@@ -107,7 +107,6 @@ IPosition getVec (uInt nrdim, const String& prompt)
 void testTiling (uInt tileSize)
 {
     // Convert the command line argument to shape.
-    uInt i;
     while (True) {
 	IPosition shape = getVec (10, "array shape (end means stop): ");
 	if (shape.nelements() == 0) {

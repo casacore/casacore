@@ -45,6 +45,7 @@
 void testVectorROIter (const Lattice<Int>& lattice)
 {
     cout << "  Testing using a Vector cursor" << endl;
+    Int nstep;
     const IPosition latticeShape(lattice.shape());
     const IPosition cursorShape(1,latticeShape(0));
     LatticeStepper step(latticeShape, cursorShape);
@@ -81,7 +82,8 @@ void testVectorROIter (const Lattice<Int>& lattice)
                      == True, AipsError);
         expectedResult.ac() += cursorShape.product();
     }
-    AlwaysAssert(iter.nsteps() == latticeShape.product()/latticeShape(0) - 1,
+    nstep = iter.nsteps();
+    AlwaysAssert(nstep == latticeShape.product()/latticeShape(0) - 1,
 		 AipsError);
     IPosition expectedPos(latticeShape-1);
     AlwaysAssert(iter.endPosition() == expectedPos, AipsError);
@@ -94,7 +96,8 @@ void testVectorROIter (const Lattice<Int>& lattice)
 	expectedResult.ac() -= cursorShape.product();
     }
     clock.show();
-    AlwaysAssert(iter.nsteps()==2*(latticeShape.product()/latticeShape(0)-1),
+    nstep = iter.nsteps();
+    AlwaysAssert(nstep == 2*(latticeShape.product()/latticeShape(0)-1),
 		 AipsError);
     expectedPos = 0;
     AlwaysAssert(iter.position() == expectedPos, AipsError);
@@ -105,6 +108,7 @@ void testVectorROIter (const Lattice<Int>& lattice)
 void testMatrixROIter (const Lattice<Int>& lattice)
 {
     cout << "  Testing using a Matrix cursor" << endl;
+    Int nstep;
     const IPosition latticeShape(lattice.shape());
     const IPosition cursorShape(2, latticeShape(0), latticeShape(1));
     RO_LatticeIterator<Int>  iter(lattice, cursorShape);
@@ -138,7 +142,8 @@ void testMatrixROIter (const Lattice<Int>& lattice)
                      == True, AipsError);
         expectedResult.ac() += cursorShape.product();
     }
-    AlwaysAssert(iter.nsteps() == latticeShape(2)*latticeShape(3) - 1,
+    nstep = iter.nsteps();
+    AlwaysAssert(nstep == latticeShape(2)*latticeShape(3) - 1,
 		 AipsError);
     IPosition expectedPos(latticeShape-1);
     AlwaysAssert(iter.endPosition() == expectedPos, AipsError);
@@ -152,7 +157,8 @@ void testMatrixROIter (const Lattice<Int>& lattice)
         expectedResult.ac() -= cursorShape.product();
     }
     clock.show();
-    AlwaysAssert(iter.nsteps()==2*(latticeShape(2)*latticeShape(3)-1),
+    nstep = iter.nsteps();
+    AlwaysAssert(nstep == 2*(latticeShape(2)*latticeShape(3)-1),
 		 AipsError);
     expectedPos = 0;
     AlwaysAssert(iter.position() == expectedPos, AipsError);
@@ -164,6 +170,7 @@ void testMatrixROIter (const Lattice<Int>& lattice)
 void testCubeROIter (const Lattice<Int>& lattice)
 {
     cout << "  Testing using a Cube cursor" << endl;
+    Int nstep;
     const IPosition latticeShape(lattice.shape());
     const IPosition cursorShape(3, latticeShape(0), latticeShape(1),
 				latticeShape(2));
@@ -200,7 +207,8 @@ void testCubeROIter (const Lattice<Int>& lattice)
                      == True, AipsError);
         expectedResult.ac() += cursorShape.product();
     }
-    AlwaysAssert(iter.nsteps() == latticeShape(3) - 1, AipsError);
+    nstep = iter.nsteps();
+    AlwaysAssert(nstep == latticeShape(3) - 1, AipsError);
     IPosition expectedPos(latticeShape-1);
     AlwaysAssert(iter.endPosition() == expectedPos, AipsError);
     expectedPos(0) = 0;
@@ -214,7 +222,8 @@ void testCubeROIter (const Lattice<Int>& lattice)
         expectedResult.ac() -= cursorShape.product();
     }
     clock.show();
-    AlwaysAssert(iter.nsteps() == 2 * (latticeShape(3) - 1), AipsError);
+    nstep = iter.nsteps();
+    AlwaysAssert(nstep == 2 * (latticeShape(3) - 1), AipsError);
     expectedPos = 0;
     AlwaysAssert(iter.position() == expectedPos, AipsError);
     expectedPos(0) = latticeShape(0) - 1;
@@ -226,6 +235,7 @@ void testCubeROIter (const Lattice<Int>& lattice)
 void testArrayROIter (const Lattice<Int>& lattice)
 {
     cout << "  Testing using an Array (4-D) cursor" << endl;
+    Int nstep;
     const IPosition latticeShape(lattice.shape());
     const IPosition cursorShape(latticeShape);
     RO_LatticeIterator<Int>  iter(lattice, cursorShape);
@@ -265,7 +275,8 @@ void testArrayROIter (const Lattice<Int>& lattice)
                      AipsError);
         expectedResult.ac() += cursorShape.product();
     }
-    AlwaysAssert(iter.nsteps() == 0, AipsError);
+    nstep = iter.nsteps();
+    AlwaysAssert(nstep == 0, AipsError);
     IPosition expectedPos(latticeShape-1);
     AlwaysAssert(iter.endPosition() == expectedPos, AipsError);
     expectedPos = 0;
@@ -277,7 +288,8 @@ void testArrayROIter (const Lattice<Int>& lattice)
         expectedResult.ac() -= cursorShape.product();
     }
     clock.show();
-    AlwaysAssert(iter.nsteps() == 0, AipsError);
+    nstep = iter.nsteps();
+    AlwaysAssert(nstep == 0, AipsError);
     expectedPos = 0;
     AlwaysAssert(iter.position() == expectedPos, AipsError);
     expectedPos = latticeShape - 1;
@@ -287,6 +299,7 @@ void testArrayROIter (const Lattice<Int>& lattice)
 void test8ElemROIter (const Lattice<Int>& lattice)
 {
     cout << "  Testing using an 8 element cursor" << endl;
+    Int nstep;
     const IPosition latticeShape(lattice.shape());
     const IPosition cursorShape(1,8);
     LatticeStepper step(latticeShape, cursorShape);
@@ -321,7 +334,8 @@ void test8ElemROIter (const Lattice<Int>& lattice)
                      AipsError);
         expectedResult += cursorShape.product();
     }
-    AlwaysAssert(iter.nsteps() == latticeShape.product()/8 - 1, AipsError);
+    nstep = iter.nsteps();
+    AlwaysAssert(nstep == latticeShape.product()/8 - 1, AipsError);
     IPosition expectedPos(latticeShape-1);
     AlwaysAssert(iter.endPosition() == expectedPos, AipsError);
     expectedPos(0) = 8;
@@ -333,7 +347,8 @@ void test8ElemROIter (const Lattice<Int>& lattice)
         expectedResult -= cursorShape.product();
     }
     clock.show();
-    AlwaysAssert(iter.nsteps() == 2*(latticeShape.product()/8 - 1), AipsError);
+    nstep = iter.nsteps();
+    AlwaysAssert(nstep == 2*(latticeShape.product()/8 - 1), AipsError);
     expectedPos = 0;
     AlwaysAssert(iter.position() == expectedPos, AipsError);
     expectedPos(0) = 8-1;
@@ -399,7 +414,7 @@ void testNonCongruentROIter (const Lattice<Int>& lattice)
     Vector<Int> oneRow(cursorShape(0));
     indgen(oneRow.ac());
     uInt i;
-    for (i = 0; i < cursorShape(1); i++) {
+    for (i = 0; i < uInt(cursorShape(1)); i++) {
         expectedResult.column(i) = oneRow;
         oneRow.ac() += latticeShape(0);
     }
@@ -407,7 +422,7 @@ void testNonCongruentROIter (const Lattice<Int>& lattice)
 		 AipsError);
     iter++;
     indgen(oneRow.ac(), cursorShape(0));
-    for (i = 0; i < cursorShape(1); i++) {
+    for (i = 0; i < uInt(cursorShape(1)); i++) {
         oneRow(7) = 0;
         oneRow(8) = 0;
         expectedResult.column(i) = oneRow;
@@ -499,6 +514,7 @@ void testNonCongruentROIter (const Lattice<Int>& lattice)
 void testVectorRWIter (Lattice<Int>& lattice)
 {
     cout << "  Testing using a Vector cursor" << endl;
+    Int nstep;
     const IPosition latticeShape(lattice.shape());
     const IPosition cursorShape(1,latticeShape(0));
     LatticeStepper step(latticeShape, cursorShape);
@@ -538,7 +554,8 @@ void testVectorRWIter (Lattice<Int>& lattice)
         iter.rwVectorCursor()(0) -= expectedResult(0);
         expectedResult.ac() += cursorShape.product();
     }
-    AlwaysAssert(iter.nsteps() == latticeShape.product()/latticeShape(0) - 1,
+    nstep = iter.nsteps();
+    AlwaysAssert(nstep == latticeShape.product()/latticeShape(0) - 1,
 		 AipsError);
     IPosition expectedPos(latticeShape-1);
     AlwaysAssert(iter.endPosition() == expectedPos, AipsError);
@@ -557,7 +574,8 @@ void testVectorRWIter (Lattice<Int>& lattice)
 		 == True, AipsError);
     iter.woCursor() = 1;
     clock.show();
-    AlwaysAssert(iter.nsteps()==2*(latticeShape.product()/latticeShape(0)-1),
+    nstep = iter.nsteps();
+    AlwaysAssert(nstep == 2*(latticeShape.product()/latticeShape(0)-1),
 		 AipsError);
     expectedPos = 0;
     AlwaysAssert(iter.position() == expectedPos, AipsError);
@@ -568,6 +586,7 @@ void testVectorRWIter (Lattice<Int>& lattice)
 void testMatrixRWIter (Lattice<Int>& lattice)
 {
     cout << "  Testing using a Matrix cursor" << endl;
+    Int nstep;
     const IPosition latticeShape(lattice.shape());
     const IPosition cursorShape(2, latticeShape(0), latticeShape(1));
     LatticeIterator<Int>  iter(lattice, cursorShape);
@@ -601,7 +620,8 @@ void testMatrixRWIter (Lattice<Int>& lattice)
                      == True, AipsError);
         iter.rwMatrixCursor()(0,0) = 2;
     }
-    AlwaysAssert(iter.nsteps() == latticeShape(2)*latticeShape(3) - 1,
+    nstep = iter.nsteps();
+    AlwaysAssert(nstep == latticeShape(2)*latticeShape(3) - 1,
 		 AipsError);
     IPosition expectedPos(latticeShape-1);
     AlwaysAssert(iter.endPosition() == expectedPos, AipsError);
@@ -618,7 +638,8 @@ void testMatrixRWIter (Lattice<Int>& lattice)
 		 == True, AipsError);
     iter.woCursor() = 3;
     clock.show();
-    AlwaysAssert(iter.nsteps()==2*(latticeShape(2)*latticeShape(3)-1),
+    nstep = iter.nsteps();
+    AlwaysAssert(nstep == 2*(latticeShape(2)*latticeShape(3)-1),
 		 AipsError);
     expectedPos = 0;
     AlwaysAssert(iter.position() == expectedPos, AipsError);
@@ -630,6 +651,7 @@ void testMatrixRWIter (Lattice<Int>& lattice)
 void testCubeRWIter (Lattice<Int>& lattice)
 {
     cout << "  Testing using a Cube cursor" << endl;
+    Int nstep;
     const IPosition latticeShape(lattice.shape());
     const IPosition cursorShape(3, latticeShape(0), latticeShape(1),
 				latticeShape(2));
@@ -666,7 +688,8 @@ void testCubeRWIter (Lattice<Int>& lattice)
                      == True, AipsError);
         iter.rwCubeCursor()(0,0,0) = 4;
     }
-    AlwaysAssert(iter.nsteps() == latticeShape(3) - 1, AipsError);
+    nstep = iter.nsteps();
+    AlwaysAssert(nstep == latticeShape(3) - 1, AipsError);
     IPosition expectedPos(latticeShape-1);
     AlwaysAssert(iter.endPosition() == expectedPos, AipsError);
     expectedPos(0) = 0;
@@ -683,7 +706,8 @@ void testCubeRWIter (Lattice<Int>& lattice)
 		 == True, AipsError);
     iter.woCursor() = 5;
     clock.show();
-    AlwaysAssert(iter.nsteps()==2*(latticeShape(3)-1), AipsError);
+    nstep = iter.nsteps();
+    AlwaysAssert(nstep == 2*(latticeShape(3)-1), AipsError);
     expectedPos = 0;
     AlwaysAssert(iter.position() == expectedPos, AipsError);
     expectedPos(0) = latticeShape(0) - 1;
@@ -695,6 +719,7 @@ void testCubeRWIter (Lattice<Int>& lattice)
 void testArrayRWIter (Lattice<Int>& lattice)
 {
     cout << "  Testing using an Array (4-D) cursor" << endl;
+    Int nstep;
     const IPosition latticeShape(lattice.shape());
     const IPosition cursorShape(latticeShape);
     LatticeIterator<Int>  iter(lattice, cursorShape);
@@ -734,7 +759,8 @@ void testArrayRWIter (Lattice<Int>& lattice)
                      AipsError);
         iter.rwCursor()(IPosition(4,0)) = 6;
     }
-    AlwaysAssert(iter.nsteps() == 0, AipsError);
+    nstep = iter.nsteps();
+    AlwaysAssert(nstep == 0, AipsError);
     IPosition expectedPos(latticeShape-1);
     AlwaysAssert(iter.endPosition() == expectedPos, AipsError);
     expectedPos = 0;
@@ -749,7 +775,8 @@ void testArrayRWIter (Lattice<Int>& lattice)
 		 AipsError);
     iter.woCursor() = 7;
     clock.show();
-    AlwaysAssert(iter.nsteps() == 0, AipsError);
+    nstep = iter.nsteps();
+    AlwaysAssert(nstep == 0, AipsError);
     expectedPos = 0;
     AlwaysAssert(iter.position() == expectedPos, AipsError);
     expectedPos = latticeShape - 1;
@@ -828,7 +855,7 @@ void testNonCongruentRWIter (Lattice<Int>& lattice)
     Vector<Int> oneRow(cursorShape(0));
     indgen(oneRow.ac());
     uInt i;
-    for (i = 0; i < cursorShape(1); i++) {
+    for (i = 0; i < uInt(cursorShape(1)); i++) {
         expectedResult1.column(i) = oneRow;
         oneRow.ac() += latticeShape(0);
     }
@@ -838,7 +865,7 @@ void testNonCongruentRWIter (Lattice<Int>& lattice)
     iter++;
     Matrix<Int> expectedResult2(cursorShape);
     indgen(oneRow.ac(), cursorShape(0));
-    for (i = 0; i < cursorShape(1); i++) {
+    for (i = 0; i < uInt(cursorShape(1)); i++) {
         oneRow(7) = 0;
         oneRow(8) = 0;
         expectedResult2.column(i) = oneRow;
