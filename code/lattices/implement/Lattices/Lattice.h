@@ -1,5 +1,5 @@
 //# Lattice.h:  Lattice is an abstract base class for array-like classes
-//# Copyright (C) 1994,1995,1996,1997,1998
+//# Copyright (C) 1994,1995,1996,1997,1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -30,10 +30,8 @@
 
 
 //# Includes
-#include <aips/aips.h>
-#include <aips/Lattices/IPosition.h>
+#include <trial/Lattices/LatticeBase.h>
 #include <aips/Lattices/Slicer.h>
-#include <trial/Lattices/LatticeCoordinates.h>
 
 //# Forward Declarations
 template <class T> class Array;
@@ -79,6 +77,8 @@ class LatticeNavigator;
 //    <li> how to apply a function to all elements
 //    <li> various shape related functions.
 // </ul>
+// The base class <linkto class=LatticeBase</linkto> contains
+// several function not dependent on the template parameter.
 // <note role=tip> Lattices always have a zero origin. </note>
 // </synopsis> 
 
@@ -224,7 +224,7 @@ class LatticeNavigator;
 // </todo>
 
 
-template <class T> class Lattice 
+template <class T> class Lattice : public LatticeBase
 {
 public: 
   // a virtual destructor is needed so that it will use the actual destructor
@@ -234,36 +234,11 @@ public:
   // Make a copy of the derived object (reference semantics).
   virtual Lattice<T>* clone() const = 0;
 
-  // Is the lattice paged to disk?
-  // <br>Default implementation returns False.
-  virtual Bool isPaged() const;
+  // Make a copy of the derived object (reference semantics)
+  // on behalf of the base class.
+  virtual LatticeBase* cloneBase() const;
 
-  // Is the lattice writable?
-  // <br>Default implementation returns True.
-  virtual Bool isWritable() const;
-
-  // Return the shape of the Lattice including all degenerate axes
-  // (ie. axes with a length of one)
-  virtual IPosition shape() const = 0;
-  
-  // Return the number of axes in this Lattice. This includes all
-  // degenerate axes.
-  // Default implementation returns shape().nelements().
-  virtual uInt ndim() const;
-  
-  // Return the total number of elements in this Lattice.
-  // Default implementation returns shape().product().
-  virtual uInt nelements() const;
-  
-  // Return a value of "True" if this instance of Lattice and 'other' have 
-  // the same shape, otherwise returns a value of "False".
-  virtual Bool conform(const Lattice<T>& other) const;
-
-  // Return the coordinates of the lattice.
-  // The default implementation returns an 'empty' LattCoord object.
-  virtual LatticeCoordinates latticeCoordinates() const;
-
-  // Return the value of the single element located at the argument
+    // Return the value of the single element located at the argument
   // IPosition.  
   // <br> The default implementation uses getSlice.
   // <group>
@@ -376,30 +351,6 @@ public:
   virtual void apply (const Functional<T,T>& function);
   // </group>
 
-  // This function returns the recommended maximum number of pixels to
-  // include in the cursor of an iterator. The default implementation
-  // returns a number that is a power of two and includes enough pixels to
-  // consume between 4 and 8 MBytes of memory.
-  virtual uInt maxPixels() const;
-
-  // Returns a recommended cursor shape for iterating through all the pixels
-  // in the Lattice. The default implementation sets up a shape that
-  // completely fills as many axes as possible, but always at least the
-  // first axis. For example, given a 10x20x30 Lattice 
-  // <srcblock>
-  // maxPixels = 1     --> niceCursorShape = [10,1,1]
-  //             100   --> niceCursorShape = [10,1,1]
-  //             300   --> niceCursorShape = [10,20,1] 
-  //             10000 --> niceCursorShape = [10,20,30] 
-  // </srcblock>
-  // The default argument is the result of <src>maxPixels()</src>.
-  // <group>
-  IPosition niceCursorShape (uInt maxPixels) const
-    { return doNiceCursorShape (maxPixels); }
-  IPosition niceCursorShape() const
-    { return doNiceCursorShape (maxPixels()); }
-  // </group>
-
   // Copy the data from the given lattice to this one.
   // The default implementation uses function <src>copyDataTo</src>.
   virtual void copyData (const Lattice<T>& from);
@@ -408,8 +359,11 @@ public:
   // The default implementation only copies data (thus no mask, etc.).
   virtual void copyDataTo (Lattice<T>& to) const;
 
-  // Check class internals - used for debugging. Should always return True
-  virtual Bool ok() const;
+  // This function returns the recommended maximum number of pixels to
+  // include in the cursor of an iterator. The default implementation
+  // returns a number that is a power of two and includes enough pixels to
+  // consume between 4 and 8 MBytes of memory.
+  virtual uInt maxPixels() const;
 
   // These functions are used by the LatticeIterator class to generate an
   // iterator of the correct type for a specified Lattice. Not recommended
@@ -443,7 +397,6 @@ public:
   virtual Bool doGetSlice (Array<T>& buffer, const Slicer& section) = 0;
   virtual void doPutSlice (const Array<T>& buffer, const IPosition& where,
 			   const IPosition& stride) = 0;
-  virtual IPosition doNiceCursorShape (uInt maxPixels) const;
   // </group>
 
 protected:
