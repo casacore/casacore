@@ -35,44 +35,35 @@
 #include <aips/Utilities/Copy.h>
 #include <aips/Utilities/Assert.h>
 
-IPosition::IPosition(const Array<Int> &other)
-: size(0), data(0)
+
+IPosition::IPosition (const Array<Int> &other)
+: size_p (other.nelements()),
+  data_p (0)
 {
-    if (other.nelements() == 0) {
-	return; // Be slightly loose about conformance checking
+    if (size_p == 0) {
+	return;        // Be slightly loose about conformance checking
     }
     if (other.ndim() != 1) {
 	throw(AipsError("IPosition::IPosition(const Array<Int> &other) - "
 			"other is not one-dimensional"));
     }
-    size = other.nelements();
-    if (size <= BufferLength) {
-        data = buffer_p;
-    } else {
-	data = new Int[size];
-	if (data == 0) {
-	    throw(AllocError("IPosition::IPosition(const Array<Int> &other) - "
-			     "new[] of internal buffer fails", size));
-	}
-    }
+    allocateBuffer();
     Bool del;
     const Int *storage = other.getStorage(del);
     // We could optimize away this copy in the case when storage is already
     // a copy.
-    objcopy(data, storage, size);
-    other.freeStorage(storage, del);
-
+    objcopy (data_p, storage, size_p);
+    other.freeStorage (storage, del);
     DebugAssert(ok(), AipsError);
 }
 
 Vector<Int> IPosition::asVector() const
 {
     DebugAssert(ok(), AipsError);
-
-    // Make an array which is the correct size
+    // Make an array which is the correct size.
     Vector<Int> retval(nelements());
-    for (uInt i=0; i<nelements(); i++)
+    for (uInt i=0; i<nelements(); i++) {
 	retval(i) = (*this)(i);
-
+    }
     return retval;
 }
