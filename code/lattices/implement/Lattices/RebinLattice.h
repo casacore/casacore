@@ -174,9 +174,9 @@ public:
 
 private:
   Slicer findOriginalSlicer (const Slicer& section) const;
-  Bool getDataAndMask (Array<T>& data, Array<Bool>& mask, const Slicer& section);
-  Bool bin(Array<T>& dataOut, Array<Bool>& maskOut,
-           const Array<T>& dataIn, const Array<Bool>& maskIn) const;
+  void getDataAndMask (const Slicer& section);
+  void bin(const Array<T>& dataIn);
+  void bin(const Array<T>& dataIn, const Array<Bool>& maskIn);
 //
   MaskedLattice<T>* itsLatticePtr;
   Vector<uInt> itsBin;

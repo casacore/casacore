@@ -199,47 +199,24 @@ String RebinLattice<T>::name (Bool stripPath) const
   return itsLatticePtr->name(stripPath);
 }
 
+
 template<class T>
 Bool RebinLattice<T>::doGetSlice (Array<T>& buffer, const Slicer& section)
 {
 
-// If we already have the result for this section don't get it again
+// If all unity, access the lattice directly.
 
-   if (section==itsSlicer && itsData.nelements()>0) {
-//      buffer.reference(itsData);
-      buffer.resize(itsData.shape());
-      buffer = itsData;
-      return False;
-   }
-
-// Get input data
-
-   Bool isRef = False;
    if (itsAllUnity) {
-      isRef = getDataAndMask (itsData, itsMask, section);
-      buffer.resize(itsData.shape());
-//      buffer.reference(itsData);
-      buffer = itsData;
-   } else {
-      Array<T> dataIn;
-      Array<Bool> maskIn;
-      getDataAndMask (dataIn, maskIn, section);
-
-// Bin it up
-
-      const IPosition& shapeOut = section.length();
-      itsData.resize(shapeOut);
-      itsMask.resize(shapeOut);
-//
-      bin (itsData, itsMask, dataIn, maskIn);
-//      buffer.reference(itsData);
-      buffer.resize(shapeOut);
-      buffer = itsData;
-      isRef = False;
+      return itsLatticePtr->doGetSlice (buffer, section);
    }
-//
-   itsSlicer = section;
-   return isRef;
+
+// Get the result for this section if not in cache
+
+   if (!(section == itsSlicer)) {
+      getDataAndMask (section);
+   }
+   buffer.reference(itsData);
+   return True;
 }
 
 
@@ -263,52 +240,28 @@ template<class T>
 Bool RebinLattice<T>::doGetMaskSlice (Array<Bool>& buffer,
                                       const Slicer& section)
 {
-// If we already have the result for this section don't get it again
 
-   if (section==itsSlicer && itsMask.nelements()>0) {
-//      buffer.reference(itsMask);
-      buffer.resize(itsMask.shape());
-      buffer = itsMask;
-      return False;
+// If not masked, simply fill the buffer
+
+  if (!itsLatticePtr->isMasked()) {
+     buffer.resize (section.length());
+     buffer = True;
+     return False;
+  }
+
+// If all unity, access the lattice directly.
+
+   if (itsAllUnity) {
+      return itsLatticePtr->doGetMaskSlice (buffer, section);
    }
-//
-   Bool isRef;
-   const IPosition& shapeOut = section.length();
-   if (itsLatticePtr->isMasked()) {
-      if (itsAllUnity) {
-         isRef = getDataAndMask (itsData, itsMask, section);
-         buffer.resize(itsMask.shape());
-//         buffer.reference(itsMask);
-         buffer = itsMask;
-      } else {
 
-// Get input data
+// Get the result for this section if not in cache
 
-         Array<T> dataIn;
-         Array<Bool> maskIn;
-         getDataAndMask (dataIn, maskIn, section);
-
-// Bin it up
-
-         itsData.resize(shapeOut);
-         itsMask.resize(shapeOut);
-         bin (itsData, itsMask, dataIn, maskIn);
-//         buffer.reference(itsMask);
-         buffer.resize(shapeOut);
-         buffer = itsMask;
-         isRef = True;
-      }
-   } else {
-       itsMask.resize(shapeOut);
-       itsMask = True;
-//       buffer.reference(itsMask);
-       buffer.resize(shapeOut);
-       buffer = itsMask;
-       isRef = False;
+   if (!(section == itsSlicer)) {
+      getDataAndMask (section);
    }
-//
-   itsSlicer = section;
-   return isRef;
+   buffer.reference(itsMask);
+   return True;
 }
 
 
@@ -320,8 +273,9 @@ Bool RebinLattice<T>::ok() const
 
 
 
+
 template<class T>
-Bool RebinLattice<T>::getDataAndMask (Array<T>& data, Array<Bool>& mask, const Slicer& section)
+void RebinLattice<T>::getDataAndMask (const Slicer& section)
 {
 
 // Work out the slicer for the input Lattice given the slicer for
@@ -331,67 +285,95 @@ Bool RebinLattice<T>::getDataAndMask (Array<T>& data, Array<Bool>& mask, const S
 
 // Fetch
 
-   Bool isRef = itsLatticePtr->getSlice(data, sectionIn);
+   Array<T> data;
+   Array<Bool> mask;
+   itsData.resize (section.length());
+   itsLatticePtr->getSlice(data, sectionIn);
    if (itsLatticePtr->isMasked()) {
-      itsLatticePtr->getMaskSlice(mask, sectionIn);    // Assume isRef same for data/mask
-   }
-   return isRef;
+      itsLatticePtr->getMaskSlice(mask, sectionIn);
+      itsMask.resize (section.length());
+      bin (data, mask);
+   } else {
+      bin (data);
+   }     
+
+// Remember what is in cache
+   itsSlicer = section;
 }
 
 
+
 template <class T>
-Bool RebinLattice<T>::bin(Array<T>& dataOut, Array<Bool>& maskOut,
-                          const Array<T>& dataIn, const Array<Bool>& maskIn) const
+void RebinLattice<T>::bin (const Array<T>& dataIn)
 {
 
 // Make Lattice from Array to get decent iterators
 
-   ArrayLattice<T> latDataIn (dataIn);
-   ArrayLattice<Bool> latMaskIn(maskIn);
-   SubLattice<T> latIn(latDataIn);
-//
-   Bool doInMask  = maskIn.nelements() > 0;
-   if (doInMask) latIn.setPixelMask(latMaskIn, False);
-   Bool doOutMask = maskOut.nelements() > 0;
-
-// Make Lattice iterators
-
-   const uInt nDim = latIn.ndim();
-   IPosition cursorShape(latIn.shape());
+   const uInt nDim = dataIn.ndim();
    IPosition bin(itsBin.nelements());
    for (uInt i=0; i<bin.nelements(); i++) bin(i) = itsBin[i];
-   LatticeStepper stepper (latIn.shape(), bin, LatticeStepper::RESIZE);
-   RO_MaskedLatticeIterator<T> inIter(latIn, stepper);
+   LatticeStepper stepper (dataIn.shape(), bin, LatticeStepper::RESIZE);
+   ArrayLattice<T> latIn (dataIn);
+   RO_LatticeIterator<T> inIter(latIn, stepper);
 
 // Do it
 
    IPosition outPos(nDim);
-   T sumData;
-   uInt nSum = 0;
 //
    for (inIter.reset(); !inIter.atEnd(); inIter++) {
       const Array<T>& cursor(inIter.cursor());
-      const uInt n = cursor.nelements();
+      const uInt nSum = cursor.nelements();
+      T sumData = sum(cursor);
+      if (nSum>0) sumData /= nSum;
+
+// Write output
+
+      const IPosition& inPos = inIter.position();
+      outPos = inPos / bin;
+      itsData(outPos) = sumData;
+   }
+}
+
+
+template <class T>
+void RebinLattice<T>::bin (const Array<T>& dataIn, const Array<Bool>& maskIn)
+{
+
+// Make Lattice from Array to get decent iterators
+
+   const uInt nDim = dataIn.ndim();
+   ArrayLattice<T> latIn (dataIn);
+   Array<Bool> maskInRef(maskIn);
+
+// Make Lattice iterators
+
+   IPosition bin(itsBin.nelements());
+   for (uInt i=0; i<bin.nelements(); i++) bin(i) = itsBin[i];
+   LatticeStepper stepper (latIn.shape(), bin, LatticeStepper::RESIZE);
+   RO_LatticeIterator<T> inIter(latIn, stepper);
+
+// Do it
+
+   IPosition outPos(nDim);
+   Array<Bool> cursorMask;
 //
-      if (doInMask) {
-         nSum = 0;
-         sumData = 0;
-         const Array<Bool>& cursorMask(inIter.getMask());
+   for (inIter.reset(); !inIter.atEnd(); inIter++) {
+      const Array<T>& cursor(inIter.cursor());
+      Array<Bool> cursorMask (maskInRef(inIter.position(),
+                                        inIter.endPosition()));
 
 // Iterate through cursor with STL iterators
 
-         typename Array<T>::const_iterator dataIter;
-         typename Array<Bool>::const_iterator maskIter;
-         for (dataIter=cursor.begin(),maskIter=cursorMask.begin();
-              dataIter!=cursor.end(); ++dataIter,++maskIter) {
-            if (*maskIter) {
-               sumData += *dataIter;
-               nSum++;
-            }
+      T sumData = 0;
+      Int nSum = 0;
+      typename Array<T>::const_iterator dataIter;
+      typename Array<Bool>::const_iterator maskIter;
+      for (dataIter=cursor.begin(),maskIter=cursorMask.begin();
+           dataIter!=cursor.end(); ++dataIter,++maskIter) {
+         if (*maskIter) {
+            sumData += *dataIter;
+            nSum++;
          }
-      } else {
-         nSum = n;
-         sumData = sum(cursor);
       }
       if (nSum>0) sumData /= nSum;
 
@@ -399,15 +381,9 @@ Bool RebinLattice<T>::bin(Array<T>& dataOut, Array<Bool>& maskOut,
 
       const IPosition& inPos = inIter.position();
       outPos = inPos / bin;
-//
-      dataOut(outPos) = sumData;
-      if (doOutMask) {
-         maskOut(outPos) = True;
-         if (nSum==0) maskOut(outPos) = False;
-      }
+      itsData(outPos) = sumData;
+      itsMask(outPos) = nSum>0;
    }
-//
-   return False;
 }
 
 
