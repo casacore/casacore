@@ -3618,3 +3618,4 @@
 13 337 src rm doc/gettingresults/multifield.latex
 13 338 src mv trial/apps/table/taqlwidget.g trial/implement/Widgets/taqlwidget.g
 13 338 src mv trial/apps/table/taqlwidget.help trial/implement/Widgets/taqlwidget.help
+13 344 src mv trial/apps/gtablebrowser/tablebrowser.g trial/apps/table/tablebrowser.g
