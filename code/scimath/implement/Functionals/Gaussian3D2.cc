@@ -41,10 +41,14 @@ Gaussian3D<AutoDiff<T> >::Gaussian3D()
 
 template<class T> 
 Gaussian3D<AutoDiff<T> >::Gaussian3D(const AutoDiff<T>& height,
-                                     const AutoDiff<T>& xCenter, const AutoDiff<T>& yCenter,
-                                     const AutoDiff<T>& zCenter,const AutoDiff<T>& xWidth,
-                                     const AutoDiff<T>& yWidth, const AutoDiff<T>& zWidth, 
-                                     const AutoDiff<T>& theta,  const AutoDiff<T>& phi) 
+                                     const AutoDiff<T>& xCenter, 
+                                     const AutoDiff<T>& yCenter,
+                                     const AutoDiff<T>& zCenter,
+                                     const AutoDiff<T>& xWidth,
+                                     const AutoDiff<T>& yWidth, 
+                                     const AutoDiff<T>& zWidth, 
+                                     const AutoDiff<T>& theta,  
+                                     const AutoDiff<T>& phi) 
 : Gaussian3DParam<AutoDiff<T> >(height, xCenter, yCenter, zCenter, 
                                 xWidth, yWidth, zWidth, theta, phi)
 {}
@@ -53,7 +57,8 @@ template<class T>
 Gaussian3D<AutoDiff<T> >::Gaussian3D(const AutoDiff<T>& height,
                                      const Vector<AutoDiff<T> >& center,
                                      const Vector<AutoDiff<T> >& width, 
-                                     const AutoDiff<T>& theta,const AutoDiff<T>& phi)
+                                     const AutoDiff<T>& theta,
+                                     const AutoDiff<T>& phi)
 : Gaussian3DParam<AutoDiff<T> >(height, center, width, theta, phi)
 {}
 
@@ -82,14 +87,14 @@ AutoDiff<T> Gaussian3D<AutoDiff<T> >::eval(typename Function<AutoDiff<T> >::Func
 //  
   if (stoT != param_p[THETA] || stoP != param_p[PHI]) settrigvals();
 
-  const T cosTV = cosT.value();
-  const T cosPV = cosP.value();
-  const T sinTV = sinT.value();
-  const T sinPV = sinP.value();
-  const T cosTcosPV = cosTcosP.value();
-  const T cosTsinPV = cosTsinP.value();
-  const T sinTcosPV = sinTcosP.value();
-  const T sinTsinPV = sinTsinP.value();
+  const T cosTV = cosT_p.value();
+  const T cosPV = cosP_p.value();
+  const T sinTV = sinT_p.value();
+  const T sinPV = sinP_p.value();
+  const T cosTcosPV = cosTcosP_p.value();
+  const T cosTsinPV = cosTsinP_p.value();
+  const T sinTcosPV = sinTcosP_p.value();
+  const T sinTsinPV = sinTsinP_p.value();
 
   if (param_p[H].nDerivatives() > 0) {
      tmp = param_p[H];
@@ -182,7 +187,7 @@ AutoDiff<T> Gaussian3D<AutoDiff<T> >::eval(typename Function<AutoDiff<T> >::Func
 
     // derivative wrt phi
     if (param_p.mask(PHI))
-      tmp.deriv(PHI) = -tvalue *( xrowterm * (-Nx*cosTsinPV - Nz*cosTcosPV) / Ax2
+      tmp.deriv(PHI) = -tvalue *(xrowterm * (-Nx*cosTsinPV - Nz*cosTcosPV)/ Ax2
 			       + yrowterm * (Nx*sinTsinPV + Nz*sinTcosPV) / Ay2
                                + zrowterm * (Nx*cosPV - Nz*sinPV) / Az2);
   }
@@ -206,4 +211,7 @@ T Gaussian3D<AutoDiff<T> >::sq(T v) const
 {
   return v*v;
 }
+
+
+
 
