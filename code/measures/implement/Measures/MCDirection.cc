@@ -609,3 +609,14 @@ void MCDirection::doConvert(MVDirection &in,
     };	// switch
   };	// for
 }
+
+String MCDirection::showState() {
+  if (!stateMade_p) {
+    MCBase::makeState(MCDirection::stateMade_p, MCDirection::FromTo_p[0],
+		      MDirection::N_Types, MCDirection::N_Routes,
+		      MCDirection::ToRef_p);
+  };
+  return MCBase::showState(MCDirection::stateMade_p, MCDirection::FromTo_p[0],
+			   MDirection::N_Types, MCDirection::N_Routes,
+			   MCDirection::ToRef_p);
+}
