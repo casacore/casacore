@@ -1,5 +1,5 @@
 //# ObjectID2.cc: Hash related OjectID functions. Prevent link coupling.
-//# Copyright (C) 1996
+//# Copyright (C) 1996,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
