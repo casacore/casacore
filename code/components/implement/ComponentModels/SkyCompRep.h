@@ -172,10 +172,10 @@ public:
   // pointer. This is used to implement a virtual copy constructor.
   virtual SkyCompRep * clone() const = 0;
 
-protected:
   // These functions will at a later stage be moved into the Measures
-  // module. But for now they are used by derived classes implementing concrete
-  // versions of the toRecord and fromRecord member functions.
+  // module. But for now they are used by derived classes, and elsewhere, for
+  // converting to and from glish records to the appropriate type ie.,
+  // Quantum<Double> or MDirection.  
   // <group>
   static void fromRecord(Quantum<Double> & quantity, String & errorMessage,
 			 const GlishRecord & record);
@@ -185,6 +185,7 @@ protected:
   static void toRecord(GlishRecord & record, const MDirection & direction);
   // </group>
 
+protected:
   // These functions are also used by derived classes implementing concrete
   // versions of the toRecord and fromRecord member functions. But they will
   // always remain here as they are quite specific to the components module.
