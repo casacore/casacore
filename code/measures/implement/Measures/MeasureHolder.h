@@ -43,9 +43,7 @@ class MPosition;
 class MRadialVelocity;
 class GlishRecord;
 
-// <summary>
-// A holder for Measures to enable record conversions
-// </summary>
+// <summary> A holder for Measures to enable record conversions </summary>
 
 // <use visibility=export>
 
@@ -65,13 +63,16 @@ class GlishRecord;
 // <synopsis>
 // This class can be used to handle heterogeneous collections of Measures, e.g.
 // as a <src>Vector<MeasureHolder></src>. With the aid of the
-// torecord() and fromrecord() functions it can be used
+// toRecord() and fromRecord() functions it can be used
 // to convert a Measure object into or from a record.
 // A MeasureHolder is created from a Measure, or can be empty.
 //
-// Checks on the contents can be made with with isMDirection() and other
-// functions. The contents can be obtained with operator() (no test on
-// existence), and with specific asMDirection() etc methods.
+// Checks on the contents can be made with functions like
+// <src>isMDirection</src> and the contents can be obtained with
+// functions like <src>asMDirection</src>. It is an error to try and
+// retrieve a measure of the wrong type and doing so will generate an
+// exception (AipsError).
+//
 // </synopsis>
 //
 // <example>
@@ -107,9 +108,9 @@ public:
 //# Constructors
   // Creates an empty holder
   MeasureHolder();
-  // Create from a Measure
+  // Create from a Measure (copy made)
   MeasureHolder(const Measure &in);
-  // Copy a holder
+  // Copy a holder (copy semantics)
   MeasureHolder(const MeasureHolder &other);
 //# Destructor
   ~MeasureHolder();
@@ -121,7 +122,8 @@ public:
   const Measure &operator()() const;
 
 //# Member Functions
-  // Check if it holds a specific Measure
+  // Check the the MeasureHolder holds the specified Measure type. Return
+  // True if if does and False otherwise.
   // <group>
   Bool isEmpty() const;
   Bool isMeasure() const;
@@ -139,6 +141,7 @@ public:
   // <li> AipsError if holder empty
   // <li> AipsError if holder contains wrong Measure
   // </thrown>
+  // <group>
   const Measure &asMeasure() const;
   const MDirection &asMDirection();
   const MDoppler &asMDoppler();
@@ -147,14 +150,34 @@ public:
   const MPosition &asMPosition();
   const MRadialVelocity &asMRadialVelocity();
   // </group>
-  // Create a Measure from a record
+  // Create a Measure from a record. An error message is generated, and False
+  // returned if an invalid record is given. A valid record will return True.
+  // A valid record contains the following fields (any additional fields are
+  // ignored):
+  // <ul>
+  // <li> type = TpString: type of Measure (direction, epoch, etc; case
+  //	 insensitive)
+  // <li> refer = TpString: reference type of Measure (case insensitive; 
+  //	  enough characters to be unique (e.g. J20, j200, utc, b1950, J2000);
+  //	  unknown reference type will log an error message and translate into
+  //	  the default type for the Measure.
+  // <li> m0, m1, ... = TpRecord(Quantity): one or more Quantities giving
+  //	  the value(s) for this Measure (e.g. longitude and latitude for a
+  //	  direction.
+  // <li> offset = TpRecord(Measure)--optional: an optional offset as a
+  //	  Measure of the same type as the main Measure (e.g. an MEpoch for an
+  //	   MEpoch)
+  // </ul>
+  // Error messages are prefixed to error.
   // <group>
   virtual Bool fromRecord(String &error,
 			  const RecordInterface &in);
   Bool fromRecord(String &error,
 		  const GlishRecord &in);
   // </group>
-  // Create a record from a Measure
+  // Create a record from a Measure. The return will be False and an error
+  // message generated only if the MeasureHolder does not contain a Measure.
+  // Error messages are prefixed to error.
   // <group>
   virtual Bool toRecord(String &error, RecordInterface &out) const;
   Bool toRecord(String &error, GlishRecord &out) const;
