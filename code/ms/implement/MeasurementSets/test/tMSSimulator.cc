@@ -36,7 +36,7 @@
 #include <aips/Measures/MPosition.h>
 #include <aips/Quanta/MVPosition.h>
 #include <aips/Measures/MDirection.h>
-#include <aips/Mathematics/Constants.h>
+#include <aips/BasicSL/Constants.h>
 
 int main()
 {

@@ -33,7 +33,7 @@
 #include <aips/OS/Time.h>
 #include <aips/Quanta/MVTime.h>
 #include <aips/Utilities/Assert.h>
-#include <aips/Utilities/String.h>
+#include <aips/BasicSL/String.h>
 
 #include <aips/sstream.h>
 #include <aips/iomanip.h>

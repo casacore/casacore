@@ -31,7 +31,7 @@
 # include <aips/FITS/fitsio.h>
 # include <aips/FITS/hdu.h>
 
-# include <aips/Utilities/String.h>
+# include <aips/BasicSL/String.h>
 
 # include <aips/iostream.h>
 # include <aips/stdlib.h>

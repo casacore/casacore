@@ -33,7 +33,7 @@
 #include <aips/Exceptions/Error.h>
 #include <aips/Utilities/Assert.h>
 #include <aips/Containers/RecordInterface.h>
-#include <aips/Quanta/MUString.h>
+#include <aips/Utilities/MUString.h>
 
 //# Constructors
 template <class T>

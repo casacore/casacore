@@ -27,7 +27,7 @@
 
 //# Includes
 #include <aips/Exceptions/Error.h>
-#include <aips/Utilities/String.h>
+#include <aips/BasicSL/String.h>
 #include <aips/Measures/MRBase.h>
 #include <aips/iostream.h>
 

@@ -26,7 +26,7 @@
 //# $Id$
 
 #include <aips/Arrays/Vector.h>
-#include <aips/Logging/TableLogSink.h>
+#include <aips/LogTables/TableLogSink.h>
 #include <aips/Tables/TableDesc.h>
 #include <aips/Tables/TableRecord.h>
 #include <aips/Tables/SetupNewTab.h>

@@ -42,9 +42,9 @@
 #include <aips/Glish/GlishRecord.h>
 #include <aips/Glish/GlishValue.h>
 #include <aips/Arrays/IPosition.h>
-#include <aips/Mathematics/Complex.h>
-#include <aips/Mathematics/Constants.h>
-#include <aips/Mathematics/Math.h>
+#include <aips/BasicSL/Complex.h>
+#include <aips/BasicSL/Constants.h>
+#include <aips/BasicMath/Math.h>
 #include <aips/Quanta/Euler.h>
 #include <aips/Measures/MCDirection.h>
 #include <aips/Measures/MDirection.h>
@@ -56,7 +56,7 @@
 #include <aips/Measures/Stokes.h>
 #include <aips/Tables/Table.h>
 #include <aips/Utilities/Assert.h>
-#include <aips/Utilities/String.h>
+#include <aips/BasicSL/String.h>
 #include <aips/iostream.h>
 
 int main() {

@@ -40,8 +40,8 @@
 #include <aips/Arrays/IPosition.h>
 #include <aips/Containers/Block.h>
 #include <aips/Containers/Record.h>
-#include <aips/Mathematics/Constants.h>
-#include <aips/Mathematics/Math.h>
+#include <aips/BasicSL/Constants.h>
+#include <aips/BasicMath/Math.h>
 #include <aips/Logging/LogIO.h>
 #include <aips/Inputs/Input.h>
 #include <aips/Exceptions/Error.h>

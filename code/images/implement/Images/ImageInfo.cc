@@ -31,11 +31,11 @@
 #include <aips/Quanta/Quantum.h>
 #include <aips/Quanta/QuantumHolder.h>
 #include <aips/Arrays/Vector.h>
-#include <aips/Mathematics/Math.h>
+#include <aips/BasicMath/Math.h>
 #include <aips/Containers/Record.h>
-#include <aips/Utilities/String.h>
+#include <aips/BasicSL/String.h>
 #include <aips/Utilities/Regex.h>
-#include <trial/Logging/LoggerHolder.h>
+#include <trial/LogTables/LoggerHolder.h>
 #include <aips/sstream.h>
 
 

@@ -3,7 +3,7 @@
 #include <aips/Utilities/Assert.h>
 #include <aips/Arrays/ArrayMath.h>
 #include <aips/OS/Timer.h>
-#include <aips/Mathematics/Constants.h>
+#include <aips/BasicSL/Constants.h>
 
 #include <trial/Mathematics/VanVleck.h>
 

@@ -29,7 +29,7 @@
 #include <aips/Arrays/ArrayMath.h>
 #include <aips/Arrays/ArrayError.h>
 //# For scalar near() functions.
-#include <aips/Mathematics/Math.h>
+#include <aips/BasicMath/Math.h>
 
 template<class T>
 Bool allEQ (const Array<T> &l, const Array<T> &r)

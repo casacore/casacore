@@ -35,9 +35,9 @@
 #include <aips/Arrays/Vector.h>
 #include <aips/Utilities/Assert.h>
 #include <aips/Exceptions/Error.h>
-#include <aips/Utilities/String.h>
+#include <aips/BasicSL/String.h>
 #include <aips/Tables/TableDesc.h>
-#include <aips/Mathematics/Math.h>
+#include <aips/BasicMath/Math.h>
 
 SDWeatherHandler::SDWeatherHandler() 
     : msWeather_p(0), msWeatherCols_p(0), rownr_p(-1), humidityId_p(-1),

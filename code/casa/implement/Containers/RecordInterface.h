@@ -33,7 +33,7 @@
 
 //# Includes
 #include <aips/aips.h>
-#include <aips/Utilities/String.h>
+#include <aips/BasicSL/String.h>
 #include <aips/Utilities/Notice.h>
 #include <aips/Utilities/DataType.h>
 #include <aips/Containers/RecordFieldId.h>

@@ -28,8 +28,8 @@
 //# Includes
 #include <trial/SpectralComponents/SpectralEstimate.h>
 
-#include <aips/Mathematics/Math.h>
-#include <aips/Mathematics/Constants.h>
+#include <aips/BasicMath/Math.h>
+#include <aips/BasicSL/Constants.h>
 #include <aips/Utilities/Assert.h>
 
 

@@ -35,7 +35,7 @@
 #include <aips/Arrays/Slicer.h>
 #include <aips/Arrays/Vector.h>
 #include <aips/Utilities/ValType.h>
-#include <aips/Utilities/String.h>
+#include <aips/BasicSL/String.h>
 #include <aips/string.h>
 #include <aips/iostream.h>
 

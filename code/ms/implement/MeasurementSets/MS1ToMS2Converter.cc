@@ -51,7 +51,7 @@
 #include <aips/Arrays/ArrayMath.h>
 #include <aips/Arrays/ArrayLogical.h>
 #include <aips/Arrays/Slice.h>
-#include <aips/Utilities/String.h>
+#include <aips/BasicSL/String.h>
 #include <aips/Exceptions/Error.h>
 #include <aips/iostream.h>
 

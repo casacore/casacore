@@ -31,7 +31,7 @@
 
 //# Includes
 #include <aips/aips.h>
-#include <aips/Utilities/String.h>
+#include <aips/BasicSL/String.h>
 #include <trial/Functionals/FuncExprData.h>
 #include <aips/vector.h>
 

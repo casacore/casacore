@@ -29,7 +29,7 @@
 #include <aips/Arrays.h>
 #include <aips/Arrays/ArrayMath.h>
 #include <aips/Arrays/ArrayLogical.h>
-#include <aips/Mathematics/Constants.h>
+#include <aips/BasicSL/Constants.h>
 #include <aips/Arrays/IPosition.h>
 #include <aips/Arrays/IPosition.h>
 #include <aips/Containers/Record.h>

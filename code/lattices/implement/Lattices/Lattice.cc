@@ -33,8 +33,8 @@
 #include <aips/Arrays/Slicer.h>
 #include <aips/Arrays/ArrayMath.h>
 #include <aips/Exceptions/Error.h>
-#include <aips/Functionals/Functional.h>
-#include <aips/Mathematics/Math.h>
+#include <aips/BasicMath/Functional.h>
+#include <aips/BasicMath/Math.h>
 #include <aips/Utilities/COWPtr.h>
 #include <aips/Utilities/Assert.h>
 

@@ -30,7 +30,7 @@
 #define AIPS_COORDINATE_H
 
 #include <aips/aips.h>
-#include <aips/Utilities/String.h>
+#include <aips/BasicSL/String.h>
 
 template<class T> class Quantum;
 template<class T> class Matrix;

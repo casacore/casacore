@@ -37,8 +37,8 @@
 #include <aips/Tables/ColumnsIndex.h>
 #include <aips/Tables/TableDesc.h>
 #include <aips/Utilities/Assert.h>
-#include <aips/Utilities/String.h>
-#include <aips/Mathematics/Math.h>
+#include <aips/BasicSL/String.h>
+#include <aips/BasicMath/Math.h>
 
 MSTableIndex::MSTableIndex()
     : timeVals_p(0), intervalVals_p(0), key_p(0), time_p(0.0), interval_p(0.0),

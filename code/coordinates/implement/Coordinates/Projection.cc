@@ -27,7 +27,7 @@
 //# $Id$
 
 #include <trial/Coordinates/Projection.h>
-#include <aips/Mathematics/Math.h>
+#include <aips/BasicMath/Math.h>
 #include <aips/Exceptions/Error.h>
 
 Projection::Projection(Projection::Type which) 

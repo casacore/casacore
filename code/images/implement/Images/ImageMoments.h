@@ -34,7 +34,7 @@
 #include <aips/Quanta/QMath.h>
 #include <aips/Quanta/Quantum.h>
 #include <aips/Measures/MDoppler.h>
-#include <trial/Tasking/PGPlotter.h>
+#include <trial/System/PGPlotter.h>
 #include <aips/Logging/LogIO.h>
 #include <aips/Arrays/Vector.h>
 

@@ -37,7 +37,7 @@
 #include <trial/Lattices/LatticeExpr.h>
 #include <trial/Lattices/LatticeExprNode.h>
 #include <aips/Lattices/LatticeIterator.h>
-#include <aips/Mathematics/Math.h>
+#include <aips/BasicMath/Math.h>
 #include <aips/Utilities/Assert.h>
 #include <trial/Images/TempImage.h>
 #include <trial/Images/SubImage.h>

@@ -32,7 +32,7 @@
 #include <aips/Tables/BaseMappedArrayEngine.h>
 #include <aips/Tables/ScalarColumn.h>
 #include <aips/Arrays/Array.h>
-#include <aips/Mathematics/Complex.h>
+#include <aips/BasicSL/Complex.h>
 
 
 // <summary>

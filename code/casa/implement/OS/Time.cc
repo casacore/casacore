@@ -28,7 +28,7 @@
 #include <aips/OS/Time.h>
 #include <aips/Exceptions/Error.h>
 #include <aips/Utilities/Assert.h>
-#include <aips/Mathematics/Constants.h>
+#include <aips/BasicSL/Constants.h>
 #include <aips/OS/HostInfo.h>
 
 #if defined(AIPS_SOLARIS) || defined(_AIX) || defined(AIPS_IRIX)

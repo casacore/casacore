@@ -32,12 +32,12 @@
 #include <aips/Arrays/Cube.h>
 #include <aips/Arrays/Vector.h>
 #include <aips/Arrays/Matrix.h>
-#include <aips/Mathematics/Complex.h>
+#include <aips/BasicSL/Complex.h>
 #include <aips/Measures/MDirection.h>
 #include <aips/Measures/MEpoch.h>
-#include <trial/MeasurementEquations/StokesVector.h>
-#include <trial/MeasurementEquations/VisibilityIterator.h>
-#include <trial/MeasurementComponents/MSCalEnums.h>
+#include <trial/MSVis/StokesVector.h>
+#include <trial/MSVis/VisibilityIterator.h>
+#include <trial/MSVis/MSCalEnums.h>
 
 //#forward
 

@@ -32,7 +32,7 @@
 #include <aips/aips.h>
 #include <trial/ComponentModels/ComponentType.h>
 #include <aips/Utilities/RecordTransformable.h>
-#include <aips/Mathematics/Complexfwd.h>
+#include <aips/BasicSL/Complexfwd.h>
 
 class MFrequency;
 class MVFrequency;

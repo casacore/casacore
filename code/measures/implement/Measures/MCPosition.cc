@@ -28,8 +28,8 @@
 //# Includes
 #include <aips/Quanta/Quantum.h>
 #include <aips/Arrays/Vector.h>
-#include <aips/Mathematics/Math.h>
-#include <aips/Mathematics/Constants.h>
+#include <aips/BasicMath/Math.h>
+#include <aips/BasicSL/Constants.h>
 #include <aips/Utilities/Assert.h>
 #include <aips/Measures/MCPosition.h>
 #include <aips/Measures/MeasTable.h>

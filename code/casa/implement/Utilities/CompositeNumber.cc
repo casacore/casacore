@@ -27,7 +27,7 @@
 
 #include <trial/Utilities/CompositeNumber.h>
 #include <aips/Utilities/GenSort.h>
-#include <aips/Mathematics/Math.h>
+#include <aips/BasicMath/Math.h>
 
 CompositeNumber::CompositeNumber(const uInt maxval) {
 

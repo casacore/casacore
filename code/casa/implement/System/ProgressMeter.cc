@@ -26,8 +26,8 @@
 //#
 //# $Id$
 
-#include <trial/Tasking/ProgressMeter.h>
-#include <aips/Utilities/String.h>
+#include <aips/System/ProgressMeter.h>
+#include <aips/BasicSL/String.h>
 #include <aips/Containers/Block.h>
 #include <aips/iostream.h>
 

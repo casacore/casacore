@@ -29,7 +29,7 @@
 #include <aips/Mathematics/AutoDiff.h>
 #include <aips/Arrays/Vector.h>
 #include <aips/Arrays/ArrayMath.h>
-#include <aips/Mathematics/Math.h>
+#include <aips/BasicMath/Math.h>
 
 //# Statics
 template <class T>

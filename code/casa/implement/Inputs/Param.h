@@ -31,7 +31,7 @@
 
 #include <aips/aips.h>
 #include <aips/Containers/Block.h>
-#include <aips/Utilities/String.h>
+#include <aips/BasicSL/String.h>
 #include <aips/IO/AipsIO.h>
 #include <aips/stdlib.h>
 #include <aips/string.h>             // need things like strlen() and such

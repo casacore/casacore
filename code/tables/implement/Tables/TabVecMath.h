@@ -33,7 +33,7 @@
 
 //# Includes
 #include <aips/aips.h>
-#include <aips/Mathematics/Math.h>
+#include <aips/BasicMath/Math.h>
 #include <aips/Tables/TableVector.h>
 #include <aips/Tables/TVecMath.h>
 

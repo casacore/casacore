@@ -29,7 +29,7 @@
 #include <aips/Arrays/ArrayError.h>
 #include <aips/Arrays/Slice.h>
 #include <aips/Arrays/MaskedArray.h>
-#include <aips/Mathematics/Math.h>
+#include <aips/BasicMath/Math.h>
 #include <aips/Utilities/Copy.h>
 #include <aips/Utilities/Assert.h>
 #include <aips/iostream.h>

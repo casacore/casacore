@@ -28,9 +28,9 @@
 #include <aips/aips.h>
 #include <aips/Exceptions/Error.h>
 #include <aips/iostream.h>
-#include <trial/MeasurementEquations/VisSet.h>
-#include <trial/MeasurementEquations/VisBuffer.h>
-#include <trial/MeasurementEquations/VisibilityIterator.h>
+#include <trial/MSVis/VisSet.h>
+#include <trial/MSVis/VisBuffer.h>
+#include <trial/MSVis/VisibilityIterator.h>
 #include <aips/OS/Timer.h>
 #include <aips/iomanip.h>
 using namespace std;

@@ -35,7 +35,7 @@
 #include <aips/MeasurementSets/MSPolColumns.h>
 #include <aips/Arrays/Vector.h>
 #include <aips/Arrays/Matrix.h>
-#include <aips/Utilities/String.h>
+#include <aips/BasicSL/String.h>
 
 //# forward declarations
 

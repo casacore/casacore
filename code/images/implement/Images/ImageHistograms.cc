@@ -32,7 +32,7 @@
 #include <trial/Images/ImageUtilities.h>
 #include <trial/Lattices/LatticeHistograms.h>
 #include <aips/Logging/LogIO.h>
-#include <aips/Utilities/String.h>
+#include <aips/BasicSL/String.h>
 
 #include <aips/sstream.h>
 

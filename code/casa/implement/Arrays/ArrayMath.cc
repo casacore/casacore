@@ -33,8 +33,8 @@
 #include <aips/Arrays/ArrayIter.h>
 #include <aips/Arrays/VectorIter.h>
 #include <aips/Arrays/ArrayError.h>
-#include <aips/Mathematics/Math.h>
-#include <aips/Mathematics/ConvertScalar.h>
+#include <aips/BasicMath/Math.h>
+#include <aips/BasicMath/ConvertScalar.h>
 #include <aips/Utilities/GenSort.h>
 
 // <thrown>

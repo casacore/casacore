@@ -30,7 +30,7 @@
 #define AIPS_NEWFILE_H
 
 #include <aips/aips.h>
-#include <aips/Utilities/String.h>
+#include <aips/BasicSL/String.h>
 
 // <summary>
 // Do checks for a new (non-existent) file.

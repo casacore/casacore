@@ -27,10 +27,10 @@
 
 //# Includes
 #include <aips/Measures/Aberration.h>
-#include <aips/Mathematics/Constants.h>
+#include <aips/BasicSL/Constants.h>
 #include <aips/Arrays/ArrayMath.h>
 #include <aips/Measures/MeasTable.h>
-#include <aips/Tasking/AipsrcValue.h>
+#include <aips/System/AipsrcValue.h>
 
 //# Constants
 const Double Aberration::INTV = 0.04;

@@ -34,15 +34,15 @@
 #include <aips/Containers/Record.h>
 #include <aips/Containers/RecordFieldId.h>
 #include <aips/Measures/MeasureHolder.h>
-#include <aips/Mathematics/Complex.h>
-#include <aips/Mathematics/Constants.h>
-#include <aips/Mathematics/Math.h>
+#include <aips/BasicSL/Complex.h>
+#include <aips/BasicSL/Constants.h>
+#include <aips/BasicMath/Math.h>
 #include <aips/Measures/MDirection.h>
 #include <aips/Quanta/MVAngle.h>
 #include <aips/Quanta/MVDirection.h>
 #include <aips/Quanta/Quantum.h>
 #include <aips/Utilities/Assert.h>
-#include <aips/Utilities/String.h>
+#include <aips/BasicSL/String.h>
 #include <aips/iostream.h>
 
 int main() {

@@ -28,11 +28,11 @@
 #include <aips/Exceptions/Error.h>
 #include <trial/Flagging/RFChunkStats.h>
 #include <trial/Flagging/RedFlagger.h>
-#include <trial/MeasurementEquations/VisibilityIterator.h>
-#include <trial/MeasurementEquations/VisBuffer.h>
+#include <trial/MSVis/VisibilityIterator.h>
+#include <trial/MSVis/VisBuffer.h>
 #include <stdio.h>
 #include <aips/sstream.h>
-#include <trial/Tasking/PGPlotter.h>
+#include <trial/System/PGPlotter.h>
     
 // when no plotter is specified for screen/report,
 // use a null (unattached plotter)

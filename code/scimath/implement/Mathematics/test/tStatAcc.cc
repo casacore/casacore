@@ -29,7 +29,7 @@
 #include <aips/Arrays.h>
 #include <trial/Mathematics/StatAcc.h>
 // #include <aips/Utilities/Assert.h>
-// #include <aips/Utilities/String.h>
+// #include <aips/BasicSL/String.h>
 #include <aips/Exceptions/Error.h>
 
 

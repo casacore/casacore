@@ -29,7 +29,7 @@
 #include <trial/Lattices/LCPolygon.h>
 #include <aips/Arrays/Matrix.h>
 #include <aips/Arrays/ArrayMath.h>
-#include <aips/Mathematics/Math.h>
+#include <aips/BasicMath/Math.h>
 #include <aips/Tables/TableRecord.h>
 #include <aips/Utilities/GenSort.h>
 #include <aips/Utilities/Assert.h>

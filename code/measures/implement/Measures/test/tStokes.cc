@@ -29,7 +29,7 @@
 
 #include <aips/aips.h>
 #include <aips/Measures/Stokes.h>
-#include <aips/Utilities/String.h>
+#include <aips/BasicSL/String.h>
 #include <aips/Exceptions/Error.h>
 #include <aips/iostream.h>
 

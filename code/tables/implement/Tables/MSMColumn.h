@@ -34,9 +34,9 @@
 #include <aips/Tables/DataManager.h>
 #include <aips/Tables/StManColumn.h>
 #include <aips/Containers/Block.h>
-#include <aips/Mathematics/Complex.h>
+#include <aips/BasicSL/Complex.h>
 #include <aips/Arrays/IPosition.h>
-#include <aips/Utilities/String.h>
+#include <aips/BasicSL/String.h>
 
 //# Forward declarations
 class MSMBase;

@@ -28,10 +28,10 @@
 #include <aips/aips.h>
 #include <aips/Exceptions/Error.h>
 #include <aips/Utilities/Assert.h>
-#include <aips/Utilities/String.h>
+#include <aips/BasicSL/String.h>
 #include <aips/iostream.h>
 
-#include <aips/Mathematics/Math.h>
+#include <aips/BasicMath/Math.h>
 
 int main() {
   try {

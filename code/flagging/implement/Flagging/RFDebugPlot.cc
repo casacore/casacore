@@ -25,7 +25,7 @@
 //#
 //# $Id$
 #include <trial/Flagging/RFDebugPlot.h>
-#include <trial/Tasking/PGPlotter.h>
+#include <trial/System/PGPlotter.h>
 #include <aips/stdio.h>
         
 RFDebugPlot::RFDebugPlot () :

@@ -30,10 +30,10 @@
 #define TRIAL_VISSETUTIL_H
 
 #include <aips/aips.h>
-#include <aips/Mathematics/Complex.h>
+#include <aips/BasicSL/Complex.h>
 #include <aips/Quanta/Quantum.h>
 #include <aips/MeasurementSets/MeasurementSet.h>
-#include <trial/MeasurementEquations/VisSet.h>
+#include <trial/MSVis/VisSet.h>
 
 // <summary> 
 // Utilities for operating on VisSets.

@@ -27,7 +27,7 @@
 
 
 #include <aips/Lattices/LatticeBase.h>
-#include <aips/Mathematics/Math.h>
+#include <aips/BasicMath/Math.h>
 #include <aips/Exceptions/Error.h>
 
 

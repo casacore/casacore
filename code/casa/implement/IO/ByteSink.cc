@@ -27,7 +27,7 @@
 
 #include <aips/IO/ByteSink.h>
 #include <aips/IO/TypeIO.h>
-#include <aips/Utilities/String.h>
+#include <aips/BasicSL/String.h>
 #include <aips/Exceptions/Error.h>
 
 ByteSink::ByteSink()

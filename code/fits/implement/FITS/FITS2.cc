@@ -30,7 +30,7 @@
 #include <aips/FITS/fitsio.h>
 #include <aips/Arrays/ArrayMath.h>
 #include <aips/FITS/hdu.h>
-#include <aips/Utilities/String.h>
+#include <aips/BasicSL/String.h>
 #include <aips/Utilities/Regex.h>
 #include <aips/Arrays/IPosition.h>
 

@@ -34,7 +34,7 @@
 #include <aips/Tables/ArrayColumn.h>
 #include <aips/TableMeasures/ScalarMeasColumn.h>
 #include <aips/TableMeasures/ScalarQuantColumn.h>
-#include <aips/Utilities/String.h>
+#include <aips/BasicSL/String.h>
 
 class MSHistory;
 // <summary>

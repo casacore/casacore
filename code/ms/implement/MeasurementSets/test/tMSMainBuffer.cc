@@ -33,12 +33,12 @@
 // #include <aips/Arrays/Cube.h>
 // #include <aips/Arrays/Matrix.h>
 // #include <aips/Exceptions/Error.h>
-// #include <aips/Mathematics/Constants.h>
-// #include <aips/Mathematics/Math.h>
+// #include <aips/BasicSL/Constants.h>
+// #include <aips/BasicMath/Math.h>
 // #include <aips/Exceptions/Excp.h>
 // #include <aips/Tables/Table.h>
 // #include <aips/Utilities/Assert.h>
-// #include <aips/Utilities/String.h>
+// #include <aips/BasicSL/String.h>
 // #include <iostream.h>
 
 int main() {

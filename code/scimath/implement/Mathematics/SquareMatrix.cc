@@ -26,8 +26,8 @@
 //# $Id$
 
 //# Includes
-#include <trial/Arrays/SquareMatrix.h>
-#include <aips/Arrays/MatrixMathLA.h>
+#include <trial/Mathematics/SquareMatrix.h>
+#include <aips/Mathematics/MatrixMathLA.h>
 #include <aips/Exceptions/Error.h>
 #include <aips/iostream.h>
 

@@ -28,7 +28,7 @@
 //# Includes
 
 #include <aips/Containers/ListMap.h>
-#include <aips/Utilities/String.h>
+#include <aips/BasicSL/String.h>
 #include <aips/Containers/OrdPairIO.h>
 #include <aips/Containers/MapIO.h>
 #include <aips/iostream.h>

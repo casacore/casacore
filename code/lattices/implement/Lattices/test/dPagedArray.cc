@@ -40,7 +40,7 @@
 #include <aips/Tables/Table.h>
 #include <aips/Tables/TableDesc.h>
 #include <aips/Utilities/COWPtr.h>
-#include <aips/Utilities/String.h>
+#include <aips/BasicSL/String.h>
 #include <aips/Inputs/Input.h>
 #include <aips/iostream.h>
 

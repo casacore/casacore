@@ -36,7 +36,7 @@
 #include <aips/OS/DirectoryIterator.h>
 #include <aips/OS/SymLink.h>
 #include <aips/IO/LockFile.h>
-#include <aips/Utilities/String.h>
+#include <aips/BasicSL/String.h>
 #include <aips/Exceptions/Error.h>
 
 

@@ -29,7 +29,7 @@
 #define AIPS_CONVERTSCALAR_H
 
 //# Includes
-#include <aips/Mathematics/Complex.h>
+#include <aips/BasicSL/Complex.h>
 
 // <summary>
 // Templated functions to convert scalars from one type to another.

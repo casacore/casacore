@@ -34,7 +34,7 @@
 #include <trial/ComponentModels/Flux.h>
 #include <trial/ComponentModels/SkyCompBase.h>
 #include <aips/Utilities/CountedPtr.h>
-#include <aips/Utilities/String.h>
+#include <aips/BasicSL/String.h>
 #include <aips/Measures/Stokes.h>
 
 class ComponentShape;

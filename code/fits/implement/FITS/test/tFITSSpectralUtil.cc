@@ -33,7 +33,7 @@
 #include <aips/Exceptions/Error.h>
 #include <trial/FITS/FITSKeywordUtil.h>
 #include <aips/Logging.h>
-#include <aips/Mathematics/Math.h>
+#include <aips/BasicMath/Math.h>
 #include <aips/Utilities/Assert.h>
 
 #include <iostream.h>

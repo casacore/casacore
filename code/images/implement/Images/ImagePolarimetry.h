@@ -34,7 +34,7 @@
 #include <aips/Arrays/Vector.h>
 #include <aips/Containers/Block.h> 
 #include <aips/Measures/Stokes.h>
-#include <aips/Mathematics/Complex.h>
+#include <aips/BasicSL/Complex.h>
 #include <trial/Images/ImageInterface.h>
 #include <trial/Fitting/LinearFitSVD.h>
 

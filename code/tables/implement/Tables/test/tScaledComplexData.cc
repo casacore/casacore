@@ -33,7 +33,7 @@
 #include <trial/Tables/ScaledComplexData.h>
 #include <aips/Tables/ArrayColumn.h>
 #include <aips/Tables/ScalarColumn.h>
-#include <aips/Mathematics/Complex.h>
+#include <aips/BasicSL/Complex.h>
 #include <aips/Arrays/Cube.h>
 #include <aips/Arrays/Matrix.h>
 #include <aips/Arrays/IPosition.h>

@@ -33,7 +33,7 @@
 #include <aips/Tables/ExprNodeRep.h>
 #include <aips/Tables/ExprRange.h>
 #include <aips/Utilities/DataType.h>
-#include <aips/Mathematics/Complex.h>
+#include <aips/BasicSL/Complex.h>
 #include <aips/Tables/ExprFuncNode.h>
 #include <aips/Utilities/Regex.h>
 

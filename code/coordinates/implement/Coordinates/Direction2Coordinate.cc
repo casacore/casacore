@@ -28,7 +28,7 @@
 
 #include <trial/Coordinates/DirectionCoordinate.h>
 #include <aips/Arrays/Vector.h>
-#include <aips/Mathematics/Constants.h>
+#include <aips/BasicSL/Constants.h>
 #include <aips/Measures/MDirection.h>
 #include <aips/Quanta/Quantum.h>
 #include <aips/Quanta/MVDirection.h>

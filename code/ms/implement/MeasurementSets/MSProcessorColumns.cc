@@ -29,7 +29,7 @@
 #include <aips/MeasurementSets/MSProcessor.h>
 #include <aips/Tables/TableDesc.h>
 #include <aips/Tables/ColDescSet.h>
-#include <aips/Utilities/String.h>
+#include <aips/BasicSL/String.h>
 
 ROMSProcessorColumns::
 ROMSProcessorColumns(const MSProcessor& msProcessor):

@@ -29,7 +29,7 @@
 #include <aips/Lattices/TiledShape.h>
 #include <aips/Arrays/Vector.h>
 #include <aips/Containers/Block.h>
-#include <aips/Mathematics/Math.h>
+#include <aips/BasicMath/Math.h>
 #include <aips/Exceptions/Error.h>
 
 

@@ -26,7 +26,7 @@
 //#
 //# $Id$
 
-#include <trial/Tasking/PGPlotter.h>
+#include <trial/System/PGPlotter.h>
 #include <aips/Exceptions/Error.h>
 #include <aips/Arrays/Vector.h>
 #include <aips/Containers/Record.h>

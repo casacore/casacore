@@ -29,7 +29,7 @@
 #define AIPS_TABLEMEASVALUEDESC_H
 
 //# Includes
-#include <aips/Utilities/String.h>
+#include <aips/BasicSL/String.h>
 
 //# Forward Declarations
 class ColumnDesc;

@@ -34,9 +34,9 @@
 #include <aips/Functionals/FunctionWrapper.h>
 #include <aips/Functionals/HyperPlane.h>
 #include <aips/Functionals/Polynomial.h>
-#include <aips/Mathematics/Complex.h>
+#include <aips/BasicSL/Complex.h>
 #include <aips/Mathematics/Primes.h>
-#include <aips/Mathematics/Random.h>
+#include <aips/BasicMath/Random.h>
 #include <aips/Utilities/Assert.h>
 
 #include <aips/iostream.h>

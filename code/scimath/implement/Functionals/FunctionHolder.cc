@@ -46,7 +46,7 @@
 #include <aips/Functionals/CombiFunction.h>
 #include <aips/Functionals/CompoundFunction.h>
 #include <trial/Functionals/CompiledFunction.h>
-#include <aips/Quanta/MUString.h>
+#include <aips/Utilities/MUString.h>
 #include <aips/Mathematics/AutoDiff.h>
 #include <aips/Mathematics/AutoDiffMath.h>
 #include <aips/sstream.h>

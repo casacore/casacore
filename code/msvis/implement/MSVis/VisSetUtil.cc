@@ -32,16 +32,16 @@
 #include <aips/Arrays/MatrixMath.h>
 #include <aips/Arrays/ArrayMath.h>
 #include <aips/Arrays/Cube.h>
-#include <aips/Mathematics/Math.h>
-#include <aips/Mathematics/Complex.h>
-#include <aips/Mathematics/Constants.h>
+#include <aips/BasicMath/Math.h>
+#include <aips/BasicSL/Complex.h>
+#include <aips/BasicSL/Constants.h>
 #include <aips/Utilities/Assert.h>
 
 #include <aips/MeasurementSets/MSColumns.h>
 
-#include <trial/MeasurementEquations/VisSet.h>
-#include <trial/MeasurementEquations/VisBuffer.h>
-#include <trial/MeasurementEquations/VisSetUtil.h>
+#include <trial/MSVis/VisSet.h>
+#include <trial/MSVis/VisBuffer.h>
+#include <trial/MSVis/VisSetUtil.h>
 
 #include <aips/Quanta/UnitMap.h>
 #include <aips/Quanta/UnitVal.h>

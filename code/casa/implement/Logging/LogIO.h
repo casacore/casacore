@@ -33,7 +33,7 @@
 #include <aips/aips.h>
 #include <aips/Logging/LogMessage.h>
 #include <aips/Logging/LogSink.h>
-#include <aips/Mathematics/Complex.h>
+#include <aips/BasicSL/Complex.h>
 
 //# Forward Declarations
 class LogSink;

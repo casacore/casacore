@@ -30,7 +30,7 @@
 #include <aips/Utilities/Assert.h>
 #include <aips/Utilities/Register.h>
 #include <aips/Quanta/MVDoppler.h>
-#include <aips/Mathematics/Math.h>
+#include <aips/BasicMath/Math.h>
 
 // MVDoppler class
 

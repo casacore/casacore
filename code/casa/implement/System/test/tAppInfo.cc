@@ -29,11 +29,11 @@
 #include <aips/Exceptions/Error.h>
 #include <aips/Arrays/Vector.h>
 #include <aips/Utilities/Assert.h>
-#include <aips/Tasking/AppInfo.h>
+#include <aips/System/AppInfo.h>
 #include <aips/Utilities/Assert.h>
 #include <aips/Arrays/ArrayIO.cc>
-#include <aips/Utilities/String.h>
-#include <aips/Tasking/AipsrcVector.h>
+#include <aips/BasicSL/String.h>
+#include <aips/System/AipsrcVector.h>
 #include <aips/Utilities/Regex.h>
 
 #include <aips/OS/Memory.h>

@@ -31,7 +31,7 @@
 //# Includes
 #include <aips/aips.h>
 #include <aips/Functionals/Function.h>
-#include <aips/Mathematics/Random.h>
+#include <aips/BasicMath/Random.h>
 
 //# Forward declarations
 

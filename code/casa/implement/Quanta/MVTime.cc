@@ -29,13 +29,13 @@
 #include <aips/Quanta/MVTime.h>
 #include <aips/Quanta/MVAngle.h>
 #include <aips/Quanta/MVEpoch.h>
-#include <aips/Quanta/MUString.h>
+#include <aips/Utilities/MUString.h>
 #include <aips/sstream.h>
 #include <aips/iomanip.h>
 #include <aips/OS/Time.h>
-#include <aips/Mathematics/Math.h>
-#include <aips/Mathematics/Constants.h>
-#include <aips/Utilities/String.h>
+#include <aips/BasicMath/Math.h>
+#include <aips/BasicSL/Constants.h>
+#include <aips/BasicSL/String.h>
 #include <aips/Utilities/Assert.h>
 
 // MVTime class

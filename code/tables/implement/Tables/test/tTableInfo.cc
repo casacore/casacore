@@ -28,7 +28,7 @@
 
 //# Includes
 #include <aips/Tables/TableInfo.h>
-#include <aips/Utilities/String.h>
+#include <aips/BasicSL/String.h>
 #include <aips/Exceptions/Error.h>
 #include <aips/iostream.h>
 

@@ -31,7 +31,7 @@
 #include <aips/Arrays/Matrix.h>
 #include <aips/Arrays/ArrayLogical.h>
 #include <aips/Arrays/ArrayMath.h>
-#include <aips/Mathematics/Math.h>
+#include <aips/BasicMath/Math.h>
 #include <aips/Quanta/Quantum.h>
 #include <trial/Coordinates/LinearCoordinate.h>
 #include <aips/Exceptions/Error.h>

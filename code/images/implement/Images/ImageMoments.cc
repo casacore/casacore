@@ -39,9 +39,9 @@
 #include <aips/Exceptions/Error.h>
 #include <aips/Functionals/Gaussian1D.h>
 #include <aips/Logging/LogIO.h>
-#include <aips/Logging/TableLogSink.h>
-#include <aips/Mathematics/Constants.h>
-#include <aips/Mathematics/Math.h>
+#include <aips/LogTables/TableLogSink.h>
+#include <aips/BasicSL/Constants.h>
+#include <aips/BasicMath/Math.h>
 #include <aips/Mathematics/Convolver.h>
 #include <aips/Quanta/Unit.h>
 #include <aips/Quanta/UnitMap.h>
@@ -52,7 +52,7 @@
 #include <aips/OS/Path.h>
 #include <aips/Tables/Table.h>
 #include <aips/Utilities/DataType.h>
-#include <aips/Utilities/String.h>
+#include <aips/BasicSL/String.h>
 #include <aips/Utilities/LinearSearch.h>
 #include <aips/Utilities/PtrHolder.h>
 
@@ -78,8 +78,8 @@
 #include <trial/Lattices/LatticeStatsBase.h>
 #include <trial/Lattices/LCPagedMask.h>
 #include <aips/Lattices/TiledLineStepper.h>
-#include <trial/Tasking/PGPlotter.h>
-#include <trial/Tasking/NewFile.h>
+#include <trial/System/PGPlotter.h>
+#include <aips/LogTables/NewFile.h>
 
 #include <aips/sstream.h>
 #include <aips/iomanip.h>

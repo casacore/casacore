@@ -30,7 +30,7 @@
 #include <aips/Utilities/DefaultValue.h>
 
 #include <aips/Exceptions/Error.h>
-#include <aips/Utilities/String.h>
+#include <aips/BasicSL/String.h>
 #include <aips/Utilities/Assert.h>
 
 #include <aips/iostream.h>

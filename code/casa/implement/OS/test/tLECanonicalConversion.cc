@@ -27,7 +27,7 @@
 
 
 #include <aips/OS/LECanonicalConversion.h>
-#include <aips/Mathematics/Math.h>
+#include <aips/BasicMath/Math.h>
 #include <aips/iostream.h>
 #include <aips/iomanip.h>
 

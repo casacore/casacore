@@ -34,7 +34,7 @@
 #include <aips/Containers/Record.h>
 #include <aips/Utilities/Assert.h>
 #include <aips/Utilities/LinearSearch.h>
-#include <aips/Mathematics/Math.h>
+#include <aips/BasicMath/Math.h>
 
 #include <aips/sstream.h>
 

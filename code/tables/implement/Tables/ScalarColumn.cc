@@ -32,7 +32,7 @@
 #include <aips/Arrays/Vector.h>
 #include <aips/Arrays/Slicer.h>
 #include <aips/Utilities/ValTypeId.h>
-#include <aips/Utilities/String.h>
+#include <aips/BasicSL/String.h>
 #include <aips/Tables/TableError.h>
 
 

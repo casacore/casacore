@@ -30,13 +30,13 @@
 
 
 #include <aips/aips.h>
-#include <aips/Mathematics/Math.h>
+#include <aips/BasicMath/Math.h>
 #include <aips/Exceptions/Error.h>
 #include <aips/Arrays/Array.h>
 #include <aips/Arrays/ArrayMath.h>
 #include <aips/Arrays/ArrayIter.h> 
 #include <aips/Arrays/ArrayIO.h> 
-#include <aips/Mathematics/Constants.h> 
+#include <aips/BasicSL/Constants.h> 
 #include <aips/math.h> 
 
 template<class T> class Matrix;

@@ -30,7 +30,7 @@
 //-----------------------------------------------------------------------------
 
 #include <aips/aips.h>
-#include <aips/Tasking/Aipsrc.h>
+#include <aips/System/Aipsrc.h>
 
 #include <trial/Images/PagedImage.h>
 #include <trial/Images/ImageFITSConverter.h>
@@ -43,7 +43,7 @@
 #include <aips/FITS/FITS.h>
 #include <aips/Inputs/Input.h>
 #include <aips/Arrays/IPosition.h>
-#include <aips/Mathematics/Constants.h>
+#include <aips/BasicSL/Constants.h>
 #include <aips/OS/File.h>
 #include <aips/OS/Path.h>
 

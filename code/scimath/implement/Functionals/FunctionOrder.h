@@ -34,7 +34,7 @@
 #include <aips/Containers/Block.h>
 #include <aips/Utilities/RecordTransformable.h>
 #include <aips/Functionals/Function.h>
-#include <aips/Utilities/String.h>
+#include <aips/BasicSL/String.h>
 
 //# Forward declarations
 class RecordInterface;

@@ -30,8 +30,8 @@
 #include <aips/Arrays/Matrix.h>
 #include <aips/Arrays/ArrayLogical.h>
 #include <aips/Arrays/ArrayMath.h>
-#include <aips/Arrays/MatrixMathLA.h>
-#include <aips/Mathematics/Math.h>
+#include <aips/Mathematics/MatrixMathLA.h>
+#include <aips/BasicMath/Math.h>
 #include <trial/Coordinates/LinearXform.h>
 #include <aips/Exceptions/Error.h>
 

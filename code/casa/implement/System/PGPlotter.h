@@ -30,7 +30,7 @@
 #define AIPS_PGPLOTTER_H
 
 #include <aips/aips.h>
-#include <trial/Tasking/PGPlotterInterface.h>
+#include <trial/System/PGPlotterInterface.h>
 #include <aips/Utilities/CountedPtr.h>
 
 class String;

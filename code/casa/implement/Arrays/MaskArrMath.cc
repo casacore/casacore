@@ -26,7 +26,7 @@
 //# $Id$
 
 #include <aips/Arrays/MaskArrMath.h>
-#include <aips/Mathematics/Math.h>
+#include <aips/BasicMath/Math.h>
 #include <aips/Arrays/MaskedArray.h>
 #include <aips/Arrays/Array.h>
 #include <aips/Arrays/ArrayError.h>

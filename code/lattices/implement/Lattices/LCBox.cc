@@ -26,7 +26,7 @@
 //# $Id$
 
 #include <trial/Lattices/LCBox.h>
-#include <aips/Mathematics/Math.h>
+#include <aips/BasicMath/Math.h>
 #include <aips/Arrays/ArrayMath.h>
 #include <aips/Tables/TableRecord.h>
 #include <aips/Utilities/Assert.h>

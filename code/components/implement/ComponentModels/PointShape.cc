@@ -31,15 +31,15 @@
 #include <aips/Containers/RecordFieldId.h>
 #include <aips/Containers/RecordInterface.h>
 #include <aips/Exceptions/Error.h>
-#include <aips/Mathematics/Complex.h>
-#include <aips/Mathematics/Math.h>
+#include <aips/BasicSL/Complex.h>
+#include <aips/BasicMath/Math.h>
 #include <aips/Measures/MCDirection.h>
 #include <aips/Measures/MeasConvert.h>
 #include <aips/Quanta/MVAngle.h>
 #include <aips/Quanta/QMath.h>
 #include <aips/Quanta/Quantum.h>
 #include <aips/Utilities/Assert.h>
-#include <aips/Utilities/String.h>
+#include <aips/BasicSL/String.h>
 
 PointShape::PointShape() 
   :ComponentShape()

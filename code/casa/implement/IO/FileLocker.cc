@@ -26,7 +26,7 @@
 //# $Id$
 
 #include <aips/IO/FileLocker.h>
-#include <aips/Utilities/String.h>
+#include <aips/BasicSL/String.h>
 #include <aips/iostream.h>
 #include <unistd.h>
 #include <fcntl.h>

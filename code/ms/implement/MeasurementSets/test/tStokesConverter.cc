@@ -29,7 +29,7 @@
 #include <aips/Arrays/ArrayLogical.h>
 #include <aips/Arrays/ArrayIO.h>
 #include <aips/Exceptions/Error.h>
-#include <trial/MeasurementComponents/StokesConverter.h>
+#include <trial/MeasurementSets/StokesConverter.h>
 #include <aips/iostream.h>
 
 int main() 

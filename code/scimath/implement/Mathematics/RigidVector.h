@@ -31,7 +31,7 @@
   
 #include <aips/aips.h>
 #include <aips/Arrays/Vector.h>
-#include <aips/Mathematics/Complex.h>
+#include <aips/BasicSL/Complex.h>
 // #include <aips/Tables/RetypedArrayEngine.h>
 // #include <aips/Tables/RetypedArraySetGet.h>
 // #include <aips/Tables/DataManError.h>

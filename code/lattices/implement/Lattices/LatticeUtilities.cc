@@ -40,7 +40,7 @@
 #include <trial/Lattices/LatticeStatistics.h>
 #include <aips/Lattices/TempLattice.h>
 #include <aips/Logging/LogIO.h>
-#include <aips/Mathematics/Math.h>
+#include <aips/BasicMath/Math.h>
 #include <aips/Exceptions/Error.h>
 #include <aips/Utilities/Assert.h>
 #include <aips/iostream.h>

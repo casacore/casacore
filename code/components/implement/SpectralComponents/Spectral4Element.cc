@@ -29,7 +29,7 @@
 #include <trial/SpectralComponents/SpectralElement.h>
 
 #include <aips/Exceptions/Error.h>
-#include <aips/Utilities/String.h>
+#include <aips/BasicSL/String.h>
 
 //# Member templates
 template <class MT>

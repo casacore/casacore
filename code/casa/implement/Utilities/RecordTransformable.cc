@@ -26,7 +26,7 @@
 //# $Id$
 
 #include <aips/Utilities/RecordTransformable.h>
-#include <aips/Utilities/String.h>
+#include <aips/BasicSL/String.h>
 
 RecordTransformable::~RecordTransformable() {
   // Nothing

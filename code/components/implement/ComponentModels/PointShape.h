@@ -32,7 +32,7 @@
 #include <aips/aips.h>
 #include <trial/ComponentModels/ComponentShape.h>
 #include <trial/ComponentModels/ComponentType.h>
-#include <aips/Mathematics/Complex.h>
+#include <aips/BasicSL/Complex.h>
 
 class MVAngle;
 class MDirection;

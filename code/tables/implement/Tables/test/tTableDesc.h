@@ -30,7 +30,7 @@
 #define TTABLEDESC_H
 
 #include <aips/aips.h>
-#include <aips/Utilities/String.h>
+#include <aips/BasicSL/String.h>
 
 // <summary>
 // Example for a non-standard column in a table description

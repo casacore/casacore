@@ -27,7 +27,7 @@
 
 #include <trial/IO/TapeIO.h>
 #include <aips/OS/Path.h>
-#include <aips/Utilities/String.h>
+#include <aips/BasicSL/String.h>
 #include <aips/Utilities/Assert.h>
 #include <aips/Exceptions/Error.h>
 #include <unistd.h>               // needed for ::close

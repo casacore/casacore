@@ -24,7 +24,7 @@
 //#                        Charlottesville, VA 22903-2475 USA
 //#
 //# $Id$
-#include <trial/MeasurementSets/SubMS.h>
+#include <trial/MSVis/SubMS.h>
 #include <trial/MeasurementSets/MSSelection.h>
 #include <aips/Tables/ExprNode.h>
 #include <aips/Tables/RefRows.h>
@@ -36,11 +36,11 @@
 #include <aips/Logging/LogIO.h>
 #include <aips/OS/File.h>
 #include <aips/Containers/Record.h>
-#include <aips/Utilities/String.h>
+#include <aips/BasicSL/String.h>
 #include <aips/Utilities/Assert.h>
-#include <trial/MeasurementEquations/VisSet.h>
-#include <trial/MeasurementEquations/VisBuffer.h>
-#include <trial/MeasurementEquations/VisibilityIterator.h>
+#include <trial/MSVis/VisSet.h>
+#include <trial/MSVis/VisBuffer.h>
+#include <trial/MSVis/VisibilityIterator.h>
 
 #include <aips/Tables/IncrementalStMan.h>
 #include <aips/Tables/ScalarColumn.h>

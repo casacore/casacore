@@ -29,7 +29,7 @@
 #include <aips/Exceptions.h>
 #include <aips/Measures/MCEarthMagnetic.h>
 #include <aips/Measures/EarthField.h>
-#include <aips/Mathematics/Constants.h>
+#include <aips/BasicSL/Constants.h>
 #include <aips/Utilities/Assert.h>
 #include <aips/Arrays/Vector.h>
 #include <aips/Arrays/ArrayMath.h>

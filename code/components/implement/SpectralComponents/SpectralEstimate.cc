@@ -28,7 +28,7 @@
 //# Includes
 #include <trial/SpectralComponents/SpectralEstimate.h>
 
-#include <aips/Mathematics/Math.h>
+#include <aips/BasicMath/Math.h>
 
 //# Constructors
 SpectralEstimate::SpectralEstimate(const uInt maxpar) :

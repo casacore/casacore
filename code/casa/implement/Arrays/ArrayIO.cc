@@ -34,7 +34,7 @@
 #include <aips/Arrays/ArrayPosIter.h>
 #include <aips/IO/AipsIO.h>
 #include <aips/IO/AipsIOCarray.h>
-#include <aips/Utilities/String.h>
+#include <aips/BasicSL/String.h>
 #include <aips/Utilities/Regex.h>
 #include <aips/Logging/LogIO.h>
 #include <aips/Utilities/Register.h>

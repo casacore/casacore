@@ -26,7 +26,7 @@
 //# $Id$
 
 //# Includes
-#include <aips/Quanta/MUString.h>
+#include <aips/Utilities/MUString.h>
 #include <aips/sstream.h>
 #include <aips/iostream.h>
 #include <aips/Arrays/Vector.h>

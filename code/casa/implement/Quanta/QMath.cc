@@ -28,7 +28,7 @@
 //# Includes
 #include <aips/Exceptions/Error.h>
 #include <aips/Quanta/QMath.h>
-#include <aips/Mathematics/Math.h>
+#include <aips/BasicMath/Math.h>
 #include <aips/Arrays/ArrayMath.h>
 #include <aips/sstream.h>
 

@@ -39,9 +39,9 @@
 
 #include <aips/aips.h>
 #include <aips/Utilities/Assert.h>
-#include <aips/Mathematics/Complex.h>
-#include <aips/Mathematics/Math.h>
-#include <aips/Utilities/String.h>
+#include <aips/BasicSL/Complex.h>
+#include <aips/BasicMath/Math.h>
+#include <aips/BasicSL/String.h>
 
 #include <aips/Arrays/IPosition.h>
 #include <aips/Arrays/Array.h>

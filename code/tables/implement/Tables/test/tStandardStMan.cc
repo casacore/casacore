@@ -34,7 +34,7 @@
 #include <aips/Tables/ArrayColumn.h>
 #include <aips/Tables/StandardStMan.h>
 #include <aips/Tables/StandardStManAccessor.h>
-#include <aips/Mathematics/Complex.h>
+#include <aips/BasicSL/Complex.h>
 #include <aips/Arrays/Vector.h>
 #include <aips/Arrays/ArrayIO.h>
 #include <aips/Arrays/Cube.h>

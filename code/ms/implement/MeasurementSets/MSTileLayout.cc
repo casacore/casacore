@@ -27,8 +27,8 @@
 
 #include <trial/MeasurementSets/MSTileLayout.h>
 #include <aips/Arrays/IPosition.h>
-#include <aips/Mathematics/Math.h>
-#include <aips/Utilities/String.h>
+#include <aips/BasicMath/Math.h>
+#include <aips/BasicSL/String.h>
 
 IPosition MSTileLayout::tileShape(const IPosition& dataShape,
 				  Int observationType, Int nIfr, Int nInt)

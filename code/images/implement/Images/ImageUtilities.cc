@@ -61,9 +61,9 @@
 #include <aips/OS/RegularFile.h>
 #include <aips/IO/RegularFileIO.h>
 #include <aips/OS/File.h>
-#include <trial/Tasking/NewFile.h>
-#include <aips/Utilities/String.h>
-#include <aips/Utilities/String.h>
+#include <aips/LogTables/NewFile.h>
+#include <aips/BasicSL/String.h>
+#include <aips/BasicSL/String.h>
 #include <aips/Utilities/Regex.h>
 #include <aips/Utilities/LinearSearch.h>
 #include <aips/Utilities/PtrHolder.h>

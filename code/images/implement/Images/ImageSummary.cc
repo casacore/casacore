@@ -35,7 +35,7 @@
 #include <trial/Images/ImageInterface.h>
 #include <trial/Images/ImageInfo.h>
 #include <aips/Logging/LogIO.h>
-#include <aips/Mathematics/Constants.h>
+#include <aips/BasicSL/Constants.h>
 #include <aips/Quanta/Unit.h>
 #include <aips/Measures/MDirection.h>
 #include <aips/Measures/MFrequency.h>

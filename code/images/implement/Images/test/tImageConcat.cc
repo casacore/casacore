@@ -34,7 +34,7 @@
 #include <aips/IO/FileLocker.h>
 #include <aips/Arrays/Slicer.h>
 #include <aips/Arrays/IPosition.h>
-#include <aips/Mathematics/Math.h>
+#include <aips/BasicMath/Math.h>
 #include <aips/Utilities/Assert.h>
 
 #include <trial/Coordinates/CoordinateUtil.h>

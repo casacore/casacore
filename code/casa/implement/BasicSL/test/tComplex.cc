@@ -27,8 +27,8 @@
 
 //# Includes
 
-#include <aips/Mathematics/Complex.h>
-#include <aips/Mathematics/IComplex.h>
+#include <aips/BasicSL/Complex.h>
+#include <aips/BasicSL/IComplex.h>
 
 #include <assert.h>
 #include <aips/stdio.h>

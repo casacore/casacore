@@ -26,8 +26,8 @@
 //# $Id$
 
 //# Includes
-#include <aips/Mathematics/Complex.h>
-#include <aips/Mathematics/Constants.h>
+#include <aips/BasicSL/Complex.h>
+#include <aips/BasicSL/Constants.h>
 #include <aips/Arrays/IPosition.h>
 #include <aips/Arrays/Array.h>
 #include <aips/Arrays/ArrayMath.h>
@@ -37,7 +37,7 @@
 #include <aips/Arrays/Cube.h>
 #include <aips/Exceptions/Error.h>
 #include <aips/Quanta/Quantum.h>
-#include <aips/Quanta/MUString.h>
+#include <aips/Utilities/MUString.h>
 #include <aips/Quanta/MVAngle.h>
 #include <aips/Quanta/MVTime.h>
 #include <aips/Utilities/Register.h>

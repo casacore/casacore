@@ -33,10 +33,10 @@
 #include <aips/Quanta/MVRadialVelocity.h>
 #include <aips/Quanta/MVDirection.h>
 #include <aips/Logging/LogIO.h>
-#include <aips/Tasking/Aipsrc.h>
-#include <aips/Mathematics/Math.h>
+#include <aips/System/Aipsrc.h>
+#include <aips/BasicMath/Math.h>
 #include <aips/Tables/TableRecord.h>
-#include <aips/Tasking/Aipsrc.h>
+#include <aips/System/Aipsrc.h>
 
 //# Constructors
 MeasComet::MeasComet() :

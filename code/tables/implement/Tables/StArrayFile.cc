@@ -33,8 +33,8 @@
 #include <aips/OS/LECanonicalConversion.h>
 #include <aips/Arrays/IPosition.h>
 #include <aips/Containers/Block.h>
-#include <aips/Mathematics/Complex.h>
-#include <aips/Utilities/String.h>
+#include <aips/BasicSL/Complex.h>
+#include <aips/BasicSL/String.h>
 #include <aips/Utilities/ValType.h>
 #include <aips/OS/Path.h>
 #include <aips/Tables/DataManError.h>

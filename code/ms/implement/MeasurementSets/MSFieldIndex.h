@@ -34,7 +34,7 @@
 #include <aips/MeasurementSets/MSField.h>
 #include <aips/MeasurementSets/MSFieldColumns.h>
 #include <aips/Arrays/Vector.h>
-#include <aips/Utilities/String.h>
+#include <aips/BasicSL/String.h>
 
 //# forward declarations
 

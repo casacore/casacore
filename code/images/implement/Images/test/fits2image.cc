@@ -26,7 +26,7 @@
 //# $Id$
 
 #include <aips/aips.h>
-#include <aips/Tasking/Aipsrc.h>
+#include <aips/System/Aipsrc.h>
 #include <aips/Exceptions/Error.h>
 #include <aips/FITS/FITS.h>
 #include <aips/Inputs/Input.h>
@@ -35,7 +35,7 @@
 
 #include <trial/Images/PagedImage.h>
 #include <trial/Images/ImageFITSConverter.h>
-#include <aips/Tasking/AppInfo.h>
+#include <aips/System/AppInfo.h>
 
 #include <aips/iostream.h>
 

@@ -32,7 +32,7 @@
 #include <aips/Lattices/LatticeStepper.h>
 #include <aips/Lattices/LatticeIterator.h>
 #include <aips/Logging/LogIO.h>
-#include <aips/Mathematics/Math.h>
+#include <aips/BasicMath/Math.h>
 #include <aips/Utilities/Assert.h>
 #include <aips/Exceptions/Error.h> 
 

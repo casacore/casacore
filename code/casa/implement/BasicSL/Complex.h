@@ -32,7 +32,7 @@
 
 //# Includes
 #include <aips/aips.h>
-#include <aips/Mathematics/Complexfwd.h>
+#include <aips/BasicSL/Complexfwd.h>
 #include <aips/complex.h>
 
 // <summary>

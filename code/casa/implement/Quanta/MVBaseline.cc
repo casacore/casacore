@@ -28,7 +28,7 @@
 //# Includes
 #include <aips/Quanta/MVBaseline.h>
 #include <aips/Utilities/Assert.h>
-#include <aips/Mathematics/Math.h>
+#include <aips/BasicMath/Math.h>
 #include <aips/Utilities/Register.h>
 #include <aips/Quanta/RotMatrix.h>
 #include <aips/Quanta/UnitVal.h>

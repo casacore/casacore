@@ -30,9 +30,9 @@
 #include <aips/Arrays/Vector.h>
 #include <aips/Arrays/ArrayLogical.h>
 #include <aips/Arrays/Matrix.h>
-#include <aips/Arrays/MatrixMathLA.h>
+#include <aips/Mathematics/MatrixMathLA.h>
 #include <aips/Exceptions/Error.h>
-#include <aips/Utilities/String.h>
+#include <aips/BasicSL/String.h>
 
 LinearXform LinearXform::fourierInvert (const Vector<Bool>& axes, 
                                         const Vector<Double>& crpix, 

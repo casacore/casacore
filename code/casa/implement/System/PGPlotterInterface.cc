@@ -26,7 +26,7 @@
 //#
 //# $Id$
 
-#include <trial/Tasking/PGPlotterInterface.h>
+#include <trial/System/PGPlotterInterface.h>
 #include <aips/Logging/LogIO.h>
 
 PGPlotterInterface::~PGPlotterInterface()

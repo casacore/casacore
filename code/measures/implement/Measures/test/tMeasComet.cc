@@ -38,7 +38,7 @@
 #include <aips/Measures/MDirection.h>
 #include <aips/Measures/MCDirection.h>
 #include <aips/Arrays/ArrayMath.h>
-#include <aips/Utilities/String.h>
+#include <aips/BasicSL/String.h>
 #include <aips/Quanta/MVTime.h>
 #include <aips/Quanta/MVRadialVelocity.h>
 #include <aips/Quanta/MVPosition.h>

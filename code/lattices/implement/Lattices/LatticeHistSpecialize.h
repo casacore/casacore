@@ -31,7 +31,7 @@
 
 //# Includes
 #include <aips/aips.h>
-#include <aips/Mathematics/Complex.h>
+#include <aips/BasicSL/Complex.h>
 
 //# Forward Declarations
 template <class T> class Vector;

@@ -47,7 +47,7 @@
 #include <aips/Utilities/Sequence.h>
 #include <aips/Utilities/Sort.h>
 #include <aips/Utilities/SortError.h>
-#include <aips/Utilities/String.h>
+#include <aips/BasicSL/String.h>
 #include <aips/Utilities/ValType.h>
 #include <aips/Utilities/cregex.h>
 

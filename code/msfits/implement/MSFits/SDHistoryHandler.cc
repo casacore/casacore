@@ -36,7 +36,7 @@
 #include <aips/Tables/ArrayColumn.h>
 #include <aips/Utilities/Assert.h>
 #include <aips/Exceptions/Error.h>
-#include <aips/Utilities/String.h>
+#include <aips/BasicSL/String.h>
 #include <trial/FITS/FITSDateUtil.h>
 #include <aips/Measures/MEpoch.h>
 #include <aips/Quanta/MVTime.h>

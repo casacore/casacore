@@ -27,7 +27,7 @@
 
 #include <aips/Arrays/IPosition.h>
 #include <aips/Arrays/ArrayError.h>
-#include <aips/Mathematics/Math.h>
+#include <aips/BasicMath/Math.h>
 #include <aips/Utilities/Assert.h>
 #include <aips/Exceptions/Error.h>
 #include <aips/iostream.h>

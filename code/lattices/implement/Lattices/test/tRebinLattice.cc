@@ -39,7 +39,7 @@
 #include <trial/Lattices/LatticeUtilities.h>
 #include <aips/Logging/LogIO.h>
 #include <aips/Utilities/Assert.h>
-#include <aips/Utilities/String.h>
+#include <aips/BasicSL/String.h>
 #include <aips/iostream.h>
 
 

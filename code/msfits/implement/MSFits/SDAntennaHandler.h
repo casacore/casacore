@@ -30,7 +30,7 @@
 #define AIPS_SDANTENNAHANDLER_H
 
 #include <aips/Containers/RecordField.h>
-#include <aips/Utilities/String.h>
+#include <aips/BasicSL/String.h>
 #include <aips/Measures/MPosition.h>
 #include <aips/Arrays/Array.h>
 

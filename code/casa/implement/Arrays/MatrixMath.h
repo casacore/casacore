@@ -32,7 +32,7 @@
 #include <aips/aips.h>
 #include <aips/Arrays/Vector.h>
 #include <aips/Arrays/Matrix.h>
-#include <aips/Mathematics/Complex.h>
+#include <aips/BasicSL/Complex.h>
 
 
 //<summary>

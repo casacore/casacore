@@ -26,7 +26,7 @@
 //# $Id$
 
 #include <aips/Mathematics/FFTPack.h>
-#include <aips/Mathematics/Complex.h>
+#include <aips/BasicSL/Complex.h>
 #include <aips/Utilities/Assert.h>
 #include <aips/Exceptions/Error.h>
 

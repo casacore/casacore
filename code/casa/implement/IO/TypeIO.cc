@@ -27,8 +27,8 @@
 
 #include <aips/IO/TypeIO.h>
 #include <aips/OS/Conversion.h>
-#include <aips/Utilities/String.h>
-#include <aips/Mathematics/Complex.h>
+#include <aips/BasicSL/String.h>
+#include <aips/BasicSL/Complex.h>
 
 TypeIO::TypeIO (ByteIO* byteIO, Bool takeOver)
 : itsByteIO(byteIO, takeOver) 

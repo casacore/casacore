@@ -31,7 +31,7 @@
 
 #include <aips/aips.h>
 #include <aips/FITS/fits.h>
-#include <aips/Utilities/String.h>
+#include <aips/BasicSL/String.h>
 #include <aips/MeasurementSets/MeasurementSet.h>
 #include <aips/OS/Path.h>
 #include <aips/Arrays/Vector.h>

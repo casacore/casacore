@@ -30,7 +30,7 @@
 #include <aips/Utilities/cregex.h>
 
 #include <aips/Utilities/Regex.h>
-#include <aips/Utilities/String.h>
+#include <aips/BasicSL/String.h>
 #include <aips/stdexcept.h>
 #include <aips/iostream.h>
 

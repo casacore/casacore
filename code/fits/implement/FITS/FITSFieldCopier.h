@@ -33,7 +33,7 @@
 #include <aips/FITS/hdu.h>
 #include <aips/Containers/RecordField.h>
 #include <aips/Arrays/Array.h>
-#include <aips/Utilities/String.h>
+#include <aips/BasicSL/String.h>
 #include <trial/FITS/FITSKeywordUtil.h>
 
 // <summary>

@@ -45,8 +45,8 @@
 #include <aips/Tables/Table.h>
 #include <aips/Utilities/Assert.h>
 #include <aips/Utilities/COWPtr.h>
-#include <aips/Utilities/String.h>
-#include <aips/Mathematics/Random.h>
+#include <aips/BasicSL/String.h>
+#include <aips/BasicMath/Random.h>
 
 #include <aips/stdlib.h>
 #include <aips/iostream.h>

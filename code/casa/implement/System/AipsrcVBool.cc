@@ -27,7 +27,7 @@
 
 //# Includes
 
-#include <aips/Tasking/AipsrcVector.h>
+#include <aips/System/AipsrcVector.h>
 #include <aips/Utilities/Assert.h>
 #include <aips/Utilities/Regex.h>
 #include <aips/Arrays/Vector.h>

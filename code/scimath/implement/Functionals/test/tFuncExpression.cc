@@ -32,7 +32,7 @@
 #include <aips/Exceptions/Error.h>
 #include <aips/Mathematics/AutoDiff.h>
 #include <aips/Mathematics/AutoDiffIO.h>
-#include <aips/Utilities/String.h>
+#include <aips/BasicSL/String.h>
 
 #include <aips/iostream.h>
 

@@ -32,8 +32,8 @@
 //# Includes
 #include <aips/aips.h>
 #include <trial/Functionals/CompiledParam.h>
-#include <aips/Mathematics/Complex.h>
-#include <aips/Mathematics/Math.h>
+#include <aips/BasicSL/Complex.h>
+#include <aips/BasicMath/Math.h>
 
 //# Forward declarations
 

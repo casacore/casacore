@@ -27,7 +27,7 @@
 
 //# Includes
 
-#include <aips/Utilities/String.h>
+#include <aips/BasicSL/String.h>
 #include <aips/Utilities/Regex.h>
 #include <assert.h>
 // Next one for atoi and atof

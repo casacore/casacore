@@ -33,7 +33,7 @@
 #include <aips/Containers/SimOrdMap.h>
 #include <aips/Containers/Block.h>
 #include <aips/Arrays/Vector.h>
-#include <aips/Utilities/String.h>
+#include <aips/BasicSL/String.h>
 #include <aips/Utilities/DataType.h>
 
 // <summary> 

@@ -32,7 +32,7 @@
 #include <aips/aips.h>
 #include <trial/ComponentModels/ComponentShape.h>
 #include <trial/ComponentModels/ComponentType.h>
-#include <aips/Mathematics/Complex.h>
+#include <aips/BasicSL/Complex.h>
 #include <aips/Quanta/Unit.h>
 #include <aips/Quanta/Quantum.h>
 

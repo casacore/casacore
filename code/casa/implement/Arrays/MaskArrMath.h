@@ -30,12 +30,12 @@
 
 
 #include <aips/aips.h>
-#include <aips/Mathematics/Math.h>
+#include <aips/BasicMath/Math.h>
 #include <aips/Arrays/Array.h>
 #include <aips/Arrays/MaskedArray.h>
 #include <aips/Arrays/IPosition.h>
 //# Needed to get the proper Complex typedef's
-#include <aips/Mathematics/Complex.h>
+#include <aips/BasicSL/Complex.h>
 
 
 // <summary> Mathematical operations for MaskedArrays (and with Arrays) </summary>

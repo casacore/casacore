@@ -27,7 +27,7 @@
 
 //# Includes
 
-#include <aips/Arrays/MatrixMathLA.h>
+#include <aips/Mathematics/MatrixMathLA.h>
 #include <aips/Arrays/ArrayMath.h>
 #include <aips/Arrays/ArrayLogical.h>
 #include <aips/Utilities/Assert.h>

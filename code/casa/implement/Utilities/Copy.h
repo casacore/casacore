@@ -30,7 +30,7 @@
 
 //# Includes
 #include <aips/aips.h>
-#include <aips/Mathematics/Complex.h>
+#include <aips/BasicSL/Complex.h>
 #include <aips/string.h>           // for memmove, etc.
 
 

@@ -32,7 +32,7 @@
 #include <aips/Inputs/Input.h>
 #include <aips/Logging.h>
 #include <aips/Mathematics/NumericTraits.h>
-#include <aips/Utilities/String.h>
+#include <aips/BasicSL/String.h>
 #include <aips/Utilities/Regex.h>
 #include <aips/Lattices/ArrayLattice.h>
 #include <trial/Lattices/LatticeStatistics.h>
@@ -40,7 +40,7 @@
 #include <trial/Lattices/LatticeStatsBase.h>
 #include <trial/Lattices/LatticeUtilities.h>
 #include <trial/Lattices/LCSlicer.h>
-#include <trial/Tasking/PGPlotter.h>
+#include <trial/System/PGPlotter.h>
 
 #include <aips/iostream.h>
 

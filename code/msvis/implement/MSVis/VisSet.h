@@ -30,10 +30,10 @@
 #define TRIAL_VISSET_H
 
 #include <aips/aips.h>
-#include <aips/Mathematics/Complex.h>
+#include <aips/BasicSL/Complex.h>
 #include <aips/Arrays/Matrix.h>
-#include <trial/MeasurementEquations/StokesVector.h>
-#include <trial/MeasurementEquations/VisibilityIterator.h>
+#include <trial/MSVis/StokesVector.h>
+#include <trial/MSVis/VisibilityIterator.h>
 
 // <summary> 
 // The interface to the MeasurementSet for synthesis processing

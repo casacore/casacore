@@ -32,7 +32,7 @@
 #include <aips/aips.h>
 #include <aips/Tables/ColumnDesc.h>
 #include <aips/Containers/SimOrdMap.h>
-#include <aips/Utilities/String.h>
+#include <aips/BasicSL/String.h>
 
 //# Forward Declarations
 #include <aips/iosfwd.h>

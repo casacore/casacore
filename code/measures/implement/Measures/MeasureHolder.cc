@@ -44,7 +44,7 @@
 #include <aips/Containers/RecordFieldId.h>
 #include <aips/Containers/Record.h>
 #include <aips/Arrays/Vector.h>
-#include <aips/Utilities/String.h>
+#include <aips/BasicSL/String.h>
 #include <aips/Logging/LogIO.h>
 #include <aips/Logging/LogOrigin.h>
 

@@ -31,7 +31,7 @@
 
 #include <aips/aips.h>
 #include <aips/Logging/LogIO.h>
-#include <aips/Utilities/String.h>
+#include <aips/BasicSL/String.h>
 #include <aips/Arrays/Vector.h>
 #include <aips/Containers/Record.h>
 #include <trial/MeasurementSets/MSSelector.h>

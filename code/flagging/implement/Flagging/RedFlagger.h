@@ -28,7 +28,7 @@
 #define AIPS_REDFLAGGER_H
 
 #include <trial/Flagging/RFChunkStats.h>
-#include <trial/Tasking/PGPlotter.h>
+#include <trial/System/PGPlotter.h>
 #include <aips/Arrays/Vector.h>
 #include <aips/Containers/Record.h>
 #include <aips/MeasurementSets/MeasurementSet.h>

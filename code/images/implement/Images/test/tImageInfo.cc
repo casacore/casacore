@@ -30,7 +30,7 @@
 
 #include <aips/Utilities/Assert.h>
 #include <aips/Exceptions/Error.h>
-#include <aips/Mathematics/Math.h>
+#include <aips/BasicMath/Math.h>
 #include <aips/Containers/Record.h>
 #include <aips/Quanta/Quantum.h>
 #include <aips/Quanta/QLogical.h>

@@ -28,8 +28,8 @@
 
 
 #include <trial/Images/ImageMomentsProgress.h>
-#include <aips/Mathematics/Math.h>
-#include <aips/Utilities/String.h>
+#include <aips/BasicMath/Math.h>
+#include <aips/BasicSL/String.h>
 
 
 ImageMomentsProgress::~ImageMomentsProgress()

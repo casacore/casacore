@@ -38,7 +38,7 @@
 #include <aips/Arrays/ArrayUtil.h>
 #include <aips/Containers/Block.h>
 #include <aips/OS/Path.h>
-#include <aips/Utilities/String.h>
+#include <aips/BasicSL/String.h>
 #include <aips/Utilities/Regex.h>
 #include <aips/Exceptions/Error.h>
 

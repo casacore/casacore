@@ -34,7 +34,7 @@
 #include <aips/Tables/MemoryStMan.h>
 #include <aips/Tables/TableError.h>
 #include <aips/Containers/Record.h>
-#include <aips/Utilities/String.h>
+#include <aips/BasicSL/String.h>
 #include <aips/OS/HostInfo.h>
 
 

@@ -33,13 +33,13 @@
 #include <aips/Arrays/ArrayMath.h>
 #include <aips/Logging/LogIO.h>
 #include <aips/Functionals/Gaussian1D.h>
-#include <aips/Mathematics/Complex.h>
-#include <aips/Mathematics/Constants.h>
-#include <aips/Mathematics/Math.h>
+#include <aips/BasicSL/Complex.h>
+#include <aips/BasicSL/Constants.h>
+#include <aips/BasicMath/Math.h>
 #include <trial/Lattices/LatticeStatsBase.h>
 
-#include <trial/Tasking/ProgressMeter.h>
-#include <trial/Tasking/PGPlotter.h>
+#include <aips/System/ProgressMeter.h>
+#include <trial/System/PGPlotter.h>
 
 
 uInt LatticeHistSpecialize::bin(Float datum, Float dmin, Float width, uInt nBins)

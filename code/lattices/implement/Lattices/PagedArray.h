@@ -34,7 +34,7 @@
 #include <aips/Tables/ArrayColumn.h>
 #include <aips/Tables/Table.h>
 #include <aips/Tables/TiledStManAccessor.h>
-#include <aips/Utilities/String.h>
+#include <aips/BasicSL/String.h>
 
 
 // <summary>

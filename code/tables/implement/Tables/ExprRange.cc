@@ -28,7 +28,7 @@
 #include <aips/Tables/ExprRange.h>
 #include <aips/Tables/TableColumn.h>
 #include <aips/Arrays/Slice.h>
-#include <aips/Mathematics/Math.h>
+#include <aips/BasicMath/Math.h>
 #include <aips/Exceptions/Error.h>
 
 TableExprRange::TableExprRange()

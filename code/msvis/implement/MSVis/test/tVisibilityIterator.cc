@@ -25,14 +25,14 @@
 //#
 //# $Id$
 
-#include <trial/MeasurementEquations/VisibilityIterator.h>
+#include <trial/MSVis/VisibilityIterator.h>
 #include <aips/Tables.h>
 #include <aips/Exceptions/Error.h>
 #include <aips/iostream.h>
 #include <aips/iomanip.h>
 #include <aips/Arrays/Vector.h>
 #include <aips/Arrays/Matrix.h>
-#include <aips/Mathematics/Constants.h>
+#include <aips/BasicSL/Constants.h>
 
 #include <aips/Tables/ForwardCol.h>
 

@@ -30,7 +30,7 @@
 #include <aips/Tables/TVecTemp.h>
 #include <aips/Tables/TableError.h>
 #include <aips/Arrays/ArrayError.h>
-#include <aips/Mathematics/Math.h>
+#include <aips/BasicMath/Math.h>
 
 //# Add, subtract, multiply, divide table vector.
 //# Define it for a vector and scalar, 2 vectors, 2 vectors with assign.

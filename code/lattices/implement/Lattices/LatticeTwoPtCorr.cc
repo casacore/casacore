@@ -39,7 +39,7 @@
 #include <aips/Logging/LogOrigin.h>
 #include <trial/Lattices/MaskedLatticeIterator.h>
 #include <aips/Utilities/Assert.h>
-#include <aips/Utilities/String.h>
+#include <aips/BasicSL/String.h>
 
 /*
 #include <aips/Arrays/ArrayIO.h>

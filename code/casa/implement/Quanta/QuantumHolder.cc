@@ -33,8 +33,8 @@
 #include <aips/Containers/RecordInterface.h>
 #include <aips/Containers/RecordFieldId.h>
 #include <aips/Containers/Record.h>
-#include <aips/Utilities/String.h>
-#include <aips/Mathematics/Complex.h>
+#include <aips/BasicSL/String.h>
+#include <aips/BasicSL/Complex.h>
 #include <aips/Arrays/Vector.h>
 
 //# Constructors

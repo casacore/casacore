@@ -30,7 +30,7 @@
 #include <aips/Arrays/ArrayMath.h>
 #include <aips/Arrays/Vector.h>
 #include <aips/Containers/RecordField.h>
-#include <aips/Utilities/String.h>
+#include <aips/BasicSL/String.h>
 #include <aips/Utilities/Assert.h>
 #include <aips/Utilities/Regex.h>
 #include <aips/FITS/fits.h>

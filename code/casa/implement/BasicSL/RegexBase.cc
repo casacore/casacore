@@ -27,7 +27,7 @@
 //# $Id$
 
 //# Includes
-#include <aips/Utilities/RegexBase.h>
+#include <aips/BasicSL/RegexBase.h>
 
 //# Destructor
 RegexBase::~RegexBase() {}

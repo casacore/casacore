@@ -30,7 +30,7 @@
 #define AIPS_FUNCTIONALS_H
 
 //# Base classes
-#include <aips/Functionals/Functional.h>
+#include <aips/BasicMath/Functional.h>
 #include <aips/Functionals/FunctionTraits.h>
 #include <aips/Functionals/FunctionParam.h>
 #include <aips/Functionals/Function.h>

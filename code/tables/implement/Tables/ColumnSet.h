@@ -34,7 +34,7 @@
 #include <aips/Tables/TableLockData.h>
 #include <aips/Tables/BaseTable.h>
 #include <aips/Containers/SimOrdMap.h>
-#include <aips/Utilities/String.h>
+#include <aips/BasicSL/String.h>
 
 //# Forward Declarations
 class SetupNewTable;

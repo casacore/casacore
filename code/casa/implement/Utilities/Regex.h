@@ -30,7 +30,7 @@
 
 //# Includes
 #include <aips/aips.h>
-#include <aips/Utilities/RegexBase.h>
+#include <aips/BasicSL/RegexBase.h>
 
 //# Forward declarations.
 #include <aips/iosfwd.h>

@@ -30,7 +30,7 @@
 #define AIPS_TIME_H
 
 #include <aips/aips.h>
-#include <aips/Utilities/String.h>
+#include <aips/BasicSL/String.h>
 #include <aips/iosfwd.h>
 
 // <Summary> date and time enquiry functions, with some operations.

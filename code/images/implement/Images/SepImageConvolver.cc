@@ -38,7 +38,7 @@
 #include <aips/Mathematics/Convolver.h>
 #include <aips/Quanta/UnitMap.h>
 #include <aips/Quanta/Quantum.h>
-#include <aips/Utilities/String.h>
+#include <aips/BasicSL/String.h>
 
 #include <trial/Coordinates/CoordinateSystem.h>
 #include <trial/Images/PagedImage.h>
@@ -49,7 +49,7 @@
 #include <trial/Lattices/LatticeUtilities.h>
 #include <aips/Lattices/TiledLineStepper.h>
 #include <trial/Mathematics/VectorKernel.h>
-#include <trial/Tasking/ProgressMeter.h>
+#include <aips/System/ProgressMeter.h>
 
 #include <aips/sstream.h>
 #include <aips/iomanip.h>

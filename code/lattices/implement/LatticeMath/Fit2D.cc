@@ -25,7 +25,7 @@
 //#
 //#   $Id$
 
-#include <trial/Fitting/Fit2D.h>
+#include <trial/LatticeMath/Fit2D.h>
 
 #include <aips/Arrays/Array.h>
 #include <aips/Arrays/Vector.h>
@@ -38,7 +38,7 @@
 #include <aips/Lattices/Lattice.h>
 #include <trial/Lattices/MaskedLattice.h>
 #include <aips/Logging/LogIO.h>
-#include <aips/Mathematics/Math.h>
+#include <aips/BasicMath/Math.h>
 #include <aips/Quanta/MVAngle.h>
 #include <aips/Mathematics/AutoDiff.h>
 #include <aips/Mathematics/AutoDiffIO.h>

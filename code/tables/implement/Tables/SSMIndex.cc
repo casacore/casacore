@@ -30,7 +30,7 @@
 #include <aips/Containers/SimOrdMapIO.h>
 #include <aips/IO/AipsIO.h>
 #include <aips/Utilities/BinarySearch.h>
-#include <aips/Mathematics/Math.h>
+#include <aips/BasicMath/Math.h>
 #include <aips/Utilities/Assert.h>
 #include <aips/Tables/TableError.h>
 #include <aips/iostream.h>

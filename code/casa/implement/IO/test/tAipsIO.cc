@@ -30,8 +30,8 @@
 #include <aips/IO/AipsIO.h>
 #include <aips/IO/MemoryIO.h>
 #include <aips/IO/RawIO.h>
-#include <aips/Mathematics/Complex.h>
-#include <aips/Utilities/String.h>
+#include <aips/BasicSL/Complex.h>
+#include <aips/BasicSL/String.h>
 #include <aips/Exceptions/Error.h>
 #include <aips/iostream.h>
 

@@ -31,7 +31,7 @@
 #include <aips/aips.h>
 #include <aips/Containers/OrderedPair.h>
 #include <aips/Containers/Block.h>
-#include <aips/Utilities/String.h>
+#include <aips/BasicSL/String.h>
 
 //# Define a macro to cast kvblk[i] to OrderedPair<K,V>*.
 //# This is needed because the compiler outlines the inline functions pair.

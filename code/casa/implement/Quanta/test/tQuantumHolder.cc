@@ -30,7 +30,7 @@
 #include <aips/aips.h>
 #include <aips/Exceptions.h>
 #include <aips/Arrays/Vector.h>
-#include <aips/Mathematics/Complex.h>
+#include <aips/BasicSL/Complex.h>
 #include <aips/Quanta/Quantum.h>
 #include <aips/Quanta/QLogical.h>
 #include <aips/Quanta/QuantumHolder.h>

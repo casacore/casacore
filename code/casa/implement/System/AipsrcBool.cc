@@ -27,7 +27,7 @@
 
 //# Includes
 
-#include <aips/Tasking/AipsrcValue.h>
+#include <aips/System/AipsrcValue.h>
 #include <aips/Utilities/Regex.h>
 #include <aips/Utilities/Assert.h>
 #include <aips/sstream.h>

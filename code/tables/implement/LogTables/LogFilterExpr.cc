@@ -25,7 +25,7 @@
 //#
 //# $Id$
 
-#include <aips/Logging/LogFilterExpr.h>
+#include <aips/LogTables/LogFilterExpr.h>
 #include <aips/Logging/LogMessage.h>
 #include <aips/Tables/ExprNode.h>
 #include <aips/Tables/RecordGram.h>

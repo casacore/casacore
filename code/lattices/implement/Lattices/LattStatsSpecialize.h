@@ -31,7 +31,7 @@
 
 //# Includes
 #include <aips/aips.h>
-#include <aips/Mathematics/Complex.h>
+#include <aips/BasicSL/Complex.h>
 template <class T> class Vector;
 template <class T> class Array;
 template <class T> class Lattice;

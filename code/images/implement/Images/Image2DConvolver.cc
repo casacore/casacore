@@ -38,7 +38,7 @@
 #include <trial/Coordinates/CoordinateUtil.h>
 #include <trial/Coordinates/CoordinateSystem.h>
 #include <trial/Coordinates/DirectionCoordinate.h>
-#include <trial/Fitting/Fit2D.h>
+#include <trial/LatticeMath/Fit2D.h>
 #include <aips/Functionals/Gaussian2D.h>
 #include <trial/Images/ImageConvolver.h>
 #include <trial/Images/PagedImage.h>
@@ -51,7 +51,7 @@
 #include <aips/Quanta/Quantum.h>
 #include <aips/Quanta/MVAngle.h>
 #include <aips/Quanta/Unit.h>
-#include <aips/Utilities/String.h>
+#include <aips/BasicSL/String.h>
 #include <aips/iostream.h>
 
 template <class T> 

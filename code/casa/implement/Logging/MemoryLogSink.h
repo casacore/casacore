@@ -33,7 +33,7 @@
 #include <aips/aips.h>
 #include <aips/Logging/LogSinkInterface.h>
 #include <aips/Containers/Block.h>
-#include <aips/Utilities/String.h>
+#include <aips/BasicSL/String.h>
 
 //# Forward Declarations
 

@@ -36,7 +36,7 @@
 #include <aips/Measures/MDirection.h>
 #include <aips/Quanta/Quantum.h>
 #include <aips/Quanta/MVAngle.h>
-#include <aips/Utilities/String.h>
+#include <aips/BasicSL/String.h>
 #include <aips/iostream.h>
 
 void printShape(const ComponentShape& theShape) {

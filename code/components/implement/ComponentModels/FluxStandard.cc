@@ -27,7 +27,7 @@
 //----------------------------------------------------------------------------
 
 #include <trial/ComponentModels/FluxStandard.h>
-#include <aips/Mathematics/Math.h>
+#include <aips/BasicMath/Math.h>
 
 //----------------------------------------------------------------------------
 

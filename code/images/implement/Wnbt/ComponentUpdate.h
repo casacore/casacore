@@ -34,7 +34,7 @@
 #include <aips/Fitting/FitLSQ.h>
 #include <aips/Containers/Block.h>
 #include <trial/ComponentModels/ComponentList.h>
-#include <aips/Mathematics/Complexfwd.h>
+#include <aips/BasicSL/Complexfwd.h>
 
 //# Forward declarations
 template <class T> class Array;

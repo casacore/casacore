@@ -38,12 +38,12 @@
 #include <aips/Arrays/Vector.h>
 #include <aips/Arrays/IPosition.h>
 #include <aips/Utilities/DataType.h>
-#include <aips/Utilities/String.h>
+#include <aips/BasicSL/String.h>
 #include <aips/Utilities/BinarySearch.h>
 #include <aips/Utilities/GenSort.h>
 #include <aips/IO/AipsIO.h>
 #include <aips/OS/DOos.h>
-#include <aips/Mathematics/Math.h>
+#include <aips/BasicMath/Math.h>
 #include <aips/Tables/DataManError.h>
 
 

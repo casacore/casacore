@@ -27,16 +27,16 @@
 
 //# Includes
 
-#include <aips/Tasking/Aipsrc.h>
+#include <aips/System/Aipsrc.h>
 #include <aips/Exceptions.h>
 #include <aips/OS/EnvVar.h>
 #include <aips/OS/RegularFile.h>
 #include <aips/OS/Time.h>
 #include <aips/Arrays/Vector.h>
 #include <aips/Utilities/Assert.h>
-#include <aips/Utilities/String.h>
+#include <aips/BasicSL/String.h>
 #include <aips/Utilities/Regex.h>
-#include <aips/Quanta/MUString.h>
+#include <aips/Utilities/MUString.h>
 #include <aips/Quanta/MVTime.h>
 #include <aips/iostream.h>
 #include <aips/fstream.h>

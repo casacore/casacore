@@ -36,7 +36,7 @@
 #include <aips/Tables/TableError.h>
 #include <aips/Quanta/MVAngle.h>
 #include <aips/Quanta/QLogical.h>
-#include <aips/Mathematics/Math.h>
+#include <aips/BasicMath/Math.h>
 
 MSFeedIndex::MSFeedIndex() 
     : MSTableIndex(), msFeedCols_p(0)

@@ -29,11 +29,11 @@
 #include <aips/Quanta/MVAngle.h>
 #include <aips/sstream.h>
 #include <aips/iomanip.h>
-#include <aips/Mathematics/Math.h>
-#include <aips/Mathematics/Constants.h>
+#include <aips/BasicMath/Math.h>
+#include <aips/BasicSL/Constants.h>
 #include <aips/Quanta/QMath.h>
-#include <aips/Quanta/MUString.h>
-#include <aips/Tasking/AppInfo.h>
+#include <aips/Utilities/MUString.h>
+#include <aips/System/AppInfo.h>
 
 // MVAngle class
 //# Static members

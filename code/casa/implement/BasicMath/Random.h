@@ -29,7 +29,7 @@
 #define AIPS_RANDOM_H
 
 #include <aips/aips.h>
-#include <aips/Mathematics/Math.h>
+#include <aips/BasicMath/Math.h>
 class String;
 template<class T> class Vector;
 

@@ -40,8 +40,8 @@
 #include <aips/Functionals/Polynomial.h>
 #include <aips/Mathematics/AutoDiff.h>
 #include <aips/Mathematics/AutoDiffIO.h>
-#include <aips/Mathematics/Math.h>
-#include <aips/Mathematics/Random.h>
+#include <aips/BasicMath/Math.h>
+#include <aips/BasicMath/Random.h>
 #include <aips/OS/Timer.h>
 #include <aips/Utilities/Assert.h>
 #include <aips/iostream.h>

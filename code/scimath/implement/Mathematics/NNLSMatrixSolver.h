@@ -30,7 +30,7 @@
 
 
 #include <aips/aips.h>
-#include <trial/Arrays/MatrixSolver.h>
+#include <trial/Mathematics/MatrixSolver.h>
 
 //<summary>
 // NNLSMatrixSolver.h: the base class for NNLS solvers of linear equations AX=B

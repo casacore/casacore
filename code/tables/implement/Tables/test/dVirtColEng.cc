@@ -41,7 +41,7 @@ int main()
 #include <aips/Tables/DataManError.h>
 #include <aips/Arrays/IPosition.h>
 #include <aips/Arrays/Array.h>
-#include <aips/Utilities/String.h>
+#include <aips/BasicSL/String.h>
 #include <aips/IO/AipsIO.h>
 
 

@@ -30,13 +30,13 @@
 #include <aips/Arrays/Vector.h>
 #include <aips/Exceptions/Error.h>
 #include <aips/Logging/LogIO.h>
-#include <aips/Mathematics/Math.h>
+#include <aips/BasicMath/Math.h>
 #include <aips/OS/Time.h>
 #include <aips/Quanta/Quantum.h>
 #include <aips/Quanta/MVTime.h>
-#include <aips/Tasking/Aipsrc.h>
-#include <aips/Tasking/AipsrcValue.h>
-#include <aips/Utilities/String.h>
+#include <aips/System/Aipsrc.h>
+#include <aips/System/AipsrcValue.h>
+#include <aips/BasicSL/String.h>
 
 //# Constants
 const Double MeasIERS::INTV = 5;

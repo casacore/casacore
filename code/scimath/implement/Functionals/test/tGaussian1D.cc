@@ -31,8 +31,8 @@
 #include <aips/Mathematics/AutoDiffA.h>
 #include <aips/Mathematics/AutoDiffIO.h>
 #include <aips/Mathematics/AutoDiffMath.h>
-#include <aips/Mathematics/Constants.h>
-#include <aips/Mathematics/Math.h>
+#include <aips/BasicSL/Constants.h>
+#include <aips/BasicMath/Math.h>
 #include <aips/Arrays/Vector.h>
 #include <aips/Arrays/ArrayLogical.h>
 #include <aips/Arrays/ArrayMath.h>

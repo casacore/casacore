@@ -28,7 +28,7 @@
 //# Includes
 #include <aips/Mathematics/AutoDiffMath.h>
 #include <aips/Arrays/ArrayMath.h>
-#include <aips/Mathematics/Constants.h>
+#include <aips/BasicSL/Constants.h>
 
 // Unary arithmetic operators.
 template<class T> AutoDiff<T> operator+(const AutoDiff<T> &other) { 

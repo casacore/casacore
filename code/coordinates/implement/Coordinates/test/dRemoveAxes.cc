@@ -32,7 +32,7 @@
 #include <trial/Coordinates.h>
 #include <aips/Exceptions/Error.h>
 #include <aips/Logging/LogIO.h>
-#include <aips/Utilities/String.h>
+#include <aips/BasicSL/String.h>
 
 #include <aips/iostream.h>
 #include <aips/iomanip.h>

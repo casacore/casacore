@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#include <trial/Arrays/RigidVector.h>
-#include <trial/Arrays/SquareMatrix.h>
+#include <trial/Mathematics/RigidVector.h>
+#include <trial/Mathematics/SquareMatrix.h>
 
 RigidVector<Complex,4> operator*(const SquareMatrix<Complex,4>& m,
 				 const RigidVector<Float,4>& v) {

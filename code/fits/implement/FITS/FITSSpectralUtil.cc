@@ -32,9 +32,9 @@
 #include <aips/Containers/RecordInterface.h>
 #include <aips/Logging/LogIO.h>
 #include <aips/Logging/LogOrigin.h>
-#include <aips/Mathematics/Constants.h>
+#include <aips/BasicSL/Constants.h>
 #include <aips/Utilities/Assert.h>
-#include <aips/Utilities/String.h>
+#include <aips/BasicSL/String.h>
 
 Bool FITSSpectralUtil::fromFITSHeader(Int &spectralAxis,
 				      Double &referenceChannel,

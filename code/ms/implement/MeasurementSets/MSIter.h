@@ -35,8 +35,8 @@
 #include <aips/Measures/MDirection.h>
 #include <aips/Measures/MPosition.h>
 #include <aips/Tables/ScalarColumn.h>
-#include <aips/Utilities/String.h>
-#include <trial/Arrays/SquareMatrix.h>
+#include <aips/BasicSL/String.h>
+#include <trial/Mathematics/SquareMatrix.h>
 
 //# forward decl
 class ROMSColumns;

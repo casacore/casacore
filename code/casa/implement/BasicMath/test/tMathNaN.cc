@@ -27,7 +27,7 @@
 
 #include <aips/aips.h>
 #include <aips/Exceptions/Error.h>
-#include <aips/Mathematics/Math.h>
+#include <aips/BasicMath/Math.h>
 #include <aips/Arrays/Vector.h>
 #include <aips/Inputs/Input.h>
 #include <aips/OS/Timer.h> 

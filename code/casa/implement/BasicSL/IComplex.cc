@@ -26,7 +26,7 @@
 //# $Id$
 
 //# Includes
-#include <aips/Mathematics/IComplex.h>
+#include <aips/BasicSL/IComplex.h>
 #include <aips/iostream.h>
 
 ostream& operator<< (ostream& os, const IComplex& val)

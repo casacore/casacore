@@ -29,7 +29,7 @@
 #define AIPS_COMPONENTSHAPE_H
 
 #include <aips/aips.h>
-#include <aips/Mathematics/Complexfwd.h>
+#include <aips/BasicSL/Complexfwd.h>
 #include <aips/Measures/MDirection.h>
 #include <aips/Quanta/Quantum.h>
 #include <aips/Utilities/RecordTransformable.h>

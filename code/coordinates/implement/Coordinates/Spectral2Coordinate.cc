@@ -34,7 +34,7 @@
 #include <aips/Arrays/Matrix.h>
 #include <trial/Coordinates/CoordinateUtil.h>
 #include <aips/Logging/LogIO.h>
-#include <aips/Mathematics/Math.h>
+#include <aips/BasicMath/Math.h>
 #include <aips/Measures/VelocityMachine.h>
 #include <aips/Measures/MeasConvert.h>
 #include <aips/Measures/MFrequency.h>
@@ -42,7 +42,7 @@
 #include <aips/Quanta/MVFrequency.h>
 #include <aips/Quanta/Quantum.h>
 #include <aips/Quanta/Unit.h>
-#include <aips/Utilities/String.h>
+#include <aips/BasicSL/String.h>
 
 
 

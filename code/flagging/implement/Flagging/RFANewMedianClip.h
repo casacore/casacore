@@ -32,7 +32,7 @@
 #include <trial/Flagging/RFFlagCube.h> 
 #include <trial/Flagging/RFRowClipper.h> 
 #include <trial/Flagging/RFDebugPlot.h> 
-#include <trial/Tasking/PGPlotter.h>
+#include <trial/System/PGPlotter.h>
 #include <trial/Mathematics/MedianSlider.h> 
 
 // <summary>

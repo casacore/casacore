@@ -25,13 +25,13 @@
 //#
 //# $Id$
 #include <trial/Flagging/RFADiffBase.h>
-#include <trial/MeasurementEquations/VisibilityIterator.h>
-#include <trial/MeasurementEquations/VisBuffer.h>
+#include <trial/MSVis/VisibilityIterator.h>
+#include <trial/MSVis/VisBuffer.h>
 #include <aips/Arrays/ArrayMath.h>
 #include <aips/Arrays/MaskArrMath.h>
 #include <aips/Arrays/ArrayLogical.h>
 #include <aips/Arrays/Slice.h>
-#include <trial/Tasking/PGPlotterInterface.h>
+#include <trial/System/PGPlotterInterface.h>
 
 #include <aips/stdio.h>
 

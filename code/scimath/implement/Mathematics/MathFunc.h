@@ -33,11 +33,11 @@
 
 
 #include <aips/aips.h>
-#include <aips/Mathematics/Math.h>
-#include <aips/Mathematics/Constants.h>
+#include <aips/BasicMath/Math.h>
+#include <aips/BasicSL/Constants.h>
 #include <aips/Exceptions/Error.h>
 #include <aips/Arrays/Vector.h>
-#include <aips/Utilities/String.h>
+#include <aips/BasicSL/String.h>
 
 // <summary>
 // Error class for <linkto class=MathFunc>MathFunc</linkto> class

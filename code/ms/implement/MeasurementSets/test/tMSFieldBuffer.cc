@@ -29,15 +29,15 @@
 // #include <aips/Exceptions/Error.h>
 // #include <aips/Exceptions/Excp.h>
 // #include <aips/Utilities/Assert.h>
-// #include <aips/Utilities/String.h>
+// #include <aips/BasicSL/String.h>
 // #include <iostream.h>
 
 // #include <trial/MeasurementSets/MSFieldBuffer.h>
 // #include <aips/Arrays/ArrayLogical.h>
 // #include <aips/Arrays/IPosition.h>
 // #include <aips/Arrays/Matrix.h>
-// #include <aips/Mathematics/Constants.h>
-// #include <aips/Mathematics/Math.h>
+// #include <aips/BasicSL/Constants.h>
+// #include <aips/BasicMath/Math.h>
 // #include <aips/Measures/MDirection.h>
 // #include <aips/Measures/MEpoch.h>
 

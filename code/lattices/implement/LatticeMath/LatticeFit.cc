@@ -25,7 +25,7 @@
 //#
 //# $Id$
 
-#include <trial/Fitting/LatticeFit.h>
+#include <trial/LatticeMath/LatticeFit.h>
 
 #include <aips/Functionals/Function.h>
 #include <aips/Lattices/Lattice.h>
@@ -40,7 +40,7 @@
 #include <aips/Exceptions/Error.h>
 #include <aips/Logging/LogIO.h>
 #include <aips/Logging/LogOrigin.h>
-#include <trial/Tasking/ProgressMeter.h>
+#include <aips/System/ProgressMeter.h>
 
 
 uInt LatticeFit::fitProfiles (Lattice<Float> &outImage,

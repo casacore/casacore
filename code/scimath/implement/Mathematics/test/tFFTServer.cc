@@ -36,9 +36,9 @@
 #include <aips/Arrays/Vector.h>
 #include <aips/Exceptions/Error.h>
 #include <aips/Arrays/IPosition.h>
-#include <aips/Mathematics/Complex.h>
-#include <aips/Mathematics/Constants.h>
-#include <aips/Mathematics/Math.h>
+#include <aips/BasicSL/Complex.h>
+#include <aips/BasicSL/Constants.h>
+#include <aips/BasicMath/Math.h>
 #include <aips/Utilities/Assert.h>
 #include <aips/iostream.h>
 

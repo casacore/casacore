@@ -32,7 +32,7 @@
 #include <aips/Arrays/Vector.h>
 #include <aips/Arrays/ArrayMath.h>
 #include <trial/Coordinates/CoordinateUtil.h>
-#include <aips/Mathematics/Constants.h>
+#include <aips/BasicSL/Constants.h>
 #include <aips/iostream.h>
 
 Float sumPixels(const ImageInterface<Float>& image){

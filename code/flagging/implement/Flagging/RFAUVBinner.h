@@ -32,8 +32,8 @@
 #include <trial/Flagging/RFFlagCube.h> 
 #include <trial/Flagging/RFRowClipper.h> 
 #include <trial/Flagging/RFDebugPlot.h> 
-#include <trial/Arrays/RigidVector.h>
-#include <trial/Tasking/PGPlotter.h>
+#include <trial/Mathematics/RigidVector.h>
+#include <trial/System/PGPlotter.h>
     
 // <summary>
 // RFAUVBinner: flagging via UV binning

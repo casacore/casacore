@@ -28,7 +28,7 @@
 
 
 #include <trial/Mathematics/HistAcc.h>
-#include <aips/Mathematics/Math.h>
+#include <aips/BasicMath/Math.h>
 #include <aips/Arrays.h>
 // #include <aips/Exceptions/Error.h>
 #include <aips/iostream.h>

@@ -29,7 +29,7 @@
 #define AIPS_STOKES_H
 
 #include <aips/aips.h>
-#include <aips/Utilities/String.h>
+#include <aips/BasicSL/String.h>
 #include <aips/Utilities/Fallible.h>
 
 

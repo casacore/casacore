@@ -26,7 +26,7 @@
 //#
 //# $Id$
 
-#include <trial/Tasking/Choice.h>
+#include <aips/System/Choice.h>
 #include <aips/Arrays/Vector.h>
 #include <aips/Utilities/Assert.h>
 #include <iostream>

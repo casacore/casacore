@@ -30,7 +30,7 @@
 #define AIPS_STATACC_H
 
 #include <aips/aips.h>
-#include <aips/Mathematics/Math.h>
+#include <aips/BasicMath/Math.h>
 #include <aips/Utilities/Fallible.h>
 
 // forward declarations:

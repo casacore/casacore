@@ -34,7 +34,7 @@
 #include <aips/Utilities/Register.h>
 #include <aips/Quanta/MVEpoch.h>
 #include <aips/Quanta/UnitVal.h>
-#include <aips/Mathematics/Math.h>
+#include <aips/BasicMath/Math.h>
 
 //# Constants
 const Double MVEpoch::secInDay(3600*24);

@@ -31,7 +31,7 @@
 
 //# Includes
 #include <aips/aips.h>
-#include <aips/Utilities/String.h>
+#include <aips/BasicSL/String.h>
 #include <aips/Quanta/UnitVal.h>
 
 //# Forward Declarations

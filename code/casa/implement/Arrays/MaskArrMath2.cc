@@ -29,7 +29,7 @@
 #include <aips/Arrays/ArrayError.h>
 //#include <aips/Arrays/VectorIter.h>
 //#include <aips/Arrays/Matrix.h>
-//#include <aips/Mathematics/Math.h>
+//#include <aips/BasicMath/Math.h>
 
 MaskedArray<Complex> operator * (const MaskedArray<Complex> &left, 
 					 const Float &right) 

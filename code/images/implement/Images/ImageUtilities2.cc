@@ -44,7 +44,7 @@
 #include <aips/Lattices/TiledLineStepper.h>
 #include <trial/Lattices/MaskedLatticeIterator.h>
 #include <trial/SpectralComponents/SpectralElement.h>
-#include <trial/Tasking/ProgressMeter.h>
+#include <aips/System/ProgressMeter.h>
 #include <aips/Logging/LogIO.h>
 #include <aips/Quanta/Unit.h>
 #include <aips/Utilities/Assert.h>

@@ -31,7 +31,7 @@
 #include <aips/Containers/Block.h>
 #include <aips/Arrays/Vector.h>
 #include <aips/Utilities/Assert.h>
-#include <trial/MeasurementComponents/MSCalEnums.h>
+#include <trial/MSVis/MSCalEnums.h>
 
 // <summary>
 // Test program for class MSCalEnums.

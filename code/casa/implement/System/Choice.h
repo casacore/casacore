@@ -31,7 +31,7 @@
 
 
 //# Includes
-#include <aips/Utilities/String.h>
+#include <aips/BasicSL/String.h>
 #include <iostream>
 
 //# Forward Declarations

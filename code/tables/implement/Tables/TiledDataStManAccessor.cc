@@ -30,7 +30,7 @@
 #include <aips/Tables/TiledDataStMan.h>
 #include <aips/Tables/Table.h>
 #include <aips/Tables/DataManError.h>
-#include <aips/Utilities/String.h>
+#include <aips/BasicSL/String.h>
 
 
 

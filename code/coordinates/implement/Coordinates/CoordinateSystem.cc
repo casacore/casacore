@@ -43,8 +43,8 @@
 #include <aips/Containers/Record.h>
 #include <aips/Containers/Block.h>
 #include <aips/Logging/LogIO.h>
-#include <aips/Mathematics/Math.h>
-#include <aips/Mathematics/Constants.h>
+#include <aips/BasicMath/Math.h>
+#include <aips/BasicSL/Constants.h>
 #include <aips/Measures/MDoppler.h>
 #include <aips/Measures/MEpoch.h>
 #include <aips/Utilities/Assert.h>
@@ -54,7 +54,7 @@
 #include <aips/Quanta/Unit.h>
 #include <aips/Quanta/UnitMap.h>
 #include <aips/Utilities/Regex.h>
-#include <aips/Utilities/String.h>
+#include <aips/BasicSL/String.h>
 
 #include <aips/sstream.h>
 #include <aips/iomanip.h>

@@ -41,15 +41,15 @@
 #include <aips/Arrays/ArrayLogical.h>
 #include <aips/Exceptions/Error.h>
 // #include <aips/Arrays/IPosition.h>
-#include <aips/Mathematics/Math.h>
-#include <aips/Mathematics/Constants.h>
+#include <aips/BasicMath/Math.h>
+#include <aips/BasicSL/Constants.h>
 #include <aips/Quanta/Quantum.h>
 #include <aips/Measures/MDirection.h>
 #include <aips/Measures/MFrequency.h>
 #include <aips/Quanta/MVAngle.h>
 #include <aips/OS/Path.h>
 #include <aips/Utilities/Assert.h>
-#include <aips/Utilities/String.h>
+#include <aips/BasicSL/String.h>
 #include <aips/iostream.h>
 
 int main() {

@@ -36,7 +36,7 @@
 #include <aips/Arrays/Slicer.h>
 #include <trial/Lattices/LCBox.h>
 #include <trial/Lattices/LCRegion.h>
-#include <aips/Mathematics/Math.h>
+#include <aips/BasicMath/Math.h>
 #include <aips/Quanta/Unit.h>
 #include <aips/Quanta/Quantum.h>
 #include <aips/Quanta/QuantumHolder.h>
@@ -44,7 +44,7 @@
 #include <aips/Tables/TableRecord.h>
 #include <aips/Utilities/Assert.h>
 #include <aips/Utilities/LinearSearch.h>
-#include <aips/Utilities/String.h>
+#include <aips/BasicSL/String.h>
 
 #include <aips/iostream.h>
 #include <aips/sstream.h>

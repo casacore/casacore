@@ -31,7 +31,7 @@
 
 //# Includes
 #include <aips/aips.h>
-#include <aips/Mathematics/Constants.h>
+#include <aips/BasicSL/Constants.h>
 #include <aips/Quanta/Quantum.h>
 #include <aips/Quanta/UnitMap.h>
 

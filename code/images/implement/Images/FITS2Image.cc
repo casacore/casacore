@@ -38,10 +38,10 @@
 #include <trial/Images/ImageInfo.h>
 #include <trial/Images/ImageFITSConverter.h>
 #include <aips/Logging/LogIO.h>
-#include <aips/Mathematics/Math.h>
+#include <aips/BasicMath/Math.h>
 #include <aips/Quanta/Unit.h>
 #include <aips/Utilities/DataType.h>
-#include <aips/Utilities/String.h>
+#include <aips/BasicSL/String.h>
 
 
 template <typename T>

@@ -34,7 +34,7 @@
 #include <aips/Tables/DataManager.h>
 #include <aips/Containers/Block.h>
 #include <aips/Arrays/IPosition.h>
-#include <aips/Utilities/String.h>
+#include <aips/BasicSL/String.h>
 
 //# Forward Declarations
 class TSMColumn;

@@ -36,7 +36,7 @@
 #include <aips/TableMeasures/ScalarQuantColumn.h>
 #include <aips/TableMeasures/ArrayMeasColumn.h>
 #include <aips/TableMeasures/ArrayQuantColumn.h>
-#include <aips/Utilities/String.h>
+#include <aips/BasicSL/String.h>
 
 class MSSpectralWindow;
 

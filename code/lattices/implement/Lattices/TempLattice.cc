@@ -32,7 +32,7 @@
 #include <aips/Tables/SetupNewTab.h>
 #include <aips/Tables/TableDesc.h>
 #include <aips/Arrays/IPosition.h>
-#include <aips/Tasking/AppInfo.h>
+#include <aips/System/AppInfo.h>
 
 
 template<class T>

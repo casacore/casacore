@@ -32,7 +32,7 @@
 #include <aips/Utilities/GenSort.h>
 #include <aips/Arrays/Vector.h>
 #include <aips/Arrays/ArrayMath.h>
-#include <aips/Mathematics/Math.h>
+#include <aips/BasicMath/Math.h>
 
 template <class Domain, class Range> Interpolate1D<Domain, Range>::
 Interpolate1D() {

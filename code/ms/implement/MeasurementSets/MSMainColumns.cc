@@ -30,7 +30,7 @@
 #include <aips/Tables/ColDescSet.h>
 #include <aips/Tables/TableDesc.h>
 #include <aips/Tables/TableRecord.h>
-#include <aips/Utilities/String.h>
+#include <aips/BasicSL/String.h>
 #include <aips/Arrays/Vector.h>
 #include <aips/Arrays/IPosition.h>
 #include <aips/Utilities/Assert.h>

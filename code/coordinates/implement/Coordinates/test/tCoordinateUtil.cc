@@ -29,7 +29,7 @@
 #include <aips/Arrays/ArrayLogical.h> 
 #include <trial/Coordinates.h>
 #include <trial/Coordinates/CoordinateUtil.h>
-#include <aips/Mathematics/Constants.h>
+#include <aips/BasicSL/Constants.h>
 #include <aips/Utilities/Assert.h>
 #include <aips/Exceptions/Error.h>
 

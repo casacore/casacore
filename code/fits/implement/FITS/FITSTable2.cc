@@ -28,7 +28,7 @@
 #include <trial/FITS/FITSTable.h>
 #include <trial/FITS/FITSFieldCopier.h>
 #include <aips/Containers/RecordField.h>
-#include <aips/Utilities/String.h>
+#include <aips/BasicSL/String.h>
 #include <aips/Utilities/Assert.h>
 #include <aips/FITS/fits.h>
 #include <aips/FITS/fitsio.h>

@@ -35,7 +35,7 @@
 #include <aips/Arrays/Array.h>
 #include <aips/Arrays/ArrayIter.h>
 #include <aips/Containers/Record.h>
-#include <aips/Utilities/String.h>
+#include <aips/BasicSL/String.h>
 #include <aips/Utilities/ValTypeId.h>
 #include <aips/Utilities/Copy.h>
 

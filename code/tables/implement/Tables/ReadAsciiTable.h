@@ -30,7 +30,7 @@
 
 //# Includes
 #include <aips/aips.h>
-#include <aips/Utilities/String.h>
+#include <aips/BasicSL/String.h>
 #include <aips/Arrays/IPosition.h>
 
 // # Forward Declarations

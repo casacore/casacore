@@ -28,8 +28,8 @@
 //# Includes
 #include <aips/Measures/MeasTable.h>
 #include <aips/Measures/Precession.h>
-#include <aips/Mathematics/Math.h>
-#include <aips/Tasking/AipsrcValue.h>
+#include <aips/BasicMath/Math.h>
+#include <aips/System/AipsrcValue.h>
 
 //# Constants
 const Double Precession::INTV = 0.1;

@@ -32,7 +32,7 @@
 #include <aips/Arrays/Vector.h>
 #include <aips/Exceptions/Error.h>
 #include <aips/Utilities/Assert.h>
-#include <aips/Utilities/String.h>
+#include <aips/BasicSL/String.h>
 
 ROMSPolarizationColumns::
 ROMSPolarizationColumns(const MSPolarization& msPolarization):

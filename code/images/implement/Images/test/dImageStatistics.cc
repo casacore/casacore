@@ -97,13 +97,13 @@
 //
 //
 #include <aips/aips.h>
-#include <aips/Tasking/Aipsrc.h>
+#include <aips/System/Aipsrc.h>
 #include <aips/Arrays/Array.h>
 #include <aips/Arrays/Matrix.h>
 #include <aips/Exceptions/Error.h>
 #include <aips/Inputs/Input.h>
 #include <aips/Logging.h>
-#include <aips/Utilities/String.h>
+#include <aips/BasicSL/String.h>
 #include <aips/Utilities/Regex.h>
   
 #include <trial/Images/ImageStatistics.h>
@@ -113,7 +113,7 @@
 #include <trial/Lattices/LatticeStatsBase.h>
 #include <trial/Lattices/LCSlicer.h>
 #include <trial/Lattices/LCBox.h>
-#include <trial/Tasking/PGPlotter.h>
+#include <trial/System/PGPlotter.h>
 
 #include <aips/iostream.h>
 

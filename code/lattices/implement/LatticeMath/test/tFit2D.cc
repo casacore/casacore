@@ -26,18 +26,18 @@
 //# $Id$
 
 #include <aips/Fitting.h>
-#include <trial/Fitting/Fit2D.h>
-#include <trial/Tasking/PGPlotter.h>
+#include <trial/LatticeMath/Fit2D.h>
+#include <trial/System/PGPlotter.h>
 #include <aips/Functionals/Gaussian2D.h>
 #include <aips/Inputs/Input.h>
 #include <aips/Logging.h>
-#include <aips/Mathematics/Math.h>
+#include <aips/BasicMath/Math.h>
 #include <aips/Arrays/Vector.h>
 #include <aips/Arrays/Matrix.h>
 #include <aips/Arrays/ArrayMath.h>
 #include <aips/Arrays/ArrayLogical.h>
-#include <aips/Mathematics/Random.h>
-#include <aips/Mathematics/Constants.h>
+#include <aips/BasicMath/Random.h>
+#include <aips/BasicSL/Constants.h>
 #include <aips/Utilities/Assert.h>
 #include <aips/iostream.h>
 

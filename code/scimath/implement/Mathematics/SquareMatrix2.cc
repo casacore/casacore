@@ -26,7 +26,7 @@
 //# $Id$
 
 //# Includes
-#include <trial/Arrays/SquareMatrix.h>
+#include <trial/Mathematics/SquareMatrix.h>
 
 SquareMatrix<Complex,4>& 
 directProduct(SquareMatrix<Complex,4>& result,

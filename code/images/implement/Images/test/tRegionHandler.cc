@@ -38,7 +38,7 @@
 #include <aips/Tables/SetupNewTab.h>
 #include <aips/Tables/Table.h>
 #include <aips/OS/File.h>
-#include <aips/Utilities/String.h>
+#include <aips/BasicSL/String.h>
 #include <aips/Utilities/Assert.h>
 #include <aips/Exceptions/Error.h>
 #include <aips/iostream.h>

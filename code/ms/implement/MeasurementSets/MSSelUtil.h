@@ -31,7 +31,7 @@
 
 #include <aips/aips.h>
 #include <aips/Arrays/Matrix.h>
-#include <aips/Mathematics/Complex.h>
+#include <aips/BasicSL/Complex.h>
 
 // <summary> 
 // Helper class for MSFlagger with templated static function

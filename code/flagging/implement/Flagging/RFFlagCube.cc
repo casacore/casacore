@@ -26,7 +26,7 @@
 //# $Id$
 #include <trial/Flagging/RFFlagCube.h>
 #include <aips/Exceptions/Error.h>
-#include <trial/MeasurementEquations/VisBuffer.h>
+#include <trial/MSVis/VisBuffer.h>
 #include <aips/Arrays/ArrayLogical.h>
 #include <aips/Arrays/ArrayMath.h>
 #include <aips/Arrays/LogiVector.h>
@@ -35,7 +35,7 @@
 #include <aips/Quanta/MVTime.h>
 #include <stdio.h>
 
-#include <trial/Tasking/PGPlotterInterface.h>
+#include <trial/System/PGPlotterInterface.h>
         
 RFCubeLattice<RFlagWord> RFFlagCube::flag; // global flag lattice
 FlagMatrix RFFlagCube::flagrow;   

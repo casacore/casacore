@@ -30,8 +30,8 @@
 #define AIPS_LOG_ORIGIN_H
 
 #include <aips/aips.h>
-#include <aips/Utilities/String.h>
-#include <aips/Tasking/ObjectID.h>
+#include <aips/BasicSL/String.h>
+#include <aips/System/ObjectID.h>
 
 #include <aips/iosfwd.h>
 class SourceLocation;

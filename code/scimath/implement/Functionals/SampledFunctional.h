@@ -29,7 +29,7 @@
 #define AIPS_SAMPLEDFUNCTIONAL_H
 
 #include <aips/aips.h>
-#include <aips/Functionals/Functional.h>
+#include <aips/BasicMath/Functional.h>
 
 // <summary> A base class for indexing into arbitrary data types </summary>
 

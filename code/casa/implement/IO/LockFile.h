@@ -34,7 +34,7 @@
 #include <aips/IO/FileLocker.h>
 #include <aips/OS/Time.h>
 #include <aips/Containers/Block.h>
-#include <aips/Utilities/String.h>
+#include <aips/BasicSL/String.h>
 #include <sys/types.h>
 
 //# Forward declarations

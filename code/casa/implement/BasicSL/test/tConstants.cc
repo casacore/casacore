@@ -28,7 +28,7 @@
 //# Includes
 
 #include <aips/iostream.h>
-#include <aips/Mathematics/Constants.h>
+#include <aips/BasicSL/Constants.h>
 
 main()
 {

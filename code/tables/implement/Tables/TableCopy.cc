@@ -36,7 +36,7 @@
 #include <aips/Containers/Record.h>
 #include <aips/Arrays/Vector.h>
 #include <aips/OS/Path.h>
-#include <aips/Utilities/String.h>
+#include <aips/BasicSL/String.h>
 
 
 Table TableCopy::makeEmptyTable (const String& newName,

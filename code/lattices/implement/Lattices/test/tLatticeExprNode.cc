@@ -48,8 +48,8 @@
 #include <aips/Exceptions/Error.h>
 #include <aips/Inputs/Input.h>
 #include <aips/Arrays/IPosition.h>
-#include <aips/Mathematics/Constants.h>
-#include <aips/Mathematics/Complex.h>
+#include <aips/BasicSL/Constants.h>
+#include <aips/BasicSL/Complex.h>
 #include <aips/Utilities/DataType.h>
 
 #include <aips/iostream.h>

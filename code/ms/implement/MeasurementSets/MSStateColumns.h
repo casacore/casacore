@@ -31,7 +31,7 @@
 #include <aips/aips.h>
 #include <aips/Tables/ScalarColumn.h>
 #include <aips/TableMeasures/ScalarQuantColumn.h>
-#include <aips/Utilities/String.h>
+#include <aips/BasicSL/String.h>
 
 class MSState;
 

@@ -25,11 +25,11 @@
 //#
 //# $Id$
 
-#include <aips/Mathematics/Random.h>
-#include <aips/Mathematics/Constants.h>
+#include <aips/BasicMath/Random.h>
+#include <aips/BasicSL/Constants.h>
 #include <aips/Exceptions/Error.h>
 #include <aips/Utilities/Assert.h>
-#include <aips/Utilities/String.h>
+#include <aips/BasicSL/String.h>
 #include <aips/Utilities/PtrHolder.h>
 #include <aips/Arrays/Vector.h>
 

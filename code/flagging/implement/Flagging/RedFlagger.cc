@@ -29,19 +29,19 @@
 #include <aips/Arrays/ArrayLogical.h>
 #include <aips/MeasurementSets/MSColumns.h>
 #include <aips/MeasurementSets/MSSpWindowColumns.h>
-#include <aips/Mathematics/Complex.h>
+#include <aips/BasicSL/Complex.h>
 #include <aips/Measures/Stokes.h>
 #include <aips/Utilities/Regex.h>
-#include <aips/Tasking/AppInfo.h>
+#include <aips/System/AppInfo.h>
 #include <trial/Flagging/RedFlagger.h>
 #include <trial/Flagging/RFAMedianClip.h>
 #include <trial/Flagging/RFASpectralRej.h>
 #include <trial/Flagging/RFASelector.h>
 #include <trial/Flagging/RFAUVBinner.h>
-#include <trial/MeasurementEquations/VisibilityIterator.h>
-#include <trial/MeasurementEquations/VisBuffer.h>
-#include <trial/Tasking/PGPlotter.h>
-#include <trial/Tasking/ProgressMeter.h>
+#include <trial/MSVis/VisibilityIterator.h>
+#include <trial/MSVis/VisBuffer.h>
+#include <trial/System/PGPlotter.h>
+#include <aips/System/ProgressMeter.h>
 #include <aips/stdio.h>
 #include <aips/math.h>
 #include <stdarg.h>
@@ -51,8 +51,8 @@
 #include <aips/Tables/TableDesc.h>
 #include <aips/Tables/TableLock.h>
 #include <aips/Tables/ExprNode.h>
-#include <trial/MeasurementEquations/VisSet.h>
-#include <trial/MeasurementEquations/VisSetUtil.h>
+#include <trial/MSVis/VisSet.h>
+#include <trial/MSVis/VisSetUtil.h>
 
 #include <aips/Measures/Stokes.h>
 #include <aips/Quanta/UnitMap.h>

@@ -34,7 +34,7 @@
 #include <aips/MeasurementSets/MSDataDescription.h>
 #include <aips/MeasurementSets/MSDataDescColumns.h>
 #include <aips/Arrays/Vector.h>
-#include <aips/Utilities/String.h>
+#include <aips/BasicSL/String.h>
 
 //# forward declarations
 

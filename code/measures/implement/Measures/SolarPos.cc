@@ -27,10 +27,10 @@
 
 //# Includes
 #include <aips/Measures/SolarPos.h>
-#include <aips/Mathematics/Constants.h>
+#include <aips/BasicSL/Constants.h>
 #include <aips/Arrays/ArrayMath.h>
 #include <aips/Measures/MeasTable.h>
-#include <aips/Tasking/AipsrcValue.h>
+#include <aips/System/AipsrcValue.h>
 
 //# Constants
 const Double SolarPos::INTV = 0.04;

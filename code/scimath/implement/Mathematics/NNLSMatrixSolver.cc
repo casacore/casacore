@@ -26,7 +26,7 @@
 //# $Id$
 
 #include <aips/aips.h>
-#include <trial/Arrays/NNLSMatrixSolver.h>
+#include <trial/Mathematics/NNLSMatrixSolver.h>
 #include <aips/Arrays/MatrixMath.h>
 
 #include <aips/Logging/LogSink.h>

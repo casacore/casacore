@@ -30,7 +30,7 @@
 #include <trial/Mathematics/VanVleck.h>
 
 #include <aips/Functionals/ScalarSampledFunctional.h>
-#include <aips/Mathematics/Math.h>
+#include <aips/BasicMath/Math.h>
 #include <aips/Arrays/ArrayMath.h>
 #include <aips/iostream.h>
 

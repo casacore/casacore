@@ -32,7 +32,7 @@
 #include <aips/Tables/SetupNewTab.h>
 #include <aips/Tables/TableDesc.h>
 #include <aips/Utilities/Assert.h>
-#include <aips/Utilities/String.h>
+#include <aips/BasicSL/String.h>
 #include <aips/iostream.h>
 
 void putData(MSDataDescColumns& cols) {

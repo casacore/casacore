@@ -25,7 +25,7 @@
 //#
 //# $Id$
 
-#include <aips/Arrays/MatrixMathLA.h>
+#include <aips/Mathematics/MatrixMathLA.h>
 #include <aips/Arrays/ArrayError.h>
 #include <aips/Utilities/Assert.h>
 

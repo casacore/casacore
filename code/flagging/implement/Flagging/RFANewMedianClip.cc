@@ -27,8 +27,8 @@
 
 #include <trial/Flagging/RFANewMedianClip.h>
 #include <aips/Arrays/ArrayMath.h>
-#include <trial/MeasurementEquations/VisBuffer.h>
-#include <trial/Tasking/PGPlotterInterface.h>
+#include <trial/MSVis/VisBuffer.h>
+#include <trial/System/PGPlotterInterface.h>
 
 #include <aips/stdio.h>    
 // -----------------------------------------------------------------------

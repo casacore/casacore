@@ -34,9 +34,9 @@
 #include <trial/Lattices/LatticeExpr.h>
 #include <trial/Lattices/LatticeExprNode.h>
 #include <aips/Logging/LogIO.h>
-#include <aips/Mathematics/Complex.h> 
-#include <aips/Mathematics/Random.h> 
-#include <aips/Utilities/String.h>
+#include <aips/BasicSL/Complex.h> 
+#include <aips/BasicMath/Random.h> 
+#include <aips/BasicSL/String.h>
 
 
 LatticeAddNoise::LatticeAddNoise()

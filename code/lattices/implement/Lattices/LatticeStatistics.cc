@@ -45,15 +45,15 @@
 #include <aips/Lattices/TempLattice.h>
 #include <trial/Lattices/LatticeExpr.h>
 #include <trial/Lattices/LatticeExprNode.h>
-#include <aips/Mathematics/Math.h>
-#include <aips/Mathematics/ConvertScalar.h>
+#include <aips/BasicMath/Math.h>
+#include <aips/BasicMath/ConvertScalar.h>
 #include <aips/Quanta/QMath.h>
-#include <aips/Tasking/AppInfo.h>
+#include <aips/System/AppInfo.h>
 #include <aips/Utilities/Assert.h>
 #include <aips/Utilities/DataType.h>
 #include <aips/Utilities/GenSort.h>
 #include <aips/Utilities/LinearSearch.h>
-#include <aips/Utilities/String.h>
+#include <aips/BasicSL/String.h>
 #include <aips/Utilities/ValType.h>
 
 #include <aips/iostream.h>

@@ -28,9 +28,9 @@
 
 #include <trial/Lattices/LatticeHistProgress.h>
 
-#include <aips/Mathematics/Math.h>
-#include <trial/Tasking/ProgressMeter.h>
-#include <aips/Utilities/String.h>
+#include <aips/BasicMath/Math.h>
+#include <aips/System/ProgressMeter.h>
+#include <aips/BasicSL/String.h>
 
 
 

@@ -36,7 +36,7 @@
 #include <aips/Tables/TableDesc.h>
 #include <aips/Tables/ColumnDesc.h>
 #include <aips/Tables/TableError.h>
-#include <aips/Utilities/String.h>
+#include <aips/BasicSL/String.h>
 
 
 template<class T>

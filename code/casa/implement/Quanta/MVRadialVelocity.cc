@@ -29,7 +29,7 @@
 #include <aips/Quanta/MVRadialVelocity.h>
 #include <aips/Arrays/Vector.h>
 #include <aips/Exceptions/Error.h>
-#include <aips/Mathematics/Math.h>
+#include <aips/BasicMath/Math.h>
 #include <aips/Quanta/MVFrequency.h>
 #include <aips/Quanta/Quantum.h>
 #include <aips/Utilities/Assert.h>

@@ -30,7 +30,7 @@
 #include <aips/Arrays/ArrayLogical.h>
 #include <aips/Arrays/VectorIter.h>
 #include <aips/Arrays/Matrix.h>
-#include <aips/Mathematics/Math.h>
+#include <aips/BasicMath/Math.h>
 #include <aips/Mathematics/NumericTraits.h>
 #include <aips/Mathematics/FFTPack.h>
 #include <aips/Utilities/Assert.h>

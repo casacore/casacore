@@ -28,7 +28,7 @@
 //# Includes
 
 #include <aips/OS/Timer.h>
-#include <aips/Utilities/String.h>
+#include <aips/BasicSL/String.h>
 #include <aips/iostream.h>
 
 int main(void)

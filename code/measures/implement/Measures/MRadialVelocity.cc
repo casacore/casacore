@@ -27,7 +27,7 @@
 
 //# Includes
 #include <aips/Utilities/Assert.h>
-#include <aips/Mathematics/Constants.h>
+#include <aips/BasicSL/Constants.h>
 #include <aips/Quanta/QMath.h>
 #include <aips/Measures/MRadialVelocity.h>
 #include <aips/Utilities/Register.h>

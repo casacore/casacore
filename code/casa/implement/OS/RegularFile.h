@@ -32,7 +32,7 @@
 #include <aips/aips.h>
 #include <aips/OS/Path.h>
 #include <aips/OS/File.h>
-#include <aips/Utilities/String.h>
+#include <aips/BasicSL/String.h>
 	
 
 // <summary> 

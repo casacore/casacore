@@ -32,14 +32,14 @@
 #include <aips/Containers/Record.h>
 #include <aips/Containers/RecordFieldId.h>
 #include <aips/Exceptions/Error.h>
-#include <aips/Mathematics/Math.h>
+#include <aips/BasicMath/Math.h>
 #include <aips/Measures/MFrequency.h>
 #include <aips/Measures/MeasureHolder.h>
 #include <aips/Measures/MeasRef.h>
 #include <aips/Quanta/MVFrequency.h>
 #include <aips/Quanta/Quantum.h>
 #include <aips/Utilities/Assert.h>
-#include <aips/Utilities/String.h>
+#include <aips/BasicSL/String.h>
 #include <aips/iostream.h>
 
 int main() {

@@ -33,7 +33,7 @@
 #include <aips/aips.h>
 #include <aips/Tables/BaseColumn.h>
 #include <aips/Tables/BaseTable.h>
-#include <aips/Utilities/String.h>
+#include <aips/BasicSL/String.h>
 #include <aips/Arrays/IPosition.h>
 
 //# Forward Declarations

@@ -31,7 +31,7 @@
 #include <aips/Mathematics/AutoDiffA.h>
 #include <aips/Mathematics/AutoDiffIO.h>
 #include <aips/Mathematics/AutoDiffMath.h>
-#include <aips/Mathematics/Math.h>
+#include <aips/BasicMath/Math.h>
 #include <trial/Functionals/UnaryFunction.h>
 #include <trial/Functionals/DiracDFunction.h>
 #include <trial/Functionals/GNoiseFunction.h>

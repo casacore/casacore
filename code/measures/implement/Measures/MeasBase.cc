@@ -28,7 +28,7 @@
 //# Includes
 #include <aips/Exceptions/Error.h>
 #include <aips/Utilities/Assert.h>
-#include <aips/Mathematics/Constants.h>
+#include <aips/BasicSL/Constants.h>
 #include <aips/Measures/MeasBase.h>
 
 //# Constructors

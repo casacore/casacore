@@ -30,7 +30,7 @@
 #include <aips/Lattices/LatticeIterator.h>
 #include <aips/Lattices/LatticeStepper.h>
 #include <aips/Logging/LogIO.h>
-#include <aips/Mathematics/Math.h>
+#include <aips/BasicMath/Math.h>
 #include <aips/Arrays/Vector.h>
 #include <aips/Arrays/ArrayMath.h>
 #include <aips/Arrays/ArrayLogical.h>

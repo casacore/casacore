@@ -30,8 +30,8 @@
 #include <aips/Arrays/Vector.h>
 #include <trial/Coordinates/CoordinateSystem.h>
 #include <aips/Exceptions/Error.h>
-#include <aips/Mathematics/Math.h>
-#include <aips/Mathematics/Constants.h>
+#include <aips/BasicMath/Math.h>
+#include <aips/BasicSL/Constants.h>
 #include <aips/Utilities/Assert.h>
  
 #include <aips/iostream.h>

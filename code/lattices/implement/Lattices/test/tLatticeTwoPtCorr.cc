@@ -31,7 +31,7 @@
 #include <aips/Lattices/LatticeStepper.h>
 #include <aips/Lattices/TempLattice.h>
 #include <trial/Lattices/SubLattice.h>
-#include <aips/Mathematics/Math.h>
+#include <aips/BasicMath/Math.h>
 #include <aips/Logging/LogIO.h>
 #include <aips/Arrays/Vector.h>
 #include <aips/Arrays/ArrayMath.h>

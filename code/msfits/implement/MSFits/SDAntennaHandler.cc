@@ -35,7 +35,7 @@
 #include <aips/Containers/Record.h>
 #include <aips/Arrays/Vector.h>
 #include <aips/Quanta/Quantum.h>
-#include <aips/Mathematics/Constants.h>
+#include <aips/BasicSL/Constants.h>
 #include <aips/Arrays/ArrayLogical.h>
 #include <aips/Tables/ScalarColumn.h>
 #include <aips/Tables/ArrayColumn.h>

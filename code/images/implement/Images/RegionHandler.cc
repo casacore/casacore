@@ -31,7 +31,7 @@
 #include <aips/Lattices/LatticeBase.h>
 #include <aips/Lattices/TiledShape.h>
 #include <aips/Arrays/Vector.h>
-#include <aips/Utilities/String.h>
+#include <aips/BasicSL/String.h>
 #include <aips/Exceptions/Error.h>
 #include <aips/sstream.h>
 

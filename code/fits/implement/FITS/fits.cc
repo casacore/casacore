@@ -32,7 +32,7 @@
 # include <string.h>
 # include <stdlib.h>
 # include <aips/sstream.h>
-# include <aips/Mathematics/Constants.h>
+# include <aips/BasicSL/Constants.h>
 
 
 # include <stdio.h>

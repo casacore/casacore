@@ -41,7 +41,7 @@
 #include <aips/Lattices/LatticeStepper.h>
 #include <aips/Lattices/TempLattice.h>
 #include <aips/Lattices/TiledLineStepper.h>
-#include <aips/Tasking/AppInfo.h>
+#include <aips/System/AppInfo.h>
 #include <aips/iostream.h>
 
 void LatticeFFT::cfft2d(Lattice<Complex>& cLattice, const Bool toFrequency) {

@@ -34,7 +34,7 @@
 #include <aips/Utilities/ValType.h>
 #include <aips/Utilities/Assert.h>
 #include <aips/Utilities/Copy.h>
-#include <aips/Mathematics/Math.h>
+#include <aips/BasicMath/Math.h>
 #include <aips/OS/CanonicalConversion.h>
 #include <aips/OS/LECanonicalConversion.h>
 

@@ -33,7 +33,7 @@
 #include <aips/TableMeasures/ScalarMeasColumn.h>
 #include <aips/TableMeasures/ScalarQuantColumn.h>
 #include <aips/Tables/ScalarColumn.h>
-#include <aips/Utilities/String.h>
+#include <aips/BasicSL/String.h>
 
 class MSFlagCmd;
 

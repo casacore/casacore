@@ -29,13 +29,13 @@
 #include <aips/aips.h>
 #include <aips/Arrays/Matrix.h>
 #include <aips/Arrays/Vector.h>
-#include <aips/Mathematics/Constants.h>
-#include <aips/Mathematics/Math.h>
+#include <aips/BasicSL/Constants.h>
+#include <aips/BasicMath/Math.h>
 #include <aips/Exceptions/Error.h>
 #include <aips/Logging.h>
 #include <aips/Quanta/Quantum.h>
 #include <aips/Quanta/Unit.h>
-#include <aips/Utilities/String.h>
+#include <aips/BasicSL/String.h>
 #include <trial/Images/TempImage.h>
 #include <trial/Images/PagedImage.h>
 #include <trial/Images/ComponentImager.h>

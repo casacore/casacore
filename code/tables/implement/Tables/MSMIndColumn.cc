@@ -28,8 +28,8 @@
 #include <aips/Tables/MSMIndColumn.h>
 #include <aips/Arrays/Array.h>
 #include <aips/Arrays/Slicer.h>
-#include <aips/Mathematics/Complex.h>
-#include <aips/Utilities/String.h>
+#include <aips/BasicSL/Complex.h>
+#include <aips/BasicSL/String.h>
 #include <aips/Utilities/DataType.h>
 #include <aips/Tables/DataManError.h>
 

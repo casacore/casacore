@@ -26,8 +26,8 @@
 //# $Id$
 
 #include <aips/Functionals/SincFunction.h>
-#include <aips/Mathematics/Constants.h>
-#include <aips/Mathematics/Math.h>
+#include <aips/BasicSL/Constants.h>
+#include <aips/BasicMath/Math.h>
 
 //# Constructors
 

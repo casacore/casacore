@@ -38,7 +38,7 @@
 #include <aips/Tables/TableDesc.h>
 #include <aips/Tables/TableError.h>
 #include <aips/Utilities/Assert.h>
-#include <aips/Utilities/String.h>
+#include <aips/BasicSL/String.h>
 
 template<class M>
 ROScalarMeasColumn<M>::ROScalarMeasColumn()

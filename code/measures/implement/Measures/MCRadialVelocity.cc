@@ -26,7 +26,7 @@
 //# $Id$
 
 //# Includes
-#include <aips/Mathematics/Constants.h>
+#include <aips/BasicSL/Constants.h>
 #include <aips/Measures/MCRadialVelocity.h>
 #include <aips/Measures/MCFrame.h>
 #include <aips/Quanta/MVPosition.h>

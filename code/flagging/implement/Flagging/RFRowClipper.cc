@@ -32,7 +32,7 @@
 #include <aips/Arrays/MaskArrMath.h>
 #include <aips/Arrays/ArrayLogical.h>
 #include <aips/Arrays/Slice.h>
-#include <trial/Tasking/PGPlotterInterface.h>
+#include <trial/System/PGPlotterInterface.h>
 #include <trial/Mathematics/MedianSlider.h>
 #include <aips/stdio.h>
     

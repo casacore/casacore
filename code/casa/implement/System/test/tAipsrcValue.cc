@@ -26,8 +26,8 @@
 //# $Id$
 
 #include <aips/aips.h>
-#include <aips/Tasking/AipsrcValue.h>
-#include <aips/Tasking/AipsrcVector.h>
+#include <aips/System/AipsrcValue.h>
+#include <aips/System/AipsrcVector.h>
 #include <aips/Arrays/Vector.h>
 #include <aips/Arrays/ArrayIO.h>
 #include <aips/Quanta/Unit.h>

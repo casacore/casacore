@@ -161,20 +161,20 @@
 //
 //
 #include <aips/aips.h>
-#include <aips/Tasking/Aipsrc.h>
+#include <aips/System/Aipsrc.h>
 #include <aips/Arrays/Vector.h>
 #include <aips/Exceptions/Error.h>
 #include <aips/Inputs/Input.h>
 #include <aips/Logging.h>
 #include <aips/Utilities/DataType.h>
-#include <aips/Utilities/String.h>
+#include <aips/BasicSL/String.h>
 #include <aips/Utilities/Regex.h>
 
 #include <trial/Images/ImageMoments.h>
 #include <trial/Images/PagedImage.h>
 #include <trial/Images/SubImage.h>
 #include <trial/Images/ImageRegion.h>
-#include <trial/Tasking/PGPlotter.h>
+#include <trial/System/PGPlotter.h>
 #include <trial/Lattices/LCSlicer.h>
 #include <trial/Lattices/LCBox.h>
 #include <trial/Mathematics/VectorKernel.h>

@@ -34,7 +34,7 @@
 
 #include <aips/Arrays/Vector.h>
 #include <aips/Quanta/Quantum.h>
-#include <aips/Utilities/String.h>
+#include <aips/BasicSL/String.h>
 
 //# Forward declarations
 #include <aips/iosfwd.h>

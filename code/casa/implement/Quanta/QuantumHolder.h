@@ -34,7 +34,7 @@
 #include <aips/Utilities/RecordTransformable.h>
 
 //# Forward Declarations
-#include <aips/Mathematics/Complexfwd.h>
+#include <aips/BasicSL/Complexfwd.h>
 class QBase;
 class String;
 class RecordInterface;

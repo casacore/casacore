@@ -32,7 +32,7 @@
 
 #include <aips/aips.h>
 #include <trial/Lattices/LatticeProgress.h>
-#include <trial/Tasking/ProgressMeter.h>
+#include <aips/System/ProgressMeter.h>
 
 // <summary> Provides a progress meter for the ImageMoments class </summary>
 // <use visibility=export>

@@ -31,7 +31,7 @@
 #include <aips/Arrays/Matrix.h>
 #include <aips/Arrays/ArrayMath.h>
 #include <aips/Functionals/CombiFunction.h>
-#include <aips/Mathematics/Math.h>
+#include <aips/BasicMath/Math.h>
 #include <aips/Utilities/Assert.h>
 
 #include <aips/iostream.h>

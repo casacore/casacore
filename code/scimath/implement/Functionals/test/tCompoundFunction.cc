@@ -31,8 +31,8 @@
 #include <aips/Functionals/Polynomial.h>
 #include <aips/Functionals/Gaussian1D.h>
 
-#include <aips/Mathematics/Math.h>
-#include <aips/Mathematics/Constants.h>
+#include <aips/BasicMath/Math.h>
+#include <aips/BasicSL/Constants.h>
 #include <aips/Arrays/Vector.h>
 #include <aips/Arrays/ArrayLogical.h>
 #include <aips/Arrays/ArrayMath.h>

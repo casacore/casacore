@@ -25,7 +25,7 @@
 //#
 //# $Id$
 
-#include<trial/Fitting/LatticeFit.h>
+#include<trial/LatticeMath/LatticeFit.h>
 
 #include<aips/Arrays.h>
 #include<trial/Fitting/LinearFitSVD.h>

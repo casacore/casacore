@@ -32,8 +32,8 @@
 #include <aips/aips.h>
 #include <aips/IO/LargeRegularFileIO.h>
 #include <aips/IO/TypeIO.h>
-#include <aips/Utilities/String.h>
-#include <aips/Mathematics/Complex.h>
+#include <aips/BasicSL/String.h>
+#include <aips/BasicSL/Complex.h>
 
 //# Forward Declarations
 class IPosition;

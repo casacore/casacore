@@ -1,6 +1,6 @@
 #include <aips/aips.h>
 #include <aips/Exceptions/Error.h>
-#include <aips/Utilities/String.h>
+#include <aips/BasicSL/String.h>
 #include <aips/iostream.h>
 
 #include <trial/MeasurementSets/MSConcat.h>

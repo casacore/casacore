@@ -28,7 +28,7 @@
 //# Includes
 #include <aips/Utilities/Assert.h>
 #include <aips/Quanta/Euler.h>
-#include <aips/Mathematics/Math.h>
+#include <aips/BasicMath/Math.h>
 #include <aips/Arrays/ArrayMath.h>
 #include <aips/Quanta/UnitVal.h>
 #include <aips/Quanta/QMath.h>

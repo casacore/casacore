@@ -29,7 +29,7 @@
 #define TRIAL_VISTIMEAVERAGER_H
 
 #include <aips/aips.h>
-#include <trial/MeasurementEquations/VisBuffer.h>
+#include <trial/MSVis/VisBuffer.h>
 
 // <summary>
 // A class to average VisBuffers in time

@@ -29,7 +29,7 @@
 #include <aips/Measures/Muvw.h>
 #include <aips/Exceptions.h>
 #include <aips/Arrays/Vector.h>
-#include <aips/Mathematics/Math.h>
+#include <aips/BasicMath/Math.h>
 #include <aips/Utilities/Register.h>
 #include <aips/Utilities/Assert.h>
 

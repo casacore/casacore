@@ -32,7 +32,7 @@
 #include <aips/Containers/RecordDesc.h>
 #include <aips/Tables.h>
 #include <aips/Utilities/Assert.h>
-#include <aips/Utilities/String.h>
+#include <aips/BasicSL/String.h>
 
 CopyRecordToTable::CopyRecordToTable(Table &outputTable,
                                      const RecordInterface &inputBuffer,

@@ -46,7 +46,7 @@
 #include <aips/IO/FilebufIO.h>
 #include <aips/OS/CanonicalConversion.h>
 #include <aips/OS/DOos.h>
-#include <aips/Mathematics/Math.h>
+#include <aips/BasicMath/Math.h>
 #include <aips/Tables/DataManError.h>
 #include <aips/iostream.h>
 

@@ -31,7 +31,7 @@
 #include <aips/Tables/ColDescSet.h>
 #include <aips/Tables/TableDesc.h>
 #include <aips/Tables/TableRecord.h>
-#include <aips/Utilities/String.h>
+#include <aips/BasicSL/String.h>
 
 ROMSPointingColumns::
 ROMSPointingColumns(const MSPointing& msPointing):

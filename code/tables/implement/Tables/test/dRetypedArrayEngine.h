@@ -30,9 +30,9 @@
 
 
 //# Includes
-#include <aips/Utilities/String.h>
+#include <aips/BasicSL/String.h>
 #include <aips/Arrays/IPosition.h>
-#include <aips/Mathematics/Complex.h>
+#include <aips/BasicSL/Complex.h>
 #include <aips/Tables/RetypedArraySetGet.h>
 
 //# Forward Declarations

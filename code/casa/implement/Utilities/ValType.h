@@ -31,8 +31,8 @@
 
 //# Includes
 #include <aips/Utilities/DataType.h>
-#include <aips/Utilities/String.h>
-#include <aips/Mathematics/Complex.h>
+#include <aips/BasicSL/String.h>
+#include <aips/BasicSL/Complex.h>
 #include <aips/Utilities/Compare.h>
 #include <aips/OS/Conversion.h>
 #include <aips/IO/AipsIO.h>

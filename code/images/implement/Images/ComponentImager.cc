@@ -32,8 +32,8 @@
 #include <aips/Containers/Block.h>
 #include <aips/Exceptions/Error.h>
 #include <aips/Arrays/IPosition.h>
-#include <aips/Mathematics/Math.h>
-#include <aips/Mathematics/Constants.h>
+#include <aips/BasicMath/Math.h>
+#include <aips/BasicSL/Constants.h>
 #include <aips/Measures/MDirection.h>
 #include <aips/Measures/MFrequency.h>
 #include <aips/Measures/MeasRef.h>
@@ -49,7 +49,7 @@
 #include <aips/Quanta/Quantum.h>
 #include <aips/Quanta/QMath.h>
 #include <aips/Utilities/Assert.h>
-#include <aips/Utilities/String.h>
+#include <aips/BasicSL/String.h>
 #include <trial/ComponentModels/ComponentList.h>
 #include <trial/ComponentModels/SpectralModel.h>
 #include <trial/ComponentModels/Flux.h>

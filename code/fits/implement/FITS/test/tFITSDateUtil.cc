@@ -28,7 +28,7 @@
 //# Includes
 #include <trial/FITS/FITSDateUtil.h>
 
-#include <aips/Mathematics/Math.h>
+#include <aips/BasicMath/Math.h>
 #include <aips/Exceptions/Error.h>
 #include <aips/Quanta/MVTime.h>
 #include <aips/Utilities/Assert.h>

@@ -36,7 +36,7 @@
 #include <aips/Arrays/Vector.h>
 #include <aips/Utilities/Assert.h>
 #include <aips/Exceptions/Error.h>
-#include <aips/Utilities/String.h>
+#include <aips/BasicSL/String.h>
 
 SDDataDescHandler::SDDataDescHandler() 
     : index_p(0), msDataDesc_p(0), msDataDescCols_p(0), rownr_p(-1)

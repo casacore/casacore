@@ -29,10 +29,10 @@
 #include <aips/Arrays/Array.h>
 #include <aips/Containers/Record.h>
 #include <aips/Inputs/Input.h>
-#include <aips/Mathematics/Math.h>
+#include <aips/BasicMath/Math.h>
 #include <aips/OS/Path.h>
-#include <aips/Tasking/Aipsrc.h>
-#include <aips/Utilities/String.h>
+#include <aips/System/Aipsrc.h>
+#include <aips/BasicSL/String.h>
 #include <aips/Utilities/DataType.h>
 #include <aips/Exceptions/Error.h>
 #include <aips/Logging/LogIO.h>

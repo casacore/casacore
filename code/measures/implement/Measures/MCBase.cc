@@ -27,7 +27,7 @@
 
 //# Includes
 #include <aips/Measures/MCBase.h>
-#include <aips/Utilities/String.h>
+#include <aips/BasicSL/String.h>
 #include <aips/sstream.h>
 #include <aips/iomanip.h>
 

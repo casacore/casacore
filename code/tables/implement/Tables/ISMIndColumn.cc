@@ -31,8 +31,8 @@
 #include <aips/Utilities/DataType.h>
 #include <aips/Arrays/Array.h>
 #include <aips/Arrays/Slicer.h>
-#include <aips/Mathematics/Complex.h>
-#include <aips/Utilities/String.h>
+#include <aips/BasicSL/Complex.h>
+#include <aips/BasicSL/String.h>
 #include <aips/Utilities/Assert.h>
 #include <aips/OS/CanonicalConversion.h>
 #include <aips/OS/LECanonicalConversion.h>

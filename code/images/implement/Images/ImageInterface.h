@@ -36,7 +36,7 @@
 #include <trial/Images/ImageInfo.h>
 #include <trial/Lattices/MaskedLattice.h>
 #include <trial/Coordinates/CoordinateSystem.h>
-#include <trial/Logging/LoggerHolder.h>
+#include <trial/LogTables/LoggerHolder.h>
 #include <aips/Tables/TableRecord.h>
 #include <aips/Quanta/Unit.h>
 

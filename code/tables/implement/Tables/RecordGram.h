@@ -29,7 +29,7 @@
 #define AIPS_RECORDGRAM_H
 
 //# Includes
-#include <aips/Utilities/String.h>
+#include <aips/BasicSL/String.h>
 #include <aips/Tables/TableGram.h>
 
 //# Forward Declarations

@@ -35,7 +35,7 @@
 #include <aips/Containers/Record.h>
 #include <aips/Logging/LogIO.h>
 #include <aips/Logging/LogOrigin.h>
-#include <aips/Mathematics/Math.h>
+#include <aips/BasicMath/Math.h>
 #include <aips/Measures/MDirection.h>
 #include <aips/Measures/MDoppler.h>
 #include <aips/Quanta/Unit.h>

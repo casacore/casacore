@@ -34,7 +34,7 @@
 //##### This file is documented in aips/Logging.h.
 
 #include <aips/Logging.h>
-#include <aips/Logging/TableLogSink.h>
+#include <aips/LogTables/TableLogSink.h>
 #include <aips/Arrays.h>
 
 #include <aips/sstream.h>

@@ -26,7 +26,7 @@
 //# $Id$
 
 #include <trial/IO/StreamIO.h>
-#include <aips/Utilities/String.h>
+#include <aips/BasicSL/String.h>
 #include <aips/Utilities/Regex.h>
 #include <aips/Utilities/Copy.h>
 #include <aips/Exceptions/Error.h>

@@ -32,7 +32,7 @@
 //# Includes
 #include <aips/aips.h>
 #include <aips/Tables/BaseTable.h>
-#include <aips/Utilities/String.h>
+#include <aips/BasicSL/String.h>
 #include <aips/Arrays/Vector.h>
 #include <aips/Containers/SimOrdMap.h>
 

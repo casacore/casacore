@@ -37,7 +37,7 @@
 #include <aips/Logging/LogIO.h>
 #include <aips/MeasurementSets/MeasurementSet.h>
 #include <aips/Measures/MFrequency.h>
-#include <aips/Utilities/String.h>
+#include <aips/BasicSL/String.h>
 #include <trial/MeasurementSets/MSTileLayout.h>
 
 class FitsInput;

@@ -35,7 +35,7 @@
 #include <aips/Arrays/ArrayMath.h>
 #include <aips/Utilities/Assert.h>
 #include <aips/iostream.h>
-#include <aips/Mathematics/Constants.h>
+#include <aips/BasicSL/Constants.h>
 #include <aips/Containers/Record.h>
 
 int main() {

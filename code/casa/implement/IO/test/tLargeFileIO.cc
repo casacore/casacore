@@ -27,7 +27,7 @@
 
 #include <aips/IO/LargeFiledesIO.h>
 #include <aips/OS/Timer.h>
-#include <aips/Utilities/String.h>
+#include <aips/BasicSL/String.h>
 #include <aips/Exceptions/Error.h>
 #include <aips/iostream.h>
 #include <aips/sstream.h>

@@ -31,7 +31,7 @@
 #include <aips/Arrays/Array.h>
 #include <aips/Arrays/ArrayLogical.h>
 #include <aips/Arrays/IPosition.h>
-#include <aips/Mathematics/Constants.h>
+#include <aips/BasicSL/Constants.h>
 #include <aips/Inputs/Input.h>
 #include <aips/Exceptions/Error.h>
 #include <aips/Utilities/COWPtr.h>

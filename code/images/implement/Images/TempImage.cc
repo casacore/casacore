@@ -33,7 +33,7 @@
 #include <aips/Arrays/Array.h>
 #include <aips/Arrays/IPosition.h>
 #include <aips/Arrays/Slicer.h>
-#include <aips/Utilities/String.h>
+#include <aips/BasicSL/String.h>
 #include <aips/Utilities/Assert.h>
 #include <aips/Exceptions/Error.h>
 

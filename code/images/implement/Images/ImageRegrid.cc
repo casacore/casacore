@@ -62,7 +62,7 @@
 #include <aips/Logging/LogIO.h>
 #include <aips/OS/Timer.h>
 #include <aips/Quanta/MVDirection.h>
-#include <trial/Tasking/ProgressMeter.h>
+#include <aips/System/ProgressMeter.h>
 #include <aips/Utilities/Assert.h>
 
 #include <aips/sstream.h>

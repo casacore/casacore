@@ -27,7 +27,7 @@
 
 //# Includes
 #include <aips/Quanta/QLogical.h>
-#include <aips/Mathematics/Math.h>
+#include <aips/BasicMath/Math.h>
 #include <aips/Arrays/ArrayLogical.h>
 #include <aips/Exceptions/Error.h>
 

@@ -48,7 +48,7 @@
 #include <aips/Arrays/Matrix.h>
 #include <aips/Quanta/UnitMap.h>
 #include <aips/Arrays/IPosition.h>
-#include <aips/Mathematics/Math.h>
+#include <aips/BasicMath/Math.h>
 #include <aips/Arrays/ArrayMath.h>
 #include <aips/Containers/Record.h>
 
@@ -61,7 +61,7 @@
 
 #include <aips/Utilities/Assert.h>
 #include <aips/Logging/LogIO.h>
-#include <trial/Tasking/ProgressMeter.h>
+#include <aips/System/ProgressMeter.h>
 
 #include <aips/sstream.h>
 #include <aips/iomanip.h>

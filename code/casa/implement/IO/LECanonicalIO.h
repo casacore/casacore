@@ -30,7 +30,7 @@
 
 #include <aips/aips.h>
 #include <aips/IO/TypeIO.h>
-#include <aips/Mathematics/Complexfwd.h>
+#include <aips/BasicSL/Complexfwd.h>
 
 class ByteIO;
 class String;

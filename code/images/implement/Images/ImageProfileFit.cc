@@ -44,9 +44,9 @@
 #include <trial/Lattices/MaskedLattice.h>
 #include <trial/Lattices/LatticeUtilities.h>
 #include <aips/Logging/LogIO.h>
-#include <aips/Mathematics/Constants.h>
-#include <aips/Mathematics/Math.h>
-#include <trial/Tasking/ProgressMeter.h>
+#include <aips/BasicSL/Constants.h>
+#include <aips/BasicMath/Math.h>
+#include <aips/System/ProgressMeter.h>
 #include <aips/Quanta/Quantum.h>
 #include <aips/Utilities/Assert.h>
 #include <trial/SpectralComponents/SpectralFit.h>

@@ -59,16 +59,16 @@
 #include <trial/Lattices/LCPagedMask.h>
 #include <aips/Logging/LogIO.h>
 #include <aips/Logging/LogOrigin.h>
-#include <aips/Mathematics/Math.h>
-#include <aips/Mathematics/Constants.h>
+#include <aips/BasicMath/Math.h>
+#include <aips/BasicSL/Constants.h>
 #include <aips/Mathematics/NumericTraits.h>
-#include <trial/Tasking/PGPlotter.h>
-#include <trial/Tasking/ProgressMeter.h>
+#include <trial/System/PGPlotter.h>
+#include <aips/System/ProgressMeter.h>
 #include <aips/Quanta/QC.h>
 #include <aips/Quanta/MVAngle.h>
 #include <aips/Utilities/GenSort.h>
 #include <aips/Utilities/Assert.h>
-#include <aips/Utilities/String.h>
+#include <aips/BasicSL/String.h>
 
 #include <aips/sstream.h>
 

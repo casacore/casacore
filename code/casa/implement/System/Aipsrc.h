@@ -29,7 +29,7 @@
 #define AIPS_AIPSRC_H
 
 #include <aips/aips.h>
-#include <aips/Utilities/String.h>
+#include <aips/BasicSL/String.h>
 #include <aips/Containers/Block.h>
 
 

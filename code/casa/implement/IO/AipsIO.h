@@ -32,8 +32,8 @@
 //# Includes
 #include <aips/aips.h>
 #include <aips/Containers/Block.h>
-#include <aips/Utilities/String.h>
-#include <aips/Mathematics/Complex.h>
+#include <aips/BasicSL/String.h>
+#include <aips/BasicSL/Complex.h>
 #include <aips/IO/ByteIO.h>
 
 //# Forward Declarations

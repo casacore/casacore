@@ -34,7 +34,7 @@
 #include <aips/Arrays/Slice.h>
 #include <aips/Arrays/Slicer.h>
 #include <aips/MeasurementSets/MeasurementSet.h>
-#include <trial/MeasurementComponents/StokesConverter.h>
+#include <trial/MeasurementSets/StokesConverter.h>
 #include <trial/MeasurementSets/MSDerivedValues.h>
 #include <trial/MeasurementSets/MSSelectionKeywords.h>
 

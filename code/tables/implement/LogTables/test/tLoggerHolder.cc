@@ -26,7 +26,7 @@
 //#
 //# $Id$
 
-#include <trial/Logging/LoggerHolder.h>
+#include <trial/LogTables/LoggerHolder.h>
 #include <aips/Tables/Table.h>
 #include <aips/Exceptions/Error.h>
 #include <aips/Utilities/Assert.h>

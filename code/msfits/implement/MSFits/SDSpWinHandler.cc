@@ -38,7 +38,7 @@
 #include <aips/Measures/MPosition.h>
 #include <aips/Utilities/Assert.h>
 #include <aips/Exceptions/Error.h>
-#include <aips/Utilities/String.h>
+#include <aips/BasicSL/String.h>
 #include <aips/Arrays/ArrayMath.h>
 #include <aips/Arrays/Slice.h>
 #include <aips/Tables/TableDesc.h>

@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#include <trial/MeasurementEquations/VisSet.h>
-#include <trial/MeasurementEquations/VisBuffer.h>
+#include <trial/MSVis/VisSet.h>
+#include <trial/MSVis/VisBuffer.h>
 #include <aips/MeasurementSets/MSColumns.h>
 #include <aips/Arrays/ArrayMath.h>
 #include <aips/Arrays/ArrayLogical.h>

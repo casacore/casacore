@@ -31,7 +31,7 @@
 #include <aips/Arrays/Array.h>
 #include <aips/Arrays/ArrayMath.h>
 #include <aips/Arrays/IPosition.h>
-#include <aips/Mathematics/Math.h>
+#include <aips/BasicMath/Math.h>
 #include <trial/Tables/TiledFileAccess.h>
 #include <aips/Utilities/Assert.h>
 #include <aips/Utilities/DataType.h>

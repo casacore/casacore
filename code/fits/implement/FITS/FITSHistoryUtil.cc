@@ -32,7 +32,7 @@
 #include <aips/Arrays/ArrayUtil.h>
 #include <aips/FITS/fits.h>
 #include <trial/FITS/FITSDateUtil.h>
-#include <trial/Logging/LoggerHolder.h>
+#include <trial/LogTables/LoggerHolder.h>
 #include <aips/Logging/LogIO.h>
 #include <aips/Logging/LogOrigin.h>
 #include <aips/Logging/LogSink.h>
@@ -40,7 +40,7 @@
 #include <aips/Quanta/MVTime.h>
 #include <aips/Utilities/Assert.h>
 #include <aips/Utilities/Regex.h>
-#include <aips/Utilities/String.h>
+#include <aips/BasicSL/String.h>
 
 uInt FITSHistoryUtil::getHistoryGroup(Vector<String> &strings, 
 				      String &groupType,

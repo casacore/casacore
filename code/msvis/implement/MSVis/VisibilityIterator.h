@@ -41,10 +41,10 @@
 #include <aips/Measures/MDoppler.h>
 #include <aips/Tables/ArrayColumn.h>
 #include <aips/Tables/ScalarColumn.h>
-#include <aips/Utilities/String.h>
+#include <aips/BasicSL/String.h>
 
 #include <trial/MeasurementSets/MSDerivedValues.h>
-#include <trial/MeasurementEquations/StokesVector.h>
+#include <trial/MSVis/StokesVector.h>
 #include <trial/MeasurementSets/MSIter.h>
 
 //# forward decl

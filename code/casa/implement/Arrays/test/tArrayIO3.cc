@@ -32,7 +32,7 @@
 #include <aips/Arrays/Vector.h>
 #include <aips/Arrays/Matrix.h>
 #include <aips/Arrays/Cube.h>
-#include <aips/Utilities/String.h>
+#include <aips/BasicSL/String.h>
 #include <aips/Quanta/Quantum.h>
 #include <aips/sstream.h>
 

@@ -31,7 +31,7 @@
 #include <aips/Quanta/Quantum.h>
 #include <aips/Quanta/Unit.h>
 #include <aips/Measures/MEpoch.h>
-#include <aips/Mathematics/Complex.h>
+#include <aips/BasicSL/Complex.h>
 #include <aips/Tables/ArrColDesc.h>
 #include <aips/Tables/ScaColDesc.h>
 #include <aips/Tables/SetupNewTab.h>

@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#include <trial/Arrays/RigidVector.h>
-#include <trial/Arrays/SquareMatrix.h>
+#include <trial/Mathematics/RigidVector.h>
+#include <trial/Mathematics/SquareMatrix.h>
 
 template <class T, Int n>
 RigidVector<T,n>& 

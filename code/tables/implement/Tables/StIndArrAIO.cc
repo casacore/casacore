@@ -30,8 +30,8 @@
 #include <aips/Tables/StIndArray.h>
 #include <aips/Utilities/DataType.h>
 #include <aips/IO/AipsIO.h>
-#include <aips/Mathematics/Complex.h>
-#include <aips/Utilities/String.h>
+#include <aips/BasicSL/Complex.h>
+#include <aips/BasicSL/String.h>
 #include <aips/Tables/DataManError.h>
 #include <aips/stdio.h>                            //# for sprintf
 

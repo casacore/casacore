@@ -33,7 +33,7 @@
 #include <aips/Containers/Record.h>
 #include <aips/Arrays/IPosition.h>
 #include <aips/Arrays/Vector.h>
-#include <aips/Utilities/String.h>
+#include <aips/BasicSL/String.h>
 
 
 TSMIdColumn::TSMIdColumn (const TSMColumn& column)

@@ -31,7 +31,7 @@
 #include <aips/Tables/TableColumn.h>
 #include <aips/Arrays/Matrix.h>
 #include <aips/Arrays/Vector.h>
-#include <aips/Mathematics/Complex.h>
+#include <aips/BasicSL/Complex.h>
 #include <aips/Exceptions/Error.h>
 #include <aips/iostream.h>
 

@@ -33,7 +33,7 @@
 #include <aips/Measures/MPosition.h>
 #include <aips/Measures/MEpoch.h>
 #include <aips/Quanta/RotMatrix.h>
-#include <aips/Mathematics/Math.h>
+#include <aips/BasicMath/Math.h>
 #include <aips/iostream.h>
 
 int main() {

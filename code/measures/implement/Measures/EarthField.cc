@@ -30,9 +30,9 @@
 #include <aips/Measures/MeasTable.h>
 #include <aips/Quanta/MVPosition.h>
 #include <aips/Arrays/Vector.h>
-#include <aips/Mathematics/Constants.h>
-#include <aips/Mathematics/Math.h>
-#include <aips/Tasking/AipsrcValue.h>
+#include <aips/BasicSL/Constants.h>
+#include <aips/BasicMath/Math.h>
+#include <aips/System/AipsrcValue.h>
 
 //# Constants
 const Double EarthField::INTV = 50000;

@@ -31,7 +31,7 @@
 #include <aips/Logging/LogIO.h>
 #include <aips/Logging/LogOrigin.h>
 #include <aips/Utilities/Assert.h>
-#include <aips/Utilities/String.h>
+#include <aips/BasicSL/String.h>
 #include <aips/iostream.h>
 
 int main()

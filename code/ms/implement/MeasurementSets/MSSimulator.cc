@@ -46,8 +46,8 @@
 #include <aips/Tables/TiledDataStMan.h>
 #include <aips/Tables/TiledStManAccessor.h>
 #include <aips/Tables/TiledDataStManAccessor.h>
-#include <aips/Mathematics/Constants.h>
-#include <aips/Mathematics/Random.h>
+#include <aips/BasicSL/Constants.h>
+#include <aips/BasicMath/Random.h>
 #include <aips/Arrays/ArrayMath.h>
 #include <aips/Arrays/MatrixMath.h>
 #include <aips/Arrays/ArrayLogical.h>

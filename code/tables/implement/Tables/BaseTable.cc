@@ -42,7 +42,7 @@
 #include <aips/Containers/Block.h>
 #include <aips/Containers/Record.h>
 #include <aips/Utilities/Sort.h>
-#include <aips/Utilities/String.h>
+#include <aips/BasicSL/String.h>
 #include <aips/Utilities/GenSort.h>
 #include <aips/IO/AipsIO.h>
 #include <aips/OS/File.h>

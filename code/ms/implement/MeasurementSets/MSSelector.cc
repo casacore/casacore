@@ -36,7 +36,7 @@
 #include <aips/Arrays/Slice.h>
 #include <aips/Containers/Record.h>
 #include <aips/Logging/LogIO.h>
-#include <aips/Mathematics/Constants.h>
+#include <aips/BasicSL/Constants.h>
 #include <aips/MeasurementSets/MSColumns.h>
 #include <aips/Tables/ExprNode.h>
 #include <aips/Tables/ExprNodeSet.h>

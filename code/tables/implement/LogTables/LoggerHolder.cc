@@ -27,9 +27,9 @@
 //# $Id$
 
 
-#include <trial/Logging/LoggerHolder.h>
+#include <trial/LogTables/LoggerHolder.h>
 #include <aips/Logging/MemoryLogSink.h>
-#include <aips/Logging/TableLogSink.h>
+#include <aips/LogTables/TableLogSink.h>
 #include <aips/Logging/LogFilter.h>
 
 

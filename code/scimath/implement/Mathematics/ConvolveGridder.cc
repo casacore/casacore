@@ -27,7 +27,7 @@
 //# $Id$
 
 #include <trial/Mathematics/ConvolveGridder.h>
-#include <aips/Mathematics/Constants.h>
+#include <aips/BasicSL/Constants.h>
 #include <aips/Arrays/ArrayMath.h>
 #include <aips/Arrays/Vector.h>
 #include <aips/iostream.h>

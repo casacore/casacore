@@ -56,7 +56,7 @@
 #include <aips/Tables/TableRecord.h>
 #include <aips/Tables/TableInfo.h>
 #include <aips/Tables/TableColumn.h>
-#include <aips/Utilities/String.h>
+#include <aips/BasicSL/String.h>
 #include <aips/Utilities/Assert.h>
 #include <aips/Quanta/UnitMap.h>
 

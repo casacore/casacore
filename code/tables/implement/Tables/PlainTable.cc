@@ -37,10 +37,10 @@
 #include <aips/Tables/TableError.h>
 #include <aips/Containers/Block.h>
 #include <aips/Containers/Record.h>
-#include <aips/Utilities/String.h>
+#include <aips/BasicSL/String.h>
 #include <aips/OS/HostInfo.h>
 #include <aips/OS/File.h>
-#include <aips/Tasking/AipsrcValue.h>
+#include <aips/System/AipsrcValue.h>
 
 
 //# Initialize the static TableCache object.

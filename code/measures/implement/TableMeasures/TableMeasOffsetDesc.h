@@ -29,7 +29,7 @@
 #define AIPS_TABLEMEASOFFSETDESC_H
 
 //# Includes
-#include <aips/Utilities/String.h>
+#include <aips/BasicSL/String.h>
 #include <aips/Measures/MeasureHolder.h>
 
 //# Forward Declarations

@@ -44,9 +44,9 @@
 #include <aips/Arrays/Cube.h>
 #include <aips/Exceptions/Error.h>
 #include <aips/Logging/LogIO.h>
-#include <aips/Mathematics/Constants.h>
-#include <aips/Mathematics/Complex.h>
-#include <aips/Mathematics/Math.h>
+#include <aips/BasicSL/Constants.h>
+#include <aips/BasicSL/Complex.h>
+#include <aips/BasicMath/Math.h>
 #include <aips/Measures/MDirection.h>
 #include <aips/Measures/MFrequency.h>
 #include <aips/Quanta/MVFrequency.h>
@@ -69,7 +69,7 @@
 #include <aips/Utilities/Assert.h>
 #include <aips/Utilities/GenSort.h>
 #include <aips/Utilities/Sort.h>
-#include <aips/Utilities/String.h>
+#include <aips/BasicSL/String.h>
 
 const String fluxName = "Flux";
 const String fluxUnitName = "Flux_Unit";

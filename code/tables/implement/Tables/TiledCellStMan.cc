@@ -35,7 +35,7 @@
 #include <aips/Arrays/Vector.h>
 #include <aips/Arrays/IPosition.h>
 #include <aips/Utilities/DataType.h>
-#include <aips/Utilities/String.h>
+#include <aips/BasicSL/String.h>
 #include <aips/Utilities/BinarySearch.h>
 #include <aips/IO/AipsIO.h>
 #include <aips/Tables/DataManError.h>

@@ -31,7 +31,7 @@
 #include <aips/aips.h>
 #include <aips/Exceptions/Error.h>
 #include <aips/Containers/Block.h>
-#include <aips/Utilities/String.h>
+#include <aips/BasicSL/String.h>
 #include <aips/Containers/Map.h>
 #include <aips/Containers/OrderedPair.h>
 #include <aips/Utilities/Register.h>

@@ -30,7 +30,7 @@
 #include <aips/Arrays/IPosition.h>
 #include <aips/Tables/TableRecord.h>
 #include <aips/Arrays/Vector.h>
-#include <aips/Mathematics/Math.h>
+#include <aips/BasicMath/Math.h>
 #include <aips/Exceptions/Error.h>
 #include <aips/iostream.h>
 #include <aips/sstream.h>

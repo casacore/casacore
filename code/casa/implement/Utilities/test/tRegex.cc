@@ -28,7 +28,7 @@
 //# Includes
 
 #include <aips/Utilities/Regex.h>
-#include <aips/Utilities/String.h>
+#include <aips/BasicSL/String.h>
 #include <aips/Arrays/Vector.h>
 #include <aips/Arrays/ArrayIO.h>
 #include <aips/Exceptions/Error.h>

@@ -30,7 +30,7 @@
 #define AIPS_VISBUFFERUTIL_H
 
 #include <aips/aips.h>
-#include <trial/MeasurementEquations/VisBuffer.h>
+#include <trial/MSVis/VisBuffer.h>
 
 // <summary> 
 // </summary>

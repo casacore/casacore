@@ -29,7 +29,7 @@
 #define TRIAL_MSSUMMARY_H
 
 #include <aips/aips.h>
-#include <aips/Utilities/String.h>
+#include <aips/BasicSL/String.h>
 #include <aips/MeasurementSets/MSColumns.h>
 class MeasurementSet;
 class LogIO;

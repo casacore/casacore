@@ -37,7 +37,7 @@
 #include <aips/Tables/StandardStManAccessor.h>
 #include <aips/Tables/TableError.h>
 #include <aips/Arrays/Vector.h>
-#include <aips/Utilities/String.h>
+#include <aips/BasicSL/String.h>
 #include <aips/sstream.h>
 
 

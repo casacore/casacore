@@ -40,7 +40,7 @@
 #include <aips/Glish/GlishRecord.h>
 #include <aips/Exceptions/Error.h>
 #include <aips/Arrays/IPosition.h>
-#include <aips/Mathematics/Constants.h>
+#include <aips/BasicSL/Constants.h>
 #include <aips/Measures/MCDirection.h>
 #include <aips/Measures/MDirection.h>
 #include <aips/Quanta/MVAngle.h>
@@ -49,7 +49,7 @@
 #include <aips/Quanta/Quantum.h>
 #include <aips/Tables/Table.h>
 #include <aips/Utilities/Assert.h>
-#include <aips/Utilities/String.h>
+#include <aips/BasicSL/String.h>
 #include <aips/iostream.h>
 
 int main() {

@@ -41,8 +41,8 @@
 #include <aips/FITS/fits.h> //
 #include <aips/FITS/fitsio.h>
 #include <aips/Logging/LogOrigin.h>
-#include <aips/Mathematics/Constants.h>
-#include <aips/Mathematics/Math.h>
+#include <aips/BasicSL/Constants.h>
+#include <aips/BasicMath/Math.h>
 #include <aips/MeasurementSets/MeasurementSet.h> //
 #include <aips/MeasurementSets/MSAntennaColumns.h>
 #include <aips/MeasurementSets/MSColumns.h>
@@ -90,8 +90,8 @@
 #include <trial/FITS/FITSSpectralUtil.h>
 #include <trial/FITS/FITSDateUtil.h>
 #include <trial/FITS/BinTable.h>
-#include <trial/Tasking/NewFile.h>
-#include <trial/Tasking/ProgressMeter.h>
+#include <aips/LogTables/NewFile.h>
+#include <aips/System/ProgressMeter.h>
 #include <aips/sstream.h>
 #include <aips/stdio.h>
 

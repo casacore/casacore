@@ -32,7 +32,7 @@
 //# Includes
 #include <aips/aips.h>
 #include <aips/OS/Conversion.h>
-#include <aips/Utilities/String.h>
+#include <aips/BasicSL/String.h>
 #include <aips/Arrays/Array.h>
 
 //# Forward Declarations.

@@ -39,10 +39,10 @@
 #include <aips/Lattices/TempLattice.h>
 #include <trial/Lattices/LatticeStatistics.h>
 #include <trial/Lattices/LattStatsSpecialize.h>
-#include <aips/Mathematics/Math.h>
+#include <aips/BasicMath/Math.h>
 #include <aips/Utilities/Assert.h>
 #include <aips/Utilities/LinearSearch.h>
-#include <aips/Utilities/String.h>
+#include <aips/BasicSL/String.h>
 #include <aips/Utilities/DataType.h>
 
 

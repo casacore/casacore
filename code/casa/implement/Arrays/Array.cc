@@ -31,7 +31,7 @@
 #include <aips/Arrays/ArrayPosIter.h>
 #include <aips/Arrays/ArrayError.h>
 #include <aips/Utilities/Assert.h>
-#include <aips/Functionals/Functional.h>
+#include <aips/BasicMath/Functional.h>
 #include <aips/Utilities/Copy.h>
 
 

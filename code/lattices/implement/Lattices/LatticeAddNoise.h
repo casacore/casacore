@@ -33,7 +33,7 @@
 //# Includes
 #include <aips/aips.h>
 #include <aips/Arrays/Vector.h>
-#include <aips/Mathematics/Random.h>
+#include <aips/BasicMath/Random.h>
 
 
 //# Forward Declarations

@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#include <aips/Logging/LogFilterTaql.h>
-#include <aips/Logging/LogFilterExpr.h>
+#include <aips/LogTables/LogFilterTaql.h>
+#include <aips/LogTables/LogFilterExpr.h>
 
 
 LogFilterTaql::LogFilterTaql (const String& expr)

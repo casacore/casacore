@@ -31,9 +31,9 @@
 #include <aips/Exceptions/Error.h>
 #include <aips/Inputs/Input.h>
 #include <aips/Logging.h>
-#include <aips/Tasking/Aipsrc.h>
+#include <aips/System/Aipsrc.h>
 #include <aips/Tables/Table.h>
-#include <aips/Utilities/String.h>
+#include <aips/BasicSL/String.h>
 #include <aips/Containers/Record.h>
 
 

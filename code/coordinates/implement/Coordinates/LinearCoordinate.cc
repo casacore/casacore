@@ -35,7 +35,7 @@
 #include <aips/Arrays/Matrix.h>
 #include <aips/Arrays/ArrayMath.h>
 #include <aips/Containers/Record.h>
-#include <aips/Mathematics/Math.h>
+#include <aips/BasicMath/Math.h>
 #include <aips/Quanta/Quantum.h>
 
 #include <aips/sstream.h>

@@ -32,7 +32,7 @@
 #include <aips/Measures/MDirection.h>
 #include <aips/Measures/MFrequency.h>
 #include <aips/Quanta/Quantum.h>
-#include <aips/Utilities/String.h>
+#include <aips/BasicSL/String.h>
 #include <trial/ComponentModels/Flux.h>
 #include <trial/ComponentModels/PointShape.h>
 #include <trial/ComponentModels/SkyComponent.h>

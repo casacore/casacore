@@ -38,11 +38,11 @@
 #include <aips/FITS/fits.h>
 #include <aips/Logging/LogIO.h>
 #include <aips/Logging/LogOrigin.h>
-#include <aips/Mathematics/Random.h>
+#include <aips/BasicMath/Random.h>
 #include <aips/OS/Time.h>
 #include <aips/Utilities/Assert.h>
 #include <aips/Utilities/Regex.h>
-#include <aips/Utilities/String.h>
+#include <aips/BasicSL/String.h>
 
 #include <aips/sstream.h>
 #include <aips/iomanip.h>

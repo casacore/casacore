@@ -26,7 +26,7 @@
 //# $Id$
 
 #include <aips/Tables/MemoryStMan.h>
-#include <aips/Utilities/String.h>
+#include <aips/BasicSL/String.h>
 
 
 MemoryStMan::MemoryStMan()

@@ -27,7 +27,7 @@
 
 //# Includes
 #include <aips/Measures/Measure.h>
-#include <aips/Quanta/MUString.h>
+#include <aips/Utilities/MUString.h>
 #include <aips/iostream.h>
 
 //# Constants

@@ -29,7 +29,7 @@
 #include <aips/Utilities/GenSort.h>
 #include <aips/Utilities/ValType.h>
 #include <aips/Utilities/Copy.h>
-#include <aips/Utilities/String.h>
+#include <aips/BasicSL/String.h>
 #include <aips/Utilities/SortError.h>
 #include <aips/Arrays/Vector.h>
 #include <aips/Arrays/ArrayMath.h>

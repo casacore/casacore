@@ -35,9 +35,9 @@
   // and Complex.h so we bypass the problem by include Complex.h only.
   //
 #if defined(AIPS_USE_NEW_SGI)
-#include <aips/Mathematics/Complex.h>
+#include <aips/BasicSL/Complex.h>
 #else
-#include <aips/Mathematics/Complexfwd.h>
+#include <aips/BasicSL/Complexfwd.h>
 #endif
 
 // <summary>C++ interface to the Fortran FFTPACK library</summary>

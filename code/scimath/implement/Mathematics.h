@@ -28,15 +28,15 @@
 #if !defined (AIPS_MATHEMATICS_H)
 #define AIPS_MATHEMATICS_H
 
-#include <aips/Mathematics/Complex.h>
-#include <aips/Mathematics/Constants.h>
+#include <aips/BasicSL/Complex.h>
+#include <aips/BasicSL/Constants.h>
 #include <aips/Mathematics/Convolver.h>
 #include <aips/Mathematics/FFTPack.h>
 #include <aips/Mathematics/FFTServer.h>
-#include <aips/Mathematics/Math.h>
+#include <aips/BasicMath/Math.h>
 #include <aips/Mathematics/NumericTraits.h>
 #include <aips/Mathematics/Primes.h>
-#include <aips/Mathematics/Random.h>
+#include <aips/BasicMath/Random.h>
 
 // <module>
 

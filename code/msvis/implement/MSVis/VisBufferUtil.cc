@@ -30,8 +30,8 @@
 
 #include <aips/Utilities/Assert.h>
 
-#include <trial/MeasurementEquations/VisBufferUtil.h>
-#include <trial/MeasurementEquations/StokesVector.h>
+#include <trial/MSVis/VisBufferUtil.h>
+#include <trial/MSVis/StokesVector.h>
 
 #include <aips/iostream.h>
 

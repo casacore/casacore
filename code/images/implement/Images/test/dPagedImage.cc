@@ -35,7 +35,7 @@
 #include <aips/Exceptions/Error.h>
 #include <aips/Arrays/IPosition.h>
 #include <aips/Tables.h>
-#include <aips/Utilities/String.h>
+#include <aips/BasicSL/String.h>
 
 #include <aips/stdlib.h>
 #include <aips/iostream.h>

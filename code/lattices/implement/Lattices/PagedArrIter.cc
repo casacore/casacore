@@ -32,7 +32,7 @@
 #include <aips/Arrays/Cube.h>
 #include <aips/Arrays/IPosition.h>
 #include <aips/Utilities/DefaultValue.h>
-#include <aips/Utilities/String.h>
+#include <aips/BasicSL/String.h>
 #include <aips/Utilities/Assert.h>
 #include <aips/Exceptions/Error.h>
 

@@ -39,7 +39,7 @@
 #include <aips/Measures/MFrequency.h>
 #include <aips/Quanta/MVAngle.h>
 #include <aips/Utilities/Assert.h>
-#include <aips/Utilities/String.h>
+#include <aips/BasicSL/String.h>
 
 SkyComponent::SkyComponent()
   :itsCompPtr(new SkyCompRep) 

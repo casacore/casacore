@@ -31,7 +31,7 @@
 //# Includes
 #include <aips/aips.h>
 #include <aips/Tables/Table.h>
-#include <aips/Utilities/String.h>
+#include <aips/BasicSL/String.h>
 #include <aips/Utilities/Sort.h>
 #include <aips/Containers/List.h>
 #include <aips/Containers/Block.h>

@@ -31,7 +31,7 @@
 #include <aips/IO/ByteIO.h>
 #include <aips/IO/RegularFileIO.h>
 #include <aips/OS/RegularFile.h>
-#include <aips/Mathematics/Complex.h>
+#include <aips/BasicSL/Complex.h>
 #include <aips/Utilities/Assert.h>
 
 // This is the implementation of the AipsIO class.

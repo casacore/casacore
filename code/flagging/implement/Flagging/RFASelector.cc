@@ -31,8 +31,8 @@
 #include <aips/Arrays/MaskArrMath.h>
 #include <aips/Quanta/Quantum.h>
 #include <aips/Quanta/MVTime.h>
-#include <trial/MeasurementEquations/VisibilityIterator.h>
-#include <trial/MeasurementEquations/VisBuffer.h>
+#include <trial/MSVis/VisibilityIterator.h>
+#include <trial/MSVis/VisBuffer.h>
 #include <trial/Flagging/RFASelector.h>
 #include <aips/stdio.h>
 

@@ -37,7 +37,7 @@
 #include <aips/Containers/Record.h>
 #include <aips/Containers/RecordField.h>
 #include <aips/Containers/Block.h>
-#include <aips/Mathematics/Math.h>
+#include <aips/BasicMath/Math.h>
 #include <aips/IO/BucketCache.h>
 #include <aips/IO/AipsIO.h>
 #include <aips/OS/Conversion.h>

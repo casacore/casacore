@@ -25,7 +25,7 @@
 //#
 //# $Id$
 
-#include <aips/Mathematics/Complex.h>
+#include <aips/BasicSL/Complex.h>
 #include <aips/Arrays/Vector.h>
 #include <aips/Arrays/Matrix.h>
 #include <aips/Arrays/MatrixMath.h>

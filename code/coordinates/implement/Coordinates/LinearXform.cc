@@ -33,7 +33,7 @@
 #include <aips/Arrays/MatrixMath.h>
 #include <aips/Arrays/ArrayMath.h>
 #include <aips/Arrays/ArrayLogical.h>
-#include <aips/Mathematics/Math.h>
+#include <aips/BasicMath/Math.h>
 #include <aips/Utilities/Assert.h>
 #include <aips/Utilities/LinearSearch.h>
 #include <wcslib/lin.h>

@@ -28,7 +28,7 @@
 //# Includes
 #include <aips/Measures/EarthMagneticMachine.h>
 #include <aips/Exceptions/Error.h>
-#include <aips/Mathematics/Math.h>
+#include <aips/BasicMath/Math.h>
 #include <aips/Measures/MCPosition.h>
 #include <aips/Measures/MCEpoch.h>
 #include <aips/Measures/MCFrame.h>

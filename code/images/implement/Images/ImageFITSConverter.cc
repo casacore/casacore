@@ -48,11 +48,11 @@
 #include <aips/Arrays/Matrix.h>
 #include <aips/Arrays/Vector.h>
 #include <aips/Arrays/IPosition.h>
-#include <aips/Mathematics/Math.h>
+#include <aips/BasicMath/Math.h>
 #include <aips/Exceptions/Error.h>
 #include <aips/Logging/LogIO.h>
 #include <aips/Containers/Record.h>
-#include <trial/Tasking/ProgressMeter.h>
+#include <aips/System/ProgressMeter.h>
 
 #include <aips/sstream.h>
 

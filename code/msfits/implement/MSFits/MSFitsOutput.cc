@@ -42,7 +42,7 @@
 #include <aips/Arrays/MatrixMath.h>
 #include <aips/Arrays/ArrayLogical.h>
 #include <aips/Utilities/GenSort.h>
-#include <aips/Mathematics/Constants.h>
+#include <aips/BasicSL/Constants.h>
 #include <aips/Quanta/MVAngle.h>
 #include <aips/Quanta/Euler.h>
 #include <aips/Measures/Stokes.h>
@@ -52,8 +52,8 @@
 #include <aips/Tables/ExprNode.h>
 #include <aips/Tables/TableIter.h>
 #include <aips/TableMeasures/ScalarMeasColumn.h>
-#include <trial/Tasking/ProgressMeter.h>
-#include <trial/Tasking/NewFile.h>
+#include <aips/System/ProgressMeter.h>
+#include <aips/LogTables/NewFile.h>
 
 #include <aips/stdlib.h> // for atoi()
 #include <aips/sstream.h>

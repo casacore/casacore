@@ -35,7 +35,7 @@
 #include <trial/Lattices/LineCollapser.h>
 #include <aips/Functionals/Gaussian1D.h>
 #include <aips/Mathematics/NumericTraits.h>
-#include <trial/Tasking/PGPlotter.h>
+#include <trial/System/PGPlotter.h>
 #include <trial/Images/SubImage.h>
 
 //# Forward Declarations

@@ -28,7 +28,7 @@
 
 //# Includes
 #include <trial/Lattices/LatticeCleanProgress.h>
-#include <trial/Tasking/PGPlotter.h>
+#include <trial/System/PGPlotter.h>
 #include <aips/Logging/LogIO.h>
 #include <aips/Arrays/Matrix.h>
 #include <aips/Arrays/ArrayMath.h>

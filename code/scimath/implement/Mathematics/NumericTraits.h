@@ -30,7 +30,7 @@
 
 //# Include files
 #include <aips/aips.h>
-#include <aips/Mathematics/Complex.h>
+#include <aips/BasicSL/Complex.h>
 
 //
 // <summary> Relationships between numeric data types </summary>

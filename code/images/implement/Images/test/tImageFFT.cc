@@ -30,12 +30,12 @@
 #include <aips/Arrays/ArrayLogical.h>
 #include <aips/Arrays/ArrayMath.h>
 #include <aips/Mathematics/FFTServer.h>
-#include <aips/Mathematics/Math.h>
-#include <aips/Tasking/Aipsrc.h>
+#include <aips/BasicMath/Math.h>
+#include <aips/System/Aipsrc.h>
 #include <aips/Exceptions/Error.h>
 #include <aips/Inputs/Input.h>
 #include <aips/Logging.h>
-#include <aips/Utilities/String.h>
+#include <aips/BasicSL/String.h>
   
 #include <trial/Images/ImageFFT.h>
 #include <trial/Images/ImageRegion.h>

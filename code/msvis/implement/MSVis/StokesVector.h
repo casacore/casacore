@@ -32,14 +32,14 @@
 #include <aips/aips.h>
 #include <aips/IO/AipsIO.h>
 //#include <aips/Tables/TableRecord.h>
-#include <aips/Mathematics/Complex.h>
+#include <aips/BasicSL/Complex.h>
 #include <aips/Arrays/Vector.h>
 #include <aips/Arrays/Matrix.h>
 #include <aips/Arrays/MatrixMath.h>
-#include <trial/Arrays/RigidVector.h>
-#include <trial/Arrays/SquareMatrix.h>
+#include <trial/Mathematics/RigidVector.h>
+#include <trial/Mathematics/SquareMatrix.h>
 #include <aips/Arrays/IPosition.h>
-#include <aips/Mathematics/Math.h>
+#include <aips/BasicMath/Math.h>
 #include <aips/iostream.h>
 
 //# Forward Declarations

@@ -27,7 +27,7 @@
 
 #include <aips/aips.h>
 #include <aips/IO/RegularFileIO.h>
-#include <aips/Utilities/String.h>
+#include <aips/BasicSL/String.h>
 #include <aips/Utilities/Assert.h>
 #include <aips/Exceptions/Error.h>
 #include <fcntl.h>

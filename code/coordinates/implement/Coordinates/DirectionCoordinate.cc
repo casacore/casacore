@@ -40,7 +40,7 @@
 #include <aips/Containers/Record.h>
 #include <aips/Logging/LogIO.h>
 #include <aips/Logging/LogOrigin.h>
-#include <aips/Mathematics/Constants.h>
+#include <aips/BasicSL/Constants.h>
 #include <aips/Measures/MeasConvert.h>
 #include <aips/Quanta/MVAngle.h>
 #include <aips/Quanta/Quantum.h>
@@ -49,7 +49,7 @@
 #include <aips/Quanta/Euler.h>
 #include <aips/Utilities/Assert.h>
 #include <aips/Utilities/LinearSearch.h>
-#include <aips/Utilities/String.h>
+#include <aips/BasicSL/String.h>
 
 #include <aips/iomanip.h>  
 #include <aips/sstream.h>

@@ -28,10 +28,10 @@
 //# Includes
 
 #include <aips/Exceptions/Error.h>
-#include <aips/Mathematics/Math.h>
+#include <aips/BasicMath/Math.h>
 #include <aips/Quanta/UnitVal.h>
 #include <aips/Quanta/UnitName.h>
-#include <aips/Quanta/MUString.h>
+#include <aips/Utilities/MUString.h>
 #include <aips/Quanta/UnitMap.h>
 #include <aips/Utilities/Regex.h>
 

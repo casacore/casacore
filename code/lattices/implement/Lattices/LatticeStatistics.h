@@ -39,9 +39,9 @@
 #include <trial/Lattices/TiledCollapser.h>
 #include <trial/Lattices/LatticeExprNode.h>
 #include <aips/Mathematics/NumericTraits.h>
-#include <trial/Tasking/PGPlotter.h>
+#include <trial/System/PGPlotter.h>
 #include <aips/Utilities/DataType.h>
-#include <aips/Utilities/String.h>
+#include <aips/BasicSL/String.h>
 #include <aips/Logging/LogIO.h>
 
 

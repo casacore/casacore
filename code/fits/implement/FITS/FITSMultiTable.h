@@ -32,7 +32,7 @@
 #include <aips/aips.h>
 #include <trial/FITS/FITSTable.h>
 #include <aips/OS/Time.h>
-#include <aips/Utilities/String.h>
+#include <aips/BasicSL/String.h>
 #include <aips/Arrays/Vector.h>
 
 // <summary>

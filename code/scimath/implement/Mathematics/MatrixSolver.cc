@@ -27,7 +27,7 @@
 
 #include <aips/aips.h>
 #include <aips/Exceptions.h>
-#include <trial/Arrays/MatrixSolver.h>
+#include <trial/Mathematics/MatrixSolver.h>
 #include <aips/Arrays/MatrixMath.h>
 
 #include <aips/Logging/LogSink.h>

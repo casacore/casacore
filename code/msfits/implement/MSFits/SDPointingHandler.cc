@@ -36,9 +36,9 @@
 #include <aips/Tables/ArrayColumn.h>
 #include <aips/Utilities/Assert.h>
 #include <aips/Exceptions/Error.h>
-#include <aips/Utilities/String.h>
+#include <aips/BasicSL/String.h>
 #include <aips/Measures/Stokes.h>
-#include <aips/Mathematics/Math.h>
+#include <aips/BasicMath/Math.h>
 #include <aips/Measures/MeasRef.h>
 #include <aips/Measures/MeasFrame.h>
 #include <aips/Measures/MeasConvert.h>

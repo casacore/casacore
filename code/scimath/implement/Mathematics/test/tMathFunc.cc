@@ -27,9 +27,9 @@
 
 //# Includes
 
-#include <aips/Mathematics/Math.h>
+#include <aips/BasicMath/Math.h>
 #include <aips/iostream.h>
-#include <aips/Mathematics/Constants.h>
+#include <aips/BasicSL/Constants.h>
 #include <aips/Exceptions/Error.h>
 #include <trial/Mathematics/MathFunc.h>
 

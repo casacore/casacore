@@ -28,7 +28,7 @@
 #include <aips/Arrays/ArrayMath.h>
 #include <aips/Arrays/ArrayError.h>
 #include <aips/Arrays/Matrix.h>
-#include <aips/Mathematics/Math.h>
+#include <aips/BasicMath/Math.h>
 #include <aips/iostream.h>
 
 static Bool ArrayMinMaxPrinted = False;

@@ -34,7 +34,7 @@
 #include <aips/Arrays/ArrayLogical.h>
 #include <aips/Arrays/ArrayIO.h>
 #include <aips/Arrays/ArrayUtil.h>
-#include <aips/Mathematics/Constants.h>
+#include <aips/BasicSL/Constants.h>
 #include <aips/Utilities/Assert.h>
 #include <aips/iostream.h>
 

@@ -29,7 +29,7 @@
 #include <aips/OS/Directory.h>
 #include <aips/OS/RegularFile.h>
 #include <aips/OS/SymLink.h>
-#include <aips/Utilities/String.h>
+#include <aips/BasicSL/String.h>
 #include <aips/Utilities/Regex.h>
 #include <aips/Utilities/Assert.h>
 #include <aips/Utilities/GenSort.h>

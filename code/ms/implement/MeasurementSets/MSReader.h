@@ -47,7 +47,7 @@
 #include <trial/MeasurementSets/MSValidIds.h>
 #include <aips/Tables/TableRow.h>
 #include <aips/Quanta/Unit.h>
-#include <aips/Utilities/String.h>
+#include <aips/BasicSL/String.h>
 
 // <summary>
 // Read from an MS, coordinating all of the subtables in the process

@@ -40,7 +40,7 @@
 #include <aips/Containers/Record.h>
 #include <aips/Logging/LogIO.h>
 #include <aips/Logging/LogOrigin.h>
-#include <aips/Mathematics/Math.h>
+#include <aips/BasicMath/Math.h>
 #include <aips/Quanta/Quantum.h>
 
 #include <aips/sstream.h>

@@ -27,7 +27,7 @@
 
 //# Includes
 #include <aips/Functionals/Gaussian2D.h>
-#include <aips/Mathematics/Math.h>
+#include <aips/BasicMath/Math.h>
 
 //# Constructors
 

@@ -29,7 +29,7 @@
 #include <aips/Tables/TSMColumn.h>
 #include <aips/Tables/TSMCube.h>
 #include <aips/Arrays/IPosition.h>
-#include <aips/Utilities/String.h>
+#include <aips/BasicSL/String.h>
 #include <aips/Utilities/BinarySearch.h>
 #include <aips/Containers/BlockIO.h>
 #include <aips/IO/AipsIO.h>

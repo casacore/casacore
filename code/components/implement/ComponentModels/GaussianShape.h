@@ -31,7 +31,7 @@
 
 #include <aips/aips.h>
 #include <aips/Functionals/Gaussian2D.h>
-#include <aips/Mathematics/Complex.h>
+#include <aips/BasicSL/Complex.h>
 #include <trial/ComponentModels/ComponentType.h>
 #include <trial/ComponentModels/TwoSidedShape.h>
 

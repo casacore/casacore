@@ -33,7 +33,7 @@
 #include <aips/aips.h>
 #include <aips/Tables/ColumnDesc.h>
 #include <aips/Utilities/Compare.h>
-#include <aips/Mathematics/Complex.h>
+#include <aips/BasicSL/Complex.h>
 
 //# Forward Declarations
 class BaseColumnDesc;

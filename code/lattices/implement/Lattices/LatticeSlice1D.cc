@@ -33,7 +33,7 @@
 #include <aips/Arrays/Vector.h>
 #include <trial/Lattices/MaskedLattice.h>
 #include <trial/Lattices/PixelCurve1D.h>
-#include <aips/Mathematics/Math.h>
+#include <aips/BasicMath/Math.h>
 #include <trial/Mathematics/Interpolate2D.h>
 #include <aips/Utilities/Assert.h>
 #include <aips/Exceptions/Error.h>

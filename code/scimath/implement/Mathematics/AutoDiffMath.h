@@ -32,7 +32,7 @@
 //# Includes
 
 #include <aips/aips.h>
-#include <aips/Mathematics/Math.h>
+#include <aips/BasicMath/Math.h>
 #include <aips/Mathematics/AutoDiff.h>
 
 // <summary>

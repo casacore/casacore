@@ -31,7 +31,7 @@
 #include <aips/Tables/TableError.h>
 #include <aips/Containers/Record.h>
 #include <aips/Arrays/Slicer.h>
-#include <aips/Mathematics/Math.h>
+#include <aips/BasicMath/Math.h>
 #include <aips/Utilities/ValType.h>
 #include <aips/Utilities/Assert.h>
 #include <aips/OS/HostInfo.h>

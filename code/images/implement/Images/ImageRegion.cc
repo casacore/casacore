@@ -37,7 +37,7 @@
 #include <trial/Coordinates/CoordinateSystem.h>
 #include <aips/Tables/TableRecord.h>
 #include <aips/Arrays/Vector.h>
-#include <aips/Utilities/String.h>
+#include <aips/BasicSL/String.h>
 #include <aips/Utilities/Assert.h>
 #include <aips/Exceptions/Error.h>
 

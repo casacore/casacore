@@ -33,7 +33,7 @@
 
 #include <aips/Arrays/Matrix.h>
 #include <aips/Arrays/ArrayIO.h>
-#include <aips/Mathematics/Constants.h>
+#include <aips/BasicSL/Constants.h>
 #include <aips/Tables/TableRecord.h>
 #include <aips/Exceptions/Error.h>
 

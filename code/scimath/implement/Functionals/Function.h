@@ -30,7 +30,7 @@
 
 //# Includes
 #include <aips/aips.h>
-#include <aips/Functionals/Functional.h>
+#include <aips/BasicMath/Functional.h>
 #include <aips/Functionals/FunctionParam.h>
 #include <aips/Functionals/FunctionTraits.h>
 #include <aips/Arrays/Vector.h>
@@ -94,8 +94,8 @@ class RecordInterface;
 //   //# Sinusoid.h
 //   #include <aips/aips.h>
 //   #include <aips/Functionals/Function.h>
-//   #include <aips/Mathematics/Constants.h>
-//   #include <aips/Mathematics/Math.h>
+//   #include <aips/BasicSL/Constants.h>
+//   #include <aips/BasicMath/Math.h>
 //   // The sinusoid class
 //   template<class T> class Sinusoid : public Function<T> {
 //    public:
@@ -141,8 +141,8 @@ class RecordInterface;
 //   //# Sinusoid.h
 //   #include <aips/aips.h>
 //   #include <aips/Functionals/Function.h>
-//   #include <aips/Mathematics/Constants.h>
-//   #include <aips/Mathematics/Math.h>
+//   #include <aips/BasicSL/Constants.h>
+//   #include <aips/BasicMath/Math.h>
 //   template<class T> class Sinusoid : public Function<T> {
 //    public:
 //     enum { AMPL=0, FREQ };

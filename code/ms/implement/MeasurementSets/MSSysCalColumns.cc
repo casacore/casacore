@@ -29,7 +29,7 @@
 #include <aips/MeasurementSets/MSSysCal.h>
 #include <aips/Tables/ColDescSet.h>
 #include <aips/Tables/TableDesc.h>
-#include <aips/Utilities/String.h>
+#include <aips/BasicSL/String.h>
 
 ROMSSysCalColumns::ROMSSysCalColumns(const MSSysCal& msSysCal):
   isNull_p(True),

@@ -31,8 +31,8 @@
 #include <aips/Arrays/ArrayMath.h>
 #include <aips/Arrays/Vector.h>
 #include <aips/Containers/Block.h>
-#include <aips/Mathematics/Math.h>
-#include <aips/Mathematics/Complex.h>
+#include <aips/BasicMath/Math.h>
+#include <aips/BasicSL/Complex.h>
 #include <aips/Tables/TableDesc.h>
 #include <aips/Tables/SetupNewTab.h>
 #include <aips/Tables/Table.h>

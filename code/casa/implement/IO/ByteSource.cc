@@ -26,7 +26,7 @@
 //# $Id$
 
 #include <aips/IO/ByteSource.h>
-#include <aips/Utilities/String.h>
+#include <aips/BasicSL/String.h>
 #include <aips/Exceptions/Error.h>
 #include <aips/IO/TypeIO.h>
 

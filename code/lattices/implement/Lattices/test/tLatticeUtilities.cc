@@ -31,7 +31,7 @@
 #include <aips/Arrays/ArrayLogical.h>
 #include <aips/Arrays/ArrayMath.h>
 #include <aips/Arrays/Slicer.h>
-#include <aips/Mathematics/Math.h>
+#include <aips/BasicMath/Math.h>
 #include <aips/Logging/LogIO.h>
 #include <aips/Logging/LogOrigin.h>
 #include <aips/Utilities/Assert.h>

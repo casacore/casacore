@@ -34,7 +34,7 @@
 #include <aips/Tables/Table.h>
 #include <aips/Tables/TableRow.h>
 #include <aips/Containers/RecordField.h>
-#include <aips/Utilities/String.h>
+#include <aips/BasicSL/String.h>
 #include <aips/Quanta/MVPosition.h>
 #include <aips/Measures/MDirection.h>
 

@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#include <trial/MeasurementEquations/VisibilityIterator.h>
-#include <trial/MeasurementEquations/VisBuffer.h>
+#include <trial/MSVis/VisibilityIterator.h>
+#include <trial/MSVis/VisBuffer.h>
 #include <aips/Arrays/ArrayMath.h>
 #include <aips/Arrays/ArrayLogical.h>
 #include <aips/Arrays/MaskedArray.h>

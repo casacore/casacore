@@ -42,7 +42,7 @@
 #include <aips/Measures/MFrequency.h>
 #include <aips/Measures/MeasTable.h>
 #include <aips/Quanta/MVFrequency.h>
-#include <aips/Mathematics/Math.h>
+#include <aips/BasicMath/Math.h>
 #include <aips/Quanta/Quantum.h>
 #include <aips/Quanta/QC.h>
 #include <aips/Utilities/Assert.h>

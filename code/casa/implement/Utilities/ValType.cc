@@ -28,7 +28,7 @@
 #include <aips/Utilities/ValType.h>
 #include <aips/OS/CanonicalConversion.h>
 #include <aips/OS/LECanonicalConversion.h>
-#include <aips/Mathematics/Constants.h>
+#include <aips/BasicSL/Constants.h>
 #include <limits.h>
 
 //# This is the implementation of the ValType class.

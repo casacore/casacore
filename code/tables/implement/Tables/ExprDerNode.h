@@ -32,7 +32,7 @@
 #include <aips/aips.h>
 #include <aips/Tables/ExprNodeRep.h>
 #include <aips/Arrays/Vector.h>
-#include <aips/Mathematics/Random.h>
+#include <aips/BasicMath/Random.h>
 #include <aips/Utilities/Regex.h>
 
 //# Forward Declarations

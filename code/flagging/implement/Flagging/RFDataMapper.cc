@@ -27,10 +27,10 @@
 #include <trial/Flagging/RFDataMapper.h> 
 #include <aips/Arrays/Slice.h>
 #include <aips/Exceptions/Error.h>
-#include <aips/Mathematics/Math.h>
-#include <aips/Mathematics/Constants.h>
-#include <trial/MeasurementEquations/VisBuffer.h>
-#include <trial/MeasurementEquations/VisibilityIterator.h>
+#include <aips/BasicMath/Math.h>
+#include <aips/BasicSL/Constants.h>
+#include <trial/MSVis/VisBuffer.h>
+#include <trial/MSVis/VisibilityIterator.h>
 #include <aips/Measures/MDirection.h>
 
 // Define functions for mapping a VisBuffer to obsevred, model and corrected

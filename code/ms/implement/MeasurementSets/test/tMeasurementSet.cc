@@ -35,7 +35,7 @@
 #include <aips/Exceptions/Error.h>
 #include <aips/Tables.h>
 #include <aips/Tables/RowCopier.h>
-#include <aips/Utilities/String.h>
+#include <aips/BasicSL/String.h>
 #include <aips/Utilities/Fallible.h>
 #include <aips/Measures/MDirection.h>
 #include <aips/Measures/MEpoch.h>

@@ -32,8 +32,8 @@
 #include <aips/Measures/MeasTable.h>
 #include <aips/Measures/MeasRef.h>
 #include <aips/Exceptions/Error.h>
-#include <aips/Mathematics/Constants.h>
-#include <aips/Mathematics/Math.h>
+#include <aips/BasicSL/Constants.h>
+#include <aips/BasicMath/Math.h>
 #include <aips/Quanta/Unit.h>
 
 //# Constructors

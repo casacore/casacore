@@ -32,7 +32,7 @@
 #include <aips/IO/RegularFileIO.h>
 #include <aips/OS/Path.h>
 #include <aips/OS/Timer.h>
-#include <aips/Utilities/String.h>
+#include <aips/BasicSL/String.h>
 #include <aips/Utilities/Assert.h>
 #include <aips/Exceptions/Error.h>
 #include <aips/iostream.h>

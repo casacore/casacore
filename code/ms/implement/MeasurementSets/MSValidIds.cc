@@ -33,7 +33,7 @@
 #include <aips/MeasurementSets/MSColumns.h>
 #include <aips/Tables/TableRecord.h>
 #include <aips/Utilities/Assert.h>
-#include <aips/Utilities/String.h>
+#include <aips/BasicSL/String.h>
 
 MSValidIds::MSValidIds()
     : romsCols_p(0), hasDoppler_p(False), hasSource_p(False)

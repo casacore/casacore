@@ -30,8 +30,8 @@
 #include <aips/Arrays/ArrayMath.h>
 #include <aips/Containers/RecordField.h>
 #include <aips/Logging/LogIO.h>
-#include <aips/Mathematics/Constants.h>
-#include <aips/Mathematics/Math.h>
+#include <aips/BasicSL/Constants.h>
+#include <aips/BasicMath/Math.h>
 #include <aips/Measures/MPosition.h>
 #include <aips/Measures/MDirection.h>
 #include <aips/Measures/MeasIERS.h>
@@ -40,15 +40,15 @@
 #include <aips/Quanta/UnitVal.h>
 #include <aips/Quanta/RotMatrix.h>
 #include <aips/Quanta/Euler.h>
-#include <aips/Quanta/MUString.h>
+#include <aips/Utilities/MUString.h>
 #include <aips/Quanta/MVAngle.h>
 #include <aips/Quanta/MVEpoch.h>
 #include <aips/Tables/Table.h>
 #include <aips/Tables/TableRecord.h>
 #include <aips/Tables/TableRow.h>
 #include <aips/Tables/ArrayColumn.h>
-#include <aips/Tasking/Aipsrc.h>
-#include <aips/Tasking/AipsrcValue.h>
+#include <aips/System/Aipsrc.h>
+#include <aips/System/AipsrcValue.h>
 #include <aips/Utilities/Assert.h>
 
 //# Constants

@@ -29,7 +29,7 @@
 #define AIPS_ENVIRONMENTVARIABLES_H
 
 #include <aips/aips.h>
-#include <aips/Utilities/String.h>
+#include <aips/BasicSL/String.h>
 
 // <summary>
 // This class allows for getting enviroment variables

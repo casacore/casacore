@@ -26,7 +26,7 @@
 //# $Id$
 
 
-#include <aips/Tasking/ObjectID.h>
+#include <aips/System/ObjectID.h>
 #include <aips/Containers/Block.h>
 #include <aips/stdio.h>                  // needed for sprintf
 

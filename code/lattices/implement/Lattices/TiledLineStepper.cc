@@ -27,7 +27,7 @@
 
 #include <aips/Lattices/TiledLineStepper.h>
 #include <aips/Tables/TiledStManAccessor.h>
-#include <aips/Mathematics/Math.h>
+#include <aips/BasicMath/Math.h>
 #include <aips/Utilities/Assert.h>
 #include <aips/Exceptions/Error.h>
 #include <aips/iostream.h>

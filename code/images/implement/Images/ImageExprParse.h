@@ -31,8 +31,8 @@
 
 //# Includes
 #include <trial/Lattices/LatticeExpr.h>
-#include <aips/Mathematics/Complex.h>
-#include <aips/Utilities/String.h>
+#include <aips/BasicSL/Complex.h>
+#include <aips/BasicSL/String.h>
 #include <aips/Utilities/DataType.h>
 #include <aips/vector.h>
 

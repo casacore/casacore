@@ -36,7 +36,7 @@
 #include <aips/Exceptions/Error.h>
 #include <aips/Logging/LogIO.h>
 #include <aips/Logging/LogOrigin.h>
-#include <aips/Mathematics/Math.h>
+#include <aips/BasicMath/Math.h>
 #include <aips/MeasurementSets/MSAntenna.h>
 #include <aips/MeasurementSets/MSAntennaColumns.h>
 #include <aips/MeasurementSets/MSDataDescColumns.h>
@@ -56,7 +56,7 @@
 #include <aips/Tables/TableDesc.h>
 #include <aips/Tables/TableRow.h>
 #include <aips/Utilities/Assert.h>
-#include <aips/Utilities/String.h>
+#include <aips/BasicSL/String.h>
 #include <aips/iostream.h>
 
 MSConcat::MSConcat(MeasurementSet& ms):

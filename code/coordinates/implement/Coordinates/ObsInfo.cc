@@ -33,7 +33,7 @@
 #include <aips/Quanta/MVDirection.h>
 #include <aips/Containers/Record.h>
 #include <trial/FITS/FITSDateUtil.h>
-#include <aips/Mathematics/Constants.h>
+#include <aips/BasicSL/Constants.h>
 
 #include <aips/iostream.h>
 

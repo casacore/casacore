@@ -28,7 +28,7 @@
 #include <aips/aips.h>
 #include <aips/Inputs/Param.h>
 #include <aips/Containers/Block.h>
-#include <aips/Utilities/String.h>
+#include <aips/BasicSL/String.h>
 #include <aips/Utilities/Assert.h>
 #include <aips/iostream.h>
 

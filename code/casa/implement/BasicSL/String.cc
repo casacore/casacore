@@ -25,9 +25,9 @@
 //#
 //# $Id$
 
-#include <aips/Utilities/String.h>
+#include <aips/BasicSL/String.h>
 
-#include <aips/Utilities/RegexBase.h>
+#include <aips/BasicSL/RegexBase.h>
 #include <algorithm>
 #include <aips/string.h>
 #include <aips/sstream.h>

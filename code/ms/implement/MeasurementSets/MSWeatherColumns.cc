@@ -29,7 +29,7 @@
 #include <aips/MeasurementSets/MSWeather.h>
 #include <aips/Tables/ColDescSet.h>
 #include <aips/Tables/TableDesc.h>
-#include <aips/Utilities/String.h>
+#include <aips/BasicSL/String.h>
 
 ROMSWeatherColumns::ROMSWeatherColumns(const MSWeather& msWeather):
   isNull_p(True),

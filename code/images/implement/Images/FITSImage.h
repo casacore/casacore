@@ -35,7 +35,7 @@
 #include <trial/Tables/TiledFileAccess.h>
 #include <aips/Lattices/TiledShape.h>
 #include <aips/FITS/fits.h>
-#include <aips/Utilities/String.h>
+#include <aips/BasicSL/String.h>
 #include <aips/Utilities/DataType.h>
 
 

@@ -36,13 +36,13 @@
 #include <aips/Exceptions/Error.h>
 #include <aips/Arrays/IPosition.h>
 #include <aips/Arrays/Slicer.h>
-#include <aips/Mathematics/Math.h>
+#include <aips/BasicMath/Math.h>
 #include <aips/Tables/SetupNewTab.h>
 #include <aips/Tables/Table.h>
 #include <aips/Tables/TableDesc.h>
 #include <aips/Utilities/Assert.h>
 #include <aips/Utilities/COWPtr.h>
-#include <aips/Utilities/String.h>
+#include <aips/BasicSL/String.h>
 #include <aips/iostream.h>
 
 

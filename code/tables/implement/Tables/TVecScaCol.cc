@@ -29,7 +29,7 @@
 #include <aips/Tables/TVecScaCol.h>
 #include <aips/Tables/ScalarColumn.h>
 #include <aips/Tables/TableError.h>
-#include <aips/Utilities/String.h>
+#include <aips/BasicSL/String.h>
 
 //# Construct a table column vector.
 template<class T>

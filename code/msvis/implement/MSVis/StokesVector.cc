@@ -26,7 +26,7 @@
 //# $Id$
 
 //# Includes
-#include <trial/MeasurementEquations/StokesVector.h>
+#include <trial/MSVis/StokesVector.h>
 // #include <aips/Tables/RetypedArrayEngine.h>
 // #include <aips/Tables/RetypedArraySetGet.h>
 // #include <aips/Tables/DataManError.h>

@@ -32,7 +32,7 @@
 
 #include <sys/types.h>
 #include <aips/aips.h>
-#include <aips/Utilities/String.h>
+#include <aips/BasicSL/String.h>
 #include <exception>
 
 // <summary>Base class for all AIPS++ library errors</summary>

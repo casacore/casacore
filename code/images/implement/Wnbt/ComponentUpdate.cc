@@ -34,7 +34,7 @@
 #include <aips/Arrays/Matrix.h>
 #include <aips/Arrays/VectorIter.h>
 #include <aips/Arrays/IPosition.h>
-#include <aips/Mathematics/Complex.h>
+#include <aips/BasicSL/Complex.h>
 #include <aips/Utilities/Assert.h>
 
 // Statics

@@ -27,7 +27,7 @@
 
 //# Includes
 
-#include <aips/Utilities/String.h>
+#include <aips/BasicSL/String.h>
 #include <aips/Quanta/UnitDim.h>
 
 void UnitDim::init() {

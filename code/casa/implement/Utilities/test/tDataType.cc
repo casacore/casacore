@@ -26,7 +26,7 @@
 //# $Id$
 
 #include <aips/Utilities/DataType.h>
-#include <aips/Utilities/String.h>
+#include <aips/BasicSL/String.h>
 #include <aips/Utilities/Assert.h>
 #include <aips/Quanta/Quantum.h>
 #include <aips/sstream.h>

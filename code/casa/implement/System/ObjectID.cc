@@ -25,7 +25,7 @@
 //#
 //# $Id$
 
-#include <aips/Tasking/ObjectID.h>
+#include <aips/System/ObjectID.h>
 #include <aips/OS/HostInfo.h>
 #include <aips/Utilities/Regex.h>
 #include <aips/Utilities/Assert.h>

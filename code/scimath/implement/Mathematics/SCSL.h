@@ -29,7 +29,7 @@
 #define AIPS_SCSL_H
 
 #include <aips/aips.h>
-#include <aips/Mathematics/Complex.h>
+#include <aips/BasicSL/Complex.h>
 
 
 // <summary>C++ Interface to the Sgi/Cray Scientific Library (SCSL)</summary>

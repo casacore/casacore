@@ -46,18 +46,18 @@
 #include <trial/Lattices/LatticeExpr.h>
 #include <trial/Lattices/LatticeExprNode.h>
 
-#include <aips/Tasking/AppInfo.h>
-#include <trial/Tasking/PGPlotter.h>
+#include <aips/System/AppInfo.h>
+#include <trial/System/PGPlotter.h>
 #include <aips/Arrays/ArrayError.h>
 #include <aips/Arrays/ArrayIter.h>
 #include <aips/Arrays/VectorIter.h>
 
 #include <aips/Utilities/GenSort.h>
-#include <aips/Utilities/String.h>
+#include <aips/BasicSL/String.h>
 #include <aips/Utilities/Assert.h>
 #include <aips/Utilities/Fallible.h>
 
-#include <aips/Mathematics/Constants.h>
+#include <aips/BasicSL/Constants.h>
 
 #include <aips/Logging/LogSink.h>
 #include <aips/Logging/LogMessage.h>

@@ -29,9 +29,9 @@
 #include <trial/SpectralComponents/SpectralElement.h>
 
 #include <aips/Exceptions/Error.h>
-#include <aips/Mathematics/Constants.h>
-#include <aips/Quanta/MUString.h>
-#include <aips/Utilities/String.h>
+#include <aips/BasicSL/Constants.h>
+#include <aips/Utilities/MUString.h>
+#include <aips/BasicSL/String.h>
 
 #include <aips/iostream.h>
 

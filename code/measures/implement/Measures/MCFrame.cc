@@ -27,8 +27,8 @@
 
 //# Includes
 #include <aips/Exceptions/Error.h>
-#include <aips/Mathematics/Math.h>
-#include <aips/Mathematics/Constants.h>
+#include <aips/BasicMath/Math.h>
+#include <aips/BasicSL/Constants.h>
 #include <aips/Quanta/MVAngle.h>
 #include <aips/Measures/MEpoch.h>
 #include <aips/Measures/MCEpoch.h>

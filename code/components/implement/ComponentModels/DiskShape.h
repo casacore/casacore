@@ -30,7 +30,7 @@
 #define AIPS_DISKSHAPE_H
 
 #include <aips/aips.h>
-#include <aips/Mathematics/Complex.h>
+#include <aips/BasicSL/Complex.h>
 #include <trial/ComponentModels/ComponentType.h>
 #include <trial/ComponentModels/TwoSidedShape.h>
 

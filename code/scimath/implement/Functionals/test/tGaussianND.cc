@@ -27,10 +27,10 @@
 
 //# Includes
 #include <aips/Functionals/GaussianND.h>
-#include <aips/Mathematics/Constants.h>
+#include <aips/BasicSL/Constants.h>
 #include <aips/Arrays/Vector.h>
 #include <aips/Arrays/ArrayMath.h>
-#include <aips/Arrays/MatrixMathLA.h>
+#include <aips/Mathematics/MatrixMathLA.h>
 #include <aips/Arrays/ArrayLogical.h>
 #include <aips/iostream.h>
 

@@ -40,7 +40,7 @@
 #include <aips/Tables/TableDesc.h>
 #include <aips/Tables/ColumnDesc.h>
 #include <aips/Tables/TableError.h>
-#include <aips/Quanta/MUString.h>
+#include <aips/Utilities/MUString.h>
 #include <aips/Quanta/MVTime.h>
 #include <aips/Quanta/MVAngle.h>
 #include <aips/Arrays/Vector.h>

@@ -30,7 +30,7 @@
 #define AIPS_SQUAREMATRIX_H
 
 #include <aips/aips.h>
-#include <aips/Mathematics/Complex.h>
+#include <aips/BasicSL/Complex.h>
 #include <aips/Arrays/Matrix.h>
 #include <aips/iosfwd.h>
 

@@ -222,7 +222,7 @@ public:
 // <example>
 //    <srcblock>
 //    #include <aips/Containers/HashMap.h>
-//    #include <aips/Utilities/String.h>
+//    #include <aips/BasicSL/String.h>
 //    #include <aips/iostream.h>
 //   
 //    main() {

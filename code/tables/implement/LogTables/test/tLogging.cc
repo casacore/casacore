@@ -27,14 +27,14 @@
 
 
 #include <aips/Logging/LogFilter.h>
-#include <aips/Logging/LogFilterTaql.h>
+#include <aips/LogTables/LogFilterTaql.h>
 #include <aips/Logging/LogMessage.h>
 #include <aips/Logging/LogOrigin.h>
 #include <aips/Logging/LogSink.h>
 #include <aips/Logging/NullLogSink.h>
 #include <aips/Logging/MemoryLogSink.h>
 #include <aips/Logging/StreamLogSink.h>
-#include <aips/Logging/TableLogSink.h>
+#include <aips/LogTables/TableLogSink.h>
 #include <aips/Logging/LogIO.h>
 
 #include <aips/Tables.h>

@@ -29,9 +29,9 @@
 #include <trial/Functionals/CompiledFunction.h>
 #include <trial/Functionals/FuncExpression.h>
 #include <aips/Functionals/FunctionTraits.h>
-#include <aips/Mathematics/Constants.h>
+#include <aips/BasicSL/Constants.h>
 #include <aips/Mathematics/NumericTraits.h>
-#include <aips/Utilities/String.h>
+#include <aips/BasicSL/String.h>
 #include <aips/vector.h>
 
 //# Constructors

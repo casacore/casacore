@@ -33,9 +33,9 @@
 #include <aips/aips.h>
 #include <aips/Tables/TSMColumn.h>
 #include <aips/Tables/TSMCube.h>
-#include <aips/Mathematics/Complex.h>
+#include <aips/BasicSL/Complex.h>
 #include <aips/Arrays/IPosition.h>
-#include <aips/Utilities/String.h>
+#include <aips/BasicSL/String.h>
 #include <aips/OS/Conversion.h>
 
 //# Forward Declarations

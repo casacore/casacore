@@ -30,7 +30,7 @@
 #define AIPS_LATTICEFFT_H
 
 #include <aips/aips.h>
-#include <aips/Mathematics/Complex.h>
+#include <aips/BasicSL/Complex.h>
 
 template <class T> class Vector;
 template <class T> class Lattice;

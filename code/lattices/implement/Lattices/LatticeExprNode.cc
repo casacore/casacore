@@ -46,7 +46,7 @@
 #include <aips/Arrays/Slicer.h>
 #include <aips/Arrays/Array.h>
 #include <aips/Containers/Block.h>
-#include <aips/Mathematics/Constants.h>
+#include <aips/BasicSL/Constants.h>
 #include <aips/Utilities/CountedPtr.h>
 #include <aips/Utilities/Assert.h>
 #include <aips/Exceptions/Error.h> 

@@ -32,7 +32,7 @@
 #include <aips/Tables/ColumnDesc.h>
 #include <aips/Tables/DataManError.h>
 #include <aips/Tables/TableRecord.h>
-#include <aips/Utilities/String.h>
+#include <aips/BasicSL/String.h>
 
 
 template<class SourceType, class TargetType>

@@ -35,8 +35,8 @@
 #include <aips/Arrays/ArrayIter.h>
 #include <aips/Arrays/Slicer.h>
 #include <aips/Containers/Record.h>
-#include <aips/Mathematics/Math.h>
-#include <aips/Utilities/String.h>
+#include <aips/BasicMath/Math.h>
+#include <aips/BasicSL/String.h>
 
 
 CompressFloat::CompressFloat (const String& sourceColumnName,

@@ -29,10 +29,10 @@
 #define AIPS_ARRAYMATH_H
 
 #include <aips/aips.h>
-#include <aips/Mathematics/Math.h>
+#include <aips/BasicMath/Math.h>
 #include <aips/Arrays/Array.h>
 //# Needed to get the proper Complex typedef's
-#include <aips/Mathematics/Complex.h>
+#include <aips/BasicSL/Complex.h>
 
 template<class T> class Matrix;
 

@@ -25,7 +25,7 @@
 //#
 //# $Id$
 #include <trial/Containers/HashMap.h>
-#include <aips/Utilities/String.h>
+#include <aips/BasicSL/String.h>
 #include <aips/Exceptions/Error.h>
 
 

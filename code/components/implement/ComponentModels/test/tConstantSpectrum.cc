@@ -39,7 +39,7 @@
 // #include <aips/Quanta/Quantum.h>
 // #include <aips/Utilities/Assert.h>
 // #include <aips/Utilities/DataType.h>
-#include <aips/Utilities/String.h>
+#include <aips/BasicSL/String.h>
 // #include <aips/Glish/GlishRecord.h>
 // #include <aips/iomanip.h>
 #include <aips/iostream.h>

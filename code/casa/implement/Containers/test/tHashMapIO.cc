@@ -26,7 +26,7 @@
 //# $Id$
 
 #include <trial/Containers/HashMapIO.h>
-#include <aips/Utilities/String.h>
+#include <aips/BasicSL/String.h>
 #include <aips/fstream.h>
 #include <aips/iostream.h>
 #include <aips/stdlib.h>

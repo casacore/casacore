@@ -37,7 +37,7 @@
 #include <aips/Tables/ArrayColumn.h>
 #include <aips/Utilities/Assert.h>
 #include <aips/Exceptions/Error.h>
-#include <aips/Utilities/String.h>
+#include <aips/BasicSL/String.h>
 #include <aips/Arrays/Matrix.h>
 #include <aips/Measures/Stokes.h>
 #include <aips/Containers/SimOrdMap.h>

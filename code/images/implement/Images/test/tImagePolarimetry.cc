@@ -42,13 +42,13 @@
 #include <trial/Images/SubImage.h>
 #include <aips/Inputs/Input.h>
 #include <aips/Logging.h>
-#include <aips/Mathematics/Math.h>
-#include <aips/Mathematics/Random.h>
+#include <aips/BasicMath/Math.h>
+#include <aips/BasicMath/Random.h>
 #include <aips/Measures/MFrequency.h>
 #include <aips/Quanta/QC.h>
-#include <aips/Tasking/Aipsrc.h>
-#include <trial/Tasking/PGPlotter.h>
-#include <aips/Utilities/String.h>
+#include <aips/System/Aipsrc.h>
+#include <trial/System/PGPlotter.h>
+#include <aips/BasicSL/String.h>
 
 #include <aips/iostream.h>
 

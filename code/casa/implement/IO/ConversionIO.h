@@ -34,7 +34,7 @@
 //# The following should be a declaration. But our Complex & DComplex classes
 //# are a typedef hence this does not work. Replace the following with
 //# forward declarations when Complex and DComplex are no longer typedefs.
-#include <aips/Mathematics/Complex.h>
+#include <aips/BasicSL/Complex.h>
 
 class DataConversion;
 class ByteIO;

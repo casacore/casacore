@@ -27,11 +27,11 @@
 
 #include <aips/Functionals/GaussianNDParam.h>
 #include <aips/Arrays/ArrayMath.h>
-#include <aips/Arrays/MatrixMathLA.h>
+#include <aips/Mathematics/MatrixMathLA.h>
 #include <aips/Arrays/ArrayLogical.h>
 #include <aips/Exceptions/Error.h>
-#include <aips/Mathematics/Math.h>
-#include <aips/Mathematics/Constants.h>
+#include <aips/BasicMath/Math.h>
+#include <aips/BasicSL/Constants.h>
 #include <aips/Utilities/Assert.h>
 
 template<class T> 

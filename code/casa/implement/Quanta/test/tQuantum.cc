@@ -28,7 +28,7 @@
 
 #include <aips/aips.h>
 #include <aips/Exceptions/Error.h>
-#include <aips/Mathematics/Complex.h>
+#include <aips/BasicSL/Complex.h>
 #include <aips/Arrays/Array.h>
 #include <aips/Arrays/Vector.h>
 #include <aips/Arrays/Matrix.h>

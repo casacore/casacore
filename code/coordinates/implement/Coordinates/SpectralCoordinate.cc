@@ -35,7 +35,7 @@
 #include <aips/Utilities/Assert.h>
 #include <aips/Containers/Record.h>
 #include <aips/Functionals/ScalarSampledFunctional.h>
-#include <aips/Mathematics/Math.h>
+#include <aips/BasicMath/Math.h>
 #include <aips/Measures/MFrequency.h>
 #include <aips/Measures/MeasureHolder.h>
 #include <aips/Measures/VelocityMachine.h>

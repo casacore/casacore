@@ -26,7 +26,7 @@
 
 //#! Includes
 
-#include <aips/Mathematics/Math.h>
+#include <aips/BasicMath/Math.h>
 #include <aips/Arrays/Vector.h>
 #include <aips/iostream.h>
 #include <trial/Mathematics/MedianSlider.h>

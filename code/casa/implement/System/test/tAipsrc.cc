@@ -26,7 +26,7 @@
 //# $Id$
 
 #include <aips/aips.h>
-#include <aips/Tasking/Aipsrc.h>
+#include <aips/System/Aipsrc.h>
 #include <aips/Utilities/Assert.h>
 #include <aips/iostream.h>
 

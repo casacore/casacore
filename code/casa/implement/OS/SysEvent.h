@@ -31,7 +31,7 @@
 
 
 #include <aips/Utilities/CountedPtr.h>
-#include <aips/Utilities/String.h>
+#include <aips/BasicSL/String.h>
 #include <aips/Utilities/Regex.h>
 #include <aips/Utilities/Register.h>
 #include <sys/types.h>

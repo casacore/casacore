@@ -27,7 +27,7 @@
 
 
 #include <aips/OS/File.h>
-#include <aips/Utilities/String.h>
+#include <aips/BasicSL/String.h>
 #include <aips/Utilities/Assert.h>
 #include <aips/Exceptions.h>
 #include <aips/iostream.h>

@@ -26,12 +26,12 @@
 //#
 //# $Id$
 
-#include <aips/Tasking/AppInfo.h>
+#include <aips/System/AppInfo.h>
 
 #include <aips/Arrays/Vector.h>
 #include <aips/Arrays/MaskedArray.h>
-#include <aips/Tasking/Aipsrc.h>
-#include <aips/Tasking/AipsrcVector.h>
+#include <aips/System/Aipsrc.h>
+#include <aips/System/AipsrcVector.h>
 #include <aips/Utilities/Assert.h>
 #include <aips/OS/Time.h>
 #include <aips/OS/Memory.h>

@@ -31,9 +31,9 @@
 #include <aips/Tables/StArrayFile.h>
 #include <aips/Tables/RefRows.h>
 #include <aips/Arrays/Vector.h>
-#include <aips/Mathematics/Complex.h>
-#include <aips/Mathematics/Math.h>
-#include <aips/Utilities/String.h>
+#include <aips/BasicSL/Complex.h>
+#include <aips/BasicMath/Math.h>
+#include <aips/BasicSL/String.h>
 #include <aips/Utilities/Copy.h>
 #include <aips/Utilities/DataType.h>
 #include <aips/IO/AipsIO.h>

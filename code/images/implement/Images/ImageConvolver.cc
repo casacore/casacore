@@ -31,8 +31,8 @@
 #include <trial/Coordinates/CoordinateUtil.h>
 #include <aips/Exceptions/Error.h>
 #include <aips/Logging/LogIO.h>
-#include <aips/Mathematics/Math.h>
-#include <aips/Utilities/String.h>
+#include <aips/BasicMath/Math.h>
+#include <aips/BasicSL/String.h>
 #include <trial/Images/PagedImage.h>
 #include <trial/Images/TempImage.h>
 #include <trial/Images/RegionHandler.h>

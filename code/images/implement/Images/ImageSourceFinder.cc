@@ -43,7 +43,7 @@
 #include <trial/ComponentModels/SkyComponent.h>
 #include <aips/Fitting/FitLSQ.h>
 #include <trial/Fitting/NonLinearFitLM.h>
-#include <trial/Fitting/Fit2D.h>
+#include <trial/LatticeMath/Fit2D.h>
 #include <aips/Functionals/Gaussian2D.h>
 #include <trial/Images/ImageInterface.h>
 #include <trial/Images/ImageInfo.h>
@@ -59,7 +59,7 @@
 #include <aips/Quanta/MVAngle.h>
 #include <aips/Quanta/Unit.h>
 #include <aips/Utilities/COWPtr.h>
-#include <aips/Mathematics/Math.h>
+#include <aips/BasicMath/Math.h>
 #include <aips/iostream.h>
 
 

@@ -26,8 +26,8 @@
 //#
 //# $Id$
 
-#include <trial/Tasking/NewFile.h>
-#include <trial/Tasking/Choice.h>
+#include <aips/LogTables/NewFile.h>
+#include <aips/System/Choice.h>
 
 #include <aips/OS/File.h>
 #include <aips/OS/RegularFile.h>

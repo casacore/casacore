@@ -40,7 +40,7 @@
 #include <aips/Tables/TableError.h>
 #include <aips/Arrays/Vector.h>
 #include <aips/Utilities/Assert.h>
-#include <aips/Utilities/String.h>
+#include <aips/BasicSL/String.h>
 
 
 template<class M>

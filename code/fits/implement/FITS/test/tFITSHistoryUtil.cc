@@ -32,7 +32,7 @@
 #include <aips/Exceptions/Error.h>
 #include <aips/FITS/fits.h>
 #include <aips/Logging.h>
-#include <trial/Logging/LoggerHolder.h>
+#include <trial/LogTables/LoggerHolder.h>
 #include <aips/Utilities/Assert.h>
 
 int main()

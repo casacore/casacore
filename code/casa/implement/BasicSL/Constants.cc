@@ -25,7 +25,7 @@
 //#
 //# $Id$
 
-#include <aips/Mathematics/Constants.h>
+#include <aips/BasicSL/Constants.h>
 
 // Been changed for SUN CC port
 

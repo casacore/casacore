@@ -35,7 +35,7 @@
 #include <aips/Arrays/Vector.h>
 #include <aips/Functionals/Gaussian1D.h>
 #include <aips/Inputs/Input.h>
-#include <aips/Mathematics/Math.h>
+#include <aips/BasicMath/Math.h>
 #include <aips/OS/Timer.h>
 #include <aips/iostream.h>
 

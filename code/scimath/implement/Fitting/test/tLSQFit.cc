@@ -29,10 +29,10 @@
 #include <aips/aips.h>
 #include <aips/Exceptions/Error.h>
 #include <aips/Fitting/LSQFit.h>
-#include <aips/Mathematics/Constants.h>
-#include <aips/Mathematics/Complex.h>
+#include <aips/BasicSL/Constants.h>
+#include <aips/BasicSL/Complex.h>
 #include <aips/OS/Timer.h>
-#include <aips/Mathematics/Random.h>
+#include <aips/BasicMath/Random.h>
 #include <aips/iostream.h>
 
 Double Y(const Double x, const Double y=3e-15) {

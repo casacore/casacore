@@ -27,12 +27,12 @@
 
 //# Includes
 #include <aips/Measures/Nutation.h>
-#include <aips/Mathematics/Constants.h>
+#include <aips/BasicSL/Constants.h>
 #include <aips/Arrays/Vector.h>
 #include <aips/Arrays/ArrayMath.h>
 #include <aips/Measures/MeasTable.h>
 #include <aips/Measures/MeasIERS.h>
-#include <aips/Tasking/AipsrcValue.h>
+#include <aips/System/AipsrcValue.h>
 
 //# Constants
 const Double Nutation::INTV = 0.04;

@@ -32,7 +32,7 @@
 #include <aips/Arrays/IPosition.h>
 #include <aips/Logging/LogIO.h>
 #include <aips/Logging/LogOrigin.h>
-#include <aips/Mathematics/Math.h>
+#include <aips/BasicMath/Math.h>
 #include <aips/Measures/MFrequency.h>
 #include <aips/Measures/MCFrequency.h>
 #include <aips/Measures/MeasConvert.h>
@@ -40,7 +40,7 @@
 #include <aips/Quanta/Quantum.h>
 #include <aips/Utilities/Assert.h>
 #include <aips/Utilities/DataType.h>
-#include <aips/Utilities/String.h>
+#include <aips/BasicSL/String.h>
 
 SpectralIndex::SpectralIndex()
   :SpectralModel(),

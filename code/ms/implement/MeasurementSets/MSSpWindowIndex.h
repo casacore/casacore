@@ -35,7 +35,7 @@
 #include <aips/MeasurementSets/MSSpectralWindow.h>
 #include <aips/MeasurementSets/MSSpWindowColumns.h>
 #include <aips/Arrays/Vector.h>
-#include <aips/Utilities/String.h>
+#include <aips/BasicSL/String.h>
 
 //# forward declarations
 

@@ -26,7 +26,7 @@
 //# $Id$
 
 //# Includes
-#include <aips/Mathematics/Math.h>
+#include <aips/BasicMath/Math.h>
 #include <aips/Exceptions/Error.h>
 #include <aips/Measures/MeasJPL.h>
 #include <aips/Quanta/Quantum.h>
@@ -34,7 +34,7 @@
 #include <aips/Measures/MeasIERS.h>
 #include <aips/OS/Time.h>
 #include <aips/Logging/LogIO.h>
-#include <aips/Tasking/Aipsrc.h>
+#include <aips/System/Aipsrc.h>
 #include <aips/Tables/TableDesc.h>
 
 //# Constants

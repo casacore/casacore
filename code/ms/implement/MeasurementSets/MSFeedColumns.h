@@ -29,7 +29,7 @@
 #define AIPS_MSFEEDCOLUMNS_H
 
 #include <aips/aips.h>
-#include <aips/Mathematics/Complex.h>
+#include <aips/BasicSL/Complex.h>
 #include <aips/Measures/MDirection.h>
 #include <aips/Measures/MEpoch.h>
 #include <aips/Measures/MPosition.h>
@@ -39,7 +39,7 @@
 #include <aips/TableMeasures/ScalarQuantColumn.h>
 #include <aips/Tables/ArrayColumn.h>
 #include <aips/Tables/ScalarColumn.h>
-#include <aips/Utilities/String.h>
+#include <aips/BasicSL/String.h>
 
 class MSFeed;
 

@@ -29,7 +29,7 @@
 #include <trial/Flagging/RFChunkStats.h> 
 #include <trial/Flagging/DDMapper.h> 
 #include <aips/Arrays/Cube.h>
-#include <trial/Arrays/RigidVector.h>
+#include <trial/Mathematics/RigidVector.h>
 #include <aips/Containers/Block.h>
 
 class RFDataMapper;

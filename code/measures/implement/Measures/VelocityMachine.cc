@@ -27,7 +27,7 @@
 
 //# Includes
 #include <aips/Measures/VelocityMachine.h>
-#include <aips/Mathematics/Math.h>
+#include <aips/BasicMath/Math.h>
 #include <aips/Arrays/Vector.h>
 #include <aips/Quanta/UnitVal.h>
 #include <aips/Measures/MeasFrame.h>

@@ -29,9 +29,9 @@
 #define AIPS_AIPSRCVALUE_H
 
 #include <aips/aips.h>
-#include <aips/Utilities/String.h>
+#include <aips/BasicSL/String.h>
 #include <aips/Containers/Block.h>
-#include <aips/Tasking/Aipsrc.h>
+#include <aips/System/Aipsrc.h>
 
 //# Forward declarations
 class Unit;

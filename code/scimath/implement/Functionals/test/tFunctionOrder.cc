@@ -27,7 +27,7 @@
 
 #include <aips/Functionals/FunctionOrder.h>
 
-#include <aips/Utilities/String.h>
+#include <aips/BasicSL/String.h>
 #include <aips/Containers/Record.h>
 #include <aips/Utilities/Assert.h>
 

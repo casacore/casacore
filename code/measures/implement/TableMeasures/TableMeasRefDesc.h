@@ -31,7 +31,7 @@
 //# Includes
 #include <aips/TableMeasures/TableMeasOffsetDesc.h>
 #include <aips/Quanta/Unit.h>
-#include <aips/Utilities/String.h>
+#include <aips/BasicSL/String.h>
 
 //# Forward Declarations
 class TableMeasDescBase;

@@ -30,7 +30,7 @@
 #define TRIAL_MSSELECTION_H
 
 #include <aips/aips.h>
-#include <aips/Utilities/String.h>
+#include <aips/BasicSL/String.h>
 #include <aips/Arrays/Vector.h>
 #include <aips/Arrays/Matrix.h>
 #include <aips/Measures/MEpoch.h>

@@ -36,7 +36,7 @@
 #include <trial/Coordinates/DirectionCoordinate.h>
 #include <aips/Exceptions/Error.h>
 #include <aips/Logging/LogIO.h>
-#include <aips/Mathematics/Complex.h>
+#include <aips/BasicSL/Complex.h>
 #include <aips/Measures/MeasureHolder.h>
 #include <aips/Measures/MeasFrame.h>
 #include <aips/Measures/MeasRef.h>
@@ -44,7 +44,7 @@
 #include <aips/Quanta/UnitVal.h>
 #include <aips/Utilities/Assert.h>
 #include <aips/Utilities/DataType.h>
-#include <aips/Utilities/String.h>
+#include <aips/BasicSL/String.h>
 #include <aips/Quanta/QuantumHolder.h>
 
 ComponentShape::ComponentShape() 

@@ -27,8 +27,8 @@
 
 //# Includes
 #include <aips/Functionals/Sinusoid1D.h>
-#include <aips/Mathematics/Constants.h>
-#include <aips/Mathematics/Math.h>
+#include <aips/BasicSL/Constants.h>
+#include <aips/BasicMath/Math.h>
 
 //# Constructors
 

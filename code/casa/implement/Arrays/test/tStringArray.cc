@@ -36,9 +36,9 @@
 #include <aips/Arrays/Matrix.h>
 #include <aips/Arrays/Cube.h>
 #include <aips/Arrays/ArrayError.h>
-#include <aips/Mathematics/Math.h>
+#include <aips/BasicMath/Math.h>
 #include <aips/Utilities/Assert.h>
-#include <aips/Utilities/String.h>
+#include <aips/BasicSL/String.h>
 
 int main()
 {

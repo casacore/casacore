@@ -34,7 +34,7 @@
 #include <aips/Arrays/Matrix.h>
 #include <aips/Utilities/Assert.h>
 #include <aips/Exceptions/Error.h>
-#include <aips/Utilities/String.h>
+#include <aips/BasicSL/String.h>
 #include <aips/Tables/TableDesc.h>
 #include <aips/Measures/MEpoch.h>
 #include <aips/Quanta/MVTime.h>

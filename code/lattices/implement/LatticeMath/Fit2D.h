@@ -31,7 +31,7 @@
 //# Includes
 #include <aips/aips.h>
 #include <aips/Functionals/CompoundFunction.h>
-#include <aips/Mathematics/Constants.h>
+#include <aips/BasicSL/Constants.h>
 #include <trial/Fitting/NonLinearFitLM.h>
 #include <aips/Logging/LogIO.h>
 

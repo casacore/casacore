@@ -32,7 +32,7 @@
 #include <aips/aips.h>
 #include <aips/Tables/StArrayFile.h>
 #include <aips/Arrays/IPosition.h>
-#include <aips/Mathematics/Complex.h>
+#include <aips/BasicSL/Complex.h>
 
 //# Forward Declarations
 class Slicer;

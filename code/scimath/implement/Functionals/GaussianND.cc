@@ -30,7 +30,7 @@
 #include <aips/Arrays/MatrixMath.h>
 #include <aips/Arrays/ArrayLogical.h>
 #include <aips/Exceptions/Error.h>
-#include <aips/Mathematics/Math.h>
+#include <aips/BasicMath/Math.h>
 
 template<class T> 
 T GaussianND<T>::eval(typename Function<T>::FunctionArg x) const {

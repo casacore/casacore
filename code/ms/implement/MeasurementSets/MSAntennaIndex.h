@@ -34,7 +34,7 @@
 #include <aips/MeasurementSets/MSAntenna.h>
 #include <aips/MeasurementSets/MSAntennaColumns.h>
 #include <aips/Arrays/Vector.h>
-#include <aips/Utilities/String.h>
+#include <aips/BasicSL/String.h>
 
 //# forward declarations
 

@@ -34,7 +34,7 @@
 #include <aips/Utilities/DataType.h>
 #include <aips/Tables/Table.h>
 #include <aips/Containers/SimOrdMap.h>
-#include <aips/Utilities/String.h>
+#include <aips/BasicSL/String.h>
 #include <aips/Tables/TableDesc.h>
 #include <aips/Utilities/Fallible.h>
 #include <aips/Arrays/Vector.h>

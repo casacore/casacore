@@ -29,11 +29,11 @@
 //# Includes
 #include <trial/Functionals/FuncExpression.h>
 #include <aips/Exceptions/Error.h>
-#include <aips/Quanta/MUString.h>
+#include <aips/Utilities/MUString.h>
 #include <aips/Utilities/Regex.h>
-#include <aips/Utilities/String.h>
-#include <aips/Mathematics/Constants.h>
-#include <aips/Mathematics/Math.h>
+#include <aips/BasicSL/String.h>
+#include <aips/BasicSL/Constants.h>
+#include <aips/BasicMath/Math.h>
 
 //# Constructors
 FuncExpression::FuncExpression() :

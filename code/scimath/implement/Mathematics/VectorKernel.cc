@@ -34,8 +34,8 @@
 #include <aips/Exceptions/Error.h>
 #include <aips/Functionals/Gaussian1D.h>
 #include <aips/Logging/LogIO.h>
-#include <aips/Mathematics/Constants.h>
-#include <aips/Mathematics/Math.h>
+#include <aips/BasicSL/Constants.h>
+#include <aips/BasicMath/Math.h>
 #include <aips/Utilities/Regex.h>
 
 

@@ -32,7 +32,7 @@
 #include <aips/aips.h>
 #include <aips/Tables/TableExprId.h>
 #include <aips/Tables/ExprRange.h>
-#include <aips/Mathematics/Complex.h>
+#include <aips/BasicSL/Complex.h>
 #include <aips/Quanta/MVTime.h>
 #include <aips/Utilities/DataType.h>
 #include <aips/Utilities/Regex.h>

@@ -31,7 +31,7 @@
 #include <aips/Containers/RecordInterface.h>
 #include <aips/Quanta/Quantum.h>
 #include <aips/Utilities/Assert.h>
-#include <aips/Utilities/String.h>
+#include <aips/BasicSL/String.h>
 
 ConstantSpectrum::ConstantSpectrum()
   :SpectralModel()

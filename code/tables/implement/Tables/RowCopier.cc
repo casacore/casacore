@@ -32,7 +32,7 @@
 #include <aips/Tables/Table.h>
 
 #include <aips/Arrays/IPosition.h>
-#include <aips/Utilities/String.h>
+#include <aips/BasicSL/String.h>
 #include <aips/Arrays/Vector.h>
 
 

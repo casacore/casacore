@@ -40,7 +40,7 @@
 #include <aips/Quanta/Quantum.h>
 #include <aips/Quanta/MVAngle.h>
 #include <aips/Quanta/MVTime.h>
-#include <aips/Utilities/String.h>
+#include <aips/BasicSL/String.h>
 #include <aips/iostream.h>
 
 void printShape(const TwoSidedShape& theShape) {

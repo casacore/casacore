@@ -33,7 +33,7 @@
 #include <aips/Tables/TableRecord.h>
 #include <aips/Tables/TableAttr.h>
 #include <aips/Containers/RecordDesc.h>
-#include <aips/Mathematics/Complex.h>
+#include <aips/BasicSL/Complex.h>
 #include <aips/Utilities/DataType.h>
 #include <aips/IO/AipsIO.h>
 #include <aips/Tables/TableError.h>

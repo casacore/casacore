@@ -28,7 +28,7 @@
 //# Includes
 
 #include <aips/Quanta/UnitMap.h>
-#include <aips/Quanta/MUString.h>
+#include <aips/Utilities/MUString.h>
 #include <aips/Utilities/Regex.h>
 #include <aips/iostream.h>
 

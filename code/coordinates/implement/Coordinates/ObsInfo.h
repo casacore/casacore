@@ -32,7 +32,7 @@
 #include <aips/aips.h>
 #include <aips/Utilities/RecordTransformable.h>
 
-#include <aips/Utilities/String.h>
+#include <aips/BasicSL/String.h>
 #include <aips/Measures/MEpoch.h>
 #include <aips/Quanta/MVDirection.h>
 

@@ -42,7 +42,7 @@
 #include <aips/Logging/LogIO.h>
 #include <aips/Measures/MFrequency.h>
 #include <aips/MeasurementSets/MeasurementSet.h>
-#include <aips/Utilities/String.h> 
+#include <aips/BasicSL/String.h> 
 class MSColumns;
 class FitsInput;
 

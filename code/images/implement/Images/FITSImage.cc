@@ -45,14 +45,14 @@
 #include <aips/Arrays/Slicer.h>
 #include <aips/Arrays/ArrayMath.h>
 #include <aips/Containers/Record.h>
-#include <trial/Logging/LoggerHolder.h>
+#include <trial/LogTables/LoggerHolder.h>
 #include <aips/Logging/LogIO.h>
-#include <aips/Mathematics/Math.h>
+#include <aips/BasicMath/Math.h>
 #include <aips/OS/File.h>
 #include <aips/Quanta/Unit.h>
 #include <aips/Utilities/CountedPtr.h>
 #include <aips/Utilities/ValType.h>
-#include <aips/Utilities/String.h>
+#include <aips/BasicSL/String.h>
 #include <aips/Exceptions/Error.h>
 
 #include <aips/iostream.h>

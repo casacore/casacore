@@ -25,7 +25,7 @@
 //#
 //# $Id$
 
-#include <aips/Mathematics/Constants.h>
+#include <aips/BasicSL/Constants.h>
 #include <aips/Exceptions/Error.h>
 #include <trial/Mathematics/MathFunc.h>
 

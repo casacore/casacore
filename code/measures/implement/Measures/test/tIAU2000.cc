@@ -29,7 +29,7 @@
 #include <aips/Arrays/ArrayMath.h>
 #include <aips/Arrays/Vector.h>
 #include <aips/Exceptions/Error.h>
-#include <aips/Mathematics/Constants.h>
+#include <aips/BasicSL/Constants.h>
 #include <aips/Measures/MDirection.h>
 #include <aips/Measures/MeasConvert.h>
 #include <aips/Measures/MeasData.h>
@@ -41,8 +41,8 @@
 #include <aips/Measures/Precession.h>
 #include <aips/OS/Time.h>
 #include <aips/Quanta/RotMatrix.h>
-#include <aips/Tasking/AipsrcValue.h>
-#include <aips/Utilities/String.h>
+#include <aips/System/AipsrcValue.h>
+#include <aips/BasicSL/String.h>
 #include <aips/iostream.h>
 
 // Print separation line of given (default 75) length

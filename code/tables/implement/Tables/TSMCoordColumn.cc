@@ -34,7 +34,7 @@
 #include <aips/Containers/RecordField.h>
 #include <aips/Arrays/IPosition.h>
 #include <aips/Arrays/Array.h>
-#include <aips/Utilities/String.h>
+#include <aips/BasicSL/String.h>
 
 
 TSMCoordColumn::TSMCoordColumn (const TSMColumn& column, uInt axisNr)
