@@ -3313,3 +3313,4 @@
 13 216 src rm /npoi/implement/Cuttlefish/GDC1.h
 13 216 src rm /npoi/implement/Cuttlefish/gdc1.g
 13 218 src mv trial/implement/Display/test/tDisplayOptions.cc display/implement/Utilities/test/tDisplayOptions.cc
+13 218 src rm /npoi/implement/Cuttlefish/metro.g
