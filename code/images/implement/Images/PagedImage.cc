@@ -73,7 +73,8 @@ PagedImage<T>::PagedImage(const TiledShape & shape,
                           Table & table, uInt rowNumber)
 : ImageInterface<T>(),
   table_p(table),
-  map_p(shape, table, "map", rowNumber)
+  map_p(shape, table, "map", rowNumber),
+  logTablePtr_p (0)
 {
   table_p.makePermanent();           // avoid double deletion by Cleanup
   attach_logtable();
@@ -98,7 +99,8 @@ PagedImage<T>::PagedImage(const TiledShape & shape,
                           const String & filename, 
                           const TableLock& lockOptions,
                           uInt rowNumber)
-: ImageInterface<T>()
+: ImageInterface<T>(),
+  logTablePtr_p (0)
 {
   logSink() << LogOrigin("PagedImage<T>", 
 			 "PagedImage(const TiledShape & shape, "
@@ -126,7 +128,8 @@ PagedImage<T>::PagedImage(const TiledShape & shape,
                           const CoordinateSystem & coordinateInfo, 
                           const String & filename, 
                           uInt rowNumber)
-: ImageInterface<T>()
+: ImageInterface<T>(),
+  logTablePtr_p (0)
 {
   logSink() << LogOrigin("PagedImage<T>", 
 			 "PagedImage(const TiledShape & shape,  "
@@ -152,7 +155,8 @@ template <class T>
 PagedImage<T>::PagedImage(Table & table, uInt rowNumber)
 : ImageInterface<T>(),
   table_p(table),
-  map_p(table, "map", rowNumber)
+  map_p(table, "map", rowNumber),
+  logTablePtr_p (0)
 {
   table_p.makePermanent();           // avoid double deletion by Cleanup
   attach_logtable();
@@ -174,7 +178,8 @@ PagedImage<T>::PagedImage(Table & table, uInt rowNumber)
 
 template <class T> 
 PagedImage<T>::PagedImage(const String & filename, uInt rowNumber)
-: ImageInterface<T>()
+: ImageInterface<T>(),
+  logTablePtr_p (0)
 {
   logSink() << LogOrigin("PagedImage<T>", 
 			 "PagedImage(const String & filename, "
@@ -199,7 +204,8 @@ PagedImage<T>::PagedImage(const String & filename, uInt rowNumber)
 template <class T> 
 PagedImage<T>::PagedImage(const String & filename, const TableLock& lockOptions,
                           uInt rowNumber)
-: ImageInterface<T>()
+: ImageInterface<T>(),
+  logTablePtr_p (0)
 {
   logSink() << LogOrigin("PagedImage<T>", 
 			 "PagedImage(const String & filename, "
