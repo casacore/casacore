@@ -33,34 +33,25 @@
 #include <aips/Containers/RecordInterface.h>
 #include <aips/Exceptions/Error.h>
 #include <aips/Lattices/IPosition.h>
-#include <aips/Logging/LogIO.h>
-#include <aips/Logging/LogOrigin.h>
-#include <aips/Measures/MDirection.h>
 #include <aips/Measures/MeasureHolder.h>
 #include <aips/Utilities/Assert.h>
 #include <aips/Utilities/DataType.h>
 #include <aips/Utilities/String.h>
 
 ComponentShape::ComponentShape() 
-  :itsDir(),
-   itsDirValue(itsDir.getValue()),
-   itsRefFrame((MDirection::Types) itsDir.getRef().getType())
+  :itsDir()
 {
   DebugAssert(ok(), AipsError);
 }
 
 ComponentShape::ComponentShape(const MDirection& direction)
-  :itsDir(direction),
-   itsDirValue(itsDir.getValue()),
-   itsRefFrame((MDirection::Types) itsDir.getRef().getType())
+  :itsDir(direction)
 {
   DebugAssert(ok(), AipsError);
 }
 
 ComponentShape::ComponentShape(const ComponentShape& other)
-  :itsDir(other.itsDir),
-   itsDirValue(other.itsDirValue),
-   itsRefFrame(other.itsRefFrame)
+  :itsDir(other.itsDir)
 {
   DebugAssert(ok(), AipsError);
 }
@@ -72,8 +63,6 @@ ComponentShape::~ComponentShape() {
 ComponentShape& ComponentShape::operator=(const ComponentShape& other) {
   if (this != &other) {
     itsDir = other.itsDir;
-    itsDirValue = other.itsDirValue;
-    itsRefFrame = other.itsRefFrame;
   }
   DebugAssert(ok(), AipsError);
   return *this;
@@ -81,8 +70,6 @@ ComponentShape& ComponentShape::operator=(const ComponentShape& other) {
 
 void ComponentShape::setRefDirection(const MDirection& newRefDir) {
   itsDir = newRefDir;
-  itsDirValue = newRefDir.getValue();
-  itsRefFrame = (MDirection::Types) newRefDir.getRef().getType();
   DebugAssert(ok(), AipsError);
 }
 
@@ -91,14 +78,17 @@ const MDirection& ComponentShape::refDirection() const {
   return itsDir;
 }
 
-const MVDirection& ComponentShape::refDirValue() const {
+void  ComponentShape::sample(Vector<Double>& scale, 
+			     const Vector<MDirection::MVType>& directions, 
+			     const MDirection::Ref& refFrame,
+			     const MVAngle& pixelSize) const {
   DebugAssert(ok(), AipsError);
-  return itsDirValue;
-}
+  const uInt nSamples = directions.nelements();
+  DebugAssert(scale.nelements() == nSamples, AipsError);
 
-const MDirection::Types& ComponentShape::refDirFrame() const {
-  DebugAssert(ok(), AipsError);
-  return itsRefFrame;
+  for (uInt i = 0; i < nSamples; i++) {
+    scale(i) = sample(MDirection(directions(i), refFrame), pixelSize);
+  }
 }
 
 Bool ComponentShape::fromRecord(String& errorMessage,
@@ -123,21 +113,6 @@ Bool ComponentShape::toRecord(String& errorMessage,
 }
 
 Bool ComponentShape::ok() const {
-  if (!allNearAbs(itsDir.getValue().get(), itsDirValue.get(), 1E-10)) {
-    LogIO logErr(LogOrigin("ComponentShape", "ok()"));
-    logErr << LogIO::SEVERE 
-	   << "Cached direction value does not agree with the actual value."
-           << LogIO::POST;
-    return False;
-  }
-  if ((MDirection::Types) itsDir.getRef().getType() != itsRefFrame) {
-    LogIO logErr(LogOrigin("ComponentShape", "ok()"));
-    logErr << LogIO::SEVERE 
-	   << "Cached direction reference frame does not agree "
-	   << "with the actual value."
-           << LogIO::POST;
-    return False;
-  }
   return True;
 }
 
