@@ -1,7 +1,7 @@
 {
     local apath := split(shell("echo $AIPSPATH"))
     if ( len(apath) == 4 ) {
-	if ( any(argv == '-tk' ) ) {
+	if ( ! any(argv == '-notk' ) ) {
 	    include spaste(apath[1],'/',apath[2],'/libexec/glishtk.g')
 	    include spaste(apath[1],'/',apath[2],'/libexec/pgplot.g')
 	}
