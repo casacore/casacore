@@ -1,5 +1,5 @@
 //# MSConcat.cc: A class for concatenating MeasurementSets.
-//# Copyright (C) 2000,2002,2003
+//# Copyright (C) 2000,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -113,200 +113,6 @@ IPosition MSConcat::isFixedShape(const TableDesc& td) {
   return fixedShape;
 }
 
-Bool MSConcat::checkSM(const MeasurementSet& ms1) const {
-	// At the moment no check of subtable storage managers is done.  This may
-	// be need to be added at a future date.  The subtable storage manager
-	// can be accesses in a manner similar to accessing the main table storage
-	// manager -> Record dminfo = ms.spectralWindow().dataManagerInfo();
-	// will access the storage manager for the spectral window subtable.
-
-	// Check to see if all of the columns in the MAIN table which depend
-	// on the number of channels are using the TiledShapeStMan -> otherwise
-	// return false.
-	
-	// The logic on this check is bad and incurs a lot of needless overhead.
-	// This should be rewritten more robustly at some point.
-	
-	Record dminfo = ms1.dataManagerInfo();
-	TableDesc td = ms1.tableDesc();
-	String SMType, colname;
-
-	if (td.isColumn("DATA")) {
-		//cout << "Checking DATA column" << endl;
-		for (uInt i=0; i<dminfo.nfields(); i++) {
-			String type = dminfo.subRecord(i).asString("TYPE");
-			Vector<String> cols = dminfo.subRecord(i).asArrayString ("COLUMNS");
-			uInt n = 0;
-			while (n < cols.nelements()) {
-				if (cols(n) == "DATA") {
-					SMType = dminfo.subRecord(i).asString("TYPE");
-					break;
-				}
-				n++;
-			}
-		}
-		if (SMType != "TiledShapeStMan") return False;
-	}
-			
-	if (td.isColumn("FLOAT_DATA")) {
-		//cout << "Checking FLOAT_DATA column" << endl;
-        for (uInt i=0; i<dminfo.nfields(); i++) {
-            String type = dminfo.subRecord(i).asString("TYPE");
-            Vector<String> cols = dminfo.subRecord(i).asArrayString ("COLUMNS");
-            uInt n = 0;
-            while (n < cols.nelements()) {
-                if (cols(n) == "FLOAT_DATA") {
-                    SMType = dminfo.subRecord(i).asString("TYPE");
-                    break;
-                }
-                n++;
-            }
-        }
-        if (SMType != "TiledShapeStMan") return False;
-	}
-
-	if (td.isColumn("VIDEO_POINT")) {
-		//cout << "Checking VIDEO_POINT column" << endl;
-        for (uInt i=0; i<dminfo.nfields(); i++) {
-            String type = dminfo.subRecord(i).asString("TYPE");
-            Vector<String> cols = dminfo.subRecord(i).asArrayString ("COLUMNS");
-            uInt n = 0;
-            while (n < cols.nelements()) {
-                if (cols(n) == "VIDEO_POINT") {
-                    SMType = dminfo.subRecord(i).asString("TYPE");
-                    break;
-                }
-                n++;
-            }
-        }
-        if (SMType != "TiledShapeStMan") return False;
-	}
-
-	if (td.isColumn("LAG_DATA")) {
-		//cout << "Checking LAG_DATA column" << endl;
-        for (uInt i=0; i<dminfo.nfields(); i++) {
-            String type = dminfo.subRecord(i).asString("TYPE");
-            Vector<String> cols = dminfo.subRecord(i).asArrayString ("COLUMNS");
-            uInt n = 0;
-            while (n < cols.nelements()) {
-                if (cols(n) == "LAG_DATA") {
-                    SMType = dminfo.subRecord(i).asString("TYPE");
-                    break;
-                }
-                n++;
-            }
-        }
-        if (SMType != "TiledShapeStMan") return False;
-	}
-
-	if (td.isColumn("SIGMA")) {
-		//cout << "Checking SIGMA column" << endl;
-        for (uInt i=0; i<dminfo.nfields(); i++) {
-            String type = dminfo.subRecord(i).asString("TYPE");
-            Vector<String> cols = dminfo.subRecord(i).asArrayString ("COLUMNS");
-            uInt n = 0;
-            while (n < cols.nelements()) {
-                if (cols(n) == "SIGMA") {
-                    SMType = dminfo.subRecord(i).asString("TYPE");
-                    break;
-                }
-                n++;
-            }
-        }
-        if (SMType != "TiledShapeStMan") return False;
-	}
-
-	if (td.isColumn("SIGMA_SPECTRUM")) {
-		//cout << "Checking SIGMA_SPECTRUM column" << endl;
-        for (uInt i=0; i<dminfo.nfields(); i++) {
-            String type = dminfo.subRecord(i).asString("TYPE");
-            Vector<String> cols = dminfo.subRecord(i).asArrayString ("COLUMNS");
-            uInt n = 0;
-            while (n < cols.nelements()) {
-                if (cols(n) == "SIGMA_SPECTRUM") {
-                    SMType = dminfo.subRecord(i).asString("TYPE");
-                    break;
-                }
-                n++;
-            }
-        }
-        if (SMType != "TiledShapeStMan") return False;
-	}
-
-	if (td.isColumn("WEIGHT")) {
-		//cout << "Checking WEIGHT column" << endl;
-        for (uInt i=0; i<dminfo.nfields(); i++) {
-            String type = dminfo.subRecord(i).asString("TYPE");
-            Vector<String> cols = dminfo.subRecord(i).asArrayString ("COLUMNS");
-            uInt n = 0;
-            while (n < cols.nelements()) {
-                if (cols(n) == "WEIGHT") {
-                    SMType = dminfo.subRecord(i).asString("TYPE");
-                    break;
-                }
-                n++;
-            }
-        }
-        if (SMType != "TiledShapeStMan") return False;
-	}
-
-	if (td.isColumn("WEIGHT_SPECTRUM")) {
-		//cout << "Checking WEIGHT_SPECTRUM column" << endl;
-        for (uInt i=0; i<dminfo.nfields(); i++) {
-            String type = dminfo.subRecord(i).asString("TYPE");
-            Vector<String> cols = dminfo.subRecord(i).asArrayString ("COLUMNS");
-            uInt n = 0;
-            while (n < cols.nelements()) {
-                if (cols(n) == "WEIGHT_SPECTRUM") {
-                    SMType = dminfo.subRecord(i).asString("TYPE");
-                    break;
-                }
-                n++;
-            }
-        }
-        if (SMType != "TiledShapeStMan") return False;
-	}
-
-	if (td.isColumn("FLAG")) {
-		//cout << "Checking FLAG column" << endl;
-        for (uInt i=0; i<dminfo.nfields(); i++) {
-            String type = dminfo.subRecord(i).asString("TYPE");
-            Vector<String> cols = dminfo.subRecord(i).asArrayString ("COLUMNS");
-            uInt n = 0;
-            while (n < cols.nelements()) {
-                if (cols(n) == "FLAG") {
-                    SMType = dminfo.subRecord(i).asString("TYPE");
-                    break;
-                }
-                n++;
-            }
-        }
-        if (SMType != "TiledShapeStMan") return False;
-	}
-
-	if (td.isColumn("FLAG_CATEGORY")) {
-		//cout << "Checking FLAG_CATEGORY column" << endl;
-        for (uInt i=0; i<dminfo.nfields(); i++) {
-            String type = dminfo.subRecord(i).asString("TYPE");
-            Vector<String> cols = dminfo.subRecord(i).asArrayString ("COLUMNS");
-            uInt n = 0;
-            while (n < cols.nelements()) {
-                if (cols(n) == "FLAG_CATEGORY") {
-                    SMType = dminfo.subRecord(i).asString("TYPE");
-                    break;
-                }
-                n++;
-            }
-        }
-        if (SMType != "TiledShapeStMan") return False;
-	}
-	
-	// Sanity check to make sure a TSM was found
-	if (SMType != "TiledShapeStMan") return False;
-	else return True;
-}
-
-
 void MSConcat::concatenate(const MeasurementSet& otherMS)
 {
   LogIO log(LogOrigin("MSConcat", "concatenate"));
@@ -314,11 +120,8 @@ void MSConcat::concatenate(const MeasurementSet& otherMS)
   //    log << "Measurement set was not created from a UVFITS file."
   //	<< LogIO::EXCEPTION;
   //}
-
   log << "Appending " << otherMS.tableName() 
       << " to " << itsMS.tableName() << endl;
-  
-
   const ROMSMainColumns otherMainCols(otherMS);
   if (otherMS.nrow() > 0) {
     if (itsFixedShape.nelements() > 0) {
@@ -459,33 +262,19 @@ void MSConcat::setTolerance(Quantum<Double>& freqTol, Quantum<Double>& dirTol){
 
 void MSConcat::checkShape(const IPosition& otherShape) const 
 {
-  LogIO os;
-  Bool usesTSM = checkSM (itsMS);
-
   const uInt nAxes = min(itsFixedShape.nelements(), otherShape.nelements());
   DebugAssert(nAxes > 0 && nAxes < 4, AipsError);
-
-  // First check and see if ms1 is using the TSM.  If so, we don't care
-  // about the shape since the resulting concatenated MS will use TSM
-  // by default.  If ms1 is NOT using the TiledShapeStMan, then we need to
-  // make sure that ms1 and ms2 have the same shape.
-  if (!usesTSM) {
-    if (nAxes > 1 && itsFixedShape(1) != otherShape(1)) {
-      throw(AipsError(String("MSConcat::checkShapes\n") + 
-  		      String("cannot concatenate this measurement set as ") +
-		      String("it has a different number of channels\n") +
-		      String("and this cannot be changed")));
-    }
-    if (itsFixedShape(0) != otherShape(0)) {
-      throw(AipsError(String("MSConcat::checkShapes\n") + 
-		      String("cannot concatenate this measurement set as ") +
-		      String("it has a different number of correlations\n") +
-		      String("and this cannot be changed")));
-    }
+  if (nAxes > 1 && itsFixedShape(1) != otherShape(1)) {
+    throw(AipsError(String("MSConcat::checkShapes\n") + 
+		    String("cannot concatenate this measurement set as ") +
+		    String("it has a different number of channels\n") +
+		    String("and this cannot be changed")));
   }
-  else {
-	os << LogIO::WARN << "MS1 is using TiledShape Storage Manager."
-	   "Ignoring shape." << LogIO::POST;
+  if (itsFixedShape(0) != otherShape(0)) {
+    throw(AipsError(String("MSConcat::checkShapes\n") + 
+		    String("cannot concatenate this measurement set as ") +
+		    String("it has a different number of correlations\n") +
+		    String("and this cannot be changed")));
   }
 }
 

@@ -1,5 +1,5 @@
 //# MSConcat.h: A class for concatenating MeasurementSets.
-//# Copyright (C) 2000,2002,2003
+//# Copyright (C) 2000,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -101,7 +101,6 @@ private:
 			    const ROMSSpWindowColumns& spwCols, 
 			    const ROMSPolarizationColumns& polCols, 
 			    uInt whichShape);
-  Bool checkSM(const MeasurementSet& ms1) const;
   void checkShape(const IPosition& otherShape) const;
   void checkCategories(const ROMSMainColumns& otherCols) const;
   Block<uInt> copyAntennaAndFeed(const MSAntenna& otherAnt,
