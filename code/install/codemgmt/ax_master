@@ -6017,3 +6017,5 @@
 17 069 src rm trial/implement/Functionals/Chebyshev.h
 17 069 src rm trial/implement/Functionals/SimButterworthBandpass.cc
 17 069 src rm trial/implement/Functionals/SimButterworthBandpass.h
+17 069 src rm trial/implement/Functionals/test/tSimButterworthBandpass.cc
+17 069 src rm trial/implement/Functionals/test/tChebyshev.cc
