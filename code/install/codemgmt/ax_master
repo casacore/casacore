@@ -5983,3 +5983,4 @@
 17 000 src mv trial/implement/Functionals/NQSimButterworthBandpass.h aips/implement/Functionals/NQSimButterworthBandpass.h
 17 000 src mv trial/implement/Functionals/NQSimButterworthBandpass.cc aips/implement/Functionals/NQSimButterworthBandpass.cc
 17 000 src mv trial/implement/Functionals/test/tNQSimButterworthBandpass.cc aips/implement/Functionals/test/tNQSimButterworthBandpass.cc
+17 000 src mv trial/implement/Functionals/test/tNQChebyshev.cc aips/implement/Functionals/test/tNQChebyshev.cc
