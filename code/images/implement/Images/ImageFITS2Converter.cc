@@ -220,7 +220,7 @@ Bool ImageFITSConverter::ImageToFITS(String &error,
 
     if (fitsName == "-") {
 	// Write to stdout
-	outfile = new FitsOutput(cout);
+	outfile = new FitsOutput();
     } else {
 
 // Make sure that the fits file does not already exist, and that we
