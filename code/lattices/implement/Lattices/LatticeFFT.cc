@@ -137,7 +137,7 @@ void LatticeFFT::rcfft(Lattice<Complex>& out, const Lattice<Float>& in,
 	    }
 	  }
 	} else { // just copy the data
-	  out.copyData(LatticeExpr<Complex>(in, 0u));
+	  out.copyData(LatticeExpr<Complex>(in));
 	}
       }
       else { // Do complex->complex transforms
@@ -225,7 +225,7 @@ void LatticeFFT::crfft(Lattice<Float>& out, Lattice<Complex>& in,
 	    }
 	  }
 	} else { // just copy the data truncating the imaginary parts.
-	  out.copyData(LatticeExpr<Float>(real(in), 1u));
+	  out.copyData(LatticeExpr<Float>(real(in)));
 	}
       }
     }
