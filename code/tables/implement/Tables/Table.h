@@ -323,6 +323,13 @@ public:
     // unless it is executed due to an exception.
     void flush (Bool sync=False);
 
+    // Resynchronize the Table object ith the table file.
+    // This function is only useful if no read-locking is used, ie.
+    // if the table lock option is UserNoReadLocking or AutoNoReadLocking.
+    // In that cases the table system does not acquire a read-lock, thus
+    // does not synchronize itself automatically.
+    void resync();
+
     // Test if the object is null, i.e. does not reference a table yet.
     // This is the case if the default constructor is used.
     Bool isNull() const
@@ -386,6 +393,8 @@ public:
     // </group>
 
     // Get readonly access to the table keyword set.
+    // When UserLocking is used, it will automatically acquire
+    // and release a read lock when the table is not locked.
     const TableRecord& keywordSet() const;
 
     // Get read/write access to the table keyword set.
@@ -790,6 +799,8 @@ inline void Table::reopenRW()
     { baseTabPtr_p->reopenRW(); }
 inline void Table::flush (Bool sync)
     { baseTabPtr_p->flush (sync); }
+inline void Table::resync()
+    { baseTabPtr_p->resync(); }
 
 inline Bool Table::isMultiUsed() const
     { return baseTabPtr_p->isMultiUsed(); }

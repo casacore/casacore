@@ -226,7 +226,13 @@ void RefTable::flush (Bool sync)
 {
     if (openedForWrite()) {
 	writeRefTable (sync);
+	baseTabPtr_p->flush (sync);
     }
+}
+
+void RefTable::resync()
+{
+    baseTabPtr_p->resync();
 }
 
 uInt RefTable::getModifyCounter() const
@@ -511,7 +517,7 @@ Vector<uInt> RefTable::rowNumbers () const
 Bool RefTable::canRemoveRow() const
     { return True; }
 Bool RefTable::canRemoveColumn (const String&) const
-    { return True; }
+    { return False; }
 Bool RefTable::canRenameColumn (const String& columnName) const
   ///    { return tdescPtr_p->isColumn (columnName); }
     { return False; }
@@ -534,11 +540,10 @@ void RefTable::removeColumn (const String&)
  
 void RefTable::renameColumn (const String& newName, const String& oldName)
 {
-  // The BaseTablke::renameColumn throws an exception.
   // renameColumn cannot be done until the problem is solved that
   // nameMap_p is copied to a RefTable made from a RefTable.
   // See the outcommented code in tTable for an example.
-    BaseTable::renameColumn (newName, oldName);
+    throw (TableInvOper ("RefTable::renameColumn not implemented yet"));
     tdescPtr_p->renameColumn (newName, oldName);
     colMap_p.rename (newName, oldName);
     nameMap_p.rename (newName, oldName);

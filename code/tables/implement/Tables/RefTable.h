@@ -182,6 +182,9 @@ public:
     // unless it is executed due to an exception.
     virtual void flush (Bool sync);
 
+    // Resync the Table object with the table file.
+    virtual void resync();
+
     // Get the modify counter.
     virtual uInt getModifyCounter() const;
 
@@ -218,7 +221,7 @@ public:
     // Remove a column.
     void removeColumn (const String& columnName);
 
-    // Test if a column can be renamed (yes if it exists).
+    // Test if a column can be renamed (no).
     Bool canRenameColumn (const String& columnName) const;
 
     // Rename a column.

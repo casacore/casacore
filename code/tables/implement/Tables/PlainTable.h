@@ -146,6 +146,9 @@ public:
     // unless it is executed due to an exception.
     virtual void flush (Bool fsync);
 
+    // Resync the Table object with the table file.
+    virtual void resync();
+
     // Get the modify counter.
     virtual uInt getModifyCounter() const;
 
@@ -205,10 +208,10 @@ public:
     // </group>
 
     // Test if a column can be removed (no).
-    Bool canRemoveColumn (const String& columnName) const;
+    virtual Bool canRemoveColumn (const String& columnName) const;
 
     // Remove a column.
-    void removeColumn (const String& columnName);
+    virtual void removeColumn (const String& columnName);
 
     // Test if a column can be renamed (yes).
     virtual Bool canRenameColumn (const String& columnName) const;
@@ -260,7 +263,6 @@ private:
 
     ColumnSet*     colSetPtr_p;        //# pointer to set of columns
     Bool           tableChanged_p;     //# Has the main data changed?
-    Bool           unlockChanged_p;    //# Changed since last unlock?
     Bool           addToCache_p;       //# Is table added to cache?
     TableLockData* lockPtr_p;          //# pointer to lock object
     TableSyncData  lockSync_p;         //# table synchronization
