@@ -1,5 +1,5 @@
 //# ReadAsciiTable.h: Filling a table from an Ascii file
-//# Copyright (C) 1993,1994,1995,1999,2001
+//# Copyright (C) 1993,1994,1995,1999,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //# 
 //# This library is free software; you can redistribute it and/or modify it
@@ -31,6 +31,15 @@
 //# Includes
 #include <aips/aips.h>
 #include <aips/Utilities/String.h>
+#include <aips/Arrays/IPosition.h>
+
+// # Forward Declarations
+#include <aips/iosfwd.h>
+class Regex;
+class IPosition;
+class LogIO;
+class TableRecord;
+class TableColumn;
 
 
 // <summary>
@@ -70,11 +79,26 @@
 //        <li>            A     for ASCII data (must be enclosed in double
 //                              quotes if it contains one or more blanks)
 //      </ul>
+//        The type can optionally be followed by one or more positive numbers
+//        (separated by commas without whitespace) indicating that the column
+//        contains an array. The numbers give the shape of the array.
+//        E.g. <src>D2,4</src> defines a column containing arrays with
+//        shape [2,4]. It "consumes" 8 numbers in each input data line.
+//        The last column can contain a 0 in one of the shape numbers.
+//        It indicates that the arrays are variable shaped; it "consumes"
+//        all remaining numbers in each input data line. If needed,
+//        the arrays are filled with default values (0, False, or blank).
+//        E.g. <src>I0</src> indicates a variable shaped vector.
+//        <src>I0,4</src> with a line with remaining input
+//        <src>1 2 3 4 5 6 7 8 9</src> results in an array with shape [3,4]
+//        (filled with with 3 zeroes).
 // </ol>
 // If the <src>autoHeader</src> argument is True, the column definition
 // lines should not be given. It recognizes the types from the first data
 // line. It gives the names 'column0', etc. to the columns.
 // It can recognize integer, double, and string types.
+// It is possible to give a shape argument which has the same function
+// as the shape values discussed above.
 // <p>
 // There are two forms of the readAsciiTable function:
 // <ol>
@@ -148,8 +172,11 @@
 
 // Create a table with name as given by tableName.
 // If autoHeader==True, the format is automatically derived from the
-// first lines. It can recognize integer, double, and String types.
+// first data line. It can recognize integer, double, and String types.
 // The columns will be named column1, column2, etc..
+// If the autoShape argument is given with 1 or more axes, all values are
+// treated as a single column with the given shape. Note that one of the
+// can have length 0 indicating a variable shaped array.
 // If autoHeader==False, the layout of the table has to be defined in
 // the first 2 lines of the input file. The remaining lines in the
 // input file contain the data.
@@ -177,12 +204,13 @@ String readAsciiTable (const String& filein, const String& tableDescName,
 		       const String& tableName, Bool autoHeader = False,
 		       Char separator = ' ',
 		       const String& commentMarkerRegex = "",
-		       Int firstLine = 1, Int lastLine = -1);
+		       Int firstLine = 1, Int lastLine = -1,
+		       const IPosition& autoShape = IPosition());
 
 
 // This form reads TWO Ascii files. The first file may contain 
 // keywords and their values as well as the two lines described above for
-// the names and type of variables.  The second file is intended for data only.
+// the names and type of variables. The second file is intended for data only.
 //
 // When the tableDescName is not blank, the table description will
 // be stored in a table description file with the given name.
@@ -217,6 +245,110 @@ String readAsciiTable (const String& headerFile, const String& dataFile,
 // </group>
 
 // </group>
+
+
+
+
+// <summary>
+// Helper class for readAsciiTable
+// </summary>
+
+// <use visibility=local>
+
+// <synopsis>
+// This class contains static functions as helpers for readAsciiTable.
+// </synopsis>
+
+class ReadAsciiTable
+{
+public:
+  // Run the readAsciiTable.
+  static String run (const String& headerfile, const String& filein, 
+		     const String& tableproto, const String& tablename,
+		     Bool autoHeader, const IPosition& autoShape,
+		     Char separator,
+		     const String& commentMarkerRegex,
+		     Int firstLine, Int lastLine);
+
+private:
+  // Define types.
+  enum RATType {RATBool, RATShort, RATInt, RATFloat, RATDouble, RATString,
+		RATComX, RATComZ, RATDComX, RATDComZ};
+
+
+  // Do the actual run.
+  static String doRun (const String& headerfile, const String& filein, 
+		       const String& tableproto, const String& tablename,
+		       Bool autoHeader, const IPosition& autoShape,
+		       Char separator,
+		       Bool testComment, const Regex& commentMarker,
+		       Int firstLine, Int lastLine);
+
+  // Get the next line. Skip lines to be ignored.
+  // It returns False when no more lines are available.
+  static Bool getLine (ifstream& file, Int& lineNumber,
+		       char* line, Int lineSize,
+		       Bool testComment, const Regex& commentMarker,
+		       Int firstLine, Int lastLine);
+  
+  // Get the next part of the line using the separator as delimiter.
+  // Leading blanks are ignored.
+  static Int getNext (const Char* string, Int strlen, Char* result,
+		      Int& at, Char separator);
+  
+  // Derive the types from the values in the first data line.
+  static void getTypes (const IPosition& shape,
+			const Char* in, Int leng,
+			Char* string1, Char* string2, Char separator);
+
+  // Turn the string into a Bool value.
+  // Empty string, value 0 and any value starting with f, F, n or N are False.
+  static Bool makeBool (const String& str);
+
+  // Handle a keyword set.
+  static void handleKeyset (Int lineSize, char* string1,
+			    char* first, char* second,
+			    TableRecord& keysets,
+			    LogIO& logger,
+			    const String& fileName,
+			    ifstream& jFile,
+			    Int& lineNumber,
+			    Char separator,
+			    Bool testComment,
+			    const Regex& commentMarker,
+			    Int firstLine, Int lastLine);
+
+  // Get the shape and type from the type string.
+  static Int getTypeShape (const String& typestr,
+			   IPosition& shape, Int& type);
+  
+  // Get the next scalar value with the given type from string1.
+  static Bool getValue (char* string1, Int lineSize, char* first,
+			Int& at1, Char separator,
+			Int type, void* value);
+
+  // Handle the next scalar with the given type from the data line and
+  // put it into the table column.
+  static void handleScalar (char* string1, Int lineSize, char* first,
+			    Int& at1, Char separator,
+			    Int type,
+			    TableColumn& tabcol, uInt rownr);
+
+  // Get the next array with the given type from string1.
+  // It returns the shape (for variable shaped arrays).
+  static IPosition getArray (char* string1, Int lineSize, char* first,
+			     Int& at1, Char separator,
+			     const IPosition& shape, Int varAxis,
+			     Int type, void* valueBlock);
+
+  // Get the next array with the given type from the data line and
+  // put it into the table column.
+  static void handleArray (char* string1, Int lineSize, char* first,
+			   Int& at1, Char separator,
+			   const IPosition& shape, Int varAxis,
+			   Int type,
+			   TableColumn& tabcol, uInt rownr);
+};
 
 
 #endif
