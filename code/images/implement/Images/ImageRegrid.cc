@@ -538,20 +538,7 @@ Bool ImageRegrid<T>::insert (ImageInterface<T>& outImage,
    if (itsShowLevel>0) {
       cerr << "missedIt = " << missedIt << endl;
    }
-
-// Init output data and mask then overwrite.  There
-// will be some duplication of effort because of this
-
-   const Bool outIsMasked = outImage.isMasked() && outImage.hasPixelMask() &&
-                            outImage.pixelMask().isWritable();
-   outImage.set(0.0);
-   if (outIsMasked) {
-      Lattice<Bool>& mask = outImage.pixelMask();
-      mask.set(False);
-   }
-   if (missedIt) {
-      return False;
-   }
+   if (missedIt) return False;
 
 // Now trim blc/trc
 
@@ -581,6 +568,8 @@ Bool ImageRegrid<T>::insert (ImageInterface<T>& outImage,
    SubImage<T> inSub(inImage, inBox);
    SubImage<T> outSub(outImage, outBox, True);
 //
+   const Bool outIsMasked = outImage.isMasked() && outImage.hasPixelMask() &&
+                            outImage.pixelMask().isWritable();
    if (outIsMasked) {
       LatticeUtilities::copyDataAndMask(os, outSub, inSub);
    } else {
