@@ -462,7 +462,7 @@ Bool FITSTable::reopen(const String &fileName)
 
     io_p = new FitsInput(fileName.chars(), FITS::Disk);
     AlwaysAssert(io_p, AipsError);
-    if (io_p->err()) {
+    if (io_p->err() || io_p->eof()) {
 	return False;
     }
     // construct the primary HDU keywords record
@@ -508,7 +508,7 @@ Bool FITSTable::reopen(const String &fileName)
 	io_p->skip_hdu();
     }
 
-    if (io_p->err()) {
+    if (io_p->err() || io_p->eof()) {
 	return False;
     }
     
@@ -1594,6 +1594,25 @@ void FITSTable::clear_self()
 const Record &FITSTable::currentRow() const
 {
     return row_p;
+}
+
+void FITSTable::move(Int torow) {
+    // we can only move within the table and only ahead
+    // if we have to change the rownr, set result to False to
+    // indicate that the result might not be where the user
+    if (torow < rownr()) torow = rownr();
+    if (torow >= Int(nrow())) torow = Int(nrow()) - 1;
+    // if we are already there, just return
+    if (torow == rownr()) return;
+
+    // use the native FITS classes to move
+    while (row_nr_p < torow) {
+	row_nr_p++;
+	if (!theheap_p) raw_table_p->read(1);
+	else ++(*raw_table_p);
+    }
+    // and fill this row
+    if (isValid()) fill_row();
 }
 
 Bool FITSTable::pastEnd() const
