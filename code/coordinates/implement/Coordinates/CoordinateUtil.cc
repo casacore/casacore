@@ -1604,10 +1604,25 @@ Bool CoordinateUtil::dropRemovedAxes (CoordinateSystem& cSysOut,
 
 
 CoordinateSystem CoordinateUtil::makeBinnedCoordinateSystem (const IPosition& factors,
-                                                             const CoordinateSystem& cSysIn)
+                                                             const CoordinateSystem& cSysIn,
+                                                             Bool failOnStokes)
 {
    const uInt nDim = factors.nelements();
    AlwaysAssert(cSysIn.nPixelAxes()==nDim,AipsError);
+
+// Check Stokes.
+
+   if (failOnStokes) {  
+      Int coord, axisInCoord;
+      for (uInt i=0; i<nDim; i++) {
+         if (factors(i) != 1) {
+            cSysIn.findPixelAxis(coord, axisInCoord, i);
+            if (cSysIn.type(coord) == Coordinate::STOKES) {
+               throw (AipsError ("You cannot rebin a Stokes axis"));
+            }
+         }
+      }
+   }
    
 // Set output values
 

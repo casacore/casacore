@@ -486,8 +486,10 @@ static Bool dropRemovedAxes (CoordinateSystem& cSysOut, const CoordinateSystem& 
   static Bool cylindricalFix (CoordinateSystem& cSys, String& errorMessage, const IPosition& shape);
 
   // Apply the binning factors to the CS and create a new one reflecting the binning
+  // You can optionally throw an exception if factors is non-unit for any Stokes axis
   static CoordinateSystem makeBinnedCoordinateSystem (const IPosition& factors,
-                                                      const CoordinateSystem& cSysIn);
+                                                      const CoordinateSystem& cSysIn,
+                                                      Bool failOnStokes=False);
 };
 
 #endif
