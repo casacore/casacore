@@ -142,6 +142,14 @@ void BaseMappedArrayEngine<SourceType, TargetType>::create (uInt initialNrrow)
 template<class SourceType, class TargetType>
 void BaseMappedArrayEngine<SourceType, TargetType>::prepare()
 {
+    prepare1();
+    prepare2();
+}
+
+
+template<class SourceType, class TargetType>
+void BaseMappedArrayEngine<SourceType, TargetType>::prepare1()
+{
     //# Get the name of the target column from the keywords in the
     //# source column.
     ROTableColumn thisCol (table(), sourceName_p);
@@ -163,6 +171,11 @@ void BaseMappedArrayEngine<SourceType, TargetType>::prepare()
     if (isWritable()) {
 	column_p = new ArrayColumn<TargetType> (table(), targetName_p);
     }
+}
+
+template<class SourceType, class TargetType>
+void BaseMappedArrayEngine<SourceType, TargetType>::prepare2()
+{
     //# Add the initial number of rows (thus only done after create).
     //# This will set the shape of the target arrays when needed.
     if (initialNrrow_p > 0) {
