@@ -184,7 +184,7 @@ DataManager* SetupNewTableRep::getDataManager (const DataManager& dataMan)
     //# that another original is allocated at the same address.
     //# So also test if the original is indeed cloned.
     DataManager* dmp = (DataManager*) (dataManMap_p((void*)&dataMan));
-    if (dmp == 0  ||  dmp->getClone() == 0) {
+    if (dmp == 0  ||  dataMan.getClone() == 0) {
 	//# Not cloned yet, so clone it.
 	//# Add it to the map in the ColumnSet object.
 	//# Tell the original object that it has been cloned.
