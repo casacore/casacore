@@ -37,7 +37,7 @@
 #include <aips/Containers/Block.h>
 
 //# Forward Declarations
-template <class T> class LatticeCleanerProgress;
+class LatticeCleanProgress;
 template <class T> class TempLattice;
 
 // <summary>Lists the different types of Convolutions that can be done</summary>
@@ -128,7 +128,7 @@ public:
   void startingIteration(const Int starting = 0) {itsStartingIter = starting; }
 
   // Clean an image. 
-  Bool clean(Lattice<T> & model, LatticeCleanerProgress<T>* progress=0);
+  Bool clean(Lattice<T> & model, LatticeCleanProgress* progress=0);
 
   // Set the mask
   void setMask(Lattice<T> & mask);
@@ -251,6 +251,8 @@ private:
   Bool itsStopAtLargeScaleNegative;
   Int itsStopPointMode;
   Bool itsDidStopPointMode;
+  Bool itsJustStarting;
+
 
 };
 #endif

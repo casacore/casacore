@@ -33,7 +33,7 @@
 #include <aips/Containers/Record.h>
 
 #include <trial/Lattices/LatticeCleaner.h>
-#include <trial/Lattices/LatticeCleanerProgress.h>
+#include <trial/Lattices/LatticeCleanProgress.h>
 #include <aips/Lattices/TiledLineStepper.h> 
 #include <aips/Lattices/LatticeStepper.h> 
 #include <aips/Lattices/LatticeNavigator.h> 
@@ -99,8 +99,8 @@ LatticeCleaner<T>::LatticeCleaner(const Lattice<T> & psf,
   itsSmallScaleBias(0.6),
   itsStopAtLargeScaleNegative(False),
   itsStopPointMode(-1),
-  itsDidStopPointMode(False)
-  
+  itsDidStopPointMode(False),
+  itsJustStarting(True)
 {
   AlwaysAssert(validatePsf(psf), AipsError);
   // Check that everything is the same dimension and that none of the
@@ -147,7 +147,8 @@ LatticeCleaner(const LatticeCleaner<T> & other):
    itsSmallScaleBias(other.itsSmallScaleBias),
    itsStopAtLargeScaleNegative(other.itsStopAtLargeScaleNegative),
    itsStopPointMode(other.itsStopPointMode),
-   itsDidStopPointMode(other.itsDidStopPointMode)
+   itsDidStopPointMode(other.itsDidStopPointMode),
+   itsJustStarting(other.itsJustStarting)
 {
 }
 
@@ -168,6 +169,7 @@ operator=(const LatticeCleaner<T> & other) {
     itsStopAtLargeScaleNegative = other.itsStopAtLargeScaleNegative;
     itsStopPointMode = other.itsStopPointMode;
     itsDidStopPointMode = other.itsDidStopPointMode;
+    itsJustStarting = other.itsJustStarting;
 
   }
   return *this;
@@ -232,7 +234,7 @@ void LatticeCleaner<T>::speedup(const Float nDouble)
 // Do the clean as set up
 template <class T>
 Bool LatticeCleaner<T>::clean(Lattice<T>& model,
-			      LatticeCleanerProgress<T>* progress)
+			      LatticeCleanProgress* progress)
 {
   AlwaysAssert(model.shape()==itsDirty->shape(), AipsError);
 
@@ -397,11 +399,12 @@ Bool LatticeCleaner<T>::clean(Lattice<T>& model,
 
 
     if(progress) {
-      progress->info(False, itsIteration, itsMaxNiter, model, maxima,
+      progress->info(False, itsIteration, itsMaxNiter, maxima,
 		     posMaximum, strengthOptimum,
 		     optimumScale, positionOptimum,
 		     totalFlux, totalFluxScale,
-		     itsDirtyConvScales, (Bool)(itsIteration==itsStartingIter) );
+		     itsJustStarting );
+      itsJustStarting = False;
     } else if ((itsIteration % 20) == 0) {
       if (itsIteration == 0) {
 	os << "ItsIteration    Resid   CleanedFlux" << LogIO::POST;
@@ -464,11 +467,10 @@ Bool LatticeCleaner<T>::clean(Lattice<T>& model,
 
   // Finish off the plot, etc.
   if(progress) {
-    progress->info(True, itsIteration, itsMaxNiter, model, maxima, posMaximum,
+    progress->info(True, itsIteration, itsMaxNiter, maxima, posMaximum,
 		   strengthOptimum,
 		   optimumScale, positionOptimum,
-		   totalFlux, totalFluxScale,
-		   itsDirtyConvScales);
+		   totalFlux, totalFluxScale);
   }
 
   if(!converged) {
