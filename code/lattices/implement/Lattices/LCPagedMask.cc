@@ -1,5 +1,5 @@
 //# LCPagedMask.cc: Class to define a rectangular mask of interest
-//# Copyright (C) 1997,1998,1999
+//# Copyright (C) 1997,1998,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -30,8 +30,6 @@
 #include <aips/Arrays/Vector.h>
 #include <aips/OS/Path.h>
 #include <aips/Exceptions/Error.h>
-
-typedef Vector<Int> lcpagedmask_gppbug1;
 
 
 LCPagedMask::LCPagedMask()
@@ -121,8 +119,13 @@ LCRegion* LCPagedMask::cloneRegion() const
 
 void LCPagedMask::handleDelete()
 {
-    // Mark the table for delete by opening it for delete.
-    Table dummy(itsMask.tableName(), Table::Delete);
+    // Test if the table can be deleted (i.e. is not used elsewhere).
+    Table dummy(itsMask.tableName());
+    if (dummy.isMultiUsed (True)) {
+      throw (AipsError("Cannot delete the mask (used in another process)"));
+    }
+    // Mark the table for delete, so the destructor will delete it.
+    dummy.markForDelete();
 }
 
 void LCPagedMask::handleRename (const String& newName, Bool overwrite)
