@@ -59,7 +59,8 @@ void setStokes (ImageInterface<Float>*& pIm, Float i, Float q, Float u, Float v,
 void setStokes (ImageInterface<Float>*& pIm, uInt stokesAxis, 
                 uInt spectralAxis, Float rm, Float pa0);
 void traditionalRotationMeasure (Double rm, Double rmFg, Double rmMax, Double pa0,
-                                 LogIO& os);
+                                 Double dF, Int nchan,
+                                 LogIO& os, const String& plotter);
 void fourierRotationMeasure (Double rm, const String& plotter, LogIO& os);
 
 main (int argc, char **argv)
@@ -76,13 +77,17 @@ try {
    inputs.create("rm", "-9999.0", "rm (rad/m/m)");
    inputs.create("rmmax", "-1.0", "rmmax (rad/m/m)");
    inputs.create("rmfg", "0.0", "rmfg (rad/m/m)");
-   inputs.create("pa0", "-20.0", "pa0 (deg)");
+   inputs.create("pa0", "0.0", "pa0 (deg)");
+   inputs.create("dF", "128e6", "dF (Hz)");
+   inputs.create("nchan", "32", "nchan");
    inputs.readArguments(argc, argv);
    const String plotter = inputs.getString("plotter");
    const Double rm = inputs.getDouble("rm");            // rad/m/m
    const Double rmMax = inputs.getDouble("rmmax");            // rad/m/m
    const Double rmFg = inputs.getDouble("rmfg");            // rad/m/m
    const Double pa0 = inputs.getDouble("pa0");           // deg
+   const Double dF = inputs.getDouble("dF");           // Hz
+   const Int nchan = inputs.getInt("nchan");     
 
 //
    LogOrigin or("tImagePolarimetry", "main()", WHERE);
@@ -96,6 +101,7 @@ try {
    Float iVal = sqrt(qVal*qVal + uVal*uVal + vVal*vVal);
 
 // First do what we can without noise
+
    {
      os << LogIO::NORMAL << "Tests with no noise" << LogIO::POST;
      const uInt size = 10;
@@ -265,16 +271,17 @@ try {
      fourierRotationMeasure(rm, plotter, os);
    }
 
+
 // Traditional rotation measure
 
    {
      os << LogIO::NORMAL << "Test traditional Rotation Measure" << LogIO::POST;
-     traditionalRotationMeasure(rm, rmFg, rmMax, pa0, os);
+     traditionalRotationMeasure(rm, rmFg, rmMax, pa0, dF, nchan, os, plotter);
 //
      Double rm0 = 10000.0;
      Double dRm = rm0 / 9.0;
      for (Double x=-rm0; x<rm0; x+=dRm) {
-        traditionalRotationMeasure(x, rmFg, x, pa0, os);
+        traditionalRotationMeasure(x, rmFg, x, pa0, dF, nchan, os, plotter);
      }
    }
 
@@ -420,23 +427,23 @@ ImageInterface<Float>* makeQUImage (Double& sigma, Double pa0, Double rm,
 
 
 void traditionalRotationMeasure (Double rm, Double rmFg, Double rmMax, 
-                                 Double pa0, LogIO& os)
+                                 Double pa0, Double dF, Int nchan, LogIO& os,
+                                 const String& plotter)
 {
 
 // Make image with Q and U
 
    const Double f0 = 1.4e9;
-   const Double dF = 128e6;
-   const uInt nchan = 32;
 
 // If RM not given, choose so no ambiguity between channels
      
    if (rm==-9999.0) {
+      Double df = dF / Double(nchan);
       Double l1 = QC::c.getValue(Unit("m/s")) / f0;
-      Double l2 = QC::c.getValue(Unit("m/s")) / (f0+dF);
+      Double l2 = QC::c.getValue(Unit("m/s")) / (f0+df);
       rm = C::pi / 2 / (l1*l1 - l2*l2);
    }
-   if (rmMax<0) rmMax = rm;
+   if (rmMax<0) rmMax = 1.1*rm;
    os << "rm, rmMax, rmFg, pa0 = " << rm << ", " << rmMax << ", " << rmFg << ", " << pa0 << LogIO::POST;
    Double sigma;
    pa0 *= C::pi/180.0;  // rad
@@ -445,6 +452,25 @@ void traditionalRotationMeasure (Double rm, Double rmFg, Double rmMax,
 // Find rm, pa0 and error images
 
    ImagePolarimetry pol(*pIm);
+
+// Make plot of P.A.
+
+   if (!plotter.empty()) {
+      ImageExpr<Float> ie = pol.linPolPosAng(False);
+      uInt nchan = ie.shape()(3);
+      IPosition blc(ie.ndim(),0);
+      IPosition trc(ie.ndim(),0);
+      trc(3) = nchan - 1;
+      Array<Float> y = ie.getSlice(blc, trc-blc+1, True);
+      Vector<Float> yy(y);
+      Vector<Float> xx(nchan);
+      for (uInt i=0; i<nchan; i++) xx(i) = i;
+//
+       PGPlotter pl(plotter);
+       pl.env(xx(0), xx(nchan-1), yy(nchan-1), yy(0), 0, 0);
+       pl.line(xx, yy);
+    }
+
    CoordinateSystem cSysRM;
    Int fAxis, sAxis;
    IPosition shapeRM = pol.rotationMeasureShape(cSysRM, fAxis, sAxis, os, -1);
