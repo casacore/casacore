@@ -3522,3 +3522,4 @@
 13 295 sys rm lib/libtrial.a
 13 295 sys rm lib/libtrial.so
 13 297 src mv display/implement/X11PixelCanvass display/implement/X11PixelCanvas
+13 297 src mv trial/implement/Display/X11PCDisplayListObject.h display/implement/X11PixelCanvas/X11PCDisplayListObject.h
