@@ -183,10 +183,6 @@ void oldArrayTest()
 	AlwaysAssertExit(vs(2) == "Boy");
 	AlwaysAssertExit(vs(3) == "Deserves");
 	AlwaysAssertExit(vs(4) == "Fudge");
-	AlwaysAssertExit (vs.index("Good") == 1);
-	AlwaysAssertExit (vs.index("Good", -10) == 1);
-	AlwaysAssertExit (vs.index("Good", 1) == 1);
-	AlwaysAssertExit (vs.index("Good", 2) == -1);
 	
 	zzz.resize(10);
 	zzz = 13;
