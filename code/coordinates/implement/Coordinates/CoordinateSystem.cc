@@ -1,5 +1,5 @@
 //# CoordinateSystem.h: Interconvert pixel and image coordinates. 
-//# Copyright (C) 1997,1998
+//# Copyright (C) 1997,1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -1059,7 +1059,7 @@ Bool CoordinateSystem::setLinearTransform(const Matrix<Double> &xform)
 	uInt nrow = tmp.nrow();
 	uInt ncol = tmp.ncolumn();
 	for (uInt j=0; j<nrow; j++) {
-	    for (uInt k=0; j<ncol; k++) {
+	    for (uInt k=0; k<ncol; k++) {
 		Int whichrow = world_maps_p[i]->operator[](j);
 		Int whichcol = pixel_maps_p[i]->operator[](k);
 		if (whichrow >= 0 && whichcol >= 0) {
