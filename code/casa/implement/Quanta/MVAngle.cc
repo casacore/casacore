@@ -34,6 +34,7 @@
 #include <aips/Measures/QMath.h>
 #include <aips/Measures/MUString.h>
 #include <aips/Tasking/Aipsrc.h>
+#include <aips/Tasking/AppInfo.h>
 
 #ifdef __GNUG__
 typedef Quantum<Double> gpp_mvangle_bug1;
@@ -44,7 +45,6 @@ typedef Quantum<Double> gpp_mvangle_bug1;
 MVAngle::Format MVAngle::defaultFormat = MVAngle::Format();
 MVAngle::Format MVAngle::interimFormat = MVAngle::Format();
 Bool MVAngle::interimSet = False;
-Double MVAngle::tzone = -1000.;
 
 //# Constructors
 MVAngle::MVAngle() : 
@@ -201,23 +201,9 @@ String MVAngle::string(const MVAngle::Format &form) const {
     return oss;
 }
 
-const Double &MVAngle::timeZone() {
-  if (MVAngle::tzone < -100.0) {
-    String val;
-    if (Aipsrc::find(val, "system.time.tzoffset")) {
-      MUString in(val);
-      Double s = in.getSign();
-      Double r = in.getuInt();
-      if (in.tSkipChar(':')) {
-	r += Double(in.getuInt())/60.0;
-      };
-      tzone = s*r/24.0;
-    } else {
-      MVAngle::tzone = 0;
-    };
-  } 
-  return tzone;
-}  
+Double MVAngle::timeZone() {
+  return AppInfo::timeZone();
+}
 
 void MVAngle::print(ostream &oss,
 		    const MVAngle::Format &form) const {

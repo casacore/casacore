@@ -362,7 +362,7 @@ class MVAngle {
 // Get code belonging to string. 0 if not known
      static MVAngle::formatTypes  giveMe(const String &in);
   // Get time zone offset (in days)
-  static const Double &timeZone();
+  static Double timeZone();
 
     private:
 //# Data
@@ -375,8 +375,6 @@ class MVAngle {
     static MVAngle::Format interimFormat;
     static Bool interimSet;
 // </group>
-  // Time zone (in days)
-  static Double tzone;
 
 //# Member functions
 };
