@@ -1,5 +1,5 @@
 //# ImageSummary.cc:  list an image header
-//# Copyright (C) 1995,1996,1997
+//# Copyright (C) 1995,1996,1997,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -25,8 +25,6 @@
 //#
 //# $Id$
 //
-#include <trial/Images/ImageSummary.h>
-
 #include <aips/aips.h>
 #include <aips/Arrays.h>
 #include <trial/Coordinates.h>
@@ -46,6 +44,8 @@
 
 #include <iomanip.h>
 #include <iostream.h>
+
+#include <trial/Images/ImageSummary.h>
 
 template <class T>
 ImageSummary<T>::ImageSummary (const ImageInterface<T>& image)
