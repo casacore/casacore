@@ -47,6 +47,7 @@
 #include <trial/Lattices/PagedArray.h>
 #include <trial/Lattices/TiledLineStepper.h>
 #include <trial/Tasking/ProgressMeter.h>
+#include <trial/Tasking/PGPlotter.h>
 
 #include <iomanip.h>
 #include <stdlib.h>
@@ -91,7 +92,6 @@ ImageHistograms<T>::ImageHistograms (const ImageInterface<T>& imageU,
    blc_p.resize(0);
    trc_p.resize(0);
    inc_p.resize(0);
-   device_p = "";
    nxy_p.resize(0); 
    range_p.resize(0);
 
@@ -129,7 +129,7 @@ ImageHistograms<T>::ImageHistograms(const ImageHistograms<T> &other)
                         blc_p(other.blc_p),
                         trc_p(other.trc_p),
                         inc_p(other.inc_p),
-                        device_p(other.device_p),
+                        plotter_p(other.plotter_p),
                         cursorAxes_p(other.cursorAxes_p),
                         displayAxes_p(other.displayAxes_p),
                         nxy_p(other.nxy_p),
@@ -190,7 +190,7 @@ ImageHistograms<T> &ImageHistograms<T>::operator=(const ImageHistograms<T> &othe
       inc_p = other.inc_p;
       cursorAxes_p = other.cursorAxes_p;
       displayAxes_p = other.displayAxes_p;
-      device_p = other.device_p;
+      plotter_p = other.plotter_p;
       nxy_p = other.nxy_p;
       range_p = other.range_p;
    }
@@ -397,7 +397,7 @@ Bool ImageHistograms<T>::setStatsList (const Bool& doListU)
 
 
 template <class T>
-Bool ImageHistograms<T>::setPlotting(const String& deviceU,
+Bool ImageHistograms<T>::setPlotting(const PGPlotter& plotterU,
                                      const Vector<Int>& nxyU)
 //
 // Assign the desired PGPLOT device name and number
@@ -412,7 +412,7 @@ Bool ImageHistograms<T>::setPlotting(const String& deviceU,
 
 // Plotting device and subplots.  nxy_p is set to [1,1] if zero length
  
-   device_p = deviceU;
+   plotter_p = plotterU;
    nxy_p.resize(0);
    nxy_p = nxyU;
    ostrstream os;
@@ -703,15 +703,19 @@ Bool ImageHistograms<T>::displayHistograms ()
 // Display the histograms as a function of the display axes
 //
 {
-// Open plotting device
+// Set up for plotting
 
-    if(cpgbeg(0, device_p.chars(), nxy_p(0), nxy_p(1)) != 1) {
-       os_p << LogIO::SEVERE << "Cannot open display device" << LogIO::POST;
-       return False;
-    }
-    cpgask(1);
-    cpgsch (1.2);
-    cpgsvp(0.1,0.9,0.1,0.9);
+
+   if (plotter_p.isAttached()) {
+      plotter_p.subp(nxy_p(0), nxy_p(1));
+      plotter_p.ask(True);
+      plotter_p.sch(1.2);
+      plotter_p.svp(0.1,0.9,0.1,0.9);
+   } else {
+      os_p << LogIO::SEVERE << "Plotter is not attached" << LogIO::POST;
+      return False;
+   }
+
       
       
 // Set up iterator to work through histogram storage image line by line.
@@ -763,14 +767,13 @@ Bool ImageHistograms<T>::displayHistograms ()
 
 // Display the histogram
 
-      if (!displayOneHistogram (linearSum, linearYMax, histIterator.position(), 
-                                range, stats, values, counts)) return False;
+      if (!displayOneHistogram (linearSum, linearYMax, 
+                                histIterator.position(), 
+                                range, stats, values, 
+                                counts, plotter_p)) return False;
     
    }
       
-// Close plotting device
- 
-   cpgend();
    return True;
 }
  
@@ -782,7 +785,8 @@ Bool ImageHistograms<T>::displayOneHistogram (const Float &linearSum,
                                               const Vector<T>& range,
                                               const Vector<Double> &stats,
                                               const Vector<Float>& values,
-                                              const Vector<Float>& counts)
+                                              const Vector<Float>& counts,
+                                              PGPlotter& plotter)
 
 //
 // Display the histogram and optionally the equivalent Gaussian
@@ -898,53 +902,36 @@ Bool ImageHistograms<T>::displayOneHistogram (const Float &linearSum,
       
 // Generate abcissa and ordinate arrays for plotting
     
-   Bool deleteItX;
-   const float* px = values.getStorage(deleteItX);
-   Bool deleteItY;
-   const float* py = counts.getStorage(deleteItY);
-    
    
 // Plot
          
-   cpgpage();
-   cpgswin(xMin, xMax, 0.0, yMax);
-   cpgbox("BCNST", 0.0, 0, "BCNST", 0.0, 0);
-   plotHist (nBins, px, py);
-      
-   counts.freeStorage(px, deleteItX);
-   counts.freeStorage(py, deleteItY);
-   
-   if (doGauss2) {
-      Bool deleteItX;
-      const float* px = gX.getStorage(deleteItX); 
-      Bool deleteItY;
-      const float* py = gY.getStorage(deleteItY);
-                 
-      cpgline (nGPts, px, py);
-                 
-      gX.freeStorage(px, deleteItX);
-      gY.freeStorage(py, deleteItY);
-   }
+   plotter.page();
+   plotter.swin(xMin, xMax, 0.0, yMax);
+   plotter.box("BCNST", 0.0, 0, "BCNST", 0.0, 0);
+   plotHist (values, counts, plotter);
+   if (doGauss2) plotter.line (gX, gY);
  
 // Label
   
    if (doCumu_p) {
-      if (doLog_p)
-         cpglab("Pixel Value", "Log10 (Cumulative Counts)", "");
-      else
-         cpglab("Pixel Value", "Cumulative Counts", "");
+      if (doLog_p) {
+         plotter.lab("Pixel Value", "Log10 (Cumulative Counts)", "");
+      } else {
+         plotter.lab("Pixel Value", "Cumulative Counts", "");
+      }
    }
    else {
-      if (doLog_p)
-         cpglab("Pixel Value", "Log10 (Counts)", "");
-      else
-         cpglab("Pixel Value", "Counts", "");
+      if (doLog_p) {
+         plotter.lab("Pixel Value", "Log10 (Counts)", "");
+      } else {
+         plotter.lab("Pixel Value", "Counts", "");
+      }
    }
    
       
 // Write values of the display axes on the plot
  
-   if (!writeDispAxesValues (histPos, xMin, yMax)) return False;
+   if (!writeDispAxesValues (histPos, xMin, yMax, plotter)) return False;
 
    return True;
 }
@@ -1588,28 +1575,24 @@ void ImageHistograms<T>::makeLogarithmic (Vector<Float>& counts,
 
 
 template <class T>
-void ImageHistograms<T>::plotHist (const Int& n, 
-                                   const float* const px,
-                                   const float* const py)
-//
-// Inputs
-//   n      Number of points
-//   px,py  Abcissa and ordinate arrays to plot
-//
+void ImageHistograms<T>::plotHist (const Vector<Float>& x,
+                                   const Vector<Float>& y,
+                                   PGPlotter& plotter)
 { 
-   const Float width = (px[1] - px[0]) / 2.0;
-   for (Int i=0; i<n; i++) {
-      float xx = px[i] - width;
+   const Float width = (x(1) - x(0)) / 2.0;
+   Float xx;
+   for (Int i=0; i<x.nelements(); i++) {
+      xx = x(i) - width;
  
-      cpgmove (xx, 0.0);
-      cpgdraw (xx, py[i]);
+      plotter.move (xx, 0.0);
+      plotter.draw (xx, y(i));
                           
-      cpgmove (xx, py[i]);
-      xx = px[i] + width;
-      cpgdraw (xx, py[i]);
+      plotter.move (xx, y(i));
+      xx = x(i) + width;
+      plotter.draw (xx, y(i));
    
-      cpgmove (xx, py[i]);
-      cpgdraw (xx, 0.0);
+      plotter.move (xx, y(i));
+      plotter.draw (xx, 0.0);
     }
 }
 
@@ -1754,7 +1737,8 @@ void ImageHistograms<T>::statsAccum (Vector<Double>& stats,
 template <class T>
 Bool ImageHistograms<T>::writeDispAxesValues (const IPosition& histPos,
                                               const Float& xMin,
-                                              const Float& yMax)
+                                              const Float& yMax,
+                                              PGPlotter& plotter)
 {
    
 // Fill the string stream with the name and value of each display axis
@@ -1782,20 +1766,20 @@ Bool ImageHistograms<T>::writeDispAxesValues (const IPosition& histPos,
    
 // Write on plot
  
-      float xb[4], yb[4];
-      cpgqtxt (0.0, 0.0, 0.0, 0.0, "X", xb, yb);
-      float dx = xb[3] - xb[0];
-      cpgqtxt (0.0, 0.0, 0.0, 0.0, tLabel, xb, yb);
-      float dy = yb[1] - yb[0];
+      Vector<Float> box(8);
+      box = plotter.qtxt (0.0, 0.0, 0.0, 0.0, "X");
+      Float dx = box(3) - box(0);
+
+      box = plotter.qtxt (0.0, 0.0, 0.0, 0.0, tLabel);
+      Float dy = box(5) - box(4);
                            
-      float mx = xMin + dx; 
-      float my = yMax + 0.5*dy;
+      Float mx = xMin + dx; 
+      Float my = yMax + 0.5*dy;
       
-      int tbg;
-      cpgqtbg(&tbg);
-      cpgstbg(0);
-      cpgptxt (mx, my, 0.0, 0.0, tLabel);
-      cpgstbg(tbg);
+      Int tbg = plotter.qtbg();
+      plotter.stbg(0);
+      plotter.ptxt (mx, my, 0.0, 0.0, tLabel);
+      plotter.stbg(tbg);
    }
 
    return True;
