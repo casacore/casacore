@@ -49,7 +49,7 @@
 #define traceFSEEK fseek
 #define traceFREAD fread
 #define traceFWRITE fwrite
-#endif PABLO_IO
+#endif // PABLO_IO
 
 FilebufIO::FilebufIO()
 : itsOwner     (False),
@@ -187,7 +187,7 @@ void FilebufIO::write (uInt size, const void* buf)
 	traceFSEEK (itsFile, 0, SEEK_CUR);
 	itsReadDone = False;
     }
-    if (traceFWRITE (buf, 1, size, itsFile) != size) {
+    if (traceFWRITE ((char *)buf, 1, size, itsFile) != size) {
 	throw (AipsError ("FilebufIO: error while writing " + fileName()));
     }
     itsWriteDone = True;
@@ -205,7 +205,7 @@ Int FilebufIO::read (uInt size, void* buf, Bool throwException)
 	traceFSEEK (itsFile, 0, SEEK_CUR);
 	itsWriteDone = False;
     }
-    Int bytesRead = ::traceFREAD (buf, 1, size, itsFile);
+    Int bytesRead = traceFREAD ((char *)buf, 1, size, itsFile);
     itsReadDone = True;
     if (bytesRead < 0 || bytesRead > Int(size)) {
       throw (AipsError ("FilebufIO::read - fread returned a bad value"));
