@@ -1,5 +1,5 @@
 //# StokesCoordinate.cc: this defines StokesCoordinate which shoe-horns Stokes axes into a Coordinate
-//# Copyright (C) 1997,1998,1999,2000,2001
+//# Copyright (C) 1997,1998,1999,2000,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -195,9 +195,11 @@ void StokesCoordinate::setStokes (const Vector<Int> &whichStokes)
     Block<Bool> alreadyUsed(Stokes::NumberOfTypes);
     alreadyUsed = False;
     for (uInt i=0; i<whichStokes.nelements(); i++) {
+/*
 	if (Stokes::type(whichStokes(i))== Stokes::Undefined) {
            throw(AipsError("You have specified an Undefined Stokes type"));
         }
+*/
 	if (alreadyUsed[whichStokes(i)]) {
            throw(AipsError("You have specified the same Stokes more than once"));
         }
