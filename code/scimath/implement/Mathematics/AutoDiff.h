@@ -1,5 +1,5 @@
 //# AutoDiff.h: an automatic differential class for parameterized functions
-//# Copyright (C) 1995,1998
+//# Copyright (C) 1995,1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -35,11 +35,6 @@
 
 // <summary>
 // Class that computes partial derivatives by automatic differentiation.
-// It does this by storing the value of a function and the values of its first 
-// derivatives with respect to its independent parameters.  When a mathematical
-// operation is applied to an AutoDiff object, the derivative values of the 
-// resulting new object are computed according to chain rules 
-// of differentiation.
 // </summary>
 //
 // <reviewed reviewer="" date="yyyy/mm/dd" tests="tAutoDiff.cc" demos="">
@@ -55,6 +50,13 @@
 // </etymology>
 //
 // <synopsis>
+// Class that computes partial derivatives by automatic differentiation.
+// It does this by storing the value of a function and the values of its first 
+// derivatives with respect to its independent parameters.  When a mathematical
+// operation is applied to an AutoDiff object, the derivative values of the 
+// resulting new object are computed according to chain rules 
+// of differentiation.
+
 // Suppose we have a function f(x0,x1,...,xn) and its differential is
 // <srcblock> 
 // df = (df/dx0)*dx0 + (df/dx1)*dx1 + ... + (df/dxn)*dxn
