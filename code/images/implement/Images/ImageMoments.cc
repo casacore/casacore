@@ -98,6 +98,8 @@ ImageMoments<T>::ImageMoments (const ImageInterface<T>& image,
    inc_p.resize(0);
    peakSNR_p = 3;
    stdDeviation_p = 0.0;
+   yMin_p = 0.0;
+   yMax_p = 0.0;
    device_p = "";
    out_p = "";
    psfOut_p = "";
@@ -108,6 +110,7 @@ ImageMoments<T>::ImageMoments (const ImageInterface<T>& image,
    doSmooth_p = False;
    noInclude_p = True;
    noExclude_p = True;
+   fixedYLimits_p = False;
 
    if (setNewImage(image)) {
 
@@ -144,6 +147,8 @@ ImageMoments<T>::ImageMoments(const ImageMoments<T> &other)
                         inc_p(other.inc_p),
                         peakSNR_p(other.peakSNR_p),
                         stdDeviation_p(other.stdDeviation_p),
+                        yMin_p(other.yMin_p),
+                        yMax_p(other.yMax_p),
                         device_p(other.device_p),
                         out_p(other.out_p),
                         psfOut_p(other.psfOut_p),
@@ -154,7 +159,8 @@ ImageMoments<T>::ImageMoments(const ImageMoments<T> &other)
                         doAuto_p(other.doAuto_p),
                         doSmooth_p(other.doSmooth_p),
                         noInclude_p(other.noInclude_p),
-                        noExclude_p(other.noExclude_p)
+                        noExclude_p(other.noExclude_p),
+                        fixedYLimits_p(other.fixedYLimits_p)
 //
 // Copy constructor
 //
@@ -207,6 +213,8 @@ ImageMoments<T> &ImageMoments<T>::operator=(const ImageMoments<T> &other)
       inc_p = other.inc_p;
       peakSNR_p = other.peakSNR_p;
       stdDeviation_p = other.stdDeviation_p;
+      yMin_p = other.yMin_p;
+      yMax_p = other.yMax_p;
       device_p = other.device_p;
       out_p = other.out_p;
       psfOut_p = other.psfOut_p;
@@ -218,6 +226,7 @@ ImageMoments<T> &ImageMoments<T>::operator=(const ImageMoments<T> &other)
       doSmooth_p = other.doSmooth_p;
       noInclude_p = other.noInclude_p;
       noExclude_p = other.noExclude_p;
+      fixedYLimits_p = other.fixedYLimits_p;
 
       return *this;
    }
@@ -636,7 +645,8 @@ Bool ImageMoments<T>::setSmoothOutName(const String& smoothOutU)
 
 template <class T>
 Bool ImageMoments<T>::setPlotting(const String& deviceU,
-                                  const Vector<Int>& nxyU)
+                                  const Vector<Int>& nxyU,
+                                  const Bool yIndU)
 //   
 // Assign the desired PGPLOT device name and number
 // of subplots
@@ -648,6 +658,7 @@ Bool ImageMoments<T>::setPlotting(const String& deviceU,
    }
 
    device_p = deviceU;
+   fixedYLimits_p = ToBool(!yIndU);
    nxy_p.resize(0);
    nxy_p = nxyU;
    if (!ImageUtilities::setNxy(nxy_p, os_p.output())) {
@@ -792,14 +803,40 @@ Bool ImageMoments<T>::createMoments()
       }
    }
 
-// Make sure we can do what user asks for.
+// Make sure we can do what user asks for.  They must give the plotting
+// device for interactive methods.  Plotting can be invoked passively
+// for other methods.
 
    if ( ((doWindow_p && !doAuto_p) ||
          (!doWindow_p && doFit_p && !doAuto_p)) && device_p.empty()) {
       os_p << LogIO::SEVERE << "You have not given a plotting device" << LogIO::POST;
       return False;
-   }
+   } 
+
+
+// The big check
+
    if (!checkMethod()) return False;
+
+
+// Try and set some useful Booools.
+
+   Bool smoothClipMethod = False;
+   Bool windowMethod = False;
+   Bool fitMethod = False;
+   Bool clipMethod = False;
+   Bool doPlot = ToBool(!device_p.empty());
+
+   if (doSmooth_p && !doWindow_p) {
+      smoothClipMethod = True;      
+   } else if (doWindow_p) {
+      windowMethod = True;
+   } else if (doFit_p) {
+      fitMethod = True;
+   } else {
+      clipMethod = True;
+      doPlot = False;
+   }     
 
 
 // Create a vector, each element of which points to the appropriate
@@ -857,19 +894,7 @@ Bool ImageMoments<T>::createMoments()
 
 // Create smoothed image as a PagedImage.  We delete it later
 // if the user doesn't want to save it
-/*
-      {
-         File inputImageName(pInImage_p->name());
-         const String path = inputImageName.path().dirName() + "/";
-         Path fileName = File::newUniqueName(path, String("ImageMoments_Smooth_"));
-         smoothName = fileName.absoluteName();
-         Table myTable = ImageUtilities::setScratchTable(pInImage_p->name(),  
-                                String("ImageMoments_Smooth_"));
-         pSmoothedImage = new PagedArray<T>(pInImage_p->shape(), myTable,
-             pInImage_p->niceCursorShape(pInImage_p->maxPixels()));
-         pSmoothedImage->set(0.0);
-      }
-*/
+
       if (smoothOut_p.empty()) {
          File inputImageName(pInImage_p->name());
          const String path = inputImageName.path().dirName() + "/";
@@ -888,7 +913,9 @@ Bool ImageMoments<T>::createMoments()
        
       pSmoothedImage = new PagedImage<T>(latticeShape, cSys, smoothName);
       pSmoothedImage->set(0.0);
-      os_p << LogIO::NORMAL << "Created " << smoothName << LogIO::POST;
+      if (!smoothOut_p.empty()) {
+         os_p << LogIO::NORMAL << "Created " << smoothName << LogIO::POST;
+      }
           
 
 // Smooth it
@@ -898,18 +925,46 @@ Bool ImageMoments<T>::createMoments()
          return False;
       }
 
-// Find the noise level
 
-      Array<T> sigma;
-      ImageStatistics<T> stats(*pSmoothedImage, os_p);
-      if (!stats.getSigma(sigma)) {
-         os_p << LogIO::SEVERE << "Error finding noise level of smoothed image" << LogIO::POST;
-         return False;
-      } else {
-         os_p << LogIO::NORMAL << "The standard deviation of the noise about the mean for the smoothed image is " 
-              << sigma(IPosition(sigma.nelements(),0)) << LogIO::POST;
+// Find the auto Y plot range.   The smooth & clip and the window
+// methods only plot the smoothed data.
+
+      if (doPlot && fixedYLimits_p && (smoothClipMethod || windowMethod)) {
+         LogSink sink;
+         LogIO oss(sink);
+         ImageStatistics<T> stats(*pSmoothedImage, oss);
+
+         Array<T> data;
+         stats.getMin(data);
+         yMin_p = data(IPosition(data.nelements(),0));
+         stats.getMax(data);
+         yMax_p = data(IPosition(data.nelements(),0));
       }
    }
+
+
+// Find the auto Y plot range if not smoothing and stretch
+// limits for plotting
+
+   if (fixedYLimits_p && doPlot) {
+      if (!doSmooth_p && (windowMethod || fitMethod)) {
+         LogSink sink;
+         LogIO oss(sink);
+         ImageStatistics<T> stats(*pInImage_p, oss);
+         stats.setRegion (blc_p, trc_p, inc_p, False);
+
+         Array<T> data;
+         if (!stats.getMin(data)) {
+            os_p << LogIO::SEVERE << "Error finding minimum of input image" << LogIO::POST;
+            return False;
+         }
+         yMin_p = data(IPosition(data.nelements(),0));
+         stats.getMax(data);
+         yMax_p = data(IPosition(data.nelements(),0));
+      }
+      ImageUtilities::stretchMinMax(yMin_p, yMax_p);
+   }
+
 
 // Set output images shape
    
@@ -976,25 +1031,22 @@ Bool ImageMoments<T>::createMoments()
          os_p << LogIO::NORMAL << "Evaluating noise level from smoothed image" << LogIO::POST;
          if (!whatIsTheNoise (noise, pSmoothedImage)) return False;
       } else {
-         os_p << LogIO::NORMAL << "Evaluating noise level from image" << LogIO::POST;
+         os_p << LogIO::NORMAL << "Evaluating noise level from input image" << LogIO::POST;
          if (!whatIsTheNoise (noise, pInImage_p)) return False;
       }
       stdDeviation_p = noise;
    }
 
+
 // Open plot device 
          
-   Bool doPlot = False;
-   if (doWindow_p || (!doWindow_p && doFit_p)) {
-      if (!device_p.empty()) {
-         if(cpgbeg(0, device_p.chars(), nxy_p(0), nxy_p(1)) != 1) {
-	    os_p << LogIO::SEVERE << "Could not open display device" << LogIO::POST;
-            return False;
-         }
-         cpgsch (1.5);
-         cpgvstd();
-         doPlot = True;
-      }
+   if (doPlot) {
+      if(cpgbeg(0, device_p.chars(), nxy_p(0), nxy_p(1)) != 1) {
+         os_p << LogIO::SEVERE << "Could not open display device" << LogIO::POST;
+         return False;
+       }
+       cpgsch (1.5);
+       cpgvstd();
    }        
 
 // Array to hold moments
@@ -1008,22 +1060,12 @@ Bool ImageMoments<T>::createMoments()
 
    const Double ks = 0.03;
 
-
-/*
-// Setup stupid 1 point output slice
-
-   Array<T> outSlice(IPosition(outDim,1));
-   IPosition stride(outDim,1);
-   IPosition zeroPos(outDim,0);
-*/
-   IPosition outPos(outDim);
-      
-
    Int nProfiles = imageIterator.latticeShape().product()/imageIterator.vectorCursor().nelements();
    Int percentInc = 20;
+   Int percent = percentInc;
    Int inc = max(1, Int(Float(percentInc)/100.0*nProfiles));
    Int iProfile = 1;
-   Int percent = percentInc;
+
    IPosition stride, sliceShape;
    if (pSmoothedImage) {
       stride.resize(pSmoothedImage->ndim());
@@ -1032,14 +1074,14 @@ Bool ImageMoments<T>::createMoments()
       sliceShape = 1;
       sliceShape(momentAxis_p) = pSmoothedImage->shape()(momentAxis_p);
    }
+   IPosition outPos(outDim);
 
-
-// Iterate through image and do all the wonderful things
+// Iterate through image and do all the wonderful things with each profile
 
    os_p << LogIO::NORMAL << "Begin computation of moments" << LogIO::POST;
    while (!imageIterator.atEnd()) {
-     if (iProfile%inc == 0 && percent <=100) {
-         os_p << LogIO::NORMAL << "Completed " << percent << "%" << LogIO::POST;
+     if (iProfile%inc == 0) {
+         os_p << "Completed " << percent << "%" << LogIO::POST;
          percent += percentInc;
      }
 
@@ -1064,13 +1106,15 @@ Bool ImageMoments<T>::createMoments()
 
 // Choose method
 
-      if (doSmooth_p && !doWindow_p) {
+      if (smoothClipMethod) {
       
 // Smooth and clip
 
          doMomSm(calcMoments, imageIterator.vectorCursor(),
-                 smoothSliceRef, doMedianI, doMedianV, doAbsDev);
-      } else if (doWindow_p) {
+                 smoothSliceRef, doMedianI, doMedianV, doAbsDev,
+                 doPlot, momAxisType, imageIterator.position());
+
+      } else if (windowMethod) {
     
 // Window, with smoothed or unsmoothed data
 
@@ -1078,20 +1122,22 @@ Bool ImageMoments<T>::createMoments()
                    smoothSliceRef, doMedianI, doMedianV, doAbsDev, 
                    doPlot, momAxisType, imageIterator.position(), ks);
 
-      } else if (doFit_p) {
+      } else if (fitMethod) {
 
 // Fit   
    
          doMomFit (calcMoments, imageIterator.vectorCursor(), 
                    doMedianI, doMedianV, doAbsDev, doPlot, 
                    momAxisType, imageIterator.position());
-      } else {
+      } else if (clipMethod) {
             
 // no clip or clip
          
          doMomCl (calcMoments, imageIterator.vectorCursor(), 
                   doMedianI, doMedianV, doAbsDev);
-      }     
+      }  else {
+         os_p << LogIO::SEVERE << "Internal logic error.  Big trouble." << LogIO::POST;
+      }
 
 // Fill output images; set position of output image (has one
 // axis removed) and assign value
@@ -1103,18 +1149,8 @@ Bool ImageMoments<T>::createMoments()
          outPos(j) = imageIterator.position()(ioMap(j)) - blc_p(ioMap(j));
       }
       for (i=0; i<moments_p.nelements(); i++) {
-//         cout << "moments=" << calcMoments.ac() << endl;
-//         cout << "selMom=" << selMom.ac() << endl;
          (*(outPt[i]))(outPos) = calcMoments(selMom(i));
       }
-
-
-/*
-      for (i=0; i<moments_p.nelements(); i++) {
-         outSlice(zeroPos) = calcMoments(selMom(i));
-         (outPt[i])->putSlice(outSlice, outPos, stride);
-      }
-*/
 
 // Increment iterators
                   
@@ -1125,18 +1161,6 @@ Bool ImageMoments<T>::createMoments()
 // Delete memory
          
    for (i=0; i<moments_p.nelements(); i++) delete outPt[i];
-
-/*
-// Now, if the user wants to save the smoothed image, copy it to
-// a PagedImage and subsection it appropriately.
-
-   if (!smoothOut_p.empty()) {
-      os_p << LogIO::NORMAL << "Saving " << smoothOut_p << endl;
-      saveLattice (pSmoothedImage, pInImage_p->coordinates(),
-                   blc_p, trc_p, smoothOut_p);
-   }
-*/
-
 
    if (pSmoothedImage) {
       delete pSmoothedImage;
@@ -1219,8 +1243,13 @@ Bool ImageMoments<T>::allNoise (T& dMean,
    T dMin, dMax;
    minMax (dMin, dMax, data.ac());
    dMean = mean(data.ac());
+
+// Assume we are continuum subtracted so outside of line mean=0
+
    const T rat = max(abs(dMin),abs(dMax)) / stdDeviation_p;
 
+//   os_p << "min,max,mean,sigma,peakSNR_p,SNR=" << dMin << " " << dMax << " " << dMean << " " 
+//        << stdDeviation_p << " " << peakSNR_p << " " << rat << LogIO::POST;
    if (rat < peakSNR_p) {
       return True; 
    } else {
@@ -1232,8 +1261,8 @@ Bool ImageMoments<T>::allNoise (T& dMean,
 
 template <class T> 
 Bool ImageMoments<T>::allNoise (const Vector<T>& spectrum,
-                                   const Double& sigma, 
-                                   const Double& ks)
+                                const Double& sigma, 
+                                const Double& ks)
 //
 // Try and work out whether this spectrum is all noise
 // or not.  We don't bother with it if it is noise.
@@ -1722,9 +1751,13 @@ void ImageMoments<T>::doMomSm (Vector<T>& calcMoments,
                                const Vector<T>& smoothedData,
                                const Bool& doMedianI,
                                const Bool& doMedianV,
-                               const Bool& doAbsDev)
+                               const Bool& doAbsDev,
+                               const Bool& doPlot,
+                               const String& momAxisType,
+                               const IPosition& pos)
 //   
-// Generate masked moments of this profile
+// Generate masked moments of this profile where the mask is
+// generated from the smoothed data
 //
 // Output:
 //   calcMomentsThe many moments
@@ -1733,8 +1766,46 @@ void ImageMoments<T>::doMomSm (Vector<T>& calcMoments,
 //   smoothedData  The smoothed profile
 //   doMedian      Don't bother with median unless we really have to
 //   doAbsDev      Don't bother with absolute deviations unless we really have to
+//   doPlot        Make plots
+//   momAxisType   Name of moment axis
+//   pos           Position in image of start of profile
 //
 {
+
+// Plot if asked
+
+   if (doPlot) {
+      Vector<T> abcissa;
+      makeAbcissa (abcissa, data.nelements());
+      String xLabel;
+      if (momAxisType.empty()) {
+         xLabel = "x (pixels)";
+      } else {
+         xLabel = momAxisType + " (pixels)";
+      }
+      const String yLabel("Intensity");
+      String title;
+      setPosLabel (title, pos);
+
+      cpgpage();
+      drawLine (abcissa, smoothedData, xLabel, yLabel, title);
+
+// Draw on clip levels and arrows
+
+      cpgsci (5);
+      drawHorizontal(T(range_p(0)));
+      drawHorizontal(T(range_p(1)));
+  
+      float xMin, xMax, yMin, yMax; 
+      cpgqwin (&xMin, &xMax, &yMin, &yMax);
+      float x = xMin + 0.05*(xMax-xMin);
+      float y = range_p(1) - 0.2*range_p(1);
+      cpgarro (x, float(range_p(1)), x, y);
+      y = range_p(0) + 0.2*range_p(0);
+      cpgarro (x, y, x, float(range_p(0)));
+      cpgsci(1);
+   }
+
 
 // Assign array for median.  
 
@@ -1910,7 +1981,7 @@ void ImageMoments<T>::doMomWin (Vector<T>& calcMoments,
 
 
       if (!doFit_p && !allSubsequent) {
-         os_p << LogIO::NORMAL << LogIO::POST;
+         os_p << endl;
          os_p << LogIO::NORMAL << "Mark extremum (left), redo (middle), reject (right), all subsequent (S)" << LogIO::POST;
       }
 
@@ -2014,7 +2085,7 @@ void ImageMoments<T>::drawHistogram (const T& dMin,
 
 
 template <class T> 
-void ImageMoments<T>::drawLoc (const T& loc,
+void ImageMoments<T>::drawVertical (const T& loc,
                                const T& yMin,
                                const T& yMax)
 {
@@ -2071,17 +2142,25 @@ void ImageMoments<T>::drawLine (const Vector<T>& x,
    const Int nPts = x.nelements();
    Float xMin = 0.0;
    Float xMax = Float(nPts);
-   T yMin, yMax;
-   minMax(yMin, yMax, y.ac());
-   Float yMinF = Float(yMin);
-   Float yMaxF = Float(yMax);
    ImageUtilities::stretchMinMax (xMin, xMax);
-   ImageUtilities::stretchMinMax (yMinF, yMaxF);
+
+   T yMin, yMax;
+   Float yMinF, yMaxF;
+   if (!fixedYLimits_p) {
+      minMax(yMin, yMax, y.ac());
+      yMinF = Float(yMin);
+      yMaxF = Float(yMax);
+      ImageUtilities::stretchMinMax (yMinF, yMaxF);
+   }
 
 
 // Plot
 
-   cpgswin (float(xMin), float(xMax), yMinF, yMaxF);
+   if (fixedYLimits_p) {
+      cpgswin (float(xMin), float(xMax), yMin_p, yMax_p);
+   } else {
+      cpgswin (float(xMin), float(xMax), yMinF, yMaxF);
+   }
    cpgbox ("BCNST", 0.0, 0, "BCNST", 0.0, 0);
    drawLine (x, y);
    cpglab (xLabel.chars(), yLabel.chars(), "");
@@ -2098,17 +2177,26 @@ void ImageMoments<T>::drawMeanSigma (const T& dMean,
 // mean +/- sigma
 //
 {
+   cpgsci(7);
+   drawHorizontal(dMean);
+   cpgsci(5);
+   drawHorizontal(dMean+dSigma);
+   drawHorizontal(dMean-dSigma);
+   cpgsci(1);
+}
+
+
+template <class T> 
+void ImageMoments<T>::drawHorizontal(const T& y)
+//
+// Draw a horizontal line across the full x range of the plot
+//
+{
    float xMin, xMax, yMin, yMax; 
    cpgqwin (&xMin, &xMax, &yMin, &yMax);
 
-   cpgsci (5);
-   cpgmove (xMin, float(dMean));
-   cpgdraw (xMax, float(dMean));
-   cpgmove (xMin, float(dMean+dSigma));      
-   cpgdraw (xMax, float(dMean+dSigma));      
-   cpgmove (xMin, float(dMean-dSigma));      
-   cpgdraw (xMax, float(dMean-dSigma));      
-   cpgsci (1);
+   cpgmove (xMin, float(y));
+   cpgdraw (xMax, float(y));
 }
 
 
@@ -2120,8 +2208,8 @@ void ImageMoments<T>::drawWindow (const Vector<Int>& window)
 {  
    float x1, x2, y1, y2;
    cpgqwin (&x1, &x2, &y1, &y2);
-   drawLoc (float(window(0)), y1, y2);
-   drawLoc (float(window(1)), y1, y2);
+   drawVertical (float(window(0)), y1, y2);
+   drawVertical (float(window(1)), y1, y2);
 }
 
 
@@ -2481,7 +2569,7 @@ void ImageMoments<T>::getInterDirectWindow (Bool& allSubsequent,
          tX = window(0);
          tY1 = yMin;
          tY2 = yMax;
-         drawLoc (tX, tY1, tY2);
+         drawVertical (tX, tY1, tY2);
 
 
 // Get and draw second location
@@ -2499,7 +2587,7 @@ void ImageMoments<T>::getInterDirectWindow (Bool& allSubsequent,
          } else {
             window(1) = min(nPts-1,Int(x2+0.5));
             tX = window(1);
-            drawLoc (tX, tY1, tY2);
+            drawVertical (tX, tY1, tY2);
 
 // Set window
 
@@ -2624,7 +2712,7 @@ void ImageMoments<T>::getInterGaussianGuess  (T& peakGuess,
    T tX = x;
    T tY1 = y1;
    T tY2 = y2;
-   drawLoc (tX, tY1, tY2);
+   drawVertical (tX, tY1, tY2);
    window(0) = Int(x+0.5);
 
    miss = True;
@@ -2647,7 +2735,7 @@ void ImageMoments<T>::getInterGaussianGuess  (T& peakGuess,
    tX = x;
    tY1 = y1;
    tY2 = y2;
-   drawLoc (tX, tY1, tY2);
+   drawVertical (tX, tY1, tY2);
    window(1) = Int(x+0.5);  
    Int iTemp = window(0);
    window(0) = min(iTemp, window(1));
@@ -3657,14 +3745,6 @@ Bool ImageMoments<T>::smoothImage (Lattice<T>* const pSmoothedImage)
 // like [nx,1,nz] or [1,1,nz] so we have to do some extra 
 // iterating outside of the convolution
 
-/*
-   IPosition cursorShape(pInImage_p->ndim(),1);
-   for (Int i=0; i<min(pInImage_p->ndim(),psf.ndim()); i++) {
-      if (psf.shape()(i) > 1) cursorShape(i) = pInImage_p->shape()(i);
-   }
-   RO_LatticeIterator<T> imageIterator(*pInImage_p, cursorShape);
-*/
-
    LatticeStepper imageNavigator(pInImage_p->shape(),
                                  IPosition(pInImage_p->ndim(),1));   
    imageNavigator.subSection(blc_p, trc_p);
@@ -3694,7 +3774,7 @@ Bool ImageMoments<T>::smoothImage (Lattice<T>* const pSmoothedImage)
    Int percent = percentInc;
 
    while (!imageIterator.atEnd()) {
-     if (iIter%inc == 0) {
+     if (iIter%inc == 0 && percent <=100) {
          os_p << LogIO::NORMAL << "Completed " << percent << "%" << LogIO::POST;
          percent += percentInc;
      }
@@ -3721,7 +3801,6 @@ Bool ImageMoments<T>::whatIsTheNoise (Double& sigma,
 // subsection the user has asked for.
 //
 {
-   os_p << LogIO::NORMAL << "First determine the noise -- requires two passes through the image" << LogIO::POST;
 
 // Set up image iterator to read image optimally fast
 
@@ -3824,8 +3903,8 @@ Bool ImageMoments<T>::whatIsTheNoise (Double& sigma,
          if (!device_p.empty()) {
             x1 = dMin + binWidth/2 + iMin*binWidth;
             x2 = dMin + binWidth/2 + iMax*binWidth;
-            drawLoc (x1, yMin, yMax);
-            drawLoc (x2, yMin, yMax);
+            drawVertical (x1, yMin, yMax);
+            drawVertical (x2, yMin, yMax);
          }
          first = False;
 
@@ -3844,12 +3923,12 @@ Bool ImageMoments<T>::whatIsTheNoise (Double& sigma,
             while (!getLoc(x1, y1)) {};
             i1 = Int((x1 -dMin)/binWidth - 0.5);
             x1 = dMin + binWidth/2 + i1*binWidth;
-            drawLoc (x1, yMin, yMax);
+            drawVertical (x1, yMin, yMax);
 
             T x2 = x1;
             while (!getLoc(x2, y1)) {};
             i2 = Int((x2 -dMin)/binWidth - 0.5);
-            drawLoc (x2, yMin, yMax);
+            drawVertical (x2, yMin, yMax);
 
             if (i1 == i2) {
                os_p << LogIO::NORMAL << "Degenerate window, try again" << LogIO::POST;
@@ -3911,7 +3990,7 @@ Bool ImageMoments<T>::whatIsTheNoise (Double& sigma,
 
       if (fitter.converged()) {
          sigma = abs(solution(2)) / sqrt(2.0);
-         os_p << LogIO::NORMAL << "*** The standard deviation of the noise is " << sigma << LogIO::POST << LogIO::POST;
+         os_p << LogIO::NORMAL << "*** The fitted standard deviation of the noise is " << sigma << LogIO::POST << LogIO::POST;
 
 // Now plot the fit 
 
@@ -3933,9 +4012,9 @@ Bool ImageMoments<T>::whatIsTheNoise (Double& sigma,
             cpgsci (1);
          }
       } else {
-         os_p << LogIO::NORMAL << "The fit to determine the noise level failed." << LogIO::POST;
-         os_p << LogIO::NORMAL << "Try inputting it directly" << LogIO::POST;
-         if (!device_p.empty()) os_p << LogIO::NORMAL << "or try a different window " << LogIO::POST;
+         os_p << LogIO::NORMAL << "The fit to determine the noise level failed." << endl;
+         os_p << "Try inputting it directly" << endl;
+         if (!device_p.empty()) os_p << "or try a different window " << LogIO::POST;
       }
 
 // Another go
