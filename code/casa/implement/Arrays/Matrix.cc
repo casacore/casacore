@@ -1,5 +1,5 @@
 //# Matrix.cc: A 2-D Specialization of the Array Class
-//# Copyright (C) 1993,1994,1995,1996,1997
+//# Copyright (C) 1993,1994,1995,1996,1997,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -375,7 +375,7 @@ void Matrix<T>::doNonDegenerate (Array<T> &other, const IPosition &ignoreAxes)
     if (tmp.ndim() != 1) {
 	throw (ArrayError ("Matrix::nonDegenerate (other, ignoreAxes) - "
 			   "removing degenerate axes from other "
-			   "does not result in matrix"))
+			   "does not result in matrix"));
     }
     reference (tmp);
 }
