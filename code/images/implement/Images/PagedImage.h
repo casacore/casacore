@@ -46,6 +46,7 @@
 class IPosition;
 class LatticeNavigator;
 class Slicer;
+class LogTable;
 template <class T> class Array;
 template <class T> class COWPtr;
 template <class T> class RO_LatticeIterInterface;
@@ -317,6 +318,9 @@ public:
 private:  
   // the default constructor -- useless.
   PagedImage();
+  // This must be called in every constructor and place where the image
+  // is attached to a new image.
+  void attach_logtable();
   void restore_units();
   void save_units();
   void report_mask();
@@ -331,7 +335,6 @@ private:
   PagedArray<T> map_p;
   PagedArray<Bool> *mask_p;
   T defaultvalue_p;
-  LogIO sink_p;
 };
 
 
