@@ -131,11 +131,11 @@ sub aips2topbar {
 "</td><td valign=middle>\n" .
 "<font size=2 face=helvetica color=\"cc0f0f\"><a href=\"$DOCSROOT/newsletters/index.html\"><img src=\"$DOCSROOT/gif/tri2.gif\" border=0>  <b>La\n" .
 "st News</a></font></b><P>\n" .
-"<font size=2 face=helvetica color=\"cc0f0f\"><a href=\"$DOCSROOT/faq/faq.html\"><img src=\"$DOCSROOT/gif/tri2.gif\" border=0>  <b>FAQ</a></fon\n" .
+"<font size=2 face=helvetica color=\"cc0f0f\"><a href=\"$DOCSROOT/faq/faq.html\"><img src=\"$DOCSROOT/gif/tri2.gif\" border=0>  <b>FAQ</a></font>\n" .
 "</b><P>\n" .
 "<font size=2 face=helvetica color=\"cc0f0f\"><a href=\"$DOCSROOT/search/search.html\"><img src=\"$DOCSROOT/gif/tri2.gif\" border=0>  <b>Search\n" .
 "</a></font></b><P>\n" .
-"<font size=2 face=helvetica color=\"cc0f0f\"><a href=\"$DOCSROOT/aips++.html\"><img src=\"$DOCSROOT/gif/tri2.gif\" border=0>  <b>Home</a></fon\n" .
+"<font size=2 face=helvetica color=\"cc0f0f\"><a href=\"$DOCSROOT/aips++.html\"><img src=\"$DOCSROOT/gif/tri2.gif\" border=0>  <b>Home</a></font>\n" .
 "</b><P>\n" .
 "\n" .
 "</td></tr></table><hr>\n" .
