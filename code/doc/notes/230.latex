@@ -4,16 +4,6 @@
 \usepackage{epsfig}
 \usepackage{makeidx}
 
-\externallabels{../Utility}{../Utility/labels.pl}
-\externallabels{../General}{../General/labels.pl}
-\externallabels{../Display}{../Display/labels.pl}
-\externallabels{../Dish}{../Dish/labels.pl}
-\externallabels{../Display}{../Display/labels.pl}
-\externallabels{../SynthesisRef}{../SynthesisRef/labels.pl}
-\externallabels{../ATNF}{../ATNF/labels.pl}
-\externallabels{../NFRA}{../NFRA/labels.pl}
-\externallabels{../NRAO}{../NRAO/labels.pl}
-
 \newcommand{\heading}[1]{
 \vspace{0.18in}
 \hrule
