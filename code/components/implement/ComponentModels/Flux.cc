@@ -27,10 +27,7 @@
 
 #include <trial/ComponentModels/Flux.h>
 #include <aips/Utilities/String.h>
-#include <aips/Utilities/Assert.h>
-#include <aips/Exceptions/Error.h>
 #include <aips/Mathematics/Complex.h>
-#include <aips/Measures/Quantum.h>
 #include <aips/Logging/LogIO.h>
 #include <aips/Logging/LogOrigin.h>
 
