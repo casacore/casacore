@@ -1,4 +1,4 @@
-//# tArrayValue.cc: This program tests the Aipsrc interface
+//# tAipsrcValue.cc: This program tests the Aipsrc value interface
 //# Copyright (C) 1996,1997
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -28,7 +28,6 @@
 #include <aips/aips.h>
 #include <trial/Tasking/AipsrcValue.h>
 #include <trial/Tasking/AipsrcVector.h>
-#include <trial/Tasking/AipsrcData.h>
 #include <aips/Arrays/Vector.h>
 #include <aips/Arrays/ArrayIO.h>
 #include <aips/Measures/Unit.h>
@@ -43,10 +42,6 @@ int main(){
   Double aVal;
   Bool bVal;
   Vector<Double> vVal;
-
-  cout << "Time zone offset: " << 
-    MVTime(AipsrcData::timeZone()).string(MVTime::TIME | MVTime::CLEAN, 4) <<
-    endl;
 
   Aipsrc::find(aipsrcValue, aipsrcKeyword);
   cout << aipsrcKeyword << " " << aipsrcValue << endl;
