@@ -1095,6 +1095,8 @@ void MSFitsInput::fillFieldTable(BinaryTable& bt, Int nField)
   // ROScalarColumn<Float> iflux(suTab,"IFLUX"); // etc Q, U, V (Jy)
   ROScalarColumn<Double> ra(suTab,"RAEPO");    //degrees
   ROScalarColumn<Double> dec(suTab,"DECEPO");  //degrees
+  ROScalarColumn<Double> raapp(suTab,"RAAPP");    //degrees
+  ROScalarColumn<Double> decapp(suTab,"DECAPP");  //degrees
   ROScalarColumn<Double> epoch(suTab,"EPOCH"); //years
   ROScalarColumn<Double> pmra(suTab,"PMRA");   //deg/day
   ROScalarColumn<Double> pmdec(suTab,"PMDEC"); //deg/day
@@ -1124,38 +1126,41 @@ void MSFitsInput::fillFieldTable(BinaryTable& bt, Int nField)
     msField.sourceId().put(fld,-1); // source table not yet filled in
     msField.code().put(fld,code(inRow));
     msField.name().put(fld,name(inRow));
-    Int numPoly = 1;
-    if (pmra(inRow)==0 && pmdec(inRow)==0) {
-      numPoly = 0;
+    Int numPoly = 0;
+    if (!nearAbs(pmra(inRow), 0.0) || !nearAbs(pmdec(inRow), 0.0)) {
+      numPoly = 1;
     }
-    // Note: this code attempts to interpret possible FITS usage
-    // of the epoch. Here it serves as both the coordinate epoch reference
-    // and the 'zero-point' for the proper motion parameters.
-    // Normally the Time column in the MSField table would contain
-    // the observation time for which the position is accurate (i.e. 
-    // zero point for rates). The coordinate epoch would be specified 
-    // separately.
-    // Need to convert epoch in years to MJD time
-    MDirection::Types epochRef=MDirection::J2000;
-    if (nearAbs(epoch(inRow),2000.0,0.01)) {
-      msField.time().put(fld, MeasData::MJD2000*C::day);
-      epochRef=MDirection::J2000;
-      // assume UTC epoch
-    } else if (nearAbs(epoch(inRow),1950.0,0.01)) {
-      msField.time().put(fld, MeasData::MJDB1950*C::day);
-      epochRef=MDirection::B1950;
+    // The code below will write the direction in B1950 or J2000 coordinates if
+    // the direction is constant. However it will use apparent Coordinates (I
+    // am not sure if this means APP, JTRUE, BTRUE or what), if the proper
+    // motion is non-zero. In all cases the time will be the date of the start
+    // of the observation.
+    MDirection::Types epochRef=MDirection::APP;
+    MVDirection refDir;
+    if (numPoly == 0) {
+      if (near(epoch(inRow),2000.0,0.01)) {
+	epochRef = MDirection::J2000;
+      } else if (numPoly == 0 && nearAbs(epoch(inRow),1950.0,0.01)) {
+	epochRef = MDirection::B1950;
+      } else {
+	itsLog << " Cannot handle epoch in SU table: "
+	       << epoch(fld) << LogIO::EXCEPTION;
+      }
+      refDir = MVDirection(ra(inRow)*C::degree,dec(inRow)*C::degree);
     } else {
-      itsLog << LogIO::SEVERE  << " Cannot handle epoch in SU table: " << 
- 	epoch(fld) <<LogIO::POST;
+      refDir = MVDirection(raapp(inRow)*C::degree,decapp(inRow)*C::degree);
     }
     Vector<MDirection> radecMeas(numPoly+1);
-    radecMeas(0).set(MVDirection(ra(inRow)*C::degree,dec(inRow)*C::degree),
-		     MDirection::Ref(epochRef));
+    radecMeas(0).set(refDir, MDirection::Ref(epochRef));
     if (numPoly==1) {
       radecMeas(1).set(MVDirection(pmra(inRow)*C::degree/C::day,
  				   pmdec(inRow)*C::degree/C::day),
 		       MDirection::Ref(epochRef));
     }
+    // Get the time from the observation subtable. I have assumed that this bit
+    // of the observation table has been filled by now.
+    const Vector<Double> obsTimes = msc_p->observation().timeRange()(0);
+    msField.time().put(fld, obsTimes(0));
     msField.numPoly().put(fld,numPoly);
     msField.delayDirMeasCol().put(fld,radecMeas);
     msField.phaseDirMeasCol().put(fld,radecMeas);
