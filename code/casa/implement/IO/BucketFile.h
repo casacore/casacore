@@ -107,6 +107,9 @@ public:
     // Close the file (if open).
     void close();
 
+    // Remove the file (and close it if needed).
+    void remove();
+
     // Fsync the file (i.e. force the data to be physically written).
     void fsync();
 

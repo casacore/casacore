@@ -29,6 +29,7 @@
 //# Includes
 #include <aips/IO/BucketFile.h>
 #include <aips/OS/Path.h>
+#include <aips/OS/DOos.h>
 #include <aips/Exceptions/Error.h>
 #include <sys/types.h>
 #include <unistd.h>
@@ -116,6 +117,13 @@ void BucketFile::open()
 			      ": " + strerror(errno)));
 	}
     }
+}
+
+
+void BucketFile::remove()
+{
+    close();
+    DOos::remove (name_p, False, False);
 }
 
 
