@@ -6309,3 +6309,4 @@
 17 396 src mv trial/implement/Functionals/FunctionOrder.cc aips/implement/Functionals/FunctionOrder.cc
 17 396 src mv trial/implement/Functionals/FunctionOrder2.cc aips/implement/Functionals/FunctionOrder2.cc
 17 396 src mv trial/implement/Functionals/test/tFunctionOrder.cc aips/implement/Functionals/test/tFunctionOrder.cc
+17 396 src mv trial/implement/Functionals/test/tFunctionOrder.out aips/implement/Functionals/test/tFunctionOrder.out
