@@ -43,34 +43,40 @@ void doIt (const LCRegion& region,
 	   const IPosition& latticeShape)
 {
     try {
-        uInt ndim = latticeShape.nelements();
-	LCExtension prism (region, axes, blc, trc, latticeShape);
+	LCExtension prism (region, axes, LCBox(blc, trc, latticeShape));
 	AlwaysAssertExit (prism.hasMask() == region.hasMask());
 	AlwaysAssertExit (! prism.isWritable());
 	Array<Bool> regmask;
-	uInt ndimr = region.box().ndim();
+	uInt ndimr = region.boundingBox().ndim();
+        uInt ndim = ndimr + latticeShape.nelements();
 	((LCRegion&)region).getSlice (regmask, IPosition(ndimr,0),
-				      region.box().length(),
+				      region.boundingBox().length(),
 				      IPosition(ndimr,1));
 	cout << regmask << endl;
 	Array<Bool> mask;
-	prism.getSlice (mask, IPosition(ndim,0), prism.box().length(),
+	prism.getSlice (mask, IPosition(ndim,0), prism.boundingBox().length(),
 			IPosition(ndim,1));
 	cout << mask << endl;
 	cout << prism.hasMask() << ' ' << endl;
-	cout << prism.box().start() << prism.box().end()
-	     << prism.box().length() << prism.latticeShape() << endl;
-	cout << prism.axes() << prism.blc() << prism.trc() << endl;
+	cout << prism.boundingBox().start() << prism.boundingBox().end()
+	     << prism.boundingBox().length() << prism.latticeShape() << endl;
+	cout << prism.extendAxes() << prism.extendBox().blc().ac()
+	     << prism.extendBox().trc().ac() << endl;
       {
 	// Test cloning.
 	LCRegion* prismcop = prism.cloneRegion();
 	AlwaysAssertExit (prism.hasMask() == prismcop->hasMask());
-	AlwaysAssertExit (prism.box().start() == prismcop->box().start());
-	AlwaysAssertExit (prism.box().end() == prismcop->box().end());
-	AlwaysAssertExit (prism.box().stride() == prismcop->box().stride());
-	AlwaysAssertExit (prism.box().length() == prismcop->box().length());
+	AlwaysAssertExit (prism.boundingBox().start() ==
+			  prismcop->boundingBox().start());
+	AlwaysAssertExit (prism.boundingBox().end() ==
+			  prismcop->boundingBox().end());
+	AlwaysAssertExit (prism.boundingBox().stride() ==
+			  prismcop->boundingBox().stride());
+	AlwaysAssertExit (prism.boundingBox().length() ==
+			  prismcop->boundingBox().length());
 	Array<Bool> arr;
-	prismcop->getSlice (arr, IPosition(ndim,0), prism.box().length(),
+	prismcop->getSlice (arr, IPosition(ndim,0),
+			    prism.boundingBox().length(),
 			    IPosition(ndim,1));
 	AlwaysAssertExit (allEQ (arr, mask));
 	delete prismcop;
@@ -79,12 +85,17 @@ void doIt (const LCRegion& region,
 	// Test persistency.
 	LCRegion* prismcop = LCRegion::fromRecord (prism.toRecord(""), "");
 	AlwaysAssertExit (prism.hasMask() == prismcop->hasMask());
-	AlwaysAssertExit (prism.box().start() == prismcop->box().start());
-	AlwaysAssertExit (prism.box().end() == prismcop->box().end());
-	AlwaysAssertExit (prism.box().stride() == prismcop->box().stride());
-	AlwaysAssertExit (prism.box().length() == prismcop->box().length());
+	AlwaysAssertExit (prism.boundingBox().start() ==
+			  prismcop->boundingBox().start());
+	AlwaysAssertExit (prism.boundingBox().end() ==
+			  prismcop->boundingBox().end());
+	AlwaysAssertExit (prism.boundingBox().stride() ==
+			  prismcop->boundingBox().stride());
+	AlwaysAssertExit (prism.boundingBox().length() ==
+			  prismcop->boundingBox().length());
 	Array<Bool> arr;
-	prismcop->getSlice (arr, IPosition(ndim,0), prism.box().length(),
+	prismcop->getSlice (arr, IPosition(ndim,0),
+			    prism.boundingBox().length(),
 			    IPosition(ndim,1));
 	AlwaysAssertExit (allEQ (arr, mask));
 	delete prismcop;
@@ -96,7 +107,7 @@ void doIt (const LCRegion& region,
       }
       {
         // Test unordered equality.
-        LCExtension prism2 (region, axes, blc, trc-1, latticeShape);
+        LCExtension prism2 (region, axes, LCBox(blc-1, trc, latticeShape));
         AlwaysAssertExit (prism2 != prism);
       }
     } catch (AipsError x) {
@@ -119,25 +130,25 @@ main()
 	LCPolygon polygon(x, y, IPosition(2,12,14));
 	
 	doIt (box, IPosition(1,1), IPosition(1,2), IPosition(1,3),
-	      IPosition(3,12,20,14));
+	      IPosition(1,20));
 	doIt (polygon, IPosition(1,2), IPosition(1,2), IPosition(1,3),
-	      IPosition(3,12,14,4));
+	      IPosition(1,4));
 	doIt (polygon, IPosition(1,1), IPosition(1,2), IPosition(1,3),
-	      IPosition(3,12,20,14));
+	      IPosition(1,20));
 	doIt (polygon, IPosition(2,0,2), IPosition(2,2,0), IPosition(2,3,2),
-	      IPosition(4,20,12,10,14));
+	      IPosition(2,20,10));
 	// Trc outside lattice, is silently adjusted
 	doIt (polygon, IPosition(1,2), IPosition(1,2), IPosition(1,5),
-	      IPosition(3,12,14,3));
-	// Error; lattice axes lengths mismatch (15 should be 14).
-	doIt (polygon, IPosition(1,1), IPosition(1,2), IPosition(1,3),
-	      IPosition(3,12,20,15));
-	// Error; trc-length mismatches blc-length.
-	doIt (polygon, IPosition(1,1), IPosition(1,2), IPosition(2,3),
-	      IPosition(3,12,20,14));
-	// Error; lattice should have 3 dimensions.
-	doIt (polygon, IPosition(1,1), IPosition(1,2), IPosition(1,3),
-	      IPosition(4,12,20,14,3));
+	      IPosition(1,3));
+	// Error; no extendaxes
+	doIt (polygon, IPosition(), IPosition(1,2), IPosition(1,3),
+	      IPosition(1,20));
+	// Error; #extendAxes mismatches blc/trc
+	doIt (polygon, IPosition(2,1,2), IPosition(1,2), IPosition(1,3),
+	      IPosition(1,20));
+	// Error; incorrect order of extendAxes
+	doIt (polygon, IPosition(2,1), IPosition(2,2), IPosition(2,3),
+	      IPosition(2,20));
     } catch (AipsError x) {
 	cout << "Caught exception: " << x.getMesg() << endl;
 	exit(1);
