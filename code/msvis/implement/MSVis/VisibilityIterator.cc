@@ -1,5 +1,5 @@
 //# VisibilityIterator.cc: Step through MeasurementEquation by visibility
-//# Copyright (C) 1996,1997,1998
+//# Copyright (C) 1996,1997,1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -705,7 +705,8 @@ const Vector<Float>& ROVisibilityIterator::feed_pa(Double time) const
     This->msd_p.setEpoch(mEpoch);
 
     // Calculate pa for all antennas.
-    for (Int iant=0;iant<nAnt_p;iant++) {
+    Int nAnt = msIter_p.receptorAngle().shape()(1);
+    for (Int iant=0;iant<nAnt;iant++) {
       This->msd_p.setAntenna(iant);
       This->pa_p(iant) = This->msd_p.parAngle();
       // add angle for receptor 0
