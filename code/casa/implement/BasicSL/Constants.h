@@ -344,17 +344,16 @@
 // </srcblock>
 
 // <note role=tip>
-// Once a more mature compiler has been adopted (and cxx2html accepts namespace)
-// the Constants class should be changed to a namespace by:
-// <ul>
-// <li> Changing 'class C' to 'namespace C'
-// <li> Change all 'static' to extern'
-// <li> Change in Constants.cc all 'const ' to 'extern const '
-// </ul>
+// Once cxx2html accepts the namespace type, the Dummy_Constants_Class can be
+// removed.<br>
+// Anyway, to use a constant (e.g. pi) use the C::pi construct now and later.
 // </note>
 
-class C {
- public:
+
+class Dummy_Constants_class {
+};
+
+namespace C {
   //#--------------------------------------------------------------------
   //  Mathematical constants
   //#--------------------------------------------------------------------
@@ -363,57 +362,57 @@ class C {
   // Irrationals:
   // <group>
   // sqrt(2)
-  static const Double sqrt2;
+  extern const Double sqrt2;
   // sqrt(3)
-  static const Double sqrt3;
+  extern const Double sqrt3;
   // 1/sqrt(2)
-  static const Double _1_sqrt2;
+  extern const Double _1_sqrt2;
   // 1/sqrt(3)
-  static const Double _1_sqrt3;
+  extern const Double _1_sqrt3;
   // </group>
 
   // Pi and functions thereof:
   // <group>
   // pi
-  static const Double pi;
+  extern const Double pi;
   // 2*pi
-  static const Double _2pi;
+  extern const Double _2pi;
   // pi/2
-  static const Double pi_2;
+  extern const Double pi_2;
   // pi/4
-  static const Double pi_4;
+  extern const Double pi_4;
   // 1/pi
-  static const Double _1_pi;
+  extern const Double _1_pi;
   // 2/pi
-  static const Double _2_pi;
+  extern const Double _2_pi;
   // 1/sqrt(pi)
-  static const Double _1_sqrtpi;
+  extern const Double _1_sqrtpi;
   // 2/sqrt(pi)
-  static const Double _2_sqrtpi;
+  extern const Double _2_sqrtpi;
   // </group>
   
   // e and functions thereof:
   // <group>
   // e
-  static const Double e;
+  extern const Double e;
   // ln(2)
-  static const Double ln2;  
+  extern const Double ln2;  
   // ln(10)
-  static const Double ln10; 
+  extern const Double ln10; 
   // log2(e)
-  static const Double log2e; 
+  extern const Double log2e; 
   // log10(e)
-  static const Double log10e;
+  extern const Double log10e;
   // </group>
   
   // gamma and functions thereof:
   // <group>
   // gamma
-  static const Double gamma;
+  extern const Double gamma;
   // ln(gamma)
-  static const Double lngamma;
+  extern const Double lngamma;
   // e**gamma
-  static const Double etogamma;
+  extern const Double etogamma;
   // </group>
   
   //#--------------------------------------------------------------------
@@ -430,26 +429,26 @@ class C {
   // <group>
   // the minimum single precision floating point number, 
   // excluding denormalised numbers
-  static const Double flt_min;
+  extern const Double flt_min;
   // the minimum single precision floating point number, 
   // including denormalised numbers
-  static const Double minfloat;
+  extern const Double minfloat;
   // the minimum double precision floating point number,
   // excluding denormalised numbers
-  static const Double dbl_min;
+  extern const Double dbl_min;
   // the minimum double precision floating point number,
   // including denormalised numbers
-  static const Double mindouble;
+  extern const Double mindouble;
   // the maximum single precision floating point number 
-  static const Double  flt_max;
+  extern const Double  flt_max;
   // the maximum double precision floating point number 
-  static const Double  dbl_max;
+  extern const Double  dbl_max;
   // Minimum single precision floating point number X such that 1+X does not
   // equal X
-  static const Double flt_epsilon;
+  extern const Double flt_epsilon;
   // Minimum double precision floating point number X such that 1+X does not
   // equal X
-  static const Double dbl_epsilon;
+  extern const Double dbl_epsilon;
   // </group>
   
   //#--------------------------------------------------------------------
@@ -465,7 +464,7 @@ class C {
   // Fundamental physical constants (SI units):
   // <group>
   // velocity of light -- for legacy reasons only -- refer to PC
-  static const Double c;
+  extern const Double c;
   // </group>
   
   //#--------------------------------------------------------------------
@@ -488,73 +487,73 @@ class C {
   //  Numerical conversion factors
   // <group>
   // e+24 (Y)
-  static const Double yotta;
+  extern const Double yotta;
   // e+21 (Z)
-  static const Double zetta;
+  extern const Double zetta;
   // e+18 (E)
-  static const Double exa;
+  extern const Double exa;
   // e+15 (P)
-  static const Double peta;
+  extern const Double peta;
   // e+12 (T)
-  static const Double tera;
+  extern const Double tera;
   // e+09 (G)
-  static const Double giga;
+  extern const Double giga;
   // e+06 (M)
-  static const Double mega;
+  extern const Double mega;
   // e+03 (k)
-  static const Double kilo;
+  extern const Double kilo;
   // e+02 (h)
-  static const Double hecto;
+  extern const Double hecto;
   // e+01 (da)
-  static const Double deka;
+  extern const Double deka;
   // e-01 (d)
-  static const Double deci;
+  extern const Double deci;
   // e-02 (c)
-  static const Double centi;
+  extern const Double centi;
   // e-03 (m)
-  static const Double milli;
+  extern const Double milli;
   // e-06 (u)
-  static const Double micro;
+  extern const Double micro;
   // e-09 (n)
-  static const Double nano;
+  extern const Double nano;
   // e-12 (p)
-  static const Double pico;
+  extern const Double pico;
   // e-15 (f)
-  static const Double femto;
+  extern const Double femto;
   // e-18 (a)
-  static const Double atto;
+  extern const Double atto;
   // e-21 (z)
-  static const Double zepto;
+  extern const Double zepto;
   // e-24 (y)
-  static const Double yocto;
+  extern const Double yocto;
   // </group>
   
   // Angular measure:
   // <group>
   // radian
-  static const Double radian;
+  extern const Double radian;
   // circle
-  static const Double circle; 
+  extern const Double circle; 
   // degree
-  static const Double degree;
+  extern const Double degree;
   // arcminute
-  static const Double arcmin;
+  extern const Double arcmin;
   // arcsecond
-  static const Double arcsec;
+  extern const Double arcsec;
   // </group>
   
   // Solid angular measure:
   // <group>
   // steradian
-  static const Double steradian;
+  extern const Double steradian;
   // sphere
-  static const Double sphere;
+  extern const Double sphere;
   // square degree
-  static const Double square_degree;
+  extern const Double square_degree;
   // square arcminute
-  static const Double square_arcmin;
+  extern const Double square_arcmin;
   // square arcsecond
-  static const Double square_arcsec;
+  extern const Double square_arcsec;
   // </group>
   
   //#-----------------------------
@@ -571,13 +570,13 @@ class C {
   // Time interval [T]:
   // <group>
   // second
-  static const Double second;
+  extern const Double second;
   // minute
-  static const Double minute;
+  extern const Double minute;
   // hour
-  static const Double hour;
+  extern const Double hour;
   // day
-  static const Double day;
+  extern const Double day;
   // </group>
   
   //#----------------------------
