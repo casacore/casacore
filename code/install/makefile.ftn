@@ -214,9 +214,9 @@ endif
 
 # Defeat builtin pattern rules.
 (%) : %
-%.o : %.f
-%.o : %.c
-%.o : %.cc
+#%.o : %.f
+#%.o : %.c
+#%.o : %.cc
 % : %.f
 % : %.c
 % : %.cc
