@@ -141,7 +141,7 @@ Param::GetDouble(Bool prompt)			// double value
 Block<double>
 Param::GetDoubleArray(Bool prompt)			// double value
 {
-    int i, idx, n = value.freq(",")+1;
+    int i, idx=0, n = value.freq(",")+1;
     String z;
     Block<double> x(n);
 
@@ -169,7 +169,7 @@ Param::GetInt(Bool prompt)			// int value
 Block<Int>
 Param::GetIntArray(Bool prompt)
 {
-    int i, idx, n = value.freq(",")+1;
+    int i, idx=0, n = value.freq(",")+1;
     String z;
     Block<Int> x(n);
 
@@ -197,7 +197,7 @@ Param::GetString(Bool prompt)			// string value
 Block<String>
 Param::GetStringArray(Bool prompt)
 {
-    int i, idx, n = value.freq(",")+1;
+    int i, idx=0, n = value.freq(",")+1;
     String z;
     Block<String> x(n);
 

@@ -42,8 +42,8 @@
 //
 
 Input::Input(Int createEnv) 
-: is_closed(False), do_prompt(False), debug_level(0), p_count(0), 
-  version("1995/04/06 BEG/TPPR/PJT")
+: version("1995/04/06 BEG/TPPR/PJT"),
+  is_closed(False), do_prompt(False), debug_level(0), p_count(0)
 {
   if (createEnv){
     EnvCreate("DEBUG","debug","0");
@@ -317,7 +317,7 @@ Bool Input::Debug(int l)
   return (debug_level >= l) ? True : False;        // make it inline
 };
 
-void Input::Usage(String foo)
+void Input::Usage(String)
 {
   cout << "Inputs::Usage() is deprecated, please delete it from your code."
     << endl;
@@ -565,8 +565,8 @@ Vector<Bool> Input::makeMaskFromRanges(const String &ranges, uInt length,
       left -= 1;
       right -= 1;
     }
-    if (left + 1 > mask.nelements() ||
-	right + 1 > mask.nelements() ||
+    if (left + 1 > Int(mask.nelements()) ||
+	right + 1 > Int(mask.nelements()) ||
 	left > right) {
       throw(AipsError(String("Input::makeMaskFromRanges - "
 			     "out of range or end<start ") + ranges));
