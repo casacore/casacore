@@ -75,7 +75,9 @@ Table TableCopy::makeEmptyMemoryTable (const String& newName,
 				       Bool noRows)
 {
   TableDesc tabDesc = tab.actualTableDesc();
+  Record dminfo = tab.dataManagerInfo();
   SetupNewTable newtab (newName, tabDesc, Table::New);
+  newtab.bindCreate (dminfo);
   return Table(newtab, Table::Memory, (noRows ? 0 : tab.nrow()));
 }
 
@@ -263,12 +265,15 @@ void TableCopy::copySubTables (Table& out, const Table& in)
   const TableDesc& outDesc = out.tableDesc();
   const TableDesc& inDesc = in.tableDesc();
   for (uInt i=0; i<outDesc.ncolumn(); i++) {
-    const String& name = outDesc[i].name();
-    if (inDesc.isColumn(name)) {
-      TableColumn outCol(out, name);
-      ROTableColumn inCol(in, name);
-      copySubTables (outCol.rwKeywordSet(), inCol.keywordSet(),
-		     out.tableName(), out.tableType(), in);
+    // Only writable columns can have keywords defined, thus subtables.
+    if (out.isColumnWritable(i)) {
+      const String& name = outDesc[i].name();
+      if (inDesc.isColumn(name)) {
+	TableColumn outCol(out, name);
+	ROTableColumn inCol(in, name);
+	copySubTables (outCol.rwKeywordSet(), inCol.keywordSet(),
+		       out.tableName(), out.tableType(), in);
+      }
     }
   }
   out.flush(); 
