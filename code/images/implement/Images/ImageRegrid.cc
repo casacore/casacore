@@ -61,6 +61,7 @@
 #include <aips/Measures/MeasConvert.h>
 #include <aips/Logging/LogIO.h>
 #include <aips/Quanta/MVEpoch.h>
+#include <aips/Quanta/MVDirection.h>
 #include <aips/Quanta/MVPosition.h>
 #include <aips/Utilities/Assert.h>
 
@@ -514,8 +515,8 @@ void ImageRegrid<T>::regrid2D (MaskedLattice<T>& outLattice,
    Bool outIsMasked = outLattice.isMasked() && outLattice.hasPixelMask() &&
                       outLattice.isMaskWritable();
    if (itsShowLevel>0) {
-      cerr << LogIO::WARN << "inIsMasked " << inIsMasked << endl;
-      cerr << LogIO::WARN << "outIsMasked " << outIsMasked << endl;
+      cerr << "inIsMasked " << inIsMasked << endl;
+      cerr << "outIsMasked " << outIsMasked << endl;
    }
    if (itsShowLevel>0) {
       if (method==Interpolate2D<T>::NEAREST) {
@@ -532,7 +533,7 @@ void ImageRegrid<T>::regrid2D (MaskedLattice<T>& outLattice,
    const Int& inPixelAxis1 = inCoordPixelAxes(1);
    const IPosition& inShape = inLattice.shape();
    const IPosition& outShape = outLattice.shape();
-   const uInt& nDim = inLattice.ndim();
+   const Int& nDim = inLattice.ndim();
 
 // Set up navigation path for output.   We get the specified 2 axes first.
 
@@ -608,7 +609,6 @@ void ImageRegrid<T>::regrid2D (MaskedLattice<T>& outLattice,
       maxInX = -100000000.0;
       maxInY = -100000000.0;
       Bool allFailed = True, ok1, ok2;
-      MDirection inMD, outMD;
       MVDirection inMVD, outMVD;
       for (Int j=0; j<cursorShape(1); j++) {
          for (Int i=0; i<cursorShape(0); i++) {
@@ -619,11 +619,11 @@ void ImageRegrid<T>::regrid2D (MaskedLattice<T>& outLattice,
 // for the axes of interest
             
             if (useMachine) {
-              ok1 = outCoord.toWorld(outMD, outPixel);            
+              ok1 = outCoord.toWorld(outMVD, outPixel);            
               ok2 = False;
               if (ok1) {
-                 inMD = machine(outMD);
-                 ok2 = inCoord.toPixel(inPixel, inMD);
+                 inMVD = machine(outMVD).getValue();
+                 ok2 = inCoord.toPixel(inPixel, inMVD);
               } 
             } else { 
                world = 0.0;
@@ -697,7 +697,7 @@ void ImageRegrid<T>::regrid2D (MaskedLattice<T>& outLattice,
             cerr << "minInX, maxInX, minInY, maxInY = " << 
                      minInX << ", " << maxInX << ", " <<  minInY << ", " << maxInY << endl;
          }
-         for (uInt k=0; k<nDim; k++) {
+         for (Int k=0; k<nDim; k++) {
             inChunkBlc(k) = outPos(pixelAxisMap(k));
             inChunkTrc(k) = outIter.endPosition()(pixelAxisMap(k));
          }
@@ -764,7 +764,7 @@ void ImageRegrid<T>::regrid2D (MaskedLattice<T>& outLattice,
 
             inChunkBlc2D = 0;
             inChunkTrc2D = inChunkShape - 1;
-            for (uInt k=0; k<nDim; k++) {
+            for (Int k=0; k<nDim; k++) {
                if (k!=inPixelAxis0 && k!=inPixelAxis1) {
                   inChunkBlc2D(k) = outPos3(pixelAxisMap(k)) - inChunkBlc(k);
                   inChunkTrc2D(k) = outPos3(pixelAxisMap(k)) - inChunkBlc(k);
@@ -897,8 +897,9 @@ void ImageRegrid<T>::regrid1D (MaskedLattice<T>& outLattice,
    Block<Float> outX(nLine);
    Bool allFailed = True;
    Bool allGood = True;
-   Bool ok1, ok2;
-   MFrequency inMF, outMF;
+   Bool ok1 = False;
+   Bool ok2 = False;
+   MFrequency inMVF, outMVF;
 //
    for (uInt i=0; i<nLine; i++) {
 
@@ -912,10 +913,10 @@ void ImageRegrid<T>::regrid1D (MaskedLattice<T>& outLattice,
 //
       if (useMachine) {
          outPixel2 = i;
-         ok1 = outSpecCoord.toWorld(outMF, outPixel2);
+         ok1 = outSpecCoord.toWorld(outMVF, outPixel2);
          if (ok1) {
-            inMF = machine(outMF);
-            ok2 = inSpecCoord.toPixel(inPixel2, inMF);
+            inMVF = machine(outMVF).getValue();
+            ok2 = inSpecCoord.toPixel(inPixel2, inMVF);
          } 
       } else {
          outPixel(outAxisInCoordinate) = i;
@@ -1003,7 +1004,8 @@ void ImageRegrid<T>::regrid1D (MaskedLattice<T>& outLattice,
 
 // Set interpolator method
 
-   InterpolateArray1D<Float,Float>::InterpolationMethod method1D;
+   InterpolateArray1D<Float,Float>::InterpolationMethod method1D =
+        InterpolateArray1D<Float,Float>::linear;
    if (method==Interpolate2D<T>::NEAREST) {
       method1D = InterpolateArray1D<Float,Float>::nearestNeighbour;
       if (itsShowLevel>0) {
@@ -1154,12 +1156,8 @@ void ImageRegrid<T>::checkAxes(IPosition& outPixelAxes,
 // Check for Stokes and discard
 
    Int outCoordinate, outAxisInCoordinate;
-   uInt j = 0;
-   for (uInt i=0; i<n1; i++) {
-
-// Find equivalent world axis
-
-      Int outWorldAxis = outCoords.pixelAxisToWorldAxis(outPixelAxes(i));
+   Int j = 0;
+   for (Int i=0; i<n1; i++) {
 
 // Find pixel axis in output coordinates if not yet done
 
