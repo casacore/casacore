@@ -449,6 +449,22 @@ public:
     // needs to make a copy.
     Bool contiguousStorage() const { return contiguous_p; }
 
+    // Get a pointer to the beginning of the array.
+    // Note that the array may not be contiguous.
+    // <group>
+    T* data()
+      { return begin_p; }
+    const T* data() const
+      { return begin_p; }
+    // </group>
+
+    // Return steps to be made if stepping one element in a dimension.
+    // This is the 'physical' step, thus it also works correctly for
+    // non-contiguous arrays. E.g. <src>data() + steps(0)</src> gives
+    // the second element of the first axis.
+    const IPosition& steps() const
+      { return steps_p; }
+
     // Generally use of this should be shunned, except to use a FORTRAN routine
     // or something similar. Because you can't know the state of the underlying
     // data layout (in particular, if there are increments) sometimes the
@@ -515,6 +531,8 @@ protected:
     // the "hide virtual function" message when compiling derived classes.
     virtual void doNonDegenerate(Array<T> &other, const IPosition &ignoreAxes);
 
+    // Make the indexing step sizes.
+    void makeIndexingConstants();
 
     // Number of elements in the array. Cached rather than computed.
     uInt nels_p;
@@ -525,6 +543,9 @@ protected:
     // Used to hold the shape, increment into the underlying storage
     // and originalLength of the array.
     IPosition length_p, inc_p, originalLength_p;
+
+    // Used to hold the step to next element in each dimension.
+    IPosition steps_p;
 
     // Reference counted block that contains the storage.
     CountedPtr<Block<T> > data_p;
