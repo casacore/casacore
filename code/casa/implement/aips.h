@@ -169,12 +169,4 @@ extern Bool aips_debug_on;
 #define typename /* Nothing */
 #endif
 
-// The total number of bytes allocated off the heap. If the implementation
-// cannot do this it always returns 0. Very few application programmers should
-// use this, instead you should use AppInfo. Note that space used by malloc/free
-// directly is not counted, and if you do not pair calls to new/delete or
-// malloc free (e.g. free memory obtained with malloc) this count will not
-// be accurate.
-extern const size_t &aipsalloc;
-
 #endif
