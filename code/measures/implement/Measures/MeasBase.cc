@@ -130,7 +130,7 @@ void MeasBase<Mv,Mr>::set(const Unit &inunit) {
 
 template <class Mv, class Mr>
 void MeasBase<Mv,Mr>::set(const MeasValue &dt) {
-  data = *((Mv *) dt.clone());
+  data = dynamic_cast<const Mv &>(dt);
 }
 
 template <class Mv, class Mr>
