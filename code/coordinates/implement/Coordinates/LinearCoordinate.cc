@@ -121,13 +121,14 @@ uInt LinearCoordinate::nWorldAxes() const
 Bool LinearCoordinate::toWorld(Vector<Double> &world, 
 			       const Vector<Double> &pixel) const
 {
+   static String errorMsg;
    uInt n = nPixelAxes();             // nWorldAxes == nPixelAxes 
    AlwaysAssert(pixel.nelements()==n, AipsError);
    if (world.nelements()!=n) world.resize(n);
 //
-   Bool ok = transform_p.reverse(world, pixel, errorMsg_p);
+   Bool ok = transform_p.reverse(world, pixel, errorMsg);
    if (!ok) {
-      set_error(errorMsg_p);
+      set_error(errorMsg);
    } else {
       for (uInt i=0; i<n; i++) {
          world(i) += crval_p[i];
@@ -139,6 +140,7 @@ Bool LinearCoordinate::toWorld(Vector<Double> &world,
 Bool LinearCoordinate::toPixel(Vector<Double> &pixel, 
 			       const Vector<Double> &world) const
 {
+   static String errorMsg;
    uInt n = nPixelAxes();             // nWorldAxes == nPixelAxes 
    AlwaysAssert(world.nelements()==n, AipsError);
    if (pixel.nelements()!=n) pixel.resize(n);
@@ -146,9 +148,9 @@ Bool LinearCoordinate::toPixel(Vector<Double> &pixel,
    for (uInt i=0; i<n; i++) {
       pixel(i) = world(i) - crval_p[i];
    }
-   Bool ok = transform_p.forward(pixel, pixel, errorMsg_p);
+   Bool ok = transform_p.forward(pixel, pixel, errorMsg);
    if (!ok) {
-      set_error(errorMsg_p);
+      set_error(errorMsg);
    }
    return ok;
 }

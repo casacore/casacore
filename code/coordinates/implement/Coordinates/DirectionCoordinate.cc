@@ -208,36 +208,42 @@ uInt DirectionCoordinate::nWorldAxes() const
 Bool DirectionCoordinate::toWorld(Vector<Double> &world,
 				  const Vector<Double> &pixel) const
 {
+
+// Temporaries
+
+    static double d_phi, d_theta, d_x, d_y, d_lng, d_lat;
+    static String errorMsg;
+//
     if (world.nelements()!=2) world.resize(2);
     AlwaysAssert(pixel.nelements() == 2, AipsError);
 
 // world contains linear xformed numbers
 
-    Bool ok = linear_p.reverse(world, pixel, errorMsg_p);
+    Bool ok = linear_p.reverse(world, pixel, errorMsg);
     if (ok) {
-	d1_x_p = world(0);
-        d1_y_p = world(1);
+	d_x = world(0);
+        d_y = world(1);
 	int errnum = celrev(pcodes[projection_p.type()],
-			    d1_x_p, d1_y_p, prjprm_p, &d1_phi_p, &d1_theta_p,
-			    celprm_p, &d1_lng_p, &d1_lat_p);
+			    d_x, d_y, prjprm_p, &d_phi, &d_theta,
+			    celprm_p, &d_lng, &d_lat);
 	ok = ToBool((errnum == 0));
 	if (ok) {
-	    world(0) = d1_lng_p;
-	    world(1) = d1_lat_p;
+	    world(0) = d_lng;
+	    world(1) = d_lat;
 	} else {
-	    errorMsg_p = "wcslib celrev error: ";
-	    errorMsg_p += celrev_errmsg[errnum];
+	    errorMsg = "wcslib celrev error: ";
+	    errorMsg += celrev_errmsg[errnum];
 	}
 
 // Convert to appropriate units from degrees.  phi and theta
 // may be returned in a different interface somewhen.
 
-//       phi = d1_phi_p / to_degrees_p[0];
-//       theta = d1_theta_p / to_degrees_p[1];
+//       phi = d_phi / to_degrees_p[0];
+//       theta = d_theta / to_degrees_p[1];
 
         toOther(world);
     } else {
-       set_error(errorMsg_p);
+       set_error(errorMsg);
     }
 //
     return ok;
@@ -247,34 +253,40 @@ Bool DirectionCoordinate::toWorld(Vector<Double> &world,
 Bool DirectionCoordinate::toPixel(Vector<Double> &pixel,
 				  const Vector<Double> &world) const
 {
+// Temporaries 
+
+    static Vector<Double> world_tmp;
+    static double d_theta, d_phi, d_lng, d_lat, d_x, d_y;
+    static String errorMsg;
+//
     if (pixel.nelements()!=2) pixel.resize(2);
     AlwaysAssert(world.nelements() == nWorldAxes(), AipsError);
-    if (world_tmp_p.nelements()!=nWorldAxes()) world_tmp_p.resize(nWorldAxes());
+    if (world_tmp.nelements()!=nWorldAxes()) world_tmp.resize(nWorldAxes());
 //
-    world_tmp_p(0) = world(0); 
-    world_tmp_p(1) = world(1);
-    toDegrees(world_tmp_p);
+    world_tmp(0) = world(0); 
+    world_tmp(1) = world(1);
+    toDegrees(world_tmp);
 
-    d2_lng_p = world_tmp_p(0);
-    d2_lat_p = world_tmp_p(1);
-    int errnum = celfwd(pcodes[projection_p.type()], d2_lng_p, d2_lat_p,
-			celprm_p, &d2_phi_p, &d2_theta_p, prjprm_p, 
-                        &d2_x_p, &d2_y_p);
+    d_lng = world_tmp(0);
+    d_lat = world_tmp(1);
+    int errnum = celfwd(pcodes[projection_p.type()], d_lng, d_lat,
+			celprm_p, &d_phi, &d_theta, prjprm_p, 
+                        &d_x, &d_y);
 //
-    world_tmp_p(0) = d2_x_p; 
-    world_tmp_p(1) = d2_y_p;
+    world_tmp(0) = d_x; 
+    world_tmp(1) = d_y;
     Bool ok = ToBool(errnum == 0);
     if (ok) {
-	ok = linear_p.forward(world_tmp_p, pixel, errorMsg_p);
+	ok = linear_p.forward(world_tmp, pixel, errorMsg);
 
 // phi and theta may be returned in a different interface somewhen
 
-//        phi = d2_phi_p;
-//        theta = d2_theta_p;
+//        phi = d_phi;
+//        theta = d_theta;
     } else {
-        errorMsg_p = "wcslib celfwd error: ";
-        errorMsg_p += celfwd_errmsg[errnum];
-	set_error(errorMsg_p);
+        errorMsg = "wcslib celfwd error: ";
+        errorMsg += celfwd_errmsg[errnum];
+	set_error(errorMsg);
     }
     return ok;
 }
@@ -288,6 +300,12 @@ Bool DirectionCoordinate::toMix(Vector<Double>& worldOut,
                                 const Vector<Double>& worldMin,
                                 const Vector<Double>& worldMax) const
 {
+
+// Temporaries
+
+   static Vector<Double> in_tmp;
+   static Vector<Double> out_tmp;
+//
    const uInt nWorld = worldAxes.nelements();
    const uInt nPixel = pixelAxes.nelements();
    AlwaysAssert(nWorld==nWorldAxes(), AipsError);
@@ -335,18 +353,18 @@ Bool DirectionCoordinate::toMix(Vector<Double>& worldOut,
           return False;
       }
 //
-      if (in_tmp_p.nelements()!=2) in_tmp_p.resize(2);
-      if (out_tmp_p.nelements()!=2) out_tmp_p.resize(2);
+      if (in_tmp.nelements()!=2) in_tmp.resize(2);
+      if (out_tmp.nelements()!=2) out_tmp.resize(2);
 //
-      in_tmp_p(0) = pixelIn(0);
-      in_tmp_p(1) = worldIn(1);
-      if (!toMix2(out_tmp_p, in_tmp_p, worldMin, 
+      in_tmp(0) = pixelIn(0);
+      in_tmp(1) = worldIn(1);
+      if (!toMix2(out_tmp, in_tmp, worldMin, 
                   worldMax, False)) return False;
 //
-      pixelOut(0) = in_tmp_p(0);
-      pixelOut(1) = out_tmp_p(1);
-      worldOut(0) = out_tmp_p(0);
-      worldOut(1) = in_tmp_p(1);  
+      pixelOut(0) = in_tmp(0);
+      pixelOut(1) = out_tmp(1);
+      worldOut(0) = out_tmp(0);
+      worldOut(1) = in_tmp(1);  
    } else if (worldAxes(0) && pixelAxes(1)) {
 //
 // world,pixel->pixel,world
@@ -357,18 +375,18 @@ Bool DirectionCoordinate::toMix(Vector<Double>& worldOut,
           return False;
       }
 //
-      if (in_tmp_p.nelements()!=2) in_tmp_p.resize(2);
-      if (out_tmp_p.nelements()!=2) out_tmp_p.resize(2);
+      if (in_tmp.nelements()!=2) in_tmp.resize(2);
+      if (out_tmp.nelements()!=2) out_tmp.resize(2);
 //
-      in_tmp_p(0) = worldIn(0);
-      in_tmp_p(1) = pixelIn(1);
-      if (!toMix2(out_tmp_p, in_tmp_p, worldMin, 
+      in_tmp(0) = worldIn(0);
+      in_tmp(1) = pixelIn(1);
+      if (!toMix2(out_tmp, in_tmp, worldMin, 
                   worldMax, True)) return False;
 //
-      pixelOut(0) = out_tmp_p(0);
-      pixelOut(1) = in_tmp_p(1);
-      worldOut(0) = in_tmp_p(0);
-      worldOut(1) = out_tmp_p(1);
+      pixelOut(0) = out_tmp(0);
+      pixelOut(1) = in_tmp(1);
+      worldOut(0) = in_tmp(0);
+      worldOut(1) = out_tmp(1);
    }
    return True;   
 }
@@ -1151,75 +1169,88 @@ Bool DirectionCoordinate::toMix2(Vector<Double>& out,
 //
 {
 //
+// Temporaries
+//
+    static int mixpix;
+    static int mixcel;
+    static double mix_vspan[2];
+    static double mix_world[2];
+    static double mix_pixcrd[2];
+    static double mix_imgcrd[2];
+    static double mix_vstep;
+    static int mix_viter;
+    static double mix_phi, mix_theta;
+    static String errorMsg;
+//
 // Set input world/pixel arrays
 //
     if (longIsWorld) {
-       mixcel_p = 1;          // 1 or 2 (a code, not an index)
-       mixpix_p = 1;          // index into pixcrd array
+       mixcel = 1;          // 1 or 2 (a code, not an index)
+       mixpix = 1;          // index into pixcrd array
 //
-       mix_world_p[wcs_p->lng] = in(0) * to_degrees_p[0];
-       mix_pixcrd_p[mixpix_p] = in(1);
+       mix_world[wcs_p->lng] = in(0) * to_degrees_p[0];
+       mix_pixcrd[mixpix] = in(1);
 //
 // Latitude span
 //
-       mix_vspan_p[0] = minWorld(1) * to_degrees_p[1];
+       mix_vspan[0] = minWorld(1) * to_degrees_p[1];
 //
-       mix_vspan_p[1] = maxWorld(1) * to_degrees_p[1];
+       mix_vspan[1] = maxWorld(1) * to_degrees_p[1];
     } else {
-       mixcel_p = 2;          // 1 or 2 (a code, not an index)
-       mixpix_p = 0;          // index into pixcrd array
+       mixcel = 2;          // 1 or 2 (a code, not an index)
+       mixpix = 0;          // index into pixcrd array
 //
-       mix_world_p[wcs_p->lat] = in(1) * to_degrees_p[1];
-       mix_pixcrd_p[mixpix_p] = in(0);
+       mix_world[wcs_p->lat] = in(1) * to_degrees_p[1];
+       mix_pixcrd[mixpix] = in(0);
 //
 // Longitude span
 //
-       mix_vspan_p[0] = minWorld(0) * to_degrees_p[0];
-       mix_vspan_p[1] = maxWorld(0) * to_degrees_p[0];
+       mix_vspan[0] = minWorld(0) * to_degrees_p[0];
+       mix_vspan[1] = maxWorld(0) * to_degrees_p[0];
     }
 //
 // Do it
 //
-//cout << "doMix2: mixpix_p = " << mixpix_p << endl;
-//cout << "doMix2: mixcel_p = " << mixcel_p << endl;
-//cout << "doMix2: input world = " << mix_world_p[0] << ", " << mix_world_p[1] << endl;
-//cout << "doMix2: input pixel = " << mix_pixcrd_p[0] << ", " << mix_pixcrd_p[1] << endl;
-//cout << "doMix2: input vspan_p = " << mix_vspan_p[0] << ", " << mix_vspan_p[1] << endl;
+//cout << "doMix2: mixpix = " << mixpix << endl;
+//cout << "doMix2: mixcel = " << mixcel << endl;
+//cout << "doMix2: input world = " << mix_world[0] << ", " << mix_world[1] << endl;
+//cout << "doMix2: input pixel = " << mix_pixcrd[0] << ", " << mix_pixcrd[1] << endl;
+//cout << "doMix2: input vspan_p = " << mix_vspan[0] << ", " << mix_vspan[1] << endl;
 //cout << "doMix2: c_crval= " << c_crval_p[0] << " " << c_crval_p[1] << endl;
 //
-    mix_vstep_p = 1.0;
-    mix_viter_p = 2;
-    int iret = wcsmix(c_ctype_p, wcs_p, mixpix_p, mixcel_p, mix_vspan_p, 
-                      mix_vstep_p, mix_viter_p, 
-                      mix_world_p, c_crval_p, celprm_p, &mix_phi_p, &mix_theta_p, 
-                      prjprm_p, mix_imgcrd_p, linear_p.linprmWCS(), mix_pixcrd_p);
+    mix_vstep = 1.0;
+    mix_viter = 2;
+    int iret = wcsmix(c_ctype_p, wcs_p, mixpix, mixcel, mix_vspan, 
+                      mix_vstep, mix_viter, 
+                      mix_world, c_crval_p, celprm_p, &mix_phi, &mix_theta, 
+                      prjprm_p, mix_imgcrd, linear_p.linprmWCS(), mix_pixcrd);
     if (iret!=0) {
-        errorMsg_p= "wcs wcsmix_error: ";
-        errorMsg_p += wcsmix_errmsg[iret];
-        set_error(errorMsg_p);
+        errorMsg= "wcs wcsmix_error: ";
+        errorMsg += wcsmix_errmsg[iret];
+        set_error(errorMsg);
         return False;
     }
 //
 // Fish out the results
 //
-//cout << "doMix2: output world = " << mix_world_p[0] << ", " << mix_world_p[1] << endl;
-//cout << "doMix2: output pixel = " << mix_pixcrd_p[0] << ", " << mix_pixcrd_p[1] << endl;
+//cout << "doMix2: output world = " << mix_world[0] << ", " << mix_world[1] << endl;
+//cout << "doMix2: output pixel = " << mix_pixcrd[0] << ", " << mix_pixcrd[1] << endl;
 //cout << "doMix2: phi, theta=" << phi << ", " << theta << endl;
 
     if (longIsWorld) {
-       out(0) = mix_pixcrd_p[0];
-       out(1) = mix_world_p[wcs_p->lat] / to_degrees_p[1];
+       out(0) = mix_pixcrd[0];
+       out(1) = mix_world[wcs_p->lat] / to_degrees_p[1];
     } else {
-       out(0) = mix_world_p[wcs_p->lng] / to_degrees_p[0];
-       out(1) = mix_pixcrd_p[1];
+       out(0) = mix_world[wcs_p->lng] / to_degrees_p[0];
+       out(1) = mix_pixcrd[1];
     } 
 
 // Phi and theta may be returned in a different interface somewhen
 // Could assign these in toMix rather than pass them out
 // but not very clear
 
-//    phi = mix_phi_p / to_degrees_p[0];
-//    theta = mix_theta_p / to_degrees_p[1];
+//    phi = mix_phi / to_degrees_p[0];
+//    theta = mix_theta / to_degrees_p[1];
 //
     return True;
 }

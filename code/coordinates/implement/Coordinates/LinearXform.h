@@ -1,5 +1,5 @@
 //# LinearXform.h: Perform a linear transform between input and output vectors
-//# Copyright (C) 1997,1998,1999
+//# Copyright (C) 1997,1998,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -161,12 +161,6 @@ private:
     // A WCSLIB C-structure.
     linprm* linprm_p;
     Bool isPCDiagonal_p;
-
-// Temporaries
-
-    uInt tmp_maxSize_p;                        // Must be set to 10 in constructor
-    mutable double d1_world_p[10], d1_pixel_p[10];
-    mutable double d2_world_p[10], d2_pixel_p[10];
 //
     linprm* make_linprm(int naxis) const;
     void delete_linprm(linprm *&to) const;

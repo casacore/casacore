@@ -38,12 +38,14 @@
 Bool DirectionCoordinate::toWorld(MDirection &world, 
 				  const Vector<Double> &pixel) const
 {
-    Bool ok = toWorld(world_tmp_p, pixel);
+    static Vector<Double> world_tmp(2);
+//
+    Bool ok = toWorld(world_tmp, pixel);
 
 // We could cache much of this for efficiency
 
-    Quantum<Double> longi(world_tmp_p(0), units_p(0));
-    Quantum<Double> lati(world_tmp_p(1), units_p(1));
+    Quantum<Double> longi(world_tmp(0), units_p(0));
+    Quantum<Double> lati(world_tmp(1), units_p(1));
     world = MDirection(longi, lati, type_p);
 //
     return ok;

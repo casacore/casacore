@@ -206,9 +206,6 @@ private:
 
     // The reference value.
     Block<Double> crval_p;
-
-    // Temporary
-    mutable String errorMsg_p;
 };
 
 #endif

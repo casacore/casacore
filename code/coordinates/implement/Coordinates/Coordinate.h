@@ -386,8 +386,6 @@ protected:
                                               Double refLat, Bool printError) const;
 private:
     mutable String error_p;
-    mutable Vector<Double> pixel_tmp_p;
-    mutable Vector<Double> world_tmp_p;
 
     // Check format type
     void checkFormat(Coordinate::formatType& format,         

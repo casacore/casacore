@@ -244,9 +244,6 @@ private:
     MFrequency::Types type_p;
     Double restfreq_p;
     TabularCoordinate worker_p;
-
-    mutable Vector<Double> world_tmp_p;
-    mutable Vector<Double> pixel_tmp_p;
 };
 
 #endif

@@ -274,7 +274,7 @@ Bool SpectralCoordinate::near(const Coordinate* pOther,
 
 // Leave it to TabularCoordinate to report errors
 
-   TabularCoordinate* tmp = &(sCoord->worker_p);
+   const TabularCoordinate* tmp = &(sCoord->worker_p);
    return worker_p.near(tmp,excludeAxes,tol);
 
    return True;  

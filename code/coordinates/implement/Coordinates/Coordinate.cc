@@ -203,6 +203,9 @@ Bool Coordinate::toMix(Vector<Double>& worldOut,
 // need their own implementation
 //
 {
+    static Vector<Double> pixel_tmp;
+    static Vector<Double> world_tmp;
+
    const uInt nWorld = worldAxes.nelements();
    const uInt nPixel = pixelAxes.nelements();
 //
@@ -224,21 +227,21 @@ Bool Coordinate::toMix(Vector<Double>& worldOut,
 //
 // Resize happens first time or maybe after an assignment
 //
-   if (world_tmp_p.nelements()!=nWorld) world_tmp_p.resize(nWorld);
-   if (pixel_tmp_p.nelements()!=nPixel) pixel_tmp_p.resize(nPixel);
+   if (world_tmp.nelements()!=nWorld) world_tmp.resize(nWorld);
+   if (pixel_tmp.nelements()!=nPixel) pixel_tmp.resize(nPixel);
 //
 // Convert world to pixel.  Use  reference value unless
 // world value given. Copy output pixels to output vector 
 // and overwrite with any input pixel values that were given
 //
-   world_tmp_p = referenceValue().copy();
+   world_tmp = referenceValue().copy();
    for (uInt i=0; i<nWorld; i++) {
-      if (worldAxes(i)) world_tmp_p(i) = worldIn(i);
+      if (worldAxes(i)) world_tmp(i) = worldIn(i);
    }
-   if (!toPixel(pixel_tmp_p,world_tmp_p)) return False;
+   if (!toPixel(pixel_tmp,world_tmp)) return False;
 //
    if (pixelOut.nelements()!=nPixel) pixelOut.resize(nPixel);
-   pixelOut = pixel_tmp_p.copy();
+   pixelOut = pixel_tmp.copy();
    for (uInt i=0; i<nPixel; i++) {
       if (pixelAxes(i)) pixelOut(i) = pixelIn(i);
    }
@@ -247,13 +250,13 @@ Bool Coordinate::toMix(Vector<Double>& worldOut,
 // pixel value given. Copy output worlds to output vector 
 // and overwrite with any input world values that were given
 //
-   pixel_tmp_p = referencePixel().copy();
+   pixel_tmp = referencePixel().copy();
    for (uInt i=0; i<nPixel; i++) {
-      if (pixelAxes(i)) pixel_tmp_p(i) = pixelIn(i);
+      if (pixelAxes(i)) pixel_tmp(i) = pixelIn(i);
    }
-   if (!toWorld(world_tmp_p,pixel_tmp_p)) return False;
+   if (!toWorld(world_tmp,pixel_tmp)) return False;
    if (worldOut.nelements()!=nWorld) worldOut.resize(nWorld);
-   worldOut = world_tmp_p.copy();
+   worldOut = world_tmp.copy();
    for (uInt i=0; i<nWorld; i++) {
       if (worldAxes(i)) worldOut(i) = worldIn(i);
    }

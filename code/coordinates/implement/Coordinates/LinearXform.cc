@@ -1,5 +1,5 @@
 //# <ClassFileName.h>: this defines <ClassName>, which ...
-//# Copyright (C) 1997,1998,1999
+//# Copyright (C) 1997,1998,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -41,8 +41,7 @@
 
 LinearXform::LinearXform(uInt naxis)
   : linprm_p(make_linprm(naxis)),
-    isPCDiagonal_p(True),
-    tmp_maxSize_p(10)             // Must match .h
+    isPCDiagonal_p(True)
 {
     AlwaysAssert(linprm_p, AipsError);
     Vector<Double> crpix(naxis);
@@ -62,8 +61,7 @@ LinearXform::LinearXform(uInt naxis)
 LinearXform::LinearXform(const Vector<Double> &crpix,
                          const Vector<Double> &cdelt)
   : linprm_p(make_linprm(crpix.nelements())),
-    isPCDiagonal_p(True),
-    tmp_maxSize_p(10)           // Must match .h
+    isPCDiagonal_p(True)
 {
     AlwaysAssert(linprm_p, AipsError);
     uInt naxis = cdelt.nelements();
@@ -77,8 +75,7 @@ LinearXform::LinearXform(const Vector<Double> &crpix,
 LinearXform::LinearXform(const Vector<Double> &crpix,
                          const Vector<Double> &cdelt,
 			 const Matrix<Double> &pc)
-  : linprm_p(make_linprm(crpix.nelements())),
-    tmp_maxSize_p(10)             // Must match .h
+  : linprm_p(make_linprm(crpix.nelements()))
 {
     AlwaysAssert(linprm_p, AipsError);
     uInt naxis = cdelt.nelements();
@@ -105,8 +102,7 @@ LinearXform::LinearXform(const Vector<Double> &crpix,
 
 LinearXform::LinearXform(const LinearXform &other)
   : linprm_p(make_linprm(other.linprm_p->naxis)),
-    isPCDiagonal_p(other.isPCDiagonal_p),
-    tmp_maxSize_p(10)                     // Other should be 10 as well...
+    isPCDiagonal_p(other.isPCDiagonal_p)
 {
     AlwaysAssert(linprm_p, AipsError);
     set_linprm(linprm_p, other.crpix(), other.cdelt(), other.pc());
@@ -118,7 +114,6 @@ LinearXform &LinearXform::operator=(const LinearXform &other)
         delete_linprm(linprm_p);
 	linprm_p = make_linprm(other.linprm_p->naxis);
         isPCDiagonal_p = other.isPCDiagonal_p;
-        tmp_maxSize_p = 10;               // other should be 10 as well
 	AlwaysAssert(linprm_p, AipsError);
 	set_linprm(linprm_p, other.crpix(), other.cdelt(), other.pc());
     }
@@ -138,24 +133,29 @@ uInt LinearXform::nWorldAxes() const
 Bool LinearXform::forward(const Vector<Double> &world, 
 				Vector<Double> &pixel, String &errorMsg) const
 {
+
+// Temporaries
+
+    static double d_world[10], d_pixel[10];
     uInt naxis = world.nelements();
-    AlwaysAssert(naxis <= tmp_maxSize_p, AipsError);
+    AlwaysAssert(naxis <= 10, AipsError);
+//
     pixel.resize(naxis);
 
     // We could optimize this to directly use the storage in world and pixel if
     // it is contiguous. Optimize if necessary.
     uInt i;
     for (i=0; i<naxis; i++) {
-        d1_world_p[i] = world(i);
+        d_world[i] = world(i);
     }
-    int errnum = linfwd(d1_world_p, linprm_p, d1_pixel_p);
+    int errnum = linfwd(d_world, linprm_p, d_pixel);
     if (errnum) {
         errorMsg = "wcs linfwd_error: ";
 	errorMsg += linfwd_errmsg[errnum];
 	return False;
     }
     for (i=0; i<naxis; i++) {
-        pixel(i) = d1_pixel_p[i];
+        pixel(i) = d_pixel[i];
     }
     return True;
 }
@@ -164,24 +164,25 @@ Bool LinearXform::reverse(Vector<Double> &world,
                           const Vector<Double> &pixel, 
                           String &errorMsg) const
 {
+    static double d_world[10], d_pixel[10];
     uInt naxis = pixel.nelements();
-    AlwaysAssert(naxis <= tmp_maxSize_p, AipsError);
+    AlwaysAssert(naxis <= 10, AipsError);
     world.resize(naxis); 
 
     // We could optimize this to directly use the storage in world and pixel if
     // it is contiguous. Optimize if necessary.
     uInt i;
     for (i=0; i<naxis; i++) {
-	d2_pixel_p[i] = pixel(i);
+	d_pixel[i] = pixel(i);
     }
-    int errnum = linrev(d2_pixel_p, linprm_p, d2_world_p);
+    int errnum = linrev(d_pixel, linprm_p, d_world);
     if (errnum) {
         errorMsg = "wcs linreb_error: ";
 	errorMsg += linrev_errmsg[errnum];
 	return False;
     }
     for (i=0; i<naxis; i++) {
-        world(i) = d2_world_p[i];
+        world(i) = d_world[i];
     }
     return True;
 }
