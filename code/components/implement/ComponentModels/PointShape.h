@@ -1,5 +1,5 @@
 //# PointShape.h:
-//# Copyright (C) 1998
+//# Copyright (C) 1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -32,10 +32,10 @@
 #include <aips/aips.h>
 #include <trial/ComponentModels/ComponentShape.h>
 #include <trial/ComponentModels/ComponentType.h>
-#include <aips/Measures/MDirection.h>
-#include <aips/Quanta/MVDirection.h>
 
 class MVAngle;
+class MDirection;
+class MVDirection;
 class RecordInterface;
 class String;
 class doubleG_COMPLEX;
@@ -159,26 +159,20 @@ public:
 
   // Construct a point shape at the specified direction.
   // flux argument.
-  PointShape(const MDirection & direction);
+  PointShape(const MDirection& direction);
 
   // The copy constructor uses copy semantics.
-  PointShape(const PointShape & other);
+  PointShape(const PointShape& other);
 
   // The destructor does nothing.
   virtual ~PointShape();
 
   // The assignment operator uses copy semantics.
-  PointShape & operator=(const PointShape & other);
+  PointShape& operator=(const PointShape& other);
 
   // get the shape of the component. This function always returns
   // ComponentType::POINT.
   virtual ComponentType::Shape type() const;
-
-  // set/get the reference direction of the point.
-  // <group>
-  virtual void setRefDirection(const MDirection & newRefDir);
-  virtual const MDirection & refDirection() const;
-  // </group>
 
   // Calculate the flux at the specified direction, in a pixel of specified
   // size, given the total flux of the component. The total flux of the
@@ -188,8 +182,12 @@ public:
   // Because this is a point shape this function will not change the flux
   // unless the direction is more than half a pixelSize away from the reference
   // direction. Then the returned flux is zero.
-  virtual void sample(Flux<Double> & flux, const MDirection & direction, 
-		      const MVAngle & pixelSize) const;
+  virtual void sample(Flux<Double>& flux, const MDirection& direction, 
+		      const MVAngle& pixelSize) const;
+
+  virtual void multiSample(Vector<Double>& scale, 
+ 			   const Vector<MVDirection>& directions, 
+ 			   const MVAngle& pixelSize) const;
 
   // Return the Fourier transform of the component at the specified point in
   // the spatial frequency domain. The point is specified by a 3 element vector
@@ -203,13 +201,13 @@ public:
 
   // The total flux of the component must be supplied in the flux variable and
   // the corresponding visibility is returned in the same variable.
-  virtual void visibility(Flux<Double> & flux, const Vector<Double> & uvw,
-			  const Double & frequency) const;
+  virtual void visibility(Flux<Double>&, const Vector<Double>&,
+			  const Double&) const;
 
   // Return a pointer to a copy of this object upcast to a ComponentShape
   // object. The class that uses this function is responsible for deleting the
   // pointer. This is used to implement a virtual copy constructor.
-  virtual ComponentShape * clone() const;
+  virtual ComponentShape* clone() const;
 
   // return the number of parameters in this shape and set/get them.
   //
@@ -218,8 +216,8 @@ public:
   // other than a zero length Vector will throw an exception.
   // <group>
   virtual uInt nParameters() const;
-  virtual void setParameters(const Vector<Double> & newParms);
-  virtual void parameters(Vector<Double> & compParms) const;
+  virtual void setParameters(const Vector<Double>& newParms);
+  virtual void parameters(Vector<Double>& compParms) const;
   // </group>
 
   // This functions convert between a RecordInterface and a PointShape. These
@@ -228,25 +226,20 @@ public:
   // is malformed and append an error message to the supplied string giving the
   // reason.
   // <group>
-  virtual Bool fromRecord(String & errorMessage,
-			  const RecordInterface & record);
-  virtual Bool toRecord(String & errorMessage, RecordInterface & record) const;
+  virtual Bool fromRecord(String& errorMessage,
+			  const RecordInterface& record);
+  virtual Bool toRecord(String& errorMessage, RecordInterface& record) const;
   // </group>
 
   // Convert the parameters of the component to the specified units. As a point
   // component has no parameters this function does nothing and always returns
   // True.
-  virtual Bool convertUnit(String & errorMessage,
-			   const RecordInterface & record);
+  virtual Bool convertUnit(String&, const RecordInterface&);
 
   // Function which checks the internal data of this class for correct
   // dimensionality and consistent values. Returns True if everything is fine
   // otherwise returns False.
   virtual Bool ok() const;
 
-private:
-  MDirection itsDir;
-  MVDirection itsDirValue;
-  MDirection::Types itsRefFrame;
 };
 #endif
