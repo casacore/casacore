@@ -35,6 +35,7 @@
 #include <aips/Measures/MVPosition.h>
 #include <aips/Measures/RotMatrix.h>
 #include <aips/Measures/Euler.h>
+#include <aips/Measures/MeasTable.h>
 #include <aips/Measures/Precession.h>
 #include <aips/Measures/Nutation.h>
 #include <aips/Measures/Aberration.h>
@@ -232,7 +233,7 @@ main()
 		ab1(eq) * (C::c / factor) << endl;
 	}
 
-	RotMatrix fromE = MeasData::posToRect();
+	RotMatrix fromE = MeasTable::posToRect();
 	cout << "Rotation matrix from ecliptic: " << fromE << endl;
 
 	cout << "J2000 barycentre Earth: " << endl;

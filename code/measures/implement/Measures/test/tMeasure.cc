@@ -1,5 +1,5 @@
 //# tMeasure.cc: This program test Measure functions
-//# Copyright (C) 1995,1996
+//# Copyright (C) 1995,1996,1997
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -34,13 +34,14 @@
 #include <aips/Measures/MDirection.h>
 #include <aips/Measures/MPosition.h>
 #include <aips/Measures/MRadialVelocity.h>
+#include <aips/Measures/MCFrame.h>
 #include <aips/Measures/MVAngle.h>
 #include <aips/Measures/MVTime.h>
 
 main()
 {
     try {
-	cout << "Test measure class MVAngle" << endl;
+      	cout << "Test measure class MVAngle" << endl;
 	cout << "--------------------------------------" << endl;
 
 	MVAngle mva1 = Quantity(190,"deg") + Quantity(59,"'") +
@@ -201,8 +202,9 @@ main()
 	cout << "LSR (J2000): " << 
 	    MDirection::Convert(lsr1900, MDirection::J2000)()
 		.getValue() << endl;
+	MeasFrame flsr1900(lsr1900);
 	cout << "LSR frame: " <<
-	    MeasFrame(lsr1900) << endl;
+	    (MCFrame::make(flsr1900), flsr1900) << endl;
     }
 
     {
@@ -264,7 +266,7 @@ main()
 					 .getValue() << endl;
 
     }
-
+    
     {
 	cout << "Test real radial velocity" << endl <<
 	    "-----------------------------------------" <<endl;
@@ -277,27 +279,27 @@ main()
 		      Quantity(52.8,"deg"),
 		      MPosition::WGS84);
 	MeasFrame frame(coord,epo,pos);
-	cout << frame << endl;
+	cout << (MCFrame::make(frame), frame) << endl;
 	cout << MDirection::Convert(coord,
 				    MDirection::Ref(MDirection::APP,
 						    frame))()
-							.getValue()
-							    .getAngle("deg") <<
-								endl;
+	  .getValue()
+	  .getAngle("deg") <<
+	  endl;
 	cout << MDirection::Convert(coord,
 				    MDirection::Ref(MDirection::APP,
 						    frame))()
-							.getValue() <<
-								endl;
+	  .getValue() <<
+	  endl;
 	cout << MEpoch::Convert(epo,
 				MEpoch::Ref(MEpoch::LAST,
 					    frame))().getValue() 
-						<< endl;
+					      << endl;
 	MRadialVelocity rv(Quantity(1253,"km/s"),
 			   MRadialVelocity::Ref(MRadialVelocity::LSR,
 						frame));
 
-	cout << MRadialVelocity::Convert(rv,
+	 cout << MRadialVelocity::Convert(rv,
 					 MRadialVelocity::Ref
 					 (MRadialVelocity::TOPO,
 					  frame))()
@@ -340,6 +342,7 @@ main()
 	cout << "Converted " << tm3 << endl <<
 	    " to " << MEpoch::Ref(MEpoch::GAST) << endl <<
 		" as " << tconv52() << endl;
+	MCFrame::make(frame);
 	cout << "Converted " << tm3 << endl <<
 	    " to " << tasref << endl <<
 		" as " << tconv5() << endl;
@@ -370,7 +373,7 @@ main()
 	cout << "Epoch B1950: " << tbm << endl;
 
         MeasFrame mftbm(tbm);
-	cout << mftbm << endl;
+	cout << (MCFrame::make(mftbm), mftbm) << endl;
 
     } catch (AipsError x) {
 	cout << x.getMesg() << endl;
