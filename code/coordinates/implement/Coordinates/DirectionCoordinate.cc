@@ -676,12 +676,22 @@ Bool DirectionCoordinate::near(const Coordinate* pOther,
                                Double tol) const
 
 {
-   if (this->type() != pOther->type()) return False;
+   if (this->type() != pOther->type()) {
+      set_error("Comparison is not with another DirectionCoordinate");
+      return False;
+   }
+   
      
    DirectionCoordinate* dCoord = (DirectionCoordinate*)pOther;
    
-   if (!projection_p.near(dCoord->projection_p, tol)) return False;
-   if (type_p != dCoord->type_p) return False;
+   if (!projection_p.near(dCoord->projection_p, tol)) {
+      set_error("The DirectionCoordinates have differing projections");
+      return False;
+   }
+   if (type_p != dCoord->type_p) {
+      set_error("The DirectionCoordinates have differing types");
+      return False;
+   }
 
 
 // Number of pixel and world axes is the same for a DirectionCoordinate
@@ -697,36 +707,65 @@ Bool DirectionCoordinate::near(const Coordinate* pOther,
 
 // Check linear transformation
 
-   if (!linear_p.near(dCoord->linear_p, excludeAxes, tol)) return False;
+   if (!linear_p.near(dCoord->linear_p, excludeAxes, tol)) {
+      set_error("The DirectionCoordinates have differing linear transformation matrices");
+      return False;
+   }
 
 
 // Check names and units
 
-   if (names_p.nelements() != dCoord->names_p.nelements()) return False;
-   if (units_p.nelements() != dCoord->units_p.nelements()) return False;
+   ostrstream oss;
+   if (names_p.nelements() != dCoord->names_p.nelements()) {
+      set_error("The DirectionCoordinates have differing numbers of world axis names");
+      return False;
+   }
+   if (units_p.nelements() != dCoord->units_p.nelements()) {
+      set_error("The DirectionCoordinates have differing numbers of axis units");
+      return False;
+   }
    for (i=0; i<names_p.nelements(); i++) {
       if (!exclude(i)) {
-         if (names_p(i) != dCoord->names_p(i)) return False;      
+         if (names_p(i) != dCoord->names_p(i)) {
+            oss << "The DirectionCoordinates have differing axis names for axis "
+                << i << ends;
+            set_error(String(oss));
+            return False;      
+         }
       }
    }
    for (i=0; i<units_p.nelements(); i++) {
       if (!exclude(i)) {
-         if (units_p(i) != dCoord->units_p(i)) return False;      
+         if (units_p(i) != dCoord->units_p(i)) {
+            oss << "The DirectionCoordinates have differing axis units for axis "
+                << i << ends;
+            set_error(String(oss));
+            return False;      
+         }
       }
    }
 
      
 // WCS structures.  
 
-   if (celprm_p->flag != dCoord->celprm_p->flag) return False;
+   if (celprm_p->flag != dCoord->celprm_p->flag) {
+      set_error("The DirectionCoordinates have differing WCS spherical coordinate structures");
+      return False;
+   }
 
 // Items 0 and 2 are longitudes, items 1 and 3 are latitiudes
 // So treat them as axes 0 and 1 ???
 
    for (i=0; i<2; i++) {
      if (!exclude(i)) {
-        if (!::near(celprm_p->ref[i],dCoord->celprm_p->ref[i],tol)) return False;
-        if (!::near(celprm_p->ref[i+2],dCoord->celprm_p->ref[i+2],tol)) return False;
+        if (!::near(celprm_p->ref[i],dCoord->celprm_p->ref[i],tol)) {
+           set_error("The DirectionCoordinates have differing WCS spherical coordinate structures");
+           return False;
+        }
+        if (!::near(celprm_p->ref[i+2],dCoord->celprm_p->ref[i+2],tol)) {
+           set_error("The DirectionCoordinates have differing WCS spherical coordinate structures");
+           return False;
+        }
      }
    }
 
@@ -735,7 +774,10 @@ Bool DirectionCoordinate::near(const Coordinate* pOther,
    if (prjprm_p->flag != dCoord->prjprm_p->flag) return False;
    if (prjprm_p->r0 != dCoord->prjprm_p->r0) return False;
    for (i=0; i<10; i++) {
-     if (!::near(prjprm_p->p[i],dCoord->prjprm_p->p[i],tol)) return False;
+      if (!::near(prjprm_p->p[i],dCoord->prjprm_p->p[i],tol)) {
+         set_error("The DirectionCoordinates have differing WCS projection structures");
+         return False;
+      }
    }
    
                           
@@ -743,10 +785,16 @@ Bool DirectionCoordinate::near(const Coordinate* pOther,
 // but might as well make sure
 
    if (!exclude(0)) {
-      if (!::near(to_degrees_p[0],dCoord->to_degrees_p[0],tol)) return False;
+      if (!::near(to_degrees_p[0],dCoord->to_degrees_p[0],tol)) {
+         set_error("The DirectionCoordinates have differing unit conversion vectors");
+         return False;
+      }
    }
    if (!exclude(1)) {
-      if (!::near(to_degrees_p[1],dCoord->to_degrees_p[1],tol)) return False;
+      if (!::near(to_degrees_p[1],dCoord->to_degrees_p[1],tol)) {
+         set_error("The DirectionCoordinates have differing unit conversion vectors");
+         return False;
+      }
    }
     
    return True;
