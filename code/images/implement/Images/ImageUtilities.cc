@@ -882,7 +882,7 @@ void ImageUtilities::verifyRegion (IPosition& blc,
    const Int trcDim = trc.nelements();
    trc.resize(nDim,True);
    if (trcDim == 0) {
-      trc = imageShape - IPosition(nDim,1);
+      trc = imageShape - 1;
    } else {
       for (Int i=0; i<nDim; i++) {
          if (i > trcDim-1) {
