@@ -35,7 +35,12 @@
 #include <aips/OS/malloc.h>
 
 #if defined(AIPS_NO_LEA_MALLOC)
+#if defined(AIPS_DARWIN)
+#include <sys/time.h>
+#include <sys/resource.h>
+#else
 #include <malloc.h>
+#endif
 #endif
 
 
@@ -43,18 +48,33 @@ size_t Memory::allocatedMemoryInBytes()
 {
     size_t total = 0;
 
+#if defined(AIPS_DARWIN)
+// Use getrusage to get the RSS
+   struct rusage rus;
+   getrusage(0, &rus);
+   total = rus.ru_maxrss;
+#else
+
     struct mallinfo m = mallinfo();
     total = m.hblkhd + m.usmblks + m.uordblks;
 
+#endif
     return total;
 }
 
 size_t Memory::assignedMemoryInBytes()
 {
     size_t total = 0;
+#if defined(AIPS_DARWIN)
+// Use getrusage to get the other memory segments
+   struct rusage rus;
+   getrusage(0, &rus);
+   total = rus.ru_idrss + rus.ru_isrss;
+#else
 
     struct mallinfo m = mallinfo();
     total = m.arena + m.hblkhd;
+#endif
 
     return total;
 }
@@ -104,5 +124,9 @@ void Memory::setMemoryOptions(){
 }
 
 int Memory::setMemoryOption(int cmd, int value){
+#if defined(AIPS_DARWIN)
+   return 0;
+#else
    return(mallopt(cmd, value));
+#endif
 }

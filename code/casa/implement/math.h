@@ -35,7 +35,7 @@
 // Make sure any special macros are set
 #include <aips/aips.h>
 
-#if defined(AIPS_SGI) || defined(AIPS_SUN_NATIVE)
+#if defined(AIPS_SGI) || defined(AIPS_SUN_NATIVE) 
 # include <math.h>
 #else
 # include <cmath>

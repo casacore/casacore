@@ -495,7 +495,7 @@ C------------------------------------------------------------------------
 *
       IF (F_GHZ .LT. 0) THEN
          WRITE(6,*) 'E-ATM,  Error from refract_vapor: frequency < 0'
-         STOP
+         STOP 'Negative frequency'
       ENDIF
 *
 * Find the frequency interval (i-1,i) of the input frequency:
