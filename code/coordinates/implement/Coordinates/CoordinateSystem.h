@@ -506,6 +506,7 @@ public:
     //# cf comment in toFITS.
     static Bool fromFITSHeader(CoordinateSystem &coordsys, 
 			       const RecordInterface &header,
+                               const IPosition& shape,
 			       Bool oneRelative,
 			       char prefix = 'c');
 
