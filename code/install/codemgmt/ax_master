@@ -4643,3 +4643,4 @@
 14 298 src mv aips/implement/MeasurementSets/test/tNewMSColumns.cc aips/implement/MeasurementSets/test/tMSColumns.cc
 14 300 src mv trial/implement/MeasurementSets/test/tMSAntennaBuffer.cc trial/implement/MeasurementSets/test/tOldMSAntennaBuffer.cc
 14 300 src mv trial/implement/MeasurementSets/test/tMSDerivedValues.cc trial/implement/MeasurementSets/test/tOldMSDerivedValues.cc
+14 300 src mv trial/implement/MeasurementSets/test/tMSFeedBuffer.cc trial/implement/MeasurementSets/test/tOldMSFeedBuffer.cc
