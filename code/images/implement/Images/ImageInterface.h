@@ -1,5 +1,5 @@
 //# ImageInterface.h: a base class for astronomical images
-//# Copyright (C) 1996,1997,1998,1999
+//# Copyright (C) 1996,1997,1998,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -32,6 +32,7 @@
 //# Includes
 #include <aips/aips.h>
 #include <trial/Images/RegionHandler.h>
+#include <trial/Images/MaskSpecifier.h>
 #include <trial/Images/ImageInfo.h>
 #include <trial/Lattices/MaskedLattice.h>
 #include <trial/Coordinates/CoordinateSystem.h>
@@ -145,6 +146,9 @@ template <class T> class ImageInterface: public MaskedLattice<T>
 public: 
   ImageInterface();
 
+  // Construct for a specific region handler object.
+  ImageInterface (const RegionHandler& regionHandler);
+
   // Copy constructor (copy semantics).
   ImageInterface (const ImageInterface& other);
 
@@ -172,14 +176,14 @@ public:
   // Return the name of the current ImageInterface object. This will generally 
   // be a file name for images that have a persistent form.  Any path
   // before the actual file name can be optionally stripped off.
-  virtual String name (const Bool stripPath=False) const = 0;
+  virtual String name (Bool stripPath=False) const = 0;
 
   // Functions to set or replace the coordinate information in the Image
   // Returns False on failure, e.g. if the number of axes do not match.
   //# NOTE. setCoordinateInfo should be pure virtual with a partial 
   //# implementation however SGI ntv will not generate it with -no_prelink.
   // <group>
-  virtual Bool setCoordinateInfo(const CoordinateSystem& coords);
+  virtual Bool setCoordinateInfo (const CoordinateSystem& coords);
   const CoordinateSystem& coordinates() const;
   // </group>
 
@@ -188,8 +192,13 @@ public:
   
   // Allow messages to be logged to this ImageInterface.
   // <group>
-  LogIO& logSink() {return log_p;}
-  const LogIO& logSink() const {return log_p;}
+  LogIO& logSink()
+  {
+    if (logClosed_p) reopenLog();
+    return log_p;
+  }
+  const LogIO& logSink() const
+    { return const_cast<ImageInterface<T>*>(this)->logSink(); }
   // </group>
   
   // Add the TableLogSink from other to this one.
@@ -214,40 +223,85 @@ public:
   // Note that setImageInfo REPLACES the information with the new information.
   // It is up to the derived class to make the ImageInfo permanent.
   // <group>
-  virtual ImageInfo imageInfo() const;
-  virtual Bool setImageInfo(const ImageInfo& info);
+  const ImageInfo& imageInfo() const
+    { return imageInfo_p; }
+  virtual Bool setImageInfo (const ImageInfo& info);
   // </group>
 
-  // Can the derived class handle region definition?
-  // The default implementation returns False.
-  virtual Bool canDefineRegion() const;
+  // Can the image handle region definition?
+  Bool canDefineRegion() const
+    { return regHandPtr_p->canDefineRegion(); }
 
-  // The "region/mask" functions are only implemented in PagedImage.
-  // All other Image classes ignore these operations (they are no-op's).
-  // See <linkto class=PagedImage>PagedImage</linkto> for a description
-  // of the functions.
-  // <group>
+  // Make a mask which is suitable for the type of image.
+  // Optionally the mask can be initialized with the given value
+  // (by default it will not).
+  // <br>Optionally the mask can be defined as an image region/mask
+  // and turned in the default mask for the image. By default it will.
+  virtual ImageRegion makeMask (const String& name,
+				Bool defineAsRegion = True,
+				Bool setAsDefaultMask = True,
+				Bool initialize = False,
+				Bool value = True);
+
+  // Define a region/mask belonging to the image.
+  // The group type determines if it stored as a region or mask.
+  // If overwrite=False, an exception will be thrown if the region
+  // already exists.
+  // <br>An exception is thrown if canDefineRegion is False.
   virtual void defineRegion (const String& name, const ImageRegion& region,
 			     RegionHandler::GroupType,
 			     Bool overwrite = False);
+
+  // Does the image have a region with the given name?
   virtual Bool hasRegion (const String& regionName,
 			  RegionHandler::GroupType = RegionHandler::Any) const;
+
+  // Get a region/mask belonging to the image from the given group
+  // (which can be Any).
+  // <br>Optionally an exception is thrown if the region does not exist.
+  // A zero pointer is returned if the region does not exist.
+  // The caller has to delete the <src>ImageRegion</src> object created.
   virtual ImageRegion* getImageRegionPtr
                             (const String& name,
 			     RegionHandler::GroupType = RegionHandler::Any,
 			     Bool throwIfUnknown = True) const;
+
+  // Rename a region.
+  // If a region with the new name already exists, it is deleted or
+  // an exception is thrown (depending on <src>overwrite</src>).
+  // The region name is looked up in the given group(s).
+  // <br>An exception is thrown if the old region name does not exist.
   virtual void renameRegion (const String& newName,
 			     const String& oldName,
 			     RegionHandler::GroupType = RegionHandler::Any,
 			     Bool overwrite = False);
+
+  // Remove a region/mask belonging to the image from the given group
+  // (which can be Any).
+  // <br>Optionally an exception is thrown if the region does not exist.
   virtual void removeRegion (const String& name,
 			     RegionHandler::GroupType = RegionHandler::Any,
 			     Bool throwIfUnknown = True);
+
+  // Get the names of all regions/masks.
   virtual Vector<String> regionNames
                    (RegionHandler::GroupType = RegionHandler::Any) const;
+
+  // Use the mask as specified.
+  // If a mask was already in use, it is replaced by the new one.
+  virtual void useMask (MaskSpecifier = MaskSpecifier());
+
+  // Set the default pixelmask to the mask with the given name
+  // (which has to exist in the "masks" group).
+  // If the image table is writable, the setting is persistent by writing
+  // the name as a keyword.
+  // If the given regionName is the empty string,
+  // the default pixelmask is unset.
   virtual void setDefaultMask (const String& regionName);
+
+  // Get the name of the default pixelmask.
+  // An empty string is returned if no default pixelmask.
   virtual String getDefaultMask() const;
-  // </group>
 
   // Get a region belonging to the image.
   // An exception is thrown if the region does not exist.
@@ -266,26 +320,48 @@ public:
   // Check class invariants. 
   virtual Bool ok() const = 0;
   
-  //<group>
-  // Function to work around the g++ upcast bug
-  ImageInterface<T>& ic() {return *this;}
-  const ImageInterface<T>& ic() const {return *this;}
-  //</group>
- 
+  // Reopen the log if needed.
+  // It can be used to reopen only the log file after a tempClose is done.
+  void reopenLog();
+
  
 protected:
   // Assignment (copy semantics) is only useful for derived classes.
   ImageInterface& operator= (const ImageInterface& other);
 
+  // Set the log sink.
+  void setLogMember (const LogIO& log)
+    { log_p = log; }
+
+  // Close the log (usually only temporarily).
+  void closeLogSink (Bool temporarily);
+
+  // Let a derived class reopen the log.
+  virtual void doReopenLogSink();
+
+  // Restore the image info from the record.
+  Bool restoreImageInfo (const RecordInterface& rec);
+
+  // Set the image info variable.
+  void setImageInfoMember (const ImageInfo& imageInfo)
+    { imageInfo_p = imageInfo; }
+
+  // Set the coordinate system variable.
+  void setCoordsMember (const CoordinateSystem& coords)
+    { coords_p = coords; }
+
+private:
   // It is the job of the derived class to make the coordinate system valid.
   CoordinateSystem coords_p;
+  // The same is true for the log table.
   LogIO log_p;
+  Bool  logClosed_p;
 
   // It is the job of the derived class to make the ImageInfo valid
   ImageInfo imageInfo_p;
 
-  Bool restoreImageInfo(const RecordInterface& rec);
-
+  // The region handling object.
+  RegionHandler* regHandPtr_p;
 };
 
 
