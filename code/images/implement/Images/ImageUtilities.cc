@@ -268,26 +268,31 @@ SkyComponent ImageUtilities::encodeSkyComponent(LogIO& os, Double& fluxRatio,
 
 void ImageUtilities::worldWidthsToPixel (LogIO& os,
                                          Vector<Double>& dParameters,
-                                         const Vector<Quantum<Double> >& parameters,
+                                         const Vector<Quantum<Double> >& wParameters,
                                          const CoordinateSystem& cSys,
-                                         const IPosition& pixelAxes)
+                                         const IPosition& pixelAxes,
+                                         Bool doRef)
+//
+// world parameters: x, y, major, minor, pa
+// pixel parameters: major, minor, pa (rad)
+//
 {
    if (pixelAxes.nelements()!=2) {
       os << "You must give two pixel axes" << LogIO::EXCEPTION;
    }
-   if (parameters.nelements()!=3) {
-      os << "The parameters vector must be of length 3" << LogIO::EXCEPTION;
+   if (wParameters.nelements()!=5) {
+      os << "The world parameters vector must be of length 5" << LogIO::EXCEPTION;
    }
 //
-   dParameters.resize(parameters.nelements());
+   dParameters.resize(3);
    Int c0, c1, axisInCoordinate0, axisInCoordinate1;
    cSys.findPixelAxis(c0, axisInCoordinate0, pixelAxes(0));
    cSys.findPixelAxis(c1, axisInCoordinate1, pixelAxes(1));
       
 // Find units
    
-   String majorUnit = parameters(0).getFullUnit().getName();
-   String minorUnit = parameters(1).getFullUnit().getName();
+   String majorUnit = wParameters(2).getFullUnit().getName();
+   String minorUnit = wParameters(3).getFullUnit().getName();
         
 // This saves me trying to handle mixed pixel/world units which is a pain for coupled coordinates
     
@@ -318,26 +323,32 @@ void ImageUtilities::worldWidthsToPixel (LogIO& os,
 // Deal with pixel units separately.    Both are in pixels if either is in pixels.
 
    if (majorUnit==String("pix")) {
-      dParameters(0) = parameters(0).getValue();                      // Major
-      dParameters(1) = parameters(1).getValue();                      // Minor
+      dParameters(0) = max(wParameters(2).getValue(), wParameters(3).getValue());
+      dParameters(1) = min(wParameters(2).getValue(), wParameters(3).getValue());
 // 
       if (type0==Coordinate::DIRECTION && type1==Coordinate::DIRECTION) {
          const DirectionCoordinate& dCoord = cSys.directionCoordinate (c0);
+
+// Use GaussianShape to get the position angle right. Use the specified
+// direction or the reference direction
+
          MDirection world;
-         dCoord.toWorld(world, dCoord.referencePixel());               // Can't fail
-
-// Use GaussianShape to get the position angle right
-
-         Quantum<Double> tmpMin(1.0, Unit("arcsec"));
-         Quantum<Double> tmpMaj(dParameters(0)/dParameters(1), Unit("arcsec"));
-         GaussianShape gaussShape(world, tmpMaj, tmpMin, parameters(2));        // pa is N->E
+         if (doRef) {
+            dCoord.toWorld(world, dCoord.referencePixel());
+         } else {
+            world = MDirection(wParameters(0), wParameters(1), dCoord.directionType());
+         }
+//
+         Quantum<Double> tmpMaj(1.0, Unit("arcsec"));
+         GaussianShape gaussShape(world, tmpMaj, dParameters(1)/dParameters(0), 
+                                  wParameters(4));                              // pa is N->E
          Vector<Double> pars = gaussShape.toPixel (dCoord);
          dParameters(2) = pars(4);                                              // pa: +x -> +y
        } else {
       
 // Some 'mixed' plane; the pa is already +x -> +y
    
-         dParameters(2) = parameters(2).getValue(Unit("rad"));                  // pa
+         dParameters(2) = wParameters(4).getValue(Unit("rad"));                  // pa
        }
        return;
    }
@@ -349,20 +360,24 @@ void ImageUtilities::worldWidthsToPixel (LogIO& os,
 // Check units are angular
       
       Unit rad(String("rad"));
-      if (!parameters(0).check(rad.getValue())) {
+      if (!wParameters(2).check(rad.getValue())) {
          os << "The units of the major axis must be angular" << LogIO::EXCEPTION;
       }
-      if (!parameters(1).check(rad.getValue())) {
+      if (!wParameters(3).check(rad.getValue())) {
          os << "The units of the minor axis must be angular" << LogIO::EXCEPTION;
       }
                                    
-// Make a Gaussian shape to convert to pixels at reference pixel
+// Make a Gaussian shape to convert to pixels at specified location
   
       const DirectionCoordinate& dCoord = cSys.directionCoordinate (c0);
-      MDirection world;
-      dCoord.toWorld(world, dCoord.referencePixel());               // Can't fail
 // 
-      GaussianShape gaussShape(world, parameters(0), parameters(1), parameters(2));
+      MDirection world;
+      if (doRef) {
+         dCoord.toWorld(world, dCoord.referencePixel());
+      } else {
+         world = MDirection(wParameters(0), wParameters(1), dCoord.directionType());
+      }
+      GaussianShape gaussShape(world, wParameters(2), wParameters(3), wParameters(4));
       Vector<Double> pars = gaussShape.toPixel (dCoord);
       dParameters(0) = pars(2);
       dParameters(1) = pars(3);
@@ -375,12 +390,18 @@ void ImageUtilities::worldWidthsToPixel (LogIO& os,
     
 // Find major and minor axes in pixels
 
-      dParameters(0) = worldWidthToPixel (os, dParameters(2), parameters(0), 
+      dParameters(0) = worldWidthToPixel (os, dParameters(2), wParameters(2), 
                                           cSys, pixelAxes);
-      dParameters(1) = worldWidthToPixel (os, dParameters(2), parameters(1), 
+      dParameters(1) = worldWidthToPixel (os, dParameters(2), wParameters(3), 
                                           cSys, pixelAxes);
-      dParameters(2) = parameters(2).getValue(Unit("rad"));                // radians; +x -> +y
+      dParameters(2) = wParameters(4).getValue(Unit("rad"));                // radians; +x -> +y
    }
+
+// Make sure major > minor
+
+   Double tmp = dParameters(0);
+   dParameters(0) = max(tmp, dParameters(1));
+   dParameters(1) = min(tmp, dParameters(1));
 }   
 
 
@@ -389,13 +410,18 @@ Bool ImageUtilities::pixelWidthsToWorld (LogIO& os,
                                          Vector<Quantum<Double> >& wParameters,
                                          const Vector<Double>& pParameters,
                                          const CoordinateSystem& cSys, 
-                                         const IPosition& pixelAxes) 
+                                         const IPosition& pixelAxes, 
+                                         Bool doRef)
+//
+// pixel parameters: x, y, major, minor, pa (rad)
+// world parameters: major, minor, pa
+//
 {
    if (pixelAxes.nelements()!=2) {
       os << "You must give two pixel axes" << LogIO::EXCEPTION;
    }
-   if (pParameters.nelements()!=3) {
-      os << "The parameters vector must be of length 3" << LogIO::EXCEPTION;
+   if (pParameters.nelements()!=5) {
+      os << "The parameters vector must be of length 5" << LogIO::EXCEPTION;
    }
 //
    Int c0, axis0, c1, axis1;
@@ -404,7 +430,7 @@ Bool ImageUtilities::pixelWidthsToWorld (LogIO& os,
    Bool flipped = False;
    if (cSys.type(c1)==Coordinate::DIRECTION  && cSys.type(c0)==Coordinate::DIRECTION) {
       if (c0==c1) {
-         flipped = skyPixelWidthsToWorld(os, wParameters, cSys, pParameters, pixelAxes);
+         flipped = skyPixelWidthsToWorld(os, wParameters, cSys, pParameters, pixelAxes, doRef);
       } else {
          os << "Cannot yet handle axes from different DirectionCoordinates" << LogIO::EXCEPTION;
       }
@@ -413,9 +439,9 @@ Bool ImageUtilities::pixelWidthsToWorld (LogIO& os,
 
 // Major/minor 
 
-      Quantum<Double> q0 = pixelWidthToWorld (os, pParameters(2), pParameters(0),
+      Quantum<Double> q0 = pixelWidthToWorld (os, pParameters(4), pParameters(2),
                                               cSys, pixelAxes);
-      Quantum<Double> q1 = pixelWidthToWorld (os, pParameters(2), pParameters(1),
+      Quantum<Double> q1 = pixelWidthToWorld (os, pParameters(4), pParameters(3),
                                               cSys, pixelAxes);
 //
       if (q0.getValue() < q1.getValue(q0.getFullUnit())) {
@@ -429,7 +455,7 @@ Bool ImageUtilities::pixelWidthsToWorld (LogIO& os,
 
 // Position angle; radians; +x -> +y
 
-      wParameters(2).setValue(pParameters(2));
+      wParameters(2).setValue(pParameters(4));
       wParameters(2).setUnit(Unit("rad"));
    }
    return flipped;
@@ -441,7 +467,11 @@ Bool ImageUtilities::skyPixelWidthsToWorld (LogIO& os,
                                             Vector<Quantum<Double> >& wParameters,
                                             const CoordinateSystem& cSys, 
                                             const Vector<Double>& pParameters,
-                                            const IPosition& pixelAxes) 
+                                            const IPosition& pixelAxes, Bool doRef)
+//
+// pixel parameters: x, y, major, minor, pa (rad)
+// world parameters: major, minor, pa
+//
 {
 
 // What coordinates are these axes ?
@@ -479,12 +509,20 @@ Bool ImageUtilities::skyPixelWidthsToWorld (LogIO& os,
 
    const DirectionCoordinate& dCoord = cSys.directionCoordinate(c0);
    GaussianShape gaussShape;
-   Vector<Double> cParameters(5);
-   cParameters(0) = dCoord.referencePixel()(whereIsX);     // x centre
-   cParameters(1) = dCoord.referencePixel()(whereIsY);     // y centre
-   cParameters(2) = pParameters(0);
-   cParameters(3) = pParameters(1);
-   cParameters(4) = pParameters(2);
+   Vector<Double> cParameters(pParameters.copy());
+//
+   if (doRef) {
+      cParameters(0) = dCoord.referencePixel()(whereIsX);     // x centre
+      cParameters(1) = dCoord.referencePixel()(whereIsY);     // y centre
+   } else {
+      if (xIsLong) {
+         cParameters(0) = pParameters(0);
+         cParameters(1) = pParameters(1);
+      } else {
+         cParameters(0) = pParameters(1);
+         cParameters(1) = pParameters(0);
+      }
+   }
 //  
    Bool flipped = gaussShape.fromPixel (cParameters, dCoord);
    wParameters.resize(3);
