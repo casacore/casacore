@@ -168,9 +168,12 @@ PagedArray<T>::PagedArray (const PagedArray<T>& other)
 template<class T>
 PagedArray<T>::~PagedArray()
 {
-  // Table may not be written if ref count > 1 - here we force a write.
-  DebugAssert(ok() == True, AipsError);
-  itsTable.flush();
+  // Only need to do something if really constructed.
+  if (! itsTable.isNull()) {
+    // Table may not be written if ref count > 1 - here we force a write.
+    DebugAssert(ok() == True, AipsError);
+    itsTable.flush();
+  }
 }
 
 template<class T>
