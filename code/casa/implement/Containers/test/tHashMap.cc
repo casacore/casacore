@@ -79,7 +79,7 @@ main() {
 	exit(1);
     }
 
-    srand((unsigned int) &x);
+    srand((unsigned long) &x);
     for (int y=0; y < 500; y++) {
 	Int index = rand() % x;
 	if ( index != hash(block[index]) )
