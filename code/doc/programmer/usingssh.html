@@ -72,16 +72,18 @@ support setuid scripts, for machines not supporting setuid scripts it will
 have to be run by aips2mgr). 
 <P>
 The ra? scripts now require ssh to work.  Initially they used rsh but rsh is
-no longer allowed by aips2.aoc.nrao.
+no longer allowed by aips2.aoc.nrao. As of august 2001, OpenSSH is used,
+which can work in ssh1 as well as ssh2 mode.
 
 <h3>Set up ssh</h3>
 <p>
 All contributing <font face=helvetica>AIPS++</font> developers have an 
-account on aips2.nrao.edu (If you 
-need an account on aips2.nrao.edu, email <a href="mailto:aips2-request@aoc.nrao.edu">aips2-request </a> to get an account).
+account on aips2.nrao.edu (If you need an account on
+aips2.nrao.edu, email <a href="mailto:aips2-request@aoc.nrao.edu">aips2-request</a> to get an account).
 <p>
 
-You will need to have <a href="ftp://ftp.net.ohio-state.edu/pub/security/ssh/">ssh 1.2</a> installed on your local machine.
+You will need to have <a href="ftp://ftp.net.ohio-state.edu/pub/security/ssh/">ssh 1.2</a> 
+installed on your local machine, or alternatively <a href="http://www.openssh.com/">OpenSSH</a>.
 <p>
 
 Create your key using ssh-keygen, (cd; ssh-keygen; chmod -R 600 .ssh)
@@ -92,7 +94,9 @@ Now log onto tarzan using slogin, repeat the steps above (cd; ssh-keygen,
 chmod -R 600 .ssh).  Now update the authorized_keys file on aips2.nrao.edu
 with the key found in your local (not aips2.nrao.edu) identity.pub file.
 To access aips2.nrao.edu from other hosts add additional keys (found in
-identity.pub).
+identity.pub).  
+For ssh2 these files are called authorized_keys2 and id_dsa.pub resp.)
+
 <p>
 
 To learn more about ssh visit the <a href="http://www.employees.org/~satch/ssh/faq">ssh FAQ</a>.
@@ -120,9 +124,12 @@ cd aips++
 mktree
 </pre>
 <p>
-Then cd to a directory and try checking something out from the master (i.e.
-cd code/doc/user; rao makefile).
-
+Then cd to a directory and try checking something out from the master, e.g.:
+<pre>
+cd code/doc/user
+rao makefile
+</pre>
+<!-- check if this really works for machines behind a firewall -->
     <hr>
     <address><a href="mailto:wyoung@aoc.nrao.edu">Wes Young</a></address>
 <!-- Created: Fri Jun 18 09:06:47 MDT 1999 -->
