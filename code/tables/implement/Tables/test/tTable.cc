@@ -1,5 +1,5 @@
 //# tTable.cc: Test program for the Table classes
-//# Copyright (C) 1994,1995,1996,1997,1998,1999
+//# Copyright (C) 1994,1995,1996,1997,1998,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -392,6 +392,10 @@ void b (Bool doExcp)
     if (seltabset.nrow() != 4) {
 	cout << "seltabset does not contain 4 rows" << endl;
     }
+    for (i=0; i<seltabset.nrow(); i++) {
+      cout << seltabset.rowNumbers() << endl;;
+      cout << seltabset.rowNumbers(sortab) << endl;
+    }
     seltabset = sortab (sortab.col("arr1")(IPosition(3,0,0,0)) < 100);
     if (seltabset.nrow() != 5) {
 	cout << "seltabset does not contain 5 rows" << endl;
@@ -597,7 +601,10 @@ void c (Bool doExcp)
     }
     ROScalarColumn<Int> expr2ab(expr2tab, "ab");
     cout << expr2ab.getColumn() << endl;
-
+    if (!allEQ (expr2tab.rowNumbers(), expr2tab.rowNumbers(tab))) {
+        cout << "error in expr2tab.rowNumbers()" << endl;
+    }
+    
     //# Remove 2 rows from the selected rows.
     expr2tab.removeRow (1);
     expr2tab.removeRow (2);
@@ -605,7 +612,7 @@ void c (Bool doExcp)
 	cout << "expr2tab does not contain 2 rows" << endl;
     }
     cout << expr2ab.getColumn() << endl;
-    
+
     //# Remove those rows.
     tab.removeRow (expr2tab.rowNumbers());
     if (tab.nrow() != 8) {
