@@ -37,7 +37,7 @@
 #include <trial/Lattices/Lattice.h>
 template <class T> class Vector;
 class CoordinateSystem;
-
+class Table;
 //
 // <summary>
 // A set of simple functions to help access and iteration through images
@@ -318,6 +318,12 @@ public:
                                     const Vector<Int>& cursorAxes, 
                                     const Int& nImageDim);
 
+// Return a Scratch Table where the Table name was constructed from the directory 
+// of a given file, a specified string and a unique number appended to the string
+// and worked out by this function.  This can be handy to generate, say, a scratch 
+// storage image (maybe it is a <src>PagedArray</src>) in the same directory as the 
+// image being traversed. 
+   static Table setScratchTable (const String &inFileName, const String &tableName);
 
 // A storage image is used to accumulate information as a function of the display
 // axes as an image is iterated through.  This function sets the storage image shape 
