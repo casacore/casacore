@@ -2482,3 +2482,4 @@
 11 312 src mv nrao/implement/VLA/VLAArchiveInput.cc nrao/implement/VLA/VLALogicalRecord.cc
 11 312 src mv nrao/implement/VLA/test/tVLAArchiveInput.cc nrao/implement/VLA/test/tVLALogicalRecord.cc
 11 329 src rm doc/faq/faqusing.html
+11 329 src rm trial/implement/HDS
