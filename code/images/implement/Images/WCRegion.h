@@ -214,6 +214,12 @@ protected:
 				    const IPosition& pixelAxesMap,
 				    const IPosition& extendAxes) const = 0;
 
+// Convert relative to absolute world as needed
+    void makeWorldAbsolute (Vector<Double>& world,
+                            const Vector<Int>& absRel,
+                            const CoordinateSystem& cSys,
+                            const IPosition& shape) const;
+
 private:
     String itsComment;
     Record itsAxesDesc;

@@ -253,3 +253,52 @@ LCRegion* WCRegion::toLCRegionAxes (const CoordinateSystem& cSys,
     delete regPtr;
     return extPtr;
 }
+
+
+
+void WCRegion::makeWorldAbsolute (Vector<Double>& world, 
+                               const Vector<Int>& absRel, 
+                               const CoordinateSystem& cSys,
+                               const IPosition& shape) const
+{
+
+// For values that are already absolute, temporarily use rel = 0
+
+   Vector<Double> t(world.copy());
+   for (uInt i=0; i<world.nelements(); i++) {
+      if (absRel(i) == RegionType::Abs) {
+         t(i) = 0.0;
+      }
+   }
+   Vector<Double> t2(t.copy());
+
+// Convert to absolute at reference pixel
+
+   cSys.makeWorldAbsolute(t);
+
+// Convert to absolute at image centre
+
+   CoordinateSystem cSys2(cSys);
+   Vector<Double> p(shape.nelements());
+   for (uInt i=0; i<shape.nelements(); i++) {  
+      p(i) = Double(shape(i)) / 2.0;
+   }
+   Vector<Double> w;
+   if (!cSys2.toWorld(w,p)) {
+      throw (AipsError (cSys2.errorMessage()));
+   }
+   if (!cSys2.setReferenceValue(w)) {
+      throw (AipsError (cSys2.errorMessage()));
+   }
+   cSys2.makeWorldAbsolute(t2);
+
+// Overwrite result for relative values.
+
+   for (uInt i=0; i<world.nelements(); i++) {
+      if (absRel(i) == RegionType::RelRef) {
+         world(i) = t(i);
+      } else if (absRel(i) == RegionType::RelCen) {
+         world(i) = t2(i);
+      }  
+   }
+}
