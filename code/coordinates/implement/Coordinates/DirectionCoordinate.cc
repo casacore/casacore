@@ -342,6 +342,12 @@ Vector<Double> DirectionCoordinate::referencePixel() const
 
 Bool DirectionCoordinate::setWorldAxisNames(const Vector<String> &names)
 {
+    Bool ok = ToBool(names.nelements()==nWorldAxes());
+    if (!ok) {
+       set_error("Two names must be provided!");
+       return False;
+    }
+//
     names_p = names;
     return True;
 }
@@ -350,7 +356,12 @@ Bool DirectionCoordinate::setWorldAxisUnits(const Vector<String> &units,
 					  Bool adjust)
 
 {
-    Bool ok = True;
+    Bool ok = ToBool(units.nelements()==nWorldAxes());
+    if (!ok) {
+       set_error("Two units must be provided!");
+       return False;
+    }
+//
     if (adjust) {
 	String error;
 	Vector<Double> factor;
@@ -362,15 +373,7 @@ Bool DirectionCoordinate::setWorldAxisUnits(const Vector<String> &units,
 	    set_error(error);
 	}
     }
-
-    if (ok) {
-	ok = ToBool(units.nelements() == 2);
-	if (ok) {
-	    units_p = units;
-	} else {
-	    set_error("Two units must be provided!");
-	}
-    }
+    if (ok) units_p = units;
 
     return ok;
 }
@@ -378,6 +381,12 @@ Bool DirectionCoordinate::setWorldAxisUnits(const Vector<String> &units,
 
 Bool DirectionCoordinate::setReferencePixel(const Vector<Double> &refPix)
 {
+    Bool ok = ToBool(refPix.nelements()==nPixelAxes());
+    if (!ok) {
+       set_error("Two ref. pixels must be provided!");
+       return False;
+    }
+//
     linear_p.crpix(refPix);
     return True;
 }
@@ -390,38 +399,42 @@ Bool DirectionCoordinate::setLinearTransform(const Matrix<Double> &xform)
 
 Bool DirectionCoordinate::setIncrement(const Vector<Double> &inc)
 {
-    Bool ok = ToBool(inc.nelements() == 2);
-    if (! ok) {
-	set_error("increment must be a 2-vector");
-    } else {
-	Vector<Double> tmp(inc.copy());
-	toDegrees(tmp);
-	linear_p.cdelt(tmp);
+    Bool ok = ToBool(inc.nelements()==nWorldAxes());
+    if (!ok) {
+       set_error("Two increments must be provided!");
+       return False;
     }
+//
+    Vector<Double> tmp(inc.copy());
+    toDegrees(tmp);
+    linear_p.cdelt(tmp);
+
     return ok;
 }
 
 Bool DirectionCoordinate::setReferenceValue(const Vector<Double> &refval)
 {
-    Bool ok = ToBool(refval.nelements() == 2);
-    if (! ok) {
-	set_error("Reference value must be a 2-vector");
-    } else {
-	Vector<Double> tmp(refval.copy());
-	toDegrees(tmp);
-	celprm_p->flag  = 0;
-	celprm_p->ref[0] = tmp(0);
-	celprm_p->ref[1] = tmp(1);
-
-        String name = Projection::name(projection().type());
-        const char *nameptr = name.chars();
-        int errnum = celset(nameptr, celprm_p, prjprm_p);
-        ok = ToBool(errnum==0);
-        if (!ok) {
-           String errmsg = "wcs celset_error: ";
-           errmsg += celset_errmsg[errnum];
-        }
+    Bool ok = ToBool(refval.nelements()==nWorldAxes());
+    if (!ok) {
+       set_error("Two ref. values must be provided!");
+       return False;
     }
+//
+    Vector<Double> tmp(refval.copy());
+    toDegrees(tmp);
+    celprm_p->flag  = 0;
+    celprm_p->ref[0] = tmp(0);
+    celprm_p->ref[1] = tmp(1);
+
+    String name = Projection::name(projection().type());
+    const char *nameptr = name.chars();
+    int errnum = celset(nameptr, celprm_p, prjprm_p);
+    ok = ToBool(errnum==0);
+    if (!ok) {
+       String errmsg = "wcs celset_error: ";
+       errmsg += celset_errmsg[errnum];
+    }
+//
     return ok;
 }
 
