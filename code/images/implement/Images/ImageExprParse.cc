@@ -1,5 +1,5 @@
 //# ImageExprParse.cc: Classes to hold results from image expression parser
-//# Copyright (C) 1998,1999,2000,2001,2002
+//# Copyright (C) 1998,1999,2000,2001,2002,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -35,10 +35,12 @@
 #include <trial/Images/RegionHandlerTable.h>
 #include <trial/Lattices/LatticeExprNode.h>
 #include <aips/Lattices/PagedArray.h>
+#include <aips/Lattices/ArrayLattice.h>
 #include <aips/Tables/Table.h>
 #include <aips/Tables/TableDesc.h>
 #include <aips/Tables/ColumnDesc.h>
 #include <aips/Arrays/Vector.h>
+#include <aips/Arrays/Slice.h>
 #include <aips/Arrays/ArrayUtil.h>
 #include <aips/Mathematics/Constants.h>
 #include <aips/Utilities/Assert.h>
@@ -368,6 +370,62 @@ LatticeExprNode ImageExprParse::makeLiteralNode() const
 	throw (AipsError ("ImageExprParse: unknown data type for literal"));
     }
     return LatticeExprNode();
+}
+
+Slice* ImageExprParse::makeSlice (const ImageExprParse& start)
+{
+  if (start.itsType!=TpInt) {
+    throw AipsError("ImageExprParse: s:e:i has to consist of integer values");
+  }
+  return new Slice(start.itsIval-1);
+}
+
+Slice* ImageExprParse::makeSlice (const ImageExprParse& start,
+				  const ImageExprParse& end)
+{
+  if (start.itsType!=TpInt || end.itsType!=TpInt) {
+    throw AipsError("ImageExprParse: s:e:i has to consist of integer values");
+  }
+  if (start.itsIval > start.itsIval) {
+    throw AipsError("ImageExprParse: in s:e:i s must be <= e");
+  }
+  return new Slice(start.itsIval-1, end.itsIval-start.itsIval+1);
+}
+
+Slice* ImageExprParse::makeSlice (const ImageExprParse& start,
+				  const ImageExprParse& end,
+				  const ImageExprParse& incr)
+{
+  if (start.itsType!=TpInt || end.itsType!=TpInt || incr.itsType!=TpInt) {
+    throw AipsError("ImageExprParse: s:e:i has to consist of integer values");
+  }
+  if (start.itsIval > start.itsIval) {
+    throw AipsError("ImageExprParse: in s:e:i s must be <= e");
+  }
+  return new Slice(start.itsIval-1, end.itsIval-start.itsIval+1, incr.itsIval);
+}
+
+LatticeExprNode ImageExprParse::makeIndexinNode (const LatticeExprNode& axis,
+						 const vector<Slice>& slices)
+{
+  // Determine maximum end value.
+  Int maxEnd = 0;
+  for (uInt i=0; i<slices.size(); i++) {
+    if (slices[i].end() > maxEnd) {
+      maxEnd = slices[i].end();
+    }
+  }
+  // Create a vector of that length and initialize to False.
+  // Set the vector to True for all ranges.
+  Vector<Bool> flags(maxEnd+1, False);
+  for (uInt i=0; i<slices.size(); i++) {
+    const Slice& slice = slices[i];
+    for (Int j=slice.start(); j<=slice.end(); j+=slice.inc()) {
+      flags[j] = True;
+    }
+  }
+  // Create the node.
+  return indexin (axis, ArrayLattice<Bool>(flags));
 }
 
 LatticeExprNode ImageExprParse::makeLRNode() const

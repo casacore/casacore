@@ -1,6 +1,6 @@
 /*
     ImageExprGram.y: Parser for image expressions
-    Copyright (C) 1998,1999
+    Copyright (C) 1998,1999,2003
     Associated Universities, Inc. Washington DC, USA.
 
     This library is free software; you can redistribute it and/or modify it
@@ -31,13 +31,19 @@
 
 %union {
 LatticeExprNode* node;
-ImageExprParse* val;
+ImageExprParse*  val;
+vector<Slice>*   slicelist;
+Slice*           slice;
 }
 
 %token <val> NAME           /* name of constant, function, or lattice */
 %token <val> LATNAME        /* lattice name */
 %token <val> TMPREG         /* temporary region name */
 %token <val> LITERAL
+%token <val> INDEXN
+%token INDEXIN
+%token IN
+%token NOT
 %token LPAREN
 %token RPAREN
 %token LBRACKET
@@ -49,6 +55,8 @@ ImageExprParse* val;
 %type <node> relexpr
 %type <node> arithexpr
 %type <node> simexpr
+%type <slicelist> rangelist;
+%type <slice> frange;
 
 
 %left OR
@@ -174,6 +182,24 @@ simexpr:   LPAREN orexpr RPAREN
                $$ = new LatticeExprNode ($1->makeFuncNode (*$3, *$5, *$7));
 	       ImageExprParse::addNode ($$);
 	   }
+         | INDEXIN LPAREN orexpr COMMA LBRACKET rangelist RBRACKET RPAREN {
+               $$ = new LatticeExprNode (ImageExprParse::makeIndexinNode (*$3, *$6));
+	       ImageExprParse::addNode ($$);
+               delete $6;
+	   }
+         | INDEXN IN LBRACKET rangelist RBRACKET {
+	       LatticeExprNode axis($1->makeLiteralNode());
+               $$ = new LatticeExprNode (ImageExprParse::makeIndexinNode (axis, *$4));
+	       ImageExprParse::addNode ($$);
+               delete $4;
+	   }
+         | INDEXN NOT IN LBRACKET rangelist RBRACKET {
+	       LatticeExprNode axis($1->makeLiteralNode());
+               LatticeExprNode node(ImageExprParse::makeIndexinNode (axis, *$5));
+               delete $5;
+	       $$ = new LatticeExprNode (!node);
+	       ImageExprParse::addNode ($$);
+	   }
          | LATNAME {
 	       $$ = new LatticeExprNode ($1->makeLRNode());
 	       ImageExprParse::addNode ($$);
@@ -190,6 +216,29 @@ simexpr:   LPAREN orexpr RPAREN
 	       $$ = new LatticeExprNode ($1->makeLiteralNode());
 	       ImageExprParse::addNode ($$);
 	   }
+         ;
+
+rangelist: rangelist COMMA frange {
+               $$ = $1;
+	       $$->push_back (*$3);
+	       delete $3;
+	   }
+         | frange {
+	       $$ = new vector<Slice>;
+	       $$->push_back (*$1);
+	       delete $1;
+	   }
+         ;
+
+frange:    LITERAL {
+               $$ = ImageExprParse::makeSlice (*$1);
+           }
+         | LITERAL COLON LITERAL {
+               $$ = ImageExprParse::makeSlice (*$1, *$3);
+           }
+         | LITERAL COLON LITERAL COLON LITERAL {
+               $$ = ImageExprParse::makeSlice (*$1, *$3, *$5);
+           }
          ;
 
 %%

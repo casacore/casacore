@@ -1,5 +1,5 @@
 //# ImageExprParse.h: Classes to hold results from image expression parser
-//# Copyright (C) 1998,1999,2000
+//# Copyright (C) 1998,1999,2000,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -34,12 +34,14 @@
 #include <aips/Mathematics/Complex.h>
 #include <aips/Utilities/String.h>
 #include <aips/Utilities/DataType.h>
+#include <aips/vector.h>
 
 //# Forward Declarations
 template<class T> class Block;
 template<class T> class PtrBlock;
 class ImageRegion;
 class Table;
+class Slice;
 
 
 // <summary>
@@ -248,6 +250,20 @@ public:
     // Make a LatticeExprNode object for the literal value.
     LatticeExprNode makeLiteralNode() const;
 
+    // Make a Slice object from 1-3 literals.
+    // <group>
+    static Slice* makeSlice (const ImageExprParse& start);
+    static Slice* makeSlice (const ImageExprParse& start,
+			     const ImageExprParse& end);
+    static Slice* makeSlice (const ImageExprParse& start,
+			     const ImageExprParse& end,
+			     const ImageExprParse& incr);
+    // </group>
+
+    // Make a node for the INDEXIN function.
+    static LatticeExprNode makeIndexinNode (const LatticeExprNode& axis,
+					    const vector<Slice>& slices);
+
     // Set the static node object (used by the .y file).
     static void setNode (const LatticeExprNode& node)
         { theirNode = node; }
@@ -259,7 +275,7 @@ public:
     static void deleteNodes();
     // </group>
 
-private:
+  //private:
     // Try if the name represent a lattice or image.
     // Return False if not.
     Bool tryLatticeNode (LatticeExprNode& node, const String& name) const;

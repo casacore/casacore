@@ -1,6 +1,6 @@
 /*
     ImageExprGram.l: Lexical analyzer for image expressions
-    Copyright (C) 1998,1999,2000
+    Copyright (C) 1998,1999,2000,2003
     Associated Universities, Inc. Washington DC, USA.
 
     This library is free software; you can redistribute it and/or modify it
@@ -56,6 +56,11 @@ DCOMPLEX  {DBINT}"i"
 TRUE      T
 FALSE     F
 
+INDEXIN   [Ii][Nn][Dd][Ee][Xx][Ii][Nn]
+INDEXN    [Ii][Nn][Dd][Ee][Xx]{INT}
+IN        [Ii][Nn]
+NOT       [Nn][Oo][Tt]
+
 QSTRING   \"[^\"\n]*\"
 ASTRING   \'[^\'\n]*\'
 UQSTRING   \"[^\"\n]*\n
@@ -65,7 +70,7 @@ USTRING   ({UQSTRING}|{UASTRING})+
 NAME      [A-Za-z_]([A-Za-z_0-9])*
 TMPNAME   "$OBJ#"{INT}"#O"
 TMPREGION "$REGION#"{INT}
-ESCNAME   ([A-Za-z0-9._~$]|(\\.))+
+ESCNAME   ([A-Za-z_~$]|(\\.))([A-Za-z0-9._~$]|(\\.))*
 COLONNAME ({NAME}|{ESCNAME})?":"":"?({NAME}|{ESCNAME})
 
 
@@ -123,6 +128,26 @@ COLONNAME ({NAME}|{ESCNAME})?":"":"?({NAME}|{ESCNAME})
             lvalp->val = new ImageExprParse (False);
 	    ImageExprParse::addNode (lvalp->val);
 	    return LITERAL;
+	  }
+
+{INDEXIN} {
+            imageExprGramPosition() += yyleng;
+            return INDEXIN;
+	  }
+{INDEXN}  {
+            imageExprGramPosition() += yyleng;
+            Int ival = atoi(ImageExprGramtext+5);
+            lvalp->val = new ImageExprParse (ival);
+	    ImageExprParse::addNode (lvalp->val);
+            return INDEXN;
+	  }
+{IN}      {
+            imageExprGramPosition() += yyleng;
+            return IN;
+	  }
+{NOT}     {
+            imageExprGramPosition() += yyleng;
+            return NOT;
 	  }
 
  /* A simple name can be name of constant, function, or lattice */
