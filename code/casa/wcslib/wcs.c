@@ -1,7 +1,7 @@
 /*=============================================================================
 *
 *   WCSLIB - an implementation of the FITS WCS proposal.
-*   Copyright (C) 1995,1996 Mark Calabretta
+*   Copyright (C) 1995-1997 Mark Calabretta
 *
 *   This library is free software; you can redistribute it and/or modify it
 *   under the terms of the GNU Library General Public License as published
@@ -287,7 +287,10 @@
 *       ignored, the reference coordinate values in cel->ref[0] and
 *       cel->ref[1] are the ones used.
 *
-*    3) The quadcube projections (CSC, QSC, TSC) may be represented in FITS in
+*    3) These functions recognize the NCP projection and convert it to the
+*       equivalent SIN projection.
+*
+*    4) The quadcube projections (CSC, QSC, TSC) may be represented in FITS in
 *       either of two ways:
 *
 *          a) The six faces may be concatenated in one plane in the "lazy T"
@@ -442,7 +445,10 @@ struct wcsprm *wcs;
          if (strncmp(&ctype[j][5], pcodes[k], 3) == 0) break;
       }
 
-      if (k == npcode) continue;
+      if (k == npcode) {
+         /* Allow NCP to pass (will be converted to SIN later). */
+         if (strncmp(&ctype[j][5], "NCP", 3)) continue;
+      }
 
       /* Parse the celestial axis type. */
       if (strcmp(wcs->pcode, "") == 0) {
@@ -536,6 +542,18 @@ double pixcrd[];
 
    if (wcs->flag != 999) {
       /* Compute projected coordinates. */
+      if (strcmp(wcs->pcode, "NCP") == 0) {
+         /* Convert NCP to SIN. */
+         if (cel->ref[2] == 0.0) {
+            return 2;
+         }
+
+         strcpy(wcs->pcode, "SIN");
+         prj->p[1] = 0.0;
+         prj->p[2] = cosd(cel->ref[2])/sind(cel->ref[2]);
+         prj->flag = 0;
+      }
+
       if (err = celfwd(wcs->pcode, world[wcs->lng], world[wcs->lat], cel,
                    phi, theta, prj, &imgcrd[wcs->lng], &imgcrd[wcs->lat])) {
          return err;
@@ -658,6 +676,18 @@ double world[];
       }
 
       /* Compute celestial coordinates. */
+      if (strcmp(wcs->pcode, "NCP") == 0) {
+         /* Convert NCP to SIN. */
+         if (cel->ref[2] == 0.0) {
+            return 2;
+         }
+ 
+         strcpy(wcs->pcode, "SIN");
+         prj->p[1] = 0.0;
+         prj->p[2] = cosd(cel->ref[2])/sind(cel->ref[2]);
+         prj->flag = 0;
+      }
+
       if (err = celrev(wcs->pcode, imgcrd[wcs->lng], imgcrd[wcs->lat], prj,
                    phi, theta, cel, &world[wcs->lng], &world[wcs->lat])) {
          return err;
