@@ -68,6 +68,7 @@ VisBuffer& VisBuffer::operator=(const VisBuffer& other)
       flagCubeOK_p=other.flagCubeOK_p;
       flagRowOK_p=other.flagRowOK_p;
       freqOK_p=other.freqOK_p;
+      lsrFreqOK_p=other.lsrFreqOK_p;
       phaseCenterOK_p=other.phaseCenterOK_p;
       polFrameOK_p=other.polFrameOK_p;
       sigmaOK_p=other.sigmaOK_p;
@@ -121,6 +122,10 @@ VisBuffer& VisBuffer::operator=(const VisBuffer& other)
     if (freqOK_p) {
       frequency_p.resize(other.frequency_p.nelements()); 
       frequency_p=other.frequency_p;
+    }
+    if (lsrFreqOK_p) {
+      lsrFrequency_p.resize(other.lsrFrequency_p.nelements()); 
+      lsrFrequency_p=other.lsrFrequency_p;
     }
     if (phaseCenterOK_p) phaseCenter_p=other.phaseCenter_p;
     if (polFrameOK_p) polFrame_p=other.polFrame_p;
@@ -214,7 +219,7 @@ void VisBuffer::attachToVisIter(ROVisibilityIterator& iter)
 void VisBuffer::invalidate()
 {
   nChannelOK_p=channelOK_p=nRowOK_p=ant1OK_p=ant2OK_p=cjonesOK_p=
-    fieldIdOK_p=flagOK_p=flagRowOK_p=freqOK_p=phaseCenterOK_p=polFrameOK_p=
+    fieldIdOK_p=flagOK_p=flagRowOK_p=freqOK_p=lsrFreqOK_p=phaseCenterOK_p=polFrameOK_p=
     sigmaOK_p=spwOK_p=timeOK_p=uvwOK_p=visOK_p=weightOK_p=corrTypeOK_p= False;
   flagCubeOK_p=visCubeOK_p=weightMatOK_p=False;
   modelVisOK_p=correctedVisOK_p=modelVisCubeOK_p=correctedVisCubeOK_p=False;
@@ -223,7 +228,7 @@ void VisBuffer::invalidate()
 void VisBuffer::validate()
 {
   nChannelOK_p=channelOK_p=nRowOK_p=ant1OK_p=ant2OK_p=cjonesOK_p=
-    fieldIdOK_p=flagOK_p=flagRowOK_p=freqOK_p=phaseCenterOK_p=polFrameOK_p=
+    fieldIdOK_p=flagOK_p=flagRowOK_p=freqOK_p=lsrFreqOK_p=phaseCenterOK_p=polFrameOK_p=
     sigmaOK_p=spwOK_p=timeOK_p=uvwOK_p=visOK_p=weightOK_p = corrTypeOK_p=True;
   flagCubeOK_p=visCubeOK_p=weightMatOK_p=True;  
   modelVisOK_p=correctedVisOK_p=modelVisCubeOK_p=correctedVisCubeOK_p=True;
@@ -300,6 +305,8 @@ Vector<Bool>& VisBuffer::fillFlagRow()
 { flagRowOK_p=True; return visIter_p->flagRow(flagRow_p);}
 Vector<Double>& VisBuffer::fillFreq()
 { freqOK_p=True; return visIter_p->frequency(frequency_p); }
+Vector<Double>& VisBuffer::fillLSRFreq()
+{ lsrFreqOK_p=True; return visIter_p->lsrFrequency(lsrFrequency_p); }
 MDirection& VisBuffer::fillPhaseCenter()
 { phaseCenterOK_p=True; return phaseCenter_p=visIter_p->phaseCenter();}
 

@@ -206,6 +206,10 @@ public:
   // Return current frequencies
   Vector<Double>& frequency(Vector<Double>& freq) const;
 
+  // Return frequencies in selected velocity frame,
+  // returns the same as frequency() if there is no vel selection active.
+  Vector<Double>& lsrFrequency(Vector<Double>& freq) const;
+
   // Return the current phase center as 2-vector of positions in radians.
   const MDirection& phaseCenter() const
   { return msIter_p.phaseCenter(); }
@@ -369,6 +373,7 @@ protected:
   MDoppler::Convert cFromBETA_p;
   MDoppler::Types vDef_p;
   Vector<Double> selFreq_p;
+  Vector<Double> lsrFreq_p;
   String vInterpolation_p;
 
 
@@ -393,7 +398,7 @@ inline Vector<SquareMatrix<Complex,2> >&
 ROVisibilityIterator::CJones(Vector<SquareMatrix<Complex,2> >& cjones) const 
 {cjones.resize(msIter_p.CJones().nelements());return cjones=msIter_p.CJones();}
 inline Int ROVisibilityIterator::channelGroupSize() const
-{ return chanWidth_p[msIter_p.spectralWindowId()]; }
+{ return velSelection_p ? nVelChan_p : chanWidth_p[msIter_p.spectralWindowId()]; }
 inline Int ROVisibilityIterator::channelIndex() const
 { return chanInc_p[msIter_p.spectralWindowId()]*curChanGroup_p; }
 inline Int ROVisibilityIterator::nRow() const
