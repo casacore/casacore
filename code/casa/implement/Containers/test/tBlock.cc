@@ -1,5 +1,5 @@
 //# tBlock.cc: This program tests the Block class
-//# Copyright (C) 1993,1994,1995,1996
+//# Copyright (C) 1993,1994,1995,1996,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -158,9 +158,40 @@ void doit()
                                       // Block::~Block called at end of fn
 }
 
+void doItPtr()
+{
+    PtrBlock<Int*> block1(5), block2(5);
+    assert (block1.nelements() == 5);
+    for (uInt i=0; i<block1.nelements(); i++) {
+        block1[i] = new Int;
+        block2[i] = new Int;
+    }
+    PtrBlock<Int*> block3(block2);
+    block1.deleteAll (3);
+    assert (block1.nelements() == 5);
+    assert (block1[0] == 0);
+    assert (block1[1] == 0);
+    assert (block1[2] == 0);
+    assert (block1[3] != 0);
+    assert (block1[4] != 0);
+    block1.deleteAll();
+    assert (block1[2] == 0);
+    assert (block1[3] == 0);
+    assert (block1[4] == 0);
+
+    block2.removeAndDelete (2, True);
+    assert (block2.nelements() == 4);
+    assert (block2[0] == block3[0]);
+    assert (block2[1] == block3[1]);
+    assert (block2[2] == block3[3]);
+    assert (block2[3] == block3[4]);
+    block2.deleteAll();
+}
+
 main()
 {
     doit();
+    doItPtr();
     cout << "OK\n";
     return 0;
 }
