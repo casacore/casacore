@@ -4859,3 +4859,4 @@
 14 316 src rm trial/apps/newdish/dishcalculatorgui.g
 14 316 sys rm libexec/dishcalculatorgui.g
 14 316 src rm trial/apps/newdish/dishfunction.g
+14 316 sys rm libexec/dishfunction.g
