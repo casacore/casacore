@@ -119,7 +119,6 @@ template<class T> class Vector;
 // </motivation>
 
 // <todo asof="1999/09/23">
-//   <li> FT axes other than the sky axes
 //   <li> reverse transformations
 // </todo>
 
@@ -141,21 +140,27 @@ public:
    ~ImageFFT();
 
 // Do the FFT of the sky plane to the uv plane
+// Masked pixels are set to zero before the FT
    void fftsky (const ImageInterface<Float>& in);
 
 // Do the FFT of the specified pixel axes (True to FT).  
-// The rest are iterated over
+// The rest are iterated over.
+// Masked pixels are set to zero before the FT
    void fft (const ImageInterface<Float>& in, 
              const Vector<Bool>& axes);
 
 // Do the FFT of the specified pixel axes (True to FT).  
 // The rest are iterated over
+// Masked pixels are set to zero before the FT
    void fft (const ImageInterface<Complex>& in, 
              const Vector<Bool>& axes);
 
 // Return the FFT (from the last call to fftsky or fft) in the 
-// desired form.    The CoordinateSystem of the image is overwritten 
-// by these functions to reflect the Fourier axes.  
+// desired form.    The CoordinateSystem, MiscInfo, ImageInfo,
+// history and units are copied/updated in the output image
+// from the image that was FFTd.   If the input image is masked,
+// and the output image has a writable mask, the mask will
+// be transferred
 // <group>
    void getComplex (ImageInterface<Complex>& out) const;
    void getReal (ImageInterface<Float>& out) const;
@@ -163,11 +168,6 @@ public:
    void getAmplitude (ImageInterface<Float>& out) const;
    void getPhase (ImageInterface<Float>& out) const;
 // </group>
-
-// This returns a reference to the internal complex 
-// FFT.  It is only useful for getting at the pixel
-// values as it has no mask.  Its coordinates are correct.
-   const ImageInterface<Complex>& getComplex () const;
 
 private:
 
