@@ -26,6 +26,7 @@
 //# $Id$
 
 #include <trial/Images/SubImage.h>
+#include <trial/Coordinates/CoordinateUtil.h>
 #include <trial/Lattices/LattRegionHolder.h>
 #include <trial/Lattices/SubLattice.h>
 #include <trial/Lattices/LatticeRegion.h>
@@ -194,14 +195,13 @@ void SubImage<T>::setCoords (const CoordinateSystem& coords)
 {
   const AxesMapping& axesMap = itsSubLatPtr->getAxesMap();
   AlwaysAssert (!axesMap.isReordered(), AipsError);
-  if (! axesMap.isRemoved()) {
+  if (!axesMap.isRemoved()) {
     setCoordsMember (coords);
   } else {
     const IPosition& map = axesMap.getToNew();
     const uInt naxes = map.nelements();
-    Vector<Double> pixels(naxes);
+    Vector<Double> pixels(naxes), world(naxes);
     pixels = 0;
-    Vector<Double> world(naxes);
     coords.toWorld (world, pixels);
     CoordinateSystem crd(coords);
     for (Int i=naxes; i>0; ) {
@@ -210,7 +210,12 @@ void SubImage<T>::setCoords (const CoordinateSystem& coords)
 	crd.removeWorldAxis (i, world(i));
       }
     }
-    setCoordsMember (crd);
+
+// Actually drop any coordinates which have their axes fully removed
+
+    CoordinateSystem crdOut;
+    CoordinateUtil::dropRemovedAxes(crdOut, crd);
+    setCoordsMember (crdOut);
   }
 }
 
@@ -408,5 +413,5 @@ template<class T>
 void SubImage<T>::convertIPosition(Vector<Float>& x, const IPosition& pos) const
 {
   x.resize(pos.nelements());
-  for (uInt i=0; i<x.nelements(); i++) x(i) = Float(pos(i));
+  for (uInt i=0; i<x.nelements(); i++) x[i] = Float(pos(i));
 }
