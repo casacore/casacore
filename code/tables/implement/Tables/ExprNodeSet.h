@@ -129,7 +129,7 @@ public:
     // <group>
     Bool isLeftClosed() const;
     Bool isRightClosed() const;
-    // <group>
+    // </group>
 
     // Get the start, end or increment expression.
     // Note that the pointer returned can be zero indicating that that
