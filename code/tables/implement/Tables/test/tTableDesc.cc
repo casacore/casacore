@@ -1,5 +1,5 @@
 //# tTableDesc.cc: Test program for the TableDesc class
-//# Copyright (C) 1994,1995,1996,1997
+//# Copyright (C) 1994,1995,1996,1997,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -28,6 +28,7 @@
 #include <tTableDesc.h>
 #include <aips/Tables/TableDesc.h>
 #include <aips/Tables/ScaColDesc.h>
+#include <aips/Tables/ScaRecordColDesc.h>
 #include <aips/Tables/ArrColDesc.h>
 #include <aips/Tables/SubTabDesc.h>
 #include <aips/Tables/DataManager.h>
@@ -94,6 +95,7 @@ void a (Bool doExcp)
     td.rwColumnDesc("ac").rwKeywordSet().define ("unit", "DEG");
     td.addColumn (ScalarColumnDesc<ExampleDesc> ("ae"));
     td.addColumn (ArrayColumnDesc<ExampleDesc> ("arr0"));
+    td.addColumn (ScalarRecordColumnDesc ("rec0"));
     if (doExcp) {
 	try {
 	    td.addColumn (ScalarColumnDesc<ExampleDesc>
