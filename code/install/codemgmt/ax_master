@@ -6025,3 +6025,6 @@
 17 069 src rm aips/implement/Functionals/GaussianNDParam.h
 17 069 src rm aips/implement/Functionals/test/tGaussianND.cc
 17 069 src rm aips/implement/Functionals/test/dGaussianND.cc
+17 070 src rm aips/implement/Functionals/test/tGaussian2D.cc
+17 070 src rm aips/implement/Functionals/test/tGaussian1D.cc
+17 070 src rm aips/implement/Functionals/test/tSumFunction.cc
