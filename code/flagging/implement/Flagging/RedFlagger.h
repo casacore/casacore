@@ -121,6 +121,7 @@ protected:
   VisSet *vs_p;
   String msname_p;
   Bool nullSelect_p;
+  Bool setdata_p;
   String dataMode_p;  
   Vector<Int> dataNchan_p;
   Vector<Int> dataStart_p, dataStep_p;
