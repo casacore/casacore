@@ -176,6 +176,10 @@ public:
   void deapplyGALtoSUPERGAL(MVPosition &in);
   void applyTOPOtoHADEC(MVPosition &in);
   void deapplyTOPOtoHADEC(MVPosition &in);
+  void applyPolarMotion(MVPosition &in);
+  void deapplyPolarMotion(MVPosition &in);
+  void applyPolarMotionLong(MVPosition &in);
+  void deapplyPolarMotionLong(MVPosition &in);
   void applyAZELtoAZELSW(MVPosition &in);
   void applyECLIPtoJ2000(MVPosition &in);
   void deapplyECLIPtoJ2000(MVPosition &in);

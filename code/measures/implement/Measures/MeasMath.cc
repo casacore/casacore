@@ -450,11 +450,7 @@ void MeasMath::applyTOPOtoHADEC(MVPosition &in) {
   MVPOS3 = MVDirection(info_p[LASTR], info_p[LAT]);
   MVPOS3.readjust(g2);
   in += MVPOS3;
-  EULER1 = MeasTable::polarMotion(info_p[TDB]);
-  EULER1(2) = info_p[LASTR];
-  ROTMAT1 = RotMatrix(EULER1);
-  in *= ROTMAT1;
-  in(1) = -in(1);
+  deapplyPolarMotion(in);
   in.adjust();
 }
 
@@ -466,13 +462,51 @@ void MeasMath::deapplyTOPOtoHADEC(MVPosition &in) {
   g2 = MeasTable::diurnalAber(info_p[RADIUS], info_p[TDB]);
   MVPOS3 = MVDirection(info_p[LASTR], info_p[LAT]);
   MVPOS3.readjust(g2);
+  applyPolarMotion(in);  
+  in -= MVPOS3;
+  in.adjust();
+}
+
+void MeasMath::applyPolarMotion(MVPosition &in) {
+  getInfo(TDB);
+  getInfo(LASTR);
   in(1) = -in(1);
   EULER1 = MeasTable::polarMotion(info_p[TDB]);
   EULER1(2) = info_p[LASTR];
   ROTMAT1 = RotMatrix(EULER1);
   in = ROTMAT1 * in;
-  in -= MVPOS3;
-  in.adjust();
+}
+
+void MeasMath::deapplyPolarMotion(MVPosition &in) {
+  getInfo(TDB);
+  getInfo(LASTR);
+  EULER1 = MeasTable::polarMotion(info_p[TDB]);
+  EULER1(2) = info_p[LASTR];
+  ROTMAT1 = RotMatrix(EULER1);
+  in *= ROTMAT1;
+  in(1) = -in(1);
+}
+
+void MeasMath::applyPolarMotionLong(MVPosition &in) {
+  getInfo(TDB);
+  getInfo(LASTR);
+  getInfo(LONG);
+  in(1) = -in(1);
+  EULER1 = MeasTable::polarMotion(info_p[TDB]);
+  EULER1(2) = info_p[LASTR] + info_p[LONG];
+  ROTMAT1 = RotMatrix(EULER1);
+  in = ROTMAT1 * in;
+}
+
+void MeasMath::deapplyPolarMotionLong(MVPosition &in) {
+  getInfo(TDB);
+  getInfo(LASTR);
+  getInfo(LONG);
+  EULER1 = MeasTable::polarMotion(info_p[TDB]);
+  EULER1(2) = info_p[LASTR] + info_p[LONG];
+  ROTMAT1 = RotMatrix(EULER1);
+  in *= ROTMAT1;
+  in(1) = -in(1);
 }
 
 void MeasMath::applyAZELtoAZELSW(MVPosition &in) {
