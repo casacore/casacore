@@ -188,12 +188,12 @@ TableExprNode MSSelection::toTableExprNode(const MeasurementSet& ms)
 
 void MSSelection::clear(void)
 {
-  setAntennaExpr("");
-  setCorrExpr("");
-  setFieldExpr("");
-  setSPWExpr("");
-  setTimeExpr("");
-  setUVDistExpr("");
+  antennaExpr_p = "";
+  corrExpr_p    = "";
+  fieldExpr_p   = "";
+  spwExpr_p     = "";
+  timeExpr_p    = "";
+  uvDistExpr_p  = "";
 
   priority_p = Vector<Int>();
 }
