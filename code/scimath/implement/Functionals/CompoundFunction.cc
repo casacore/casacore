@@ -43,6 +43,7 @@ T NQCompoundFunction<T>::eval(typename Function<T>::FunctionArg x) const {
 template<class T>
 Function<typename FunctionTraits<T>::DiffType>
 *NQCompoundFunction<T>::cloneAD() const {
+  if (parset_p) fromParam_p();
   Function<typename FunctionTraits<T>::DiffType> *t =
     new NQCompoundFunction<typename FunctionTraits<T>::DiffType>();
   for (uInt i=0; i<nFunctions(); ++i) {
@@ -55,6 +56,7 @@ Function<typename FunctionTraits<T>::DiffType>
 template<class T>
 Function<typename FunctionTraits<T>::BaseType>
 *NQCompoundFunction<T>::cloneBase() const {
+  if (parset_p) fromParam_p();
   Function<typename FunctionTraits<T>::BaseType> *t =
     new NQCompoundFunction<typename FunctionTraits<T>::BaseType>();
   for (uInt i=0; i<nFunctions(); ++i) {

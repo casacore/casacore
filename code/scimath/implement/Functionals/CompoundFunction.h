@@ -108,11 +108,14 @@ template <class T> class NQCompoundFunction : public NQCompoundParam<T> {
   // The default constructor -- no functions, no parameters, nothing, the
   // function operator returns a 0.
   NQCompoundFunction() : NQCompoundParam<T>() {};
-  // Make this object a (deep) copy of other.
+  // Make this object a (deep) copy of other. If parameters have been set
+  // without an intervening calculation, a <src>consolidate()</src> could
+  // be necessary on <em>other</em> first.
   NQCompoundFunction(const NQCompoundFunction<T> &other) :
     NQCompoundParam<T>(other) {};
   // Make this object a (deep) copy of other.
   NQCompoundFunction<T> &operator=(const NQCompoundFunction<T> &other) {
+    other.fromParam_p();
     NQCompoundParam<T>::operator=(other); return *this; };
   
   // Destructor
@@ -123,12 +126,15 @@ template <class T> class NQCompoundFunction : public NQCompoundParam<T> {
   virtual T eval(typename Function<T>::FunctionArg x) const;
   
   //# Member functions
+  // Consolidate the parameter settings. This could be necessary if
+  // parameters have been set, and a copy constructor called.
+  NQCompoundFunction<T> &consolidate() { fromParam_p(); return *this; };
   // Return a copy of this object from the heap. The caller is responsible for
   // deleting the pointer. The <em>AD, Base</em> versions return an
   // <src>AutoDiff</src> or <src>Base</src> version (which could be same if
   // already <src>AutoDiff</src> or <src>Base</src>).
   // <group>
-  virtual Function<T> *clone() const {
+  virtual Function<T> *clone() const { fromParam_p();
     return new NQCompoundFunction<T>(*this); };
   virtual Function<typename FunctionTraits<T>::DiffType>
     *cloneAD() const;
@@ -161,12 +167,15 @@ public NQCompoundParam<AutoDiff<T> > {
   // The default constructor -- no functions, no parameters, nothing, the
   // function operator returns a 0.
   NQCompoundFunction_PS() : NQCompoundParam<AutoDiff<T> >() {};
-  // Make this object a (deep) copy of other.
+  // Make this object a (deep) copy of other. If parameters have been set
+  // without an intervening calculation, a <src>consolidate()</src> could
+  // be necessary on <em>other</em> first.
   NQCompoundFunction_PS(const NQCompoundFunction_PS<AutoDiff<T> > &other) :
     NQCompoundParam<AutoDiff<T> >(other) {};
   // Make this object a (deep) copy of other.
   NQCompoundFunction_PS<AutoDiff<T> > &
     operator=(const NQCompoundFunction_PS<AutoDiff<T> > &other) {
+    fromParam_p();
     NQCompoundParam<AutoDiff<T> >::operator=(other); return *this; };
 
   // Destructor
@@ -179,12 +188,16 @@ public NQCompoundParam<AutoDiff<T> > {
     eval(typename Function<AutoDiff<T> >::FunctionArg x) const;
   
   //# Member functions
+  // Consolidate the parameter settings. This could be necessary if
+  // parameters have been set, and a copy constructor called.
+  NQCompoundFunction_PS<AutoDiff<T> > &consolidate() { fromParam_p();
+  return *this; };
   // Return a copy of this object from the heap. The caller is responsible for
   // deleting the pointer. The <em>AD, Base</em> versions return an
   // <src>AutoDiff</src> or <src>Base</src> version (which could be same if
   // already <src>AutoDiff</src> or <src>Base</src>).
   // <group>
-  virtual Function<AutoDiff<T> > *clone() const {
+  virtual Function<AutoDiff<T> > *clone() const { fromParam_p();
     return new NQCompoundFunction<AutoDiff<T> >(*this); };
   virtual Function<typename FunctionTraits<AutoDiff<T> >::DiffType>
     *cloneAD() const;
