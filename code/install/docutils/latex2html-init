@@ -155,7 +155,7 @@ sub aips2script {
 "\n" .
 "</SCRIPT>\n" .
 "\n" .
-#}\n" .
+}\n" .
 sub aips2topbar {
 #"\n" .
 "<FONT FACE=\"Arial,Helvetica\">\n" .
