@@ -39,7 +39,7 @@ LatticeExpr<T>::LatticeExpr()
 {}
 
 template <class T>
-LatticeExpr<T>::LatticeExpr (const LatticeExprNode& expr, uInt)
+LatticeExpr<T>::LatticeExpr (const LatticeExprNode& expr)
 : lastChunkPtr_p (0)
 //
 // Construct from a LatticeExprNode object.  The LEN type is
