@@ -2027,3 +2027,4 @@
 08 210 src mv admin/system/depstat install/codedevl/depstat
 08 216 src rm trial/scripts/TkPGPLOT_demo_scripts/pgtkdemo1.g
 08 216 src rm trial/scripts/TkPGPLOT_demo_scripts/pgtkdemo2.g
+08 216 src rm trial/scripts/TkPGPLOT_demo_scripts/pgtkdemo3.g
