@@ -313,6 +313,11 @@ XLIBPATH = $(addprefix -L,$(foreach XLIB,$($(XLIBSEL)),$($(XLIB)LIBD)))
 # All required external libraries.
 XTRNLIBS = $(XLIBPATH) $(foreach XLIB,$($(XLIBSEL)),$($(XLIB)LIB)) $(ARCHLIBS)
 
+# Used by updatelib to create share libraries
+XLIBPATH_shared = $(addprefix -L,$(foreach XLIB,$(XLIBLIST_shared),$($(XLIB)LIBD)))
+XTRNLIBS_shared = $(XLIBPATH_shared) $(foreach XLIB,$(XLIBLIST_shared),$($(XLIB)LIB)) $(ARCHLIBS)
+XTRNLIBS_rpath  =
+
 # Preprocessor defines for all required external libraries.
 XTRNDEFS = $(foreach XLIB,$($(XLIBSEL)),$($(XLIB)DEFS))
 

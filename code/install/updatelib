@@ -130,15 +130,19 @@
 
 # Load makedefs variables into the environment if necessary.
   echo "#$AR#$ARFLAGS#$RANLIB#$CXXAR$CXXARDBG#$CXXAROPT#$UPDBATCH#$LD#" \
-       "#$SFXSTAT#$SFXSHAR#$MKSO#" | grep '##' > /dev/null 2>&1
+       "#$SFXSTAT#$SFXSHAR#$MKSO#$XTRNLIBS_shared#$XTRNLIBS_rpath#" | grep '##' > /dev/null 2>&1
   if [ "$?" = 0 ]
   then
-     VARS="AR ARFLAGS RANLIB CXXAR CXXARDBG CXXAROPT UPDBATCH LD LDSOPTS SFXSTAT SFXSHAR LIB$PACKAGE MKSO"
+     VARS="AR ARFLAGS RANLIB CXXAR CXXARDBG CXXAROPT UPDBATCH LD LDSOPTS SFXSTAT SFXSHAR LIB$PACKAGE MKSO XTRNLIBS_shared XTRNLIBS_rpath"
      eval `gmake -f $AIPSARCH/makedefs VARS="$VARS" eval_vars`
   fi
 
   PCKGLIBR=lib$PCKGLANG.$SFXSTAT
-
+  if [ -n "$XTRNLIBS_rpath" ]; then
+     XTRNPATH=-Wl,-rpath,$XTRNLIBS_rpath:/usr/lib:/lib
+  else
+     XTRNPATH=-Wl,-rpath,/usr/lib:/lib
+  fi
 
 # Ensure the package temporary area exists.
   if [ ! -d "$TMPPCKGD" ]
@@ -318,7 +322,9 @@
 
      if [ "$FLAG" = shatic -o "$FLAG" = shared ]
      then
-        PCKGSHAR=lib$PCKGLANG.$SFXSHAR
+	VERSION=`avers | sed 's/^\([0-9][0-9]*\.[0-9][0-9]*\)\..*/\1/'`
+	PCKGLINK=lib$PCKGLANG.$SFXSHAR
+        PCKGSHAR=lib$PCKGLANG.$SFXSHAR.$VERSION
 
         echo ""
         echo "Update $PCKGSHAR ($LEVEL):"
@@ -341,7 +347,7 @@
 	   fi
 
 	   SHRFAILD=""
-           $MKSO $LDSOPTS -o $PCKGSHAR *
+           $MKSO $LDSOPTS -Wl,-h,$PCKGSHAR $XTRNPATH -o $PCKGSHAR * $XTRNLIBS_shared
 
            if [ "$?" != 0 ]
            then
@@ -424,8 +430,8 @@
 
   if [ "$SHRFAILD" = "" ]
   then
-     [ -f dbg/$PCKGSHAR ] && mv -f dbg/$PCKGSHAR $AIPSARCH/libdbg
-     [ -f opt/$PCKGSHAR ] && mv -f opt/$PCKGSHAR $AIPSARCH/lib
+     [ -f dbg/$PCKGSHAR ] && mv -f dbg/$PCKGSHAR $AIPSARCH/libdbg && (cd $AIPSARCH/libdbg; rm -f $PCKGLINK; ln -s $PCKGSHAR $PCKGLINK)
+     [ -f opt/$PCKGSHAR ] && mv -f opt/$PCKGSHAR $AIPSARCH/lib && (cd $AIPSARCH/lib; rm -f $PCKGLINK; ln -s $PCKGSHAR $PCKGLINK)
   fi
 
 # Delete object libraries which are not being maintained.
