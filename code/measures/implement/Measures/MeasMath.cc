@@ -123,14 +123,12 @@ void MeasMath::createPrecession() {
 
 void MeasMath::applyPrecession(MVPosition &in) {
   getInfo(TDB);
-  ROTMAT1 = (*PRECESIAU)(info_p[TDB]);
-  in *= ROTMAT1;
+  in *= (*PRECESIAU)(info_p[TDB]);
 }
 
 void MeasMath::deapplyPrecession(MVPosition &in) {
   getInfo(TDB);
-  ROTMAT1 = (*PRECESIAU)(info_p[TDB]);
-  in = ROTMAT1 * in;
+  in = (*PRECESIAU)(info_p[TDB]) * in;
 }
 
 void MeasMath::createPrecessionB1950() {
@@ -139,14 +137,12 @@ void MeasMath::createPrecessionB1950() {
 
 void MeasMath::applyPrecessionB1950(MVPosition &in) {
   getInfo(TDB);
-  ROTMAT1 = (*PRECESB1950)(info_p[TDB]);
-  in *= ROTMAT1;
+  in *= (*PRECESB1950)(info_p[TDB]);
 }
 
 void MeasMath::deapplyPrecessionB1950(MVPosition &in) {
   getInfo(TDB);
-  ROTMAT1 = (*PRECESB1950)(info_p[TDB]);
-  in = ROTMAT1 * in;
+  in = (*PRECESB1950)(info_p[TDB]) * in;
 }
 
 // Nutation
@@ -156,14 +152,12 @@ void MeasMath::createNutation() {
 
 void MeasMath::applyNutation(MVPosition &in) {
   getInfo(TDB);
-  ROTMAT1 = (*NUTATIAU)(info_p[TDB]);
-  in *= ROTMAT1;
+  in *= (*NUTATIAU)(info_p[TDB]);
 }
 
 void MeasMath::deapplyNutation(MVPosition &in) {
   getInfo(TDB);
-  ROTMAT1 = (*NUTATIAU)(info_p[TDB]);
-  in = ROTMAT1 * in;
+  in = (*NUTATIAU)(info_p[TDB]) * in;
 }
 
 void MeasMath::createNutationB1950() {
@@ -172,14 +166,12 @@ void MeasMath::createNutationB1950() {
 
 void MeasMath::applyNutationB1950(MVPosition &in) {
   getInfo(TDB);
-  ROTMAT1 = (*NUTATB1950)(info_p[TDB]);
-  in *= ROTMAT1;
+  in *= (*NUTATB1950)(info_p[TDB]);
 }
 
 void MeasMath::deapplyNutationB1950(MVPosition &in) {
   getInfo(TDB);
-  ROTMAT1 = (*NUTATB1950)(info_p[TDB]);
-  in = ROTMAT1 * in;
+  in = (*NUTATB1950)(info_p[TDB]) * in;
 }
 
 // Precession and Nutation
@@ -190,16 +182,14 @@ void MeasMath::createPrecNutat() {
 
 void MeasMath::applyPrecNutat(MVPosition &in) {
   getInfo(TDB);
-  ROTMAT1 = (*PRECESIAU)(info_p[TDB]);
-  ROTMAT1 *= (*NUTATIAU)(info_p[TDB]);
-  in *= ROTMAT1;
+  in *= (RotMatrix((*PRECESIAU)(info_p[TDB])) *
+	 RotMatrix((*NUTATIAU)(info_p[TDB])));
 }
 
 void MeasMath::deapplyPrecNutat(MVPosition &in) {
   getInfo(TDB);
-  ROTMAT1 = (*PRECESIAU)(info_p[TDB]);
-  ROTMAT1 *= (*NUTATIAU)(info_p[TDB]);
-  in = ROTMAT1 * in;
+  in = (RotMatrix((*PRECESIAU)(info_p[TDB])) *
+	RotMatrix((*NUTATIAU)(info_p[TDB]))) * in;
 }
 
 void MeasMath::createPrecNutatB1950() {
@@ -207,20 +197,18 @@ void MeasMath::createPrecNutatB1950() {
   if (!NUTATB1950) NUTATB1950 = new Nutation(Nutation::B1950);
 }
 
-void MeasMath::applyPrecNutatB1950(MVPosition &in) {
+void MeasMath::applyPrecNutatB1950(MVPosition &in, Bool doin) {
   getInfo(TDB);
-  applyETerms(in);
-  ROTMAT1 = (*PRECESB1950)(info_p[TDB]);
-  ROTMAT1 *= (*NUTATB1950)(info_p[TDB]);
-  in *= ROTMAT1;
+  applyETerms(in, doin);
+  in *= (RotMatrix((*PRECESB1950)(info_p[TDB])) *
+	 RotMatrix((*NUTATB1950)(info_p[TDB])));
 }
 
-void MeasMath::deapplyPrecNutatB1950(MVPosition &in) {
+void MeasMath::deapplyPrecNutatB1950(MVPosition &in, Bool doin) {
   getInfo(TDB);
-  ROTMAT1 = (*PRECESB1950)(info_p[TDB]);
-  ROTMAT1 *= (*NUTATB1950)(info_p[TDB]);
-  in = ROTMAT1 * in;
-  deapplyETerms(in);
+  in = (RotMatrix((*PRECESB1950)(info_p[TDB])) *
+	RotMatrix((*NUTATB1950)(info_p[TDB]))) * in;
+  deapplyETerms(in, doin);
 }
 
 // Aberration
@@ -228,7 +216,8 @@ void MeasMath::createAberration() {
   if (!ABERIAU) ABERIAU = new Aberration(Aberration::STANDARD);
 }
 
-void MeasMath::applyAberration(MVPosition &in) {
+void MeasMath::applyAberration(MVPosition &in, Bool doin) {
+  /// Still to do
   getInfo(TDB);
   // Aberration
   MVPOS1 = (*ABERIAU)(info_p[TDB]);
@@ -241,7 +230,8 @@ void MeasMath::applyAberration(MVPosition &in) {
   in.adjust();
 }
 
-void MeasMath::deapplyAberration(MVPosition &in) {
+void MeasMath::deapplyAberration(MVPosition &in, Bool doin) {
+  /// still to do
   getInfo(TDB);
   // Aberration
   MVPOS1 = (*ABERIAU)(info_p[TDB]);
@@ -274,20 +264,46 @@ void MeasMath::createAberrationB1950() {
   if (!ABERB1950) ABERB1950 = new Aberration(Aberration::B1950);
 }
 
-void MeasMath::applyAberrationB1950(MVPosition &in) {
+void MeasMath::applyAberrationB1950(MVPosition &in, Bool doin) {
   getInfo(TDB);
   // Aberration
   MVPOS1 = (*ABERB1950)(info_p[TDB]);
-  in += MVPOS1;
-  in.adjust();
+  if (doin) {
+    in += MVPOS1;
+    in.adjust();
+  } else {
+    getInfo(J2000LAT); getInfo(J2000LONG);
+    // Rotation towards direction
+    ROTMAT1 = RotMatrix(Euler(-C::pi_2 + info_p[J2000LAT], 2u,
+			      -info_p[J2000LONG], 3u));
+    // Rotation in direction correction
+    ROTMAT1 = RotMatrix(Euler(-(ROTMAT1*MVPOS1).getLong(), 3u)) * ROTMAT1;
+    // Rotate over aberration
+    in = ((RotMatrix(Euler((ROTMAT1*MVPOS1).getValue()(0), 2u)) *
+	   ROTMAT1) * in) * ROTMAT1;
+
+  };
 }
 
-void MeasMath::deapplyAberrationB1950(MVPosition &in) {
+void MeasMath::deapplyAberrationB1950(MVPosition &in, Bool doin) {
   getInfo(TDB);
   // Aberration
   MVPOS1 = (*ABERB1950)(info_p[TDB]);
-  in -= MVPOS1;
-  in.adjust();
+  if (doin) {
+    in -= MVPOS1;
+    in.adjust();
+  } else {
+    getInfo(J2000LAT); getInfo(J2000LONG);
+    // Rotation towards direction
+    ROTMAT1 = RotMatrix(Euler(-C::pi_2 + info_p[J2000LAT], 2u,
+			      -info_p[J2000LONG], 3u));
+    // Rotation in direction correction
+    ROTMAT1 = RotMatrix(Euler(-(ROTMAT1*MVPOS1).getLong(), 3u)) * ROTMAT1;
+    // Rotate over aberration
+    in = ((RotMatrix(Euler(-(ROTMAT1*MVPOS1).getValue()(0), 2u)) *
+	   ROTMAT1) * in) * ROTMAT1;
+
+  };
 }
 
 // Solar bending
@@ -295,25 +311,43 @@ void MeasMath::createSolarPos() {
   if (!SOLPOSIAU) SOLPOSIAU = new SolarPos(SolarPos::STANDARD);
 }
 
-void MeasMath::applySolarPos(MVPosition &in) {
+void MeasMath::applySolarPos(MVPosition &in, Bool doin) {
   getInfo(TDB);
   // Solar position in rectangular coordinates
   MVPOS1 = (*SOLPOSIAU)(info_p[TDB]);
   // Get length and unit vector
   MVPOS1.adjust(lengthE);
   g1 = -1.974e-8 / lengthE;
-  g2 = in * MVPOS1;
+  if (doin) MVPOS2 = in;
+  else {
+    getInfo(J2000DIR);
+    MVPOS2 = infomvd_p[J2000DIR-N_FrameDInfo];
+  }; 
+  g2 = MVPOS2 * MVPOS1;
   // Check if near sun
   if (!nearAbs(g2, 1.0,
 	       1.0-cos(MeasData::SunSemiDiameter()/lengthE))) {
-    MVPOS1 -= g2 * in;
+    MVPOS3 = MVPOS1;
+    MVPOS1 -= g2 * MVPOS2;
     MVPOS1 *= (g1 / (1.0 - g2));
-    in += MVPOS1;
-    in.adjust();
+    if (doin) {
+      in += MVPOS1;
+      in.adjust();
+    } else {
+      getInfo(J2000LAT); getInfo(J2000LONG);
+      // Rotation towards direction
+      ROTMAT1 = RotMatrix(Euler(-C::pi_2 + info_p[J2000LAT], 2u,
+				-info_p[J2000LONG], 3u));
+      // Rotation towards sun
+      ROTMAT1 = RotMatrix(Euler(-(ROTMAT1*MVPOS3).getLong(), 3u)) * ROTMAT1;
+      // Rotate over bending
+      in = ((RotMatrix(Euler((ROTMAT1*MVPOS1).getValue()(0), 2u)) *
+	     ROTMAT1) * in) * ROTMAT1;
+    };
   };
 }
 
-void MeasMath::deapplySolarPos(MVPosition &in) {
+void MeasMath::deapplySolarPos(MVPosition &in, Bool doin) {
   getInfo(TDB);
   // Solar position in rectangular coordinates
   MVPOS1 = (*SOLPOSIAU)(info_p[TDB]);
@@ -350,59 +384,69 @@ void MeasMath::deapplySolarPos(MVPosition &in) {
 // Various conversions
 void MeasMath::applyHADECtoITRF(MVPosition &in) {
   getInfo(LONG);
-  ROTMAT1 = RotMatrix(Euler(info_p[LONG], (uInt) 3));
-  in *= ROTMAT1;
+  in *= RotMatrix(Euler(info_p[LONG], 3u));
   in(1) = -in(1);
 }
 
 void MeasMath::deapplyHADECtoITRF(MVPosition &in) {
   getInfo(LONG);
-  ROTMAT1 = RotMatrix(Euler(info_p[LONG], (uInt) 3));
   in(1) = -in(1);
-  in = ROTMAT1 * in;
+  in = RotMatrix(Euler(info_p[LONG], 3u)) * in;
 }
 
 void MeasMath::applyHADECtoAZEL(MVPosition &in) {
   getInfo(LAT);
-  ROTMAT1 = RotMatrix(Euler(C::pi_2 - info_p[LAT] ,(uInt) 2,
-			    C::pi, (uInt) 3));
-  in *= ROTMAT1;
+  in *= RotMatrix(Euler(C::pi_2 - info_p[LAT] , 2u, C::pi, 3u));
 }
 
 void MeasMath::deapplyHADECtoAZEL(MVPosition &in) {
   getInfo(LAT);
-  ROTMAT1 = RotMatrix(Euler(C::pi_2 - info_p[LAT] ,(uInt) 2,
-			    C::pi, (uInt) 3));
-  in = ROTMAT1 * in;
+  in = RotMatrix(Euler(C::pi_2 - info_p[LAT] , 2u, C::pi, 3u)) * in;
 }
 
-void MeasMath::applyJ2000toB1950(MVPosition &in) {
+void MeasMath::applyJ2000toB1950(MVPosition &in, Bool doin) {
   // Frame rotation
-  ROTMAT1 = MeasData::MToB1950(4);
-  in *= ROTMAT1;
+  in *= MeasData::MToB1950(4);
   in.adjust();
   // E-terms
-  deapplyETerms(in);
+  deapplyETerms(in, doin);
 }
 
-void MeasMath::deapplyJ2000toB1950(MVPosition &in) {
-  applyETerms(in);
+void MeasMath::deapplyJ2000toB1950(MVPosition &in, Bool doin) {
+  applyETerms(in,doin);
   // Frame rotation
-  ROTMAT1 = MeasData::MToJ2000(0);
-  in *= ROTMAT1;
+  in *= MeasData::MToJ2000(0);
   in.adjust();
 }
 
-void MeasMath::applyETerms(MVPosition &in) {
+void MeasMath::applyETerms(MVPosition &in, Bool doin) {
   // E-terms
   MVPOS1 = MVPosition(MeasTable::AberETerm(0));
-  g1 = in * MVPOS1;
-  in += g1 * in;
-  in -= MVPOS1;
-  in.adjust();
+  if (doin) MVPOS2 = in;
+  else {
+    getInfo(B1950DIR);
+    MVPOS2 = infomvd_p[B1950DIR-N_FrameDInfo];
+  }; 
+  g1 = MVPOS2 * MVPOS1;
+  MVPOS1 = g1 * MVPOS2 - MVPOS1;
+  if (doin) {
+    in += MVPOS1;
+    in.adjust();
+  } else {
+    getInfo(B1950LAT); getInfo(B1950LONG);
+    // Rotation towards direction
+    ROTMAT1 = RotMatrix(Euler(-C::pi_2 + info_p[B1950LAT], 2u,
+			      -info_p[B1950LONG], 3u));
+    // Rotation towards correction
+    ROTMAT1 = RotMatrix(Euler(-(ROTMAT1*MVPOS1).getLong(), 3u)) * ROTMAT1;
+    // Rotate over Eterm
+    in = ((RotMatrix(Euler((ROTMAT1*MVPOS1).getValue()(0), 2u)) *
+	   ROTMAT1) * in) * ROTMAT1;
+  };
 }
 
-void MeasMath::deapplyETerms(MVPosition &in) {
+void MeasMath::deapplyETerms(MVPosition &in, Bool doin) {
+  /// todo
   // E-terms
   // Iterate
   MVPOS1 = MVPosition(MeasTable::AberETerm(0));
@@ -442,7 +486,7 @@ void MeasMath::deapplyGALtoSUPERGAL(MVPosition &in) {
   in *= MeasTable::galToSupergal();
 }
 
-void MeasMath::applyTOPOtoHADEC(MVPosition &in) {
+void MeasMath::applyTOPOtoHADEC(MVPosition &in, Bool doin) {
   getInfo(LASTR);
   getInfo(TDB);
   getInfo(RADIUS);
@@ -450,12 +494,25 @@ void MeasMath::applyTOPOtoHADEC(MVPosition &in) {
   g2 = MeasTable::diurnalAber(info_p[RADIUS], info_p[TDB]);
   MVPOS3 = MVDirection(info_p[LASTR], info_p[LAT]);
   MVPOS3.readjust(g2);
-  in += MVPOS3;
+  if (doin) {
+    in += MVPOS3;
+    in.adjust();
+  } else {
+    // Really use topo (for planets)
+    getInfo(APPLAT); getInfo(APPLONG);
+    // Rotation towards direction
+    ROTMAT1 = RotMatrix(Euler(-C::pi_2 + info_p[APPLAT], 2u,
+			      -info_p[APPLONG], 3u));
+    // Rotation towards correction
+    ROTMAT1 = RotMatrix(Euler(-(ROTMAT1*MVPOS3).getLong(), 3u)) * ROTMAT1;
+    // Rotate over diurnal aberration
+    in = ((RotMatrix(Euler((ROTMAT1*MVPOS3).getValue()(0), 2u)) *
+	   ROTMAT1) * in) * ROTMAT1;
+  };
   deapplyPolarMotion(in);
-  in.adjust();
 }
 
-void MeasMath::deapplyTOPOtoHADEC(MVPosition &in) {
+void MeasMath::deapplyTOPOtoHADEC(MVPosition &in, Bool doin) {
   getInfo(LASTR);
   getInfo(TDB);
   getInfo(RADIUS);
@@ -464,8 +521,21 @@ void MeasMath::deapplyTOPOtoHADEC(MVPosition &in) {
   MVPOS3 = MVDirection(info_p[LASTR], info_p[LAT]);
   MVPOS3.readjust(g2);
   applyPolarMotion(in);  
-  in -= MVPOS3;
-  in.adjust();
+  if (doin) {
+    in -= MVPOS3;
+    in.adjust();
+  } else {
+    // Really use topo for planets
+    getInfo(APPLAT); getInfo(APPLONG);
+    // Rotation towards direction
+    ROTMAT1 = RotMatrix(Euler(-C::pi_2 + info_p[APPLAT], 2u,
+			      -info_p[APPLONG], 3u));
+    // Rotation towards correction
+    ROTMAT1 = RotMatrix(Euler(-(ROTMAT1*MVPOS3).getLong(), 3u)) * ROTMAT1;
+    // Rotate over diurnal aberration
+    in = ((RotMatrix(Euler(-(ROTMAT1*MVPOS3).getValue()(0), 2u)) *
+	   ROTMAT1) * in) * ROTMAT1;
+  };
 }
 
 void MeasMath::applyPolarMotion(MVPosition &in) {
@@ -474,8 +544,7 @@ void MeasMath::applyPolarMotion(MVPosition &in) {
   in(1) = -in(1);
   EULER1 = MeasTable::polarMotion(info_p[TDB]);
   EULER1(2) = info_p[LASTR];
-  ROTMAT1 = RotMatrix(EULER1);
-  in = ROTMAT1 * in;
+  in = RotMatrix(EULER1) * in;
 }
 
 void MeasMath::deapplyPolarMotion(MVPosition &in) {
@@ -483,31 +552,28 @@ void MeasMath::deapplyPolarMotion(MVPosition &in) {
   getInfo(LASTR);
   EULER1 = MeasTable::polarMotion(info_p[TDB]);
   EULER1(2) = info_p[LASTR];
-  ROTMAT1 = RotMatrix(EULER1);
-  in *= ROTMAT1;
+  in *= RotMatrix(EULER1);
   in(1) = -in(1);
 }
 
 void MeasMath::applyPolarMotionLong(MVPosition &in) {
-  getInfo(TDB);
-  getInfo(LASTR);
-  getInfo(LONG);
-  ///  in(1) = -in(1);
-  EULER1 = MeasTable::polarMotion(info_p[TDB]);
-  EULER1(2) = info_p[LASTR] - info_p[LONG];;;
-  ROTMAT1 = RotMatrix(EULER1);
-  in = ROTMAT1 * in;
-}
-
-void MeasMath::deapplyPolarMotionLong(MVPosition &in) {
+  /// remove
   getInfo(TDB);
   getInfo(LASTR);
   getInfo(LONG);
   EULER1 = MeasTable::polarMotion(info_p[TDB]);
   EULER1(2) = info_p[LASTR] - info_p[LONG];
-  ROTMAT1 = RotMatrix(EULER1);
-  in *= ROTMAT1;
-  ///  in(1) = -in(1);
+  in =  RotMatrix(EULER1) * in;
+}
+
+void MeasMath::deapplyPolarMotionLong(MVPosition &in) {
+  /// remove
+  getInfo(TDB);
+  getInfo(LASTR);
+  getInfo(LONG);
+  EULER1 = MeasTable::polarMotion(info_p[TDB]);
+  EULER1(2) = info_p[LASTR] - info_p[LONG];
+  in *= RotMatrix(EULER1);
 }
 
 void MeasMath::applyAZELtoAZELSW(MVPosition &in) {
@@ -516,94 +582,135 @@ void MeasMath::applyAZELtoAZELSW(MVPosition &in) {
 }
 
 void MeasMath::applyECLIPtoJ2000(MVPosition &in) {
-  ROTMAT1 = RotMatrix(Euler(MeasTable::fundArg(0)(0), 1, 0, 0));
-  in = ROTMAT1 * in;
+  in = RotMatrix(Euler(MeasTable::fundArg(0)(0), 1, 0, 0)) * in;
 }
 
 void MeasMath::deapplyECLIPtoJ2000(MVPosition &in) {
-  ROTMAT1 = RotMatrix(Euler(MeasTable::fundArg(0)(0), 1, 0, 0));
-  in *= ROTMAT1;
+  in *= RotMatrix(Euler(MeasTable::fundArg(0)(0), 1, 0, 0));
 }
 
 void MeasMath::applyMECLIPtoJMEAN(MVPosition &in) {
   getInfo(TDB);
-  ROTMAT1 = 
-    RotMatrix(Euler(MeasTable::fundArg(0)((info_p[TDB] - 
-					   MeasData::MJD2000)/
-					  MeasData::JDCEN), 1, 0, 0));
-  in = ROTMAT1 * in;
+  in = RotMatrix(Euler(MeasTable::fundArg(0)((info_p[TDB] - 
+					      MeasData::MJD2000)/
+					     MeasData::JDCEN), 1, 0, 0)) * in;
 }
 
 void MeasMath::deapplyMECLIPtoJMEAN(MVPosition &in) {
   getInfo(TDB);
-  ROTMAT1 = 
-    RotMatrix(Euler(MeasTable::fundArg(0)((info_p[TDB] - 
-					   MeasData::MJD2000)/
-					  MeasData::JDCEN), 1, 0, 0));
-  in *= ROTMAT1;
+  in *= RotMatrix(Euler(MeasTable::fundArg(0)((info_p[TDB] - 
+					       MeasData::MJD2000)/
+					      MeasData::JDCEN), 1, 0, 0));
 }
 
 void MeasMath::applyTECLIPtoJTRUE(MVPosition &in) {
   getInfo(TDB);
-  ROTMAT1 = 
-    RotMatrix(Euler(-Nutation(Nutation::STANDARD)(info_p[TDB])(2), 1, 0, 0));
-  in = ROTMAT1 * in;
+  in = RotMatrix(Euler(-Nutation(Nutation::STANDARD)(info_p[TDB])(2),
+		       1, 0, 0)) * in;
 }
 
 void MeasMath::deapplyTECLIPtoJTRUE(MVPosition &in) {
   getInfo(TDB);
-  ROTMAT1 = 
-    RotMatrix(Euler(-Nutation(Nutation::STANDARD)(info_p[TDB])(2), 1, 0, 0));
-  in *= ROTMAT1;
+  in *= RotMatrix(Euler(-Nutation(Nutation::STANDARD)(info_p[TDB])(2),
+			1, 0, 0));
 }
 
-void MeasMath::applyAPPtoTOPO(MVPosition &in, const Double len) {
+void MeasMath::applyAPPtoTOPO(MVPosition &in, const Double len,
+			      Bool doin) {
   if (len != 0) {
     getInfo(LASTR);
     getInfo(LONG);
     getInfo(LAT);
     getInfo(RADIUS);
-    ROTMAT1 = RotMatrix(Euler(info_p[LASTR] - info_p[LONG], (uInt) 3));
-    MVPOS1 = MVPosition(Quantity(info_p[RADIUS], "m"),
-			info_p[LONG], info_p[LAT]);
-    in -= (ROTMAT1 * MVPOS1) * (1.0/len);
-    in.adjust();
+    ROTMAT1 = RotMatrix(Euler(info_p[LASTR] - info_p[LONG], 3u));
+    // Correction
+    MVPOS1 = (ROTMAT1 *
+	      MVPosition(Quantity(info_p[RADIUS], "m"),
+			 info_p[LONG], info_p[LAT])) * (1.0/len);
+    if (doin) {
+      in -= MVPOS1;
+      in.adjust();
+    } else {
+      getInfo(APPLAT); getInfo(APPLONG);
+      // Rotation towards direction
+      ROTMAT1 = RotMatrix(Euler(-C::pi_2 + info_p[APPLAT], 2u,
+				-info_p[APPLONG], 3u));
+      // Rotation towards correction
+      ROTMAT1 = RotMatrix(Euler(-(ROTMAT1*MVPOS1).getLong(), 3u)) * ROTMAT1;
+      // Rotate over correction
+      in = ((RotMatrix(Euler(-(ROTMAT1*MVPOS1).getValue()(0), 2u)) *
+	     ROTMAT1) * in) * ROTMAT1;
+    };
   };
 }
 
-void MeasMath::deapplyAPPtoTOPO(MVPosition &in, const Double len) {
+void MeasMath::deapplyAPPtoTOPO(MVPosition &in, const Double len,
+				Bool doin) {
   if (len != 0) {
     getInfo(LASTR);
     getInfo(LONG);
     getInfo(LAT);
     getInfo(RADIUS);
-    ROTMAT1 = RotMatrix(Euler(info_p[LASTR] - info_p[LONG], (uInt) 3));
-    MVPOS1 = MVPosition(Quantity(info_p[RADIUS], "m"),
-			info_p[LONG], info_p[LAT]);
-    in += (ROTMAT1 * MVPOS1) * (1.0/len);
-    in.adjust();
+    ROTMAT1 = RotMatrix(Euler(info_p[LASTR] - info_p[LONG], 3u));
+    // Correction
+    MVPOS1 = (ROTMAT1 *
+	      MVPosition(Quantity(info_p[RADIUS], "m"),
+			 info_p[LONG], info_p[LAT])) * (1.0/len);
+    if (doin) {
+      in += MVPOS1;
+      in.adjust();
+    } else {
+      // Really iterate if a planet
+      getInfo(APPLAT); getInfo(APPLONG);
+      // Rotation towards direction
+      ROTMAT1 = RotMatrix(Euler(-C::pi_2 + info_p[APPLAT], 2u,
+				-info_p[APPLONG], 3u));
+      // Rotation towards correction
+      ROTMAT1 = RotMatrix(Euler(-(ROTMAT1*MVPOS1).getLong(), 3u)) * ROTMAT1;
+      // Rotate over correction
+      in = ((RotMatrix(Euler((ROTMAT1*MVPOS1).getValue()(0), 2u)) *
+	     ROTMAT1) * in) * ROTMAT1;
+    };
   };
 }
 
-// general support
+// General support
 void MeasMath::getInfo(FrameInfo i) {
   // Frame information groups
   static FrameType InfoType[N_FrameInfo] = {
-    EPOCH, EPOCH, POSITION, POSITION, POSITION };
+    EPOCH, EPOCH, POSITION, POSITION, POSITION,
+    DIRECTION, DIRECTION, DIRECTION };
   // Frame information methods
-  static FRINFO InfoFrame[N_FrameInfo] = {
+  static FRDINFO InfoDFrame[N_FrameDInfo] = {
     &MCFrame::getTDB,
     &MCFrame::getLASTr,
     &MCFrame::getLong,
     &MCFrame::getLat,
-    &MCFrame::getRadius };
+    &MCFrame::getRadius,
+    &MCFrame::getJ2000Long,
+    &MCFrame::getJ2000Lat,
+    &MCFrame::getB1950Long,
+    &MCFrame::getB1950Lat,
+    &MCFrame::getAppLong,
+    &MCFrame::getAppLat };
+
+  static FRMVDINFO InfoMVDFrame[N_FrameMVDInfo] = {
+    &MCFrame::getJ2000,
+    &MCFrame::getB1950,
+    &MCFrame::getApp };
 
   if (!infoOK_p[i]) {
     // Make sure there has not been an epoch added
     getFrame(InfoType[i]);
     if (frameOK_p[InfoType[i]]) {
-      (((MCFrame *)(applyFrame_p[InfoType[i]]->
-		    getMCFramePoint()))->*InfoFrame[i])(info_p[i]);
+      if (i < N_FrameDInfo) {
+	(((MCFrame *)(applyFrame_p[InfoType[i]]->
+		      getMCFramePoint()))->*InfoDFrame[i])(info_p[i]);
+      } else {
+	(((MCFrame *)(applyFrame_p[InfoType[i]]->
+		      getMCFramePoint()))->*InfoMVDFrame[i-N_FrameDInfo])
+	  (infomvd_p[i-N_FrameDInfo]);
+      };
     } else {
       throw(AipsError(String("Missing information in Frame ") +
 		      "specified for conversion"));

@@ -34,6 +34,7 @@
 #include <aips/Quanta/Euler.h>
 #include <aips/Quanta/RotMatrix.h>
 #include <aips/Quanta/MVPosition.h>
+#include <aips/Quanta/MVDirection.h>
 #include <aips/Measures/MeasFrame.h>
 
 //# Forward Declarations
@@ -140,23 +141,24 @@ public:
   void applyPrecNutat(MVPosition &in);
   void deapplyPrecNutat(MVPosition &in);
   void createPrecNutatB1950();
-  void applyPrecNutatB1950(MVPosition &in);
-  void deapplyPrecNutatB1950(MVPosition &in);
+  void applyPrecNutatB1950(MVPosition &in, Bool doin=True);
+  void deapplyPrecNutatB1950(MVPosition &in, Bool doin=True);
   //   </group>
   // Aberration for J2000 (IAU definition) and B1950 and in coordinates
   //   <group>
   void createAberration();
-  void applyAberration(MVPosition &in);
-  void deapplyAberration(MVPosition &in);
+  void applyAberration(MVPosition &in, Bool doin=True);
+  void deapplyAberration(MVPosition &in, Bool doin=True);
   void createAberrationB1950();
-  void applyAberrationB1950(MVPosition &in);
-  void deapplyAberrationB1950(MVPosition &in);
+  void applyAberrationB1950(MVPosition &in, Bool doin=True);
+  void deapplyAberrationB1950(MVPosition &in, Bool doin=True);
   //   </group>
-  // Solar bending for J2000 (IAU definition) and in coordinates
+  // Solar bending for J2000 (IAU definition) and in coordinates.
+  // False if dependent on frame direction rather than input one.
   //   <group>
   void createSolarPos();
-  void applySolarPos(MVPosition &in);
-  void deapplySolarPos(MVPosition &in);
+  void applySolarPos(MVPosition &in, Bool doin=True);
+  void deapplySolarPos(MVPosition &in, Bool doin=True);
   //   </group>
   // Various conversions
   // <group>
@@ -164,18 +166,18 @@ public:
   void deapplyHADECtoITRF(MVPosition &in);
   void applyHADECtoAZEL(MVPosition &in);
   void deapplyHADECtoAZEL(MVPosition &in);
-  void applyJ2000toB1950(MVPosition &in);
-  void deapplyJ2000toB1950(MVPosition &in);
-  void applyETerms(MVPosition &in);
-  void deapplyETerms(MVPosition &in);
+  void applyJ2000toB1950(MVPosition &in, Bool doin=True);
+  void deapplyJ2000toB1950(MVPosition &in, Bool doin=True);
+  void applyETerms(MVPosition &in, Bool doin=True);
+  void deapplyETerms(MVPosition &in, Bool doin=True);
   void applyGALtoJ2000(MVPosition &in);
   void deapplyGALtoJ2000(MVPosition &in);
   void applyGALtoB1950(MVPosition &in);
   void deapplyGALtoB1950(MVPosition &in);
   void applyGALtoSUPERGAL(MVPosition &in);
   void deapplyGALtoSUPERGAL(MVPosition &in);
-  void applyTOPOtoHADEC(MVPosition &in);
-  void deapplyTOPOtoHADEC(MVPosition &in);
+  void applyTOPOtoHADEC(MVPosition &in, Bool doin=True);
+  void deapplyTOPOtoHADEC(MVPosition &in, Bool doin=True);
   void applyPolarMotion(MVPosition &in);
   void deapplyPolarMotion(MVPosition &in);
   void applyPolarMotionLong(MVPosition &in);
@@ -187,8 +189,10 @@ public:
   void deapplyMECLIPtoJMEAN(MVPosition &in);
   void applyTECLIPtoJTRUE(MVPosition &in);
   void deapplyTECLIPtoJTRUE(MVPosition &in);
-  void applyAPPtoTOPO(MVPosition &in, const Double len);
-  void deapplyAPPtoTOPO(MVPosition &in, const Double len);
+  void applyAPPtoTOPO(MVPosition &in, const Double len,
+		      Bool doin=True);
+  void deapplyAPPtoTOPO(MVPosition &in, const Double len,
+			Bool doin=True);
   // </group>
   // </group>
 
@@ -208,13 +212,27 @@ private:
     LONG,
     LAT,
     RADIUS,
-    N_FrameInfo };
+    J2000LONG,
+    J2000LAT,
+    B1950LONG,
+    B1950LAT,
+    APPLONG,
+    APPLAT,
+    N_FrameDInfo,
+    J2000DIR = N_FrameDInfo,
+    B1950DIR,
+    APPDIR,
+    N_FrameInfo,
+    N_FrameMVDInfo = N_FrameInfo-J2000DIR };
 
   //# Typedefs
   // To get frame group
   typedef const Measure *const (MeasFrame::*FRFCT)() const;
   // To get frame info
-  typedef Bool (MCFrame::*FRINFO)(Double &);
+  // <group>
+  typedef Bool (MCFrame::*FRDINFO)(Double &);
+  typedef Bool (MCFrame::*FRMVDINFO)(MVDirection &);
+  // </group>
 
   //# Cached Data
   // Data cached for fast calculations and workspace
@@ -243,7 +261,8 @@ private:
   MVPosition MVPOS1, MVPOS2, MVPOS3;
   Double g1, g2, g3, lengthE;
   Bool infoOK_p[N_FrameInfo];
-  Double info_p[N_FrameInfo];
+  Double info_p[N_FrameDInfo];
+  MVDirection infomvd_p[N_FrameMVDInfo];
   // </group>
   // </group>
 
