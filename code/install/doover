@@ -92,9 +92,10 @@
   cat << EOT
 
 
-#include <iostream.h>
-#include <iomanip.h>
+#include <iostream>
+#include <iomanip>
 
+using namespace std;
 
 void report_aips_version(ostream &os)
 {
