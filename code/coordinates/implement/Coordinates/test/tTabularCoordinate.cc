@@ -103,6 +103,46 @@ int main()
          }
      } 
 
+// Test Quantum constructor interfaces
+  
+     {
+        Double crval = 100.0;
+        Double crpix = 1.0;
+        Double cdelt = 1.2;
+        String name("length");
+        String unit("m");
+//
+        TabularCoordinate tc1(crval, cdelt, crpix, unit, name);
+//
+        Quantum<Double> crval2(crval, "m");
+        Quantum<Double> cdelt2(100*cdelt, "cm");
+        TabularCoordinate tc2(crval2, cdelt2, crpix, name);
+//
+        if (!tc1.near(&tc2)) {
+           throw(AipsError(String("Quantum interface (1) constructor failed consistency test")));
+        }
+      }
+
+
+     {
+        Vector<Double> world(3);
+        Vector<Double> pixel(3);
+        pixel(0) = 1.0; pixel(1) = 3.0; pixel(2) = 6.0;
+        world(0) = 10.0; world(1) = 30.0; world(2) = 60.0;
+        String name("length");
+        String unit("m");
+//
+        TabularCoordinate tc1(pixel, world, unit, name);
+//
+        Quantum<Vector<Double> > world2(world, unit);
+        TabularCoordinate tc2(pixel, world2, name);
+//
+        if (!tc1.near(&tc2)) {
+           throw(AipsError(String("Quantum interface (2) constructor failed consistency test")));
+        }
+      }
+
+
 // Test the rest
 
       {
