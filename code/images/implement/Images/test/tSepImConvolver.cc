@@ -1,5 +1,5 @@
 //# tSepImConvolver.cc: 
-//# Copyright (C) 1996,1997,1999,2000
+//# Copyright (C) 1996,1997,1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -72,6 +72,8 @@ try {
    Double fwhm = inputs.getDouble("width");
    Bool autoScale = inputs.getBool("autoscale");
    Bool show = inputs.getBool("show");
+   Bool useShapeExactly = False;
+
 //
    if (in.empty()) {
       cout << "You must give an input image name" << endl;
@@ -159,11 +161,11 @@ try {
 
       if (axis<=0) {
          for (uInt j=0; j<shape.nelements(); j++) {
-            sic.setKernel(j, type, fwhm, autoScale);
+            sic.setKernel(j, type, fwhm, autoScale, useShapeExactly);
          }
       } else {
          axis--;
-         sic.setKernel(axis, type, fwhm, autoScale);
+         sic.setKernel(axis, type, fwhm, autoScale, useShapeExactly);
       }
       sic.convolve(outImage2);
    }
@@ -183,7 +185,7 @@ try {
 
 // Set/Get a kernel
       
-      sic.setKernel(0, type, fwhm, autoScale);
+      sic.setKernel(0, type, fwhm, autoScale, useShapeExactly);
       Vector<Float> kernel = sic.getKernel(uInt(0));
       if (show) {
          cout << "Kernel = " << kernel << endl;
