@@ -28,7 +28,7 @@
 #include <aips/Measures/MeasConvert.h>
 #include <aips/Measures/MeasFrame.h>
 #include <aips/Measures/MeasRef.h>
-#include <aips/Measures/MeasValue.h>
+#include <aips/Quanta/MeasValue.h>
 #include <aips/Measures/MEpoch.h>
 #include <aips/Measures/MPosition.h>
 #include <aips/Measures/MDirection.h>

@@ -33,7 +33,7 @@
 #include <aips/Measures/MeasConvert.h>
 #include <aips/Measures/MeasFrame.h>
 #include <aips/Measures/MEpoch.h>
-#include <aips/Measures/MVEpoch.h>
+#include <aips/Quanta/MVEpoch.h>
 #include <aips/Quanta/MVTime.h>
 #include <aips/Measures/MDirection.h>
 #include <aips/Measures/MFrequency.h>

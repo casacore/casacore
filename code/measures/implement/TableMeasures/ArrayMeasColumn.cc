@@ -35,7 +35,7 @@
 #include <aips/Lattices/IPosition.h>
 #include <aips/Measures/MeasConvert.h>
 #include <aips/Measures/MeasRef.h>
-#include <aips/Measures/MeasValue.h>
+#include <aips/Quanta/MeasValue.h>
 #include <aips/Measures/MDirection.h>
 #include <aips/Measures/MDoppler.h>
 #include <aips/Measures/MEpoch.h>
