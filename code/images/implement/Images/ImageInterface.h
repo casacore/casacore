@@ -28,17 +28,13 @@
 #if !defined(AIPS_IMAGEINTERFACE_H)
 #define AIPS_IMAGEINTERFACE_H
 
-#if defined(_AIX)
-#pragma implementation ("ImageInterface.cc")
-#endif 
-
+//# Includes
 #include <aips/aips.h>
-
 #include <trial/Lattices/Lattice.h>
 #include <trial/Coordinates/CoordinateSystem.h>
 #include <aips/Logging/LogIO.h>
 
-//# predeclarations
+//# Forward Declarations
 template <class T> class LatticeIterInterface;
 template <class T> class Vector;
 template <class T> class COWPtr;
@@ -48,23 +44,25 @@ class LogIO;
 class RecordInterface;
 class Unit;
 
-// <summary> a base class for astronomical images </summary>
-//
+// <summary>
+// a base class for astronomical images
+// </summary>
+
 // <use visibility=export>
-//
+
 // <reviewed reviewer="" date="" tests="" demos="">
 // </reviewed>
-//
+
 // <prerequisite>
 //   <li> <linkto class=Lattice>Lattices</linkto>
 //   <li> <linkto class=CoordinateSystem>CoordinateSystem</linkto>
 // </prerequisite>
-//
+
 // <etymology>
 // The ImageInterface class name is derived from its role as the cookie cutter
 // Interface base class for Images.  
 // </etymology>
-//
+
 // <synopsis> 
 // The ImageInterface class is an abstract base class. All Image classes
 // should derive from this class to ensure functions which operate on Images
@@ -76,7 +74,7 @@ class Unit;
 // PagedImage, which allows the image to be stored on disk, and only reads
 // specified portions of the image into memory.  
 // </synopsis>
-//
+
 // <example>
 // As this is an abstract base class it is not possible to construct an
 // instance of this object.  It can however be used as a function argument.<br>
@@ -127,16 +125,17 @@ class Unit;
 // };
 // </srcblock>
 // </example>
-//
+
 // <motivation> 
 // The use of abstract base classes to guide inheritance seemed appropriate
 // for Images to ensure that CoordinateSystems and masking get handled
 // uniformly.
 // </motivation>
-//
+
 // <todo asof="1995/04/25">
 //   <li> replace ImageCoordinates
 // </todo>
+
 
 template <class T> class ImageInterface: public Lattice<T>
 {
@@ -146,10 +145,10 @@ public:
   // Copy constructor (copy semantics).
   ImageInterface (const ImageInterface& other);
 
-  // Copy constructor (copy semantics).
-  ImageInterface& operator= (const ImageInterface& other);
-
   ~ImageInterface();
+
+  // Make a copy of the derived object (reference semantics).
+  virtual Lattice<T>* clone() const = 0;
 
   // function which returns the shape of the Image.
   virtual IPosition shape() const = 0;
@@ -253,7 +252,7 @@ public:
 
   // Return the name of the current ImageInterface object. This will generally 
   // be a file name for images that have a persistent form.  Any path
-  // before teh actual file name can be optionally stripped off.
+  // before the actual file name can be optionally stripped off.
   virtual String name(const Bool stripPath=False) const = 0;
 
   // Functions to set or replace the coordinate information in the Image
@@ -304,6 +303,9 @@ public:
  
  
 protected:
+  // Assignment (copy semantics) is only useful for derived classes.
+  ImageInterface& operator= (const ImageInterface& other);
+
   Bool throughmask_p;
   // It is the job of the derived class to make the coordinate system valid.
   CoordinateSystem coords_p;
