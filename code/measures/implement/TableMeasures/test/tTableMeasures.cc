@@ -48,9 +48,11 @@ int main(void)
     // Create an underlying column for each Measure column.
     ArrayColumnDesc<Double> cdTime("Time1", "An MEpoch column");
     ArrayColumnDesc<Double> cdB1950("SiderealColumn", "An MDirection column");
+    ArrayColumnDesc<Double> cdTimeArr("Time1Arr", "An MEpoch array column");
 
     td.addColumn(cdTime);
     td.addColumn(cdB1950);
+    td.addColumn(cdTimeArr);
     
     {
 	// A TableMeasDesc for a simple MEpoch column "Time1" with reference
@@ -71,6 +73,21 @@ int main(void)
 	TableMeasDesc<MEpoch> tmdObs(tmvdObs, tmrdObs);
 	tmdObs.write(td);
     }
+    {
+	// An array MEpoch column descriptor.  The TableMeasDesc for an Array
+	// measure column is identical to the Scalar measure column.
+	
+	MEpoch mjdToday(MVEpoch(51234));
+	TableMeasOffsetDesc tmodToday(mjdToday);
+	TableMeasRefDesc tmrdLast(MEpoch::LAST, tmodToday);
+	TableMeasValueDesc tmvdLast(td, "Time1Arr");
+	// create a tmp and test if copy constructor and assignment work
+	TableMeasDesc<MEpoch> tmp(tmvdLast, tmrdLast);
+	TableMeasDesc<MEpoch> tmp2 = tmp;
+	TableMeasDesc<MEpoch> tmdArrLast(tmp2);	
+	
+	tmdArrLast.write(td);
+    }    
     // create the table
     SetupNewTable newtab("TestTableMeasures", td, Table::New);
     const uInt tabRows = 5;
@@ -110,53 +127,28 @@ int main(void)
 	}	
     }    
     
-#ifdef COMMENT
     {
-	// An array MEpoch column descriptor.  The TableMeasDesc for an Array
-	// measure column is identical to the Scalar measure column.
-	
-	MEpoch mjdToday(MVEpoch(51234));
-	TableMeasOffsetDesc tmodToday(mjdToday);
-	TableMeasRefDesc tmrdLast(MEpoch::LAST, tmodToday);
-	TableMeasValueDesc tmvdLast(td, "Time1Arr");
-	// create a tmp and test if copy constructor and assignment work
-	TableMeasDesc<MEpoch> tmp(tmvdLast, tmrdLast);
-	TableMeasDesc<MEpoch> tmp2 = tmp;
-	TableMeasDesc<MEpoch> tmdArrLast(tmp2);	
-	
-	tmdArrLast.write(td);
-    }    
-    {
-	cout << "\n\nCreate MEpochScaCol which has an offset...\n";
-	ROMEpochScaCol lastCol(tab, "Time1");
-
-	MEpoch last(Quantity(13.45, "h"), 
-	    MEpoch::Ref(MEpoch::TAI));
-	last.getRef().set(MEpoch(MVEpoch(51234)));
-	cout << "Real Measure is: " << last << endl;
-	cout << last.getRef() << "\n\n";
-	
-	// print some details things about the column
-	if (lastCol.isRefVariable()) {
-	    cout << "The column has variable references.\n";
-	} else {
-	    cout << "The MeasRef for the column is: " << lastCol.getMeasRef() 
-		<< endl;
-	}	
-    }    
-    {
+	cout << "Creating an MEpoch Array Column\n";
 	MEpochArrCol arrayCol(tab, "Time1Arr");
 
 	MEpoch last(Quantity(13.45, "h"), MEpoch::Ref(MEpoch::TAI));
 	Vector<MEpoch> ev(10);
 	for (uInt i=0; i<10; i++) {
-	    ev(0) = last;
+	    last.set(Quantity(13.45 + i, "h"));
+	    ev(i) = last;
 	}
 	
+	cout << "Adding a vector to the column at row 0.\n";
 	arrayCol.put(0, ev);
-	cout << arrayCol(0) << endl;
+	Vector<MEpoch> ew;
+	arrayCol.get(ew, 0, True);
+	
+	for (i=0; i<10; i++) {
+	    cout << "ev: " << ev(i) << " " << ev(i).getRef() << endl;
+	    cout << "ew: " << ew(i) << " " << ew(i).getRef() << endl;
+	}
+//	cout << arrayCol(0) << endl;
     }
-#endif
     
     cout << "Bye.\n";  
   } catch (AipsError x) {
