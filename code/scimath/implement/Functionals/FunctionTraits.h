@@ -1,5 +1,5 @@
 //# FunctionTraits.h: Function data types for parameters and arguments
-//# Copyright (C) 2001
+//# Copyright (C) 2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -32,6 +32,7 @@
 #include <aips/aips.h>
 #include <aips/Mathematics/AutoDiff.h>
 #include <aips/Mathematics/AutoDiffA.h>
+#include <aips/Mathematics/AutoDiffX.h>
 
 //
 // <summary> Function data types for parameters and arguments
@@ -76,8 +77,8 @@
 //   <li> <src>AutoDiffA</src> calculate form <src>AutoDiff<T></src>
 //	arguments and parameters (note that either could be simple
 //	values with zero derivatives)
-//   <li> <src>AutoDiffX<T></src> (not yet implemented): calculate wrt
-//	the arguments the derivatives only, by using <src>T</src> 
+//   <li> <src>AutoDiffX<T></src> : calculate only with respect to
+//	the arguments the derivatives, by using <src>T</src> 
 // 	parameters
 // </ol>
 // The following types are defined:
@@ -86,13 +87,17 @@
 // <dd> The template argument
 // <dt> <src>BaseType</src>
 // <dd> One down in the template hierarchy if possible (e.g. <src>Double</src>
-//	for </src>AutoDiff<Double></src>)
+//	for <src>AutoDiff<Double></src>)
+// <dt> <src>NumericType</src>
+// <dd> Ultimate numeric type (e.g. <src>Double</src> for
+//	<src>AutoDiff<AutoDiff<Double> ></src>
 // <dt> <src>ParamType</src>
 // <dd> Type used for parameters
 // <dt> <src>ArgType</src>
 // <dd> Type used for arguments
 // <dt> <src>DiffType</src>
-// <dd> The default differentiation type
+// <dd> The default differentiation type (e.g. <src>AutoDiff<Double></src>
+//		for <src>AutoDiff<Double></src>)
 // </dl>
 //
 // The specializations are done in such a way that higher order
@@ -118,10 +123,11 @@
 // <li> <src>T</src>
 // <li> <src>AutoDiff<T></src>
 // <li> <src>AutoDiffA<T></src>
+// <li> <src>AutoDiffX<T></src>
 // </ul>
 // </templating>
 //
-// <todo asof="2001/10/19">
+// <todo asof="2002/06/19">
 //  <li> Additional <src>AutoDiff*</src> classes if and when needed
 // </todo>
 //
@@ -130,8 +136,10 @@ template <class T> class FunctionTraits {
 public:
   // Actual template type
   typedef T Type; 
-  // possible template base type
+  // Template base type
   typedef T BaseType;
+  // Numeric type of template
+  typedef T NumericType;
   // Type for parameters
   typedef T ParamType;
   // Type for arguments
@@ -152,8 +160,10 @@ template <class T> class FunctionTraits_P<AutoDiff<T> > {
 public:
   // Actual template type
   typedef AutoDiff<T> Type; 
-  // possible template base type
+  // Template base type
   typedef T BaseType;
+  // Template numeric type
+  typedef typename FunctionTraits_P<T>::NumericType NumericType;
   // Type for parameters
   typedef AutoDiff<T> ParamType;
   // Type for arguments
@@ -173,8 +183,10 @@ template <class T> class FunctionTraits_PA<AutoDiffA<T> > {
 public:
   // Actual template type
   typedef AutoDiffA<T> Type; 
-  // possible template base type
+  // Template base type
   typedef T BaseType;
+  // Template numeric type
+  typedef typename FunctionTraits_PA<T>::NumericType NumericType;
   // Type for parameters
   typedef AutoDiffA<T> ParamType;
   // Type for arguments
@@ -184,5 +196,28 @@ public:
 };
 
 #undef FunctionTraits_PA
+
+#define FunctionTraits_PX FunctionTraits
+
+// <summary> FunctionTraits specialization for AutoDiffX
+// </summary>
+
+template <class T> class FunctionTraits_PX<AutoDiffX<T> > {
+public:
+  // Actual template type
+  typedef AutoDiffX<T> Type; 
+  // Template base type
+  typedef T BaseType;
+  // Template numeric type
+  typedef typename FunctionTraits_PX<T>::NumericType NumericType;
+  // Type for parameters
+  typedef T ParamType;
+  // Type for arguments
+  typedef AutoDiffX<T> ArgType;
+  // Default type for differentiation
+  typedef AutoDiffX<T> DiffType;
+};
+
+#undef FunctionTraits_PX
 
 #endif
