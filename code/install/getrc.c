@@ -56,6 +56,12 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
+#if defined(AIPS_DARWIN)
+   #define EXPSIZ 1024
+   #include <regex.h>
+    regex_t expbuf;
+#endif
 
 #if defined (AIPS_SVID3) && !defined(HAVE_LINUX_GLIBC)
    #define INIT       register char *sp = instring;
@@ -73,11 +79,7 @@
 
 #if defined(TOOLBOX)
 
-int main(argc,argv)
-
-int   argc;
-char  *argv[];
-
+int main(int argc, char *argv[])
 {
    int  douser, j, verbose;
    char *expr, line[256], match[256], rcfile[256];
@@ -145,11 +147,7 @@ char  *argv[];
 #endif
 
 
-getrc(douser, expr, match, rcfile, line)
-
-int  douser;
-char *expr, *line, *match, *rcfile;
-
+int getrc(int douser, char *expr, char *match, char *rcfile, char *line)
 {
    int  i, j, k, n;
    char pattern[256];
@@ -169,6 +167,7 @@ char *expr, *line, *match, *rcfile;
 
    /* Test for a blank expression. */
    if (strcmp(expr, "") == 0) {
+      printf("Blank expression\n");
       return(4);
    }
 
@@ -244,14 +243,26 @@ char *expr, *line, *match, *rcfile;
 #if defined (AIPS_SVID3) && !defined(HAVE_LINUX_GLIBC)
          if (compile(pattern, expbuf, &expbuf[EXPSIZ], '\0') != 0) return (4);
 #else
+#if defined(AIPS_DARWIN)
+         if (regcomp(&expbuf, pattern, REG_EXTENDED) != 0){
+             
+             return (4);
+         }
+#else
          if (re_comp(pattern) != 0) return (4);
 #endif
+#endif
+
 
          /* Test for regular expression match. */
 #if defined (AIPS_SVID3) && !defined(HAVE_LINUX_GLIBC)
          if (step(expr, expbuf)) {
 #else
+#if defined(AIPS_DARWIN)
+         if (!regexec(&expbuf, expr,  0, 0, REG_NOTBOL)) {
+#else
          if (re_exec(expr)) {
+#endif
 #endif
             /* Return the value. */
             for (k = 0, cp = line ; *cp != '\0' ; cp++) {

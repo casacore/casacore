@@ -30,11 +30,8 @@
 #include <aips/Tables/TableColumn.h>
 #include <aips/Tables/ColumnDesc.h>
 #include <aips/Quanta/MVTime.h>
-#if defined(AIPS_DARWIN)
 #include <float.h>                     // for DBL_MAX
-#else
 #include <limits.h>                     // for DBL_MAX
-#endif
 
 
 // Implement the comparison operators for each data type.
