@@ -768,9 +768,9 @@ void MSFitsInput::fillMSMainTable(Int& nField, Int& nSpW)
 	  } else {
 	    weightSpec(pol, chan) = wt;
 	    flag(pol, chan) = False;
+            // weight column is sum of weight_spectrum (each pol):
+            weight(pol)+=wt;
 	  }
-          // weight column is sum of weight_spectrum (each pol):
-          weight(pol)+=wt;
 	  vis(pol, chan) = Complex(visReal, visImag);
  	}
       }
