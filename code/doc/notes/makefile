@@ -1,7 +1,7 @@
 # Fundamentals
 #-------------
 AIPSROOT := $(word 1, $(AIPSPATH))
-notes := -split 0 -no_navigation
+notes := -split 0
 103 := -split +1
 106 := -split +1
 114 := -split +1
