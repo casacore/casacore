@@ -49,7 +49,6 @@ class Slicer;
 class LogTable;
 template <class T> class Array;
 template <class T> class COWPtr;
-template <class T> class RO_LatticeIterInterface;
 template <class T> class LatticeIterInterface;
 #if defined(AIPS_STDLIB)
 #include <iosfwd.h>
@@ -76,8 +75,8 @@ class TableLock;
 //
 // <etymology>
 // The PagedImage name comes from its role as the Image class with paging 
-// from persistant memory.  Users are thus invited to treat the 
-// ArrayImage instances like AIPS++ Lattices  
+// from persistent memory.  Users are thus invited to treat the 
+// PagedImage instances like AIPS++ Lattices  
 // </etymology>
 //
 // <synopsis> 
@@ -114,37 +113,23 @@ class TableLock;
 template <class T> class PagedImage: public ImageInterface<T>
 {
 public: 
-  // construct a new Image from an IPosition and coordinate information. Data
+  // construct a new Image from shape and coordinate information. Data
   // will be stored in the argument table, masking is created if True
-  PagedImage(const IPosition &mapShape, const CoordinateSystem &coordinateInfo,
+  PagedImage(const TiledShape &mapShape, const CoordinateSystem &coordinateInfo,
 	     Table &table, Bool masking = False, uInt rowNumber = 0);
   
-  // construct a new Image from an IPosition and coordinate information. Table
+  // construct a new Image from shape and coordinate information. Table
   // will be stored in the named file, masking is created if True.
-  PagedImage(const IPosition &mapShape, const CoordinateSystem &coordinateInfo,
+  PagedImage(const TiledShape &mapShape, const CoordinateSystem &coordinateInfo,
 	     const String &nameOfNewFile, Bool masking = False, 
 	     uInt rowNumber = 0);
   
-  // construct a new Image from an IPosition and coordinate information. Table
-  // will be stored in the named file, masking is created if True. The tile
-  // shape may be specified
-  PagedImage(const IPosition &mapShape, const CoordinateSystem &coordinateInfo,
-	     const String &nameOfNewFile, const IPosition& tileShape, Bool masking = False, 
-	     uInt rowNumber = 0);
-  
-  // construct a new Image from an IPosition and coordinate information. Table
+  // construct a new Image from shape and coordinate information. Table
   // will be stored in the named file, masking is created if True. The lock
   // options may be specified
-  PagedImage(const IPosition &mapShape, const CoordinateSystem &coordinateInfo,
+  PagedImage(const TiledShape &mapShape, const CoordinateSystem &coordinateInfo,
 	     const String &nameOfNewFile, const TableLock& lockOptions,
              Bool masking = False, uInt rowNumber = 0);
-  
-  // construct a new Image from an IPosition and coordinate information. Table
-  // will be stored in the named file, masking is created if True. The lock
-  // options and tile shape may be specified
-  PagedImage(const IPosition &mapShape, const CoordinateSystem &coordinateInfo,
-	     const String &nameOfNewFile, const TableLock& lockOptions,
-             const IPosition& tileShape, Bool masking = False, uInt rowNumber = 0);
   
   // reconstruct an image from a pre-existing file
   PagedImage(Table &table, uInt rowNumber = 0);
@@ -154,15 +139,15 @@ public:
   
   // reconstruct an image from a pre-existing file with Locking
   PagedImage(const String &filename, const TableLock& lockOptions,
-     uInt rowNumber = 0);
+	     uInt rowNumber = 0);
   
-  // the copy constructor. (reference semantics)
+  // the copy constructor (reference semantics).
   PagedImage(const PagedImage<T> &other);
 
   // destructor
   ~PagedImage();
   
-  // assignment operator. (reference semantics)
+  // assignment operator (reference semantics).
   PagedImage<T> &operator=(const PagedImage<T> &other);
   
   // Function to change the name of the Table file on disk.
@@ -187,7 +172,7 @@ public:
   IPosition shape() const;
 
   // change the shape of the image (N.B. the data is thrown away)
-  void resize(const IPosition &newShape);
+  void resize(const TiledShape &newShape);
 
   // functions which extract an array from the map.
   // <group>   
@@ -293,13 +278,7 @@ public:
   
   // these are the implementations of the letters for the envelope Iterator
   // class <note> Not for public use </note>
-  //<group>
-  RO_LatticeIterInterface<T> *makeIter(
-				    const LatticeNavigator &navigator) const;
-  RO_LatticeIterInterface<T> *makeIter(const IPosition &cursorShape) const;
-  LatticeIterInterface<T> *makeIter(const LatticeNavigator &navigator);
-  LatticeIterInterface<T> *makeIter(const IPosition &cursorShape);
-  //</group>
+  LatticeIterInterface<T> *makeIter(const LatticeNavigator &navigator) const;
 
   // Help the user pick a cursor for most efficient access if he only wants
   // pixel values and doesn't care about the order. Usually just use
@@ -318,12 +297,14 @@ public:
 			    const IPosition& windowStart,
 			    const IPosition& windowLength,
 			    const IPosition& axisPath);
-  // Clears and frees up the caches, but the maximum allowd cache size is 
+
+  // Clears and frees up the caches, but the maximum allowed cache size is 
   // unchanged from when setCacheSize was called
-  void clearCache() const;
+  void clearCache();
 
   // Report on cache success
-  void showCacheStatistics(ostream &os);
+  void showCacheStatistics(ostream &os) const;
+
 private:  
   // the default constructor -- useless.
   PagedImage();
@@ -334,10 +315,7 @@ private:
   void save_units();
   void report_mask();
   void check_conformance(const Lattice<T> &other);
-  void openTable(const String &filename);
-  void openTable(const String &filename) const;
-  void openTable(const String &filename, const TableLock& lockOptions);
-  void openTable(const String &filename, const TableLock& lockOptions) const;
+  void reopenRW();
   void setTableType();
 
   Table table_p;
@@ -358,5 +336,15 @@ private:
 // <group name="pixeltype")
     DataType imagePixelType(const String &fileName);
 // </group>
+
+
+template<class T>
+inline void PagedImage<T>::reopenRW()
+{
+  if (!table_p.isWritable()  &&  Table::isWritable(name())) {
+    table_p.reopenRW();
+  }
+}
+
 
 #endif
