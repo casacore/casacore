@@ -67,9 +67,9 @@ template<class T> class Vector;
 //
 // Correct indexing order of a matrix is:
 // <srcblock>
-// Matrix<Int> mi(n1,n2)
-// for (uInt j=0; j<n2; j++) {
-//    for (uInt i=0; i<n1; i++) {
+// Matrix<Int> mi(n1,n2)                  // [nrow, ncolumn]
+// for (uInt j=0; j<mi.ncolumn(); j++) {
+//    for (uInt i=0; i<mi.nrow(); i++) {
 //       mi(i,j) = i*j;
 //    }      
 // }
