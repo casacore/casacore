@@ -63,8 +63,10 @@ UASTRING   \'[^\'\n]*\n
 STRING    ({QSTRING}|{ASTRING})+
 USTRING   ({UQSTRING}|{UASTRING})+
 NAME      [A-Za-z_]([A-Za-z_0-9])*
-TEMPNAME  [$]{INT}
+TMPNAME   [$]{INT}
+TMPREGION "$REGION#"{INT}
 ESCNAME   ([A-Za-z0-9._~$]|(\\.))+
+COLONNAME ({NAME}|{ESCNAME})?":"":"?({NAME}|{ESCNAME})
 
 
 %%
@@ -124,10 +126,17 @@ ESCNAME   ([A-Za-z0-9._~$]|(\\.))+
 	  }
 
  /* A temporary image number can be given */
-{TEMPNAME} {
+{TMPNAME} {
             imageExprGramPosition() += yyleng;
             lvalp->val = new ImageExprParse (atoi(ImageExprGramtext+1));
 	    return NAME;
+	  }
+
+ /* A temporary region number can be given */
+{TMPREGION} {
+            imageExprGramPosition() += yyleng;
+            lvalp->val = new ImageExprParse (atoi(ImageExprGramtext+8));
+	    return TMPREG;
 	  }
 
  /*
@@ -144,8 +153,16 @@ ESCNAME   ([A-Za-z0-9._~$]|(\\.))+
        "a'b"'c"d'   results in a'bc"d
    - Use the backslash escape character. E.g.
        a\/b\/c      results in a/b/c
+ Furthermore a name can look like ::region or lattice::region indicating
+ that a region is given.
  */
 {ESCNAME} {
+            imageExprGramPosition() += yyleng;
+            lvalp->val = new ImageExprParse
+                             (imageExprGramRemoveEscapes (ImageExprGramtext));
+	    return LATNAME;
+	  }
+{COLONNAME} {
             imageExprGramPosition() += yyleng;
             lvalp->val = new ImageExprParse
                              (imageExprGramRemoveEscapes (ImageExprGramtext));
@@ -178,6 +195,7 @@ ESCNAME   ([A-Za-z0-9._~$]|(\\.))+
 "["       { imageExprGramPosition() += yyleng; return LBRACKET; }
 "]"       { imageExprGramPosition() += yyleng; return RBRACKET; }
 ","       { imageExprGramPosition() += yyleng; return COMMA; }
+":"       { imageExprGramPosition() += yyleng; return COLON; }
 
  /* Whitespace is skipped */
 {WHITE}   { imageExprGramPosition() += yyleng; }
