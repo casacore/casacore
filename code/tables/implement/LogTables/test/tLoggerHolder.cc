@@ -1,4 +1,4 @@
-//# tImageLogger.cc: Test program for class ImageLogger
+//# tLoggerHolder.cc: Test program for class LoggerHolder
 //# Copyright (C) 2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -26,32 +26,32 @@
 //#
 //# $Id$
 
-#include <trial/Images/ImageLogger.h>
+#include <trial/Logging/LoggerHolder.h>
 #include <aips/Tables/Table.h>
 #include <aips/Exceptions/Error.h>
 #include <aips/Utilities/Assert.h>
 
 void doIt (Bool tempClose)
 {
-  ImageLogger sublogger (False);
-  ImageLogger sublogger1 (False);
-  ImageLogger logger (False);
-  logger.addParent (&sublogger);
-  logger.addParent (&sublogger1);
+  LoggerHolder sublogger (False);
+  LoggerHolder sublogger1 (False);
+  LoggerHolder logger (False);
+  logger.addParent (sublogger);
+  logger.addParent (sublogger1);
   sublogger.logio() << "subtest1" << LogIO::POST;
   logger.logio() << "test1" << LogIO::POST;
 
   // Make sure we have a new table.
-  if (Table::isReadable ("tImageLogger_tmp.log")) {
-    Table::deleteTable ("tImageLogger_tmp.log");
+  if (Table::isReadable ("tLoggerHolder_tmp.log")) {
+    Table::deleteTable ("tLoggerHolder_tmp.log");
   }
   // Create with a TableLogSink.
   // Test copy ctor and assignment.
-  ImageLogger logger2a ("tImageLogger_tmp.log", True);
-  ImageLogger logger2 (logger);
+  LoggerHolder logger2a ("tLoggerHolder_tmp.log", True);
+  logger2a.addParent (logger);
+  LoggerHolder logger2 (logger);
   logger2 = logger2a;
-  logger2.addParent (&logger);
-  logger2.addParent (&sublogger);
+  logger2.addParent (sublogger);
   logger2.logio() << "testtable" << LogIO::POST;
   logger.logio() << "test2" << LogIO::POST;
   AlwaysAssertExit (logger.logio().localSink().nelements() == 2);
@@ -65,21 +65,35 @@ void doIt (Bool tempClose)
   AlwaysAssertExit (logger2.isTempClosed() == tempClose);
 
   {
-    Table tab("tImageLogger_tmp.log");
+    Table tab("tLoggerHolder_tmp.log");
     AlwaysAssertExit (tab.nrow() == 1);
   }
 
-  for (ImageLogger::const_iterator iter = logger2.begin();
+  uInt nmsg=0;
+  for (LoggerHolder::const_iterator iter = logger2.begin();
        iter != logger2.end();
        iter++) {
     cout << iter->time() << ' ' << (*iter).message() << endl;
+    nmsg++;
   }
+  AlwaysAssertExit (nmsg == 5);
   AlwaysAssertExit (logger2.isTempClosed() == tempClose);
-  for (ImageLogger::const_iterator iter = sublogger1.begin();
+  nmsg = 0;
+  for (LoggerHolder::const_iterator iter = sublogger.begin();
        iter != sublogger.end();
        iter++) {
     cout << iter->time() << ' ' << (*iter).message() << endl;
+    nmsg++;
   }
+  AlwaysAssertExit (nmsg == 1);
+  nmsg = 0;
+  for (LoggerHolder::const_iterator iter = sublogger1.begin();
+       iter != sublogger1.end();
+       iter++) {
+    cout << iter->time() << ' ' << (*iter).message() << endl;
+    nmsg++;
+  }
+  AlwaysAssertExit (nmsg == 0);
 }
 
 int main()
