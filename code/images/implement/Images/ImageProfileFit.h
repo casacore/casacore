@@ -174,8 +174,8 @@ public:
 
     // Fit all profiles in the region and write out images.
     //<group>
-    void fit (ImageInterface<Float>*& fit,
-              ImageInterface<Float>*& residual);
+    void fit (RecordInterface& rec, ImageInterface<Float>*& fit,
+              ImageInterface<Float>*& residual, const String& xUnitRec);
     //</group>
 
     // Find the residuals 
@@ -239,6 +239,10 @@ private:
                                     Bool xAbsOut,
                                     const Unit& xUnitOut,
                                     const MDoppler::Types dopplerOut);
+//
+   Bool getElements (RecordInterface& estimate,
+                     const String& xUnit, const SpectralList& list);
+
 //
    void setData (const ImageInterface<Float>& image,
                  const Slicer& sl, Bool average);
