@@ -1,5 +1,5 @@
 //# aips.h: Global initialization for namespace management, standard types, etc.
-//# Copyright (C) 1993-1997
+//# Copyright (C) 1993-1997,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -81,11 +81,7 @@ typedef long Long;
 typedef unsigned long uLong;
 typedef float Float;
 typedef double Double;
-#if defined (AIPS_IRIX) && !defined(__GNUG__)
-typedef double lDouble;
-#else
 typedef long double lDouble;
-#endif
 
 #if defined(__GNUG__)
 // Needed for g++ 2.7.2. Hopefully we can delete these at some point.
