@@ -1,5 +1,5 @@
 //# TableLockData.cc: Class to hold table lock data
-//# Copyright (C) 1997,1998
+//# Copyright (C) 1997,1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -37,8 +37,6 @@ TableLockData::TableLockData (const TableLock& lockOptions,
 			      void* releaseParentObject)
 : TableLock          (lockOptions),
   itsLock            (0),
-  itsReadLocked      (False),
-  itsWriteLocked     (False),
   itsReleaseCallBack (releaseCallBack),
   itsReleaseParent   (releaseParentObject)
 {}
@@ -50,14 +48,14 @@ TableLockData::~TableLockData()
 
 
 void TableLockData::makeLock (const String& name, Bool create,
-			      FileLocker::LockType type)
+			      FileLocker::LockType type, uInt locknr)
 {
     //# Create lock file object only when not created yet.
     //# It is acceptable that no lock file exists for a readonly table
     //# (to be able to read older tables).
     if (itsLock == 0) {
 	itsLock = new LockFile (name + "/table.lock", interval(), create,
-				True, False);
+				True, False, locknr);
     }
     //# Acquire a lock when permanent locking is in use.
     if (isPermanent()) {
@@ -69,10 +67,6 @@ void TableLockData::makeLock (const String& name, Bool create,
 	    throw (TableError ("Permanent lock on table " + name +
 			       " could not be acquired (" +
 			       itsLock->lastMessage() + ")"));
-	}
-	itsReadLocked = True;
-	if (type == FileLocker::Write) {
-	    itsWriteLocked = True;
 	}
     }
 }
@@ -120,11 +114,6 @@ Bool TableLockData::acquire (MemoryIO* info,
 	    throw (TableError ("Error (" + itsLock->lastMessage() +
 			       ") when acquiring lock on " + itsLock->name()));
 	}
-    }else{
-	itsReadLocked = True;
-	if (type == FileLocker::Write) {
-	    itsWriteLocked = True;
-	}
     }
     return status;
 }
@@ -134,7 +123,7 @@ void TableLockData::release (Bool always)
     //# Only release if not permanently locked.
     if (always  ||  !isPermanent()) {
 	MemoryIO* memIO = 0;
-	if (itsWriteLocked) {
+	if (hasLock (FileLocker::Write)) {
 	    if (itsReleaseCallBack != 0) {
 		memIO = itsReleaseCallBack (itsReleaseParent, always);
 	    }
@@ -143,7 +132,5 @@ void TableLockData::release (Bool always)
 	    throw (TableError ("Error (" + itsLock->lastMessage() +
 			       ") when releasing lock on " + itsLock->name()));
 	}
-	itsReadLocked  = False;
-	itsWriteLocked = False;
     }
 }
