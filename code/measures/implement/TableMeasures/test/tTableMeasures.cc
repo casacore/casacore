@@ -25,13 +25,6 @@
 //#
 //# $Id$
 
-#include <iostream.h>
-#include <aips/aips.h>
-#include <aips/Exceptions.h>
-#include <aips/Arrays/Array.h>
-#include <aips/Arrays/Vector.h>
-#include <aips/Measures/MeasConvert.h>
-#include <aips/Measures/MeasFrame.h>
 #include <trial/TableMeasures/ScalarMeasColumn.h>
 #include <trial/TableMeasures/ArrayMeasColumn.h>
 #include <trial/TableMeasures/TableMeasValueDesc.h>
@@ -39,19 +32,16 @@
 #include <trial/TableMeasures/TableMeasRefDesc.h>
 #include <trial/TableMeasures/TableMeasDesc.h>
 #include <aips/Measures/MEpoch.h>
+#include <aips/Measures/MDirection.h>
+#include <aips/Measures/MPosition.h>
+#include <aips/Measures/MeasTable.h>
+#include <aips/Measures/MeasData.h>
+#include <aips/Measures/MeasRef.h>
+#include <aips/Measures/MeasFrame.h>
+#include <aips/Measures/MeasConvert.h>
 #include <aips/Quanta/MVEpoch.h>
 #include <aips/Quanta/MVTime.h>
 #include <aips/Quanta/QLogical.h>
-#include <aips/Measures/MBaseline.h>
-#include <aips/Measures/MDirection.h>
-#include <aips/Measures/MDoppler.h>
-#include <aips/Measures/MEarthMagnetic.h>
-#include <aips/Measures/MFrequency.h>
-#include <aips/Measures/MDirection.h>
-#include <aips/Measures/MRadialVelocity.h>
-#include <aips/Measures/Muvw.h>
-#include <aips/Measures/MeasData.h>
-#include <aips/Measures/MeasRef.h>
 #include <aips/Tables/Table.h>
 #include <aips/Tables/TableDesc.h>
 #include <aips/Tables/ArrayColumn.h>
@@ -61,8 +51,12 @@
 #include <aips/Tables/ScaColDesc.h>
 #include <aips/Tables/ScalarColumn.h>
 #include <aips/Tables/TableRecord.h>
+#include <aips/Arrays/Array.h>
+#include <aips/Arrays/Vector.h>
 #include <aips/Utilities/ValType.h>
 #include <aips/Utilities/Assert.h>
+#include <aips/Exceptions/Error.h>
+#include <iostream.h>
 
 
 void showKeys (const TableRecord& record, uInt indent)
@@ -142,15 +136,12 @@ int main(int argc)
     // columns required.
     ArrayColumnDesc<Double> cdMDir("MDirColumn", "Simple mdirection column",
 				   IPosition(1,2), ColumnDesc::Direct);
-    ArrayColumnDesc<Double> cdMDir2("MDirColumn2", "Simple mdirection column",
-				    IPosition(1,3), ColumnDesc::Direct);
 
-    // A scalar MEpoch column with a fixed offset and refernce.  Fixed
+    // A scalar MEpoch column with a fixed offset and reference.  Fixed
     // references and offsets do not need additional columns as they are
     // stored as keywords.
     ScalarColumnDesc<Double> cdTOffset("TimeOffset",
 		  "MEpoch column with fix reference and offset");
-
 
     // The following three columns will be used to set up a Scalar MEpoch
     // column with variable references and offsets.  3 columns are needed.
@@ -221,7 +212,6 @@ int main(int argc)
     td.addColumn(cdTOffset);
     td.addColumn(cdVarOffset);
     td.addColumn(cdMDir);
-    td.addColumn(cdMDir2);
     td.addColumn(cdTimeRef);
     td.addColumn(cdTimeRefStr);
     td.addColumn(cdMEVS);
@@ -251,13 +241,6 @@ int main(int argc)
       TableMeasDesc<MDirection> tmdMDir(tmvdMDir);
       // writing create the measure column
       tmdMDir.write(td);
-
-      // The value desc. specifies the column to use for the measures
-      TableMeasValueDesc tmvdMDir2(td, "MDirColumn2");
-      // the TableMeasDesc gives the column a type (write internal values)
-      TableMeasDesc<MDirection> tmdMDir2(tmvdMDir2, True);
-      // writing create the measure column
-      tmdMDir2.write(td);
     }
     {
       MEpoch obsTime(MVEpoch(MVTime(1995, 5, 17, (8+18./60.)/24.)),
@@ -281,14 +264,14 @@ int main(int argc)
       // TableMeasDesc associate the value desc. and the reference desc. and
       // gives the column a type (MEpoch).
       TableMeasDesc<MEpoch> tmdObs(tmvdObs, tmrdObs);
-	
+
       // (test purposes only for purify - test assign and copy contructors
       TableMeasDesc<MEpoch> tmdObs1 = tmdObs;
-      TableMeasDesc<MEpoch> tmdObs2(tmdObs1);
+      TableMeasDesc<MEpoch> tmdObs1a(tmdObs1);
 
       // finally write the descriptor!  The column is now a TableMeasure
       // column.
-      tmdObs2.write(td);
+      tmdObs1a.write(td);
     }
     {
       // Set up a MEpoch column with variable references and offsets
@@ -540,7 +523,7 @@ int main(int argc)
       cout << "A column of MEpochs where the reference and offset are ";
       cout << "non-variable.\n";
       // create first a null object and attach it and copy it etc.
-      // show that these operation work.
+      // to show that these operations work.
       MEpoch::ScalarColumn tmpCol;
       if (tmpCol.isNull()) {
 	tmpCol.attach(tab, "TimeOffset");
@@ -596,7 +579,7 @@ int main(int argc)
       uInt i;
       for (i=0; i<tabRows; i++) {
 	tm.set(MVEpoch(1234 + (i/10.0)));
-	tmpCol.put(i, tm);
+	timeCol.put(i, tm);
       }
 
       cout << "Reading the MEpochs back from TimeOffset...\n";
@@ -687,6 +670,38 @@ int main(int argc)
 	AlwaysAssertExit (near (tm.get("s"),
 				MEpoch(MVEpoch(1234.+i/10.0)).get("s"),
 				1.e-10));
+
+	MEpoch tm1 = timeColRead.convert (i, MEpoch::UTC);
+	AlwaysAssertExit (tm1.getRef().getType() == MEpoch::UTC);
+	offptr = dynamic_cast<const MEpoch*> (tm1.getRef().offset());
+	AlwaysAssertExit (offptr == 0);
+	AlwaysAssertExit (near (tm1.get("s"),
+				MEpoch(MVEpoch(1234.+i/10.0)).get("s"),
+				1.e-10));
+
+	MEpoch tm2 = timeColRead.convert (i, tm1);
+	AlwaysAssertExit (tm2.getRef().getType() == MEpoch::UTC);
+	offptr = dynamic_cast<const MEpoch*> (tm2.getRef().offset());
+	AlwaysAssertExit (offptr == 0);
+	AlwaysAssertExit (near (tm2.get("s"),
+				MEpoch(MVEpoch(1234.+i/10.0)).get("s"),
+				1.e-10));
+
+	MPosition mpobs;
+	MeasTable::Observatory(mpobs, "WSRT");
+	MEpoch::Ref mref(MEpoch::LAST, MeasFrame(mpobs));
+	MEpoch tm3 = timeColRead.convert (i, mref);
+	AlwaysAssertExit (tm3.getRef().getType() == MEpoch::LAST);
+	offptr = dynamic_cast<const MEpoch*> (tm3.getRef().offset());
+	AlwaysAssertExit (offptr == 0);
+	MEpoch tm4 = MEpoch::Convert (tm3, mref)();
+	AlwaysAssertExit (near (tm3.get("s"), tm4.get("s"), 1.e-10));
+
+	MEpoch tm5 = timeColRead.convert (i, tm4);
+	AlwaysAssertExit (tm5.getRef().getType() == MEpoch::LAST);
+	offptr = dynamic_cast<const MEpoch*> (tm5.getRef().offset());
+	AlwaysAssertExit (offptr == 0);
+	AlwaysAssertExit (near (tm5.get("s"), tm4.get("s"), 1.e-10));
       }
     }
 
@@ -697,7 +712,6 @@ int main(int argc)
       if (mdirCol.measDesc().isRefCodeVariable()) {
 	cout << "Error: reference is variable!\n";
       }
-      MDirection::ScalarColumn mdirCol2(tab, "MDirColumn2");
 
       cout << "Filling the MDirection column MDirColumn\n";
       MDirection mdir;
@@ -705,7 +719,6 @@ int main(int argc)
 	MDirection mdir (Quantity(20, "deg"), Quantity(53, "deg"));
 	cout << "put: " << mdir << endl;
 	mdirCol.put(i, mdir);
-	mdirCol2.put(i, mdir);
       }
     }
 
@@ -716,11 +729,9 @@ int main(int argc)
       if (mdirCol.measDesc().isRefCodeVariable()) {
 	cout << "Error: reference is variable!\n";
       }
-      MDirection::ROScalarColumn mdirCol2(tab, "MDirColumn2");
       cout << "Reading from MDirection column MDirColumn\n";
       for (uInt i=0; i<tabRows; i++) {
 	cout << "retrieve: " << mdirCol(i) << endl;
-	cout << "retrieve: " << mdirCol2(i) << endl;
       }
     }
 
@@ -858,6 +869,48 @@ int main(int argc)
 	AlwaysAssertExit (near (offptr->get("s"), mjdToday.get("s"), 1.e-10));
 	MEpoch tmp = MEpoch::Convert (ew(i), MEpoch::TAI)();
 	AlwaysAssertExit (near (tmp.get("s"), ev(i).get("s"), 1.e-10));
+      }
+
+      Vector<MEpoch> tm1 = arrayCol.convert (0, MEpoch::UTC);
+      for (uInt i=0; i<10; i++) {
+	AlwaysAssertExit (tm1(i).getRef().getType() == MEpoch::UTC);
+	const MEpoch* offptr = dynamic_cast<const MEpoch*>
+	                               (tm1(i).getRef().offset());
+	AlwaysAssertExit (offptr == 0);
+	MEpoch tmp = MEpoch::Convert (ev(i), MEpoch::UTC)();
+	AlwaysAssertExit (near (tmp.get("s"), tm1(i).get("s"), 1.e-10));
+      }
+
+      Vector<MEpoch> tm2 = arrayCol.convert (0, tm1(0));
+      for (uInt i=0; i<10; i++) {
+	AlwaysAssertExit (tm2(i).getRef().getType() == MEpoch::UTC);
+	const MEpoch* offptr = dynamic_cast<const MEpoch*>
+	                               (tm2(i).getRef().offset());
+	AlwaysAssertExit (offptr == 0);
+	MEpoch tmp = MEpoch::Convert (ev(i), MEpoch::UTC)();
+	AlwaysAssertExit (near (tmp.get("s"), tm2(i).get("s"), 1.e-10));
+      }
+
+      MPosition mpobs;
+      MeasTable::Observatory(mpobs, "WSRT");
+      MEpoch::Ref mref(MEpoch::LAST, MeasFrame(mpobs));
+      Vector<MEpoch> tm3 = arrayCol.convert (0, mref);
+      for (uInt i=0; i<10; i++) {
+	AlwaysAssertExit (tm3(i).getRef().getType() == MEpoch::LAST);
+	const MEpoch* offptr = dynamic_cast<const MEpoch*>
+	                               (tm3(i).getRef().offset());
+	AlwaysAssertExit (offptr == 0);
+	MEpoch tmp = MEpoch::Convert (ev(i), mref)();
+	AlwaysAssertExit (near (tmp.get("s"), tm3(i).get("s"), 1.e-10));
+      }
+
+      Vector<MEpoch> tm5 = arrayCol.convert (0, tm3(0));
+      for (uInt i=0; i<10; i++) {
+	AlwaysAssertExit (tm5(i).getRef().getType() == MEpoch::LAST);
+	const MEpoch* offptr = dynamic_cast<const MEpoch*>
+	                               (tm5(i).getRef().offset());
+	AlwaysAssertExit (offptr == 0);
+	AlwaysAssertExit (near (tm5(i).get("s"), tm3(i).get("s"), 1.e-10));
       }
 
       if (doExcep) {
