@@ -4313,3 +4313,4 @@
 14 220 src rm trial/data/dishdemo/dishparkes.fits
 14 220 src rm trial/data/dishdemo/dishspecproc.fits
 14 220 src rm trial/data/dishdemo/dishmopra.fits
+14 220 src rm trial/data/dishdemo/makefile
