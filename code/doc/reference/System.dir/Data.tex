@@ -243,7 +243,7 @@ or only a small portion:
    yourhost% cvs co data/geodetic/IGRF
 \end{verbatim}
 
-After you have had code check out for some time, you may want to bring it
+After you have had code checked out for some time, you may want to bring it
 up to date with the current state of the code. You use \code{update} to do
 this, e.g.
 
@@ -255,7 +255,7 @@ this, e.g.
 \code{update} will not trample over your changes. It updates all files
 files which have not been modified, and where possible it merges in
 differences to files which you have modified without any problems. Where
-conflicts occur, it does includes your changes and other changes in
+conflicts occur, it includes your changes and other changes in
 a \textit{diff-like} format. When you get a warning about this problem,
 you must edit the file by hand and reconcile your changes and the other
 changes.
@@ -283,7 +283,7 @@ are kept beneath \file{config} directories. The directories which may be
 found beneath \file{config} are \file{bin} for executable scripts,
 \file{libexec} for scripts which are included rather than executed directly,
 and \file{makedefs} for the small bundles of functionality which are
-included by other makefile to allow them to do their work. A \file{config}
+included by other makefiles to allow them to do their work. A \file{config}
 tree can occur anywhere in the data repository source tree. The principal
 is that the \file{config} files should be placed as far down on the
 source tree as possible. For example, a script would only be placed in
@@ -338,11 +338,10 @@ When writing makefiles, there are some basic tools which should be
 used. \code{\$(RUN)} \textit{must} be used to execute the scripts
 used to generate a data component from scratch. This collects the
 exit status of the script and then uses the status to produce the
-update and error logs.
-
-Another tool which is often useful is \code{\$(MKHIER)}. When a
-fully qualified path is passed in, this will create the entire
-path if it doesn't exist, e.g. a makefile rule like:
+update and error logs. Another tool which is often useful is
+\code{\$(MKHIER)}. When a fully qualified path is passed in, this
+will create the entire path if it doesn't exist, e.g. a makefile
+rule like:
 
 \begin{verbatim}
    doit:
@@ -403,8 +402,8 @@ and has the same name as the current directory. Including the \file{install.fits
 makedef defines the rule which will copy all fits files in the current directory
 to the corresponding directory in the repository.
 
-So for example, the makefile to just copy a table which is not updated to the
-repository would look like:
+So for example, the makefile to just copy a table which is not updated as
+part of the \code{build} process to the repository would look like:
 
 \begin{verbatim}
    DATA_THISDIR  := $(shell pwd | sed -e 's=^/tmp_mnt/=/=')
