@@ -113,21 +113,3 @@ uInt NQCompoundParam<T>::addFunction(const Function<T> &newFunction) {
   };
   return i;
 }
-
-template <class T>
-void NQCompoundParam<T>::toParam_p() const {
-  for (uInt i=0; i<nparameters(); ++i) {
-    const_cast<FunctionParam<T> &>(param_p)[i] =
-      (*functionPtr_p[funpar_p[i]])[locpar_p[i]];
-  };
-}
-
-template <class T>
-void NQCompoundParam<T>::fromParam_p() const {
-  if (parset_p) {
-    parset_p = False;
-    for (uInt i=0; i<nparameters(); ++i) {
-      (*functionPtr_p[funpar_p[i]])[locpar_p[i]] = param_p[i];
-    };
-  };
-}

@@ -139,18 +139,13 @@ template<class T> class NQCompoundParam : public Function<T> {
   // Returns the dimension of functions in the linear combination
   virtual uInt ndim() const { return ndim_p; };
 
- protected:
-  //# Member functions
-  // Copy the local parameters to/from general block
-  // <group>
-  void toParam_p() const;
-  void fromParam_p() const;
-  // </group>
-
  private:
   //# Data
   // Number of dimensions of underlying functions
   uInt ndim_p;
+
+ protected:
+  //# Data
   // Pointer to each added function
   PtrBlock<Function<T> *> functionPtr_p;
   // Index of offset for each function to its parameters in general list
