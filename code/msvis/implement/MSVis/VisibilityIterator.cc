@@ -917,6 +917,7 @@ VisibilityIterator::operator=(const VisibilityIterator& other)
 	RWcolVisPtr[1]=&RWcolModelVis;
 	RWcolVisPtr[2]=&RWcolCorrVis;
 	RWcolWeight.reference(other.RWcolWeight);
+	RWcolSigma.reference(other.RWcolSigma);
 	RWcolImagingWeight.reference(other.RWcolImagingWeight);
     }
     return *this;
@@ -951,6 +952,7 @@ void VisibilityIterator::attachColumns()
   RWcolVisPtr[1]=&RWcolModelVis;
   RWcolVisPtr[2]=&RWcolCorrVis;
   RWcolWeight.attach(selTable_p,MS::columnName(MS::WEIGHT));
+  RWcolSigma.attach(selTable_p,MS::columnName(MS::SIGMA));
   RWcolFlag.attach(selTable_p,MS::columnName(MS::FLAG));
   if (cds.isDefined("IMAGING_WEIGHT")) 
     RWcolImagingWeight.attach(selTable_p,"IMAGING_WEIGHT");
@@ -1052,6 +1054,16 @@ void VisibilityIterator::setVis(const Cube<Complex>& vis, DataColumn whichOne)
 void VisibilityIterator::setWeight(const Vector<Float>& weight)
 {
     RWcolWeight.putColumn(weight);
+}
+
+void VisibilityIterator::setSigma(const Vector<Float>& sigma)
+{
+  Matrix<Float> sigmat=colSigma.getColumn();
+  for (Int i=0; i < nPol_p; i++) {
+    Vector<Float> r = sigmat.row(i);
+    r = sigma;
+  }
+  RWcolSigma.putColumn(sigmat);
 }
 
 void VisibilityIterator::setImagingWeight(const Matrix<Float>& wt)
