@@ -37,7 +37,7 @@
 
 
 void RegionHandler::setDefaultMask (Table& table,
-				      const String& regionName)
+				    const String& regionName)
 {
   // Store the new default name (when writable).
   if (table.isWritable()) {
@@ -59,76 +59,68 @@ String RegionHandler::getDefaultMask (const Table& table)
   return keys.asString(field);
 }
 
-ImageRegion* RegionHandler::makeRegion (const Table& table,
-					const String& regionName)
-{
-  // Make no region if the name is empty.
-  if (regionName.empty()) {
-    return 0;
-  }
-  // Try to find the region.
-  ImageRegion* regPtr = 0;
-  const TableRecord& keys = table.keywordSet();
-  Int field = keys.fieldNumber ("regions");
-  if (field >= 0) {
-    const TableRecord& regs = keys.subRecord(field);
-    field = regs.fieldNumber (regionName);
-    if (field >= 0) {
-      regPtr = ImageRegion::fromRecord (regs.subRecord (field),
-					table.tableName());
-    }
-  }
-  if (regPtr == 0) {
-    throw (AipsError ("RegionHandler::setDefaultMask - region " + regionName +
-		      " does not exist in table " + table.tableName()));
-  }
-  return regPtr;
-}
-
-
-void RegionHandler::defineRegion (Table& table,
+Bool RegionHandler::defineRegion (Table& table,
 				  const String& name,
 				  const ImageRegion& region,
+				  RegionHandler::GroupType type,
 				  Bool overwrite)
 {
-  if (table.isWritable()) {
-    TableRecord& keys = table.rwKeywordSet();
-    Int field = keys.fieldNumber ("regions");
-    if (field < 0) {
-      keys.defineRecord ("regions", TableRecord());
-    }
-    TableRecord& regs = keys.rwSubRecord("regions");
-    if (!overwrite  &&  regs.isDefined (name)) {
-	throw (AipsError ("RegionHandler::defineRegion - table " +
-			  table.tableName() +
-			  " already has a region with name " + name));
-    }
-    regs.defineRecord (name, region.toRecord (table.tableName()));
+  if (! table.isWritable()) {
+    return False;
   }
-}
-
-void RegionHandler::removeRegion (Table& table, const String& name)
-{
-  if (table.isWritable()) {
-    TableRecord& keys = table.rwKeywordSet();
-    Int field = keys.fieldNumber ("regions");
-    if (field >= 0) {
-      TableRecord& regs = keys.rwSubRecord(field);
-      field = regs.fieldNumber (name);
-      if (field >= 0) {
-	regs.removeField (field);
-      }
+  // First check if the region is already defined in "regions" or "masks".
+  // If so, remove it if possible. Otherwise throw an exception.
+  TableRecord& keys = table.rwKeywordSet();
+  Int groupField = findRegionGroup (table, name, RegionHandler::Any, False);
+  if (groupField >= 0) {
+    if (!overwrite) {
+      throw (AipsError ("RegionHandler::defineRegion - table " +
+			table.tableName() +
+			" already has a region or mask with name " + name));
+    }
+    TableRecord& regs = keys.rwSubRecord(groupField);
+    if (regs.isDefined (name)) {
+      regs.removeField (name);
     }
   }
+  // Okay, we can define the region now.
+  // Define the "regions" or "masks" group when needed.
+  String groupName = "regions";
+  if (type == RegionHandler::Masks) {
+    groupName = "masks";
+  }
+  if (! keys.isDefined (groupName)) {
+    keys.defineRecord (groupName, TableRecord());
+  }
+  // Now define the region in the group.
+  keys.rwSubRecord(groupName).defineRecord
+                        (name, region.toRecord (table.tableName()));
+  return True;
 }
 
-ImageRegion* RegionHandler::getRegion (const Table& table, const String& name)
+Bool RegionHandler::removeRegion (Table& table, const String& name,
+				  RegionHandler::GroupType type,
+				  Bool throwIfUnknown)
 {
-  const TableRecord& keys = table.keywordSet();
-  Int field = keys.fieldNumber ("regions");
-  if (field >= 0) {
-    const TableRecord& regs = keys.subRecord(field);
-    field = regs.fieldNumber (name);
+  if (! table.isWritable()) {
+    return False;
+  }
+  Int groupField = findRegionGroup (table, name, type, throwIfUnknown);
+  if (! groupField >= 0) {
+    TableRecord& keys = table.rwKeywordSet();
+    keys.rwSubRecord(groupField).removeField (name);
+  }
+  return True;
+}
+
+ImageRegion* RegionHandler::getRegion (const Table& table, const String& name,
+				       RegionHandler::GroupType type,
+				       Bool throwIfUnknown)
+{
+  Int groupField = findRegionGroup (table, name, type, throwIfUnknown);
+  if (groupField >= 0) {
+    const TableRecord& regs = table.keywordSet().subRecord(groupField);
+    Int field = regs.fieldNumber (name);
     if (field >= 0) {
       return ImageRegion::fromRecord (regs.subRecord (field),
 				      table.tableName());
@@ -137,13 +129,53 @@ ImageRegion* RegionHandler::getRegion (const Table& table, const String& name)
   return 0;
 }
 
+Int RegionHandler::findRegionGroup (const Table& table,
+				    const String& regionName,
+				    RegionHandler::GroupType type,
+				    Bool throwIfUnknown)
+{
+  // Check if the region is defined in "regions" or "masks".
+  // If so, return its groupName.
+  const TableRecord& keys = table.keywordSet();
+  if (type != RegionHandler::Masks) {
+    Int field = keys.fieldNumber ("regions");
+    if (field >= 0) {
+      const TableRecord& regs = keys.subRecord(field);
+      if (regs.isDefined (regionName)) {
+	return field;
+      }
+    }
+  }
+  if (type != RegionHandler::Regions) {
+    Int field = keys.fieldNumber ("masks");
+    if (field >= 0) {
+      const TableRecord& regs = keys.subRecord(field);
+      if (regs.isDefined (regionName)) {
+	return field;
+      }
+    }
+  }
+  if (throwIfUnknown) {
+    String typeName = "region/mask ";
+    if (type == RegionHandler::Regions) {
+      typeName = "region ";
+    } else if (type == RegionHandler::Masks) {
+      typeName = "mask ";
+    }
+    throw (AipsError ("RegionHandler: " + typeName + regionName +
+		      " does not exist in table " + table.tableName()));
+  }
+  return -1;
+}
+
+
 LCPagedMask RegionHandler::makeMask (const LatticeBase& lattice,
 				     const String& name)
 {
-    if (! lattice.isPaged()) {
-	throw (AipsError ("RegionHandler::makeMask - "
-			  "cannot create mask, because lattice is transient"));
-    }
-    return LCPagedMask (TiledShape (lattice.shape(), lattice.niceCursorShape()),
-			lattice.name() + '/' + name);
+  if (! lattice.isPaged()) {
+    throw (AipsError ("RegionHandler::makeMask - "
+		      "cannot create mask, because lattice is transient"));
+  }
+  return LCPagedMask (TiledShape (lattice.shape(), lattice.niceCursorShape()),
+		      lattice.name() + '/' + name);
 }
