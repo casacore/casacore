@@ -1,5 +1,5 @@
 //# dRemoveAxes.cc: demonstrate use of CoordinateUtil::removeAxes function
-//# Copyright (C) 1994,1995,1996,1997,1998,1999,2000,2001
+//# Copyright (C) 1994,1995,1996,1997,1998,1999,2000,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -38,15 +38,18 @@
 #include <aips/iomanip.h>
 
 
-void listIt (const CoordinateSystem& cSys,
-             const Vector<Double>& worldReplacement);
 
 
 main (int argc, char **argv)
 {
 try {
 
+   LogOrigin or("dRemoveAxes", "main()", WHERE);
+   LogIO os(or);
+   IPosition d1, d2;
    Vector<Double> worldReplacement;
+   Vector<Double> pixelReplacement;
+//
    {
      cout << "remove world axes = [0, 1] and associated pixel axes from [ra, dec, freq]" << endl;
      CoordinateSystem cSys = CoordinateUtil::defaultCoords3D();
@@ -55,7 +58,7 @@ try {
      Bool remove = False;
      if (CoordinateUtil::removeAxes(cSys, worldReplacement,
                                     list,  remove)) {
-       listIt (cSys, worldReplacement);
+       cSys.list(os, MDoppler::RADIO, d1, d2);
      } else {
        cout << "failed" << endl;
      }
@@ -70,7 +73,7 @@ try {
      Bool remove = True;
      if (CoordinateUtil::removeAxes(cSys, worldReplacement,
                                     list, remove)) {
-        listIt (cSys, worldReplacement);
+        cSys.list(os, MDoppler::RADIO, d1, d2);
      } else {
        cout << "failed" << endl;
      }
@@ -86,7 +89,7 @@ try {
      Bool remove = True;
      if (CoordinateUtil::removeAxes(cSys, worldReplacement,
                                     list, remove)) {
-        listIt (cSys, worldReplacement);
+        cSys.list(os, MDoppler::RADIO, d1, d2);
      } else {
        cout << "failed" << endl;
      }
@@ -107,7 +110,7 @@ try {
         list(1) = 1;
         if (CoordinateUtil::removeAxes(cSys, worldReplacement,
                                        list, remove)) {
-           listIt (cSys, worldReplacement);
+        cSys.list(os, MDoppler::RADIO, d1, d2);
         } else {
           cout << "failed" << endl;
         }
@@ -138,7 +141,7 @@ try {
      
      if (CoordinateUtil::removeAxes(cSys, worldReplacement,
                                     list, remove)) {
-       listIt (cSys, worldReplacement);
+        cSys.list(os, MDoppler::RADIO, d1, d2);
      } else {
        cout << "failed" << endl;
      }
@@ -154,7 +157,85 @@ try {
      Bool remove = True;
      if (CoordinateUtil::removeAxes(cSys, worldReplacement,
                                     list, remove)) {
-       listIt (cSys, worldReplacement);
+        cSys.list(os, MDoppler::RADIO, d1, d2);
+     } else {
+       cout << "failed" << endl;
+     }
+   }   
+   cout << endl << endl;
+   {
+     cout << "remove pixel axes = [0] from [ra,dec,freq]" << endl;
+     CoordinateSystem cSys = CoordinateUtil::defaultCoords3D();
+
+     Vector<uInt> list(1);
+     list(0) = 0;
+     Bool remove = True;
+     if (CoordinateUtil::removePixelAxes(cSys, pixelReplacement,
+                                        list, remove)) {
+        cSys.list(os, MDoppler::RADIO, d1, d2);
+     } else {
+       cout << "failed" << endl;
+     }
+   }   
+   cout << endl << endl;
+   {
+     cout << "remove pixel axes = [1] from [ra,dec,freq]" << endl;
+     CoordinateSystem cSys = CoordinateUtil::defaultCoords3D();
+
+     Vector<uInt> list(1);
+     list(0) = 1;
+     Bool remove = True;
+     if (CoordinateUtil::removePixelAxes(cSys, pixelReplacement,
+                                        list, remove)) {
+        cSys.list(os, MDoppler::RADIO, d1, d2);
+     } else {
+       cout << "failed" << endl;
+     }
+   }   
+   cout << endl << endl;
+   {
+     cout << "remove pixel axes = [0,1] from [ra,dec,freq]" << endl;
+     CoordinateSystem cSys = CoordinateUtil::defaultCoords3D();
+
+     Vector<uInt> list(2);
+     list(0) = 0;
+     list(1) = 1;
+     Bool remove = True;
+     if (CoordinateUtil::removePixelAxes(cSys, pixelReplacement,
+                                        list, remove)) {
+        cSys.list(os, MDoppler::RADIO, d1, d2);
+     } else {
+       cout << "failed" << endl;
+     }
+   }   
+   cout << endl << endl;
+   {
+     cout << "remove pixel axes = [0,2] from [ra,dec,freq]" << endl;
+     CoordinateSystem cSys = CoordinateUtil::defaultCoords3D();
+
+     Vector<uInt> list(2);
+     list(0) = 0;
+     list(1) = 2;
+     Bool remove = True;
+     if (CoordinateUtil::removePixelAxes(cSys, pixelReplacement,
+                                        list, remove)) {
+        cSys.list(os, MDoppler::RADIO, d1, d2);
+     } else {
+       cout << "failed" << endl;
+     }
+   }   
+   cout << endl << endl;
+   {
+     cout << "remove pixel axes = [1,2] from [ra,dec,freq]" << endl;
+     CoordinateSystem cSys = CoordinateUtil::defaultCoords3D();
+
+     Vector<uInt> list(2);
+     list(0) = 1;
+     list(1) = 2;
+     Bool remove = True;
+     if (CoordinateUtil::removePixelAxes(cSys, pixelReplacement,
+                                        list, remove)) {
+        cSys.list(os, MDoppler::RADIO, d1, d2);
      } else {
        cout << "failed" << endl;
      }
@@ -172,14 +253,4 @@ try {
  
 }
 
-
-void listIt (const CoordinateSystem& cSys,
-             const Vector<Double>& worldReplacement)
-{
-    cout << "nWorldAxes = " << cSys.nWorldAxes() << endl;
-    cout << "nPixelAxes = " << cSys.nPixelAxes() << endl;
-    cout << "world axis names = " << cSys.worldAxisNames() << endl;
-    cout << "reference pixels = " << cSys.referencePixel() << endl;
-    cout << "replacement world values = " << worldReplacement << endl;
-}
 
