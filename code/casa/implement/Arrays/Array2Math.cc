@@ -1,5 +1,5 @@
 //# Array2Math.cc: Arithmetic functions defined on Arrays
-//# Copyright (C) 1993,1994,1995,1996,1999
+//# Copyright (C) 1993,1994,1995,1996,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //# 
 //# This library is free software; you can redistribute it and/or modify it
@@ -388,8 +388,9 @@ void RealToComplex(Array<Complex> &carray, const Array<Float> &rarray)
 
     uInt n=carray.nelements();
     for (uInt i=0; i<n; i++) {
-	cptr[i].real() = rptr[2*i];
-	cptr[i].imag() = rptr[2*i+1];
+      ///	cptr[i].real() = rptr[2*i];
+      ///	cptr[i].imag() = rptr[2*i+1];
+      cptr[i] = Complex(rptr[2*i], rptr[2*i+1]);
     }
     rarray.freeStorage(rptr, delr);
     carray.putStorage(cptr, delc);
@@ -418,8 +419,9 @@ void RealToComplex(Array<DComplex> &carray, const Array<Double> &rarray)
 
     uInt n=carray.nelements();
     for (uInt i=0; i<n; i++) {
-	cptr[i].real() = rptr[2*i];
-	cptr[i].imag() = rptr[2*i+1];
+      ///	cptr[i].real() = rptr[2*i];
+      ///	cptr[i].imag() = rptr[2*i+1];
+      cptr[i] = DComplex(rptr[2*i], rptr[2*i+1]);
     }
     rarray.freeStorage(rptr, delr);
     carray.putStorage(cptr, delc);
