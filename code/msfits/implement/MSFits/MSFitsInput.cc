@@ -1513,7 +1513,7 @@ void MSFitsInput::fillExtraTables()
           mss.transition().put(j,transition);
           Vector<Double> restFreqs(1);
           restFreqs(0)=restfreq_p; 
-          if (restFreqs(0)==0.0) {
+          if (restFreqs(0)<=0.0) {
             // put in the reference freq as default for the rest frequency
             restFreqs(0)=msc_p->spectralWindow().refFrequency()(spwId);
           }
