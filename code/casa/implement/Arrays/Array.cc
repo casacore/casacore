@@ -576,14 +576,14 @@ template<class T> Array<T> Array<T>::reform(const IPosition &len,
 }
 
 template<class T> const Array<T> Array<T>::
-nonDegenerate(uInt startingAxis) const {
-  Array<T> * This = (Array<T> *) this;
-  const Array<T> tmp(This->nonDegenerate(startingAxis));
-  return tmp;
+nonDegenerate(uInt startingAxis) const
+{
+  return ((Array<T>*) this)->nonDegenerate(startingAxis);
 }
 
 template<class T> Array<T> Array<T>::
-nonDegenerate(uInt startingAxis) {
+nonDegenerate(uInt startingAxis)
+{
   Array<T> tmp;
   DebugAssert(ok(), ArrayError);
   tmp.nonDegenerate(*this, startingAxis);
@@ -591,10 +591,36 @@ nonDegenerate(uInt startingAxis) {
 }
 
 template<class T> void Array<T>::
-nonDegenerate(Array<T> & other, uInt startingAxis) {
+nonDegenerate(Array<T> & other, uInt startingAxis)
+{
+  AlwaysAssert(startingAxis < other.ndim(), ArrayError);
+  IPosition ignoreAxes(startingAxis);
+  for (uInt i=0; i<startingAxis; i++) {
+    ignoreAxes(i) = i;
+  }
+  nonDegenerate (other, ignoreAxes);
+}
+
+template<class T> const Array<T> Array<T>::
+nonDegenerate(const IPosition& ignoreAxes) const
+{
+  return ((Array<T>*) this)->nonDegenerate(ignoreAxes);
+}
+
+template<class T> Array<T> Array<T>::
+nonDegenerate(const IPosition& ignoreAxes)
+{
+  Array<T> tmp;
+  DebugAssert(ok(), ArrayError);
+  tmp.nonDegenerate(*this, ignoreAxes);
+  return tmp;
+}
+
+template<class T> void Array<T>::
+nonDegenerate(Array<T> & other, const IPosition& ignoreAxes)
+{
   DebugAssert(ok(), ArrayError);
   AlwaysAssert(other.ndim() > 0, AipsError);
-  AlwaysAssert(startingAxis < other.ndim(), ArrayError);
 
   // These data members are the same irrespective of the degenerate axes. 
   nels = other.nels;
@@ -602,15 +628,31 @@ nonDegenerate(Array<T> & other, uInt startingAxis) {
   data = other.data;
   
   // To remove degenerate axes use two passes - first find out how many axes
-  // are not of length one.
-  uInt count=0;
+  // have to be kept.
   uInt i;
-  for (i=startingAxis; i < other.ndim(); i++)
-    if (other.length[i] != 1) 
+  uInt nd = other.ndim();
+  // First determine which axes have to be ignored, thus always be kept.
+  // Do not count here, because in theory ignoreAxes can contain the
+  // same axis more than once.
+  IPosition keepAxes(nd, 0);
+  for (i=0; i<ignoreAxes.nelements(); i++) {
+      AlwaysAssert (ignoreAxes(i) < nd, AipsError);
+      keepAxes(ignoreAxes(i)) = 1;
+  }
+  // Now count all axes to keep.
+  uInt count=0;
+  for (i=0; i<nd; i++) {
+    if (keepAxes(i) == 1) {
       count++;
-  count += startingAxis;
+    }else{
+      if (other.length[i] != 1) {
+	keepAxes(i) = 1;
+        count++;
+      }
+    }
+  }
   
-  // A special case - all axes are of length one.
+  // A special case - all axes have length=1
   if (count == 0) {
     ndimen = 1;
     start.resize(1, False, False);
@@ -624,7 +666,7 @@ nonDegenerate(Array<T> & other, uInt startingAxis) {
     return;        // early exit - special case
   }
 
-  // Maybe we have no axes of length one.
+  // Maybe we have no axes to remove
   if (count == other.ndim()){
     ndimen = other.ndimen;
     start = other.start;
@@ -634,7 +676,7 @@ nonDegenerate(Array<T> & other, uInt startingAxis) {
     return;
   }
 
-  // OK, we have some length==1 axes
+  // OK, we have some axes to remove
   ndimen = count;
   start.resize(ndimen, False, False);
   length.resize(ndimen, False, False);
@@ -643,17 +685,17 @@ nonDegenerate(Array<T> & other, uInt startingAxis) {
 
   uInt skippedVolume = 1;
   count=0;
-  for (i=0; i < other.ndim(); i++) {
-    if (other.length[i] != 1 || i < startingAxis) {
+  for (i=0; i<nd; i++) {
+    if (keepAxes(i) == 1) {
       length[count] = other.length[i];
       start[count] = other.start[i];
       originalLength[count] = other.originalLength[i];
       inc[count] = skippedVolume*other.inc[i];
       skippedVolume = 1;
       count++;
-    } 
-    else
+    }else{
       skippedVolume *= other.originalLength[i];
+    }
   }
 }
 

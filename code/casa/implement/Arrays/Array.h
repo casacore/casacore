@@ -335,11 +335,17 @@ public:
     // Arrays.  Only axes greater than startingAxis are considered (normally
     // one wants to remove trailing axes. The first two of these function
     // return an Array reference with axes removed. The last of these functions
-    // returns a reference to the 'other' array with degenerater axes removed.
+    // returns a reference to the 'other' array with degenerated axes removed.
+    // <br>
+    // The functions with argument <src>ignoreAxes</src> do
+    // not consider the axes given in that argument..
     // <group>
     Array<T> nonDegenerate(uInt startingAxis=0);
     const Array<T> nonDegenerate(uInt startingAxis=0) const;
     void nonDegenerate(Array<T> & other, uInt startingAxis=0);
+    Array<T> nonDegenerate(const IPosition& ignoreAxes);
+    const Array<T> nonDegenerate(const IPosition& ignoreAxes) const;
+    void nonDegenerate(Array<T> & other, const IPosition& ignoreAxes);
     // </group> 
 
     // These member functions return an Array reference with the specified
