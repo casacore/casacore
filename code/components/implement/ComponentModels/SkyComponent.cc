@@ -95,11 +95,11 @@ void SkyComponent::project(ImageInterface<Float> & plane) const {
   DebugAssert(ok(), AipsError);
 }
 
-Flux<Double> SkyComponent::flux() {
+Flux<Double> & SkyComponent::flux() {
   DebugAssert(ok(), AipsError);
   return itsCompPtr->flux();
 }
-const Flux<Double> SkyComponent::flux() const {
+const Flux<Double> & SkyComponent::flux() const {
   DebugAssert(ok(), AipsError);
   return itsCompPtr->flux();
 }
