@@ -604,7 +604,10 @@ MethodResult squarer::runMethod(uInt which,
     \item This is the returned value. {\tt returnval} is a special
           parameter name, and you may not use it for any other
           argument. Void functions merely omit having a parameter named
-          {\tt returnval}.
+          {\tt returnval}. Note that pure output parameters should be
+          set to {\tt ParameterSet::Out}, whereas any parameters which
+          are both input and output (used and set) should be marked
+          {\tt ParameterSet::InOut}.
     \item
     \item Only run the method if we're told to (otherwise we're just
           {\em defining} the parameters we need).
@@ -882,8 +885,10 @@ system. The presently implemented or envisaged services are:
   \item[Progress] Display a ``sliding bar'' visual indication of how
   far a (typically) long-running process has progressed. A no-op for
   non-interactive sessions. {\em not yet implemented} 
-  \item[Graphics] Simple plotting and image display. A no-op if
-  non-interactive. {\em not yet implemented}
+  \item[PGPlotter] Plotting (both line and graphics) is available through the
+                   PGPlotter class. The preferred way for an application to
+                   get its PGPlotter is via 
+                   {\tt ApplicationEnvironment::getPlotter}.
 \end{description}
 
 \subsection{Exception strategy}
