@@ -203,7 +203,9 @@ public:
   Bool ok() const;
 
 private:
+  void createTable(const String & fileName, const Table::TableOption option);
   void writeTable();
+  void readTable(const String & fileName, const Bool readOnly);
   //  Int compareAbsI(const void * comp1Ptr, const void * comp2Ptr);
   Block<SkyComponent> itsList;
   uInt itsNelements;
