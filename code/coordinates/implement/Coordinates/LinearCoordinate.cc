@@ -446,89 +446,8 @@ Coordinate *LinearCoordinate::clone() const
 }
 
 
-void LinearCoordinate::checkFormat(Coordinate::formatType& format,
-                                   const Bool ) const
-//
-//
-{
-// Scientific or fixed formats only are allowed.
-// Absolute or offset is irrelevant
- 
-   if (format == Coordinate::DEFAULT) {
-      format = Coordinate::SCIENTIFIC;
-   } else {
-      if (format != Coordinate::SCIENTIFIC &&
-          format != Coordinate::FIXED) format = Coordinate::SCIENTIFIC;
-   }
-}
-
-void LinearCoordinate::getPrecision(Int& precision,
-                                    Coordinate::formatType& format,
-                                    const Bool absolute,
-                                    const Int defPrecScientific,
-                                    const Int defPrecFixed,
-                                    const Int ) const
-{
-// Scientific or fixed formats only are allowed.
-// Absolute or offset is irrelevant
- 
-   checkFormat (format, absolute);
-   
-   if (format == Coordinate::SCIENTIFIC) {
-      if (defPrecScientific >= 0) {
-         precision = defPrecScientific;
-      } else {
-         precision = 6;              
-      }
-   } else if (format == Coordinate::FIXED) {
-      if (defPrecFixed >= 0) {
-         precision = defPrecFixed;
-      } else {
-         precision = 6;
-      }
-   }
-}
-
-String LinearCoordinate::format(String& units,
-                                const Coordinate::formatType format,
-                                const Double worldValue,
-                                const uInt worldAxis,
-                                const Bool absolute,
-                                const Int precision) const
-{
-   AlwaysAssert(worldAxis < nWorldAxes(), AipsError);
- 
-// Check format
- 
-   Coordinate::formatType form = format;
-   checkFormat (form, absolute);
-   
-   
-// Set default precision
- 
-   Int prec = precision;
-   if (prec < 0) getPrecision(prec, form, absolute, -1, -1, -1);
-       
-   
-// Format and get units
-         
-   ostrstream oss;
-   if (form == Coordinate::SCIENTIFIC) {
-      oss.setf(ios::scientific, ios::floatfield);
-      oss.precision(prec);
-      oss << worldValue;
-   } else if (form == Coordinate::FIXED) {
-      oss.setf(ios::fixed, ios::floatfield);
-      oss.precision(prec);
-      oss << worldValue;        
-   }                            
-   units = worldAxisUnits()(worldAxis);
- 
-   return String(oss);
-}
 
 
-    
 Coordinate* LinearCoordinate::makeFourierCoordinate (const Vector<Bool>& axes,
                                                      const Vector<Int>& shape) const
 //        

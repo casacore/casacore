@@ -171,27 +171,6 @@ public:
                       Double tol=1e-6) const;
     // </group>
 
-    // Format a LinearCoordinate world value with the common format
-    // interface (refer to the base class <linkto class=Coordinate>Coordinate</linkto>
-    // for more details on this interface, particularly with regards polymorphic use).
-    // A LinearCoordinate can be formatted in either Coordinate::SCIENTIFIC
-    // or Coordinate::FIXED formats only.  The argument absolute
-    // is ignored.
-    //<group>
-    virtual void getPrecision(Int& precision,
-                              Coordinate::formatType& format,
-                              const Bool absolute,
-                              const Int defPrecSci, 
-                              const Int defPrecFloat,
-                              const Int defPrecRADEC) const;
-    virtual String format(String& units, 
-                          const Coordinate::formatType format,
-                          const Double worldValue,
-                          const uInt worldAxis,
-                          const Bool absolute,
-                          const Int precision = -1) const;
-    //</group>
-
     // Find the Coordinate for when we Fourier Transform ourselves.  This pointer
     // must be deleted by the caller. Axes specifies which axes of the coordinate
     // you wish to transform.   Shape specifies the shape of the image

@@ -35,6 +35,7 @@
 #include <aips/Measures/MFrequency.h>
 
 class LogIO;
+template<class T> class Quantum;
 
 // <summary>
 // Interconvert pixel and frequency values.
@@ -211,28 +212,6 @@ public:
                       Double tol=1e-6) const;
     // </group>
 
-    // Format a SpectralCoordinate world value with the common format interface
-    // (refer to the base class <linkto class=Coordinate>Coordinate</linkto> for
-    // more details on this interface, particularly with regards polymorphic
-    // use).
-    //
-    // A SpectralCoordinate can be formatted in either
-    // <src>Coordinate::SCIENTIFIC</src> or <src>Coordinate::FIXED</src> formats
-    // only.  The argument <src>absolute</src> is ignored.
-    //<group>
-    virtual void getPrecision(Int& precision,
-                              Coordinate::formatType& format,
-                              const Bool absolute,
-                              const Int defPrecSci,
-                              const Int defPrecFloat,
-                              const Int defPrecRADEC) const;
-    virtual String format(String& units,
-                          const Coordinate::formatType format,
-                          const Double worldValue,
-                          const uInt worldAxis,
-                          const Bool absolute,
-                          const Int precision = -1) const;
-    //</group>
 
     // Find the Coordinate for when we Fourier Transform ourselves.  This pointer
     // must be deleted by the caller. Axes specifies which axes of the coordinate
