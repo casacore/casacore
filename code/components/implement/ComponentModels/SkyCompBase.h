@@ -32,6 +32,7 @@
 #include <aips/aips.h>
 #include <trial/ComponentModels/ComponentType.h>
 #include <aips/Utilities/RecordTransformable.h>
+#include <aips/Mathematics/Complexfwd.h>
 
 class MFrequency;
 class MVFrequency;
@@ -46,6 +47,7 @@ class GlishRecord;
 class Unit;
 template <class T> class Flux;
 template <class T> class Vector;
+template <class T> class Matrix;
 template <class T> class Cube;
 template <class Ms> class MeasRef;
 
@@ -239,6 +241,16 @@ public:
   // real.
   virtual Flux<Double> visibility(const Vector<Double>& uvw,
 				  const Double& frequency) const = 0;
+
+  // Same as the previous function except that many (u,v,w) points are done at
+  // once. The visibilities are returned in the first argument which must have
+  // dimensions of [4, nChan, nVis]. The points to sample are specified in the
+  // second argument which must have dimensions of [3, nVis], and the
+  // frequencoies to sampel are specified by the third argument which must have
+  // a length of nChan.
+  virtual void visibility(Cube<DComplex>& visibilities,
+			  const Matrix<Double>& uvws,
+			  const Vector<Double>& frequencies) const = 0;
 
   // This functions convert between a record and a component.  Derived classes
   // can interpret fields in the record in a class specific way. These
