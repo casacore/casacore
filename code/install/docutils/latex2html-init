@@ -24,7 +24,9 @@ $DESTDIR = '';         # Put the result in this directory
 # another file directory.
 $NO_SUBDIR = 0;
 
-if(!$DOCSROOT){
+if(length $ENV{DOCSROOT} > 0){
+  $DOCSROOT = $ENV{DOCSROOT};
+} else {
    $DOCSROOT = '../..';
 }
 if(!$DOCSCOLOR) {
