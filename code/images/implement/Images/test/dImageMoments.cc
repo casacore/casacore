@@ -1,5 +1,5 @@
 //# dImageMoments.cc: generate image moments
-//# Copyright (C) 1996,1997,1998,1999,2000,2001,2003
+//# Copyright (C) 1996,1997,1998,1999,2000,2001,2003,2004
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -210,7 +210,7 @@ try {
    inputs.create("include", "0.0", "Pixel range to include");
    inputs.create("exclude", "0.0", "Pixel range to exclude");
    inputs.create("snr", "3.0,0.0", "SNR cutoff and sigma for automatic window method");
-   inputs.create("out", "dImageMoments.output_file", "Output root image name");
+   inputs.create("out", "dImageMoments_tmp", "Output root image name");
    inputs.create("smout", "", "Output smoothed image name");
    inputs.create("plotter", "none", "PGPLOT device");
    inputs.create("nxy", "-1", "Number of subplots in x and y");
