@@ -173,7 +173,7 @@ T ::avdev(const MaskedArray<T> &, T) - MaskedArray must have at least 1 element
 
 Test insufficient elements, ::median (const MaskedArray &, Bool)
 Caught an ArrayError:
-T ::median(const MaskedArray<T> &, Bool) - MaskedArray must have at least 1 element
+T ::median(const MaskedArray<T> &) - MaskedArray must have at least 1 element
 
 
 
