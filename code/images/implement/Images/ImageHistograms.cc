@@ -117,6 +117,7 @@ ImageHistograms<T>::ImageHistograms (const ImageInterface<T>& imageU,
 template <class T>
 ImageHistograms<T>::ImageHistograms(const ImageHistograms<T> &other)
                       : os_p(other.os_p),
+                        pInImage_p(other.pInImage_p),
                         binAll_p(other.binAll_p),
                         goodParameterStatus_p(other.goodParameterStatus_p),
                         needStorageImage_p(other.needStorageImage_p),
@@ -137,9 +138,6 @@ ImageHistograms<T>::ImageHistograms(const ImageHistograms<T> &other)
 // Copy constructor
 //
 { 
- // Assign to image pointer
- 
-   pInImage_p = other.pInImage_p;
   
 // Copy storage images and assign storage image pointers
 
