@@ -29,10 +29,6 @@
 #if !defined(AIPS_MEASTABLE_H)
 #define AIPS_MEASTABLE_H
 
-#if defined(_AIX)
-#pragma implementation ("MeasTable.cc")
-#endif
-
 //# Includes
 #include <aips/aips.h>
 #include <aips/Measures/MeasData.h>
@@ -277,9 +273,13 @@ public:
   static const Vector<Double> &mulPosSunZ(uInt which, Double T);
   // </group>
   // Get the rotation matrix to change position from ecliptic to rectangular
+  // for Soma et al. analytical expression
   static const RotMatrix &posToRect();
   // Get the rotation matrix to change position from rectangular to ecliptic
+  // for Soma et al. analytical expression
   static const RotMatrix &rectToPos();
+  // Get the rotation matrix from galactic to supergalactic
+  static const RotMatrix &galToSupergal();
   // </group>
   
   // Position related routines
