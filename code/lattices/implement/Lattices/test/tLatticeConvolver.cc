@@ -1,5 +1,5 @@
 //# tLatticeConvolver.cc:
-//# Copyright (C) 1997
+//# Copyright (C) 1997,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -46,22 +46,107 @@ int main() {
   try {
     LatticeConvolver<Float> d;
 
-    TempLattice<Float> psf(IPosition(3,160,160,160));
+    TempLattice<Float> psf(IPosition(4,16,5,1,9));
     psf.set(0.0f);
     psf.putAt(1.0f, psf.shape()/2);
-    LatticeConvolver<Float> c(psf);
-    TempLattice<Float> extractedPsf(psf.shape());
-    c.getPsf(extractedPsf);
-    AlwaysAssert(near(extractedPsf.getAt(psf.shape()/2), 1.0f, 
-		      NumericTraits<Float>::epsilon), AipsError);
-    extractedPsf.putAt(0.0f, psf.shape()/2);
-    RO_LatticeIterator<Float> iter(extractedPsf, 
-				   extractedPsf.niceCursorShape(extractedPsf.maxPixels()));
-    for (iter.reset(); !iter.atEnd(); iter++) {
-      AlwaysAssert(allNearAbs(iter.cursor(), 0.0f, 
-			      NumericTraits<Float>::epsilon), AipsError);
-    }
-    
+    {
+      LatticeConvolver<Float> c(psf);
+      TempLattice<Float> extractedPsf(psf.shape());
+      // test the getPsf function
+      c.getPsf(extractedPsf);
+      AlwaysAssert(near(extractedPsf.getAt(psf.shape()/2), 1.0f, 
+			NumericTraits<Float>::epsilon), AipsError);
+      extractedPsf.putAt(0.0f, psf.shape()/2);
+      RO_LatticeIterator<Float> iter(extractedPsf, 
+				     extractedPsf.niceCursorShape());
+      for (iter.reset(); !iter.atEnd(); iter++) {
+	AlwaysAssert(allNearAbs(iter.cursor(), 0.0f,
+				NumericTraits<Float>::epsilon), AipsError);
+      }
+   // test circular convolution
+ }
+ {
+      // test linear convolution
+   {
+     const IPosition imageShape = psf.shape();
+     LatticeConvolver<Float> c(psf, imageShape);
+   }
+   {
+     const IPosition imageShape(4,1);
+     LatticeConvolver<Float> c(psf, imageShape);
+   }
+   {
+     const IPosition imageShape(4,2);
+     LatticeConvolver<Float> c(psf, imageShape);
+   }
+   {
+     const IPosition imageShape(4,32);
+     LatticeConvolver<Float> c(psf, imageShape);
+   }
+   {
+     TempLattice<Float> psf1D(IPosition(1,3));
+     psf1D.set(0.0f);
+     psf1D.putAt(1.0f, psf1D.shape()/2);
+     psf1D.putAt(0.5f, psf1D.shape()/2-1);
+     psf1D.putAt(0.3f, psf1D.shape()/2+1);
+     Array<Float> psfArray;
+     psf1D.getSlice(psfArray, IPosition(1,0), psf1D.shape());
+     cout << "psf = " << psfArray.ac() << endl;
+
+     TempLattice<Float> model(IPosition(1,7));
+     model.set(0.0);
+     model.putAt(2.0, IPosition(1,0));
+     model.putAt(5.0, model.shape()-1);
+     Array<Float> modelArray;
+     model.getSlice(modelArray, IPosition(1,0), model.shape());
+     cout << "model = " << modelArray.ac() << endl;
+     
+     const IPosition imageShape = model.shape();
+     LatticeConvolver<Float> c(psf1D, imageShape);
+
+     TempLattice<Float> result(model.shape());
+     c.linear(result, model);
+
+     Array<Float> resultArray;
+     result.getSlice(resultArray, IPosition(1,0), result.shape());
+     cout << "result = " << resultArray.ac() << endl;
+   }
+   {
+     TempLattice<Float> psf2D(IPosition(2,3,3));
+     psf2D.set(0.0f);
+     IPosition centre = psf2D.shape()/2;
+     psf2D.putAt(1.0f, centre);
+     centre(0) -= 1;
+     psf2D.putAt(0.5f, centre);
+     centre(0) += 2;
+     psf2D.putAt(0.4f, centre);
+     centre = psf2D.shape()/2; centre(1) -= 1;
+     psf2D.putAt(0.2f, centre);
+     centre(1) += 2;
+     psf2D.putAt(0.1f, centre);
+     Array<Float> psfArray;
+     psf2D.getSlice(psfArray, IPosition(2,0), psf2D.shape());
+     cout << "psf = " << psfArray.ac() << endl;
+
+     TempLattice<Float> model(IPosition(2,7,6));
+     model.set(0.0);
+     model.putAt(2.0, IPosition(2,0));
+     model.putAt(5.0, model.shape()-1);
+     Array<Float> modelArray;
+     model.getSlice(modelArray, IPosition(2,0), model.shape());
+     cout << "model = " << modelArray.ac() << endl;
+     
+     const IPosition imageShape = model.shape();
+     LatticeConvolver<Float> c(psf2D, imageShape);
+
+     TempLattice<Float> result(model.shape());
+     c.linear(result, model);
+
+     Array<Float> resultArray;
+     result.getSlice(resultArray, IPosition(2,0), result.shape());
+     cout << "result = " << resultArray.ac() << endl;
+   }
+ }
     
   } catch (AipsError x) {
     cout<< "FAIL"<< endl;
