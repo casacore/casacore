@@ -36,6 +36,7 @@
 #include <aips/IO/AipsIOCarray.h>
 #include <aips/Utilities/String.h>
 #include <aips/Logging/LogIO.h>
+#include <aips/RTTI/Register.h>
 #include <iostream.h>
 #include <fstream.h>
 #include <strstream.h>           // needed for internal IO
@@ -442,6 +443,8 @@ istream &operator >> (istream &s, Array<T> &x) {
 template <class T>
 Bool read(istream &s, Array<T> &x,
 	  const IPosition *ip, Bool it) {
+  ///  Array<T> *to; PCAST(to, Array<T>, &x);
+  ///  if (to) {
   if (AiPs_hidden_type_((Array<T> *) 0) == x.idv()) {
     Block<T> tmp;
     Bool tr;
@@ -564,6 +567,10 @@ Bool readArrayBlock(istream &s, Bool &trans,
     };
   };		// end start shape
 
+  // The following is done to circumvent the problem arising from the fact that
+  // the output of a String array is given as [ abc, def], but the String >>
+  // will read all characters between blanks. Proper String I/O handling
+  // would solve this. Lines with /// were added/deleted
   if (how && ch != '[') {
     s.putback(ch);
     s >> r;
@@ -578,6 +585,8 @@ Bool readArrayBlock(istream &s, Bool &trans,
       cnt++;
     };
   } else {
+    String st;	///
+    uInt chstr = Register((String *)0);	///
     while (how) {
       s >> ws;
       s.get(ch);
@@ -588,7 +597,22 @@ Bool readArrayBlock(istream &s, Bool &trans,
       } else {
 	s.putback(ch);
       };
-      s >> r;
+      if (chstr == Register(&r)) {
+	s >> st;	/// Read string
+	Int ix = st.index(Regex("[],]"));	/// See if any present
+	if (ix >= 0) {	/// if yes
+	  s.putback(' ');
+	  for (Int i1=st.length()-1; i1>=ix; i1--) {	/// set back
+	    s.putback(st[i1]);	///
+	  };			///
+	  st = st.before(ix);	/// keep first part
+	};				///
+	///      s >> r;
+	istrstream instr(st);	/// read data from string
+	instr >> r;			///
+      } else {			///
+	s >> r;			///
+      };			///
       if (!s.ipfx(0)) {
 	s.clear(ios::failbit|s.rdstate()); // Redundant if using GNU iostreams
 	how = False;

@@ -121,11 +121,13 @@ template<class T> LogIO &operator<<(LogIO &os, const Array<T> &a);
 // </srcblock>
 // Elements are separated by whitespace, or a comma, optionally surrounded
 // by white space. <br>
-// Note: Some input routines read fields between blank spaces. This
+// <note role=warning> Some input routines read fields between blank spaces. This
 // is (at the moment) especially true for Quantities and Strings.
 // In those cases
 // the separator should be blank (or a comma following a blank), and the
 // end ']' should have a blank in front.
+// A crude fix for String arrays having separators <src>,</src> and <src>]</src>
+// without blanks preceding has been made; but slows routines down </note>
 // The default input is a vector of unspecified length. The input shape
 // can be changed by pre-pending the input with:
 // <srcblock>
