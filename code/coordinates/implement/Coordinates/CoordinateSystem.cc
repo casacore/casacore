@@ -585,9 +585,19 @@ Bool CoordinateSystem::removePixelAxis(uInt axis, Double replacement)
 }
 
 
-CoordinateSystem CoordinateSystem::subImage(const Vector<Int> &originShift,
-					    const Vector<Int> &pixincFac,
+CoordinateSystem CoordinateSystem::subImage(const Vector<Float> &originShift,
+					    const Vector<Float> &pixincFac,
                                             const Vector<Int>& newShape) const
+{
+    CoordinateSystem coords = *this;
+    coords.subImageInSitu(originShift, pixincFac, newShape);
+    return coords;
+}
+
+
+void CoordinateSystem::subImageInSitu(const Vector<Float> &originShift,
+                                      const Vector<Float> &pixincFac,
+                                      const Vector<Int>& newShape)
 {
     AlwaysAssert(originShift.nelements() == nPixelAxes() &&
                  pixincFac.nelements() == nPixelAxes(), AipsError);
@@ -600,9 +610,8 @@ CoordinateSystem CoordinateSystem::subImage(const Vector<Int> &originShift,
 
     AlwaysAssert(originShift.nelements() == pixincFac.nelements(), AipsError);
     uInt n = nPixelAxes();
-    CoordinateSystem coords = *this;
-    Vector<Double> crpix = coords.referencePixel();
-    Vector<Double> cdelt = coords.increment();
+    Vector<Double> crpix = referencePixel().copy();
+    Vector<Double> cdelt = increment().copy();
 
 // Not efficient, but easy and this code shouldn't be called often
 
@@ -610,11 +619,15 @@ CoordinateSystem CoordinateSystem::subImage(const Vector<Int> &originShift,
     for (uInt i=0; i<n; i++) {
         findPixelAxis(coordinate, axisInCoordinate, i);
         if (type(coordinate)==Coordinate::STOKES) {
+
+// Only integer shift and factor for Stokes
+
            Int s = -1;
            if (nShape!=0) s = newShape(i);
            StokesCoordinate sc = stokesSubImage(stokesCoordinate(coordinate), 
-                                                originShift(i), pixincFac(i), s);
-           coords.replaceCoordinate(sc, coordinate);
+                                                Int(originShift(i)+0.5),
+                                                Int(pixincFac(i)+0.5), s);
+           replaceCoordinate(sc, coordinate);
         } else {
            AlwaysAssert(pixincFac(i) >= 1, AipsError);
            crpix(i) -= originShift(i);
@@ -623,11 +636,10 @@ CoordinateSystem CoordinateSystem::subImage(const Vector<Int> &originShift,
         }
     }
 //
-    coords.setReferencePixel(crpix);
-    coords.setIncrement(cdelt);
-//
-    return coords;
+    setReferencePixel(crpix);
+    setIncrement(cdelt);
 }
+
 
 void CoordinateSystem::restoreOriginal()
 {
