@@ -1,5 +1,5 @@
 //# RefTable.h: Class for a table as a view of another table
-//# Copyright (C) 1994,1995,1996,1997,1998
+//# Copyright (C) 1994,1995,1996,1997,1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -292,7 +292,8 @@ private:
     RefTable& operator= (const RefTable&);
 
     static void makeDesc (TableDesc& desc, const TableDesc& rootDesc,
-			  SimpleOrderedMap<String,String>& nameMap);
+			  SimpleOrderedMap<String,String>& nameMap,
+			  Vector<String>& names);
 
     // Setup the main parts of the object.
     // <br>Create the initial name map from the table description.

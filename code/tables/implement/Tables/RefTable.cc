@@ -36,6 +36,7 @@
 #include <aips/Utilities/Assert.h>
 #include <aips/OS/Path.h>
 #include <aips/Tables/TableError.h>
+#include <aips/Utilities/Assert.h>
 
 
 RefTable::RefTable (AipsIO& ios, const String& name, uInt nrrow, int opt,
@@ -264,11 +265,17 @@ void RefTable::writeRefTable (Bool sync)
 	AipsIO ios;
 	writeStart (ios);
 	ios << "RefTable";
-	ios.putstart ("RefTable", 1);
+	ios.putstart ("RefTable", 2);
 	// Make the name of the base table relative to this table.
 	ios << Path::stripDirectory (baseTabPtr_p->tableName(),
 				     tableName());
 	ios << nameMap_p;
+	// Write the column names in order of appearance.
+	Vector<String> names(tdescPtr_p->ncolumn());
+	for (uInt i=0; i<names.nelements(); i++) {
+	    names(i) = tdescPtr_p->columnDesc(i).name();
+	}
+	ios << names;
 	ios << baseTabPtr_p->nrow();
 	ios << rowOrd_p;
 	ios.put (nrrow_p, rows_p);
@@ -288,10 +295,16 @@ void RefTable::getRef (AipsIO& ios, int opt, const TableLock& lockOptions)
     //# Open the file, read name and type of root and read object data.
     String rootName;
     uInt rootNrow, nrrow;
-    ios.getstart ("RefTable");
+    Int version = ios.getstart ("RefTable");
     ios >> rootName;
     rootName = Path::addDirectory (rootName, tableName());
     ios >> nameMap_p;
+    Vector<String> names;
+    if (version > 1) {
+        ios >> names;
+    }
+    else { cout << "no names vector" << endl;
+    }
     ios >> rootNrow;
     ios >> rowOrd_p;
     ios >> nrrow;
@@ -322,7 +335,7 @@ void RefTable::getRef (AipsIO& ios, int opt, const TableLock& lockOptions)
     if (tdescPtr_p == 0) {
 	throw (AllocError ("RefTable::getRef", 1));
     }
-    makeDesc (*tdescPtr_p, rootDesc, nameMap_p);
+    makeDesc (*tdescPtr_p, rootDesc, nameMap_p, names);
     //# Create the refColumns.
     makeRefCol();
     //# Great, everything is done.
@@ -336,35 +349,52 @@ void RefTable::getLayout (TableDesc& desc, AipsIO& ios)
 {
     String rootName;
     SimpleOrderedMap<String,String> nameMap("");
-    ios.getstart ("RefTable");
+    Int version = ios.getstart ("RefTable");
     ios >> rootName;
     ios >> nameMap;
+    Vector<String> names;
+    if (version > 1) {
+        ios << names;
+    }
     // Get description of the parent table.
     TableDesc pdesc;
     Table::getLayout (pdesc, rootName);
-    makeDesc (desc, pdesc, nameMap);
+    makeDesc (desc, pdesc, nameMap, names);
 }
 
 void RefTable::makeDesc (TableDesc& desc, const TableDesc& rootDesc,
-			 SimpleOrderedMap<String,String>& nameMap)
+			 SimpleOrderedMap<String,String>& nameMap,
+			 Vector<String>& names)
 {
+    //# The names block contains the column names in order of appearance.
+    //# For older versions it can be empty. If so, fill it with the
+    //# names from the map.
+    uInt i;
+    if (names.nelements() == 0) {
+        names.resize (nameMap.ndefined());
+	for (i=0; i<names.nelements(); i++) {
+	    names(i) = nameMap.getKey(i);
+	}
+    }
     //# Build up the table description.
     //# It is possible that columns have disappeared from the root table.
-    //# Remember these columns, so they be removed later from the map.
+    //# Remember these columns, so they are removed later from the map.
     //# The nameMap maps column names in this table to the names in the
     //# root table, so a rename is needed if names are different.
-    uInt i;
     SimpleOrderedMap<String,void*> unknownCol ((RefColumn*)0);
-    for (i=0; i<nameMap.ndefined(); i++) {
-	if (rootDesc.isColumn (nameMap.getVal(i))) {
-	    desc.addColumn (rootDesc.columnDesc (nameMap.getVal(i)));
-	    if (nameMap.getKey(i) != nameMap.getVal(i)) {
+    for (i=0; i<names.nelements(); i++) {
+        const String& name = names(i);
+	const String* mapValPtr = nameMap.isDefined (name);
+	AlwaysAssert (mapValPtr != 0, AipsError);
+	if (rootDesc.isColumn (*mapValPtr)) {
+	    desc.addColumn (rootDesc.columnDesc (*mapValPtr));
+	    if (name != *mapValPtr) {
 		//# Renames are currently not supported anymore.
 		throw (TableInternalError ("renamed column in RefTable"));
 //#//		desc.renameColumn (nameMap.getKey(i), nameMap.getVal(i));
 	    }
 	}else{
-	    unknownCol.define (nameMap.getKey(i), (void*)0);
+	    unknownCol.define (name, (void*)0);
 	}
     }
     //# Remove the unknown ones.
@@ -441,8 +471,14 @@ BaseColumn* RefTable::getColumn (const String& columnName) const
     tdescPtr_p->columnDesc(columnName);             // check if column exists
     return colMap_p(columnName);
 }
+//# We cannot simply return colMap_p.getVal(columnIndex), because the order of
+//# the columns in the description is important. So first get the column
+//# name and use that as key.
 BaseColumn* RefTable::getColumn (uInt columnIndex) const
-    { return colMap_p.getVal (columnIndex); }
+{ 
+    const String& name = tdescPtr_p->columnDesc(columnIndex).name();
+    return colMap_p(name);
+}
     
 
 Vector<uInt>* RefTable::rowStorage()
