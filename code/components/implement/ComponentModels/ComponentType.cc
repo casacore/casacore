@@ -49,7 +49,7 @@ ComponentType::Shape ComponentType::shape(const String & shapeName) {
       return s;
     }
   }
-  return ComponentType::UNKNOWN;
+  return ComponentType::UNKNOWN_SHAPE;
 }
 
 String ComponentType::name(ComponentType::Polarisation fluxEnum) {
@@ -81,7 +81,7 @@ ComponentType::Polarisation ComponentType::polarisation(const String &
 
 String ComponentType::name(ComponentType::SpectralShape spectralEnum) {
   switch (spectralEnum) {
-  case ComponentType::CONSTANT:
+  case ComponentType::CONSTANT_SPECTRUM:
     return "Constant";
   case ComponentType::SPECTRAL_INDEX:
     return "Spectral Index";

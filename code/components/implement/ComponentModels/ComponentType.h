@@ -62,7 +62,7 @@ public:
     // A elliptical Gaussian Component
     GAUSSIAN,
     // An unknown Component
-    UNKNOWN,
+    UNKNOWN_SHAPE,
     // The number of types in this enumerator
     NUMBER_SHAPES
   };
@@ -82,7 +82,7 @@ public:
   // The different functional forms for the spectral variation.
   enum SpectralShape {
     // The flux is constant at different frequencies
-    CONSTANT = 0,
+    CONSTANT_SPECTRUM = 0,
     // The flux varies as I = I_0 * (\nu / \nu_0)^\alpha
     SPECTRAL_INDEX,
     // an unknown spectral types

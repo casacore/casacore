@@ -39,7 +39,7 @@ int main() {
       AlwaysAssert(ComponentType::name(e) == "Point", AipsError);
       e = ComponentType::GAUSSIAN;
       AlwaysAssert(ComponentType::name(e) == "Gaussian", AipsError);
-      e = ComponentType::UNKNOWN;
+      e = ComponentType::UNKNOWN_SHAPE;
       AlwaysAssert(ComponentType::name(e) == "Unknown", AipsError);
       e = ComponentType::NUMBER_SHAPES;
       AlwaysAssert(ComponentType::name(e) == "Unknown", AipsError);
@@ -50,7 +50,7 @@ int main() {
       AlwaysAssert(ComponentType::shape(s) == ComponentType::GAUSSIAN,
 		   AipsError);
       s = "Pointer";
-      AlwaysAssert(ComponentType::shape(s) == ComponentType::UNKNOWN,
+      AlwaysAssert(ComponentType::shape(s) == ComponentType::UNKNOWN_SHAPE,
 		   AipsError);
     }
     {
@@ -78,7 +78,7 @@ int main() {
 		   ComponentType::UNKNOWN_POLARISATION, AipsError);
     }
     {
-      ComponentType::SpectralShape e(ComponentType::CONSTANT);
+      ComponentType::SpectralShape e(ComponentType::CONSTANT_SPECTRUM);
       AlwaysAssert(ComponentType::name(e) == "Constant", AipsError);
       e = ComponentType::SPECTRAL_INDEX;
       AlwaysAssert(ComponentType::name(e) == "Spectral Index", AipsError);
@@ -87,8 +87,8 @@ int main() {
       e = ComponentType::NUMBER_SPECTRAL_SHAPES;
       AlwaysAssert(ComponentType::name(e) == "Unknown", AipsError);
       String s("constant");
-      AlwaysAssert(ComponentType::spectralShape(s) == ComponentType::CONSTANT, 
-		   AipsError);
+      AlwaysAssert(ComponentType::spectralShape(s) ==
+		   ComponentType::CONSTANT_SPECTRUM, AipsError);
       s = "SPECTRAL INDEX";
       AlwaysAssert(ComponentType::spectralShape(s) == 
 		   ComponentType::SPECTRAL_INDEX, AipsError);
