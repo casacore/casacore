@@ -1252,7 +1252,7 @@
 	           CVSUPVERS="released"
 	       else
 	           echo $AIPSROOT | grep weekly
-	           if [ $? eq 0 ] 
+	           if [ $? -eq 0 ] 
 	           then 
                       CVSUPVERS='weekly'
 	           fi
