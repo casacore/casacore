@@ -501,7 +501,7 @@ void ComponentList::sort(ComponentList::SortCriteria criteria) {
   case ComponentList::FLUX: {
     for (uInt i = 0; i < nelements(); i++) {
       itsList[i].flux().convertPol(ComponentType::STOKES);
-      val[i] = abs(itsList[i].flux().value(0u).re);
+      val[i] = abs(itsList[i].flux().value(0u).real());
     }
     order = Sort::Descending;
     break;
