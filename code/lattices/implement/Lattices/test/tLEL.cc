@@ -92,7 +92,7 @@ Bool checkBool (LELInterface<Bool>& expr,
                  const Bool suppress);
 
 
-main (int argc, char *argv[])
+int main (int argc, char *argv[])
 {
  try {
     cout << ">>>" << endl;
@@ -2141,7 +2141,7 @@ main (int argc, char *argv[])
     cout << "LELConvert<Complex,DComplex> " << endl;
     CountedPtr<LELInterface<DComplex> > pExpr = new LELLattice<DComplex>(bDC);
     LELConvert<Complex,DComplex> expr(pExpr);
-    CResult = bDCVal;
+    CResult = Complex(bDCVal.real(), bDCVal.imag());
     if (!checkComplex(expr, CResult, String("LELConvert"), shape, False, suppress)) ok = False;
     }
 
