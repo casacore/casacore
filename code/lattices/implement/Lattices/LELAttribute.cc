@@ -1,5 +1,5 @@
 //# LELAttribute.cc: Ancillary information for the LEL letter classes
-//# Copyright (C) 1997,1998,1999
+//# Copyright (C) 1997,1998,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -27,6 +27,7 @@
 
 
 #include <trial/Lattices/LELAttribute.h>
+#include <trial/Lattices/LELLattCoord.h>
 #include <aips/Utilities/Assert.h>
 #include <aips/Exceptions/Error.h> 
 
@@ -34,8 +35,8 @@
 LELAttribute::LELAttribute()
 : isScalar_p (True),
   isRegion_p (False),
-  isMasked_p (False)
-
+  isMasked_p (False),
+  coords_p   (new LELLattCoord())
 {}
 
 LELAttribute::LELAttribute(Bool isMasked,
@@ -54,7 +55,8 @@ LELAttribute::LELAttribute(uInt regionNdim)
 : isScalar_p  (False),
   isRegion_p  (True),
   isMasked_p  (False),
-  shape_p     (IPosition(regionNdim, 0))
+  shape_p     (IPosition(regionNdim, 0)),
+  coords_p   (new LELLattCoord())
 {}
 
 LELAttribute::LELAttribute(const LELAttribute& other)
