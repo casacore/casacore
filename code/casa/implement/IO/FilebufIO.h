@@ -1,5 +1,5 @@
-//# FilebufIO.h: Class for IO on a file using a filebuf object
-//# Copyright (C) 1996
+//# FilebufIO.h: Class for IO on a file using standard IO
+//# Copyright (C) 1996,1997
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -28,21 +28,16 @@
 #if !defined(AIPS_FILEBUFIO_H)
 #define AIPS_FILEBUFIO_H
 
-#if defined (_AIX)
-#pragma implementation ("FilebufIO.cc")
-#endif
 
 //# Includes
 #include <aips/aips.h>
 #include <aips/IO/ByteIO.h>
 #include <aips/Utilities/String.h>
+#include <stdio.h>
 
-#if !defined(AIPS_STDLIB)
-imported class filebuf;
-#endif
 
 // <summary> 
-// Class for IO on a file using a filebuf object.
+// Class for IO on a file using standard IO.
 // </summary>
 
 // <use visibility=export>
@@ -52,20 +47,23 @@ imported class filebuf;
 
 // <prerequisite> 
 //    <li> <linkto class=ByteIO>ByteIO</linkto> class
-//    <li> filebuf class in iostream package (see man filebuf)
+//    <li> stdio package (see man stdio)
 // </prerequisite>
 
 // <synopsis> 
 // This class is a specialization of class
-// <linkto class=ByteIO>ByteIO</linkto>. It uses a <src>filebuf</src>
-// object to read/write data.
+// <linkto class=ByteIO>ByteIO</linkto>. It uses <src>stdio</src>
+// to read/write data.
 // <p>
-// A <src>filebuf</src> uses an internal buffer. The size of the
-// buffer influences the performance. The larger the buffer, the less
-// physical IO has to be done. However, memory usage will increase
-// when the buffer is large.
-// It is possible to define the buffer size in the constructor of
-// <src>FilebufIO</src>. Usually the default will do.
+// <src>stdio</src> uses an internal buffer. The size of the
+// buffer influences the performance. Usually it is best to use
+// the default buffer size (which stdio optimizes for the disk).
+// However, it is possible to specify a particular buffer size.
+// <p>
+// It is also possible to construct a <src>FilebufIO</src> object
+// from a file descriptor (e.g. for a pipe or socket).
+// The constructor will determine automatically if the file is
+// readable, writable and seekable.
 // </synopsis>
 
 // <example>
@@ -87,7 +85,7 @@ imported class filebuf;
 // </example>
 
 // <motivation> 
-// Make it possible to use the AIPS++ IO functionality on a filebuf.
+// Make it possible to use the AIPS++ IO functionality on any file.
 // In this way any device can be hooked to the IO framework.
 // </motivation>
 
@@ -99,17 +97,46 @@ public:
     // A stream can be attached using the attach function.
     FilebufIO();
 
-    // Construct from a given file descriptor.
+    // Construct from a given file pointer which is taken over
+    // (thus the file is closed by function detach or the destructor).
     // It will determine itself if the file is readable, writable,
     // and seekable.
-    explicit FilebufIO (int fd, uInt filebufSize=65536);
+    // A buffer with the given length will be used by the FILE object.
+    // A zero buffer size means an appropriate buffer size will be used.
+    explicit FilebufIO (FILE*, uInt bufferSize=0);
 
-    // The destructor closes the filebuf when not closed yet.
+    // Construct from a given file pointer.
+    // When takeOver is true, the file will be closed by the
+    // detach function or the destructor.
+    // It will determine itself if the file is readable, writable,
+    // and seekable.
+    FilebufIO (FILE*, Bool takeOver);
+
+    // Construct from the given file descriptor.
+    explicit FilebufIO (int fd, uInt bufferSize=16384);
+
+    // Attach the given file pointer which is taken over
+    // (thus the file is closed by function detach or the destructor).
+    // It will determine itself if the file is readable, writable,
+    // and seekable.
+    // A buffer with the given length will be used by the FILE object.
+    // A zero buffer size means an appropriate buffer size will be used.
+    void attach (FILE*, uInt bufferSize=0);
+
+    // Attach the given file pointer.
+    // When takeOver is true, the file will be closed by the
+    // detach function or the destructor.
+    // It will determine itself if the file is readable, writable,
+    // and seekable.
+    void attach (FILE*, Bool takeOver);
+
+    // Attach to the given file descriptor.
+    void attach (int fd, uInt bufferSize=16384);
+
+    // The destructor closes the file when it was owned and opened and not
+    // closed yet.
     ~FilebufIO();
     
-    // Attach an fd to the filebuf.
-    void attach (int fd, uInt bufferSize);
-
     // Write the number of bytes.
     virtual void write (uInt size, const void* buf);
 
@@ -138,28 +165,32 @@ public:
 
 
 protected:
-    // Prepare for the attach.
-    // It allocates a buffer with the given size for the filebuf.
-    void prepareAttach (uInt bufferSize, Bool readable, Bool writable);
+    // Attach the given FILE pointer.
+    // If bufferSize>0, it allocates a buffer for the file.
+    void attach (FILE* file, uInt bufferSize, Bool readable, Bool writable);
 
-    // Detach the filebuf.
+    // Detach the FILE. Close it when it is owned.
     void detach();
 
-    // Test if the file is seekable.
+    // Determine if the file descriptor is readable and/or writable.
+    void fillRWFlags (int fd);
+
+    // Determine if the file is seekable.
     void fillSeekable();
 
-    // Get the filebuf for the derived class.
-    filebuf* getFilebuf();
+    // Get the file for the derived class.
+    FILE* getFilePtr();
 
-    // Set to writable.
-    void setWritable();
+    // Get the buffer size used.
+    uInt bufferSize() const;
 
 private:
     Bool        itsOwner;
     Bool        itsSeekable;
     Bool        itsReadable;
     Bool        itsWritable;
-    filebuf*    itsFilebuf;
+    FILE*       itsFile;
+    uInt        itsBufSize;
     char*       itsBuffer;
     Bool        itsReadDone;
     Bool        itsWriteDone;
@@ -172,13 +203,13 @@ private:
 };
 
 
-inline filebuf* FilebufIO::getFilebuf()
+inline FILE* FilebufIO::getFilePtr()
 {
-    return itsFilebuf;
+    return itsFile;
 }
-inline void FilebufIO::setWritable()
+inline uInt FilebufIO::bufferSize() const
 {
-    itsWritable = True;
+    return itsBufSize;
 }
 
 

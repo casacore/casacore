@@ -1,5 +1,5 @@
 //# FilebufIO.cc: Class for IO on a file using a filebuf object.
-//# Copyright (C) 1996
+//# Copyright (C) 1996,1997
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -29,23 +29,36 @@
 #include <aips/IO/FilebufIO.h>
 #include <aips/Utilities/Assert.h>
 #include <aips/Exceptions/Error.h>
-#include <iostream.h>
-#include <fstream.h>
 #include <fcntl.h>
+
 
 FilebufIO::FilebufIO()
 : itsOwner     (False),
-  itsFilebuf   (0),
+  itsFile      (0),
+  itsBufSize   (0),
   itsBuffer    (0),
   itsSeekable  (False),
   itsReadable  (False),
-  itsWritable  (False),
-  itsReadDone  (False),
-  itsWriteDone (False)
+  itsWritable  (False)
 {}
 
+FilebufIO::FilebufIO (FILE* file, uInt bufferSize)
+: itsFile   (0),
+  itsBuffer (0)
+{
+    attach (file, bufferSize);
+}
+
+FilebufIO::FilebufIO (FILE* file, Bool takeOver)
+: itsFile   (0),
+  itsBuffer (0)
+{
+    attach (file, takeOver);
+}
+
 FilebufIO::FilebufIO (int fd, uInt bufferSize)
-: itsFilebuf (0)
+: itsFile   (0),
+  itsBuffer (0)
 {
     attach (fd, bufferSize);
 }
@@ -55,26 +68,70 @@ FilebufIO::~FilebufIO()
     detach();
 }
 
-void FilebufIO::prepareAttach (uInt bufferSize, Bool readable, Bool writable)
+void FilebufIO::attach (FILE* file, uInt bufferSize,
+			Bool readable, Bool writable)
 {
-    AlwaysAssert (itsFilebuf == 0, AipsError);
+    AlwaysAssert (itsFile == 0, AipsError);
+    itsFile      = file;
+    itsBufSize   = bufferSize;
     itsOwner     = True;
     itsReadable  = readable;
     itsWritable  = writable;
+    itsSeekable  = False;
     itsReadDone  = True;
     itsWriteDone = True;
-    // Create a buffer for filebuf and attach it.
-    itsBuffer  = new char[bufferSize];
-    itsFilebuf = new filebuf;
-    AlwaysAssert (itsBuffer != 0  &&  itsFilebuf != 0, AipsError);
-    AlwaysAssert (itsFilebuf->setbuf(itsBuffer, bufferSize) != 0, AipsError);
+    // When needed create a buffer for the FILE.
+    // Attach it to the file.
+    if (bufferSize > 0) {
+	itsBuffer = new char[bufferSize];
+	AlwaysAssert (itsBuffer != 0, AipsError);
+	setvbuf (itsFile, itsBuffer, _IOFBF, bufferSize);
+    }
+}
+
+void FilebufIO::attach (FILE* file, uInt bufferSize)
+{
+    attach (file, bufferSize, False, False);
+    fillRWFlags (fileno (itsFile));
+    fillSeekable();
+}
+
+void FilebufIO::attach (FILE* file, Bool takeOver)
+{
+    attach (file, uInt(0));
+    itsOwner = takeOver;
 }
 
 void FilebufIO::attach (int fd, uInt bufferSize)
 {
-    prepareAttach (bufferSize, False, False);
-    // Attach the file.
-    AlwaysAssert (itsFilebuf->attach (fd) != 0, AipsError);
+    fillRWFlags (fd);
+    String opt = "rb";
+    if (itsWritable) {
+	opt = "wb";
+	if (itsReadable) {
+	    opt = "rb+";
+	}
+    }
+    FILE* file = fdopen (fd, opt.chars());
+    if (file == 0) {
+	throw (AipsError ("FilebufIO: error in fdopen"));
+    }
+    attach (file, bufferSize, itsReadable, itsWritable);
+    fillSeekable();
+}
+
+void FilebufIO::detach()
+{
+    if (itsOwner  &&  itsFile != 0) {
+	fclose (itsFile);
+	delete [] itsBuffer;
+	itsFile   = 0;
+	itsBuffer = 0;
+    }
+}
+
+void FilebufIO::fillRWFlags (int fd)
+{
     int flags = fcntl (fd, F_GETFL);
     if (flags & O_RDWR) {
 	itsReadable = True;
@@ -83,19 +140,6 @@ void FilebufIO::attach (int fd, uInt bufferSize)
 	itsWritable = True;
     } else {
 	itsReadable = True;
-    }
-    fillSeekable();
-}
-
-void FilebufIO::detach()
-{
-    if (itsFilebuf != 0) {
-	if (itsOwner) {
-	    delete itsFilebuf;
-	    delete [] itsBuffer;
-	}
-	itsFilebuf = 0;
-	itsBuffer  = 0;
     }
 }
 
@@ -117,12 +161,13 @@ void FilebufIO::write (uInt size, const void* buf)
     if (!itsWritable) {
 	throw (AipsError ("FilebufIO object is not writable"));
     }
-    // If a read has been done, adjust the write pointer.
+    // After a read a seek is needed before a write can be done.
+    // (requirement of stdio).
     if (itsReadDone) {
-	itsFilebuf->seekoff (0, ios::cur, ios::in|ios::out);
+	fseek (itsFile, 0, SEEK_CUR);
 	itsReadDone = False;
     }
-    if (itsFilebuf->sputn ((const char*)buf, size) != size) {
+    if (fwrite (buf, 1, size, itsFile) != size) {
 	throw (AipsError ("FilebufIO: error while writing " + fileName()));
     }
     itsWriteDone = True;
@@ -134,12 +179,13 @@ void FilebufIO::read (uInt size, void* buf)
     if (!itsReadable) {
 	throw (AipsError ("FilebufIO object is not readable"));
     }
-    // If a write has been done, adjust the read pointer.
+    // After a write a seek is needed before a read can be done.
+    // (requirement of stdio).
     if (itsWriteDone) {
-	itsFilebuf->seekoff (0, ios::cur, ios::in|ios::out);
+	fseek (itsFile, 0, SEEK_CUR);
 	itsWriteDone = False;
     }
-    if (itsFilebuf->sgetn ((char*)buf, size) != size) {
+    if (fread (buf, 1, size, itsFile) != size) {
 	throw (AipsError ("FilebufIO: error while reading " + fileName()));
     }
     itsReadDone = True;
@@ -151,11 +197,16 @@ Long FilebufIO::seek (Long offset, ByteIO::SeekOption dir)
     itsWriteDone = False;
     switch (dir) {
     case ByteIO::Begin:
-	return itsFilebuf->seekoff (offset, ios::beg, ios::in|ios::out);
+	fseek (itsFile, offset, SEEK_SET);
+	break;
     case ByteIO::End:
-	return itsFilebuf->seekoff (offset, ios::end, ios::in|ios::out);
+	fseek (itsFile, offset, SEEK_END);
+	break;
+    default:
+	fseek (itsFile, offset, SEEK_CUR);
+	break;
     }
-    return itsFilebuf->seekoff (offset, ios::cur, ios::in|ios::out);
+    return ftell (itsFile);
 }
 
 Long FilebufIO::length()

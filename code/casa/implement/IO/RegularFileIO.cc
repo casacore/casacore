@@ -1,5 +1,5 @@
 //# RegularFileIO.cc: Class for IO on a regular file
-//# Copyright (C) 1996
+//# Copyright (C) 1996,1997
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -30,8 +30,7 @@
 #include <aips/Utilities/String.h>
 #include <aips/Utilities/Assert.h>
 #include <aips/Exceptions/Error.h>
-#include <unistd.h>
-#include <fcntl.h>
+#include <stdio.h>
 
 
 RegularFileIO::RegularFileIO (const RegularFile& regularFile,
@@ -39,44 +38,48 @@ RegularFileIO::RegularFileIO (const RegularFile& regularFile,
 : itsOption      (option),
   itsRegularFile (regularFile)
 {
+    const String& name = itsRegularFile.path().expandedName();
     // Open file as input and/or output.
     Bool writable = True;
-    int stropt;
+    String stropt;
     switch (option) {
     case ByteIO::Old:
 	writable = False;
-	stropt = ios::in|ios::nocreate;
+	stropt = "rb";
 	break;
     case ByteIO::New:
     case ByteIO::Scratch:
-	stropt = ios::in|ios::out|ios::trunc;
+	stropt = "wb+";
 	break;
     case ByteIO::NewNoReplace:
-	stropt = ios::in|ios::out|ios::noreplace|ios::trunc;
+	if (regularFile.exists()) {
+	    throw (AipsError ("RegularFileIO: new file " + name +
+			      " already exists"));
+	}
+	stropt = "wb+";
 	break;
     case ByteIO::Append:
-	stropt = ios::in|ios::out|ios::app;
+	stropt = "ab+";
 	break;
     case ByteIO::Update:
     case ByteIO::Delete:
-	stropt = ios::in|ios::out|ios::nocreate;
+	stropt = "rb+";
 	break;
     default:
 	throw (AipsError ("RegularFileIO: unknown open option"));
     }
-    prepareAttach (bufferSize, True, writable);
     // Open the file.
-    const String& name = itsRegularFile.path().expandedName();
-    if (getFilebuf()->open (name.chars(), stropt) == 0) {
+    FILE* file = fopen (name.chars(), stropt.chars());
+    if (file == 0) {
 	throw (AipsError ("RegularFileIO: error in open or create of file " +
 			  name));
     }
+    attach (file, bufferSize, True, writable);
     fillSeekable();
 }
 
 RegularFileIO::~RegularFileIO()
 {
-    getFilebuf()->close();
     detach();
     if (itsOption == ByteIO::Scratch  ||  itsOption == ByteIO::Delete) {
 	itsRegularFile.remove();
@@ -91,18 +94,15 @@ void RegularFileIO::reopenRW()
     }
     // First try if the file can be opened as read/write.
     const String& name = itsRegularFile.path().expandedName();
-    int fd = ::open (name.chars(), O_RDWR);
-    if (fd == -1) {
+    FILE* file = fopen (name.chars(), "rb+");
+    if (file == 0) {
 	throw (AipsError ("RegularFileIO: reopenRW not possible for file " +
 			  name));
     }
-    ::close (fd);
+    uInt bufsize = bufferSize();
+    detach();
+    attach (file, bufsize, True, True);
     // It can be reopened, so close and reopen.
-    getFilebuf()->close();
-    AlwaysAssert (getFilebuf()->open (name.chars(),
-				      ios::in|ios::out|ios::nocreate) != 0,
-		  AipsError);
-    setWritable();
     itsOption = ByteIO::Update;
 }
 

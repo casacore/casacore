@@ -1,5 +1,5 @@
 //# RegularFileIO.h: Class for IO on a regular file
-//# Copyright (C) 1996
+//# Copyright (C) 1996,1997
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -89,10 +89,10 @@ public:
     // <br>
     // The argument <src>filebufSize</src> defines the length of
     // the internal buffer in the underlying <linkto class=FilebufIO>
-    // FilebufIO</linkto> object.
+    // FilebufIO</linkto> object. A zero length uses an appropriate default.
     explicit RegularFileIO (const RegularFile& regularFile,
 			    ByteIO::OpenOption = ByteIO::Old,
-			    uInt filebufSize=65536);
+			    uInt filebufSize=0);
 
     ~RegularFileIO();
     
