@@ -2490,3 +2490,4 @@
 11 339 sys rm libexec/display_meta.g
 11 340 sys rm libexec/display.g
 11 340 src rm trial/apps/viewer/displays.help
+11 341 src rm doc/faq/faqabout.html
