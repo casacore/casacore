@@ -46,18 +46,15 @@
 #include <aips/Mathematics/Math.h>
 #include <aips/Measures/Quantum.h>
 #include <aips/Measures/MVDirection.h>
-#include <aips/Measures/MDirection.h>
 #include <aips/Measures/Stokes.h>
 #include <aips/Utilities/COWPtr.h>
 #include <aips/Utilities/Assert.h>
 
-SkyComponent::
-~SkyComponent()
+SkyComponent::~SkyComponent()
 {
 };
 
-void SkyComponent::
-operator()(ImageInterface<Float> & image) const {
+void SkyComponent::operator()(ImageInterface<Float> & image) const {
   const CoordinateSystem coords = image.coordinates();
   const IPosition imageShape = image.shape();
   const uInt naxis = imageShape.nelements();
@@ -66,37 +63,42 @@ operator()(ImageInterface<Float> & image) const {
   // All other coordinates (ie. polarization and frequency) are optional. 
   const Int dirCoordAxis = coords.findCoordinate(Coordinate::DIRECTION);
   AlwaysAssert(dirCoordAxis >= 0, AipsError);
-  AlwaysAssert(coords.findCoordinate(Coordinate::DIRECTION, dirCoordAxis) == -1,
- 	       AipsError);
+  AlwaysAssert(coords.findCoordinate(Coordinate::DIRECTION, dirCoordAxis)
+	       == -1, AipsError);
 
-  // Check if there is a Stokes Axes and if so which polarizations. The default
-  // is to use I only. 
-  Vector<Int> stokes;
-  Int polAxis = -1;
-  uInt nStokes = 1;
-  const Int polCoordAxis = coords.findCoordinate(Coordinate::STOKES);
-  if (polCoordAxis >= 0){
-    AlwaysAssert(coords.findCoordinate(Coordinate::STOKES, polCoordAxis) == -1,
-		 AipsError);
-    StokesCoordinate polCoord = coords.stokesCoordinate(polCoordAxis);
-    stokes = polCoord.stokes();
-    nStokes = stokes.nelements();
-    AlwaysAssert(nStokes > 0, AipsError);
-    Vector<Int> polAxes = coords.pixelAxes(polCoordAxis);
-    AlwaysAssert(polAxes.nelements() == 1, AipsError);
-    polAxis = polAxes(0);
-    if (polAxis >= 0) {
-      AlwaysAssert(imageShape(polAxis) == nStokes, AipsError);
-    } 
-    else
-      AlwaysAssert(nStokes == 1, AipsError);
-    for (uInt i = 0; i < nStokes; i++)
-      AlwaysAssert(stokes(i) == Stokes::I || stokes(i) == Stokes::Q ||
-		   stokes(i) == Stokes::U || stokes(i) == Stokes::V, AipsError)
-  }
-  else {
-    stokes.resize(1);
-    stokes = Stokes::I;
+  // Check if there is a Stokes Axes and if so which polarizations. Otherwise
+  // only grid the I polarisation
+  Vector<Int> stokes; // Vector stating which polarisations are on which plane
+  uInt nStokes;       // The total number of polarisations
+  Int polAxis;        // The axis on the image with the polarisation
+  { // This could be packaged up as a protected function. 
+    const Int polCoordAxis = coords.findCoordinate(Coordinate::STOKES);
+    if (polCoordAxis >= 0) {
+      AlwaysAssert(coords.findCoordinate(Coordinate::STOKES, polCoordAxis) 
+		   == -1, AipsError);
+      StokesCoordinate polCoord = coords.stokesCoordinate(polCoordAxis);
+      stokes = polCoord.stokes();
+      nStokes = stokes.nelements();
+      AlwaysAssert(nStokes > 0, AipsError);
+      Vector<Int> polAxes = coords.pixelAxes(polCoordAxis);
+      AlwaysAssert(polAxes.nelements() == 1, AipsError);
+      polAxis = polAxes(0);
+      if (polAxis >= 0) {
+	AlwaysAssert(imageShape(polAxis) == nStokes, AipsError);
+      }
+      else
+	AlwaysAssert(nStokes == 1, AipsError);
+      for (uInt p = 0; p < nStokes; p++)
+	AlwaysAssert(stokes(p) == Stokes::I || stokes(p) == Stokes::Q ||
+		     stokes(p) == Stokes::U || stokes(p) == Stokes::V, 
+		     AipsError);
+    }
+    else {
+      stokes.resize(1);
+      stokes(0) = Stokes::I;
+      nStokes = 1;
+      polAxis = -1;
+    }
   }
   // Setup an iterator to step through the image in chunks that can fit into
   // memory. Go to a bit of effort to make the chunck size as large as
@@ -116,12 +118,12 @@ operator()(ImageInterface<Float> & image) const {
       }
     }
   }
-  LatticeIterator<Float> chunkIter(image, 
-				   LatticeStepper(imageShape, chunckShape));
-  const DirectionCoordinate dirCoord = coords.directionCoordinate(dirCoordAxis);
+  LatticeIterator<Float> chunkIter(image, chunckShape);
+  const DirectionCoordinate dirCoord = 
+    coords.directionCoordinate(dirCoordAxis);
   Vector<Double> pixelCoord(nPixAxes); 
-  Vector<Double> worldCoord(2); 
   pixelCoord = 0.0;
+  Vector<Double> worldCoord(2); 
   Int axis;
   MDirection pixelDir(MVDirection(0.0), dirCoord.directionType());
   Vector<Quantum<Double> > dirVal(2);
@@ -130,7 +132,7 @@ operator()(ImageInterface<Float> & image) const {
   StokesVector pixelVal;
   Block<IPosition> blc(nStokes);
   Block<IPosition> trc(nStokes);
-  if ((polAxis >= 0) && (nStokes > 1)){
+  if (nStokes > 1) {
     blc = IPosition(naxis,0);
     trc = elementShape - 1;
     for (uInt p = 0; p < nStokes; p++) {
@@ -139,61 +141,62 @@ operator()(ImageInterface<Float> & image) const {
     }
   }
 
-   for (chunkIter.reset(); !chunkIter.atEnd(); chunkIter++) {
-     ArrayLattice<Float> array(chunkIter.cursor());
-     ArrLatticeIter<Float> elementIter(array, elementShape);
+  for (chunkIter.reset(); !chunkIter.atEnd(); chunkIter++) {
+    ArrayLattice<Float> array(chunkIter.cursor());
+    ArrLatticeIter<Float> elementIter(array, elementShape);
     
-     for (elementIter.reset(); !elementIter.atEnd(); elementIter++) {
-       for (uInt k = 0; k < nPixAxes; k++) {
-	 axis = dirAxes(k);
-	 if (axis >= 0)
-	   pixelCoord(k) = elementIter.position()(axis);
-       }
-       AlwaysAssert(dirCoord.toWorld(worldCoord, pixelCoord) == True, AipsError);
-       dirVal(0).setValue(worldCoord(0));
-       dirVal(1).setValue(worldCoord(1));
-       pixelDir.set(MVDirection(dirVal));
-       pixelVal = operator()(pixelDir);
-       if ((polAxis == -1) || (nStokes == 1)){
-	 switch (stokes(0)) {
-	 case Stokes::I:
-	   elementIter.cursor() += pixelVal(0); break;
-	 case Stokes::Q:
-	   elementIter.cursor() += pixelVal(1); break;
-	 case Stokes::U:
-	   elementIter.cursor() += pixelVal(2); break;
-	 case Stokes::V:
-	   elementIter.cursor() += pixelVal(3); break;
-	 }
-       }
-       else if (elementShape.nelements() == nStokes)
-	 for (uInt p = 0; p < nStokes; p++) {
-	   switch (stokes(p)) {
-	   case Stokes::I:
-	     elementIter.cursor()(blc[p]) += pixelVal(0); break;
-	   case Stokes::Q:
-	     elementIter.cursor()(blc[p]) += pixelVal(1); break;
-	   case Stokes::U:
-	     elementIter.cursor()(blc[p]) += pixelVal(2); break;
-	   case Stokes::V:
-	     elementIter.cursor()(blc[p]) += pixelVal(3); break;
-	   }
-	 }
-       else
-	 for (uInt p = 0; p < nStokes; p++) {
-	   switch (stokes(p)) {
-	   case Stokes::I:
-	     elementIter.cursor()(blc[p], trc[p]) += pixelVal(0); break;
-	   case Stokes::Q:
-	     elementIter.cursor()(blc[p], trc[p]) += pixelVal(1); break;
-	   case Stokes::U:
-	     elementIter.cursor()(blc[p], trc[p]) += pixelVal(2); break;
-	   case Stokes::V:
-	     elementIter.cursor()(blc[p], trc[p]) += pixelVal(3); break;
-	   }
-	 }
-     }
-   }
+    for (elementIter.reset(); !elementIter.atEnd(); elementIter++) {
+      for (uInt k = 0; k < nPixAxes; k++) {
+	axis = dirAxes(k);
+	if (axis >= 0)
+	  pixelCoord(k) = elementIter.position()(axis);
+      }
+      AlwaysAssert(dirCoord.toWorld(worldCoord, pixelCoord) == True, 
+		   AipsError);
+      dirVal(0).setValue(worldCoord(0));
+      dirVal(1).setValue(worldCoord(1));
+      pixelDir.set(MVDirection(dirVal));
+      pixelVal = operator()(pixelDir);
+      if (nStokes == 1) {
+	switch (stokes(0)) {
+	case Stokes::I:
+	  elementIter.cursor() += pixelVal(0); break;
+	case Stokes::Q:
+	  elementIter.cursor() += pixelVal(1); break;
+	case Stokes::U:
+	  elementIter.cursor() += pixelVal(2); break;
+	case Stokes::V:
+	  elementIter.cursor() += pixelVal(3); break;
+	}
+      }
+      else if (elementShape.product() == nStokes)
+	for (uInt p = 0; p < nStokes; p++) {
+	  switch (stokes(p)) {
+	  case Stokes::I:
+	    elementIter.cursor()(blc[p]) += pixelVal(0); break;
+	  case Stokes::Q:
+	    elementIter.cursor()(blc[p]) += pixelVal(1); break;
+	  case Stokes::U:
+	    elementIter.cursor()(blc[p]) += pixelVal(2); break;
+	  case Stokes::V:
+	    elementIter.cursor()(blc[p]) += pixelVal(3); break;
+	  }
+	}
+      else
+	for (uInt p = 0; p < nStokes; p++) {
+	  switch (stokes(p)) {
+	  case Stokes::I:
+	    elementIter.cursor()(blc[p], trc[p]).ac() += pixelVal(0); break;
+	  case Stokes::Q:
+	    elementIter.cursor()(blc[p], trc[p]).ac() += pixelVal(1); break;
+	  case Stokes::U:
+	    elementIter.cursor()(blc[p], trc[p]).ac() += pixelVal(2); break;
+	  case Stokes::V:
+	    elementIter.cursor()(blc[p], trc[p]).ac() += pixelVal(3); break;
+	  }
+	}
+    }
+  }
 };
 
 void SkyComponent::
