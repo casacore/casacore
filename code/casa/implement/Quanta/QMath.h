@@ -1,5 +1,5 @@
 //# QMath.h: Mathematical operations for the Quantum class.
-//# Copyright (C) 1994,1995,1996,1998,1999,2000
+//# Copyright (C) 1994,1995,1996,1998,1999,2000,2004
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -79,7 +79,7 @@ template <class T> class Array;
 //   <li> <linkto file="QMath.h#math">Arithmetic functions: return Quantum<T></linkto>
 //   <li> <linkto file="QMath.h#arithmetic">Some useful arithmetic (linear) functions</linkto>
 //   <li> <linkto file="QMath.h#trigonometric">Trigonometric functions</linkto>
-//   <li> <linkto file="QMath.h#foreign">Functions to implement complex, integer ceil/floor</linkto>
+//   <li> <linkto file="QMath.h#foreign">Functions to implement integer ceil/floor</linkto>
 // </ul
 //
 // The operations/functions defined are:
@@ -216,12 +216,8 @@ Quantum<Qtype> exp(const Quantum<Qtype> &left);
 // </group>
 
 
-// Functions to implement complex, integer ceil/floor and others
+// Functions to implement integer ceil/floor and others
 // <group name="foreign">
-Complex ceil(const Complex &val);
-Complex floor(const Complex &val);
-DComplex ceil(const DComplex &val);
-DComplex floor(const DComplex &val);
 Int ceil(const Int &val);
 Int floor(const Int &val);
 Float real(const Float &val);

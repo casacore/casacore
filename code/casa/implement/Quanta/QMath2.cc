@@ -1,5 +1,5 @@
 //# QMath2.cc: class to manipulate physical, dimensioned quantities
-//# Copyright (C) 1994,1995,1996,1998,2000
+//# Copyright (C) 1994,1995,1996,1998,2000,2004
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -30,22 +30,6 @@
 #include <aips/Quanta/QMath.h>
 #include <aips/Mathematics/Math.h>
 #include <aips/Arrays/ArrayMath.h>
-
-Complex ceil(const Complex &val) {
-    return (Complex(ceil(val.real()),ceil(val.imag())));
-}
-
-Complex floor(const Complex &val) {
-    return (Complex(floor(val.real()),floor(val.imag())));
-}
-
-DComplex ceil(const DComplex &val) {
-    return (DComplex(ceil(val.real()),ceil(val.imag())));
-}
-
-DComplex floor(const DComplex &val) {
-    return (DComplex(floor(val.real()),floor(val.imag())));
-}
 
 Int ceil(const Int &val) {
     return (val);
