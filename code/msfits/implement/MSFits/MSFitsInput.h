@@ -177,17 +177,16 @@ class MSFitsInput
   // This is an implementation helper class used to store 'local' data
   // during the filling process.
 public:
-  // Create from output and input file names
+  // Create from output and input file names. This function opens the input
+  // file, and checks the output file is writable.
   MSFitsInput(const String& msFile, const String& fitsFile);
 
+  // The destructor is fairly trivial.
   ~MSFitsInput();
 
-  // Has the filler been constructed ok? If false, do not use any other
-  // member functions.
-  Bool ok() {return True;}
-
-  // read the FITS file and create the MeasurementSet
-  Bool readFitsFile();
+  // Read all the data from the FITS file and create the MeasurementSet. Throws
+  // an exception when it has severe trouble interpreting the FITS file.
+  void readFitsFile();
 
 protected:
 
@@ -233,6 +232,13 @@ protected:
   void fixEpochReferences();
 
 private:
+  //# The default constructor is private and undefined
+  MSFitsInput();
+  //# The copy constructor is private and undefined
+  MSFitsInput(const MSFitsInput& other);
+  //# The assignment operator is private and undefined
+  MSFitsInput& operator=(const MSFitsInput& other);
+
   FitsInput* infile_p;
   String msFile_p;
   MSPrimaryGroupHolder priGroup_p;
