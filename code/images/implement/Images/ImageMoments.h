@@ -447,16 +447,26 @@ enum KernelTypes {
 // method.  The default state of the class is to not output the smoothed image. 
    Bool setSmoothOutName(const String& smOut);
 
-// This sets the name of the PGPLOT plotting device and the number of
-// subplots in x and y per page.  Note that even if you are not invoking an 
-// interactive method, but if it is necessary to determine the noise level of the
-// image, if you set the plotting device, this will be done interactively.
+// This sets the name of the PGPLOT plotting device, the number of
+// subplots in x and y per page and whether each spectrum plot is 
+// autoscaled individually (<src>yInd=False</src>) or they are 
+// plotted with the same range automatically determined from the image.
+// Plotting is not invoked for all states of the class.  It is only
+// needed for the interactive methods.  If you ask for a method that
+// needs to determine the noise from the image, and you set the
+// plottig device, then this will be done interactively.  Similarly,
+// if you invoke the automatic window or fit methods, but set the
+// plotting device, then you will see plots of the spectra and
+// the selected windows and fits, respectively.
+//
 // The default state of the class is that no plotting characteristics are set.
 // However, if you set <src>device</src> but offer a zero length array for
-// <src>nxy</src> then the latter is set to [1,1]
+// <src>nxy</src> then the latter is set to [1,1].   A return value
+// of <src>False</src> indicates that you gave roo many values in the
+// <src>nxy</src> vector.
    Bool setPlotting(const String& device,
-                    const Vector<Int>& nxy);
-
+                    const Vector<Int>& nxy,
+                    const Bool yInd=False);
 
 // Reset argument error condition.  If you specify invalid arguments to
 // one of the above functions, an internal flag will be set which will
@@ -517,6 +527,7 @@ private:
 
    Double peakSNR_p;
    Double stdDeviation_p;
+   Float yMin_p, yMax_p;
 
    String device_p; 
    String out_p;
@@ -525,6 +536,7 @@ private:
 
    Bool goodParameterStatus_p;
    Bool doWindow_p, doFit_p, doAuto_p, doSmooth_p, noInclude_p, noExclude_p;
+   Bool fixedYLimits_p;
 
 
 
@@ -582,7 +594,10 @@ private:
                         const Vector<Float>& smoothedData,
                         const Bool& doMedianI, 
                         const Bool& doMedianV,
-                        const Bool& doAbsDev);
+                        const Bool& doAbsDev,
+                        const Bool& doPlot,
+                        const String& momAxisType,
+                        const IPosition& pos);
 
 // Compute moments with the window method
    void doMomWin       (Vector<T>& calcMoments,
@@ -613,10 +628,13 @@ private:
                         const String& yLabel,
                         const String& title);
 
-// Draw a vertical line at a given abcissa 
-   void drawLoc        (const T& loc,
+// Draw a vertical line of the given length at a given abcissa 
+   void drawVertical   (const T& x,
                         const T& yMin,
                         const T& yMax);
+
+// Draw a horizintal line the full width of the plot
+   void drawHorizontal (const T& y);
 
 // Draw on lines marking the mean and +/- sigma                     
    void drawMeanSigma  (const T& dMean,   
