@@ -2694,3 +2694,4 @@
 10 019 src mv trial/implement/Measures/test/tEarthMagneticMachine.out aips/implement/Measures/test/tEarthMagneticMachine.out
 10 019 src mv trial/implement/Measures/test/tMEarthMagnetic.out aips/implement/Measures/test/tMEarthMagnetic.out
 10 019 src mv trial/implement/Measures/test/tEarthField.out aips/implement/Measures/test/tEarthField.out
+10 020 src mv trial/apps/datalinetool/dataline.g trial/implement/Datalinetool/dataline.g
