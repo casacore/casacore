@@ -309,10 +309,10 @@ Matrix<Float> rproduct (const Matrix<Complex> &A, const Matrix<Complex> &B) {
     throw (ArrayError("product - multiplication of" 
 		      " these matrices shapes is undefined"));
   Matrix<Float> result(A.nrow(), B.ncolumn());
-  for (Int i = 0; i < A.nrow(); i++) 
-    for (Int j = 0; j < B.ncolumn(); j++) {
+  for (uInt i = 0; i < A.nrow(); i++) 
+    for (uInt j = 0; j < B.ncolumn(); j++) {
       result(i,j) = 0.0;
-      for (Int k = 0; k < A.ncolumn(); k++) result(i,j) += 
+      for (uInt k = 0; k < A.ncolumn(); k++) result(i,j) += 
 		      real(A(i, k) * B(k, j));
     }
   return result;
@@ -323,9 +323,9 @@ Vector<Float> rproduct(const Matrix<Complex> &A, const Vector<Complex> &x) {
     throw (ArrayError("product - multiplication of" 
 		      " these matrices shapes is undefined"));
   Vector<Float> result(A.nrow());
-  for (Int i = 0; i < A.nrow(); i++) {
+  for (uInt i = 0; i < A.nrow(); i++) {
     result(i) = 0.0;
-    for (Int k = 0; k < A.ncolumn(); k++) result(i) += 
+    for (uInt k = 0; k < A.ncolumn(); k++) result(i) += 
 		    real(A(i, k) * x(k));
   }
   return result;
@@ -336,9 +336,9 @@ Vector<Complex> product(const Matrix<Complex> &A, const Vector<Float> &x) {
     throw (ArrayError("product - multiplication of" 
 		      " these matrices shapes is undefined"));
   Vector<Complex> result(A.nrow());
-  for (Int i = 0; i < A.nrow(); i++) {
+  for (uInt i = 0; i < A.nrow(); i++) {
     result(i) = Complex(0);
-    for (Int k = 0; k < A.ncolumn(); k++) result(i) += 
+    for (uInt k = 0; k < A.ncolumn(); k++) result(i) += 
 		    A(i, k) * x(k);
   }
   return result;
