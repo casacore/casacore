@@ -62,7 +62,7 @@
 // amount of cache memory consumed.
 //
 // Some Lattices (in particular PagedArrays) are stored (on disk) in
-// tiles. For an N-dimensional Lattice a tile is is an N-dimensional
+// tiles. For an N-dimensional Lattice a tile is an N-dimensional
 // subsection with fewer elements along each axis. For example a Lattice of
 // shape [512,512,4,32] may have a tile shape of [32,16,4,16], and there
 // will be 16*32*1*2 (=1024) tiles in the entire Lattice. To allow efficient
@@ -124,9 +124,14 @@
 // same as the number of elements in the Lattice along the axis the cursor
 // is aligned with.
 //
-// The cursor position can be incremented or decremented to retrieve the
-// next Vector in the Lattice. The position of the next Vector in the
-// Lattice will depend on the tile shape, and is described above.
+// The cursor position can be incremented or decremented to retrieve the next
+// or previous Vector in the Lattice. The position of the next Vector in the
+// Lattice will depend on the tile shape, and is described above. Within a tile
+// the Vector cursor will move first through the x-axis and then the y-axis
+// (assuming we have a cursor oriented along the z-axis). In general the lower
+// dimensions will be exhausted (within a tile) before moving the cursor
+// through higher dimensions. This intra-tile behaviour for cursor movement
+// extends to the inter-tile movement of the cursor between tiles. 
 //
 // This navigator does not currently support sub-sectioning.
 //
