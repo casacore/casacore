@@ -43,7 +43,6 @@
 #include <aips/Mathematics/Constants.h>
 #include <aips/Mathematics/Complex.h>
 #include <aips/Mathematics/Math.h>
-#include <aips/Measures/MCDirection.h>
 #include <aips/Measures/MDirection.h>
 #include <aips/Measures/MFrequency.h>
 #include <aips/Quanta/MVFrequency.h>
@@ -77,7 +76,7 @@ ComponentList::ComponentList()
   AlwaysAssert(ok(), AipsError);
 }
 
-ComponentList::ComponentList(const String & fileName, const Bool readOnly)
+ComponentList::ComponentList(const String& fileName, const Bool readOnly)
   :itsList(),
    itsNelements(0),
    itsTable(),
@@ -89,7 +88,7 @@ ComponentList::ComponentList(const String & fileName, const Bool readOnly)
   AlwaysAssert(ok(), AipsError);
 }
 
-ComponentList::ComponentList(const ComponentList & other)
+ComponentList::ComponentList(const ComponentList& other)
   :itsList(other.itsList),
    itsNelements(other.itsNelements),
    itsTable(other.itsTable),  
@@ -106,7 +105,7 @@ ComponentList::~ComponentList() {
   AlwaysAssert(ok(), AipsError);
 }
 
-ComponentList & ComponentList::operator=(const ComponentList & other){
+ComponentList& ComponentList::operator=(const ComponentList& other){
   if (this != &other) {
     if ((itsROFlag == False) && (itsTable.isNull() == False))
       writeTable();
@@ -121,9 +120,9 @@ ComponentList & ComponentList::operator=(const ComponentList & other){
   return *this;
 }
 
-Flux<Double> ComponentList::sample(const MDirection & sampleDir,
-				   const MVAngle & pixelSize,
-				   const MFrequency & centerFreq) const {
+Flux<Double> ComponentList::sample(const MDirection& sampleDir,
+				   const MVAngle& pixelSize,
+				   const MFrequency& centerFreq) const {
   DebugAssert(ok(), AipsError);
   const Unit retUnit("Jy");
   const ComponentType::Polarisation retPol(ComponentType::STOKES);
@@ -155,7 +154,7 @@ void ComponentList::add(SkyComponent component) {
   itsNelements++;
 }
 
-void ComponentList::remove(const uInt & index) {
+void ComponentList::remove(const uInt& index) {
   AlwaysAssert(itsROFlag == False, AipsError);
   AlwaysAssert(index < nelements(), AipsError);
   DebugAssert(ok(), AipsError);
@@ -171,7 +170,7 @@ void ComponentList::remove(const uInt & index) {
   }
 }
 
-void ComponentList::remove(const Vector<Int> & indices) {
+void ComponentList::remove(const Vector<Int>& indices) {
   Vector<Int> zeroCheck(indices);
   AlwaysAssert(allGE(zeroCheck, 0), AipsError);
   uInt c = indices.nelements();
@@ -188,7 +187,7 @@ uInt ComponentList::nelements() const {
   return itsNelements;
 }
 
-void ComponentList::deselect(const Vector<Int> & indexes) {
+void ComponentList::deselect(const Vector<Int>& indexes) {
   for (uInt i = 0; i < indexes.nelements(); i++) {
     AlwaysAssert(indexes(i) < Int(nelements()), AipsError);
     AlwaysAssert(indexes(i) >= 0, AipsError);
@@ -197,7 +196,7 @@ void ComponentList::deselect(const Vector<Int> & indexes) {
   DebugAssert(ok(), AipsError);
 }
 
-void ComponentList::select(const Vector<Int> & indexes) {
+void ComponentList::select(const Vector<Int>& indexes) {
   for (uInt i = 0; i < indexes.nelements(); i++) {
     AlwaysAssert(indexes(i) < Int(nelements()), AipsError);
     AlwaysAssert(indexes(i) >= 0, AipsError);
@@ -225,8 +224,8 @@ Vector<Int> ComponentList::selected() const {
   return retVal;
 }
 
-void ComponentList::setLabel(const Vector<Int> & which,
-			     const String & newLabel) {
+void ComponentList::setLabel(const Vector<Int>& which,
+			     const String& newLabel) {
   uInt c;
   for (uInt i = 0; i < which.nelements(); i++) {
     AlwaysAssert(which(i) >= 0, AipsError);
@@ -236,8 +235,8 @@ void ComponentList::setLabel(const Vector<Int> & which,
   DebugAssert(ok(), AipsError);
 }
 
-void ComponentList::setFlux(const Vector<Int> & which,
-			    const Flux<Double> & newFlux) {
+void ComponentList::setFlux(const Vector<Int>& which,
+			    const Flux<Double>& newFlux) {
   uInt c;
   for (uInt i = 0; i < which.nelements(); i++) {
     AlwaysAssert(which(i) >= 0, AipsError);
@@ -247,8 +246,8 @@ void ComponentList::setFlux(const Vector<Int> & which,
   DebugAssert(ok(), AipsError);
 }
 
-void ComponentList::convertFluxUnit(const Vector<Int> & which,
-				    const Unit & unit) {
+void ComponentList::convertFluxUnit(const Vector<Int>& which,
+				    const Unit& unit) {
   uInt c;
   for (uInt i = 0; i < which.nelements(); i++) {
     AlwaysAssert(which(i) >= 0, AipsError);
@@ -258,7 +257,7 @@ void ComponentList::convertFluxUnit(const Vector<Int> & which,
   DebugAssert(ok(), AipsError);
 }
   
-void ComponentList::convertFluxPol(const Vector<Int> & which,
+void ComponentList::convertFluxPol(const Vector<Int>& which,
 				   ComponentType::Polarisation pol) {
   uInt c;
   for (uInt i = 0; i < which.nelements(); i++) {
@@ -269,14 +268,14 @@ void ComponentList::convertFluxPol(const Vector<Int> & which,
   DebugAssert(ok(), AipsError);
 }
  
-void ComponentList::setRefDirection(const Vector<Int> & which,
-				    const MVDirection & newDir) {
+void ComponentList::setRefDirection(const Vector<Int>& which,
+				    const MVDirection& newDir) {
   uInt c;
   MDirection curDir;
   for (uInt i = 0; i < which.nelements(); i++) {
     AlwaysAssert(which(i) >= 0, AipsError);
     c = which(i);
-    ComponentShape & curShape = component(c).shape();
+    ComponentShape& curShape = component(c).shape();
     curDir = curShape.refDirection();
     curDir.set(newDir);
     curShape.setRefDirection(curDir);
@@ -284,7 +283,7 @@ void ComponentList::setRefDirection(const Vector<Int> & which,
   DebugAssert(ok(), AipsError);
 }
 
-void ComponentList::setRefDirectionFrame(const Vector<Int> & which,
+void ComponentList::setRefDirectionFrame(const Vector<Int>& which,
 					 MDirection::Types newFrame) {
   uInt c;
   MDirection curDir;
@@ -292,7 +291,7 @@ void ComponentList::setRefDirectionFrame(const Vector<Int> & which,
   for (uInt i = 0; i < which.nelements(); i++) {
     AlwaysAssert(which(i) >= 0, AipsError);
     c = which(i);
-    ComponentShape & curShape = component(c).shape();
+    ComponentShape& curShape = component(c).shape();
     curDir = curShape.refDirection();
     curDir.set(newRef);
     curShape.setRefDirection(curDir);
@@ -300,7 +299,7 @@ void ComponentList::setRefDirectionFrame(const Vector<Int> & which,
   DebugAssert(ok(), AipsError);
 }
 
-void ComponentList::convertRefDirection(const Vector<Int> & which,
+void ComponentList::convertRefDirection(const Vector<Int>& which,
 					MDirection::Types newFrame) {
   uInt c;
   MDirection::Convert converter;
@@ -309,15 +308,15 @@ void ComponentList::convertRefDirection(const Vector<Int> & which,
   for (uInt i = 0; i < which.nelements(); i++) {
     AlwaysAssert(which(i) >= 0, AipsError);
     c = which(i);
-    ComponentShape & curShape = component(c).shape();
+    ComponentShape& curShape = component(c).shape();
     curDir = curShape.refDirection();
     curShape.setRefDirection(converter(curDir));
   }
   DebugAssert(ok(), AipsError);
 }
 
-void ComponentList::setShape(const Vector<Int> & which,
-			     const ComponentShape & newShape) {
+void ComponentList::setShape(const Vector<Int>& which,
+			     const ComponentShape& newShape) {
   uInt c;
   for (uInt i = 0; i < which.nelements(); i++) {
     AlwaysAssert(which(i) >= 0, AipsError);
@@ -327,14 +326,14 @@ void ComponentList::setShape(const Vector<Int> & which,
   DebugAssert(ok(), AipsError);
 }
 
-void ComponentList::setShapeParms(const Vector<Int> & which,
-				  const ComponentShape & newShape) {
+void ComponentList::setShapeParms(const Vector<Int>& which,
+				  const ComponentShape& newShape) {
   uInt c;
   MDirection oldDir;
   for (uInt i = 0; i < which.nelements(); i++) {
     AlwaysAssert(which(i) >= 0, AipsError);
     c = which(i);
-    SkyComponent & comp = component(c);
+    SkyComponent& comp = component(c);
     oldDir = comp.shape().refDirection();
     component(c).setShape(newShape);
     comp.shape().setRefDirection(oldDir);
@@ -342,8 +341,8 @@ void ComponentList::setShapeParms(const Vector<Int> & which,
   DebugAssert(ok(), AipsError);
 }
 
-void ComponentList::setSpectrum(const Vector<Int> & which,
-				const SpectralModel & newSpectrum) {
+void ComponentList::setSpectrum(const Vector<Int>& which,
+				const SpectralModel& newSpectrum) {
   uInt c;
   for (uInt i = 0; i < which.nelements(); i++) {
     AlwaysAssert(which(i) >= 0, AipsError);
@@ -353,14 +352,14 @@ void ComponentList::setSpectrum(const Vector<Int> & which,
   DebugAssert(ok(), AipsError);
 }
 
-void ComponentList::setSpectrumParms(const Vector<Int> & which,
-				     const SpectralModel & newSpectrum) {
+void ComponentList::setSpectrumParms(const Vector<Int>& which,
+				     const SpectralModel& newSpectrum) {
   uInt c;
   MFrequency oldFreq;
   for (uInt i = 0; i < which.nelements(); i++) {
     AlwaysAssert(which(i) >= 0, AipsError);
     c = which(i);
-    SkyComponent & comp = component(c);
+    SkyComponent& comp = component(c);
     oldFreq = comp.spectrum().refFrequency();
     component(c).setSpectrum(newSpectrum);
     comp.spectrum().setRefFrequency(oldFreq);
@@ -368,14 +367,14 @@ void ComponentList::setSpectrumParms(const Vector<Int> & which,
   DebugAssert(ok(), AipsError);
 }
 
-void ComponentList::setRefFrequency(const Vector<Int> & which, 
-				    const MVFrequency & newFreq) {
+void ComponentList::setRefFrequency(const Vector<Int>& which, 
+				    const MVFrequency& newFreq) {
   uInt c;
   MFrequency curFreq;
   for (uInt i = 0; i < which.nelements(); i++) {
     AlwaysAssert(which(i) >= 0, AipsError);
     c = which(i);
-    SpectralModel & curSpectrum = component(c).spectrum();
+    SpectralModel& curSpectrum = component(c).spectrum();
     curFreq = curSpectrum.refFrequency();
     curFreq.set(newFreq);
     curSpectrum.setRefFrequency(curFreq);
@@ -383,7 +382,7 @@ void ComponentList::setRefFrequency(const Vector<Int> & which,
   DebugAssert(ok(), AipsError);
 }
 
-void ComponentList::setRefFrequencyFrame(const Vector<Int> & which,
+void ComponentList::setRefFrequencyFrame(const Vector<Int>& which,
 					 MFrequency::Types newFrame) {
   uInt c;
   MFrequency curFreq;
@@ -391,7 +390,7 @@ void ComponentList::setRefFrequencyFrame(const Vector<Int> & which,
   for (uInt i = 0; i < which.nelements(); i++) {
     AlwaysAssert(which(i) >= 0, AipsError);
     c = which(i);
-    SpectralModel & curSpectrum = component(c).spectrum();
+    SpectralModel& curSpectrum = component(c).spectrum();
     curFreq = curSpectrum.refFrequency();
     curFreq.set(newRef);
     curSpectrum.setRefFrequency(curFreq);
@@ -400,8 +399,8 @@ void ComponentList::setRefFrequencyFrame(const Vector<Int> & which,
 }
 
 
-void ComponentList::setRefFrequencyUnit(const Vector<Int> & which,
-					const Unit & unit) {
+void ComponentList::setRefFrequencyUnit(const Vector<Int>& which,
+					const Unit& unit) {
   uInt c;
   for (uInt i = 0; i < which.nelements(); i++) {
     AlwaysAssert(which(i) >= 0, AipsError);
@@ -411,20 +410,20 @@ void ComponentList::setRefFrequencyUnit(const Vector<Int> & which,
   DebugAssert(ok(), AipsError);
 }
 
-SkyComponent & ComponentList::component(const uInt & index) {
+SkyComponent& ComponentList::component(const uInt& index) {
   AlwaysAssert(itsROFlag == False, AipsError);
   AlwaysAssert(index < nelements(), AipsError);
   DebugAssert(ok(), AipsError);
   return itsList[itsOrder[index]];
 }
 
-const SkyComponent & ComponentList::component(const uInt & index) const {
+const SkyComponent& ComponentList::component(const uInt& index) const {
   DebugAssert(ok(), AipsError);
   AlwaysAssert(index < nelements(), AipsError);
   return itsList[itsOrder[index]];
 }
 
-void ComponentList::rename(const String & fileName, 
+void ComponentList::rename(const String& fileName, 
 			   const Table::TableOption option) {
   AlwaysAssert(option != Table::Old, AipsError);
   AlwaysAssert(itsROFlag == False, AipsError);
@@ -523,7 +522,7 @@ String ComponentList::name(ComponentList::SortCriteria enumerator) {
   };
 }
 
-ComponentList::SortCriteria ComponentList::type(const String & criteria) {
+ComponentList::SortCriteria ComponentList::type(const String& criteria) {
   String canonicalCase(criteria);
   canonicalCase.capitalize();
   for (uInt i = 0; i < ComponentList::NUMBER_CRITERIA; i++) {
@@ -582,7 +581,7 @@ Bool ComponentList::ok() const {
   return True;
 }
 
-void ComponentList::createTable(const String & fileName,
+void ComponentList::createTable(const String& fileName,
 				const Table::TableOption option) {
   // Build a default table description
   TableDesc td("ComponentListDescription", "3", TableDesc::Scratch);  
@@ -593,10 +592,10 @@ void ComponentList::createTable(const String & fileName,
 	fluxValCol("Flux", "Flux values", IPosition(1,4), ColumnDesc::Direct);
       td.addColumn(fluxValCol);
       const ScalarColumnDesc<String>
-	fluxUnitCol("Flux Unit", "Flux units", ColumnDesc::Direct);
+	fluxUnitCol("Flux_Unit", "Flux units", ColumnDesc::Direct);
       td.addColumn(fluxUnitCol);
       const ScalarColumnDesc<String> 
-	fluxPolCol("Flux Polarisation", "Flux polarisation representation", 
+	fluxPolCol("Flux_Polarisation", "Flux polarisation representation", 
 		   ColumnDesc::Direct);
       td.addColumn(fluxPolCol);
     }
@@ -604,12 +603,12 @@ void ComponentList::createTable(const String & fileName,
       const ScalarColumnDesc<String> 
 	shapeCol("Shape", "Shape of the Component", ColumnDesc::Direct);
       td.addColumn(shapeCol);
-      const String dirValColName = "Reference Direction";
+      const String dirValColName = "Reference_Direction";
       const ArrayColumnDesc<Double> 
 	dirValCol(dirValColName, "Reference direction values",
 		  IPosition(1,3), ColumnDesc::Direct);
       td.addColumn(dirValCol);
-      const String dirRefColName = "Direction Frame";
+      const String dirRefColName = "Direction_Frame";
       const ScalarColumnDesc<String>
 	dirRefCol(dirRefColName, "The reference direction frame", 
 		  ColumnDesc::Direct);
@@ -619,21 +618,21 @@ void ComponentList::createTable(const String & fileName,
       TableMeasDesc<MDirection> dirTMCol(dirValTMCol, dirRefTMCol);
       dirTMCol.write(td);
       const ArrayColumnDesc<Double> 
-	shapeParmCol("Shape Parameters",
+	shapeParmCol("Shape_Parameters",
 		     "Parameters specific to the component shape", 1);
       td.addColumn(shapeParmCol);
     }
     {
       const ScalarColumnDesc<String>
-	freqShapeCol("Spectrum Shape", "Shape of the spectrum", 
+	freqShapeCol("Spectrum_Shape", "Shape of the spectrum", 
 		     ColumnDesc::Direct);
       td.addColumn (freqShapeCol);
-      const String freqValColName = "Reference Frequency";
+      const String freqValColName = "Reference_Frequency";
       const ArrayColumnDesc<Double>
 	freqValCol(freqValColName, "The reference frequency values", 
 		     IPosition(1,1), ColumnDesc::Direct);
       td.addColumn(freqValCol);
-      const String freqRefColName = "Frequency Frame";
+      const String freqRefColName = "Frequency_Frame";
       const ScalarColumnDesc<String>
 	freqRefCol(freqRefColName, "The reference frequency frame", 
 		   ColumnDesc::Direct);
@@ -643,7 +642,7 @@ void ComponentList::createTable(const String & fileName,
       TableMeasDesc<MFrequency> freqTMCol(freqValTMCol, freqRefTMCol);
       freqTMCol.write(td);
       const ArrayColumnDesc<Double> 
-	specParmCol("Spectral Shape Parameters", 
+	specParmCol("Spectral_Parameters", 
 		    "Parameters specific to the components spectrum", 1);
       td.addColumn(specParmCol);
     }
@@ -678,16 +677,14 @@ void ComponentList::writeTable() {
 	itsTable.removeRow(r);
   }
   ArrayColumn<DComplex> fluxValCol(itsTable, "Flux");
-  ScalarColumn<String> fluxUnitCol(itsTable, "Flux Unit");
-  ScalarColumn<String> fluxPolCol(itsTable, "Flux Polarisation");
+  ScalarColumn<String> fluxUnitCol(itsTable, "Flux_Unit");
+  ScalarColumn<String> fluxPolCol(itsTable, "Flux_Polarisation");
   ScalarColumn<String> shapeCol(itsTable, "Shape");
-  ScalarMeasColumn<MDirection,MVDirection> dirCol(itsTable,
-						  "Reference Direction");
-  ArrayColumn<Double> shapeParmCol(itsTable, "Shape Parameters");
-  ScalarColumn<String> specShapeCol(itsTable, "Spectrum Shape");
-  ScalarMeasColumn<MFrequency,MVFrequency> freqCol(itsTable,
-						  "Reference Frequency");
-  ArrayColumn<Double> specShapeParmCol(itsTable, "Spectral Shape Parameters");
+  MDirection::ScalarColumn dirCol(itsTable, "Reference Direction");
+  ArrayColumn<Double> shapeParmCol(itsTable, "Shape_Parameters");
+  ScalarColumn<String> specShapeCol(itsTable, "Spectrum_Shape");
+  MFrequency::ScalarColumn freqCol(itsTable, "Reference_Frequency");
+  ArrayColumn<Double> specShapeParmCol(itsTable, "Spectral_Parameters");
   ScalarColumn<String> labelCol(itsTable, "Label");
   
   MDirection compDir;
@@ -700,7 +697,7 @@ void ComponentList::writeTable() {
       fluxPolCol.put(i, ComponentType::name(component(i).flux().pol()));
     }
     {
-      const ComponentShape & compShape = component(i).shape();
+      const ComponentShape& compShape = component(i).shape();
       shapeCol.put(i, ComponentType::name(compShape.type()));
       compDir = compShape.refDirection();
       dirCol.put(i, compDir);
@@ -709,7 +706,7 @@ void ComponentList::writeTable() {
       shapeParmCol.put(i, shapeParms);
     }
     {
-      const SpectralModel & compSpectrum = component(i).spectrum();
+      const SpectralModel& compSpectrum = component(i).spectrum();
       specShapeCol.put(i, ComponentType::name(compSpectrum.type()));
       freqCol.put(i, compSpectrum.refFrequency());
       spectralParms.resize(compSpectrum.nParameters());
@@ -722,7 +719,7 @@ void ComponentList::writeTable() {
   }
 }
 
-void ComponentList::readTable(const String & fileName, const Bool readOnly) {
+void ComponentList::readTable(const String& fileName, const Bool readOnly) {
   {
     if (readOnly) {
       AlwaysAssert(Table::isReadable(fileName), AipsError);
@@ -738,17 +735,15 @@ void ComponentList::readTable(const String & fileName, const Bool readOnly) {
     }
   }
   const ROArrayColumn<DComplex> fluxValCol(itsTable, "Flux");
-  const ROScalarColumn<String> fluxUnitCol(itsTable, "Flux Unit");
-  const ROScalarColumn<String> fluxPolCol(itsTable, "Flux Polarisation");
+  const ROScalarColumn<String> fluxUnitCol(itsTable, "Flux_Unit");
+  const ROScalarColumn<String> fluxPolCol(itsTable, "Flux_Polarisation");
   const ROScalarColumn<String> shapeCol(itsTable, "Shape");
-  const ROScalarMeasColumn<MDirection,MVDirection> 
-    dirCol(itsTable, "Reference Direction");
-  const ROArrayColumn<Double> shapeParmCol(itsTable, "Shape Parameters");
-  const ROScalarColumn<String> specShapeCol(itsTable, "Spectrum Shape");
-  const ROScalarMeasColumn<MFrequency,MVFrequency> 
-    freqCol(itsTable, "Reference Frequency");
-  const ROArrayColumn<Double> 
-    specShapeParmCol(itsTable, "Spectral Shape Parameters");
+  const MDirection::ROScalarColumn dirCol(itsTable, "Reference_Direction");
+  const ROArrayColumn<Double> shapeParmCol(itsTable, "Shape_Parameters");
+  const ROScalarColumn<String> specShapeCol(itsTable, "Spectrum_Shape");
+  const MFrequency::ROScalarColumn freqCol(itsTable, "Reference_Frequency");
+  const ROArrayColumn<Double> specShapeParmCol(itsTable,
+					       "Spectral_Parameters");
   const ROScalarColumn<String> labelCol(itsTable, "Label");
   SkyComponent currentComp;
   const uInt nComp = fluxValCol.nrow();
@@ -772,7 +767,7 @@ void ComponentList::readTable(const String & fileName, const Bool readOnly) {
     }
     {
       dirCol.get(i, compDir);
-      ComponentShape & compShape = currentComp.shape();
+      ComponentShape& compShape = currentComp.shape();
       compShape.setRefDirection(compDir);
       shapeParms.resize(0);
       shapeParmCol.get(i, shapeParms);
@@ -780,7 +775,7 @@ void ComponentList::readTable(const String & fileName, const Bool readOnly) {
     }
     {
       freqCol.get(i, compFreq);
-      SpectralModel & compSpectrum = currentComp.spectrum();
+      SpectralModel& compSpectrum = currentComp.spectrum();
       compSpectrum.setRefFrequency(compFreq);
       spectralParms.resize(0);
       specShapeParmCol.get(i, spectralParms);
@@ -794,5 +789,5 @@ void ComponentList::readTable(const String & fileName, const Bool readOnly) {
   itsROFlag = readOnly;
 }
 // Local Variables: 
-// compile-command: "gmake OPTLIB=1 ComponentList"
+// compile-command: "gmake ComponentList"
 // End: 
