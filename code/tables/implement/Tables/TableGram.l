@@ -86,7 +86,7 @@ USTRING   ({UQSTRING}|{UASTRING})+
 SELECT    [Ss][Ee][Ll][Ee][Cc][Tt]
 FROM      [Ff][Rr][Oo][Mm]
 WHERE     [Ww][Hh][Ee][Rr][Ee]
-ORDERBY   [Oo][Rr][Dd][Ee][Rr][Bb][Yy]
+ORDERBY   [Oo][Rr][Dd][Ee][Rr]{WHITE}[Bb][Yy]
 NODUPL    [Nn][Oo][Dd][Uu][Pp][Ll][Ii][Cc][Aa][Tt][Ee][Ss]
 GIVING    [Gg][Ii][Vv][Ii][Nn][Gg]
 ASC       [Aa][Ss][Cc]
@@ -144,6 +144,14 @@ NAMETAB   ([A-Za-z0-9_./+\-~$]|(\\.))+
 {NODUPL}  {
             tableGramPosition() += yyleng;
 	    return NODUPL;
+          }
+{DESC}    {
+            tableGramPosition() += yyleng;
+	    return SORTDESC;
+          }
+{ASC}     {
+            tableGramPosition() += yyleng;
+	    return SORTASC;
           }
 {GIVING}  {
             tableGramPosition() += yyleng;
@@ -203,16 +211,6 @@ NAMETAB   ([A-Za-z0-9_./+\-~$]|(\\.))+
 ")"       { tableGramPosition() += yyleng; return RPAREN; }
 ","       { tableGramPosition() += yyleng; return COMMA; }
 
- /* In the ORDERBY clause the sort qualifier ASC or DESC can be given.
- */
-{DESC}    {
-            tableGramPosition() += yyleng;
-	    return SORTDESC;
-          }
-{ASC}     {
-            tableGramPosition() += yyleng;
-	    return SORTASC;
-          }
 
  /* Literals */
 {COMPLEX} {
