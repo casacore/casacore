@@ -86,6 +86,7 @@
   ARGS=
   AU=
   OPER="chmod a-w"
+  SAVE_RESULTS=
   FILES=
   DIRS=
   for i
@@ -101,10 +102,13 @@
 
      case $i in
      -l)
-        OPER=":"
+        OPER="rm -f"
+        SAVE_RESULTS="tar cf o.tmp.tar"
         continue
         ;;
      -u)
+        OPER="rm -f"
+        SAVE_RESULTS="tar cf o.tmp.tar"
         continue
         ;;
      -*)
@@ -175,13 +179,25 @@
   else
      COMMAND="cd $PGMRDIR &&"
   fi
-  COMMAND="$COMMAND ai -I $ARGS && rm -f $FILES"
+  COMMAND="$COMMAND ai -I $ARGS"
+  if [ "$SAVE_RESULTS" ]
+  then
+     COMMAND="$COMMAND && $SAVE_RESULTS $FILES"
+  fi
+  COMMAND="$COMMAND && rm -f $FILES"
   $ARSH /aips++/weekly/.rshexec sh -c \'\""$COMMAND"\"\'
 
   [ "$FILES" ] && $OPER $FILES
 
+# Retrieve results if they were saved
+  if [ "$SAVE_RESULTS" ]
+  then
+     scp -qpC $AUID@aips2.nrao.edu:$PGMRDIR/o.tmp.tar o.tmp.tar && tar pvxf o.tmp.tar > /dev/null
+     $ARSH /aips++/weekly/.rshexec sh -c \'\""cd $PGMRDIR && rm -f o.tmp.tar"\"\'
+     rm -f o.tmp.tar
+  fi
+
 # Update the local installation?
   [ "$AU" ] && rau $FILES $DIRS
-
 
   exit 0
