@@ -4360,3 +4360,11 @@
 14 247 src rm trial/apps/measures/TAI_UTC/table.f0
 14 247 src rm trial/apps/measures/TAI_UTC/table.info
 14 247 src rm trial/apps/measures/TAI_UTC/table.lock
+14 247 src rm trial/apps/measures/DE200
+14 247 src rm trial/apps/measures/DE405
+14 247 src rm trial/apps/measures/IERSeop97
+14 247 src rm trial/apps/measures/IERSpredict
+14 247 src rm trial/apps/measures/IGRF
+14 247 src rm trial/apps/measures/Observatories
+14 247 src rm trial/apps/measures/Sources
+14 247 src rm trial/apps/measures/TAI_UTC
