@@ -31,7 +31,7 @@
 #include <aips/Containers/Record.h>
 #include <trial/FITS/FITSUtil.h>
 
-#include <ostream.h>
+#include <iostream.h>
 
 String ObsInfo::defaultTelescope()
 {
