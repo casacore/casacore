@@ -274,7 +274,7 @@ HDSLIB   := -lhds -lems -lchr -lcnf
 
 # Default package-dependent link lists for shared library linking.
 XLIBLIST_shared_aips  := GLISH X11 LAPACK F77
-XLIBLIST_shared_trial := GLISH XmPGPLOT XPM Motif X11 WCSLIB LAPACK F77
+XLIBLIST_shared_trial := GLISH XmPGPLOT XPM Motif X11 MIRLIB WCSLIB LAPACK F77
 XLIBLIST_shared_trialdisplay := $(XLIBLIST_shared_trial)
 XLIBLIST_shared_nrao  := $(XLIBLIST_shared_trial)
 XLIBLIST_shared_atnf  := RPFITS $(XLIBLIST_shared_trial)
