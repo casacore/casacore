@@ -46,7 +46,6 @@
 #include <aips/Functionals/Function1D.h>
 #include <aips/Functionals/FunctionND.h>
 #include <aips/Functionals/SampledFunctional.h>
-#include <aips/Functionals/FuncWithDerivs.h>
 
 //# 1-D Functions
 #include <aips/Functionals/Polynomial.h>
