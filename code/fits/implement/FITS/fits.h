@@ -1,5 +1,5 @@
 //# fits.h:
-//# Copyright (C) 1993,1994,1995,1996,1997,1999,2000,2001,2003
+//# Copyright (C) 1993,1994,1995,1996,1997,1999,2000,2001,2003,2004
 //# Associated Universities, Inc. Washington DC, USA.
 //# 
 //# This library is free software; you can redistribute it and/or modify it
@@ -36,22 +36,9 @@
 # include <aips/Mathematics/IComplex.h>
 # include <aips/FITS/FITSError.h>
 
-//#  Automatically configure for known LITTLE ENDIAN systems
-#if !(defined(AIPS_LITTLE_ENDIAN))
-#  if (defined(__alpha) || defined(i386))
-#    define AIPS_LITTLE_ENDIAN
-#  endif
-#endif
-//#
-
-//# All FITS code seems to assume longs are 4 bytes. Take care of machines 
-//# for which this isn't true here by defining FitsLong to be the 4 byte int.
-//# Use FitsLong instead of long in the FITS code where it matters.
-# if (defined(__alpha) || defined(__sgi))
-    typedef Int FitsLong;
-# else
-    typedef Long FitsLong;
-# endif 
+//# All FITS code seems to assume longs are 4 bytes. To take care of machines 
+//# for which this isn't true use FitsLong instead of Long in the FITS code
+//# where it matters.
 
 class ReservedFitsKeywordCollection; // Forward declarations
 class FitsNameResult;
