@@ -206,11 +206,19 @@ public:
 		      const Vector<MVFrequency>& frequencies,
 		      const MeasRef<MFrequency>& freqRef) const;
 
-  // See the corresponding functions in the
+  // See the corresponding function in the
   // <linkto class="SkyCompBase">SkyCompBase</linkto>
   // class for a description of this function.
   virtual Flux<Double> visibility(const Vector<Double> & uvw,
 				  const Double & frequency) const;
+
+  // See the corresponding function in the
+  // <linkto class="SkyCompBase">SkyCompBase</linkto>
+  // class for a description of this function.
+  virtual void visibility(Cube<DComplex>& visibilities,
+			  const Matrix<Double>& uvws,
+			  const Vector<Double>& frequencies) const;
+
   // See the corresponding functions in the
   // <linkto class="SkyCompBase">SkyCompBase</linkto>
   // class for a description of these functions.
