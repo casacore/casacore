@@ -609,12 +609,12 @@ Bool CoordinateUtil::makeDirectionMachine(LogIO& os, MDirection::Convert& machin
 // and position in the machine.  
 
    Double t = epochFrom.getValue().get();
-   if (near(t,0.0)) {
+   if (t<0.0) {
       os << "In setting up the DirectionCoordinate conversion machinery" << endl;
       os << "The output CoordinateSystem has no valid epoch" << LogIO::EXCEPTION;
    }
    t = epochTo.getValue().get();
-   if (near(t,0.0)) {
+   if (t<0.0)) {
       os << "In setting up the DirectionCoordinate conversion machinery" << endl;
       os << "The input CoordinateSystem has no valid epoch" << LogIO::EXCEPTION;
    }
@@ -725,7 +725,7 @@ Bool CoordinateUtil::makeFrequencyMachine(LogIO& os, MFrequency::Convert& machin
       }
       const DirectionCoordinate& dCoord = coordsTo.directionCoordinate(c);   
       const Vector<Double>& rp = dCoord.referencePixel();   
-      if (dCoord.toWorld(dirTo, rp)) {
+      if (!dCoord.toWorld(dirTo, rp)) {
          os << dCoord.errorMessage() << LogIO::EXCEPTION;
       }
    }
@@ -811,12 +811,12 @@ Bool CoordinateUtil::makeFrequencyMachine(LogIO& os, MFrequency::Convert& machin
 // Add Epoch   
 
    Double t = epochFrom.getValue().get();
-   if (near(t,0.0)) {
+   if (t<0.0) {
       os << "In setting up the SpectralCoordinate conversion machinery" << endl;
       os << "The output CoordinateSystem has no valid epoch" << LogIO::EXCEPTION;
    }
    t = epochTo.getValue().get();
-   if (near(t,0.0)) {
+   if (t<0.0) {
       os << "In setting up the SpectralCoordinate conversion machinery" << endl;
       os << "The input CoordinateSystem has no valid epoch" << LogIO::EXCEPTION;
    }
@@ -851,7 +851,7 @@ Bool CoordinateUtil::makeFrequencyMachine(LogIO& os, MFrequency::Convert& machin
       os << "the radial velocity - this is not implemented yet" << LogIO::EXCEPTION;
    }
 //
-   return machine.isNOP();
+   return ok;
 }
 
 
