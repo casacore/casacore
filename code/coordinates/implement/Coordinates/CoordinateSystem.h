@@ -60,7 +60,7 @@ class IPosition;
 // typically attached to an 
 // <linkto class=ImageInterface>ImageInterface</linkto>, however the
 // coordinate system can be manipulated on its own. <src>CoordinateSystem</src>
-// is in turn composed from various classes derived from
+// is in turn composed from various classes derived from the base class
 // <linkto class=Coordinate>Coordinate</linkto>.
 // <p>
 // The fundamental operations available to the user of a 
@@ -84,7 +84,6 @@ class IPosition;
 //        Removing a world axis also removes the corresponding pixel axis.
 //   <li> Calculate the coordinate system that results from a subimage
 //        operation.
-//   <li> Various convenience functions to create "standard" coordinate systems.
 // </ol>
 //
 // Note that all the knowledge to do with removing and transposing axes is
@@ -102,11 +101,13 @@ class IPosition;
 // <p>
 // However, the CoordinateSystem may have more world axes than pixel axes
 // because it is possible to remove a pixel axis but not its associated
-// world axis.   Now, if you use the CoordinateSystem functions 
-// referencePixel and referenceValue to get these vectors, the latter
-// will have more values than the former if a pixel axis has been removed,
-// but not the world axis.  You must use the ancilliary functions provided
-// to find out what is where.
+// world axis (for example for a moment image).   Now, if you use
+// the CoordinateSystem functions 
+// referencePixel and referenceValue, you will find the vector of reference
+// values will have more values than the vector of reference pixels,
+// if a pixel axis has been removed but not the world axis.  You 
+// must use the ancilliary functions provided
+// to find out what is where.   
 // <p>
 // Let's consider an example where a CoordinateSystem consisted of
 // a DirectionCoordinate and a SpectralCoordinate.  Let us say that
@@ -130,7 +131,7 @@ class IPosition;
 // CoordinateSystem knows about removed axes, the DirectionCoordinate
 // itself is ignorant that it has been bisected. If you want to find
 // out what axis in the Coordinate system is where, you can use
-// CoordinateSystem::findPixelAxis or CoordinateSystem::findWorldAxis.
+// the functions findPixelAxis or findWorldAxis.
 // If we asked the former to find pixel axis 0, it would tell us that the
 // Coordinate number was 0 (the DirectionCoordinate) and that the axis in
 // that coordinate was 0 (the first axis in a DirectionCoordinate
@@ -138,7 +139,7 @@ class IPosition;
 // pxiel axis 1, it would tell us that the Coordinate number was 1
 // (the SpectralCoordinate) and that the axis in that coordinate was 0
 // (there is only one axis in a SpectralCoordinate). If we asked for
-// pixelAxis 2 that would generate an error because out squashed image
+// pixelAxis 2 that would generate an error because our squashed image
 // only has 2 pixel axes. Now, if we asked findWorldAxis similar questions,
 // it would tell us that worldAxis 0 in the CoordinateSystem can be found in
 // coordinate 0 (the DirectionCoordinate) in axis 0 of that DirectionCoordinate.
@@ -147,8 +148,8 @@ class IPosition;
 // Finally, worldAxis 2 in the CoordinateSystem is in coordinate 1 
 // (the SpectralCoordinate) in axis 0 of that SpectralCoordinate.
 // <p>
-// Other handy functions are CoordinateSystem::pixelAxes and
-// CoordinateSystem::worldAxes These list the pixel and world axes in
+// Other handy functions are pixelAxes and worldAxes.
+// These list the pixel and world axes in
 // the CoordinateSystem for the specified coordinate. Thus, if we asked
 // pixelAxes to find the pixel axes for coordinate 0 (the  DirectionCoordinate)
 // in the CoordinateSystem it would return a vector [0, -1]  indicating
@@ -157,8 +158,8 @@ class IPosition;
 // Similarly, if operated on coordinate 1 (the SpectralCoordinate), pixelAxes
 // would return [1] and worldAxes would return [2].
 //
-// Because you can transpose the CoordinateSystem about, you should never assume
-// anything except that the pixel axes of the CoordinateSystem map to the pixel
+// Because you can transpose the CoordinateSystem about, you should NEVER ASSUME
+// ANYTHING except that the pixel axes of the CoordinateSystem map to the pixel
 // axes of the image when you first construct the image.
 // </synopsis>
 
@@ -181,6 +182,7 @@ class IPosition;
 class CoordinateSystem : public Coordinate
 {
 public:
+    // Default constructor
     CoordinateSystem();
 
     // Copying and assignment use copy semantics.
@@ -189,6 +191,7 @@ public:
     CoordinateSystem &operator=(const CoordinateSystem &other);
     // </group>
 
+    // Destructor
     ~CoordinateSystem();
 
     // Add another coordinate to this coordinate system. This addition is done
@@ -205,19 +208,19 @@ public:
                    const Vector<Int> &newPixelOrder);
 
     // Find the world axis mapping to the supplied <src>CoordinateSystem</src>
-    // from the current <src>CoordinateSystem</src>. <src>False</src> is 
-    // returned if either the supplied or current <src>CoordinateSystem</src>, 
+    // from the current coordinate system. <src>False</src> is 
+    // returned if either the supplied or current coordinate system, 
     // has no world axes (and a message recoverable with function
     // <src>errorMessage</src> indicating why).  Othwerwise <src>True</src> is returned.
     // <src>worldAxisMap(i)</src> is the location of world axis <src>i</src> (from the
-    // supplied <src>CoordinateSystem</src>, <src>cSys</src>,
-    // in the current <src>CoordinateSystem</src>.
+    // supplied coordinate system, <src>cSys</src>,
+    // in the current coordinate system.
     // <src>worldAxisTranspose(i)</src> is the location of world axis 
-    // <src>i</src> (from the current <src>CoordinateSystem</src>) in the supplied 
-    // <src>CoordinateSystem</src>, <src>cSys</src>.  The output vectors
+    // <src>i</src> (from the current coordinate system) in the supplied 
+    // coordinate system, <src>cSys</src>.  The output vectors
     // are resized appropriately by this function.  A value of  -1 
     // in either vector means that it could not be found in the other
-    // <src>CoordinateSystem</src>.  Note that two world axes of the
+    // coordinate system.  Note that two world axes of the
     // same coordinate type (e.g. <src>SpectralCoordinate</src>)
     // will be considered to not  match if their specific types are 
     // different (e.g. TOPO versus LSR for the <src>SpectralCoordinate</src>, 
@@ -242,10 +245,12 @@ public:
     Bool removePixelAxis(uInt axis, Double replacement);
     // </group>
 
-    // Both vectors should be of length nPixelAxes(). At present this will throw
-    // an exception if <src>nPixelAxes() != nWorldAxes()</src>. 
+    // Return a coordinate system appropriate for a shift of origin
+    // (the shift is subtracted from the reference pixel)
+    // and change of increment (the increments are multipled
+    // by the factor). Both vectors should be of length nPixelAxes(). 
     CoordinateSystem subImage(const Vector<Int> &originShift,
-			      const Vector<Int> &pixincFac) const;
+			      const Vector<Int> &incrFac) const;
 
     // Untranspose and undelete all axes. Does not undo the effects of
     // subimaging.
@@ -258,9 +263,10 @@ public:
 
     // For a given coordinate say where its world and coordinate axes are in
     // this coordinate system. The position in the returned Vector is its
-    // axis number in the Coordinate system, and its value is the axis
-    // number in the CoordinateSystem. If the value is less than zero the axis
-    // has been removed from this CoordinateSystem.  <group>
+    // axis number in the coordinate system, and its value is the axis
+    // number in the coordinate system. If the value is less than zero the axis
+    // has been removed from this coordinate system.
+    //  <group>
     Vector<Int> worldAxes(uInt whichCoord) const;
     Vector<Int> pixelAxes(uInt whichCoord) const;
     // </group> 
@@ -268,10 +274,11 @@ public:
     // Return the type of the given coordinate.
     Coordinate::Type type(uInt whichCoordinate) const;
 
-    // Returns the type of the given coordinate
+    // Returns the type of the given coordinate as a string
     String showType(uInt whichCoordinate) const;
 
-    // Return the given coordinate.
+    // Return the given coordinate as a reference to the base
+    // class object
     const Coordinate &coordinate(uInt which) const;
 
     // Return the given coordinate.
@@ -298,10 +305,9 @@ public:
     // type is not found.
     Int findCoordinate(Coordinate::Type type, Int afterCoord = -1) const;
 
-    // Turn an axis number in the coordinate system into the coordinate number
-    // and axis in that coordinate. That is, this function undoes the effects
-    // of transposing and removing axes. The returned values are set to -1 if
-    // the axis does not exist.
+    // Given an axis number (pixel or world) in the coordinate system,
+    // find the corresponding coordinate number and axis in that coordinate. 
+    // The returned values are set to -1 if the axis does not exist
     // <group>
     void findWorldAxis(Int &coordinate, Int &axisInCoordinate, 
 		       uInt axisInCoordinateSystem) const;
@@ -326,14 +332,14 @@ public:
     virtual String showType() const;
 
     // Sums the number of axes in the coordinates that the coordinate system
-    // contains, correcting for removed axes.
+    // contains, allowing for removed axes.
     // <group>
     virtual uInt nPixelAxes() const;
     virtual uInt nWorldAxes() const;
     // </group>
 
 
-    // Convert a pixel position to a worl position or vice versa. Returns True
+    // Convert a pixel position to a world position or vice versa. Returns True
     // if the conversion succeeds, otherwise it returns False and
     // <src>errorMessage()</src> contains an error message. The output vectors
     // are resized.
@@ -348,7 +354,7 @@ public:
     // operation through CoordinateSystem.  The output vector is resized.   
     Bool toWorld(Vector<Double> &world, const IPosition &pixel) const;
 
-    // Report the value of the requested attributed.
+    // Return the requested attribute.
     // <group>
     virtual Vector<String> worldAxisNames() const;
     virtual Vector<Double> referencePixel() const;
@@ -358,7 +364,7 @@ public:
     virtual Vector<String> worldAxisUnits() const;
     // </group>
 
-    // Set the value of the requested attribute.  Note that these just
+    // Set the requested attribute.  Note that these just
     // change the internal values, they do not cause any recomputation.
     // <group>
     virtual Bool setWorldAxisNames(const Vector<String> &names);
@@ -407,15 +413,16 @@ public:
     void setObsInfo(const ObsInfo &obsinfo);
     // </group>
 
-    // Save ourself into the supplised record using the supplied field name.
+    // Save ourself into the supplied record using the supplied field name.
     // The field must not exist, otherwise <src>False</src> is returned.
     virtual Bool save(RecordInterface &container,
 		    const String &fieldName) const;
 
+    // Restore the coordinate system from a record.
     // A null pointer means that the restoration did not succeed - probably 
     // because fieldName doesn't exist or doesn't contain a coordinate system.
     static CoordinateSystem *restore(const RecordInterface &container,
-				   const String &fieldName);
+ 				   const String &fieldName);
 
     // Make a copy of ourself using new. The caller is responsible for calling
     // delete.
