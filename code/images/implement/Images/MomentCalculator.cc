@@ -31,7 +31,6 @@
 #include <aips/Arrays/Vector.h>
 #include <aips/Arrays/ArrayMath.h>
 #include <trial/Fitting/NonLinearFitLM.h>
-#include <aips/Functionals/Gaussian1D.h>
 #include <aips/Functionals/Polynomial.h>
 #include <aips/Functionals/SumFunction.h>
 #include <trial/Functionals/FuncWithAutoDerivs.h>
@@ -1683,7 +1682,7 @@ MomentClip<T>::MomentClip(Lattice<T>* pMaskLattice,
    momAxisType_p = momentAxisName(iMom_p);
 
 // Are we computing coordinate-dependent moments.  If
-// soo precompute coordinate vector is momebt axis separable
+// so precompute coordinate vector is momebt axis separable
 
    doCoordCalc_p = doCoordCalc(iMom_p);
    if (doCoordCalc_p) setUpCoords(iMom_p, pixelIn_p, worldOut_p,
@@ -2276,8 +2275,8 @@ MomentFit<T>::MomentFit(ImageMoments<T>& iMom,
 
    momAxisType_p = momentAxisName(iMom_p);
 
-// Are we computing coordinate-dependent moments.  If
-// so precompute coordinate vector is momebt axis separable
+// Are we computing coordinate-dependent moments.  If so
+// precompute coordinate vector if moment axis is separable
  
    doCoordCalc_p = doCoordCalc(iMom_p);
    if (doCoordCalc_p) setUpCoords(iMom_p, pixelIn_p, worldOut_p, 
@@ -2308,6 +2307,8 @@ T MomentFit<T>::collapse(const Vector<T>& vector,
    T tmp = 0;
    return tmp;
 }
+
+
 
 
 template <class T> 
@@ -2364,9 +2365,12 @@ Vector<T>& MomentFit<T>::multiCollapse(const Vector<T>& profile,
    Bool preComp = ToBool(sepWorldCoord_p.nelements() > 0);
 
 
-// Generate Gaussian functional
+// Set Gaussian functional values.  We reuse the same functional that
+// was used in the interactive fitting display process.
 
-   const Gaussian1D<T> gauss(gaussPars(0), gaussPars(1), gaussPars(2));
+   gauss_p.setHeight(gaussPars(0));
+   gauss_p.setCenter(gaussPars(1));
+   gauss_p.setWidth(gaussPars(2));
 
 
 // Compute moments
@@ -2385,7 +2389,7 @@ Vector<T>& MomentFit<T>::multiCollapse(const Vector<T>& profile,
    
    for (Int i=0; i<nPts; i++) {
       xx = i;
-      gData(i) = gauss(xx) + gaussPars(3);
+      gData(i) = gauss_p(xx) + gaussPars(3);
       
       if (preComp) {
          coord = sepWorldCoord_p(i);

@@ -32,6 +32,7 @@
 #endif
 #include <aips/aips.h>
 #include <trial/Lattices/VectorCollapser.h>
+#include <aips/Functionals/Gaussian1D.h>
 
 template <class T> class Vector;
 template <class T> class ImageMoments;
@@ -55,9 +56,10 @@ template <class T> class ImageMoments;
 //  to optimally iterate through a Lattice; it deals with tiling and to a 
 //  lesser extent memory.    LatticeApply functions are used by offering a class 
 //  object to them that has a member function with a name and signature 
-//  specified by an abstract base class that both LatticeApply and the 
-//  offered class inherit from.   Specifically, in this case, MomentCalcBase
-//  and LatticeApply inherit from VectorCollapser.  This defines the functions
+//  specified by an abstract base class that LatticeApply uses and the 
+//  offered class inherits from.   Specifically, in this case, MomentCalcBase
+//  inherits from VectorCollapser and LatticeApply uses objects and methods of this
+//  class (bit does not inherit from it).  This defines the functions
 //  <src>collapse</src> and <src>multiCollapse</src> which operate on a vector
 //  extracted from a Lattice.  The former returns one number, the latter a vector
 //  of numbers from that profile.  MomentCalcBase is a base class for
@@ -91,8 +93,12 @@ template <class T> class ImageMoments;
 //  of the MomentCalculator classes. The rest of the coupling is done via the constructors 
 //  of the derived MomentCalculator classes.  
 //
-//  Finally, MomentCalcBase also has a number of functions that are common to
-//  its derived classes (e.g. plotting, fitting, accumulating sums etc).
+//  Finally, MomentCalcBase also has a number of protected functions that are common to its
+//  derived classes (e.g. plotting, fitting, accumulating sums etc).  It also has protected 
+//  data that is common to all the MomentCalculator classes.  This protected data is accessed 
+//  directly by name rather than with interface functions as there is too much of it.  Of 
+//  course, since MomentCalcBase is an abstract base class, it is up to the MomentCalculator 
+//  classes to give the MomentCalcBase protected data objects values.
 //
 //  For discussion about different moments and algorithms to compute them see the 
 //  discussion in <linkto class="ImageMoments">ImageMoments</linkto> and also in
@@ -123,6 +129,66 @@ public:
    virtual ~MomentCalcBase();
 
 protected:
+
+
+// A number of private data members are kept here in the base class
+// as they are common to the derived classes.  Since this class
+// is abstract, they have to be filled by the derived classes.
+
+// This vector is a container for all the possible moments that
+// can be calculated.  They are in the order given by the ImageMoments
+// enum MomentTypes
+   Vector<T> calcMoments_p;
+
+// This vector is a container for the moments that the user actually
+// asked to see.  They are selected from calcMoments_p
+   Vector<T> retMoments_p;
+
+// This vector tells us which elements of the calcMoments_p vector
+// we wish to select and put into retMoments_p
+   Vector<Int> selectMoments_p;
+
+// Although the general philosophy of these classes is to compute
+// all the posisble moments and then select the ones we want,
+// some of them are too expensive to calculate unless they are
+// really wanted.  These are the median moments and those that
+// require a second pass.  These control Bools tell us whether
+// we really want to compute the expesnive ones.
+   Bool doMedianI_p, doMedianV_p, doAbsDev_p;
+
+
+// These vectors are used to transform coordinates between pixel and world
+   Vector<Double> pixelIn_p, worldOut_p;
+
+// All computations involving Coordinate conversions are relatively expensive
+// This Bool signifies whether we need coordinate calculations or not for
+// any of the moments
+   Bool doCoordCalc_p;
+
+// This vector houses the world coordinate values for the profile if it
+// was from a separable axis. This means this vector can be pre computed 
+// just once, instead of working out the coordinates for each profile 
+// (expensive).  It should only be filled if doCoordCalc_p is True
+   Vector<Double> sepWorldCoord_p;
+
+// This Bool tells whether we are going to do some plotting or not
+   Bool doPlot_p;
+
+// This Bool tells us whether we want to see all profiles plotted with the 
+// Y range or whether they are to be scaled individually
+   Bool fixedYLimits_p;
+
+// When we are plotting, if we have asked to all profiles with the same 
+// Y min and max, these are the values to use
+   Float yMinAuto_p, yMaxAuto_p;
+
+// This vector is used to hold the abcissa values when plotting
+// profiles
+   Vector<T> abcissa_p;
+
+// This string tells us the name of the moment axis (VELO or FREQ etc)
+   String momAxisType_p;
+
 
 // Accumulate statistical sums from a vector
    void accumSums (Double& s0,
@@ -625,30 +691,16 @@ public:
 private:
 
    ImageMoments<T>& iMom_p;
-
+   LogIO& os_p;
    Lattice<T>* pMaskLattice_p; 
    const Vector<T>* pMaskProfile_p;
    Vector<T> maskSliceRef_p;
-
-   Vector<T> calcMoments_p;
-   Vector<T> retMoments_p;
-
-   Vector<T> abcissa_p;
-
    Vector<T> selectedData_p;
    Vector<Int> selectedDataIndex_p;
-
-   Vector<Double> pixelIn_p, worldOut_p, sepWorldCoord_p;
-   Vector<Float> range_p;
-   Vector<Int> selectMoments_p;
-
-   Float yMinAuto_p, yMaxAuto_p;
    Bool doInclude_p, doExclude_p;
-   Bool doMedianI_p, doMedianV_p, doAbsDev_p, doCoordCalc_p;
-   Bool doPlot_p, fixedYLimits_p;
-   String momAxisType_p;
+   Vector<Float> range_p;
    IPosition blc_p, trc_p, stride_p, sliceShape_p;
-   LogIO& os_p;
+
 };
 
 
@@ -771,29 +823,14 @@ public:
 private:
 
    ImageMoments<T>& iMom_p;
-
+   LogIO& os_p;
    Lattice<T>* pMaskLattice_p; 
    const Vector<T>* pProfile_p;
    Vector<T> maskSliceRef_p;
-
-   Vector<T> calcMoments_p;
-   Vector<T> retMoments_p;
-
-   Vector<T> abcissa_p;
-
    Vector<T> selectedData_p;
-   
-   Vector<Double> pixelIn_p, worldOut_p, sepWorldCoord_p;
-   Vector<Int> selectMoments_p;
-
    Double stdDeviation_p, peakSNR_p;
-   Float yMinAuto_p, yMaxAuto_p;
-   Bool doMedianI_p, doMedianV_p, doAbsDev_p, doCoordCalc_p;
-   Bool doPlot_p, doAuto_p, doFit_p;
-   Bool fixedYLimits_p;
-   String momAxisType_p;
+   Bool doAuto_p, doFit_p;
    IPosition blc_p, trc_p, stride_p, sliceShape_p;
-   LogIO& os_p;
 
 };
 
@@ -898,20 +935,12 @@ public:
 private:
 
    ImageMoments<T>& iMom_p;
-   const Vector<T>* pMaskProfile_p;
-   Vector<T> calcMoments_p;
-   Vector<T> retMoments_p;
-   Vector<T> abcissa_p;
-
-   Vector<Double> pixelIn_p, worldOut_p, sepWorldCoord_p;
-   Vector<Int> selectMoments_p;
-
-   Double stdDeviation_p, peakSNR_p;
-   Float yMinAuto_p, yMaxAuto_p;
-   Bool doMedianI_p, doMedianV_p, doAbsDev_p, doCoordCalc_p;
-   Bool doPlot_p, fixedYLimits_p, doAuto_p, doFit_p;
-   String momAxisType_p;
    LogIO& os_p;
+   const Vector<T>* pMaskProfile_p;
+   Double stdDeviation_p, peakSNR_p;
+   Bool doAuto_p, doFit_p;
+   Gaussian1D<T> gauss_p;
+
 };
 
 
