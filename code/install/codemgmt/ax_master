@@ -5676,3 +5676,4 @@
 15 308 src mv atnf/apps/pksgridzilla/cube_helper atnf/apps/pksgridzilla/cubecat
 15 308 src mv atnf/apps/pksgridzilla/cube_helper.g atnf/apps/pksgridzilla/cubecat.g
 15 333 sys rm libexec/newsdfits2ms_meta.g
+15 335 src mv trial/apps/flagger/autoflag.cc trial/apps/autoflag/autoflag.cc
