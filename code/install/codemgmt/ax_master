@@ -2426,3 +2426,4 @@
 09 364 src mv trial/implement/guiutils/combobox.g trial/implement/guiutils/oldcombobox.g
 09 365 src rm nrao/apps/dish/dish_avgapp.g
 09 368 src rm aips/fortran/PGWRAP.f
+09 374 src rm trial/apps/image/templates
