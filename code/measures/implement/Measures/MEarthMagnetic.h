@@ -41,12 +41,12 @@
 
 //# Forward Declarations
 class MEarthMagnetic;
+class MCEarthMagnetic;
+template <class M, class F, class MC> class MeasConvert;
 
 //# Typedefs
 
-// <summary>
-//  A Measure: Magnetic field on Earth
-// </summary>
+// <summary> A Measure: Magnetic field on Earth </summary>
 
 // <use visibility=export>
 
@@ -58,39 +58,45 @@ class MEarthMagnetic;
 // </prerequisite>
 //
 // <etymology>
+// Earth and Magnetic field
 // </etymology>
 //
 // <synopsis>
 // MEarthMagnetic forms derived Measure class for Earth' magnetic flux density
 // It contains the following magnetic field models:
 // <ul>
-//   <li> DIPOLE	simple dipole model with fixed dipole towards ...
-//   <li> MDIPOLE	moving dipole (.... + .../decade)
-//   <li> XDIPOLE	excentric dipole (....)
-//   <li> MXDIPOLE	moving excentric dipole (....)
 //   <li> IGRF		international reference field
+//   <li> directions	direction types to convert to (e.g. AZEL)
 // </ul>
-// <note role=warning> Only DIPOLE and XDIPOLE are present at the moment.
-// The moving ones need a Frame, which uses Tables, which uses Measures...
-// Awaits solution of module dependency problem. The IGRF needs a Table
+// <note role=warning>
+// The IGRF needs a Table
 // of coefficients (at 5-year interval) </note>
 //
-// Conversion between fields is not supported.
+// Conversion between field models is not supported.
+// The field can be given in any of the standard <linkto class=MDirection>
+// direction</linkto> coordinate systems ny selecting the correct conversion output
+// reference type (e.g. MEarthMagnetic::AZEL). 
 //
-// The field at a certain position on Earth is obtained with the () operator.
+// An <linkto class=EarthFieldMachine> EarthFieldMachine</linkto> has been
+// provided to get e.g. the field in a certain direction at a certain height.
+//
 // </synopsis>
 //
 // <example>
 // <srcblock>
 // // Where on Earth
-// MVPosition pos(Quantity(20,'m'), Quantity(5,'deg'), Quantity(52,'deg'));
-// // Make sure it is in Earth centered coordinates
-// MVPosition ipos = MPosition::Convert( MPosition(pos, MPosition::WGS84),
-//				         MPosition::ITRF)().getValue();
-// // Magnetic field model (DIPOLE)
+// MPosition pos(MVPosition(Quantity(20,'m'), Quantity(5,'deg'), 
+//                          Quantity(52,'deg')), MPosition::WGS84);
+// // Time we want it
+// MEpoch epo(MVEpoch(50000));
+// // Put in frame
+// MeasFrame frame(pos, epo);
+// // Magnetic field model
 // MEarthMagnetic mf;
-// // Show field strength in Gauss
-// cout << mf(ipos).getLength("G") << endl;
+// // Show field strength in Gauss in AzEl system
+// cout <<
+//   MEarthMagnetic::Convert(mf, MEarthMagnetic::AZEL)().
+//		getValue().getLength("G") << endl;
 // </srcblock>
 // </example>
 //
@@ -98,15 +104,16 @@ class MEarthMagnetic;
 // </motivation>
 //
 // <todo asof="1997/02/19">
-//	<li> IGRF model
-//	<li> wandering pole model
+//	<li> nothing I know
 // </todo>
 
-class MEarthMagnetic : public MeasBase<MVEarthMagnetic, MeasRef<MEarthMagnetic> > 
-{
+class MEarthMagnetic : public MeasBase<MVEarthMagnetic, MeasRef<MEarthMagnetic> >  {
+
 public:
 //# Friends
 // Conversion of data
+    friend class MeasConvert<MEarthMagnetic, MVEarthMagnetic, MCEarthMagnetic>;
+
 //# Enumerations
 // Types of known MEarthMagnetics
 // <note role=tip> The order defines the order in the translation matrix FromTo
@@ -114,16 +121,40 @@ public:
 // changing the array. Additions should be made before N_types, and
 // an additional row and column should be coded in FromTo, and
 // in showType().</note>
-    enum Types { DIPOLE,
-		 MDIPOLE,
-		 XDIPOLE,
-		 MXDIPOLE,
-		 IGRF, 
-		 N_Types,
-		 DEFAULT=DIPOLE};
+    enum Types {
+      ITRF,
+      J2000,
+      JMEAN,
+      JTRUE,
+      APP,
+      B1950,
+      BMEAN,
+      BTRUE,
+      GALACTIC,
+      HADEC,
+      AZEL,
+      AZELSW,
+      JNAT,
+      ECLIPTIC,  
+      MECLIPTIC,
+      TECLIPTIC,
+      SUPERGAL,
+      N_Types,
+      // Models. Firsty one should be IGRF
+      IGRF = 32,
+      N_Models,
+      // All extra bits
+      EXTRA = 32,
+      // Defaults
+      DEFAULT=IGRF,
+      // Synonyms
+      AZELNE=AZEL 
+    };
 //# Typedefs
 // Measure reference
     typedef MeasRef<MEarthMagnetic> Ref;
+// MeasConvert use
+    typedef class MeasConvert<MEarthMagnetic,MVEarthMagnetic,MCEarthMagnetic> Convert;
 
 //# Constructors
 // <note> In the following constructors and other functions, all 
@@ -132,22 +163,27 @@ public:
 // of compiler limitations the formal arguments had to be specified as
 // <em>uInt</em> rather than the Measure enums that should be used as actual 
 // arguments.</note>
-// Default constructor; generates the default DIPOLE type
+// Default constructor; generates the default IGRF type
     MEarthMagnetic();
 // Create from data and reference
 // <group>
     MEarthMagnetic(const MVEarthMagnetic &dt);
     MEarthMagnetic(const MVEarthMagnetic &dt, const MEarthMagnetic::Ref &rf);
     MEarthMagnetic(const MVEarthMagnetic &dt, uInt rf);
+    MEarthMagnetic(const Measure *dt);
+    MEarthMagnetic(const MeasValue *dt);
+    MEarthMagnetic(const MEarthMagnetic::Ref &rf);
 // </group>
+
+  // <group>
+  MEarthMagnetic(const MEarthMagnetic &);
+  MEarthMagnetic &operator=(const MEarthMagnetic &);
+  // </group>
 
 //# Destructor
     ~MEarthMagnetic();
 
 //# Operators
-
-  // Get the field for a position
-MVEarthMagnetic operator()(const MVPosition &pos) const;
 
 //# General Member Functions
 // Tell me your type
@@ -175,6 +211,8 @@ MVEarthMagnetic operator()(const MVPosition &pos) const;
   virtual const String &getDefaultType() const;
   // Get the reference type (for records, including codes like R_)
   virtual String getRefString() const;
+  // Get my type (as Register)
+  static uInt myType();
 
 // Get Measure data
 // <group>

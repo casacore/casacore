@@ -30,13 +30,13 @@
 #include <aips/Measures/Quantum.h>
 typedef Quantum<Double> gpp_mEarthMagnetic_bug1;
 #endif
+#include <trial/Measures/MEarthMagnetic.h>
 #include <aips/Exceptions.h>
 #include <aips/Utilities/Assert.h>
 #include <aips/Arrays/Vector.h>
 #include <aips/Mathematics/Math.h>
-#include <aips/Mathematics/Constants.h>
 #include <aips/RTTI/Register.h>
-#include <trial/Measures/MEarthMagnetic.h>
+#include <aips/Mathematics/Constants.h>
 #include <aips/Measures/RotMatrix.h>
 #include <aips/Measures/Euler.h>
 #include <aips/Measures/MVPosition.h>
@@ -56,39 +56,32 @@ MEarthMagnetic::MEarthMagnetic(const MVEarthMagnetic &dt, const MEarthMagnetic::
 MEarthMagnetic::MEarthMagnetic(const MVEarthMagnetic &dt, uInt rf) : 
   MeasBase<MVEarthMagnetic,MEarthMagnetic::Ref>(dt,rf) {}
 
+MEarthMagnetic::MEarthMagnetic(const Measure *dt) :
+  MeasBase<MVEarthMagnetic,MEarthMagnetic::Ref>(dt) {}
+
+MEarthMagnetic::MEarthMagnetic(const MeasValue *dt) :
+  MeasBase<MVEarthMagnetic,MEarthMagnetic::Ref>(*(MVEarthMagnetic*)dt,
+						MEarthMagnetic::DEFAULT) {}
+
+MEarthMagnetic::MEarthMagnetic(const MEarthMagnetic::Ref &rf) :
+  MeasBase<MVEarthMagnetic,MEarthMagnetic::Ref>(rf) {}
+
+MEarthMagnetic::MEarthMagnetic(const MEarthMagnetic &other)
+  : MeasBase<MVEarthMagnetic, MeasRef<MEarthMagnetic> > (other) {}
+
+MEarthMagnetic &MEarthMagnetic::operator=(const MEarthMagnetic &other) {
+  if (this != &other) {
+    MeasBase<MVEarthMagnetic, MeasRef<MEarthMagnetic> > &This = *this;
+    const MeasBase<MVEarthMagnetic, MeasRef<MEarthMagnetic> > &Other = other;
+    This = Other;
+  }
+  return *this;
+}
+
 //# Destructor
 MEarthMagnetic::~MEarthMagnetic() {}
 
 //# Operators
-MVEarthMagnetic MEarthMagnetic::operator()(const MVPosition &pos) const {
-  static Quantity dpfield = Quantity(0.30953, "G");
-  static Quantity dplong = Quantity(299.73,"deg");
-  static Quantity dplat =  Quantity(78.7,"deg");
-  static Quantity dprad = Quantity(6371.2, "km");
-  MVDirection rz(dplong, dplat);
-  MVDirection rx(dplong, dplat - Quantity(90.0, "deg"));
-  MVDirection ry(rz.crossProduct(rx));
-  RotMatrix dprot; dprot.set(rx.getValue(), ry.getValue(),
-				    rz.getValue());
-  RotMatrix idprot(dprot); idprot.transpose();
-
-  MVPosition posrot = dprot * pos;
-  Vector<Double> rotan = posrot.getAngle().getBaseValue();
-  Quantity poslen = posrot.getLength();
-  Double hor = (dpfield * pow(dprad/poslen, 3) * sin(rotan(1))).
-    getBaseValue();
-  Double ver = (2. * dpfield * pow(dprad/poslen, 3) * sin(rotan(1))).
-    getBaseValue();
-  MVEarthMagnetic res = MVEarthMagnetic(hor,0,ver);
-  rz = MVDirection(rotan(0), rotan(1));
-  rx = MVDirection(rotan(0), rotan(1) - C::pi_2);
-  ry = rz.crossProduct(rx);
-  dprot.set(rx.getValue(), ry.getValue(), rz.getValue());
-  dprot.transpose();
-  res = dprot * res;
-  res = idprot * res;
-  return res;
-}
 
 //# Member functions
 
@@ -113,30 +106,79 @@ void MEarthMagnetic::assert(const Measure &in) {
 }
 
 const String &MEarthMagnetic::showType(uInt tp) {
-    static const String tname[MEarthMagnetic::N_Types] = {
-	"DIPOLE",
-	"MDIPOLE",
-	"XDIPOLE",
-	"MXDIPOLE",
-	"IGRF"};
-    DebugAssert(tp < MEarthMagnetic::N_Types, AipsError);
-    return tname[tp];
+  static const String tname[MEarthMagnetic::N_Types] = {
+    "ITRF",
+    "J2000",
+    "JMEAN",
+    "JTRUE",
+    "APP",
+    "B1950",
+    "BMEAN",
+    "BTRUE",
+    "GALACTIC",
+    "HADEC",
+    "AZEL",
+    "AZELSW",
+    "JNAT",
+    "ECLIPTIC",
+    "MECLIPTIC",
+    "TECLIPTIC",
+    "SUPERGAL" };
+  static const String pname[MEarthMagnetic::N_Models -
+			   MEarthMagnetic::IGRF] = {
+    "IGRF" };
+
+    if ((tp & MEarthMagnetic::EXTRA) == 0) {
+      DebugAssert(tp < MEarthMagnetic::N_Types, AipsError);
+      return tname[tp];
+    };
+    DebugAssert((tp & ~MEarthMagnetic::EXTRA) < 
+		(MEarthMagnetic::N_Models - MEarthMagnetic::IGRF), AipsError);
+    return pname[tp & ~MEarthMagnetic::EXTRA];
 }
 
 Bool MEarthMagnetic::getType(MEarthMagnetic::Types &tp, const String &in) {
-  static const Int N_name = 5;
+  static const Int N_name = 19;
   static const String tname[N_name] = {
-    "DIPOLE",
-    "MDIPOLE",
-    "XDIPOLE",
-    "MXDIPOLE",
-    "IGRF"};
+    "ITRF",
+    "J2000",
+    "JMEAN",
+    "JTRUE",
+    "APP",
+    "B1950",
+    "BMEAN",
+    "BTRUE",
+    "GALACTIC",
+    "HADEC",
+    "AZEL",
+    "AZELSW",
+    "AZELNE",
+    "JNAT",
+    "ECLIPTIC",
+    "MECLIPTIC",
+    "TECLIPTIC",
+    "SUPERGAL",
+    "IGRF" };
 
   static const MEarthMagnetic::Types oname[N_name] = {
-    MEarthMagnetic::DIPOLE,
-    MEarthMagnetic::MDIPOLE,
-    MEarthMagnetic::XDIPOLE,
-    MEarthMagnetic::MXDIPOLE,
+    MEarthMagnetic::ITRF,
+    MEarthMagnetic::J2000,
+    MEarthMagnetic::JMEAN,
+    MEarthMagnetic::JTRUE,
+    MEarthMagnetic::APP,
+    MEarthMagnetic::B1950,
+    MEarthMagnetic::BMEAN,
+    MEarthMagnetic::BTRUE,
+    MEarthMagnetic::GALACTIC,
+    MEarthMagnetic::HADEC,
+    MEarthMagnetic::AZEL,
+    MEarthMagnetic::AZELSW,
+    MEarthMagnetic::AZEL,
+    MEarthMagnetic::JNAT,
+    MEarthMagnetic::ECLIPTIC,
+    MEarthMagnetic::MECLIPTIC,
+    MEarthMagnetic::TECLIPTIC,
+    MEarthMagnetic::SUPERGAL,
     MEarthMagnetic::IGRF};
 
     uInt i = Measure::giveMe(in, N_name, tname);
@@ -188,8 +230,12 @@ String MEarthMagnetic::getRefString() const {
   return MEarthMagnetic::showType(ref.getType());
 }
 
+uInt MEarthMagnetic::myType() {
+  return Register((MEarthMagnetic *)0);
+}
+
 Quantum<Vector<Double> > MEarthMagnetic::get(const Unit &inunit) const {
-    return Quantum<Vector<Double> >(data.getValue(),"m").get(inunit);
+    return Quantum<Vector<Double> >(data.getValue(),"T").get(inunit);
 }
 
 Quantum<Vector<Double> > MEarthMagnetic::getAngle() const {
