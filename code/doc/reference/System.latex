@@ -28,6 +28,7 @@
 \newcommand{\cplusplus}{{\textsc{c}\texttt{++}}}
 \newcommand{\gnu}{\textsc{gnu}}
 \newcommand{\rcs}{\textsc{rcs}}
+\newcommand{\cvs}{\textsc{cvs}}
 
 % References.
 %------------
