@@ -2531,3 +2531,4 @@
 11 374 src mv trial/scripts/aips++init.g trial/implement/Utilities/aips++init.g
 11 374 src mv trial/scripts/defaultattributes.g trial/implement/Utilities/defaultattributes.g
 11 374 src mv trial/scripts/edit.g trial/implement/Utilities/edit.g
+11 374 src mv trial/scripts/finclude.g trial/implement/Utilities/finclude.g
