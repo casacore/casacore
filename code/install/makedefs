@@ -392,6 +392,7 @@ SFXSHAR  := so
 LIBaips      := static static defeat defeat static static
 #                                                          Standard
 LIBdish       = defeat static defeat defeat defeat defeat
+LIBdisplay    = defeat static defeat defeat defeat defeat
 LIBsynthesis  = defeat defeat defeat defeat defeat defeat
 LIBvlbi       = defeat defeat defeat defeat defeat defeat
 #                                                          Auxiliary
@@ -796,6 +797,7 @@ export SFXSTAT  := $(SFXSTAT)
 export SFXSHAR  := $(SFXSHAR)
 export LIBaips      := $(LIBaips)
 export LIBdish      := $(LIBdish)
+export LIBdisplay   := $(LIBdisplay)
 export LIBsynthesis := $(LIBsynthesis)
 export LIBvlbi      := $(LIBvlbi)
 export LIBcontrib   := $(LIBcontrib)
