@@ -1,5 +1,5 @@
 //# tDirectionCoordinate.cc: Test program for DirectionCoordinate
-//# Copyright (C) 1998,1999
+//# Copyright (C) 1998,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -364,9 +364,17 @@ void doit3 (DirectionCoordinate& lc)
 //
    MDirection dir;
    if (!lc.toWorld(dir, pixel)) {
-      throw(AipsError(String("toWorld conversion failed because ") + lc.errorMessage()));
+      throw(AipsError(String("toWorld conversion failed because ") + lc.errorMessage())); 
    }
    if (!allNear(dir.getAngle().getValue(), world, 1e-6)) {
+         throw(AipsError("Coordinate conversion reflection 2 failed"));
+   }
+//
+   Vector<Double> pixel3;
+   if (!lc.toPixel(pixel3, dir)) {
+      throw(AipsError(String("toPixel conversion failed because ") + lc.errorMessage()));
+   }
+   if (!allNear(pixel3, pixel, 1e-6)) {
          throw(AipsError("Coordinate conversion reflection 2 failed"));
    }
 //
@@ -609,10 +617,14 @@ void doit4 (DirectionCoordinate& dC)
    worldAxes.set(False);
    worldAxes(0) = True;
    pixelAxes(1) = True;
+cerr << "worldIn, pixelIn=" << worldIn << pixelIn << endl;
+cerr << "worldAxes, pixelAxes = " << worldAxes << pixelAxes << endl;
    if (!dC.toMix(worldOut, pixelOut, worldIn, pixelIn, worldAxes, pixelAxes, minWorld, maxWorld)) {
       throw(AipsError(String("Conversion failed because ")
                   + dC.errorMessage()));
    }
+cerr << "worldOut, pixelOut = " << worldOut << pixelOut << endl;
+
    if (!allNear(pixelOut, dC.referencePixel(), 1e-8)) {
       throw(AipsError(String("Failed world->pixel consistency test")));
    }
