@@ -1311,6 +1311,7 @@ Bool ImageStatistics<T>::generateStorageImage()
    doneSomeGoodPoints_p = False;
 
    delete pPixelIterator;
+   return True;
 }
 
 
