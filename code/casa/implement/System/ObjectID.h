@@ -1,5 +1,5 @@
 //# ObjectID.h: A unique identifier for distributed and other objects
-//# Copyright (C) 1996
+//# Copyright (C) 1996,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -39,6 +39,7 @@ class RecordInterface;
 imported class ostream;
 #endif
 class GlishRecord;
+template<class T> class Block;
 
 // <summary> 
 // ObjectID:  A unique identifier for distributed and other objects.
@@ -109,6 +110,7 @@ public:
     // <srcblock>
     // sequence=123 host=hostname pid=pid time=time
     // </srcblock>
+    // with an optional comma between the fields.
     // However, in general user code should not depend on the exact form of
     // the string.
     // <group>
@@ -150,15 +152,20 @@ public:
     const String &hostName() const;
     // </group>
 
-    // Interconvert between strings and object ID's. Useful for
+    // Extract objectID strings (as set by glish script substitute.g) from
+    // a command, convert them to ObjectID object, store those in the
+    // Block, and replace the strings by their Block indices as <src>$n</src>..
     // various persistence mechanisms.
+    static String extractIDs (Block<ObjectID>& objectIDs,
+			      const String& command);
+
 private:
     Int sequence_number_p;
     Int process_id_p;
     Int creation_time_p;
     String hostname_p;
 
-    // Make a unique sequence number, returns 0 on first cal, 1 on next, ...
+    // Make a unique sequence number, returns 0 on first call, 1 on next, ...
     static Int sequence_number();
 };
 
