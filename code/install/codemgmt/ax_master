@@ -2783,3 +2783,4 @@
 10 101 src mv trial/apps/numerics/randomnumbers.help trial/implement/Mathematics/randomnumbers.help
 10 101 src mv trial/apps/numerics/randomnumbers.g trial/implement/Mathematics/randomnumbers.g
 10 101 src mv trial/apps/numerics/sinusoidfitter.g trial/implement/Mathematics/sinusoidfitter.g
+10 101 src mv trial/apps/numerics/sinusoidfitter.help trial/implement/Mathematics/sinusoidfitter.help
