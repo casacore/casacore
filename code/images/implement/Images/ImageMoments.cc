@@ -60,7 +60,7 @@
 #include <trial/Lattices/LatticeIterator.h>
 #include <trial/Lattices/LatticeStepper.h>
 #include <trial/Lattices/MomentCalculator.h>
-#include <trial/Lattices/PixelBox.h>
+#include <trial/Lattices/LCBox.h>
 #include <trial/Lattices/PagedArray.h>
 #include <trial/Lattices/SubLattice.h>
 #include <trial/Lattices/TiledLineStepper.h>
@@ -1011,7 +1011,7 @@ Bool ImageMoments<T>::createMoments()
 
 // Iterate optimally through the image, compute the moments, fill the output lattices
 
-   const PixelBox region(blc_p, trc_p, pInImage_p->shape());
+   const LCBox region(blc_p, trc_p, pInImage_p->shape());
    ImageMomentsProgress* pProgressMeter = new ImageMomentsProgress();
    LatticeApply<T>::lineMultiApply(outPt, *pInImage_p, region,
                                    *pMomentCalculator, momentAxis_p, 
@@ -1582,7 +1582,7 @@ void ImageMoments<T>::saveLattice (const Lattice<T>* const pLattice,
 
    CopyLattice (outImage.lc(), pLattice->lc(), blc, trc);
 
-//   const PixelBox region(blc, trc, pLattice->shape());
+//   const LCBox region(blc, trc, pLattice->shape());
 //   SubLattice<T> subLattice(*pLattice, region);
 //   outImage.copyData(subLattice);
 }
@@ -1693,7 +1693,7 @@ Bool ImageMoments<T>::smoothImage (String& smoothName,
 // First copy input to output then smooth in situ.  
 
    CopyLattice(pSmoothedImage->lc(), pInImage_p->lc(), blc_p, trc_p);
-//   const PixelBox region(blc_p, trc_p, pInImage_p->shape());
+//   const LCBox region(blc_p, trc_p, pInImage_p->shape());
 //   SubLattice<T> subLattice(*pInImage_p, region);
 //   pSmoothedImage->copyData(subLattice);
 
