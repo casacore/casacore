@@ -66,6 +66,9 @@ template <class T>
 ImageStatistics<T>::ImageStatistics (const MaskedImage<T>& imageU,
                                      LogIO& osU, 
                                      Bool showProgressU)
+// 
+// Constructor
+//
 : os_p(osU),
   pStoreImage_p(0),
   doList_p(False),
@@ -102,6 +105,9 @@ ImageStatistics<T>::ImageStatistics (const MaskedImage<T>& imageU,
 template <class T>
 ImageStatistics<T>::ImageStatistics (const MaskedImage<T>& imageU,
                                      Bool showProgressU)  
+// 
+// Constructor
+//
 : pStoreImage_p(0),
   doList_p(False),
   noInclude_p(True),
@@ -148,7 +154,6 @@ ImageStatistics<T>::ImageStatistics(const ImageStatistics<T> &other)
                         noInclude_p(other.noInclude_p), 
                         noExclude_p(other.noExclude_p),
                         goodParameterStatus_p(other.goodParameterStatus_p),
-                        needStorageImage_p(other.needStorageImage_p),
                         doneSomeGoodPoints_p(other.doneSomeGoodPoints_p),
                         someGoodPointsValue_p(other.someGoodPointsValue_p),
                         haveLogger_p(other.haveLogger_p),
@@ -158,21 +163,18 @@ ImageStatistics<T>::ImageStatistics(const ImageStatistics<T> &other)
                         maxPos_p(other.maxPos_p),
                         blcParent_p(other.blcParent_p)
 //
-// Copy constructor.  Storage image is copied.
+// Copy constructor.  Storage image is not copied.
 //
 {
-// Copy storage image and assigg storage image pointer
-
-   copyStorageImage (other);
-
+   pStoreImage_p = 0;
+   needStorageImage_p = True;
 }
 
 
 template <class T>
 ImageStatistics<T> &ImageStatistics<T>::operator=(const ImageStatistics<T> &other)
 //
-// Assignment operator.  Any storage image associated with the object
-// being assigned to is deleted first
+// Assignment operator.  Storage image is not copied
 //
 {
    if (this != &other) {
@@ -181,13 +183,15 @@ ImageStatistics<T> &ImageStatistics<T>::operator=(const ImageStatistics<T> &othe
 
       pInImage_p = other.pInImage_p;
 
-// Copy storage image and assign storage image pointer
+
+// Delete storage image 
 
       if (pStoreImage_p != 0) {
          delete pStoreImage_p;
          pStoreImage_p = 0;
       }
-      copyStorageImage(other);
+      needStorageImage_p = True;
+
 
 // Do the rest
 
@@ -202,7 +206,7 @@ ImageStatistics<T> &ImageStatistics<T>::operator=(const ImageStatistics<T> &othe
       noInclude_p = other.noInclude_p; 
       noExclude_p = other.noExclude_p;
       goodParameterStatus_p = other.goodParameterStatus_p;
-      needStorageImage_p = other.needStorageImage_p;
+
       doneSomeGoodPoints_p = other.doneSomeGoodPoints_p;
       someGoodPointsValue_p = other.someGoodPointsValue_p;
       haveLogger_p = other.haveLogger_p;
@@ -999,25 +1003,6 @@ Bool ImageStatistics<T>::calculateStatistic (Array<T>& slice, const Int& ISTAT)
 }
 
 
-
-template <class T>
-void ImageStatistics<T>::copyStorageImage(const ImageStatistics<T> &other) 
-//
-// Copy storage image from other and assign new pointer for *this
-{
-   if (other.pStoreImage_p !=0) {   
-      IPosition shape =other.pStoreImage_p->shape();
-      IPosition tileShape = other.pStoreImage_p->tileShape();
-      Table myTable = ImageUtilities::setScratchTable(other.pInImage_p->name(),
-                            String("ImageStatistics_Sums_"));
-      pStoreImage_p = new PagedArray<T>(TiledShape(shape, tileShape),
-                                        myTable);
-
-      pStoreImage_p->copyData(*(other.pStoreImage_p));
-   } else {
-      pStoreImage_p = 0;
-   }
-}
 
 
 template <class T>

@@ -328,9 +328,6 @@ private:
 // Calculate statistic from accumulation image and return in an array
    Bool calculateStatistic (Array<T>& slice, const Int& ISTAT);
 
-// Copy storage image from other object to *this object
-   void copyStorageImage(const ImageStatistics<T> &other);
-
 // Find the next good or bad point in an array
    Bool findNextDatum     (uInt& iFound,
                            const uInt& n,
