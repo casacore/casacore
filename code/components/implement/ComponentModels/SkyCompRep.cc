@@ -213,15 +213,18 @@ Bool SkyCompRep::fromRecord(String & errorMessage,
 	return False;
       }      
       const Record & shapeRec = record.asRecord(shape);
-      const ComponentType::Shape recShape = 
+      const ComponentType::Shape recType = 
 	ComponentShape::getType(errorMessage, shapeRec);
-      const ComponentType::Shape thisShape = itsShapePtr->type();
-      if (recShape != thisShape) {
-	errorMessage += String("The shape record specifies a ") + 
-	  ComponentType::name(recShape) + String(" shape\n") +
-	  String("which cannot be assigned to a component with a ") +
-	  ComponentType::name(thisShape) + String(" shape");
+      if (recType >= ComponentType::UNKNOWN_SHAPE) {
+	errorMessage += String("Cannot create a component with a '" +
+			       ComponentType::name(recType) + "' shape\n");
 	return False;
+      }
+      if (recType != itsShapePtr->type()) {
+	ComponentShape* newShape = ComponentType::construct(recType);
+	AlwaysAssert(newShape != 0, AipsError);
+	setShape(*newShape);
+	delete newShape;
       }
       if (!itsShapePtr->fromRecord(errorMessage, shapeRec)) {
 	errorMessage += "Problem parsing the 'shape' field\n";
@@ -248,15 +251,18 @@ Bool SkyCompRep::fromRecord(String & errorMessage,
 	return False;
       }      
       const Record & spectrumRec = record.asRecord(spectrum);
-      const ComponentType::SpectralShape recShape = 
+      const ComponentType::SpectralShape recType = 
 	SpectralModel::getType(errorMessage, spectrumRec);
-      const ComponentType::SpectralShape thisShape = itsSpectrumPtr->type();
-      if (recShape != thisShape) {
-	errorMessage += String("The spectrum record specifies a ") + 
-	  ComponentType::name(recShape) + String(" spectrum\n") +
-	  String("which cannot be assigned to a component with a") +
-	  ComponentType::name(thisShape) + String(" spectrum");
+      if (recType >= ComponentType::UNKNOWN_SPECTRAL_SHAPE) {
+	errorMessage += String("Cannot create a component with a '" +
+			       ComponentType::name(recType) + "' spectrum\n");
 	return False;
+      }
+      if (recType != itsSpectrumPtr->type()) {
+	SpectralModel* newSpectrum = ComponentType::construct(recType);
+	AlwaysAssert(newSpectrum != 0, AipsError);
+	setSpectrum(*newSpectrum);
+	delete newSpectrum;
       }
       if (!itsSpectrumPtr->fromRecord(errorMessage, spectrumRec)) {
 	return False;
