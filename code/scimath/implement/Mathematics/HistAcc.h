@@ -1,5 +1,5 @@
 //# HistAcc.h: Histogram Accumulator
-//# Copyright (C) 1996
+//# Copyright (C) 1996,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -51,8 +51,7 @@ class String;
 // </prerequisite>
 //
 // <summary> 
-// Makes a histogram from input values. The histogram bin parameters
-// may be defined, or determined from the first n input values.
+// Makes a histogram from input values.
 // </summary>
 //
 // <etymology>
@@ -65,6 +64,8 @@ class String;
 // </templating>
 
 // <synopsis>
+// Makes a histogram from input values. The histogram bin parameters
+// may be defined, or determined from the first n input values.
 // The input values are fed to HistAcc via the member function `put'. 
 // They can be fed individually, or in the form of an Array. 
 //

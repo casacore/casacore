@@ -1,5 +1,5 @@
 //# StatAcc.h: Statistics Accumulator
-//# Copyright (C) 1996
+//# Copyright (C) 1996,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -51,8 +51,7 @@ class String;
 // </prerequisite>
 //
 // <summary> 
-// A statistics accumulator accepts (weighted) input values and 
-// calculates simple statistice (min, max, weighted mean, rms etc).
+// A statistics accumulator 
 // </summary>
 //
 // <etymology>
@@ -60,6 +59,8 @@ class String;
 // </etymology>
 //
 // <templating arg=T>
+// A statistics accumulator accepts (weighted) input values and 
+// calculates simple statistice (min, max, weighted mean, rms etc).
 // The accepted input types are real, i.e. Int, uInt, Float, Double, 
 // but not Complex. The reason for this is that the < operator of
 // Complex (needed for min/max) works on the norm in any case, and

@@ -1,5 +1,5 @@
 //# NNGridder.h: Definition for Nearest Neighbour Gridder
-//# Copyright (C) 1996,1997
+//# Copyright (C) 1996,1997,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -30,6 +30,10 @@
 #define AIPS_NNGRIDDER_H
 
 #include <trial/Mathematics/Gridder.h>
+
+// <summary>
+// A non-negative gridding class
+// </summary>
 
 template <class Domain, class Range>
 class NNGridder : public Gridder<Domain, Range> {

@@ -1,5 +1,5 @@
 //# Gridder.h: Definition for Gridder
-//# Copyright (C) 1996,1997
+//# Copyright (C) 1996,1997,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -39,6 +39,10 @@ typedef Vector<Int> gppbug2;
 #endif
 
 class IPosition;
+
+// <summary>
+// A base class for gridding
+// </summary>
 
 template <class Domain, class Range>
 class Gridder {
