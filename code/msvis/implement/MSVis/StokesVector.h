@@ -39,6 +39,7 @@
 #include <trial/Arrays/RigidVector.h>
 #include <trial/Arrays/SquareMatrix.h>
 #include <aips/Arrays/IPosition.h>
+#include <aips/Mathematics/Math.h>
 #include <iostream.h>
 
 //# Forward Declarations
