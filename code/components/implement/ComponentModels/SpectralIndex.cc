@@ -38,6 +38,7 @@
 #include <aips/Measures/MCFrequency.h>
 #include <aips/Measures/MVFrequency.h>
 #include <aips/Measures/MeasConvert.h>
+#include <aips/Measures/Quantum.h>
 #include <aips/Utilities/Assert.h>
 #include <aips/Utilities/DataType.h>
 #include <aips/Utilities/String.h>
@@ -48,7 +49,7 @@ typedef MeasConvert<MFrequency,MVFrequency,MCFrequency>
 #endif
 
 SpectralIndex::SpectralIndex()
-  :itsRefFreq(),
+  :itsRefFreq(Quantum<Double>(1, "GHz"), MFrequency::LSR),
    itsIndex(4, 0.0),
    itsRefFrame((MFrequency::Types) itsRefFreq.getRef().getType()),
    itsNu0(itsRefFreq.getValue().getValue()),

@@ -29,11 +29,12 @@
 #include <aips/Arrays/Vector.h>
 #include <aips/Exceptions/Error.h>
 #include <aips/Containers/RecordInterface.h>
+#include <aips/Measures/Quantum.h>
 #include <aips/Utilities/Assert.h>
 #include <aips/Utilities/String.h>
 
 ConstantSpectrum::ConstantSpectrum()
-  :itsRefFreq()
+  :itsRefFreq(Quantum<Double>(1, "GHz"), MFrequency::LSR)
 {
   DebugAssert(ok(), AipsError);
 }
