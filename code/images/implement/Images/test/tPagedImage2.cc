@@ -65,15 +65,18 @@ int main()
       AlwaysAssertExit (pIm.isPaged());
       pIm.set(1);
       
-// Create a region and add it to the image.
-      pIm.defineRegion ("reg1", box1);
+// Create a region as a mask and add it to the image.
+// The region won't be found in the regions.
+      pIm.defineRegion ("reg1", box1, RegionHandler::Masks);
       ImageRegion reg = pIm.getRegion("reg1");
       AlwaysAssertExit (reg == ImageRegion(box1));
+      AlwaysAssertExit (pIm.getImageRegionPtr
+                            ("reg1", RegionHandler::Regions, False) == 0);
 
 // Define the region as the default.
       pIm.setDefaultMask ("reg1");
       AlwaysAssertExit (pIm.getDefaultMask() == "reg1");
-      AlwaysAssertExit (! pIm.isMasked());         // Slicer does not have mask
+      AlwaysAssertExit (! pIm.isMasked());        // Slicer does not have mask
       AlwaysAssertExit (! pIm.isMaskWritable());
 
 // Check number of elements.
@@ -84,13 +87,23 @@ int main()
     { 
       PagedImage<Float> pIm ("tPagedImage2_tmp.img");
       AlwaysAssertExit (pIm.getDefaultMask() == "reg1");
-      AlwaysAssertExit (! pIm.isMasked());          //
+      AlwaysAssertExit (! pIm.isMasked());
       AlwaysAssertExit (! pIm.isMaskWritable());
       AlwaysAssertExit (pIm.isWritable());
       AlwaysAssertExit (pIm.isPaged());
       AlwaysAssertExit (pIm.getRegionPtr() != 0);
       ImageRegion reg = pIm.getRegion("reg1");
       AlwaysAssertExit (reg == ImageRegion(box1));
+
+// Define the region in the regions group and check it can be found.
+      pIm.defineRegion ("regr1", reg, RegionHandler::Regions);
+      AlwaysAssertExit (pIm.getImageRegionPtr
+                            ("regr1", RegionHandler::Regions, False) != 0);
+      AlwaysAssertExit (pIm.getImageRegionPtr
+                            ("regr1", RegionHandler::Masks, False) == 0);
+      AlwaysAssertExit (pIm.getImageRegionPtr
+                            ("regr1", RegionHandler::Any, False) != 0);
+      
 
       pIm.setDefaultMask ("");
       AlwaysAssertExit (! pIm.isMasked());
@@ -101,7 +114,8 @@ int main()
       AlwaysAssertExit (allEQ(pIm.getMask(), mask));
 
 // Create a mask and make it default region.
-      pIm.defineRegion ("reg2", RegionHandler::makeMask (pIm, "reg2"));
+      pIm.defineRegion ("reg2", RegionHandler::makeMask (pIm, "reg2"),
+			RegionHandler::Masks);
       pIm.setDefaultMask ("reg2");
       AlwaysAssertExit (pIm.getDefaultMask() == "reg2");
       AlwaysAssertExit (pIm.isMasked());
