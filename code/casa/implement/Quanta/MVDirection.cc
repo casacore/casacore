@@ -243,6 +243,38 @@ MVDirection MVDirection::crossProduct(const MVDirection &other) const {
   return res;
 }
 
+void MVDirection::shift(const Quantum<Double> &lng) {
+  shift(lng.getBaseValue(), 0);
+}
+
+void MVDirection::shift(Double lng) {
+  shift(lng, 0);
+}
+
+void MVDirection::shift(const Quantum<Double> &lng,
+			const Quantum<Double> &lat) {
+  shift(lng.getBaseValue(), lat.getBaseValue());
+}
+
+void MVDirection::shift(Double lng, Double &lat) {
+  Vector<Double> x(2);
+  x = get();
+  x(0) += lng;
+  x(1) += lat;
+  xyz = MVDirection(x).getValue();
+}
+
+void MVDirection::shiftLatitude(const Quantum<Double> &lat) {
+  shift(0, lat.getBaseValue());
+}
+
+void MVDirection::shiftLatitude(Double &lat) {
+  shift(0, lat);
+}
+
+void MVDirection::shift(const MVDirection &shft) {
+}
+
 MeasValue *MVDirection::clone() const {
   return (new MVDirection(*this));
 }

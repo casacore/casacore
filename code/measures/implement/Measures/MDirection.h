@@ -124,6 +124,11 @@ template <class M, class F, class MC> class MeasConvert;
 // Another problem can arise if the source has proper motion and/or radial
 // velocities. These should be taken into account. An
 // MCatalog class will maybe take care of that.
+// <note role=warning>
+// The offset that can be specified in the MDirection::Ref is an MDIrection
+// offset, and can not be used for specifying angular offsets. shift()
+// methods are available for these cases.
+// </note>
 // <p>
 // To aid in formatting of the angles without having to check all difference
 // referencetypes, the following global types are provided:
@@ -284,6 +289,17 @@ public:
     Quantum<Vector<Double> > getAngle() const;
     Quantum<Vector<Double> > getAngle(const Unit &inunit) const;
 // </group>
+  // Shift the direction in longitude (radians if Double) and latitude.
+  // <group>
+  void shift(const Quantity &lng);
+  void shift(Double lng);
+  void shift(const Quantum<Double> &lng,
+	     const Quantum<Double> &lat);
+  void shift(Double lng, Double &lat);
+  void shiftLatitude(const Quantum<Double> &lat);
+  void shiftLatitude(Double &lat);
+  void shift(const MVDirection &shft);
+  // </group>
 
 // Make a copy
 // <group>

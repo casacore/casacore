@@ -28,15 +28,11 @@
 #if !defined(AIPS_MVDIRECTION_H)
 #define AIPS_MVDIRECTION_H
 
-#if defined(_AIX)
-#pragma implementation ("MVDirection.cc")
-#endif
-
 //# Includes
 #include <aips/aips.h>
 #include <aips/Measures/MVPosition.h>
 
-//# Forward Declarations
+//# Forward De
 
 // <summary> Vector of three direction cosines </summary>
 
@@ -87,6 +83,9 @@
 // Direction cosines can be added and subtracted: the result will be 
 // adjusted to a length of 1.<br>
 // The multiplication of two direction cosines produces the inner product.<br>
+// shift() methods are available to shift in angular coordinates. E.g.
+// shift(Quantity(5, "arcsec"), Quantity(-7, "arcsec")) will shift 5 arcsec
+// in longitude, and -7 arcsec in latitude.
 // </synopsis>
 //
 // <example>
@@ -186,6 +185,17 @@ public:
   // </group>
   // Set the internal value if correct values and dimensions
   virtual Bool putValue(const Vector<Quantum<Double> > &in);
+  // Shift the direction in longitude (radians if Double) and latitude.
+  // <group>
+  void shift(const Quantity &lng);
+  void shift(Double lng);
+  void shift(const Quantum<Double> &lng,
+	     const Quantum<Double> &lat);
+  void shift(Double lng, Double &lat);
+  void shiftLatitude(const Quantum<Double> &lat);
+  void shiftLatitude(Double &lat);
+  void shift(const MVDirection &shft);
+  // </group>
   
 protected:
   //# Data

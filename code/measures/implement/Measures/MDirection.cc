@@ -295,6 +295,38 @@ Quantum<Vector<Double> > MDirection::getAngle(const Unit &inunit) const {
     return (data.getAngle(inunit));
 }
 
+void MDirection::shift(const Quantum<Double> &lng) {
+  shift(lng.getBaseValue(), 0);
+}
+
+void MDirection::shift(Double lng) {
+  shift(lng, 0);
+}
+
+void MDirection::shift(const Quantum<Double> &lng,
+			const Quantum<Double> &lat) {
+  shift(lng.getBaseValue(), lat.getBaseValue());
+}
+
+void MDirection::shift(Double lng, Double &lat) {
+  Vector<Double> x(2);
+  x = data.get();
+  x(0) += lng;
+  x(1) += lat;
+  data = MVDirection(x);
+}
+
+void MDirection::shiftLatitude(const Quantum<Double> &lat) {
+  shift(0, lat.getBaseValue());
+}
+
+void MDirection::shiftLatitude(Double &lat) {
+  shift(0, lat);
+}
+
+void MDirection::shift(const MVDirection &shft) {
+}
+
 Measure *MDirection::clone() const {
     return (new MDirection(*this));
 }
