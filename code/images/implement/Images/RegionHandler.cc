@@ -178,8 +178,19 @@ Bool RegionHandler::removeRegion (Table& table, const String& name,
     // We need to clone it to make it non-const.
     if (regPtr->isLCRegion()) {
       LCRegion* lcPtr = regPtr->asLCRegion().cloneRegion();
-      lcPtr->handleDelete();
+      String msg;
+      Bool error = False;
+      try {
+	lcPtr->handleDelete();
+      } catch (AipsError x) {
+	error = True;
+	msg = x.getMesg();
+      }
       delete lcPtr;
+      if (error) {
+	delete regPtr;
+	throw (AipsError("Region " + name + " could not be removed\n" + msg));
+      }
     }
     delete regPtr;
     TableRecord& keys = table.rwKeywordSet();
