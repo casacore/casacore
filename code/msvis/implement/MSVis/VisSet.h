@@ -175,10 +175,6 @@ private:
   // compression columns)
   void removeCalSet(MeasurementSet& ms);
 
-  // add the MODEL_DATA, CORRECTED_DATA and IMAGING_WEIGHT columns
-  // (deprecated)
-  void addColumns(Table& tab);
-
   MeasurementSet ms_p;
   VisIter* iter_p;
   Matrix<Int> selection_p;
