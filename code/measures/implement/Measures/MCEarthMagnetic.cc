@@ -39,44 +39,44 @@
 //# Statics
 Bool MCEarthMagnetic::stateMade_p = False;
 uInt MCEarthMagnetic::ToRef_p[N_Routes][3] = {
-    {MEarthMagnetic::ITRF,	MEarthMagnetic::JNAT,		0},
-    {MEarthMagnetic::JNAT,	MEarthMagnetic::ITRF,		0},
-    {MEarthMagnetic::GALACTIC,	MEarthMagnetic::J2000,		0},
-    {MEarthMagnetic::GALACTIC,	MEarthMagnetic::B1950,		3},
-    {MEarthMagnetic::J2000,	MEarthMagnetic::GALACTIC,	0},
-    {MEarthMagnetic::B1950,	MEarthMagnetic::GALACTIC,	3},
-    {MEarthMagnetic::J2000,	MEarthMagnetic::B1950,		3},
-    {MEarthMagnetic::B1950,	MEarthMagnetic::J2000,		3},
-    {MEarthMagnetic::J2000,	MEarthMagnetic::JMEAN,		0},
-    {MEarthMagnetic::B1950,	MEarthMagnetic::BMEAN,		3},
-    {MEarthMagnetic::JMEAN,	MEarthMagnetic::J2000,		0},
-    {MEarthMagnetic::JMEAN,	MEarthMagnetic::JTRUE,		0},
-    {MEarthMagnetic::BMEAN,	MEarthMagnetic::B1950,		3},
-    {MEarthMagnetic::BMEAN,	MEarthMagnetic::BTRUE,		3},
-    {MEarthMagnetic::JTRUE,	MEarthMagnetic::JMEAN,		0},
-    {MEarthMagnetic::BTRUE,	MEarthMagnetic::BMEAN,		3},
-    {MEarthMagnetic::J2000,	MEarthMagnetic::JNAT,		0},
-    {MEarthMagnetic::JNAT,	MEarthMagnetic::J2000,		0},
-    {MEarthMagnetic::B1950,	MEarthMagnetic::APP,		3},
-    {MEarthMagnetic::APP,	MEarthMagnetic::B1950,		3},
-    {MEarthMagnetic::APP,	MEarthMagnetic::HADEC,		2},
-    {MEarthMagnetic::HADEC,	MEarthMagnetic::AZEL,		2},
-    {MEarthMagnetic::AZEL,	MEarthMagnetic::HADEC,		2},
-    {MEarthMagnetic::HADEC,	MEarthMagnetic::APP,		2},
-    {MEarthMagnetic::AZEL,	MEarthMagnetic::AZELSW,		0},
-    {MEarthMagnetic::AZELSW,	MEarthMagnetic::AZEL,		0},
-    {MEarthMagnetic::APP,	MEarthMagnetic::JNAT,		1},
-    {MEarthMagnetic::JNAT,	MEarthMagnetic::APP,		1},
-    {MEarthMagnetic::J2000,	MEarthMagnetic::ECLIPTIC,	0},
-    {MEarthMagnetic::ECLIPTIC,	MEarthMagnetic::J2000,		0},
-    {MEarthMagnetic::JMEAN,	MEarthMagnetic::MECLIPTIC,	0},
-    {MEarthMagnetic::MECLIPTIC,	MEarthMagnetic::JMEAN,		0},
-    {MEarthMagnetic::JTRUE,	MEarthMagnetic::TECLIPTIC,	0},
-    {MEarthMagnetic::TECLIPTIC,	MEarthMagnetic::JTRUE,		0},
-    {MEarthMagnetic::GALACTIC,	MEarthMagnetic::SUPERGAL,	0},
-    {MEarthMagnetic::SUPERGAL,	MEarthMagnetic::GALACTIC,	0},
-    {MEarthMagnetic::ITRF,	MEarthMagnetic::HADEC,		2},
-    {MEarthMagnetic::HADEC,	MEarthMagnetic::ITRF,		2} };
+  {MEarthMagnetic::GALACTIC,	 	MEarthMagnetic::J2000,		0},
+  {MEarthMagnetic::GALACTIC,		MEarthMagnetic::B1950,		2},
+  {MEarthMagnetic::J2000,		MEarthMagnetic::GALACTIC,	0},
+  {MEarthMagnetic::B1950,		MEarthMagnetic::GALACTIC,	2},
+  {MEarthMagnetic::J2000,		MEarthMagnetic::B1950,		2},
+  {MEarthMagnetic::B1950,		MEarthMagnetic::J2000,		2},
+  {MEarthMagnetic::J2000,		MEarthMagnetic::JMEAN,		0},
+  {MEarthMagnetic::B1950,		MEarthMagnetic::BMEAN,		2},
+  {MEarthMagnetic::JMEAN,		MEarthMagnetic::J2000,		0},
+  {MEarthMagnetic::JMEAN,		MEarthMagnetic::JTRUE,		0},
+  {MEarthMagnetic::BMEAN,		MEarthMagnetic::B1950,		2},
+  {MEarthMagnetic::BMEAN,		MEarthMagnetic::BTRUE,		2},
+  {MEarthMagnetic::JTRUE,		MEarthMagnetic::JMEAN,		0},
+  {MEarthMagnetic::BTRUE,		MEarthMagnetic::BMEAN,		2},
+  {MEarthMagnetic::J2000,		MEarthMagnetic::JNAT,		0},
+  {MEarthMagnetic::JNAT,		MEarthMagnetic::J2000,		0},
+  {MEarthMagnetic::B1950,		MEarthMagnetic::APP,	 	2},
+  {MEarthMagnetic::APP,			MEarthMagnetic::B1950,		2},
+  {MEarthMagnetic::APP,			MEarthMagnetic::TOPO,		0},
+  {MEarthMagnetic::HADEC,		MEarthMagnetic::AZEL,		0},
+  {MEarthMagnetic::AZEL,		MEarthMagnetic::HADEC,		0},
+  {MEarthMagnetic::HADEC,		MEarthMagnetic::TOPO,		0},
+  {MEarthMagnetic::AZEL,		MEarthMagnetic::AZELSW,		0},
+  {MEarthMagnetic::AZELSW,		MEarthMagnetic::AZEL,		0},
+  {MEarthMagnetic::APP,			MEarthMagnetic::JNAT,		0},
+  {MEarthMagnetic::JNAT,		MEarthMagnetic::APP,		0},
+  {MEarthMagnetic::J2000,		MEarthMagnetic::ECLIPTIC,	0},
+  {MEarthMagnetic::ECLIPTIC,		MEarthMagnetic::J2000,		0},
+  {MEarthMagnetic::JMEAN,		MEarthMagnetic::MECLIPTIC,	0},
+  {MEarthMagnetic::MECLIPTIC,		MEarthMagnetic::JMEAN,		0},
+  {MEarthMagnetic::JTRUE,		MEarthMagnetic::TECLIPTIC,	0},
+  {MEarthMagnetic::TECLIPTIC,		MEarthMagnetic::JTRUE,		0},
+  {MEarthMagnetic::GALACTIC,		MEarthMagnetic::SUPERGAL,	0},
+  {MEarthMagnetic::SUPERGAL,		MEarthMagnetic::GALACTIC,	0},
+  {MEarthMagnetic::ITRF,		MEarthMagnetic::HADEC,		0},
+  {MEarthMagnetic::HADEC,		MEarthMagnetic::ITRF,		0},
+  {MEarthMagnetic::TOPO,		MEarthMagnetic::HADEC,		0},
+  {MEarthMagnetic::TOPO,		MEarthMagnetic::APP,		0} };
 uInt MCEarthMagnetic::
 FromTo_p[MEarthMagnetic::N_Types][MEarthMagnetic::N_Types];
 
@@ -140,14 +140,6 @@ void MCEarthMagnetic::initConvert(uInt which, MConvertBase &mc) {
   if (!MVPOS1)  MVPOS1 = new MVPosition();
   
   switch (which) {
-    
-  case ITRF_JNAT:
-    measMath.createPrecNutat();
-    break;
-
-  case JNAT_ITRF:
-    measMath.createPrecNutat();
-    break;
 
   case J2000_JMEAN:
     measMath.createPrecession();
@@ -181,8 +173,16 @@ void MCEarthMagnetic::initConvert(uInt which, MConvertBase &mc) {
     measMath.createNutationB1950();
     break;
     
+  case J2000_JNAT:
+    measMath.createSolarPos();
+    break;
+    
   case JNAT_APP:
     measMath.createPrecNutat();
+    break;
+    
+  case JNAT_J2000:
+    measMath.createSolarPos();
     break;
     
   case APP_JNAT:
@@ -216,6 +216,8 @@ void MCEarthMagnetic::doConvert(MVEarthMagnetic &in,
 				MRBase &outref,
 				const MConvertBase &mc) {
   Double g2, tdbTime;
+  // Planetary aberration factor
+  Double lengthP = 0;
   EarthField::EarthFieldTypes modID(EarthField::IGRF);
 
   measMath.initFrame(inref, outref);
@@ -223,16 +225,6 @@ void MCEarthMagnetic::doConvert(MVEarthMagnetic &in,
   for (Int i=0; i<mc.nMethod(); i++) {
     
     switch (mc.getMethod(i)) {
-      
-    case ITRF_JNAT:
-      measMath.applyPolarMotionLong(in);
-      measMath.deapplyPrecNutat(in);
-      break;
-    
-    case JNAT_ITRF:
-      measMath.applyPrecNutat(in);
-      measMath.deapplyPolarMotionLong(in);
-      break;
 
     case HADEC_ITRF: 
       measMath.applyHADECtoITRF(in);
@@ -302,38 +294,51 @@ void MCEarthMagnetic::doConvert(MVEarthMagnetic &in,
       measMath.deapplyNutationB1950(in);
       break;
     
-    case J2000_JNAT: {
-    }
-    break;
+    
+    case J2000_JNAT:
+      in.adjust(g2);
+      measMath.applySolarPos(in);
+      in.readjust(g2);
+      break;
     
     case JNAT_APP:
+      in.adjust(g2);
+      measMath.applyAberration(in);
+      in.readjust(g2);
       measMath.applyPrecNutat(in);
       break;
     
     case APP_JNAT:
       measMath.deapplyPrecNutat(in);
+      in.adjust(g2);
+      measMath.deapplyAberration(in);
+      in.readjust(g2);
       break;
     
-    case JNAT_J2000: {
-    }
-    break;
+    case JNAT_J2000:
+      in.adjust(g2);
+      measMath.deapplySolarPos(in);
+      in.readjust(g2);
+      break;
     
     case B1950_APP: 
-      in.adjust(g2);
-      measMath.applyETerms(in);
-      in.readjust(g2);
       measMath.applyPrecNutatB1950(in);
+      in.adjust(g2);
+      measMath.applyAberrationB1950(in);
+      in.readjust(g2);
       break;
     
     case APP_B1950:
-      measMath.deapplyPrecNutatB1950(in);
       in.adjust(g2);
-      measMath.deapplyETerms(in);
+      measMath.deapplyAberrationB1950(in);
       in.readjust(g2);
+      measMath.deapplyPrecNutatB1950(in);
       break;
     
-    case APP_HADEC:
-      measMath.deapplyPolarMotion(in);
+    case TOPO_HADEC: 
+      in.adjust(g2);
+      measMath.applyTOPOtoHADEC(in);
+      in.readjust(g2);
       break;
     
     case HADEC_AZEL:
@@ -343,9 +348,23 @@ void MCEarthMagnetic::doConvert(MVEarthMagnetic &in,
     case AZEL_HADEC:
       measMath.deapplyHADECtoAZEL(in);
       break;
+     
+    case HADEC_TOPO: 
+      in.adjust(g2);
+      measMath.deapplyTOPOtoHADEC(in);
+      in.readjust(g2);
+      break;
     
-    case HADEC_APP:
-      measMath.applyPolarMotion(in);
+    case APP_TOPO: 
+      in.adjust(g2);
+      measMath.applyAPPtoTOPO(in, lengthP);
+      in.readjust(g2);
+      break;
+   
+    case TOPO_APP: 
+      in.adjust(g2);
+      measMath.deapplyAPPtoTOPO(in, lengthP);
+      in.readjust(g2);
       break;
     
     case AZEL_AZELSW: 

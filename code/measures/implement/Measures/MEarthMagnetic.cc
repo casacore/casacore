@@ -115,7 +115,6 @@ MEarthMagnetic::Types MEarthMagnetic::castType(uInt tp) {
 
 const String &MEarthMagnetic::showType(MEarthMagnetic::Types tp) {
   static const String tname[MEarthMagnetic::N_Types] = {
-    "ITRF",
     "J2000",
     "JMEAN",
     "JTRUE",
@@ -131,7 +130,9 @@ const String &MEarthMagnetic::showType(MEarthMagnetic::Types tp) {
     "ECLIPTIC",
     "MECLIPTIC",
     "TECLIPTIC",
-    "SUPERGAL" };
+    "SUPERGAL",
+    "ITRF",
+    "TOPO" };
   static const String pname[MEarthMagnetic::N_Models -
 			   MEarthMagnetic::IGRF] = {
     "IGRF" };
@@ -148,10 +149,9 @@ const String &MEarthMagnetic::showType(uInt tp) {
 
 const String *const MEarthMagnetic::allMyTypes(Int &nall, Int &nextra,
 					  const uInt *&typ) {
-  static const Int N_name  = 19;
+  static const Int N_name  = 20;
   static const Int N_extra = 0;
   static const String tname[N_name] = {
-    "ITRF",
     "J2000",
     "JMEAN",
     "JTRUE",
@@ -169,10 +169,11 @@ const String *const MEarthMagnetic::allMyTypes(Int &nall, Int &nextra,
     "MECLIPTIC",
     "TECLIPTIC",
     "SUPERGAL",
+    "ITRF",
+    "TOPO",
     "IGRF" };
 
   static const uInt oname[N_name] = {
-    MEarthMagnetic::ITRF,
     MEarthMagnetic::J2000,
     MEarthMagnetic::JMEAN,
     MEarthMagnetic::JTRUE,
@@ -190,6 +191,8 @@ const String *const MEarthMagnetic::allMyTypes(Int &nall, Int &nextra,
     MEarthMagnetic::MECLIPTIC,
     MEarthMagnetic::TECLIPTIC,
     MEarthMagnetic::SUPERGAL,
+    MEarthMagnetic::ITRF,
+    MEarthMagnetic::TOPO,
     MEarthMagnetic::IGRF};
 
   nall   = N_name;

@@ -131,7 +131,6 @@ class MEarthMagnetic : public MeasBase<MVEarthMagnetic, MeasRef<MEarthMagnetic> 
   // an additional row and column should be coded in FromTo, and
   // in showType().</note>
   enum Types {
-    ITRF,
     J2000,
     JMEAN,
     JTRUE,
@@ -148,6 +147,8 @@ class MEarthMagnetic : public MeasBase<MVEarthMagnetic, MeasRef<MEarthMagnetic> 
     MECLIPTIC,
     TECLIPTIC,
     SUPERGAL,
+    ITRF,
+    TOPO,
     N_Types,
     // Models. First one should be IGRF
     IGRF = 32,
