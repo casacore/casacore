@@ -249,9 +249,8 @@ template<class T> AutoDiff<T> pow(const AutoDiff<T> &a, const T &b) {
 
 template<class T> AutoDiff<T> sqrt(const AutoDiff<T> &ad) { 
   AutoDiff<T> tmp(ad);
-  T tv = tmp.theRep()->val_p;
-  tmp.theRep()->val_p = sqrt(tv);
-  tmp.theRep()->grad_p /= T(2)*tv;
+  tmp.theRep()->val_p = sqrt(tmp.theRep()->val_p);
+  tmp.theRep()->grad_p /= T(2)*tmp.theRep()->val_p;
   return tmp.ref();
 }
 
