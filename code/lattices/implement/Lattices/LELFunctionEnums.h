@@ -115,6 +115,18 @@ public:
 // abs
    ABS,
 
+// phase (of complex number)
+   ARG,
+
+// real (part of number)
+   REAL,
+
+// imag (inary part of complex number)
+   IMAG,
+
+// conj (ugate complex number)
+   CONJ,
+
 // fmod; fmod(x,y) returns the remainder  of  x  with  respect  to  y;  that is, 
 // the result r is one of the numbers that differ from x by an integral multiple of y.  
    FMOD,
@@ -140,13 +152,13 @@ public:
 // nelements; nelements(x)
    NELEM,
 
-// all
+// all (true)
    ALL,
 
-// any
+// any (true)
    ANY,
 
-// ntrue
+// ntrue 
    NTRUE,
 
 // nfalse

@@ -43,13 +43,29 @@ LELFunctionFloat::LELFunctionFloat(const LELFunctionEnums::Function function,
 : function_p(function), arg_p(exp)
 {
     switch (function_p) {
+    case LELFunctionEnums::ABS :
+    case LELFunctionEnums::ARG :
+    case LELFunctionEnums::REAL :
+    case LELFunctionEnums::IMAG :
+
+// Returns a real number
+
+    {
+       if (arg_p.nelements() != 1) {
+          throw (AipsError ("LELFunctionFloat::constructor - functions can only"
+                            "have one argument"));
+       }
+       setAttr(LELAttribute(arg_p[0].isScalar(), arg_p[0].shape()));
+       break;
+    }
     case LELFunctionEnums::ATAN2 :
     case LELFunctionEnums::POW :
     case LELFunctionEnums::FMOD :
     case LELFunctionEnums::MIN :
     case LELFunctionEnums::MAX :
     {
-	// Expect 2 Float arguments
+// Expect 2 Float arguments
+
 	Block<Int> argType(2);
 	argType[0] = TpFloat;
 	argType[1] = TpFloat;
@@ -92,92 +108,121 @@ void LELFunctionFloat::eval(Array<Float>& result,
    cout << "LELFunctionFloat:: eval" << endl;
 #endif
 
-   if (arg_p[0].isScalar()) {
-      Float scalarTemp;
-      arg_p[0].eval(scalarTemp);
-      Array<Float> arrayTemp(result.shape());
-      arg_p[1].eval(arrayTemp, region);
+   if (arg_p.nelements() == 1) {
       switch (function_p) {
-///      case LELFunctionEnums::ATAN2 :
-///      {
-///	 Array<Float> tempLeft (result.shape());
-///	 tempLeft = scalarTemp;
-///	 Array<Float> temp (pow (tempLeft, arrayTemp));
-///	 result.reference (temp);
-///	 break;
-///      }
-///      case LELFunctionEnums::FMOD :
-///      {
-///	 Array<Float> tempLeft (result.shape());
-///	 tempLeft = scalarTemp;
-///	 Array<Float> temp (fmod (tempLeft, arrayTemp));
-///	 result.reference (temp);
-///	 break;
-///      }
-      case LELFunctionEnums::MIN :
-	 min (result, arrayTemp, scalarTemp);
-	 break;
-      case LELFunctionEnums::MAX :
-	 max (result, arrayTemp, scalarTemp);
-	 break;
-      default:
-	 throw (AipsError ("LELFunctionFloat::eval - unknown Float function"));
+      case LELFunctionEnums::ABS :
+      {
+         if (arg_p[0].dataType() == TpFloat) {
+            arg_p[0].eval(result, region);
+            Array<Float> tmp(abs(result));
+            result.reference(tmp);
+         } else {
+            Array<Complex> tmpC(result.shape());
+            arg_p[0].eval(tmpC, region);
+   	    amplitude(result, tmpC);
+         }
+         break;
       }
+      case LELFunctionEnums::ARG :
+      {
+         Array<Complex> tmpC(result.shape());
+         arg_p[0].eval(tmpC, region);
+         phase(result, tmpC);
+         break;
+      }
+      case LELFunctionEnums::REAL :
+      {
+         if (arg_p[0].dataType() == TpFloat) {
+            arg_p[0].eval(result, region);      // The real part of a real is the real !
+         } else {
+            Array<Complex> tmpC(result.shape());
+            arg_p[0].eval(tmpC, region);
+   	    real(result, tmpC);
+         }
+         break;
+      }
+      case LELFunctionEnums::IMAG :
+      {
+         Array<Complex> tmpC(result.shape());
+         arg_p[0].eval(tmpC, region);
+         imag(result, tmpC);
+         break;
+      }
+      default:
+         throw (AipsError ("LELFunctionFloat::eval - unknown Float function"));
+      }
+   } else {   
+      if (arg_p[0].isScalar()) {
+         Float scalarTemp;
+         arg_p[0].eval(scalarTemp);
+         Array<Float> arrayTemp(result.shape());
+         arg_p[1].eval(arrayTemp, region);
+         switch (function_p) {
+         case LELFunctionEnums::MIN :
+   	    min (result, arrayTemp, scalarTemp);
+   	    break;
+         case LELFunctionEnums::MAX :
+   	    max (result, arrayTemp, scalarTemp);
+   	    break;
+         default:
+            throw (AipsError ("LELFunctionFloat::eval - unknown Float function"));
+         }
 
-   } else if (arg_p[1].isScalar()) {
-      Float scalarTemp;
-      arg_p[1].eval(scalarTemp);
-      Array<Float> arrayTemp(result.shape());
-      arg_p[0].eval(arrayTemp, region);
-      switch (function_p) {
-      case LELFunctionEnums::MIN :
-	 min (result, arrayTemp, scalarTemp);
-	 break;
-      case LELFunctionEnums::MAX :
-	 max (result, arrayTemp, scalarTemp);
-	 break;
-      case LELFunctionEnums::POW :
-      {
-	 Array<Float> temp (pow (arrayTemp, Double(scalarTemp)));
-	 result.reference (temp);
-	 break;
-      }
-      default:
-	 throw (AipsError ("LELFunctionFloat::eval - unknown Float function"));
-      }
+      } else if (arg_p[1].isScalar()) {
+         Float scalarTemp;
+         arg_p[1].eval(scalarTemp);
+         Array<Float> arrayTemp(result.shape());
+         arg_p[0].eval(arrayTemp, region);
+         switch (function_p) {
+         case LELFunctionEnums::MIN :
+	    min (result, arrayTemp, scalarTemp);
+   	    break;
+         case LELFunctionEnums::MAX :
+	    max (result, arrayTemp, scalarTemp);
+	    break;
+         case LELFunctionEnums::POW :
+         {
+   	    Array<Float> temp (pow (arrayTemp, Double(scalarTemp)));
+	    result.reference (temp);
+	    break;
+         }
+         default:
+	    throw (AipsError ("LELFunctionFloat::eval - unknown Float function"));
+         }
 
-   } else {
-      Array<Float> tempLeft(result.shape());
-      Array<Float> tempRight(result.shape());
-      arg_p[0].eval(tempLeft, region);
-      arg_p[1].eval(tempRight, region);
-      switch(function_p) {
-      case LELFunctionEnums::ATAN2 :
-      {
-	 Array<Float> temp (atan2 (tempLeft, tempRight));
-	 result.reference (temp);
-	 break;
-      }
-      case LELFunctionEnums::POW :
-      {
-	 Array<Float> temp (pow (tempLeft, tempRight));
-	 result.reference (temp);
-	 break;
-      }
-      case LELFunctionEnums::FMOD :
-      {
-	 Array<Float> temp (fmod (tempLeft, tempRight));
-	 result.reference (temp);
-	 break;
-      }
-      case LELFunctionEnums::MIN :
-	 min(result, tempLeft, tempRight);
-	 break;
-      case LELFunctionEnums::MAX :
-	 max(result, tempLeft, tempRight);
-	 break;
-      default:
-	 throw(AipsError("LELFunctionFloat::eval - unknown function"));
+      } else {
+         Array<Float> tempLeft(result.shape());
+         Array<Float> tempRight(result.shape());
+         arg_p[0].eval(tempLeft, region);
+         arg_p[1].eval(tempRight, region);
+         switch(function_p) {
+         case LELFunctionEnums::ATAN2 :
+         {
+   	    Array<Float> temp (atan2 (tempLeft, tempRight));
+   	    result.reference (temp);
+	    break;
+         }
+         case LELFunctionEnums::POW :
+         {
+   	    Array<Float> temp (pow (tempLeft, tempRight));
+	    result.reference (temp);
+	    break;
+         }
+         case LELFunctionEnums::FMOD :
+         {
+   	    Array<Float> temp (fmod (tempLeft, tempRight));
+	    result.reference (temp);
+	    break;
+         }
+         case LELFunctionEnums::MIN :
+	    min(result, tempLeft, tempRight);
+	    break;
+         case LELFunctionEnums::MAX :
+   	    max(result, tempLeft, tempRight);
+	    break;
+         default:
+	    throw(AipsError("LELFunctionFloat::eval - unknown function"));
+         }
       }
    }
 }
@@ -189,6 +234,24 @@ Float LELFunctionFloat::getScalar() const
 #endif
 
    switch (function_p) {
+   case LELFunctionEnums::ABS :       
+   {
+       if (arg_p[0].dataType() == TpFloat) {
+          return abs(arg_p[0].getFloat());
+       } else {
+          return Float(abs(arg_p[0].getComplex()));
+       }
+   }
+   case LELFunctionEnums::ARG :
+       return Float(arg(arg_p[0].getComplex()));
+   case LELFunctionEnums::REAL :
+       if (arg_p[0].dataType() == TpFloat) {
+          return arg_p[0].getFloat();
+       } else {
+          return Float(real(arg_p[0].getComplex()));
+       }
+   case LELFunctionEnums::IMAG :
+       return Float(imag(arg_p[0].getComplex()));
    case LELFunctionEnums::ATAN2 :
        return atan2(arg_p[0].getFloat(), arg_p[1].getFloat());
    case LELFunctionEnums::POW :
@@ -229,9 +292,26 @@ LELFunctionDouble::LELFunctionDouble(const LELFunctionEnums::Function function,
 : function_p(function), arg_p(exp)
 {
     switch (function_p) {
+    case LELFunctionEnums::ABS :  
+    case LELFunctionEnums::ARG :
+    case LELFunctionEnums::REAL :
+    case LELFunctionEnums::IMAG :
+
+// Returns a real number
+
+    {
+       if (arg_p.nelements() != 1) {
+          throw (AipsError ("LELFunctionDouble::constructor - functions can only"
+                            "have one argument"));
+       }
+       setAttr(LELAttribute(arg_p[0].isScalar(), arg_p[0].shape()));
+       break;
+    }
     case LELFunctionEnums::NELEM :
+    {
 	setAttr (LELAttribute (True, IPosition()));       // result is scalar
 	break;
+    }
     case LELFunctionEnums::NTRUE :
     case LELFunctionEnums::NFALSE :
     {
@@ -247,7 +327,7 @@ LELFunctionDouble::LELFunctionDouble(const LELFunctionEnums::Function function,
     case LELFunctionEnums::MIN :
     case LELFunctionEnums::MAX :
     {
-	// Expect 2 Double arguments
+// Expect 2 Double arguments
 	Block<Int> argType(2);
 	argType[0] = TpDouble;
 	argType[1] = TpDouble;
@@ -290,76 +370,121 @@ void LELFunctionDouble::eval(Array<Double>& result,
    cout << "LELFunctionDouble:: eval" << endl;
 #endif
 
-   if (arg_p[0].isScalar()) {
-      Double scalarTemp;
-      arg_p[0].eval(scalarTemp);
-      Array<Double> arrayTemp(result.shape());
-      arg_p[1].eval(arrayTemp, region);
+   if (arg_p.nelements() == 1) {
       switch (function_p) {
-      case LELFunctionEnums::MIN :
-	 min (result, arrayTemp, scalarTemp);
-	 break;
-      case LELFunctionEnums::MAX :
-	 max (result, arrayTemp, scalarTemp);
-	 break;
-      default:
-	 throw (AipsError ("LELFunctionDouble::eval - unknown Double function"));
-      }
-
-   } else if (arg_p[1].isScalar()) {
-      Double scalarTemp;
-      arg_p[1].eval(scalarTemp);
-      Array<Double> arrayTemp(result.shape());
-      arg_p[0].eval(arrayTemp, region);
-      switch (function_p) {
-      case LELFunctionEnums::MIN :
-	 min (result, arrayTemp, scalarTemp);
-	 break;
-      case LELFunctionEnums::MAX :
-	 max (result, arrayTemp, scalarTemp);
-	 break;
-      case LELFunctionEnums::POW :
+      case LELFunctionEnums::ABS :
       {
-	 Array<Double> temp (pow (arrayTemp, scalarTemp));
-	 result.reference (temp);
-	 break;
+         if (arg_p[0].dataType() == TpDouble) {
+            arg_p[0].eval(result, region);
+            Array<Double> tmp(abs(result));
+            result.reference(tmp);
+         } else {
+            Array<DComplex> tmpC(result.shape());
+            arg_p[0].eval(tmpC, region);
+            amplitude(result, tmpC);
+         }
+         break;
+      }
+      case LELFunctionEnums::ARG :
+      {
+         Array<DComplex> tmpC(result.shape());
+         arg_p[0].eval(tmpC, region);
+         phase(result, tmpC);
+         break;
+      }
+      case LELFunctionEnums::REAL :
+      {
+         if (arg_p[0].dataType() == TpDouble) {
+            arg_p[0].eval(result, region);      // The real part of a real is the real !
+         } else {
+            Array<DComplex> tmpC(result.shape());
+            arg_p[0].eval(tmpC, region);
+   	    real(result, tmpC);
+         }
+         break;
+      }
+      case LELFunctionEnums::IMAG :
+      {
+         Array<DComplex> tmpC(result.shape());
+         arg_p[0].eval(tmpC, region);
+         imag(result, tmpC);
+         break;
       }
       default:
-	 throw (AipsError ("LELFunctionDouble::eval - unknown Double function"));
+         throw (AipsError ("LELFunctionFloat::eval - unknown Float function"));
       }
-
    } else {
-      Array<Double> tempLeft(result.shape());
-      Array<Double> tempRight(result.shape());
-      arg_p[0].eval(tempLeft, region);
-      arg_p[1].eval(tempRight, region);
-      switch(function_p) {
-      case LELFunctionEnums::ATAN2 :
-      {
-	 Array<Double> temp (atan2 (tempLeft, tempRight));
-	 result.reference (temp);
-	 break;
-      }
-      case LELFunctionEnums::POW :
-      {
-	 Array<Double> temp (pow (tempLeft, tempRight));
-	 result.reference (temp);
-	 break;
-      }
-      case LELFunctionEnums::FMOD :
-      {
-	 Array<Double> temp (fmod (tempLeft, tempRight));
-	 result.reference (temp);
-	 break;
-      }
-      case LELFunctionEnums::MIN :
-	 min(result, tempLeft, tempRight);
-	 break;
-      case LELFunctionEnums::MAX :
-	 max(result, tempLeft, tempRight);
-	 break;
-      default:
-	 throw(AipsError("LELFunctionDouble::eval - unknown function"));
+      if (arg_p[0].isScalar()) {
+         Double scalarTemp;
+         arg_p[0].eval(scalarTemp);
+         Array<Double> arrayTemp(result.shape());
+         arg_p[1].eval(arrayTemp, region);
+         switch (function_p) {
+         case LELFunctionEnums::MIN :
+   	    min (result, arrayTemp, scalarTemp);
+   	    break;
+         case LELFunctionEnums::MAX :
+	    max (result, arrayTemp, scalarTemp);
+	    break;
+         default:
+	    throw (AipsError ("LELFunctionDouble::eval - unknown Double function"));
+         }
+
+      } else if (arg_p[1].isScalar()) {
+         Double scalarTemp;
+         arg_p[1].eval(scalarTemp);
+         Array<Double> arrayTemp(result.shape());
+         arg_p[0].eval(arrayTemp, region);
+         switch (function_p) {
+         case LELFunctionEnums::MIN :
+            min (result, arrayTemp, scalarTemp);
+            break;
+         case LELFunctionEnums::MAX :
+	    max (result, arrayTemp, scalarTemp);
+	    break;
+         case LELFunctionEnums::POW :
+         {
+            Array<Double> temp (pow (arrayTemp, scalarTemp));
+            result.reference (temp);
+            break;
+         }
+         default:
+            throw (AipsError ("LELFunctionDouble::eval - unknown Double function"));
+         }
+
+      } else {
+         Array<Double> tempLeft(result.shape());
+         Array<Double> tempRight(result.shape());
+         arg_p[0].eval(tempLeft, region);
+         arg_p[1].eval(tempRight, region);
+         switch(function_p) {
+         case LELFunctionEnums::ATAN2 :
+         {
+            Array<Double> temp (atan2 (tempLeft, tempRight));
+            result.reference (temp);
+   	    break;
+         }
+         case LELFunctionEnums::POW :
+         {
+            Array<Double> temp (pow (tempLeft, tempRight));
+            result.reference (temp);
+            break;
+         }
+         case LELFunctionEnums::FMOD :
+         {
+            Array<Double> temp (fmod (tempLeft, tempRight)); 
+            result.reference (temp);
+            break;
+         }
+         case LELFunctionEnums::MIN :
+            min(result, tempLeft, tempRight);
+            break;
+         case LELFunctionEnums::MAX :
+            max(result, tempLeft, tempRight);
+            break;
+         default:
+            throw(AipsError("LELFunctionDouble::eval - unknown function"));
+         }
       }
    }
 }
@@ -416,6 +541,24 @@ Double LELFunctionDouble::getScalar() const
 	  return 1;
        }
        return arg_p[0].shape().product();
+   case LELFunctionEnums::ABS :       
+   {
+       if (arg_p[0].dataType() == TpDouble) {
+          return abs(arg_p[0].getDouble());
+       } else {
+          return Double(abs(arg_p[0].getDComplex()));
+       }
+   }
+   case LELFunctionEnums::ARG :
+       return Double(arg(arg_p[0].getDComplex()));
+   case LELFunctionEnums::REAL :
+       if (arg_p[0].dataType() == TpDouble) {
+          return arg_p[0].getDouble();
+       } else {
+          return Double(real(arg_p[0].getDComplex()));
+       }
+   case LELFunctionEnums::IMAG :
+       return Double(imag(arg_p[0].getDComplex()));
    case LELFunctionEnums::ATAN2 :
        return atan2(arg_p[0].getDouble(), arg_p[1].getDouble());
    case LELFunctionEnums::POW :
@@ -457,9 +600,21 @@ LELFunctionComplex::LELFunctionComplex
 : function_p(function), arg_p(exp)
 {
     switch (function_p) {
+    case LELFunctionEnums::CONJ :
+    {
+// Expect 1 Complex argument
+
+       if (arg_p.nelements() != 1) {
+          throw (AipsError ("LELFunctionComplex::constructor - functions can only"
+                            "have one argument"));
+       }
+       setAttr(LELAttribute(arg_p[0].isScalar(), arg_p[0].shape()));
+       break;
+    }
     case LELFunctionEnums::POW :
     {
-	// Expect 2 Complex arguments
+// Expect 2 Complex arguments
+
 	Block<Int> argType(2);
 	argType[0] = TpComplex;
 	argType[1] = TpComplex;
@@ -494,44 +649,59 @@ void LELFunctionComplex::eval(Array<Complex>& result,
    cout << "LELFunctionComplex:: eval" << endl;
 #endif
 
-   if (arg_p[0].isScalar()) {
-      throw (AipsError ("LELFunctionComplex::eval - unknown Complex function"));
-
-   } else if (arg_p[1].isScalar()) {
-      Complex scalarTemp;
-      arg_p[1].eval(scalarTemp);
-      if (scalarTemp.imag() != 0) {
-	 throw (AipsError ("LELFunctionComplex::eval - When raising a complex lattice to a "
-			   "power the scalar exponent should be real"));
-      }
-      Double exponent = scalarTemp.real();
-      Array<Complex> arrayTemp(result.shape());
-      arg_p[0].eval(arrayTemp, region);
+   if (arg_p.nelements() == 1) {
       switch (function_p) {
-      case LELFunctionEnums::POW :
-      {
-	 Array<Complex> temp (pow (arrayTemp, exponent));
-	 result.reference (temp);
-	 break;
+      case LELFunctionEnums::CONJ :
+      {   
+         arg_p[0].eval(result, region);
+         Array<Complex> tmpC(conj(result));
+         result.reference(tmpC);
+         break;
       }
       default:
-	 throw (AipsError ("LELFunctionComplex::eval - unknown Complex function"));
+         throw (AipsError ("LELFunctionComplex::eval - unknown Complex function"));
       }
-
+ 
    } else {
-      Array<Complex> tempLeft(result.shape());
-      Array<Complex> tempRight(result.shape());
-      arg_p[0].eval(tempLeft, region);
-      arg_p[1].eval(tempRight, region);
-      switch(function_p) {
-      case LELFunctionEnums::POW :
-      {
-	 Array<Complex> temp (pow (tempLeft, tempRight));
-	 result.reference (temp);
-	 break;
-      }
-      default:
-	 throw(AipsError("LELFunctionComplex::eval - unknown function"));
+      if (arg_p[0].isScalar()) {
+         throw (AipsError ("LELFunctionComplex::eval - unknown Complex function"));
+
+      } else if (arg_p[1].isScalar()) {
+         Complex scalarTemp;
+         arg_p[1].eval(scalarTemp);
+         if (scalarTemp.imag() != 0) {
+   	    throw (AipsError ("LELFunctionComplex::eval - When raising a complex lattice to a "
+			      "power the scalar exponent should be real"));
+         }
+         Double exponent = scalarTemp.real();
+         Array<Complex> arrayTemp(result.shape());
+         arg_p[0].eval(arrayTemp, region);
+         switch (function_p) {
+         case LELFunctionEnums::POW :
+         {
+            Array<Complex> temp (pow (arrayTemp, exponent));
+            result.reference (temp);
+            break;
+         }
+         default:
+            throw (AipsError ("LELFunctionComplex::eval - unknown Complex function"));
+         }
+
+      } else {
+         Array<Complex> tempLeft(result.shape());
+         Array<Complex> tempRight(result.shape());
+         arg_p[0].eval(tempLeft, region);
+         arg_p[1].eval(tempRight, region);
+         switch(function_p) {
+         case LELFunctionEnums::POW :
+         {
+            Array<Complex> temp (pow (tempLeft, tempRight));
+            result.reference (temp);
+            break;
+         }
+         default:
+            throw(AipsError("LELFunctionComplex::eval - unknown function"));
+         }
       }
    }
 }
@@ -543,6 +713,8 @@ Complex LELFunctionComplex::getScalar() const
 #endif
 
    switch (function_p) {
+   case LELFunctionEnums::CONJ :
+       return conj(arg_p[0].getComplex());
    case LELFunctionEnums::POW :
        return pow(arg_p[0].getComplex(), arg_p[1].getComplex());
    default:
@@ -576,6 +748,17 @@ LELFunctionDComplex::LELFunctionDComplex
 : function_p(function), arg_p(exp)
 {
     switch (function_p) {
+    case LELFunctionEnums::CONJ :
+    {
+// Expect 1 Complex argument
+
+       if (arg_p.nelements() != 1) {
+          throw (AipsError ("LELFunctionDComplex::constructor - functions can only"
+                            "have one argument"));
+       }
+       setAttr(LELAttribute(arg_p[0].isScalar(), arg_p[0].shape()));
+       break;
+    }
     case LELFunctionEnums::POW :
     {
 	// Expect 2 DComplex arguments
@@ -613,44 +796,59 @@ void LELFunctionDComplex::eval(Array<DComplex>& result,
    cout << "LELFunctionDComplex:: eval" << endl;
 #endif
 
-   if (arg_p[0].isScalar()) {
-      throw (AipsError ("LELFunctionDComplex::eval - unknown DComplex function"));
-
-   } else if (arg_p[1].isScalar()) {
-      DComplex scalarTemp;
-      arg_p[1].eval(scalarTemp);
-      if (scalarTemp.imag() != 0) {
-	 throw (AipsError ("LELFunctionDComplex::eval - When raising a complex lattice to a "
-			   "power the scalar exponent should be real"));
-      }
-      Double exponent = scalarTemp.real();
-      Array<DComplex> arrayTemp(result.shape());
-      arg_p[0].eval(arrayTemp, region);
+   if (arg_p.nelements() == 1) {
       switch (function_p) {
-      case LELFunctionEnums::POW :
-      {
-	 Array<DComplex> temp (pow (arrayTemp, exponent));
-	 result.reference (temp);
-	 break;
+      case LELFunctionEnums::CONJ :
+      {   
+         arg_p[0].eval(result, region);
+         Array<DComplex> tmpC(conj(result));
+         result.reference(tmpC);
+         break;
       }
       default:
-	 throw (AipsError ("LELFunctionDComplex::eval - unknown DComplex function"));
+         throw (AipsError ("LELFunctionDComplex::eval - unknown Complex function"));
       }
+ 
+   } else { 
+      if (arg_p[0].isScalar()) {
+         throw (AipsError ("LELFunctionDComplex::eval - unknown DComplex function"));
 
-   } else {
-      Array<DComplex> tempLeft(result.shape());
-      Array<DComplex> tempRight(result.shape());
-      arg_p[0].eval(tempLeft, region);
-      arg_p[1].eval(tempRight, region);
-      switch(function_p) {
-      case LELFunctionEnums::POW :
-      {
-	 Array<DComplex> temp (pow (tempLeft, tempRight));
-	 result.reference (temp);
-	 break;
-      }
-      default:
-	 throw(AipsError("LELFunctionDComplex::eval - unknown function"));
+      } else if (arg_p[1].isScalar()) {
+         DComplex scalarTemp;
+         arg_p[1].eval(scalarTemp);
+         if (scalarTemp.imag() != 0) {
+            throw (AipsError ("LELFunctionDComplex::eval - When raising a complex lattice to a "
+                             "power the scalar exponent should be real"));
+         }
+         Double exponent = scalarTemp.real();
+         Array<DComplex> arrayTemp(result.shape());
+         arg_p[0].eval(arrayTemp, region);
+         switch (function_p) {
+         case LELFunctionEnums::POW :
+         {
+            Array<DComplex> temp (pow (arrayTemp, exponent));
+            result.reference (temp);
+            break;
+         }
+         default:
+            throw (AipsError ("LELFunctionDComplex::eval - unknown DComplex function"));
+         }
+
+      } else {
+         Array<DComplex> tempLeft(result.shape());
+         Array<DComplex> tempRight(result.shape());
+         arg_p[0].eval(tempLeft, region);
+         arg_p[1].eval(tempRight, region);
+         switch(function_p) {
+         case LELFunctionEnums::POW :
+         {
+            Array<DComplex> temp (pow (tempLeft, tempRight));
+            result.reference (temp);
+            break;
+         }
+         default:
+            throw(AipsError("LELFunctionDComplex::eval - unknown function"));
+         }
       }
    }
 }
@@ -662,6 +860,8 @@ DComplex LELFunctionDComplex::getScalar() const
 #endif
 
    switch (function_p) {
+   case LELFunctionEnums::CONJ :
+       return conj(arg_p[0].getDComplex());
    case LELFunctionEnums::POW :
        return pow(arg_p[0].getDComplex(), arg_p[1].getDComplex());
    default:

@@ -35,6 +35,7 @@
 #include <trial/Lattices/LELBinaryEnums.h>
 #include <trial/Lattices/LELUnaryEnums.h>
 #include <trial/Lattices/LELFunctionEnums.h>
+//#include <trial/Lattices/LatticeExpr.h>
 #include <aips/Utilities/CountedPtr.h>
 #include <aips/Utilities/DataType.h>
 
@@ -170,14 +171,27 @@ class LatticeExprNode
    friend LatticeExprNode sqrt (const LatticeExprNode& expr);
    friend LatticeExprNode ceil (const LatticeExprNode& expr);
    friend LatticeExprNode floor(const LatticeExprNode& expr);
-   friend LatticeExprNode abs  (const LatticeExprNode& expr);
    friend LatticeExprNode fmod (const LatticeExprNode& left,
                                 const LatticeExprNode& right);
    friend LatticeExprNode min  (const LatticeExprNode& left,
 				const LatticeExprNode& right);
    friend LatticeExprNode max  (const LatticeExprNode& left,
 				const LatticeExprNode& right);
+   friend LatticeExprNode abs  (const LatticeExprNode& expr);
+   friend LatticeExprNode arg  (const LatticeExprNode& expr);
+   friend LatticeExprNode real (const LatticeExprNode& expr);
+   friend LatticeExprNode imag (const LatticeExprNode& expr);
+   friend LatticeExprNode conj (const LatticeExprNode& expr);
 // </group>
+
+// Specialized numerical functions 
+// <group>
+// sqrt(a^2+b^2)
+   friend LatticeExprNode amp (const LatticeExprNode& left,
+                               const LatticeExprNode& right);
+// </group>   
+
+
 
 // Functions operating on a numeric expression resulting in a scalar
 // <group>
@@ -334,6 +348,8 @@ private:
 // </group>
 
 // Create a new node for a numerical unary operation.
+// The result has the same data type as the input.
+
    static LatticeExprNode newNumUnary (LELUnaryEnums::Operation oper,
 				       const LatticeExprNode& expr);
 
@@ -347,17 +363,30 @@ private:
    static LatticeExprNode newRealFunc1D (LELFunctionEnums::Function func,
 					 const LatticeExprNode& expr);
 
+// Create a new node for a complex numerical function with 1
+// argument. The result has the same data type as the input.
+   static LatticeExprNode newComplexFunc1D (LELFunctionEnums::Function func,
+                                            const LatticeExprNode& expr);
+
+// Create a new node for a numerical function with 1 arguments that 
+// returns a real number
+   static LatticeExprNode newNumReal1D (LELFunctionEnums::Function func,
+					const LatticeExprNode& expr);
+
 // Create a new node for a numerical function with 2 arguments.
+// The result has the same data type as the combined input type.
    static LatticeExprNode newNumFunc2D (LELFunctionEnums::Function func,
 					const LatticeExprNode& left,
 					const LatticeExprNode& right);
 
 // Create a new node for a numerical binary operator.
+// The result has the same data type as the combined input type.
    static LatticeExprNode newNumBinary (LELBinaryEnums::Operation oper,
 					const LatticeExprNode& left,
 					const LatticeExprNode& right);
 
 // Create a new node for a comparison binary operator.
+// The result has the same data type as the combined input type.
    static LatticeExprNode newBinaryCmp (LELBinaryEnums::Operation oper,
 					const LatticeExprNode& left,
 					const LatticeExprNode& right);
@@ -373,6 +402,5 @@ private:
    CountedPtr<LELInterface<DComplex> > pExprDComplex_p;
    CountedPtr<LELInterface<Bool> >     pExprBool_p;
 };
-
 
 #endif

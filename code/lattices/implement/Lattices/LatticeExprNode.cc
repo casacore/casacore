@@ -767,14 +767,6 @@ LatticeExprNode floor(const LatticeExprNode& expr)
    return LatticeExprNode::newRealFunc1D (LELFunctionEnums::FLOOR, expr);
 }
 
-LatticeExprNode abs(const LatticeExprNode& expr)
-{ 
-#if defined(AIPS_TRACE)
-   cout << "LatticeExprNode:: 1d function abs" << endl;
-#endif
-   return LatticeExprNode::newNumFunc1D (LELFunctionEnums::ABS, expr);
-}
-
 LatticeExprNode min(const LatticeExprNode& expr)
 { 
 #if defined(AIPS_TRACE)
@@ -790,6 +782,49 @@ LatticeExprNode max(const LatticeExprNode& expr)
 #endif
    return LatticeExprNode::newNumFunc1D (LELFunctionEnums::MAX1D, expr);
 }
+
+LatticeExprNode abs(const LatticeExprNode& expr)
+{ 
+#if defined(AIPS_TRACE)
+   cout << "LatticeExprNode:: 1d function abs" << endl;
+#endif
+   return LatticeExprNode::newNumReal1D (LELFunctionEnums::ABS, expr);
+}
+
+LatticeExprNode arg(const LatticeExprNode& expr)
+{ 
+#if defined(AIPS_TRACE)
+   cout << "LatticeExprNode:: 1d function arg" << endl;
+#endif
+   AlwaysAssert (expr.dataType()==TpComplex || expr.dataType()==TpDComplex, AipsError);
+   return LatticeExprNode::newNumReal1D (LELFunctionEnums::ARG, expr);
+}
+
+LatticeExprNode real(const LatticeExprNode& expr)
+{ 
+#if defined(AIPS_TRACE)
+   cout << "LatticeExprNode:: 1d function real" << endl;
+#endif
+   return LatticeExprNode::newNumReal1D (LELFunctionEnums::REAL, expr);
+}
+
+LatticeExprNode imag(const LatticeExprNode& expr)
+{ 
+#if defined(AIPS_TRACE)
+   cout << "LatticeExprNode:: 1d function imag" << endl;
+#endif
+   AlwaysAssert (expr.dataType()==TpComplex || expr.dataType()==TpDComplex, AipsError);
+   return LatticeExprNode::newNumReal1D (LELFunctionEnums::IMAG, expr);
+}
+
+LatticeExprNode conj(const LatticeExprNode& expr)
+{ 
+#if defined(AIPS_TRACE)
+   cout << "LatticeExprNode:: 1d function conj" << endl;
+#endif
+   return LatticeExprNode::newComplexFunc1D (LELFunctionEnums::CONJ, expr);
+}
+
 
 LatticeExprNode mean(const LatticeExprNode& expr)
 { 
@@ -860,6 +895,16 @@ LatticeExprNode max (const LatticeExprNode& left,
    cout << "LatticeExprNode:: 2d function max" << endl;
 #endif
    return LatticeExprNode::newNumFunc2D (LELFunctionEnums::MAX, left, right);
+}
+
+LatticeExprNode amp (const LatticeExprNode& left,
+                     const LatticeExprNode& right)
+{ 
+#if defined(AIPS_TRACE)
+   cout << "LatticeExprNode:: 2d function amp" << endl;
+#endif
+
+   return sqrt(pow(left,2.0) + pow(right,2.0));
 }
 
 
@@ -1041,6 +1086,9 @@ LatticeExprNode nfalse (const LatticeExprNode& expr)
 
 LatticeExprNode LatticeExprNode::newNumUnary (LELUnaryEnums::Operation oper,
 					      const LatticeExprNode& expr)
+//
+// Create a new node for a numerical unary operation.   
+// The result has the same data type as the input.  
 {
    switch (expr.dataType()) {
    case TpFloat:
@@ -1061,6 +1109,10 @@ LatticeExprNode LatticeExprNode::newNumUnary (LELUnaryEnums::Operation oper,
 
 LatticeExprNode LatticeExprNode::newNumFunc1D (LELFunctionEnums::Function func,
 					       const LatticeExprNode& expr)
+//
+// Create a new node for a numerical function with 1 argument.
+// The result has the same data type as the input.
+//
 {
    AlwaysAssert (expr.dataType() != TpBool, AipsError);
    switch (expr.dataType()) {
@@ -1082,8 +1134,11 @@ LatticeExprNode LatticeExprNode::newNumFunc1D (LELFunctionEnums::Function func,
 
 LatticeExprNode LatticeExprNode::newRealFunc1D (LELFunctionEnums::Function func,
 						const LatticeExprNode& expr)
+//
+// Create a new node for a real numerical function with 1
+// argument. The result has the same data type as the input.
+// 
 {
-   AlwaysAssert (expr.dataType() != TpBool, AipsError);
    switch (expr.dataType()) {
    case TpFloat:
       return new LELFunctionReal1D<Float> (func, expr.pExprFloat_p);
@@ -1097,10 +1152,62 @@ LatticeExprNode LatticeExprNode::newRealFunc1D (LELFunctionEnums::Function func,
    return LatticeExprNode();
 }
 
+LatticeExprNode LatticeExprNode::newComplexFunc1D (LELFunctionEnums::Function func,
+    						   const LatticeExprNode& expr)
+//
+// Create a new node for a complex numerical function with 1
+// argument. The result has the same data type as the input.
+// 
+{
+   Block<LatticeExprNode> arg(1);
+   arg[0] = expr;
+   switch (expr.dataType()) {
+   case TpComplex:
+      return new LELFunctionComplex(func, arg);
+   case TpDComplex:
+      return new LELFunctionDComplex(func, arg);
+   default:
+      throw (AipsError
+            ("LatticeExprNode::newComplexFunc1D - only complex arguments allowed"));
+   }
+   return LatticeExprNode();
+}
+
+LatticeExprNode LatticeExprNode::newNumReal1D (LELFunctionEnums::Function func,
+					       const LatticeExprNode& expr)
+//
+// Create a new node for a real numerical function with 1
+// argument. The resultant type is non-complex
+//
+{
+   DataType dtype = expr.dataType();
+   Block<LatticeExprNode> arg(1);
+   arg[0] = expr;
+   switch (dtype) {
+   case TpFloat:
+   case TpComplex:
+      return new LELFunctionFloat (func, arg);
+   case TpDouble:
+   case TpDComplex:
+      return new LELFunctionDouble (func, arg);
+   default:
+      throw (AipsError
+            ("LatticeExprNode::newNumReal1D - output type must be real and numeric"));
+   }
+   return LatticeExprNode();
+}
+
+
+
+
 
 LatticeExprNode LatticeExprNode::newNumFunc2D (LELFunctionEnums::Function func,
 					       const LatticeExprNode& left,
 					       const LatticeExprNode& right)
+//
+//  Create a new node for a numerical function with 2 arguments.
+//  The result has the same data type as the combined input type.
+// 
 {
    DataType dtype = resultDataType (left.dataType(), right.dataType());
    Block<LatticeExprNode> arg(2);
