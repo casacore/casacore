@@ -1,5 +1,5 @@
 //# PGPlotter.h: Standard plotting object for application programmers.
-//# Copyright (C) 1997,2000
+//# Copyright (C) 1997,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -116,7 +116,8 @@ public:
     //   <li> An <linkto class="AipsError">AipsError</linkto> will be thrown
     //        if the underlying PGPLOT open fails for some reason.
     // </thrown>
-    PGPlotter(const String &device, uInt mincolors=2, uInt maxcolors=100);
+    PGPlotter(const String &device, uInt mincolors=2, uInt maxcolors=100,
+              uInt sizex=600, uInt sizey=450);
 
     // Copies use reference semantics, i.e. after copying the new and old
     // copy both draw onto the same surface.
