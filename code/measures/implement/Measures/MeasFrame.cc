@@ -1,5 +1,5 @@
 //# MeasFrame.cc: Container for Measure frame
-//# Copyright (C) 1996,1997,1998,1999,2000,2001
+//# Copyright (C) 1996,1997,1998,1999,2000,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -490,6 +490,12 @@ Bool MeasFrame::getRadius(Double &tdb) {
   if (rep && rep->mymcf) return rep->getdbl(rep->mymcf, GetRadius, tdb);
   tdb = 0;
   return False; 
+}
+
+Bool MeasFrame::getLatGeo(Double &tdb) {
+  if (rep && rep->mymcf) return rep->getdbl(rep->mymcf, GetLatGeo, tdb);
+  tdb = 0;
+  return False;
 }
 
 Bool MeasFrame::getLAST(Double &tdb) {

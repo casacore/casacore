@@ -1,5 +1,5 @@
 //# MeasFrame.h: Container for Measure frame
-//# Copyright (C) 1996,1997,1998,1999,2000,2001
+//# Copyright (C) 1996,1997,1998,1999,2000,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -243,14 +243,16 @@ class MeasFrame {
   // <group>
   // Get TDB in days
   Bool getTDB(Double &tdb);
-  // Get the longitude (in rad)
+  // Get the ITRF longitude (in rad)
   Bool getLong(Double &tdb);
-  // Get the latitude (in rad)
+  // Get the ITRF latitude (in rad)
   Bool getLat(Double &tdb);
   // Get the position
   Bool getITRF(MVPosition &tdb);
-  // Get the gecentric position (in m)
+  // Get the geocentric position (in m)
   Bool getRadius(Double &tdb);
+  // Get the geodetic latitude
+  Bool getLatGeo(Double &tdb);
   // Get the LAST (in days)
   Bool getLAST(Double &tdb);
   // Get the LAST (in rad)
@@ -292,12 +294,14 @@ private:
   enum GetTypes {
     // Get TDB in days
     GetTDB,
-    // Get the longitude (in rad)
+    // Get the ITRF longitude (in rad)
     GetLong,
-    // Get the latitude (in rad)
+    // Get the ITRF latitude (in rad)
     GetLat,
-    // Get the gecentric position (in m)
+    // Get the geocentric position (in m)
     GetRadius,
+    // Get the geodetic latitude
+    GetLatGeo,
     // Get the LAST (in days)
     GetLAST,
     // Get the LAST (in rad)

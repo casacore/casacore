@@ -1,5 +1,5 @@
 //# MCFrame.h: Measure frame calculations proxy
-//# Copyright (C) 1996,1997,1998,1999,2000,2001
+//# Copyright (C) 1996,1997,1998,1999,2000,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -105,12 +105,14 @@ public:
   Bool getTDB(Double &tdb);
   // Get the longitude (in rad)
   Bool getLong(Double &tdb);
-  // Get the latitude (in rad)
+  // Get the latitude (ITRF) (in rad)
   Bool getLat(Double &tdb);
   // Get the position
   Bool getITRF(MVPosition &tdb);
-  // Get the gecentric position (in m)
+  // Get the geocentric position (in m)
   Bool getRadius(Double &tdb);
+  // Get the geodetic latitude
+  Bool getLatGeo(Double &tdb);
   // Get the LAST (in days)
   Bool getLAST(Double &tdb);
   // Get the LAST (in rad)
@@ -146,7 +148,8 @@ private:
   MeasFrame myf;
   // The actual measure conversion values
   // <group>
-  // Conversion to TDB time (due to some (for me) unsolvable dependency errors
+  // Conversion to TDB time (due to some (for me) unsolvable dependency
+  // errors)
   // not the proper MeasConvert* here)
   void *epConvTDB;
   // TDB time
@@ -155,12 +158,18 @@ private:
   void *epConvLAST;
   // LAST time
   Double *epLASTp;
-  // Conversion to astronomical longitude/latitude
+  // Conversion to ITRF longitude/latitude
   void *posConvLong;
   // Longitude
   Vector<Double> *posLongp;
   // Position
   MVPosition *posITRFp;
+  // Conversion to geodetic longitude/latitude
+  void *posConvLongGeo;
+  // Latitude
+  Vector<Double> *posLongGeop;
+  // Position
+  MVPosition *posGeop;
   // Conversion to J2000
   void *dirConvJ2000;
   // Longitude
