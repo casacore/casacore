@@ -387,7 +387,8 @@ void StokesConverter::convert(Array<Bool>& out, const Array<Bool>& in) const
   }
 }
 
-void StokesConverter::convert(Array<Float>& out, const Array<Float>& in) const
+void StokesConverter::convert(Array<Float>& out, const Array<Float>& in,
+			      Bool sigma) const
 {
   IPosition outShape(in.shape()); outShape(0)=out_p.nelements();
   out.resize(outShape);
@@ -397,14 +398,20 @@ void StokesConverter::convert(Array<Float>& out, const Array<Float>& in) const
   
   Matrix<Float> outMat=out.reform(IPosition(2,outShape(0),
 					   out.nelements()/outShape(0)));
+  // change calculation based on sigma:
+  // for weights we use Wout=1/sum(square(factor(k))*1/Win(k))
+  // for sigmas  we use Sout=sqrt(sum(square(factor(k)*Sin(k))))
   for (uInt i=0; i<out_p.nelements(); i++) {
     for (uInt j=0; j<inMat.ncolumn(); j++) {
       outMat(i,j)=0;
       for (Int k=0; k<nCorrIn; k++) {
-	if (inMat(k,j)!=0) outMat(i,j)+=square(wtConv_p(i,k))/inMat(k,j);
+	if (inMat(k,j)!=0) outMat(i,j)+= 
+			     (sigma ? square(wtConv_p(i,k)*inMat(k,j)) :
+			      square(wtConv_p(i,k))/inMat(k,j));
 	else { outMat(i,j)=0; break;}  // flag output if one of inputs is zero
       }
-      if (outMat(i,j)!=0) outMat(i,j)=1/outMat(i,j);
+      if (outMat(i,j)!=0) outMat(i,j)=
+			    (sigma ? sqrt(outMat(i,j)) : 1/outMat(i,j));
     }
   }
 }

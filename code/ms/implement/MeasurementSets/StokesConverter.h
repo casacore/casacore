@@ -150,7 +150,9 @@ public:
   // convert weights, first dimension of input must match
   // that of the input conversion vector used to set up the conversion.
   // Output is resized as needed.
-  void convert(Array<Float>& out, const Array<Float>& in) const;
+  // Set sigma to True when converting sigma's using this routine.
+  void convert(Array<Float>& out, const Array<Float>& in,
+	       Bool sigma=False) const;
 
   // invert flags, first dimension of input must match
   // that of the output conversion vector used to set up the conversion.
