@@ -2568,3 +2568,7 @@
 11 376 src rm trial/scripts/tgImageWithSpectrum.g
 11 376 src rm trial/scripts/tgOTF.g
 11 376 src rm trial/scripts/tgXYPlot.g
+11 376 sys rm libexec/tgImage.g
+11 376 sys rm libexec/tgImageWithSpectrum.g
+11 376 sys rm libexec/tgOTF.g
+11 376 sys rm libexec/tgXYPlot.g
