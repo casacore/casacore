@@ -158,8 +158,12 @@ public:
     void toBlock(Block<T> &other) const;
 
     // Single-pixel addressing. If AIPS_ARRAY_INDEX_CHECK is defined,
-    // bounds checking is performed.
+    // bounds checking is performed (not for [])..
     // <group>
+    T &operator[](uInt index)
+      { return (contiguous_p  ?  begin_p[index] : begin_p[index*inc_p(0)]); }
+    const T &operator[](uInt index) const
+      { return (contiguous_p  ?  begin_p[index] : begin_p[index*inc_p(0)]); }
     T &operator()(const IPosition &i)
       { return Array<T>::operator()(i); }
     const T &operator()(const IPosition &i) const 
