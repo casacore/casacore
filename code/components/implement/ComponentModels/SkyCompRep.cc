@@ -411,10 +411,8 @@ Bool SkyCompRep::readLabel(String & errorMessage, const GlishRecord & record) {
 Bool SkyCompRep::addLabel(String & errorMessage, GlishRecord & record) const {
   String thisLabel;
   label(thisLabel);
-  if (thisLabel != "") {
-    record.add("label", thisLabel);
-  }
   if (errorMessage == ""); // Suppress compiler warning about unused variable
+  record.add("label", thisLabel);
   return True;
 }
 
