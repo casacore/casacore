@@ -1,5 +1,5 @@
 //# DOos.cc: Functions used to implement the DO functionality
-//# Copyright (C) 1999,2000,2001
+//# Copyright (C) 1999,2000,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -44,8 +44,12 @@ Vector<Bool> DOos::isValidPathName (const Vector<String>& pathName)
 {
   Vector<Bool> result(pathName.nelements());
   for (uInt i=0; i<pathName.nelements(); i++) {
-    File file(pathName(i));
-    result(i) =  (file.exists() || file.canCreate());
+    if (pathName(i).empty()) {
+      result(i) = False;
+    } else {
+      File file(pathName(i));
+      result(i) =  (file.exists() || file.canCreate());
+    }
   }
   return result;
 }
@@ -55,11 +59,15 @@ Vector<Bool> DOos::fileExists (const Vector<String>& pathName,
 {
   Vector<Bool> result(pathName.nelements());
   for (uInt i=0; i<pathName.nelements(); i++) {
-    File file(pathName(i));
-    if (follow && file.isSymLink()) {
-      file = File(SymLink(file).followSymLink());
+    if (pathName(i).empty()) {
+      result(i) = False;
+    } else {
+      File file(pathName(i));
+      if (follow && file.isSymLink()) {
+	file = File(SymLink(file).followSymLink());
+      }
+      result(i) = file.exists();
     }
-    result(i) =  (file.exists());
   }
   return result;
 }
