@@ -27,10 +27,9 @@
 
 #include <aips/aips.h>
 #include <aips/Arrays/Array.h>
+#include <aips/Arrays/ArrayLogical.h>
 #include <aips/Arrays/ArrayMath.h>
 #include <aips/Arrays/VectorIter.h>
-#include <aips/Arrays/MaskedArray.h>
-#include <aips/Arrays/MaskArrMath.h>
 #include <aips/Arrays/Matrix.h>
 #include <aips/Exceptions/Error.h>
 #include <aips/Inputs/Input.h>
@@ -208,6 +207,9 @@ Bool ImageStatistics<T>::setAxes (const Vector<Int>& axesU)
       return False;
    }
 
+// Save current cursor axes
+
+   Vector<Int> saveAxes(cursorAxes_p.copy());
 
 // Assign cursor axes.
 
@@ -229,10 +231,11 @@ Bool ImageStatistics<T>::setAxes (const Vector<Int>& axesU)
       }
    }
 
-// Signal that we have changed the axes and need a new accumulaiton
+// Signal that we have changed the axes and need a new accumulation
 // image
 
-   needStorageImage_p = True;
+   if (saveAxes.nelements() != cursorAxes_p.nelements() ||
+       !allEQ(saveAxes.ac(), cursorAxes_p.ac())) needStorageImage_p = True;
 
    return True;
 }
@@ -249,6 +252,12 @@ Bool ImageStatistics<T>::setInExCludeRange(const Vector<Double>& includeU,
       os_p << LogIO::SEVERE << "Internal class status is bad" << LogIO::POST;
       return False;
    }
+
+// Save current ranges
+
+   Vector<Float> saveRange(range_p.copy());
+
+// Check
       
    ostrstream os;
    if (!ImageUtilities::setIncludeExclude(range_p, noInclude_p, noExclude_p,
@@ -261,8 +270,9 @@ Bool ImageStatistics<T>::setInExCludeRange(const Vector<Double>& includeU,
 
 // Signal that we have changed the pixel range and need a new accumulaiton
 // image
-    
-   needStorageImage_p = True;
+   
+   if (saveRange.nelements() != range_p.nelements() ||
+       !allEQ(saveRange.ac(), range_p.ac())) needStorageImage_p = True;    
 
    return True;
 }
@@ -385,6 +395,11 @@ Bool ImageStatistics<T>::setRegion(const IPosition& blcU,
       return False;
    }
 
+// Save current region
+
+   IPosition saveBlc(blc_p);
+   IPosition saveTrc(trc_p);
+
 // Check OK
 
    blc_p.resize(0);
@@ -398,6 +413,10 @@ Bool ImageStatistics<T>::setRegion(const IPosition& blcU,
       os_p << LogIO::NORMAL << "Selected region : " << blc_p+1<< " to "
         << trc_p+1 << LogIO::POST;
    }
+
+// Signal we need new accumulation images
+
+   if (!saveBlc.isEqual(blc_p) || !saveTrc.isEqual(trc_p)) needStorageImage_p = True;
 
    return True;
 }
