@@ -26,6 +26,7 @@
 //# $Id$
 
 #include <trial/Lattices/LCBox.h>
+#include <aips/Mathematics/Math.h>
 #include <aips/Tables/TableRecord.h>
 #include <aips/Utilities/Assert.h>
 #include <aips/Exceptions/Error.h>
@@ -100,19 +101,63 @@ LCBox::LCBox (const Vector<Double>& blc, const Vector<Double>& trc,
     setSlicerBox (bl, tr);
 }
 
-LCBox::LCBox (const LCBox& that)
-: LCRegionFixed (that)
+LCBox::LCBox (const LCBox& other)
+: LCRegionFixed (other),
+  itsBlc(other.itsBlc),
+  itsTrc(other.itsTrc)
 {}
+ 
 
 LCBox::~LCBox()
 {}
 
-LCBox& LCBox::operator= (const LCBox& that)
+LCBox& LCBox::operator= (const LCBox& other)
 {
-    if (this != &that) {
-	LCRegionFixed::operator= (that);
+    if (this != &other) {
+	LCRegionFixed::operator= (other);
     }
+    itsBlc.resize(other.itsBlc.nelements());
+    itsTrc.resize(other.itsTrc.nelements());
+    itsBlc = other.itsBlc;    
+    itsTrc = other.itsTrc;
+
     return *this;
+}
+
+
+Bool LCBox::operator== (const LCRegion& other) const
+// 
+// See if this region is the same as the other region
+//
+{
+
+// Check below us
+
+   if (LCRegionFixed::operator!=(other)) return False;
+
+// Caste (is safe)
+
+   const LCBox& that = (const LCBox&)other;
+
+// Compare private data.  The blc/trc vectors have the same length
+
+   if (itsBlc.nelements() != that.itsBlc.nelements()) return False;
+   if (itsTrc.nelements() != that.itsTrc.nelements()) return False;
+   for (uInt i=0; i<itsBlc.nelements(); i++) {
+      if (!near(itsBlc(i),that.itsBlc(i))) return False;
+      if (!near(itsTrc(i),that.itsTrc(i))) return False;
+   }
+
+   return True;
+}
+
+Bool LCBox::operator!= (const LCRegion& other) const
+// 
+// See if this region is different from the other region
+//
+{
+   if (LCBox::operator==(other)) return False;
+   return True;
 }
 
 LCRegion* LCBox::cloneRegion() const
@@ -140,6 +185,11 @@ LCRegion* LCBox::doTranslate (const Vector<Float>& translateVector,
 String LCBox::className()
 {
     return "LCBox";
+}
+
+String LCBox::type() const
+{
+   return className();
 }
 
 TableRecord LCBox::toRecord (const String&) const
