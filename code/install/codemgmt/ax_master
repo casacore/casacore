@@ -5835,3 +5835,4 @@
 16 215 src rm trial/implement/Functionals/Sinusoid1D2.h
 16 217 src mv trial/implement/Functionals/Gaussian1DParam.h aips/implement/Functionals/Gaussian1DParam.h
 16 217 src mv trial/implement/Functionals/Gaussian1DParam.cc aips/implement/Functionals/Gaussian1DParam.cc
+16 217 src mv trial/implement/Images/ImageLogger.h trial/implement/Logging/LoggerHolder.h
