@@ -173,7 +173,8 @@ Flux<Double> SkyCompRep::visibility(const Vector<Double> & uvw,
 				    const Double & frequency) const {
   DebugAssert(ok(), AipsError);
   Flux<Double> flux = itsFlux.copy();
-  itsShapePtr->visibility(flux, uvw, frequency);
+  Double scale = itsShapePtr->visibility(uvw, frequency).real();
+  flux.scaleValue(scale, scale, scale, scale);
   // I should scale by the frequency here also but I need to consult with Tim
   // first.
   return flux;
