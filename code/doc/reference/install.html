@@ -59,9 +59,118 @@ src="../gif/tri2.gif" border=0>  <b>Home</a
 <font face=helvetica size="+2" color="cc0000">
 Obtaining AIPS++</font><p>
 
+<p>
+Note: The following provides a binary installation of AIPS++ with only the 
+required parts of the data repository. This version is available only for 
+running the package and is not appropriate for development. 
 <p> 
-Binary releases are currently suspended.
+<h2>Download:</h2>
+<p>
+RPM (RedHat Package Manager) files (containing a binary installation of the 
+AIPS++ software and associated data and library files) are available at: 
 <P>
+ftp://ftp.cv.nrao.edu/aips++/TST1
+<p>
+Should you wish to update your installation, new rpms will be built following
+each stable and can be downloaded from this location.
+<p>
+Currently supported OSs are RH7.2, RH9.0, SuSE8.2 [and Vine2.6r3].
+<p>
+<ul>
+<li>	rh9: source rpms for Red Hat 9.0 
+<li> 	suse: source rpms for SuSE 8.2
+<li>	rh7.2: source rpms for Red Hat 7.2
+<li>	vine: source rpms for Vine Linux 2.6r3 (beta)
+
+</ul>
+
+<p>
+Note: For users of Solaris, a previous installation can be brought up to
+date using the 'aupdate' command.
+<p>
+To download, use your browser to select all of the rpms in the
+appropriate OS directory and download them
+to your computer. <p>Alternatively, you can follow the command line download
+below:
+<p>
+<verbatim>
+<ol>
+<li> Save the OS appropriate file into the directory you want to store the RPMs.
+This is an ftp command file to retrieve the appropriate RPMs.
+
+<p>
+        <a href="./almatst1/suckrpm_rh9">suckrpm_rh9</a><br>
+	<a href="./almatst1/suckrpm_suse">suckrpm_suse</a><br>
+        <a href="./almatst1/suckrpm_vine">suckrpm_vine</a>
+<p>
+
+<li> copy the following line into the file .netrc in your home directory (create
+	the file if you don't have one):
+<p>
+	default login anonymous password user@site
+<p>
+
+
+<li> Execute the following command to download the relevant files into your current
+	directory.
+<p>
+	ftp ftp.cv.nrao.edu < suckrpm_rh9 (or vine)
+<p>
+</verbatim>
+
+<p>
+<h2>Install: </h2>
+
+<p>
+To install the AIPS++ data reduction package, 
+execute the following linux rpm commands 
+(requires root privilege) where the RPMs are located. Note: If you already 
+have a prior installation of the AIPS++ 
+package through this rpm install, then do "rpm -Uvh" to update rather than 
+install; this will be indicated by a message like the following:
+<p>
+file "FILENAME" from install of "RPMNAME" conflicts with file from package "RPMNAME". 
+<p>
+The rpms are [205 MB].
+<p>
+The required memory is 512 MB with at least 1 GB of swap space, though more
+is better.
+The disk space required varies depending upon the dataset. Having 5 GB should
+be safe in all cases.
+<p>
+To install AIPS++, cut and paste (or type) the following lines to a unix command line 
+prompt; you will need 'root' permission.
+<p>
+
+<ol>
+<li> Install AIPS++ 
+<p>
+rpm -ivh aips++*
+<p>
+
+<li> Install required PGPLOT libraries
+<p>
+rpm -ivh pgplot*
+<p>
+
+<li> Install other needed utilities
+<p>
+rpm -ivh cfitsio* rpfits*
+<p>
+
+</ol>
+
+<h2>Running AIPS++:</h2>
+<p>
+This will install the AIPS++ DRP into /usr/lib/aips++. 
+AIPS++ can be started simply by typing:
+<p>
+<verbatim>
+> aips++
+</verbatim>
+<p>
+at your unix command prompt.
+<p>
 Copyright &#169; 1995-2002,2003 Associated Universities Inc.,
 Washington, D.C.</i>
 </td></tr></table>
