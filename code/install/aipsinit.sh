@@ -3,7 +3,7 @@
 # aipsinit.sh: Define the AIPS++ environment for Bourne-like shells
 #-----------------------------------------------------------------------------
 #
-#   Copyright (C) 1992-1997
+#   Copyright (C) 1992-1997,1998
 #   Associated Universities, Inc. Washington DC, USA.
 #
 #   This program is free software; you can redistribute it and/or modify
@@ -279,9 +279,9 @@
      then
         a_temp='aipsinit () { local aips_ext="$*" ; local a_root='$a_root' ; . '$a_root'/aipsinit.sh; }'
         eval $a_temp
-     elif [ "${KSH_VERSION-}" != "" ]
+     elif [ "${SHELL##*/}" = "ksh" ]
      then
-        a_temp='aipsinit () { aips_ext="$*" ; a_root='$a_root' ; . '$a_root'/aipsinit.sh }'
+        a_temp='aipsinit () { aips_ext="$*" ; a_root='$a_root' ; . '$a_root'/aipsinit.sh; }'
         eval $a_temp
      fi
   fi
