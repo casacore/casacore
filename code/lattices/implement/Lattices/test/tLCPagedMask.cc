@@ -79,6 +79,15 @@ main ()
 {
   try {
     {
+      IPosition latticeShape(2, 4, 8);
+      Array<Bool> arr(latticeShape);
+      arr.set(True);
+      arr(IPosition(2,0,0)) = False;
+      LCPagedMask mask(latticeShape, "tLCPagedMask_tmp.data");
+      mask.put (arr);
+      cout << mask.hasMask() << mask.maskArray().ac() << endl;
+    }
+    {
       IPosition latticeShape(4, 16, 12, 4, 32);
       Array<Bool> arr(latticeShape);
       arr(IPosition(4,0,0,0,0), latticeShape-1, IPosition(4,1,2,1,1)) = True;
@@ -99,13 +108,20 @@ main ()
       AlwaysAssertExit (copmask->shape() == latticeShape);
       testVectorROIter (*copmask, False, True);
       delete copmask;
+//
+      LCPagedMask mask2(mask);
+      AlwaysAssertExit (mask2 == mask);
+      LCPagedMask mask3(latticeShape-1, "tLCPagedMask_tmp3.data");
+      Array<Bool> arr3(latticeShape-1);
+      arr3.set(True);
+      AlwaysAssertExit (mask3 != mask);
+
     }
   } catch (AipsError x) {
     cerr << "Caught exception: " << x.getMesg() << endl;
-    cout << "FAIL" << endl;
-    return 1;
+    exit(1);
   } end_try;
 
-  cout << "OK" << endl;
-  return 0;
+   cout << "OK" << endl;
+   exit(0);
 }
