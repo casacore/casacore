@@ -187,6 +187,7 @@ private:
     Bool        delete_p;
     TableDesc*  tdescPtr_p;
     ColumnSet*  colSetPtr_p;      //# 0 = object is already used by a Table
+    SimpleOrderedMap<void*,void*> dataManMap_p;
 
     // Copy constructor is forbidden, because copying a table requires
     // some more knowledge (like table name of result).
