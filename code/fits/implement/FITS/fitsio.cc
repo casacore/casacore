@@ -32,11 +32,17 @@
 # include <casa/string.h>
 # include <casa/sstream.h>
 
+// using cfitsio of NASA
+// can't use "" to replace <>.
+// The following is included through fitsio.h-->blockio.h already! 
+//# include <cfitsio/fitsio.h>     
+//# include <cfitsio/fitsio2.h>
+//
 FitsIO::~FitsIO() {
 }
 
 FitsInput::~FitsInput() {
-	delete &fin;
+	delete &m_fin;
 }
 
 FitsDiskInput::~FitsDiskInput() {
@@ -61,64 +67,80 @@ FitsTape9Output::~FitsTape9Output() {
 Block<String> messages_(32);
 Block<Int> errLevels_(32);
 uInt nerrs_ = 0;
-
+//============================================================================================
 // special error handler function used by read_header_rec
 void readHeaderRecErrHandler(const char *errMessage, FITSError::ErrorLevel severity)
 {
     if (nerrs_ >= messages_.nelements()) {
-	uInt newSize = messages_.nelements()*2;
-	messages_.resize(newSize, True, True);
-	errLevels_.resize(newSize, True, True);
+	    uInt newSize = messages_.nelements()*2;
+	    messages_.resize(newSize, True, True);
+	    errLevels_.resize(newSize, True, True);
     }
     messages_[nerrs_] = String(errMessage);
     errLevels_[nerrs_] = Int(severity);
     nerrs_++;
 }
-
-
+//=============================================================================================
 void FitsInput::errmsg(FitsErrs e, char *s) {
+    //cout<<"[FitsInput::errmsg] called."<<endl;
     ostringstream msgline;
     msgline << "FitsInput error:  ";
-    if (fin.fname() == 0 || *fin.fname() == '\0') 
-	msgline << "File Descriptor " << fin.fdes();
+    if (m_fin.fname() == 0 || *m_fin.fname() == '\0') 
+	    msgline << "File Descriptor " << m_fin.fdes();
     else
-	msgline << "File " << fin.fname();
-    msgline << " Physical record " << fin.blockno()
-	    << " logical record " << fin.recno() << " --\n\t" << s;
-    err_status = e;
+  	    msgline << "File " << m_fin.fname();
+    msgline << " Physical record " << m_fin.blockno()
+	    << " logical record " << m_fin.recno() << " --\n\t" << s << endl;
+    m_err_status = e;
     // all FitsIO messages are SEVERE
-    const char * mptr = msgline.str().data();
-    errfn(mptr, FITSError::SEVERE);
+    //const char * mptr = msgline.str().data();
+	 const char * mptr = msgline.str().c_str();
+    m_errfn(mptr, FITSError::SEVERE);
     // delete [] mptr;
 }
-
+//==========================================================================================
+// Implement skip function with cfitsio of NASA. GYL
 char *FitsDiskInput::skip(int n) { // skip n logical records and read
-	if (n == 0)
-	    return read();
-	while (n) {
-	    current += recsize;
-	    if (current >= iosize)
-		break;
-	    --n;
-	    ++rec_no;
-	}
-	if (n == 0)
-	    return read();
-	int phy_rec = n / nrec; // find # physical records to skip
-	if (phy_rec > 0) {
-	    if (lseek(fd,(long)(phy_rec * blocksize),SEEK_CUR) == -1) {
-		errmsg(READERR,"Error performing lseek");
-                iosize = 0;
-	    }	    
-	    n -= phy_rec * nrec;
-	    rec_no += phy_rec * nrec;
-	    block_no += phy_rec;
-	}
-	while (n--)
-	    read();
-        return read();
-}
+	// Is the contents of the m_buffer enough for skip()? if yes,
+	// convert n to OFF_T, just in case n*m_recsize is larger than maximum int.
+	if( ( OFF_T(n)*m_recsize )<= OFF_T(m_iosize - m_current)){
+	   m_current += n*m_recsize;
+		m_rec_no = m_rec_no + n;
+		return read();
+	} 
+	// The situation when m_buffer has less logical record than n:
+	// check that we do not exceed number of rows in the file
+   int l_endrow = ((m_fptr->Fptr)->bytepos - (m_iosize - m_current )) / m_recsize + n;
+	int l_totalrow = ((m_fptr->Fptr)->filesize) / m_recsize;
+   if (l_endrow >=  l_totalrow )
+   {
+      errmsg(READERR,"Attempt to read past end of file [FitsdiskInput::skip()]");
+      return(0);
+   }
 
+   // move the i/o pointer to the end position of the skipped block.
+	// (m_iosize - m_current ) is the bytes of data left within the m_buffer
+	// still need to test this part with big fits file.
+   OFF_T bytpost = (m_fptr->Fptr)->bytepos + (m_recsize * uInt(n) ) - ( m_iosize - m_current );
+	int l_status = 0;     
+   ffmbyt(m_fptr, bytpost, REPORT_EOF, &l_status);
+	if ( l_status ){
+       fits_report_error(stderr, l_status); /* print error report */
+		 errmsg(READERR,"bytepos setting error [FitsdiskInput::skip()]");
+	   return (0);
+   }else{
+		 // (m_iosize-m_current) is in the previous m_block_no already.
+	    int l_phy_rec = ( n - ( m_iosize - m_current )/m_recsize )/m_nrec;		
+	    m_block_no += l_phy_rec; 
+		 m_rec_no += n;
+		 m_iosize = 0;   // the m_buffer data is all used.
+		 m_current = 0;  // reset the buffer position to beginning.
+		 
+	}
+		
+   return read();
+}
+//===============================================================================================
 BlockInput &FitsInput::make_input(const char *n, const FITS::FitsDevice &d, 
 				  int b, 
 				  FITSErrorHandler errhandler)
@@ -127,50 +149,53 @@ BlockInput &FitsInput::make_input(const char *n, const FITS::FitsDevice &d,
 
 	switch (d) {
 	    case FITS::Disk:
-		bptr =  new FitsDiskInput(n,FitsRecSize,b,errhandler);
+		bptr =  new FitsDiskInput(n,m_recsize,b,errhandler);
 		break;
-	    case FITS::Tape9: 
-		bptr = new FitsTape9Input(n,FitsRecSize,b,errhandler);
+	    case FITS::Tape9:
+		  //errmsg(IOERR,"FITS::Tape9 is not supported. Please use FITS::DISK!"); 
+		  bptr = new FitsTape9Input(n,m_recsize,b,errhandler);
 		break;
 	    case FITS::Std: 
-		bptr = new FitsStdInput(FitsRecSize,errhandler);
+		bptr = new FitsStdInput(m_recsize,errhandler);
 		break;
 	}
     // Dereferences a null pointer if "d" was not caught in the above switch.
         return *bptr;
 }
-
+//=============================================================================================
 void FitsOutput::errmsg(FitsErrs e, char *s) {
     ostringstream msgline;
     msgline << "FitsOutput error:  ";
-    if (fout.fname() == 0 || *fout.fname() == '\0') 
-	msgline << "File Descriptor " << fout.fdes();
+    if (m_fout.fname() == 0 || *m_fout.fname() == '\0') 
+ 	    msgline << "File Descriptor " << m_fout.fdes();
     else
-	msgline << "File " << fout.fname();
-    msgline << " Physical record " << fout.blockno()
-	    << " logical record " << fout.recno() << " --\n\t" << s;
-    err_status = e;
+	    msgline << "File " << m_fout.fname();
+    msgline << " Physical record " << m_fout.blockno()
+	    << " logical record " << m_fout.recno() << " --\n\t" << s << endl;
+    m_err_status = e;
     // all FitsIO messages are SEVERE
-    const char * mptr = msgline.str().data();
-    errfn(mptr, FITSError::SEVERE);
+	 //const char * mptr = msgline.str().data();
+    const char * mptr = msgline.str().c_str();
+    m_errfn(mptr, FITSError::SEVERE);
     // delete [] mptr;
 }
-
+//==============================================================================================
 BlockOutput &FitsOutput::make_output(const char *n, const FITS::FitsDevice &d, 
 				     int b, 
 				     FITSErrorHandler errhandler)
 				     
 {
     BlockOutput *bptr = 0;
-	switch (d) {
+	 switch (d) {
 	    case FITS::Disk:
-		bptr =  new FitsDiskOutput(n,FitsRecSize,b,errhandler);
-		break;
-	    case FITS::Tape9: 
-		bptr =  new FitsTape9Output(n,FitsRecSize,b,errhandler);
-		break;
+		   bptr =  new FitsDiskOutput(n,m_recsize,b,errhandler);
+	  	   break;
+	    case FITS::Tape9:
+		   //errmsg(IOERR,"FITS::Tape9 is not supported. Please use FITS::DISK!");  
+		   bptr =  new FitsTape9Output(n,m_recsize,b,errhandler);
+		   break;
 	    case FITS::Std: 
-		bptr =  new FitsStdOutput(FitsRecSize,errhandler);
+		bptr =  new FitsStdOutput(m_recsize,errhandler);
 		break;
 	}
 
@@ -178,312 +203,424 @@ BlockOutput &FitsOutput::make_output(const char *n, const FITS::FitsDevice &d,
     // switch.
     return *bptr;
 }
-
+//========================================================================================
 FitsOutput::FitsOutput(const char *n, const FITS::FitsDevice &d, int b, 
 		       FITSErrorHandler errhandler) :
-	FitsIO(errhandler), fout(make_output(n,d,b,errhandler)) {
-	if (fout.err()) {
-	    rec_type = FITS::EndOfFile;
+	FitsIO(errhandler), m_fout(make_output(n,d,b,errhandler)),m_required_keys_only(TRUE) {
+	if (m_fout.err()) {
+	    m_rec_type = FITS::EndOfFile;
 	    errmsg(IOERR,"Error constructing output");
 	    return;
 	}
-	curr = new char [FitsRecSize];
-	if (!curr) {
-	    rec_type = FITS::EndOfFile;
+	m_curr = new char [m_recsize];
+	if (!m_curr) {
+	    m_rec_type = FITS::EndOfFile;
 	    errmsg(MEMERR,"Could not allocate storage for output buffer.");
 	}
+	m_fptr = m_fout.getfptr();
 }
-
+//=========================================================================================
 FitsOutput::FitsOutput(FITSErrorHandler errhandler) : FitsIO(errhandler), 
-	fout(*(BlockOutput *)(new FitsStdOutput(FitsRecSize,errhandler))) {
-	if (fout.err()) {
-	    rec_type = FITS::EndOfFile;
+	m_fout(*(BlockOutput *)(new FitsStdOutput(m_recsize,errhandler))), m_required_keys_only(TRUE) {
+	if (m_fout.err()) {
+	    m_rec_type = FITS::EndOfFile;
 	    errmsg(IOERR,"Error constructing output");
 	    return;
 	}
-	curr = new char [FitsRecSize];
-	if (!curr) {
-	    rec_type = FITS::EndOfFile;
+	m_curr = new char [m_recsize];
+	if (!m_curr) {
+	    m_rec_type = FITS::EndOfFile;
 	    errmsg(MEMERR,"Could not allocate storage for output buffer.");
 	}
 }
-
+//==========================================================================================
 FitsOutput::~FitsOutput() {
-	if (hdu_inprogress())
-	    errmsg(BADOPER,"ERROR! Output closed before HDU was complete."); 
-	delete &fout;
-	delete [] curr;
+	if (hdu_inprogress()){
+	    errmsg(BADOPER,"ERROR! Output closed before HDU was complete.");
+	} 
+	delete &m_fout;
+	delete [] m_curr;
 }
-
+//========================================================================================
 void FitsInput::init() {
-	if (fin.err())
+	if (m_fin.err())
 		errmsg(IOERR,"Error constructing input");
 	else {
-	    curr = fin.read();
-	    got_rec = True;
-	    if (!curr) {
-	        errmsg(EMPTYFILE,"This is an empty file.");
-	        rec_type = FITS::EndOfFile;
+	    //cout<<"[FitsInput::init()] First call to BolockInput::read()." << endl;
+	    m_curr = m_fin.read();
+	    m_got_rec = True;
+	    if (!m_curr) {
+	        errmsg(EMPTYFILE,"This is an empty file [FitsInput::init()].");
+	        m_rec_type = FITS::EndOfFile;
 	        return;
 	    }
-	    if (fin.err()) {
-	        errmsg(IOERR,"Error reading first record.");
-	        rec_type = FITS::BadBeginningRecord;
+	    if (m_fin.err()) {
+	        errmsg(IOERR,"Error reading first record [FitsInput::init()].");
+	        m_rec_type = FITS::BadBeginningRecord;
 	        return;
 	    }
-	    kc.parse(curr,kw,0,errfn,True);
+	    m_kc.parse(m_curr,m_kw,0,m_errfn,True);
+
+		 // get the fitsfile pointer
+	    m_fptr = m_fin.getfptr(); 
+
 	    HeaderDataUnit::HDUErrs n;
-	    if (!HeaderDataUnit::determine_type(kw,hdu_type,data_type,errfn,n)) {
-	        errmsg(BADBEGIN,"Unrecognizable record at the beginning.");
-	        rec_type = FITS::BadBeginningRecord;
+	    if (!HeaderDataUnit::determine_type(m_kw,m_hdu_type,m_data_type,m_errfn,n)) {
+	        errmsg(BADBEGIN,"Unrecognizable record at the beginning [FitsInput::init()].");
+	        m_rec_type = FITS::BadBeginningRecord;
 	        return;
 	    }
-	    if (!(hdu_type == FITS::PrimaryArrayHDU || 
-		  hdu_type == FITS::PrimaryGroupHDU)) {
-	        errmsg(NOPRIMARY,"Missing primary header-data unit.");
+	    if (!(m_hdu_type == FITS::PrimaryArrayHDU || 
+		  m_hdu_type == FITS::PrimaryGroupHDU)) {
+	        errmsg(NOPRIMARY,"Missing primary header-data unit [FitsInput::init()].");
 	    } else {
-                isaprimary = True;
-	        if (kw(FITS::SIMPLE)->asBool() == True) 
-		    valid_fits = True;
-		else
-		    errfn("Value of keyword SIMPLE is FALSE; this file may not be a valid FITS file.",
-			  FITSError::WARN);
-	        if (kw(FITS::EXTEND))
-		    if (kw.curr()->asBool() == True)
-		        extend = True;
+                m_isaprimary = True;
+	        if (m_kw(FITS::SIMPLE)->asBool() == True) 
+		        m_valid_fits = True;
+		     else
+		       m_errfn("Value of keyword SIMPLE is FALSE; this file may not be a valid FITS file [FitsInput::init()].",
+			            FITSError::WARN);
+	        if (m_kw(FITS::EXTEND))
+		       if (m_kw.curr()->asBool() == True)
+		        m_extend = True;
 	    }
-	    rec_type = FITS::HDURecord;
+	    m_rec_type = FITS::HDURecord;
+	}
+}
+//===============================================================================================
+// return the header of the chdu as a Vector of Strings.
+Vector<String> FitsInput::kwlist_str(){  
+   Vector<String> cards;
+   if( !m_header_done ){
+  		cout<< "[FitsInput::kwlist_str()] This method should be called before reading data."<<endl;
+		return cards;	
+   }else{
+	   // remember the cfitsio bytepos before calling any cfitsio function
+	   OFF_T l_bytepos = (m_fptr->Fptr)->bytepos; 	
+ 	   int l_keysexist = 0, l_morekeys = 0, l_status = 0;
+	   // get the total number of keywords in the chdu
+	   if(ffghsp( m_fptr,&l_keysexist, &l_morekeys, &l_status )){
+		   fits_report_error(stderr, l_status); // print error report
+		   cout<<"[FitsInput::kwlist_str()]Error when getting total number of keywords in CHDU."<<endl;
+         return cards;
+	   }
+	   // get every card image as a char* and store them into cards.
+	   char* cardImg = new char[81];
+		cards.resize( l_keysexist + 1 );
+	   for( int keynum = 1; keynum<l_keysexist+1;keynum++ ){
+	      ffgrec( m_fptr, keynum, cardImg, &l_status );
+	  	   String onecard( cardImg );
+		  	cards[keynum -1] = onecard;	
+	   }
+	   // since keysexist does not count the END keyword, we add it in.
+		String endCard( "END" );
+	   cards[l_keysexist] = endCard;
+		// set the cfitsio bytepos to what it was at begnning of this method.
+		if( l_bytepos < ((m_fptr->Fptr)->filesize) ){
+		   if(ffmbyt(m_fptr, l_bytepos, REPORT_EOF, &l_status)>0 ){
+			   fits_report_error(stderr, l_status); // print error report
+			   errmsg(BADOPER,"bytepos setting error!");
+		   }
+	   }else{
+		   (m_fptr->Fptr)->bytepos = l_bytepos;
+	   }
+	   return cards;
 	}
 }
 
+//================================================================================================
+// read a special record or an unrecognizable record
 char * FitsInput::read_sp() {
-	err_status = OK;
-	if (rec_type == FITS::BadBeginningRecord) {
-		if (got_rec) {
-			got_rec = False;
-			return curr;
+	m_err_status = OK;
+	if (m_rec_type == FITS::BadBeginningRecord) {
+		if (m_got_rec) {
+			m_got_rec = False;
+			return m_curr;
 		}
-		curr = fin.read();
-		if (!curr) {
-	    		rec_type = FITS::EndOfFile;
-			got_rec = True;
-	    		return 0;
+		m_curr = m_fin.read();
+		if (!m_curr) {
+	    	m_rec_type = FITS::EndOfFile;
+			m_got_rec = True;
+	    	return 0;
 		}
-		if (fin.err()) {
-	    		errmsg(IOERR,"Error reading record.");
-	    		return curr;
+		if (m_fin.err()) {
+	    	errmsg(IOERR,"Error reading record.");
+	    	return m_curr;
 		}
-		kw.delete_all();
-		kc.parse(curr,kw,0,errfn,True);
-	        HeaderDataUnit::HDUErrs n;
-	        if (!HeaderDataUnit::determine_type(kw,
-			hdu_type,data_type,errfn,n))
-	            return curr;
-	        if (!(hdu_type == FITS::PrimaryArrayHDU || 
-		      hdu_type == FITS::PrimaryGroupHDU)) {
-	            errmsg(NOPRIMARY,"Missing primary header-data unit.");
-	        } else {
-	            if (kw(FITS::SIMPLE)->asBool() == True) 
-		        valid_fits = True;
-		    else
-		    errfn("Value of keyword SIMPLE is FALSE; this file may not be a valid FITS file.",
-			  FITSError::WARN);
-	            if (kw(FITS::EXTEND))
-		        if (kw.curr()->asBool() == True)
-		            extend = True;
-		}
-	        rec_type = FITS::HDURecord;
-		got_rec = True;
+		m_kw.delete_all();
+		m_kc.parse(m_curr,m_kw,0,m_errfn,True);
+	      HeaderDataUnit::HDUErrs n;
+	      if (!HeaderDataUnit::determine_type(m_kw,
+			     m_hdu_type,m_data_type,m_errfn,n)){
+	           return m_curr;
+			}
+	      if (!(m_hdu_type == FITS::PrimaryArrayHDU || 
+		      m_hdu_type == FITS::PrimaryGroupHDU)) {
+	         errmsg(NOPRIMARY,"Missing primary header-data unit.");
+	      } else {
+	         if (m_kw(FITS::SIMPLE)->asBool() == True){ 
+		        m_valid_fits = True;
+		      }else{
+		        m_errfn("Value of keyword SIMPLE is FALSE; this file may not be a valid FITS file.",
+			              FITSError::WARN);
+				}
+	         if (m_kw(FITS::EXTEND)){
+		        if (m_kw.curr()->asBool() == True)
+		        {    m_extend = True;  }
+				}
+		   }
+	   m_rec_type = FITS::HDURecord;
+		m_got_rec = True;
 		return 0;
-	} else if (rec_type == FITS::UnrecognizableRecord) {
-		if (got_rec) {
-			got_rec = False;
-			return curr;
+	} else if (m_rec_type == FITS::UnrecognizableRecord) {
+		if (m_got_rec) {
+			m_got_rec = False;
+			return m_curr;
 		}
-		curr = fin.read();
-		if (!curr) {
-	    		rec_type = FITS::EndOfFile;
-			got_rec = True;
-	    		return 0;
+		m_curr = m_fin.read();
+		if (!m_curr) {
+	    	m_rec_type = FITS::EndOfFile;
+			m_got_rec = True;
+	    	return 0;
 		}
-		if (fin.err()) {
+		if (m_fin.err()) {
 	    		errmsg(IOERR,"Error reading record.");
-	    		return curr;
+	    		return m_curr;
 		}
-		kw.delete_all();
-		kc.parse(curr,kw,0,errfn,True);
-	        HeaderDataUnit::HDUErrs n;
-	        if (!HeaderDataUnit::determine_type(kw,
-			hdu_type,data_type,errfn,n))
-	            return curr;
-	        rec_type = FITS::HDURecord;
-		got_rec = True;
+		m_kw.delete_all();
+		m_kc.parse(m_curr,m_kw,0,m_errfn,True);
+	   HeaderDataUnit::HDUErrs n;
+	   if (!HeaderDataUnit::determine_type(m_kw,
+           m_hdu_type,m_data_type,m_errfn,n)){
+	      return m_curr;
+	   }     
+		m_rec_type = FITS::HDURecord;
+		m_got_rec = True;
 		return 0;
-	} else if (rec_type == FITS::SpecialRecord) {
-		if (got_rec) {
-			got_rec = False;
-			return curr;
+	} else if (m_rec_type == FITS::SpecialRecord) {
+		if (m_got_rec) {
+			m_got_rec = False;
+			return m_curr;
 		}
-		curr = fin.read();
-		if (!curr) {
-	    		rec_type = FITS::EndOfFile;
-			got_rec = True;
-			err_status = OK;
-	    		return 0;
+		m_curr = m_fin.read();
+		if (!m_curr) {
+	    	m_rec_type = FITS::EndOfFile;
+			m_got_rec = True;
+			m_err_status = OK;
+	    	return 0;
 		}
-		if (fin.err()) {
+		if (m_fin.err()) {
 	    		errmsg(IOERR,"Error reading record.");
-	    		return curr;
+	    		return m_curr;
 		}
-		err_status = OK;
-		return curr;
+		m_err_status = OK;
+		return m_curr;
 	}
 	return 0;
 }
-
+//========================================================================================================
+// implement read_head_rec() with CFITSIO of NASA
 void FitsInput::read_header_rec() {
-	curr = fin.read();
-	got_rec = True;
-	if (!curr) {
-	    rec_type = FITS::EndOfFile;
+   // make the next hdu be the chdu of cfitsio and set the file position pointer at the begining of the hdu.	
+	int l_status = 0, l_hdutype = 0, l_hdunum = 0, l_chdunum = 0;
+	// get the total number of the hdu in fits file
+	if( ffthdu(m_fptr, &l_hdunum, &l_status)>0){
+	   fits_report_error(stderr, l_status); // print error report
+		errmsg(IOERR,"[FitsInput::read_header_rec()] Error when getting total number of HDU.");
+      return;
+	}
+	// get the number of the current hdu. This function returns the number of
+	// chdu, not an error code. So we do not check the return.         
+	ffghdn(m_fptr, &l_chdunum);
+	// if there is more hdu, make the next hdu be the current hdu
+	if( l_chdunum < l_hdunum ){ 
+	   if( ffmrhd(m_fptr,  1, &l_hdutype, &l_status)>0){
+	      fits_report_error(stderr, l_status); // print error report
+		   errmsg(IOERR,"[FitsInput::read_header_rec()] Error moving CHDU.");
+         return;
+	   }
+	}else{ // reach the end of the fits file, end the program gracefully.
+	   m_curr = m_fin.read();
+	   m_got_rec = True;
+	   if (!m_curr) {
+	     cout <<"Reached the end of the FITS file. [ FitsInput::read_header_rec()] "<< endl;
+	     m_rec_type = FITS::EndOfFile;
+	     return;
+	   }
+	   if (m_fin.err()) {
+	     errmsg(IOERR,"Error reading first record of new header [ FitsInput::read_header_rec()].");
+	     m_rec_type = FITS::UnrecognizableRecord;
+	     return;
+ 	   }
+	}
+	// since ffmrhd() reads the header, we need to move the file pointer back
+	// to the beginning of the hdu before calling m_fin.read()
+	 OFF_T l_headstart, l_datastart, l_dataend;
+    l_status = 0;
+    // get size info of the current HDU 
+    if (ffghof(m_fptr, &l_headstart, &l_datastart, &l_dataend, &l_status) > 0){
+	 	 fits_report_error(stderr, l_status); // print error report
+		 errmsg(BADSIZE,"[FitsInput::read_header_rec()]Error computing size of data.");
+       return;
+    }
+	 // move file pointer to the beginning of the new hdu.
+	 l_status = 0;
+	 if(ffmbyt(m_fptr, l_headstart, REPORT_EOF, &l_status)){
+	 	 fits_report_error(stderr, l_status); // print error report
+		 errmsg(IOERR,"[FitsInput::read_header_rec()]Error when moving the file position pointer.");
+	 }
+	 // reset m_iosize so that next m_fin.read() will start from the beginning of next hdu.
+	 m_fin.reset_iosize();
+    // end of the new code
+	m_curr = m_fin.read();
+	m_got_rec = True;
+	if (!m_curr) {
+	    cout <<" Reached the end of the fit file. [ FitsInput::read_header_rec()] "<< endl;
+	    m_rec_type = FITS::EndOfFile;
 	    return;
 	}
-	if (fin.err()) {
-	    errmsg(IOERR,"Error reading first record of new header.");
-	    rec_type = FITS::UnrecognizableRecord;
+	if (m_fin.err()) {
+	    errmsg(IOERR,"Error reading first record of new header [ FitsInput::read_header_rec()].");
+	    m_rec_type = FITS::UnrecognizableRecord;
 	    return;
 	}
-	kw.delete_all();
+	m_kw.delete_all();
 	// reset the cache counter nevertheless
 	nerrs_ = 0;
-	kc.parse(curr,kw,0,readHeaderRecErrHandler,True);
+	m_kc.parse(m_curr,m_kw,0,readHeaderRecErrHandler,True);
+	//cout << "[ FitsInput::read_header_rec()] Number of errors from parsing: nerrs_ = " << nerrs_ <<endl;
 	uInt parseErrs = nerrs_;
 	HeaderDataUnit::HDUErrs n;
-	if (!HeaderDataUnit::determine_type(kw,hdu_type,data_type,readHeaderRecErrHandler,n)) {
+	if (!HeaderDataUnit::determine_type(m_kw,m_hdu_type,m_data_type,readHeaderRecErrHandler,n)) {
 	    // in this case, the header is completely bogus, the error messages which
 	    // convey that are the ones returned by determine_type, the ones returned
 	    // by parse are useless and needlessly confusing, so don't show them
+		 //cout<< "[ FitsInput::read_header_rec()] Error mesages from determin_type(): " << endl;
 	    for (uInt i=parseErrs; i<nerrs_;i++) {
-		errfn(messages_[i].chars(),
-		      FITSError::ErrorLevel(errLevels_[i]));
+	 	    m_errfn(messages_[i].chars(),
+		    FITSError::ErrorLevel(errLevels_[i]));
 	    }
 	    nerrs_ = 0;
-	    rec_type = FITS::SpecialRecord;
+	    m_rec_type = FITS::SpecialRecord;
 	    return;
 	}
 	// spit out all of the cached error messages
+	// cout<< "[ FitsInput::read_header_rec()] Error message from parsing and determin_type():" << endl;
 	for (uInt i=0;i<nerrs_;i++) {
-	    errfn(messages_[i].chars(), FITSError::ErrorLevel(errLevels_[i]));
+	    m_errfn(messages_[i].chars(), FITSError::ErrorLevel(errLevels_[i]));
 	}
 	nerrs_ = 0;
-	if (hdu_type == FITS::PrimaryArrayHDU || hdu_type == FITS::PrimaryGroupHDU) 
-	    errmsg(BADPRIMARY,"Misplaced primary header-data unit.");
-	rec_type = FITS::HDURecord;
-        header_done = False;
+	if (m_hdu_type == FITS::PrimaryArrayHDU || m_hdu_type == FITS::PrimaryGroupHDU){ 
+	    errmsg(BADPRIMARY,"[ FitsInput::read_header_rec()] Misplaced primary header-data unit.");
+	}
+	m_rec_type = FITS::HDURecord;
+   m_header_done = False;
 }
-
+//========================================================================================
+// Implement the skip_hdu with cfitsio of NASA
 int FitsInput::skip_hdu() { //Skip an entire header-data unit
-	err_status = OK;
-	if ((rec_type != FITS::HDURecord) || header_done) {
+	m_err_status = OK;
+	if ((m_rec_type != FITS::HDURecord) || m_header_done) {
 		errmsg(BADOPER,"Illegal operation on FITS input");
-		return (int)err_status;
+		return (int)m_err_status;
 	}
-	int i;
-	FitsKeyword *x, *y;
-	kw.first(); y = kw.next(); // set the list pointer
-        for (; ; kc.parse(curr,kw,0,errfn,False)) {
-	    // The worst error is if there is no END keyword.
-	    kw.last(); x = kw.prev(); // do backwards search for END 
-	    if (x->kw().name() == FITS::END)
-	        break;
-	    while (x != y) {
-		x = kw.prev();
-		if (x->kw().name() == FITS::END)
-		    break;
-	    }
-	    if (x->kw().name() == FITS::END)
-		break;
-	    kw.last(); y = kw.prev(); // reset the list pointer
-	    kw.last(); // return list iterator to last position
-	    curr = fin.read(); // read the next record
-	    if (!curr) {
-	        errmsg(BADEOF,"Unexpected end of file.");
-	        rec_type = FITS::EndOfFile;
-	        return (int)err_status;
-	    }
-	    if (fin.err()) {
-	        errmsg(IOERR,"Error reading header record.");
-	        rec_type = FITS::UnrecognizableRecord;
-	        return (int)err_status;
-	    }
-	    // This attempts to deal with the problem of no END keyword
-            // by searching for non-text data in the first 8 bytes.
-	    for (i = 0; i < 8; ++i)
-		if (!FITS::isa_text(curr[i]))
-		    break;
-	    if (i < 8) {
-		errmsg(MISSKEY,"Missing END keyword.  Non-text data \
-found in name field.\n\tEnd of keywords assumed.");
-		break;
-	    }
+	
+	// check if the header of the current HDU is properly ended
+   char l_message[FLEN_ERRMSG];
+	char l_keyname[FLEN_KEYWORD];
+   char l_keyval[FLEN_VALUE];
+	char l_card[FLEN_CARD];
+	char* l_comm = NULL;
+	
+	int l_status = 0;
+		
+//	--------------------------------------------------------------------------
+	int l_found_end = 0, l_namelen = 0;
+	for (int nextkey = 1; !l_found_end; nextkey++)  
+   {
+      // get next keyword 
+      // don't use ffgkyn here because it trys to parse the card to read 
+      // the value string, thus failing to read the file just because of 
+      // minor syntax errors in optional keywords.                       
+      if (ffgrec(m_fptr, nextkey, l_card, &l_status) > 0 )  // get the 80-byte card 
+      {
+        if (l_status == KEY_OUT_BOUNDS)
+        {
+          l_found_end = 1;  // simply hit the end of the header
+          l_status = 0;  // reset error status
+			 //cout<<"[FitsInput::skip_hdu()] Found END keyword "<<endl;
+        }
+        else          
+        {
+          errmsg(MISSKEY,"[FitsInput::skip_hdu()] Failed to find the END keyword in header.");
+			 return (int)m_err_status;
+        }
+      }else{ // got the next keyword without error 
+        ffgknm(l_card, l_keyname, &l_namelen, &l_status); // get the keyword name
+
+        if (fftrec(l_keyname, &l_status) > 0){  // test keyword name; catches no END
+          sprintf(l_message,
+              "Name of keyword no. %d contains illegal character(s): %s",
+              nextkey, l_keyname);
+          errmsg(MISSKEY,l_message);
+
+          if (nextkey % 36 == 0){ // test if at beginning of 36-card record.
+            errmsg(MISSKEY,"This may indicate a missing END keyword.");
+				return (int)m_err_status;
+			 }
+		   }
+		   if (!strcmp(l_keyname, "END")){  l_found_end = 1;  }
+	   }
+   }
+	
+//	--------------------------------------------------------------------------
+	// These functions don't work for END keyword!
+	/*if(ffgcrd( m_fptr, l_keyname, l_card, &l_status )){
+   //if(ffgkey( m_fptr, l_keyname, l_keyval, l_comm, &l_status )){
+		fits_report_error(stderr, l_status); // print error report 
+	   errmsg(BADOPER,"[FitsInput::skip_hdu()] Missing END keyword.");
+		return -1;
 	}
-	if (!extend) {
-	    if (kw(FITS::EXTEND))
-	        if (kw.curr()->asBool() == True)
-		    extend = True;
+   */
+	// check if the m_extend data member is set
+	l_status = 0;
+	if (!m_extend) {
+	   //l_keyname = "EXTEND";
+		strcpy(l_keyname, "EXTEND");
+	   if(!ffgkey( m_fptr, l_keyname, l_keyval, l_comm, &l_status )){
+		   if( l_keyval[0]=='T') m_extend = True;
+		}	
+	}	
+	// reset the m_iosize to 0, so that next m_fin.read() will start from where the file position pointer is;	 
+	// Since read_header_rec() will move the chdu forward for one, no need to call ffmrhd() here. And 
+	// read_header_rec() will also move the cfitsio bytepos.
+	m_fin.reset_iosize ();  
+   // read header to get ready for process_header
+	read_header_rec(); // this will set the current hdu_type etc.
+	if (err()){ 
+		return (int)m_err_status;	
 	}
-	HeaderDataUnit::HDUErrs nerr;
-	Int nd;
-	if (!HeaderDataUnit::compute_size(kw,data_size,nd,
-		hdu_type,data_type,errfn,nerr)) {
-		item_size = 0;
-		data_type = FITS::NOVALUE;
-		data_size = 0;
-	    	errmsg(BADSIZE,"Error computing size of data.");
-	        rec_type = FITS::UnrecognizableRecord;
-	        return (int)err_status;
-	}
-	item_size = FITS::fitssize(data_type);
-	uInt n = data_size / FitsRecSize; // compute number of records to skip
-	if (data_size % FitsRecSize) 
-		n++;
-	if (n) {
-		curr = fin.skip(n - 1);
-		if (!curr) {
-		    errmsg(BADEOF,"Unexpected end of file.");
-	    	    rec_type = FITS::EndOfFile;
-	    	    return (int)err_status;
-		}
-		if (fin.err()) {
-	    	    errmsg(IOERR,"Error skipping data records.");
-	    	    rec_type = FITS::UnrecognizableRecord;
-	    	    return (int)err_status;
-		}
-	}
-	read_header_rec();
-	if (err()) 
-		return (int)err_status;	
 	return 0;
 }
-
+//=================================================================================
 int FitsInput::process_header(FITS::HDUType t, FitsKeywordList &uk) {
-	err_status = OK;
-	item_size = 0;
-	data_type = FITS::NOVALUE;
-	data_size = 0;
-	bytepos = 0;
-	curr_size = 0;
-	if ((rec_type != FITS::HDURecord || hdu_type != t) || header_done) {
+	m_err_status = OK;
+	m_item_size = 0;
+	m_data_type = FITS::NOVALUE;
+	m_data_size = 0;
+	m_bytepos = 0;
+	m_curr_size = 0;
+	if ((m_rec_type != FITS::HDURecord || m_hdu_type != t) || m_header_done) {
 		errmsg(BADOPER,"Illegal operation on FITS input");
 		return -1;
 	}
 	uk.delete_all();
-	uk = kw;
+	uk = m_kw;
 	int cnt = 0;
 	int i;
 	FitsKeyword *x, *y;
 	uk.first(); y = uk.next(); // set the list pointer
-        for (; ; kc.parse(curr,uk,cnt,errfn,True)) {
+   for (; ; m_kc.parse(m_curr,uk,cnt,m_errfn,True)) {
 	    // The worst error is if there is no END keyword.
 	    uk.last(); x = uk.prev(); // do backwards search for END 
 	    if (x->kw().name() == FITS::END)
@@ -497,407 +634,553 @@ int FitsInput::process_header(FITS::HDUType t, FitsKeywordList &uk) {
 		break;
 	    uk.last(); y = uk.prev(); // reset the list pointer
 	    uk.last(); // return list iterator to last position
-	    curr = fin.read(); // read the next record
-	    if (!curr) {
-	        errmsg(BADEOF,"Unexpected end of file.");
-	        rec_type = FITS::EndOfFile;
+	    m_curr = m_fin.read(); // read the next record
+	    if (!m_curr) {
+	        errmsg(BADEOF,"[FitsInput::process_header()] Unexpected end of file.");
+	        m_rec_type = FITS::EndOfFile;
 	        return -1;
 	    }
-	    if (fin.err()) {
-	        errmsg(IOERR,"Error reading header record.");
-	        rec_type = FITS::UnrecognizableRecord;
+	    if (m_fin.err()) {
+	        errmsg(IOERR,"[FitsInput::process_header()] Error reading header record.");
+	        m_rec_type = FITS::UnrecognizableRecord;
 	        return -1;
 	    }
             ++cnt;
 	    // This attempts to deal with the problem of no END keyword
             // by searching for non-text data in the first 8 bytes.
 	    for (i = 0; i < 8; ++i)
-		if (!FITS::isa_text(curr[i]))
+		if (!FITS::isa_text(m_curr[i]))
 		    break;
 	    if (i < 8) {
-		errmsg(MISSKEY,"Missing END keyword.  Non-text data \
-found in name field.\n\tEnd of keywords assumed.");
+		errmsg(MISSKEY,"[FitsInput::process_header()] Missing END keyword.  Non-text data \
+             found in name field.\n\tEnd of keywords assumed.");
 		break;
 	    }
 	}
-	if (!extend) {
+	//cout << "[ FitsInput::process_header()] keyword list uk:\n" << uk << endl;
+	if (!m_extend) {
 	    if (uk(FITS::EXTEND))
 	        if (uk.curr()->asBool() == True)
-		    extend = True;
+		    m_extend = True;
 	}
 	HeaderDataUnit::HDUErrs n;
 	Int nd;
-	if (!HeaderDataUnit::compute_size(uk,data_size,nd,
-		hdu_type,data_type,errfn,n)) {
-	    	errmsg(BADSIZE,"Error computing size of data.");
-	        rec_type = FITS::UnrecognizableRecord;
+	if (!HeaderDataUnit::compute_size(uk,m_data_size,nd,
+		m_hdu_type,m_data_type,m_errfn,n)) {
+	    	errmsg(BADSIZE,"[FitsInput::process_header()] Error computing size of data.");
+	        m_rec_type = FITS::UnrecognizableRecord;
 	        return -1;
 	}
-	item_size = FITS::fitssize(data_type);
-	curr_size = data_size;
-        header_done = True;
-	if (((uInt)data_size) > 0) {
-		curr = fin.read();
-		got_rec = True;
-		if (!curr) {
-		    hdu_type = FITS::NotAHDU;
-		    item_size = 0;
-		    data_type = FITS::NOVALUE;
-		    data_size = 0;
-		    curr_size = 0;
-		    errmsg(BADEOF,"Unexpected end of file.");
-		    rec_type = FITS::EndOfFile;
+	m_item_size = FITS::fitssize(m_data_type);
+	m_curr_size = m_data_size;
+        m_header_done = True;
+	if ( m_data_size > 0) {
+		m_curr = m_fin.read();
+		m_got_rec = True;
+		if (!m_curr) {
+		    m_hdu_type = FITS::NotAHDU;
+		    m_item_size = 0;
+		    m_data_type = FITS::NOVALUE;
+		    m_data_size = 0;
+		    m_curr_size = 0;
+		    errmsg(BADEOF,"[FitsInput::process_header()] Unexpected end of file.");
+		    m_rec_type = FITS::EndOfFile;
 		    return -1;
 		}
-		if (fin.err()) {
-		    hdu_type = FITS::NotAHDU;
-		    item_size = 0;
-		    data_type = FITS::NOVALUE;
-		    data_size = 0;
-		    curr_size = 0;
-		    errmsg(IOERR,"Error reading first data record.");
-		    rec_type = FITS::UnrecognizableRecord;
+		if (m_fin.err()) {
+		    m_hdu_type = FITS::NotAHDU;
+		    m_item_size = 0;
+		    m_data_type = FITS::NOVALUE;
+		    m_data_size = 0;
+		    m_curr_size = 0;
+		    errmsg(IOERR,"[FitsInput::process_header()] Error reading first data record.");
+		    m_rec_type = FITS::UnrecognizableRecord;
 		    return -1;
 		}
-	} else
+	} else{
 		read_header_rec();
+	}
 	return 0;
 }
-
-uInt FitsInput::read_all(FITS::HDUType t, char *addr) { // read all data into addr
-	if (curr_size <= 0 || curr_size != data_size ||
-	    rec_type != FITS::HDURecord || t != hdu_type || (!header_done)) {
-		errmsg(BADOPER,"Illegal operation on FITS input");
+//===============================================================================================
+// Implement the read_all() method with the cfitsio of NASA.
+// Read the whole data unit of current HDU from the beginning to end ( the 
+// condition m_curr_size = m_data_size guarantees this. The 
+// read data is stored into a char* buffer -- addr.
+//
+// If addr is too big, it cannot be fitted into memory. So if this function is
+// called, m_data_size actually cannot be bigger than the machine's memory size.
+// we still change the return type to OFF_T though.
+OFF_T FitsInput::read_all(FITS::HDUType t, char *addr) {
+	if (m_curr_size <= 0 || m_curr_size != m_data_size ||
+	    m_rec_type != FITS::HDURecord || t != m_hdu_type || (!m_header_done)) {
+		errmsg(BADOPER,"Illegal operation on FITS input[FitsInput::read_all]");
 		return 0;
 	}
-	while (curr_size >= uInt(FitsRecSize)) {
-	    memcpy(addr,curr,FitsRecSize);
-	    addr += FitsRecSize;
-	    curr_size -= FitsRecSize;
-	    curr = fin.read();
-	    if (!curr) {
-		    errmsg(BADEOF,"Unexpected end of file.");
-		    rec_type = FITS::EndOfFile;
-		    return 0;
-	    }
-	    if (fin.err()) {
-		    errmsg(IOERR,"Error reading first data record.");
-		    rec_type = FITS::UnrecognizableRecord;
-		    return 0;
-	    }
-	}
-	if (curr_size) {
-	    memcpy(addr,curr,curr_size);
-	    curr_size = 0;
-	}
-	read_header_rec();
-	return data_size;
-}
+	// get size of the current HDU
+	OFF_T l_headstart, l_datastart, l_dataend;
+   int l_status = 0;
+   if (ffghof(m_fptr, &l_headstart, &l_datastart, &l_dataend, &l_status) > 0){
+	 	 fits_report_error(stderr, l_status); // print error report
+       return 0;
+   }
 
+	// determine how many byte of data is in the current hdu data unit. This is 
+	// probably redundant(actually this sometimes cause error) since m_data_size
+	// is already determined when read header.
+   //m_data_size = l_dataend - l_datastart; // this may not be needed.	
+	//
+	// move file pointer to the beginning of the data unit of the current hsu
+	l_status = 0;
+	// The following may not be  needed with if the condition m_curr_size = m_data_size 
+	// is met.
+	ffmbyt(m_fptr, l_datastart, REPORT_EOF, &l_status);
+	if( l_status ){   
+		fits_report_error(stderr, l_status); // print error report
+      return(0);
+	}
+	// using the cfitsio function to read m_data_size bytes from the file
+  	// pointed to by m_fptr from where the file position indicator currently at.
+  	l_status = 0;
+	ffgbyt( m_fptr, m_data_size, addr, &l_status);                 
+   if( l_status ){   
+		fits_report_error(stderr, l_status); // print error report
+      return(0);
+	}
+	if( l_dataend < ((m_fptr->Fptr)->filesize) ){
+		   if(ffmbyt(m_fptr, l_dataend, REPORT_EOF, &l_status)>0 ){
+			   fits_report_error(stderr, l_status); // print error report
+			   errmsg(BADOPER,"bytepos setting error!");
+				return(0);
+		   }
+	}else{
+		   (m_fptr->Fptr)->bytepos = l_dataend;
+	}
+	m_curr_size = 0;
+	// reset m_iosize so that next m_fin.read() will start from the beginning of next hdu.
+	m_fin.reset_iosize(); 
+	read_header_rec();
+	return (m_data_size);
+}
+//=========================================================================================
+// Implement read() method with cfitsio of NASA throgh BlockInput::read().
+// read next nb bytes into addr within the same hdu. If nb > m_curr_size,
+// make nb = m_curr_size.
 int FitsInput::read(FITS::HDUType t, char *addr, int nb) { 
 	// read next nb bytes into addr
-	if (rec_type != FITS::HDURecord || t != hdu_type || (!header_done)) {
+	if (m_rec_type != FITS::HDURecord || t != m_hdu_type || (!m_header_done)) {
 		errmsg(BADOPER,"Illegal operation on FITS input");
 		return 0;
 	}
-	if (curr_size == 0) {
+	if (m_curr_size == 0) {
 		read_header_rec();
 		return 0;
 	}
-	if (uInt(nb) > curr_size)
-		nb = curr_size;
+	if (OFF_T(nb) > m_curr_size)
+		nb = m_curr_size;
 	int n = nb;
-	if (bytepos == FitsRecSize) {
-		curr = fin.read();
-	    	if (!curr) {
+	if (m_bytepos == m_recsize) {
+		m_curr = m_fin.read();
+	    	if (!m_curr) {
 		    errmsg(BADEOF,"Unexpected end of file.");
-		    rec_type = FITS::EndOfFile;
+		    m_rec_type = FITS::EndOfFile;
 		    return -1;
 	    	}
-	    	if (fin.err()) {
+	    	if (m_fin.err()) {
 		    errmsg(IOERR,"Error reading first data record.");
-		    rec_type = FITS::UnrecognizableRecord;
+		    m_rec_type = FITS::UnrecognizableRecord;
 		    return -1;
 	    	}
-		bytepos = 0;
+		m_bytepos = 0;
 	}
 	do {
-	    if (n <= (FitsRecSize - bytepos)) {
-	    	memcpy(addr,&curr[bytepos],n);
-	    	bytepos += n;
-	    	curr_size -= n;
-		n = 0;
+	    if (n <= (m_recsize - m_bytepos)) {
+	    	memcpy(addr,&m_curr[m_bytepos],n);
+	    	m_bytepos += n;
+	    	m_curr_size -= n;
+	  	   n = 0;
 	    } else {
-	    	memcpy(addr,&curr[bytepos],(FitsRecSize - bytepos));
-	    	curr_size -= FitsRecSize - bytepos;
-	    	n -= FitsRecSize - bytepos;
-		addr += FitsRecSize - bytepos;
-	    	curr = fin.read();
-	    	if (!curr) {
+	    	memcpy(addr,&m_curr[m_bytepos],(m_recsize - m_bytepos));
+	    	m_curr_size -= m_recsize - m_bytepos;
+	    	n -= m_recsize - m_bytepos;
+		   addr += m_recsize - m_bytepos;
+	    	m_curr = m_fin.read();
+	    	if (!m_curr) {
 		    errmsg(BADEOF,"Unexpected end of file.");
-		    rec_type = FITS::EndOfFile;
+		    m_rec_type = FITS::EndOfFile;
 		    return -1;
 	    	}
-	    	if (fin.err()) {
+	    	if (m_fin.err()) {
 		    errmsg(IOERR,"Error reading first data record.");
-		    rec_type = FITS::UnrecognizableRecord;
+		    m_rec_type = FITS::UnrecognizableRecord;
 		    return -1;
 	    	}
-	    	bytepos = 0;
+	    	m_bytepos = 0;
 	    }
 	} while ( n > 0);
-	if (curr_size == 0)
+	if (m_curr_size == 0){
 		read_header_rec();
+	}
+	//cout<<"[FitsInput::read()] byte read, nb = " << nb <<endl;
 	return nb;
 }
-
-int FitsInput::skip(FITS::HDUType t, int nb) { // skip next nb bytes 
-	if (rec_type != FITS::HDURecord || t != hdu_type || (!header_done)) {
+//==========================================================================================
+// Implement the skip() method with cfitsio of NASA
+// Skip the next nb bytes within the same HDU. If nb is greater than the data size left
+// within the current HDU, skip to the end of the HDU. Return(with return statement) the 
+// number of bytes that is actually skipped.
+int FitsInput::skip(FITS::HDUType t, OFF_T nb) { // skip next nb bytes. Original comment                                         															
+	if (m_rec_type != FITS::HDURecord || t != m_hdu_type || (!m_header_done)) {
 		errmsg(BADOPER,"Illegal operation on FITS input");
 		return 0;
 	}
-	if (curr_size == 0) {
+	// determine how many byte of data left within the current hdu data unit. Keep in mind 
+	// that there may be still some data in the m_buffer( m_iosize-m_current)
+  	if (m_curr_size == 0) {
 		read_header_rec();
 		return 0;
 	}
-	if (uInt(nb) > curr_size)
-		nb = curr_size;
-	uInt n = nb;
-	if (bytepos == FitsRecSize) {
-		curr = fin.read();
-	    	if (!curr) {
-		    errmsg(BADEOF,"Unexpected end of file.");
-		    rec_type = FITS::EndOfFile;
-		    return -1;
-	    	}
-	    	if (fin.err()) {
-		    errmsg(IOERR,"Error reading first data record.");
-		    rec_type = FITS::UnrecognizableRecord;
-		    return -1;
-	    	}
-		bytepos = 0;
+	if ( nb > m_curr_size){
+		nb = m_curr_size;
 	}
-	do {
-	    if (n <= uInt(FitsRecSize - bytepos)) {
-	    	bytepos += n;
-	    	curr_size -= n;
-		n = 0;
-	    } else {
-	    	curr_size -= FitsRecSize - bytepos;
-	    	n -= FitsRecSize - bytepos;
-	    	curr = fin.read();
-	    	if (!curr) {
+	OFF_T l_n = nb;
+	// if m_bytepos = m_recsize, the current data record is used up. So read a new record.
+	if (m_bytepos == m_recsize) {
+		m_curr = m_fin.read();
+	    	if (!m_curr) {
 		    errmsg(BADEOF,"Unexpected end of file.");
-		    rec_type = FITS::EndOfFile;
+		    m_rec_type = FITS::EndOfFile;
 		    return -1;
 	    	}
-	    	if (fin.err()) {
+	    	if (m_fin.err()) {
 		    errmsg(IOERR,"Error reading first data record.");
-		    rec_type = FITS::UnrecognizableRecord;
+		    m_rec_type = FITS::UnrecognizableRecord;
 		    return -1;
 	    	}
-	    	bytepos = 0;
+		m_bytepos = 0;
+	}
+	
+	if( l_n<= OFF_T(m_fin.iosize()-m_fin.current())){
+	// In this case, there is enough data in m_buffer, so no need to get it from disk.
+	  do {
+	     // if l_n is smaller than (m_recsize-m_bytepos), simply skip the bytes l_n.
+		  // this "if block" also takes care of the ending part of the data to read.
+		 if (l_n <= OFF_T(m_recsize - m_bytepos)) {
+	    	m_bytepos += l_n;
+	    	m_curr_size -= l_n;
+	  	   l_n = 0;
+	    } else {
+	    	m_curr_size -= m_recsize - m_bytepos;
+	    	l_n -= m_recsize - m_bytepos;
+			// since this is still within m_buffer, no need to check read errors.
+	    	m_curr = m_fin.read(); 
+	      m_bytepos = 0;
 	    }
-	} while ( n > 0);
-	if (curr_size == 0)
+	  } while ( l_n > 0);	 
+	}else{ 
+	// Need to skip more bytes than what m_buffer has. We could still have let the control use above
+	// block. But if there are lots of data to read, the following block will be more efficient. 
+	   int l_bb = m_fin.iosize()-m_fin.current(); // bytes in m_buffer
+		int l_status = 0;
+		int l_res = ((m_fptr->Fptr)->bytepos + l_n - l_bb )%m_recsize;
+		// move file position pointer to the end of last complete record to skip.
+		OFF_T l_postogo = ((m_fptr->Fptr)->bytepos) + l_n - l_bb - l_res;
+	   
+	   if( l_postogo < ((m_fptr->Fptr)->filesize) ){
+		   if(ffmbyt(m_fptr, l_postogo, REPORT_EOF, &l_status)>0 ){
+			   fits_report_error(stderr, l_status); // print error report
+			   errmsg(BADOPER,"bytepos setting error!");
+				return -1;
+		   }
+	   }else{
+	      (m_fptr->Fptr)->bytepos = l_postogo;
+	  	   m_rec_type = FITS::EndOfFile;
+	      // do not need a return here. m_fin.read()
+		   // will handle it if reaches the end of file
+	   }
+
+		m_fin.reset_iosize(); // this guarantees next m_fin.read() will read from disk.
+		// the following lines read whatever is left by ffmbyt. Note that m_fin.read()
+		// always read a complete record. That is why we only let ffmbyt() move the file
+		// position pointer to the end of the last complete record to skip.
+		m_curr = m_fin.read();
+		if (!m_curr) {
+		     errmsg(BADEOF,"Reached the end of the file.");
+		     m_rec_type = FITS::EndOfFile;
+		     return -1;
+	    }
+	    if (m_fin.err()) {
+		     errmsg(IOERR,"Error reading(skipping) data record.");
+		     m_rec_type = FITS::UnrecognizableRecord;
+		     return -1;
+	   } 
+		m_bytepos = l_res;	  
+	} 
+   // set the current data size(remaining) within the data unit of the current hdu.
+	m_curr_size -= l_n;
+   if (m_curr_size == 0){
 		read_header_rec();
+	}
 	return nb;
 }
-
-void FitsInput::skip_all(FITS::HDUType t) { // skip all remaining data
-	if (rec_type != FITS::HDURecord || t != hdu_type || (!header_done)) {
+//=====================================================================================
+// Implement the skip_all() method with cfitsio of NASA
+// Skip the remaining data within the current HDU, and then moving to the 
+// beginning of the data unit of the next hdu ( by calling read_header_rec()); 
+void FitsInput::skip_all(FITS::HDUType t) {
+	if (m_rec_type != FITS::HDURecord || t != m_hdu_type || (!m_header_done)) {
 		errmsg(BADOPER,"Illegal operation on FITS input");
 		return;
 	}
-
-	if (curr_size == 0) {
+	if (m_curr_size == 0) {
 		read_header_rec();
 		return;
 	}
-	if (bytepos < FitsRecSize) {
-	    if (uInt(FitsRecSize - bytepos) >= curr_size) {
-		bytepos = FitsRecSize;
-		curr_size = 0;
-		read_header_rec();
-		return;
-	    } else {
-	      
-		curr_size -= FitsRecSize - bytepos;
-		bytepos = FitsRecSize;
-	    }
-	}
-	while (curr_size > uInt(FitsRecSize)) {
-	    curr = fin.read();
-	    if (!curr) {
-		    errmsg(BADEOF,"Unexpected end of file.");
-		    rec_type = FITS::EndOfFile;
-		    return;
-	    }
-	    if (fin.err()) {
-		    errmsg(IOERR,"Error reading first data record.");
-		    rec_type = FITS::UnrecognizableRecord;
-		    return;
-	    }
-	    curr_size -= FitsRecSize;
 
+	/* get size of the current HDU */
+	 OFF_T l_headstart, l_datastart, l_dataend;
+    int l_status = 0;
+    if (ffghof(m_fptr, &l_headstart, &l_datastart, &l_dataend, &l_status) > 0){
+	 	 fits_report_error(stderr, l_status); /* print error report */
+       return;
+    }
+	 // Determine how many byte of data left within the current hdu data unit.
+	 // Consider the case that the file pointer is still pointing at the header part!
+    l_status = 0;
+	 if( l_dataend < ((m_fptr->Fptr)->filesize) ){
+		   if(ffmbyt(m_fptr, l_dataend, REPORT_EOF, &l_status)>0 ){
+			   fits_report_error(stderr, l_status); // print error report
+			   errmsg(BADOPER,"bytepos setting error!");
+				m_rec_type = FITS::UnrecognizableRecord;
+				return;
+		   }
+	}else{
+	   (m_fptr->Fptr)->bytepos = l_dataend;
+		m_rec_type = FITS::EndOfFile;
+	   // do not need a return here. read_header_rec()
+		// will handle it if reaches the end of file
 	}
-	if( (curr_size > 0) && (curr_size < uInt(FitsRecSize))){
-	  curr= fin.read();
-	  if (!curr) {
-	    errmsg(BADEOF,"Unexpected end of file.");
-	    rec_type = FITS::EndOfFile;
-	    return;
-	  }
-	}
+
+   m_curr_size = 0;
+	m_bytepos = m_recsize;
+	m_fin.reset_iosize(); // this guarantees next m_fin.read() will read from disk.
 	read_header_rec();
-	return;
+   return;
 }
-
+//=========================================================================================
+// Reset the fitsfile pointer
+void FitsOutput::setfptr( fitsfile* ffp ){
+   //int l_status = 0;
+   //if(m_fout.close_file( m_fptr, &l_status)){
+	//   errmsg(IOERR,"[BlockIO::setfptr()] Error closing file");
+	//}
+	// Cannot do above here. Since then cannot update BlockIO::m_fptr.
+	// BlockIO.setfptr() will do above. 
+   m_fptr = ffp ; 
+}
+//=========================================================================================
 int FitsOutput::write_hdr(FitsKeywordList &kwl, FITS::HDUType t, FITS::ValueType dt, 
-	Int ds, Int is) {
-	if ((rec_type == FITS::EndOfFile) || (rec_type == FITS::SpecialRecord)
-	    || header_done || t == FITS::NotAHDU) {
+	OFF_T ds, Int is) {
+	if ((m_rec_type == FITS::EndOfFile) || (m_rec_type == FITS::SpecialRecord)
+	    || m_header_done || t == FITS::NotAHDU) {
 	    errmsg(BADOPER,"Illegal operation -- cannot write FITS header.");
 	    return -1;
 	}
 	if (t == FITS::PrimaryArrayHDU || t == FITS::PrimaryGroupHDU) {
-	    if (rec_type != FITS::InitialState) {
-		errmsg(BADOPER,"Primary Header must be written first.");
-	    	return -1;
+		 if (m_rec_type != FITS::InitialState) {
+		    errmsg(BADOPER,"[FitsOutput::write_hdr()] Primary Header must be written first.");
+	     	 return -1;
 	    } else {
-                isaprimary = True;
+		     //cout << "[FitsOutput::write_hdr()] PrimaryArrayHDU or PrimaryGroupHDU"<<endl;
+           m_isaprimary = True;
 	        if (kwl(FITS::SIMPLE)->asBool() == True) 
-		    valid_fits = True;
-	        if (kwl(FITS::EXTEND))
-		    if (kwl.curr()->asBool() == True)
-		        extend = True;
+		     { m_valid_fits = True; }
+	        if (kwl(FITS::EXTEND)){
+		       if (kwl.curr()->asBool() == True)
+		       {  m_extend = True;  }
+			  }
 	    }
-	} else if (rec_type != FITS::HDURecord) {
-	    errmsg(BADOPER,"Catastrophic error!  Illegal record type.");
-	    rec_type = FITS::EndOfFile;
+	} else if (m_rec_type != FITS::HDURecord) {
+	    errmsg(BADOPER,"[FitsOutput::write_hdr()] Catastrophic error!  Illegal record type.");
+		 cout<<"[FitsOutput::write_hdr()] Illeagal record type."<<endl;
+	    m_rec_type = FITS::EndOfFile;
 	    return -1;
 	} else {
+		 //cout<<"[FitsOutput::write_hdr()] Non-Primary Header."<<endl;
 	    if (!hdu_complete()) {
-	    	errmsg(BADOPER,"Previous HDU incomplete -- cannot write header.");
+	    	errmsg(BADOPER,"[FitsOutput::write_hdr()] Previous HDU incomplete -- cannot write header.");
 	    	return -1;
 	    }
-	    if (!extend) {
-		errmsg(BADOPER,"Cannot write extension HDU - EXTEND not True");
-		return -1;
+	    if (!m_extend) {
+		   errmsg(BADOPER,"[FitsOutput::write_hdr()] Cannot write extension HDU - EXTEND not True");
+		   return -1;
 	    } else {
 	    	if (t == FITS::PrimaryArrayHDU || t == FITS::PrimaryGroupHDU) {
-	    	    errmsg(BADOPER,"Primary HDU already written.");
+	    	    errmsg(BADOPER,"[FitsOutput::write_hdr()] Primary HDU already written.");
 	    	    return -1;
 	    	}
 	    }
 	}
-	rec_type = FITS::HDURecord;
-	hdu_type = t;
-	data_type = dt;
-	data_size = ds;
-	item_size = is;
-	curr_size = 0;
-	bytepos = 0;
+	// this boolean variable indicates wheather the user is using only the write_***_hdr() methods, which write
+	// only the required key words for the corresponding hdu and they cannot work with write_hdu(). So once
+	// write_hdu() is called, we set it to be FALSE here. 
+	m_required_keys_only = FALSE;
+//-------------------
+	// Create, initialize, and move the i/o pointer to a new extension appended to the end of the FITS file.
+	/*
+	Int l_status = 0;
+	if(ffcrhd(m_fptr, &l_status)){
+		errmsg(BADOPER,"[FitsOutput::write_hdr() Create new HDU failed!");
+	   fits_report_error(stderr, l_status); // print error report
+		return -1;
+	}
+	*/
+//----------------------
+	m_rec_type = FITS::HDURecord;
+	m_hdu_type = t;
+	m_data_type = dt;
+	m_data_size = ds;
+	m_item_size = is;
+	m_curr_size = 0;
+	m_bytepos = 0;
+		
 	kwl.first();
 	kwl.next();
-	while (kc.build(curr,kwl)) {
-	    fout.write(curr);
+	while (m_kc.build(m_curr,kwl)) {
+	    m_fout.write(m_curr);
 	}
-	fout.write(curr);
-	err_status = OK;
-	header_done = True;
-	if (data_size == 0)
-	    header_done = False;
-
+	
+	m_fout.write(m_curr);
+	m_err_status = OK;
+	m_header_done = True;
+	if (m_data_size == 0){
+	    m_header_done = False;
+	}
+	
 	return 0;
 }
 
+// FitsOutput::set_data_into() is used by PrimaryArray::write_priArr_hdr() etc.
+void FitsOutput::set_data_info( FitsKeywordList &kwl, FITS::HDUType t, FITS::ValueType dt, OFF_T ds, Int is){
+	if (t == FITS::PrimaryArrayHDU || t == FITS::PrimaryGroupHDU) {
+		 m_isaprimary = True;
+	    if (kwl(FITS::SIMPLE)->asBool() == True) 
+		 { m_valid_fits = True; }
+	    if (kwl(FITS::EXTEND)){
+		    if (kwl.curr()->asBool() == True)
+		    {  m_extend = True;  }
+		 }
+	}
+	
+	m_rec_type = FITS::HDURecord;
+	m_hdu_type = t;
+	m_data_type = dt;
+	m_data_size = ds;
+	m_item_size = is;
+	m_curr_size = 0;
+	m_bytepos = 0;
+	m_err_status = OK;
+	m_header_done = True;
+	if (m_data_size == 0){ m_header_done = False; }
+}
 // write all data from addr
 int FitsOutput::write_all(FITS::HDUType t, char *addr, char pad) { 
 	if (!hdu_inprogress()) {
 	    errmsg(BADOPER,"Illegal operation -- no HDU in progress");
 	    return -1;
 	}
-	if (t != hdu_type) {
+	if (t != m_hdu_type) {
 	    errmsg(BADOPER,"Illegal operation -- incorrect HDU type");
 	    return -1;
 	}
-	while ((data_size - curr_size) >= uInt(FitsRecSize)) {
-	    memcpy(curr,addr,FitsRecSize);
-	    fout.write(curr);
-	    addr += FitsRecSize;
-	    curr_size += FitsRecSize;
+	// what if addr is used up first? GYL
+	while ((m_data_size - m_curr_size) >= OFF_T(m_recsize)) {
+	    memcpy(m_curr,addr,m_recsize);
+	    m_fout.write(m_curr);
+	    addr += m_recsize;
+	    m_curr_size += m_recsize;
 	}
-	bytepos = data_size - curr_size;
-	if (bytepos) {
-	    memcpy(curr,addr,bytepos);
-	    while (bytepos < FitsRecSize)
-		curr[bytepos++] = pad;
-	    fout.write(curr);
+	// note that  m_curr_size starts from 0. GYL
+	m_bytepos = m_data_size - m_curr_size; 
+	if (m_bytepos) { 
+		 memcpy(m_curr,addr,m_bytepos);
+		 // pad the last record. GYL
+	    while (m_bytepos < m_recsize){
+		   m_curr[m_bytepos++] = pad;
+		 }
+	    m_fout.write(m_curr);
 	}
-	data_size = 0;
-	curr_size = 0;
-	err_status = OK;
-        header_done = False;
+	m_data_size = 0;
+	m_curr_size = 0;
+	m_err_status = OK;
+   m_header_done = False;
 	return 0;
 }
-
-int FitsOutput::write(FITS::HDUType t, char *addr, int bytes, char pad) { 
+// BlockOutput::write() is wraped to cfitsio already. So no need
+// to directly wrap FitsOuput::write(). GYL
+int FitsOutput::write(FITS::HDUType t, char *addr, Int bytes, char pad) { 
 	int n;
 	if (!hdu_inprogress()) {
-	    errmsg(BADOPER,"Illegal operation -- no HDU in progress");
+	    errmsg(BADOPER,"[FitsOutput::write()] Illegal operation -- no HDU in progress");
 	    return -1;
 	}
-	if (t != hdu_type) {
+	
+	if (t != m_hdu_type) {
 	    errmsg(BADOPER,"Illegal operation -- incorrect HDU type");
 	    return -1;
 	}
-	if ((bytes + curr_size) > data_size) {
-	    errmsg(BADOPER,"Attempt to write too much data -- truncated");
-	    bytes = data_size - curr_size;
+	
+	//cout<<"[FitsOutput::write()] m_hdu_type = "<< m_hdu_type << endl;
+	//cout<<"[FitsOutput::write()] is t == m_hdu_type? t =  "<< t << endl;
+	if ((bytes + m_curr_size) > m_data_size) {
+	    errmsg(BADOPER,"[FitsOutput::write] Attempt to write too much data -- truncated");
+		 cout<<"[FitsOutput::write] Attempt to write too much data -- truncated" << endl;
+	    bytes = m_data_size - m_curr_size;
 	}
-	if (bytes <= (FitsRecSize - bytepos)) {
-	    memcpy(&curr[bytepos],addr,bytes);
-	    bytepos += bytes;
-	    curr_size += bytes;
+	if (bytes <= (m_recsize - m_bytepos)) {
+	    memcpy(&m_curr[m_bytepos],addr,bytes);
+	    m_bytepos += bytes;
+	    m_curr_size += bytes;
 	} else {
-	    n = FitsRecSize - bytepos;
-	    memcpy(&curr[bytepos],addr,n);
-	    curr_size += n;;
+	    n = m_recsize - m_bytepos;
+	    memcpy(&m_curr[m_bytepos],addr,n);
+	    m_curr_size += n;
 	    addr += n;
 	    bytes -= n;
-	    fout.write(curr);
-	    while (bytes >= FitsRecSize) {
-		memcpy(curr,addr,FitsRecSize);
-		fout.write(curr);
-		addr += FitsRecSize;
-		curr_size += FitsRecSize;
-		bytes -= FitsRecSize;
+	    m_fout.write(m_curr); // write a record
+	    while (bytes >= m_recsize ) {
+			memcpy(m_curr,addr,m_recsize);
+			m_fout.write(m_curr);  // write a record
+			addr += m_recsize;
+			m_curr_size += m_recsize;
+			bytes -= m_recsize;
 	    }
-	    bytepos = bytes;
+	    m_bytepos = bytes;
 	    if (bytes) {
-		memcpy(curr,addr,bytes);
-		curr_size += bytes;
+			memcpy(m_curr,addr,bytes);
+			m_curr_size += bytes;
 	    }
 	}
 	// Fill up and write the last record as long as the data doesn't
 	// evenly fill the last record.
-	if (curr_size == data_size) {
+	if (m_curr_size == m_data_size) {
 	    if (bytes) {
-		while (bytepos < FitsRecSize)
-		    curr[bytepos++] = pad;
-		fout.write(curr);
+			while (m_bytepos < m_recsize){
+		    	m_curr[m_bytepos++] = pad;
+			}
+			m_fout.write(m_curr);
 	    }
-	    data_size = 0;
-	    curr_size = 0;
-            header_done = False;
+	    m_data_size = 0;
+	    m_curr_size = 0;
+       m_header_done = False;
 	}
-	err_status = OK;
+	m_err_status = OK;
+	//cout<<"[FitsOutput::write()] Ending."<< endl;
 	return 0;
 }
 
 int FitsOutput::write_sp (char *rec) { // write a special record
-	if (rec_type == FITS::EndOfFile) {
+	if (m_rec_type == FITS::EndOfFile) {
 	    errmsg(BADOPER,"Illegal operation -- EOF has been written");
 	    return -1;
         }
@@ -905,9 +1188,10 @@ int FitsOutput::write_sp (char *rec) { // write a special record
 	    errmsg(BADOPER,"Illegal operation -- HDU in progress");
 	    return -1;
 	}
-	if (rec_type != FITS::SpecialRecord)
-		rec_type = FITS::SpecialRecord;
-	fout.write(rec);
+	if (m_rec_type != FITS::SpecialRecord){
+		m_rec_type = FITS::SpecialRecord;
+	}
+	m_fout.write(rec);
 	return 0;
 }
 		
@@ -942,22 +1226,22 @@ FitsTape9Output::FitsTape9Output(const char *f, int l, int n,
 }
 
 FitsIO::FitsIO(FITSErrorHandler errhandler) : 
-    FitsRecSize(2880), valid_fits(False),
-    extend(False), isaprimary(False), header_done(False),
-    rec_type(FITS::InitialState), hdu_type(FITS::NotAHDU), errfn(errhandler), 
-    err_status(OK), curr(0), bytepos(0), item_size(0), 
-    data_type(FITS::NOVALUE), data_size(0), curr_size(0)  {
+    m_recsize(2880), m_valid_fits(False),
+    m_extend(False), m_isaprimary(False), m_header_done(False),
+    m_rec_type(FITS::InitialState), m_hdu_type(FITS::NotAHDU), m_errfn(errhandler), 
+    m_err_status(OK), m_curr(0), m_bytepos(0), m_item_size(0), 
+    m_data_type(FITS::NOVALUE), m_data_size(0), m_curr_size(0)  {
 }
 
 FitsInput::FitsInput(const char *n, const FITS::FitsDevice &d, int b, 
 		     FITSErrorHandler errhandler) : 
-    FitsIO(errhandler), fin(make_input(n,d,b,errhandler)), got_rec(False)
+    FitsIO(errhandler), m_fin(make_input(n,d,b,errhandler)), m_got_rec(False)
 {
     init();
 }
 
 FitsInput::FitsInput(FITSErrorHandler errhandler) : FitsIO(errhandler), 
-	fin(*(BlockInput *)(new FitsStdInput(FitsRecSize,errhandler)))
+	m_fin(*(BlockInput *)(new FitsStdInput(m_recsize,errhandler)))
 {
     init();
 }
