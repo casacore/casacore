@@ -369,7 +369,7 @@ int PrimaryArray<TYPE>::set_next(int ne) {
 
 template <class TYPE>
 int PrimaryArray<TYPE>::store(const TYPE *source, int npixels) {
-    if (npixels < 0 || npixels > nelements()) {
+    if (npixels < 0 || npixels > Int(nelements())) {
 	errmsg(BADSIZE, "npixels < 0 or > nelements()");
 	return -1;
     }
@@ -448,11 +448,13 @@ void PrimaryArray<TYPE>::copy(double *target, FITS::FitsArrayOption opt) const {
 	Int offset, i, j, *sub, *C_factor;
 	double fscale = (double)bscale();
 	double fzero = (double)bzero();
+	i=0;
+	n=0;
 
 	Bool blanked = isablank() && !FitsFPUtil::isFP((TYPE *)0) ? True:False;
-	TYPE blankval;
+	TYPE blankval = TYPE(0);
 	if (blanked) {
-	    blankval == blank();
+	    blankval = blank();
 	}
 	double nan;
 	FitsFPUtil::setNaN(nan);
@@ -489,7 +491,7 @@ void PrimaryArray<TYPE>::copy(double *target, FITS::FitsArrayOption opt) const {
 		for (n = 0; n < nmax; ++n)
 		    target[n] = (double)(fscale * array[n] + fzero);
 	    } else {
-		for (n=0; i<nmax; ++n) {
+		for (n=0; i<Int(nmax); ++n) {
 		    target[n] = array[n] != blankval ?
 			(double)(fscale * array[n] + fzero) : nan;
 		}
@@ -529,11 +531,13 @@ void PrimaryArray<TYPE>::copy(float *target, FITS::FitsArrayOption opt) const {
 	Int offset, i, j, *sub, *C_factor;
 	float fscale = (float)bscale();
 	float fzero = (float)bzero();
+	i=0;
+	n=0;
 
 	Bool blanked = isablank() && !FitsFPUtil::isFP((TYPE *)0) ? True:False;
-	TYPE blankval;
+	TYPE blankval = TYPE(0);
 	if (blanked) {
-	    blankval == blank();
+	    blankval = blank();
 	}
 	float nan;
 	FitsFPUtil::setNaN(nan);
@@ -570,7 +574,7 @@ void PrimaryArray<TYPE>::copy(float *target, FITS::FitsArrayOption opt) const {
 		for (n = 0; n < nmax; ++n)
 		    target[n] = (float)(fscale * array[n] + fzero);
 	    } else {
-		for (n=0; i<nmax; ++n) {
+		for (n=0; i<Int(nmax); ++n) {
 		    target[n] = array[n] != blankval ?
 			(float)(fscale * array[n] + fzero) : nan;
 		}
@@ -609,7 +613,7 @@ void PrimaryArray<TYPE>::move(TYPE *target, FITS::FitsArrayOption opt) const {
 		for (i = 0, offset = 0; i < dims(); ++i)
 		    offset += sub[i] * C_factor[i];
 		target[offset] = array[count++];
-		if (count == nelements()) 
+		if (count == Int(nelements())) 
 		    break;
 		for (i = 0; i < dims(); ++i) {
 		    ++sub[i];
