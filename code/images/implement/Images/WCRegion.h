@@ -35,41 +35,45 @@
 class LCRegion;
 class CoordinateSystem;
 class TableRecord;
+class IPosition;
 
 
 // <summary>
-// Class to define a region of interest in an image.
+// Base class to define world coordinate regions of interest in an image.
 // </summary>
 
 // <use visibility=export>
 
 // <reviewed reviewer="" date="" tests="">
 // </reviewed>
-
+//
 // <prerequisite>
 //   <li> <linkto class=Slicer>Slicer</linkto>
 // </prerequisite>
-
+//
 // <synopsis> 
-// The only purpose of WCRegion is to have a single object for
-// the various kinds of regions (e.g. LCRegion and WCRegion).
-// So far, it is only used to hold an LCRegion or WCRegion object.
-// In the future it can also be useful to hold other types of regions.
+// WCRegion is the base class for world coordinate regions.
+// It defines the functionality simply as conversion to an LCRegion.
+// This is because you need an LCRegion to be able to access the
+// pixels in a Lattice.
+//
+// The conversion functions should be flexible in that the
+// supplied CoordinateSystem does not have to be the same
+// as that with which the derived class was constructed. 
+// This means that you can apply a WCRegion from one image
+// to another, provided that operation has some meaning.
 // </synopsis> 
-
+//
 // <example>
 // <srcblock>
 // </srcblock>
 // </example>
-
+//
 // <motivation>
-// It was felt that making an abstract base class LatticeRegion for
-// LCRegion and WCRegion would create undesirable dependencies of
-// module Lattices on module Coordinates. E.g. it would be impossible
-// to have a function toWCRegion.
-// Therefore the container class WCRegion is chosen.
+// User should be able to specify their regions in world coordinates
+// as well as lattice coordinates.
 // </motivation>
-
+//
 //# <todo asof="1997/11/11">
 //# <li>
 //# </todo>
@@ -87,8 +91,9 @@ public:
     // Clone a WCRegion object.
     virtual WCRegion* cloneRegion() const = 0;
 
-    // Convert to an LCRegion using the given coordinate system.
-    virtual LCRegion* toLCRegion (const CoordinateSystem&) const = 0;
+    // Convert to an LCRegion using the given coordinate system and shape
+    virtual LCRegion* toLCRegion (const CoordinateSystem& cSys,
+                                  const IPosition& shape) const = 0;
 
     // Convert the (derived) object to a record.
     // The record can be used to make the object persistent.
