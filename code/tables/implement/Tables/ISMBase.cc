@@ -41,12 +41,14 @@
 #include <aips/IO/RawIO.h>
 #include <aips/IO/CanonicalIO.h>
 #include <aips/IO/FiledesIO.h>
+#include <aips/OS/DOos.h>
 #include <aips/Tables/DataManError.h>
 #include <iostream.h>
 
 
 ISMBase::ISMBase (uInt bucketSize, Bool checkBucketSize, uInt cacheSize)
 : DataManager       (),
+  dataManName_p     ("ISM"),
   version_p         (3),
   iosfile_p         (0),
   uniqnr_p          (0),
@@ -562,6 +564,20 @@ void ISMBase::reopenRW()
     for (uInt i=0; i<nrcol; i++) {
 	colSet_p[i]->reopenRW();
     }
+}
+
+void ISMBase::deleteManager()
+{
+    delete iosfile_p;
+    iosfile_p = 0;
+    // Clear cache without flushing.
+    if (cache_p != 0) {
+      cache_p->clear (0, False);
+    }
+    if (file_p != 0) {
+      file_p->remove();
+    }
+    DOos::remove (fileName(), False, False);
 }
 
 

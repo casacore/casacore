@@ -42,6 +42,7 @@
 #include <aips/Utilities/BinarySearch.h>
 #include <aips/Utilities/GenSort.h>
 #include <aips/IO/AipsIO.h>
+#include <aips/OS/DOos.h>
 #include <aips/Mathematics/Math.h>
 #include <aips/Tables/DataManError.h>
 
@@ -288,6 +289,21 @@ void TiledStMan::reopenRW()
 	    fileSet_p[i]->bucketFile()->setRW();
 	}
     }
+}
+
+void TiledStMan::deleteManager()
+{
+    for (uInt i=0; i<cubeSet_p.nelements(); i++) {
+	if (cubeSet_p[i] != 0) {
+	  cubeSet_p[i]->clearCache (False);
+	}
+    }
+    for (uInt i=0; i<fileSet_p.nelements(); i++) {
+	if (fileSet_p[i] != 0) {
+	    fileSet_p[i]->bucketFile()->remove();
+	}
+    }
+    DOos::remove (fileName(), False, False);
 }
 
 void TiledStMan::setMaximumCacheSize (uInt nbytes)
