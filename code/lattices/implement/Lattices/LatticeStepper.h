@@ -1,5 +1,5 @@
 //# LatticeStepper.h:  provides 'natural' traversal, by cursor shape
-//# Copyright (C) 1994,1995,1996,1997,1998,1999,2000
+//# Copyright (C) 1994,1995,1996,1997,1998,1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -87,6 +87,27 @@
 // Also the cursor shape on all axes must be less than or equal to the Lattice
 // shape on that axis. Otherwise an exception will be thrown. 
 // <p>
+// In principle cursor axes with length 1 are degenerate axes. They
+// are removed from the lattice cursor if the
+// <linkto class=LatticeIterator>LatticeIterator</linkto> cursor is accessed
+// using e.g. the <src>matrixCursor</src> function.
+// Using a special LatticeStepper constructor it is, however, possible
+// to specify which cursor axes with length 1 have to be treated as
+// normal axes. In that way one can be sure that a cursor is, for
+// example, always 2D, even if an axis happens to have length 1.
+// <srcblock>
+// IPosition latticeShape(4,20,16,1,4);
+// IPosition cursorAxes(2,1,2);
+// IPosition cursorShape(2,16,1);
+// IPosition axisPath;
+// LatticeStepper stepper(latticeShape, cursorShape,
+//                        cursorAxes, axisPath);
+// </srcblock>
+// This results in a cursor with shape [1,16,1,1]. The first and last
+// axis are degenerate, so the cursor can also be accessed using
+// <src>matrixCursor</src> (with shape [16,1]).
+// Note that the cursor shape could also be specified as [1,16,1,1].
+// <p>
 // The "path" of the cursor through the Lattice can be controlled by
 // specifying an axisPath during construction of the class. This is an
 // IPosition which has exactly as many elements as the Lattice
@@ -120,9 +141,10 @@
 // The cursor never changes dimensionality as it traverses the Lattice.  But it
 // may change shape if the cursor shape is not a factor of the Lattice
 // shape. A cursor shape is not a factor of the Lattice shape if the Lattice
-// shape is not an integer multiple of the cursor shape on all axes. The integer// multiplier need not to be the same for each axes. For example, for
-// a Lattice of shape [10,10,10] a cursor of shape [8,5,2] is not a factor
-// but one with a shape of [10,5,1] is.
+// shape is not an integer multiple of the cursor shape on all axes.
+// The integer multiplier need not to be the same for each axes.
+// For example, for a Lattice of shape [10,10,10] a cursor of shape [8,5,2]
+// is not a factor but one with a shape of [10,5,1] is.
 // <br>
 // When the cursor is not congruent with the Lattice moving the cursor through
 // the Lattice will sometimes result in part of the cursor hanging over the
@@ -286,6 +308,7 @@ public:
   // <br>or <src>cursorShape.nelements() == cursorAxes.nelements()</src>
   // The latter means that the cursorShape contains the axes mentioned in
   // cursorAxes.
+  // <br>See also the example in the synopsis.
   LatticeStepper (const IPosition& latticeShape, const IPosition& cursorShape,
 		  const IPosition& cursorAxes,
 		  const IPosition& axisPath, const uInt hangOverPolicy=PAD);
