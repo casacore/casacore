@@ -575,116 +575,125 @@ template<class T> Array<T> Array<T>::reform(const IPosition &len,
     return tmp;
 }
 
-template<class T> 
-const Array<T> Array<T>::nonDegenerate(uInt startingAxis) const {
+template<class T> const Array<T> Array<T>::
+nonDegenerate(uInt startingAxis) const {
   Array<T> * This = (Array<T> *) this;
-  const Array<T> tmp((*This).nonDegenerate(startingAxis));
+  const Array<T> tmp(This->nonDegenerate(startingAxis));
   return tmp;
 }
 
-template<class T> Array<T> Array<T>::nonDegenerate(uInt startingAxis)
-{
-    DebugAssert(ok(), ArrayError);
-    if (ndim() > 0) {
-        AlwaysAssert(startingAxis < ndim(), ArrayError);
-    }
-
-    Array<T> tmp(*this);
-
-//     if (nelements() == 0) {
-// 	tmp.ndimen = 1;
-// 	tmp.originalLength.resize(1, True);
-// 	tmp.inc.resize(1, True);
-// 	tmp.start.resize(1, True);
-// 	tmp.length.resize(1, True);
-// 	tmp.length[0] = 0;
-// 	return tmp;        // early exit - special case
-//     }
-
-    // OK - remove degenerate axes. Two passes - first find out how many
-    // axes are of length one.
-    uInt count=0;
-    for (Int i=startingAxis; i < ndim(); i++)
-	if (length[i] != 1) count++;
-    count += startingAxis;
-
-     // Another special case - all lengths are one.
-     if (count == 0) {
- 	tmp.ndimen = 1;
- 	tmp.originalLength.resize(1, True);
- 	tmp.inc.resize(1, True);
- 	tmp.start.resize(1, True);
- 	tmp.length.resize(1, True);
- 	tmp.length[0] = 1;
- 	return tmp;        // early exit - special case
-     }
-
-    // Maybe we are COMPLETELY non-degenerate
-    if (ndim() == count)
-	return tmp;        // early exit - special case
-
-    // OK, we have some length==1 axes
-    Block<Int> newLength(count), newInc(count), newStart(count),
-	newOriginal(count);
-    uInt skippedVolume = 1;
-    count=0;
-    for (i=0; i < ndim(); i++) {
-	if (length[i] != 1 || i < startingAxis) {
-	    newLength[count] = length[i];
-	    newStart[count] = start[i];
-	    newOriginal[count] = originalLength[i];
-	    newInc[count] = skippedVolume*inc[i];
-	    skippedVolume = 1;
-	    count++;
-	} else {
-	    skippedVolume *= originalLength[i];
-	}
-    }
-    tmp.ndimen = count;
-    tmp.length = newLength;
-    tmp.inc = newInc;
-    tmp.start = newStart;
-    tmp.originalLength = newOriginal;
-    return tmp;
-}
-
-template<class T> 
-const Array<T> Array<T>::addDegenerate(uInt numAxes) const {
-  Array<T> * This = (Array<T> *) this;
-  const Array<T> tmp((*This).addDegenerate(numAxes));
+template<class T> Array<T> Array<T>::
+nonDegenerate(uInt startingAxis) {
+  Array<T> tmp;
+  DebugAssert(ok(), ArrayError);
+  tmp.nonDegenerate(*this, startingAxis);
   return tmp;
 }
 
-template<class T> Array<T> Array<T>::addDegenerate(uInt numAxes)
-{
-    DebugAssert(ok(), ArrayError);
-    Array<T> tmp(*this);
-    if (numAxes == 0)
-      return tmp;
+template<class T> void Array<T>::
+nonDegenerate(Array<T> & other, uInt startingAxis) {
+  DebugAssert(ok(), ArrayError);
+  AlwaysAssert(other.ndim() > 0, AipsError);
+  AlwaysAssert(startingAxis < other.ndim(), ArrayError);
 
-    const uInt newDim = ndim() + numAxes;
-    Block<Int> newLength(newDim), newInc(newDim), newStart(newDim),
-	newOriginal(newDim);
+  // These data members are the same irrespective of the degenerate axes. 
+  nels = other.nels;
+  begin = other.begin;
+  data = other.data;
+  
+  // To remove degenerate axes use two passes - first find out how many axes
+  // are not of length one.
+  uInt count=0;
+  uInt i;
+  for (i=startingAxis; i < other.ndim(); i++)
+    if (other.length[i] != 1) 
+      count++;
+  count += startingAxis;
+  
+  // A special case - all axes are of length one.
+  if (count == 0) {
+    ndimen = 1;
+    start.resize(1, False, False);
+    start[0] = other.start[0];
+    length.resize(1, False, False);
+    length[0] = other.length[0];
+    inc.resize(1, False, False);
+    inc[0] = other.inc[0];
+    originalLength.resize(1, False, False);
+    originalLength[0] = other.originalLength[0];
+    return;        // early exit - special case
+  }
 
-    uInt i;
-    for (i=0; i < ndim(); i++) {
-      newLength[i] = length[i];
-      newStart[i] = start[i];
-      newOriginal[i] = originalLength[i];
-      newInc[i] = inc[i];
-    }
-    for (i=ndim(); i < newDim; i++){
-      newLength[i] = 1;
-      newStart[i] = 0;
-      newOriginal[i] = 1;
-      newInc[i] = 1;
-    }
-    tmp.ndimen = newDim;
-    tmp.length = newLength;
-    tmp.inc = newInc;
-    tmp.start = newStart;
-    tmp.originalLength = newOriginal;
+  // Maybe we have no axes of length one.
+  if (count == other.ndim()){
+    ndimen = other.ndimen;
+    start = other.start;
+    length = other.length;
+    originalLength = other.originalLength;
+    inc = other.inc;
+    return;
+  }
+
+  // OK, we have some length==1 axes
+  ndimen = count;
+  start.resize(ndimen, False, False);
+  length.resize(ndimen, False, False);
+  inc.resize(ndimen, False, False);
+  originalLength.resize(ndimen, False, False);
+
+  uInt skippedVolume = 1;
+  count=0;
+  for (i=0; i < other.ndim(); i++) {
+    if (other.length[i] != 1 || i < startingAxis) {
+      length[count] = other.length[i];
+      start[count] = other.start[i];
+      originalLength[count] = other.originalLength[i];
+      inc[count] = skippedVolume*other.inc[i];
+      skippedVolume = 1;
+      count++;
+    } 
+    else
+      skippedVolume *= other.originalLength[i];
+  }
+}
+
+template<class T> const Array<T> Array<T>::
+addDegenerate(uInt numAxes) const {
+  Array<T> * This = (Array<T> *) this;
+  const Array<T> tmp(This->addDegenerate(numAxes));
+ return tmp;
+}
+
+template<class T> Array<T> Array<T>::
+addDegenerate(uInt numAxes) {
+  DebugAssert(ok(), ArrayError);
+  Array<T> tmp(*this);
+  if (numAxes == 0)
     return tmp;
+  
+  const uInt newDim = ndim() + numAxes;
+  Block<Int> newLength(newDim), newInc(newDim), newStart(newDim),
+    newOriginal(newDim);
+  
+  uInt i;
+  for (i=0; i < ndim(); i++) {
+    newLength[i] = length[i];
+    newStart[i] = start[i];
+    newOriginal[i] = originalLength[i];
+    newInc[i] = inc[i];
+  }
+  for (i=ndim(); i < newDim; i++){
+    newLength[i] = 1;
+    newStart[i] = 0;
+    newOriginal[i] = 1;
+    newInc[i] = 1;
+  }
+  tmp.ndimen = newDim;
+  tmp.length = newLength;
+  tmp.inc = newInc;
+  tmp.start = newStart;
+  tmp.originalLength = newOriginal;
+  return tmp;
 }
 
 template<class T> Bool Array<T>::conform(const Array<T> &other) const

@@ -236,11 +236,13 @@ public:
     void apply(const Functional<T,T> &function);
     // </group>
 
-    // After invocation, this array and other reference the same
-    // storage. That is, modifying an element through one will show
-    // up in the other. The arrays appear to be identical;
-    // they have the same shape and origin.
+    // After invocation, this array and other reference the same storage. That
+    // is, modifying an element through one will show up in the other. The
+    // arrays appear to be identical; they have the same shape and
+    // origin.
+    // <group>
     virtual void reference(Array<T> &other);
+    // </group>
 
     // Copy the values in other to this. If the array on the left hand
     // side has no elements, then it is resized to be the same size as
@@ -330,15 +332,15 @@ public:
     // </srcblock>
     Array<T> reform(const IPosition &shape, const IPosition &origin) const;
     
-    // This member function returns an Array reference which has all degenerate
-    // (length==1) axes removed and the dimensionality reduced appropriately.
-    // If nelements==0 returns a dimension 1 0-length array.
-    // Otherwise returns an array with all length-1 axes removed.
-    // Only axes greater than startingAxis are considered (normally one wants to
-    // remove trailing axes.
-    // <group> 
+    // These member functions remove degenerate (ie. length==1) axes from
+    // Arrays.  Only axes greater than startingAxis are considered (normally
+    // one wants to remove trailing axes. The first two of these function
+    // return an Array reference with axes removed. The last of these functions
+    // returns a reference to the 'other' array with degenerater axes removed.
+    // <group>
     Array<T> nonDegenerate(uInt startingAxis=0);
     const Array<T> nonDegenerate(uInt startingAxis=0) const;
+    void nonDegenerate(Array<T> & other, uInt startingAxis=0);
     // </group> 
 
     // These member functions return an Array reference with the specified
@@ -528,7 +530,7 @@ protected:
     uInt nels;
 
     // Dimensionality of the array.
-    int ndimen;
+    Int ndimen;
 
     // Used to hole the origin, shape, increment into the underlying storage
     // and originalLength of the array. These should be coelesced to avoid
