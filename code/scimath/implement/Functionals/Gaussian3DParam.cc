@@ -290,15 +290,15 @@ void Gaussian3DParam<Type>::setphi(const Type& phi)
 template <class Type>
 void Gaussian3DParam<Type>::settrigvals() const
 {
-  stoT = param_p[THETA];
-  stoP = param_p[PHI];
-  sinT = sin(param_p[THETA]);
-  cosT = cos(param_p[THETA]);
-  sinP = sin(param_p[PHI]);
-  cosP = cos(param_p[PHI]);
-  cosTcosP = cosT * cosP;
-  cosTsinP = cosT * sinP;
-  sinTcosP = sinT * cosP;
-  sinTsinP = sinT * sinP;
+  stoT_p = param_p[THETA];
+  stoP_p = param_p[PHI];
+  sinT_p = sin(param_p[THETA]);
+  cosT_p = cos(param_p[THETA]);
+  sinP_p = sin(param_p[PHI]);
+  cosP_p = cos(param_p[PHI]);
+  cosTcosP_p = cosT_p * cosP_p;
+  cosTsinP_p = cosT_p * sinP_p;
+  sinTcosP_p = sinT_p * cosP_p;
+  sinTsinP_p = sinT_p * sinP_p;
 }
 
