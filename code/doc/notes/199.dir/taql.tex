@@ -150,7 +150,7 @@ The various clauses have the following meaning:
        Normally only persistent tables (i.e. tables on disk) can
        be used. However, it is also possible to use transient tables
        in a TaQL command given in \htmlref{Glish or C++}{TAQL:GLISHC}.
-       This done by passing one or more  table objects to the
+       This is done by passing one or more table objects to the
        function executing the TaQL command. In the TaQL command a
        \$-sign followed by a sequence number has to be given to
        indicate the correct object containing the transient table.
@@ -387,8 +387,8 @@ precedence) for scalars:
 \begin{description}
   \item[] Unary \textbf{+} and \textbf{-}
        \\Can only be used with double and complex operands.
-       They have a higher precedence than the binary operators.
-       E.g. \texttt{-3}\verb+^+\texttt{2} results in \texttt{9}.
+       They do not have a higher precedence than the binary operators.
+       E.g. \texttt{-3}\verb+^+\texttt{2} results in \texttt{-9}.
   \item[] Unary \textbf{!} (or \textbf{NOT})
        \\Logical NOT operator.
        Can only be used with Bool operands.
@@ -917,7 +917,7 @@ is to store the result of the subquery in a temporary table and reuse it.
   SELECT FROM maintable WHERE any(time >=
       [SELECT starttime FROM tmptab]
                                && time <=
-      [SELECT endtime FROM tmptab]
+      [SELECT endtime FROM tmptab])
 \end{verbatim}
 However, this has the disadvantage that the table \texttt{tmptab}
 still exists after the query and has to be deleted explictly by the
@@ -926,6 +926,18 @@ user. Below a better solution for this problem is shown.
 TaQL has a few extensions to support tables better,
 in particular the AIPS++ measurement sets.
 \begin{enumerate}
+\item
+The temporary problem above can be circumvented by using the
+ability to use a \texttt{SELECT} expression in the \texttt{FROM}
+clause. E.g.
+\begin{verbatim}
+  SELECT FROM maintable,
+      [SELECT FROM othertable WHERE windspeed < 5] tmptab
+      WHERE any(time >= [SELECT starttime FROM tmptab]
+             && time <= [SELECT endtime FROM tmptab])
+\end{verbatim}
+However, below a even nicer solution is given. 
+
 \item
 The time range problem above can be solved elegantly by using
 a set as the result of the subquery. Instead of a table name,
@@ -1072,7 +1084,7 @@ that indexing arrays should be done with care.
     \\is a combination of the previous selections.
     \\
   \item[] \texttt{ SELECT FROM mytable WHERE column0 IN }
-    \\\texttt{ [SELECT FROM outtable ORDERBY column0 DESC][1:10] }
+    \\\texttt{ [SELECT column0 FROM outtable ORDERBY column0 DESC][1:10] }
     \\selects the 10 highest values of \texttt{column0}
     \\
   \item[] \texttt{ SELECT FROM mytable ORDERBY column0 DESC GIVING outtable }
@@ -1149,7 +1161,7 @@ that indexing arrays should be done with care.
       \\finds all rows in the MeasurementSet with the given
       NET\_SIDEBAND.
       \\The MeasurementSet uses a table to map spectral-window-id to
-      data-desc-id. Hence tow nested subqueries are needed.
+      data-desc-id. Hence two nested subqueries are needed.
 \end{description}
 
 \section{\label{TAQL:GLISHC}Interface to TaQL}
@@ -1278,7 +1290,7 @@ features and by doing optimizations.
     constant scalar, it might be possible to reduce the node to
     one of its branches.
   \item Optimize by removing an \texttt{IN} node when the righthand
-    operand is empty. This cannot be done when the lefthand operand.
+    operand is empty. This cannot be done when the lefthand operand
     is variable shaped.
   \item Handle invalid subexpressions (e.g. exceeding array bounds)
     as undefined values
