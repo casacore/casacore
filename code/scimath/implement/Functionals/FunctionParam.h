@@ -33,6 +33,7 @@
 #include <aips/Arrays/Vector.h>
 
 //# Forward declarations
+#include <aips/iosfwd.h>
 
 // <summary>Container of function parameters with masking flags
 // </summary>
@@ -98,10 +99,15 @@ template<class T> class FunctionParam {
   //# Operators
   // Copy assignment (deep copy)
   FunctionParam &operator=(const FunctionParam<T> &other);
+  // Manipulate the nth parameter (0-based) with no index check
+  // <group>
+  T &operator[](const uInt n) { return param_p[n]; };
+  const T &operator[](const uInt n) const{ return param_p[n]; };
+  // </group>
 
   //# Member functions
   // Return the number of parameters
-  uInt nParameters() const { return param_p.nelements(); };
+  uInt nelements() const { return param_p.nelements(); };
   // Manipulate the nth parameter (0-based) with no index check
   // <group>
   T &parameter(const uInt n) { return param_p[n]; };
@@ -144,6 +150,9 @@ template<class T> class FunctionParam {
   // </group>
   // </group>
 
+  // Output the parameters
+  ostream &print(ostream &os) const;
+
  private:
   //# Data
   // Number of parameters
@@ -162,6 +171,19 @@ template<class T> class FunctionParam {
   void clearMaskedPtr() const;
 
 };
+
+//# Global functions
+// <summary> Global functions </summary>
+// <group name=Output>
+// Output declaration
+template<class T>
+ostream &operator<<(ostream &os, const FunctionParam<T> &par);
+// </group>
+
+//# Inlines
+template<class T>
+inline ostream &operator<<(ostream &os, const FunctionParam<T> &par) {
+  return par.print(os); };
 
 #endif
 

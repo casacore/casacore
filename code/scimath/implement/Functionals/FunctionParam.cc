@@ -26,6 +26,7 @@
 //# $Id$
 
 #include <trial/Functionals/FunctionParam.h>
+#include <aips/iostream.h>
 
 template<class T>
 FunctionParam<T>::FunctionParam()
@@ -97,13 +98,13 @@ void FunctionParam<T>::setParamMasks(const Vector<Bool> &masks) {
 
 template<class T>
 uInt FunctionParam<T>::nMaskedParameters() const {
-  if (!maskedPtr_p) createMaskedPtr();
+  createMaskedPtr();
   return maskedPtr_p->nelements();
 }
 
 template<class T>
 Vector<T> &FunctionParam<T>::getMaskedParameters() const {
-  if (!maskedPtr_p) createMaskedPtr();
+  createMaskedPtr();
   return *maskedPtr_p;
 }
 
@@ -117,14 +118,16 @@ void FunctionParam<T>::setMaskedParameters(Vector<T> &in) {
 
 template<class T>
 void FunctionParam<T>::createMaskedPtr() const {
-  clearMaskedPtr();
-  Vector<T> tmp(npar_p);
-  uInt n(0);
-  for (uInt i(0); i<npar_p; ++i) {
-    if (mask_p[i]) tmp[n++] = param_p[i];
+  if (!maskedPtr_p) {
+    clearMaskedPtr();
+    Vector<T> tmp(npar_p);
+    uInt n(0);
+    for (uInt i(0); i<npar_p; ++i) {
+      if (mask_p[i]) tmp[n++] = param_p[i];
+    };
+    tmp.resize(n, True);
+    maskedPtr_p = new Vector<T>(tmp);
   };
-  tmp.resize(n, True);
-  maskedPtr_p = new Vector<T>(tmp);
 }
 
 template<class T>
@@ -132,10 +135,24 @@ void FunctionParam<T>::clearMaskedPtr() const {
   delete maskedPtr_p; maskedPtr_p = 0;
 }
 
+//# Global functions
+template<class T>
+ostream &FunctionParam<T>::print(ostream &os) const {
+  os << "[";
+  for (uInt i=0; i<npar_p; i++) {
+    if (i!=0) os << ", ";
+    os << "(" << param_p[i] << ", " <<
+      ((mask_p[i]) ? "True" : "False") << ")";
+  };
+  os << "]";
+  return os;
+}
+
 /// For test purposes only. Move to repositories
 template class FunctionParam<Double>;
 template class FunctionParam<Float>;
 #include <aips/Mathematics/AutoDiff.h>
+#include <aips/Mathematics/AutoDiffIO.h>
 #include <aips/Mathematics/AutoDiffMath.h>
 template class FunctionParam<AutoDiff<Double> >;
 template class FunctionParam<AutoDiff<Float> >;
