@@ -36,6 +36,7 @@
 rtti_imp_mbrf_a1(Vector);
 
 template<class T> Vector<T>::Vector()
+  : Array<T>(IPosition(1,0))
 {
     DebugAssert(ok(), ArrayError);
 }
