@@ -62,7 +62,11 @@ template class \
 template class \
   __rwstd::__rb_tree<T, pair<T const, U >, \
   __rwstd::__select1st<pair<T const, U>, T  >, \
-  std::less<T>, allocator<pair<T const, U> > >;
+  std::less<T>, allocator<pair<T const, U> > >; \
+template void std::__distance<\
+  map<T, U>::iterator, uInt> (map<T, U>::iterator, map<T, U>::iterator, uInt&, std::bidirectional_iterator_tag);\
+template void std::__distance<\
+  map<T, U>::const_iterator, uInt> (map<T, U>::const_iterator, map<T, U>::const_iterator, uInt&, std::bidirectional_iterator_tag);
 #else
 
 #define AIPS_MAP_AUX_TEMPLATES(T, U)
