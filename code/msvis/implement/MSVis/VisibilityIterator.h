@@ -383,8 +383,8 @@ public:
   void allSelectedSpectralWindows(const Vector<Int>& spws, Vector<Int>& nvischan);
 
   // Convert the frequency from the observe frame to lsr frame.
-  
-  void lsrFrequency(const Int& spw, Vector<Double>& freq);
+  // convert=false => just return frequencies as is
+  void lsrFrequency(const Int& spw, Vector<Double>& freq, Bool& convert);
 
 protected:
   // advance the iteration
