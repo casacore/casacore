@@ -54,7 +54,7 @@ void MSCalEnums::initMap ()
     theirFieldMap.define (CORRELATOR_ID, "CORRELATOR_ID");
     theirFieldMap.define (FIELD_ID, "FIELD_ID");
     theirFieldMap.define (OBSERVATION_ID, "OBSERVATION_ID");
-    theirFieldMap.define (PULSAR_GATE_ID, "PULSAR_GATE_ID ");
+    theirFieldMap.define (PULSAR_GATE_ID, "PULSAR_GATE_ID");
     theirFieldMap.define (SPECTRAL_WINDOW_ID, "SPECTRAL_WINDOW_ID");
 
     theirFieldMap.define (FREQ_GROUP, "FREQ_GROUP");
