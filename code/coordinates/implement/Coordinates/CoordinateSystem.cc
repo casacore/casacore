@@ -72,7 +72,8 @@ void CoordinateSystem::copy(const CoordinateSystem &other)
     coordinates_p = other.coordinates_p;
     const uInt n = coordinates_p.nelements();
 
-    for (uInt i=0; i < n; i++) {
+    uInt i;
+    for (i=0; i < n; i++) {
 	coordinates_p[i] = coordinates_p[i]->clone();
 	AlwaysAssert(coordinates_p[i], AipsError);
     }
@@ -157,7 +158,8 @@ void CoordinateSystem::addCoordinate(const Coordinate &coord)
     world_maps_p.resize(n+1);
     world_maps_p[n] = new Block<Int>(coordinates_p[n]->nWorldAxes());
     AlwaysAssert(world_maps_p[n], AipsError);
-    for (uInt i=0; i < world_maps_p[n]->nelements(); i++) {
+    uInt i;
+    for (i=0; i < world_maps_p[n]->nelements(); i++) {
 	world_maps_p[n]->operator[](i) = oldWorldAxes + i;
     }
 
@@ -208,7 +210,8 @@ void CoordinateSystem::transpose(const Vector<Int> &newWorldOrder,
     // Verify that all axes are in new*Order once (only)
     Block<Bool> found(nw);
     found = False;
-    for (uInt i=0; i<found.nelements(); i++) {
+    uInt i;
+    for (i=0; i<found.nelements(); i++) {
 	Int which = newWorldOrder(i);
 	AlwaysAssert(which >=0 && uInt(which) < nw && !found[which], AipsError);
 	found[which] = True;
@@ -785,7 +788,8 @@ Bool CoordinateSystem::toWorld(Vector<Double> &world,
 	// coordinates own toWorld, and then copy the output values
 	// from the world temporary to the world coordinate
 	const uInt npa = pixel_maps_p[i]->nelements();
-	for (uInt j=0; j<npa; j++) {
+	uInt j;
+	for (j=0; j<npa; j++) {
 	    Int where = pixel_maps_p[i]->operator[](j);
 	    if (where >= 0) {
 		// cerr << "i j where " << i << " " << j << " " << where <<endl;
@@ -856,7 +860,8 @@ Bool CoordinateSystem::toPixel(Vector<Double> &pixel,
 	// copy the output values from the pixel temporary to the pixel
 	// coordinate
 	const uInt nwra = world_maps_p[i]->nelements();
-	for (uInt j=0; j<nwra; j++) {
+	uInt j;
+	for (j=0; j<nwra; j++) {
 	    Int where = world_maps_p[i]->operator[](j);
 	    if (where >= 0) {
 		This->world_tmps_p[i]->operator()(j) = world(where);
@@ -1196,7 +1201,8 @@ Bool CoordinateSystem::near(const Coordinate* pOther,
 // we don't check it
 
       Bool allGone = True;
-      for (Int j=0; j<Int(worldAxes(i).nelements()); j++) {
+      Int j;
+      for (j=0; j<Int(worldAxes(i).nelements()); j++) {
          if (worldAxes(i)(j) >= 0) {
             allGone = False;
             break;
@@ -1445,7 +1451,8 @@ CoordinateSystem *CoordinateSystem::restore(const RecordInterface &container,
     nc = coords.nelements();
 
     retval = new CoordinateSystem;
-    for (Int i=0; i<nc; i++) {
+    Int i;
+    for (i=0; i<nc; i++) {
 	retval->addCoordinate(*(coords[i]));
 	delete coords[i];
 	coords[i] = 0;
@@ -1549,7 +1556,8 @@ Bool CoordinateSystem::toFITSHeader(RecordInterface &header,
     Int stokesCoord = coordsys.findCoordinate(Coordinate::STOKES);
     Int stokesAxis = -1;
 
-    for (Int i=0; i<n ; i++) {
+    Int i;
+    for (i=0; i<n ; i++) {
 	Int c, a;
 	coordsys.findWorldAxis(c, a, i);
 	if (c == skyCoord) {
@@ -1942,7 +1950,8 @@ Bool CoordinateSystem::fromFITSHeader(CoordinateSystem &coordsys,
 
     // OK, find out what standard axes we have.
     Int longAxis=-1, latAxis=-1, stokesAxis=-1, specAxis=-1;
-    for (Int i=0; i<n; i++) {
+    Int i;
+    for (i=0; i<n; i++) {
 	if (ctype(i).contains("RA") || ctype(i).contains("LON")) {
 	    if (longAxis >= 0) {
 		os << LogIO::SEVERE << "More than one longitude axis is "
