@@ -41,17 +41,42 @@ eval(typename Function<AutoDiff<T> >::FunctionArg x) const {
       break;
     };
   };
-  for (uInt j=0; j<tmp.nDerivatives(); j++) tmp.deriv(j) = 0.0;
   // function value
   Int j = nparameters();
   tmp.value() = param_p[--j].value();
   while (--j >= 0) tmp.value() += param_p[j].value()*x[j];
-  // derivatives
-  for (uInt i=0; i<nparameters()-1; ++i) {
-    if (param_p.mask(i)) tmp.deriv(i) = x[i];
+  // get derivatives (assuming either all or none)
+  if (tmp.nDerivatives()>0) {
+    for (uInt j=0; j<tmp.nDerivatives(); j++) tmp.deriv(j) = 0.0;
+    for (uInt i=0; i<nparameters()-1; ++i) {
+      if (param_p.mask(i)) tmp.deriv(i) = x[i];
+    };
+    if (param_p.mask(nparameters()-1)) tmp.deriv(nparameters()-1) = 1;
   };
-  if (param_p.mask(nparameters()-1)) tmp.deriv(nparameters()-1) = 1;
   return tmp;
 }
 
 //# Member functions
+template<class T>
+Function<typename FunctionTraits<AutoDiff<T> >::DiffType>
+*NQHyperPlane<AutoDiff<T> >::cloneAD() const {
+  Function<typename FunctionTraits<AutoDiff<T> >::DiffType> *t =
+    new NQHyperPlane<typename FunctionTraits<AutoDiff<T> >::DiffType>();
+  for (uInt i=0; i<nparameters(); ++i) {
+    (*t)[i] = typename FunctionTraits<AutoDiff<T> >::
+      DiffType(param_p[i]);
+  };
+  return t;
+}
+
+template<class T>
+Function<typename FunctionTraits<AutoDiff<T> >::BaseType>
+*NQHyperPlane<AutoDiff<T> >::cloneBase() const {
+  Function<typename FunctionTraits<AutoDiff<T> >::BaseType> *t =
+    new NQHyperPlane<typename FunctionTraits<AutoDiff<T> >::BaseType>();
+  for (uInt i=0; i<nparameters(); ++i) {
+    (*t)[i] = typename FunctionTraits<AutoDiff<T> >::
+      DiffType(param_p[i]).value();
+  };
+  return t;
+}

@@ -39,3 +39,28 @@ T NQCombiFunction<T>::eval(typename Function<T>::FunctionArg x) const {
   };
   return tmp;
 }
+
+//# Member functions
+template<class T>
+Function<typename FunctionTraits<T>::DiffType>
+*NQCombiFunction<T>::cloneAD() const {
+  Function<typename FunctionTraits<T>::DiffType> *t =
+    new NQCombiFunction<typename FunctionTraits<T>::DiffType>();
+  for (uInt i=0; i<nFunctions(); ++i) {
+    dynamic_cast<NQCombiFunction<typename FunctionTraits<T>::DiffType> *>
+      (t)->addFunction(*(function(i).cloneAD()));
+  };
+  return t;
+}
+
+template<class T>
+Function<typename FunctionTraits<T>::BaseType>
+*NQCombiFunction<T>::cloneBase() const {
+  Function<typename FunctionTraits<T>::BaseType> *t =
+    new NQCombiFunction<typename FunctionTraits<T>::BaseType>();
+  for (uInt i=0; i<nFunctions(); ++i) {
+    dynamic_cast<NQCombiFunction<typename FunctionTraits<T>::BaseType> *>
+      (t)->addFunction(*(function(i).cloneBase()));
+  };
+  return t;
+}

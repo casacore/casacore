@@ -125,9 +125,20 @@ class NQFunctionWrapper : public NQWrapperParam<T> {
   // Get the dimensionality
   virtual uInt ndim() const { return (doit_p ? doit_p->ndim() : 0); };
   // Return a copy of this object from the heap. The caller is responsible 
-  // for deleting this pointer.
+  // for deleting this pointer. The <em>AD, Base</em> versions return an
+  // <src>AutoDiff</src> or <src>Base</src> version (which could be same if
+  // already <src>AutoDiff</src> or <src>Base</src>).
+  // <note role=warning>
+  // The <src>cloneBase</src> and <src>cloneAD</src> will create at the
+  // moment an empty wrapper.</note>
+  // <group>
   virtual Function<T> *clone() const {
     return new NQFunctionWrapper<T>(*this); };
+  virtual Function<typename FunctionTraits<T>::DiffType>
+    *cloneAD() const;
+  virtual Function<typename FunctionTraits<T>::BaseType>
+    *cloneBase() const;
+  // </group>
 
  protected:
   //# Data

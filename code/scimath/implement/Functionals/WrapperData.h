@@ -107,7 +107,11 @@ class NQWrapperData_TT<T,T,T,True,True> : public NQWrapperBase<T> {
   // Evaluate the function at <src>x</src>.
   virtual T eval(typename Function<T>::FunctionArg x,
 		 const Vector<T> &par) const {
-    if (pf_p) return pf_p((*static_cast<const T*>(x)), par[0]);
+    if (pf_p) {
+      return
+	pf_p((*static_cast<const typename Function<T>::FunctionArg>(x)),
+	     par[0]);
+    };
     return T(0); };
 
   //# Member functions
@@ -177,7 +181,10 @@ class NQWrapperData_TV<T,T,Vector<T>,True,True> : public NQWrapperBase<T> {
   virtual ~NQWrapperData_TV() {};
   virtual T eval(typename Function<T>::FunctionArg x,
 		 const Vector<T> &par) const {
-    if (pf_p) return pf_p((*static_cast<const T*>(x)), par);
+    if (pf_p) {
+      return pf_p((*static_cast<const typename Function<T>::FunctionArg>(x)),
+		  par);
+    };
     return T(0); };
  protected:
   T (*pf_p)(const T&, const Vector<T>&);
@@ -297,7 +304,9 @@ class NQWrapperData_TF<T,T,T,True,False> : public NQWrapperBase<T> {
   virtual ~NQWrapperData_TF() {};
   virtual T eval(typename Function<T>::FunctionArg x, 
 		 const Vector<T> &par) const {
-    if (pf_p) return pf_p((*static_cast<const T*>(x)));
+    if (pf_p) {
+      return pf_p((*static_cast<const typename Function<T>::FunctionArg>(x)));
+    };
     return T(0); };
  protected:
   T (*pf_p)(const T&);

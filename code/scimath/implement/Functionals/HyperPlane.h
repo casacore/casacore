@@ -112,10 +112,16 @@ template<class T> class NQHyperPlane : public NQHyperPlaneParam<T> {
   virtual T eval(typename Function<T>::FunctionArg x) const;
   
   // Return a copy of this object from the heap. The caller is responsible for
-  // deleting the pointer.
+  // deleting the pointer. The <em>AD, Base</em> versions return an
+  // <src>AutoDiff</src> or <src>Base</src> version (which could be same if
+  // already <src>AutoDiff</src> or <src>Base</src>).
+  // <group>
   virtual Function<T> *clone() const { return new NQHyperPlane<T>(*this); };
-
- private:
+  virtual Function<typename FunctionTraits<T>::DiffType>
+    *cloneAD() const;
+  virtual Function<typename FunctionTraits<T>::BaseType>
+    *cloneBase() const;
+  // </group>
 
 };
 
@@ -155,11 +161,17 @@ public NQHyperPlaneParam<AutoDiff<T> > {
     eval(typename Function<AutoDiff<T> >::FunctionArg x) const;
   
   // Return a copy of this object from the heap. The caller is responsible for
-  // deleting the pointer.
+  // deleting the pointer. The <em>AD, Base</em> versions return an
+  // <src>AutoDiff</src> or <src>Base</src> version (which could be same if
+  // already <src>AutoDiff</src> or <src>Base</src>).
+  // <group>
   virtual Function<AutoDiff<T> > *clone() const {
     return new NQHyperPlane_PS<AutoDiff<T> >(*this); };
-
- private:
+  virtual Function<typename FunctionTraits<AutoDiff<T> >::DiffType>
+    *cloneAD() const;
+  virtual Function<typename FunctionTraits<AutoDiff<T> >::BaseType>
+    *cloneBase() const;
+  // </group>
 
 };
 

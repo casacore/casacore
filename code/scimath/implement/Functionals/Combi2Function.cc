@@ -46,7 +46,33 @@ eval(typename Function<AutoDiff<T> >::FunctionArg x) const {
   for (uInt i = 0; i< nparameters(); ++i) {
     T v = (function(i))(x).value();
     tmp.value() += param_p[i].value()*v;
-    if (param_p.mask(i)) tmp.deriv(i) = v;
+    // get derivatives (assuming either all or none)
+    if (tmp.nDerivatives()>0 && param_p.mask(i)) tmp.deriv(i) = v;
   };
   return tmp;
+}
+
+//# Member functions
+template<class T>
+Function<typename FunctionTraits<AutoDiff<T> >::DiffType>
+*NQCombiFunction<AutoDiff<T> >::cloneAD() const {
+  Function<typename FunctionTraits<AutoDiff<T> >::DiffType> *t =
+    new NQCombiFunction<typename FunctionTraits<AutoDiff<T> >::DiffType>();
+  for (uInt i=0; i<nFunctions(); ++i) {
+    dynamic_cast<NQCombiFunction<typename FunctionTraits<AutoDiff<T> >::
+      DiffType> *>(t)->addFunction(*(function(i).cloneAD()));
+  };
+  return t;
+}
+
+template<class T>
+Function<typename FunctionTraits<AutoDiff<T> >::BaseType>
+*NQCombiFunction<AutoDiff<T> >::cloneBase() const {
+  Function<typename FunctionTraits<AutoDiff<T> >::BaseType> *t =
+    new NQCombiFunction<typename FunctionTraits<AutoDiff<T> >::BaseType>();
+  for (uInt i=0; i<nFunctions(); ++i) {
+    dynamic_cast<NQCombiFunction<typename FunctionTraits<AutoDiff<T> >::
+      BaseType> *>(t)->addFunction(*(function(i).cloneBase()));
+  };
+  return t;
 }

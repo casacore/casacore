@@ -47,17 +47,45 @@ eval(typename Function<AutoDiff<T> >::FunctionArg x) const {
   typename AutoDiff<T>::value_type sinarg = sin(arg);
   // Function value
   tmp.value() = param_p[AMPLITUDE].value() * cosarg;
-  for (uInt j = 0; j < tmp.nDerivatives(); j++) tmp.deriv(j) = 0.0;
-  // derivative wrt amplitude
-  typename AutoDiff<T>::value_type dev = cosarg;
-  if (param_p.mask(AMPLITUDE)) tmp.deriv(AMPLITUDE) = dev;
-  // derivative wrt period
-  dev = param_p[AMPLITUDE].value() * arg * sinarg / param_p[PERIOD].value();
-  if (param_p.mask(PERIOD)) tmp.deriv(PERIOD) = dev;
-  // derivative wrt x0
-  dev = param_p[AMPLITUDE].value() *
-    static_cast<typename AutoDiff<T>::value_type>(C::_2pi) *
-    sinarg / param_p[PERIOD].value();
-  if (param_p.mask(X0)) tmp.deriv(X0) = dev;
+  // get derivatives (assuming either all or none)
+  if (tmp.nDerivatives()>0) {
+    for (uInt j = 0; j < tmp.nDerivatives(); j++) tmp.deriv(j) = 0.0;
+    // derivative wrt amplitude
+    typename AutoDiff<T>::value_type dev = cosarg;
+    if (param_p.mask(AMPLITUDE)) tmp.deriv(AMPLITUDE) = dev;
+    // derivative wrt period
+    dev = param_p[AMPLITUDE].value() * arg * sinarg / param_p[PERIOD].value();
+    if (param_p.mask(PERIOD)) tmp.deriv(PERIOD) = dev;
+    // derivative wrt x0
+    dev = param_p[AMPLITUDE].value() *
+      static_cast<typename AutoDiff<T>::value_type>(C::_2pi) *
+      sinarg / param_p[PERIOD].value();
+    if (param_p.mask(X0)) tmp.deriv(X0) = dev;
+  };
   return tmp;
+}
+
+//# Member functions
+template<class T>
+Function<typename FunctionTraits<AutoDiff<T> >::DiffType>
+*NQSinusoid1D<AutoDiff<T> >::cloneAD() const {
+  Function<typename FunctionTraits<AutoDiff<T> >::DiffType> *t =
+    new NQSinusoid1D<typename FunctionTraits<AutoDiff<T> >::DiffType>();
+  for (uInt i=0; i<nparameters(); ++i) {
+    (*t)[i] = typename FunctionTraits<AutoDiff<T> >::
+      DiffType(param_p[i]);
+  };
+  return t;
+}
+
+template<class T>
+Function<typename FunctionTraits<AutoDiff<T> >::BaseType>
+*NQSinusoid1D<AutoDiff<T> >::cloneBase() const {
+  Function<typename FunctionTraits<AutoDiff<T> >::BaseType> *t =
+    new NQSinusoid1D<typename FunctionTraits<AutoDiff<T> >::BaseType>();
+  for (uInt i=0; i<nparameters(); ++i) {
+    (*t)[i] = typename FunctionTraits<AutoDiff<T> >::
+      DiffType(param_p[i]).value();
+  };
+  return t;
 }

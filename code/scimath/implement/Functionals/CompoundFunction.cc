@@ -35,11 +35,35 @@ template<class T>
 T NQCompoundFunction<T>::eval(typename Function<T>::FunctionArg x) const {
   if (parset_p) fromParam_p();
   T tmp(0);
-  for (uInt i = 0; i< nFunctions(); ++i) tmp += function(i)(x);
+  for (uInt i = 0; i<nFunctions(); ++i) tmp += function(i)(x);
   return tmp;
 }
 
 //# Member functions
+template<class T>
+Function<typename FunctionTraits<T>::DiffType>
+*NQCompoundFunction<T>::cloneAD() const {
+  Function<typename FunctionTraits<T>::DiffType> *t =
+    new NQCompoundFunction<typename FunctionTraits<T>::DiffType>();
+  for (uInt i=0; i<nFunctions(); ++i) {
+    dynamic_cast<NQCompoundFunction<typename FunctionTraits<T>::DiffType> *>
+      (t)->addFunction(*(function(i).cloneAD()));
+  };
+  return t;
+}
+
+template<class T>
+Function<typename FunctionTraits<T>::BaseType>
+*NQCompoundFunction<T>::cloneBase() const {
+  Function<typename FunctionTraits<T>::BaseType> *t =
+    new NQCompoundFunction<typename FunctionTraits<T>::BaseType>();
+  for (uInt i=0; i<nFunctions(); ++i) {
+    dynamic_cast<NQCompoundFunction<typename FunctionTraits<T>::BaseType> *>
+      (t)->addFunction(*(function(i).cloneBase()));
+  };
+  return t;
+}
+
 template <class T>
 void NQCompoundFunction<T>::fromParam_p() const {
   if (parset_p) {

@@ -124,8 +124,17 @@ template <class T> class NQCompoundFunction : public NQCompoundParam<T> {
   
   //# Member functions
   // Return a copy of this object from the heap. The caller is responsible for
-  // deleting the pointer.
-  virtual Function<T> *clone() const { return new NQCompoundFunction<T>(*this); };
+  // deleting the pointer. The <em>AD, Base</em> versions return an
+  // <src>AutoDiff</src> or <src>Base</src> version (which could be same if
+  // already <src>AutoDiff</src> or <src>Base</src>).
+  // <group>
+  virtual Function<T> *clone() const {
+    return new NQCompoundFunction<T>(*this); };
+  virtual Function<typename FunctionTraits<T>::DiffType>
+    *cloneAD() const;
+  virtual Function<typename FunctionTraits<T>::BaseType>
+    *cloneBase() const;
+  // </group>
   
 private:
   //# Member functions
@@ -171,17 +180,22 @@ public NQCompoundParam<AutoDiff<T> > {
   
   //# Member functions
   // Return a copy of this object from the heap. The caller is responsible for
-  // deleting the pointer.
+  // deleting the pointer. The <em>AD, Base</em> versions return an
+  // <src>AutoDiff</src> or <src>Base</src> version (which could be same if
+  // already <src>AutoDiff</src> or <src>Base</src>).
+  // <group>
   virtual Function<AutoDiff<T> > *clone() const {
     return new NQCompoundFunction<AutoDiff<T> >(*this); };
+  virtual Function<typename FunctionTraits<AutoDiff<T> >::DiffType>
+    *cloneAD() const;
+  virtual Function<typename FunctionTraits<AutoDiff<T> >::BaseType>
+    *cloneBase() const;
+  // </group>
 
  private:
   //# Member functions
   // Copy the local parameters to/from general block
-  // <group>
-  void toParam_p() const;
   void fromParam_p() const;
-  // </group>
 
 };
 
