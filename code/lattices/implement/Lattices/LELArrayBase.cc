@@ -58,6 +58,12 @@ void LELArrayBase::removeMask()
     itsMaskPtr = 0;
 }
 
+void LELArrayBase::setMask (const Array<Bool>& mask)
+{
+    delete itsMaskPtr;
+    itsMaskPtr = new Array<Bool> (mask);
+}
+
 void LELArrayBase::setMask (Array<Bool>& mask)
 {
     delete itsMaskPtr;
