@@ -301,7 +301,7 @@ try {
 // Convert kernel types to an Int vector
 
    Vector<Int> kernelTypes;
-   kernelTypes = VectorKernel::toKernelTypes(kernels);
+   kernelTypes = VectorKernel::toKernelTypes(kernels, ",");
    if (kernelTypes.nelements() != 0) validInputs(SMOOTH) = True;
 
 
