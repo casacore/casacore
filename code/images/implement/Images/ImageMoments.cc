@@ -43,6 +43,7 @@
 #include <aips/Tables/Table.h>
 #include <aips/Utilities/DataType.h>
 #include <aips/Utilities/String.h>
+#include <aips/Arrays/ArrayPosIter.h>
 
 #include <trial/Coordinates.h>
 #include <trial/Coordinates/CoordinateUtil.h>
@@ -341,7 +342,7 @@ Bool ImageMoments<T>::setMomentAxis(const Int& momentAxisU)
        return False;
      }
    } else {
-      if (momentAxis_p < 0 || momentAxis_p > pInImage_p->ndim()-1) {
+      if (momentAxis_p < 0 || momentAxis_p > Int(pInImage_p->ndim()-1)) {
          os_p << LogIO::SEVERE << "Illegal moment axis; out of range" << LogIO::POST;
          goodParameterStatus_p = False;
          return False;
@@ -409,7 +410,7 @@ Bool ImageMoments<T>::setWinFitMethod(const Vector<Int>& methodU)
 
 // Check legality
 
-   for (Int i = 0; i<methodU.nelements(); i++) {
+   for (Int i = 0; i<Int(methodU.nelements()); i++) {
       if (methodU(i) < 0 || methodU(i) > NMETHODS-1) {
          os_p << LogIO::SEVERE << "Illegal method given" << LogIO::POST;
          goodParameterStatus_p = False;
@@ -447,8 +448,8 @@ Bool ImageMoments<T>::setSmoothMethod(const Vector<Int>& smoothAxesU,
    Int i;
    if (smoothAxesU.nelements() > 0) {
       smoothAxes_p = smoothAxesU;
-      for (i=0; i<smoothAxes_p.nelements(); i++) {
-         if (smoothAxes_p(i) < 0 || smoothAxes_p(i) > pInImage_p->ndim()-1) {
+      for (i=0; i<Int(smoothAxes_p.nelements()); i++) {
+         if (smoothAxes_p(i) < 0 || smoothAxes_p(i) > Int(pInImage_p->ndim()-1)) {
             os_p << LogIO::SEVERE << "Illegal smoothing axis given" << LogIO::POST;
             goodParameterStatus_p = False;
             return False;
@@ -465,7 +466,7 @@ Bool ImageMoments<T>::setSmoothMethod(const Vector<Int>& smoothAxesU,
 
    if (kernelTypesU.nelements() > 0) {
       kernelTypes_p = kernelTypesU;
-      for (i=0; i<kernelTypes_p.nelements(); i++) {
+      for (i=0; i<Int(kernelTypes_p.nelements()); i++) {
          if (kernelTypes_p(i) < 0 || kernelTypes_p(i) > NKERNELS-1) {
             os_p << LogIO::SEVERE << "Illegal smoothing kernel types given" << LogIO::POST;
             goodParameterStatus_p = False;
@@ -493,7 +494,7 @@ Bool ImageMoments<T>::setSmoothMethod(const Vector<Int>& smoothAxesU,
 
    kernelWidths_p.resize(smoothAxes_p.nelements());
    Int nK = kernelWidthsU.nelements();
-   for (i=0; i<smoothAxes_p.nelements(); i++) {
+   for (i=0; i<Int(smoothAxes_p.nelements()); i++) {
       if (kernelTypes_p(i) == HANNING) {
 
 // For Hanning, width is always 3
@@ -737,7 +738,7 @@ Vector<Int> ImageMoments<T>::toKernelTypes (const String& kernels)
 
    Vector<Int> kernelTypes(kernelStrings.nelements());
 
-   for (Int i=0; i<kernelStrings.nelements(); i++) {
+   for (Int i=0; i<Int(kernelStrings.nelements()); i++) {
       String tKernels= kernelStrings(i);
       tKernels.upcase();
 
@@ -904,7 +905,7 @@ Bool ImageMoments<T>::createMoments()
 // Create a vector of pointers for output images 
 
    PtrBlock<Lattice<Float> *> outPt(moments_p.nelements());
-   for (i=0; i<outPt.nelements(); i++) outPt[i] = 0;
+   for (i=0; i<Int(outPt.nelements()); i++) outPt[i] = 0;
 
 
 // Loop over desired output moments
@@ -914,7 +915,7 @@ Bool ImageMoments<T>::createMoments()
    Bool giveMessage = True;
    Unit imageUnits = pInImage_p->units();
    
-   for (i=0; i<moments_p.nelements(); i++) {
+   for (i=0; i<Int(moments_p.nelements()); i++) {
 
 // Set moment image units and assign pointer to output moments array
 // Value of goodUnits is the same for each output moment image
@@ -1006,7 +1007,7 @@ Bool ImageMoments<T>::createMoments()
 // Clean up
          
    delete pMomentCalculator;
-   for (i=0; i<moments_p.nelements(); i++) delete outPt[i];
+   for (i=0; i<Int(moments_p.nelements()); i++) delete outPt[i];
 
    if (pSmoothedImage) {
       delete pSmoothedImage;
@@ -1590,7 +1591,7 @@ Bool ImageMoments<T>::smoothImage (String& smoothName,
 // Check axes
 
    Int axMax = max(smoothAxes_p.ac()) + 1;
-   if (axMax > pInImage_p->ndim()) {
+   if (axMax > Int(pInImage_p->ndim())) {
       os_p << LogIO::SEVERE << "You have specified a smoothing axis larger" << endl;
       os_p <<                  "than the number of axes in the image" << LogIO::POST;
       return False;
@@ -1647,7 +1648,7 @@ Bool ImageMoments<T>::smoothImage (String& smoothName,
       Int coordinate, axisInCoordinate, worldAxis, pixelAxis;
       Vector<Double> refPix(smoothAxes_p.nelements());
       Int i;
-      for (i=0,pixelAxis=0; pixelAxis<psfCSys.nPixelAxes(); pixelAxis++) {
+      for (i=0,pixelAxis=0; pixelAxis<Int(psfCSys.nPixelAxes()); pixelAxis++) {
          if (ImageUtilities::inVector(pixelAxis, smoothAxes_p) == -1) {
             psfCSys.findPixelAxis(coordinate, axisInCoordinate, pixelAxis);
             worldAxis = psfCSys.worldAxes(coordinate)(axisInCoordinate);
@@ -1677,11 +1678,11 @@ Bool ImageMoments<T>::smoothImage (String& smoothName,
 // First copy input to output then smooth in situ.  
 
    CopyLattice(pSmoothedImage->lc(), pInImage_p->lc(), blc_p, trc_p);
-   for (Int i=0; i<psf.ndim(); i++) {
+   for (Int i=0; i<Int(psf.ndim()); i++) {
       if (psf.shape()(i) > 1) {
          os_p << LogIO::NORMAL << "Convolving axis " << i+1 << LogIO::POST;
          Vector<T> psfRow = psfSep.column(i);
-         psfRow.resize(psf.shape()(i),0,True);
+         psfRow.resize(psf.shape()(i),True);
          smoothRow (pSmoothedImage, i, psfRow);
       }
    }
@@ -1762,7 +1763,7 @@ Bool ImageMoments<T>::whatIsTheNoise (Double& sigma,
    while (!iterator.atEnd()) {
       const T* pt = iterator.cursor().getStorage(deleteIt);
 
-      for (i=0; i<iterator.cursor().nelements(); i++) {
+      for (i=0; i<Int(iterator.cursor().nelements()); i++) {
          iBin = min(nBins-1, Int((pt[i]-dMin)/binWidth));
          y(iBin) += 1.0;
       }
