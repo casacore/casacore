@@ -4457,3 +4457,4 @@
 14 296 src mv aips/implement/MeasurementSets/MSTable2.cc aips/implement/MeasurementSets/OldMSTable2.cc
 14 296 src mv aips/implement/MeasurementSets/MSTableImpl.cc aips/implement/MeasurementSets/OldMSTableImpl.cc
 14 296 src mv aips/implement/MeasurementSets/MSTableImpl.h aips/implement/MeasurementSets/OldMSTableImpl.h
+14 296 src mv aips/implement/MeasurementSets/MSWeather.cc aips/implement/MeasurementSets/OldMSWeather.cc
