@@ -35,10 +35,10 @@
 //# Includes
 #include <aips/aips.h>
 #include <aips/Tables/BaseColumn.h>
+#include <aips/Tables/ColumnSet.h>
 #include <aips/Tables/TableRecord.h>
 
 //# Forward Declarations
-class ColumnSet;
 class BaseColumnDesc;
 class DataManager;
 class DataManagerColumn;
@@ -99,8 +99,8 @@ public:
 
     // Get access to the column keyword set.
     // <group>
+    TableRecord& rwKeywordSet();
     TableRecord& keywordSet();
-    const TableRecord& keywordSet() const;
     // </group>
 
     // Get nr of rows in the column.
@@ -157,6 +157,14 @@ protected:
     void checkValueLength (const Array<String>* value) const;
     // </group>
     
+    // Lock the table before reading or writing.
+    // If manual or permanent locking is in effect, it checks if
+    // the table is locked.
+    void checkLock (Bool write, Bool wait) const;
+
+    // Inspect the auto lock when the inspection interval has expired and
+    // release it when another process needs the lock.
+    void autoReleaseLock() const;
 };
 
 
@@ -166,7 +174,12 @@ inline DataManagerColumn*& PlainColumn::dataManagerColumn()
     { return dataColPtr_p; }
 
 inline void PlainColumn::checkValueLength (const void*) const
-{}
+    {}
+
+inline void PlainColumn::checkLock (Bool write, Bool wait) const
+    { colSetPtr_p->checkLock (write, wait); }
+inline void PlainColumn::autoReleaseLock() const
+    { colSetPtr_p->autoReleaseLock(); }
 
 
 #endif
