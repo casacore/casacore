@@ -1,5 +1,5 @@
 //# ArrColData.cc: Access to a table column containing arrays
-//# Copyright (C) 1994,1995,1996,1997,1998,2000
+//# Copyright (C) 1994,1995,1996,1997,1998,2000,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -81,7 +81,7 @@ void ArrayColumnData<T>::createDataManagerColumn()
 				 "shape of FixedShape array "
 				 + colDescPtr_p->name() + " not defined"));
 	}
-	dataColPtr_p->setShapeColumn (shapeCol_p);
+	dataColPtr_p->setFixedShapeColumn (shapeCol_p);
     }
     //# Set the maximum length of an item.
     dataColPtr_p->setMaxLength (colDescPtr_p->maxLength());
