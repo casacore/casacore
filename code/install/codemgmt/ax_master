@@ -6170,3 +6170,4 @@
 17 179 src rm trial/implement/Functionals/test/tLinearComb.cc
 17 179 src rm trial/implement/Functionals/LinearComb.h
 17 179 src rm trial/implement/Functionals/LinearComb.cc
+17 180 src rm alma/apps/almati2ms/templates
