@@ -450,6 +450,12 @@ static Bool dropRemovedAxes (CoordinateSystem& cSysOut, const CoordinateSystem& 
    static String formatCoordinate(const Vector<Double>& pixel, CoordinateSystem& cSys);
 // </group>
 
+// Generate axis label String from coordinate. Specify coordinate axis,
+// whether world or pixel labels required, whether absolute or
+// relative.   For spectral coordinates, doVel says if you want to 
+// use the velocity information contained in it to generate the label
+   static String axisLabel (const Coordinate& coord, uInt axisInCoordinate=0,
+                            Bool doWorld=True, Bool doAbs=True, Bool doVel=False);
 
   // <group name=Coordinate comparison>
   // Check how the coordinates of this and that compare.

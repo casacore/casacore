@@ -1648,5 +1648,118 @@ CoordinateSystem CoordinateUtil::makeBinnedCoordinateSystem (const IPosition& fa
 //
     return cSysOut;
 }
- 
 
+
+ 
+String CoordinateUtil::axisLabel (const Coordinate& coord, uInt axis, 
+                                  Bool doWorld, Bool doAbs, Bool doVel)
+{
+  String axisName = coord.worldAxisNames()(axis);
+//
+  String nativeUnit = coord.worldAxisUnits()(axis);
+//
+  Coordinate::Type ctype = coord.type();
+  String base;
+//
+  if (ctype == Coordinate::DIRECTION) {
+     const DirectionCoordinate& dcoord = dynamic_cast<const DirectionCoordinate&>(coord);
+//
+     MDirection::Types dtype = dcoord.directionType();
+     MDirection::Types ctype;
+     dcoord.getReferenceConversion(ctype);
+//
+     Bool isLong = (axis==0);
+
+// Depending on the requested labelling type, we convert
+// the axis unit name to something sensible. This is
+// because it's confusing to see Galactic coordinates
+// called 'Right Ascension' say.
+
+     uInt ctypeI = static_cast<uInt>(ctype);
+     MDirection::GlobalTypes gType = MDirection::globalType(ctypeI);
+     if (dtype != ctype) {
+        if (gType==MDirection::GRADEC) {
+           if (isLong) {
+              axisName = "Right Ascension";
+           } else {
+              axisName = "Declination";
+           }
+        } else if (gType==MDirection::GHADEC) {
+           if (isLong) {
+              axisName = "Hour Angle";
+           } else {
+              axisName = "Declination";
+           }
+        } else if (gType==MDirection::GAZEL) {
+           if (isLong) {
+              axisName = "Azimuth";
+           } else {
+              axisName = "Elevation";
+           }
+        } else if (gType==MDirection::GLONGLAT) {
+           if (isLong) {
+              axisName = "Longitude";
+           } else {
+              axisName = "Latitude";
+           }
+        }
+     }
+//
+     String stype = MDirection::showType(ctype);
+     if (doAbs) {
+        if (doWorld) {
+           base = stype + String(" ") + axisName;
+        } else {
+           base = stype + String(" ") + axisName + String(" (pixels)");
+        }
+     } else {
+        base = String("Relative ") + stype + String(" ") + axisName +
+               String(" (") + nativeUnit + String(")");
+     }
+  } else if (ctype == Coordinate::SPECTRAL) {
+    const SpectralCoordinate& dcoord = dynamic_cast<const SpectralCoordinate&>(coord);
+
+// Get frame conversion state
+
+    MFrequency::Types ctype;
+    MEpoch epoch;
+    MPosition position;
+    MDirection direction;
+    dcoord.getReferenceConversion(ctype, epoch, position, direction);
+    String freqType = MFrequency::showType(ctype);
+
+// Get velocity state
+
+//
+    if (doWorld) {
+
+// We must avoid making a unit from the String 'pixels'
+
+       if (doVel) {
+          String velUnit = dcoord.velocityUnit();
+          String doppler = MDoppler::showType(dcoord.velocityDoppler());
+          base = freqType + String(" ") + doppler + String(" velocity (") + velUnit + String(")");
+       } else {
+          base = freqType + String(" ") + axisName + String(" (") + nativeUnit + String(")");
+       }
+    } else {
+       base = freqType + String(" ") + axisName + String(" (pixels)");
+    }
+//
+    if (doAbs) {
+      base = String("Relative ") + base;
+    }
+  } else if (ctype==Coordinate::STOKES) {
+     base = axisName;
+     if (doWorld) {
+        if (!doAbs) base = String("Relative ") + base;
+     } else {
+        if (!doAbs) base = String("Relative ") + base + 
+          String(" (") + nativeUnit + String(")");
+     }
+  } else {
+    base = axisName + String(" (") + nativeUnit + String(")");
+    if (!doAbs) base = String("Relative ") + base;
+  }
+  return base;
+}
