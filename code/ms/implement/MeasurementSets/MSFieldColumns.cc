@@ -36,7 +36,6 @@
 #include <aips/Quanta/Quantum.h>
 #include <aips/Tables/ColDescSet.h>
 #include <aips/Tables/TableDesc.h>
-#include <aips/Utilities/String.h>
 
 RONewMSFieldColumns::RONewMSFieldColumns(const NewMSField& msField):
   name_p(msField, NewMSField::columnName(NewMSField::NAME)),
@@ -223,4 +222,6 @@ interpolateDirMeas(const Array<MDirection>& arrDir, Int numPoly,
     return MDirection(MVDirection(dir),vecDir(0).getRef());
   }
 }
-
+// Local Variables: 
+// compile-command: "gmake NewMSFieldColumns"
+// End: 
