@@ -364,7 +364,7 @@ Bool ImageFITSConverter::ImageToFITS(String &error,
 // Make sure bscale does not come out to be zero
 
         if (::near(minPix, maxPix)) {
-           if (::near(0.0, maxPix)) {
+           if (::near(Float(0.0), maxPix)) {
               maxPix = 1.0;
            } else {
               maxPix = maxPix + 0.01*maxPix;
