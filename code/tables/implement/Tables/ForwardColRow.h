@@ -386,7 +386,7 @@ public:
 
 inline uInt ForwardColumnIndexedRowEngine::convertRownr (uInt rownr)
 {
-    if (rownr != lastRow_p) {
+    if (Int(rownr) != lastRow_p) {
 	rowNumber_p = rowColumn_p(rownr);
 	lastRow_p   = rownr;
     }
