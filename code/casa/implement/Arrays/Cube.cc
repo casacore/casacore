@@ -1,5 +1,5 @@
 //# Cube.cc: A 3-D Specialization of the Array Class
-//# Copyright (C) 1993,1994,1995,1996,1997,1998,1999
+//# Copyright (C) 1993,1994,1995,1996,1997,1998,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -26,12 +26,13 @@
 //# $Id$
 
 #include <aips/Arrays/Cube.h>
+#include <aips/Arrays/Matrix.h>
+#include <aips/Arrays/Slice.h>
+#include <aips/Arrays/MaskedArray.h>
 #include <aips/Arrays/ArrayError.h>
 #include <aips/Utilities/Assert.h>
 #include <iostream.h>
 
-//# Implement rtti functions.
-rtti_imp_mbrf_a1(Cube);
 
 template<class T> Cube<T>::Cube()
 : Array<T>(IPosition(3, 0))

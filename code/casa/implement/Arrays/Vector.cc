@@ -1,5 +1,5 @@
 //# Vector.cc: A 1-D Specialization of the Array Class
-//# Copyright (C) 1993,1994,1995,1996,1997,1998,1999
+//# Copyright (C) 1993,1994,1995,1996,1997,1998,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -27,13 +27,13 @@
 
 #include <aips/Arrays/Vector.h>
 #include <aips/Arrays/ArrayError.h>
-#include <aips/Utilities/Assert.h>
+#include <aips/Arrays/Slice.h>
+#include <aips/Arrays/MaskedArray.h>
 #include <aips/Mathematics/Math.h>
 #include <aips/Utilities/Copy.h>
+#include <aips/Utilities/Assert.h>
 #include <iostream.h>
 
-//# Implement rtti functions.
-rtti_imp_mbrf_a1(Vector);
 
 template<class T> Vector<T>::Vector()
   : Array<T>(IPosition(1,0))

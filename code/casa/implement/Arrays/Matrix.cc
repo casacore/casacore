@@ -26,12 +26,13 @@
 //# $Id$
 
 #include <aips/Arrays/Matrix.h>
+#include <aips/Arrays/Vector.h>
+#include <aips/Arrays/Slice.h>
+#include <aips/Arrays/MaskedArray.h>
 #include <aips/Arrays/ArrayError.h>
 #include <aips/Utilities/Assert.h>
 #include <iostream.h>
 
-//# Implement rtti functions.
-rtti_imp_mbrf_a1(Matrix);
 
 template<class T> Matrix<T>::Matrix()
 : Array<T>(IPosition(2, 0))

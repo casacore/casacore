@@ -1,5 +1,5 @@
 //# Cube.h: A 3-D Specialization of the Array Class
-//# Copyright (C) 1993,1994,1995,1996,1999
+//# Copyright (C) 1993,1994,1995,1996,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -28,22 +28,14 @@
 #if !defined(AIPS_CUBE_H)
 #define AIPS_CUBE_H
 
-#include <aips/aips.h>
+
+//# Includes
 #include <aips/Arrays/Array.h>
-#include <aips/Arrays/CubeRtti.h>
-// Could forward declare
-#include <aips/Arrays/Slice.h>
-#include <aips/Arrays/MaskedArray.h>
 
-//# For index checking
-#if defined(AIPS_ARRAY_INDEX_CHECK)
-#include <aips/Arrays/IPosition.h>
-#endif
+//# Forward Declarations
+template<class T> class Matrix;
 
-//# Wouldn't be necessary if we could forward declare properly.
-#include <aips/Arrays/Matrix.h>
 
-// 
 // <summary> A 3-D Specialization of the Array class </summary>
 //
 // Cube objects are three-dimensional specializations (e.g., more convenient
@@ -290,9 +282,6 @@ public:
 
     // Checks that the cube is consistent (invariants check out).
     virtual Bool ok() const;
-
-    // Macro to define the typeinfo member functions
-    rtti_dcl_mbrf_p1(Cube<T>, Array<T>);
 
 protected:
     // Remove the degenerate axes from other and store result in this cube.
