@@ -214,6 +214,11 @@ const Qtype &Quantum<Qtype>::getValue() const {
 }
 
 template <class Qtype>
+Qtype & Quantum<Qtype>::getValue() {
+  return qVal;
+}
+
+template <class Qtype>
 Qtype Quantum<Qtype>::getValue(const Unit &other) const {
     Double d1 = other.getValue().getFac() /
 	qUnit.getValue().getFac();	// SUN native overloading problems

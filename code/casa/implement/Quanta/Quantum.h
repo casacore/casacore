@@ -1,5 +1,5 @@
 //# Quantum.h: class to manipulate physical, dimensioned quantities
-//# Copyright (C) 1994,1995,1996,1997
+//# Copyright (C) 1994,1995,1996,1997,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -345,7 +345,10 @@ Quantum<Qtype> operator/(const Quantum<Qtype> &other) const;
 
 //# General member functions
 // Get value of quantum in current units (i.e. in units specified in quantum)
+  // <group>
     const Qtype &getValue() const;
+    Qtype &getValue();
+  // </group>
 // Get value in canonical base units
     Qtype getBaseValue() const;
 // Get value in specified units
