@@ -278,7 +278,7 @@ void ImageFFT::getComplex(ImageInterface<Complex>& out)  const
       os << "Could not replace CoordinateSystem in output real image" << LogIO::EXCEPTION;
    }
 //
-   copyMiscellaneous(out, *itsInImagePtrFloat);
+   copyMiscellaneous(out);
 }
 
 
@@ -299,7 +299,7 @@ void ImageFFT::getReal(ImageInterface<Float>& out)  const
       os << "Could not replace CoordinateSystem in output real image" << LogIO::EXCEPTION;
    }
 //
-   copyMiscellaneous(out, *itsInImagePtrFloat);
+   copyMiscellaneous(out);
 }
 
 
@@ -320,7 +320,7 @@ void ImageFFT::getImaginary(ImageInterface<Float>& out) const
       os << "Could not replace CoordinateSystem in output imaginary image" << LogIO::EXCEPTION;
    }
 //
-   copyMiscellaneous(out, *itsInImagePtrFloat);
+   copyMiscellaneous(out);
 }
 
 
@@ -341,7 +341,7 @@ void ImageFFT::getAmplitude(ImageInterface<Float>& out) const
       os << "Could not replace CoordinateSystem in output amplitude image" << LogIO::EXCEPTION;
    }
 //
-   copyMiscellaneous(out, *itsInImagePtrFloat);
+   copyMiscellaneous(out);
 }
 
 
@@ -362,7 +362,7 @@ void ImageFFT::getPhase(ImageInterface<Float>& out) const
       os << "Could not replace CoordinateSystem in output phase image" << LogIO::EXCEPTION;
    }
 //
-   copyMiscellaneous(out, *itsInImagePtrFloat);
+   copyMiscellaneous(out);
    out.setUnits(Unit("deg"));
 }
 
@@ -527,25 +527,35 @@ void ImageFFT::copyMask (ImageInterface<Complex>& out,
 
 
 
-
-
-void ImageFFT::copyMiscellaneous (ImageInterface<Float>& out,
-                                  const ImageInterface<Float>& in) const
+void ImageFFT::copyMiscellaneous (ImageInterface<Float>& out) const
 {
-    out.setMiscInfo(in.miscInfo());
-    out.setImageInfo(in.imageInfo());
-    out.setUnits(in.units());
-    out.mergeTableLogSink(in);
+   if (itsInImagePtrFloat!=0) {
+      out.setMiscInfo(itsInImagePtrFloat->miscInfo());
+      out.setImageInfo(itsInImagePtrFloat->imageInfo());
+      out.setUnits(itsInImagePtrFloat->units());
+      out.mergeTableLogSink(*itsInImagePtrFloat);
+   } else {
+      out.setMiscInfo(itsInImagePtrComplex->miscInfo());
+      out.setImageInfo(itsInImagePtrComplex->imageInfo());
+      out.setUnits(itsInImagePtrComplex->units());
+//      out.mergeTableLogSink(*itsInImagePtrComplex);
+   }
 }
 
 
-void ImageFFT::copyMiscellaneous (ImageInterface<Complex>& out,
-                                  const ImageInterface<Float>& in) const
+void ImageFFT::copyMiscellaneous (ImageInterface<Complex>& out) const
 {
-    out.setMiscInfo(in.miscInfo());
-    out.setImageInfo(in.imageInfo());
-    out.setUnits(in.units());
-//    out.mergeTableLogSink(in);
+   if (itsInImagePtrFloat!=0) {
+      out.setMiscInfo(itsInImagePtrFloat->miscInfo());
+      out.setImageInfo(itsInImagePtrFloat->imageInfo());
+      out.setUnits(itsInImagePtrFloat->units());
+//      out.mergeTableLogSink(*itsInImagePtrFloat);
+   } else {
+      out.setMiscInfo(itsInImagePtrComplex->miscInfo());
+      out.setImageInfo(itsInImagePtrComplex->imageInfo());
+      out.setUnits(itsInImagePtrComplex->units());
+      out.mergeTableLogSink(*itsInImagePtrComplex);
+   }
 }
 
 
@@ -692,5 +702,3 @@ Bool ImageFFT::findSky(LogIO& os, Int& dC, Vector<Int>& pixelAxes,
       }
    }
 }
-
-
