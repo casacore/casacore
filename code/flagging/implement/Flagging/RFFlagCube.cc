@@ -1,5 +1,5 @@
 //# RFFlagCube.cc: this defines RFFlagCube
-//# Copyright (C) 2000,2001
+//# Copyright (C) 2000,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -636,12 +636,14 @@ void RFFlagCube::plotStats (PGPlotterInterface &pgp)
     }
   if( sum(img1) )
   {
-    plotImage(pgp,img1,"","",title+": % rows flagged, by IFR",True,1,1);
+    plotImage(pgp,img1,"","",(title+": % rows flagged, by IFR").chars(),
+	      True,1,1);
     plotIfrMap(pgp,img1,row_per_ifr!=0u);
   }
   if( sum(img2) )
   {
-    plotImage(pgp,img2,"","",title+": % pixels flagged, by IFR",True,1,1);
+    plotImage(pgp,img2,"","",(title+": % pixels flagged, by IFR").chars(),
+	      True,1,1);
     plotIfrMap(pgp,img2,row_per_ifr!=0u);
   }
   
@@ -682,7 +684,8 @@ void RFFlagCube::plotStats (PGPlotterInterface &pgp)
         }
       if( sum(img) )
       {
-        plotImage(pgp,img,timeaxis,"",title+": Rows flagged, by time-IFR",False,0,nval);
+        plotImage(pgp,img,timeaxis.chars(),"",
+		  (title+": Rows flagged, by time-IFR").chars(),False,0,nval);
         plotAntAxis(pgp,antnums,True);
       }
       }
@@ -708,7 +711,9 @@ void RFFlagCube::plotStats (PGPlotterInterface &pgp)
         }
       if( sum(img) )
       {
-        plotImage(pgp,img,timeaxis,"",title+": % pixels flagged, by time-IFR",True,0,nval);
+        plotImage(pgp,img,timeaxis.chars(),"",
+		  (title+": % pixels flagged, by time-IFR").chars(),
+		  True,0,nval);
         plotAntAxis(pgp,antnums,True);
       }
       }
@@ -733,7 +738,9 @@ void RFFlagCube::plotStats (PGPlotterInterface &pgp)
               }
             }
           }
-        plotImage(pgp,img,"Channel (frequency, MHz)","",title+": % pixels flagged, by channel-IFR",True,0,nval,True);
+        plotImage(pgp,img,"Channel (frequency, MHz)","",
+		  (title+": % pixels flagged, by channel-IFR").chars(),
+		  True,0,nval,True);
         plotAntAxis(pgp,antnums,True);
       }
     }
@@ -748,7 +755,8 @@ void RFFlagCube::plotStats (PGPlotterInterface &pgp)
             if( rowAgentFlagged(ifr,it) )
               img(it,ifr) = 1;
       if( sum(img) )
-        plotImage(pgp,img,timeaxis,"IFR #",title+": Rows flagged, by time-IFR",False);
+        plotImage(pgp,img,timeaxis.chars(),"IFR #",
+		  (title+": Rows flagged, by time-IFR").chars(),False);
       }
     // draw IFR-Time image
       {
@@ -759,7 +767,8 @@ void RFFlagCube::plotStats (PGPlotterInterface &pgp)
           for( uInt it=0; it<num(TIME); it++ )
             img(it,ifr) = chunk.nfIfrTime(ifr,it)*scale;
       if( sum(img) )
-        plotImage(pgp,img,timeaxis,"IFR #",title+": % of pixels flagged, by time-IFR");
+        plotImage(pgp,img,timeaxis.chars(),"IFR #",
+		  (title+": % of pixels flagged, by time-IFR").chars());
       // draw IFR-Channel image
         if( num(CHAN)>1 )
         {
@@ -771,7 +780,9 @@ void RFFlagCube::plotStats (PGPlotterInterface &pgp)
               for( uInt ich=0; ich<num(CHAN); ich++ )
                 img(ich,ifr) = chunk.nfChanIfr(ich,ifr)*scale;
             }
-          plotImage(pgp,img,"Channel (frequency, MHz)","IFR #",title+": % of pixels flagged, by channel-IFR",True,0,0,True);
+          plotImage(pgp,img,"Channel (frequency, MHz)","IFR #",
+		    (title+": % of pixels flagged, by channel-IFR").chars(),
+		    True,0,0,True);
         }
       }
     }
@@ -819,16 +830,22 @@ void RFFlagCube::plotStats (PGPlotterInterface &pgp)
     }
     if( sum(img1) )
     {
-      plotImage(pgp,img1,timeaxis,"",title+": % rows flagged, by time-antenna",True,0,1);
+      plotImage(pgp,img1,timeaxis.chars(),"",
+		(title+": % rows flagged, by time-antenna").chars(),
+		True,0,1);
       plotAntAxis(pgp,antnums,True);
     }
     if( sum(img2) )
     {
-      plotImage(pgp,img2,timeaxis,"",title+": % pixels flagged, by time-antenna",True,0,1);
+      plotImage(pgp,img2,timeaxis.chars(),"",
+		(title+": % pixels flagged, by time-antenna").chars(),
+		True,0,1);
       plotAntAxis(pgp,antnums,True);
       if( num(CHAN)>1 )
       {
-        plotImage(pgp,img3,"Channel (frequency, MHz)","",title+": % pixels flagged, by channel-antenna",True,0,1,True);
+        plotImage(pgp,img3,"Channel (frequency, MHz)","",
+		  (title+": % pixels flagged, by channel-antenna").chars(),
+		  True,0,1,True);
         plotAntAxis(pgp,antnums,True);
       }
     }
