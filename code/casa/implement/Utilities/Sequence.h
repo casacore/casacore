@@ -1,5 +1,5 @@
 //# Sequence.h: provides sequences
-//# Copyright (C) 1993,1994,1995,1999
+//# Copyright (C) 1993,1994,1995,1999,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -43,7 +43,7 @@
 
 template<class t> class Sequence {
 public:
-    virtual ~Sequence();
+    virtual ~Sequence(){};
 
     // Force derived classes to provide this function, to return the
     // next value in the sequence.
