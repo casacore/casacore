@@ -147,7 +147,7 @@ template<class key, class val> val &HashMapIter<key,val>::getVal() {
     if ( this->iter.atEnd() && this->iter.isValid() )
 	((HashMapIter<key,val>*)this)->step();
 
-    if ( ! isValid() || ! this->iter.isValid() || atEnd() )
+    if ( ! this->isValid() || ! this->iter.isValid() || this->atEnd() )
 	throw_invalid_hashmapiter_error();
 
     return this->iter.getRight().y();
