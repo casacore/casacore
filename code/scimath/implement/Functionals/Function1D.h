@@ -1,5 +1,5 @@
 //# Function1D.h: Numerical functional interface class for 1 dimension
-//# Copyright (C) 2001,2002
+//# Copyright (C) 2001,2002,2005
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -85,6 +85,7 @@ public:
   explicit Function1D(const uInt n) : Function<T,U>(n) {};
   explicit Function1D(const Vector<T> &in) : Function<T,U>(in) {};
   Function1D(const FunctionParam<T> &other) : Function<T,U>(other) {};
+  Function1D(const Function1D<T,U> &other) : Function<T,U>(other) {};
   // </group>
 
   // Destructor
