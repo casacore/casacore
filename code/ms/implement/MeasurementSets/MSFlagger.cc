@@ -50,6 +50,7 @@
 #include <aips/Tables/TiledDataStManAccessor.h>
 #include <aips/Tables/TiledColumnStMan.h>
 #include <aips/Utilities/Assert.h>
+#include <aips/Utilities/GenSort.h>
 #include <trial/MeasurementSets/MSSelector.h>
 #include <trial/MeasurementSets/MSSelUtil.h>
 
@@ -729,27 +730,31 @@ Bool MSFlagger::createFlagHistory(Int nHis)
       tab.addColumn(td1,tiledStMan1);
       TiledDataStManAccessor flagCatAccessor(tab,"TiledFlagCategory");
 
+      // get the hypercube ids, sort them, remove the duplicate values
       ROScalarColumn<Int> hypercubeId(tab,flagHypercubeId);
+      Vector<Int> ids=hypercubeId.getColumn();
+      Int nId=genSort(ids,Sort::QuickSort+Sort::NoDuplicates);
+      ids.resize(nId,True); // resize and copy values
+      Vector<Bool> cubeAdded(nId,False);
       Record values1; 
       values1.define("FLAG_CATEGORY_HYPERCUBE_ID",hypercubeId(0));
-      Int idMin, idMax, nRow=tab.nrow();
-      minMax(idMin, idMax, hypercubeId.getColumn());
-      Int nId = idMax-idMin+1;
-      Vector<Bool> cubeAdded(nId,False);
+      Int cube;
+      for (cube=0; cube<nId; cube++) if (ids(cube)==hypercubeId(0)) break;
+      Int nRow=tab.nrow();
       for (Int i=0; i<nRow; i++) {
 	// add new hyperCube
-	if (i>0 && hypercubeId(i)!=hypercubeId(i-1))
+	if (i>0 && hypercubeId(i)!=hypercubeId(i-1)) {
 	  values1.define("FLAG_CATEGORY_HYPERCUBE_ID",hypercubeId(i));
-	Int j = hypercubeId(i)-idMin;
-	if (!cubeAdded(j)) {
-	  cout << "adding hypercube for id="<<hypercubeId(i)<<endl;
+	  for (cube=0; cube<nId; cube++) if (ids(cube)==hypercubeId(i)) break;
+	}
+	if (!cubeAdded(cube)) {
+	  cubeAdded(cube)=True;
 	  Int numCorr=flagCol.shape(i)(0);
 	  Int numChan=flagCol.shape(i)(1);
 	  Int tileSize=numChan/10+1;
 	  IPosition cubeShape(4,nHis,numCorr,numChan,0);
 	  IPosition tileShape(4,1,numCorr,tileSize,16384/numCorr/tileSize);
 	  flagCatAccessor.addHypercube(cubeShape,tileShape,values1);
-	  cubeAdded(j)=True;
 	}
 	flagCatAccessor.extendHypercube(1,values1);
       }
