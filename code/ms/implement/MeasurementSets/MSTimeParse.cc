@@ -26,6 +26,8 @@
 //# $Id$
 
 #include <ms/MeasurementSets/MSTimeParse.h>
+#include <ms/MeasurementSets/MSMainColumns.h>
+#include <casa/Quanta/MVTime.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
@@ -33,18 +35,46 @@ TableExprNode MSTimeParse::node_p;
 
 //# Constructor
 MSTimeParse::MSTimeParse ()
-: MSParse()
+: MSParse(), colName(MS::columnName(MS::TIME))
 {
 }
 
 //# Constructor with given ms name.
 MSTimeParse::MSTimeParse (const MeasurementSet& ms)
-: MSParse(ms, "Time")
-{}
+: MSParse(ms, "Time"), colName(MS::columnName(MS::TIME))
+{
+}
 
 TableExprNode& MSTimeParse::node()
 {
     return node_p;
+}
+
+TableExprNode *MSTimeParse::selectStartTime(const MEpoch& startTime)
+{
+    MVTime mvStart(startTime.getValue());
+
+    node() = (ms().col(colName) >= mvStart);
+    return &node();
+}
+
+TableExprNode *MSTimeParse::selectEndTime(const MEpoch& endTime)
+{
+    MVTime mvEnd(endTime.getValue());
+ 
+    node() = (ms().col(colName) <= mvEnd);
+    return &node();
+}
+
+TableExprNode *MSTimeParse::selectRange(const MEpoch& startTime,
+                                        const MEpoch& endTime)
+{
+    MVTime mvStart(startTime.getValue());
+    MVTime mvEnd(endTime.getValue());
+
+    node() = (ms().col(colName) >= mvStart) &&
+             (ms().col(colName) <= mvEnd);
+    return &node();
 }
 
 } //# NAMESPACE CASA - END

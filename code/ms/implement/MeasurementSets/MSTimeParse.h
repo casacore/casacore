@@ -30,6 +30,7 @@
 
 //# Includes
 #include <ms/MeasurementSets/MSParse.h>
+#include <measures/Measures/MEpoch.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
@@ -92,11 +93,17 @@ public:
     // Associate the ms and the shorthand.
     MSTimeParse (const MeasurementSet& ms);
 
+    TableExprNode *selectStartTime(const MEpoch& startTime);
+    TableExprNode *selectEndTime(const MEpoch& endTime);
+    TableExprNode *selectRange(const MEpoch& startTime,
+                               const MEpoch& endTime);
+
     // Get table expression node object.
     static TableExprNode& node();
 
 private:
     static TableExprNode node_p;
+    const String colName;
 };
 
 } //# NAMESPACE CASA - END
