@@ -287,6 +287,8 @@ pa
 replace
  Float Scalar
  Float Array
+ Bool Scalar
+ Bool Array
 
 3-argument functions 
 iif
@@ -294,10 +296,13 @@ iif
   Double Scalar,Array,Scalar
   Complex Scalar,Scalar,Array
   DComplex Scalar,Array,Array
+  Bool Scalar,Array,Array
   Float/Double Array,Scalar,Scalar
   Complex/Double Array,Scalar,Array
   Double Array,Array,Scalar
   Double Array,Array,Array
+  Bool Array,Array,Scalar
+  Bool Array,Array,Array
 
 Conversion functions
 toFloat
@@ -636,6 +641,8 @@ pa
 replace
  Float Scalar
  Float Array
+ Bool Scalar
+ Bool Array
 
 3-argument functions 
 iif
@@ -643,10 +650,13 @@ iif
   Double Scalar,Array,Scalar
   Complex Scalar,Scalar,Array
   DComplex Scalar,Array,Array
+  Bool Scalar,Array,Array
   Float/Double Array,Scalar,Scalar
   Complex/Double Array,Scalar,Array
   Double Array,Array,Scalar
   Double Array,Array,Array
+  Bool Array,Array,Scalar
+  Bool Array,Array,Array
 
 Conversion functions
 toFloat
@@ -985,6 +995,8 @@ pa
 replace
  Float Scalar
  Float Array
+ Bool Scalar
+ Bool Array
 
 3-argument functions 
 iif
@@ -992,10 +1004,13 @@ iif
   Double Scalar,Array,Scalar
   Complex Scalar,Scalar,Array
   DComplex Scalar,Array,Array
+  Bool Scalar,Array,Array
   Float/Double Array,Scalar,Scalar
   Complex/Double Array,Scalar,Array
   Double Array,Array,Scalar
   Double Array,Array,Array
+  Bool Array,Array,Scalar
+  Bool Array,Array,Array
 
 Conversion functions
 toFloat
