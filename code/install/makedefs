@@ -2,7 +2,7 @@
 # makedefs: Default values of variables required by AIPS++ makefiles
 #-----------------------------------------------------------------------------
 #
-#   Copyright (C) 1992-2000,2001
+#   Copyright (C) 1992-2000,2001,2002
 #   Associated Universities, Inc. Washington DC, USA.
 #
 #   This program is free software; you can redistribute it and/or modify
@@ -228,6 +228,13 @@ MIRLIBDEFS :=
 MIRLIBINCD  = $(AIPSROOT)/code/aips
 MIRLIBLIBD  = $(AIPSARCH)/lib
 MIRLIBLIB  := -lmir
+
+# GSDLIB (for supporting GSD vis data).
+GSDLIBROOT := $(AIPSROOT)/code/hia/gsdlib
+GSDLIBDEFS :=
+GSDLIBINCD  = $(AIPSROOT)/code/hia
+GSDLIBLIBD  = $(AIPSARCH)/lib
+GSDLIBLIB  := -lmir
 
 # Hierarchical Data System - a Starlink data format (required by NPOI).
 HDSROOT  := /usr/local
