@@ -4455,3 +4455,4 @@
 14 296 src mv aips/implement/MeasurementSets/MSTable.cc aips/implement/MeasurementSets/OldMSTable.cc
 14 296 src mv aips/implement/MeasurementSets/MSTable.h aips/implement/MeasurementSets/OldMSTable.h
 14 296 src mv aips/implement/MeasurementSets/MSTable2.cc aips/implement/MeasurementSets/OldMSTable2.cc
+14 296 src mv aips/implement/MeasurementSets/MSTableImpl.cc aips/implement/MeasurementSets/OldMSTableImpl.cc
