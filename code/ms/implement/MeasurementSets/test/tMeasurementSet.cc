@@ -1,5 +1,5 @@
 //# tMeasurementSet.cc : this program tests the MeasurementSet class
-//# Copyright (C) 1995,1996,1997,2000,2001
+//# Copyright (C) 1995,1996,1997,2000,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -31,10 +31,10 @@
 
 #include <aips/Arrays/Vector.h>
 #include <aips/Arrays/Matrix.h>
+#include <aips/Arrays/ArrayUtil.h>
 #include <aips/Exceptions/Error.h>
 #include <aips/Tables.h>
 #include <aips/Tables/RowCopier.h>
-#include <aips/Tables/TableRecord.h>
 #include <aips/Utilities/String.h>
 #include <aips/Utilities/Fallible.h>
 #include <aips/Measures/MDirection.h>
@@ -148,10 +148,13 @@ uInt tNonStatic(const String& sdmsName)
     MS::addColumnCompression (td, MS::FLOAT_DATA);
     // add one column, not a PredefinedColumn
     td.addColumn(ScalarColumnDesc<Double>("test_column"));
+    td.defineHypercolumn ("TiledData", 3, stringToVector("FLOAT_DATA"));
 
     SetupNewTable setup(sdmsName, td, Table::New);
     StManAipsIO aipsioman;
+    TiledShapeStMan tsm("TiledData", IPosition(3,2));
     setup.bindAll(aipsioman);
+    setup.bindColumn("FLOAT_DATA", tsm);
     
     // small table, ten rows
     MeasurementSet ms(setup, 10);
@@ -172,6 +175,18 @@ uInt tNonStatic(const String& sdmsName)
     AlwaysAssertExit (ms.isColumnStored ("FLOAT_DATA_OFFSET"));
     AlwaysAssertExit (! ms.isColumnStored ("FLOAT_DATA"));
     AlwaysAssertExit (ms.isColumnStored ("SIGMA"));
+    // Check that the compressed column uses TiledShapeStMan.
+    fnd = False;
+    for (uInt i=0; i<dminfo.nfields(); i++) {
+      if (dminfo.subRecord(i).asString("TYPE") == "TiledShapeStMan") {
+	Vector<String> vec = dminfo.subRecord(i).asArrayString ("COLUMNS");
+	if (vec.nelements() == 1  &&  vec(0) == "FLOAT_DATA_COMPRESSED") {
+	  fnd = True;
+	}
+      }
+    }
+    AlwaysAssertExit(fnd);
+
     ms.createDefaultSubtables(Table::New);
 
     ArrayColumn<Float> fldata(ms,MS::columnName(MS::FLOAT_DATA));
