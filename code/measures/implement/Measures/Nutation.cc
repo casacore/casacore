@@ -77,6 +77,8 @@ void Nutation::copy(const Nutation &other) {
   checkEpoch_p = other.checkEpoch_p;
   eqeq_p = other.eqeq_p;
   deqeq_p = other.deqeq_p;
+  neval_p = other.neval_p;
+  deval_p = other.deval_p;
   for (uInt i=0; i<3; i++) {
     nval_p[i] = other.nval_p[i];
     dval_p[i] = other.dval_p[i];
@@ -150,6 +152,16 @@ Double Nutation::derivativeEqox(Double epoch) {
   return deqeq_p;
 }
 
+Double Nutation::eqoxCT(Double epoch) {
+  calcNut(epoch);
+  return neval_p + (epoch - checkEpoch_p)*deval_p;
+}
+
+Double Nutation::derivativeEqoxCT(Double epoch) {
+  calcNut(epoch);
+  return deval_p;
+}
+
 Quantity Nutation::getEqoxAngle(Double epoch) {
   return Quantity(eqox(epoch),"rad");
 }
@@ -187,6 +199,7 @@ void Nutation::calcNut(Double t) {
     dval_p[1] = Double(0);
     nval_p[2] = Double(0);
     dval_p[2] = Double(0);
+    neval_p = deval_p = 0;
     switch (method_p) {
     case B1950:
       nval_p[0] = MeasTable::fundArg1950(0)(t); 	//eps0
@@ -317,6 +330,42 @@ void Nutation::calcNut(Double t) {
     eqeq_p = -nval_p[1] * cos(nval_p[2]);
     deqeq_p = -dval_p[1] * cos(nval_p[2]) +
       nval_p[1] * sin(nval_p[2]) * dval_p[2];
+    // Complimentary terms equation of equinoxes
+    switch (method_p) {
+    case IAU2000B:
+      for (uInt i=0; i<14; i++) {
+	pfa(i) = MeasTable::planetaryArg2000(i)(t);
+	pdfa(i) = (MeasTable::planetaryArg2000(i).derivative())(t);
+      };
+    case IAU2000A:
+      neval_p = deval_p = 0;
+      for (Int i=32; i>=0; --i) {
+	dtmp = ddtmp = 0;
+	for (uInt j=0; j<14; j++) {
+	  dtmp += MeasTable::mulArgEqEqCT2000(i)[j] * pfa[j];
+	  ddtmp += MeasTable::mulPlanArg2000A(i)[j] * pdfa[j];
+	};
+	neval_p += MeasTable::mulSCEqEqCT2000(i)[0] * sin(dtmp);
+	neval_p += MeasTable::mulSCEqEqCT2000(i)[1] * cos(dtmp);
+	deval_p += MeasTable::mulSCEqEqCT2000(i)[0] * cos(dtmp) -
+	  MeasTable::mulSCEqEqCT2000(i)[1] * sin(dtmp) * ddtmp;
+      };
+      dtmp = ddtmp = 0;
+      for (uInt j=0; j<14; j++) {
+	dtmp += MeasTable::mulArgEqEqCT2000(33)[j] * pfa[j];
+	ddtmp += MeasTable::mulPlanArg2000A(33)[j] * pdfa[j];
+      };
+      neval_p += t*MeasTable::mulSCEqEqCT2000(33)[0] * sin(dtmp);
+      neval_p += t*MeasTable::mulSCEqEqCT2000(33)[1] * cos(dtmp);
+      deval_p += MeasTable::mulSCEqEqCT2000(33)[0] * cos(dtmp) -
+	MeasTable::mulSCEqEqCT2000(33)[1] * sin(dtmp) * ddtmp;
+      neval_p *= C::arcsec;
+      eqeq_p += neval_p;
+      ///      deqeq_p += deval_p*...;
+      break;
+    default:
+      break;
+    }
   };
 }
 

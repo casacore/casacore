@@ -128,7 +128,10 @@
 // Using MJD (JD-2400000.5) rather than JD is for precision reasons.
 // </motivation>
 //
-// <todo asof="1997/12/04">
+// <todo asof="2003/10/20">
+//   <li> Correct deval_p (derivative complimentary eqox terms)
+//   <li> Improve speed by a bit more lazyness in derivative calculations
+//	and separate eqox calculations 
 // </todo>
 
 class Nutation {
@@ -183,7 +186,11 @@ class Nutation {
   // </group>
   // Get the derivative of the equation of equinoxes in d<sup>-1</sup>
   Double derivativeEqox(Double epoch);
-  
+  // Get the complimentary terms of the equation of equinoxes
+  Double eqoxCT(Double epoch);
+  // Get the derivative of the complimentary terms of the equation of equinoxes
+  Double derivativeEqoxCT(Double epoch);
+
  private:
   
   //# Data members
@@ -199,6 +206,10 @@ class Nutation {
   Double eqeq_p;
   // Cached derivative equation of equinoxes
   Double deqeq_p;
+  // Cached complimentary terms equation of equinoxes
+  Double neval_p;
+  // Cached derivative of complimentary terms equation of equinoxes
+  Double deval_p;
   // To be able to use references rather than copies, and also to use these
   // references in simple (up to 4 terms of Nutation results) expressions,
   // results are calculated in circulating buffer
