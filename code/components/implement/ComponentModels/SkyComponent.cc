@@ -207,21 +207,19 @@ void SkyComponent::fromPixel (const Vector<Double>& parameters,
                               const Vector<Quantum<Double> >& restoringBeam,
                               const CoordinateSystem& cSys,
                               ComponentType::Shape componentShape,
-                              Stokes::StokesTypes stokes,
-                              Bool xIsLong)
+                              Stokes::StokesTypes stokes)
 {
    itsCompPtr->fromPixel(parameters, brightnessUnitIn, restoringBeam,
-                         cSys, componentShape, stokes, xIsLong);
+                         cSys, componentShape, stokes);
 }
 
 Vector<Double> SkyComponent::toPixel (const Unit& brightnessUnitIn,
                                       const Vector<Quantum<Double> >& restoringBeam,
                                       const CoordinateSystem& cSys,
-                                      Stokes::StokesTypes stokes,  
-                                      Bool xIsLong) const
+                                      Stokes::StokesTypes stokes) const
 {
    return itsCompPtr->toPixel(brightnessUnitIn, restoringBeam,
-                              cSys, stokes, xIsLong);
+                              cSys, stokes);
 }
 
 
