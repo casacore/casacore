@@ -1,5 +1,5 @@
-//# LogFilter.h: Filter LogMessages
-//# Copyright (C) 1996,2000
+//# LogFilter.h: Filter LogMessages on message priority
+//# Copyright (C) 1996,2000,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -26,19 +26,15 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_LOG_FILTER_H)
-#define AIPS_LOG_FILTER_H
+#if !defined(AIPS_LOGFILTER_H)
+#define AIPS_LOGFILTER_H
 
 //# Includes
-#include <aips/aips.h>
-#include <aips/Logging/LogMessage.h>
-
-//# Forward Declarations
-class LogFilterExpr;
+#include <aips/Logging/LogFilterInterface.h>
 
 
 // <summary>
-// Filter LogMessages.
+// Filter LogMessages on message priority.
 // </summary>
 
 // <use visibility=export>
@@ -82,7 +78,7 @@ class LogFilterExpr;
 //# <todo asof="1996/07/23">
 //# </todo>
 
-class LogFilter
+class LogFilter : public LogFilterInterface
 {
 public:
   // Construct a filter with the LOWEST priority that you want passed.  Thus
@@ -91,44 +87,31 @@ public:
   // class="NullLogSink">NullLogSink</linkto> which will have this effect.
   LogFilter (LogMessage::Priority lowest=LogMessage::NORMAL);
 
-  // Construct a filter from a TaQL expression. Only messages matching
-  // the expression pass the filter.
-  // The field names that can be used in the expression are:
-  // TIME, PRIORITY, MESSAGE, LOCATION, OBJECT_ID.
-  // All fields are strings, expect for TIME which is a double (MJD in sec.).
-  explicit LogFilter (const String& expr);
-
   // Copy <src>other</src> to <src>this</src>.
   // <group>
-  LogFilter(const LogFilter& other);
+  LogFilter (const LogFilter& other);
   LogFilter& operator= (const LogFilter& other);
   // </group>
 
-  ~LogFilter();
+  virtual ~LogFilter();
+
+  // Clone the object.
+  virtual LogFilter* clone() const;
 
   // Return True if <src>message</src> passes this filter.
-  Bool pass (const LogMessage& message) const;
+  virtual Bool pass (const LogMessage& message) const;
 
   // Return the lowest priority which will pass this filter.
   LogMessage::Priority lowestPriority() const;
 
 private:
   LogMessage::Priority lowest_p;
-  LogFilterExpr*       expr_p;
-
-  // Does the message pass the expression?
-  Bool passExpr (const LogMessage& message) const;
 };
 
 
 inline LogMessage::Priority LogFilter::lowestPriority() const
 {
   return lowest_p;
-}
-
-inline Bool LogFilter::pass (const LogMessage& message) const
-{
-  return (expr_p==0  ?  (message.priority() >= lowest_p) : passExpr(message));
 }
 
 
