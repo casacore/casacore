@@ -2,7 +2,7 @@
 # makedefs: Installation-specific definitions used by AIPS++ makefiles
 #-----------------------------------------------------------------------------
 #
-#   Copyright (C) 1997
+#   Copyright (C) 1997,1998
 #   Associated Universities, Inc. Washington DC, USA.
 #
 #   This program is free software; you can redistribute it and/or modify
@@ -68,96 +68,149 @@
 # $Id$
 #=============================================================================
 
+#-----------------------------------------------------------------------------
+# This file should work on Red Hat Linux 5.0 systems without
+# modification, and on Red Hat Linux 5.1 systems with only slight
+# modification (the C++EGCS definition should be uncommented), if all of
+# the prerequisite software packages have been installed "normally."
+#
+# ATTENTION: If you are using the EGCS compiler suite (the default
+# compiler suite provided with Red Hat Linux version 5.1, for example),
+# uncomment the following definition:
+#-----------------------------------------------------------------------------
+#C++EGCS := -fguiding-decls -DNATIVE_EXCP
+
 # Libraries and include paths.
 #-----------------------------------------------------------------------------
 
 # The C++ compiler.
 #------------------
-C++ROOT  := /usr
+C++ROOT := /usr
 
 # General external libraries.
 #----------------------------
+# PGPLOT (FORTRAN plotting package).
+PGPLOTROOT := /usr
+
+# TCL (version 7.6 or later).
+TCLROOT := /usr
+TCLLIB  := -ltcl -ldl
+
 # X11.
-X11ROOT  := /usr/X11R6
+X11ROOT := /usr/X11R6
 
 # Motif.
 MotifROOT := $(X11ROOT)
 
-# PGPLOT
-PGPLOTROOT := /usr/local
-
-# TCL (version 7.6 or later
-TCLROOT  := /usr
-TCLLIB   := -ltcl -ldl
-
-# LAPACK
+# LAPACK (FORTRAN Linear Algebra Package).
 LAPACKROOT := /usr
 
 # FORTRAN compiler.
-F77ROOT  := /usr
-F77LIBD  := $(F77ROOT)/lib
-F77LIB   := -lf2c /opt/local/lib/f77main.o
+# Currently still using fort77 (f2c+gcc), not native g77.
+F77ROOT := /usr
+F77LIBD := $(F77ROOT)/lib
+# f77__.o is provided with the NRAO RPM of the PGPLOT package; it's not
+# a standard part of any Linux distribution or PGPLOT, so your system
+# may not have it!
+F77LIB  := -lf2c $(F77LIBD)/f77__.o
 
-# Platform-specific libraries.
+# Platform-specific libraries - always added.
 ARCHLIBS := -lm
 
+# External libraries required by particular AIPS++ packages.
+#-----------------------------------------------------------
+# RPFITS (required by ATNF).
+RPFITSLIB :=
 
 #-----------------------------------------------------------------------------
 # Compilation and linkage variables
 #-----------------------------------------------------------------------------
+
 # Preprocessor flags for system debug/optimized compilations.
-CPPDBG   += -DAIPS_LINUX -DAIPS_LITTLE_ENDIAN -DAIPS_DEBUG
-CPPOPT   += -DAIPS_LINUX -DAIPS_LITTLE_ENDIAN 
+CPPDBG += -DAIPS_LINUX -DAIPS_LITTLE_ENDIAN -DF2C
+CPPOPT += -DAIPS_LINUX -DAIPS_LITTLE_ENDIAN -DF2C
 
 # C compiler flags for system debug/optimized compilations.
-CC       := /usr/bin/cc
-CDBGLVL  := -g
-COPTLVL  := -O2 -fno-strength-reduce
+CDBG    += -DAIPS_SVID3 -DHAVE_LINUX_GLIBC -Wreturn-type
+COPTLVL := -O2
+COPT    += -DAIPS_SVID3 -DHAVE_LINUX_GLIBC -Wreturn-type
 
 # C++ compiler flags for system debug/optimized compilations.
-C++       := $(C++ROOT)/bin/c++ -fno-for-scope -fno-implicit-templates
-C++DBGLVL := -g -DAIPS_ARRAY_INDEX_CHECK
-C++OPTLVL := -O2 -fno-strength-reduce
+C++       := c++
+C++DBG    += -pipe -fno-for-scope -fno-implicit-templates -Wreturn-type $(C++EGCS)
+C++OPTLVL := -O2
+C++OPT    += -pipe -fno-for-scope -fno-implicit-templates -Wreturn-type $(C++EGCS)
 
-# Add lib to the runpath. Needed for DEBUG as well because glish can build
-# shared libraries.
-LDOPT := -Xlinker -rpath -Xlinker $(AIPSARCH)/lib
-LDDBG := $(LDOPT)
-
-# Use do-it-yourself template instantiation.
+# Set to "diy" to enable do-it-yourself template instantiation, e.g. for g++.
 TEMPLATES := diy
 
 # FORTRAN compiler flags for system debug/optimized compilations.
-FC       := $(F77ROOT)/bin/fort77
-FCDBG    := -g
-FCOPT    := -O2 -Wc,-fno-strength-reduce -Wc,-fPIC
+FC       := fort77
+FCDBG    += -fPIC
+FCOPTLVL := -O2
+FCOPT    += -fPIC
+
+# Link flags for system debug/optimized compilations; these are passed to
+# the C++ compiler.
+# Link flags for system debug/optimized compilations; passed to g++.
+LDDBG := -Xlinker -rpath -Xlinker $(AIPSARCH)/lib
+LDOPT := -s $(LDDBG)
 
 # Object library utilities.
-AR       := /usr/bin/ar
-ARFLAGS  := ruv
-# Not needed for ELF systems
-RANLIB   := /bin/true
+RANLIB := true
 
-# Limit update size
-UPDBATCH := 2000
-
-TIMER     := adate -l
+# Control table for building AIPS++ libraries.  Four keywords are recognized:
+#    defeat:  The library will not be built (and if an old version exists it
+#             will be deleted).
+#    static:  The static library is built and is the one linked to.
+#    shatic:  The static and shared libraries are built but the static library
+#             is the one linked to.
+#    shared:  The static and shared libraries are built and the shared library
+#             is the one linked to.
+#
+#                    C++            C          FORTRAN
+#                 dbg    opt    dbg    opt    dbg    opt
+#               ------------- ------------- -------------
+#                                                          Kernel
+LIBaips      := defeat static defeat defeat defeat static
+#                                                          Auxiliary
+LIBtrial     := defeat static defeat defeat defeat static
+#                                                          Consortia
+LIBnrao      := defeat static defeat defeat defeat defeat
 
 # Absolute pathnames of perl-4 and perl-5 executables (if available).
-PERL4    :=
-PERL5    := /usr/bin/perl
+PERL4 := /usr/bin/perl
+PERL5 := /usr/bin/perl
 
 # TeX, dvips, and MetaFont paths.
 #--------------------------------
-TEXROOT   := /usr/lib
+TEXROOT    := /usr/lib/texmf/texmf
+TEXFONTS   := $(TEXROOT)/fonts/tfm//
+TEXFORMATS := $(TEXROOT)/web2c
+TEXINPUTS  := $(TEXROOT)/tex//
+TEXPOOL    := $(TEXROOT)/web2c
+TEXPKS     := $(TEXROOT)/fonts/pk//
+MFBASES    := $(TEXROOT)/web2c
+MFINPUTS   := $(TEXROOT)/metafont//:$(TEXROOT)/fonts/source//
+MFPOOL     := $(TEXROOT)/web2c
 
-# Assume that no docs are to be extracted - sun4sol_gnu or some other
-# architecture will do it instead.
-DOCSYS    := 
-DOCEXTR   := 
+# Variables which tell the makefiles what to do and how to do it
+#-----------------------------------------------------------------------------
+# Command for benchmarking the rebuild (usually 'adate -l').
+TIMER := adate -l
+
+# Unset this to defeat document compilation.
+DOCSYS :=
+
+# Unset this to defeat document extraction from C++ sources.
+DOCEXTR :=
+
+# What consortium packages to build (atnf bima hia nfra nral nrao tifr).
+CONSORTIA := nrao
 
 #-----------------------------------------------------------------------------
-# Programmer variables for code development.
+# The remaining definitions are programmer variables for code development.
+# These are not required for production-line systems.
 #-----------------------------------------------------------------------------
 ifeq "$(MAKEMODE)" "programmer"
    # Alternate definitions for CPPFLAGS.
@@ -167,9 +220,9 @@ ifeq "$(MAKEMODE)" "programmer"
 
    # C++ compiler flags for programmer compilations.
    ifdef OPT
-      C++FLAGS := $(C++OPT)
+      C++FLAGS := $(C++OPT) -Wall
    else
-      C++FLAGS := $(C++DBG)
+      C++FLAGS := $(C++DBG) -Wall -DAIPS_ARRAY_INDEX_CHECK
    endif
 
    # Where to put binaries for programmer compilations.
@@ -186,25 +239,9 @@ ifeq "$(MAKEMODE)" "programmer"
       override CPPFLAGS := $(CPPOPT) $(EXTRA_CPPFLAGS)
       PGMRBIND := $(wildcard $(PGMRARCH)/bin)
       PGMRLIBD := $(wildcard $(PGMRARCH)/lib)
-      override C++FLAGS := $(C++OPT)
+      override C++FLAGS := $(C++OPT) -Wall
    endif
 
    # Extra compiler flags.
    C++FLAGS += $(EXTRA_C++FLAGS)
 endif
-
-
-### Socorro specific makedefs start here
-###
-#
-#                    C++            C          FORTRAN
-#                 dbg    opt    dbg    opt    dbg    opt
-#               ------------- ------------- -------------
-#                                                          Kernel
-LIBaips      := static static defeat defeat static static
-LIBtrial     := static static defeat defeat static static
-LIBnrao      := static static defeat defeat static static
-LIBatnf      := static static defeat defeat static static
-
-AUXILIARY := trial
-CONSORTIA := atnf nrao
