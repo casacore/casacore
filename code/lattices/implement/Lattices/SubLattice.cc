@@ -386,10 +386,28 @@ Bool SubLattice<T>::doGetSlice (Array<T>& buffer,
   if (! itsAxesMap.isRemoved()) {
     return itsLatticePtr->getSlice (buffer, itsRegion.convert (section));
   }
-  Bool ref = itsLatticePtr->getSlice (buffer, itsRegion.convert
-                                           (itsAxesMap.slicerToOld (section)));
-  Array<T> tmp = buffer.reform (section.length());
-  buffer.reference (tmp);
+  // Axes have been removed, so we have to reform the array buffer
+  // to be able to get data from the original lattice.
+  // Get the section shape in the original lattice.
+  Slicer latSect = itsRegion.convert (itsAxesMap.slicerToOld (section));
+  Array<T> tmp;
+  Bool reformed = False;
+  if (buffer.shape().isEqual (section.length())) {
+    // Use (in principle) the same buffer storage if its shape is correct.
+    // This is needed for LatticeIterator to work correctly, because it
+    // expects to get the data in the buffer it provides
+    // (unless ref=True is returned).
+    Array<T> tmp2 = buffer.reform (latSect.length());
+    tmp.reference (tmp2);
+    reformed = True;
+  }
+  Bool ref = itsLatticePtr->getSlice (tmp, latSect);
+  // Reform (i.e. remove axes) if the buffer did not have the correct shape
+  // or if the lattice data are referenced.
+  if (!reformed  ||  ref) {
+    Array<T> tmp2 = tmp.reform (section.length());
+    buffer.reference (tmp2);
+  }
   return ref;
 }
 
