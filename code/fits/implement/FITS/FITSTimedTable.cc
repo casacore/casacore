@@ -32,9 +32,9 @@
 #include <aips/Utilities/Assert.h>
 
 FITSTimedTable::FITSTimedTable()
-    : table_p(0), row_now_p(0), row_next_p(0), how_past_end_p(0),
-      atStart_p(True), timeColumn_p(0), hasChanged_p(False),
-      changePending_p(False)
+    : atStart_p(True), hasChanged_p(False), changePending_p(False), 
+      table_p(0), row_now_p(0), row_next_p(0), how_past_end_p(0),
+      timeColumn_p(0)
 {
     rowDesc_p.addField("Time", TpDouble);
     row_now_p = new Record(rowDesc_p);
@@ -53,10 +53,10 @@ FITSTimedTable::FITSTimedTable()
 
 FITSTimedTable::FITSTimedTable(FITSTabular *originalTable, 
 			       uInt whichColumnIsTime)
-    : table_p(originalTable), rowDesc_p(table_p->description()),
-      row_now_p(0), row_next_p(0), how_past_end_p(0), 
-      atStart_p(True), timeColumn_p(whichColumnIsTime),
-      hasChanged_p(False), changePending_p(False)
+    : atStart_p(True), hasChanged_p(False), changePending_p(False), 
+      table_p(originalTable), row_now_p(0), row_next_p(0), 
+      rowDesc_p(table_p->description()), how_past_end_p(0), 
+      timeColumn_p(whichColumnIsTime)
 {
     AlwaysAssert(table_p, AipsError);
 

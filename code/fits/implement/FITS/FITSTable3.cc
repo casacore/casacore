@@ -59,8 +59,8 @@ FITSGroupWriter::FITSGroupWriter(const String &fileName,
 				 const Record &extraKeywords,
 				 const Record &units,
 				 Bool freeOutput)
-    : delete_writer_p(freeOutput), writer_p(0), nrows_written_p(0), group_p(0),
-      nrows_total_p(nrows), error_count_p(0)
+    : delete_writer_p(freeOutput), writer_p(0), nrows_written_p(0),
+      nrows_total_p(nrows),  group_p(0), error_count_p(0)
 {
     LogIO log(LogOrigin("FITSGroupWriter", "FITSGroupWriter", WHERE));
 

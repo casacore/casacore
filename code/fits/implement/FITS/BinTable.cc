@@ -62,7 +62,7 @@ Bool isSDFitsColumn(FITS::ReservedName name) {
 BinaryTable::BinaryTable(FitsInput& fitsin, ostream& output, Bool useIncrSM,
 			 Bool sdfits) :
     BinaryTableExtension(fitsin, output), currRowTab(0), nelem(0), 
-    colNames(0), theheap_p(0), vaptr_p(0), vatypes_p(0), va_p(0)
+    colNames(0), vatypes_p(0), vaptr_p(0), va_p(0), theheap_p(0)
 {
     // is there a heap
     if (pcount()) {
@@ -165,7 +165,7 @@ BinaryTable::BinaryTable(FitsInput& fitsin, ostream& output, Bool useIncrSM,
    // will hold the index portion for indexed keywords, this should be
    // more than enough space
    char index[8];
-   while (kw = kwl.next()) {
+   while ((kw = kwl.next())) {
        if (!kw->isreserved() || (sdfits && isSDFitsColumn(kw->kw().name()))) {
 	   // Get the kw name and remove the trailing spaces
            kwname = kw->name();
@@ -501,7 +501,7 @@ void BinaryTable::fillRow()
 		FitsField<FitsBit> thisfield =
 		    *(FitsField<FitsBit> *)&field(j);
 		Vector<Bool> vec(nelem[j]);
-		for (Int k=0;k<field(j).nelements();k++) {
+		for (uInt k=0;k<field(j).nelements();k++) {
 		    vec(k) = ToBool(int(thisfield(k)));
 		}
 		if (nelem[j] > 1) {
@@ -943,6 +943,8 @@ BinaryTable::~BinaryTable()
 		case FITS::DOUBLE: delete [] (Double *)vaptr_p[i]; break;
 		case FITS::COMPLEX: delete [] (Complex *)vaptr_p[i]; break;
 		case FITS::DCOMPLEX: delete [] (DComplex *)vaptr_p[i]; break;
+		  // nothing else should happen, should probably throw an exception
+		default: break;
 		}
 	    }
 	}
@@ -974,7 +976,7 @@ Table BinaryTable::fullTable(const String& tabname,
     Table full(newtab,nrows());
     RowCopier rowcop(full, *currRowTab);
     //			loop over all rows remaining
-    for (uInt outrow = 0, infitsrow = currrow(); infitsrow < nrows(); 
+    for (Int outrow = 0, infitsrow = currrow(); infitsrow < nrows(); 
 	 outrow++, infitsrow++) {
 	rowcop.copy(outrow, 0);
 	//		don't read past the end of the table

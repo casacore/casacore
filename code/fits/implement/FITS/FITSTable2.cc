@@ -277,14 +277,18 @@ FITSTableWriter::FITSTableWriter(FitsOutput *file,
 	        DComplex val;
 		extraKeywords.get(i, val);
 		kw.mk(name.chars(), val.real(), val.imag(), comment);
-	  }
-	  break;
+	    }
+	    break;
 	case TpString:
 	    {
 	        String val;
 		extraKeywords.get(i, val);
 		kw.mk(name.chars(), val.chars(), comment);
 	    }
+	    break;
+	default:
+	    throw(AipsError("Invalid type"));
+	    break;
 	}
     }
     kw.spaces();

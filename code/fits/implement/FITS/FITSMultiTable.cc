@@ -47,9 +47,9 @@
 
 FITSMultiTable::FITSMultiTable(const Vector<String> &fileNames,
 			       FITSTabular* (*tabMaker)(const String&))
-    : table_p(0), file_names_p(fileNames.copy()), which_file_p(0), 
-      nfiles_p(fileNames.nelements()), hasChanged_p(False),
-      row_p(RecordInterface::Variable)
+    : table_p(0), file_names_p(fileNames.copy()),  
+      nfiles_p(fileNames.nelements()), which_file_p(0), 
+      hasChanged_p(False), row_p(RecordInterface::Variable)
 {
     AlwaysAssert(nfiles_p > 0, AipsError);
     for (uInt i=0;i<nfiles_p;i++) {
