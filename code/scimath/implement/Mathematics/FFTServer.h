@@ -40,6 +40,23 @@
 //# Forward Declarations
 template <class T> class Array;
 
+// <summary>Lists the different types of FFT's that can be done</summary>
+// <synopsis>This enumerator is brought out as a separate class because g++
+// currently cannot handle enumerators in a templated class. When it can this
+// class will go away and this enumerator moved into the FFTServer
+// class</synopsis>
+class FFTEnums {
+public:
+  enum TransformType {
+    // Complex to Complex transforms.
+    COMPLEX,
+    // Real to Complex or Complex to Real transforms.
+    REALTOCOMPLEX,
+    // Real to Real transforms with symmetric Arrays.
+    REALSYMMETRIC
+  };
+};
+
 // <summary>A class with methods for Fast Fourier Transforms</summary>
 
 // <use visibility=export>
@@ -66,19 +83,19 @@ template <class T> class Array;
 
 // Because the output from a real to complex transform is Hermitian only half
 // of the complex result is returned. Similarly with a complex to real
-// transform only half of the complex plane is required, the other half
-// is implicitly assumed to be the complex conjugate of the supplied half-plane.
+// transform only half of the complex plane is required, the other half is
+// implicitly assumed to be the complex conjugate of the supplied half-plane.
 // <note role=warning> The complex to real transform does not check that the
 // imaginary component of the values where u=0 are zero</note>
 
 // This class can be initialised with a shape that indicates the length of the
 // transforms that will be performed, and whether they are going to be
 // real<->complex transforms or complex<->complex ones. This initialisation
-// sets up a variety of internal buffers and computes factorizations and twiddle
-// factors used during the transform. The initialised transform shape is always
-// compared with the shape of the supplied arguments when a transform is done
-// and the FFTServer class will automatically resize itself if necessary. So
-// the default constructor is perfectly safe to use.
+// sets up a variety of internal buffers and computes factorizations and
+// twiddle factors used during the transform. The initialised transform shape
+// is always compared with the shape of the supplied arguments when a transform
+// is done and the FFTServer class will automatically resize itself if
+// necessary. So the default constructor is perfectly safe to use.
 
 // With any transform the output Array must either be the correct shape for the
 // desired output or zero length (ie not contain any elements). If it is zero
@@ -91,10 +108,10 @@ template <class T> class Array;
 // input Array and cx (which is used later) is the length of the first axis on
 // the <em>complex</em> input Array.
 
-// For complex to real transforms the output length on the first axis is not
-// uniquely defined by the shape of the complex input Array. This class uses the
-// following algorithm to work out the length of the first axis on the output
-// Array.
+// <strong>For complex to real transforms the output length on the first axis
+// is not uniquely defined by the shape of the complex input
+// Array</strong>. This class uses the following algorithm to work out the
+// length of the first axis on the output Array.
 // <ul> 
 // <li> If the size of the output Array is non-zero then its shape must match
 // the size of the input Array except for the first axis. The length of the
@@ -114,7 +131,8 @@ template <class T> class Array;
 // first axis.
 // </ul>
 
-// This class does transforms using the widely used FORTRAN fftpack package.<br>
+// This class does transforms using the widely used FORTRAN fftpack
+// package.<br>
 // <em> P.N. Swarztrauber, Vectorizing the FFTs, in Parallel Computations
 // (G. Rodrigue, ed.), Academic Press, 1982, pp. 51--83. </em><br>
 // This package only does one dimensional transforms and this class decomposes
@@ -197,12 +215,14 @@ template <class T> class Array;
 //
 // <todo asof="1997/10/22">
 //   <li> The time taken to flip the Array can be reduced, if all the Array
-//   dimensions are even, by pre-multiplying the every other element on the input
-//   Array by -1. Then no flipping needs to be done on the output Array.
+//   dimensions are even, by pre-multiplying the every other element on the
+//   input Array by -1. Then no flipping needs to be done on the output Array.
 // </todo>
+
 template<class T, class S> class FFTServer
 {
 public:
+
   // The default constructor. The server will automatically resize to do
   // transforms of the appropriate length when necessary.
   FFTServer();
@@ -210,8 +230,10 @@ public:
   // Initialise the server to do transforms on Arrays of the specified
   // shape. The server will, however, resize to do transforms of other lengths
   // if necessary. See the resize function for a description of the
-  // complexTransforms flag.
-  FFTServer(const IPosition & fftSize, const Bool complexTransforms=False);
+  // TransformType enumerator.
+  FFTServer(const IPosition & fftSize, 
+	    const FFTEnums::TransformType transformType 
+	    = FFTEnums::REALTOCOMPLEX);
   
   // copy constructor. The copied server is initialised to do transforms of the
   // same length as the other server. Uses copy (and not reference) semantics
@@ -226,16 +248,18 @@ public:
   // constructor.
   FFTServer<T,S> & operator=(const FFTServer<T,S> & other);
 
-  // Modify the FFTServer object to do transforms of the supplied shape. If
-  // complexTransforms is True then it is assumed that complex to complex
-  // transforms are going to be done. Otherwise it is assumed that Real to
-  // complex transforms (and vice-versa) will be done. The shape is the shape
-  // of the real array (or complex one if complex to complex transforms are
-  // being done). In general it is not necessary to use this function as all
-  // the fft & fft0 functions will automatically resize the server, if
-  // necessary, to match their input arguments.
+  // Modify the FFTServer object to do transforms of the supplied shape. The
+  // amount of internal storage, and the initialisation, depends on the type of
+  // transform that will be done. Th etransform type is specified with the
+  // TransformTypes enumerator. Currently there is no difference in
+  // initialisation for the COMPLEXTOREAL and REALTOCOMPLEX transforms. The
+  // shape argument is the shape of the real array (or complex one if complex
+  // to complex transforms are being done). In general it is not necessary to
+  // use this function as all the fft & fft0 functions will automatically
+  // resize the server, if necessary, to match their input arguments.
   void resize(const IPosition & fftSize,
-		 const Bool complexTransforms=False);
+	      const FFTEnums::TransformType transformType
+	      = FFTEnums::REALTOCOMPLEX);
 
   // Real to complex fft. The origin of the transform is in the centre of the
   // Array. Because of the Hermitian property the output Array only contains
@@ -256,7 +280,8 @@ public:
   // <src>shape = [2*cx-1, cy, cz,...]</src>.  <br>
   // Otherwise an AipsError is thrown. See the description in the synopsis for
   // the algorithm used to choose between the two possible output shapes and a
-  // description of the constInput Flag.  <group>
+  // description of the constInput Flag.  
+  // <group>
   void fft(Array<T> & rResult, Array<S> & cData, const Bool constInput=False);
   void fft(Array<T> & rResult, const Array<S> & cData);
   // </group>
@@ -294,6 +319,7 @@ public:
   void fft0(Array<S> & cValues, const Bool toFrequency=True);
   void fft0(Array<S> & cResult, const Array<S> & cData,
 	    const Bool toFrequency=True);
+  //# void fft0(Array<T> & rValues, const Bool toFrequency=True);
   // </group>
 private:
   //# Flips the quadrants in a complex Array so that the point at
@@ -315,15 +341,15 @@ private:
   //# finds the shape of the output array when doing complex->real transforms
   IPosition determineShape(const IPosition & rShape, const Array<S> & cData);
   //# The size of the last FFT done by this object
-  IPosition theSize;
+  IPosition itsSize;
   //# Whether the last FFT was complex<->complex or not
-  Bool theComplexFlag;
+  FFTEnums::TransformType itsTransformType;
   //# twiddle factors and factorisations used by fftpack
-  PtrBlock<Block<T> *> theWork;
+  PtrBlock<Block<T> *> itsWork;
   //# buffer for copying non-contigious arrays to contigious ones. This is done
   //# so that the FFT's have a better chance of fitting into cache and hence
   //# going faster. 
   //# This buffer is also used as temporary storage when flipping the data.
-  Block<S> theBuffer;
+  Block<S> itsBuffer;
 };
 #endif
