@@ -2107,3 +2107,4 @@
 08 334 src mv nrao/apps/sdcalc/dish_browser.ps doc/user/Refman.dir/dish_browser.ps
 08 334 src mv nrao/apps/sdcalc/dish_sdplot.ps doc/user/Refman.dir/dish_sdplot.ps
 08 334 src mv nrao/apps/sdcalc/dish_main1.ps doc/user/Refman.dir/dish_main1.ps
+08 334 src mv nrao/apps/sdcalc/dish_main2.ps doc/user/Refman.dir/dish_main2.ps
