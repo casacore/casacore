@@ -1,5 +1,5 @@
 //# NNLSMatrixSolver.cc: concrete class for NNLS solvers of AX=B
-//# Copyright (C) 1994,1995,1999,2001
+//# Copyright (C) 1994,1995,1999,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //# 
 //# This library is free software; you can redistribute it and/or modify it
@@ -33,9 +33,11 @@
 
 #include <aips/strstream.h>
 
-#define NEED_FORTRAN_UNDERSCORES
+#if !defined(NEED_FORTRAN_UNDERSCORES)
+#define NEED_FORTRAN_UNDERSCORES 1
+#endif
 
-#if defined(NEED_FORTRAN_UNDERSCORES)
+#if NEED_FORTRAN_UNDERSCORES
    #define nnls nnls_
 #endif
 
