@@ -1,0 +1,227 @@
+//# tPagedArray1.cc:  tests the PagedArray class
+//# Copyright(C) 1997
+//# Associated Universities, Inc. Washington DC, USA.
+//#
+//# This program is free software; you can redistribute it and/or modify it
+//# under the terms of the GNU General Public License as published by the Free
+//# Software Foundation; either version 2 of the License, or(at your option)
+//# any later version.
+//#
+//# This program is distributed in the hope that it will be useful, but WITHOUT
+//# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+//# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
+//# more details.
+//#
+//# You should have received a copy of the GNU General Public License along
+//# with this program; if not, write to the Free Software Foundation, Inc.,
+//# 675 Massachusetts Ave, Cambridge, MA 02139, USA.
+//#
+//# Correspondence concerning AIPS++ should be addressed as follows:
+//#        Internet email: aips2-request@nrao.edu.
+//#        Postal address: AIPS++ Project Office
+//#                        National Radio Astronomy Observatory
+//#                        520 Edgemont Road
+//#                        Charlottesville, VA 22903-2475 USA
+//#
+//# $Id$
+
+#include <trial/Lattices/PagedArray.h>
+#include <trial/Lattices/PagedArrIter.h>
+#include <trial/Lattices/LatticeStepper.h>
+#include <trial/Lattices/LatticeIterInterface.h>
+
+#include <aips/Arrays/Array.h>
+#include <aips/Arrays/ArrayMath.h>
+#include <aips/Arrays/ArrayLogical.h>
+#include <aips/Arrays/Vector.h>
+#include <aips/Exceptions/Error.h>
+#include <aips/Lattices/IPosition.h>
+#include <aips/Lattices/Slicer.h>
+#include <aips/Mathematics/Math.h>
+#include <aips/Tables/SetupNewTab.h>
+#include <aips/Tables/Table.h>
+#include <aips/Tables/TableDesc.h>
+#include <aips/Utilities/Assert.h>
+#include <aips/Utilities/COWPtr.h>
+#include <aips/Utilities/String.h>
+#include <iostream.h>
+
+int main() {
+  try {
+    {
+      PagedArray<Float> pa(IPosition(2,12), "tPagedArray1_tmp.array");
+      pa.set(10.0);
+      Array<Float> arr;
+      pa.getSlice(arr, IPosition(2,0), IPosition(2,12), IPosition(2,1));
+      AlwaysAssert(allNear(arr, 10.0f, 1E-5), AipsError);
+      indgen(arr);
+      Array<Float> arr1(arr(IPosition(2,0), IPosition(2,0,11), 
+			    IPosition(2,1,2)));
+      pa.putSlice(arr1, IPosition(2,0), IPosition(2,1,2));
+      Vector<Float> vec(10);
+      indgen(vec.ac());
+      pa.putSlice(vec(IPosition(1,0), IPosition(1,9), IPosition(1,2)), 
+		  IPosition(2,1,1), IPosition(2,2,1));
+    }
+    {
+      PagedArray<Float> pa("tPagedArray1_tmp.array");
+      AlwaysAssert(pa.shape().isEqual(IPosition(2,12)), AipsError);
+      Array<Float> arr;
+      Slicer sl(IPosition(2,0), IPosition(2,12));
+      pa.getSlice(arr, sl);
+      AlwaysAssert(near(pa(IPosition(2,0)), 0.0f), AipsError);
+      AlwaysAssert(near(pa(IPosition(2,0,1)), 10.0f), AipsError);
+      AlwaysAssert(near(pa.getAt(IPosition(2,0,2)), 24.0f), AipsError);
+      AlwaysAssert(near(pa.getAt(IPosition(2,1,1)), 0.0f), AipsError);
+      AlwaysAssert(near(pa(IPosition(2,2,1)), 10.0f), AipsError);
+      AlwaysAssert(near(pa(IPosition(2,3,1)), 2.0f), AipsError);
+      pa(IPosition(2,11)) = 99.0f;
+      pa.putAt(98.0f, IPosition(2,11,10));
+      AlwaysAssert(pa.tableName() == "tPagedArray1_tmp.array", AipsError);
+      AlwaysAssert(pa.columnName() == PagedArray<Float>::defaultColumn(), 
+		   AipsError);
+      AlwaysAssert(pa.rowNumber() == PagedArray<Float>::defaultRow(),
+		   AipsError);
+    }
+    {
+      Table pagedTable("tPagedArray1_tmp.array", Table::Update);
+      PagedArray<Float> pa(pagedTable);
+      AlwaysAssert(near(pa(IPosition(2,11)), 99.0f), AipsError);
+      AlwaysAssert(near(pa(IPosition(2,11, 10)), 98.0f), AipsError);
+    }
+    {
+      PagedArray<Int> scratch(IPosition(3,9));
+      PagedArrIter<Int> li(scratch, IPosition(3,1,1,9));
+      Int i = 0;
+      for (li.reset(); !li.atEnd(); li++, i++)
+	li.cursor() = i;
+      COWPtr<Array<Int> > ptrM;
+      scratch.getSlice(ptrM, IPosition(3,0), IPosition(3,9,9,1), 
+		       IPosition(3,1), True);
+      AlwaysAssert(ptrM->shape().isEqual(IPosition(2,9)), AipsError);
+      Array<Int> expectedResult(IPosition(2,9));
+      indgen(expectedResult.ac());
+      AlwaysAssert(allEQ(*ptrM, expectedResult), AipsError);
+      ptrM.rwRef() = 0;
+      AlwaysAssert(allEQ(*ptrM, 0), AipsError);
+      Slicer sl(IPosition(3,0,0,5), IPosition(3,9,9,1), IPosition(3,1));
+
+      scratch.getSlice(ptrM, sl, True);
+      AlwaysAssert(allEQ(*ptrM, expectedResult), AipsError);
+      scratch.resize(IPosition(2,8));
+      AlwaysAssert(scratch.shape().isEqual(IPosition(2,8)), AipsError);
+      scratch.set(0);
+      scratch(IPosition(2,7)) = 7;
+      AlwaysAssert(scratch.getAt(IPosition(2,0)) == 0, AipsError);
+      AlwaysAssert(scratch.getAt(IPosition(2,7)) == 7, AipsError);
+    }
+    {
+      SetupNewTable arraySetup("tPagedArray1_tmp_1.array", 
+			       TableDesc(), Table::Scratch);
+      Table arrayTable(arraySetup);
+      const IPosition latticeShape(4, 128, 128, 4, 32);
+      PagedArray<Float> pa(latticeShape, arrayTable);
+      AlwaysAssert(pa.tileShape().isEqual(IPosition(4,32,16,4,16)), AipsError);
+      AlwaysAssert(pa.tileShape().isEqual(pa.niceCursorShape(pa.maxPixels())),
+		   AipsError);
+      Array<Float> arr(IPosition(4,1,1,4,32));
+      Slicer sl(IPosition(4,0), IPosition(4,1,1,4,32));
+      pa.clearCache();
+      pa.setCacheSizeFromPath(arr.shape(), IPosition(4,0),
+			      IPosition(4,16,16,4,32) - 1, 
+			      IPosition(4,0,1,2,3));
+      pa.getSlice(arr, sl);
+      cout << "The actual cache size should be 2 tiles" << endl;
+      pa.showCacheStatistics(cout);
+
+      SetupNewTable array1Setup("tPagedArray1_tmp.array", 
+				TableDesc(), Table::New);
+      Table array1Table(array1Setup);
+      PagedArray<Float> pa1(latticeShape, array1Table, 
+			    IPosition(4,16,16,4,32));
+      AlwaysAssert(pa1.tileShape().isEqual(IPosition(4,16,16,4,32)), 
+		   AipsError);
+      pa1.clearCache();
+      pa1.setCacheSizeFromPath(arr.shape(), IPosition(4,0),
+			      IPosition(4,16,16,4,32) - 1, 
+			       IPosition(4,0,1,2,3));
+      pa1.getSlice(arr, sl);
+      cout << "The actual Cache size should be 1 tile" << endl;
+      pa1.showCacheStatistics(cout);
+      pa = pa1;
+      AlwaysAssert(pa.tileShape().isEqual(IPosition(4,16,16,4,32)), AipsError);
+      arr = 9.0f;
+      pa.putSlice(arr, IPosition(4,0));
+      arr = 0.0f;
+      pa1.getSlice(arr, sl);
+      AlwaysAssert(allNear(arr, 9.0f, 1E-5), AipsError);
+
+      IPosition lat2Shape = IPosition(4,16);
+      PagedArray<Float> pa2(lat2Shape, array1Table, 
+			    PagedArray<Float>::defaultColumn(), 2, 
+			    PagedArray<Float>::defaultTileShape(lat2Shape));
+      arr.resize(lat2Shape);
+      indgen(arr);
+      pa2.putSlice(arr, IPosition(4,0));
+      
+      IPosition lat3Shape = IPosition(2,16);
+      PagedArray<Int> pa3(lat3Shape, array1Table, "IntPagedArray", 1, 
+			  lat3Shape);
+      Array<Int> iarr(lat3Shape);
+      indgen(iarr);
+      pa3.putSlice(iarr, IPosition(2,0));
+    }
+    {
+      Table file("tPagedArray1_tmp.array", Table::Update);
+      PagedArray<Float> pa1(file);
+      AlwaysAssert(pa1.shape().isEqual(IPosition(4,128,128,4,32)), AipsError);
+      PagedArray<Float> pa2(file, PagedArray<Float>::defaultColumn(), 2);
+      AlwaysAssert(pa2.shape().isEqual(IPosition(4,16)), AipsError);
+      PagedArray<Int> pa3(file, "IntPagedArray", 1);
+      AlwaysAssert(pa3.shape().isEqual(IPosition(2,16)), AipsError);
+      Array<Int> iarr(pa3.shape()), expected(pa3.shape());
+      pa3.setMaximumCacheSize(256*256);
+      indgen(expected);
+      pa3.getSlice(iarr, IPosition(2,0), IPosition(2,16), IPosition(2,1));
+      AlwaysAssert(allEQ(iarr, expected), AipsError);
+      {
+	PagedArray<Int> pa4(pa3);
+	AlwaysAssert(pa4.shape().isEqual(IPosition(2,16)), AipsError);
+	iarr = 0;
+	pa4.getSlice(iarr, IPosition(2,0), IPosition(2,16), IPosition(2,1));
+	AlwaysAssert(allEQ(iarr, expected), AipsError);
+	AlwaysAssert(pa4.ok() == True, AipsError);
+      }
+      AlwaysAssert(
+      PagedArray<Float>::defaultTileShape(IPosition(2,32)).isEqual(
+                                          IPosition(2,32)), AipsError);
+      AlwaysAssert(
+      PagedArray<Float>::defaultTileShape(IPosition(4,512,512,4,32)).isEqual(
+                                          IPosition(4,32, 16, 4, 16)), 
+                                           AipsError);
+      AlwaysAssert(
+      PagedArray<Float>::defaultTileShape(IPosition(4,521,521,5,31)).isEqual(
+                                          IPosition(4,521,521, 1, 1)), 
+                                          AipsError);
+      AlwaysAssert(
+      PagedArray<Float>::defaultTileShape(IPosition(4,511,513,5,31)).isEqual(
+                                          IPosition(4,73, 3, 5, 31)), 
+                                          AipsError);
+      AlwaysAssert(pa3.maximumCacheSize() == 65536, AipsError);
+      LatticeIterInterface<Float> * iterPtr = 
+	pa1.makeIter(LatticeStepper(pa1.shape(), IPosition(4,4)));
+      delete iterPtr;
+
+      pa3.resize(IPosition(2,8));
+      pa3.set(0);
+      pa3(IPosition(2,7)) = 7;
+      AlwaysAssert(pa3.getAt(IPosition(2,7)) == 7, AipsError);
+      AlwaysAssert(pa3.getAt(IPosition(2,0)) == 0, AipsError);
+      AlwaysAssert(pa3.shape().isEqual(IPosition(2,8)), AipsError);
+    }
+    cout<< "OK"<< endl;
+    return 0;
+  } catch (AipsError x) {
+    cerr << x.getMesg() << endl;
+  } end_try;
+}
