@@ -709,6 +709,7 @@ void FitsInput::skip_all(FITS::HDUType t) { // skip all remaining data
 		errmsg(BADOPER,"Illegal operation on FITS input");
 		return;
 	}
+
 	if (curr_size == 0) {
 		read_header_rec();
 		return;
@@ -720,11 +721,12 @@ void FitsInput::skip_all(FITS::HDUType t) { // skip all remaining data
 		read_header_rec();
 		return;
 	    } else {
+	      
 		curr_size -= FitsRecSize - bytepos;
 		bytepos = FitsRecSize;
 	    }
 	}
-	while (curr_size > 0) {
+	while (curr_size > uInt(FitsRecSize)) {
 	    curr = fin.read();
 	    if (!curr) {
 		    errmsg(BADEOF,"Unexpected end of file.");
@@ -737,6 +739,15 @@ void FitsInput::skip_all(FITS::HDUType t) { // skip all remaining data
 		    return;
 	    }
 	    curr_size -= FitsRecSize;
+
+	}
+	if( (curr_size > 0) && (curr_size < uInt(FitsRecSize))){
+	  curr= fin.read();
+	  if (!curr) {
+	    errmsg(BADEOF,"Unexpected end of file.");
+	    rec_type = FITS::EndOfFile;
+	    return;
+	  }
 	}
 	read_header_rec();
 	return;
