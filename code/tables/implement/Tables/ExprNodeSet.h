@@ -125,13 +125,19 @@ public:
     // Is a single value given?
     Bool isSingle() const;
 
+    // Is the interval left or right closed?
+    // <group>
+    Bool isLeftClosed() const;
+    Bool isRightClosed() const;
+    // <group>
+
     // Get the start, end or increment expression.
     // Note that the pointer returned can be zero indicating that that
     // value was not given.
     // <group>
-    const TableExprNodeRep* start() const;
-    const TableExprNodeRep* end() const;
-    const TableExprNodeRep* increment() const;
+    TableExprNodeRep* start() const;
+    TableExprNodeRep* end() const;
+    TableExprNodeRep* increment() const;
     // </group>
 
     // Fill a vector with the value(s) from this element.
@@ -210,15 +216,23 @@ inline Bool TableExprNodeSetElem::isSingle() const
 {
     return itsSingle;
 }
-inline const TableExprNodeRep* TableExprNodeSetElem::start() const
+inline Bool TableExprNodeSetElem::isLeftClosed() const
+{
+    return itsLeftClosed;
+}
+inline Bool TableExprNodeSetElem::isRightClosed() const
+{
+    return itsRightClosed;
+}
+inline TableExprNodeRep* TableExprNodeSetElem::start() const
 {
     return itsStart;
 }
-inline const TableExprNodeRep* TableExprNodeSetElem::end() const
+inline TableExprNodeRep* TableExprNodeSetElem::end() const
 {
     return itsEnd;
 }
-inline const TableExprNodeRep* TableExprNodeSetElem::increment() const
+inline TableExprNodeRep* TableExprNodeSetElem::increment() const
 {
     return itsIncr;
 }
@@ -365,6 +379,9 @@ private:
     // A copy of a TableExprNodeSet cannot be made.
     TableExprNodeSet& operator= (const TableExprNodeSet&);
 
+    // Delete all set elements in itsElems.
+    void deleteElems();
+
     // Convert a bounded set to an Array.
     // <group>
     Array<Bool>     toArrayBool     (const TableExprId& id) const;
@@ -374,11 +391,18 @@ private:
     Array<MVTime>   toArrayDate     (const TableExprId& id) const;
     // </group>
 
+    // Sort and combine intervals.
+    // <group>
+    void combineDoubleIntervals();
+    void combineDateIntervals();
+    // </group>
+
     PtrBlock<TableExprNodeSetElem*> itsElems;
     Bool itsSingle;
     Bool itsDiscrete;
     Bool itsBounded;       //# Set is discrete and all starts/ends are defined
     Bool itsCheckTypes;    //# True = checking data types is not needed
+    Bool itsSorted;        //# True = intervals are sorted in ascending order
 };
 
 
