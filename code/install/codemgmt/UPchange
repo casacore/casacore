@@ -138,7 +138,9 @@ if ($domv) then
    foreach i ($x)
      set j = `echo $i | sed -f $ldir/${tp}.cfnm`
      if ($upreal && ! $nox) then
-	amv -src $i $j
+	amv -src $i $j <<EOF
+y
+EOF
      else
 	echo amv -src $i $j
      endif
