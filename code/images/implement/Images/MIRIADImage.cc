@@ -754,8 +754,8 @@ void MIRIADImage::getImageAttributes (CoordinateSystem& cSys,
     }
 
     Double referenceChannel = crpix(spectralAxis);
-    Double referenceFrequency;
-    Double deltaFrequency;
+    Double referenceFrequency = 0.0;
+    Double deltaFrequency = 0.0;
     Vector<Double> frequencies;
 
     MFrequency::Types refFrame;
@@ -793,6 +793,7 @@ void MIRIADImage::getImageAttributes (CoordinateSystem& cSys,
       for (Int i=0; i<nChan; i++) {
 	frequencies(i) = referenceFrequency + (Double(i)-referenceChannel)*delt;
       }
+      if (restFrequency<0) restFrequency = 0.0;
     } else if (ctype(spectralAxis).contains("FELO")) {
       delt *= 1e3;
       rval *= 1e3;
