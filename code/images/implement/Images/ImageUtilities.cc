@@ -250,6 +250,8 @@ Bool ImageUtilities::pixToWorld (Vector<String>& sWorld,
          sWorld(i) = "?";
       }
    }
+
+   return True;
 }
 
 
