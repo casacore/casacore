@@ -34,6 +34,8 @@
 
 int main()
 {
+  //using namespace std;
+  using namespace casa;
   try {
     cout << "MSSummary" << endl;
     cout << "--------------------------------------" << endl;
@@ -41,7 +43,7 @@ int main()
 
     // Open the test MS.
     // !!! Make sure that MSName points to a local MeasurementSet!!!
-    String MSName("/home/rrusk/testing/2/3C273XC1.ms");
+    String MSName("/home/rrusk/testing/3C273XC1.ms");
     MeasurementSet ms(MSName, Table::Old);
 
     LogIO os(LogOrigin("tMSSummary", "main()"));
