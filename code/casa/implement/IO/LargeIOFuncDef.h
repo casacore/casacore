@@ -1,5 +1,5 @@
 //# LargeIOFuncDef.cc: Header to define possible large IO function names
-//# Copyright (C) 2001
+//# Copyright (C) 2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -33,9 +33,13 @@
 // see www-pablo.cs.uiuc.edu for more about pablo.
 //
 // If AIPS_LARGEFILE is defined, it will use the large file functions.
+// Define _LARGEFILE64_SOURCE for Linux systems.
 
 
 #ifdef AIPS_LARGEFILE
+# ifdef AIPS_LINUX
+#  define _LARGEFILE64_SOURCE
+# endif
 # define traceFOPEN fopen64
 # define traceFCLOSE fclose
 # define traceFSEEK fseeko64
