@@ -55,7 +55,9 @@
 #include <aips/Utilities/ValType.h>
 #include <aips/Utilities/Regex.h>
 #include <aips/Utilities/String.h>
+#include <aips/Utilities/Assert.h>
 #include <aips/Exceptions/Error.h>
+#include <trial/FITS/FITSUtil.h>
 
 #include <aips/iostream.h>
 
@@ -370,7 +372,7 @@ void MIRIADImage::setup()
    Path path(name_p);
    String fullName = path.absoluteName();
 
-   cerr << "MIRIAD::setup name=" << fullName << endl;
+   // cerr << "MIRIAD::setup name=" << fullName << endl;
 
 // Fish things out of the MIRIAD file
 
@@ -459,26 +461,26 @@ void MIRIADImage::getImageAttributes (CoordinateSystem& cSys,
   xyopen_c(&tno_p, name, "old", naxis, axes);    // open miriad file
   rdhdi_c(tno_p,"naxis",&ndim,0);                // for convenience, get ndim
 
+#if 0
   // DEBUG: output what size cube we found
-  cerr << "::getImageAttributes: [";
+  cerr << "MIRIAD::getImageAttributes: [";
   for (i=0; i<ndim; i++) {
     if (i > 0) cerr << "x";
     cerr << axes[i] ;
   }
   cerr <<  "]" << endl;
+#endif
 
   //    crackHeader(cSys, shape, imageInfo, brightnessUnit, miscInfo, os);
   hasBlanks = FALSE;
 
-  // 2D image for now; what to do about redundant axes ??
-  shape.resize(2);
-  shape(0) = axes[0];
-  shape(1) = axes[1];
+  shape.resize(ndim);
+  for (Int i=0; i<ndim; i++) shape(i) = axes[i];
   
   // get a coordinate system. MIRIAD is pretty simple,  it only knows
   // 'rectangular' coordinate systems, with the usual astronomical conventions
   // most of this code has been grabbed from CoordinateSystem::fromFITSHeader
-  
+
   Vector<Double> cdelt, crval, crpix;
   Vector<Int> naxes;
   Vector<String> ctype;
@@ -501,22 +503,23 @@ void MIRIADImage::getImageAttributes (CoordinateSystem& cSys,
       tmps = "ctype" + digit.toString(i+1);
       rdhda_c(tno_p,(const char *)tmps, tmps64, "", 64);
       ctype(i) = tmps64;
-      //cerr << tmps << "=>" << ctype(i) << endl;
+      // cerr << tmps << "=>" << ctype(i) << endl;
 
       tmps = "crval" + digit.toString(i+1);
       rdhdd_c(tno_p,(const char *)tmps, &crval(i), 0.0);
-      //cerr << tmps << "=>" << crval(i) << endl;
+      // cerr << tmps << "=>" << crval(i) << endl;
 
       tmps = "cdelt" + digit.toString(i+1);
       rdhdd_c(tno_p,(const char *)tmps, &cdelt(i), 0.0);
-      //cerr << tmps << "=>" << cdelt(i) << endl;
+      // cerr << tmps << "=>" << cdelt(i) << endl;
 
       tmps = "crpix" + digit.toString(i+1);
       rdhdd_c(tno_p,(const char *)tmps, &crpix(i), 0.0);
-      //cerr << tmps << "=>" << crpix(i) << endl;
+      crpix(i) -= offset;
+      // cerr << tmps << "=>" << crpix(i) << endl;
   }
 
-  Int longAxis=-1, latAxis=-1, stokesAxis=-1, specAxis=-1;
+  Int longAxis=-1, latAxis=-1, stokesAxis=-1, spectralAxis=-1;
 
   for (i=0; i<ndim; i++) {
         String subRA(ctype(i).at(0,2));
@@ -540,11 +543,12 @@ void MIRIADImage::getImageAttributes (CoordinateSystem& cSys,
 	} else if (ctype(i).contains("FREQ") || 
 		   ctype(i).contains("FELO") ||
 		   ctype(i).contains("VELO")) {
-	    specAxis = i;
+	    spectralAxis = i;
 	}
   }
 
   // We must have longitude AND latitude
+  // (really, what about certain PV diagrams ???)
 
   if (longAxis >= 0 && latAxis < 0) {
 	os << LogIO::SEVERE << "We have a longitude axis but no latitude axis!";
@@ -554,8 +558,6 @@ void MIRIADImage::getImageAttributes (CoordinateSystem& cSys,
 	os << LogIO::SEVERE << "We have a latitude axis but no longitude axis!";
 	// return False; 
   }
-
-
 
   // DIRECTION
 
@@ -716,6 +718,168 @@ void MIRIADImage::getImageAttributes (CoordinateSystem& cSys,
     cSys.addCoordinate(dir);
   }
 
+  // potential bug to track down:
+  // - a miriad cube that has been processes with 'velsw axis=freq' has slightly
+  //   wrong labels when printed with dImageSummary
+
+  if (spectralAxis >= 0) {
+    // cerr << "Hey, process spectralAxis = " << spectralAxis << endl;
+    //  see       SpectralCoordinate::fromFITS(tmp, error, header, spectralAxis,os);
+    //  and       FITSSpectralUtil::fromFITSHeader
+    //  so, as opposed to doing it here, it should be done parallel to those places
+    //
+
+    Int velref = 2; // Default is optical + topocentric ("OBS")
+    if (ctype(spectralAxis).contains("VELO")) {
+      velref = 258; // radio + OBS
+    }
+
+    // Try to work out OPTICAL/RADIO/. Default to Optical
+    String type(ctype(spectralAxis).before(4));
+    MDoppler::Types velocityPreference = MDoppler::OPTICAL;
+    if (velref > 256) {
+      velocityPreference = MDoppler::RADIO;   
+    }
+
+    Double restFrequency;
+    rdhdd_c(tno_p,"restfreq", &restFrequency, -1.0);
+    restFrequency *= 1e9;   // miriad uses GHz
+
+    // convert the velocity frame tag in ctype  to a reference frame
+    String spectralAxisQualifier;
+    if (ctype(spectralAxis).length() <= 5) {
+      spectralAxisQualifier = "";
+    } else {
+      spectralAxisQualifier = ctype(spectralAxis).after(4);
+    }
+
+    Double referenceChannel = crpix(spectralAxis);
+    Double referenceFrequency;
+    Double deltaFrequency;
+    Vector<Double> frequencies;
+
+    MFrequency::Types refFrame;
+    Bool ok = FITSSpectralUtil::frameFromTag(refFrame, 
+					spectralAxisQualifier, 
+						velref);
+
+    if (!ok) {
+      if (spectralAxisQualifier == "") {
+	if ((velref%256) >= 0) {
+	  // no tag and velref is unrecognized
+	  os << LogIO::SEVERE << "Illegal value for VELREF("
+		 << velref << 
+	    ") assuming topocentric" << LogIO::POST;
+	}
+      } else {
+	// unrecognized tag
+	os << LogIO::SEVERE << "Unknown spectral reference frame " 
+	       << spectralAxisQualifier << 
+	  ". Assuming topocentric." << LogIO::POST;
+      }
+    }
+
+    Int nChan = shape(spectralAxis);
+    Double delt = cdelt(spectralAxis);
+    Double rval = crval(spectralAxis);
+    Double rpix = crpix(spectralAxis);
+    
+    if (ctype(spectralAxis).contains("FREQ")) {
+      delt *= 1e9;
+      rval *= 1e9;
+      referenceFrequency = rval;
+      deltaFrequency = delt;
+      frequencies.resize(nChan);
+      for (Int i=0; i<nChan; i++) {
+	frequencies(i) = referenceFrequency + (Double(i)-referenceChannel)*delt;
+      }
+    } else if (ctype(spectralAxis).contains("FELO")) {
+      delt *= 1e3;
+      rval *= 1e3;
+      if (restFrequency < 0) {
+	os << LogIO::SEVERE << "FELO axis does not have rest frequency "
+	  "information (RESTFREQ)" << LogIO::POST;
+	// return False;
+      } else {
+	// Have RESTFREQ, deduce freq's from velocities and rest freq
+	referenceChannel = rpix;
+	switch(velocityPreference) {
+	case MDoppler::OPTICAL:
+	  {
+	    referenceFrequency = restFrequency / (1.0 + rval/C::c);
+	    deltaFrequency =   -delt*referenceFrequency / (
+							   ( (C::c + rval) ) );
+	  }
+	  break;
+	case MDoppler::RADIO:
+	  {
+	    os << LogIO::SEVERE << "FELO/RADIO is illegal" <<
+	      LogIO::POST;
+	    // return False;
+	  }
+	  break;
+	default:
+	  {
+	    AlwaysAssert(0, AipsError); // NOTREACHED
+	  }
+	}
+	frequencies.resize(nChan);
+	for (Int i=0; i<nChan; i++) {
+	  frequencies(i) = referenceFrequency + 
+	    (Double(i)-referenceChannel) * deltaFrequency;
+	}
+      }
+    } else if (ctype(spectralAxis).contains("VELO")) {
+      delt *= 1e3;
+      rval *= 1e3;
+      if (restFrequency < 0) {
+	os << LogIO::SEVERE << "VELO axis does not have rest frequency "
+	  "information (RESTFREQ)" << LogIO::POST;
+	// return False;
+      } else {
+	// Have RESTFREQ
+	os << LogIO::NORMAL << "ALTRVAL and ALTRPIX have not been "
+	  "supplied in the FITS header, so I \nwill deduce the "
+	  "frequencies from the velocities and rest frequency." << 
+	  LogIO::POST;
+	referenceChannel = rpix;
+	switch(velocityPreference) {
+	case MDoppler::RADIO:
+	  {
+	    referenceFrequency = -rval/C::c*restFrequency + 
+	      restFrequency;
+	    deltaFrequency =  
+	      -delt*referenceFrequency / (C::c - rval);
+	  }
+	  break;
+	case MDoppler::OPTICAL:
+	  {
+	    os << LogIO::SEVERE << 
+	      "VELO/OPTICAL is not implemented" <<LogIO::POST;
+	    // return False;
+	  }
+	  break;
+	default:
+	  {
+	    AlwaysAssert(0, AipsError); // NOTREACHED
+	  }
+	}
+	frequencies.resize(nChan);
+	for (Int i=0; i<nChan; i++) {
+	  frequencies(i) = referenceFrequency + 
+	    (Double(i)-referenceChannel) * deltaFrequency;
+	}
+      }
+    } else {   // catch VELO/FELO/FREQ/....
+      AlwaysAssert(0, AipsError); // NOTREACHED
+    }
+    // SpectralCoordinate::fromFITS
+    SpectralCoordinate tmp(refFrame, referenceFrequency, deltaFrequency, 
+			   referenceChannel, restFrequency);
+    cSys.addCoordinate(tmp);
+  }
+
+
   // STOKES.   shape is used only here as the StokesCoordinate
   // is a bit peculiar, and not really separable from the shape
   
@@ -734,6 +898,8 @@ void MIRIADImage::getImageAttributes (CoordinateSystem& cSys,
 	
 	Double tmp = crval(stokesAxis) + 
 		(k - crpix(stokesAxis))*cdelt(stokesAxis);
+	
+	// cerr << "Stokes: tmp = " << tmp << endl;
 	if (tmp >= 0) {
 	  stokes(k) = Int(tmp + 0.01);
 	} else {
@@ -856,5 +1022,68 @@ void MIRIADImage::getImageAttributes (CoordinateSystem& cSys,
 	//return False;
       } 
   }
+
+// Now we need to work out the transpose order
+
+  Vector<Int> order(ndim);
+  Int nspecial = 0;
+  if (longAxis >= 0) nspecial++;
+  if (latAxis >= 0) nspecial++;
+  if (stokesAxis >= 0) nspecial++;
+  if (spectralAxis >= 0) nspecial++;
+#if 0
+  // I can't figure this out now, there is something wrong here for miriad
+  Int linused = 0;
+  for (i=0; i<ndim; i++) {
+    if (i == longAxis) {
+      order(i) = 0; // long is always first if it exist
+    } else if (i == latAxis) {
+      order(i) = 1; // lat is always second if it exists
+    } else if (i == stokesAxis) {
+      if (longAxis >= 0) { // stokes is axis 0 if no dir, otherwise 2
+	order(i) = 3;   // 3 for MIRIAD !!!   2 for fits?
+      } else {
+	order(i) = 0;
+      }
+    } else if (i == spectralAxis) {
+      if (longAxis >= 0 && stokesAxis >= 0) {
+	order(i) = 2; // stokes and dir :  (3 for fits, 2 for miriad?)
+      } else if (longAxis >= 0) {
+	order(i) = 2; // dir only
+      } else if (stokesAxis >= 0) {
+	order(i) = 1;  // stokes but no dir
+      } else {
+	order(i) = 0; // neither stokes or dir
+      }
+    } else {
+      order(i) = nspecial + linused;
+      linused++;
+    }
+  }
+//
+  cSys.transpose(order, order);
+#endif
+
+  // DATE-OBS
+  Double obstime;
+  rdhdd_c(tno_p, "obstime", &obstime, -1.0);
+  // cerr << "obstime=" << obstime << endl;
+  obstime -= 2400000.5;    // make it MJD ("d")
+  MVEpoch mve(Quantity(obstime,"d"));
+  MEpoch mep(mve,MEpoch::UTC);   // miriad uses JDN (in UTC)   -- no good
+
+  // TELESCOP
+  String telescop;
+  rdhda_c(tno_p, "telescop", tmps64,"",64);
+  telescop = tmps64;
+
+  ObsInfo oi;
+  oi.setTelescope(telescop);
+  oi.setObsDate(mep);
+
+  cSys.setObsInfo(oi);
+
   xyclose_c(tno_p);
 }
+
+
