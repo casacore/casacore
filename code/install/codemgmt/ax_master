@@ -1837,3 +1837,4 @@
 08 003 sys rm bin/sdcalc
 08 003 sys rm bin/simulating
 08 003 sys rm bin/ssfitsfiller
+08 003 sys rm bin/statistics.atoms
