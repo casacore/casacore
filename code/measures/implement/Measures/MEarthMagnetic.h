@@ -1,5 +1,5 @@
 //# MEarthMagnetic.h: A Measure: Magnetic field on Earth
-//# Copyright (C) 1995,1996,1997,1998,1999
+//# Copyright (C) 1995,1996,1997,1998,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -111,7 +111,7 @@ template <class M> class ROScalarMeasColumn;
 // To have the Earth' magnetic field in the standard Measure environment.
 // </motivation>
 //
-// <todo asof="1999806/19">
+// <todo asof="2000/06/15">
 //	<li> maybe add other field models if necessary (e.g. dipole)
 // </todo>
 
@@ -176,17 +176,14 @@ public:
 //# Constructors
 // <note> In the following constructors and other functions, all 
 // <em>MeasRef</em> can be replaced with simple <src>Measure::TYPE</src>
-// where no offsets or frames are needed in the reference. For reasons
-// of compiler limitations the formal arguments had to be specified as
-// <em>uInt</em> rather than the Measure enums that should be used as actual 
-// arguments.</note>
+// where no offsets or frames are needed in the reference. </note>
 // Default constructor; generates the default IGRF type
     MEarthMagnetic();
 // Create from data and reference
 // <group>
     MEarthMagnetic(const MVEarthMagnetic &dt);
     MEarthMagnetic(const MVEarthMagnetic &dt, const MEarthMagnetic::Ref &rf);
-    MEarthMagnetic(const MVEarthMagnetic &dt, uInt rf);
+    MEarthMagnetic(const MVEarthMagnetic &dt, MEarthMagnetic::Types rf);
     MEarthMagnetic(const Measure *dt);
     MEarthMagnetic(const MeasValue *dt);
     MEarthMagnetic(const MEarthMagnetic::Ref &rf);
@@ -210,8 +207,16 @@ public:
     virtual uInt type() const;
     static void assert(const Measure &in);
 // </group>
-// Translate reference code
-    static const String &showType(uInt tp);
+// Translate reference code. The uInt version has a check for valid codes
+  // (i.e. it is a safe cast).
+  // <thrown>
+  //   <li> AipsError in the uInt interface if illegal code given
+  // </thrown>
+  // <group>
+  static MEarthMagnetic::Types castType(uInt tp);
+  static const String &showType(MEarthMagnetic::Types tp);
+  static const String &showType(uInt tp);
+  // </group>
 // Translate string to reference code
 // <group>
   static Bool getType(MEarthMagnetic::Types &tp, const String &in);

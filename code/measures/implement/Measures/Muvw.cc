@@ -1,5 +1,5 @@
 //# Muvw.cc:  A Measure: uvw on Earth
-//# Copyright (C) 1998,1999
+//# Copyright (C) 1998,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -43,7 +43,7 @@ Muvw::Muvw(const MVuvw &dt) :
 Muvw::Muvw(const MVuvw &dt, const Muvw::Ref &rf) : 
   MeasBase<MVuvw, Muvw::Ref>(dt,rf) {}
 
-Muvw::Muvw(const MVuvw &dt, uInt rf) : 
+Muvw::Muvw(const MVuvw &dt, Muvw::Types rf) : 
   MeasBase<MVuvw, Muvw::Ref>(dt,rf) {}
 
 Muvw::Muvw(const Measure *dt) :
@@ -91,7 +91,12 @@ void Muvw::assert(const Measure &in) {
   };
 }
 
-const String &Muvw::showType(uInt tp) {
+Muvw::Types Muvw::castType(uInt tp) {
+  DebugAssert(tp < Muvw::N_Types, AipsError);
+  return static_cast<Muvw::Types>(tp);
+}
+
+const String &Muvw::showType(Muvw::Types tp) {
   static const String tname[Muvw::N_Types] = {
     "ITRF",
     "J2000",
@@ -110,9 +115,11 @@ const String &Muvw::showType(uInt tp) {
     "MECLIPTIC",
     "TECLIPTIC",
     "SUPERGAL" };
-  
-  DebugAssert(tp < Muvw::N_Types, AipsError);
   return tname[tp];
+}
+
+const String &Muvw::showType(uInt tp) {
+  return Muvw::showType(Muvw::castType(tp));
 }
 
 const String *const Muvw::allMyTypes(Int &nall, Int &nextra,

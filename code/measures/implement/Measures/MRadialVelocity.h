@@ -1,5 +1,5 @@
 //# MRadialVelocity.h: A Measure: radial velocity
-//# Copyright (C) 1995,1996,1997,1998,1999
+//# Copyright (C) 1995,1996,1997,1998,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -127,9 +127,8 @@ class MVDoppler;
 // <motivation>
 // </motivation>
 //
-// <todo asof="1996/10/14">
-//   <li> test sign of conversions independently
-//   <li> look at relativistic effects
+// <todo asof="2000/06/15">
+//	<li>
 // </todo>
 
 class MRadialVelocity : public MeasBase<MVRadialVelocity, MeasRef<MRadialVelocity> > {
@@ -174,20 +173,17 @@ public:
 //# Constructors
 // <note role=tip> In the following constructors and other functions, all 
 // <em>MeasRef</em> can be replaced with simple <src>Measure::TYPE</src>
-// where no offsets or frames are needed in the reference. For reasons
-// of compiler limitations the formal arguments had to be specified as
-// <em>uInt</em> rather than the Measure enums that should be used as actual 
-// arguments.</note>
+// where no offsets or frames are needed in the reference. </note>
 // Default constructor; generates a zero rest RadialVelocity
     MRadialVelocity();
 // Create from data and reference
 // <group>
     MRadialVelocity(const MVRadialVelocity &dt);
     MRadialVelocity(const MVRadialVelocity &dt, const MRadialVelocity::Ref &rf);
-    MRadialVelocity(const MVRadialVelocity &dt, uInt rf);
+    MRadialVelocity(const MVRadialVelocity &dt, MRadialVelocity::Types rf);
     MRadialVelocity(const Quantity &dt);
     MRadialVelocity(const Quantity &dt, const MRadialVelocity::Ref &rf);
-    MRadialVelocity(const Quantity &dt, uInt rf);
+    MRadialVelocity(const Quantity &dt, MRadialVelocity::Types rf);
     MRadialVelocity(const Measure *dt);
     MRadialVelocity(const MeasValue *dt);
 // </group>
@@ -205,14 +201,20 @@ public:
     virtual uInt type() const;
     static void assert(const Measure &in);
 // </group>
-// Translate reference code
-    static const String &showType(uInt tp);
+// Translate reference code. The uInt version has a check for valid codes
+  // (i.e. it is a safe cast).
+  // <thrown>
+  //   <li> AipsError in the uInt interface if illegal code given
+  // </thrown>
+  // <group>
+  static MRadialVelocity::Types castType(uInt tp);
+  static const String &showType(MRadialVelocity::Types tp);
+  static const String &showType(uInt tp);
+  // </group>
 // Translate string to reference code
 // <group>
   static Bool getType(MRadialVelocity::Types &tp, const String &in);
   Bool giveMe(MRadialVelocity::Ref &mr, const String &in);
-// This one for historic reasons only
-  Bool giveMe(const String &in, MRadialVelocity::Ref &mr);
 // </group>
   // Set the offset in the reference (False if non-matching Measure)
   virtual Bool setOffset(const Measure &in);

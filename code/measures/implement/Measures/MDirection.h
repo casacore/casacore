@@ -157,7 +157,7 @@ template <class M> class ROScalarMeasColumn;
 // <motivation>
 // </motivation>
 //
-// <todo asof="1996/02/21">
+// <todo asof="2000/06/15">
 //	<li>
 // </todo>
 
@@ -241,27 +241,24 @@ public:
 //# Constructors
 // <note role=tip> In the following constructors and other functions, all 
 // <em>MeasRef</em> can be replaced with simple <src>Measure::TYPE</src>
-// where no offsets or frames are needed in the reference. For reasons
-// of compiler limitations the formal arguments had to be specified as
-// <em>uInt</em> rather than the Measure enums that should be used as actual 
-// arguments.</note>
+// where no offsets or frames are needed in the reference. </note>
 // Default constructor; generates the J2000 pole direction
     MDirection();
 // Create from data and reference
 // <group>
     MDirection(const MVDirection &dt);
     MDirection(const MVDirection &dt, const MDirection::Ref &rf);
-    MDirection(const MVDirection &dt, uInt rf);
+    MDirection(const MVDirection &dt, MDirection::Types rf);
     MDirection(const Quantity &dt, const Quantity &dt1);
     MDirection(const Quantity &dt, const Quantity &dt1, 
 	       const MDirection::Ref &rf);
     MDirection(const Quantity &dt, const Quantity &dt1, 
-	       uInt rf);
+	       MDirection::Types rf);
     MDirection(const Quantum<Vector<Double> > &dt);
     MDirection(const Quantum<Vector<Double> > &dt, 
 	       const MDirection::Ref &rf);
     MDirection(const Quantum<Vector<Double> > &dt, 
-	       uInt rf);
+	       MDirection::Types rf);
     MDirection(const Measure *dt);
     MDirection(const MeasValue *dt);
     MDirection(const MDirection::Ref &rf);
@@ -284,14 +281,20 @@ public:
     static void assert(const Measure &in);
 // Tell me the global type (like GRADEC) for tp (tp like MDirection::J2000)
   static MDirection::GlobalTypes globalType(uInt tp);
-// Translate reference code tp (should be given as e.g. MDirection::J2000)
-    static const String &showType(uInt tp);
+// Translate reference code tp. The uInt version has a check for valid codes
+  // (i.e. it is a safe cast).
+  // <thrown>
+  //   <li> AipsError in the uInt interface if illegal code given
+  // </thrown>
+  // <group>
+  static MDirection::Types castType(uInt tp);
+  static const String &showType(MDirection::Types tp);
+  static const String &showType(uInt tp);
+  // </group>
 // Translate string to reference code
 // <group>
   static Bool getType(MDirection::Types &tp, const String &in);
   Bool giveMe(MDirection::Ref &mr, const String &in);
-// This one for historic reasons only
-  Bool giveMe(const String &in, MDirection::Ref &mr);
 // </group>
   // Set the offset in the reference (False if non-matching Measure)
   virtual Bool setOffset(const Measure &in);

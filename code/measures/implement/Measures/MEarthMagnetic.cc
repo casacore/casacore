@@ -1,5 +1,5 @@
 //# MEarthMagnetic.cc: A Measure: Magnetic field on Earth
-//# Copyright (C) 1995,1996,1997,1998,1999
+//# Copyright (C) 1995,1996,1997,1998,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -50,7 +50,8 @@ MEarthMagnetic::MEarthMagnetic(const MVEarthMagnetic &dt,
 			       const MEarthMagnetic::Ref &rf) : 
   MeasBase<MVEarthMagnetic, MEarthMagnetic::Ref>(dt,rf) {}
 
-MEarthMagnetic::MEarthMagnetic(const MVEarthMagnetic &dt, uInt rf) : 
+MEarthMagnetic::MEarthMagnetic(const MVEarthMagnetic &dt,
+			       MEarthMagnetic::Types rf) : 
   MeasBase<MVEarthMagnetic, MEarthMagnetic::Ref>(dt,rf) {}
 
 MEarthMagnetic::MEarthMagnetic(const Measure *dt) :
@@ -102,7 +103,17 @@ void MEarthMagnetic::assert(const Measure &in) {
   };
 }
 
-const String &MEarthMagnetic::showType(uInt tp) {
+MEarthMagnetic::Types MEarthMagnetic::castType(uInt tp) {
+  if ((tp & MEarthMagnetic::EXTRA) == 0) {
+    DebugAssert(tp < MEarthMagnetic::N_Types, AipsError);
+  } else {
+    DebugAssert((tp & ~MEarthMagnetic::EXTRA) < 
+		(MEarthMagnetic::N_Models - MEarthMagnetic::IGRF), AipsError);
+  };
+  return static_cast<MEarthMagnetic::Types>(tp);
+}
+
+const String &MEarthMagnetic::showType(MEarthMagnetic::Types tp) {
   static const String tname[MEarthMagnetic::N_Types] = {
     "ITRF",
     "J2000",
@@ -126,12 +137,13 @@ const String &MEarthMagnetic::showType(uInt tp) {
     "IGRF" };
 
     if ((tp & MEarthMagnetic::EXTRA) == 0) {
-      DebugAssert(tp < MEarthMagnetic::N_Types, AipsError);
       return tname[tp];
     };
-    DebugAssert((tp & ~MEarthMagnetic::EXTRA) < 
-		(MEarthMagnetic::N_Models - MEarthMagnetic::IGRF), AipsError);
     return pname[tp & ~MEarthMagnetic::EXTRA];
+}
+
+const String &MEarthMagnetic::showType(uInt tp) {
+  return MEarthMagnetic::showType(MEarthMagnetic::castType(tp));
 }
 
 const String *const MEarthMagnetic::allMyTypes(Int &nall, Int &nextra,

@@ -1,5 +1,5 @@
 //# MFrequency.cc: A Measure: wave characteristics
-//# Copyright (C) 1995,1996,1997,1998,1999
+//# Copyright (C) 1995,1996,1997,1998,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -43,7 +43,7 @@ MFrequency::MFrequency(const MVFrequency &dt) :
 MFrequency::MFrequency(const MVFrequency &dt, const MFrequency::Ref &rf) : 
   MeasBase<MVFrequency, MFrequency::Ref>(dt,rf) {}
 
-MFrequency::MFrequency(const MVFrequency &dt, uInt rf) : 
+MFrequency::MFrequency(const MVFrequency &dt, MFrequency::Types rf) : 
   MeasBase<MVFrequency, MFrequency::Ref>(dt,rf) {}
 
 MFrequency::MFrequency(const Quantity &dt) : 
@@ -52,7 +52,7 @@ MFrequency::MFrequency(const Quantity &dt) :
 MFrequency::MFrequency(const Quantity &dt, const MFrequency::Ref &rf) : 
   MeasBase<MVFrequency, MFrequency::Ref>(dt,rf) {}
 
-MFrequency::MFrequency(const Quantity &dt, uInt rf) : 
+MFrequency::MFrequency(const Quantity &dt, MFrequency::Types rf) : 
   MeasBase<MVFrequency, MFrequency::Ref>(dt,rf) {}
 
 MFrequency::MFrequency(const Measure *dt) :
@@ -89,7 +89,12 @@ void MFrequency::assert(const Measure &in) {
   };
 }
 
-const String &MFrequency::showType(uInt tp) {
+MFrequency::Types MFrequency::castType(uInt tp) {
+  DebugAssert(tp < MFrequency::N_Types, AipsError);
+  return static_cast<MFrequency::Types>(tp);
+}
+
+const String &MFrequency::showType(MFrequency::Types tp) {
     static const String tname[MFrequency::N_Types] = {
 	"REST",
 	"LSR",
@@ -98,8 +103,11 @@ const String &MFrequency::showType(uInt tp) {
 	"GEO",	    
 	"TOPO",
 	"GALACTO"}; 
-    DebugAssert(tp < MFrequency::N_Types, AipsError);
     return tname[tp];
+}
+
+const String &MFrequency::showType(uInt tp) {
+  return MFrequency::showType(MFrequency::castType(tp));
 }
 
 const String *const MFrequency::allMyTypes(Int &nall, Int &nextra,
@@ -160,10 +168,6 @@ Bool MFrequency::giveMe(MFrequency::Ref &mr, const String &in) {
   };
   return True;
 };
-
-Bool MFrequency::giveMe(const String &in, MFrequency::Ref &mr) {
-  return MFrequency::giveMe(mr, in);
-}
 
 Bool MFrequency::setOffset(const Measure &in) {
   if (in.type() != Register(static_cast<MFrequency *>(0))) return False;

@@ -42,7 +42,7 @@ MDirection::MDirection(const MVDirection &dt) :
 MDirection::MDirection(const MVDirection &dt, const MDirection::Ref &rf) : 
   MeasBase<MVDirection, MDirection::Ref>(dt,rf) {}
 
-MDirection::MDirection(const MVDirection &dt, uInt rf) : 
+MDirection::MDirection(const MVDirection &dt, MDirection::Types rf) : 
   MeasBase<MVDirection, MDirection::Ref>(dt,rf) {}
 
 MDirection::MDirection(const Quantity &dt, const Quantity &dt1) : 
@@ -54,7 +54,7 @@ MDirection::MDirection(const Quantity &dt, const Quantity &dt1,
   MeasBase<MVDirection, MDirection::Ref>(MVDirection(dt,dt1),rf) {}
 
 MDirection::MDirection(const Quantity &dt, const Quantity &dt1,
-		       uInt rf) : 
+		       MDirection::Types rf) : 
   MeasBase<MVDirection, MDirection::Ref>(MVDirection(dt,dt1),rf) {}
 
 MDirection::MDirection(const Quantum<Vector<Double> > &dt) :
@@ -66,7 +66,7 @@ MDirection::MDirection(const Quantum<Vector<Double> > &dt,
   MeasBase<MVDirection, MDirection::Ref>(MVDirection(dt),rf) {}
 
 MDirection::MDirection(const Quantum<Vector<Double> > &dt,
-		       uInt rf) : 
+		       MDirection::Types rf) : 
   MeasBase<MVDirection, MDirection::Ref>(MVDirection(dt),rf) {}
 
 MDirection::MDirection(const Measure *dt) :
@@ -106,7 +106,17 @@ void MDirection::assert(const Measure &in) {
   };
 }
 
-const String &MDirection::showType(uInt tp) {
+MDirection::Types MDirection::castType(uInt tp) {
+    if ((tp & MDirection::EXTRA) == 0) {
+      DebugAssert(tp < MDirection::N_Types, AipsError);
+    } else {
+      DebugAssert((tp & ~MDirection::EXTRA) < 
+		  (MDirection::N_Planets - MDirection::MERCURY), AipsError);
+    };
+    return static_cast<MDirection::Types>(tp);
+}
+
+const String &MDirection::showType(MDirection::Types tp) {
     static const String tname[MDirection::N_Types] = {
 	"J2000",
 	"JMEAN",
@@ -139,13 +149,12 @@ const String &MDirection::showType(uInt tp) {
 	"MOON",
 	"COMET" };
 
-    if ((tp & MDirection::EXTRA) == 0) {
-      DebugAssert(tp < MDirection::N_Types, AipsError);
-      return tname[tp];
-    };
-    DebugAssert((tp & ~MDirection::EXTRA) < 
-		(MDirection::N_Planets - MDirection::MERCURY), AipsError);
+    if ((tp & MDirection::EXTRA) == 0) return tname[tp];
     return pname[tp & ~MDirection::EXTRA];
+}
+
+const String &MDirection::showType(uInt tp) {
+  return MDirection::showType(MDirection::castType(tp));
 }
 
 const String *const MDirection::allMyTypes(Int &nall, Int &nextra,
@@ -252,10 +261,6 @@ Bool MDirection::giveMe(MDirection::Ref &mr, const String &in) {
   };
   return True;
 };
-
-Bool MDirection::giveMe(const String &in, MDirection::Ref &mr) {
-  return MDirection::giveMe(mr, in);
-}
 
 MDirection::GlobalTypes MDirection::globalType(uInt tp) {
 

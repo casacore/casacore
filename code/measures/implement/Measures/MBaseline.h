@@ -1,5 +1,5 @@
 //# MBaseline.h: A Measure: Baseline on Earth
-//# Copyright (C) 1998,1999
+//# Copyright (C) 1998,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -77,7 +77,7 @@ template <class M> class ROScalarMeasColumn;
 // <motivation>
 // </motivation>
 //
-// <todo asof="1998/04/20">
+// <todo asof="2000/06/15">
 //	<li> add some Earth tide model
 // </todo>
 
@@ -138,17 +138,14 @@ public:
 //# Constructors
 // <note role=tip> In the following constructors and other functions, all 
 // <em>MeasRef</em> can be replaced with simple <src>Measure::TYPE</src>
-// where no offsets or frames are needed in the reference. For reasons
-// of compiler limitations the formal arguments had to be specified as
-// <em>uInt</em> rather than the Measure enums that should be used as actual 
-// arguments.</note>
+// where no offsets or frames are needed in the reference. </note>
 // Default constructor; generates the ITRF centre
     MBaseline();
 // Create from data and reference
 // <group>
     MBaseline(const MVBaseline &dt);
     MBaseline(const MVBaseline &dt, const MBaseline::Ref &rf);
-    MBaseline(const MVBaseline &dt, uInt rf);
+    MBaseline(const MVBaseline &dt, MBaseline::Types rf);
     MBaseline(const Measure *dt);
     MBaseline(const MeasValue *dt);
 // </group>
@@ -171,10 +168,18 @@ public:
     virtual uInt type() const;
     static void assert(const Measure &in);
 // </group>
-// Translate reference code
-    static const String &showType(uInt tp);
-// Translate string to reference code
-// <group>
+  // Translate reference code. The uInt version has a check for valid codes
+  // (i.e. it is a safe cast).
+  // <thrown>
+  //   <li> AipsError in the uInt interface if illegal code given
+  // </thrown>
+  // <group>
+  static MBaseline::Types castType(uInt tp);
+  static const String &showType(MBaseline::Types tp);
+  static const String &showType(uInt tp);
+  // </group>
+  // Translate string to reference code
+  // <group>
   static Bool getType(MBaseline::Types &tp, const String &in);
   Bool giveMe(MBaseline::Ref &mr, const String &in);
 // </group>

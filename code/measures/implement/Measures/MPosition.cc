@@ -1,5 +1,5 @@
 //# MPosition.cc:  A Measure: position on Earth
-//# Copyright (C) 1995,1996,1997,1998,1999
+//# Copyright (C) 1995,1996,1997,1998,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -43,7 +43,7 @@ MPosition::MPosition(const MVPosition &dt) :
 MPosition::MPosition(const MVPosition &dt, const MPosition::Ref &rf) : 
   MeasBase<MVPosition, MPosition::Ref>(dt,rf) {}
 
-MPosition::MPosition(const MVPosition &dt, uInt rf) : 
+MPosition::MPosition(const MVPosition &dt, MPosition::Types rf) : 
   MeasBase<MVPosition, MPosition::Ref>(dt,rf) {}
 
 MPosition::MPosition(const Quantity &dt, const Quantity &dt1,
@@ -56,7 +56,7 @@ MPosition::MPosition(const Quantity &dt, const Quantity &dt1,
   MeasBase<MVPosition, MPosition::Ref>(MVPosition(dt,dt1,dt2),rf) {}
 
 MPosition::MPosition(const Quantity &dt, const Quantity &dt1,
-		     const Quantity &dt2, uInt rf) : 
+		     const Quantity &dt2, MPosition::Types rf) : 
   MeasBase<MVPosition, MPosition::Ref>(MVPosition(dt,dt1,dt2),rf) {}
 
 MPosition::MPosition(const Quantity &dt0, const Quantum<Vector<Double> > &dt) :
@@ -68,7 +68,7 @@ MPosition::MPosition(const Quantity &dt0, const Quantum<Vector<Double> > &dt,
   MeasBase<MVPosition, MPosition::Ref>(MVPosition(dt0,dt),rf) {}
 
 MPosition::MPosition(const Quantity &dt0, const Quantum<Vector<Double> > &dt,
-		     uInt rf) : 
+		     MPosition::Types rf) : 
   MeasBase<MVPosition, MPosition::Ref>(MVPosition(dt0,dt),rf) {}
 
 MPosition::MPosition(const Measure *dt) :
@@ -139,12 +139,20 @@ const String *const MPosition::allTypes(Int &nall, Int &nextra,
   return MPosition::allMyTypes(nall, nextra, typ);
 }
 
-const String &MPosition::showType(uInt tp) {
+MPosition::Types MPosition::castType(uInt tp) {
+  DebugAssert(tp < MPosition::N_Types, AipsError);
+  return static_cast<MPosition::Types>(tp);
+}
+
+const String &MPosition::showType(MPosition::Types tp) {
     static const String tname[MPosition::N_Types] = {
 	"ITRF",
 	"WGS84"};
-    DebugAssert(tp < MPosition::N_Types, AipsError);
     return tname[tp];
+}
+
+const String &MPosition::showType(uInt tp) {
+  return MPosition::showType(MPosition::castType(tp));
 }
 
 Bool MPosition::getType(MPosition::Types &tp, const String &in) {
@@ -172,10 +180,6 @@ Bool MPosition::giveMe(MPosition::Ref &mr, const String &in) {
   };
   return True;
 };
-
-Bool MPosition::giveMe(const String &in, MPosition::Ref &mr) {
-  return MPosition::giveMe(mr, in);
-}
 
 Bool MPosition::setOffset(const Measure &in) {
   if (in.type() != Register(static_cast<MPosition *>(0))) return False;

@@ -1,5 +1,5 @@
 //# MBaseline.cc:  A Measure: Baseline on Earth
-//# Copyright (C) 1998,1999
+//# Copyright (C) 1998,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -43,7 +43,7 @@ MBaseline::MBaseline(const MVBaseline &dt) :
 MBaseline::MBaseline(const MVBaseline &dt, const MBaseline::Ref &rf) : 
   MeasBase<MVBaseline, MBaseline::Ref>(dt,rf) {}
 
-MBaseline::MBaseline(const MVBaseline &dt, uInt rf) : 
+MBaseline::MBaseline(const MVBaseline &dt, MBaseline::Types  rf) : 
   MeasBase<MVBaseline, MBaseline::Ref>(dt,rf) {}
 
 MBaseline::MBaseline(const Measure *dt) :
@@ -92,7 +92,12 @@ void MBaseline::assert(const Measure &in) {
   };
 }
 
-const String &MBaseline::showType(uInt tp) {
+MBaseline::Types MBaseline::castType(uInt tp) {
+  DebugAssert(tp < MBaseline::N_Types, AipsError);
+  return static_cast<MBaseline::Types>(tp);
+}
+
+const String &MBaseline::showType(MBaseline::Types tp) {
   static const String tname[MBaseline::N_Types] = {
     "ITRF",
     "J2000",
@@ -111,9 +116,11 @@ const String &MBaseline::showType(uInt tp) {
     "MECLIPTIC",
     "TECLIPTIC",
     "SUPERGAL" };
-  
-  DebugAssert(tp < MBaseline::N_Types, AipsError);
   return tname[tp];
+}
+
+const String &MBaseline::showType(uInt tp) {
+  return MBaseline::showType(MBaseline::castType(tp));
 }
 
 const String *const MBaseline::allMyTypes(Int &nall, Int &nextra,

@@ -1,5 +1,5 @@
 //# MFrequency.h: A Measure: wave characteristics
-//# Copyright (C) 1995,1996,1997,1998,1999
+//# Copyright (C) 1995,1996,1997,1998,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -140,7 +140,8 @@ template <class M> class ROScalarMeasColumn;
 // <motivation>
 // </motivation>
 //
-// <todo asof="1996/10/10">
+// <todo asof="2000/06/15">
+//	<li>
 // </todo>
 
 class MFrequency : public MeasBase<MVFrequency, MeasRef<MFrequency> > {
@@ -186,20 +187,17 @@ public:
 //# Constructors
 // <note role=tip> In the following constructors and other functions, all 
 // <em>MeasRef</em> can be replaced with simple <src>Measure::TYPE</src>
-// where no offsets or frames are needed in the reference. For reasons
-// of compiler limitations the formal arguments had to be specified as
-// <em>uInt</em> rather than the Measure enums that should be used as actual 
-// arguments.</note>
+// where no offsets or frames are needed in the reference. </note>
 // Default constructor; generates a zero rest frequency
     MFrequency();
 // Create from data and reference
 // <group>
     MFrequency(const MVFrequency &dt);
     MFrequency(const MVFrequency &dt, const MFrequency::Ref &rf);
-    MFrequency(const MVFrequency &dt, uInt rf);
+    MFrequency(const MVFrequency &dt, MFrequency::Types rf);
     MFrequency(const Quantity &dt);
     MFrequency(const Quantity &dt, const MFrequency::Ref &rf);
-    MFrequency(const Quantity &dt, uInt rf);
+    MFrequency(const Quantity &dt, MFrequency::Types rf);
     MFrequency(const Measure *dt);
     MFrequency(const MeasValue *dt);
 // </group>
@@ -217,14 +215,20 @@ public:
     virtual uInt type() const;
     static void assert(const Measure &in);
 // </group>
-// Translate reference code
-    static const String &showType(uInt tp);
+// Translate reference code. The uInt version has a check for valid codes
+  // (i.e. it is a safe cast).
+  // <thrown>
+  //   <li> AipsError in the uInt interface if illegal code given
+  // </thrown>
+  // <group>
+  static MFrequency::Types castType(uInt tp);
+  static const String &showType(MFrequency::Types tp);
+  static const String &showType(uInt tp);
+  // </group>
 // Translate string to reference code
 // <group>
   static Bool getType(MFrequency::Types &tp, const String &in);
   Bool giveMe(MFrequency::Ref &mr, const String &in);
-// This one for historic reasons only
-  Bool giveMe(const String &in, MFrequency::Ref &mr);
 // </group>
   // Set the offset in the reference (False if non-matching Measure)
   virtual Bool setOffset(const Measure &in);

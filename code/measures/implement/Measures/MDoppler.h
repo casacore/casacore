@@ -1,5 +1,5 @@
 //# MDoppler.h: A Measure: Doppler shift
-//# Copyright (C) 1995,1996,1997,1998,1999
+//# Copyright (C) 1995,1996,1997,1998,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -123,7 +123,8 @@ template <class M> class ROScalarMeasColumn;
 // <motivation>
 // </motivation>
 //
-// <todo asof="1996/05/04">
+// <todo asof="2000/06/15">
+//	<li>
 // </todo>
 
 class MDoppler : public MeasBase<MVDoppler, MeasRef<MDoppler> > {
@@ -170,20 +171,17 @@ public:
 //# Constructors
 // <note role=tip> In the following constructors and other functions, all 
 // <em>MeasRef</em> can be replaced with simple <src>Measure::TYPE</src>
-// where no offsets or frames are needed in the reference. For reasons
-// of compiler limitations the formal arguments had to be specified as
-// <em>uInt</em> rather than the Measure enums that should be used as actual 
-// arguments.</note>
+// where no offsets or frames are needed in the reference. </note>
 // Default constructor; generates a zero rest Doppler
     MDoppler();
 // Create from data and reference
 // <group>
     MDoppler(const MVDoppler &dt);
     MDoppler(const MVDoppler &dt, const MDoppler::Ref &rf);
-    MDoppler(const MVDoppler &dt, uInt rf);
+    MDoppler(const MVDoppler &dt, MDoppler::Types rf);
     MDoppler(const Quantity &dt);
     MDoppler(const Quantity &dt, const MDoppler::Ref &rf);
-    MDoppler(const Quantity &dt, uInt rf);
+    MDoppler(const Quantity &dt, MDoppler::Types rf);
     MDoppler(const Measure *dt);
     MDoppler(const MeasValue *dt);
 // </group>
@@ -201,14 +199,20 @@ public:
     virtual uInt type() const;
     static void assert(const Measure &in);
 // </group>
-// Translate reference code
-    static const String &showType(uInt tp);
+// Translate reference code. The uInt version has a check for valid codes
+  // (i.e. it is a safe cast).
+  // <thrown>
+  //   <li> AipsError in the uInt interface if illegal code given
+  // </thrown>
+  // <group>
+  static MDoppler::Types castType(uInt tp);
+  static const String &showType(MDoppler::Types tp);
+  static const String &showType(uInt tp);
+  // </group>
 // Translate string to reference code
 // <group>
   static Bool getType(MDoppler::Types &tp, const String &in);
   Bool giveMe(MDoppler::Ref &mr, const String &in);
-// This one for historic reasons only
-  Bool giveMe(const String &in, MDoppler::Ref &mr);
 // </group>
   // Set the offset in the reference (False if non-matching Measure)
   virtual Bool setOffset(const Measure &in);

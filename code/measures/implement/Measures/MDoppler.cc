@@ -1,5 +1,5 @@
 //# MDoppler.cc: A Measure: Doppler shift
-//# Copyright (C) 1995,1996,1997,1998,1999
+//# Copyright (C) 1995,1996,1997,1998,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -40,7 +40,7 @@ MDoppler::MDoppler(const MVDoppler &dt) :
 MDoppler::MDoppler(const MVDoppler &dt, const MDoppler::Ref &rf) : 
   MeasBase<MVDoppler, MDoppler::Ref>(dt,rf) {}
 
-MDoppler::MDoppler(const MVDoppler &dt, uInt rf) : 
+MDoppler::MDoppler(const MVDoppler &dt, MDoppler::Types rf) : 
   MeasBase<MVDoppler, MDoppler::Ref>(dt,rf) {}
 
 MDoppler::MDoppler(const Quantity &dt) : 
@@ -49,7 +49,7 @@ MDoppler::MDoppler(const Quantity &dt) :
 MDoppler::MDoppler(const Quantity &dt, const MDoppler::Ref &rf) : 
   MeasBase<MVDoppler, MDoppler::Ref>(dt,rf) {}
 
-MDoppler::MDoppler(const Quantity &dt, uInt rf) : 
+MDoppler::MDoppler(const Quantity &dt, MDoppler::Types  rf) : 
   MeasBase<MVDoppler, MDoppler::Ref>(dt,rf) {}
 
 MDoppler::MDoppler(const Measure *dt) :
@@ -84,16 +84,23 @@ void MDoppler::assert(const Measure &in) {
   };
 }
 
-const String &MDoppler::showType(uInt tp) {
+MDoppler::Types MDoppler::castType(uInt tp) {
+    DebugAssert(tp < MDoppler::N_Types, AipsError);
+    return static_cast<MDoppler::Types>(tp);
+}
+
+const String &MDoppler::showType(MDoppler::Types tp) {
     static const String tname[MDoppler::N_Types] = {
 	"RADIO", 
 	"OPTICAL",
 	"RATIO",
 	"TRUE",
 	"GAMMA"};
-
-    DebugAssert(tp < MDoppler::N_Types, AipsError);
     return tname[tp];
+}
+
+const String &MDoppler::showType(uInt tp) {
+  return MDoppler::showType(MDoppler::castType(tp));
 }
 
 const String *const MDoppler::allMyTypes(Int &nall, Int &nextra,
@@ -156,10 +163,6 @@ Bool MDoppler::giveMe(MDoppler::Ref &mr, const String &in) {
   };
   return True;
 };
-
-Bool MDoppler::giveMe(const String &in, MDoppler::Ref &mr) {
-  return MDoppler::giveMe(mr, in);
-}
 
 Bool MDoppler::setOffset(const Measure &in) {
   if (in.type() != Register(static_cast<MDoppler *>(0))) return False;

@@ -1,5 +1,5 @@
 //# MRadialVelocity.cc: A Measure: radial velocity
-//# Copyright (C) 1995,1996,1997,1998,1999
+//# Copyright (C) 1995,1996,1997,1998,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -47,7 +47,8 @@ MRadialVelocity::MRadialVelocity(const MVRadialVelocity &dt,
 				 const MRadialVelocity::Ref &rf) : 
   MeasBase<MVRadialVelocity, MRadialVelocity::Ref>(dt,rf) {}
 
-MRadialVelocity::MRadialVelocity(const MVRadialVelocity &dt, uInt rf) : 
+MRadialVelocity::MRadialVelocity(const MVRadialVelocity &dt,
+				 MRadialVelocity::Types rf) : 
   MeasBase<MVRadialVelocity, MRadialVelocity::Ref>(dt,rf) {}
 
 MRadialVelocity::MRadialVelocity(const Quantity &dt) : 
@@ -58,7 +59,8 @@ MRadialVelocity::MRadialVelocity(const Quantity &dt,
 				 const MRadialVelocity::Ref &rf) : 
   MeasBase<MVRadialVelocity, MRadialVelocity::Ref>(dt,rf) {}
 
-MRadialVelocity::MRadialVelocity(const Quantity &dt, uInt rf) : 
+MRadialVelocity::MRadialVelocity(const Quantity &dt,
+				 MRadialVelocity::Types rf) : 
   MeasBase<MVRadialVelocity, MRadialVelocity::Ref>(dt,rf) {}
 
 MRadialVelocity::MRadialVelocity(const Measure *dt) :
@@ -96,7 +98,12 @@ void MRadialVelocity::assert(const Measure &in) {
   };
 }
 
-const String &MRadialVelocity::showType(uInt tp) {
+MRadialVelocity::Types MRadialVelocity::castType(uInt tp) {
+  DebugAssert(tp < MRadialVelocity::N_Types, AipsError);
+  return static_cast<MRadialVelocity::Types>(tp);
+}
+
+const String &MRadialVelocity::showType(MRadialVelocity::Types tp) {
     static const String tname[MRadialVelocity::N_Types] = {
 	"LSR",
 	"LSRK",
@@ -104,8 +111,11 @@ const String &MRadialVelocity::showType(uInt tp) {
 	"GEO",	    
 	"TOPO",
 	"GALACTO"}; 
-    DebugAssert(tp < MRadialVelocity::N_Types, AipsError);
     return tname[tp];
+}
+
+const String &MRadialVelocity::showType(uInt tp) {
+  return MRadialVelocity::showType(MRadialVelocity::castType(tp));
 }
 
 const String *const MRadialVelocity::allMyTypes(Int &nall, Int &nextra,
@@ -164,10 +174,6 @@ Bool MRadialVelocity::giveMe(MRadialVelocity::Ref &mr, const String &in) {
   };
   return True;
 };
-
-Bool MRadialVelocity::giveMe(const String &in, MRadialVelocity::Ref &mr) {
-  return MRadialVelocity::giveMe(mr, in);
-}
 
 Bool MRadialVelocity::setOffset(const Measure &in) {
   if (in.type() != Register(static_cast<MRadialVelocity *>(0))) return False;

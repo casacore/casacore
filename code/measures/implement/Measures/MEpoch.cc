@@ -1,5 +1,5 @@
 //# MEpoch.cc: A Measure: instant in time
-//# Copyright (C) 1995,1996,1997,1998,1999
+//# Copyright (C) 1995,1996,1997,1998,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -41,7 +41,7 @@ MEpoch::MEpoch(const MVEpoch &dt) :
 MEpoch::MEpoch(const MVEpoch &dt, const MEpoch::Ref &rf) : 
   MeasBase<MVEpoch, MEpoch::Ref>(dt,rf) {}
 
-MEpoch::MEpoch(const MVEpoch &dt, uInt rf) : 
+MEpoch::MEpoch(const MVEpoch &dt, MEpoch::Types  rf) : 
   MeasBase<MVEpoch, MEpoch::Ref>(dt,rf) {}
 
 MEpoch::MEpoch(const Quantity &dt) : 
@@ -50,7 +50,7 @@ MEpoch::MEpoch(const Quantity &dt) :
 MEpoch::MEpoch(const Quantity &dt, const MEpoch::Ref &rf) : 
   MeasBase<MVEpoch, MEpoch::Ref>(dt,rf) {}
 
-MEpoch::MEpoch(const Quantity &dt, uInt rf) : 
+MEpoch::MEpoch(const Quantity &dt, MEpoch::Types rf) : 
   MeasBase<MVEpoch, MEpoch::Ref>(dt,rf) {}
 
 MEpoch::MEpoch(const Measure *dt) :
@@ -86,7 +86,12 @@ void MEpoch::assert(const Measure &in) {
   };
 }
 
-const String &MEpoch::showType(uInt tp) {
+MEpoch::Types MEpoch::castType(uInt tp) {
+  DebugAssert((tp & ~MEpoch::EXTRA) < MEpoch::N_Types, AipsError);
+  return static_cast<MEpoch::Types>(tp);
+}
+
+const String &MEpoch::showType(MEpoch::Types tp) {
   static const String tname[MEpoch::N_Types] = {
     "LAST",
     "LMST",
@@ -100,8 +105,11 @@ const String &MEpoch::showType(uInt tp) {
     "TCG",
     "TDB",
     "TCB"};
-  DebugAssert((tp & ~MEpoch::EXTRA) < MEpoch::N_Types, AipsError);
   return tname[tp & ~MEpoch::EXTRA];
+}
+
+const String &MEpoch::showType(uInt tp) {
+  return MEpoch::showType(MEpoch::castType(tp));
 }
 
 const String *const MEpoch::allMyTypes(Int &nall, Int &nextra,
@@ -182,10 +190,6 @@ Bool MEpoch::giveMe(MEpoch::Ref &mr, const String &in) {
   };
   return True;
 };
-
-Bool MEpoch::giveMe(const String &in, MEpoch::Ref &mr) {
-  return MEpoch::giveMe(mr, in);
-}
 
 Bool MEpoch::setOffset(const Measure &in) {
   if (in.type() != Register(static_cast<MEpoch *>(0))) return False;
