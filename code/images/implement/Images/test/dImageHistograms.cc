@@ -46,6 +46,9 @@
 //            The default is to make a histogram of the entire image.
 //    
 // 
+//   blc,trc  Region (1 relative)
+//   inc      Increment to step through image
+//
 //   nbins    This specifies the number of bins, which is the same for each 
 //            histogram.  Note that the bin width is worked out for each histogram 
 //            separately from the data minimum and maximum for that data chunk
@@ -105,7 +108,7 @@
 #include <iostream.h>
 
 
-enum defaults {AXES, RANGE, NDEFAULTS};
+enum defaults {AXES, REGION, RANGE, NDEFAULTS};
 
 
 main (int argc, char **argv)
@@ -120,6 +123,9 @@ try {
 
    inputs.Create("in", "", "Input image name");
    inputs.Create("axes", "-10", "Cursor axes");
+   inputs.Create("blc", "-10", "blc");
+   inputs.Create("trc", "-10", "trc");
+   inputs.Create("inc", "-10", "inc");
    inputs.Create("nbins", "25", "Number of bins");
    inputs.Create("include", "0.0", "Pixel range to include");
    inputs.Create("gauss", "True", "Plot Gaussian equivalent ?");
@@ -132,6 +138,9 @@ try {
 
    const String in = inputs.GetString("in");
    const Block<Int> cursorAxesB(inputs.GetIntArray("axes"));
+   const Block<Int> blcB(inputs.GetIntArray("blc"));
+   const Block<Int> trcB(inputs.GetIntArray("trc"));
+   const Block<Int> incB(inputs.GetIntArray("inc"));
    const Int nBins = inputs.GetInt("nbins");
    const Bool doGauss = inputs.GetBool("gauss");
    const Bool doCumu = inputs.GetBool("cumu");
@@ -146,15 +155,17 @@ try {
  
    Vector<Bool> validInputs(NDEFAULTS);
    validInputs = False;
+   LogOrigin or("imhist", "main()", WHERE);
+   LogIO os(or);
 
 // Check inputs
 
    if (in.empty()) {
-     cout << endl << "You must give an input image" << endl << endl;
+     os << LogIO::SEVERE << "You must give an input image" << LogIO::POST;
      return 1;
    }
    if (device.empty()) {
-     cout << endl << "You must give a plotting device" << endl << endl;
+     os << LogIO::SEVERE << "You must give a plotting device" << LogIO::POST;
      return 1;
    }
 
@@ -166,6 +177,33 @@ try {
    } else {
       for (Int i=0; i<cursorAxes.nelements(); i++) cursorAxes(i)--;
       validInputs(AXES) = True;
+   }
+
+// Convert region things to IPositions (0 relative)
+   
+   IPosition blc;
+   IPosition trc;
+   IPosition inc;
+   if (blcB.nelements() == 1 && blcB[0] == -10) {
+      blc.resize(0);
+   } else {
+      blc.resize(blcB.nelements());
+      for (Int i=0; i<blcB.nelements(); i++) blc(i) = blcB[i] - 1;
+      validInputs(REGION) = True;
+   }
+   if (trcB.nelements() == 1 && trcB[0] == -10) {
+      trc.resize(0);
+   } else {
+      trc.resize(trcB.nelements());
+      for (Int i=0; i<trcB.nelements(); i++) trc(i) = trcB[i] - 1;
+      validInputs(REGION) = True;
+   }
+   if (incB.nelements() == 1 && incB[0] == -10) {
+      inc.resize(0);
+   } else {
+      inc.resize(incB.nelements());
+      for (Int i=0; i<incB.nelements(); i++) inc(i) = incB[i];
+      validInputs(REGION) = True;
    }
 
 // Convert inclusion range to vector
@@ -194,15 +232,16 @@ try {
   
 // Construct histogram object
   
-      LogOrigin or("imhist", "main()", WHERE);
-      LogIO os(or);
       ImageHistograms<Float> histo(inImage, os);
- 
+
    
 // Set state
       
       if (validInputs(AXES)) {
          if (!histo.setAxes(cursorAxes)) return 1;
+      }
+      if (validInputs(REGION)) {
+         if (!histo.setRegion(blc, trc, inc)) return 1;
       }
       if (!histo.setNBins(nBins)) return 1;
       if (validInputs(RANGE)) {
@@ -213,20 +252,44 @@ try {
       if (!histo.setStatsList(doList)) return 1;
       if (!histo.setPlotting(device, nxy)) return 1;
 
-// Display histogram
 
-      if (!histo.display()) return 1;
+// Get histograms   
+
+      Array<Float> values, counts;
+      os << LogIO::NORMAL << "Recovering histogram arrays" << LogIO::POST;
+      Bool ok = histo.getHistograms(values,counts);
+//      os << "values=" << values.ac() << endl;
+//      os << "counts=" << counts.ac() << endl;
+
+
+// Test copy constructor
+
+      os << LogIO::NORMAL << "Applying copy constructor" << endl;
+      ImageHistograms<Float> histo2(histo);
+
+// Test assignment operator
+
+      os << "Applying assignment operator" << LogIO::POST;
+      histo = histo2;
+
+
+// Display histograms
+
+      ok = histo.display();
+
 
    } else {
-      cout << "images of type " << imageType << " not yet supported" << endl;
-      return 1;
+      os << "images of type " << imageType << " not yet supported" << endl;
+      exit(1);
    }
 }
    catch (AipsError x) {
       cerr << "aipserror: error " << x.getMesg() << endl;
-      return 1;
+      exit(1);
   }end_try;
 
-  return 0;
+  exit(0)
+
+;
 
 }
