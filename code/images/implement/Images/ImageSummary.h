@@ -181,6 +181,12 @@ public:
 // Retrieve whether image has mask or not
    Bool hasAMask () const;
 
+// Retrieve mask names
+   Vector<String> maskNames() const;
+
+// Retrieve default mask name.  Empty if none
+   String defaultMaskName() const;
+
 // List all header information.  By default, the reference
 // values and pixel increments are converted to a "nice" unit before 
 // formatting (e.g. RA is  shown as HH:MM:SS.S).  If <src>nativeFormat</src> 
@@ -267,6 +273,8 @@ private:
                     const Int precRefValRADEC,
                     const Int precRefPixFloat,
                     const Int precIncSci) const;
+
+String makeMasksString() const;
 
 Bool pixelToVelocity(Double& velocity,
                      const Double pixel,

@@ -338,6 +338,20 @@ Bool ImageSummary<T>::hasAMask () const
 
 
 template <class T> 
+Vector<String> ImageSummary<T>::maskNames() const
+{
+   return pImage_p->regionNames(RegionHandler::Masks);
+}
+   
+template <class T> 
+String ImageSummary<T>::defaultMaskName() const
+{
+   return pImage_p->getDefaultMask();
+}
+
+
+
+template <class T> 
 void ImageSummary<T>::list (LogIO& os,
                             const MDoppler::Types velocityType,
                             const Bool nativeFormat) 
@@ -371,7 +385,8 @@ void ImageSummary<T>::list (LogIO& os,
       os << "Date observation : " << obsDate(epoch) << endl;
    }
    if (hasAMask()) {
-      os << "Image mask       : Present" << endl;
+     String list = makeMasksString();
+     os << "Image mask       : " << list << endl;
    } else {
       os << "Image mask       : Absent" << endl;
    }
@@ -1179,3 +1194,33 @@ Bool ImageSummary<T>::velocityIncrement(Double& velocityInc,
 }
 
 
+         
+template <class T> 
+String ImageSummary<T>::makeMasksString() const
+{
+   const String defaultMask = defaultMaskName();
+   const Vector<String> masks = maskNames();
+   const uInt nMasks = masks.nelements();
+//
+   ostrstream oss;
+   if (!defaultMask.empty()) oss << defaultMask;
+//
+   if (!defaultMask.empty() && nMasks==1) {
+      return String(oss);
+   }
+//
+   oss << " [";
+   Bool first = True;
+   for (uInt i=0; i<nMasks; i++) {
+      if (masks(i)!=defaultMask) {
+         if (first) {
+            oss << masks(i);
+            first = False;
+         } else {
+            oss << ", " << masks(i);
+         }
+      }
+   } 
+   oss << "]";
+   return String(oss);
+}
