@@ -431,7 +431,7 @@ void ImageConcat<T>::checkContiguous (Bool& isContig, Bool& warnContig, const IP
                warnContig = False;
             }
          } else {
-           os << "Images are not contiguous along the concatenation axis" 
+           os << "Images are not contiguous along the concatenation axis - consider relax=T" 
               << LogIO::EXCEPTION;
          }
          isContig = False;
@@ -452,7 +452,7 @@ void ImageConcat<T>::checkContiguous (Bool& isContig, Bool& warnContig, const IP
                warnContig = False;
             }
          } else {
-           os << "Images are not contiguous along the concatenation axis" 
+           os << "Images are not contiguous along the concatenation axis - consider relax=T" 
               << LogIO::EXCEPTION;
          }
          isContig = False;
