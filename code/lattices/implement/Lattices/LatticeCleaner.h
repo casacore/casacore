@@ -122,6 +122,7 @@ public:
 
   // return how many iterations we did do
   Int iteration() { return itsIteration; }
+  Int numberIterations() { return itsIteration; }
 
   // what iteration number to start on
   void startingIteration(const Int starting = 0) {itsStartingIter = starting; }
@@ -145,6 +146,9 @@ public:
   // Look at what WE think the residuals look like
   // Assumes the first scale is zero-sized
   Lattice<T>*  residual() { return itsDirtyConvScales[0]; }
+
+  // Method to return threshold, including any speedup factors
+  Float threshold();
 
 private:
   //# The following functions are used in various places in the code and are
@@ -189,9 +193,6 @@ private:
   // Threshold speedup factors:
   Bool  itsDoSpeedup;  // if false, threshold does not change with iteration
   Float itsNDouble;
-
-  // Method to return threshold, including any speedup factors
-  Float threshold();
 
   // Stop now?
   Bool stopnow();
