@@ -122,6 +122,14 @@ int main()
          CoordinateSystem cSys2 = makeCoordinateSystem(nCoords, types, sTypes,
                                                        iDC, iSpC, iTC, iStC, iLC,
                                                        dC, spC, tC, stC, lC);
+
+// near tests
+
+         if (!cSys1.near(cSys1)) {
+            String msg = String("Failed near test 0 because ") +
+                         cSys1.errorMessage();
+            throw(AipsError(msg));
+         }
          if (!cSys1.near(cSys2)) {
             String msg = String("Failed near test 1 because ") +
                          cSys1.errorMessage();
@@ -132,6 +140,99 @@ int main()
          excludeAxes(1) = 2;
          if (!cSys1.near(cSys2, excludeAxes)) {
             String msg = String("Failed near test 2 because ") +
+                         cSys1.errorMessage();
+            throw(AipsError(msg));
+         }
+
+// nearPixel tests
+
+         if (!cSys1.nearPixel(cSys1)) {
+            String msg = String("Failed nearPixel test 0 because ") +
+                         cSys1.errorMessage();
+            throw(AipsError(msg));
+         }
+         if (!cSys1.nearPixel(cSys2)) {
+            String msg = String("Failed nearPixel test 1 because ") +
+                         cSys1.errorMessage();
+            throw(AipsError(msg));
+         }
+//
+         Vector<Double> refVal1(cSys1.referenceValue().copy());         
+         Vector<Double> refPix1(cSys1.referencePixel().copy());         
+         Vector<Double> inc1(cSys1.increment().copy());         
+         Vector<Double> refVal2(cSys2.referenceValue().copy());         
+         Vector<Double> refPix2(cSys2.referencePixel().copy());         
+         Vector<Double> inc2(cSys2.increment().copy());         
+//
+         refVal1(0) += inc1(0);
+         cSys1.setReferenceValue(refVal1);
+         if (cSys1.nearPixel(cSys2)) {
+            String msg = String("Unexpectedly passed nearPixel test 2");
+            throw(AipsError(msg));
+         }
+         refVal1(0) -= inc1(0);
+         cSys1.setReferenceValue(refVal1);
+         refVal2(0) += inc2(0);
+         cSys2.setReferenceValue(refVal2);
+         if (cSys1.nearPixel(cSys2)) {
+            String msg = String("Unexpectedly passed nearPixel test 3");
+            throw(AipsError(msg));
+         }
+         refVal2(0) -= inc2(0);
+         cSys2.setReferenceValue(refVal2);
+//
+//
+         refPix1(0) += 1;
+         cSys1.setReferencePixel(refPix1);
+         if (cSys1.nearPixel(cSys2)) {
+            String msg = String("Unexpectedly passed nearPixel test 4");
+            throw(AipsError(msg));
+         }
+         refPix1(0) -= 1;
+         cSys1.setReferencePixel(refPix1);
+         refPix2(0) += 1;
+         cSys2.setReferencePixel(refPix2);
+         if (cSys1.nearPixel(cSys2)) {
+            String msg = String("Unexpectedly passed nearPixel test 5");
+            throw(AipsError(msg));
+         }
+         refPix2(0) -= 1;
+         cSys2.setReferencePixel(refPix2);
+////
+         inc1(0) *= 2.0;
+         cSys1.setIncrement(inc1);
+         if (cSys1.nearPixel(cSys2)) {
+            String msg = String("Unexpectedly passed nearPixel test 6");
+            throw(AipsError(msg)); 
+         }
+         inc1(0) /= 2.0;
+         cSys1.setIncrement(inc1);
+         inc2(0) *= 2.0;
+         cSys2.setIncrement(inc2);
+         if (cSys1.nearPixel(cSys2)) {
+            String msg = String("Unexpectedly passed nearPixel test 7");
+            throw(AipsError(msg));
+         }
+
+         inc2(0) /= 2.0;
+         cSys2.setIncrement(inc2);
+////
+         Int pAxis = cSys1.nPixelAxes() - 2;
+         cSys1.removePixelAxis(pAxis, 0.0);
+         pAxis = 1;
+         cSys1.removePixelAxis(pAxis, 0.0);
+         if (cSys1.nearPixel(cSys2)) {
+            String msg = String("Unexpectedly passed nearPixel test 8");
+            throw(AipsError(msg));
+         }
+
+//
+         pAxis = cSys2.nPixelAxes() - 2;
+         cSys2.removePixelAxis(pAxis, 0.0);
+         pAxis = 1;
+         cSys2.removePixelAxis(pAxis, 0.0);
+         if (!cSys1.nearPixel(cSys2)) {
+            String msg = String("Failed nearPixel test 9 because ") +
                          cSys1.errorMessage();
             throw(AipsError(msg));
          }
