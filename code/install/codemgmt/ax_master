@@ -3242,3 +3242,4 @@
 13 118 src rm trial/implement/DisplayEvents/WCITStdFiddler.h
 13 118 src rm trial/implement/DisplayEvents/WCITMapFiddler.cc
 13 118 src rm trial/implement/DisplayEvents/WCITStdFiddler.cc
+13 129 src rm trial/apps/gDisplay/templates
