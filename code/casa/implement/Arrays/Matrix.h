@@ -65,6 +65,17 @@ template<class T> class Vector;
 // mf.diagonal() = 1;
 // </srcblock>
 //
+// Correct indexing order of a matrix is:
+// <srcblock>
+// Matrix<Int> mi(n1,n2)
+// for (uInt j=0; j<n2; j++) {
+//    for (uInt i=0; i<n1; i++) {
+//       mi(i,j) = i*j;
+//    }      
+// }
+// </srcblock>
+//
+//
 // Element-by-element arithmetic and logical operations are available (in
 // aips/ArrayMath.h and aips/ArrayLogical.h). Other Matrix operations (e.g.
 // LU decomposition) are available, and more appear periodically.
