@@ -39,6 +39,12 @@
 #include <sys/stat.h>               // needed for mkdir
 #include <errno.h>                  // needed for errno
 #include <string.h>                 // needed for strerror
+#if defined(AIPS_SOLARIS)
+#include <sys/statvfs.h>            // needed for statvfs
+#define statfs statvfs
+#else
+#include <sys/vfs.h>
+#endif
 
 // Shouldn't be needed, but is needed to get rename under linux. The
 // man page claims it's in unistd.h.
@@ -133,6 +139,23 @@ Bool Directory::isEmpty() const
     return True;
 }
 
+uLong Directory::freeSpace() const
+{
+    struct statfs buf;
+    if (statfs (itsFile.path().expandedName().chars(), &buf) < 0) {
+	throw (AipsError ("Directory::freeSpace error on " +
+			  itsFile.path().expandedName() +
+			  ": " + strerror(errno)));
+    }
+#if defined(AIPS_SOLARIS)
+    //# On Solaris the fragment size usually contains the true block size.
+    if (buf.f_frsize > 0) {
+	return buf.f_frsize * buf.f_bavail;
+    }
+#endif
+    return buf.f_bsize * buf.f_bavail;
+}
+
 void Directory::create (Bool overwrite)
 {
     // If overwrite is False the directory will not be overwritten.
@@ -211,14 +234,18 @@ void Directory::copy (const Path& target, Bool overwrite,
 	SymLink(targetFile).remove();
     }
     // Copy the entire directory recursively using the system function cp.
-    String call("cp -r ");
-    call += itsFile.path().expandedName() + " " + targetName.expandedName();
-    system (call);
+    String command("cp -r ");
+    command += itsFile.path().expandedName() + " " + targetName.expandedName();
+    system (command);
     // Give write permission to user if needed.
     if (setUserWritePermission) {
-	String call("chmod -Rf u+w ");
-	call += targetName.expandedName();
-	system (call);
+#if defined(__hpux__)
+	command = "chmod -R u+w ";
+#else
+	command = "chmod -Rf u+w ";
+#endif
+	command += targetName.expandedName();
+	system (command);
     }
 }
 

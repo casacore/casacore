@@ -117,6 +117,11 @@ public:
     // If the directory does not exist, an exception will be thrown.
     uInt nEntries() const;
 
+    // Get the amount of free space (in bytes) on the file system this
+    // directory is on. When the directory path is a symbolic link, that
+    // link is resolved first.
+    uLong freeSpace() const;
+
     // Create the directory.
     // <br>If the directory exists and overwrite=True, it will be removed
     // (recursively). Otherwise an exception is thrown.
