@@ -1,4 +1,4 @@
-//# ImageProfileFit.h: Class to fit profiles
+//# ImageProfileFit.h: Class to fit profiles in images
 //# Copyright (C) 1997,1998,1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -62,6 +62,31 @@ class LogIO;
 // </prerequisite>
 
 // <synopsis> 
+// The Record used to contain models/fits is as follows.  Other fields
+// will be ignored.
+//
+// <src>
+// Field                     Type             Description
+//-----------------------------------------------------------
+// xabs                      Bool              Are the x-values absolute or 
+//                                             relative to the reference pixel
+// xunit                     String            The x unit 
+// yunit                     String            The y unit
+// doppler                   String            doppler type ('radio', 'optical', 'true' etc)
+//                                             Only required if x unit consistent with m/s
+// elements                  Record            Holds SpectralElement descriptions.  
+// elements[i]               Record            There will be N of these where N is the
+//                                             number of spectral elements.  Each elements[i]
+//                                             holds a record description that SpectralElement::fromRecord
+//                                             can read or writes
+//         .type             String            Type of SE (gaussian, polynomial, etc)
+//         .parameters       Vector<Double>    The parameters of the element.
+//         .errors           Vector<Double>    The errors of parameters of the element.
+//         .fixed            Vector<Bool>      Says whether parameter is going to be held fixed when fitting
+//                                             This field is not used by SpectralElement.  If its
+//                                             not there, all parameters are fitted for.
+//
+// </src>
 // </synopsis> 
 // <example>
 // <srcblock>
@@ -95,6 +120,12 @@ public:
                   uInt profileAxis);
     void setData (const ImageInterface<Float>& image,
                   uInt profileAxis);
+    //</group>
+
+    // Set data directly. x-units can be 'pix'. if absolute
+    // they must be 0-rel
+    // Say whether positions are absolute or relative (to somewhere)
+    //<group>
     void setData (const Quantum<Vector<Float> >& x, 
                   const Quantum<Vector<Float> >& y,
                   Bool isAbs);
@@ -110,12 +141,19 @@ public:
     // False if can't find any elements.
     Bool estimate (uInt nMax = 0);
 
-    // Decode the Glish record holding estimates and adds
-    // to the fitter.  
+    // Decode the Glish record holding SpectralElements and adds
+    // them to the fitter.   Absolute pixel coordinate units are 1-rel on input.
     uInt addElements (const RecordInterface& estimate);
 
-    // Get elements into a record.  USe doppler and abs of addElements
-    // Only returns False if the field is already defined.
+    // Gets SpectralElements into a record.  When the data source is an image:
+    // the xunits are selected (in order of preference) xunits specified in <src>addElements</src>,
+    // preferred profile axis units in the CoordinateSystem of the image, native units
+    // of the profile axis; xabs and doppler are those specified in <src>addElements</src>
+    // or True and 'radio' of its not called. If the data source is not an image,
+    // the xunits, yunits, xabs are those of the source vectors, the doppler is 'radio'
+    //
+    // Only returns False if the field is already defined. Absolute pixel 
+    // coordinate units  are 1-rel on output.
     Bool getElements (RecordInterface& estimate,
                       const String& xUnit);
 
