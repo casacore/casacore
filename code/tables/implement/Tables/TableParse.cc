@@ -1994,7 +1994,7 @@ void TableParseSelect::execute (Bool setInGiving, String& commandType,
     //# Give an error if no command part has been given.
     if (mustSelect  &&  commandType_p == 1  &&  node_p == 0  &&  sort_p == 0
     &&  columnNames_p.nelements() == 0  &&  resultSet_p == 0
-    &&  limit_p < 0  &&  offset_p <= 0) {
+    &&  limit_p <= 0  &&  offset_p <= 0) {
 	throw (TableError
 	    ("TableParse error: no projection, selection, sorting, "
 	     "limit, offset, or giving-set given in SELECT command"));
