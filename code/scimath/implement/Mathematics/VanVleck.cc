@@ -38,17 +38,51 @@
 // initial values for the static data members
 
 Interpolate1D<Double, Double> *VanVleck::itsInterp = NULL;
+uInt VanVleck::itsSize = 33;
+uInt VanVleck::itsNx = 0;
+uInt VanVleck::itsNy = 0;
+Bool VanVleck::itsEquiSpaced = False;
 Vector<Double> VanVleck::itsQx0;
 Vector<Double> VanVleck::itsQx1;
 Vector<Double> VanVleck::itsQy0;
 Vector<Double> VanVleck::itsQy1;
-Int VanVleck::itsSize = 65;
+Vector<Double> VanVleck::itsQx0Qx0;
+Vector<Double> VanVleck::itsQy0Qy0;
+Matrix<Double> VanVleck::itsQx0Qy0;
+Matrix<Double> VanVleck::itsQx1Qy1diffs;
+Double VanVleck::itsXlev = 0.0;
+Double VanVleck::itsYlev = 0.0;
+Double VanVleck::itsXmean = 0.0;
+Double VanVleck::itsYmean = 0.0;
 
-void VanVleck::size(Int npts)
+#define NEED_UNDERSCORES
+#if defined(NEED_UNDERSCORES)
+#define dqags dqags_
+#define vvr3 vvr3_
+#define vvr9 vvr9_
+#endif
+
+extern "C" { 
+   void dqags(Double (*)(Double *), Double*, Double *, Double *, Double *, Double *,
+	      Double *, Int *, Int*, Int *, Int *, Int *, Int *, Double *);
+}
+
+extern "C" { 
+   Double vvr3(Double*, Double *, Double *, Double *, Double *);
+}
+
+extern "C" { 
+   Double vvr9(Double*, Double *, Double *, Double *, Double *);
+}
+
+
+
+void VanVleck::size(uInt npts)
 {
-  if (itsSize != npts) {
-    itsSize = npts;
-  }
+    if (itsSize != npts) {
+	itsSize = npts;
+	initInterpolator();
+    }
 }
 
 uInt VanVleck::getsize()
@@ -59,48 +93,113 @@ uInt VanVleck::getsize()
 void VanVleck::setQuantization(const Matrix<Double> &qx, 
 			       const Matrix<Double> &qy)
 {
+    // should double check that first dimension is 2
 
-  // should double check that first dimension is 2
-  if (itsQx1.nelements() != qx.ncolumn()) {
-    itsQx0.resize(qx.ncolumn());
-    itsQx1.resize(qx.ncolumn());
-  }
-  if (itsQy0.nelements() != qy.ncolumn()) {
-    itsQy0.resize(qy.ncolumn());
-    itsQy1.resize(qy.ncolumn());
-  }
-  itsQx0 = qx.row(0);
-  itsQx1 = qx.row(1);
-  itsQy0 = qy.row(0);
-  itsQy1 = qy.row(1);
-  initInterpolator();
+    uInt nx = qx.ncolumn();
+    uInt ny = qy.ncolumn();
+    Bool nxChanged = itsNx != nx;
+    Bool nyChanged = itsNy != ny;
+
+    if (nxChanged) {
+	itsQx0.resize(nx);
+	itsQx1.resize(nx);
+	itsQx0Qx0.resize(nx);
+	itsNx = nx;
+    }
+    if (nyChanged) {
+	itsQy0.resize(ny);
+	itsQy1.resize(ny);
+	itsQy0Qy0.resize(ny);
+	itsNy = ny;
+    }
+    if (nxChanged || nyChanged) {
+	itsQx0Qy0.resize(nx,ny);
+	itsQx1Qy1diffs.resize(nx,ny);
+    }
+    itsQx0 = qx.row(0);
+    itsQx1 = qx.row(1);
+    itsQy0 = qy.row(0);
+    itsQy1 = qy.row(1);
+    for (uInt i=0;i<itsNx;i++) {
+	itsQx0Qx0[i] = -.5*itsQx0[i]*itsQx0[i];
+	Double a = itsQx1[i+1]-itsQx1[i];
+	for (uInt j=0;j<itsNy;j++) {
+	    itsQx0Qy0(i,j) = itsQx0[i]*itsQy0[j];
+	    itsQx1Qy1diffs(i,j) = a*(itsQy1[j+1]-itsQy1[j]);
+	}
+    }
+    for (uInt j=0;j<itsNy;j++) {
+	itsQy0Qy0[j] = -.5*itsQy0[j]*itsQy0[j];
+    }
+    initInterpolator();
 }
+
+Bool VanVleck::setEquiSpaced(Double xlev, Double ylev,
+			     Double xmean, Double ymean,
+			     Int n)
+{
+    Bool result = n==3 || n==9;
+    if (result) {
+	itsNx = itsNy = n;
+	itsXlev = xlev;
+	itsYlev = ylev;
+	itsXmean = xmean;
+	itsYmean = ymean;
+	itsEquiSpaced = True;
+	initInterpolator();
+    }
+    return result;
+}
+
 
 void VanVleck::initInterpolator()
 {
   delete itsInterp;
   itsInterp = 0;
 
-  if (itsQx0.nelements() == 0) return;
-
   Vector<Double> rs(itsSize);
   Vector<Double> rhos(itsSize);
+
   Double twoN = 2.0*itsSize;
   Double denom = cos(C::pi/twoN);
   Int midi = (itsSize-1)/2;
   rhos[midi] = 0.0;
   rs[midi] = 0.0;
 
-  for (Int i=1;i<=midi;i++) {
-    // for the rhos, choose the modified Chebyshev points
-    // upper side
-    Double hi = midi+i;
-    rhos[hi] = -cos(Double(2*hi+1)*C::pi/twoN)/denom;
-    rs[hi] = rs[hi-1] + rinc(rhos[hi-1],rhos[hi]);
-    // lower side
-    Double lo = midi-i;
-    rhos[lo] = -cos(Double(2*lo+1)*C::pi/twoN)/denom;
-    rs[lo] = rs[lo+1] + rinc(rhos[lo+1],rhos[lo]);
+  if (!itsEquiSpaced) {
+      if (itsQx0.nelements() == 0) return;
+
+      for (Int i=1;i<=midi;i++) {
+	  // for the rhos, choose the modified Chebyshev points
+	  // upper side
+	  Double hi = midi+i;
+	  rhos[hi] = -cos(Double(2*hi+1)*C::pi/twoN)/denom;
+	  rs[hi] = rs[hi-1] + rinc(rhos[hi-1],rhos[hi]);
+	  // lower side
+	  Double lo = midi-i;
+	  rhos[lo] = -cos(Double(2*lo+1)*C::pi/twoN)/denom;
+	  rs[lo] = rs[lo+1] + rinc(rhos[lo+1],rhos[lo]);
+      }
+  } else {
+      for (Int i=1;i<=midi;i++) {
+	  // for the rhos, choose the modified Chebyshev points
+	  // upper side
+	  Double hi = midi+i;
+	  rhos[hi] = -cos(Double(2*hi+1)*C::pi/twoN)/denom;
+	  // lower side
+	  Double lo = midi-i;
+	  rhos[lo] = -cos(Double(2*lo+1)*C::pi/twoN)/denom;
+      }
+      if (itsNx == 3) {
+	  for (uInt i=0;i<rhos.nelements();i++) {
+	      rs[i] = vvr3(&itsXmean, &itsYmean, &itsXlev, &itsYlev, &(rhos[i]));
+	  }
+      } else {
+	  // it must be 9
+	  for (uInt i=0;i<rhos.nelements();i++) {
+	      rs[i] = vvr9(&itsXmean, &itsYmean, &itsXlev, &itsYlev, &(rhos[i]));
+	  }
+      }
   }
   ScalarSampledFunctional<Double> fx(rs);
   ScalarSampledFunctional<Double> fy(rhos);
@@ -120,29 +219,20 @@ void VanVleck::getTable(Vector<Double> &rs,
 
 double VanVleck::drbydrho(double *rho)
 {
-  Double s = 0.0;
-  Double a;
-  for (uInt i=0;i<(itsQx0.nelements()-1);i++) {
-    a = itsQx1[i+1]-itsQx1[i];
-    for (uInt j=0;j<(itsQy0.nelements()-1);j++) {
-      s+=a*(itsQy1[j+1]-itsQy1[j])
-	*g(itsQx0[i],itsQy0[j],*rho);
+    Double s = 0.0;
+    Double thisRho = *rho;
+    Double oneMinusRhoRho = 1.0 - thisRho*thisRho;
+    Double denom = C::_2pi*sqrt(oneMinusRhoRho);
+
+    for (uInt i=0;i<(itsNx-1);i++) {
+	for (uInt j=0;j<(itsNy-1);j++) {
+	    s+=itsQx1Qy1diffs(i,j) *
+		exp((itsQx0Qx0[i]+thisRho*itsQx0Qy0(i,j)+itsQy0Qy0[j])/oneMinusRhoRho) /
+		denom;
+	}
     }
-  }
-  return s;
+    return s;
 }
-
-#define NEED_UNDERSCORES
-#if defined(NEED_UNDERSCORES)
-#define dqags dqags_
-#endif
-
-extern "C" { 
-   void dqags(Double (*)(Double *), Double*, Double *, Double *, Double *, Double *,
-	      Double *, Int *, Int*, Int *, Int *, Int *, Int *, Double *);
-}
-
-
 
 Double VanVleck::rinc(Double &rhoi, Double &rhof)
 {
