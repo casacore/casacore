@@ -185,16 +185,19 @@ public:
   const Quantum<Vector<DComplex> > &asQuantumVectorDComplex() ;
   // </group>
 
-  // Create a Quantum from a record
+  // Create a Quantum from a record or a string.
   // A valid record will contain the following fields:
   // <ul>
   //  <li> value: contains a numeric value of Int, Float, Double, Complex,
   //		DComplex or a vector thereof
-  //  <li> unit: a string with a unit valid.
+  //  <li> unit: a string with a valid unit string.
   // </ul>
+  // A valid string will be one of the special time/angle formats or a
+  // value with a valid unit string.
   // Illegal values or units will return False and write an error message.
   // <group>
   virtual Bool fromRecord(String &error, const RecordInterface &in);
+  virtual Bool fromString(String &error, const String &in);
   Bool fromRecord(String &error, const GlishRecord &in);
   // </group>
   // Create a record from a Quantum. A False return and an error message is

@@ -381,6 +381,18 @@ Bool QuantumHolder::fromRecord(String &error,
   return False;
 }
 
+Bool QuantumHolder::fromString(String &error,
+			       const String &in) {
+  Quantum<Double> res;
+  if (!Quantum<Double>::read(res, in)) {
+    error += String("Illegal input units or format in ") +
+      String("QuantumHolder::fromString\n");
+    return False;
+  };
+  hold_p.set(new Quantum<Double>(res));
+  return True;
+}
+
 Bool QuantumHolder::toRecord(String &error, RecordInterface &out) const {
   if (hold_p.ptr()) {
     if (out.isDefined("value")) out.removeField(RecordFieldId("value"));
