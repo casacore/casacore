@@ -69,26 +69,30 @@ if ($upswn) exit 0
 #
 # Execute
 #
-if (! -r $ldir/${tp}.found) then
+if (! -r $ldir/${tp}${tpbx}.found) then
    echo "No ${tp}.found present. Cannot proceed."
    echo "Execute UPfind first"
    exit 1
 endif
 
-set a = ( `wc $ldir/${tp}.found` )
-echo $a[1] files in ${tp}.found
-unset a
+if (! $upswQ) then
+  set a = ( `wc $ldir/${tp}${tpbx}.found` )
+  echo $a[1] files in ${tp}.found
+  unset a
+  echo "Finding locked files..."
+endif
 
-echo "Finding locked files..."
 if (-e $ldir/${tp}.locked) rm -f $ldir/${tp}.locked
 touch $ldir/${tp}.locked
 foreach i (`alog -m -L -t | grep ".*/.*/" | grep  -v " "`)
    grep $i $ldir/${tp}.found >> $ldir/${tp}.locked
 end
 
-set a = ( `wc $ldir/${tp}.locked` )
-echo $a[1] files in ${tp}.locked
-unset a
+if (! $upswQ) then
+  set a = ( `wc $ldir/${tp}.locked` )
+  echo $a[1] files in ${tp}.locked
+  unset a
+endif
 
 exit 0
 #
