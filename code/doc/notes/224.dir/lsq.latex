@@ -464,7 +464,7 @@ would be introduced. In the more complex cases the precise, let alone the
 best, form for these additional equations is difficult to determine (e.g. the
 redundancy situation in Westerbork).
 
-A method known as `Single value decomposition' (\SVD) can be used to obtain
+A method known as `Singular value decomposition' (\SVD) can be used to obtain
 the minimal set of orthogonal equations that have to be added to solve the
 \LSQ\ problem. Several implementations exist in the literature.
 
