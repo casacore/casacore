@@ -591,7 +591,7 @@ private:
 // applying that mask to the unwmoothed data
    void doMomSm        (Vector<T>& calcMoments,
                         const Vector<T>& data,
-                        const Vector<Float>& smoothedData,
+                        const Vector<T>& smoothedData,
                         const Bool& doMedianI, 
                         const Bool& doMedianV,
                         const Bool& doAbsDev,
