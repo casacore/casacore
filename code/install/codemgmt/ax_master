@@ -4776,3 +4776,4 @@
 14 316 sys rm libexec/dish_avgman.g
 14 316 src rm trial/apps/dish/dish_blapp.g
 14 316 sys rm libexec/dish_blapp.g
+14 316 src rm trial/apps/dish/dish_blman.g
