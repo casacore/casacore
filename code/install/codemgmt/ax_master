@@ -2562,3 +2562,5 @@
 11 375 src rm trial/implement/DisplayEvents/ZoomMotionEH.h
 11 375 src rm trial/implement/DisplayEvents/ZoomPositionEH.cc
 11 375 src rm trial/implement/DisplayEvents/ZoomPositionEH.h
+11 375 src rm aips/apps/gtable/gtable.help
+11 375 src rm nfra/apps/gplot1d/gplot1d.help
