@@ -91,6 +91,9 @@ int main(){
     aVal = AipsrcValue<Double>::get(n);
     aVal1 = AipsrcValue<Double>::get(n1);
     cout << "Values: " << aVal << ", " << aVal1 << endl;
+    AipsrcValue<Double>::save(n);
+    AipsrcValue<Double>::save(n1);
+    AipsrcValue<Bool>::save(n2);
   }
 
   return 0; 
