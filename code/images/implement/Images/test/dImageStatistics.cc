@@ -138,7 +138,6 @@ try {
    inputs.create("trc", "-10", "trc");
    inputs.create("inc", "-10", "inc");
    inputs.create("stats", "mean,sigma", "Statistics to plot");
-   inputs.create("lel", "", "LEL statistic");
    inputs.create("include", "0.0", "Pixel range to include");
    inputs.create("exclude", "0.0", "Pixel range to exclude");
    inputs.create("list", "True", "List statistics as well as plot ?");
@@ -153,7 +152,6 @@ try {
    const Block<Int> trcB(inputs.getIntArray("trc"));
    const Block<Int> incB(inputs.getIntArray("inc"));
    const String statsToPlot = inputs.getString("stats");
-   const String lelExpr = inputs.getString("lel");
    const Block<Double> includeB = inputs.getDoubleArray("include");
    const Block<Double> excludeB = inputs.getDoubleArray("exclude");
    const Bool doList = inputs.getBool("list");
@@ -293,7 +291,6 @@ try {
 // Construct statistics object
    
       ImageStatistics<Float> stats(*pSubImage2, os, True, forceDisk);
-
   
 // Clean up SUbImage pointers
 
@@ -332,54 +329,21 @@ try {
 
      os << "Recovering display axes" << endl;
      Vector<Int> displayAxes = stats.displayAxes();
-
-     Array<Float> data;
-     os << LogIO::NORMAL << "Recovering npts array"  << endl;
-     if (!stats.getNPts(data)) {
-        os << stats.errorMessage() << LogIO::POST;
+//
+     os << endl << endl;
+     os << "Recover array for each statistics type " << endl;
+     const Int nStats = LatticeStatsBase::NSTATS;
+     for (Int i=0; i<nStats; i++) {
+       os << "Statistic " << LatticeStatsBase::toStatisticName(i) << LogIO::POST;
+       Array<Double> a;
+       LatticeStatsBase::StatisticsTypes t = static_cast<LatticeStatsBase::StatisticsTypes>(i);
+       stats.getStatistic (a, t, True);
      }
-     os << "Recovering sum array" << endl;
-     if (!stats.getSum(data)) {
-        os << stats.errorMessage() << LogIO::POST;
-     }
-     os << "Recovering sum squared array" << endl;
-     if (!stats.getSumSquared(data)) {
-        os << stats.errorMessage() << LogIO::POST;
-     }
-     os << "Recovering min array" << endl;
-     if (!stats.getMin(data)) {
-        os << stats.errorMessage() << LogIO::POST;
-     }
-     os << "Recovering max array" << endl;
-     if (!stats.getMax(data)) {
-        os << stats.errorMessage() << LogIO::POST;
-     }
-     os << "Recovering mean array" << endl;
-     if (!stats.getMean(data)) {
-        os << stats.errorMessage() << LogIO::POST;
-     }
-     os << "Recovering sigma array " << endl;
-     if (!stats.getSigma(data)) {
-        os << stats.errorMessage() << LogIO::POST;
-     }
-     os << "Recovering variance array " << endl;
-     if (!stats.getVariance(data)) {
-        os << stats.errorMessage() << LogIO::POST;
-     }
-     os << "Recovering rms array" << endl;
-     if (!stats.getRms(data)) {
-        os << stats.errorMessage() << LogIO::POST;
-     }
-     if (cursorAxes.nelements()==0 && !lelExpr.empty()) {
-        os << "Recovering LEL array" << endl;
-        if (!stats.getLEL(data, lelExpr)) {
-           os << stats.errorMessage() << LogIO::POST;
-        }
-     }
+//
      os << "Recovering statistics slice from origin" << endl;
      IPosition pos(stats.displayAxes().nelements(),0);
      IPosition pos2(nDim,0);
-     Vector<Float> dataV;
+     Vector<Double> dataV;
      if (!stats.getStats(dataV, pos, False)) {
         os << stats.errorMessage() << LogIO::POST;
      }
@@ -393,8 +357,6 @@ try {
         os << stats.errorMessage() << LogIO::POST;
         exit(1);
      }
-
-
 
 // Test copy constructor
      
@@ -451,7 +413,6 @@ try {
 // Construct statistics object
    
       ImageStatistics<Complex> stats(*pSubImage2, os, True, forceDisk);
-
   
 // Clean up SUbImage pointers
 
@@ -459,6 +420,7 @@ try {
 
 
 // Set state
+
       if (validInputs(AXES)) {
          if (!stats.setAxes(cursorAxes)) {
             os << stats.errorMessage() << LogIO::POST;
@@ -488,9 +450,7 @@ try {
 	 << " not yet supported" << LogIO::POST;
       return 1;
    }
-}
-
-  catch (AipsError x) {
+} catch (AipsError x) {
      cerr << "aipserror: error " << x.getMesg() << endl;
      return 1;
   }
