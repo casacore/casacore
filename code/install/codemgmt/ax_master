@@ -2013,3 +2013,4 @@
 08 200 src rm trial/implement/Functionals/BinaryComb.cc
 08 200 src rm trial/implement/Functionals/BinaryComb.h
 08 200 src rm trial/implement/Functionals/BinaryCombEnums.h
+08 200 src rm trial/implement/Functionals/BinaryOperation.cc
