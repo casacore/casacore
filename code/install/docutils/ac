@@ -98,7 +98,6 @@ then
     then
 	exit 2;
     fi
-    cp CHANGELOG.LASTID CHANGELOG.LASTID-old
     cd $a_pwd
     cvs update changelog
     if [ "$?" != 0 ]
