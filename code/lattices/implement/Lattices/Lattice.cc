@@ -1,5 +1,5 @@
 //# Lattice.cc:  this defines Lattice.cc, a base for array-related classes
-//# Copyright (C) 1994,1995,1996,1997,1998
+//# Copyright (C) 1994,1995,1996,1997,1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -44,15 +44,9 @@ Lattice<T>::~Lattice()
 }
 
 template <class T>
-Bool Lattice<T>::isPaged() const
+LatticeBase* Lattice<T>::cloneBase() const
 {
-  return False;
-}
-
-template <class T>
-Bool Lattice<T>::isWritable() const
-{
-  return True;
+    return clone();
 }
 
 // rvalue subscript operator for const objects
@@ -61,36 +55,6 @@ T Lattice<T>::operator() (const IPosition& where) const
 {
   return getAt (where);
 }
-
-// returns the number of axes in this Lattice.
-template <class T>
-uInt Lattice<T>::ndim() const
-{
-  return shape().nelements();
-}
-
-// returns the total number of elements in this Lattice.
-template <class T>
-uInt Lattice<T>::nelements() const
-{
-  return shape().product(); 
-}
-
-// returns a value of "True" if this Lattice and 'other' have the same 
-// shape, otherwise returns a value of "False"
-template <class T>
-Bool Lattice<T>::conform (const Lattice<T>& other) const
-{
-  return shape().isEqual (other.shape());
-}
-
-// returns a LattCoord object.
-template <class T>
-LatticeCoordinates Lattice<T>::latticeCoordinates() const
-{
-  return LatticeCoordinates();
-}
-
 
 template<class T>
 Bool Lattice<T>::get (COWPtr<Array<T> >& buffer,
@@ -342,29 +306,4 @@ uInt Lattice<T>::maxPixels() const
   // The returned number of pixels is always a power of two for unknown
   // reasons, and occupies between 4 and 8 MBytes
   return (uInt) pow (2.0, ceil(log(4.0*1024.0*1024.0/sizeof(T))/log(2.0)));
-}
-
-template<class T>
-IPosition Lattice<T>::doNiceCursorShape (uInt maxPixels) const
-{
-  IPosition originalShape(shape());
-  uInt ndim = originalShape.nelements();
-  IPosition cursorShape(ndim);
-  if (ndim > 0) {
-    cursorShape = 1;
-    cursorShape(0) = originalShape(0);
-    for (uInt i=1;
-	 i < ndim  &&  cursorShape.product()*originalShape(i) <= Int(maxPixels);
-	 i++) {
-      cursorShape(i) = originalShape(i);
-    }
-  }
-  return cursorShape;
-}
-
-// Check class invariants. 
-template <class T>
-Bool Lattice<T>::ok() const
-{
-  return True;
 }
