@@ -235,18 +235,17 @@ private:
   RedFlagger& operator=(const RedFlagger &)  { return *this; };
 
   void printAgentRecord(String &, uInt, const RecordInterface &);
-  // make lock()/unlock() methods private since they are not for client to use.
- 
-  // variables used for writting to history table
-  MSHistoryHandler *hist_p;
+
+  // Sink used to store history
+  LogSink logSink_p;
+
+  // Used to update the MS HISTORY Table
   Table historytab_p;
+  MSHistoryHandler *hist_p;
   Int histLockCounter_p;
 
-  // Lock the ms and its subtables
-  Bool lock();
-  // Unlock the ms and its subtables
-  Bool unlock();
-
+  // Method to update MS History Table
+  void writeHistory(LogIO& os, Bool cliCommand);
 };
 
 

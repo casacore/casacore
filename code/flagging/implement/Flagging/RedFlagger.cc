@@ -82,9 +82,13 @@ namespace casa {
 // -----------------------------------------------------------------------
 RedFlagger::RedFlagger ():mssel_p(0), vs_p(0)
 {
+  // For HISTORY table logging
+  logSink_p=LogSink(LogMessage::NORMAL, False);
+  hist_p=0;
+  histLockCounter_p = 0;
+
   nant=0;
   setdata_p = False;
-  histLockCounter_p = 0;
   // setupAgentDefaults();
   pgprep_nx=pgprep_ny=1;
 }
@@ -95,9 +99,13 @@ RedFlagger::RedFlagger ():mssel_p(0), vs_p(0)
 // -----------------------------------------------------------------------
 RedFlagger::RedFlagger ( const MeasurementSet &mset ) : mssel_p(0), vs_p(0)
 {
+  // For HISTORY table logging
+  logSink_p=LogSink(LogMessage::NORMAL, False);
+  hist_p=0;
+  histLockCounter_p = 0;
+
   nant=0;
   setdata_p = False;
-  histLockCounter_p = 0;
   attach(mset);
   pgprep_nx=pgprep_ny=1;
 }
@@ -189,17 +197,18 @@ void RedFlagger::attach( const MeasurementSet &mset, Bool setAgentDefaults )
   sprintf(str,"attached MS %s: %d rows, %d times, %d baselines\n",ms.tableName().chars(),nrows,ntime,nifr);
   os<<str<<LogIO::POST;
   
-   // Setup to write LogIO to HISTORY Table in MS
-    if(!(Table::isReadable(ms.historyTableName()))){
-      // create a new HISTORY table if its not there
-      TableRecord &kws = ms.rwKeywordSet();
-      SetupNewTable historySetup(ms.historyTableName(),
-				 MSHistory::requiredTableDesc(),Table::New);
-      kws.defineTable(MS::keywordName(MS::HISTORY), Table(historySetup));
-    }
-    historytab_p=Table(ms.historyTableName(),
-		       TableLock(TableLock::UserNoReadLocking), Table::Update);
-    hist_p= new MSHistoryHandler( ms, "RedFlagger");
+  //// Write LogIO to HISTORY Table in MS
+  if(!(Table::isReadable(ms.historyTableName()))){
+    // create a new HISTORY table if its not there
+    TableRecord &kws = ms.rwKeywordSet();
+    SetupNewTable historySetup(ms.historyTableName(),
+			       MSHistory::requiredTableDesc(),Table::New);
+    kws.defineTable(MS::keywordName(MS::HISTORY), Table(historySetup));
+  }
+  historytab_p=Table(ms.historyTableName(),
+		     TableLock(TableLock::UserNoReadLocking), Table::Update);
+  hist_p= new MSHistoryHandler( ms, "RedFlagger");
+  ////
 }    
 
 // -----------------------------------------------------------------------
@@ -1074,6 +1083,17 @@ void RedFlagger::run ( const RecordInterface &agents,const RecordInterface &opt,
       for( uInt i = 0; i<acc.nelements(); i++ ) 
         if( active_init(i) )
           acc[i]->endFlag();
+
+      {
+      os << "Writing the following to MS HISTORY Table:" << LogIO::POST;
+      logSink_p.clearLocally();
+      LogIO oss(LogOrigin("RedFlagger", "run()"), logSink_p);
+      os=oss;
+      this->summary(agents, opt, ind_base);
+      printSummaryReport(chunk,opt);
+      printAgentReports();
+      this->writeHistory(os, False);
+      }
     }
 // call endChunk on all agents
     for( uInt i = 0; i<acc.nelements(); i++ ) 
@@ -1318,46 +1338,29 @@ int dprintf( LogIO &os,const char *format, ...)
   os<<LogIO::DEBUGGING<<str<<LogIO::POST;
   return ret;
 }
-Bool RedFlagger::lock(){
-  Bool ok; 
-  ok=True;
-  if (histLockCounter_p == 0) {
-    if(!historytab_p.isNull()) {
-      ok = historytab_p.lock(True);
+
+void RedFlagger::writeHistory(LogIO& os, Bool cliCommand){
+  if (!historytab_p.isNull()) {
+    if (histLockCounter_p == 0) {
+      historytab_p.lock(True);
     }
-  }
-  ++histLockCounter_p;
-  return ok ; 
-}
+    ++histLockCounter_p;
 
-Bool RedFlagger::unlock(){
-  if (histLockCounter_p == 1) {
-    if(!historytab_p.isNull())
+    os.postLocally();
+    if (cliCommand) {
+      hist_p->cliCommand(os);
+    } else {
+      hist_p->addMessage(os);
+    }
+
+    if (histLockCounter_p == 1) {
       historytab_p.unlock();
-  }
-  if (histLockCounter_p > 0) {
-    --histLockCounter_p;
-  }
-  return True ; 
-}
- 
-void RedFlagger::writeHistory(LogIO& os){
-  if(lock()){
-     os.postLocally();
-     hist_p->addMessage(os);
-     unlock();
-  }else{
-     cerr << "Cannot get lock() of the History Table." << endl;
-  }
-}
-
-void RedFlagger::writeCommand(LogIO& os){
-  if(lock()){
-     os.postLocally();
-     hist_p->cliCommand(os);
-     unlock();
-  }else{
-     cerr<< "Cannot get lock of the History Table." << endl;
+    }
+    if (histLockCounter_p > 0) {
+      --histLockCounter_p;
+    }
+  } else {
+    os << LogIO::SEVERE << "must attach to MeasurementSet" << LogIO::POST;
   }
 }
 
