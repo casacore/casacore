@@ -6537,3 +6537,4 @@
 18 594 src mv trial/implement/MeasurementComponents/SolvableMJDesc.h trial/implement/CalTables/SolvableMJDesc.h
 18 594 src mv trial/implement/MeasurementComponents/SolvableMJDesc.cc trial/implement/CalTables/SolvableMJDesc.cc
 18 594 src mv trial/implement/MeasurementComponents/BJonesDesc.h trial/implement/CalTables/BJonesDesc.h
+18 594 src mv trial/implement/MeasurementComponents/BJonesDesc.cc trial/implement/CalTables/BJonesDesc.cc
