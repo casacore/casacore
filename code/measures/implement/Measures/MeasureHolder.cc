@@ -1,5 +1,5 @@
 //# MeasureHolder.cc: A holder for Measures to enable record conversions
-//# Copyright (C) 1998
+//# Copyright (C) 1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -236,7 +236,7 @@ Bool MeasureHolder::fromRecord(String &error,
       };
     };
     QuantumHolder q0, q1, q2;
-    Int n;
+    Int n(0);
     if (in.isDefined(String("m0")) &&
 	in.type(in.idToNumber(RecordFieldId("m0"))) == TpRecord) {
       if (!q0.fromRecord(error, in.asRecord(RecordFieldId("m0")))) {
