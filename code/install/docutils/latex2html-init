@@ -138,7 +138,7 @@ sub aips2script {
 "img6off = new Image();\n" .
 "img6off.src = \"$DOCSROOT/html/navpages/images/tophomeoff.gif\";\n" .
 "img7off = new Image();\n" .
-"img7off.src = \"DOCSROOT/html/navpages/images/topglishon.gif\";\n" .
+"img7off.src = \"DOCSROOT/html/navpages/images/topglishoff.gif\";\n" .
 #"\n" .
 #"\n" .
 "}\n" .
@@ -232,7 +232,7 @@ sub aips2botbar {
 "          onMouseOver=\"imgOn('img5')\" \n" .
 "          onMouseOut=\"imgOff('img5')\">\n" .
 "<IMG NAME=\"img5\" SRC=\"$DOCSROOT/html/navpages/images/topcommoff.gif\" BORDER=0></A>\n" .
-"</td></tr>\n" .
+"</td><td>\n" .
 "<tr><td colspan=3 align=right>\n" .
 "<A HREF=\"$DOCSROOT/html/aips++.html\" \n" .
 "          onMouseOver=\"imgOn('img6')\" \n" .
