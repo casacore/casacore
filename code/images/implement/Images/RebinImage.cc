@@ -41,10 +41,10 @@ RebinImage<T>::RebinImage ()
 
 template<class T>
 RebinImage<T>::RebinImage (const ImageInterface<T>& image,
-                           const Vector<uInt>& factors, Bool doCache)
+                           const Vector<uInt>& factors)
 : itsImagePtr (image.cloneII())
 {
-  itsRebinPtr = new RebinLattice<T>(image, factors, doCache);
+  itsRebinPtr = new RebinLattice<T>(image, factors);
 //
   CoordinateSystem cSys = makeOutputCoordinates (factors, image.coordinates(),
                                                  image.shape(), itsRebinPtr->shape());

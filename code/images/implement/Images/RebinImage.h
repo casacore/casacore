@@ -87,7 +87,7 @@ public:
 
   // Constructor. The bin factors don't have to be integral. Anything left over
   // at the end is treated as a full bin.
-  RebinImage (const ImageInterface<T>&, const Vector<uInt>& factors, Bool doCache=False);
+  RebinImage (const ImageInterface<T>&, const Vector<uInt>& factors);
 
   // Copy constructor (reference semantics).
   RebinImage (const RebinImage<T>& other);
