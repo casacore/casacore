@@ -6276,3 +6276,4 @@
 17 221 src mv trial/implement/stdmap.h aips/implement/stdmap.h
 17 221 src mv trial/implement/stdexcept.h aips/implement/stdexcept.h
 17 233 src rm contrib/recipes/bimafiller.g
+17 254 src rm trial/implement/Guiutils/pgplotter_gplot1d.gp
