@@ -141,7 +141,7 @@ public:
   //# General Member Functions
   // Precession related data
   // <group>
-  // Get the precesiion-rate part of the IAU 20000 precession-nutation models
+  // Get the precession-rate part of the IAU 20000 precession-nutation models
   // (which 0=dpsi (long) and 1=deps (obliquity))
   static Double precRate00(const uInt which, const Double tt);
 
@@ -176,12 +176,17 @@ public:
   static const Polynomial<Double> &fundArg2000(uInt which);
   // </group>
 
+  // Get the planetary arguments (L, L', F, D, Om, Me, Ve, E, Ma, Ju Sa,
+  // Ur, Ne, pre) 
+  static const Polynomial<Double> &planetaryArg2000(uInt which);
+
   // Generate the which' vector of the nutation series arguments
   // <group>
   static const Vector<Char> &mulArg(uInt which);
   static const Vector<Char> &mulArg1950(uInt which);
   static const Vector<Char> &mulArg2000A(uInt which);
   static const Vector<Char> &mulArg2000B(uInt which);
+  static const Vector<Char> &mulPlanArg2000A(uInt which);
   // </group>
   
   // Generate the which' vector of the nutation series multipliers
@@ -189,8 +194,9 @@ public:
   // <group>
   static const Vector<Double> &mulSC(uInt which, Double T);
   static const Vector<Double> &mulSC1950(uInt which, Double T);
-  static const Vector<Double> &mulSC2000B(uInt which, Double T);
   static const Vector<Double> &mulSC2000A(uInt which, Double T);
+  static const Vector<Double> &mulSC2000B(uInt which, Double T);
+  static const Vector<Double> &mulPlanSC2000A(uInt which, Double T);
   // </group>
 
   // Get nutation angles corrections for UTC T in rad.
@@ -401,11 +407,19 @@ private:
 			  const Double coeff[6][4]); 
   static void calcFundArg00(Bool &need, Polynomial<Double> result[6],
 			    const Double coeff[6][5]); 
+  static void calcPlanArg00(Bool &need, 
+			    Polynomial<Double> result[14],
+			    const Double coeff[8][2]);
   // </group>
 
   // Calculate mulArg
+  // <group>
   static void calcMulArg(Bool &need, Vector<Char> result[],
 			 const Char coeff[][5], Int row); 
+  static void calcMulPlanArg(Bool &need, Vector<Char> result[],
+			     const Char coeff[][14], Int row); 
+  // </group>
+
   // Calculate mulSC
   static void calcMulSC(Bool &need, Double &check, Double T,
 			Vector<Double> result[], Int resrow,
