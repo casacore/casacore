@@ -54,6 +54,7 @@
 #include <aips/Lattices/TiledLineStepper.h>
 #include <aips/Lattices/LatticeStepper.h>
 #include <aips/Lattices/LatticeIterator.h>
+#include <trial/Lattices/MaskedLatticeIterator.h>
 #include <trial/Lattices/LatticeStatistics.h>
 #include <trial/Lattices/LCPagedMask.h>
 #include <aips/Logging/LogIO.h>
@@ -805,8 +806,7 @@ void ImagePolarimetry::rotationMeasure(ImageInterface<Float>*& rmOutPtr,
 
    const IPosition tileShape = pa.niceCursorShape();
    TiledLineStepper ts(pa.shape(), tileShape, fAxis);
-   RO_LatticeIterator<Float> it(pa, ts);
-
+   RO_MaskedLatticeIterator<Float> it(pa, ts);
 //
    Float rm, rmErr, pa0, pa0Err, rChiSq, nTurns;
    uInt j, k, l, m;
@@ -859,7 +859,7 @@ void ImagePolarimetry::rotationMeasure(ImageInterface<Float>*& rmOutPtr,
       }
       ok = findRotationMeasure (rm, rmErr, pa0, pa0Err, rChiSq, nTurns,
                                 sortidx, wsqsort, it.vectorCursor(),
-                                pa.getMaskSlice(it.position(),it.cursorShape()),
+                                it.getMask(False),
                                 paerr.getSlice(it.position(),it.cursorShape()),
                                 rmFg, rmMax, maxPaErr, plotter, posString);
 
@@ -1281,13 +1281,11 @@ void ImagePolarimetry::copyDataAndMask(ImageInterface<Float>& out,
 // It is not used, because using putSlice directly is faster and as easy.
 
    LatticeIterator<Float> dummyIter(out);
-   RO_LatticeIterator<Float> iter(in, stepper);
-         
+   RO_MaskedLatticeIterator<Float> iter(in, stepper);
    for (iter.reset(); !iter.atEnd(); iter++) {
       out.putSlice (iter.cursor(), iter.position());
       if (doMask) {
-         pMaskOut->putSlice(in.getMaskSlice(iter.position(),
-                            iter.cursorShape()), iter.position());
+         pMaskOut->putSlice(iter.getMask(False), iter.position());
       }
    }
 }

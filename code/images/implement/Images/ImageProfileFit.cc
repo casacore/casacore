@@ -40,7 +40,7 @@
 #include <trial/Images/ImageRegion.h>
 #include <trial/Images/SubImage.h>
 #include <aips/Lattices/TiledLineStepper.h>
-#include <aips/Lattices/LatticeIterator.h>
+#include <trial/Lattices/MaskedLatticeIterator.h>
 #include <trial/Lattices/LatticeStatistics.h>
 #include <trial/Lattices/LCRegion.h>
 #include <trial/Lattices/MaskedLattice.h>
@@ -887,7 +887,7 @@ void ImageProfileFit::fit (Bool fillRecord, RecordInterface& rec,
 //
    IPosition inTileShape = itsImagePtr->niceCursorShape();
    TiledLineStepper stepper (itsImagePtr->shape(), inTileShape, itsProfileAxis);
-   RO_LatticeIterator<Float> inIter(*itsImagePtr, stepper);
+   RO_MaskedLatticeIterator<Float> inIter(*itsImagePtr, stepper);
 //
    PtrHolder<LatticeIterator<Float> > fitIter;
    PtrHolder<LatticeIterator<Bool> > fitMaskIter;
@@ -951,8 +951,7 @@ void ImageProfileFit::fit (Bool fillRecord, RecordInterface& rec,
 // Get data and mask (reflects pixelMask and region mask of SubImage)
 
       const Vector<Float>& data = inIter.vectorCursor();
-      inMask = itsImagePtr->getMaskSlice(inIter.position(), 
-                                         inIter.cursorShape(), True);
+      inMask = inIter.getMask(True);
 
 // Make estimate
 

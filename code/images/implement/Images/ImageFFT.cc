@@ -1,5 +1,5 @@
 //# ImageFFT.cc: FFT an image
-//# Copyright (C) 1995,1997,1998,1999,2000,2001,2002
+//# Copyright (C) 1995,1997,1998,1999,2000,2001,2002,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -46,7 +46,7 @@
 #include <trial/Lattices/LatticeExpr.h>
 #include <trial/Lattices/SubLattice.h>
 #include <aips/Lattices/LatticeStepper.h>
-#include <aips/Lattices/LatticeIterator.h>
+#include <trial/Lattices/MaskedLatticeIterator.h>
 #include <trial/Images/ImageInterface.h>
 #include <trial/Images/TempImage.h>
 
@@ -415,11 +415,10 @@ void ImageFFT::copyMask (ImageInterface<Float>& out,
 // It is not used, because using putSlice directly is faster and as easy.
       
    LatticeIterator<Float> dummyIter(out);
-   RO_LatticeIterator<Float> iter(in, stepper);
+   RO_MaskedLatticeIterator<Float> iter(in, stepper);
    Lattice<Bool>& outMask = out.pixelMask();
    for (iter.reset(); !iter.atEnd(); iter++) {
-      outMask.putSlice(in.getMaskSlice(iter.position(), iter.cursorShape()),  
-                       iter.position());
+      outMask.putSlice(iter.getMask(False), iter.position());
    }
 }
 
@@ -451,11 +450,10 @@ void ImageFFT::copyMask (ImageInterface<Float>& out,
 // It is not used, because using putSlice directly is faster and as easy.
       
    LatticeIterator<Float> dummyIter(out);   
-   RO_LatticeIterator<Complex> iter(in, stepper);   
+   RO_MaskedLatticeIterator<Complex> iter(in, stepper);   
    Lattice<Bool>& outMask = out.pixelMask();
    for (iter.reset(); !iter.atEnd(); iter++) {
-      outMask.putSlice(in.getMaskSlice(iter.position(), iter.cursorShape()),
-                       iter.position());
+      outMask.putSlice(iter.getMask(False), iter.position());
    }
 }
 
@@ -487,11 +485,10 @@ void ImageFFT::copyMask (ImageInterface<Complex>& out,
 // It is not used, because using putSlice directly is faster and as easy.
       
    LatticeIterator<Complex> dummyIter(out);   
-   RO_LatticeIterator<Float> iter(in, stepper);   
+   RO_MaskedLatticeIterator<Float> iter(in, stepper);   
    Lattice<Bool>& outMask = out.pixelMask();
    for (iter.reset(); !iter.atEnd(); iter++) {
-      outMask.putSlice(in.getMaskSlice(iter.position(), iter.cursorShape()),
-                       iter.position());
+      outMask.putSlice(iter.getMask(False), iter.position());
    }
 }
 
@@ -523,11 +520,10 @@ void ImageFFT::copyMask (ImageInterface<Complex>& out,
 // It is not used, because using putSlice directly is faster and as easy.
       
    LatticeIterator<Complex> dummyIter(out);   
-   RO_LatticeIterator<Complex> iter(in, stepper);   
+   RO_MaskedLatticeIterator<Complex> iter(in, stepper);   
    Lattice<Bool>& outMask = out.pixelMask();
    for (iter.reset(); !iter.atEnd(); iter++) {
-      outMask.putSlice(in.getMaskSlice(iter.position(), iter.cursorShape()),
-                       iter.position());
+      outMask.putSlice(iter.getMask(False), iter.position());
    }
 }
 
