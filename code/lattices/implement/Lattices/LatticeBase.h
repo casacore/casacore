@@ -31,7 +31,7 @@
 
 //# Includes
 #include <trial/Lattices/LELCoordinates.h>
-#include <aips/Arrays/IPosition.h>
+#include <aips/Lattices/IPosition.h>
 #include <aips/IO/FileLocker.h>
 #include <aips/Utilities/String.h>
 
@@ -135,11 +135,7 @@ public:
   // include in the cursor of an iterator. The default implementation
   // returns a number that is a power of two and includes enough pixels to
   // consume between 4 and 8 MBytes of memory.
-  // <group>
   virtual uInt advisedMaxPixels() const = 0;
-  uInt maxPixels() const
-    { return advisedMaxPixels(); }
-  // </group>
 
   // Returns a recommended cursor shape for iterating through all the pixels
   // in the Lattice. The default implementation sets up a shape that
@@ -184,7 +180,6 @@ public:
   // tiles. Tiles are cached using a first in first out algorithm.
   // Default implementation does nothing.
   virtual void setCacheSizeInTiles (uInt howManyTiles);
-
 
   // Set the cache size as to "fit" the indicated path.
   // Default implementation does nothing.
