@@ -1,5 +1,5 @@
 //# tChebyshev: test the Chebyshev class
-//# Copyright (C) 2000,2001,2002
+//# Copyright (C) 2000,2001,2002,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -31,6 +31,7 @@
 
 #include <aips/Functionals/Chebyshev.h>
 #include <aips/Functionals/Polynomial.h>
+#include <aips/Containers/Record.h>
 #include <aips/Arrays/Vector.h>
 #include <aips/Arrays/ArrayMath.h>
 #include <aips/Mathematics/Math.h>
@@ -38,6 +39,7 @@
 #include <aips/Mathematics/AutoDiffMath.h>
 #include <aips/Mathematics/AutoDiffIO.h>
 #include <aips/Utilities/Assert.h>
+#include <aips/Exceptions.h>
 #include <aips/iostream.h>
 
 int main() {
@@ -146,6 +148,65 @@ int main() {
     cheb.setOutOfIntervalMode(Chebyshev<Double>::ZEROTH);
     cheb.setCoefficient(0, 1);
     AlwaysAssertExit(cheb(xmax+1) == cheb.getCoefficient(0));
+
+    // Test setMode()
+    AlwaysAssertExit(cheb.hasMode());
+
+    Record rec;
+    Vector<Double> intv(2);
+    intv(0) = -10.0; intv(1) = 10.0;
+    rec.define(RecordFieldId("intervalMode"), "cyclic");
+    rec.define(RecordFieldId("interval"), intv);
+    rec.define(RecordFieldId("default"), 80.0);
+
+    cheb.setMode(rec);
+
+#ifdef DIAGNOSTICS
+    cout << "Results from setMode():" << endl
+	 << "  Interval Mode: " << cheb.getOutOfIntervalMode() << endl
+	 << "  Range: " << cheb.getIntervalMin() << ", " 
+	 << cheb.getIntervalMax() << endl
+	 << "  Default: " << cheb.getDefault() << endl;
+#endif
+    AlwaysAssertExit(cheb.getOutOfIntervalMode() == 
+		         Chebyshev<Double>::CYCLIC  &&
+                     cheb.getIntervalMin() == -10.0 &&
+		     cheb.getIntervalMax() ==  10.0 &&
+	             cheb.getDefault() == 80.0);
+
+    // test setMode() via constructor
+    Chebyshev<Double> cheb2(2, rec);
+    AlwaysAssertExit(cheb2.getOutOfIntervalMode() == 
+		         Chebyshev<Double>::CYCLIC  &&
+                     cheb2.getIntervalMin() == -10.0 &&
+		     cheb2.getIntervalMax() ==  10.0 &&
+	             cheb2.getDefault() == 80.0);
+
+    // test getMode() 
+    Record rec2;
+    cheb.setInterval(-15.0, 15.0);
+    cheb.setDefault(70.0);
+    cheb.setOutOfIntervalMode(Chebyshev<Double>::ZEROTH);
+    cheb.getMode(rec2);
+
+    try {
+	Vector<Double> tmp(2);
+	rec2.get(RecordFieldId("interval"), tmp);
+
+	Double def;
+	rec2.get(RecordFieldId("default"), def);
+
+	String mode;
+	rec2.get(RecordFieldId("intervalMode"), mode);
+
+	AlwaysAssertExit(mode == String("zeroth") && 
+			 tmp(0) == -15.0 && tmp(1) == 15.0 &&
+			 def == 70.0);
+    }
+    catch (AipsError ex) {
+	cerr << "Exception: " << ex.getMesg() << endl;
+	exit(1);
+    }
 
     cout << "OK" << endl;
     return 0;
