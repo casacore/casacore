@@ -36,68 +36,50 @@
 // This program tests the Modcomp conversion functions.
 
 void compare(Int& error, Char exp, Char res) {
-  union {
-    Char result;
-    uChar byteResult[1];
-  };
-  result = res;
-  union {
-    Char expected;
-    uChar byteExpected[1];
-  };
-  expected = exp;
   // Compare the results. 
-  if (result != expected) {
+  if (res != exp) {
     error = 1;
-    cerr << "expected " << expected;
+    uChar byteResult[1];
+    uChar byteExpected[1];
+    memcpy (byteResult, &res, 1);
+    memcpy (byteExpected, &exp, 1);
+    cerr << "expected " << exp;
     cerr << setbase(16) << " (" << Int(byteExpected[0]) << ")";
-    cerr << setbase(10) << " got " << result;
+    cerr << setbase(10) << " got " << res;
     cerr << setbase(16) << " (" << Int(byteResult[0]) << ")";
     cerr << setbase(10) << endl;
   }
 }
 
 void compare(Int& error, uChar exp, uChar res) {
-  union {
-    uChar result;
-    uChar byteResult[1];
-  };
-  result = res;
-  union {
-    uChar expected;
-    uChar byteExpected[1];
-  };
-  expected = exp;
   // Compare the results. 
-  if (result != expected) {
+  if (res != exp) {
     error = 1;
-    cerr << "expected " << expected;
+    uChar byteResult[1];
+    uChar byteExpected[1];
+    memcpy (byteResult, &res, 1);
+    memcpy (byteExpected, &exp, 1);
+    cerr << "expected " << exp;
     cerr << setbase(16) << " (" << Int(byteExpected[0]) << ")";
-    cerr << setbase(10) << " got " << result;
+    cerr << setbase(10) << " got " << res;
     cerr << setbase(16) << " (" << Int(byteResult[0]) << ")";
     cerr << setbase(10) << endl;
   }
 }
 
 void compare(Int& error, Short exp, Short res) {
-  union {
-    Short result;
-    uChar byteResult[2];
-  };
-  result = res;
-  union {
-    Short expected;
-    uChar byteExpected[2];
-  };
-  expected = exp;
   // Compare the results. 
-  if (result != expected) {
+  if (res != exp) {
     error = 1;
-    cerr << "expected " << expected;
+    uChar byteResult[2];
+    uChar byteExpected[2];
+    memcpy (byteResult, &res, 2);
+    memcpy (byteExpected, &exp, 2);
+    cerr << "expected " << exp;
     cerr << setbase(16) << " (" 
-	 << Int(byteExpected[0]) << ":"
+	 <<Int(byteExpected[0]) << ":"
 	 << Int(byteExpected[1]) << ")";
-    cerr << setbase(10) << " got " << result;
+    cerr << setbase(10) << " got " << res;
     cerr << setbase(16) << " (" 
 	 << Int(byteResult[0]) << ":"
 	 << Int(byteResult[1]) << ")";
@@ -106,24 +88,18 @@ void compare(Int& error, Short exp, Short res) {
 }
 
 void compare(Int& error, uShort exp, uShort res) {
-  union {
-    uShort result;
-    uChar byteResult[2];
-  };
-  result = res;
-  union {
-    uShort expected;
-    uChar byteExpected[2];
-  };
-  expected = exp;
   // Compare the results. 
-  if (result != expected) {
+  if (res != exp) {
     error = 1;
-    cerr << "expected " << expected;
+    uChar byteResult[2];
+    uChar byteExpected[2];
+    memcpy (byteResult, &res, 2);
+    memcpy (byteExpected, &exp, 2);
+    cerr << "expected " << exp;
     cerr << setbase(16) << " (" 
 	 << Int(byteExpected[0]) << ":"
 	 << Int(byteExpected[1]) << ")";
-    cerr << setbase(10) << " got " << result;
+    cerr << setbase(10) << " got " << res;
     cerr << setbase(16) << " (" 
 	 << Int(byteResult[0]) << ":"
 	 << Int(byteResult[1]) << ")";
@@ -132,26 +108,20 @@ void compare(Int& error, uShort exp, uShort res) {
 }
 
 void compare(Int& error, Int exp, Int res) {
-  union {
-    Int result;
-    uChar byteResult[4];
-  };
-  result = res;
-  union {
-    Int expected;
-    uChar byteExpected[4];
-  };
-  expected = exp;
   // Compare the results.
-  if (result != expected) {
+  if (res != exp) {
     error = 1;
-    cerr << "expected " << expected;
+    uChar byteResult[4];
+    uChar byteExpected[4];
+    memcpy (byteResult, &res, 4);
+    memcpy (byteExpected, &exp, 4);
+    cerr << "expected " << exp;
     cerr << setbase(16) << " (" 
 	 << Int(byteExpected[0]) << ":"
 	 << Int(byteExpected[1]) << ":"
 	 << Int(byteExpected[2]) << ":"
 	 << Int(byteExpected[3]) << ")";
-    cerr << setbase(10) << " got " << result;
+    cerr << setbase(10) << " got " << res;
     cerr << setbase(16) << " (" 
 	 << Int(byteResult[0]) << ":"
 	 << Int(byteResult[1]) << ":"
@@ -162,26 +132,20 @@ void compare(Int& error, Int exp, Int res) {
 }
 
 void compare(Int& error, uInt exp, uInt res) {
-  union {
-    uInt result;
-    uChar byteResult[4];
-  };
-  result = res;
-  union {
-    uInt expected;
-    uChar byteExpected[4];
-  };
-  expected = exp;
   // Compare the results.
-  if (result != expected) {
+  if (res != exp) {
     error = 1;
-    cerr << "expected " << expected;
+    uChar byteResult[4];
+    uChar byteExpected[4];
+    memcpy (byteResult, &res, 4);
+    memcpy (byteExpected, &exp, 4);
+    cerr << "expected " << exp;
     cerr << setbase(16) << " (" 
 	 << Int(byteExpected[0]) << ":"
 	 << Int(byteExpected[1]) << ":"
 	 << Int(byteExpected[2]) << ":"
 	 << Int(byteExpected[3]) << ")";
-    cerr << setbase(10) << " got " << result;
+    cerr << setbase(10) << " got " << res;
     cerr << setbase(16) << " (" 
 	 << Int(byteResult[0]) << ":"
 	 << Int(byteResult[1]) << ":"
@@ -192,26 +156,20 @@ void compare(Int& error, uInt exp, uInt res) {
 }
 
 void compare(Int& error, Long exp, Long res) {
-  union {
-    Long result;
-    uChar byteResult[4];
-  };
-  result = res;
-  union {
-    Long expected;
-    uChar byteExpected[4];
-  };
-  expected = exp;
   // Compare the results.
-  if (result != expected) {
+  if (res != exp) {
     error = 1;
-    cerr << "expected " << expected;
+    uChar byteResult[4];
+    uChar byteExpected[4];
+    memcpy (byteResult, &res, 4);
+    memcpy (byteExpected, &exp, 4);
+    cerr << "expected " << exp;
     cerr << setbase(16) << " (" 
 	 << Int(byteExpected[0]) << ":"
 	 << Int(byteExpected[1]) << ":"
 	 << Int(byteExpected[2]) << ":"
 	 << Int(byteExpected[3]) << ")";
-    cerr << setbase(10) << " got " << result;
+    cerr << setbase(10) << " got " << res;
     cerr << setbase(16) << " (" 
 	 << Int(byteResult[0]) << ":"
 	 << Int(byteResult[1]) << ":"
@@ -222,26 +180,20 @@ void compare(Int& error, Long exp, Long res) {
 }
 
 void compare(Int& error, uLong exp, uLong res) {
-  union {
-    uLong result;
-    uChar byteResult[4];
-  };
-  result = res;
-  union {
-    uLong expected;
-    uChar byteExpected[4];
-  };
-  expected = exp;
   // Compare the results.
-  if (result != expected) {
+  if (res != exp) {
     error = 1;
-    cerr << "expected " << expected;
+    uChar byteResult[4];
+    uChar byteExpected[4];
+    memcpy (byteResult, &res, 4);
+    memcpy (byteExpected, &exp, 4);
+    cerr << "expected " << exp;
     cerr << setbase(16) << " (" 
 	 << Int(byteExpected[0]) << ":"
 	 << Int(byteExpected[1]) << ":"
 	 << Int(byteExpected[2]) << ":"
 	 << Int(byteExpected[3]) << ")";
-    cerr << setbase(10) << " got " << result;
+    cerr << setbase(10) << " got " << res;
     cerr << setbase(16) << " (" 
 	 << Int(byteResult[0]) << ":"
 	 << Int(byteResult[1]) << ":"
@@ -534,29 +486,23 @@ void checkConversion (Int& error)
 }
 
 void compare(Int& error, Float exp, Float res) {
-  union {
-    Float result;
-    uChar byteResult[4];
-  };
-  result = res;
-  union {
-    Float expected;
-    uChar byteExpected[4];
-  };
-  expected = exp;
   // Compare the results. Allow the answers to differ in the LSB as the
   // conversion from Double to Float rounds to the nearest floating point
   // number whereas the conversion from ModComp to IEEE rounds down.
-  if (abs(result - expected) > 1.4013e-45) { // This number is the
+  if (abs(res - exp) > 1.4013e-45) {         // This number is the
                                              // smallest subnormal number
     error = 1;
-    cerr << "expected " << expected;
+    uChar byteResult[4];
+    uChar byteExpected[4];
+    memcpy (byteResult, &res, 4);
+    memcpy (byteExpected, &exp, 4);
+    cerr << "expected " << exp;
     cerr << setbase(16) << " ("
 	 << Int(byteExpected[3]) << ":"
 	 << Int(byteExpected[2]) << ":"
 	 << Int(byteExpected[1]) << ":"
 	 << Int(byteExpected[0]) << ")";
-    cerr << " got " << result;
+    cerr << " got " << res;
     cerr << setbase(16) << " ("
 	 << Int(byteResult[3]) << ":"
 	 << Int(byteResult[2]) << ":"
@@ -622,22 +568,16 @@ void checkFloat (Int& error)
 }
 
 void compare(Int& error, Double exp, Double res) {
-  union {
-    Double result;
-    uChar byteResult[8];
-  };
-  result = res;
-  union {
-    Double expected;
-    uChar byteExpected[8];
-  };
-  expected = exp;
   // Compare the results. Allow the answers to differ in the LSB as the
   // conversion from Double to Float rounds to the nearest floating point
   // number whereas the conversion from ModComp to IEEE rounds down.
-  if (abs(result - expected) > 0) {
+  if (abs(res - exp) > 0) {
     error = 1;
-    cerr << "expected " << expected;
+    uChar byteResult[8];
+    uChar byteExpected[8];
+    memcpy (byteResult, &res, 8);
+    memcpy (byteExpected, &exp, 8);
+    cerr << "expected " << exp;
     cerr << setbase(16) << " ("
 	 << Int(byteExpected[7]) << ":"
 	 << Int(byteExpected[6]) << ":"
@@ -647,7 +587,7 @@ void compare(Int& error, Double exp, Double res) {
 	 << Int(byteExpected[2]) << ":"
 	 << Int(byteExpected[1]) << ":"
 	 << Int(byteExpected[0]) << ")";
-    cerr << " got " << result;
+    cerr << " got " << res;
     cerr << setbase(16) << " ("
 	 << Int(byteResult[7]) << ":"
 	 << Int(byteResult[6]) << ":"
