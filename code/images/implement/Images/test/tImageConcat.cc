@@ -82,13 +82,15 @@ int main() {
                             "tImageConcat_tmp1.img");
       PagedImage<Float> im2(shape, CoordinateUtil::defaultCoords2D(),
                             "tImageConcat_tmp2.img");
-      makeMask(im1, True, True); makeMask(im2, False, True);
-      im1.put(a1); im2.put(a2);
+      makeMask(im1, True, True); 
+      makeMask(im2, False, True);
+      im1.put(a1); 
+      im2.put(a2);
 
 // Make a MaskedLattice as well
 
-    ArrayLattice<Float> al1(a1);
-    SubLattice<Float> ml1(al1);
+     ArrayLattice<Float> al1(a1);
+     SubLattice<Float> ml1(al1);
  
 //
       {
@@ -107,6 +109,7 @@ int main() {
          AlwaysAssert(outShape(0)==shape(0)+shape(0), AipsError);
          AlwaysAssert(outShape(1)==shape(1), AipsError);
          AlwaysAssert(lc.isMasked()==True, AipsError);
+         AlwaysAssert(lc.hasPixelMask()==True, AipsError);
 
 // Make output
 
@@ -141,6 +144,7 @@ int main() {
          AlwaysAssert(outShape(0)==shape(0), AipsError);
          AlwaysAssert(outShape(1)==shape(1)+shape(1), AipsError);
          AlwaysAssert(lc.isMasked()==True, AipsError);
+         AlwaysAssert(lc.hasPixelMask()==True, AipsError);
 
 // Make output
 
@@ -176,6 +180,7 @@ int main() {
          AlwaysAssert(outShape(0)==3*shape(0), AipsError);
          AlwaysAssert(outShape(1)==shape(1), AipsError);
          AlwaysAssert(lc.isMasked()==True, AipsError);
+         AlwaysAssert(lc.hasPixelMask()==False, AipsError);
 
 // Make output
 
@@ -229,6 +234,7 @@ int main() {
          AlwaysAssert(outShape.nelements()==2, AipsError);
          AlwaysAssert(shape2.isEqual(outShape), AipsError);
          AlwaysAssert(lc.isMasked()==False, AipsError);
+         AlwaysAssert(lc.hasPixelMask()==False, AipsError);
 
 // Make output
 
@@ -274,6 +280,7 @@ int main() {
 
          AlwaysAssert(lc.shape().isEqual(lc2.shape()), AipsError);
          AlwaysAssert(lc.isMasked()==lc2.isMasked(), AipsError);
+         AlwaysAssert(lc.hasPixelMask()==lc2.hasPixelMask(), AipsError);
 
 // Make output
    
@@ -305,6 +312,7 @@ int main() {
 
          AlwaysAssert(lc.shape().isEqual(lc2.shape()), AipsError);
          AlwaysAssert(lc.isMasked()==lc2.isMasked(), AipsError);
+         AlwaysAssert(lc.hasPixelMask()==lc2.hasPixelMask(), AipsError);
 
 // Make output
    
