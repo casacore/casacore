@@ -935,6 +935,12 @@ export MFBASES    := $(MFBASES)
 export MFINPUTS   := $(MFINPUTS)
 export MFPOOL     := $(MFPOOL)
 
+# These two variables control use of the megaserver, set them to null in your local
+# makedefs to avoid using the megaserver.
+
+export MEGALINK := megalink
+export MEGAUNLINK := megaunlink
+
 
 #-----------------------------------------------------------------------------
 # Pattern rules applicable to all AIPS++ makefiles.
