@@ -1,4 +1,4 @@
-//# Copyright (C) 1997,1998
+//# Copyright (C) 1997,1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -177,7 +177,7 @@ convolve(Lattice<T> & result, const Lattice<T> & model) const {
   Bool doPadding = False;
   const Lattice<T> * modelPtr = &model;
   Lattice<T> * resultPtr = &result;
-  if (itsFFTShape > modelShape) {
+  if (!(itsFFTShape <= modelShape)) {
     doPadding = True;
     modelPtr = resultPtr = new TempLattice<T>(itsFFTShape);
     pad(*resultPtr, model);
