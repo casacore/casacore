@@ -2732,3 +2732,4 @@
 11 423 src rm doc/user/gettingstarted.dir/f14-pgautogui.ps
 11 423 src rm doc/user/gettingstarted.dir/f15-gaussplot.ps
 11 423 src rm doc/user/gettingstarted.dir/gplot1d.ps
+11 423 src rm doc/user/gettingstarted.dir/logerr.ps
