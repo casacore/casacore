@@ -38,7 +38,11 @@
 #include <aips/Logging/LogIO.h>
 
 //# Forward Declarations
+#if defined(AIPS_STDLIB)
 #include <iosfwd>
+#else
+class ostream;
+#endif
 
 
 // <summary>
