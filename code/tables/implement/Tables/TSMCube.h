@@ -32,7 +32,6 @@
 //# Includes
 #include <aips/aips.h>
 #include <aips/Tables/TSMShape.h>
-#include <aips/Tables/BucketFile.h>
 #include <aips/Containers/Record.h>
 #include <aips/Arrays/IPosition.h>
 #include <aips/OS/Conversion.h>
