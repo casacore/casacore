@@ -95,7 +95,6 @@ template <class T, class Key> class ObjectPool {
   // <src>release</src> method.
   // <group>
   T *const get(const Key key=Key());
-  ///  const T *const get(const Key key=Key()) const;
   // </group>
 
   // Release an object obtained from the pool through <src>get</src> for
