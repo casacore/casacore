@@ -110,6 +110,13 @@ Bool checkBool (const LatticeExprNode& expr,
                 const IPosition& shape,
                 const Bool shouldBeScalar,
 		const Bool undefinedScalar);
+Bool checkBoolRepl (const LatticeExprNode& expr,
+		    const Bool result,
+		    const IPosition& shape,
+		    const Array<Bool>& replArray,
+		    Bool replScalar,
+		    Bool isReplScalar);
+
 
 Bool checkMask (const LatticeExprNode& expr,
 		Bool hasMask,
@@ -635,7 +642,7 @@ Bool doIt (const MaskedLattice<Float>& aF,
       LatticeExprNode expr3(expr1>expr2);
       if (!checkBool (expr3, ToBool(bFVal>cFVal), shape, True, False)) ok = False;
       LatticeExprNode expr4(expr1>expr1);
-      if (!checkBool (expr4, False, shape, False, False)) ok = False;
+      if (!checkBool (expr4, False, shape, True, False)) ok = False;
    }
    {
       cout << "  Complex Scalar" << endl;
@@ -644,7 +651,7 @@ Bool doIt (const MaskedLattice<Float>& aF,
       LatticeExprNode expr3(expr1>expr2);
       if (!checkBool (expr3, ToBool(bCVal>cCVal), shape, True, False)) ok = False;
       LatticeExprNode expr4(expr1>expr1);
-      if (!checkBool (expr4, False, shape, False, False)) ok = False;
+      if (!checkBool (expr4, False, shape, True, False)) ok = False;
    }
    {
       cout << "  Float Array" << endl;
@@ -676,7 +683,7 @@ Bool doIt (const MaskedLattice<Float>& aF,
       LatticeExprNode expr3(expr1>=expr2);
       if (!checkBool (expr3, ToBool(bFVal>=cFVal), shape, True, False)) ok = False;
       LatticeExprNode expr4(expr1>=expr1);
-      if (!checkBool (expr4, True, shape, False, False)) ok = False;
+      if (!checkBool (expr4, True, shape, True, False)) ok = False;
    }
    {
       cout << "  Complex Scalar" << endl;
@@ -685,7 +692,7 @@ Bool doIt (const MaskedLattice<Float>& aF,
       LatticeExprNode expr3(expr1>=expr2);
       if (!checkBool (expr3, ToBool(bCVal>=cCVal), shape, True, False)) ok = False;
       LatticeExprNode expr4(expr1>=expr1);
-      if (!checkBool (expr4, True, shape, False, False)) ok = False;
+      if (!checkBool (expr4, True, shape, True, False)) ok = False;
    }
    {
       cout << "  Float Array" << endl;
@@ -717,7 +724,7 @@ Bool doIt (const MaskedLattice<Float>& aF,
       LatticeExprNode expr3(expr1<expr2);
       if (!checkBool (expr3, ToBool(bFVal<cFVal), shape, True, False)) ok = False;
       LatticeExprNode expr4(expr1<expr1);
-      if (!checkBool (expr4, False, shape, False, False)) ok = False;
+      if (!checkBool (expr4, False, shape, True, False)) ok = False;
    }
    {
       cout << "  Complex Scalar" << endl;
@@ -726,7 +733,7 @@ Bool doIt (const MaskedLattice<Float>& aF,
       LatticeExprNode expr3(expr1<expr2);
       if (!checkBool (expr3, ToBool(bCVal<cCVal), shape, True, False)) ok = False;
       LatticeExprNode expr4(expr1<expr1);
-      if (!checkBool (expr4, False, shape, False, False)) ok = False;
+      if (!checkBool (expr4, False, shape, True, False)) ok = False;
    }
    {
       cout << "  Float Array" << endl;
@@ -758,7 +765,7 @@ Bool doIt (const MaskedLattice<Float>& aF,
       LatticeExprNode expr3(expr1<=expr2);
       if (!checkBool (expr3, ToBool(bFVal<=cFVal), shape, True, False)) ok = False;
       LatticeExprNode expr4(expr1<=expr1);
-      if (!checkBool (expr4, True, shape, False, False)) ok = False;
+      if (!checkBool (expr4, True, shape, True, False)) ok = False;
    }
    {
       cout << "  Complex Scalar" << endl;
@@ -767,7 +774,7 @@ Bool doIt (const MaskedLattice<Float>& aF,
       LatticeExprNode expr3(expr1<=expr2);
       if (!checkBool (expr3, ToBool(bCVal<=cCVal), shape, True, False)) ok = False;
       LatticeExprNode expr4(expr1<=expr1);
-      if (!checkBool (expr4, True, shape, False, False)) ok = False;
+      if (!checkBool (expr4, True, shape, True, False)) ok = False;
    }
    {
       cout << "  Float Array" << endl;
@@ -1887,6 +1894,24 @@ Bool doIt (const MaskedLattice<Float>& aF,
                                                            ok = False;
       if (!checkMask (expr3, bF.isMasked(), bF.getMask())) ok = False;
    }
+   {
+      cout << " Bool Scalar" << endl;
+      LatticeExprNode expr1(bB);
+      LatticeExprNode expr2(cBVal);
+      LatticeExprNode expr3 = replace(expr1,expr2);
+      if (!checkBoolRepl (expr3, bBVal, shape, cB.get(), cBVal, True))
+                                                           ok = False;
+      if (!checkMask (expr3, bB.isMasked(), bB.getMask())) ok = False;
+   }
+   {
+      cout << " Bool Array" << endl;
+      LatticeExprNode expr1(bB);
+      LatticeExprNode expr2(cB);
+      LatticeExprNode expr3 = replace(expr1,expr2);
+      if (!checkBoolRepl (expr3, bBVal, shape, cB.get(), cBVal, False))
+                                                           ok = False;
+      if (!checkMask (expr3, bB.isMasked(), bB.getMask())) ok = False;
+   }
 
 
 //
@@ -1934,6 +1959,15 @@ Bool doIt (const MaskedLattice<Float>& aF,
       if (!checkDComplex (expr4, cDCVal, shape, False, False)) ok = False;
    }
    {
+      cout << "  Bool Scalar,Array,Array" << endl;
+      LatticeExprNode expr1(bB);
+      LatticeExprNode expr2(cB);
+      LatticeExprNode expr3 = iif(aBVal,expr1,expr2);
+      if (!checkBool (expr3, bBVal, shape, False, False)) ok = False;
+      LatticeExprNode expr4 = iif(bBVal,expr1,expr2);
+      if (!checkBool (expr4, cBVal, shape, False, False)) ok = False;
+   }
+   {
       cout << "  Float/Double Array,Scalar,Scalar" << endl;
       LatticeExprNode expr1(bFVal);
       LatticeExprNode expr2(cDVal);
@@ -1968,6 +2002,24 @@ Bool doIt (const MaskedLattice<Float>& aF,
       if (!checkDouble (expr3, bDVal, shape, False, False)) ok = False;
       LatticeExprNode expr4 = iif(bB,expr1,expr2);
       if (!checkDouble (expr4, cDVal, shape, False, False)) ok = False;
+   }
+   {
+      cout << "  Bool Array,Array,Scalar" << endl;
+      LatticeExprNode expr1(bB);
+      LatticeExprNode expr2(cBVal);
+      LatticeExprNode expr3 = iif(aB,expr1,expr2);
+      if (!checkBool (expr3, bBVal, shape, False, False)) ok = False;
+      LatticeExprNode expr4 = iif(bB,expr1,expr2);
+      if (!checkBool (expr4, cBVal, shape, False, False)) ok = False;
+   }
+   {
+      cout << "  Bool Array,Array,Array" << endl;
+      LatticeExprNode expr1(bB);
+      LatticeExprNode expr2(cB);
+      LatticeExprNode expr3 = iif(aB,expr1,expr2);
+      if (!checkBool (expr3, bBVal, shape, False, False)) ok = False;
+      LatticeExprNode expr4 = iif(bB,expr1,expr2);
+      if (!checkBool (expr4, cBVal, shape, False, False)) ok = False;
    }
 
 
@@ -2537,10 +2589,11 @@ Bool compareScalarBool (const LatticeExprNode expr,
 
 
 
-Bool checkFloatInfo (const LatticeExprNode& expr,
-		     const IPosition& shape,
-		     const Bool shouldBeScalar,
-		     const Bool undefinedScalar)
+Bool checkInfo (const LatticeExprNode& expr,
+		const IPosition& shape,
+		const Bool shouldBeScalar,
+		const Bool undefinedScalar,
+		const DataType dtype)
 {
     Bool ok = True;  
     if (shouldBeScalar && !expr.isScalar()) {
@@ -2551,9 +2604,9 @@ Bool checkFloatInfo (const LatticeExprNode& expr,
        cout << "   result should be array" << endl;
        ok = False;
     }
-    if (expr.dataType() != TpFloat) {
+    if (expr.dataType() != dtype) {
        cout << "   Data type is        " << expr.dataType() << endl;
-       cout << "   Data type should be " << TpFloat << endl;
+       cout << "   Data type should be " << dtype << endl;
        ok = False;
     }
     if (expr.isScalar()) {
@@ -2581,7 +2634,8 @@ Bool checkFloat (const LatticeExprNode& expr,
                  const Bool shouldBeScalar,
 		 const Bool undefinedScalar)
 {
-    Bool ok = checkFloatInfo (expr, shape, shouldBeScalar, undefinedScalar);
+    Bool ok = checkInfo (expr, shape, shouldBeScalar,
+			 undefinedScalar, TpFloat);
     Float result2;
     LELArray<Float> Arr(shape);
     IPosition origin(shape); origin = 0;
@@ -2618,7 +2672,7 @@ Bool checkFloatRepl (const LatticeExprNode& expr,
 		     Float replScalar,
 		     Bool isReplScalar)
 {
-    Bool ok = checkFloatInfo (expr, shape, False, False);
+    Bool ok = checkInfo (expr, shape, False, False, TpFloat);
     LELArray<Float> Arr(shape);
     IPosition origin(shape); origin = 0;
     Slicer region(origin, shape);
@@ -2855,51 +2909,25 @@ Bool checkDComplex (const LatticeExprNode& expr,
 }
 
 
-
 Bool checkBool (const LatticeExprNode& expr,
 		const Bool result,
 		const IPosition& shape,
 		const Bool shouldBeScalar,
 		const Bool undefinedScalar)
 {
-    Bool ok = True;  
+    Bool ok = checkInfo (expr, shape, shouldBeScalar,
+			 undefinedScalar, TpBool);
     Bool result2;
     LELArray<Bool> Arr(shape);
     IPosition origin(shape); origin = 0;
     Slicer region(origin, shape);
-
-    if (shouldBeScalar && !expr.isScalar()) {
-       cout << "   result should be scalar" << endl;
-       ok = False;
-    }
-    if (expr.dataType() != TpBool) {
-       cout << "   Data type is        " << expr.dataType() << endl;
-       cout << "   Data type should be " << TpBool << endl;
-       ok = False;
-    }
-    if (expr.isScalar()) {
-       if (!expr.shape().isEqual(IPosition())) {
-          cout << "   Shape should be " << shape << endl;
-          cout << "   Shape is        " << expr.shape() << endl;
-          ok = False;
-       }
-       if (undefinedScalar != expr.isInvalidScalar()) {
-	  cout << "   Incorrect (in)valid scalar result" << endl;
-       }
-    } else {
-       if (!expr.shape().isEqual(shape)) {
-          cout << "   Shape should be " << shape << endl;
-          cout << "   Shape is        " << expr.shape() << endl;
-          ok = False;
-       }
-    }
     if (! expr.isInvalidScalar()) {
       if (expr.isScalar()) {
 	result2 = expr.getBool();
 	if (result2 != result) {
-          cout << "   result should be " << result << endl;
-          cout << "   Scalar result is " << result2  << endl;
-          ok = False;
+	  cout << "   result should be " << result << endl;
+	  cout << "   Scalar result is " << result2  << endl;
+	  ok = False;
 	}
 	expr.eval(result2);
 	if (result2 != result) {
@@ -2917,6 +2945,61 @@ Bool checkBool (const LatticeExprNode& expr,
     }
     return ok;
 }
+
+Bool checkBoolRepl (const LatticeExprNode& expr,
+		    const Bool result,
+		    const IPosition& shape,
+		    const Array<Bool>& replArray,
+		    Bool replScalar,
+		    Bool isReplScalar)
+{
+    Bool ok = checkInfo (expr, shape, False, False, TpBool);
+    LELArray<Bool> Arr(shape);
+    IPosition origin(shape); origin = 0;
+    Slicer region(origin, shape);
+    expr.eval(Arr, region);
+    if (! Arr.isMasked()) {
+       if (! allEQ (Arr.value(), result)) {
+	  cout << "   result should be " << result << endl;
+	  cout << "   Array result is  " << Arr.value() << endl;
+	  ok = False;
+       }
+    } else {
+       Bool delres, delmask, delrepl;
+       const Bool* mask = Arr.mask().getStorage (delmask);
+       const Bool* res = Arr.value().getStorage (delres);
+       const Bool* repl = 0;
+       if (!isReplScalar) {
+	  repl = replArray.getStorage (delrepl);
+       }
+       uInt n = Arr.value().nelements();
+       for (uInt i=0; i<n; i++) {
+	  if (! mask[i]) {
+	     if (!isReplScalar) {
+	        replScalar = repl[i];
+	     }
+	     if (res[i] != replScalar) {
+	        cout << "   result " << i << " should be " << replScalar << endl;
+		cout << "   Replace result is " << res[i] << endl;
+		ok = False;
+	     }
+	  } else {
+	     if (res[i] != result) {
+	        cout << "   result " << i << " should be " << result << endl;
+		cout << "   Replace result is " << res[i] << endl;
+		ok = False;
+	     }
+	  }
+       }
+       Arr.mask().freeStorage (mask, delmask);
+       Arr.value().freeStorage (res, delres);
+       if (!isReplScalar) {
+	  replArray.freeStorage (repl, delrepl);
+       }
+    }
+    return ok;
+}
+
 
 Bool checkMask (const LatticeExprNode& expr,
 		Bool hasMask,
