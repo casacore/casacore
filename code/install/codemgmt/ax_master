@@ -2215,3 +2215,11 @@
 09 124 src mv trial/implement/Tasking/test/tAipsrcValue.cc aips/implement/Tasking/test/tAipsrcValue.c
 09 124 src mv trial/implement/Tasking/test/templates aips/implement/Tasking/test/templates
 09 127 src rm atnf/implement/pks/AnnealFit1D.h
+09 127 src rm atnf/implement/pks/MeanDevFit1D.cc
+09 127 src rm atnf/implement/pks/MeanDevFitPoly.cc
+09 127 src rm atnf/implement/pks/MedianDevFit1D.cc
+09 127 src rm atnf/implement/pks/MedianDevFitPoly.cc
+09 127 src rm atnf/implement/pks/MeanDevFit1D.h
+09 127 src rm atnf/implement/pks/MeanDevFitPoly.h
+09 127 src rm atnf/implement/pks/MedianDevFit1D.h
+09 127 src rm atnf/implement/pks/MedianDevFitPoly.h
