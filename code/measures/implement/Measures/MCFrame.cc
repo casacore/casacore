@@ -613,6 +613,8 @@ void MCFrame::makeDirection() {
   };
   if (appLongp) {
     delete appLongp; appLongp = 0;
+  };
+  if (dirAppp) {
     delete dirAppp; dirAppp = 0;
   };
   if (radLSRp) {
