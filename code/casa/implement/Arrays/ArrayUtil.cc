@@ -1,5 +1,5 @@
 //# ArrayUtil.cc: Utility functions for arrays (templated)
-//# Copyright (C) 1995
+//# Copyright (C) 1995,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //# 
 //# This library is free software; you can redistribute it and/or modify it
@@ -33,10 +33,10 @@ template<class T>
 Array<T> concatenateArray (const Array<T>& left, const Array<T>& right)
 {
     if (left.nelements() == 0) {
-	return right;
+	return right.copy();
     }
     if (right.nelements() == 0) {
-	return left;
+	return left.copy();
     }
     IPosition shape = right.shape();
     IPosition leftShape = left.shape();
