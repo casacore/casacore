@@ -60,7 +60,14 @@ AIPS++ (aipsrc variables)
 \begin{verbatim}
 a:=1:1000
 b:=sin(pi*(a/360)^2)
-print a, b
+a, b
+\end{verbatim}
+\item Control of output:
+\begin{verbatim}
+a, b
+system.print.limit:=10
+b::print.limit:=50
+a, b
 \end{verbatim}
 \item Plotting: 
 \begin{verbatim}
@@ -99,7 +106,7 @@ di.init_ms()
 t:=table('MS')
 t.browse()
 \end{verbatim}
-\item Take the 4th root of the weight (Done in VLBI)
+\item Reweight the data for one antenna
 \begin{verbatim}
 t:=table('MS', read_only=F)
 t.colnames()
@@ -107,7 +114,7 @@ st:=t.query('ANTENNA1==4 || ANTENNA2==4')
 st.nrows()
 t.nrows()
 w:=st.getcol('WEIGHT')
-w[w>0]:=sqrt(sqrt(w[w>0]))
+w[w>0]*:=2.0
 st.putcol('WEIGHT', w)
 st.flush()
 \end{verbatim}
@@ -150,7 +157,7 @@ di.images.restored:='restored.1'
 \item Show a gaintable:
 \begin{verbatim}
 gt:=gaintable('tcal')
-gt.plot()
+gt.plot('phase')
 \end{verbatim}
 \end{itemize}
 
@@ -189,7 +196,6 @@ sysinfo().host()
 f:=infowindow('Eat at Bodos', 'Dining recommendations') # Informative only
 choicewin('Type of bagel',"plain wheat sourdough")      # Choice returned to Glish
 g:=guiframework()					# Framework of GUIs
-g:=F							# How to kill the frame
 \end{verbatim}
 \end{itemize}
 
