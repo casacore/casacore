@@ -320,14 +320,10 @@ void checkNumbers (const ImageInterface<Float>& rIn,
 
 void makeMask(ImageInterface<Float>& out)
 {
-   LCPagedMask mask1 = LCPagedMask(RegionHandler::makeMask (out, "mask0"));
-   out.defineRegion ("mask0", ImageRegion(mask1), RegionHandler::Masks);
-   out.setDefaultMask("mask0");
+   out.makeMask ("mask0", True, True);
 }
 
 void makeMask(ImageInterface<Complex>& out)
 {
-   LCPagedMask mask1 = LCPagedMask(RegionHandler::makeMask (out, "mask0"));
-   out.defineRegion ("mask0", ImageRegion(mask1), RegionHandler::Masks);
-   out.setDefaultMask("mask0");
+   out.makeMask ("mask0", True, True);
 }

@@ -74,8 +74,10 @@ main (int argc, char *argv[])
       image.put (arr);
       
       // Define 2 masks for the image and make the first one the default.
-      LCPagedMask mask1 = RegionHandler::makeMask (image, "mask1");
-      LCPagedMask mask2 = RegionHandler::makeMask (image, "mask2");
+      ImageRegion maskreg1 = image.makeMask ("mask1", True, True);
+      ImageRegion maskreg2 = image.makeMask ("mask2", True, False);
+      LCRegion& mask1 = maskreg1.asMask();
+      LCRegion& mask2 = maskreg2.asMask();
       Matrix<Bool> mask(shape);
       mask = True;
       mask(0,0) = False;
@@ -89,9 +91,6 @@ main (int argc, char *argv[])
       arrm2(IPosition(2,1,1)) = -1;
       mask2.put (mask);
       m2 = mask;
-      image.defineRegion ("mask1", mask1, RegionHandler::Masks);
-      image.defineRegion ("mask2", mask2, RegionHandler::Masks);
-      image.setDefaultMask ("mask1");
     }
     PagedImage<Float> image ("tImageExpr2Gram_tmp.img");
     Block<LatticeExprNode> temps(1);
