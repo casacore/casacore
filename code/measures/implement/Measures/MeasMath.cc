@@ -491,9 +491,9 @@ void MeasMath::applyPolarMotionLong(MVPosition &in) {
   getInfo(TDB);
   getInfo(LASTR);
   getInfo(LONG);
-  in(1) = -in(1);
+  ///  in(1) = -in(1);
   EULER1 = MeasTable::polarMotion(info_p[TDB]);
-  EULER1(2) = info_p[LASTR] + info_p[LONG];
+  EULER1(2) = info_p[LASTR] - info_p[LONG];;;
   ROTMAT1 = RotMatrix(EULER1);
   in = ROTMAT1 * in;
 }
@@ -503,10 +503,10 @@ void MeasMath::deapplyPolarMotionLong(MVPosition &in) {
   getInfo(LASTR);
   getInfo(LONG);
   EULER1 = MeasTable::polarMotion(info_p[TDB]);
-  EULER1(2) = info_p[LASTR] + info_p[LONG];
+  EULER1(2) = info_p[LASTR] - info_p[LONG];
   ROTMAT1 = RotMatrix(EULER1);
   in *= ROTMAT1;
-  in(1) = -in(1);
+  ///  in(1) = -in(1);
 }
 
 void MeasMath::applyAZELtoAZELSW(MVPosition &in) {
