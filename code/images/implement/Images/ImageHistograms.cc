@@ -38,13 +38,14 @@
 #include <trial/Lattices/LatticeIterator.h>
 #include <trial/Lattices/LatticeStepper.h>
 #include <trial/Lattices/LatticeRegion.h>
-#include <trial/Lattices/PagedArray.h>
+#include <trial/Lattices/TempLattice.h>
 #include <trial/Lattices/SubLattice.h>
 #include <aips/Logging/LogIO.h>
 #include <aips/Mathematics/Constants.h>
 #include <aips/Mathematics/Math.h>
 #include <aips/Quanta/QMath.h>
 #include <aips/Tables/Table.h>
+#include <aips/Tasking/AppInfo.h>
 #include <trial/Tasking/PGPlotter.h>
 #include <aips/Utilities/Assert.h>
 #include <aips/Utilities/DataType.h>
@@ -1225,25 +1226,13 @@ void ImageHistograms<T>::makeHistograms()
  
    if (pStoreImage_p != 0) delete pStoreImage_p;
 
-
-// Find size of storage image in Mb
-   
-   T tmp;
-   DataType dataType = whatType(&tmp);
-   Int size0 = storeImageShape.product() * ValType::getTypeSize(dataType);
-   size0 = max(0,size0/1000000);
-   uInt size = size0;
- 
-// Create Table descriptor
- 
-   Table myTable = ImageUtilities::setScratchTable(String("ImageStatistics::"), size);
-
-
 // Create storage image
  
-   pStoreImage_p = new PagedArray<T>(TiledShape(storeImageShape, tileShape),
-				     myTable);
 
+   uInt memory = AppInfo::memoryInMB();
+   Double useMemory = Double(memory)/10.0;
+   pStoreImage_p = new TempLattice<T>(TiledShape(storeImageShape,
+                                       tileShape), useMemory);
 
 // Create collapser for LatticeApply
 

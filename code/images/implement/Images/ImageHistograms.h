@@ -39,7 +39,7 @@
 
 //# Forward Declarations
 template <class T> class ImageInterface;
-template <class T> class PagedArray;
+template <class T> class TempLattice;
 template <class T> class Vector;
 template <class T> class RO_LatticeIterator;
 class IPosition;
@@ -79,14 +79,13 @@ class PGPlotter;
 //
 // Currently complex images are not handled by this class.
 //
-// This class generates one "storage image" into which it writes the histograms.
-// It is from the histogram storage image that the plotting and retrieval arrays 
-// are drawn.  The storage images is actually put in a <src>PagedArray</src>.  
-// This is a disk based storage medium.   The storage image is deleted 
-// when the <src>ImageHistograms</src> class object destructs.    However, currently, if 
-// the process is terminated ungracefully, the storage images will be left over.  
-// They have a name starting with the string "ImageHistograms::",
-// and then a unique number. You can safely delete them in this case.
+// This class generates a "storage image" into which it writes the histograms.
+// It is from this storage image that the plotting and retrieval
+// arrays are drawn.  The storage image is either in core or on disk
+// depending upon its size (if > 10% of memory given by .aipsrc system.resources.memory
+// then it goes into a disk-based PagedArray).  If on disk,  the
+// storage image is deleted when the <src>ImageHistograms</src> 
+// object destructs.    
 //
 // <note role=tip>
 // If you ignore return error statuses from the functions that set the
@@ -276,7 +275,7 @@ private:
 
    LogIO os_p;
    const ImageInterface<T>* pInImage_p;
-   PagedArray<T>* pStoreImage_p;
+   TempLattice<T>* pStoreImage_p;
    ImageStatistics<T>* pStats_p;
    Bool binAll_p, goodParameterStatus_p, needStorageImage_p;
    Bool doCumu_p, doGauss_p, doList_p, doLog_p;
