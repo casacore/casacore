@@ -34,6 +34,7 @@
 class MFrequency;
 class RecordInterface;
 class String;
+class Unit;
 template <class T> class Flux;
 template <class T> class Vector;
 
@@ -148,6 +149,13 @@ public:
   // <group>
   virtual void setRefFrequency(const MFrequency & newRefFreq) = 0;
   virtual const MFrequency & refFrequency() const = 0;
+  // </group>
+
+  // get the frequency unit, and change the default frequency unit to the
+  // specified one.
+  // <group>
+  virtual const Unit & frequencyUnit() const = 0;
+  virtual void convertFrequencyUnit(const Unit & freqUnit) = 0;
   // </group>
 
   // Calculate the flux at the specified frequency given the flux at the
