@@ -30,6 +30,8 @@
 #include <trial/Functionals/FuncExprData.h>
 #include <trial/Functionals/CompiledFunction.h>
 #include <aips/Exceptions/Error.h>
+#include <aips/Mathematics/AutoDiff.h>
+#include <aips/Mathematics/AutoDiffIO.h>
 #include <aips/Utilities/String.h>
 
 #include <aips/iostream.h>
@@ -91,7 +93,23 @@ int main() {
       };
       if (expr.nparameters() > 0) expr[0] = 1.5;
       if (expr.nparameters() > 1) expr[1] = 2.5;
-      ///      cout << expr;
+      cout << "Value(3.5, 0): ";
+      cout << expr(3.5) << ", " << expr(0.0) << endl;
+      cout << "----------------------------------------------------" << endl;
+    };
+    for (uInt i=0; i<n; ++i) {
+      CompiledFunction<AutoDiff<Double> > expr;
+      String myexpr = exprlist[i];
+      cout << "Expression: '" << myexpr << "'" << endl; 
+      if (!expr.setFunction(myexpr)) {
+	cout << expr.errorMessage() << endl;
+      };
+      if (expr.nparameters() > 0) {
+	expr[0] = AutoDiff<Double>(1.5, expr.nparameters(), 0);
+      };
+      if (expr.nparameters() > 1) {
+	expr[1] = AutoDiff<Double>(2.5, expr.nparameters(), 1);
+      };
       cout << "Value(3.5, 0): ";
       cout << expr(3.5) << ", " << expr(0.0) << endl;
       cout << "----------------------------------------------------" << endl;
