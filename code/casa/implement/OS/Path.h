@@ -222,8 +222,8 @@ private:
     // These variables are pointer to strings because the functions which use 
     // these variables are const functions. This means that they would not be 
     // able to modify the string, now they can.
-    String* itsAbsolutePathName;
-    String* itsExpandedPathName;
+    mutable String itsAbsolutePathName;
+    mutable String itsExpandedPathName;
 
     // Define the maximum number of bytes in a pathname
     // This definition does not use Posix values.

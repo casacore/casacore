@@ -79,49 +79,30 @@ const uInt NAME_MAX_GUESS = 255;  // if NAME_MAX is indeterminate
 
 
 Path::Path() 
-: itsOriginalPathName ("."), 
-  itsAbsolutePathName (0),
-  itsExpandedPathName (0)
-{
-    itsAbsolutePathName = new String(); 
-    itsExpandedPathName = new String();
-}
+: itsOriginalPathName (".")
+{}
 
 Path::Path (const String& pathName)
-: itsOriginalPathName (pathName), 
-  itsAbsolutePathName (0),
-  itsExpandedPathName (0)
+: itsOriginalPathName (pathName)
 {
     if (itsOriginalPathName.empty()) { 
 	itsOriginalPathName = ".";    
     }
-    itsAbsolutePathName = new String(); 
-    itsExpandedPathName = new String();
 }    
 
 Path::Path (const Path& that)
-: itsOriginalPathName (that.itsOriginalPathName), 
-  itsAbsolutePathName (0),
-  itsExpandedPathName (0)
-{
-    itsAbsolutePathName = new String (* (that.itsAbsolutePathName));
-    itsExpandedPathName = new String (* (that.itsExpandedPathName));
-}
+: itsOriginalPathName (that.itsOriginalPathName)
+{}
 
 Path::~Path()
-{
-    delete itsAbsolutePathName;
-    delete itsExpandedPathName;
-}   
+{}   
 
 Path& Path::operator= (const Path& that)
 {
     if (this != &that) {   
 	itsOriginalPathName = that.itsOriginalPathName;
-	delete itsAbsolutePathName;
-	itsAbsolutePathName = new String (* (that.itsAbsolutePathName));
-	delete itsExpandedPathName;
-	itsExpandedPathName = new String (* (that.itsExpandedPathName));
+	itsAbsolutePathName = that.itsAbsolutePathName;
+	itsExpandedPathName = that.itsExpandedPathName;
     }
     return *this;
 }
@@ -134,25 +115,25 @@ void Path::append (const String& string)
 	    itsOriginalPathName += "/";
 	}
 	itsOriginalPathName += string;
-	*itsAbsolutePathName = "";
-	*itsExpandedPathName = "";
+	itsAbsolutePathName = "";
+	itsExpandedPathName = "";
     }
 }
 
 const String& Path::expandedName() const
 {
-    if (itsExpandedPathName->empty()) {
-	*itsExpandedPathName = expandName (itsOriginalPathName);
+    if (itsExpandedPathName.empty()) {
+	itsExpandedPathName = expandName (itsOriginalPathName);
     }
-    return *itsExpandedPathName;
+    return itsExpandedPathName;
 }
 
 const String& Path::absoluteName() const
 {
-    if (itsAbsolutePathName->empty()) {
-	*itsAbsolutePathName = removeDots (makeAbsoluteName (expandedName()));
+    if (itsAbsolutePathName.empty()) {
+	itsAbsolutePathName = removeDots (makeAbsoluteName (expandedName()));
     }
-    return *itsAbsolutePathName;
+    return itsAbsolutePathName;
 }
 
 Bool Path::isValid() const
