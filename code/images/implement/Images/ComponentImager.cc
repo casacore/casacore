@@ -27,6 +27,7 @@
 
 #include <trial/ComponentModels/ComponentImager.h>
 #include <aips/Arrays/ArrayMath.h>
+#include <aips/Arrays/Matrix.h>
 #include <aips/Arrays/Vector.h>
 #include <aips/Containers/Block.h>
 #include <aips/Exceptions/Error.h>
@@ -34,9 +35,11 @@
 #include <aips/Lattices/IPosition.h>
 #include <aips/Measures/MDirection.h>
 #include <aips/Measures/MFrequency.h>
+#include <aips/Measures/MeasRef.h>
 #include <aips/Measures/Stokes.h>
 #include <aips/Quanta/MVAngle.h>
 #include <aips/Quanta/MVDirection.h>
+#include <aips/Quanta/MVFrequency.h>
 #include <aips/Quanta/Quantum.h>
 #include <aips/Utilities/Assert.h>
 #include <aips/Utilities/String.h>
@@ -47,152 +50,143 @@
 #include <trial/Coordinates/CoordinateSystem.h>
 #include <trial/Coordinates/CoordinateUtil.h>
 #include <trial/Coordinates/DirectionCoordinate.h>
+#include <trial/Coordinates/SpectralCoordinate.h>
 #include <trial/Images/ImageInterface.h>
 #include <trial/Lattices/LatticeIterator.h>
-#include <trial/Lattices/ArrayLattice.h>
+#include <trial/Lattices/LatticeStepper.h>
 
 void ComponentImager::
 project(ImageInterface<Float>& image, const ComponentList& list) {
-  const CoordinateSystem coords = image.coordinates();
+  const CoordinateSystem& coords = image.coordinates();
   const IPosition imageShape = image.shape();
-  const uInt naxis = imageShape.nelements();
   
-  // I currently REQUIRE that the image has one direction coordinate (only).
-  // All other coordinates (ie. polarization and frequency) are optional. 
-  const Vector<Int> dirAxes = CoordinateUtil::findDirectionAxes(coords);
-  if (dirAxes.nelements() == 0) {
-    throw(AipsError("ComponentImager::project(...) - The supplied image" 
-		    " does not have any direction coordinates"));
+  // I currently REQUIRE that:
+  // * The list has at least one element.
+  // * The image has at least one pixel.
+  // * The image has one direction coordinate (only).
+  // * The direction coordinate has two pixel and two world axes.
+  // * Polarization and frequency coordinates are optional, however at most one
+  //   each of these coordinates can exist.
+  // * If there is a Stokes axis it can only contain Stokes::I,Q,U,V pols.
+  // * The pixels are square.
+  uInt latAxis, longAxis;
+  {
+    const Vector<Int> dirAxes = CoordinateUtil::findDirectionAxes(coords);
+    DebugAssert(dirAxes.nelements() == 2, AipsError);
+    latAxis = dirAxes(0);
+    longAxis = dirAxes(1);
   }
-  const uInt nPixAxes = dirAxes.nelements();
-  Vector<Double> pixelCoord(nPixAxes); pixelCoord = 0.0;
-  Vector<Double> worldCoord(2);
-
-  const DirectionCoordinate& dirCoord = 
+  DirectionCoordinate dirCoord = 
     coords.directionCoordinate(coords.findCoordinate(Coordinate::DIRECTION));
-  MDirection pixelDir(MVDirection(0.0), dirCoord.directionType());
-  Vector<Quantum<Double> > dirVal(2);
+  DebugAssert(dirCoord.nPixelAxes() == 2, AipsError);
+  DebugAssert(dirCoord.nWorldAxes() == 2, AipsError);
+  dirCoord.setWorldAxisUnits(Vector<String>(2, "rad"));
+  const MeasRef<MDirection> dirRef(dirCoord.directionType());
   MVAngle pixelSize;
   {
-    Vector<String> units = dirCoord.worldAxisUnits();
-    dirVal(0).setUnit(units(0));
-    dirVal(1).setUnit(units(1));
     Vector<Double> inc = dirCoord.increment();
-    Quantum<Double> inc0(abs(inc(0)), units(0));
-    Quantum<Double> inc1(abs(inc(1)), units(1));
-    AlwaysAssert(near(inc0.getValue("rad"), inc1.getValue("rad")), AipsError);
-    pixelSize = MVAngle(inc0);
+    Double latInc = abs(inc(0));
+    DebugAssert(near(latInc, abs(inc(1))), AipsError);
+    pixelSize = MVAngle(latInc);
   }
   
-  // Setup an iterator to step through the image in chunks that can fit into
-  // memory. Go to a bit of effort to make the chunck size as large as
-  // possible but still minimize the number of tiles in the cache.
-  IPosition elementShape = imageShape;
-  IPosition chunckShape = imageShape;
-  uInt axis;
-  {
-    const IPosition tileShape(image.niceCursorShape());
-    for (uInt k = 0; k < nPixAxes; k++) {
-      axis = dirAxes(k);
-      elementShape(axis) = 1;
-      chunckShape(axis) = tileShape(axis);
-    }
-  }
-
   // Check if there is a Stokes Axes and if so which polarizations. Otherwise
   // only grid the I polarisation.
+  uInt nStokes;
   Vector<Stokes::StokesTypes> stokes; 
   // Vector stating which polarisations are on each plane
   // Find which axis is the stokes pixel axis
   const Int polAxis = CoordinateUtil::findStokesAxis(stokes, coords);  
-  const uInt nStokes = stokes.nelements(); 
   if (polAxis >= 0) {
-    AlwaysAssert(imageShape(polAxis) == Int(nStokes), AipsError);
-  }
-  for (uInt p = 0; p < nStokes; p++)
-    AlwaysAssert(stokes(p) == Stokes::I || stokes(p) == Stokes::Q ||
- 		 stokes(p) == Stokes::U || stokes(p) == Stokes::V, 
- 		 AipsError);
-
-  Block<IPosition> blc;
-  Block<IPosition> trc;
-  if (nStokes > 1) {
-    blc.resize(nStokes);
-    blc = IPosition(naxis,0);
-    trc.resize(nStokes);
-    trc = elementShape - 1;
+    nStokes = stokes.nelements();
+    DebugAssert(static_cast<uInt>(imageShape(polAxis)) == nStokes, AipsError);
     for (uInt p = 0; p < nStokes; p++) {
-      blc[p](polAxis) = p;
-      trc[p](polAxis) = p;
+      DebugAssert(stokes(p) == Stokes::I || stokes(p) == Stokes::Q ||
+		  stokes(p) == Stokes::U || stokes(p) == Stokes::V, 
+		  AipsError);
     }
+  } else {
+    nStokes = stokes.nelements();
   }
 
-  const MFrequency refFreq = list.component(0).spectrum().refFrequency();
+  // Check if there is a frequency axis and if so get the all the frequencies
+  // as a Vector<MVFrequency>. Otherwise assume the reference frequency is the
+  // same as the reference frequency of the first component in the list.
+  MeasRef<MFrequency> freqRef;
+  uInt nFreqs = 1;
+  Vector<MVFrequency> freqValues(nFreqs);
+  const Int freqAxis = CoordinateUtil::findSpectralAxis(coords);
+  if (freqAxis >= 0) {
+    nFreqs = static_cast<uInt>(imageShape(freqAxis));
+    freqValues.resize(nFreqs);
+    SpectralCoordinate specCoord = 
+      coords.spectralCoordinate(coords.findCoordinate(Coordinate::SPECTRAL));
+    specCoord.setWorldAxisUnits(Vector<String>(1, "Hz"));
+    freqRef = MeasRef<MFrequency>(specCoord.frequencySystem());
+    Double thisFreq;
+    for (uInt f = 0; f < nFreqs; f++) {
+      if (!specCoord.toWorld(thisFreq, static_cast<Double>(f))) {
+	throw(AipsError("ComponentImager::project(...) - "
+			"cannot convert a frequency value"));
+      }
+      freqValues(f) = MVFrequency(thisFreq);
+    }
+  } else {
+    const MFrequency& defaultFreq = 
+      list.component(0).spectrum().refFrequency();
+    freqRef = defaultFreq.getRef();
+    freqValues(0) = defaultFreq.getValue();
+  }
+
+  // Setup an iterator to step through the image in chunks that can fit into
+  // memory. Go to a bit of effort to make the chunck size as large as
+  // possible but still minimize the number of tiles in the cache.
+  IPosition chunckShape = imageShape;
+  {
+    const IPosition tileShape = image.niceCursorShape();
+    chunckShape(latAxis) = tileShape(latAxis);
+    chunckShape(longAxis) = tileShape(longAxis);
+  }
+  IPosition pixelShape = imageShape;
+  pixelShape(latAxis) = pixelShape(longAxis) = 1;
+
   LatticeIterator<Float> chunkIter(image, chunckShape);
-  Flux<Double> pixelVal;
-  IPosition chunkOrigin(naxis), elementPosition(naxis);
+  const uInt nDirs = imageShape(latAxis) * imageShape(longAxis);
+  Matrix<Flux<Double> > pixelVals(nDirs, nFreqs);
+  Vector<MVDirection> dirVals(nDirs);
+  const uInt naxis = imageShape.nelements();
+  IPosition chunkOrigin(naxis), pixelPosition(naxis);
+  Vector<Double> pixelDir(2);
+  Vector<Double> worldDir(2);
   for (chunkIter.reset(); !chunkIter.atEnd(); chunkIter++) {
-    ArrayLattice<Float> array(chunkIter.rwCursor());
-    LatticeIterator<Float> elementIter(array, elementShape);
     chunkOrigin = chunkIter.position();
-    for (elementIter.reset(); !elementIter.atEnd(); elementIter++) {
-      elementPosition = elementIter.position();
-      for (uInt k = 0; k < nPixAxes; k++) {
- 	axis = dirAxes(k);
- 	pixelCoord(k) = elementPosition(axis) + chunkOrigin(axis);
-      }
-      if (!dirCoord.toWorld(worldCoord, pixelCoord)) {
+    LatticeStepper pixelStepper(chunckShape, pixelShape);
+    uInt d = 0;
+    for (pixelStepper.reset(); !pixelStepper.atEnd(); pixelStepper++) {
+      pixelPosition = pixelStepper.position();
+      pixelDir(0) = pixelPosition(latAxis) + chunkOrigin(latAxis);
+      pixelDir(1) = pixelPosition(longAxis) + chunkOrigin(longAxis);
+      if (!dirCoord.toWorld(worldDir, pixelDir)) {
 // I am not sure what to do here, probably this message should be logged.
-  	cerr << "ComponentImager::Pixel at " << pixelCoord 
-  	     << " cannot be projected" << endl;
+   	cerr << "ComponentImager::Pixel at " << pixelDir 
+   	     << " cannot be projected" << endl;
+      } else {
+	dirVals(d) = MVDirection(worldDir(0), worldDir(1));
+	d++;
       }
-      else {
- 	dirVal(0).setValue(worldCoord(0));
- 	dirVal(1).setValue(worldCoord(1));
- 	pixelDir.set(MVDirection(dirVal));
-	pixelVal = list.sample(pixelDir, pixelSize, refFreq);
-	pixelVal.convertPol(ComponentType::STOKES);
- 	if (nStokes == 1) {
-	  switch (stokes(0)) {
-	  case Stokes::I:
-	    elementIter.rwCursor() += Float(pixelVal.value(0).real()); break;
-	  case Stokes::Q:
-	    elementIter.rwCursor() += Float(pixelVal.value(1).real()); break;
-	  case Stokes::U:
-	    elementIter.rwCursor() += Float(pixelVal.value(2).real()); break;
-	  case Stokes::V:
-	    elementIter.rwCursor() += Float(pixelVal.value(3).real()); break;
-	  }
- 	}
-	else if (elementShape.product() == Int(nStokes))
-	  for (uInt p = 0; p < nStokes; p++) {
-	    switch (stokes(p)) {
-	    case Stokes::I:
-	      elementIter.rwCursor()(blc[p]) += Float(pixelVal.value(0).real()); break;
-	    case Stokes::Q:
-	      elementIter.rwCursor()(blc[p]) += Float(pixelVal.value(1).real()); break;
-	    case Stokes::U:
-	      elementIter.rwCursor()(blc[p]) += Float(pixelVal.value(2).real()); break;
-	    case Stokes::V:
-	      elementIter.rwCursor()(blc[p]) += Float(pixelVal.value(3).real()); break;
-	    }
-	  }
-	else
-	for (uInt p = 0; p < nStokes; p++) {
-	  switch (stokes(p)) {
-	  case Stokes::I:
-	    elementIter.rwCursor()(blc[p], trc[p]) += Float(pixelVal.value(0).real());
-	    break;
-	  case Stokes::Q:
-	    elementIter.rwCursor()(blc[p], trc[p]) += Float(pixelVal.value(1).real());
-	    break;
-	  case Stokes::U:
-	    elementIter.rwCursor()(blc[p], trc[p]) += Float(pixelVal.value(2).real());
-	    break;
-	  case Stokes::V:
-	    elementIter.rwCursor()(blc[p], trc[p]) += Float(pixelVal.value(3).real());
-	    break;
-	  }
+    }
+    list.sample(pixelVals, dirVals, dirRef, pixelSize, freqValues, freqRef);
+    Array<Float>& imageChunk = chunkIter.rwCursor();
+    for (pixelStepper.reset(), d = 0; !pixelStepper.atEnd(); 
+	 pixelStepper++, d++) {
+      pixelPosition = pixelStepper.position();
+      for (uInt f = 0; f < nFreqs; f++) {
+	pixelPosition(freqAxis) = f;
+	const Flux<Double>& thisFlux = pixelVals(d, f);
+	for (uInt s = 0; s < nStokes; s++) {
+	  pixelPosition(polAxis) = s;
+	  imageChunk(pixelPosition) += 
+	    static_cast<Float>(thisFlux.value(s).real());
 	}
       }
     }
