@@ -1,5 +1,5 @@
 //# ColumnDesc.h: an envelope class for column descriptions in tables
-//# Copyright (C) 1994,1995,1996,1997
+//# Copyright (C) 1994,1995,1996,1997,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -28,9 +28,6 @@
 #if !defined(AIPS_COLUMNDESC_H)
 #define AIPS_COLUMNDESC_H
 
-#if defined(_AIX)
-#pragma implementation ("ColumnDesc.cc")
-#endif 
 
 //# Includes
 #include <aips/aips.h>
@@ -69,6 +66,8 @@ imported class ostream;
 // Class ColumnDesc is an envelope for the letter class BaseColDesc
 // and its derivations like
 // <linkto class="ScalarColumnDesc:description">ScalarColumnDesc</linkto>,
+// <linkto class="ScalarRecordColumnDesc:description">
+//  ScalarRecordColumnDesc</linkto>.
 // <linkto class="ArrayColumnDesc:description">ArrayColumnDesc</linkto>, and
 // <linkto class="SubTableDesc:description">SubTableDesc</linkto>.
 // ColumnDesc is meant to examine or slightly modify already existing
@@ -106,7 +105,7 @@ imported class ostream;
 //  <dd>
 //     Undefined is only useful for scalars. If not given, all possible
 //     values of the scalar have a meaning. If given, a value equal to
-//     the undefined values in ValType.h is a truely undefined value.
+//     the default value in the column description is an undefined value.
 //     The function TableColumn::isDefined will return False for such
 //     values.
 // </dl>
