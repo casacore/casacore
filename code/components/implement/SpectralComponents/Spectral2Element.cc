@@ -26,7 +26,7 @@
 //# $Id$
 
 //# Includes
-#include <trial/Wnbt/SpectralElement.h>
+#include <trial/SpectralComponents/SpectralElement.h>
 
 #include <aips/Arrays/ArrayMath.h>
 #include <aips/Containers/RecordInterface.h>

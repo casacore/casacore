@@ -26,10 +26,10 @@
 //# $Id$
 
 //# Includes
-#include <trial/Wnbt/SpectralList.h>
+#include <trial/SpectralComponents/SpectralList.h>
 
 #include <aips/Exceptions/Error.h>
-#include <trial/Wnbt/SpectralElement.h>
+#include <trial/SpectralComponents/SpectralElement.h>
 
 #include <aips/iostream.h>
 

@@ -27,10 +27,10 @@
 
 //# Includes
 #include <aips/aips.h>
-#include <trial/Wnbt/SpectralElement.h>
-#include <trial/Wnbt/SpectralList.h>
-#include <trial/Wnbt/SpectralEstimate.h>
-#include <trial/Wnbt/SpectralFit.h>
+#include <trial/SpectralComponents/SpectralElement.h>
+#include <trial/SpectralComponents/SpectralList.h>
+#include <trial/SpectralComponents/SpectralEstimate.h>
+#include <trial/SpectralComponents/SpectralFit.h>
 #include <trial/Tasking/PGPlotter.h>
 #include <aips/Exceptions/Error.h>
 #include <aips/Arrays/Vector.h>

@@ -26,7 +26,7 @@
 //# $Id$
 
 //# Includes
-#include <trial/Wnbt/SpectralEstimate.h>
+#include <trial/SpectralComponents/SpectralEstimate.h>
 
 #include <aips/Mathematics/Math.h>
 

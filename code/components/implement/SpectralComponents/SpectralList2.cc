@@ -26,11 +26,11 @@
 //# $Id$
 
 //# Includes
-#include <trial/Wnbt/SpectralList.h>
+#include <trial/SpectralComponents/SpectralList.h>
 
 #include <aips/Arrays/Vector.h>
 #include <aips/Exceptions/Error.h>
-#include <trial/Wnbt/SpectralElement.h>
+#include <trial/SpectralComponents/SpectralElement.h>
 
 //# Member templates
 template <class MT>

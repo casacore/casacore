@@ -50,10 +50,10 @@
 #include <trial/Tasking/ProgressMeter.h>
 #include <aips/Quanta/Quantum.h>
 #include <aips/Utilities/Assert.h>
-#include <trial/Wnbt/SpectralFit.h>
-#include <trial/Wnbt/SpectralEstimate.h>
-#include <trial/Wnbt/SpectralElement.h>
-#include <trial/Wnbt/SpectralList.h>
+#include <trial/SpectralComponents/SpectralFit.h>
+#include <trial/SpectralComponents/SpectralEstimate.h>
+#include <trial/SpectralComponents/SpectralElement.h>
+#include <trial/SpectralComponents/SpectralList.h>
 
 
 #include <aips/ostream.h>

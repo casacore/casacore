@@ -26,14 +26,14 @@
 //# $Id$
 
 //# Includes
-#include <trial/Wnbt/SpectralFit.h>
+#include <trial/SpectralComponents/SpectralFit.h>
 #include <aips/Arrays/Vector.h>
 #include <aips/Functionals/SumFunction.h>
 #include <aips/Functionals/Gaussian1D.h>
 #include <aips/Functionals/Polynomial.h>
 #include <trial/Fitting/NonLinearFitLM.h>
 #include <trial/Functionals/FuncWithAutoDerivs.h>
-#include <trial/Wnbt/SpectralElement.h>
+#include <trial/SpectralComponents/SpectralElement.h>
 
 //# Templated member functions
 template <class MT>

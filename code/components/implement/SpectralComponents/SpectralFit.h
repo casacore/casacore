@@ -31,7 +31,7 @@
 
 //# Includes
 #include <aips/aips.h>
-#include <trial/Wnbt/SpectralList.h>
+#include <trial/SpectralComponents/SpectralList.h>
 
 //# Forward Declarations
 class SpectralElement;

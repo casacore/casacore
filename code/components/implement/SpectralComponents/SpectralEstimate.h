@@ -31,8 +31,8 @@
 
 //# Includes
 #include <aips/aips.h>
-#include <trial/Wnbt/SpectralElement.h>
-#include <trial/Wnbt/SpectralList.h>
+#include <trial/SpectralComponents/SpectralElement.h>
+#include <trial/SpectralComponents/SpectralList.h>
 
 //# Forward Declarations
 template <class T> class Vector;

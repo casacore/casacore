@@ -36,9 +36,9 @@
 #include <aips/Quanta/Unit.h>
 #include <aips/Measures/MDoppler.h>
 //
-#include <trial/Wnbt/SpectralElement.h>
-#include <trial/Wnbt/SpectralEstimate.h>
-#include <trial/Wnbt/SpectralFit.h>
+#include <trial/SpectralComponents/SpectralElement.h>
+#include <trial/SpectralComponents/SpectralEstimate.h>
+#include <trial/SpectralComponents/SpectralFit.h>
 
 // Forward declarations
 template<class T> class ImageInterface;
