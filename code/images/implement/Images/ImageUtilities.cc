@@ -860,6 +860,32 @@ Int ImageUtilities::findSpectralAxis (const IPosition& shape,
    return -1;
 }
 
+String ImageUtilities::shortAxisName (const String& axisName)
+//
+// Look for "Right Ascension", "Declination", "Velocity",
+// and "Frequency" in an axis string name and return "RA", 
+// "Dec", "Vel", "Freq", respectively
+// if these are found.  Anything else is returned as is.
+// This will go away when I do something in the Coordinates
+// classes to return long, short and FITS names
+//
+{
+   String temp = axisName;
+   temp.upcase();
+   if (temp.contains("RIGHT ASCENSION")) {
+     temp = "RA";
+   } else if (temp.contains("DECLINATION")) {
+     temp = "Dec";
+   } else if (temp.contains("VELOCITY")) {
+     temp = "Vel";
+   } else if (temp.contains("FREQUENCY")) {
+     temp = "Freq";
+   } else {
+     temp = axisName;
+   }
+   return temp;
+}
+
 Bool ImageUtilities::verifyAxes (const Int& nDim,
                                  const Vector<Int>& axes,
                                  ostream& os)

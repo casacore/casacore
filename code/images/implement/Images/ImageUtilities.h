@@ -333,6 +333,10 @@ public:
    static Int findSpectralAxis     (const IPosition& imageShape,
                                     const CoordinateSystem& coordinate);
 
+// Convert long axis names "Right Ascension", "Declination", "Frequency" and
+// "Velocity" to "RA", "Dec", "Freq", "Vel" respectively.
+   static String shortAxisName (const String& axisName);
+
 
 // Verify that an array of axes are valid for this image. That is, make sure they are 
 // in the range 0 -> nDimensions-1.   A return value of <src>False</src> indicates
