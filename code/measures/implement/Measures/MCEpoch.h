@@ -1,5 +1,5 @@
 //# MCEpoch.h: MEpoch conversion routines 
-//# Copyright (C) 1995,1996,1997,1998,1999
+//# Copyright (C) 1995,1996,1997,1998,1999,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -90,7 +90,7 @@ class MCEpoch : public MCBase {
 public:
 
   //# Friends
-  friend MEpoch::Convert;
+  friend class MeasConvert<MEpoch>;
   
   //# Constructors
   // Default constructor

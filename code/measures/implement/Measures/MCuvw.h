@@ -1,5 +1,5 @@
 //# MCuvw.h: Muvw conversion routines 
-//# Copyright (C) 1998,1999,2000
+//# Copyright (C) 1998,1999,2000,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -85,7 +85,7 @@ public:
 
   //# Friends
   // Conversion of data
-  friend Muvw::Convert;
+  friend class MeasConvert<Muvw>;
   
   //# Constructors
   // Default constructor

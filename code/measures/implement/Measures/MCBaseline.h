@@ -1,5 +1,5 @@
 //# MCBaseline.h: MBaseline conversion routines 
-//# Copyright (C) 1998,1999,2000
+//# Copyright (C) 1998,1999,2000,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -84,7 +84,7 @@ public:
 
   //# Friends
   // Conversion of data
-  friend MBaseline::Convert;
+  friend class MeasConvert<MBaseline>;
   
   //# Constructors
   // Default constructor
