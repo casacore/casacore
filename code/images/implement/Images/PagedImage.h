@@ -28,21 +28,17 @@
 #if !defined(AIPS_PAGEDIMAGE_H)
 #define AIPS_PAGEDIMAGE_H
 
-#if defined(_AIX)
-#pragma implementation ("PagedImage.cc")
-#endif 
 
+//# Includes
 #include <aips/aips.h>
-
 #include <trial/Images/ImageInterface.h>
 #include <trial/Lattices/PagedArray.h>
 #include <aips/Tables/Table.h>
 #include <aips/Utilities/DataType.h>
 #include <aips/Tables/TableRecord.h>
-
 #include <aips/Logging/LogIO.h>
 
-//# predeclarations
+//# Forward Declarations
 class IPosition;
 class LatticeNavigator;
 class Slicer;
@@ -50,19 +46,24 @@ class LogTable;
 template <class T> class Array;
 template <class T> class COWPtr;
 template <class T> class LatticeIterInterface;
+class String;
+class TableLock;
 #if defined(AIPS_STDLIB)
 #include <iosfwd.h>
 #else
 class ostream;
 #endif
-class String;
-class TableLock;
 
-// <summary> read, store, and manipulate astronomical images </summary>
-//
+
+// <summary>
+// read, store, and manipulate astronomical images
+// </summary>
+
+// <use visibility=export>
+
 // <reviewed reviewer="" date="" tests="tPagedmage.cc" demos="dPagedImage.cc>
 // </reviewed>
-//
+
 // <prerequisite>
 // <list>
 //   <item> CoordinateSystem
@@ -72,13 +73,13 @@ class TableLock;
 //   <item> LatticeNavigator
 // </list>
 // </prerequisite>
-//
+
 // <etymology>
 // The PagedImage name comes from its role as the Image class with paging 
 // from persistent memory.  Users are thus invited to treat the 
 // PagedImage instances like AIPS++ Lattices  
 // </etymology>
-//
+
 // <synopsis> 
 // All AIPS++ Images are Lattices.  They may be treated like any other Lattice;
 // getSlice(...), putSlice(...), LatticeIterator for iterating, etc...
@@ -91,24 +92,25 @@ class TableLock;
 // what the pixel type of an image is before you open the image if your
 // code can work with Images of many possible types, or for error checking.
 // </synopsis> 
-//
+
 // <example>
 // <srcblock>
 // </srcblock>
 // </example>
-//
+
 // <motivation>
 // The size of astronomical data can be very large.  The ability to fit an 
 // entire image into random access memory cannot be guaranteed.  Paging from 
 // disk pieces of the image appeared to be the way to deal with this problem.
 // </motivation>
-//
+
 // <todo asof="1996/09/04">
 //   <li> The CoordinateSystem::store() function returns a TableRecord.  That
 // TableRecord should be stored in the same row as our image.  This will 
 // allow ImageStack members to have their own coordinate frames.
 //   <li> Create a proper table log sink, not just the null sink.
 // </todo>
+
 
 template <class T> class PagedImage: public ImageInterface<T>
 {
@@ -150,6 +152,12 @@ public:
   // assignment operator (reference semantics).
   PagedImage<T> &operator=(const PagedImage<T> &other);
   
+  // Make a copy of the object (reference semantics).
+  virtual Lattice<T>* clone() const;
+
+  // Is the PagedImage writable?
+  virtual Bool isWritable() const;
+
   // Function to change the name of the Table file on disk.
   // PagedImage is given a file name at construction time.  You may change
   // that name here.
@@ -169,31 +177,32 @@ public:
   uInt rowNumber() const;
 
   // return the shape of the image
-  IPosition shape() const;
+  virtual IPosition shape() const;
 
   // change the shape of the image (N.B. the data is thrown away)
-  void resize(const TiledShape &newShape);
+  virtual void resize(const TiledShape &newShape);
 
   // functions which extract an array from the map.
   // <group>   
-  Bool getSlice(COWPtr<Array<T> > &buffer, const IPosition &start, 
-		const IPosition &shape, const IPosition &stride,
-		Bool removeDegenerateAxes=False) const;
-  
-  Bool getSlice(COWPtr<Array<T> > &buffer, const Slicer &theSlice, 
-		Bool removeDegenerateAxes=False) const;
-  
-  Bool getSlice(Array<T> &buffer, const IPosition &start, 
-		const IPosition &shape, const IPosition &stride,
-		Bool removeDegenerateAxes=False);
-  
-  Bool getSlice(Array<T> &buffer, const Slicer &theSlice, 
-		Bool removeDegenerateAxes=False);
+  virtual Bool getSlice(COWPtr<Array<T> > &buffer, const IPosition &start, 
+			const IPosition &shape, const IPosition &stride,
+			Bool removeDegenerateAxes=False) const;
+  virtual Bool getSlice(COWPtr<Array<T> > &buffer, const Slicer &theSlice, 
+			Bool removeDegenerateAxes=False) const;
+  virtual Bool getSlice(Array<T> &buffer, const IPosition &start, 
+			const IPosition &shape, const IPosition &stride,
+			Bool removeDegenerateAxes=False);
+  virtual Bool getSlice(Array<T> &buffer, const Slicer &theSlice, 
+			Bool removeDegenerateAxes=False);
   // </group>
   
   // function to replace the values in the map with soureBuffer.
-  void putSlice(const Array<T> &sourceBuffer, const IPosition &where,
-		const IPosition &stride);
+  // The stride defaults to 1.
+  // <group>
+  virtual void putSlice(const Array<T> &sourceBuffer, const IPosition &where);
+  virtual void putSlice(const Array<T> &sourceBuffer, const IPosition &where,
+			const IPosition &stride);
+  // </group>
 
   // replace every element, x, of the lattice with the result  of f (x).
   // you must pass in the address of the function -- so the function
@@ -206,9 +215,9 @@ public:
   // for the built-in types, which may be an issue for large Lattices
   // stored in memory, where disk access is not an issue.
   // <group>
-  void apply(T (*function)(T));
-  void apply(T (*function)(const T &));
-  void apply(const Functional<T,T> &function);
+  virtual void apply(T (*function)(T));
+  virtual void apply(T (*function)(const T &));
+  virtual void apply(const Functional<T,T> &function);
   // </group>
 
   // function which returns True if the image has a mask, returns False 
@@ -217,8 +226,8 @@ public:
 
   // return the whole mask Lattice to allow iteration or Lattice functions.
   // <group>    
-  const Lattice<Bool> &mask() const;
-  Lattice<Bool> &mask();
+  virtual const Lattice<Bool> &mask() const;
+  virtual Lattice<Bool> &mask();
   // </group>
   
   // addition operator. Masks are summed, i.e. if the pixel is 
@@ -259,8 +268,8 @@ public:
   // These are the true implementations of the paran operator.
   // <note> Not for public use </note>
   // <group>
-  T getAt(const IPosition &where) const;
-  void putAt(const T &value, const IPosition &where);
+  virtual T getAt(const IPosition &where) const;
+  virtual void putAt(const T &value, const IPosition &where);
   // </group>
 
   // Often we have miscellaneous information we want to attach to an image.
@@ -278,18 +287,27 @@ public:
   
   // these are the implementations of the letters for the envelope Iterator
   // class <note> Not for public use </note>
-  LatticeIterInterface<T> *makeIter(const LatticeNavigator &navigator) const;
+  virtual LatticeIterInterface<T> *makeIter
+                                 (const LatticeNavigator &navigator) const;
+
+  // Returns the maximum recommended number of pixels for a cursor. This is
+  // the number of pixels in a tile. 
+  virtual uInt maxPixels() const;
 
   // Help the user pick a cursor for most efficient access if he only wants
   // pixel values and doesn't care about the order. Usually just use
-  // <src>IPosition shape = pa.niceCursorShape(pa.maxPixels());</src>
-  virtual uInt maxPixels() const;
+  // <src>IPosition shape = pa.niceCursorShape();</src>
+  // <br>The default argument is the result of <src>maxPixels()</src>.
+  // <group>
   virtual IPosition niceCursorShape(uInt maxPixels) const;
+  IPosition niceCursorShape() const
+    { return niceCursorShape (maxPixels()); }
+  // </group>
 
   // Maximum size - not necessarily all used. In pixels.
   uInt maximumCacheSize() const;
 
-  // Set the maximum (allowd) cache size as indicated.
+  // Set the maximum (allowed) cache size as indicated.
   void setMaximumCacheSize(uInt howManyPixels);
 
   // Set the cache size as to "fit" the indicated path.
@@ -341,7 +359,8 @@ private:
 template<class T>
 inline void PagedImage<T>::reopenRW()
 {
-  if (!table_p.isWritable()  &&  Table::isWritable(name())) {
+  //# Open for write if not done yet and if writable.
+  if (!table_p.isWritable()  &&  isWritable()) {
     table_p.reopenRW();
   }
 }
