@@ -231,7 +231,7 @@ void LCStretch::multiGetSlice (Array<Bool>& buffer,
     uInt nrs = itsStretchAxes.nelements();
     for (uInt i=0; i<nrs; i++) {
         uInt axis = itsStretchAxes(i);
-	blc(axis) = 1;
+	blc(axis) = 0;
 	len(axis) = 1;
 	inc(axis) = 1;
     }
