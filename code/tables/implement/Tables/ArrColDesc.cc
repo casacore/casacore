@@ -44,7 +44,7 @@ ArrayColumnDesc<T>::ArrayColumnDesc (const String& name,
 		  opt, ndim, IPosition(),
 		  False, True, False)
 {
-    if (nrdim_p == 0) {
+    if (nrdim_p <= 0) {
 	nrdim_p = -1;
     }
 }
