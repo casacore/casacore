@@ -1,5 +1,5 @@
 //# Interpolate2D.cc:  this implements Interpolate2D
-//# Copyright (C) 1996,1997,1998,1999,2000,2001
+//# Copyright (C) 1996,1997,1998,1999,2000,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -44,14 +44,14 @@ Interpolate2D::Interpolate2D(Interpolate2D::Method method)
 // Set up function pointers to correct method
 
   if (method==Interpolate2D::LINEAR) {
-    itsFuncPtr = &(Interpolate2D::interpLinear);
-    itsFuncPtrBool = &(Interpolate2D::interpLinearBool);
+    itsFuncPtr = &Interpolate2D::interpLinear;
+    itsFuncPtrBool = &Interpolate2D::interpLinearBool;
   } else if (method==Interpolate2D::CUBIC) {
-    itsFuncPtr = &(Interpolate2D::interpCubic);
-    itsFuncPtrBool = &(Interpolate2D::interpCubicBool);
+    itsFuncPtr = &Interpolate2D::interpCubic;
+    itsFuncPtrBool = &Interpolate2D::interpCubicBool;
   } else if (method==Interpolate2D::NEAREST) {
-    itsFuncPtr = &(Interpolate2D::interpNearest);
-    itsFuncPtrBool = &(Interpolate2D::interpNearestBool);
+    itsFuncPtr = &Interpolate2D::interpNearest;
+    itsFuncPtrBool = &Interpolate2D::interpNearestBool;
   }   
 }
 
