@@ -156,12 +156,6 @@ Flux<Double> SkyCompRep::sample(const MDirection & direction,
   return flux;
 }
 
-void SkyCompRep::sample(Flux<Double> & flux, const MDirection & direction, 
-		       const MVAngle & pixelSize) const {
-  DebugAssert(ok(), AipsError);
-  flux = sample(direction, pixelSize);
-}
-
 Flux<Double> SkyCompRep::visibility(const Vector<Double> & uvw,
 				    const Double & frequency) const {
   DebugAssert(ok(), AipsError);
@@ -170,19 +164,6 @@ Flux<Double> SkyCompRep::visibility(const Vector<Double> & uvw,
   // I should scale by the frequency here also but I need to consult with Tim
   // first.
   return flux;
-}
-
-void SkyCompRep::visibility(Flux<Double> & flux, const Vector<Double> & uvw,
-			    const Double & frequency) const {
-  flux = visibility(uvw, frequency);
-  DebugAssert(ok(), AipsError);
-}
-
-ComponentShape * SkyCompRep::cloneShape() const {
-  DebugAssert(ok(), AipsError);
-  ComponentShape * tmpPtr = itsShapePtr->cloneShape();
-  AlwaysAssert(tmpPtr != 0, AipsError);
-  return tmpPtr;
 }
 
 uInt SkyCompRep::nShapeParameters() const {
@@ -224,19 +205,6 @@ Flux<Double> SkyCompRep::sample(const MFrequency & centerFrequency) const {
   return flux;
 }
 
-void SkyCompRep::sample(Flux<Double> & flux,
-		       const MFrequency & centerFrequency) const {
-  DebugAssert(ok(), AipsError);
-  flux = sample(centerFrequency);
-}
-
-SpectralModel * SkyCompRep::cloneSpectrum() const {
-  DebugAssert(ok(), AipsError);
-  SpectralModel * tmpPtr = itsSpectrumPtr->cloneSpectrum();
-  AlwaysAssert(tmpPtr != 0, AipsError);
-  return tmpPtr;
-}
-
 uInt SkyCompRep::nSpectralParameters() const {
   DebugAssert(ok(), AipsError);
   return itsSpectrumPtr->nSpectralParameters();
@@ -262,13 +230,6 @@ Flux<Double> SkyCompRep::sample(const MDirection & direction,
   itsShapePtr->sample(flux, direction, pixelSize);
   itsSpectrumPtr->sample(flux, centerFrequency);
   return flux;
-}
-
-void SkyCompRep::sample(Flux<Double> & flux, const MDirection & direction, 
-		       const MVAngle & pixelSize, 
-		       const MFrequency & centerFrequency) const {
-  DebugAssert(ok(), AipsError);
-  flux = sample(direction, pixelSize, centerFrequency);
 }
 
 void SkyCompRep::setLabel(const String & newLabel) {
@@ -567,7 +528,7 @@ Bool SkyCompRep::ok() const {
   }
   if (itsShapePtr->ok() == False) {
     LogIO logErr(LogOrigin("SkyCompRep", "ok()"));
-    logErr << LogIO::SEVERE << "The shape class is not ok"
+    logErr << LogIO::SEVERE << "The component shape is not ok"
            << LogIO::POST;
     return False;
   }
@@ -579,7 +540,7 @@ Bool SkyCompRep::ok() const {
   }
   if (itsSpectrumPtr->ok() == False) {
     LogIO logErr(LogOrigin("SkyCompRep", "ok()"));
-    logErr << LogIO::SEVERE << "The spectrum class is not ok"
+    logErr << LogIO::SEVERE << "The component spectrum is not ok"
            << LogIO::POST;
     return False;
   }
