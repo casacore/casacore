@@ -113,6 +113,13 @@ void MSCalEnums::initMaps ()
     theirFieldMap.define (PHASE_OFFSET, "PHASE_OFFSET");
     theirFieldMap.define (SB_DELAY, "SB_DELAY");
     theirFieldMap.define (DELAY_RATE, "DELAY_RATE");
+
+    theirFieldMap.define (POLY_TYPE, "POLY_TYPE");
+    theirFieldMap.define (N_POLY_AMP, "N_POLY_AMP");
+    theirFieldMap.define (N_POLY_PHASE, "N_POLY_PHASE");
+    theirFieldMap.define (POLY_COEFF_AMP, "POLY_COEFF_AMP");
+    theirFieldMap.define (POLY_COEFF_PHASE, "POLY_COEFF_PHASE");
+    theirFieldMap.define (SIDEBAND_REF, "SIDEBAND_REF");
   };
 
 // Initialize the static map containing the basic field data types
@@ -190,6 +197,13 @@ void MSCalEnums::initMaps ()
     theirTypeMap.define (PHASE_OFFSET, TpFloat);
     theirTypeMap.define (SB_DELAY, TpFloat);
     theirTypeMap.define (DELAY_RATE, TpFloat);
+
+    theirTypeMap.define (POLY_TYPE, TpString);
+    theirTypeMap.define (N_POLY_AMP, TpInt);
+    theirTypeMap.define (N_POLY_PHASE, TpInt);
+    theirTypeMap.define (POLY_COEFF_AMP, TpDouble);
+    theirTypeMap.define (POLY_COEFF_PHASE, TpDouble);
+    theirTypeMap.define (SIDEBAND_REF, TpComplex);
   };
 
 };

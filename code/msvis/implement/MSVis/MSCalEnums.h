@@ -225,11 +225,18 @@ class MSCalEnums
   IONOSPH_TEC = 802,
   IONOSPH_TEC_ERROR = 803,
 
-  // GJonesFF additions:
+  // GJonesDelayRateSB additions
   PHASE_OFFSET = 900,
   SB_DELAY = 901,
-  DELAY_RATE = 902
+  DELAY_RATE = 902,
 
+  // BJonesPoly additions
+  POLY_TYPE = 1000,
+  N_POLY_AMP = 1001,
+  N_POLY_PHASE = 1002,
+  POLY_COEFF_AMP = 1003,
+  POLY_COEFF_PHASE = 1004,
+  SIDEBAND_REF = 1005
 
   };
 
