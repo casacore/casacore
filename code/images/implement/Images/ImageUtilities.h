@@ -32,7 +32,9 @@
 #include <aips/aips.h>
 #include <trial/ComponentModels/ComponentType.h>
 #include <aips/Measures/Stokes.h>
+template <class T> class ImageInterface;
 template <class T> class Vector;
+template <class T> class Quantum;
 class CoordinateSystem;
 class SkyComponent;
 class ImageInfo;
@@ -94,6 +96,11 @@ public:
 // Return the type of an image with the given name.
    static ImageTypes imageType (const String& fileName);
 
+// Copy MiscInfo, ImageInfo, brightness unit and logger (history) from in to out
+// SHould template this function.
+   static void copyMiscellaneous (ImageInterface<Float>& out,
+                                  const ImageInterface<Float>& in);
+
 // This function converts pixel coordinates to world coordinates. You
 // specify a vector of pixel coordinates (<src>pixels</src>) for only one 
 // axis, the <src>pixelAxis</src>.    For the other pixel axes in the
@@ -143,6 +150,43 @@ public:
                                           const Vector<Double>& parameters,
                                           Stokes::StokesTypes stokes,
                                           Bool xIsLong);
+
+// Convert 2d sky shape (parameters=major axis, minor axis, position angle) 
+// from pixels to world at reference pixel. pixelAxes describes which
+// 2 pixel axes of the coordinate system our 2D shape is in.
+// On input pa is positive for +x -> +y in pixel frame
+// On output pa is positive N->E
+// Returns True if major/minor exchanged themselves on conversion to world.
+   static Bool skyWidthsPixelToWorld (LogIO& os,
+                                      Vector<Quantum<Double> >& wParameters,
+                                      const CoordinateSystem& cSys,
+                                      const Vector<Double>& pParameters,
+                                      const IPosition& pixelAxes);
+
+//
+// Convert 2d shape (parameters=major axis, minor axis, position angle)
+// from world to pixel.  Can handle quantum units 'pix'.  If one width is 
+// in pixel units both must be in pixel units.  pixelAxes describes which
+// 2 pixel axes of the coordinate system our 2D shape is in.
+// If axes are not from the same coordinate type units must be pixels.
+//
+// On input, pa is N->E (at ref pix) for celestial planes.
+// Otherwise pa is in pixel coordinate system +x -> +y
+// On output, pa is positive +x -> +y in pixel frame
+   static void worldWidthsToPixel (LogIO& os, Vector<Double>& dParameters,
+                                   const Vector<Quantum<Double> >& parameters,
+                                   const CoordinateSystem& cSys,
+                                   const IPosition& pixelAxes);
+
+   private:
+
+// Convert a length and position angle in world units (for a non-coupled 
+// coordinate) to pixels. The length is in some 2D plane in the 
+// CoordinateSystem specified  by pixelAxes.
+   static Double worldWidthToPixel (LogIO& os, Double positionAngle,
+                                    const Quantum<Double>& length,
+                                    const CoordinateSystem& cSys,
+                                    const IPosition& pixelAxes);
 };
 
 
