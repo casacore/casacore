@@ -1,5 +1,5 @@
 //# LELFunction.h:  LELFunction.h
-//# Copyright (C) 1997,1998
+//# Copyright (C) 1997,1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -109,14 +109,14 @@ public:
   ~LELFunction1D();
 
 // Recursively evaluate the expression 
-   virtual void eval (Array<T>& result,
+   virtual void eval (LELArray<T>& result,
                       const Slicer& section) const;
 
 // Recursively evaluate the scalar expression.
-   virtual T getScalar() const;
+   virtual LELScalar<T> getScalar() const;
 
 // Do further preparations (e.g. optimization) on the expression.
-   virtual void prepare();
+   virtual Bool prepareScalarExpr();
 
 // Get class name
    virtual String className() const;
@@ -199,14 +199,14 @@ public:
   ~LELFunctionReal1D();
 
 // Recursively evaluate the expression 
-   virtual void eval (Array<T>& result,
+   virtual void eval (LELArray<T>& result,
                       const Slicer& section) const;
 
 // Recursively evaluate the scalar expression 
-   virtual T getScalar() const;
+   virtual LELScalar<T> getScalar() const;
 
 // Do further preparations (e.g. optimization) on the expression.
-   virtual void prepare();
+   virtual Bool prepareScalarExpr();
 
 // Get class name
    virtual String className() const;
@@ -291,14 +291,14 @@ public:
   ~LELFunctionND();
 
 // Recursively evaluate the expression 
-   virtual void eval (Array<T>& result,
+   virtual void eval (LELArray<T>& result,
                       const Slicer& section) const;
 
 // Recursively evaluate the scalar expression 
-   virtual T getScalar() const;
+   virtual LELScalar<T> getScalar() const;
 
 // Do further preparations (e.g. optimization) on the expression.
-   virtual void prepare();
+   virtual Bool prepareScalarExpr();
 
 // Get class name
    virtual String className() const;
@@ -388,14 +388,14 @@ public:
   ~LELFunctionFloat();
 
 // Recursively evaluate the expression 
-   virtual void eval (Array<Float>& result,
+   virtual void eval (LELArray<Float>& result,
                       const Slicer& section) const;
 
 // Recursively evaluate the scalar expression 
-   virtual Float getScalar() const;
+   virtual LELScalar<Float> getScalar() const;
 
 // Do further preparations (e.g. optimization) on the expression.
-   virtual void prepare();
+   virtual Bool prepareScalarExpr();
 
 // Get class name
    virtual String className() const;
@@ -491,19 +491,25 @@ public:
   ~LELFunctionDouble();
 
 // Recursively evaluate the expression 
-   virtual void eval (Array<Double>& result,
+   virtual void eval (LELArray<Double>& result,
                       const Slicer& section) const;
 
 // Recursively evaluate the scalar expression 
-   virtual Double getScalar() const;
+   virtual LELScalar<Double> getScalar() const;
 
 // Do further preparations (e.g. optimization) on the expression.
-   virtual void prepare();
+   virtual Bool prepareScalarExpr();
 
 // Get class name
    virtual String className() const;
 
 private:
+   // Count number of masked elements in a LatticeExprNode.
+   // <group>
+   uInt nMaskedElements (const LatticeExprNode&) const;
+   uInt nMaskedOn (const Array<Bool>& mask) const;
+   // </group>
+
    LELFunctionEnums::Function function_p;
    Block<LatticeExprNode> arg_p;
 };
@@ -579,14 +585,14 @@ public:
   ~LELFunctionComplex();
 
 // Recursively evaluate the expression 
-   virtual void eval (Array<Complex>& result,
+   virtual void eval (LELArray<Complex>& result,
                       const Slicer& section) const;
 
 // Recursively evaluate the scalar expression 
-   virtual Complex getScalar() const;
+   virtual LELScalar<Complex> getScalar() const;
 
 // Do further preparations (e.g. optimization) on the expression.
-   virtual void prepare();
+   virtual Bool prepareScalarExpr();
 
 // Get class name
    virtual String className() const;
@@ -668,14 +674,14 @@ public:
   ~LELFunctionDComplex();
 
 // Recursively evaluate the expression 
-   virtual void eval (Array<DComplex>& result,
+   virtual void eval (LELArray<DComplex>& result,
                       const Slicer& section) const;
 
 // Recursively evaluate the scalar expression 
-   virtual DComplex getScalar() const;
+   virtual LELScalar<DComplex> getScalar() const;
 
 // Do further preparations (e.g. optimization) on the expression.
-   virtual void prepare();
+   virtual Bool prepareScalarExpr();
 
 // Get class name
    virtual String className() const;
@@ -756,14 +762,14 @@ public:
   ~LELFunctionBool();
 
 // Recursively evaluate the expression 
-   virtual void eval (Array<Bool>& result,
+   virtual void eval (LELArray<Bool>& result,
                       const Slicer& section) const;
 
 // Recursively evaluate the scalar expression 
-   virtual Bool getScalar() const;
+   virtual LELScalar<Bool> getScalar() const;
 
 // Do further preparations (e.g. optimization) on the expression.
-   virtual void prepare();
+   virtual Bool prepareScalarExpr();
 
 // Get class name
    virtual String className() const;
