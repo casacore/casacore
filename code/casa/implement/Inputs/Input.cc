@@ -1,5 +1,5 @@
 //# Input.cc: A linked list of user input parameters
-//# Copyright (C) 1993,1994,1995,1996,1999
+//# Copyright (C) 1993,1994,1995,1996,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -504,7 +504,32 @@ void Input::readArguments (Int ac, char *av[])
     cout << "MAIN> " << p_count << " program parameters\n";
   }
   close();             // close creation 
-  
+
+  // Show version on screen if -v or --version is given.
+  if (String(av[1]) == "-v"  ||  String(av[1]) == "--version") {
+    cerr << av[0] << "  version " << version_id << endl;
+    exit (1);
+  }
+  // Show parameters on screen if -h or --help given.
+  if (String(av[1]) == "-h"  ||  String(av[1]) == "--help") {
+    cerr << av[0] << "  version " << version_id << endl;
+    ConstListIter<Param> parlist(parList_p);       
+    for (parlist.toStart(); ! parlist.atEnd(); parlist++) {
+      const Param& x = parlist.getRight();
+      if (x.getIndex() > 0) {
+	cerr << x.getKey() << ", " << x.getType() << ", ";
+	if (String(x.get()) != "") {
+	  cerr << '(' << x.get() << ')';
+	}
+	cerr << endl;
+        if (String(x.getHelp()) != "") {
+	  cerr << "    " << x.getHelp() << endl;
+	}
+      }
+    }
+    exit (1);
+  }
+
   // Turn khoros style command inputs into keyword=value inputs
   //     ' -channels 64'  becomes  'channels=64'
   String thisarg;
