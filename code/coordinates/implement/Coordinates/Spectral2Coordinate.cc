@@ -29,6 +29,7 @@
 #include <trial/Coordinates/SpectralCoordinate.h>
 #include <aips/Arrays/Vector.h>
 #include <aips/Measures/MFrequency.h>
+#include <aips/Quanta/MVFrequency.h>
 #include <aips/Quanta/Quantum.h>
 #include <aips/Utilities/String.h>
 
@@ -36,35 +37,50 @@
 Bool SpectralCoordinate::toWorld(MFrequency& world, 
 				 Double pixel) const
 {
-    static Vector<Double> pixel_tmp(1), world_tmp(1);
+    static Double world_tmp;
+    static Quantum<Double> q_tmp;
 //
-    pixel_tmp(0) = pixel;
-    Bool ok = toWorld(world_tmp, pixel_tmp);
+    Bool ok = toWorld(world_tmp, pixel);
     if (ok) {
-       Unit units = worldAxisUnits()(0);
-       world = MFrequency(Quantity(world_tmp(0), units), type_p);
+       const Unit& units = Unit(worldAxisUnits()(0));
+       q_tmp.setValue(world_tmp);
+       q_tmp.setUnit(units);
+       world = MFrequency(q_tmp, type_p);
     }
+    return ok;
+}
+
+Bool SpectralCoordinate::toWorld(MVFrequency& world, 
+				 Double pixel) const
+{
+    static MFrequency world_tmp;
+    Bool ok = toWorld(world_tmp, pixel);
+    if (ok) world = world_tmp.getValue();    // Hz
     return ok;
 }
 
 Bool SpectralCoordinate::toPixel(Double& pixel,
                                  const MFrequency& world) const
 {
-    static Vector<Double> pixel_tmp(1), world_tmp(1);
+    static Double world_tmp;
+    static Quantum<Double> q_tmp;
 
-// Convert to current units
+// Convert MFrequency to current units
 
-    const Vector<String>& units = worldAxisUnits();
-    Quantum<Double> value = world.get(Unit(units(0)));
-    world_tmp(0) = value.getValue();
+    const Unit& units = Unit(worldAxisUnits()(0));
+    world_tmp = world.get(units).getValue();
 
 // Convert to pixel
 
-    Bool ok = toPixel(pixel_tmp, world_tmp);
-    if (ok) {
-       pixel = pixel_tmp(0);
-    }
-    return ok;
+    return toPixel(pixel, world_tmp);
+}
+ 
+Bool SpectralCoordinate::toPixel(Double& pixel,
+                                 const MVFrequency& world) const
+{
+   static MFrequency world_tmp;
+   world_tmp.set(world, type_p);      // MVFrequency in Hz
+   return toPixel(pixel, world_tmp);
 }
  
  
