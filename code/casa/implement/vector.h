@@ -50,6 +50,37 @@ using std::vector;
 #endif
 
 #if defined(AIPS_GCC)
+#if defined(AIPS_GCC3)
+#define AIPS_VECTOR_AUX_TEMPLATES(T) \
+template \
+   T *std::__uninitialized_copy_aux<T *, T *>(T *, T *, T *, __false_type); \
+template \
+   T* std::__uninitialized_copy_aux<vector<T >::iterator , T *>(vector<T >::iterator , vector<T >::iterator , T *, __false_type); \
+template \
+   T* std::__uninitialized_copy_aux<vector<T >::const_iterator , T *>(vector<T >::const_iterator , vector<T >::const_iterator , T *, __false_type); \
+template \
+   vector<T >::iterator std::__uninitialized_copy_aux<vector<T >::iterator , vector<T >::iterator>(vector<T >::iterator , vector<T >::iterator , vector<T >::iterator, __false_type); \
+template \
+   T *std::__uninitialized_copy_aux<T const *, T *>(T const *, T const *, \
+			                                            T *, __false_type); \
+template \
+   vector<T >::iterator std::fill_n<vector<T >::iterator, uInt, T >(vector<T >::iterator, uInt, T const &); \
+template \
+   T *std::fill_n<T *, uInt, T >(T *, uInt, T const &); \
+template \
+   void std::fill<vector<T >::iterator, T >(vector<T >::iterator, vector<T >::iterator, T const &); \
+template \
+   void std::fill<T *, T >(T *, T *, T const &); \
+template \
+   vector<T >::iterator std::__uninitialized_fill_n_aux<vector<T >::iterator, uInt, T >(vector<T >::iterator, uInt, \
+              T const &, __false_type); \
+template \
+   T *std::__uninitialized_fill_n_aux<T *, uInt, T >(T *, uInt, \
+T const &, __false_type); \
+template \
+   void vector<T, std::allocator<T> >:: \
+_M_assign_aux(T const *, T const *, forward_iterator_tag);
+#else
 #define AIPS_VECTOR_AUX_TEMPLATES(T) \
 template \
 T *std::__uninitialized_copy_aux<T *, T *>(T *, T *, T *, __false_type); \
@@ -66,6 +97,7 @@ T *std::__uninitialized_fill_n_aux<T *, uInt, T >(T *, uInt, \
 template \
 void vector<T, std::allocator<T> >:: \
 _M_assign_aux(T const *, T const *, forward_iterator_tag);
+#endif
 
 #else
 #if defined(AIPS_SUN_NATIVE)
