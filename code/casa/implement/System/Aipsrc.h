@@ -1,5 +1,5 @@
 //# Aipsrc.h: Class to read the aipsrc general resource files
-//# Copyright (C) 1995,1996,1997,1998,1999,2002
+//# Copyright (C) 1995,1996,1997,1998,1999,2002,2004
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -112,7 +112,10 @@ typedef AipsrcVector<String> AipsrcVString;
 // </srcblock> 
 // It is not an error for any of the aipsrc files to be absent or empty.
 // However, it is an error if either <em>HOME</em> or <em>AIPSPATH</em> has
-// not been set: an exception will occur.<br>
+// not been set: an exception will occur. AIPSPATH will in general be
+// read from the global environment variables, but can, before any other
+// <src>Aipsrc</src> related call, be set with the
+// <src>setAipsPath()</src> call.<br>
 // The basic interaction with the class is with the static keyword match function
 // <srcblock>Bool Aipsrc::find(String &result, const String &keyword)
 // </srcblock>
@@ -287,7 +290,14 @@ public:
   static void save(uInt keyword, const Vector<String> &tname);
   // </group>
 
-  // Returns the appropiate AIPS++ or system variable values
+  // Set an AIPSPATH that should be used in stead of a global AIPSPATH.
+  // This call should be made before any Aipsrc related call. The AIPSPATH
+  // will have up to 4 fields (which can all be empty) giving the root, host,
+  // site and arch directory that will be searched for possible
+  // <src>[.]aipsrc</src> files.
+  static void setAipsPath(const String &path = String());
+
+  // Returns the appropriate AIPS++ or system variable values
   // <group>
   static const String &aipsRoot();
   static const String &aipsArch();
@@ -359,6 +369,8 @@ private:
   static Block<String> keywordPattern;
   // The start of the non-home values
   static uInt fileEnd;
+  // The possibly set external AIPSPATH
+  static String extAipsPath;
   // AIPSROOT
   static String root;
   // AIPSARCH

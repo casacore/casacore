@@ -1,5 +1,5 @@
 //# Aipsrc.cc: Class to read the aipsrc general resource files 
-//# Copyright (C) 1995,1996,1997,1998,2000,2001,2002,2003
+//# Copyright (C) 1995,1996,1997,1998,2000,2001,2002,2003,2004
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -154,9 +154,14 @@ const String &Aipsrc::fillAips(const String &nam) {
     if (uhome.empty())
       throw(AipsError(String("The HOME environment variable has not been set") +
 		      "\n\t(see system administrator)"));
-    String aipsPath = EnvironmentVariable::get("AIPSPATH");
+ 
+    String aipsPath;
+    if (extAipsPath.empty()) {
+      aipsPath = EnvironmentVariable::get("AIPSPATH");
+    } else aipsPath = extAipsPath;
     if (aipsPath.empty())
-      throw(AipsError(String("The AIPSPATH environment variable has not been set") +
+      throw(AipsError(String("The AIPSPATH environment variable has not been "
+			     "set or setAipsPath has not been used") +
 		      "\n\t(see system administrator)"));
     Int n = aipsPath.freq(' ') + aipsPath.freq('	') + 4;
     String *newdir = new String[n];
@@ -172,6 +177,10 @@ const String &Aipsrc::fillAips(const String &nam) {
   };
   return nam;
 }
+  
+  void Aipsrc::setAipsPath(const String &path) {
+    if (extAipsPath.empty()) extAipsPath = path + " ";
+  }
 
 const String &Aipsrc::aipsRoot() {
   return fillAips(root);
@@ -540,24 +549,25 @@ Bool Aipsrc::genGet(String &val, Vector<String> &namlst, Vector<String> &vallst,
   return True;
 }
 
-// Static Initializations -- Only really want to read the files once
+  // Static Initializations -- Only really want to read the files once
 
-Bool Aipsrc::doInit = True;
-Double Aipsrc::lastParse = 0;
-Block<String> Aipsrc::keywordPattern(0);
-Block<String> Aipsrc::keywordValue(0);
-uInt Aipsrc::fileEnd = 0;
-String Aipsrc::root = String();
-String Aipsrc::arch = String();
-String Aipsrc::site = String();
-String Aipsrc::host = String();
-String Aipsrc::home = String();
-String Aipsrc::uhome= String();
-Bool Aipsrc::filled = False;
-Block<String> Aipsrc::strlst(0);
-Block<String> Aipsrc::nstrlst(0);
-Block<uInt> Aipsrc::codlst(0);
-Block<String> Aipsrc::ncodlst(0);
+  Bool Aipsrc::doInit = True;
+  Double Aipsrc::lastParse = 0;
+  Block<String> Aipsrc::keywordPattern(0);
+  Block<String> Aipsrc::keywordValue(0);
+  uInt Aipsrc::fileEnd = 0;
+  String Aipsrc::extAipsPath  = String();
+  String Aipsrc::root = String();
+  String Aipsrc::arch = String();
+  String Aipsrc::site = String();
+  String Aipsrc::host = String();
+  String Aipsrc::home = String();
+  String Aipsrc::uhome= String();
+  Bool Aipsrc::filled = False;
+  Block<String> Aipsrc::strlst(0);
+  Block<String> Aipsrc::nstrlst(0);
+  Block<uInt> Aipsrc::codlst(0);
+  Block<String> Aipsrc::ncodlst(0);
 
 } //# NAMESPACE CASA - END
 
