@@ -83,6 +83,13 @@ class MUString;
 //	return the normalised value) to within 180 degrees of the
 //	argument value. This is useful for making a range of angles
 //	contiguous.
+//   <li> <src>MVAngle binorm(Double)</src> will normalise the angle in
+//	steps of 180 degrees. 
+//	using the value specified (and return the value)
+//	in fractions of 180 degrees (this was chosen rather than radians to make
+// 	for easier and more precise programming) as a lower bound. I.e.
+//	(-0.5) will normalise between -90 and +90 degrees, (0.) between
+//	0 and 180 degrees, (10.) between 1800 and 1980 dgrees.
 //   <li> <src>Double radian()</src> will return value in radians
 //   <li> <src>Double degree()</src> will return value in degrees
 //   <li> <src>Double circle()</src> will return value in fraction of circles
@@ -232,90 +239,92 @@ class MUString;
 
 class MVAngle {
 
-    public:
+ public:
 
-//# Enumerations
-// Format types
-    enum formatTypes {
-	ANGLE,
-	TIME,
-	CLEAN 			= 4,
-	NO_D 			= 8,
-	NO_DM 			= NO_D+16,
-	DIG2			= 1024,
-	FITS			= TIME+2048,
-	LOCAL			= 4096,
-	NO_H 			= NO_D,
-	NO_HM 			= NO_DM,
-	ANGLE_CLEAN 		= ANGLE + CLEAN,
-	ANGLE_NO_D 		= ANGLE + NO_D,
-	ANGLE_NO_DM 		= ANGLE + NO_DM,
-	ANGLE_CLEAN_NO_D	= ANGLE + CLEAN + NO_D,
-	ANGLE_CLEAN_NO_DM	= ANGLE + CLEAN + NO_DM,
-	TIME_CLEAN 		= TIME + CLEAN,
-	TIME_NO_H 		= TIME + NO_H,
-	TIME_NO_HM 		= TIME + NO_HM,
-	TIME_CLEAN_NO_H		= TIME + CLEAN + NO_H,
-	TIME_CLEAN_NO_HM	= TIME + CLEAN + NO_HM ,
-	MOD_MASK		= NO_DM + CLEAN + DIG2 + LOCAL};
-
-//# Local structure
-// Format structure
-    class Format {
-	public:
-	friend class MVAngle;
-	Format(MVAngle::formatTypes intyp = MVAngle::ANGLE,
-	       uInt inprec = 0) :
-	typ(intyp), prec(inprec) {;};
-	Format(uInt inprec) :
-	typ(MVAngle::ANGLE), prec(inprec) {;};
-// Construct from type and precision (present due to overlaoding problems)
-	Format(uInt intyp, uInt inprec) :
-	typ((MVAngle::formatTypes) intyp), prec(inprec) {;};
-	Format(const Format &other) :
-	typ(other.typ), prec(other.prec) {;};
-	private:
-	MVAngle::formatTypes typ;
-	uInt prec;
-    };
-
-//# Friends
-// Output an angle
-    friend ostream &operator<<(ostream &os, const MVAngle &meas);
-// Input an angle
-    friend istream &operator>>(istream &is, MVAngle &meas);
-// Set a temporary format
-    friend ostream &operator<<(ostream &os, const MVAngle::Format &form);
-
-//# Constructors
-// Default constructor: generate a zero value
-    MVAngle();
-// Copy constructor
-    MVAngle(const MVAngle &other);
-// Copy assignment
-    MVAngle &operator=(const MVAngle &other);
-// Constructor from Double
-    MVAngle(Double d);
-// Constructor from Quantum : value can be an angle or time
-// <thrown>
-//   <li> AipsError if not a time or angle
-// </thrown>
-    MVAngle(const Quantity &other);
-
-// Destructor
-    ~MVAngle();
-
-//# Operators
-// Conversion operator
-    operator Double() const;
-// Normalisation between -180 and +180 degrees (-pi and +pi)
-    const MVAngle &operator()();
-// Normalisation between 2pi*norm and 2pi*norm + 2pi
-    const MVAngle &operator()(Double norm);
-// Normalisation between norm-pi and norm+pi
-    const MVAngle &operator()(const MVAngle &norm);
-
-//# General member functions
+  //# Enumerations
+  // Format types
+  enum formatTypes {
+    ANGLE,
+    TIME,
+    CLEAN 			= 4,
+    NO_D 			= 8,
+    NO_DM 			= NO_D+16,
+    DIG2			= 1024,
+    FITS			= TIME+2048,
+    LOCAL			= 4096,
+    NO_H 			= NO_D,
+    NO_HM 			= NO_DM,
+    ANGLE_CLEAN 		= ANGLE + CLEAN,
+    ANGLE_NO_D 			= ANGLE + NO_D,
+    ANGLE_NO_DM 		= ANGLE + NO_DM,
+    ANGLE_CLEAN_NO_D		= ANGLE + CLEAN + NO_D,
+    ANGLE_CLEAN_NO_DM		= ANGLE + CLEAN + NO_DM,
+    TIME_CLEAN 			= TIME + CLEAN,
+    TIME_NO_H 			= TIME + NO_H,
+    TIME_NO_HM 			= TIME + NO_HM,
+    TIME_CLEAN_NO_H		= TIME + CLEAN + NO_H,
+    TIME_CLEAN_NO_HM		= TIME + CLEAN + NO_HM ,
+    MOD_MASK			= NO_DM + CLEAN + DIG2 + LOCAL};
+  
+  //# Local structure
+  // Format structure
+  class Format {
+  public:
+    friend class MVAngle;
+    Format(MVAngle::formatTypes intyp = MVAngle::ANGLE,
+	   uInt inprec = 0) :
+      typ(intyp), prec(inprec) {;};
+    Format(uInt inprec) :
+      typ(MVAngle::ANGLE), prec(inprec) {;};
+    // Construct from type and precision (present due to overlaoding problems)
+    Format(uInt intyp, uInt inprec) :
+      typ((MVAngle::formatTypes) intyp), prec(inprec) {;};
+    Format(const Format &other) :
+      typ(other.typ), prec(other.prec) {;};
+  private:
+    MVAngle::formatTypes typ;
+    uInt prec;
+  };
+  
+  //# Friends
+  // Output an angle
+  friend ostream &operator<<(ostream &os, const MVAngle &meas);
+  // Input an angle
+  friend istream &operator>>(istream &is, MVAngle &meas);
+  // Set a temporary format
+  friend ostream &operator<<(ostream &os, const MVAngle::Format &form);
+  
+  //# Constructors
+  // Default constructor: generate a zero value
+  MVAngle();
+  // Copy constructor
+  MVAngle(const MVAngle &other);
+  // Copy assignment
+  MVAngle &operator=(const MVAngle &other);
+  // Constructor from Double
+  MVAngle(Double d);
+  // Constructor from Quantum : value can be an angle or time
+  // <thrown>
+  //   <li> AipsError if not a time or angle
+  // </thrown>
+  MVAngle(const Quantity &other);
+  
+  // Destructor
+  ~MVAngle();
+  
+  //# Operators
+  // Conversion operator
+  operator Double() const;
+  // Normalisation between -180 and +180 degrees (-pi and +pi)
+  const MVAngle &operator()();
+  // Normalisation between 2pi*norm and 2pi*norm + 2pi
+  const MVAngle &operator()(Double norm);
+  // Normalisation between norm-pi and norm+pi
+  const MVAngle &operator()(const MVAngle &norm);
+  
+  //# General member functions
+  // Normalisation between pi*norm and pi*norm + pi
+  const MVAngle &binorm(Double norm);
   // Check if String unit
   static Bool unitString(UnitVal &uv, String &us, MUString &in);
   // Make res angle Quantity from string in angle/time-like format. In the
@@ -326,54 +335,54 @@ class MVAngle {
   static Bool read(Quantity &res, const String &in, Bool chk);
   static Bool read(Quantity &res, MUString &in, Bool chk);
   // </group>
-// Make co-angle (e.g. zenith distance from elevation)
-    MVAngle coAngle() const;
-// Get value in given unit
-// <group>
-    Double radian() const;
-    Double degree() const;
-    Double circle() const;
-    Quantity get() const;
-    Quantity get(const Unit &inunit) const;
-// </group>
-// Output data
-// <group>
-    String string() const;
-    String string(MVAngle::formatTypes intyp, uInt inprec = 0) const;
-    String string(uInt intyp, uInt inprec) const;
-    String string(uInt inprec) const;
-    String string(const MVAngle::Format &form) const;
-    void print(ostream &oss, const MVAngle::Format &form) const;
-    void print(ostream &oss, const MVAngle::Format &form, Bool loc) const;
-// </group>
-// Set default format
-// <group>
-    static Format setFormat(MVAngle::formatTypes intyp, 
-			    uInt inprec = 0);
-    static Format setFormat(uInt intyp, uInt inprec);
-    static Format setFormat(uInt inprec = 0);
-    static Format setFormat(const Format &form);
-// </group>
-// Get default format
-    static Format getFormat();
-// Get code belonging to string. 0 if not known
-     static MVAngle::formatTypes  giveMe(const String &in);
+  // Make co-angle (e.g. zenith distance from elevation)
+  MVAngle coAngle() const;
+  // Get value in given unit
+  // <group>
+  Double radian() const;
+  Double degree() const;
+  Double circle() const;
+  Quantity get() const;
+  Quantity get(const Unit &inunit) const;
+  // </group>
+  // Output data
+  // <group>
+  String string() const;
+  String string(MVAngle::formatTypes intyp, uInt inprec = 0) const;
+  String string(uInt intyp, uInt inprec) const;
+  String string(uInt inprec) const;
+  String string(const MVAngle::Format &form) const;
+  void print(ostream &oss, const MVAngle::Format &form) const;
+  void print(ostream &oss, const MVAngle::Format &form, Bool loc) const;
+  // </group>
+  // Set default format
+  // <group>
+  static Format setFormat(MVAngle::formatTypes intyp, 
+			  uInt inprec = 0);
+  static Format setFormat(uInt intyp, uInt inprec);
+  static Format setFormat(uInt inprec = 0);
+  static Format setFormat(const Format &form);
+  // </group>
+  // Get default format
+  static Format getFormat();
+  // Get code belonging to string. 0 if not known
+  static MVAngle::formatTypes  giveMe(const String &in);
   // Get time zone offset (in days)
   static Double timeZone();
-
-    private:
-//# Data
-// Value
-    Double val;
-// Default format
-    static MVAngle::Format defaultFormat;
-// Temporary format
-// <group>
-    static MVAngle::Format interimFormat;
-    static Bool interimSet;
-// </group>
-
-//# Member functions
+  
+ private:
+  //# Data
+  // Value
+  Double val;
+  // Default format
+  static MVAngle::Format defaultFormat;
+  // Temporary format
+  // <group>
+  static MVAngle::Format interimFormat;
+  static Bool interimSet;
+  // </group>
+  
+  //# Member functions
 };
 
 // Global functions

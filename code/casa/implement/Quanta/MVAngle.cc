@@ -1,5 +1,5 @@
 //# MVAngle.cc: Class to handle angle type conversions and I/O
-//# Copyright (C) 1996,1997,1998,1999
+//# Copyright (C) 1996,1997,1998,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -322,6 +322,15 @@ void MVAngle::print(ostream &oss,
       };
     };
     oss.fill(sfill);
+}
+
+const MVAngle &MVAngle::binorm(Double norm) {
+    Double t = val/C::pi - norm;
+    if (t < 0 || t >=1) {
+      Double df = floor(t)*C::pi;
+      val -= df;
+    };
+    return *this;
 }
 
 Bool MVAngle::unitString(UnitVal &uv, String &us, MUString &in) {
