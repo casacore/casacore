@@ -48,11 +48,13 @@ main (int argc, char *argv[])
  Bool foundError = False;
 
  try {
+    cout << ">>>" << endl;
     Input inp(1);
-    inp.Version(" ");
+    inp.Version("1.0");
     inp.Create("nx", "10", "Number of pixels along the x-axis", "int");
     inp.Create("ny", "10", "Number of pixels along the y-axis", "int");
     inp.ReadArguments(argc, argv);
+    cout << "<<<" << endl;
 
     const uInt nx=inp.GetInt("nx");
     const uInt ny=inp.GetInt("ny");
@@ -95,6 +97,29 @@ main (int argc, char *argv[])
     Array<Double> aArr(shape);
     Array<Bool> aBoolArr(shape);
 
+  {
+    cout << endl;
+    try {
+      LatticeExpr<Double> expr (ImageExprParse::command ("b/a1"));
+    } catch (AipsError x) {
+      cout << x.getMesg() << endl;
+    } end_try;
+    try {
+      LatticeExpr<Double> expr (ImageExprParse::command ("a1/b"));
+    } catch (AipsError x) {
+      cout << x.getMesg() << endl;
+    } end_try;
+    try {
+      LatticeExpr<Double> expr (ImageExprParse::command ("b/b*"));
+    } catch (AipsError x) {
+      cout << x.getMesg() << endl;
+    } end_try;
+    try {
+      LatticeExpr<Double> expr (ImageExprParse::command ("min(b,b,b)"));
+    } catch (AipsError x) {
+      cout << x.getMesg() << endl;
+    } end_try;
+  }
   {
     cout << endl;
     cout << "Expr:  a = 1" << endl;
