@@ -1,5 +1,5 @@
 //# LockFile.h: Class to handle file locking and synchronization
-//# Copyright (C) 1997,1998,1999
+//# Copyright (C) 1997,1998,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -252,15 +252,18 @@ public:
     // Get the block of request id's.
     const Block<Int>& reqIds() const;
 
+    // Get the request id's and the info from the lock file.
+    void getInfo (MemoryIO& info);
+
+    // Put the info into the file (after the request id's).
+    void putInfo (const MemoryIO& info) const;
+
 private:
     // The copy constructor cannot be used (its semantics are too difficult).
     LockFile (const LockFile&);
 
     // Assignment cannot be used (its semantics are too difficult).
     LockFile& operator= (const LockFile&);
-
-    // Get the request id's and the info from the lock file.
-    void getInfo (MemoryIO& info);
 
     // Get an Int from the buffer at the given offset and convert
     // it from canonical to local format.
@@ -286,9 +289,6 @@ private:
 
     // Get the number of request id's.
     Int getNrReqId() const;
-
-    // Put the info into the file (after the request id's).
-    void putInfo (const MemoryIO& info) const;
 
 
     //# The member variables.
