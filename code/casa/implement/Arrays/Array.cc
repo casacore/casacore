@@ -1,5 +1,5 @@
 //# Array.cc: A templated N-D Array class with variable origin
-//# Copyright (C) 1993,1994,1995,1996
+//# Copyright (C) 1993,1994,1995,1996,1997
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -180,6 +180,7 @@ Array<T>::Array(const IPosition &shape, const T *storage)
 
 template<class T> Array<T>::~Array()
 {
+    // Nothing
 }
 
 template<class T> void Array<T>::cleanup()
@@ -210,6 +211,8 @@ template<class T> Array<T> Array<T>::copy() const
 
     if (ndim() == 0) {
         return vp;
+    } else if (contiguousStorage()) {
+	objcopy(vp.begin, begin, nels);
     } else if (ndim() == 1) {
 	objcopy(vp.begin, begin, uInt(length[0]), 1U, uInt(inc[0]));
     } else {
@@ -247,6 +250,8 @@ template<class T> Array<T> &Array<T>::operator=(const Array<T> &other)
     if (Conform == True) { // Copy in place
       if (ndim() == 0) {
 	    return *this;
+      } else if (contiguousStorage() && other.contiguousStorage()) {
+	  objcopy(begin, other.begin, nels);
       } else if (ndim() == 1) {
 	    objcopy(begin, other.begin, uInt(length[0]), uInt(inc[0]),
 		    uInt(other.inc[0]));
@@ -281,7 +286,10 @@ template<class T> Array<T> &Array<T>::operator=(const Array<T> &other)
 	ndimen = other.ndimen;
 	if (ndim() == 0) {
 	    return *this;
-	} if (ndim() == 1) {
+	} 
+	if (other.contiguousStorage()) {
+	    objcopy(begin, other.begin, nels);
+	} else if (ndim() == 1) {
 	    objcopy(begin, other.begin, uInt(length[0]), uInt(inc[0]),
 		    uInt(other.inc[0]));
 	} else {
@@ -363,6 +371,8 @@ template<class T> void Array<T>::set(const T &Value)
     uInt offset;
     if (ndim() == 0) {
         return;
+    } else if (contiguousStorage()) {
+	objset(begin, Value, nels);
     } else if (ndim() == 1) {
 	objset(begin, Value, uInt(length[0]), uInt(inc[0]));
     } else {
@@ -388,22 +398,28 @@ template<class T> void Array<T>::apply(T (*function)(T))
         return; // short-circuit
     }
 
-    // Step through Vector by Vector
-    ArrayPositionIterator ai(shape(), origin(), 1);
-    IPosition index(ndim());
-
-    uInt len  = length[0];
-    uInt incr = inc[0];
-    uInt offset;
-
-    while (! ai.pastEnd()) {
-	index = ai.pos();
-	offset = ArrayIndexOffset(ndim(), originalLength.storage(),
-				  start.storage(), inc.storage(), index);
-	for (uInt i=0; i < len; i++) {
-	    begin[offset + i*incr] = function(begin[offset + i*incr]);
+    if (contiguousStorage()) {
+	for (uInt i=0; i<nels; i++) {
+	    begin[i] = function(begin[i]);
 	}
-	ai.next();
+    } else {
+	// Step through Vector by Vector
+	ArrayPositionIterator ai(shape(), origin(), 1);
+	IPosition index(ndim());
+
+	uInt len  = length[0];
+	uInt incr = inc[0];
+	uInt offset;
+
+	while (! ai.pastEnd()) {
+	    index = ai.pos();
+	    offset = ArrayIndexOffset(ndim(), originalLength.storage(),
+				      start.storage(), inc.storage(), index);
+	    for (uInt i=0; i < len; i++) {
+		begin[offset + i*incr] = function(begin[offset + i*incr]);
+	    }
+	    ai.next();
+	}
     }
 }
 
@@ -415,22 +431,28 @@ template<class T> void Array<T>::apply(T (*function)(const T &))
         return; // short-circuit
     }
 
-    // Step through Vector by Vector
-    ArrayPositionIterator ai(shape(), origin(), 1);
-    IPosition index(ndim());
-
-    uInt len  = length[0];
-    uInt incr = inc[0];
-    uInt offset;
-
-    while (! ai.pastEnd()) {
-	index = ai.pos();
-	offset = ArrayIndexOffset(ndim(), originalLength.storage(),
-				  start.storage(), inc.storage(), index);
-	for (uInt i=0; i < len; i++) {
-	    begin[offset+i*incr] = function(begin[offset+i*incr]);
+    if (contiguousStorage()) {
+	for (uInt i=0; i<nels; i++) {
+	    begin[i] = function(begin[i]);
 	}
-	ai.next();
+    } else {
+	// Step through Vector by Vector
+	ArrayPositionIterator ai(shape(), origin(), 1);
+	IPosition index(ndim());
+
+	uInt len  = length[0];
+	uInt incr = inc[0];
+	uInt offset;
+
+	while (! ai.pastEnd()) {
+	    index = ai.pos();
+	    offset = ArrayIndexOffset(ndim(), originalLength.storage(),
+				      start.storage(), inc.storage(), index);
+	    for (uInt i=0; i < len; i++) {
+		begin[offset+i*incr] = function(begin[offset+i*incr]);
+	    }
+	    ai.next();
+	}
     }
 }
 
@@ -442,22 +464,28 @@ template<class T> void Array<T>::apply(const Functional<T,T> &function)
         return; // short-circuit
     }
 
-    // Step through Vector by Vector
-    ArrayPositionIterator ai(shape(), origin(), 1);
-    IPosition index(ndim());
-
-    uInt len  = length[0];
-    uInt incr = inc[0];
-    uInt offset;
-
-    while (! ai.pastEnd()) {
-	index = ai.pos();
-	offset = ArrayIndexOffset(ndim(), originalLength.storage(),
-				  start.storage(), inc.storage(), index);
-	for (uInt i=0; i < len; i++) {
-	    begin[offset+i*incr] = function(begin[offset+i*incr]);
+    if (contiguousStorage()) {
+	for (uInt i=0; i<nels; i++) {
+	    begin[i] = function(begin[i]);
 	}
-	ai.next();
+    } else {
+	// Step through Vector by Vector
+	ArrayPositionIterator ai(shape(), origin(), 1);
+	IPosition index(ndim());
+
+	uInt len  = length[0];
+	uInt incr = inc[0];
+	uInt offset;
+
+	while (! ai.pastEnd()) {
+	    index = ai.pos();
+	    offset = ArrayIndexOffset(ndim(), originalLength.storage(),
+				      start.storage(), inc.storage(), index);
+	    for (uInt i=0; i < len; i++) {
+		begin[offset+i*incr] = function(begin[offset+i*incr]);
+	    }
+	    ai.next();
+	}
     }
 }
 
@@ -466,16 +494,9 @@ template<class T> void Array<T>::unique()
     DebugAssert(ok(), ArrayError);
 
     // short circuit when we are unique and flat
-    Bool flat = True;
-    if (nrefs() == 1) {
-	for (Int i=0; i < ndim(); i++) {
-	    if (inc[i] != 1) {
-		flat = False;
-		break;
-	    }
-	}
-	if (flat)
-	    return;
+    Bool flat = contiguousStorage();
+    if (flat && nrefs() == 1) {
+	return;
     }
 
     // OK, we know we are going to need to copy
@@ -483,6 +504,8 @@ template<class T> void Array<T>::unique()
     uInt i, offset;
     if (ndim() == 0) {
       // Nothing
+    } else if (flat) {
+	objcopy(vp->storage(), begin, nels);
     } else if (ndim() == 1) {
 	objcopy(vp->storage(), begin, uInt(length[0]), 1U, uInt(inc[0]));
     } else {
@@ -823,6 +846,48 @@ template<class T> void Array<T>::validateIndex(const IPosition &i) const
     // OK - normal return
 }
 
+template<class T> Bool Array<T>::contiguousStorage() const
+{
+    const Int nd = ndim();
+
+    if (nd == 0) {
+	return True;
+    }
+
+    // If we have increments, we're definitely not contiguous
+    for (Int i=0; i < nd; i++) {
+	if (inc[i] != 1) {
+	    return False;
+	}
+    }
+
+    // If we don't fill up the region (except for the last dimension), then
+    // we're also not contiguous
+    //
+    //   -------------------------
+    //   |                       |
+    //   |                       |
+    //   |                       |
+    //   |           +---+       |
+    //   |           |   |       |
+    //   |           |   |       |
+    //   |           +---+       |
+    //   -------------------------
+    //
+    // Here, even though the increment is one, we need to make a copy since
+    // all the elements in the sub-region aren't contiguous. Note, though, that
+    // the lengths don't need to be identical in the last axis.
+
+    for (i=0; i < nd - 1; i++) {
+	if (length[i] != originalLength[i]) {
+	    return False;
+	}
+    }
+
+    // If we've made it here, we are contiguous!
+    return True;
+}
+
 template<class T> uInt Array<T>::nrefs() const
 {
     DebugAssert(ok(), ArrayError);
@@ -912,44 +977,10 @@ template<class T> IPosition Array<T>::end() const
 template<class T> T *Array<T>::getStorage(Bool &deleteIt)
 {
     DebugAssert(ok(), ArrayError);
+    deleteIt = ToBool(!contiguousStorage());
 
-    deleteIt = False;
     if (ndim() == 0) {
 	return 0;
-    }
-
-    // If we have increments, we'll need to make a copy
-    for (Int i=0; i < ndim(); i++) {
-	if (inc[i] != 1) {
-	    deleteIt = True;
-	    break;
-	}
-    }
-
-    // If we don't fill up the region (except for the last dimension), then
-    // we also need to make a copy, e.g.:
-    //
-    //   -------------------------
-    //   |                       |
-    //   |                       |
-    //   |                       |
-    //   |           +---+       |
-    //   |           |   |       |
-    //   |           |   |       |
-    //   |           +---+       |
-    //   -------------------------
-    //
-    // Here, even though the increment is one, we need to make a copy since
-    // all the elements in the sub-region aren't contiguous. Note, though, that
-    // the lengths don't need to be identical in the last axis.
-
-    if (deleteIt == False) {  // We don't always need to do this test
-        for (i=0; i < ndim() - 1; i++) {
-            if (length[i] != originalLength[i]) {
-	       deleteIt = True;
-               break;
-	    }
-	}
     }
 
     if (deleteIt == False)
@@ -996,7 +1027,7 @@ template<class T> void Array<T>::putStorage(T *&storage, Bool deleteAndCopy)
     if (deleteAndCopy == False) {
 	storage = 0;
 	return;
-}
+    }
 
     if (ndim() == 1) {
 	objcopy(begin, storage, uInt(length[0]), uInt(inc[0]), 1U);

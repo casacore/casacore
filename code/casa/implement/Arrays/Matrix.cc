@@ -1,5 +1,5 @@
 //# Matrix.cc: A 2-D Specialization of the Array Class
-//# Copyright (C) 1993,1994,1995,1996
+//# Copyright (C) 1993,1994,1995,1996,1997
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -167,36 +167,29 @@ template<class T> Matrix<T> &Matrix<T>::operator=(const Matrix<T> &other)
     Bool Conform = conform(other);
     if (Conform == False && nelements() != 0)
 	validateConformance(other);  // We can't overwrite, so throw exception
-    Int i, j;
-    if (Conform == True) { // copy in place
-	Int ioff1 = other.start[0] - start[0];
-	Int ioff2 = other.start[1] - start[1];
-	for(j=start[1]; j < start[1] + length[1]; j++)
-	    for(i=start[0]; i < start[0] + length[0]; i++)
-		(*this)(i,j) = other(i+ioff1,j+ioff2);
-    } else {
-        data = new Block<T>(other.nelements());
-        begin = data->storage();
-        start=other.start;
-        length = other.length;
-	originalLength = length;
-        inc[0] = 1; inc[1] = 1; // flatten
-        nels = ArrayVolume(ndimen, length.storage());
+
+    Array<T>::operator=(other);
+    if (!Conform) {
 	makeIndexingConstants();
-	Int ioff1 = other.start[0] - start[0];
-	Int ioff2 = other.start[1] - start[1];
-	for(j=start[1]; j < start[1] + length[1]; j++)
-	    for(i=start[0]; i < start[0] + length[0]; i++)
-		(*this)(i,j) = other(i+ioff1,j+ioff2);
     }
+    
     return *this;
 }
 
 template<class T> Array<T> &Matrix<T>::operator=(const Array<T> &a)
 {
     DebugAssert(ok(), ArrayError);
-    Matrix<T> tmp(a);
-    (*this) = tmp;
+    Bool Conform = conform(a);
+    if (a.ndim() == 2) {
+	Array<T>::operator=(a);
+	if (!Conform) {
+	    makeIndexingConstants();
+	}
+    } else {
+	// This will work if a is 1D
+	Matrix<T> tmp(a);
+	(*this) = tmp;
+    }
     return *this;
 }
 
