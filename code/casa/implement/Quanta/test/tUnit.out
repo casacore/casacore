@@ -88,7 +88,7 @@ SI unit table (50):
     s         (second)                     1 s
     sr        (steradian)                  1 sr
     t         (tonne)                      1000 kg
-Customary unit table (72):
+Customary unit table (73):
     "         (arcsec)                     4.8481368111e-06 rad
     "_2       (square arcsec)              2.35044305391e-11 sr
     '         (arcmin)                     0.000290888208666 rad
@@ -127,6 +127,7 @@ Customary unit table (72):
     ata       (technical atmosphere)       98066.5 m-1.kg.s-2
     atm       (standard atmosphere)        101325 m-1.kg.s-2
     bar       (bar)                        100000 m-1.kg.s-2
+    beam      (undefined beam area)        1
     cal       (calorie (Int))              4.1868 m2.kg.s-2
     cwt       (hundredweight)              50.80234544 kg
     deg_2     (square degree)              0.000304617419787 sr
