@@ -6213,3 +6213,4 @@
 17 191 src mv ./aips/implement/Functionals/NQGaussianND.cc ./aips/implement/Functionals/GaussianND.cc
 17 191 src mv ./aips/implement/Functionals/NQGaussianND.h ./aips/implement/Functionals/GaussianND.h
 17 191 src mv ./aips/implement/Functionals/NQGaussianNDParam.cc ./aips/implement/Functionals/GaussianNDParam.cc
+17 191 src mv ./aips/implement/Functionals/NQGaussianNDParam.h ./aips/implement/Functionals/GaussianNDParam.h
