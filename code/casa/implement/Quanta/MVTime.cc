@@ -389,7 +389,7 @@ Bool MVTime::read(Quantity &res, MUString &in, Bool chk) {
   Double s = in.getSign();
   if (in.tSkipStringNC("today") || in.testChar('/')) {
     if (in.tSkipChar('/')) {
-      if (MVAngle::read(res, in)) {
+      if (MVAngle::read(res, in, chk)) {
 	res = Quantity(res.get("deg").getValue()/360., "d");
 	res += Quantity(Double((Int) Time().modifiedJulianDay()),
 			"d");
@@ -461,7 +461,7 @@ Bool MVTime::read(Quantity &res, MUString &in, Bool chk) {
     in.pop(); return False;
   };
   if (in.tSkipChar('/') || in.tSkipChar('-')) {
-    if (MVAngle::read(res, in)) {
+    if (MVAngle::read(res, in, chk)) {
       res = Quantity(res.get("deg").getValue()/360., "d");
     } else {
       in.pop(); return False;
@@ -497,7 +497,7 @@ Bool MVTime::read(Quantity &res, const String &in) {
 
 Bool MVTime::read(Quantity &res, const String &in, Bool chk) {
   MUString tmp(in);		// Pointed non-const String
-  if (!MVTime::read(res, tmp)) {
+  if (!MVTime::read(res, tmp, chk)) {
     Double r = tmp.getDouble();
     UnitVal u; String us;
     if (!MVAngle::unitString(u,us,tmp)) return False;

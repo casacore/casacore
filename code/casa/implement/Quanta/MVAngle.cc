@@ -428,7 +428,7 @@ Bool MVAngle::read(Quantity &res, const String &in) {
 
 Bool MVAngle::read(Quantity &res, const String &in, Bool chk) {
   MUString tmp(in);		// Pointed non-const String
-  if (!MVAngle::read(res, tmp)) {
+  if (!MVAngle::read(res, tmp, chk)) {
     Double r = tmp.getDouble();
     UnitVal u; String us;
     if (!MVAngle::unitString(u,us,tmp)) return False;
