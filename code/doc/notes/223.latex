@@ -11,11 +11,11 @@
 \title{NOTE 223 --
 Lattice Expression Language}
 \author {Ger van Diepen, NFRA Dwingeloo}
-\date {1999 January 20}
+\date {1999 March 5}
 \maketitle
 %%---------------------------------------------------------------------------
 \begin{htmlonly}
-\htmladdnormallink{A postscript version of this note is available (80kB).}{../223.ps}
+\htmladdnormallink{A postscript version of this note is available (95kB).}{../223.ps}
 \end{htmlonly}
 \input{LELdesc}
 \end{document}
