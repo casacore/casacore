@@ -208,7 +208,8 @@ public:
     const String &errorMessage() const;
 
     // Comparison to fractional tolerance (for floating point values). 
-    // Don't compare on specified axes in coordinate.
+    // Don't compare on specified axes in coordinate. If the comparison
+    // returns False, <src>errorMessage()</src> contains a message.
     // <group>
     virtual Bool near(const Coordinate* pOther, 
                       Double tol) const = 0;
