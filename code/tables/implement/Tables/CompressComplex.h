@@ -304,8 +304,8 @@ protected:
   Float getOffset (uInt rownr);
 
   // Find minimum and maximum from the array data.
-  // NaN values are ignored. If all values are NaN, minimum and maximum
-  // are also set to NaN.
+  // NaN and infinite values are ignored. If no values are finite,
+  // minimum and maximum are set to NaN.
   virtual void findMinMax (Float& minVal, Float& maxVal,
 			   const Array<Complex>& array) const;
 
@@ -486,8 +486,8 @@ private:
 			   Array<Int>& target);
 
   // Find minimum and maximum from the array data.
-  // NaN values an zero imaginary parts are ignored.
-  // If all values are NaN, minimum and maximum are also set to NaN.
+  // NaN and infinite values and zero imaginary parts are ignored.
+  // If no values are finite, minimum and maximum are set to NaN.
   virtual void findMinMax (Float& minVal, Float& maxVal,
 			   const Array<Complex>& array) const;
 

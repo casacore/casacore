@@ -239,7 +239,7 @@ void CompressFloat::findMinMax (Float& minVal, Float& maxVal,
   const uInt nr = array.nelements();
   Bool firstTime = True;
   for (uInt i=0; i<nr; i++) {
-    if (! isNaN (data[i])) {
+    if (isFinite (data[i])) {
       if (firstTime) {
 	minVal = data[i];
 	maxVal = data[i];
@@ -303,15 +303,15 @@ void CompressFloat::scaleOnPut (Float scale, Float offset,
   Short* out = target.getStorage (deleteOut);
   const uInt nr = array.nelements();
   for (uInt i=0; i<nr; i++) {
-    if (isNaN (in[i])) {
-      out[i] = -32768;
-    } else {
+    if (isFinite (in[i])) {
       Float tmp = (in[i] - offset) / scale;
       if (tmp < 0) {
 	out[i] = short (ceil(tmp - 0.5));
       } else {
 	out[i] = short (floor(tmp + 0.5));
       }
+    } else {
+      out[i] = -32768;
     }
   }
   array.freeStorage (in, deleteIn);

@@ -300,8 +300,8 @@ private:
   Float getOffset (uInt rownr);
 
   // Find minimum and maximum from the array data.
-  // NaN values are ignored. If all values are NaN, minimum and maximum
-  // are also set to NaN.
+  // NaN and infinite values are ignored. If no values are finite,
+  // minimum and maximum are set to NaN.
   void findMinMax (Float& minVal, Float& maxVal,
 		   const Array<Float>& array) const;
 

@@ -241,7 +241,7 @@ void CompressComplex::findMinMax (Float& minVal, Float& maxVal,
   const uInt nr = array.nelements();
   Bool firstTime = True;
   for (uInt i=0; i<nr; i++) {
-    if (! isNaN (data[i])) {
+    if (isFinite(data[i].real())  &&  isFinite(data[i].imag())) {
       Float tmp = data[i].real();
       if (firstTime) {
 	minVal = tmp;
@@ -320,7 +320,7 @@ void CompressComplex::scaleOnPut (Float scale, Float offset,
   Int* out = target.getStorage (deleteOut);
   const uInt nr = array.nelements();
   for (uInt i=0; i<nr; i++) {
-    if (isNaN (in[i])) {
+    if (!isFinite(in[i].real())  ||  !isFinite(in[i].imag())) {
       out[i] = -32768 * 65536;
     } else {
       Short s;
@@ -659,7 +659,7 @@ void CompressComplexSD::findMinMax (Float& minVal, Float& maxVal,
   const uInt nr = array.nelements();
   Bool firstTime = True;
   for (uInt i=0; i<nr; i++) {
-    if (! isNaN (data[i])) {
+    if (isFinite(data[i].real())  &&  isFinite(data[i].imag())) {
       Float tmp = data[i].real();
       if (firstTime) {
 	minVal = tmp;
@@ -734,7 +734,7 @@ void CompressComplexSD::scaleOnPut (Float scale, Float offset,
   Int* out = target.getStorage (deleteOut);
   const uInt nr = array.nelements();
   for (uInt i=0; i<nr; i++) {
-    if (isNaN (in[i])) {
+    if (!isFinite(in[i].real())  ||  !isFinite(in[i].imag())) {
       out[i] = -32768 * 65536;
     } else if (in[i].imag() == 0) {
       // Imaginary part =0, so scale real part with 15 bits extra
