@@ -3,7 +3,7 @@
 # aipsinit.sh: Define the AIPS++ environment for Bourne-like shells
 #-----------------------------------------------------------------------------
 #
-#   Copyright (C) 1992-1999,2000
+#   Copyright (C) 1992-1999,2000,2001
 #   Associated Universities, Inc. Washington DC, USA.
 #
 #   This program is free software; you can redistribute it and/or modify
@@ -132,25 +132,25 @@
   GLISHROOT="$a_root"
   export GLISHROOT
 # Set the architecture and site.
-  a_arch=`echo $a_temp | awk '{ print $2 }'`
-  a_site=`echo $a_temp | awk '{ print $3 }'`
+  a_arch=`/bin/echo $a_temp | awk '{ print $2 }'`
+  a_site=`/bin/echo $a_temp | awk '{ print $3 }'`
 
   if [ "$a_arch" = NONE ]
   then
 #    Remove aips_bin, aips_lib, and aips_doc from PATH, LD_LIBRARY_PATH,
 #    and MANPATH.
-     PATH=`echo ":${PATH}:" | sed -e '{s#:aips_bin:#:#g;s#^:##;s#:$##;}'`
+     PATH=`/bin/echo ":${PATH}:" | sed -e '{s#:aips_bin:#:#g;s#^:##;s#:$##;}'`
      export PATH
 
      if [ "${LD_LIBRARY_PATH-}" != "" ]
      then
-        LD_LIBRARY_PATH=`echo ":${LD_LIBRARY_PATH}:" | sed -e {'s#:aips_lib:#:#g;s#^:##;s#:$##;}'`
+        LD_LIBRARY_PATH=`/bin/echo ":${LD_LIBRARY_PATH}:" | sed -e {'s#:aips_lib:#:#g;s#^:##;s#:$##;}'`
      fi
      export LD_LIBRARY_PATH
 
      if [ "${MANPATH-}" != "" ]
      then
-        MANPATH=`echo ":${MANPATH}:" | sed -e {'s#:aips_doc:#:#g;s#^:##;s#:$##;}'`
+        MANPATH=`/bin/echo ":${MANPATH}:" | sed -e {'s#:aips_doc:#:#g;s#^:##;s#:$##;}'`
         export MANPATH
      fi
   else
@@ -200,7 +200,7 @@
         # Sometimes the host name is used as the architecture (eg. dop03_egcs).
         # So look if such a directory with files exists.
         a_temp=$a_root/${a_host}_*/*
-        a_temp=`echo $a_temp | awk '{ print $1 }' | \
+        a_temp=`/bin/echo $a_temp | awk '{ print $1 }' | \
                    awk -F/ '{ print $(NF) }'`
         if [ "${a_temp}" != "*" ]
         then
@@ -211,17 +211,17 @@
 #       in a subdirectory of the architecture (with possible extension).
 #       Use the first subdirectory as the site name.
         a_temp=$a_root/$a_arch/*/aipsrc
-        a_temp=`echo $a_temp | awk '{ print $1 }' | \
+        a_temp=`/bin/echo $a_temp | awk '{ print $1 }' | \
                    awk -F/ '{ print $(NF-1) }'`
         if [ "${a_temp}" = "*" ]
         then
            a_temp=$a_root/$a_arch*/*/aipsrc
-           a_temp=`echo $a_temp | awk '{ print $1 }' | \
+           a_temp=`/bin/echo $a_temp | awk '{ print $1 }' | \
                       awk -F/ '{ print $(NF-1) }'`
            if [ "${a_temp}" = "*" ]
            then
               a_temp=$a_root/$a_arch/*/makedefs
-	      a_temp=`echo $a_temp | awk '{ print $1 }' | \
+	      a_temp=`/bin/echo $a_temp | awk '{ print $1 }' | \
                          awk -F/ '{ print $(NF-1) }'`
               if [ "${a_temp}" = "*" ]
               then
@@ -229,7 +229,7 @@
               fi
            fi
         fi
-        a_site=`echo $a_temp | \
+        a_site=`/bin/echo $a_temp | \
                    awk '{ print $1 }' | \
                    awk -F/ '{ print $(NF-1) }'`
         [ "$a_site" = "*" ] && a_site=UNKNOWN_SITE
@@ -240,20 +240,20 @@
      then
         if [ "$aips_ext" = "_" -o "$aips_ext" = " " ]
         then
-           a_arch=`echo $a_arch | sed -e 's/_.*//'`
+           a_arch=`/bin/echo $a_arch | sed -e 's/_.*//'`
         else
-           a_arch=`echo ${a_arch}_$aips_ext | sed -e '{s/ .*//;s/_.*_/_/;}'`
+           a_arch=`/bin/echo ${a_arch}_$aips_ext | sed -e '{s/ .*//;s/_.*_/_/;}'`
         fi
         aips_ext=
      else
-        a_ext=`echo $a_arch | sed -e 's/.*_//'`
+        a_ext=`/bin/echo $a_arch | sed -e 's/.*_//'`
         if [ $a_ext = $a_arch ]
         then
            a_temp=$a_root/${a_arch}_*/bin
-           a_temp=`echo $a_temp | \
+           a_temp=`/bin/echo $a_temp | \
                    awk '{ print $1 }' | \
                    awk -F/ '{ print $(NF-1) }'`
-           a_ext=`echo $a_temp | sed -e 's/.*_//'`
+           a_ext=`/bin/echo $a_temp | sed -e 's/.*_//'`
            [ "$a_ext" != "*" ] && a_arch=${a_arch}_$a_ext
         fi
      fi
@@ -261,8 +261,8 @@
 #    Is AIPSPATH already defined?
      if [ "$AIPSPATH" != "" ]
      then
-        a_och=`echo $AIPSPATH | awk '{print $2}'`
-        a_old=`echo $AIPSPATH | awk '{printf("%s/%s",$1,$2)}'`
+        a_och=`/bin/echo $AIPSPATH | awk '{print $2}'`
+        a_old=`/bin/echo $AIPSPATH | awk '{printf("%s/%s",$1,$2)}'`
      else
         a_och=$a_arch
         a_old=$a_root/$a_arch
@@ -284,13 +284,13 @@
      cd .
 
 #    Escape pound sign
-     a_old=`echo $a_old | sed -e 's/#/\\\\#/g'`
-     a_och=`echo $a_och | sed -e 's/#/\\\\#/g'`
-     a_arch_t=`echo $a_arch | sed -e 's/#/\\\\#/g'`
-     a_root_t=`echo $a_root | sed -e 's/#/\\\\#/g'`
+     a_old=`/bin/echo $a_old | sed -e 's/#/\\\\#/g'`
+     a_och=`/bin/echo $a_och | sed -e 's/#/\\\\#/g'`
+     a_arch_t=`/bin/echo $a_arch | sed -e 's/#/\\\\#/g'`
+     a_root_t=`/bin/echo $a_root | sed -e 's/#/\\\\#/g'`
 
 #    Reset PATH.
-     a_new=`echo " $PATH " | \
+     a_new=`/bin/echo " $PATH " | \
         sed -e 's#::*# #g' \
             -e "s# $a_old/bin # aips_bin #g" \
             -e "s#/aips++/$a_och/#/aips++/$a_arch_t/#g" \
@@ -298,38 +298,38 @@
      export PATH
 
 #    Ensure that some AIPS++ bin area got into PATH.
-     echo $a_new | grep " $a_root/$a_arch/bin " > /dev/null 2>&1
+     /bin/echo $a_new | grep " $a_root/$a_arch/bin " > /dev/null 2>&1
      if [ "$?" != 0 ]
      then
 #       Leave "." first, and put the AIPS++ areas next.
-        a_temp=`echo $a_new | awk '{ print $1 }'`
+        a_temp=`/bin/echo $a_new | awk '{ print $1 }'`
         if [ "$a_temp" = "." ]
         then
-           a_new=`echo $a_new | sed -e "s#^\. #. $a_root_t/$a_arch_t/bin #"`
+           a_new=`/bin/echo $a_new | sed -e "s#^\. #. $a_root_t/$a_arch_t/bin #"`
         else
            a_new="$a_root/$a_arch/bin $a_new"
         fi
      fi
 
 #    Reset it, with sanity check!
-     a_new=`echo $a_new | sed -e 's# #:#g'`
+     a_new=`/bin/echo $a_new | sed -e 's# #:#g'`
      [ "$a_new" != "" ] && PATH="$a_new"
 
 
 #    Reset LD_LIBRARY_PATH.
      if [ "${LD_LIBRARY_PATH-}" != "" ]
      then
-        a_new=`echo " $LD_LIBRARY_PATH " | \
+        a_new=`/bin/echo " $LD_LIBRARY_PATH " | \
            sed -e 's#::*# #g' \
                -e "s# $a_old/lib # aips_lib #g" \
                -e "s# aips_lib # $a_root_t/$a_arch_t/lib #g"`
 
 #       Ensure that some AIPS++ lib area got into LD_LIBRARY_PATH.
-        echo $a_new | grep " $a_root/$a_arch/lib " > /dev/null 2>&1
+        /bin/echo $a_new | grep " $a_root/$a_arch/lib " > /dev/null 2>&1
         [ "$?" != 0 ] && a_new="$a_root/$a_arch/lib $a_new"
 
 #       Reset it, with sanity check!
-        a_new=`echo $a_new | sed -e 's# #:#g'`
+        a_new=`/bin/echo $a_new | sed -e 's# #:#g'`
         [ "$a_new" != "" ] && LD_LIBRARY_PATH="$a_new"
      else
         LD_LIBRARY_PATH="$a_root/$a_arch/lib"
@@ -340,22 +340,22 @@
 #    Reset MANPATH.
      if [ "${MANPATH-}" != "" ]
      then
-        a_new=`echo " $MANPATH " | \
+        a_new=`/bin/echo " $MANPATH " | \
            sed -e 's#::*# #g' \
                -e "s# $a_old/doc # aips_doc #g" \
                -e "s# aips_doc # $a_root_t/$a_arch_t/doc #g"`
 
 #       Ensure that some AIPS++ man area got into MANPATH.
-        echo $a_new | grep " $a_root/$a_arch/doc " > /dev/null 2>&1
+        /bin/echo $a_new | grep " $a_root/$a_arch/doc " > /dev/null 2>&1
         [ "$?" != 0 ] && a_new="$a_root/$a_arch/doc $a_new"
 
 #       Reset it, with sanity check!
-        a_new=`echo $a_new | sed -e 's# #:#g'`
+        a_new=`/bin/echo $a_new | sed -e 's# #:#g'`
         [ "$a_new" != "" ] && MANPATH="$a_new"
         export MANPATH
      fi
 
-     a_shell=`echo $SHELL | sed 's#.*/##'`
+     a_shell=`/bin/echo $SHELL | sed 's#.*/##'`
 #    Function which invokes aipsinit with "aips_ext" as a command line argument.
      if [ "${BASH_VERSION-}" != "" ]
      then
