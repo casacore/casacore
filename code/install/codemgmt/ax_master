@@ -5887,3 +5887,4 @@
 16 291 src rm trial/apps/dish/dishpg.g
 16 291 src rm trial/apps/dish/temppf.g
 16 291 src rm trial/apps/dish/pfg.g
+16 291 sys rm libexec/dishpg.g
