@@ -613,7 +613,7 @@ public:
         { return itsPos != other.itsPos; }
 
     };
-
+    // </group>
 
 
     // Define the STL-style iterators.
@@ -635,6 +635,7 @@ public:
     typedef const T* const_contiter;
     // </group>
     // Get the begin iterator object for any array.
+    // <group>
     iterator begin()
         { return iterator (*this); }
     const_iterator begin() const
@@ -643,8 +644,8 @@ public:
         { return end_p; }
     // </group>
 
-    // </group>
     // Get the begin iterator object for a contiguous array.
+    // <group>
     contiter cbegin()
         { return begin_p; }
     const_contiter cbegin() const

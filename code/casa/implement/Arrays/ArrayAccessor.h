@@ -230,9 +230,9 @@ template <class T> class ArrayBaseAccessor {
 //	access time is about 2 times faster than indexing (for cubes,
 //	more for more indices),
 //   <li> Special iteration (like in chunks) are catered for by the
-//	<linkto class=ArrayIter>ArrayIter</linkto>,
-//	<linkto class=MatrixIter>MatrixIter</linkto>,
-//	<linkto class=VectorIter>VectorIter</linkto> classes.
+//	<linkto class=ArrayIterator>ArrayIterator</linkto>,
+//	<linkto class=MatrixIterator>MatrixIterator</linkto>,
+//	<linkto class=VectorIterator>VectorIterator</linkto> classes.
 // </ul>
 // The ArrayAccessor class is an iterator like pointer to the data
 // in the array. It is a 1-dimensional accessor. It is created with either
