@@ -5731,3 +5731,4 @@
 16 134 src rm aips/implement/MeasurementSets/OldMSArray.cc
 16 134 src rm aips/implement/MeasurementSets/OldMSArray.h
 16 134 src rm aips/implement/MeasurementSets/OldMSArrayColumns.cc
+16 134 src rm aips/implement/MeasurementSets/OldMSArrayColumns.h
