@@ -59,6 +59,7 @@
 #include <trial/Images/ImageUtilities.h>
 #include <trial/Images/MomentCalculator.h>
 #include <trial/Images/PagedImage.h>
+#include <trial/Images/RegionHandler.h>
 #include <trial/Images/ImageRegion.h>
 #include <trial/Images/SubImage.h>
 #include <trial/Lattices/ArrayLattice.h>
@@ -852,7 +853,7 @@ Bool ImageMoments<T>::createMoments()
 
 // Create a vector of pointers for output images 
 
-   PtrBlock<Lattice<T> *> outPt(moments_p.nelements());
+   PtrBlock<MaskedLattice<T> *> outPt(moments_p.nelements());
    for (i=0; i<outPt.nelements(); i++) outPt[i] = 0;
 
 
@@ -905,6 +906,10 @@ Bool ImageMoments<T>::createMoments()
          os_p << LogIO::NORMAL << "Created " << out_p+suffix << LogIO::POST;
          imgp->setMiscInfo(pInImage_p->miscInfo());
       }
+//
+      LCPagedMask mask(RegionHandler::makeMask (*imgp, "mask0"));
+      imgp->defineRegion ("mask0", ImageRegion(mask), RegionHandler::Masks);
+      imgp->setDefaultMask("mask0");
       outPt[i] = imgp;
 
 // Set output image units if possible
