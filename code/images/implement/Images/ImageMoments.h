@@ -1,5 +1,5 @@
 //# ImageMoments.h: generate moments from images
-//# Copyright (C) 1996,1997,1998,1999,2000,2001
+//# Copyright (C) 1996,1997,1998,1999,2000,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -244,7 +244,7 @@ public:
 // fails with a typedef problem.  But I can't solve it with say
 // "typedef MomentCalcBase<T> gpp_type;"  because you can only do a 
 // typedef with an actual type, not a <T> !
-   friend MomentCalcBase<T>;
+   friend class MomentCalcBase<T>;
 
 // Constructor takes an image and a <src>LogIO</src> object for logging purposes.
 // You specify whether output images are  automatically overwritten if pre-existing,
