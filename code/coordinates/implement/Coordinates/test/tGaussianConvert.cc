@@ -1,5 +1,5 @@
 //# tGaussianConvert.cc: Test program for GaussianConvert
-//# Copyright (C) 1998,1999,2000
+//# Copyright (C) 1998,1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -297,21 +297,9 @@ void doit3()
       majSource.setValue(20.0);
       minSource.setValue(10.0);
       paSource.setValue(45.0);
-      majBeam.setValue(20.0);
-      minBeam.setValue(10.0);
+      majBeam.setValue(20.00001);
+      minBeam.setValue(10.00001);
       paBeam.setValue(45.0);
-//
-      Double maj = sqrt(square(majSource.getValue(rad)) -
-                        square(majBeam.getValue(rad)));
-      Quantum<Double> majQ(maj, rad);
-      majQ.convert(majSource.getFullUnit());
-//
-      Double min = sqrt(square(minSource.getValue(rad)) -
-                        square(minBeam.getValue(rad)));
-      Quantum<Double> minQ(min, rad);
-      minQ.convert(minSource.getFullUnit());
-//
-      Quantum<Double> paQ(45.0,paSource.getFullUnit());
 //
       Bool isPoint = GaussianConvert::deconvolve(majModel, minModel, paModel,
                                                  majSource, minSource, paSource,
@@ -319,10 +307,10 @@ void doit3()
       cout << "Source   = " << majSource << ", " << minSource << ", " << paSource << endl;
       cout << "Beam     = " << majBeam << ", " << minBeam << ", " << paBeam << endl;
       cout << "Model    = " << majModel << ", " << minModel << ", " << paModel << endl;
-      cout << "Expected = " << majQ << ", " << minQ << ", " << paQ << endl;
+      cout << "Expected = " << majBeam << ", " << minBeam << ", " << paBeam << endl;
       cout << "isPoint  = " << isPoint << endl << endl;
       AlwaysAssert(isPoint, AipsError);
-      AlwaysAssert((nearAbs(majModel.getValue(),0.0,1e-6) &&
-                    nearAbs(minModel.getValue(),0.0,1e-6)),AipsError);
+      AlwaysAssert((nearAbs(majModel.getValue(),majBeam.getValue(),1e-6) &&
+                    nearAbs(minModel.getValue(),minBeam.getValue(),1e-6)),AipsError);
    }
 }
