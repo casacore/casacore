@@ -1,5 +1,5 @@
 //# Path.cc: Class to define a pathname
-//# Copyright (C) 1993,1994,1995,1996,1997
+//# Copyright (C) 1993,1994,1995,1996,1997,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //# 
 //# This library is free software; you can redistribute it and/or modify it
@@ -126,8 +126,8 @@ Path& Path::operator= (const Path& that)
 void Path::append (const String& string)
 {
     if  (!string.empty()) {
-	if ((itsOriginalPathName.lastchar() != '/') && 
-	    (string.firstchar() != '/')) {
+	if (itsOriginalPathName.lastchar() != '/'
+        &&  string.firstchar() != '/') {
 	    itsOriginalPathName += "/";
 	}
 	itsOriginalPathName += string;
@@ -416,8 +416,12 @@ void Path::getNextName (const String& inString, uInt& count) const
 
 String Path::stripDirectory (const String& name, const String& otherName)
 {
-    // Get the directory of other (with the trailing /).
-    String dir (Path(otherName).dirName() + '/');
+    // First try to remove the full otherName.
+    // Add trailing slash if not there.
+    String dir (Path(otherName).expandedName());
+    if (dir.lastchar() != '/') {
+	dir += '/';
+    }
     String tName(name);
     // Remove possible leading ./ from dir and name.
     while (tName.length() >= 2  &&  tName[0] == '.'  &&  tName[1] == '/') {
@@ -428,14 +432,29 @@ String Path::stripDirectory (const String& name, const String& otherName)
     }
     Int leng = dir.length();
     // If directory is contained in this name, return name without it.
+    // Prepend by ././ indicating full name is removed.
     if (leng > 0) {
 	if (tName.length() > uInt(leng)  &&  tName.before(leng) == dir) {
-	    // The leading ./ indicates that the directory has been stripped.
-	    return "./" + tName.from (leng);
+	    return "././" + tName.from (leng);
+	}else{
+	    // No match; now compare using the directory part only.
+	    dir = Path(dir).dirName() + '/';
+	    while (dir.length() >= 2  &&  dir[0] == '.'  &&  dir[1] == '/') {
+		dir = dir.after(1);
+	    }
+	    leng = dir.length();
+	    if (leng > 0) {
+		if (tName.length() > uInt(leng)  && tName.before(leng) == dir) {
+		    // The leading ./ indicates that directory is removed.
+		    return "./" + tName.from (leng);
+		}
+	    }
 	}
-    }else{
-	// Also if the parent is this directory and the subtable is relative.
-	if (Path(tName).expandedName()[0] != '/') {
+    }
+    if (leng == 0) {
+	// Also relative if the parent is this directory and the
+	// subtable is relative.
+	if (tName[0] != '/'  &&  tName[0] != '$'  &&  tName[0] != '~') {
 	    return "./" + tName;
 	}
     }
@@ -452,9 +471,14 @@ String Path::addDirectory (const String& name, const String& otherName)
     while (tName.length() >= 2  &&  tName[0] == '.'  &&  tName[1] == '/') {
 	tName = tName.after(1);
     }
-    // If anything was removed, we have to add the directory of the other name.
+    // If anything was removed, we have to add the directory.
     if (tName.length() < name.length()) {
-	Path dir (Path(otherName).dirName());
+	// If ./ was removed, add directory of otherName.
+	// Otherwise add the full otherName.
+	Path dir(otherName);
+	if (tName.length() == name.length() - 2) {
+	    dir = Path(dir.dirName());
+	}
 	dir.append (tName);
 	return dir.originalName();
     }
