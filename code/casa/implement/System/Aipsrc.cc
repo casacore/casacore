@@ -1,5 +1,5 @@
 //# Aipsrc.cc: Class to read the aipsrc general resource files 
-//# Copyright (C) 1995,1996,1997
+//# Copyright (C) 1995,1996,1997,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -500,6 +500,8 @@ void Aipsrc::genSet(Vector<String> &namlst, Vector<String> &vallst,
   uInt n = Aipsrc::registerRC(nam, nl);
   if (n > vallst.nelements()) vallst.resize(n, True);
   vallst(n-1) = val;
+//   if (n > namlst.nelements()) namlst.resize(n, True);
+  namlst.resize(0);
   namlst = Vector<String>(nl);
 }
 
