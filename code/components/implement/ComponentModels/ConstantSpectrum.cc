@@ -55,7 +55,7 @@ ConstantSpectrum & ConstantSpectrum::operator=(const ConstantSpectrum & other) {
   return *this;
 }
 
-ComponentType::SpectralShape ConstantSpectrum::spectralShape() const {
+ComponentType::SpectralShape ConstantSpectrum::type() const {
   DebugAssert(ok(), AipsError);
   return ComponentType::CONSTANT_SPECTRUM;
 }
@@ -81,27 +81,27 @@ void ConstantSpectrum::sample(Flux<Double> & flux,
   }
 }
 
-SpectralModel * ConstantSpectrum::cloneSpectrum() const {
+SpectralModel * ConstantSpectrum::clone() const {
   DebugAssert(ok(), AipsError);
   SpectralModel * tmpPtr = new ConstantSpectrum(*this);
   AlwaysAssert(tmpPtr != 0, AipsError);
   return tmpPtr;
 }
 
-uInt ConstantSpectrum::nSpectralParameters() const {
+uInt ConstantSpectrum::nParameters() const {
   DebugAssert(ok(), AipsError);
   return 0;
 }
 
 void ConstantSpectrum::
-setSpectralParameters(const Vector<Double> & newSpectralParms) {
-  DebugAssert(newSpectralParms.nelements() == nSpectralParameters(),AipsError);
+setParameters(const Vector<Double> & newSpectralParms) {
+  DebugAssert(newSpectralParms.nelements() == nParameters(),AipsError);
   DebugAssert(ok(), AipsError);
 }
 
-void ConstantSpectrum::spectralParameters(Vector<Double> & spectralParms) const {
+void ConstantSpectrum::parameters(Vector<Double> & spectralParms) const {
   DebugAssert(ok(), AipsError);
-  DebugAssert(spectralParms.nelements() == nSpectralParameters(),AipsError);
+  DebugAssert(spectralParms.nelements() == nParameters(),AipsError);
 }
 
 Bool ConstantSpectrum::fromRecord(String & errorMessage, 
@@ -120,7 +120,7 @@ Bool ConstantSpectrum::toRecord(String & errorMessage,
   // Use errorMessage for something to suppress a compiler warning
   if (&errorMessage == 0) {
   }
-  record.define("type", ComponentType::name(spectralShape()));
+  record.define(RecordFieldId("type"), ComponentType::name(type()));
   return True;
 }
 
