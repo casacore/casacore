@@ -2720,3 +2720,4 @@
 10 060 src mv aips/implement/Measures/MVDoppler.cc aips/implement/Quanta/MVDoppler.cc
 10 060 src mv aips/implement/Measures/MVDoppler.h aips/implement/Quanta/MVDoppler.h
 10 060 src mv aips/implement/Measures/MVDouble.cc aips/implement/Quanta/MVDouble.cc
+10 060 src mv aips/implement/Measures/MVDouble.h aips/implement/Quanta/MVDouble.h
