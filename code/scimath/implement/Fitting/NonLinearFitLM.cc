@@ -29,7 +29,6 @@
 
 #include <trial/Fitting/NonLinearFitLM.h>
 #include <aips/Arrays/ArrayMath.h>
-#include <aips/Arrays/VectorSTLIterator.h>
 #include <aips/Exceptions/Error.h>
 #include <aips/Functionals/Function.h>
 #include <aips/typeinfo.h>
@@ -68,7 +67,7 @@ fitIt(Vector<typename FunctionTraits<T>::BaseType> &sol,
   converge_p = False;
   Double fitit_p = 1.0;
   // Initialise fitter
-  LSQFit::reset();
+  reset();
   set(aCount_ai,
       typename LSQTraits<typename FunctionTraits<T>::BaseType>::num_type());
   Double mu, me;
@@ -97,15 +96,11 @@ fitIt(Vector<typename FunctionTraits<T>::BaseType> &sol,
   setMaskedParameterValues(sol_p);
   buildMatrix(x, y, sigma, mask);
   invert(nr_p, True);
-  VectorSTLIterator<typename FunctionTraits<T>::BaseType> ceqit(condEq_p);;;
-  solve(ceqit);
-  ///solve(condEq_p);
+  solve(condEq_p);
   mu = getSD();
   me = getWeightedSD();
   sol_p += condEq_p;
-  VectorSTLIterator<typename FunctionTraits<T>::BaseType> cerrit(err_p);;;
-  ///LSQFit::getErrors(err_p);
-  LSQFit::getErrors(cerrit);
+  getErrors(err_p);
   errors_p = True;
   for (uInt i=0, k=0; i<pCount_p; i++) {
     if (ptr_derive_p->mask(i)) {

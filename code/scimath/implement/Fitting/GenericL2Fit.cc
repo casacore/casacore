@@ -38,7 +38,7 @@
 
 template<class T>
 GenericL2Fit<T>::GenericL2Fit() :
-  LSQFit(),
+  LSQaips(),
   COLLINEARITY(1e-8),
   aCount_ai(0),
   svd_p(False), ptr_derive_p(0),
@@ -54,7 +54,7 @@ GenericL2Fit<T>::GenericL2Fit() :
 
 template<class T>
 GenericL2Fit<T>::GenericL2Fit(const GenericL2Fit &other) :
-  LSQFit(other),
+  LSQaips(other),
   COLLINEARITY(1e-8),
   aCount_ai(other.aCount_ai),
   svd_p(other.svd_p), ptr_derive_p(0),
@@ -79,7 +79,7 @@ GenericL2Fit<T>::GenericL2Fit(const GenericL2Fit &other) :
 template<class T>
 GenericL2Fit<T> &GenericL2Fit<T>::operator=(const GenericL2Fit &other) {
   if (this != &other) {
-    LSQFit::operator=(other);
+    LSQaips::operator=(other);
     aCount_ai = other.aCount_ai;
     svd_p = other.svd_p;
     if (other.ptr_derive_p) ptr_derive_p = other.ptr_derive_p->clone();

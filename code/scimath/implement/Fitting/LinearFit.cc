@@ -29,7 +29,6 @@
 //# Includes
 #include <trial/Fitting/LinearFit.h>
 #include <aips/Arrays/ArrayMath.h>
-#include <aips/Arrays/VectorSTLIterator.h>
 #include <aips/Mathematics/AutoDiffIO.h>
 #include <aips/Functionals/Function.h>
 
@@ -74,15 +73,11 @@ fitIt(Vector<typename FunctionTraits<T>::BaseType> &sol,
   solved_p = invert(nr_p, svd_p);
   // Get solution and errors
   if (solved_p) {
-    VectorSTLIterator<typename FunctionTraits<T>::BaseType> ceqit(condEq_p);;;
-    ///solve(condEq_p);
-    solve(ceqit);
+    solve(condEq_p);
     sol_p += condEq_p;
     mu = getSD();
     me = getWeightedSD();
-    VectorSTLIterator<typename FunctionTraits<T>::BaseType> cerrit(err_p);;;
-    ///    LSQFit::getErrors(err_p);
-    LSQFit::getErrors(cerrit);
+    getErrors(err_p);
     errors_p = True;
     for (uInt i=0, k=0; i<pCount_p; i++) {
       if (ptr_derive_p->mask(i)) sol[i] = sol_p[k++];

@@ -31,7 +31,7 @@
 
 //# Includes
 #include <aips/aips.h>
-#include <aips/Fitting/LSQFit.h>
+#include <aips/Fitting/LSQaips.h>
 #include <aips/Arrays/Matrix.h>
 #include <aips/Arrays/Vector.h>
 #include <aips/Mathematics/AutoDiff.h>
@@ -206,7 +206,7 @@ template <class T, class U> class Function;
 // information, and other examples.
 // </example>
 
-template<class T> class GenericL2Fit : public LSQFit {
+template<class T> class GenericL2Fit : public LSQaips {
  public: 
   //# Constants
   // Default collinearity test for SVD
