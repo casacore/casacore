@@ -1,5 +1,5 @@
 //# TableRecordRep.cc: A hierarchical collection of named fields of various types
-//# Copyright (C) 1996,1997,1999,2000
+//# Copyright (C) 1996,1997,1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -28,6 +28,7 @@
 #include <aips/Tables/TableRecordRep.h>
 #include <aips/Tables/TableRecord.h>
 #include <aips/Tables/TableKeyword.h>
+#include <aips/Tables/TableAttr.h>
 #include <aips/Tables/Table.h>
 #include <aips/Tables/TableDesc.h>
 #include <aips/Arrays/Array.h>
@@ -351,52 +352,49 @@ Bool TableRecordRep::areTablesMultiUsed() const
 
 
 void TableRecordRep::putRecord (AipsIO& os, int recordType,
-				const String& parentTableName) const
+				const TableAttr& parentAttr) const
 {
     os.putstart ("TableRecord", 1);              // version 1
     os << desc_p;
     os << recordType;
-    putData (os, parentTableName);
+    putData (os, parentAttr);
     os.putend();
 }
 
-void TableRecordRep::putData (AipsIO& os,
-			      const String& parentTableName) const
+void TableRecordRep::putData (AipsIO& os, const TableAttr& parentAttr) const
 {
     for (uInt i=0; i<nused_p; i++) {
 	if (desc_p.type(i) == TpRecord) {
 	    const RecordDesc& desc = desc_p.subRecord(i);
 	    if (desc.nfields() == 0) {
-		static_cast<TableRecord*>(data_p[i])->putRecord
-		  (os, parentTableName);
+		static_cast<TableRecord*>(data_p[i])->putRecord (os,
+								 parentAttr);
 	    }else{
-		static_cast<TableRecord*>(data_p[i])->putData
-		  (os, parentTableName);
+		static_cast<TableRecord*>(data_p[i])->putData (os, parentAttr);
 	    }
 	} else if (desc_p.type(i) == TpTable) {
-	    os << static_cast<TableKeyword*>(data_p[i])->tableName
-	      (parentTableName);
+	  os << static_cast<TableKeyword*>(data_p[i])->tableName (parentAttr);
 	}else{
 	    putDataField (os, desc_p.type(i), data_p[i]);
 	}
     }
 }
 
-void TableRecordRep::getRecord (AipsIO& os, int& recordType, Bool openWritable,
-				const String& parentTableName)
+void TableRecordRep::getRecord (AipsIO& os, int& recordType,
+				const TableAttr& parentAttr)
 {
     // Support reading scalar, array, and table keyword sets as records.
     uInt version;
     String type = os.getNextType();
     if (type == "ScalarKeywordSet") {
 	version = os.getstart ("ScalarKeywordSet");
-	getTableKeySet (os, version, openWritable, parentTableName, 0);
+	getTableKeySet (os, version, parentAttr, 0);
     } else if (type == "ArrayKeywordSet") {
 	version = os.getstart ("ArrayKeywordSet");
-	getTableKeySet (os, version, openWritable, parentTableName, 1);
+	getTableKeySet (os, version, parentAttr, 1);
     } else if (type == "TableKeywordSet") {
 	version = os.getstart ("TableKeywordSet");
-	getTableKeySet (os, version, openWritable, parentTableName, 2);
+	getTableKeySet (os, version, parentAttr, 2);
 	recordType = RecordInterface::Variable;
     }else{
 	uInt version = os.getstart ("TableRecord");
@@ -406,13 +404,13 @@ void TableRecordRep::getRecord (AipsIO& os, int& recordType, Bool openWritable,
 	os >> recordType;
 	restructure (desc);
 	// Read the data.
-	getData (os, version, openWritable, parentTableName);
+	getData (os, version, parentAttr);
     }
     os.getend();
 }
 
-void TableRecordRep::getData (AipsIO& os, uInt version, Bool openWritable,
-			      const String& parentTableName)
+void TableRecordRep::getData (AipsIO& os, uInt version,
+			      const TableAttr& parentAttr)
 {
     for (uInt i=0; i<nused_p; i++) {
 	DataType type = desc_p.type(i);
@@ -420,16 +418,15 @@ void TableRecordRep::getData (AipsIO& os, uInt version, Bool openWritable,
 	    const RecordDesc& desc = desc_p.subRecord(i);
 	    if (desc.nfields() == 0) {
 		static_cast<TableRecord*>(data_p[i])->getRecord
-		  (os, openWritable, parentTableName);
+		                                   (os, parentAttr);
 	    }else{
 		static_cast<TableRecord*>(data_p[i])->getData
-		  (os, version, openWritable, parentTableName);
+		                                   (os, version, parentAttr);
 	    }
 	}else if (type == TpTable) {
 	    String name;
 	    os >> name;
-	    static_cast<TableKeyword*>(data_p[i])->set (name, openWritable,
-							parentTableName);
+	    static_cast<TableKeyword*>(data_p[i])->set (name, parentAttr);
 	}else{
 	    getDataField (os, desc_p.type(i), data_p[i]);
 	}
@@ -449,8 +446,7 @@ void TableRecordRep::reopenRW()
 }
 
 void TableRecordRep::getTableKeySet (AipsIO& os, uInt version,
-				     Bool openWritable,
-				     const String& parentTableName,
+				     const TableAttr& parentAttr,
 				     uInt type)
 {
     // First build the description from the map of keyword names and
@@ -472,7 +468,7 @@ void TableRecordRep::getTableKeySet (AipsIO& os, uInt version,
 	    os >> key;               // keyword name
 	    os >> name;              // table name
 	    static_cast<TableKeyword*>(data_p[desc_p.fieldNumber(key)])->set
-	      (name, openWritable, parentTableName);
+	                                           (name, parentAttr);
 	}
     }
     // Newer keyword sets may contain nested keyword sets.

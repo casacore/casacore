@@ -1,5 +1,5 @@
 //# SubTabDesc.cc: Description of columns containing tables
-//# Copyright (C) 1994,1995,1996,1997
+//# Copyright (C) 1994,1995,1996,1997,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -27,6 +27,7 @@
 
 #include <aips/Tables/SubTabDesc.h>
 #include <aips/Tables/TableDesc.h>
+#include <aips/Tables/TableAttr.h>
 #include <aips/Utilities/DataType.h>
 #include <aips/Tables/TableError.h>
 #include <aips/IO/AipsIO.h>
@@ -156,7 +157,7 @@ void SubTableDesc::putDesc (AipsIO& ios) const
     ios << tabDescTyp_p;
     ios << byName_p;
     if (!byName_p) {
-	tabDescPtr_p->putFile (ios, True);
+	tabDescPtr_p->putFile (ios, TableAttr());
     }
 }
 
@@ -176,7 +177,7 @@ void SubTableDesc::getDesc (AipsIO& ios)
 	readTableDesc();
     }else{
 	tabDescPtr_p = new TableDesc;
-	tabDescPtr_p->getFile (ios, False, "");      // get nested table desc.
+	tabDescPtr_p->getFile (ios, TableAttr());    // get nested table desc.
     }
 }
 

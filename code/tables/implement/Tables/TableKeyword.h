@@ -30,6 +30,7 @@
 
 //# Includes
 #include <aips/aips.h>
+#include <aips/Tables/TableAttr.h>
 #include <aips/Utilities/String.h>
 
 //# Forward Declarations
@@ -145,8 +146,7 @@ public:
 
     // Set the name of the table and the writable switch.
     // This is used when reading back a keyword.
-    void set (const String& name, Bool openWritable,
-	      const String& parentTableName);
+    void set (const String& name, const TableAttr& parentAttr);
 
     // Set the keyword to read/write access.
     // If the table is already open, it will be reopened with read/write
@@ -162,7 +162,11 @@ public:
     const String& tableName() const;
 
     // Get the name of the table relative to parent table.
-    String tableName (const String& parentTableName) const;
+    // <group>
+    String tableName (const String& parentName) const;
+    String tableName (const TableAttr& parentAttr) const
+      { return tableName (parentAttr.name()); }
+    // </group>
 
     // Get the table.
     // It will be opened when necessary.
@@ -188,17 +192,16 @@ public:
     Bool isFixed() const;
 
 private:
-    String name_p;
-    Bool   openWritable_p;
-    Table* table_p;
-    String tableDescName_p;
+    Table*    table_p;
+    TableAttr attr_p;
+    String    tableDescName_p;
 };
 
 
 
 inline const String& TableKeyword::tableName() const
 {
-    return name_p;
+    return attr_p.name();
 }
 
 inline Bool TableKeyword::isFixed() const

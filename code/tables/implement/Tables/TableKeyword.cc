@@ -1,5 +1,5 @@
 //# TableKeyword.cc: A keyword value representing a table
-//# Copyright (C) 1996,1997,1998,2000
+//# Copyright (C) 1996,1997,1998,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -29,27 +29,25 @@
 //# Includes
 #include <aips/Tables/TableKeyword.h>
 #include <aips/Tables/Table.h>
+#include <aips/Tables/TableAttr.h>
 #include <aips/Tables/TableDesc.h>
 #include <aips/Tables/TableError.h>
 #include <aips/OS/Path.h>
 
 TableKeyword::TableKeyword (const String& tableDescName)
-: openWritable_p  (False),
-  table_p (new Table),
+: table_p         (new Table),
   tableDescName_p (tableDescName)
 {}
 
 TableKeyword::TableKeyword (const Table& table, const String& tableDescName)
-: name_p  (table.tableName()),
-  openWritable_p  (table.isWritable()),
-  table_p (new Table(table)),
+: table_p         (new Table(table)),
+  attr_p          (table),
   tableDescName_p (tableDescName)
 {}
 
 TableKeyword::TableKeyword (const TableKeyword& that)
-: name_p  (that.name_p),
-  openWritable_p  (that.openWritable_p),
-  table_p (new Table(*that.table_p)),
+: table_p         (new Table(*that.table_p)),
+  attr_p          (that.attr_p),
   tableDescName_p (that.tableDescName_p)
 {}
 
@@ -67,8 +65,7 @@ TableKeyword& TableKeyword::operator= (const Table& table)
 	throw (TableError ("TableKeyword::operator=; non-conforming table"));
     }
     *table_p = table;
-    name_p   = table.tableName();
-    openWritable_p = table.isWritable();
+    attr_p.set (table);
     return *this;
 }
 
@@ -78,20 +75,19 @@ TableKeyword::~TableKeyword()
 }
 
 
-void TableKeyword::set (const String& name, Bool openWritable,
-			const String& parentTableName)
+void TableKeyword::set (const String& name, const TableAttr& parentAttr)
 {
-    openWritable_p = openWritable;
+    attr_p = parentAttr;
     // If a directory was stripped off, add the directory of the parent.
     // Otherwise use the name as such.
-    name_p = Path::addDirectory (name, parentTableName);
+    attr_p.setName (Path::addDirectory (name, parentAttr.name()));
 }
 
 void TableKeyword::setRW()
 {
-    openWritable_p = True;
+    attr_p.setRW();
     if (! table_p->isNull()) {
-	if (Table::isWritable (name_p)) {
+	if (Table::isWritable (attr_p.name())) {
 	    table_p->reopenRW();
 	}
     }
@@ -103,7 +99,7 @@ Bool TableKeyword::isMultiUsed (Bool checkSubTables) const
         return table_p->isMultiUsed (checkSubTables);
     }
     // The Table is closed immediately (thus not left open unnecessarily).
-    Table tab(name_p, Table::Old);
+    Table tab(attr_p.name(), Table::Old);
     return tab.isMultiUsed (checkSubTables);
 }
 
@@ -113,9 +109,8 @@ void TableKeyword::renameTable (const String& newParentName,
     // When stripping off the parent table name changes the name,
     // the table is part of the parent table.
     String old = tableName (oldParentName);
-    if (old != name_p) {
-	String newName = Path::addDirectory (old, newParentName);
-	name_p = newName;
+    if (old != attr_p.name()) {
+	attr_p.setName (Path::addDirectory (old, newParentName));
     }
     // Note that renaming subtables of a subtable is not necessary,
     // because they are always relative to the subtable (which
@@ -123,11 +118,11 @@ void TableKeyword::renameTable (const String& newParentName,
 }
 
 
-String TableKeyword::tableName (const String& parentTableName) const
+String TableKeyword::tableName (const String& parentName) const
 {
     // Get the directory of the parent (with the trailing /).
     // If it is contained in this name, return name without it.
-    return Path::stripDirectory (name_p, parentTableName);
+    return Path::stripDirectory (attr_p.name(), parentName);
 }
 
 const Table& TableKeyword::table() const
@@ -136,10 +131,10 @@ const Table& TableKeyword::table() const
     // Open for write when needed and possible.
     if (table_p->isNull()) {
 	Table::TableOption option = Table::Old;
-	if (openWritable_p  &&  Table::isWritable (name_p)) {
+	if (attr_p.openWritable()  &&  Table::isWritable (attr_p.name())) {
 	    option = Table::Update;
 	}
-	*table_p = Table(name_p, option);
+	*table_p = Table(attr_p.name(), attr_p.lockOptions(), option);
     }
     return *table_p;
 }

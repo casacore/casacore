@@ -1,5 +1,5 @@
 //# ScaRecordColData.cc: Access to a table column containing scalar records
-//# Copyright (C) 1998,2000
+//# Copyright (C) 1998,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -32,6 +32,7 @@
 #include <aips/Tables/RefRows.h>
 #include <aips/Tables/Table.h>
 #include <aips/Tables/TableRecord.h>
+#include <aips/Tables/TableAttr.h>
 #include <aips/Arrays/Vector.h>
 #include <aips/Tables/DataManager.h>
 #include <aips/Tables/TableError.h>
@@ -188,7 +189,7 @@ void ScalarRecordColumnData::getRecord (uInt rownr, TableRecord& rec) const
 	const uChar* buf = data.getStorage (deleteIt);
 	MemoryIO memio (buf, shape(0));
 	AipsIO aio(&memio);
-	rec.getRecord (aio, False, dataManager()->table().tableName());
+	rec.getRecord (aio, TableAttr(dataManager()->table()));
 	data.freeStorage (buf, deleteIt);
     }
 }
@@ -197,7 +198,7 @@ void ScalarRecordColumnData::putRecord (uInt rownr, const TableRecord& rec)
 {
     MemoryIO memio;
     AipsIO aio(&memio);
-    rec.putRecord (aio, dataManager()->table().tableName());
+    rec.putRecord (aio, TableAttr(dataManager()->table().tableName()));
     IPosition shape (1, Int(memio.length()));
     Vector<uChar> data(shape, (uChar*)(memio.getBuffer()), SHARE);
     dataColPtr_p->setShape (rownr, shape);

@@ -1,5 +1,5 @@
 //# BaseColDesc.h: an abstract base class for column descriptions
-//# Copyright (C) 1994,1995,1996,1997,1999,2000
+//# Copyright (C) 1994,1995,1996,1997,1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -39,6 +39,7 @@
 class AipsIO;
 class ColumnDescSet;
 class TableRecord;
+class TableAttr;
 class BaseColumn;
 class PlainColumn;
 class RefTable;
@@ -265,12 +266,11 @@ protected:
 
     // Put the object.
     // It uses putDesc to put the derived object.
-    void putFile (AipsIO&, const String& parentTableName) const;
+    void putFile (AipsIO&, const TableAttr&) const;
 
     // Get the object.
     // It uses getDesc to get the derived object.
-    void getFile (AipsIO&, Bool tableIsWritable,
-		  const String& parentTableName);
+    void getFile (AipsIO&, const TableAttr&);
 
     // Put the derived object.
     virtual void putDesc (AipsIO&) const = 0;

@@ -1,5 +1,5 @@
 //# ColDescSet.cc: This class defines a set of column descriptions
-//# Copyright (C) 1994,1995,1996,1997,2000
+//# Copyright (C) 1994,1995,1996,1997,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -258,18 +258,17 @@ void ColumnDescSet::add (const ColumnDescSet& set)
 
 
 //# Put the object.
-void ColumnDescSet::putFile (AipsIO& ios, const String& parentTableName) const
+void ColumnDescSet::putFile (AipsIO& ios, const TableAttr& parentAttr) const
 {
     uInt nrcol = ncolumn();
     ios << nrcol;
     for (uInt i=0; i<nrcol; i++) {
-	(*this)[i].putFile (ios, parentTableName);
+	(*this)[i].putFile (ios, parentAttr);
     }
 }
 
 //# Get the object.
-void ColumnDescSet::getFile (AipsIO& ios, Bool tableIsWritable,
-			     const String& parentTableName)
+void ColumnDescSet::getFile (AipsIO& ios, const TableAttr& parentAttr)
 {
     //# Clear the entire set.
     *this = ColumnDescSet();
@@ -277,7 +276,7 @@ void ColumnDescSet::getFile (AipsIO& ios, Bool tableIsWritable,
     ios >> nrcol;
     for (uInt i=0; i<nrcol; i++) {
 	ColumnDesc coldes;
-	coldes.getFile (ios, tableIsWritable, parentTableName);
+	coldes.getFile (ios, parentAttr);
 	addColumn (coldes);
     }
 }

@@ -187,11 +187,10 @@ private:
     void add (const ColumnDescSet& set);
 
     // Put the object.
-    void putFile (AipsIO& ios, const String& parentTableName) const;
+    void putFile (AipsIO& ios, const TableAttr&) const;
 
     // Get the object
-    void getFile (AipsIO&, Bool tableIsWritable,
-		  const String& parentTableName);
+    void getFile (AipsIO&, const TableAttr&);
 
 
     // The set of all columns.

@@ -1,5 +1,5 @@
 //# PlainColumn.cc: Base class for a column in a plain table
-//# Copyright (C) 1994,1995,1996,1997,1998,1999,2000
+//# Copyright (C) 1994,1995,1996,1997,1998,1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -99,14 +99,14 @@ void PlainColumn::setMaximumCacheSize (uInt nbytes)
 //# Its data will be read/written by the appropriate storage manager.
 //# It was felt that putstart takes too much space, so therefore
 //# the version is put "manually".
-void PlainColumn::putFile (AipsIO& ios, const String&)
+void PlainColumn::putFile (AipsIO& ios, const TableAttr&)
 {
     ios << (uInt)2;                  // class version 2
     ios << originalName_p;
     putFileDerived (ios);
 }
 void PlainColumn::getFile (AipsIO& ios, const ColumnSet& colset,
-			   Bool tableIsWritable, const String& tableName)
+			   const TableAttr& attr)
 {
     uInt version;
     ios >> version;
@@ -115,7 +115,7 @@ void PlainColumn::getFile (AipsIO& ios, const ColumnSet& colset,
     // So read it for those and merge it into the TableDesc keywords.
     if (version == 1) {
 	TableRecord tmp;
-	tmp.getRecord (ios, tableIsWritable, tableName);
+	tmp.getRecord (ios, attr);
 	keywordSet().merge (tmp, RecordInterface::OverwriteDuplicates);
     }
     ios >> originalName_p;

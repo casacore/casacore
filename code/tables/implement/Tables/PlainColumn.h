@@ -1,5 +1,5 @@
 //# PlainColumn.h: Base class for a column in a plain table
-//# Copyright (C) 1994,1995,1996,1997,1998,1999,2000
+//# Copyright (C) 1994,1995,1996,1997,1998,1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -36,6 +36,7 @@
 #include <aips/Tables/TableRecord.h>
 
 //# Forward Declarations
+class TableAttr;
 class BaseColumnDesc;
 class DataManager;
 class DataManagerColumn;
@@ -129,11 +130,10 @@ public:
     virtual void setMaximumCacheSize (uInt nbytes);
 
     // Write the column.
-    void putFile (AipsIO&, const String& tableName);
+    void putFile (AipsIO&, const TableAttr&);
 
     // Read the column.
-    void getFile (AipsIO&, const ColumnSet&, Bool tableIsWritable,
-		  const String& tableName);
+    void getFile (AipsIO&, const ColumnSet&, const TableAttr&);
 
 protected:
     DataManager*        dataManPtr_p;    //# Pointer to data manager.

@@ -339,13 +339,23 @@ void TableRecord::merge (const TableRecord& other, DuplicatesFlag flag)
 }
 
 
-void TableRecord::putRecord (AipsIO& os,
-			     const String& parentTableName) const
+AipsIO& operator<< (AipsIO& os, const TableRecord& rec)
 {
-    ref().putRecord (os, recordType(), parentTableName);
+    rec.putRecord (os, TableAttr());
+    return os;
 }
-void TableRecord::getRecord (AipsIO& os, Bool openWritable,
-			     const String& parentTableName)
+
+AipsIO& operator>> (AipsIO& os, TableRecord& rec)
+{
+    rec.getRecord (os, TableAttr());
+    return os;
+}
+
+void TableRecord::putRecord (AipsIO& os, const TableAttr& parentAttr) const
+{
+    ref().putRecord (os, recordType(), parentAttr);
+}
+void TableRecord::getRecord (AipsIO& os, const TableAttr& parentAttr)
 {
     // Get is only possible when the Record is empty or when
     // the Record is non-fixed.
@@ -355,6 +365,6 @@ void TableRecord::getRecord (AipsIO& os, Bool openWritable,
     // Reading the record type back means casting it from an int
     // to the correct type.
     int type;
-    rwRef().getRecord (os, type, openWritable, parentTableName);
+    rwRef().getRecord (os, type, parentAttr);
     recordType() = (RecordInterface::RecordType)type;
 }

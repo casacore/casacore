@@ -1,5 +1,5 @@
 //# ColumnDesc.h: an envelope class for column descriptions in tables
-//# Copyright (C) 1994,1995,1996,1997,1998,1999,2000
+//# Copyright (C) 1994,1995,1996,1997,1998,1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -40,6 +40,7 @@
 class PlainColumn;
 class RefColumn;
 class TableRecord;
+class TableAttr;
 class AipsIO;
 #if defined(AIPS_STDLIB)
 #include <iosfwd>
@@ -329,12 +330,10 @@ public:
     void show (ostream& os) const;
 
     // Write into AipsIO.
-    friend AipsIO& operator<< (AipsIO& ios, const ColumnDesc& cd)
-	{ cd.putFile (ios, ""); return ios; }
+    friend AipsIO& operator<< (AipsIO& ios, const ColumnDesc& cd);
 
     // Read from AipsIO.
-    friend AipsIO& operator>> (AipsIO& ios, ColumnDesc& cd)
-	{ cd.getFile(ios, False, "");  return ios;}
+    friend AipsIO& operator>> (AipsIO& ios, ColumnDesc& cd);
 
     // Show on ostream.
     friend ostream& operator<< (ostream& ios, const ColumnDesc& cd);
@@ -412,11 +411,10 @@ private:
 	{ colPtr_p->setName(name); }
 
     // Store the object in AipsIO.
-    void putFile (AipsIO& ios, const String& parentTableName) const;
+    void putFile (AipsIO& ios, const TableAttr&) const;
 
     // Get the object from AipsIO.
-    void getFile (AipsIO&, Bool tableIsWritable,
-		  const String& parentTableName);
+    void getFile (AipsIO&, const TableAttr&);
 
     // Register all column types. In this way the getFile function
     // can construct the correct xxxColumnDesc object.

@@ -1,5 +1,5 @@
 //# PlainTable.cc: Class defining a regular table
-//# Copyright (C) 1994,1995,1996,1997,1998,1999,2000
+//# Copyright (C) 1994,1995,1996,1997,1998,1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -29,6 +29,7 @@
 #include <aips/Tables/PlainTable.h>
 #include <aips/Tables/SetupNewTab.h>
 #include <aips/Tables/Table.h>
+#include <aips/Tables/TableAttr.h>
 #include <aips/Tables/TableDesc.h>
 #include <aips/Tables/TableLockData.h>
 #include <aips/Tables/ColumnSet.h>
@@ -174,8 +175,9 @@ PlainTable::PlainTable (AipsIO&, uInt version, const String& tabname,
       tableChanged_p = True;
     }
 #endif
-    
-    tdescPtr_p->getFile (ios, isWritable(), tableName());  // read description
+
+    TableAttr attr (tableName(), isWritable(), lockOptions);
+    tdescPtr_p->getFile (ios, attr);            // read description
     // Check if the given table type matches the type in the file.
     if ((! type.empty())  &&  type != tdescPtr_p->getType()) {
 	throw (TableInvType (type, tdescPtr_p->getType()));
@@ -188,7 +190,7 @@ PlainTable::PlainTable (AipsIO&, uInt version, const String& tabname,
     // because function keywordSet() uses the lock.
     TableRecord tmp;
     if (version == 1) {
-	tmp.getRecord (ios, isWritable(), tableName());
+        tmp.getRecord (ios, attr);
     }
     //# Construct and read the ColumnSet object.
     //# This will also construct the various DataManager objects.
@@ -249,7 +251,7 @@ PlainTable::~PlainTable()
 //# Read description and #rows.
 void PlainTable::getLayout (TableDesc& desc, AipsIO& ios)
 {
-    desc.getFile (ios, False, "");                     // read description
+    desc.getFile (ios, TableAttr());                     // read description
 }
 
 void PlainTable::reopenRW()
@@ -416,21 +418,21 @@ Bool PlainTable::putFile (Bool always)
     AipsIO ios;
     Bool writeTab = always || tableChanged_p;
     Bool written = writeTab;
+    TableAttr attr(tableName());
     if (writeTab) {
 #ifdef AIPS_TRACE
         cout << "  full PlainTable::putFile" << endl;
 #endif
 	writeStart (ios);
 	ios << "PlainTable";
-	tdescPtr_p->putFile (ios, tableName());         // write description
-	colSetPtr_p->putFile (True, ios, tableName(),
-			      False);                   // write column data
+	tdescPtr_p->putFile (ios, attr);                 // write description
+	colSetPtr_p->putFile (True, ios, attr, False);   // write column data
 	writeEnd (ios);
 	//# Write the TableInfo.
 	flushTableInfo();
     } else {
         //# Tell the data managers to write their data only.
-        if (colSetPtr_p->putFile (False, ios, tableName(), False)) {
+        if (colSetPtr_p->putFile (False, ios, attr, False)) {
 	    written = True;
 #ifdef AIPS_TRACE
 	    cout << "  data PlainTable::putFile on " << tableName() << endl;

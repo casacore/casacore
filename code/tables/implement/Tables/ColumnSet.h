@@ -1,5 +1,5 @@
 //# ColumnSet.h: Class to manage a set of table columns
-//# Copyright (C) 1994,1995,1996,1997,1998,1999,2000
+//# Copyright (C) 1994,1995,1996,1997,1998,1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -40,6 +40,7 @@ class SetupNewTable;
 class Table;
 class TableDesc;
 class PlainTable;
+class TableAttr;
 class ColumnDesc;
 class PlainColumn;
 class DataManager;
@@ -188,8 +189,7 @@ public:
     // Write all the data and let the data managers flush their data.
     // This function is called when a table gets written (i.e. flushed).
     // It returns True if any data manager wrote something.
-    Bool putFile (Bool writeTable, AipsIO&, const String& tableName,
-		  Bool fsync);
+    Bool putFile (Bool writeTable, AipsIO&, const TableAttr&, Bool fsync);
 
     // Read the data, reconstruct the data managers, and link those to
     // the table object.

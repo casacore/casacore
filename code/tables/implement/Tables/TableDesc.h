@@ -1,5 +1,5 @@
 //# TableDesc.h:  specify structure of aips++ tables
-//# Copyright (C) 1994,1995,1996,1997,1999,2000
+//# Copyright (C) 1994,1995,1996,1997,1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -36,6 +36,7 @@
 
 //# Forward Declarations
 class TableRecord;
+class TableAttr;
 class TabPath;
 template<class T> class Vector;
 #if defined(AIPS_STDLIB)
@@ -492,11 +493,10 @@ public:
     // Put the table description into the file.
     // The name can be used to write the TableDesc from a Table and
     // is used to set the names of subtables correctly.
-    void putFile (AipsIO&, const String& parentTableName) const;
+    void putFile (AipsIO&, const TableAttr&) const;
 
     // Get the table description from the file.
-    void getFile (AipsIO&, Bool tableIsWritable,
-		  const String& parentTableName);
+    void getFile (AipsIO&, const TableAttr&);
 };
 
 

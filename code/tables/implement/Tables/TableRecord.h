@@ -1,5 +1,5 @@
 //# TableRecord.h: A hierarchical collection of named fields of various types
-//# Copyright (C) 1996,1997,1998,2000
+//# Copyright (C) 1996,1997,1998,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -374,24 +374,22 @@ public:
     // Put the data of a record.
     // This is used to write a subrecord, whose description has
     // not been written.
-    void putRecord (AipsIO& os, const String& parentTableName) const;
+    void putRecord (AipsIO& os, const TableAttr&) const;
 
     // Read a record.
     // This is used to read a subrecord, whose description has
     // not been read.
-    void getRecord (AipsIO& os, Bool openWritable,
-		    const String& parentTableName);
+    void getRecord (AipsIO& os, const TableAttr&);
 
     // Put the data of a record.
     // This is used to write a subrecord, whose description has
     // already been written.
-    void putData (AipsIO& os, const String& parentTableName) const;
+    void putData (AipsIO& os, const TableAttr&) const;
 
     // Read the data of a record.
     // This is used to read a subrecord, whose description has
     // already been read.
-    void getData (AipsIO& os, uInt version, Bool openWritable,
-		  const String& parentTableName);
+    void getData (AipsIO& os, uInt version, const TableAttr&);
 
     // Reopen possible tables in keywords as read/write.
     // Tables are not reopened if they are not writable.
@@ -465,27 +463,18 @@ inline Bool TableRecord::conform (const TableRecord& other) const
     return ref().conform (other.ref());
 }
 
-inline AipsIO& operator<< (AipsIO& os, const TableRecord& rec)
-{
-    rec.putRecord (os, "");
-    return os;
-}
 inline void TableRecord::putData (AipsIO& os,
-				  const String& parentTableName) const
+				  const TableAttr& parentAttr) const
 {
-    ref().putData (os, parentTableName);
+    ref().putData (os, parentAttr);
 }
 
-inline AipsIO& operator>> (AipsIO& os, TableRecord& rec)
+inline void TableRecord::getData (AipsIO& os, uInt version,
+				  const TableAttr& parentAttr)
 {
-    rec.getRecord (os, False, "");
-    return os;
+    rwRef().getData (os, version, parentAttr);
 }
-inline void TableRecord::getData (AipsIO& os, uInt version, Bool openWritable,
-				  const String& parentTableName)
-{
-    rwRef().getData (os, version, openWritable, parentTableName);
-}
+
 inline void TableRecord::reopenRW()
 {
     rwRef().reopenRW();

@@ -1,5 +1,5 @@
 //# TableDesc.cc: Description of a table
-//# Copyright (C) 1994,1995,1996,1997,1999,2000
+//# Copyright (C) 1994,1995,1996,1997,1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -28,6 +28,7 @@
 #include <aips/Tables/TableDesc.h>
 #include <aips/Tables/TabPath.h>
 #include <aips/Tables/TableRecord.h>
+#include <aips/Tables/TableAttr.h>
 #include <aips/Tables/TableError.h>
 #include <aips/Arrays/Vector.h>
 #include <aips/Arrays/Slice.h>
@@ -113,7 +114,7 @@ TableDesc::~TableDesc ()
     if (swwrite_p) {
 	if (option_p == Update  ||  option_p == New
         ||  option_p == NewNoReplace) {
-	    putFile (iofil_p, "");           // write the description
+	    putFile (iofil_p, TableAttr());         // write the description
 	}                             
     }
     iofil_p.close ();
@@ -192,12 +193,12 @@ void TableDesc::init (const TabPath& tdpath)
     if (option_p != Scratch) {
 	iofil_p.open (dir_p + name_p + ".tabdsc", fopt);
 	if (option_p == Old  ||  option_p == Update  || option_p == Delete) {
-	    getFile (iofil_p, False, "");                      // read file
+	    getFile (iofil_p, TableAttr());                      // read file
 	}
 	if (option_p == Old  ||  option_p == Update) {
 	    iofil_p.close ();
 	    if (option_p == Update) {
-		iofil_p.open (dir_p + name_p + ".tabdsc", fopt);// to reposition
+		iofil_p.open (dir_p + name_p + ".tabdsc", fopt); // reposition
 	    }
 	}
     }
@@ -293,31 +294,30 @@ void TableDesc::show (ostream& os) const
 }
 
 
-void TableDesc::putFile (AipsIO& ios, const String& parentTableName) const
+void TableDesc::putFile (AipsIO& ios, const TableAttr& parentAttr) const
 {
     ios.putstart ("TableDesc", 2);
     ios << name_p;
     ios << vers_p;
     ios << comm_p;
-    key_p->putRecord (ios, parentTableName);
+    key_p->putRecord (ios, parentAttr);
     ios << *privKey_p;
-    col_p.putFile (ios, parentTableName);
+    col_p.putFile (ios, parentAttr);
     ios.putend ();
 }
 
-void TableDesc::getFile (AipsIO& ios, Bool tableIsWritable,
-			 const String& parentTableName)
+void TableDesc::getFile (AipsIO& ios, const TableAttr& parentAttr)
 {
     uInt tvers = ios.getstart ("TableDesc");
     ios >> name_p;
     ios >> vers_p;
     ios >> comm_p;
-    key_p->getRecord (ios, tableIsWritable, parentTableName);
+    key_p->getRecord (ios, parentAttr);
     // Version 1 does not contain privKey_p.
     if (tvers != 1) {
 	ios >> *privKey_p;
     }
-    col_p.getFile (ios, tableIsWritable, parentTableName);
+    col_p.getFile (ios, parentAttr);
     ios.getend ();
 }
 

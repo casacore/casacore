@@ -1,5 +1,5 @@
 //# TableRecordRep.h: The representation of a TableRecord
-//# Copyright (C) 1996,1997,2000
+//# Copyright (C) 1996,1997,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -35,7 +35,7 @@
 
 //# Forward Declarations
 class TableRecord;
-
+class TableAttr;
 
 
 // <summary>
@@ -176,24 +176,21 @@ public:
 
     // Put the description and data of the Record.
     // It also puts the fixedFlag attribute (of the mother object).
-    void putRecord (AipsIO& os, int recordType,
-		    const String& parentTableName) const;
+    void putRecord (AipsIO& os, int recordType, const TableAttr&) const;
 
     // Get the description and data of the Record.
     // It also gets the fixedFlag attribute (of the mother object).
-    void getRecord (AipsIO& os, int& recordType, Bool openWritable,
-		    const String& parentTableName);
+    void getRecord (AipsIO& os, int& recordType, const TableAttr&);
 
     // Put the data of a record.
     // This is used to write a subrecord, whose description has
     // already been written.
-    void putData (AipsIO& os, const String& parentTableName) const;
+    void putData (AipsIO& os, const TableAttr&) const;
 
     // Read the data of a record.
     // This is used to read a subrecord, whose description has
     // already been read.
-    void getData (AipsIO& os, uInt version, Bool openWritable,
-		  const String& parentTableName);
+    void getData (AipsIO& os, uInt version, const TableAttr&);
 
     // Reopen possible tables in keywords as read/write.
     // Tables are not reopened if they are not writable.
@@ -236,8 +233,8 @@ protected:
 
     // Get a KeywordSet object as a TableRecord.
     // (type: 0=ScalarKeywordSet, 1=ArrayKeywordSet, 2=TableKeywordSet)
-    void getTableKeySet (AipsIO& os, uInt version, Bool openWritable,
-			 const String& parentTableName, uInt type);
+    void getTableKeySet (AipsIO& os, uInt version, const TableAttr&,
+			 uInt type);
 
 
     // Holds the description.

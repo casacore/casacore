@@ -1,5 +1,5 @@
 //# ColumnSet.cc: Class to manage a set of table columns
-//# Copyright (C) 1994,1995,1996,1997,1998,1999,2000
+//# Copyright (C) 1994,1995,1996,1997,1998,1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -28,6 +28,7 @@
 #include <aips/Tables/ColumnSet.h>
 #include <aips/Tables/SetupNewTab.h>
 #include <aips/Tables/PlainColumn.h>
+#include <aips/Tables/TableAttr.h>
 #include <aips/Tables/TableDesc.h>
 #include <aips/Tables/ColumnDesc.h>
 #include <aips/Tables/PlainTable.h>
@@ -537,7 +538,7 @@ Bool ColumnSet::areTablesMultiUsed() const
 
 
 Bool ColumnSet::putFile (Bool writeTable, AipsIO& ios,
-			 const String& tableName, Bool fsync)
+			 const TableAttr& attr, Bool fsync)
 {
     Bool written = False;
     //# Only write the table data when the flag is set.
@@ -571,7 +572,7 @@ Bool ColumnSet::putFile (Bool writeTable, AipsIO& ios,
 	}
 	//# Now write all columns.
 	for (i=0; i<colMap_p.ndefined(); i++) {
-	    getColumn(i)->putFile (ios, tableName);
+	    getColumn(i)->putFile (ios, attr);
 	}
     }
     //# Now write out the data in all data managers.
@@ -630,11 +631,9 @@ void ColumnSet::getFile (AipsIO& ios, Table& tab, uInt nrrow)
     //# (which was needed to support addColumn properly and is better anyway).
     for (i=0; i<colMap_p.ndefined(); i++) {
 	if (version == 1) {
-	    COLMAPVAL(i)->getFile (ios, *this, tab.isWritable(),
-				   tab.tableName());
+	    COLMAPVAL(i)->getFile (ios, *this, TableAttr(tab));
 	}else{
-	    getColumn(i)->getFile (ios, *this, tab.isWritable(),
-				   tab.tableName());
+	    getColumn(i)->getFile (ios, *this, TableAttr(tab));
 	}
     }
     //# Link the data managers to the table.

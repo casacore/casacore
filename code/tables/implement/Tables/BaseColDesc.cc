@@ -1,5 +1,5 @@
 //# BaseColDesc.cc: Abstract base class for table column descriptions
-//# Copyright (C) 1994,1995,1996,1997,1999,2000
+//# Copyright (C) 1994,1995,1996,1997,1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -256,7 +256,7 @@ TableDesc* BaseColumnDesc::tableDesc()
 //# Note that the data is read back by the ctor taking AipsIO.
 //# It was felt that putstart takes too much space, so therefore
 //# the version is put "manually".
-void BaseColumnDesc::putFile (AipsIO& ios, const String& parentTableName) const
+void BaseColumnDesc::putFile (AipsIO& ios, const TableAttr& parentAttr) const
 {
     ios << (uInt)1;                  // class version 1
     ios << colName_p;
@@ -271,13 +271,12 @@ void BaseColumnDesc::putFile (AipsIO& ios, const String& parentTableName) const
 	ios << shape_p;
     }
     ios << maxLength_p;
-    keySetPtr_p->putRecord (ios, parentTableName);
+    keySetPtr_p->putRecord (ios, parentAttr);
     putDesc(ios);
 }
 
 
-void BaseColumnDesc::getFile (AipsIO& ios, Bool isTableWritable,
-			      const String& parentTableName)
+void BaseColumnDesc::getFile (AipsIO& ios, const TableAttr& parentAttr)
 {
     uInt version;
     ios >> version;
@@ -296,7 +295,7 @@ void BaseColumnDesc::getFile (AipsIO& ios, Bool isTableWritable,
 	ios >> shape_p;
     }
     ios >> maxLength_p;
-    keySetPtr_p->getRecord (ios, isTableWritable, parentTableName);
+    keySetPtr_p->getRecord (ios, parentAttr);
     getDesc (ios);
 }
 

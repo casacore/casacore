@@ -1,5 +1,5 @@
 //# ColumnDesc.cc: Envelope class for description of a table column
-//# Copyright (C) 1994,1995,1996,1997,1998
+//# Copyright (C) 1994,1995,1996,1997,1998,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -31,6 +31,7 @@
 #include <aips/Tables/ArrColDesc.h>
 #include <aips/Tables/SubTabDesc.h>
 #include <aips/Tables/TableRecord.h>
+#include <aips/Tables/TableAttr.h>
 #include <aips/Containers/RecordDesc.h>
 #include <aips/Mathematics/Complex.h>
 #include <aips/Utilities/DataType.h>
@@ -161,20 +162,31 @@ const String& ColumnDesc::name() const
     { return colPtr_p->name(); }
 
 
+AipsIO& operator<< (AipsIO& ios, const ColumnDesc& cd)
+{
+    cd.putFile (ios, TableAttr());
+    return ios;
+}
+
+AipsIO& operator>> (AipsIO& ios, ColumnDesc& cd)
+{
+    cd.getFile(ios, TableAttr());
+    return ios;
+}
+
 //# Put into AipsIO.
 //# It was felt that putstart takes too much space, so therefore
 //# the version is put "manually".
-void ColumnDesc::putFile (AipsIO& ios, const String& parentTableName) const
+void ColumnDesc::putFile (AipsIO& ios, const TableAttr& parentAttr) const
 {
     ios << (uInt)1;                  // class version 1
     //# First write the exact column type, then its data.
     ios << colPtr_p->className();
-    colPtr_p->putFile (ios, parentTableName);
+    colPtr_p->putFile (ios, parentAttr);
 }
 
 //# Get from AipsIO.
-void ColumnDesc::getFile (AipsIO& ios, Bool tableIsWritable,
-			  const String& parentTableName)
+void ColumnDesc::getFile (AipsIO& ios, const TableAttr& parentAttr)
 {
     //# First register all subclasses if not done yet.
     if (!registrationDone_p) {
@@ -193,7 +205,7 @@ void ColumnDesc::getFile (AipsIO& ios, Bool tableIsWritable,
     if (colPtr_p == 0) {
 	throw (AllocError ("ColumnDesc(AipsIO&)",1));
     }
-    colPtr_p->getFile (ios, tableIsWritable, parentTableName);
+    colPtr_p->getFile (ios, parentAttr);
 }
 
 
