@@ -464,12 +464,10 @@ GlishRecord MSRange::range(const Vector<Int>& keys,
 	  }
 	} else {
 	  if (colData1.isNull()) {
-	    os << LogIO::WARN << colData1.columnDesc().name()
-	       <<" column doesn't exist"<<LogIO::POST;
+	    os << LogIO::WARN <<"Requested data column doesn't exist"<<LogIO::POST;
 	  }
 	  if (needCol2 && colData2.isNull()) {
-	    os<< LogIO::WARN << colData2.columnDesc().name()
-	      <<" column doesn't exist"<<LogIO::POST;
+	    os << LogIO::WARN <<"Requested data column doesn't exist"<<LogIO::POST;
 	  }
 	}
       } else {
