@@ -1,5 +1,5 @@
 //# PagedImage.h: reading, storing and manipulating astronomical images
-//# Copyright (C) 1994,1995,1996,1997
+//# Copyright (C) 1994,1995,1996,1997,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -44,7 +44,6 @@ class LatticeNavigator;
 class Slicer;
 class LogTable;
 template <class T> class Array;
-template <class T> class COWPtr;
 template <class T> class LatticeIterInterface;
 class String;
 class TableLock;
@@ -116,22 +115,21 @@ template <class T> class PagedImage: public ImageInterface<T>
 {
 public: 
   // construct a new Image from shape and coordinate information. Data
-  // will be stored in the argument table, masking is created if True
+  // will be stored in the argument table.
   PagedImage(const TiledShape &mapShape, const CoordinateSystem &coordinateInfo,
-	     Table &table, Bool masking = False, uInt rowNumber = 0);
+	     Table &table, uInt rowNumber = 0);
   
   // construct a new Image from shape and coordinate information. Table
-  // will be stored in the named file, masking is created if True.
+  // will be stored in the named file.
   PagedImage(const TiledShape &mapShape, const CoordinateSystem &coordinateInfo,
-	     const String &nameOfNewFile, Bool masking = False, 
-	     uInt rowNumber = 0);
+	     const String &nameOfNewFile, uInt rowNumber = 0);
   
   // construct a new Image from shape and coordinate information. Table
-  // will be stored in the named file, masking is created if True. The lock
-  // options may be specified
+  // will be stored in the named file.
+  // The lock options may be specified
   PagedImage(const TiledShape &mapShape, const CoordinateSystem &coordinateInfo,
 	     const String &nameOfNewFile, const TableLock& lockOptions,
-             Bool masking = False, uInt rowNumber = 0);
+             uInt rowNumber = 0);
   
   // reconstruct an image from a pre-existing file
   PagedImage(Table &table, uInt rowNumber = 0);
@@ -153,7 +151,10 @@ public:
   PagedImage<T> &operator=(const PagedImage<T> &other);
   
   // Make a copy of the object (reference semantics).
+  // <group>
   virtual Lattice<T>* clone() const;
+  virtual ImageInterface<T>* cloneII() const;
+  // </group>
 
   // Is the PagedImage writable?
   virtual Bool isWritable() const;
@@ -182,27 +183,12 @@ public:
   // change the shape of the image (N.B. the data is thrown away)
   virtual void resize(const TiledShape &newShape);
 
-  // functions which extract an array from the map.
-  // <group>   
-  virtual Bool getSlice(COWPtr<Array<T> > &buffer, const IPosition &start, 
-			const IPosition &shape, const IPosition &stride,
-			Bool removeDegenerateAxes=False) const;
-  virtual Bool getSlice(COWPtr<Array<T> > &buffer, const Slicer &theSlice, 
-			Bool removeDegenerateAxes=False) const;
-  virtual Bool getSlice(Array<T> &buffer, const IPosition &start, 
-			const IPosition &shape, const IPosition &stride,
-			Bool removeDegenerateAxes=False);
-  virtual Bool getSlice(Array<T> &buffer, const Slicer &theSlice, 
-			Bool removeDegenerateAxes=False);
-  // </group>
+  // function which extracts an array from the map.
+  virtual Bool doGetSlice(Array<T> &buffer, const Slicer &theSlice);
   
   // function to replace the values in the map with soureBuffer.
-  // The stride defaults to 1.
-  // <group>
-  virtual void putSlice(const Array<T> &sourceBuffer, const IPosition &where);
-  virtual void putSlice(const Array<T> &sourceBuffer, const IPosition &where,
-			const IPosition &stride);
-  // </group>
+  virtual void doPutSlice(const Array<T> &sourceBuffer, const IPosition &where,
+			  const IPosition &stride);
 
   // replace every element, x, of the lattice with the result  of f (x).
   // you must pass in the address of the function -- so the function
@@ -220,25 +206,11 @@ public:
   virtual void apply(const Functional<T,T> &function);
   // </group>
 
-  // function which returns True if the image has a mask, returns False 
-  // otherwise.
-  virtual Bool isMasked() const;
-
-  // return the whole mask Lattice to allow iteration or Lattice functions.
-  // <group>    
-  virtual const Lattice<Bool> &mask() const;
-  virtual Lattice<Bool> &mask();
-  // </group>
-  
-  // addition operator. Masks are summed, i.e. if the pixel is 
-  // masked in either image, it is masked in the final.
-  PagedImage<T> &operator+=(const PagedImage<T> &other);
-
   // addition operator. Lattice.
   PagedImage<T> &operator+=(const Lattice<T> &other);
 
   // addition operator. Constant
-  PagedImage<T> &operator+=(const T &val);
+///  PagedImage<T> &operator+=(const T &val);
 
   // Function which get and set the units associated with the image
   // pixels (i.e. the "brightness" unit). <src>setUnits()</src> returns
@@ -287,15 +259,8 @@ public:
   // the number of pixels in a tile. 
   virtual uInt maxPixels() const;
 
-  // Help the user pick a cursor for most efficient access if he only wants
-  // pixel values and doesn't care about the order. Usually just use
-  // <src>IPosition shape = pa.niceCursorShape();</src>
-  // <br>The default argument is the result of <src>maxPixels()</src>.
-  // <group>
-  virtual IPosition niceCursorShape(uInt maxPixels) const;
-  IPosition niceCursorShape() const
-    { return niceCursorShape (maxPixels()); }
-  // </group>
+  // Help the user pick a cursor for most efficient access.
+  virtual IPosition doNiceCursorShape(uInt maxPixels) const;
 
   // Maximum size - not necessarily all used. In pixels.
   uInt maximumCacheSize() const;
@@ -324,14 +289,12 @@ private:
   void attach_logtable();
   void restore_units();
   void save_units();
-  void report_mask();
   void check_conformance(const Lattice<T> &other);
   void reopenRW();
   void setTableType();
 
   Table table_p;
   PagedArray<T> map_p;
-  PagedArray<Bool> *mask_p;
 };
 
 
