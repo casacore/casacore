@@ -1033,6 +1033,10 @@ void ROVisibilityIterator::lsrFrequency(const Int& spw, Vector<Double>& freq,
   			    MFrequency::Ref(MFrequency::LSRK, frame));
 
 
+  if(obsMFreqType != MFrequency::LSRK){
+    convert=True;
+  }
+
 
   for (Int i=0; i<chanWidth_p[spw]; i++) {
     if(convert){
