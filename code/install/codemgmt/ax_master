@@ -2044,3 +2044,4 @@
 08 220 src rm doc/user/Refman.dir/statistics.htex
 08 220 src rm doc/user/Refman.dir/synthesis.htex
 08 220 src rm doc/user/Refman.dir/table.htex
+08 220 src rm doc/user/Refman.dir/tableplotter.htex
