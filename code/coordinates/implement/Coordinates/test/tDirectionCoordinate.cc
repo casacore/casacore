@@ -63,6 +63,8 @@ void doit3 (DirectionCoordinate& lc);
 void doit4 (DirectionCoordinate& lc);
 void doit5 (DirectionCoordinate& lc);
 void doit6();
+void doit7 ();
+
 
 
 int main()
@@ -200,6 +202,9 @@ int main()
       {
          doit6 ();
       }
+      {
+         doit7 ();
+      }
   } catch (AipsError x) {
       cerr << "aipserror: error " << x.getMesg() << endl;
       return (1);
@@ -220,9 +225,12 @@ DirectionCoordinate makeCoordinate(MDirection::Types type,
    crval.resize(2);
    crpix.resize(2);
    cdelt.resize(2);
-   crval(0) = 0.1; crval(1) = 0.5;
-   crpix(0) = 100.0; crpix(1) = 120.0;
-   cdelt(0) = 1e-6; cdelt(1) = 2e-6;
+   crval(0) = 0.1; 
+   crval(1) = 0.5;
+   crpix(0) = 100.0; 
+   crpix(1) = 120.0;
+   cdelt(0) = 1e-6; 
+   cdelt(1) = 2e-6;
    xform.resize(2,2);
    xform = 0.0;
    xform.diagonal() = 1.0;
@@ -472,6 +480,18 @@ void doit3 (DirectionCoordinate& lc)
       }
    }
 //
+   {
+      MDirection coord;
+      Bool ok = lc.toWorld(coord, lc.referencePixel() + 10.0);
+      MVDirection mv1 = coord.getValue();
+      lc.makeWorldRelative(coord);
+      MVDirection mv2 = coord.getValue();
+      lc.makeWorldAbsolute(coord);
+      MVDirection mv3 = coord.getValue();
+      if (mv1==mv3) {
+         throw(AipsError("Coordinate makeWorldAbsolute/Relative reflection failed"));
+      }
+   }
 //
 // Formatting.  
 //
@@ -851,5 +871,49 @@ void doit6 ()
    if (!ok) {
       throw(AipsError("Failed longLatPoles 2 extraction test"));  
    }
-
 }
+
+void doit7 ()
+{
+//
+// Test conversion with reference change
+//
+   Projection proj;
+   Vector<Double> crval, crpix, cdelt;
+   Matrix<Double> xform;
+//
+   DirectionCoordinate lc = makeCoordinate(MDirection::J2000,
+                                           proj, crval, crpix,
+                                           cdelt, xform);
+   lc.setConversionDirectionType(MDirection::GALACTIC);
+   Vector<String> units = lc.worldAxisUnits().copy();
+   units = String("deg");
+   lc.setWorldAxisUnits(units);
+//
+   Vector<Double> pixel = lc.referencePixel().copy();
+   Vector<Double> world;
+   if (!lc.toWorld(world, pixel)) {
+      throw(AipsError(String("toWorld + type change conversion (1) failed because ") + lc.errorMessage()));
+   }
+//
+   Vector<Double> pixel2;
+   if (!lc.toPixel(pixel2, world)) {
+      throw(AipsError(String("toPixel + type change conversion (1) failed because ") + lc.errorMessage()));
+   }
+   if (!allNear(pixel2, pixel, 1e-6)) {
+         throw(AipsError("Coordinate + type change conversion reflection 1 failed"));
+   }    
+//
+   MDirection dir;
+   if (!lc.toWorld(dir, pixel)) {
+      throw(AipsError(String("toWorld + type change conversion (2) failed because ") + lc.errorMessage())); 
+   }
+   Vector<Double> pixel3;
+   if (!lc.toPixel(pixel3, dir)) {
+      throw(AipsError(String("toPixel + type change conversion (2) failed because ") + lc.errorMessage()));
+   }
+   if (!allNear(pixel3, pixel, 1e-6)) {
+         throw(AipsError("Coordinate + type change conversion reflection 2 failed"));
+   }
+}
+
