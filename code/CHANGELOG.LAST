@@ -1,0 +1,14 @@
+
+change id: 0044
+ author:   Neil Killeen
+ date:     2000/08/31
+ avers:    1.4
+ area:     Tool
+ package:  trial
+ module:   image
+ type:     Code Documentation
+ category: Change
+ summary:  mask handling has been unified
+The handling of masks has been improved so that for 
+all of our virtual and non-virtual images mask handling
+is more consistent.
