@@ -310,6 +310,14 @@ enum MomentTypes {
 // an error will result.
    Bool setMomentAxis (const Int& momentAxis);
 
+// Set the region of interest of the image.    Currently, just a blc and trc
+// are available (the increment is always set to unity at present),  In the  
+// future, a more sophisticated selection method will be available.  The default
+// state of the class is to use the entire image.
+   Bool setRegion (const IPosition &blc,
+                   const IPosition &trc,
+                   const IPosition &inc,
+                   const Bool& listRegion=True);
 
 // The <src>enum MethodTypes</src> is provided for use with the
 // <src>setWinFitMethod</src> function.  It gives the allowed moment
@@ -505,6 +513,8 @@ private:
    Vector<Int> smoothAxes_p;
    Vector<Double> worldOut_p;
 
+   IPosition blc_p, trc_p, inc_p;
+
    Double peakSNR_p;
    Double stdDeviation_p;
 
@@ -569,7 +579,7 @@ private:
 // applying that mask to the unwmoothed data
    void doMomSm        (Vector<T>& calcMoments,
                         const Vector<T>& data,
-                        const Vector<Bool>& mask,
+                        const Vector<Float>& smoothedData,
                         const Bool& doMedianI, 
                         const Bool& doMedianV,
                         const Bool& doAbsDev);
@@ -577,7 +587,7 @@ private:
 // Compute moments with the window method
    void doMomWin       (Vector<T>& calcMoments,
                         const Vector<T>& data,
-                        const Vector<T>* pSmoothedData,
+                        const Vector<T>& smoothedData,
                         const Bool& doMedianI,
                         const Bool& doMedianV,
                         const Bool& doAbsDev,     
@@ -738,21 +748,17 @@ private:
 // Increase an integer to the next odd integer
    Bool makeOdd        (Int& i);
                      
-// Generate a mask based on pixel intensity inclusion or
-// exclusion ranges
-   void makeMask       (Lattice<Bool>* pMask,
-                        const Lattice<T>* pSmoothedImage);
-                     
 // Generate the PSF
-   Bool makePSF        (Array<T>& psf, 
-                        const IPosition& imageShape);
+   Bool makePSF        (Array<T>& psf);
 
 // Compute the world coordinate for the given moment axis pixel                     
    Double getMomentCoord     (const Double& index);
 
 // Save a lattice to disk as a PagedImage
-   void saveLattice (const Lattice<T>* pLattice,
+   void saveLattice (const Lattice<T>* const pLattice,
                      const CoordinateSystem& coordinate,
+                     const IPosition& blc,
+                     const IPosition& trc,
                      const String& fileName);
 
 // Set the output image suffixes and fill the moment
@@ -800,7 +806,7 @@ private:
                         const Vector<T>& y);
 
 // Smooth an image   
-   Bool smoothImage    (Lattice<T>* smoothedImage);
+   Bool smoothImage    (Lattice<T>* const smoothedImage);
 
 
 // Determine the noise by fitting a Gaussian to a histogram 
