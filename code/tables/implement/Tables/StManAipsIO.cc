@@ -300,10 +300,8 @@ void StManColumnAipsIO::deleteData (void* datap, Bool byPtr)
 	    delete [] (String*)datap;
 	    break;
 	default:
-	  {
-	    DataManInvDT tmp;
-	    throw (tmp);
-	  }
+	    // Sort of roundabout to make both g++ and edg happy
+	    throw (DataManInvDT(new DataManInvDT));
 	}
     }
     datap = 0;
@@ -357,10 +355,8 @@ void* StManColumnAipsIO::allocData (uInt nrval, Bool byPtr)
 	    datap = new String[nrval];
 	    break;
 	default:
-	  {
-	    DataManInvDT tmp;
-	    throw (tmp);
-	  }
+	    // Sort of roundabout to make both g++ and edg happy
+	    throw (DataManInvDT(new DataManInvDT));
 	}
     }
     if (datap == 0) {
@@ -414,10 +410,8 @@ void StManColumnAipsIO::removeData (void* dp, uInt inx, uInt nrvalAfter)
 	objmove (((String*)dp) + inx, ((String*)dp) + inx+1,nrvalAfter-inx);
 	break;
     default:
-      {
-	DataManInvDT tmp;
-	throw (tmp);
-      }
+        // Sort of roundabout to make both g++ and edg happy
+	throw (DataManInvDT(new DataManInvDT));
     }
 }
 

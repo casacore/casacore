@@ -53,8 +53,8 @@ template<class T>
 void TabVecRep<T>::validateConformance (uInt leng) const
 {
     if (nelements() != leng) {
-        TableVectorNonConform tmp;
-	throw (tmp);
+        // Sort of roundabout to make both g++ and edg happy
+	throw (TableVectorNonConform(new TableVectorNonConform));
     }
 }
 

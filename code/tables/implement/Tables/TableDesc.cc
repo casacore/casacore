@@ -146,8 +146,8 @@ void TableDesc::init (const TabPath& tdpath)
 	dir_p = "**SCRATCH**";
     }else{
 	if (name_p.empty()) {
-	    TableDescNoName tmp;
-	    throw (tmp);
+	    // Sort of roundabout to make both g++ and edg happy
+	    throw (TableDescNoName(new TableDescNoName));
 	}
         Bool exsw = tdpath.found (name_p + ".tabdsc", dir_p);
         if (option_p == NewNoReplace) {
