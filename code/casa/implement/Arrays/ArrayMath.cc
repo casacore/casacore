@@ -1190,63 +1190,64 @@ template<class T> T avdev(const Array<T> &a,T mean)
 // <thrown>
 //    </item> ArrayError
 // </thrown>
-template<class T> T median(const Array<T> &a, Bool sorted)
+template<class T> T median(const Array<T> &a, Bool sorted,
+			   Bool takeEvenMean)
 {
-    if (a.nelements() < 1) {
-	throw(ArrayError("::median(const Array<T> &,T) - Need at least 1 "
+    uInt nelem = a.nelements();
+    if (nelem < 1) {
+	throw(ArrayError("::median(const Array<T> &) - Need at least 1 "
 			 "elements"));
     }
-    
+    //# Mean does not have to be taken for odd number of elements.
+    if (nelem%2 != 0) {
+	takeEvenMean = False;
+    }
     T medval;
-
     Bool deleteIt;
     const T *storage = a.getStorage(deleteIt);
-    uInt n2 = (a.nelements() - 1)/2;
+    const T *data = storage;
+    T *copy = 0;
+    uInt n2 = (nelem - 1)/2;
     if (! sorted) {
 	// Sort a copy. Perhaps we should give an option for copying in place?
 	// If deleteIt is true, storage already points to copied storage; we
 	// could optimize away a possible copy in that case by casting away
 	// const and sorting in place.
-	T *copy = new T[a.nelements()];
+	copy = new T[nelem];
 	if (copy == 0) {
 	    a.freeStorage(storage, deleteIt);
 	    throw(AllocError("::median(const Array<T> &) - sort buffer",
-			     a.nelements()));
+			     nelem));
 	}
-	memcpy((char *)copy, (char *)storage, a.nelements()*sizeof(T));
-	genSort(copy, a.nelements());
-	if (a.nelements() %2 == 1) {
-	    // odd
-	    medval = copy[n2];
+	memcpy((char *)copy, (char *)storage, nelem*sizeof(T));
+	data = copy;
+	// Use a faster algorithm when the array is big enough.
+	// If needed take the mean for an even number of elements.
+	// Sort a small array in ascending order.
+	if (nelem > 50) {
+	    if (takeEvenMean) {
+		medval = T(0.5 * (GenSort<T>::kthLargest (copy, nelem, n2) +
+				  GenSort<T>::kthLargest (copy, nelem, n2+1)));
+	    } else {
+		medval = GenSort<T>::kthLargest (copy, nelem, n2);
+	    }
 	} else {
-	    // even
-	    medval = T(0.5)*(copy[n2] + copy[n2+1]);
-	}
-	delete [] copy;
-    } else {
-	if (a.nelements() %2 == 1) {
-	    // odd
-	    medval = storage[n2];
-	} else {
-	    // even
-	    medval = T(0.5)*(storage[n2] + storage[n2+1]);
+	    GenSort<T>::sort (copy, nelem);
+	    sorted = True;
 	}
     }
+    if (sorted) {
+	if (takeEvenMean) {
+	    medval = T(0.5 * (data[n2] + data[n2+1]));
+	} else {
+	    medval = data[n2];
+	}
+    }
+    delete [] copy;
     a.freeStorage(storage, deleteIt);
     return medval;
 }
 
-// <thrown>
-//    </item> ArrayError
-// </thrown>
-template<class T> T median(const Array<T> &a)
-{
-    if (a.nelements() < 1) {
-	throw(ArrayError("::median(const Array<T> &,T) - Need at least 1 "
-			 "elements"));
-    }
-    return median(a, False);
-}
 
 template<class T, class U> void convertArray(Array<T> &to,
 					     const Array<U> &from)
@@ -1262,12 +1263,13 @@ template<class T, class U> void convertArray(Array<T> &to,
 
     Bool deleteTo, deleteFrom;
     T *toptr = to.getStorage(deleteTo);
+    T *origTo = toptr;
     const U *fromptr = from.getStorage(deleteFrom);
-
-    for (uInt i=0; i < to.nelements(); i++) {
-	*toptr = *fromptr;
-	toptr++; fromptr++;
+    const U *origFrom = fromptr;
+    const U *endFrom = fromptr + from.nelements();
+    while (fromptr < endFrom) {
+	*toptr++ = *fromptr++;
     }
-    to.putStorage(toptr, deleteTo);
-    from.freeStorage(fromptr, deleteFrom);
+    to.putStorage(origTo, deleteTo);
+    from.freeStorage(origFrom, deleteFrom);
 }
