@@ -221,7 +221,8 @@ void ColumnSet::addRow (uInt nrrow)
 void ColumnSet::removeRow (uInt rownr)
 {
     if (!canRemoveRow()) {
-	throw (TableInvOper ("Cannot remove rows from this table"));
+	throw (TableInvOper ("Rows cannot be removed from this table; "
+			     "its storage managers do not support it"));
     }
     if (rownr >= nrrow_p) {
 	throw (TableInvOper ("removeRow: rownr out of bounds"));
