@@ -352,8 +352,10 @@ Bool doIt (const SubLattice<Float>& aF, const SubLattice<Float>& bF)
     if (!checkFloat(fmod(min(aF),max(bF)), emptyFArr,
 		    fmod(min(arra),max(arrb)), invalid, emptyMask)) ok = False;
 
-    if (!checkFloat(min(aF,bF), min(arra,arrb),
-		    0, False, mask)) ok = False;
+       // SGI needs LatticeExprNode(SubLattice) for min(SubLattice, SubLattice) and
+       //  max(SubLattice, SubLattice), It's scoping problem with -LANG:std
+    if (!checkFloat((min(LatticeExprNode(aF),LatticeExprNode(bF))), min(arra,arrb),
+		    0, False, static_cast<Array<Bool> >(mask))) ok = False;
     if (!checkFloat(min(aF,min(bF)), min(arra,minarrb),
 		    0, False, asMask)) ok = False;
     if (!checkFloat(min(max(aF),bF), min(maxarra,arrb),
@@ -361,7 +363,7 @@ Bool doIt (const SubLattice<Float>& aF, const SubLattice<Float>& bF)
     if (!checkFloat(min(min(aF),max(bF)), emptyFArr,
 		    min(min(arra),max(arrb)), invalid, emptyMask)) ok = False;
 
-    if (!checkFloat(max(aF,bF), max(arra,arrb),
+    if (!checkFloat(max(LatticeExprNode(aF),LatticeExprNode(bF)), max(arra,arrb),
 		    0, False, mask)) ok = False;
     if (!checkFloat(max(aF,min(bF)), max(arra,minarrb),
 		    0, False, asMask)) ok = False;
