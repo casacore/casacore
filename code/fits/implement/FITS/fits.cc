@@ -1,5 +1,5 @@
 //# fits.cc:
-//# Copyright (C) 1993,1994,1995,1996,1997,1998
+//# Copyright (C) 1993,1994,1995,1996,1997,1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //# 
 //# This library is free software; you can redistribute it and/or modify it
@@ -654,7 +654,7 @@ int ReservedFitsKeywordCollection::rules(const ReservedFitsKeyword &res,
 		    return -1;
 		}
 		break;
-	    case FITS::DATE: // s must be of the form `DD/MM/YY'
+	    case FITS::DATE: // s must be of the form `DD/MM/YY' or 'YYYY-MM-DD[THH:MM:SS[.sss]]
 	    case FITS::DATE_OBS:
 		if (v_len < 8) {
 		    msg = "Illegal date format.";
@@ -684,9 +684,14 @@ int ReservedFitsKeywordCollection::rules(const ReservedFitsKeyword &res,
 			    if ((FITS::digit2bin(p[11]) >= 2 && 
 				 FITS::digit2bin(p[12]) >= 4) ||
 				FITS::digit2bin(p[14]) >= 6 || 
-				FITS::digit2bin(p[17]) >= 6) {
+				FITS::digit2bin(p[17]) > 6) {
 				msg = "Illegal time.";
 				return 1;
+			    }
+			    if (FITS::digit2bin(p[17]) == 6 &&
+				FITS::digit2bin(p[18]) >= 1) {
+			      msg = "Illegal time.";
+			      return 1;
 			    }
 			    if (v_len > 19 && !(p[19] == '.')) {
 				msg = "Illegal date format.";
