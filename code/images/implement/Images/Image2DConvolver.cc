@@ -298,7 +298,7 @@ void Image2DConvolver<T>::dealWithRestoringBeam (LogIO& os,
          pixelParameters(2) = parameters(2).getValue(Unit("rad"));
          Vector<Quantum<Double> > worldParameters;
 //
-         ImageUtilities::skyPixelWidthsToWorld (os, worldParameters, cSys, pixelParameters, axes);
+         ImageUtilities::pixelWidthsToWorld (os, worldParameters, cSys, pixelParameters, axes);
 //
          beamOut(0) = worldParameters(0);
          beamOut(1) = worldParameters(1);
@@ -397,7 +397,7 @@ void Image2DConvolver<T>::dealWithRestoringBeam (LogIO& os,
          pixelParameters(1) = bSolution(4);
          pixelParameters(2) = bSolution(5);
 //
-         ImageUtilities::skyPixelWidthsToWorld (os, beamOut, cSys, pixelParameters, axes);
+         ImageUtilities::pixelWidthsToWorld (os, beamOut, cSys, pixelParameters, axes);
       } else {
          if (autoScale) {
     
