@@ -7,6 +7,8 @@
 
 #include <trial/Mathematics/VanVleck.h>
 
+#include <aips/iostream.h>
+
 Matrix<Double> qfn(Int nlevels, Double thresh, Double dcoff)
 {
   // works for odd numbers of levels
