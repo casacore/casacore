@@ -634,15 +634,13 @@ All \aipspp\ resources are within the scope of \exe{getrc}.
 \exe{getrc} returns 0 on success with the value on \file{stdout}.  Otherwise,
 it returns a message on \file{stderr} with a non-zero status as follows
 
-Status returns:
-\begin{status}
-   0: success\\
-   1: usage error\\
-   2: \code{\$AIPSPATH} not defined\\
-   3: \file{\$HOME} not defined\\
-   4: invalid regular expression\\
-   5: pattern not matched
-\end{status}
+Status return values
+\\ \verb+   0+: success
+\\ \verb+   1+: usage error
+\\ \verb+   2+: \code{\$AIPSPATH} not defined
+\\ \verb+   3+: \file{\$HOME} not defined
+\\ \verb+   4+: invalid regular expression
+\\ \verb+   5+: pattern not matched
 
 \subsection*{Examples}
 

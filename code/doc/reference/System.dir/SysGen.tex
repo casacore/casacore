@@ -82,14 +82,14 @@ Construction of the \file{aipsrc} databases is part of \exe{configure}'s job.
 \subsection*{Diagnostics}
 
 Status return values correspond to the various phases of the operation
-\\    0: success
-\\    1: initialization error
-\\    2: error fetching required utilities or installing \unixexe{gzip}
-\\    3: error extracting compressed \unixexe{tar} files
-\\    4: error installing the \exeref{aipsinit} scripts or databases
-\\    5: error constructing the system directory tree
-\\    6: error installing \unixexe{gzip}, \aipsexe{gmake}
-\\    7: error installing local \file{makedefs} and \file{aipsinit} files
+\\ \verb+   0+: success
+\\ \verb+   1+: initialization error
+\\ \verb+   2+: error fetching required utilities or installing \unixexe{gzip}
+\\ \verb+   3+: error extracting compressed \unixexe{tar} files
+\\ \verb+   4+: error installing the \exeref{aipsinit} scripts or databases
+\\ \verb+   5+: error constructing the system directory tree
+\\ \verb+   6+: error installing \unixexe{gzip}, \aipsexe{gmake}
+\\ \verb+   7+: error installing local \file{makedefs} and \file{aipsinit} files
 
 \subsection*{See also}
 
@@ -218,9 +218,9 @@ them.
 
 \subsection*{Diagnostics}
 
-Status returns:
-\\    0:  success
-\\    1:  initialization error
+Status return values
+\\ \verb+   0+: success
+\\ \verb+   1+: initialization error
 
 \subsection*{Examples}
 
@@ -2059,8 +2059,8 @@ are recognized by having names of the form \file{*\_[0-9][0-9][0-9][0-9].cc}.
 \subsection*{Diagnostics}
  
 Status return values
-\\    0: success
-\\    1: the \file{templates} file contains one or more bad entries
+\\ \verb+   0+: success
+\\ \verb+   1+: the \file{templates} file contains one or more bad entries
  
 \subsection*{Examples}
  
@@ -2192,9 +2192,9 @@ with names of the form \file{updatelib.*}.  These are described below.
 \subsection*{Diagnostics}
 
 Status return values
-\\    0: success
-\\    1: initialization error
-\\    2: library update failed
+\\ \verb+   0+: success
+\\ \verb+   1+: initialization error
+\\ \verb+   2+: library update failed
 
 \noindent
 If any library update fails, none of the libraries will be updated.

@@ -90,13 +90,11 @@ None.
 
 \subsection*{Diagnostics}
 
-Status returns:
-\begin{status}
-   0: success\\
-   1: initialization error\\
-   2: semaphore file not found\\
-   3: failed to delete semaphore file
-\end{status}
+Status return values
+\\ \verb+   0+: success
+\\ \verb+   1+: initialization error
+\\ \verb+   2+: semaphore file not found
+\\ \verb+   3+: failed to delete semaphore file
 
 \subsection*{Examples}
 
@@ -265,15 +263,13 @@ master host, \host{aips2.nrao.edu}, may instead use a related utility,
 
 \subsection*{Diagnostics}
 
-Status returns:
-\begin{status}
-   0: success\\
-   1: initialization error\\
-   2: checkin failure\\
-   3: checked in ok to master, but slave not updated\\
-   4: code not updated\\
-   5: directory creation failed
-\end{status}
+Status return values
+\\ \verb+   0+: success
+\\ \verb+   1+: initialization error
+\\ \verb+   2+: checkin failure
+\\ \verb+   3+: checked in ok to master, but slave not updated
+\\ \verb+   4+: code not updated
+\\ \verb+   5+: directory creation failed
 
 \subsection*{Examples}
 
@@ -431,12 +427,10 @@ which it passes to \unixexe{co}.
 
 \subsection*{Diagnostics}
 
-Status returns:
-\begin{status}
-   0: success\\
-   1: initialization error, no check out\\
-   2: checkout failure
-\end{status}
+Status return values
+\\ \verb+   0+: success
+\\ \verb+   1+: initialization error, no check out
+\\ \verb+   2+: checkout failure
 
 \subsection*{Examples}
 
@@ -615,11 +609,9 @@ specify a list of users.
 
 \subsection*{Diagnostics}
 
-Status returns:
-\begin{status}
-   0: success\\
-   1: initialization error
-\end{status}
+Status return values
+\\ \verb+   0+: success
+\\ \verb+   1+: initialization error
 
 \subsection*{Examples}
 
@@ -726,13 +718,11 @@ master directory from the current working directory.
 
 \subsection*{Diagnostics}
 
-Status returns:
-\begin{status}
-   0: success\\
-   1: initialization error\\
-   2: failed to update the master\\
-   3: updated master, but slave not updated
-\end{status}
+Status return values
+\\ \verb+   0+: success
+\\ \verb+   1+: initialization error
+\\ \verb+   2+: failed to update the master
+\\ \verb+   3+: updated master, but slave not updated
 
 \subsection*{Examples}
 
@@ -906,13 +896,11 @@ is only allowed for members of the \acct{aips2mgr} group.
 
 \subsection*{Diagnostics}
 
-Status returns:
-\begin{status}
-   0:  success\\
-   1:  initialization error\\
-   2:  usage error\\
-   3:  failed to get \aipsexee{ax\_master}{ax}
-\end{status}
+Status return values
+\\ \verb+   0+:  success
+\\ \verb+   1+:  initialization error
+\\ \verb+   2+:  usage error
+\\ \verb+   3+:  failed to get \aipsexee{ax\_master}{ax}
 
 \subsection*{Examples}
 
@@ -992,12 +980,10 @@ None.
  
 \subsection*{Diagnostics}
  
-Status returns:
-\begin{status}
-  -1:  fork failed\\
-   0:  success, value returned on stdout\\
-else:  exit status returned by the command
-\end{status}
+Status return values
+\\ \verb+   -1+:  fork failed
+\\ \verb+    0+:  success, value returned on \file{stdout}
+\\ \verb+ else+:  exit status returned by the command
  
 \subsection*{Examples}
  
@@ -1073,14 +1059,12 @@ None.
 
 \subsection*{Diagnostics}
 
-Status returns:
-\begin{status}
-   0: success\\
-   1: initialization error\\
-   2: master file not found\\
-   3: slave not updated\\
-   4: code not updated
-\end{status}
+Status return values
+\\ \verb+   0+: success
+\\ \verb+   1+: initialization error
+\\ \verb+   2+: master file not found
+\\ \verb+   3+: slave not updated
+\\ \verb+   4+: code not updated
 
 \subsection*{Examples}
 
@@ -1170,12 +1154,10 @@ None.
 
 \subsection*{Diagnostics}
 
-Status returns:
-\begin{status}
-   0: success\\
-   1: initialization error\\
-   2: cache file not accessible
-\end{status}
+Status return values
+\\ \verb+   0+: success
+\\ \verb+   1+: initialization error
+\\ \verb+   2+: cache file not accessible
 
 \subsection*{Examples}
 
@@ -1281,12 +1263,10 @@ prefix.
 
 \subsection*{Diagnostics}
 
-Status return values:
-\begin{status}
-   0: success\\
-   1: invalid option\\
-   2: \code{\$AIPSPATH} not defined
-\end{status}
+Status return values
+\\ \verb+   0+: success
+\\ \verb+   1+: invalid option
+\\ \verb+   2+: \code{\$AIPSPATH} not defined
 
 \subsection*{Examples}
 
@@ -1562,13 +1542,11 @@ the time the file is rescinded (see \exeref{avers}).
 
 \subsection*{Diagnostics}
 
-Status returns:
-\begin{status}
-   0: success\\
-   1: initialization error\\
-   2: failed to get \exe{ax\_master}\\
-   3: argument error
-\end{status}
+Status return values
+\\ \verb+   0+: success
+\\ \verb+   1+: initialization error
+\\ \verb+   2+: failed to get \exe{ax\_master}
+\\ \verb+   3+: argument error
 
 \subsection*{Examples}
 
@@ -1693,12 +1671,10 @@ None.
  
 \subsection*{Diagnostics}
  
-Status returns:
-\begin{status}
-   0: success\\
-   1: initialization error\\
-   2: \file{VERSION} file not found
-\end{status}
+Status return values
+\\ \verb+   0+: success
+\\ \verb+   1+: initialization error
+\\ \verb+   2+: \file{VERSION} file not found
  
 \subsection*{Examples}
  
@@ -1816,11 +1792,9 @@ A \exe{-master} option which creates \file{RCS} symlinks directly into
 
 \subsection*{Diagnostics}
 
-Status return values:
-\begin{status}
-   0: success\\
-   1: initialization error
-\end{status}
+Status return values
+\\ \verb+   0+: success
+\\ \verb+   1+: initialization error
 
 \subsection*{Examples}
 
@@ -2001,11 +1975,9 @@ Refer to the options for \exeref{ai}.  \exe{rai} itself has no options.
 
 \subsection*{Diagnostics}
  
-Status return values:
-\begin{status}
-   0:  success (returned from \aipsexee{ai\_master}{ai})\\
-   1:  initialization error, no check in\\
-\end{status}
+Status return values
+\\ \verb+   0+:  success (returned from \aipsexee{ai\_master}{ai})
+\\ \verb+   1+:  initialization error, no check in\\
  
 \subsection*{Examples}
  
@@ -2140,11 +2112,9 @@ Refer to the options for \exeref{ao}.  \exe{rao} itself has no options.
  
 \subsection*{Diagnostics}
  
-Status return values:
-\begin{status}
-   0:  success (returned from \aipsexee{ao\_master}{ao})\\
-   1:  initialization error, no check out\\
-\end{status}
+Status return values
+\\ \verb+   0+:  success (returned from \aipsexee{ao\_master}{ao})
+\\ \verb+   1+:  initialization error, no check out
 
 \subsection*{Examples}
  
@@ -2298,11 +2268,9 @@ None.
 
 \subsection*{Diagnostics}
  
-Status returns:
-\begin{status}
-   0:  initialization succeeded\\
-   1:  initialization error
-\end{status}
+Status return values
+\\ \verb+   0+:  initialization succeeded
+\\ \verb+   1+:  initialization error
  
 \subsection*{Examples}
  
@@ -2397,13 +2365,11 @@ None.
 
 \subsection*{Diagnostics}
  
-Status returns:
-\begin{status}
-   0: success\\
-   1: usage error\\
-   2: file access error\\
-   3: \rcs\ file format error
-\end{status}
+Status return values
+\\ \verb+   0+: success
+\\ \verb+   1+: usage error
+\\ \verb+   2+: file access error
+\\ \verb+   3+: \rcs\ file format error
  
 \subsection*{See also}
  
@@ -2487,11 +2453,9 @@ Whitespace is allowed between short-form options and their arguments.
 
 \subsection*{Diagnostics}
 
-Status return values:
-\begin{status}
-   0:  success\\
-   1:  initialization error
-\end{status}
+Status return values
+\\ \verb+   0+:  success
+\\ \verb+   1+:  initialization error
 
 \subsection*{Examples}
 
@@ -2580,13 +2544,11 @@ number of seconds.
 
 \subsection*{Diagnostics}
 
-Status return values:
-\begin{status}
-  -1:  In query mode, the file is younger than the specified timespan.\\
-   0:  Success.\\
-   1:  Usage error.\\
-   2:  File access error.
-\end{status}
+Status return values
+\\ \verb+  -1+:  In query mode, the file is younger than the specified timespan.
+\\ \verb+   0+:  Success.
+\\ \verb+   1+:  Usage error.
+\\ \verb+   2+:  File access error.
 
 \subsection*{Examples}
 
@@ -2668,12 +2630,10 @@ If no file or directory is specified then \file{\$AIPSROOT/slave} is assumed.
 
 \subsection*{Diagnostics}
 
-Status return values:
-\begin{status}
-   0: success\\
-   1: initialization error\\
-   2: a bad \rcs\ version file was found
-\end{status}
+Status return values
+\\ \verb+   0+: success
+\\ \verb+   1+: initialization error
+\\ \verb+   2+: a bad \rcs\ version file was found
 
 \subsection*{Examples}
 
