@@ -63,8 +63,8 @@ int main()
 	Vector<String> name(6);
 	name.set("ANT1");
 	for (uInt i=0; i<6;i++) {
-	  ostrstream cbuf; cbuf << flush << "ANT" << i <<ends;
-	  char* pChar=cbuf.str(); name(i)=*pChar; delete pChar;
+	  ostringstream cbuf; cbuf << flush << "ANT" << i;
+	  name(i)=cbuf.str();
 	}
 	String coordsys = "local";	
 	// position of ATCA
