@@ -35,12 +35,13 @@
 #include <tables/Tables/TableRecord.h>
 #include <casa/Containers/Block.h>
 #include <fits/FITS/hdu.h>
+#include <fits/FITS/fitsio.h>
+
+namespace casa { //# NAMESPACE CASA - BEGIN
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
 class String;
-class FitsInput;
-class FitsOutput;
 class FITSFieldCopier;
 class TableDesc;
 template<class T> class Vector;
@@ -213,6 +214,9 @@ public:
     FITSTable(const String &fileName, uInt whichHDU=1,
 	      Bool allKeywords = False);
     ~FITSTable() { clear_self();}
+
+    // Has the end of file been reached yet
+    virtual Bool eof() const {return io_p->eof();}
 
     // Attach this FITSTable to a new file name, same HDU# as at open time
     virtual Bool reopen(const String &fileName);

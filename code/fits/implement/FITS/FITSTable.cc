@@ -34,7 +34,6 @@
 #include <casa/Utilities/Assert.h>
 #include <casa/Utilities/Regex.h>
 #include <fits/FITS/fits.h>
-#include <fits/FITS/fitsio.h>
 #include <fits/FITS/hdu.h>
 #include <casa/OS/Path.h>
 
