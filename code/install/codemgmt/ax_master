@@ -5989,3 +5989,4 @@
 17 010 src rm trial/implement/Fitting/test/tLQFit2D.cc
 17 011 src mv trial/implement/Functionals/NQGaussianND.h aips/implement/Functionals/NQGaussianND.h
 17 011 src mv trial/implement/Functionals/NQGaussianND.cc aips/implement/Functionals/NQGaussianND.cc
+17 011 src mv trial/implement/Functionals/NQGaussianNDParam.h aips/implement/Functionals/NQGaussianNDParam.h
