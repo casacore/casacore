@@ -59,7 +59,8 @@ C
       integer convsize, sampling
       complex convfunc(convsize, convsize), cwt, crot
 
-      complex shiftx(-convsize:convsize), shifty(-convsize:convsize)
+      complex shiftx(-support:support), shifty(-support:support)
+      complex sconv(-support:support, -support:support)
 
       real norm
       real wt
@@ -79,6 +80,13 @@ C
       do ix=-support,support
          shiftx(ix)=1.0
          shifty(ix)=1.0
+      end do
+      do iy=-support,support
+         iloc(2)=iy+convsize/2+1
+         do ix=-support,support
+            iloc(1)=ix+convsize/2+1
+            sconv(ix,iy)=conjg(convfunc(iloc(1), iloc(2)))
+         end do
       end do
       doshift=.FALSE.
 
@@ -111,59 +119,83 @@ C
                shifty(iy)=shifty(iy-1)*crot
                shifty(-iy)=conjg(shifty(iy))
             end do
-         end if
-         if(rflag(irow).eq.0) then 
-         do ichan=1, nvischan
-            achan=chanmap(ichan)+1
-            if((achan.ge.1).and.(achan.le.nchan).and.
-     $           (weight(ichan,irow).gt.0.0)) then
-               call smosft(uvw(1,irow), dphase(irow), freq(ichan), c, 
-     $              scale, offset, sampling, pos, loc, off, phasor)
-               if (omosft(nx, ny, loc, support)) then
-                  do ipol=1, nvispol
-                     apol=polmap(ipol)+1
-                     if((flag(ipol,ichan,irow).ne.1).and.
-     $                    (apol.ge.1).and.(apol.le.npol)) then
-C If we are making a PSF then we don't want to phase
-C rotate but we do want to reproject uvw
-                        if(dopsf.eq.1) then
-                           nvalue=cmplx(weight(ichan,irow))
-                        else
-                           nvalue=weight(ichan,irow)*
-     $                          (values(ipol,ichan,irow)*phasor)
-                        end if
-C norm will be the value we would get for the peak
-C at the phase center. We will want to normalize 
-C the final image by this term.
-                        norm=0.0
-                        do iy=-support,support
-                           iloc(2)=convsize/2+1+iy*sampling
-     $                          +off(2)
-                           do ix=-support,support
-                              iloc(1)=convsize/2+1+ix*sampling
-     $                             +off(1)
-                              if(doshift) then
-                                 cwt=conjg(convfunc(iloc(1),
-     $                                iloc(2)))*shiftx(ix)*shifty(iy)
-                              else
-                                 cwt=conjg(convfunc(iloc(1),
-     $                                iloc(2)))
-                              end if
-                              grid(loc(1)+ix,
-     $                             loc(2)+iy,apol,achan)=
-     $                             grid(loc(1)+ix,
-     $                             loc(2)+iy,apol,achan)+
-     $                             nvalue*cwt
-                              norm=norm+real(cwt)
-                           end do
-                        end do
-                        sumwt(apol,achan)=sumwt(apol,achan)+
-     $                       weight(ichan,irow)*norm
+            if(sampling.eq.1) then
+               do iy=-support,support
+                  iloc(2)=iy+convsize/2+1
+                  do ix=-support,support
+                     iloc(1)=ix+convsize/2+1
+                     if(doshift) then
+                        sconv(ix,iy)=conjg(convfunc(iloc(1),
+     $                       iloc(2)))*shiftx(ix)*shifty(iy)
+                     else
+                        sconv(ix,iy)=conjg(convfunc(iloc(1),
+     $                       iloc(2)))
                      end if
                   end do
-               end if
+               end do
             end if
-         end do
+         end if
+         if(rflag(irow).eq.0) then 
+            do ichan=1, nvischan
+               achan=chanmap(ichan)+1
+               if((achan.ge.1).and.(achan.le.nchan).and.
+     $              (weight(ichan,irow).gt.0.0)) then
+                  call smosft(uvw(1,irow), dphase(irow), freq(ichan), c, 
+     $                 scale, offset, sampling, pos, loc, off, phasor)
+                  if (omosft(nx, ny, loc, support)) then
+                     do ipol=1, nvispol
+                        apol=polmap(ipol)+1
+                        if((flag(ipol,ichan,irow).ne.1).and.
+     $                       (apol.ge.1).and.(apol.le.npol)) then
+C     If we are making a PSF then we don't want to phase
+C     rotate but we do want to reproject uvw
+                           if(dopsf.eq.1) then
+                              nvalue=cmplx(weight(ichan,irow))
+                           else
+                              nvalue=weight(ichan,irow)*
+     $                             (values(ipol,ichan,irow)*phasor)
+                           end if
+C     norm will be the value we would get for the peak
+C     at the phase center. We will want to normalize 
+C     the final image by this term.
+                           norm=0.0
+                           if(sampling.eq.1) then
+                              do iy=-support,support
+                                 do ix=-support,support
+                                    grid(loc(1)+ix,
+     $                                   loc(2)+iy,apol,achan)=
+     $                                   grid(loc(1)+ix,
+     $                                   loc(2)+iy,apol,achan)+
+     $                                   nvalue*sconv(ix,iy)
+                                    norm=norm+real(sconv(ix,iy))
+                                 end do
+                              end do
+                           else 
+                              do ix=-support,support
+                                 iloc(1)=convsize/2+1+ix*sampling
+     $                                +off(1)
+                                 if(doshift) then
+                                    cwt=conjg(convfunc(iloc(1),
+     $                                   iloc(2)))*shiftx(ix)*shifty(iy)
+                                 else
+                                    cwt=conjg(convfunc(iloc(1),
+     $                                   iloc(2)))
+                                 end if
+                                 grid(loc(1)+ix,
+     $                                loc(2)+iy,apol,achan)=
+     $                                grid(loc(1)+ix,
+     $                                loc(2)+iy,apol,achan)+
+     $                                nvalue*cwt
+                                 norm=norm+real(cwt)
+                              end do
+                           end if
+                           sumwt(apol,achan)=sumwt(apol,achan)+
+     $                          weight(ichan,irow)*norm
+                        end if
+                     end do
+                  end if
+               end if
+            end do
          end if
       end do
       return
@@ -197,7 +229,8 @@ C
       integer convsize, sampling
       complex convfunc(convsize, convsize), cwt, crot
 
-      complex shiftx(-convsize:convsize), shifty(-convsize:convsize)
+      complex shiftx(-support:support), shifty(-support:support)
+      complex sconv(-support:support, -support:support)
 
       real norm, phase
 
@@ -217,6 +250,13 @@ C
       do ix=-support,support
          shiftx(ix)=1.0
          shifty(ix)=1.0
+      end do
+      do iy=-support,support
+         iloc(2)=iy+convsize/2+1
+         do ix=-support,support
+            iloc(1)=ix+convsize/2+1
+            sconv(ix,iy)=conjg(convfunc(iloc(1), iloc(2)))
+         end do
       end do
       doshift=.FALSE.
 
@@ -249,42 +289,68 @@ C
                shifty(iy)=shifty(iy-1)*crot
                shifty(-iy)=conjg(shifty(iy))
             end do
-         end if
-         if(rflag(irow).eq.0) then
-         do ichan=1, nvischan
-            achan=chanmap(ichan)+1
-            if((achan.ge.1).and.(achan.le.nchan)) then
-               call smosft(uvw(1,irow), dphase(irow), freq(ichan), c,
-     $              scale, offset, sampling, pos, loc, off, phasor)
-               if (omosft(nx, ny, loc, support)) then
-                  do ipol=1, nvispol
-                     apol=polmap(ipol)+1
-                     if((flag(ipol,ichan,irow).ne.1).and.
-     $                    (apol.ge.1).and.(apol.le.npol)) then
-                        nvalue=0.0
-                        do iy=-support,support
-                           iloc(2)=convsize/2+1+sampling*iy+off(2)
-                           do ix=-support,support
-                              iloc(1)=convsize/2+1+ix*sampling
-     $                             +off(1)
-                              if(doshift) then
-                                 cwt=conjg(convfunc(iloc(1),
-     $                                iloc(2)))*shiftx(ix)*shifty(iy)
-                              else
-                                 cwt=conjg(convfunc(iloc(1),
-     $                                iloc(2)))
-                              end if
-                              nvalue=nvalue+conjg(cwt)*
-     $                             grid(loc(1)+ix,loc(2)+iy,
-     $                             apol,achan)
-                           end do
-                        end do
-                        values(ipol,ichan,irow)=nvalue*conjg(phasor)
+            if(sampling.eq.1) then
+               do iy=-support,support
+                  iloc(2)=iy+convsize/2+1
+                  do ix=-support,support
+                     iloc(1)=ix+convsize/2+1
+                     if(doshift) then
+                        sconv(ix,iy)=conjg(convfunc(iloc(1),
+     $                       iloc(2)))*shiftx(ix)*shifty(iy)
+                     else
+                        sconv(ix,iy)=conjg(convfunc(iloc(1),
+     $                       iloc(2)))
                      end if
                   end do
-               end if
+               end do
             end if
-         end do
+         end if
+         if(rflag(irow).eq.0) then
+            do ichan=1, nvischan
+               achan=chanmap(ichan)+1
+               if((achan.ge.1).and.(achan.le.nchan)) then
+                  call smosft(uvw(1,irow), dphase(irow), freq(ichan), c,
+     $                 scale, offset, sampling, pos, loc, off, phasor)
+                  if (omosft(nx, ny, loc, support)) then
+                     do ipol=1, nvispol
+                        apol=polmap(ipol)+1
+                        if((flag(ipol,ichan,irow).ne.1).and.
+     $                       (apol.ge.1).and.(apol.le.npol)) then
+                           nvalue=0.0
+                           if(sampling.eq.1) then
+                              do iy=-support,support
+                                 do ix=-support,support
+                                    nvalue=nvalue+conjg(sconv(ix,iy))*
+     $                                   grid(loc(1)+ix,loc(2)+iy,
+     $                                   apol,achan)
+                                 end do
+                              end do
+                           else
+                              do iy=-support,support
+                                 iloc(2)=convsize/2+1+sampling*iy+off(2)
+                                 do ix=-support,support
+                                    iloc(1)=convsize/2+1+ix*sampling
+     $                                   +off(1)
+                                    if(doshift) then
+                                       cwt=conjg(convfunc(iloc(1),
+     $                                      iloc(2)))*shiftx(ix)*
+     $                                      shifty(iy)
+                                    else
+                                       cwt=conjg(convfunc(iloc(1),
+     $                                      iloc(2)))
+                                    end if
+                                    nvalue=nvalue+conjg(cwt)*
+     $                                   grid(loc(1)+ix,loc(2)+iy,
+     $                                   apol,achan)
+                                 end do
+                              end do
+                           end if
+                           values(ipol,ichan,irow)=nvalue*conjg(phasor)
+                        end if
+                     end do
+                  end if
+               end if
+            end do
          end if
       end do
       return
@@ -305,12 +371,21 @@ C
       double precision pi
       data pi/3.14159265358979323846/
 
-      do idim=1,2
-         pos(idim)=scale(idim)*uvw(idim)*freq/c+
-     $        (offset(idim)+1.0)
-         loc(idim)=nint(pos(idim))
-         off(idim)=nint((loc(idim)-pos(idim))*sampling)
-      end do
+      if(sampling.gt.1) then
+         do idim=1,2
+            pos(idim)=scale(idim)*uvw(idim)*freq/c+
+     $           (offset(idim)+1.0)
+            loc(idim)=nint(pos(idim))
+            off(idim)=nint((loc(idim)-pos(idim))*sampling)
+         end do
+      else
+         do idim=1,2
+            pos(idim)=scale(idim)*uvw(idim)*freq/c+
+     $           (offset(idim)+1.0)
+            loc(idim)=nint(pos(idim))
+            off(idim)=0
+         end do
+      end if
 
       phase=-2.0D0*pi*dphase*freq/c
       phasor=cmplx(cos(phase), sin(phase))
