@@ -1,5 +1,5 @@
 //# Constants.h: Mathematical and numerical constants
-//# Copyright (C) 1993,1994,1995,1997,1998,1999
+//# Copyright (C) 1993,1994,1995,1997,1998,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -353,11 +353,7 @@
 class Dummy_Constants_class {
 };
 
-// namespace C {
-AIPS_MACRO_NAMESPACE(C)
-#if defined(__GNUG__) && (__GNUG__ == 2) && (__GNUC_MINOR__ < 91)
-#define extern static
-#endif
+namespace C {
   //#--------------------------------------------------------------------
   //  Mathematical constants
   //#--------------------------------------------------------------------
@@ -594,7 +590,5 @@ AIPS_MACRO_NAMESPACE(C)
   //# <group>
   
 };
-
-#undef extern
 
 #endif
