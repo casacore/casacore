@@ -1787,6 +1787,9 @@
      = scimath/Mathematics/AutoDiffMath.h 
      template class HyperPlane<AutoDiffA<Double> > 
      template class HyperPlane<AutoDiffA<Float> > 
+     = casa/BasicSL/Complex.h 
+     template class HyperPlane<AutoDiffA<DComplex> > 
+     template class HyperPlane<AutoDiffA<Complex> > 
 1020 scimath/Functionals/HyperPlane.cc 
      template class HyperPlane<Double> 
      template class HyperPlane<Float> 
@@ -1820,6 +1823,9 @@
      = scimath/Mathematics/AutoDiffMath.h 
      template class HyperPlaneParam<AutoDiffA<Double> > 
      template class HyperPlaneParam<AutoDiffA<Float> > 
+     = casa/BasicSL/Complex.h 
+     template class HyperPlaneParam<AutoDiffA<Complex> > 
+     template class HyperPlaneParam<AutoDiffA<DComplex> > 
 1040 scimath/Functionals/HyperPlaneParam.cc 
      template class HyperPlaneParam<Double> 
      template class HyperPlaneParam<Float> 
