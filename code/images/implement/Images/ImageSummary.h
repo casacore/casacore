@@ -186,8 +186,11 @@ public:
 // Retrieve default mask name.  Empty if none
    String defaultMaskName() const;
 
-// Retrieve restoreing beam.  Will be of length zero if does not exist
+// Retrieve restoring beam.  Will be of length zero if does not exist
    Vector<Quantum<Double> > restoringBeam() const;
+
+// Retrieve image type
+   String imageType () const;
 
 // List all header information.  By default, the reference
 // values and pixel increments are converted to a "nice" unit before 
