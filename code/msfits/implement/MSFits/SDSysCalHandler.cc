@@ -369,5 +369,6 @@ void SDSysCalHandler::initRow(Vector<Bool> &handledCols, const Record &row)
 	handledCols(tmp) = True;
     }
     // ignore this field as it add no useful additional information
-    if (row.fieldNumber("SYSCAL_NUM_RECEPTORS")) handledCols(row.fieldNumber("SYSCAL_NUM_RECEPTORS")) = True;
+    if (row.fieldNumber("SYSCAL_NUM_RECEPTORS") >= 0) 
+	handledCols(row.fieldNumber("SYSCAL_NUM_RECEPTORS")) = True;
 }
