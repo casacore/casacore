@@ -127,6 +127,7 @@ Bool SubMS::makeSubMS(String& msname, String& colname){
        << "Failed on selection: combination of spw and field chosen may be"
        << " invalid" 
        << LogIO::POST;
+    ms_p=MeasurementSet();
     return False;
   }
   mscIn_p=new MSColumns(mssel_p);
@@ -136,6 +137,9 @@ Bool SubMS::makeSubMS(String& msname, String& colname){
   msc_p=new MSColumns(msOut_p);
   // fill or update
   if(!fillDDTables()){
+    delete outpointer;
+    //Detaching the selected part
+    ms_p=MeasurementSet();
     return False;
     
   }
