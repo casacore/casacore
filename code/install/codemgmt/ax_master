@@ -4046,3 +4046,4 @@
 14 065 src mv trial/implement/DisplayCanvas/WCCSNLAxisLabeller.cc trialdisplay/implement/DisplayCanvas/WCCSNLAxisLabeller.cc
 14 065 src mv trial/implement/DisplayCanvas/WCCoordinateHandler.cc trialdisplay/implement/DisplayCanvas/WCCoordinateHandler.cc
 14 065 src mv trial/implement/DisplayCanvas/WCDataScaleHandler.cc trialdisplay/implement/DisplayCanvas/WCDataScaleHandler.cc
+14 065 src mv trial/implement/DisplayCanvas/WCLinearScaleHandler.cc trialdisplay/implement/DisplayCanvas/WCLinearScaleHandler.cc
