@@ -1,4 +1,4 @@
-//# dPagedArray1.cc:  this contains the examples from the PagedArray.h file
+//# dPagedArray.cc:  this contains the examples from the PagedArray.h file
 //# Copyright (C) 1997
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -30,8 +30,8 @@
 #include <trial/Lattices/LatticeIterator.h>
 #include <trial/Lattices/LatticeStepper.h>
 #include <trial/Lattices/TiledLineStepper.h>
+#include <aips/Arrays/Array.h>
 #include <aips/Arrays/ArrayMath.h>
-#include <aips/Arrays/Vector.h>
 #include <aips/Exceptions/Error.h>
 #include <aips/Functionals/Gaussian1D.h>
 #include <aips/Lattices/IPosition.h>
@@ -98,19 +98,18 @@ int main(){
       // channel 16. Its height is 1.0.
       Gaussian1D<Float> g(1.0f, 16.0f, 10.0f);
       // Create a vector to cache a sampled version of this profile.
-      Vector<Float> profile(shape(3));
-      indgen(profile.ac());
-      profile.ac().apply(g);
-      // Now put this profile into every spectral channel in the paged array. This
-      // is best done using an iterator.
+      Array<Float> profile(IPosition(4,1,1,1,shape(3)));
+      indgen(profile);
+      profile.apply(g);
+      // Now put this profile into every spectral channel in the paged array.
+      // This is best done using an iterator.
       LatticeIterator<Float> iter(diskArray,
 				  TiledLineStepper(shape,
 						   diskArray.tileShape(),
 						   3));
       Timer timer;
       for (iter.reset(); !iter.atEnd(); iter++) {
-	iter.vectorCursor() = profile;
-	iter.writeCursor();
+	iter.woCursor() = profile;
       }
       timer.show ("set vectors   ");
       diskArray.showCacheStatistics (cout);
@@ -134,8 +133,7 @@ int main(){
       LatticeIterator<Float> iter(da, step);
       Timer timer;
       for (iter.reset(); !iter.atEnd(); iter++) {
-	iter.cursor() *= 10.0f;
-	iter.writeCursor();
+	iter.rwCursor() *= 10.0f;
       }
       timer.show ("set I-pol     ");
       da.showCacheStatistics (cout);
