@@ -1,5 +1,5 @@
 //# tQuantumHolder.cc: This program tests QuantumHolder
-//# Copyright (C) 1998,2000
+//# Copyright (C) 1998,2000,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -36,6 +36,7 @@
 #include <aips/Quanta/QuantumHolder.h>
 #include <aips/Containers/Record.h>
 #include <aips/Glish/GlishRecord.h>
+#include <aips/iostream.h>
 
 int main() {
   try {

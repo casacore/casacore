@@ -1,5 +1,5 @@
 //# tUnit.cc: test program for Unit section of Measures module
-//# Copyright (C) 1994,1995,1996,1998,1999,2000
+//# Copyright (C) 1994,1995,1996,1998,1999,2000,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -32,6 +32,7 @@
 #include <aips/Quanta/UnitMap.h>
 #include <aips/Quanta/UnitVal.h>
 #include <aips/Quanta/UnitName.h>
+#include <aips/iostream.h>
 
 int main () {
     try {
