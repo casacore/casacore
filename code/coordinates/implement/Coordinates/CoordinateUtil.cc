@@ -1499,3 +1499,26 @@ Bool CoordinateUtil::setCoordinateUnits (CoordinateSystem& cSys, const Vector<St
   return cSys.setWorldAxisUnits (tUnits);
 }
 
+
+Coordinate::Type CoordinateUtil::findPixelAxis (const CoordinateSystem& cSys, Int axis)
+{
+   Int coord, axisInCoordinate;
+   cSys.findPixelAxis(coord, axisInCoordinate, axis);
+   if (coord<0) {
+      throw(AipsError("Given pixel axis does not exist in CoordinateSystem"));
+   }
+//
+   return cSys.type (coord);
+}
+
+Coordinate::Type CoordinateUtil::findWorldAxis (const CoordinateSystem& cSys, Int axis)
+{
+   Int coord, axisInCoordinate;
+   cSys.findWorldAxis(coord, axisInCoordinate, axis);
+   if (coord<0) {
+      throw(AipsError("Given world axis does not exist in CoordinateSystem"));
+   }
+//
+   return cSys.type (coord);
+}
+

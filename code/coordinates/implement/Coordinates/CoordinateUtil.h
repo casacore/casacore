@@ -33,6 +33,7 @@
 #include <aips/aips.h>
 #include <aips/Arrays/Vector.h>
 #include <aips/Measures/Stokes.h>
+#include <trial/Coordinates/Coordinate.h>
 //
 #include <aips/Measures/MDirection.h>        // For enums
 #include <aips/Measures/MFrequency.h>
@@ -294,6 +295,12 @@ static Int findStokesAxis(Vector<Stokes::StokesTypes>& whichPols,
 // return -1 for that value. 
 static void findStokesAxis(Int& pixelAxis, Int& worldAxis, Int& coordinate,
                            const CoordinateSystem & coords);
+
+// Find Coordinate type for this pixel or world axis
+// <group>
+static Coordinate::Type findPixelAxis (const CoordinateSystem& cSys, Int axis);
+static Coordinate::Type findWorldAxis (const CoordinateSystem& cSys, Int axis);
+// </group>
 
 // Remove a list of world axes and their associated
 // pixel axes from a <src>CoordinateSystem</src>. The list of world
