@@ -1,5 +1,5 @@
 //# LatticeStatistics.cc: generate statistics from a MaskedLattice
-//# Copyright (C) 1996,1997,1998,1999,2000,2001
+//# Copyright (C) 1996,1997,1998,1999,2000,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -88,7 +88,8 @@ LatticeStatistics<T>::LatticeStatistics (const MaskedLattice<T>& lattice,
   doneSomeGoodPoints_p(False),
   someGoodPointsValue_p(False),
   showProgress_p(showProgress),
-  forceDisk_p(forceDisk)
+  forceDisk_p(forceDisk),
+  doneFullMinMax_p(False)
 {
    nxy_p.resize(0);
    statsToPlot_p.resize(0);   
@@ -131,7 +132,8 @@ LatticeStatistics<T>::LatticeStatistics (const MaskedLattice<T>& lattice,
   doneSomeGoodPoints_p(False),
   someGoodPointsValue_p(False),
   showProgress_p(showProgress),
-  forceDisk_p(forceDisk)
+  forceDisk_p(forceDisk),
+  doneFullMinMax_p(False)
 {
    nxy_p.resize(0);
    statsToPlot_p.resize(0);
@@ -212,6 +214,10 @@ LatticeStatistics<T> &LatticeStatistics<T>::operator=(const LatticeStatistics<T>
       doRobust_p = other.doRobust_p;
       error_p = other.error_p;
       doneLEL_p = other.doneLEL_p;
+//
+      doneFullMinMax_p= other.doneFullMinMax_p;
+      minFull_p = other.minFull_p;
+      maxFull_p = other.maxFull_p;
    }
    return *this;
 }
@@ -1001,6 +1007,25 @@ Bool LatticeStatistics<T>::getMinMaxPos(IPosition& minPos, IPosition& maxPos)
       maxPos.resize(0);
    }
    return True;
+}
+
+
+template <class T>
+Bool LatticeStatistics<T>::getFullMinMax(T& dataMin, T& dataMax)
+{
+  if (!doneFullMinMax_p) {
+
+// Specialize
+
+     LattStatsSpecialize::minMax (minFull_p, maxFull_p, pInLattice_p,
+                                  range_p, noInclude_p, noExclude_p);
+     doneFullMinMax_p = True;
+  }
+//
+  dataMin = minFull_p;
+  dataMax = maxFull_p;
+//
+   return (maxFull_p > minFull_p);
 }
 
 

@@ -332,6 +332,10 @@ public:
 // This function allows you to reset that internal state to good.
    void resetError () {goodParameterStatus_p = True;};
 
+// Get full lattice min and max only.  Returns False if no unmasked data, else returns True.
+// Honours any include or exclude range if set.
+   Bool getFullMinMax (T& dataMin, T& dataMax);
+
 // Recover last error message
    String errorMessage() const {return error_p;};
 
@@ -412,6 +416,9 @@ private:
    Bool doList_p, noInclude_p, noExclude_p;
    Bool needStorageLattice_p, doneSomeGoodPoints_p, someGoodPointsValue_p;
    Bool showProgress_p, forceDisk_p;
+//
+   T minFull_p, maxFull_p;
+   Bool doneFullMinMax_p;
 
 // Summarize the statistics found over the entire lattice
    virtual void summStats(); 
