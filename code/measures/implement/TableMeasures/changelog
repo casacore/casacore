@@ -4,7 +4,7 @@
  <date> 2001/01/11 </date>
  <avers> 1.5 </avers>
  <area> Library </area>
- <package> aips </package>
+ <package> measures </package>
  <module> TableMeasures </module>
  <type> Code </type>
  <category> Bugfix </category>
