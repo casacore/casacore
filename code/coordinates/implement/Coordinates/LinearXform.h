@@ -1,5 +1,5 @@
 //# LinearXform.h: Perform a linear transform between input and output vectors
-//# Copyright (C) 1997,1998
+//# Copyright (C) 1997,1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -81,25 +81,28 @@ struct linprm;
 class LinearXform
 {
 public:
-    // Create with "naxis" axes, CRPIX of 0, CDELT of 1, and a diagonal PC
-    // matrix.
+    // Construct with "naxis" axes, CRPIX of 0, CDELT of 1, and a 
+    // diagonal PC matrix.
     LinearXform(uInt naxis=1);
-    // Create the linear transformation from the supplied crpix and cdelt. The
+
+    // Construct the linear transformation from the supplied crpix and cdelt. The
     // PC matrix is the unit matrix. crpix and cdelt must have the same number
     // of elements.
     LinearXform(const Vector<Double> &crpix, const Vector<Double> &cdelt);
-    // Create a linear transformation, supplying all of crpix, cdelt, and pc.
+
+    // Construct a linear transformation, supplying all of crpix, cdelt, and pc.
     // The vectors must be of the same length "n", and the number of rows and
     // columns in the matrix must also be n.
     LinearXform(const Vector<Double> &crpix, const Vector<Double> &cdelt,
-		      const Matrix<Double> &pcMatrix);
+                 const Matrix<Double> &pcMatrix);
 
-    // Make a copy of other. Copy sematics, NOT reference semanticsl
-    // <group>
+    // Copy constructor (copy sematics)
     LinearXform(const LinearXform &other);
-    LinearXform &operator=(const LinearXform &other);
-    // </group>
 
+    // Assignment (copy sematics)
+    LinearXform &operator=(const LinearXform &other);
+
+    // Destructor
     ~LinearXform();
 
     // Returns the number or world axes, which for this class is also the
