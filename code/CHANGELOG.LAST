@@ -1,0 +1,18 @@
+
+change id: 0073
+ author:   Ger van Diepen
+ date:     2001/02/14
+ avers:    1.5
+ area:     Library
+ package:  trial
+ module:   Lattices
+ type:     Code
+ category: New
+ summary:  Fractiles added to LEL
+The class LatticeFractile has been added.
+It contains static functions to find the fractile in a lattice or
+to find 2 fractiles simultaneously. Note that the median is the
+fractile of 0.5.
+
+It is used in LEL which got the new functions fractile and
+fractilerange (see the description in note 223).
