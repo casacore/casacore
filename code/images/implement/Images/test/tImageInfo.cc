@@ -37,6 +37,7 @@
 #include <aips/Arrays/Vector.h>
 #include <aips/iostream.h>
 
+
 void equalBeams(const Vector<Quantum<Double> >& b1, const Vector<Quantum<Double> >& b2)
 {
     AlwaysAssertExit(b1.nelements()==b2.nelements());
@@ -47,6 +48,17 @@ void equalBeams(const Vector<Quantum<Double> >& b1, const Vector<Quantum<Double>
        AlwaysAssertExit(b1(i) == b2(i));
     }
 }
+
+
+void equal (const ImageInfo& ii1, const ImageInfo& ii2)
+{
+    const Vector<Quantum<Double> >& b1 = ii1.restoringBeam();
+    const Vector<Quantum<Double> >& b2 = ii2.restoringBeam();
+    equalBeams(b1, b2);
+//
+    AlwaysAssertExit(ii1.imageType()==ii2.imageType());
+}
+
 
 
 int main()
@@ -81,18 +93,36 @@ try {
     mii.removeRestoringBeam();
     AlwaysAssertExit(mii.restoringBeam().nelements()==0);
 //
+// ImageType
+//
+    for (uInt i=0; i<ImageInfo::nTypes; i++) {
+       ImageInfo::ImageTypes type = static_cast<ImageInfo::ImageTypes>(i);
+       {
+          mii.setImageType(type);
+          AlwaysAssertExit(type==mii.imageType());
+       }
+       {
+          String typeS = ImageInfo::imageType(type);
+          ImageInfo::ImageTypes type2 = ImageInfo::imageType(typeS);
+          AlwaysAssertExit(type==type2);
+       }
+    }
+//
 // Copy constructor and assignemnt
 //
     mii.setRestoringBeam(beam(0), beam(1), beam(2));
+    mii.setImageType(ImageInfo::SpectralIndex);
     ImageInfo mii2(mii);
-    equalBeams(mii2.restoringBeam(), beam);
+    equal(mii2, mii);
+//
     Vector<Quantum<Double> > beam2(3);
     beam2(0) = Quantum<Double>(50.0, "arcsec");
     beam2(1) = Quantum<Double>(0.0001, "rad");
     beam2(2) = Quantum<Double>(-90.0, "deg");
     mii2.setRestoringBeam(beam2);
+    mii2.setImageType(ImageInfo::OpticalDepth);
     mii = mii2;
-    equalBeams(mii.restoringBeam(), beam2);
+    equal(mii2, mii);
 //
 // Record conversion
 //
@@ -103,7 +133,18 @@ try {
     ImageInfo mii3;
     Bool ok = mii3.fromRecord(error, rec);
     if (!ok) cout << "Error = " << error << endl;
-    equalBeams(mii3.restoringBeam(), beam2);
+    equal(mii3, mii);
+    AlwaysAssertExit(mii3.imageType()==mii.imageType());
+//
+// FITS
+//
+    Record header;
+    AlwaysAssertExit(mii3.toFITS(error, header));
+    ImageInfo mii4;
+    Vector<String> error2;
+    AlwaysAssertExit(mii4.fromFITS(error2, header));
+    equal(mii4, mii3);
+    AlwaysAssertExit(mii4.imageType()==mii3.imageType());
 //
 // output stream
 //
