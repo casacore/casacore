@@ -135,6 +135,9 @@ public:
   const ROArrayColumn<String>& transition() const {return transition_p;}
   // </group>
 
+  // Convenience function that returns the number of rows in any of the columns
+  uInt nrow() const {return calibrationGroup_p.nrow();}
+
 protected:
   //# default constructor creates a object that is not usable. Use the attach
   //# function correct this.

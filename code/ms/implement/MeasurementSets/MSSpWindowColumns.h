@@ -126,6 +126,9 @@ public:
   const ROScalarColumn<Int>& receiverId() const {return receiverId_p;}
   // </group>
 
+  // Convenience function that returns the number of rows in any of the columns
+  uInt nrow() const {return chanFreq_p.nrow();}
+
 protected:
   //# default constructor creates a object that is not usable. Use the attach
   //# function correct this.
