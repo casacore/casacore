@@ -156,8 +156,8 @@ Quantum<Qtype> &Quantum<Qtype>::operator/=(const Quantum<Qtype> &other) {
 	    qUnit = Unit(String("(") + other.qUnit.getName() +
 			 String(")-1"));
 	} else {
-	    qUnit = Unit(qUnit.getName() + ("/(" + 
-					    other.qUnit.getName() + ")"));
+	    qUnit = Unit(qUnit.getName() +
+			 ("/(" + other.qUnit.getName() + ")"));
 	}
     }
     return *this;
@@ -306,28 +306,27 @@ void Quantum<Qtype>::convert(const Unit &s) {
       // To suppress some warnings, next statement not used
       //	qVal *= (qUnit.getValue().getFac()/s.getValue().getFac());
       qVal = (Qtype) (qVal * 
-		      qUnit.getValue().getFac()/s.getValue().getFac());
+		      (qUnit.getValue().getFac()/s.getValue().getFac()));
       qUnit = s;
     } else {
       if (qUnit.getValue() == UnitVal::ANGLE && 
 	  s.getValue() == UnitVal::TIME) {
 	qVal = (Qtype) (qVal *
-			qUnit.getValue().getFac()/
-			s.getValue().getFac() * C::day/C::circle);
+			(qUnit.getValue().getFac()/s.getValue().getFac()) *
+			C::day/C::circle);
 	qUnit = s;
       } else if (qUnit.getValue() == UnitVal::TIME &&
 		 s.getValue() == UnitVal::ANGLE) {
 	qVal = (Qtype) (qVal *
-			qUnit.getValue().getFac()/
-			s.getValue().getFac() * C::circle/C::day);
+			(qUnit.getValue().getFac()/s.getValue().getFac()) *
+			C::circle/C::day);
 	qUnit = s;
       } else {
 	qUnit.setValue(qUnit.getValue() / s.getValue());
 	ostrstream oss;
 	oss << qUnit.getValue().getDim();
 	// Suppress (gcc) warnings:
-	qVal = (Qtype) (qVal * 
-			      qUnit.getValue().getFac());
+	qVal = (Qtype) (qVal * qUnit.getValue().getFac());
 	if (s.empty()) {
 	  qUnit = String(oss);
 	} else {
