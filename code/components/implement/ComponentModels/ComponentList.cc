@@ -803,21 +803,14 @@ void ComponentList::writeTable() {
     }
     fluxErrCol.attach(itsTable, fluxErrName);
     if (!cds.isDefined(dirErrName)) {
-//       const ArrayColumnDesc<Double>
-//  	dirErrCol(dirErrName, "Error in the reference direction values",
-//  		  IPosition(1,2), ColumnDesc::Direct);
-//       itsTable.addColumn(dirErrCol);
-//       const String dirErrUnitName = "Direction_Error_Units";
-//       const ArrayColumnDesc<String>
-// 	dirErrUnitCol(dirErrUnitName, "Units of the direction error", 
-// 		      IPosition(1,2), ColumnDesc::Direct);
-//       itsTable.addColumn(dirErrUnitCol);
-//       {
-// 	TableQuantumDesc dirErrTMCol(td, dirErrName, dirErrUnitName);
-// 	dirErrTMCol.write(td);
-//       }
+      LogIO logErr(LogOrigin("ComponentList", "ok()"));
+      logErr << LogIO::WARN 
+	     << "Cannot write the direction error columns "
+	     << "as this is an old format componentlist table."
+	     << LogIO::POST;
+    } else {
+      dirErrCol.attach(itsTable, dirErrName);
     }
-    dirErrCol.attach(itsTable, dirErrName);
     if (!cds.isDefined(shapeErrName)) {
       itsTable.addColumn
 	(ArrayColumnDesc<Double>(shapeErrName,
@@ -825,8 +818,14 @@ void ComponentList::writeTable() {
     }
     shapeErrCol.attach(itsTable, shapeErrName);
     if (!cds.isDefined(freqErrName)) {
+      LogIO logErr(LogOrigin("ComponentList", "ok()"));
+      logErr << LogIO::WARN 
+	     << "Cannot write the frequency error columns "
+	     << "as this is an old format componentlist table."
+	     << LogIO::POST;
+    } else {
+      freqErrCol.attach(itsTable, freqErrName);
     }
-    freqErrCol.attach(itsTable, freqErrName);
     if (!cds.isDefined(spectErrName)) {
       itsTable.addColumn
 	(ArrayColumnDesc<Double>(spectErrName,
@@ -848,9 +847,11 @@ void ComponentList::writeTable() {
       const ComponentShape& compShape = component(i).shape();
       shapeCol.put(i, compShape.ident());
       dirCol.put(i, compShape.refDirection());
-      dirErr(0) = compShape.refDirectionErrorLat();
-      dirErr(1) = compShape.refDirectionErrorLong();
-      dirErrCol.put(i, dirErr);
+      if (!dirErrCol.isNull()) {
+	dirErr(0) = compShape.refDirectionErrorLat();
+	dirErr(1) = compShape.refDirectionErrorLong();
+	dirErrCol.put(i, dirErr);
+      }
       shapeParmCol.put(i, compShape.parameters());
       shapeErrCol.put(i, compShape.errors());
     }
@@ -858,7 +859,9 @@ void ComponentList::writeTable() {
       const SpectralModel& compSpectrum = component(i).spectrum();
       specShapeCol.put(i, compSpectrum.ident());
       freqCol.put(i, compSpectrum.refFrequency());
-      freqErrCol.put(i, compSpectrum.refFrequencyError());
+      if (!freqErrCol.isNull()) {
+	freqErrCol.put(i, compSpectrum.refFrequencyError());
+      }
       specShapeParmCol.put(i, compSpectrum.parameters());
       spectErrCol.put(i, compSpectrum.errors());
     }
