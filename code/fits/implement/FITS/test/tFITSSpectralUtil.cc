@@ -1,5 +1,5 @@
 //# tFITSSpectralUtil.cc: Test program for FITSSpectralUtil
-//# Copyright (C) 2002
+//# Copyright (C) 2002,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -35,6 +35,8 @@
 #include <aips/Logging.h>
 #include <aips/Mathematics/Math.h>
 #include <aips/Utilities/Assert.h>
+
+#include <iostream.h>
 
 int main()
 {
@@ -140,13 +142,22 @@ int main()
 	    MFrequency::Types inFrame, outFrame;
 	    inFrame = MFrequency::Types(i);
 	    if (!FITSSpectralUtil::tagFromFrame(tag, velref, inFrame)) {
-		throw(AipsError("testFITSSpectralUtil: unexpected failure in tagFromFrame"));
+		// expect this to fail for LGROUP and larger
+		if (i < MFrequency::LGROUP) {
+		    throw(AipsError("testFITSSpectralUtil: unexpected failure in tagFromFrame"));
+		}
 	    }
 	    if (!FITSSpectralUtil::frameFromTag(outFrame, tag, velref)) {
-		throw(AipsError("testFITSSpectralUtil: unexpected failure in frameFromTag"));
+		// expect this to fail for LGROUP and larger
+		if (i < MFrequency::LGROUP) {
+		    throw(AipsError("testFITSSpectralUtil: unexpected failure in frameFromTag"));
+		}
 	    }
 	    if (inFrame != outFrame) {
-		throw(AipsError("testFITSSpectralUtil: frameFromTag did not return original frame"));
+		// expect this to fail for LGROUP and larger
+		if (i < MFrequency::LGROUP) {
+		    throw(AipsError("testFITSSpectralUtil: frameFromTag did not return original frame"));
+		}
 	    }
 	}
     } catch (AipsError x) {
