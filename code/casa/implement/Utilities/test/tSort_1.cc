@@ -1,5 +1,5 @@
 //# tSort_1.cc: This program tests the performance of the Sort class
-//# Copyright (C) 1993,1994,1995,1996,1997
+//# Copyright (C) 1993,1994,1995,1996,1997,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -30,6 +30,7 @@
 #include <aips/Arrays/Vector.h>
 #include <aips/OS/Timer.h>
 #include <strstream.h>
+#include <stdlib.h>
 
 //# Forward Declarations
 Bool sortarr (Int*, uInt nr, int);
@@ -43,7 +44,7 @@ static Int* gbla;
 // It sorts some data in ascending and/or descending order.
 // The timing results are written to stdout.
 
-main(int argc, char** argv)
+int main(int argc, char** argv)
 {
     Bool success = True;
     uInt nr=5000;
@@ -170,7 +171,7 @@ Bool sortall (Int* arr, uInt nr, uInt type)
 	success = False;
     }
     Timer tim;
-    Int i;
+    uInt i;
     if (type==0 || (type==2 && nr<=10000) || (type==5 && nr<=20000)
     || (type==10 && nr<=100000)) {
 	cout << "qsort     ";
@@ -234,7 +235,7 @@ Bool sortarr (Int* arr, uInt nr, int opt)
     Timer tim;
     sort.sort (ptr,nr,opt);
     tim.show();
-    for (Int i=1; i<nr; i++) {
+    for (uInt i=1; i<nr; i++) {
 	if (arr[ptr(i)] < arr[ptr(i-1)]) {
 	    cout << "Out of order " <<arr[ptr(i)] << "," <<arr[ptr(i-1)]<<endl;
 	    success = False;
