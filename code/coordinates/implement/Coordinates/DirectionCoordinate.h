@@ -88,8 +88,8 @@ template<class T> class Quantum;
 // Directions in the sky are fundamental to astronomy.
 // </motivation>
 //
-// <todo asof="1997/01/13">
-//   <li> Add "wcsmix" capability.
+// <todo asof="2000/01/01">
+//   <li> Nothing
 // </todo>
 
 class DirectionCoordinate : public Coordinate
