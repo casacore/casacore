@@ -6256,7 +6256,7 @@ Double MeasTable::GMST00(Double ut1, Double tt) {
   if (needInit) {
     needInit = False;
     stPoly.setCoefficient(0, 0.014506*C::arcsec);	
-    stPoly.setCoefficient(1, 4612.15739966*C::arcsec);
+    stPoly.setCoefficient(1, 4612.15739966*C::arcsec+630.73514045148926);
     stPoly.setCoefficient(2, + 1.39667721*C::arcsec);	
     stPoly.setCoefficient(3, - 0.00009344*C::arcsec);
     stPoly.setCoefficient(4, + 0.00001882*C::arcsec);
