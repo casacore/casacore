@@ -293,6 +293,22 @@ void SpectralElement::set(SpectralElement::Types tp,
   check();
 }
 
+void SpectralElement::set(const Vector<Double> &param) {
+    if (param.nelements() != par_p.nelements()) {
+      throw(AipsError("SpectralElement: setting incorrect number of "
+		      "parameters in the element"));
+    };
+    par_p = param;
+}
+
+void SpectralElement::set(const Vector<Float> &param) {
+    if (param.nelements() != par_p.nelements()) {
+      throw(AipsError("SpectralElement: setting incorrect number of "
+		      "parameters in the element"));
+    };
+    for (uInt i=0; i<par_p.nelements(); i++) par_p(i) = param(i);
+}
+
 void SpectralElement::setError(const Vector<Double> &err) {
     if (err.nelements() != err_p.nelements()) {
       throw(AipsError("SpectralElement: setting incorrect number of errors "

@@ -200,8 +200,16 @@ class SpectralElement : public RecordTransformable {
   //   <li> AipsError if sigma == 0.0
   // </thrown>
   // <group>
+  // Reset a complete element
+  // <group>
   void set(SpectralElement::Types tp, const Vector<Double> &param);
   void set(SpectralElement::Types tp, const Vector<Float> &param);
+  // </group>
+  // Reset the parameter values only (i.e zero errors and nothing fixed)
+  // <group>
+  void set(const Vector<Double> &param);
+  void set(const Vector<Float> &param);
+  // </group>
   // </group>
   // Set the error fields
   void setError(const Vector<Double> &err);
