@@ -1,5 +1,5 @@
 //# LELLattice.cc:  this defines LELLattice.cc
-//# Copyright (C) 1997
+//# Copyright (C) 1997,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -41,7 +41,8 @@ template <class T>
 LELLattice<T>::LELLattice(const Lattice<T>& lattice) 
 : pLattice_p (lattice.clone())
 {
-   setAttr(LELAttribute(False, lattice.shape()));
+   setAttr(LELAttribute(lattice.shape(), lattice.niceCursorShape(),
+			lattice.latticeCoordinates()));
 
 #if defined(AIPS_TRACE)
    cout << "LELLattice:: constructor, pLattice_p.nrefs() = "

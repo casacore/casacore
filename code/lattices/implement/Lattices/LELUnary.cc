@@ -1,5 +1,5 @@
 //# LELUnary.cc:  this defines templated classes in LELUnary.h
-//# Copyright (C) 1997
+//# Copyright (C) 1997,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -27,7 +27,6 @@
 
 #include <trial/Lattices/LELUnary.h>
 #include <trial/Lattices/PixelRegion.h>
-#include <aips/Lattices/IPosition.h>
 #include <aips/Arrays/Array.h>
 #include <aips/Arrays/ArrayMath.h>
 #include <aips/Exceptions/Error.h> 
@@ -38,7 +37,7 @@ template <class T>
 LELUnaryConst<T>::LELUnaryConst(const T val)
 : val_p(val)
 {
-   setAttr (LELAttribute(True, IPosition()));
+   setAttr (LELAttribute());
 
 #if defined(AIPS_TRACE)
    cout << "LELUnaryConst:: constructor" << endl;
