@@ -70,7 +70,7 @@ attach(const NewMSPolarization& msPolarization)
 }
 
 Int RONewMSPolarizationColumns::
-match(const Vector<Stokes::StokesTypes>& polType, Int tryRow=-1) {
+match(const Vector<Stokes::StokesTypes>& polType, Int tryRow) {
   uInt r = nrow();
   if (r == 0) return -1;
   // Convert the corrType to Integers.
@@ -113,7 +113,8 @@ matchCorrType(uInt row, const Vector<Int>& polType) const {
 Bool RONewMSPolarizationColumns::
 matchCorrProduct(uInt row, const Matrix<Int>& polProduct) const {
   DebugAssert(row < nrow(), AipsError);
-  return allEQ(corrProduct()(row), polProduct);
+    // The static cast is a work around for an SGI compiler Bug
+  return allEQ(corrProduct()(row), static_cast< const Matrix<Int> &>(polProduct));
 }
 
 NewMSPolarizationColumns::
