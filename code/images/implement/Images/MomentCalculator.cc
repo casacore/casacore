@@ -35,7 +35,7 @@
 #include <aips/Functionals/SumFunction.h>
 #include <trial/Functionals/FuncWithAutoDerivs.h>
 #include <trial/Images/ImageMoments.h>
-#include <trial/Images/ImageUtilities.h>
+#include <trial/Lattices/LatticeStatsBase.h>
 #include <aips/Mathematics/Math.h>
 #include <aips/Quanta/QMath.h>
 #include <aips/Logging/LogIO.h> 
@@ -276,7 +276,7 @@ Bool MomentCalcBase<T>::drawSpectrum (const Vector<T>& x,
 
       yMinF = convertT(yMin);
       yMaxF = convertT(yMax);
-      ImageUtilities::stretchMinMax (yMinF, yMaxF);
+      LatticeStatsBase::stretchMinMax (yMinF, yMaxF);
    } else {
       yMinF = convertT(yMinAuto);
       yMaxF = convertT(yMaxAuto);
@@ -285,7 +285,7 @@ Bool MomentCalcBase<T>::drawSpectrum (const Vector<T>& x,
    const uInt nPts = x.nelements();
    Float xMin = 0.0;
    Float xMax = Float(nPts);
-   ImageUtilities::stretchMinMax (xMin, xMax); 
+   LatticeStatsBase::stretchMinMax (xMin, xMax); 
 
 
 // Draw box and label

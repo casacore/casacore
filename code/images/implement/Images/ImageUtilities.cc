@@ -31,15 +31,8 @@
 #include <aips/Utilities/String.h>
 #include <aips/Utilities/LinearSearch.h>
 #include <aips/Arrays/Vector.h>
-#include <aips/Quanta/MVAngle.h>
-#include <aips/OS/File.h>
-#include <aips/OS/Path.h>
-#include <aips/Tables/Table.h>
-#include <aips/Tables/TableDesc.h>
-#include <aips/Tables/SetupNewTab.h>
-#include <aips/Tasking/AppInfo.h>
+#include <aips/Lattices/IPosition.h>
 #include <trial/Coordinates/CoordinateSystem.h>
-#include <trial/Coordinates/StokesCoordinate.h>
 
   
 
@@ -133,119 +126,6 @@ Bool ImageUtilities::pixToWorld (Vector<String>& sWorld,
 
 
 
-    
-void ImageUtilities::setDisplayAxes (Vector<Int>& displayAxes, 
-                                     const Vector<Int>& cursorAxes, 
-                                     const Int& nImageDim)
-//
-// Set up array describing the display axes; these are the axes
-// for which the result (e.g. statistics or histogram will
-// be displayed as a function of) and are the complement of
-// the cursor axes.
-//
-// Input:
-//   cursorAxes     The cursor axes
-//   nImageDim      Number of dimensions to image
-// Output:
-//   displayAxes    The display axes.  If the cursor axes
-//                  are all of the image axes, there
-//                  will be no display axes
-{
-   uInt i,j;
-   const uInt nCursorAxes = cursorAxes.nelements();
-
-// See if the statistics axes are the full image, easy if so.
-
-   if (Int(nCursorAxes) == nImageDim) 
-      displayAxes.resize(0);
-   else {
-
-// The statistics axes are a subset of those in the image; set display axes
-
-      Bool found;
-      displayAxes.resize(nImageDim, False);
-      for (i=0,j=0; Int(i)<nImageDim; i++) {
-         if (linearSearch(found, cursorAxes, Int(i), cursorAxes.nelements()) == -1) {
-            displayAxes(j) = i;
-            j++;
-         }
-      }
-      displayAxes.resize(j, True);
-   }
-}
-
-
-Bool ImageUtilities::setNxy (Vector<Int>& nxy,
-                             ostream& os)
-//
-// Deal with the keyword setting the number of subplots
-// in x and y
-//
-// Input:
-//   os      Output stream
-// Input/output
-//   nxy     The Int vector containing the filled in inputs on output
-// Output:
-//   Bool    False if user gave something silly
-//
-{
-   Int n = nxy.nelements();
-   nxy.resize(2,True);
-   if (n > 2) {
-      os << "Too many elements for argument nxy" << endl;
-      return False;
-   } else if (n == 2) {
-      nxy(0) = max(1,nxy(0));
-      nxy(1) = max(1,nxy(1));
-   } else if (n == 1) {
-      nxy(0) = max(1,nxy(0));
-      nxy(1) = nxy(0);
-   } else {
-      nxy(0) = 1;
-      nxy(1) = 1;
-   }
-   return True;
-}
-
-void ImageUtilities::setStorageImageShape(IPosition& storeImageShape,
-                                          const Bool& last,
-                                          const Int& axisSize,
-                                          const Vector<Int>& displayAxes, 
-                                          const IPosition& imageShape)
-//
-// Resize a storage image (currently an array lattice) as required
-// given the display axes and the shape image being iterated through.
-// The shape of the storage image is given by the sizes of the
-// display axes plus one more goven by the user.  This extra one
-// can be either the first or last axis.
-//
-// Input/output:
-//   storeImageShape   The storage image shape. On input it just needs to be
-//                     created.  On output it is resized and filled
-// Inputs:
-//   last              If true, it is the last axis of the storage shape
-//                     that is of size axisSize.  If false, it is the
-//                     first axis.
-//   axisSize          The size of the first or last dimension of the
-//                     storage image.
-//   displayAxes       The display axes
-//   imageShape        Image shape being iterated through
-//
-{
-   Int nStoreImageDim = displayAxes.nelements() + 1;
-   storeImageShape.resize(nStoreImageDim);
-
-   if (last) {
-      for (Int i=0; i<nStoreImageDim-1; i++) storeImageShape(i) = imageShape(displayAxes(i));
-      storeImageShape(nStoreImageDim-1) = axisSize;
-   } else {
-      for (Int i=1; i<nStoreImageDim; i++) 
-        storeImageShape(i) = imageShape(displayAxes(i-1));
-      storeImageShape(0) = axisSize;
-   }
-}
-
-
 
 String ImageUtilities::shortAxisName (const String& axisName)
 //
@@ -272,39 +152,6 @@ String ImageUtilities::shortAxisName (const String& axisName)
    }
    return temp;
 }
-
-
-
-void ImageUtilities::stretchMinMax (Float& dMin, 
-                                    Float& dMax)
-//
-// Stretch a range by 5%
-//
-// Input/output:
-//   dMin,Max     The range to stretch
-//
-{
-   Float delta = 0.05*(dMax-dMin);
-   Float absmax = max(abs(dMax),abs(dMin));
-   if (delta < 1.0e-5*absmax) delta = 0.01 * absmax;
-
-   if (dMin==dMax) {
-      if (dMin==0.0) {
-         dMin = -1.0; 
-         dMax = 1.0;
-      }
-      else {
-         dMin = dMin - 0.05*dMin; 
-         dMax = dMax + 0.05*dMax;
-      }
-   }
-   else {
-      dMin = dMin - delta; 
-      dMax = dMax + delta;
-   }
-}
-
-
 
 
 Bool ImageUtilities::verifyRegion (IPosition& blc,

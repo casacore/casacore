@@ -58,7 +58,6 @@
 #include <trial/Images/ImageMomentsProgress.h>
 #include <trial/Images/ImageStatistics.h>
 #include <trial/Images/ImageHistograms.h>
-#include <trial/Images/ImageUtilities.h>
 #include <trial/Images/MomentCalculator.h>
 #include <trial/Images/PagedImage.h>
 #include <trial/Images/RegionHandler.h>
@@ -68,6 +67,7 @@
 #include <trial/Lattices/ArrayLattice.h>
 #include <trial/Lattices/LatticeApply.h>
 #include <trial/Lattices/LatticeIterator.h>
+#include <trial/Lattices/LatticeStatsBase.h>
 #include <trial/Lattices/LCPagedMask.h>
 #include <trial/Lattices/TiledLineStepper.h>
 #include <trial/Tasking/PGPlotter.h>
@@ -596,7 +596,7 @@ Bool ImageMoments<T>::setPlotting(PGPlotter& plotterU,
    fixedYLimits_p = ToBool(!yIndU);
    nxy_p.resize(0);
    nxy_p = nxyU;
-   if (!ImageUtilities::setNxy(nxy_p, os_p.output())) {
+   if (!LatticeStatsBase::setNxy(nxy_p, os_p.output())) {
       goodParameterStatus_p = False;
       return False;
    }
@@ -1551,7 +1551,7 @@ Bool ImageMoments<T>::whatIsTheNoise (T& sigma,
    xMax = values(nBins-1) + binWidth;
    Float xMinF = convertT(xMin);
    Float xMaxF = convertT(xMax);
-   ImageUtilities::stretchMinMax(xMinF, xMaxF);
+   LatticeStatsBase::stretchMinMax(xMinF, xMaxF);
 
    IPosition yMinPos(1), yMaxPos(1);
    minMax (yMin, yMax, yMinPos, yMaxPos, counts);

@@ -30,11 +30,11 @@
 
 
 #include <aips/aips.h>
-#include <aips/Mathematics/Complex.h>
-#include <trial/Lattices/Lattice.h>
 template <class T> class Vector;
 class CoordinateSystem;
-class Table;
+class String;
+class IPosition;
+
 //
 // <summary>
 // A set of simple functions to help access and iteration through images
@@ -93,38 +93,11 @@ public:
                            const Vector<Double>& pixels,
                            const Int& prec);
 
-// Set the display axes (0 relative). These are the axes that are not cursor axes.   If the
-// cursor axes are all of the available image axes, the displayAxes array is of length 0.
-   static void setDisplayAxes (Vector<Int>& displayAxes, 
-                               const Vector<Int>& cursorAxes, 
-                               const Int& nImageDim);
-
-// Check and fill in defaults for a <src>Vector<Int></src> containing the 
-// number of subplots in x and y to be put on a plot.  The <src>Vector<Int></src> 
-// is resized to 2 before assignment.  A return value of <src>False</src> indicates 
-// invalid arguments.
-   static Bool setNxy (Vector<Int>& nxy,
-                       ostream& os);
-
-// A storage image is used to accumulate information as a function of the display
-// axes as an image is iterated through.  This function sets the storage image shape 
-// to that appropriate to the shape of the display axes and the desired size of the first
-// or last dimension.  
-   static void setStorageImageShape (IPosition& storeImageShape,
-                                     const Bool& last,
-                                     const Int& axisSize,
-                                     const Vector<Int>& displayAxes,
-                                     const IPosition& imageShape);
-
 // Convert long axis names "Right Ascension", "Declination", "Frequency" and
 // "Velocity" to "RA", "Dec", "Freq", "Vel" respectively.  Unknown strings
 // are returned as given.
    static String shortAxisName (const String& axisName);
 
-
-// Stretch a range by 10%
-   static void stretchMinMax (Float& min, 
-                              Float& max);
 // Verify an image region specification.  Illegal (inlcuding blc > trc) or 
 // unspecified values are  given 0 (blc) imageShape (trc) or 
 // unity (inc).  Returns <src>True</src> if any of the region objects 
@@ -133,7 +106,6 @@ public:
                              IPosition& trc,
                              IPosition& inc,
                              const IPosition& imageShape);
-
 };
 
 #endif

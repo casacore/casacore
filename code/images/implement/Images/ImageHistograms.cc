@@ -434,7 +434,7 @@ Bool ImageHistograms<T>::setPlotting(PGPlotter& plotter,
    nxy_p.resize(0);
    nxy_p = nxy;
    ostrstream os;
-   if (!ImageUtilities::setNxy(nxy_p, os)) {
+   if (!LatticeStatsBase::setNxy(nxy_p, os)) {
       error_p = "Invalid number of subplots";
       goodParameterStatus_p = False;
       return False;
@@ -969,8 +969,8 @@ Bool ImageHistograms<T>::generateStorageImage()
 {
 // Set the display axes vector.
 
-   ImageUtilities::setDisplayAxes (displayAxes_p, cursorAxes_p,
-                                   pInImage_p->ndim());
+   displayAxes_p = IPosition::otherAxes(pInImage_p->ndim(),
+                                        cursorAxes_p).asVector();
 
 // Make the statistics object 
 
@@ -1076,8 +1076,8 @@ void ImageHistograms<T>::makeHistograms()
 // Set storage image shape.  The first axis is the histogram axis 
  
    IPosition storeImageShape;
-   ImageUtilities::setStorageImageShape(storeImageShape, False, Int(nBins_p),
-                                        displayAxes_p, pInImage_p->shape());
+   LatticeStatsBase::setStorageImageShape(storeImageShape, False, Int(nBins_p),
+                                          displayAxes_p, pInImage_p->shape());
 
 // Set the storage image tile shape to the tile shape of the
 // axes of the parent image from which it is created.

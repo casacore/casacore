@@ -25,15 +25,20 @@
 //#
 //# $Id$
 
-#include <aips/aips.h>
-#include <aips/Arrays/Vector.h>
-#include <aips/Arrays/ArrayUtil.h>
-#include <aips/Utilities/String.h>
-#include <aips/Utilities/Regex.h>
 #include <trial/Lattices/LatticeStatsBase.h>
 
+#include <aips/Arrays/Vector.h>
+#include <aips/Arrays/ArrayUtil.h>
+#include <aips/Lattices/IPosition.h>
+#include <aips/Mathematics/Math.h>
+#include <aips/Utilities/String.h>
+#include <aips/Utilities/Regex.h>
+
+#include <iostream.h>
+
+
 Vector<Int> LatticeStatsBase::toStatisticTypes (const String& statsU, 
-                                              const Regex& delimiter)
+                                                const Regex& delimiter)
 { 
    Vector<String> statsStrings = stringToVector(statsU, delimiter);
    return LatticeStatsBase::toStatisticTypes(statsStrings);
@@ -82,5 +87,70 @@ Int LatticeStatsBase::toStatisticType (const String& statU)
       statToPlot = FLUX;
    }
    return statToPlot;
+}  
+
+Bool LatticeStatsBase::setNxy (Vector<Int>& nxy,
+                               ostream& os)
+{
+   Int n = nxy.nelements();
+   nxy.resize(2,True);
+   if (n > 2) {
+      os << "Too many elements for argument nxy" << endl;
+      return False;
+   } else if (n == 2) {
+      nxy(0) = max(1,nxy(0));
+      nxy(1) = max(1,nxy(1));
+   } else if (n == 1) {
+      nxy(0) = max(1,nxy(0));
+      nxy(1) = nxy(0);
+   } else {
+      nxy(0) = 1;
+      nxy(1) = 1;
+   }
+   return True;
 }
+
+void LatticeStatsBase::setStorageImageShape(IPosition& storeImageShape,
+                                            const Bool& last,
+                                            const Int& axisSize,
+                                            const Vector<Int>& displayAxes, 
+                                            const IPosition& imageShape)
+{
+   Int nStoreImageDim = displayAxes.nelements() + 1;
+   storeImageShape.resize(nStoreImageDim);
+
+   if (last) {
+      for (Int i=0; i<nStoreImageDim-1; i++) storeImageShape(i) = imageShape(displayAxes(i));
+      storeImageShape(nStoreImageDim-1) = axisSize;
+   } else {
+      for (Int i=1; i<nStoreImageDim; i++) 
+        storeImageShape(i) = imageShape(displayAxes(i-1));
+      storeImageShape(0) = axisSize;
+   }
+}
+
+
+void LatticeStatsBase::stretchMinMax (Float& dMin, 
+                                      Float& dMax)
+{
+   Float delta = 0.05*(dMax-dMin);
+   Float absmax = max(abs(dMax),abs(dMin));
+   if (delta < 1.0e-5*absmax) delta = 0.01 * absmax;
+
+   if (dMin==dMax) {
+      if (dMin==0.0) {
+         dMin = -1.0; 
+         dMax = 1.0;
+      }
+      else {
+         dMin = dMin - 0.05*dMin; 
+         dMax = dMax + 0.05*dMax;
+      }
+   }
+   else {
+      dMin = dMin - delta; 
+      dMax = dMax + delta;
+   }
+}
+
 

@@ -30,6 +30,7 @@
 
 #include <aips/aips.h>
 #include <aips/Arrays/Vector.h>
+class IPosition;
 class Regex;
 
 // <summary> Base class for LatticeStatistics class</summary>
@@ -135,6 +136,26 @@ enum StatisticsTypes {
 // Returns -1 if the statistic string is not valid
    static Int toStatisticType (const String& statistic);
 
+// Check and fill in defaults for a <src>Vector<Int></src> containing the 
+// number of subplots in x and y to be put on a plot.  The <src>Vector<Int></src> 
+// is resized to 2 before assignment.  A return value of <src>False</src> indicates 
+// invalid arguments.
+   static Bool setNxy (Vector<Int>& nxy,
+                       ostream& os);
+
+// A storage image is used to accumulate information as a function of the display
+// axes as an image is iterated through.  This function sets the storage image shape 
+// to that appropriate to the shape of the display axes and the desired size of the first
+// or last dimension.  
+   static void setStorageImageShape (IPosition& storeImageShape,
+                                     const Bool& last,
+                                     const Int& axisSize,
+                                     const Vector<Int>& displayAxes,
+                                     const IPosition& shape);
+
+// Stretch a range by 10%
+   static void stretchMinMax (Float& min, 
+                              Float& max);
 };
 
 #endif

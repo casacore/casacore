@@ -35,7 +35,6 @@
 #include <aips/Arrays/Matrix.h>
 #include <aips/Exceptions/Error.h>
 #include <aips/Logging/LogIO.h>
-#include <trial/Images/ImageUtilities.h>
 #include <trial/Lattices/MaskedLattice.h>
 #include <trial/Lattices/LatticeIterator.h>
 #include <trial/Lattices/LatticeStepper.h>
@@ -46,7 +45,6 @@
 #include <aips/Mathematics/Math.h>
 #include <aips/Quanta/QMath.h>
 #include <aips/Tasking/AppInfo.h>
-#include <aips/Tables/Table.h>
 #include <aips/Utilities/Assert.h>
 #include <aips/Utilities/DataType.h>
 #include <aips/Utilities/ValType.h>
@@ -278,9 +276,8 @@ Bool LatticeStatistics<T>::setAxes (const Vector<Int>& axes)
 // via the public function "displayAxes" before any real work is done
 // so poke this in here too.
 
-   ImageUtilities::setDisplayAxes (displayAxes_p, cursorAxes_p, 
-                                   pInLattice_p->ndim());
-
+   displayAxes_p = IPosition::otherAxes(pInLattice_p->ndim(),
+                                        cursorAxes_p).asVector();
 
    return True;
 }
@@ -411,7 +408,7 @@ Bool LatticeStatistics<T>::setPlotting(PGPlotter& plotter,
    nxy_p.resize(0);
    nxy_p = nxy;
    ostrstream os;
-   if (!ImageUtilities::setNxy(nxy_p, os)) {
+   if (!LatticeStatsBase::setNxy(nxy_p, os)) {
       error_p = "Invalid number of subplots";
       goodParameterStatus_p = False;
       return False;
@@ -1097,16 +1094,16 @@ Bool LatticeStatistics<T>::generateStorageLattice()
 
 // Set the display axes vector (possibly already set in ::setAxes)
 
-   ImageUtilities::setDisplayAxes (displayAxes_p, cursorAxes_p, 
-                                   pInLattice_p->ndim());
+   displayAxes_p = IPosition::otherAxes(pInLattice_p->ndim(),
+                                        cursorAxes_p).asVector();
 
 
 // Work out dimensions of storage lattice (statistics accumulations
 // are along the last axis)
 
     IPosition storeLatticeShape;
-    ImageUtilities::setStorageImageShape(storeLatticeShape, True, Int(LatticeStatsBase::NACCUM),
-                                         displayAxes_p, pInLattice_p->shape());
+    LatticeStatsBase::setStorageImageShape(storeLatticeShape, True, Int(LatticeStatsBase::NACCUM),
+                                           displayAxes_p, pInLattice_p->shape());
 
 // Set the storage lattice tile shape to the tile shape of the
 // axes of the parent lattice from which it is created.  
@@ -1125,7 +1122,7 @@ Bool LatticeStatistics<T>::generateStorageLattice()
     Double useMemory = Double(memory)/10.0;
     if (forceDisk_p) useMemory = 0.0;
     pStoreLattice_p = new TempLattice<T>(TiledShape(storeLatticeShape,
-                                       tileShape), useMemory);
+                                         tileShape), useMemory);
 
 // Set up min/max location variables
 
