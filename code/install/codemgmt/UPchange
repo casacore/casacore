@@ -42,6 +42,7 @@ set usage = 'Usage: UPchange [-c] [-mv] [-t] [-l] [-i] [-mk] [-d] <typ>'
 #   -i  will not check any files in/out, but only work on files in work area
 #   -mk will make the changed files to test if correct
 #   -d  will show some debug information
+#   -n  will only generate the specific data, without executing
 # <typ>.done and <typ>.error give lists of files successfully done or not.
 #
 # See UPinfo for details
@@ -49,14 +50,25 @@ set usage = 'Usage: UPchange [-c] [-mv] [-t] [-l] [-i] [-mk] [-d] <typ>'
 #
 # Get general info
 #
-set x = "`which UPinfo`"
+if (! $?AIPSPATH) then
+   echo "No AIPSPATH environment set, initialize aips++ first"
+   exit 1
+endif
+set x = "`which UPfind`"
 if (-x "$x") then
    set uppath = $x:h
 else
    set x = ( $AIPSPATH )
-   set uppath = $x[1]
+   set uppath = $x[1]/$x[2]/bin
 endif
 unset x
+if ("$uppath" == ".") then
+    set uppath = `pwd`
+endif
+if (! -r $uppath/UPinfo) then
+   echo "Cannot find the UPinfo source script in $uppath"
+   echo "Check your aips++ installation"
+endif
 source $uppath/UPinfo
 if (! $ok) exit 1
 #
@@ -110,7 +122,7 @@ if ($domv) then
       echo "Specify sed patterns to change the names of files to move"
       echo 'Example: s#/Measures#/Quanta#'
       while (1)
-         echo -n 'File pattern: '
+         echo -n 'sed pattern: '
          set x = "$<"
          if ("$x" == "") break
          echo "$x" >> $ldir/${tp}.cfnm
@@ -122,16 +134,20 @@ if ($domv) then
       exit (1)
    endif
    cd $dir/code/
-   foreach i (`cat $ldir/${tp}.sel`)
+   set x = (`cat $ldir/${tp}.sel`)
+   foreach i ($x)
      set j = `echo $i | sed -f $ldir/${tp}.cfnm`
-     if ($upreal) then
+     if ($upreal && ! $nox) then
 	amv -src $i $j
      else
-	echo "amv -src $i $j"
+	echo amv -src $i $j
      endif
    end
    cd $ldir
+   unset x
 endif
+
+if ($nox) exit 0
 
 if ($upaoi) then
    if (! -r $ldir/${tp}.rcs) then
@@ -167,7 +183,7 @@ unset a
 if (-e ${tp}.changed) rm -f ${tp}.changed
 if (! $leav) then
     echo "Change the file names in ${tp}.found (to ${tp}.changed)..."
-    $uppath/UPsed $ldir/$tp ${tp}.found ${tp}.changed force
+    $uppath/UPsed -f $ldir/$tp ${tp}.found ${tp}.changed
 else
     cat ${tp}.found >! ${tp}.changed
 endif
@@ -197,7 +213,7 @@ if (! $upmake) then
 	endif
     endif
     if (-e $i:t) then
-        $uppath/UPsed $ldir/$tp $i:t $i:t force
+        $uppath/UPsed -f $ldir/$tp $i:t $i:t
 	if ($upaoi) $xai $i:t < $ldir/${tp}.rcs
         echo "$i done" >> $ldir/${tp}.done
         if ($xai == rai && $upaoi) rm -f $i:t
@@ -238,7 +254,7 @@ if ($upmake) then
       if ($upaoi) $xao $i:t
       if (-e $i:t) then
           chmod 644 $i:t
-          $uppath/UPsed $ldir/$tp $i:t $i:t force
+          $uppath/UPsed -f $ldir/$tp $i:t $i:t
 	  chmod 444 $i:t
 	  set ok = 0
 	  if (${i:t:e} == cc) then
@@ -271,3 +287,7 @@ if ($upmake) then
 endif
 
 exit 0
+
+
+
+

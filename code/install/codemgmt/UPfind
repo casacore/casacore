@@ -32,7 +32,7 @@ set script = "UPfind"
 set usage = 'Usage: UPfind [-c] [-g] <typ>'
 #
 # UPfind script (must have x allowed)
-# Get all files that have to be updated according to a grep -E rule
+# Get all files that have to be updated according to an egrep rule
 # All .cc, .h and template files are scanned, or the .g if -g given
 # The file list will be in <typ>.raw
 # <typ>.found will have the list without user selected
@@ -42,14 +42,25 @@ set usage = 'Usage: UPfind [-c] [-g] <typ>'
 #
 # Get general info
 #
-set x = "`which UPinfo`"
+if (! $?AIPSPATH) then
+   echo "No AIPSPATH environment set, initialize aips++ first"
+   exit 1
+endif
+set x = "`which UPfind`"
 if (-x "$x") then
    set uppath = $x:h
 else
    set x = ( $AIPSPATH )
-   set uppath = $x[1]
+   set uppath = $x[1]/$x[2]/bin
 endif
 unset x
+if ("$uppath" == ".") then
+    set uppath = `pwd`
+endif
+if (! -r $uppath/UPinfo) then
+   echo "Cannot find the UPinfo source script in $uppath"
+   echo "Check your aips++ installation"
+endif
 source $uppath/UPinfo
 if (! $ok) exit 1
 #
@@ -57,7 +68,7 @@ if (! $ok) exit 1
 #
 if (! -r $ldir/${tp}.up1) then
    touch $ldir/${tp}.up1
-   echo "Specify grep -E expression(s) to find files"
+   echo "Specify egrep  expression(s) to find files"
    echo 'Examples: /Measures/((MUString)|(MVAngle)|(MVTime)|(RotM)|Q|(Un))'
    echo '      or: [(][^(]*[*] *[)][ \t]*0'
    echo 'Multi-line expressions will be ORed'
@@ -71,9 +82,15 @@ if (! -r $ldir/${tp}.up1) then
 endif
 
 if (! -r $ldir/${tp}.rm) then
-   echo "Specify grep pattern for files to be removed from list found."
+   echo "Specify egrep pattern for files to be removed from list found."
    echo "Example: [/]glish[/]"
+   echo "tmplinst files will always be removed"
    echo tmplinst >! $ldir/${tp}.rm
+   echo -n "Remove glish files? (y|n) [y]: "
+   set x = "$<"
+   if ("$x" != "n") then
+      echo '[/]glish[/]' >> $ldir/${tp}.rm
+   endif
    while (1)
 	 echo -n "Remove pattern: "
 	 set x = "$<"
@@ -92,11 +109,11 @@ cd $dir/code
 echo "Starting find..."
 if ($gls) then
    find . -name '*.g' \
-	-exec $upgrep -l -E -f $ldir/${tp}.up1 {} \; \
+	-exec egrep -l -f $ldir/${tp}.up1 {} \; \
 	      >! $ldir/${tp}.raw 
 else
    find . \( \( -name '*.h' -o -name '*.cc' \) -o -name 'templates' \) \
-	-exec $upgrep -l -E -f $ldir/${tp}.up1 {} \; \
+	-exec egrep -l -f $ldir/${tp}.up1 {} \; \
 	      >! $ldir/${tp}.raw 
 endif
 cd $ldir
@@ -106,7 +123,7 @@ echo $a[1] files found in ${tp}.raw
 unset a
 
 echo "Starting selected removal..."
-$upgrep -v -f $ldir/${tp}.rm $ldir/${tp}.raw >! $ldir/${tp}.found
+egrep -v -f $ldir/${tp}.rm $ldir/${tp}.raw >! $ldir/${tp}.found
 
 set a = ( `wc ${tp}.found` )
 echo $a[1] files left in ${tp}.found

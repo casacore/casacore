@@ -44,40 +44,64 @@ set usage = 'Usage: UPsed [-f] <typ> <filename in> [<filename out>]'
 #
 # Get general info
 #
-if ($#arg < 1) then
+if ($# < 1) then
     echo "$usage"
     exit (1)
 endif
 
 if ("$1" == "-f") then
     shift
+    set arg = ($*)
 else
-    source UPinfo
-    if (! $ok) exit 1
+   if (! $?AIPSPATH) then
+      echo "No AIPSPATH environment set, initialize aips++ first"
+      exit 1
+   endif
+   set x = "`which UPfind`"
+   if (-x "$x") then
+     set uppath = $x:h
+   else
+     set x = ( $AIPSPATH )
+     set uppath = $x[1]/$x[2]/bin
+   endif
+   unset x
+   if ("$uppath" == ".") then
+     set uppath = `pwd`
+   endif
+   if (! -r $uppath/UPinfo) then
+     echo "Cannot find the UPinfo source script in $uppath"
+     echo "Check your aips++ installation"
+   endif
+   source $uppath/UPinfo
+   if (! $ok) exit 1
 endif
 #
 # Get specific data
 #
-if ($#arg < 1) then
+if ($#arg < 2) then
     echo "$usage"
     exit (1)
 endif
 
-set fin = $1
-if ($#arg < 2) then
+set tp = $arg[1]
+set fin = $arg[2]
+if ($#arg < 3) then
     set fout = $fin
 else
-    set fout = $2
-endif
-
-if (! -e $tp.sed) then
-   echo "Cannot access $tp.sed"
+    set fout = $arg[3]
 endif
 
 set tmp = $$
+if (! -e $tp.sed) then
+    echo "Cannot access $tp.sed"
+    exit 1
+endif
+
 sed -f $tp.sed $fin >! $tmp.tmp
 
 mv -f $tmp.tmp $fout
+
+unset tmp
 
 exit 0
 
