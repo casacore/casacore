@@ -207,8 +207,13 @@ public:
     void resize(uInt n, Bool forceSmaller)   { resize(n, forceSmaller, True); }
     // </group>
 
-    // Remove a single element from the Block. This may force a new allocations
-    // and copies and hence may be relatively expensive.
+    // Remove a single element from the Block. If forceSmaller is True this
+    // will resize the Block and hence involve new memory allocations. This is
+    // relatively expensive so setting forceSmaller to False is preferred. When
+    // forcesmaller is False the Block is not resized but the elements with an
+    // index above the removed element are shuffled down by one. For backward
+    // compatibility forceSmaller is True by default.
+    // <group>
     void remove(uInt whichOne, Bool forceSmaller)
       {
 	ThrowBlockError::raise(whichOne >= npts, ThrowBlockError::pastend1, 999);
@@ -228,9 +233,8 @@ public:
 	else
 	  objmove(array+whichOne, array + whichOne + 1, npts - whichOne - 1);
       }
-  void remove(uInt whichOne) { remove(whichOne, True); }
-
-
+    void remove(uInt whichOne) { remove(whichOne, True); }
+    // </group>
 
     // Replace the internal storage with a C-array (i.e. pointer).
     // If <src>takeOverStorage</src> is True, The Block assumes that it
