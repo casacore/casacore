@@ -6588,3 +6588,4 @@
 19 111 src mv aips/wcslib/proj.c aips/wcslib/prj.c
 19 111 sys rm lib/libwcs.a
 19 195 src mv trial/fortran/sofa/ aips/fortran/sofa
+19 198 src mv trial/implement/Measures/SofaTest.h aips/implement/Measures/SofaTest.h
