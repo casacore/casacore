@@ -33,6 +33,23 @@
 #include <errno.h>                // needed for errno
 #include <string.h>               // needed for strerror
 
+//
+// PABLO_IO is used to profile the IO performance of the AIPS++ (in particular
+// to help us locate bottlenecks associated with parallel processing)
+//
+// Please see http://www-pablo.cs.uiuc.edu if you need more details
+// You'll need to set PABLO_IO='yes' in the makedefs add addition -I flag to find
+// the header file and -L to resolve with the library.
+//
+
+#ifdef PABLO_IO
+#include "IOTrace.h"
+#else
+#define traceFCLOSE fclose
+#define traceFSEEK fseek
+#define traceFREAD fread
+#define traceFWRITE fwrite
+#endif PABLO_IO
 
 FilebufIO::FilebufIO()
 : itsOwner     (False),
@@ -116,8 +133,8 @@ void FilebufIO::attach (int fd, uInt bufferSize)
     }
     FILE* file = fdopen (fd, opt.chars());
     if (file == 0) {
-	throw (AipsError ("FilebufIO: error in fdopen: " +
-			  String(strerror(errno))));
+       throw (AipsError ("FilebufIO: error in fdopen: " +
+                         String(strerror(errno))));
     }
     attach (file, bufferSize, itsReadable, itsWritable);
     fillSeekable();
@@ -126,7 +143,7 @@ void FilebufIO::attach (int fd, uInt bufferSize)
 void FilebufIO::detach()
 {
     if (itsOwner  &&  itsFile != 0) {
-	fclose (itsFile);
+	traceFCLOSE (itsFile);
 	delete [] itsBuffer;
 	itsFile   = 0;
 	itsBuffer = 0;
@@ -167,10 +184,10 @@ void FilebufIO::write (uInt size, const void* buf)
     // After a read a seek is needed before a write can be done.
     // (requirement of stdio).
     if (itsReadDone) {
-	fseek (itsFile, 0, SEEK_CUR);
+	traceFSEEK (itsFile, 0, SEEK_CUR);
 	itsReadDone = False;
     }
-    if (fwrite (buf, 1, size, itsFile) != size) {
+    if (traceFWRITE (buf, 1, size, itsFile) != size) {
 	throw (AipsError ("FilebufIO: error while writing " + fileName()));
     }
     itsWriteDone = True;
@@ -185,10 +202,10 @@ void FilebufIO::read (uInt size, void* buf)
     // After a write a seek is needed before a read can be done.
     // (requirement of stdio).
     if (itsWriteDone) {
-	fseek (itsFile, 0, SEEK_CUR);
+	traceFSEEK (itsFile, 0, SEEK_CUR);
 	itsWriteDone = False;
     }
-    if (fread (buf, 1, size, itsFile) != size) {
+    if (traceFREAD (buf, 1, size, itsFile) != size) {
 	throw (AipsError ("FilebufIO: error while reading " + fileName()));
     }
     itsReadDone = True;
@@ -203,19 +220,19 @@ Long FilebufIO::seek (Long offset, ByteIO::SeekOption dir)
 	// On the SUN a seek (even at the same place) slows down fread
 	// tremendously. So only seek when needed.
 	if (offset != ftell(itsFile)) {
-	    fseek (itsFile, offset, SEEK_SET);
+	    traceFSEEK (itsFile, offset, SEEK_SET);
 	    itsReadDone  = False;
 	    itsWriteDone = False;
 	}
 	break;
     case ByteIO::End:
-	fseek (itsFile, offset, SEEK_END);
+	traceFSEEK (itsFile, offset, SEEK_END);
 	itsReadDone  = False;
 	itsWriteDone = False;
 	break;
     default:
 	if (offset != 0) {
-	    fseek (itsFile, offset, SEEK_CUR);
+	    traceFSEEK (itsFile, offset, SEEK_CUR);
 	    itsReadDone  = False;
 	    itsWriteDone = False;
 	}
