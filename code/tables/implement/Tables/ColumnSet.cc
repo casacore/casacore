@@ -324,7 +324,7 @@ void ColumnSet::doAddColumn (const ColumnDesc& columnDesc,
 	error = True;
 	msg = x.getMesg();
 	//# Get the column pointer (it may not have been filled yet).
-	//# When #columns has grown, the columnhas been already added.
+	//# When #columns has grown, the column has been already added.
 	//# In that case remove it, which will also delete the column.
 	//# Otherwise delete the column directly.
 	dmcol = col->dataManagerColumn();
@@ -402,8 +402,37 @@ void ColumnSet::addColumn (const TableDesc& tableDesc,
     autoReleaseLock();
 }
 
+void ColumnSet::removeColumn (const String& columnName)
+{
+    if (! tdescPtr_p->isColumn (columnName)) {
+        throw (TableInvOper ("Table::removeColumn; column " + columnName +
+			     " does not exist"));
+    }
+    if (! canRemoveColumn (columnName)) {
+	throw (TableInvOper ("Table::removeColumn; column " + columnName +
+			     " cannot be removed"));
+    }
+    checkWriteLock (True);
+    tdescPtr_p->removeColumn (columnName);
+    PlainColumn* colPtr = COLMAPNAME(columnName);
+    DataManagerColumn* dmcolPtr = colPtr->dataManagerColumn();
+    DataManager* dmPtr = colPtr->dataManager();
+    dmPtr->removeColumn (dmcolPtr);
+    delete colPtr;
+    colMap_p.remove (columnName);
+    autoReleaseLock();
+}
+
 void ColumnSet::renameColumn (const String& newName, const String& oldName)
 {
+    if (! tdescPtr_p->isColumn (oldName)) {
+        throw (TableInvOper ("Table::renameColumn; column " + oldName +
+			     " does not exist"));
+    }
+    if (tdescPtr_p->isColumn (newName)) {
+        throw (TableInvOper ("Table::renameColumn; new column " + newName +
+			     " already exists"));
+    }
     checkWriteLock (True);
     tdescPtr_p->renameColumn (newName, oldName);
     colMap_p.rename (newName, oldName);

@@ -158,6 +158,9 @@ public:
     // It will throw an exception if not possible.
     void removeRow (uInt rownr);
 
+    // Remove the column from the map and the data manager.
+    void removeColumn (const String& columnname);
+
     // Rename the column in the map.
     void renameColumn (const String& newName, const String& oldName);
 
