@@ -3,10 +3,14 @@ Test measure class MBaseline
 Baseline: [100, 10, 0]
 Baseline: Baseline: [100, 10, 0]
 Baseline reference: Reference for an Baseline with Type: ITRF,
-Frame: Epoch: 33281::22:09:46.8619
+Frame: Epoch: 50927::22:18:12.3840
+       Position: [-4.75092e+06, 2.79291e+06, -3.20048e+06]
 Baseline reference: Reference for an Baseline with Type: J2000
 Test Baseline conversion ...
 --------------------------------------
 Converted Baseline: [100, 10, 0]
  to Reference for an Baseline with Type: J2000
- as Baseline: [100, 10, 0]
+ as Baseline: [60.9714, -79.8905, 0.0077784]
+Back      Baseline: [60.9714, -79.8905, 0.0077784]
+ as Baseline: [100, 10, -1.62115e-16]
+========================================================

@@ -51,6 +51,7 @@ main()
 		      MPosition::ITRF);
 	MeasFrame mf(tbm, pos);
 	MVBaseline mvb0(100 ,10, 0);
+	Double cadj = sqrt(10000+100);
 	cout << "Baseline: " << mvb0 << endl;
 
 	MBaseline::Ref mbref0(MBaseline::ITRF, mf);
@@ -85,7 +86,7 @@ main()
 	    MBaseline::Convert backw(rout, rin);
 	    if (!allNearAbs(mb0.getValue().getValue().ac() -
 			 backw(forw(mb0)).getValue().getValue().ac(), 
-			 tvec.ac(), 1e-5)) {
+			 tvec.ac(), 1e-7)) {
 	      cout << MBaseline::showType(i) << " to " <<
 		MBaseline::showType(j) << ": " <<
 		mb0.getValue().getValue().ac() -
@@ -93,10 +94,18 @@ main()
 	    };
 	  };
 	};
+	cout << "========================================================" <<
+	  endl;
  	{
 	  MVDirection mvd0(0.5, 0.5, 0.5);
+	  Double tp;
 	  for (uInt i=MDirection::J2000; i<MDirection::N_Types; i++) {
 	    for (uInt j=MDirection::J2000; j<MDirection::N_Types; j++) {
+	      if (i == MDirection::B1950 || i == MDirection::BMEAN ||
+		  i == MDirection::BTRUE ||
+		  j == MDirection::B1950 || j == MDirection::BMEAN ||
+                  j == MDirection::BTRUE) tp = 1.7e-8;
+	      else tp = 1e-9;
 	      MDirection::Ref rin(i, mf);
 	      MDirection::Ref rout(j, mf);
 	      MDirection mb0(mvd0, rin);
@@ -104,7 +113,7 @@ main()
 	      MDirection::Convert backw(rout, rin);
 	      if (!allNearAbs(mb0.getValue().getValue().ac() -
 			      backw(forw(mb0)).getValue().getValue().ac(), 
-			      tvec.ac(), 1e-5)) {
+			      tvec.ac(), tp)) {
 		cout << MDirection::showType(i) << " to " <<
 		  MDirection::showType(j) << ": " <<
 		  mb0.getValue().getValue().ac() -
