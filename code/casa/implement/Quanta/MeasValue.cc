@@ -45,6 +45,10 @@ Vector<Quantum<Double> > MeasValue::getXRecordValue() const {
   return Vector<Quantum<Double> >(0);
 }
 
+Vector<Quantum<Double> > MeasValue::getTMRecordValue() const {
+  return getRecordValue();
+}
+
 void MeasValue::adjust() {}
 
 void MeasValue::adjust(Double &val) {
