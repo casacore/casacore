@@ -1980,3 +1980,4 @@
 08 088 src mv trial/scripts/displaytext.g trial/implement/guiutils/displaytext.g
 08 095 src mv trial/implement/guiutils/aipsbroswer.g trial/implement/guiutils/aipsbrowser.g
 08 118 src mv doc/notes/206.dir/aips++_gbt.tex doc/notes/206.dir/aips2_gbt.tex
+08 124 sys rm lib/libsds.a
