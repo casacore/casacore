@@ -474,10 +474,14 @@ Bool TSMCube::matches (const PtrBlock<TSMColumn*> idColSet,
             break;
         case TpComplex:
         case TpDComplex:
-            if (idValues.asDComplex (name) != values_p.asDComplex (name)) {
-                return False;
-            }
-            break;
+	    {
+	        const DComplex& idVal = idValues.asDComplex (name);
+	        const DComplex& val = values_p.asDComplex (name);
+                if (idVal != val) {
+	            return False;
+                }
+	    }
+	    break;
         default:
             if (idValues.asdouble (name) != values_p.asdouble (name)) {
                 return False;
