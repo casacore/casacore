@@ -1,5 +1,5 @@
 //# LatticeStatsBase.cc: base class for LatticeStatistics.cc
-//# Copyright (C) 1996,1999,2000
+//# Copyright (C) 1996,1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -91,6 +91,8 @@ Int LatticeStatsBase::toStatisticType (const String& statU)
       statToPlot = MEDIAN;
    } else if (stat.contains("QU")) {
       statToPlot = QUARTILE;
+   } else if (stat.contains("LEL")) {
+      statToPlot = LEL;
    }
    return statToPlot;
 }  
