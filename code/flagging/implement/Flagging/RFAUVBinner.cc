@@ -65,18 +65,18 @@ RFAUVBinner::RFAUVBinner  ( RFChunkStats &ch,const RecordInterface &parm ) :
       report_chan = parm.asInt(RF_PLOTCHAN);
     else 
       report_chan = -1;
-    // setup plotter
-    String filename("uvbinner.ps");
-    os<<"Extra plots will be dumped to file "<<filename<<endl<<LogIO::POST;
-    pgp = PGPlotter(filename+"/ps",80);
-    // setup colormap for PS
-    uInt c1=16,nc=64;
-    Float s0=.5,scale=.5/(nc-1);
-    pgp.scir(c1,c1+nc-1);
-    for( uInt c=0; c<nc; c++ )
-      pgp.scr(c1+c,s0+c*scale,s0+c*scale,s0+c*scale);
-    // setup pane layout
-    pgp.subp(2,2);
+//     // setup plotter
+//     String filename("uvbinner.ps");
+//     os<<"Extra plots will be dumped to file "<<filename<<endl<<LogIO::POST;
+//     pgp = PGPlotter(filename+"/ps",80);
+//     // setup colormap for PS
+//     uInt c1=16,nc=64;
+//     Float s0=.5,scale=.5/(nc-1);
+//     pgp.scir(c1,c1+nc-1);
+//     for( uInt c=0; c<nc; c++ )
+//       pgp.scr(c1+c,s0+c*scale,s0+c*scale,s0+c*scale);
+//     // setup pane layout
+//     pgp.subp(2,2);
     econoplot = isFieldSet(parm,RF_ECONOPLOT);
   }
   else
@@ -262,15 +262,18 @@ RFA::IterMode RFAUVBinner::iterDry (uInt it)
       {
         for( uInt ich=0; ich<num(CHAN); ich++ )
         {
-          Int bc = bincounts(computeBin(uv,yvalue(ich,ifr),ich));
-          if( bc<0 )
-            flag.setFlag(ich,ifr);
-          // add point to plot if in low-pop bin
-          if( plot_chan==(Int)ich && abs(bc)<=econo_density )
+          if( !flag.preFlagged(ich,ifr) )
           {
-            Vector<Float> x(1,uv),y(1,yvalue(ich,ifr));
-            pgp.pt(x,y,DOT);
-            cerr<<"plotting dit\n";
+            Int bc = bincounts(computeBin(uv,yvalue(ich,ifr),ich));
+            if( bc<0 )
+              flag.setFlag(ich,ifr);
+            // add point to plot if in low-pop bin
+            if( plot_chan==(Int)ich && abs(bc)<=econo_density )
+            {
+              plot_px(plot_np) = uv;
+              plot_py(plot_np) = yvalue(ich,ifr);
+              plot_np++;
+            }
           }
         }
       }
@@ -320,16 +323,17 @@ RFA::IterMode RFAUVBinner::endDry ()
 // already binned? then it must have been flagged, so stop
   if( binned )
   {
-    if( plot_chan>=0 )
-      pgp.ebuf();
+    if( plot_chan>=0 && chunk.pgprep().isAttached() )
+    {
+      chunk.setReportPanels(2,2);
+      makePlot(chunk.pgprep(),plot_chan);
+    }
     return RFA::STOP;
   }
 // else compute bad bins
   binned = True;
   for( uInt ich=0; ich<num(CHAN); ich++ )
   {
-    // make debug plot
-    Bool makeplot = (plot_chan==(Int)ich);
     // bins for this channel
     Matrix<Int> bins( bincounts.xyPlane(ich) );
     Int maxcount = max(bins);
@@ -356,107 +360,32 @@ RFA::IterMode RFAUVBinner::endDry ()
     // anything stored in them anyway
     LogicalMatrix wh( bins<=thr_count );
     bins(wh) = - bins(wh);
-    // produce plots
-    if( makeplot )
+    //  set up to produce a plot at end of pass
+    if( plot_chan==(Int)ich )
     {
-      const Float xbox_arr[] = {0,0,1,1,0}, ybox_arr[] = {0,1,1,0,0};
-      const Vector<Float> xbox0(IPosition(1,5),xbox_arr),
-                        ybox0(IPosition(1,5),ybox_arr);
-      // sum up flagged pixels
-      Int bincount=0,pixcount=0;
-      for( uInt i=0; i<bins.ncolumn(); i++ )
-        for( uInt j=0; j<bins.nrow(); j++ )
-          if( bins(j,i)<0 )
-          {
-            bincount++;
-            pixcount+= -bins(j,i);
-          }
-      // make plot of probability distributions
-      Vector<Float> prob(maxcount);
-      convertArray(prob,cumul);
-      prob /= (Float)totcounts(ich);
-      Vector<Float> ind(maxcount);
-      indgen(ind); ind += 1.f;
-      // zoom display into interseting part of curve
-      Float pmax = threshold*5;
-      if( pmax>1 )
-        pmax = 1;
-      Int popmax = 0;
-      while( prob(popmax)<=pmax && popmax<maxcount )
-        popmax++;  // popmax = #{bins<=Pmax}
-      // setup plot
-      pgp.env(1,popmax,0,pmax,0,0);
-      char s1[256],s2[256],s3[256];
-      sprintf(s1,"Bin population (threshold %d)",thr_count);
-      sprintf(s2,"Cumulative probability (%g cut-off)",threshold);
-      sprintf(s3,"%d of %d points in %d bins flagged",pixcount,totcounts(ich),bincount);
-      pgp.lab(s1,s2,s3);
-      // plot probability curve
-      pgp.line(ind(Slice(0,popmax)),prob(Slice(0,popmax)));
-      // plot cut-off points
-      pgp.sls(LINE_DOT);
-      Vector<Float> xx(2,thr_count+.5);
-      Vector<Float> yy(2,0); yy(1)=1;
-      pgp.line(xx,yy);
-      xx(0)=1; xx(1)=thr_count+.5;
-      yy=threshold;
-      pgp.line(xx,yy);
-      // plot full curve in a sub-box corner
-      Float xs=(popmax-1)/3.0;
-      Float ys=pmax/3.0;
-      Float x0=popmax-1.1*xs;
-      Float y0=.1*ys;
-      pgp.sls(LINE_FULL);
-      pgp.line(xbox0*xs+x0,ybox0*ys+y0); // box around graph
-      pgp.line(ind*(xs/maxcount)+x0,prob*ys+y0); // graph
-      pgp.sch(.5);
-      Vector<Float> cs( pgp.qcs(4)/4 );
-      pgp.ptxt(x0-cs(0),y0,0,1,"0");
-      pgp.ptxt(x0-cs(0),y0+ys-cs(1)*4,0,1,"1");
-      pgp.ptxt(x0,y0+ys+cs(1),0,0,"0");
-      pgp.ptxt(x0+xs,y0+ys+cs(1),0,1,String::toString(maxcount));
-      pgp.sch(1);
-      // make plot of bin density and flagged bins
-      pgp.env(uvmin(ich),uvmax(ich),ymin(ich),ymax(ich),0,0);
-      pgp.bbuf();
-      sprintf(s1,"%s chunk %d, channel %d, %d by %d bins",
-          chunk.msName().chars(),chunk.nchunk(),ich,nbin_uv,nbin_y);
-      pgp.lab("UV distance",RFDataMapper::descExpression(),s1);
-      // in econo-plot mode, plot image of bin density
+      plot_thr_count = thr_count;
+      plot_prob.resize(maxcount);
+      convertArray(plot_prob,cumul);
+      plot_prob /= (Float)totcounts(ich);
+      // in econoplot mode, we only want the 10% least populous
+      // bins to be plotted as individual dots, the rest as just 
+      // a density image. Compute this critical density
       if( econoplot )
       {
-        Matrix<Float> img( bins.shape() );
-        convertArray(img,bins);
-        img += maxcount*.8f; // shift up (for darker greyscales)
-        // we want only the least-populous 10% to be plotted as points,
-        // the rest as an image. Find the critical density
-        
-        // only plot bins with higher that certain density. For the rest, point will be plotted
-        Int econo_density=0;
+        econo_density=0;
         Float cutoff = totcounts(ich)*.1;
         while( cumul(econo_density)<=cutoff && econo_density<maxcount )
           econo_density++;
-        cerr<<"econo_density: "<<econo_density<<endl;
-        // zero the low values, and push the high values up
-        img( bins<=econo_density ) = 0;
-        // setup TR function and plot the image
-        const Float tr_array[] = {uvmin(ich)-uvbinsize(ich)/2,uvbinsize(ich),0,
-                                ymin(ich)-ybinsize(ich)/2,0,ybinsize(ich) }; 
-        const Vector<Float> tr(IPosition(1,6),tr_array);
-        pgp.imag(img,maxcount,0,tr);
-        // pgp.wedg("RI",.5,4,maxcount,0,"");
       }
       else
         econo_density = maxcount;
-      // plot boxes around flagged bins
-      Vector<Float> xbox( xbox0*uvbinsize(ich) ),
-                   ybox( ybox0*ybinsize(ich) );
-      for( uInt i=0; i<bins.ncolumn(); i++ )
-        for( uInt j=0; j<bins.nrow(); j++ )
-          if( bins(j,i)<0 )
-            pgp.line(xbox+uvmin(ich)+j*uvbinsize(ich),ybox+ymin(ich)+i*ybinsize(ich));
-      // additional outliers will be plotted during the flagging
-      pgp.bbuf();
+      // allocate px and py arrays to accumulate coordinates of points
+      // in the first <econo_density> bins
+      Int np = cumul(econo_density);
+      plot_px.resize(np);
+      plot_py.resize(np);
+      plot_np=0;
+      cerr<<name()<<": plot_np expected "<<np<<" "<<cumul(econo_density)<<endl;
     }
   }
 // request another dry pass to do the flags
@@ -505,5 +434,106 @@ const RecordInterface & RFAUVBinner::getDefaults ()
   return rec;
 }
 
+void RFAUVBinner::makePlot ( PGPlotterInterface &pgp,uInt ich )
+{
+  const Float xbox_arr[] = {0,0,1,1,0}, ybox_arr[] = {0,1,1,0,0};
+  const Vector<Float> xbox0(IPosition(1,5),xbox_arr),
+                    ybox0(IPosition(1,5),ybox_arr);
+  Matrix<Int> bins( bincounts.xyPlane(ich) );
+  char s1[256],s2[256],s3[256];
+  Int maxcount = plot_prob.nelements();
   
+// make plot of bin density and flagged bins
+  pgp.env(uvmin(ich),uvmax(ich),ymin(ich),ymax(ich),0,0);
+  pgp.bbuf();
+  sprintf(s1,"%s chunk %d, channel %d, %d by %d bins",
+      chunk.msName().chars(),chunk.nchunk(),ich,nbin_uv,nbin_y);
+  pgp.lab("UV distance",RFDataMapper::descExpression(),s1);
+  // in econo-plot mode, plot image of bin density
+  if( econoplot )
+  {
+    Matrix<Float> img( bins.shape() );
+    convertArray(img,bins);
+    img += maxcount*.5f; // shift up (for darker greyscales)
+    // we want only the least-populous 10% to be plotted as points,
+    // the rest as an image. use the critical density
+    img( bins<=econo_density ) = 0;
+    // setup TR function and plot the image
+    const Float tr_array[] = {uvmin(ich)-uvbinsize(ich)/2,uvbinsize(ich),0,
+                            ymin(ich)-ybinsize(ich)/2,0,ybinsize(ich) }; 
+    const Vector<Float> tr(IPosition(1,6),tr_array);
+    pgp.imag(img,maxcount,0,tr);
+    // pgp.wedg("RI",.5,4,maxcount,0,"");
+  }
+  // plot individual points
+  if( plot_np != plot_px.nelements() )
+  {
+    cerr<<name()<<": plot_np stats: "<<plot_np<<"/"<<plot_px.nelements()<<endl;
+    plot_px.resize(plot_np,True);
+    plot_py.resize(plot_np,True);
+  }
+  pgp.pt( plot_px,plot_py,DOT );
+  // plot boxes around flagged bins
+  Vector<Float> xbox( xbox0*uvbinsize(ich) ),
+               ybox( ybox0*ybinsize(ich) );
+  for( uInt i=0; i<bins.ncolumn(); i++ )
+    for( uInt j=0; j<bins.nrow(); j++ )
+      if( bins(j,i)<0 )
+        pgp.line(xbox+uvmin(ich)+j*uvbinsize(ich),ybox+ymin(ich)+i*ybinsize(ich));
+  
+// make probability plot
+  // sum up flagged pixels
+  Int bincount=0,pixcount=0;
+  for( uInt i=0; i<bins.ncolumn(); i++ )
+    for( uInt j=0; j<bins.nrow(); j++ )
+      if( bins(j,i)<0 )
+      {
+        bincount++;
+        pixcount+= -bins(j,i);
+      }
+  // make plot of probability distributions
+  Vector<Float> ind(maxcount);
+  indgen(ind); ind += 1.f;
+  // zoom display into interseting part of curve
+  Float pmax = threshold*5;
+  if( pmax>1 )
+    pmax = 1;
+  Int popmax = 0;
+  while( plot_prob(popmax)<=pmax && popmax<maxcount )
+    popmax++;  // popmax = #{bins<=Pmax}
+  // setup plot
+  pgp.env(1,popmax,0,pmax,0,0);
+  sprintf(s1,"Bin population (threshold %d)",plot_thr_count);
+  sprintf(s2,"Cumulative probability (%g cut-off)",threshold);
+  sprintf(s3,"%d of %d points in %d bins flagged",pixcount,totcounts(ich),bincount);
+  pgp.lab(s1,s2,s3);
+  // plot probability curve
+  pgp.line(ind(Slice(0,popmax)),plot_prob(Slice(0,popmax)));
+  // plot cut-off points
+  pgp.sls(LINE_DOT);
+  Vector<Float> xx(2,plot_thr_count+.5);
+  Vector<Float> yy(2,0); yy(1)=1;
+  pgp.line(xx,yy);
+  xx(0)=1; xx(1)=plot_thr_count+.5;
+  yy=threshold;
+  pgp.line(xx,yy);
+  // plot full curve in a sub-box corner
+  Float xs=(popmax-1)/3.0;
+  Float ys=pmax/3.0;
+  Float x0=popmax-1.1*xs;
+  Float y0=.1*ys;
+  pgp.sls(LINE_FULL);
+  pgp.line(xbox0*xs+x0,ybox0*ys+y0); // box around graph
+  pgp.line(ind*(xs/maxcount)+x0,plot_prob*ys+y0); // graph
+  pgp.sch(.5);
+  Vector<Float> cs( pgp.qcs(4)/4 );
+  pgp.ptxt(x0-cs(0),y0,0,1,"0");
+  pgp.ptxt(x0-cs(0),y0+ys-cs(1)*4,0,1,"1");
+  pgp.ptxt(x0,y0+ys+cs(1),0,0,"0");
+  pgp.ptxt(x0+xs,y0+ys+cs(1),0,1,String::toString(maxcount));
+  pgp.sch(1);
 
+  plot_px.resize();
+  plot_py.resize();
+  plot_prob.resize();
+}
