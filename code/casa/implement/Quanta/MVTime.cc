@@ -1,5 +1,5 @@
 //# MVTime.cc: Class to handle date/time type conversions and I/O
-//# Copyright (C) 1996,1997,1998,1999,2000,2001
+//# Copyright (C) 1996,1997,1998,1999,2000,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -330,7 +330,13 @@ void MVTime::print(ostream &oss,
     uInt inprec = form.prec;
     uInt intyp = form.typ;
     uInt i1 = intyp & ~MVTime::MOD_MASK;
-    MVTime loc(val);
+    // Next is to try to solve the problem with the Intel's indecision
+    // arithmetic
+    Int locday = ifloor(val);
+    MVTime loc = Double(locday);
+    Double loctmp((val - loc.val)*C::circle);
+    MVAngle atmp(loctmp);
+    atmp(0.0);
     if ((intyp & MVTime::LOCAL) == MVTime::LOCAL) {
       loc = MVTime(val + MVTime::timeZone());
     };
@@ -378,7 +384,6 @@ void MVTime::print(ostream &oss,
     };
     if ((intyp & MVTime::NO_TIME) != MVTime::NO_TIME) {
 	MVAngle::Format ftmp((MVAngle::formatTypes) intyp, inprec);
-	MVAngle atmp(loc.val * C::circle); atmp();
 	atmp.print(oss, ftmp);
     };
 }
