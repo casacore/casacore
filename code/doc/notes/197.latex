@@ -16,7 +16,7 @@
 \newcommand{\gsURL}{../gettingstarted/gettingstarted.html}
 \newcommand{\glossaryURL}{../../docs/glossary/glossary.html}
 \newcommand{\userrefmanualURL}{../../docs/user/Refman/Refman.html}
-\newcommand{\GlishmanualURL}{../../docs/reference/Glish/Glish.html}
+\newcommand{\GlishmanualURL}{../../reference/Glish/Glish.html}
 \newcommand{\GlishtutorialURL}{../../notes/195/195.html}
 %
 % URLS to Help system
