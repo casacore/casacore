@@ -4054,3 +4054,4 @@
 14 065 src mv trial/implement/DisplayCanvas/makefile trialdisplay/implement/DisplayCanvas/makefile
 14 065 src mv trial/implement/DisplayDatas/ActiveCaching2dDD.h trialdisplay/implement/DisplayDatas/ActiveCaching2dDD.h
 14 065 src mv trial/implement/DisplayDatas/AxesDisplayData.h trialdisplay/implement/DisplayDatas/AxesDisplayData.h
+14 065 src mv trial/implement/DisplayDatas/AxesDisplayMethod.h trialdisplay/implement/DisplayDatas/AxesDisplayMethod.h
