@@ -1,5 +1,5 @@
 //# Dlist.h: Doubly linked list
-//# Copyright (C) 1993,1994,1995,1999
+//# Copyright (C) 1993,1994,1995,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -49,8 +49,8 @@ template<class t> class Dlist : public List<t> {
 
 rtti_dcl_init_a1(ConstDlistIter);
 
-// <summary>
-//    <b>Deprecated</b> use <linkto class=ConstListIter>ConstListIter</linkto> instead
+// <summary><b>Deprecated</b> use 
+// <linkto class=ConstListIter>ConstListIter</linkto>
 // </summary>
 // <h2>Deprecated use <linkto class=ConstListIter><src>ConstListIter</src></linkto> instead.</h2>
 //
