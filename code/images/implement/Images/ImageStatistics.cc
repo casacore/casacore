@@ -1114,7 +1114,7 @@ Bool ImageStatistics<T>::generateStorageImage()
 
    Int newOutAxis = pStoreImage_p->ndim()-1;
    LatticeApply<T>::tiledApply(*pStoreImage_p, *pInImage_p, 
-                               collapser, IPosition(cursorAxes_p), 
+                               collapser, IPosition(cursorAxes_p),
                                newOutAxis, pProgressMeter);
    if (pProgressMeter !=0) {
       delete pProgressMeter;
@@ -1352,7 +1352,7 @@ template <class T>
 void ImageStatistics<T>::multiColourYLabel (String& label,      
                                             PGPlotter& plotter,
                                             const String& LRLoc, 
-                                            const Vector<Int>& colours,
+                                            const Vector<uInt>& colours,
                                             const Int& nLabs)
 
 //
@@ -1718,10 +1718,10 @@ Bool ImageStatistics<T>::plotStats (const IPosition& dPos,
    
 // Do plots.  Here we convert to real 
 
-   Vector<Int> lCols(nL);
-   Vector<Int> rCols(nR);
-   int ls = 0;
-   int i = -1;
+   Vector<uInt> lCols(nL);
+   Vector<uInt> rCols(nR);
+   Int ls = 0;
+   Int i = -1;
    Bool initColours = True;
    plotter.page();
 
