@@ -1,5 +1,5 @@
 //# LargeIOFuncDef.cc: Header to define possible large IO function names
-//# Copyright (C) 2001,2002
+//# Copyright (C) 2001,2002,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -41,18 +41,28 @@
 #   define _LARGEFILE64_SOURCE
 #  endif
 # endif
-# define traceFOPEN fopen64
-# define traceFCLOSE fclose
-# define traceFSEEK fseeko64
-# define traceFTELL ftello64
-# define traceFREAD fread
-# define traceFWRITE fwrite
-# define traceREAD read
-# define traceWRITE write
-# define trace2OPEN open64
-# define traceLSEEK lseek64
-# define trace3OPEN open64
-# define traceCLOSE close
+# ifdef PABLO_IO
+#  include "IOTrace.h"
+#  define traceFOPEN fopen64
+#  define traceFSEEK fseeko64
+#  define traceFTELL ftello64
+#  define trace2OPEN open64
+#  define traceLSEEK lseek64
+#  define trace3OPEN open64
+# else
+#  define traceFOPEN fopen64
+#  define traceFCLOSE fclose
+#  define traceFSEEK fseeko64
+#  define traceFTELL ftello64
+#  define traceFREAD fread
+#  define traceFWRITE fwrite
+#  define traceREAD read
+#  define traceWRITE write
+#  define trace2OPEN open64
+#  define traceLSEEK lseek64
+#  define trace3OPEN open64
+#  define traceCLOSE close
+# endif
 #else
 # define traceFTELL ftell
 # ifdef PABLO_IO
