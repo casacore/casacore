@@ -115,6 +115,7 @@ void SDFeedHandler::fill(const Record &row, Int antennaId, Int spwinId, const Ve
 	Vector<String> polType;
 	stokesToPolType(stokes, polType);
 	*numRecpKey_p = polType.nelements();
+	nrecpt_p = *numRecpKey_p;
 	Bool found = False;
 	feedId_p = -1;
 	Vector<uInt> foundRows = index_p->getRowNumbers();
@@ -129,8 +130,14 @@ void SDFeedHandler::fill(const Record &row, Int antennaId, Int spwinId, const Ve
 	    // turn this into an array
 	    istrstream istr((*polarizationTypeField_p).chars(), (*polarizationTypeField_p).length());
 	    Array<String> polTypeArr;
-	    istr >> polTypeArr;
 	    // decode it - [#,#,#,#...] - individual brackets separated by commas
+	    istr >> polTypeArr;
+	    // if polTypeArr is empty, interpret that as sufficient unknown values so
+	    // that polTypeArr has same shape as polType
+	    if (polTypeArr.nelements() == 0) {
+		polTypeArr.resize(polType.shape());
+		polTypeArr = Stokes::name(Stokes::Undefined);
+	    }
 	    doMSCheck = allEQ(polType, polTypeArr);
 	}
 	while (!found && whichOne<foundRows.nelements()) {
@@ -172,9 +179,8 @@ void SDFeedHandler::fill(const Record &row, Int antennaId, Int spwinId, const Ve
 			}
 		    }
 		}
-	    } else {
-		whichOne++;
 	    }
+	    if (!found) whichOne++;
 	}
 	// if it was found, nothing else to do
 	if (!found) {
@@ -206,7 +212,6 @@ void SDFeedHandler::fill(const Record &row, Int antennaId, Int spwinId, const Ve
 		msFeedCols_p->interval().put(newRow, 0.0);
 	    }
 	    msFeedCols_p->numReceptors().put(newRow, *numRecpKey_p);
-	    nrecpt_p = *numRecpKey_p;
 	    if (beamIdField_p.isAttached()) {
 		msFeedCols_p->beamId().put(newRow, *beamIdField_p);
 	    } else {
