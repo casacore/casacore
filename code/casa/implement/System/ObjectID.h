@@ -29,13 +29,16 @@
 #define AIPS_OBJECT_ID_H
 
 #include <aips/aips.h>
+#include <aips/Utilities/String.h>
 
-template<class T> class Vector;
+class RecordInterface;
+
 #if defined(AIPS_STDLIB)
 #include <iosfwd.h>
 #else
 imported class ostream;
 #endif
+class GlishRecord;
 
 // <summary> 
 // ObjectID:  A unique identifier for distributed and other objects.
@@ -70,8 +73,8 @@ imported class ostream;
 // creating processes address space.
 // </motivation>
 //
-// <todo asof="1996March18">
-//   <li> Hostname would be more useful than hostid.
+// <todo asof="1997/09/23">
+//   <li> Nothing (hostid -> hostname on this date).
 // </todo>
 
 class ObjectID
@@ -81,7 +84,7 @@ public:
     // a unique ObjectID.
     ObjectID(Bool makeNull = False);
     // Create explicitly from the provided constituents.
-    ObjectID(Int sequence, Int pid, Int time, Int hostid);
+    ObjectID(Int sequence, Int pid, Int time, const String &hostname);
 
     // Copy <src>other</src>. Note that if the ObjectID is embedded inside an
     // object, the enclosing object probably does not want to copy the ObjectID
@@ -101,11 +104,41 @@ public:
     Bool operator!=(const ObjectID &other) const;
     // </group>
 
-    // ObjectID's must be handed across the network, etc., so it must be
-    // straightforward to save/restore an object from a canonical data type.
+    // It is useful to interconvert between strings and ObjecID's, e.g. when
+    // saving to FITS or writing to a table. The form of the string is:
+    // <srcblock>
+    // sequence=123 host=hostname pid=pid time=time
+    // </srcblock>
+    // However, in general user code should not depend on the exact form of
+    // the string.
     // <group>
-    const Vector<Int> &toVector() const;
-    void fromVector(const Vector<Int> &vec);
+    // If this fails, an error message is set and the ObjectID is the null
+    // ObjectID.
+    Bool fromString(String &error, const String &in);
+    // Note that <src>out</src> is zero'd before it is set.
+    void toString(String &out) const;
+    // </group>
+
+    // It is useful to be able to interconvert between ObjectID's and Records.
+    // At present the Tasking system only uses GlishRecords, but we might want
+    // to change this to RecordInterfaces at some point. Note that if you do
+    // not call this function you will not link against Glish, as it is in its
+    // own .cc file.
+    //
+    // Although you shouldn't need to know the exact form of the record, it is:
+    // <srcblock>
+    // [_seq=sequence, _pid=pid, _time=time, _host=hostname]
+    // </srcblock>
+    // Note that the prefix ("_") may be defined.
+    //
+    // This mapping may change with time. If any of the above fields already
+    // exist they will be overwritten when writing. When reading, all fields
+    // must be set. The field names begin with an underscore so that they may
+    // may be set into the same record as "user" data.
+    // <group>
+    void toRecord(GlishRecord &out, const char *prefix = "_") const;
+    Bool fromRecord(String &error, const GlishRecord &in, 
+		    const char*prefix = "_");
     // </group>
 
     // Ordinarily the user does not need to get at the exact state of the,
@@ -114,24 +147,24 @@ public:
     Int sequence() const;
     Int pid() const;
     Int creationTime() const;
-    Int hostid() const;
+    const String &hostName() const;
     // </group>
+
+    // Interconvert between strings and object ID's. Useful for
+    // various persistence mechanisms.
 private:
     Int sequence_number_p;
     Int process_id_p;
     Int creation_time_p;
-    Int hostid_p;
+    String hostname_p;
 
-    // Break into functions to isolate portability problems
+    // Make a unique sequence number, returns 0 on first cal, 1 on next, ...
     static Int sequence_number();
-    static Int process_id();
-    static Int time();
-    static Int host_id();
 };
 
-ostream &operator<<(ostream &os, const ObjectID &);
-
 uInt hashFunc(const ObjectID &);
+
+ostream &operator<<(ostream &os, const ObjectID &id);
 
 //# Inlines
 
@@ -150,9 +183,9 @@ inline Int ObjectID::creationTime() const
     return creation_time_p;
 }
 
-inline Int ObjectID::hostid() const
+inline const String &ObjectID::hostName() const
 {
-    return hostid_p;
+    return hostname_p;
 }
 
 #endif

@@ -25,40 +25,36 @@
 //#
 
 #include <aips/Tasking/ObjectID.h>
-#include <aips/Arrays/Vector.h>
-#include <aips/OS/Time.h>
+#include <aips/OS/HostInfo.h>
+#include <aips/Utilities/Regex.h>
 #include <aips/Utilities/Assert.h>
+#include <aips/Containers/RecordInterface.h>
 
-#include <unistd.h>
+#include <strstream.h>
 #include <iostream.h>
 
-#if defined(AIPS_SOLARIS)
-#include <sys/systeminfo.h>
-#include <stdio.h>
-#endif
-
-
 ObjectID::ObjectID(Bool makeNull)
-  : sequence_number_p(0), process_id_p(0), creation_time_p(0), hostid_p(0)
+  : sequence_number_p(0), process_id_p(0), creation_time_p(0), hostname_p("")
 {
     if (! makeNull) {
         sequence_number_p = sequence_number();
-	process_id_p = process_id();
-	creation_time_p = time();
-	hostid_p = hostid();
+	process_id_p = HostInfo::processID();
+	creation_time_p = Int(HostInfo::secondsFrom1970() + 0.499);
+	hostname_p = HostInfo::hostName();
     }
 }
 
-ObjectID::ObjectID(Int sequence, Int pid, Int time, Int hostid)
+ObjectID::ObjectID(Int sequence, Int pid, Int time, const String &hostname)
   : sequence_number_p(sequence), process_id_p(pid), creation_time_p(time),
-    hostid_p(hostid)
+    hostname_p(hostname)
 {
     // Nothing
 }
 
 ObjectID::ObjectID(const ObjectID &other)
-  : sequence_number_p(other.sequence_number_p), process_id_p(other.process_id_p),
-    creation_time_p(other.creation_time_p), hostid_p(other.hostid_p)
+  : sequence_number_p(other.sequence_number_p), 
+    process_id_p(other.process_id_p),
+    creation_time_p(other.creation_time_p), hostname_p(other.hostname_p)
 {
     // Nothing
 }
@@ -69,7 +65,7 @@ ObjectID &ObjectID::operator=(const ObjectID &other)
       sequence_number_p = other.sequence_number_p;
       process_id_p = other.process_id_p;
       creation_time_p = other.creation_time_p;
-      hostid_p = other.hostid_p;
+      hostname_p = other.hostname_p;
     }
     return *this;
 }
@@ -79,7 +75,7 @@ Bool ObjectID::isNull() const
     return ToBool(sequence_number_p == 0 &&
 		  process_id_p == 0 &&
 		  creation_time_p == 0 &&
-		  hostid_p == 0);
+		  hostname_p == "");
 }
 
 Bool ObjectID::operator==(const ObjectID &other) const
@@ -87,33 +83,12 @@ Bool ObjectID::operator==(const ObjectID &other) const
     return ToBool(sequence_number_p == other.sequence_number_p &&
 		  process_id_p == other.process_id_p &&
 		  creation_time_p == other.creation_time_p &&
-		  hostid_p == other.hostid_p);
+		  hostname_p == other.hostname_p);
 }
 
 Bool ObjectID::operator!=(const ObjectID &other) const
 {
     return ToBool(! (*this == other));
-}
-
-// Move this out of the object since it can cause problems for our
-// exception emulation.
-    static Vector<Int> state(4);
-const Vector<Int> &ObjectID::toVector() const
-{
-    state(0) = sequence_number_p;
-    state(1) = process_id_p;
-    state(2) = creation_time_p;
-    state(3) = hostid_p;
-    return state;
-}
-
-void ObjectID::fromVector(const Vector<Int> &vec)
-{
-    AlwaysAssert(vec.nelements() >= 4, AipsError);
-    sequence_number_p = vec(0);
-    process_id_p = vec(1);
-    creation_time_p = vec(2);
-    hostid_p = vec(3);
 }
 
 Int ObjectID::sequence_number()
@@ -123,40 +98,118 @@ Int ObjectID::sequence_number()
     return seqno;
 }
 
-Int ObjectID::process_id()
+void ObjectID::toString(String &out) const
 {
-  // Should move out into OS/ package.
-    return getpid();
+    out = "";
+    if (isNull()) {
+	return;
+    }
+
+    ostrstream os;
+    os << "sequence=" << sequence() << " host=" << hostName() <<
+	" pid=" << pid() << " time=" << creationTime();
+    out = os;
 }
 
-// Move out of func in case it causes our exception emulation problems.
-Int ObjectID::time()
+static Bool toInt(Int &val, String &error, const String &in)
 {
-    Time epoch(1990, 1, 1);
-    Time now;
-    return Int(now - epoch);
+    error = "";
+    val = 0;
+    Int len = in.length();
+    if (len == 0) {
+	error = "No digits in number.";
+	return False;
+    }
+    for (Int i=0; i<len; i++) {
+	char digit = in[i];
+	Int diff = digit - '0';
+	if (diff < 0 || diff > 9) {
+	    error = String("Illegal character (") + digit + ") in number";
+	    return False;
+	}
+	val = 10*val + diff;
+    }
+    return True;
 }
 
-Int ObjectID::host_id()
+Bool ObjectID::fromString(String &error, const String &in)
 {
-  // Not very portable yet
-#if defined (AIPS_SOLARIS)
-  char hostid[32];
-  Int  hostidcount = 32;
-  Int resultcount = sysinfo( SI_HW_SERIAL, hostid, hostidcount );
-  Int id;
-  sscanf( hostid, "%i", &id );
-#else
-  Int id = (Int)gethostid();
-#endif
-  return id;
+    error = "";
+    *this = ObjectID(True);
+    if (in == "") {
+	return True; // Null string is the null object!
+    }
+
+    // Allow for extra fields.
+    String parsed[8]; // keyword=value for each String
+    Int found = split(in, parsed, sizeof(parsed)/sizeof(String), RXwhite);
+    if (found <= 0) {
+	error = String("Could not parse string: ") + in;
+	return False;
+    }
+
+    Bool foundSeq = False, foundHost = False, foundPid = False, 
+	foundTime = False;
+    String host;
+    Int seq, pid, time;
+    Bool ok = True;
+
+    
+    String splitup[2];
+    
+    String &key = splitup[0];
+    String &val = splitup[1];
+    for (Int i=0; ok && i<found; i++) {
+	key = ""; val = "";
+	split(parsed[i], splitup, 2, "=");
+	val.gsub(" ", "");
+	if (key == "sequence") {
+	    if (foundSeq || !toInt(seq, error, val)) {
+		ok = False;
+		error = String("Error parsing 'sequence': ") + error;
+	    } else {
+		foundSeq = True;
+	    }
+	} else if (key == "host") {
+	    if (!foundHost && val != "") {
+		host = val;
+		foundHost = True;
+	    } else {
+		ok = False;
+		error = String("Illegal host field in: ") + in;
+	    }
+	} else if (key == "pid") {
+	    if (foundPid || !toInt(pid, error, val)) {
+		ok = False;
+		error = String("Error parsing 'pid': ") + error;
+	    } else {
+		foundPid = True;
+	    }
+	} else if (key == "time") {
+	    if (foundTime || !toInt(time, error, val)) {
+		ok = False;
+		error = String("Error parsing 'time': ") + error;
+	    } else {
+		foundTime = True;
+	    }
+	}
+    }
+
+    if (ok) {
+	if (foundSeq && foundPid && foundHost && foundTime) {
+	    *this = ObjectID(seq, pid, time, host);
+	} else {
+	    ok = False;
+	    error = "Could not find all of sequence, host, pid, and time";
+	}
+    }
+    return ok;
 }
 
 ostream &operator<<(ostream &os, const ObjectID &id)
 {
-    os << "[pid=" << id.pid() << " sequence=" << id.sequence() << 
-      " creationTime=" << id.creationTime() << " hostid" <<
-      id.hostid() << "]";
+    String tmp;
+    id.toString(tmp);
+    cout << "[" << tmp << "]";
     return os;
 }
-
