@@ -40,7 +40,6 @@
 template<class T>
 ROArrayColumn<T>::ROArrayColumn()
 : ROTableColumn (),
-  canChangeShape_p         (False),
   canAccessSlice_p         (new Bool(False)),
   canAccessColumn_p        (new Bool(False)),
   canAccessColumnSlice_p   (new Bool(False)),
@@ -61,7 +60,6 @@ ROArrayColumn<T>::ROArrayColumn (const Table& tab,
   reaskAccessColumnSlice_p (new Bool(True))
 {
     checkDataType();
-    canChangeShape_p = baseColPtr_p->canChangeShape();
 }
 
 template<class T>
@@ -75,13 +73,11 @@ ROArrayColumn<T>::ROArrayColumn (const ROTableColumn& column)
   reaskAccessColumnSlice_p (new Bool(True))
 {
     checkDataType();
-    canChangeShape_p = baseColPtr_p->canChangeShape();
 }
 
 template<class T>
 ROArrayColumn<T>::ROArrayColumn (const ROArrayColumn<T>& that)
 : ROTableColumn (that),
-  canChangeShape_p         (that.canChangeShape_p),
   canAccessSlice_p         (new Bool (*that.canAccessSlice_p)),
   canAccessColumn_p        (new Bool (*that.canAccessColumn_p)),
   canAccessColumnSlice_p   (new Bool (*that.canAccessColumnSlice_p)),
@@ -100,7 +96,6 @@ template<class T>
 void ROArrayColumn<T>::reference (const ROArrayColumn<T>& that)
 {
     ROTableColumn::reference (that);
-    canChangeShape_p          = that.canChangeShape_p;
     *canAccessSlice_p         = *that.canAccessSlice_p;
     *canAccessColumn_p        = *that.canAccessColumn_p;
     *canAccessColumnSlice_p   = *that.canAccessColumnSlice_p;
@@ -185,7 +180,8 @@ void ROArrayColumn<T>::getSlice (uInt rownr, const Slicer& arraySection,
     //# Extend the array if empty.
     IPosition arrayShape (shape(rownr));
     IPosition blc,trc,inc;
-    IPosition shp = arraySection.inferShapeFromSource (arrayShape, blc,trc,inc);
+    IPosition shp = arraySection.inferShapeFromSource (arrayShape,
+						       blc, trc, inc);
     if (! shp.isEqual (arr.shape())) {
 	if (resize  ||  arr.nelements() == 0) {
 	    arr.resize (shp);
@@ -200,7 +196,18 @@ void ROArrayColumn<T>::getSlice (uInt rownr, const Slicer& arraySection,
     //# Access the slice if possible.
     //# Otherwise get the entire array and slice it.
     if (*canAccessSlice_p) {
-	baseColPtr_p->getSlice (rownr, arraySection, &arr);
+        //# Creating a Slicer is somewhat expensive, so use the slicer
+        //# itself if it contains no undefined values.
+        if (arraySection.isFixed()) {
+	    baseColPtr_p->getSlice (rownr,
+				    arraySection,
+				    &arr);
+	} else {
+	    baseColPtr_p->getSlice (rownr,
+				    Slicer(blc, trc, inc,
+					   Slicer::endIsLast),
+				    &arr);
+	}
     }else{
 	Array<T> array(arrayShape);
 	baseColPtr_p->get (rownr, &array);
@@ -297,15 +304,14 @@ void ROArrayColumn<T>::getColumn (const Slicer& arraySection,
     }
     //# Access the column slice if possible.
     //# Otherwise fill the entire array by looping through all cells.
+    Slicer defSlicer (blc, trc, inc, Slicer::endIsLast);
     if (*canAccessColumnSlice_p) {
-	baseColPtr_p->getColumnSlice (Slicer(blc, trc, inc,
-					     Slicer::endIsLast),
-				      &arr);
+        baseColPtr_p->getColumnSlice (defSlicer, &arr);
     }else{
         if (arr.nelements() > 0) {
 	    ArrayIterator<T> iter(arr, arr.ndim()-1);
 	    for (uInt rownr=0; rownr<nrrow; rownr++) {
-	        getSlice (rownr, arraySection, iter.array());
+	        baseColPtr_p->getSlice (rownr, defSlicer, &(iter.array()));
 		iter.next();
 	    }
 	}
@@ -515,13 +521,13 @@ void ArrayColumn<T>::put (uInt rownr, const Array<T>& arr)
     //# Define the shape if not defined yet.
     //# If defined, check if shape conforms.
     if (!isDefined(rownr)) {
-	setShape (rownr, arr.shape());
+	baseColPtr_p->setShape (rownr, arr.shape());
     }else{
 	if (! arr.shape().isEqual (baseColPtr_p->shape (rownr))) {
 	    if (!canChangeShape_p) {
 		throw (TableArrayConformanceError("ArrayColumn::put"));
 	    }
-	    setShape (rownr, arr.shape());
+	    baseColPtr_p->setShape (rownr, arr.shape());
 	}
     }
     baseColPtr_p->put (rownr, &arr);
@@ -642,7 +648,7 @@ void ArrayColumn<T>::putColumn (const Slicer& arraySection, const Array<T>& arr)
         if (arr.nelements() > 0) {
 	    ReadOnlyArrayIterator<T> iter(arr, arr.ndim()-1);
 	    for (uInt rownr=0; rownr<nrrow; rownr++) {
-	        putSlice (rownr, arraySection, iter.array());
+	        baseColPtr_p->putSlice (rownr, arraySection, &(iter.array()));
 		iter.next();
 	    }
 	}

@@ -1,5 +1,5 @@
 //# ArrayColumn.h: access to an array table column with arbitrary data type
-//# Copyright (C) 1994,1995,1996,1997,1998
+//# Copyright (C) 1994,1995,1996,1997,1998,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -34,7 +34,6 @@
 #include <aips/Tables/TableColumn.h>
 
 //# Forward Declarations
-class BaseColumn;
 class RefRows;
 template<class T> class Array;
 class IPosition;
@@ -258,6 +257,13 @@ public:
 			     const Slicer& arraySection) const;
     // </group>
 
+    // The get() function like above which does not check shapes, etc..
+    // It is faster and can be used for performance reasons if one
+    // knows for sure that the arguments are correct.
+    // E.g. it is used internally in virtual column engines.
+    void baseGet (uInt rownr, Array<T>& array) const
+      { baseColPtr_p->get (rownr, &array); }
+
 private:
     // Assignment makes no sense for a readonly class.
     // Declaring this operator private, makes it unusable.
@@ -277,7 +283,6 @@ protected:
     // be accessed or the change of an array can be changed.
     // All switches are Bool*, because they can be changed in a const function.
     // True = yes;  False = no.
-    Bool canChangeShape_p;
     Bool* canAccessSlice_p;
     Bool* canAccessColumn_p;
     Bool* canAccessColumnSlice_p;
@@ -393,12 +398,6 @@ public:
     void attach (const Table& table, const String& columnName)
 	{ reference (ArrayColumn<T> (table, columnName)); }
 
-    // Can the shape of an already existing non-FixedShape array be changed?
-    // This depends on the storage manager. Most storage managers
-    // can handle it, but TiledDataStMan and TiledColumnStMan can not.
-    Bool canChangeShape() const
-        { return canChangeShape_p; }
-
     // Set the shape of the array in the given row.
     // Setting the shape is needed if the array is put in slices,
     // otherwise the table system would not know the shape.
@@ -496,6 +495,13 @@ public:
     // (provided the data type promotion is possible).
     // In fact, this function is an assignment operator with copy semantics.
     void putColumn (const ROArrayColumn<T>& that);
+
+    // The put() function like above which does not check shapes, etc..
+    // It is faster and can be used for performance reasons if one
+    // knows for sure that the arguments are correct.
+    // E.g. it is used internally in virtual column engines.
+    void basePut (uInt rownr, const Array<T>& array)
+      { baseColPtr_p->put (rownr, &array); }
 
 private:
     // Assigning one column to another suggests a deep copy.
