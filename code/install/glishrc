@@ -1,12 +1,14 @@
 {
     local apath := split(shell("echo $AIPSPATH"))
     if ( len(apath) == 4 ) {
+	system.path.include := [ spaste(apath[1],'/',apath[2],'/libexec'),
+				 system.path.include ]
 	if ( ! any(argv == '-notk' ) ) {
-	    include spaste(apath[1],'/',apath[2],'/libexec/glishtk.g')
-	    include spaste(apath[1],'/',apath[2],'/libexec/pgplot.g')
+	    include 'glishtk.g'
+	    include 'pgplot.g'
 	}
 	if ( ! any(argv == '-plain') )
-	    include spaste(apath[1],'/',apath[2],'/libexec/aips++init.g')
+	    include 'aips++init.g'
 	if ( len(stat(spaste(apath[1],'/.glishrc_local'))) > 0 )
 	    include spaste(apath[1],'/.glishrc_local')
     }
