@@ -1143,8 +1143,8 @@ void NewMSFitsInput::fillFeedTable() {
 void NewMSFitsInput::fixEpochReferences() {
   if (timsys_p=="IAT") timsys_p="TAI";
   if (timsys_p=="UTC" || timsys_p=="TAI") {
-    if (timsys_p=="UTC") msc_p->setEpochRef(MEpoch::UTC);
-    if (timsys_p=="TAI") msc_p->setEpochRef(MEpoch::TAI);
+    if (timsys_p=="UTC") msc_p->setEpochRef(MEpoch::UTC, False);
+    if (timsys_p=="TAI") msc_p->setEpochRef(MEpoch::TAI, False);
   } else {
     if (timsys_p!="")
       os << LogIO::SEVERE << "Unhandled time reference frame: "<<timsys_p<<LogIO::POST;
