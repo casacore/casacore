@@ -666,6 +666,8 @@ public:
 					   const TableExprNodeSet& indices,
 					   uInt origin);
  
+    // returns pointer to the representation-object of it
+    const TableExprNodeRep* getNodeRep() const;
 
 private:
     // returns pointer to the representation-object of it
@@ -1280,6 +1282,10 @@ inline TableExprNode iif (const TableExprNode& condition,
 inline void TableExprNode::show (ostream& os) const
 {
     node_p->show (os, 0);
+}
+inline const TableExprNodeRep* TableExprNode::getNodeRep() const
+{
+    return node_p;
 }
 inline TableExprNodeRep* TableExprNode::getRep()
 {

@@ -673,6 +673,9 @@ public:
     // of fixed-shaped array.
     void checkIndexValues (const TableExprNodeRep* arrayNode);
 
+    // Get the Slicer value for a constant index.
+    const Slicer& getConstantSlicer() const;
+
     // Get the Slicer value for the slice.
     const Slicer& getSlicer (const TableExprId& id);
 
@@ -758,6 +761,9 @@ public:
     Array<DComplex> getColumnDComplex();
     Array<String>   getColumnString();
 
+    // Get the index node.
+  const TableExprNodeIndex* getIndexNode() const;
+
 private:
     TableExprNodeIndex* indexNode_p;
 }; 
@@ -769,6 +775,10 @@ inline Bool TableExprNodeIndex::isSingle() const
 {
     return isSingle_p;
 }
+inline const Slicer& TableExprNodeIndex::getConstantSlicer() const
+{
+    return slicer_p;
+}
 inline const Slicer& TableExprNodeIndex::getSlicer (const TableExprId& id)
 {
     if (!isConstant()) {
@@ -776,8 +786,14 @@ inline const Slicer& TableExprNodeIndex::getSlicer (const TableExprId& id)
     }
     return slicer_p;
 }
+
 inline const ROTableColumn& TableExprNodeArrayColumn::getColumn() const
-    { return tabCol_p; }
+{
+    return tabCol_p;
+}
+
+inline const TableExprNodeIndex* TableExprNodeArrayPart::getIndexNode() const
+    { return indexNode_p; }
 
 
 
