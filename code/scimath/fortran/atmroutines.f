@@ -235,7 +235,7 @@ C
 C+HPUX
 c$OPTIMIZE LEVEL1
 C-HPUX
-      SUBROUTINE ATM_ATMOSP(T0,P0,H0)
+      SUBROUTINE ATMATMOSP(T0,P0,H0)
 C----------------------------------------------------------------------
 C Compute an atmospheric model, interpolated between standard atmospheres
 C of winter and summer (subroutines ase45 and asj 45), to fit with temperature
@@ -305,7 +305,7 @@ C----------------------------------------------------------------------
       ENDDO
       RETURN
 *
-      ENTRY ATM_TRANSM(WATER,AIRMASS,FREQ,TEMI,TATM,TAUOX,TAUW,TAUT
+      ENTRY ATMTRANSM(WATER,AIRMASS,FREQ,TEMI,TATM,TAUOX,TAUW,TAUT
      $,IER)
 C----------------------------------------------------------------------
 C Compute atmospheric emission and  absorption.
@@ -334,7 +334,7 @@ C----------------------------------------------------------------------
       TAUT = TAUT / AIRMASS              !
       RETURN
 *
-      ENTRY ATM_PATH(WATER,AIRMASS,FREQ,PATH,IER)
+      ENTRY ATMPATH(WATER,AIRMASS,FREQ,PATH,IER)
 C----------------------------------------------------------------------
 C       integrated optical pathlength of atmosphere
 C
