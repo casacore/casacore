@@ -33,15 +33,17 @@
 #include <trial/Coordinates/DirectionCoordinate.h>
 #include <trial/Coordinates/LinearCoordinate.h>
 #include <trial/Coordinates/Coordinate.h>
-
 #include <aips/Arrays/ArrayMath.h>
 #include <aips/Arrays/Matrix.h>
 #include <aips/Containers/Record.h>
 #include <aips/Logging/LogIO.h>
 #include <aips/Mathematics/Constants.h>
+#include <aips/Measures/MeasConvert.h>
 #include <aips/Quanta/MVAngle.h>
 #include <aips/Quanta/Quantum.h>
 #include <aips/Quanta/Unit.h>
+#include <aips/Quanta/RotMatrix.h>
+#include <aips/Quanta/Euler.h>
 #include <aips/Utilities/Assert.h>
 #include <aips/Utilities/LinearSearch.h>
 #include <aips/Utilities/String.h>
@@ -53,6 +55,7 @@
 DirectionCoordinate::DirectionCoordinate()
 : Coordinate(),
   type_p(MDirection::J2000), 
+  conversionType_p(type_p), 
   projection_p(Projection(Projection::CAR)),
   celprm_p(0), 
   prjprm_p(0), 
@@ -63,6 +66,8 @@ DirectionCoordinate::DirectionCoordinate()
   prefUnits_p(2), 
   worldMin_p(0),
   worldMax_p(0),
+  pConversionMachineTo_p(0),
+  pConversionMachineFrom_p(0),
   canDoToMix_p(True),
   canDoToMixErrorMsg_p("")
 {
@@ -72,6 +77,7 @@ DirectionCoordinate::DirectionCoordinate()
     makeDirectionCoordinate (0.0, 0.0, 1.0, 1.0,
                              xform, 0.0, 0.0, 999.0, 999.0);
     setDefaultWorldMixRanges();
+    setRotationMatrix();
 }
 
 DirectionCoordinate::DirectionCoordinate(MDirection::Types directionType,
@@ -83,6 +89,7 @@ DirectionCoordinate::DirectionCoordinate(MDirection::Types directionType,
                                          Double longPole, Double latPole)
 : Coordinate(),
   type_p(directionType), 
+  conversionType_p(type_p), 
   projection_p(projection),
   celprm_p(0), 
   prjprm_p(0), 
@@ -93,12 +100,16 @@ DirectionCoordinate::DirectionCoordinate(MDirection::Types directionType,
   prefUnits_p(2), 
   worldMin_p(0),
   worldMax_p(0),
+  pConversionMachineTo_p(0),
+  pConversionMachineFrom_p(0),
   canDoToMix_p(True),
   canDoToMixErrorMsg_p("")
 {
     makeDirectionCoordinate (refLong, refLat, incLong, incLat,
                              xform, refX, refY, longPole, latPole);
     setDefaultWorldMixRanges();
+    setRotationMatrix();
+    makeConversionMachines();
 }
 
 DirectionCoordinate::DirectionCoordinate(MDirection::Types directionType,
@@ -113,6 +124,7 @@ DirectionCoordinate::DirectionCoordinate(MDirection::Types directionType,
                                          const Quantum<Double>& latPole)
 : Coordinate(),
   type_p(directionType), 
+  conversionType_p(type_p), 
   projection_p(projection),
   celprm_p(0), 
   prjprm_p(0), 
@@ -123,6 +135,8 @@ DirectionCoordinate::DirectionCoordinate(MDirection::Types directionType,
   prefUnits_p(2), 
   worldMin_p(0),
   worldMax_p(0),
+  pConversionMachineTo_p(0),
+  pConversionMachineFrom_p(0),
   canDoToMix_p(True),
   canDoToMixErrorMsg_p("")
 {
@@ -165,33 +179,38 @@ DirectionCoordinate::DirectionCoordinate(MDirection::Types directionType,
    makeDirectionCoordinate (lon, lat, dlon, dlat, xform, refX, refY,
                             dLongPole, dLatPole);
    setDefaultWorldMixRanges();
+   setRotationMatrix();
+   makeConversionMachines();
 }
 
 
 DirectionCoordinate::DirectionCoordinate(const DirectionCoordinate &other)
 : Coordinate(other),
   type_p(other.type_p), 
+  conversionType_p(other.conversionType_p), 
   projection_p(other.projection_p),
   celprm_p(0), 
   prjprm_p(0), 
   wcs_p(0), 
   linear_p(other.linear_p),
+  to_degrees_p(other.to_degrees_p.copy()),
+  to_radians_p(other.to_radians_p.copy()),
   names_p(other.names_p.copy()), 
   units_p(other.units_p.copy()),
   prefUnits_p(other.prefUnits_p.copy()), 
   worldMin_p(other.worldMin_p.copy()),
   worldMax_p(other.worldMax_p.copy()),
+  rot_p(other.rot_p),
+  pConversionMachineTo_p(0),
+  pConversionMachineFrom_p(0),
   canDoToMix_p(other.canDoToMix_p),
   canDoToMixErrorMsg_p(other.canDoToMixErrorMsg_p)
 {
-    to_degrees_p[0] = other.to_degrees_p[0];
-    to_degrees_p[1] = other.to_degrees_p[1];
-    to_radians_p[0] = other.to_radians_p[0];
-    to_radians_p[1] = other.to_radians_p[1];
-//
     copy_celprm_and_prjprm(celprm_p, prjprm_p, wcs_p, c_ctype_p, 
                            c_crval_p, other.celprm_p, other.prjprm_p,
                            other.wcs_p, other.c_ctype_p, other.c_crval_p);
+//
+    makeConversionMachines();
 }
 
 
@@ -201,6 +220,7 @@ DirectionCoordinate &DirectionCoordinate::operator=(const DirectionCoordinate &o
         Coordinate::operator=(other);
 //
 	type_p = other.type_p;
+	conversionType_p = other.conversionType_p;
 	projection_p = other.projection_p;
 //
 	DirectionCoordinate::copy_celprm_and_prjprm(celprm_p, prjprm_p, wcs_p, 
@@ -214,10 +234,13 @@ DirectionCoordinate &DirectionCoordinate::operator=(const DirectionCoordinate &o
 	prefUnits_p = other.prefUnits_p;
         worldMin_p = other.worldMin_p;
         worldMax_p = other.worldMax_p;
-	to_degrees_p[0] = other.to_degrees_p[0];
-	to_degrees_p[1] = other.to_degrees_p[1];
-	to_radians_p[0] = other.to_radians_p[0];
-	to_radians_p[1] = other.to_radians_p[1];
+	to_degrees_p = other.to_degrees_p.copy();
+	to_radians_p = other.to_radians_p.copy();
+        rot_p = other.rot_p;
+//
+        if (pConversionMachineTo_p) delete pConversionMachineTo_p;
+        if (pConversionMachineFrom_p) delete pConversionMachineFrom_p;
+        makeConversionMachines();
 //
         canDoToMix_p = other.canDoToMix_p;
         canDoToMixErrorMsg_p = other.canDoToMixErrorMsg_p;
@@ -235,6 +258,15 @@ DirectionCoordinate::~DirectionCoordinate()
 //
     delete wcs_p;
     wcs_p = 0;
+//
+    if (pConversionMachineTo_p) {
+       delete pConversionMachineTo_p;
+       pConversionMachineTo_p = 0;
+    }
+    if (pConversionMachineFrom_p) {
+       delete pConversionMachineFrom_p;
+       pConversionMachineFrom_p = 0;
+    }
 }
 
 Coordinate::Type DirectionCoordinate::type() const
@@ -258,12 +290,34 @@ uInt DirectionCoordinate::nWorldAxes() const
     return 2;
 }
 
+void DirectionCoordinate::setConversionDirectionType (MDirection::Types directionType)
+{
+   conversionType_p = directionType;
+//
+   if (pConversionMachineTo_p) delete pConversionMachineTo_p;
+   if (pConversionMachineFrom_p) delete pConversionMachineFrom_p;
+//
+   makeConversionMachines();
+}
 
 Bool DirectionCoordinate::toWorld(Vector<Double> &world,
-				  const Vector<Double> &pixel) const
+ 				  const Vector<Double> &pixel) const
 {
 
-// Temporaries
+/*
+cerr << "Enter toWorld" << endl;
+   {
+         ostrstream oss;
+         oss.setf(ios::fixed, ios::floatfield);
+         oss.precision(15);
+         oss << "pixel = " << pixel(0) << ", " << pixel(1) << endl;
+         String s(oss);
+         cerr << s << endl;
+   }
+*/
+
+
+ // Temporaries
 
     double d_phi, d_theta, d_x, d_y, d_lng, d_lat;
 //
@@ -301,6 +355,31 @@ Bool DirectionCoordinate::toWorld(Vector<Double> &world,
            return False;
 	}
     } 
+
+// Convert to specified conversion reference type
+
+/*
+   {
+         ostrstream oss;
+         oss.setf(ios::fixed, ios::floatfield);
+         oss.precision(15);
+         oss << "native world = " << world(0) << ", " << world(1) << endl;
+         String s(oss);
+         cerr << s << endl;
+   }
+*/
+    convertTo(world);
+/*
+   {
+         ostrstream oss;
+         oss.setf(ios::fixed, ios::floatfield);
+         oss.precision(15);
+         oss << "changed world = " << world(0) << ", " << world(1) << endl;
+         String s(oss);
+         cerr << s << endl;
+   }
+*/
+//
     return True;
 }
 
@@ -308,6 +387,8 @@ Bool DirectionCoordinate::toWorld(Vector<Double> &world,
 Bool DirectionCoordinate::toPixel(Vector<Double> &pixel,
 				  const Vector<Double> &world) const
 {
+//cerr << "Enter toPixel" << endl;
+
 // Temporaries 
 
     static Vector<Double> world_tmp;
@@ -320,8 +401,32 @@ Bool DirectionCoordinate::toPixel(Vector<Double> &pixel,
 //
     world_tmp(0) = world(0); 
     world_tmp(1) = world(1);
-    toDegrees(world_tmp);
 
+// Convert from specified conversion reference type
+
+/*
+   {
+         ostrstream oss;
+         oss.setf(ios::fixed, ios::floatfield);
+         oss.precision(15);
+         oss << "changed world = " << world_tmp(0) << ", " << world_tmp(1) << endl;
+         String s(oss);
+         cerr << s << endl;
+   }
+*/
+    convertFrom(world_tmp);
+/*
+   {
+         ostrstream oss;
+         oss.setf(ios::fixed, ios::floatfield);
+         oss.precision(15);
+         oss << "native world = " << world_tmp(0) << ", " << world_tmp(1) << endl;
+         String s(oss);
+         cerr << s << endl;
+   }
+*/
+//
+    toDegrees(world_tmp);
     d_lng = world_tmp(0);
     d_lat = world_tmp(1);
     int errnum = celfwd(pcodes[projection_p.type()], d_lng, d_lat,
@@ -346,6 +451,16 @@ Bool DirectionCoordinate::toPixel(Vector<Double> &pixel,
 //        theta = d_theta;
     }
 //
+/*
+   {
+         ostrstream oss;
+         oss.setf(ios::fixed, ios::floatfield);
+         oss.precision(15);
+         oss << "pixel = " << pixel(0) << ", " << pixel(1) << endl;
+         String s(oss);
+         cerr << s << endl;
+   }
+*/
     return True;
 }
 
@@ -456,6 +571,11 @@ Bool DirectionCoordinate::toMix(Vector<Double>& worldOut,
 MDirection::Types DirectionCoordinate::directionType() const
 {
     return type_p;
+}
+
+MDirection::Types DirectionCoordinate::conversionDirectionType() const
+{
+    return conversionType_p;
 }
 
 Projection DirectionCoordinate::projection() const
@@ -616,10 +736,14 @@ Bool DirectionCoordinate::setReferenceValue(const Vector<Double> &refval)
        errmsg += celset_errmsg[errnum];
        set_error(errmsg);
     }
-//
+
+// Update offset coordinate rotation matrix
+
+    setRotationMatrix();
+
 // Fill in the silly wcs private members I have to cart about
 // for toMix caching
-//
+
     c_crval_p[0] = tmp(0);
     c_crval_p[1] = tmp(1);
 //
@@ -1199,7 +1323,7 @@ Bool DirectionCoordinate::save(RecordInterface &container,
 	Record subrec;
 	Projection proj = projection();
 	String system = MDirection::showType(type_p);
-
+//
 	subrec.define("system", system);
 	subrec.define("projection", proj.name());
 	subrec.define("projection_parameters", proj.parameters());
@@ -1210,6 +1334,9 @@ Bool DirectionCoordinate::save(RecordInterface &container,
 	subrec.define("axes", worldAxisNames());
 	subrec.define("units", worldAxisUnits());
 //
+	String convSystem = MDirection::showType(conversionType_p);
+	subrec.define("conversionSystem", convSystem); 
+//
         subrec.define("longpole", celprm_p->ref[2]);    // Always degrees
         subrec.define("latpole", celprm_p->ref[3]);     // Always degrees
 //
@@ -1218,7 +1345,7 @@ Bool DirectionCoordinate::save(RecordInterface &container,
     return ok;
 }
 
-DirectionCoordinate *DirectionCoordinate::restore(const RecordInterface &container,
+DirectionCoordinate* DirectionCoordinate::restore(const RecordInterface &container,
 						  const String &fieldName)
 {
     if (! container.isDefined(fieldName)) {
@@ -1235,7 +1362,6 @@ DirectionCoordinate *DirectionCoordinate::restore(const RecordInterface &contain
     String system;
     subrec.get("system", system);
     MDirection::Types sys;
-    MDirection::Ref mref;
     Bool ok = MDirection::getType(sys, system);
     if (!ok) {
 	return 0;
@@ -1320,7 +1446,18 @@ DirectionCoordinate *DirectionCoordinate::restore(const RecordInterface &contain
     // Set the actual units and names
     retval->setWorldAxisUnits(units);
     retval->setWorldAxisNames(axes);
-							  
+
+    // Set the conversion type if it exists
+    if (subrec.isDefined("conversionSystem")) {
+       String conversionSystem;
+       subrec.get("conversionSystem", conversionSystem);
+       MDirection::Types cSystem;
+       Bool ok = MDirection::getType(cSystem, conversionSystem);
+       if (ok) {
+          retval->setConversionDirectionType(cSystem);
+       }
+    }
+//
     return retval;
 }
 
@@ -1645,6 +1782,9 @@ void DirectionCoordinate::makeDirectionCoordinate(Double refLong, Double refLat,
 {
 // Initially we are in radians
 
+    to_degrees_p.resize(2);
+    to_radians_p.resize(2);
+//
     to_degrees_p[0] = 1.0 / C::degree;
     to_degrees_p[1] = to_degrees_p[0];
     to_radians_p[0] = 1.0;
@@ -1688,38 +1828,41 @@ Vector<Double> DirectionCoordinate::longLatPoles () const
     return x;
 }
 
-
+// These world abs/rel functions are independent of the conversion direction type.
 
 void DirectionCoordinate::makeWorldRelative (Vector<Double>& world) const
-//
-// relLong = (absLong - refLong) * cos(refLat)
-//
 {
     AlwaysAssert(world.nelements()==2, AipsError);
-//   
-    Double cosLat1 = cos(celprm_p->ref[1] * C::degree);
-    Double tLong = world(0)*to_degrees_p[0] - celprm_p->ref[0];
-    if (tLong > 180.0) {
-      tLong -= 360.0;
-    } else if (tLong < -180) {
-      tLong += 360.0;
-    }    
-    world(0) = tLong / to_degrees_p[0] * cosLat1;
-    world(1) -= celprm_p->ref[1] / to_degrees_p[1];
+//
+    MVDirection mv(world(0)*to_radians_p[0], world(1)*to_radians_p[1]);
+    mv *= rot_p;
+//
+    world[0] = mv.getLong() / to_radians_p[0];
+    world[1] = mv.getLat()  / to_radians_p[1];
+}
+
+void DirectionCoordinate::makeWorldRelative (MDirection& world) const
+{
+    world.set(world.getValue() * rot_p);
 }
 
 
 void DirectionCoordinate::makeWorldAbsolute (Vector<Double>& world) const
-//
-// absLong = relLong/cos(refLat) + refLong
-//
 {
     AlwaysAssert(world.nelements()==2, AipsError);
+//   
+    MVDirection mv(world(0)*to_radians_p[0], world(1)*to_radians_p[1]);
+    mv = rot_p * mv;
 //
-    Double cosLat2 = cos(celprm_p->ref[1] * C::degree);
-    world(0) = (world(0)/cosLat2) + (celprm_p->ref[0]/to_degrees_p[0]);
-    world(1) += celprm_p->ref[1] / to_degrees_p[1];
+    world[0] = mv.getLong() / to_radians_p[0];
+    world[1]= mv.getLat()  / to_radians_p[1];
 }
+
+void DirectionCoordinate::makeWorldAbsolute (MDirection& world) const
+{
+    world.set(rot_p * world.getValue());
+}
+
 
 
 Bool DirectionCoordinate::setWorldMixRanges (const IPosition& shape)
@@ -1839,7 +1982,47 @@ void DirectionCoordinate::setDefaultWorldMixRanges ()
    worldMax_p(1) =   90.0/to_degrees_p[1];
 }
 
+void DirectionCoordinate::setRotationMatrix () 
+// 
+// Set rotation matrix for use in handling offset coordinates
+//
+{
+    Double refLon = referenceValue()(0) * to_radians_p[0];
+    Double refLat = referenceValue()(1) * to_radians_p[1];
+    MVDirection refPos(refLon, refLat);
+    Euler eul(refLat, 2u, -refLon, 3);
+    RotMatrix rot(eul);
+    rot.transpose();
+//
+    rot_p = rot;
+}
 
+void DirectionCoordinate::makeConversionMachines ()
+{
+   MDirection::Ref oldType(type_p);
+   MDirection::Ref newType(conversionType_p);
+   pConversionMachineTo_p   = new MDirection::Convert(oldType, newType);
+   pConversionMachineFrom_p = new MDirection::Convert(newType, oldType);
+}
+
+
+void DirectionCoordinate::convertTo (Vector<Double>& world) const
+{
+   static MVDirection inMV;
+   if (type_p != conversionType_p) {
+      inMV.setAngle(world[0]*to_radians_p[0], world[1]*to_radians_p[1]);
+      world  = (*pConversionMachineTo_p)(inMV).getValue().get() / to_radians_p;
+   }
+}
+
+void DirectionCoordinate::convertFrom (Vector<Double>& world) const
+{
+   static MVDirection inMV;
+   if (type_p != conversionType_p) {
+      inMV.setAngle(world[0]*to_radians_p[0], world[1]*to_radians_p[1]);
+      world = (*pConversionMachineFrom_p)(inMV).getValue().get() / to_radians_p;
+   }
+}
 
 Double DirectionCoordinate::putLongInPiRange (Double lon, const String& unit) const
 {  
