@@ -66,7 +66,47 @@ print a[1:10] , b[1:10]
 \begin{verbatim}
 dp.plotxy(a, b, "Chirp")
 \end{verbatim}
-\item Servers and FFTs:
+\item Servers and FFTs. Do a help first:
+\begin{verbatim}
+- help('*fft*')      
+
+There are 10 matches. Please choose from:
+  aips.mathematics.fftserverdemo
+  aips.mathematics.fftservertest
+  aips.mathematics.fftserver
+  aips.mathematics.fftserver.complexfft
+  aips.mathematics.fftserver.realtocomplexfft
+  aips.mathematics.fftserver.convolve
+  aips.mathematics.fftserver.crosscorr
+  aips.mathematics.fftserver.autocorr
+  aips.mathematics.fftserver.shift
+  synthesis.synthesisdos.imagesolver.setfft
+F 
+- help('*fftserver')
+
+ fftserver -- Object  -- aips.mathematics
+
+  FFTs and related operations
+
+ Methods
+   complexfft   Full complex-to-complex in-place FFT of an array
+   realtocomplexfft     Real to Complex FFT of an array
+   convolve     Convolve a model with a psf
+   crosscorr    Cross-correlate two real arrays
+   autocorr     Auto-correlate an array
+   shift        Shift an array some number of pixels with an FFT
+
+You may find more information in the on-line documentation available
+via your web browser.  Type the command
+
+   web()
+
+to view more about aips.mathematics.fftserver.
+
+F 
+- web()
+\end{verbatim}
+Now use it:
 \begin{verbatim}
 fft:=fftserver()
 c:=fft.realtocomplexfft(b)
@@ -74,6 +114,13 @@ dp.clear()
 dp.ploty(abs(c), "FT of Chirp")
 \end{verbatim}
 Zoom on plot to show detail.
+\item tkPGPLOT. Show the plotting capabilities given by the
+PGPLOT tk widget (courtesy of Martin Shepherd and Tim Pearson!)
+as bound to Glish. 
+\begin{verbatim}
+include "pgdemo.g"
+pgdemo()
+\end{verbatim}
 \item Aipsview. Make and display an array:
 \begin{verbatim}
 a:=array(1:1000, 100, 100)
@@ -81,6 +128,7 @@ dd.array(a)
 \end{verbatim}
 \end{itemize}
 \end{itemize}
+
 
 \section{Synthesis}
 
@@ -94,7 +142,8 @@ dc.gui()
 imagerdemo(T)
 di.init_ms()
 \end{verbatim}
-\item Browse the MS: 
+\item Browse the MS. Remember to close the table. Talk about
+locking of files.
 \begin{verbatim}
 t:=table('MS')
 t.browse()
@@ -114,13 +163,15 @@ st.putcol('UVW', uvw)
 st.flush()
 t.close();
 \end{verbatim}
-\item Now demonstrate the synthesis processing: first deconvolve an an image: 
+\item Now demonstrate the synthesis processing: first deconvolve an an image
+(after re-initializing the MS).
 \begin{verbatim}
+di.init_ms()
 di.inputs()
 di.npix:=[256,256]            # Could be greater
 di.npol:=4                    # I,Q,U,V images
 di.weight_ms()                # Robust weighting
-di.deconvolve()               # Does CLEAN only deconvolution
+di.solve_clean()              # Does CLEAN only deconvolution
 \end{verbatim}
 \item Display it:
 \begin{verbatim}
@@ -148,7 +199,7 @@ di.solve_cal()
 image: 
 \begin{verbatim}
 di.images.restored:='restored.1'
-di.deconvolve()               # Does CLEAN only deconvolution
+di.solve_clean()              # Does CLEAN only deconvolution
 \end{verbatim}
 \item Display the image again.
 \end{itemize}
@@ -162,8 +213,10 @@ gt.plot()
 \section{Measures GUI}
 
 \begin{itemize}
-\item Find LAST from GMT. First start measures gui:
+\item Find Local Apparent Sidereal Time from Greenwich Mean Time. First start 
+measures gui:
 \begin{verbatim}
+include "measures.g"
 dm.gui()
 \end{verbatim}
 \begin{itemize}
@@ -189,12 +242,11 @@ sysinfo()
 sysinfo().numcpu()
 sysinfo().host()
 \end{verbatim}
-\item GUI stuff
+\item GUI stuff: each one of these lines does something interesting:
 \begin{verbatim}
 f:=infowindow('Eat at Bodos', 'Dining recommendations') # Informative only
 choicewin('Type of bagel',"plain wheat sourdough")      # Choice returned to Glish
 g:=guiframework()					# Framework of GUIs
-g:=F							# How to kill the frame
 \end{verbatim}
 \end{itemize}
 
@@ -210,7 +262,7 @@ sddemo()
 \begin{verbatim}
 include 'sdavg.g'
 \end{verbatim}
-\item Load one of the demo tables using the File menu (select Open).
+\item Load one of the demo tables using the File menu (select Open)
 \item Browse
 \begin{itemize}
 \item Look at a number of records and see how the plot changes
