@@ -760,11 +760,11 @@ Quantum<Double> SkyCompRep::peakToIntegralFlux (const DirectionCoordinate& dirCo
    }
 //
    Quantum<Double> fluxIntegral;
-   Quantum<Double> major(majorAxis);
-   Quantum<Double> minor(minorAxis);
-   major.convert(Unit("rad"));
-   minor.convert(Unit("rad"));
-   fluxIntegral = tmp * major * minor;
+   Quantum<Double> majorAxis2(majorAxis);
+   Quantum<Double> minorAxis2(minorAxis);
+   majorAxis2.convert(Unit("rad"));
+   minorAxis2.convert(Unit("rad"));
+   fluxIntegral = tmp * majorAxis2 * minorAxis2;
    if (fluxIntegral.isConform(Unit("Jy"))) {
       fluxIntegral.convert("Jy");
    } else {
@@ -819,11 +819,11 @@ Quantum<Double> SkyCompRep::integralToPeakFlux (const DirectionCoordinate& dirCo
 // And divide out shape
 
    Quantum<Double> peakFlux;
-   Quantum<Double> major(majorAxis);
-   Quantum<Double> minor(minorAxis);
-   major.convert(Unit("rad"));
-   minor.convert(Unit("rad"));
-   peakFlux = tmp / major / minor;
+   Quantum<Double> majorAxis2(majorAxis);
+   Quantum<Double> minorAxis2(minorAxis);
+   majorAxis2.convert(Unit("rad"));
+   minorAxis2.convert(Unit("rad"));
+   peakFlux = tmp / majorAxis2 / minorAxis2;
    peakFlux.convert(unitIn);
 //
    SkyCompRep::undefineBrightnessUnits();
