@@ -264,6 +264,36 @@ Int main() {
     vd = uvw.getValue();
     cout << "Corrected UVW:        " << MVPosition(ump(vd)) << endl;
 
+    cout << "---------------Vectors: ---------------" << endl;
+    UVWMachine umcp(um);
+    UVWMachine umas = um;
+    Vector<Vector<Double> > vdd(1);
+    Vector<MVPosition> vmv(1);
+    cout << "Input uvw:            " << uvw << endl;
+    vdd(0) = uvw.getValue();
+    cout << "Phase correction:     " << ump.getPhase(vdd).ac() << endl;
+    cout << "Corrected UVW:        " << MVPosition(vdd(0)) << endl;
+    vdd(0) = uvw.getValue();
+    umcp.convertUVW(vdd);
+    cout << "Corrected UVW:        " << MVPosition(vdd(0)) << endl;
+    vdd(0) = uvw.getValue();
+    Vector<Vector<Double> > vddo;
+    vddo =  um(vdd);
+    cout << "Corrected UVW:        " << MVPosition(vddo(0)) << endl;
+
+    vmv(0) = uvw;
+    cout << "Phase correction:     " << ump.getPhase(vmv).ac() << endl;
+    cout << "Corrected UVW:        " << vmv(0) << endl;
+    vmv(0) = uvw;
+    umas.convertUVW(vmv);
+    cout << "Corrected UVW:        " << vmv(0) << endl;
+    vmv(0) = uvw;
+    Vector<MVPosition> vmvo;
+    vmvo = um(vmv);
+    cout << "Corrected UVW:        " << vmvo(0) << endl;
+
+    cout << "---------------------------------------" << endl;
+
   } catch (AipsError x) {
     cout << x.getMesg() << endl;
   } end_try;
