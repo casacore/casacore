@@ -109,8 +109,8 @@ Corrected UVW:        [25.4425, 109.585, 193.504]
 Corrected UVW:        [25.4425, 109.585, 193.504]
 -------------- Projected: ------------
 UVW rotation:         Axis Lengths: [3, 3]  (NB: Matrix in Row/Column order)
-[1, 1.45717e-16, -0.05571
- -1.11022e-16, 1, -0.0534238
+[1, 0, -0.05571
+ 0, 1, -0.0534238
  0.0558767, 0.0535837, 0.997017]
 
 Phase correction:     -6.49614

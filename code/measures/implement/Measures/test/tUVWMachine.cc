@@ -32,6 +32,7 @@
 #include <aips/Arrays/Vector.h>
 #include <aips/Measures/MPosition.h>
 #include <aips/Measures/MEpoch.h>
+#include <aips/Measures/RotMatrix.h>
 
 Int main() {
   try {
@@ -243,7 +244,10 @@ Int main() {
     u1 = uvw;
     ump.convertUVW(ph, u1);
     cout << "-------------- Projected: ------------" << endl;
-    cout << "UVW rotation:         " << ump.rotationUVW() << endl;
+    RotMatrix roma = ump.rotationUVW();
+    if (nearAbs(roma(0,1), Double(0), 1e-15)) roma(0,1) = 0;
+    if (nearAbs(roma(1,0), Double(0), 1e-15)) roma(1,0) = 0;
+    cout << "UVW rotation:         " << roma << endl;
     cout << "Phase correction:     " << ph << endl;
     cout << "Corrected UVW:        " << u1 << endl;
     u1 = uvw;
