@@ -66,6 +66,11 @@ MSConcat::MSConcat(MeasurementSet& ms):
   itsMS(ms),
   itsFixedShape(isFixedShape(ms.tableDesc()))
 {
+
+
+  itsDirTol=Quantum<Double>(1.0, "mas");
+  itsFreqTol=Quantum<Double>(1.0, "Hz");
+  
   // if (ms.tableInfo().subType() != "UVFITS") {
   // throw(AipsError("MSConcat::MSConcat(..) - Measurement set was not created"
   //		    " from a UVFITS file."));
