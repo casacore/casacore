@@ -215,6 +215,10 @@ public:
 			  const RecordInterface & record);
   virtual Bool toRecord(String & errorMessage, 
 			RecordInterface & record) const;
+  virtual Bool fromRecord(String& errorMessage, 
+                          const GlishRecord& record);
+  virtual Bool toRecord(String& errorMessage, 
+                        GlishRecord& record) const;
   // </group>
 
   // Return a distinct copy of this component. As both the assignment operator

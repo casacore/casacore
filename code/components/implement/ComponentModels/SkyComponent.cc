@@ -171,6 +171,14 @@ Bool SkyComponent::toRecord(String& errorMessage,
   return itsCompPtr->toRecord(errorMessage, record);
 }
 
+Bool SkyComponent::fromRecord(String& error, const GlishRecord& in) {
+  return itsCompPtr->SkyCompBase::fromRecord(error, in);
+}
+
+Bool SkyComponent::toRecord(String& error, GlishRecord& out) const {
+  return itsCompPtr->SkyCompBase::toRecord(error, out);
+}
+
 SkyComponent SkyComponent::copy() const {
   DebugAssert(ok(), AipsError);
   SkyComponent newComp(flux().copy(), shape(), spectrum());
