@@ -3907,3 +3907,4 @@
 14 065 src mv trial/implement/Display/SimpleWorldCanvasApp.cc trialdisplay/implement/Display/SimpleWorldCanvasApp.cc
 14 065 src mv trial/implement/Display/WCPGFilter.cc trialdisplay/implement/Display/WCPGFilter.cc
 14 065 src mv trial/implement/Display/WorldCanvas.cc trialdisplay/implement/Display/WorldCanvas.cc
+14 065 src mv trial/implement/Display/WorldCanvasHolder.cc trialdisplay/implement/Display/WorldCanvasHolder.cc
