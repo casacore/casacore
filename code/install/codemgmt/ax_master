@@ -2741,3 +2741,7 @@
 10 072 src rm trial/apps/gmisc
 10 075 src rm trial/apps/sky/skyImpl.h
 10 075 src rm trial/apps/sky/skyImpl.cc
+10 077 src rm trial/implement/Tasking/QuantumParameterAccessor.h
+10 077 src rm trial/implement/Tasking/QuantumParameterAccessor.cc
+10 077 src rm trial/implement/Tasking/MeasureParameterAccessor.h
+10 077 src rm trial/implement/Tasking/MeasureParameterAccessor.cc
