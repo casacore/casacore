@@ -4526,3 +4526,4 @@
 14 296 src mv aips/implement/MeasurementSets/NewMSPointingEnums.h aips/implement/MeasurementSets/MSPointingEnums.h
 14 296 src mv aips/implement/MeasurementSets/NewMSPolarization.cc aips/implement/MeasurementSets/MSPolarization.cc
 14 296 src mv aips/implement/MeasurementSets/NewMSPolarization.h aips/implement/MeasurementSets/MSPolarization.h
+14 296 src mv aips/implement/MeasurementSets/NewMSPolColumns.cc aips/implement/MeasurementSets/MSPolColumns.cc
