@@ -92,13 +92,33 @@ $local_host = hostname();
 ##
 $README_TEXT = <<'EOF'
 
-This directory contains AIPS++ release $VERSION. It is intended
-for end-user (not AIPS++ consortium) installations.
+This directory contains AIPS++ release $VERSION.  If you
+wish more information about AIPS++, please point your web browser to
+http://aips2.nrao.edu.
 
-For installation instructions, please download the file releasenotes11.ps.gz,
-and then gunzip and print the file. Don't forget to ftp the file in binary
-mode! If you have trouble with the instructions, please contact
-aips2-request@nrao.edu for help.
+For installation:
+
+1) Insert the CD into the CD-ROM drive
+2) Type: mount /mnt/cdrom
+3) Type: sh /mnt/cdrom/INSTALL
+
+After then installation is complete, point your web browser to
+
+file://\$AIPSINSTALL/readme.html
+
+for more information, where \$AIPSINSTALL is the AIPS++ installation 
+directory you have chosen.
+
+If your system configuration restricts user mounting of a CDROM, you 
+you will need to either mount the CD as root or have your system 
+adminstrator enable user mounting of the CDROM. On Solaris, the system 
+adminstrator may need to enable vold to automatically mount the CDROM.
+Typing df /cdrom/aips2install will indicate if the CDROM has been mounted 
+properly.
+
+Please send comments and questions to: aips2-request@aoc.nrao.edu
+
+The AIPS++ Consortium
 
 EOF
 ;
