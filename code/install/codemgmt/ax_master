@@ -5310,3 +5310,4 @@
 15 034 src rm nrao/apps/gbtutils/gbtcom.g
 15 034 src rm nrao/apps/gbtutils/gbtutils.g
 15 034 src rm nrao/apps/gbtutils/gbtutils.help
+15 034 src rm nrao/apps/gbtutils/if.g
