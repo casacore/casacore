@@ -120,11 +120,31 @@ public:
 		  const Float gain, const Quantity& threshold,
 		  const Bool choose=True);
 
+  // return how many iterations we did do
+  Int iteration() { return itsIteration; }
+
+  // what iteration number to start on
+  void startingIteration(const Int starting = 0) {itsStartingIter = starting; }
+
   // Clean an image. 
   Bool clean(Lattice<T> & model, LatticeCleanerProgress<T>* progress=0);
 
   // Set the mask
   void setMask(Lattice<T> & mask);
+
+  // speedup() will speed the clean iteration by raising the
+  // threshold.  This may be required if the threshold is
+  // accidentally set too low (ie, lower than can be achieved
+  // given errors in the approximate PSF).
+  //
+  // threshold(iteration) = threshold(0) 
+  //                        * ( exp( (iteration - startingiteration)/Ndouble )/ 2.718 )
+  // If speedup() is NOT invoked, no effect on threshold
+  void speedup(const Float Ndouble);
+
+  // Look at what WE think the residuals look like
+  // Assumes the first scale is zero-sized
+  Lattice<T>*  residual() { return itsDirtyConvScales[0]; }
 
 private:
   //# The following functions are used in various places in the code and are
@@ -140,15 +160,19 @@ private:
   TempLattice<T>* itsMask;
 
   Int itsNscales;
+  Vector<Float> itsScaleSizes;
 
   PtrBlock<TempLattice<T>* > itsScales;
   PtrBlock<TempLattice<T>* > itsPsfConvScales;
   PtrBlock<TempLattice<T>* > itsDirtyConvScales;
+  PtrBlock<TempLattice<T>* > itsScaleMasks;
 
   Bool itsScalesValid;
 
   Float itsGain;
-  Int itsNiter;
+  Int itsMaxNiter;	// maximum possible number of iterations
+  Int itsIteration;	// what iteration did we get to?
+  Int itsStartingIter;	// what iteration did we get to?
   Quantum<Double> itsThreshold;
 
   IPosition itsPositionPeakPsf;
@@ -162,6 +186,13 @@ private:
   // Let the user choose whether to stop
   Bool itsChoose;
 
+  // Threshold speedup factors:
+  Bool  itsDoSpeedup;  // if false, threshold does not change with iteration
+  Float itsNDouble;
+
+  // Method to return threshold, including any speedup factors
+  Float threshold();
+
   // Stop now?
   Bool stopnow();
 
@@ -172,6 +203,7 @@ private:
   Int index(const Int scale, const Int otherscale);
   
   Bool destroyScales();
+  Bool destroyMasks();
 
   Bool findMaxAbsLattice(const Lattice<T>& lattice,
 			 T& maxAbs, IPosition& posMax);
@@ -181,5 +213,10 @@ private:
 
   Bool validatePsf(const Lattice<T> & psf);
 
+  Bool makeScaleMasks();
+  Bool oldMakeScaleMasks();
+
+  
+  
 };
 #endif
