@@ -5694,3 +5694,4 @@
 15 341 src mv doc/project/devplan_1.5.latex doc/project/deferred_1.5.latex
 15 355 src rm aips/implement/Deconvolution
 16 004 src rm aips/implement/Deconvolution.h
+16 004 src rm trial/apps/visplot
