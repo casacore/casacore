@@ -1823,6 +1823,30 @@
      template class RecordFieldPtr<String> 
      template class RecordFieldPtr<uChar> 
      template class RecordFieldPtr<uInt> 
+1000 casa/Containers/RecordFieldWriter.cc 
+     = casa/Arrays/Array.h 
+     template class RecordFieldCopier<Array<Bool>, Array<Bool> > 
+     template class RecordFieldCopier<Array<Complex>, Array<Complex> > 
+     template class RecordFieldCopier<Array<DComplex>, Array<DComplex> > 
+     template class RecordFieldCopier<Array<Double>, Array<Double> > 
+     template class RecordFieldCopier<Array<Float>, Array<Float> > 
+     template class RecordFieldCopier<Array<Int>, Array<Int> > 
+     template class RecordFieldCopier<Array<Short>, Array<Short> > 
+     template class RecordFieldCopier<Array<String>, Array<String> > 
+     template class RecordFieldCopier<Array<uChar>, Array<uChar> > 
+1010 casa/Containers/RecordFieldWriter.cc 
+     template class RecordFieldCopier<Bool, Bool> 
+     template class RecordFieldCopier<Complex, Complex> 
+     template class RecordFieldCopier<DComplex, DComplex> 
+     template class RecordFieldCopier<Double, Double> 
+     template class RecordFieldCopier<Float, Float> 
+     template class RecordFieldCopier<Float, Int> 
+     template class RecordFieldCopier<Int, Int> 
+     template class RecordFieldCopier<Short, Short> 
+     template class RecordFieldCopier<String, String> 
+     template class RecordFieldCopier<uChar, uChar> 
+     template class RecordFieldCopier<Double, Float> 
+     template class RecordFieldCopier<Int, Short> 
 1000 casa/Containers/SimOrdMap.cc 
      = casa/BasicSL/String.h 
      = casa/Containers/Record.h 
@@ -3055,28 +3079,7 @@
 1030 casa/vector.h 
      template class vector<Double> 
      AIPS_VECTOR_AUX_TEMPLATES(Double) 
+1040 casa/vector.h 
+     template class vector<Float> 
+     AIPS_VECTOR_AUX_TEMPLATES(Float) 
 #
-1000 casa/Containers/RecordFieldWriter.cc 
-     = casa/Arrays/Array.h 
-     template class RecordFieldCopier<Array<Bool>, Array<Bool> > 
-     template class RecordFieldCopier<Array<Complex>, Array<Complex> > 
-     template class RecordFieldCopier<Array<DComplex>, Array<DComplex> > 
-     template class RecordFieldCopier<Array<Double>, Array<Double> > 
-     template class RecordFieldCopier<Array<Float>, Array<Float> > 
-     template class RecordFieldCopier<Array<Int>, Array<Int> > 
-     template class RecordFieldCopier<Array<Short>, Array<Short> > 
-     template class RecordFieldCopier<Array<String>, Array<String> > 
-     template class RecordFieldCopier<Array<uChar>, Array<uChar> > 
-1010 casa/Containers/RecordFieldWriter.cc 
-     template class RecordFieldCopier<Bool, Bool> 
-     template class RecordFieldCopier<Complex, Complex> 
-     template class RecordFieldCopier<DComplex, DComplex> 
-     template class RecordFieldCopier<Double, Double> 
-     template class RecordFieldCopier<Float, Float> 
-     template class RecordFieldCopier<Float, Int> 
-     template class RecordFieldCopier<Int, Int> 
-     template class RecordFieldCopier<Short, Short> 
-     template class RecordFieldCopier<String, String> 
-     template class RecordFieldCopier<uChar, uChar> 
-     template class RecordFieldCopier<Double, Float> 
-     template class RecordFieldCopier<Int, Short> 
