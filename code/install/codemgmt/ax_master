@@ -2091,3 +2091,5 @@
 11 090 src rm doc/html/navpages/ref/glossary/yseries.gif
 11 096 src rm doc/texinputs.dir/misc
 11 096 src rm doc/texinputs.dir/pstricks
+11 097 src rm trial/scripts/synthesisio.g
+11 097 src rm trial/scripts/synthesisio.help
