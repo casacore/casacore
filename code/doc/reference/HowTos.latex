@@ -15,7 +15,7 @@
 \author{W Young (Ed.)}
 \maketitle
 \begin{htmlonly}
-\textit{A \htmladdnormallink{postscript version}{../HowTos.ps} of this document
+\textit{A \htmladdnormallink{postscript version}{../HowTos.ps.gz} of this document
 is available.}
 \end{htmlonly}
 \tableofcontents
@@ -53,7 +53,7 @@ Charlottesville, Va. 22903-2475 USA.
 \emph{written as Note 170 by Paul Shannon, NRAO-NM\\June 23, 1995}
 \index{Code Review}\index{Code Copping}
 \begin{htmlonly}
-This chapter is available in \htmladdnormallink{postscript}{../../notes/170.ps}.
+This chapter is available in \htmladdnormallink{postscript}{../../notes/170.ps.gz}.
 \end{htmlonly}
 \input{body170}
 \part{Useful Notes from AIPS++ Programmers\label{HowTo.UsefulNotes}}o
@@ -62,14 +62,14 @@ This chapter is available in \htmladdnormallink{postscript}{../../notes/170.ps}.
 \index{g++}\index{g++, using}
 \emph{written as Note 196 by Ralph Marson, NRAO-NM\\May 1996}
 \begin{htmlonly}
-This chapter is available in \htmladdnormallink{postscript}{../../notes/196.ps}.
+This chapter is available in \htmladdnormallink{postscript}{../../notes/196.ps.gz}.
 \end{htmlonly}
 \input{body196}
 \chapter{Getting Started with Glish \label{HowTo.GlishTutorial}}
 \emph{written as Note 195 by Rick Fisher, NRAO-GB\\ April 1996}
 \index{glish, getting started}
 \begin{htmlonly}
-This chapter is available in \htmladdnormallink{postscript}{../../notes/195.ps}.
+This chapter is available in \htmladdnormallink{postscript}{../../notes/195.ps.gz}.
 \end{htmlonly}
 \input{GlishTutorial}
 \printindex
