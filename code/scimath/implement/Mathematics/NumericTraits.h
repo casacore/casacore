@@ -23,6 +23,8 @@
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
 //#
+//# $Id$
+
 #if !defined(AIPS_NUMERICTRAITS_H)
 #define AIPS_NUMERICTRAITS_H
 
