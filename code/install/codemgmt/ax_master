@@ -5924,3 +5924,4 @@
 16 317 src mv trial/implement/Functionals/test/tNQPolynomial.cc aips/implement/Functionals/test/tNQPolynomial.cc
 16 325 src mv trial/implement/Functionals/FunctionTraits.h aips/implement/Functionals/FunctionTraits.h
 16 325 top rm code/bima/miriad
+16 329 src rm trial/apps/dish/dishcli.g
