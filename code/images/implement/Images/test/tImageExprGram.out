@@ -1,5 +1,5 @@
 >>>
-tImageExprGram: Version 1.0
+/export/home/gvd/aips++/sun4sol_egcs/bindbg/tImageExprGram: Version 1.0
 <<<
 
 ImageExprParse: 'xxx' is an unknown lattice or image or it is an unqualified region
@@ -36,5 +36,9 @@ Expr:  aBool = !bBool
 Expr:  a = sum(e)/nelements(b) + min('c') + max('c', mean('c'+d))
 Expr:  a = sum(e[bBool])
 Expr:  a = sum((e + sum(f[b>0]*c)/d)[!bBool])
+Expr:  a = median(b)
+Expr:  a = fractile(b,0.2)
+Expr:  a = fractilerange(b,0.2)
+Expr:  a = fractilerange(b,0.2,0.6)
 Expr:  a = min(a+10,5)
 
