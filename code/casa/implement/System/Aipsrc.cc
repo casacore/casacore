@@ -1,5 +1,5 @@
 //# Aipsrc.cc: Class to read the aipsrc general resource files 
-//# Copyright (C) 1995,1996,1997,1998
+//# Copyright (C) 1995,1996,1997,1998,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -292,16 +292,16 @@ void Aipsrc::save(const String keyword, const String val) {
     MVTime(Time()).string(MVTime::YMD | MVTime::LOCAL, 0) << endl;
   ostr << keyword << ":	" << val << endl;
   fil = RegularFile(filno);
+  Char *buf = new Char[8192];	// Single lines must fit in this
   if (fil.exists()) {
     String buffer;
-    Char buf[8192];	// Single lines must fit in this
     Int nv = atoi(Aipsrc::get(nv_r).chars());	// number to keep
     Bool editSeen = False;	// if edit line seen
     String editBuf;		// edit line buffer
     Int editCnt = 0;		// count for edits
     String kwt = keyword + ":";  // keyword test
     ifstream istr(filno, ios::in | ios::nocreate);
-    while (istr.getline(&buf[0], sizeof(buf))) {
+    while (istr.getline(buf, sizeof(buf))) {
       buffer = buf;
       if (editSeen) {
 	if (buffer.index(kwt) == 0) {
@@ -321,9 +321,10 @@ void Aipsrc::save(const String keyword, const String val) {
 	editBuf = buffer;
       } else {
 	ostr << buffer << endl;
-      };
-    };
-  };
+      }
+    }
+  }
+  delete [] buf;
 }
   
 uInt Aipsrc::parse() {
@@ -382,6 +383,7 @@ uInt Aipsrc::genParse(Block<String> &keywordPattern,
   String *directories = new String[dirCount];
   dirCount = split(fileList, directories, dirCount, ":");
   keywordFile.resize(dirCount);
+  Char *buf = new Char[8192];
   for (Int i=0; i<dirCount; i++) {
     keywordFile[nfile] = directories[i];
     if (i == 0) fileEnd = nkw;
@@ -391,13 +393,12 @@ uInt Aipsrc::genParse(Block<String> &keywordPattern,
     if (fil.exists()) {
       ifstream fileAipsrc(keywordFile[nfile], ios::in | ios::nocreate);
       String buffer;
-      Char buf[8192];	// Single lines must fit in this
       String keyword;
       String value;
       const Regex comm("^[ 	]*#");	// Comment line
       const Regex defin(":[ 	]*");	// Line with value
       const Regex lspace("^[ 	]*");	// Leading spaces
-      while (fileAipsrc.getline(&buf[0], sizeof(buf))) {
+      while (fileAipsrc.getline(buf, sizeof(buf))) {
 	buffer = buf;
 	if (buffer.empty() || buffer.contains(comm))	// Ignore comments
 	  continue;
@@ -420,6 +421,7 @@ uInt Aipsrc::genParse(Block<String> &keywordPattern,
     };
     nfile++;
   };
+  delete [] buf;
   delete [] directories;
 
   // Resize static lists
