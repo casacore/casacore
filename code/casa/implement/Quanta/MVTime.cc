@@ -1,5 +1,5 @@
 //# MVTime.cc: Class to handle date/time type conversions and I/O
-//# Copyright (C) 1996,1997,1998,1999,2000,2001,2002,2003
+//# Copyright (C) 1996,1997,1998,1999,2000,2001,2002,2003,2004
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -402,7 +402,8 @@ Bool MVTime::read(Quantity &res, MUString &in, Bool chk) {
   in.skipBlank();
   in.push();			// Save position
   Double s = in.getSign();
-  if (in.tSkipStringNC("today") || in.testChar('/')) {
+  if (in.tSkipStringNC("today") || in.tSkipStringNC("now") ||
+      in.testChar('/')) {
     if (in.tSkipChar('/')) {
       if (MVAngle::read(res, in, chk)) {
 	res = Quantity(res.get("deg").getValue()/360., "d");

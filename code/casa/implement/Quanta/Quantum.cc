@@ -1,5 +1,5 @@
 //# Quantum.cc: class to manipulate physical, dimensioned quantities
-//# Copyright (C) 1994,1995,1996,1997,1998,1999,2000,2001,2003
+//# Copyright (C) 1994,1995,1996,1997,1998,1999,2000,2001,2003,2004
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -282,12 +282,14 @@ template <class Qtype>
 Bool Quantum<Qtype>::read(Quantity &res, const String &in) {
   static Regex ex("^[[:space:][:punct:]]*[[:digit:]]");
   static Regex ex2("[tT][oO][dD][aA][yY]");
+  static Regex ex3("[nN][oO][wW]");
   MUString tmp(in);
   // The next construct is to cater for an unexplained error in
   // the Linux egcs stream input library; and an even more funny one in sgi
   ///  if (!in.empty() && (in[0] == 'n' || in[0] == 'N' || in[0] == 'y' ||
   ///		      in[0] == 'Y')) {
-  if (!in.empty() && !in.contains(ex2) && !in.contains(ex)) {
+  if (!in.empty() && !in.contains(ex2) && !in.contains(ex3) &&
+      !in.contains(ex)) {
     tmp = MUString(String("0.0") + in);		// Pointed non-const String
   };
   return Quantum<Qtype>::read(res, tmp);
