@@ -26,8 +26,8 @@
 //#
 //# $Id$
 
-#if !defined(TRIAL_DO_DECONVOLVER_H)
-#define TRIAL_DO_DECONVOLVER_H
+#if !defined(TRIAL_IMAGEREGRID_H)
+#define TRIAL_IMAGEREGRID_H
 
 #include <aips/aips.h>
 #include <trial/Tasking/ApplicationObject.h>
