@@ -1,5 +1,5 @@
 //# LinearCoordinate.h: Assume a general linear relation between pixel and world axes.
-//# Copyright (C) 1997,1998
+//# Copyright (C) 1997,1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -35,7 +35,7 @@
 #include <aips/Arrays/Vector.h>
 
 // <summary>
-// Assume a general linear relation between pixel and world axes.
+// Interconvert between pixel and a linear world coordinate.
 // </summary>
 
 // <use visibility=export>
@@ -49,19 +49,26 @@
 // </prerequisite>
 //
 // <synopsis>
-// The LinearCoordinate class ties pixel and world axes together through a general
-// linear transformation. 
+// The LinearCoordinate class ties pixel and world axes together through 
+// a general linear transformation. 
 //
 // <srcblock>
 // world = (cdelt * PC * (pixel - crpix)) + crval
 // </srcblock>
-// Where PC is an NxN matrix, pixel, crval, crpix and world are length N vectors, and
-// cdelt is an NxN diagonal matrix, represented as a length N vector.
+// Where PC is an NxN matrix, pixel, crval, crpix and world are length N 
+// vectors, and cdelt is an NxN diagonal matrix, represented as a length 
+// N vector.
 //
-// The actual computations are carried out in WCSLIB, written by Mark Calabretta
-// of the ATNF.
+// The actual computations are carried out with the WCS library.
 //
+// The LinearCoordinate can contain several axes (similar to the way
+// in which the DirectionCoordinate contains two axes, but they
+// would not be coupled).
 // </synopsis>
+//
+// <note role=caution>
+// All pixels coordinates are zero relative.
+// </note>
 //
 // <example>
 // See the example in <linkto module=Coordinates>Coordinates.h</linkto>.
@@ -73,17 +80,18 @@
 // </motivation>
 //
 // <todo asof="1997/01/14">
-//   <li> Allow differing numbers of world and pixel axes. Requres a change in
+//   <li> Allow differing numbers of world and pixel axes. Requires a change in
 //        WCS or use of a different library.
 // </todo>
 
 class LinearCoordinate : public Coordinate
 {
 public:
-    // The default constructor just copies the pixel coordinate through to the
-    // world coordinate and vice versa.
+    // The default constructor make a coordinate for which pixel 
+    // and world coordinate are equal.
     LinearCoordinate(uInt naxis = 1);
-    // Set up the full linear transformation.
+
+    // Construct the linear transformation.
     LinearCoordinate(const Vector<String> &names,
 		     const Vector<String> &units,
 		     const Vector<Double> &refVal,
@@ -91,15 +99,16 @@ public:
 		     const Matrix<Double> &xform,
 		     const Vector<Double> &refPix);
 
-    // Overwrite this linear coordinate with "other" (copy semantics).
-    // <group>
+    // Copy constructor (copy semantics).
     LinearCoordinate(const LinearCoordinate &other);
-    LinearCoordinate &operator=(const LinearCoordinate &other);
-    // </group>
 
+    // Assignment  (copy semantics).
+    LinearCoordinate &operator=(const LinearCoordinate &other);
+
+    // Destructor
     virtual ~LinearCoordinate();
 
-    // Return Coordinate::LINEAR.
+    // Returns Coordinate::LINEAR.
     virtual Coordinate::Type type() const;
 
     //Returns "Linear"
@@ -113,8 +122,8 @@ public:
     // </group>
 
     // Convert a pixel position to a worl position or vice versa. Returns True
-    // if the conversion succeeds, otherwise it returns False and
-    // <src>errorMessage()</src> contains an error message.  The output 
+    // if the conversion succeeds, otherwise it returns False and method
+    // errorMessage returns an error message.  The output 
     // vectors are appropriately resized.
     // <group>
     virtual Bool toWorld(Vector<Double> &world, 
@@ -123,7 +132,7 @@ public:
 			 const Vector<Double> &world) const;
     // </group>
 
-    // Report the value of the requested attributed.
+    // Return the requested attributes
     // <group>
     virtual Vector<String> worldAxisNames() const;
     virtual Vector<Double> referenceValue() const;
@@ -143,15 +152,17 @@ public:
     virtual Bool setReferenceValue(const Vector<Double> &refval);
     // </group>
 
-    // If <src>adjust</src> is True, the units must be compatible with
+    // Set the world axis units. If adjust is True, 
+    // the units must be compatible with
     // angle. The units are initially "rad" (radians).
     virtual Bool setWorldAxisUnits(const Vector<String> &units,
 				   Bool adjust = True);
 
     // Comparison function. Any private Double data members are compared    
-    // with the specified fractional tolerance.  Don't compare on the specified     
-    // axes in the Coordinate.  If the comparison returns False, 
-    // <src>errorMessage()</src> contains a message about why.
+    // with the specified fractional tolerance.  Don't 
+    // compare on the specified     
+    // axes in the Coordinate.  If the comparison returns False, method
+    // errorMessage contains a message about why.
     // <group>
     virtual Bool near(const Coordinate* pOther, 
                       Double tol=1e-6) const;
@@ -163,8 +174,8 @@ public:
     // Format a LinearCoordinate world value with the common format
     // interface (refer to the base class <linkto class=Coordinate>Coordinate</linkto>
     // for more details on this interface, particularly with regards polymorphic use).
-    // A LinearCoordinate can be formatted in either <src>Coordinate::SCIENTIFIC</src>
-    // or <src>Coordinate::FIXED</src> formats only.  The argument <src>absolute</src>
+    // A LinearCoordinate can be formatted in either Coordinate::SCIENTIFIC
+    // or Coordinate::FIXED formats only.  The argument absolute
     // is ignored.
     //<group>
     virtual void getPrecision(Int& precision,
@@ -186,6 +197,7 @@ public:
     virtual Bool save(RecordInterface &container,
 		    const String &fieldName) const;
 
+    // Restore the LinearCoordinate from a record.
     // A null pointer means that the restoration did not succeed - probably 
     // because fieldName doesn't exist or doesn't contain a coordinate system.
     static LinearCoordinate *restore(const RecordInterface &container,
@@ -194,6 +206,7 @@ public:
     // Make a copy of ourself using new. The caller is responsible for calling
     // delete.
     virtual Coordinate *clone() const;
+
 private:
     // An interface to the WCSLIB linear transformation routines.
     LinearXform transform_p;

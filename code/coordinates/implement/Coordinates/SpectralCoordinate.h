@@ -1,5 +1,5 @@
-//# SpectralCoordinate.h: Map a channel number to frequency.
-//# Copyright (C) 1997,1998
+//# SpectralCoordinate.h: Interconvert between pixel and frequency.
+//# Copyright (C) 1997,1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -37,7 +37,7 @@
 class LogIO;
 
 // <summary>
-// Map a channel number to frequency.
+// Interconvert pixel and frequency values.
 // </summary>
 
 // <use visibility=export>
@@ -47,58 +47,66 @@ class LogIO;
 
 // <prerequisite>
 //   <li> <linkto class=Coordinate>Coordinate</linkto>
-//   <li> <linkto class=MFrequency>MFrequency</linkto> and
-//        <linkto class=MDoppler>MDoppler</linkto> classes if you want
-//        radial velocities.
+//   <li> <linkto class=MFrequency>MFrequency</linkto>,
+//        <linkto class=MDoppler>MDoppler</linkto> and
+//        <linkto class=VelocityMachine>VelocityMachine</linkto> 
+//        classes if you want radial velocities.
 // </prerequisite>
 //
 // <synopsis>
-// This class performs the mapping from channel number to frequency. An MFrequency
-// may be obtained if you are interested in radial velocities.
+// This class performs the mapping from pixel to frequency. 
+// An MFrequency may be obtained if you are interested in radial velocities.
 // </synopsis>
 //
+
+// <note role=caution>
+// All pixels coordinates are zero relative.
+// </note>
+//
 // <example>
-// See the example in <linkto module=Coordinates>Coordinates.h</linkto>.
+// See the example in <linkto module=Coordinates>Coordinates.h</linkto>
+// and tSpectralCoordinate.cc
 // </example>
 //
 // <todo asof="1997/08/15">
-//   <li> Do velocity calculations directly for the user rather than going
-//        through the measures system?
 //   <li> Allow other than linear interpolations for frequency lookup.
 // </todo>
 
 class SpectralCoordinate : public Coordinate
 {
 public:
-    // f0 is the frequncy of th reference channel, inc is the channel increment,
-    // refChan is the (0-relative) reference channel (often 0). You can
+    // Default constructor.    It is equivalent to doing
+    // SpectralCoordinate(MFrequency::TOPO, 0.0, 1.0, 0.0)
+    SpectralCoordinate();
+
+    // Create a linear frequency axis.
+    // f0 is the frequency of the reference pixel, inc is the pixel increment,
+    // refChan is the reference pixel. You can
     // optionally store the rest frequency for later use in calculating radial
     // velocities.
     //
     // Frequencies and increments initially in Hz. This may be changed later
-    // with setWorldAxisUnits().
+    // with the method setWorldAxisUnits.
     SpectralCoordinate(MFrequency::Types type, Double f0, Double inc, 
 		       Double refChan, Double restFrequency = 0.0);
 
-    // Construct a SpectralCoordinate with the specified frequencies. The
-    // increments and related functions return the <src>average</src> values
+    // Construct a SpectralCoordinate with the specified frequencies. 
+    // This axis can be non linear; the increments and related 
+    // functions return the <src>average</src> values
     // (calculated from the first and last pixels frequencies).
     //
     // A linear interpolation/extrapolation is used for channels which are
-    // not supplied. The refrence channel (pixel) is chosen to be 0.
-    // The frequencies must increase or decreas monotonically (otherwise
+    // not supplied. The reference pixel is chosen to be 0.
+    // The frequencies must increase or decrease monotonically (otherwise
     // the toPixel lookup would not be possible).
     SpectralCoordinate(MFrequency::Types type, const Vector<Double> &freqs,
 		       Double restFrequency = 0.0);
     
-    // Equivalent to SpectralCoordinate(MFrequency::TOPO, 0.0, 1.0, 0.0)
-    SpectralCoordinate();
-
-    // Overwrite this SpectralCoordinate with other (copy semantics).
-    // <group>
+    // Copy constructor (copy semantics).
     SpectralCoordinate(const SpectralCoordinate &other);
+
+    // Assignment (copy semantics).
     SpectralCoordinate &operator=(const SpectralCoordinate &other);
-    // </group>
 
     virtual ~SpectralCoordinate();
 

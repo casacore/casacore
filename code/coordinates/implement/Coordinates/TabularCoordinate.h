@@ -1,5 +1,5 @@
 //# TabularCoordinate.h: Table lookup 1-D coordinate, with interpolation
-//# Copyright (C) 1997,1998
+//# Copyright (C) 1997,1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -50,13 +50,19 @@ class LogIO;
 //
 // <synopsis>
 // This class is used where the world and pixel values are determined by a
-// table. Off the pixel-values, a linear interpolation is used. The values
-// returned by, e.g., increment, are based on the average of the whole table,
-// i.e. the first position in the table to the last position. At present,
+// lookup table. For fractional pixel values, a linear interpolation is used. 
+// The values returned for e.g., the increment, are based on 
+// the average of the whole table, i.e. the first position in 
+// the table to the last position. At present,
 // the values must either increase or decrease monotonically.
 // </synopsis>
 //
+// <note role=caution>
+// All pixels coordinates are zero relative.
+// </note>
+//
 // <example>
+// See tTabularCoordinate.cc
 // </example>
 //
 // <todo asof="1997/07/12">
@@ -66,15 +72,17 @@ class LogIO;
 class TabularCoordinate : public Coordinate
 {
 public:
-    // Equivalent to TabularCoordinate(0,1,0, "", "Tabular");
+    // Default constructor.  Its is equivalent to 
+    // TabularCoordinate(0,1,0, "", "Tabular");
     TabularCoordinate();
-    // Create a pure linear coordinate system: 
+
+    // Create a linear TabularCoordinate where 
     // <src>world = refval + inc*(pixel-refpix)</src>
     TabularCoordinate(Double refval, Double inc, Double refpix,
 		      const String &unit, const String &axisName);
 
     // Construct a TabularCoordinate with the specified world values. The
-    // increments and related functions return the <src>average</src> values
+    // increments and related functions return the average values
     // calculated from the first and last world values. The number of pixel
     // and world values must be the same. Normally the pixel values will be
     // 0,1,2,..., but this is not required.
@@ -88,15 +96,16 @@ public:
 		      const String &unit, const String &axisName);
     
 
-    // Overwrite this TabularCoordinate with other (copy semantics).
-    // <group>
+    // Copy constructor (copy semantics).
     TabularCoordinate(const TabularCoordinate &other);
-    TabularCoordinate &operator=(const TabularCoordinate &other);
-    // </group>
 
+    // Assignment (copy semantics).
+    TabularCoordinate &operator=(const TabularCoordinate &other);
+
+    // Destructor.
     virtual ~TabularCoordinate();
 
-    // Always returns Coordinate::TABULAR
+    // Returns Coordinate::TABULAR
     virtual Coordinate::Type type() const;
 
     // Always returns "Tabular"
@@ -108,9 +117,9 @@ public:
     virtual uInt nWorldAxes() const;
     // </group>
 
-    // Convert a pixel position to a worl position or vice versa. Returns True
-    // if the conversion succeeds, otherwise it returns False and
-    // <src>errorMessage()</src> contains an error message.  The output
+    // Convert a pixel position to a world position or vice versa. Returns True
+    // if the conversion succeeds, otherwise it returns False and method
+    // errorMessage contains an error message.  The output
     // vectors are appropriately resized.
     // <group>
     virtual Bool toWorld(Vector<Double> &world, 
@@ -121,7 +130,7 @@ public:
     Bool toPixel(Double &pixel, Double world) const;
     // </group>
 
-    // Report the value of the requested attributed.
+    // Return the requested attributed.
     // <group>
     virtual Vector<String> worldAxisNames() const;
     virtual Vector<Double> referencePixel() const;
@@ -141,7 +150,7 @@ public:
     virtual Bool setReferenceValue(const Vector<Double> &refval);
     // </group>
 
-    // Set the unit. If adjust is True, the unit must be compatible with
+    // Set the axis unit. If adjust is True, the unit must be compatible with
     // frequency.
     virtual Bool setWorldAxisUnits(const Vector<String> &units,
 				   Bool adjust = True);
@@ -155,8 +164,8 @@ public:
 
     // Comparison function. Any private Double data members are compared    
     // with the specified fractional tolerance.  Don't compare on the specified     
-    // axes in the Coordinate.  If the comparison returns False, 
-    // <src>errorMessage()</src> contains a message about why.
+    // axes in the Coordinate.  If the comparison returns False, method
+    // errorMessage() contains a message about why.
     // <group>
     virtual Bool near(const Coordinate* pOther, 
                       Double tol=1e-6) const;
@@ -170,6 +179,7 @@ public:
     virtual Bool save(RecordInterface &container,
 		    const String &fieldName) const;
 
+    // Recover the TabularCoordinate from a record.
     // A null pointer means that the restoration did not succeed - probably 
     // because fieldName doesn't exist or doesn't contain a coordinate system.
     static TabularCoordinate *restore(const RecordInterface &container,
@@ -178,6 +188,7 @@ public:
     // Make a copy of ourself using new. The caller is responsible for calling
     // delete.
     virtual Coordinate *clone() const;
+
 private:
     Double crval_p, cdelt_p, crpix_p;
     Double matrix_p;

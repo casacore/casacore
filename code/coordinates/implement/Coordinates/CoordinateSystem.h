@@ -56,18 +56,18 @@ class IPosition;
 // </prerequisite>
 
 // <synopsis>
-// <src>CoordinateSystem</src> is the normal interface to coordinate systems,
+// CoordinateSystem is the normal interface to coordinate systems,
 // typically attached to an 
 // <linkto class=ImageInterface>ImageInterface</linkto>, however the
-// coordinate system can be manipulated on its own. <src>CoordinateSystem</src>
+// coordinate system can be manipulated on its own. CoordinateSystem
 // is in turn composed from various classes derived from the base class
 // <linkto class=Coordinate>Coordinate</linkto>.
 // <p>
 // The fundamental operations available to the user of a 
-// <src>CoordinateSystem</src> are:
+// CoordinateSystem are:
 // <ol>
-//   <li> Transform a world (physical) coordinate system to a pixel coordinate or 
-//        vice versa via <src>toWorld()</src> and <src>toPixel()</src>.
+//   <li> Transform a world (physical) coordinate system to a pixel coordinate 
+//        or vice versa viathe methods toWorld and toPixel.
 //   <li> Compose a coordinate system from one or more independent groups,
 //        typically the sky-plane transformation will be one group, and the
 //        spectral axis will be another group. Each group consists of a linear
@@ -163,8 +163,13 @@ class IPosition;
 // axes of the image when you first construct the image.
 // </synopsis>
 
+// <note role=caution>
+// All pixels coordinates are zero relative.
+// </note>
+
 // <example>
-// See the example in <linkto module=Coordinates>Coordinates.h</linkto>.
+// See the example in <linkto module=Coordinates>Coordinates.h</linkto>
+// and tCoordinateSystem.cc
 // </example>
 
 // <motivation>
@@ -182,49 +187,48 @@ class IPosition;
 class CoordinateSystem : public Coordinate
 {
 public:
-    // Default constructor
+    // Default constructor.  This is an empty CoordinateSystem.
     CoordinateSystem();
 
-    // Copying and assignment use copy semantics.
-    // <group>
+    // Copying constructor (copy semantics)
     CoordinateSystem(const CoordinateSystem &other);
+
+    // Assignment (copy semantics).
     CoordinateSystem &operator=(const CoordinateSystem &other);
-    // </group>
 
     // Destructor
     ~CoordinateSystem();
 
     // Add another coordinate to this coordinate system. This addition is done
-    // by copying, so that if <src>coord</src> changes the change is NOT
+    // by copying, so that if coord changes the change is NOT
     // reflected in the coordinate system.
     void addCoordinate(const Coordinate &coord);
 
     // Transpose the coordinate system so that world axis 0 is
-    // <src>newWorldOrder(0)</src> and so on for all the other axes.
-    // <src>newPixelOrder</src> works similarly. Normally you will give the
+    // newWorldOrder(0) and so on for all the other axes.
+    // newPixelOrder works similarly. Normally you will give the
     // same transformation vector for both the world and pixel transformations,
     // however this is not required.
     void transpose(const Vector<Int> &newWorldOrder,
                    const Vector<Int> &newPixelOrder);
 
-    // Find the world axis mapping to the supplied <src>CoordinateSystem</src>
+    // Find the world axis mapping to the supplied CoordinateSystem
     // from the current coordinate system. <src>False</src> is 
     // returned if either the supplied or current coordinate system, 
     // has no world axes (and a message recoverable with function
-    // <src>errorMessage</src> indicating why).  Othwerwise <src>True</src> is returned.
-    // <src>worldAxisMap(i)</src> is the location of world axis <src>i</src> (from the
-    // supplied coordinate system, <src>cSys</src>,
-    // in the current coordinate system.
-    // <src>worldAxisTranspose(i)</src> is the location of world axis 
+    // errorMessage indicating why).  Otherwise <src>True</src> is returned.
+    // worldAxisMap(i) is the location of world axis <src>i</src> (from the
+    // supplied coordinate system, cSys, in the current coordinate system.
+    // worldAxisTranspose(i) is the location of world axis 
     // <src>i</src> (from the current coordinate system) in the supplied 
-    // coordinate system, <src>cSys</src>.  The output vectors
+    // coordinate system, cSys.  The output vectors
     // are resized appropriately by this function.  A value of  -1 
     // in either vector means that it could not be found in the other
     // coordinate system.  Note that two world axes of the
-    // same coordinate type (e.g. <src>SpectralCoordinate</src>)
+    // same coordinate type (e.g. SpectralCoordinate)
     // will be considered to not  match if their specific types are 
-    // different (e.g. TOPO versus LSR for the <src>SpectralCoordinate</src>, 
-    // or J2000 versus GALACTIC for <src>DirectionCoordinate</src>).
+    // different (e.g. TOPO versus LSR for the SpectralCoordinate, 
+    // or J2000 versus GALACTIC for DirectionCoordinate).
     Bool worldMap (Vector<Int>& worldAxisMap,
 		   Vector<Int>& worldAxisTranspose,
 		   const CoordinateSystem& cSys) const;
@@ -374,7 +378,7 @@ public:
     virtual Bool setReferenceValue(const Vector<Double> &refval);
     // </group>
 
-    // Change the units. If <src>adjust</src> is True, adjust the increment and
+    // Change the units. If adjust is True, adjust the increment and
     // reference value by the ratio of the old and new units. This implies that
     // the units must be known <linkto class=Unit>Unit</linkto> strings, and
     // that they must be compatible, e.g. they can't change from time to
@@ -385,15 +389,17 @@ public:
     // Comparison function. Any private Double data members are compared
     // with the specified fractional tolerance.  Don't compare on the specified 
     // pixel axes in the CoordinateSystem.  If the comparison returns
-    // False, <src>errorMessage()</src> contains a message about why.
+    // False, errorMessage() contains a message about why.
+    // <group>
     virtual Bool near(const Coordinate* pOther, Double tol=1e-6) const;
     virtual Bool near(const Coordinate* pOther, 
                       const Vector<Int>& excludePixelAxes,
                       Double tol=1e-6) const;
+    // </group>
 
     // Format a world value with the common format interface (refer to the base 
     // class <linkto class=Coordinate>Coordinate</linkto> for more details on this 
-    // interface).   For the specified <src>worldAxis</src>, the coordinate
+    // interface).   For the specified worldAxis, the coordinate
     // number in the CoordinateSystem is found and the actual derived Coordinate
     // class object for that number is created.  The arguments to the formatting 
     // function are then passed on to the formatter for that Coordinate. So
@@ -440,9 +446,9 @@ public:
     // Use <src>oneRelative=True</src> to convert zero-relative pixel coordinates to
     // one-relative FITS coordinates.
     //
-    // <src>prefix</src> gives the prefix for the FITS keywords. E.g.,
-    // if <src>prefix="c"</src> then <src>crval, cdelt</src> etc. 
-    // if <src>prefix="d"</src> then <src>drval, ddelt</src> etc. 
+    // prefix gives the prefix for the FITS keywords. E.g.,
+    // if prefix="c" then crval, cdelt etc. 
+    // if prefix="d" then drval, ddelt etc. 
     //# Much of the work in to/from fits should be moved to the individual
     //# classes.
     Bool toFITSHeader(RecordInterface &header, 
@@ -455,7 +461,7 @@ public:
 
     // Probably even if we return False we should set up the best linear
     // coordinate that we can.
-    // Use <src>oneRelative=True</src> to convert one-relative FITS pixel coordinates to
+    // Use oneRelative=True to convert one-relative FITS pixel coordinates to
     // zero-relative aips++ coordinates.
     //# cf comment in toFITS.
     static Bool fromFITSHeader(CoordinateSystem &coordsys, 

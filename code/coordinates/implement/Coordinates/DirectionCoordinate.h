@@ -1,5 +1,5 @@
-//# DirectionCoordinate.h: Interconvert pixel positions and directions (e.g.,RA/DEC)
-//# Copyright (C) 1997,1998
+//# DirectionCoordinate.h: Interconvert pixel positions and directions (e.g. RA/DEC)
+//# Copyright (C) 1997,1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -40,7 +40,7 @@ class celprm;
 class prjprm;
 
 // <summary>
-// Interconvert pixel positions and directions (e.g.,RA/DEC).
+// Interconvert pixel positions and directions (e.g. RA/DEC).
 // </summary>
 
 // <use visibility=export>
@@ -62,18 +62,23 @@ class prjprm;
 //
 // <synopsis>
 // This class implements pixel to world coordinate conversions. It is important
-// to understand that this class implements the only geometric conversions
-// (e.g., SIN projection). Astronomical conversions (<src>RA/DEC <--> l,b</src>)
+// to understand that this class implements only the geometric conversions
+// (e.g. SIN projection). Astronomical conversions (RA/DEC <--> l,b)
 // are the responsibliy of the <linkto module=Measures>Measures</linkto> module.
 // Of course the <linkto class=MDirection>MDirection</linkto> object you can
 // obtain from this class would be the prime input for that conversion.
 //
-// The actual computations are carried out in WCSLIB, written by Mark Calabretta
-// of the ATNF.
+// The actual computations are carried out with the WCS library.
 // </synopsis>
 //
+
+// <note role=caution>
+// All pixels coordinates are zero relative.
+// </note>
+
 // <example>
-// See the example in <linkto module=Coordinates>Coordinates.h</linkto>.
+// See the example in <linkto module=Coordinates>Coordinates.h</linkto>
+// and tDirectionCoordinate.cc
 // </example>
 //
 // <motivation>
@@ -94,12 +99,12 @@ public:
 
     // Define the direction coordinate transformation. refLong and refLat will
     // normally the the RA/DEC of the pixel described by refX/refY. incLat/incLong
-    // are the increment per pixel (RA is usually negative!), and the xform
+    // are the increments per pixel (RA is usually negative), and the xform
     // matrix is usually the unit diagonal matrix unless you have a rotation or
     // some other linear transformation between the pixel and world axes.
     // 
-    // Note that the units are RADIANS initially! You can change it to degrees
-    // or something else with <src>setWorldAxisUnits()</src> later if you want.
+    // Note that the units are RADIANS initially. You can change it to degrees
+    // or something else with the setWorldAxisUnits method later if you want.
     DirectionCoordinate(MDirection::Types directionType,
  			const Projection &projection,
 			Double refLong, Double refLat,
@@ -107,16 +112,16 @@ public:
 			const Matrix<Double> &xform,
  			Double refX, Double refY);
 
-    // Overwrite this DirectionCoordinate with the value of other (copy
-    // semantics).
-    // <group>
+    // Copy constructor (copy semantics)
     DirectionCoordinate(const DirectionCoordinate &other);
-    DirectionCoordinate &operator=(const DirectionCoordinate &other);
-    // </group>
 
+    // Assignment (copy semantics).
+    DirectionCoordinate &operator=(const DirectionCoordinate &other);
+
+    // Destructor
     virtual ~DirectionCoordinate();
 
-    // Return <src>Coordinate::DIRECTION</src>
+    // Return Coordinate::DIRECTION
     virtual Coordinate::Type type() const;
 
     // Returns "Direction"
@@ -129,8 +134,8 @@ public:
     // </group>
 
     // Convert a pixel position to a worl position or vice versa. Returns True
-    // if the conversion succeeds, otherwise it returns False and
-    // <src>errorMessage()</src> contains an error message.   The output 
+    // if the conversion succeeds, otherwise it returns False and method
+    // errorMessage returns an error message.   The output 
     // vectors are appropriately resized.
     // <group>
     virtual Bool toWorld(Vector<Double> &world, 
@@ -148,7 +153,7 @@ public:
     // possible, but probably not needed.
     Bool toWorld(MDirection &world, const Vector<Double> &pixel) const;
 
-    // Report the value of the requested attributed.
+    // Recover the requested attributed.
     // <group>
     MDirection::Types directionType() const;
     Projection projection() const;
@@ -170,20 +175,23 @@ public:
     virtual Bool setReferenceValue(const Vector<Double> &refval);
     // </group>
 
-    // If <src>adjust</src> is True, the units must be compatible with
+    // Change the world axis units.
+    // If adjust is True, the units must be compatible with
     // angle. The units are initially "rad" (radians).
     virtual Bool setWorldAxisUnits(const Vector<String> &units,
 				   Bool adjust = True);
 
-    // I think this should be in the MDirection class, but Wim
+    // Return canonical axis names for the given MDirection type,
+    // giving FITS names if desired.
+    // BEG think this should be in the MDirection class, but WNB
     // disagrees. Leave it here for now.
     static Vector<String> axisNames(MDirection::Types type, 
 				    Bool FITSName = False);
 
     // Comparison function. Any private Double data members are compared    
     // with the specified fractional tolerance.  Don't compare on the specified     
-    // axes in the Coordinate.  If the comparison returns False, 
-    // <src>errorMessage()</src> contains a message about why.
+    // axes in the Coordinate.  If the comparison returns False,  method
+    // errorMessage returns a message about why.
      // <group>
     Bool near(const Coordinate* pOther, 
               Double tol=1e-6) const;
@@ -195,17 +203,17 @@ public:
 
     // Format a DirectionCoordinate coordinate world value nicely through the
     // common format interface.  Formatting types that are allowed are
-    // <src>Coordinate::SCIENTIFIC, Coordinate::FIXED, Coordinate::TIME</src>
-    // If you ask for format type <src>Coordinate::DEFAULT</src> then the
+    // Coordinate::SCIENTIFIC, Coordinate::FIXED, Coordinate::TIME
+    // If you ask for format type Coordinate::DEFAULT then the
     // selected format depends upon what the value of the enum 
-    // <src>MDirection::GlobalTypes</src> is for this DirectionCoordinate.
-    // For example, if it is <src>GRADEC</src> or <src>GHADEC</src> you would
-    // get <src>Coordinate::TIME</src> style formatting (DD:MM:SS.SS), otherwise
-    // you would get <src>Coordinate::FIXED</src> formatting by default.
+    // MDirection::GlobalTypes is for this DirectionCoordinate.
+    // For example, if it is GRADEC or GHADEC you would
+    // get Coordinate::TIME style formatting (DD:MM:SS.SS), otherwise
+    // you would get Coordinate::FIXED formatting by default.
     //
-    // <src>worldAxis</src> says which axis in this Coordinate we are formatting.  
+    // axis says which axis in this Coordinate we are formatting.  
     // We have to know this because we may format, say, RA and DEC differently.  
-    // For <src>Coordinate::TIME</src> style formatting, <src>precision</src>
+    // For Coordinate::TIME style formatting, precision
     // refers to the places after the decimal in the SS field.
     //<group>
     virtual void getPrecision (Int& precision, 
@@ -217,7 +225,7 @@ public:
     virtual String format(String& units,
                           const Coordinate::formatType format, 
                           const Double worldValue, 
-                          const uInt worldAxis, 
+                          const uInt axis, 
                           const Bool absolute,
                           const Int precision = -1) const;
     //</group>

@@ -1,5 +1,5 @@
 //# StokesCoordinate.h: Interconvert between pixel number and Stokes value.
-//# Copyright (C) 1997,1998
+//# Copyright (C) 1997,1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -35,7 +35,7 @@
 #include <aips/Containers/Block.h>
 
 // <summary>
-// Interconvert between pixel number and Stokes value.
+// Interconvert between pixel and Stokes value.
 // </summary>
 
 // <use visibility=export>
@@ -50,11 +50,22 @@
 //
 // <synopsis>
 // Although not really a "coordinate", an axis where pixel numbers are used
-// for different Stokes values are in wide use.
+// for different Stokes values are in wide use.     The StokesCoordinate
+// is a somewhat poor fit to the Coordinate polymorphic model
+// and you will probably find that if you try to use the Coordinate
+// classes polymorphically, that StokesCoordinate will cannot be 
+// dealt wqith fully polymorphocally (you may have to deal with
+// a specific StokesCoordinate)
+
 // </synopsis>
 //
+// <note role=caution>
+// All pixels coordinates are zero relative.
+// </note>
+//
 // <example>
-// See the example in <linkto module=Coordinates>Coordinates.h</linkto>.
+// See the example in <linkto module=Coordinates>Coordinates.h</linkto>
+// and tStokesCoordinate.cc
 // </example>
 //
 // <todo asof="1997/1/14">
@@ -72,15 +83,16 @@ public:
     // only one axis position may contain "I".
     StokesCoordinate(const Vector<Int> &whichStokes);
 
-    // Copy semantics.
-    // <group>
+    // Copy constructor (copy semantics)
     StokesCoordinate(const StokesCoordinate &other);
-    StokesCoordinate &operator=(const StokesCoordinate &other);
-    // </group>
 
+    // Assignment (copy semantics)
+    StokesCoordinate &operator=(const StokesCoordinate &other);
+
+    // Destructor
     virtual ~StokesCoordinate();
 
-    // Always returns Coordinates::STOKES
+    // Returns Coordinates::STOKES
     virtual Coordinate::Type type() const;
 
     // Always returns "Stokes"
@@ -93,8 +105,8 @@ public:
     // </group>
 
     // Convert a pixel position to a worl position or vice versa. Returns True
-    // if the conversion succeeds, otherwise it returns False and
-    // <src>errorMessage()</src> contains an error message.
+    // if the conversion succeeds, otherwise it returns False and method
+    // errorMessage returns an error message.
     //
     // The calculation that takes place in going from pixel to world is the
     // following.
@@ -118,13 +130,14 @@ public:
 			 const Vector<Double> &world) const;
     // </group>
 
-    // Interconvert between pixel number and stokes type.
+    // Interconvert between pixel number and Stokes type.
     // <group>
     Bool toPixel(Int &pixel, Stokes::StokesTypes stokes) const;
     Bool toWorld(Stokes::StokesTypes &stokes, Int pixel) const;
     // </group>
 
-    // Get all the stokes at once.
+    // Get the Stokes values (Stokes::StokesType) that we constructed 
+   // with into a vector
     Vector<Int> stokes() const;
 
     // Report the value of the requested attributed.
@@ -172,8 +185,8 @@ public:
 
     // Comparison function. Any private Double data members are compared    
     // with the specified fractional tolerance.  Don't compare on the specified     
-    // axes in the Coordinate.  If the comparison returns False, 
-    // <src>errorMessage()</src> contains a message about why.
+    // axes in the Coordinate.  If the comparison returns False,  method
+    // errorMessage returns a message about why.
     // <group>
     virtual Bool near(const Coordinate*,
                       Double tol=1e-6) const;
@@ -187,6 +200,7 @@ public:
     virtual Bool save(RecordInterface &container,
 		    const String &fieldName) const;
 
+    // Recover the StokesCoordinate from a record.
     // A null pointer means that the restoration did not succeed - probably 
     // because fieldName doesn't exist or doesn't contain a coordinate system.
     static StokesCoordinate *restore(const RecordInterface &container,
@@ -195,6 +209,7 @@ public:
     // Make a copy of ourself using new. The caller is responsible for calling
     // delete.
     virtual Coordinate *clone() const;
+
 private:
     Block<Int> values_p;
     // Keep these for subimaging purposes.
