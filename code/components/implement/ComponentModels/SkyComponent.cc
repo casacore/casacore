@@ -134,6 +134,27 @@ void SkyComponent::direction(MDirection & compDir) const {
   DebugAssert(ok(), AipsError);
 }
 
+void SkyComponent::visibility(Vector<DComplex> & vis,
+			      const Vector<Double> & uvw,
+			      const Double & frequency) const {
+  itsCompPtr->visibility(vis, uvw, frequency);
+  DebugAssert(ok(), AipsError);
+}
+
+void SkyComponent::visibilityLinear(Vector<DComplex> & vis, 
+				    const Vector<Double> & uvw,
+				    const Double & frequency) const {
+  itsCompPtr->visibilityLinear(vis, uvw, frequency);
+  DebugAssert(ok(), AipsError);
+}
+
+void SkyComponent::visibilityCircular(Vector<DComplex> & vis, 
+				      const Vector<Double> & uvw,
+				      const Double & frequency) const {
+  itsCompPtr->visibilityCircular(vis, uvw, frequency);
+  DebugAssert(ok(), AipsError);
+}
+
 void SkyComponent::setLabel(const String & newLabel) {
   itsCompPtr->setLabel(newLabel);
   DebugAssert(ok(), AipsError);
