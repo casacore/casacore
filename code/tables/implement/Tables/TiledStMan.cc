@@ -323,6 +323,12 @@ Bool TiledStMan::canChangeShape() const
     return False;
 }
 
+Bool TiledStMan::canAccessColumn (Bool& reask) const
+{
+    reask = True;
+    return (nhypercubes() == 1);
+}
+
 //# Does the storage manager allow to add rows? (yes)
 Bool TiledStMan::canAddRow() const
 {

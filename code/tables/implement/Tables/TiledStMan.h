@@ -171,6 +171,13 @@ public:
     // The default is no (but TiledCellStMan can).
     virtual Bool canChangeShape() const;
 
+    // Can the tiled storage manager access an entire column.
+    // TiledColumnStMan can always do that.
+    // The others might be able to do it (for this time).
+    // The default implementation returns True if there is only 1 hypercube.
+    // reask is set to True (because next time things might be different).
+    virtual Bool canAccessColumn (Bool& reask) const;
+
     // Calculate the cache size (in buckets) for accessing the hypercube
     // containing the given row. It takes the maximum cache size into
     // account (allowing an overdraft of 10%).

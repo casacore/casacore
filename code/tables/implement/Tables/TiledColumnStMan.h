@@ -179,10 +179,13 @@ public:
 
     // Clone this object.
     // It does not clone TSMColumn objects possibly used.
-    DataManager* clone() const;
+    virtual DataManager* clone() const;
+
+    // TiledColumnStMan can always access a column.
+    virtual Bool canAccessColumn (Bool& reask) const;
 
     // Get the type name of the data manager (i.e. TiledColumnStMan).
-    String dataManagerType() const;
+    virtual String dataManagerType() const;
 
     // Record a record containing data manager specifications.
     virtual Record dataManagerSpec() const;

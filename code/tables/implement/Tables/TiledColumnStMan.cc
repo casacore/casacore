@@ -99,6 +99,12 @@ Record TiledColumnStMan::dataManagerSpec() const
   return rec;
 }
 
+Bool TiledColumnStMan::canAccessColumn (Bool& reask) const
+{
+    reask = False;
+    return True;
+}
+
 
 void TiledColumnStMan::create (uInt nrrow)
 {

@@ -47,7 +47,7 @@ static Record emptyRecord;
 
 
 
-TiledShapeStMan::TiledShapeStMan ()
+TiledShapeStMan::TiledShapeStMan()
 : TiledStMan     (),
   nrUsedRowMap_p (0)
 {}
@@ -62,8 +62,8 @@ TiledShapeStMan::TiledShapeStMan (const String& hypercolumnName,
 
 TiledShapeStMan::TiledShapeStMan (const String& hypercolumnName,
 				  const Record& spec)
-: TiledStMan  (hypercolumnName, 0),
-  nrUsedRowMap_p     (0)
+: TiledStMan     (hypercolumnName, 0),
+  nrUsedRowMap_p (0)
 {
     if (spec.isDefined ("DEFAULTTILESHAPE")) {
         defaultTileShape_p = IPosition (spec.asArrayInt ("DEFAULTTILESHAPE"));
@@ -98,6 +98,14 @@ String TiledShapeStMan::dataManagerType() const
 IPosition TiledShapeStMan::defaultTileShape() const
 {
     return defaultTileShape_p;
+}
+
+Bool TiledShapeStMan::canAccessColumn (Bool& reask) const
+{
+    // The entire column can be accessed if all rows are in the same hypercube,
+    // thus if there is 1 row map entry and the last value is #rows.
+    reask = True;
+    return (nrUsedRowMap_p == 1  &&  rowMap_p[0] == nrrow_p-1);
 }
 
 

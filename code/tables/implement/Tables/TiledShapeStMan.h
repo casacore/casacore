@@ -203,10 +203,15 @@ public:
 
     // Clone this object.
     // It does not clone TSMColumn objects possibly used.
-    DataManager* clone() const;
+    virtual DataManager* clone() const;
 
     // Get the type name of the data manager (i.e. TiledShapeStMan).
-    String dataManagerType() const;
+    virtual String dataManagerType() const;
+
+    // TiledShapeStMan can access a column if there are 2 hypercubes
+    // and the first one is empty.
+    // reask is set to True (because next time things might be different).
+    virtual Bool canAccessColumn (Bool& reask) const;
 
     // Set the shape and tile shape of the given hypercube.
     // It is used when the first row in a new hypercube is written.
