@@ -327,7 +327,6 @@ template<class T> LogicalArray operator || (const T &val, const Array<T> &array)
 //
 // <group>
 
-
 template<class T> Bool anyLE (const Array<T> &l, const Array<T> &r);
 template<class T> Bool anyLT (const Array<T> &l, const Array<T> &r);
 template<class T> Bool anyGE (const Array<T> &l, const Array<T> &r);
@@ -354,7 +353,6 @@ template<class T> Bool anyOR (const Array<T> &l, const Array<T> &r);
 // At some point operators will be available that return masks where the
 // comparison is true.
 // <group>
-
 
 template<class T> Bool anyLE (const Array<T> &array, const T &val);
 template<class T> Bool anyLE (const T &val, const Array<T> &array);
@@ -417,5 +415,6 @@ template<class T> Array<uInt> partialNFalse (const Array<T>& array,
 
 // </group>
 
+// </group>
 
 #endif
