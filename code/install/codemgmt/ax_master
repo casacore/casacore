@@ -6183,3 +6183,4 @@
 17 184 src rm aips/implement/Functionals/FuncWithDerivs.h
 17 184 src rm trial/implement/Functionals/FuncWithAutoDerivs.cc
 17 184 src rm trial/implement/Functionals/FuncWithAutoDerivs.h
+17 191 src mv ./aips/implement/Functionals/NQChebyshev.cc ./aips/implement/Functionals/Chebyshev.cc
