@@ -1068,7 +1068,7 @@
 # List of hosts which will rebuild each architecture.
   INHOSTS=`getrc -i inhale.sneeze.hosts 2> /dev/null`
   DELTASLEEP=`getrc -i inhale.sneeze.sleep 2> /dev/null`
-  if [ "$DELTASLEEP" == "" ]
+  if [ "$DELTASLEEP" = "" ]
   then
      DELTASLEEP=600
   fi
