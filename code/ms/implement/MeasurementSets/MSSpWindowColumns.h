@@ -147,10 +147,20 @@ public:
 	       const Quantum<Double>& tolerance, Int tryRow=-1) const;
   // This is to check that the channels are matched individually
   // and also if the spw is matched in reverse; 
+
+  //Same as the above but returns all the possible match that it could find
+  // in the spectral window table. 
+  Vector<Int> allMatchedSpw(const MFrequency& refFreq, uInt nChan, 
+	       const Quantum<Double>& bandwidth, Int ifChain,
+	       const Quantum<Double>& tolerance) const;
+
+  //This version does a channel to channel match too and also return
+  // the reversed if it matches but the channels are in inverse order
+  // like an upper or lower side band having same characteristics
   Int matchSpw(const MFrequency& refFreq, uInt nChan, 
 	       const Quantum<Double>& bandwidth, Int ifChain,
 	       const Quantum<Double>& tolerance, Vector<Double>& otherFreqs, 
-	       Bool& reversed, Int tryRow=-1) const;
+	       Bool& reversed) const;
 protected:
   //# default constructor creates a object that is not usable. Use the attach
   //# function correct this.

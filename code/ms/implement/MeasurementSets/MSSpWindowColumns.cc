@@ -144,20 +144,71 @@ matchSpw(const MFrequency& refFreq, uInt nChan,
   return -1;
 }
 
+Vector<Int> ROMSSpWindowColumns::
+allMatchedSpw(const MFrequency& refFreq, uInt nChan, 
+	 const Quantum<Double>& bandwidth, Int ifChain,
+	 const Quantum<Double>& tolerance) const {
+  uInt r = nrow();
+  Vector<Int> matched;
+  if (r == 0) return matched;
+  // Convert the reference frequency to Hz
+  const MFrequency::Types refType = 
+    MFrequency::castType(refFreq.getRef().getType());
+  const Double refFreqInHz = refFreq.getValue().getValue();
+  // Convert the totalBandwidth to Hz
+  const Unit Hz("Hz");
+  DebugAssert(bandwidth.check(Hz.getValue()), AipsError);
+  const Double bandwidthInHz = bandwidth.getValue(Hz);
+  // Convert the tolerance to Hz
+  DebugAssert(tolerance.check(Hz.getValue()), AipsError);
+  const Double tolInHz = tolerance.getValue(Hz);
+
+
+  Int numMatch=0;
+  for (Int k=0; k < r; ++k){
+    
+    if (!flagRow()(k) &&
+	matchNumChan(k, nChan) &&
+	matchIfConvChain(k, ifChain) &&
+	matchTotalBandwidth(k, bandwidthInHz, nChan*tolInHz) &&
+ 	matchRefFrequency(k, refType, refFreqInHz, tolInHz)) {
+      ++numMatch;
+      matched.resize(numMatch, True);
+      matched(numMatch-1)=k;
+    }
+
+  }
+
+  return matched;
+
+}
+
 
 Int ROMSSpWindowColumns::
 matchSpw(const MFrequency& refFreq, uInt nChan, 
 	 const Quantum<Double>& bandwidth, Int ifChain,
 	 const Quantum<Double>& tolerance, Vector<Double>& otherFreqs, 
-	 Bool& reversed, Int tryRow) const {
+	 Bool& reversed) const {
 
   reversed=False;
   
   Int matchedSpw=-1;
-  matchedSpw=matchSpw(refFreq, nChan, bandwidth, ifChain, tolerance, tryRow);
 
-  if((nChan >1) && (matchedSpw > -1)){
-    Double tolInHz= tolerance.get("Hz").getValue();
+  Vector<Int> allMatchSpw=
+    allMatchedSpw(refFreq, nChan, bandwidth, ifChain, tolerance);
+ 
+  Int nMatches=allMatchSpw.shape()(0);
+  if(nMatches==0) return -1;
+
+
+
+  // if only one channel then return the first match
+  if (nChan == 1) return allMatchSpw[0];
+  Double tolInHz= tolerance.get("Hz").getValue();
+  for (Int k=0; k < nMatches; ++k){
+
+    matchedSpw=allMatchSpw[k];
+      
     if(matchChanFreq(matchedSpw, otherFreqs, tolInHz)){ 
       return matchedSpw;
     }
@@ -170,17 +221,13 @@ matchSpw(const MFrequency& refFreq, uInt nChan,
 	reversed=True;
 	return matchedSpw;
       }
-      else{
-
-	return -1;
-      }
 
     }
 
   }
  
 
-  return matchedSpw;
+  return -1;
 }
 ROMSSpWindowColumns::ROMSSpWindowColumns():
   chanFreq_p(),
