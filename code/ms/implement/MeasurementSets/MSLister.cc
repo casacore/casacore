@@ -37,6 +37,7 @@
 #include <aips/Arrays/ArrayMath.h>
 #include <aips/Arrays/MaskedArray.h>
 #include <aips/Arrays/MaskArrMath.h>
+#include <aips/Glish/GlishArray.h>
 #include <iomanip.h>
 #include <iostream.h>
 
@@ -54,7 +55,7 @@ MSLister::MSLister ()
 // initialises the output, sets string to format output, and initialises the
 // listing.
 //
-MSLister::MSLister (MeasurementSet& ms, LogIO& os)
+MSLister::MSLister (const MeasurementSet& ms, LogIO& os)
   : pMS(&ms),
     os_p(os),
     dashline_p(replicate("-",80))
@@ -132,12 +133,7 @@ void MSLister::initList()
   // polarisations and the first spectral channel.
   mss_p.setMS(*pMS);
 
-  cout << endl;
-  cout << "Before mss_p.initSelection()" << endl;
   mss_p.initSelection();
-
-  cout << endl;
-  cout << "After mss_p.initSelection()" << endl;
 
   // Get the ranges (into ranges_p) of the following usefully
   // selectable attributes.  range_p can be changed later to
@@ -149,11 +145,9 @@ void MSLister::initList()
   items_p(2)="antenna2";		// the list of antenna2 id values
   items_p(3)="uvdist";			// the range of the UV-distance (m)
   //  items_p(4)="spectral_window_id";	// the list of spwin id values
-  items_p(4)="data_desc_id";	// the list of spwin id values
+  items_p(4)="data_desc_id";            // the list of data desc id values
   items_p(5)="field_id";		// the list of field id values
   getRanges();
-
-  cout << "After getRanges." << endl << endl;
 
   // Set up for selection on channel or polarisation
   ROMSSpWindowColumns msSpWinC(pMS->spectralWindow());
@@ -166,9 +160,10 @@ void MSLister::initList()
 			     (msPolC.corrType()(0)(IPosition(1,i))));
   }
 
+
   // Store spwin ref freqs for later use:
   //   (should get channel freqs for multi-channel MS's)
-  freqs_p.resize(4,False);
+  //  freqs_p.resize(4,False);
   freqs_p=msSpWinC.refFrequency().getColumn();
 
   // Signal completion of initList
@@ -229,14 +224,12 @@ void MSLister::getRanges()
   // Assumes items_p has already been set (should add check on this)
   // **SPW**
   
-  cout << endl << "mss_p.dataDescId() = " <<  mss_p.dataDescId() << endl;
-
   MSRange msr(mss_p.selectedTable(),mss_p.dataDescId());		
   ranges_p = msr.range(items_p);		
 
   // Print out the retrieved ranges:
-  cout << "Printing out the GlishRecord ranges_p:" << endl;
-  cout << ranges_p << endl;
+  //  cout << "Printing out the GlishRecord ranges_p:" << endl;
+  //  cout << ranges_p << endl;
 }
 
 
@@ -281,11 +274,8 @@ void MSLister::list()
   // if (!mss_p.select(ranges_p)) return boo-boo1;
 
 
-  cout << endl << "Before applying selection." << endl;
   // Actually apply the ranges_p selection:
   mss_p.select(ranges_p);
-  cout << endl << "After applying selection." << endl;
-
 
   // Spectral and polarisation selection are handled separately from
   // the GlishRecord ranges_p
@@ -315,7 +305,7 @@ Bool MSLister::selectTime (Double& inputStartTime, Double& inputStopTime)
   ranges_p.toRecord(dataRecords_p);
   dataRecords_p.get("time", msTimeLimits);
 
-  // Maybe you think there ain't no Sanity Claus, but....
+  // Make sure requested times make sense
   Bool ok = ToBool(inputStartTime < inputStopTime &&
 		   inputStartTime < msTimeLimits(1) &&
 		   inputStopTime > msTimeLimits(0));
@@ -356,7 +346,7 @@ void MSLister::listData()
   // MSSelector::selms_p member...
   // **SPW**
 
-  items_p.resize(8,True);
+  items_p.resize(9,True);
   items_p(0)="time";
   items_p(1)="antenna1";		
   items_p(2)="antenna2";		
@@ -366,19 +356,14 @@ void MSLister::listData()
   items_p(5)="field_id";		
   items_p(6)="amplitude";
   items_p(7)="phase";		
-  //items_p(8)="weight";		
+  items_p(8)="weight";		
 
   // Get ranges of selected data to ranges_p for use in field-width/precision setting
-  cout << endl << "Before getRanges" << endl;
   getRanges();
-  cout << endl << "Before getData" << endl;
-
 
   // Now extract the selected data Record.  Note that mss_p is the *selected*
   // data, and mss_p.getData() is an implicit GlishRecord object
   mss_p.getData(items_p,False).toRecord(dataRecords_p);
-
-  cout << endl << "After getData" << endl;
 
   // Construct arrays for the Record items.  The V-float declaration
   // appears to be necessary (instead of V-double) despite the get()
@@ -386,35 +371,22 @@ void MSLister::listData()
   Vector <Double>	time,uvdist;
   Vector <Int>		ant1,ant2,spwinid,fieldid;
   Array <Float>		ampl,phase;
-  //  Vector <Float>	weight;
-
-  cout << endl << "After arrays instantiation" << endl;
+  Array <Float>	        weight;
 
   // Extract the values from the Record into the Arrays
   dataRecords_p.get("time", time);  // in sec
-  cout << "got Time" << endl;
   dataRecords_p.get("antenna1", ant1);
-  cout << "got Ant1" << endl;
   dataRecords_p.get("antenna2", ant2);
-  cout << "got Ant2" << endl;
   dataRecords_p.get("uvdist", uvdist);  // in meters
-  cout << "got UVD" << endl;
   //  dataRecords_p.get("spectral_window_id", spwinid);
   dataRecords_p.get("data_desc_id", spwinid);
-  cout << "got dataDesc" << endl;
   dataRecords_p.get("field_id", fieldid);
-  cout << "got fldid" << endl;
   dataRecords_p.get("amplitude", ampl);
-  cout << "got ampl" << endl;
   dataRecords_p.get("phase", phase);  // in rad
-  cout << "got phase" << endl;
-  //  dataRecords_p.get("weight", weight);
-  //  cout << "got weight" << endl;
+  dataRecords_p.get("weight", weight);
 
   // Number of rows that will be listed
   Int nrows = time.nelements();
-  Vector <Float>	weight;
-  weight.resize(nrows,True);
   
   // Convert units of some params:
   time = time/C::day;        // time now in days
@@ -429,30 +401,54 @@ void MSLister::listData()
   // converted values (so we can use ranges_p for field width and 
   // precision setting):
 
-  //     TBD....
+  Vector<Double> uvminmax(2);
+  uvminmax(0)=min(uvdist);
+  uvminmax(1)=max(uvdist);
+  ranges_p.add("uvdist",GlishArray(uvminmax));
+
+  Vector<Float> amplminmax(2);
+  amplminmax(0)=min(ampl(ampl>0.0f));
+  amplminmax(1)=max(ampl);
+  ranges_p.add("amplitude",GlishArray(amplminmax));
+
+  Vector<Float> phminmax(2);
+  phminmax(0)=min(abs(phase(phase!=0.0f)));  // 
+  phminmax(1)=max(phase);
+  ranges_p.add("phase",GlishArray(phminmax));
+
+  Vector<Float> wtminmax(2);
+  wtminmax(0)=min(weight(weight >0.0f));
+  wtminmax(1)=max(weight);
+  ranges_p.add("weight",GlishArray(wtminmax));
+
+
+  //  cout << endl;
+  //  cout << "Printing out the GlishRecord ranges_p:" << endl;
+  //  cout << ranges_p << endl;
+
 
 
   // Make flags for showing index columns.
   doFld_p = (ranges_p.get("field_id").nelements() > 1);
-  doSpW_p = (ranges_p.get("spectral_window_id").nelements() > 1);
+  doSpW_p = (ranges_p.get("data_desc_id").nelements() > 1);
   doChn_p = (nchan_p > 1);
 
 
-  cout << "Fld id : " << ranges_p.get("field_id") << endl;
-  cout << "SpW id : " << ranges_p.get("spectral_window_id") << endl << endl;
+  //  cout << "Fld id : " << ranges_p.get("field_id") << endl;
+  //  cout << "SpW id : " << ranges_p.get("spectral_window_id") << endl << endl;
 
 
   // From this point on, don't change scaling in list arrays, since the
   // field sizes are determined directly from the data.
 
-  cout << "Minumum uvdist = " << min(uvdist) << endl;
-  cout << "Maximum uvdist = " << max(uvdist) << endl;
-  cout << "Minumum non-zero amp = " << min(ampl(ampl>0.0f)) << endl;
-  cout << "Maximum amp = " << max(ampl) << endl;
-  cout << "Minumum non-zero abs phase = " << min(abs(phase(phase!=0.0f))) << endl;
-  cout << "Maximum phase = " << max(abs(phase)) << endl;
-  //  cout << "Minumum weight = " << min(weight(weight>0.0f)) << endl;
-  // cout << "Maximum weight = " << max(weight) << endl;
+  //  cout << "Minumum uvdist             = " << min(uvdist) << endl;
+  //  cout << "Maximum uvdist             = " << max(uvdist) << endl;
+  //  cout << "Minumum non-zero amp       = " << min(ampl(ampl>0.0f)) << endl;
+  //  cout << "Maximum amp                = " << max(ampl) << endl;
+  //  cout << "Minumum non-zero abs phase = " << min(abs(phase(phase!=0.0f))) << endl;
+  //  cout << "Maximum phase              = " << max(abs(phase)) << endl;
+  //  cout << "Minumum weight             = " << min(weight(weight>0.0f)) << endl;
+  //  cout << "Maximum weight             = " << max(weight) << endl;
 
 
   // Set order of magnitude and precision (for field width setting):
@@ -492,10 +488,10 @@ void MSLister::listData()
   //   The field width for non-index columns is given by the  
   //    sum of the order and precision:
   wTime_p   = oTime_p + precTime_p;
-  wUVDist_p = oUVDist_p + precUVDist_p;  // left+dec+right
-  wAmpl_p   = oAmpl_p + precAmpl_p;  // left+dec+right
-  wPhase_p  = oPhase_p + precPhase_p;  // sign+left+dec+right
-  wWeight_p = oWeight_p + precWeight_p; // left+dec+right
+  wUVDist_p = oUVDist_p + precUVDist_p;  
+  wAmpl_p   = oAmpl_p + precAmpl_p;  
+  wPhase_p  = oPhase_p + precPhase_p;  
+  wWeight_p = oWeight_p + precWeight_p;
 
   // Enforce minimum field widths,
   // add leading space so columns nicely separated,
@@ -574,7 +570,7 @@ void MSLister::listData()
 	os_p.output().precision(precPhase_p);
 	os_p.output().width(wPhase_p); os_p << phase(IPosition(3,ipol,ichan,row));
 	os_p.output().precision(precWeight_p);
-	os_p.output().width(wWeight_p); os_p << weight(row);
+	os_p.output().width(wWeight_p); os_p << weight(IPosition(2,ipol,row));
       }
       os_p << endl;
     }
@@ -592,7 +588,7 @@ void MSLister::listColumnHeader() {
 
   // First line of column header
   os_p.output().setf(ios::left, ios::adjustfield);
-  os_p.output().width(wTime_p);             os_p << "-Date/Time-";
+  os_p.output().width(wTime_p);             os_p << "Date/Time:";
   os_p.output().setf(ios::right, ios::adjustfield);
   os_p.output().width(wIntrf_p);            os_p << " ";
   os_p.output().width(wUVDist_p);           os_p << " ";
