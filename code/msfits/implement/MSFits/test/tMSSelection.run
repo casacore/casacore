@@ -23,4 +23,4 @@
   echo $AIPSDEMO
   echo $FITS
   echo $MS
-  tMSSelection fits=$FITS ms=$MS
+  ./tMSSelection fits=$FITS ms=$MS
