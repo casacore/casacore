@@ -61,7 +61,7 @@ SDFieldHandler &SDFieldHandler::operator=(const SDFieldHandler &other)
 	clearAll();
 	msField_p = new NewMSField(*(other.msField_p));
 	AlwaysAssert(msField_p, AipsError);
-	msFieldCols_p = new NewMSFieldColumns(*(other.msFieldCols_p));
+	msFieldCols_p = new NewMSFieldColumns(*msField_p);
 	AlwaysAssert(msFieldCols_p, AipsError);
 	rownr_p = other.rownr_p;
 	fieldIdField_p = other.fieldIdField_p;
