@@ -2610,3 +2610,4 @@
 11 382 src mv trial/scripts/statistics.g trial/implement/Mathematics/statistics.g
 11 382 src mv trial/scripts/statistics.help trial/implement/Mathematics/statistics.help
 11 382 src mv trial/scripts/gaussian.help trial/implement/Mathematics/gaussian.help
+11 382 src mv aips/scripts/timer.help aips/implement/Utilities/timer.help
