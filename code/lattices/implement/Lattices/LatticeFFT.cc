@@ -72,18 +72,21 @@ void LatticeFFT::cfft(Lattice<Complex> & cLattice,
   const uInt ndim = cLattice.ndim();
   DebugAssert(ndim > 0, AipsError);
   AlwaysAssert(ndim == whichAxes.nelements(), AipsError);
+  FFTServer<Float,Complex> ffts;
   const IPosition latticeShape = cLattice.shape();
   const IPosition tileShape = cLattice.niceCursorShape(cLattice.maxPixels());
-  FFTServer<Float,Complex> ffts;
   const Complex cZero(0,0);
 
   for (uInt dim = 0; dim < ndim; dim++) {
     if (whichAxes(dim) == True) {
       TiledLineStepper ts(latticeShape, tileShape, dim);
       LatticeIterator<Complex> li(cLattice, ts);
+      Bool first=True;
       for (li.reset(); !li.atEnd(); li++) {
 	if (!allNear(li.cursor(), cZero, 1E-6)) {
-	  ffts.fft(li.rwVectorCursor(), toFrequency);
+          Vector<Complex> saved=li.rwVectorCursor().copy();
+	  ffts.fft(saved, toFrequency);
+          li.rwVectorCursor()=saved;
 	}
       }
     }
