@@ -100,25 +100,42 @@ BlockInput::~BlockInput() {
 }
 
 char *BlockInput::read() {
-	current += recsize;
-	if (current >= iosize) {
-		iosize = ::read(fd,buffer,(unsigned)blocksize);
-		if (iosize == 0)
-			return 0;
-		block_no++;
-		if (iosize == -1) {
-			errmsg(READERR,"Error reading record");
-			iosize = 0;
-		}
-		else if (iosize % recsize != 0) {
-			errmsg(READERR,"Wrong length record");
-			iosize -= (iosize % recsize);
-		} else
-			err_status = OK;
-		current = 0;
+    current += recsize;
+    int nreadlast = 0;
+    if (current >= iosize) {
+	int ntoread = blocksize;
+	int nreadlast;
+	iosize = 0;
+	// Read in a loop because, e.g., stdin or the network can break things
+	// up into differently sized records. This might not quite be the right
+	// thing to do with tapes, but the code doesn't work properly on tapes
+	// yet in any event.
+	do {
+	    nreadlast = ::read(fd, buffer, (unsigned)ntoread);
+	    if (nreadlast > 0) {
+		ntoread -= nreadlast;
+		iosize += nreadlast;
+	    }
+	} while (ntoread > 0 && nreadlast > 0);
+	if (iosize == 0)
+	    return 0;
+	block_no++;
+	if (nreadlast < 0) {
+	    if (iosize > 0) {
+		iosize -= (iosize % recsize);
+	    }
+	    errmsg(READERR,"Error reading record");
+	    iosize = 0;
+	} else if (iosize % recsize != 0) {
+	    errmsg(READERR,"Wrong length record");
+	    iosize -= (iosize % recsize);
+	} else {
+	    err_status = OK;
 	}
-	rec_no++;
-	return &buffer[current];
+	current = 0;
+    }
+    rec_no++;
+    return &buffer[current];
 }
 
 char *BlockInput::skip(int n) {
