@@ -1349,8 +1349,7 @@ Bool CoordinateSystem::save(RecordInterface &container,
     }
 
     uInt nc = coordinates_p.nelements();
-    uInt i;
-    for (i=0; i<nc; i++)
+    for (uInt i=0; i<nc; i++)
     {
 	// Write eaach string into a field it's type plus coordinate
 	// number, e.g. direction0
@@ -1391,7 +1390,7 @@ Bool CoordinateSystem::save(RecordInterface &container,
     Vector<String> axisNames(nPixelAxes());
     Vector<String> coordinateTypes(nPixelAxes());
     Int c, axisInCoordinate, worldAxis;
-    for (i=0; i<nPixelAxes(); i++) {
+    for (uInt i=0; i<nPixelAxes(); i++) {
        findPixelAxis(c, axisInCoordinate, i);
        coordinateTypes(i) = coordinate(c).showType();
 #
@@ -1404,11 +1403,21 @@ Bool CoordinateSystem::save(RecordInterface &container,
           axisNames(i) = "removed";
        }
    }
+   Vector<Int> toWorldMap(nPixelAxes());
+   for (uInt i=0; i<nPixelAxes(); i++) {
+      toWorldMap(i) = pixelAxisToWorldAxis(i);
+   }
+   Vector<Int> toPixelMap(nWorldAxes());
+   for (uInt i=0; i<nWorldAxes(); i++) {
+      toPixelMap(i) = worldAxisToPixelAxis(i);
+   }
    subrec.define("nPixelAxes",Int(nPixelAxes()));
    subrec.define("nWorldAxes",Int(nWorldAxes()));
    subrec.define("axisUnits", axisUnits);
    subrec.define("axisNames", axisNames);
    subrec.define("coordinateTypes", coordinateTypes);
+   subrec.define("toWorldAxisMap", toWorldMap);
+   subrec.define("toPixelAxisMap", toPixelMap);
 
 #
 
