@@ -28,6 +28,7 @@
 #if !defined(AIPS_LELSCALAR_H)
 #define AIPS_LELSCALAR_H
 
+#include <trial/Lattices/LELInterface.h>
 
 // <summary>
 // This LEL class holds a scalar with a mask.
