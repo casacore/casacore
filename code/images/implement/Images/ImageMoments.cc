@@ -26,8 +26,6 @@
 //# $Id$
 //   
 
-#include <trial/Images/ImageMoments.h>
-
 #include <aips/aips.h>
 #include <aips/Arrays/Array.h>
 #include <aips/Arrays/ArrayMath.h>
@@ -68,6 +66,8 @@
 
 #include <strstream.h>
 #include <iomanip.h>
+
+#include <trial/Images/ImageMoments.h>
 
 
 

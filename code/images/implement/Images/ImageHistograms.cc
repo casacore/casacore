@@ -25,8 +25,6 @@
 //#
 //# $Id$
 
-#include <trial/Images/ImageHistograms.h>
-
 #include <aips/aips.h>
 #include <aips/Arrays/Array.h>
 #include <aips/Arrays/ArrayMath.h>
@@ -54,6 +52,8 @@
 #include <iomanip.h>
 #include <stdlib.h>
 #include <strstream.h>
+
+#include <trial/Images/ImageHistograms.h>
 
 
 

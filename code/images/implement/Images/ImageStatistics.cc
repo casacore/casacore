@@ -1,5 +1,5 @@
 //# ImageStatistics.cc: generate statistics from an image
-//# Copyright (C) 1996,1997
+//# Copyright (C) 1996,1997,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -24,8 +24,6 @@
 //#                        Charlottesville, VA 22903-2475 USA
 //#
 //# $Id$
-
-#include <trial/Images/ImageStatistics.h>
 
 #include <aips/Arrays/ArrayLogical.h>
 #include <aips/Arrays/ArrayMath.h>
@@ -55,6 +53,8 @@
 #include <iomanip.h>
 #include <stdlib.h>
 #include <strstream.h>
+
+#include <trial/Images/ImageStatistics.h>
 
 
 
