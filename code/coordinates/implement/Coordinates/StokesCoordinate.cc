@@ -1,5 +1,5 @@
 //# StokesCoordinate.cc: this defines StokesCoordinate which shoe-horns Stokes axes into a Coordinate
-//# Copyright (C) 1997,1998,1999,2000,2001,2002
+//# Copyright (C) 1997,1998,1999,2000,2001,2002,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -137,7 +137,7 @@ Bool StokesCoordinate::toPixel(Int& pixel, Stokes::StokesTypes stokes) const
 Bool StokesCoordinate::toWorld(Vector<Double>& world, 
 			       const Vector<Double>& pixel) const
 {
-    AlwaysAssert(pixel.nelements()==1, AipsError);
+    DebugAssert(pixel.nelements()==1, AipsError);
     world.resize(1);
 //
     Double tmp;
@@ -152,7 +152,7 @@ Bool StokesCoordinate::toWorld(Vector<Double>& world,
 Bool StokesCoordinate::toPixel(Vector<Double> &pixel, 
     	                       const Vector<Double> &world) const
 {
-    AlwaysAssert(world.nelements()==1, AipsError);
+    DebugAssert(world.nelements()==1, AipsError);
     pixel.resize(1);
 //
     Double tmp;
@@ -536,7 +536,7 @@ void StokesCoordinate::makePixelRelative (Vector<Double>& pixel) const
 // rel = abs - ref
 //
 { 
-   AlwaysAssert(pixel.nelements()==1, AipsError);
+   DebugAssert(pixel.nelements()==1, AipsError);
 //
    Int index = Int(pixel(0) + 0.5);
    if (index >= 0 && index < nValues_p) {
@@ -556,7 +556,7 @@ void StokesCoordinate::makePixelAbsolute (Vector<Double>& pixel) const
 // abs = rel + ref
 //
 { 
-   AlwaysAssert(pixel.nelements()==1, AipsError);
+   DebugAssert(pixel.nelements()==1, AipsError);
    pixel += referencePixel();
 //
    Int index = Int(pixel(0) + 0.5);
