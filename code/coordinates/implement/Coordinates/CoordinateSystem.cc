@@ -2954,7 +2954,7 @@ Bool CoordinateSystem::fromFITSHeader(CoordinateSystem &coordsys,
         }
      }
 //
-     if (longAxis > 0) {
+     if (longAxis >= 0) {
         if (proj1 != proj2) {
 
 // Maybe instead I should switch to CAR, or use the first?
