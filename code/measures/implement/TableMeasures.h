@@ -49,7 +49,7 @@
 //   <li> <linkto module=Tables>Tables</linkto>
 // </prerequisite>
 
-// <reviewed reviewer="" date="" demos="" tests="tTableMeasures">
+// <reviewed reviewer="Bob Garwood" date="1999/12/23">
 // </reviewed>
 
 // <etymology>
@@ -77,7 +77,54 @@
 // Measure column objects see 
 // <linkto><class=ROScalarMeasColumn>ScalarMeasColumn</linkto> and
 // <linkto><class=ROArrayMeasColumn>ArrayMeasColumn</linkto>.
-
+//
+// <h3>Conversions</h3>
+// The classes accessing the data use the underlying
+// <linkto module=Quanta>Quanta</linkto> or
+// <linkto module=Measures>Measures</linkto> classes to convert
+// the units or references of the measures or quanta.
+// The TableMeasures classes do not test if a conversion is possible.
+// <br>In general one can say that about every unit conversion is possible.
+// The <linkto class=Unit>Unit</linkto> class adjusts units as needed.
+// <br>Conversions of Measures are only possible if enough information
+// is supplied for the measure's reference.
+// <br>Take a look at the abovementioned modules to find out about conversions.
+//
+// <h3>Performance</h3>
+// Using the TableMeasures classes makes it easier to deal with
+// measures in tables. However, there is a performance penalty
+// compared to handling the values directly in the table using
+// the Tables classes <linkto class=ScalarColumn>ScalarColumn</linkto>
+// and <linkto class=ArrayColumn>ArrayColumn</linkto>.
+//
+// The performance of the TableMeasures classes depends on how the
+// measures are stored; thus if a fixed or variable offset and reference
+// are used.
+// Of course, it also depends on whether the measures have to be
+// converted before they can be stored.
+// <br>The TableMeasures classes are always slower than the Tables classes,
+// but they offer more convenience.
+// In general one can say that for large tables it is better to use
+// the Tables classes directly to put/get the data.
+// However, even when putting directly using the Tables classes, the
+// column itself should be defined as a TableMeasure. In that way there
+// is one standard way of defining columns as table measures.
+// <br>For example, the TIME column in a MeasurementSet should be handled
+// directly uisng the Tables classes (because it is so large).
+// On the other hand, the FIELD table is very small and it may make life
+// easier to handle its columns through the TableMeasures classes.
+//
+// In a test putting an array of quanta using class
+// <linkto class=ArrayQuantColumn>ArrayQuantColumn</linkto> took
+// about 5 times as long as doing it directly using class
+// <linkto class=ArrayColumn>ArrayColumn</linkto>. The quantum column
+// had variable units. so for each row the unit had to be written as well.
+// Reading it back took about 3 times as long.
+// <br>When using a qunatum column with fixed units, putting took about
+// 2.5 times as long as using <src>ArrayColumn</src> directly.
+// Each put involved a unit conversion.
+// Reading it back took only 10% more than when using <src>ArrayColumn</src>.
+//
 // </synopsis>
 
 // <motivation>
