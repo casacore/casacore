@@ -17,7 +17,8 @@ main()
       Int v2 = 9;
       Int v3 = 1;
       uInt nv = 0;                     // nr ov test-values
-      for (Float v=v1; v<=v2; v+=v3) {nv++;}  
+      Int v;
+      for (v=v1; v<=v2; v+=v3) {nv++;}  
       cout << "value-vector vv:  nv=" << nv;
       cout << "  v1=" << v1;
       cout << "  v2=" << v2;
