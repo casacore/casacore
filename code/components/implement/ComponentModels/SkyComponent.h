@@ -163,16 +163,17 @@ public:
 
   // get the actual type of the component 
   // (as an ComponentTypes::ComponentTypes enum)
-  virtual ComponentType::Shape shapeType() const;
+  virtual ComponentType::Shape shape() const;
 
   // This functions convert between a glish record and a SkyComponent. This way
   // derived classes can interpret fields in the record in a class specific
-  // way. These functions define how a component is represented in glish. The
-  // fromRecord function appends a message to the errorMessage string if the
-  // conversion failed for any reason.
+  // way. These functions define how a component is represented in glish. They
+  // append a message to the errorMessage string if the conversion failed for
+  // any reason and then return False. Both functions return True if the
+  // conversion succeded.  
   // <group>
-  virtual void fromRecord(String & errorMessage, const GlishRecord & record);
-  virtual void toRecord(GlishRecord & record) const;
+  virtual Bool fromRecord(String & errorMessage, const GlishRecord & record);
+  virtual Bool toRecord(String & errorMessage, GlishRecord & record) const;
   // </group>
   
   // return the type of component that the supplied record represents. Returns 
@@ -192,21 +193,22 @@ public:
   virtual Bool ok() const;
 
 protected:
-  // An easy way for derived classes to initialise the base class is to use
-  // this constructor. The pointer is taken over. 
+  //# An easy way for derived classes to initialise the base class is to use
+  //# this constructor. The pointer is taken over. 
   SkyComponent(SkyCompRep * rawPtr);
 
-  // Return the polymorphic pointer that is being reference counted. This is
-  // used by derived classes to cache an downcast pointer.
+  //# Return the polymorphic pointer that is being reference counted. This is
+  //# used by derived classes to cache an downcast pointer.
   SkyCompRep * rawPtr(); 
   const SkyCompRep * rawPtr() const;
 
-  // Check that the type in the glishRecord matches the type of this
-  // component. If not return the errors in the errorMessage String
-  void checkShape(String & errorMessage, const GlishRecord & record) const;
+  //# Check that the type in the glishRecord matches the type of this
+  //# component. Returns False if not and appends a reason in the errorMessage
+  //# String
+  Bool checkShape(String & errorMessage, const GlishRecord & record) const;
 
 private:
-  CountedPtr<SkyCompRep> theCompPtr;
+  CountedPtr<SkyCompRep> itsCompPtr;
 };
 
 #endif

@@ -43,7 +43,7 @@
 #include <aips/Utilities/String.h>
 
 SkyComponent::SkyComponent()
-  :theCompPtr(new PointCompRep) 
+  :itsCompPtr(new PointCompRep) 
 {
   AlwaysAssert(ok(), AipsError);
 }
@@ -51,9 +51,9 @@ SkyComponent::SkyComponent()
 SkyComponent::SkyComponent(ComponentType::Shape shape) {
   switch (shape){
   case ComponentType::POINT:
-    theCompPtr = new PointCompRep; break;
+    itsCompPtr = new PointCompRep; break;
   case ComponentType::GAUSSIAN:
-    theCompPtr = new GaussianCompRep; break;
+    itsCompPtr = new GaussianCompRep; break;
   case ComponentType::UNKNOWN:
   case ComponentType::NUMBER_SHAPES:
     throw(AipsError("SkyComponent::Unable to construct a component of "
@@ -63,7 +63,7 @@ SkyComponent::SkyComponent(ComponentType::Shape shape) {
 }
 
 SkyComponent::SkyComponent(const SkyComponent & other) 
-  :theCompPtr(other.theCompPtr)
+  :itsCompPtr(other.itsCompPtr)
 { 
   AlwaysAssert(ok(), AipsError);
 }
@@ -74,7 +74,7 @@ SkyComponent::~SkyComponent() {
 
 SkyComponent & SkyComponent::operator=(const SkyComponent & other) {
   if (this != &other)
-    theCompPtr = other.theCompPtr;
+    itsCompPtr = other.itsCompPtr;
   // This call to ok is restricted to the base class as the operator= function
   // is called by derived classes before the derived object is fully
   // constructed.
@@ -85,119 +85,122 @@ SkyComponent & SkyComponent::operator=(const SkyComponent & other) {
 void SkyComponent::sample(Vector<Double> & result, 
 			  const MDirection & sampleDir, 
 			  const MVAngle & pixelSize) const {
-  theCompPtr->sample(result, sampleDir, pixelSize);
+  itsCompPtr->sample(result, sampleDir, pixelSize);
   DebugAssert(ok(), AipsError);
 }
 
 void SkyComponent::project(ImageInterface<Float> & plane) const {
-  theCompPtr->project(plane);
+  itsCompPtr->project(plane);
   DebugAssert(ok(), AipsError);
 }
 
 void SkyComponent::setFlux(const Quantum<Vector<Double> > & newFlux) {
-  theCompPtr->setFlux(newFlux);
+  itsCompPtr->setFlux(newFlux);
   DebugAssert(ok(), AipsError);
 }
 
 void SkyComponent::flux(Quantum<Vector<Double> > & compFlux) const {
-  theCompPtr->flux(compFlux);
+  itsCompPtr->flux(compFlux);
   DebugAssert(ok(), AipsError);
 }
 
 void SkyComponent::setDirection(const MDirection & newDir) {
-  theCompPtr->setDirection(newDir);
+  itsCompPtr->setDirection(newDir);
   DebugAssert(ok(), AipsError);
 }
 
 void SkyComponent::direction(MDirection & compDir) const {
-  theCompPtr->direction(compDir);
+  itsCompPtr->direction(compDir);
   DebugAssert(ok(), AipsError);
 }
 
 void SkyComponent::setLabel(const String & newLabel) {
-  theCompPtr->setLabel(newLabel);
+  itsCompPtr->setLabel(newLabel);
   DebugAssert(ok(), AipsError);
 }
 
 void SkyComponent::label(String & compLabel) const {
-  theCompPtr->label(compLabel);
+  itsCompPtr->label(compLabel);
   DebugAssert(ok(), AipsError);
 }
 
 uInt SkyComponent::nParameters() const {
   DebugAssert(ok(), AipsError);
-  return theCompPtr->nParameters();
+  return itsCompPtr->nParameters();
 }
 
 void SkyComponent::setParameters(const Vector<Double> & newParms) {
-  theCompPtr->setParameters(newParms);
+  itsCompPtr->setParameters(newParms);
   DebugAssert(ok(), AipsError);
 }
 
 void SkyComponent::parameters(Vector<Double> & compParms) const {
-  theCompPtr->parameters(compParms);
+  itsCompPtr->parameters(compParms);
   DebugAssert(ok(), AipsError);
 }
 
-ComponentType::Shape SkyComponent::shapeType() const {
-  // This call to ok is restricted to the base class as the shapeType()
+ComponentType::Shape SkyComponent::shape() const {
+  // This call to ok is restricted to the base class as the shape()
   // function is called by derived classes before the derived object is fully
   // constructed.
   DebugAssert(SkyComponent::ok(), AipsError);
-  return theCompPtr->shapeType();
+  return itsCompPtr->shape();
 }
 
-void SkyComponent::fromRecord(String & errorMessage, 
+Bool SkyComponent::fromRecord(String & errorMessage, 
 			      const GlishRecord & record) {
-  String componentErrors = "";
-  // First check that the shapes match;
-  checkShape(componentErrors, record);
-  if (componentErrors != "")
-    errorMessage += componentErrors;
-  else
-    theCompPtr->fromRecord(errorMessage, record);
   DebugAssert(ok(), AipsError);
+  // First check that the shapes match;
+  if (checkShape(errorMessage, record) == False) return False;
+  return itsCompPtr->fromRecord(errorMessage, record);
 }
 
-void SkyComponent::toRecord(GlishRecord & record) const {
-  theCompPtr->toRecord(record);
+Bool SkyComponent::toRecord(String & errorMessage,
+			    GlishRecord & record) const {
   DebugAssert(ok(), AipsError);
+  return itsCompPtr->toRecord(errorMessage, record);
 }
 
 ComponentType::Shape SkyComponent::getShape(String & errorMessage,
 					    const GlishRecord & record) {
-  if (!record.exists("type"))
-    errorMessage += "\nThe record does not have a 'type' field";
-  else {
-    if (record.get("type").type() != GlishValue::ARRAY)
-      errorMessage += "\nThe 'type' field cannot be a record";
-    else {
-      const GlishArray typeField = record.get("type");
-      if (typeField.elementType() != GlishArray::STRING)
- 	errorMessage += "\nThe 'type' field must be a string";
-      else {
-	const IPosition shape = typeField.shape();
-	if (shape.nelements() != 1 || shape.product() != 1)
- 	  errorMessage += "\nThe 'type' field can only have one element";
-	else {
-	  String typeString;
-	  if (typeField.get(typeString) == False)
-	    errorMessage += "\nCould not read the 'type' field "
-	      "for an unknown reason";
-	  else {
-	    typeString.upcase();
-	    return ComponentType::shape(typeString);
-	  }
-	}
-      }
-    }
+  if (!record.exists("shape")) {
+    errorMessage += "\nThe record does not have a 'shape' field";
+    return ComponentType::UNKNOWN;
   }
-  return ComponentType::UNKNOWN;
+  if (record.get("shape").type() != GlishValue::RECORD) {
+    errorMessage += "\nThe 'shape' field must be a record";
+    return ComponentType::UNKNOWN;
+  }
+  const GlishRecord shapeRec = record.get("shape");
+  if (!shapeRec.exists("type")) {
+    errorMessage += "\nThe shape record does not have a 'type' field";
+    return ComponentType::UNKNOWN;
+  }
+  if (shapeRec.get("type").type() != GlishValue::ARRAY) {
+    errorMessage += "\nThe 'type' field cannot be a record";
+    return ComponentType::UNKNOWN;
+  }
+  const GlishArray typeField = shapeRec.get("type");
+  if (typeField.elementType() != GlishArray::STRING) {
+    errorMessage += "\nThe 'type' field must be a string";
+    return ComponentType::UNKNOWN;
+  }
+  const IPosition shape = typeField.shape();
+  if (shape.nelements() != 1 || shape.product() != 1) {
+    errorMessage += "\nThe 'type' field can only have one element";
+    return ComponentType::UNKNOWN;
+  }
+  String typeString;
+  if (typeField.get(typeString) == False) {
+    errorMessage += "\nCould not read the 'type' field for an unknown reason";
+    return ComponentType::UNKNOWN;
+  }
+  return ComponentType::shape(typeString);
 }
 
 SkyComponent SkyComponent::copy() const {
   DebugAssert(ok(), AipsError);
-  SkyComponent newComp(shapeType());
+  SkyComponent newComp(shape());
   {
     Quantum<Vector<Double> > thisFlux;
     flux(thisFlux);
@@ -222,13 +225,13 @@ SkyComponent SkyComponent::copy() const {
 }
 
 Bool SkyComponent::ok() const {
-  if (theCompPtr.null() == True) {
+  if (itsCompPtr.null() == True) {
     LogIO logErr(LogOrigin("SkyComponent", "ok()"));
     logErr << LogIO::SEVERE << "Internal pointer is not pointing to anything"
            << LogIO::POST;
     return False;
   }
-  if (theCompPtr->ok() == False) {
+  if (itsCompPtr->ok() == False) {
     LogIO logErr(LogOrigin("SkyComponent", "ok()"));
     logErr << LogIO::SEVERE << "Component representation is not ok"
            << LogIO::POST;
@@ -238,30 +241,34 @@ Bool SkyComponent::ok() const {
 }
 
 SkyComponent::SkyComponent(SkyCompRep * rawPtr)
-  :theCompPtr(rawPtr) {
+  :itsCompPtr(rawPtr) {
 }
 
 SkyCompRep * SkyComponent::rawPtr() {
-  return &(*theCompPtr);
+  return &(*itsCompPtr);
 }
 
 const SkyCompRep * SkyComponent::rawPtr() const {
-  return &(*theCompPtr);
+  return &(*itsCompPtr);
 }
 
-void SkyComponent::checkShape(String & errorMessage, 
+Bool SkyComponent::checkShape(String & errorMessage, 
 			      const GlishRecord & record) const {
   String typeMessage = "";
   ComponentType::Shape recordType = getShape(typeMessage, record);
-  if (typeMessage != "")
+  if (typeMessage != "") {
     errorMessage += typeMessage;
-  else
-    if (recordType != shapeType())
-      errorMessage += 
-	String("\nThe record is for a component of type") 
-	+ ComponentType::name(recordType)
-	+ String(" and cannot be assigned to a SkyComponent of type ")
-	+ ComponentType::name(shapeType());
+    return False;
+  }
+  if (recordType != shape()) {
+    errorMessage += 
+      String("\nThe record is for a component of type ") 
+      + ComponentType::name(recordType)
+      + String(" and cannot be assigned to a SkyComponent of type ")
+      + ComponentType::name(shape());
+    return False;
+  }
+  return True;
 }
 // Local Variables: 
 // compile-command: "gmake OPTLIB=1 SkyComponent"
