@@ -43,7 +43,8 @@ void a (Bool, uInt, Int64&, Int64&, Int64&, Int64&);
 void b (Bool, Int64, Int64, Int64, Int64, Int64&, Int64&, Int64&, Int64&);
 void c (Bool, Int64, Int64, Int64, Int64);
 
-main (int argc, char** argv) {
+int main (int argc, char** argv)
+{
     uInt stVersion = 0;
     uInt endVersion = 1;
     if (argc > 1) {
@@ -199,6 +200,7 @@ void b (Bool canonical, Int64 off1, Int64 off2, Int64 off3, Int64 off4,
     io.put (off2+l2, 1, 20, cbuf);
     cout << "Length=" << io.length() << endl;
     io.put (off4+l4, 1, 20, bbuf);
+    io.put (off4+l4, 23, 1, bbuf);
     io.put (off4+l4, 34, 4, bbuf);
     cout << "Length=" << io.length() << endl;
     uInt lc1 = io.putShape (shp1, offc1, static_cast<Int*>(0));
@@ -264,6 +266,9 @@ void c (Bool canonical, Int64 off1, Int64 off2, Int64 off3, Int64 off4)
 	if (i>=1 && i<21) {
 	    j = i-1;
 	    b = (j%3 == 0  ?  True : False);
+	}
+	if (i == 23) {
+	  b = True;
 	}
 	if (i>=34 && i<38) {
 	    b = ((i-34)%3 == 0  ?  True : False);
