@@ -1313,8 +1313,15 @@ EOT
    >>$AIPSARCH/$SITE/aipsrc
   echo "" >>$AIPSARCH/$SITE/aipsrc
 
-  tz="`date -u +%H` - `date +%H`"
+  
+  # This can fail around the turn of the hour or around the turn of the
+  # year if you are unlucky.
+  daydiff="`date -u +%j` - `date +%j`"
+  daydiff=`expr $daydiff`
+  daydiff=`expr $daydiff '*' 24`
+  tz="`date +%H` - `date -u +%H` - $daydiff"
   tz=`expr $tz`
+
 
   echo "tzoffset: $tz" >>$AIPSARCH/$SITE/aipsrc
   echo "Added my best guess at timezone offset ($tz) to $AIPSARCH/$SITE/aipsrc"
