@@ -1,5 +1,5 @@
 //# MomentCalculator.h: 
-//# Copyright (C) 1997
+//# Copyright (C) 1997,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -39,6 +39,7 @@
 //# Forward Declarations
 template <class T> class Vector;
 template <class T> class ImageMoments;
+class CoordinateSystem;
 
 // <summary>
 // Abstract base class for moment calculator classes
@@ -163,9 +164,9 @@ protected:
    Vector<Double> pixelIn_p, worldOut_p;
 
 // All computations involving Coordinate conversions are relatively expensive
-// This Bool signifies whether we need coordinate calculations or not for
-// any of the moments
-   Bool doCoordCalc_p;
+// These Bools signifies whether we need coordinate calculations or not for
+// the full profile, and for some occaisional calculations
+   Bool doCoordProfile_p, doCoordRandom_p;
 
 // This vector houses the world coordinate values for the profile if it
 // was from a separable axis. This means this vector can be pre computed 
@@ -271,7 +272,9 @@ protected:
 
 // Return the Bool saying whether we need to compute coordinates
 // or not for the requested moments
-   Bool doCoordCalc(ImageMoments<T>& iMom) const;
+   void doCoordCalc(Bool& doCoordProfile,
+                    Bool& doCoordRandom,
+                    ImageMoments<T>& iMom) const;
 
 // Return the Bool from the ImageMoments object saying whether we 
 // are going to fit Gaussians to the profiles or not.
@@ -426,7 +429,8 @@ protected:
 {
    pixelIn(iMom.momentAxis_p) = momentPixel;
    iMom.pInImage_p->coordinates().toWorld(worldOut, pixelIn);
-   return worldOut(iMom.momentAxis_p);
+   Int worldAxis = iMom.pInImage_p->coordinates().pixelAxisToWorldAxis(iMom.momentAxis_p);
+   return worldOut(worldAxis);
 };
 
 
@@ -471,7 +475,7 @@ protected:
                         Vector<T>& calcMoments,
                         Vector<Double>& pixelIn,
                         Vector<Double>& worldOut,
-                        Bool doCoordCalc,
+                        Bool doCoord,
                         T dMedian,
                         T vMedian,
                         Int nPts,
@@ -538,7 +542,7 @@ protected:
                                       
 // Coordinate of maximum value
 
-   if (doCoordCalc) calcMoments(IM::MAXIMUM_COORDINATE) =
+   if (doCoord) calcMoments(IM::MAXIMUM_COORDINATE) =
          getMomentCoord(iMom, pixelIn, worldOut, Double(iMax));                                     
 
 // Minimum value
@@ -546,7 +550,7 @@ protected:
 
 // Coordinate of minimum value
 
-   if (doCoordCalc) calcMoments(IM::MINIMUM_COORDINATE) =
+   if (doCoord) calcMoments(IM::MINIMUM_COORDINATE) =
           getMomentCoord(iMom, pixelIn, worldOut, Double(iMin));
 
 // Medians
@@ -567,8 +571,15 @@ protected:
                      Vector<Double>& pixelIn,
                      Vector<Double>& worldOut,
                      Vector<Double>& sepWorldCoord,
-                     LogIO& os) const;
+                     LogIO& os,
+                     Bool doCoordProfile, Bool doCoordRandom) const;
 
+// Get hold of the CoordinateSystem from the image in the ImageMoments object
+   const CoordinateSystem& imageCoordinates(ImageMoments<T>& iMom) const 
+   {
+      return iMom.pInImage_p->coordinates();
+   }
+ 
 // Plot the Gaussian fit
    void showGaussFit(const T peak,
                      const T pos,    
