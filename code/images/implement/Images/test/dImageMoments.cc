@@ -200,6 +200,7 @@
 
 #include <trial/Images/ImageMoments.h>
 #include <trial/Images/PagedImage.h>
+#include <trial/Tasking/PGPlotter.h>
 
 #include <iostream.h>
 
@@ -422,7 +423,11 @@ try {
       if (validInputs(OUT)) moment.setOutName(out);
       if (validInputs(PSFOUT)) moment.setPsfOutName(psfOut);
       if (validInputs(SMOUT)) moment.setSmoothOutName(smOut);
-      if (validInputs(PLOTTING)) {if (!moment.setPlotting (device, nxy, yInd)) return 1;}
+      if (validInputs(PLOTTING)) {
+         PGPlotter plotter(device);
+         if (!moment.setPlotting (plotter, nxy, yInd)) return 1;
+      }
+
 
 // Do work
 
