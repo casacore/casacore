@@ -124,7 +124,8 @@ inline void ColumnCache::invalidate()
 
 inline Int ColumnCache::offset (uInt rownr) const
 {
-    return rownr<itsStart || rownr>itsEnd  ?  -1 : (rownr-itsStart)*itsIncr;
+    return rownr<itsStart || rownr>itsEnd  ?  -1 :
+	                                      Int((rownr-itsStart)*itsIncr);
 }
 
 inline const void* ColumnCache::dataPtr() const
