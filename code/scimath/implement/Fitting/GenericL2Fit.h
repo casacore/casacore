@@ -1,6 +1,6 @@
 //# LQGenericL2Fit.h: Generic base lass for least-squares fit.
 //#
-//# Copyright (C) 2001
+//# Copyright (C) 2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -62,7 +62,7 @@ template <class T> class Function;
 //
 // <synopsis>
 // The class acts as a base class for L2-type (least-squares) fitting. 
-// Actual classes (se e.g. <linkto class=LQLinearFit>LinearFit</linkto> and
+// Actual classes (se e.g. <linkto class=LQLinearFit>LQLinearFit</linkto> and
 // <linkto class=LQNonLinearFit>LQNonLinearFit</linkto>.
 //
 // The following is a brief summary of the linear least-squares fit problem.

@@ -1,5 +1,5 @@
 //# LQNonLinearFit.h: Class for non-linear least-squares fit.
-//# Copyright (C) 1994,1995,1996,1999,2000,2001
+//# Copyright (C) 1994,1995,1996,1999,2000,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -117,7 +117,7 @@
 // latter case the solution returned will be the fixed value.
 // 
 // <templating arg=T>
-// The following data types can be used to instantiate the LinearFit 
+// The following data types can be used to instantiate the LQNonLinearFit 
 // templated class:
 // <li> Float
 // <li> Double
