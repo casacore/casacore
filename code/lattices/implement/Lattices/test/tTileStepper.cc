@@ -1,5 +1,5 @@
 //# tTileStepper.cc: Test program for class TileStepper
-//# Copyright (C) 1997
+//# Copyright (C) 1997,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -98,6 +98,12 @@ main (int argc, char *argv[])
 	    stepper++;
 	}
 	cout << "nsteps = " << stepper.nsteps() << endl;
+	while (! stepper.atStart()) {
+	    cout << stepper.position() << ' ' << stepper.endPosition() << ' '
+		 << stepper.cursorShape() << endl;
+	    stepper--;
+	}
+	cout << "nsteps = " << stepper.nsteps() << endl;
     }
     {
 	TileStepper stepper(shape, tileShape, IPosition(3,2,1,0));
@@ -106,6 +112,12 @@ main (int argc, char *argv[])
 	    cout << stepper.position() << ' ' << stepper.endPosition() << ' '
 		 << stepper.cursorShape() << endl;
 	    stepper++;
+	}
+	cout << "nsteps = " << stepper.nsteps() << endl;
+	while (! stepper.atStart()) {
+	    cout << stepper.position() << ' ' << stepper.endPosition() << ' '
+		 << stepper.cursorShape() << endl;
+	    stepper--;
 	}
 	cout << "nsteps = " << stepper.nsteps() << endl;
     }
