@@ -627,7 +627,7 @@ Vector<Double> Fit2D::availableErrors (uInt which)  const
 // Convert Gaussian solution axial ratio to major/minor axis.
 // ratio  = other / YWIDTH
 // sol(4) = other / sol(3)
-// Use standard propagation of errors to get error in other
+//
 //
    if (itsTypeList(which)==Fit2D::GAUSSIAN) {
       Int iY = NQGaussian2D<Float>::YWIDTH;
@@ -639,20 +639,36 @@ Vector<Double> Fit2D::availableErrors (uInt which)  const
 //
       Double sigRatio = errors(iR);
       Double sigYWidth = errors(iY);
+
+/*
+// Use standard propagation of errors to get error in other
+
       Double f1 = sigRatio * sigRatio / ratio / ratio;
       Double f2 = sigYWidth * sigYWidth / yWidth / yWidth;
       Double sigOther = other * sqrt(f1 + f2);
+*/
+
+// The propagation errors are too large.  Try using
+// same fractional error...  I need to find better ways
+// to deal with the Gaussian as wdith and ratio 
+
+      Double sigOther = other * (sigRatio/ratio);
+
+/*
+cerr << "ratio, major, other = " << ratio << ", " << yWidth << ", " << other << endl;
+cerr << "sigRatio, sigMajor, sigOther = " << sigRatio << ", " << sigYWidth << ", " << sigOther << endl;
+*/
       if (yWidth > other) {
 
 // ywidth is major, other is minor
 
          errors(4) = sigOther;          // minor
-         errors(3) = errors(3);         // major
+         errors(3) = sigYWidth;         // major
       } else {
 
 // ywidth is minor, other is major
 
-         errors(4) = errors(3);         // minor
+         errors(4) = sigYWidth;         // minor
          errors(3) = sigOther;          // major
       }
    }   
