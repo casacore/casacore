@@ -551,8 +551,9 @@ const ReservedFitsKeyword & ReservedFitsKeywordCollection::match(int i,
 const ReservedFitsKeyword & ReservedFitsKeywordCollection::get(
 	FITS::ReservedName nm, Bool n, FITS::ValueType t, const void *v,
 	int v_len, const char *&msg) const {
+	int i;
 	msg = 0;
-	for (int i = 0; i < no_items; ++i)
+	for (i = 0; i < no_items; ++i)
 	    if (resword[i].name() == nm)
 		break;
 	return match(i,0,0,n,t,v,v_len,msg);
@@ -748,7 +749,8 @@ int ReservedFitsKeywordCollection::rules(const ReservedFitsKeyword &res,
 }
 
 const char *ReservedFitsKeywordCollection::aname(FITS::ReservedName nm) const {
-	for (int i = 0; i < no_items; ++i)
+	int i;
+	for (i = 0; i < no_items; ++i)
 	    if (resword[i].name() == nm)
 		break;
 	return i < no_items ? resword[i].aname() : "";
@@ -831,9 +833,10 @@ ReservedFitsKeywordCollection ResWord_;
 ReservedFitsKeywordCollection &FITS::ResWord = ResWord_;
 
 void FITS::get_name(const char *s, int len, FitsNameResult &result) {
+	int i;
 	// A name is any sequence of text chars except ' ' and '='
 	result.err = FitsNameResult::OK;
-	for (int i = 0; *s == ' ' && (i < len); ++i, ++s) ; // skip spaces
+	for (i = 0; *s == ' ' && (i < len); ++i, ++s) ; // skip spaces
 	if (i == len || (!FITS::isa_text(*s)) || *s == '=') {
 	    result.isaname = False; // If there is no name, only
 	    result.begpos = i;	// begpos has meaning.
@@ -869,7 +872,8 @@ int FITS::get_value_id(const char *s, int l, int &pos) {
 	// A value_id is the first occurance of "=" in the field.
 	// If there is a value_id, 1 is returned; otherwise, 0 is returned.
 	// If a value_id is present, its position is recorded in pos.
-	for (int i = 0; *s == ' ' && (i < l); ++i, ++s) ; // skip spaces
+	int i;
+	for (i = 0; *s == ' ' && (i < l); ++i, ++s) ; // skip spaces
 	if (i == l || *s != '=') {
 	    pos = 0;
 	    return 0;
@@ -1434,7 +1438,8 @@ int FITS::chk_comment(const char *s, int len) {
 
 int FITS::get_comment(const char *s, int len, int &begpos) {
 	// find the beginning of a comment and return the trimmed length
-	for (int i = 0; s[i] == ' ' && i < len; ++i) ;
+	int i;
+	for (i = 0; s[i] == ' ' && i < len; ++i) ;
 	if (s[i] == '/') {
 	    ++i;
 	    if (i < len) {
@@ -1536,7 +1541,7 @@ void FITS::parse_vatform(const char *s, FITS::ValueType &valType,
     }
 }
 
-FitsParse::FitsParse(int max) : no_errs_(0) ,max_errs(max) {
+FitsParse::FitsParse(int max) : no_errs_(0), max_errs(max) {
 	err_ = new const char * [max_errs];
 	// check for storage allocation errors
 	if (err_ == 0) {
@@ -1832,7 +1837,7 @@ void FitsKeyword::err(const char *nm, const FITS::ValueType &ty,
 
 void FitsKeyword::setval(const FITS::ValueType &ty, const void *v, int vlen) {
 	if (ty == FITS::STRING || ty == FITS::FSTRING) {
-	    int plen = vlen;
+	    int i, plen = vlen;
 	    if (vlen < 8)
 	        plen = 8; // FITS strings must be at least 8 chars
 	    char *p = new char [plen + 1]; memchk(p);
@@ -1840,7 +1845,7 @@ void FitsKeyword::setval(const FITS::ValueType &ty, const void *v, int vlen) {
 		memcpy(p,v,vlen);
 	    else
 		FITS::fstr2str(p,(const char *)v,vlen);
-	    for (int i = vlen; i < 8; i++)
+	    for (i = vlen; i < 8; i++)
 		p[i] = ' ';
 	    p[i] = '\0';
 	    val = p;
@@ -2206,7 +2211,8 @@ void FitsKeywordList::delete_all() {
 }
 
 FitsKeyword *FitsKeywordList::next(const FITS::ReservedName &n) {
-	for (FitsKeyword *x = next(); x != 0; x = next())
+	FitsKeyword *x;
+	for (x = next(); x != 0; x = next())
 		if (x->isreserved() && !(x->isindexed()) &&
 		    (n == x->kw().name()))
 			break;
@@ -2214,7 +2220,8 @@ FitsKeyword *FitsKeywordList::next(const FITS::ReservedName &n) {
 }
 
 FitsKeyword *FitsKeywordList::next(const FITS::ReservedName &n, int ndx) {
-	for (FitsKeyword *x = next(); x != 0; x = next())
+	FitsKeyword *x;
+	for (x = next(); x != 0; x = next())
 		if (x->isreserved() && (x->index() == ndx) &&
 		    (n == x->kw().name()))
 			break;
@@ -2222,7 +2229,8 @@ FitsKeyword *FitsKeywordList::next(const FITS::ReservedName &n, int ndx) {
 }
 
 FitsKeyword *FitsKeywordList::next(const char *w) {
-	for (FitsKeyword *x = next(); x != 0; x = next())
+	FitsKeyword *x;
+	for (x = next(); x != 0; x = next())
 		if (strcmp(w,x->name()) == 0)
 			break;
 	return x ? curr() : 0;
@@ -2302,7 +2310,8 @@ int FitsKeywordList::rules(ostream &o) {
 	int n;
 	FitsKeyword *endkey = 0;
 	//first();
-	for (FitsKeyword *x = beg_; x != 0; x = x->next_) {
+	FitsKeyword *x;
+	for (x = beg_; x != 0; x = x->next_) {
 	    n = rules(*x,o);
 	    if (n != 0 && (rtn == 0 || (rtn == 1 && n == -1)))
 		    rtn = n;
