@@ -34,34 +34,6 @@
 typedef Array<Bool> gpp_arraylogical_bug1;
 #endif
 
-
-
-// Special case allEQ. It returns False also if the arrays do not conform.
-// All other logical operations throw a conformance error in this case.
-template<class T> 
-Bool allEQ(const Array<T> &l, const Array<T> &r) 
-{ 
-    if (l.conform(r) == False) { 
-        return False;
-    } 
-    uInt ntotal = l.nelements(); 
-    Bool deleteL, deleteR; 
-    const T *ls = l.getStorage(deleteL); 
-    const T *rs = r.getStorage(deleteR); 
-
-    Bool retval = True; 
-    for (uInt i=0; i < ntotal; i++) { 
-	if (! (ls[i] == rs[i])) { 
-	    retval = False; 
-	    break; 
-	} 
-    } 
-    l.freeStorage(ls, deleteL); 
-    r.freeStorage(rs, deleteR); 
-    return retval; 
-}
-
-
 #define ARRLOG_B_ALLFUNC_AA(ALLFUNC,OP,STRALLFUNC) \
 template<class T> \
 Bool ALLFUNC (const Array<T> &l, const Array<T> &r) \
@@ -92,7 +64,7 @@ ARRLOG_B_ALLFUNC_AA ( allLE,  <=, "allLE" )
 ARRLOG_B_ALLFUNC_AA ( allLT,  <,  "allLT" )
 ARRLOG_B_ALLFUNC_AA ( allGE,  >=, "allGE" )
 ARRLOG_B_ALLFUNC_AA ( allGT,  >,  "allGT" )
-  // ARRLOG_B_ALLFUNC_AA ( allEQ,  ==, "allEQ" ) ## Special cased above.
+ARRLOG_B_ALLFUNC_AA ( allEQ,  ==, "allEQ" )
 ARRLOG_B_ALLFUNC_AA ( allNE,  !=, "allNE" )
 ARRLOG_B_ALLFUNC_AA ( allAND, &&, "allAND" )
 ARRLOG_B_ALLFUNC_AA ( allOR,  ||, "allOR" )
@@ -150,7 +122,7 @@ LogicalArray operator OP (const Array<T> &l, const Array<T> &r) \
     const T *rStorage = r.getStorage(deleteR); \
     const T *rs = rStorage; \
 \
-    LogicalArray retarr (l.shape(), l.origin()); \
+    LogicalArray retarr (l.shape()); \
     Bool deleteRet; \
     Bool *retStorage = retarr.getStorage(deleteRet); \
     Bool *rets = retStorage; \
@@ -184,7 +156,7 @@ ARRLOG_LA_OP_AA ( ||, "||" )
 template<class T>
 LogicalArray operator ! (const Array<T> &array)
 {
-    LogicalArray result (array.shape(), array.origin());
+    LogicalArray result (array.shape());
 
     Bool resultDelete;
     LogicalArrayElem *resultStorage =
@@ -516,7 +488,7 @@ Bool anyOR (const T &val, const Array<T> &array)
 template<class T>
 LogicalArray operator && (const Array<T> &array, const T &val)
 {
-    LogicalArray retarr (array.shape(), array.origin());
+    LogicalArray retarr (array.shape());
 
     if (!val) {
         retarr = False;
@@ -548,7 +520,7 @@ LogicalArray operator && (const Array<T> &array, const T &val)
 template<class T>
 LogicalArray operator && (const T &val, const Array<T> &array)
 {
-    LogicalArray retarr (array.shape(), array.origin());
+    LogicalArray retarr (array.shape());
 
     if (!val) {
         retarr = False;
@@ -580,7 +552,7 @@ LogicalArray operator && (const T &val, const Array<T> &array)
 template<class T>
 LogicalArray operator || (const Array<T> &array, const T &val)
 {
-    LogicalArray retarr (array.shape(), array.origin());
+    LogicalArray retarr (array.shape());
 
     if (val) {
         retarr = True;
@@ -612,7 +584,7 @@ LogicalArray operator || (const Array<T> &array, const T &val)
 template<class T>
 LogicalArray operator || (const T &val, const Array<T> &array)
 {
-    LogicalArray retarr (array.shape(), array.origin());
+    LogicalArray retarr (array.shape());
 
     if (val) {
         retarr = True;
@@ -649,7 +621,7 @@ LogicalArray operator OP (const Array<T> &array, const T &val) \
     const T *aStorage = array.getStorage(deleteIt); \
     const T *as = aStorage; \
 \
-    LogicalArray retarr (array.shape(), array.origin()); \
+    LogicalArray retarr (array.shape()); \
     Bool deleteRet; \
     Bool *retStorage = retarr.getStorage(deleteRet); \
     Bool *rets = retStorage; \
@@ -676,7 +648,7 @@ LogicalArray operator OP (const T &val, const Array<T> &array) \
     const T *aStorage = array.getStorage(deleteIt); \
     const T *as = aStorage; \
 \
-    LogicalArray retarr (array.shape(), array.origin()); \
+    LogicalArray retarr (array.shape()); \
     Bool deleteRet; \
     Bool *retStorage = retarr.getStorage(deleteRet); \
     Bool *rets = retStorage; \
@@ -724,7 +696,7 @@ template<class T> LogicalArray near(const Array<T> &l, const Array<T> &r,
     const T *rStorage = r.getStorage(deleteR);
     const T *rs = rStorage;
 
-    LogicalArray retarr (l.shape(), l.origin());
+    LogicalArray retarr (l.shape());
     Bool deleteRet;
     Bool *retStorage = retarr.getStorage(deleteRet);
     Bool *rets = retStorage;
@@ -759,7 +731,7 @@ template<class T> LogicalArray nearAbs(const Array<T> &l, const Array<T> &r,
     const T *rStorage = r.getStorage(deleteR);
     const T *rs = rStorage;
 
-    LogicalArray retarr (l.shape(), l.origin());
+    LogicalArray retarr (l.shape());
     Bool deleteRet;
     Bool *retStorage = retarr.getStorage(deleteRet);
     Bool *rets = retStorage;
@@ -786,7 +758,7 @@ template<class T> LogicalArray near (const Array<T> &array, const T &val,
     const T *aStorage = array.getStorage(deleteIt);
     const T *as = aStorage;
 
-    LogicalArray retarr (array.shape(), array.origin());
+    LogicalArray retarr (array.shape());
     Bool deleteRet;
     Bool *retStorage = retarr.getStorage(deleteRet);
     Bool *rets = retStorage;
@@ -811,7 +783,7 @@ template<class T> LogicalArray near (const T &val, const Array<T> &array,
     const T *aStorage = array.getStorage(deleteIt);
     const T *as = aStorage;
 
-    LogicalArray retarr (array.shape(), array.origin());
+    LogicalArray retarr (array.shape());
     Bool deleteRet;
     Bool *retStorage = retarr.getStorage(deleteRet);
     Bool *rets = retStorage;
@@ -836,7 +808,7 @@ template<class T> LogicalArray nearAbs (const Array<T> &array, const T &val,
     const T *aStorage = array.getStorage(deleteIt);
     const T *as = aStorage;
 
-    LogicalArray retarr (array.shape(), array.origin());
+    LogicalArray retarr (array.shape());
     Bool deleteRet;
     Bool *retStorage = retarr.getStorage(deleteRet);
     Bool *rets = retStorage;
@@ -861,7 +833,7 @@ template<class T> LogicalArray nearAbs (const T &val, const Array<T> &array,
     const T *aStorage = array.getStorage(deleteIt);
     const T *as = aStorage;
 
-    LogicalArray retarr (array.shape(), array.origin());
+    LogicalArray retarr (array.shape());
     Bool deleteRet;
     Bool *retStorage = retarr.getStorage(deleteRet);
     Bool *rets = retStorage;

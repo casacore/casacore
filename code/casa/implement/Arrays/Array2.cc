@@ -31,7 +31,7 @@
 
 // This probably isn't of interest to normal users. It returns the "volume" of
 // an array (i.e. "nelements").
-uInt ArrayVolume(uInt Ndim, const Int *Shape)
+uInt ArrayVolume (uInt Ndim, const Int *Shape)
 {
     if (aips_debug) {
 	for (Int i=0; i < Ndim; i++)
@@ -51,9 +51,9 @@ uInt ArrayVolume(uInt Ndim, const Int *Shape)
 // array with a non-zero origin, what is the linear index into storage.
 // Here we assume that the Shape is the original length, i.e. has INC
 // in it.
-uInt ArrayIndexOffset(uInt Ndim, const Int *Shape,
-			     const Int *Origin, const Int *Inc,
-			     const IPosition &Index)
+uInt ArrayIndexOffset (uInt Ndim, const Int *Shape,
+		       const Int *Origin, const Int *Inc,
+		       const IPosition &Index)
 {
     if (aips_debug) {
 	for (Int i=0; i < Ndim; i++)
@@ -65,6 +65,23 @@ uInt ArrayIndexOffset(uInt Ndim, const Int *Shape,
     uInt offset = (Index(0) - Origin[0])*Inc[0];
     for (Int i=1; i < Ndim; i++)
 	offset += (Index(i) - Origin[i])*Inc[i]*ArrayVolume(i, Shape);
+
+    return offset;
+}
+
+uInt ArrayIndexOffset (uInt Ndim, const Int *Shape,
+		       const Int *Inc, const IPosition &Index)
+{
+    if (aips_debug) {
+	for (Int i=0; i < Ndim; i++)
+	    if (Index(i) < 0 || Index(i) >= Shape[i] ||
+		Shape[i] < 0 || Inc[i] < 1)
+		throw(ArrayError("::ArrayIndexOffset - negative shape or inc"
+				 "<1 or out-of-bounds index"));
+    }
+    uInt offset = Index(0)*Inc[0];
+    for (Int i=1; i < Ndim; i++)
+	offset += Index(i)*Inc[i]*ArrayVolume(i, Shape);
 
     return offset;
 }

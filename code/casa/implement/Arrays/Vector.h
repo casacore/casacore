@@ -90,15 +90,11 @@ public:
     // A zero-length Vector.
     Vector();
 
-    // A Vector with a defined length and origin.
-    // <group>
-    Vector(uInt Length, Int Origin);
-    Vector(IPosition Length, IPosition Origin);
-    // </group>
-
     // A Vector with a defined length and origin of zero.
+    // <group>
     explicit Vector(uInt Length);
-
+    explicit Vector(const IPosition& Length);
+    // </group>
 
     // Create a Vector from the given Block "other." Make it length "nr"
     // and copy over that many elements.
@@ -129,23 +125,15 @@ public:
     // Create a reference to "other", which must be of dimension one.
     void reference(Array<T> &other);
 
-    // Resize this Vector to the given length and use the given origin.
-    // <group>
-    void resize(uInt len, Int origin, Bool copyValues = False);
-    void resize(const IPosition &len, const IPosition &origin);
-    void resize(const IPosition &len, const IPosition &origin, Bool copyValues);
-    // </group>
-
     // Resize this Vector to the given length. Zero-origin.
     // <group>
-    void resize(uInt len, Bool copyValues = False) {resize (len, 0, copyValues);}
-    void resize(const IPosition &len);
-    void resize(const IPosition &len, Bool copyValues);
+    void resize(uInt len, Bool copyValues = False);
+    void resize(const IPosition &len, Bool copyValues = False);
     // </group>
 
     // Assign to this Vector. If this Vector is zero-length, then resize
     // to be the same size as other. Otherwise this and other have to be
-    // conformant (same size but not necessarily same origin).
+    // conformant (same size).
     // <group>
     Vector<T> &operator=(const Vector<T> &other);
     // Other must be a 1-dimensional array.
@@ -179,7 +167,7 @@ public:
 	IndexCopy(0) = index;
 	validateIndex(IndexCopy);   //# Throws an exception on failure
 #endif
-        return *(begin + (index - start[0])*inc[0]);
+        return *(begin_p + index*inc_p(0));
     }
 
     const T &operator()(Int index) const {
@@ -190,7 +178,7 @@ public:
 	IndexCopy(0) = index;
 	validateIndex(IndexCopy);   //# Throws an exception on failure
 #endif
-        return *(begin + (index - start[0])*inc[0]);
+        return *(begin_p + index*inc_p(0));
     }
     // </group>
 
@@ -214,11 +202,14 @@ public:
         {return ((Array<T> *)this)->operator()(blc,trc);}
     // </group>
 
+    // Return the index of the first value matching the given value.
+    // By default it starts at the beginning of the vector.
+    // -1 is returned when no matching element is found.
+    Int index (const T& value, Int startpos = 0) const;
+
 
     // The array is masked by the input LogicalArray.
-    // This mask must conform to the array, but it does not need to have the
-    // same origin.
-    //
+    // This mask must conform to the array.
     // <group>
 
     // Return a MaskedArray.
@@ -235,9 +226,7 @@ public:
     // The array is masked by the input MaskedLogicalArray.
     // The mask is effectively the AND of the internal LogicalArray
     // and the internal mask of the MaskedLogicalArray.
-    // The MaskedLogicalArray must conform to the array, but it does not
-    // need to have the same origin.
-    //
+    // The MaskedLogicalArray must conform to the array.
     // <group>
 
     // Return a MaskedArray.
@@ -251,21 +240,17 @@ public:
     // </group>
 
 
-    // The position of the first element.
-    // <group>
-    void origin(Int &Origin) const {Origin = start[0];}
-    IPosition origin() const;
-    // </group>
-
     // The length of the Vector.
     // <group>
-    void shape(Int &Shape) const {Shape = length[0];}
-    IPosition shape() const;
+    void shape(Int &Shape) const
+            {Shape = length_p(0);}
+    const IPosition &shape() const
+	    {return length_p;}
     // </group>
 
     // The position of the last element.
     // <group>
-    void end(Int &End) const {End = start[0] + length[0] - 1;}
+    void end(Int &End) const {End = length_p(0) - 1;}
     IPosition end() const;
     // </group>
 

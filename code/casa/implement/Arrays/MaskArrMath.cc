@@ -337,7 +337,7 @@ MaskedArray<T> operator OP (const MaskedArray<T> &left, const T &right) \
 template<class T> \
 MaskedArray<T> operator OP (const T &left, const MaskedArray<T> &right) \
 { \
-    Array<T> resultarray (right.shape(), right.origin()); \
+    Array<T> resultarray (right.shape()); \
     resultarray = left; \
 \
     MaskedArray<T> result (resultarray, right.getMask()); \
@@ -775,7 +775,7 @@ MaskedArray<T> FUNC (const MaskedArray<T> &left, const T &right) \
 template<class T> \
 MaskedArray<T> FUNC (const T &left, const MaskedArray<T> &right) \
 { \
-    Array<T> resultarray (right.shape(), right.origin()); \
+    Array<T> resultarray (right.shape()); \
     resultarray = left; \
 \
     MaskedArray<T> result (resultarray, right.getMask()); \
@@ -922,8 +922,10 @@ void minMax(T &minVal, T &maxVal, IPosition &minPos, IPosition &maxPos,
     minVal = minLocal;
     maxVal = maxLocal;
 
-    minPos = toIPositionInArray (marray.nelements() - minNtotal, marray);
-    maxPos = toIPositionInArray (marray.nelements() - maxNtotal, marray);
+    minPos = toIPositionInArray (marray.nelements() - minNtotal,
+				 marray.shape());
+    maxPos = toIPositionInArray (marray.nelements() - maxNtotal,
+				 marray.shape());
 
     return;
 }
@@ -933,8 +935,8 @@ template<class T>
 void minMax(T &minVal, T &maxVal,
             const MaskedArray<T> &marray)
 {
-    IPosition minPos (marray.origin());
-    IPosition maxPos (marray.origin());
+    IPosition minPos (marray.ndim(), 0);
+    IPosition maxPos (minPos);
 
     minMax (minVal, maxVal, minPos, maxPos, marray);
 
@@ -1173,7 +1175,7 @@ MaskedArray<T> FUNC (const MaskedArray<T> &left, const T &right) \
 template<class T> \
 MaskedArray<T> FUNC (const T &left, const MaskedArray<T> &right) \
 { \
-    Array<T> resultarray (right.shape(), right.origin()); \
+    Array<T> resultarray (right.shape()); \
     resultarray = left; \
 \
     MaskedArray<T> result (resultarray, right.getMask()); \

@@ -1,5 +1,5 @@
-//# MaskedArray.h: A templated N-D masked array class with variable origin.
-//# Copyright (C) 1993,1994,1995,1996
+//# MaskedArray.h: A templated N-D masked array class with zero origin.
+//# Copyright (C) 1993,1994,1995,1996,1997
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -78,13 +78,12 @@ template <class T> class MaskedArray;
 // elements of the Array.
 //
 // The mask used in the constructor for the MaskedArray must conform to
-// the Array.  However, it does not need to have the same origin.
+// the Array, thus have the same shape.
 // The internal mask is (will be) copy constructed with reference semantics
-// from the input mask.  Its origin is then shifted to have the same origin as
-// the Array.  Therefore, it is (will be) possible to change the internal mask
-// by changing values in the input mask *after* the MaskedArray has been
-// constructed.  To ensure that the internal mask is independent of the input
-// mask after construction, use mask.copy() as the input argument.
+// from the input mask. Therefore, it is (will be) possible to change the
+// internal mask by changing values in the input mask *after* the MaskedArray
+// has been constructed.  To ensure that the internal mask is independent of
+// the input mask after construction, use mask.copy() as the input argument.
 //
 // One can explicitly construct a MaskedArray from an Array and a mask or
 // a MaskedArray and a mask.  One can also use operator() on an Array or
@@ -324,11 +323,6 @@ template <class T> class MaskedArray;
 //          specified as Array<Bool>.
 //   <li> Change constructors to always do copy construction with
 //          reference semantics when creating the internal mask.
-//          Then shift the internal mask's origin to coincide with
-//          that of the Array.
-//
-//          The Array class must have a "shiftOrigin()" member function
-//          added so that this can work.
 // </todo>
 
 
@@ -351,8 +345,7 @@ public:
     // Create a MaskedArray from an Array and a LogicalArray.
     //
     // The internal mask is a total copy of the input mask, and is
-    // completely independent of the input mask.  However, the origin of
-    // the internal mask is shifted to coincide with that of the Array.
+    // completely independent of the input mask.
     //
     // The Array is copy constructed, which means that it is a really smart
     // pointer to the underlying Block, and shares this Block with the input
@@ -376,8 +369,7 @@ public:
     // Create a MaskedArray from a MaskedArray and a LogicalArray.
     //
     // The internal mask is the AND of the input mask and the mask of
-    // the input MaskedArray.  The origin of the internal mask is set
-    // to coincide with that of the Array of the input MaskedArray.
+    // the input MaskedArray.
     //
     // The Array from the input MaskedArray is copy constructed, which
     // means that it is a really smart pointer to the underlying Block, and
@@ -404,9 +396,7 @@ public:
     // Create a MaskedArray from an Array and a MaskedLogicalArray.
     //
     // The internal mask is the AND of the internal LogicalArray and the
-    // internal mask of the MaskedLogicalArray.  The origin of the internal
-    // mask is set to coincide with that of the Array of the input
-    // MaskedArray.
+    // internal mask of the MaskedLogicalArray.
     //
     // The Array is copy constructed, which means that it is a really smart
     // pointer to the underlying Block, and shares this Block with the input
@@ -431,8 +421,7 @@ public:
     //
     // The internal mask is the AND of the internal LogicalArray and the
     // internal mask of the MaskedLogicalArray, ANDed with the mask of
-    // the input MaskedArray.  The origin of the internal mask is set
-    // to coincide with that of the Array of the input MaskedArray.
+    // the input MaskedArray.
     //
     // The Array from the input MaskedArray is copy constructed, which
     // means that it is a really smart pointer to the underlying Block, and
@@ -493,8 +482,7 @@ public:
 
     // Return a MaskedArray.  The new MaskedArray is masked by the input
     // LogicalArray "anded" with the mask of the original MaskedArray.
-    // This mask must conform to the array, but it does not need to have the
-    // same origin.
+    // This mask must conform to the array.
     //
     // The MaskedArray constructed is writeable if the input
     // MaskedArray is writeable, and readonly if the input MaskedArray
@@ -504,8 +492,7 @@ public:
 
     // Return a MaskedArray.  The new MaskedArray is masked by the input
     // MaskedLogicalArray "anded" with the mask of the original MaskedArray.
-    // This mask must conform to the array, but it does not need to have the
-    // same origin.
+    // This mask must conform to the array.
     //
     // The MaskedArray constructed is writeable if the input
     // MaskedArray is writeable, and readonly if the input MaskedArray
@@ -562,19 +549,11 @@ public:
     // invoked after construction and on entry to most member functions.
     Bool ok() const;
 
-    // Are the shapes identical? The origins do NOT need to be the same.
-    // Binary operations will "line up" the masked arrays at their origins, so
-    // as long as the shapes are the same the masked arrays conform.
+    // Are the shapes identical?
     // <group>
     Bool conform(const Array<T> &other) const;
     Bool conform(const MaskedArray<T> &other) const;
     // </group>
-
-    // The IPosition of the first element of the underlying Array.
-    // <note role=tip>
-    //   The mask origin is defined to be this also.
-    // </note>
-    IPosition origin() const;
 
     // The length of each axis.
     IPosition shape() const;
@@ -739,9 +718,7 @@ protected:
 
 
 // Test conformance for masked arrays and arrays of different types.
-// Are the shapes identical? The origins do NOT need to be the same.
-// Binary operations will "line up" the arrays at their origins, so
-// as long as the shapes are the same the arrays conform.
+// Are the shapes identical?
 //
 //   <group name=conform2>
 //

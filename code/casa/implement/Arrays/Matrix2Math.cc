@@ -72,11 +72,8 @@ Complex innerProduct (const Vector<Complex> &A, const Vector<Complex> &B) {
   if (!(A.conform(B)))
     throw (ArrayConformanceError("innerProduct - conform() error."));
   Complex scalar = 0;
-  Int AOffset, BOffset;
-  A.origin(AOffset);
-  B.origin(BOffset);
   for (uInt i = 0; i < A.nelements(); i++)
-    scalar += A(i+AOffset)*conj(B(i+BOffset));
+    scalar += A(i)*conj(B(i));
   return scalar;
 };
  
@@ -100,11 +97,8 @@ DComplex innerProduct (const Vector<DComplex> &A, const Vector<DComplex> &B)
   if (!(A.conform(B)))
     throw (ArrayConformanceError("innerProduct - conform() error."));
   DComplex scalar = 0;
-  Int AOffset, BOffset;
-  A.origin(AOffset);
-  B.origin(BOffset);
   for (uInt i = 0; i < A.nelements(); i++)
-    scalar += A(i+AOffset)*conj(B(i+BOffset));
+    scalar += A(i)*conj(B(i));
   return scalar;
 };
  
@@ -314,15 +308,12 @@ Matrix<Float> rproduct (const Matrix<Complex> &A, const Matrix<Complex> &B) {
   if (A.ncolumn() != B.nrow())
     throw (ArrayError("product - multiplication of" 
 		      " these matrices shapes is undefined"));
-  Matrix<Float> result(A.nrow(), B.ncolumn(), 0, 0);
-  Int ARowOffset, BColOffset, AColOffset, BRowOffset;
-  A.origin(ARowOffset, AColOffset);
-  B.origin(BRowOffset, BColOffset);
+  Matrix<Float> result(A.nrow(), B.ncolumn());
   for (Int i = 0; i < A.nrow(); i++) 
     for (Int j = 0; j < B.ncolumn(); j++) {
       result(i,j) = 0.0;
       for (Int k = 0; k < A.ncolumn(); k++) result(i,j) += 
-		      real(A(i+ARowOffset, k+AColOffset) * B(k+BRowOffset, j+BColOffset));
+		      real(A(i, k) * B(k, j));
     }
   return result;
 }
@@ -332,13 +323,10 @@ Vector<Float> rproduct(const Matrix<Complex> &A, const Vector<Complex> &x) {
     throw (ArrayError("product - multiplication of" 
 		      " these matrices shapes is undefined"));
   Vector<Float> result(A.nrow());
-  Int ARowOffset, AColOffset, xOrigin;
-  A.origin(ARowOffset, AColOffset); 
-  x.origin(xOrigin);
   for (Int i = 0; i < A.nrow(); i++) {
     result(i) = 0.0;
     for (Int k = 0; k < A.ncolumn(); k++) result(i) += 
-		    real(A(i+ARowOffset, k+AColOffset) * x(k+xOrigin));
+		    real(A(i, k) * x(k));
   }
   return result;
 }
@@ -348,13 +336,10 @@ Vector<Complex> product(const Matrix<Complex> &A, const Vector<Float> &x) {
     throw (ArrayError("product - multiplication of" 
 		      " these matrices shapes is undefined"));
   Vector<Complex> result(A.nrow());
-  Int ARowOffset, AColOffset, xOrigin;
-  A.origin(ARowOffset, AColOffset); 
-  x.origin(xOrigin);
   for (Int i = 0; i < A.nrow(); i++) {
     result(i) = Complex(0);
     for (Int k = 0; k < A.ncolumn(); k++) result(i) += 
-		    A(i+ARowOffset, k+AColOffset) * x(k+xOrigin);
+		    A(i, k) * x(k);
   }
   return result;
 }

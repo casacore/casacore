@@ -1,5 +1,5 @@
 //# ArrayIter.cc: Iterate an Array cursor through another Array
-//# Copyright (C) 1993,1994,1995
+//# Copyright (C) 1993,1994,1995,1997
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -29,13 +29,13 @@
 #include <aips/Arrays/ArrayError.h>
 
 template<class T> ArrayIterator<T>::ArrayIterator(Array<T> &a, uInt byDim)
-: ArrayPositionIterator(a.shape(), a.origin(), byDim), readOnly(False), ap(0)
+: ArrayPositionIterator(a.shape(), byDim), readOnly(False), ap(0)
 {
     init(a);
 }
 
 template<class T> ArrayIterator<T>::ArrayIterator(Array<T> &a)
-: ArrayPositionIterator(a.shape(), a.origin(), 1), readOnly(False), ap(0)
+: ArrayPositionIterator(a.shape(), 1), readOnly(False), ap(0)
 {
     init(a);
 }
@@ -52,7 +52,7 @@ template<class T> void ArrayIterator<T>::init(Array<T> &a)
               " failed to make new Array<t>(a) for pOriginalArray"));
     }
 
-    IPosition blc(pOriginalArray->origin()), trc(pOriginalArray->origin());
+    IPosition blc(pOriginalArray->ndim(), 0);
     if (dimIter() < 1)
 	throw(ArrayIteratorError("ArrayIterator<T>::ArrayIterator<T> - "
 				 " at the moment cannot iterate by scalars"));
@@ -64,22 +64,22 @@ template<class T> void ArrayIterator<T>::init(Array<T> &a)
 	// See if there is a dimension with more than one element left.
 	// If so take a step in that one. Otherwise nothing to do.
 	for (Int j=dimIter(); j<a.ndim(); j++)
-	    if (pOriginalArray->length[j]>1) {
+	    if (pOriginalArray->length_p(j)>1) {
 		whereNextStep(j) += 1;
 		step=True;
 		break;
 	    }
     }
 
+    IPosition trc(blc);
     for (Int i = 0; i < dimIter(); i++) {
-	trc(i) = blc(i) + pOriginalArray->length[i] - 1;
+	trc(i) += pOriginalArray->length_p(i) - 1;
     }
 
     // Calculate what the offset for ap->begin is for each step
     offset = ArrayIndexOffset(pOriginalArray->ndim(), 
-			      pOriginalArray->originalLength.storage(),
-			      pOriginalArray->start.storage(), 
-			      pOriginalArray->inc.storage(), whereNextStep);
+			      pOriginalArray->originalLength_p.storage(),
+			      pOriginalArray->inc_p.storage(), whereNextStep);
     if (!step) {
        offset = 9999999; // This should be obvious
     }
@@ -103,9 +103,9 @@ template<class T> void ArrayIterator<T>::apSetPointer()
 	throw(ArrayIteratorError("ArrayIterator<T>::apSetPointer()"
 				 " - no iteration array!"));
     if (pastEnd()) {
-	ap->begin = 0;  // Mark it "invalid"
+	ap->begin_p = 0;  // Mark it "invalid"
     } else {
-	ap->begin = pOriginalArray->begin + nSteps()*offset;
+	ap->begin_p = pOriginalArray->begin_p + nSteps()*offset;
     }
 }
 

@@ -34,16 +34,7 @@
 rtti_imp_mbrf_a1(Cube);
 
 template<class T> Cube<T>::Cube()
-: Array<T>(IPosition(3, 0, 0, 0))
-{
-    makeIndexingConstants();
-    DebugAssert(ok(), ArrayError);
-}
-
-
-template<class T> Cube<T>::Cube(uInt l1, uInt l2, uInt l3, 
-                                Int o1, Int o2, Int o3)
-: Array<T>(IPosition(3, l1, l2, l3), IPosition(3, o1, o2, o3))
+: Array<T>(IPosition(3, 0))
 {
     makeIndexingConstants();
     DebugAssert(ok(), ArrayError);
@@ -56,11 +47,11 @@ template<class T> Cube<T>::Cube(uInt l1, uInt l2, uInt l3)
     DebugAssert(ok(), ArrayError);
 }
 
-template<class T> Cube<T>::Cube(const IPosition &len, const IPosition &or)
-  : Array<T>(len,or)
+template<class T> Cube<T>::Cube(const IPosition &len)
+  : Array<T>(len)
 {
     makeIndexingConstants();
-    AlwaysAssert(len.nelements() == 3 && or.nelements() == 3, ArrayError);
+    AlwaysAssert(len.nelements() == 3, ArrayError);
 }
 
 template<class T> Cube<T>::Cube(const Cube<T> &other)
@@ -81,21 +72,21 @@ template<class T> Cube<T>::Cube(const Array<T> &other)
 			     "(const Array<T> &): ndim of other > 3"));
     // We need to fiddle a bit if the ndim is == 1 or 2
     if (ndim() == 1) {
-	ndimen = 3;
-	start.resize(3); length.resize(3); inc.resize(3); 
-	originalLength.resize(3);
-	start[1] = 0; length[1] = 1; inc[1] = 1;
-	start[2] = 0; length[2] = 1; inc[2] = 1;
-	originalLength[1] = 1;
-	originalLength[2] = 1;
+	ndimen_p = 3;
+	length_p.resize(3); inc_p.resize(3); 
+	originalLength_p.resize(3);
+        length_p(1) = 1; inc_p(1) = 1;
+	length_p(2) = 1; inc_p(2) = 1;
+	originalLength_p(1) = 1;
+	originalLength_p(2) = 1;
     } else if (ndim() == 2) {
-	ndimen = 3;
-	start.resize(3); length.resize(3); inc.resize(3);
-	start[2] = 0; length[2] = 1; inc[2] = 1;
-	originalLength.resize(3);
-	originalLength[2] = 1;
+	ndimen_p = 3;
+	length_p.resize(3); inc_p.resize(3);
+	length_p(2) = 1; inc_p(2) = 1;
+	originalLength_p.resize(3);
+	originalLength_p(2) = 1;
     }
-    ArrayVolume(ndimen, length.storage());
+    nels_p = length_p.product();
     makeIndexingConstants();
     DebugAssert(ok(), ArrayError);
 }
@@ -104,35 +95,22 @@ template<class T> Cube<T>::~Cube()
 {}
 
 
-// <thrown>
-//   <item> ArrayConformanceError
-// </thrown>
-template<class T> void Cube<T>::resize(const IPosition &l, const IPosition &o)
-{
-    DebugAssert(ok(), ArrayError);
-    if (l.nelements() != 3 || o.nelements() != 3)
-	throw(ArrayConformanceError("Cube<T>::resize() - attempt to form "
-				    "non-Cube"));
-    Array<T>::resize(l,o);
-    makeIndexingConstants();
-}
-
 template<class T> void Cube<T>::resize(const IPosition &len)
 {
     DebugAssert(ok(), ArrayError);
-    IPosition or(len.nelements());
-    or = 0;
-    resize(len,or);
+    if (len.nelements() != 3)
+	throw(ArrayConformanceError("Cube<T>::resize() - attempt to form "
+				    "non-Cube"));
+    Array<T>::resize(len);
+    makeIndexingConstants();
 }
 
-template<class T> void Cube<T>::resize(uInt nx, uInt ny, uInt nz,
-				       Int ox, Int oy, Int oz)
+template<class T> void Cube<T>::resize(uInt nx, uInt ny, uInt nz)
 {
     DebugAssert(ok(), ArrayError);
-    IPosition l(3), o(3);
+    IPosition l(3);
     l(0) = nx; l(1) = ny; l(2) = nz;
-    o(0) = ox; o(1) = oy; o(2) = oz;
-    Cube<T>::resize(l,o);
+    Cube<T>::resize(l);
 }
 
 // <thrown>
@@ -190,8 +168,8 @@ template<class T> Cube<T> Cube<T>::operator()(const Slice &sliceX,
     DebugAssert(ok(), ArrayError);
     Int b1, l1, s1, b2, l2, s2, b3,s3,l3;       // begin length step
     if (sliceX.all()) {
-	b1 = start[0];
-	l1 = length[0];
+	b1 = 0;
+	l1 = length_p(0);
 	s1 = 1;
     } else {
 	b1 = sliceX.start();
@@ -199,8 +177,8 @@ template<class T> Cube<T> Cube<T>::operator()(const Slice &sliceX,
 	s1 = sliceX.inc();
     }
     if (sliceY.all()) {
-	b2 = start[1];
-	l2 = length[1];
+	b2 = 0;
+	l2 = length_p(1);
 	s2 = 1;
     } else {
 	b2 = sliceY.start();
@@ -208,8 +186,8 @@ template<class T> Cube<T> Cube<T>::operator()(const Slice &sliceX,
 	s2 = sliceY.inc();
     }
     if (sliceZ.all()) {
-	b3 = start[2];
-	l3 = length[2];
+	b3 = 0;
+	l3 = length_p(2);
 	s3 = 1;
     } else {
 	b3 = sliceZ.start();
@@ -222,12 +200,12 @@ template<class T> Cube<T> Cube<T>::operator()(const Slice &sliceX,
 	throw(ArrayError("Cube<T>::operator()(Slice,Slice,Slice) : step < 1"));
     } else if (l1 < 0  || l2 < 0 || l3 < 0) {
 	throw(ArrayError("Cube<T>::operator()(Slice,Slice,Slice): length < 0"));
-    } else if ((b1+(l1-1)*s1 >start[0]+length[0] - 1) || 
-	       (b2+(l2-1)*s2 >start[1]+length[1] - 1) ||
-	       (b3+(l3-1)*s3 >start[2]+length[2] - 1)) {
+    } else if ((b1+(l1-1)*s1 >= length_p(0)) || 
+	       (b2+(l2-1)*s2 >= length_p(1)) ||
+	       (b3+(l3-1)*s3 >= length_p(2))) {
 	throw(ArrayError("Cube<T>::operator()(Slice,Slice,Slice) : "
 			 "Desired slice extends beyond the end of the array"));
-    } else if (b1 < start[0] || b2 < start[1] || b3 < start[2]) {
+    } else if (b1 < 0 || b2 < 0 || b3 < 0) {
 	throw(ArrayError("Cube<T>::operator()(Slice,Slice,Slice) : "
 			 "start of slice before beginning of cube"));
    }
@@ -245,11 +223,9 @@ template<class T> void Cube<T>::makeIndexingConstants()
 {
     // No lAssert since the Cube often isn't constructed yet when
     // calling this
-    xyzoffset = -start[0]*inc[0] - start[1]*inc[1]*originalLength[0] - 
-	start[2]*inc[2]*originalLength[0]*originalLength[1];
-    xinc = inc[0];
-    yinc = inc[1]*originalLength[0];
-    zinc = inc[2]*originalLength[0]*originalLength[1];
+    xinc_p = inc_p(0);
+    yinc_p = inc_p(1)*originalLength_p(0);
+    zinc_p = inc_p(2)*originalLength_p(0)*originalLength_p(1);
 }
 
 // <thrown>
@@ -258,12 +234,15 @@ template<class T> void Cube<T>::makeIndexingConstants()
 template<class T> Matrix<T> Cube<T>::xyPlane(Int which)
 {
     DebugAssert(ok(), ArrayError);
-    if ((which < start[2]) || which > (start[2] + length[2] - 1)) {
+    if (which < 0 || which >= length_p(2)) {
 	throw(ArrayConformanceError("Cube<T>::xyPlane - "
-				    "plane < start or > end"));
+				    "plane < 0 or > end"));
     }
     Cube<T> tmp((*this)(Slice(), Slice(), which));
-    tmp.ndimen = 2;
+    tmp.ndimen_p = 2;
+    tmp.length_p.resize (2);
+    tmp.inc_p.resize (2);
+    tmp.originalLength_p.resize (2);
     return tmp; // should match Matrix<T>(const Array<T> &)
 }
 
@@ -275,18 +254,6 @@ template<class T> const Matrix<T> Cube<T>::xyPlane(Int which) const
     return This->xyPlane(which);
 }
 
-
-template<class T> IPosition Cube<T>::origin() const
-{
-    DebugAssert(ok(), ArrayError);
-    return Array<T>::origin();
-}
-
-template<class T> IPosition Cube<T>::shape() const
-{
-    DebugAssert(ok(), ArrayError);
-    return Array<T>::shape();
-}
 
 template<class T> IPosition Cube<T>::end() const
 {

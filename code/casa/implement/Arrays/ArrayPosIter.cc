@@ -28,30 +28,43 @@
 #include <aips/Arrays/ArrayPosIter.h>
 #include <aips/Arrays/ArrayError.h>
 
-// <thrown>
-//     <item> ArrayIteratorError
-// </thrown>
 ArrayPositionIterator::ArrayPositionIterator(const IPosition &shape, 
 					     const IPosition &origin,
 					     uInt byDim)
-: Start(origin), Shape(shape), End(ndim()), Cursor(ndim()),
+: Start(origin), Shape(shape),
   iterationDim(byDim), stepsFromBegin(0), atOrBeyondEnd(False)
 {
-    if (iterationDim > ndim())
+    setup();
+}
+
+ArrayPositionIterator::ArrayPositionIterator(const IPosition &shape, 
+					     uInt byDim)
+: Start(shape.nelements(), 0), Shape(shape),
+  iterationDim(byDim), stepsFromBegin(0), atOrBeyondEnd(False)
+{
+    setup();
+}
+
+// <thrown>
+//     <item> ArrayIteratorError
+// </thrown>
+void ArrayPositionIterator::setup()
+{
+    if (iterationDim > ndim()) {
 	throw(ArrayIteratorError("ArrayPositionIterator::ArrayPositionIterator"
 	    " - Stepping by dimension > Array dimension"));
-
-    if (origin.nelements() != shape.nelements())
+    }
+    if (Start.nelements() != Shape.nelements()) {
 	throw(ArrayIteratorError("ArrayPositionIterator::ArrayPositionIterator"
 				 " - ndim of origin and shape differ"));
-
-    Cursor = Start;
+    }
     for (Int i=0; i < ndim(); i++) {
 	if (Shape(i) < 0)
          throw(ArrayIteratorError("ArrayPositionIterator::ArrayPositionIterator"
 				     " - Shape(i) < 0"));
-	End(i) = Start(i) + Shape(i) - 1;
     }
+    Cursor = Start;
+    End = Start + Shape - 1;
 }
 
 void ArrayPositionIterator::origin()

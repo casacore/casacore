@@ -95,12 +95,9 @@ public:
 
     // A l1xl2xl3 sized cube.
     Cube(uInt l1, uInt l2, uInt l3);
-    // A l1xl2xl3 sized cube whose first element is at position (o1,o2,o3).
-    Cube(uInt l1, uInt l2, uInt l3, Int o1, Int o2, Int o3);
 
-    // A Cube where the shape ("len") and origin ("or") are defined with
-    // IPositions.
-    Cube(const IPosition &len, const IPosition &or);
+    // A Cube where the shape ("len") is defined with IPositions.
+    Cube(const IPosition &len);
 
     // The copy constructor uses reference semantics.
     // <note role=warning> The copy constructor should normally be avoided. More
@@ -126,17 +123,9 @@ public:
     // 3 or less.
     void reference(Array<T> &other);
 
-    // Resize the array to the given shape and origin.
-    // <group>
-    void resize(uInt nx, uInt ny, uInt nz, Int ox, Int oy, Int oz);
-    void resize(const IPosition &len, const IPosition &or);
-    // </group>
-
     // Resize to the given shape. The origin is (0,0,0).
     // <group>
-    void resize(uInt nx, uInt ny, uInt nz) {
-        resize (nx, ny, nz, 0, 0, 0);
-    }
+    void resize(uInt nx, uInt ny, uInt nz);
     void resize(const IPosition &);
     // </group>
 
@@ -172,7 +161,7 @@ public:
         index(0) = i1; index(1) = i2; index(2) = i3;
         validateIndex(index);   // Throws an exception on failure
 #endif
-        return *(begin + xyzoffset + i1*xinc + i2*yinc + i3*zinc);
+        return *(begin_p + i1*xinc_p + i2*yinc_p + i3*zinc_p);
     }
 
     const T &operator()(Int i1, Int i2, Int i3) const {
@@ -183,7 +172,7 @@ public:
         index(0) = i1; index(1) = i2; index(2) = i3;
         validateIndex(index);   // Throws an exception on failure
 #endif
-        return *(begin + xyzoffset + i1*xinc + i2*yinc + i3*zinc);
+        return *(begin_p + i1*xinc_p + i2*yinc_p + i3*zinc_p);
     }
     // </group>
 
@@ -210,9 +199,7 @@ public:
 
 
     // The array is masked by the input LogicalArray.
-    // This mask must conform to the array, but it does not need to have the
-    // same origin.
-    //
+    // This mask must conform to the array.
     // <group>
 
     // Return a MaskedArray.
@@ -229,9 +216,7 @@ public:
     // The array is masked by the input MaskedLogicalArray.
     // The mask is effectively the AND of the internal LogicalArray
     // and the internal mask of the MaskedLogicalArray.
-    // The MaskedLogicalArray must conform to the array, but it does not
-    // need to have the same origin.
-    //
+    // The MaskedLogicalArray must conform to the array.
     // <group>
 
     // Return a MaskedArray.
@@ -253,18 +238,12 @@ public:
     const  Matrix<T> xyPlane(Int zplane) const; 
     // </group>
 
-    // The position of the first element of the cube.
-    // <group>
-    void origin(Int &o1, Int &o2, Int &o3) const 
-          {o1 = start[0]; o2=start[1]; o3 = start[2];}
-    IPosition origin() const;
-    // </group>
-
     // The length of each axis of the cube.
     // <group>
     void shape(Int &s1, Int &s2, Int &s3) const
-           {s1 = length[0]; s2=length[1]; s3=length[2];}
-    IPosition shape() const;
+           {s1 = length_p(0); s2=length_p(1); s3=length_p(2);}
+    const IPosition &shape() const
+           {return length_p;}
     // </group>
 
     // The position of the last element of the cube.
@@ -272,8 +251,7 @@ public:
     // a convenience funtion.
     // <group>
     void end(Int &e1, Int &e2, Int &e3) const 
-          {e1=start[0]+length[0]-1;e2=start[1]+length[1]-1; 
-	   e3=start[2]+length[2]-1;}
+          {e1=length_p(0)-1; e2=length_p(1)-1; e3=length_p(2)-1;}
     IPosition end() const;
     // </group>
 
@@ -296,7 +274,7 @@ public:
 
 private:
     // Cached constants to improve indexing.
-    Int xyzoffset, xinc, yinc, zinc;
+    Int xinc_p, yinc_p, zinc_p;
     // Helper fn to calculate the indexing constants.
     void makeIndexingConstants();
 };

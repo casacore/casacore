@@ -438,7 +438,7 @@ MaskedLogicalArray operator OP (const MaskedArray<T> &left, \
                 " - arrays do not conform")); \
     } \
 \
-    LogicalArray resultarr (left.shape(), left.origin()); \
+    LogicalArray resultarr (left.shape()); \
     resultarr = False; \
     MaskedLogicalArray result (resultarr, left.getMask()); \
 \
@@ -492,7 +492,7 @@ MaskedLogicalArray operator OP (const Array<T> &left, \
                 " - arrays do not conform")); \
     } \
 \
-    LogicalArray resultarr (left.shape(), left.origin()); \
+    LogicalArray resultarr (left.shape()); \
     resultarr = False; \
     MaskedLogicalArray result (resultarr, right.getMask()); \
 \
@@ -546,7 +546,7 @@ MaskedLogicalArray operator OP (const MaskedArray<T> &left, \
                 " - arrays do not conform")); \
     } \
 \
-    LogicalArray resultarr (left.shape(), left.origin()); \
+    LogicalArray resultarr (left.shape()); \
     resultarr = False; \
     MaskedLogicalArray result (resultarr, \
                                (left.getMask() && right.getMask())); \
@@ -1211,7 +1211,7 @@ template<class T> \
 MaskedLogicalArray operator OP (const MaskedArray<T> &left, \
                                 const T right) \
 { \
-    LogicalArray resultarr (left.shape(), left.origin()); \
+    LogicalArray resultarr (left.shape()); \
     resultarr = False; \
     MaskedLogicalArray result (resultarr, left.getMask()); \
 \
@@ -1252,7 +1252,7 @@ template<class T> \
 MaskedLogicalArray operator OP (const T left, \
                                 const MaskedArray<T> &right) \
 { \
-    LogicalArray resultarr (right.shape(), right.origin()); \
+    LogicalArray resultarr (right.shape()); \
     resultarr = False; \
     MaskedLogicalArray result (resultarr, right.getMask()); \
 \
@@ -1306,7 +1306,7 @@ template<class T>
 MaskedLogicalArray operator && (const MaskedArray<T> &marray,
                                 const T val)
 {
-    LogicalArray resultarr (marray.shape(), marray.origin());
+    LogicalArray resultarr (marray.shape());
     resultarr = False;
     MaskedLogicalArray result (resultarr, marray.getMask());
 
@@ -1348,7 +1348,7 @@ template<class T>
 MaskedLogicalArray operator && (const T val,
                                 const MaskedArray<T> &marray)
 {
-    LogicalArray resultarr (marray.shape(), marray.origin());
+    LogicalArray resultarr (marray.shape());
     resultarr = False;
     MaskedLogicalArray result (resultarr, marray.getMask());
 
@@ -1390,7 +1390,7 @@ template<class T>
 MaskedLogicalArray operator || (const MaskedArray<T> &marray,
                                 const T val)
 {
-    LogicalArray resultarr (marray.shape(), marray.origin());
+    LogicalArray resultarr (marray.shape());
     resultarr = False;
     MaskedLogicalArray result (resultarr, marray.getMask());
 
@@ -1435,7 +1435,7 @@ template<class T>
 MaskedLogicalArray operator || (const T val,
                                 const MaskedArray<T> &marray)
 {
-    LogicalArray resultarr (marray.shape(), marray.origin());
+    LogicalArray resultarr (marray.shape());
     resultarr = False;
     MaskedLogicalArray result (resultarr, marray.getMask());
 

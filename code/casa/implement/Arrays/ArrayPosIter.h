@@ -75,8 +75,12 @@ public:
     // through. Also define the dimensionality of the step. byDim==0 implies
     // we are stepping by scalars (i.e. every element), byDim==1 implies that
     // we are stepping by vector, ==2 by matrices, and so on.
+    // <group>
     ArrayPositionIterator(const IPosition &shape, const IPosition &origin,
-		  uInt byDim);
+			  uInt byDim);
+    ArrayPositionIterator(const IPosition &shape,
+			  uInt byDim);
+    // </group>
     // Reset the cursor to the beginning of the volume.
     virtual void origin();
     // Returns true of the cursor is at the origin.
@@ -95,6 +99,9 @@ public:
     // How many steps have we taken from the beginning?
     uInt nSteps() const {return stepsFromBegin;}
 private:
+    // Setup the object for the constructor.
+    void setup();
+
     //# We should probably have mf's for getting at Start,Shape and End.
     IPosition Start, Shape, End, Cursor;
     Bool atOrBeyondEnd;

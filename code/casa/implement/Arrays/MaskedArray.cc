@@ -1,5 +1,5 @@
 //# MaskedArray.cc: A templated N-D masked array class with variable origin.
-//# Copyright (C) 1993,1994,1995,1996
+//# Copyright (C) 1993,1994,1995,1996,1997
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -72,9 +72,6 @@ MaskedArray<T>::setData (const Array<T> &data,
 		       " new() for pMask failed",
 		       1));
   }
-  if (pMask->origin() != pArray->origin())
-    pMask->reform(pMask->shape(), pArray->origin());
-
   nelemValid = 0;
   nelemValidIsOK = False;
   isRO  = isReadOnly; 
@@ -106,9 +103,6 @@ MaskedArray<T>::setData (const MaskedArray<T> & array,
 		       " new() for pMask failed",
 		       1));
   }
-  if (pMask->origin() != pArray->origin())
-    pMask->reform(pMask->shape(), pArray->origin());
-  
   nelemValid = 0;
   nelemValidIsOK = False;
   isRO  = isReadOnly; 
@@ -140,7 +134,7 @@ MaskedArray<T>::MaskedArray (const Array<T> &inarray,
             1));
     }
 
-    pMask = new LogicalArray (inmask.shape(), inarray.origin());
+    pMask = new LogicalArray (inmask.shape());
     if (!pMask) {
         throw (AllocError (
             "MaskedArray<T>::MaskedArray (const Array<T> &,"
@@ -178,7 +172,7 @@ MaskedArray<T>::MaskedArray (const Array<T> &inarray,
             1));
     }
 
-    pMask = new LogicalArray (inmask.shape(), inarray.origin());
+    pMask = new LogicalArray (inmask.shape());
     if (!pMask) {
         throw (AllocError (
             "MaskedArray<T>::MaskedArray (const Array<T> &,"
@@ -219,7 +213,7 @@ MaskedArray<T>::MaskedArray (const MaskedArray<T> &inarray,
             1));
     }
 
-    pMask = new LogicalArray (inmask.shape(), inarray.origin());
+    pMask = new LogicalArray (inmask.shape());
     if (!pMask) {
         throw (AllocError (
             "MaskedArray<T>::MaskedArray (const MaskedArray<T> &,"
@@ -259,7 +253,7 @@ MaskedArray<T>::MaskedArray (const MaskedArray<T> &inarray,
             1));
     }
 
-    pMask = new LogicalArray (inmask.shape(), inarray.origin());
+    pMask = new LogicalArray (inmask.shape());
     if (!pMask) {
         throw (AllocError (
             "MaskedArray<T>::MaskedArray (const MaskedArray<T> &,"
@@ -299,7 +293,7 @@ MaskedArray<T>::MaskedArray (const Array<T> &inarray,
             1));
     }
 
-    pMask = new LogicalArray (inarray.shape(), inarray.origin());
+    pMask = new LogicalArray (inarray.shape());
     if (!pMask) {
         throw (AllocError (
           "MaskedArray<T>::MaskedArray(const Array<T> &inarray,"
@@ -337,7 +331,7 @@ MaskedArray<T>::MaskedArray (const Array<T> &inarray,
             1));
     }
 
-    pMask = new LogicalArray (inarray.shape(), inarray.origin());
+    pMask = new LogicalArray (inarray.shape());
     if (!pMask) {
         throw (AllocError (
           "MaskedArray<T>::MaskedArray(const Array<T> &inarray,"
@@ -377,7 +371,7 @@ MaskedArray<T>::MaskedArray (const MaskedArray<T> &inarray,
             1));
     }
 
-    pMask = new LogicalArray (inarray.shape(), inarray.origin());
+    pMask = new LogicalArray (inarray.shape());
     if (!pMask) {
         throw (AllocError (
           "MaskedArray<T>::MaskedArray (const MaskedArray<T> &inarray,"
@@ -418,7 +412,7 @@ MaskedArray<T>::MaskedArray (const MaskedArray<T> &inarray,
             1));
     }
 
-    pMask = new LogicalArray (inarray.shape(), inarray.origin());
+    pMask = new LogicalArray (inarray.shape());
     if (!pMask) {
         throw (AllocError (
           "MaskedArray<T>::MaskedArray (const MaskedArray<T> &inarray,"
@@ -636,14 +630,6 @@ Bool MaskedArray<T>::conform(const MaskedArray<T> &other) const
     DebugAssert(ok(), ArrayError);
 
     return pArray->conform(*(other.pArray));
-}
-
-
-template<class T> IPosition MaskedArray<T>::origin() const
-{
-    DebugAssert(ok(), ArrayError);
-
-    return pArray->origin();
 }
 
 

@@ -94,15 +94,8 @@ public:
     // A Matrix with "l1" rows and "l2" columns.
     Matrix(uInt l1, uInt l2);
 
-    // A Matrix with "l1" rows and "l2" columns and origin at (o1,o2)
-    Matrix(uInt l1, uInt l2, Int o1, Int o2);
-
     // A matrix of shape with shape "len".
     Matrix(const IPosition &len);
-
-    // A Matrix where the shape ("len") and origin ("or") are defined with
-    // IPositions.
-    Matrix(const IPosition &len, const IPosition &or);
 
     // The copy constructor uses reference semantics.
     // <note role=warning> The copy constructor should normally be avoided. More
@@ -128,15 +121,9 @@ public:
     // 2 or less.
     void reference(Array<T> &other);
 
-    // Resize the array to the given shape and origin.
-    // <group>
-    void resize(uInt nx, uInt ny, Int ox, Int oy);
-    void resize(const IPosition &len, const IPosition &or);
-   // </group>
-
     // Resize to the given shape. The origin is (0,0).
     // <group>
-    void resize(uInt nx, uInt ny) {resize (nx, ny, 0, 0);}
+    void resize(uInt nx, uInt ny);
     void resize(const IPosition &len);
     // </group>
 
@@ -173,7 +160,7 @@ public:
         validateIndex(index);   // Throws an exception on failure
 #endif
         // optimize by storing constants
-        return *(begin + xyoffset + i1*xinc + i2*yinc);
+        return *(begin_p + i1*xinc_p + i2*yinc_p);
     }
 
     const T &operator()(Int i1, Int i2) const {
@@ -185,15 +172,13 @@ public:
         validateIndex(index);   // Throws an exception on failure
 #endif
         // optimize by storing constants
-        return *(begin + xyoffset + i1*xinc + i2*yinc);
+        return *(begin_p + i1*xinc_p + i2*yinc_p);
     }
     // </group>
 
 
     // The array is masked by the input LogicalArray.
-    // This mask must conform to the array, but it does not need to have the
-    // same origin.
-    //
+    // This mask must conform to the array.
     // <group>
 
     // Return a MaskedArray.
@@ -210,9 +195,7 @@ public:
     // The array is masked by the input MaskedLogicalArray.
     // The mask is effectively the AND of the internal LogicalArray
     // and the internal mask of the MaskedLogicalArray.
-    // The MaskedLogicalArray must conform to the array, but it does not
-    // need to have the same origin.
-    //
+    // The MaskedLogicalArray must conform to the array.
     // <group>
 
     // Return a MaskedArray.
@@ -284,32 +267,28 @@ public:
         {return ((Array<T> *)this)->operator()(blc,trc);}
     // </group>
 
-    // The position of the first element of the matrix.
-    // <group>
-    void origin(Int &o1, Int &o2) const {o1 = start[0]; o2=start[1];}
-    IPosition origin() const;
-    // </group>
-
     // The length of each axis of the Matrix.
     // <group>
-    void shape(Int &s1, Int &s2) const {s1 = length[0]; s2=length[1];}
-    IPosition shape() const;
+    void shape(Int &s1, Int &s2) const
+            {s1 = length_p(0); s2=length_p(1);}
+    const IPosition &shape() const
+            {return length_p;}
     // </group>
 
     // The position of the last element of the Matrix.
-    // This is the same as origin(i) + shape(i) - 1; i.e. this is
+    // This is the same as shape(i) - 1; i.e. this is
     // a convenience funtion.
     // <group>
     void end(Int &e1, Int &e2) const 
-          {e1=start[0]+length[0]-1;e2=start[1] +length[1]-1;}
+          {e1=length_p(0)-1;e2=length_p(1)-1;}
     IPosition end() const;
     // </group>
 
     // The number of rows in the Matrix, i.e. the length of the first axis.
-    uInt nrow() const {return length[0];}
+    uInt nrow() const {return length_p(0);}
 
     // The number of columns in the Matrix, i.e. the length of the 2nd axis.
-    uInt ncolumn() const {return length[1];}
+    uInt ncolumn() const {return length_p(1);}
 
     // Replace the data values with those in the pointer <src>storage</src>.
     // The results are undefined is storage does not point at nelements() or
@@ -317,7 +296,7 @@ public:
     // is True.
     // <group>
     virtual void takeStorage(const IPosition &shape, T *storage,
-		     StorageInitPolicy policy = COPY);
+			     StorageInitPolicy policy = COPY);
     // Since the pointer is const, a copy is always taken.
     virtual void takeStorage(const IPosition &shape, const T *storage);
     // </group>
@@ -330,7 +309,8 @@ public:
 
 private:
     // Cached constants to improve indexing.
-    Int xyoffset, xinc, yinc;
+    Int xinc_p, yinc_p;
+
     // Helper fn to calculate the indexing constants.
     void makeIndexingConstants();
 };

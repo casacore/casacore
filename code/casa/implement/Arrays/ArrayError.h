@@ -77,7 +77,7 @@ rtti_dcl_init(ArrayIndexError);
 //
 // The ArrayIndexError class, which is derived from ArrayError, is intended
 // to be thrown when an index is out-of-bounds. It contains within it
-// the offending index, as well as the shape and origin of the array which
+// the offending index, as well as the shape of the array which
 // is being indexed. This should be multiply-derived from
 // indexError<T> defined in Error.h.
 class ArrayIndexError : public ArrayError
@@ -85,28 +85,24 @@ class ArrayIndexError : public ArrayError
 public:
     // Initialize with the message "ArrayIndexError".
     ArrayIndexError();
-    // Initialize with the supplied message, the index, shape and
-    // origin are null.
+    // Initialize with the supplied message, the index and shape are null.
     ArrayIndexError(const Char *m);
-    // Initialize with the supplied message, the index, shape and
-    // origin are null.
+    // Initialize with the supplied message, the index and shape are null.
     ArrayIndexError(const String &m);
     // Initialize with a given out-of-bounds index, as well as the shape
-    // and origin of the array and a supplied message.
+    // of the array and a supplied message.
     ArrayIndexError(const IPosition &index, const IPosition &shape, 
-		    const IPosition &origin, const Char *m="ArrayIndexError");
+		    const Char *m="ArrayIndexError");
     ArrayIndexError(ExcpError *);
     ~ArrayIndexError();
     // The out-of-bounds index.
     IPosition index() const;
-    // The origin of the violated array.
-    IPosition origin() const;
     // The shape of the violated array.
     IPosition shape() const;
     rtti_dcl_mbrf_p1(ArrayIndexError,ArrayError);
 private:
     //# index, offset, length
-    IPosition i,o,l;
+    IPosition i,l;
 };
 
 //# Initialize the ArrayConformanceError type() functions

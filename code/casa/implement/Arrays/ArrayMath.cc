@@ -1,5 +1,5 @@
 //# ArrayMath.cc: Arithmetic functions defined on Arrays
-//# Copyright (C) 1993,1994,1995,1996
+//# Copyright (C) 1993,1994,1995,1996,1997
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -71,14 +71,13 @@ void minMax(ScalarType &minVal, ScalarType &maxVal,
     ScalarType val;
 
     // Initialize
-    minPos = maxPos = array.origin();
+    minPos = maxPos = IPosition (array.ndim(), 0);
     minVal = maxVal = array(minPos);
     uInt n = ai.vector().nelements();
 
     while (! ai.pastEnd()) {
-        Int orig = ai.vector().origin()(0);
 	for (uInt i=0; i<n; i++) {
-	    val = ai.vector()(i + orig);
+	    val = ai.vector()(i);
 	    if (val < minVal) {
 	        minVal = val;
 		minPos = ai.pos();
@@ -132,9 +131,8 @@ void minMax(ScalarType &minVal, ScalarType &maxVal,
     uInt ifound;
     uInt n = mi.vector().nelements();
     while (! mi.pastEnd() && !found) {
-        Int orig = mi.vector().origin()(0);
 	for (uInt i=0; i<n; i++) {
-	    if (mi.vector()(i + orig)) {
+	    if (mi.vector()(i)) {
 		maxPos = ai.pos();
 		maxPos(0) += i;
 		found =  True;
@@ -159,11 +157,9 @@ void minMax(ScalarType &minVal, ScalarType &maxVal,
 
     // Finish with vector where first value was found.
     {
-        Int aorig = ai.vector().origin()(0);
-        Int morig = mi.vector().origin()(0);
         for (uInt i=++ifound; i<n; i++) {
-            if (mi.vector()(i + morig)) {
-                val = ai.vector()(i + aorig);
+            if (mi.vector()(i)) {
+                val = ai.vector()(i);
                 if (val < minVal) {
                     minVal = val;
                     minPos = ai.pos();
@@ -181,11 +177,9 @@ void minMax(ScalarType &minVal, ScalarType &maxVal,
 
     // Continue with the rest of the array.
     while (! ai.pastEnd()) {
-        Int aorig = ai.vector().origin()(0);
-        Int morig = mi.vector().origin()(0);
         for (uInt i=0; i<n; i++) {
-            if (mi.vector()(i + morig)) {
-                val = ai.vector()(i + aorig);
+            if (mi.vector()(i)) {
+                val = ai.vector()(i);
                 if (val < minVal) {
                     minVal = val;
                     minPos = ai.pos();

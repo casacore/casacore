@@ -48,9 +48,6 @@ ostream &operator<<(ostream &s, const Array<T> &a)
     if (a.ndim() > 2) {
 	s << "Ndim=" << a.ndim() << " ";
     }
-    if (a.origin() != 0) {
-	s << "Origin: " << a.origin() << " ";
-    }
     if (a.ndim() > 1) {
 	s << "Axis Lengths: " << a.shape() << " ";
     }
@@ -65,10 +62,8 @@ ostream &operator<<(ostream &s, const Array<T> &a)
 	// Vector
 	IPosition ipos(1);
 	s << "[";
-	Int istart, iend;
-	istart = a.origin()(0);
-	iend   = a.end()(0);
-	for (Int i=istart; i < iend; i++) {
+	Int iend = a.end()(0);
+	for (Int i=0; i < iend; i++) {
 	    ipos(0) = i;
 	    s << a(ipos) << ", ";
 	}
@@ -78,18 +73,16 @@ ostream &operator<<(ostream &s, const Array<T> &a)
 	// Matrix
 	s << " (NB: Matrix in Row/Column order)" << endl;
 	IPosition index(2);
-	Int row_start = a.origin()(0);
-	Int row_end   = a.end()(0);
-	Int col_start = a.origin()(1);
-	Int col_end   = a.end()(1);
-	for (Int i=row_start; i <= row_end; i++) {
+	Int row_end = a.end()(0);
+	Int col_end = a.end()(1);
+	for (Int i=0; i <= row_end; i++) {
 	    index(0) = i;
-	    if (i == row_start) {
+	    if (i == 0) {
 		s << "[";
 	    } else {
 		s << " ";
 	    }
-	    for (Int j=col_start; j <= col_end; j++) {
+	    for (Int j=0; j <= col_end; j++) {
 		index(1) = j;
 		s << a(index);
 		if (j != col_end) {
@@ -106,11 +99,9 @@ ostream &operator<<(ostream &s, const Array<T> &a)
 	// Any dimension - print by vectors, preceed each vector by IPosition
 	// of start.
 	s << endl;
-	IPosition aorigin = a.origin();
-	IPosition aend = a.end();
 	IPosition ashape = a.shape();
 	Int andim = a.ndim();
-	ArrayPositionIterator ai(ashape, aorigin, 1);
+	ArrayPositionIterator ai(ashape, 1);
 	Int i;
 	IPosition index(andim);
 	// Print vector by vector
@@ -118,10 +109,10 @@ ostream &operator<<(ostream &s, const Array<T> &a)
 	    index = ai.pos();
 	    s << index;
 	    s << "[";
-	    for(i=aorigin(0); i < aend(0) + 1; i++) {
+	    for(i=0; i < ashape(0); i++) {
 		index(0) = i;
+		if (i > 0) s << ", ";
 		s << a(index); 
-		if (i < aend(0)) s << ", ";
 	    }
 	    s << "]\n";
 	    ai.next();
@@ -143,11 +134,8 @@ AipsIO &operator<<(AipsIO &ios, const Array<T> &a)
     ios.putstart(rtti_decode(a.id()), Array<T>::arrayVersion());
     // Write out dimensionality
     ios << a.ndim();
-    // Write out length, origin
+    // Write out length
     for (uInt i=0; i < a.ndim(); i++) {
-	ios << a.origin()(i);
-    }
-    for (i=0; i < a.ndim(); i++) {
 	ios << a.shape()(i);
     }
     // Now write out the data
@@ -172,21 +160,21 @@ AipsIO &operator>>(AipsIO &ios, Array<T> &a)
     Array<T> tmp;
     // Even if we are, say, a Vector, we were written as an Array. We only use
     // "tmp" for its name.
-    if (ios.getstart(rtti_decode(tmp.id())) != Array<T>::arrayVersion()) {
-	throw(ArrayError("AipsIO &operator>> - "
-			 "Version on disk does not match header!"));
-    }
-    
+    Int version = ios.getstart(rtti_decode(tmp.id()));
     Int ndim;
     ios >> ndim;
-    IPosition shape(ndim), origin(ndim);
-    for (Int i=0; i < ndim; i++) {
-	ios >> origin(i);
+    IPosition shape(ndim);
+    // Older versions contain an origin (which we discard).
+    if (version < 3) {
+	Int orig;
+	for (Int i=0; i < ndim; i++) {
+	    ios >> orig;
+	}
     }
-    for (i=0; i < ndim; i++) {
+    for (Int i=0; i < ndim; i++) {
 	ios >> shape(i);
     }
-    a.resize(shape, origin);  // hopefully a no-op if unchanged
+    a.resize(shape);                // hopefully a no-op if unchanged
 
     // Now read in the data.
 

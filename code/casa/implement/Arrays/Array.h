@@ -1,4 +1,4 @@
-//# Array.h: A templated N-D Array class with variable origin
+//# Array.h: A templated N-D Array class with zero origin
 //# Copyright (C) 1993,1994,1995,1996,1997
 //# Associated Universities, Inc. Washington DC, USA,
 //#
@@ -41,11 +41,11 @@
 #include <aips/Arrays/ArrayIO.h>
 #include <aips/Arrays/LogiArray.h>
 #include <aips/Arrays/MaskLogiArrFwd.h>
+#include <aips/Lattices/IPosition.h>
 
 //# Forwards
 class AipsIO;
 template<class T> class ArrayIterator;
-class IPosition;
 template<class T> class MaskedArray;
 template<class T> class Matrix;
 template<class Domain, class Range> class Functional;
@@ -67,9 +67,9 @@ enum StorageInitPolicy {
   SHARE};
 
 
-// <summary> A templated N-D Array class with variable origin </summary>
+// <summary> A templated N-D Array class with zero origin </summary>
 
-// Array<T> is a templated, N-dimensional, Array class. The origin is variable,
+// Array<T> is a templated, N-dimensional, Array class. The origin is zero,
 // but by default indices are zero-based. This Array class is the
 // base class for specialized Vector<T>, Matrix<T>, and Cube<T> classes.
 //
@@ -85,19 +85,16 @@ enum StorageInitPolicy {
 // Array<Int> ai(axisLengths);         // ai is a 5 dimensional array of
 //                                     // integers; indices are 0-based
 //                                     // => ai.nelements() == 120
-// IPosition origin(5); origin = -1;   //    origin = [-1,-1,-1,-1,-1]
-// Array<Int> ai2(axisLengths, origin);// The first element is at index
+// Array<Int> ai2(axisLengths);        // The first element is at index
 //                                     // "origin".
 // IPosition zero(5); zero = 0;        // [0,0,0,0,0]
 // //...
-// ai(zero) = ai2(origin);             // Copy first element of ai2 to ai1
 // </srcblock>
 // Indexing into an N-dimensional array is relatively expensive. Normally
 // you will index into a Vector, Matrix, or Cube. These may be obtained from
 // an N-dimensional array by creating a reference, or by using an 
 // ArrayIterator. The "shape" of the array is an IPosition which gives the
-// length of each axis, and the "origin" of the array is an IPosition which
-// gives the index of the first array element ([0,0,0...] by default).
+// length of each axis.
 //
 // An Array may be standalone, or it may refer to another array, or to
 // part of another array (by refer we mean that if you change a pixel in 
@@ -199,9 +196,6 @@ public:
     // The origin of the Array is zero.
     explicit Array(const IPosition &shape);
 
-    // Create an array with a given shape and origin.
-    Array(const IPosition &shape, const IPosition &origin);
-
     // After construction, this and other reference the same storage.
     Array(const Array<T> &other);
 
@@ -237,16 +231,13 @@ public:
 
     // After invocation, this array and other reference the same storage. That
     // is, modifying an element through one will show up in the other. The
-    // arrays appear to be identical; they have the same shape and
-    // origin.
-    // <group>
+    // arrays appear to be identical; they have the same shape.
     virtual void reference(Array<T> &other);
-    // </group>
 
     // Copy the values in other to this. If the array on the left hand
     // side has no elements, then it is resized to be the same size as
     // as the array on the right hand side. Otherwise, the arrays must
-    // conform (same shapes, but origins do not need to be the same).
+    // conform (same shapes).
     // <srcblock>
     // IPosition shape(2,10,10);     // some shape
     // Array<Double> ad(shape);
@@ -317,7 +308,7 @@ public:
     void unique();
 
     // It is occasionally useful to have an array which access the same
-    // storage appear to have a different shape and origin. For example,
+    // storage appear to have a different shape. For example,
     // Turning an N-dimensional array into a Vector. This will work when
     // before.nelements() == after.nelements() and if this array refers
     // to other storage, the increment on all axes must be one (guaranteed,
@@ -329,7 +320,7 @@ public:
     // Vector<Float> line(square.reform(lineShape));
     // // "square"'s storage may  now be accessed through Vector "line"
     // </srcblock>
-    Array<T> reform(const IPosition &shape, const IPosition &origin) const;
+    Array<T> reform(const IPosition &shape) const;
     
     // These member functions remove degenerate (ie. length==1) axes from
     // Arrays.  Only axes greater than startingAxis are considered (normally
@@ -362,7 +353,6 @@ public:
     // copied over to the new array.
     // <group>
     virtual void resize(const IPosition &newShape);
-    virtual void resize(const IPosition &newShape, const IPosition &newOrigin);
     // </group>
 
     // Access a single element of the array. This is relatively
@@ -387,37 +377,21 @@ public:
 
 
     // The array is masked by the input LogicalArray.
-    // This mask must conform to the array, but it does not need to have the
-    // same origin.
-    //
+    // This mask must conform to the array.
     // <group>
-
-    // Return a MaskedArray.
     MaskedArray<T> operator() (const LogicalArray &mask) const;
-
-    // Return a MaskedArray.
     MaskedArray<T> operator() (const LogicalArray &mask);
- 
     // </group>
 
-    
     // The array is masked by the input MaskedLogicalArray.
     // The mask is effectively the AND of the internal LogicalArray
     // and the internal mask of the MaskedLogicalArray.
-    // The MaskedLogicalArray must conform to the array, but it does not
-    // need to have the same origin.
-    //
+    // The MaskedLogicalArray must conform to the array.
     // <group>
-
-    // Return a MaskedArray.
     MaskedArray<T> operator() (const MaskedLogicalArray &mask) const;
-
-    // Return a MaskedArray.
     MaskedArray<T> operator() (const MaskedLogicalArray &mask);
- 
     // </group>
 
-    
     // The number of references the underlying storage has assigned to it.
     // It is 1 unless there are outstanding references to the storage (e.g.,
     // through a slice). Normally you have no need to do this since the
@@ -425,30 +399,26 @@ public:
     uInt nrefs() const;
 
     // The dimensionality of this array.
-    uInt ndim() const {return ndimen;}
+    uInt ndim() const { return ndimen_p; }
 
     // How many elements does this array have? Product of all axis lengths.
-    uInt nelements() const { return nels; }
+    uInt nelements() const { return nels_p; }
 
     // Check to see if the Array is consistent. This is about the same thing
     // as checking for invariants. If AIPS_DEBUG is defined, this is invoked
     // after construction and on entry to most member functions.
     virtual Bool ok() const;
 
-    // Are the shapes identical? The origins do NOT need to be the same.
-    // Binary operations will "line up" the arrays at their origins, so
-    // as long as the shapes are the same the Arrays conform.
+    // Are the shapes identical?
     // <group>
     Bool conform(const Array<T> &other) const;
     Bool conform(const MaskedArray<T> &other) const;
     // </group>
 
-    // The IPosition of the first array element. All zero is the default.
-    // When zero based, max_index(i) == shape(i) - 1.
-    IPosition origin() const;
     // The length of each axis.
-    IPosition shape() const;
-    // A convenience function: end(i) = origin(i) + shape(i) - 1; i.e. this
+    const IPosition &shape() const { return length_p; }
+
+    // A convenience function: end(i) = shape(i) - 1; i.e. this
     // is the IPosition of the last element of the Array.
     IPosition end() const;
 
@@ -509,7 +479,7 @@ public:
     // Array version for major change (used by ArrayIO).
     // enum did not work properly with cfront 3.0.1), so replaced
     // by a static inline function. Users won't normally use this.
-    static uInt arrayVersion() {return 2;}
+    static uInt arrayVersion() {return 3;}
 
     // Macro to define the typeinfo member functions.
     rtti_dcl_mbrf_p1(Array<T>, Cleanup);
@@ -530,34 +500,38 @@ public:
     Array<T> &ac() {return *this;}
     const Array<T> &ac() const {return *this;}
     // </group>
+
 protected:
     // Number of elements in the array. Cached rather than computed.
-    uInt nels;
+    uInt nels_p;
 
     // Dimensionality of the array.
-    Int ndimen;
+    Int ndimen_p;
 
-    // Used to hole the origin, shape, increment into the underlying storage
-    // and originalLength of the array. These should be coelesced to avoid
-    // wasted space by we have by using 4 blocks.
-    Block<Int> start, length, inc, originalLength;
+    // Used to hold the shape, increment into the underlying storage
+    // and originalLength of the array.
+    IPosition length_p, inc_p, originalLength_p;
 
     // Reference counted block that contains the storage.
-    CountedPtr<Block<T> > data;
+    CountedPtr<Block<T> > data_p;
 
     // This pointer is adjusted to point to the first element of the array.
     // It is not necessarily the same thing as data->storage() since
     // this array might be a section, e.g. have a blc which shifts us forward
     // into the block.
-    T *begin;
+    T *begin_p;
+
+    // A switch to tell if the data is contiguous.
+    Bool contiguous_p;
+
 
     // Various helper functions that should be deleted.
     // <group>
-    Array(uInt, const Block<Int> &);
+///    Array(uInt, const Block<Int> &);
     void validateConformance(const Array<T> &) const;
     void validateIndex(const IPosition &) const;
-    Bool contiguousStorage() const;
-    // </group>
+    Bool contiguousStorage() const { return contiguous_p; }
+    Bool isStorageContiguous() const;
 };
 
 
@@ -589,22 +563,20 @@ uInt ArrayVolume(uInt Ndim, const Int *Shape);
 // What is the linear index into an "Ndim" dimensional array of the given
 // "Shape", "Origin", and "Increment" for a given IPosition Index.
 //  An Array helper function.
+// <group>
 uInt ArrayIndexOffset(uInt Ndim, const Int *Shape, 
 		      const Int *Origin, const Int *Inc, 
 		      const IPosition &Index);
-
+uInt ArrayIndexOffset(uInt Ndim, const Int *Shape, 
+		      const Int *Inc, const IPosition &Index);
+// </group>
 
 // 
 // Test conformance for two arrays of different types.
-// Are the shapes identical? The origins do NOT need to be the same.
-// Binary operations will "line up" the arrays at their origins, so
-// as long as the shapes are the same the arrays conform.
-//
+// Are the shapes identical?
 // <group name=conform2>
-
 template<class T, class U>
   Bool conform2 (const Array<T> &left, const Array<U> &right);
-
 // </group>
 
 // </group>

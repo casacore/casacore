@@ -34,17 +34,10 @@
 rtti_imp_mbrf_a1(Matrix);
 
 template<class T> Matrix<T>::Matrix()
-: Array<T>(IPosition(2, 0, 0))
+: Array<T>(IPosition(2, 0))
 {
     makeIndexingConstants();
     DebugAssert(ok(), ArrayError);
-}
-
-template<class T> Matrix<T>::Matrix(const IPosition &len, const IPosition &or)
-  : Array<T>(len,or)
-{
-    makeIndexingConstants();
-    AlwaysAssert(len.nelements() == 2 && or.nelements() == 2, ArrayError);
 }
 
 template<class T> Matrix<T>::Matrix(const IPosition &len)
@@ -52,13 +45,6 @@ template<class T> Matrix<T>::Matrix(const IPosition &len)
 {
     makeIndexingConstants();
     AlwaysAssert(len.nelements() == 2, ArrayError);
-}
-
-template<class T> Matrix<T>::Matrix(uInt l1, uInt l2, Int o1, Int o2)
-: Array<T>(IPosition(2, l1, l2), IPosition(2, o1, o2))
-{
-    makeIndexingConstants();
-    DebugAssert(ok(), ArrayError);
 }
 
 template<class T> Matrix<T>::Matrix(uInt l1, uInt l2)
@@ -87,15 +73,15 @@ template<class T> Matrix<T>::Matrix(const Array<T> &other)
 			     "(const Array<T> &): ndim of other > 2"));
     // We need to fiddle a bit if the ndim is == 1
     if (ndim() == 1) {
-	ndimen = 2;
-	start.resize(2); 
-	length.resize(2); 
-	inc.resize(2);
-	originalLength.resize(2);
-	start[1] = 0; length[1] = 1; inc[1] = 1;
-	originalLength[1] = 1;
+	ndimen_p = 2;
+	length_p.resize(2); 
+	inc_p.resize(2);
+	originalLength_p.resize(2);
+	length_p(1) = 1;
+	inc_p(1) = 1;
+	originalLength_p(1) = 1;
     }
-    nels = ArrayVolume(ndimen, length.storage());
+    nels_p = length_p.product();
     makeIndexingConstants();
     DebugAssert(ok(), ArrayError);
 }
@@ -107,31 +93,22 @@ template<class T> Matrix<T>::~Matrix()
 // <thrown>
 //   <item> ArrayConformanceError
 // </thrown>
-template<class T> void Matrix<T>::resize(const IPosition &l, const IPosition &o)
+template<class T> void Matrix<T>::resize(const IPosition &l)
 {
     DebugAssert(ok(), ArrayError);
-    if (l.nelements() != 2 || o.nelements() != 2)
+    if (l.nelements() != 2)
 	throw(ArrayConformanceError("Matrix<T>::resize() - attempt to form "
 				    "non-Matrix"));
-    Array<T>::resize(l,o);
+    Array<T>::resize(l);
     makeIndexingConstants();
 }
 
-template<class T> void Matrix<T>::resize(const IPosition &len)
+template<class T> void Matrix<T>::resize(uInt nx, uInt ny)
 {
     DebugAssert(ok(), ArrayError);
-    IPosition or(len.nelements());
-    or = 0;
-    resize(len,or);
-}
-
-template<class T> void Matrix<T>::resize(uInt nx, uInt ny, Int ox, Int oy)
-{
-    DebugAssert(ok(), ArrayError);
-    IPosition l(2), o(2);
+    IPosition l(2);
     l(0) = nx; l(1) = ny;
-    o(0) = ox; o(1) = oy;
-    Matrix<T>::resize(l,o);
+    Matrix<T>::resize(l);
 }
 
 // <thrown>
@@ -143,14 +120,13 @@ template<class T> void Matrix<T>::reference(Array<T> &other)
     if (other.ndim() == 2) {
 	Array<T>::reference(other);
     } else if (other.ndim() == 1) {
-	start[0] = other.start[0]; start[1] = 0;
-	length[0] = other.length[0]; length[1] = 1;
-	nels = other.nels;
-	originalLength[0] = other.originalLength[0];
-	originalLength[1] = 1;
-	inc[0] = other.inc[0]; inc[1] = 1;
-	data = other.data;
-	begin = other.begin; 
+	length_p(0) = other.length_p(0); length_p(1) = 1;
+	nels_p = other.nels_p;
+	originalLength_p(0) = other.originalLength_p(0);
+	originalLength_p(1) = 1;
+	inc_p(0) = other.inc_p(0); inc_p(1) = 1;
+	data_p = other.data_p;
+	begin_p = other.begin_p; 
     } else {
 	throw(ArrayNDimError(2, other.ndim(), "Matrix<T>::reference()"
 			     " - attempt to reference non-Matrix"));
@@ -202,8 +178,8 @@ template<class T> Matrix<T> Matrix<T>::operator()(const Slice &sliceX,
     DebugAssert(ok(), ArrayError);
     Int b1, l1, s1, b2, l2, s2;       // begin length step
     if (sliceX.all()) {
-	b1 = start[0];
-	l1 = length[0];
+	b1 = 0;
+	l1 = length_p(0);
 	s1 = 1;
     } else {
 	b1 = sliceX.start();
@@ -211,8 +187,8 @@ template<class T> Matrix<T> Matrix<T>::operator()(const Slice &sliceX,
 	s1 = sliceX.inc();
     }
     if (sliceY.all()) {
-	b2 = start[1];
-	l2 = length[1];
+	b2 = 0;
+	l2 = length_p(1);
 	s2 = 1;
     } else {
 	b2 = sliceY.start();
@@ -225,11 +201,11 @@ template<class T> Matrix<T> Matrix<T>::operator()(const Slice &sliceX,
 	throw(ArrayError("Matrix<T>::operator()(Slice,Slice) : step < 1"));
     } else if (l1 < 0  || l2 < 0) {
 	throw(ArrayError("Matrix<T>::operator()(Slice,Slice) : length < 0"));
-    } else if ((b1+(l1-1)*s1 >start[0]+length[0] - 1) || 
-	       (b2+(l2-1)*s2 >start[1]+length[1] - 1)) {
+    } else if ((b1+(l1-1)*s1 >= length_p(0)) || 
+	       (b2+(l2-1)*s2 >= length_p(1))) {
 	throw(ArrayError("Matrix<T>::operator()(Slice,Slice): desired slice"
 			 " extends beyond the end of the array"));
-    } else if (b1 < start[0] || b2 < start[1]) {
+    } else if (b1 < 0 || b2 < 0) {
 	throw(ArrayError("Matrix<T>::operator()(Slice,Slice) : start of slice "
 			 "before beginning of matrix"));
     }
@@ -248,17 +224,20 @@ template<class T> Matrix<T> Matrix<T>::operator()(const Slice &sliceX,
 template<class T> Vector<T> Matrix<T>::row(Int n)
 {
     DebugAssert(ok(), ArrayError);
-    if (n < start[0] || n > start[0] + length[0] - 1)
+    if (n < 0 || n >= length_p(0))
 	throw(ArrayConformanceError("Matrix<T>::row - row < 0 or > end"));
 
     Matrix<T> tmp((*this)(n, Slice())); // A reference
-    tmp.ndimen = 1;
-    tmp.length[0] = tmp.length[1];
-    tmp.inc[0] = inc[1]*length[0]*inc[0];
+    tmp.ndimen_p = 1;
+    tmp.length_p(0) = tmp.length_p(1);
+    tmp.inc_p(0) = inc_p(1)*length_p(0)*inc_p(0);
     // "Lie" about the original length so that ok() doesn't spuriously fail
     // the test length[i] < originalLength (basically we've "swapped" axes).
-    tmp.originalLength[0] = tmp.length[0]*tmp.inc[0];
-    tmp.nels = tmp.length[0];
+    tmp.originalLength_p(0) = tmp.length_p(0)*tmp.inc_p(0);
+    tmp.length_p.resize (1);
+    tmp.inc_p.resize (1);
+    tmp.originalLength_p.resize (1);
+    tmp.nels_p = tmp.length_p(0);
     return tmp; // should match Vector<T>(const Array<T> &)
 }
 
@@ -268,12 +247,15 @@ template<class T> Vector<T> Matrix<T>::row(Int n)
 template<class T> Vector<T> Matrix<T>::column(Int n)
 {
     DebugAssert(ok(), ArrayError);
-    if (n < start[1] || n > start[1] + length[1] - 1)
+    if (n < 0 || n >= length_p(1))
 	throw(ArrayConformanceError("Matrix<T>::column - column < 0 or > end"));
 
     Matrix<T> tmp((*this)(Slice(), n)); // A reference
-    tmp.ndimen = 1;
-    tmp.nels = tmp.length[0];
+    tmp.ndimen_p = 1;
+    tmp.length_p.resize (1);
+    tmp.inc_p.resize (1);
+    tmp.originalLength_p.resize (1);
+    tmp.nels_p = tmp.length_p(0);
     return tmp; // should match Vector<T>(const Array<T> &)
 
 }
@@ -287,27 +269,31 @@ template<class T> Vector<T> Matrix<T>::diagonal(Int n)
     Int absn;
     if (n < 0) absn = -n; else absn = n;
 
-    if (length[0] != length[1])
+    if (length_p(0) != length_p(1))
 	throw(ArrayConformanceError("Matrix<T>::diagonal() - "
 				    "non-square matrix"));
 
-    if (absn > length[0] - 1)
+    if (absn >= length_p(0))
 	throw(ArrayConformanceError("Matrix<T>::diagonal() - "
 				    "diagonal out of range"));
 
     Int r, c;
     if ( n < 0 ) {
-	r = start[0] + absn;
-	c = start[1];
+	r = absn;
+	c = 0;
     } else {
-	r = start[0];
-	c = start[1] + absn;
+	r = 0;
+	c = absn;
     }
-    Int len = length[0] - absn;
+    Int len = length_p(0) - absn;
     Matrix<T> tmp((*this)(Slice(r,len), Slice(c)));
-    tmp.ndimen = 1;
-    tmp.nels = tmp.length[0];
-    tmp.inc[0] += inc[0]*length[0];
+    tmp.ndimen_p = 1;
+    tmp.length_p.resize (1);
+    tmp.inc_p.resize (1);
+    tmp.originalLength_p.resize (1);
+    tmp.nels_p = tmp.length_p(0);
+    tmp.inc_p(0) += inc_p(0)*length_p(0);
+    tmp.contiguous_p = False;
 	
     return tmp;  // should match Vector<T>(const Array<T> &)
 }
@@ -358,24 +344,12 @@ template<class T> const Vector<T> Matrix<T>::diagonal(Int n) const
 // Set up constants for efficient indexing
 template<class T> void Matrix<T>::makeIndexingConstants()
 {
-    // No lAssert since the Cube often isn't constructed yet when
+    // No lAssert since the Matrix often isn't constructed yet when
     // calling this
-    xyoffset = -start[0]*inc[0] - start[1]*inc[1]*originalLength[0];
-    xinc = inc[0];
-    yinc = inc[1]*originalLength[0];
+    xinc_p = inc_p(0);
+    yinc_p = inc_p(1)*originalLength_p(0);
 }
 
-template<class T> IPosition Matrix<T>::origin() const
-{
-    DebugAssert(ok(), ArrayError);
-    return Array<T>::origin();
-}
-
-template<class T> IPosition Matrix<T>::shape() const
-{
-    DebugAssert(ok(), ArrayError);
-    return Array<T>::shape();
-}
 
 template<class T> IPosition Matrix<T>::end() const
 {

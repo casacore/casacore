@@ -1,5 +1,5 @@
 //# ArrayError.cc: Exception classes thrown by Array and related classes/functions
-//# Copyright (C) 1993,1994,1995
+//# Copyright (C) 1993,1994,1995,1997
 //# Associated Universities, Inc. Washington DC, USA.
 //# 
 //# This library is free software; you can redistribute it and/or modify it
@@ -63,9 +63,8 @@ ArrayIndexError::ArrayIndexError(const Char *m) : ArrayError(m) {}
 ArrayIndexError::ArrayIndexError(const String &m) : ArrayError(m) {}
 
 ArrayIndexError::ArrayIndexError(const IPosition &in, 
-				 const IPosition &or,
 				 const IPosition &sh, const Char *m)
-: i(in), o(or), l(sh), ArrayError(m)
+: i(in), l(sh), ArrayError(m)
 {
     // Nothing
 }
@@ -78,7 +77,6 @@ ArrayIndexError::ArrayIndexError(ExcpError *excp)
     if (tmp) {
         _equal = True;
 	i = tmp->i;
-	o = tmp->o;
 	l = tmp->l;
     } else {
         _equal = False;
@@ -90,11 +88,6 @@ ArrayIndexError::~ArrayIndexError() {}
 IPosition ArrayIndexError::index() const
 {
     return i;
-}
-
-IPosition ArrayIndexError::origin() const
-{
-    return o;
 }
 
 IPosition ArrayIndexError::shape() const

@@ -45,11 +45,8 @@ template<class T> T innerProduct (const Vector<T> &A, const Vector<T> &B) {
     throw(ArrayConformanceError("innerProduct - conform() error."));
   }
   T scalar = 0;   
-  Int AOffset, BOffset;
-  A.origin(AOffset);
-  B.origin(BOffset);
   for (uInt i=0; i < A.nelements(); i++)
-    scalar += A(i+AOffset)*B(i+BOffset);
+    scalar += A(i)*B(i);
   return scalar;
 }
 
@@ -83,12 +80,9 @@ Vector<T> crossProduct (const Vector<T> &A, const Vector<T> &B) {
       throw (ArrayConformanceError("crossProduct - Vector not in 3-space"));
   }
   Vector<T> result(3);
-  Int AOffset, BOffset;
-  A.origin(AOffset);
-  B.origin(BOffset);
-  result(0) = A(1+AOffset)*B(2+BOffset) - A(2+AOffset)*B(1+BOffset);
-  result(1) = A(2+AOffset)*B(0+BOffset) - A(0+AOffset)*B(2+BOffset);
-  result(2) = A(0+AOffset)*B(1+BOffset) - A(1+AOffset)*B(0+BOffset);
+  result(0) = A(1)*B(2) - A(2)*B(1);
+  result(1) = A(2)*B(0) - A(0)*B(2);
+  result(2) = A(0)*B(1) - A(1)*B(0);
   return result;
 }
 
@@ -99,13 +93,9 @@ Vector<T> product (const Matrix<T> &A, const Vector<T> &x) {
     throw (ArrayError("product - multiplication of" 
                                     " these matrices shapes is undefined"));
   Vector<T> result(A.nrow());
-  Int ARowOffset, AColOffset, xOrigin;
-  A.origin(ARowOffset, AColOffset); 
-  x.origin(xOrigin);
   for (Int i = 0; i < A.nrow(); i++) {
       result(i) = T(0);
-      for (Int k = 0; k < A.ncolumn(); k++) result(i) += 
-        A(i+ARowOffset, k+AColOffset) * x(k+xOrigin);
+      for (Int k = 0; k < A.ncolumn(); k++) result(i) += A(i,k) * x(k);
   }
   return result;
 }
@@ -156,15 +146,11 @@ Matrix<T> product (const Matrix<T> &A, const Matrix<T> &B) {
   if (A.ncolumn() != B.nrow())
     throw (ArrayError("product - multiplication of" 
                                     " these matrices shapes is undefined"));
-  Matrix<T> result(A.nrow(), B.ncolumn(), 0, 0);
-  Int ARowOffset, BColOffset, AColOffset, BRowOffset;
-  A.origin(ARowOffset, AColOffset);
-  B.origin(BRowOffset, BColOffset);
+  Matrix<T> result(A.nrow(), B.ncolumn());
   for (Int i = 0; i < A.nrow(); i++) 
       for (Int j = 0; j < B.ncolumn(); j++) {
 	  result(i,j) = T(0);
-	  for (Int k = 0; k < A.ncolumn(); k++) result(i,j) += 
-	      A(i+ARowOffset, k+AColOffset) * B(k+BRowOffset, j+BColOffset);
+	  for (Int k = 0; k < A.ncolumn(); k++) result(i,j) += A(i,k) * B(k,j);
       }
   return result;
 }
@@ -179,10 +165,8 @@ Matrix<T> cayleyProduct (const Matrix<T> &A, const Matrix<T> &B) {
 
 template <class T> Matrix<T> transpose (const Matrix<T> &A) {
   Matrix<T> aT(A.ncolumn(), A.nrow());
-  Int RowOffset, ColOffset;
-  A.origin(RowOffset, ColOffset);
   for (uInt i=0; i<A.nrow(); i++)
-    for (uInt j=0; j<A.ncolumn(); j++) aT(j,i) = A(i+RowOffset,j+ColOffset);
+    for (uInt j=0; j<A.ncolumn(); j++) aT(j,i) = A(i,j);
   return aT;
 }
 

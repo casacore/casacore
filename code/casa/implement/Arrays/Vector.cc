@@ -42,12 +42,6 @@ template<class T> Vector<T>::Vector()
 }
 
 
-template<class T> Vector<T>::Vector(uInt Length, Int Origin)
-: Array<T>(IPosition(1, Length), IPosition(1, Origin))
-{
-    DebugAssert(ok(), ArrayError);
-}
-
 template<class T> Vector<T>::Vector(uInt Length)
 : Array<T>(IPosition(1, Length))
 {
@@ -55,10 +49,10 @@ template<class T> Vector<T>::Vector(uInt Length)
 }
 
 
-template<class T> Vector<T>::Vector(IPosition len, IPosition or)
-  : Array<T>(len,or)
+template<class T> Vector<T>::Vector(const IPosition& len)
+  : Array<T>(len)
 {
-    AlwaysAssert(len.nelements() == 1 && or.nelements() == 1, ArrayError);
+    AlwaysAssert(len.nelements() == 1, ArrayError);
 }
 
 template<class T> Vector<T>::Vector(const Block<T> &other, Int nr)
@@ -92,7 +86,7 @@ template<class T> void Vector<T>::initVector(const Block<T> &other, Int nr)
 	this->resize(n);
     }
     for (Int i=0; i < n; i++)
-	(*data)[i] = other[i];
+	begin_p[i] = other[i];
 
     return;
 }
@@ -139,50 +133,28 @@ template<class T> Vector<T>::~Vector()
 // <thrown>
 //    <item> ArrayConformanceError
 // </thrown>
-template<class T> void Vector<T>::resize(const IPosition &l, const IPosition &o,
-					 Bool copyValues)
+template<class T> void Vector<T>::resize(const IPosition &l, Bool copyValues)
 {
     DebugAssert(ok(), ArrayError);
-    if (l.nelements() != 1 || o.nelements() != 1)
+    if (l.nelements() != 1)
 	throw(ArrayConformanceError("Vector<T>::resize() - attempt to form "
 				    "non-vector"));
     if (copyValues) {
         Vector<T> oldref(*this);
-	Array<T>::resize(l,o);
+	Array<T>::resize(l);
 	uInt minNels = min(this->nelements(), oldref.nelements());
-	objcopy(begin, oldref.begin, minNels, uInt(inc[0]), uInt(oldref.inc[0]));
+	objcopy(begin_p, oldref.begin_p, minNels,
+		uInt(inc_p(0)), uInt(oldref.inc_p(0)));
     } else {
-	Array<T>::resize(l,o);
+	Array<T>::resize(l);
     }
-}
-
-template<class T> void Vector<T>::resize(const IPosition &l, const IPosition &o)
-{
-    resize(l,o,False);
-}
-
-template<class T> void Vector<T>::resize(const IPosition &l)
-{
-    resize(l,False);
-}
-
-
-template<class T> void Vector<T>::resize(const IPosition &len, Bool copyValues)
-{
     DebugAssert(ok(), ArrayError);
-    IPosition or(len.nelements());
-    or = 0;
-    resize(len,or, copyValues);
+}
+template<class T> void Vector<T>::resize(uInt len, Bool copyValues)
+{
+    Vector<T>::resize(IPosition(1,len), copyValues);
 }
 
-template<class T> void Vector<T>::resize(uInt len, Int orign, Bool copyValues)
-{
-    DebugAssert(ok(), ArrayError);
-    IPosition l(1), o(1);
-    l(0) = len;
-    o(0) = orign;
-    Vector<T>::resize(l,o, copyValues);
-}
 
 // <thrown>
 //    <item> ArrayNDimError
@@ -204,18 +176,17 @@ template<class T> Vector<T> &Vector<T>::operator=(const Vector<T> &other)
         return *this;
 
     Bool Conform = conform(other);
-    if (Conform == False && length[0] != 0)
+    if (Conform == False && length_p(0) != 0)
 	validateConformance(other);  // We can't overwrite, so throw exception
 
     if (Conform != True) { // copy in place
-        data = new Block<T>(other.length[0]);
-        begin = data->storage();
-        start = other.start;
-        length = other.length;
-	nels = other.nels;
-	originalLength = length;
+        data_p = new Block<T>(other.length_p(0));
+        begin_p = data_p->storage();
+        length_p = other.length_p;
+	nels_p = other.nels_p;
+	originalLength_p = length_p;
     }
-    objcopy(begin, other.begin, nels, inc[0], other.inc[0]);
+    objcopy(begin_p, other.begin_p, nels_p, inc_p(0), other.inc_p(0));
     return *this;
 }
 
@@ -226,7 +197,7 @@ template<class T> void Vector<T>::toBlock(Block<T> & other) const
     uInt vec_length = nelements();
     // Make sure the block has enough space, but there is no need to copy elements
     other.resize(vec_length, True, False);
-    objcopy(other.storage(), begin, nels, 1U, inc[0]);
+    objcopy(other.storage(), begin_p, nels_p, 1U, inc_p(0));
 }
 
 template<class T> Array<T> &Vector<T>::operator=(const Array<T> &a)
@@ -245,8 +216,8 @@ template<class T> Vector<T> Vector<T>::operator()(const Slice &slice)
     DebugAssert(ok(), ArrayError);
     Int b, l, s;       // begin length step
     if (slice.all()) {
-	b = start[0];
-	l = length[0];
+	b = 0;
+	l = length_p(0);
 	s = 1;
     } else {
 	b = slice.start();
@@ -259,10 +230,10 @@ template<class T> Vector<T> Vector<T>::operator()(const Slice &slice)
 	throw(ArrayError("Vector<T>::operator()(Slice) : step < 1"));
     } else if (l < 0) {
 	throw(ArrayError("Vector<T>::operator()(Slice) : length < 0"));
-    } else if (b+(l-1)*s > start[0]+length[0] - 1) {
+    } else if (b+(l-1)*s >= length_p(0)) {
 	throw(ArrayError("Vector<T>::operator()(Slice) : Desired slice extends"
 			 " beyond the end of the array"));
-    } else if (b < start[0]) {
+    } else if (b < 0) {
 	throw(ArrayError("Vector<T>::operator()(Slice) : start of slice before "
 			 "beginning of vector"));
     }
@@ -275,28 +246,27 @@ template<class T> Vector<T> Vector<T>::operator()(const Slice &slice)
     Vector<T> vp(*this);
 
     // Increment vp's begin so that it is at the selected position
-    vp.begin += (b - vp.start[0])*vp.inc[0];
-
-    vp.start[0] = 0;    // Slices always zero based
-    vp.inc[0] *= s;
-
-    vp.length[0] = l;
-    vp.nels = l;
+    vp.begin_p += b;
+    vp.inc_p(0) *= s;
+    vp.length_p(0) = l;
+    vp.nels_p = l;
+    vp.contiguous_p = vp.isStorageContiguous();
 
     return vp;
 }
 
-template<class T> IPosition Vector<T>::origin() const
+template<class T> Int Vector<T>::index (const T& value, Int startpos) const
 {
-    DebugAssert(ok(), ArrayError);
-    return Array<T>::origin();
+    if (startpos < 0) startpos = 0;
+    Int n = nelements();
+    for (Int i=startpos; i<n; i++) {
+	if (value == (*this)(i)) {
+	    return i;
+	}
+    }
+    return -1;
 }
 
-template<class T> IPosition Vector<T>::shape() const
-{
-    DebugAssert(ok(), ArrayError);
-    return Array<T>::shape();
-}
 
 template<class T> IPosition Vector<T>::end() const
 {
@@ -306,7 +276,7 @@ template<class T> IPosition Vector<T>::end() const
 
 template<class T>
 void Vector<T>::takeStorage(const IPosition &shape, T *storage,
-		     StorageInitPolicy policy)
+			    StorageInitPolicy policy)
 {
     AlwaysAssert(shape.nelements() == 1, ArrayError);
     Array<T>::takeStorage(shape, storage, policy);
