@@ -35,6 +35,7 @@
 #include <aips/Tables/ScalarColumn.h>
 #include <aips/Tables/ArrayColumn.h>
 #include <aips/Tables/StManAipsIO.h>
+#include <aips/Tables/StandardStMan.h>
 #include <aips/Tables/IncrementalStMan.h>
 #include <aips/Tables/TiledCellStMan.h>
 #include <aips/Arrays/Vector.h>
@@ -59,6 +60,8 @@ void a()
     TableDesc td("", "1", TableDesc::Scratch);
     td.addColumn (ScalarColumnDesc<Int>("col1"));
     td.addColumn (ScalarColumnDesc<Int>("col2"));
+    td.addColumn (ScalarColumnDesc<Int>("col3"));
+    td.addColumn (ScalarColumnDesc<String>("cols"));
     td.addColumn (ArrayColumnDesc<float> ("Pol", IPosition(1,16),
 					  ColumnDesc::FixedShape));
     td.addColumn (ArrayColumnDesc<float> ("Freq", 1, ColumnDesc::FixedShape));
@@ -72,13 +75,16 @@ void a()
     // Now create a new table from the description.
     SetupNewTable newtab("tTableLockSync_tmp.tab", td, Table::New);
     StManAipsIO sm1;
-    IncrementalStMan sm2;
-    TiledCellStMan sm3 ("TSMExample", IPosition(2,5,6));
+    StandardStMan sm2(100);
+    IncrementalStMan sm3;
+    TiledCellStMan sm4 ("TSMExample", IPosition(2,5,6));
     newtab.setShapeColumn ("Freq", IPosition(1,25));
     newtab.setShapeColumn ("Data", IPosition(2,16,25));
-    newtab.bindAll (sm3);
+    newtab.bindAll (sm4);
     newtab.bindColumn ("col1", sm1);
     newtab.bindColumn ("col2", sm2);
+    newtab.bindColumn ("cols", sm2);
+    newtab.bindColumn ("col3", sm3);
     Table tab(newtab, 1);
 }
 
@@ -98,6 +104,8 @@ void b (Bool noReadLocking)
     } end_try;
     ScalarColumn<Int> col1 (tab, "col1");
     ScalarColumn<Int> col2 (tab, "col2");
+    ScalarColumn<Int> col3 (tab, "col3");
+    ScalarColumn<String> cols (tab, "cols");
     ArrayColumn<float> freq (tab, "Freq");
     ArrayColumn<float> pol (tab, "Pol");
     ArrayColumn<float> data (tab, "Data");
@@ -148,7 +156,7 @@ void b (Bool noReadLocking)
 	    Bool err = False;
 	    try {
 	        col1.get (0, val);
-		if (opt == 8) {
+		if (opt == 9) {
 		    col1.put (0, val);
 		}
 	    } catch (AipsError x) {
@@ -158,7 +166,7 @@ void b (Bool noReadLocking)
 	    if (!err) {
 	        cout << "rownr: ";
 		cin >> rownr;
-		if (opt == 8) {
+		if (opt == 9) {
 		    cout << "value: ";
 		    cin >> val;
 		    if (rownr >= Int(tab.nrow())) {
@@ -168,6 +176,9 @@ void b (Bool noReadLocking)
 		    }
 		    col1.put (rownr, val);
 		    col2.put (rownr, val+1);
+		    col3.put (rownr, val+2);
+		    cols.put (rownr, "ARatherLongTestString" +
+			             String::toString(val));
 		    indgen (freqValues, float(val+2));
 		    indgen (polValues, float(val+3));
 		    indgen (dataValues, float(val+4));
@@ -181,6 +192,7 @@ void b (Bool noReadLocking)
 		    }else{
 		        cout << "Row " << rownr << " has value "
 			     << col1(rownr) << ' ' << col2(rownr) << ' '
+			     << col3(rownr) << ' ' << cols(rownr) << ' '
 			     << freq(rownr)(IPosition(1,0)) << '-'
 			     << freq(rownr)(IPosition(1,24)) - 24 << ' '
 			     << pol(rownr)(IPosition(1,0)) << '-'
