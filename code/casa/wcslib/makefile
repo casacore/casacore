@@ -26,10 +26,9 @@ WCSLIB := $(LIBOPTD)/libwcs.$(SFXSTAT)
 # Source lists.
 #--------------
 WCSIMPS := $(filter %.c,$(AIPSSRCS))
-ifdef AIPSRCS
-   WCSIMPS += $(patsubst $(RCSDIR)/%$(comma)v,%,$(wildcard $(RCSDIR)/*/*.c,v))
-else
-   WCSIMPS += $(subst $(CODEDIR)/,,$(wildcard $(CODEDIR)/*/*.c))
+
+ifeq "$(WCSLIBTRIG)" ""
+  WCSIMPS := $(filter-out wcstrig.c,$(WCSIMPS))
 endif
 
 
