@@ -1,5 +1,5 @@
-//# <ClassFileName.h>: this defines <ClassName>, which ...
-//# Copyright (C) 1996,2000
+//# RecordFieldWriter.h: Various copiers to move fields between records.
+//# Copyright (C) 1996,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -33,46 +33,32 @@
 #include <aips/Containers/RecordField.h>
 #include <aips/Arrays/Array.h>
 
-// <summary> Record field writer
+// <summary> Record field writer.  Base class for the copiers.
 // </summary>
 
-// <use visibility=local>   or   <use visibility=export>
+// <use visibility=local>
 
 // <reviewed reviewer="" date="yyyy/mm/dd" tests="" demos="">
 // </reviewed>
 
-// <prerequisite>
-//   <li> SomeClass
-//   <li> SomeOtherClass
-//   <li> some concept
-// </prerequisite>
-//
 // <etymology>
+// These classes write values to a field or fields in a record.
 // </etymology>
 //
 // <synopsis>
+// These classes are used in the ms2sdfits conversion code.
+// It might be better if they were moved there.
 // </synopsis>
 //
-// <example>
-// </example>
-//
 // <motivation>
+// It was useful to set up a number of copiers and invoke them as appropriate
+// via a single function call.  Some copiers may be more complicate than a
+// direct field to field copy.
 // </motivation>
 //
-// <templating arg=T>
-//    <li>
-//    <li>
-// </templating>
-//
-// <thrown>
-//    <li>
-//    <li>
-// </thrown>
-//
-// <todo asof="yyyy/mm/dd">
-//   <li> add this feature
-//   <li> fix this bug
-//   <li> start discussion of this possible extension
+// <todo asof="2001/07/10">
+//   <li> Either make this generally useful here or move them out of containers
+//   <li> fully document this
 // </todo>
 
 class RecordFieldWriter
@@ -82,8 +68,22 @@ public:
     virtual void writeField() = 0;
 };
 
-// <summary> Record field copier
+// <summary> Record field copier.  Copies field to field as is.
 // </summary>
+
+// <use visibility=local>
+
+// <reviewed reviewer="" date="yyyy/mm/dd" tests="" demos="">
+// </reviewed>
+
+// <etymology>
+// Copies a field from a record to another record with a field
+// of the same type.
+// </etymology>
+
+// <motivation>
+// This type of copy can be inlined.
+// </motivation>
 
 template<class outType, class inType> 
 class RecordFieldCopier : public RecordFieldWriter
@@ -100,8 +100,25 @@ private:
     RORecordFieldPtr<inType> in_p;
 };
 
-// <summary> Unequal shape copier
+// <summary> Unequal shape copier.
 // </summary>
+
+// <use visibility=local>
+
+// <reviewed reviewer="" date="yyyy/mm/dd" tests="" demos="">
+// </reviewed>
+
+// <etymology>
+// Copy fields where the two fields fields do not have the same shape,
+// however, the number of elements must match.  Copying is done element
+// by element in vector order.
+// </etymology>
+//
+// <motivation>
+// Sometimes the shapes need to change even though the number of elements
+// stays the same.
+// </motivation>
+//
 
 template<class T> class UnequalShapeCopier : public RecordFieldWriter
 {
@@ -116,8 +133,23 @@ private:
     RORecordFieldPtr<Array<T> > in_p;
 };
 
-// <summary> Multi field writer
+// <summary> Multi field writer.  Copy many fields with a single call.
 // </summary>
+
+// <use visibility=local>
+
+// <reviewed reviewer="" date="yyyy/mm/dd" tests="" demos="">
+// </reviewed>
+
+// <etymology>
+// This class contains other copiers and copies multiple fields at a time.
+// </etymology>
+//
+// <motivation>
+// It was useful to set up a number of copiers and invoke them as appropriate
+// via a single function call.
+// </motivation>
+//
 
 class MultiRecordFieldWriter
 {
