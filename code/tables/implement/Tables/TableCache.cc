@@ -60,7 +60,13 @@ void TableCache::define (const String& tableName, PlainTable* tab)
 
 void TableCache::remove (const String& tableName)
 {
-    tableMap_p.remove (tableName);
+    // For static Table objects it is possible that the TableCache is
+    // deleted before the Table.
+    // Therefore do not delete if the map is already empty
+    // (otherwise an exception is thrown).
+    if (tableMap_p.ndefined() > 0) {
+	tableMap_p.remove (tableName);
+    }
 }
 
 void TableCache::rename (const String& newName, const String& oldName)
