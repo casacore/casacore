@@ -916,7 +916,7 @@ Bool ImageMoments<T>::createMoments()
 
 // Create a vector of pointers for output images 
 
-   PtrBlock<Lattice<Float> *> outPt(moments_p.nelements());
+   PtrBlock<Lattice<T> *> outPt(moments_p.nelements());
    for (i=0; i<Int(outPt.nelements()); i++) outPt[i] = 0;
 
 
@@ -937,24 +937,26 @@ Bool ImageMoments<T>::createMoments()
    
 // Create output image(s)
 
+      PagedImage<T>* imgp;
       const String in = pInImage_p->name();   
       if (moments_p.nelements() == 1) {
          if (out_p.empty()) out_p = in+suffix;
-         outPt[i] = new PagedImage<T>(outImageShape, outImageCoord, out_p);
+         imgp = new PagedImage<T>(outImageShape, outImageCoord, out_p);
          os_p << LogIO::NORMAL << "Created " << out_p << LogIO::POST;
-         ((PagedImage<T>*)outPt[i])->setMiscInfo(pInImage_p->miscInfo());
+         imgp->setMiscInfo(pInImage_p->miscInfo());
       } else {
          if (out_p.empty()) out_p = in;
-         outPt[i] = new PagedImage<T>(outImageShape, outImageCoord,
-                                      out_p+suffix);
+         imgp = new PagedImage<T>(outImageShape, outImageCoord,
+				  out_p+suffix);
          os_p << LogIO::NORMAL << "Created " << out_p+suffix << LogIO::POST;
-         ((PagedImage<T>*)outPt[i])->setMiscInfo(pInImage_p->miscInfo());
+         imgp->setMiscInfo(pInImage_p->miscInfo());
       }
+      outPt[i] = imgp;
 
 // Set output image units if possible
 
       if (goodUnits) {
-         ((PagedImage<T>*)outPt[i])->setUnits(momentUnits);
+         imgp->setUnits(momentUnits);
       } else {
         if (giveMessage) {
            os_p << LogIO::NORMAL 
