@@ -26,6 +26,7 @@
 //# $Id$
 
 #include <aips/aips.h>
+#include <aips/Arrays/Vector.h>
 #include <aips/Arrays/Array.h>
 #include <aips/Arrays/ArrayLogical.h>
 #include <aips/Exceptions/Error.h>
@@ -42,17 +43,27 @@
 #include <trial/Lattices/PagedArray.h>
 #include <iostream.h>
 
+void print(const Lattice<Float> & psf, const Lattice<Float> & model,
+	   const Lattice<Float> & result) {
+  cout << "Psf: " << psf.get() << endl;
+  cout << "Model: " << model.get() << endl;
+  cout << "Result: " << result.get() << endl;
+}
+
 int main() {
   try {
     LatticeConvolver<Float> d;
-
+    AlwaysAssert(d.shape() == IPosition(1,0), AipsError);
+    AlwaysAssert(d.fftShape() == IPosition(1,1) , AipsError);
     TempLattice<Float> psf(IPosition(4,16,5,1,9));
     psf.set(0.0f);
     psf.putAt(1.0f, psf.shape()/2);
     {
       LatticeConvolver<Float> c(psf);
+      AlwaysAssert(c.shape() == IPosition(4,0,0,0,0) , AipsError);
+      AlwaysAssert(c.fftShape() == psf.shape(), AipsError);
       TempLattice<Float> extractedPsf(psf.shape());
-      // test the getPsf function
+      // test the getPsf function (tests the FFT's but not padding)
       c.getPsf(extractedPsf);
       AlwaysAssert(near(extractedPsf.getAt(psf.shape()/2), 1.0f, 
 			NumericTraits<Float>::epsilon), AipsError);
@@ -63,91 +74,276 @@ int main() {
 	AlwaysAssert(allNearAbs(iter.cursor(), 0.0f,
 				NumericTraits<Float>::epsilon), AipsError);
       }
-   // test circular convolution
- }
- {
+      // test circular convolution
+    }
+    {
       // test linear convolution
-   {
-     const IPosition imageShape = psf.shape();
-     LatticeConvolver<Float> c(psf, imageShape);
-   }
-   {
-     const IPosition imageShape(4,1);
-     LatticeConvolver<Float> c(psf, imageShape);
-   }
-   {
-     const IPosition imageShape(4,2);
-     LatticeConvolver<Float> c(psf, imageShape);
-   }
-   {
-     const IPosition imageShape(4,32);
-     LatticeConvolver<Float> c(psf, imageShape);
-   }
-   {
-     TempLattice<Float> psf1D(IPosition(1,3));
-     psf1D.set(0.0f);
-     psf1D.putAt(1.0f, psf1D.shape()/2);
-     psf1D.putAt(0.5f, psf1D.shape()/2-1);
-     psf1D.putAt(0.3f, psf1D.shape()/2+1);
-     Array<Float> psfArray;
-     psf1D.getSlice(psfArray, IPosition(1,0), psf1D.shape());
-     cout << "psf = " << psfArray.ac() << endl;
+//       {
+// 	const IPosition imageShape = psf.shape();
+// 	LatticeConvolver<Float> c(psf, imageShape);
+//       }
+//       {
+// 	const IPosition imageShape(4,1);
+// 	LatticeConvolver<Float> c(psf, imageShape);
+//       }
+//       {
+// 	const IPosition imageShape(4,2);
+// 	LatticeConvolver<Float> c(psf, imageShape);
+//       }
+//       {
+// 	const IPosition imageShape(4,32);
+// 	LatticeConvolver<Float> c(psf, imageShape);
 
-     TempLattice<Float> model(IPosition(1,7));
-     model.set(0.0);
-     model.putAt(2.0, IPosition(1,0));
-     model.putAt(5.0, model.shape()-1);
-     Array<Float> modelArray;
-     model.getSlice(modelArray, IPosition(1,0), model.shape());
-     cout << "model = " << modelArray.ac() << endl;
-     
-     const IPosition imageShape = model.shape();
-     LatticeConvolver<Float> c(psf1D, imageShape);
+//       }
+      const IPosition evenPsfShape(1,10);
+      TempLattice<Float> evenPsf1D(evenPsfShape);
+      evenPsf1D.set(0.0f);
+      evenPsf1D.putAt(0.2f, evenPsfShape*0);
+      evenPsf1D.putAt(0.5f, evenPsfShape/2-1);
+      evenPsf1D.putAt(1.0f, evenPsfShape/2);
+      evenPsf1D.putAt(0.3f, evenPsfShape/2+1);
+      evenPsf1D.putAt(0.1f, evenPsfShape-1);
 
-     TempLattice<Float> result(model.shape());
-     c.linear(result, model);
+      const IPosition oddPsfShape(1,11);
+      TempLattice<Float> oddPsf1D(oddPsfShape);
+      oddPsf1D.set(0.0f);
+      oddPsf1D.putAt(0.2f, oddPsfShape*0);
+      oddPsf1D.putAt(0.5f, oddPsfShape/2-1);
+      oddPsf1D.putAt(1.0f, oddPsfShape/2);
+      oddPsf1D.putAt(0.3f, oddPsfShape/2+1);
+      oddPsf1D.putAt(0.1f, oddPsfShape-1);
+      {
+	const IPosition imageShape(1,4);
+	LatticeConvolver<Float> c(evenPsf1D, imageShape);
+	TempLattice<Float> model(imageShape);
+	AlwaysAssert(c.shape() == imageShape, AipsError);
+	AlwaysAssert(c.fftShape() == IPosition(1,7) , AipsError);
+	model.set(0.0);
+	model.putAt(2.0, IPosition(1,0));
+	model.putAt(5.0, model.shape()-1);
+	TempLattice<Float> result(model.shape());
+	c.linear(result, model);
+	AlwaysAssert(near(result(IPosition(1,0)), 2.0f, 1E-6), AipsError);
+	AlwaysAssert(near(result(IPosition(1,1)), 0.6f, 1E-6), AipsError);
+	AlwaysAssert(near(result(IPosition(1,2)), 2.5f, 1E-6), AipsError);
+	AlwaysAssert(near(result(IPosition(1,3)), 5.0f, 1E-6), AipsError);
+	TempLattice<Float> psf(evenPsfShape);
+	c.getPsf(psf);
+	Array<Float> psfArr = psf.get();
+	AlwaysAssert(allNearAbs(psf.get(), evenPsf1D.get(), 1E-5), AipsError);
+      }
+      {
+	const IPosition imageShape(1,5);
+	LatticeConvolver<Float> c(evenPsf1D, imageShape);
+	AlwaysAssert(c.shape() == imageShape, AipsError);
+	AlwaysAssert(c.fftShape() == IPosition(1,10) , AipsError);
+	TempLattice<Float> model(imageShape);
+	model.set(0.0);
+	model.putAt(2.0, IPosition(1,0));
+	model.putAt(5.0, model.shape()-1);
+	TempLattice<Float> result(model.shape());
+	c.linear(result, model);
+	AlwaysAssert(near(result(IPosition(1,0)), 2.0f, 1E-6), AipsError);
+	AlwaysAssert(near(result(IPosition(1,1)), 0.6f, 1E-6), AipsError);
+	AlwaysAssert(nearAbs(result(IPosition(1,2)), 0.0f, 1E-6), AipsError);
+	AlwaysAssert(near(result(IPosition(1,3)), 2.5f, 1E-6), AipsError);
+	AlwaysAssert(near(result(IPosition(1,4)), 5.2f, 1E-6), AipsError);
+      }
+      {
+	const IPosition imageShape(1,6);
+	LatticeConvolver<Float> c(evenPsf1D, imageShape);
+	AlwaysAssert(c.shape() == imageShape, AipsError);
+	AlwaysAssert(c.fftShape() == IPosition(1,11) , AipsError);
+	TempLattice<Float> model(imageShape);
+	model.set(0.0);
+	model.putAt(2.0, IPosition(1,0));
+	model.putAt(5.0, model.shape()-1);
+	TempLattice<Float> result(model.shape());
+	c.linear(result, model);
+	AlwaysAssert(near(result(IPosition(1,0)), 3.0f, 1E-6), AipsError);
+	AlwaysAssert(near(result(IPosition(1,1)), 0.6f, 1E-6), AipsError);
+	AlwaysAssert(nearAbs(result(IPosition(1,2)), 0.0f, 1E-6), AipsError);
+	AlwaysAssert(nearAbs(result(IPosition(1,3)), 0.0f, 1E-6), AipsError);
+	AlwaysAssert(near(result(IPosition(1,4)), 2.7f, 1E-6), AipsError);
+	AlwaysAssert(near(result(IPosition(1,5)), 5.0f, 1E-6), AipsError);
+      }
+      {
+	const IPosition imageShape(1,4);
+	LatticeConvolver<Float> c(oddPsf1D, imageShape);
+	AlwaysAssert(c.shape() == imageShape, AipsError);
+	AlwaysAssert(c.fftShape() == IPosition(1,7) , AipsError);
+	TempLattice<Float> result(imageShape);
+	result.set(0.0);
+	result.putAt(2.0, IPosition(1,0));
+	result.putAt(5.0, result.shape()-1);
+	c.linear(result);
+	AlwaysAssert(near(result(IPosition(1,0)), 2.0f, 1E-6), AipsError);
+	AlwaysAssert(near(result(IPosition(1,1)), 0.6f, 1E-6), AipsError);
+	AlwaysAssert(near(result(IPosition(1,2)), 2.5f, 1E-6), AipsError);
+	AlwaysAssert(near(result(IPosition(1,3)), 5.0f, 1E-6), AipsError);
+      }
+      {
+	const IPosition imageShape(1,5);
+	LatticeConvolver<Float> c(oddPsf1D, imageShape);
+	AlwaysAssert(c.shape() == imageShape, AipsError);
+	AlwaysAssert(c.fftShape() == IPosition(1,9) , AipsError);
+	TempLattice<Float> result(imageShape);
+	result.set(0.0);
+	result.putAt(2.0, IPosition(1,0));
+	result.putAt(5.0, result.shape()-1);
+	c.linear(result);
+	AlwaysAssert(near(result(IPosition(1,0)), 2.0f, 1E-6), AipsError);
+	AlwaysAssert(near(result(IPosition(1,1)), 0.6f, 1E-6), AipsError);
+	AlwaysAssert(nearAbs(result(IPosition(1,2)), 0.0f, 1E-6), AipsError);
+	AlwaysAssert(near(result(IPosition(1,3)), 2.5f, 1E-6), AipsError);
+	AlwaysAssert(near(result(IPosition(1,4)), 5.0f, 1E-6), AipsError);
+      }
+      {
+	const IPosition imageShape(1,6);
+	LatticeConvolver<Float> c(oddPsf1D, imageShape);
+	AlwaysAssert(c.shape() == imageShape, AipsError);
+	AlwaysAssert(c.fftShape() == IPosition(1,11) , AipsError);
+	TempLattice<Float> result(imageShape);
+	result.set(0.0);
+	result.putAt(2.0, IPosition(1,0));
+	result.putAt(5.0, result.shape()-1);
+	c.linear(result);
+	AlwaysAssert(near(result(IPosition(1,0)), 3.0f, 1E-6), AipsError);
+	AlwaysAssert(near(result(IPosition(1,1)), 0.6f, 1E-6), AipsError);
+	AlwaysAssert(nearAbs(result(IPosition(1,2)), 0.0f, 1E-6), AipsError);
+	AlwaysAssert(nearAbs(result(IPosition(1,3)), 0.0f, 1E-6), AipsError);
+	AlwaysAssert(near(result(IPosition(1,4)), 2.5f, 1E-6), AipsError);
+	AlwaysAssert(near(result(IPosition(1,5)), 5.2f, 1E-6), AipsError);
+      }
+// 	{
+// 	  TempLattice<Float> result(model.shape());
+// 	  c.linear(result, model);
+// 	  AlwaysAssert(result.shape() == model.shape(), AipsError);
+// 	  AlwaysAssert(near(result(IPosition(1,0)), 2.0f, 1E-6), AipsError);
+// 	  AlwaysAssert(near(result(IPosition(1,1)), 0.6f, 1E-6), AipsError);
+// 	  AlwaysAssert(nearAbs(result(IPosition(1,2)), 0.0f, 1E-6), AipsError);
+// 	  AlwaysAssert(nearAbs(result(IPosition(1,3)), 0.0f, 1E-6), AipsError);
+// 	  AlwaysAssert(nearAbs(result(IPosition(1,4)), 0.0f, 1E-6), AipsError);
+// 	  AlwaysAssert(near(result(IPosition(1,5)), 2.5f, 1E-6), AipsError);
+// 	  AlwaysAssert(near(result(IPosition(1,6)), 5.0f, 1E-6), AipsError);
+// 	}
+//  	{
+//  	  const IPosition resultShape(model.shape()*2);
+//  	  TempLattice<Float> result(resultShape);
+//  	  c.linear(result, model);
+// 	  AlwaysAssert(result.shape() == resultShape, AipsError);
+// 	  AlwaysAssert(near(result(IPosition(1,4)), 2.0f, 1E-6), AipsError);
+// 	  AlwaysAssert(near(result(IPosition(1,5)), 0.6f, 1E-6), AipsError);
+// 	  AlwaysAssert(nearAbs(result(IPosition(1,6)), 0.0f, 1E-6), AipsError);
+// 	  AlwaysAssert(nearAbs(result(IPosition(1,7)), 0.0f, 1E-6), AipsError);
+// 	  AlwaysAssert(nearAbs(result(IPosition(1,8)), 0.0f, 1E-6), AipsError);
+// 	  AlwaysAssert(near(result(IPosition(1,9)), 2.5f, 1E-6), AipsError);
+// 	  AlwaysAssert(near(result(IPosition(1,10)), 5.0f, 1E-6), AipsError);
+// 	}
+// 	{
+// 	  const IPosition resultShape(model.shape()*2-1);
+// 	  TempLattice<Float> result(resultShape);
+// 	  c.linear(result, model);
+// 	  AlwaysAssert(result.shape() == resultShape, AipsError);
+// 	  AlwaysAssert(near(result(IPosition(1,4)), 2.0f, 1E-6), AipsError);
+// 	  AlwaysAssert(near(result(IPosition(1,5)), 0.6f, 1E-6), AipsError);
+// 	  AlwaysAssert(nearAbs(result(IPosition(1,6)), 0.0f, 1E-6), AipsError);
+// 	  AlwaysAssert(nearAbs(result(IPosition(1,7)), 0.0f, 1E-6), AipsError);
+// 	  AlwaysAssert(nearAbs(result(IPosition(1,8)), 0.0f, 1E-6), AipsError);
+// 	  AlwaysAssert(near(result(IPosition(1,9)), 2.5f, 1E-6), AipsError);
+// 	  AlwaysAssert(near(result(IPosition(1,10)), 5.0f, 1E-6), AipsError);
+// 	}
+//       }
+//       {
+// 	TempLattice<Float> psf1D(IPosition(1,4));
+// 	psf1D.set(0.0f);
+// 	psf1D.putAt(0.1f, psf1D.shape()/2-2);
+// 	psf1D.putAt(0.5f, psf1D.shape()/2-1);
+// 	psf1D.putAt(1.0f, psf1D.shape()/2);
+// 	psf1D.putAt(0.3f, psf1D.shape()/2+1);
+  
+// 	TempLattice<Float> model(IPosition(1,7));
+// 	model.set(0.0);
+// 	model.putAt(2.0, IPosition(1,0));
+// 	model.putAt(5.0, model.shape()-1);
+  
+// 	const IPosition imageShape = model.shape();
+// 	LatticeConvolver<Float> c(psf1D, imageShape);
+// 	{
+// 	  TempLattice<Float> result(model.shape());
+// 	  c.linear(result, model);
+// 	  AlwaysAssert(result.shape() == model.shape(), AipsError);
+// 	  AlwaysAssert(near(result(IPosition(1,0)), 2.0f, 1E-6), AipsError);
+// 	  AlwaysAssert(near(result(IPosition(1,1)), 0.6f, 1E-6), AipsError);
+// 	  AlwaysAssert(nearAbs(result(IPosition(1,2)), 0.0f, 1E-6), AipsError);
+// 	  AlwaysAssert(nearAbs(result(IPosition(1,3)), 0.0f, 1E-6), AipsError);
+// 	  AlwaysAssert(nearAbs(result(IPosition(1,4)), 0.0f, 1E-6), AipsError);
+// 	  AlwaysAssert(near(result(IPosition(1,5)), 2.5f, 1E-6), AipsError);
+// 	  AlwaysAssert(near(result(IPosition(1,6)), 5.0f, 1E-6), AipsError);
+// 	}
+//  	{
+//  	  const IPosition resultShape(model.shape()*2);
+//  	  TempLattice<Float> result(resultShape);
+//  	  c.linear(result, model);
+// 	  AlwaysAssert(result.shape() == resultShape, AipsError);
+// 	  AlwaysAssert(near(result(IPosition(1,4)), 2.0f, 1E-6), AipsError);
+// 	  AlwaysAssert(near(result(IPosition(1,5)), 0.6f, 1E-6), AipsError);
+// 	  AlwaysAssert(nearAbs(result(IPosition(1,6)), 0.0f, 1E-6), AipsError);
+// 	  AlwaysAssert(nearAbs(result(IPosition(1,7)), 0.0f, 1E-6), AipsError);
+// 	  AlwaysAssert(nearAbs(result(IPosition(1,8)), 0.0f, 1E-6), AipsError);
+// 	  AlwaysAssert(near(result(IPosition(1,9)), 2.5f, 1E-6), AipsError);
+// 	  AlwaysAssert(near(result(IPosition(1,10)), 5.0f, 1E-6), AipsError);
+// 	}
+// 	{
+// 	  const IPosition resultShape(model.shape()*2-1);
+// 	  TempLattice<Float> result(resultShape);
+// 	  c.linear(result, model);
+// 	  AlwaysAssert(result.shape() == resultShape, AipsError);
+// 	  AlwaysAssert(near(result(IPosition(1,4)), 2.0f, 1E-6), AipsError);
+// 	  AlwaysAssert(near(result(IPosition(1,5)), 0.6f, 1E-6), AipsError);
+// 	  AlwaysAssert(nearAbs(result(IPosition(1,6)), 0.0f, 1E-6), AipsError);
+// 	  AlwaysAssert(nearAbs(result(IPosition(1,7)), 0.0f, 1E-6), AipsError);
+// 	  AlwaysAssert(nearAbs(result(IPosition(1,8)), 0.0f, 1E-6), AipsError);
+// 	  AlwaysAssert(near(result(IPosition(1,9)), 2.5f, 1E-6), AipsError);
+// 	  AlwaysAssert(near(result(IPosition(1,10)), 5.0f, 1E-6), AipsError);
+// 	}
+//       }
+//       {
+// 	TempLattice<Float> psf2D(IPosition(2,3,3));
+// 	psf2D.set(0.0f);
+// 	IPosition centre = psf2D.shape()/2;
+// 	psf2D.putAt(1.0f, centre);
+// 	centre(0) -= 1;
+// 	psf2D.putAt(0.5f, centre);
+// 	centre(0) += 2;
+// 	psf2D.putAt(0.4f, centre);
+// 	centre = psf2D.shape()/2; centre(1) -= 1;
+// 	psf2D.putAt(0.2f, centre);
+// 	centre(1) += 2;
+// 	psf2D.putAt(0.1f, centre);
+// 	Array<Float> psfArray;
+// 	psf2D.getSlice(psfArray, IPosition(2,0), psf2D.shape());
+// 	cout << "psf = " << psfArray.ac() << endl;
 
-     Array<Float> resultArray;
-     result.getSlice(resultArray, IPosition(1,0), result.shape());
-     cout << "result = " << resultArray.ac() << endl;
-   }
-   {
-     TempLattice<Float> psf2D(IPosition(2,3,3));
-     psf2D.set(0.0f);
-     IPosition centre = psf2D.shape()/2;
-     psf2D.putAt(1.0f, centre);
-     centre(0) -= 1;
-     psf2D.putAt(0.5f, centre);
-     centre(0) += 2;
-     psf2D.putAt(0.4f, centre);
-     centre = psf2D.shape()/2; centre(1) -= 1;
-     psf2D.putAt(0.2f, centre);
-     centre(1) += 2;
-     psf2D.putAt(0.1f, centre);
-     Array<Float> psfArray;
-     psf2D.getSlice(psfArray, IPosition(2,0), psf2D.shape());
-     cout << "psf = " << psfArray.ac() << endl;
+// 	TempLattice<Float> model(IPosition(2,7,6));
+// 	model.set(0.0);
+// 	model.putAt(2.0, IPosition(2,0));
+// 	model.putAt(5.0, model.shape()-1);
+// 	Array<Float> modelArray;
+// 	model.getSlice(modelArray, IPosition(2,0), model.shape());
+// 	cout << "model = " << modelArray.ac() << endl;
 
-     TempLattice<Float> model(IPosition(2,7,6));
-     model.set(0.0);
-     model.putAt(2.0, IPosition(2,0));
-     model.putAt(5.0, model.shape()-1);
-     Array<Float> modelArray;
-     model.getSlice(modelArray, IPosition(2,0), model.shape());
-     cout << "model = " << modelArray.ac() << endl;
-     
-     const IPosition imageShape = model.shape();
-     LatticeConvolver<Float> c(psf2D, imageShape);
+// 	const IPosition imageShape = model.shape();
+// 	LatticeConvolver<Float> c(psf2D, imageShape);
 
-     TempLattice<Float> result(model.shape());
-     c.linear(result, model);
+// 	TempLattice<Float> result(model.shape());
+// 	c.linear(result, model);
 
-     Array<Float> resultArray;
-     result.getSlice(resultArray, IPosition(2,0), result.shape());
-     cout << "result = " << resultArray.ac() << endl;
-   }
- }
-    
+// 	Array<Float> resultArray;
+// 	result.getSlice(resultArray, IPosition(2,0), result.shape());
+// 	cout << "result = " << resultArray.ac() << endl;
+//       }
+    }
   } catch (AipsError x) {
     cout<< "FAIL"<< endl;
     cerr << x.getMesg() << endl;
