@@ -1,0 +1,19 @@
+
+change id: 0075
+ author:   Wim Brouw
+ date:     2001/02/16
+ avers:    1.5
+ area:     Library
+ package:  trial
+ module:   Fitting
+ type:     Code Documentation
+ category: New Change
+ summary:  added more interface to LinearFit and LinearFitSVD
+To ease the use of the LinearFit classes LinearFit and LinearFitSVD, I have added three more optiuons to specify the function to be fitted in addition to the existing LinearComb class:
+- any functiopn with derivatives (including SumFunctions) can be used as
+  a definition of the fitted function: in this way a single polynomial can
+  e.g. be specified for a polynomial fit
+- a user defined 1D or ND function can be used as the fitting function
+- a user defined numeric vector can be used as fitting function
+
+The documentations has been extended with examples and clarifications.
