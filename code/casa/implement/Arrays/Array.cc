@@ -798,6 +798,7 @@ template<class T> Array<T> Array<T>::operator()(const IPosition &b,
     }
     tmp.nels_p = tmp.length_p.product();
     tmp.contiguous_p = tmp.isStorageContiguous();
+    tmp.makeIndexingConstants();
     DebugAssert (tmp.ok(), ArrayError);
     return tmp;
 }
