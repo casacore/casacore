@@ -54,7 +54,7 @@ template <class T> class Vector;
 // </etymology>
 //
 // <synopsis>
-// The SpectralEstimate class obtains a initial guess for spectral
+// The SpectralEstimate class obtains an initial guess for spectral
 // components. The current implementation uses the entire 
 // profile as signal region.  The second derivative of
 // the profile in the signal region is calculated by fitting
@@ -106,11 +106,8 @@ class SpectralEstimate {
 
   //# Member functions
   // Get the number of estimates found in a profile
-  ///  uInt estimate(const Vector<Float> &prof);
-  ///  uInt estimate(const Double *const prof);
-  uInt estimate(Double * prof);
+  uInt estimate(const Vector<Float> &prof);
   // Get the data for the n-th element
-  ///  const SpectralElement &element(uInt which) const;
   const SpectralElement element(uInt which) const;
 
   // Set data for element
@@ -123,33 +120,39 @@ class SpectralEstimate {
 
  private:
   //#Data
+  // Use window search
+  Bool useWindow_p;
+  // rms estimate in profile
+  Double rms_p;
+  // Source cutoff amplitude
+  Double cutoff_p;
+  // Window low and end value
+  // <group>
+  Int windowLow_p;
+  Int windowEnd_p;
+  // </group>
+  // Smoothing parameter. I.e. 2q+1 points are taken
+  Int q_p;
+  // The minimum gaussian width
+  Double sigmin_p;
+  // Maximum number of parameters to find
+  Int maxpar_p;
+  // The second derivatives
+  Double *deriv_p;
+  // The list of components
+  SpectralElement *pars_p;
+  // The number of components
+  Int npar_p;
 
   //# Member functions
-Int compar(const SpectralElement &p1,
-	   const SpectralElement &p2);
-
-Int window( Double  y[] ,
-	    Int    n ,             /* length of profile */
-	    Double  cutoff ,        /* the critical level */
-	    Double  rms ,           /* nois level in profile */
-	    Int    *wstart ,       /* begin of signal region */
-	    Int    *wend );       /* end of signal region */
-
-void findc2( Double  y[] ,           /* the profile */
-	     Double  work[] ,        /* the derivative */
-	     Int    n ,             /* length of profile */
-	     Int    iwlo ,          /* start of window */
-	     Int    iwhi ,          /* end of window */
-	     Int    q ) ;            /* smoothing parameter */
-
-Int findga( Double  y[] ,           /* the profile */
-	    Double  work[] ,        /* the second derivative */
-	    Int    n ,             /* length of profile */
-	    Int    iwlo ,          /* start of window */
-	    Int    iwhi ,          /* end of window */
-	    Double  cutoff ,        /* critical level */
-	    Double   sigmin );       /* minimum value for sigma */
-
+  Int compar(const SpectralElement &p1,
+	     const SpectralElement &p2);
+  // Get the window or the total spectrum
+  uInt window(const Vector<Float> &prof);
+  // Get the second derivatives
+  void findc2(const Vector<Float> &prof);
+  // Find the Gaussians
+  Int findga(const Vector<Float> &prof);
 };
 
 #endif
