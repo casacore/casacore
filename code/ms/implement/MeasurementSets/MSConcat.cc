@@ -646,6 +646,7 @@ Block<uInt> MSConcat::copySpwAndPol(const MSSpectralWindow& otherSpw,
     }
     
 
+
     DebugAssert(otherDDCols.polarizationId()(d) >= 0 &&
 		otherDDCols.polarizationId()(d) < 
 		static_cast<Int>(otherPol.nrow()), AipsError);
@@ -658,22 +659,30 @@ Block<uInt> MSConcat::copySpwAndPol(const MSSpectralWindow& otherSpw,
     for (uInt p = 0; p < nCorr; p++) {
       corrPol(p) = Stokes::type(corrInt(p));
     }
-    *newPolPtr = polCols.match(corrPol);
-    if (*newPolPtr < 0) {
-      // need to add a new entry in the POLARIZATION subtable
-      *newPolPtr= pol.nrow();
-      pol.addRow();
-      polRow.putMatchingFields(*newPolPtr, otherPolRow.get(otherPolId));
-      // Again there cannot be an entry in the DATA_DESCRIPTION Table
-      matchedDD = False;
+    Bool matchedBoth=False;
+    uInt numActPol =0;
+    while ( !matchedBoth && (numActPol < polCols.nrow()) ){
+      *newPolPtr = polCols.match(corrPol, numActPol);
+      if (*newPolPtr < 0) {
+	// need to add a new entry in the POLARIZATION subtable
+	*newPolPtr= pol.nrow();
+	pol.addRow();
+	polRow.putMatchingFields(*newPolPtr, otherPolRow.get(otherPolId));
+	// Again there cannot be an entry in the DATA_DESCRIPTION Table
+	matchedDD = False;
+	matchedBoth = True; // just to break out of while loop
+      }
+      else{
+	// We need to check if there exists an entry in the DATA_DESCRIPTION
+	// table with the required spectral window and polarization index.
+	//if we had a match on spw
+	if(matchedDD)
+	  ddMap[d] = ddIndex.getRowNumber(matchedBoth);
+      }
+      ++numActPol;
     }
 
-    if (matchedDD) {
-      // We need to check if there exists an entry in the DATA_DESCRIPTION
-      // table with the required spectral window and polarization index.
-      ddMap[d] = ddIndex.getRowNumber(matchedDD);
-    }
-    
+
     if (!matchedDD) {
       // Add an entry to the data description sub-table
       ddMap[d] = ddCols.nrow();
