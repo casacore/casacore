@@ -27,16 +27,16 @@
 
 
 #include <aips/OS/Path.h>
-#include <aips/Utilities/Assert.h>
+#include <aips/OS/EnvVar.h>
 #include <aips/Arrays/Vector.h>
 #include <aips/Arrays/ArrayUtil.h>
+#include <aips/Utilities/Assert.h>
 #include <aips/Exceptions.h>
 
 #include <pwd.h>                    // needed for getpwnam
 #include <unistd.h>                 // needed for pathconf
 #include <limits.h>                 // needed for PATH_MAX, etc.
 #include <ctype.h>                  // needed for isprint
-#include <aips/stdlib.h>                 // needed for getenv
 
 
 // The maximum number of bytes in a pathname is 255 (_POSIX_PATH_MAX)
@@ -309,9 +309,9 @@ String Path::expandName (const String& inString) const
 	// Replace tilde with the name of the home directory
 	if (tempString.firstchar() == '~') {
 	    if (tempString.length() == 1  ||  tempString[1] == '/') {
-		char* name=getenv ("HOME");       // To get the homedirectory,
-                                                  // the environment variable
-		if (name != 0) {                  // HOME is used
+	      // To get the homedirectory, environment variable HOME is used.
+		String name (EnvironmentVariable::get("HOME"));
+		if (! name.empty()) {
 		    tempString.del ("~",0);
 		    tempString.prepend (name);
 		}
@@ -337,8 +337,8 @@ String Path::expandName (const String& inString) const
 	    getNextName (tempString, i);      // i is set on the next name   
 	    if (tempString[cursor] == '$') {  // Environment variable detected
 		String dName (tempString.at (Int(cursor+1), Int((i-cursor)-1)));
-		char* name = getenv (dName.chars());
-		if (name != 0) {
+		String name (EnvironmentVariable::get(dName));
+		if (! name.empty()) {
 		    String res (name);
 		    res.prepend (tempString.before(Int(cursor)));
 		    res += tempString.after (Int(i-1));
