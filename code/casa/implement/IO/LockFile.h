@@ -1,5 +1,5 @@
 //# LockFile.h: Class to handle file locking and synchronization
-//# Copyright (C) 1997,1998,1999,2000,2001
+//# Copyright (C) 1997,1998,1999,2000,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -324,6 +324,9 @@ private:
     Block<Int>   itsReqId;            //# Id's of processes requesting lock
                                       //# First value contains #req id's
                                       //# Thereafter pid, hostid
+    Int          itsInspectCount;     //# The number of times inspect() has
+                                      //# been called since the last elapsed
+                                      //# time check.
 };
 
 
