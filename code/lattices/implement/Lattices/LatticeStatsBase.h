@@ -103,9 +103,6 @@ enum StatisticsTypes {
 // inter-quartile range
    QUARTILE, 
 
-// A LEL expression string given by the user
-   LEL,
-
 // The minimum
    MIN,
 
@@ -141,9 +138,17 @@ enum StatisticsTypes {
 // A new value is added to the output vector (which is resized appropriately) if any of the
 // substrings "npts", "min", "max", "sum", "sumsq", "mean", "sigma", "rms", 
 // and "flux" is present.  An empty vector results if there are no matches
+// <group>
    static Vector<Int> toStatisticTypes (const String& statistics, 
                                         const Regex& delimiter);
    static Vector<Int> toStatisticTypes (const Vector<String>& statistics);
+// </group>
+
+// Convert type to string.
+// <group>
+   static String toStatisticName (StatisticsTypes type);
+   static String toStatisticName (Int type);
+// </group>
 
 // Returns -1 if the statistic string is not valid
    static Int toStatisticType (const String& statistic);
@@ -166,8 +171,7 @@ enum StatisticsTypes {
                                      const IPosition& shape);
 
 // Stretch a range by 10%
-   static void stretchMinMax (Float& min, 
-                              Float& max);
+   static void stretchMinMax (Float& min, Float& max);
 };
 
 #endif

@@ -92,11 +92,51 @@ Int LatticeStatsBase::toStatisticType (const String& statU)
       statToPlot = MEDIAN;
    } else if (stat.contains("QU")) {
       statToPlot = QUARTILE;
-   } else if (stat.contains("LEL")) {
-      statToPlot = LEL;
    }
    return statToPlot;
 }  
+
+
+String LatticeStatsBase::toStatisticName (Int iType)
+{
+   StatisticsTypes type = StatisticsTypes(iType);
+   return toStatisticName(type);
+}
+
+String LatticeStatsBase::toStatisticName (StatisticsTypes type)
+{
+   String name;
+   if (type==NPTS) {
+      name = "NPTS";
+   } else if (type==SUM) {
+      name = "SUM";
+   } else if (type==SUMSQ) {  
+      name = "SUMSQ";
+   } else if (type==MEAN) {
+      name = "MEAN";
+   } else if (type==VARIANCE) {
+      name = "VARIANCE";
+   } else if (type==SIGMA) {
+      name = "SIGMA";
+   } else if (type==RMS) {
+      name = "RMS";
+   } else if (type==MIN) {
+      name = "MIN";
+   } else if (type==MAX) {
+      name = "MAX";
+   } else if (type==FLUX) {
+      name = "FLUX";
+   } else if (type==MEDABSDEVMED) {
+      name = "MEDABSDEVMED";
+   } else if (type==MEDIAN) {
+      name = "MEDIAN";
+   } else if (type==QUARTILE) {
+      name = "QUARTILE";
+   }
+   return name;
+}  
+
+
 
 Bool LatticeStatsBase::setNxy (Vector<Int>& nxy,
                                ostream& os)
