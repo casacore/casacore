@@ -36,16 +36,19 @@
 #include <aips/Functionals/Interpolate1D.h>
 #include <aips/Functionals/ScalarSampledFunctional.h>
 #include <aips/Mathematics/Math.h>
+#include <aips/Measures/MFrequency.h>
+#include <aips/Measures/VelocityMachine.h>
 #include <aips/Quanta/Quantum.h>
 #include <aips/Containers/RecordInterface.h>
 #include <aips/Logging/LogIO.h>
 #include <aips/Logging/LogOrigin.h>
-#include <trial/FITS/FITSUtil.h>
+ #include <trial/FITS/FITSUtil.h>
 
 SpectralCoordinate::SpectralCoordinate()
 : Coordinate(),
   type_p(MFrequency::TOPO), restfreq_p(0.0),
-  worker_p(0.0,1.0,0.0,"Hz", "Frequency")
+  worker_p(0.0,1.0,0.0,"Hz", "Frequency"),
+  pVelocityMachine_p(0)
 {
 }
 
@@ -54,7 +57,8 @@ SpectralCoordinate::SpectralCoordinate(MFrequency::Types type,
 				       Double restFrequency)
 : Coordinate(),
   type_p(type), restfreq_p(restFrequency),
-  worker_p(f0, inc, refPix, "Hz", "Frequency")
+  worker_p(f0, inc, refPix, "Hz", "Frequency"),
+  pVelocityMachine_p(0)
 {
 }
 
@@ -64,7 +68,8 @@ SpectralCoordinate::SpectralCoordinate(MFrequency::Types type,
                                        Double refPix, 
                                        const Quantum<Double>& restFrequency)
 : Coordinate(),
-  type_p(type)
+  type_p(type),
+  pVelocityMachine_p(0)
 {
    Unit hz("Hz");
    if (!f0.isConform(hz)) {
@@ -87,7 +92,8 @@ SpectralCoordinate::SpectralCoordinate(MFrequency::Types type,
                                        const Vector<Double> &freqs,
                                        Double restFrequency)
 : Coordinate(),
-  type_p(type), restfreq_p(restFrequency)
+  type_p(type), restfreq_p(restFrequency),
+  pVelocityMachine_p(0)
 {
     Vector<Double> channels(freqs.nelements());
     indgen(channels);
@@ -99,7 +105,8 @@ SpectralCoordinate::SpectralCoordinate(MFrequency::Types type,
                                        const Quantum<Vector<Double> >& freqs,
                                        const Quantum<Double>& restFrequency)
 : Coordinate(),
-  type_p(type)
+  type_p(type),
+  pVelocityMachine_p(0)
 {
    Unit hz("Hz");
    if (!freqs.isConform(hz)) {
@@ -122,8 +129,10 @@ SpectralCoordinate::SpectralCoordinate(const SpectralCoordinate &other)
 : Coordinate(other),
   type_p(other.type_p),
   restfreq_p(other.restfreq_p),
-  worker_p(other.worker_p)
+  worker_p(other.worker_p),
+  pVelocityMachine_p(0)
 {
+   deleteVelocityMachine();
 }
 
 SpectralCoordinate &SpectralCoordinate::operator=(const SpectralCoordinate &other)
@@ -133,14 +142,16 @@ SpectralCoordinate &SpectralCoordinate::operator=(const SpectralCoordinate &othe
 	type_p = other.type_p;
 	restfreq_p = other.restfreq_p;
 	worker_p = other.worker_p;
+        deleteVelocityMachine();
     }
     return *this;
 }
 
 SpectralCoordinate::~SpectralCoordinate()
 {
-    // Nothing
-}
+   deleteVelocityMachine();
+}  
+
 
 Coordinate::Type SpectralCoordinate::type() const
 {
@@ -229,6 +240,7 @@ Bool SpectralCoordinate::setWorldAxisUnits(const Vector<String> &units)
 	Double after = increment()(0);
 	restfreq_p *= after / before;
     }
+    deleteVelocityMachine();
     return ok;
 }
 
@@ -276,12 +288,14 @@ MFrequency::Types SpectralCoordinate::frequencySystem() const
 void  SpectralCoordinate::setFrequencySystem(MFrequency::Types type)
 {
     type_p = type;
+    deleteVelocityMachine();
 }
 
 
 Bool SpectralCoordinate::setRestFrequency(Double newFrequency)
 {
     restfreq_p = newFrequency;
+    deleteVelocityMachine();
     return True;
 }
 
@@ -593,9 +607,6 @@ Bool SpectralCoordinate::fromFITS(SpectralCoordinate &out, String &,
 }
 
 
- 
-
-
 Coordinate* SpectralCoordinate::makeFourierCoordinate (const Vector<Bool>& axes, 
                                                        const Vector<Int>& shape) const
 //
@@ -606,3 +617,11 @@ Coordinate* SpectralCoordinate::makeFourierCoordinate (const Vector<Bool>& axes,
    return worker_p.makeFourierCoordinate(axes, shape);
 }
 
+void SpectralCoordinate::deleteVelocityMachine ()
+// 
+// Force it to be rebuilt when next accessed
+//
+{
+   delete pVelocityMachine_p;  
+   pVelocityMachine_p = 0;
+}
