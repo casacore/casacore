@@ -815,7 +815,12 @@
   rm -f VERSION_
 
 # Clean up.
-  rm -rf $SLAVTMPD
+# (But don't clean up yet if we'll be calling ourself again: it kills
+# the re-submission if FTP is defeated.)
+  if [ "$MODE" != base -o "$NEWMINOR" = 000 -o "$FTPLIMIT" -gt 0 ]
+  then
+     rm -rf $SLAVTMPD
+  fi
 
   trap 0 1 2 3 15
 
