@@ -4712,3 +4712,4 @@
 14 304 src mv trial/apps/sditerator/sditerator.cc trial/apps/oldsditerator/oldsditerator.cc
 14 304 src mv trial/apps/sditerator/sditerator.g trial/apps/oldsditerator/oldsditerator.g
 14 304 src mv trial/apps/sditerator/sditerator.help trial/apps/oldsditerator/oldsditerator.help
+14 304 src mv trial/apps/sditerator/sditeratorImpl.h trial/apps/oldsditerator/oldsditeratorImpl.h
