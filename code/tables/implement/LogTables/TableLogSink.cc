@@ -60,10 +60,11 @@ TableLogSink::TableLogSink(const LogFilter &filter, const String &fileName)
 	  String("Creating ") + fileName);
 	LogSink::postGlobally(logMessage);
         SetupNewTable setup(fileName, logTableDescription(), Table::New);
-	// Bind all to the ISM. When we have a standard storage manager we
-	// should bind the MESSAGE column to it.
-	IncrementalStMan incstman("ISM");
-	setup.bindAll(incstman);
+// 	// Bind all to the ISM. When we have a standard storage manager we
+// 	// should bind the MESSAGE column to it.
+// 	IncrementalStMan stman("ISM");
+	StManAipsIO stman;   // Use AipsIO until bug gone from ISM
+	setup.bindAll(stman);
 	log_table_p = Table(setup);
 	log_table_p.tableInfo() = TableInfo(TableInfo::LOG);
 	log_table_p.tableInfo().
