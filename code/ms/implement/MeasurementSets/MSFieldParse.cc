@@ -28,6 +28,7 @@
 #include <ms/MeasurementSets/MSFieldParse.h>
 #include <ms/MeasurementSets/MSFieldIndex.h>
 #include <ms/MeasurementSets/MSSourceIndex.h>
+#include <casa/Logging/LogIO.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
@@ -61,7 +62,7 @@ const TableExprNode *MSFieldParse::selectFieldIds(const Vector<Int>& fieldIds)
 
 const TableExprNode *MSFieldParse::selectFieldOrSource(const String& fieldName)
 {
-
+  LogIO os(LogOrigin("MSFieldParse", "selectFieldOrSource", WHERE));
   Vector<Int> SourceIdsFromSN ;
   Vector<Int> SourceIdsFromSC ;
   Vector<Int> FieldIdsFromFN ;
@@ -88,7 +89,7 @@ const TableExprNode *MSFieldParse::selectFieldOrSource(const String& fieldName)
       condition=(ms()->col(colName).in
 		 (msFI.matchSourceId(SourceIdsFromSC)));
     } else {
-      cout << " No exactly matched Souce name(code), search for field  "<< endl;
+      os << " No Souce name(code) matched, search for field  " << LogIO::POST;
       searchField = True;
     }
   } 
@@ -104,11 +105,10 @@ const TableExprNode *MSFieldParse::selectFieldOrSource(const String& fieldName)
 	(ms()->col(colName).in(FieldIdsFromFN));
     } else if (FieldIdsFromFC.nelements() > 0) {
       //Field code selection
-      cout << " field code found " << endl;
       condition =
 	(ms()->col(colName).in(FieldIdsFromFC));
     } else {
-      cout << " No exactly matched field name(code) found! "<< endl;
+      os << " No exactly matched field name(code) found! " << LogIO::POST;
     }
   }
 
