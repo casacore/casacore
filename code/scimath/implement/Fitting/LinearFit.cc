@@ -79,7 +79,7 @@ fitIt(Vector<typename FunctionTraits<T>::BaseType> &sol,
   if (solved_p) {
     solve(condEq_p, mu, me);
     sol_p += condEq_p;
-    ///    FitLSQ::getErrors(err_p);
+    FitLSQ::getErrors(err_p);
     errors_p = True;
     for (uInt i=0, k=0; i<pCount_p; i++) {
       if (ptr_derive_p->mask(i)) sol[i] = sol_p[k++];
