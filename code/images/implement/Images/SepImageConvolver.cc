@@ -43,9 +43,9 @@
 #include <trial/Images/PagedImage.h>
 #include <trial/Images/ImageRegion.h>
 #include <trial/Images/SubImage.h>
+#include <trial/Images/TempImage.h>
 #include <aips/Lattices/LatticeIterator.h>
 #include <aips/Lattices/TiledLineStepper.h>
-#include <trial/Lattices/LCPagedMask.h>
 #include <trial/Mathematics/VectorKernel.h>
 #include <trial/Tasking/ProgressMeter.h>
 
@@ -216,13 +216,10 @@ void SepImageConvolver<T>::convolve(ImageInterface<T>& imageOut)
 
 // Give the output image a mask if needed and make it the default
 
-   LCPagedMask* pMask = 0;
-   if (itsImagePtr->isMasked()) {
+   if (itsImagePtr->isMasked() && !imageOut.isMasked()) {
       if (imageOut.canDefineRegion()) {
-         String maskName = imageOut.makeUniqueRegionName (String("mask0"), 0);
-         pMask = new LCPagedMask(RegionHandler::makeMask(imageOut, maskName));
-         imageOut.defineRegion (maskName, ImageRegion(*pMask), RegionHandler::Masks);
-         imageOut.setDefaultMask(maskName);
+         String maskName = imageOut.makeUniqueRegionName (String("mask"), 0);
+         imageOut.makeMask(maskName, True, True);
          itsOs << LogIO::NORMAL << "Created mask " << maskName 
                << " and make it the default" << LogIO::POST;
       } else {
@@ -234,7 +231,6 @@ void SepImageConvolver<T>::convolve(ImageInterface<T>& imageOut)
 // both the pixel mask and the region mask.  We also set the output mask to the input mask
  
    copyAndZero(imageOut, *itsImagePtr);
-
 
 // Smooth in situ.  
       
@@ -420,4 +416,12 @@ void SepImageConvolver<T>::checkAxis(uInt axis)
    }
 }
 
+template <class T>
+Bool SepImageConvolver<T>::isTempImage (const ImageInterface<Float>* pIm) const
+{
+   Bool isTemp = False;
+   const TempImage<Float>* tmp = dynamic_cast<const TempImage<Float>*>(pIm);
+   if (tmp!=0) isTemp = True;
+   return isTemp;
+}
 

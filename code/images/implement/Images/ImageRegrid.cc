@@ -40,6 +40,7 @@
 #include <trial/Coordinates/SpectralCoordinate.h>
 #include <trial/Coordinates/ObsInfo.h>
 #include <trial/Images/TempImage.h>
+#include <trial/Images/ImageRegion.h>
 #include <trial/Images/SubImage.h>
 #include <aips/Lattices/ArrayLattice.h>
 #include <trial/Lattices/MaskedLattice.h> 
@@ -47,10 +48,10 @@
 #include <aips/Lattices/LatticeNavigator.h>
 #include <aips/Lattices/LatticeIterator.h>
 #include <trial/Lattices/LCSlicer.h>
-#include <aips/Lattices/TempLattice.h>
 #include <aips/Lattices/TiledShape.h>
 #include <aips/Lattices/TiledLineStepper.h>
 #include <trial/Lattices/SubLattice.h>
+#include <trial/Lattices/LCRegion.h>
 #include <trial/Mathematics/InterpolateArray1D.h>
 #include <trial/Mathematics/Interpolate2D.h>
 #include <aips/Measures/MDirection.h>
@@ -222,12 +223,11 @@ void ImageRegrid<T>::regrid(ImageInterface<T>& outImage,
 
 // Attach mask if out is masked.  Don't init mask because it will be overwritten
 
-            TiledShape tmp(outShape2);
-            outPtr = new TempImage<T>(tmp, outCoords);
+            outPtr = new TempImage<T>(TiledShape(outShape2), outCoords);
             if (outIsMasked) {
-               TempLattice<Bool> mask(tmp);
+               String maskName("mask0");
                TempImage<T>* tmpPtr = dynamic_cast<TempImage<T>*>(outPtr);
-               tmpPtr->attachMask(mask);
+               tmpPtr->makeMask(maskName, True, True, False);
             }
 
 // Get DirectionCoordinates for input and output
@@ -290,13 +290,11 @@ void ImageRegrid<T>::regrid(ImageInterface<T>& outImage,
 
 // Attach mask if out is masked.  
 
-            TiledShape tmp(outShape2);
-            outPtr = new TempImage<T>(tmp, outCoords);
+            outPtr = new TempImage<T>(TiledShape(outShape2), outCoords);
             if (outIsMasked) {
-               TempLattice<Bool> mask(tmp);
-               mask.set(True);
+               String maskName("mask0");
                TempImage<T>* tmpPtr = dynamic_cast<TempImage<T>*>(outPtr);
-               tmpPtr->attachMask(mask);
+               tmpPtr->makeMask(maskName, True, True, True, True);
             }
 
 // Set world axis units for input and output coordinates for this pixel

@@ -38,6 +38,8 @@
 #include <aips/Lattices/LatticeStepper.h>
 #include <aips/Lattices/TempLattice.h>
 #include <trial/Lattices/LCPagedMask.h>
+#include <trial/Lattices/LCMask.h>
+#include <trial/Lattices/LCRegionSingle.h>
 #include <aips/FITS/fitsio.h>
 #include <aips/FITS/hdu.h>
 #include <trial/FITS/FITSUtil.h>
@@ -57,7 +59,7 @@
 // At least the Coordinate and header related things could be factored out
 // into template independent code.
 template<class HDUType>
-void ImageFITSConverterImpl<HDUType>::FITSToImage(ImageInterface<Float>*& newImage,
+void ImageFITSConverterImpl<HDUType>::FITSToImage(ImageInterface<Float>*& pNewImage,
 						  String &error,
 						  const String &imageName,
 						  HDUType &fitsImage,
@@ -137,24 +139,24 @@ void ImageFITSConverterImpl<HDUType>::FITSToImage(ImageInterface<Float>*& newIma
     Bool isTempImage = False;
     try {
        if (imageName.empty()) {
-          newImage = new TempImage<Float>(shape2, coords);
+          pNewImage = new TempImage<Float>(shape2, coords);
           os << LogIO::WARN << "Created (temp)image of shape" << shape2 << LogIO::POST;
           isTempImage = True;
        } else {
-          newImage = new PagedImage<Float>(shape2, coords, imageName);
+          pNewImage = new PagedImage<Float>(shape2, coords, imageName);
           os << LogIO::WARN << "Created image of shape" << shape2 << LogIO::POST;
        }
     } catch (AipsError x) {
-	if (newImage) {
-	    delete newImage;
+	if (pNewImage) {
+           delete pNewImage;
 	}
-	newImage = 0;
+	pNewImage = 0;
 	error = String("Error creating or writing file ") + 
 	    imageName + ":" + x.getMesg();
 	return;
     } 
 
-    if (newImage == 0) {
+    if (pNewImage == 0) {
 	error = String("Unknown error writing ") + imageName;
 	return;
     }
@@ -171,7 +173,7 @@ void ImageFITSConverterImpl<HDUType>::FITSToImage(ImageInterface<Float>*& newIma
 // There is no scale factor in this translation.
 
             Unit tmp = UnitMap::fromFITS(Unit(unitString));
-	    newImage->setUnits(tmp);
+	    pNewImage->setUnits(tmp);
 	} else {
 	    os << "FITS unit " << unitString << " unknown to AIPS++ - ignoring."
 	       << LogIO::POST;
@@ -249,7 +251,7 @@ void ImageFITSConverterImpl<HDUType>::FITSToImage(ImageInterface<Float>*& newIma
        bmajq.convert(Unit("arcsec")); 
        bminq.convert(Unit("arcsec"));
        imageInfo.setRestoringBeam(bmajq, bminq, Quantum<Double>(bpa, "deg"));
-       newImage->setImageInfo(imageInfo);
+       pNewImage->setImageInfo(imageInfo);
 //
        header.removeField("bmaj");
        header.removeField("bmin");
@@ -258,13 +260,13 @@ void ImageFITSConverterImpl<HDUType>::FITSToImage(ImageInterface<Float>*& newIma
 
 // Put whatever is left in the header into the MiscInfo bucket
 
-    newImage->setMiscInfo(header);
+    pNewImage->setMiscInfo(header);
 
 // Restore the logtable from HISTORY (this could be moved to non-templated code)
 
-    if (newImage->logSink().localSink().isTableLogSink()) {
+    if (pNewImage->logSink().localSink().isTableLogSink()) {
 	TableLogSink &logTable = 
-	    newImage->logSink().localSink().castToTableLogSink();
+	    pNewImage->logSink().localSink().castToTableLogSink();
 	Vector<String> lines;
 	String groupType;
 	ConstFitsKeywordList kw = fitsImage.kwlist();
@@ -289,14 +291,14 @@ void ImageFITSConverterImpl<HDUType>::FITSToImage(ImageInterface<Float>*& newIma
                                           sizeof(HDUType::ElementType),
                                           memoryInMB);
 
-    os << LogIO::NORMAL << "Copy FITS file to '" << newImage->name() << "' " <<
+    os << LogIO::NORMAL << "Copy FITS file to '" << pNewImage->name() << "' " <<
 	report << LogIO::POST;
     LatticeStepper imStepper(shape2, cursorShape, IPosition::makeAxisPath(ndim));
-    LatticeIterator<Float> imIter(*newImage, imStepper);
+    LatticeIterator<Float> imIter(*pNewImage, imStepper);
 
-    Int nIter = max(1,newImage->shape().product()/cursorShape.product());
+    Int nIter = max(1,pNewImage->shape().product()/cursorShape.product());
     Int iUpdate = max(1,nIter/20);
-    ProgressMeter meter(0.0, Double(newImage->shape().product()),
+    ProgressMeter meter(0.0, Double(pNewImage->shape().product()),
 			"FITS to Image", "Pixels copied", "", "",  True, 
 			iUpdate);
     Double nPixPerIter = cursorShape.product();
@@ -306,21 +308,17 @@ void ImageFITSConverterImpl<HDUType>::FITSToImage(ImageInterface<Float>*& newIma
 // are blanks or not.   SO we have to make the mask, and then
 // delete it if its not needed.
 
-    Lattice<Bool>* pMask = 0;
-    LatticeStepper* pMaskStepper = 0;
+    ImageRegion maskReg;
     LatticeIterator<Bool>* pMaskIter = 0;
     Bool madeMask = False;
 //
     if (bitpix<0 || isBlanked) {
-       if (isTempImage) {
-          pMask = new TempLattice<Bool>(shape2);
-       } else {
-          pMask = new LCPagedMask(RegionHandler::makeMask (*newImage, "mask0"));
-       }
+       maskReg = pNewImage->makeMask ("mask0", False, False);
+       LCRegion& mask = maskReg.asMask();
 //
-       pMaskStepper = new LatticeStepper(shape2, cursorShape, 
-                                         IPosition::makeAxisPath(ndim));
-       pMaskIter = new LatticeIterator<Bool>(*pMask, *pMaskStepper);
+       LatticeStepper pMaskStepper (shape2, cursorShape, 
+				    IPosition::makeAxisPath(ndim));
+       pMaskIter = new LatticeIterator<Bool>(mask, pMaskStepper);
        pMaskIter->reset();
        madeMask = True;
     }
@@ -338,8 +336,8 @@ void ImageFITSConverterImpl<HDUType>::FITSToImage(ImageInterface<Float>*& newIma
             meter.update(meterValue);
 	    if (fitsImage.err()) {
 		error = "Error reading from FITS image";
-		delete newImage;
-		newImage = 0;
+		delete pNewImage;
+		pNewImage = 0;
 		return;
 	    }
 	    Bool deletePtr;
@@ -391,52 +389,23 @@ void ImageFITSConverterImpl<HDUType>::FITSToImage(ImageInterface<Float>*& newIma
             meter.update(meterValue);
          }
 //
-// Now either delete the mask or attach it properly to the image
+// Now attach the mask to the image if required
 //
          if (madeMask) {
             if (hasBlanks) {
-               if (isTempImage) {
-
-// Attach to TempImage
-
-                  TempImage<Float>* castImagePtr = dynamic_cast<TempImage<Float>*>(newImage);
-                  castImagePtr->attachMask(*pMask);
-                  os << LogIO::NORMAL << "Storing (temp)mask" << endl;
-               } else {
-                  os << LogIO::NORMAL << "Storing mask with name 'mask0'" << endl;
-//
-// Make mask known to the image 
-//
-                  PagedImage<Float>* castImagePtr = dynamic_cast<PagedImage<Float>*>(newImage);
-                  LCPagedMask* castMaskPtr = dynamic_cast<LCPagedMask*>(pMask);
-                  castImagePtr->defineRegion ("mask0", ImageRegion(*castMaskPtr), 
-                                              RegionHandler::Masks);
-//
-// Make the mask the default mask. Hereafter the mask is writable
-// through newImage.
-//
-                  castImagePtr->setDefaultMask(String("mask0"));
-               }
-            } else {
-//
-// There were no blanks, so we don't need the mask
-// 
-               if (!isTempImage) {
-                  LCPagedMask* castMaskPtr = dynamic_cast<LCPagedMask*>(pMask);
-                  castMaskPtr->handleDelete();
-               }
+               os << LogIO::NORMAL << "Storing mask with name 'mask0'" << endl;
+               pNewImage->defineRegion ("mask0", maskReg, RegionHandler::Masks);
+               pNewImage->setDefaultMask(String("mask0"));
             }
 //
 // Clean up pointers
 //
-            delete pMask;
-            delete pMaskStepper;
             delete pMaskIter;
          }
     } catch (AipsError x) {
 	error = String("Error writing pixel values to image: " ) + x.getMesg();
-	delete newImage;
-	newImage = 0;
+	delete pNewImage;
+	pNewImage = 0;
     } 
 
     // Successful

@@ -124,7 +124,8 @@ public:
 
 // Perform the convolution.    The error checking for the
 // convolution parameters is done when you call this
-// function.
+// function.  If it needs a mask and doesn't have one,
+// the output image will be given one if possible.
 // <group>
    void convolve(ImageInterface<T>& imageOut);
    void convolve();
@@ -143,6 +144,7 @@ private:
    void checkAxis(uInt axis);
    void copyAndZero(ImageInterface<T>& out,
                     ImageInterface<T>& in);
+   Bool isTempImage (const ImageInterface<Float>* pIm) const;
    void zero();
    void smoothProfiles (ImageInterface<T>& in,
                         const Int& axis,

@@ -31,6 +31,7 @@
 
 //# Includes
 #include <aips/aips.h>
+#include <aips/Arrays/Vector.h>
 #include <aips/Containers/Block.h> 
 #include <aips/Measures/Stokes.h>
 #include <aips/Mathematics/Complex.h>
@@ -289,6 +290,7 @@ public:
 // rotationMeasureShape.  For the position angle images, use function
 // singleStokesShape.  Null pointer ImageInterface objects are 
 // not accessed so you can select which output images you want.
+// Any output images not masked will be given a mask.
 // The position angles are all in degrees. The RM images in rad/m/m.
 // ImageInfo, MiscInfo, Units, and
 // history are copied to the output.
@@ -301,7 +303,7 @@ public:
    void rotationMeasure(ImageInterface<Float>*& rmPtr,  ImageInterface<Float>*& rmErrPtr, 
                         ImageInterface<Float>*& pa0Ptr,  ImageInterface<Float>*& pa0ErrPtr,
                         Int spectralAxis,  Float rmMax, Float maxPaErr=1.0e30,
-                        Float sigma=-1.0, Float rmFg=0.0);
+                        Float sigma=-1.0, Float rmFg=0.0, Bool showProgress=False);
 
 private:
    const ImageInterface<Float>* itsInImagePtr;
@@ -317,12 +319,15 @@ private:
 // Delete all private pointers
    void cleanup();
 
+// Copy data and mask
+   void copyDataAndMask(ImageInterface<Float>& out,
+                        ImageInterface<Float>& in) const;
+
 // Copy MiscInfo, ImagInfo, History
    void copyMiscellaneous (ImageInterface<Float>& out) const;
 
-// Copy mask 
-   void ImagePolarimetry::copyMask (ImageInterface<Float>& out,
-                                    const ImageInterface<Float>& in) const;
+// For traiditional RM approach, give output a mask if possible
+   Bool dealWithMask (Lattice<Bool>*& pMask, ImageInterface<Float>*& pIm, LogIO& os, const String& type) const;
 
 // Change the Stokes Coordinate for the given float image to be of the specified Stokes type
    void fiddleStokesCoordinate(ImageInterface<Float>& ie, Stokes::StokesTypes type) const;
@@ -391,6 +396,10 @@ private:
 
 // Find the standard deviation for the Stokes image specified by the integer index
    Float sigma (ImagePolarimetry::StokesTypes index, Float clip);
+
+// Subtract profile mean from image
+   void subtractProfileMean (ImageInterface<Float>& im, uInt axis) const;
+
 };
 
 
