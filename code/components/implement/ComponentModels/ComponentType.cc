@@ -39,8 +39,21 @@ String ComponentType::name(ComponentType::Shape componentEnum) {
   };
 }
 
-ComponentType::Shape ComponentType::shape(const String & componentName) {
-  String canonicalCase(componentName);
+String ComponentType::name(ComponentType::Polarisation fluxEnum) {
+  switch (fluxEnum) {
+  case ComponentType::STOKES: 
+    return "Stokes";
+  case ComponentType::LINEAR:
+    return "Linear";
+  case ComponentType::CIRCULAR:
+    return "Circular";
+  default:
+    return "Unknown";
+  };
+}
+
+ComponentType::Shape ComponentType::shape(const String & shapeName) {
+  String canonicalCase(shapeName);
   canonicalCase.capitalize();
   ComponentType::Shape s;
   for (uInt i = 0; i < NUMBER_SHAPES; i++) {
@@ -50,6 +63,20 @@ ComponentType::Shape ComponentType::shape(const String & componentName) {
     }
   }
   return ComponentType::UNKNOWN;
+}
+
+ComponentType::Polarisation ComponentType::polarisation(const String & 
+						 polarisationName) {
+  String canonicalCase(polarisationName);
+  canonicalCase.capitalize();
+  ComponentType::Polarisation s;
+  for (uInt i = 0; i < NUMBER_POLARISATIONS; i++) {
+    s = (ComponentType::Polarisation) i;
+    if (canonicalCase.matches(ComponentType::name(s))) {
+      return s;
+    }
+  }
+  return ComponentType::UNKNOWN_POLARISATION;
 }
 // Local Variables: 
 // compile-command: "gmake OPTLIB=1 ComponentType"
