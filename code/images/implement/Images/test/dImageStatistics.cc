@@ -109,10 +109,10 @@
 #include <trial/Images/ImageStatistics.h>
 #include <trial/Images/PagedImage.h>
 #include <trial/Images/SubImage.h>
-#include <trial/Images/ImageUtilities.h>
 #include <trial/Images/ImageRegion.h>
 #include <trial/Lattices/LatticeStatsBase.h>
 #include <trial/Lattices/LCSlicer.h>
+#include <trial/Lattices/LCBox.h>
 #include <trial/Tasking/PGPlotter.h>
 
 #include <iostream.h>
@@ -262,7 +262,7 @@ try {
       SubImage<Float>* pSubImage2 = 0;
 
       if (validInputs(REGION)) {
-         ImageUtilities::verifyRegion(blc, trc, inc, inImage.shape());
+         LCBox::verify(blc, trc, inc, inImage.shape());
          cout << "Selected region : " << blc+1<< " to "
               << trc+1 << endl;
          const LCSlicer region(blc, trc);
