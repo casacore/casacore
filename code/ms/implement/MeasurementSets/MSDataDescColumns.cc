@@ -30,14 +30,46 @@
 #include <aips/Tables/TableDesc.h>
 #include <aips/Tables/ColDescSet.h>
 
-NewMSDataDescColumns::NewMSDataDescColumns(NewMSDataDescription& msDataDesc):
-flagRow_p(msDataDesc,NewMSDataDescription::columnName(NewMSDataDescription::FLAG_ROW)),
-polarizationId_p(msDataDesc,NewMSDataDescription::columnName(NewMSDataDescription::POLARIZATION_ID)),
-spectralWindowId_p(msDataDesc,NewMSDataDescription::columnName(NewMSDataDescription::SPECTRAL_WINDOW_ID))
+NewMSDataDescColumns::NewMSDataDescColumns()
+  :flagRow_p(),
+   lagId_p(),
+   polarizationId_p(),
+   spectralWindowId_p()
 {
-  const ColumnDescSet& cds=msDataDesc.tableDesc().columnDescSet();
-  if (cds.isDefined(NewMSDataDescription::columnName(NewMSDataDescription::LAG_ID)))
-    lagId_p.attach(msDataDesc,NewMSDataDescription::columnName(NewMSDataDescription::LAG_ID));
+}
+
+NewMSDataDescColumns::NewMSDataDescColumns(NewMSDataDescription& msDataDesc):
+  flagRow_p(msDataDesc, NewMSDataDescription::
+	    columnName(NewMSDataDescription::FLAG_ROW)),
+  lagId_p(),
+  polarizationId_p(msDataDesc, NewMSDataDescription::
+		   columnName(NewMSDataDescription::POLARIZATION_ID)),
+  spectralWindowId_p(msDataDesc,NewMSDataDescription::
+		     columnName(NewMSDataDescription::SPECTRAL_WINDOW_ID))
+{
+  attachOptionalCols(msDataDesc);
+}
+
+void NewMSDataDescColumns::attach(NewMSDataDescription& msDataDesc)
+{
+  flagRow_p.attach(msDataDesc, NewMSDataDescription::columnName
+		   (NewMSDataDescription::FLAG_ROW));
+  polarizationId_p.attach(msDataDesc, NewMSDataDescription::columnName
+			  (NewMSDataDescription::POLARIZATION_ID));
+  spectralWindowId_p.attach(msDataDesc, NewMSDataDescription::columnName
+			    (NewMSDataDescription::SPECTRAL_WINDOW_ID));
+  attachOptionalCols(msDataDesc);
+}
+
+void NewMSDataDescColumns::
+attachOptionalCols(NewMSDataDescription& msDataDesc)
+{
+  const ColumnDescSet& cds = msDataDesc.tableDesc().columnDescSet();
+  if (cds.isDefined(NewMSDataDescription::columnName
+		    (NewMSDataDescription::LAG_ID))) {
+    lagId_p.attach(msDataDesc, NewMSDataDescription::columnName
+		   (NewMSDataDescription::LAG_ID));
+  }
 }
 
 NewMSDataDescColumns::~NewMSDataDescColumns() {}

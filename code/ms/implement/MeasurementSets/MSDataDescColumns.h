@@ -70,24 +70,32 @@
 class NewMSDataDescColumns
 {
 public:
+  // default constructor creates a object that is not usable. Use the attach
+  // function correct this.
+  NewMSDataDescColumns();
 
-NewMSDataDescColumns(NewMSDataDescription& msDataDesc);
+  // The copy constructor uses reference semantics
+  NewMSDataDescColumns(NewMSDataDescription& msDataDesc);
 
-~NewMSDataDescColumns();
+  // The desctructor does nothing special
+  ~NewMSDataDescColumns();
 
-// Access to columns
-ScalarColumn<Bool>& flagRow() {return flagRow_p;}
-ScalarColumn<Int>& polarizationId() {return polarizationId_p;}
-ScalarColumn<Int>& spectralWindowId() {return spectralWindowId_p;}
-ScalarColumn<Int>& lagId() {return lagId_p;}
+  // attach this object to the supplied table.
+  void attach(NewMSDataDescription& msDataDesc);
+
+  // Access to columns
+  ScalarColumn<Bool>& flagRow() {return flagRow_p;}
+  ScalarColumn<Int>& polarizationId() {return polarizationId_p;}
+  ScalarColumn<Int>& spectralWindowId() {return spectralWindowId_p;}
+  ScalarColumn<Int>& lagId() {return lagId_p;}
 
 private:
+  void attachOptionalCols(NewMSDataDescription& msDataDesc);
 
-ScalarColumn<Bool> flagRow_p;
-ScalarColumn<Int> lagId_p;
-ScalarColumn<Int> polarizationId_p;
-ScalarColumn<Int> spectralWindowId_p;
-
+  ScalarColumn<Bool> flagRow_p;
+  ScalarColumn<Int> lagId_p;
+  ScalarColumn<Int> polarizationId_p;
+  ScalarColumn<Int> spectralWindowId_p;
 };
 
 // <summary>
