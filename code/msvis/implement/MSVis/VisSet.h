@@ -1,5 +1,5 @@
 //# VisSet.h: VisSet definitions
-//# Copyright (C) 1996,1997,1998
+//# Copyright (C) 1996,1997,1998,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -139,16 +139,29 @@ public:
   // Note: this calls origin on the iterator.
   void selectChannel(Int nGroup,Int start, Int width, Int increment, 
 		     Int spectralWindow);
+
   // number of antennas
   Int numberAnt() const;
+
   // number of spectral windows
   Int numberSpw() const;
+
   // number of channels in each spectral window
   Vector<Int> numberChan() const;
+
   // start channel of VisSet selection in each spectral window
   Vector<Int> startChan() const;
+
   // number of coherences
   Int numberCoh() const;
+
+  // Lock and unlock the associated MS
+  void lock() {ms_p.lock();};
+  void unlock() {ms_p.unlock();};
+
+  // Return the associated MS name
+  String msName() {return ms_p.tableName();};
+  
 private:
   // add the MODEL_DATA, CORRECTED_DATA and IMAGING_WEIGHT columns
   void addColumns(Table& tab);
