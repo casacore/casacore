@@ -1,5 +1,5 @@
 //# TSMDataColumn.cc: Tiled Hypercube Storage Manager for data columns
-//# Copyright (C) 1995,1996,1997,1998
+//# Copyright (C) 1995,1996,1997,1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -39,8 +39,7 @@
 
 
 TSMDataColumn::TSMDataColumn (const TSMColumn& column)
-: TSMColumn    (column),
-  lastAccess_p (NoAccess)
+: TSMColumn (column)
 {
     DataType dt = DataType(dataType());
     localPixelSize_p = ValType::getTypeSize (dt);
@@ -128,7 +127,7 @@ void TSMDataColumn::setShapeTiled (uInt rownr, const IPosition& shape,
 	    //# Set the new shape and take care that on the next access
 	    //# the cache size is recalculated.
 	    stmanPtr_p->setShape (rownr, hypercube, shape, tileShape);
-	    lastAccess_p = NoAccess;
+	    hypercube->setLastColAccess (TSMCube::NoAccess);
 	}
     }
 }
@@ -178,11 +177,11 @@ void TSMDataColumn::accessCell (uInt rownr, const void* dataPtr,
     }
     // Size the cache if the user has not done it and if the
     // last access was not to a cell.
-    if (lastAccess_p != CellAccess) {
+    if (hypercube->getLastColAccess() != TSMCube::CellAccess) {
 	if (! stmanPtr_p->userSetCache (rownr)) {
 	    hypercube->setCacheSize (1 + end - start, IPosition(),
 				     IPosition(), IPosition(), False, False);
-	    lastAccess_p = CellAccess;
+	    hypercube->setLastColAccess (TSMCube::CellAccess);
 	}
     }
     hypercube->accessSection (start, end, (char*)dataPtr, colnr_p,
@@ -209,7 +208,8 @@ void TSMDataColumn::accessCellSlice (uInt rownr, const Slicer& ns,
     }
     // Size the cache if the user has not done it
     // and if the access type or slice shape differs.
-    if (lastAccess_p != SliceAccess  ||  ! lastSlice_p.isEqual (slice)) {
+    if (hypercube->getLastColAccess() != TSMCube::SliceAccess
+    ||  ! slice.isEqual (hypercube->getLastColSlice())) {
 	if (! stmanPtr_p->userSetCache (rownr)) {
 	    // The main access path is assumed to be along the full slice
 	    // dimensions.
@@ -223,9 +223,8 @@ void TSMDataColumn::accessCellSlice (uInt rownr, const Slicer& ns,
 	    axisPath.resize (naxis);
 	    hypercube->setCacheSize (1 + end - start, IPosition(),
 				     IPosition(), axisPath, False, False);
-	    lastAccess_p = SliceAccess;
-	    lastSlice_p.resize (slice.nelements());
-	    lastSlice_p = slice;
+	    hypercube->setLastColAccess (TSMCube::SliceAccess);
+	    hypercube->setLastColSlice (slice);
 	}
     }
     hypercube->accessStrided (start, end, stride,
@@ -244,7 +243,7 @@ void TSMDataColumn::accessColumn (const void* dataPtr, Bool writeFlag)
     if (! stmanPtr_p->userSetCache (0)) {
 	hypercube->setCacheSize (end + 1, IPosition(),
 				 IPosition(), IPosition(), False, False);
-	lastAccess_p = ColumnAccess;
+	hypercube->setLastColAccess (TSMCube::ColumnAccess);
     }
     hypercube->accessSection (start, end, (char*)dataPtr, colnr_p,
 			      localPixelSize_p, writeFlag);
@@ -273,7 +272,8 @@ void TSMDataColumn::accessColumnSlice (const Slicer& ns,
     }
     // Size the cache if the user has not done it
     // and if the access type or slice shape differs.
-    if (lastAccess_p != ColumnSliceAccess  ||  ! lastSlice_p.isEqual (slice)) {
+    if (hypercube->getLastColAccess() != TSMCube::ColumnSliceAccess
+    ||  ! slice.isEqual (hypercube->getLastColSlice())) {
 	if (! stmanPtr_p->userSetCache (0)) {
 	    // The main access path is assumed to be along the full slice
 	    // dimensions.
@@ -292,9 +292,8 @@ void TSMDataColumn::accessColumnSlice (const Slicer& ns,
 	    axisPath.resize (naxis);
 	    hypercube->setCacheSize (1 + end - start, IPosition(),
 				     IPosition(), axisPath, False, False);
-	    lastAccess_p = ColumnSliceAccess;
-	    lastSlice_p.resize (slice.nelements());
-	    lastSlice_p = slice;
+	    hypercube->setLastColAccess (TSMCube::ColumnSliceAccess);
+	    hypercube->setLastColSlice (slice);
 	}
     }
     hypercube->accessStrided (start, end, stride,
