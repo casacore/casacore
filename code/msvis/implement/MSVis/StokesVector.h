@@ -1,5 +1,5 @@
 //# StokesVector.h: A fast RigidVector with Stokes conversions
-//# Copyright (C) 1996,1999,2001
+//# Copyright (C) 1996,1999,2001,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
