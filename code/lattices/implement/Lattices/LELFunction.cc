@@ -543,7 +543,7 @@ LELFunctionND<T>::LELFunctionND(const LELFunctionEnums::Function function,
    case LELFunctionEnums::IIF :
    {
       if (arg_p.nelements() != 3) {
-         throw (AipsError ("LELFunctionFloat::constructor - "
+         throw (AipsError ("LELFunctionND - "
 			   "function IIF should have 3 arguments"));
       }
 //# The 1st argument must be Bool, the 2nd and 3rd must be T.
@@ -553,6 +553,26 @@ LELFunctionND<T>::LELFunctionND(const LELFunctionEnums::Function function,
       argType[0] = TpBool;
       argType[1] = whatType((T*)0);
       argType[2] = whatType((T*)0);
+      setAttr (LatticeExprNode::checkArg (arg_p, argType, False));
+      break;
+   }
+   case LELFunctionEnums::REPLACE :
+   {
+      if (arg_p.nelements() != 2) {
+         throw (AipsError ("LELFunctionND - "
+			   "function REPLACE should have 2 arguments"));
+      }
+//# The 1st and 2nd argument must be T.
+//# The first arguments has to be a lattice.
+
+      if (arg_p[0].isScalar()) {
+	 throw (AipsError ("LELFunctionND - "
+			   "first argument of function REPLACE cannot be "
+			   " a scalar"));
+      }
+      Block<Int> argType(2);
+      argType[0] = whatType((T*)0);
+      argType[1] = whatType((T*)0);
       setAttr (LatticeExprNode::checkArg (arg_p, argType, False));
       break;
    }
@@ -778,6 +798,48 @@ void LELFunctionND<T>::eval(LELArray<T>& result,
       }
       break;
    }
+
+   case LELFunctionEnums::REPLACE :
+   {
+      //# The first argument is always an array.
+      //# Replacing is only needed if the first argument has a mask.
+      arg_p[0].eval (result, section);
+      if (arg_p[0].isMasked()) {
+	 uInt n = result.value().nelements();
+	 Bool deleteRes, deleteMask;
+	 T* resData = result.value().getStorage (deleteRes);
+	 const Bool* maskData = result.mask().getStorage (deleteMask);
+	 //# Handle the scalar case. Use 0 for an invalid scalar.
+	 if (arg_p[1].isScalar()) {
+	    T tmp;
+	    if (arg_p[1].isInvalidScalar()) {
+	       tmp = 0;
+	    } else {
+	       arg_p[1].eval (tmp);
+	    }
+	    for (uInt i=0; i<n; i++) {
+	       if (! maskData[i]) {
+		  resData[i] = tmp;
+	       }
+	    }
+	 } else {
+	    LELArrayRef<T> tmp(result.shape());
+	    arg_p[1].evalRef (tmp, section);
+	    Bool deleteTmp;
+	    const T* tmpData = tmp.value().getStorage (deleteTmp);
+	    for (uInt i=0; i<n; i++) {
+	       if (! maskData[i]) {
+		  resData[i] = tmpData[i];
+	       }
+	    }
+	    tmp.value().freeStorage (tmpData, deleteTmp);
+	 }
+	 result.value().putStorage (resData, deleteRes);
+	 result.mask().freeStorage (maskData, deleteMask);
+      }
+      break;
+   }
+	 
    default:
       throw(AipsError("LELFunctionND::eval - unknown function"));
    }
@@ -821,9 +883,14 @@ Bool LELFunctionND<T>::prepareScalarExpr()
    uInt i;
    for (i=0; i<arg_p.nelements(); i++) {
        Bool invalid = arg_p[i].replaceScalarExpr();
-       if (invalid  &&  function_p != LELFunctionEnums::IIF) {
+       if (invalid  &&  function_p != LELFunctionEnums::IIF
+       &&  function_p != LELFunctionEnums::REPLACE) {
 	  return True;
        }
+   }
+   // REPLACE is never invalid.
+   if (function_p == LELFunctionEnums::REPLACE) {
+      return False;
    }
    // IIF is invalid if:
    // - the condition is an invalid scalar.

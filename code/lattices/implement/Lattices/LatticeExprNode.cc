@@ -1494,6 +1494,39 @@ LatticeExprNode iif (const LatticeExprNode& condition,
    return LatticeExprNode();
 }
 
+LatticeExprNode replace (const LatticeExprNode& arg1,
+			 const LatticeExprNode& arg2)
+{  
+#if defined(AIPS_TRACE)
+   cout << "LatticeExprNode:: function replace" << endl;
+#endif
+   DataType dtype = LatticeExprNode::resultDataType (arg1.dataType(),
+						     arg2.dataType());
+   Block<LatticeExprNode> arg(2);
+   switch (dtype) {
+   case TpFloat:
+       arg[0] = arg1.makeFloat();
+       arg[1] = arg2.makeFloat();
+       return new LELFunctionND<Float>(LELFunctionEnums::REPLACE, arg);
+   case TpDouble:
+       arg[0] = arg1.makeDouble();
+       arg[1] = arg2.makeDouble();
+       return new LELFunctionND<Double>(LELFunctionEnums::REPLACE, arg);
+   case TpComplex:
+       arg[0] = arg1.makeComplex();
+       arg[1] = arg2.makeComplex();
+       return new LELFunctionND<Complex>(LELFunctionEnums::REPLACE, arg);
+   case TpDComplex:
+       arg[0] = arg1.makeDComplex();
+       arg[1] = arg2.makeDComplex();
+       return new LELFunctionND<DComplex>(LELFunctionEnums::REPLACE, arg);
+   default:
+      throw (AipsError ("LatticeExprNode::replace - "
+			"1st and 2nd argument cannot be Bool"));
+   }
+   return LatticeExprNode();
+}
+
 
 
 Bool LatticeExprNode::areRegions (const LatticeExprNode& left,

@@ -251,6 +251,8 @@ LatticeExprNode ImageExprParse::makeFuncNode (const LatticeExprNode& arg1) const
 	return avdev(arg1);
     } else if (itsSval == "sum") {
 	return sum(arg1);
+    } else if (itsSval == "replace") {
+	return replace(arg1, 0);
     } else if (itsSval == "ndim") {
 	return ndim(arg1);
     } else if (itsSval == "nelements"  ||  itsSval == "count") {
@@ -271,6 +273,8 @@ LatticeExprNode ImageExprParse::makeFuncNode (const LatticeExprNode& arg1) const
 	return toComplex(arg1);
     } else if (itsSval == "dcomplex") {
 	return toDComplex(arg1);
+    } else if (itsSval == "bool") {
+	return toBool(arg1);
     } else {
 	throw (AipsError ("1-argument function " + itsSval + " is unknown"));
     }
@@ -299,6 +303,8 @@ LatticeExprNode ImageExprParse::makeFuncNode (const LatticeExprNode& arg1,
 	return amp(arg1, arg2);
     } else if (itsSval == "pa") {
 	return pa(arg1, arg2);
+    } else if (itsSval == "replace") {
+	return replace(arg1, arg2);
     } else {
 	throw (AipsError ("2-argument function " + itsSval + " is unknown"));
     }

@@ -349,6 +349,14 @@ class LatticeExprNode
 			       const LatticeExprNode& arg1,
 			       const LatticeExprNode& arg2);
 
+// This function replaces every masked-off element in the first argument
+// with the corresponding element from the second argument.
+// The first argument has to be a lattice (expression), the second can
+// be a scalar or lattice. The mask of the first argument is not changed.
+// If the first argument does not have a mask, this function does nothing.
+   friend LatticeExprNode replace (const LatticeExprNode& arg1,
+			           const LatticeExprNode& arg2);
+
 // Functions to convert to the given data type.  These are mostly 
 // meaningful for down-conversions (e.g. double to float),
 // since up-conversions are automatically done to get matching data types
