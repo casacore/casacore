@@ -28,123 +28,117 @@
 #include <trial/OS/ModcompConversion.h>
 #include <aips/Utilities/Assert.h>
 #include <aips/Exceptions/Error.h>
-#include <iomanip.h>
 
 // Modcomp has one more bit in the exponent than IEEE and because it does not
 // have an implicit bit two less bits in the Mantissa. It does not have any
 // special numbers like NaN or Infinity. The Modcomp is big-endian (like Sun's)
 void ModcompConversion::toLocal (Float* to, const void* from, uInt nr)
 {
-  DebugAssert(sizeof(Float) == SIZE_MODCOMP_FLOAT, AipsError);
   DebugAssert(sizeof(Short) >= 2, AipsError);
-  union {
-    Float asFloat;
-    uChar asByte[SIZE_MODCOMP_FLOAT];
-  };
-  const Char* data = (const Char*) from;
-  for (const Float* const last = to + nr; to < last; 
-       data += SIZE_MODCOMP_FLOAT, to++) {
-    // Copy the data to the union correcting for big/little ended machines
-    CanonicalConversion::toLocal(asFloat, data);
+  uChar asByte[SIZE_MODCOMP_FLOAT];
+
+  const uChar* data = (const uChar*) from;
+  for (const Float* const last = to + nr; to < last; to++) {
+    // Copy the data to the union
+    for (uShort i = 0; i < SIZE_MODCOMP_FLOAT; i++) {
+      asByte[i] = *data;
+      data++;
+    }
     // If the number is negative then its positive value is the twos complement
-    const Bool isNegative = 
-      ((asByte[SIZE_MODCOMP_FLOAT-1] & 0x80) > 0) ? True : False;
+    const Bool isNegative = ((asByte[0] & 0x80) > 0) ? True : False;
     if (isNegative) { // This code takes the twos complement
-      uShort i = SIZE_MODCOMP_FLOAT;
-      while (i > 0) {
- 	i--;
+      uShort i = 0;
+      while (i < SIZE_MODCOMP_FLOAT) {
  	asByte[i] = ~asByte[i];
-      }
-      asByte[i]++;
-      while (asByte[i] == 0 && i < SIZE_MODCOMP_FLOAT) {
  	i++;
+      }
+      i--;
+      asByte[i]++;
+      while (asByte[i] == 0 && i > 0) {
+ 	i--;
  	asByte[i]++;
       }
     }
 
-    Bool isZero = (asByte[SIZE_MODCOMP_FLOAT-2] & 0x3f) == 0x00;
-    {
-      uInt i = SIZE_MODCOMP_FLOAT-2;
-      while (i > 0) {
- 	i--;
- 	isZero = (asByte[i] == 0x00) && isZero;
-      }
+    Bool isZero = (asByte[1] & 0x3f) == 0x00;
+    for (uShort i = 2; i < SIZE_MODCOMP_FLOAT; i++) {
+      isZero = (asByte[i] == 0x00) && isZero;
     }
+
     if (isZero) { // Early exit if the number is zero. 
       // I am told this is common in the data so it should speed things up.
-      for (uInt k = 0; k < SIZE_MODCOMP_FLOAT-1; k++) {
+      for (uShort k = 1; k < SIZE_MODCOMP_FLOAT; k++) {
 	asByte[k] = 0x00;
       }
       if (isNegative) { // Return a signed zero
-	asByte[SIZE_MODCOMP_FLOAT-1] = 0x80;
+	asByte[0] = 0x80;
       } else {
-	asByte[SIZE_MODCOMP_FLOAT-1] = 0x00;
+	asByte[0] = 0x00;
       }
     } else { // Number is not zero
-      Short exponent = ( (asByte[SIZE_MODCOMP_FLOAT-1] & 0x7f) << 2 ) |
-	               ( (asByte[SIZE_MODCOMP_FLOAT-2] & 0xc0) >> 6 );
-      while ((asByte[2] & 0x20) == 0) { // See if the number is unnormalised
+      Short exponent = ((asByte[0] & 0x7f) << 2) | ((asByte[1] & 0xc0) >> 6);
+      while ((asByte[1] & 0x20) == 0) { // See if the number is unnormalised
 	{ // If so try to normalise it. 
-	  // This code does a (painful) byte by byte shift by one bit.
-	  uInt i = 0; 
+	  // This code does a byte by byte left shift by one bit (painful).
+	  uShort i = SIZE_MODCOMP_FLOAT-1; 
 	  Bool msbIsSet = (asByte[i] & (0x80)) > 0 ? True : False;
 	  asByte[i] <<= 1;
-	  i++;
-	  while (i < SIZE_MODCOMP_FLOAT-2) {
+	  i--;
+	  while (i > 1) {
 	    Bool prevMsbIsSet = msbIsSet;
 	    msbIsSet = (asByte[i] & (0x80)) > 0 ? True : False;
 	    asByte[i] <<= 1;
 	    if (prevMsbIsSet) asByte[i] |= 0x01;
-	    i++;
+	    i--;
 	  }
-	  asByte[i] = ((asByte[i] & 0x3f) << 1) | asByte[i] & 0xc0;
-	  if (msbIsSet) asByte[i] |= 0x01;
+	  asByte[1] = ((asByte[1] & 0x3f) << 1) | asByte[1] & 0xc0;
+	  if (msbIsSet) asByte[1] |= 0x01;
 	}
 	exponent--; // Because the exponent can go negative it must be signed
       }
       if (exponent > 384) {// exponent is too big.
-	for (uInt i = 0; i < SIZE_MODCOMP_FLOAT-2; i++) {
+	for (uShort i = 2; i < SIZE_MODCOMP_FLOAT; i++) {
 	  asByte[i] = 0x00;
 	}
-	asByte[SIZE_MODCOMP_FLOAT-2] = 0x80;
+	asByte[1] = 0x80;
 	if (isNegative) {
-	  asByte[SIZE_MODCOMP_FLOAT-1] = 0xff; // Return a negative infinity
+	  asByte[0] = 0xff; // Return a negative infinity
 	} else {
-	  asByte[SIZE_MODCOMP_FLOAT-1] = 0x7f;  // Return a positive infinity
+	  asByte[0] = 0x7f; // Return a positive infinity
 	}
       } else if (exponent < 108) {// exponent is too small.
-	for (uInt i = 0; i < SIZE_MODCOMP_FLOAT-1; i++) {
+	for (uShort i = 1; i < SIZE_MODCOMP_FLOAT; i++) {
 	  asByte[i] = 0x00;       
 	}
 	if (isNegative) {
-	  asByte[SIZE_MODCOMP_FLOAT-1] = 0x80;  // Return a negative zero
+	  asByte[0] = 0x80;  // Return a negative zero
 	} else {
-	  asByte[SIZE_MODCOMP_FLOAT-1] = 0x00;  // Return a positive zero
+	  asByte[0] = 0x00;  // Return a positive zero
 	}
       } else if (exponent > 130) { // A normal number
 	// The next 2 lines assumes mantissa is normalised (as is done above) 
 	exponent -= 130;
-	{ // This code does a (painful) byte by byte shift by 2 bits
-	  uInt i = 0; 
+	{ // This code does a byte by byte left shift by 2 bits (painful)
+	  uShort i = SIZE_MODCOMP_FLOAT-1;
 	  uChar msbits = asByte[i] >> 6;
 	  asByte[i] <<= 2;
-	  i++;
-	  while (i < SIZE_MODCOMP_FLOAT-2) {
+	  i--;
+	  while (i > 1) {
 	    uChar prevMsbits = msbits;
 	    msbits = asByte[i] >> 6;
 	    asByte[i] <<= 2;
 	    asByte[i] |= prevMsbits;
-	    i++;
+	    i--;
 	  }
-	  asByte[i] = (asByte[i] << 2) | msbits;
+	  asByte[1] = (asByte[1] << 2) | msbits;
 	}
 	if ((exponent & 0x0001) == 0) {
-	  asByte[SIZE_MODCOMP_FLOAT-2] &= 0x7f; 
+	  asByte[1] &= 0x7f; 
 	} else {
-	  asByte[SIZE_MODCOMP_FLOAT-2] |= 0x80; 
+	  asByte[1] |= 0x80; 
 	}
-	asByte[SIZE_MODCOMP_FLOAT-1] = (uChar) exponent >> 1;
-	if (isNegative) asByte[SIZE_MODCOMP_FLOAT-1] |= 0x80;
+	asByte[0] = (uChar) exponent >> 1;
+	if (isNegative) asByte[0] |= 0x80;
 	// The IEEE format effectively has two more bits in the mantissa than
 	// the Modcomp format. The least significant bits are always set to
 	// zero. Numerically it would be better to set them randomly to zero or
@@ -156,46 +150,47 @@ void ModcompConversion::toLocal (Float* to, const void* from, uInt nr)
 	  while (shift > 0) { // Exponent too small is already dealt with
 	    const Short thisShift = shift > 8 ? 8 : shift;
 	    const Short compShift = 8-thisShift;
-	    uInt i = SIZE_MODCOMP_FLOAT-2;
-	    asByte[i] &= 0x3f;
-	    uChar lsbits = asByte[i] << compShift;
-	    asByte[i] >>= thisShift;
-	    i--;
-	    while (i > 0) {
+	    asByte[1] &= 0x3f;
+	    uChar lsbits = asByte[1] << compShift;
+	    asByte[1] >>= thisShift;
+	    uShort i = 2;
+	    while (i < SIZE_MODCOMP_FLOAT-1) {
 	      uChar prevLsbits = lsbits;
 	      lsbits = asByte[i] << compShift;
-	      asByte[i] >>= thisShift; asByte[i] |= prevLsbits;
-	      i--;
+	      asByte[i] >>= thisShift; 
+	      asByte[i] |= prevLsbits;
+	      i++;
 	    }
-	    asByte[i] >>= thisShift; asByte[i] |= lsbits;
+	    asByte[SIZE_MODCOMP_FLOAT-1] >>= thisShift; 
+	    asByte[SIZE_MODCOMP_FLOAT-1] |= lsbits;
 	    shift -= 8;
 	  }
 	} else if (exponent == 130) { // need to shift mantissa to the left
 	  // This code does a (painful) byte by byte left shift by one bit.
-	  uInt i = 0; 
+	  uShort i = SIZE_MODCOMP_FLOAT-1;
 	  Bool msbIsSet = (asByte[i] & (0x80)) > 0 ? True : False;
 	  asByte[i] <<= 1;
-	  i++;
-	  while (i < SIZE_MODCOMP_FLOAT-2) {
+	  i--;
+	  while (i > 1) {
 	    Bool prevMsbIsSet = msbIsSet;
 	    msbIsSet = (asByte[i] & (0x80)) > 0 ? True : False;
 	    asByte[i] <<= 1;
 	    if (prevMsbIsSet) asByte[i] |= 0x01;
-	    i++;
+	    i--;
 	  }
-	  asByte[i] = (asByte[i] & 0x3f) << 1;
-	  if (msbIsSet) asByte[i] |= 0x01;
+	  asByte[1] = (asByte[1] & 0x3f) << 1;
+	  if (msbIsSet) asByte[1] |= 0x01;
 	} else { // exponent == 129. No need to shift the mantissa
-	  asByte[SIZE_MODCOMP_FLOAT-2] &= 0x3f;
+	  asByte[1] &= 0x3f;
 	}
 	if (isNegative) {// the exponent is always zero, so just fixup the sign
-	  asByte[SIZE_MODCOMP_FLOAT-1] = 0x80;
+	  asByte[0] = 0x80;
 	} else {
-	  asByte[SIZE_MODCOMP_FLOAT-1] = 0x00;
+	  asByte[0] = 0x00;
 	}
       }
     }
-    *to = asFloat; 
+    CanonicalConversion::toLocal(*to, asByte);
   }
 }
 
