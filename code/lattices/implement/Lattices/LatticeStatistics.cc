@@ -31,7 +31,6 @@
 #include <aips/Arrays/ArrayMath.h>
 #include <aips/Arrays/VectorIter.h>
 #include <aips/Arrays/Matrix.h>
-#include <trial/Coordinates.h>  
 #include <aips/Exceptions/Error.h>
 #include <aips/Logging/LogIO.h>
 #include <trial/Images/ImageUtilities.h>
