@@ -215,6 +215,13 @@ public:
   // Returns a Vector whose indices indicate which components are selected
   Vector<Int> selected() const;
 
+  // set the label on the specified components to the specified string
+  // <li> AipsError - If the index is equal to or larger than the number of
+  //                  elements in the list or less than zero
+  // </thrown>
+  void setLabel(const Vector<Int> & whichComponents,
+		const String & newLabel);
+
   // set the flux on the specified components to the specified flux
   // <thrown>
   // <li> AipsError - If the index is equal to or larger than the number of
@@ -267,6 +274,11 @@ public:
   // </thrown>
   void convertRefDirection(const Vector<Int> & whichComponents,
 			   MDirection::Types newFrame);
+
+  // change the shape used by the specified components. Shape parameters are
+  // set to there default values. Does not change the shape if the string
+  // cannot be translated into a valid shape.
+  //  void changeShape(const Vector<Int> & which, ComponentType::Shape newShape);
 
   // returns a reference to the specified element in the list.
   // <thrown>
