@@ -27,7 +27,7 @@
 
 #include <trial/Lattices/LatticeExpr.h>
 #include <trial/Lattices/ArrayLattice.h>
-#include <trial/Lattices/PixelBox.h>
+#include <aips/Lattices/Slicer.h>
 #include <aips/Arrays/Array.h>
 #include <aips/Arrays/ArrayLogical.h>
 #include <aips/Lattices/IPosition.h>
