@@ -62,6 +62,7 @@
 #include <aips/Tables/ScalarColumn.h>
 #include <aips/Tables/ArrayColumn.h>
 #include <aips/Tables/TableRow.h>
+#include <aips/Tables/TableCopy.h>
 #include <aips/Arrays/Array.h>
 #include <aips/Arrays/Slicer.h>
 #include <aips/Arrays/Slice.h>
@@ -605,6 +606,8 @@
 // of a sorted or selected table results in the update of the original
 // table. The result is, however, a table in itself, so all table
 // functions (including select and sort) can be used with it.
+// Note that a true copy of such a reference table can be made with
+// the <linkto class=Table>Table::deepCopy</linkto> function.
 // <p>
 // Rows or columns can be selected from a table. Columns can be selected
 // by the
