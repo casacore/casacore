@@ -2,7 +2,7 @@
 # makedefs: Installation-specific definitions used by AIPS++ makefiles
 #-----------------------------------------------------------------------------
 #
-#   Copyright (C) 1997,1998
+#   Copyright (C) 1997,1998,1999
 #   Associated Universities, Inc. Washington DC, USA.
 #
 #   This program is free software; you can redistribute it and/or modify
@@ -69,7 +69,7 @@
 #=============================================================================
 
 #-----------------------------------------------------------------------------
-# This file should work on Red Hat Linux 5.1 systems without
+# This file should work on RedHat Linux 5.1 and 5.2 systems without
 # modification assuming that the additional software (lapack, pgplot
 # etc.) available on the AIPS++ ftp site has been installed. It uses
 # egcs as the compiler for C,C++ and Fortran (ie g77).
@@ -82,8 +82,14 @@
 #------------------
 C++ROOT := /usr
 
-# General external libraries.
-#----------------------------
+# General external libraries. 
+#---------------------------- 
+# WCSLIB (supplied with AIPS++).
+# This definition is needed for RedHat-5.1 and 5.2. We do not know if
+# it is needed for other Linux distributions. It enables a macro
+# workaround for a 'signbit' function that is missing in some OS's
+WCSDEFS := -DSIGNBIT
+
 # PGPLOT (FORTRAN plotting package).
 PGPLOTROOT := /usr
 
