@@ -35,8 +35,10 @@ typedef Quantum<Double> gpp_MeasTable_bug1;
 #include <aips/Measures/RotMatrix.h>
 #include <aips/Measures/Euler.h>
 #include <aips/Measures/MVEpoch.h>
+#include <aips/Measures/MPosition.h>
 #include <aips/Measures/MeasIERS.h>
 #include <aips/Measures/MeasJPL.h>
+#include <aips/Measures/MUString.h>
 #include <aips/OS/Time.h>
 #include <aips/Utilities/Assert.h>
 #include <aips/Mathematics/Constants.h>
@@ -49,6 +51,11 @@ typedef Quantum<Double> gpp_MeasTable_bug1;
 #include <aips/Containers/RecordField.h>
 
 //# Constants
+
+//# Data
+Bool MeasTable::obsNeedInit = True;
+Vector<String> MeasTable::obsNams(0);
+Vector<MPosition> MeasTable::obsPos(0);
 
 //# Member functions
 void MeasTable::
@@ -776,6 +783,64 @@ const Double &MeasTable::Planetary(MeasTable::JPLconst what) {
     };
   };
   return cn[what];
+}
+
+// Observatory data
+void MeasTable::initObservatories() {
+  if (obsNeedInit) {
+    obsNeedInit = False;
+    Table t;
+    ROTableRow row;
+    TableRecord kws;
+    String rfn[3] = {"Long", "Lat", "Height"};
+    RORecordFieldPtr<Double> rfp[3];
+    Double dt;
+    String vs;	
+    if (!MeasIERS::getTable(t, kws, row, rfp, vs, dt, 3, rfn, "Observatories",
+		  "measures.observatory.directory",
+		  "aips/Measures")) {
+      LogIO os(LogOrigin("MeasTable",
+			 String("Observatories(MVPosition, String)"),
+			 WHERE));
+      os << "Cannot read table of Observatories" << LogIO::EXCEPTION;
+    };
+    Int N = t.nrow();
+    if (N<1) {
+     LogIO os(LogOrigin("MeasTable",
+			String("Observatories(MVPosition, String)"),
+			WHERE));
+      os << "No entries in table of Observatories" << LogIO::EXCEPTION;
+    };
+    obsNams.resize(N); obsNams.makePermanent();
+    obsPos.resize(N); obsPos.makePermanent();
+    MPosition::Ref mr;
+    MPosition tmp;
+    for (Int i=0; i<N; i++) {
+      row.get(i);
+      obsNams(i) = *RORecordFieldPtr<String>(row.record(), "Name");
+      if (!tmp.giveMe(*RORecordFieldPtr<String>(row.record(), "Type"), mr)) {
+	LogIO os(LogOrigin("MeasTable",
+			   String("Observatories(MVPosition, String)"),
+			   WHERE));
+	os << "Illegal position type in Observatories" << LogIO::EXCEPTION;
+      };
+      obsPos(i) = MPosition(MVPosition(*(rfp[0]), *(rfp[1]), *(rfp[2])), mr);
+    };
+  };
+}
+const Vector<String> &MeasTable::Observatories() {
+  MeasTable::initObservatories();
+  return MeasTable::obsNams;
+}
+
+const Bool MeasTable::Observatory(MPosition &obs, const String &nam) {
+  MeasTable::initObservatories();
+  Int i=MUString::minimaxNC(nam, MeasTable::obsNams);
+  if (i < MeasTable::obsNams.nelements()) {
+    obs = MeasTable::obsPos(i);
+    return True;
+  };
+  return False;
 }
 
 // Aberration function

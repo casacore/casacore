@@ -36,6 +36,7 @@
 //# Includes
 #include <aips/aips.h>
 #include <aips/Measures/MeasData.h>
+#include <aips/Measures/MPosition.h>
 #include <aips/Functionals/Polynomial.h>
 
 //# Forward Declarations
@@ -191,6 +192,16 @@ public:
   // Get the JPL DE constant indicated
   static const Double &Planetary(MeasTable::JPLconst what);
   // </group>
+
+  // Observatory positions
+  // <group>
+  // Initialise list of all observatories from Observatories table
+  static void initObservatories();
+  // Get list of all observatories
+  static const Vector<String> &Observatories();
+  // get position of observatory nam (False if not present)
+  static const Bool Observatory(MPosition &obs, const String &nam);
+  // </group>
   
   // Aberration related data
   // <group>
@@ -342,6 +353,15 @@ private:
 			Polynomial<Double> poly[],
 			const Long coeffTD[][5], Int TDrow,
 			const Short coeffSC[][2]);
+
+  //# Data
+  // Observatories table data
+  // <group>
+  static Bool obsNeedInit;
+  static Vector<String> obsNams;
+  static Vector<MPosition> obsPos;
+  // </group>
+
 };
 
 #endif
