@@ -42,21 +42,25 @@ int main(int argc, char **argv)
     MeasurementSet ms(msName);
     MeasurementSet * mssel;
     cout << "Original table has rows " << ms.nrow() << endl;
-    msFieldGramParseCommand(ms, "field='<1'");
-    const TableExprNode *node = &msFieldGramParseNode();
-    cout << "TableExprNode has rows = " << node->nrow() << endl;
-    Table tablesel(ms.tableName(), Table::Update);
-    mssel = new MeasurementSet(tablesel(*node, node->nrow() ));
-    cout << "After mssel constructor called " << endl;
-    mssel->rename(ms.tableName()+"/SELECTED_TABLE", Table::Scratch);
-    mssel->flush();
-    if(mssel->nrow()==0){
-      cout << "Check your input, No data selected" << endl;
+    if(msFieldGramParseCommand(ms, "field='<1'")) {
+      const TableExprNode *node = &msFieldGramParseNode();
+      cout << "TableExprNode has rows = " << node->nrow() << endl;
+      Table tablesel(ms.tableName(), Table::Update);
+      mssel = new MeasurementSet(tablesel(*node, node->nrow() ));
+      cout << "After mssel constructor called " << endl;
+      mssel->rename(ms.tableName()+"/SELECTED_TABLE", Table::Scratch);
+      mssel->flush();
+      if(mssel->nrow()==0){
+        cout << "Check your input, No data selected" << endl;
+      }
+      else {
+        cout << "selected table has rows " << mssel->nrow() << endl;
+      }
+      delete mssel;
     }
     else {
-      cout << "selected table has rows " << mssel->nrow() << endl;
+      cout << "failed to parse expression" << endl;
     }
-    delete mssel;
   } catch (AipsError x) {
     cout << "ERROR: " << x.getMesg() << endl;
     return 1;
