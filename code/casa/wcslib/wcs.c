@@ -2461,6 +2461,7 @@ int wcssptr(
    char ctypeS2[9])
 
 {
+   char   *code;
    int    j, status;
    double cdeltS2, crvalS2;
 
@@ -2493,10 +2494,23 @@ int wcssptr(
       return 6;
    }
 
+
+   /* Translate keyword values. */
    wcs->flag = 0;
    wcs->cdelt[j] = cdeltS2;
-   strcpy(wcs->ctype[j], ctypeS2);
    wcs->crval[j] = crvalS2;
+
+   /* Extract the Doppler frame from AIPS-convention types. */
+   code = wcs->ctype[j] + 4;
+   if (strcmp(code, "-LSR") == 0) {
+      strcpy(wcs->specsys, "LSRK");
+   } else if (strcmp(code, "-HEL") == 0) {
+      strcpy(wcs->specsys, "BARYCENT");
+   } else if (strcmp(code, "-OBS") == 0) {
+      strcpy(wcs->specsys, "TOPOCENT");
+   }
+
+   strcpy(wcs->ctype[j], ctypeS2);
 
    return 0;
 }
