@@ -53,7 +53,8 @@
 //
 // <synopsis>
 // These functions perform element by element logical operations on
-// arrays.  The two arrays must conform.
+// arrays.  The two arrays must conform, except for allEQ which returns
+// False if the arrays do not conform.
 //
 // There are two classes of functions.  One class returns a LogicalArray.
 // In these functions, the value of an element of the LogicalArray is
@@ -121,6 +122,9 @@
 // The operator forms of array logical operations which return a single Bool
 // have been replaced by these "all" functions.
 // The operator forms of array logical operations now return a LogicalArray.
+//
+// The arrays must conform except for allEQ, which will return False if the
+// arrays are different shapes.
 //
 // <thrown>
 //    <li> ArrayConformanceError
