@@ -39,10 +39,9 @@
 #include <trial/TableMeasures/TableQuantumDesc.h>
 
 // <module> 
-//
+
 // <summary> 
-// TableMeasures.h: Create and use scalar and array columns of Quanta and 
-// Measures in Tables.
+// TableMeasures.h: Create and use scalar and array columns of Quanta and Measures in Tables.
 // </summary>
 
 // <prerequisite>
@@ -51,14 +50,14 @@
 // </prerequisite>
 
 // <reviewed reviewer="" date="" demos="" tests="tTableMeasures">
-
-// <use visibility=export>
+// </reviewed>
 
 // <etymology>
 // Table columns containing Measures and Quanta
 // </etymology>
-//
+
 // <synopsis>
+
 // The TableMeasures system exists to provide a way of creating (defining)
 // Measure and Quantum Table columns thus enabling the direct storage of 
 // Quanta and Measures in Aips++ Tables. 
@@ -66,21 +65,21 @@
 // Defining Quantum and Measure columns is a once only operation (for each
 // column).  It can be seen as an extension to the existing Column Descriptor 
 // mechanism which adds a column of a specified type to a table.  The 
-// <linkto><class="TableMeasDesc">TableMeasDesc</linkto> and 
-// <linkto><class="TableQuantumDesc">TableQuantumDesc</linkto> class 
+// <linkto><class=TableMeasDesc>TableMeasDesc</linkto> and 
+// <linkto><class=TableQuantumDesc>TableQuantumDesc</linkto> class 
 // hierarchies are used to define Measure and Quantum columns.
 // 
 // Once defined, Measure and Quantum column objects are used to access a
 // column for reading and writing of Measures and Quanta.  For Quantum
 // column objects see the classes 
-// <linkto><class="ROScalarQuantColumn">ScalarQuantColumn</linkto> and
-// <linkto><class="ROArrayQuantColumn">ArrayQuantColumn</linkto>.  For
+// <linkto><class=ROScalarQuantColumn>ScalarQuantColumn</linkto> and
+// <linkto><class=ROArrayQuantColumn>ArrayQuantColumn</linkto>.  For
 // Measure column objects see 
-// <linkto><class="ROScalarMeasColumn">ScalarMeasColumn</linkto> and
-// <linkto><class="ROArrayMeasColumn">ArrayMeasColumn</linkto>.
-// 
+// <linkto><class=ROScalarMeasColumn>ScalarMeasColumn</linkto> and
+// <linkto><class=ROArrayMeasColumn>ArrayMeasColumn</linkto>.
+
 // </synopsis>
-//
+
 // <motivation>
 // The standard Aips++ Table system does not directly support Quantum and
 // Measure columns.  These classes overcome this limitation.
