@@ -466,10 +466,8 @@ void testLogIO()
     }
 }
 
-void testLogMemory()
+void testLogAny (LogSink& sink)
 {
-  LogFilter tmp;
-  LogSink sink(tmp, False);
   LogIO lio(sink);
   lio << "test " << LogIO::WARN << "message" << LogIO::SEVERE
       << LogIO::POST;
@@ -487,6 +485,28 @@ void testLogMemory()
   AlwaysAssertExit (sink.nelements() == 3);
   AlwaysAssertExit (sink.getMessage(2) == "test2 message");
   AlwaysAssertExit (sink.getPriority(2) == "SEVERE");
+  sink.clearLocally();
+  AlwaysAssertExit (sink.nelements() == 0);
+  lio << "test " << LogIO::WARN << "message" << LogIO::SEVERE
+      << LogIO::POST;
+  AlwaysAssertExit (sink.nelements() == 1);
+  AlwaysAssertExit (sink.getMessage(0) == "test message");
+  AlwaysAssertExit (sink.getPriority(0) == "SEVERE");
+}
+
+void testLogMemory()
+{
+  LogFilter tmp;
+  LogSink sink(tmp, False);
+  testLogAny (sink);
+}
+
+void testLogTable()
+{
+  LogFilter tmp;
+  cleanup();
+  LogSink sink(tmp, tableNames[0]);
+  testLogAny (sink);
 }
 
 int main()
@@ -499,7 +519,7 @@ int main()
 	testLogSink();
 	testLogIO();
 	testLogMemory();
-	cleanup();
+	testLogTable();
     } catch (AipsError x) {
         cout << "Caught an exception : " << x.getMesg() << endl;
 	exit(1);
