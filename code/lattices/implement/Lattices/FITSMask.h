@@ -1,5 +1,5 @@
  //# FITSMask.h: A Lattice that can be used for temporary storage
-//# Copyright (C) 1997,1998,1999,2000,2001
+//# Copyright (C) 1997,1998,1999,2000,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -95,12 +95,21 @@ class FITSMask : public Lattice<Bool>
 {
 public:
 
-  // Constructor.    The pointer is not cloned, just copied
-  // The scale, offset, maguc blanking value and indication that the
-  // FITS file has blanks are needed for 16bit integer FITS only.
-  // The values must come from the FITS header ('bscale', 'bzero', 'blank')
+  // Constructor (for 32 bit floating point). The pointer is not cloned, 
+  // just copied.  
+  FITSMask (TiledFileAccess* tiledFileAccess);
+
+  // Constructor (for 16 bit integers).  The pointer is not cloned, just copied
+  // The scale, offset, magic blanking values must come from
+  // the FITS header ('bscale', 'bzero', 'blank')
   FITSMask (TiledFileAccess* tiledFileAccess, Float scale, Float offset,
             Short magic, Bool hasBlanks);
+  
+  // Constructor (for 32 bit integers).  The pointer is not cloned, just copied
+  // The scale, offset, magic blanking values must come from
+  // the FITS header ('bscale', 'bzero', 'blank')
+  FITSMask (TiledFileAccess* tiledFileAccess, Float scale, Float offset,
+            Int magic, Bool hasBlanks);
   
   // Copy constructor (reference semantics).  The TiledFileAccess pointer
   // is just copied.
@@ -140,8 +149,9 @@ private:
   TiledFileAccess* itsTiledFilePtr;
   Array<Float> itsBuffer;
   Float itsScale, itsOffset;
-  Short itsMagic;
-  Bool itsHasBlanks;
+  Short itsShortMagic;
+  Int itsLongMagic;
+  Bool itsHasIntBlanks;
 };
 
 

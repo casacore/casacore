@@ -1,5 +1,5 @@
 //# FITSMask.cc: an on-the-fly mask for FITS images
-//# Copyright (C) 1997,1998,1999,2000,2001
+//# Copyright (C) 1997,1998,1999,2000,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -38,26 +38,49 @@
 
 
 
+FITSMask::FITSMask (TiledFileAccess* tiledFile)
+: itsTiledFilePtr(tiledFile),
+  itsScale(1.0),
+  itsOffset(0.0),
+  itsShortMagic(0),
+  itsLongMagic(0),
+  itsHasIntBlanks(False)
+{
+   AlwaysAssert(itsTiledFilePtr->dataType()==TpFloat, AipsError);
+}
+
 FITSMask::FITSMask (TiledFileAccess* tiledFile, Float scale, Float offset,
                     Short magic, Bool hasBlanks)
 : itsTiledFilePtr(tiledFile),
   itsScale(scale),
   itsOffset(offset),
-  itsMagic(magic),
-  itsHasBlanks(hasBlanks)
+  itsShortMagic(magic),
+  itsLongMagic(0),
+  itsHasIntBlanks(hasBlanks)
 {
-// We could implement more cases in doGetSlice
-
-   AlwaysAssert(itsTiledFilePtr->dataType()==TpFloat ||
-                itsTiledFilePtr->dataType()==TpShort, AipsError);
+   AlwaysAssert(itsTiledFilePtr->dataType()==TpShort, AipsError);
 }
+
+FITSMask::FITSMask (TiledFileAccess* tiledFile, Float scale, Float offset,
+                    Int magic, Bool hasBlanks)
+: itsTiledFilePtr(tiledFile),
+  itsScale(scale),
+  itsOffset(offset),
+  itsShortMagic(0),
+  itsLongMagic(magic),
+  itsHasIntBlanks(hasBlanks)
+{
+   AlwaysAssert(itsTiledFilePtr->dataType()==TpInt, AipsError);
+}
+
 
 FITSMask::FITSMask (const FITSMask& other)
 : itsTiledFilePtr(other.itsTiledFilePtr),
   itsScale(other.itsScale),
   itsOffset(other.itsOffset),
-  itsMagic(other.itsMagic),
-  itsHasBlanks(other.itsHasBlanks)
+  itsShortMagic(other.itsShortMagic),
+  itsLongMagic(other.itsLongMagic),
+  itsHasIntBlanks(other.itsHasIntBlanks)
 {}
 
 FITSMask::~FITSMask()
@@ -71,8 +94,9 @@ FITSMask& FITSMask::operator= (const FITSMask& other)
     itsBuffer = other.itsBuffer.copy();
     itsScale = other.itsScale;
     itsOffset = other.itsOffset;
-    itsMagic = other.itsMagic;
-    itsHasBlanks = other.itsHasBlanks;
+    itsShortMagic = other.itsShortMagic;
+    itsLongMagic = other.itsLongMagic;
+    itsHasIntBlanks = other.itsHasIntBlanks;
   }
   return *this;
 }
@@ -100,9 +124,12 @@ Bool FITSMask::doGetSlice (Array<Bool>& mask, const Slicer& section)
 //
    if (itsTiledFilePtr->dataType()==TpFloat) {
       itsTiledFilePtr->get(itsBuffer, section);
-   } else {
+   } else if (itsTiledFilePtr->dataType()==TpInt) {
       itsTiledFilePtr->get(itsBuffer, section, itsScale, itsOffset, 
-                           itsMagic, itsHasBlanks);
+                           itsLongMagic, itsHasIntBlanks);
+   } else if (itsTiledFilePtr->dataType()==TpShort) {
+      itsTiledFilePtr->get(itsBuffer, section, itsScale, itsOffset, 
+                           itsShortMagic, itsHasIntBlanks);
    }
 //
    Bool deletePtrD;
@@ -125,8 +152,8 @@ Bool FITSMask::doGetSlice (Array<Bool>& mask, const Slicer& section)
 }
 
 void FITSMask::doPutSlice (const Array<Bool>& sourceBuffer,
-				 const IPosition& where, 
-				 const IPosition& stride)
+                           const IPosition& where, 	
+                           const IPosition& stride)
 {
    throw(AipsError("FITSMask object is not writable"));
 }
