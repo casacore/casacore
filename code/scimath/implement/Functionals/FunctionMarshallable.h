@@ -103,8 +103,10 @@ public:
     virtual ~FunctionMarshallable() {}
 
     // store the state of this Function into a GlishRecord
-    virtual void store(GlishRecord& gr) const 
-	throw (InvalidGlishSerializationError) = 0;
+    // <thrown>
+    // InvalidGlishSerializationError  if an error during serialization
+    // </thrown>
+    virtual void store(GlishRecord& gr) const;
 
     virtual FunctionMarshallable& 
          operator=(const FunctionMarshallable& other) 
