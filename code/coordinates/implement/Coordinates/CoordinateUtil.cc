@@ -796,3 +796,80 @@ Bool CoordinateUtil::makeFrequencyMachine(LogIO& os, MFrequency::Convert& machin
 //
    return True;
 }
+
+
+Bool CoordinateUtil::isSky (LogIO& os, const CoordinateSystem& cSys)
+{   
+   const uInt nPixelAxes = cSys.nPixelAxes();
+   if (nPixelAxes != 2) {
+      os << "The CoordinateSystem is not two dimensional" << LogIO::EXCEPTION;
+}  
+   Bool xIsLong = True;
+   Int dirCoordinate = cSys.findCoordinate(Coordinate::DIRECTION);
+   if (dirCoordinate==-1) {
+      os << "There is no DirectionCoordinate (sky) in this CoordinateSystem" << LogIO::EXCEPTION;
+   }
+//
+   Vector<Int> dirPixelAxes = cSys.pixelAxes(dirCoordinate);
+   if (dirPixelAxes(0) == -1 || dirPixelAxes(1) == -1) {
+      os << "The pixel axes for the DirectionCoordinate have been removed" << LogIO::EXCEPTION;
+   }
+ 
+// Which axis is longitude and which is latitude
+
+   if(dirPixelAxes(0)==0 && dirPixelAxes(1)==1) {
+      xIsLong = True;
+   } else {
+      xIsLong = False;
+   }
+   return xIsLong;
+} 
+
+
+Bool CoordinateUtil::holdsSky (Bool& holdsOneSkyAxis, const CoordinateSystem& cSys, Vector<Int> axes) 
+{
+   AlwaysAssert(axes.nelements()==2, AipsError);
+//
+   holdsOneSkyAxis = False;
+   Int dirCoordinate = cSys.findCoordinate(Coordinate::DIRECTION);
+   if (dirCoordinate!=-1) {
+      Vector<Int> dirPixelAxes = cSys.pixelAxes(dirCoordinate);
+      if ( (dirPixelAxes(0)==axes(0) && dirPixelAxes(1)==axes(1)) ||
+           (dirPixelAxes(0)==axes(1) && dirPixelAxes(1)==axes(0))) {
+         return True;
+      }
+//
+      if ( (axes(0)==dirPixelAxes(0) && axes(1)!=dirPixelAxes(1)) ||
+           (axes(0)!=dirPixelAxes(0) && axes(1)==dirPixelAxes(1)) ||
+           (axes(0)==dirPixelAxes(1) && axes(1)!=dirPixelAxes(0)) ||
+           (axes(0)!=dirPixelAxes(1) && axes(1)==dirPixelAxes(0)) ) {
+         holdsOneSkyAxis = True;
+      }
+   }
+   return False;
+}
+
+
+Stokes::StokesTypes CoordinateUtil::findSingleStokes (LogIO& os, const CoordinateSystem& cSys,
+                                                      uInt pixel)
+{  
+   Stokes::StokesTypes stokes(Stokes::Undefined);
+   Int stokesCoordinateNumber = cSys.findCoordinate(Coordinate::STOKES);
+   if (stokesCoordinateNumber==-1) {
+      os << LogIO::WARN
+         << "There is no Stokes coordinate in the CoordinateSystem - assuming Stokes I"
+         << LogIO::POST;
+      stokes = Stokes::I;
+   } else {
+      StokesCoordinate stokesCoordinate = cSys.stokesCoordinate(stokesCoordinateNumber);
+// 
+// Find out what Stokes the specified pixel belongs to.  
+// 
+      if (!stokesCoordinate.toWorld(stokes, pixel)) {
+         os << "StokesCoordinate conversion failed because "
+            << stokesCoordinate.errorMessage() << LogIO::EXCEPTION;
+      }
+   }
+   return stokes;
+}
+

@@ -326,6 +326,22 @@ static Bool removeAxes(CoordinateSystem& cSys,
                                    const CoordinateSystem& coordsFrom);
 // </group>
 
+// Does the CoordinateSystem hold just the sky ?  Exception if not.
+// Returns True if CS pixel axis 0 is the longitude and 1 latitude  
+// else returns False
+   static Bool isSky (LogIO& os, const CoordinateSystem& cSys);
+
+// Do the specified axes hold the sky ?  Returns False if no DirectionCoordinate
+// or if only one axis of the DirectionCoordinate is held or the specified
+// axes don't pertain to the DirectionCoordinate.  
+   static Bool holdsSky (Bool& holdsOneSkyAxis, const CoordinateSystem& cSys, 
+                         Vector<Int> axes);
+
+
+// Find the Stokes for the specified pixel. If there is no Stokes in the
+// CoordinateSystem, returns Stokes::I
+   static Stokes::StokesTypes findSingleStokes (LogIO& os, const CoordinateSystem& cSys,
+                                                uInt pixel=0);
 };
 
 #endif
