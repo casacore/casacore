@@ -55,8 +55,7 @@ template <class T> class Vector;
 // model the spectrum of a component. The most fundamental derived class is the
 // <linkto class=ConstantSpectrum>ConstantSpectrum</linkto> class but the
 // <linkto class=SpectralIndex>SpectralIndex</linkto> class is also
-// available. These classes model the spectral shape of emission from the
-// sky. 
+// available. These classes model the spectrum of emission from the sky.
 
 // Classes derived from the 
 // <linkto class=ComponentShape>ComponentShape</linkto> class are used to model
@@ -157,14 +156,17 @@ public:
   // derived class will be used.
   virtual ~SpectralModel();
 
-  // return the actual spectral shape.
+  // return the actual spectral type. The ident function returns it as a
+  // String. 
+  // <group>
   virtual ComponentType::SpectralShape type() const = 0;
-
+  virtual const String& ident() const;
+  // </group>
 
   // set/get the reference frequency
   // <group>
-  virtual void setRefFrequency(const MFrequency& newRefFreq);
-  virtual const MFrequency& refFrequency() const;
+  void setRefFrequency(const MFrequency& newRefFreq);
+  const MFrequency& refFrequency() const;
   // </group>
 
   // get the frequency unit, and change the default frequency unit to the
