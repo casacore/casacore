@@ -34,6 +34,8 @@
 #include <aips/aips.h>
 #include <trial/Lattices/MaskedLattice.h>
 #include <trial/Lattices/LatticeRegion.h>
+#include <trial/Arrays/AxesSpecifier.h>
+#include <trial/Arrays/AxesMapping.h>
 
 //# Forward Declarations
 
@@ -89,8 +91,9 @@ public:
   // should be writable (if the original lattice is non-writable, the
   // SubLattice is always set to non-writable).
   // <group>
-  SubLattice (const Lattice<T>& lattice);
-  SubLattice (Lattice<T>& lattice, Bool writableIfPossible);
+  SubLattice (const Lattice<T>& lattice, AxesSpecifier=AxesSpecifier());
+  SubLattice (Lattice<T>& lattice, Bool writableIfPossible,
+	      AxesSpecifier=AxesSpecifier());
   // </group>
 
   // Create a SubLattice from a MaskedLattice.
@@ -99,8 +102,9 @@ public:
   // should be writable (if the original lattice is non-writable, the
   // SubLattice is always set to non-writable).
   // <group>
-  SubLattice (const MaskedLattice<T>& lattice);
-  SubLattice (MaskedLattice<T>& lattice, Bool writableIfPossible);
+  SubLattice (const MaskedLattice<T>& lattice, AxesSpecifier=AxesSpecifier());
+  SubLattice (MaskedLattice<T>& lattice, Bool writableIfPossible,
+	      AxesSpecifier=AxesSpecifier());
   // </group>
 
   // Create a SubLattice from the given MaskedLattice and region.
@@ -110,24 +114,28 @@ public:
   // <br>An exception is thrown if the lattice shape used in the region
   // differs from the shape of the lattice.
   // <group>
-  SubLattice (const Lattice<T>& lattice, const LatticeRegion& region);
+  SubLattice (const Lattice<T>& lattice, const LatticeRegion& region,
+	      AxesSpecifier=AxesSpecifier());
   SubLattice (Lattice<T>& lattice, const LatticeRegion& region,
-	      Bool writableIfPossible);
-  SubLattice (const MaskedLattice<T>& lattice, const LatticeRegion& region);
+	      Bool writableIfPossible, AxesSpecifier=AxesSpecifier());
+  SubLattice (const MaskedLattice<T>& lattice, const LatticeRegion& region,
+	      AxesSpecifier=AxesSpecifier());
   SubLattice (MaskedLattice<T>& lattice, const LatticeRegion& region,
-	      Bool writableIfPossible);
+	      Bool writableIfPossible, AxesSpecifier=AxesSpecifier());
   // </group>
   
   // Create a SubLattice from the given (Masked)Lattice and slicer.
   // The slicer can be strided.
   // <br>An exception is thrown if the slicer exceeds the lattice shape.
   // <group>
-  SubLattice (const Lattice<T>& lattice, const Slicer& slicer);
+  SubLattice (const Lattice<T>& lattice, const Slicer& slicer,
+	      AxesSpecifier=AxesSpecifier());
   SubLattice (Lattice<T>& lattice, const Slicer& slicer,
-	      Bool writableIfPossible);
-  SubLattice (const MaskedLattice<T>& lattice, const Slicer& slicer);
+	      Bool writableIfPossible, AxesSpecifier=AxesSpecifier());
+  SubLattice (const MaskedLattice<T>& lattice, const Slicer& slicer,
+	      AxesSpecifier=AxesSpecifier());
   SubLattice (MaskedLattice<T>& lattice, const Slicer& slicer,
-  	      Bool writableIfPossible);
+  	      Bool writableIfPossible, AxesSpecifier=AxesSpecifier());
   // </group>
   
   // Copy constructor (reference semantics).
@@ -172,8 +180,18 @@ public:
   // if the table lock option is UserNoReadLocking or AutoNoReadLocking.
   // In that cases the table system does not acquire a read-lock, thus
   // does not synchronize itself automatically.
-  // <br>By default the function does not do anything at all.
   virtual void resync();
+
+  // Flush the data.
+  virtual void flush();
+
+  // Close the Lattice temporarily (if it is paged to disk).
+  // It'll be reopened automatically when needed or when
+  // <src>reopen</src> is called explicitly.
+  virtual void tempClose();
+
+  // If needed, reopen a temporarily closed Lattice.
+  virtual void reopen();
 
   // Does the SubLattice have a pixelmask?
   virtual Bool hasPixelMask() const;
@@ -246,14 +264,25 @@ protected:
   void setRegion();
   // </group>
 
+  // Set the axes mapping from the specification.
+  void setAxesMap (const AxesSpecifier&);
+
 
 private:
+  // Get mask data from region and mask.
+  // <group>
+  Bool getRegionDataSlice (Array<Bool>& buffer, const Slicer& section);
+  Bool getMaskDataSlice (Array<Bool>& buffer, const Slicer& section);
+  // </group>
+
   Lattice<T>*       itsLatticePtr;
   MaskedLattice<T>* itsMaskLatPtr;
   LatticeRegion     itsRegion;
   Bool              itsWritable;
   Bool              itsHasPixelMask;
   SubLattice<Bool>* itsPixelMask;
+  AxesSpecifier     itsAxesSpec;
+  AxesMapping       itsAxesMap;
 };
 
 
