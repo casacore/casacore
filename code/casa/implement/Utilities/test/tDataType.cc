@@ -32,7 +32,7 @@
 #include <strstream.h>
 #include <iostream.h>
 
-int main()
+void simpleTests()
 {
     // First check the << operator
     char null = 0;
@@ -204,27 +204,122 @@ int main()
     AlwaysAssertExit( whatType((Record *)0) == TpRecord );
 
     AlwaysAssertExit (isScalar(TpBool) && isScalar(TpChar) && isScalar(TpUChar)&&
-      isScalar(TpShort) && isScalar(TpUShort) && isScalar(TpInt) && 
-      isScalar(TpUInt) && isScalar(TpFloat) && isScalar(TpDouble) &&
-      isScalar(TpComplex) && isScalar(TpDComplex) && isScalar(TpString) &&
-      !isScalar(TpTable) && !isScalar(TpRecord) && !isScalar(TpOther) &&
-      !isScalar(TpArrayBool) && !isScalar(TpArrayChar) && 
-      !isScalar(TpArrayUChar)&& !isScalar(TpArrayShort) && 
-      !isScalar(TpArrayUShort) && !isScalar(TpArrayInt) && 
-      !isScalar(TpArrayUInt) && !isScalar(TpArrayFloat) && 
-      !isScalar(TpArrayDouble) && !isScalar(TpArrayComplex) &&
-      !isScalar(TpArrayDComplex) && !isScalar(TpArrayString));
+		      isScalar(TpShort) && isScalar(TpUShort) && isScalar(TpInt) && 
+		      isScalar(TpUInt) && isScalar(TpFloat) && isScalar(TpDouble) &&
+		      isScalar(TpComplex) && isScalar(TpDComplex) && isScalar(TpString) &&
+		      !isScalar(TpTable) && !isScalar(TpRecord) && !isScalar(TpOther) &&
+		      !isScalar(TpArrayBool) && !isScalar(TpArrayChar) && 
+		      !isScalar(TpArrayUChar)&& !isScalar(TpArrayShort) && 
+		      !isScalar(TpArrayUShort) && !isScalar(TpArrayInt) && 
+		      !isScalar(TpArrayUInt) && !isScalar(TpArrayFloat) && 
+		      !isScalar(TpArrayDouble) && !isScalar(TpArrayComplex) &&
+		      !isScalar(TpArrayDComplex) && !isScalar(TpArrayString));
     AlwaysAssertExit (!isArray(TpBool) && !isArray(TpChar) && !isArray(TpUChar)&&
-      !isArray(TpShort) && !isArray(TpUShort) && !isArray(TpInt) && 
-      !isArray(TpUInt) && !isArray(TpFloat) && !isArray(TpDouble) &&
-      !isArray(TpComplex) && !isArray(TpDComplex) && !isArray(TpString) &&
-      !isArray(TpTable) && !isArray(TpRecord) && !isArray(TpOther) &&
-      isArray(TpArrayBool) && isArray(TpArrayChar) && 
-      isArray(TpArrayUChar)&& isArray(TpArrayShort) && 
-      isArray(TpArrayUShort) && isArray(TpArrayInt) && 
-      isArray(TpArrayUInt) && isArray(TpArrayFloat) && 
-      isArray(TpArrayDouble) && isArray(TpArrayComplex) &&
-      isArray(TpArrayDComplex) && isArray(TpArrayString));
+		      !isArray(TpShort) && !isArray(TpUShort) && !isArray(TpInt) && 
+		      !isArray(TpUInt) && !isArray(TpFloat) && !isArray(TpDouble) &&
+		      !isArray(TpComplex) && !isArray(TpDComplex) && !isArray(TpString) &&
+		      !isArray(TpTable) && !isArray(TpRecord) && !isArray(TpOther) &&
+		      isArray(TpArrayBool) && isArray(TpArrayChar) && 
+		      isArray(TpArrayUChar)&& isArray(TpArrayShort) && 
+		      isArray(TpArrayUShort) && isArray(TpArrayInt) && 
+		      isArray(TpArrayUInt) && isArray(TpArrayFloat) && 
+		      isArray(TpArrayDouble) && isArray(TpArrayComplex) &&
+		      isArray(TpArrayDComplex) && isArray(TpArrayString));
+    AlwaysAssertExit(asScalar(TpBool) == TpBool &&
+		     asScalar(TpChar) == TpChar &&
+		     asScalar(TpUChar) == TpUChar &&
+		     asScalar(TpShort) == TpShort &&
+		     asScalar(TpUShort) == TpUShort &&
+		     asScalar(TpInt) == TpInt &&
+		     asScalar(TpUInt) == TpUInt &&
+		     asScalar(TpFloat) == TpFloat &&
+		     asScalar(TpDouble) == TpDouble &&
+		     asScalar(TpComplex) == TpComplex &&
+		     asScalar(TpDComplex) == TpDComplex &&
+		     asScalar(TpString) == TpString &&
+		     asScalar(TpArrayBool) == TpBool &&
+		     asScalar(TpArrayChar) == TpChar &&
+		     asScalar(TpArrayUChar) == TpUChar &&
+		     asScalar(TpArrayShort) == TpShort &&
+		     asScalar(TpArrayUShort) == TpUShort &&
+		     asScalar(TpArrayInt) == TpInt &&
+		     asScalar(TpArrayUInt) == TpUInt &&
+		     asScalar(TpArrayFloat) == TpFloat &&
+		     asScalar(TpArrayDouble) == TpDouble &&
+		     asScalar(TpArrayComplex) == TpComplex &&
+		     asScalar(TpArrayDComplex) == TpDComplex &&
+		     asScalar(TpArrayString) == TpString);
+
+    AlwaysAssertExit(asArray(TpBool) == TpArrayBool &&
+		     asArray(TpChar) == TpArrayChar &&
+		     asArray(TpUChar) == TpArrayUChar &&
+		     asArray(TpShort) == TpArrayShort &&
+		     asArray(TpUShort) == TpArrayUShort &&
+		     asArray(TpInt) == TpArrayInt &&
+		     asArray(TpUInt) == TpArrayUInt &&
+		     asArray(TpFloat) == TpArrayFloat &&
+		     asArray(TpDouble) == TpArrayDouble &&
+		     asArray(TpComplex) == TpArrayComplex &&
+		     asArray(TpDComplex) == TpArrayDComplex &&
+		     asArray(TpString) == TpArrayString &&
+		     asArray(TpArrayBool) == TpArrayBool &&
+		     asArray(TpArrayChar) == TpArrayChar &&
+		     asArray(TpArrayUChar) == TpArrayUChar &&
+		     asArray(TpArrayShort) == TpArrayShort &&
+		     asArray(TpArrayUShort) == TpArrayUShort &&
+		     asArray(TpArrayInt) == TpArrayInt &&
+		     asArray(TpArrayUInt) == TpArrayUInt &&
+		     asArray(TpArrayFloat) == TpArrayFloat &&
+		     asArray(TpArrayDouble) == TpArrayDouble &&
+		     asArray(TpArrayComplex) == TpArrayComplex &&
+		     asArray(TpArrayDComplex) == TpArrayDComplex &&
+		     asArray(TpArrayString) == TpArrayString);
+}
+
+// to be called using types for which an exception from asScalar is expected
+void excpAsScalar(DataType type)
+{
+    Bool hadExcp = False;
+    DataType dummy;
+    try {
+	dummy = asScalar(type);
+    } catch (AipsError x) {
+	hadExcp = True;
+    } end_try;
+    AlwaysAssert(hadExcp, AipsError);
+}
+
+void excpAsArray(DataType type)
+{
+    Bool hadExcp = False;
+    DataType dummy;
+    try {
+	dummy = asArray(type);
+    } catch (AipsError x) {
+	hadExcp = True;
+    } end_try;
+    AlwaysAssert(hadExcp, AipsError);
+}
+
+void excpTests() 
+{
+    excpAsScalar(TpTable);
+    excpAsScalar(TpRecord);
+    excpAsScalar(TpOther);
+    excpAsArray(TpTable);
+    excpAsArray(TpRecord);
+    excpAsArray(TpOther);
+}
+
+int main()
+{
+    try {
+	simpleTests();
+	excpTests();
+    } catch (AipsError x) {
+	cout << "Caught an exception: " << x.getMesg() << endl;
+	return 1;
+    } end_try;
 
     cout << "OK" << endl;
     return 0;
