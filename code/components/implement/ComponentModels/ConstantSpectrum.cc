@@ -26,6 +26,7 @@
 //# $Id$
 
 #include <trial/ComponentModels/ConstantSpectrum.h>
+#include <aips/Arrays/Vector.h>
 #include <aips/Exceptions/Error.h>
 #include <aips/Containers/RecordInterface.h>
 #include <aips/Utilities/Assert.h>
