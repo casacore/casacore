@@ -338,18 +338,17 @@ static Bool removePixelAxes(CoordinateSystem& cSys,
                                    const ObsInfo& obsFrom);
 
 // Setup Measures conversion machines for MFrequencies. 
-// Returns True if the machine was needed and set.
-// Returns False if the machine was not needed and not set. 
+// Returns False if a trial conversion failed, else returns True.
 // There must be both a Direction and a Spectral
-// Coordinate in the CoordinateSystem when making the Frequency machine. 
+// Coordinate in the CoordinateSystem when making the Frequency machine,
+// else an exception occurs.
    static Bool makeFrequencyMachine(LogIO& os, MFrequency::Convert& machine, 
                                     Int coordinateTo, Int coordinateFrom, 
                                     const CoordinateSystem& coordsTo, 
 				    const CoordinateSystem& coordsFrom);
 
 // Setup Measures conversion machines for MFrequencies.
-// Returns True if the machine was needed and set.  Returns False
-// if the machine was not needed and not set.    
+// Returns False if a trial conversion failed, else returns True.
    static Bool makeFrequencyMachine(LogIO& os, MFrequency::Convert& machine,
                                     MFrequency::Types typeTo, MFrequency::Types typeFrom,
                                     const MDirection& dirTo, const MDirection& dirFrom,
