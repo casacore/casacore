@@ -1,5 +1,5 @@
 //# Math.cc: Implementation of miscellaneous functions in Math.h
-//# Copyright (C) 1995,1996,1997,1998,1999
+//# Copyright (C) 1995,1996,1997,1998,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -79,6 +79,14 @@ Bool near(Float val1, Float val2, Double tol) {
     return False;
   }
   return ToBool(abs(val1-val2) <= tol*max(abs(val1),abs(val2)));
+}
+
+Bool near(Float val1, Double val2, Double tol) {
+   return near(Double(val1), val2, tol);
+}
+
+Bool near(Double val1, Float val2, Double tol) {
+   return near(val1, Double(val2), tol);
 }
 
 Bool near(Double val1, Double val2, Double tol) {
