@@ -167,27 +167,23 @@ public:
     T &operator()(uInt i1, uInt i2)
       {
 #if defined(AIPS_ARRAY_INDEX_CHECK)
-	// It would be better performance wise for this to be static, but
-	// CFront 3.0.1 doesn't like that.
         IPosition index(2);
         index(0) = i1; index(1) = i2;
         validateIndex(index);   // Throws an exception on failure
 #endif
-        // optimize by storing constants
-        return *(begin_p + i1*xinc_p + i2*yinc_p);
+	return contiguous_p ? begin_p[i1 + i2*yinc_p] :
+                              begin_p[i1*xinc_p + i2*yinc_p];
       }
 
     const T &operator()(uInt i1, uInt i2) const
       {
 #if defined(AIPS_ARRAY_INDEX_CHECK)
-	// It would be better performance wise for this to be static, but
-	// CFront 3.0.1 doesn't like that.
         IPosition index(2);
         index(0) = i1; index(1) = i2;
         validateIndex(index);   // Throws an exception on failure
 #endif
-        // optimize by storing constants
-        return *(begin_p + i1*xinc_p + i2*yinc_p);
+	return contiguous_p ? begin_p[i1 + i2*yinc_p] :
+                              begin_p[i1*xinc_p + i2*yinc_p];
       }
     // </group>
 
