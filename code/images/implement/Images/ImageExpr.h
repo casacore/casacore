@@ -30,11 +30,9 @@
 
 
 //# Includes
-#include <aips/aips.h>
-#include <aips/Containers/Record.h>
-#include <trial/Images/ImageInterface.h>
-#include <trial/Lattices/ArrayLattice.h>
+#include <trial/Images/MaskedImage.h>
 #include <trial/Lattices/LatticeExpr.h>
+#include <aips/Containers/Record.h>
 
 
 
@@ -109,8 +107,7 @@ class String;
 // </todo>
 
 
-template <class T> class ImageExpr: public ImageInterface<T>,
-                                    public MaskedLattice<T>
+template <class T> class ImageExpr: public MaskedImage<T>
 {
 public: 
   // The default constructor
@@ -134,8 +131,7 @@ public:
   // Make a copy of the object (reference semantics).
   // <group>
   virtual Lattice<T>* clone() const;
-  virtual MaskedLattice<T>* cloneML() const;
-  virtual ImageInterface<T>* cloneII() const;
+  virtual MaskedImage<T>* cloneMI() const;
   // </group>
 
   // Has the object really a mask?

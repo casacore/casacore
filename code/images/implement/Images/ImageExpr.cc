@@ -61,7 +61,7 @@ ImageExpr<T>::ImageExpr (const LatticeExpr<T>& latticeExpr,
                         "LatticeExpr does not have coordinates"));
    }
 
-// Caste to get at ImageCoord
+// Cast to get at ImageCoord
 
    const ImageCoord* pImCoord = (ImageCoord*)pLattCoord;
    coords_p = pImCoord->coordinates();
@@ -70,14 +70,10 @@ ImageExpr<T>::ImageExpr (const LatticeExpr<T>& latticeExpr,
 
 template <class T>
 ImageExpr<T>::ImageExpr (const ImageExpr<T>& other)
-: ImageInterface<T>(other),
+: MaskedImage<T>(other),
   latticeExpr_p (other.latticeExpr_p),
   pBool_p(other.pBool_p),
   name_p(other.name_p)
-
-//
-// Copy constructor.  Uses reference semantics
-//
 {}
  
 template <class T>
@@ -87,7 +83,7 @@ ImageExpr<T>& ImageExpr<T>::operator=(const ImageExpr<T>& other)
 //
 {
    if (this != &other) {
-      ImageInterface<T>::operator= (other);
+      MaskedImage<T>::operator= (other);
       latticeExpr_p = other.latticeExpr_p;
       pBool_p = other.pBool_p;
       name_p = other.name_p;
@@ -97,9 +93,6 @@ ImageExpr<T>& ImageExpr<T>::operator=(const ImageExpr<T>& other)
  
 template <class T>
 ImageExpr<T>::~ImageExpr()
-//
-// Destructor does nothing
-//
 {}
 
 
@@ -109,15 +102,10 @@ Lattice<T>* ImageExpr<T>::clone() const
    return new ImageExpr (*this);
 }   
 template <class T>
-MaskedLattice<T>* ImageExpr<T>::cloneML() const
+MaskedImage<T>* ImageExpr<T>::cloneMI() const
 {
    return new ImageExpr (*this);
 }
-template <class T>
-ImageInterface<T>* ImageExpr<T>::cloneII() const
-{
-   return new ImageExpr (*this);
-}   
 
 
 template <class T>

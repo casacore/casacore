@@ -30,13 +30,13 @@
 
 
 //# Includes
-#include <trial/Images/ImageInterface.h>
-#include <trial/Lattices/SubLattice.h>
+#include <trial/Images/MaskedImage.h>
 
 //# Forward Declarations
 class IPosition;
 class ImageRegion;
 class Slicer;
+template <class T> class SubLattice;
 template <class T> class Array;
 class LatticeNavigator;
 template <class T> class LatticeIterInterface;
@@ -77,8 +77,7 @@ class String;
 // </todo>
 
 
-template <class T> class SubImage: public ImageInterface<T>,
-                                   public SubLattice<T>
+template <class T> class SubImage: public MaskedImage<T>
 {
 public: 
   // The default constructor
@@ -95,27 +94,27 @@ public:
   SubImage (ImageInterface<T>& image, Bool writableIfPossible);
   // </group>
 
-  // Create a SubImage from the given SubImage and region.
+  // Create a SubImage from the given (Masked)Image and region.
   // <br>An exception is thrown if the image shape used in the region
   // differs from the shape of the image.
   // <group>
   SubImage (const ImageInterface<T>& image, const ImageRegion& region);
   SubImage (ImageInterface<T>& image, const ImageRegion& region,
 	    Bool writableIfPossible);
-  SubImage (const SubImage<T>& image, const ImageRegion& region);
-  SubImage (SubImage<T>& image, const ImageRegion& region,
+  SubImage (const MaskedImage<T>& image, const ImageRegion& region);
+  SubImage (MaskedImage<T>& image, const ImageRegion& region,
 	    Bool writableIfPossible);
   // </group>
   
-  // Create a SubImage from the given (Sub)Image and slicer.
+  // Create a SubImage from the given (Masked)Image and slicer.
   // The slicer can be strided.
   // <br>An exception is thrown if the slicer exceeds the image shape.
   // <group>
   SubImage (const ImageInterface<T>& image, const Slicer& slicer);
   SubImage (ImageInterface<T>& image, const Slicer& slicer,
 	    Bool writableIfPossible);
-  SubImage (const SubImage<T>& image, const Slicer& slicer);
-  SubImage (SubImage<T>& image, const Slicer& slicer,
+  SubImage (const MaskedImage<T>& image, const Slicer& slicer);
+  SubImage (MaskedImage<T>& image, const Slicer& slicer,
 	    Bool writableIfPossible);
   // </group>
   
@@ -130,13 +129,45 @@ public:
   // Make a copy of the object (reference semantics).
   // <group>
   virtual Lattice<T>* clone() const;
-  virtual MaskedLattice<T>* cloneML() const;
-  virtual ImageInterface<T>* cloneII() const;
+  virtual MaskedImage<T>* cloneMI() const;
   // </group>
 
-  // Returns the shape of the SubLattice including all degenerate axes
+
+  // Is the SubImage writable?
+  virtual Bool isWritable() const;
+
+  // Is the SubImage really masked?
+  // False means that it is only a rectangular box and that it is
+  // not needed to look at the mask.
+  virtual Bool isMasked() const;
+
+  // Get the region/mask object describing this subImage.
+  virtual const LatticeRegion& region() const;
+
+  // Returns the shape of the SubImage including all degenerate axes
   // (i.e. axes with a length of one).
   virtual IPosition shape() const;
+  
+  // Returns the number of axes in this SubImage. This includes all
+  // degenerate axes.
+  virtual uInt ndim() const;
+  
+  // Returns the total number of elements in this SubImage.
+  virtual uInt nelements() const;
+  
+  // returns a value of "True" if this instance of Lattice and 'other' have 
+  // the same shape, otherwise returns a value of "False".
+  virtual Bool conform (const Lattice<T>& other) const;
+  
+  // This function returns the recommended maximum number of pixels to
+  // include in the cursor of an iterator.
+  virtual uInt maxPixels() const;
+
+  // Get or put a single element in the lattice.
+  // <group>
+  virtual T getAt (const IPosition& where) const;
+  virtual void putAt (const T& value, const IPosition& where);
+  // </group>
   
   // Function which changes the shape of the SubImage.
   // Throws an exception as resizing a SubImage is not possible.
@@ -173,6 +204,9 @@ public:
   // Check class invariants.
   virtual Bool ok() const;
 
+  // Do the actual get of the mask data.
+  virtual Bool doGetMaskSlice (Array<Bool>& buffer, const Slicer& section);
+
   // Do the actual getting of an array of values.
   virtual Bool doGetSlice (Array<T>& buffer, const Slicer& section);
 
@@ -181,11 +215,20 @@ public:
 			   const IPosition& where,
 			   const IPosition& stride);
   
+  // This function is used by the LatticeIterator class to generate an
+  // iterator of the correct type for this Lattice. Not recommended
+  // for general use. 
+  virtual LatticeIterInterface<T>*
+                      makeIter (const LatticeNavigator& navigator) const;
+
+  // Get the best cursor shape.
+  virtual IPosition doNiceCursorShape (uInt maxPixels) const;
+
 private:
   //# Both pointers point to the same object.
   //# However, itsSubImagePtr is 0 if the parent image was not a SubImage.
   ImageInterface<T>* itsImagePtr;
-  SubImage<T>*       itsSubImagePtr;
+  SubLattice<T>*     itsSubLatPtr;
 };
 
 

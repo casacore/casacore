@@ -27,100 +27,95 @@
 
 #include <trial/Images/SubImage.h>
 #include <trial/Images/ImageRegion.h>
+#include <trial/Lattices/SubLattice.h>
 #include <aips/Lattices/IPosition.h>
 #include <aips/Arrays/Vector.h>
 #include <aips/Measures/UnitMap.h>
 #include <aips/Utilities/Assert.h>
 #include <aips/Exceptions/Error.h>
 
-typedef Vector<Int> gppbug_subimage;
+typedef Vector<Int> gppbug1_subimage;
+typedef Array<Bool> gppbug2_subimage;
 
 
 template<class T>
 SubImage<T>::SubImage()
-: ImageInterface<T> (),
-  SubLattice<T>     (),
-  itsImagePtr       (0),
-  itsSubImagePtr    (0)
+: MaskedImage<T> (),
+  itsImagePtr    (0),
+  itsSubLatPtr   (0)
 {}
 
 template<class T>
 SubImage<T>::SubImage (const ImageInterface<T>& image)
-: ImageInterface<T> (),
-  itsImagePtr (image.cloneII()),
-  itsSubImagePtr    (0)
+: MaskedImage<T> (),
+  itsImagePtr (image.cloneII())
 {
-  setPtr (itsImagePtr, 0, False);
-  setRegion();
+  itsSubLatPtr = new SubLattice<T> (image);
   coords_p = image.coordinates();
 }
 
 template<class T>
 SubImage<T>::SubImage (ImageInterface<T>& image,
 		       Bool writableIfPossible)
-: ImageInterface<T> (),
-  itsImagePtr (image.cloneII()),
-  itsSubImagePtr    (0)
+: MaskedImage<T> (),
+  itsImagePtr (image.cloneII())
 {
-  setPtr (itsImagePtr, 0, writableIfPossible);
-  setRegion();
+  itsSubLatPtr = new SubLattice<T> (image, writableIfPossible);
   coords_p = image.coordinates();
 }
 
 template<class T>
 SubImage<T>::SubImage (const ImageInterface<T>& image,
-		       const ImageRegion& imageRegion)
-: ImageInterface<T> (),
-  itsImagePtr (image.cloneII()),
-  itsSubImagePtr    (0)
+		       const ImageRegion& region)
+: MaskedImage<T> (),
+  itsImagePtr (image.cloneII())
 {
-  setPtr (itsImagePtr, 0, False);
-  setRegion (imageRegion.toLCRegion (image.coordinates()));
-  const Slicer& slicer = region().slicer();
+  itsSubLatPtr = new SubLattice<T> (image,
+				    region.toLCRegion (image.coordinates()));
+  const Slicer& slicer = itsSubLatPtr->region().slicer();
   coords_p = image.coordinates().subImage (slicer.start().asVector(),
 					   slicer.stride().asVector());
 }
 
 template<class T>
 SubImage<T>::SubImage (ImageInterface<T>& image,
-		       const ImageRegion& imageRegion,
+		       const ImageRegion& region,
 		       Bool writableIfPossible)
-: ImageInterface<T> (),
-  itsImagePtr (image.cloneII()),
-  itsSubImagePtr    (0)
+: MaskedImage<T> (),
+  itsImagePtr (image.cloneII())
 {
-  setPtr (itsImagePtr, 0, writableIfPossible);
-  setRegion (imageRegion.toLCRegion (image.coordinates()));
-  const Slicer& slicer = region().slicer();
+  itsSubLatPtr = new SubLattice<T> (image,
+				    region.toLCRegion(image.coordinates()),
+				    writableIfPossible);
+  const Slicer& slicer = itsSubLatPtr->region().slicer();
   coords_p = image.coordinates().subImage (slicer.start().asVector(),
 					   slicer.stride().asVector());
 }
 
 template<class T>
-SubImage<T>::SubImage (const SubImage<T>& image,
-		       const ImageRegion& imageRegion)
-: ImageInterface<T> (),
-  itsSubImagePtr    (new SubImage<T>(image))
+SubImage<T>::SubImage (const MaskedImage<T>& image,
+		       const ImageRegion& region)
+: MaskedImage<T> (),
+  itsImagePtr (image.cloneII())
 {
-  itsImagePtr = itsSubImagePtr;
-  setPtr (0, itsSubImagePtr, False);
-  setRegion (imageRegion.toLCRegion (image.coordinates()));
-  const Slicer& slicer = region().slicer();
+  itsSubLatPtr = new SubLattice<T> (image,
+				    region.toLCRegion(image.coordinates()));
+  const Slicer& slicer = itsSubLatPtr->region().slicer();
   coords_p = image.coordinates().subImage (slicer.start().asVector(),
 					   slicer.stride().asVector());
 }
 
 template<class T>
-SubImage<T>::SubImage (SubImage<T>& image,
-		       const ImageRegion& imageRegion,
+SubImage<T>::SubImage (MaskedImage<T>& image,
+		       const ImageRegion& region,
 		       Bool writableIfPossible)
-: ImageInterface<T> (),
-  itsSubImagePtr    (new SubImage<T>(image))
+: MaskedImage<T> (),
+  itsImagePtr (image.cloneII())
 {
-  itsImagePtr = itsSubImagePtr;
-  setPtr (0, itsSubImagePtr, writableIfPossible);
-  setRegion (imageRegion.toLCRegion (image.coordinates()));
-  const Slicer& slicer = region().slicer();
+  itsSubLatPtr = new SubLattice<T> (image,
+				    region.toLCRegion(image.coordinates()),
+				    writableIfPossible);
+  const Slicer& slicer = itsSubLatPtr->region().slicer();
   coords_p = image.coordinates().subImage (slicer.start().asVector(),
 					   slicer.stride().asVector());
 }
@@ -128,87 +123,77 @@ SubImage<T>::SubImage (SubImage<T>& image,
 template<class T>
 SubImage<T>::SubImage (const ImageInterface<T>& image,
 		       const Slicer& slicer)
-: ImageInterface<T> (),
-  itsImagePtr       (image.cloneII()),
-  itsSubImagePtr    (0)
+: MaskedImage<T> (),
+  itsImagePtr (image.cloneII())
 {
-  setPtr (itsImagePtr, 0, False);
-  setRegion (slicer);
-  coords_p = image.coordinates().subImage (slicer.start().asVector(),
-					   slicer.stride().asVector());
+  itsSubLatPtr = new SubLattice<T> (image, slicer);
+  const Slicer& refslicer = itsSubLatPtr->region().slicer();
+  coords_p = image.coordinates().subImage (refslicer.start().asVector(),
+					   refslicer.stride().asVector());
 }
 
 template<class T>
 SubImage<T>::SubImage (ImageInterface<T>& image,
 		       const Slicer& slicer,
 		       Bool writableIfPossible)
-: ImageInterface<T> (),
-  itsImagePtr       (image.cloneII()),
-  itsSubImagePtr    (0)
+: MaskedImage<T> (),
+  itsImagePtr (image.cloneII())
 {
-  setPtr (itsImagePtr, 0, writableIfPossible);
-  setRegion (slicer);
-  coords_p = image.coordinates().subImage (slicer.start().asVector(),
-					   slicer.stride().asVector());
+  itsSubLatPtr = new SubLattice<T> (image, slicer, writableIfPossible);
+  const Slicer& refslicer = itsSubLatPtr->region().slicer();
+  coords_p = image.coordinates().subImage (refslicer.start().asVector(),
+					   refslicer.stride().asVector());
 }
 
 template<class T>
-SubImage<T>::SubImage (const SubImage<T>& image,
+SubImage<T>::SubImage (const MaskedImage<T>& image,
 		       const Slicer& slicer)
-: ImageInterface<T> (),
-  itsSubImagePtr    (new SubImage<T>(image))
+: MaskedImage<T> (),
+  itsImagePtr (image.cloneII())
 {
-  itsImagePtr = itsSubImagePtr;
-  setPtr (0, itsSubImagePtr, False);
-  setRegion (slicer);
-  coords_p = image.coordinates().subImage (slicer.start().asVector(),
-					   slicer.stride().asVector());
+  itsSubLatPtr = new SubLattice<T> (image, slicer);
+  const Slicer& refslicer = itsSubLatPtr->region().slicer();
+  coords_p = image.coordinates().subImage (refslicer.start().asVector(),
+					   refslicer.stride().asVector());
 }
 
 template<class T>
-SubImage<T>::SubImage (SubImage<T>& image,
+SubImage<T>::SubImage (MaskedImage<T>& image,
 		       const Slicer& slicer,
 		       Bool writableIfPossible)
-: ImageInterface<T> (),
-  itsSubImagePtr    (new SubImage<T>(image))
+: MaskedImage<T> (),
+  itsImagePtr (image.cloneII())
 {
-  itsImagePtr = itsSubImagePtr;
-  setPtr (0, itsSubImagePtr, writableIfPossible);
-  setRegion (slicer);
-  coords_p = image.coordinates().subImage (slicer.start().asVector(),
-					   slicer.stride().asVector());
+  itsSubLatPtr = new SubLattice<T> (image, slicer, writableIfPossible);
+  const Slicer& refslicer = itsSubLatPtr->region().slicer();
+  coords_p = image.coordinates().subImage (refslicer.start().asVector(),
+					   refslicer.stride().asVector());
 }
 
 template<class T>
 SubImage<T>::SubImage (const SubImage<T>& other)
-: ImageInterface<T> (),
-  itsImagePtr       (0),
-  itsSubImagePtr    (0)
+: MaskedImage<T> (other),
+  itsImagePtr  (other.itsImagePtr->cloneII())
 {
-  operator= (other);
+  itsSubLatPtr = new SubLattice<T> (*other.itsSubLatPtr);
 }
 
 template<class T>
 SubImage<T>::~SubImage()
 {
-  // Note that itsImagePtr is the same as itsLatticePtr in the base class.
-  // So the object gets already deleted in ~SubLattice.
+  delete itsImagePtr;
+  delete itsSubLatPtr;
 }
 
 template<class T>
 SubImage<T>& SubImage<T>::operator= (const SubImage<T>& other)
 {
   if (this != &other) {
-    ImageInterface<T>::operator= (other);
-    itsSubImagePtr = other.itsSubImagePtr;
-    if (itsSubImagePtr == 0) {
-      itsImagePtr = other.itsImagePtr->cloneII();
-    } else {
-      itsSubImagePtr = new SubImage<T>(*itsSubImagePtr);
-      itsImagePtr    = itsSubImagePtr;
-    }
-    setPtr (itsImagePtr, itsSubImagePtr, other.isWritable());
-    setRegion (other.region());
+    MaskedImage<T>::operator= (other);
+    delete itsImagePtr;
+    itsImagePtr = other.itsImagePtr->cloneII();
+    delete itsSubLatPtr;
+    itsSubLatPtr = new SubLattice<T> (*other.itsSubLatPtr);
   }
   return *this;
 }
@@ -219,12 +204,7 @@ Lattice<T>* SubImage<T>::clone() const
   return new SubImage<T> (*this);
 }
 template<class T>
-MaskedLattice<T>* SubImage<T>::cloneML() const
-{
-  return new SubImage<T> (*this);
-}
-template<class T>
-ImageInterface<T>* SubImage<T>::cloneII() const
+MaskedImage<T>* SubImage<T>::cloneMI() const
 {
   return new SubImage<T> (*this);
 }
@@ -233,13 +213,49 @@ ImageInterface<T>* SubImage<T>::cloneII() const
 template <class T>
 Bool SubImage<T>::ok() const
 {
-  return SubLattice<T>::ok();
+  return itsSubLatPtr->ok();
+}
+
+template<class T>
+Bool SubImage<T>::isWritable() const
+{
+  return itsSubLatPtr->isWritable();
+}
+
+template<class T>
+Bool SubImage<T>::isMasked() const
+{
+  return itsSubLatPtr->isMasked();
+}
+
+template<class T>
+const LatticeRegion& SubImage<T>::region() const
+{
+    return itsSubLatPtr->region();
 }
 
 template<class T>
 IPosition SubImage<T>::shape() const
 {
-  return SubLattice<T>::shape();
+  return itsSubLatPtr->shape();
+}
+
+template<class T>
+uInt SubImage<T>::ndim() const
+{
+  return itsSubLatPtr->ndim();
+}
+
+template<class T>
+uInt SubImage<T>::nelements() const
+{
+  return itsSubLatPtr->nelements();
+}
+
+template<class T>
+Bool SubImage<T>::conform (const Lattice<T>& other) const
+{
+  return shape().isEqual (other.shape());
 }
 
 template<class T>
@@ -263,7 +279,7 @@ Unit SubImage<T>::units() const
 template<class T>
 String SubImage<T>::name(const Bool) const
 {
-  return "";
+  return itsImagePtr->name();
 }
   
 template<class T>
@@ -285,16 +301,54 @@ Bool SubImage<T>::setMiscInfo(const RecordInterface&)
 }
 
 template<class T>
-Bool SubImage<T>::doGetSlice (Array<T>& buffer,
-				const Slicer& section)
+Bool SubImage<T>::doGetMaskSlice (Array<Bool>& buffer,
+				  const Slicer& section)
 {
-  return SubLattice<T>::doGetSlice (buffer, section);
+  return itsSubLatPtr->doGetMaskSlice (buffer, section);
+}
+
+template<class T>
+Bool SubImage<T>::doGetSlice (Array<T>& buffer,
+			      const Slicer& section)
+{
+  return itsSubLatPtr->doGetSlice (buffer, section);
 }
 
 template<class T>
 void SubImage<T>::doPutSlice (const Array<T>& sourceBuffer,
-				const IPosition& where, 
-				const IPosition& stride)
+			      const IPosition& where, 
+			      const IPosition& stride)
 {
-  SubLattice<T>::doPutSlice (sourceBuffer, where, stride);
+  itsSubLatPtr->doPutSlice (sourceBuffer, where, stride);
+}
+
+template<class T>
+uInt SubImage<T>::maxPixels() const
+{
+  return itsSubLatPtr->maxPixels();
+}
+
+template<class T>
+IPosition SubImage<T>::doNiceCursorShape (uInt maxPixels) const
+{
+  return itsSubLatPtr->niceCursorShape (maxPixels);
+}
+
+template<class T>
+T SubImage<T>::getAt (const IPosition& where) const
+{
+  return itsSubLatPtr->getAt (where);
+}
+
+template<class T>
+void SubImage<T>::putAt (const T& value, const IPosition& where)
+{
+  itsSubLatPtr->putAt (value, where);
+}
+
+template<class T>
+LatticeIterInterface<T>* SubImage<T>::makeIter
+                               (const LatticeNavigator& navigator) const
+{
+  return itsSubLatPtr->makeIter (navigator);
 }
