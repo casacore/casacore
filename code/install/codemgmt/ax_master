@@ -3344,3 +3344,4 @@
 13 226 src mv atnf/implement/Atoms/DOatoms.cc atnf/implement/Atoms/DOatoms.cc.txt
 13 226 src mv atnf/apps/atoms/atoms.cc atnf/apps/atoms/atoms.cc.txt
 13 240 src rm trial/implement/MeasurementEquations/test/templates
+13 242 src mv atnf/apps/atoms/templates atnf/apps/atoms/templates.txt
