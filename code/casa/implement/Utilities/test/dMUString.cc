@@ -28,8 +28,8 @@
 //# Includes
 #include <aips/aips.h>
 #include <aips/Exceptions/Error.h>
-#include <aips/Measures/Quantum.h>
-#include <aips/Measures/MVAngle.h>
+#include <aips/Quanta/Quantum.h>
+#include <aips/Quanta/MVAngle.h>
 #if defined(__GNUG__)
 typedef Quantum<Double> gpp_dmustringbug_1;
 #endif

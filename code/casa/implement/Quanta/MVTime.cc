@@ -27,13 +27,13 @@
 
 //# Includes
 #ifdef __GNUG__
-#include <aips/Measures/Quantum.h>
+#include <aips/Quanta/Quantum.h>
 typedef Quantum<Double> gpp_mvtime_bug1;
 #endif
-#include <aips/Measures/MVTime.h>
-#include <aips/Measures/MVAngle.h>
+#include <aips/Quanta/MVTime.h>
+#include <aips/Quanta/MVAngle.h>
 #include <aips/Measures/MVEpoch.h>
-#include <aips/Measures/MUString.h>
+#include <aips/Quanta/MUString.h>
 #include <strstream.h>
 #include <iomanip.h>
 #include <aips/OS/Time.h>

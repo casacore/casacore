@@ -1,5 +1,5 @@
 //# ExprDerNode.cc: Nodes representing scalar operators in table select expression tree
-//# Copyright (C) 1994,1995,1996,1997
+//# Copyright (C) 1994,1995,1996,1997,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -35,7 +35,7 @@
 #include <aips/Arrays/ArrayLogical.h>
 #include <aips/Utilities/DataType.h>
 #include <aips/Mathematics/Math.h>
-#include <aips/Measures/MVTime.h>
+#include <aips/Quanta/MVTime.h>
 #include <aips/OS/Time.h>
 
 

@@ -27,19 +27,19 @@
 
 //# Includes
 #ifdef __GNUG__
-#include <aips/Measures/Quantum.h>
+#include <aips/Quanta/Quantum.h>
 typedef Quantum<Double> gpp_MeasTable_bug1;
 #endif
 #include <aips/Measures/MeasTable.h>
-#include <aips/Measures/UnitVal.h>
-#include <aips/Measures/RotMatrix.h>
-#include <aips/Measures/Euler.h>
+#include <aips/Quanta/UnitVal.h>
+#include <aips/Quanta/RotMatrix.h>
+#include <aips/Quanta/Euler.h>
 #include <aips/Measures/MVEpoch.h>
 #include <aips/Measures/MPosition.h>
 #include <aips/Measures/MDirection.h>
 #include <aips/Measures/MeasIERS.h>
 #include <aips/Measures/MeasJPL.h>
-#include <aips/Measures/MUString.h>
+#include <aips/Quanta/MUString.h>
 #include <aips/OS/Time.h>
 #include <aips/Utilities/Assert.h>
 #include <aips/Mathematics/Constants.h>

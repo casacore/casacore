@@ -31,7 +31,7 @@
 #include <aips/Containers/RecordInterface.h>
 #include <aips/Logging/LogIO.h>
 #include <aips/Logging/LogOrigin.h>
-#include <aips/Measures/Quantum.h>
+#include <aips/Quanta/Quantum.h>
 #include <aips/Utilities/Assert.h>
 #include <aips/Utilities/String.h>
 

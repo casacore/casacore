@@ -38,7 +38,7 @@
 #include <aips/Exceptions/Excp.h>
 #include <aips/Lattices/IPosition.h>
 #include <aips/Measures/MDirection.h>
-#include <aips/Measures/Quantum.h>
+#include <aips/Quanta/Quantum.h>
 #include <aips/Utilities/String.h>
 #include <iostream.h>
 

@@ -33,7 +33,7 @@
 #include <aips/Arrays/Vector.h>
 #include <aips/Arrays/ArrayMath.h>
 #include <aips/Arrays/ArrayLogical.h>
-#include <aips/Measures/MVTime.h>
+#include <aips/Quanta/MVTime.h>
 #include <aips/OS/Time.h>
 #include <aips/Mathematics/Constants.h>
 #include <aips/Mathematics/Math.h>

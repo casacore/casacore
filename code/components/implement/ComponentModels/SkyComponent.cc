@@ -37,7 +37,7 @@
 #include <aips/Logging/LogOrigin.h>
 #include <aips/Measures/MDirection.h>
 #include <aips/Measures/MFrequency.h>
-#include <aips/Measures/MVAngle.h>
+#include <aips/Quanta/MVAngle.h>
 #include <aips/Utilities/Assert.h>
 #include <aips/Utilities/String.h>
 

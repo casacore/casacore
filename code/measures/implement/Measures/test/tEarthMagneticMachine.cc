@@ -31,7 +31,7 @@
 #include <aips/Measures.h>
 #include <trial/Measures/EarthField.h>
 #include <trial/Measures/EarthMagneticMachine.h>
-#include <aips/Measures/MVTime.h>
+#include <aips/Quanta/MVTime.h>
 #include <aips/Measures/MDirection.h>
 #include <aips/Measures/MPosition.h>
 #include <aips/Measures/MEpoch.h>

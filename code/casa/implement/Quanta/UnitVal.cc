@@ -1,5 +1,5 @@
 //# UnitVal.cc: defines the class describing a unit as a value and a dimension
-//# Copyright (C) 1994,1995,1996,1997
+//# Copyright (C) 1994,1995,1996,1997,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -29,10 +29,10 @@
 
 #include <aips/Exceptions/Error.h>
 #include <aips/Mathematics/Math.h>
-#include <aips/Measures/UnitVal.h>
-#include <aips/Measures/UnitName.h>
-#include <aips/Measures/MUString.h>
-#include <aips/Measures/UnitMap.h>
+#include <aips/Quanta/UnitVal.h>
+#include <aips/Quanta/UnitName.h>
+#include <aips/Quanta/MUString.h>
+#include <aips/Quanta/UnitMap.h>
 
 //# Constants
 UnitVal UnitVal::NODIM(1.);

@@ -27,7 +27,7 @@
 
 //# Includes
 #include <aips/Exceptions/Error.h>
-#include <aips/Measures/QMath.h>
+#include <aips/Quanta/QMath.h>
 #include <aips/Mathematics/Math.h>
 #include <aips/Arrays/ArrayMath.h>
 

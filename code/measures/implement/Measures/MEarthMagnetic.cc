@@ -27,7 +27,7 @@
 
 //# Includes
 #ifdef __GNUG__
-#include <aips/Measures/Quantum.h>
+#include <aips/Quanta/Quantum.h>
 typedef Quantum<Double> gpp_mEarthMagnetic_bug1;
 #endif
 #include <trial/Measures/MEarthMagnetic.h>
@@ -37,11 +37,11 @@ typedef Quantum<Double> gpp_mEarthMagnetic_bug1;
 #include <aips/Mathematics/Math.h>
 #include <aips/RTTI/Register.h>
 #include <aips/Mathematics/Constants.h>
-#include <aips/Measures/RotMatrix.h>
-#include <aips/Measures/Euler.h>
+#include <aips/Quanta/RotMatrix.h>
+#include <aips/Quanta/Euler.h>
 #include <aips/Measures/MVPosition.h>
 #include <aips/Measures/MVDirection.h>
-#include <aips/Measures/QMath.h>
+#include <aips/Quanta/QMath.h>
 
 //# Constructors
 MEarthMagnetic::MEarthMagnetic() :

@@ -1,5 +1,5 @@
 //# AppInfo.cc: General information for applications
-//# Copyright (C) 1996,1997
+//# Copyright (C) 1996,1997,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -34,7 +34,7 @@
 #include <aips/Utilities/Assert.h>
 #include <aips/OS/Time.h>
 #include <aips/OS/Memory.h>
-#include <aips/Measures/Unit.h>
+#include <aips/Quanta/Unit.h>
 #include <aips/Arrays/Vector.h>
 #include <aips/OS/Directory.h>
 #include <aips/Logging/LogIO.h>

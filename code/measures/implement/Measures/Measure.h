@@ -39,7 +39,7 @@ class MeasValue;
 class MRBase;
 //# g++ 2.7.2.1.f.1 needs Quantum's to be included even though it shouldn't!
 #ifdef __GNUG__
-#include <aips/Measures/Quantum.h>
+#include <aips/Quanta/Quantum.h>
 #else
 template <class T> class Quantum;
 #endif

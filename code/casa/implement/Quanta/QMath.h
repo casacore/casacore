@@ -35,7 +35,7 @@
 //# Includes
 #include <aips/aips.h>
 #include <aips/Mathematics/Complex.h>
-#include <aips/Measures/Quantum.h>
+#include <aips/Quanta/Quantum.h>
 
 //# Forward Declarations
 template <class T> class Array;

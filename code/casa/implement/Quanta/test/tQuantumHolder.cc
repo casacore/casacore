@@ -31,9 +31,9 @@
 #include <aips/Exceptions.h>
 #include <aips/Arrays/Vector.h>
 #include <aips/Mathematics/Complex.h>
-#include <aips/Measures/Quantum.h>
-#include <aips/Measures/QLogical.h>
-#include <aips/Measures/QuantumHolder.h>
+#include <aips/Quanta/Quantum.h>
+#include <aips/Quanta/QLogical.h>
+#include <aips/Quanta/QuantumHolder.h>
 #include <aips/Containers/Record.h>
 #include <aips/Glish/GlishRecord.h>
 

@@ -1,5 +1,5 @@
 //# <ClassFileName.h>: this defines <ClassName>, which ...
-//# Copyright (C) 1996,1997
+//# Copyright (C) 1996,1997,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -35,7 +35,7 @@
 #include <trial/Coordinates/LinearCoordinate.h>
 #include <trial/FITS/FITSUtil.h>
 
-#include <aips/Measures/UnitMap.h>
+#include <aips/Quanta/UnitMap.h>
 #include <aips/Arrays/Matrix.h>
 #include <aips/Arrays/Vector.h>
 #include <aips/Lattices/IPosition.h>

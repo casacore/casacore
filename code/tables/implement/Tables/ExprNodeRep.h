@@ -1,5 +1,5 @@
 //# ExprNodeRep.h: Abstract base class for a node in a table column expression tree
-//# Copyright (C) 1994,1995,1996,1997
+//# Copyright (C) 1994,1995,1996,1997,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -32,7 +32,7 @@
 #include <aips/aips.h>
 #include <aips/Tables/ExprRange.h>
 #include <aips/Mathematics/Complex.h>
-#include <aips/Measures/MVTime.h>
+#include <aips/Quanta/MVTime.h>
 #include <aips/Utilities/DataType.h>
 
 //# Forward Declarations

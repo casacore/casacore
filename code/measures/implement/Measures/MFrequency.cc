@@ -27,7 +27,7 @@
 
 //# Includes
 #ifdef __GNUG__
-#include <aips/Measures/Quantum.h>
+#include <aips/Quanta/Quantum.h>
 typedef Quantum<Double> gpp_mfrequency_bug1;
 #endif
 #include <aips/Utilities/Assert.h>

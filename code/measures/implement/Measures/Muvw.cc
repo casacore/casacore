@@ -27,7 +27,7 @@
 
 //# Includes
 #ifdef __GNUG__
-#include <aips/Measures/Quantum.h>
+#include <aips/Quanta/Quantum.h>
 typedef Quantum<Double> gpp_muvw_bug1;
 #endif
 #include <trial/Measures/Muvw.h>

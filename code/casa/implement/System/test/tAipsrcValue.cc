@@ -1,5 +1,5 @@
 //# tAipsrcValue.cc: This program tests the Aipsrc value interface
-//# Copyright (C) 1996,1997
+//# Copyright (C) 1996,1997,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -30,8 +30,8 @@
 #include <aips/Tasking/AipsrcVector.h>
 #include <aips/Arrays/Vector.h>
 #include <aips/Arrays/ArrayIO.h>
-#include <aips/Measures/Unit.h>
-#include <aips/Measures/MVTime.h>
+#include <aips/Quanta/Unit.h>
+#include <aips/Quanta/MVTime.h>
 #include <aips/Utilities/Assert.h>
 
 int main(){

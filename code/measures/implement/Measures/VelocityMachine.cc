@@ -29,7 +29,7 @@
 #include <trial/Measures/VelocityMachine.h>
 #include <aips/Mathematics/Math.h>
 #include <aips/Arrays/Vector.h>
-#include <aips/Measures/UnitVal.h>
+#include <aips/Quanta/UnitVal.h>
 #include <aips/Measures/MeasFrame.h>
 #include <aips/Measures/MeasConvert.h>
 

@@ -1,5 +1,5 @@
 //# TableQuantumDesc.cc: Definition of a Quantum in a Table.
-//# Copyright (C) 1997
+//# Copyright (C) 1997,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -27,7 +27,7 @@
 
 //# Includes
 #include <aips/Exceptions.h>
-#include <aips/Measures/Unit.h>
+#include <aips/Quanta/Unit.h>
 #include <aips/Tables/ColumnDesc.h>
 #include <aips/Tables/TableDesc.h>
 #include <aips/Tables/TableRecord.h>

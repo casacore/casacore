@@ -31,13 +31,13 @@
 #include <aips/Utilities/Assert.h>
 #include <aips/Arrays/Vector.h>
 #include <aips/Arrays/ArrayMath.h>
-#include <aips/Measures/Quantum.h>
+#include <aips/Quanta/Quantum.h>
 #ifdef __GNUG__
 typedef Quantum<Double> gpp_direction_bug1;
 #endif
 #include <aips/Measures/MCDirection.h>
 #include <aips/Measures/MCFrame.h>
-#include <aips/Measures/RotMatrix.h>
+#include <aips/Quanta/RotMatrix.h>
 #include <aips/Measures/MVPosition.h>
 #include <aips/Measures/SolarPos.h>
 #include <aips/Measures/Aberration.h>

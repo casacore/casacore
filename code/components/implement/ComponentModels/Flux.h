@@ -33,13 +33,13 @@
 #include <aips/Arrays/Vector.h>
 #include <aips/Exceptions/Error.h>
 #include <aips/Mathematics/NumericTraits.h>
-#include <aips/Measures/Unit.h>
+#include <aips/Quanta/Unit.h>
 #include <aips/Utilities/CountedPtr.h>
 #include <trial/ComponentModels/ComponentType.h>
 
 #include <aips/Arrays/Array.h>
 #include <aips/Arrays/ArrayMath.h>
-#include <aips/Measures/Quantum.h>
+#include <aips/Quanta/Quantum.h>
 #include <aips/Utilities/Assert.h>
 
 class RecordInterface;

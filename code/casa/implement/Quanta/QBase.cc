@@ -27,7 +27,7 @@
 
 //# Includes
 #include <aips/Exceptions/Error.h>
-#include <aips/Measures/QBase.h>
+#include <aips/Quanta/QBase.h>
 
 QBase::QBase() 
 : qUnit() {}

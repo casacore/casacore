@@ -32,7 +32,7 @@
 #include <aips/Measures/MDirection.h>
 #include <aips/Measures/MFrequency.h>
 #include <aips/Measures/MVDirection.h>
-#include <aips/Measures/Quantum.h>
+#include <aips/Quanta/Quantum.h>
 #include <aips/Measures/Stokes.h>
 #include <aips/Utilities/Assert.h>
 #include <aips/Utilities/String.h>
@@ -47,7 +47,7 @@
 #include <trial/ComponentModels/SpectralModel.h>
 // #include <aips/Arrays/Vector.h>
 // #include <aips/Lattices/IPosition.h>
-// #include <aips/Measures/MVAngle.h>
+// #include <aips/Quanta/MVAngle.h>
 // #include <trial/Coordinates/CoordinateSystem.h>
 // #include <trial/Coordinates/CoordinateUtil.h>
 // #include <trial/Coordinates/StokesCoordinate.h>

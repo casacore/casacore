@@ -31,7 +31,7 @@
 #include <trial/ComponentModels/ComponentType.h>
 #include <trial/ComponentModels/SpectralModel.h>
 #include <aips/Measures/MFrequency.h>
-#include <aips/Measures/Unit.h>
+#include <aips/Quanta/Unit.h>
 
 class RecordInterface;
 class String;

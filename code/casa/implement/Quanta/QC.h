@@ -1,5 +1,5 @@
 //# QC.h: physical constants with units
-//# Copyright (C) 1994,1995,1996,1997
+//# Copyright (C) 1994,1995,1996,1997,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -35,8 +35,8 @@
 //# Includes
 #include <aips/aips.h>
 #include <aips/Mathematics/Constants.h>
-#include <aips/Measures/Quantum.h>
-#include <aips/Measures/UnitMap.h>
+#include <aips/Quanta/Quantum.h>
+#include <aips/Quanta/UnitMap.h>
 
 //# Forward Declarations
 

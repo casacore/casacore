@@ -42,7 +42,7 @@
 #include <trial/Lattices/SubLattice.h>
 #include <trial/Lattices/LCBox.h>
 #include <aips/Mathematics/Math.h>
-#include <aips/Measures/QMath.h>
+#include <aips/Quanta/QMath.h>
 #include <aips/Tasking/AppInfo.h>
 #include <aips/Tables/Table.h>
 #include <aips/Utilities/Assert.h>

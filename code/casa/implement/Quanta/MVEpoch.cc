@@ -27,17 +27,17 @@
 
 //# Includes
 #ifdef __GNUG__
-#include <aips/Measures/Quantum.h>
+#include <aips/Quanta/Quantum.h>
 typedef Quantum<Double> gpp_mvepoch_bug1;
 #endif
 #include <iostream.h>
 #include <iomanip.h>
 #include <aips/Exceptions/Error.h>
-#include <aips/Measures/Unit.h>
+#include <aips/Quanta/Unit.h>
 #include <aips/Utilities/Assert.h>
 #include <aips/RTTI/Register.h>
 #include <aips/Measures/MVEpoch.h>
-#include <aips/Measures/UnitVal.h>
+#include <aips/Quanta/UnitVal.h>
 #include <aips/Mathematics/Math.h>
 
 //# Constants

@@ -53,7 +53,7 @@
 #include <aips/Utilities/DefaultValue.h>
 #include <aips/Utilities/String.h>
 #include <aips/Utilities/Assert.h>
-#include <aips/Measures/UnitMap.h>
+#include <aips/Quanta/UnitMap.h>
 
 #include <aips/Logging/LogMessage.h>
 

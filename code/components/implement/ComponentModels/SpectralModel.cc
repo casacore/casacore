@@ -33,8 +33,8 @@
 #include <aips/Lattices/IPosition.h>
 #include <aips/Measures/MFrequency.h>
 #include <aips/Measures/MeasureHolder.h>
-#include <aips/Measures/QuantumHolder.h>
-#include <aips/Measures/Quantum.h>
+#include <aips/Quanta/QuantumHolder.h>
+#include <aips/Quanta/Quantum.h>
 #include <aips/Utilities/Assert.h>
 #include <aips/Utilities/DataType.h>
 #include <aips/Utilities/String.h>

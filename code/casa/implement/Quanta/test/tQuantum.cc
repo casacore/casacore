@@ -34,11 +34,11 @@
 #include <aips/Arrays/Matrix.h>
 #include <aips/Arrays/Cube.h>
 #include <aips/Arrays/ArrayMath.h>
-#include <aips/Measures/Quantum.h>
-#include <aips/Measures/QMath.h>
-#include <aips/Measures/QLogical.h>
-#include <aips/Measures/QC.h>
-#include <aips/Measures/UnitMap.h>
+#include <aips/Quanta/Quantum.h>
+#include <aips/Quanta/QMath.h>
+#include <aips/Quanta/QLogical.h>
+#include <aips/Quanta/QC.h>
+#include <aips/Quanta/UnitMap.h>
 
 main ()
 {

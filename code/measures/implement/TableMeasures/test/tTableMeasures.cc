@@ -34,7 +34,7 @@
 #include <aips/Measures/MeasFrame.h>
 #include <aips/Measures/MEpoch.h>
 #include <aips/Measures/MVEpoch.h>
-#include <aips/Measures/MVTime.h>
+#include <aips/Quanta/MVTime.h>
 #include <aips/Measures/MDirection.h>
 #include <aips/Measures/MFrequency.h>
 #include <aips/Measures/MPosition.h>

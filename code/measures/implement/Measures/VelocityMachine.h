@@ -30,8 +30,8 @@
 
 //# Includes
 #include <aips/aips.h>
-#include <aips/Measures/Unit.h>
-#include <aips/Measures/Quantum.h>
+#include <aips/Quanta/Unit.h>
+#include <aips/Quanta/Quantum.h>
 #include <aips/Measures/MCFrequency.h>
 #include <aips/Measures/MCDoppler.h>
 #include <aips/Measures/MeasConvert.h>

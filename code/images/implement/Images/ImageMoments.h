@@ -32,7 +32,7 @@
 #endif
 
 #include <aips/aips.h>
-#include <aips/Measures/QMath.h>
+#include <aips/Quanta/QMath.h>
 #include <trial/Tasking/PGPlotter.h>
 
 template <class T> class Array;

@@ -1,5 +1,5 @@
 //# Unit.h: defines the Unit class
-//# Copyright (C) 1994, 1995, 1996
+//# Copyright (C) 1994,1995,1996,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -35,7 +35,7 @@
 //# Includes
 #include <aips/aips.h>
 #include <aips/Utilities/String.h>
-#include <aips/Measures/UnitVal.h>
+#include <aips/Quanta/UnitVal.h>
 
 //# Forward Declarations
 

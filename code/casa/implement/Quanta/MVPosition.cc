@@ -27,7 +27,7 @@
 
 //# Includes
 #ifdef __GNUG__
-#include <aips/Measures/Quantum.h>
+#include <aips/Quanta/Quantum.h>
 typedef Quantum<Double> gpp_mvposition_bug1;
 #endif
 #include <aips/Utilities/Assert.h>
@@ -35,10 +35,10 @@ typedef Quantum<Double> gpp_mvposition_bug1;
 #include <aips/Utilities/Assert.h>
 #include <aips/RTTI/Register.h>
 #include <aips/Measures/MVPosition.h>
-#include <aips/Measures/RotMatrix.h>
-#include <aips/Measures/UnitVal.h>
-#include <aips/Measures/QMath.h>
-#include <aips/Measures/QLogical.h>
+#include <aips/Quanta/RotMatrix.h>
+#include <aips/Quanta/UnitVal.h>
+#include <aips/Quanta/QMath.h>
+#include <aips/Quanta/QLogical.h>
 #include <aips/Arrays/ArrayMath.h>
 #include <aips/Arrays/ArrayLogical.h>
 

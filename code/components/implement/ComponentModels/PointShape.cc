@@ -33,10 +33,10 @@
 #include <aips/Exceptions/Error.h>
 #include <aips/Mathematics/Complex.h>
 #include <aips/Measures/MCDirection.h>
-#include <aips/Measures/MVAngle.h>
+#include <aips/Quanta/MVAngle.h>
 #include <aips/Measures/MeasConvert.h>
-#include <aips/Measures/Quantum.h>
-#include <aips/Measures/QMath.h>
+#include <aips/Quanta/Quantum.h>
+#include <aips/Quanta/QMath.h>
 #include <aips/Utilities/Assert.h>
 #include <aips/Utilities/String.h>
 

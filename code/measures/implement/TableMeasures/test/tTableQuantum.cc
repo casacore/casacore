@@ -31,8 +31,8 @@
 #include <aips/Arrays/Vector.h>
 #include <aips/Arrays/ArrayIter.h>
 #include <aips/Exceptions.h>
-#include <aips/Measures/Quantum.h>
-#include <aips/Measures/Unit.h>
+#include <aips/Quanta/Quantum.h>
+#include <aips/Quanta/Unit.h>
 #include <aips/Measures/MEpoch.h>
 #include <aips/Mathematics/Complex.h>
 #include <trial/TableMeasures/TableQuantumDesc.h>

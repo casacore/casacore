@@ -1,5 +1,5 @@
 //# DirectionCoordinate.h: this defines the DirectionCoordinate class
-//# Copyright (C) 1997
+//# Copyright (C) 1997,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -35,7 +35,7 @@
 #include <aips/Arrays/Matrix.h>
 #include <aips/Containers/Record.h>
 #include <aips/Mathematics/Constants.h>
-#include <aips/Measures/MVAngle.h>
+#include <aips/Quanta/MVAngle.h>
 #include <aips/Utilities/Assert.h>
 #include <aips/Utilities/LinearSearch.h>
 #include <aips/Utilities/String.h>

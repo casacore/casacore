@@ -32,7 +32,7 @@
 #include <aips/Measures.h>
 #include <aips/Measures/MCDirection.h>
 #include <aips/Measures/MVPosition.h>
-#include <aips/Measures/RotMatrix.h>
+#include <aips/Quanta/RotMatrix.h>
 
 //# Forward Declarations
 class MeasFrame;

@@ -1,5 +1,5 @@
 //# Euler.cc: Vector of Euler rotation angles
-//# Copyright (C) 1995,1996,1997
+//# Copyright (C) 1995,1996,1997,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -27,15 +27,15 @@
 
 //# Includes
 #ifdef __GNUG__
-#include <aips/Measures/Quantum.h>
+#include <aips/Quanta/Quantum.h>
 typedef Quantum<Double> gpp_euler1_bug1;
 #endif
 #include <aips/Utilities/Assert.h>
-#include <aips/Measures/Euler.h>
+#include <aips/Quanta/Euler.h>
 #include <aips/Mathematics/Math.h>
 #include <aips/Arrays/ArrayMath.h>
-#include <aips/Measures/UnitVal.h>
-#include <aips/Measures/QMath.h>
+#include <aips/Quanta/UnitVal.h>
+#include <aips/Quanta/QMath.h>
 
 // Euler class
 

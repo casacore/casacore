@@ -29,12 +29,12 @@
 #include <aips/aips.h>
 #include <aips/Exceptions/Error.h>
 #include <aips/Measures.h>
-#include <aips/Measures/RotMatrix.h>
-#include <aips/Measures/Euler.h>
+#include <aips/Quanta/RotMatrix.h>
+#include <aips/Quanta/Euler.h>
 #include <trial/Measures/MEarthMagnetic.h>
 #include <trial/Measures/MCEarthMagnetic.h>
 #include <trial/Measures/EarthField.h>
-#include <aips/Measures/MVTime.h>
+#include <aips/Quanta/MVTime.h>
 #include <aips/Measures/MDirection.h>
 #include <aips/Measures/MPosition.h>
 #include <aips/Measures/MEpoch.h>

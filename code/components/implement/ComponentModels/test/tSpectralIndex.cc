@@ -37,9 +37,9 @@
 #include <aips/Exceptions/Excp.h>
 #include <aips/Measures/MFrequency.h>
 #include <aips/Measures/MVFrequency.h>
-#include <aips/Measures/Quantum.h>
+#include <aips/Quanta/Quantum.h>
 #include <aips/Measures/Stokes.h>
-#include <aips/Measures/Unit.h>
+#include <aips/Quanta/Unit.h>
 #include <aips/Utilities/Assert.h>
 #include <aips/Utilities/String.h>
 #include <iostream.h>

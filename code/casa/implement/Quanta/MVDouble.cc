@@ -26,7 +26,7 @@
 //# $Id$
 
 //# Includes
-#include <aips/Measures/Quantum.h>
+#include <aips/Quanta/Quantum.h>
 #ifdef __GNUG__
 typedef Quantum<Double> gpp_mvdouble_bug1;
 #endif

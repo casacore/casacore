@@ -1,5 +1,5 @@
 //# ImageUtilities.cc:  Helper class for accessing images
-//# Copyright (C) 1996,1997
+//# Copyright (C) 1996,1997,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -31,7 +31,7 @@
 #include <aips/Utilities/String.h>
 #include <aips/Utilities/LinearSearch.h>
 #include <aips/Arrays/Vector.h>
-#include <aips/Measures/MVAngle.h>
+#include <aips/Quanta/MVAngle.h>
 #include <aips/OS/File.h>
 #include <aips/OS/Path.h>
 #include <aips/Tables/Table.h>

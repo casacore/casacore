@@ -1,5 +1,5 @@
 //# MomentCalculator.cc: 
-//# Copyright (C) 1996,1997
+//# Copyright (C) 1996,1997,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -37,7 +37,7 @@
 #include <trial/Images/ImageMoments.h>
 #include <trial/Images/ImageUtilities.h>
 #include <aips/Mathematics/Math.h>
-#include <aips/Measures/QMath.h>
+#include <aips/Quanta/QMath.h>
 #include <aips/Logging/LogIO.h> 
 #include <aips/Utilities/Assert.h>
 #include <aips/Exceptions/Error.h>

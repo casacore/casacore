@@ -37,7 +37,7 @@
 #include <trial/Lattices/LatticeIterator.h>
 
 #include <aips/Arrays/ArrayMath.h>
-#include <aips/Measures/Unit.h>
+#include <aips/Quanta/Unit.h>
 #include <aips/Utilities/Assert.h>
 
 #include <aips/Logging/LogIO.h>

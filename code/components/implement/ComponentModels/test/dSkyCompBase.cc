@@ -32,7 +32,7 @@
 #include <aips/Exceptions/Excp.h>
 #include <aips/Measures/MDirection.h>
 #include <aips/Measures/MFrequency.h>
-#include <aips/Measures/Quantum.h>
+#include <aips/Quanta/Quantum.h>
 #include <aips/Utilities/String.h>
 #include <trial/ComponentModels/Flux.h>
 #include <trial/ComponentModels/PointShape.h>

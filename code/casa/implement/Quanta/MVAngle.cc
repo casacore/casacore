@@ -1,5 +1,5 @@
 //# MVAngle.cc: Class to handle angle type conversions and I/O
-//# Copyright (C) 1996,1997
+//# Copyright (C) 1996,1997,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -26,13 +26,13 @@
 //# $Id$
 
 //# Includes
-#include <aips/Measures/MVAngle.h>
+#include <aips/Quanta/MVAngle.h>
 #include <strstream.h>
 #include <iomanip.h>
 #include <aips/Mathematics/Math.h>
 #include <aips/Mathematics/Constants.h>
-#include <aips/Measures/QMath.h>
-#include <aips/Measures/MUString.h>
+#include <aips/Quanta/QMath.h>
+#include <aips/Quanta/MUString.h>
 #include <aips/Tasking/Aipsrc.h>
 #include <aips/Tasking/AppInfo.h>
 

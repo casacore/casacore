@@ -1,5 +1,5 @@
 //# Precession.cc:  Precession class
-//# Copyright (C) 1995,1996,1997
+//# Copyright (C) 1995,1996,1997,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -27,7 +27,7 @@
 
 //# Includes
 #ifdef __GNUG__
-#include <aips/Measures/Quantum.h>
+#include <aips/Quanta/Quantum.h>
 typedef Quantum<Double> gpp_mvdoppler_bug1;
 #endif
 #include <aips/Measures/MeasTable.h>

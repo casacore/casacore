@@ -25,7 +25,7 @@
 //#
 //# $Id$
 
-#include <aips/Measures/Quantum.h>
+#include <aips/Quanta/Quantum.h>
 
 #if defined(__GNUG__)
 typedef Quantum<Double> gpp_bug_1;

@@ -27,7 +27,7 @@
 
 //# Includes
 #ifdef __GNUG__
-#include <aips/Measures/Quantum.h>
+#include <aips/Quanta/Quantum.h>
 typedef Quantum<Double> gpp_mvuvw_bug1;
 #endif
 #include <trial/Measures/MVuvw.h>
@@ -35,11 +35,11 @@ typedef Quantum<Double> gpp_mvuvw_bug1;
 #include <aips/Mathematics/Math.h>
 #include <aips/Mathematics/Constants.h>
 #include <aips/RTTI/Register.h>
-#include <aips/Measures/RotMatrix.h>
-#include <aips/Measures/Euler.h>
-#include <aips/Measures/UnitVal.h>
-#include <aips/Measures/QMath.h>
-#include <aips/Measures/QLogical.h>
+#include <aips/Quanta/RotMatrix.h>
+#include <aips/Quanta/Euler.h>
+#include <aips/Quanta/UnitVal.h>
+#include <aips/Quanta/QMath.h>
+#include <aips/Quanta/QLogical.h>
 #include <aips/Measures/MVDirection.h>
 #include <trial/Measures/MVBaseline.h>
 #include <aips/Arrays/ArrayMath.h>

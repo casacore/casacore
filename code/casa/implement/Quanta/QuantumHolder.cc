@@ -26,10 +26,10 @@
 //# $Id$
 
 //# Includes
-#include <aips/Measures/QuantumHolder.h>
+#include <aips/Quanta/QuantumHolder.h>
 #include <aips/Exceptions.h>
-#include <aips/Measures/UnitVal.h>
-#include <aips/Measures/Quantum.h>
+#include <aips/Quanta/UnitVal.h>
+#include <aips/Quanta/Quantum.h>
 #include <aips/Containers/RecordInterface.h>
 #include <aips/Containers/RecordFieldId.h>
 #include <aips/Containers/Record.h>

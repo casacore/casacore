@@ -27,7 +27,7 @@
 
 //# Includes
 #include <aips/Measures/UVWMachine.h>
-#include <aips/Measures/Euler.h>
+#include <aips/Quanta/Euler.h>
 
 //# Constructors
 UVWMachine::UVWMachine(const MDirection::Ref &out, const MDirection &in,

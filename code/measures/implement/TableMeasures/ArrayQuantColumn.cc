@@ -1,4 +1,4 @@
-//# Copyright (C) 1997
+//# Copyright (C) 1997,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -30,8 +30,8 @@
 #include <aips/Arrays/Vector.h>
 #include <aips/Exceptions.h>
 #include <aips/Mathematics/Complex.h>
-#include <aips/Measures/Quantum.h>
-#include <aips/Measures/Unit.h>
+#include <aips/Quanta/Quantum.h>
+#include <aips/Quanta/Unit.h>
 #include <trial/TableMeasures/ArrayQuantColumn.h>
 #include <trial/TableMeasures/TableQuantumDesc.h>
 #include <aips/Tables/ArrayColumn.h>

@@ -38,8 +38,8 @@
 #include <aips/Mathematics/Constants.h>
 #include <aips/Mathematics/Math.h>
 #include <aips/Mathematics/Convolver.h>
-#include <aips/Measures/Unit.h>
-#include <aips/Measures/QMath.h>
+#include <aips/Quanta/Unit.h>
+#include <aips/Quanta/QMath.h>
 #include <aips/OS/Directory.h>
 #include <aips/OS/File.h>
 #include <aips/OS/Path.h>

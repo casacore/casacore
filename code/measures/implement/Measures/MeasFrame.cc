@@ -27,12 +27,12 @@
 
 //# Includes
 #ifdef __GNUG__
-#include <aips/Measures/Quantum.h>
+#include <aips/Quanta/Quantum.h>
 typedef Quantum<Double> gpp_MeasFrame_bug1;
 #endif
 #include <aips/Exceptions/Error.h>
 #include <aips/RTTI/Register.h>
-#include <aips/Measures/Quantum.h>
+#include <aips/Quanta/Quantum.h>
 #include <aips/Measures/MEpoch.h>
 #include <aips/Measures/MPosition.h>
 #include <aips/Measures/MDirection.h>

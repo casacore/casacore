@@ -1,5 +1,5 @@
 //# UnitDim.cc: defines the (private) class describing basic SI dimensions
-//# Copyright (C) 1994,1995,1996,1997
+//# Copyright (C) 1994,1995,1996,1997,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -28,7 +28,7 @@
 //# Includes
 
 #include <aips/Utilities/String.h>
-#include <aips/Measures/UnitDim.h>
+#include <aips/Quanta/UnitDim.h>
 
 UnitDim::UnitDim() {
     for (Int i=0; i<UNITDIM_DLNUMBER; i++) {

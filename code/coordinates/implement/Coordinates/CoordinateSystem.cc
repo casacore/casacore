@@ -40,8 +40,8 @@
 #include <aips/Arrays/ArrayMath.h>
 #include <aips/Arrays/ArrayLogical.h>
 #include <aips/Utilities/Assert.h>
-#include <aips/Measures/Unit.h>
-#include <aips/Measures/UnitMap.h>
+#include <aips/Quanta/Unit.h>
+#include <aips/Quanta/UnitMap.h>
 
 #include <aips/Containers/Record.h>
 #include <aips/Logging/LogIO.h>

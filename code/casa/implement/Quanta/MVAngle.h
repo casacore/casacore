@@ -1,5 +1,5 @@
 //# MVAngle.h: Class to handle angle type conversions and I/O
-//# Copyright (C) 1996,1997
+//# Copyright (C) 1996,1997,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -34,7 +34,7 @@
 
 //# Includes
 #include <aips/aips.h>
-#include <aips/Measures/Quantum.h>
+#include <aips/Quanta/Quantum.h>
 
 //# Forward Declarations
 #if defined(AIPS_STDLIB)

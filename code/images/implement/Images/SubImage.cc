@@ -30,7 +30,7 @@
 #include <trial/Lattices/SubLattice.h>
 #include <aips/Lattices/IPosition.h>
 #include <aips/Arrays/Vector.h>
-#include <aips/Measures/UnitMap.h>
+#include <aips/Quanta/UnitMap.h>
 #include <aips/Utilities/Assert.h>
 #include <aips/Exceptions/Error.h>
 

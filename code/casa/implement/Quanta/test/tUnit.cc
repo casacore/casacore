@@ -28,10 +28,10 @@
 //# Includes
 #include <aips/aips.h>
 #include <aips/Exceptions/Error.h>
-#include <aips/Measures/Unit.h>
-#include <aips/Measures/UnitMap.h>
-#include <aips/Measures/UnitVal.h>
-#include <aips/Measures/UnitName.h>
+#include <aips/Quanta/Unit.h>
+#include <aips/Quanta/UnitMap.h>
+#include <aips/Quanta/UnitVal.h>
+#include <aips/Quanta/UnitName.h>
 
 main ()
 {

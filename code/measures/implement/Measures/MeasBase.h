@@ -36,7 +36,7 @@
 //# Includes
 #include <aips/aips.h>
 #include <aips/Measures/Measure.h>
-#include <aips/Measures/Quantum.h>
+#include <aips/Quanta/Quantum.h>
 
 //# Forward Declarations
 template <class T> class Vector;

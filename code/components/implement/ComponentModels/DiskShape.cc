@@ -38,10 +38,10 @@
 #include <aips/Mathematics/Constants.h>
 #include <aips/Mathematics/Math.h>
 #include <aips/Measures/MCDirection.h>
-#include <aips/Measures/MVAngle.h>
+#include <aips/Quanta/MVAngle.h>
 #include <aips/Measures/MeasConvert.h>
-#include <aips/Measures/Quantum.h>
-#include <aips/Measures/QuantumHolder.h>
+#include <aips/Quanta/Quantum.h>
+#include <aips/Quanta/QuantumHolder.h>
 #include <aips/Utilities/Assert.h>
 #include <aips/Utilities/DataType.h>
 #include <aips/Utilities/String.h>

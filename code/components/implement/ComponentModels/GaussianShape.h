@@ -35,7 +35,7 @@
 #include <aips/Measures/MDirection.h>
 #include <aips/Measures/MVDirection.h>
 #include <aips/Functionals/Gaussian2D.h>
-#include <aips/Measures/Unit.h>
+#include <aips/Quanta/Unit.h>
 
 class RecordInterface;
 class String;

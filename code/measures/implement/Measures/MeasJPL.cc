@@ -1,5 +1,5 @@
 //# MeasJPL.cc: Interface to JPL DE tables
-//# Copyright (C) 1996,1997
+//# Copyright (C) 1996,1997,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -27,13 +27,13 @@
 
 //# Includes
 #ifdef __GNUG__
-#include <aips/Measures/Quantum.h>
+#include <aips/Quanta/Quantum.h>
 typedef Quantum<Double> gpp_MeasJPL_bug1;
 #endif
 #include <aips/Mathematics/Math.h>
 #include <aips/Exceptions/Error.h>
 #include <aips/Measures/MeasJPL.h>
-#include <aips/Measures/Quantum.h>
+#include <aips/Quanta/Quantum.h>
 #include <aips/Measures/MVEpoch.h>
 #include <aips/Measures/MeasIERS.h>
 #include <aips/OS/Time.h>

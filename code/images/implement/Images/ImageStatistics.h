@@ -1,5 +1,5 @@
 //# ImageStatistics.h: generate statistics from an image
-//# Copyright (C) 1996,1997
+//# Copyright (C) 1996,1997,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -39,7 +39,7 @@
 #include <trial/Lattices/LatticeProgress.h>
 #include <trial/Lattices/TiledCollapser.h>
 #include <aips/Mathematics/NumericTraits.h>
-#include <aips/Measures/QMath.h>
+#include <aips/Quanta/QMath.h>
 #include <trial/Tasking/PGPlotter.h>
 #include <trial/Tasking/ProgressMeter.h>
 #include <aips/Utilities/String.h>

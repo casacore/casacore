@@ -37,9 +37,9 @@
 #include <aips/Mathematics/Constants.h>
 #include <aips/Containers/SimOrdMap.h>
 #include <aips/Utilities/String.h>
-#include <aips/Measures/UnitDim.h>
-#include <aips/Measures/UnitVal.h>
-#include <aips/Measures/UnitName.h>
+#include <aips/Quanta/UnitDim.h>
+#include <aips/Quanta/UnitVal.h>
+#include <aips/Quanta/UnitName.h>
 
 //# Forward Declarations
 

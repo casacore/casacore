@@ -34,7 +34,7 @@
 //#include <trial/ComponentModels/ComponentType.h>
 #include <aips/Measures/MDirection.h>
 #include <aips/Measures/MVDirection.h>
-#include <aips/Measures/Unit.h>
+#include <aips/Quanta/Unit.h>
 
 class RecordInterface;
 class String;

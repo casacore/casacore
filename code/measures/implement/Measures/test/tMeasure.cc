@@ -36,8 +36,8 @@
 #include <aips/Measures/MPosition.h>
 #include <aips/Measures/MRadialVelocity.h>
 #include <aips/Measures/MCFrame.h>
-#include <aips/Measures/MVAngle.h>
-#include <aips/Measures/MVTime.h>
+#include <aips/Quanta/MVAngle.h>
+#include <aips/Quanta/MVTime.h>
 
 main()
 {

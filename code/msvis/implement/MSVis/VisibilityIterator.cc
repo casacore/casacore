@@ -34,7 +34,7 @@
 #include <aips/Exceptions/Error.h>
 #include <aips/Utilities/Assert.h>
 #include <aips/MeasurementSets/MSColumns.h>
-#include <aips/Measures/MVTime.h>
+#include <aips/Quanta/MVTime.h>
 #include <aips/Tables/TableDesc.h>
 #include <aips/Tables/ColDescSet.h>
 #include <aips/Tables/TableRecord.h>

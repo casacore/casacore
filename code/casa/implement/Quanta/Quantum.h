@@ -35,7 +35,7 @@
 //# Includes
 #include <aips/aips.h>
 #include <strstream.h>
-#include <aips/Measures/QBase.h>
+#include <aips/Quanta/QBase.h>
 
 //# Forward Declarations
 template <class T> class Quantum;

@@ -1,5 +1,5 @@
 //# Coordinate.cc: this defines the Coordinate class
-//# Copyright (C) 1997
+//# Copyright (C) 1997,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -30,7 +30,7 @@
 #include <aips/Arrays/Matrix.h>
 #include <aips/Arrays/Vector.h>
 #include <aips/Utilities/Assert.h>
-#include <aips/Measures/Unit.h>
+#include <aips/Quanta/Unit.h>
 #include <aips/Arrays/ArrayMath.h>
 #include <aips/Arrays/ArrayLogical.h>
 

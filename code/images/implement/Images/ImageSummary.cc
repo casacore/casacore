@@ -33,12 +33,12 @@
 #include <aips/Lattices/IPosition.h>
 #include <aips/Logging/LogIO.h>
 #include <aips/Mathematics/Constants.h>
-#include <aips/Measures/Unit.h>
+#include <aips/Quanta/Unit.h>
 #include <aips/Measures/MDirection.h>
 #include <aips/Measures/MFrequency.h>
 #include <aips/Measures/MDoppler.h>
-#include <aips/Measures/MVAngle.h>
-#include <aips/Measures/Quantum.h>
+#include <aips/Quanta/MVAngle.h>
+#include <aips/Quanta/Quantum.h>
 #include <aips/Measures/Stokes.h>
 #include <trial/Measures/VelocityMachine.h>
 

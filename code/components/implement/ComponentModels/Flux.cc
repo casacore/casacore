@@ -26,7 +26,7 @@
 //# $Id$
 
 #include <trial/ComponentModels/Flux.h>
-#include <aips/Measures/QuantumHolder.h>
+#include <aips/Quanta/QuantumHolder.h>
 #include <aips/Containers/RecordInterface.h>
 #include <aips/Exceptions/Error.h>
 #include <aips/Logging/LogIO.h>

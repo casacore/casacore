@@ -31,7 +31,7 @@
 #include <aips/Arrays/Vector.h>
 #include <aips/Measures/MFrequency.h>
 #include <aips/Measures/Stokes.h>
-#include <aips/Measures/Unit.h>
+#include <aips/Quanta/Unit.h>
 #include <trial/ComponentModels/ComponentType.h>
 #include <trial/ComponentModels/SpectralModel.h>
 

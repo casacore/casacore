@@ -35,8 +35,8 @@
 //# Includes
 #include <aips/aips.h>
 #include <aips/Arrays/Vector.h>
-#include <aips/Measures/QC.h>
-#include <aips/Measures/Quantum.h>
+#include <aips/Quanta/QC.h>
+#include <aips/Quanta/Quantum.h>
 #include <aips/Measures/MeasValue.h>
 #ifdef __GNUG__
 typedef Quantum<Double> gpp_mvfreq_bug2;

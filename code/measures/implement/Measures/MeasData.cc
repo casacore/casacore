@@ -26,7 +26,7 @@
 //# $Id$
 
 //# Includes
-#include <aips/Measures/RotMatrix.h>
+#include <aips/Quanta/RotMatrix.h>
 #include <aips/Measures/MeasData.h>
 #include <aips/Utilities/Assert.h>
 #include <aips/Exceptions/Error.h>

@@ -36,10 +36,10 @@
 #include <aips/Arrays/Matrix.h>
 #include <aips/Arrays/Cube.h>
 #include <aips/Exceptions/Error.h>
-#include <aips/Measures/Quantum.h>
-#include <aips/Measures/MUString.h>
-#include <aips/Measures/MVAngle.h>
-#include <aips/Measures/MVTime.h>
+#include <aips/Quanta/Quantum.h>
+#include <aips/Quanta/MUString.h>
+#include <aips/Quanta/MVAngle.h>
+#include <aips/Quanta/MVTime.h>
 #include <aips/RTTI/Register.h>
 
 #if defined(__GNUG__)

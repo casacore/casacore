@@ -34,7 +34,7 @@
 
 //# Includes
 #include <aips/aips.h>
-#include <aips/Measures/Unit.h>
+#include <aips/Quanta/Unit.h>
 
 //# Forward Declarations
 

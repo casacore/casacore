@@ -27,9 +27,9 @@
 
 //# Includes
 #include <aips/Measures/MeasureHolder.h>
-#include <aips/Measures/QuantumHolder.h>
+#include <aips/Quanta/QuantumHolder.h>
 #include <aips/Exceptions.h>
-#include <aips/Measures/Quantum.h>
+#include <aips/Quanta/Quantum.h>
 #include <aips/Measures/MDirection.h>
 #include <aips/Measures/MDoppler.h>
 #include <aips/Measures/MEpoch.h>

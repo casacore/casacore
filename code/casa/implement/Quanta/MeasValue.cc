@@ -27,7 +27,7 @@
 
 //# Includes
 #include <aips/Measures/MeasValue.h>
-#include <aips/Measures/Quantum.h>
+#include <aips/Quanta/Quantum.h>
 #include <aips/Arrays/Vector.h>
 
 //# Constants

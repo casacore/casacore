@@ -1,5 +1,5 @@
 //# AipsrcValue.cc: Class to read values from the Aipsrc general resource files 
-//# Copyright (C) 1995,1996,1997
+//# Copyright (C) 1995,1996,1997,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -29,7 +29,7 @@
 
 #include <aips/Tasking/AipsrcValue.h>
 #include <aips/Utilities/Assert.h>
-#include <aips/Measures/Quantum.h>
+#include <aips/Quanta/Quantum.h>
 #include <strstream.h>
 
 //# Constructor

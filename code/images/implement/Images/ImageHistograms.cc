@@ -42,7 +42,7 @@
 #include <aips/Logging/LogIO.h>
 #include <aips/Mathematics/Constants.h>
 #include <aips/Mathematics/Math.h>
-#include <aips/Measures/QMath.h>
+#include <aips/Quanta/QMath.h>
 #include <aips/Tables/Table.h>
 #include <trial/Tasking/PGPlotter.h>
 #include <aips/Utilities/Assert.h>

@@ -27,12 +27,12 @@
 
 //# Includes
 #ifdef __GNUG__
-#include <aips/Measures/Quantum.h>
+#include <aips/Quanta/Quantum.h>
 typedef Quantum<Double> gpp_mradvel_bug1;
 #endif
 #include <aips/Utilities/Assert.h>
 #include <aips/Mathematics/Constants.h>
-#include <aips/Measures/QMath.h>
+#include <aips/Quanta/QMath.h>
 #include <aips/Measures/MRadialVelocity.h>
 #include <aips/RTTI/Register.h>
 #include <aips/Measures/MDoppler.h>

@@ -48,11 +48,11 @@
 #include <aips/Measures/MDirection.h>
 #include <aips/Measures/MFrequency.h>
 #include <aips/Measures/MVFrequency.h>
-#include <aips/Measures/MVAngle.h>
+#include <aips/Quanta/MVAngle.h>
 #include <aips/Measures/MVDirection.h>
 #include <aips/Measures/MeasConvert.h>
-#include <aips/Measures/Quantum.h>
-#include <aips/Measures/Unit.h>
+#include <aips/Quanta/Quantum.h>
+#include <aips/Quanta/Unit.h>
 #include <aips/Tables/ArrColDesc.h>
 #include <aips/Tables/ArrayColumn.h>
 #include <aips/Tables/ColumnDesc.h>

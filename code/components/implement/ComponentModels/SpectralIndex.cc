@@ -38,7 +38,7 @@
 #include <aips/Measures/MCFrequency.h>
 #include <aips/Measures/MVFrequency.h>
 #include <aips/Measures/MeasConvert.h>
-#include <aips/Measures/Quantum.h>
+#include <aips/Quanta/Quantum.h>
 #include <aips/Utilities/Assert.h>
 #include <aips/Utilities/DataType.h>
 #include <aips/Utilities/String.h>

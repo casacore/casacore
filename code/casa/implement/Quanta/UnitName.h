@@ -1,5 +1,5 @@
 //# UnitName.h: defines a tagged unit definition
-//# Copyright (C) 1994,1995,1996,1997
+//# Copyright (C) 1994,1995,1996,1997,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -35,8 +35,8 @@
 //# Includes
 #include <aips/aips.h>
 #include <aips/Utilities/String.h>
-#include <aips/Measures/Unit.h>
-#include <aips/Measures/UnitVal.h>
+#include <aips/Quanta/Unit.h>
+#include <aips/Quanta/UnitVal.h>
 
 //# Forward Declarations
 #if defined(AIPS_STDLIB)

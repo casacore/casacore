@@ -38,9 +38,9 @@
 #include <aips/Tables/TableDesc.h>
 #include <aips/Tables/ColumnDesc.h>
 #include <aips/Tables/TableError.h>
-#include <aips/Measures/MUString.h>
-#include <aips/Measures/MVTime.h>
-#include <aips/Measures/MVAngle.h>
+#include <aips/Quanta/MUString.h>
+#include <aips/Quanta/MVTime.h>
+#include <aips/Quanta/MVAngle.h>
 #include <aips/Arrays/Vector.h>
 #include <aips/Arrays/ArrayIO.h>
 #include <aips/Utilities/Sort.h>

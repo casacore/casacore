@@ -36,8 +36,8 @@
 #include <aips/Utilities/Assert.h>
 #include <aips/Utilities/String.h>
 #include <aips/Utilities/Regex.h>
-#include <aips/Measures/MUString.h>
-#include <aips/Measures/MVTime.h>
+#include <aips/Quanta/MUString.h>
+#include <aips/Quanta/MVTime.h>
 #include <iostream.h>
 #include <fstream.h>
 #include <strstream.h>

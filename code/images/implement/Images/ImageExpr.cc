@@ -37,7 +37,7 @@
 #include <aips/Lattices/Slicer.h>
 #include <aips/Utilities/String.h>
 #include <aips/Utilities/Assert.h>
-#include <aips/Measures/Unit.h>
+#include <aips/Quanta/Unit.h>
 
 #include <iostream.h>
 

@@ -29,13 +29,13 @@
 #define AIPS_MODULE_QUANTA_H
 
 //# Includes
-#include <aips/Measures/Unit.h>
+#include <aips/Quanta/Unit.h>
 //# Next one at this place
-#include <aips/Measures/QC.h>
-#include <aips/Measures/UnitMap.h>
-#include <aips/Measures/Quantum.h>
-#include <aips/Measures/QMath.h>
-#include <aips/Measures/QLogical.h>
+#include <aips/Quanta/QC.h>
+#include <aips/Quanta/UnitMap.h>
+#include <aips/Quanta/Quantum.h>
+#include <aips/Quanta/QMath.h>
+#include <aips/Quanta/QLogical.h>
 
 // <module>
 // 

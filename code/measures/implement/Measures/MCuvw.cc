@@ -27,7 +27,7 @@
 
 //# Includes
 #ifdef __GNUG__
-#include <aips/Measures/Quantum.h>
+#include <aips/Quanta/Quantum.h>
 typedef Quantum<Double> gpp_uvw_bug1;
 #endif
 #include <aips/Exceptions.h>
@@ -37,7 +37,7 @@ typedef Quantum<Double> gpp_uvw_bug1;
 #include <aips/Arrays/Vector.h>
 #include <aips/Arrays/ArrayMath.h>
 #include <aips/Measures/MCFrame.h>
-#include <aips/Measures/RotMatrix.h>
+#include <aips/Quanta/RotMatrix.h>
 #include <aips/Measures/MVPosition.h>
 #include <aips/Measures/Precession.h>
 #include <aips/Measures/Nutation.h>

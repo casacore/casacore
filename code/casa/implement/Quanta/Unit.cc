@@ -1,5 +1,5 @@
 //# Unit.cc: defines the Unit class
-//# Copyright (C) 1994,1995,1996,1997
+//# Copyright (C) 1994,1995,1996,1997,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -28,7 +28,7 @@
 //# Includes
 
 #include <aips/Exceptions/Error.h>
-#include <aips/Measures/Unit.h>
+#include <aips/Quanta/Unit.h>
 
 Unit::Unit() 
 : uName(), uVal() {}

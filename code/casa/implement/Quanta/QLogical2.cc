@@ -1,5 +1,5 @@
 //# QLogical.cc: class to manipulate physical, dimensioned quantities
-//# Copyright (C) 1994, 1995, 1996
+//# Copyright (C) 1994,1995,1996,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -26,7 +26,7 @@
 //# $Id$
 
 //# Includes
-#include <aips/Measures/QLogical.h>
+#include <aips/Quanta/QLogical.h>
 #include <aips/Mathematics/Math.h>
 #include <aips/Arrays/ArrayLogical.h>
 #include <aips/Exceptions/Error.h>

@@ -27,12 +27,12 @@
 
 //# Includes
 #ifdef __GNUG__
-#include <aips/Measures/Quantum.h>
+#include <aips/Quanta/Quantum.h>
 typedef Quantum<Double> gpp_measiers_bug1;
 #endif
 #include <aips/Measures/MeasIERS.h>
-#include <aips/Measures/Quantum.h>
-#include <aips/Measures/MVTime.h>
+#include <aips/Quanta/Quantum.h>
+#include <aips/Quanta/MVTime.h>
 #include <aips/Exceptions/Error.h>
 #include <aips/OS/Time.h>
 #include <aips/Logging.h>

@@ -1,5 +1,5 @@
 //# MeasConvert.h: Conversion of Measures
-//# Copyright (C) 1995,1996,1997
+//# Copyright (C) 1995,1996,1997,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -37,7 +37,7 @@
 #include <aips/aips.h>
 #include <aips/Containers/Block.h>
 #include <aips/Measures/MConvertBase.h>
-#include <aips/Measures/Quantum.h>
+#include <aips/Quanta/Quantum.h>
 #include <aips/Measures/Measure.h>
 #include <aips/Measures/MeasRef.h>
 

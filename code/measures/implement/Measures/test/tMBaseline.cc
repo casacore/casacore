@@ -29,8 +29,8 @@
 #include <aips/aips.h>
 #include <aips/Exceptions/Error.h>
 #include <aips/Measures.h>
-#include <aips/Measures/RotMatrix.h>
-#include <aips/Measures/Euler.h>
+#include <aips/Quanta/RotMatrix.h>
+#include <aips/Quanta/Euler.h>
 #include <aips/Measures/Aberration.h>
 #include <aips/Measures/MEpoch.h>
 #include <aips/Measures/MDirection.h>

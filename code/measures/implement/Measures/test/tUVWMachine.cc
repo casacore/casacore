@@ -32,7 +32,7 @@
 #include <aips/Arrays/Vector.h>
 #include <aips/Measures/MPosition.h>
 #include <aips/Measures/MEpoch.h>
-#include <aips/Measures/RotMatrix.h>
+#include <aips/Quanta/RotMatrix.h>
 
 Int main() {
   try {
