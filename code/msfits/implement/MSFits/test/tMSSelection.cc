@@ -29,15 +29,16 @@
 void convert(String fitsName, String msName)
 {
     if (!Table::isReadable(msName)) {
-      if (fitsName.length() == 0) {
-        String errorMsg = "Input ms called " + msName + " does not exist\n" +
-          " and no FITS file is specified";
-        throw(AipsError(errorMsg));
-      }
-      cout << "Converting FITS file called " << fitsName
-           << " to and MS called " << msName << endl;
-      MSFitsInput msfitsin(msName, fitsName);
-      msfitsin.readFitsFile();
+        if (fitsName.length() == 0) {
+            cout << "Assuming MS " << msName << " already exist" << endl
+                 << " since no FITS file is specified";
+        }
+        else {
+            cout << "Converting FITS file called " << fitsName
+                 << " to and MS called " << msName << endl;
+            MSFitsInput msfitsin(msName, fitsName);
+            msfitsin.readFitsFile();
+        }
     }
 }
 
@@ -53,20 +54,7 @@ int main(int argc, char **argv)
     const String msName = inputs.getString("ms");
 
     // Convert fits format to ms
-    try {    
-        convert(fitsName, msName);
-    }
-    catch (AipsError x) {
-        cerr << x.getMesg() << endl;
-        cout << "FAIL!!!" << endl;
-        return 1;
-    }
-    catch (...) {
-        cerr << "Exception not derived from AipsError" << endl;
-        cout << "FAIL" << endl;
-        return 2;
-    }
-    cout << "OK" << endl;
+    convert(fitsName, msName);
 
     // Do selection over newly created ms
     try {
