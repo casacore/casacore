@@ -2549,3 +2549,5 @@
 11 374 src mv trial/scripts/sh.help trial/implement/Tasking/sh.help
 11 374 src rm trial/implement/Display/WCLogScaleHandler.h
 11 374 src rm trial/implement/Display/WCLogScaleHandler.cc
+11 374 src rm trial/implement/Display/WCNNResampleHandler.h
+11 374 src rm trial/implement/Display/WCNNResampleHandler.cc
