@@ -1,5 +1,5 @@
 //# tTempImage.cc: Test program for the TempImage class
-//# Copyright(C) 1998
+//# Copyright (C) 1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -26,12 +26,14 @@
 //# $Id$
 
 #include <trial/Images/TempImage.h>
+#include <trial/Images/ImageInfo.h>
 #include <trial/Coordinates/CoordinateUtil.h>
 #include <trial/Lattices/LatticeIterator.h>
 #include <aips/Arrays/Array.h>
 #include <aips/Arrays/ArrayMath.h>
 #include <aips/Arrays/ArrayLogical.h>
 #include <aips/Lattices/IPosition.h>
+#include <aips/Quanta/QLogical.h>
 #include <aips/Utilities/COWPtr.h>
 #include <aips/Utilities/Assert.h>
 #include <aips/Exceptions/Error.h>
@@ -65,23 +67,35 @@ void doIt (TempImage<Int>& scratch)
     scratch.putAt (7, IPosition(3,7));
     AlwaysAssert(scratch.getAt(IPosition(3,0)) == 0, AipsError);
     AlwaysAssert(scratch.getAt(IPosition(3,7)) == 7, AipsError);
-
+//
     scratch.setUnits (Unit("Jy"));
     AlwaysAssert(scratch.units() == Unit("Jy"), AipsError);;
+//
+    ImageInfo info = scratch.imageInfo();
+    AlwaysAssert(info.restoringBeam().nelements()==0, AipsError);
+    Quantum<Double> a1(10.0,Unit("arcsec"));
+    Quantum<Double> a2(8.0,Unit("arcsec"));
+    Quantum<Double> a3(-45.0,Unit("deg"));
+    info.setRestoringBeam(a1, a2, a3);
+    scratch.setImageInfo(info);
+    info = scratch.imageInfo();
+    AlwaysAssert(info.restoringBeam()(0)==a1, AipsError);
+    AlwaysAssert(info.restoringBeam()(1)==a2, AipsError);
+    AlwaysAssert(info.restoringBeam()(2)==a3, AipsError);
 }
 
 main()
 {
     try {
 	{
-	    TempImage<Int> scratch(IPosition(3,64,64,257),
+	    TempImage<Int> scratch(TiledShape(IPosition(3,64,64,257)),
 				   CoordinateUtil::defaultCoords3D(),
 				   1);
 	    AlwaysAssertExit (scratch.isPaged());
 	    doIt (scratch);
 	}
 	{
-	    TempImage<Int> small(IPosition(3,64,64,16),
+	    TempImage<Int> small(TiledShape(IPosition(3,64,64,16)),
 				 CoordinateUtil::defaultCoords3D(),
 				 1);
 	    AlwaysAssertExit (small.ok());
