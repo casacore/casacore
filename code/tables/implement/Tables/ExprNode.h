@@ -375,6 +375,7 @@ public:
     TableExprNode operator() (const TableExprNodeSet& indices);
 
     // The IN operator to test if a value is contained in an array or set.
+    // The array can also be a scalar.
     // <group>
     TableExprNode in (const TableExprNode& array) const;
     TableExprNode in (const TableExprNodeSet& set) const;
@@ -535,6 +536,10 @@ public:
     // Origin indicates whether the first row should be zero (for C++ binding)
     // or an other value (one for TaQL binding).
     static TableExprNode newRownrNode (const BaseTable* tabptr, uInt origin);
+
+    // Create rowid() function node.
+    // Origin is always 0.
+    static TableExprNode newRowidNode (const BaseTable* tabptr);
 
     // Create rand() function node.
     static TableExprNode newRandomNode (const BaseTable* tabptr);
