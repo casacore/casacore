@@ -54,13 +54,30 @@
 // is a somewhat poor fit to the Coordinate polymorphic model
 // and you will probably find that if you try to use the Coordinate
 // classes polymorphically, that StokesCoordinate will cannot be 
-// dealt wqith fully polymorphocally (you may have to deal with
+// dealt with fully polymorphocally (you may have to deal with
 // a specific StokesCoordinate)
-
+//
+// In particular, the StokesCoordinate really just maintains
+// a list (given in the constructor) of possibly non-monotonic
+// Stokes values.    A simple equation is used to convert between 
+// an index of that list, and  workld value.  The formula
+// is index = (pixel - crpix)*cdelt*linear + crval
+// Now you could use the set* functions to change crval or cdelt etc
+// However, you run the risk of breaking your StokesCoordinate
+// if you do so.   This is because you may cause the computed
+// index to be outside of the range of the Stokes actually
+// contained in the StokesCoordinate and pixel/world conversion
+// will fail.  This is quite different behaviour to the other 
+// Coordinates, where you can change these coordinate descriptors
+// as you wish.     So use these functions very carefully, if
+// you must.
+//
 // </synopsis>
 //
 // <note role=caution>
 // All pixels coordinates are zero relative.
+// </note>
+//
 // </note>
 //
 // <example>
