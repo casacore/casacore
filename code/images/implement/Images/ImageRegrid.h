@@ -146,15 +146,15 @@ public:
               Bool showProgress=False, Bool forceRegrid=False);
 
   // Inserts inImage into outImage.  The alignment is done by
-  // placing the reference pixel of inImage at the specified reference
-  // pixel of outImage.  Only integral shifts are done.
-  // The CoordinateSystem of outImage is overwitten by that of
-  // inImage and the new reference pixel.  If outImage has a mask,
-  // it will be updated.
+  // placing the blc of inImage at the specified 
+  // absolute pixel of the outImage (outPixelLocation).  If 
+  // the outPixelLocation vector is of zero length, then the images 
+  // are aligned by their reference pixels.  Only integral shifts are done
+  // in the aligment process. If outImage has a mask,  it will be updated.
   // Returns False if no overlap of images, in which case the
   // output is not updated.
   Bool insert(ImageInterface<T>& outImage,
-              const Vector<Double>& outReferencePixel,
+              const Vector<Double>& outPixelLocation,
               const ImageInterface<T>& inImage);
 
   // Print out useful debugging information (level 0 is none,

@@ -465,7 +465,7 @@ void ImageRegrid<T>::regridOneCoordinate (LogIO& os, IPosition& outShape2,
 
 template<class T>
 Bool ImageRegrid<T>::insert (ImageInterface<T>& outImage,
-                             const Vector<Double>& outReferencePixel,
+                             const Vector<Double>& outPixel,
                              const ImageInterface<T>& inImage) 
 {
    LogIO os(LogOrigin("ImageRegrid", "insert(...)", WHERE));
@@ -475,24 +475,20 @@ Bool ImageRegrid<T>::insert (ImageInterface<T>& outImage,
    }
 //
    const CoordinateSystem& inCoords = inImage.coordinates();
+   const CoordinateSystem& outCoords = outImage.coordinates();
    const uInt nPixelAxes = inCoords.nPixelAxes();
    AlwaysAssert(outImage.shape().nelements()==nPixelAxes,AipsError);
-   AlwaysAssert(outReferencePixel.nelements()==nPixelAxes,AipsError);
 //
-   CoordinateSystem outCoords = inImage.coordinates();
-   if (!outCoords.setReferencePixel(outReferencePixel)) {
-      os << outCoords.errorMessage() << LogIO::EXCEPTION;
-   }
-   if (!outImage.setCoordinateInfo(outCoords)) {
-      os << "Failed to set new reference pixel in output image" << LogIO::EXCEPTION;
+   Bool locateByRefPix = outPixel.nelements()==0;
+   if (!locateByRefPix) {
+      AlwaysAssert(outPixel.nelements()==nPixelAxes,AipsError);
    }
 //
    const IPosition& inShape = inImage.shape();
    const IPosition& outShape = outImage.shape();
-   const Vector<Double>& inReferencePixel = inCoords.referencePixel();
-   if (itsShowLevel>0) {
-     cerr << "in, out reference pixel = " << inReferencePixel << outReferencePixel << endl;
-   }
+//
+   const Vector<Double>& inRefPix = inCoords.referencePixel();
+   const Vector<Double>& outRefPix = outCoords.referencePixel();
 
 // Where are the output blc/trc after placing the input image
 // No trimming yet
@@ -512,7 +508,11 @@ Bool ImageRegrid<T>::insert (ImageInterface<T>& outImage,
          os << "It is not possible to change the shape of the Stokes axis" << LogIO::EXCEPTION;
       }
 //
-      outBlc(i) = static_cast<Int>(outReferencePixel(i) - inReferencePixel(i));
+      if (locateByRefPix) {
+         outBlc(i) = static_cast<Int>(outRefPix(i) - inRefPix(i) + 0.5);
+      } else {
+         outBlc(i) = static_cast<Int>(outPixel(i) + 0.5);
+      }
       outTrc(i) = outBlc(i) + inShape(i) - 1;
 //
       inBlc(i) = 0;
@@ -522,7 +522,6 @@ Bool ImageRegrid<T>::insert (ImageInterface<T>& outImage,
       cerr << "inBlc, inTrc = " << inBlc << inTrc << endl;
       cerr << "outBlc, outTrc = " << outBlc << outTrc << endl;
    }
-
 
 // Does the input miss the output entirely ?
 
@@ -559,7 +558,6 @@ Bool ImageRegrid<T>::insert (ImageInterface<T>& outImage,
       cerr << "inBlc, inTrc = " << inBlc << inTrc << endl;
       cerr << "outBlc, outTrc = " << outBlc << outTrc << endl;
    }
-
 
 // Copy the relevant portion
 
