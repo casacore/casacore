@@ -2660,3 +2660,4 @@
 10 010 src mv aips/implement/Measures/QBase.cc aips/implement/Quanta/QBase.cc
 10 012 src rm atnf/implement/pks/HVCBandPass_median.cc
 10 012 src rm atnf/implement/pks/HVCBandPass_median.h
+10 014 src mv trial/implement/Measures/Muvw.cc aips/implement/Measures/Muvw.cc
