@@ -108,13 +108,68 @@ void setNaN(DComplex &val)
 // fmod functions
 
 DComplex fmod(const DComplex &in, const DComplex &f) {
-  return DComplex(fmod(real(in), real(f))); }
+  return DComplex(fmod(real(in), real(f)), imag(in)); }
 Complex fmod(const Complex &in, const Complex &f) {
-  return Complex(fmod(real(in), real(f))); }
+  return Complex(fmod(real(in), real(f)), imag(in)); }
 
+// Inverse trigonometry (see Abromowitz)
+DComplex atan(const DComplex &in) {
+  const Double n = norm(in);
+  return DComplex(0.5*atan(2.0*real(in)/(1.0-n)),
+		  0.25*log((1.0+n+2*imag(in))/(1.0+n-2*imag(in))));
+}
+Complex atan(const Complex &in) {
+  const Float n = norm(in);
+  return Complex(0.5*atan(2.0*real(in)/(1.0-n)),
+		 0.25*log((1.0+n+2*imag(in))/(1.0+n-2*imag(in))));
+}
+DComplex asin(const DComplex &in) {
+  const Double n = norm(in);
+  Double a = 0.5*sqrt(1.0+n+2*real(in));
+  const Double c = 0.5*sqrt(1.0+n-2*real(in));
+  const Double b = a-c;
+  a += c;
+  return DComplex(asin(b), log(a+sqrt(a*a-1.0)));
+}
+Complex asin(const Complex &in) {
+  const Float n = norm(in);
+  Float a = 0.5*sqrt(1.0+n+2*real(in));
+  const Float c = 0.5*sqrt(1.0+n-2*real(in));
+  const Float b = a-c;
+  a += c;
+  return Complex(asin(b), log(a+sqrt(a*a-1.0)));
+}
+DComplex acos(const DComplex &in) {
+  const Double n = norm(in);
+  Double a = 0.5*sqrt(1.0+n+2*real(in));
+  const Double c = 0.5*sqrt(1.0+n-2*real(in));
+  const Double b = a-c;
+  a += c;
+  return DComplex(acos(b), -log(a+sqrt(a*a-1.0)));
+}
+Complex acos(const Complex &in) {
+  const Float n = norm(in);
+  Float a = 0.5*sqrt(1.0+n+2*real(in));
+  const Float c = 0.5*sqrt(1.0+n-2*real(in));
+  const Float b = a-c;
+  a += c;
+  return Complex(acos(b), -log(a+sqrt(a*a-1.0)));
+}
+DComplex atan2(const DComplex &in, const DComplex &t2) {
+  if (norm(t2) == 0) return DComplex(C::pi_2);
+  const DComplex z = atan(in/t2);
+  if (real(t2) > 0) return z;
+  return (z + DComplex(C::pi));
+}
+Complex atan2(const Complex &in, const Complex &t2) {
+  if (norm(t2) == 0) return Complex(C::pi_2);
+  const Complex z = atan(in/t2);
+  if (real(t2) > 0) return z;
+  return (z + Complex(C::pi));
+}
 
-
-// Temporary for now, likely should go into templates
+/// Temporary for now, likely should go into templates (or in a macro
+// preferably in define.h)
 
 #if defined(AIPS_SUN_NATIVE)
 

@@ -260,4 +260,17 @@ DComplex fmod(const DComplex &in, const DComplex &f);
 Complex fmod(const Complex &in, const Complex &f);
 // </group>
 
+// <summary> Inverse trigonometry </summary>
+// <group name=inverse>
+// atan not valid for z == -1
+DComplex atan(const DComplex &in);
+Complex atan(const Complex &in);
+DComplex asin(const DComplex &in);
+Complex asin(const Complex &in);
+DComplex acos(const DComplex &in);
+Complex acos(const Complex &in);
+DComplex atan2(const DComplex &in, const DComplex &t2);
+Complex atan2(const Complex &in, const Complex &t2);
+// </group>
+
 #endif
