@@ -3452,3 +3452,4 @@
 13 265 src rm nrao/implement/FITS/OldGBTRaDec.cc
 13 265 src rm nrao/implement/FITS/OldGBTWeather.h
 13 265 src rm nrao/implement/FITS/OldGBTWeather.cc
+13 270 src rm doc/cookbook/
