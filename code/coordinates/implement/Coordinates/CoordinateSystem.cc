@@ -4317,7 +4317,7 @@ void CoordinateSystem::listVelocity (LogIO& os,  Coordinate* pc, uInt widthAxis,
 
    if (!findWidths) clearFlags(os);
 
-// Caste to get SepctralCoordinate
+// Caste to get SpectralCoordinate
 
     SpectralCoordinate* sc0 = dynamic_cast<SpectralCoordinate*>(pc);
 
@@ -4391,9 +4391,9 @@ void CoordinateSystem::listVelocity (LogIO& os,  Coordinate* pc, uInt widthAxis,
 
 // Remember units
 
-   Vector<String> oldUnits(pc->nWorldAxes());
-   oldUnits = pc->worldAxisUnits();
-   Vector<String> units(pc->nWorldAxes());
+   Vector<String> oldUnits(sc0->nWorldAxes());
+   oldUnits = sc0->worldAxisUnits();
+   Vector<String> units(sc0->nWorldAxes());
 
 // Convert reference pixel it to a velocity and format 
 
@@ -4403,9 +4403,11 @@ void CoordinateSystem::listVelocity (LogIO& os,  Coordinate* pc, uInt widthAxis,
    form = Coordinate::DEFAULT;
    pc->getPrecision(prec, form, True, precRefValSci, 
                     precRefValFloat, precRefValRADEC);
-   string = pc->format(velUnits, form, 
-                       pc->referenceValue()(axisInCoordinate),
-                       axisInCoordinate, True, True, prec);
+//
+   sc0->setPreferredVelocityType (doppler);
+   string = sc0->format(velUnits, form, 
+                        sc0->referenceValue()(axisInCoordinate),
+                        axisInCoordinate, True, True, prec);
    if (findWidths) {
       widthRefValue = max(widthRefValue,string.length());
    } else {
@@ -4419,7 +4421,7 @@ void CoordinateSystem::listVelocity (LogIO& os,  Coordinate* pc, uInt widthAxis,
       ostrstream oss;
       oss.setf(ios::fixed, ios::floatfield);
       oss.precision(precRefPixFloat);
-      oss << pc->referencePixel()(axisInCoordinate) + 1.0;
+      oss << sc0->referencePixel()(axisInCoordinate) + 1.0;
       string = String(oss);
    } else {
       string = " ";
