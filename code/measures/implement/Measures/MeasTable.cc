@@ -859,16 +859,39 @@ const Bool MeasTable::Observatory(MPosition &obs, const String &nam) {
 // Source data
 void MeasTable::initLines() {
   if (lineNeedInit) {
-    const uInt N = 2;
     lineNeedInit = False;
+    Table t;
+    ROTableRow row;
+    TableRecord kws;
+    String rfn[1] = {"Freq"};
+    RORecordFieldPtr<Double> rfp[1];
+    Double dt;
+    String vs;	
+    if (!MeasIERS::getTable(t, kws, row, rfp, vs, dt, 1, rfn, "Lines",
+			    "measures.line.directory",
+			    "aips/Measures")) {
+      LogIO os(LogOrigin("MeasTable",
+			 String("initLines()"),
+			 WHERE));
+      os << "Cannot read table of spectral Lines" << LogIO::EXCEPTION;
+    };
+    Int N = t.nrow();
+    if (N<1) {
+      LogIO os(LogOrigin("MeasTable",
+			 String("initLines()"),
+			 WHERE));
+      os << "No entries in table of spectral Lines" << LogIO::EXCEPTION;
+    };
     lineNams.resize(N);
     linePos.resize(N);
     MFrequency::Ref mr(MFrequency::REST);
     MFrequency tmp;
-    lineNams(0)  = "HI"; 
-    linePos (0)  = MFrequency(QC::HI, mr);
-    lineNams(1)  = "OH1612"; 
-    linePos (1)  = MFrequency(MVFrequency(Quantity(1612.231000, "MHz")), mr);
+    for (Int i=0; i<N; i++) {
+      row.get(i);
+      lineNams(i) = *RORecordFieldPtr<String>(row.record(), "Name");
+      linePos(i) = MFrequency(MVFrequency(Quantity(*(rfp[0]), "GHz")), mr);
+      if (lineNams(i) == "HI") linePos(i) = MFrequency(QC::HI, mr);
+    };
   };
 }
 
