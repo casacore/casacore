@@ -309,10 +309,10 @@
 #    Create a file containing commands for ftp.
      echo "open $MASTERHOST" > ftpcommands
      echo "user ftp $USERNAME" >> ftpcommands
-     echo "cd $MSTRFTPD/site_status" >> ftpcommands
-     echo "send $SITE $SITE.init" >> ftpcommands
-     echo "rename $SITE.init $SITE" >> ftpcommands
-     echo "ls * sitedir" >> ftpcommands
+#      echo "cd $MSTRFTPD/site_status" >> ftpcommands
+#      echo "send $SITE $SITE.init" >> ftpcommands
+#      echo "rename $SITE.init $SITE" >> ftpcommands
+#      echo "ls * sitedir" >> ftpcommands
      echo "cd $MSTRFTPD" >> ftpcommands
      echo "ls master-*.tar.gz masterdir" >> ftpcommands
      if [ "$DINKUM" ]
@@ -334,7 +334,7 @@
         echo "No VERSION file present in $SLAVTMPD, abort!"
         exit 2
      fi
-     touch sitedir
+#      touch sitedir
      ls master-*.tar.gz > masterdir
   fi
 
@@ -444,13 +444,13 @@
   fi
 
 # Check access restrictions.
-  if [ "`grep $SITE.deny sitedir`" != "" ]
-  then
-     exec 1>&2
-     echo ""
-     echo "inhale: Permission denied."
-     exit 2
-  fi
+#   if [ "`grep $SITE.deny sitedir`" != "" ]
+#   then
+#      exec 1>&2
+#      echo ""
+#      echo "inhale: Permission denied."
+#      exit 2
+#   fi
 
 # Remove any extraneous information from masterdir.
   cp masterdir masterdir_
@@ -1049,25 +1049,25 @@
   fi
 
 # Update the site status report.
-  if [ "$FTPLIMIT" -gt 0 ]
-  then
-     cd /tmp
+#   if [ "$FTPLIMIT" -gt 0 ]
+#   then
+#      cd /tmp
 
-     echo "inhale: Execution on $HOST by $LOGNAME (terminating)" >> $SITE
-     echo ""  >> $SITE
-     avers -l >> $SITE
+#      echo "inhale: Execution on $HOST by $LOGNAME (terminating)" >> $SITE
+#      echo ""  >> $SITE
+#      avers -l >> $SITE
 
-     echo "open $MASTERHOST" > ftpcommands
-     echo "user ftp $USERNAME" >> ftpcommands
-     echo "cd $MSTRFTPD/site_status" >> ftpcommands
-     echo "send $SITE $SITE.term" >> ftpcommands
-     echo "rename $SITE.term $SITE" >> ftpcommands
-     echo "quit" >> ftpcommands
+#      echo "open $MASTERHOST" > ftpcommands
+#      echo "user ftp $USERNAME" >> ftpcommands
+#      echo "cd $MSTRFTPD/site_status" >> ftpcommands
+#      echo "send $SITE $SITE.term" >> ftpcommands
+#      echo "rename $SITE.term $SITE" >> ftpcommands
+#      echo "quit" >> ftpcommands
 
-     ftp -in < ftpcommands
+#      ftp -in < ftpcommands
 
-     rm -f $SITE ftpcommands
-  fi
+#      rm -f $SITE ftpcommands
+#   fi
 
   echo ""
   echo "inhale: Execution terminated at"
