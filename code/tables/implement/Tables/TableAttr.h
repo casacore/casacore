@@ -110,7 +110,8 @@ public:
     void setName (const String& name)
       { name_p = name; }
 
-    // Get the info.
+    // Get info.
+    // <group>
     const String& name() const
       { return name_p; }
     const Bool openWritable() const

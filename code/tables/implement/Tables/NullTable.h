@@ -120,6 +120,7 @@ public:
 			     int sortOption);
   virtual void renameSubTables (const String& newName,
 				const String& oldName);
+  // </group>
 
 private:
   // Copy constructor is forbidden, because copying a table requires
