@@ -2149,15 +2149,16 @@ Bool doIt (const MaskedLattice<Float>& aF,
    {
       cout << "Rebin" << endl;
       IPosition shapeIn(2, 10, 20);
-      Vector<Float> bin(shapeIn.nelements());
-      bin = 2.0;
-      LatticeExprNode nodeBin((ArrayLattice<Float>(bin)));
+      IPosition binfac(2, 2, 2);
+      LatticeExprNode nodeBin(binfac);
 //
-      Vector<uInt> binI(shapeIn.nelements());
-      binI = 2;
+      IPosition binI(shapeIn.nelements());
+      for (uInt i=0; i<binI.nelements(); i++) {
+	binI[i] = 2;
+      }
 //
       {
-         cerr << "  Float" << endl;
+         cout << "  Float" << endl;
          ArrayLattice<Float> lat(shapeIn);
          lat.set(1.0);
          SubLattice<Float> mLat(lat);
@@ -2174,7 +2175,7 @@ Bool doIt (const MaskedLattice<Float>& aF,
          checkMask (expr, hasMask, rL.getMask());
       }
       {
-         cerr << "  Double" << endl;
+         cout << "  Double" << endl;
          ArrayLattice<Double> lat(shapeIn);
          lat.set(1.0);
          SubLattice<Double> mLat(lat);
@@ -2191,7 +2192,7 @@ Bool doIt (const MaskedLattice<Float>& aF,
          checkMask (expr, hasMask, rL.getMask());
       }
       {
-         cerr << "  Complex" << endl;
+         cout << "  Complex" << endl;
          ArrayLattice<Complex> lat(shapeIn);
          Complex val(1.0, 1.0);
          lat.set(val);
@@ -2209,7 +2210,7 @@ Bool doIt (const MaskedLattice<Float>& aF,
          checkMask (expr, hasMask, rL.getMask());
       }
       {
-         cerr << "  DComplex" << endl;
+         cout << "  DComplex" << endl;
          ArrayLattice<DComplex> lat(shapeIn);
          DComplex val(1.0, 1.0);
          lat.set(val);

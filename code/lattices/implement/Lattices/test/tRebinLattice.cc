@@ -43,11 +43,11 @@
 #include <aips/iostream.h>
 
 
-void doit1 (const IPosition& shape, const Vector<uInt>& factors);
+void doit1 (const IPosition& shape, const IPosition& factors);
 void doit2 ();
 void doit3 ();
 void doit4 (RebinLattice<Float>& rb, const IPosition& shape, 
-            const Vector<uInt>& factors);
+            const IPosition& factors);
 
 
 
@@ -79,7 +79,7 @@ try {
    }
    uInt nDim = shapeIn.nelements();
 //
-   Vector<uInt> factors;
+   IPosition factors;
    if (factorsU.nelements()>0) {
       if (factorsU.nelements()==1 && factorsU[0]==-10) {
          factors.resize(nDim);
@@ -99,78 +99,78 @@ try {
 
    {
       IPosition shape(1,10);
-      Vector<uInt> fac(1,1);
+      IPosition fac(1,1);
       doit1 (shape, fac);
    }
    {
       IPosition shape(1,10);
-      Vector<uInt> fac(1,2);
+      IPosition fac(1,2);
       doit1 (shape, fac);
    }
    {
       IPosition shape(1,10);
-      Vector<uInt> fac(1,3);
+      IPosition fac(1,3);
       doit1 (shape, fac);
    }
    {
       IPosition shape(1,10);
-      Vector<uInt> fac(1,7);
+      IPosition fac(1,7);
       doit1 (shape, fac);
    }
    {
       IPosition shape(1,10);
-      Vector<uInt> fac(1,11);
+      IPosition fac(1,11);
       doit1 (shape, fac);
    }
 
 //
    {
       IPosition shape(2,20,24);
-      Vector<uInt> fac(2,1); 
+      IPosition fac(2,1,1); 
       doit1 (shape, fac);
    }
    {
       IPosition shape(2,20,24);
-      Vector<uInt> fac(2,1); fac[0] = 2;
+      IPosition fac(2,2,1);
       doit1 (shape, fac);
    }
    {
       IPosition shape(2,20,24);
-      Vector<uInt> fac(2,1); fac[1] = 2;
+      IPosition fac(2,1,2);
       doit1 (shape, fac);
    }
    {
       IPosition shape(2,20,24);
-      Vector<uInt> fac(2,2); 
+      IPosition fac(2,2,2); 
       doit1 (shape, fac);
    }
 //
    {
       IPosition shape(3,10,20,30);
-      Vector<uInt> fac(3, 1);
+      IPosition fac(3, 1,1,1);
       doit1 (shape, fac);
    }
    {
       IPosition shape(3,23,28,31);
-      Vector<uInt> fac(3,1); fac[0] = 3;
-      doit1 (shape, fac);
-   }
-//
-   {
-      IPosition shape(3,23,28,31);
-      Vector<uInt> fac(3,1); fac[1] = 3;
+      IPosition fac(3, 3,1,1);
       doit1 (shape, fac);
    }
 //
    {
       IPosition shape(3,23,28,31);
-      Vector<uInt> fac(3,1); fac[2] = 3;
+      IPosition fac(3, 1,3,1); fac[1] = 3;
+      doit1 (shape, fac);
+   }
+//
+   {
+      IPosition shape(3,23,28,31);
+      IPosition fac(3, 1,1,3); fac[2] = 3;
       doit1 (shape, fac);
    }
 //
    {
       IPosition shape(3,23,27,31);
-      Vector<uInt> fac(3,1); fac[0] = 3; fac[1] = 4; fac[2] = 9;
+      IPosition fac(3, 3,4,9);
       doit1 (shape, fac);
    }
 
@@ -196,7 +196,7 @@ return 0;
 
 
 
-void doit1 (const IPosition& shapeIn, const Vector<uInt>& factors)
+void doit1 (const IPosition& shapeIn, const IPosition& factors)
 {
 
 // Make input ML
@@ -253,7 +253,7 @@ void doit2 ()
 
 // Make data
 
-   Vector<uInt> factors(1, 2);
+   IPosition factors(1, 2);
    IPosition shapeIn(1, 6);
    Array<Float> dataIn(shapeIn);
    IPosition pos(1);
@@ -314,7 +314,7 @@ void doit3 ()
 
 // Make data
 
-   Vector<uInt> factors(1, 2);
+   IPosition factors(1, 2);
    IPosition shapeIn(1, 6);
    Array<Float> dataIn(shapeIn);
    IPosition pos(1);
@@ -355,7 +355,7 @@ void doit3 ()
 }
 
 void doit4 (RebinLattice<Float>& rb, const IPosition& shape, 
-            const Vector<uInt>& factors)
+            const IPosition& factors)
 {
 
    AlwaysAssert(rb.isMasked(), AipsError);
@@ -372,7 +372,7 @@ void doit4 (RebinLattice<Float>& rb, const IPosition& shape,
    rb.reopen();
 //
    AlwaysAssert(rb.getRegionPtr()==0, AipsError);
-   AlwaysAssert(rb.shape()(0)==shape(0)/Int(factors(0)), AipsError);
+   AlwaysAssert(rb.shape()(0)==shape(0)/factors(0), AipsError);
    String name = rb.name();
    uInt nMaxPix = rb.advisedMaxPixels();
    AlwaysAssert(rb.ok(), AipsError);
