@@ -1,5 +1,5 @@
 //# tTableGram.cc: This program tests table commands using TableGram/Parse
-//# Copyright (C) 1994,1995,1996,1998,2000,2002
+//# Copyright (C) 1994,1995,1996,1998,2000,2002,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -147,11 +147,12 @@ void seltab (const String& str)
     uInt i;
     Table tab;
     Vector<String> vecstr;
+    String cmd;
     cout << str << endl;
     // Select rows from the table.
-    tab = tableCommand (str, vecstr);
+    tab = tableCommand (str, vecstr, cmd);
     cout << "    has been executed" << endl;
-    cout << "    " << tab.nrow() << " rows selected" << endl;
+    cout << "    " << cmd << " of " << tab.nrow() << " rows" << endl;
     // Show the selected column names.
     cout << vecstr.nelements() << " selected columns: ";
     for (i=0; i<vecstr.nelements(); i++) {
