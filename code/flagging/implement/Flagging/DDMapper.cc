@@ -1,5 +1,5 @@
 //# DDMapper.cc: this defines DDMapper
-//# Copyright (C) 2000,2001
+//# Copyright (C) 2000,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -129,12 +129,12 @@ DDFunc::FuncSignature DDFunc::getFunction ( const String &func )
 {
   // Map of available functions
   const struct { const char *name; DDFunc::FuncSignature func; } func_map[] = 
-  { { "ABS", abs },
-    { "ARG", arg },
-    { "RE" , real },
-    { "IM" , imag },
-    { "RE" , real },
-    { "NORM" , norm }
+  { { "ABS", std::abs },
+    { "ARG", std::arg },
+    { "RE" , std::real },
+    { "IM" , std::imag },
+    { "RE" , std::real },
+    { "NORM" , std::norm }
   };
   const uInt num_func_map = sizeof(func_map)/sizeof(func_map[0]);
 
@@ -187,8 +187,8 @@ DDMapper * DDFunc::getMapper ( String &descr,const Vector<String> &expr0,Bool th
   if( nel == 1 ) // 1 element: assume it's just CORR, and use abs(CORR)
   {
     if( expr(0) == "I" ) // I is special (maps to XX+YY or RR+LL)
-      return new DDFuncSum(&abs,"I","I");
-    return new DDFunc(&abs,expr(0));
+      return new DDFuncSum(&std::abs,"I","I");
+    return new DDFunc(&std::abs,expr(0));
   }
   else if( nel == 2 ) // 2 elements: assume FUNC CC
   {
