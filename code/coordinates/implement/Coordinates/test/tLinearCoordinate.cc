@@ -1,5 +1,5 @@
 //# tLinearCoordinate.cc: Test program for LinearCoordinate
-//# Copyright (C) 1998,1999,2000,2001
+//# Copyright (C) 1998,1999,2000,2001,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -404,10 +404,10 @@ int main()
             axes(1) = False;
             Coordinate* pC = lc.makeFourierCoordinate (axes, shape);
 //
-            Vector<String> units2 = pC->worldAxisUnits();
-            Vector<String> names2 = pC->worldAxisNames();
-            Vector<Double> crval2 = pC->referenceValue();
-            Vector<Double> crpix2 = pC->referencePixel();
+            const Vector<String>& units2 = pC->worldAxisUnits();
+            const Vector<String>& names2 = pC->worldAxisNames();
+            const Vector<Double>& crval2 = pC->referenceValue();
+            const Vector<Double>& crpix2 = pC->referencePixel();
             if (units2(0)!=String("s") || units2(1)!=String("Hz") ||
                 units2(2)!=String("Hz")) {
                throw(AipsError("makeFourierCoordinate (2) failed units test"));
