@@ -32,12 +32,12 @@
 #include <aips/aips.h>
 #include <aips/Mathematics/Complex.h>
 
-// <summary>Complex to complex transforms</summary>
+// <summary>Interface to the Fortran complex to complex transforms</summary>
 // <synopsis>
 // These are C++ wrapper functions for the FORTRAN complex to complex transform
 // routines in the files fftpak.f and dfftpack.f. The purpose of these
 // definitions is to overload the functions so that C++ users can access the
-// functions in either fftpak or dfftpack with an identical function names.
+// functions in either fftpak or dfftpack with identical function names.
 
 // These routines only do one-dimensional transforms with the first element of
 // the array being the "origin" of the transform. The <linkto
@@ -45,12 +45,12 @@
 // multi-dimensional complex to complex transforms with the origin of the
 // transform either at the centre or the first element of the Array.
 
-// Before using the forward transform <src>cfftf</src> or the backward
-// transform src>cfftb</src> the work array <src>wsave</src> must be
+// Before using the forward transform (<src>cfftf</src>) or the backward
+// transform (<src>cfftb</src>) the work array <src>wsave</src> must be
 // initialised using the <src>cffti</src> function.
 
 // <note role=warning> 
-// These functions assume that it is possble to convert between AIPS++ numeric
+// These functions assume that it is possible to convert between AIPS++ numeric
 // types and those used by Fortran. That it is possible to convert between
 // Float & float, Double & double and Int & int.
 // </note>
@@ -71,22 +71,22 @@
 
 // <group name="Complex To Complex Transforms">
 
-// cffti initializes the array wsave which is used in both cfftf and cfftb. The
-// prime factorization of n together with a tabulation of the trigonometric
-// functions are computed and stored in wsave.
+// cffti initializes the array wsave which is used in both <src>cfftf</src> and
+// <src>cfftb</src>. The prime factorization of n together with a tabulation of
+// the trigonometric functions are computed and stored in wsave.
 // 
 // Input parameter:
 // <dl compact>
 // <dt><b>n</b>
-// <dd>       the length of the sequence to be transformed
+// <dd>    The length of the sequence to be transformed
 // </dl>
 // Output parameter:
 // <dl compact>
 // <dt><b>wsave</b>
-// <dd>    a work array which must be dimensioned at least 4*n+15
-//         the same work array can be used for both cfftf and cfftb
-//         as long as n remains unchanged. different wsave arrays
-//         are required for different values of n. the contents of
+// <dd>    A work array which must be dimensioned at least 4*n+15
+//         The same work array can be used for both cfftf and cfftb
+//         as long as n remains unchanged. Different wsave arrays
+//         are required for different values of n. The contents of
 //         wsave must not be changed between calls of cfftf or cfftb.
 // </dl>
 // <group>
@@ -103,8 +103,8 @@ void cffti(Int n, Double * wsave);
 // the output must be divided by n. Otherwise a call of cfftf
 // followed by a call of cfftb will multiply the sequence by n.
 // 
-// The array wsave which is used by subroutine cfftf must be
-// initialized by calling subroutine <src>cffti(n,wsave)</src>.
+// The array wsave which is used by <src>cfftf</src> must be
+// initialized by calling <src>cffti(n,wsave)</src>.
 // 
 // Input parameters:
 // <dl compact>
@@ -117,7 +117,7 @@ void cffti(Int n, Double * wsave);
 // <dt><b>wsave</b>
 // <dd>    A real work array which must be dimensioned at least 4n+15
 //         by the program that calls cfftf. The wsave array must be
-//         initialized by calling subroutine <src>cffti(n,wsave)</src> and a
+//         initialized by calling <src>cffti(n,wsave)</src> and a
 //         different wsave array must be used for each different
 //         value of n. This initialization does not have to be
 //         repeated so long as n remains unchanged thus subsequent
@@ -132,8 +132,8 @@ void cffti(Int n, Double * wsave);
 //                  c(k)*exp(-i*(j-1)*(k-1)*2*pi/n)<br>
 //                        where i=sqrt(-1)<br>
 // <dt><b>wsave</b>
-// <dd>    contains initialization calculations which must not be
-//         destroyed between calls of subroutine cfftf or cfftb
+// <dd>    Contains initialization calculations which must not be
+//         destroyed between calls of cfftf or cfftb
 // </dl>
 // <group>
 void cfftf(Int n, Complex * c, Float * wsave);
@@ -148,7 +148,7 @@ void cfftf(Int n, DComplex * c, Double * wsave);
 // A call of cfftf followed by a call of cfftb will multiply the
 // sequence by n.
 // 
-// The array wsave which is used by subroutine cfftb must be
+// The array wsave which is used by <src>cfftb</src> must be
 // initialized by calling <src>cffti(n,wsave)</src>.
 // 
 // Input parameters:
@@ -162,7 +162,7 @@ void cfftf(Int n, DComplex * c, Double * wsave);
 // <dt><b>wsave</b> 
 // <dd>          A real work array which must be dimensioned at least 4n+15
 //               in the program that calls cfftb. The wsave array must be
-//               initialized by calling subroutine <src>cffti(n,wsave)</src>
+//               initialized by calling <src>cffti(n,wsave)</src>
 //               and a different wsave array must be used for each different
 //               value of n. This initialization does not have to be
 //               repeated so long as n remains unchanged thus subsequent
@@ -177,8 +177,8 @@ void cfftf(Int n, DComplex * c, Double * wsave);
 //                     c(k)*exp(i*(j-1)*(k-1)*2*pi/n)<br>
 
 // <dt><b>wsave</b>
-// <dd>          contains initialization calculations which must not be
-//               destroyed between calls of subroutine cfftf or cfftb
+// <dd>          Contains initialization calculations which must not be
+//               destroyed between calls of cfftf or cfftb
 // </dl>
 // <group>
 void cfftb(Int n, Complex * c, Float * wsave);
@@ -186,12 +186,12 @@ void cfftb(Int n, DComplex * c, Double * wsave);
 // </group>
 // </group>
 
-// <summary>Real to complex & complex to real transforms</summary>
+// <summary>Interface to the Fortran real to complex & complex to real transforms</summary>
 // <synopsis>
 // These are C++ wrapper functions for the FORTRAN real to complex & complex to
 // real transform routines in the files fftpak.f and dfftpack.f. The purpose of
 // these definitions is to overload the functions so that C++ users can access
-// the functions in either fftpak or dfftpack with an identical function names.
+// the functions in either fftpak or dfftpack with identical function names.
 
 // These routines only do one-dimensional transforms with the first element of
 // the array being the "origin" of the transform. The <linkto
@@ -200,8 +200,8 @@ void cfftb(Int n, DComplex * c, Double * wsave);
 // origin of the transform either at the centre or the first element of the
 // Array.
 
-// Before using the forward transform <src>rfftf</src> or the backward
-// transform src>rfftb</src> the work array <src>wsave</src> must be
+// Before using the forward transform (<src>rfftf</src>) or the backward
+// transform (<src>rfftb</src>) the work array <src>wsave</src> must be
 // initialised using the <src>rffti</src> function.
 
 // The "ez" routines provide a simpler interface to the real to complex
@@ -209,7 +209,7 @@ void cfftb(Int n, DComplex * c, Double * wsave);
 // precision only. Internally they use use the "rfft" functions.
 
 // <note role=warning> 
-// These functions assume that it is possble to convert between AIPS++ numeric
+// These functions assume that it is possible to convert between AIPS++ numeric
 // types and those used by Fortran. That it is possible to convert between
 // Float & float, Double & double and Int & int.
 // </note>
@@ -224,15 +224,15 @@ void cfftb(Int n, DComplex * c, Double * wsave);
 // Input parameter:
 // <dl compact>
 // <dt><b>n</b>
-// <dd>       the length of the sequence to be transformed.
+// <dd>       The length of the sequence to be transformed.
 // </dl>
 // Output parameter:
 // <dl compact>
 // <dt><b>wsave</b>
-// <dd>    a work array which must be dimensioned at least 2*n+15.
-//         the same work array can be used for both rfftf and rfftb
-//         as long as n remains unchanged. different wsave arrays
-//         are required for different values of n. the contents of
+// <dd>    A work array which must be dimensioned at least 2*n+15.
+//         The same work array can be used for both rfftf and rfftb
+//         as long as n remains unchanged. Different wsave arrays
+//         are required for different values of n. The contents of
 //         wsave must not be changed between calls of rfftf or rfftb.
 // </dl>
 // <group>
@@ -246,16 +246,16 @@ void rffti(Int n, Double * wsave);
 // Input parameters:
 // <dl compact>
 // <dt><b>n</b>
-// <dd>    the length of the array r to be transformed.  The method
+// <dd>    The length of the array r to be transformed.  The method
 //         is most efficient when n is a product of small primes.
 //         n may change so long as different work arrays are provided
 // <dt><b>r</b>
-// <dd>    a real array of length n which contains the sequence
+// <dd>    A real array of length n which contains the sequence
 //         to be transformed
 // <dt><b>wsave</b>
-// <dd>    a work array which must be dimensioned at least 2*n+15
+// <dd>    A work array which must be dimensioned at least 2*n+15
 //         in the program that calls rfftf. The wsave array must be
-//         initialized by calling subroutine <src>rffti(n,wsave)</src> and a
+//         initialized by calling <src>rffti(n,wsave)</src> and a
 //         different wsave array must be used for each different
 //         value of n. This initialization does not have to be
 //         repeated so long as n remains unchanged thus subsequent
@@ -281,7 +281,7 @@ void rffti(Int n, Double * wsave);
 //              followed by a call of rfftb will multiply the input
 //              sequence by n.
 // <dt><b>wsave</b>
-// <dd>    contains results which must not be destroyed between
+// <dd>    Contains results which must not be destroyed between
 //         calls of rfftf or rfftb.
 // </dl>
 // <group>
@@ -296,16 +296,16 @@ void rfftf(Int n, Double * r, Double * wsave);
 // Input parameters:
 // <dl compact>
 // <dt><b>n</b>
-// <dd>    the length of the array r to be transformed.  The method
+// <dd>    The length of the array r to be transformed.  The method
 //         is most efficient when n is a product of small primes.
 //         n may change so long as different work arrays are provided
 // <dt><b>r</b>
-// <dd>    a real array of length n which contains the sequence
+// <dd>    A real array of length n which contains the sequence
 //         to be transformed
 // <dt><b>wsave</b>
-// <dd>    a work array which must be dimensioned at least 2*n+15
+// <dd>    A work array which must be dimensioned at least 2*n+15
 //         in the program that calls rfftb. The wsave array must be
-//         initialized by calling subroutine <src>rffti(n,wsave)</src> and a
+//         initialized by calling <src>rffti(n,wsave)</src> and a
 //         different wsave array must be used for each different
 //         value of n. This initialization does not have to be
 //         repeated so long as n remains unchanged thus subsequent
@@ -330,7 +330,7 @@ void rfftf(Int n, Double * r, Double * wsave);
 //              followed by a call of rfftb will multiply the input
 //              sequence by n.
 // <dt><b>wsave</b>
-// <dd>    contains results which must not be destroyed between
+// <dd>    Contains results which must not be destroyed between
 //         calls of rfftb or rfftf.
 // </dl>
 // <group>
@@ -338,20 +338,19 @@ void rfftb(Int n, Float * r, Float * wsave);
 void rfftb(Int n, Double * r, Double * wsave);
 // </group>
 
-// ezffti initializes the array wsave which is used in
-// both ezfftf and ezfftb. The prime factorization of n together with
-// a tabulation of the trigonometric functions are computed and
-// stored in wsave.
+// ezffti initializes the array wsave which is used in both <src>ezfftf</src>
+// and <src>ezfftb</src>. The prime factorization of n together with a
+// tabulation of the trigonometric functions are computed and stored in wsave.
 // 
 // Input parameter:
 // <dl compact>
 // <dt><b>n</b>
-// <dd>    the length of the sequence to be transformed.
+// <dd>    The length of the sequence to be transformed.
 // </dl>
 // Output parameter:
 // <dl compact>
 // <dt><b>wsave</b>
-// <dd>    a work array which must be dimensioned at least 3*n+15.
+// <dd>    A work array which must be dimensioned at least 3*n+15.
 //         The same work array can be used for both ezfftf and ezfftb
 //         as long as n remains unchanged. Different wsave arrays
 //         are required for different values of n.
@@ -366,15 +365,15 @@ void ezffti(Int n, Float * wsave);
 // Input parameters:
 // <dl compact>
 // <dt><b>n</b>
-// <dd>    the length of the array r to be transformed.  The method
+// <dd>    The length of the array r to be transformed.  The method
 //         is most efficient when n is the product of small primes.
 // <dt><b>r</b>
-// <dd>    a real array of length n which contains the sequence
+// <dd>    A real array of length n which contains the sequence
 //         to be transformed. r is not destroyed.
 // <dt><b>wsave</b>
-// <dd>    a work array which must be dimensioned at least 3*n+15
+// <dd>    A work array which must be dimensioned at least 3*n+15
 //         in the program that calls ezfftf. The wsave array must be
-//         initialized by calling subroutine <src>ezffti(n,wsave)</src> and a
+//         initialized by calling <src>ezffti(n,wsave)</src> and a
 //         different wsave array must be used for each different
 //         value of n. This initialization does not have to be
 //         repeated so long as n remains unchanged thus subsequent
@@ -384,9 +383,9 @@ void ezffti(Int n, Float * wsave);
 // Output parameters:
 // <dl compact>
 // <dt><b>azero</b>
-// <dd>    the sum from i=1 to i=n of r(i)/n
+// <dd>    The sum from i=1 to i=n of r(i)/n
 // <dt><b>a,b</b>
-// <dd>    real arrays of length n/2 (n even) or (n-1)/2 (n odd)<br>
+// <dd>    Real arrays of length n/2 (n even) or (n-1)/2 (n odd)<br>
 //         for n even<br>
 //            b(n/2)=0, and <br>
 //            a(n/2) is the sum from i=1 to i=n of (-1)**(i-1)*r(i)/n<br>
@@ -410,21 +409,21 @@ void ezfftf(Int n, Float * r, Float * azero, Float * a, Float * b,
 // Input parameters:
 // <dl compact>
 // <dt><b>n</b>       
-// <dd>    the length of the output array r.  The method is most
+// <dd>    The length of the output array r.  The method is most
 //         efficient when n is the product of small primes.
 // <dt><b>azero</b>
-// <dd>    the constant Fourier coefficient
+// <dd>    The constant Fourier coefficient
 // <dt><b>a,b</b>
-// <dd>    arrays which contain the remaining Fourier coefficients
+// <dd>    Arrays which contain the remaining Fourier coefficients
 //         these arrays are not destroyed.
 //         The length of these arrays depends on whether n is even or
 //         odd.
 //         If n is even n/2    locations are required,
 //         if n is odd (n-1)/2 locations are required.
 // <dt><b>wsave</b>
-// <dd>    a work array which must be dimensioned at least 3*n+15.
+// <dd>    A work array which must be dimensioned at least 3*n+15.
 //         in the program that calls ezfftb. The wsave array must be
-//         initialized by calling subroutine <src>ezffti(n,wsave)</src> and a
+//         initialized by calling <src>ezffti(n,wsave)</src> and a
 //         different wsave array must be used for each different
 //         value of n. This initialization does not have to be
 //         repeated so long as n remains unchanged thus subsequent
@@ -449,24 +448,24 @@ void ezfftb(Int n, Float * r, Float * azero, Float * a, Float * b,
 	    Float * wsave);
 // </group>
 
-// <summary>Sine transform</summary>
+// <summary>Interface to the Fortran sine transforms</summary>
 // <synopsis>
 // These are C++ wrapper functions for the FORTRAN sine transform
 // routines in the files fftpak.f and dfftpack.f. The purpose of these
 // definitions is to overload the functions so that C++ users can access the
-// functions in either fftpak or dfftpack with an identical function names.
+// functions in either fftpak or dfftpack with identical function names.
 
 // These routines only do one-dimensional transforms with the first element of
 // the array being the "origin" of the transform. These functions are not used
 // <linkto class="FFTServer">FFTServer</linkto> class.
 
 // As this function is its own inverse there is no need for sepearte forward or
-// backward functions. Before using the transform <src>sint</src> the work
+// backward functions. Before using the transform (<src>sint</src>) the work
 // array <src>wsave</src> must be initialised using the <src>sinti</src>
 // function.
 
 // <note role=warning> 
-// These functions assume that it is possble to convert between AIPS++ numeric
+// These functions assume that it is possible to convert between AIPS++ numeric
 // types and those used by Fortran. That it is possible to convert between
 // Float & float, Double & double and Int & int.
 // </note>
@@ -475,21 +474,20 @@ void ezfftb(Int n, Float * r, Float * azero, Float * a, Float * b,
 // <group name="Sine Transforms">
 
 // sinti initializes the array wsave which is used in
-// subroutine sint. The prime factorization of n together with
-// a tabulation of the trigonometric functions are computed and
-// stored in wsave.
+// <src>sint</src>. The prime factorization of n together with a tabulation of
+// the trigonometric functions are computed and stored in wsave.
 // 
 // Input parameter:
 // <dl compact>
 // <dt><b>n</b>
-// <dd>    the length of the sequence to be transformed.  the method
+// <dd>    The length of the sequence to be transformed.  the method
 //         is most efficient when n+1 is a product of small primes.
 // </dl>
 // Output parameter:
 // <dl compact>
 // <dt><b>wsave</b>
-// <dd>    a work array with at least int(2.5*n+15) locations.
-//         different wsave arrays are required for different values
+// <dd>    A work array with at least int(2.5*n+15) locations.
+//         Different wsave arrays are required for different values
 //         of n. The contents of wsave must not be changed between
 //         calls of sint.
 // </dl>
@@ -498,26 +496,26 @@ void sinti(Int n, Float * wsave);
 void sinti(Int n, Double * wsave);
 // </group>
 
-// subroutine sint computes the discrete Fourier sine transform
+// sint computes the discrete Fourier sine transform
 // of an odd sequence x(i). The transform is defined below at
 // output parameter x.
 // sint is the unnormalized inverse of itself since a call of sint
 // followed by another call of sint will multiply the input sequence
 // x by 2*(n+1).
-// The array wsave which is used by subroutine sint must be
-// initialized by calling subroutine <src>sinti(n,wsave)</src>.
+// The array wsave which is used by sint must be
+// initialized by calling <src>sinti(n,wsave)</src>.
 // 
 // Input parameters:
 // <dl compact>
 // <dt><b>n</b>
-// <dd>    the length of the sequence to be transformed.  The method
+// <dd>    The length of the sequence to be transformed.  The method
 //         is most efficient when n+1 is the product of small primes.
 // <dt><b>x</b>
-// <dd>    an array which contains the sequence to be transformed
+// <dd>    An array which contains the sequence to be transformed
 // <dt><b>wsave</b>
-// <dd>    a work array with dimension at least int(2.5*n+15)
+// <dd>    A work array with dimension at least int(2.5*n+15)
 //         in the program that calls sint. The wsave array must be
-//         initialized by calling subroutine <src>sinti(n,wsave)</src> and a
+//         initialized by calling <src>sinti(n,wsave)</src> and a
 //         different wsave array must be used for each different
 //         value of n. This initialization does not have to be
 //         repeated so long as n remains unchanged thus subsequent
@@ -536,7 +534,7 @@ void sinti(Int n, Double * wsave);
 //              of itself.
 // 
 // <dt><b>wsave</b>
-// <dd>    contains initialization calculations which must not be
+// <dd>    Contains initialization calculations which must not be
 //         destroyed between calls of sint.
 // </dl>
 // <group>
@@ -545,12 +543,12 @@ void sint(Int n, Double * x, Double * wsave);
 // </group>
 // </group>
 
-// <summary>Cosine transform</summary>
+// <summary>Interface to the Fortran cosine transforms</summary>
 // <synopsis>
 // These are C++ wrapper functions for the FORTRAN cosine transform
 // routines in the files fftpak.f and dfftpack.f. The purpose of these
 // definitions is to overload the functions so that C++ users can access the
-// functions in either fftpak or dfftpack with an identical function names.
+// functions in either fftpak or dfftpack with identical function names.
 
 // These routines only do one-dimensional transforms with the first element of
 // the array being the "origin" of the transform. The <linkto
@@ -559,12 +557,12 @@ void sint(Int n, Double * x, Double * wsave);
 // either at the centre or the first element of the Array.
 
 // As this function is its own inverse there is no need for separate forward or
-// backward functions. Before using the transform <src>cost</src> the work
+// backward functions. Before using the transform (<src>cost</src>) the work
 // array <src>wsave</src> must be initialised using the <src>costi</src>
 // function.
 
 // <note role=warning> 
-// These functions assume that it is possble to convert between AIPS++ numeric
+// These functions assume that it is possible to convert between AIPS++ numeric
 // types and those used by Fortran. That it is possible to convert between
 // Float & float, Double & double and Int & int.
 // </note>
@@ -573,20 +571,19 @@ void sint(Int n, Double * x, Double * wsave);
 // <group name="Cosine Transforms">
 
 // costi initializes the array wsave which is used in
-// subroutine cost. The prime factorization of n together with
-// a tabulation of the trigonometric functions are computed and
-// stored in wsave.
+// <src>cost</src>. The prime factorization of n together with a tabulation of
+// the trigonometric functions are computed and stored in wsave.
 // 
 // Input parameter:
 // <dl compact>
 // <dt><b>n</b>
-// <dd>    the length of the sequence to be transformed.  The method
+// <dd>    The length of the sequence to be transformed.  The method
 //         is most efficient when n-1 is a product of small primes.
 // </dl>
 // Output parameter:
 // <dl compact>
 // <dt><b>wsave</b>
-// <dd>    a work array which must be dimensioned at least 3*n+15.
+// <dd>    A work array which must be dimensioned at least 3*n+15.
 //         Different wsave arrays are required for different values
 //         of n. The contents of wsave must not be changed between
 //         calls of cost.
@@ -602,21 +599,21 @@ void costi(Int n, Double * wsave);
 // cost is the unnormalized inverse of itself since a call of cost
 // followed by another call of cost will multiply the input sequence
 // x by 2*(n-1). The transform is defined below at output parameter x.
-// The array wsave which is used by subroutine cost must be
-// initialized by calling subroutine <src>costi(n,wsave)</src>.
+// The array wsave which is used by <src>cost</src> must be
+// initialized by calling <src>costi(n,wsave)</src>.
 // 
 // Input parameters:
 // <dl compact>
 // <dt><b>n</b>
-// <dd>    the length of the sequence x. n must be greater than 1.
+// <dd>    The length of the sequence x. n must be greater than 1.
 //         The method is most efficient when n-1 is a product of
 //         small primes.
 // <dt><b>x</b>
-// <dd>    an array which contains the sequence to be transformed
+// <dd>    An array which contains the sequence to be transformed
 // <dt><b>wsave</b>
-// <dd>    a work array which must be dimensioned at least 3*n+15
+// <dd>    A work array which must be dimensioned at least 3*n+15
 //         in the program that calls cost. The wsave array must be
-//         initialized by calling subroutine <src>costi(n,wsave)</src> and a
+//         initialized by calling <src>costi(n,wsave)</src> and a
 //         different wsave array must be used for each different
 //         value of n. This initialization does not have to be
 //         repeated so long as n remains unchanged thus subsequent
@@ -635,7 +632,7 @@ void costi(Int n, Double * wsave);
 //              hence cost is the unnormalized inverse
 //              of itself.
 // <dt><b>wsave</b>
-// <dd>    contains initialization calculations which must not be
+// <dd>    Contains initialization calculations which must not be
 //         destroyed between calls of cost.
 // </dl>
 // <group>
@@ -644,23 +641,151 @@ void cost(Int n, Double * x, Double * wsave);
 // </group>
 // </group>
 
-// <summary>Quarter-wave sine transform</summary>
+// <summary>Interface to the Fortran quarter-wave sine transforms</summary>
+// <synopsis>
+// These are C++ wrapper functions for the FORTRAN quarter wave sine transform
+// routines in the files fftpak.f and dfftpack.f. The purpose of these
+// definitions is to overload the functions so that C++ users can access the
+// functions in either fftpak or dfftpack with identical function names.
+
+// These routines only do one-dimensional transforms with the first element of
+// the array being the "origin" of the transform. These functions are not used
+// <linkto class="FFTServer">FFTServer</linkto> class.
+
+// Before using the forward transform (<src>sinqf</src>) or the backward
+// transform (<src>sinqb</src>) the work array <src>wsave</src> must be
+// initialised using the <src>sinqi</src> function.
+
+// <note role=warning> 
+// These functions assume that it is possible to convert between AIPS++ numeric
+// types and those used by Fortran. That it is possible to convert between
+// Float & float, Double & double and Int & int.
+// </note>
+// </synopsis>
+
 // <group name="Quarter Wave Sine Transforms">
+
+// sinqi initializes the array wsave which is used in both <src>sinqf</src> and
+// <src>sinqb</src>. The prime factorization of n together with a tabulation of
+// the trigonometric functions are computed and stored in wsave.
+//
+// Input parameter:
+// <dl compact>
+// <dt><b>n</b>
+// <dd>    The length of the sequence to be transformed. The method
+//         is most efficient when n is a product of small primes.
+// </dl>
+// Output parameter:
+// <dl compact>
+// <dt><b>wsave</b>
+// <dd>    A work array which must be dimensioned at least 3*n+15.
+//         The same work array can be used for both sinqf and sinqb
+//         as long as n remains unchanged. Different wsave arrays
+//         are required for different values of n. The contents of
+//         wsave must not be changed between calls of sinqf or sinqb.
+// </dl>
 // <group>
 void sinqi(Int n, Float * wsave);
 void sinqi(Int n, Double * wsave);
 // </group>
+
+// sinqf computes the fast Fourier transform of quarter wave data. That is,
+// sinqf computes the coefficients in a sine series representation with only
+// odd wave numbers. The transform is defined below at output parameter x.
+// 
+// sinqb is the unnormalized inverse of sinqf since a call of sinqf followed by
+// a call of sinqb will multiply the input sequence x by 4*n.
+// 
+// The array wsave which is used by sinqf must be initialized by calling
+// <src>sinqi(n,wsave)</src>.
+// 
+// Input parameters:
+// <dl compact>
+// <dt><b>n</b>
+// <dd>    The length of the array x to be transformed.  The method
+//         is most efficient when n is a product of small primes.
+// <dt><b>x</b>
+// <dd>    An array which contains the sequence to be transformed
+// <dt><b>wsave</b>
+//         A work array which must be dimensioned at least 3*n+15.
+//         in the program that calls sinqf. The wsave array must be
+//         initialized by calling <src>sinqi(n,wsave)</src> and a
+//         different wsave array must be used for each different
+//         value of n. This initialization does not have to be
+//         repeated so long as n remains unchanged thus subsequent
+//         transforms can be obtained faster than the first.
+// </dl>
+// Output parameters:
+// <dl compact>
+// <dt><b>x</b>
+// <dd>    for i=1,...,n<br>
+//              x(i) = (-1)**(i-1)*x(n)<br>
+//                 + the sum from k=1 to k=n-1 of<br>
+//                 2*x(k)*sin((2*i-1)*k*pi/(2*n))<br>
+// 
+//              a call of sinqf followed by a call of
+//              sinqb will multiply the sequence x by 4*n.
+//              therefore sinqb is the unnormalized inverse
+//              of sinqf.
+// <dt><b>wsave </b>
+// <dd>    Contains initialization calculations which must not
+//         be destroyed between calls of sinqf or sinqb.
+// </dl>
 // <group>
 void sinqf(Int n, Float * x, Float * wsave);
 void sinqf(Int n, Double * x, Double * wsave);
 // </group>
+
+// sinqb computes the fast Fourier transform of quarter
+// wave data. that is, sinqb computes a sequence from its
+// representation in terms of a sine series with odd wave numbers.
+// the transform is defined below at output parameter x.
+// 
+// sinqf is the unnormalized inverse of sinqb since a call of sinqb
+// followed by a call of sinqf will multiply the input sequence x
+// by 4*n.
+// 
+// The array wsave which is used by <src>sinqb</src> must be
+// initialized by calling <src>sinqi(n,wsave)</src>.
+// 
+// Input parameters:
+// <dl compact>
+// <dt><b>n</b>
+// <dd>    The length of the array x to be transformed.  The method
+//         is most efficient when n is a product of small primes.
+// <dt><b>x</b>
+// <dd>    An array which contains the sequence to be transformed
+// <dt><b>wsave</b>
+//         A work array which must be dimensioned at least 3*n+15.
+//         in the program that calls sinqb. The wsave array must be
+//         initialized by calling <src>sinqi(n,wsave)</src> and a
+//         different wsave array must be used for each different
+//         value of n. This initialization does not have to be
+//         repeated so long as n remains unchanged thus subsequent
+//         transforms can be obtained faster than the first.
+// </dl>
+// Output parameters:
+// <dl compact>
+// <dt><b>x</b>
+// <dd>    for i=1,...,n<br>
+//              x(i)= the sum from k=1 to k=n of<br>
+//                4*x(k)*sin((2k-1)*i*pi/(2*n))<br>
+// 
+//              a call of sinqb followed by a call of
+//              sinqf will multiply the sequence x by 4*n.
+//              Therefore sinqf is the unnormalized inverse
+//              of sinqb.
+// <dt><b>wsave</b>
+// <dd>    Contains initialization calculations which must not
+//         be destroyed between calls of sinqb or sinqf.
+// </dl>
 // <group>
 void sinqb(Int n, Float * x, Float * wsave);
 void sinqb(Int n, Double * x, Double * wsave);
 // </group>
 // </group>
 
-// <summary>C++ Interface to the Fortran Quarter Wave Cosine Transforms</summary>
+// <summary>Interface to the Fortran quarter wave cosine transforms</summary>
 // <group name="Quarter Wave Cosine Transforms">
 // <group>
 void cosqi(Int n, Float * wsave);
