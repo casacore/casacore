@@ -35,6 +35,7 @@ template <class T> class Vector;
 template <class T> class Flux;
 class MFrequency;
 class RecordInterface;
+class GlishRecord;
 class String;
 
 // <summary>Base class for Spectral Models</summary>
@@ -167,8 +168,12 @@ public:
   // <group>
   virtual Bool fromRecord(String & errorMessage, 
 			  const RecordInterface & record) = 0;
+  virtual Bool fromRecord(String & errorMessage, 
+			  const GlishRecord & record) = 0;
   virtual Bool toRecord(String & errorMessage,
 			RecordInterface & record) const = 0;
+  virtual Bool toRecord(String & errorMessage,
+			GlishRecord & record) const = 0;
   // </group>
 
   // Return the spectral shape that the supplied record represents. Returns
