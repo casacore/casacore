@@ -16,9 +16,10 @@ To summarize, the following functionality is supported:
       \htmlref{functions}{LEL:FUNCTIONS}.
 \item Mixed \htmlref{data type}{LEL:DATATYPES} arithmetic
       and automatic data type promotion.
+\item Support of image \htmlref{masks}{LEL:MASKS}.
 \item \htmlref{Masking}{LEL:CONDITIONS} using boolean expressions.
-\item Propagation of \htmlref{masks}{LEL:MASKS} through an expression.
-\item Support of image \htmlref{regions and masks}{LEL:REGIONS}.
+\item Propagation of \htmlref{masks}{LEL:PROPMASKS} through an expression.
+\item Support of image \htmlref{regions}{LEL:REGIONS}.
 \item Interface from both Glish and C++.
 \end{itemize}
 
@@ -72,7 +73,7 @@ assignment to another lattice.
 
 \medskip\noindent LEL fully supports masks. In almost all cases the mask of a
 subexpression is formed by and-ing the masks of its operands.
-It is fully explained in a \htmlref{later section}{LEL:MASKS}.
+It is fully explained in a \htmlref{later section}{LEL:PROPMASKS}.
 
 
 \label{LEL:DATATYPES}
@@ -277,6 +278,22 @@ The result of these functions is a scalar.
 
 \subsubsection{Miscellaneous functions}
 \begin{description}
+  \item[ \texttt{anytype REPLACE(anytype, anytype)}]
+    The first argument has to be a lattice (expression).
+    The optional second argument can be a scalar or a lattice
+    (expression). It defaults to 0.
+    \\The result of the function is a copy of the first argument,
+    where each masked-off element in the first argument is replaced by the
+    corresponding element in the second argument. The result's mask is
+    a copy of the mask of the first argument.
+    \begin{verbatim}
+    replace (lat1, 0)
+    replace (lat1, lat2)
+    \end{verbatim}
+    The first example replaces each masked-off element in
+    \texttt{lat1} by 0.
+    \\The second example replaces it by the corresponding element in
+    \texttt{lat2}. A possible mask of \texttt{lat2} is not used.
   \item[ \texttt{anytype IIF(Bool, anytype, anytype)}]
     The first argument is a boolean expression. If an element in
     it is true, the corresponding element from the second argument is
@@ -289,6 +306,9 @@ The result of these functions is a scalar.
     The examples shows that scalars and lattices can be freely mixed.
     When all arguments are scalars, the result is a scalar. Otherwise
     the result is a lattice.
+    \\Note that the mask of the result is formed by combining the
+    mask of the arguments in an appropriate way as explained in the
+    section about \htmlref{mask propagation}{LEL:PROPMASKS}.
 \end{description}
 
 \subsubsection{Conversion functions}
@@ -303,7 +323,14 @@ The result of these functions is a scalar.
   \item[ \texttt{DComplex DCOMPLEX(numeric)}]
     Convert to double precision complex.
     If the argument is real, the imaginary part is set to 0.
+  \item[ \texttt{Bool BOOLEAN(region)}]
+    Convert to boolean.
+    This can be useful to convert a region to a boolean lattice.
+    Only a region in pixel coordinates can be converted, so in
+    practice only an image mask can be converted.
 \end{description}
+Note that, where necessary, up-conversions are done automatically.
+Usuually it may only be needed to do a down-conversion (e.g. Double to Float).
 
 \subsection{\label{LEL:LATTICES}Lattice names}
 
@@ -348,10 +375,8 @@ of the \htmlref{Image}{images:image} tool).
 \medskip\noindent When using LEL, the basic behaviour is that the default mask is used. 
 However, by qualifying the image name with a suffix string, it is
 possible to specify no mask or another mask should be used.  The suffix
-is a colon followed by the word /texttt{nomask} or the name of the
-alternative mask.  Note that the suffix should not be enclosed in the
-possible quotes of the image name, otherwise it is part of the image
-name. 
+is a colon followed by the word \texttt{nomask} or the name of the
+alternative mask.
 
 \begin{verbatim}
   myimage.data
@@ -359,13 +384,23 @@ name.
   'myimage.data:othermask'
 \end{verbatim}
 
-\medskip\noindent The first example uses the default mask (if the image has one).
+\medskip\noindent
+The first example uses the default mask (if the image has one).
 The second example uses no mask (thus all pixels are designated good)
 and the third example uses mask \texttt{othermask}.
 
-\medskip\noindent Note that if the image name is enclosed in quotes, the mask name
+\medskip\noindent
+Note that if the image name is enclosed in quotes, the mask name
 should be enclosed too. It means that a colon cannot be part of
 an image name.
+
+\medskip\noindent
+It is also possible to use a mask from another image like
+\begin{verbatim}
+  myimage.data:nomask[myotherimage::othermask]
+\end{verbatim}
+This syntax is explained in the section describing
+\htmlref{regions}{LEL:REGIONS}
 
 
 \subsection{\label{LEL:CONDITIONS}Lattice Condition Mask}
@@ -406,11 +441,13 @@ where the condition {\tt [lat1<5]} is true and the resultant expression
 has a mask associated with it.  
 
 
-\subsection{Mask Propagation}
+\subsection{\label{LEL:PROPMASKS}Mask Propagation}
 
 As explained in the previous subsections, lattices can have a mask. 
-Examples are a mask of good pixels in an image or a mask created using a
-boolean condition and the operator \texttt{[]}. 
+Examples are a \htmlref{mask}{LEL:MASKS} of good pixels in an image,
+a mask created using a \htmlref{boolean condition}{LEL:CONDITIONS}
+and the operator \texttt{[]},
+or a mask giving a \htmlref{region}{LEL:REGIONS} in its bounding box.
 
 \medskip\noindent Masks are combined and propagated throughout an expression.  E.g.  when
 two lattices are added, the mask of the result is formed by and-ing the
@@ -459,6 +496,11 @@ defined where its mask is true.
 \item
 The logical OR operator works the same as the AND operator.  If
 an operand has a true value the other operand can be ignored.
+
+\item
+The mask of the result of the \texttt{replace} function is a copy
+of the mask of its first operand. The mask of the second operand is
+not used at all.
 
 \item
 The \texttt{iif} function has three operands. Depending on the
@@ -913,6 +955,9 @@ The following examples show some LEL expressions.
   \item[] \texttt{lat1[lat1$>$2*min(lat1)]}
     \\results in a lattice with a mask. Only the pixels
     greater than twice the minimum are valid.
+  \item[] \texttt{replace(lat1)}
+    \\results in a lattice where each masked-off element in
+    \texttt{lat1} is replaced by 0.
   \item[] \texttt{iif(lat1$<$mean(lat1),lat1*2,lat1/2)}
     \\results in a lattice where the elements less than the mean
     are doubled and the elements greater or equal to the mean are
