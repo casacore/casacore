@@ -95,10 +95,10 @@ class SpectralFit {
   // <thrown>
   //   <li> AipsError if index too large
   // </thrown>
-  void setFitElement(uInt index, SpectralElement &elem);
+  void setFitElement(uInt index, const SpectralElement &elem);
 
   // Add an element to be fitted
-  void addFitElement(SpectralElement &elem);
+  void addFitElement(const SpectralElement &elem);
 
   // Get number of elements being fitted
   uInt getNElements() const { return n_p; }
