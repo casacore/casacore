@@ -337,7 +337,7 @@ Bool SpectralCoordinate::save(RecordInterface &container,
 	String system = "unknown";
 	switch (type_p) {
 	case MFrequency::REST: system = "REST"; break;
-	case MFrequency::LSR: system = "LSR"; break;
+	case MFrequency::LSRD: system = "LSRD"; break;
 	case MFrequency::LSRK: system = "LSRK"; break;
 	case MFrequency::BARY: system = "BARY"; break;
 	case MFrequency::GEO: system = "GEO"; break;
