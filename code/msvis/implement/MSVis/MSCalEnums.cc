@@ -23,7 +23,7 @@
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
 //#
-//# $Id: 
+//# $Id$
 //----------------------------------------------------------------------------
 
 #include <trial/MeasurementComponents/MSCalEnums.h>
@@ -225,6 +225,27 @@ String MSCalEnums::fieldName (Int enumField)
   
   // Return the column name
   return theirFieldMap (enumField);
+};
+
+//----------------------------------------------------------------------------
+
+Block<String> MSCalEnums::fieldNames (const Vector<Int>& enumFields)
+{
+// Static function to look up a set of field names:
+// Inputs:
+//    enumFields  const Vector<Int>&     Field enumerations.
+// Outputs:
+//    fieldNames  Block<String>          Field names.
+// Exceptions:
+//    Exception if invalid field enumeration.
+//
+  // Return the column names
+  uInt nFields = enumFields.nelements();
+  Block<String> names(nFields);
+  for (uInt i=0; i < nFields; i++) {
+    names[i] = fieldName (enumFields(i));
+  };
+  return names;
 };
 
 //----------------------------------------------------------------------------
