@@ -58,7 +58,7 @@ int main(int argc, char *argv[])
 	inp.version(""); // By setting to null, we turn of the announcement
 
         String root = Aipsrc::aipsRoot();
-        String name = root + "/code/trial/implement/Images/test/test_image";
+        String name = root + "/data/demo/Images/test_image";
 	inp.create("in", name, "Input AIPS++ Image name", "string");
 	inp.create("mask", "default", "Mask to apply", "string");
 	inp.create("out", "image2fits_tmp.out", "Output FITS file name",

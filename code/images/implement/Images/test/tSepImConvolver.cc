@@ -55,7 +55,7 @@ try {
 // Get inputs
 
    String root = Aipsrc::aipsRoot();
-   String name = root + "/code/trial/implement/Images/test/test_image";
+   String name = root + "/data/demo/Images/test_image";
    inputs.create("in", name, "Input file name");
    inputs.create("out", "tSepImageConv_image", "Output root image name");
    inputs.create("axis", "-1", "axis to convolve (default is all)");

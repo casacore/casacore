@@ -131,7 +131,7 @@ try {
 // Get inputs
 
    String root = Aipsrc::aipsRoot();
-   String name = root + "/code/trial/implement/Images/test/test_image";
+   String name = root + "/data/demo/Images/test_image";
    inputs.create("in", name, "Input file name");
    inputs.create("axes", "-10", "Cursor axes");
    inputs.create("blc", "-10", "blc");

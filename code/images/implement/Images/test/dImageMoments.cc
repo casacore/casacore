@@ -196,7 +196,7 @@ try {
 // Get inputs
 
    String root = Aipsrc::aipsRoot();
-   String name = root + "/code/trial/implement/Images/test/test_image";
+   String name = root + "/data/demo/Images/test_image";
    inputs.create("in", name, "Input image name");
    inputs.create("moments", "0", "Moments to output");
    inputs.create("axis", "2", "Moment axis");

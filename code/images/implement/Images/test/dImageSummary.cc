@@ -45,7 +45,7 @@ try {
    inputs.version ("$Revision$");
 
    String root = Aipsrc::aipsRoot();
-   String name = root + "/code/trial/implement/Images/test/test_image";
+   String name = root + "/data/demo/Images/test_image";
    inputs.create("in", name, "Input image name?");
    inputs.create("type", "RADIO","Velocity type ?");
    inputs.readArguments(argc, argv);
