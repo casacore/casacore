@@ -1876,3 +1876,4 @@
 08 003 sys rm libexec/tgmultisc.g
 08 003 sys rm libexec/units.g
 08 003 sys rm libexec/workspace.g
+08 004 top rm docs/user/synthesis-ifits.ps
