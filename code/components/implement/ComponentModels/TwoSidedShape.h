@@ -34,13 +34,13 @@
 #include <trial/ComponentModels/ComponentType.h>
 #include <aips/Mathematics/Complex.h>
 #include <aips/Quanta/Unit.h>
+#include <aips/Quanta/Quantum.h>
 
 class DirectionCoordinate;
 class MDirection;
 class MVAngle;
 class RecordInterface;
 class String;
-template <class Qtype> class Quantum;
 template <class T> class Vector;
 
 // <summary>Base class for component shapes with two sides</summary>
@@ -177,6 +177,20 @@ public:
   virtual Double axialRatio() const;
   // </group>
 
+  // set/get the errors on the shape parameters. 
+  // <group>
+//   virtual void setErrors(const Quantum<Double>& majorAxisError,
+// 			 const Quantum<Double>& minorAxisError, 
+// 			 const Quantum<Double>& positionAngleError);
+//   virtual void setWidth(const Quantum<Double>& majorAxis,
+// 			const Double axialRatio, 
+// 			const Quantum<Double>& positionAngle);
+//   virtual Quantum<Double> majorAxis() const;
+//   virtual Quantum<Double> minorAxis() const;
+//   virtual Quantum<Double> positionAngle() const;
+//   virtual Double axialRatio() const;
+  // </group>
+
   // set/get the width and orientation of the Shape. These are the same as the
   // above functions except that all widths are in radians.
   // <group>
@@ -245,13 +259,17 @@ public:
   // set/get the shape parameters associated with this shape. There are always
   // three these being in order: the major-axis, the minor-axis and the
   // position angle. All these angular quantities are specified and returned in
-  // radians. The Vector supplied to the <src>setParameters</src> function must
-  // have three elements and the Vector supplied to and returned by the
-  // <src>parameters</src> function will have three elements.
+  // radians. The Vector supplied to the <src>setParameters</src> and
+  // <src>setErrors</src> functions must have three elements and the Vector
+  // returned by the <src>parameters</src> and <src>errors</src> functions will
+  // have three elements. The errors are nominally 1-sigma in an implicit
+  // Gaussian distribution.
   // <group>
   virtual uInt nParameters() const;
   virtual void setParameters(const Vector<Double>& newParms);
-  virtual void parameters(Vector<Double>& compParms) const;
+  virtual Vector<Double> parameters() const;
+  virtual void setErrors(const Vector<Double>& newParms);
+  virtual Vector<Double> errors() const;
   // </group>
 
   // This functions convert between a Record and a shape derived from this
@@ -314,5 +332,8 @@ private:
   Unit itsMajUnit;
   Unit itsMinUnit;
   Unit itsPaUnit;
+  Quantum<Double> itsMajErr;
+  Quantum<Double> itsMinErr;
+  Quantum<Double> itsPaErr;
 };
 #endif

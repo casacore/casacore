@@ -27,6 +27,7 @@
 
 #include <trial/ComponentModels/TwoSidedShape.h>
 #include <aips/Arrays/Vector.h>
+#include <aips/Arrays/ArrayLogical.h>
 #include <aips/Containers/Record.h>
 #include <aips/Containers/RecordFieldId.h>
 #include <aips/Containers/RecordInterface.h>
@@ -135,12 +136,35 @@ void TwoSidedShape::setParameters(const Vector<Double>& newParms) {
   DebugAssert(ok(), AipsError);
 }
 
-void TwoSidedShape::parameters(Vector<Double>& compParms) const {
-  DebugAssert(compParms.nelements() == nParameters(), AipsError);
+Vector<Double> TwoSidedShape::parameters() const {
   DebugAssert(ok(), AipsError);
+  Vector<Double> compParms(3);
   compParms(0) = majorAxisInRad();
   compParms(1) = minorAxisInRad();
   compParms(2) = positionAngleInRad();
+  return compParms;
+}
+
+void TwoSidedShape::setErrors(const Vector<Double>& newErrors) {
+  DebugAssert(newErrors.nelements() == nParameters(), AipsError);
+  DebugAssert(allGT(newErrors, 0.0), AipsError);
+  const Unit rad("rad");
+  itsMajErr.setValue(newErrors(0));
+  itsMajErr.setUnit(rad);
+  itsMinErr.setValue(newErrors(1));
+  itsMinErr.setUnit(rad);
+  itsPaErr.setValue(newErrors(2));
+  itsPaErr.setUnit(rad);
+  DebugAssert(ok(), AipsError);
+}
+
+Vector<Double> TwoSidedShape::errors() const {
+  DebugAssert(ok(), AipsError);
+  Vector<Double> compErrors(3);
+  compErrors(0) = itsMajErr.getBaseValue();
+  compErrors(1) = itsMinErr.getBaseValue();
+  compErrors(2) = itsPaErr.getBaseValue();
+  return compErrors;
 }
 
 Bool TwoSidedShape::fromRecord(String& errorMessage,
