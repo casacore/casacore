@@ -1,0 +1,16 @@
+
+change id: 0093
+ author:   Neil Killeen
+ date:     2001/05/10
+ avers:    1.6
+ area:     Tool
+ package:  trial
+ module:   image
+ type:     Code
+ category: New
+ summary:  new functions addnoise and maxfit
+New functions
+
+addnoise - add noise of specified distribution to image
+
+maxfit - find brightest source in specified region
