@@ -264,7 +264,7 @@ public:
   Vector<Double> toPixel (const Unit& brightnessUnitOut,
                           const Vector<Quantum<Double> >& restoringBeam,
                           const CoordinateSystem& cSys,
-                          Stokes::StokesTypes stokes);
+                          Stokes::StokesTypes stokes) const;
 
   // Take a vector Doubles and fill the SkyComponent from the values.
   // The first three elements of the given vector are : flux for given 
@@ -297,12 +297,34 @@ public:
 // be length 0 or 3. It can be obtained from class ImageInfo
    static Unit defineBrightnessUnits (LogIO& os,
                                       const Unit& brightnessUnitIn,
-                                      const CoordinateSystem& cSys,
+                                      const DirectionCoordinate& dirCoord,
                                       const Vector<Quantum<Double> >& restoringBeam,
                                       Bool integralIsJy);
 
 // Remove the user defined "/beam" and "/pixel" definitions
    static void undefineBrightnessUnits ();
+
+// Find the factor that converts whatever per whatevers (e.g. mJy per beam)
+// to Jy per whatevers (e.g. Jy per beam)
+   static Double convertToJy (const Unit& brightnessUnit);
+
+// Convert a peak flux density to integral flux density
+   static Quantum<Double> peakToIntegralFlux (const DirectionCoordinate& dirCoord,
+                                              ComponentType::Shape componentShape,
+                                              const Quantum<Double>& peakFlux,
+                                              const Quantum<Double>& majorAxis,
+                                              const Quantum<Double>& minorAxis,
+                                              const Vector<Quantum<Double> >& restoringBeam);
+
+// Convert an integral flux density to peak flux density.  The brightness unit
+// of the output quantum (e.g. mJy/beam) is specified by <src>brightnessUnit</src>
+   static Quantum<Double> integralToPeakFlux (const DirectionCoordinate& dirCoord,
+                                              ComponentType::Shape componentShape,
+                                              const Quantum<Double>& integralFlux,
+                                              const Unit& brightnessUnit,
+                                              const Quantum<Double>& majorAxis,
+                                              const Quantum<Double>& minorAxis,
+                                              const Vector<Quantum<Double> >& restoringBeam);
 
 private:
   CountedPtr<ComponentShape> itsShapePtr;
