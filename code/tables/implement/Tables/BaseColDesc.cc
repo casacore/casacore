@@ -66,6 +66,8 @@ BaseColumnDesc::BaseColumnDesc (const String& name, const String& comment,
 	    throw (TableInvColumnDesc (name,
 			          "Shape only allowed for FixedShape arrays"));
 	}
+    } else {
+        nrdim_p = -1;
     }
     // Option Undefined can only be set for standard types.
     if (dtype_p == TpOther) {
