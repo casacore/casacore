@@ -296,6 +296,13 @@ template<class T> AutoDiff<T> fmod(const AutoDiff<T> &x, const T &c) {
   return tmp.ref();
 }
 
+template<class T> AutoDiff<T> fmod(const AutoDiff<T> &x,
+				   const AutoDiff<T> &c) { 
+  AutoDiff<T> tmp(x);
+  tmp.theRep()->val_p = fmod(x.theRep()->val_p, c.theRep()->val_p);
+  return tmp.ref();
+}
+
 template<class T>
 Bool operator>(const AutoDiff<T> &left, const AutoDiff<T> &right) {
   return (left.theRep()->val_p > right.theRep()->val_p);

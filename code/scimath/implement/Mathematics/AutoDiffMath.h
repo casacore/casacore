@@ -126,6 +126,8 @@ template<class T> AutoDiff<T> abs(const AutoDiff<T> &ad);
 // a constant.
 // <group>
 template<class T> AutoDiff<T> fmod(const AutoDiff<T> &x, const T &c);
+template<class T> AutoDiff<T> fmod(const AutoDiff<T> &x,
+				   const AutoDiff<T> &c);
 // </group>
  
 // Comparison operators.  Only the values are compared: in the actual
