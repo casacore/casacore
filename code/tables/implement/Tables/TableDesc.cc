@@ -322,6 +322,19 @@ void TableDesc::getFile (AipsIO& ios, const TableAttr& parentAttr)
 }
 
 
+
+//# Rename a column.
+void TableDesc::renameColumn (const String& newname,
+			      const String& oldname)
+{
+  // First rename the column itself.
+  col_p.rename (newname, oldname);
+  // Now adjust the hypercolumn descriptions.
+  SimpleOrderedMap<String,String> old2new("", 1);
+  old2new.define (oldname, newname);
+  adjustHypercolumns (old2new, True, True, True);
+}
+
 void TableDesc::defineHypercolumn (const String& hypercolumnName,
 				   uInt ndim,
 				   const Vector<String>& dataColumnNames)
@@ -580,7 +593,8 @@ uInt TableDesc::hypercolumnDesc (const String& name,
 
 void TableDesc::adjustHypercolumns
                         (const SimpleOrderedMap<String, String>& old2new,
-			 Bool keepUnknown)
+			 Bool keepUnknownData, Bool keepUnknownCoord,
+			 Bool keepUnknownId)
 {
   Vector<String> hcNames = hypercolumnNames();
   Vector<String> dataNames, coordNames, idNames;
@@ -594,19 +608,20 @@ void TableDesc::adjustHypercolumns
       const String* newName = old2new.isDefined (dataNames(j));
       if (newName) {
 	dataNames(nr++) = *newName;
-      } else if (keepUnknown) {
+      } else if (keepUnknownData) {
 	nr++;
       }
     }
-    if (nr == 0) {
-      // No data columns left, so no need to recreate the hypercolumn.
-    } else {
+    // If no data columns left, there is no need to recreate the hypercolumn.
+    if (nr > 0) {
       dataNames.resize (nr, True);
       nr = 0;
       for (uInt j=0; j<coordNames.nelements(); j++) {
 	const String* newName = old2new.isDefined (coordNames(j));
 	if (newName) {
 	  coordNames(nr++) = *newName;
+	} else if (keepUnknownCoord) {
+	  nr++;
 	}
       }
       // All coordinate columns are needed, so removal of one means
@@ -623,6 +638,8 @@ void TableDesc::adjustHypercolumns
 	const String* newName = old2new.isDefined (idNames(j));
 	if (newName) {
 	  idNames(nr++) = *newName;
+	} else if (keepUnknownId) {
+	  nr++;
 	}
       }
       idNames.resize (nr, True);

@@ -457,8 +457,10 @@ public:
     // <src>keepUnknown==False</src>.
     // If all data columns of a hypercolumn are removed, the entire
     // hypercolumn is removed.
-    void adjustHypercolumns (const SimpleOrderedMap<String, String>& old2new,
-			     Bool keepUnknown = False);
+    void adjustHypercolumns (const SimpleOrderedMap<String,String>& old2new,
+			     Bool keepUnknownData = False,
+			     Bool keepUnknownCoord = False,
+			     Bool keppUnknownId = False);
 
     // Remove ID-columns from the given hypercolumn definitions
     // and set their default data manager type to IncrementalStMan
@@ -566,11 +568,6 @@ inline ColumnDesc& TableDesc::addColumn (const ColumnDesc& column,
 //# Remove a column.
 inline void TableDesc::removeColumn (const String& name)
     { col_p.remove (name); }
-
-//# Rename a column.
-inline void TableDesc::renameColumn (const String& newname,
-				     const String& oldname)
-    { col_p.rename (newname, oldname); }
 
 //# Access the comment.
 inline const String& TableDesc::comment () const
