@@ -122,7 +122,8 @@ const String& UnitDim::dimName(uInt which) {
     "cd",
     "mol",
     "rad",
-    "sr"
+    "sr",
+    "_"
   };
   return Nlist[which];
 }  
@@ -137,7 +138,8 @@ const String& UnitDim::dimFull(uInt which) {
     "candela",
     "mole",
     "radian",
-    "steradian"
+    "steradian",
+    "undimensioned"
   };
   return Flist[which];
 }  
