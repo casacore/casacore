@@ -23,7 +23,7 @@ Create \aipspp\ source code updates.
 \subsection*{Synopsis}
 
 \begin{synopsis}
-   \code{\exe{exhale} [\exe{-l}]}
+   \code{\exe{exhale} [\exe{-e}] [\exe{-l}]}
 \end{synopsis}
 
 \subsection*{Description}
@@ -49,7 +49,7 @@ responsible for producing the following update files which is deposits in
    files which changed since the last time \exe{exhale} ran.  These have names
    of the form \file{master-\textit{mm}.\textit{nnn}.tar.gz}, where
    \textit{nnn} is the three-digit minor, or incremental version number.  They
-   are kept for ten days.
+   are kept for thirty days.
 
 \item
    The \file{VERSION} file is used as a timestamp file for the incremental
@@ -60,9 +60,10 @@ responsible for producing the following update files which is deposits in
 \item
    A cumulative update file which contains a copy of every \rcs\ version file
    which has changed since the last base release.  This has a name of the form
-   \file{master-\textit{mm}.\textit{nnn}.ALL.tar.gz}.  Two versions are kept,
-   one corresponding to the latest version and one for the latest version
-   which passed the \exeref{testsuite}.
+   \file{master-\textit{mm}.\textit{nnn}.ALL.tar.gz}.  Cumulative update 
+   files are kept for seven days.  In addition, cumulative update files
+   are kept for all versions listed in the \file{BLESSED} file as having 
+   passed the \exeref{testsuite}.
 
    The base release file for the current major version is used as the
    timestamp for cumulative updates.
@@ -110,7 +111,8 @@ when it is called upon to produce a new base release, \code{\textit{mm}.000}
       will have been archived when the base release for version \textit{ll}
       was produced).  The old revisions are deleted in order to reduce the
       size of the \rcs\ version file for efficient checkin (\exeref{ai}) and
-      checkout (\exeref{ao}).
+      checkout (\exeref{ao}).  This operation is only performed when
+      \exe{exhale} is invoked with the \exe{-e} option.
 
    \item
       ``Uprev'' the \rcs\ version file to \rcs\ revision number
@@ -143,6 +145,10 @@ when it is called upon to produce a new base release, \code{\textit{mm}.000}
 \subsection*{Options}
 
 \begin{description}
+\item[\exe{-e}]
+   Expire mode; ``outdates'' old RCS revisions.  Only useful when
+   \exe{exhale} is creating a new base release; ignored otherwise.
+
 \item[\exe{-l}]
    Latchkey mode (see notes); the update produced will be invisible to
    \exeref{inhale} unless it is also invoked with the \exe{-l} option.
