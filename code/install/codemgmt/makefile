@@ -43,12 +43,12 @@ include $(AIPSARCH)/makedefs
 # Source lists.
 #--------------
 AISCRIPT := ai ae amv am ao au ax rau
-SUIDWRAP := sau
+SUIDWRAP := sau sai
 DISTSCRP := inhale sneeze
 SCRIPTS  := alog av ih_log_info.pl inhold mktree rai rao runtests squiz xrcs
 
-AIPSEXES := $(basename $(filter %.c,$(AIPSSRCS)))
-PGMREXES := $(basename $(wildcard *.c))
+AIPSEXES := $(basename $(filter-out %_master.c,$(filter %.c,$(AIPSSRCS))))
+PGMREXES := $(basename $(filter-out %_master.c,$(wildcard *.c)))
 ALLEXES  := $(sort $(AIPSEXES) $(PGMREXES))
 
 SUIDEXES := $(filter $(SUIDWRAP),$(PGMREXES))
@@ -96,7 +96,7 @@ $(AISCRIPT) $(WRAPPED) $(DISTSCRP) $(SCRIPTS) : % : $(ARCHBIND)/% ;
 
 # "Wrapped" source code management scripts.
 $(addprefix $(ARCHBIND)/,$(WRAPPED)) : $(ARCHBIND)/s%.sh : $(ARCHBIND)/%
-	cat $< > $@
+	cat $< | sed "s#MSTRETCD/$*_master#MSTRETCD/s$*_master#g" > $@
 	@ chmod ug=rwx,o=r $@
 
 # Source code management scripts.
