@@ -27,7 +27,6 @@
 
 //# Includes
 #include <aips/Measures/Muvw.h>
-#include <aips/Measures/MDirection.h>
 #include <aips/Exceptions.h>
 #include <aips/Arrays/Vector.h>
 #include <aips/Mathematics/Math.h>
@@ -215,6 +214,16 @@ void Muvw::checkMyTypes() {
 		   AipsError);
     };
   };
+}
+
+Muvw::Types Muvw::fromDirType(const MDirection::Types in) {
+  Muvw::checkMyTypes();
+  return static_cast<Muvw::Types>(static_cast<uInt>(in));
+}
+
+MDirection::Types Muvw::toDirType(const Muvw::Types in) {
+  Muvw::checkMyTypes();
+  return static_cast<MDirection::Types>(static_cast<uInt>(in));
 }
 
 Bool Muvw::getType(Muvw::Types &tp, const String &in) {

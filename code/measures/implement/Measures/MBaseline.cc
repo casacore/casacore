@@ -188,7 +188,7 @@ const String *const MBaseline::allTypes(Int &nall, Int &nextra,
 
 void MBaseline::checkTypes() const {
   MBaseline::checkMyTypes();
-};
+}
 
 void MBaseline::checkMyTypes() {
   static Bool first(True);
@@ -216,6 +216,16 @@ void MBaseline::checkMyTypes() {
 		   AipsError);
     };
   };
+}
+
+MBaseline::Types MBaseline::fromDirType(const MDirection::Types in) {
+  MBaseline::checkMyTypes();
+  return static_cast<MBaseline::Types>(static_cast<uInt>(in));
+}
+
+MDirection::Types MBaseline::toDirType(const MBaseline::Types in) {
+  MBaseline::checkMyTypes();
+  return static_cast<MDirection::Types>(static_cast<uInt>(in));
 }
 
 Bool MBaseline::getType(MBaseline::Types &tp, const String &in) {

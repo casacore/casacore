@@ -32,6 +32,7 @@
 //# Includes
 #include <aips/aips.h>
 #include <aips/Measures/MeasBase.h>
+#include <aips/Measures/MDirection.h>
 #include <aips/Measures/MeasRef.h>
 #include <aips/Quanta/MVBaseline.h>
 
@@ -211,6 +212,11 @@ class MBaseline : public MeasBase<MVBaseline, MeasRef<MBaseline> > {
   // <group> 
   virtual void checkTypes() const;
   static void checkMyTypes();
+  // </group>
+  // Get the correct MBaseline type from a given direction type (or v.v.)
+  // <group>
+  static MBaseline::Types fromDirType(const MDirection::Types in);
+  static MDirection::Types toDirType(const MBaseline::Types in);
   // </group>
   // Get the reference type (for records, including codes like R_)
   virtual String getRefString() const;
