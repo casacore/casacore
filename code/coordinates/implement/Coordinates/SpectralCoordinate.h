@@ -31,9 +31,9 @@
 
 #include <aips/aips.h>
 #include <trial/Coordinates/Coordinate.h>
+#include <trial/Coordinates/TabularCoordinate.h>
 #include <aips/Measures/MFrequency.h>
 
-template<class Domain, class Range> class Interpolate1D;
 class LogIO;
 
 // <summary>
@@ -61,32 +61,28 @@ class LogIO;
 // See the example in <linkto module=Coordinates>Coordinates.h</linkto>.
 // </example>
 //
-// <todo asof="1997/07/12">
-//   <li> Make the frequency table persistent, and/or use a common "lookup table"
-//        class.
-//   <li> Allow non-regularly gridded axes?
+// <todo asof="1997/08/15">
 //   <li> Do velocity calculations directly for the user rather than going
 //        through the measures system?
 //   <li> Allow other than linear interpolations for frequency lookup.
-//   <li> Be able to get out the original frequency table and the pixel
-//        corrector.
 // </todo>
 
 class SpectralCoordinate : public Coordinate
 {
 public:
     // f0 is the frequncy of th reference channel, inc is the channel increment,
-    // refChan is the (0-relative) reference channel (often 0). You can optionally
-    // store the rest frequency for later use in calculating radial velocities.
+    // refChan is the (0-relative) reference channel (often 0). You can
+    // optionally store the rest frequency for later use in calculating radial
+    // velocities.
     //
     // Frequencies and increments initially in Hz. This may be changed later
     // with setWorldAxisUnits().
     SpectralCoordinate(MFrequency::Types type, Double f0, Double inc, 
 		       Double refChan, Double restFrequency = 0.0);
 
-    // Construct a SpectralCoordinate with the specified frequencies. The increments
-    // and related functions return the <src>average</src> values (calculated from
-    // the first and last pixels frequencies).
+    // Construct a SpectralCoordinate with the specified frequencies. The
+    // increments and related functions return the <src>average</src> values
+    // (calculated from the first and last pixels frequencies).
     //
     // A linear interpolation/extrapolation is used for channels which are
     // not supplied. The refrence channel (pixel) is chosen to be 0.
@@ -95,7 +91,7 @@ public:
     SpectralCoordinate(MFrequency::Types type, const Vector<Double> &freqs,
 		       Double restFrequency = 0.0);
     
-    // Equivalent to SpectralCoordinate(MFrequency::TOPO, 0.0, 0.0, 0.0)
+    // Equivalent to SpectralCoordinate(MFrequency::TOPO, 0.0, 1.0, 0.0)
     SpectralCoordinate();
 
     // Overwrite this SpectralCoordinate with other (copy semantics).
@@ -162,11 +158,13 @@ public:
     virtual Bool setReferenceValue(const Vector<Double> &refval);
     // </group>
 
-    // This will be of length>0 when the SpectralCoordinate is constructed
-    // from a frequency table. Basically it maps the channel number to the
-    // channel required to get the correct input frequency. It corresponds
-    // to the pixel correction image in the draft WCS paper.
-    Vector<Double> pixelCorrections() const;
+    // Get the table, i.e. the pixel and world values. The length of these
+    // Vectors will be zero if this axis is pure linear (i.e. if the
+    // channel and frequencies are related through an increment and offset).
+    // <group>
+    Vector<Double> pixelValues() const;
+    Vector<Double> worldValues() const;
+    // </group>
 
     // Restore ourself from a FITS header. Returns False if axis 'axisNumber'
     // (0-relative) does not appear to be a spectral axis.
@@ -188,13 +186,14 @@ public:
     virtual Bool setWorldAxisUnits(const Vector<String> &units,
 				   Bool adjust = True);
 
-    // Format a SpectralCoordinate world value with the common format 
-    // interface (refer to the base class <linkto class=Coordinate>Coordinate</linkto>
-    // for more details on this interface, particularly with regards polymorphic use).  
+    // Format a SpectralCoordinate world value with the common format interface
+    // (refer to the base class <linkto class=Coordinate>Coordinate</linkto> for
+    // more details on this interface, particularly with regards polymorphic
+    // use).
     //
-    // A SpectralCoordinate can be formatted in either <src>Coordinate::SCIENTIFIC</src> 
-    // or <src>Coordinate::FIXED</src> formats only.    The argument <src>absolute</src>
-    // is ignored.
+    // A SpectralCoordinate can be formatted in either
+    // <src>Coordinate::SCIENTIFIC</src> or <src>Coordinate::FIXED</src> formats
+    // only.  The argument <src>absolute</src> is ignored.
     //<group>
     virtual void getPrecision(Int& precision,
                               Coordinate::formatType& format,
@@ -225,18 +224,8 @@ public:
     virtual Coordinate *clone() const;
 private:
     MFrequency::Types type_p;
-    Double crval_p, cdelt_p, crpix_p;
-    String unit_p;
-    String name_p;
-    Double matrix_p;
     Double restfreq_p;
-
-    // Channel_True = channel_corrections_p(channel_in). Corresponds to the
-    // draft WCS pixel correction image.
-    // <group>
-    Interpolate1D<Double,Double> *channel_corrector_p;
-    Interpolate1D<Double,Double> *channel_corrector_rev_p;
-    // </group>
+    TabularCoordinate worker_p;
 
     // Check format type
     void checkFormat(Coordinate::formatType& format,         
