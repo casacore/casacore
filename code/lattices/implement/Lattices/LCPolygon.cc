@@ -43,9 +43,25 @@ LCPolygon::LCPolygon()
 LCPolygon::LCPolygon (const Vector<Float>& x, const Vector<Float>& y,
 		      const IPosition& latticeShape)
 : LCRegionFixed (latticeShape),
-  itsX (x),
-  itsY (y)
+  itsX (x.copy()),
+  itsY (y.copy())
 {
+    defineBox();
+    defineMask();
+}
+
+LCPolygon::LCPolygon (const Vector<Double>& x, const Vector<Double>& y,
+		      const IPosition& latticeShape)
+: LCRegionFixed (latticeShape),
+  itsX (x.nelements()),
+  itsY (y.nelements())
+{
+    for (uInt i=0; i<x.nelements(); i++) {
+	itsX(i) = x(i);
+	if (i < y.nelements()) {
+	    itsY(i) = y(i);
+	}
+    }
     defineBox();
     defineMask();
 }
