@@ -1,5 +1,5 @@
 //# VisibilityIterator.h: Step through the MeasurementEquation by visibility
-//# Copyright (C) 1996,1997,1998,1999
+//# Copyright (C) 1996,1997,1998,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -413,7 +413,7 @@ protected:
   // column access functions
   ROScalarColumn<Int> colAntenna1, colAntenna2;
   ROScalarColumn<Double> colTime;
-  ROScalarColumn<Float> colWeight;
+  ROArrayColumn<Float> colWeight;
   ROArrayColumn<Float> colImagingWeight;
   ROArrayColumn<Complex> colVis;
   ROArrayColumn<Complex> colModelVis;
@@ -563,7 +563,7 @@ protected:
   ArrayColumn<Complex> RWcolModelVis;
   ArrayColumn<Complex> RWcolCorrVis;
   PtrBlock<ArrayColumn<Complex>* > RWcolVisPtr;
-  ScalarColumn<Float> RWcolWeight;
+  ArrayColumn<Float> RWcolWeight;
   ArrayColumn<Float> RWcolSigma;
   ArrayColumn<Float> RWcolImagingWeight;
   ArrayColumn<Bool> RWcolFlag;
