@@ -44,31 +44,6 @@
 
 #include <aips/iostream.h>
 
-// the dataType() member functions in Tables report only the scalar type
-// even for Array columns.  So, if a column is TpArrayFloat in MS then it
-// will appear as TpFloat in a Table.  
-// This function converts from a scalar type to the appropriate array type.
-// Non-scalar types and types with no array equivalent are simply returned as is.
-// It is probably more generally useful than in this test program.
-DataType makeArrayType(DataType type)
-{
-    switch (type) {
-    case TpBool: type = TpArrayBool; break;
-    case TpChar: type = TpArrayChar; break;
-    case TpUChar: type = TpArrayUChar; break;
-    case TpShort: type = TpArrayShort; break;
-    case TpUShort: type = TpArrayUShort; break;
-    case TpInt: type = TpArrayInt; break;
-    case TpUInt: type = TpArrayUInt; break;
-    case TpFloat: type = TpArrayFloat; break;
-    case TpDouble: type = TpArrayDouble; break;
-    case TpComplex: type = TpArrayComplex; break;
-    case TpDComplex: type = TpArrayDComplex; break;
-    case TpString: type = TpArrayString; break;
-    default: break;
-    }
-    return type;
-}
 
 // test functions, all return the number of errors unless otherwise stated
 // test PredefinedColumns static functions in MeasurementSet
@@ -80,7 +55,7 @@ uInt tColumnStatics()
 
     for (Int i=0;i<MS::NUMBER_PREDEFINED_COLUMNS;i++) {
 	MS::PredefinedColumns pdcol = MS::PredefinedColumns(i);
-	DataType dtype = MS::columnDataType(pdcol);
+	MS::columnDataType(pdcol);
 	String pdname = MS::columnName(pdcol);
 	MS::PredefinedColumns pdtype = MS::columnType(pdname);
 	if (pdtype != pdcol) {
@@ -131,7 +106,7 @@ uInt tKeywordStatics()
 	}
 
 	// this just tests that a dtype is available
-	DataType dtype = MS::keywordDataType(pdkey);
+	MS::keywordDataType(pdkey);
         // this just tests that a comment exists (an exception will occur here if not)
 	String comment = MS::keywordStandardComment(pdkey);
 
@@ -168,8 +143,9 @@ uInt tNonStatic(const String& sdmsName)
     uInt errCount = 0;
 
     TableDesc td(MS::requiredTableDesc());
-    // Add the DATA column
+    // Add the DATA column and compress it.
     MS::addColumnToDesc(td, MS::FLOAT_DATA, 2);
+    MS::addColumnCompression (td, MS::FLOAT_DATA);
     // add one column, not a PredefinedColumn
     td.addColumn(ScalarColumnDesc<Double>("test_column"));
 
@@ -179,6 +155,23 @@ uInt tNonStatic(const String& sdmsName)
     
     // small table, ten rows
     MeasurementSet ms(setup, 10);
+    Record dminfo = ms.dataManagerInfo();
+    // Check that the CompressFloat engine is created.
+    Bool fnd = False;
+    for (uInt i=0; i<dminfo.nfields(); i++) {
+      if (dminfo.subRecord(i).asString("TYPE") == "CompressFloat") {
+	Vector<String> vec = dminfo.subRecord(i).asArrayString ("COLUMNS");
+	if (vec.nelements() == 1  &&  vec(0) == "FLOAT_DATA") {
+	  fnd = True;
+	}
+      }
+    }
+    AlwaysAssertExit(fnd);
+    AlwaysAssertExit (ms.isColumnStored ("FLOAT_DATA_COMPRESSED"));
+    AlwaysAssertExit (ms.isColumnStored ("FLOAT_DATA_SCALE"));
+    AlwaysAssertExit (ms.isColumnStored ("FLOAT_DATA_OFFSET"));
+    AlwaysAssertExit (! ms.isColumnStored ("FLOAT_DATA"));
+    AlwaysAssertExit (ms.isColumnStored ("SIGMA"));
     ms.createDefaultSubtables(Table::New);
 
     ArrayColumn<Float> fldata(ms,MS::columnName(MS::FLOAT_DATA));
@@ -295,7 +288,8 @@ uInt tConstructors(const String& msName)
     }
     // make non MS table
     {
-      SetupNewTable newtab("badmsTable","badTD",Table::New);
+      SetupNewTable newtab("tMeasurementSet_tmp.badmsTable",
+			   "badTD",Table::New);
       Table tab(newtab);
     }
 
@@ -303,7 +297,7 @@ uInt tConstructors(const String& msName)
     // try creating bad MS
     Bool thrown=False;
     try {
-      MeasurementSet badms("badmsTable");
+      MeasurementSet badms("tMeasurementSet_tmp.badmsTable");
     } catch (AipsError x) {
       thrown = True;
     } 
@@ -314,7 +308,7 @@ uInt tConstructors(const String& msName)
     // try creating bad MS
     thrown=False;
     try {
-      MeasurementSet badms("badmsTable","");
+      MeasurementSet badms("tMeasurementSet_tmp.badmsTable","");
     } catch (AipsError x) {
       thrown = True;
     } 
@@ -328,7 +322,7 @@ uInt tConstructors(const String& msName)
     // try the same with a bad table
     thrown=False;
     try {
-      Table badtab("badmsTab;e","");
+      Table badtab("tMeasurementSet_tmp.badmsTab;e","");
       MeasurementSet badms(badtab);
     } catch (AipsError x) {
       thrown = True;
@@ -337,7 +331,7 @@ uInt tConstructors(const String& msName)
 
     // cleanup
 
-    Table badtab("badmsTable",Table::Delete);
+    Table badtab("tMeasurementSet_tmp.badmsTable",Table::Delete);
     TableDesc("badTD",TableDesc::Delete);
 
     // finally, as a const MS referencing that MS
@@ -356,16 +350,16 @@ uInt tConstructors(const String& msName)
 	TableDesc td2(MSFeed::requiredTableDesc(),"badAntTD","",TableDesc::New);
       }
       // construct from name and tabledesc
-      SetupNewTable newtab1("msant2","antTD",Table::New);
+      SetupNewTable newtab1("tMeasurementSet_tmp.msant2","antTD",Table::New);
       {
 	MSAntenna msant(newtab1);
       }
-      MSAntenna msant2("msant2","antTD",Table::Old);
+      MSAntenna msant2("tMeasurementSet_tmp.msant2","antTD",Table::Old);
       
       // try an invalid tableDesc
       Bool thrown=False;
       try {
-	MSAntenna msant2b("msant2","badAntTD",Table::Old);
+	MSAntenna msant2b("tMeasurementSet_tmp.msant2","badAntTD",Table::Old);
 	msant2b.markForDelete();
       } catch (AipsError x) {
 	thrown = True;
@@ -374,14 +368,16 @@ uInt tConstructors(const String& msName)
       //if (!thrown) errCount++;
       
       // construct from SetupNewTable
-      SetupNewTable newtab2("msant3",MSAntenna::requiredTableDesc(),Table::New);
+      SetupNewTable newtab2("tMeasurementSet_tmp.msant3",
+			    MSAntenna::requiredTableDesc(),Table::New);
       MSAntenna msant3(newtab2,5);
       msant3.markForDelete();
       
       // try invalid newtab
       thrown = False;
       try {
-	SetupNewTable newtab("msant3b",MSFeed::requiredTableDesc(),Table::New);
+	SetupNewTable newtab("tMeasurementSet_tmp.msant3b",
+			     MSFeed::requiredTableDesc(),Table::New);
 	MSAntenna msant3b(newtab,5);
       } catch (AipsError x) {
 	thrown = True;
@@ -390,13 +386,15 @@ uInt tConstructors(const String& msName)
 
       // cleanup the mess
       {
-	SetupNewTable newtab("msant3b",MSFeed::requiredTableDesc(),Table::New);
+	SetupNewTable newtab("tMeasurementSet_tmp.msant3b",
+			     MSFeed::requiredTableDesc(),Table::New);
 	Table tab(newtab);
 	tab.markForDelete();
       }
       
       // construct from Table
-      SetupNewTable newtab3("msantTable","antTD",Table::New);
+      SetupNewTable newtab3("tMeasurementSet_tmp.msantTable",
+			    "antTD",Table::New);
       Table tab(newtab3);
       tab.markForDelete();
       MSAntenna msant4(tab);
@@ -404,7 +402,8 @@ uInt tConstructors(const String& msName)
       // try invalid table
       thrown = False;
       try {
-	SetupNewTable newtab4("badmsantTable","badAntTD",Table::New);
+	SetupNewTable newtab4("tMeasurementSet_tmp.badmsantTable",
+			      "badAntTD",Table::New);
 	Table tab(newtab4);
 	tab.markForDelete();
 	MSAntenna msant4b(tab);
@@ -414,15 +413,15 @@ uInt tConstructors(const String& msName)
       if (!thrown) errCount++;
       
       // construct from existing table
-      MSAntenna msant5("msantTable",Table::Old);
+      MSAntenna msant5("tMeasurementSet_tmp.msantTable",Table::Old);
 
       // try invalid table
       thrown = False;
       try {
 	{
-	  Table tab("badmsantTable","badAntTD",Table::New);
+	  Table tab("tMeasurementSet_tmp.badmsantTable","badAntTD",Table::New);
 	}
-	MSAntenna msant5b("badmsantTable");
+	MSAntenna msant5b("tMeasurementSet_tmp.badmsantTable");
       } catch (AipsError x) {
 	thrown = True;
       } 
@@ -445,7 +444,7 @@ uInt tConstructors(const String& msName)
       // make table invalid before destruction
       thrown=False;
       try {
-	SetupNewTable newtab("msAnt","antTD",Table::New);
+	SetupNewTable newtab("tMeasurementSet_tmp.msAnt","antTD",Table::New);
 	MSAntenna msant(newtab);
 	msant.markForDelete();
 	msant.renameColumn("myPos",MSAntenna::columnName(MSAntenna::POSITION));
