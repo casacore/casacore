@@ -311,8 +311,9 @@ public:
     // ones that require extra frame information (epoch, position) such
     // as to AZEL from J2000 etc.  This will be added later.
     //
-    // As yet, this functionality is not supported in the mixed pixel/world
-    // conversion routines.
+    // In the mixed pixel/world conversion routine <src>toMix</src>
+    // the implementation is only partial.  See the comments for this
+    // function below.
     void setConversionDirectionType (MDirection::Types conversionDirectionType);
 
     // Convert a pixel position to a world position or vice versa. Returns True
@@ -343,7 +344,8 @@ public:
     // Values in <src>worldIn</src> are converted to pixel and
     // put into <src>pixelOut</src> in the appropriate pixel axis
     // location.  Values in <src>pixelIn</src> are copied to
-    // <src>pixelOut</src>
+    // <src>pixelOut</src>.  
+    //
     // <src>worldMin</src> and <src>worldMax</src> specify the range of the world
     // coordinate (in the world axis units of that world axis
     // in the CoordinateSystem) being solved for in a mixed calculation
@@ -358,6 +360,21 @@ public:
     // Returns True if the conversion succeeds, otherwise it returns False and
     // <src>errorMessage()</src> contains an error message. The output vectors
     // are resized.
+    //
+    // If you actually request a pure pixel to world or world to pixel
+    // via <src>toMix</src>, then the functions <src>toWorld</src> or <src>toPixel</src>
+    // will be invoked directly (see above) and the extra conversion layer
+    // invoked through function <src>setConversionDirectionType</src> is always
+    // active.  However, if you do request a true mixed pixel/world conversion,
+    // then because of the nature of mixed conversions, the extra conversion
+    // layer can only be partly implemented.  If you make a mixed conversion
+    // and <src>useConversionType==True</src>, then the *output* world values are
+    // further converted to the type specified by the 
+    // <src>setConversionDirectionType</src> function.  Any input world value 
+    // must always be in the Direction type specified by the constructor.
+    // If  <src>useConversionType==False</src>, then no further conversion
+    // of the  *output* world values is done.   This is not a symmetric
+    // situation but it's the best I can do.
     virtual Bool toMix(Vector<Double>& worldOut,
                        Vector<Double>& pixelOut,
                        const Vector<Double>& worldIn,
@@ -365,7 +382,7 @@ public:
                        const Vector<Bool>& worldAxes,
                        const Vector<Bool>& pixelAxes,
                        const Vector<Double>& worldMin,
-                       const Vector<Double>& worldMax) const; 
+                       const Vector<Double>& worldMax, Bool useConversionType=False) const; 
 
     // Compute and retrieve the world min and max ranges, for use in function <src>toMix</src>, 
     // for  a lattice of the given shape (for this coordinate).   Using these
