@@ -2479,3 +2479,4 @@
 09 444 src mv trial/implement/Measures/test/tBaseline.cc trial/implement/Measures/test/tMBaseline.cc
 09 444 src mv trial/implement/Measures/test/tBaseline.out trial/implement/Measures/test/tMBaseline.out
 09 448 src rm doc/html/navpages
+09 448 src mv doc/navpages doc/html/navpages
