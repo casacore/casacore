@@ -31,13 +31,26 @@
 #include <aips/Arrays/Vector.h>
 #include <aips/Containers/Record.h>
 
-PGPlotter::PGPlotter() : worker_p(0)
+//# Default is no create function, thus use createLocal.
+PGPlotter::CreateFunction* PGPlotter::creator_p = 0;
+
+
+PGPlotter::PGPlotter()
+  : worker_p(0)
 {
     // Nothing
 }
 
+PGPlotter::PGPlotter (const String &device,
+		      uInt mincolors, uInt maxcolors,
+		      uInt sizex, uInt sizey)
+  : worker_p(0)
+{
+    *this = create (device, mincolors, maxcolors, sizex, sizey);
+}
+
 PGPlotter::PGPlotter(const PGPlotter &other)
-    : worker_p(other.worker_p)
+  : worker_p(other.worker_p)
 {
     // Nothing
 }
@@ -53,6 +66,26 @@ PGPlotter::~PGPlotter()
     // Nothing
 }
 
+PGPlotter PGPlotter::create (const String &device,
+			     uInt mincolors, uInt maxcolors,
+			     uInt sizex, uInt sizey)
+{
+    if (creator_p == 0) {
+        return PGPlotter();
+    }
+    return creator_p (device, mincolors, maxcolors, sizex, sizey);
+}
+
+PGPlotter::CreateFunction* PGPlotter::setCreateFunction
+                                          (PGPlotter::CreateFunction* func,
+					   Bool override)
+{
+    CreateFunction* tmp = creator_p;
+    if (override  ||  tmp == 0) {
+        creator_p = func;
+    }
+    return tmp;
+}
 
 void PGPlotter::detach()
 {

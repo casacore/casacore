@@ -93,31 +93,24 @@ template<class T> class Vector;
 class PGPlotter : public PGPlotterInterface
 {
 public:
+    // Define the signature of a function creating a PGPlotter object.
+    typedef PGPlotter CreateFunction (const String &device,
+				      uInt mincolors, uInt maxcolors,
+				      uInt sizex, uInt sizey);
+
     // The default constructor does not attach to any plotter, that is
     // <src>isAttached()</src> returns False. An exception is thrown if you 
     // attempt to plot to an unattached PGPlotter.
     PGPlotter();
 
-    // Open "device", which must be a valid PGPLOT style device, for example
-    // <src>/cps</src> for colour postscript (or <src>myfile.ps/cps</src>
-    // if you want to name the file), or <src>/xs</src> or <src>/xw</src> for
-    // and X-windows display. This constructor (only) causes
-    // PGPLOT and everything PGPLOT requires to be linked in to the current
-    // executable.
-    //
-    // If your plot cannot back-off gracefully to black and white, you should
-    // set <src>mincolors</src> to the minimum number of colors your plot
-    // needs to succeed. Generally you should only need to do this for
-    // color-raster displays. Similarly, if you know the maximum number of
-    // colors you will use, you can prevent colormap flashing by setting
-    // <src>maxcolors</src>. If the device cannot supply at least
-    // <src>mincolors</src>, <src>isAttached</src> will return False.
-    // <thrown>
-    //   <li> An <linkto class="AipsError">AipsError</linkto> will be thrown
-    //        if the underlying PGPLOT open fails for some reason.
-    // </thrown>
-    PGPlotter(const String &device, uInt mincolors=2, uInt maxcolors=100,
-              uInt sizex=600, uInt sizey=450);
+    // Create PGPlotter object using the curreent create function.
+    PGPlotter (const String &device,
+	       uInt mincolors=2, uInt maxcolors=100,
+	       uInt sizex=600, uInt sizey=450);
+
+    // Create from the given PGPlotterInterface instantiation.
+    // It takes over the pointer.
+    PGPlotter (PGPlotterInterface*);
 
     // Copies use reference semantics, i.e. after copying the new and old
     // copy both draw onto the same surface.
@@ -128,6 +121,19 @@ public:
 
     // If this is the last reference, close the plot.
     virtual ~PGPlotter();
+
+    // Create a PGPlotter object using the current create function.
+    static PGPlotter create (const String &device,
+			     uInt mincolors=2, uInt maxcolors=100,
+			     uInt sizex=600, uInt sizey=450);
+
+    // Set the create function. It returns the current create function.
+    // It is, for example, used by ObjectController to attach to glish.
+    // The initial create function creates a detached PGPlotter object.
+    // If <src>override==False</src>, the function is only set if it was
+    // not already set.
+    static CreateFunction* setCreateFunction (CreateFunction*,
+					      Bool override=True);
 
     // True if it is OK to plot to this object.
     virtual Bool isAttached() const;
@@ -283,6 +289,7 @@ public:
     // </group>
  private:
     CountedPtr<PGPlotterInterface> worker_p;
+    static CreateFunction* creator_p;
 
     // Throws an exception if !isAttached()
     void ok() const;
