@@ -6243,3 +6243,4 @@
 17 191 src mv ./aips/implement/Functionals/test/tNQGaussian1D.cc ./aips/implement/Functionals/test/tGaussian1D.cc
 17 191 src mv ./aips/implement/Functionals/test/tNQGaussian2D.cc ./aips/implement/Functionals/test/tGaussian2D.cc
 17 191 src mv ./aips/implement/Functionals/test/tNQGaussianND.cc ./aips/implement/Functionals/test/tGaussianND.cc
+17 191 src mv ./aips/implement/Functionals/test/tNQHyperPlane.cc ./aips/implement/Functionals/test/tHyperPlane.cc
