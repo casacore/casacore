@@ -1,5 +1,5 @@
 //# File.h: Class to get file information and a base for other file classes
-//# Copyright (C) 1993,1994,1995,1996,2000
+//# Copyright (C) 1993,1994,1995,1996,2000,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -33,8 +33,18 @@
 #include <aips/OS/Path.h>
 #include <aips/Utilities/String.h>
 
-//# Forward Declarations.
-struct stat;
+#if !defined(AIPS_NOLARGEFILE)
+# ifdef AIPS_LINUX
+#  if !defined(_LARGEFILE64_SOURCE)
+#   define _LARGEFILE64_SOURCE
+#  endif
+# endif
+# define fileLSTAT lstat64
+# define fileSTAT  stat64
+#else
+# define fileLSTAT lstat
+# define fileSTAT  stat
+#endif
 
 
 // <summary> 
@@ -70,6 +80,8 @@ struct stat;
 // This class does not contain virtual functions, because a lot of functions 
 // have different parameters, e.g. 'create' for RegularFile has one parameter
 // and 'create' for SymLink has two parameters. 
+//
+// It handles large files correctly.
 // </synopsis>
 
 // <example>
@@ -240,15 +252,15 @@ protected:
     // (const char*).  Since lstat() does not change its first argument,
     // it is safe to convert our const variable to a non-const one so that
     // we can call lstat() successfully.
-    int mylstat (const char* path, struct stat* buf) const;
+    int mylstat (const char* path, struct fileSTAT* buf) const;
 
     // Get the lstat of this file.
     // Throw an exception when it fails.
-    void getstat (struct stat* buf) const;
+    void getstat (struct fileSTAT* buf) const;
 
     // Get the lstat of a file.
     // Throw an exception when it fails.
-    void getstat (const File& file, struct stat* buf) const;
+    void getstat (const File& file, struct fileSTAT* buf) const;
 
     // Check if the new path for a copy or move is valid.
     // An exception is thrown if:
@@ -278,7 +290,7 @@ inline const Path& File::path() const
     return itsPath;
 }
 
-inline void File::getstat (struct stat* buf) const
+inline void File::getstat (struct fileSTAT* buf) const
 {
     getstat (*this, buf);
 }

@@ -1,5 +1,5 @@
 //# RegularFile.cc: Manipulate and get information about regular files
-//# Copyright (C) 1993,1994,1995,1996,1997,2001,2002
+//# Copyright (C) 1993,1994,1995,1996,1997,2001,2002,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //# 
 //# This library is free software; you can redistribute it and/or modify it
@@ -173,7 +173,7 @@ uInt RegularFile::size() const
 {
     // The struct buf is filled in by mylstat, and the size 
     // of the file is extracted from buf.
-    struct stat buf;
+    struct fileSTAT buf;
     getstat (itsFile.path().expandedName(), &buf);
     return buf.st_size;
 }

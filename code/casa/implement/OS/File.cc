@@ -1,5 +1,5 @@
 //# File.cc: Class to define a File
-//# Copyright (C) 1993,1994,1995,1996,1997,2001
+//# Copyright (C) 1993,1994,1995,1996,1997,2001,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //# 
 //# This library is free software; you can redistribute it and/or modify it
@@ -33,7 +33,7 @@
 #include <aips/Exceptions.h>
 
 #include <unistd.h>                 // needed for access, etc.
-#include <sys/stat.h>               // needed for lstat
+#include <sys/stat.h>               // needed for lstat or lstat64
 #include <utime.h>                  // needed for utimbuf
 #include <errno.h>                  // needed for errno
 #include <aips/string.h>                 // needed for strerror
@@ -80,7 +80,7 @@ Bool File::isRegular (Bool followSymLink) const
 	}
 	testPath = SymLink(itsPath).followSymLink();
     }
-    struct stat buf;
+    struct fileSTAT buf;
     if (mylstat (testPath.expandedName().chars(), &buf) < 0) {
 	return False;
     }
@@ -98,7 +98,7 @@ Bool File::isDirectory (Bool followSymLink) const
 	}
 	testPath = SymLink(itsPath).followSymLink();
     }
-    struct stat buf;
+    struct fileSTAT buf;
     if (mylstat (testPath.expandedName().chars(), &buf) < 0) {
 	return False;
     }
@@ -109,7 +109,7 @@ Bool File::isSymLink() const
 {
     // The struct is filled in by mylstat, and S_ISLNK checks buf
     // if the file is a symbolic link.
-    struct stat buf;
+    struct fileSTAT buf;
     if (mylstat (itsPath.expandedName().chars(), &buf) < 0) {
 	return False;
     }
@@ -120,7 +120,7 @@ Bool File::isPipe() const
 {
     // The struct is filled in by mylstat, and S_ISFIFO checks buf
     // if the file is a pipe.
-    struct stat buf;
+    struct fileSTAT buf;
     getstat (&buf);
     return (S_ISFIFO (buf.st_mode)); 
 }
@@ -129,7 +129,7 @@ Bool File::isCharacterSpecial() const
 {
     // The struct is filled in by mylstat, and S_ISCHR checks buf
     // if the file is a characterspecialfile.
-    struct stat buf;
+    struct fileSTAT buf;
     getstat (&buf);
     return (S_ISCHR (buf.st_mode));
 }
@@ -138,7 +138,7 @@ Bool File::isBlockSpecial() const
 {
     // The struct is filled in by mylstat, and S_ISBLK checks buf
     // if the file is a blokspecialfile.
-    struct stat buf;
+    struct fileSTAT buf;
     getstat (&buf);
     return (S_ISBLK (buf.st_mode));
 }
@@ -147,7 +147,7 @@ Bool File::isSocket() const
 {
     // The struct is filled in by mylstat, and S_ISSOCK checks buf
     // if the file is a socket.
-    struct stat buf;
+    struct fileSTAT buf;
     getstat (&buf);
     return (S_ISSOCK (buf.st_mode));
 }
@@ -156,7 +156,7 @@ Bool File::exists() const
 {
     // The function access always substitutes symlinks.
     // Therefore use lstat instead.
-    struct stat buf;
+    struct fileSTAT buf;
     return  (mylstat((itsPath.expandedName()).chars(), &buf) == 0);
 }
 
@@ -193,7 +193,7 @@ long File::userID() const
 {
     // Returns the userid of a file which is extracted from the struct
     // buf.
-    struct stat buf;
+    struct fileSTAT buf;
     getstat (&buf);
     return buf.st_uid;
 }
@@ -202,7 +202,7 @@ long File::groupID() const
 {
     // Returns the groupid of a file which is extracted from the struct
     // buf.
-    struct stat buf;
+    struct fileSTAT buf;
     getstat (&buf);
     return buf.st_gid;
 }
@@ -211,7 +211,7 @@ uInt File::readPermissions() const
 {
     // Returns the permissions as a decimal value. The value 
     // is extracted from buf.
-    struct stat buf;
+    struct fileSTAT buf;
     getstat (&buf);
     return (uInt (buf.st_mode & 07) +
            (uInt (buf.st_mode &070) >> 3) * 10 +
@@ -272,7 +272,7 @@ uInt File::accessTime () const
 {
     // The struct is filled in by mylstat, and the accesstime 
     // is returned.
-    struct stat buf;
+    struct fileSTAT buf;
     getstat (&buf);
     return buf.st_atime;
 }
@@ -281,7 +281,7 @@ String File::accessTimeString () const
 {
     // The struct is filled in by mylstat, and the accesstime 
     // is returned as a string.
-    struct stat buf;
+    struct fileSTAT buf;
     getstat (&buf);
     return String (asctime (localtime (&buf.st_atime)));
 
@@ -291,7 +291,7 @@ uInt File::modifyTime () const
 {
     // The struct is filled in by mylstat, and the modificationtime 
     // is returned.
-    struct stat buf;
+    struct fileSTAT buf;
     getstat (&buf);
     return buf.st_mtime;
 }
@@ -301,7 +301,7 @@ String File::modifyTimeString () const
 {
     // The struct is filled in by mylstat, and the modificationtime 
     // is returned as a string.    
-    struct stat buf;
+    struct fileSTAT buf;
     getstat (&buf);
     return String (asctime (localtime (&buf.st_mtime)));
 }
@@ -310,7 +310,7 @@ uInt File::statusChangeTime () const
 {
     // The struct is filled in by mylstat, and the statusChangetime 
     // is returned.
-    struct stat buf;
+    struct fileSTAT buf;
     getstat (&buf);
     return buf.st_ctime;
 }
@@ -319,7 +319,7 @@ String File::statusChangeTimeString() const
 {
     // The struct is filled in by mylstat, and the statusChangetime 
     // is return from buf as a string.    
-    struct stat buf;
+    struct fileSTAT buf;
     getstat (&buf);
     return String (asctime (localtime (&buf.st_ctime)));
 }
@@ -336,12 +336,12 @@ void File::removeSymLinks ()
     }
 }
 
-int File::mylstat(const char* path, struct stat* buf) const
+int File::mylstat(const char* path, struct fileSTAT* buf) const
 {
-    return lstat ((char*)path, buf);
+    return fileLSTAT ((char*)path, buf);
 }
 
-void File::getstat (const File& file, struct stat* buf) const
+void File::getstat (const File& file, struct fileSTAT* buf) const
 {
     if (mylstat (file.path().expandedName().chars(), buf) < 0) {
 	throw (AipsError ("File::getstat error on " +
