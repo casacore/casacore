@@ -141,7 +141,7 @@ sub aips2script {
 "img7off.src = \"DOCSROOT/html/navpages/images/topglishoff.gif\";\n" .
 #"\n" .
 #"\n" .
-}\n" .
+#}\n" .
 #"\n" .
 "function imgOn(imgName) {\n" .
 "        if (document.images) {\n" .
@@ -152,7 +152,7 @@ sub aips2script {
 "            document[imgName].src = eval(imgName + \"off.src\");        }}\n" .
 #"\n" .
 "//-->\n" .
-"\n" .
+#"\n" .
 "</SCRIPT>\n" .
 "\n" .
 }
