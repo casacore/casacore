@@ -144,7 +144,7 @@ template<class T> class Array;
 //     // This one is indirect and has no dimensionality mentioned yet.
 //     // Define the keyword UNIT in it.
 //     ArrayColumnDesc<Complex> arr1Column("Arr1", "comment for Arr1");
-//     arr1Column.keywordSet().keysString()("UNIT") = "Jy";
+//     arr1Column.rwKeywordSet().define ("UNIT", "Jy");
 //     tabDesc.addColumn (arr1Column);
 //
 //     // This one is indirect and has 3-dim arrays.
