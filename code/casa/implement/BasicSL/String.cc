@@ -1,5 +1,5 @@
 //# String.cc: String classes
-//# Copyright (C) 1992,1993,1994,1995,1996,1997,1998,1999
+//# Copyright (C) 1992,1993,1994,1995,1996,1997,1998,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -30,6 +30,7 @@
 
 #include <aips/Utilities/String.h>
 #include <aips/Exceptions/Error.h>
+#include <aips/Utilities/Assert.h>
 
 #include <strstream.h>
 #include <string.h>
@@ -1313,6 +1314,14 @@ String String::toString(uInt value) {
   ostrstream s;
   s << value;
   return s;
+}
+
+Int String::toInt(const String& s) {
+  DebugAssert(s.matches(RXint), AipsError);
+  istrstream stream(s.chars());
+  Int i;
+  stream >> i;
+  return i;
 }
 
 ostream& operator<<(ostream& s, const SubString& x)
