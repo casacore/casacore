@@ -328,18 +328,22 @@ template<class T> T avdev(const Array<T> &a);
 template<class T> T avdev(const Array<T> &a,T mean);
 
 // 
-// The median of "a" is a((n+1/2)) if a has an odd number of elements,
-// otherwise it is 1/2(a(n/2) + a((n+1)/2)).
-// If "sorted"==True we assume
-// the data is already sorted and we compute the median directly, otherwise
-// we sort it first (there are algorithms which don't require a sort we
-// could implement if necessary).
-template<class T> T median(const Array<T> &a, Bool sorted);
-
-// 
-// The median of "a" is a((n+1/2)) if a has an odd number of elements,
-// otherwise it is 1/2(a(n/2) + a((n+1)/2)). Assumes that "a" is unsorted.
-template<class T> T median(const Array<T> &a);
+// The median of "a" is a(n/2).
+// When a has an even number of elements and the switch takeEvenMean is set,
+// the median is 0.5*(a(n/2) + a((n+1)/2)).
+// According to Numerical Recipes (2nd edition) it makes little sense to take
+// the mean when the array is large enough (> 100 elements). Therefore
+// the default for takeEvenMean is False when the array has > 100 elements,
+// otherwise it is True.
+// <br>If "sorted"==True we assume the data is already sorted and we
+// compute the median directly. Otherwise the function GenSort::kthLargest
+// is used to find the median (kthLargest is about 6 times faster
+// than a full quicksort).
+// <group>
+template<class T> inline T median(const Array<T> &a, Bool sorted = False)
+    { return median (a, sorted, ToBool(a.nelements() <= 100)); }
+template<class T> T median(const Array<T> &a, Bool sorted, Bool takeEvenMean);
+// </group>
 
 //
 // Returns the complex conjugate of a complex array.
