@@ -1,5 +1,5 @@
 //# aipstype.h: Global initialization for standard aips++ types
-//# Copyright (C) 2000
+//# Copyright (C) 2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -46,6 +46,9 @@ typedef float Float;
 typedef double Double;
 typedef long double lDouble;
 
+#define ToBool /* empty */
+
+/*
 // This is an inline guaranteed-correct conversion function which converts
 // to Bool any type which has meaning in a C++ logical expression.
 // Will be removed at some stage now Bool is a typedef
@@ -58,5 +61,6 @@ inline Bool ToBool (int val) {return Bool(val!=0);}
 inline Bool ToBool (unsigned int val) {return Bool(val!=0);}
 inline Bool ToBool (double val) {return Bool(val!=0.0);}
 // </group>
+*/
 
 #endif
