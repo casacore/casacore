@@ -1290,8 +1290,8 @@ Bool ImageStatistics<T>::generateStorageImage()
 // Iterate through image and accumulate statistical sums
 
    Double meterMax = Double(latticeShape.product())/Double(pPixelIterator->cursor().shape().product());
-   ProgressMeter clock(0.0, meterMax, String("Generate Storage Image"), String(""), 
-                       String(""), String(""), True, max(1,Int(meterMax/10)));
+   ProgressMeter clock(0.0, meterMax, "Generate Storage Image", "Accumulation iterations", 
+                       "", "", True, max(1,Int(meterMax/20)));
    Double meterValue = 0.0;
 
    os_p << LogIO::NORMAL << "Begin accumulation" << LogIO::POST;
@@ -1304,8 +1304,8 @@ Bool ImageStatistics<T>::generateStorageImage()
       accumulate (nIter, nVirCursorIter, pPixelIterator->position(), 
                   pPixelIterator->cursor());
 
-      clock.update(meterValue);
       meterValue += 1.0;
+      clock.update(meterValue);
    }  
    needStorageImage_p = False;     
    doneSomeGoodPoints_p = False;
