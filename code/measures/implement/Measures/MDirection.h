@@ -89,7 +89,7 @@ template <class M, class MV> class ROScalarMeasColumn;
 //  <li>MDirection::TECLIPTIC -- ecliptic for true equator of date
 //  <li>MDirection::SUPERGAL -- supergalactic coordinates
 //  <li>MDirection::ITRF -- coordinates wrt ITRF Earth frame
-//  <li>MDirection::APP ---- apparent topocentric position
+//  <li>MDirection::TOPO -- apparent topocentric position
 //  <li>MDirection::MERCURY -- the planet: has no data attached
 //  <li>MDirection::VENUS
 //  <li>MDirection::MARS
