@@ -20,6 +20,17 @@ retrieve: Epoch: 1234::07:11:60.0000
   Reference for an Epoch with Type: LAST, Offset: Epoch: 50220::08:17:60.0000
 retrieve: Epoch: 1234::09:36:00.0000
   Reference for an Epoch with Type: LAST, Offset: Epoch: 50220::08:17:60.0000
+Reopening the table read-only and reading contents...
+retrieve: Epoch: 1234::00:00:00.0000
+  Reference for an Epoch with Type: LAST, Offset: Epoch: 50220::08:17:60.0000
+retrieve: Epoch: 1234::02:23:60.0000
+  Reference for an Epoch with Type: LAST, Offset: Epoch: 50220::08:17:60.0000
+retrieve: Epoch: 1234::04:48:00.0000
+  Reference for an Epoch with Type: LAST, Offset: Epoch: 50220::08:17:60.0000
+retrieve: Epoch: 1234::07:11:60.0000
+  Reference for an Epoch with Type: LAST, Offset: Epoch: 50220::08:17:60.0000
+retrieve: Epoch: 1234::09:36:00.0000
+  Reference for an Epoch with Type: LAST, Offset: Epoch: 50220::08:17:60.0000
 Filling the MPosition column MPosColumn
 put: Position: [14.138, 5.14582, 19.9659]
 put: Position: [14.7035, 5.35165, 20.7645]
@@ -44,4 +55,34 @@ retrieve: Epoch: 51234::09:36:00.0000
   Reference for an Epoch with Type: UTC, Offset: Epoch: 1234::07:11:60.0000
 retrieve: Epoch: 51234::12:00:00.0000
   Reference for an Epoch with Type: LAST, Offset: Epoch: 1234::09:36:00.0000
+Creating an MEpoch Array Column
+Null MEpochArrCol successfully attached
+Adding a vector to the column at row 0.
+elements: 10
+ndim(): 1
+new ms shape: [10, 2]
+array.nelements(): 20
+ev: Epoch: 0::13:26:60.0000 Reference for an Epoch with Type: TAI
+ew: Epoch: 0::13:26:60.0000 Reference for an Epoch with Type: TAI, Offset: Epoch: 51234::00:00:00.0000
+ev: Epoch: 0::14:26:60.0000 Reference for an Epoch with Type: TAI
+ew: Epoch: 0::14:26:60.0000 Reference for an Epoch with Type: TAI, Offset: Epoch: 51234::00:00:00.0000
+ev: Epoch: 0::15:27:00.0000 Reference for an Epoch with Type: TAI
+ew: Epoch: 0::15:27:00.0000 Reference for an Epoch with Type: TAI, Offset: Epoch: 51234::00:00:00.0000
+ev: Epoch: 0::16:26:60.0000 Reference for an Epoch with Type: TAI
+ew: Epoch: 0::16:26:60.0000 Reference for an Epoch with Type: TAI, Offset: Epoch: 51234::00:00:00.0000
+ev: Epoch: 0::17:26:60.0000 Reference for an Epoch with Type: TAI
+ew: Epoch: 0::17:26:60.0000 Reference for an Epoch with Type: TAI, Offset: Epoch: 51234::00:00:00.0000
+ev: Epoch: 0::18:27:00.0000 Reference for an Epoch with Type: TAI
+ew: Epoch: 0::18:27:00.0000 Reference for an Epoch with Type: TAI, Offset: Epoch: 51234::00:00:00.0000
+ev: Epoch: 0::19:26:60.0000 Reference for an Epoch with Type: TAI
+ew: Epoch: 0::19:26:60.0000 Reference for an Epoch with Type: TAI, Offset: Epoch: 51234::00:00:00.0000
+ev: Epoch: 0::20:26:60.0000 Reference for an Epoch with Type: TAI
+ew: Epoch: 0::20:26:60.0000 Reference for an Epoch with Type: TAI, Offset: Epoch: 51234::00:00:00.0000
+ev: Epoch: 0::21:27:00.0000 Reference for an Epoch with Type: TAI
+ew: Epoch: 0::21:27:00.0000 Reference for an Epoch with Type: TAI, Offset: Epoch: 51234::00:00:00.0000
+ev: Epoch: 0::22:26:60.0000 Reference for an Epoch with Type: TAI
+ew: Epoch: 0::22:26:60.0000 Reference for an Epoch with Type: TAI, Offset: Epoch: 51234::00:00:00.0000
+Open table again in RO mode to test ROArrayMeasColumn...
+Creating an MEpoch Array Column
+[Epoch: 0::13:26:60.0000, Epoch: 0::14:26:60.0000, Epoch: 0::15:27:00.0000, Epoch: 0::16:26:60.0000, Epoch: 0::17:26:60.0000, Epoch: 0::18:27:00.0000, Epoch: 0::19:26:60.0000, Epoch: 0::20:26:60.0000, Epoch: 0::21:27:00.0000, Epoch: 0::22:26:60.0000]
 Bye.
