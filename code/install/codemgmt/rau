@@ -3,7 +3,7 @@
 # rau: Update AIPS++ sources from the master
 #-----------------------------------------------------------------------------
 #
-#   Copyright (C) 1996,1999
+#   Copyright (C) 1996,1999,2001
 #   Associated Universities, Inc. Washington DC, USA.
 #
 #   This program is free software; you can redistribute it and/or modify
@@ -140,9 +140,14 @@
   REMOTE_USER="-l aips2mgr"
   REMOTE_CP="aips2mgr@aips2.nrao.edu"
 
+  if [ -e $HOME/.ssh/id_dsa ]; then
+     IDFILES="-i $HOME/.ssh/identity -i $HOME/.ssh/id_dsa"
+  else
+     IDFILES="-i $HOME/.ssh/identity"
+  fi
 # Find out which of these are files and which are directories.
-  ARSH="ssh -i $HOME/.ssh/identity -q -C aips2.nrao.edu $REMOTE_USER"
-  ARCP="scp -i $HOME/.ssh/identity -q -C $REMOTE_CP"
+  ARSH="ssh $IDFILES -q -C aips2.nrao.edu $REMOTE_USER"
+  ARCP="scp $IDFILES -q -C $REMOTE_CP"
   TARGLIST=`$ARSH RAU LIST $MSTRDIR $TARGLIST`
 
   FILES=
