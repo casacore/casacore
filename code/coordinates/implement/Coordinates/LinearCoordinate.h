@@ -114,7 +114,8 @@ public:
 
     // Convert a pixel position to a worl position or vice versa. Returns True
     // if the conversion succeeds, otherwise it returns False and
-    // <src>errorMessage()</src> contains an error message.
+    // <src>errorMessage()</src> contains an error message.  The output 
+    // vectors are appropriately resized.
     // <group>
     virtual Bool toWorld(Vector<Double> &world, 
 			 const Vector<Double> &pixel) const;
