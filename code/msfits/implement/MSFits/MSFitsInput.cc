@@ -502,7 +502,8 @@ void MSFitsInput::setupMeasurementSet(const String& MSFileName, Bool useTSM) {
   IncrementalStMan incrStMan ("ISMData");
   newtab.bindAll(incrStMan, True);
   // bind ANTENNA2 to the standardStMan as it changes every row
-  StandardStMan aipsStMan;
+  // set a reasonable bucketsize
+  StandardStMan aipsStMan(32768);
   newtab.bindColumn(MS::columnName(MS::ANTENNA2), aipsStMan);
   
   if (useTSM) {
