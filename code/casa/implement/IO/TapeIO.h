@@ -104,7 +104,7 @@ public:
 
   // The destructor will only close the file if the appropriate constructor, or
   // attach function, was used.
-  ~TapeIO();
+  virtual ~TapeIO();
     
   // Attach to the given file descriptor. The file descriptor will not be
   // closed when this class is destroyed.
