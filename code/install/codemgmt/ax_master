@@ -2221,3 +2221,7 @@
 11 152 sys rm libexec/quantitywidget.g
 11 152 sys rm libexec/measurewidget.g
 11 152 sys rm libexec/rangewidget.g
+11 154 src rm trial/implement/Widgets/test/tfilewidget.g
+11 154 src rm trial/implement/Widgets/test/tscalarwidget.g
+11 154 src rm trial/implement/Widgets/test/tquantitywidget.g
+11 154 src rm trial/implement/Widgets/test/tmeasurewidget.g
