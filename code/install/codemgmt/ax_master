@@ -3640,3 +3640,4 @@
 13 348 src mv atnf/implement/pks/FFTfilter.h atnf/apps/pksbandpass/FFTfilter.h
 13 348 src mv atnf/implement/pks/RobustLineFit.cc atnf/apps/pksbandpass/RobustLineFit.cc
 13 348 src mv atnf/implement/pks/RobustLineFit.h atnf/apps/pksbandpass/RobustLineFit.h
+13 349 src mv atnf/implement/pks/mbfits.h atnf/apps/pksmbfits/MBFITS.h
