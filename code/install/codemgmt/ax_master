@@ -2225,3 +2225,4 @@
 11 154 src rm trial/implement/Widgets/test/tscalarwidget.g
 11 154 src rm trial/implement/Widgets/test/tquantitywidget.g
 11 154 src rm trial/implement/Widgets/test/tmeasurewidget.g
+11 154 src mv trial/implement/Widgets/recbrowserwidget.g trial/implement/Widgets/recordbrowserwidget.g
