@@ -5332,3 +5332,17 @@
 15 036 src rm nrao/apps/gbtutils/commissioning.help
 15 036 sys rm libexec/commissioning.g
 15 036 sys rm libexec/commissioning_meta.g
+15 038 src rm aips/implement/Exceptions/test/tException.cc
+15 038 src rm aips/implement/Exceptions/test/tException.out
+15 038 src rm aips/implement/Exceptions/test/tException.run
+15 038 src rm aips/implement/Exceptions/test/tExcpA.cc
+15 038 src rm aips/implement/Exceptions/test/tExcpA.out
+15 038 src rm aips/implement/Exceptions/test/tExcpA.run
+15 038 src rm aips/implement/Exceptions/test/tExcpB.cc
+15 038 src rm aips/implement/Exceptions/test/tExcpB.out
+15 038 src rm aips/implement/Exceptions/test/tExcpB.run
+15 038 src rm aips/implement/Exceptions/test/tExcpC.cc
+15 038 src rm aips/implement/Exceptions/test/tExcpC.out
+15 038 src rm aips/implement/Exceptions/test/tExcpD.cc
+15 038 src rm aips/implement/Exceptions/test/tExcpD.out
+15 038 src rm aips/implement/Exceptions/test/tIndexError.cc
