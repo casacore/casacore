@@ -64,10 +64,10 @@ TryErrOpen
 AipsIO: already open
 TryAlrCls
 TryErrIn
-RegularFileIO: error in open or create of file tAipsIO_tmp.aa
+RegularFileIO: error in open or create of file tAipsIO_tmp.aa: No such file or directory
 TryScr
 TryErrDel
-RegularFileIO: error in open or create of file tAipsIO_tmp.aa
+RegularFileIO: error in open or create of file tAipsIO_tmp.aa: No such file or directory
 TryOut
 TryDel
 TryApp
@@ -76,7 +76,7 @@ TryErrNorep
 RegularFileIO: new file tAipsIO_tmp.aa already exists
 TryDel
 TryErrUpd
-RegularFileIO: error in open or create of file tAipsIO_tmp.aa
+RegularFileIO: error in open or create of file tAipsIO_tmp.aa: No such file or directory
 TryNew
 TryIn
 TryScr
