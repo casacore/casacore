@@ -2023,3 +2023,4 @@
 08 206 src rm aips/implement/Functionals/BinaryArithEnums.h
 08 206 src rm aips/implement/Functionals/test/tBinaryOperation.cc
 08 208 src mv trial/implement/Arrays/MaskArrMath2.cc aips/implement/Arrays/MaskArrMath2.cc
+08 209 src mv trial/implement/Lattices/test/tArrayLattice.cc trial/implement/Lattices/test/tArrayLatticeOld.cc
