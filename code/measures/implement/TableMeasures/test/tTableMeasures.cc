@@ -1,5 +1,5 @@
 //# tTableMeasures.cc: test program for the TableMeasures class.
-//# Copyright (C) 1994,1995,1996,1997
+//# Copyright (C) 1994,1995,1996,1997,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -192,7 +192,7 @@ int main(void)
 	ROMEpochScaCol timeColRead(tab, "TimeOffset");
 	for (i=0; i<tabRows; i++) {
 	    if (timeColRead.isDefined(i)) {
-		timeColRead.get(tm, i);
+		timeColRead.get(i, tm);
 	    	cout << "retrieve: " << tm << endl;
 		cout << "  " << tm.getRef() << endl;
     	    } else {
@@ -258,7 +258,7 @@ int main(void)
 	meCol.put(4, me);
 	
 	for (uInt i=0; i<tabRows; i++) {
-	    meCol.get(me, i);
+	    meCol.get(i, me);
 	    cout << "retrieve: " << me << endl;
 	    cout << "  " << me.getRef() << endl;
 	}
