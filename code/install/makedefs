@@ -1202,3 +1202,9 @@ megalink:
 	    done;                    \
 	fi
 
+megaunlink:
+	cd $(AIPSARCH)/bin;          \
+	for i in measures quanta image ms misc imager calibrater componentlist deconvolver; do \
+		if [ -h $$i ]; then rm -f $$i; fi \
+	done;                    \
+
