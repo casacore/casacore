@@ -29,10 +29,6 @@
 #define AIPS_TABLEMEASDESC_H
 
 
-#if defined(_AIX)
-#pragma implementation ("TableMeasDesc.cc")
-#endif
-
 //# Includes
 #include <trial/TableMeasures/TableMeasDescBase.h>
 
