@@ -3,7 +3,7 @@
 # mkinst: Generate template instantiation files from a list
 #-----------------------------------------------------------------------------
 #
-#   Copyright (C) 1996,1997
+#   Copyright (C) 1996,1997,2000
 #   Associated Universities, Inc. Washington DC, USA.
 #
 #   This program is free software; you can redistribute it and/or modify
@@ -37,6 +37,9 @@
 # The format of the entries in the templates file is
 #
 #   <ident> <.cc file> <.h file> [<extra .h files>] <template declaration>
+#
+# The system accepts any name consisting of lowercase letters also as 
+# include files.
 #
 # The 
 #   <ident> <.cc file> <.h file> [<extra .h files>] 
@@ -194,7 +197,7 @@
       for TOKEN
       do
 	case $TOKEN in
-        *.cc | *.h)
+        *.cc | *.h | *[a-z][a-z][a-z] | *646)
 	  echo "#include <$TOKEN>" >> tmp1.$$
 	  ;;
         *)
@@ -288,14 +291,14 @@
       for TOKEN
       do
 	case $TOKEN in
-        *.cc | *.h)
-	  echo "#include <$TOKEN>" >> tmp1.$$
-	  ;;
         template)
 	  echo "$*;" >> tmp1.$$
           shift
           [ "$VERBOSE" ] && echo "$*"
           break
+	  ;;
+        *.cc | *.h | *[a-z][a-z][a-z] | *646)
+	  echo "#include <$TOKEN>" >> tmp1.$$
 	  ;;
         *)
           echo "   Bad entry for ${TFILE}:" 1>&2
