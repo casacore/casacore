@@ -48,9 +48,7 @@ MSAntennaIndex::MSAntennaIndex(const MSAntenna& antenna)
 //
   // Generate an array of antenna id's, used in later queries
   nrows_p = msAntennaCols_p.nrow();
-  cout << " nrows " << nrows_p << endl;
   antennaIds_p.resize(nrows_p);
-  cout << " ndimy "  << antennaIds_p.ndim() << endl;
   indgen(antennaIds_p);
 };
 
