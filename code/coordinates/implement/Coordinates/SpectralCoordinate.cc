@@ -222,13 +222,7 @@ SpectralCoordinate::SpectralCoordinate(const SpectralCoordinate &other)
   epoch_p(other.epoch_p)
 {
    pVelocityMachine_p = new VelocityMachine(*(other.pVelocityMachine_p));
-   Int ok = makeConversionMachines(type_p, conversionType_p, epoch_p, position_p, direction_p);
-   if (ok==-1) {
-
-// Trial conversion failed
-
-      conversionType_p = type_p;
-   }
+   makeConversionMachines(type_p, conversionType_p, epoch_p, position_p, direction_p);
 }
 
 SpectralCoordinate &SpectralCoordinate::operator=(const SpectralCoordinate &other)
@@ -247,13 +241,7 @@ SpectralCoordinate &SpectralCoordinate::operator=(const SpectralCoordinate &othe
         direction_p = other.direction_p;
         position_p = other.position_p;
         epoch_p = other.epoch_p;
-        Int ok = makeConversionMachines(type_p, conversionType_p, epoch_p, position_p, direction_p);
-        if (ok==-1) {
-
-// Trial conversion failed
-
-           conversionType_p = type_p;
-        }
+        makeConversionMachines(type_p, conversionType_p, epoch_p, position_p, direction_p);
 //
         deleteVelocityMachine();
         if (other.pVelocityMachine_p) {
@@ -419,16 +407,18 @@ Bool SpectralCoordinate::setReferenceConversion (MFrequency::Types conversionTyp
 
    if (conversionType_p==conversionType) return True;
 //
-   conversionType_p = conversionType;
-   Int ok = makeConversionMachines(type_p, conversionType_p, epoch, position, direction);
+   Int ok = makeConversionMachines(type_p, conversionType, epoch, position, direction);
    if (ok==-1) {
 
-// Trial conversion failed
+// Trial conversion failed.  The machines will be deleted so we must set the
+// conversion machines back to what they were before thi calamity.
 
-      conversionType_p = type_p;
+      makeConversionMachines(type_p, conversionType_p, epoch_p, 
+                             position_p, direction_p);
       return False;
    }
 //
+   conversionType_p = conversionType;
    epoch_p = epoch;
    position_p = position;
    direction_p = direction;   
@@ -808,16 +798,10 @@ SpectralCoordinate *SpectralCoordinate::restore(const RecordInterface &container
           retval->epoch_p = mh.asMEpoch();
        }
 //
-       Int ok = retval->makeConversionMachines(retval->type_p, retval->conversionType_p,
-                                               retval->epoch_p, 
-                                               retval->position_p, 
-                                               retval->direction_p);
-       if (ok==-1) {
-
-// Trial conversion failed
- 
-          retval->conversionType_p = retval->type_p;
-       }
+       retval->makeConversionMachines(retval->type_p, retval->conversionType_p,
+                                      retval->epoch_p, 
+                                      retval->position_p, 
+                                      retval->direction_p);
     } else {
 
 // Old SpectralCoordinates won't have this state.  The conversion
