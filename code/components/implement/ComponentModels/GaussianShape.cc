@@ -307,8 +307,10 @@ void GaussianShape::setParameters(const Vector<Double> & newParms) {
   AlwaysAssert(newParms.nelements() == nParameters(), AipsError);
   DebugAssert(newParms(0) >= newParms(1), AipsError);
   DebugAssert(abs(newParms(2)) <= C::_2pi, AipsError);
-  itsShape.setMajorAxis(newParms(0));
-  itsShape.setMinorAxis(newParms(1));
+  Vector<Double> width(2);
+  width(0) = newParms(0);
+  width(1) = newParms(1);
+  itsShape.setWidth(width);
   itsShape.setPA(newParms(2));
   // Adjusting the width normally keeps the height constant and modifies the
   // flux. Modify this behaviour by restoring the flux
