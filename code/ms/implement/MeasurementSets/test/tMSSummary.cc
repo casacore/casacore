@@ -39,7 +39,8 @@ int main()
     cout << "--------------------------------------" << endl;
 
 
-    // Open the test MS
+    // Open the test MS.
+    // !!! Make sure that MSName points to a local MeasurementSet!!!
     String MSName("/home/rrusk/testing/2/3C273XC1.ms");
     MeasurementSet ms(MSName, Table::Old);
 
