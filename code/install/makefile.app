@@ -2,7 +2,7 @@
 # makefile.app: Generic AIPS++ applications makefile
 #-----------------------------------------------------------------------------
 #
-#   Copyright (C) 1992-1999,2000
+#   Copyright (C) 1992-1999,2000,2002
 #   Associated Universities, Inc. Washington DC, USA.
 #
 #   This program is free software; you can redistribute it and/or modify
@@ -64,7 +64,7 @@ AIPSIMPS := $(filter-out $(THISAPP).cc,$(filter %.cc,$(AIPSSRCS)))
 PGMRIMPS := $(filter-out $(THISAPP).cc,$(sort $(AIPSIMPS) $(wildcard *.cc)))
 
 # Glish scripts.
-LIBEXECS := $(filter %.g %.gp, $(AIPSSRCS))
+LIBEXECS := $(filter %.g %.gp %.gm, $(AIPSSRCS))
 
 # Glish script icons.
 LIBICONS := $(filter %.xbm, $(AIPSSRCS))
