@@ -5933,3 +5933,4 @@
 16 341 src mv trial/implement/Functionals/NQCombi2Function.cc aips//implement/Functionals/NQCombi2Function.cc
 16 341 src mv trial/implement/Functionals/NQCombiFunction.cc aips//implement/Functionals/NQCombiFunction.cc
 16 341 src mv trial/implement/Functionals/NQCombiFunction.h aips//implement/Functionals/NQCombiFunction.h
+16 341 src mv trial/implement/Functionals/NQCombiParam.cc aips//implement/Functionals/NQCombiParam.cc
