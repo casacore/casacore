@@ -1072,7 +1072,12 @@ ImageInfo ImageFITSConverter::getImageInfo (RecordInterface& header)
 {
    ImageInfo ii;
    Vector<String> errors;
-   ii.fromFITS (errors, header);
+   Bool ok = ii.fromFITS (errors, header);
+   if (!ok) {
+      LogIO log(LogOrigin("ImageFITSConverter::getImageInfo", "ImageToFITS", WHERE));
+      log << errors << endl;
+   }
+//
    FITSKeywordUtil::removeKeywords(header, ImageInfo::keywordNamesFITS());
 //
    return ii;
