@@ -139,12 +139,12 @@ PagedArray<T>::PagedArray (Table& file, const String& columnName,
 }
 
 template<class T>
-PagedArray<T>::PagedArray (const PagedArray<T> &other)
+PagedArray<T>::PagedArray (const PagedArray<T>& other)
 : itsTable      (other.itsTable),
   itsColumnName (other.itsColumnName), 
   itsRowNumber  (other.itsRowNumber),
-  itsROArray    (other.itsROArray),
   itsRWArray    (other.itsRWArray),
+  itsROArray    (other.itsROArray),
   itsAccessor   (other.itsAccessor)
 {
   DebugAssert(ok() == True, AipsError);
@@ -361,7 +361,7 @@ template<class T>
 IPosition PagedArray<T>::niceCursorShape (uInt maxPixels) const
 {
   IPosition retval = tileShape();
-  if (retval.product() > maxPixels) {
+  if (retval.product() > Int(maxPixels)) {
     retval = Lattice<T>::niceCursorShape(maxPixels);
   }
   return retval;
@@ -403,7 +403,7 @@ void PagedArray<T>::clearCache()
 }
 
 template<class T>
-void PagedArray<T>::showCacheStatistics (ostream &os) const
+void PagedArray<T>::showCacheStatistics (ostream& os) const
 {
   itsAccessor.showCacheStatistics (os);
 }
@@ -420,7 +420,7 @@ T PagedArray<T>::getAt(const IPosition& where) const
 }
 
 template<class T>
-void PagedArray<T>::putAt (const T &value, const IPosition& where)
+void PagedArray<T>::putAt (const T& value, const IPosition& where)
 {
   const IPosition shape(ndim(),1);
   Array<T> buffer(shape);
@@ -499,15 +499,15 @@ void PagedArray<T>::makeArray (const TiledShape& shape)
   // if table doesn't have enough rows to match our row number
   // then add rows and fill them with empty arrays
   const IPosition emptyShape(ndim, 1);
-  const Int rows = itsTable.nrow() - 1;
-  if (rows < itsRowNumber) {
-    itsTable.addRow(itsRowNumber-rows);
-    for (Int r = rows+1; r < itsRowNumber; r++) {
+  const uInt rows = itsTable.nrow();
+  if (rows <= itsRowNumber) {
+    itsTable.addRow (itsRowNumber-rows+1);
+    for (uInt r = rows; r < itsRowNumber; r++) {
       itsRWArray.setShape(r, emptyShape);
     }
   }
   if (newColumn) {
-    for (Int r = 0; r <= rows; r++) {
+    for (uInt r = 0; r < rows; r++) {
       if (r != itsRowNumber) {
 	itsRWArray.setShape(r, emptyShape);
       }
