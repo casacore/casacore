@@ -1,5 +1,5 @@
 //# MSConcat.h: A class for concatenating MeasurementSets.
-//# Copyright (C) 2000,2002
+//# Copyright (C) 2000,2002,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
