@@ -4699,3 +4699,4 @@
 14 304 src mv trial/apps/newsdfits2ms/newsdfits2ms.cc trial/apps/sdfits2ms/sdfits2ms.cc
 14 304 src mv trial/apps/newsdfits2ms/newsdfits2ms.g trial/apps/sdfits2ms/sdfits2ms.g
 14 304 src mv trial/apps/newsdfits2ms/newsdfits2ms_meta.g trial/apps/sdfits2ms/sdfits2ms_meta.g
+14 304 src mv trial/apps/newsdfits2ms/templates trial/apps/sdfits2ms/templates
