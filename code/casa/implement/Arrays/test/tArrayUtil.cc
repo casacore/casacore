@@ -31,6 +31,8 @@
 #include <aips/Arrays/Matrix.h>
 #include <aips/Arrays/Vector.h>
 #include <aips/Utilities/Regex.h>
+#include <aips/OS/Timer.h>
+
 
 // <summary>
 // Test of functions in ArrayUtil.h.
@@ -42,8 +44,9 @@
 // proper detection of memory leaks using tools like TestCenter.
 
 
-Bool testVectorToString (Bool)
+Bool testStringToVector (Bool)
 {
+    cout << "stringToVector..." << endl;
     Bool ok = True;
 
     Vector<String> vec1 = stringToVector ("");
@@ -82,8 +85,9 @@ Bool testVectorToString (Bool)
 }
 
 
-Bool testVectorToStringRegex (Bool)
+Bool testStringToVectorRegex (Bool)
 {
+    cout << "stringToVectorRegex..." << endl;
     // Test using multiple spaces and a single comma as delimiter.
     Regex delim(" *, *");
     Bool ok = True;
@@ -145,6 +149,7 @@ Bool testVectorToStringRegex (Bool)
 
 Bool testConcatenateArray (Bool doExcp)
 {
+    cout << "concatenateArray..." << endl;
     Bool ok = True;
     Matrix<Int> matrix1 (3u,4u);
     Matrix<Int> matrix2 (3u,5u);
@@ -187,11 +192,15 @@ Bool testConcatenateArray (Bool doExcp)
     
     if (doExcp) {
 	try {
-	    concatenateArray (matrix1, matrix2);
+	    concatenateArray (matrix1, matrix3);
+	    ok = False;             // should not get here
+	    cout << "1st concatenateArray exception not thrown" << endl;
 	} catch (ArrayConformanceError x) {
 	} 
 	try {
 	    concatenateArray (matrix1, vector1);
+	    ok = False;             // should not get here
+	    cout << "2nd concatenateArray exception not thrown" << endl;
 	} catch (ArrayConformanceError x) {
 	} 
     }
@@ -200,26 +209,201 @@ Bool testConcatenateArray (Bool doExcp)
 }
 
 
-main (int argc)
+Bool testReorderArray (Bool doExcp)
 {
-    Bool ok = True;
-    try {
-	if (! testVectorToString ( (argc < 2))) {
-	    ok = False;
+  Bool ok = True;
+  {
+    cout << "arrayReorder 2D..." << endl;
+    IPosition shape(2,3,4);
+    Array<Int> arr(shape);
+    indgen(arr);
+    for (Int j0=0; j0<2; j0++) {
+      for (Int j1=0; j1<2; j1++) {
+	if (j1 != j0) {
+	  IPosition axisOrder(2, j0, j1);
+	  Array<Int> res = reorderArray (arr, axisOrder);
+	  const IPosition& resShape = res.shape();
+	  IPosition posOld(2);
+	  IPosition posNew(2);
+	  for (Int i1=0; i1<resShape(1); i1++) {
+	    posNew(1) = i1;
+	    posOld(axisOrder(1)) = i1;
+	    for (Int i0=0; i0<resShape(0); i0++) {
+	      posNew(0) = i0;
+	      posOld(axisOrder(0)) = i0;
+	      if (arr(posOld) != res(posNew)) {
+		ok = False;
+		cout << "for shape " << shape << resShape
+		     << ", axisorder " << axisOrder << endl;
+		cout << " result is " << res << endl;
+	      }
+	    }
+	  }
 	}
-	if (! testVectorToStringRegex ( (argc < 2))) {
-	    ok = False;
-	}
-	if (! testConcatenateArray( (argc < 2))) {
-	    ok = False;
-	}
-    } catch (AipsError x) {
-	cout << "Caught an exception: " << x.getMesg() << endl;
-	ok = False;
-    } 
-    if (!ok) {
-	return 1;
+      }
     }
-    cout << "OK" << endl;
-    return 0;               // successfully executed
+  }
+  {
+    cout << "arrayReorder 3D..." << endl;
+    IPosition shape(3,3,4,5);
+    Array<Int> arr(shape);
+    indgen(arr);
+    for (Int j0=0; j0<3; j0++) {
+      for (Int j1=0; j1<3; j1++) {
+	if (j1 != j0) {
+	  for (Int j2=0; j2<3; j2++) {
+	    if (j2 != j0  &&  j2 != j1) {
+	      IPosition axisOrder(3, j0, j1, j2);
+	      Array<Int> res = reorderArray (arr, axisOrder);
+	      const IPosition& resShape = res.shape();
+	      IPosition posOld(3);
+	      IPosition posNew(3);
+	      for (Int i2=0; i2<resShape(2); i2++) {
+		posNew(2) = i2;
+		posOld(axisOrder(2)) = i2;
+		for (Int i1=0; i1<resShape(1); i1++) {
+		  posNew(1) = i1;
+		  posOld(axisOrder(1)) = i1;
+		  for (Int i0=0; i0<resShape(0); i0++) {
+		    posNew(0) = i0;
+		    posOld(axisOrder(0)) = i0;
+		    if (arr(posOld) != res(posNew)) {
+		      ok = False;
+		      cout << "for shape " << shape << resShape
+			   << ", axisorder " << axisOrder << endl;
+		      cout << " result is " << res << endl;
+		    }
+		  }
+		}
+	      }
+	    }
+	  }
+	}
+      }
+    }
+  }
+  {
+    cout << "arrayReorder 4D..." << endl;
+    IPosition shape(4,3,4,5,6);
+    Array<Int> arr(shape);
+    indgen(arr);
+    for (Int j0=0; j0<4; j0++) {
+      for (Int j1=0; j1<4; j1++) {
+	if (j1 != j0) {
+	  for (Int j2=0; j2<4; j2++) {
+	    if (j2 != j0  &&  j2 != j1) {
+	      for (Int j3=0; j3<4; j3++) {
+		if (j3 != j0  &&  j3 != j1  &&  j3 != j2) {
+		  IPosition axisOrder(4, j0, j1, j2, j3);
+		  Array<Int> res = reorderArray (arr, axisOrder);
+		  const IPosition& resShape = res.shape();
+		  IPosition posOld(4);
+		  IPosition posNew(4);
+		  for (Int i3=0; i3<resShape(3); i3++) {
+		    posNew(3) = i3;
+		    posOld(axisOrder(3)) = i3;
+		    for (Int i2=0; i2<resShape(2); i2++) {
+		      posNew(2) = i2;
+		      posOld(axisOrder(2)) = i2;
+		      for (Int i1=0; i1<resShape(1); i1++) {
+			posNew(1) = i1;
+			posOld(axisOrder(1)) = i1;
+			for (Int i0=0; i0<resShape(0); i0++) {
+			  posNew(0) = i0;
+			  posOld(axisOrder(0)) = i0;
+			  if (arr(posOld) != res(posNew)) {
+			    ok = False;
+			    cout << "for shape " << shape << resShape
+				 << ", axisorder " << axisOrder << endl;
+			    cout << " result is " << res << endl;
+			  }
+			}
+		      }
+		    }
+		  }
+		}
+	      }
+	    }
+	  }
+	}
+      }
+    }
+  }
+  {
+    cout << "arrayReorder 10 timings on [30,40,50,60] ..." << endl;
+    IPosition shape(4,30,40,50,60);
+    Array<Int> arr(shape);
+    indgen(arr);
+    {
+      Timer tim;
+      for (Int i=0; i<10; i++) {
+	reorderArray (arr, IPosition(1,0));
+      }
+      tim.show ("0,1,2,3");
+    }
+    {
+      Timer tim;
+      for (Int i=0; i<10; i++) {
+	reorderArray (arr, IPosition(4,0,1,3,2));
+      }
+      tim.show ("0,1,3,2");
+    }
+    {
+      Timer tim;
+      for (Int i=0; i<10; i++) {
+	reorderArray (arr, IPosition(4,0,2,1,3));
+      }
+      tim.show ("0,2,1,3");
+    }
+    {
+      Timer tim;
+      for (Int i=0; i<10; i++) {
+	reorderArray (arr, IPosition(4,1,3,2,0));
+      }
+      tim.show ("1,3,2,0");
+    }
+  }
+  if (doExcp) {
+    try {
+      reorderArray (Array<Int>(IPosition(2,3,4)), IPosition(2,1,1));
+      ok = False;        // should not get here
+      cout << "1st reorderArray exception not thrown" << endl;
+    } catch (AipsError x) {
+    } 
+    try {
+      reorderArray (Array<Int>(IPosition(2,3,4)), IPosition(2,1,2));
+      ok = False;        // should not get here
+      cout << "2nd reorderArray exception not thrown" << endl;
+    } catch (AipsError x) {
+    } 
+  }
+  return ok;
+}
+
+
+int main (int argc)
+{
+  Bool ok = True;
+  try {
+    if (! testStringToVector ( (argc < 2))) {
+      ok = False;
+    }
+    if (! testStringToVectorRegex ( (argc < 2))) {
+      ok = False;
+    }
+    if (! testConcatenateArray( (argc < 2))) {
+      ok = False;
+    }
+    if (! testReorderArray( (argc < 2))) {
+      ok = False;
+    }
+  } catch (AipsError x) {
+    cout << "Caught an exception: " << x.getMesg() << endl;
+    ok = False;
+  } 
+  if (!ok) {
+    return 1;
+  }
+  cout << "OK" << endl;
+  return 0;               // successfully executed
 }
