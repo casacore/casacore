@@ -1,0 +1,24 @@
+
+change id: 0136
+ author:   Raymond Plante
+ date:     2003/03/26
+ avers:    1.8
+ area:     Library
+ package:  aips
+ module:   Functionals
+ type:     Code
+ category: Change
+ summary:  added "Mode" facility to the abstract Function interface
+The "Mode" facility provides a generic interface for getting and setting
+function-specific state outside of the "Parameter" mechanism.  This state
+is passed in the form of a Record whose contents are defined by the specific
+implementations of the Function.  This is useful for data that do not fit
+in well as Parameters, e.g. because they are not of the same type as the 
+Range or Domain.  This facility is used by the FunctionHolder class to pass
+such special state between C++ and Glish.
+
+Chebyshev was updated to make use of the Mode facility.  The special state
+passed in this way includes the interval of interest, the out-of-interval
+behavior, and the default value.  
+
+The Mode facility may be replaced with a different mechanism in the future.
