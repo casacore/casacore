@@ -31,6 +31,7 @@
 
 //# Includes
 #include <aips/Tables/TSMCube.h>
+#include <aips/Utilities/DataType.h>
 
 //# Forward Declarations
 class TiledFileHelper;
@@ -71,11 +72,11 @@ class Slicer;
 // <example>
 // <srcblock>
 //  // Define the object which also opens the file.
-//  // The array starts at offset 2880.
-//  TiledFileAccess<Float> tfa ("fits.file", 2880, IPosition(2,512,512),
-//                              IPosition(2,512,1));
+//  // The (float) array starts at offset 2880.
+//  TiledFileAccess tfa ("fits.file", 2880, IPosition(2,512,512),
+//                       IPosition(2,512,1), TpFloat);
 //  // Get all the data.
-//  Array<Float> data = tfa.get (Slicer(IPosition(2,0,0), tfa.shape()));
+//  Array<Float> data = tfa.getFloat (Slicer(IPosition(2,0,0), tfa.shape()));
 // </srcblock>
 // </example>
 
@@ -84,14 +85,14 @@ class Slicer;
 //# </todo>
 
 
-template<class T> class TiledFileAccess
+class TiledFileAccess
 {
 public:
   // Create a TiledFileAccess object.
   TiledFileAccess (const String& fileName, Int64 fileOffset,
 		   const IPosition& shape, const IPosition& tileShape,
-		   uInt maximumCacheSize=0, Bool writable=False,
-		   Bool canonical=True);
+		   DataType dataTtpe, uInt maximumCacheSize=0,
+		   Bool writable=False, Bool canonical=True);
 
   ~TiledFileAccess();
 
@@ -99,15 +100,35 @@ public:
   Bool isWritable() const
     { return itsWritable; }
 
+  DataType dataType() const
+    { return itsDataType; }
+
   // Get part of the array.
   // The Array object is resized if needed.
   // <group>
-  Array<T> get (const Slicer& section);
-  void get (Array<T>&, const Slicer& section);
+  Array<Short>    getShort    (const Slicer& section);
+  Array<Int>      getInt      (const Slicer& section);
+  Array<Float>    getFloat    (const Slicer& section);
+  Array<Double>   getDouble   (const Slicer& section);
+  Array<Complex>  getComplex  (const Slicer& section);
+  Array<DComplex> getDComplex (const Slicer& section);
+  void get (Array<Short>&, const Slicer& section);
+  void get (Array<Int>&, const Slicer& section);
+  void get (Array<Float>&, const Slicer& section);
+  void get (Array<Double>&, const Slicer& section);
+  void get (Array<Complex>&, const Slicer& section);
+  void get (Array<DComplex>&, const Slicer& section);
   // </group>
 
   // Put part of the array.
-  void put (const Array<T>&, const Slicer& section);
+  // <group>
+  void put (const Array<Short>&, const Slicer& section);
+  void put (const Array<Int>&, const Slicer& section);
+  void put (const Array<Float>&, const Slicer& section);
+  void put (const Array<Double>&, const Slicer& section);
+  void put (const Array<Complex>&, const Slicer& section);
+  void put (const Array<DComplex>&, const Slicer& section);
+  // </group>
 
   // Flush the cache.
   void flush()
@@ -181,6 +202,7 @@ private:
   TiledFileHelper* itsTSM;
   uInt             itsLocalPixelSize;
   Bool             itsWritable;
+  DataType         itsDataType;
 };
 
 

@@ -60,8 +60,8 @@ int main()
       arr.freeStorage (dataPtr, deleteIt);
     }
     try {
-      TiledFileAccess<Float> tfa ("tTiledFileAccess_tmp.dat", 0, shape,
-				  IPosition(2,16,1));
+      TiledFileAccess tfa ("tTiledFileAccess_tmp.dat", 0, shape,
+			   IPosition(2,16,1), TpFloat);
       AlwaysAssertExit (tfa.shape() == shape);
       AlwaysAssertExit (tfa.tileShape() == IPosition(2,16,1));
       AlwaysAssertExit (! tfa.isWritable());
@@ -70,8 +70,8 @@ int main()
       tfa.setMaximumCacheSize (100000);
       AlwaysAssertExit (tfa.maximumCacheSize() == 100000);
       
-      AlwaysAssertExit (allEQ (arr, tfa.get (Slicer(IPosition(2,0,0),
-						    shape))));
+      AlwaysAssertExit (allEQ (arr, tfa.getFloat (Slicer(IPosition(2,0,0),
+							 shape))));
       tfa.showCacheStatistics (cout);
       cout << tfa.cacheSize() << endl;
     } catch (AipsError x) {
@@ -99,8 +99,8 @@ int main()
     }
     try {
       // The array starts at offset off2.
-      TiledFileAccess<Float> tfa ("tTiledFileAccess_tmp.dat", off2, shape,
-				  IPosition(2,16,1), 100, False, False);
+      TiledFileAccess tfa ("tTiledFileAccess_tmp.dat", off2, shape,
+			   IPosition(2,16,1), TpFloat, 100, False, False);
       AlwaysAssertExit (tfa.shape() == shape);
       AlwaysAssertExit (tfa.tileShape() == IPosition(2,16,1));
       AlwaysAssertExit (! tfa.isWritable());
@@ -109,8 +109,8 @@ int main()
       tfa.setMaximumCacheSize (100000);
       AlwaysAssertExit (tfa.maximumCacheSize() == 100000);
       
-      AlwaysAssertExit (allEQ (arr, tfa.get (Slicer(IPosition(2,0,0),
-						    shape))));
+      AlwaysAssertExit (allEQ (arr, tfa.getFloat (Slicer(IPosition(2,0,0),
+							 shape))));
       tfa.showCacheStatistics (cout);
       cout << tfa.cacheSize() << endl;
     } catch (AipsError x) {
@@ -139,27 +139,27 @@ int main()
     }
     try {
       Slicer slicer (IPosition(2,0,0), shape);
-      TiledFileAccess<DComplex> tfac ("tTiledFileAccess_tmp.dat", 0, shape,
-				      IPosition(2,17,1), 0, True);
-      AlwaysAssertExit (allEQ (arr, tfac.get (slicer)));
+      TiledFileAccess tfac ("tTiledFileAccess_tmp.dat", 0, shape,
+			    IPosition(2,17,1), TpDComplex, 0, True);
+      AlwaysAssertExit (allEQ (arr, tfac.getDComplex (slicer)));
       AlwaysAssertExit (tfac.shape() == shape);
       AlwaysAssertExit (tfac.tileShape() == IPosition(2,17,1));
-      TiledFileAccess<DComplex> tfal ("tTiledFileAccess_tmp.dat", off2, shape,
-				      IPosition(2,17,1), 0, True, False);
-      AlwaysAssertExit (allEQ (arr, tfal.get (slicer)));
-      tfac.put (tfac.get(slicer) + DComplex(1,2), slicer);
-      tfal.put (tfal.get(slicer) + DComplex(3,5), slicer);
+      TiledFileAccess tfal ("tTiledFileAccess_tmp.dat", off2, shape,
+			    IPosition(2,17,1), TpDComplex, 0, True, False);
+      AlwaysAssertExit (allEQ (arr, tfal.getDComplex (slicer)));
+      tfac.put (tfac.getDComplex(slicer) + DComplex(1,2), slicer);
+      tfal.put (tfal.getDComplex(slicer) + DComplex(3,5), slicer);
     } catch (AipsError x) {
       cout << "Exception: " << x.getMesg() << endl;
       return 1;
     }
     try {
-      TiledFileAccess<DComplex> tfac ("tTiledFileAccess_tmp.dat", 0, shape,
-				      IPosition(2,17,1), 0, True);
+      TiledFileAccess tfac ("tTiledFileAccess_tmp.dat", 0, shape,
+			    IPosition(2,17,1), TpDComplex, 0, True);
       AlwaysAssertExit (tfac.shape() == shape);
       AlwaysAssertExit (tfac.tileShape() == IPosition(2,17,1));
-      TiledFileAccess<DComplex> tfal ("tTiledFileAccess_tmp.dat", off2, shape,
-				      IPosition(2,17,1), 0, True, False);
+      TiledFileAccess tfal ("tTiledFileAccess_tmp.dat", off2, shape,
+			    IPosition(2,17,1), TpDComplex, 0, True, False);
       IPosition st(2,0,0);
       IPosition end(2,15,0);
       IPosition leng(2,16,1);
@@ -167,9 +167,9 @@ int main()
 	st(1) = i;
 	end(1) = i;
 	AlwaysAssertExit (allEQ (arr(st,end) + DComplex(1,2),
-				 tfac.get (Slicer(st,leng))));
+				 tfac.getDComplex (Slicer(st,leng))));
 	AlwaysAssertExit (allEQ (arr(st,end) + DComplex(3,5),
-				 tfal.get (Slicer(st,leng))));
+				 tfal.getDComplex (Slicer(st,leng))));
       }
       cout << end << endl;
     } catch (AipsError x) {
