@@ -5980,3 +5980,4 @@
 17 000 src mv trial/implement/Functionals/NQChebyshev.cc aips/implement/Functionals/NQChebyshev.cc
 17 000 src mv trial/implement/Functionals/NQChebyshevParam.cc aips/implement/Functionals/NQChebyshevParam.cc
 17 000 src mv trial/implement/Functionals/NQChebyshevParam.h aips/implement/Functionals/NQChebyshevParam.h
+17 000 src mv trial/implement/Functionals/NQSimButterworthBandpass.h aips/implement/Functionals/NQSimButterworthBandpass.h
