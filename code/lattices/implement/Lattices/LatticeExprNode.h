@@ -1,5 +1,5 @@
 //# LatticeExprNode.h:  LatticeExprNode.h
-//# Copyright (C) 1997,1998,1999,2000,2001,2002
+//# Copyright (C) 1997,1998,1999,2000,2001,2002,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -338,6 +338,20 @@ class LatticeExprNode
    friend LatticeExprNode length (const LatticeExprNode& expr,
 				  const LatticeExprNode& axis);
 
+// 2-argument function telling per pixel if its index on the given axis
+// is contained in the 2nd argument. The 2nd argument should be a boolean
+// vector where True means that the index is contained.
+// For indices >= vector_length, the 2nd argument defaults to False.
+// Results in a Bool array.
+// <note role=caution>
+// Axes start counting at 1.
+// If the axis is a number < 1 or > ndim, an exception is thrown.
+// </note>
+// <group>
+   friend LatticeExprNode indexin (const LatticeExprNode& axis,
+				   const LatticeExprNode& indexFlags);
+// </group>
+
 // Test if a value is a NaN.
    friend LatticeExprNode isNaN (const LatticeExprNode& expr);
 
@@ -510,6 +524,15 @@ public:
    Complex getComplex() const;
    DComplex getDComplex() const;
    Bool getBool() const;
+// </group>
+
+// Evaluate the expression (in case it is a constant array).
+// <group>
+   Array<Float> getArrayFloat() const;
+   Array<Double> getArrayDouble() const;
+   Array<Complex> getArrayComplex() const;
+   Array<DComplex> getArrayDComplex() const;
+   Array<Bool> getArrayBool() const;
 // </group>
 
 // Get the data type of the expression.
