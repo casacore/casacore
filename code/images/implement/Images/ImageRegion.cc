@@ -33,7 +33,6 @@
 #include <trial/Images/WCComplement.h>
 #include <trial/Lattices/LCRegion.h>
 #include <trial/Lattices/LCSlicer.h>
-#include <trial/Lattices/LCExtension.h>
 #include <trial/Lattices/RegionType.h>
 #include <trial/Coordinates/CoordinateSystem.h>
 #include <aips/Tables/TableRecord.h>
