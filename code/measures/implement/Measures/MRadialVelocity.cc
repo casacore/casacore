@@ -37,35 +37,37 @@
 
 //# Constructors
 MRadialVelocity::MRadialVelocity() :
-  MeasBase<MVRadialVelocity,MRadialVelocity::Ref>() {}
+  MeasBase<MVRadialVelocity, MRadialVelocity::Ref>() {}
 
 MRadialVelocity::MRadialVelocity(const MVRadialVelocity &dt) : 
-  MeasBase<MVRadialVelocity,MRadialVelocity::Ref>(dt,
-						  MRadialVelocity::DEFAULT) {}
+  MeasBase<MVRadialVelocity,
+  MRadialVelocity::Ref>(dt, MRadialVelocity::DEFAULT) {}
 
 MRadialVelocity::MRadialVelocity(const MVRadialVelocity &dt, 
 				 const MRadialVelocity::Ref &rf) : 
-  MeasBase<MVRadialVelocity,MRadialVelocity::Ref>(dt,rf) {}
+  MeasBase<MVRadialVelocity, MRadialVelocity::Ref>(dt,rf) {}
 
 MRadialVelocity::MRadialVelocity(const MVRadialVelocity &dt, uInt rf) : 
-  MeasBase<MVRadialVelocity,MRadialVelocity::Ref>(dt,rf) {}
+  MeasBase<MVRadialVelocity, MRadialVelocity::Ref>(dt,rf) {}
 
 MRadialVelocity::MRadialVelocity(const Quantity &dt) : 
-  MeasBase<MVRadialVelocity,MRadialVelocity::Ref>(dt,
-						  MRadialVelocity::DEFAULT) {}
+  MeasBase<MVRadialVelocity, MRadialVelocity::Ref>(dt,
+						   MRadialVelocity::DEFAULT) {}
 
-MRadialVelocity::MRadialVelocity(const Quantity &dt, const MRadialVelocity::Ref &rf) : 
-  MeasBase<MVRadialVelocity,MRadialVelocity::Ref>(dt,rf) {}
+MRadialVelocity::MRadialVelocity(const Quantity &dt,
+				 const MRadialVelocity::Ref &rf) : 
+  MeasBase<MVRadialVelocity, MRadialVelocity::Ref>(dt,rf) {}
 
 MRadialVelocity::MRadialVelocity(const Quantity &dt, uInt rf) : 
-  MeasBase<MVRadialVelocity,MRadialVelocity::Ref>(dt,rf) {}
+  MeasBase<MVRadialVelocity, MRadialVelocity::Ref>(dt,rf) {}
 
 MRadialVelocity::MRadialVelocity(const Measure *dt) :
-  MeasBase<MVRadialVelocity,MRadialVelocity::Ref>(dt) {}
+  MeasBase<MVRadialVelocity, MRadialVelocity::Ref>(dt) {}
 
 MRadialVelocity::MRadialVelocity(const MeasValue *dt) :
-  MeasBase<MVRadialVelocity,MRadialVelocity::Ref>(*(MVRadialVelocity*)dt,
-				MRadialVelocity::DEFAULT) {}
+  MeasBase<MVRadialVelocity,
+  MRadialVelocity::Ref>(*(MVRadialVelocity*)dt, 
+			MRadialVelocity::DEFAULT) {}
 
 //# Destructor
 MRadialVelocity::~MRadialVelocity() {}

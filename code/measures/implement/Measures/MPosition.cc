@@ -35,62 +35,57 @@
 
 //# Constructors
 MPosition::MPosition() :
-  MeasBase<MVPosition,MPosition::Ref>() {}
+  MeasBase<MVPosition, MPosition::Ref>() {}
 
 MPosition::MPosition(const MVPosition &dt) : 
-  MeasBase<MVPosition,MPosition::Ref>(dt,MPosition::DEFAULT) {}
+  MeasBase<MVPosition, MPosition::Ref>(dt,MPosition::DEFAULT) {}
 
 MPosition::MPosition(const MVPosition &dt, const MPosition::Ref &rf) : 
-  MeasBase<MVPosition,MPosition::Ref>(dt,rf) {}
+  MeasBase<MVPosition, MPosition::Ref>(dt,rf) {}
 
 MPosition::MPosition(const MVPosition &dt, uInt rf) : 
-  MeasBase<MVPosition,MPosition::Ref>(dt,rf) {}
+  MeasBase<MVPosition, MPosition::Ref>(dt,rf) {}
 
 MPosition::MPosition(const Quantity &dt, const Quantity &dt1,
 		     const Quantity &dt2) : 
-  MeasBase<MVPosition,MPosition::Ref>(MVPosition(dt,dt1,dt2),
-				      MPosition::DEFAULT) {}
+  MeasBase<MVPosition, MPosition::Ref>(MVPosition(dt,dt1,dt2),
+				       MPosition::DEFAULT) {}
 
 MPosition::MPosition(const Quantity &dt, const Quantity &dt1,
 		     const Quantity &dt2, const MPosition::Ref &rf) : 
-  MeasBase<MVPosition,MPosition::Ref>(MVPosition(dt,dt1,dt2),rf) {}
+  MeasBase<MVPosition, MPosition::Ref>(MVPosition(dt,dt1,dt2),rf) {}
 
 MPosition::MPosition(const Quantity &dt, const Quantity &dt1,
 		     const Quantity &dt2, uInt rf) : 
-  MeasBase<MVPosition,MPosition::Ref>(MVPosition(dt,dt1,dt2),rf) {}
+  MeasBase<MVPosition, MPosition::Ref>(MVPosition(dt,dt1,dt2),rf) {}
 
 MPosition::MPosition(const Quantity &dt0, const Quantum<Vector<Double> > &dt) :
-  MeasBase<MVPosition,MPosition::Ref>(MVPosition(dt0,dt),
-				      MPosition::DEFAULT) {}
+  MeasBase<MVPosition, MPosition::Ref>(MVPosition(dt0,dt),
+				       MPosition::DEFAULT) {}
 
 MPosition::MPosition(const Quantity &dt0, const Quantum<Vector<Double> > &dt,
 		     const MPosition::Ref &rf) : 
-  MeasBase<MVPosition,MPosition::Ref>(MVPosition(dt0,dt),rf) {}
+  MeasBase<MVPosition, MPosition::Ref>(MVPosition(dt0,dt),rf) {}
 
 MPosition::MPosition(const Quantity &dt0, const Quantum<Vector<Double> > &dt,
 		     uInt rf) : 
-  MeasBase<MVPosition,MPosition::Ref>(MVPosition(dt0,dt),rf) {}
+  MeasBase<MVPosition, MPosition::Ref>(MVPosition(dt0,dt),rf) {}
 
 MPosition::MPosition(const Measure *dt) :
-  MeasBase<MVPosition,MPosition::Ref>(dt) {}
+  MeasBase<MVPosition, MPosition::Ref>(dt) {}
 
 MPosition::MPosition(const MeasValue *dt) :
-  MeasBase<MVPosition,MPosition::Ref>(*(MVPosition*)dt,
-				MPosition::DEFAULT) {}
+  MeasBase<MVPosition, MPosition::Ref>(*(MVPosition*)dt, MPosition::DEFAULT) {}
 
-MPosition::MPosition(const MPosition &other)
-: MeasBase<MVPosition, MeasRef<MPosition> > (other)
-{
-  // Nothing
-}
+MPosition::MPosition(const MPosition &other) :
+  MeasBase<MVPosition, MPosition::Ref> (other) {}
 
-MPosition &MPosition::operator=(const MPosition &other)
-{
+MPosition &MPosition::operator=(const MPosition &other) {
   if (this != &other) {
-    MeasBase<MVPosition, MeasRef<MPosition> > &This = *this;
-    const MeasBase<MVPosition, MeasRef<MPosition> > &Other = other;
+    MeasBase<MVPosition, MPosition::Ref> &This = *this;
+    const MeasBase<MVPosition, MPosition::Ref> &Other = other;
     This = Other;
-  }
+  };
   return *this;
 }
 

@@ -1,5 +1,5 @@
 //# MCFrequency.h: MFrequency conversion routines 
-//# Copyright (C) 1995,1996,1997,1998
+//# Copyright (C) 1995,1996,1997,1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -92,7 +92,7 @@ class MCFrequency : public MCBase {
 public:
   //# Friends
   // Conversion of data
-  friend class MeasConvert<MFrequency,MVFrequency,MCFrequency>;
+  friend class MFrequency::Convert;
   
   //# Constructors
   // Default constructor

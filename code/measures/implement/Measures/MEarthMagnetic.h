@@ -38,7 +38,7 @@
 //# Forward Declarations
 class MEarthMagnetic;
 class MCEarthMagnetic;
-template <class M, class F, class MC> class MeasConvert;
+template <class M> class MeasConvert;
 template <class M, class MV> class ArrayMeasColumn;
 template <class M, class MV> class ROArrayMeasColumn;
 template <class M, class MV> class ScalarMeasColumn;
@@ -120,7 +120,7 @@ class MEarthMagnetic : public MeasBase<MVEarthMagnetic, MeasRef<MEarthMagnetic> 
 public:
 //# Friends
 // Conversion of data
-    friend class MeasConvert<MEarthMagnetic, MVEarthMagnetic, MCEarthMagnetic>;
+    friend class MeasConvert<MEarthMagnetic>;
 
 //# Enumerations
 // Types of known MEarthMagnetics
@@ -166,7 +166,7 @@ public:
   // Measure reference (i.e. MEarthMagnetic::Ref)
   typedef class MeasRef<MEarthMagnetic> Ref;
   // Measure Convert (i.e. MEarthMagnetic::Convert)
-    typedef class MeasConvert<MEarthMagnetic,MVEarthMagnetic,MCEarthMagnetic> Convert;
+    typedef class MeasConvert<MEarthMagnetic> Convert;
 // Measure table Columns (e.g., MEarthMagnetic::ROScalarColumn)
     typedef class ROScalarMeasColumn<MEarthMagnetic, MVEarthMagnetic> ROScalarColumn;
     typedef class ScalarMeasColumn<MEarthMagnetic, MVEarthMagnetic> ScalarColumn;
@@ -198,7 +198,7 @@ public:
   // </group>
 
 //# Destructor
-    ~MEarthMagnetic();
+    virtual ~MEarthMagnetic();
 
 //# Operators
 

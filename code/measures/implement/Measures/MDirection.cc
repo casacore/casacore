@@ -34,50 +34,50 @@
 
 //# Constructors
 MDirection::MDirection() :
-  MeasBase<MVDirection,MDirection::Ref>() {}
+  MeasBase<MVDirection, MDirection::Ref>() {}
 
 MDirection::MDirection(const MVDirection &dt) : 
-  MeasBase<MVDirection,MDirection::Ref>(dt,MDirection::DEFAULT) {}
+  MeasBase<MVDirection, MDirection::Ref>(dt,MDirection::DEFAULT) {}
 
 MDirection::MDirection(const MVDirection &dt, const MDirection::Ref &rf) : 
-  MeasBase<MVDirection,MDirection::Ref>(dt,rf) {}
+  MeasBase<MVDirection, MDirection::Ref>(dt,rf) {}
 
 MDirection::MDirection(const MVDirection &dt, uInt rf) : 
-  MeasBase<MVDirection,MDirection::Ref>(dt,rf) {}
+  MeasBase<MVDirection, MDirection::Ref>(dt,rf) {}
 
 MDirection::MDirection(const Quantity &dt, const Quantity &dt1) : 
-  MeasBase<MVDirection,MDirection::Ref>(MVDirection(dt,dt1),
-					MDirection::DEFAULT) {}
+  MeasBase<MVDirection, MDirection::Ref>(MVDirection(dt,dt1),
+					 MDirection::DEFAULT) {}
 
 MDirection::MDirection(const Quantity &dt, const Quantity &dt1,
 		       const MDirection::Ref &rf) : 
-  MeasBase<MVDirection,MDirection::Ref>(MVDirection(dt,dt1),rf) {}
+  MeasBase<MVDirection, MDirection::Ref>(MVDirection(dt,dt1),rf) {}
 
 MDirection::MDirection(const Quantity &dt, const Quantity &dt1,
 		       uInt rf) : 
-  MeasBase<MVDirection,MDirection::Ref>(MVDirection(dt,dt1),rf) {}
+  MeasBase<MVDirection, MDirection::Ref>(MVDirection(dt,dt1),rf) {}
 
 MDirection::MDirection(const Quantum<Vector<Double> > &dt) :
-  MeasBase<MVDirection,MDirection::Ref>(MVDirection(dt),
-					MDirection::DEFAULT) {}
+  MeasBase<MVDirection, MDirection::Ref>(MVDirection(dt),
+					 MDirection::DEFAULT) {}
 
 MDirection::MDirection(const Quantum<Vector<Double> > &dt,
 		       const MDirection::Ref &rf) : 
-  MeasBase<MVDirection,MDirection::Ref>(MVDirection(dt),rf) {}
+  MeasBase<MVDirection, MDirection::Ref>(MVDirection(dt),rf) {}
 
 MDirection::MDirection(const Quantum<Vector<Double> > &dt,
 		       uInt rf) : 
-  MeasBase<MVDirection,MDirection::Ref>(MVDirection(dt),rf) {}
+  MeasBase<MVDirection, MDirection::Ref>(MVDirection(dt),rf) {}
 
 MDirection::MDirection(const Measure *dt) :
-  MeasBase<MVDirection,MDirection::Ref>(dt) {}
+  MeasBase<MVDirection, MDirection::Ref>(dt) {}
 
 MDirection::MDirection(const MeasValue *dt) :
-  MeasBase<MVDirection,MDirection::Ref>(*(MVDirection*)dt,
-					MDirection::DEFAULT) {}
+  MeasBase<MVDirection, MDirection::Ref>(*(MVDirection*)dt,
+					 MDirection::DEFAULT) {}
 
 MDirection::MDirection(const MDirection::Ref &rf) : 
-  MeasBase<MVDirection,MDirection::Ref>(rf) {}
+  MeasBase<MVDirection, MDirection::Ref>(rf) {}
 
 //# Destructor
 MDirection::~MDirection() {}

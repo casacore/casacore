@@ -35,33 +35,33 @@
 
 //# Constructors
 MBaseline::MBaseline() :
-  MeasBase<MVBaseline,MBaseline::Ref>() {}
+  MeasBase<MVBaseline, MBaseline::Ref>() {}
 
 MBaseline::MBaseline(const MVBaseline &dt) : 
-  MeasBase<MVBaseline,MBaseline::Ref>(dt,MBaseline::DEFAULT) {}
+  MeasBase<MVBaseline, MBaseline::Ref>(dt,MBaseline::DEFAULT) {}
 
 MBaseline::MBaseline(const MVBaseline &dt, const MBaseline::Ref &rf) : 
-  MeasBase<MVBaseline,MBaseline::Ref>(dt,rf) {}
+  MeasBase<MVBaseline, MBaseline::Ref>(dt,rf) {}
 
 MBaseline::MBaseline(const MVBaseline &dt, uInt rf) : 
-  MeasBase<MVBaseline,MBaseline::Ref>(dt,rf) {}
+  MeasBase<MVBaseline, MBaseline::Ref>(dt,rf) {}
 
 MBaseline::MBaseline(const Measure *dt) :
-  MeasBase<MVBaseline,MBaseline::Ref>(dt) {}
+  MeasBase<MVBaseline, MBaseline::Ref>(dt) {}
 
 MBaseline::MBaseline(const MeasValue *dt) :
-  MeasBase<MVBaseline,MBaseline::Ref>(*(MVBaseline*)dt,
-				      MBaseline::DEFAULT) {}
+  MeasBase<MVBaseline, MBaseline::Ref>(*(MVBaseline*)dt,
+				       MBaseline::DEFAULT) {}
 
 MBaseline::MBaseline(const MBaseline &other)
-  : MeasBase<MVBaseline, MeasRef<MBaseline> > (other) {}
+  : MeasBase<MVBaseline, MBaseline::Ref> (other) {}
 
 MBaseline &MBaseline::operator=(const MBaseline &other) {
   if (this != &other) {
-    MeasBase<MVBaseline, MeasRef<MBaseline> > &This = *this;
-    const MeasBase<MVBaseline, MeasRef<MBaseline> > &Other = other;
+    MeasBase<MVBaseline, MBaseline::Ref> &This = *this;
+    const MeasBase<MVBaseline, MBaseline::Ref> &Other = other;
     This = Other;
-  }
+  };
   return *this;
 }
 

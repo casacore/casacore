@@ -29,261 +29,254 @@
 #include <aips/Exceptions/Error.h>
 #include <aips/Measures/MeasBase.h>
 #include <aips/Measures/MeasConvert.h>
+#include <aips/Measures/MeasFrame.h>
 
 //# Constructors
-template<class M, class F, class MC>
-MeasConvert<M,F,MC>::MeasConvert() :
+template<class M>
+MeasConvert<M>::MeasConvert() :
   model(0), unit(), outref(), 
   offin(0), offout(0), crout(0), cvdat(0), lres(0), locres(0) {
-    init();
+  init();
 }
 
-template<class M, class F, class MC>
-MeasConvert<M,F,MC>::MeasConvert(const MeasConvert<M,F,MC> &other) :
+template<class M>
+MeasConvert<M>::MeasConvert(const MeasConvert<M> &other) :
   model(0), unit(), outref(),
   offin(0), offout(0), crout(0), cvdat(0), lres(0), locres(0) {
-    init();
-    copy(other);
-  }
+  init();
+  copy(other);
+}
 
-template<class M, class F, class MC>
-MeasConvert<M,F,MC> &MeasConvert<M,F,MC>::operator=(const MeasConvert<M,F,MC> &other) {
+template<class M>
+MeasConvert<M> &MeasConvert<M>::operator=(const MeasConvert<M> &other) {
   if (this != &other) {
     copy(other);
   };
   return *this;
 }
 
-template<class M, class F, class MC>
-MeasConvert<M,F,MC>::MeasConvert(const M &ep) :
+template<class M>
+MeasConvert<M>::MeasConvert(const M &ep) :
   model(0), unit(ep.unit), outref(),
   offin(0), offout(0), crout(0), cvdat(0), lres(0), locres(0) {
-    init();
-    model = new M(ep);
-    create();
-  }
+  init();
+  model = new M(ep);
+  create();
+}
 
-template<class M, class F, class MC>
-MeasConvert<M,F,MC>::MeasConvert(const M &ep, const MeasRef<M> &mr) :
+template<class M>
+MeasConvert<M>::MeasConvert(const M &ep, const typename M::Ref &mr) :
   model(0), unit(ep.unit), outref(),
   offin(0), offout(0), crout(0), cvdat(0), lres(0), locres(0) {
-    init();
-    model = new M(ep);
-    outref = mr;
-    create();
-  }
+  init();
+  model = new M(ep);
+  outref = mr;
+  create();
+}
 
-template<class M, class F, class MC>
-MeasConvert<M,F,MC>::MeasConvert(const Measure &ep, const MeasRef<M> &mr) :
+template<class M>
+MeasConvert<M>::MeasConvert(const Measure &ep, const typename M::Ref &mr) :
   model(0), unit(ep.getUnit()), outref(),
   offin(0), offout(0), crout(0), cvdat(0), lres(0), locres(0) {
-    init();
-    model = ep.clone();
-    outref = mr;
-    create();
-  }
+  init();
+  model = ep.clone();
+  outref = mr;
+  create();
+}
 
-template<class M, class F, class MC>
-MeasConvert<M,F,MC>::MeasConvert(const M &ep, uInt mr) :
+template<class M>
+MeasConvert<M>::MeasConvert(const M &ep, uInt mr) :
   model(0), unit(ep.unit), outref(),
   offin(0), offout(0), crout(0), cvdat(0), lres(0), locres(0) {
-    init();
-    model = new M(ep);
-    outref = MeasRef<M>(mr);
-    create();
-  }
+  init();
+  model = new M(ep);
+  outref = typename M::Ref(mr);
+  create();
+}
 
-template<class M, class F, class MC>
-MeasConvert<M,F,MC>::MeasConvert(const MeasRef<M> &mrin,
-				 const MeasRef<M> &mr) :
+template<class M>
+MeasConvert<M>::MeasConvert(const typename M::Ref &mrin,
+			    const typename M::Ref &mr) :
   model(0), unit(), outref(),
   offin(0), offout(0), crout(0), cvdat(0), lres(0), locres(0) {
-    init();
-    model = new M(F(), mrin);
-    outref = mr;
-    create();
-  }
+  init();
+  model = new M(typename M::MVType(), mrin);
+  outref = mr;
+  create();
+}
 
-template<class M, class F, class MC>
-MeasConvert<M,F,MC>::MeasConvert(const MeasRef<M> &mrin,
-				 uInt mr) :
+template<class M>
+MeasConvert<M>::MeasConvert(const typename M::Ref &mrin,
+			    uInt mr) :
   model(0), unit(), outref(),
   offin(0), offout(0), crout(0), cvdat(0), lres(0), locres(0) {
-    init();
-    model = new M(F(), mrin);
-    outref = MeasRef<M>(mr);
-    create();
-  }
+  init();
+  model = new M(typename M::MVType(), mrin);
+  outref = typename M::Ref(mr);
+  create();
+}
 
-template<class M, class F, class MC>
-MeasConvert<M,F,MC>::MeasConvert(uInt mrin,
-				 const MeasRef<M> &mr) :
+template<class M>
+MeasConvert<M>::MeasConvert(uInt mrin,
+			    const typename M::Ref &mr) :
   model(0), unit(), outref(),
   offin(0), offout(0), crout(0), cvdat(0), lres(0), locres(0) {
-    init();
-    model = new M(F(), MeasRef<M>(mrin));
-    outref = mr;
-    create();
-  }
+  init();
+  model = new M(typename M::MVType(), typename M::Ref(mrin));
+  outref = mr;
+  create();
+}
 
-template<class M, class F, class MC>
-MeasConvert<M,F,MC>::MeasConvert(uInt mrin,
-				 uInt mr) :
+template<class M>
+MeasConvert<M>::MeasConvert(uInt mrin,
+			    uInt mr) :
   model(0), unit(), outref(),
   offin(0), offout(0), crout(0), cvdat(0), lres(0), locres(0) {
-    init();
-    model = new M(F(), MeasRef<M>(mrin));
-    outref = MeasRef<M>(mr);
-    create();
-  }
+  init();
+  model = new M(typename M::MVType(), typename M::Ref(mrin));
+  outref = typename M::Ref(mr);
+  create();
+}
 
-template<class M, class F, class MC>
-MeasConvert<M,F,MC>::MeasConvert(const Unit &inunit, const MeasRef<M> &mrin,
-				 const MeasRef<M> &mr) :
+template<class M>
+MeasConvert<M>::MeasConvert(const Unit &inunit, const typename M::Ref &mrin,
+			    const typename M::Ref &mr) :
   model(0), unit(inunit), outref(),
   offin(0), offout(0), crout(0), cvdat(0), lres(0), locres(0) {
-    init();
-    model = new M( F(), mrin);
-    outref = mr;
-    create();
-  }
+  init();
+  model = new M( typename M::MVType(), mrin);
+  outref = mr;
+  create();
+}
 
-template<class M, class F, class MC>
-MeasConvert<M,F,MC>::MeasConvert(const Unit &inunit, const MeasRef<M> &mrin,
-				 uInt mr) :
+template<class M>
+MeasConvert<M>::MeasConvert(const Unit &inunit, const typename M::Ref &mrin,
+			    uInt mr) :
   model(0), unit(inunit), outref(),
   offin(0), offout(0), crout(0), cvdat(0), lres(0), locres(0) {
-    init();
-    model = new M( F(), mrin);
-    outref = MeasRef<M>(mr);
-    create();
-  }
+  init();
+  model = new M( typename M::MVType(), mrin);
+  outref = typename M::Ref(mr);
+  create();
+}
 
-template<class M, class F, class MC>
-MeasConvert<M,F,MC>::MeasConvert(const Unit &inunit, uInt mrin,
-				 const MeasRef<M> &mr) :
+template<class M>
+MeasConvert<M>::MeasConvert(const Unit &inunit, uInt mrin,
+			    const typename M::Ref &mr) :
   model(0), unit(inunit), outref(),
   offin(0), offout(0), crout(0), cvdat(0), lres(0), locres(0) {
-    init();
-    model = new M( F(), MeasRef<M>(mrin));
-    outref = mr;
-    create();
-  }
+  init();
+  model = new M( typename M::MVType(), typename M::Ref(mrin));
+  outref = mr;
+  create();
+}
 
-template<class M, class F, class MC>
-MeasConvert<M,F,MC>::MeasConvert(const Unit &inunit, uInt mrin,
-				 uInt mr) :
+template<class M>
+MeasConvert<M>::MeasConvert(const Unit &inunit, uInt mrin,
+			    uInt mr) :
   model(0), unit(inunit), outref(),
   offin(0), offout(0), crout(0), cvdat(0), lres(0), locres(0) {
-    init();
-    model = new M( F(), MeasRef<M>(mrin));
-    outref = MeasRef<M>(mr);
-    create();
-  }
+  init();
+  model = new M( typename M::MVType(), typename M::Ref(mrin));
+  outref = typename M::Ref(mr);
+  create();
+}
 
 //# Destructor
-template<class M, class F, class MC>
-MeasConvert<M,F,MC>::~MeasConvert() {
+template<class M>
+MeasConvert<M>::~MeasConvert() {
   clear();
 }
 
 //# Operators
-template<class M, class F, class MC>
-const M &MeasConvert<M,F,MC>::operator()() {
-  return operator()(*(F*)(model->getData()));
+template<class M>
+const M &MeasConvert<M>::operator()() {
+  return operator()(*(typename M::MVType*)(model->getData()));
 }
 
-template<class M, class F, class MC>
-const M &MeasConvert<M,F,MC>::operator()(Double val) {
+template<class M>
+const M &MeasConvert<M>::operator()(Double val) {
   if (unit.empty()) {
-    *locres = F(val);
+    *locres = typename M::MVType(val);
   } else {
-    *locres = F(Quantity(val,unit));
+    *locres = typename M::MVType(Quantity(val,unit));
   };
   return operator()(*locres);
 }
 
-template<class M, class F, class MC>
-const M &MeasConvert<M,F,MC>::operator()(const Vector<Double> &val) {
-  if (unit.empty()) {
-    *locres = F(val);
-  } else {
-    *locres = F(Quantum<Vector<Double> >(val,unit));
-  };
+template<class M>
+const M &MeasConvert<M>::operator()(const Vector<Double> &val) {
+  if (unit.empty()) *locres = typename M::MVType(val);
+  else *locres = typename M::MVType(Quantum<Vector<Double> >(val,unit));
   return operator()(*locres);
 }
 
-template<class M, class F, class MC>
-const M &MeasConvert<M,F,MC>::operator()(const Quantum<Double> &val) {
+template<class M>
+const M &MeasConvert<M>::operator()(const Quantum<Double> &val) {
   unit = val.getUnit();
-  *locres = F(val);
+  *locres = typename M::MVType(val);
   return operator()(*locres);
 }
 
-template<class M, class F, class MC>
-const M &MeasConvert<M,F,MC>::operator()(const Quantum<Vector<Double> > &val) {
+template<class M>
+const M &MeasConvert<M>::operator()(const Quantum<Vector<Double> > &val) {
   unit = val.getUnit();
-  *locres = F(val);
+  *locres = typename M::MVType(val);
   return operator()(*locres);
 }
 
-template<class M, class F, class MC>
-const M &MeasConvert<M,F,MC>::operator()(const F &val) {
+template<class M>
+const M &MeasConvert<M>::operator()(const typename M::MVType &val) {
   *locres = convert(val);
-  if (offout) {
-    *locres -= *offout;
-  }
+  if (offout) *locres -= *offout;
   lres++; lres %= 4;
   *(result[lres]) = M(*locres,outref);
   return (*(result[lres]));
 }
 
-template<class M, class F, class MC>
-const M &MeasConvert<M,F,MC>::operator()(const M &val) {
+template<class M>
+const M &MeasConvert<M>::operator()(const M &val) {
   setModel(val);
-  return operator()(*(F*)(model->getData()));
+  return operator()(*(typename M::MVType*)(model->getData()));
 }
 
-template<class M, class F, class MC>
-const M &MeasConvert<M,F,MC>::operator()(const M &val, const MeasRef<M> &mr) {
+template<class M>
+const M &MeasConvert<M>::operator()(const M &val, const typename M::Ref &mr) {
   set(val,mr);
-  return operator()(*(F*)(model->getData()));
+  return operator()(*(typename M::MVType*)(model->getData()));
 }
 
-template<class M, class F, class MC>
-const M &MeasConvert<M,F,MC>::operator()(const M &val, uInt mr) {
+template<class M>
+const M &MeasConvert<M>::operator()(const M &val, uInt mr) {
   set(val,mr);
-  return operator()(*(F*)(model->getData()));
+  return operator()(*(typename M::MVType*)(model->getData()));
 }
 
-template<class M, class F, class MC>
-const M &MeasConvert<M,F,MC>::operator()(const MeasRef<M> &mr) {
+template<class M>
+const M &MeasConvert<M>::operator()(const typename M::Ref &mr) {
   setOut(mr);
-  return operator()(*(F*)(model->getData()));
+  return operator()(*(typename M::MVType*)(model->getData()));
 }
 
-template<class M, class F, class MC>
-const M &MeasConvert<M,F,MC>::operator()(uInt mr) {
+template<class M>
+const M &MeasConvert<M>::operator()(uInt mr) {
   setOut(mr);
-  return operator()(*(F*)(model->getData()));
+  return operator()(*(typename M::MVType*)(model->getData()));
 }
 
 //# Member functions
-template<class M, class F, class MC>
-void MeasConvert<M,F,MC>::init() {
-  cvdat = new MC();
-  for (Int i=0; i<4; i++) {
-    result[i] = new M();
-  };
-  
-  locres = new F();
+template<class M>
+void MeasConvert<M>::init() {
+  cvdat = new typename M::MCType();
+  for (Int i=0; i<4; i++) result[i] = new M();
+  locres = new typename M::MVType();
 }
 
-template<class M, class F, class MC>
-void MeasConvert<M,F,MC>::clear() {
+template<class M>
+void MeasConvert<M>::clear() {
   delete model; model = 0;
   unit = Unit();
-  outref = MeasRef<M>();
+  outref = typename M::Ref();
   crout.resize(0, True);
   delete cvdat; cvdat = 0;
   delete offin; offin = 0;
@@ -294,70 +287,71 @@ void MeasConvert<M,F,MC>::clear() {
   };
 }
 
-template<class M, class F, class MC>
-void MeasConvert<M,F,MC>::copy(const MeasConvert<M,F,MC> &other) {
+template<class M>
+void MeasConvert<M>::copy(const MeasConvert<M> &other) {
   clear();
   init();
-  if (other.model)
-    model = new M(other.model);
+  if (other.model) model = new M(other.model);
   unit = other.unit;
   outref = other.outref;
   create();
 }
 
-template<class M, class F, class MC>
-void MeasConvert<M,F,MC>::addMethod(uInt method) {
+template<class M>
+void MeasConvert<M>::addMethod(uInt method) {
   crout.resize(crout.nelements() + 1);
   crout[crout.nelements() - 1] = method;
 }
 
-template<class M, class F, class MC>
-Int MeasConvert<M,F,MC>::nMethod() const {
+template<class M>
+Int MeasConvert<M>::nMethod() const {
   return crout.nelements();
 }
 
-template<class M, class F, class MC>
-uInt MeasConvert<M,F,MC>::getMethod(uInt which) const {
+template<class M>
+uInt MeasConvert<M>::getMethod(uInt which) const {
   return crout[which];
 }
 
-template<class M, class F, class MC>
-void MeasConvert<M,F,MC>::create() {
+template<class M>
+void MeasConvert<M>::create() {
   delete offin; offin = 0;
   if (model && model->getRefPtr()->offset()) {
-    F *ptmp = (F *)(model->getRefPtr()->offset()->getData());
+    typename M::MVType *ptmp =
+      (typename M::MVType *)(model->getRefPtr()->offset()->getData());
     // Next due to compiler error (gcc)
     MRBase *rptmp(model->getRefPtr());
     uInt tptmp = rptmp->getType();
     MeasFrame mftmp = rptmp->getFrame();
-    MeasRef<M> rtmp(tptmp, mftmp);
-    MeasRef<M> mrtmp(*(MeasRef<M>*)(model->getRefPtr()->
-				    offset()->getRefPtr()));
+    typename M::Ref rtmp(tptmp, mftmp);
+    typename M::Ref mrtmp(*(typename M::Ref*)(model->getRefPtr()->
+					      offset()->getRefPtr()));
     if (!mrtmp.empty()) {
       M mtmp(*ptmp, mrtmp);
-      offin = new F(MeasConvert<M,F,MC>(mtmp, rtmp).convert());
+      offin = new typename M::MVType(MeasConvert<M>(mtmp, rtmp).convert());
     } else {
-      offin = new F(*ptmp);
-    }
-  }
+      offin = new typename M::MVType(*ptmp);
+    };
+  };
   delete offout; offout = 0;
   if (outref.offset()) {
-    F *ptmp = (F *)(outref.offset()->getData());
-    MeasRef<M> rtmp(outref.getType(), outref.getFrame());
-    MeasRef<M> mrtmp(*(MeasRef<M> *)(outref.offset()->getRefPtr()));
+    typename M::MVType *ptmp =
+      (typename M::MVType *)(outref.offset()->getData());
+    typename M::Ref rtmp(outref.getType(), outref.getFrame());
+    typename M::Ref mrtmp(*(typename M::Ref *)(outref.offset()->getRefPtr()));
     if (!mrtmp.empty()) {
       M mtmp(*ptmp, mrtmp);
-      offout = new F(MeasConvert<M,F,MC>(mtmp, rtmp).convert());
+      offout = new typename M::MVType(MeasConvert<M>(mtmp, rtmp).convert());
     } else {
-      offout = new F(*ptmp);
-    }
-  }
+      offout = new typename M::MVType(*ptmp);
+    };
+  };
   crout.resize(0, True);
   // Make sure a reference given
   if (model && model->getRefPtr()->empty()) {
-    ((MeasBase<F, MeasRef<M> > *)model)->set(MeasRef<M>(M::DEFAULT));
+    ((MeasBase<typename M::MVType, typename M::Ref > *)model)
+      ->set(typename M::Ref(M::DEFAULT));
   };
-  if (outref.empty()) outref = MeasRef<M>(M::DEFAULT);
   if (model && !(model->getRefPtr()->empty()) && !(outref.empty())) {
     // Next due to compiler error (gcc)
     MRBase *rptmp(model->getRefPtr());
@@ -365,7 +359,7 @@ void MeasConvert<M,F,MC>::create() {
     if (!(mftmp.empty()) &&
 	!(outref.getFrame().empty()) &&
 	mftmp != outref.getFrame()) {
-      MRBase *reftmp = new MeasRef<M>(M::DEFAULT);
+      MRBase *reftmp = new typename M::Ref(M::DEFAULT);
       cvdat->getConvert(*this, *model->getRefPtr(), 
 			*reftmp);
       cvdat->getConvert(*this, *reftmp,
@@ -377,43 +371,42 @@ void MeasConvert<M,F,MC>::create() {
   };
 }
 
-template<class M, class F, class MC>
-const F &MeasConvert<M,F,MC>::convert() {
-  return convert(*(F*)(model->getData()));
+template<class M>
+const typename M::MVType &MeasConvert<M>::convert() {
+  return convert(*(typename M::MVType*)(model->getData()));
 }
 
-template<class M, class F, class MC>
-const F &MeasConvert<M,F,MC>::convert(const F &val) {
+template<class M>
+const typename M::MVType &MeasConvert<M>::
+convert(const typename M::MVType &val) {
   *locres = val;
-  if (offin) {
-    *locres += *offin;
-  }
+  if (offin) *locres += *offin;
   cvdat->doConvert(*locres, *model->getRefPtr(), outref, *this);
   return *locres;
 }
 
-template<class M, class F, class MC>
-void MeasConvert<M,F,MC>::setModel(const Measure &val) {
+template<class M>
+void MeasConvert<M>::setModel(const Measure &val) {
   delete model; model = 0;
   model = new M(&val);
   unit = val.getUnit();
   create();
 }
 
-template<class M, class F, class MC>
-void MeasConvert<M,F,MC>::setOut(const MeasRef<M> &mr) {
+template<class M>
+void MeasConvert<M>::setOut(const typename M::Ref &mr) {
   outref = mr;
   create();
 }
 
-template<class M, class F, class MC>
-void MeasConvert<M,F,MC>::setOut(uInt mr) {
-  outref = MeasRef<M>(mr);
+template<class M>
+void MeasConvert<M>::setOut(uInt mr) {
+  outref = typename M::Ref(mr);
   create();
 }
 
-template<class M, class F, class MC>
-void MeasConvert<M,F,MC>::set(const M &val, const MeasRef<M> &mr) {
+template<class M>
+void MeasConvert<M>::set(const M &val, const typename M::Ref &mr) {
   delete model; model = 0;
   model = new M(val);
   unit = val.unit;
@@ -421,17 +414,17 @@ void MeasConvert<M,F,MC>::set(const M &val, const MeasRef<M> &mr) {
   create();
 }
 
-template<class M, class F, class MC>
-void MeasConvert<M,F,MC>::set(const M &val, uInt mr) {
+template<class M>
+void MeasConvert<M>::set(const M &val, uInt mr) {
   delete model; model = 0;
   model = new M(val);
   unit = val.unit;
-  outref = MeasRef<M>(mr);
+  outref = typename M::Ref(mr);
   create();
 }
 
-template<class M, class F, class MC>
-void MeasConvert<M,F,MC>::set(const MeasValue &val) {
+template<class M>
+void MeasConvert<M>::set(const MeasValue &val) {
   if (model) {
     model->set(val);
   } else {
@@ -440,13 +433,13 @@ void MeasConvert<M,F,MC>::set(const MeasValue &val) {
   };
 }
 
-template<class M, class F, class MC>
-void MeasConvert<M,F,MC>::set(const Unit &inunit) {
+template<class M>
+void MeasConvert<M>::set(const Unit &inunit) {
   unit = inunit;
 }    
 
-template<class M, class F, class MC>
-void MeasConvert<M,F,MC>::print(ostream &os) const {
+template<class M>
+void MeasConvert<M>::print(ostream &os) const {
   os << "Converter with";
   if (model) os << " Template Measure" << *model;
   if (!outref.empty()) os << " Output reference" << outref;

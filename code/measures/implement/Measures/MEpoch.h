@@ -38,7 +38,7 @@
 //# Forward Declarations
 class MEpoch;
 class MCEpoch;
-template <class M, class F, class MC> class MeasConvert;
+template <class M> class MeasConvert;
 template <class M, class MV> class ArrayMeasColumn;
 template <class M, class MV> class ROArrayMeasColumn;
 template <class M, class MV> class ScalarMeasColumn;
@@ -91,11 +91,11 @@ template <class M, class MV> class ROScalarMeasColumn;
 //	<li>
 // </todo>
 
-class MEpoch : public MeasBase<MVEpoch,MeasRef<MEpoch> > {
+class MEpoch : public MeasBase<MVEpoch, MeasRef<MEpoch> > {
 
 public:
   //# Friends
-  friend class MeasConvert<MEpoch, MVEpoch, MCEpoch>;
+  friend class MeasConvert<MEpoch>;
   
   //# Enumerations
   // Types of known MEpochs
@@ -145,7 +145,7 @@ public:
   // Measure reference (i.e. MEpoch::Ref)
   typedef class MeasRef<MEpoch> Ref;
   // Measure Convert (i.e. MEpoch::Convert)
-  typedef class MeasConvert<MEpoch,MVEpoch,MCEpoch> Convert;
+  typedef class MeasConvert<MEpoch> Convert;
   // Measure table Columns (e.g., MEpoch::ROScalarColumn)
   typedef class ROScalarMeasColumn<MEpoch, MVEpoch> ROScalarColumn;
   typedef class ScalarMeasColumn<MEpoch, MVEpoch> ScalarColumn;
@@ -174,7 +174,7 @@ public:
   // </group>
   
   //# Destructor
-  ~MEpoch();
+  virtual ~MEpoch();
   
   //# Operators
   

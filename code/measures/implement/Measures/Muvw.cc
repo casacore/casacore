@@ -35,33 +35,32 @@
 
 //# Constructors
 Muvw::Muvw() :
-  MeasBase<MVuvw,Muvw::Ref>() {}
+  MeasBase<MVuvw, Muvw::Ref>() {}
 
 Muvw::Muvw(const MVuvw &dt) : 
-  MeasBase<MVuvw,Muvw::Ref>(dt,Muvw::DEFAULT) {}
+  MeasBase<MVuvw, Muvw::Ref>(dt,Muvw::DEFAULT) {}
 
 Muvw::Muvw(const MVuvw &dt, const Muvw::Ref &rf) : 
-  MeasBase<MVuvw,Muvw::Ref>(dt,rf) {}
+  MeasBase<MVuvw, Muvw::Ref>(dt,rf) {}
 
 Muvw::Muvw(const MVuvw &dt, uInt rf) : 
-  MeasBase<MVuvw,Muvw::Ref>(dt,rf) {}
+  MeasBase<MVuvw, Muvw::Ref>(dt,rf) {}
 
 Muvw::Muvw(const Measure *dt) :
-  MeasBase<MVuvw,Muvw::Ref>(dt) {}
+  MeasBase<MVuvw, Muvw::Ref>(dt) {}
 
 Muvw::Muvw(const MeasValue *dt) :
-  MeasBase<MVuvw,Muvw::Ref>(*(MVuvw*)dt,
-			    Muvw::DEFAULT) {}
+  MeasBase<MVuvw, Muvw::Ref>(*(MVuvw*)dt, Muvw::DEFAULT) {}
 
-Muvw::Muvw(const Muvw &other)
-  : MeasBase<MVuvw, MeasRef<Muvw> > (other) {}
+Muvw::Muvw(const Muvw &other) :
+  MeasBase<MVuvw, Muvw::Ref> (other) {}
 
 Muvw &Muvw::operator=(const Muvw &other) {
   if (this != &other) {
-    MeasBase<MVuvw, MeasRef<Muvw> > &This = *this;
-    const MeasBase<MVuvw, MeasRef<Muvw> > &Other = other;
+    MeasBase<MVuvw, Muvw::Ref> &This = *this;
+    const MeasBase<MVuvw, Muvw::Ref> &Other = other;
     This = Other;
-  }
+  };
   return *this;
 }
 

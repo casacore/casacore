@@ -40,7 +40,7 @@ class Muvw;
 class MCuvw;
 class MBaseline;
 class MDirection;
-template <class M, class F, class MC> class MeasConvert;
+template <class M> class MeasConvert;
 template <class M, class MV> class ArrayMeasColumn;
 template <class M, class MV> class ROArrayMeasColumn;
 template <class M, class MV> class ScalarMeasColumn;
@@ -120,7 +120,7 @@ class Muvw : public MeasBase<MVuvw, MeasRef<Muvw> > {
 public:
   //# Friends
   // Conversion of data
-  friend class MeasConvert<Muvw, MVuvw, MCuvw>;
+  friend class MeasConvert<Muvw>;
   
   //# Enumerations
   // Types of known Muvws
@@ -162,7 +162,7 @@ public:
   // Measure reference (i.e. Muvw::Ref)
   typedef class MeasRef<Muvw> Ref;
   // MeasConvert use (i.e. Muvw::Convert)
-  typedef class MeasConvert<Muvw,MVuvw,MCuvw> Convert;
+  typedef class MeasConvert<Muvw> Convert;
   // Measure table Columns (e.g., Muvw::ROScalarColumn)
   typedef class ROScalarMeasColumn<Muvw, MVuvw> ROScalarColumn;
   typedef class ScalarMeasColumn<Muvw, MVuvw> ScalarColumn;
@@ -197,7 +197,7 @@ public:
   // </group>
   
   //# Destructor
-  ~Muvw();
+  virtual ~Muvw();
   
   //# Operators
   

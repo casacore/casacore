@@ -38,7 +38,7 @@
 //# Forward Declarations
 class MRadialVelocity;
 class MCRadialVelocity;
-template <class M, class F, class MC> class MeasConvert;
+template <class M> class MeasConvert;
 template <class M, class MV> class ArrayMeasColumn;
 template <class M, class MV> class ROArrayMeasColumn;
 template <class M, class MV> class ScalarMeasColumn;
@@ -132,12 +132,12 @@ class MVDoppler;
 //   <li> look at relativistic effects
 // </todo>
 
-class MRadialVelocity : public MeasBase<MVRadialVelocity,MeasRef<MRadialVelocity> >
-{
+class MRadialVelocity : public MeasBase<MVRadialVelocity, MeasRef<MRadialVelocity> > {
+
 public:
 //# Friends
 // Conversion of data
-    friend class MeasConvert<MRadialVelocity,MVRadialVelocity,MCRadialVelocity>;
+    friend class MeasConvert<MRadialVelocity>;
 
 //# Enumerations
 // Types of known MRadialVelocity
@@ -164,7 +164,7 @@ public:
 // Measure reference (i.e. MRadialVelocity::Ref)
     typedef MeasRef<MRadialVelocity> Ref;
 // Measure conversion use (i.e. MRadialVelocity::Convert)
-    typedef MeasConvert<MRadialVelocity,MVRadialVelocity,MCRadialVelocity> Convert;
+    typedef class MeasConvert<MRadialVelocity> Convert;
 // Measure table Columns (e.g., MRadialVelocity::ROScalarColumn)
     typedef class ROScalarMeasColumn<MRadialVelocity, MVRadialVelocity> ROScalarColumn;
     typedef class ScalarMeasColumn<MRadialVelocity, MVRadialVelocity> ScalarColumn;
@@ -193,7 +193,7 @@ public:
 // </group>
 
 //# Destructor
-    ~MRadialVelocity();
+    virtual ~MRadialVelocity();
 
 //# Operators
 

@@ -38,8 +38,7 @@
 //# Forward Declarations
 class MDirection;
 class MCDirection;
-template <class M, class F, class MC> class MeasConvert;
-template <class M, class F, class MC> class MeasConvert;
+template <class M> class MeasConvert;
 template <class M, class MV> class ArrayMeasColumn;
 template <class M, class MV> class ROArrayMeasColumn;
 template <class M, class MV> class ScalarMeasColumn;
@@ -160,12 +159,12 @@ template <class M, class MV> class ROScalarMeasColumn;
 //	<li>
 // </todo>
 
-class MDirection : public MeasBase<MVDirection,MeasRef<MDirection> > 
-{
+class MDirection : public MeasBase<MVDirection, MeasRef<MDirection> > { 
+
 public:
 //# Friends
 // Conversion of data
-    friend class MeasConvert<MDirection,MVDirection,MCDirection>;
+    friend class MeasConvert<MDirection>;
 
 //# Enumerations
 // Types of known MDirections
@@ -228,7 +227,7 @@ public:
   // Measure reference (i.e. MDirection::Ref)
   typedef class MeasRef<MDirection> Ref;
   // Measure Convert (i.e. MDirection::Convert)
-    typedef class MeasConvert<MDirection,MVDirection,MCDirection> Convert;
+    typedef class MeasConvert<MDirection> Convert;
 // Measure table Columns (e.g., MDirection::ROScalarColumn)
     typedef class ROScalarMeasColumn<MDirection, MVDirection> ROScalarColumn;
     typedef class ScalarMeasColumn<MDirection, MVDirection> ScalarColumn;
@@ -265,7 +264,7 @@ public:
 // </group>
 
 //# Destructor
-    ~MDirection();
+    virtual ~MDirection();
 
 //# Operators
 

@@ -32,32 +32,31 @@
 
 //# Constructors
 MDoppler::MDoppler() :
-  MeasBase<MVDoppler,MDoppler::Ref>() {}
+  MeasBase<MVDoppler, MDoppler::Ref>() {}
 
 MDoppler::MDoppler(const MVDoppler &dt) : 
-  MeasBase<MVDoppler,MDoppler::Ref>(dt,MDoppler::DEFAULT) {}
+  MeasBase<MVDoppler, MDoppler::Ref>(dt,MDoppler::DEFAULT) {}
 
 MDoppler::MDoppler(const MVDoppler &dt, const MDoppler::Ref &rf) : 
-  MeasBase<MVDoppler,MDoppler::Ref>(dt,rf) {}
+  MeasBase<MVDoppler, MDoppler::Ref>(dt,rf) {}
 
 MDoppler::MDoppler(const MVDoppler &dt, uInt rf) : 
-  MeasBase<MVDoppler,MDoppler::Ref>(dt,rf) {}
+  MeasBase<MVDoppler, MDoppler::Ref>(dt,rf) {}
 
 MDoppler::MDoppler(const Quantity &dt) : 
-  MeasBase<MVDoppler,MDoppler::Ref>(dt,MDoppler::DEFAULT) {}
+  MeasBase<MVDoppler, MDoppler::Ref>(dt,MDoppler::DEFAULT) {}
 
 MDoppler::MDoppler(const Quantity &dt, const MDoppler::Ref &rf) : 
-  MeasBase<MVDoppler,MDoppler::Ref>(dt,rf) {}
+  MeasBase<MVDoppler, MDoppler::Ref>(dt,rf) {}
 
 MDoppler::MDoppler(const Quantity &dt, uInt rf) : 
-  MeasBase<MVDoppler,MDoppler::Ref>(dt,rf) {}
+  MeasBase<MVDoppler, MDoppler::Ref>(dt,rf) {}
 
 MDoppler::MDoppler(const Measure *dt) :
-  MeasBase<MVDoppler,MDoppler::Ref>(dt) {}
+  MeasBase<MVDoppler, MDoppler::Ref>(dt) {}
 
 MDoppler::MDoppler(const MeasValue *dt) :
-  MeasBase<MVDoppler,MDoppler::Ref>(*(MVDoppler*)dt,
-				MDoppler::DEFAULT) {}
+  MeasBase<MVDoppler, MDoppler::Ref>(*(MVDoppler*)dt, MDoppler::DEFAULT) {}
 
 //# Destructor
 MDoppler::~MDoppler() {}

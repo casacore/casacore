@@ -38,7 +38,7 @@
 //# Forward Declarations
 class MDoppler;
 class MCDoppler;
-template <class M, class F, class MC> class MeasConvert;
+template <class M> class MeasConvert;
 template <class M, class MV> class ArrayMeasColumn;
 template <class M, class MV> class ROArrayMeasColumn;
 template <class M, class MV> class ScalarMeasColumn;
@@ -126,12 +126,12 @@ template <class M, class MV> class ROScalarMeasColumn;
 // <todo asof="1996/05/04">
 // </todo>
 
-class MDoppler : public MeasBase<MVDoppler,MeasRef<MDoppler> > {
+class MDoppler : public MeasBase<MVDoppler, MeasRef<MDoppler> > {
 
 public:
 //# Friends
 // Conversion of data
-    friend class MeasConvert<MDoppler,MVDoppler,MCDoppler>;
+    friend class MeasConvert<MDoppler>;
 
 //# Enumerations
 // Types of known MDopplers
@@ -160,7 +160,7 @@ public:
   // Measure reference (i.e. MDoppler::Ref)
   typedef class MeasRef<MDoppler> Ref;
   // Measure Convert (i.e. MDoppler::Convert)
-    typedef MeasConvert<MDoppler,MVDoppler,MCDoppler> Convert;
+    typedef MeasConvert<MDoppler> Convert;
 // Measure table Columns (e.g., MDoppler::ROScalarColumn)
     typedef class ROScalarMeasColumn<MDoppler, MVDoppler> ROScalarColumn;
     typedef class ScalarMeasColumn<MDoppler, MVDoppler> ScalarColumn;
@@ -189,7 +189,7 @@ public:
 // </group>
 
 //# Destructor
-    ~MDoppler();
+    virtual ~MDoppler();
 
 //# Operators
 

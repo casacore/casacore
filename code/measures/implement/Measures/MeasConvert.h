@@ -35,7 +35,7 @@
 #include <aips/Measures/MConvertBase.h>
 #include <aips/Quanta/Quantum.h>
 #include <aips/Measures/Measure.h>
-#include <aips/Measures/MeasRef.h>
+/// #include <aips/Measures/MeasRef.h>
 
 //# Forward Declarations
 class MCBase;
@@ -133,10 +133,10 @@ class MCBase;
 // from the actual conversion could speed up the process.
 // </motivation>
 //
-// <todo asof="1997/04/15">
+// <todo asof="1999/09/24">
 // </todo>
 
-template<class M, class F, class MC> class MeasConvert : public MConvertBase {
+template<class M> class MeasConvert : public MConvertBase {
 
 public:
 
@@ -153,26 +153,26 @@ public:
   // probably a setOut has been done.
   MeasConvert();
   // Copy constructor
-  MeasConvert(const MeasConvert<M,F,MC> &other);
+  MeasConvert(const MeasConvert<M> &other);
   // Copy assignment
-  MeasConvert<M,F,MC> &operator=(const MeasConvert<M,F,MC> &other);
+  MeasConvert<M> &operator=(const MeasConvert<M> &other);
   
   // Construct a conversion for the specified Measure and reference
   // <group>
   MeasConvert(const M &ep);
-  MeasConvert(const M &ep, const MeasRef<M> &mr);
-  MeasConvert(const Measure &ep, const MeasRef<M> &mr);
+  MeasConvert(const M &ep, const typename M::Ref &mr);
+  MeasConvert(const Measure &ep, const typename M::Ref &mr);
   MeasConvert(const M &ep, uInt mr);
-  MeasConvert(const MeasRef<M> &mrin, const MeasRef<M> &mr);
-  MeasConvert(const MeasRef<M> &mrin, uInt mr);
-  MeasConvert(uInt mrin, const MeasRef<M> &mr);
+  MeasConvert(const typename M::Ref &mrin, const typename M::Ref &mr);
+  MeasConvert(const typename M::Ref &mrin, uInt mr);
+  MeasConvert(uInt mrin, const typename M::Ref &mr);
   MeasConvert(uInt mrin, uInt mr);
-  MeasConvert(const Unit &inunit, const MeasRef<M> &mrin, 
-	      const MeasRef<M> &mr);
-  MeasConvert(const Unit &inunit, const MeasRef<M> &mrin, 
+  MeasConvert(const Unit &inunit, const typename M::Ref &mrin, 
+	      const typename M::Ref &mr);
+  MeasConvert(const Unit &inunit, const typename M::Ref &mrin, 
 	      uInt mr);
   MeasConvert(const Unit &inunit, uInt mrin, 
-	      const MeasRef<M> &mr);
+	      const typename M::Ref &mr);
   MeasConvert(const Unit &inunit, uInt mrin, 
 	      uInt mr);
   // </group>
@@ -189,11 +189,11 @@ public:
   const M &operator()(const Vector<Double> &val);
   const M &operator()(const Quantum<Double> &val);
   const M &operator()(const Quantum<Vector<Double> > &val);
-  const M &operator()(const F &val);
+  const M &operator()(const typename M::MVType &val);
   const M &operator()(const M &val);
-  const M &operator()(const M &val, const MeasRef<M> &mr);
+  const M &operator()(const M &val, const typename M::Ref &mr);
   const M &operator()(const M &val, uInt mr);
-  const M &operator()(const MeasRef<M> &mr);
+  const M &operator()(const typename M::Ref &mr);
   const M &operator()(uInt mr);
   // </group>
   
@@ -202,12 +202,12 @@ public:
   virtual void setModel(const Measure &val);
   // Set a new output reference
   // <group>
-  void setOut(const MeasRef<M> &mr);
+  void setOut(const typename M::Ref &mr);
   void setOut(uInt mr);
   // </group>
   // Set a new model and reference
   // <group>
-  void set(const M &val, const MeasRef<M> &mr);
+  void set(const M &val, const typename M::Ref &mr);
   void set(const M &val, uInt mr);
   // </group>
   // Set a new model value only
@@ -231,11 +231,11 @@ private:
   // The model unit to be used in conversions
   Unit unit;
   // The output reference
-  MeasRef<M> outref;
+  typename M::Ref outref;
   // The input offset
-  F *offin;
+  typename M::MVType *offin;
   // The output offset
-  F *offout;
+  typename M::MVType *offout;
   // Vector of conversion routines (length variable)
   Block<uInt> crout;
   // Local conversion data
@@ -248,27 +248,25 @@ private:
   // </group>
   // Local variables that can be used in conversion
   // <group>
-  F *locres;
+  typename M::MVType *locres;
   // </group>
   
   //# Member functions
   // Initialise pointers
   void init();
   // Copy a MeasConvert
-  void copy(const MeasConvert<M,F,MC> &other);
+  void copy(const MeasConvert<M> &other);
   // Clear self
   void clear();
   // Create the conversion routine chain
   void create();
   // Convert a value
   // <group>
-  const F &convert();
-  const F &convert(const F &val);
+  const typename M::MVType &convert();
+  const typename M::MVType &convert(const typename M::MVType &val);
   // </group>
 };
 
 //# Global functions
 
 #endif
-
-

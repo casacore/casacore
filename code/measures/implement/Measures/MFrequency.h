@@ -40,8 +40,7 @@ class MFrequency;
 class MCFrequency;
 class MDoppler;
 class MVDoppler;
-template <class M, class F, class MC> class MeasConvert;
-template <class M, class F, class MC> class MeasConvert;
+template <class M> class MeasConvert;
 template <class M, class MV> class ArrayMeasColumn;
 template <class M, class MV> class ROArrayMeasColumn;
 template <class M, class MV> class ScalarMeasColumn;
@@ -144,12 +143,12 @@ template <class M, class MV> class ROScalarMeasColumn;
 // <todo asof="1996/10/10">
 // </todo>
 
-class MFrequency : public MeasBase<MVFrequency,MeasRef<MFrequency> > {
+class MFrequency : public MeasBase<MVFrequency, MeasRef<MFrequency> > {
 
 public:
 //# Friends
 // Conversion of data
-    friend class MeasConvert<MFrequency,MVFrequency,MCFrequency>;
+    friend class MeasConvert<MFrequency>;
 
 //# Enumerations
 // Types of known MFrequencies
@@ -177,7 +176,7 @@ public:
   // Measure reference (i.e. MFrequency::Ref)
     typedef class MeasRef<MFrequency> Ref;
 // Measure conversion use (i.e. MFrequency::Convert)
-    typedef class MeasConvert<MFrequency,MVFrequency,MCFrequency> Convert;
+    typedef class MeasConvert<MFrequency> Convert;
 // Measure table Columns (e.g., MFrequency::ROScalarColumn)
     typedef class ROScalarMeasColumn<MFrequency, MVFrequency> ROScalarColumn;
     typedef class ScalarMeasColumn<MFrequency, MVFrequency> ScalarColumn;
@@ -206,7 +205,7 @@ public:
 // </group>
 
 //# Destructor
-    ~MFrequency();
+    virtual ~MFrequency();
 
 //# Operators
 

@@ -35,32 +35,32 @@
 
 //# Constructors
 MFrequency::MFrequency() :
-  MeasBase<MVFrequency,MFrequency::Ref>() {}
+  MeasBase<MVFrequency, MFrequency::Ref>() {}
 
 MFrequency::MFrequency(const MVFrequency &dt) : 
-  MeasBase<MVFrequency,MFrequency::Ref>(dt,MFrequency::DEFAULT) {}
+  MeasBase<MVFrequency, MFrequency::Ref>(dt,MFrequency::DEFAULT) {}
 
 MFrequency::MFrequency(const MVFrequency &dt, const MFrequency::Ref &rf) : 
-  MeasBase<MVFrequency,MFrequency::Ref>(dt,rf) {}
+  MeasBase<MVFrequency, MFrequency::Ref>(dt,rf) {}
 
 MFrequency::MFrequency(const MVFrequency &dt, uInt rf) : 
-  MeasBase<MVFrequency,MFrequency::Ref>(dt,rf) {}
+  MeasBase<MVFrequency, MFrequency::Ref>(dt,rf) {}
 
 MFrequency::MFrequency(const Quantity &dt) : 
-  MeasBase<MVFrequency,MFrequency::Ref>(dt,MFrequency::DEFAULT) {}
+  MeasBase<MVFrequency, MFrequency::Ref>(dt,MFrequency::DEFAULT) {}
 
 MFrequency::MFrequency(const Quantity &dt, const MFrequency::Ref &rf) : 
-  MeasBase<MVFrequency,MFrequency::Ref>(dt,rf) {}
+  MeasBase<MVFrequency, MFrequency::Ref>(dt,rf) {}
 
 MFrequency::MFrequency(const Quantity &dt, uInt rf) : 
-  MeasBase<MVFrequency,MFrequency::Ref>(dt,rf) {}
+  MeasBase<MVFrequency, MFrequency::Ref>(dt,rf) {}
 
 MFrequency::MFrequency(const Measure *dt) :
-  MeasBase<MVFrequency,MFrequency::Ref>(dt) {}
+  MeasBase<MVFrequency, MFrequency::Ref>(dt) {}
 
 MFrequency::MFrequency(const MeasValue *dt) :
-  MeasBase<MVFrequency,MFrequency::Ref>(*(MVFrequency*)dt,
-				MFrequency::DEFAULT) {}
+  MeasBase<MVFrequency, MFrequency::Ref>(*(MVFrequency*)dt,
+					 MFrequency::DEFAULT) {}
 
 //# Destructor
 MFrequency::~MFrequency() {}

@@ -41,36 +41,37 @@
 
 //# Constructors
 MEarthMagnetic::MEarthMagnetic() :
-  MeasBase<MVEarthMagnetic,MEarthMagnetic::Ref>() {}
+  MeasBase<MVEarthMagnetic, MEarthMagnetic::Ref>() {}
 
 MEarthMagnetic::MEarthMagnetic(const MVEarthMagnetic &dt) : 
-  MeasBase<MVEarthMagnetic,MEarthMagnetic::Ref>(dt,MEarthMagnetic::DEFAULT) {}
+  MeasBase<MVEarthMagnetic, MEarthMagnetic::Ref>(dt,MEarthMagnetic::DEFAULT) {}
 
-MEarthMagnetic::MEarthMagnetic(const MVEarthMagnetic &dt, const MEarthMagnetic::Ref &rf) : 
-  MeasBase<MVEarthMagnetic,MEarthMagnetic::Ref>(dt,rf) {}
+MEarthMagnetic::MEarthMagnetic(const MVEarthMagnetic &dt,
+			       const MEarthMagnetic::Ref &rf) : 
+  MeasBase<MVEarthMagnetic, MEarthMagnetic::Ref>(dt,rf) {}
 
 MEarthMagnetic::MEarthMagnetic(const MVEarthMagnetic &dt, uInt rf) : 
-  MeasBase<MVEarthMagnetic,MEarthMagnetic::Ref>(dt,rf) {}
+  MeasBase<MVEarthMagnetic, MEarthMagnetic::Ref>(dt,rf) {}
 
 MEarthMagnetic::MEarthMagnetic(const Measure *dt) :
-  MeasBase<MVEarthMagnetic,MEarthMagnetic::Ref>(dt) {}
+  MeasBase<MVEarthMagnetic, MEarthMagnetic::Ref>(dt) {}
 
 MEarthMagnetic::MEarthMagnetic(const MeasValue *dt) :
-  MeasBase<MVEarthMagnetic,MEarthMagnetic::Ref>(*(MVEarthMagnetic*)dt,
-						MEarthMagnetic::DEFAULT) {}
+  MeasBase<MVEarthMagnetic, MEarthMagnetic::Ref>(*(MVEarthMagnetic*)dt,
+						 MEarthMagnetic::DEFAULT) {}
 
 MEarthMagnetic::MEarthMagnetic(const MEarthMagnetic::Ref &rf) :
-  MeasBase<MVEarthMagnetic,MEarthMagnetic::Ref>(rf) {}
+  MeasBase<MVEarthMagnetic, MEarthMagnetic::Ref>(rf) {}
 
-MEarthMagnetic::MEarthMagnetic(const MEarthMagnetic &other)
-  : MeasBase<MVEarthMagnetic, MeasRef<MEarthMagnetic> > (other) {}
+MEarthMagnetic::MEarthMagnetic(const MEarthMagnetic &other) :
+  MeasBase<MVEarthMagnetic, MEarthMagnetic::Ref> (other) {}
 
 MEarthMagnetic &MEarthMagnetic::operator=(const MEarthMagnetic &other) {
   if (this != &other) {
-    MeasBase<MVEarthMagnetic, MeasRef<MEarthMagnetic> > &This = *this;
-    const MeasBase<MVEarthMagnetic, MeasRef<MEarthMagnetic> > &Other = other;
+    MeasBase<MVEarthMagnetic, MEarthMagnetic::Ref> &This = *this;
+    const MeasBase<MVEarthMagnetic, MEarthMagnetic::Ref> &Other = other;
     This = Other;
-  }
+  };
   return *this;
 }
 

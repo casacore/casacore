@@ -38,7 +38,7 @@
 //# Forward Declarations
 class MBaseline;
 class MCBaseline;
-template <class M, class F, class MC> class MeasConvert;
+template <class M> class MeasConvert;
 template <class M, class MV> class ArrayMeasColumn;
 template <class M, class MV> class ROArrayMeasColumn;
 template <class M, class MV> class ScalarMeasColumn;
@@ -86,7 +86,7 @@ class MBaseline : public MeasBase<MVBaseline, MeasRef<MBaseline> > {
 public:
 //# Friends
 // Conversion of data
-    friend class MeasConvert<MBaseline, MVBaseline, MCBaseline>;
+    friend class MeasConvert<MBaseline>;
 
 //# Enumerations
 // Types of known MBaselines
@@ -128,7 +128,7 @@ public:
   // Measure reference (i.e. MBaseline::Ref)
   typedef class MeasRef<MBaseline> Ref;
   // Measure Convert (i.e. MBaseline::Convert)
-    typedef class MeasConvert<MBaseline,MVBaseline,MCBaseline> Convert;
+    typedef class MeasConvert<MBaseline> Convert;
 // Measure table Columns (e.g., MBaseline::ROScalarColumn)
     typedef class ROScalarMeasColumn<MBaseline, MVBaseline> ROScalarColumn;
     typedef class ScalarMeasColumn<MBaseline, MVBaseline> ScalarColumn;
@@ -159,7 +159,7 @@ public:
   // </group>
 
 //# Destructor
-    ~MBaseline();
+    virtual ~MBaseline();
 
 //# Operators
 

@@ -33,32 +33,31 @@
 
 //# Constructors
 MEpoch::MEpoch() : 
-  MeasBase<MVEpoch,MEpoch::Ref>() {}
+  MeasBase<MVEpoch, MEpoch::Ref>() {}
 
 MEpoch::MEpoch(const MVEpoch &dt) : 
-  MeasBase<MVEpoch,MEpoch::Ref>(dt,MEpoch::DEFAULT) {}
+  MeasBase<MVEpoch, MEpoch::Ref>(dt,MEpoch::DEFAULT) {}
 
 MEpoch::MEpoch(const MVEpoch &dt, const MEpoch::Ref &rf) : 
-  MeasBase<MVEpoch,MEpoch::Ref>(dt,rf) {}
+  MeasBase<MVEpoch, MEpoch::Ref>(dt,rf) {}
 
 MEpoch::MEpoch(const MVEpoch &dt, uInt rf) : 
-  MeasBase<MVEpoch,MEpoch::Ref>(dt,rf) {}
+  MeasBase<MVEpoch, MEpoch::Ref>(dt,rf) {}
 
 MEpoch::MEpoch(const Quantity &dt) : 
-  MeasBase<MVEpoch,MEpoch::Ref>(dt,MEpoch::DEFAULT) {}
+  MeasBase<MVEpoch, MEpoch::Ref>(dt,MEpoch::DEFAULT) {}
 
 MEpoch::MEpoch(const Quantity &dt, const MEpoch::Ref &rf) : 
-  MeasBase<MVEpoch,MEpoch::Ref>(dt,rf) {}
+  MeasBase<MVEpoch, MEpoch::Ref>(dt,rf) {}
 
 MEpoch::MEpoch(const Quantity &dt, uInt rf) : 
-  MeasBase<MVEpoch,MEpoch::Ref>(dt,rf) {}
+  MeasBase<MVEpoch, MEpoch::Ref>(dt,rf) {}
 
 MEpoch::MEpoch(const Measure *dt) :
-  MeasBase<MVEpoch,MEpoch::Ref>(dt) {}
+  MeasBase<MVEpoch, MEpoch::Ref>(dt) {}
 
 MEpoch::MEpoch(const MeasValue *dt) :
-  MeasBase<MVEpoch,MEpoch::Ref>(*(MVEpoch*)dt,
-				MEpoch::DEFAULT) {}
+  MeasBase<MVEpoch, MEpoch::Ref>(*(MVEpoch*)dt, MEpoch::DEFAULT) {}
 
 //# Destructor
 MEpoch::~MEpoch() {}

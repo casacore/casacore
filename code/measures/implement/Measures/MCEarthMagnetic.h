@@ -1,5 +1,5 @@
 //# MCEarthMagnetic.h: MEarthMagnetic conversion routines 
-//# Copyright (C) 1998
+//# Copyright (C) 1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -89,7 +89,7 @@ public:
 
   //# Friends
   // Conversion of data
-  friend class MeasConvert<MEarthMagnetic,MVEarthMagnetic,MCEarthMagnetic>;
+  friend class MEarthMagnetic::Convert;
   
   //# Constructors
   // Default constructor

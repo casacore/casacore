@@ -38,8 +38,7 @@
 //# Forward Declarations
 class MPosition;
 class MCPosition;
-template <class M, class F, class MC> class MeasConvert;
-template <class M, class F, class MC> class MeasConvert;
+template <class M> class MeasConvert;
 template <class M, class MV> class ArrayMeasColumn;
 template <class M, class MV> class ROArrayMeasColumn;
 template <class M, class MV> class ScalarMeasColumn;
@@ -82,7 +81,7 @@ class MPosition : public MeasBase<MVPosition, MeasRef<MPosition> > {
 public:
 //# Friends
 // Conversion of data
-    friend class MeasConvert<MPosition, MVPosition, MCPosition>;
+    friend class MeasConvert<MPosition>;
 
 //# Enumerations
 // Types of known MPositions
@@ -104,7 +103,7 @@ public:
   // Measure reference (i.e. MPosition::Ref)
   typedef class MeasRef<MPosition> Ref;
   // Measure Convert (i.e. MPosition::Convert)
-    typedef class MeasConvert<MPosition,MVPosition,MCPosition> Convert;
+    typedef class MeasConvert<MPosition> Convert;
 // Measure table Columns (e.g., MPosition::ROScalarColumn)
     typedef class ROScalarMeasColumn<MPosition, MVPosition> ROScalarColumn;
     typedef class ScalarMeasColumn<MPosition, MVPosition> ScalarColumn;
@@ -145,7 +144,7 @@ public:
   // </group>
 
 //# Destructor
-    ~MPosition();
+    virtual ~MPosition();
 
 //# Operators
 
