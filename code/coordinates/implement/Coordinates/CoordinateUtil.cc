@@ -52,8 +52,8 @@ void addDirAxes(CoordinateSystem & coords){
 			       );
   // reset the increment to 1 minute of arc on both axes
   Vector<String> units(2); units = String("'"); 
+  Vector<Double> inc(2); inc = 1.0;
   dirAxes.setWorldAxisUnits(units);
-  Vector<Double> inc(2); inc = C::pi/180.0/60.0; 
   AlwaysAssert(dirAxes.setIncrement(inc) == True, AipsError);
   // Add the direction coordinates to the system. 
   coords.addCoordinate(dirAxes);
@@ -93,7 +93,7 @@ CoordinateSystem defaultCoords2D(){
 CoordinateSystem defaultCoords3D(){
   CoordinateSystem coords;
   addDirAxes(coords);
-  addIQUVAxis(coords);
+  addFreqAxis(coords);
   return coords;
 }
 CoordinateSystem defaultCoords4D(){
