@@ -5845,3 +5845,4 @@
 16 219 src mv trial/implement/Functionals/GaussianNDParam.cc aips/implement/Functionals/GaussianNDParam.cc
 16 229 src mv ./trial/implement/Mathematics/AutoDiff.cc ./aips/implement/Mathematics/AutoDiff.cc
 16 229 src mv ./trial/implement/Mathematics/AutoDiff.h ./aips/implement/Mathematics/AutoDiff.h
+16 229 src mv ./trial/implement/Mathematics/AutoDiffA.h ./aips/implement/Mathematics/AutoDiffA.h
