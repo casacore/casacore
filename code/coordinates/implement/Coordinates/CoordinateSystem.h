@@ -498,12 +498,23 @@ public:
     virtual Vector<Double> worldMixMax () const;
     //</group>
 
-    // Make absolute coordinates relative and vice-versa    
+    // Make absolute coordinates relative and vice-versa (relative
+    // to the reference pixel/value).  The vectors must be of length
+    // <src>nPixelAxes()</src> or <src>nWorldAxes()</src>
     //<group>
     virtual void makePixelRelative (Vector<Double>& pixel) const;
     virtual void makePixelAbsolute (Vector<Double>& pixel) const;
     virtual void makeWorldRelative (Vector<Double>& world) const;
     virtual void makeWorldAbsolute (Vector<Double>& world) const;
+    //</group>
+
+    // Make absolute coordinates relative and vice versa with respect
+    // to the given reference value.  Add the other functions in this grouping
+    // as needed.    The vectors must be of length
+    // <src>nPixelAxes()</src> or <src>nWorldAxes()</src>
+    //<group>
+    virtual void makeWorldAbsolute (Vector<Double>& world,
+                                    const Vector<Double>& refVal) const;
     //</group>
 
     // General coordinate conversion.  Only works if no axes

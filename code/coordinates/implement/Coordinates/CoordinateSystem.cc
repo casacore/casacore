@@ -1183,6 +1183,49 @@ void CoordinateSystem::makeWorldRelative (Vector<Double>& world) const
 
 
 
+void CoordinateSystem::makeWorldAbsolute (Vector<Double>& world,
+                                          const Vector<Double>& refVal) const
+{
+    AlwaysAssert(world.nelements() == nWorldAxes(), AipsError);
+    AlwaysAssert(refVal.nelements() == nWorldAxes(), AipsError);
+//
+    const uInt nc = coordinates_p.nelements();
+    Int where;
+    for (uInt i=0; i<nc; i++) {
+	const uInt nwa = world_maps_p[i]->nelements();
+
+// Copy elements for this coordinate and replace removed axis values
+// Borrow worldOut_tmps vector from toMix
+
+	uInt j;
+	for (j=0; j<nwa; j++) {
+	    where = world_maps_p[i]->operator[](j);
+	    if (where >= 0) {
+		world_tmps_p[i]->operator()(j) = world(where);
+                worldOut_tmps_p[i]->operator()(j) = refVal(where); 
+	    } else {
+		world_tmps_p[i]->operator()(j) = 
+		    world_replacement_values_p[i]->operator()(j);
+		worldOut_tmps_p[i]->operator()(j) = 
+		    coordinates_p[i]->referenceValue()(j);  // Use refval
+	    }
+	}
+
+// Convert for this coordinate. 
+
+	coordinates_p[i]->makeWorldAbsolute(*(world_tmps_p[i]),
+                                            *(worldOut_tmps_p[i]));
+
+// Copy to output
+
+	for (j=0; j<nwa; j++) {
+	    where = world_maps_p[i]->operator[](j);
+	    if (where >= 0) world(where) = world_tmps_p[i]->operator()(j);
+	}
+    }
+}
+
+
 void CoordinateSystem::makeWorldAbsolute (Vector<Double>& world) const
 {
     AlwaysAssert(world.nelements() == nWorldAxes(), AipsError);
