@@ -1,5 +1,5 @@
 //# Euler.cc: Vector of Euler rotation angles
-//# Copyright (C) 1995,1996,1997,1998,1999
+//# Copyright (C) 1995,1996,1997,1998,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -216,12 +216,12 @@ const Double &Euler::operator()(uInt which) const{
 //# Member functions
 
 Double Euler::makeRad(const Quantity &in) {
-    in.assert(UnitVal::ANGLE);
+    in.assure(UnitVal::ANGLE);
     return in.get().getValue();
 }
 
 Vector<Double> Euler::makeRad(const Quantum<Vector<Double> > &in) {
-    in.assert(UnitVal::ANGLE);
+    in.assure(UnitVal::ANGLE);
     return in.get().getValue();
 }
 

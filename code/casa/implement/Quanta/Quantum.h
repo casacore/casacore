@@ -169,7 +169,7 @@ typedef Quantum<Double> Quantity;
 // </ul>
 // or by an assertion, which will throw an exception:<br>
 // <ul>
-//   <li> assert(UnitVal kind)
+//   <li> assure(UnitVal kind)
 // </ul>
 //
 // The quantum can be retrieved with a change in units by:
@@ -380,7 +380,7 @@ template <class Qtype> class Quantum : public QBase{
   // <thrown>
   //   <li> AipsError if non-conforming unit dimensions
   // </thrown>
-  void assert(const UnitVal &uv) const;
+  void assure(const UnitVal &uv) const;
   
   // Return a Quantum converted to specified units
   // <group name="get">

@@ -293,9 +293,9 @@ Bool Quantum<Qtype>::check(const UnitVal &uv) const {
 }
 
 template <class Qtype>
-void Quantum<Qtype>::assert(const UnitVal &uv) const {
+void Quantum<Qtype>::assure(const UnitVal &uv) const {
     if (qUnit.getValue() != uv) {
-	throw(AipsError("Quantum::assert non-conforming unit type '" +
+	throw(AipsError("Quantum::assure non-conforming unit type '" +
 			getUnit() + "'"));
     }
 }

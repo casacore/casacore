@@ -159,8 +159,8 @@ main()
 	  RotMatrix rm(Euler(25, 1, 0, 0));
 	  cout << "operator*:      " << x2*rm << endl;
 	  cout << "operator*:      " << x2*2 << endl;
-	  MVBaseline::assert(x);
-	  cout << "assert:         " << "ok" << endl;
+	  MVBaseline::assure(x);
+	  cout << "assure:         " << "ok" << endl;
 	  cout << "getLength:      " << x.getLength() << endl;
 	  cout << "operator*:      " << x*x1 << endl;
 	  cout << "operator*       " << x*x2 << endl;
@@ -191,8 +191,8 @@ main()
 	  cout << mr << endl;
 	  cout << "setRefString:   " << mb.setRefString("hadec") << ", ";
 	  cout << mb << endl;
-	  MBaseline::assert(mb);
-	  cout << "assert:         " << "ok" << endl;
+	  MBaseline::assure(mb);
+	  cout << "assure:         " << "ok" << endl;
 	  cout << "clone:          " << *(mb.clone()) << endl;
 	  cout << "get:            " << mb.get("cm") << endl;
 	  cout << "getAngle:       " << mb.getAngle("deg") << endl;

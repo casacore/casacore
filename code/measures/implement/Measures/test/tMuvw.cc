@@ -171,8 +171,8 @@ main()
 	  RotMatrix rm(Euler(25, 1, 0, 0));
 	  cout << "operator*:      " << x2*rm << endl;
 	  cout << "operator*:      " << x2*2 << endl;
-	  MVuvw::assert(x);
-	  cout << "assert:         " << "ok" << endl;
+	  MVuvw::assure(x);
+	  cout << "assure:         " << "ok" << endl;
 	  cout << "getLength:      " << x.getLength() << endl;
 	  cout << "operator*:      " << x*x1 << endl;
 	  cout << "operator*       " << x*x2 << endl;
@@ -211,8 +211,8 @@ main()
 	  cout << mr << endl;
 	  cout << "setRefString:   " << mb.setRefString("hadec") << ", ";
 	  cout << mb << endl;
-	  Muvw::assert(mb);
-	  cout << "assert:         " << "ok" << endl;
+	  Muvw::assure(mb);
+	  cout << "assure:         " << "ok" << endl;
 	  Measure *xmu = mb.clone();
 	  cout << "clone:          " << *xmu << endl;
 	  delete xmu;
@@ -243,7 +243,7 @@ main()
       cout << "Test Muvw exception" << endl;
       cout << "---------------------------" << endl;
       MEpoch x;
-      Muvw::assert(x);
+      Muvw::assure(x);
 
     } catch (AipsError x) {
 	cout << x.getMesg() << endl;
@@ -253,7 +253,7 @@ main()
       cout << "Test MVuvw exception" << endl;
       cout << "---------------------------" << endl;
       MVEpoch x;
-      MVuvw::assert(x);
+      MVuvw::assure(x);
 
     } catch (AipsError x) {
 	cout << x.getMesg() << endl;

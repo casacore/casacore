@@ -1,5 +1,5 @@
 //# MVEarthMagnetic.cc: A 3D Earth magnetic field vector
-//# Copyright (C) 1996,1997,1998,1999
+//# Copyright (C) 1996,1997,1998,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -60,7 +60,7 @@ MVEarthMagnetic::MVEarthMagnetic(const Quantity &l) :
   MVPosition() {
     static UnitVal testUnit = UnitVal::MASS/UnitVal::TIME/UnitVal::TIME/
       UnitVal::CURRENT;
-    l.assert(testUnit);
+    l.assure(testUnit);
     xyz(2) = l.getBaseValue();
   }
 
@@ -71,7 +71,7 @@ MVEarthMagnetic::MVEarthMagnetic(const Quantity &l, Double angle0, Double angle1
   MVPosition() {
     static UnitVal testUnit = UnitVal::MASS/UnitVal::TIME/UnitVal::TIME/
       UnitVal::CURRENT;
-    l.assert(testUnit);
+    l.assure(testUnit);
     Double loc = cos(angle1);
     xyz(0) = cos(angle0)*loc;
     xyz(1) = sin(angle0)*loc;
@@ -84,7 +84,7 @@ MVEarthMagnetic::MVEarthMagnetic(const Quantity &l, const Quantity &angle0,
   MVPosition() {
     static UnitVal testUnit = UnitVal::MASS/UnitVal::TIME/UnitVal::TIME/
       UnitVal::CURRENT;
-    l.assert(testUnit);
+    l.assure(testUnit);
     Double loc = (cos(angle1)).getValue();
     xyz(0) = ((cos(angle0)).getValue()) * loc;
     xyz(1) = ((sin(angle0)).getValue()) * loc;
@@ -100,7 +100,7 @@ MVEarthMagnetic::MVEarthMagnetic(const Quantum<Vector<Double> > &angle) :
     if (i > 3 ) {
       throw (AipsError("Illegal vector length in MVEarthMagnetic constructor"));
     } else if (i == 3) {
-      angle.assert(testUnit);
+      angle.assure(testUnit);
       xyz = angle.getBaseValue();
     } else {
       Vector<Double> tsin = (sin(angle)).getValue(); 
@@ -128,7 +128,7 @@ MVEarthMagnetic::MVEarthMagnetic(const Quantity &l,
     if (i > 3 ) {
       throw (AipsError("Illegal vector length in MVEarthMagnetic constructor"));
     } else if (i == 3) {
-      angle.assert(UnitVal::NODIM);
+      angle.assure(UnitVal::NODIM);
       xyz = angle.getValue();
     } else {
       Vector<Double> tsin = (sin(angle)).getValue(); 
@@ -145,7 +145,7 @@ MVEarthMagnetic::MVEarthMagnetic(const Quantity &l,
 	xyz(2)=1.0;
       }
     }
-    l.assert(testUnit);
+    l.assure(testUnit);
     readjust(l.getBaseValue());
 }
 
@@ -231,7 +231,7 @@ uInt MVEarthMagnetic::type() const {
   return Register(static_cast<MVEarthMagnetic *>(0));
 }
 
-void MVEarthMagnetic::assert(const MeasValue &in) {
+void MVEarthMagnetic::assure(const MeasValue &in) {
   if (in.type() != Register(static_cast<MVEarthMagnetic *>(0))) {
     throw(AipsError("Illegal MeasValue type argument: MVEarthMagnetic"));
   };

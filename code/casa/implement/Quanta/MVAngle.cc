@@ -57,7 +57,7 @@ MVAngle::MVAngle(const Quantity &other) {
     val = other.getBaseValue();
     if (other.check(UnitVal::ANGLE)) {
     } else {
-	other.assert(UnitVal::TIME);
+	other.assure(UnitVal::TIME);
 	val *= factor;
     };
 }

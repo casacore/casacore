@@ -1,5 +1,5 @@
 //# MVEpoch.cc: a class for high precision time
-//# Copyright (C) 1996,1997,1998,1999
+//# Copyright (C) 1996,1997,1998,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -149,7 +149,7 @@ uInt MVEpoch::type() const {
   return Register(static_cast<MVEpoch *>(0));
 }
 
-void MVEpoch::assert(const MeasValue &in) {
+void MVEpoch::assure(const MeasValue &in) {
   if (in.type() != Register(static_cast<MVEpoch *>(0))) {
     throw(AipsError("Illegal MeasValue type argument: MVEpoch"));
   };
@@ -244,7 +244,7 @@ Bool MVEpoch::putValue(const Vector<Quantum<Double> > &in) {
 }
 
 Double MVEpoch::makeDay(const Quantity &in) const {
-  in.assert(UnitVal::TIME);
+  in.assure(UnitVal::TIME);
   return in.get("d").getValue();
 }
 

@@ -280,7 +280,7 @@ public:
 // Tell me your reference type (as Register())
     virtual uInt type() const;
 // Assert you are a direction
-    static void assert(const Measure &in);
+    static void assure(const Measure &in);
 // Tell me the global type (like GRADEC) for tp (tp like MDirection::J2000)
   static MDirection::GlobalTypes globalType(uInt tp);
 // Translate reference code tp. The uInt version has a check for valid codes

@@ -154,7 +154,7 @@ public:
   //   <li> AipsError if wrong MeasValue type
   // </thrown>
   // Each Measure should have:
-  // <src> static void assert(const MeasValue &in); </src>
+  // <src> static void assure(const MeasValue &in); </src>
   // Get the type (== Register(M*)) of derived MeasValue
   // <group>
   virtual uInt type() const = 0;

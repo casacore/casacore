@@ -1,5 +1,5 @@
 //# MVPosition.cc: A 3D vector in space
-//# Copyright (C) 1996,1997,1998,1999
+//# Copyright (C) 1996,1997,1998,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -68,7 +68,7 @@ MVPosition::MVPosition(Double in) :
 MVPosition::MVPosition(const Quantity &l) :
   xyz(3) {
     xyz = Double(0.0);
-    l.assert(UnitVal::LENGTH);
+    l.assure(UnitVal::LENGTH);
     xyz(2) = l.getBaseValue();
   }
 
@@ -95,7 +95,7 @@ MVPosition::MVPosition(const Quantity &l, const Quantity &angle0,
     xyz(0) = ((cos(angle0)).getValue()) * loc;
     xyz(1) = ((sin(angle0)).getValue()) * loc;
     xyz(2) = (sin(angle1)).getValue();
-    l.assert(UnitVal::LENGTH);
+    l.assure(UnitVal::LENGTH);
     readjust(l.getBaseValue());
   }
 
@@ -105,7 +105,7 @@ MVPosition::MVPosition(const Quantum<Vector<Double> > &angle) :
     if (i > 3 ) {
       throw (AipsError("Illegeal vector length in MVPosition constructor"));
     } else if (i == 3) {
-      angle.assert(UnitVal::LENGTH);
+      angle.assure(UnitVal::LENGTH);
       xyz = angle.getBaseValue();
     } else {
       Vector<Double> tsin = (sin(angle)).getValue(); 
@@ -131,7 +131,7 @@ MVPosition::MVPosition(const Quantity &l,
     if (i > 3 ) {
       throw (AipsError("Illegal vector length in MVPosition constructor"));
     } else if (i == 3) {
-      angle.assert(UnitVal::NODIM);
+      angle.assure(UnitVal::NODIM);
       xyz = angle.getValue();
     } else {
       Vector<Double> tsin = (sin(angle)).getValue(); 
@@ -148,7 +148,7 @@ MVPosition::MVPosition(const Quantity &l,
 	xyz(2)=1.0;
       }
     }
-    l.assert(UnitVal::LENGTH);
+    l.assure(UnitVal::LENGTH);
     readjust(l.getBaseValue());
   }
 
@@ -284,7 +284,7 @@ uInt MVPosition::type() const {
   return Register(static_cast<MVPosition *>(0));
 }
 
-void MVPosition::assert(const MeasValue &in) {
+void MVPosition::assure(const MeasValue &in) {
   if (in.type() != Register(static_cast<MVPosition *>(0))) {
     throw(AipsError("Illegal MeasValue type argument: MVPosition"));
   };

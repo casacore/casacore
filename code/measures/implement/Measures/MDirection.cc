@@ -99,7 +99,7 @@ uInt MDirection::type() const {
   return Register(static_cast<MDirection *>(0));
 }
 
-void MDirection::assert(const Measure &in) {
+void MDirection::assure(const Measure &in) {
   if (in.type() != Register(static_cast<MDirection *>(0))) {
     throw(AipsError("Illegal Measure type argument: " +
 		    MDirection::showMe()));

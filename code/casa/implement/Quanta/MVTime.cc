@@ -1,5 +1,5 @@
 //# MVTime.cc: Class to handle date/time type conversions and I/O
-//# Copyright (C) 1996,1997,1998,1999
+//# Copyright (C) 1996,1997,1998,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -79,7 +79,7 @@ MVTime::MVTime(const Quantity &other) {
     if (other.check(UnitVal::ANGLE)) {
 	val /= C::circle;
     } else {
-	other.assert(UnitVal::TIME);
+	other.assure(UnitVal::TIME);
 	val /= C::day;
     };
 }

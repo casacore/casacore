@@ -177,7 +177,7 @@ public:
   // Tell me your type
   // <group>
   virtual uInt type() const;
-  static void assert(const MeasValue &in);
+  static void assure(const MeasValue &in);
   // </group>
   
   // Normalise direction aspects by adjusting the length to 1

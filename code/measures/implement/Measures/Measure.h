@@ -305,9 +305,9 @@ public:
   //   <li> AipsError if wrong Measure type
   // </thrown>
   // Each Measure should have:
-  // <src> static void assert(const Measure &in); </src>
+  // <src> static void assure(const Measure &in); </src>
   // <group>
-  virtual void assert(const String &tp) const = 0;
+  virtual void assure(const String &tp) const = 0;
   // </group>
   // Tell me your Measure type (e.g. "Epoch")
   virtual const String &tellMe() const = 0;

@@ -1,5 +1,5 @@
 //# MVFrequency.cc: Internal value for MFrequency
-//# Copyright (C) 1996,1997,1998,1999
+//# Copyright (C) 1996,1997,1998,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -127,7 +127,7 @@ uInt MVFrequency::type() const {
   return Register(static_cast<MVFrequency *>(0));
 }
 
-void MVFrequency::assert(const MeasValue &in) {
+void MVFrequency::assure(const MeasValue &in) {
   if (in.type() != Register(static_cast<MVFrequency *>(0))) {
     throw(AipsError("Illegal MeasValue type argument: MVFrequency"));
   };
@@ -245,7 +245,7 @@ Double MVFrequency::makeF(Double v, const Unit &dt, Bool rev) const{
   } else if (dt.getValue() == Energy) {
     x = dt.getValue().getFac()/Planck;
   } else {
-    Quantity(1.0,dt).assert(Impuls);
+    Quantity(1.0,dt).assure(Impuls);
     x = dt.getValue().getFac()*LVel/Planck;
   }
   if (rev) return (v/x);

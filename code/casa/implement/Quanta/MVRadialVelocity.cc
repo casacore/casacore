@@ -1,5 +1,5 @@
 //# MVRadialVelocity.cc: Internal value for MRadialvelocity
-//# Copyright (C) 1996,1997,1998,1999
+//# Copyright (C) 1996,1997,1998,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -125,7 +125,7 @@ uInt MVRadialVelocity::type() const {
   return Register(static_cast<MVRadialVelocity *>(0));
 }
 
-void MVRadialVelocity::assert(const MeasValue &in) {
+void MVRadialVelocity::assure(const MeasValue &in) {
   if (in.type() != Register(static_cast<MVRadialVelocity *>(0))) {
     throw(AipsError("Illegal MeasValue type argument: MVRadialVelocity"));
   };
@@ -201,6 +201,6 @@ Double MVRadialVelocity::makeF(const Unit &dt) const{
     needInit = False;
     Velocity = UnitVal::LENGTH/UnitVal::TIME;
   };
-  Quantity(1.0,dt).assert(Velocity);
+  Quantity(1.0,dt).assure(Velocity);
   return (dt.getValue().getFac());
 }

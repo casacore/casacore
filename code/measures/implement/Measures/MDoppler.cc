@@ -77,7 +77,7 @@ uInt MDoppler::type() const {
   return Register(static_cast<MDoppler *>(0));
 }
 
-void MDoppler::assert(const Measure &in) {
+void MDoppler::assure(const Measure &in) {
   if (in.type() != Register(static_cast<MDoppler *>(0))) {
     throw(AipsError("Illegal Measure type argument: " +
 		    MDoppler::showMe()));

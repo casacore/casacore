@@ -1,5 +1,5 @@
 //# MVEpoch.h: a class for high precision time
-//# Copyright (C) 1996,1997,1998,1999
+//# Copyright (C) 1996,1997,1998,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -143,7 +143,7 @@ public:
   // Tell me your type
   // <group>
   virtual uInt type() const;
-  static void assert(const MeasValue &in);
+  static void assure(const MeasValue &in);
   // </group>
   
   // Adjust the time to its constituent parts. The returned result is always 1.0

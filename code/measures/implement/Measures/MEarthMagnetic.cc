@@ -96,7 +96,7 @@ uInt MEarthMagnetic::type() const {
   return Register(static_cast<MEarthMagnetic *>(0));
 }
 
-void MEarthMagnetic::assert(const Measure &in) {
+void MEarthMagnetic::assure(const Measure &in) {
   if (in.type() != Register(static_cast<MEarthMagnetic *>(0))) {
     throw(AipsError("Illegal Measure type argument: " +
 		    MEarthMagnetic::showMe()));

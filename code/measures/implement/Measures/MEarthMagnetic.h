@@ -209,7 +209,7 @@ class MEarthMagnetic : public MeasBase<MVEarthMagnetic, MeasRef<MEarthMagnetic> 
     virtual const String &tellMe() const;
     static const String &showMe();
     virtual uInt type() const;
-    static void assert(const Measure &in);
+    static void assure(const Measure &in);
 // </group>
 // Translate reference code. The uInt version has a check for valid codes
   // (i.e. it is a safe cast).

@@ -163,7 +163,7 @@ public:
   // Tell me your type
   // <group>
   virtual uInt type() const;
-  static void assert(const MeasValue &in);
+  static void assure(const MeasValue &in);
   // </group>
   
   // Adjust the direction cosines to a length of 1

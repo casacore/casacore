@@ -143,7 +143,7 @@ uInt MVDirection::type() const {
   return Register(static_cast<MVDirection *>(0));
 }
 
-void MVDirection::assert(const MeasValue &in) {
+void MVDirection::assure(const MeasValue &in) {
   if (in.type() != Register(static_cast<MVDirection *>(0))) {
     throw(AipsError("Illegal MeasValue type argument: MVDirection"));
   };

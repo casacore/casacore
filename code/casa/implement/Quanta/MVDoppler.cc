@@ -1,5 +1,5 @@
 //# MVDoppler.cc: Internal value for MDoppler
-//# Copyright (C) 1996,1997,1998,1999
+//# Copyright (C) 1996,1997,1998,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -125,7 +125,7 @@ uInt MVDoppler::type() const {
   return Register(static_cast<MVDoppler *>(0));
 }
 
-void MVDoppler::assert(const MeasValue &in) {
+void MVDoppler::assure(const MeasValue &in) {
   if (in.type() != Register(static_cast<MVDoppler *>(0))) {
     throw(AipsError("Illegal MeasValue type argument: MVDoppler"));
   };
@@ -210,7 +210,7 @@ Double MVDoppler::makeD(Double v, const Unit &dt, Bool rev) const{
   if (dt.getValue() == UnitVal::NODIM) {
     x = dt.getValue().getFac();
   } else {
-    Quantity(1.0,dt).assert(Velocity);
+    Quantity(1.0,dt).assure(Velocity);
     x = dt.getValue().getFac()/LVel;
   }
   if (rev) return (v/x);

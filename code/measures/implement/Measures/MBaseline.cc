@@ -85,7 +85,7 @@ uInt MBaseline::type() const {
   return Register(static_cast<MBaseline *>(0));
 }
 
-void MBaseline::assert(const Measure &in) {
+void MBaseline::assure(const Measure &in) {
   if (in.type() != Register(static_cast<MBaseline *>(0))) {
     throw(AipsError("Illegal Measure type argument: " +
 		    MBaseline::showMe()));

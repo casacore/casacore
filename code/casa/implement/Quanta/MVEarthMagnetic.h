@@ -1,5 +1,5 @@
 //# MVEarthMagnetic.h: A 3D Earth magnetic field vector
-//# Copyright (C) 1996,1997,1998
+//# Copyright (C) 1996,1997,1998,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -175,7 +175,7 @@ public:
   // Tell me your type
   // <group>
   virtual uInt type() const;
-  static void assert(const MeasValue &in);
+  static void assure(const MeasValue &in);
   // </group>
   
   // Normalise direction aspects by adjusting the length to 1

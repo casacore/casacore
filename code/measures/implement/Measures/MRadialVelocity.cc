@@ -91,7 +91,7 @@ uInt MRadialVelocity::type() const {
   return Register(static_cast<MRadialVelocity *>(0));
 }
 
-void MRadialVelocity::assert(const Measure &in) {
+void MRadialVelocity::assure(const Measure &in) {
   if (in.type() != Register(static_cast<MRadialVelocity *>(0))) {
     throw(AipsError("Illegal Measure type argument: " +
 		    MRadialVelocity::showMe()));
@@ -213,7 +213,7 @@ MDoppler MRadialVelocity::toDoppler() {
 }
 
 MDoppler MRadialVelocity::toDoppler(const Measure &in) {
-  MRadialVelocity::assert(in);
+  MRadialVelocity::assure(in);
   Double t = ((MVRadialVelocity *)(in.getData()))->getValue() / C::c;
   return MDoppler( MVDoppler(t), MDoppler::BETA);
 }
@@ -235,7 +235,7 @@ MRadialVelocity MRadialVelocity::fromDoppler(const MDoppler &dop,
 
 MRadialVelocity MRadialVelocity::fromDoppler(const Measure &dop,
 					     MRadialVelocity::Types typ) {
-  MDoppler::assert(dop);
+  MDoppler::assure(dop);
   Double t = C::c * MDoppler::Convert(dop, MDoppler::BETA)()
     .getValue().getValue();
   return MRadialVelocity(MVRadialVelocity(t),

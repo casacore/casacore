@@ -109,7 +109,7 @@ uInt MPosition::type() const {
   return Register(static_cast<MPosition *>(0));
 }
 
-void MPosition::assert(const Measure &in) {
+void MPosition::assure(const Measure &in) {
   if (in.type() != Register(static_cast<MPosition *>(0))) {
     throw(AipsError("Illegal Measure type argument: " +
 		    MPosition::showMe()));

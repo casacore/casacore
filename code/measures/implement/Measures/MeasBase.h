@@ -114,7 +114,7 @@ public:
   // <thrown>
   //   <li> AipsError if wrong Measure
   // </thrown>
-  virtual void assert(const String &tp) const;
+  virtual void assure(const String &tp) const;
   
   // Refill the specified entities
   // <group>

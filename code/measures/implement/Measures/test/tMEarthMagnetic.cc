@@ -191,8 +191,8 @@ int main() {
 	  RotMatrix rm(Euler(25, 1, 0, 0));
 	  cout << "operator*:      " << x2*rm << endl;
 	  cout << "operator*:      " << x2*2 << endl;
-	  MVEarthMagnetic::assert(x);
-	  cout << "assert:         " << "ok" << endl;
+	  MVEarthMagnetic::assure(x);
+	  cout << "assure:         " << "ok" << endl;
 	  cout << "getLength:      " << x.getLength() << endl;
 	  cout << "operator*:      " << x*x1 << endl;
 	  cout << "operator*       " << x*x2 << endl;
@@ -224,8 +224,8 @@ int main() {
 	  cout << mr << endl;
 	  cout << "setRefString:   " << mb.setRefString("hadec") << ", ";
 	  cout << mb << endl;
-	  MEarthMagnetic::assert(mb);
-	  cout << "assert:         " << "ok" << endl;
+	  MEarthMagnetic::assure(mb);
+	  cout << "assure:         " << "ok" << endl;
 	  Measure *y = mb.clone();
 	  cout << "clone:          " << *y << endl;
 	  delete y;

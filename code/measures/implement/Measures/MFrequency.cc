@@ -82,7 +82,7 @@ uInt MFrequency::type() const {
   return Register(static_cast<MFrequency *>(0));
 }
 
-void MFrequency::assert(const Measure &in) {
+void MFrequency::assure(const Measure &in) {
   if (in.type() != Register(static_cast<MFrequency *>(0))) {
     throw(AipsError("Illegal Measure type argument: " +
 		    MFrequency::showMe()));
@@ -214,7 +214,7 @@ MDoppler MFrequency::toDoppler(const MVFrequency &rest) const {
 }
 
 MDoppler MFrequency::toDoppler(const Measure &in, const MVFrequency &rest) {
-  MFrequency::assert(in);
+  MFrequency::assure(in);
   Double t = ((MVFrequency *)(in.getData()))->getValue()
     / rest.getValue();
   t *= t;
@@ -238,7 +238,7 @@ MFrequency MFrequency::fromDoppler(const MDoppler &dop,
 MFrequency MFrequency::fromDoppler(const Measure &dop,
 				   const MVFrequency &rest,
 				   MFrequency::Types type) {
-  MDoppler::assert(dop);
+  MDoppler::assure(dop);
   Double t = MDoppler::Convert(dop, MDoppler::BETA)().getValue();
   t = (1-t)/(1+t);
   return MFrequency(MVFrequency(sqrt(t) * rest.getValue()),
@@ -253,8 +253,8 @@ MFrequency MFrequency::toRest(const MDoppler &dop) {
 }
 
 MFrequency MFrequency::toRest(const Measure &in, const Measure &dop) {
-  MDoppler::assert(dop);
-  MFrequency::assert(in);
+  MDoppler::assure(dop);
+  MFrequency::assure(in);
   Double t = MDoppler::Convert(dop, MDoppler::BETA)().getValue();
   t = (1-t)/(1+t);
   return MFrequency(MVFrequency(((MVFrequency *)(in.getData()))->getValue()

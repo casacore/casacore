@@ -84,7 +84,7 @@ uInt Muvw::type() const {
   return Register(static_cast<Muvw *>(0));
 }
 
-void Muvw::assert(const Measure &in) {
+void Muvw::assure(const Measure &in) {
   if (in.type() != Register(static_cast<Muvw *>(0))) {
     throw(AipsError("Illegal Measure type argument: " +
 		    Muvw::showMe()));

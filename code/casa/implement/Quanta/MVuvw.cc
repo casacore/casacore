@@ -1,5 +1,5 @@
 //# MVuvw.cc: A 3D vector on Earth
-//# Copyright (C) 1998,1999
+//# Copyright (C) 1998,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -173,7 +173,7 @@ uInt MVuvw::type() const {
   return Register(static_cast<MVuvw *>(0));
 }
 
-void MVuvw::assert(const MeasValue &in) {
+void MVuvw::assure(const MeasValue &in) {
   if (in.type() != Register(static_cast<MVuvw *>(0))) {
     throw(AipsError("Illegal MeasValue type argument: MVuvw"));
   };

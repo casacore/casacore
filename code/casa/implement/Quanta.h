@@ -1,5 +1,5 @@
 //# Quanta.h:  a module for units and quantities
-//# Copyright (C) 1998,1999
+//# Copyright (C) 1998,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -298,7 +298,7 @@
 //   <li> <src>Bool isConform(Unit)</src>
 //   <li> <src>Bool isConform(Quantum<any>)</src>
 //   <li> <src>Bool check(UnitVal)</src>
-//   <li> <src> void assert(UnitVal)</src>
+//   <li> <src> void assure(UnitVal)</src>
 // </ul>
 //
 // The value and units of a quantum can be set or retrieved separately by the

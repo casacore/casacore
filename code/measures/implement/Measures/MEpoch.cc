@@ -79,7 +79,7 @@ uInt MEpoch::type() const {
   return Register(static_cast<MEpoch *>(0));
 }
 
-void MEpoch::assert(const Measure &in) {
+void MEpoch::assure(const Measure &in) {
   if (in.type() != Register(static_cast<MEpoch *>(0))) {
     throw(AipsError("Illegal Measure type argument: " +
 		    MEpoch::showMe()));
