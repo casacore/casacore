@@ -4772,3 +4772,4 @@
 14 316 sys rm libexec/dishArrBrowser.g
 14 316 src rm trial/apps/dish/dishRecBrowser.g
 14 316 sys rm libexec/dishRecBrowser.g
+14 316 src rm trial/apps/dish/dish_avgman.g
