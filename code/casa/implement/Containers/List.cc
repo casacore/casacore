@@ -1,5 +1,5 @@
 //# List.cc: Singly linked list classes
-//# Copyright (C) 1993,1994,1995,1997,1998,1999
+//# Copyright (C) 1993,1994,1995,1997,1998,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -99,6 +99,7 @@ template<class t> List<t> &List<t>::operator=(const List<t> &other) {
     for (; !iter.atEnd(); iter++ )
 	cur = new Link<t>(iter.getRight(),cur);
     tail = cur;
+    length = other.len();
     return *this;
 }
     
@@ -117,6 +118,7 @@ template<class t> List<t> &List<t>::operator=(const List<t> *other) {
     for (; !iter.atEnd(); iter++ )
 	cur = new Link<t>(iter.getRight(),cur);
     tail = cur;
+    length = other->len();
     return *this;
 }
 
