@@ -7,32 +7,32 @@ Result:    [12747.6, 1091.33, 47047]
 ------------------------------------------
 In ITRF:   EarthMagnetic: [12747.6, 1091.33, 47047]
            [4.8932, 74.7866] deg
-In AZEL:   EarthMagnetic: [18511.9, -2550.18, 45032.5]
-           [-7.84366, 67.4635] deg
-In HADEC:  EarthMagnetic: [12537.5, 2550.18, 47047]
-           [11.4974, 74.7866] deg
+In AZEL:   EarthMagnetic: [18312.1, -382.004, 45184.5]
+           [-1.19506, 67.9342] deg
+In HADEC:  EarthMagnetic: [12788.5, 382.004, 47047]
+           [1.71097, 74.7866] deg
 ------------------------------------------
 In AZEL:   EarthMagnetic: [18312.1, -382.004, 45184.5]
            [-1.19506, 67.9342] deg
 In HADEC:  EarthMagnetic: [12788.5, 382.004, 47047.1]
            [1.71096, 74.7866] deg
-In ITRF:   EarthMagnetic: [12747.6, -1091.33, 47047.1]
-           [-4.8932, 74.7866] deg
+In ITRF:   EarthMagnetic: [12747.6, 1091.33, 47047.1]
+           [4.8932, 74.7866] deg
 ------------------------------------------
 Model ITRF:   EarthMagnetic: [12747.6, 1091.33, 47047]
               [4.8932, 74.7866] deg, 0.487557 G
-Model AZEL:   EarthMagnetic: [18511.9, -2550.18, 45032.5]
-              [-7.84366, 67.4635] deg, 0.487557 G
-Model HADEC:  EarthMagnetic: [12537.5, 2550.18, 47047]
-              [11.4974, 74.7866] deg, 0.487557 G
+Model AZEL:   EarthMagnetic: [18312.1, -382.004, 45184.5]
+              [-1.19506, 67.9342] deg, 0.487557 G
+Model HADEC:  EarthMagnetic: [12788.5, 382.004, 47047]
+              [1.71097, 74.7866] deg, 0.487557 G
 --------------------------------------
 Testing all conversions forward/backward
 All forward/backward conversions: ok
 --------------------------------------
 Exercise all MVEarthMagnetic function
 putValue:       [23 G, 23 G, 23 G], [0.0023, 0.0023, 0.0023]
-EarthMagneticAngle:  -0.246449
-EarthMagneticAngle:  -14.1205 deg
+earthMagneticAngle:  -0.246449
+earthMagneticAngle:  -14.1205 deg
 get:            [0.00398372, 0.785398, 0.61548]
 getRecordValue: [0.0023 nT, 0.0023 nT, 0.0023 nT]
 separation:     3.14159

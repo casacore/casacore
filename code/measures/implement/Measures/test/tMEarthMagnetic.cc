@@ -153,8 +153,8 @@ Int main() {
 	  vq = Quantity(23, "G");
 	  x.putValue(vq);
 	  cout << "putValue:       " << vq.ac() << ", " << x << endl;
-	  cout << "EarthMagneticAngle:  " << x.EarthMagneticAngle(mvb0) << endl;
-	  cout << "EarthMagneticAngle:  " << x.EarthMagneticAngle(mvb0, "deg") << endl;
+	  cout << "earthMagneticAngle:  " << x.earthMagneticAngle(mvb0) << endl;
+	  cout << "earthMagneticAngle:  " << x.earthMagneticAngle(mvb0, "deg") << endl;
 	  cout << "get:            " << x.get().ac() << endl;
 	  cout << "getRecordValue: " << x.getRecordValue().ac() << endl;
 	  cout << "separation:     " << x.separation(mvb0) << endl;
