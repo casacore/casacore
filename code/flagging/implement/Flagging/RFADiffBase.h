@@ -1,5 +1,5 @@
 //# RFADiffBase.h: this defines RFADiffBase and RFADiffMapbase
-//# Copyright (C) 2000,2001
+//# Copyright (C) 2000,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -78,7 +78,7 @@ class PGPlotterLocal;
 //   <li> start discussion of this possible extension
 // </todo>
 
-class RFADiffBase : public RFAFlagCubeBase,PGPlotEnums
+class RFADiffBase : public RFAFlagCubeBase, public PGPlotEnums
 {
 public:
   RFADiffBase  ( RFChunkStats &ch,const RecordInterface &parm );
