@@ -1,7 +1,7 @@
 /*=============================================================================
 *
 *   WCSLIB - an implementation of the FITS WCS proposal.
-*   Copyright (C) 1995-1999, Mark Calabretta
+*   Copyright (C) 1995-2000, Mark Calabretta
 *
 *   This library is free software; you can redistribute it and/or modify it
 *   under the terms of the GNU Library General Public License as published
@@ -94,7 +94,7 @@
 *   Given:
 *      crval    const double[]
 *                        Coordinate reference values corresponding to the FITS
-*                        CRVALn header cards.
+*                        CRVALn header cards (see note 2).
 *
 *   Given and returned:
 *      cel      celprm*  Spherical coordinate transformation parameters (usage
@@ -169,7 +169,7 @@
 *   Given:
 *      crval    const double[]
 *                        Coordinate reference values corresponding to the FITS
-*                        CRVALn header cards.
+*                        CRVALn header cards (see note 2).
 *
 *   Given and returned:
 *      cel      celprm*  Spherical coordinate transformation parameters
@@ -240,7 +240,7 @@
 *   Given:
 *      crval    const double[]
 *                        Coordinate reference values corresponding to the FITS
-*                        CRVALn header cards.
+*                        CRVALn header cards (see note 2).
 *
 *   Given and returned:
 *      cel      celprm*  Spherical coordinate transformation parameters
@@ -290,7 +290,9 @@
 *    3) These functions recognize the NCP projection and convert it to the
 *       equivalent SIN projection.
 *
-*    4) The quadcube projections (CSC, QSC, TSC) may be represented in FITS in
+*       They also recognize GLS as a synonym for SFL.
+*
+*    4) The quadcube projections (TSC, CSC, QSC) may be represented in FITS in
 *       either of two ways:
 *
 *          a) The six faces may be laid out in one plane and numbered as
@@ -379,8 +381,11 @@
 *===========================================================================*/
 
 #include <math.h>
+#include <string.h>
+#include <stdio.h>
 #include "wcsmath.h"
 #include "wcstrig.h"
+#include "sph.h"
 #include "wcs.h"
 
 /* Map error number to error message for each function. */
@@ -423,6 +428,9 @@ const char ctype[][9];
 struct wcsprm *wcs;
 
 {
+   int  nalias = 2;
+   char aliases [2][4] = {"NCP", "GLS"};
+
    int j, k, *ndx;
    char requir[9];
 
@@ -451,8 +459,15 @@ struct wcsprm *wcs;
       }
 
       if (k == npcode) {
-         /* Allow NCP to pass (will be converted to SIN later). */
-         if (strncmp(&ctype[j][5], "NCP", 3)) continue;
+         /* Maybe it's a projection alias. */
+         for (k = 0; k < nalias; k++) {
+            if (strncmp(&ctype[j][5], aliases[k], 3) == 0) break;
+         }
+      }
+
+      if (k == nalias) {
+         /* Not recognized. */
+         continue;
       }
 
       /* Parse the celestial axis type. */
@@ -483,6 +498,18 @@ struct wcsprm *wcs;
             sprintf(wcs->lattyp, "%cLAT", ctype[j][0]);
             ndx = &wcs->lng;
             sprintf(requir, "%s-%s", wcs->lngtyp, wcs->pcode);
+         } else if (strncmp(&ctype[j][2], "LN", 2) == 0) {
+            wcs->lng = j;
+            sprintf(wcs->lngtyp, "%c%cLN", ctype[j][0], ctype[j][1]);
+            sprintf(wcs->lattyp, "%c%cLT", ctype[j][0], ctype[j][1]);
+            ndx = &wcs->lat;
+            sprintf(requir, "%s-%s", wcs->lattyp, wcs->pcode);
+         } else if (strncmp(&ctype[j][2], "LT", 2) == 0) {
+            wcs->lat = j;
+            sprintf(wcs->lngtyp, "%c%cLN", ctype[j][0], ctype[j][1]);
+            sprintf(wcs->lattyp, "%c%cLT", ctype[j][0], ctype[j][1]);
+            ndx = &wcs->lng;
+            sprintf(requir, "%s-%s", wcs->lngtyp, wcs->pcode);
          } else {
             /* Unrecognized celestial type. */
             return 1;
@@ -501,6 +528,11 @@ struct wcsprm *wcs;
    if (strcmp(requir, "")) {
       /* Unmatched celestial axis. */
       return 1;
+   }
+
+   /* Do simple alias translations. */
+   if (strncmp(wcs->pcode, "GLS", 3) == 0) {
+      strcpy(wcs->pcode, "SFL");
    }
 
    if (strcmp(wcs->pcode, "")) {
@@ -549,14 +581,14 @@ double pixcrd[];
       /* Compute projected coordinates. */
       if (strcmp(wcs->pcode, "NCP") == 0) {
          /* Convert NCP to SIN. */
-         if (cel->ref[2] == 0.0) {
+         if (cel->ref[1] == 0.0) {
             return 2;
          }
 
          strcpy(wcs->pcode, "SIN");
          prj->p[1] = 0.0;
-         prj->p[2] = cosd(cel->ref[2])/sind(cel->ref[2]);
-         prj->flag = 0;
+         prj->p[2] = cosd(cel->ref[1])/sind(cel->ref[1]);
+         prj->flag = (prj->flag < 0) ? -1 : 0;
       }
 
       if (err = celfwd(wcs->pcode, world[wcs->lng], world[wcs->lat], cel,
@@ -683,14 +715,14 @@ double world[];
       /* Compute celestial coordinates. */
       if (strcmp(wcs->pcode, "NCP") == 0) {
          /* Convert NCP to SIN. */
-         if (cel->ref[2] == 0.0) {
+         if (cel->ref[1] == 0.0) {
             return 2;
          }
  
          strcpy(wcs->pcode, "SIN");
          prj->p[1] = 0.0;
-         prj->p[2] = cosd(cel->ref[2])/sind(cel->ref[2]);
-         prj->flag = 0;
+         prj->p[2] = cosd(cel->ref[1])/sind(cel->ref[1]);
+         prj->flag = (prj->flag < 0) ? -1 : 0;
       }
 
       if (err = celrev(wcs->pcode, imgcrd[wcs->lng], imgcrd[wcs->lat], prj,
@@ -733,6 +765,11 @@ double pixcrd[];
    double dabs, dmin, lmin;
    double phi0, phi1;
    struct celprm cel0;
+
+   /* Initialize if required. */
+   if (wcs->flag != WCSSET) {
+      if (wcsset(lin->naxis, ctype, wcs)) return 1;
+   }
 
    /* Check vspan. */
    if (vspan[0] <= vspan[1]) {
@@ -1148,8 +1185,6 @@ double pixcrd[];
    cel0.euler[2] =  90.0;
    cel0.euler[3] =   1.0;
    cel0.euler[4] =   0.0;
-   cel0.prjfwd = cel->prjfwd;
-   cel0.prjrev = cel->prjrev;
 
    /* No convergence, check for aberrant behaviour at a native pole. */
    *theta = -90.0;

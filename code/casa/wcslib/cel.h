@@ -1,7 +1,7 @@
 /*=============================================================================
 *
 *   WCSLIB - an implementation of the FITS WCS proposal.
-*   Copyright (C) 1995-1999, Mark Calabretta
+*   Copyright (C) 1995-2000, Mark Calabretta
 *
 *   This library is free software; you can redistribute it and/or modify it
 *   under the terms of the GNU Library General Public License as published
@@ -38,25 +38,10 @@
 extern "C" {
 #endif
 
-extern int npcode;
-extern char pcodes[25][4];
-
 struct celprm {
    int flag;
    double ref[4];
    double euler[5];
-
-#if __STDC__  || defined(__cplusplus)
-   int (*prjfwd)(const double, const double,
-                 struct prjprm *,
-                 double *, double *);
-   int (*prjrev)(const double, const double,
-                 struct prjprm *,
-                 double *, double *);
-#else
-   int (*prjfwd)();
-   int (*prjrev)();
-#endif
 };
 
 #if __STDC__  || defined(__cplusplus)

@@ -1,7 +1,7 @@
 /*============================================================================
 *
 *   WCSLIB - an implementation of the FITS WCS proposal.
-*   Copyright (C) 1995-1999, Mark Calabretta
+*   Copyright (C) 1995-2000, Mark Calabretta
 *
 *   This library is free software; you can redistribute it and/or modify it
 *   under the terms of the GNU Library General Public License as published
@@ -34,11 +34,8 @@
 *---------------------------------------------------------------------------*/
 
 #include <math.h>
+#include "wcsmath.h"
 #include "wcstrig.h"
-
-#define PI 3.141592653589793238462643
-const double d2r = PI / 180.0;
-const double r2d = 180.0 / PI;
 
 double cosd(angle)
 
@@ -58,7 +55,7 @@ const double angle;
       return 0.0;
    }
 
-   return cos(angle*d2r);
+   return cos(angle*D2R);
 }
 
 /*--------------------------------------------------------------------------*/
@@ -81,7 +78,7 @@ const double angle;
       return 0.0;
    }
 
-   return sin(angle*d2r);
+   return sin(angle*D2R);
 }
 
 /*--------------------------------------------------------------------------*/
@@ -102,7 +99,7 @@ const double angle;
       return -1.0;
    }
 
-   return tan(angle*d2r);
+   return tan(angle*D2R);
 }
 
 /*--------------------------------------------------------------------------*/
@@ -120,7 +117,7 @@ const double v;
       if (v+1.0 > -WCSTRIG_TOL) return 180.0;
    }
 
-   return acos(v)*r2d;
+   return acos(v)*R2D;
 }
 
 /*--------------------------------------------------------------------------*/
@@ -138,7 +135,7 @@ const double v;
       if (v-1.0 <  WCSTRIG_TOL) return 90.0;
    }
 
-   return asin(v)*r2d;
+   return asin(v)*R2D;
 }
 
 /*--------------------------------------------------------------------------*/
@@ -156,7 +153,7 @@ const double v;
       return 45.0;
    }
 
-   return atan(v)*r2d;
+   return atan(v)*R2D;
 }
 
 /*--------------------------------------------------------------------------*/
@@ -180,5 +177,5 @@ const double x, y;
       }
    }
 
-   return atan2(y,x)*r2d;
+   return atan2(y,x)*R2D;
 }

@@ -1,7 +1,7 @@
 /*=============================================================================
 *
 *   WCSLIB - an implementation of the FITS WCS proposal.
-*   Copyright (C) 1995-1999, Mark Calabretta
+*   Copyright (C) 1995-2000, Mark Calabretta
 *
 *   This library is free software; you can redistribute it and/or modify it
 *   under the terms of the GNU Library General Public License as published
@@ -31,6 +31,26 @@
 
 #ifndef WCSLIB_MATH
 #define WCSLIB_MATH
+
+#ifdef PI
+#undef PI
+#endif
+
+#ifdef D2R
+#undef D2R
+#endif
+
+#ifdef R2D
+#undef R2D
+#endif
+
+#ifdef SQRT2
+#undef SQRT2
+#endif
+
+#ifdef SQRT2INV
+#undef SQRT2INV
+#endif
 
 #define PI 3.141592653589793238462643
 #define D2R PI/180.0
