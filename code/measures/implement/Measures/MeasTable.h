@@ -194,7 +194,11 @@ public:
   static const Vector<Char> &mulArg2000B(uInt which);
   static const Vector<Char> &mulPlanArg2000A(uInt which);
   // </group>
-  
+
+  // Generate the which' vector of the equation of equinoxes (IAU2000)
+  // complementary terms series arguments
+  static const Vector<Char> &mulArgEqEqCT2000(uInt which);
+
   // Generate the which' vector of the nutation series multipliers
   // at T, measured in Julian centuries since J2000.0, respectively B1900.0
   // <group>
@@ -204,6 +208,11 @@ public:
   static const Vector<Double> &mulSC2000B(uInt which, Double T);
   static const Vector<Double> &mulPlanSC2000A(uInt which);
   // </group>
+
+  // Generate the which' vector of the equation of equinoxes (IAU2000)
+  // complementary terms series multipliers
+  // at T, measured in Julian centuries since J2000.0, respectively B1900.0
+  static const Vector<Double> &mulSCEqEqCT2000(uInt which);
 
   // Get nutation angles corrections for UTC T in rad.
   // which = 0 : dPsi as given by IERS for IAU nutation theory;
@@ -452,6 +461,9 @@ private:
   static void calcMulSCPlan(Bool &need,
 			    Vector<Double> result[], uInt resrow,
 			    const Short coeffSC[][4]);
+  static void calcMulSCPlan(Bool &need,
+			    Vector<Double> result[], uInt resrow,
+			    const Double coeffSC[][2]);
   // </group>
   //# Data
   // Observatories table data

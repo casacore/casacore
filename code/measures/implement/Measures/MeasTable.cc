@@ -1901,6 +1901,51 @@ const Vector<Char> &MeasTable::mulArg2000B(uInt which) {
   return argArray[which];
 }
 
+const Vector<Char> &MeasTable::mulArgEqEqCT2000(uInt which) {
+  static Bool needInit = True;
+  static Vector<Char> argArray[34];
+  static const Char ARG[34][14] = {
+  // L   L'  F   D   Om  Me  Ve  E  Ma  Ju  Sa  Ur  Ne  pre
+   { 0,  0,  0,  0,  1,  0,  0,  0,  0,  0,  0,  0,  0,  0 },   //  1
+   { 0,  0,  0,  0,  2,  0,  0,  0,  0,  0,  0,  0,  0,  0 },   //  2
+   { 0,  0,  2, -2,  3,  0,  0,  0,  0,  0,  0,  0,  0,  0 },   //  3
+   { 0,  0,  2, -2,  1,  0,  0,  0,  0,  0,  0,  0,  0,  0 },   //  4
+   { 0,  0,  2, -2,  2,  0,  0,  0,  0,  0,  0,  0,  0,  0 },   //  5
+   { 0,  0,  2,  0,  3,  0,  0,  0,  0,  0,  0,  0,  0,  0 },   //  6
+   { 0,  0,  2,  0,  1,  0,  0,  0,  0,  0,  0,  0,  0,  0 },   //  7
+   { 0,  0,  0,  0,  3,  0,  0,  0,  0,  0,  0,  0,  0,  0 },   //  8
+   { 0,  1,  0,  0,  1,  0,  0,  0,  0,  0,  0,  0,  0,  0 },   //  9
+   { 0,  1,  0,  0, -1,  0,  0,  0,  0,  0,  0,  0,  0,  0 },   // 10
+   { 1,  0,  0,  0, -1,  0,  0,  0,  0,  0,  0,  0,  0,  0 },   // 11
+   { 1,  0,  0,  0,  1,  0,  0,  0,  0,  0,  0,  0,  0,  0 },   // 12
+   { 0,  1,  2, -2,  3,  0,  0,  0,  0,  0,  0,  0,  0,  0 },   // 13
+   { 0,  1,  2, -2,  1,  0,  0,  0,  0,  0,  0,  0,  0,  0 },   // 14
+   { 0,  0,  4, -4,  4,  0,  0,  0,  0,  0,  0,  0,  0,  0 },   // 15
+   { 0,  0,  1, -1,  1,  0, -8, 12,  0,  0,  0,  0,  0,  0 },   // 16
+   { 0,  0,  2,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0 },   // 17
+   { 0,  0,  2,  0,  2,  0,  0,  0,  0,  0,  0,  0,  0,  0 },   // 18
+   { 1,  0,  2,  0,  3,  0,  0,  0,  0,  0,  0,  0,  0,  0 },   // 19
+   { 1,  0,  2,  0,  1,  0,  0,  0,  0,  0,  0,  0,  0,  0 },   // 20
+   { 0,  0,  2, -2,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0 },   // 21
+   { 0,  1, -2,  2, -3,  0,  0,  0,  0,  0,  0,  0,  0,  0 },   // 22
+   { 0,  1, -2,  2, -1,  0,  0,  0,  0,  0,  0,  0,  0,  0 },   // 23
+   { 0,  0,  0,  0,  0,  0,  8,-13,  0,  0,  0,  0,  0, -1 },   // 24
+   { 0,  0,  0,  2,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0 },   // 25
+   { 2,  0, -2,  0, -1,  0,  0,  0,  0,  0,  0,  0,  0,  0 },   // 26
+   { 1,  0,  0, -2,  1,  0,  0,  0,  0,  0,  0,  0,  0,  0 },   // 27
+   { 0,  1,  2, -2,  2,  0,  0,  0,  0,  0,  0,  0,  0,  0 },   // 28
+   { 1,  0,  0, -2, -1,  0,  0,  0,  0,  0,  0,  0,  0,  0 },   // 29
+   { 0,  0,  4, -2,  4,  0,  0,  0,  0,  0,  0,  0,  0,  0 },   // 30
+   { 0,  0,  2, -2,  4,  0,  0,  0,  0,  0,  0,  0,  0,  0 },   // 31
+   { 1,  0, -2,  0, -3,  0,  0,  0,  0,  0,  0,  0,  0,  0 },   // 32
+   { 1,  0, -2,  0, -1,  0,  0,  0,  0,  0,  0,  0,  0,  0 },   // 33
+   { 0,  0,  0,  0,  1,  0,  0,  0,  0,  0,  0,  0,  0,  0 }    // T^1 term
+  };
+  calcMulPlanArg(needInit, argArray, &ARG[0], 34);
+  DebugAssert(which < 34, AipsError);
+  return argArray[which];
+}
+
 const Vector<Char> &MeasTable::mulArg1950(uInt which) {
   static Bool needInit = True;
   static Vector<Char> argArray[69];
@@ -3662,6 +3707,52 @@ const Vector<Double> &MeasTable::mulPlanSC2000A(uInt which) {
   return argArray[which];
 }
 
+const Vector<Double> &MeasTable::mulSCEqEqCT2000(uInt which) {
+  static Bool needInit = True;
+  static Vector<Double> argArray[34];
+  // Equation of Equinox complementary terms
+  static const Double MULSC[34][2] = {
+  //        sin                 cos
+     {  +2640.96e-6,          -0.39e-6 },     //  1
+     {    +63.52e-6,          -0.02e-6 },     //  2
+     {    +11.75e-6,          +0.01e-6 },     //  3
+     {    +11.21e-6,          +0.01e-6 },     //  4
+     {     -4.55e-6,          +0.00e-6 },     //  5
+     {     +2.02e-6,          +0.00e-6 },     //  6
+     {     +1.98e-6,          +0.00e-6 },     //  7
+     {     -1.72e-6,          +0.00e-6 },     //  8
+     {     -1.41e-6,          -0.01e-6 },     //  9
+     {     -1.26e-6,          -0.01e-6 },     // 10
+     {     -0.63e-6,          +0.00e-6 },     // 11
+     {     -0.63e-6,          +0.00e-6 },     // 12
+     {     +0.46e-6,          +0.00e-6 },     // 13
+     {     +0.45e-6,          +0.00e-6 },     // 14
+     {     +0.36e-6,          +0.00e-6 },     // 15
+     {     -0.24e-6,          -0.12e-6 },     // 16
+     {     +0.32e-6,          +0.00e-6 },     // 17
+     {     +0.28e-6,          +0.00e-6 },     // 18
+     {     +0.27e-6,          +0.00e-6 },     // 19
+     {     +0.26e-6,          +0.00e-6 },     // 20
+     {     -0.21e-6,          +0.00e-6 },     // 21
+     {     +0.19e-6,          +0.00e-6 },     // 22
+     {     +0.18e-6,          +0.00e-6 },     // 23
+     {     -0.10e-6,          +0.05e-6 },     // 24
+     {     +0.15e-6,          +0.00e-6 },     // 25
+     {     -0.14e-6,          +0.00e-6 },     // 26
+     {     +0.14e-6,          +0.00e-6 },     // 27
+     {     -0.14e-6,          +0.00e-6 },     // 28
+     {     +0.14e-6,          +0.00e-6 },     // 29
+     {     +0.13e-6,          +0.00e-6 },     // 30
+     {     -0.11e-6,          +0.00e-6 },     // 31
+     {     +0.11e-6,          +0.00e-6 },     // 32
+     {     +0.11e-6,          +0.00e-6 },     // 33
+     {     -0.87e-6,          +0.00e-6 }      // T^1 term
+  };
+  calcMulSCPlan(needInit, argArray, 34, &MULSC[0]);
+  DebugAssert(which < 34, AipsError);
+  return argArray[which];
+}
+
 const Vector<Double> &MeasTable::mulSC1950(uInt which, Double T) {
   static Bool needInit = True;
   static Double checkT = -1e30;
@@ -3849,6 +3940,18 @@ void MeasTable::calcMulSCPlan(Bool &need,
     for (uInt i=0; i<resrow; i++) {
       result[i].resize(4);
       for (uInt j=0; j<4; j++) result[i](j) = coeffSC[i][j]*C::arcsec*1e-7;
+    };
+  };
+}
+
+void MeasTable::calcMulSCPlan(Bool &need,
+			      Vector<Double> result[], uInt resrow,
+			      const Double coeffSC[][2]) {
+  if (need) {
+    need = False;
+    for (uInt i=0; i<resrow; i++) {
+      result[i].resize(2);
+      for (uInt j=0; j<2; j++) result[i](j) = coeffSC[i][j];
     };
   };
 }
