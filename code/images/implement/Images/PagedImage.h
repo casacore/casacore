@@ -1,5 +1,5 @@
 //# PagedImage.h: read, store and manipulate astronomical images
-//# Copyright (C) 1994,1995,1996,1997,1998,1999
+//# Copyright (C) 1994,1995,1996,1997,1998,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -212,6 +212,9 @@ public:
   // Add the TableLogSink from other to this one.
   // This is where the history is kept.
   virtual void mergeTableLogSink (const LogIO& other);
+
+  // A PagedImage is always persistent.
+  virtual Bool isPersistent() const;
 
   // A PagedImage is always paged to disk.
   virtual Bool isPaged() const;
