@@ -30,7 +30,7 @@
 #include <aips/Quanta/Quantum.h>
 typedef Quantum<Double> gpp_muvw_bug1;
 #endif
-#include <trial/Measures/Muvw.h>
+#include <aips/Measures/Muvw.h>
 #include <aips/Exceptions.h>
 #include <aips/Arrays/Vector.h>
 #include <aips/Mathematics/Math.h>

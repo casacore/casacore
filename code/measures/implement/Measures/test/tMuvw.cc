@@ -35,10 +35,10 @@
 #include <aips/Measures/MEpoch.h>
 #include <aips/Measures/MDirection.h>
 #include <aips/Measures/MVDirection.h>
-#include <trial/Measures/MVBaseline.h>
+#include <aips/Measures/MVBaseline.h>
 #include <aips/Measures/MPosition.h>
-#include <trial/Measures/Muvw.h>
-#include <trial/Measures/MVuvw.h>
+#include <aips/Measures/Muvw.h>
+#include <aips/Measures/MVuvw.h>
 #include <aips/Measures/MCFrame.h>
 #include <aips/Arrays/ArrayMath.h>
 #include <aips/Arrays/ArrayLogical.h>
