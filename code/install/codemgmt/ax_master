@@ -6317,3 +6317,4 @@
 18 024 src rm doc/gettingresults/gettingresults.latex
 18 031 src rm aips/implement/Mathematics/NumericTraits2.h
 18 063 src rm aips/implement/Mathematics/BLASError.cc
+18 072 src mv trial/apps/gainfitter/pgplotmanager.g trial/implement/Guiutils/pgplotmanager.g
