@@ -1,5 +1,5 @@
 //# TempLattice.h: A Lattice that can be used for temporary storage
-//# Copyright (C) 1997,1998,1999
+//# Copyright (C) 1997,1998,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -138,7 +138,8 @@ public:
   // memory the Lattice can consume before it becomes disk based by giving a
   // non-negative value to the maxMemoryInMB argument. Otherwise it will assume
   // it can use up to 25% of the memory on your machine as defined in aipsrc
-  // (this algorithm may change).
+  // (this algorithm may change). Setting maxMemoryInMB to zero will force
+  // the lattice to disk.
   // <group>
   explicit TempLattice (const TiledShape& shape, Int maxMemoryInMB=-1);
   TempLattice (const TiledShape& shape, Double maxMemoryInMB);
