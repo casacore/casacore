@@ -35,6 +35,11 @@
 #include <aips/Mathematics/Math.h>
 #include <aips/Utilities/Assert.h>
 
+// make a portable float to float sqrt for use in Array<Float>::apply
+extern "C" {
+    static float floatsqrt(float val) {return sqrt(val);}
+};
+
 StokesConverter::StokesConverter() {}
 
 StokesConverter::StokesConverter(const Vector<Int>& out, const Vector<Int>& in)
@@ -44,7 +49,10 @@ StokesConverter::StokesConverter(const Vector<Int>& out, const Vector<Int>& in)
 
 StokesConverter& StokesConverter::operator=(const StokesConverter& other)
 {
-  setConversion(other.out_p,other.in_p);
+  if (this!=&other) {
+    setConversion(other.out_p,other.in_p);
+  }
+  return *this;
 }
 
 void StokesConverter::setConversion(const Vector<Int>& out, 
@@ -260,7 +268,7 @@ void StokesConverter::convert(Array<Complex>& out, const Array<Complex>& in)
 	    if (j==1) outf=real(tmp);
 	    else outf.ac()+=real(tmp);
 	  }
-	  outf.apply(sqrtf);
+	  outf.apply(floatsqrt);
 	  if (pol==Stokes::PFtotal) {
 	    outf.ac()/=amplitude(iquv.row(0).ac());
 	  }
@@ -278,7 +286,7 @@ void StokesConverter::convert(Array<Complex>& out, const Array<Complex>& in)
 	    if (j==1) outf=real(tmp);
 	    else outf.ac()+=real(tmp);
 	  }
-	  outf.apply(sqrtf);
+	  outf.apply(floatsqrt);
 	  if (pol==Stokes::PFlinear) {
 	    outf.ac()/=amplitude(iquv.row(0).ac());
 	  }
