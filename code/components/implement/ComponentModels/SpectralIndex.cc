@@ -26,19 +26,17 @@
 //# $Id$
 
 #include <trial/ComponentModels/SpectralIndex.h>
-#include <aips/Arrays/Array.h>
-#include <aips/Arrays/ArrayMath.h>
-#include <aips/Containers/Record.h>
+#include <aips/Arrays/Vector.h>
 #include <aips/Containers/RecordInterface.h>
 #include <aips/Exceptions/Error.h>
+#include <aips/Exceptions/Excp.h>
 #include <aips/Lattices/IPosition.h>
 #include <aips/Logging/LogIO.h>
 #include <aips/Logging/LogOrigin.h>
-#include <aips/Mathematics/Constants.h>
 #include <aips/Mathematics/Math.h>
 #include <aips/Measures/MCFrequency.h>
-#include <aips/Quanta/MVFrequency.h>
 #include <aips/Measures/MeasConvert.h>
+#include <aips/Quanta/MVFrequency.h>
 #include <aips/Quanta/Quantum.h>
 #include <aips/Utilities/Assert.h>
 #include <aips/Utilities/DataType.h>
@@ -96,12 +94,10 @@ void SpectralIndex::setIndex(const Double& newIndex) {
 Double SpectralIndex::sample(const MFrequency& centerFreq) const {
   DebugAssert(ok(), AipsError);
   const MFrequency& refFreq(refFrequency());
-  const MFrequency::Ref& refFreqFrame(refFreq.getRef());
-  const Double nu = centerFreq.getValue().getValue();
+  const MFrequency::Ref& centerFreqFrame(centerFreq.getRef());
   Double nu0;
-  if (centerFreq.getRef() != refFreqFrame) {
-    nu0 = MFrequency::Convert(refFreq, centerFreq.getRef())()
-      .getValue().getValue();
+  if (centerFreqFrame != refFreq.getRef()) {
+    nu0 = MFrequency::Convert(refFreq,centerFreqFrame)().getValue().getValue();
   } else {
     nu0 = refFreq.getValue().getValue();
   }
@@ -109,7 +105,34 @@ Double SpectralIndex::sample(const MFrequency& centerFreq) const {
     throw(AipsError("SpectralIndex::sample(...) - "
 		    "the reference frequency is zero or negative"));
   }
+  const Double nu = centerFreq.getValue().getValue();
   return pow(nu/nu0, itsIndex);
+}
+
+void SpectralIndex::sample(Vector<Double>& scale, 
+			   const Vector<MFrequency::MVType>& frequencies, 
+			   const MFrequency::Ref& refFrame) const {
+  DebugAssert(ok(), AipsError);
+  const uInt nSamples = frequencies.nelements();
+  DebugAssert(scale.nelements() == nSamples, AipsError);
+
+  const MFrequency& refFreq(refFrequency());
+  Double nu0;
+  if (refFrame != refFreq.getRef()) {
+    nu0 = MFrequency::Convert(refFreq, refFrame)().getValue().getValue();
+  } else {
+    nu0 = refFreq.getValue().getValue();
+  }
+  if (nu0 <= 0.0) {
+    throw(AipsError("SpectralIndex::sample(...) - "
+		    "the reference frequency is zero or negative"));
+  }
+
+  Double nu;
+  for (uInt i = 0; i < nSamples; i++) {
+    nu = frequencies(i).getValue();
+    scale(i) = pow(nu/nu0, itsIndex);
+  }
 }
 
 SpectralModel* SpectralIndex::clone() const {
@@ -139,30 +162,28 @@ void SpectralIndex::parameters(Vector<Double>& spectralParms) const {
 Bool SpectralIndex::fromRecord(String& errorMessage, 
  			       const RecordInterface& record) {
   if (!SpectralModel::fromRecord(errorMessage, record)) return False;
-  {
-    if (!record.isDefined(String("index"))) {
-      errorMessage += "The 'spectrum' record must have an 'index' field\n";
-      return False;
-    }
-    const RecordFieldId index("index");
-    const IPosition shape(1,1);
-    if (record.shape(index) != shape) {
-      errorMessage += "The 'index' field must be a scalar\n";
-      return False;
-    }
-    Double indexVal;
-    switch (record.dataType(index)) {
-    case TpArrayDouble:
-    case TpArrayFloat:
-    case TpArrayInt:
-      indexVal = record.asDouble(index);
-      break;
-    default:
-      errorMessage += "The 'index' field must be a real numbers\n";
-      return False;
-    }
-    setIndex(indexVal);
+  if (!record.isDefined(String("index"))) {
+    errorMessage += "The 'spectrum' record must have an 'index' field\n";
+    return False;
   }
+  const RecordFieldId index("index");
+  const IPosition shape(1,1);
+  if (record.shape(index) != shape) {
+    errorMessage += "The 'index' field must be a scalar\n";
+    return False;
+  }
+  Double indexVal;
+  switch (record.dataType(index)) {
+  case TpDouble:
+  case TpFloat:
+  case TpInt:
+    indexVal = record.asDouble(index);
+    break;
+  default:
+    errorMessage += "The 'index' field must be a real number\n";
+    return False;
+  }
+  setIndex(indexVal);
   DebugAssert(ok(), AipsError);
   return True;
 }
@@ -193,9 +214,22 @@ Bool SpectralIndex::convertUnit(String& errorMessage,
 }
 
 Bool SpectralIndex::ok() const {
+  if (!SpectralModel::ok()) return False;
+  if (refFrequency().getValue().getValue() <= 0.0) {
+    LogIO logErr(LogOrigin("SpectralIndex", "ok()"));
+    logErr << LogIO::SEVERE << "The reference frequency is zero or negative!" 
+           << LogIO::POST;
+    return False;
+  }
+  if (abs(itsIndex) > 100) {
+    LogIO logErr(LogOrigin("SpectralIndex", "ok()"));
+    logErr << LogIO::SEVERE << "The spectral index is greater than 100!" 
+           << LogIO::POST;
+    return False;
+  }
   return True;
 }
 
 // Local Variables: 
-// compile-command: "gmake OPTLIB=1 SpectralIndex"
+// compile-command: "gmake SpectralIndex"
 // End: 
