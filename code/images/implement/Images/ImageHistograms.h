@@ -39,6 +39,7 @@ template <class T> class RO_LatticeIterator;
 class IPosition;
 class LogIO;
 class CoordinateSystem;
+class PGPlotter;
 
 // <summary> Displays histograms of regions from an image</summary>
 // <use visibility=export>
@@ -224,13 +225,13 @@ public:
    Bool setStatsList(const Bool& doList);
 
 // This function sets the name of the PGPLOT plotting device and the number of
-// subplots in x and y per page.   If you set <src>device</src> but offer
+// subplots in x and y per page.   If you set <src>plotter</src> but offer
 // a zero length array for <src>nxy</src> then <src>nxy</src> is set
 // to [1,1].  A return value of <src>False</src> indicates invalid
 // plotting arguments or that the internal status of the class is bad. If you
 // don't call this function, the default state of the class is to not set
 // a plotting device.
-   Bool setPlotting(const String& device,
+   Bool setPlotting(const PGPlotter& plotter,
                     const Vector<Int>& nxy);
 
 // Display the histograms by plotting them.  A return value of <src>False</src> 
@@ -273,7 +274,7 @@ private:
    Int nBins_p;
    IPosition  blc_p, trc_p, inc_p;
 
-   String device_p; 
+   PGPlotter plotter_p;
    Vector<Int> cursorAxes_p;
    Vector<Int> displayAxes_p;
    Vector<Int> nxy_p;
@@ -297,7 +298,8 @@ private:
                              const Vector<T>& range,
                              const Vector<Double> &stats,
                              const Vector<Float>& values,
-                             const Vector<Float>& counts);
+                             const Vector<Float>& counts,
+                             PGPlotter& plotter);
 
 
 // Fish out and convert to the appropriate form one histogram from the
@@ -377,9 +379,9 @@ private:
                          const Int& nBins);
 
 // Plot one histogram
-   void plotHist  (const Int& n,
-                   const float* const px,
-                   const float* const py);
+   void plotHist  (const Vector<Float>& x,
+                   const Vector<Float>& y,
+                   PGPlotter& plotter);
 
 // Update the histogram storage image with the histogram
 // accumulated from the current chunk
@@ -410,7 +412,8 @@ private:
 // Write values of display axes on plots
    Bool writeDispAxesValues (const IPosition& startPos,
                              const Float& xMin,
-                             const Float& yMax);
+                             const Float& yMax,
+                             PGPlotter& plotter);
 
 };
 
