@@ -2286,3 +2286,4 @@
 09 232 src rm trial/apps/imager2
 09 234 src rm aips/glish/glish/TkPGPLOT.cc
 09 234 src rm aips/glish/glish/TkPGPLOT.h
+09 234 src rm aips/glish/sds
