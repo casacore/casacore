@@ -25,15 +25,16 @@
 //#
 //# $Id$
 
-#include <aips/Tables/ExprFuncNode.h>
 #include <aips/Tables/ExprNode.h>
 #include <aips/Tables/ExprNodeSet.h>
 #include <aips/Tables/ExprDerNode.h>
 #include <aips/Tables/ExprMathNode.h>
 #include <aips/Tables/ExprLogicNode.h>
+#include <aips/Tables/ExprFuncNode.h>
 #include <aips/Tables/ExprDerNodeArray.h>
 #include <aips/Tables/ExprMathNodeArray.h>
 #include <aips/Tables/ExprLogicNodeArray.h>
+#include <aips/Tables/ExprFuncNodeArray.h>
 #include <aips/Tables/ExprRange.h>
 #include <aips/Tables/Table.h>
 #include <aips/Tables/TableColumn.h>
@@ -63,6 +64,11 @@ TableExprNode::TableExprNode (const Int& val)
 TableExprNode::TableExprNode (const Double& val)
 {
     node_p = new TableExprNodeConstDouble (Double (val));
+    node_p->link();
+}
+TableExprNode::TableExprNode (const Complex& val)
+{
+    node_p = new TableExprNodeConstDComplex (DComplex(val));
     node_p->link();
 }
 TableExprNode::TableExprNode (const DComplex& val)
@@ -177,6 +183,7 @@ TableExprNode::~TableExprNode ()
 
 TableExprNode TableExprNode::in (const TableExprNodeSet& set) const
 {
+    set.checkEqualDataTypes();
     TableExprNodeSet setcp = set;
     return newIN (setcp.setOrArray());
 }
@@ -979,9 +986,16 @@ TableExprNode TableExprNode::newFunctionNode
     resDT = TableExprFuncNode::checkOperands (dtypeOper, resVT, vtypeOper,
 					      ftype, par);
     // Create new function node and fill it.
-    TableExprFuncNode* fnode = new TableExprFuncNode (ftype, resDT,
-						      resVT, set); 
-    return TableExprFuncNode::fillNode (fnode, par, dtypeOper);
+    if (resVT == TableExprNodeRep::VTScalar) {
+        TableExprFuncNode* fnode = new TableExprFuncNode (ftype, resDT,
+							  resVT, set);
+	return TableExprFuncNode::fillNode (fnode, par, dtypeOper);
+    } else {
+        TableExprFuncNodeArray* fnode = new TableExprFuncNodeArray
+                                                         (ftype, resDT,
+							  resVT, set);
+	return TableExprFuncNodeArray::fillNode (fnode, par, dtypeOper);
+    }
 }
 
 TableExprNode TableExprNode::newArrayPartNode (const TableExprNode& arrayNode,
@@ -1023,7 +1037,8 @@ TableExprNode TableExprNode::newRandomNode (const BaseTable* tabptr)
 
 DataType TableExprNode::dataType() const
 {
-    if (node_p->valueType() == TableExprNodeRep::VTScalar) {
+    if (node_p->valueType() == TableExprNodeRep::VTScalar
+    ||  node_p->valueType() == TableExprNodeRep::VTArray) {
 	switch(node_p->dataType()) {
 	case TableExprNodeRep::NTBool:
 	    return TpBool;
