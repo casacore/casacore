@@ -3525,3 +3525,4 @@
 13 297 src mv trial/implement/Display/X11PCDisplayListObject.h display/implement/X11PixelCanvas/X11PCDisplayListObject.h
 13 297 src mv trial/implement/Display/X11PCDisplayListObject.cc display/implement/X11PixelCanvas/X11PCDisplayListObject.cc
 13 297 src rm aips/implement/Display
+13 297 src rm trial/implement/MeasurementComponents/PBSkyJones.h
