@@ -333,6 +333,8 @@ Bool SubMS::fillDDTables(){
 
 
   MSPolarization poltable= mssel_p.polarization();
+  ROScalarColumn<Int> numCorr (poltable, 
+    MSPolarization::columnName(MSPolarization::NUM_CORR));
   ROArrayColumn<Int> corrType(poltable, 
 			  MSPolarization::columnName(MSPolarization::CORR_TYPE));
   ROArrayColumn<Int> corrProd(poltable, MSPolarization::columnName(MSPolarization::CORR_PRODUCT));
@@ -359,15 +361,35 @@ Bool SubMS::fillDDTables(){
   ROScalarColumn<Double> totBW(spwtable, MSSpectralWindow::columnName(MSSpectralWindow::TOTAL_BANDWIDTH));
   inNumChan_p.resize(spw_p.nelements()); 
 
+  Vector<Int> ddPolId=polId.getColumn();
+  Bool dum;
+  Sort sort( ddPolId.getStorage(dum),sizeof(Int) );
+  sort.sortKey((uInt)0,TpInt);
+  Vector<uInt> index,uniq;
+  sort.sort(index,ddPolId.nelements());
+  uInt nPol = sort.unique(uniq,index);
+  Vector<Int> selectedPolId(nPol);
+  for(uInt k=0; k < nPol; ++k){
+    selectedPolId[k]=ddPolId[index[uniq[k]]];
+  }
+  Vector<Int> newPolId(spw_p.nelements());
   for(uInt k=0; k < spw_p.nelements(); ++k){
-    inNumChan_p[k]=numChan(spw_p[k]);
+    for (uInt j=0; j < nPol; ++j){ 
+      if(selectedPolId[j]==ddPolId[k])
+	newPolId[k]=j;
+    }
+  }
+  for(uInt k=0; k < nPol; ++k){
     msOut_p.polarization().addRow();
-    msOut_p.spectralWindow().addRow();
-    msOut_p.dataDescription().addRow();
-    msPol.numCorr().put(k,npol_p[k]);
+    msPol.numCorr().put(k,numCorr(polId(spw_p[k])));
     msPol.corrType().put(k,corrType(polId(spw_p[k])));
     msPol.corrProduct().put(k,corrProd(polId(spw_p[k])));
     msPol.flagRow().put(k,polFlagRow(polId(spw_p[k])));
+  }
+  for(uInt k=0; k < spw_p.nelements(); ++k){
+    inNumChan_p[k]=numChan(spw_p[k]);
+    msOut_p.spectralWindow().addRow();
+    msOut_p.dataDescription().addRow();
     spwRelabel_p[spw_p[k]]=k;
     if(nchan_p[k] != numChan(spw_p[k])){
       Int totchan=nchan_p[k]*chanStep_p[k]+chanStart_p[k];
@@ -426,7 +448,7 @@ Bool SubMS::fillDDTables(){
 
 
     msDD.flagRow().put(k, False);
-    msDD.polarizationId().put(k,k);
+    msDD.polarizationId().put(k,newPolId[k]);
     msDD.spectralWindowId().put(k,k);
 
   }
