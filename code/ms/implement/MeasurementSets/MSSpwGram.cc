@@ -98,7 +98,7 @@ int msSpwGramInput (char* buf, int max_size)
 
 void MSSpwGramerror (char*)
 {
-    throw (AipsError ("UV Distribution Expression: Parse error at or near '" +
+    throw (AipsError ("Spw Expression: Parse error at or near '" +
 		      String(MSSpwGramtext) + "'"));
 }
 

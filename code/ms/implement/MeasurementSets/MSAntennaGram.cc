@@ -98,7 +98,7 @@ int msAntennaGramInput (char* buf, int max_size)
 
 void MSAntennaGramerror (char*)
 {
-    throw (AipsError ("UV Distribution Expression: Parse error at or near '" +
+    throw (AipsError ("Antenna Expression: Parse error at or near '" +
 		      String(MSAntennaGramtext) + "'"));
 }
 

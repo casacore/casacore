@@ -1,4 +1,4 @@
-//# MSUvDistGram.cc: Grammar for UV distribution expressions
+//# MSUvDistGram.cc: Grammar for field expressions
 //# Copyright (C) 1998,1999,2001,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -25,7 +25,7 @@
 //#
 //# $Id$
 
-// MSUvDistGram; grammar for UV distribution command lines
+// MSUvDistGram; grammar for field command lines
 
 // This file includes the output files of bison and flex for
 // parsing command lines operating on lattices.

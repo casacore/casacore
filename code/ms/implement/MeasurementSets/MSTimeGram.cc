@@ -98,7 +98,7 @@ int msTimeGramInput (char* buf, int max_size)
 
 void MSTimeGramerror (char*)
 {
-    throw (AipsError ("UV Distribution Expression: Parse error at or near '" +
+    throw (AipsError ("Time Expression: Parse error at or near '" +
 		      String(MSTimeGramtext) + "'"));
 }
 

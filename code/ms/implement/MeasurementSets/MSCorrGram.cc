@@ -98,7 +98,7 @@ int msCorrGramInput (char* buf, int max_size)
 
 void MSCorrGramerror (char*)
 {
-    throw (AipsError ("UV Distribution Expression: Parse error at or near '" +
+    throw (AipsError ("Corr Expression: Parse error at or near '" +
 		      String(MSCorrGramtext) + "'"));
 }
 
