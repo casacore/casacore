@@ -69,7 +69,6 @@ MCFrame::MCFrame(MeasFrame &inf) :
     myf.setMCFrameGetmvdir(MCFrameGetmvdir);
     myf.setMCFrameGetmvpos(MCFrameGetmvpos);
     create();
-    ///    myf.unlock();
 }
 
 // Destructor
@@ -405,15 +404,16 @@ void MCFrame::makeDirection() {
 							 this->myf));
   if (dirConvJ2000) myf.unlock();
 
-  static MDirection::Ref REFB1950(MDirection::B1950);
+  static const MDirection::Ref REFB1950
+    = MDirection::Ref(MDirection::B1950);
   if (dirConvB1950) {
     myf.lock();
     delete (MDirection::Convert *) dirConvB1950;
     dirConvB1950 = 0;
   };
-  REFB1950.set(this->myf);
   dirConvB1950 = new MDirection::Convert(*(myf.direction()),
-					 REFB1950);
+					 MDirection::Ref(MDirection::B1950,
+							 this->myf));
   if (dirConvB1950) myf.unlock();
 
   if (dirConvApp) {
