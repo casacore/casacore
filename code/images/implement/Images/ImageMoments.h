@@ -34,11 +34,14 @@
 #include <aips/aips.h>
 
 template <class T> class ImageInterface;
+template <class T> class PagedImage;
 template <class T> class Vector;
-template <class T> class PagedArray;
+template <class T> class Lattice;
+class CoordinateSystem;
+class IPosition;
 class LogIO;
 class String;
-class IPosition;
+class Unit;
 
 //
 // <summary> This class generates moments from an image. </summary>
@@ -835,7 +838,6 @@ private:
                         const Vector<T>& y);
 
 // Smooth an image   
-
   Bool smoothImage (String& smoothName,
                     PagedImage<T>*& pSmoothedImage,
                     const IPosition& latticeShape);
