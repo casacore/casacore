@@ -57,17 +57,13 @@ void minMax(ScalarType &minVal, ScalarType &maxVal,
 	    IPosition &minPos, IPosition &maxPos,
 	    const Array<ScalarType> &array) 
 {
-    if (minPos.nelements() != array.ndim() ||
-	maxPos.nelements() != array.ndim() ) {
-      throw(ArrayError("void minMax(T &min, T &max, IPosition &minPos,"
-		       "IPosition &maxPos, const Array<T> &array) - "
-                       "minPos, maxPos dimensionality inconsistent with array"));
-    }
     if (array.nelements() == 0) {
         throw(ArrayError("void minMax(T &min, T &max, IPosition &minPos,"
 			 "IPosition &maxPos, const Array<T> &array) - "
                          "Array has no elements"));	
     }
+    minPos.resize (array.ndim());
+    maxPos.resize (array.ndim());
 
     ReadOnlyVectorIterator<ScalarType> ai(array);
     ScalarType val;
