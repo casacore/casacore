@@ -32,32 +32,34 @@
 #include <aips/Exceptions/Error.h>
 
 
-RefRows::RefRows (const Vector<Int>& rowNumbers, Bool collapse)
-: itsRows  (rowNumbers),
-  itsNrows (0)
+RefRows::RefRows (const Vector<uInt>& rowNumbers, Bool isSliced,
+		  Bool collapse)
+: itsRows   (rowNumbers),
+  itsNrows  (rowNumbers.nelements()),
+  itsSliced (isSliced)
 {
-    uInt n = rowNumbers.nelements();
-    if (collapse  &&  n>0) {
-	itsNrows = n;
-	itsRows.resize (0);
-	itsRows.resize (n);
-	if (rowNumbers(0) < 0) {
-	    throw (AipsError ("RefRows::RefRows - invalid row specs"));
-	}
-	Int start, end, incr;
+    if (itsSliced) {
+	AlwaysAssert (itsNrows%3 == 0, AipsError);
+	itsNrows = 0;
+    } else if (collapse) {
+	//# Try to turn individual row numbers into slices.
+	//# Stop doing that when the number of elements in the
+	//# resulting array would exceed the input length, because
+	//# in that case we gain not anything at all.
+	Vector<uInt> rows(itsNrows+3);
+	uInt start, end, incr;
 	uInt nv = 0;
 	uInt nr = 0;
-	for (uInt i=0; i<n; i++) {
-	    Int value = rowNumbers(i);
-	    if (value < 0) {
-		throw (AipsError ("RefRows::RefRows - invalid row specs"));
-	    }
+	for (uInt i=0; i<itsNrows  &&  nr<itsNrows; i++) {
+	    uInt value = rowNumbers(i);
 	    if (nv == 0) {
 		start = value;
 		nv++;
 	    } else if (nv == 1) {
 		if (value <= start) {
-		    itsRows(nr++) = start;
+		    rows(nr++) = start;
+		    rows(nr++) = start;
+		    rows(nr++) = 1;
 		    start = value;
 		} else {
 		    end = value;
@@ -68,96 +70,55 @@ RefRows::RefRows (const Vector<Int>& rowNumbers, Bool collapse)
 		end = value;
 		nv++;
 	    } else {
-		itsRows(nr++) = start;
+		rows(nr++) = start;
 		if (nv > 2) {
-		    itsRows(nr++) = -end;
-		    if (incr != 1) {
-			itsRows(nr++) = -incr;
-		    }
+		    rows(nr++) = end;
+		    rows(nr++) = incr;
+		    start = value;
+		    nv = 1;
+		} else {
+		    rows(nr++) = start;
+		    rows(nr++) = 1;
+		    start = end;
+		    end = value;
+		    incr = end - start;
+		    nv = 2;
 		}
-		start = value;
-		nv = 1;
 	    }
 	}
-	itsRows(nr++) = start;
-	if (nv == 2) {
-	    itsRows(nr++) = end;
-	} else if (nv > 2) {
-	    itsRows(nr++) = -end;
-	    if (incr != 1) {
-		itsRows(nr++) = -incr;
-	    }
-	}
-	itsRows.resize (nr, True);
-    }
-}
-
-RefRows::RefRows (const Vector<uInt>& rowNumbers)
-: itsNrows (rowNumbers.nelements())
-{
-    uInt n = rowNumbers.nelements();
-    itsRows.resize (n);
-    Int start, end, incr;
-    uInt nv = 0;
-    uInt nr = 0;
-    for (uInt i=0; i<n; i++) {
-	Int value = rowNumbers(i);
-	if (nv == 0) {
-	    start = value;
-	    nv++;
-	} else if (nv == 1) {
-	    if (value <= start) {
-		itsRows(nr++) = start;
-		start = value;
+	// Great, our result is smaller than the input. So use the result
+	// after filling in the last slice.
+	if (nr < itsNrows) {
+	    rows(nr++) = start;
+	    if (nv == 1) {
+		rows(nr++) = start;
+		rows(nr++) = 1;
 	    } else {
-		end = value;
-		incr = end - start;
-		nv++;
+		rows(nr++) = end;
+		rows(nr++) = incr;
 	    }
-	} else if (value-end == incr) {
-	    end = value;
-	    nv++;
-	} else {
-	    itsRows(nr++) = start;
-	    if (nv > 2) {
-		itsRows(nr++) = -end;
-		if (incr != 1) {
-		    itsRows(nr++) = -incr;
-		}
-		start = value;
-		nv = 1;
-	    } else {
-		start = end;
-		end = value;
-		incr = end - start;
-		nv = 2;
-	    }
+	    rows.resize (nr, True);
+	    itsRows.reference (rows);
+	    itsSliced = True;
 	}
     }
-    itsRows(nr++) = start;
-    if (nv == 2) {
-	itsRows(nr++) = end;
-    } else if (nv > 2) {
-	itsRows(nr++) = -end;
-	if (incr != 1) {
-	    itsRows(nr++) = -incr;
-	}
-    }
-    itsRows.resize (nr, True);
 }
 
 RefRows::RefRows (uInt start, uInt end, uInt incr)
-: itsRows  (3),
-  itsNrows (1 + (end-start)/incr)
+: itsRows   (3),
+  itsNrows  (1 + (end-start)/incr),
+  itsSliced (True)
 {
     AlwaysAssert (start<=end, AipsError);
     itsRows(0) = start;
-    itsRows(1) = -end;
-    itsRows(2) = -incr;
+    itsRows(1) = end;
+    itsRows(2) = incr;
 }
 
 RefRows::RefRows (const RefRows& other)
-: itsRows (other.itsRows)
+: itsRows   (other.itsRows),
+  itsNrows  (other.itsNrows),
+  itsSliced (other.itsSliced)
 {}
 
 // Assignment (copy semantics).
@@ -165,7 +126,9 @@ RefRows& RefRows::operator= (const RefRows& other)
 {
     if (this != &other) {
 	itsRows.resize (other.itsRows.nelements());
-	itsRows = other.itsRows;
+	itsRows   = other.itsRows;
+	itsNrows  = other.itsNrows;
+	itsSliced = itsSliced;
     }
     return *this;
 }
@@ -175,25 +138,28 @@ RefRows::~RefRows()
 
 Bool RefRows::operator== (const RefRows& other) const
 {
-    return ToBool(itsRows.nelements() == other.itsRows.nelements()
+    return ToBool(itsSliced == other.itsSliced
+              &&  itsRows.nelements() == other.itsRows.nelements()
               &&  allEQ (itsRows.ac(), other.itsRows.ac()));
 }
 
 uInt RefRows::fillNrows() const
 {
-    uInt n = 0;
-    RefRowsSliceIter iter(*this);
-    while (! iter.pastEnd()) {
-	n += 1 + (iter.sliceEnd() - iter.sliceStart()) / iter.sliceIncr();
+    uInt nr = 0;
+    uInt n = itsRows.nelements();
+
+    for (uInt i=0; i<n; i+=3) {
+	nr += 1 + (itsRows(i+1) - itsRows(i)) / itsRows(i+2);
     }
-    ((RefRows*)this)->itsNrows = n;
-    return n;
+    ((RefRows*)this)->itsNrows = nr;
+    return nr;
 }
 
 
 
 RefRowsSliceIter::RefRowsSliceIter (const RefRows& rows)
-: itsRows (rows.rowVector())
+: itsRows   (rows.rowVector()),
+  itsSliced (rows.isSliced())
 {
     reset();
 }
@@ -217,55 +183,12 @@ void RefRowsSliceIter::next()
 	itsPastEnd = True;
     } else {
 	itsStart = itsRows(itsPos++);
-        itsEnd = itsStart;
-        itsIncr = 1;
-	if (itsPos < itsRows.nelements()  &&  itsRows(itsPos) < 0) {
-	    itsEnd = -itsRows(itsPos++);
-	    if (itsPos < itsRows.nelements()  &&  itsRows(itsPos) < 0) {
-		itsIncr = -itsRows(itsPos++);
-	    }
-	}
-    }
-}
-
-
-
-
-RefRowsRowIter::RefRowsRowIter (const RefRows& rows)
-: itsRows (rows.rowVector())
-{
-    reset();
-}
-
-void RefRowsRowIter::reset()
-{
-    itsPos = 0;
-    itsRow = 0;
-    itsEnd = 0;
-    itsIncr = 1;
-    itsPastEnd = True;
-    if (itsPos < itsRows.nelements()) {
-	itsPastEnd = False;
-	next();
-    }
-}
-
-void RefRowsRowIter::nextSlice()
-{
-    if (itsPastEnd) {
-	throw (AipsError ("RefRowsRowIter::next - past end"));
-    }
-    if (itsPos >= itsRows.nelements()) {
-	itsPastEnd = True;
-    } else {
-	itsRow = itsRows(itsPos++);
-	itsEnd = itsRow;
-	itsIncr = 1;
-	if (itsPos < itsRows.nelements()  &&  itsRows(itsPos) < 0) {
-	    itsEnd = -itsRows(itsPos++);
-	    if (itsPos < itsRows.nelements()  &&  itsRows(itsPos) < 0) {
-		itsIncr = -itsRows(itsPos++);
-	    }
+	if (itsSliced) {
+	    itsEnd  = itsRows(itsPos++);
+	    itsIncr = itsRows(itsPos++);
+	} else {
+	    itsEnd  = itsStart;
+	    itsIncr = 1;
 	}
     }
 }

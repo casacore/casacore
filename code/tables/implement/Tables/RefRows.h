@@ -73,22 +73,18 @@ class Slicer;
 
 class RefRows
 {
-friend class RefRowsSliceIter;
-friend class RefRowsRowIter;
-
 public:
 
     // Create the object from a Vector containing the row numbers.
-    // When <src>collapse==True</src>, it will collapse the vector
-    // by combining adjacent row numbers.
-    // If False, it is assumed that the vector is already collapsed.
-    RefRows (const Vector<Int>& rowNumbers, Bool collapse = True);
+    // When <src>isSliced==False</src>, the vector is treated as
+    // containing individual row numbers, otherwise as containing
+    // slices in the form start,end,incr.
+    // When <src>collapse==True</src>, it will try to collapse the
+    // individual row numbers to the slice form.
+    RefRows (const Vector<uInt>& rowNumbers, Bool isSliced = False,
+	     Bool collapse = False);
 
-    // Create the object from a Vector containing the row numbers.
-    // It will collapse the vector by combining adjacent row numbers.
-    RefRows (const Vector<uInt>& rowNumbers);
-
-    // Create the object from the start,end,incr.
+    // Create the object from a single start,end,incr slice.
     RefRows (uInt start, uInt end, uInt incr=1);
 
     // Copy constructor (reference semantics).
@@ -103,23 +99,32 @@ public:
     Bool operator== (const RefRows& other) const;
 
     // Return the number of rows given by this object.
+    // <group>
+    uInt nrows() const
+        { return (itsNrows == 0  ?  fillNrows() : itsNrows); }
     uInt nrow() const
-        { return (itsNrows == 0  ?  fillNrows() : 0); }
+        { return (itsNrows == 0  ?  fillNrows() : itsNrows); }
+    // </group>
 
     // Return the first row in the object.
     uInt firstRow() const
         { return itsRows(0); }
 
+    // Represents the vector a slice?
+    Bool isSliced() const
+        { return itsSliced; }
+
+    // Get the true row vector.
+    const Vector<uInt>& rowVector() const
+        { return itsRows; }
+
 private:
     // Fill the itsNrows variable.
     uInt fillNrows() const;
 
-    // Get the true row vector.
-    const Vector<Int>& rowVector() const
-        { return itsRows; }
-
-    Vector<Int> itsRows;
-    uInt        itsNrows;            //# 0 = still unknown
+    Vector<uInt> itsRows;
+    uInt         itsNrows;            //# 0 = still unknown
+    Bool         itsSliced;           //# True = vector contains slices
 };
 
 
@@ -156,52 +161,13 @@ public:
     // </group>
 
 private:
-    Vector<Int> itsRows;
-    uInt        itsStart;
-    uInt        itsEnd;
-    uInt        itsIncr;
-    uInt        itsPos;
-    Bool        itsPastEnd;
-};
-
-
-
-class RefRowsRowIter
-{
-public:
-    RefRowsRowIter (const RefRows&);
-
-    // Reset the iterator.
-    void reset();
-
-    // Is the iterator past the end?
-    Bool pastEnd() const
-        { return itsPastEnd; }
-
-    // Go to the next row.
-    // <group>
-    void operator++()
-        { next(); }
-    void operator++(Int)
-        { next(); }
-    void next()
-        { itsRow += itsIncr; if (itsRow > itsEnd) nextSlice(); }
-    // </group>
-
-    // Get the current row.
-    uInt row() const
-        { return itsRow; }
-
-private:
-    // Go to the next row slice.
-    void nextSlice();
-
-    Vector<Int> itsRows;
-    uInt        itsRow;
-    uInt        itsEnd;
-    uInt        itsIncr;
-    uInt        itsPos;
-    Bool        itsPastEnd;
+    Vector<uInt> itsRows;
+    Bool         itsSliced;
+    uInt         itsStart;
+    uInt         itsEnd;
+    uInt         itsIncr;
+    uInt         itsPos;
+    Bool         itsPastEnd;
 };
 
 
