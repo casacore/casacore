@@ -45,3 +45,17 @@ change id: 0118
  summary:  Pool classes to minimize memory allocation times
 A set of classes ObjectPool and PoolStack are provided, parameterized on e.g. a vector length, are provided. They create a pre-allocated stack of e.g. vectors of a certain length, greatly reducing memmory allocation overhead.
 These classes are used e.g. in the automatic differntiation.
+
+change id: 0119
+ author:   Wim Brouw
+ date:     2002/02/18
+ avers:    1.7
+ area:     Library
+ package:  trial
+ module:   Fitting
+ type:     Code
+ category: Change
+ summary:  High level fitting
+The high-level fitting (LinearFit, NonLinearFit) classes have been changed. They all accept now the 'new' Function classes, which produce an automatic derivative wrt the parameters.
+
+The major change for the use of these classes is the similarity between Linear and nonLinear solutions (no need to combine many polynomial terms), and the fact that the FuncWithDerivs are no longer necessary: any function derived from the Function class can be used to solve for its parameters
