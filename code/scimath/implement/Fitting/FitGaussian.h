@@ -61,8 +61,7 @@
 // and the fitting proceeds automatically.  Upon failure of the fitter it will 
 // retry the fit according to the retry factors until a fit is completed
 // successfully.  The user can optionally require as a criterion for success
-// that the RMS (root-mean-square, sqrt[chisq/N], an estimate of the average
-// error) of the fit not exceed some maximum value.
+// that the RMS of the fit residuals not exceed some maximum value.
 
 // The retry factors are applied in different ways: the height and widths
 // are multiplied by the retry factors while the center and angles are
@@ -155,7 +154,7 @@ class FitGaussian
   // <group>
   void setRetryFactors();
   void setRetryFactors(const Matrix<T>& retryfactors);
-  // <group>
+  // </group>
 
   // Return the number of retry options available
   uInt nRetryFactors() {return itsRetryFctr.nrow();};
