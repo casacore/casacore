@@ -64,42 +64,52 @@ echo
 echo "Summary of $AIPSPATH runtests $VERSION"
 echo
 echo "******************************************************************************"
-echo 
 echo $PACK | awk '{printf "Test results for package %s\n", $1}'
-echo $TPASS $TFAIL $TWARNING $TUNKNOWN| awk '{printf "\t%5.1f%% passed (%d of %d)\n", 100*$1/($1+$2+$3+$4), $1, $1+$2+$3+$4}'
+echo $TPASS $TFAIL $TWARNING $TUNKNOWN| awk '{nr=$1+$2+$3+$4; perc=0; if (nr!=0) perc=100*$1/nr; printf "\t%5.1f%% passed (%d of %d)\n", perc, $1, nr}'
 echo "          $TFAIL failed"
 echo "          $TWARNING with verification warnings (floating point discrepancies)"
 echo "          $TUNKNOWN unknown"
 echo "          $TUNTESTED skipped"
-echo "******************************************************************************"
-echo 
-echo "Tests that failed to compile"
-echo 
-grep "^${PKG}-.*FAIL.*compile" $1/bintest/runtests.report
-echo
-echo "Tests that failed to execute"
-echo 
-grep "^${PKG}-.*FAIL.*execute" $1/bintest/runtests.report
-echo
-echo "Tests that failed to verify"
-echo 
-grep "^${PKG}-.*FAIL.*verify" $1/bintest/runtests.report
+echo "+*****************************************************************************"
+
+NRPGM=`grep "^${PKG}-.*FAIL.*compile" $1/bintest/runtests.report | wc -l`
+if [ $NRPGM != 0 ]; then
+  echo 
+  echo "  Tests that failed to compile"
+  grep "^${PKG}-.*FAIL.*compile" $1/bintest/runtests.report
+fi
+NRPGM=`grep "^${PKG}-.*FAIL.*execute" $1/bintest/runtests.report | wc -l`
+if [ $NRPGM != 0 ]; then
+  echo
+  echo "  Tests that failed to execute"
+  grep "^${PKG}-.*FAIL.*execute" $1/bintest/runtests.report
+fi
+NRPGM=`grep "^${PKG}-.*FAIL.*verify" $1/bintest/runtests.report | wc -l`
+if [ $NRPGM != 0 ]; then
+  echo
+  echo "  Tests that failed to verify"
+  grep "^${PKG}-.*FAIL.*verify" $1/bintest/runtests.report
+fi
+NRPGM=`grep "^${PKG}-.*UNKNOWN" $1/bintest/runtests.report | wc -l`
+if [ $NRPGM != 0 ]; then
+  echo 
+  echo "  Tests that were unknown"
+  grep "^${PKG}-.*UNKNOWN" $1/bintest/runtests.report
+fi
+NRPGM=`grep "^${PKG}-.*UNTESTED" $1/bintest/runtests.report | wc -l`
+if [ $NRPGM != 0 ]; then
+  echo 
+  echo "  Tests that were skipped"
+  grep "^${PKG}-.*UNTESTED" $1/bintest/runtests.report
+fi
+
 grep "^${PKG}-.*FAIL.*execute" $1/bintest/runtests.report > /tmp/aips2tests.noexecute
-echo 
-echo "Tests that were unknown"
-echo 
-grep "^${PKG}-.*UNKNOWN" $1/bintest/runtests.report
-echo 
-echo "Tests that were skipped"
-echo 
-grep "^${PKG}-.*UNTESTED" $1/bintest/runtests.report
 if [ -s /tmp/aips2tests.noexecute ]
 then
    echo 
    echo "*****************************************************************"
    echo "Details tests that had execution failures"
    echo "*****************************************************************"
-   echo 
    
    NOVERIFY=`awk '{print $2}' /tmp/aips2tests.noexecute`
    for testrpt in $NOVERIFY
@@ -108,7 +118,6 @@ then
       echo "*****************************************************************"
       echo "$testrpt -- report"
       echo "*****************************************************************"
-      echo
       $AWK -v testrpt=$testrpt '{printf "%s-execute> %s\n", testrpt, $0}' $1/bintest/$testrpt.report
    done
 fi
@@ -121,7 +130,6 @@ then
    echo "*****************************************************************"
    echo "Details tests that had verify failures"
    echo "*****************************************************************"
-   echo 
    
    NOVERIFY=`awk '{print $2}' /tmp/aips2tests.noverify`
    for testrpt in $NOVERIFY
@@ -130,17 +138,19 @@ then
       echo "*****************************************************************"
       echo "$testrpt -- report"
       echo "*****************************************************************"
-      echo
       $AWK -v testrpt=$testrpt '{printf "%s-verify> %s\n", testrpt, $0}' $1/bintest/$testrpt.report
    done
 fi
 rm /tmp/aips2tests.noverify
-echo "Tests that had warnings"
-echo 
-grep "^${PKG}-.*WARNING" $1/bintest/runtests.report
+
+NRPGM=`grep "^${PKG}-.*WARNING" $1/bintest/runtests.report | wc -l`
+if [ $NRPGM != 0 ]; then
+  echo
+  echo "  Tests that had warnings"
+  grep "^${PKG}-.*WARNING" $1/bintest/runtests.report
+fi
 echo
-echo "Tests that passed"
-echo
+echo "  Tests that passed"
 grep "^${PKG}-.*PASS" $1/bintest/runtests.report
 echo
 echo "*****************************************************************"

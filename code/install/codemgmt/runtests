@@ -23,7 +23,7 @@
  
   AIPSROOT=`echo $AIPSPATH | awk '{ print $1 }'`
   AIPSARCH=`echo $AIPSPATH | awk '{printf("%s/%s",$1,$2)}'`
-  BINTESTD=`echo $AIPSPATH | awk '{printf("%s/%s/bintest",$1,$2)}'`
+  BINTESTD=$AIPSARCH/bintest
  
 # Get the current version number.
   VERSION=`avers | awk '{printf("%.6s",$1)}'`
@@ -52,24 +52,30 @@
      echo ""
      cat $BINTESTD/runtests.log
      echo $PATH
+
      # Create a total summary.
      rm -f $BINTESTD/runtests.summary
-     echo "Summary of runtests for $AIPSPATH" > $BINTESTD/runtests.summary
-     echo "---------------------------------" >> $BINTESTD/runtests.summary
+     echo "Summary of runtests for $AIPSPATH ($VERSION)" > $BINTESTD/runtests.summary
+     echo "--------------------------------------" >> $BINTESTD/runtests.summary
      echo "" >> $BINTESTD/runtests.summary
-     testsum.sh $AIPSARCH  2>&1 | fgrep -A15 'Test results for ' | fgrep -B15 '*****' >> $BINTESTD/runtests.summary
+     ../testsum.sh $AIPSARCH  2>&1 | fgrep -A15 'Test results for ' | fgrep -B15 '*****' >> $BINTESTD/runtests.summary
      echo "" >> $BINTESTD/runtests.summary
+
      # Create a summary for each package (which must have an implement dir).
      # Do it only if the package occurs in the runtests output.
-     # Append the number of failed, etc. to the total summary.
      for PKG in `ls $AIPSROOT/code`
      do
        PKGNM=`basename $PKG`
        if [ -d $AIPSROOT/code/$PKGNM/implement ]; then
          grep "${PKGNM}-" $BINTESTD/runtests.report > /dev/null 2>&1
          if [ $? = 0 ]; then
-           testsum.sh $AIPSARCH $PKGNM > $BINTESTD/runtests_$PKGNM.summary 2>&1
-           fgrep -A15 'Test results for ' $BINTESTD/runtests_$PKGNM.summary | fgrep -B15 '*****' >> $BINTESTD/runtests.summary
+           echo "" >> $BINTESTD/runtests.summary
+           ../testsum.sh $AIPSARCH $PKGNM > $BINTESTD/runtests_$PKGNM.summary 2>&1
+           # Append the number of failed, etc. to the total summary.
+           fgrep -A15 'Test results for ' $BINTESTD/runtests_$PKGNM.summary | fgrep -B15 '+****' | fgrep -v '+****' >> $BINTESTD/runtests.summary
+           # Append the failures.
+	   fgrep -A10000000 '+****' $BINTESTD/runtests_$PKGNM.summary | fgrep -v '+****' | fgrep -B10000000 'Tests that passed' | fgrep -v 'Tests that passed' | egrep -B10000000 '[^ ]+' >> $BINTESTD/runtests.summary
+	   echo "******************************************************************************" >> $BINTESTD/runtests.summary
          fi
        fi
      done
