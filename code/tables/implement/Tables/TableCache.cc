@@ -1,5 +1,5 @@
 //# TableCache.cc: Cache of open tables
-//# Copyright (C) 1994,1995,1997
+//# Copyright (C) 1994,1995,1997,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -26,6 +26,8 @@
 //# $Id$
 
 #include <aips/Tables/TableCache.h>
+#include <aips/OS/Path.h>
+
 
 TableCache::TableCache()
 : tableMap_p((void*)0)
@@ -36,9 +38,12 @@ TableCache::~TableCache()
 
 PlainTable* TableCache::operator() (const String& tableName) const
 {
-    PlainTable** ptr = (PlainTable**)(tableMap_p.isDefined (tableName));
-    if (ptr)
+    // Make name absolute and remove possible . and ..
+    String name (Path(tableName).absoluteName());
+    PlainTable** ptr = (PlainTable**)(tableMap_p.isDefined (name));
+    if (ptr) {
 	return *ptr;
+    }
     return 0;
 }
 
@@ -55,7 +60,9 @@ uInt TableCache::ntable() const
 
 void TableCache::define (const String& tableName, PlainTable* tab)
 {
-    tableMap_p.define (tableName, tab);
+    // Make name absolute and remove possible . and ..
+    String name (Path(tableName).absoluteName());
+    tableMap_p.define (name, tab);
 }
 
 void TableCache::remove (const String& tableName)
@@ -65,13 +72,18 @@ void TableCache::remove (const String& tableName)
     // Therefore do not delete if the map is already empty
     // (otherwise an exception is thrown).
     if (tableMap_p.ndefined() > 0) {
-	tableMap_p.remove (tableName);
+        // Make name absolute and remove possible . and ..
+        String name (Path(tableName).absoluteName());
+	tableMap_p.remove (name);
     }
 }
 
 void TableCache::rename (const String& newName, const String& oldName)
 {
-    if (tableMap_p.isDefined (oldName)) {
-	tableMap_p.rename (newName, oldName);
+  // Make names absolute and remove possible . and ..
+    String oldnm (Path(oldName).absoluteName());
+    if (tableMap_p.isDefined (oldnm)) {
+        String newnm (Path(newName).absoluteName());
+	tableMap_p.rename (newnm, oldnm);
     }
 }
