@@ -277,7 +277,7 @@ Bool ImageFITSConverter::ImageToFITS(String &error,
     Double bscale, bzero;
     const Short maxshort = 32767;
     const Short minshort = -32768;
-    Bool hasBlanks;
+    Bool hasBlanks = True;
     if (BITPIX == -32) {
         bscale = 1.0;
         bzero = 0.0;
