@@ -2208,11 +2208,35 @@ void ImageStatistics<T>::summStats ()
    pos(0) = MAX;
    T dMax = stats(pos);
 
+// Get beam volume if present.  ALl this beamy stuff should go to
+// a class called GaussianBeam and be used by GaussianCOnvert as well
+//
+   Double beamArea = -1.0;
+   ImageInfo ii = pInImage_p->imageInfo();
+   Vector<Quantum<Double> > beam = ii.restoringBeam();
+   CoordinateSystem cSys = pInImage_p->coordinates();
+   String imageUnits = pInImage_p->units().getName();
+   imageUnits.upcase();
+//
+   Int afterCoord = -1;   
+   Int dC = cSys.findCoordinate(Coordinate::DIRECTION, afterCoord);
+   if (beam.nelements()==3 && dC!=-1 && imageUnits==String("JY/BEAM")) {
+      DirectionCoordinate dCoord = cSys.directionCoordinate(dC);
+      Vector<String> units(2);
+      units(0) = "rad"; units(1) = "rad";
+      dCoord.setWorldAxisUnits(units, True);
+      Vector<Double> deltas = dCoord.increment();
+//
+      Double major = beam(0).getValue(Unit("rad"));
+      Double minor = beam(1).getValue(Unit("rad"));
+      beamArea = 1.1331 * major * minor / abs(deltas(0) * deltas(1));
+   }
+
 // Have to convert LogIO object to ostream before can apply
 // the manipulators
 
    const Int oPrec = 6;
-   const Int oWidth = 15;
+   const Int oWidth = 14;
    os_p.output().fill(' '); 
    os_p.output().precision(oPrec);
    os_p.output().setf(ios::scientific, ios::floatfield);
@@ -2220,12 +2244,16 @@ void ImageStatistics<T>::summStats ()
 
    os_p << endl; 
    if ( Int(nPts+0.1) > 0) {
-      os_p << "No pts   = ";
+      os_p << "Number points = ";
       os_p.output() << setw(oWidth) << Int(nPts+0.1) << endl;
-      os_p << "Sum      = ";
+      if (beamArea > 0) {
+         os_p << "Flux density  = ";
+         os_p.output() << setw(oWidth) << sum/beamArea << " Jy" << endl;
+      }
+      os_p << "Sum           = ";
       os_p.output() << setw(oWidth) << sum << "       Mean     = ";
       os_p.output() << setw(oWidth) << mean << endl;
-      os_p << "Variance = ";
+      os_p << "Variance      = ";
       os_p.output() << setw(oWidth) << var;
       if (var > 0.0) {
          os_p << "       Sigma    = ";
@@ -2233,14 +2261,17 @@ void ImageStatistics<T>::summStats ()
       } else {
          os_p << endl;
       }
-      os_p << "Rms      = ";
+      os_p << "Rms           = ";
       os_p.output() << setw(oWidth) << rms << endl;
       os_p << endl;
       if (!fixedMinMax_p) {
-         os_p << "Minimum value at " << minPos_p+1 << " = ";
-         os_p.output()  << setw(oWidth) << dMin << endl;
-         os_p << "Maximum value at " << maxPos_p+1 << " = ";
-         os_p.output()  << setw(oWidth) << dMax << endl;   
+         os_p << "Minimum value is ";
+         os_p.output() << setw(oWidth) << dMin;
+         os_p <<  " at " << minPos_p+1 << endl;
+//
+         os_p << "Maximum value is ";
+         os_p.output() << setw(oWidth) << dMax;
+         os_p <<  " at " << maxPos_p+1 << endl;
       }
    } else
       os_p << "No valid points found " << endl;
