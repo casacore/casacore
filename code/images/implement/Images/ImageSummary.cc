@@ -23,6 +23,8 @@
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
 //#
+//# $Id$
+//
 #include <aips/aips.h>
 #include <aips/Arrays.h>
 #include <aips/Mathematics/Constants.h>
@@ -51,19 +53,6 @@ ImageSummary<T>::ImageSummary (const ImageInterface<T>& image)
 
 template <class T> 
 ImageSummary<T>::ImageSummary (const ImageSummary<T> &other)
-                   : widthName_p(other.widthName_p),
-                     widthProj_p(other.widthProj_p),
-                     widthNPix_p(other.widthNPix_p),
-                     widthTile_p(other.widthTile_p),
-                     widthRefValue_p(other.widthRefValue_p),
-                     widthAxUnits_p(other.widthAxUnits_p),
-                     precRefValueSci_p(other.precRefValueSci_p),
-                     precRefValueFixed_p(other.precRefValueFixed_p),
-                     widthRefPixel_p(other.widthRefPixel_p),
-                     precRefPixel_p(other.precRefPixel_p),
-                     widthInc_p(other.widthInc_p),
-                     precInc_p(other.precInc_p)
-
 //
 // Copy constructor
 //
@@ -84,19 +73,8 @@ ImageSummary<T> &ImageSummary<T>::operator=(const ImageSummary<T> &other)
 // Assignment operator
 //
 {
-   pImage_p = other.pImage_p;
-   widthName_p = other.widthName_p;
-   widthProj_p = other.widthProj_p;
-   widthNPix_p = other.widthNPix_p;
-   widthTile_p = other.widthTile_p;
-   widthRefValue_p = other.widthRefValue_p;
-   widthAxUnits_p = other.widthAxUnits_p;
-   precRefValueSci_p = other.precRefValueSci_p;
-   precRefValueFixed_p = other.precRefValueFixed_p;
-   widthRefPixel_p = other.widthRefPixel_p;
-   precRefPixel_p = other.precRefPixel_p;
-   widthInc_p = other.widthInc_p;
-   precInc_p = other.precInc_p;
+   if (this != &other) pImage_p = other.pImage_p;
+   return *this;
 }
 
 template <class T> 
@@ -136,8 +114,6 @@ gpp_VS ImageSummary<T>::axisNames () const
 // Get axis names for the pixel axes
 //
 {
-//   return pImage_p->coordinates().worldAxisNames();
-
    CoordinateSystem cSys = pImage_p->coordinates();
    Int coordinate, axisInCoordinate;
    Vector<String> names(cSys.nPixelAxes());
@@ -159,8 +135,6 @@ Vector<Double> ImageSummary<T>::referencePixels () const
 // Get reference pixels for the pixel axes
 //
 {
-//   return pImage_p->coordinates().referencePixel().ac() + 1.0;
-
    CoordinateSystem cSys = pImage_p->coordinates();
    Int coordinate, axisInCoordinate;
    Vector<Double> refPix(cSys.nPixelAxes());
@@ -179,7 +153,6 @@ Vector<Double> ImageSummary<T>::referenceValues () const
 // Get reference values for the pixel axes
 //
 {
-//   return pImage_p->coordinates().referenceValue().ac();
 
    CoordinateSystem cSys = pImage_p->coordinates();
    Int coordinate, axisInCoordinate;
@@ -200,9 +173,6 @@ Vector<Double> ImageSummary<T>::axisIncrements () const
 // Get axis increments for the pixel axes
 //
 {
-//   return pImage_p->coordinates().increment().ac();
-
-
    CoordinateSystem cSys = pImage_p->coordinates();
    Int coordinate, axisInCoordinate;
    Vector<Double> incs(cSys.nPixelAxes());
@@ -221,8 +191,6 @@ Vector<String> ImageSummary<T>::axisUnits () const
 // Get axis units for the pixel axes
 //
 {
-//   return pImage_p->coordinates().worldAxisUnits().ac();
-
    CoordinateSystem cSys = pImage_p->coordinates();
    Int coordinate, axisInCoordinate;
  
@@ -304,57 +272,58 @@ void ImageSummary<T>::list (LogIO& os,
 
    CoordinateSystem cSys = pImage_p->coordinates();
 
-// Maximum width of names fields 
 
-   widthName_p = 0;
-   for (uInt i=0; i<cSys.worldAxisNames().nelements(); i++) {
-     widthName_p = max(widthName_p,cSys.worldAxisNames()(i).length());
-   }
+// Determine the widths for all the fields that we want to list
+
+   uInt widthName, widthProj, widthShape, widthTile, widthRefValue;
+   uInt widthRefPixel, widthInc, widthUnits, totWidth;
+
+   String nameName, nameProj, nameShape, nameTile, nameRefValue;
+   String nameRefPixel, nameInc, nameUnits;
+   
+   Int precRefValSci, precRefValFloat, precRefValRADEC;
+   Int precRefPixFloat, precIncSci;
+
+   getFieldWidths (widthName, widthProj, widthShape, widthTile,
+                   widthRefValue, widthRefPixel, widthInc,
+                   widthUnits, totWidth, precRefValSci, 
+                   precRefValFloat, precRefValRADEC, precRefPixFloat,
+                   precIncSci, nameName, nameProj, nameShape, 
+                   nameTile, nameRefValue, nameRefPixel, nameInc, 
+                   nameUnits, nativeFormat, cSys);
 
 
-// Set up headers
+// Write headers
 
    os.output().fill(' ');
    os.output().setf(ios::left, ios::adjustfield);
 
-   os.output().width(widthName_p);
-   os << "Type";
-   widthName_p = max(String("Type").length(), widthName_p);
+   os.output().width(widthName);
+   os << nameName;
 
    os.output().setf(ios::right, ios::adjustfield);
-   widthProj_p = 5;
-   os.output().width(widthProj_p);
-   os << "Proj";
+   os.output().width(widthProj);
+   os << nameProj;
 
-   widthNPix_p = 7;
-   os.output().width(widthNPix_p);
-   os << "Pixels";
+   os.output().width(widthShape);
+   os << nameShape;
 
-   widthTile_p = 5;
-   os.output().width(widthTile_p);
-   os << "Tile";
+   os.output().width(widthTile);
+   os << nameTile;
 
-   widthRefValue_p = 14;
-   precRefValueSci_p = 6;
-   precRefValueFixed_p = 3;
-   os.output().width(widthRefValue_p);
-   os << "Coord Value";
+   os.output().width(widthRefValue);
+   os << nameRefValue;
 
-   widthRefPixel_p = 9;
-   precRefPixel_p = 2;
-   os.output().width(widthRefPixel_p);
-   os << "at Pixel";
+   os.output().width(widthRefPixel);
+   os << nameRefPixel;
 
-   widthInc_p = 14;
-   precInc_p = 6;
-   os.output().width(widthInc_p);
-   os << "Coord Incr";
+   os.output().width(widthInc);
+   os << nameInc;
 
-   os << " Units" << endl;
+   os << nameUnits << endl;
 
-   widthAxUnits_p = 8;
-   uInt totWidth = widthName_p + widthProj_p + widthNPix_p + widthTile_p + widthRefValue_p +
-                   widthRefPixel_p + widthInc_p + widthAxUnits_p;
+   totWidth = widthName + widthProj + widthShape + widthTile +
+              widthRefValue + widthRefPixel + widthInc + widthUnits;
    os.output().fill('-');
    os.output().width(totWidth);
    os.output().setf(ios::right, ios::adjustfield);
@@ -365,6 +334,7 @@ void ImageSummary<T>::list (LogIO& os,
 // Loop over the number of pixel axes in the coordinate system (same
 // as number of axes in image) 
 
+
    Int pixelAxis;
    Int coordinate, axisInCoordinate;
    for (pixelAxis=0; pixelAxis<cSys.nPixelAxes(); pixelAxis++) {
@@ -374,24 +344,15 @@ void ImageSummary<T>::list (LogIO& os,
  
       cSys.findPixelAxis(coordinate, axisInCoordinate, pixelAxis);
 
+// List it
 
-// List according to coordinate type
-
-      if (cSys.type(coordinate) == Coordinate::DIRECTION) { 
-        DirectionCoordinate dCoord = cSys.directionCoordinate(coordinate);
-        listDirection (os, dCoord, axisInCoordinate, pixelAxis, 
-                       nativeFormat);
-      } else if (cSys.type(coordinate) == Coordinate::SPECTRAL) { 
-        const SpectralCoordinate sCoord = cSys.spectralCoordinate(coordinate);
-        listSpectral (os, sCoord, axisInCoordinate, pixelAxis);
-      } else if (cSys.type(coordinate) == Coordinate::LINEAR) { 
-        const LinearCoordinate lCoord = cSys.linearCoordinate(coordinate);
-        listLinear (os, lCoord, axisInCoordinate, pixelAxis);
-      } else if (cSys.type(coordinate) == Coordinate::STOKES) { 
-        const StokesCoordinate sCoord = cSys.stokesCoordinate(coordinate);
-        listStokes (os, sCoord, axisInCoordinate, pixelAxis,
-                    nativeFormat);
-      }
+      Coordinate* pc = cSys.coordinate(coordinate).clone();
+      listHeader(os, pc, widthName, widthProj, widthShape, widthTile, 
+                 widthRefValue, widthRefPixel, widthInc, widthUnits,
+                 False, axisInCoordinate, pixelAxis, nativeFormat,
+                 precRefValSci, precRefValFloat, precRefValRADEC, 
+                 precRefPixFloat, precIncSci);
+      delete pc;
    }
    os << endl;
 
@@ -413,22 +374,15 @@ void ImageSummary<T>::list (LogIO& os,
       Vector<Int> pixelAxes = cSys.pixelAxes(coordinate);
       if (pixelAxes(axisInCoordinate) == -1) {
 
+// List it
 
-// List according to coordinate type
-
-        if (cSys.type(coordinate) == Coordinate::DIRECTION) { 
-          DirectionCoordinate dCoord = cSys.directionCoordinate(coordinate);
-          listDirection (os, dCoord, axisInCoordinate, -1, nativeFormat);
-        } else if (cSys.type(coordinate) == Coordinate::SPECTRAL) { 
-          const SpectralCoordinate sCoord = cSys.spectralCoordinate(coordinate);
-          listSpectral (os, sCoord, axisInCoordinate, -1);
-        } else if (cSys.type(coordinate) == Coordinate::LINEAR) { 
-          const LinearCoordinate lCoord = cSys.linearCoordinate(coordinate);
-          listLinear (os, lCoord, axisInCoordinate, -1);
-        } else if (cSys.type(coordinate) == Coordinate::STOKES) { 
-          const StokesCoordinate sCoord = cSys.stokesCoordinate(coordinate);
-          listStokes (os, sCoord, axisInCoordinate, -1, nativeFormat);
-        }
+        Coordinate* pc = cSys.coordinate(coordinate).clone();
+        listHeader(os, pc, widthName, widthProj, widthShape, 
+                   widthTile, widthRefValue, widthRefPixel, 
+                   widthInc, widthUnits, False, axisInCoordinate, 
+                   -1, nativeFormat, precRefValSci, precRefValFloat, 
+                   precRefValRADEC, precRefPixFloat, precIncSci);
+        delete pc;
      }
    }
  
@@ -457,19 +411,117 @@ Bool ImageSummary<T>::setNewImage (const ImageInterface<T>& image)
 }
 
 
+template <class T> 
+void ImageSummary<T>::getFieldWidths (uInt& widthName, 
+                                      uInt& widthProj, 
+                                      uInt& widthShape,
+                                      uInt& widthTile,
+                                      uInt& widthRefValue, 
+                                      uInt& widthRefPixel, 
+                                      uInt& widthInc,
+                                      uInt& widthUnits, 
+                                      uInt& totWidth, 
+                                      Int& precRefValSci, 
+                                      Int& precRefValFloat, 
+                                      Int& precRefValRADEC,
+                                      Int& precRefPixFloat, 
+                                      Int& precIncSci,
+                                      String& nameName,
+                                      String& nameProj,
+                                      String& nameShape,
+                                      String& nameTile,
+                                      String& nameRefValue,
+                                      String& nameRefPixel,
+                                      String& nameInc,
+                                      String& nameUnits,
+                                      const Bool& nativeFormat,
+                                      const CoordinateSystem& cSys) const
+//
+// ALl these silly format and precision things shoudl really be
+// in  a little class, but I can't be bothered !
+{
+
+// Precision for scientific notation, floating notation,
+// HH:MM:SS.SSS and sDD:MM:SS.SSS for the reference value formatting.
+// Precision for the reference pixel and increment formatting.
+
+   precRefValSci = 6;
+   precRefValFloat = 3;
+   precRefValRADEC = 3;
+   precRefPixFloat = 2;
+   precIncSci = 6;   
+
+
+// Header names for fields
+
+   nameName = "Name";
+   nameProj = "Proj";
+   nameShape = "Shape";
+   nameTile = "Tile";
+   nameRefValue = "Coord value";
+   nameRefPixel = "at pixel";
+   nameInc = "Coord incr";
+   nameUnits = " Units";
+
+// Initialize (logger will never be used)
+
+   widthName = widthProj = widthShape = widthTile = widthRefValue = 0;
+   widthRefPixel = widthInc = widthUnits = 0;
+   LogIO os(LogOrigin("ImageSummary", "getFieldWidths()", WHERE));
+
+// Loop over number of pixel axes
+
+   Int pixelAxis;
+   Int coordinate, axisInCoordinate;
+   for (pixelAxis=0; pixelAxis<cSys.nPixelAxes(); pixelAxis++) {
+
+
+// Find coordinate number for this pixel axis
+ 
+      cSys.findPixelAxis(coordinate, axisInCoordinate, pixelAxis);
+
+
+// Update widths of fields
+
+      Coordinate* pc = cSys.coordinate(coordinate).clone();
+      listHeader (os, pc,  widthName, widthProj, widthShape, widthTile, 
+                  widthRefValue, widthRefPixel, widthInc, widthUnits,
+                  True, axisInCoordinate, pixelAxis,
+                  nativeFormat, precRefValSci, precRefValFloat,
+                  precRefValRADEC, precRefPixFloat, precIncSci);
+      delete pc;
+   }
+
+
+// Compare with header widths
+
+   widthName = max(nameName.length(), widthName) + 1;
+   widthProj = max(nameProj.length(), widthProj) + 1;
+   widthShape = max(nameShape.length(), widthShape) + 1;
+   widthTile = max(nameTile.length(), widthTile) + 1;
+   widthRefValue = max(nameRefValue.length(), widthRefValue) + 1;
+   widthRefPixel = max(nameRefPixel.length(), widthRefPixel) + 1;
+   widthInc = max(nameInc.length(), widthInc) + 1;
+   widthUnits = max(nameUnits.length(), widthUnits);
+}
+
 
 template <class T> 
-void ImageSummary<T>::listDirection (LogIO& os, 
-                                     DirectionCoordinate& coord,
-                                     const Int& axisInCoordinate,
-                                     const Int& pixelAxis,
-                                     const Bool& nativeFormat) const
+void ImageSummary<T>::listHeader (LogIO& os, Coordinate* pc,
+                                  uInt& widthName, uInt& widthProj,
+                                  uInt& widthShape, uInt& widthTile,
+                                  uInt& widthRefValue, uInt& widthRefPixel, 
+                                  uInt& widthInc, uInt& widthUnits, const Bool& findWidths,
+                                  const Int& axisInCoordinate, const Int& pixelAxis,
+                                  const Bool& nativeFormat, const Int& precRefValSci, 
+                                  const Int& precRefValFloat, const Int& precRefValRADEC, 
+                                  const Int& precRefPixFloat, const Int& precIncSci) const
 //
-// Output the descriptors for a DIRECTION axis
+// List all the good stuff
 //
 //  Input:
 //     os               The LogIO to write to
-//     coord            The direction coordinate
+//     pc               Pointer to the coordinate
 //     axisIncoordinate The axis number in this coordinate 
 //     pixelAxis        The axis in the image for this axis in this coordinate
 //     nativeFormat     If true don't convert any units
@@ -478,470 +530,247 @@ void ImageSummary<T>::listDirection (LogIO& os,
 
 // Clear flags
 
-   clearFlags(os);
+   if (!findWidths) clearFlags(os);
 
 // Axis name
 
-   os.output().setf(ios::left, ios::adjustfield);
-   os.output().width(widthName_p);
-   os << coord.worldAxisNames()(axisInCoordinate);
+   String string = pc->worldAxisNames()(axisInCoordinate);
+   if (findWidths) {
+      widthName = max(widthName, string.length());
+   } else {
+      os.output().setf(ios::left, ios::adjustfield);
+      os.output().width(widthName);
+      os << string;
+   }
+
 
 // Projection
 
-   os.output().setf(ios::right, ios::adjustfield);
-   os.output().width(widthProj_p);
-   os << coord.projection().name();
+   if (pc->type() == Coordinate::DIRECTION) {
+      DirectionCoordinate* dc = (DirectionCoordinate*)pc;
+      string = dc->projection().name();
+   } else {
+      string = " ";
+   }
+   if (findWidths) {
+      widthProj = max(widthProj, string.length());
+   } else {
+      os.output().setf(ios::right, ios::adjustfield);
+      os.output().width(widthProj);
+      os << string;
+   }
+
 
 // Number of pixels
    
-   os.output().width(widthNPix_p);
    if (pixelAxis != -1) {
-      os << this->shape()(pixelAxis);
+      ostrstream oss;
+      oss << this->shape()(pixelAxis);
+      string = String(oss);
    } else {
-      os << " ";
+      string = " ";
    }
+   if (findWidths) {
+      widthShape = max(widthShape, string.length());
+   } else {
+      os.output().width(widthShape);
+      os << string;
+   }
+
 
 // Tile shape
 
-   os.output().width(widthTile_p);
    if (pixelAxis != -1) {
-      os << this->tileShape()(pixelAxis);
+      ostrstream oss;
+      oss << this->tileShape()(pixelAxis);
+      string = String(oss);
    } else {
-      os << " ";
+      string = " ";
+   }
+   if (findWidths) {
+      widthTile = max(widthTile, string.length());
+   } else {
+      os.output().width(widthTile);
+      os << string;
    }
 
 
 // Remember units
 
-   Vector<String> oldUnits(2);
-   oldUnits = coord.worldAxisUnits();
-   Vector<String> units(2);
+   Vector<String> oldUnits(pc->nWorldAxes());
+   oldUnits = pc->worldAxisUnits();
+   Vector<String> units(pc->nWorldAxes());
 
 
 // Reference value
 
-   String tString = coord.worldAxisNames()(axisInCoordinate);
-   tString.upcase();
-   os.output().width(widthRefValue_p);
-   if (nativeFormat) {
-      os.output().setf(ios::scientific, ios::floatfield);
-      os.output().precision(precRefValueSci_p);
-      os << coord.referenceValue()(axisInCoordinate);
+   if (nativeFormat && pc->type() != Coordinate::STOKES) {
+      ostrstream oss;
+      oss.setf(ios::scientific, ios::floatfield);
+      oss.precision(precRefValSci);
+      oss << pc->referenceValue()(axisInCoordinate);
+      string = String(oss);
    } else {
-
-// Convert to radians as MVAngle wants radians
-
-      units = "rad";
-      coord.setWorldAxisUnits(units);
-
-      MVAngle mVA(coord.referenceValue()(axisInCoordinate));
-      if (tString.contains("RIGHT ASCENSION")) {
-         os << mVA.string(MVAngle::TIME,8);
-      } else if (tString.contains("DECLINATION")) {
-         os << mVA.string(MVAngle::DIG2,8);
-      } else {
-         os.output().setf(ios::fixed, ios::floatfield);
-         os.output().precision(precRefValueFixed_p);
-         os << mVA.degree();
-      }
-   }
-
-// Reference pixel
-
-   os.output().setf(ios::fixed, ios::floatfield);
-   os.output().width(widthRefPixel_p);
-   os.output().precision(precRefPixel_p);
-   if (pixelAxis != -1) {
-      os << coord.referencePixel()(axisInCoordinate) + 1.0;
-   } else {
-      os << " ";
-   }
-
-
-// Increment
-
-   os.output().setf(ios::scientific, ios::floatfield);
-   os.output().width(widthInc_p);
-   os.output().precision(precInc_p);
-   if (pixelAxis != -1) {
-      if (nativeFormat) {
-         os << coord.increment()(axisInCoordinate);
-      } else { 
-         if (tString.contains("RIGHT ASCENSION") ||   
-             tString.contains("DECLINATION")) {
-            units = "''";
-            coord.setWorldAxisUnits(units);
-            os << coord.increment()(axisInCoordinate);
-         } else {
-            os << coord.increment()(axisInCoordinate);
-         }
-      }
-   } else {
-      os << " ";
-   }
-
-
-
-// Increment units
-
-   os.output().setf(ios::left, ios::adjustfield);
-   if (pixelAxis != -1) {
-      os << " " << coord.worldAxisUnits()(axisInCoordinate);
-   }
-
-   os << endl;    
-
-
-// Put the units back to what they were
-
-   coord.setWorldAxisUnits(oldUnits);
-
-}
-
-
-template <class T> 
-void ImageSummary<T>::listSpectral (LogIO& os, 
-                                    const SpectralCoordinate& coord,
-                                    const Int& axisInCoordinate,
-                                    const Int& pixelAxis) const
-//
-// Output the descriptors for a SPECTRAL axis
-//
-//  Input:
-//     os               The LogIO to write to
-//     coord            The spectral coordinate
-//     axisIncoordinate The axis number in this coordinate 
-//     pixelAxis        The axis in the image for this axis in this coordinate
-//           
-{
-
-// Clear flags
-
-   clearFlags(os);
-
-// Axis name
-
-   os.output().setf(ios::left, ios::adjustfield);
-   os.output().width(widthName_p);
-   os << coord.worldAxisNames()(axisInCoordinate);
-
-// Projection (none)
-
-   os.output().setf(ios::right, ios::adjustfield);
-   os.output().width(widthProj_p);
-   os << " ";
-
-// Number of pixels
-   
-   os.output().width(widthNPix_p);
-   if (pixelAxis != -1) {
-      os << this->shape()(pixelAxis);
-   } else {
-      os << " ";
-   }
-
-// Tile shape
-
-   os.output().width(widthTile_p);
-   if (pixelAxis != -1) {
-      os << this->tileShape()(pixelAxis);
-   } else {
-      os << " ";
-   }
-
-
-// Reference value
-
-   os.output().setf(ios::scientific, ios::floatfield);
-   os.output().width(widthRefValue_p);
-   os.output().precision(precRefValueSci_p);
-   os << coord.referenceValue()(axisInCoordinate);
-
-// Reference pixel
-
-   os.output().setf(ios::fixed, ios::floatfield);
-   os.output().width(widthRefPixel_p);
-   os.output().precision(precRefPixel_p);
-   if (pixelAxis != -1) {
-      os << coord.referencePixel()(axisInCoordinate) + 1.0;
-   } else {
-      os << " ";
-   }
-      
-
-// Increment
-
-   os.output().setf(ios::scientific, ios::floatfield);
-   os.output().width(widthInc_p);
-   os.output().precision(precInc_p);
-   if (pixelAxis != -1) {
-      os << coord.increment()(axisInCoordinate);
-   } else {
-      os << " ";
-   }
-
-
-// Increment units
-  
-   os.output().setf(ios::left, ios::adjustfield);
-   if (pixelAxis != -1) {
-      os << " " << coord.worldAxisUnits()(axisInCoordinate);
-   }
-
-
-   os << endl; 
-}
-
-
-template <class T> 
-void ImageSummary<T>::listLinear (LogIO& os, 
-                                  const LinearCoordinate& coord,
-                                  const Int& axisInCoordinate,
-                                  const Int& pixelAxis) const
-//
-// Output the descriptors for a LINEAR axis
-//
-//  Input:
-//     os               The LogIO to write to
-//     coord            The linear coordinate
-//     axisIncoordinate The axis number in this coordinate 
-//     pixelAxis        The axis in the image for this axis in this coordinate
-//           
-{
-
-// Clear flags
-
-   clearFlags(os);
-
-// Axis name
-
-   os.output().setf(ios::left, ios::adjustfield);
-   os.output().width(widthName_p);
-   os << coord.worldAxisNames()(axisInCoordinate);
-
-// Projection (none)
-
-   os.output().setf(ios::right, ios::adjustfield);
-   os.output().width(widthProj_p);
-   os << " ";
-
-
-// Number of pixels
-   
-   os.output().width(widthNPix_p);
-   if (pixelAxis != -1) {
-      os << this->shape()(pixelAxis);
-   } else {
-      os << " ";
-   }
-
-// Tile shape
-
-   os.output().width(widthTile_p);
-   if (pixelAxis != -1) {
-      os << this->tileShape()(pixelAxis);
-   } else {
-      os << " ";
-   }
-
-
-// Reference value
-
-   os.output().setf(ios::scientific, ios::floatfield);
-   os.output().width(widthRefValue_p);
-   os.output().precision(precRefValueSci_p);
-   os << coord.referenceValue()(axisInCoordinate);
-
-// Reference pixel
-
-   os.output().setf(ios::fixed, ios::floatfield);
-   os.output().width(widthRefPixel_p);
-   os.output().precision(precRefPixel_p);
-   if (pixelAxis != -1) {
-      os << coord.referencePixel()(axisInCoordinate) + 1.0;
-   } else {
-      os << " ";
-   }
-
-
-// Increment
-
-   os.output().setf(ios::scientific, ios::floatfield);
-   os.output().width(widthInc_p);
-   os.output().precision(precInc_p);
-   if (pixelAxis != -1) {
-      os << coord.increment()(axisInCoordinate);
-   } else {
-      os << " ";
-   }
-
-
-// Increment units
-  
-   os.output().setf(ios::left, ios::adjustfield);
-   if (pixelAxis != -1) {
-      os << " " << coord.worldAxisUnits()(axisInCoordinate);
-   }
-
-   os << endl; 
-}
-
-
-
-
-template <class T> 
-void ImageSummary<T>::listStokes (LogIO& os, 
-                                  const StokesCoordinate& coord,
-                                  const Int& axisInCoordinate,
-                                  const Int& pixelAxis,
-                                  const Bool& nativeFormat) const
-//
-// Output the descriptors for a STOKES axis
-//
-//  Input:
-//     os               The LogIO to write to
-//     coord            The stokes coordinate
-//     axisIncoordinate The axis number in this coordinate 
-//     pixelAxis        The axis in the image for this axis in this coordinate
-//     nativeFormat     If true don't convert any units
-//
-{
-
-// Clear flags
-
-   clearFlags(os);
-
-// Axis name
-
-   os.output().setf(ios::left, ios::adjustfield);
-   os.output().width(widthName_p);
-   os << coord.worldAxisNames()(axisInCoordinate);
-
-// Projection (none)
-
-   os.output().setf(ios::right, ios::adjustfield);
-   os.output().width(widthProj_p);
-   os << " ";
-
-// Number of pixels
-   
-   os.output().width(widthNPix_p);
-   if (pixelAxis != -1) {
-      os << this->shape()(pixelAxis);
-   } else {
-      os << " ";
-   }
-
-// Tile shape
-
-   os.output().width(widthTile_p);
-   if (pixelAxis != -1) {
-      os << this->tileShape()(pixelAxis);
-   } else {
-      os << " ";
-   }
-
-
-// Reference value, reference pixel, increment
-
-   if (nativeFormat) {
-      os.output().setf(ios::scientific, ios::floatfield);
-      os.output().width(widthRefValue_p);
-      os.output().precision(precRefValueFixed_p);
-      os << coord.referenceValue()(axisInCoordinate);
-
-      os.output().setf(ios::fixed, ios::floatfield);
-      os.output().width(widthRefPixel_p);
-      os.output().precision(precRefPixel_p);
-      if (pixelAxis != -1) {
-         os << coord.referencePixel()(axisInCoordinate) + 1.0;
-      } else {
-         os << " ";
-      }
-
-      os.output().setf(ios::scientific, ios::floatfield);
-      os.output().width(widthInc_p);
-      os.output().precision(precInc_p);
-      if (pixelAxis != -1) {
-         os << coord.increment()(axisInCoordinate);
-      } else {
-         os << " ";
-      }
-
-      os.output().setf(ios::left, ios::adjustfield);
-      if (pixelAxis != -1) {
-         os << " " << coord.worldAxisUnits()(axisInCoordinate);
-      } else {
-         os << " ";
-      }
-   } else {
-
-// We write here the names of each pixel on the Stokes axes such as
-// IQUV or XXYYXYYX etc   It is possible that this will run into trouble
-// if for some reason the Stokes axis is very funny and the names overflow
-// the width of the field "widthRefValue_p".  This is pretty remote
-// except in test cases.
-
-      os.output().width(widthRefValue_p);
-      if (pixelAxis != -1) {
+      Coordinate::formatType form;
+      Bool absolute = True;
+      String listUnits;
+      Int prec;
+
+      if (pc->type() == Coordinate::STOKES) {
+         Vector<Double> world(1);
+         Vector<Double> pixel(1);
          String sName;
-         for (Int i=0; i<this->shape()(pixelAxis); i++) {
-            Stokes::StokesTypes iStokes;
-            Bool ok = coord.toWorld(iStokes, i);
+         form = Coordinate::DEFAULT;
 
-// SOme protections against funny axes
-
-            String temp;
-            if (ok) {
-               temp = Stokes::name(Stokes::type(iStokes));
-            } else {
-               temp = "?";
+         if (pixelAxis != -1) {
+            for (Int i=0; i<this->shape()(pixelAxis); i++) {
+               pixel(0) = Double(i);
+               Bool ok = pc->toWorld(world, pixel);
+               String temp;
+               if (ok) {
+                  temp = pc->format(listUnits, form, world(0), 
+                                    axisInCoordinate, absolute, -1);
+               } else {
+                  temp = "?";
+               }
+               sName += temp;
             }
-            if (sName.length()+temp.length() < widthRefValue_p) sName += temp;
-         }
-         os << sName;
-      } else {
-         String sName;
-         Stokes::StokesTypes iStokes;
-         Int i = Int(coord.referencePixel()(axisInCoordinate));
-         Bool ok = coord.toWorld(iStokes, i);
-
-         if (ok) {
-            sName = Stokes::name(Stokes::type(iStokes));
          } else {
-            sName = "?";
+            pixel(0) =pc->referencePixel()(axisInCoordinate);
+            Bool ok = pc->toWorld(world, pixel);
+            if (ok) {
+               sName = pc->format(listUnits, form, world(0), 
+                                  axisInCoordinate, absolute, -1);
+            } else {
+               sName = "?";
+            }
          }
-         os << sName;
+         string = sName;
+      } else {
+         if (pc->type() == Coordinate::DIRECTION) {
+
+// Convert to radians for formatting for DirectionCoordinate
+
+            units = "rad";
+            pc->setWorldAxisUnits(units);
+         }
+         form = Coordinate::DEFAULT;
+         pc->getPrecision(prec, form, absolute, precRefValSci, 
+                          precRefValFloat, precRefValRADEC);
+         string = pc->format(listUnits, form, 
+                            pc->referenceValue()(axisInCoordinate),
+                            axisInCoordinate, absolute, prec);
+      }
+   }
+   if (findWidths) {
+      widthRefValue = max(widthRefValue,string.length());
+   } else {
+      os.output().width(widthRefValue);
+      os << string;
+   }
+
+// Reference pixel
+
+   if (pc->type() != Coordinate::STOKES) {
+      if (pixelAxis != -1) {
+         ostrstream oss;
+         oss.setf(ios::fixed, ios::floatfield);
+         oss.precision(precRefPixFloat);
+         oss << pc->referencePixel()(axisInCoordinate) + 1.0;
+         string = String(oss);
+      } else {
+         string = " ";
+      }
+      if (findWidths) {
+         widthRefPixel = max(widthRefPixel,string.length());
+      } else {
+         os.output().width(widthRefPixel);
+         os << string;
       }
    }
 
 
-   os << endl; 
+// Increment
 
+   String incUnits;
+   if (pc->type() != Coordinate::STOKES) {
+      if (pixelAxis != -1) {
+         if (nativeFormat) {
+            ostrstream oss;
+            oss.setf(ios::scientific, ios::floatfield);
+            oss.precision(precIncSci);
+            oss << pc->increment()(axisInCoordinate);
+            string = String(oss);
+            incUnits = pc->worldAxisUnits()(axisInCoordinate);
+         } else {
+            Coordinate::formatType form;
+            const Bool absolute = False;
+            String listUnits;
+            Int prec;
+
+            form = Coordinate::DEFAULT;
+ 
+            pc->getPrecision(prec, form, absolute, precRefValSci, 
+                             precRefValFloat, precRefValRADEC);
+            string = pc->format(incUnits, form, 
+                                pc->increment()(axisInCoordinate),
+                                axisInCoordinate, absolute, prec);
+         }
+      } else {
+         string = " ";
+      }
+      if (findWidths) {
+         widthInc = max(widthInc,string.length());
+      } else {
+         os.output().width(widthInc);
+         os << string;
+      }
+   }
+
+
+// Increment units
+
+   if (pc->type()!= Coordinate::STOKES) {
+      if (pixelAxis != -1) {
+/*
+         ostrstream oss;
+         oss << " " << pc->worldAxisUnits()(axisInCoordinate);
+         string = String(oss);
+*/
+         string = " " + incUnits;
+      } else {
+         string = " ";
+      }
+      if (findWidths) {
+         widthUnits = max(widthUnits,string.length());
+      } else {
+         os.output().setf(ios::left, ios::adjustfield);
+         os << string;
+      }
+   }
+
+   if (!findWidths) os << endl;    
 }
 
 
-template <class T> 
+template <class T>
 void ImageSummary<T>::clearFlags(LogIO& os) const
 //
 // Clear all the formatting flags
 //
-{
+{  
    os.output().unsetf(ios::left);
    os.output().unsetf(ios::right);
    os.output().unsetf(ios::internal);
-
+ 
    os.output().unsetf(ios::dec);
    os.output().unsetf(ios::oct);
    os.output().unsetf(ios::hex);
-
+ 
    os.output().unsetf(ios::showbase | ios::showpos | ios::uppercase | ios::showpoint);
-
+ 
    os.output().unsetf(ios::scientific);
    os.output().unsetf(ios::fixed);
-
+ 
 }
-
-
-
 

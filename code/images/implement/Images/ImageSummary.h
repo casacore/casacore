@@ -1,4 +1,4 @@
-//# ImageSummary.h: Helper class for applications listing an image header
+//# ImageSummary.h: List information from an image header
 //# Copyright (C) 1996,1997
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -24,6 +24,8 @@
 //#                        Charlottesville, VA 22903-2475 USA
 //#
 //#
+//# $Id$
+//
 #if !defined(AIPS_IMAGESUMMARY_H)
 #define AIPS_IMAGESUMMARY_H
 
@@ -38,10 +40,7 @@ template <class T> class Vector;
 class IPosition;
 class Unit;
 class LogIO;
-class DirectionCoordinate;
-class SpectralCoordinate;
-class StokesCoordinate;
-class LinearCoordinate;
+class Coordinate;
 
 // <summary> Provides and lists information about the header of an image </summary>
 // <use visibility=export>
@@ -159,7 +158,7 @@ public:
 // values and pixel increments are converted to a "nice" unit before 
 // formatting (e.g. RA is  shown as HH:MM:SS.S).  If <src>nativeFormat</src> 
 // is <src>True</src> then the values are formatted in their native format.
-   void list (LogIO& os, Bool nativeFormat=False);
+   void list(LogIO& os, Bool nativeFormat=False);
 
 // Set a new image
    Bool setNewImage (const ImageInterface<T>& image);
@@ -168,48 +167,52 @@ public:
 private:
    const ImageInterface<T>* pImage_p;
 
-// These are format controllers used by the list() function.
-// I should probably write these as a little format class
-// but I can't be bothered !
+   void getFieldWidths (uInt& widthName, 
+                        uInt& widthProj,
+                        uInt& widthShape,
+                        uInt& widthTile,
+                        uInt& widthRefValue,
+                        uInt& widthRefPixel,
+                        uInt& widthInc,
+                        uInt& widthUnits,
+                        uInt& totWidth,
+                        Int& precRefValSci,
+                        Int& precRefValloat,
+                        Int& precRefValRADEC,   
+                        Int& precRefPixFloat,
+                        Int& precIncSci,
+                        String& nameName,
+                        String& nameProj,
+                        String& nameShape,
+                        String& nameTile,
+                        String& nameRefValue,
+                        String& nameRefPixel,
+                        String& nameInc,
+                        String& nameUnits,
+                        const Bool& nativeFormat,
+                        const CoordinateSystem& cSys) const;
 
-   uInt widthName_p;
-   uInt widthProj_p;
-   uInt widthNPix_p;
-   uInt widthTile_p;
-   uInt widthRefValue_p;
-   uInt widthAxUnits_p;
-   Int precRefValueSci_p;
-   Int precRefValueFixed_p;
-   uInt widthRefPixel_p;
-   Int precRefPixel_p;
-   uInt widthInc_p;
-   Int precInc_p;
 
-// List DirectionCoordinate axis descriptors
-   void listDirection (LogIO& os, 
-                       DirectionCoordinate& coord,
-                       const Int& axisInCoordinate,
-                       const Int& pixelAxis, 
-                       const Bool& nativeFormat) const;
-
-// List SpectralCoordinate axis descriptors
-   void listSpectral  (LogIO& os, 
-                       const SpectralCoordinate& coord,
-                       const Int& axisInCoordinate,
-                       const Int& pixelAxis) const;
-
-// List LinearCoordinate axis descriptors
-   void listLinear    (LogIO& os, 
-                       const LinearCoordinate& coord,
-                       const Int& axisInCoordinate,
-                       const Int& pixelAxis) const;
-
-// List StokesCoordinate axis descriptors
-   void listStokes    (LogIO& os, 
-                       const StokesCoordinate& coord,
-                       const Int& axisInCoordinate,
-                       const Int& pixelAxis,
-                       const Bool& nativeFormat) const;
+// List axis descriptors
+   void listHeader (LogIO& os,
+                    Coordinate* pc,
+                    uInt& widthName,
+                    uInt& widthProj,
+                    uInt& widthShape,
+                    uInt& widthTile,
+                    uInt& widthRefValue,
+                    uInt& widthRefPixel,
+                    uInt& widthInc,
+                    uInt& widthUnits,
+                    const Bool& findWidths,
+                    const Int& axisInCoordinate,
+                    const Int& pixelAxis,
+                    const Bool& nativeFormat,
+                    const Int& precRefValSci,
+                    const Int& precRefValFloat,
+                    const Int& precRefValRADEC,
+                    const Int& precRefPixFloat,
+                    const Int& precIncSci) const;
 
 // Clear formatting flags
    void clearFlags (LogIO& os) const;
@@ -217,4 +220,3 @@ private:
 };
 
 #endif
-
