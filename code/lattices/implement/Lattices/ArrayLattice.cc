@@ -37,27 +37,31 @@
 
 template<class T>
 ArrayLattice<T>::ArrayLattice()
-{
-  // Nothing
-}
+: itsWritable (False)
+{}
 
 template<class T>
 ArrayLattice<T>::ArrayLattice (const IPosition& shape) 
-: theData(shape)
-{
-    // Nothing
-}
+: itsData     (shape),
+  itsWritable (True)
+{}
+
+template<class T>
+ArrayLattice<T>::ArrayLattice (Array<T>& array) 
+: itsData     (array),
+  itsWritable (True)
+{}
 
 template<class T>
 ArrayLattice<T>::ArrayLattice (const Array<T>& array) 
-: theData(array)
-{
-    // Nothing
-}
+: itsData     (array),
+  itsWritable (False)
+{}
 
 template<class T>
 ArrayLattice<T>::ArrayLattice (const ArrayLattice<T>&other) 
-: theData(other.theData)
+: itsData     (other.itsData),
+  itsWritable (other.itsWritable)
 {
     // Nothing
 }
@@ -72,15 +76,28 @@ template<class T>
 ArrayLattice<T>& ArrayLattice<T>::operator= (const ArrayLattice<T>& other)
 {
   if (this != &other) {
-    theData = other.theData;
+    itsData     = other.itsData;
+    itsWritable = other.itsWritable;
   }
   return *this;
 }
 
 template<class T>
+Lattice<T>* ArrayLattice<T>::clone() const
+{
+  return new ArrayLattice<T> (*this);
+}
+
+template <class T>
+Bool ArrayLattice<T>::isWritable() const
+{
+  return itsWritable;
+}
+
+template<class T>
 IPosition ArrayLattice<T>::shape() const
 {
-  return theData.shape();
+  return itsData.shape();
 } 
 
 template<class T>
@@ -102,14 +119,11 @@ Bool ArrayLattice<T>::getSlice (COWPtr<Array<T> >& bufPtr,
   // be done as the COWPtr will be set to be "readonly" and hence the
   // ArrayLattice cannot be modified without the COWPtr making a copy of the
   // cursor
-  if (bufPtr.isNull()) {
-    bufPtr.set(new Array<T>());
-  }
+  // The COWPtr takes over the pointer to the array.
   ArrayLattice<T>* This = (ArrayLattice<T>*) this;
-  Bool isAref = This->getSlice(bufPtr.rwRef(), section, removeDegenerateAxes);
-  if (isAref) {
-    bufPtr.setReadOnly();
-  }
+  Array<T>* arr = new Array<T>;
+  Bool isARef = This->getSlice(*arr, section, removeDegenerateAxes);
+  bufPtr = COWPtr<Array<T> > (arr, True, isARef);
   // While the returned array is normally a reference return "False" indicating
   // a copy as any attempt to modify the Array will result in a copy.
   return False;
@@ -144,7 +158,7 @@ Bool ArrayLattice<T>::getSlice (Array<T>& buffer,
       AlwaysAssert (shape.isEqual (section.length()), AipsError);
     }
   }
-  Array<T> cursor = theData(section.start(), section.end(), section.stride());
+  Array<T> cursor = itsData(section.start(), section.end(), section.stride());
   if (removeDegenerateAxes) {
     buffer.nonDegenerate(cursor);
   } else {
@@ -158,17 +172,20 @@ void ArrayLattice<T>::putSlice (const Array<T>& sourceBuffer,
 				const IPosition& where, 
 				const IPosition& stride)
 {
+  if (!itsWritable) {
+      throw (AipsError ("ArrayLattice::putSlice - non-writable lattice"));
+  }
   const uInt sdim = sourceBuffer.ndim();
   const uInt ldim = ndim();
   DebugAssert(ldim == where.nelements(), AipsError);
   DebugAssert(ldim == stride.nelements(), AipsError);
   if (sdim == ldim) {
-    theData(where, 
+    itsData(where, 
 	    where + (sourceBuffer.shape()-1)*stride, 
 	    stride) = sourceBuffer;
   } else {
     Array<T> allAxes(sourceBuffer.addDegenerate(ldim-sdim));
-    theData(where, 
+    itsData(where, 
 	    where + (allAxes.shape()-1)*stride, 
 	    stride) = allAxes;
   }
@@ -178,35 +195,53 @@ template<class T>
 void ArrayLattice<T>::putSlice (const Array<T>& sourceBuffer,
 				const IPosition& where)
 {
+  if (!itsWritable) {
+      throw (AipsError ("ArrayLattice::putSlice - non-writable lattice"));
+  }
   const uInt sdim = sourceBuffer.ndim();
   const uInt ldim = ndim();
   DebugAssert(ldim == where.nelements(), AipsError);
   if (sdim == ldim) {
-    theData(where, 
+    itsData(where, 
 	    where + (sourceBuffer.shape()-1)) = sourceBuffer;
   } else {
     Array<T> allAxes(sourceBuffer.addDegenerate(ldim-sdim));
-    theData(where, 
+    itsData(where, 
 	    where + (allAxes.shape()-1)) = allAxes;
   }
 }
 
 template<class T>
+void ArrayLattice<T>::getIterSlice (Array<T>& buffer, const IPosition& start,
+				    const IPosition& end, const IPosition& incr)
+{
+    Array<T> tmp (itsData(start, end, incr));
+    buffer.reference (tmp);
+}
+
+
+template<class T>
 void ArrayLattice<T>::set (const T& value)
 {
-  theData.set(value);
+  if (!itsWritable) {
+      throw (AipsError ("ArrayLattice::set - non-writable lattice"));
+  }
+  itsData.set(value);
 }
 
 template<class T>
 T ArrayLattice<T>::getAt (const IPosition& where) const
 {
-  return theData(where);
+  return itsData(where);
 }
 
 template<class T>
 void ArrayLattice<T>::putAt (const T& value, const IPosition& where)
 {
-  theData(where) = value;
+  if (!itsWritable) {
+      throw (AipsError ("ArrayLattice::putAt - non-writable lattice"));
+  }
+  itsData(where) = value;
 }
 
 template<class T>
@@ -219,18 +254,21 @@ LatticeIterInterface<T>* ArrayLattice<T>::makeIter
 template<class T>
 Array<T>& ArrayLattice<T>::asArray()
 {
-  return theData;
+  if (!itsWritable) {
+      throw (AipsError ("ArrayLattice::asArray - non-writable lattice"));
+  }
+  return itsData;
 }
 
 template<class T>
 const Array<T>& ArrayLattice<T>::asArray() const
 {
-  return theData;
+  return itsData;
 }
 
 // Check class invariants. 
 template<class T>
 Bool ArrayLattice<T>::ok() const
 {
-  return theData.ok();
+  return itsData.ok();
 }
