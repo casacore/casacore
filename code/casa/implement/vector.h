@@ -64,7 +64,7 @@ template \
 T *std::__uninitialized_fill_n_aux<T *, uInt, T >(T *, uInt, \
 			      T const &, __false_type); \
 template \
-void vector<T, allocator<T> >:: \
+void vector<T, std::allocator<T> >:: \
 _M_assign_aux(T const *, T const *, forward_iterator_tag);
 
 #else
