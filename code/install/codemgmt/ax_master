@@ -5886,3 +5886,4 @@
 16 276 src rm trial/apps/almati2ms
 16 291 src rm trial/apps/dish/dishpg.g
 16 291 src rm trial/apps/dish/temppf.g
+16 291 src rm trial/apps/dish/pfg.g
