@@ -226,6 +226,38 @@ Flux<Double> SkyCompRep::visibility(const Vector<Double>& uvw,
   return flux;
 }
 
+void SkyCompRep::visibility(Cube<DComplex>& visibilities,
+			    const Matrix<Double>& uvws,
+			    const Vector<Double>& frequencies) const {
+  DebugAssert(ok(), AipsError);
+  DebugAssert(uvws.nrow() == 3, AipsError);
+  DebugAssert(visibilities.nrow() == 4, AipsError);
+  const uInt nFreq = frequencies.nelements();
+  DebugAssert(visibilities.ncolumn() == nFreq, AipsError);
+  const uInt nVis = uvws.ncolumn();
+  DebugAssert(visibilities.nplane() == nVis, AipsError);
+  DebugAssert(thisShape->isSymmetric() == nFreq, AipsError);
+
+  Vector<Double> uvw(3);
+  Block<DComplex> flux(4);
+  for (uInt p = 0; p < 4; p++) {
+    flux[p] = itsFlux.value(p);
+  }
+  for (uInt v = 0; v < nVis; v++) {
+    for (uInt u = 0; u < 3; u++) {
+      uvw(u) = uvws(u, v);
+    }
+    for (uInt f = 0; f < nFreq; f++) {
+      const Double scale = itsShapePtr->visibility(uvw, frequencies(f)).real();
+      // I should scale by the frequency here also but I need to consult with
+      // Tim first.
+      for (uInt p = 0; p < 4; p++) {
+	visibilities(p, f, v) = flux[p] * scale;
+      }
+    }
+  }
+}
+
 Bool SkyCompRep::fromRecord(String& errorMessage,
 			    const RecordInterface& record) {
   {
