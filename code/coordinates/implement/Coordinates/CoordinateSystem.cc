@@ -1925,7 +1925,6 @@ Bool CoordinateSystem::toFITSHeader(RecordInterface &header,
 	    header.define("projp", projp);
 	}
     }
-
     if (specAxis > 1) {
 	const SpectralCoordinate &spec = spectralCoordinate(specCoord);
 	spec.toFITS(header, specAxis, os, oneRelative, preferVelocity, 
@@ -2439,12 +2438,15 @@ Bool CoordinateSystem::fromFITSHeader(CoordinateSystem &coordsys,
 //
         Bool foundI = False;
 	for (Int k=0; k<shape(stokesAxis); k++) {
+
+// crpix is 0-relative
+
 	    Double tmp = crval(stokesAxis) + 
 		(k - crpix(stokesAxis))*cdelt(stokesAxis);
 	    if (tmp >= 0) {
-		stokes(k) = Int(floor(tmp + 0.01));
+		stokes(k) = Int(tmp + 0.01);
 	    } else {
-		stokes(k) = Int(floor(tmp - 0.01));
+		stokes(k) = Int(tmp - 0.01);
 	    }
 //
    	    switch (stokes(k)) {
