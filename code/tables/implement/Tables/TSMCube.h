@@ -42,11 +42,7 @@ class TSMFile;
 class TSMColumn;
 class BucketCache;
 template<class T> class Block;
-#if defined(AIPS_STDLIB)
-#include <iosfwd>
-#else
-class ostream;
-#endif
+#include <aips/aipsiosfwd.h>
 
 
 // <summary>
@@ -168,6 +164,10 @@ public:
     // no file is attached to the cube (for cells without a value).
     Int getObject (AipsIO& ios);
 
+    // Resync the object with the data file.
+    // It reads the object, and adjusts the cache.
+    void resync (AipsIO& ios);
+
     // Is the hypercube extensible?
     Bool isExtensible() const;
 
@@ -283,7 +283,10 @@ private:
     TSMCube& operator= (const TSMCube&);
 
     // Initialize the various variables.
+    // <group>
     void setup();
+    void setupNrTiles();
+    // </group>
 
     // Adjust the tile shape to the hypercube shape.
     // A size of 0 gets set to 1.
