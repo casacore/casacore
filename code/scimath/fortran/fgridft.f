@@ -1,5 +1,5 @@
 *=======================================================================
-*     Copyright (C) 1999
+*     Copyright (C) 1999,2001
 *     Associated Universities, Inc. Washington DC, USA.
 *
 *     This library is free software; you can redistribute it and/or
@@ -89,7 +89,7 @@ C rotate but we do want to reproject uvw
                            nvalue=cmplx(weight(ichan,irow))
                         else
                            nvalue=weight(ichan,irow)*
-     $                        conjg(values(ipol,ichan,irow)*phasor)
+     $                        (values(ipol,ichan,irow)*phasor)
                         end if
                         norm=0.0
                         do iy=-support,support
@@ -182,7 +182,7 @@ C
      $                             grid(loc(1)+ix,loc(2)+iy,apol,achan)
                            end do
                         end do
-                        values(ipol,ichan,irow)=conjg(nvalue*phasor)
+                        values(ipol,ichan,irow)=(nvalue*phasor)
      $                       /norm
                      end if
                   end do
