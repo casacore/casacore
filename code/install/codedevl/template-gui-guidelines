@@ -261,6 +261,13 @@ statements about the use of the "Tab" key.  This statement on
 the desirability of "Tab" directed input does not preclude
 other alternative uses of the "Tab" key (e.g. file name completion).
 
+User Feedback
+    All GUI actions which take more than a few seconds on the
+canonical aips++ machine must change the cursor to indicate the the
+action was seen and is being worked on.  In addition, it may also be
+desirable to disable widgets for operations that take more than a few
+seconds to prevent possible confusion.
+
 
 Trap window manager kill events
     Watch for killed events from the outer frame and do
