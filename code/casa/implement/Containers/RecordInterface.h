@@ -294,6 +294,7 @@ public:
     void define (const RecordFieldId&, Double value);
     void define (const RecordFieldId&, const Complex& value);
     void define (const RecordFieldId&, const DComplex& value);
+    void define (const RecordFieldId&, const Char* value);
     void define (const RecordFieldId&, const String& value);
     void define (const RecordFieldId&, const Array<Bool>& value,
 		 Bool FixedShape = False);
@@ -477,6 +478,10 @@ inline RecordInterface::RecordType RecordInterface::recordType() const
 inline DataType RecordInterface::dataType (const RecordFieldId& id) const
 {
     return type (idToNumber(id));
+}
+inline void RecordInterface::define (const RecordFieldId& id, const Char* value)
+{
+    define (id, String(value));
 }
 inline Float RecordInterface::asFloat (const RecordFieldId& id) const
 {

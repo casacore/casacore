@@ -1,5 +1,5 @@
 //# AipsIO.h: AipsIO is the object persistency mechanism of AIPS++
-//# Copyright (C) 1993,1994,1995,1996
+//# Copyright (C) 1993,1994,1995,1996,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -247,6 +247,7 @@ public:
     AipsIO& operator<< (const Complex& value);
     AipsIO& operator<< (const DComplex& value);
     AipsIO& operator<< (const String& value);
+    AipsIO& operator<< (const Char* value);
     // </group>
 
     // Put an array of values with the given number of values.

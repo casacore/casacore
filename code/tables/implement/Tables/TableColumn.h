@@ -1,5 +1,5 @@
 //# TableColumn.h: Access to a table column
-//# Copyright (C) 1994,1995,1996,1997
+//# Copyright (C) 1994,1995,1996,1997,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -457,6 +457,8 @@ public:
 	{ TABLECOLUMNCHECKROW(rownr); baseColPtr_p->putScalar (rownr, value); }
     void putScalar (uInt rownr, const String& value)
 	{ TABLECOLUMNCHECKROW(rownr); baseColPtr_p->putScalar (rownr, value); }
+    void putScalar (uInt rownr, const Char* value)
+	{ putScalar (rownr, String(value)); }
     // </group>
 
     //# The following routines add/remove/rename columns for the

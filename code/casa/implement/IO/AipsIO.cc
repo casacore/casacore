@@ -1,5 +1,5 @@
 //# AipsIO.cc: AipsIO is the object persistency mechanism of AIPS++
-//# Copyright (C) 1993,1994,1995,1996,1997
+//# Copyright (C) 1993,1994,1995,1996,1997,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //# 
 //# This library is free software; you can redistribute it and/or modify it
@@ -297,6 +297,14 @@ AipsIO& AipsIO::operator<< (const String& var)
 {
     testput();
     objlen_p[level_p] += io_p->write (1, &var);
+    return (*this);
+}
+
+AipsIO& AipsIO::operator<< (const Char* var)
+{
+    testput();
+    String str(var);
+    objlen_p[level_p] += io_p->write (1, &str);
     return (*this);
 }
 
