@@ -1,5 +1,5 @@
 //# tArray.cc: Test program for the Array class
-//# Copyright (C) 1993,1994,1995,1996,1997,1998,1999,2000,2001,2002
+//# Copyright (C) 1993,1994,1995,1996,1997,1998,1999,2000,2001,2002,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -717,13 +717,33 @@ int main()
 	}
 
 	{
-	  // Matrix.referece(1-d array)
+	  // Matrix.reference(1-d array)
 	  Array<Int> ai(IPosition(1,10));
 	  Matrix<Int> mi;
 	  mi.reference(ai);
 	  AlwaysAssertExit(mi.shape() == IPosition(2,10,1));
 	  ai = 11;
 	  AlwaysAssertExit(allEQ(mi, 11));
+	}
+
+	{
+	  // Array assign
+	  Array<Int> ai(IPosition(1,10));
+	  ai = 1;
+	  Matrix<Int> mi(5,3);
+	  mi = 2;
+	  Bool exc = False;
+	  try {
+	    mi.assign (ai);
+	  } catch (AipsError) {
+	    exc = True;
+	  }
+	  AlwaysAssertExit (exc);
+	  AlwaysAssertExit(mi.shape() == IPosition(2,5,3));
+	  AlwaysAssertExit(allEQ(mi, 2));
+	  ai.assign (mi);
+	  AlwaysAssertExit(ai.shape() == IPosition(2,5,3));
+	  AlwaysAssertExit(allEQ(ai, 2));
 	}
 
 	{
