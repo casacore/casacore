@@ -111,8 +111,8 @@ T GenSort<T>::kthLargest (T* data, uInt nr, uInt k)
     }
     Int st = 0;
     Int end = Int(nr) - 1;
-    // Partition until a set of 1 element is left.
-    while (end > st) {
+    // Partition until a set of 1 or 2 elements is left.
+    while (end > st+1) {
 	// Choose a partition element by taking the median of the
 	// first, middle and last element.
 	// Store the partition element at the end.
@@ -141,6 +141,11 @@ T GenSort<T>::kthLargest (T* data, uInt nr, uInt k)
 	i = sf-data;
 	if (i <= Int(k)) st = i;
 	if (i >= Int(k)) end = i;
+    }
+    if (end == st+1) {
+      if (data[st] < data[end]) {
+	swap (data[st], data[end]);
+      }
     }
     return data[k];
 }
