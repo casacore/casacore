@@ -1954,3 +1954,5 @@
 08 066 src rm trial/data/glishtutorial
 08 066 top rm docs/design
 08 066 top rm docs/aips2help
+08 066 src rm aips/apps/gtable/gtable.atoms
+08 066 src rm trial/implement/distributed/imagesolver.atoms
