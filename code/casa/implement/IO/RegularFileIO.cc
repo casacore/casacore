@@ -1,5 +1,5 @@
 //# RegularFileIO.cc: Class for IO on a regular file
-//# Copyright (C) 1996,1997,1998
+//# Copyright (C) 1996,1997,1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -43,7 +43,7 @@
 #include "IOTrace.h"
 #else
 #define traceFOPEN fopen
-#endif PABLO_IO
+#endif // PABLO_IO
 
 
 RegularFileIO::RegularFileIO (const RegularFile& regularFile,
@@ -82,7 +82,7 @@ RegularFileIO::RegularFileIO (const RegularFile& regularFile,
 	throw (AipsError ("RegularFileIO: unknown open option"));
     }
     // Open the file.
-    FILE* file = traceFOPEN (name.chars(), stropt.chars());
+    FILE* file = traceFOPEN ((char *)name.chars(), (char *)stropt.chars());
     if (file == 0) {
 	throw (AipsError ("RegularFileIO: error in open or create of file " +
 			  name + ": " + strerror(errno)));
@@ -107,7 +107,7 @@ void RegularFileIO::reopenRW()
     }
     // First try if the file can be opened as read/write.
     const String& name = itsRegularFile.path().expandedName();
-    FILE* file = traceFOPEN (name.chars(), "rb+");
+    FILE* file = traceFOPEN ((char *)name.chars(), "rb+");
     if (file == 0) {
 	throw (AipsError ("RegularFileIO: reopenRW not possible for file " +
 			  name + ": " + strerror(errno)));
