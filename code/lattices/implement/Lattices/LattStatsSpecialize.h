@@ -1,5 +1,5 @@
 //# LattStatsSpecialize.h: specialized functions for LatticeStatistics
-//# Copyright (C) 1996,1997,1998,1999
+//# Copyright (C) 1996,1997,1998,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -33,7 +33,10 @@
 #include <aips/aips.h>
 #include <aips/Mathematics/Complex.h>
 template <class T> class Vector;
+template <class T> class Lattice;
+class LatticeExprNode;
 class String;
+class IPosition;
 
 
 
@@ -111,6 +114,13 @@ public:
 //
    static Float max(Float v1, Float v2);
    static Complex max(Complex v1, Complex v2);
+//
+   static void putNodeInStorageLattice(Lattice<Float>& lat,
+                                       const LatticeExprNode& node,
+                                       const IPosition& where);
+   static void putNodeInStorageLattice(Lattice<Complex>& lat,
+                                       const LatticeExprNode& node,
+                                       const IPosition& where);
 //
    static Bool setIncludeExclude (String& errorMessage,
                                   Vector<Float>& range,
