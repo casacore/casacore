@@ -25,32 +25,72 @@
 //#
 //# $Id$
 
-//# Includes
 #include <aips/MeasurementSets/NewMSDopplerColumns.h>
-
-NewMSDopplerColumns::NewMSDopplerColumns(NewMSDoppler& msDoppler):
-isNull_p(msDoppler.isNull())
-{
-  if (!isNull()) {
-    dopplerId_p.attach(msDoppler,NewMSDoppler::columnName(NewMSDoppler::DOPPLER_ID));
-    sourceId_p.attach(msDoppler,NewMSDoppler::columnName(NewMSDoppler::SOURCE_ID));
-    transitionId_p.attach(msDoppler,NewMSDoppler::columnName(NewMSDoppler::TRANSITION_ID));
-  }
-}
-
-NewMSDopplerColumns::~NewMSDopplerColumns() {}
+#include <aips/MeasurementSets/NewMSDoppler.h>
 
 RONewMSDopplerColumns::RONewMSDopplerColumns(const NewMSDoppler& msDoppler):
-isNull_p(msDoppler.isNull())
+  isNull_p(True),
+  dopplerId_p(),
+  sourceId_p(),
+  transitionId_p()
 {
-  if (!isNull()) {
-    dopplerId_p.attach(msDoppler,NewMSDoppler::columnName(NewMSDoppler::DOPPLER_ID));
-    sourceId_p.attach(msDoppler,NewMSDoppler::columnName(NewMSDoppler::SOURCE_ID));
-    transitionId_p.attach(msDoppler,NewMSDoppler::columnName(NewMSDoppler::TRANSITION_ID));
-  }
+  attach(msDoppler);
 }
 
 RONewMSDopplerColumns::~RONewMSDopplerColumns() {}
 
+RONewMSDopplerColumns::RONewMSDopplerColumns():
+  isNull_p(True),
+  dopplerId_p(),
+  sourceId_p(),
+  transitionId_p()
+{
+}
 
+void RONewMSDopplerColumns::attach(const NewMSDoppler& msDoppler)
+{
+  isNull_p = msDoppler.isNull();
+  if (!isNull()) {
+    dopplerId_p.attach(msDoppler, NewMSDoppler::
+		       columnName(NewMSDoppler::DOPPLER_ID));
+    sourceId_p.attach(msDoppler, NewMSDoppler::
+		      columnName(NewMSDoppler::SOURCE_ID));
+    transitionId_p.attach(msDoppler, NewMSDoppler::
+			  columnName(NewMSDoppler::TRANSITION_ID));
+  }
+}
 
+NewMSDopplerColumns::NewMSDopplerColumns(NewMSDoppler& msDoppler):
+  RONewMSDopplerColumns(),
+  dopplerId_p(),
+  sourceId_p(),
+  transitionId_p()
+{
+  attach(msDoppler);
+}
+
+NewMSDopplerColumns::~NewMSDopplerColumns() {}
+
+NewMSDopplerColumns::NewMSDopplerColumns():
+  RONewMSDopplerColumns(),
+  dopplerId_p(),
+  sourceId_p(),
+  transitionId_p()
+{
+}
+
+void NewMSDopplerColumns::attach(NewMSDoppler& msDoppler)
+{
+  RONewMSDopplerColumns::attach(msDoppler);
+  if (!isNull()) {
+    dopplerId_p.attach(msDoppler, NewMSDoppler::
+		       columnName(NewMSDoppler::DOPPLER_ID));
+    sourceId_p.attach(msDoppler, NewMSDoppler::
+		      columnName(NewMSDoppler::SOURCE_ID));
+    transitionId_p.attach(msDoppler, NewMSDoppler::
+			  columnName(NewMSDoppler::TRANSITION_ID));
+  }
+}
+// Local Variables: 
+// compile-command: "gmake NewMSDopplerColumns"
+// End: 
