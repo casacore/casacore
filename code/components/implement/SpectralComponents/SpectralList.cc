@@ -186,7 +186,7 @@ void SpectralList::insert(const SpectralElement &in) {
   if (i == n) add(in);
   else {
     if (nmax_p != 0 && n >= nmax_p) {
-      delete list_p[n]; list_p[n] = 0;
+      delete list_p[n-1]; list_p[n-1] = 0;
     } else {
       list_p.resize(n+1);
       list_p[n++] = 0;
