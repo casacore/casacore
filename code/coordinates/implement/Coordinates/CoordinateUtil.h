@@ -120,7 +120,7 @@ template<class T> class Vector;
 // an exception (AipsError) is thrown.
 //
 // Finally a function is provided for removing a list of world axes,
-// and optionally their associated pixel axes from a CoordinateSystem.  
+// and their associated pixel axes from a CoordinateSystem.  
 // This process is made a little awkward by the fact that when you
 // remove one world axis, all the rest shuffle down one, so it is
 // provided here.  Generally, one only needs to remove one axis
@@ -157,10 +157,9 @@ template<class T> class Vector;
 //   CoordinateSystem cSys = CoordinateUtil::defaultCoords3D();
 //   Vector<uInt> worldAxes(2);
 //   worldAxes(0) = 0; worldAxes(1) = cSys.nWorldAxes()-1;
-//   Vector<Double> worldRep, pixelRep;
-//   Bool ok = CoordinateUtil::removeAxes(cSys, worldRep, pixelRep, worldAxes, True);
+//   Vector<Double> worldRep;
+//   Bool ok = CoordinateUtil::removeAxes(cSys, worldRep, worldAxes, True);
 //   cout << "For world axes used " << worldRep.ac() << " for replacement" << endl;
-//   cout << "For pixel axes used " << pixelRep.ac() << " for replacement" << endl;
 // </srcblock>
 // </example>
 //
@@ -210,16 +209,31 @@ static CoordinateSystem defaultCoords(uInt dims);
 //  </group>
 
 //
-// Find which pixel axis is the frequency axes in the supplied coordinate
-// system and return this. If there is no SpectralCoordinate in the coordinate
-// system then return a negative number.
+// Find which pixel axis in the CoordinateSystem corresponds to the
+// SpectralCoordinate. If there is no SpectralCoordinate in the coordinate
+// system then return -1.
 static Int findSpectralAxis(const CoordinateSystem & coords);
 
-// Find which pixel axes are the direction axes in the supplied coordinate
+// Find the SpectralCoordinate in the CoordinateSystem, and then
+// return the most general description of where it is.  
+// If there is no SpectralCoordinate in the CoordinateSystem then return 
+// -1 for coordinate.  If the world or pixel axis has been removed,
+// return -1 for that value. 
+static void findSpectralAxis(Int& pixelAxis, Int& worldAxis, Int& coordinate,
+                             const CoordinateSystem & coords);
+
+// Find which pixel axes correspond to the DirectionCoordinate in the supplied coordinate
 // system and return this as a Vector. If there is no DirectionCoordinate in
 // the CoordinateSystem then return a Vector of zero length. Normally the
-// returned Vector will have a length of two.
+// returned Vector will have a length of two.  
 static Vector<uInt> findDirectionAxes(const CoordinateSystem & coords);
+
+// Find which pixel axes correspond to the DirectionCoordinate in the supplied coordinate
+// system and return the most general description of where it is. If there is 
+// no DirectionCoordinate then coordinate is returned with value -1.
+// Values of -1 in the returned vectors indicate an axis has been removed.
+static void findDirectionAxes(Vector<Int>& pixelAxes, Vector<Int>& worldAxes,
+                              Int& coordinate, const CoordinateSystem & coords);
 
 // Find which pixel axis is the polarisation axis in the supplied
 // CoordinateSystem and return this. If there is no StokesCoordinate in the
@@ -231,17 +245,25 @@ static Vector<uInt> findDirectionAxes(const CoordinateSystem & coords);
 // Stokes::I
 static Int findStokesAxis(Vector<Int> & whichPols, const CoordinateSystem & coords);
 
+// Find the StokesCoordinate in the CoordinateSystem, and then
+// return the most general description of where it is.  
+// If there is no StokesCoordinate in the CoordinateSystem then return 
+// -1 for coordinate.  If the world or pixel axis has been removed,
+// return -1 for that value. 
+static void findStokesAxis(Int& pixelAxis, Int& worldAxis, Int& coordinate,
+                           const CoordinateSystem & coords);
+
 // Remove a list of world axes and their associated
 // pixel axes from a <src>CoordinateSystem</src>. The list of world
 // axes to remove is derived from a list giving either axes to remove, 
 // or axes to keep (controlled by whether <src>remove</src> 
 // is <src>True</src> or <src>False</src>.  The replacement values (see functions 
-// <src>CoordinateSYstem::removeWorldAxis</src> 
-// and  <src>CoordinateSystem::removePixelAxis</src>) can be given.
-// If the lengths of the replacement value vectors are not the
-// number world axes to be removed and the number of pixel
-// axes to be removed (these could be different !) then the
-// reference values/pixels will be used (e.g. use zero length
+// <src>CoordinateSYstem::removeWorldAxis</src>  for the world axes
+// can be given.  For the associated pixel axes, the pixel replacement
+// coordinate is found by converting the world coordinate 
+// to a pixel coordinate. If the length of the replacement value 
+// vector is not the number world axes to be removed then
+// the reference values will be used (e.g. use zero length
 // vectors).
 static Bool removeAxes(CoordinateSystem& cSys,
                        Vector<Double>& worldReplacement,
