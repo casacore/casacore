@@ -287,7 +287,7 @@ void SepImageConvolver<T>::copyAndZero(ImageInterface<T>& out,
       IPosition shape = outIter.woCursor().shape();
       Array<T> dataIn(shape);
       Array<Bool> maskIn(shape);
-      Lattice<Bool>* maskOutPtr;
+      Lattice<Bool>* maskOutPtr = 0;
       if (out.isMasked()) maskOutPtr = &(out.pixelMask());
 //       
       for (outIter.reset(); !outIter.atEnd(); outIter++) {
