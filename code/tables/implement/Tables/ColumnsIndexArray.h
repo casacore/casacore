@@ -1,5 +1,5 @@
 //# ColumnsIndexArray.h: Index to an array column in a table
-//# Copyright (C) 2001
+//# Copyright (C) 2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -305,7 +305,6 @@ private:
   void*   itsLowerField;
   void*   itsUpperField;
   Bool         itsChanged;
-  Bool         itsUnique;
   Vector<uInt> itsDataIndex;         //# Row numbers of all keys
   //# Indices in itsDataIndex for each unique key
   Vector<uInt> itsUniqueIndex;

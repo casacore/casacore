@@ -1,5 +1,5 @@
 //# ColumnsIndex.h: Index to one or more columns in a table
-//# Copyright (C) 1998,1999,2001
+//# Copyright (C) 1998,1999,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -386,7 +386,6 @@ private:
     Block<void*> itsUpperFields;
     Block<Bool>  itsColumnChanged;
     Bool         itsChanged;
-    Bool         itsUnique;
     Bool         itsNoSort;            //# True = sort is not needed
     Compare*     itsCompare;           //# Compare function
     Vector<uInt> itsDataIndex;         //# Row numbers of all keys
