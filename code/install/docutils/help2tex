@@ -305,9 +305,9 @@ sub make_tex_file{
             $argroot ='';
             $dum =~ s/[\n\']/ /g;
             print "$pack.$miname.objs.$oiname.d := '$dum';\n";}
-         if($opt_outline == 1){
-           print "\\>\\>\\htmlref{$oname}{$mname:$oname}\\\\\n";
-         }
+         #if($opt_outline == 1){
+           #print "\\>\\>\\htmlref{$oname}{$mname:$oname}\\\\\n";
+         #}
          undef @methodsid{$oname};
          undef @constructorsid{$oname};
          undef @constructors{$oname};
@@ -332,9 +332,9 @@ sub make_tex_file{
             $argroot ='';
             $dum =~ s/[\n\']/ /g;
             print "$pack.$miname.objs.$oiname.d := '$dum';\n";}
-         if($opt_outline == 1){
-           print "\\>\\>\\htmlref{$oname}{$mname:$oname}\\\\\n";
-         }
+         #if($opt_outline == 1){
+           #print "\\>\\>\\htmlref{$oname}{$mname:$oname}\\\\\n";
+         #}
          undef @methodsid{$oname};
          undef @constructorsid{$oname};
          undef @constructors{$oname};
@@ -357,9 +357,9 @@ sub make_tex_file{
             print "$pack.$miname.objs.$oiname.c.$iname := [=];\n";
             $dum =~ s/[\n\']/ /g;
             print "$pack.$miname.objs.$oiname.c.$iname.d := '$dum';\n";}
-         if($opt_outline == 1){
-           print "\\>\\>\\>\\htmlref{$fname}{$mname:$oname.$fname.constructor}\\\\\n";
-         }
+         #if($opt_outline == 1){
+           #print "\\>\\>\\>\\htmlref{$fname}{$mname:$oname.$fname.constructor}\\\\\n";
+         #}
       }
       $recIndent = "";
       if(/\\begin{ahrecord}/){
@@ -384,9 +384,9 @@ sub make_tex_file{
                print "$argroot := [=];\n";
                $dum =~ s/[\n\']/ /g;
                print "$argroot.d := '$dum';\n"; }
-             if($opt_outline == 1){
-                print "\\>\\>\\>\\htmlref{$fname}{$mname:$oname.$fname.function}\\\\\n";
-             }
+             #if($opt_outline == 1){
+                #print "\\>\\>\\>\\htmlref{$fname}{$mname:$oname.$fname.function}\\\\\n";
+             #}
          }else{
             push @funcsid, $fname;
             $funcs{$fname} = $dum;
@@ -398,9 +398,9 @@ sub make_tex_file{
                print "$argroot.a := [=];\n";
                $dum =~ s/[\n\']/ /g;
                print "$argroot.d := '$dum';\n";}
-             if($opt_outline == 1){
-                print "\\>\\>\\htmlref{$fname}{$mname:$fname.function}\\\\\n";
-             }
+             #if($opt_outline == 1){
+                #print "\\>\\>\\htmlref{$fname}{$mname:$fname.function}\\\\\n";
+             #}
          }
       } 
    
