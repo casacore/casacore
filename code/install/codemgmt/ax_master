@@ -2352,3 +2352,4 @@
 11 201 sys rm libexec/mans_cold.g
 11 201 sys rm libexec/mans_topold.g
 11 201 sys rm libexec/rbtest1.g
+11 205 src rm aips/glish/glish/Reporter.h
