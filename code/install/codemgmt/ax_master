@@ -2733,3 +2733,4 @@
 11 423 src rm doc/user/gettingstarted.dir/f15-gaussplot.ps
 11 423 src rm doc/user/gettingstarted.dir/gplot1d.ps
 11 423 src rm doc/user/gettingstarted.dir/logerr.ps
+11 425 src rm doc/html/tour/activem.gif
