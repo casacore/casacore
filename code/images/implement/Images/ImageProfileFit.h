@@ -152,7 +152,7 @@ public:
 
     // Decode the Glish record holding SpectralElements and add
     // them to the fitter.   Absolute pixel coordinate units are assumed to be
-    // 1-rel on input.
+    // 1-rel on input.  Return the number of the element added.
     uInt addElements (const RecordInterface& estimate);
 
     // Gets the internal SpectralElements (either estimate or fit
@@ -168,7 +168,7 @@ public:
     // depending on what function you called last) into a SpectralList
     // Only returns False if the field is already defined. Absolute pixel 
     // coordinate units  are 1-rel on output.
-    const SpectralList& getList () const;
+    SpectralList getList () const;
 
     // Reset the internal list of SpectralElements to null 
     void reset ();
@@ -176,19 +176,23 @@ public:
     // Return number of SpectralElements set
     uInt nElements ();
 
-    // Do the fit of the averaged profile 
+    // Do the fit of the averaged profile. Specify the
+    // order of the baseline you would also like to fit for.
     //<group>
-    Bool fit();
+    Bool fit(Int order=-1);
     //</group>
 
     // Fit all profiles in the region and write out images.
+    // Specify the order of the baseline you would also like to fit for.
+
     //<group>
     void fit (RecordInterface& rec,  
               Bool xAbsRec,
               const String& xUnitRec,
               const String& dopplerRec,
               PtrHolder<ImageInterface<Float> >& fit,
-              PtrHolder<ImageInterface<Float> >& resid);
+              PtrHolder<ImageInterface<Float> >& resid,
+              Int order=-1);
     //</group>
 
     // Find the residuals (fit or estimate) of the averaged profile
@@ -218,8 +222,10 @@ private:
    Quantum<Vector<Float> > itsX, itsY;
    Vector<Bool> itsMask;
 
-// The fitter
+// The fitters.  The first one does not have a polynomial in it
+// The second one may.
    SpectralFit* itsSpectralFitPtr;
+   SpectralFit itsSpectralFitter;
 
 // The coordinate system if the data source was an image
 // itsProfileAxis specified the profile axis in the image
@@ -263,6 +269,10 @@ private:
                                   const String& dopplerOut,
                                   Bool oneRelIn,
                                   Bool oneRelOut);
+
+// 
+   SpectralList ImageProfileFit::filterList (const SpectralList& listIn) const;
+
 //
    Bool getElements (RecordInterface& rec,
                      Bool xAbsOut,

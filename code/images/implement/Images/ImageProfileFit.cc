@@ -296,14 +296,15 @@ Bool ImageProfileFit::getElements (RecordInterface& rec,
                                    const String& xUnitOut,
                                    const String& dopplerOut)
 {
-   const SpectralList& list = itsSpectralFitPtr->list();
-   return getElements(rec, xAbsOut, xUnitOut, dopplerOut, list);
+   const SpectralList& list = itsSpectralFitter.list();
+   SpectralList list2 = filterList(list);
+   return getElements(rec, xAbsOut, xUnitOut, dopplerOut, list2);
 }
 
-const SpectralList& ImageProfileFit::getList () const
+SpectralList ImageProfileFit::getList () const
 {
    const SpectralList& list = itsSpectralFitPtr->list();
-   return list;
+   return filterList(list);
 }
 
 
@@ -433,6 +434,7 @@ Bool ImageProfileFit::estimate (uInt nMax)
 
       itsSpectralFitPtr->addFitElement(se);
    }
+   itsSpectralFitter = *itsSpectralFitPtr;
 //
    return True;
 }
@@ -444,12 +446,25 @@ uInt ImageProfileFit::nElements ()
 }
     
 
-Bool ImageProfileFit::fit()
+Bool ImageProfileFit::fit(Int order)
 {
+   itsSpectralFitter = *itsSpectralFitPtr;
+//
+   if (order >= 0) {
+
+// Add polynomial to fitter
+
+      SpectralElement el(order);
+      itsSpectralFitter.addFitElement(el);
+   }
+
+// Do fit
+
+   Bool ok = itsSpectralFitter.fit(itsY.getValue(), 
+                                   itsX.getValue(),  
+                                   itsMask);
    itsFitDone = True;
-   return itsSpectralFitPtr->fit(itsY.getValue(), 
-                                 itsX.getValue(), 
-                                 itsMask);
+   return ok;
 }
 
 
@@ -458,7 +473,7 @@ void ImageProfileFit::residual(Vector<Float>& resid,
 {
    resid.resize(0);
    resid = itsY.getValue();
-   itsSpectralFitPtr->list().residual(resid, x);
+   itsSpectralFitter.list().residual(resid, x);
 }
 
 
@@ -466,19 +481,19 @@ void ImageProfileFit::residual(Vector<Float>& resid) const
 {
    resid.resize(0);
    resid = itsY.getValue();
-   itsSpectralFitPtr->list().residual(resid, itsX.getValue());
+   itsSpectralFitter.list().residual(resid, itsX.getValue());
 }
 
 
 void ImageProfileFit::model(Vector<Float>& model, 
                             const Vector<Float>& x) const
 {
-   itsSpectralFitPtr->list().evaluate(model, x);
+   itsSpectralFitter.list().evaluate(model, x);
 }
 
 void ImageProfileFit::model(Vector<Float>& model) const
 {
-   itsSpectralFitPtr->list().evaluate(model, itsX.getValue());
+   itsSpectralFitter.list().evaluate(model, itsX.getValue());
 }
 
 // Private functions
@@ -790,7 +805,9 @@ void ImageProfileFit::fit (RecordInterface& rec,
                            const String& xUnitOut, 
                            const String& dopplerOut,
                            PtrHolder<ImageInterface<Float> >& fitImage,
-                           PtrHolder<ImageInterface<Float> >& residImage)
+                           PtrHolder<ImageInterface<Float> >& residImage,
+                           Int order)
+
 {
    LogIO os(LogOrigin("ImageProfileFit", "setDataAndFit", WHERE));
    if (!itsFitRegion) {
@@ -852,9 +869,15 @@ void ImageProfileFit::fit (RecordInterface& rec,
    if (l.nelements() == 0) {
       throw(AipsError("You must specify an initial estimate"));
    }
-//
+
+// Make fitter and add poly if desired
+
    SpectralFit fit;
    fit.addFitElement(l);
+   if (order >= 0) {
+      SpectralElement el(order);
+      fit.addFitElement(el);
+   }
 //
    Vector<Bool> inMask;
    Bool ok = False;
@@ -929,4 +952,22 @@ void ImageProfileFit::fit (RecordInterface& rec,
     os << "Number of    profiles = " << nProfiles << LogIO::POST;
     os << "Number of   good fits = " << nProfiles - nFail << LogIO::POST;
     os << "Number of failed fits = " << nFail << LogIO::POST;
+}
+
+
+SpectralList ImageProfileFit::filterList (const SpectralList& listIn) const
+{
+   SpectralList listOut;
+   const uInt n = listIn.nelements();
+   for (uInt i=0; i<n; i++) {
+      const SpectralElement& el = listIn[i];
+
+// Filter out polynomials
+
+      if (el.getType()!=SpectralElement::POLYNOMIAL) {
+         listOut.add(el);
+      }
+   }
+//
+   return listOut;
 }
