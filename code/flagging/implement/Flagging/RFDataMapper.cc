@@ -100,6 +100,8 @@ RFDataMapper::RFDataMapper ( const String &colmn,DDMapper *map )
     cubemap(getCubeMapper(colmn,True)),
     mytype(MAPCORR)
 { 
+  sin_dec = -10;    // need not be computed by default, so set to <-1
+  full_cycle = cycle_base = 0;   // by default, mapped values are not cyclic
   rowmapper = &RFDataMapper::dummyRowMapper;
 }
 
@@ -114,7 +116,8 @@ RFDataMapper::RFDataMapper ( const Vector<String> &expr0,const String &defcol )
 //    rowmapper(dummyRowMapper),
     mytype(MAPCORR)
 {
-  sin_dec = -10; // need not be computed by default, so set to <-1
+  sin_dec = -10;    // need not be computed by default, so set to <-1
+  full_cycle = cycle_base = 0;   // by default, mapped values are not cyclic
   rowmapper = &RFDataMapper::dummyRowMapper;
   Vector<String> expr( splitExpression(expr0) );
 // first, check for per-row expressions (i.e., UVW, etc.)
@@ -142,11 +145,17 @@ RFDataMapper::RFDataMapper ( const Vector<String> &expr0,const String &defcol )
   else if( el == "UVD" || el == "UVDIST" )
     rowmapper = &RFDataMapper::UVD_RowMapper;
   else if( el == "UVA" || el == "UVANGLE" )
+  {
     rowmapper = &RFDataMapper::UVA_RowMapper;
+    full_cycle = 360;   // mapping into angles
+    cycle_base = -180;
+  }
   else if( el == "HA" || el == "HANGLE" )
   {
     sin_dec = 0; // will need to be computed
     rowmapper = &RFDataMapper::HA_RowMapper;
+    full_cycle = 360;   // mapping into angles
+    cycle_base = -180;
   }
   else
     rowmapper = NULL;

@@ -189,13 +189,48 @@ Bool RFASelector::parseMinMax( Float &vmin,Float &vmax,const RecordInterface &sp
   return True;
 }
 
+
+// -----------------------------------------------------------------------
+// normalize
+// Helper function to shift a cyclic value (i.e. angle) into
+// the interval [base,base+cycle) by adding/subtarcting an integer
+// number of cycles
+// -----------------------------------------------------------------------
+static Double normalize( Double value,Double base,Double cycle )
+{
+  if( value < base )
+    value += (floor((base-value)/cycle)+1)*cycle;
+  else if( value >= base+cycle )
+    value -= floor((value-base)/cycle)*cycle;
+  return value;  
+}
+    
+
 // -----------------------------------------------------------------------
 // addClipInfo
 // -----------------------------------------------------------------------
 void RFASelector::addClipInfo( const Vector<String> &expr,Float vmin,Float vmax,Bool clip )
 {
+// create mapper and clipinfo block
   RFDataMapper *mapper = new RFDataMapper(expr);
-  ClipInfo clipinfo = { mapper,vmin,vmax,clip };
+  ClipInfo clipinfo = { mapper,vmin,vmax,clip,0.0 };
+// if dealing with cyclic values, normalize min/max accordingly
+  Double cycle = mapper->getValueCycle();  // e.g. 360 for angles
+  if( cycle>0 )
+  {
+    Double base = mapper->getValueBase();  // e.g. -180 for angles
+    // normalize min/max angle into [base,base+cycle)
+    clipinfo.vmin = normalize(clipinfo.vmin,base,cycle);
+    clipinfo.vmax = normalize(clipinfo.vmax,base,cycle);
+    // if order is reversed, then we're spanning a cycle boundary (i.e. 355->5)
+    if( clipinfo.vmin>clipinfo.vmax ) 
+      clipinfo.vmax += cycle;   // ...so add a cycle
+    // use vmin as offset
+    clipinfo.offset = clipinfo.vmin;
+    clipinfo.vmin = 0;
+    clipinfo.vmax -= clipinfo.offset;
+  }
+// add block to appropriate list  
   Block<ClipInfo> & block( mapper->type()==RFDataMapper::MAPROW ? sel_clip_row : sel_clip );
   uInt ncl = block.nelements();
   block.resize(ncl+1,False,True);
@@ -270,9 +305,9 @@ void RFASelector::addClipInfoDesc ( const Block<ClipInfo> &clip )
     String ss;
     char s1[32]="",s2[32]="";
     if( clip[i].vmin != -C::flt_max )
-      sprintf(s1,"%g",clip[i].vmin);
+      sprintf(s1,"%g",clip[i].vmin+clip[i].offset);
     if( clip[i].vmax != C::flt_max )
-      sprintf(s2,"%g",clip[i].vmax);
+      sprintf(s2,"%g",clip[i].vmax+clip[i].offset);
     if( clip[i].clip )
     {
       ss += clip[i].mapper->description();
@@ -797,7 +832,7 @@ RFA::IterMode RFASelector::iterTime (uInt it)
         for( uInt j=0; j<sel_clip_row.nelements(); j++ ) 
         {
           Float vmin = sel_clip_row[j].vmin, vmax = sel_clip_row[j].vmax;
-          Float val = sel_clip_row[j].mapper->mapValue(i);
+          Float val = sel_clip_row[j].mapper->mapValue(i) - sel_clip_row[j].offset;
           if( (sel_clip_row[j].clip  && ( val<vmin || val>vmax ) ) ||
               (!sel_clip_row[j].clip && val>=vmin && val<=vmax ) )
             processRow(ifrs(i),it);

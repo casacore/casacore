@@ -82,6 +82,13 @@ public:
   
   // returns type of mapper
   MapperType type ();
+  
+  // If the value being mapped into is cyclic (i.e. an angle),
+  // returns value of full cycle (e.g. 360); otherwise returns 0.
+  Double getValueCycle ();
+  // Returns base of a cyclic value (e.g. -180, if value is an angle -180..180)
+  // If value is non-cyclic, the result is undefined.
+  Double getValueBase  ();
 
   // gets a value from the DDMapper
   Float mapValue ( uInt ich,uInt irow );
@@ -115,6 +122,7 @@ protected:
   Vector<RigidVector<Double,3> > *puvw; // pointer to UVW matrix
   CubeMapperFunc cubemap; // function to map a chunk to a visibility cube
   MapperType mytype;
+  Double full_cycle,cycle_base;     // for cyclic values (i.e. angles)
   
 // various row mappers
   Float dummyRowMapper (uInt);
@@ -145,5 +153,10 @@ inline String RFDataMapper::description () const
 { return desc; }
 inline String RFDataMapper::descExpression () const
 { return expr_desc; }
+
+inline Double RFDataMapper::getValueCycle ()
+{ return full_cycle; }
+inline Double RFDataMapper::getValueBase ()
+{ return cycle_base; }
 
 #endif

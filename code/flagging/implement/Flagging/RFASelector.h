@@ -78,7 +78,10 @@ public:
 
 protected:
   typedef struct ClipInfo {
-      RFDataMapper *mapper; Float vmin,vmax; Bool clip; 
+      RFDataMapper *mapper; 
+      Float vmin,vmax; 
+      Bool clip;          // flag outside range if True (otherwise flag inside)
+      Float offset;       // offset added to value (used for angles, etc.)
   } ClipInfo;
     
   template<class T> Bool reformRange( Matrix<T> &rng,const Array<T> &arr );
