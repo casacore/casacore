@@ -30,7 +30,7 @@ if(length $ENV{DOCSROOT} > 0){
    $DOCSROOT = '../..';
 }
 if(!$DOCSCOLOR) {
-   $DOCSCOLOR = '#OOOO9C';
+   $DOCSCOLOR = '#00009C';
 }
 
 
