@@ -1,5 +1,5 @@
 //# tFit2D.cc: Test nonlinear least squares classes
-//# Copyright (C) 1995,1996,1998,1999,2000
+//# Copyright (C) 1995,1996,1998,1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -107,7 +107,7 @@ int main(int argc, char **argv)
       gauss2d.setXcenter(xcen);
       gauss2d.setYcenter(ycen);
    }
-   gauss2d.setPA(pa + C::pi_2);             // +y -> -x
+   gauss2d.setPA(Fit2D::paToGauss2D(pa));          // +y -> -x
 //
    IPosition shape(2,nx,ny);
    Array<Float> pixels(shape);
@@ -170,7 +170,7 @@ int main(int argc, char **argv)
          iMask(i) = 0;
       }
    }
-   parameters(5) -= C::pi_2;                      // +x -> +y
+   parameters(5) = Fit2D::paFromGauss2D(parameters(5));
 //
 // convert axial ratio to minor axis (availableParameter
 // interface uses axial ratio)
