@@ -223,6 +223,16 @@ public:
     // (e.g. if it is a FITSMultiTable)
     virtual uInt nrow() const {return raw_table_p->nrows();}
 
+    // these tables should also know where they are
+    virtual Int rownr() const {return row_nr_p;}
+
+    // and it should be possible to move to a desired row
+    // the rownr() member can be used to verify that a move 
+    // was successful - this will happen if the requested row
+    // was < rownr() or >= nrow() - i.e. movements backwards or
+    // beyond the end of the file are not possible.
+    virtual void move(Int torow);
+
     // the keywords from the Primary HDU
     virtual const TableRecord &primaryKeywords() const {return primaryKeys_p;}
 protected:
