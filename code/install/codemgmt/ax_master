@@ -4805,3 +4805,4 @@
 14 316 src rm trial/apps/dish/dish_ranges.g
 14 316 sys rm libexec/dish_ranges.g
 14 316 src rm trial/apps/dish/dish_recbrowser.g
+14 316 sys rm libexec/dish_recbrowser.g
