@@ -31,6 +31,7 @@
 #include <aips/Arrays/Matrix.h>
 #include <aips/Arrays/ArrayLogical.h>
 #include <aips/Arrays/ArrayMath.h>
+#include <aips/Containers/Record.h>
 #include <aips/Mathematics/Math.h>
 #include <aips/Measures/MDirection.h>
 #include <aips/Quanta/Unit.h>
@@ -42,7 +43,6 @@
 #include <trial/Coordinates/TabularCoordinate.h>
 #include <trial/Coordinates/CoordinateUtil.h>
 #include <aips/Exceptions/Error.h>
-#include <aips/Tables/TableRecord.h>
 
 #include <iostream.h>
 
@@ -548,7 +548,7 @@ void doit (CoordinateSystem& cSys, uInt nCoords, const Vector<Int>& types,
 //
    {
       CoordinateSystem cSys3;
-      TableRecord rec;
+      Record rec;
       IPosition shape;
       if (CoordinateSystem::fromFITSHeader(cSys3, rec, shape, True, 'c')) {
          throw(AipsError("Unexpectedly did not fail fromFITSHeader (1)"));
@@ -564,7 +564,7 @@ void doit (CoordinateSystem& cSys, uInt nCoords, const Vector<Int>& types,
       cSys2.addCoordinate(makeSpectralCoordinate());
       cSys2.addCoordinate(makeLinearCoordinate());
 //
-      TableRecord rec;
+      Record rec;
       IPosition shape(cSys2.nPixelAxes(),64);
       shape(stokesAxis) = shapeStokes;
       if (!cSys2.toFITSHeader(rec, shape, True, 'c', False,
@@ -601,7 +601,7 @@ void doit (CoordinateSystem& cSys, uInt nCoords, const Vector<Int>& types,
       uInt stokesAxis = 0;
       cSys2.addCoordinate(stokesCoord);
 //
-      TableRecord rec;
+      Record rec;
       IPosition shape(cSys2.nPixelAxes(),64);
       shape(stokesAxis) = shapeStokes;
       if (!cSys2.toFITSHeader(rec, shape, True, 'c', False,
@@ -631,7 +631,7 @@ void doit (CoordinateSystem& cSys, uInt nCoords, const Vector<Int>& types,
       uInt stokesAxis = 0;
       cSys2.addCoordinate(stokesCoord);
 //
-      TableRecord rec;
+      Record rec;
       IPosition shape(cSys2.nPixelAxes(),64);
       shape(stokesAxis) = shapeStokes;
       if (!cSys2.toFITSHeader(rec, shape, True, 'c', False,
@@ -661,7 +661,7 @@ void doit (CoordinateSystem& cSys, uInt nCoords, const Vector<Int>& types,
       uInt stokesAxis = 0;
       cSys2.addCoordinate(stokesCoord);
 //
-      TableRecord rec;
+      Record rec;
       IPosition shape(cSys2.nPixelAxes(),64);
       shape(stokesAxis) = shapeStokes;
       if (!cSys2.toFITSHeader(rec, shape, True, 'c', False,
@@ -682,17 +682,25 @@ void doit (CoordinateSystem& cSys, uInt nCoords, const Vector<Int>& types,
 
 
 //   
-// Test record saving
+// Test record saving.
 //
-   TableRecord rec;
+   Record rec;
    if (!cSys.save(rec, "coordsys")) {
       throw(AipsError("Saving to Record failed"));  
    }  
    CoordinateSystem* pcSys = CoordinateSystem::restore(rec, "coordsys");
    if (!pcSys->near(cSys, 1e-6)) {
-      throw(AipsError("Reflection through record interface failed"));  
+      throw(AipsError("Reflection through record interface (1) failed"));  
    }
    delete pcSys;
+//
+   Record rec2 = rec.asRecord("coordsys");
+   pcSys = CoordinateSystem::restore(rec2, "");
+   if (!pcSys->near(cSys, 1e-6)) {
+      throw(AipsError("Reflection through record interface (2) failed"));  
+   }
+   delete pcSys;
+	
 //
 // Test clone
 //
