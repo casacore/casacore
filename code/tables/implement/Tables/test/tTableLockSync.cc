@@ -1,5 +1,5 @@
 //# tTableLockSync.cc: Interactive test program for concurrent access to tables
-//# Copyright (C) 1997,1998,1999
+//# Copyright (C) 1997,1998,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -29,6 +29,7 @@
 #include <aips/Tables/SetupNewTab.h>
 #include <aips/Tables/Table.h>
 #include <aips/Tables/TableLocker.h>
+#include <aips/Tables/TableRecord.h>
 #include <aips/Tables/ScaColDesc.h>
 #include <aips/Tables/ArrColDesc.h>
 #include <aips/Tables/ScalarColumn.h>
@@ -66,6 +67,7 @@ void a()
 			  2,
 			  stringToVector ("Data"),
 			  stringToVector ("Pol,Freq"));
+    td.rwKeywordSet().define ("k0", Int(0));
 
     // Now create a new table from the description.
     SetupNewTable newtab("tTableLockSync_tmp.tab", td, Table::New);
@@ -77,14 +79,17 @@ void a()
     newtab.bindAll (sm3);
     newtab.bindColumn ("col1", sm1);
     newtab.bindColumn ("col2", sm2);
-    Table tab(newtab);
+    Table tab(newtab, 1);
 }
 
-void b()
+void b (Bool noReadLocking)
 {
     // Open the table for update with UserLocking.
-    Table tab ("tTableLockSync_tmp.tab", TableLock(TableLock::UserLocking),
-	       Table::Update);
+    TableLock lt(TableLock::UserLocking);;
+    if (noReadLocking) {
+        lt = TableLock::UserNoReadLocking;
+    }
+    Table tab("tTableLockSync_tmp.tab", lt, Table::Update);
     try {
 	TableLocker lock1 (tab, FileLocker::Write, 1);
 	tab.addRow();
@@ -102,8 +107,9 @@ void b()
     Matrix<float> dataValues(IPosition(2,16,25));
     Int opt, rownr, val;
     while (True) {
-	cout << "0=quit, 1=quit/delete, 2=rdlock, 3=rdlockwait, 4=wrlock, 5=wrlockwait" << endl;
-	cout << "6=get, 7=put, 8=unlock, 9=hasChanged, 10=multiUsed: ";
+	cout << "0=quit, 1=quit/delete, 2=rdlock, 3=rdlockw, 4=wrlock, 5=wrlockw, 6=unlock" << endl;
+	cout << "7=status, 8=get, 9=put, 10=rdkey, 11=wrkey, 12=flush, 13=resync" << endl;
+	cout << "14=hasChanged: ";
 	cin >> opt;
 	if (opt <= 1) {
 	    break;
@@ -123,23 +129,40 @@ void b()
 	    if (! tab.lock (True, 0)) {
 		cout << "Could not acquire a write lock" << endl;
 	    }
-	} else if (opt == 8) {
+	} else if (opt == 6) {
 	    tab.unlock();
-	} else if (opt == 9) {
+	} else if (opt == 7) {
+	  cout << " hasReadLock=" << tab.hasLock (FileLocker::Read) << endl;
+	  cout << " hasWriteLock=" << tab.hasLock (FileLocker::Write) << endl;
+	  cout << " isMultiUsed = " << tab.isMultiUsed() << endl;
+	} else if (opt == 12) {
+	    tab.flush();
+	} else if (opt == 13) {
+	    tab.resync();
+	    cout << "nrows=" << tab.nrow() << endl;
+	} else if (opt == 14) {
 	    cout << "hasDataChanged = " << tab.hasDataChanged() << endl;
-	} else if (opt == 10) {
-	    cout << "isMultiUsed = " << tab.isMultiUsed() << endl;
 	} else {
-	    if (! tab.hasLock (ToBool(opt==7))) {
-		cout << "Cannot get/put; table is not locked" << endl;
-	    }else{
-		cout << "rownr: ";
+	  if (opt == 8  ||  opt == 9) {
+	    // First test if get or put is possible (using row 0).
+	    Bool err = False;
+	    try {
+	        col1.get (0, val);
+		if (opt == 8) {
+		    col1.put (0, val);
+		}
+	    } catch (AipsError x) {
+	        cout << x.getMesg() << endl;
+		err = True;
+	    } end_try;
+	    if (!err) {
+	        cout << "rownr: ";
 		cin >> rownr;
-		if (opt == 7) {
+		if (opt == 8) {
 		    cout << "value: ";
 		    cin >> val;
 		    if (rownr >= Int(tab.nrow())) {
-			Int n = 1 + rownr - tab.nrow();
+		        Int n = 1 + rownr - tab.nrow();
 			tab.addRow (n);
 			cout << "added " << n << " rows" << endl;
 		    }
@@ -153,20 +176,49 @@ void b()
 		    pol.put (rownr, polValues);
 		}else{
 		    if (rownr >= Int(tab.nrow())) {
-			cout << "Only " << tab.nrow()
+		        cout << "Only " << tab.nrow()
 			     << " rows in table" << endl;
 		    }else{
-			cout << "Row " << rownr << " has value "
-			    << col1(rownr) << ' ' << col2(rownr) << ' '
-			    << freq(rownr)(IPosition(1,0)) << '-'
-			    << freq(rownr)(IPosition(1,24)) - 24 << ' '
-			    << pol(rownr)(IPosition(1,0)) << '-'
-			    << pol(rownr)(IPosition(1,15)) - 15 << ' '
-			    << data(rownr)(IPosition(2,0,0)) << '-'
-			    << data(rownr)(IPosition(2,15,24)) - 399 << endl;
+		        cout << "Row " << rownr << " has value "
+			     << col1(rownr) << ' ' << col2(rownr) << ' '
+			     << freq(rownr)(IPosition(1,0)) << '-'
+			     << freq(rownr)(IPosition(1,24)) - 24 << ' '
+			     << pol(rownr)(IPosition(1,0)) << '-'
+			     << pol(rownr)(IPosition(1,15)) - 15 << ' '
+			     << data(rownr)(IPosition(2,0,0)) << '-'
+			     << data(rownr)(IPosition(2,15,24)) - 399 << endl;
 		    }
 		}
 	    }
+	  } else {
+	    // First test if get or put is possible (using key k0).
+	    Bool err = False;
+	    try {
+	        val = tab.keywordSet().asInt ("k0");
+		if (opt == 11) {
+		    tab.rwKeywordSet().define ("k0", val);
+		}
+	    } catch (AipsError x) {
+	        cout << x.getMesg() << endl;
+		err = True;
+	    } end_try;
+	    if (!err) {
+		cout << "keyword name: ";
+		String name;
+		cin >> name;
+		if (opt == 10) {
+		  if (! tab.keywordSet().isDefined (name)) {
+		    cout << "Keyword " << name << " does not exist" << endl;
+		  } else {
+		    cout << tab.keywordSet().asInt (name) << endl;
+		  }
+		} else {
+		    cout << "value: ";
+		    cin >> val;
+		    tab.rwKeywordSet().define(name, val);
+		}
+	    }
+	  }
 	}
     }
     if (opt == 1) {
@@ -178,16 +230,23 @@ void b()
 main (int argc, char** argv)
 {
     if (argc < 2) {
-	cout << "Execute as: tTableLockSync 1  to create new table"
+	cout << "Execute as: tTableLockSync 1 x  to create new table"
 	     << endl;
-	cout << "            tTableLockSync 0  to update existing table"
+	cout << "            tTableLockSync 0 x  to update existing table"
 	     << endl;
+	cout << "where x=1 means NoReadLocking" << endl;
     }else{
 	try {
+	    Bool noReadLocking = False;
+	    if (argc >= 3) {
+	        if (*(argv[2]) == '1') {
+		    noReadLocking = True;
+		}
+	    }
 	    if (*(argv[1]) == '1') {
 		a();
 	    }
-	    b();
+	    b (noReadLocking);
 	} catch (AipsError x) {
 	    cout << "Caught an exception: " << x.getMesg() << endl;
 	    return 1;
