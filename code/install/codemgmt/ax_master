@@ -2426,3 +2426,4 @@
 11 235 src mv trial/implement/Images/ImageCoord.cc trial/implement/Images/LELImageCoord.cc
 11 237 src rm trial/apps/gplot1d
 11 237 src rm trial/apps/plotter/plotter.g
+11 237 sys rm libexec/plotter.g
