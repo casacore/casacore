@@ -6173,3 +6173,9 @@
 17 180 src rm alma/apps/almati2ms/templates
 17 182 src rm bima/apps/mirfiller/mirfillertester.cc
 17 182 src rm bima/apps/mirfiller/mirfillertester.help
+17 183 src rm aips/implement/Functionals/Function1D.cc
+17 183 src rm aips/implement/Functionals/Function1D.h
+17 183 src rm aips/implement/Functionals/FunctionND.cc
+17 183 src rm aips/implement/Functionals/FunctionND.h
+17 183 src rm aips/implement/Functionals/Parameterized.cc
+17 183 src rm aips/implement/Functionals/Parameterized.h
