@@ -1,5 +1,5 @@
 //# OS.h: Classes for operating system services, and assorted other things
-//# Copyright (C) 1995,1996,1998
+//# Copyright (C) 1995,1996,1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -99,7 +99,7 @@
 //       <linkto class=VAXConversion:description>VAX</linkto> format, and
 //       <linkto class=IBMConversion:description>IBM/360</linkto> format.
 //       The structure of the framework is shown in the 
-//       <a href=OS/OS_1.html>OMT diagram</a>.
+//       <a href="OS/OS_1.html">OMT diagram</a>.
 //  <li> A class to encapsulate <linkto class=Memory>Memory</linkto> usage.
 // </ul>
 
