@@ -27,8 +27,10 @@
 
 #include <trial/Lattices/LatticeExpr.h>
 #include <trial/Lattices/LELArray.h>
+#include <aips/Lattices/LatticeIterator.h>
 #include <aips/Arrays/Array.h>
 #include <aips/Arrays/Slicer.h>
+#include <aips/Arrays/ArrayMath.h>
 #include <aips/Utilities/Assert.h>
 #include <aips/Exceptions/Error.h> 
 
@@ -244,14 +246,57 @@ void LatticeExpr<T>::doPutSlice (const Array<T>&, const IPosition&,
 template<class T>
 void LatticeExpr<T>::copyDataTo (Lattice<T>& to) const
 {
-// If a scalar, set lattice to its value.
-// Otherwise use the Lattice copyDataTo function.
-
+  // If a scalar, set lattice to its value.
+  // Otherwise use the Lattice copyDataTo function.
   if (expr_p.isScalar()) {
+    // Check the lattice is writable.
+    AlwaysAssert (to.isWritable(), AipsError);
     T value;
     expr_p.eval (value);
     to.set (value);
   } else {
     Lattice<T>::copyDataTo (to);
+  }
+}
+
+template<class T>
+void LatticeExpr<T>::handleMathTo (Lattice<T>& to, int oper) const
+{
+  // If a scalar, apply its value to the lattice.
+  // Otherwise use the Lattice handleMathTo function.
+  if (expr_p.isScalar()) {
+    T value;
+    expr_p.eval (value);
+    // Check the lattice is writable.
+    AlwaysAssert (to.isWritable(), AipsError);
+    // Create an iterator for the output.
+    // If possible, use reference semantics in the iterator.
+    LatticeIterator<T> iter(to, True);
+    switch (oper) {
+    case 0:
+      for (iter.reset(); !iter.atEnd(); iter++) {
+	iter.rwCursor() += value;
+      }
+      break;
+    case 1:
+      for (iter.reset(); !iter.atEnd(); iter++) {
+	iter.rwCursor() -= value;
+      }
+      break;
+    case 2:
+      for (iter.reset(); !iter.atEnd(); iter++) {
+	iter.rwCursor() *= value;
+      }
+      break;
+    case 3:
+      for (iter.reset(); !iter.atEnd(); iter++) {
+	iter.rwCursor() /= value;
+      }
+      break;
+    default:
+      throw AipsError ("LatticeExpr::handleMathTo - Unknown operator");
+    }
+  } else {
+    Lattice<T>::handleMathTo (to, oper);
   }
 }
