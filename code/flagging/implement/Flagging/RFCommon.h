@@ -207,7 +207,7 @@ class PGPlotEnums {
 // short inline function for checking the type of a record field
 inline Bool fieldType ( const RecordInterface &parm,const String &id,DataType type,DataType type2 = TpNumberOfTypes )
 {
-  if( !parm.isDefined(id) )
+  if( !parm.isDefined(id) || !parm.shape(id).product() )
     return False;
   DataType t = parm.dataType(id);
   return t==type || t==type2;
@@ -221,12 +221,20 @@ inline Bool isField ( const RecordInterface &parm,const String &id,Bool (*func)(
   DataType type = parm.dataType(id);
   return (*func)(type);
 }
+
+// short inline function for checking that a field is a non-empty record
+inline Bool isValidRecord ( const RecordInterface &parm,const String &id)
+{
+  if( !parm.isDefined(id) || parm.dataType(id) != TpRecord )
+    return False;
+  return parm.asRecord(id).nfields() > 0;
+}
     
 // Short inline function for checking if a record field is "set",
-// i.e. exists, and is not boolean F.
+// i.e. exists, and is not an empty array or a boolean False.
 inline Bool isFieldSet ( const RecordInterface &parm,const String &id )
 {
-  return parm.isDefined(id) && ( parm.dataType(id) != TpBool || parm.asBool(id) );
+  return parm.isDefined(id) && parm.shape(id).product() && ( parm.dataType(id) != TpBool || parm.asBool(id) );
 }
     
 // Short inline function for returning the number of elements in a field

@@ -53,7 +53,7 @@ void RFASpectralRej::parseRegion ( const RecordInterface &parm )
 {
   Bool parsed = False;
   Int spwid = -1;
-  if( fieldType(parm,RF_SPWID,TpInt) )
+  if( isFieldSet(parm,RF_SPWID) && fieldType(parm,RF_SPWID,TpInt) )
     spwid = parm.asInt(RF_SPWID) - indexingBase();
 // figure out how channel ranges are specified - frequencies or channel #'s
 // First version is frequencies
@@ -124,7 +124,7 @@ RFASpectralRej::RFASpectralRej  ( RFChunkStats &ch,const RecordInterface &parm )
 // figure out how channel ranges are specified
 // if a full region record is specified, parse each element
 // otherwise just parse the parameter record itself
-  if( fieldType(parm,RF_REGION,TpRecord) ) // full region record
+  if( isValidRecord(parm,RF_REGION) ) // full region record
   {
     const RecordInterface &reg( parm.asRecord(RF_REGION) );
     for( uInt i=0; i<reg.nfields(); i++ )

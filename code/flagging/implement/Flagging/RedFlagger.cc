@@ -548,7 +548,7 @@ void RedFlagger::run ( const RecordInterface &agents,const RecordInterface &opt,
 // -----------------------------------------------------------------------
 void RedFlagger::setupPlotters ( const RecordInterface &opt )
 {
-  if( fieldType(opt,RF_PLOTSCR,TpBool) && !opt.asBool(RF_PLOTSCR) )
+  if( !isFieldSet(opt,RF_PLOTSCR) )
   { 
     // skip the on-screen plot report
   }
@@ -573,7 +573,7 @@ void RedFlagger::setupPlotters ( const RecordInterface &opt )
 //   plotdev=F for no plot
 //   plotdev=T for plot (*default*)
 //   plotdev=[nx,ny] for NX x NY sub-panels
-  if( fieldType(opt,RF_PLOTDEV,TpBool) && !opt.asBool(RF_PLOTDEV) )
+  if( !isFieldSet(opt,RF_PLOTDEV) )
   {
     // skip the hardcopy report
   }

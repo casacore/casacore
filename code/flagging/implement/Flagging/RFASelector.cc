@@ -96,6 +96,8 @@ template Bool RFASelector::parseRange( Matrix<String>&,const RecordInterface&,co
 // -----------------------------------------------------------------------
 Bool RFASelector::parseTimes ( Array<Double> &times,const RecordInterface &parm,const String &id,Bool secs )
 {
+  if( !isFieldSet(parm,id) )
+    return False;
   if( fieldType(parm,id,TpString,TpArrayString) ) // String date/times
   {
     Array<String> tt( parm.asArrayString(id) );
@@ -583,17 +585,18 @@ RFASelector::RFASelector ( RFChunkStats &ch,const RecordInterface &parm ) :
   else
     quack_si = 0;
 // flag a specific range or clip outside of range?
-  if( isFieldSet(parm,RF_CLIP) || isFieldSet(parm,RF_FLAGRANGE) )
+  if( isValidRecord(parm,RF_CLIP) )
+    parseClipField(parm.asRecord(RF_CLIP),True);
+  if( isValidRecord(parm,RF_FLAGRANGE) )
+    parseClipField(parm.asRecord(RF_FLAGRANGE),False);
+  // add to description strings, if something was parsed
+  if( sel_clip.nelements() )
   {
-    if( parm.dataType(RF_CLIP) == TpRecord )
-      parseClipField(parm.asRecord(RF_CLIP),True);
-    if( parm.dataType(RF_FLAGRANGE) == TpRecord )
-      parseClipField(parm.asRecord(RF_FLAGRANGE),False);
-    // now build up descriptions
     addClipInfoDesc(sel_clip);
     sel_clip_active.resize(sel_clip.nelements());
-    addClipInfoDesc(sel_clip_row);
   }
+  if( sel_clip_row.nelements() )
+    addClipInfoDesc(sel_clip_row);
   
 // if nothing has been specified to flag, flag everything within selection
   flag_everything = ( quack_si==0 && !sel_time.nelements() && !sel_autocorr 

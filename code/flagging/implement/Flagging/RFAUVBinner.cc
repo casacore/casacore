@@ -44,15 +44,18 @@ RFAUVBinner::RFAUVBinner  ( RFChunkStats &ch,const RecordInterface &parm ) :
 //    rowclipper(chunk,flag,threshold,halfwin)
 {
 // get bin size arguments
-  if( fieldType(parm,RF_NBINS,TpArrayInt) )
+  if( isFieldSet(parm,RF_NBINS) ) 
   {
-    Vector<Int> binsize( parm.asArrayInt(RF_NBINS) );
-    nbin_uv = binsize(0);
-    nbin_y  = binsize(1);
-  } 
-  else if( fieldType(parm,RF_NBINS,TpInt) )
-  {
-    nbin_uv = nbin_y = parm.asInt(RF_NBINS);
+    if( fieldType(parm,RF_NBINS,TpArrayInt) )
+    {
+      Vector<Int> binsize( parm.asArrayInt(RF_NBINS) );
+      nbin_uv = binsize(0);
+      nbin_y  = binsize(1);
+    } 
+    else if( fieldType(parm,RF_NBINS,TpInt) )
+    {
+      nbin_uv = nbin_y = parm.asInt(RF_NBINS);
+    }
   }
 // check threshold for validity
   if( threshold >= 1 )
