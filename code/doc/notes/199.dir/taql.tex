@@ -143,6 +143,8 @@ The various clauses have the following meaning:
        optionally followed by \texttt{ASC} or \texttt{DESC}
        (indicating ascending or descending). The default for each
        expression is ascending.
+       \\To be compliant with SQL whitespace can be used between the
+       words ORDER and BY.
        \\The word ORDERBY can optionally be followed by NODUPLICATES
        which means that only the first row of multiple rows with
        equal sort keys is kept in the result.
@@ -345,15 +347,15 @@ to construct a constant array.
 The following operators can be used (with their normal meaning and
 precedence) for scalars:
 \begin{description}
-  \item[] \textbf{Unary + and -}
+  \item[] Unary \textbf{+} and \textbf{-}
        \\Can only be used with double and complex operands.
        They have a higher precedence than the binary operators.
        E.g. \texttt{-3}\verb+^+\texttt{2} results in \texttt{9}.
-  \item[] \textbf{Unary !}
+  \item[] Unary \textbf{!} (or \textbf{NOT})
        \\Logical NOT operator.
        Can only be used with Bool operands.
 %  \item[ Binary \verb+^+, *, /, \%, +, and -] 
-  \item[] \textbf{Binary $\wedge$, *, /, \%, +, and -}
+  \item[] Binary \textbf{$\wedge$, *, /, \%, +}, and \textbf{-}
        \\\% is the modulo operator.
        E.g. \texttt{3\%1.4} results in \texttt{0.2} and
        \texttt{-10\%3} results in \texttt{-1}.
@@ -372,13 +374,18 @@ precedence) for scalars:
        \\- Subtraction of a double (unit days) from a DateTime
        (resulting in a DateTime).
        \\- Subtraction of 2 DateTimes (resulting in a double with unit days).
-  \item[] \textbf{==, $!=$, $>$, $>=$, $<$, and $<=$}
+  \item[] \textbf{==, $!=$, $>$, $>=$, $<$}, and \textbf{$<=$}
        \\Can be used with any operand as long as their data types conform.
        Operator $>$, $>=$, $<$, and $<=$ cannot be used for Regex.
        They use the norm for Complex values.
-  \item[] \textbf{\&\& and $\mid\mid$}
-       \\Logical AND and OR operator.
-       Can only be used with Bool operands.
+       \\To be compliant with SQL $=$ can be used for
+       $==$ and $<>$ can be used for $!=$.
+  \item[] \textbf{\&\&} and \textbf{$\mid\mid$}
+       \\Logical AND and OR operator. 
+       \\To be compliant with SQL the
+       words \texttt{AND} and \texttt{OR} can be used instead of the
+       symbols. These words are case insensitive.
+       \\These operators can only be used with Bool operands.
 \end{description}
 \begin{description}
   \item The precedence order is:
@@ -621,7 +628,11 @@ character of the column name. E.g. \verb+\+\texttt{1stDay}.
 \\
 Because several words are used in the language, they cannot
 be used directly as column names. The reserved words are:
-\\\texttt{ASC DESC FROM GIVING IN NODUPLICATES ORDERBY SELECT WHERE}.
+\begin{verbatim}
+   AND AS ASC DESC FROM GIVING IN
+   NODUPLICATES NOT OR ORDERBY
+   SELECT WHERE
+\end{verbatim}
 They can, however, be used as a column name by escaping
 them with a backslash. E.g. \verb+\+\texttt{IN}.
 \\Note that in C++ and Glish a backslash itself has to be escaped
