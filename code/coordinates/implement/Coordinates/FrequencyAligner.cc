@@ -29,6 +29,7 @@
 
 #include <casa/Arrays/ArrayAccessor.h>
 #include <casa/Arrays/VectorIter.h>
+#include <casa/BasicMath/Math.h>
 #include <casa/Quanta/Unit.h>
 #include <casa/Utilities/Assert.h>
 #include <casa/Exceptions/Error.h>
@@ -179,7 +180,7 @@ Bool FrequencyAligner<T>::align (Vector<T>& yOut, Vector<Bool>& maskOut,
    } else {
       for (uInt i=0; i<nPixels; i++) {
          itsFreqX[i] = itsMachine(xIn[i]).getValue().getValue();
-         maxDiff = max(abs(itsFreqX[i]-itsRefFreqX[i]),maxDiff);
+         maxDiff = casa::max(casa::abs(itsFreqX[i]-itsRefFreqX[i]),maxDiff);
       }
    }
    maxDiff /= abs(itsRefFreqX[1]-itsRefFreqX[0]);      // Max diff as a fraction of a channel
@@ -338,7 +339,7 @@ Double FrequencyAligner<T>::makeAbcissa (Vector<Double>& freq, Bool doDiff)
          itsSpecCoord.toWorld(world,i); 
          freq[i] = itsMachine(world).getValue().getValue();
 //
-         maxDiff = max(abs(freq[i]-itsRefFreqX[i]),maxDiff);
+         maxDiff = casa::max(casa::abs(freq[i]-itsRefFreqX[i]),maxDiff);
       }
    } else {
       for (uInt i=0; i<n; i++) {
