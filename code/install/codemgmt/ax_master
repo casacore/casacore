@@ -2876,3 +2876,4 @@
 11 442 src rm /doc/html/navpages/programmer.html
 11 450 src rm nrao/apps/vlafiller/vlatoms_meta.g
 12 001 src mv trial/implement/ComponentModels/tcomponentlist.g trial/implement/ComponentModels/test/tcomponentlist.g
+12 009 src rm doc/html/navpages/consortium.html
