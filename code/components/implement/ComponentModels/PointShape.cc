@@ -73,42 +73,56 @@ ComponentType::Shape PointShape::type() const {
   return ComponentType::POINT;
 }
 
-void PointShape::sample(Flux<Double>& flux, const MDirection& direction, 
-			const MVAngle& pixelSize) const {
+Double PointShape::sample(const MDirection& direction, 
+			  const MVAngle& pixelSize) const {
   DebugAssert(ok(), AipsError);
+  const MDirection& compDir(refDirection());
+  const MDirection::Ref& compDirFrame(compDir.getRef());
+  const MDirection::MVType& compDirValue(compDir.getValue());
+  Double separation;
   // Convert direction to the same frame as the reference direction
-  if ((MDirection::Types) direction.getRef().getType() != refDirFrame()) {
-    const MVDirection dirVal = 
-      MDirection::Convert(direction, refDirFrame())().getValue();
-    if (refDirValue().separation(dirVal) > pixelSize.radian()/2.0) {
-      flux.scaleValue(0.0, 0.0, 0.0, 0.0);
-    }
+  if (direction.getRef() != compDirFrame) {
+    const MDirection::MVType sampledDirValue = 
+      MDirection::Convert(direction, compDirFrame)().getValue();
+    separation = compDirValue.separation(sampledDirValue);
   } else {
-    if (refDirValue().separation(direction.getValue()) > 
-	pixelSize.radian()/2.0) {
-      flux.scaleValue(0.0, 0.0, 0.0, 0.0);
-    }
+    separation = compDirValue.separation(direction.getValue());
   }
+  if (separation < pixelSize.radian()/2.0) {
+    return 1.0;
+  }
+  return 0.0;
 }
 
-void PointShape::multiSample(Vector<Double>& scale, 
-			     const Vector<MVDirection>& directions, 
-			     const MVAngle& pixelSize) const {
+void PointShape::sample(Vector<Double>& scale, 
+			const Vector<MDirection::MVType>& directions, 
+			const MDirection::Ref& refFrame, 
+			const MVAngle& pixelSize) const {
   DebugAssert(ok(), AipsError);
   const uInt nSamples = directions.nelements();
-  if (scale.nelements() == 0) scale.resize(nSamples);
   DebugAssert(scale.nelements() == nSamples, AipsError);
-
-  Double separation;
+  
+  const MDirection& compDir(refDirection());
+  const MDirection::Ref& compDirFrame(compDir.getRef());
+  const MDirection::MVType* compDirValue = &(compDir.getValue());
+  Bool deleteValue = False;
+  // Convert direction to the same frame as the reference direction
+  if (refFrame != compDirFrame) {
+    compDirValue = new MDirection::MVType
+      (MDirection::Convert(compDir, refFrame)().getValue());
+    deleteValue = True;
+  }
   const Double pixSize = pixelSize.radian()/2.0;
+  Double separation;
   for (uInt i = 0; i < nSamples; i++) {
-    separation = refDirValue().separation(directions(i));
+    separation = compDirValue->separation(directions(i));
     if (separation < pixSize) {
       scale(i) = 1.0;
     } else {
       scale(i) = 0.0;
     }
   }
+  if (deleteValue) delete compDirValue;
 }
 
 void PointShape::visibility(Flux<Double>&, const Vector<Double>&,
