@@ -32,6 +32,7 @@
 #include <aips/Containers/RecordDesc.h>
 #include <aips/Arrays/Array.h>
 #include <aips/Arrays/ArrayMath.h>
+#include <aips/Exceptions/Error.h>
 
 
 TableExprNodeRecordField::TableExprNodeRecordField
