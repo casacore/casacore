@@ -38,6 +38,8 @@
 
 //#   storage managers
 #include <aips/Tables/StManAipsIO.h>
+#include <aips/Tables/StandardStMan.h>
+#include <aips/Tables/StandardStManAccessor.h>
 #include <aips/Tables/IncrementalStMan.h>
 #include <aips/Tables/IncrStManAccessor.h>
 #include <aips/Tables/TiledDataStMan.h>
@@ -339,7 +341,7 @@
 // #include <aips/Tables/ScaColDesc.h>
 // #include <aips/Tables/ScaRecordColDesc.h>
 // #include <aips/Tables/ArrColDesc.h>
-// #include <aips/Tables/StManAipsIO.h>
+// #include <aips/Tables/StandardStMan.h>
 // #include <aips/Tables/IncrementalStMan.h>
 // 
 // main()
@@ -360,15 +362,15 @@
 //     SetupNewTable newtab("newtab.data", td, Table::New);
 //
 //     // Step 3 -- Create storage managers for it.
-//     StManAipsIO stmanAipsIO_1;
-//     StManAipsIO stmanAipsIO_2;
+//     StandardStMan stmanStand_1;
+//     StandardStMan stmanStand_2;
 //     IncrementalStMan stmanIncr;
 // 
 //     // Step 4 -- First, bind all columns to the first storage
 //     // manager. Then, bind a few columns to another storage manager
 //     // (which will overwrite the previous bindings).
-//     newtab.bindAll (stmanAipsIO_1);
-//     newtab.bindColumn ("ab", stmanAipsIO_2);
+//     newtab.bindAll (stmanStand_1);
+//     newtab.bindColumn ("ab", stmanStand_2);
 //     newtab.bindColumn ("ae", stmanIncr);
 //     newtab.bindColumn ("arr3", stmanIncr);
 // 
@@ -443,7 +445,7 @@
 //     // and create the (still empty) table.
 //     // Note that since we do not explicitly bind columns to
 //     // data managers, all columns will be bound to the default
-//     // AipsIO storage manager.
+//     // standard storage manager StandardStMan.
 //     SetupNewTable newtab("newtab.data", td, Table::New);
 //     Table tab(newtab);
 //
@@ -932,14 +934,17 @@
 // <A NAME="Tables:storage managers">
 // <h3>Storage Managers</h3></A>
 //
-// Several storage managers are currently supported:
+// Several storage managers are currently supported.
+// The default and preferred storage manager is <src>StandardStMan</src>.
+// Other storage managers should only be used when they pay off in
+// file space (like <src>IncrementalStMan</src> for slowly varying data)
+// or access speed (like the tiled storage managers for large data arrays).
 // <ol>
 //  <li>
-//   <linkto class="StManAipsIO:description">StManAipsIO</linkto>
-//   uses AipsIO to store the data in the columns.
-//   It supports all table functionality, but its I/O is probably not
-//   as efficient as other storage managers. It also requires that
-//   a large part of the table fits in memory.
+//   <linkto class="StandardStMan:description">StandardStMan</linkto>
+//   stores all the values in so-called buckets (equally sized chunks
+//   in the file). It requires little memory.
+//   <br>It replaces the old <src>StManAipsIO</src>.
 //
 //  <li>
 //   <linkto class="IncrementalStMan:description">IncrementalStMan</linkto>
@@ -958,8 +963,14 @@
 //   UV-data as well as for image data.
 //
 //  <li>
-//   The <src>StManMirAIO</src> storage manager has been deprecated.
-//   Instead <src>IncrementalStMan</src> (mentioned above) should be used.
+//   <linkto class="StManAipsIO:description">StManAipsIO</linkto>
+//   uses <src>AipsIO</src> to store the data in the columns.
+//   It supports all table functionality, but its I/O is probably not
+//   as efficient as other storage managers. It also requires that
+//   a large part of the table fits in memory.
+//   <br>It should not be used anymore, because it uses much memory
+//   for larger tables and because it is not very robust in case an
+//   application or system crashes.
 // </ol>
 //
 // The storage manager framework makes it possible to support arbitrary files
