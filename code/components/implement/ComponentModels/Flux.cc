@@ -489,7 +489,7 @@ setErrors(const NumericTraits<T>::ConjugateType& error0,
 }
 
 template<class T> const Vector<NumericTraits<T>::ConjugateType>& FluxRep<T>::
-errors() {
+errors() const {
   return itsErr;
 }
 
