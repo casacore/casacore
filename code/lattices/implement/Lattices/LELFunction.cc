@@ -302,7 +302,6 @@ LELScalar<T> LELFunction1D<T>::getScalar() const
 	    iter++;
 	 }
       } else {
-	cout << "mean masked" << endl;
 ////	 RO_LatticeIterator<T> maskiter(latExpr.pixelMask(), latExpr.niceCursorShape());
 	 Array<Bool> mask;
 	 while (! iter.atEnd()) {
