@@ -44,46 +44,34 @@ one_arg_error_handler_t set_Complex_error_handler(one_arg_error_handler_t f)
   return old;
 }
 
-Bool near(G_COMPLEX(float) val1, G_COMPLEX(float) val2, double tol)
-{
-    if (tol <= 0) {
-	return ToBool(val1 == val2);
-    }
-
-    if (val1 == val2) return True;
-
-    if (val1 == 0) {
-	return ToBool(abs(val2) <= FLT_MIN + FLT_MIN*tol);
-    } else if (val2 == 0) {
-	return ToBool(abs(val1) <= FLT_MIN + FLT_MIN*tol);
-    }
-    return ToBool(abs(val1-val2) <= tol*max(abs(val1),abs(val2)));
+Bool near(G_COMPLEX(float) val1, G_COMPLEX(float) val2, double tol) {
+  if (tol <= 0)
+    return ToBool(val1 == val2);
+  if (val1 == val2) return True;
+  if (val1 == 0)
+    return ToBool(abs(val2) <= (1+tol)*FLT_MIN);
+  else if (val2 == 0)
+    return ToBool(abs(val1) <= (1+tol)*FLT_MIN);
+  return ToBool(abs(val1-val2) <= tol*max(abs(val1),abs(val2)));
 }
 
-Bool near(G_COMPLEX(double) val1, G_COMPLEX(double) val2, double tol)
-{
-    if (tol <= 0) {
-	return ToBool(val1 == val2);
-    }
-
-    if (val1 == val2) return True;
-
-    if (val1 == 0) {
-	return ToBool(abs(val2) <= DBL_MIN + DBL_MIN*tol);
-    } else if (val2 == 0) {
-	return ToBool(abs(val1) <= DBL_MIN + DBL_MIN*tol);
-    }
-    return ToBool(abs(val1-val2) <= tol*max(abs(val1),abs(val2)));
+Bool near(G_COMPLEX(double) val1, G_COMPLEX(double) val2, double tol) {
+  if (tol <= 0)
+    return ToBool(val1 == val2);
+  if (val1 == val2) return True;
+  if (val1 == 0)
+    return ToBool(abs(val2) <= (1+tol)*DBL_MIN);
+  else if (val2 == 0)
+    return ToBool(abs(val1) <= (1+tol)*DBL_MIN);
+  return ToBool(abs(val1-val2) <= tol*max(abs(val1),abs(val2)));
 }
 
-Bool nearAbs(G_COMPLEX(float) val1, G_COMPLEX(float) val2, double tol)
-{
-    return ToBool(abs(val2 - val1) <= tol);
+Bool nearAbs(G_COMPLEX(float) val1, G_COMPLEX(float) val2, double tol) {
+  return ToBool(abs(val2 - val1) <= tol);
 }
 
-Bool nearAbs(G_COMPLEX(double) val1, G_COMPLEX(double) val2, double tol)
-{
-    return ToBool(abs(val2 - val1) <= tol);
+Bool nearAbs(G_COMPLEX(double) val1, G_COMPLEX(double) val2, double tol) {
+  return ToBool(abs(val2 - val1) <= tol);
 }
 
 g_implement2(G_COMPLEX,double,G_COMPLEX_CTOR_OP_IMP(double,int) G_COMPLEX_CTOR_OP_IMP(double,float) G_COMPLEX_ASSIGN_OP_IMP(double,float) G_COMPLEX_ASSIGN_OP_IMP(double,int) G_COMPLEX_OPEQ_IMP(double,float) G_COMPLEX_OPEQ_IMP(double,int))

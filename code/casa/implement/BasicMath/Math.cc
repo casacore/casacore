@@ -1,5 +1,5 @@
 //# Math.cc: Implementation of miscellaneous functions in Math.h
-//# Copyright (C) 1995,1996
+//# Copyright (C) 1995,1996,1997
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -30,93 +30,59 @@
 #include <aips/Utilities/Assert.h>
 
 
-Bool near(uInt val1, uInt val2, Double tol)
-{
-    if (tol <= 0) {
-        return ToBool(val1 == val2);
-    }
-
-    if (val1 == val2) return True;
-    if ((0<val1) != (0<val2)) return False;
-
-    if (val1 == 0) {
-	return ToBool(val2 <= FLT_MIN + FLT_MIN*tol);
-    } else if (val2 == 0) {
-	return ToBool(val1 <= FLT_MIN + FLT_MIN*tol);
-    }
-    return ToBool(abs((Int) (val1-val2)) <= tol*max(val1,val2));
+Bool near(uInt val1, uInt val2, Double tol) {
+  if (tol <= 0) 
+    return ToBool(val1 == val2);
+  if (val1 == val2) return True;
+  return ToBool(abs((Int) (val1-val2)) <= tol*max(val1,val2));
 }
 
-Bool near(Int val1, Int val2, Double tol)
-{
-    if (tol <=0) {
-        return ToBool(val1 == val2);
-    }
-
-    if (val1 == val2) return True;
-    if ((0<val1) != (0<val2)) return False;
-
-    if (val1 == 0) {
-	return ToBool(abs(val2) <= FLT_MIN + FLT_MIN*tol);
-    } else if (val2 == 0) {
-	return ToBool(abs(val1) <= FLT_MIN + FLT_MIN*tol);
-    }
-    return ToBool(abs(val1-val2) <= tol*max(abs(val1),abs(val2)));
+Bool near(Int val1, Int val2, Double tol) {
+  if (tol <=0) 
+    return ToBool(val1 == val2);
+  if (val1 == val2) return True;
+  if ((0<val1) != (0<val2)) return False;
+  return ToBool(abs(val1-val2) <= tol*max(abs(val1),abs(val2)));
 }
 
-Bool near(Float val1, Float val2, Double tol)
-{
-    if (tol <=0) {
-        return ToBool(val1 == val2);
-    }
-
-    if (val1 == val2) return True;
-    if ((0<val1) != (0<val2)) return False;
-
-    if (val1 == 0) {
-	return ToBool(abs(val2) <= FLT_MIN + FLT_MIN*tol);
-    } else if (val2 == 0) {
-	return ToBool(abs(val1) <= FLT_MIN + FLT_MIN*tol);
-    }
-    return ToBool(abs(val1-val2) <= tol*max(abs(val1),abs(val2)));
+Bool near(Float val1, Float val2, Double tol) {
+  if (tol <=0)
+    return ToBool(val1 == val2);
+  if (val1 == val2) return True;
+  if (val1 == 0)
+    return ToBool(abs(val2) <= (1+tol)*FLT_MIN);
+  else if (val2 == 0)
+    return ToBool(abs(val1) <= (1+tol)*FLT_MIN);
+  if ((0<val1) != (0<val2)) return False;
+  return ToBool(abs(val1-val2) <= tol*max(abs(val1),abs(val2)));
 }
 
-Bool near(Double val1, Double val2, Double tol)
-{
-    if (tol <=0) {
-        return ToBool(val1 == val2);
-    }
-
-    if (val1 == val2) return True;
-    if ((0<val1) != (0<val2)) return False;
-
-    if (val1 == 0) {
-	return ToBool(abs(val2) <= DBL_MIN + DBL_MIN*tol);
-    } else if (val2 == 0) {
-	return ToBool(abs(val1) <= DBL_MIN + DBL_MIN*tol);
-    }
-    return ToBool(abs(val1-val2) <= tol*max(abs(val1),abs(val2)));
+Bool near(Double val1, Double val2, Double tol) {
+  if (tol <=0)
+    return ToBool(val1 == val2);
+  if (val1 == val2) return True;
+  if (val1 == 0)
+    return ToBool(abs(val2) <= (1+tol)*DBL_MIN);
+  else if (val2 == 0)
+    return ToBool(abs(val1) <= (1+tol)*DBL_MIN);
+  if ((0<val1) != (0<val2)) return False;
+  return ToBool(abs(val1-val2) <= tol*max(abs(val1),abs(val2)));
 }
 
-Bool nearAbs(uInt val1, uInt val2, uInt tol)
-{
-    return ToBool(tol > abs((Int) (val2 - val1)));
-}
-Bool nearAbs(Int val1, Int val2, Int tol)
-{
-    DebugAssert(tol >= 0, AipsError);
-    return ToBool(tol > abs(val2 - val1));
-}
-Bool nearAbs(Float val1, Float val2, Double tol)
-{
-    DebugAssert(tol >= 0, AipsError);
-    return ToBool(tol > fabs(val2 - val1));
+Bool nearAbs(uInt val1, uInt val2, uInt tol) {
+  return ToBool(tol > abs((Int) (val2 - val1)));
 }
 
-Bool nearAbs(Double val1, Double val2, Double tol)
-{
-    DebugAssert(tol >= 0, AipsError);
-    return ToBool(tol > fabs(val2 - val1));
+Bool nearAbs(Int val1, Int val2, Int tol) {
+  return ToBool(tol > abs(val2 - val1));
+}
+
+Bool nearAbs(Float val1, Float val2, Double tol) {
+  return ToBool(tol > fabs(val2 - val1));
+}
+
+Bool nearAbs(Double val1, Double val2, Double tol) {
+  return ToBool(tol > fabs(val2 - val1));
 }
 
 Bool isNaN(const float &val)
