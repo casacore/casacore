@@ -57,7 +57,7 @@ int main()
     IPosition lminPos(3, 0);
     IPosition lmaxPos(3, 0);
 
-    LatticeMinMax(lmin, lmax, lminPos, lmaxPos, lat);
+    minMax(lmin, lmax, lminPos, lmaxPos, lat);
 
     IPosition trueMaxPos = IPosition(3, 1020, 1020, 8);
     IPosition trueMinPos = IPosition(3, 800, 800, 9);
