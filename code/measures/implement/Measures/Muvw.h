@@ -38,8 +38,6 @@
 //# Forward Declarations
 class Muvw;
 class MCuvw;
-class MBaseline;
-class MDirection;
 template <class M> class MeasConvert;
 template <class M> class ArrayMeasColumn;
 template <class M> class ROArrayMeasColumn;
@@ -108,11 +106,8 @@ template <class M> class ROScalarMeasColumn;
 // reference directions.
 // </motivation>
 //
-// <todo asof="2000/06/15">
+// <todo asof="2000/11/08">
 //	<li> EW baselines
-//	<li> implement baseline to direction reference conversion (in
-//		separate .cc file to keep conversion separated)
-//	<li> implement Vector of uvw
 // </todo>
 
 class Muvw : public MeasBase<MVuvw, MeasRef<Muvw> > {
@@ -186,10 +181,6 @@ public:
   Muvw(const Measure *dt);
   Muvw(const MeasValue *dt);
   // </group>
-  // Create from a fully defined baseline and direction. (not implemented).<br>
-  // If the references for the baseline and direction disagree, the baseline
-  // is converted to the direction frame, before the uvw is calculated.
-  Muvw(const MBaseline &pos, const MDirection &dr);
   // Copy constructor and assign
   // <group>
   Muvw(const Muvw &);
