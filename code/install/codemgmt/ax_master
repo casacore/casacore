@@ -4087,3 +4087,4 @@
 14 065 src mv trial/implement/DisplayDatas/CachingDisplayData.cc trialdisplay/implement/DisplayDatas/CachingDisplayData.cc
 14 065 src mv trial/implement/DisplayDatas/CachingDisplayMethod.cc trialdisplay/implement/DisplayDatas/CachingDisplayMethod.cc
 14 065 src mv trial/implement/DisplayDatas/DDDObject.cc trialdisplay/implement/DisplayDatas/DDDObject.cc
+14 065 src mv trial/implement/DisplayDatas/DDDRectangle.cc trialdisplay/implement/DisplayDatas/DDDRectangle.cc
