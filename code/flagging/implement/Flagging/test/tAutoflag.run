@@ -7,6 +7,11 @@
 #
 # $Id$
 #-----------------------------------------------------------------------------
+
+  # This script has problems, because it uses glish. So exit immediately.
+  echo "UNTESTED: tAutoflag.run (AIPSPATH not defined)"
+  exit 3
+
   if [ "$AIPSPATH" = "" ]
   then
      echo "UNTESTED: tAutoflag.run (AIPSPATH not defined)"
