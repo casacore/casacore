@@ -487,7 +487,9 @@ Vector<uInt> Table::rowNumbers (const Table& that) const
 	}
     }
     thisRows.putStorage (thisRowData, deleteThis);
-    rownrs.freeStorage (rownrsData, deleteIt);
+    const uInt *dummy(rownrsData);      // Need to const the pointer to get
+                                        // by the SGI compiler.
+    rownrs.freeStorage (dummy, deleteIt);
     return thisRows;
 }
 
