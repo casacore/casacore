@@ -5,7 +5,7 @@ DATAFILE=`echo $AIPSPATH | awk '{print $1}'`/data/demo/dishdemo/dishdemo1.fits
 if [ -f $DATAFILE ]
 then
    # make sure things are cleaned up
-   if [ -e tBinTable.table.0 ]
+   if [ -r tBinTable.table.0 ]
    then
       rm -rf tBinTable.table.0
    fi
