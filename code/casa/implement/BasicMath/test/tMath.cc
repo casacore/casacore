@@ -39,37 +39,45 @@ int main() {
       Float x;
       setNaN(x);
       AlwaysAssert(isNaN(x), AipsError);
+      AlwaysAssert(!isFinite(x), AipsError);
     }
     {
       Double x = floatNaN();
       AlwaysAssert(isNaN(x), AipsError);
+      AlwaysAssert(!isFinite(x), AipsError);
     }
     {
       Float x = doubleNaN();
       AlwaysAssert(isNaN(x), AipsError);
+      AlwaysAssert(!isFinite(x), AipsError);
     }
     {
       Double x;
       setNaN(x);
       AlwaysAssert(isNaN(x), AipsError);
+      AlwaysAssert(!isFinite(x), AipsError);
     }
     {
       Float x;
       setInf(x);
       AlwaysAssert(isInf(x), AipsError);
+      AlwaysAssert(!isFinite(x), AipsError);
     }
     {
       Double x = floatInf();
       AlwaysAssert(isInf(x), AipsError);
+      AlwaysAssert(!isFinite(x), AipsError);
     }
     {
       Float x = doubleInf();
       AlwaysAssert(isInf(x), AipsError);
+      AlwaysAssert(!isFinite(x), AipsError);
     }
     {
       Double x;
       setInf(x);
       AlwaysAssert(isInf(x), AipsError);
+      AlwaysAssert(!isFinite(x), AipsError);
     }
   }
   catch (AipsError x) {
