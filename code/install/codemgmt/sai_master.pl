@@ -3,9 +3,9 @@
 # $Id$
 
 print "$<: $>\n";
-print "$(: $)\n";
-$< = $>;
-print "$<: $>\n";
+#$< = $>;
+#print "$<: $>\n";
+#print "$(: $)\n";
 
 $AIPSPATH = (split (' ', $ENV{AIPSPATH}))[0];
 # Untaint.
