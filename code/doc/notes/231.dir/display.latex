@@ -357,7 +357,41 @@ to managing the collection of registered DisplayDatas, and to
 arranging a set of ``restrictions'' which are used to assist the
 DisplayDatas in determining what of their data to draw, and how.
 
-\subsection{The MultiWCHolder}
+\subsection{The MultiWCHolder and PanelDisplay}
+
+Over the period of development of the first Display Library
+application --- the {\em Viewer}\/ (see below) --- it became clear
+that significant demand existed for the type of display where multiple
+slices from a multi-dimensional dataset are shown in individual panels
+forming a grid across the visible surface.  This type of display, a
+{\em PanelDisplay}, is common in multi-frequency radio astronomy
+packages, and is required in \aipspp.  One of the most recent
+additions to the Display Library then, has been the {\em
+  MultiWCHolder}\/ and {\em PanelDisplay}\/ classes.  The first of
+these is essentially a class which is capable of managing a number of
+WorldCanvasHolders, and which provides functions to register and
+unregister DisplayDatas across all the managed WorldCanvasHolders: it
+is a {\em holder of WorldCanvasHolders}. 
+
+The PanelDisplay class wraps all this up in a convenient class which
+creates a set of WorldCanvases and WorldCanvasHolders on a given
+PixelCanvas according to specifications given in the constructor,
+creates a MultiWCHolder to manage these WorldCanvasHolders, and which
+provides convenience functions for registering and unregistering
+DisplayDatas across the PanelDisplay.  
+
+A new Animation tool will need to be written for the MultiWCHolder to
+provide smart animation whereby the individual slices of data
+``march'' across the screen from panel to panel.  Further tricky issues
+have arisen in the development of the multi-panel facilities, and
+relate mostly to event handling in the case of overlapping, or nearly
+overlapping, WorldCanvases on a single PixelCanvas.  The developer in
+the future will need to decide whether events should be consumed by
+the first WorldCanvas asked to process the event, or whether they
+should instead be processed by all WorldCanvases.  The latter solution
+could create havoc for even simple operations, such as zooming, and
+needs extremely careful thought.  However, this is the current mode of
+operation...
 
 \section{The Glish Connection}
 
@@ -368,7 +402,7 @@ vehicle to provide the Display Library services to the \aipspp\ user.
 This facility has been provided this way so that Display Library
 canvases could be embedded in the \aipspp\ graphical user
 interface elements which were already supplied by by the {\tt glishtk}
-proxy client.  Additionally, the nature of {\tt glishtk} enable the
+proxy client.  Additionally, the nature of {\tt glishtk} enables the
 Display Library services to be loaded {\em dynamically}\/ into an
 already-running client.  Had the interface been implemented more along
 the lines of the existing \glish\ distributed-object mechanism, then
@@ -512,7 +546,7 @@ OpenGL, but is seen as less important for non-interactive devices,
 such as the existing PSPixelCanvas which has no great need to offer
 caching services.  For interactive devices, code to turn native events
 (such as mouse movement and key presses) into
-PC\{Motion,Position\}Event object as appropriate must be implemented,
+PC\{Motion,Position\}Event objects as appropriate must be implemented,
 and finally the graphics primitives must be implemented to a high
 level of quality and trustworthiness.  Ultimately, it is the intention
 to provide full test wrappers for all classes in the Display Library,
@@ -535,21 +569,107 @@ certain cases, deriving from existing higher-level classes such as
 WCRectTool will be good practise and buy the developer {\em and
   user}\/ significant common ground.  There are sufficient tools now
 implemented to give good example code on how to extend the tool beyond
-the derived capabilities.
+the derived capabilities.  The majority of this code can be found in
+{\tt trialdisplay/implement/DisplayEvents}.
 
 \subsection{Writing a DisplayData}
 
 Writing a new DisplayData still remains the most complex task in
 developing the Display Library, and no doubt it would be worth
-spending an amount of time on improving the programmability of
-DisplayDatas.  This complexity is primarily because the DisplayData
-object is expected to do a lot of work, both in accessing and
-extracting data from storage, and actually drawing the data to the
-screen.  It is also due to this aspect of the Display Library having
-been neglected in order to produce finished DisplayDatas, rather than
-fully design a substantial class hierarchy.
+spending a considerable amount of time on improving the
+programmability of DisplayDatas.  This complexity is primarily because
+the DisplayData object is expected to do a lot of work, both in
+accessing and extracting data from storage, and actually drawing the
+data to the screen.  The complexity also arises from the fraction of
+development time spent on DisplayDatas to date, compared to the
+magnitude of the work they are ultimately expected to do.  There is no
+doubt that parts of the DisplayData class interfaces need further
+work, and this work will need to be carefully coordinated in the
+future amongst the various Display Library developers.  Anyway, on
+with the show \ldots Start by examining the code available in {\tt
+  trialdisplay/implement/DisplayDatas}: the primary interfaces that
+must be understood are the {\em DisplayData}\/ and {\em DisplayMethod}
+classes.  These two classes define the interface for the entire
+DisplayData class hierarchy, and are therefore of utmost importance.
 
-...
+After digesting these two classes, attention should be given to the
+immediately derived classes {\em CachingDisplayData}\/ and {\em
+  CachingDisplayMethod}.  These two classes add to the base class
+interfaces to implement ``automagic'' caching facilities for
+DisplayDatas.  The idea is that if a DisplayData has previously drawn
+itself on a WorldCanvas, with a set of given options or attributes or
+characteristics, then if requested to do so again, and the conditions
+have not changed, or at least have reverted to the state they were in,
+then a cached drawing should be available to place rapidly on the
+viewing surface (ie.\ the WorldCanvas).  The main trick to using these
+classes correctly is to properly implement the {\tt
+  optionsAsAttributes} function, and to correctly manage the set of
+{\tt Attributes} on the DisplayData itself.  If this is done
+correctly, as described in the class documentation, then classes
+derived from CachingDisplayData and CachingDisplayMethod need never
+worry about implementing the {\tt refreshEH} method of the base
+DisplayData class.\footnote{For the real details, examine the
+  implementation of {\tt CachingDisplayData::refreshEH} while you read
+  the following notes:\begin{enumerate}
+  \item{First we just find out the WorldCanvas we're dealing with, and
+      likewise the WorldCanvasHolder.  Next we get a copy of the
+      restrictions on the WorldCanvasHolder.  For our DisplayData `NGDD'
+      to draw, it will have to match some of these restrictions.}
+  \item{To the WorldCanvasHolder restrictions, we add the state of the
+      WorldCanvas - basically we describe its geometry on the
+      underlying PixelCanvas.  Then we get a copy of the restrictions
+      on the DisplayData, and to this copy, we add restrictions which
+      describe the options the user has set on the NGDD.  This is done
+      with the line: {\tt
+        ddRestrictions->add(optionsAsAttributes());}}
+  \item{If caching is {\bf on}, we search our list of previously made
+      CachingDisplayMethods, to see if we can find one whose restrictions 
+      match the two buffers created above, and if they have in the
+      past been drawn on the WorldCanvas we're supposed to draw on
+      now: \begin{itemize}
+      \item{If we {\em don't}\/ find such an element ({\tt if (!found)
+            \{ ... \}}) we construct a new one by calling the method
+          {\tt newDisplayMethod}, which {\em must}\/ be implemented in
+          derived classes, and add the result to our list.  We keep a
+          pointer to it though, since we'll draw it below.  The
+          {\tt purgeCache} call is made to make sure the cache doesn't get
+          too large.}
+      \item{If we {\em do}\/ find such an element, let's do nothing, because
+          {\tt cdMethod} now points to it, so we can ask it to draw just a bit
+          lower down in the code.}
+      \end{itemize}}
+  \item{On the other hand, if caching is {\bf off}, let's just make a
+      new displaymethod using the {\tt newDisplayMethod} function, but
+      we'll delete it after we use it!}
+  \item{So now we can delete the restriction buffers we used to
+      compare to our list of already drawn "views", we install a
+      Colormap if required, and just ask the method to draw itself:
+      {\tt cdMethod->draw(ev.reason(), *holder);}}
+  \item{Finally, if caching is off, we just delete the {\tt cdMethod}
+      pointer and free the memory used by our drawing.}
+  \end{enumerate}}
+It is the humble suggestion of the author that all future
+implementations of DisplayDatas be made by deriving ultimately from
+the CachingDisplay classes.
+
+Other than actually accessing data and drawing it to a WorldCanvas,
+one very important task still not implemented at the level of the
+CachingDisplayData class is {\tt DisplayData::sizeControl}.  The
+job of this method is --- on request from a WorldCanvas --- to set up
+the linear coordinate system (LCS) of that WorldCanvas.  Very roughly, two
+types of DisplayData exist: those that do implement {\tt sizeControl}
+and can therefore set up the WorldCanvas LCS, and those that leave a
+null implementation and return {\tt False} to the caller.  The latter
+type can be termed {\em passive}\/ DisplayDatas, and they can only
+ever draw once another DisplayData's sizeControl method has been
+called for the WorldCanvas/Holder on which they are registered.  As
+such, they are pretty easy to write, but only suitable for use as
+overlays on other DisplayDatas.  
+
+The former type, the {\em active}\/ DisplayDatas, must have the {\tt
+  sizeControl} function implemented in a non-trivial way, and return a
+{\tt True} value to indicate to the caller that indeed they did
+perform a ``sizeControl'' action.  
 
 \subsection{Adding Agents to the GlishTk Interface}
 
