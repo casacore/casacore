@@ -649,7 +649,8 @@ Vector<Double> Fit2D::estimate(Fit2D::Types type,
 // probabilistic approach from Miriad imfit.for   Only works
 // for single models.  Honours and inclusion/exclusion pixel range
 //
-// PA sign convention in pixel coordinate is +y -> +x is positive
+// PA sign convention in pixel coordinate is +y -> -x is positive
+// (same as Gaussian2D.cc) and opposite to Miriad
 //
 {
    Vector<Double> parameters;
