@@ -142,8 +142,8 @@ The various clauses have the following meaning:
        \htmlref{WHERE}{TAQL:EXPRESSIONS} clause.
        The resulting data type of the expression must
        be a standard scalar one, thus it cannot be a Regex or
-       DateTime. See \htmlref{below}{TAQL:EXPRESSIONS} for a discussion
-       of the available data types.
+       DateTime (see \htmlref{below}{TAQL:DATATYPES} for a discussion
+       of the available data types).
        E.g.
        \begin{verbatim}
        ORDERBY col1, col2, col3
@@ -152,8 +152,7 @@ The various clauses have the following meaning:
        ORDERBY datetime(col)             incorrect data type
        ORDERBY mjd(datetime(col))        is correct
        \end{verbatim}
-  \item[GIVING table]
-    \label{TAQL:GIVING}
+  \item[ \label{TAQL:GIVING}GIVING table ]
        indicates that the ultimate result of the SELECT command can be
        written to a table (with the given name). This table is a
        so-called reference table.
@@ -175,8 +174,7 @@ at least one of them has to be used. Otherwise no operation is
 performed on the primary table (which makes no sense).
 
 
-\section{Expressions}
-\label{TAQL:EXPRESSIONS}
+\section{\label{TAQL:EXPRESSIONS}Expressions}
 An arbitrary expression can be used in the WHERE clause, as a sort
 key in the ORDERBY clause, or in the set in the GIVING clause.
 Note that the expression result must be
@@ -204,6 +202,7 @@ E.g.
 \end{verbatim}
 The last example shows a \htmlref{set}{TAQL:SETS} with a continuous interval.
 
+\label{TAQL:DATATYPES}
 TaQL knows the following data types:
 \begin{description}
   \item[ Bool]
@@ -223,8 +222,7 @@ is used TaQL can do the following automatic conversions:
 \\- from String to DateTime
 
 
-\subsection{Constants}
-\label{TAQL:CONSTANTS}
+\subsection{\label{TAQL:CONSTANTS}Constants}
 Scalar constants of the various data types can be formed as follows
 (which is very similar to Glish):
 \begin{itemize}
@@ -331,8 +329,7 @@ as such.
 \\Whenever needed it is easy to implement a Glish-like array function
 to construct a constant array.
 
-\subsection{Operators}
-\label{TAQL:OPERATORS}
+\subsection{\label{TAQL:OPERATORS}Operators}
 The following operators can be used (with their normal meaning and
 precedence) for scalars:
 \begin{description}
@@ -384,8 +381,7 @@ precedence) for scalars:
 All these operators can be used in the same way for arrays
 (also a mix of scalar and array).
 
-\subsection{Functions}
-\label{TAQL:FUNCTIONS}
+\subsection{\label{TAQL:FUNCTIONS}Functions}
 Some functions have 2 names. One name is the AIPS++/Glish name, while the
 other is the name as used in SQL.
 In the following tables the function names are shown in uppercase,
@@ -591,8 +587,7 @@ These functions can only be used on arrays.
        subset from a table.
 \end{description}
 
-\subsection{Table Columns}
-\label{TAQL:COLUMNS}
+\subsection{\label{TAQL:COLUMNS}Table Columns}
 A column can contain a scalar or an array value.
 Note that only columns in the primary table can be handled directly.
 A column in another table can be used via a subquery. E.g.
@@ -621,8 +616,7 @@ them with a backslash. E.g. \verb+\+\texttt{IN}.
 by another backslash. E.g. in Glish:
 \texttt{tab.query('DATE}\verb+\\_+\texttt{OBS$>$10MAR1996')}.
 
-\subsection{Table Keywords}
-\label{TAQL:KEYWORDS}
+\subsection{\label{TAQL:KEYWORDS}Table Keywords}
 It is possible to use table or column keywords, which can have
 a scalar or an array value. A table keyword has to be specified
 as \texttt{::key}. In an expression the \texttt{::} part can be omitted
@@ -630,10 +624,10 @@ when there is no column with such a name.
 A column keyword has to be specified as \texttt{column::key}.
 \\Note that \texttt{::} is similar to the scope operator in C++.
 \\
-As explained \htmlref{in the beginning}{TAQL:TABLE_LIST},
-keywords from the primary table and from secondary tables can be used. When used
-from a secondary table, it has to be qualified with the (shorthand) name
-of the table. E.g.
+As explained in the \htmlref{FROM clause}{TAQL:TABLE_LIST} of the syntax
+section, keywords from the primary table and from secondary tables
+can be used. When used from a secondary table, it has to be qualified
+with the (shorthand) name of the table. E.g.
 \\\texttt{sh.key} or \texttt{sh.::key}
 \\takes table keyword \texttt{key} from the table with the shorthand name
 \texttt{sh}.
@@ -641,8 +635,7 @@ of the table. E.g.
 A keyword can be used in any expression. It is evaluated immediately
 and transformed to a constant value.
 
-\subsection{Array Index Operator}
-\label{TAQL:INDEXING}
+\subsection{\label{TAQL:INDEXING}Array Index Operator}
 It is possible to take a subsection or a
 single element from an array column, keyword or expression
 using the index operator
@@ -694,8 +687,7 @@ The second form results in reading the entire array.
 \\From this example it should be clear that indexing an array
 expression has to be done with care.
 
-\subsection{Sets}
-\label{TAQL:SETS}
+\subsection{\label{TAQL:SETS}Sets}
 As in SQL the operator \texttt{IN} can be used to do a selection
 based on a set or array. E.g.
 \begin{verbatim}
@@ -764,8 +756,7 @@ discrete values, while the 3rd form results in a continuous interval.
 Another form of constructing a set is the
 \htmlref{subquery}{TAQL:SUBQUERIES} shown below.
 
-\subsection{Subqueries}
-\label{TAQL:SUBQUERIES}
+\subsection{\label{TAQL:SUBQUERIES}Subqueries}
 As in SQL it is possible to create a set from a subquery. A
 subquery has the same syntax as a main query, but has to be
 enclosed in square brackets. Basically it looks like:
@@ -972,7 +963,7 @@ that indexing arrays should be done with care.
        \\finds all 3C objects inside that circle.
 \end{description}
 
-\section{Interface to TaQL}
+\section{\label{TAQL:GLISHC}Interface to TaQL}
 There exists a user and a programmer interface to TaQL.
 Glish functions form the user interface, while C++ functions
 and classes form the programmer interface.
