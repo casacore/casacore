@@ -523,7 +523,9 @@
 // The correct reference (MeasRef) and conversion (MeasConvert) class for
 // each Measure (a frequency cannot be converted into an epoch) are templated,
 // and have specified (and to be used) typedefs: <em>Measure::Ref</em> and
-// <em>Measure::Convert</em> (e.g. <em>MEpoch::Ref, MEpoch::Convert</em>).
+// <em>Measure::Convert</em> (e.g. <em>MEpoch::Ref, MEpoch::Convert</em>). In
+// addition, Measure::MVType and Measure::MCType are defined for all
+// measures.
 // <p>
 // <h4>Measure errors </h4>
 // In the current implementation, no errors are attached to a Measure. In the
