@@ -1,5 +1,5 @@
 //# QMath.h: Mathematical operations for the Quantum class.
-//# Copyright (C) 1994, 1995, 1996
+//# Copyright (C) 1994,1995,1996,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -38,6 +38,7 @@
 #include <aips/Measures/Quantum.h>
 
 //# Forward Declarations
+template <class T> class Array;
 
 //# Typedefs
 
@@ -205,7 +206,7 @@ Quantum<Qtype> atan2(const Qtype &left, const Quantum<Qtype> &other);
 // </group>
 
 
-// Functions to implement complex, integer ceil/floor
+// Functions to implement complex, integer ceil/floor and others
 // <group name="foreign">
 Complex ceil(const Complex &val);
 Complex floor(const Complex &val);
@@ -215,6 +216,8 @@ IComplex ceil(const IComplex &val);
 IComplex floor(const IComplex &val);
 Int ceil(const Int &val);
 Int floor(const Int &val);
+Array<Complex> operator *(const Array<Complex> &in, Double f);
+Array<Complex> operator /(const Array<Complex> &in, Double f);
 // </group>
 //# Inline Implementations
 
