@@ -40,13 +40,13 @@ OrderedMapRep<key,value>::OrderedMapRep (const value& dflt, uInt incr)
 {}
 
 template<class key, class value>
-OrderedMapRep<key,value>::OrderedMapRep (const value& dflt) :
-                     MapRep<key,value>(dflt),
-	             kvblk(10),
-	             lastRef(0),
-		     nrtot(10),
-		     nrused(0),
-		     nrincr(10)
+OrderedMapRep<key,value>::OrderedMapRep (const value& dflt)
+: MapRep<key,value>(dflt),
+  kvblk  (10),
+  nrtot  (10),
+  nrused (0),
+  nrincr (10),
+  lastRef(0)
 {}
 
 template<class key, class value>

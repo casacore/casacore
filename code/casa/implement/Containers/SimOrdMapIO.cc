@@ -38,7 +38,7 @@ AipsIO& operator<< (AipsIO& ios, const SimpleOrderedMap<K,V>& map)
     ios << map.defaultVal();
     ios << map.ndefined();
     ios << map.incr();
-    for (Int i=0; i<map.ndefined(); i++) {
+    for (uInt i=0; i<map.ndefined(); i++) {
 	ios << map.getKey(i);
 	ios << map.getVal(i);
     }
@@ -81,7 +81,7 @@ ostream& operator<< (ostream& ios, const SimpleOrderedMap<K,V>& map)
     ios << " nrincr=";
     ios << map.incr();
     ios << endl;
-    for (Int i=0; i<map.ndefined(); i++) {
+    for (uInt i=0; i<map.ndefined(); i++) {
 	ios << map.getKey(i);
 	ios << " ";
 	ios << map.getVal(i);

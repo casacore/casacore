@@ -30,10 +30,10 @@
 
 template<class K, class V>
 SimpleOrderedMap<K,V>::SimpleOrderedMap (const V& dflt, uInt incr)
-: DefaultVal(dflt),
-  kvblk(incr),
+: kvblk(incr),
   nrused(0),
-  nrincr(incr)
+  nrincr(incr),
+  DefaultVal(dflt)
 {
     if (nrincr < 16) {
 	nrincr = 16;
@@ -42,24 +42,28 @@ SimpleOrderedMap<K,V>::SimpleOrderedMap (const V& dflt, uInt incr)
 
 template<class K, class V>
 SimpleOrderedMap<K,V>::SimpleOrderedMap (const V& dflt)
-: DefaultVal(dflt),
-  kvblk (16),
+: kvblk (16),
   nrused(0),
-  nrincr(16)
+  nrincr(16),
+  DefaultVal(dflt)
 {}
 
 template<class K, class V>
 SimpleOrderedMap<K,V>::SimpleOrderedMap
                            (const SimpleOrderedMap<K,V>& that)
-: DefaultVal(that.DefaultVal),
-  kvblk (that.kvblk.nelements()),
+: kvblk (that.kvblk.nelements()),
   nrused(that.nrused),
-  nrincr(that.nrincr)
-    { copyBlock (that); }
+  nrincr(that.nrincr),
+  DefaultVal(that.DefaultVal)
+{
+    copyBlock (that);
+}
 
 template<class K, class V>
 SimpleOrderedMap<K,V>::~SimpleOrderedMap ()
-    { clear(); }
+{
+    clear();
+}
 
 template<class K, class V>
 void SimpleOrderedMap<K,V>::clear ()
@@ -143,11 +147,8 @@ V *SimpleOrderedMap<K,V>::isDefined (const K& k)
 template<class K, class V>
 V &SimpleOrderedMap<K,V>::operator()(const K &ky)
 {
-    V *vptr;
-    if (vptr = isDefined(ky))
-	return *vptr;
-    else
-	return define(ky,DefaultVal);
+    V *vptr = isDefined(ky);
+    return vptr  ?  *vptr : define(ky,DefaultVal);
 }
 
 template<class K, class V>
