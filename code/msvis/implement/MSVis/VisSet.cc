@@ -104,6 +104,12 @@ VisSet::VisSet(MeasurementSet& ms,const Block<Int>& columns,
       
       ArrayColumn<Complex> mcd(ms,"MODEL_DATA");
       mcd.rwKeywordSet().define("CHANNEL_SELECTION",selection_p);
+
+      // Force re-sort (in VisIter ctor below) by deleting current sort info 
+      if (ms.keywordSet().isDefined("SORT_COLUMNS")) 
+	ms.rwKeywordSet().removeField("SORT_COLUMNS");
+      if (ms.keywordSet().isDefined("SORTED_TABLE")) 
+	  ms.rwKeywordSet().removeField("SORTED_TABLE");
     }
 
 
