@@ -1,5 +1,5 @@
 //# ImageRegrid.h: Regrid Images
-//# Copyright (C) 1996,1997,1998,1999,2000,2001
+//# Copyright (C) 1996,1997,1998,1999,2000,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -308,6 +308,17 @@ public:
                                     Array<Bool>*& inMaskChunkPtr,
                                     const Cube<Double>& pix2DPos,
                                     const Matrix<Bool>& failed);
+
+void findXYExtent (Bool& missedIt, Bool& allFailed,
+                                   Double& minInX, Double& minInY,
+                                   Double& maxInX, Double& maxInY,
+                                   const Cube<Double>& in2DPos,
+                                   const Matrix<Bool>& failed,
+                                   uInt xInAxis, uInt yInAxis,
+                                   uInt xOutAxis, uInt yOutAxis,
+                                   const IPosition& outPos,
+                                   const IPosition& outCursorShape,
+                                   const IPosition& inShape) const;
 };
 
  
