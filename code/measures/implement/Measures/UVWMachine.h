@@ -1,5 +1,5 @@
 //# UVWMachine.h: Converts UVW coordinates between coordinate systems 
-//# Copyright (C) 1998
+//# Copyright (C) 1998,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -98,14 +98,20 @@ template <class T> class Vector;
 // the only way to carry them from conversion to conversion (and also have a
 // variable phase-center; which can, btw, always be obtained by the
 // phaseCenter() member).<br>
-// Note that a reCalc() is necessary between calls of the engine, since the
-// planetary position will change from time to time (i.e. with the Frame).
+// Note that a reCalculate() is necessary between calls of the engine,
+// since the planetary position will change from time to time (i.e. with
+// the Frame).
 //
- // If you want to convert to say an azimuth/elevation map of the Sun, this
+// If no explicit output coordinate is given (i.e. no phase shift necessary),
+// and the conversion from input to output is an essential NOP, and no
+// reprojection to the input plane is required, the machine will bypass all
+// calculations. This state can be inspected by the <src>isNOP()</src> method.
+//
+// If you want to convert to say an azimuth/elevation map of the Sun, this
 // can be done to have either two conversion engines (original to Sun, then
 // Sun to AzEl), or by conversion of the Sun to AzEl before entering the
 // engine.
-// </note>
+// </note role=tip>
 // The output of the machine is either a set of rotation matrices that can
 // be used to convert UVW coordinates (and, if necessary, phases); or the
 // UVW conversion and actual phase can be calculated from a given
@@ -150,8 +156,8 @@ template <class T> class Vector;
 // </todo>
 
 class UVWMachine {
-public:
-//# Constructors
+ public:
+  //# Constructors
   // Constructors have an EW flag, which will give a projection parallel to
   // the polar axis rather than in the direction of the fieldcenter, and a
   // project flag. The last will correct the UV coordinates to re-project
@@ -159,7 +165,7 @@ public:
   // <group>
   // Construct a UVW conversion machine from the in coordinate and its
   // system to the out coordinate system (output absolute direction 
-  //remains the same)
+  // remains the same)
   UVWMachine(const MDirection::Ref &out, const MDirection &in,
 	     Bool EW=False, Bool project=False);
   // Construct a UVW conversion machine from the in coordinate and its
@@ -194,6 +200,8 @@ public:
   //# Member functions
   // Return the new phase center coordinates
   const MDirection &phaseCenter() const;
+  // Return if the engine is an effective NOP
+  Bool isNOP() { return nop_p; };
   // Return a rotation matrix that can be used to convert UVW coordinates:
   // UVW(new) = UVW(old) * rotationUVW()
   const RotMatrix &rotationUVW() const;
@@ -225,7 +233,7 @@ public:
   // Recalculate the parameters for the machine after e.g. a frame change
   void reCalculate();
 
-private:
+ private:
 
   //# Data
   // EW flag
@@ -234,6 +242,8 @@ private:
   Bool proj_p;
   // Zero phase flag (for speed)
   Bool zp_p;
+  // No conversion necessary flag
+  Bool nop_p;
   // Old phase center
   MDirection in_p;
   // New coordinate reference
