@@ -159,7 +159,7 @@ String ImageUtilities::shortAxisName (const String& axisName)
 }
 
 
-SkyComponent ImageUtilities::encodeSkyComponent(LogIO& os,
+SkyComponent ImageUtilities::encodeSkyComponent(LogIO& os, Double& fluxRatio,
                                                 const ImageInfo& ii,
                                                 const CoordinateSystem& cSys,
                                                 const Unit& brightnessUnit,
@@ -185,7 +185,7 @@ SkyComponent ImageUtilities::encodeSkyComponent(LogIO& os,
    }
 //
    Vector<Quantum<Double> > beam = ii.restoringBeam();
-   sky.fromPixel(pars, brightnessUnit, beam, cSys, type, stokes);
+   sky.fromPixel(fluxRatio, pars, brightnessUnit, beam, cSys, type, stokes);
    return sky;
 } 
 
