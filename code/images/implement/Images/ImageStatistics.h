@@ -78,6 +78,15 @@ class CoordinateSystem;
 // you must specify which ones you would like to see.
 //
 // Note that this class cannot handle complex images yet.
+//
+// This class generates a "storage image" into which it writes the accumulated
+// statistical sums.  It is from this storage image that the listing and
+// plotting is drawn.  The dimension of the storage image is the number of
+// display axes (i.e. the axes not given as the cursor axes) plus 1.
+// The storage image is actually put in a PagedArray.  This is a disk based
+// storage medium.   The storage image is deleted when the ImageStatistics class 
+// object destructs.  
+//
 // </synopsis>
 //
 // <example>
