@@ -200,7 +200,7 @@ void IPosition::resize(uInt newSize, Bool copy)
         newData = buffer_p;
     } else {
         newData = new Int[newSize];
-	if (data == 0) {
+	if (newData == 0) {
 	    throw(AllocError("IPosition::resize(Int newSize.Bool copy) - "
 			     "Cannot allocate storage", size));
 	}
@@ -220,6 +220,7 @@ void IPosition::resize(uInt newSize, Bool copy)
     // Point to new data
     size = newSize;
     data = newData;
+    DebugAssert(ok(), AipsError);
 }
 
 // <thrown>
@@ -241,6 +242,7 @@ IPosition &IPosition::operator=(const IPosition &other)
     for (uInt i=0; i < size; i++) {
 	data[i] = other.data[i];
     }
+    DebugAssert(ok(), AipsError);
     return *this;
 }
 
@@ -972,13 +974,11 @@ AipsIO &operator>>(AipsIO &aio, IPosition &ip)
     }
     uInt nel;
     Int *values;
-    aio.getnew(nel, values);
+    aio >> nel;
+    ip.resize (nel);
+    aio.get (nel, ip.data);
     aio.getend();
-    if (ip.data != &ip.buffer_p[0]) {
-        delete [] ip.data;
-    }
-    ip.size = nel;
-    ip.data = values;
+    DebugAssert (ip.ok(), AipsError);
     return aio;
 }
 
