@@ -32,13 +32,13 @@
 //# Includes
 #include <aips/aips.h>
 #include <aips/Tables/BaseTable.h>
+#include <aips/Tables/TableLock.h>
 #include <aips/Utilities/DataType.h>
 #include <aips/Utilities/Sort.h>
 
 //# Forward Declarations
 class SetupNewTable;
 class TableDesc;
-class TableLock;
 class ColumnDesc;
 class TableRecord;
 class TableExprNode;
@@ -274,7 +274,10 @@ public:
 
     // Has this process the read or write lock, thus can the table
     // be read or written safely?
+    // <group>
     Bool hasLock (Bool write = True) const;
+    Bool hasLock (TableLock::LockMode mode) const;
+    // </group>
 
     // Try to lock the table for read or write access (default is write).
     // The number of attempts (default = forever) can be specified when
@@ -284,7 +287,10 @@ public:
     // The return value is false when acquiring the lock failed.
     // When <src>PermanentLocking</src> is in effect, a lock is already
     // present, so nothing will be done.
+    // <group>
     Bool lock (Bool write = True, uInt nattempts = 0);
+    Bool lock (TableLock::LockMode mode, uInt nattempts = 0);
+    // </group>
 
     // Unlock the table. This will also synchronize the table data,
     // thus force the data to be written to disk.
@@ -735,10 +741,14 @@ inline const TableLock& Table::lockOptions() const
     { return baseTabPtr_p->lockOptions(); }
 inline Bool Table::lock (Bool write, uInt nattempts)
     { return baseTabPtr_p->lock (write, nattempts); }
+inline Bool Table::lock (TableLock::LockMode mode, uInt nattempts)
+    { return baseTabPtr_p->lock (ToBool (mode==TableLock::Write), nattempts); }
 inline void Table::unlock()
     { baseTabPtr_p->unlock(); }
 inline Bool Table::hasLock (Bool write) const
     { return baseTabPtr_p->hasLock (write); }
+inline Bool Table::hasLock (TableLock::LockMode mode) const
+    { return baseTabPtr_p->hasLock (ToBool (mode==TableLock::Write)); }
 
 inline Bool Table::isWritable() const
     { return baseTabPtr_p->isWritable(); }
