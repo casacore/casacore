@@ -2539,12 +2539,15 @@ Usage:   UPfind [-f] [-g] [-c] [-r] [-u] [-d] [-n] <typ>
 Uses:    <typ>.def, <typ>.spat, <typ>.rmpat
 Creates: <typ>.raw, <typ>.found
   -g use all .g files rather than the C++ files
-  -f use a file pattern to search files, not their contents
+  -f use a file pattern to search for files, not their contents
   -c clear all defining information files for this script
   -r clear only the general defining information in .def
   -u clear all but the general defining information in .def
   -d give some debug information (mostly not implemented)
   -n run script only to get defining information, without executing
+  -Q run quietly
+  -F force acceptance of normally asked for data
+  -h this information
 
 The following UP scripts are available:
     UPfind    [-f] [-g]      [-c] [-r] [-u] [-d] [-n] <typ>
@@ -3212,7 +3215,12 @@ files in the \aipspp\ system. It checks each package against the standard
 e.g. be safely be moved from some local test or application templates file to
 one of the standard \exe{aips} or \exe{trial} packages. An \exe{-s} switch is
 available to run in {\em system} mode, which will only indicate duplicates
-that are a problem as it is. 
+that are a problem as it is. \\
+The normal operation is to check \code{aips} package templates against its
+repository; the check \code{trial} package templates against its and aips'
+repository; to check all other package templates files agains aips' and
+trial's repository templates.
+
 
 \subsubsection*{Options}
 
@@ -3220,6 +3228,18 @@ that are a problem as it is.
 \item[\code{\exe{-s}}]
     Execute in {\em system} mode. I.e. only show duplicates that are a
     problem.
+\item[\code{\exe{UPdup.packages}}]
+    If the \exe{UPdup.packages} file is present in the directory from which
+    the \exe{UPdup} script is run, the checking behaviour can be
+    influenced. Each line in the file contains a series of package names. The
+    first is the indicator for the package to be checked, the rest are
+    packages, in addition to aips and trial, which repositories are used in
+    the checking process. I.e. if \exe{UPdup.packages} contains a line:
+\begin{verbatim}
+  atnf trialdisplay
+\end{verbatim}
+    then the duplicates check for the \code{atnf} package will be aginat
+    trial, aips and trialdisplay.
 \end{description}
 
 \subsubsection*{Examples}
