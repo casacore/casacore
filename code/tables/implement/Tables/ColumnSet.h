@@ -97,6 +97,9 @@ public:
     // Rename the necessary subtables in the column keywords.
     void renameTables (const String& newName, const String& oldName);
 
+    // Are subtables used in other processes.
+    Bool areTablesMultiUsed() const;
+
     // Get a column by name.
     PlainColumn* getColumn (const String& columnName) const;
 

@@ -171,6 +171,9 @@ public:
     void renameTables (const String& newParentName,
 		       const String& oldParentName);
 
+    // Are subtables used in other processes.
+    Bool areTablesMultiUsed() const;
+
     // Put the description and data of the Record.
     // It also puts the fixedFlag attribute (of the mother object).
     void putRecord (AipsIO& os, int recordType,

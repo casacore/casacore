@@ -1,5 +1,5 @@
 //# TableRecord.h: A hierarchical collection of named fields of various types
-//# Copyright (C) 1996,1997,1998
+//# Copyright (C) 1996,1997,1998,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -362,6 +362,9 @@ public:
     void renameTables (const String& newParentName,
 		       const String& oldParentName);
 
+    // Are subtables used in other processes.
+    Bool areTablesMultiUsed() const;
+
     // Write the TableRecord to an output stream.
     friend AipsIO& operator<< (AipsIO& os, const TableRecord& rec);
 
@@ -492,6 +495,11 @@ inline void TableRecord::renameTables (const String& newParentName,
 				       const String& oldParentName)
 {
     rwRef().renameTables (newParentName, oldParentName);
+}
+
+inline Bool TableRecord::areTablesMultiUsed() const
+{
+    return ref().areTablesMultiUsed();
 }
 
 

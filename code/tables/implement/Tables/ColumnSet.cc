@@ -506,6 +506,16 @@ void ColumnSet::renameTables (const String& newName, const String& oldName)
     }
 }
 
+Bool ColumnSet::areTablesMultiUsed() const
+{
+    for (uInt i=0; i<colMap_p.ndefined(); i++) {
+        if (getColumn(i)->keywordSet().areTablesMultiUsed()) {
+	    return True;
+	}
+    }
+    return False;
+}
+
 
 Bool ColumnSet::putFile (Bool writeTable, AipsIO& ios,
 			 const String& tableName, Bool fsync)
