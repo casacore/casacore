@@ -1,5 +1,5 @@
 //# tTableQuantum.cc: test program for Quantum columns in TableMeasures module
-//# Copyright (C) 1997,1998,1999,2000,2001
+//# Copyright (C) 1997,1998,1999,2000,2001,2004
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -53,7 +53,7 @@ int main (int argc, char* argv[])
   Bool doExcep = (argc<2);
   uInt nrrow = 5000;
   if (argc >= 2) {
-    istrstream istr(argv[1]);
+    istringstream istr(argv[1]);
     istr >> nrrow;
   }
 
