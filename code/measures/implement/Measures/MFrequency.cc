@@ -192,6 +192,12 @@ MDoppler MFrequency::toDoppler(const MVFrequency &rest) {
     return MDoppler( MVDoppler((1-t)/(1+t)), MDoppler::BETA);
 }
 
+MDoppler MFrequency::toDoppler(const MVFrequency &rest) const {
+    Double t = data / rest;
+    t *= t;
+    return MDoppler( MVDoppler((1-t)/(1+t)), MDoppler::BETA);
+}
+
 MDoppler MFrequency::toDoppler(const Measure &in, const MVFrequency &rest) {
   MFrequency::assert(in);
   Double t = ((MVFrequency *)(in.getData()))->getValue()

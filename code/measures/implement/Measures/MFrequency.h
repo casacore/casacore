@@ -233,7 +233,10 @@ public:
     Quantity get(const Unit &un) const;
 
 // Make a Doppler velocity from the frequency and the specified rest frequency
+// <group>
     MDoppler toDoppler(const MVFrequency &rest);
+    MDoppler toDoppler(const MVFrequency &rest) const;
+// </group>
   // Local use only
     static MDoppler toDoppler(const Measure &in, const MVFrequency &rest);
 // Make a frequency from the Doppler velocity and the specified rest frequency
