@@ -4633,3 +4633,4 @@
 14 297 src mv trial/implement/MeasurementSets/NewMSValidIds.cc trial/implement/MeasurementSets/MSValidIds.cc
 14 297 src mv trial/implement/MeasurementSets/NewMSValidIds.h trial/implement/MeasurementSets/MSValidIds.h
 14 297 src mv trial/implement/MeasurementSets/NewMSWeatherIndex.cc trial/implement/MeasurementSets/MSWeatherIndex.cc
+14 297 src mv trial/implement/MeasurementSets/NewMSWeatherIndex.h trial/implement/MeasurementSets/MSWeatherIndex.h
