@@ -486,20 +486,23 @@ template Bool FunctionHolder<Double>::getType<AutoDiff<Double> >(String &,
 template Bool FunctionHolder<Double>::getRecord<AutoDiff<Double> >(String &,
 						Function<AutoDiff<Double> > *&,
 						const RecordInterface &);
-///template class FunctionHolder<Complex>;
-///template Bool FunctionHolder<Complex>::getType(String &,
-///                                              Function<Complex> *&,
-///                                              const RecordInterface &);
-///template Bool FunctionHolder<Complex>::getType(String &,
-///                                              Function<Complex> *&);
-///template Bool FunctionHolder<Complex>::getRecord(String &,
-///                                                Function<Complex> *&,
-///                                                const RecordInterface &);
-///template Bool FunctionHolder<Complex>::getType(String &,
-///                                              Function<AutoDiff<Complex> > *&,
-///                                              const RecordInterface &);
-///template Bool FunctionHolder<Complex>::getType(String &,
-///                                              Function<AutoDiff<Complex> > *&);
-///template Bool FunctionHolder<Complex>::getRecord(String &,
-///                                                Function<AutoDiff<Complex> > *&,
-///                                                const RecordInterface &);
+template class FunctionHolder<DComplex>;
+template Bool FunctionHolder<DComplex>::getType(String &,
+						Function<DComplex> *&,
+						const RecordInterface &);
+template Bool FunctionHolder<DComplex>::getType(String &,
+						Function<DComplex> *&);
+template Bool FunctionHolder<DComplex>::getRecord(String &,
+						  Function<DComplex> *&,
+						  const RecordInterface &);
+template Bool FunctionHolder<DComplex>::
+getType(String &,
+	Function<AutoDiff<DComplex> > *&,
+	const RecordInterface &);
+template Bool FunctionHolder<DComplex>::
+getType(String &,
+	Function<AutoDiff<DComplex> > *&);
+template Bool FunctionHolder<DComplex>::
+getRecord(String &,
+	  Function<AutoDiff<DComplex> > *&,
+	  const RecordInterface &);
