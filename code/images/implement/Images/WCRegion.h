@@ -34,6 +34,7 @@
 //# Forward Declarations
 class LCRegion;
 class CoordinateSystem;
+class RecordInterface;
 class TableRecord;
 class IPosition;
 class String;
@@ -105,6 +106,10 @@ public:
     // Convert correct object from a record.
     static WCRegion* fromRecord (const TableRecord& rec,
                                  const String& tableName);
+
+    // Define the type and class name in the record.
+    void defineRecordFields (RecordInterface& record,
+                             const String& className) const;
 
 protected:
     // Assignment (copy semantics) makes only sense for a derived class.

@@ -31,7 +31,7 @@
 #include <aips/Tables/TableRecord.h>
 #include <trial/Images/WCBox.h>
 #include <trial/Images/WCPolygon.h>
-
+#include <trial/Lattices/RegionType.h>
 
 WCRegion::WCRegion()
 {}
@@ -70,3 +70,12 @@ WCRegion* WCRegion::fromRecord (const TableRecord& rec,
     }
     return 0;
 }
+
+
+void WCRegion::defineRecordFields (RecordInterface& record,
+                                   const String& className) const
+{
+    record.define ("isRegion", Int(RegionType::WC));
+    record.define ("name", className);
+}
+
