@@ -283,9 +283,9 @@ Bool Coordinate::setWorldAxisUnits(const Vector<String> &units,
 	Vector<Double> factor;
 	ok = find_scale_factor(error, factor, units, worldAxisUnits());
 	if (ok) {
-	    ok = setIncrement(increment() * factor);
+	    ok = setIncrement(increment().ac() * factor.ac());
 	    if (ok) {
-		ok = setReferenceValue(referenceValue() * factor);
+		ok = setReferenceValue(referenceValue().ac() * factor.ac());
 	    }
 	} else {
 	    set_error(error);
