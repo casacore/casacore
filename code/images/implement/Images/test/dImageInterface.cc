@@ -31,7 +31,7 @@
 #include <aips/Lattices/IPosition.h>
 #include <aips/Arrays/Vector.h>
 #include <aips/Arrays/ArrayMath.h>
-#include <trial/ImgCrdSys/ImageCoordinate.h>
+#include <trial/Coordinates/CoordinateUtil.h>
 #include <trial/Measures/SkyPosition.h>
 #include <trial/Measures/MeasuredValue.h>
 #include <aips/Mathematics/Constants.h>
@@ -49,30 +49,9 @@ Float sumPixels(const ImageInterface<Float>& image){
   return sumPix;
 }
 
-ImageCoordinate defaultCoords2D(){
-    // Default object position is at RA=0, Dec=0
-  Vector<Double> defaultPosition(2); defaultPosition = 0;
-  // Default Earth position is for the centre of the earth at 0:00 UT on 1/1/96
-  EarthPosition defaultObs(0.0, 1, 1, 1996, 0.0, 0.0, 0.0);
-  // Default Reference Pixel is the first pixel
-  Vector<Double> refPixel(2); refPixel = 1;
-  // Default step size is 1 arc-sec/pixel
-  Vector<Double> defaultStep(2); defaultStep = C::pi/180./60./60.; 
-  ProjectedPosition defaultRAandDec(ProjectedPosition::SIN, 
-                                    SkyPosition::EQUATORIAL,
-                                    SkyPosition::J2000,
-                                    defaultPosition, 
-                                    defaultObs,
-                                    0.0, // Rotation
-                                    refPixel,
-                                    defaultStep); 
-  ImageCoordinate defaultAxes;
-  defaultAxes.addAxis(defaultRAandDec);
-  return defaultAxes;
-}
 
 int main(){
-  PagedImage<Float> demo(IPosition(2, 10), defaultCoords2D(), 
+  PagedImage<Float> demo(IPosition(2, 10), CoordinateUtil::defaultCoords2D(), 
 			 "dImageInterface_tmp.image");
   demo.set(1.0f);
   cout << "Sum of all pixels is: " << sumPixels(demo) << endl;
