@@ -369,11 +369,8 @@ Bool LatticeIterInterface<T>::ok() const
     message += "Navigator Lattice and Data Lattice are different shapes\n";
     flag = False;
   }
-  // Check the Navigator cursor and cached Array are the same shape
-  if (!(itsNavPtr->cursorShape().isEqual(itsCursor.shape()))) {
-    message += "Navigator cursor and Data cursor are different shapes\n"; 
-    flag = False;
-  }
+  // We do not check if the Navigator cursor and itsCursor are the same shape,
+  // because ArrLatticeIter resizes the cursor only when it is being used.
   if (!flag) {
     LogIO ROlogErr(LogOrigin("LatticeIterInterface<T>", "ok()"));
     ROlogErr << LogIO::SEVERE << message << LogIO::POST;
