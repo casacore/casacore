@@ -393,6 +393,12 @@ Vector<String> ImageSummary<T>::list (LogIO& os, const MDoppler::Types velocityT
 
    Vector<Quantum<Double> > rb = imageInfo_p.restoringBeam();
    if (rb.nelements()>0) {
+      rb(0).convert(Unit("deg"));
+      rb(1).convert(Unit("deg"));
+      if (rb(0).getValue()<1.0 || rb(1).getValue()<1.0) {
+         rb(0).convert(Unit("arcsec"));
+         rb(1).convert(Unit("arcsec"));
+      }
       rb(2).convert(Unit("deg"));
       os.output() << "Restoring Beam   : " << rb(0) << ", " << rb(1) << ", " << rb(2) << endl;
    } 
