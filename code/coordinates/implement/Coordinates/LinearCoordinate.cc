@@ -341,7 +341,10 @@ Bool LinearCoordinate::near(const Coordinate* pOther,
                             const Vector<Int>& excludeAxes,
                             Double tol) const
 {
-   if (pOther->type() != this->type()) return False;
+   if (pOther->type() != this->type()) {
+      set_error("Comparison is not with another LinearSystem");
+      return False;
+   }
 
    LinearCoordinate* lCoord = (LinearCoordinate*)pOther;
 
