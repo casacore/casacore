@@ -1,5 +1,5 @@
 //# TableRecord.cc: A hierarchical collection of named fields of various types
-//# Copyright (C) 1995,1996,1997,1998
+//# Copyright (C) 1995,1996,1997,1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -89,6 +89,11 @@ TableRecord::TableRecord (const RecordInterface& other)
                                               (other.get_pointer (i, dtype)));
 	    defineRecord (i, TableRecord (subrec),
 			  subrec.isFixed()  ?  Fixed : Variable);
+	} else if (dtype == TpTable) {
+	    const TableKeyword& tabkey = *(const TableKeyword*)
+                                              (other.get_pointer (i, dtype));
+	    defineTable (i, tabkey.table(),
+			 tabkey.isFixed()  ?  Fixed : Variable);
 	}else{
 	    rep_p->copyDataField (dtype, i, other.get_pointer (i, dtype));
 	}
