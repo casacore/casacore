@@ -88,8 +88,8 @@ const MVAngle &MVAngle::operator()() {
 const MVAngle &MVAngle::operator()(Double norm) {
     Double t = val/C::_2pi - norm;
     if (t < 0 || t >=1) {
-      /// Next statement necessary for Linux gnu; val -= expr; gives incorrect
-      /// result of order 2e-11
+      // Next statement necessary for Linux gnu; val -= expr; gives incorrect
+      // result of order 2e-11
       Double df = floor(t)*C::_2pi;
       val -= df;  /// val - = floor(t)*C::_2pi;
     };
@@ -242,6 +242,7 @@ void MVAngle::print(ostream &oss,
     t1 = 1.0;
     if (inprec > 2) t1 /= 60.;
     if (inprec > 4) t1 /= 60.;
+    // The next (Double)s necessary for wrong choice of pow
     if (inprec > 6) t1 /= pow(Double(10), Double(inprec-6));
     if (i1 == MVAngle::ANGLE || ((intyp & MVAngle::DIG2) == MVAngle::DIG2)) {
 	if (t < 0) {
@@ -253,8 +254,8 @@ void MVAngle::print(ostream &oss,
 	  oss << ' ';
 	};
     };
-    t = abs(floor(t/t1+0.5)*t1);
-    ///    t += t1;
+    // The next 0.1 necessary for some rounding errors
+    t = abs((floor(t/t1+0.5)+0.1)*t1);
     Int h = ifloor(t);
     if ((intyp & MVAngle::NO_D) != MVAngle::NO_D) {
 	if (i1 == MVAngle::ANGLE) {
@@ -308,8 +309,7 @@ void MVAngle::print(ostream &oss,
 	oss << setfill('0') << setw(2) << h;
     };
     if (inprec > 6) {
-      ///     t -= 59.9*t1;
-      t = abs(fmod(t, 1.0) *60.);
+      t = abs((fmod(t, 1.0) - 6.0*t1)*60.);
       // The following was necessary since abs(0) becomes -0 (Solaris at least)
       if (t <= 0.0) t = 0;
       Int oprec = oss.precision();
