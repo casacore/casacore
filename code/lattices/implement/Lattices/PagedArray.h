@@ -28,10 +28,7 @@
 #if !defined(AIPS_PAGEDARRAY_H)
 #define AIPS_PAGEDARRAY_H
 
-#if defined(_AIX)
-#pragma implementation ("PagedArray.cc")
-#endif 
-
+//# Includes
 #include <aips/aips.h>
 #include <trial/Lattices/Lattice.h>
 #include <trial/Lattices/TiledShape.h>
@@ -41,6 +38,7 @@
 #include <aips/Utilities/String.h>
 #include <aips/Logging/LogIO.h>
 
+//# Forward Declarations
 class LatticeNavigator;
 class IPosition;
 class Slicer;
@@ -273,8 +271,7 @@ class ostream;
 // LatticeIterator<Float> iter(diskArray, 
 //                          TiledLineStepper(shape, diskArray.tileShape(), 3));
 // for (iter.reset(); !iter.atEnd(); iter++) {
-//    iter.vectorCursor() = profile;
-//    iter.writeCursor();
+//    iter.woCursor() = profile;
 // }
 // </srcblock>
 //
@@ -291,14 +288,13 @@ class ostream;
 // const ny = latticeShape(1);
 // const npol = latticeShape(2);
 // const nchan = latticeShape(3);
-// IPosition cursorShape = da.niceCursorShape(da.maxPixels());
+// IPosition cursorShape = da.niceCursorShape();
 // cursorShape(2) = 1;
 // LatticeStepper step(latticeShape, cursorShape);
 // step.subSection(IPosition(4,0), IPosition(4,nx-1,ny-1,0,nchan-1));
 // LatticeIterator<Float> iter(da, step);
 // for (iter.reset(); !iter.atEnd(); iter++) {
-//    iter.cursor() *= 10.0f;
-//    iter.writeCursor();
+//    iter.rwCursor() *= 10.0f;
 // }
 // </srcblock>
 // 
@@ -459,6 +455,12 @@ public:
   // constructor assigning by value does not make sense.
   PagedArray<T>& operator= (const PagedArray<T>& other);
   
+  // Make a copy of the object (reference semantics).
+  virtual Lattice<T>* clone() const;
+
+  // Is the PagedArray writable?
+  virtual Bool isWritable() const;
+
   // returns the shape of the PagedArray.
   virtual IPosition shape() const;
 
@@ -560,9 +562,14 @@ public:
   // pixel values and don't care about the order or dimension of the
   // cursor. Usually the tile shape is the best cursor shape, and this can
   // be obtained using:<br>
-  // <src>IPosition shape = pa.niceCursorShape(pa.maxPixels())</src> where
+  // <src>IPosition shape = pa.niceCursorShape()</src> where
   // <src>pa</src> is a PagedArray object.
+  // <br>The default argument is the result of <src>maxPixels()</src>.
+  // <group>
   virtual IPosition niceCursorShape (uInt maxPixels) const;
+  IPosition niceCursorShape() const
+    { return niceCursorShape (maxPixels()); }
+  // </group>
 
   // Set the maximum allowed cache size for all Arrays in this column of the
   // Table.  The actual value used may be smaller. A value of zero means
@@ -634,23 +641,23 @@ private:
   // It reopens the table for write when needed.
   void makeRWArray();
 
-  Table  theTable;
-  String theColumnName;
-  Int    theRowNumber;
-  ArrayColumn<T>       theRWArray;
-  ROArrayColumn<T>     theROArray;
-  ROTiledStManAccessor theAccessor;
-  LogIO  theLog;
+  Table  itsTable;
+  String itsColumnName;
+  Int    itsRowNumber;
+  ArrayColumn<T>       itsRWArray;
+  ROArrayColumn<T>     itsROArray;
+  ROTiledStManAccessor itsAccessor;
+  LogIO  itsLog;
 };
 
 
 template<class T>
 inline ArrayColumn<T>& PagedArray<T>::getRWArray()
 {
-  if (theRWArray.isNull()) {
+  if (itsRWArray.isNull()) {
     makeRWArray();
   }
-  return theRWArray;
+  return itsRWArray;
 }
 
 
