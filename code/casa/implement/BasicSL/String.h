@@ -1,5 +1,5 @@
 //# String.h: String classes
-//# Copyright (C) 1992,1993,1994,1995,1996
+//# Copyright (C) 1992,1993,1994,1995,1996,1997
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -978,7 +978,7 @@ inline String::String(char c)
 inline SubString::SubString(const SubString &x)
   :S(x.S), pos(x.pos), len(x.len) {}
 inline SubString::SubString(String &x, int first, int l)
-  :S(x), pos(first), len(l) {}
+  :S(x), pos(first), len(first+l > x.length()  ?  x.length()-first : l) {}
 
 inline SubString::~SubString() {}
 
@@ -1457,7 +1457,7 @@ inline ostream &operator<<(ostream &s, const String &x)
 
 inline SubString String::_substr(int first, int l)
 {
-  if (first < 0 || (unsigned)(first + l) > length() )
+  if (first < 0  ||  first >= length() )
     return SubString(_nilString, 0, 0) ;
   else 
     return SubString(*this, first, l);
