@@ -158,7 +158,6 @@ void ComponentImager::project(ImageInterface<Float>& image, const ComponentList&
   Vector<Bool> coordIsGood(nDirs);
   const uInt naxis = imageShape.nelements();
   Vector<Double> pixelDir(2);
-  Vector<Double> worldDir(2);
   uInt d;
   IPosition pixelPosition(naxis, 0);
 
@@ -192,12 +191,10 @@ void ComponentImager::project(ImageInterface<Float>& image, const ComponentList&
     while (pixelDir(1) <= trc(longAxis)) {
       pixelDir(0) = blc(latAxis);
       while (pixelDir(0) <= trc(latAxis)) {
- 	if (dirCoord.toWorld(worldDir, pixelDir)) {
-	  dirVals(d) = MVDirection(worldDir(0), worldDir(1));
-	} else {
-	  // These pixels will be masked
- 	  coordIsGood(d) = False;
- 	}
+  	if (!dirCoord.toWorld(dirVals(d), pixelDir)) {
+ 	  // These pixels will be masked
+  	  coordIsGood(d) = False;
+  	}
 	d++;
 	pixelDir(0)++;
       }
