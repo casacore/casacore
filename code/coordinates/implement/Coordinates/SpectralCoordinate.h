@@ -123,16 +123,19 @@ public:
     virtual uInt nWorldAxes() const;
     // </group>
 
-    // Convert a pixel position to a worl position or vice versa. Returns True
-    // if the conversion succeeds, otherwise it returns False and
-    // <src>errorMessage()</src> contains an error message.   The output 
-    // vectors are appropriately resized.
-    // <group>
-    virtual Bool toWorld(Vector<Double> &world, 
-			 const Vector<Double> &pixel) const;
-    virtual Bool toPixel(Vector<Double> &pixel, 
-			 const Vector<Double> &world) const;
-    // </group>
+  // Convert a pixel position to a world position or vice versa. Returns True
+  // if the conversion succeeds, otherwise it returns False and
+  // <src>errorMessage()</src> contains an error message.  The input vectors
+  // must be of length one and the output vectors are resized if they are not
+  // already of length one.
+  // <group>
+  virtual Bool toWorld(Vector<Double> &world, 
+		       const Vector<Double> &pixel) const;
+  virtual Bool toPixel(Vector<Double> &pixel, 
+		       const Vector<Double> &world) const;
+  Bool toWorld(Double& world, const Double& pixel) const;
+  Bool toPixel(Double& pixel, const Double& world) const;
+  // </group>
 
     // Turn a pixel (channel number) into an MFrequency. Usually you will do
     // this for calculating velocities or converting frequencies from one frame
