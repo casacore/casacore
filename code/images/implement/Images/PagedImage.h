@@ -30,8 +30,8 @@
 
 
 //# Includes
-#include <aips/aips.h>
 #include <trial/Images/ImageInterface.h>
+#include <trial/Images/MaskSpecifier.h>
 #include <trial/Lattices/PagedArray.h>
 #include <aips/Tables/Table.h>
 #include <aips/Utilities/DataType.h>
@@ -171,21 +171,22 @@ public:
   // </group>
   
   // Reconstruct an image from a pre-existing file.
-  // Use the default mask if the flag is True.
-  PagedImage (Table& table, Bool useDefaultMask = True, uInt rowNumber = 0);
+  // By default the default mask (if available) is used.
+  PagedImage (Table& table, MaskSpecifier = MaskSpecifier(),
+	      uInt rowNumber = 0);
   
   // Reconstruct an image from a pre-existing file.
-  // Use the default mask if the flag is True.
-  PagedImage (const String& filename, Bool useDefaultMask = True,
+  // By default the default mask (if available) is used.
+  PagedImage (const String& filename, MaskSpecifier = MaskSpecifier(),
 	      uInt rowNumber = 0);
   
   // Reconstruct an image from a pre-existing file with Locking.
-  // Use the default mask if the flag is True.
+  // By default the default mask (if available) is used.
   // <group>
   PagedImage (const String& filename, TableLock::LockOption,
-	      Bool useDefaultMask = True, uInt rowNumber = 0);
+	      MaskSpecifier = MaskSpecifier(), uInt rowNumber = 0);
   PagedImage (const String& filename, const TableLock& lockOptions,
-	      Bool useDefaultMask = True, uInt rowNumber = 0);
+	      MaskSpecifier = MaskSpecifier(), uInt rowNumber = 0);
   // </group>
   
   // Copy constructor (reference semantics).
@@ -330,7 +331,11 @@ public:
   virtual void removeRegion (const String& name,
 			     RegionHandler::GroupType = RegionHandler::Any,
 			     Bool throwIfUnknown = True);
-  
+
+  // Get the names of all regions/masks.
+  virtual Vector<String> regionNames
+                   (RegionHandler::GroupType = RegionHandler::Any) const;
+
   // This is the implementation of the letter for the envelope Iterator
   // class. <note> Not for public use </note>.
   virtual LatticeIterInterface<T>* makeIter
@@ -381,7 +386,7 @@ private:
   void reopenRW();
   void doReopenRW();
   void setTableType();
-  void applyDefaultMask();
+  void applyMaskSpecifier (const MaskSpecifier&);
   void applyMask (const String& maskName);
   void makePagedImage (const TiledShape& mapShape,
 		       const CoordinateSystem& coordinateInfo,
@@ -389,7 +394,7 @@ private:
 		       const TableLock& lockOptions,
 		       uInt rowNumber);
   void makePagedImage (const String& filename, const TableLock& lockOptions,
-		       Bool useDefaultMask, uInt rowNumber);
+		       const MaskSpecifier&, uInt rowNumber);
 
   Table table_p;
   PagedArray<T> map_p;

@@ -184,7 +184,7 @@ PagedImage<T>::PagedImage(const TiledShape& shape,
 }
 
 template <class T> 
-PagedImage<T>::PagedImage(Table& table, Bool useDefaultMask, uInt rowNumber)
+PagedImage<T>::PagedImage(Table& table, MaskSpecifier spec, uInt rowNumber)
 : ImageInterface<T>(),
   table_p(table),
   map_p(table, "map", rowNumber),
@@ -195,7 +195,7 @@ PagedImage<T>::PagedImage(Table& table, Bool useDefaultMask, uInt rowNumber)
   attach_logtable();
   logSink() << LogOrigin("PagedImage<T>", 
 			 "PagedImage(Table& table, "
-			 "Bool useDefaultMask, "
+			 "MaskSpecifier, "
 			 "uInt rowNumber)", WHERE);
   logSink() << LogIO::DEBUGGING
 	    << "Reading an image from row " << rowNumber 
@@ -208,13 +208,11 @@ PagedImage<T>::PagedImage(Table& table, Bool useDefaultMask, uInt rowNumber)
   AlwaysAssert(restoredCoords != 0, AipsError);
   coords_p = *restoredCoords;
   delete restoredCoords;
-  if (useDefaultMask) {
-      applyDefaultMask();
-  }
+  applyMaskSpecifier (spec);
 }
 
 template <class T> 
-PagedImage<T>::PagedImage(const String& filename, Bool useDefaultMask,
+PagedImage<T>::PagedImage(const String& filename, MaskSpecifier spec,
 			  uInt rowNumber)
 : ImageInterface<T>(),
   logTablePtr_p (0),
@@ -222,7 +220,7 @@ PagedImage<T>::PagedImage(const String& filename, Bool useDefaultMask,
 {
   logSink() << LogOrigin("PagedImage<T>", 
 			 "PagedImage(const String& filename, "
-			 "Bool useDefaultMask, "
+			 "MaskSpecifier, "
 			 "uInt rowNumber)", WHERE);
   logSink() << LogIO::DEBUGGING
 	    << "Reading an image from row " << rowNumber 
@@ -239,42 +237,40 @@ PagedImage<T>::PagedImage(const String& filename, Bool useDefaultMask,
   AlwaysAssert(restoredCoords != 0, AipsError);
   coords_p = *restoredCoords;
   delete restoredCoords;
-  if (useDefaultMask) {
-      applyDefaultMask();
-  }
+  applyMaskSpecifier (spec);
 }
 
 template <class T> 
 PagedImage<T>::PagedImage(const String& filename, const TableLock& lockOptions,
-                          Bool useDefaultMask, uInt rowNumber)
+                          MaskSpecifier spec, uInt rowNumber)
 : ImageInterface<T>(),
   logTablePtr_p (0),
   regionPtr_p   (0)
 {
-  makePagedImage (filename, lockOptions, useDefaultMask, rowNumber);
+  makePagedImage (filename, lockOptions, spec, rowNumber);
 }
 
 template <class T> 
 PagedImage<T>::PagedImage(const String& filename,
 			  TableLock::LockOption lockMode,
-                          Bool useDefaultMask, uInt rowNumber)
+                          MaskSpecifier spec, uInt rowNumber)
 : ImageInterface<T>(),
   logTablePtr_p (0),
   regionPtr_p   (0)
 {
-  makePagedImage (filename, TableLock(lockMode), useDefaultMask, rowNumber);
+  makePagedImage (filename, TableLock(lockMode), spec, rowNumber);
 }
 
 template <class T> 
 void PagedImage<T>::makePagedImage(const String& filename,
 				   const TableLock& lockOptions,
-				   Bool useDefaultMask,
+				   const MaskSpecifier& spec,
 				   uInt rowNumber)
 {
   logSink() << LogOrigin("PagedImage<T>", 
 			 "PagedImage(const String& filename, "
 			 "const TableLock& lockOptions, "
-			 "Bool useDefaultMask, "
+			 "MaskSpecifier, "
 			 "uInt rowNumber)", WHERE);
   logSink() << LogIO::DEBUGGING
 	    << "Reading an image from row " << rowNumber 
@@ -291,9 +287,7 @@ void PagedImage<T>::makePagedImage(const String& filename,
   AlwaysAssert(restoredCoords != 0, AipsError);
   coords_p = *restoredCoords;
   delete restoredCoords;
-  if (useDefaultMask) {
-      applyDefaultMask();
-  }
+  applyMaskSpecifier (spec);
 }
 
 template <class T> 
@@ -377,10 +371,6 @@ const LatticeRegion* PagedImage<T>::getRegionPtr() const
 template<class T>
 void PagedImage<T>::setDefaultMask (const String& regionName)
 {
-  // Do nothing if region name does not change.
-  if (regionName == getDefaultMask()) {
-    return;
-  }
   // Reopen for write when needed and possible.
   reopenRW();
   // Use the new region as the image's mask.
@@ -396,9 +386,18 @@ String PagedImage<T>::getDefaultMask() const
 }
 
 template<class T>
-void PagedImage<T>::applyDefaultMask()
+void PagedImage<T>::applyMaskSpecifier (const MaskSpecifier& spec)
 {
-  applyMask (getDefaultMask());
+  // Use default mask if told to do so.
+  // If it does not exist, use no mask.
+  String name = spec.name();
+  if (spec.useDefault()) {
+    name = getDefaultMask();
+    if (! hasRegion (name, RegionHandler::Masks)) {
+      name = "";
+    }
+  }
+  applyMask (name);
 }
 
 template<class T>
@@ -738,6 +737,12 @@ void PagedImage<T>::removeRegion (const String& name,
   reopenRW();
   RegionHandler::removeRegion (table_p, name, type, throwIfUnknown);
 }
+template<class T> 
+Vector<String> PagedImage<T>::regionNames (RegionHandler::GroupType type) const
+{
+  return RegionHandler::regionNames (table_p, type);
+}
+
 template<class T> 
 ImageRegion* PagedImage<T>::getImageRegionPtr (const String& name,
 				  RegionHandler::GroupType type,
