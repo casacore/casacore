@@ -25,56 +25,138 @@
 //#
 //# $Id$
 
-//# Includes
 #include <aips/MeasurementSets/NewMSFreqOffColumns.h>
+#include <aips/MeasurementSets/NewMSFreqOffset.h>
 
-NewMSFreqOffsetColumns::NewMSFreqOffsetColumns(NewMSFreqOffset& msFreqOffset):
-isNull_p(msFreqOffset.isNull())
+RONewMSFreqOffsetColumns::
+RONewMSFreqOffsetColumns(const NewMSFreqOffset& msFreqOffset):
+  isNull_p(True),
+  antenna1_p(),
+  antenna2_p(),
+  feedId_p(),
+  interval_p(),
+  offset_p(),
+  spectralWindowId_p(),
+  time_p(),
+  timeMeas_p(),
+  intervalQuant_p(),
+  offsetQuant_p(),
+  timeQuant_p()
 {
-  if (!isNull()) {
-    antenna1_p.attach(msFreqOffset,NewMSFreqOffset::columnName(NewMSFreqOffset::ANTENNA1));
-    antenna2_p.attach(msFreqOffset,NewMSFreqOffset::columnName(NewMSFreqOffset::ANTENNA2));
-    feedId_p.attach(msFreqOffset,NewMSFreqOffset::columnName(NewMSFreqOffset::FEED_ID));
-    interval_p.attach(msFreqOffset,NewMSFreqOffset::columnName(NewMSFreqOffset::INTERVAL));
-    offset_p.attach(msFreqOffset,NewMSFreqOffset::columnName(NewMSFreqOffset::OFFSET));
-    spectralWindowId_p.attach(msFreqOffset,
-		       NewMSFreqOffset::columnName(NewMSFreqOffset::SPECTRAL_WINDOW_ID));
-    time_p.attach(msFreqOffset,NewMSFreqOffset::columnName(NewMSFreqOffset::TIME));
-    timeMeas_p.attach(msFreqOffset,NewMSFreqOffset::columnName(NewMSFreqOffset::TIME));
-    intervalQuant_p.attach(msFreqOffset,NewMSFreqOffset::columnName(NewMSFreqOffset::INTERVAL));
-    offsetQuant_p.attach(msFreqOffset,NewMSFreqOffset::columnName(NewMSFreqOffset::OFFSET));
-    timeQuant_p.attach(msFreqOffset,NewMSFreqOffset::columnName(NewMSFreqOffset::TIME));
-  }
-}
-NewMSFreqOffsetColumns::~NewMSFreqOffsetColumns() {}
-
-RONewMSFreqOffsetColumns::RONewMSFreqOffsetColumns(const NewMSFreqOffset& msFreqOffset):
-isNull_p(msFreqOffset.isNull())
-{
-  if (!isNull()) {
-    antenna1_p.attach(msFreqOffset,NewMSFreqOffset::columnName(NewMSFreqOffset::ANTENNA1));
-    antenna2_p.attach(msFreqOffset,NewMSFreqOffset::columnName(NewMSFreqOffset::ANTENNA2));
-    feedId_p.attach(msFreqOffset,NewMSFreqOffset::columnName(NewMSFreqOffset::FEED_ID));
-    interval_p.attach(msFreqOffset,NewMSFreqOffset::columnName(NewMSFreqOffset::INTERVAL));
-    offset_p.attach(msFreqOffset,NewMSFreqOffset::columnName(NewMSFreqOffset::OFFSET));
-    spectralWindowId_p.attach(msFreqOffset,
-		       NewMSFreqOffset::columnName(NewMSFreqOffset::SPECTRAL_WINDOW_ID));
-    time_p.attach(msFreqOffset,NewMSFreqOffset::columnName(NewMSFreqOffset::TIME));
-    timeMeas_p.attach(msFreqOffset,NewMSFreqOffset::columnName(NewMSFreqOffset::TIME));
-    intervalQuant_p.attach(msFreqOffset,NewMSFreqOffset::columnName(NewMSFreqOffset::INTERVAL));
-    offsetQuant_p.attach(msFreqOffset,NewMSFreqOffset::columnName(NewMSFreqOffset::OFFSET));
-    timeQuant_p.attach(msFreqOffset,NewMSFreqOffset::columnName(NewMSFreqOffset::TIME));
-  }
+  attach(msFreqOffset);
 }
 
 RONewMSFreqOffsetColumns::~RONewMSFreqOffsetColumns() {}
 
+RONewMSFreqOffsetColumns::RONewMSFreqOffsetColumns():
+  isNull_p(True),
+  antenna1_p(),
+  antenna2_p(),
+  feedId_p(),
+  interval_p(),
+  offset_p(),
+  spectralWindowId_p(),
+  time_p(),
+  timeMeas_p(),
+  intervalQuant_p(),
+  offsetQuant_p(),
+  timeQuant_p()
+{
+}
 
+void RONewMSFreqOffsetColumns::attach(const NewMSFreqOffset& msFreqOffset)
+{
+  isNull_p = msFreqOffset.isNull();
+  if (!isNull()) {
+    antenna1_p.attach(msFreqOffset, NewMSFreqOffset::
+		      columnName(NewMSFreqOffset::ANTENNA1));
+    antenna2_p.attach(msFreqOffset, NewMSFreqOffset::
+		      columnName(NewMSFreqOffset::ANTENNA2));
+    feedId_p.attach(msFreqOffset, NewMSFreqOffset::
+		    columnName(NewMSFreqOffset::FEED_ID));
+    interval_p.attach(msFreqOffset, NewMSFreqOffset::
+		      columnName(NewMSFreqOffset::INTERVAL));
+    offset_p.attach(msFreqOffset, NewMSFreqOffset::
+		    columnName(NewMSFreqOffset::OFFSET));
+    spectralWindowId_p.attach(msFreqOffset, NewMSFreqOffset::
+			      columnName(NewMSFreqOffset::SPECTRAL_WINDOW_ID));
+    time_p.attach(msFreqOffset, NewMSFreqOffset::
+		  columnName(NewMSFreqOffset::TIME));
+    timeMeas_p.attach(msFreqOffset, NewMSFreqOffset::
+		      columnName(NewMSFreqOffset::TIME));
+    intervalQuant_p.attach(msFreqOffset, NewMSFreqOffset::
+			   columnName(NewMSFreqOffset::INTERVAL));
+    offsetQuant_p.attach(msFreqOffset, NewMSFreqOffset::
+			 columnName(NewMSFreqOffset::OFFSET));
+    timeQuant_p.attach(msFreqOffset, NewMSFreqOffset::
+		       columnName(NewMSFreqOffset::TIME));
+  }
+}
 
+NewMSFreqOffsetColumns::NewMSFreqOffsetColumns(NewMSFreqOffset& msFreqOffset):
+  RONewMSFreqOffsetColumns(),
+  antenna1_p(),
+  antenna2_p(),
+  feedId_p(),
+  interval_p(),
+  offset_p(),
+  spectralWindowId_p(),
+  time_p(),
+  timeMeas_p(),
+  intervalQuant_p(),
+  offsetQuant_p(),
+  timeQuant_p()
+{
+  attach(msFreqOffset);
+}
 
+NewMSFreqOffsetColumns::~NewMSFreqOffsetColumns() {}
 
+NewMSFreqOffsetColumns::NewMSFreqOffsetColumns():
+  RONewMSFreqOffsetColumns(),
+  antenna1_p(),
+  antenna2_p(),
+  feedId_p(),
+  interval_p(),
+  offset_p(),
+  spectralWindowId_p(),
+  time_p(),
+  timeMeas_p(),
+  intervalQuant_p(),
+  offsetQuant_p(),
+  timeQuant_p()
+{
+}
 
+void NewMSFreqOffsetColumns::attach(NewMSFreqOffset& msFreqOffset) 
+{
+  RONewMSFreqOffsetColumns::attach(msFreqOffset);
+  if (!isNull()) {
+    antenna1_p.attach(msFreqOffset, NewMSFreqOffset::
+		      columnName(NewMSFreqOffset::ANTENNA1));
+    antenna2_p.attach(msFreqOffset, NewMSFreqOffset::
+		      columnName(NewMSFreqOffset::ANTENNA2));
+    feedId_p.attach(msFreqOffset, NewMSFreqOffset::
+		    columnName(NewMSFreqOffset::FEED_ID));
+    interval_p.attach(msFreqOffset, NewMSFreqOffset::
+		      columnName(NewMSFreqOffset::INTERVAL));
+    offset_p.attach(msFreqOffset, NewMSFreqOffset::
+		    columnName(NewMSFreqOffset::OFFSET));
+    spectralWindowId_p.attach(msFreqOffset, NewMSFreqOffset::
+			      columnName(NewMSFreqOffset::SPECTRAL_WINDOW_ID));
+    time_p.attach(msFreqOffset, NewMSFreqOffset::
+		  columnName(NewMSFreqOffset::TIME));
+    timeMeas_p.attach(msFreqOffset, NewMSFreqOffset::
+		      columnName(NewMSFreqOffset::TIME));
+    intervalQuant_p.attach(msFreqOffset, NewMSFreqOffset::
+			   columnName(NewMSFreqOffset::INTERVAL));
+    offsetQuant_p.attach(msFreqOffset, NewMSFreqOffset::
+			 columnName(NewMSFreqOffset::OFFSET));
+    timeQuant_p.attach(msFreqOffset, NewMSFreqOffset::
+		       columnName(NewMSFreqOffset::TIME));
+  }
+}
 
-
-
-
+// Local Variables: 
+// compile-command: "gmake NewMSFreqOffColumns"
+// End: 
