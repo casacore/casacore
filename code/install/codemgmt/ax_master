@@ -3223,3 +3223,4 @@
 13 067 src rm aips/implement/Measures/MyDummy.cc
 13 069 src rm trial/implement/Images/ImageStatsBase.h
 13 069 src rm trial/implement/Images/ImageStatsBase.cc
+13 069 src rm trial/implement/Images/Image2Statistics.cc
