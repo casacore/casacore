@@ -27,3 +27,17 @@ SimButterworthBandpass now uses the Function interface's "Mode" facility
 to support generic access to non-Parameter data.  In this case, the passband
 orders can be accessed via a Record using this facility.  This allows these
 parameters to be accessible to the functionals tool.
+
+change id: 0143
+ author:   Raymond Plante
+ date:     2003/03/31
+ avers:    1.8
+ area:     Tool
+ package:  trial
+ module:   functionals
+ type:     Code Documentation
+ category: Change
+ summary:  added butterworth functional
+The functionals tool now supports a Butterworth bandpass functional via
+dfs.butterworth().  This is supported on the C++ side via the 
+SimButterworthBandpass class.
