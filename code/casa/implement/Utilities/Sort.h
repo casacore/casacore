@@ -29,18 +29,16 @@
 #if !defined(AIPS_SORT_H)
 #define AIPS_SORT_H
 
-#if defined(_AIX)
-#pragma implementation ("Sort.cc")
-#endif
-
+//# Includes
 #include <aips/aips.h>
 #include <aips/Utilities/ValType.h>
 #include <aips/Containers/Block.h>
 #include <aips/Utilities/Compare.h>
 #include <aips/Exceptions/Excp.h>
 
-//# Forward declarations.
+//# Forward Declarations
 class AipsIO;
+template<class T> class Vector;
 
 // <summary> Define a Sort key </summary>
 // <use visibility=local>
@@ -81,8 +79,13 @@ public:
     // Needed for Cleanup.
     void cleanup();
 
+    // Try if GenSort can be used for this single key.
+    // If it succeeds, it returns the resulting number of elements.
+    // Otherwise it returns 0.
+    uInt tryGenSort (Vector<uInt>& indexVector, uInt nrrec, int opt) const;
+
 protected:
-    // sort order; 1 = ascending, -1 = descending
+    // sort order; -1 = ascending, 1 = descending
     int               order_p;
     // address of first data point
     const void*       data_p;
@@ -333,18 +336,9 @@ public:
 
     // Sort the data array of <src>nrrec</src> records.
     // The result is an array of indices giving the requested order.
-    // If the pointer for the output index array is zero, a new array will
-    // be allocated, otherwise it is assumed that an index array with length
-    // <src>nrrec</src> exists.
-    //
-    // By additionally specifying an input index-array
-    // (with <src>nrrec</src> elements), we instruct the sort to only sort
-    // the data records indexed by that input index-array.
-    // <group>
-    uInt sort (uInt nrrec, uInt*& outputIndices, int options = HeapSort) const;
-    uInt sort (uInt nrrec, const uInt* inputIndices, uInt*& outputIndices,
+    // It returns the number of resulting records.
+    uInt sort (Vector<uInt>& indexVector, uInt nrrec,
 	       int options = HeapSort) const;
-    // </group>
 
 private:
     Block<void*>    keys_p;                       //# keys to sort on
@@ -357,9 +351,6 @@ private:
     void addKey (const void* data, DataType, uInt nr, int options);
     void addKey (const void* data, ObjCompareFunc*, uInt nr, int options);
     // </group>
-
-    // Do the actual sort.
-    uInt doSort (uInt nr, uInt* indices, int options) const;
 
     // Do an insertion sort, optionally skipping duplicates.
     // <group>

@@ -1,5 +1,5 @@
 //# Sort.cc: Sort on one or more keys, ascending and/or descending
-//# Copyright (C) 1993,1994,1995,1996
+//# Copyright (C) 1993,1994,1995,1996,1997
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -26,9 +26,13 @@
 //# $Id$
 
 #include <aips/Utilities/Sort.h>
+#include <aips/Utilities/GenSort.h>
 #include <aips/Utilities/ValType.h>
 #include <aips/Utilities/Copy.h>
+#include <aips/Utilities/String.h>
 #include <aips/Utilities/SortError.h>
+#include <aips/Arrays/Vector.h>
+#include <aips/Arrays/ArrayMath.h>
 #include <aips/aips_exit.h>
 #include <stdlib.h>                 // for rand
 #include <aips/aips_enter.h>
@@ -69,6 +73,37 @@ SortKey& SortKey::operator= (const SortKey& that)
     return *this;
 }
 
+uInt SortKey::tryGenSort (Vector<uInt>& indexVector, uInt nrrec, int opt) const
+{
+    Sort::Order ord = (order_p < 0  ?  Sort::Ascending : Sort::Descending);
+    if (cmpFunc_p == ObjCompare<Double>::compare) {
+	if (incr_p == sizeof(Double)) {
+	    return GenSortIndirect<Double>::sort (indexVector, (Double*)data_p,
+						  nrrec, ord, opt);
+	}
+    } else if (cmpFunc_p == ObjCompare<Float>::compare) {
+	if (incr_p == sizeof(Float)) {
+	    return GenSortIndirect<Float>::sort (indexVector, (Float*)data_p,
+						 nrrec, ord, opt);
+	}
+    } else if (cmpFunc_p == ObjCompare<uInt>::compare) {
+	if (incr_p == sizeof(uInt)) {
+	    return GenSortIndirect<uInt>::sort (indexVector, (uInt*)data_p,
+						nrrec, ord, opt);
+	}
+    } else if (cmpFunc_p == ObjCompare<Int>::compare) {
+	if (incr_p == sizeof(Int)) {
+	    return GenSortIndirect<Int>::sort (indexVector, (Int*)data_p,
+					       nrrec, ord, opt);
+	}
+    } else if (cmpFunc_p == ObjCompare<String>::compare) {
+	if (incr_p == sizeof(String)) {
+	    return GenSortIndirect<String>::sort (indexVector, (String*)data_p,
+						  nrrec, ord, opt);
+	}
+    }
+    return 0;
+}
 
 
 
@@ -141,62 +176,57 @@ void Sort::addKey (const void* dat, ObjCompareFunc* cmp, uInt inc, int ord)
 }
 
 
-uInt Sort::sort (uInt nrrec, uInt*& inx, int opt) const
+uInt Sort::sort (Vector<uInt>& indexVector, uInt nrrec, int opt) const
 {
-    // First build the index array of all records.
-    // Allocate it if not allocated yet.
-    if (inx == 0) {
-	inx = new uInt[nrrec];
-	if (inx == 0) {
-	    throw (AllocError ("Sort-indices",nrrec));
+    //# Try if we can use the faster GenSort when we have one key only.
+    if (nrkey_p == 1) {
+	uInt n = ((SortKey*)(keys_p[0]))->tryGenSort (indexVector, nrrec, opt);
+	if (n > 0) {
+	    return n;
 	}
     }
-    for (uInt i=0; i<nrrec; i++) {
-	inx[i] = i;
-    }
-    return doSort (nrrec, inx, opt);               // do the sort
-}
-
-
-uInt Sort::sort (uInt nrrec, const uInt* inxin, uInt*& inx, int opt) const
-{
-    // First build the index array of all records.
-    // Allocate it if not allocated yet.
-    if (inx == 0) {
-	inx = new uInt[nrrec];
-	if (inx == 0) {
-	    throw (AllocError ("Sort-indices",nrrec));
-	}
-    }
-    objcopy (inx, inxin, nrrec);
-    return doSort (nrrec, inx, opt);               // do the sort
-}
-
-
-uInt Sort::doSort (uInt nrrec, uInt* inx, int opt) const
-{
+    indexVector.resize (nrrec);
+    indgen (indexVector.ac());
+    // Pass the sort function a C-array of indices, because indexing
+    // in there is (much) faster than in a vector.
+    Bool del;
+    uInt* inx = indexVector.getStorage (del);
+    // Choose the sort required.
     int nodup = opt & NoDuplicates;
     int type  = opt - nodup;
+    uInt n;
     switch (type) {
     case QuickSort:
 	if (nodup) {
-	    return quickSortNoDup (nrrec, inx);
+	    n = quickSortNoDup (nrrec, inx);
+	}else{
+	    n = quickSort (nrrec, inx);
 	}
-	return quickSort (nrrec,inx);
+	break;
     case HeapSort:
 	if (nodup) {
-	    return heapSortNoDup (nrrec, inx);
+	    n = heapSortNoDup (nrrec, inx);
+	}else{
+	    n = heapSort (nrrec,inx);
 	}
-	return heapSort (nrrec,inx);
+	break;
     case InsSort:
 	if (nodup) {
-	    return insSortNoDup (nrrec, inx);
+	    n = insSortNoDup (nrrec, inx);
+	}else{
+	    n = insSort (nrrec, inx);
 	}
-	return insSort (nrrec,inx);
+	break;
     default:
 	throw (SortInvOpt());
     }
-    return 0;
+    indexVector.putStorage (inx, del);
+    // If n < nrrec, some duplicates have been deleted.
+    // This means we have to resize the Vector.
+    if (n < nrrec) {
+	indexVector.resize (n, True);
+    }
+    return n;
 }
 
 
