@@ -1,4 +1,4 @@
-#!/usr/local/bin/perl5
+#!/usr/bin/perl
 #
 #   Copyright (C) 1996,1997,1998,1999
 #   Associated Universities, Inc. Washington DC, USA.
@@ -228,6 +228,7 @@ sub make_tex_file{
          $iname =~ s/\\_/_/g;
          undef @funcsid;
          undef @objsid;
+         $psfile = "../$miname--Module.ps.gz";
          if($opt_glish == 1){
             print "$pack.$miname := [=];\n";
             print "$pack.$miname.objs := [=];\n";
@@ -254,6 +255,7 @@ sub make_tex_file{
          $dum = $2;
          $iname =~ s/\\_/_/g;
          $oiname = $iname;
+         $psfile = "../$oiname--Tool.ps.gz";
          if($opt_glish == 1){
             print "$pack.$miname.objs.$oiname := [=];\n";
             print "$pack.$miname.objs.$oiname.m := [=];\n";
@@ -274,6 +276,7 @@ sub make_tex_file{
          $dum = $2;
          $iname =~ s/\\_/_/g;
          $oiname = $iname;
+         $psfile = "../$oiname--Tool.ps.gz";
          if($opt_glish == 1){
             print "$pack.$miname.objs.$oiname := [=];\n";
             print "$pack.$miname.objs.$oiname.m := [=];\n";
@@ -405,12 +408,20 @@ sub make_tex_file{
       s/\\begin{ahobject}\s*{($mtext)}\s*{($mtext)}/
    \\subsection{$1 -- Tool\\label{$miname:$iname}\\index{$1}\\index{$mname.$1}}
    \\subsectionO{$1}{$pack}{$mname}
+     \\begin{htmlonly}
+     \\htmladdnormallink{Postscript file available}{$psfile}
+     \\vspace{.10in}
+     \\end{htmlonly}
    $2\\\\
    /g;
    
       s/\\begin{ahtool}\s*{($mtext)}\s*{($mtext)}/
    \\subsection{$1 -- Tool\\label{$miname:$iname}\\index{$1}\\index{$mname.$1}}
    \\subsectionO{$1}{$pack}{$mname}
+     \\begin{htmlonly}
+     \\htmladdnormallink{Postscript file available}{$psfile}
+     \\vspace{.10in}
+     \\end{htmlonly}
    $2\\\\
    /g;
    
@@ -427,6 +438,10 @@ sub make_tex_file{
    
      s/\\begin{ahmodule}\s*{($mtext)}\s*{($mtext)}/
    \\section{$1 - Module \\label{$iname}\\index{$1}}
+     \\begin{htmlonly}
+     \\htmladdnormallink{Postscript file available}{$psfile}
+     \\vspace{.10in}
+     \\end{htmlonly}
    $2\\\\/g;
    
      s/\\ahinclude{($mtext)}/include \"$1\"/g;
