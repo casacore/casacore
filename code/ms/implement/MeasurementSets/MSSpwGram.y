@@ -43,11 +43,10 @@ using namespace casa;
   Double dval;
 }
 
+%token <str> SPWNAME
+%token <dval> NUMBER
 %token FREQUENCYUNIT
 %token VELOCITYUNIT
-%token <str> SPWNAME
-%token <ival> INDEX
-%token <dval> NUMBER
 %token DASH
 %token EQASS
 %token SQUOTE
@@ -90,28 +89,28 @@ combindexexpr: pureindexexpr {
              | indexexpr COMMA indexexpr {
                  $$ = new TableExprNode ($1 || $3);}
              ;
-pureindexexpr: INDEX {
+pureindexexpr: NUMBER {
                  Vector<Int> spwids(1);
-                 spwids[0] = $1;
+                 spwids[0] = (Int)$1;
                  $$ = MSSpwParse().selectSpwIds(spwids);
                  }
-             | pureindexexpr COMMA INDEX {
+             | pureindexexpr COMMA NUMBER {
                  Vector<Int> spwids(1);
-                 spwids[0] = $3;
+                 spwids[0] = (Int)$3;
 	         $$ = MSSpwParse().selectSpwIds(spwids);
                  }
              ;
-indexexpr: INDEX COLON INDEX {
-	     $$ = MSSpwParse().selectChaninASpw($1, $3);
+indexexpr: NUMBER COLON NUMBER {
+	     $$ = MSSpwParse().selectChaninASpw((Int)$1, (Int)$3);
 	     }
-         | INDEX COLON INDEX DASH INDEX {
-             $$ = MSSpwParse().selectChanRangeinASpw($1, $3, $5);
+         | NUMBER COLON NUMBER DASH NUMBER {
+             $$ = MSSpwParse().selectChanRangeinASpw((Int)$1, (Int)$3, (Int)$5);
 	     }
-         | INDEX COLON NUMBER DASH NUMBER VELOCITYUNIT {
-             $$ = MSSpwParse().selectVelRangeinASpw($1, $3, $5);
+         | NUMBER COLON NUMBER DASH NUMBER VELOCITYUNIT {
+             $$ = MSSpwParse().selectVelRangeinASpw((Int)$1, $3, $5);
 	     }
-         | INDEX COLON NUMBER DASH NUMBER FREQUENCYUNIT {
-             $$ = MSSpwParse().selectFreRangeinASpw($1, $3, $5);
+         | NUMBER COLON NUMBER DASH NUMBER FREQUENCYUNIT {
+             $$ = MSSpwParse().selectFreRangeinASpw((Int)$1, $3, $5);
 	     }
          ;
 nameexpr:  SPWNAME {

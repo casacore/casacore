@@ -54,11 +54,6 @@ FREQUENCYUNIT    [Mm][Hh][Zz]
 VELOCITYUNIT     [Kk][Mm]"/"[Ss]
 SPWNAME    [A-Za-z]([A-Za-z0-9])*
 
-REGEX1    m"/"[^/]+"/"
-REGEX2    m%[^%]+%
-REGEX3    m#[^#]+#
-REGEX     {REGEX1}|{REGEX2}|{REGEX3}
-
   /* rules */
 
 %%
@@ -128,16 +123,10 @@ REGEX     {REGEX1}|{REGEX2}|{REGEX3}
                   return VELOCITYUNIT;
                 }
 
-{INT}     { msSpwGramPosition() += yyleng;
-            lvalp->ival = atoi(MSSpwGramtext);
-            return INDEX;
-	  }
-
 {FNUMBER} { msSpwGramPosition() += yyleng;
             lvalp->dval = atof(MSSpwGramtext);
             return NUMBER;
 	  }
-
 
 {SPWNAME} { msSpwGramPosition() += yyleng;
             lvalp->str = MSSpwGramtext;
