@@ -795,14 +795,13 @@ void ImageStatistics<T>::accumulate (Int& nIter,
    {
       Bool init = True;
       while (!posIt.pastEnd()) {
-         Int orig = posIt.vector().origin()(0);
 
          if (!noInclude_p) {
 
 // Inclusion range
 
             for (i=0; i<n1; i++) {
-               tmp = posIt.vector()(i+orig);
+               tmp = posIt.vector()(i);
                if (tmp >= range_p(0) && tmp <= range_p(1)) {
                   if (init) {
                      sMin = tmp + 1;
@@ -818,7 +817,7 @@ void ImageStatistics<T>::accumulate (Int& nIter,
 // Exclusion range
 
             for (i=0; i<n1; i++) {
-               tmp = posIt.vector()(i+orig);
+               tmp = posIt.vector()(i);
                if (tmp < range_p(0) || tmp > range_p(1)) {
                   if (init) {                
                      sMin = tmp + 1;
@@ -834,13 +833,13 @@ void ImageStatistics<T>::accumulate (Int& nIter,
 // All data accepted
  
             if (init) {
-               sMin = posIt.vector()(orig) + 1;
-               sMax = posIt.vector()(orig) - 1;
+               sMin = posIt.vector()(0) + 1;
+               sMax = posIt.vector()(0) - 1;
                init = False;
             }
             for (i=0; i<n1; i++) accumulate2 (sum, sumsq, sMin, sMax, nPts, tMinPos,
                                               tMaxPos, i, posIt.pos(), 
-                                              posIt.vector()(i+orig));
+                                              posIt.vector()(i));
          }
          posIt.next();
       }

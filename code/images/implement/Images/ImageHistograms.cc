@@ -613,9 +613,8 @@ void ImageHistograms<T>::accumulate (const IPosition& imagePosition,
 
    if (!binAll_p) {
       while (!cursorIt.pastEnd()) {
-         Int orig = cursorIt.vector().origin()(0);
          for (Int i=0; i<n1; i++) {
-            datum = cursorIt.vector()(i+orig);
+            datum = cursorIt.vector()(i);
             if (datum >= clip(0) && datum <= clip(1)) {
                histAccum (counts, datum, clip(0), binWidth, nBins);
                statsAccum (stats, datum);
@@ -626,9 +625,8 @@ void ImageHistograms<T>::accumulate (const IPosition& imagePosition,
    }
    else {
       while (!cursorIt.pastEnd()) {
-         Int orig = cursorIt.vector().origin()(0);
          for (Int i=0; i<n1; i++) {
-            datum = cursorIt.vector()(i+orig);
+            datum = cursorIt.vector()(i);
             histAccum (counts, datum, clip(0), binWidth, nBins);
             statsAccum (stats, datum);
          }
