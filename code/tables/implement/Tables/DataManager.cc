@@ -1,5 +1,5 @@
 //# DataManager.cc: Storage manager for tables
-//# Copyright (C) 1994,1995,1996,1997,1998,1999,2000,2001,2002
+//# Copyright (C) 1994,1995,1996,1997,1998,1999,2000,2001,2002,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -35,6 +35,7 @@
 #include <aips/Tables/TiledCellStMan.h>
 #include <aips/Tables/TiledColumnStMan.h>
 #include <aips/Tables/TiledShapeStMan.h>
+#include <aips/Tables/MemoryStMan.h>
 #include <aips/Tables/CompressFloat.h>
 #include <aips/Tables/CompressComplex.h>
 #include <aips/Tables/ForwardCol.h>
@@ -421,6 +422,7 @@ void DataManager::registerAllCtor ()
     registerCtor ("TiledCellStMan", TiledCellStMan::makeObject);
     registerCtor ("TiledColumnStMan", TiledColumnStMan::makeObject);
     registerCtor ("TiledShapeStMan", TiledShapeStMan::makeObject);
+    registerCtor ("MemoryStMan", MemoryStMan::makeObject);
     CompressFloat::registerClass();
     CompressComplex::registerClass();
     CompressComplexSD::registerClass();
