@@ -1021,7 +1021,9 @@ CoordinateSystem ImageFITSConverter::getCoordinateSystem (RecordInterface& heade
 //
     Int after = -1;
     if (cSys.findCoordinate(Coordinate::SPECTRAL, after) >= 0) {
-       header.removeField("restfreq");
+       ignore.resize(1);
+       ignore(0) = "restfreq";
+       FITSKeywordUtil::removeKeywords(header, ignore);
     }
 //
     return cSys;
