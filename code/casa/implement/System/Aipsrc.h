@@ -305,6 +305,7 @@ public:
   static Double lastRead();
   // </group>
   
+
   // The following functions return the full lists of available data. They could
   // be useful for debugging purposes.
   // <group>
@@ -317,6 +318,25 @@ public:
   static void show(ostream &oStream);
   // Prints all info on cout
   static void show();
+  // The following set is a general set of functions
+  // <group>
+  // Read aipsrc type files (without wildcards), and return the unique names
+  // and values in the Vector arguments. The return value is number of names.
+  static uInt genRestore(Vector<String> &namlst, Vector<String> &vallst,
+		    const String &fileList);
+  // Save the names/values in file
+  static void genSave(Vector<String> &namlst, Vector<String> &vallst,
+		      const String &fnam);
+  // Set (new or overwrite) keyword/value pair
+  static void genSet(Vector<String> &namlst, Vector<String> &vallst,
+		     const String &nam, const String &val);
+  // Remove a keyword from list (False if not in list)
+  static Bool genUnSet(Vector<String> &namlst, Vector<String> &vallst,
+		       const String &nam);
+  // Get the value of a keyword
+  static Bool genGet(String &val, Vector<String> &namlst, Vector<String> &vallst,
+		     const String &nam);
+  // </group>
 
 protected:
   // Actual find function
@@ -368,6 +388,13 @@ private:
   static uInt parse(String &fileList);
   // </group>
   
+  // The following parse function can be used for any list of files. It will
+  // return the list of Patterns and values found, and the last keyword number
+  // of first file in list.
+  static uInt genParse(Block<String> &keywordPattern, 
+		       Block<String> &keywordValue,
+		       uInt &fileEnd, const String &fileList);
+
   // Locate the right keyword in the static maps
   static Bool matchKeyword(uInt &where, const String &keyword,
 			   uInt start);

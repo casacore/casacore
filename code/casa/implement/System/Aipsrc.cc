@@ -346,6 +346,26 @@ uInt Aipsrc::parse(String &fileList) {
   doInit = False;		 // Indicate parse done
   Time x;
   lastParse = x.modifiedJulianDay();	// Save time of parse
+  Int nkw = Aipsrc::genParse(Aipsrc::keywordPattern,
+			     Aipsrc::keywordValue, 
+			     Aipsrc::fileEnd, fileList);
+  const String gs00(".");	// make correct patterns
+  const String gs01("\\.");
+  const String gs10("*");
+  const String gs11(".*");
+  String keyword;
+  for (Int i=0; i<nkw; i++) {
+    keyword = keywordPattern[i];
+    keyword.gsub(gs00, gs01);
+    keyword.gsub(gs10, gs11);
+    keywordPattern[i] = String("^") + keyword + String("$");
+  };
+  return nkw;
+}
+
+uInt Aipsrc::genParse(Block<String> &keywordPattern, 
+		      Block<String> &keywordValue,
+		      uInt &fileEnd, const String &fileList) {
   keywordValue.resize(0, True);  // Clear the old values if any
   keywordPattern.resize(0, True);
   Block<String> keywordFile;
@@ -375,10 +395,6 @@ uInt Aipsrc::parse(String &fileList) {
       const Regex comm("^[ 	]*#");	// Comment line
       const Regex defin(":[ 	]*");	// Line with value
       const Regex lspace("^[ 	]*");	// Leading spaces
-      const String gs00(".");	// make correct patterns
-      const String gs01("\\.");
-      const String gs10("*");
-      const String gs11(".*");
       while (fileAipsrc.getline(&buf[0], sizeof(buf))) {
 	buffer = buf;
 	if (buffer.empty() || buffer.contains(comm))	// Ignore comments
@@ -394,9 +410,7 @@ uInt Aipsrc::parse(String &fileList) {
 	    keywordValue.resize(keywordPattern.nelements());
 	  };
 	  keywordValue[nkw] = value;
-	  keyword.gsub(gs00, gs01);
-	  keyword.gsub(gs10, gs11);
-	  keywordPattern[nkw] = String("^") + keyword + String("$");
+	  keywordPattern[nkw] = keyword;
 	  nkw++;
 	  if (i == 0) fileEnd = nkw;
 	};            
@@ -434,6 +448,89 @@ void Aipsrc::show(ostream &oStream) {
       nam << ":	" <<
       keywordValue[j] << endl;
   };
+}
+
+// General usage routines
+uInt Aipsrc::genRestore(Vector<String> &namlst, Vector<String> &vallst,
+			const String &fileList) {
+  uInt ef;
+  Block<String> nl;
+  Block<String> vl;
+  Int nkw = Aipsrc::genParse(nl, vl, ef, fileList);
+  Block<String> nla;
+  Block<String> vla;
+  nla.resize(0);
+  vla.resize(0);
+  uInt n;
+  for (Int i=nkw-1; i>=0; i--) {	// reverse order to do aipsrc like
+    if (!nl[i].contains('*')) {		// no wild cards
+      n = Aipsrc::registerRC(nl[i], nla);
+      vla.resize(n);
+      vla[n-1] = vl[i];
+    };
+  };
+  namlst = Vector<String>(nla);
+  vallst = Vector<String>(vla);
+  return namlst.nelements();
+}
+
+void Aipsrc::genSave(Vector<String> &namlst, Vector<String> &vallst,
+		     const String &fnam) {
+  static String editTxt = "# Saved at ";
+  String filno(fnam + ".old");
+  RegularFile fil(fnam);
+  RegularFile filo(filno);
+  if (fil.exists()) {
+    fil.move(filno, True);
+  } else if (filo.exists()) {
+    filo.remove();
+  };
+  ofstream ostr(fnam, ios::out);
+  ostr << editTxt << 
+    MVTime(Time()).string(MVTime::YMD | MVTime::LOCAL, 0) << endl;
+  for (Int i=namlst.nelements()-1; i>=0; i--) {
+    ostr << namlst(i) << ":	" << vallst(i) << endl;
+  };
+}
+
+void Aipsrc::genSet(Vector<String> &namlst, Vector<String> &vallst,
+		    const String &nam, const String &val) {
+  Block<String> nl;
+  namlst.toBlock(nl);
+  uInt n = Aipsrc::registerRC(nam, nl);
+  if (n > vallst.nelements()) vallst.resize(n, True);
+  vallst(n-1) = val;
+  namlst = Vector<String>(nl);
+}
+
+Bool Aipsrc::genUnSet(Vector<String> &namlst, Vector<String> &vallst,
+		      const String &nam) {
+  uInt n;
+  uInt N = namlst.nelements();
+  for (n=0; n<N; n++) {
+    if (namlst(n) == nam) break;
+  };
+  n++;
+  if (n>N) return False;
+  for (Int i=n; i<N; i++) {
+    namlst(i-1) = namlst(i);
+    vallst(i-1) = vallst(i);
+  };
+  namlst.resize(N-1, True);
+  vallst.resize(N-1, True);
+  return True;
+}
+
+Bool Aipsrc::genGet(String &val, Vector<String> &namlst, Vector<String> &vallst,
+		    const String &nam) {
+  uInt n;
+  for (n=0; n<namlst.nelements(); n++) {
+    if (namlst(n) == nam) break;
+  };
+  n++;
+  if (n>vallst.nelements()) return False;
+  val = vallst(n-1);
+  return True;
 }
 
 // Static Initializations -- Only really want to read the files once
