@@ -28,8 +28,10 @@
 
 #include <trial/Coordinates/DirectionCoordinate.h>
 #include <aips/Arrays/Vector.h>
+#include <aips/Mathematics/Constants.h>
 #include <aips/Measures/MDirection.h>
 #include <aips/Quanta/Quantum.h>
+#include <aips/Quanta/MVDirection.h>
 #include <aips/Quanta/Unit.h>
 
 // A different file so that apps which don't need measures don't link them all
@@ -38,59 +40,39 @@
 Bool DirectionCoordinate::toWorld(MDirection &world, 
 				  const Vector<Double> &pixel) const
 {
-    static Vector<Double> world_tmp(2);
-    Quantum<Double> longi;
-    Quantum<Double> lati;
-//
+    static MVDirection world_tmp;
     Bool ok = toWorld(world_tmp, pixel);
-//
-    longi.setValue(world_tmp(0));
-    longi.setUnit(units_p(0));
-    lati.setValue(world_tmp(1));
-    lati.setUnit(units_p(1));
-//
-    world = MDirection(longi, lati, type_p);
-//
+    if (ok) {
+       world.set(world_tmp, type_p);
+    }
     return ok;
 }
 
 Bool DirectionCoordinate::toWorld(MVDirection &world, 
 				  const Vector<Double> &pixel) const
 {
-    static MDirection world_tmp;
+    static Vector<Double> world_tmp(2);
     Bool ok = toWorld(world_tmp, pixel);
-    if (ok) world = world_tmp.getValue();
-//
+    if (ok) {
+       world = MVDirection(world_tmp(0)*to_radians_p[0],    // No MVDirection set functions
+                           world_tmp(1)*to_radians_p[1]);
+    }
     return ok;
 }
 
 Bool DirectionCoordinate::toPixel(Vector<Double> &pixel,
                                   const MDirection &world) const
 {
-    static Quantum<Vector<Double> > lonlat;
-    static Vector<Double> lonlatVal(2);
-
-// Convert to current units
-
-    lonlat = world.getAngle();
-//
-    lonlat.convert(units_p(0));
-    lonlatVal(0) = lonlat.getValue()(0);
-//
-    lonlat.convert(units_p(1));
-    lonlatVal(1) = lonlat.getValue()(1);
-
-// Do it
-
-    return toPixel(pixel, lonlatVal);
+    return toPixel(pixel, world.getValue());
 }
 
 
 Bool DirectionCoordinate::toPixel(Vector<Double> &pixel,
                                   const MVDirection &world) const
 {
-   static MDirection world_tmp;
-   world_tmp.set(world, type_p);
+   static Vector<Double> world_tmp(2);
+   world_tmp(0) = world.getLong() * 180.0 / C::pi / to_degrees_p[0]; 
+   world_tmp(1) = world.getLat()  * 180.0 / C::pi / to_degrees_p[1];
    return toPixel(pixel, world_tmp);
 }
 
