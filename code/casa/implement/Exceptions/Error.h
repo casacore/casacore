@@ -209,16 +209,6 @@ public:
 // This class is templated to allow generalalized indexes to be returned
 // with the error message i.e. the class is templated on the index type.
 //
-//  <note role=tip> The 
-//         <linkto class=FreezeCleanup><src>FreezeCleanup</src> </linkto> 
-//         and <linkto class=UnfreezeCleanup><src>UnfreezeCleanup</src>
-//         </linkto> members are used to freeze and 
-//         unfreeze the <linkto class=Cleanup><src>Cleanup</src></linkto>
-//         mechanism. This is necessary because the templated key may or
-//         may not be derived from <src>Cleanup</src>, and thus could be
-//         destructed by the exception mechanism before the exception is
-//         caught.
-//
 // </synopsis>
 //
 // <example>
@@ -234,9 +224,7 @@ public:
 //
 template<class t> class indexError : public IndexError {
 protected:
-  FreezeCleanup f;
   t oIndex;                 // Offending Index
-  UnfreezeCleanup u;
 public:
   //
   // This constructor takes the error message and the index
@@ -320,16 +308,6 @@ public:
 //  </linkto>, the user to catch all duplicate key errors with one catch
 //  statement. 
 //
-//  <note role=tip> The 
-//         <linkto class=FreezeCleanup><src>FreezeCleanup</src> </linkto> 
-//         and <linkto class=UnfreezeCleanup><src>UnfreezeCleanup</src>
-//         </linkto> members are used to freeze and 
-//         unfreeze the <linkto class=Cleanup><src>Cleanup</src></linkto>
-//         mechanism. This is necessary because the templated key may or
-//         may not be derived from <src>Cleanup</src>, and thus could be
-//         destructed by the exception mechanism before the exception is
-//         caught.
-//
 // </synopsis>
 //
 // <example>
@@ -341,9 +319,7 @@ public:
 //
 template<class t> class duplError : public DuplError {
 protected:
-  FreezeCleanup f;
   t oKey;                   // Offending Key
-  UnfreezeCleanup u;
 public:
   //
   // This constructs a "duplError" for the offending key, and an
