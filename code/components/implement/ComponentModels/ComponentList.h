@@ -219,7 +219,7 @@ public:
   // <li> AipsError - If the index is equal to or larger than the number of
   //                  elements in the list or less than zero
   // </thrown>
-  void setLabel(const Vector<Int> & whichComponents,
+  void setLabel(const Vector<Int> & which,
 		const String & newLabel);
 
   // set the flux on the specified components to the specified flux
@@ -227,7 +227,7 @@ public:
   // <li> AipsError - If the index is equal to or larger than the number of
   //                  elements in the list or less than zero
   // </thrown>
-  void setFlux(const Vector<Int> & whichComponents,
+  void setFlux(const Vector<Int> & which,
 	       const Flux<Double> & newFlux);
 
   // convert the flux on the specified components to the specified units
@@ -235,7 +235,7 @@ public:
   // <li> AipsError - If the index is equal to or larger than the number of
   //                  elements in the list or less than zero
   // </thrown>
-  void convertFluxUnit(const Vector<Int> & whichComponents,
+  void convertFluxUnit(const Vector<Int> & which,
 		       const Unit & unit);
   
   // convert the flux on the specified components to the specified 
@@ -244,7 +244,7 @@ public:
   // <li> AipsError - If the index is equal to or larger than the number of
   //                  elements in the list or less than zero
   // </thrown>
-  void convertFluxPol(const Vector<Int> & whichComponents,
+  void convertFluxPol(const Vector<Int> & which,
 		      ComponentType::Polarisation pol);
   
   // set the reference direction on the specified components to the specified
@@ -254,7 +254,7 @@ public:
   // <li> AipsError - If the index is equal to or larger than the number of
   //                  elements in the list or less than zero
   // </thrown>
-  void setRefDirection(const Vector<Int> & whichComponents,
+  void setRefDirection(const Vector<Int> & which,
 		       const MVDirection & newDir);
 
   // set the reference direction frame on the specified components to the
@@ -263,7 +263,7 @@ public:
   // <li> AipsError - If the index is equal to or larger than the number of
   //                  elements in the list or less than zero
   // </thrown>
-  void setRefDirectionFrame(const Vector<Int> & whichComponents,
+  void setRefDirectionFrame(const Vector<Int> & which,
 			    MDirection::Types newFrame);
 
   // Convert the reference direction frame on the specified components to the
@@ -272,13 +272,24 @@ public:
   // <li> AipsError - If the index is equal to or larger than the number of
   //                  elements in the list or less than zero
   // </thrown>
-  void convertRefDirection(const Vector<Int> & whichComponents,
+  void convertRefDirection(const Vector<Int> & which,
 			   MDirection::Types newFrame);
 
-  // change the shape used by the specified components. Shape parameters are
-  // set to there default values. Does not change the shape if the string
-  // cannot be translated into a valid shape.
-  //  void changeShape(const Vector<Int> & which, ComponentType::Shape newShape);
+  // set the shape on the specified components to the specified one.
+  // <thrown>
+  // <li> AipsError - If the index is equal to or larger than the number of
+  //                  elements in the list or less than zero
+  // </thrown>
+  void setShape(const Vector<Int> & which,
+		const ComponentShape & newShape);
+
+  // set the spectrum on the specified components to the specified one.
+  // <thrown>
+  // <li> AipsError - If the index is equal to or larger than the number of
+  //                  elements in the list or less than zero
+  // </thrown>
+  void setSpectrum(const Vector<Int> & which,
+		   const SpectralModel & newSpectrum);
 
   // returns a reference to the specified element in the list.
   // <thrown>
