@@ -163,7 +163,9 @@ main()
 	  cout << "operator*:      " << x*x1 << endl;
 	  cout << "operator*       " << x*x2 << endl;
 	  cout << "operator*:      " << x1*x << endl;
-	  cout << "clone:          " << *(x.clone()) << endl;
+	  MeasValue *xmvu = x.clone();
+	  cout << "clone:          " << *xmvu << endl;
+	  delete xmvu;
 	  cout << "getVector:      " << x.getVector().ac() << endl;
 	  cout << "near:           " << x.near(x2) << endl;
 	  cout << "near:           " << x.near(x2, Quantity(1, "deg")) << endl;
@@ -171,6 +173,12 @@ main()
 	  cout << "!=:             " << (x != x2) << endl;
 	  cout << "==:             " << (x == x2) << endl;
 	  cout << "type:           " << x.type() << endl;
+	  cout << "Original:       " << x << endl;
+	  Double xa;
+	  x.adjust(xa);
+	  cout << "adjust:         " << x << endl;
+	  x.readjust(xa);
+	  cout << "readjust:       " << x << endl;
 
 	  cout << "All MVuvw functions: ok" << endl;
 	  cout << "----------------------------" << endl;
@@ -190,13 +198,23 @@ main()
 	  cout << mb << endl;
 	  Muvw::assert(mb);
 	  cout << "assert:         " << "ok" << endl;
-	  cout << "clone:          " << *(mb.clone()) << endl;
+	  Measure *xmu = mb.clone();
+	  cout << "clone:          " << *xmu << endl;
+	  delete xmu;
 	  cout << "get:            " << mb.get("cm") << endl;
 	  cout << "getAngle:       " << mb.getAngle("deg") << endl;
 	  cout << "getDefaultType: " << mb.getDefaultType() << endl;
 	  cout << "getRefString:   " << mb.getRefString() << endl;
 	  cout << "myType:         " << mb.myType() << endl;
+	  cout << "Original:       " << mb << endl;
 	  cout << "type:           " << mb.type() << endl;
+	  Muvw cpc(mb);
+	  cout << "Ctor copy:      " << cpc << endl;
+	  Muvw cpas;
+	  cpas = mb;
+	  cout << "Assign:         " << cpas << endl;
+	  cout << "tellMe:         " << mb.tellMe() << endl;
+	  cout << "showMe:         " << mb.showMe() << endl;
 
 	  cout << "All Muvw functions: ok" << endl;
 	  cout << "---------------------------" << endl;
@@ -205,6 +223,27 @@ main()
     } catch (AipsError x) {
 	cout << x.getMesg() << endl;
     } end_try;
+
+    try {
+      cout << "Test Muvw exception" << endl;
+      cout << "---------------------------" << endl;
+      MEpoch x;
+      Muvw::assert(x);
+
+    } catch (AipsError x) {
+	cout << x.getMesg() << endl;
+    } end_try;
+
+    try {
+      cout << "Test MVuvw exception" << endl;
+      cout << "---------------------------" << endl;
+      MVEpoch x;
+      MVuvw::assert(x);
+
+    } catch (AipsError x) {
+	cout << x.getMesg() << endl;
+    } end_try;
+    cout << "---------------------------" << endl;
 
     exit(0);
 }

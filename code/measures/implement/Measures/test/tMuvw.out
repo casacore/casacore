@@ -10,9 +10,9 @@ Test uvw conversion ...
 --------------------------------------
 Converted uvw: [100, 10, 0]
  to Reference for an uvw with Type: J2000
- as uvw: [-100.459, -2.80956, -0.0181135]
-Back      uvw: [-100.459, -2.80956, -0.0181135]
- as uvw: [100, 10, -6.93889e-18]
+ as uvw: [-51.3123, 86.4121, -0.00582302]
+Back      uvw: [-51.3123, 86.4121, -0.00582302]
+ as uvw: [100, 10, 1.75356e-16]
 --------------------------------------
 Make uvw from Baseline
 Baseline: [100, 10, 1][5.71059, 0.570096] deg
@@ -62,6 +62,9 @@ nearAbs:        0
 !=:             1
 ==:             0
 type:           3
+Original:       [30, 40, 0]
+adjust:         [0.6, 0.8, 0]
+readjust:       [30, 40, 0]
 All MVuvw functions: ok
 ----------------------------
 Exercise all Muvw function
@@ -75,6 +78,18 @@ getAngle:       [5.71059, 0] deg
 getDefaultType: ITRF
 getRefString:   HADEC
 myType:         4
+Original:       uvw: [100, 10, 0]
 type:           4
+Ctor copy:      uvw: [100, 10, 0]
+Assign:         uvw: [100, 10, 0]
+tellMe:         uvw
+showMe:         uvw
 All Muvw functions: ok
+---------------------------
+Test Muvw exception
+---------------------------
+Illegal Measure type argument: uvw
+Test MVuvw exception
+---------------------------
+Illegal MeasValue type argument: MVuvw
 ---------------------------
