@@ -41,14 +41,14 @@
 
 SDSourceHandler::SDSourceHandler() 
     : index_p(0), msSource_p(0), msSourceCols_p(0), sourceId_p(-1),
-      nextSourceId_p(0), restfreq_p(-1), rvsys_p(-1), vframe_p(-1),
+      nextSourceId_p(0), restfreq_p(-1), vframe_p(-1),
       hasTransition_p(False), hasRestFreq_p(False), hasSysVel_p(False)
 {;}
 
 SDSourceHandler::SDSourceHandler(MeasurementSet &ms, Vector<Bool> &handledCols,
 				   const Record &row) 
     : index_p(0), msSource_p(0), msSourceCols_p(0), sourceId_p(-1),
-      nextSourceId_p(0), restfreq_p(-1), rvsys_p(-1), vframe_p(-1),
+      nextSourceId_p(0), restfreq_p(-1), vframe_p(-1),
       hasTransition_p(False), hasRestFreq_p(False), hasSysVel_p(False)
 {
     initAll(ms, handledCols, row);
@@ -56,7 +56,7 @@ SDSourceHandler::SDSourceHandler(MeasurementSet &ms, Vector<Bool> &handledCols,
 
 SDSourceHandler::SDSourceHandler(const SDSourceHandler &other) 
     : index_p(0), msSource_p(0), msSourceCols_p(0), sourceId_p(-1),
-      nextSourceId_p(0), restfreq_p(-1), rvsys_p(-1), vframe_p(-1),
+      nextSourceId_p(0), restfreq_p(-1), vframe_p(-1),
       hasTransition_p(False), hasRestFreq_p(False), hasSysVel_p(False)
 {
     *this = other;
@@ -84,7 +84,6 @@ SDSourceHandler &SDSourceHandler::operator=(const SDSourceHandler &other)
 	
 	// this should point to the same field as that in other
 	restfreq_p = other.restfreq_p;
-	rvsys_p = other.rvsys_p;
 	vframe_p = other.vframe_p;
 	transiti_p = other.transiti_p;
 	object_p = other.object_p;
@@ -148,11 +147,8 @@ void SDSourceHandler::fill(const Record &row, Int spectralWindowId)
 	Double restfreq = 0.0;
 	if (restfreq_p >= 0) restfreq = row.asDouble(restfreq_p);
 	Double sysvel = 0.0;
-	if (rvsys_p >= 0) {
-	    sysvel = row.asDouble(rvsys_p);
-	    if (vframe_p >= 0) {
-		sysvel -= row.asDouble(vframe_p);
-	    }
+	if (vframe_p >= 0) {
+	    sysvel = row.asDouble(vframe_p);
 	}
 	if (foundRows.nelements() > 0) {
 	    // we have at least 1 candidate, look for a matching spectral window ID
@@ -309,7 +305,7 @@ void SDSourceHandler::clearRow()
     molecule_p.detach();
     object_p.detach();
     obsmode_p.detach();
-    restfreq_p = rvsys_p = vframe_p = -1;
+    restfreq_p = vframe_p = -1;
     hasTransition_p = hasRestFreq_p = hasSysVel_p = False;
     calibrationGroupField_p.detach();
     pulsarIdField_p.detach();
@@ -334,7 +330,7 @@ void SDSourceHandler::initAll(MeasurementSet &ms, Vector<Bool> &handledCols,
 	MSSource::addColumnToDesc(td,MSSource::REST_FREQUENCY);
 	hasRestFreq_p = True;
     }
-    if (rvsys_p >= 0) {
+    if (vframe_p >= 0) {
 	MSSource::addColumnToDesc(td,MSSource::SYSVEL);
 	hasSysVel_p = True;
     }
@@ -344,7 +340,7 @@ void SDSourceHandler::initAll(MeasurementSet &ms, Vector<Bool> &handledCols,
     }
     // and add these columns in, if there any
     for (uInt i=0;i<td.ncolumn();i++) {
-	msSource_p->addColumn(td[i]);
+	msSource_p->addColumn(td[i],"StandardStMan", False);
     }
 
     msSourceCols_p = new MSSourceColumns(*msSource_p);
@@ -371,13 +367,10 @@ void SDSourceHandler::initRow(Vector<Bool> &handledCols, const Record &row)
     restfreq_p = row.fieldNumber("RESTFREQ");
     if (restfreq_p >= 0) handledCols(restfreq_p) = True;
 
-    rvsys_p = row.fieldNumber("RVSYS");
-    if (rvsys_p >= 0) {
-	handledCols(rvsys_p) = True;
-	// VFRAME is only useful if RVSYS also exists
-	vframe_p = row.fieldNumber("VFRAME");
-	if (vframe_p >= 0) handledCols(vframe_p) = True;
-    }
+    // VFRAME == SYSVEL
+    vframe_p = row.fieldNumber("VFRAME");
+    if (vframe_p >= 0) handledCols(vframe_p) = True;
+    
     Int tmp = row.fieldNumber("TRANSITI");
     if (tmp >= 0) {
 	transiti_p.attachToRecord(row, tmp);
