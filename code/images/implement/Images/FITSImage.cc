@@ -39,6 +39,7 @@
 #include <trial/Lattices/FITSMask.h>
 #include <trial/Tables/TiledFileAccess.h>
 #include <trial/Coordinates/CoordinateSystem.h>
+#include <trial/Coordinates/CoordinateUtil.h>
 #include <aips/Arrays/Array.h>
 #include <aips/Arrays/IPosition.h>
 #include <aips/Arrays/Slicer.h>
@@ -540,6 +541,13 @@ void FITSImage::getImageAttributes (CoordinateSystem& cSys,
 // Get recordnumber 
    
     recordnumber = infile.recno();
+
+// Fix any DirectionCoordinate for cylindrical coordinates mess
+
+    String errorMessage;
+    if (!CoordinateUtil::cylindricalFix (cSys, errorMessage, shape)) {
+       throw (AipsError(errorMessage));
+    }
 }
 
 
