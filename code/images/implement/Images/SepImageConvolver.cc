@@ -37,6 +37,7 @@
 #include <aips/Logging/LogIO.h>
 #include <aips/Mathematics/Convolver.h>
 #include <aips/Quanta/UnitMap.h>
+#include <aips/Quanta/Quantum.h>
 #include <aips/Utilities/String.h>
 
 #include <trial/Coordinates/CoordinateSystem.h>
@@ -136,6 +137,8 @@ void SepImageConvolver<T>::setKernel(uInt axis, VectorKernel::KernelTypes kernel
    String sunit = width.getFullUnit().getName();
    if (sunit==String("pix")) {
       setKernel (axis, kernelType, width.getValue(), autoScale, useImageShapeExactly, scale);
+      itsOs.output() << "Axis " << axis+1<< " : setting width "  << width << endl;
+      itsOs << LogIO::NORMAL;
       return;
    }
 //
@@ -154,6 +157,10 @@ void SepImageConvolver<T>::setKernel(uInt axis, VectorKernel::KernelTypes kernel
             << unit.getName() << LogIO::EXCEPTION;
    }
    Double width2 = abs(width.getValue(unit)/inc);
+//
+   itsOs.output() << "Axis " << axis+1<< " : setting width "
+         << width << " = " << width2 << " pixels" << endl;
+   itsOs <<  LogIO::NORMAL;
    setKernel(axis, kernelType, width2, autoScale, useImageShapeExactly, scale);
 }
 
