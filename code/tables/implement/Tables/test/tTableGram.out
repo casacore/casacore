@@ -131,7 +131,7 @@ select ab,ac from tTableGram_tmp.link/tTable_2.data_v0 where ab < mean([3:6,ab])
  2 3
  3 4
  4 5
-select ab,ac from tTableGram_tmp.link/tTable_2.data_v0 where ab IN [select ac from tab where ab>4]
+select ab,ac from tTableGram_tmp.link/tTable_2.data_v0 where ab IN [select ac from tTableGram_tmp.link/tTable_2.data_v0 where ab>4]
     has been executed
     4 rows selected
 2 selected columns:  ab ac
@@ -150,7 +150,7 @@ select ab,ac from tTableGram_tmp.link/tTable_2.data_v0 where ab IN [:=2,4=:<6,7<
  5 6
  8 9
  9 10
-select ab,ac from tTableGram_tmp.link/tTable_2.data_v0 where ab IN [select from tab where ab>4 giving [ac=:=ac+0.5]]
+select ab,ac from tTableGram_tmp.link/tTable_2.data_v0 where ab IN [select from tTableGram_tmp.link/tTable_2.data_v0 where ab>4 giving [ac=:=ac+0.5]]
     has been executed
     4 rows selected
 2 selected columns:  ab ac
