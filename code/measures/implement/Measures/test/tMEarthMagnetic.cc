@@ -47,6 +47,10 @@ Int main() {
     try {
 	cout << "Test Earth Magnetic field" << endl;
 	cout << "--------------------------------------" << endl;
+
+	cout << endl << "MEarthMagnetic state transition matrix:\n" << endl;
+	cout << MCEarthMagnetic::showState() << endl;
+
 	MEarthMagnetic vl;
 	MVTime dat(1998,5,18);
 	MPosition obs(MVPosition(Quantity(3828488.86, "m").getBaseValue(),
@@ -116,9 +120,9 @@ Int main() {
 	cout << "--------------------------------------" << endl;
 	cout << "Testing all conversions forward/backward" << endl;
 
+	Bool isok = True;
 	Vector<Double> tvec(3);
 	tvec = 0.0;
-	Int ecnt = 0;
 	for (uInt i=MEarthMagnetic::ITRF; i<MEarthMagnetic::N_Types; i++) {
 	  for (uInt j=MEarthMagnetic::ITRF; j<MEarthMagnetic::N_Types; j++) {
 	    MEarthMagnetic::Ref rin(i, frame);
@@ -133,14 +137,16 @@ Int main() {
 		MEarthMagnetic::showType(j) << ": " <<
 		mb0.getValue().getValue().ac() -
 		backw(forw(mb0)).getValue().getValue().ac() << endl;
-	      ecnt++;
+	      isok = False;
 	    };
 	  };
 	};
-	if (ecnt == 0) {
-	  cout << "All forward/backward conversions: ok" << endl;
+	if (isok) {
+	  cout << "All forward/backward Magnetic conversions: ok" << endl;
+	} else {
+	  cout << "Some forward/backward Magnetic conversions wrong" << endl;
 	};
-
+ 
 	cout << "--------------------------------------" << endl;
 	cout << "Exercise all MVEarthMagnetic function" << endl;
 	MVEarthMagnetic mvb0(res);
