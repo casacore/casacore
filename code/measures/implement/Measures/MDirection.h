@@ -112,6 +112,16 @@ template <class M, class F, class MC> class MeasConvert;
 // Another problem can arise if the source has proper motion and/or radial
 // velocities. These should be taken into account. An
 // MCatalog class will maybe take care of that.
+// <p>
+// To aid in formatting of the angles without having to check all difference
+// referencetypes, the following global types are provided:
+// <ul>
+//  <li> GRADEC for types that are probably expressed in HM,DM
+//  <li> GHADEC for types that are probably expressed in +-HM,DM
+//  <li> GAZEL for types that are probably expressed in +-deg,deg
+//  <li> GLONGLAT for types that are probably expressed in deg,deg
+// </ul>
+// they can be obtained with the globalType() method. 
 // </synopsis>
 //
 // <example>
@@ -154,7 +164,11 @@ public:
 		N_Types,
 		DEFAULT=J2000,
 	        AZELNE=AZEL};
-
+  // Global types
+  enum GlobalTypes {GRADEC,
+		    GHADEC,
+		    GAZEL,
+		    GLONGLAT};
 //# Typedefs
 // MeasRef use
     typedef class MeasRef<MDirection> Ref;
@@ -195,13 +209,17 @@ public:
 //# Operators
 
 //# General Member Functions
-// Tell me your type
+// Tell me your type ('Direction')
 // <group>
     virtual const String &tellMe() const;
     static const String &showMe();
-    virtual uInt type() const;
-    static void assert(const Measure &in);
 // </group>
+// Tell me your reference type (as Register())
+    virtual uInt type() const;
+// Assert you are a direction
+    static void assert(const Measure &in);
+// Tell me your global type (like GRADEC)
+  MDirection::GlobalTypes globalType() const;
 // Translate reference code
     static const String &showType(uInt tp);
 // Translate string to reference code
