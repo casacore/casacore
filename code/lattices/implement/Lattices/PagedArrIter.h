@@ -243,15 +243,26 @@ private:
   void setup_tile_cache();
   // Synchronise the storage in the "degenerate axis Array" with theCurPtr
   void relinkArray();
+  // Do the actual read of the data.
+  //# Casting the const away is harmless.
+  // <group>
+  void getData();
+  void getData() const
+    { ((RO_PagedArrIter<T>*)this)->getData(); }
+  // </group>
 
   // reference to the Lattice
   PagedArray<T> theData;
   // Polymorphic pointer to a subpart of the Lattice
-  Array<T> * theCurPtr;
+  Array<T>*     theCurPtr;
   // An Array which references the same data as the theCurPtr, but has all
   // the degenerate axes. This is an optimisation to avoid the overhead of
   // having to add the degenerate axes for each iteration.
-  Array<T> theCursor;
+  Array<T>      theCursor;
+  // Have the data been read after a cursor update? (False=not read)
+  Bool          theReadFlag;
+  // The axes forming the cursor.
+  IPosition     theCursorAxes;
   // pointer to the method of Lattice transversal
   CountedPtr<LatticeNavigator> theNavPtr;
 };
@@ -464,11 +475,15 @@ private:
   // reference to the Lattice
   PagedArray<T> theData;
   // Polymorphic pointer to a subpart of the Lattice
-  Array<T> * theCurPtr;
+  Array<T>*     theCurPtr;
   // An Array which references the same data as the theCurPtr, but has all
   // the degenerate axes. This is an optimisation to avoid the overhead of
   // having to add the degenerate axes for each iteration.
-  Array<T> theCursor;
+  Array<T>      theCursor;
+  // Have the data been read after a cursor update? (False=not read)
+  Bool          theReadFlag;
+  // The axes forming the cursor.
+  IPosition     theCursorAxes;
   // pointer to the method of Lattice transversal
   CountedPtr<LatticeNavigator> theNavPtr;
 };
