@@ -241,7 +241,7 @@ CFITSIOLIB  := -lcfitsio
 # RPFITS (required by ATNF).
 RPFITSROOT := /usr/local
 RPFITSDEFS :=
-RPFITSINCD  =
+RPFITSINCD  = $(RPFITSROOT)/include
 RPFITSLIBD  = $(RPFITSROOT)/lib
 RPFITSLIB  := -lrpfits
 
