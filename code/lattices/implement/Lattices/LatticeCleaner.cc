@@ -184,7 +184,8 @@ Bool LatticeCleaner<T>::clean(Lattice<T>& model,
 
   // Find the peaks of the convolved Psfs
   Vector<T> maxPsfConvScales(itsNscales);
-  for (Int scale=0;scale<itsNscales;scale++) {
+  Int scale;
+  for (scale=0;scale<itsNscales;scale++) {
     IPosition positionPeakPsfConvScales(model.shape().nelements(), 0);
     findMaxAbsLattice(*itsPsfConvScales[scale], maxPsfConvScales(scale),
 		      positionPeakPsfConvScales);
@@ -219,7 +220,8 @@ Bool LatticeCleaner<T>::clean(Lattice<T>& model,
   IPosition positionOptimum(model.shape().nelements(), 0);
   os << "Starting iteration"<< LogIO::POST;
 
-  for (Int iteration=0; iteration < itsNiter; iteration++) {
+  Int iteration;
+  for (iteration=0; iteration < itsNiter; iteration++) {
 
     // Find the peak residual
     strengthOptimum = 0.0;
@@ -414,7 +416,8 @@ Bool LatticeCleaner<T>::setscales(const Vector<Float>& scaleSizes)
 
   PtrBlock<TempLattice<Complex> *> scaleXfr(itsNscales);
 
-  for (Int scale=0; scale<itsNscales;scale++) {
+  Int scale;
+  for (scale=0; scale<itsNscales;scale++) {
     os << "Calculating image for scale " << scale+1 << LogIO::POST;
     itsScales[scale] = new TempLattice<T>(itsDirty->shape(),
 					  itsMemoryMB);
@@ -525,7 +528,8 @@ template<class T>
 Bool LatticeCleaner<T>::destroyScales()
 {
   if(!itsScalesValid) return True;
-  for(uInt scale=0; scale<itsScales.nelements();scale++) {
+  uInt scale;
+  for(scale=0; scale<itsScales.nelements();scale++) {
     if(itsScales[scale]) delete itsScales[scale];
     itsScales[scale]=0;
   }
