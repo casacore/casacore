@@ -60,15 +60,16 @@
 #include <iostream.h>
 #include <strstream.h>
 
-template <class T> PagedImage<T>::
-PagedImage()
+template <class T> 
+PagedImage<T>::PagedImage()
 {
   table_p.makePermanent();           // avoid double deletion by Cleanup
 }
 
-template <class T> PagedImage<T>::
-PagedImage(const TiledShape & shape, const CoordinateSystem & coordinateInfo, 
-	   Table & table, uInt rowNumber)
+template <class T> 
+PagedImage<T>::PagedImage(const TiledShape & shape, 
+                          const CoordinateSystem & coordinateInfo, 
+                          Table & table, uInt rowNumber)
 : ImageInterface<T>(),
   table_p(table),
   map_p(shape, table, "map", rowNumber)
@@ -90,10 +91,12 @@ PagedImage(const TiledShape & shape, const CoordinateSystem & coordinateInfo,
   setTableType();
 };
 
-template <class T> PagedImage<T>::
-PagedImage(const TiledShape & shape, const CoordinateSystem & coordinateInfo, 
-	   const String & filename, const TableLock& lockOptions,
-	   uInt rowNumber)
+template <class T> 
+PagedImage<T>::PagedImage(const TiledShape & shape, 
+                          const CoordinateSystem & coordinateInfo, 
+                          const String & filename, 
+                          const TableLock& lockOptions,
+                          uInt rowNumber)
 : ImageInterface<T>()
 {
   logSink() << LogOrigin("PagedImage<T>", 
@@ -117,9 +120,11 @@ PagedImage(const TiledShape & shape, const CoordinateSystem & coordinateInfo,
   setTableType();
 };
 
-template <class T> PagedImage<T>::
-PagedImage(const TiledShape & shape, const CoordinateSystem & coordinateInfo, 
-	   const String & filename, uInt rowNumber)
+template <class T> 
+PagedImage<T>::PagedImage(const TiledShape & shape, 
+                          const CoordinateSystem & coordinateInfo, 
+                          const String & filename, 
+                          uInt rowNumber)
 : ImageInterface<T>()
 {
   logSink() << LogOrigin("PagedImage<T>", 
@@ -142,14 +147,13 @@ PagedImage(const TiledShape & shape, const CoordinateSystem & coordinateInfo,
   setTableType();
 };
 
-template <class T> PagedImage<T>::
-PagedImage(Table & table, uInt rowNumber)
+template <class T> 
+PagedImage<T>::PagedImage(Table & table, uInt rowNumber)
 : ImageInterface<T>(),
   table_p(table),
   map_p(table, "map", rowNumber)
 {
   table_p.makePermanent();           // avoid double deletion by Cleanup
-  attach_logtable();
   logSink() << LogOrigin("PagedImage<T>", 
 			 "PagedImage(Table & table, "
 			 "uInt rowNumber)", WHERE);
@@ -166,8 +170,8 @@ PagedImage(Table & table, uInt rowNumber)
   delete restoredCoords;
 };
 
-template <class T> PagedImage<T>::
-PagedImage(const String & filename, uInt rowNumber)
+template <class T> 
+PagedImage<T>::PagedImage(const String & filename, uInt rowNumber)
 : ImageInterface<T>()
 {
   logSink() << LogOrigin("PagedImage<T>", 
@@ -179,7 +183,6 @@ PagedImage(const String & filename, uInt rowNumber)
 	    << " '" << filename << "'" << endl;
   table_p = Table(filename);
   table_p.makePermanent();           // avoid double deletion by Cleanup
-  attach_logtable();
   map_p = PagedArray<T>(table_p, "map", rowNumber);
   logSink() << LogIO::DEBUGGING << "The image shape is " << map_p.shape() << endl;
   logSink() << LogIO::DEBUGGING;
@@ -190,9 +193,9 @@ PagedImage(const String & filename, uInt rowNumber)
   delete restoredCoords;
 };
 
-template <class T> PagedImage<T>::
-PagedImage(const String & filename, const TableLock& lockOptions,
-	   uInt rowNumber)
+template <class T> 
+PagedImage<T>::PagedImage(const String & filename, const TableLock& lockOptions,
+                          uInt rowNumber)
 : ImageInterface<T>()
 {
   logSink() << LogOrigin("PagedImage<T>", 
@@ -205,7 +208,6 @@ PagedImage(const String & filename, const TableLock& lockOptions,
 	    << " '" << filename << "'" << endl;
   table_p = Table(filename, lockOptions);
   table_p.makePermanent();           // avoid double deletion by Cleanup
-  attach_logtable();
   map_p = PagedArray<T>(table_p, "map", rowNumber);
   logSink() << LogIO::DEBUGGING << "The image shape is " << map_p.shape() << endl;
   logSink() << LogIO::DEBUGGING;
@@ -216,8 +218,8 @@ PagedImage(const String & filename, const TableLock& lockOptions,
   delete restoredCoords;
 };
 
-template <class T> PagedImage<T>::
-PagedImage(const PagedImage<T> & other)
+template <class T> 
+PagedImage<T>::PagedImage(const PagedImage<T> & other)
 : ImageInterface<T>(other),
   table_p(other.table_p), 
   map_p(other.map_p)
@@ -225,8 +227,8 @@ PagedImage(const PagedImage<T> & other)
   table_p.makePermanent();           // avoid double deletion by Cleanup
 }
 
-template <class T> PagedImage<T>::
-~PagedImage()
+template <class T> 
+PagedImage<T>::~PagedImage()
 {
   // Detach the LogIO from the log table in case the pixel table is going to
   // be destroyed.
@@ -234,8 +236,8 @@ template <class T> PagedImage<T>::
   log_p = globalOnly;
 };
 
-template <class T> PagedImage<T> & PagedImage<T>::
-operator=(const PagedImage<T> & other)
+template <class T> 
+PagedImage<T> & PagedImage<T>::operator=(const PagedImage<T> & other)
 {
   if (this != &other) {
     ImageInterface<T>::operator= (other);
@@ -246,32 +248,31 @@ operator=(const PagedImage<T> & other)
   return *this;
 };
 
-template <class T> Lattice<T>* PagedImage<T>::
-clone() const
+template <class T> 
+Lattice<T>* PagedImage<T>::clone() const
 {
   return new PagedImage<T> (*this);
 }
-template <class T> ImageInterface<T>* PagedImage<T>::
-cloneII() const
+template <class T> 
+ImageInterface<T>* PagedImage<T>::cloneII() const
 {
   return new PagedImage<T> (*this);
 }
 
-template <class T> Bool PagedImage<T>::
-isWritable() const
+template <class T> 
+Bool PagedImage<T>::isWritable() const
 {
   return map_p.isWritable();
 }
 
-template <class T> void PagedImage<T>::
-rename(const String & newName)
+template <class T> 
+void PagedImage<T>::rename(const String & newName)
 {
   table_p.rename(newName, Table::New);
-  attach_logtable();
 }
 
-template <class T> String PagedImage<T>::
-name(const Bool stripPath) const 
+template <class T> 
+String PagedImage<T>::name(const Bool stripPath) const 
 {
    if (!stripPath) {
       // Full path included
@@ -282,20 +283,20 @@ name(const Bool stripPath) const
    return file.path().baseName();
 }
 
-template <class T> uInt PagedImage<T>::
-rowNumber() const
+template <class T> 
+uInt PagedImage<T>::rowNumber() const
 {
   return map_p.rowNumber();
 }
 
-template <class T> IPosition PagedImage<T>::
-shape() const
+template <class T> 
+IPosition PagedImage<T>::shape() const
 {
   return map_p.shape();
 }
 
-template<class T> void PagedImage<T>::
-resize(const TiledShape & newShape)
+template<class T> 
+void PagedImage<T>::resize(const TiledShape & newShape)
 {
   if (newShape.shape().nelements() != coords_p.nPixelAxes()) {
     throw(AipsError("PagedImage<T>::resize: coordinate info is "
@@ -304,8 +305,8 @@ resize(const TiledShape & newShape)
   map_p.resize(newShape);
 }
 
-template <class T> Bool PagedImage<T>::
-setCoordinateInfo(const CoordinateSystem & coords)
+template <class T> 
+Bool PagedImage<T>::setCoordinateInfo(const CoordinateSystem & coords)
 {
   logSink() << LogOrigin ("PagedImage<T>", "setCoordinateInfo(const "
 			  "CoordinateSystem & coords)",  WHERE);
@@ -333,15 +334,16 @@ setCoordinateInfo(const CoordinateSystem & coords)
 }
 
   
-template <class T> Bool PagedImage<T>::
-doGetSlice(Array<T> & buffer, const Slicer & theSlice)
+template <class T> 
+Bool PagedImage<T>::doGetSlice(Array<T> & buffer, const Slicer & theSlice)
 {
   return map_p.doGetSlice(buffer, theSlice);
 }
 
-template <class T> void PagedImage<T>::
-doPutSlice(const Array<T> & sourceBuffer, const IPosition & where, 
-	   const IPosition & stride)
+template <class T> 
+void PagedImage<T>::doPutSlice(const Array<T> & sourceBuffer, 
+                               const IPosition & where, 
+                               const IPosition & stride)
 {
     //  if (throughmask_p || !mask_p) {
   map_p.putSlice(sourceBuffer,where,stride);
@@ -362,43 +364,44 @@ doPutSlice(const Array<T> & sourceBuffer, const IPosition & where,
 
 
 // apply a function to all elements of the map
-template <class T> void PagedImage<T>::
-apply(T (*function)(T)) 
+template <class T> 
+void PagedImage<T>::apply(T (*function)(T)) 
 {
     map_p.apply(function);
 }
 
 // apply a function to all elements of a const map;
-template <class T> void PagedImage<T>::
-apply(T (*function)(const T &))
+template <class T> 
+void PagedImage<T>::apply(T (*function)(const T &))
 {
     map_p.apply(function);
 }
 
-template <class T> void PagedImage<T>::
-apply(const Functional<T,T> & function)
+template <class T> 
+void PagedImage<T>::apply(const Functional<T,T> & function)
 {
     map_p.apply(function);
 }
 
-template <class T> Table PagedImage<T>::
-table()
+template <class T> 
+Table PagedImage<T>::table()
 {
   return table_p;
 }
 
-template <class T> T PagedImage<T>::
-getAt(const IPosition & where) const
+template <class T> 
+T PagedImage<T>::getAt(const IPosition & where) const
 {
    return map_p(where);
 }
 
-template <class T> void PagedImage<T>::
-putAt(const T & value, const IPosition & where) {
+template <class T> 
+void PagedImage<T>::putAt(const T & value, const IPosition & where) {
     map_p.putAt (value, where);
 }
 
-template<class T> const RecordInterface & PagedImage<T>::
+template<class T> 
+const RecordInterface & PagedImage<T>::
 miscInfo() const
 {
   static TableRecord* use_if_none_in_table = 0; // A small leak if set
@@ -414,8 +417,8 @@ miscInfo() const
   }
 }
 
-template<class T> Bool PagedImage<T>::
-setMiscInfo(const RecordInterface & newInfo)
+template<class T> 
+Bool PagedImage<T>::setMiscInfo(const RecordInterface & newInfo)
 {
   reopenRW();
   if (! table_p.isWritable()) {
@@ -428,14 +431,14 @@ setMiscInfo(const RecordInterface & newInfo)
   return True;
 }
 
-template <class T> LatticeIterInterface<T> * PagedImage<T>::
-makeIter(const LatticeNavigator & navigator) const
+template <class T> 
+LatticeIterInterface<T> * PagedImage<T>::makeIter(const LatticeNavigator & navigator) const
 {
   return map_p.makeIter (navigator);
 }
 
-template <class T> Bool PagedImage<T>::
-ok() const
+template <class T> 
+Bool PagedImage<T>::ok() const
 {
   Int okay = (map_p.ndim() == coords_p.nPixelAxes());
   okay = okay && !table_p.isNull();
@@ -443,8 +446,8 @@ ok() const
 }
 
 /*
-template <class T> PagedImage<T> & PagedImage<T>::
-operator+= (const PagedImage<T> & other)
+template <class T> 
+PagedImage<T> & PagedImage<T>::operator+= (const PagedImage<T> & other)
 {
   logSink() << LogOrigin("PagedImage<T>", 
 			 "operator+=(const PagedImage<T> & other)",
@@ -503,8 +506,8 @@ operator+= (const PagedImage<T> & other)
   return *this;
 }
 
-template <class T> PagedImage<T> & PagedImage<T>::
-operator+= (const T & val)
+template <class T> 
+PagedImage<T> & PagedImage<T>::operator+= (const T & val)
 {
   logSink() << LogOrigin("PagedImage<T>", "operator+=(const T & val)", 
 			 WHERE) << LogIO::DEBUGGING;
@@ -531,8 +534,8 @@ operator+= (const T & val)
 }
 */
 
-template <class T> PagedImage<T> & PagedImage<T>::
-operator+= (const Lattice<T> & other)
+template <class T> 
+PagedImage<T> & PagedImage<T>::operator+= (const Lattice<T> & other)
 {
   logSink() << LogOrigin("PagedImage<T>", 
 			 "operator+=(const Lattice<T> & other)", WHERE) <<
@@ -552,7 +555,8 @@ operator+= (const Lattice<T> & other)
   return *this;
 }
 
-template<class T> void PagedImage<T>::attach_logtable()
+template<class T> 
+void PagedImage<T>::attach_logtable()
 {
   TableLogSink *logtable = new TableLogSink(LogFilter(), name() + "/logtable");
   LogSinkInterface *interface = logtable;
@@ -564,7 +568,8 @@ template<class T> void PagedImage<T>::attach_logtable()
   log_p << LogIO::NORMAL;
 }
 
-template<class T> Bool PagedImage<T>::setUnits(const Unit &newUnits) 
+template<class T> 
+Bool PagedImage<T>::setUnits(const Unit &newUnits) 
 {
   reopenRW();
   if (! table_p.isWritable()) {
@@ -577,7 +582,8 @@ template<class T> Bool PagedImage<T>::setUnits(const Unit &newUnits)
   return True;
 }
 
-template<class T> Unit PagedImage<T>::units() const
+template<class T> 
+Unit PagedImage<T>::units() const
 {
   Unit retval;
   String unitName;
@@ -617,8 +623,8 @@ template<class T> Unit PagedImage<T>::units() const
   return retval;
 }
 
-template<class T> void PagedImage<T>::
-check_conformance(const Lattice<T> & other)
+template<class T> 
+void PagedImage<T>::check_conformance(const Lattice<T> & other)
 {
   if (! this->conform(other)) {
     logSink() << "this and other do not conform (" << this->shape() 
@@ -626,54 +632,54 @@ check_conformance(const Lattice<T> & other)
   }
 };
 
-template<class T> uInt PagedImage<T>::
-maximumCacheSize() const
+template<class T> 
+uInt PagedImage<T>::maximumCacheSize() const
 {
   return map_p.maximumCacheSize();
 };
 
-template<class T> void PagedImage<T>::
-setMaximumCacheSize(uInt howManyPixels)
+template<class T> 
+void PagedImage<T>::setMaximumCacheSize(uInt howManyPixels)
 {
   map_p.setMaximumCacheSize(howManyPixels);
 };
 
-template<class T> void PagedImage<T>::
-setCacheSizeFromPath(const IPosition & sliceShape, 
-		     const IPosition & windowStart,
-		     const IPosition & windowLength,
-		     const IPosition & axisPath)
+template<class T> 
+void PagedImage<T>::setCacheSizeFromPath(const IPosition & sliceShape, 
+    	                                 const IPosition & windowStart,
+                                         const IPosition & windowLength,
+                                         const IPosition & axisPath)
 {
   map_p.setCacheSizeFromPath(sliceShape, windowStart, windowLength, axisPath);
 };
 
-template<class T> void PagedImage<T>::
-clearCache()
+template<class T> 
+void PagedImage<T>::clearCache()
 {
   map_p.clearCache();
 };
 
-template<class T> void PagedImage<T>::
-showCacheStatistics(ostream & os) const
+template<class T> 
+void PagedImage<T>::showCacheStatistics(ostream & os) const
 {
   os << "Pixel statistics : ";
   map_p.showCacheStatistics(os);
 };
 
-template<class T> uInt PagedImage<T>::
-maxPixels() const
+template<class T> 
+uInt PagedImage<T>::maxPixels() const
 {
   return map_p.maxPixels();
 };
 
-template<class T> IPosition PagedImage<T>::
-doNiceCursorShape(uInt maxPixels) const
+template<class T> 
+IPosition PagedImage<T>::doNiceCursorShape(uInt maxPixels) const
 {
   return map_p.niceCursorShape(maxPixels);
 };
 
-template<class T> void PagedImage<T>::
-setTableType()
+template<class T> 
+void PagedImage<T>::setTableType()
 {
   TableInfo & info(table_p.tableInfo());
   {
