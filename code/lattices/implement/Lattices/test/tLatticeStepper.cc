@@ -179,6 +179,33 @@ int main()
     AlwaysAssert(s0.hangOver() == False, AipsError);
     AlwaysAssert(s1.hangOver() == False, AipsError);
     AlwaysAssert(s2.hangOver() == True, AipsError);
+    // Check that things work with the RESIZE cursor
+    LatticeStepper s3(latticeShape, stepperShape, LatticeStepper::RESIZE);
+    AlwaysAssert(s3.hangOver() == False, AipsError);
+    AlwaysAssert(s3.position() == IPosition(4,0), AipsError);
+    AlwaysAssert(s3.endPosition() == IPosition(4,3,0,0,0), AipsError);
+    s3++; 
+    s3++;
+    AlwaysAssert(s3.hangOver() == True, AipsError);
+    AlwaysAssert(s3.position() == IPosition(4,8,0,0,0), AipsError);
+    AlwaysAssert(s3.endPosition() == IPosition(4,9,0,0,0), AipsError);
+
+    LatticeStepper s4(latticeShape, stepperShape, stepperOrientation, 
+		      LatticeStepper::RESIZE);
+    s4.subSection(IPosition(4,1,0,0,0), IPosition(4,9,0,0,0), 
+		  IPosition(4,2,1,1,1));
+    AlwaysAssert(s4.hangOver() == False, AipsError);
+    AlwaysAssert(s4.relativePosition() == IPosition(4,0), AipsError);
+    AlwaysAssert(s4.position() == IPosition(4,1,0,0,0), AipsError);
+    AlwaysAssert(s4.relativeEndPosition() == IPosition(4,3,0,0,0), AipsError);
+    AlwaysAssert(s4.endPosition() == IPosition(4,7,0,0,0), AipsError);
+    s4++; 
+    AlwaysAssert(s4.hangOver() == True, AipsError);
+    AlwaysAssert(s4.relativePosition() == IPosition(4,4,0,0,0), AipsError);
+    AlwaysAssert(s4.position() == IPosition(4,9,0,0,0), AipsError);
+    AlwaysAssert(s4.relativeEndPosition() == IPosition(4,4,0,0,0), AipsError);
+    AlwaysAssert(s4.endPosition() == IPosition(4,9,0,0,0), AipsError);
+    
     // Check the latticeshape, cursorShape & orientation functions
     AlwaysAssert(s1.latticeShape() == latticeShape, AipsError);
     AlwaysAssert(s1.cursorShape().nonDegenerate() == stepperShape, AipsError);
@@ -220,3 +247,6 @@ int main()
   cout << "OK" << endl;
   return 0;
 }
+// Local Variables:
+// compile-command: "gmake OPTLIB=1 tLatticeStepper"
+// End:
