@@ -94,8 +94,18 @@ void ImageFITSConverterImpl<HDUType>::FITSToImage(PagedImage<Float> *&newImage,
 
     ok = CoordinateSystem::fromFITSHeader(coords, header, True);
     if (! ok) {
-	os << LogIO::SEVERE << "Error creating coordinate system from FITS " <<
-	    "keywords." << LogIO::POST;
+	os << LogIO::WARN << 
+	  "Error creating coordinate system from FITS keywords.\n" 
+	  "I will use a linear coordinate along each axis instead.\n"
+	  "If you your FITS file actually does contain a coordinate system\n"
+	  "please submit a bug report."  << LogIO::POST;
+	CoordinateSystem empty;
+	LinearCoordinate linear(shape.nelements());
+	Vector<Double> crval(shape.nelements());
+	crval = 1.0;
+	linear.setReferenceValue(crval);
+	empty.addCoordinate(linear);
+	coords = empty;
     }
 
     try {
