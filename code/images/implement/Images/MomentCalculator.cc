@@ -1699,6 +1699,7 @@ void MomentClip<T>::multiProcess(Vector<T>& moments,
                j++;
             }
          }
+         nPts = j;
       } else if (doExclude_p) {
          for (i=0,j=0; i<nPts; i++) {
             if (pProfileSelect[i] <= range_p(0) || 
@@ -1716,6 +1717,7 @@ void MomentClip<T>::multiProcess(Vector<T>& moments,
                j++;
             }
          }
+         nPts = j;
       } else {    
          for (i=0; i<nPts; i++) {
             if (preComp) {
@@ -1791,9 +1793,9 @@ void MomentClip<T>::multiProcess(Vector<T>& moments,
             }
          }
       }
+      nPts = j;
       profileInMask.freeStorage(pProfileInMask, deleteIt2);
    }
-   nPts = j;
 
 
 // Delete pointer memory
