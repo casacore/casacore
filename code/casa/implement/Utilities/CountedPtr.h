@@ -235,8 +235,10 @@ public:
     // to be freely assigned to each other.
     //
     SimpleCountedConstPtr<t> &operator=(const SimpleCountedConstPtr<t> &val) {
-	if (ref && --(*ref).count == 0)
+	if (ref && --(*ref).count == 0){
 	    delete ref;
+            ref = 0;
+        }
 	if ((ref = val.ref) != 0)
 	    (*ref).count++;
 	return *this;

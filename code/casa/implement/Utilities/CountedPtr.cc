@@ -1,5 +1,5 @@
 //# CountedPtr.cc: Referenced counted pointer classes
-//# Copyright (C) 1993,1994,1995,1996
+//# Copyright (C) 1993,1994,1995,1996,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -39,16 +39,19 @@ void PtrRep<t>::freeVal() {
 
 template<class t>
 SimpleCountedConstPtr<t> &SimpleCountedConstPtr<t>::operator=(t *v) {
-  if (ref && --(*ref).count == 0)
+  if (ref && --(*ref).count == 0){
     delete ref;
+  }
   ref = new PtrRep<t>(v);
   return *this;
 }
 
 template<class t>
 SimpleCountedConstPtr<t>::~SimpleCountedConstPtr() {
-  if (ref && --(*ref).count == 0)
+  if (ref && --(*ref).count == 0){
     delete ref;
+    ref = 0;
+  }
 }
 
 //
