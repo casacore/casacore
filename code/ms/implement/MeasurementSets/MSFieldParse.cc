@@ -84,12 +84,12 @@ const TableExprNode *MSFieldParse::selectFieldOrSource(const String& fieldName)
     if(SourceIdsFromSN.nelements() > 0) {
       cout << " source name found " << endl;
       condition=(ms()->col(colName).in
-		 (msFI.matchSourceId(msSI.matchSourceName(fieldName))));
+		 (msFI.matchSourceId(SourceIdsFromSN)));
     } else if (SourceIdsFromSC.nelements() > 0) {
       //Source Code selection  
       cout << " source code found " << endl;
       condition=(ms()->col(colName).in
-		 (msFI.matchSourceId(msSI.matchSourceCode(fieldName))));
+		 (msFI.matchSourceId(SourceIdsFromSC)));
     } else {
       cout << " No matched Souce name(code), search for field  "<< endl;
       searchField = True;
@@ -105,12 +105,12 @@ const TableExprNode *MSFieldParse::selectFieldOrSource(const String& fieldName)
       //Field name selection
       cout << " field name found " << endl;
       condition =
-	(ms()->col(colName).in(msFI.matchFieldName(fieldName)));
+	(ms()->col(colName).in(SourceIdsFromFN));
     } else if (SourceIdsFromFC.nelements() > 0) {
       //Field code selection
       cout << " field code found " << endl;
       condition =
-	(ms()->col(colName).in(msFI.matchFieldCode(fieldName)));
+	(ms()->col(colName).in(SourceIdsFromFC));
     } else {
       cout << " No matched field name(code) or Souce name(code) "<< endl;
     }
