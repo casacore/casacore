@@ -1,7 +1,10 @@
 %% coding-standards.latex
 %% $Id$
 %%----------------------------------------------------------------------------
-\documentstyle{article}
+\documentclass[11pt]{article}
+\include{aips2defs}
+\usepackage{html,epsf}
+%% changed as old-fashioned \documentstyle{article}
 %%-----------------------------------------------------------------------------
 %% See 'A Guide to Latex', Kopka & Daly, Addison-Wesley, section 3.2.4
 %% for these and other variables which override style settings.
@@ -15,7 +18,7 @@
 \setlength{\parindent}{0.0cm}
 \setlength{\parskip}{0.1cm}
 
-\newcommand{\bmar}{\marginpar[$\parallel$]{$\parallel$}}
+\providecommand{\bmar}{\marginpar{$\|$}}
 %%-----------------------------------------------------------------------------
 \begin{document}
 

@@ -1,9 +1,8 @@
-\providecommand{\bmar}{\marginpar[$\parallel$]{$\parallel$}}
 \section {Introduction}
 These standards and guidelines have been chosen to promote a consistent
 style, clarity and organization in AIPS++ code.  {\em Standards} are coding
 practices which everyone must follow; {\em guidelines} are recommended
-practices, and are identified below by ($\star$).
+practices, and are identified below by ($\ast$).
 \bmar Use of standards and guidelines will in general reduce the number of
 initial defects by about 25\%, and make maintenance of code easier.\bmar
 
@@ -105,13 +104,13 @@ needed only in your test or demo programs should exist in your {\it
 test/templates} file. See the {\em System Manual} for details about template
 management.\footnote {reident, unused, duplicates programs}
 %%---------------------------------------------------------------------------
-\subsection {File Size ($\star$)}
+\subsection {File Size ($\ast$)}
 Files should rarely -- if ever -- exceed 2000 lines:  a 1000 line
 maximum will usually apply.  Well-designed classes often have short header
 and, certainly, short implementation files, usually less than 500 lines
 including documentation.
 %%---------------------------------------------------------------------------
-\subsection {Function Length ($\star$)}
+\subsection {Function Length ($\ast$)}
 Functions should rarely exceed 100 lines in length; shorter, well-focused
 functions should dominate, and will usually be less than 50 lines.
 %%---------------------------------------------------------------------------
@@ -188,7 +187,7 @@ format is {\em yyyy/mm/dd}. An example is {\em 1995/02/27}.
 \bmar forward declarations when that will suffice.\footnote {This may sometimes
 involve the use of special forwarding include files like iosfwd.}
 %%---------------------------------------------------------------------------
-\subsection {Protected Data Members ($\star$)}
+\subsection {Protected Data Members ($\ast$)}
 Avoid protected data members, using protected member functions for access
 to private data instead.
 %%---------------------------------------------------------------------------
@@ -281,7 +280,7 @@ Only C++ style casting is allowed. The use of
    {\em const\_cast} (but be aware of what you are doing) and {\em
    dynamic\_cast}. 
 %%---------------------------------------------------------------------------
-\subsection {Macros} ($\star$) \bmar
+\subsection {Macros} ($\ast$) \bmar
 Macros (especially {\it \#if} type, should be limited
    to the {\it include guard}. Other cases should be checked with the QAG,
    who often can point out other solutions.
