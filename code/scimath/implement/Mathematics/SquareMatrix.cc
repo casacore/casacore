@@ -32,6 +32,8 @@
 
 inline Float real(Float r) { return r;}
 inline Float conj(Float r) { return r;}
+inline Complex real(Complex c) { return std::real(c);}
+inline Complex conj(Complex c) { return std::conj(c);}
 
 template <class T, Int n> 
 SquareMatrix<T,n>& 
