@@ -168,12 +168,13 @@ Table& Table::operator= (const Table& that)
 }
 
 
-Bool Table::canDeleteTable (const String& tableName)
+Bool Table::canDeleteTable (const String& tableName, Bool checkSubTables)
 {
     String message;
     return canDeleteTable (message, tableName);
 }
-Bool Table::canDeleteTable (String& message, const String& tableName)
+Bool Table::canDeleteTable (String& message, const String& tableName,
+			    Bool checkSubTables)
 {
     if (! isWritable (tableName)) {
 	message = "table is not writable";
@@ -188,14 +189,18 @@ Bool Table::canDeleteTable (String& message, const String& tableName)
 	message = "table is still open in another process";
 	return False;
     }
+    if (checkSubTables  &&  table.isMultiUsed(True)) {
+	message = "a subtable of the table is still open in another process";
+	return False;
+    }
     return True;
 }
 
 
-void Table::deleteTable (const String& tableName)
+void Table::deleteTable (const String& tableName, Bool checkSubTables)
 {
     String message;
-    if (! canDeleteTable (message, tableName)) {
+    if (! canDeleteTable (message, tableName, checkSubTables)) {
 	throw (TableError ("Table " + tableName + " cannot be deleted: " +
 			   message));
     }

@@ -196,7 +196,7 @@ void RefTable::reopenRW()
     option_p = Table::Update;
 }
 
-Bool RefTable::isMultiUsed() const
+Bool RefTable::isMultiUsed (Bool) const
 {
     return False;
 }

@@ -248,16 +248,25 @@ public:
     // Can the table be deleted?
     // If true, function deleteTable can safely be called.
     // If not, message contains the reason why (e.g. 'table is not writable').
+    // It checks if the table is writable, is not open in this process
+    // and is not open in another process.
+    // <br>If <src>checkSubTables</src> is set, it also checks if
+    // a subtable is not open in another process.
     // <group>
-    static Bool canDeleteTable (const String& tableName);
-    static Bool canDeleteTable (String& message, const String& tableName);
+    static Bool canDeleteTable (const String& tableName,
+				Bool checkSubTables=False);
+    static Bool canDeleteTable (String& message, const String& tableName,
+				Bool checkSubTables=False);
     // </group>
 
     // Delete the table.
     // An exception is thrown if the table cannot be deleted because
     // its is not writable or because it is still open in this or
     // another process.
-    static void deleteTable (const String& tableName);
+    // <br>If <src>checkSubTables</src> is set, it is also checked if
+    // a subtable is used in another process.
+    static void deleteTable (const String& tableName,
+			     Bool checkSubTables=False);
 
     // Try to reopen the table for read/write access.
     // An exception is thrown if the table is not writable.
@@ -268,7 +277,9 @@ public:
     static Bool isOpened (const String& tableName);
 
     // Is the table used (i.e. open) in another process.
-    Bool isMultiUsed() const;
+    // If <src>checkSubTables</src> is set, it is also checked if
+    // a subtable is used in another process.
+    Bool isMultiUsed (Bool checkSubTables=False) const;
 
     // Get the locking options.
     const TableLock& lockOptions() const;
@@ -802,8 +813,8 @@ inline void Table::flush (Bool sync)
 inline void Table::resync()
     { baseTabPtr_p->resync(); }
 
-inline Bool Table::isMultiUsed() const
-    { return baseTabPtr_p->isMultiUsed(); }
+inline Bool Table::isMultiUsed(Bool checkSubTables) const
+    { return baseTabPtr_p->isMultiUsed(checkSubTables); }
 inline const TableLock& Table::lockOptions() const
     { return baseTabPtr_p->lockOptions(); }
 inline Bool Table::lock (FileLocker::LockType type, uInt nattempts)

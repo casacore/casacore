@@ -115,7 +115,9 @@ public:
     virtual void reopenRW();
 
     // Is the table in use (i.e. open) in another process?
-    virtual Bool isMultiUsed() const;
+    // If <src>checkSubTables</src> is set, it is also checked if
+    // a subtable is used in another process.
+    virtual Bool isMultiUsed (Bool checkSubTables) const;
 
     // Get the locking info.
     virtual const TableLock& lockOptions() const;

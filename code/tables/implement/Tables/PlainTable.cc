@@ -221,10 +221,12 @@ PlainTable::~PlainTable()
     }else{
 	//# Check if table can indeed be deleted.
 	//# If not, set delete flag to False.
-	if (isMultiUsed()) {
+        //# It only checks if the main table is multi-used.
+	if (isMultiUsed(False)) {
 	    unmarkForDelete (False, "");
 	    throw (TableError ("Table " + name_p + " cannot be deleted;"
-			       " it is still used in another process"));
+			       " the table or a subtable is still used"
+			       " in another process"));
 	}
     }
     //# Remove it from the table cache (if added).
@@ -268,9 +270,19 @@ void PlainTable::renameSubTables (const String& newName,
     colSetPtr_p->renameTables (newName, oldName);
 }
 
-Bool PlainTable::isMultiUsed() const
+Bool PlainTable::isMultiUsed (Bool checkSubTables) const
 {
-    return lockPtr_p->isMultiUsed();
+    if (lockPtr_p->isMultiUsed()) {
+        return True;
+    }
+    if (checkSubTables) {
+        if (const_cast<PlainTable*>(this)->
+                                    keywordSet().areTablesMultiUsed()) {
+	    return True;
+	}
+	return colSetPtr_p->areTablesMultiUsed();
+    }
+    return False;
 }
 
 const TableLock& PlainTable::lockOptions() const
