@@ -749,14 +749,6 @@ int ReservedFitsKeywordCollection::rules(const ReservedFitsKeyword &res,
 	      // Nothing - OK
 	        break;
 	}
-	// For reserved keywords, if the data type is STRING,
-	// the length of the string must be at least 8 bytes.
-	if (t == FITS::STRING) {
-	    if (v_len < 8) {
-		msg = "Keyword string value is less than 8 characters.";
-		return 1;
-	    }
-	}
 	return 0;
 }
 
@@ -1737,7 +1729,9 @@ must have a value.");
 	  switch (val.type) { // check for adherence to fixed format
 	    case FITS::FSTRING:
 	    case FITS::STRING:
-	      if (!(val.begpos == 10 && val.endpos >= 19 && val.endpos <= 79))
+              // allow for lenths < 8 characters even though that isn't
+              // exactly fixed format.
+	      if (!(val.begpos == 10 && val.endpos <= 79))
 	        seterr("String value does not conform to FITS fixed format.");
 	      break;
 	    case FITS::LOGICAL:
