@@ -38,17 +38,49 @@
 // <reviewed reviewer="" date="" tests="">
 // </reviewed>
 
+// <synopsis>
+// This class defines 2 enum's used by the region classes in module
+// Lattices and Images.
+// </synopsis>
+
 
 class RegionType
 {
 public:
+    // Define the type of region.
+    // The values are used in regionmanager(gui).g, so they should
+    // not be changed.
     enum Type {
+        // Not used yet.
 	Invalid = -1,
+        // Other type is not used yet.
 	Other = 0,
+        // lattice region (pixel coordinates)
 	LC = 1,
+        // image region (world coordinates)
 	WC = 2,
-        nRegionTypes = 3        // Good types only
+        // slicer (pixel based with optional stride)
+	Slicer = 3,
+        // Number of recognized types only
+        nRegionTypes
     };
+
+    // Define if a region is absolute or relative.
+    // The values are used in regionmanager(gui).g, so they should
+    // not be changed.
+    enum AbsRelType {
+        // absolute
+	Abs    = 1,
+        // relative to reference pixel
+	RelRef = 2,
+        // relative to center
+	RelCen = 3,
+        //# relative to a direction
+//#	RelDir = 4,
+        // Number of recognized types only
+	nAbsRelTypes
+    };
+
 };
 
 
