@@ -163,8 +163,9 @@ Flux<Double> SkyCompRep::sample(const MDirection & direction,
 				const MFrequency & centerFrequency) const {
   DebugAssert(ok(), AipsError);
   Flux<Double> flux = itsFlux.copy();
-  itsShapePtr->sample(flux, direction, pixelSize);
   itsSpectrumPtr->sample(flux, centerFrequency);
+  Double scale = itsShapePtr->sample(direction, pixelSize);
+  flux.scaleValue(scale, scale, scale, scale);
   return flux;
 }
 
