@@ -1,5 +1,5 @@
 \documentclass[11pt]{article}
-\usepackage{html, epsf}
+\usepackage{html, epsfig}
 %%-----------------------------------------------------------------------------
 
 \begin{document}
