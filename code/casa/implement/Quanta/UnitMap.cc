@@ -28,6 +28,7 @@
 //# Includes
 
 #include <aips/Quanta/UnitMap.h>
+#include <aips/Quanta/MUString.h>
 
 //# constants
 
@@ -539,28 +540,52 @@ void UnitMap::removeUser(const UnitName& name) {
   UnitMap::removeUser(name.getName());
 }
 
+const String &UnitMap::getStringFITS(uInt which) {
+  static String FITSstring[N_FITS] = {
+    "_",
+    "d",
+    "deg",
+    "deg",
+    "Hz",
+    "Jy",
+    "K",
+    "K",
+    "km",
+    "m",
+    "m",
+    "Pa",
+    "_",
+    "s",
+    "s",
+    "s",
+    "V",
+    "a",
+    "a"
+  };
+  return FITSstring[which];
+}
+
 Bool UnitMap::getNameFITS(UnitName *&name, uInt which) {
-  const uInt N_FITS = 19;
   static UnitName FITSunit[N_FITS] = {
-    UnitName("BEAM",	UnitVal(1.0, "_"),	"dimensionless beam"),
-    UnitName("DAYS",	UnitVal(1.0, "d"),	"day"),
-    UnitName("DEGREES",	UnitVal(1.0, "deg"),	"degree"),
-    UnitName("DEG",	UnitVal(1.0, "deg"),	"degree"),
-    UnitName("HZ",	UnitVal(1.0, "Hz"),	"hertz"),
-    UnitName("JY",	UnitVal(1.0, "Jy"),	"jansky"),
-    UnitName("KELVINS",	UnitVal(1.0, "K"),	"kelvin"),
-    UnitName("KELVIN",	UnitVal(1.0, "K"),	"kelvin"),
-    UnitName("KM",	UnitVal(1.0, "km"),	"km"),
-    UnitName("METERS",	UnitVal(1.0, "m"),	"meter"),
-    UnitName("M",	UnitVal(1.0, "m"),	"meter"),
-    UnitName("PASCAL",	UnitVal(1.0, "Pa"),	"pascal"),
-    UnitName("PIXEL",   UnitVal(1.0, "_"),	"dimensionless pixel"),
-    UnitName("S",	UnitVal(1.0, "s"),	"second"),
-    UnitName("SECONDS",	UnitVal(1.0, "s"),	"second"),
-    UnitName("SEC",	UnitVal(1.0, "s"),	"second"),
-    UnitName("VOLTS",	UnitVal(1.0, "V"),	"volt"),
-    UnitName("YEARS",	UnitVal(1.0, "a"),	"year"),
-    UnitName("YEAR",	UnitVal(1.0, "a"),	"year")
+    UnitName("BEAM",	UnitVal(1.0, getStringFITS(0)),	"dimensionless beam"),
+    UnitName("DAYS", 	UnitVal(1.0, getStringFITS(1)),	"day"),
+    UnitName("DEGREES", UnitVal(1.0, getStringFITS(2)),	"degree"),
+    UnitName("DEG",	UnitVal(1.0, getStringFITS(3)),	"degree"),
+    UnitName("HZ",	UnitVal(1.0, getStringFITS(4)),	"hertz"),
+    UnitName("JY",	UnitVal(1.0, getStringFITS(5)),	"jansky"),
+    UnitName("KELVINS",	UnitVal(1.0, getStringFITS(6)),	"kelvin"),
+    UnitName("KELVIN",	UnitVal(1.0, getStringFITS(7)),	"kelvin"),
+    UnitName("KM",	UnitVal(1.0, getStringFITS(8)),	"km"),
+    UnitName("METERS",	UnitVal(1.0, getStringFITS(9)),	"meter"),
+    UnitName("M",	UnitVal(1.0, getStringFITS(10)),"meter"),
+    UnitName("PASCAL",	UnitVal(1.0, getStringFITS(11)),"pascal"),
+    UnitName("PIXEL",   UnitVal(1.0, getStringFITS(12)),"dimensionless pixel"),
+    UnitName("SECONDS",	UnitVal(1.0, getStringFITS(13)),"second"),
+    UnitName("SEC",	UnitVal(1.0, getStringFITS(14)),"second"),
+    UnitName("S",	UnitVal(1.0, getStringFITS(15)),"second"),
+    UnitName("VOLTS",	UnitVal(1.0, getStringFITS(16)),"volt"),
+    UnitName("YEARS",	UnitVal(1.0, getStringFITS(17)),"year"),
+    UnitName("YEAR",	UnitVal(1.0, getStringFITS(18)),"year")
   };
   if (which >= N_FITS) {
     return False;
@@ -593,6 +618,52 @@ void UnitMap::clearFITS() {
     };
     UnitMap::doneFITS = False;
   };
+}
+
+Unit UnitMap::fromFITS(const Unit &un) {
+  static Regex sepa("[^a-zA-Z]");
+  MUString mus(un.getName());
+  String y;
+  String z;
+  UnitName *nam;
+  while (!mus.eos()) {
+    if (mus.testChar(sepa)) y += String(mus.getChar());
+    else {
+      z = mus.getAlpha();
+      for (uInt i=0; i<N_FITS; i++) {
+	getNameFITS(nam, i);
+	if (z == nam->getName()) {
+	  z =  getStringFITS(i);
+	  break;
+	};
+      };
+      y += z;
+    };
+  };
+  return Unit(y);
+}
+
+Unit UnitMap::toFITS(const Unit &un) {
+  static Regex sepa("[^a-zA-Z]");
+  MUString mus(un.getName());
+  String y;
+  String z;
+  UnitName *nam;
+  while (!mus.eos()) {
+    if (mus.testChar(sepa)) y += String(mus.getChar());
+    else {
+      z = mus.getAlpha();
+      for (Int i=N_FITS-1; i>= 0; i--) {
+	if (z == getStringFITS(i)) {
+	  getNameFITS(nam, i);
+	  z =  nam->getName();
+	  break;
+	};
+      };
+      y += z;
+    };
+  };
+  return Unit(y);
 }
 
 void UnitMap::clearCache() {

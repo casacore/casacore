@@ -46,6 +46,8 @@
 // </note>
 // IAU definition of Gaussian grav. constant for calculating IAU units
 const Double IAU_k=0.01720209895;
+// Number of FITS units recognised
+const uInt N_FITS = 19;
 
 // <summary>
 // contains all simple known physical units
@@ -207,6 +209,14 @@ public:
 // Clear FITS related units from user list
     static void clearFITS();
 
+// Translate a FITS unit to the proper units. Note that this is a translation
+// of the string only, no conversion. Unknown FITS units are not translated.
+// Hence any new definition of the FITS units will work ok
+    static Unit fromFITS(const Unit &un);
+
+// Translate to a FITS unit
+    static Unit toFITS(const Unit &un);
+
 // List some part of the standard unit lists on cout or stream
 // <group name="list">
 // List all known unit symbols
@@ -296,7 +306,8 @@ private:
 //# Functions
 // Get the name of a FITS unit
     static Bool getNameFITS(UnitName *&name, uInt which);
-
+// Get the belonging unit to a FITS unit
+    static const String &getStringFITS(uInt which);
 // Initialise the static map
     static void initUM();
 };
