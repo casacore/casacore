@@ -230,5 +230,5 @@ Ndim=3 Axis Lengths: [7, 6, 1]
 [2][2][2]
 LCExtension::LCExtension - no extend axes have been specified
 LCExtension::LCExtension - number of axes in extend box mismatches number of extend axes
-LCExtension::LCExtension - extend axes are not specified in ascending order
+LCExtension::LCExtension - extend axes multiply specified
 OK
