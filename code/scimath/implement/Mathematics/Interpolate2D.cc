@@ -183,10 +183,10 @@ Bool Interpolate2D::interpLinear(Float& result,
    AlwaysAssert(where.nelements()==2, AipsError);
    const IPosition& shape = data.shape();
 
-// Find nearest pixel; (i,j) = centre
+// We find 4 points surrounding the one of interest.
 
-   Int i = Int(where(0)+0.5);
-   Int j = Int(where(1)+0.5);
+   Int i = Int(where(0));
+   Int j = Int(where(1));
 
 // Handle edge. Just move start left/down by one,
 
@@ -234,29 +234,38 @@ Bool Interpolate2D::interpCubic(Float& result,
    AlwaysAssert(where.nelements()==2, AipsError);
    const IPosition& shape = data.shape();
 
-// Find nearest pixel; (i,j) = centre
+// We find 4 points surrounding the one of interest.
+// Points are labelled:
+//
+//   1   2
+//   0   3
+//
+// where point 0 is [i,j].
+//
+// we use points in a 4 x 4 grid in total (to get derivatives)
+// [i-1,j-1] -> [i+2,j+2]
 
-   Int i = Int(where(0)+0.5);
-   Int j = Int(where(1)+0.5);
+   Int i = Int(where(0));
+   Int j = Int(where(1));
 
-
-// Interpolation grid is 4x4 :  [i-1,j-1] -> [i+2,j+2]
 // Handle edge (and beyond) by using linear.
 
    if (i<=0 || i>=shape(0)-2 || j<=0 || j>=shape(1)-2) {
       return interpLinear(result, where, data, maskPtr);
    }
-//
+
+// Handle mask
+
    if (anyBadMaskPixels(maskPtr, i-1, i+2, j-1, j+2)) return False;
 
 // Do it
 
    Double d1 = 1.0;
    Double d2 = 1.0;
-//
    Double TT = where(0) - i;
    Double UU = where(1) - j;
 
+//
 // define values of function and its derivatives on the
 // square of points bounding "where"
 
@@ -264,17 +273,23 @@ Bool Interpolate2D::interpCubic(Float& result,
    itsY(1) = data(i+1,j);
    itsY(2) = data(i+1,j+1);
    itsY(3) = data(i,  j+1);
-//
+
+// x-derivatives (points 0->3)
+
    itsY1(0) = data(i+1, j)   - data(i-1, j);
    itsY1(1) = data(i+2, j)   - data(i,   j);
    itsY1(2) = data(i+2, j+1) - data(i,   j+1);
    itsY1(3) = data(i+1, j+1) - data(i-1, j+1);
-//  
+
+// y-derivatives (points 0->3)
+
    itsY2(0) = data(i,   j+1) - data(i,   j-1);
    itsY2(1) = data(i+1, j+1) - data(i+1, j-1);
    itsY2(2) = data(i+1, j+2) - data(i+1, j);
    itsY2(3) = data(i,   j+2) - data(i,   j);
-//
+
+// cross derivatives (points 0->3)
+
    itsY12(0) =  data(i+1, j+1) + data(i-1, j-1) -
                 data(i-1, j+1) - data(i+1, j-1);
    itsY12(1) =  data(i+2, j+1) + data(i, j-1) -
@@ -283,9 +298,10 @@ Bool Interpolate2D::interpCubic(Float& result,
                 data(i, j+2) - data(i+2, j);
    itsY12(3) =  data(i+1, j+2) + data(i-1, j) - 
                 data(i-1, j+2) - data(i+1, j);
-//
+
+// Get result
+
    bcucof(itsC, itsY, itsY1, itsY2, itsY12, d1, d2);
-//  
    result = 0.0;
    for (Int i=3; i>=0; i--) {
      result = TT*result + ((itsC(i,3)*UU + itsC(i,2))*UU + 
