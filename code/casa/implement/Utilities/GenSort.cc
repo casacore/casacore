@@ -1,5 +1,5 @@
 //# GenSort.cc: General sort functions
-//# Copyright (C) 1993,1994,1995,1996,1997
+//# Copyright (C) 1993,1994,1995,1996,1997,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -264,7 +264,8 @@ void GenSort<T>::heapSortAsc (T* data, Int nr)
     // Use the heapsort algorithm described by Jon Bentley in
     // UNIX Review, August 1992.
     data--;
-    for (Int j=nr/2; j>=1; j--) {
+    Int j;
+    for (j=nr/2; j>=1; j--) {
 	heapAscSiftDown (j, nr, data);
     }
     for (j=nr; j>=2; j--) {
@@ -278,7 +279,8 @@ void GenSort<T>::heapAscSiftDown (Int low, Int up, T* data)
 {
     T sav = data[low];
     Int c;
-    for (Int i=low; (c=2*i)<=up; i=c) {
+    Int i;
+    for (i=low; (c=2*i)<=up; i=c) {
 	if (c < up  &&  data[c+1] > data[c]) {
 	    c++;
 	}
@@ -300,7 +302,8 @@ void GenSort<T>::heapSortDesc (T* data, Int nr)
     // Use the heapsort algorithm described by Jon Bentley in
     // UNIX Review, August 1992.
     data--;
-    for (Int j=nr/2; j>=1; j--) {
+    Int j;
+    for (j=nr/2; j>=1; j--) {
 	heapDescSiftDown (j, nr, data);
     }
     for (j=nr; j>=2; j--) {
@@ -314,7 +317,8 @@ void GenSort<T>::heapDescSiftDown (Int low, Int up, T* data)
 {
     T sav = data[low];
     Int c;
-    for (Int i=low; (c=2*i)<=up; i=c) {
+    Int i;
+    for (i=low; (c=2*i)<=up; i=c) {
 	if (c < up  &&  data[c+1] < data[c]) {
 	    c++;
 	}
@@ -700,7 +704,8 @@ void GenSortIndirect<T>::heapSortAsc (uInt* inx, const T* data, Int nr)
     // Use the heapsort algorithm described by Jon Bentley in
     // UNIX Review, August 1992.
     inx--;
-    for (Int j=nr/2; j>=1; j--) {
+    Int j;
+    for (j=nr/2; j>=1; j--) {
 	heapAscSiftDown (inx, j, nr, data);
     }
     for (j=nr; j>=2; j--) {
@@ -715,7 +720,8 @@ void GenSortIndirect<T>::heapAscSiftDown (uInt* inx, Int low, Int up,
 {
     uInt sav = inx[low];
     Int c;
-    for (Int i=low; (c=2*i)<=up; i=c) {
+    Int i;
+    for (i=low; (c=2*i)<=up; i=c) {
 	if (c < up  &&  isAscending (data, inx[c+1], inx[c])) {
 	    c++;
 	}
@@ -737,7 +743,8 @@ void GenSortIndirect<T>::heapSortDesc (uInt* inx, const T* data, Int nr)
     // Use the heapsort algorithm described by Jon Bentley in
     // UNIX Review, August 1992.
     inx--;
-    for (Int j=nr/2; j>=1; j--) {
+    Int j;
+    for (j=nr/2; j>=1; j--) {
 	heapDescSiftDown (inx, j, nr, data);
     }
     for (j=nr; j>=2; j--) {
@@ -752,7 +759,8 @@ void GenSortIndirect<T>::heapDescSiftDown (uInt* inx, Int low, Int up,
 {
     uInt sav = inx[low];
     Int c;
-    for (Int i=low; (c=2*i)<=up; i=c) {
+    Int i;
+    for (i=low; (c=2*i)<=up; i=c) {
 	if (c < up  &&  isDescending (data, inx[c+1], inx[c])) {
 	    c++;
 	}

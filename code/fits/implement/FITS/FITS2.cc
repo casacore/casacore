@@ -1,5 +1,5 @@
 //# FITS2.cc: Transform an AIPS++ Array to or from a FITS disk file (helper functions)
-//# Copyright (C) 1994,1995
+//# Copyright (C) 1994,1995,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //# 
 //# This library is free software; you can redistribute it and/or modify it
@@ -54,7 +54,7 @@ void ReadFITSin(PrimaryArray<StorageType> &fitsdata,
     shape.resize(fitsdata.dims());
     for (uInt i=0; i < shape.nelements(); i++) shape(i) = fitsdata.dim(i);
     data.resize(shape);
-    if (fitsdata.read() != data.nelements()) {
+    if (fitsdata.read() != Int(data.nelements())) {
 	ErrorMessage = "Could not real all data";
 	ok = False;
 	return;
@@ -71,26 +71,26 @@ void ReadFITSin(PrimaryArray<StorageType> &fitsdata,
     }
     if (axisNames) {
 	(*axisNames).resize(fitsdata.dims());
-	for (i=0; i<fitsdata.dims(); i++) {
+	for (Int i=0; i<fitsdata.dims(); i++) {
 	    (*axisNames)(i) = fitsdata.ctype(i);
 	    (*axisNames)(i) = (*axisNames)(i).before(trailing);
 	}
     }
     if (refPixel) {
 	(*refPixel).resize(fitsdata.dims());
-	for (i=0; i<fitsdata.dims(); i++) {
+	for (Int i=0; i<fitsdata.dims(); i++) {
 	    (*refPixel)(i) = fitsdata.crpix(i) - 1.0f; // FITS is 1-relative
 	}
     }
     if (refLocation) {
 	(*refLocation).resize(fitsdata.dims());
-	for (i=0; i<fitsdata.dims(); i++) {
+	for (Int i=0; i<fitsdata.dims(); i++) {
 	    (*refLocation)(i) = fitsdata.crval(i); // FITS is 1-relative
 	}
     }
     if (delta) {
 	(*delta).resize(fitsdata.dims());
-	for (i=0; i<fitsdata.dims(); i++) {
+	for (Int i=0; i<fitsdata.dims(); i++) {
 	    (*delta)(i) = fitsdata.cdelt(i); // FITS is 1-relative
 	}
     }
@@ -118,6 +118,7 @@ void ReadFITSin(PrimaryArray<StorageType> &fitsdata,
 	    case  FITS::DOUBLE:  (*keywords)(kwname) = next->asDouble(); break;
 	    case FITS::FLOAT:    (*keywords)(kwname) = next->asFloat(); break;
             case FITS::LONG:     (*keywords)(kwname) = next->asInt(); break;
+            default:             break;
 			     }
 	    next = kwl.next();
 	}
