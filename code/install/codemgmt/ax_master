@@ -2502,3 +2502,4 @@
 11 350 sys rm bin/cal
 11 352 src rm trial/implement/Tasking/manager.g
 11 352 sys rm libexec/manager.g
+11 352 src mv doc/html/navpages/communicate/reportabug.html doc/html/navpages/communicate/gnatsreportabug.html
