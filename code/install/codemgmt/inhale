@@ -1262,7 +1262,15 @@
 	           CVSUPVERS="all"
 	       fi
 	       echo "*default host=aips2.nrao.edu compress" > $SUPFILE
-	       echo "*default base=$AIPSROOT/$fetchme" >> $SUPFILE
+#
+#  data is different from docs so the base is different
+#
+               if [ $fetchme != "data" ]
+               then
+	          echo "*default base=$AIPSROOT" >> $SUPFILE
+               else
+	          echo "*default base=$AIPSROOT/$fetchme" >> $SUPFILE
+               fi
 	       echo "*default release=$CVSUPVERS" >> $SUPFILE
 	       echo "*default delete use-rel-suffix" >> $SUPFILE
 	       echo "$fetchme" >> $SUPFILE
