@@ -118,6 +118,20 @@ class SpectralFit {
    	   const Vector<Float> &y);
   // </group>
 
+  // Evaluate the fit at the given points x. The result returned in y.
+  // <group>
+  void evaluate(Vector<Float> &y, const Vector<Float> &x) const;
+  void evaluate(Vector<Double> &y, const Vector<Double> &x) const;
+  // </group>
+  // Calculate ther residuals at the points x; by subtracting the model from y
+  // <thrown>
+  //  <li> AipsError if y and x have different lengths
+  // </thrown>
+  // <group>
+  void residual(Vector<Float> &y, const Vector<Float> &x) const;
+  void residual(Vector<Double> &y, const Vector<Double> &x) const;
+  // </group>
+
  private:
   //#Data
   // Number of elements to fit

@@ -120,6 +120,23 @@ const SpectralElement SpectralEstimate::element(uInt which) const {
   return pars_p[which]; /// test which
 }
 
+void SpectralEstimate::evaluate(Vector<Float> &prof) const {
+  for (uInt j=0; j<prof.nelements(); j++) {
+    if (npar_p > 0) prof(j) = pars_p[0](j);
+    else prof(j) = 0;
+  };
+  for (Int i=1; i<npar_p; i++) {
+    for (uInt j=0; j<prof.nelements(); j++) prof(j) += pars_p[i](j);
+  };
+}
+
+void SpectralEstimate::residual(Vector<Float> &prof) const {
+  for (Int i=0; i<npar_p; i++) {
+    for (uInt j=0; j<prof.nelements(); j++) prof(j) -= pars_p[i](j);
+  };
+}
+
+
 void SpectralEstimate::setRMS(const Double rms) {
   rms_p = abs(rms);
 }

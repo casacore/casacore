@@ -113,11 +113,19 @@ class SpectralEstimate {
   uInt estimate(const Vector<Float> &prof, Vector<Float> *der = 0);
 
   // Return the number of estimates found. 0 if <src>estimates</src>
-  // not ter called.
+  // not yet called.
   uInt getNElements() const {return npar_p;};
 
   // Get the data for the n-th element
   const SpectralElement element(uInt which) const;
+
+  // Get the estimated profile values for all estimates found. The evaluation
+  // is for the length of the given <src>prof</src>, assuming the same
+  // start value as the input profiles for the estimates
+  void evaluate(Vector<Float> &prof) const;
+  // Get the residual after subtracting of estimates found in <src>prof</src>
+  // <src>prof</src> is supposed to contain the original data
+  void residual(Vector<Float> &prof) const;
 
   // Set estimation parameters
   // <group>

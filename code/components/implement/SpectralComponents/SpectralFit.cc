@@ -167,6 +167,46 @@ Bool SpectralFit::fit(const Vector<Float> &x,
   return fitter.converged();
 }
 
+void SpectralFit::evaluate(Vector<Float> &y, const Vector<Float> &x) const {
+  y.resize(x.nelements());
+  for (uInt j=0; j<x.nelements(); j++) {
+    if (n_p > 0) y(j) = el_p[0](j);
+    else y(j) = 0;
+  };
+  for (uInt i=1; i<n_p; i++) {
+    for (uInt j=0; j<x.nelements(); j++) y(j) += el_p[i](x(j));
+  };
+}
+
+void SpectralFit::evaluate(Vector<Double> &y, const Vector<Double> &x) const {
+  y.resize(x.nelements());
+  for (uInt j=0; j<x.nelements(); j++) {
+    if (n_p > 0) y(j) = el_p[0](j);
+    else y(j) = 0;
+  };
+  for (uInt i=1; i<n_p; i++) {
+    for (uInt j=0; j<x.nelements(); j++) y(j) += el_p[i](x(j));
+  };
+}
+
+void SpectralFit::residual(Vector<Float> &y, const Vector<Float> &x) const {
+  if (x.nelements() != y.nelements()) {
+    throw(AipsError("Unequal lengths in arguments SpectralFit::residual"));
+  };
+  for (uInt i=0; i<n_p; i++) {
+    for (uInt j=0; j<x.nelements(); j++) y(j) -= el_p[i](x(j));
+  };
+}
+
+void SpectralFit::residual(Vector<Double> &y, const Vector<Double> &x) const {
+  if (x.nelements() != y.nelements()) {
+    throw(AipsError("Unequal lengths in arguments SpectralFit::residual"));
+  };
+  for (uInt i=0; i<n_p; i++) {
+    for (uInt j=0; j<x.nelements(); j++) y(j) -= el_p[i](x(j));
+  };
+}
+
 void SpectralFit::capacity() {
   if (cap_p == 0) {
     cap_p = 10;
