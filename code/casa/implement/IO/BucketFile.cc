@@ -1,5 +1,5 @@
 //# BucketFile.cc: Tiled Hypercube Storage Manager for tables
-//# Copyright (C) 1995,1996,1999,2001
+//# Copyright (C) 1995,1996,1999,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -27,6 +27,7 @@
 
 
 //# Includes
+#include <aips/IO/LargeIOFuncDef.h>
 #include <aips/IO/BucketFile.h>
 #include <aips/OS/Path.h>
 #include <aips/OS/DOos.h>
@@ -35,39 +36,7 @@
 #include <unistd.h>
 #include <fcntl.h>
 #include <errno.h>                // needed for errno
-#include <aips/string.h>               // needed for strerror
-
-
-#ifdef AIPS_LARGEFILE
-# define traceFCLOSE fclose
-# define traceFSEEK fseeko64
-# define traceFTELL ftello64
-# define traceFREAD fread
-# define traceFWRITE fwrite
-# define traceREAD read
-# define traceWRITE write
-# define trace2OPEN open64
-# define traceLSEEK lseek64
-# define trace3OPEN open64
-# define traceCLOSE close
-#else
-# define traceFTELL ftell
-# ifdef PABLO_IO
-#  include "IOTrace.h"
-# else
-#  define traceFCLOSE fclose
-#  define traceFSEEK fseek
-#  define traceFREAD fread
-#  define traceFWRITE fwrite
-#  define traceREAD read
-#  define traceWRITE write
-#  define trace2OPEN open
-#  define traceLSEEK lseek
-#  define trace3OPEN open
-#  define traceCLOSE close
-# endif
-#endif
-
+#include <aips/string.h>          // needed for strerror
 
 
 BucketFile::BucketFile (const String& fileName)
