@@ -1,5 +1,5 @@
 //# TableMeasDefBase.cc: Definition of a Measure in a Table.
-//# Copyright (C) 1997,1998
+//# Copyright (C) 1997,1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
