@@ -652,13 +652,12 @@ void FITSImage::crackHeaderShort (CoordinateSystem& cSys,
        header.get("bscale", s);
        header.removeField("bscale");
     }
-    if (header.isDefined("bscale")) {
+    if (header.isDefined("bzero")) {
        header.get("bzero", o);
        header.removeField("bzero");
     }
     scale = s; 
     offset = o;
-
 //
     hasBlanks = False;
     if (header.isDefined("blank")) {
