@@ -2123,3 +2123,4 @@
 08 364 src rm trial/implement/ComponentModels/test/templates
 08 374 src rm install/makefile.boot
 08 374 src rm install/PWD.c
+08 374 sys rm bin/PWD
