@@ -1,5 +1,5 @@
 //# ArrayMath.h: ArrayMath: Simple mathematics done on an entire array.
-//# Copyright (C) 1993,1994,1995,1996,1998,1999,2001
+//# Copyright (C) 1993,1994,1995,1996,1998,1999,2001,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //# 
 //# This library is free software; you can redistribute it and/or modify it
@@ -403,18 +403,36 @@ template<class T> Array<T> partialMaxs (const Array<T>& array,
 					const IPosition& collapseAxes);
 template<class T> Array<T> partialMeans (const Array<T>& array,
 					 const IPosition& collapseAxes);
-template<class T> Array<T> partialVariances (const Array<T>& array,
-					     const IPosition& collapseAxes);
+template<class T> inline Array<T> partialVariances (const Array<T>& array,
+					     const IPosition& collapseAxes)
+{
+    return partialVariances (array, collapseAxes,
+			     partialMeans (array, collapseAxes));
+}
 template<class T> Array<T> partialVariances (const Array<T>& array,
 					     const IPosition& collapseAxes,
 					     const Array<T>& means);
-template<class T> Array<T> partialStddevs (const Array<T>& array,
-					   const IPosition& collapseAxes);
-template<class T> Array<T> partialStddevs (const Array<T>& array,
+template<class T> inline Array<T> partialStddevs (const Array<T>& array,
+					   const IPosition& collapseAxes)
+{
+    return sqrt (partialVariances (array, collapseAxes,
+				   partialMeans (array, collapseAxes)));
+}
+template<class T> inline Array<T> partialStddevs (const Array<T>& array,
 					   const IPosition& collapseAxes,
-					   const Array<T>& means);
+					   const Array<T>& means)
+{
+    return sqrt (partialVariances (array, collapseAxes, means));
+}
+template<class T> inline Array<T> partialAvdevs (const Array<T>& array,
+					  const IPosition& collapseAxes)
+{
+    return partialAvdevs (array, collapseAxes,
+			  partialMeans (array, collapseAxes));
+}
 template<class T> Array<T> partialAvdevs (const Array<T>& array,
-					  const IPosition& collapseAxes);
+					  const IPosition& collapseAxes,
+					  const Array<T>& means);
 template<class T> Array<T> partialMedians (const Array<T>& array,
 					   const IPosition& collapseAxes,
 					   Bool takeEvenMean=False,
@@ -551,7 +569,3 @@ uInt partialFuncHelper (Int& nelemCont,
 
 
 #endif
-
-
-
-

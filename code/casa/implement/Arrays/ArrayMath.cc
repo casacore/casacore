@@ -1,5 +1,5 @@
 //# ArrayMath.cc: Arithmetic functions defined on Arrays
-//# Copyright (C) 1993,1994,1995,1996,1997,1998,1999,2001
+//# Copyright (C) 1993,1994,1995,1996,1997,1998,1999,2001,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -1331,8 +1331,8 @@ template<class T> T stddev(const Array<T> &a, T mean)
 template<class T> T avdev(const Array<T> &a)
 {
     if (a.nelements() < 1) {
-	throw(ArrayError("::avdev(const Array<T> &,) - Need at least  "
-			 "elements"));
+	throw(ArrayError("::avdev(const Array<T> &,) - Need at least 1 "
+			 "element"));
     }
     return avdev(a, mean(a));
 }
@@ -1340,11 +1340,11 @@ template<class T> T avdev(const Array<T> &a)
 // <thrown>
 //    </item> ArrayError
 // </thrown>
-template<class T> T avdev(const Array<T> &a,T mean)
+template<class T> T avdev(const Array<T> &a, T mean)
 {
     if (a.nelements() < 1) {
 	throw(ArrayError("::avdev(const Array<T> &,T) - Need at least 1 "
-			 "elements"));
+			 "element"));
     }
     Array<T> avdeviations(fabs(a - mean));
     return sum(avdeviations)/(1.0*a.nelements());
@@ -1480,6 +1480,9 @@ template<class T, class U> void convertArray(Array<T> &to,
 template<class T> Array<T> partialSums (const Array<T>& array,
 					const IPosition& collapseAxes)
 {
+  if (collapseAxes.nelements() == 0) {
+    return array.copy();
+  }
   const IPosition& shape = array.shape();
   uInt ndim = shape.nelements();
   if (ndim == 0) {
@@ -1500,7 +1503,7 @@ template<class T> Array<T> partialSums (const Array<T>& array,
   // end up in the same output element.
   // cont tells if any data are contiguous.
   // stax gives the first non-contiguous axis.
-  // no gives the number of contiguous elements.
+  // n0 gives the number of contiguous elements.
   Bool cont = True;
   uInt n0 = nelemCont;
   Int incr0 = incr(0);
@@ -1544,6 +1547,9 @@ template<class T> Array<T> partialSums (const Array<T>& array,
 template<class T> Array<T> partialProducts (const Array<T>& array,
 					    const IPosition& collapseAxes)
 {
+  if (collapseAxes.nelements() == 0) {
+    return array.copy();
+  }
   const IPosition& shape = array.shape();
   uInt ndim = shape.nelements();
   if (ndim == 0) {
@@ -1564,7 +1570,7 @@ template<class T> Array<T> partialProducts (const Array<T>& array,
   // end up in the same output element.
   // cont tells if any data are contiguous.
   // stax gives the first non-contiguous axis.
-  // no gives the number of contiguous elements.
+  // n0 gives the number of contiguous elements.
   Bool cont = True;
   uInt n0 = nelemCont;
   Int incr0 = incr(0);
@@ -1608,6 +1614,9 @@ template<class T> Array<T> partialProducts (const Array<T>& array,
 template<class T> Array<T> partialMins (const Array<T>& array,
 					const IPosition& collapseAxes)
 {
+  if (collapseAxes.nelements() == 0) {
+    return array.copy();
+  }
   const IPosition& shape = array.shape();
   uInt ndim = shape.nelements();
   if (ndim == 0) {
@@ -1636,7 +1645,7 @@ template<class T> Array<T> partialMins (const Array<T>& array,
   // end up in the same output element.
   // cont tells if any data are contiguous.
   // stax gives the first non-contiguous axis.
-  // no gives the number of contiguous elements.
+  // n0 gives the number of contiguous elements.
   Bool cont = True;
   uInt n0 = nelemCont;
   Int incr0 = incr(0);
@@ -1686,6 +1695,9 @@ template<class T> Array<T> partialMins (const Array<T>& array,
 template<class T> Array<T> partialMaxs (const Array<T>& array,
 					const IPosition& collapseAxes)
 {
+  if (collapseAxes.nelements() == 0) {
+    return array.copy();
+  }
   const IPosition& shape = array.shape();
   uInt ndim = shape.nelements();
   if (ndim == 0) {
@@ -1714,7 +1726,7 @@ template<class T> Array<T> partialMaxs (const Array<T>& array,
   // end up in the same output element.
   // cont tells if any data are contiguous.
   // stax gives the first non-contiguous axis.
-  // no gives the number of contiguous elements.
+  // n0 gives the number of contiguous elements.
   Bool cont = True;
   uInt n0 = nelemCont;
   Int incr0 = incr(0);
@@ -1764,6 +1776,9 @@ template<class T> Array<T> partialMaxs (const Array<T>& array,
 template<class T> Array<T> partialMeans (const Array<T>& array,
 					 const IPosition& collapseAxes)
 {
+  if (collapseAxes.nelements() == 0) {
+    return array.copy();
+  }
   Array<T> result = partialSums (array, collapseAxes);
   uInt nr = result.nelements();
   if (nr > 0) {
@@ -1776,13 +1791,6 @@ template<class T> Array<T> partialMeans (const Array<T>& array,
     result.putStorage (res, deleteRes);
   }
   return result;
-}
-
-template<class T> Array<T> partialVariances (const Array<T>& array,
-					     const IPosition& collapseAxes)
-{
-  return partialVariances (array, collapseAxes,
-			   partialMeans (array, collapseAxes));
 }
 
 template<class T> Array<T> partialVariances (const Array<T>& array,
@@ -1820,7 +1828,7 @@ template<class T> Array<T> partialVariances (const Array<T>& array,
   // end up in the same output element.
   // cont tells if any data are contiguous.
   // stax gives the first non-contiguous axis.
-  // no gives the number of contiguous elements.
+  // n0 gives the number of contiguous elements.
   Bool cont = True;
   uInt n0 = nelemCont;
   Int incr0 = incr(0);
@@ -1871,26 +1879,6 @@ template<class T> Array<T> partialVariances (const Array<T>& array,
   return result;
 }
 
-template<class T> Array<T> partialStddevs (const Array<T>& array,
-					   const IPosition& collapseAxes)
-{
-  return sqrt (partialVariances (array, collapseAxes));
-}
-
-template<class T> Array<T> partialStddevs (const Array<T>& array,
-					   const IPosition& collapseAxes,
-					   const Array<T>& means)
-{
-  return sqrt (partialVariances (array, collapseAxes, means));
-}
-
-template<class T> Array<T> partialAvdevs (const Array<T>& array,
-					  const IPosition& collapseAxes)
-{
-  return partialAvdevs (array, collapseAxes,
-			partialMeans (array, collapseAxes));
-}
-
 template<class T> Array<T> partialAvdevs (const Array<T>& array,
 					  const IPosition& collapseAxes,
 					  const Array<T>& means)
@@ -1923,7 +1911,7 @@ template<class T> Array<T> partialAvdevs (const Array<T>& array,
   // end up in the same output element.
   // cont tells if any data are contiguous.
   // stax gives the first non-contiguous axis.
-  // no gives the number of contiguous elements.
+  // n0 gives the number of contiguous elements.
   Bool cont = True;
   uInt n0 = nelemCont;
   Int incr0 = incr(0);
@@ -1980,7 +1968,7 @@ template<class T> Array<T> partialMedians (const Array<T>& array,
   // Is there anything to collapse?
   uInt ndimColl = collapseAxes.nelements();
   if (ndimColl == 0) {
-    return array.copy();
+    return (inPlace  ?  array : array.copy());
   }
   // Reorder the array such that the collapse axes are the first axes.
   Array<T> newArr = reorderArray (array, collapseAxes, !inPlace);
@@ -2056,7 +2044,7 @@ template<class T> Array<T> partialFractiles (const Array<T>& array,
   // Is there anything to collapse?
   uInt ndimColl = collapseAxes.nelements();
   if (ndimColl == 0) {
-    return array.copy();
+    return (inPlace  ?  array : array.copy());
   }
   // Reorder the array such that the collapse axes are the first axes.
   Array<T> newArr = reorderArray (array, collapseAxes, !inPlace);
