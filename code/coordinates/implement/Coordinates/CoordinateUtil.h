@@ -326,22 +326,23 @@ static Bool removePixelAxes(CoordinateSystem& cSys,
                             const Vector<uInt>& pixelAxes,
                             const Bool remove);
 
-// Setup Measures conversion machines for Directions and Frequencies.
+// Setup Measures conversion machine for MDirections.
 // Returns True if the machine was needed and set.  Returns False
-// if the machine was not needed and not set.  There must be both a Direction 
-// and a Spectral Coordinate in the CoordinateSystem when making the
-// Frequency machine.
-// <group>
+// if the machine was not needed and not set.  
   static Bool makeDirectionMachine(LogIO& os, MDirection::Convert& machine,
                                    const DirectionCoordinate& dirCoordTo,
                                    const DirectionCoordinate& dirCoordFrom,
                                    const ObsInfo& obsTo,
                                    const ObsInfo& obsFrom);
+// Setup Measures conversion machines for MFrequencies.
+// Returns True if the machine was needed and set.  Returns False
+// if the machine was not needed and not set.  There must be both a Direction 
+// and a Spectral Coordinate in the CoordinateSystem when making the
+// Frequency machine.
   static Bool makeFrequencyMachine(LogIO& os, MFrequency::Convert& machine,
                                    Int coordinateTo, Int coordinateFrom,
                                    const CoordinateSystem& coordsTo,
                                    const CoordinateSystem& coordsFrom);
-// </group>
 
 //
 // Find the Sky in the CoordinateSystem. Assumes only one DirectionCoordinate.
