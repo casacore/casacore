@@ -153,8 +153,8 @@ Bool MSSelector::initSelection(Int dataDescId, Bool reset)
       for (Int i=1; i<ndd; i++) {
 	if (spwc.numChan()(ddc.spectralWindowId()(i)) != 
 	    spwc.numChan()(ddc.spectralWindowId()(i-1)) ||
-	    polc.numCorr()(ddc.spectralWindowId()(i)) != 
-	    polc.numCorr()(ddc.spectralWindowId()(i-1))) {
+	    polc.numCorr()(ddc.polarizationId()(i)) != 
+	    polc.numCorr()(ddc.polarizationId()(i-1))) {
 	  constantShape = False;
 	  break;
 	}
