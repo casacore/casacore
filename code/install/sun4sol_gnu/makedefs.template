@@ -2,7 +2,7 @@
 # makedefs: Installation-specific definitions used by AIPS++ makefiles
 #-----------------------------------------------------------------------------
 #
-#   Copyright (C) 1996
+#   Copyright (C) 1996,1997
 #   Associated Universities, Inc. Washington DC, USA.
 #
 #   This program is free software; you can redistribute it and/or modify
@@ -111,6 +111,11 @@ C++DBGLVL:= -g
 C++DBG   += -pipe -fno-for-scope -fno-implicit-templates
 C++OPTLVL:= -O2
 C++OPT   += -pipe -fno-for-scope -fno-implicit-templates
+
+# Add lib to the runpath. Needed for DEBUG as well because glish can build
+# shared libraries.
+LDOPT := -Xlinker -R -Xlinker $(AIPSARCH)/lib
+LDDBG := $(LDOPT)
 
 # Use do-it-yourself template instantiation.
 TEMPLATES := diy
