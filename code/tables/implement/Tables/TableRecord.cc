@@ -77,9 +77,14 @@ TableRecord::TableRecord (const TableRecord& other)
 
 TableRecord::TableRecord (const RecordInterface& other)
 : RecordInterface (other),
-  rep_p    (new TableRecordRep (other.description())),
   parent_p (0)
 {
+  // If the RecordInterface is a TableRecord, assign it immediately.
+  const TableRecord* trecp = dynamic_cast<const TableRecord*>(&other);
+  if (trecp != 0) {
+    rep_p = trecp->rep_p;
+  } else {
+    rep_p.set (new TableRecordRep (other.description()));
     uInt n = other.nfields();
     const RecordDesc& desc = description();
     for (uInt i=0; i<n; i++) {
@@ -98,6 +103,7 @@ TableRecord::TableRecord (const RecordInterface& other)
 	    rep_p->copyDataField (dtype, i, other.get_pointer (i, dtype));
 	}
     }
+  }
 }
 
 TableRecord& TableRecord::operator= (const TableRecord& other)
