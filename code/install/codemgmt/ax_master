@@ -4741,3 +4741,4 @@
 14 306 src mv trial/implement/SDIterators/test/tNewSDRecord.cc trial/implement/SDIterators/test/tSDRecord.cc
 14 306 sys rm bin/newsditerator
 14 306 sys rm libexec/newsdaverager.g
+14 306 sys rm libexec/sditerator2.g
