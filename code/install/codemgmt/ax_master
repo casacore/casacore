@@ -4422,3 +4422,4 @@
 14 296 src mv aips/implement/MeasurementSets/MSFeed.cc aips/implement/MeasurementSets/OldMSFeed.cc
 14 296 src mv aips/implement/MeasurementSets/MSFeed.h aips/implement/MeasurementSets/OldMSFeed.h
 14 296 src mv aips/implement/MeasurementSets/MSFeedColumns.cc aips/implement/MeasurementSets/OldMSFeedColumns.cc
+14 296 src mv aips/implement/MeasurementSets/MSFeedColumns.h aips/implement/MeasurementSets/OldMSFeedColumns.h
