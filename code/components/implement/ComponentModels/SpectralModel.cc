@@ -73,6 +73,13 @@ SpectralModel::SpectralModel()
   DebugAssert(ok(), AipsError);
 }
 
+SpectralModel::SpectralModel(const MFrequency& refFreq, const Unit& freqUnit)
+  :itsRefFreq(refFreq),
+   itsFreqUnit(freqUnit)
+{
+  DebugAssert(ok(), AipsError);
+}
+
 SpectralModel::SpectralModel(const SpectralModel& other) 
   :itsRefFreq(other.itsRefFreq),
    itsFreqUnit(other.itsFreqUnit)
@@ -185,5 +192,5 @@ Bool SpectralModel::ok() const {
 }
 
 // Local Variables: 
-// compile-command: "gmake OPTLIB=1 SpectralModel"
+// compile-command: "gmake SpectralModel"
 // End: 
