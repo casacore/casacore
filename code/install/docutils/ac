@@ -128,12 +128,12 @@ cd $a_code
 \rm -f CHANGELOG.LASTID CHANGELOG.LAST
 cvs update CHANGELOG.LASTID CHANGELOG.LAST
 a_idold=`cat CHANGELOG.LASTID`
-a_id=`expr $a_idold + 1 | awk '{printf d4 $1}'`
+a_id=`expr $a_idold + 1 | awk '{printf("%04d",$1)}'`
 # Update the common files and commit them.
 \rm -f CHANGELOG.LASTID
 echo $a_id > CHANGELOG.LASTID
 sed $a_pwd/changelog.entry-brief -e "s/-_-chid-_-/$a_id/" >> CHANGELOG.LAST
-cvs commit -m "ac: set to change-id $a_id" CHANGELOG.LASTID CHANGELOG.LAST
+cvs commit -f -m "ac: set to change-id $a_id" CHANGELOG.LASTID CHANGELOG.LAST
 a_sts=$?
 \rm -f CHANGELOG.LASTID CHANGELOG.LAST
 if [ $a_sts != 0 ]
@@ -142,11 +142,13 @@ then
   exit 1
 fi
 # Update and check in the changelog file.
+# In one way or another the -f (force) switch has to be used with cvs commit,
+# otherwise it thinks there are no changes.
 cd $a_pwd
 \rm -f changelog
 cvs update changelog
 sed $a_pwd/changelog.entry-full -e "s/-_-chid-_-/$a_id/" >> changelog
-cvs commit -m "ac: added change-id $a_id" changelog
+cvs commit -f -m "ac: added change-id $a_id" changelog
 a_sts=$?
 \rm -f changelog
 if [ $a_sts != 0 ]
