@@ -190,10 +190,6 @@ public:
                  const Vector<Int>& pixelAxisMap,
                  const CoordinateSystem& outCoords);
 
-  // Copy data and mask
-  void copyDataAndMask(MaskedLattice<T>& out,
-                       MaskedLattice<T>& in) const;
-
   // Find maps between coordinate systems
   void findMaps (uInt nDim, 
                  Vector<Int>& pixelAxisMap1,
