@@ -1,5 +1,5 @@
 //# CopyRecord.cc:  definition of CopyRecordToTable
-//# Copyright (C) 1995,1996,1997,1998,1999
+//# Copyright (C) 1995,1996,1997,1998,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -238,8 +238,230 @@ CopyRecordToTable::CopyRecordToTable(Table &outputTable,
 	}
     }
 }
+
+CopyRecordToTable::CopyRecordToTable(const CopyRecordToTable &other)
+{
+    *this = other;
+}
  
 CopyRecordToTable::~CopyRecordToTable()
+{
+    clearAll();
+}
+
+CopyRecordToTable &CopyRecordToTable::operator=(const CopyRecordToTable &other)
+{
+    if (this != &other) {
+	clearAll();
+	table_bool.resize(other.table_bool.nelements(), True);
+	record_bool.resize(other.record_bool.nelements(), True);
+	for (uInt i=0;i<table_bool.nelements();i++) {
+	    table_bool[i] = new ScalarColumn<Bool>(*(other.table_bool[i]));
+	    record_bool[i] = other.record_bool[i];
+	    AlwaysAssert(table_bool[i], AipsError);
+	}
+	table_char.resize(other.table_char.nelements(), True);
+	record_char.resize(other.record_char.nelements(), True);
+	for (uInt i=0;i<table_char.nelements();i++) {
+	    table_char[i] = new ScalarColumn<uChar>(*(other.table_char[i]));
+	    record_char[i] = other.record_char[i];
+	    AlwaysAssert(table_char[i], AipsError);
+	}
+	table_short.resize(other.table_short.nelements(), True);
+	record_short.resize(other.record_short.nelements(), True);
+	for (uInt i=0;i<table_short.nelements();i++) {
+	    table_short[i] = new ScalarColumn<Short>(*(other.table_short[i]));
+	    record_short[i] = other.record_short[i];
+	    AlwaysAssert(table_short[i], AipsError);
+	}
+	table_int.resize(other.table_int.nelements(), True);
+	record_int.resize(other.record_int.nelements(), True);
+	for (uInt i=0;i<table_int.nelements();i++) {
+	    table_int[i] = new ScalarColumn<Int>(*(other.table_int[i]));
+	    record_int[i] = other.record_int[i];
+	    AlwaysAssert(table_int[i], AipsError);
+	}
+	table_float.resize(other.table_float.nelements(), True);
+	record_float.resize(other.record_float.nelements(), True);
+	for (uInt i=0;i<table_float.nelements();i++) {
+	    table_float[i] = new ScalarColumn<Float>(*(other.table_float[i]));
+	    record_float[i] = other.record_float[i];
+	    AlwaysAssert(table_float[i], AipsError);
+	}
+	table_double.resize(other.table_double.nelements(), True);
+	record_double.resize(other.record_double.nelements(), True);
+	for (uInt i=0;i<table_double.nelements();i++) {
+	    table_double[i] = new ScalarColumn<Double>(*(other.table_double[i]));
+	    record_double[i] = other.record_double[i];
+	    AlwaysAssert(table_double[i], AipsError);
+	}
+	table_complex.resize(other.table_complex.nelements(), True);
+	record_complex.resize(other.record_complex.nelements(), True);
+	for (uInt i=0;i<table_complex.nelements();i++) {
+	    table_complex[i] = new ScalarColumn<Complex>(*(other.table_complex[i]));
+	    record_complex[i] = other.record_complex[i];
+	    AlwaysAssert(table_complex[i], AipsError);
+	}
+	table_dcomplex.resize(other.table_dcomplex.nelements(), True);
+	record_dcomplex.resize(other.record_dcomplex.nelements(), True);
+	for (uInt i=0;i<table_dcomplex.nelements();i++) {
+	    table_dcomplex[i] = new ScalarColumn<DComplex>(*(other.table_dcomplex[i]));
+	    record_dcomplex[i] = other.record_dcomplex[i];
+	    AlwaysAssert(table_dcomplex[i], AipsError);
+	}
+	table_string.resize(other.table_string.nelements(), True);
+	record_string.resize(other.record_string.nelements(), True);
+	for (uInt i=0;i<table_string.nelements();i++) {
+	    table_string[i] = new ScalarColumn<String>(*(other.table_string[i]));
+	    record_string[i] = other.record_string[i];
+	    AlwaysAssert(table_string[i], AipsError);
+	}
+	table_array_bool.resize(other.table_array_bool.nelements(), True);
+	record_array_bool.resize(other.record_array_bool.nelements(), True);
+	for (uInt i=0;i<table_array_bool.nelements();i++) {
+	    table_array_bool[i] = new ArrayColumn<Bool>(*(other.table_array_bool[i]));
+	    record_array_bool[i] = other.record_array_bool[i];
+	    AlwaysAssert(table_array_bool[i], AipsError);
+	}
+	table_array_char.resize(other.table_array_char.nelements(), True);
+	record_array_char.resize(other.record_array_char.nelements(), True);
+	for (uInt i=0;i<table_array_char.nelements();i++) {
+	    table_array_char[i] = new ArrayColumn<uChar>(*(other.table_array_char[i]));
+	    record_array_char[i] = other.record_array_char[i];
+	    AlwaysAssert(table_array_char[i], AipsError);
+	}
+	table_array_short.resize(other.table_array_short.nelements(), True);
+	record_array_short.resize(other.record_array_short.nelements(), True);
+	for (uInt i=0;i<table_array_short.nelements();i++) {
+	    table_array_short[i] = new ArrayColumn<Short>(*(other.table_array_short[i]));
+	    record_array_short[i] = other.record_array_short[i];
+	    AlwaysAssert(table_array_short[i], AipsError);
+	}
+	table_array_int.resize(other.table_array_int.nelements(), True);
+	record_array_int.resize(other.record_array_int.nelements(), True);
+	for (uInt i=0;i<table_array_int.nelements();i++) {
+	    table_array_int[i] = new ArrayColumn<Int>(*(other.table_array_int[i]));
+	    record_array_int[i] = other.record_array_int[i];
+	    AlwaysAssert(table_array_int[i], AipsError);
+	}
+	table_array_float.resize(other.table_array_float.nelements(), True);
+	record_array_float.resize(other.record_array_float.nelements(), True);
+	for (uInt i=0;i<table_array_float.nelements();i++) {
+	    table_array_float[i] = new ArrayColumn<Float>(*(other.table_array_float[i]));
+	    record_array_float[i] = other.record_array_float[i];
+	    AlwaysAssert(table_array_float[i], AipsError);
+	}
+	table_array_double.resize(other.table_array_double.nelements(), True);
+	record_array_double.resize(other.record_array_double.nelements(), True);
+	for (uInt i=0;i<table_array_double.nelements();i++) {
+	    table_array_double[i] = new ArrayColumn<Double>(*(other.table_array_double[i]));
+	    record_array_double[i] = other.record_array_double[i];
+	    AlwaysAssert(table_array_double[i], AipsError);
+	}
+	table_array_complex.resize(other.table_array_complex.nelements(), True);
+	record_array_complex.resize(other.record_array_complex.nelements(), True);
+	for (uInt i=0;i<table_array_complex.nelements();i++) {
+	    table_array_complex[i] = new ArrayColumn<Complex>(*(other.table_array_complex[i]));
+	    record_array_complex[i] = other.record_array_complex[i];
+	    AlwaysAssert(table_array_complex[i], AipsError);
+	}
+	table_array_dcomplex.resize(other.table_array_dcomplex.nelements(), True);
+	record_array_dcomplex.resize(other.record_array_dcomplex.nelements(), True);
+	for (uInt i=0;i<table_array_dcomplex.nelements();i++) {
+	    table_array_dcomplex[i] = new ArrayColumn<DComplex>(*(other.table_array_dcomplex[i]));
+	    record_array_dcomplex[i] = other.record_array_dcomplex[i];
+	    AlwaysAssert(table_array_dcomplex[i], AipsError);
+	}
+	table_array_string.resize(other.table_array_string.nelements(), True);
+	record_array_string.resize(other.record_array_string.nelements(), True);
+	for (uInt i=0;i<table_array_string.nelements();i++) {
+	    table_array_string[i] = new ArrayColumn<String>(*(other.table_array_string[i]));
+	    record_array_string[i] = other.record_array_string[i];
+	    AlwaysAssert(table_array_string[i], AipsError);
+	}
+    }
+    return *this;
+}
+
+void CopyRecordToTable::copy(uInt rownr)
+{
+    uInt i;
+
+    for (i=0; i < table_bool.nelements(); i++) {
+        table_bool[i]->put(rownr, *(record_bool[i]));
+    }
+ 
+    for (i=0; i < table_char.nelements(); i++) {
+        table_char[i]->put(rownr, *(record_char[i]));
+    }
+ 
+    for (i=0; i < table_short.nelements(); i++) {
+       table_short[i]->put(rownr, *(record_short[i]));
+    }
+ 
+    for (i=0; i < table_int.nelements(); i++) {
+        table_int[i]->put(rownr, *(record_int[i]));
+    }
+ 
+    for (i=0; i < table_float.nelements(); i++) {
+        table_float[i]->put(rownr, *(record_float[i]));
+    }
+ 
+    for (i=0; i < table_double.nelements(); i++) {
+        table_double[i]->put(rownr, *(record_double[i]));
+    }
+ 
+    for (i=0; i < table_complex.nelements(); i++) {
+        table_complex[i]->put(rownr, *(record_complex[i]));
+    }
+ 
+    for (i=0; i < table_dcomplex.nelements(); i++) {
+        table_dcomplex[i]->put(rownr, *(record_dcomplex[i]));
+    }
+ 
+    for (i=0; i < table_string.nelements(); i++) {
+        table_string[i]->put(rownr, *(record_string[i]));
+    }
+  
+    for (i=0; i < table_array_bool.nelements(); i++) {
+        table_array_bool[i]->put(rownr, *(record_array_bool[i]));
+    }
+ 
+    for (i=0; i < table_array_char.nelements(); i++) {
+        table_array_char[i]->put(rownr, *(record_array_char[i]));
+    }
+ 
+    for (i=0; i < table_array_short.nelements(); i++) {
+        table_array_short[i]->put(rownr, *(record_array_short[i]));
+   }
+ 
+    for (i=0; i < table_array_int.nelements(); i++) {
+        table_array_int[i]->put(rownr, *(record_array_int[i]));
+    }
+ 
+    for (i=0; i < table_array_float.nelements(); i++) {
+        table_array_float[i]->put(rownr, *(record_array_float[i]));
+    }
+ 
+    for (i=0; i < table_array_double.nelements(); i++) {
+        table_array_double[i]->put(rownr, *(record_array_double[i]));
+    }
+ 
+    for (i=0; i < table_array_complex.nelements(); i++) {
+        table_array_complex[i]->put(rownr, *(record_array_complex[i]));
+    }
+ 
+    for (i=0; i < table_array_dcomplex.nelements(); i++) {
+        table_array_dcomplex[i]->put(rownr, *(record_array_dcomplex[i]));
+    }
+ 
+    for (i=0; i < table_array_string.nelements(); i++) {
+	table_array_string[i]->put(rownr, *(record_array_string[i]));
+    }
+}
+
+
+void CopyRecordToTable::clearAll()
 {
     uInt i;
  
@@ -333,84 +555,6 @@ CopyRecordToTable::~CopyRecordToTable()
     }
     table_array_string.set(static_cast<ArrayColumn<String>*>(0));
 }
- 
-void CopyRecordToTable::copy(uInt rownr)
-{
-    uInt i;
-
-    for (i=0; i < table_bool.nelements(); i++) {
-        table_bool[i]->put(rownr, *(record_bool[i]));
-    }
- 
-    for (i=0; i < table_char.nelements(); i++) {
-        table_char[i]->put(rownr, *(record_char[i]));
-    }
- 
-    for (i=0; i < table_short.nelements(); i++) {
-       table_short[i]->put(rownr, *(record_short[i]));
-    }
- 
-    for (i=0; i < table_int.nelements(); i++) {
-        table_int[i]->put(rownr, *(record_int[i]));
-    }
- 
-    for (i=0; i < table_float.nelements(); i++) {
-        table_float[i]->put(rownr, *(record_float[i]));
-    }
- 
-    for (i=0; i < table_double.nelements(); i++) {
-        table_double[i]->put(rownr, *(record_double[i]));
-    }
- 
-    for (i=0; i < table_complex.nelements(); i++) {
-        table_complex[i]->put(rownr, *(record_complex[i]));
-    }
- 
-    for (i=0; i < table_dcomplex.nelements(); i++) {
-        table_dcomplex[i]->put(rownr, *(record_dcomplex[i]));
-    }
- 
-    for (i=0; i < table_string.nelements(); i++) {
-        table_string[i]->put(rownr, *(record_string[i]));
-    }
-  
-    for (i=0; i < table_array_bool.nelements(); i++) {
-        table_array_bool[i]->put(rownr, *(record_array_bool[i]));
-    }
- 
-    for (i=0; i < table_array_char.nelements(); i++) {
-        table_array_char[i]->put(rownr, *(record_array_char[i]));
-    }
- 
-    for (i=0; i < table_array_short.nelements(); i++) {
-        table_array_short[i]->put(rownr, *(record_array_short[i]));
-   }
- 
-    for (i=0; i < table_array_int.nelements(); i++) {
-        table_array_int[i]->put(rownr, *(record_array_int[i]));
-    }
- 
-    for (i=0; i < table_array_float.nelements(); i++) {
-        table_array_float[i]->put(rownr, *(record_array_float[i]));
-    }
- 
-    for (i=0; i < table_array_double.nelements(); i++) {
-        table_array_double[i]->put(rownr, *(record_array_double[i]));
-    }
- 
-    for (i=0; i < table_array_complex.nelements(); i++) {
-        table_array_complex[i]->put(rownr, *(record_array_complex[i]));
-    }
- 
-    for (i=0; i < table_array_dcomplex.nelements(); i++) {
-        table_array_dcomplex[i]->put(rownr, *(record_array_dcomplex[i]));
-    }
- 
-    for (i=0; i < table_array_string.nelements(); i++) {
-	table_array_string[i]->put(rownr, *(record_array_string[i]));
-    }
-}
-
 
 void addRecordDesc(TableDesc &tableDescription,
                           const RecordDesc &recDesc,
@@ -820,4 +964,3 @@ void CopyRecordToRecord::copy()
 	*(out_record_array_string[i]) = *(in_record_array_string[i]);
     }
 }
-

@@ -1,5 +1,5 @@
 //# CopyRecord.h: Copy fields from a Record to a table or other record.
-//# Copyright (C) 1995,1996,1997,1999
+//# Copyright (C) 1995,1996,1997,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -26,8 +26,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_COPY_RECORD_H)
-#define AIPS_COPY_RECORD_H
+#if !defined(AIPS_COPYRECORD_H)
+#define AIPS_COPYRECORD_H
 
 
 #include <aips/aips.h>
@@ -84,20 +84,19 @@ public:
                       const RecordInterface &inputBuffer,
                       const Vector<Int> inputMap);
 
+    // assignment constructor, reference semantics
+    CopyRecordToTable(const CopyRecordToTable &other);
 
     ~CopyRecordToTable();
+
+    // assignment operator, reference semantics
+    CopyRecordToTable &operator=(const CopyRecordToTable &other);
 
     // Copy from the record (which must still exist) to the given row number
     // of the table (which must also still exist).
     void copy(uInt rownr);
 
-private:
-
-    // Undefined and inaccessible
-    CopyRecordToTable();
-    CopyRecordToTable(const CopyRecordToTable &);
-    CopyRecordToTable &operator=(const CopyRecordToTable &);
- 
+private: 
     // We could just have a TableColumn for scalars, but we'd need all of
     // the array types anyway.
     PtrBlock<ScalarColumn<Bool> *> table_bool;
@@ -137,6 +136,11 @@ private:
     Block<RORecordFieldPtr<Array<Complex> > > record_array_complex;
     Block<RORecordFieldPtr<Array<DComplex> > > record_array_dcomplex;
     Block<RORecordFieldPtr<Array<String> > > record_array_string;
+
+    void clearAll();
+
+    // Undefined and inaccessible
+    CopyRecordToTable();
 };
 
 //#!                        global functions
