@@ -60,8 +60,13 @@
 #endif
 
 // This section contains the various standard types used by AIPS++.
-
+#if defined(AIPS_STDLIB)
+typedef bool Bool;
+#define True true
+#define False false
+#else
 enum Bool { False = 0, True = 1 };
+#endif
 
 typedef char Char;
 typedef unsigned char uChar;
@@ -115,12 +120,15 @@ inline lDouble &at_c(lDouble &val) { return(val); };
 
 // This is an inline guaranteed-correct conversion function which converts
 // to Bool any type which has meaning in a C++ logical expression.
-template <class T>
-inline
-Bool ToBool (T val)
-{
-    return (val ? True : False);
-}
+// <group>
+inline Bool ToBool (Bool val) {return val;}
+inline Bool ToBool (const void *val) {return Bool(val!=0);}
+inline Bool ToBool (long val) {return Bool(val!=0);}
+inline Bool ToBool (unsigned long val) {return Bool(val!=0);}
+inline Bool ToBool (int val) {return Bool(val!=0);}
+inline Bool ToBool (unsigned int val) {return Bool(val!=0);}
+inline Bool ToBool (double val) {return Bool(val!=0.0);}
+// </group>
 
 // If AIPS_DEBUG is not defined, then the symbol expands to (0) which in an
 // if should be removed by the dead code eliminator of any optimizer; thus
