@@ -612,15 +612,15 @@ int main()
       }
       cout << " for collapseaxis 1 and 0..." << endl;
       Timer timer;
-      Array<Float> arr(shape);
+      Array<Double> arr(shape);
       indgen(arr);
       for (Int j=0; j<2; j++) {
 	{
 	  timer.mark();
-	  Array<Float> res2 = partialSums (arr, IPosition(1,1-j));
+	  Array<Double> res2 = partialSums (arr, IPosition(1,1-j));
 	  timer.show("partialSums   ");
 	  timer.mark();
-	  Vector<Float> res(shape(j));
+	  Vector<Double> res(shape(j));
 	  IPosition st(2,0);
 	  IPosition end(shape-1);
 	  for (Int i=0; i<shape(j); i++) {
@@ -629,14 +629,21 @@ int main()
 	    res(i) = sum(arr(st,end));
 	  }
 	  timer.show("Using sum     ");
-	  AlwaysAssertExit (allNear (res, res2, 1.e-6));
+	  uInt nd=res.ndim();
+	  Array<Double> rs = abs(res-res2)/res2;
+	  Double mn,mx;
+	  IPosition mnpos, mxpos;
+	  minMax(mn, mx, mnpos, mxpos, rs);
+	  cout << "Maximum result diff = " << rs(mxpos) << " at " << mxpos
+	       << " (" << res(mxpos) << " and " << res2(mxpos) << ')' << endl;
+	  AlwaysAssertExit (allNear (res, res2, 1.e-7));
 	}
 	{
 	  timer.mark();
-	  Array<Float> res2 = partialMedians (arr, IPosition(1,1-j));
+	  Array<Double> res2 = partialMedians (arr, IPosition(1,1-j));
 	  timer.show("partialMedians");
 	  timer.mark();
-	  Vector<Float> res(shape(j));
+	  Vector<Double> res(shape(j));
 	  IPosition st(2,0);
 	  IPosition end(shape-1);
 	  for (Int i=0; i<shape(j); i++) {
@@ -645,6 +652,13 @@ int main()
 	    res(i) = median(arr(st,end), False, False);
 	  }
 	  timer.show("Using median  ");
+	  uInt nd=res.ndim();
+	  Array<Double> rs = abs(res-res2)/res2;
+	  Double mn,mx;
+	  IPosition mnpos, mxpos;
+	  minMax(mn, mx, mnpos, mxpos, rs);
+	  cout << "Maximum result diff = " << rs(mxpos) << " at " << mxpos
+	       << " (" << res(mxpos) << " and " << res2(mxpos) << ')' << endl;
 	  AlwaysAssertExit (allNear (res, res2, 1.e-6));
 	}
       }
