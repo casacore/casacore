@@ -521,7 +521,7 @@ Bool CoordinateSystem::toWorld(Vector<Double> &world,
 
 // Move out of function in case it causes problems with our exception emulation.
     static Vector<Double> pix;
-Bool CoordinateSystem::toworld(Vector<Double> &world, 
+Bool CoordinateSystem::toWorld(Vector<Double> &world, 
 			       const IPosition &pixel) const
 {
     if (pix.nelements() != pixel.nelements()) {
