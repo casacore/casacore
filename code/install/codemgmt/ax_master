@@ -4692,3 +4692,4 @@
 14 304 src rm trial/apps/sdfits2ms/SDFITS2MSSetup.cc
 14 304 src rm trial/apps/sdfits2ms/SDFITS2MSSetup.h
 14 304 src rm trial/apps/sdfits2ms/SpecialHandlers.cc
+14 304 src rm trial/apps/sdfits2ms/SpecialHandlers.h
