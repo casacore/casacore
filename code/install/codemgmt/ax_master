@@ -5657,3 +5657,4 @@
 15 304 src mv ./trial/implement/Wnbt/Spectral2Element.cc ./trial/implement/SpectralComponents/Spectral2Element.cc
 15 304 src mv ./trial/implement/Wnbt/Spectral2Estimate.cc ./trial/implement/SpectralComponents/Spectral2Estimate.cc
 15 304 src mv ./trial/implement/Wnbt/Spectral3Element.cc ./trial/implement/SpectralComponents/Spectral3Element.cc
+15 304 src mv ./trial/implement/Wnbt/Spectral4Element.cc ./trial/implement/SpectralComponents/Spectral4Element.cc
