@@ -50,6 +50,7 @@
 #include <trial/Wnbt/SpectralFit.h>
 #include <trial/Wnbt/SpectralEstimate.h>
 #include <trial/Wnbt/SpectralElement.h>
+#include <trial/Wnbt/SpectralList.h>
 
 
 #include <aips/ostream.h>
@@ -155,7 +156,6 @@ void ImageProfileFit::setData (const Quantum<Vector<Float> >& x,
                                Bool isAbs)
 {
    AlwaysAssert(x.getValue().nelements()==mask.nelements(),AipsError);
-
    setData(x, y, isAbs);
 //
    itsMask.resize(mask.nelements());
@@ -165,13 +165,17 @@ void ImageProfileFit::setData (const Quantum<Vector<Float> >& x,
 
 
 uInt ImageProfileFit::addElements (const RecordInterface& rec)
-//
-// 'elements'
-// 'xabs'      must be T
-// 'xunit'
-// 'yunit'
-// 'doppler'
 {
+   if (!rec.isDefined("xunit")) {
+      throw (AipsError("Record holding model is missing 'xunit' field"));
+   }
+   if (!rec.isDefined("yunit")) {
+      throw (AipsError("Record holding model is missing 'yunit' field"));
+   }
+   if (!rec.isDefined("xabs")) {
+      throw (AipsError("Record holding model is missing 'xabs' field"));
+   }
+//
    Unit yUnitEst(rec.asString("yunit"));
    Unit xUnitEst(rec.asString("xunit"));
    String doppler;
@@ -183,10 +187,10 @@ uInt ImageProfileFit::addElements (const RecordInterface& rec)
 // Loop over elements in record
 
    if (!rec.isDefined("elements")) {
-      throw (AipsError("Record holding estimate is missing 'elements' field"));
+      throw (AipsError("Record holding model is missing 'elements' field"));
    }
    if (rec.dataType("elements") != TpRecord) {
-     throw (AipsError("Record holding estimate is invalid - 'elements' is not a record"));
+     throw (AipsError("Record holding model is invalid - 'elements' is not a record"));
    }
    Record rec2 = rec.asRecord("elements");
 //
@@ -201,9 +205,25 @@ uInt ImageProfileFit::addElements (const RecordInterface& rec)
          throw(AipsError(error));
       }
 
-// Deal with amplitude.  Convert to data y-units
+// Deal with each SpectralElement type
 
       if (se.getType()==SpectralElement::GAUSSIAN) {
+
+// See if we have the 'fixed' record
+
+         Vector<Bool> fixed;
+         if (rec3.isDefined("fixed")) fixed = rec3.asArrayBool("fixed");
+//
+         if (fixed.nelements()!=0) {
+            if (fixed.nelements()==3) {
+               if (fixed(0)) se.fixAmpl(True);
+               if (fixed(1)) se.fixCenter(True);
+               if (fixed(0)) se.fixFWHM(True);
+            } else {
+               throw (AipsError("'fixed' vector must be of length 3 for a Gaussian"));
+            }
+         }
+//
          Unit yUnitOut = itsY.getFullUnit();
          Quantum<Double> v(se.getAmpl(), yUnitEst);
          se.setAmpl(v.getValue(yUnitOut));
@@ -213,7 +233,7 @@ uInt ImageProfileFit::addElements (const RecordInterface& rec)
 // Otherwise we convert as best we can to the data source
 // x-units
 
-         if (itsProfileAxis==-1) {
+         if (itsProfileAxis==-1) {                     // Data source is vectors
 
 // Set abs/rel
 
@@ -229,19 +249,41 @@ uInt ImageProfileFit::addElements (const RecordInterface& rec)
                  throw (AipsError("X-data units must be km/s because estimate units are km/s"));
               }
            }
+
+// Need code here to handle 'pix' units for both the data source
+// and estimate units (unless they are both pix)
+
+           if (xUnitData.getName()==String("pix") ||
+               xUnitEst.getName()==String("pix")) {
+              if (!(xUnitData.getName()==String("pix") && 
+                    xUnitEst.getName()==String("pix"))) {
+                 throw (AipsError("x-units of 'pix' are not yet handled for data or model"));
+              }
+           }
 //
            if (xUnitEst.getName() != xUnitData.getName()) {
               Quantum<Double> vCen(se.getCenter(), xUnitEst);
               se.setCenter(vCen.getValue(xUnitData));
 //
-              Quantum<Double> vWidth(se.getSigma(), xUnitEst);
-              se.setSigma(vWidth.getValue(xUnitData));
+              Quantum<Double> vWidth(se.getFWHM(), xUnitEst);
+              se.setFWHM(vWidth.getValue(xUnitData));
            }
          } else {
 
-// Data source is an image
+// Data source is an image.  Convert 1-rel to 0-rel pixels in here.
 
            convertXEstimateToPixels(se, xAbs, xUnitEst, doppler);
+         }
+      } else if (se.getType()==SpectralElement::POLYNOMIAL) {
+         if (itsProfileAxis==-1) {
+
+// Convert coefficients to data source units
+
+         } else {
+
+// Convert coefficients to absolute pixels
+
+
          }
       } else {
          throw (AipsError("element type not supported"));
@@ -345,9 +387,10 @@ Bool ImageProfileFit::getElements (RecordInterface& rec,
 
 void ImageProfileFit::listElements(LogIO& os) const
 {
-   const uInt n = itsSpectralFitPtr->list().nelements();
+   const SpectralList& list = itsSpectralFitPtr->list();
+   const uInt n = list.nelements();
    for (uInt i=0; i<n; i++) {
-     SpectralElement se = itsSpectralFitPtr->list()[i];
+     SpectralElement se = list[i];
      os.output() << se << endl;
    }
 }
@@ -404,8 +447,8 @@ Bool ImageProfileFit::estimate (uInt nMax)
          SpectralElement el = list[i];
          v = x(0) + inc*el.getCenter();
          el.setCenter(v);
-         v = el.getSigma();
-         el.setSigma(v*inc);
+         v = el.getFWHM();
+         el.setFWHM(v*inc);
 //
          itsSpectralFitPtr->addFitElement(el);
       }
@@ -521,7 +564,7 @@ void ImageProfileFit::convertXEstimateToPixels (SpectralElement& el,
                                                 const Unit& xUnitEstIn,
                                                 const String& dopplerIn)
 //
-// Convert estimate to absolute pixels
+// Convert estimate to absolute 0-rel pixels
 //
 {
    itsXAbs = True;
@@ -554,11 +597,14 @@ void ImageProfileFit::convertXEstimateToPixels (SpectralElement& el,
 
 // Convert position
 
+   Double offset = 0.0;
    if (xUnit==String("pix")) {
       coordIn = itsCoords.referencePixel();
       unitsIn = String("pix");
       if (!xAbsIn) {
          itsCoords.makePixelRelative(coordIn);
+      } else {
+         offset = -1.0;                             // make 0-rel
       }
    } else {
       coordIn = itsCoords.referenceValue();
@@ -568,9 +614,9 @@ void ImageProfileFit::convertXEstimateToPixels (SpectralElement& el,
       }
    }
    unitsIn(itsProfileAxis) = xUnit;
-   coordIn(itsProfileAxis) = el.getCenter();
+   coordIn(itsProfileAxis) = el.getCenter() + offset;
    if (!itsCoords.convert (coordOut, coordIn, absIn, unitsIn, itsDopplerType,
-                           absOut, unitsOut, itsDopplerType, 0.0, 0.0)) {
+                           absOut, unitsOut, itsDopplerType, 0.0, 0.0)) {   
       throw (AipsError(itsCoords.errorMessage()));
    }
    el.setCenter(coordOut(itsProfileAxis));
@@ -589,12 +635,12 @@ void ImageProfileFit::convertXEstimateToPixels (SpectralElement& el,
    absIn = False;
    absOut = False;
    unitsIn(itsProfileAxis) = xUnit;
-   coordIn(itsProfileAxis) = el.getSigma();
+   coordIn(itsProfileAxis) = el.getFWHM();
    if (!itsCoords.convert (coordOut, coordIn, absIn, unitsIn, itsDopplerType,
-                                absOut, unitsOut, itsDopplerType, 0.0, 0.0)) {
+                           absOut, unitsOut, itsDopplerType, 0.0, 0.0)) {
       throw (AipsError(itsCoords.errorMessage()));
    }
-   el.setSigma(abs(coordOut(itsProfileAxis)));
+   el.setFWHM(abs(coordOut(itsProfileAxis)));
 }
 
 
@@ -603,8 +649,8 @@ void ImageProfileFit::convertXEstimateFromPixels (SpectralElement& el,
                                                   const Unit& xUnitOut,
                                                   MDoppler::Types dopplerOut)
 //
-// Convert estimate from absolute pixels
-//
+// Convert estimate from absolute 0-rel pixels
+// If the output unit is 'pix' then they are 1-rel
 {
    Unit velUnit(String("m/s"));
    String xUnit = xUnitOut.getName();
@@ -619,23 +665,33 @@ void ImageProfileFit::convertXEstimateFromPixels (SpectralElement& el,
    Vector<Bool> absIn(n, True);
    Vector<Bool> absOut(n, xAbsOut);
 //
+   Double offset = 0.0;
    Vector<String> unitsIn(n, String("pix"));
    Vector<String> unitsOut(n);
    if (xUnit==pix) {
       unitsOut = pix;
+      if (xAbsOut) offset = 1.0;
    } else {
       unitsOut = itsCoords.worldAxisUnits();
       unitsOut(itsProfileAxis) = xUnit;
    }
+//
+   Double fac, value;
+   Vector<Double> errors;
+   el.getError(errors);
 
 // Convert position
 
-   coordIn(itsProfileAxis) = el.getCenter();
+   value = el.getCenter();
+   coordIn(itsProfileAxis) = value;
    if (!itsCoords.convert (coordOut, coordIn, absIn, unitsIn, dopplerOut,
-                           absOut, unitsOut, dopplerOut, 0.0, 0.0)) {
+                           absOut, unitsOut, dopplerOut, 0.0, offset)) {
       throw (AipsError(itsCoords.errorMessage()));
    }
    el.setCenter(coordOut(itsProfileAxis));
+//
+   fac = value / coordOut(itsProfileAxis);
+   errors(1) *= abs(fac);
 
 // Convert width
 
@@ -643,10 +699,17 @@ void ImageProfileFit::convertXEstimateFromPixels (SpectralElement& el,
    absOut = False;
    coordIn = itsCoords.referencePixel();
    itsCoords.makePixelRelative(coordIn);
-   coordIn(itsProfileAxis) = el.getSigma();
+   value = el.getFWHM();
+   coordIn(itsProfileAxis) = value;
    if (!itsCoords.convert (coordOut, coordIn, absIn, unitsIn, itsDopplerType,
-                                absOut, unitsOut, itsDopplerType, 0.0, 0.0)) {
+                           absOut, unitsOut, itsDopplerType, 0.0, 0.0)) {
       throw (AipsError(itsCoords.errorMessage()));
    }
-   el.setSigma(abs(coordOut(itsProfileAxis)));
+   el.setFWHM(abs(coordOut(itsProfileAxis)));
+   fac = value / coordOut(itsProfileAxis);
+   errors(2) *= abs(fac);
+
+// Reset errors
+
+   el.setError(errors);
 }
