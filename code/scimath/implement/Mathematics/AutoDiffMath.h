@@ -1,4 +1,4 @@
-//# AutoDiffMath.h: an automatic differential class for arameterized functions
+//# AutoDiffMath.h: Implements all mathematical functions for AutoDiff.
 //# Copyright (C) 1995,1999,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -29,9 +29,9 @@
 #if !defined(AIPS_AUTODIFFMATH_H)
 #define AIPS_AUTODIFFMATH_H
 
+//# Includes
 
 #include <aips/aips.h>
-#include <aips/Arrays/ArrayLogical.h>
 #include <aips/Mathematics/Math.h>
 #include <trial/Mathematics/AutoDiff.h>
 
@@ -57,8 +57,8 @@
 
 // Unary arithmetic operators.
 // <group>
-template<class T> AutoDiff<T> operator+(const AutoDiff<T> &ad);
-template<class T> AutoDiff<T> operator-(const AutoDiff<T> &ad);
+template<class T> AutoDiff<T> operator+(const AutoDiff<T> &other);
+template<class T> AutoDiff<T> operator-(const AutoDiff<T> &other);
 // </group>
 
 // arithmetic on two AutoDiff objects, returning an AutoDiff object
@@ -99,65 +99,71 @@ AutoDiff<T> operator/(const T &left, const AutoDiff<T> &right);
 
 // Transcendental functions
 // <group>
-template<class T> AutoDiff<T> acos(const AutoDiff<T>& ad);
-template<class T> AutoDiff<T> asin(const AutoDiff<T>& ad);
-template<class T> AutoDiff<T> atan(const AutoDiff<T>& ad);
-template<class T> AutoDiff<T> atan2(const AutoDiff<T>& y, 
-				      const AutoDiff<T>& x);
-template<class T> AutoDiff<T> cos(const AutoDiff<T>& ad);
-template<class T> AutoDiff<T> cosh(const AutoDiff<T>& ad);
-template<class T> AutoDiff<T> exp(const AutoDiff<T>& ad);
-template<class T> AutoDiff<T> log(const AutoDiff<T>& ad);
-template<class T> AutoDiff<T> log10(const AutoDiff<T>& ad);
-template<class T> AutoDiff<T> pow(const AutoDiff<T>& a, 
-				    const AutoDiff<T>& b);
-template<class T> AutoDiff<T> pow(const AutoDiff<T>& a, const T &b);
-template<class T> AutoDiff<T> sin(const AutoDiff<T>& ad);
-template<class T> AutoDiff<T> sinh(const AutoDiff<T>& ad);
-template<class T> AutoDiff<T> sqrt(const AutoDiff<T>& ad);
-template<class T> AutoDiff<T> tan(const AutoDiff<T>& ad);
-template<class T> AutoDiff<T> tanh(const AutoDiff<T>& ad);
-template<class T> AutoDiff<T> abs(const AutoDiff<T>& ad);
+template<class T> AutoDiff<T> acos(const AutoDiff<T> &ad);
+template<class T> AutoDiff<T> asin(const AutoDiff<T> &ad);
+template<class T> AutoDiff<T> atan(const AutoDiff<T> &ad);
+template<class T> AutoDiff<T> atan2(const AutoDiff<T> &y, 
+				    const AutoDiff<T> &x);
+template<class T> AutoDiff<T> cos(const AutoDiff<T> &ad);
+template<class T> AutoDiff<T> cosh(const AutoDiff<T> &ad);
+template<class T> AutoDiff<T> exp(const AutoDiff<T> &ad);
+template<class T> AutoDiff<T> log(const AutoDiff<T> &ad);
+template<class T> AutoDiff<T> log10(const AutoDiff<T> &ad);
+template<class T> AutoDiff<T> pow(const AutoDiff<T> &a, 
+				  const AutoDiff<T> &b);
+template<class T> AutoDiff<T> pow(const AutoDiff<T> &a, const T &b);
+template<class T> AutoDiff<T> sin(const AutoDiff<T> &ad);
+template<class T> AutoDiff<T> sinh(const AutoDiff<T> &ad);
+template<class T> AutoDiff<T> sqrt(const AutoDiff<T> &ad);
+template<class T> AutoDiff<T> tan(const AutoDiff<T> &ad);
+template<class T> AutoDiff<T> tanh(const AutoDiff<T> &ad);
+template<class T> AutoDiff<T> abs(const AutoDiff<T> &ad);
 // Floating-point remainder of x/c, with the same sign as x, where c is
 // a constant.
-template<class T> AutoDiff<T> fmod(const AutoDiff<T>& x,const T c);
+template<class T> AutoDiff<T> fmod(const AutoDiff<T> &x, const T c);
 // </group>
  
 // Comparison operators.  Only the values are compared: in the actual
 // functions, comparisons are used to decide on algorithms. To check
-// if two functions are equal, for example, use value && derivative
+// if two functions are equal, for example, use value & &derivative
 // comparisons both.
 // <group>
 // Compare two AutoDiff's
-template<class T> Bool operator>(const AutoDiff<T>& right,const AutoDiff<T>& left);
-template<class T> Bool operator<(const AutoDiff<T>& right,const AutoDiff<T>& left);
-template<class T> Bool operator>=(const AutoDiff<T>& right,const AutoDiff<T>& left);
-template<class T> Bool operator<=(const AutoDiff<T>& right,const AutoDiff<T>& left);
-template<class T> Bool operator==(const AutoDiff<T>& right,const AutoDiff<T>& left);
-template<class T> Bool operator!=(const AutoDiff<T>& right,const AutoDiff<T>& left);
-template<class T> Bool near(const AutoDiff<T>& right,const AutoDiff<T>& left);
+template<class T> Bool operator>(const AutoDiff<T> &right,
+				 const AutoDiff<T> &left);
+template<class T> Bool operator<(const AutoDiff<T> &right,
+				 const AutoDiff<T> &left);
+template<class T> Bool operator>=(const AutoDiff<T> &right,
+				  const AutoDiff<T> &left);
+template<class T> Bool operator<=(const AutoDiff<T> &right,
+				  const AutoDiff<T> &left);
+template<class T> Bool operator==(const AutoDiff<T> &right,
+				  const AutoDiff<T> &left);
+template<class T> Bool operator!=(const AutoDiff<T> &right,
+				  const AutoDiff<T> &left);
+template<class T> Bool near(const AutoDiff<T> &right, const
+			    AutoDiff<T> &left);
 
 // Compare an AutoDiff and a constant
-template<class T> Bool operator>(const AutoDiff<T>& right,const T& left);
-template<class T> Bool operator<(const AutoDiff<T>& right,const T& left);
-template<class T> Bool operator>=(const AutoDiff<T>& right,const T& left);
-template<class T> Bool operator<=(const AutoDiff<T>& right,const T& left);
-template<class T> Bool operator==(const AutoDiff<T>& right,const T& left);
-template<class T> Bool operator!=(const AutoDiff<T>& right,const T& left);
-template<class T> Bool near(const AutoDiff<T>& right,const T& left);
+template<class T> Bool operator>(const AutoDiff<T> &right, const T &left);
+template<class T> Bool operator<(const AutoDiff<T> &right, const T &left);
+template<class T> Bool operator>=(const AutoDiff<T> &right, const T &left);
+template<class T> Bool operator<=(const AutoDiff<T> &right, const T &left);
+template<class T> Bool operator==(const AutoDiff<T> &right, const T &left);
+template<class T> Bool operator!=(const AutoDiff<T> &right, const T &left);
+template<class T> Bool near(const AutoDiff<T> &right, const T &left);
 
 
 // Compare a constant and an AutoDiff
-template<class T> Bool operator>(const T& right,const AutoDiff<T>& left);
-template<class T> Bool operator<(const T& right,const AutoDiff<T>& left);
-template<class T> Bool operator>=(const T& right,const AutoDiff<T>& left);
-template<class T> Bool operator<=(const T& right,const AutoDiff<T>& left);
-template<class T> Bool operator==(const T& right,const AutoDiff<T>& left);
-template<class T> Bool operator!=(const T& right,const AutoDiff<T>& left);
-template<class T> Bool near(const T& right,const AutoDiff<T>& left);
+template<class T> Bool operator>(const T &right, const AutoDiff<T> &left);
+template<class T> Bool operator<(const T &right, const AutoDiff<T> &left);
+template<class T> Bool operator>=(const T &right, const AutoDiff<T> &left);
+template<class T> Bool operator<=(const T &right, const AutoDiff<T> &left);
+template<class T> Bool operator==(const T &right, const AutoDiff<T> &left);
+template<class T> Bool operator!=(const T &right, const AutoDiff<T> &left);
+template<class T> Bool near(const T &right, const AutoDiff<T> &left);
 
 
-// </group>
 // </group>
 
 #endif
