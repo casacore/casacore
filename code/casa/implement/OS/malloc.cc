@@ -25,6 +25,8 @@
 //#
 //# $Id$
 
+#if !defined(AIPS_NO_LEA_MALLOC)
+
 #if !defined(AIPS_LINUX)
 /* Ignore for linux since it already uses gnu malloc! */
 
@@ -2323,3 +2325,6 @@ History:
     static const char *ptr = 0; 
 #endif
 /* AIPS_LINUX */
+
+#endif
+/* AIPS_NO_LEA_MALLOC */

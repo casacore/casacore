@@ -25,6 +25,8 @@
 //#
 //# $Id$
 
+#if !defined(AIPS_NO_LEA_MALLOC)
+
 #if !defined (AIPS_MALLOC_H)
 #define AIPS_MALLOC_H
 
@@ -944,3 +946,6 @@ struct mallinfo mALLINFo();
 
 #endif
 /* AIPS_MALLOC */
+
+#endif
+/* AIPS_NO_LEA_MALLOC */
