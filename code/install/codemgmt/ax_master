@@ -1773,3 +1773,5 @@
 11 085 src rm nrao/apps/sddfiller/sddfiller.notes
 11 085 sys rm bin/sddfiller
 11 085 sys rm libexec/gsdd-helper.g
+11 085 src rm nrao/implement/MeasurementSets/OldMeasurementSet.h
+11 085 src rm nrao/implement/MeasurementSets/OldMeasurementSet.cc
