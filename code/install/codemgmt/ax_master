@@ -2122,3 +2122,4 @@
 11 105 src mv trial/implement/Lattices/test/tScalarRecordColumn.out aips/implement/Tables/test/tScalarRecordColumn.out
 11 108 src mv doc/papers/bgadass93.latex doc/papers/adass93/bgadass93.latex
 11 108 src rm trial/implement/DisplayDatas/LatticePADisplayData.h
+11 108 src rm trial/implement/DisplayDatas/LatticePADisplayData.cc
