@@ -26,6 +26,7 @@
 //# $Id$
 
 #include <trial/IO/TapeIO.h>
+#include <aips/OS/Path.h>
 #include <aips/Utilities/String.h>
 #include <aips/Utilities/Assert.h>
 #include <aips/Exceptions/Error.h>
@@ -37,58 +38,50 @@
 #include <sys/mtio.h>             // needed for ioctl
 
 TapeIO::TapeIO()
-  :itsSeekable(False),
+  :itsDevice(-1),
+   itsOwner(False),
    itsReadable(False),
    itsWritable(False),
-   itsDevice(-1)
+   itsSeekable(False),
+   itsDeviceName("")
 {
 }
 
 TapeIO::TapeIO (int fd)
   :itsDevice(-1)
 {
-  attach (fd);
+  attach(fd);
+}
+
+TapeIO::TapeIO(const Path& device, Bool writable) 
+  :itsDevice(-1)
+{
+  attach(device, writable);
 }
 
 TapeIO::~TapeIO() {
   detach();
 }
 
-
 void TapeIO::attach(int fd) {
-  AlwaysAssert(itsDevice == -1, AipsError);
+  if (itsDevice >= 0) detach();
+  DebugAssert(itsDevice == -1, AipsError);
+  itsOwner = False;
   itsDevice = fd;
-  fillRWFlags (fd);
+  fillRWFlags();
   fillSeekable();
+  itsDeviceName = String("");
 }
 
-void TapeIO::detach() {
-  itsDevice = -1;
+void TapeIO::attach(const Path& device, Bool writable) {
+  if (itsDevice >= 0) detach();
+  DebugAssert(itsDevice == -1, AipsError);
+  itsOwner = True;
+  itsDevice = TapeIO::open(device, writable);
+  fillRWFlags();
+  fillSeekable();
+  itsDeviceName = device.absoluteName();
 }
-
-void TapeIO::fillRWFlags(int fd) {
-  itsReadable = itsWritable = False;
-  int flags = fcntl (fd, F_GETFL);
-  if ((flags & O_RDWR)  ==  O_RDWR) {
-    itsReadable = True;
-    itsWritable = True;
-  } else if ((flags & O_WRONLY)  ==  O_WRONLY) {
-    itsWritable = True;
-  } else {
-    itsReadable = True;
-  }
-}
-
-void TapeIO::fillSeekable() {
-  //  cout << "seek output " << seek (0, ByteIO::Current) << endl;
-  itsSeekable = ToBool (seek (0, ByteIO::Current)  >= 0);
-}
-
-
-String TapeIO::fileName() const {
-  return "";
-}
-
 
 void TapeIO::write (uInt size, const void* buf) {
   // Throw an exception if not writable.
@@ -106,17 +99,16 @@ Int TapeIO::read(uInt size, void* buf, Bool throwException) {
     throw (AipsError ("TapeIO::read - tape is not readable"));
   }
   Int bytesRead = ::read (itsDevice, buf, size);
+  if (bytesRead < 0) {
+    throw (AipsError (String("TapeIO::read - "
+			     " error returned by system call: ") + 
+		      strerror(errno)));
+  }
   if (bytesRead > Int(size)) { // Should never be executed
-    throw (AipsError ("TapeIO::read - read returned a bad value"));
+    throw (AipsError ("TapeIO::read - read more bytes than requested"));
   }
   if (bytesRead != Int(size) && throwException == True) {
-    if (bytesRead < 0) {
-      throw (AipsError (String("TapeIO::read - "
-			       " error returned by system call: ") + 
-			strerror(errno)));
-    } else if (bytesRead < Int(size)) {
-      throw (AipsError ("TapeIO::read - incorrect number of bytes read"));
-    }
+    throw (AipsError ("TapeIO::read - incorrect number of bytes read"));
   }
   return bytesRead;
 }
@@ -129,6 +121,33 @@ void TapeIO::rewind() {
   if (error != 0) {
     throw(AipsError(String("TapeIO::rewind - error returned by ioctl: ") 
 		    + strerror(errno)));
+  }
+}
+
+void TapeIO::skip(uInt howMany) {
+  if (howMany > 0) {
+    struct mtop tapeCommand;
+    tapeCommand.mt_op = MTFSF;
+    tapeCommand.mt_count = howMany;
+    Int error = ::ioctl(itsDevice, MTIOCTOP, &tapeCommand);
+    if (error != 0) {
+      throw(AipsError(String("TapeIO::skip - error returned by ioctl: ") 
+		      + strerror(errno)));
+    }
+  }
+}
+
+void TapeIO::mark(uInt howMany) {
+  DebugAssert(isWritable(), AipsError);
+  if (howMany > 0) {
+    struct mtop tapeCommand;
+    tapeCommand.mt_op = MTWEOF;
+    tapeCommand.mt_count = howMany;
+    Int error = ::ioctl(itsDevice, MTIOCTOP, &tapeCommand);
+    if (error != 0) {
+      throw(AipsError(String("TapeIO::mark - error returned by ioctl: ") 
+		      + strerror(errno)));
+    }
   }
 }
 
@@ -145,31 +164,8 @@ Long TapeIO::seek (Long offset, ByteIO::SeekOption dir) {
 }
 
 Long TapeIO::length() {
-  if (!itsSeekable) {
-    return -1;
-  }
-  // Get current position to be able to reposition.
-  Long pos = seek (0, ByteIO::Current);
-  //  cout << "pos output: " << pos << endl;
-  // Seek to the end of the stream.
-  // If it fails, we cannot seek and the current position is the length.
-  Long len = seek (0, ByteIO::End);
-  //  cout << "len output: " << len << endl;
-
-  // Reposition
-  seek (pos, ByteIO::Begin);
-  // Return the length.
-  if (len > pos) {
-    return len;
-  } else {
-    return pos;
-  }
-//   cout << "final output: " <<   seek (pos, ByteIO::Begin) << endl;
-//   return len;
-//   return -1;
-  
+  return -1;
 }
-
    
 Bool TapeIO::isReadable() const {
   return itsReadable;
@@ -183,27 +179,74 @@ Bool TapeIO::isSeekable() const {
   return itsSeekable;
 }
 
-int TapeIO::open(const String& device, Bool writable) {
+String TapeIO::fileName() const {
+  return itsDeviceName;
+}
+
+int TapeIO::open(const Path& device, Bool writable) {
   int fd;
+  const String& deviceString = device.absoluteName();
+  char* devicePtr = (char*) deviceString.chars();
   if (writable) {
-    fd = ::open (device, O_RDWR);
+    fd = ::open (devicePtr, O_RDWR);
   } else {
-    fd = ::open (device, O_RDONLY);
+    fd = ::open (devicePtr, O_RDONLY);
   }
   if (fd == -1) {
-    throw (AipsError ("TapeIO: device " + device +
+    throw (AipsError ("TapeIO: device " + deviceString +
 		      " could not be opened: " + String(strerror(errno))));
   }
   return fd;
 }
 
 void TapeIO::close(int fd) {
+  DebugAssert(fd >= 0, AipsError);
   if (::close (fd)  == -1) {
     throw (AipsError (String("TapeIO: file could not be closed: ")
 		      + strerror(errno)));
   }
 }
 
+void TapeIO::detach() {
+  if (itsOwner) {
+    if (isWritable()) mark(1);
+    TapeIO::close(itsDevice);
+    itsOwner = False;
+    itsDeviceName = String("");
+  }
+  itsDevice = -1;
+  itsSeekable = itsReadable = itsWritable = False;
+}
+
+void TapeIO::fillRWFlags() {
+  if (itsDevice < 0) {
+    itsReadable = False;
+    itsWritable = False;
+    return;
+  }
+  int flags = fcntl (itsDevice, F_GETFL);
+  if ((flags & O_RDWR)  ==  O_RDWR) {
+    itsReadable = True;
+    itsWritable = True;
+  } else if ((flags & O_RDONLY)  ==  O_RDONLY) {
+    itsReadable = True;
+    itsWritable = False;
+  } else if ((flags & O_WRONLY)  ==  O_WRONLY) {
+    itsReadable = False;
+    itsWritable = True;
+  } else {
+    itsReadable = False;
+    itsWritable = False;
+  }
+}
+
+void TapeIO::fillSeekable() {
+  if (itsDevice < 0) {
+    itsSeekable = False;
+    return;
+  }
+  itsSeekable = ToBool (seek (0, ByteIO::Current)  >= 0);
+}
 // Local Variables: 
 // compile-command: "gmake OPTLIB=1 TapeIO; cd test; gmake OPTLIB=1 tTapeIO"
 // End: 

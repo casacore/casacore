@@ -30,8 +30,9 @@
 
 #include <aips/aips.h>
 #include <aips/IO/ByteIO.h>
+#include <aips/Utilities/String.h>
 
-class String;
+class Path;
 // <summary>Class for IO on a tape device</summary>
 
 // <use visibility=export>
@@ -83,64 +84,95 @@ class String;
 class TapeIO: public ByteIO
 {
 public: 
-    // Default constructor.
-    // A stream can be attached using the attach function.
-    TapeIO();
+  // Default constructor.
+  // A stream can be attached using the attach function.
+  TapeIO();
 
-    // Construct from the given file descriptor.
-    explicit TapeIO(int fd);
+  // Construct from the given file descriptor. The file descriptor must have
+  // been obtained using the TapeIO::open static function. When constructed
+  // this way the class will not take over the file descriptor and hence not
+  // close the Tape device when this class is destroyed.
+  explicit TapeIO(int fd);
 
-    // Attach to the given file descriptor.
-    void attach(int fd);
+  // Construct from the given device. The device must point to a tape device
+  // and if requested it is checked if the device is writeable. Throws an
+  // exception if the device could not be opened correctly. When constructed
+  // this way the class will close the Tape device when this class is destroyed
+  // or the TapeIO object is attached to a new file descriptor.
+  TapeIO(const Path& device, Bool writable = False);
 
-    // The destructor does not close the file.
-    ~TapeIO();
+  // The destructor will only close the file if the appropriate constructor, or
+  // attach function, was used.
+  ~TapeIO();
     
-    // Write the number of bytes.
-    virtual void write(uInt size, const void* buf);
+  // Attach to the given file descriptor. The file descriptor will not be
+  // closed when this class is destroyed.
+  void attach(int fd);
 
-    // Read <src>size</src> bytes from the tape. Returns the number of bytes
-    // actually read or a negative number if an error occured. Will throw an
-    // Exception (AipsError) if the requested number of bytes could not be
-    // read, or an error occured, unless throwException is set to False. Will
-    // always throw an exception if the tape is not readable or the system call
-    // returned an undocumented value.
-    virtual Int read(uInt size, void* buf, Bool throwException=True);    
+  // Attach to the given tape device. The tape will be closed when this class
+  // is destroyed or the TapeIO object is attached to a new descriptor.
+  void attach(const Path& device, Bool writable = False);
 
-  virtual void rewind ();
+  // Write the specified number of bytes.
+  virtual void write(uInt size, const void* buf);
 
-    // Reset the position pointer to the given value. It returns the
-    // new position.
-    virtual Long seek(Long offset, ByteIO::SeekOption = ByteIO::Begin);
+  // Read <src>size</src> bytes from the tape. Returns the number of bytes
+  // actually read or a negative number if an error occured. Will throw an
+  // exception (AipsError) if the requested number of bytes could not be read,
+  // or an error occured, unless throwException is set to False. Will always
+  // throw an exception if the tape is not readable or the system call returns
+  // an undocumented value. Returns zero if the tape is at the end of the
+  // current file (and size if non-zero and throwException is False).
+  virtual Int read(uInt size, void* buf, Bool throwException=True);    
 
-    // Get the length of the byte stream.
-    virtual Long length();
-       
-    // Is the IO stream readable?
-    virtual Bool isReadable() const;
+  // Rewind the tape device to the beginning.
+  virtual void rewind();
+  
+  // skip the specified number of files (ie tape marks) on the tape. Throws an
+  // exception if you try to skip past the last filemark.
+  virtual void skip(uInt howMany=1);
+  
+  // write the specified number of filemarks.
+  virtual void mark(uInt howMany=1);
+  
+  // Reset the position pointer to the given value. It returns the new
+  // position. May not work on all Tape devices use the isSeekable(0 member
+  // function to see if this function is usuable. Otherwise an Exception
+  // (AipsError) is thrown. 
+  virtual Long seek(Long offset, ByteIO::SeekOption = ByteIO::Begin);
+  
+  // Get the length of the tape device.  Not a meaningful function in for this
+  // class and this function always returns -1.
+  virtual Long length();
+  
+  // Is the tape device readable?
+  virtual Bool isReadable() const;
+  
+  // Is the tape device writable?
+  virtual Bool isWritable() const;
+  
+  // Is the tape device seekable?
+  virtual Bool isSeekable() const;
+  
+  // Get the name of the attached device or return a zero length string if it
+  // cannot be determined.
+  virtual String fileName() const;
 
-    // Is the IO stream writable?
-    virtual Bool isWritable() const;
-
-    // Is the IO stream seekable?
-    virtual Bool isSeekable() const;
-
-    // Get the file name of the file attached.
-    virtual String fileName() const;
-
-    // Some static convenience functions for file create/open/close.
-    // <group>
-    static int open(const String& device, Bool writable = False);
-    static void close(int fd);
-    // </group>
+  // Some static convenience functions for file descriptor opening &
+  // closing. The open function returns a file descriptor and the close
+  // function requires a file descriptor as an argument.
+  // <group>
+  static int open(const Path& device, Bool writable = False);
+  static void close(int fd);
+  // </group>
 
 
 protected:
     // Detach the FILE. Close it when it is owned.
     void detach();
 
-    // Determine if the file descriptor is readable and/or writable.
-    void fillRWFlags (int fd);
+    // Determine if the file is readable and/or writable.
+    void fillRWFlags();
 
     // Determine if the file is seekable.
     void fillSeekable();
@@ -151,11 +183,12 @@ private:
   TapeIO (const TapeIO& that);
   TapeIO& operator= (const TapeIO& that);
 
+  int         itsDevice;
   Bool        itsOwner;
-  Bool        itsSeekable;
   Bool        itsReadable;
   Bool        itsWritable;
-  int         itsDevice;
+  Bool        itsSeekable;
+  String      itsDeviceName;
 };
 
 
