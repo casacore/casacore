@@ -194,7 +194,7 @@ void LatticeUtilities::copyAndZero(LogIO& os,
 
 template <class T>
 void LatticeUtilities::copyDataAndMask(LogIO& os, MaskedLattice<T>& out,
-                                       MaskedLattice<T>& in)
+                                       const MaskedLattice<T>& in)
 //
 // Copy the data and mask from an input ML to the output ML.
 // If the input is masked, the output must already be masked

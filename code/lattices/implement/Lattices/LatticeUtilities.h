@@ -1,5 +1,5 @@
 //# LatticeUtilities.h: useful global functions for Lattices
-//# Copyright (C) 1995,1996,1997,1999,2000,2001
+//# Copyright (C) 1995,1996,1997,1999,2000,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -88,7 +88,7 @@ class LatticeUtilities
 // Copy data and mask from input to output.
    template <class T>
    static void copyDataAndMask (LogIO& os, MaskedLattice<T>& out,
-                                MaskedLattice<T>& in);
+                                const MaskedLattice<T>& in);
 
 // Replicate array through lattice in the specified region
    template <class T>
