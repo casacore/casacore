@@ -27,9 +27,18 @@
 //# $Id$
 
 #include <aips/aips.h>
+
 #include <aips/version.h>
 #include <aips/Utilities/Assert.h>
 #include <iostream.h>
+// Cure some problems seen on dec alpha - something is defining macros
+// major and minor
+#if defined(major)
+#undef major
+#endif
+#if defined(minor)
+#undef minor
+#endif
 
 int main()
 {
