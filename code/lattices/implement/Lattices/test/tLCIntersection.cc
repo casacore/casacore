@@ -67,7 +67,7 @@ void doIt (const IPosition& latticeShape,
    
     {
 	// Test cloning.
-        LCRegion* interscop = inters.clone();
+        LCRegion* interscop = inters.cloneRegion();
 	AlwaysAssertExit (inters.hasMask() == interscop->hasMask());
 	AlwaysAssertExit (inters.box().start() == interscop->box().start());
 	AlwaysAssertExit (inters.box().end() == interscop->box().end());

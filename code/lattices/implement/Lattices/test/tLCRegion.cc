@@ -63,7 +63,7 @@ void doIt (const IPosition& latticeShape,
     cout << cir.center().ac() << cir.radii().ac() << endl;
     {
 	// Test cloning.
-	LCRegionFixed* boxcop = (LCRegionFixed*)(box.clone());
+	LCRegionFixed* boxcop = (LCRegionFixed*)(box.cloneRegion());
 	AlwaysAssertExit (box.hasMask() == boxcop->hasMask());
 	AlwaysAssertExit (allEQ (box.maskArray(), boxcop->maskArray()));
 	AlwaysAssertExit (box.box().start() == boxcop->box().start());
@@ -71,7 +71,7 @@ void doIt (const IPosition& latticeShape,
 	AlwaysAssertExit (box.box().stride() == boxcop->box().stride());
 	AlwaysAssertExit (box.box().length() == boxcop->box().length());
 	delete boxcop;
-	LCRegionFixed* circop = (LCRegionFixed*)(cir.clone());
+	LCRegionFixed* circop = (LCRegionFixed*)(cir.cloneRegion());
 	AlwaysAssertExit (cir.hasMask() == circop->hasMask());
 	AlwaysAssertExit (allEQ (cir.maskArray(), circop->maskArray()));
 	AlwaysAssertExit (cir.box().start() == circop->box().start());

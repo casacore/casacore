@@ -63,7 +63,7 @@ void doIt (const LCRegion& region,
 	cout << prism.axes() << prism.blc() << prism.trc() << endl;
       {
 	// Test cloning.
-	LCRegion* prismcop = prism.clone();
+	LCRegion* prismcop = prism.cloneRegion();
 	AlwaysAssertExit (prism.hasMask() == prismcop->hasMask());
 	AlwaysAssertExit (prism.box().start() == prismcop->box().start());
 	AlwaysAssertExit (prism.box().end() == prismcop->box().end());
