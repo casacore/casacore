@@ -40,6 +40,7 @@
 class celprm;
 class prjprm;
 class MVDirection;
+class MVAngle;
 template<class T> class Quantum;
 
 
@@ -360,6 +361,18 @@ private:
     void checkFormat(Coordinate::formatType& format,
                      Bool absolute) const;
 
+    // format a latitude
+    String DirectionCoordinate::formatLatitude (String& units, MVAngle& mVA,
+                                                Bool absolute, Bool native,
+                                                Coordinate::formatType form,
+                                                Int prec) const;
+    // format a longitude
+    String formatLongitude (String& units, MVAngle& mVA,
+                            MDirection::GlobalTypes gtype,
+                            Bool absolute, Bool native,
+                            Coordinate::formatType form,
+                            Int prec) const;
+
     // Mixed pixel/world coordinate conversion.  Vector in must
     // be length nWorldAxes (2).  Specify whether longitude
     // (in(0)) or latitude (in(1)) is the world coordinate . It is
@@ -389,3 +402,4 @@ private:
 };
 
 #endif
+
