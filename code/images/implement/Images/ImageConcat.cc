@@ -495,13 +495,14 @@ void ImageConcat<T>::checkCoordinates (Bool& warnRefPix, Bool& warnRefVal,
 // The ImageSummary objects gives us the descriptors in pixel
 // axis order
 {
+   Bool pixelOrder = True;
    const uInt dim = sum1.ndim();
    Vector<Double> refPix1 = sum1.referencePixels();
    Vector<Double> refPix2 = sum2.referencePixels();
-   Vector<Double> refVal1 = sum1.referenceValues();
-   Vector<Double> refVal2 = sum2.referenceValues();
-   Vector<Double> inc1 = sum1.axisIncrements();
-   Vector<Double> inc2 = sum2.axisIncrements();
+   Vector<Double> refVal1 = sum1.referenceValues(pixelOrder);
+   Vector<Double> refVal2 = sum2.referenceValues(pixelOrder);
+   Vector<Double> inc1 = sum1.axisIncrements(pixelOrder);
+   Vector<Double> inc2 = sum2.axisIncrements(pixelOrder);
 //
    for (uInt j=0; j<dim; j++) {
       if (j!= axis) {
