@@ -1087,6 +1087,7 @@ void MSSimulator::extendMS(MeasurementSet & ms)
 			      IPosition(3,nCorr_p(i),tileSize,
 					4000/nCorr_p(i)/tileSize),
 			      values);
+
     }
     
     MSFieldColumns& fieldc=msc.field();
@@ -1259,7 +1260,8 @@ void MSSimulator::extendMS(MeasurementSet & ms)
 	ms.addRow(nBase);
 	
 	accessor.extendHypercube(nBase,values);
-	
+
+
 	for (Int ant1=0; ant1<nAnt_p; ant1++) {
 	    Double x1=antXYZ_p(0,ant1), y1=antXYZ_p(1,ant1), z1=antXYZ_p(2,ant1);
 	    for (Int ant2=ant1; ant2<nAnt_p; ant2++) {
@@ -1301,7 +1303,17 @@ void MSSimulator::extendMS(MeasurementSet & ms)
 		  msc.data().put(row,data);		  
 		  msc.flag().put(row,flag);
 		  msc.flagRow().put(row,False);
-		  
+
+		  if(ms.tableDesc().isColumn("CORRECTED_DATA")){
+		    msc.correctedData().setShape(row, data.shape());
+		    msc.correctedData().put(row,data);
+		    msc.modelData().setShape(row,data.shape());
+		    msc.modelData().put(row, data);
+		    Vector<Float> dummywgt(nChan_p(SpWId));
+		    dummywgt.set(1.0);
+		    msc.imagingWeight().setShape(row, data.shape().getLast(1));
+		    msc.imagingWeight().put(row, dummywgt);
+		  }
 		  // Deal with differing diameter case
 		  Float sigma1 = diamMax2/(antDiam_p(ant1) * antDiam_p(ant2));
 		  Float wt = 1/square(sigma1);
