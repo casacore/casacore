@@ -203,6 +203,12 @@ TableDesc    version    (Directory **SCRATCH**)
 #columns in or2tab: 3
 [9, 8, 7, 6, 5]
 [3, 5, 6, 7]
+[6, 7, 8, 9]
+>>>
+ScratchCallBack:  name=tab14159_16  isScratch=0  oldName=
+<<<
+ScratchCallBack:  name=tTable_tmp.ex1  isScratch=1  oldName=
+ScratchCallBack:  name=tTable_tmp.ex1  isScratch=0  oldName=
 ScratchCallBack:  name=tTable_tmp.data1  isScratch=1  oldName=
 ScratchCallBack:  name=tTable_tmp.data1  isScratch=0  oldName=
 ScratchCallBack:  name=tTable_tmp.data2  isScratch=1  oldName=
