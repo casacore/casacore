@@ -3006,6 +3006,8 @@
      template uInt Register(MVPosition const *) 
 1290 casa/Utilities/Register.cc casa/Quanta/MVRadialVelocity.h 
      template uInt Register(MVRadialVelocity const *) 
+1295 casa/Utilities/Register.cc casa/Quanta/MVuvw.h 
+     template uInt Register(MVuvw const *) 
 1300 casa/Utilities/Register.cc 
      template <class Qtype> class Quantum 
      template <class T> class Array 
