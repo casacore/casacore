@@ -457,6 +457,31 @@ int main()
                throw(AipsError("Coordinate conversion reflection failed"));
          }
       }
+      {
+         SpectralCoordinate lc = 
+            makeNonLinearCoordinate(MFrequency::TOPO, freqs, restFreq);
+//
+         Double pixel;
+         MVFrequency world;
+         pixel = 12.2;
+         if (!lc.toWorld(world, pixel)) {
+            throw(AipsError(String("toWorld conversion failed because ") + lc.errorMessage()));
+         }
+
+// Adjust coordinate units to make test harder
+
+         Vector<String> units = lc.worldAxisUnits();
+         units.set("KHz");
+         lc.setWorldAxisUnits(units);
+//
+         Double pixel2;
+         if (!lc.toPixel(pixel2, world)) {
+            throw(AipsError(String("toPixel conversion failed because ") + lc.errorMessage()));
+         }
+         if (!allNear(pixel2, pixel, 1e-6)) {
+               throw(AipsError("Coordinate conversion reflection failed"));
+         }
+      }
 //
 // Test record saving
 //
