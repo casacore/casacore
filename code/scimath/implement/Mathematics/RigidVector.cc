@@ -1,5 +1,5 @@
 //# RigidVector.cc: Fast Vector classes with fixed (templated) length
-//# Copyright (C) 1996,1998
+//# Copyright (C) 1996,1998,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -57,6 +57,13 @@ RigidVector<T,n>::operator*=(const SquareMatrix<T,n>& m) {
     }
   }
 }
+template <class T, Int n>
+RigidVector<T,n> sqrt(const RigidVector<T,n>& v) {
+      RigidVector<T,n> tmp;
+      for (Int i=0; i<n; i++) tmp.v_p[i]=::sqrt(v.v_p[i]);
+      return tmp;
+    }
+
  
 // // Needed for Image<RigidVector>
 // template <class T, Int n>

@@ -234,11 +234,7 @@ public:
 	return v;
     }
     // Square Root
-    RigidVector<T,n> sqrt(const RigidVector<T,n>& v) {
-      RigidVector<T,n> tmp;
-      for (Int i=0; i<n; i++) tmp.v_p[i]=::sqrt(v.v_p[i]);
-      return tmp;
-    }
+    RigidVector<T,n> sqrt(const RigidVector<T,n>& v);
 
 // // The following are needed for Image<RigidVector>
 
