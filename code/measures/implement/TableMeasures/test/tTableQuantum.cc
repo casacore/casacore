@@ -43,7 +43,8 @@
 #include <aips/Arrays/Vector.h>
 #include <aips/Arrays/ArrayUtil.h>
 #include <aips/OS/Timer.h>
-#include <aips/Exceptions.h>
+#include <aips/Utilities/Assert.h>
+#include <aips/Exceptions/Error.h>
 #include <iostream.h>
 
 
@@ -177,6 +178,27 @@ int main(int argc)
     SetupNewTable newtab("tTableQuantum_tmp.tab", td, Table::New);
     Table qtab(newtab, 5);
 
+    // Check that columns contain quanta.
+    AlwaysAssertExit (TableQuantumDesc::hasQuanta
+		             ( ROTableColumn (qtab, "ScaQuantDouble")));
+    AlwaysAssertExit (TableQuantumDesc::hasQuanta
+		             ( ROTableColumn (qtab, "ScaQuantComplex")));
+    AlwaysAssertExit (! TableQuantumDesc::hasQuanta
+		             ( ROTableColumn (qtab, "varUnitsColumn")));
+    AlwaysAssertExit (TableQuantumDesc::hasQuanta
+		             ( ROTableColumn (qtab, "ArrQuantDouble")));
+    AlwaysAssertExit (TableQuantumDesc::hasQuanta
+		             ( ROTableColumn (qtab, "ArrQuantDoubleNonVar")));
+    AlwaysAssertExit (TableQuantumDesc::hasQuanta
+		             ( ROTableColumn (qtab, "ArrQuantDoubleNonVar2")));
+    AlwaysAssertExit (TableQuantumDesc::hasQuanta
+		             ( ROTableColumn (qtab, "ArrQuantScaUnits")));
+    AlwaysAssertExit (! TableQuantumDesc::hasQuanta
+		             ( ROTableColumn (qtab, "varArrUnitsColumn")));
+    AlwaysAssertExit (! TableQuantumDesc::hasQuanta
+		             ( ROTableColumn (qtab, "varArrScaUnitsColumn")));
+    AlwaysAssertExit (! TableQuantumDesc::hasQuanta
+		             ( ROTableColumn (qtab, "BogusQuantCol")));
     {
       // Play with a null object first
       cout << "Creating a null ScaQuantumCol()\n";
