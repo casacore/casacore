@@ -174,7 +174,7 @@ T LELFunction1D<T>::getScalar() const
          return pExpr_p->getScalar();
       }
       Bool firstTime = True;
-      T minVal;
+      T minVal = T();
       LatticeExpr<T> latExpr(pExpr_p, 0);
       RO_LatticeIterator<T> iter(latExpr, latExpr.niceCursorShape());
       while (! iter.atEnd()) {
@@ -193,7 +193,7 @@ T LELFunction1D<T>::getScalar() const
          return pExpr_p->getScalar();
       }
       Bool firstTime = True;
-      T maxVal;
+      T maxVal = T();
       LatticeExpr<T> latExpr(pExpr_p, 0);
       RO_LatticeIterator<T> iter(latExpr, latExpr.niceCursorShape());
       while (! iter.atEnd()) {
