@@ -192,4 +192,12 @@ private:
 };
 
 
+// Some typedefs to help gcc compiler recognize these template types
+typedef LatticeExpr<Float> gpp_LatticeExpr_Float;
+typedef LatticeExpr<Double> gpp_LatticeExpr_Double;
+typedef LatticeExpr<Complex> gpp_LatticeExpr_Complex;
+typedef LatticeExpr<DComplex> gpp_LatticeExpr_DComplex;
+typedef LatticeExpr<Bool> gpp_LatticeExpr_Bool;
+
+
 #endif
