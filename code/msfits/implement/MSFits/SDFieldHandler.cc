@@ -322,43 +322,44 @@ void SDFieldHandler::initRow(Vector<Bool> &handledCols, const Record &row)
 {
     rownr_p = -1;
 
-    if (row.fieldNumber("MAIN_FIELD_ID") && row.dataType("MAIN_FIELD_ID") == TpInt) {
+    if (row.fieldNumber("MAIN_FIELD_ID") >= 0 && row.dataType("MAIN_FIELD_ID") == TpInt) {
 	fieldIdField_p.attachToRecord(row,"MAIN_FIELD_ID");
 	handledCols(row.fieldNumber("MAIN_FIELD_ID")) = True;
     }
-    if (row.fieldNumber("FIELD_CODE") && row.dataType("FIELD_CODE") == TpString) {
+    if (row.fieldNumber("FIELD_CODE") >= 0 && row.dataType("FIELD_CODE") == TpString) {
 	codeField_p.attachToRecord(row,"FIELD_CODE");
 	handledCols(row.fieldNumber("FIELD_CODE")) = True;
     }
-    if (row.fieldNumber("FIELD_NAME") && row.dataType("FIELD_NAME") == TpString) {
+    if (row.fieldNumber("FIELD_NAME") >= 0 && row.dataType("FIELD_NAME") == TpString) {
 	nameField_p.attachToRecord(row,"FIELD_NAME");
 	handledCols(row.fieldNumber("FIELD_NAME")) = True;
     }
-    if (row.fieldNumber("FIELD_TIME") && row.dataType("FIELD_TIME") == TpDouble) {
+    if (row.fieldNumber("FIELD_TIME") >= 0 && row.dataType("FIELD_TIME") == TpDouble) {
 	timeField_p.attachToRecord(row,"FIELD_TIME");
 	handledCols(row.fieldNumber("FIELD_TIME")) = True;
     }
-    if (row.fieldNumber("FIELD_DELAY_DIR") && row.dataType("FIELD_DELAY_DIR") == TpArrayDouble) {
+    if (row.fieldNumber("FIELD_DELAY_DIR") >= 0 && row.dataType("FIELD_DELAY_DIR") == TpArrayDouble) {
 	delayDirField_p.attachToRecord(row,"FIELD_DELAY_DIR");
 	handledCols(row.fieldNumber("FIELD_DELAY_DIR")) = True;
     }
-    if (row.fieldNumber("FIELD_DELAY_DIR_RATE") && row.dataType("FIELD_DELAY_DIR_RATE") == TpArrayDouble) {
+    if (row.fieldNumber("FIELD_DELAY_DIR_RATE") >= 0 && row.dataType("FIELD_DELAY_DIR_RATE") == TpArrayDouble) {
 	delayDirRateField_p.attachToRecord(row,"FIELD_DELAY_DIR_RATE");
 	handledCols(row.fieldNumber("FIELD_DELAY_DIR_RATE")) = True;
     }
-    if (row.fieldNumber("FIELD_PHASE_DIR") && row.dataType("FIELD_PHASE_DIR") == TpArrayDouble) {
+    if (row.fieldNumber("FIELD_PHASE_DIR") >= 0 && row.dataType("FIELD_PHASE_DIR") == TpArrayDouble) {
 	phaseDirField_p.attachToRecord(row,"FIELD_PHASE_DIR");
 	handledCols(row.fieldNumber("FIELD_PHASE_DIR")) = True;
     }
-    if (row.fieldNumber("FIELD_PHASE_DIR_RATE") && row.dataType("FIELD_PHASE_DIR_RATE") == TpArrayDouble) {
+    if (row.fieldNumber("FIELD_PHASE_DIR_RATE") >= 0 && row.dataType("FIELD_PHASE_DIR_RATE") == TpArrayDouble) {
 	phaseDirRateField_p.attachToRecord(row,"FIELD_PHASE_DIR_RATE");
 	handledCols(row.fieldNumber("FIELD_PHASE_DIR_RATE")) = True;
     }
-    if (row.fieldNumber("FIELD_REFERENCE_DIR") && row.dataType("FIELD_REFERENCE_DIR") == TpArrayDouble) {
+    if (row.fieldNumber("FIELD_REFERENCE_DIR") >= 0 && row.dataType("FIELD_REFERENCE_DIR") == TpArrayDouble) {
 	referenceDirField_p.attachToRecord(row,"FIELD_REFERENCE_DIR");
 	handledCols(row.fieldNumber("FIELD_REFERENCE_DIR")) = True;
     }
-    if (row.fieldNumber("FIELD_REFERENCE_DIR_RATE") && row.dataType("FIELD_REFERENCE_DIR_RATE") == TpArrayDouble) {
+    if (row.fieldNumber("FIELD_REFERENCE_DIR_RATE") >= 0 && 
+	row.dataType("FIELD_REFERENCE_DIR_RATE") == TpArrayDouble) {
 	referenceDirRateField_p.attachToRecord(row,"FIELD_REFERENCE_DIR_RATE");
 	handledCols(row.fieldNumber("FIELD_REFERENCE_DIR_RATE")) = True;
     }

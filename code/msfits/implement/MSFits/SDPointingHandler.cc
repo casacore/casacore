@@ -219,11 +219,12 @@ void SDPointingHandler::initAll(NewMeasurementSet &ms, Vector<Bool> &handledCols
 void SDPointingHandler::initRow(Vector<Bool> &handledCols, const Record &row)
 {
     rownr_p = -1;
-    if (row.fieldNumber("OBJECT")) {
+    if (row.fieldNumber("OBJECT") >= 0) {
 	objectField_p.attachToRecord(row, "OBJECT");
 	handledCols(row.fieldNumber("OBJECT")) = True;
     }
-    if (row.fieldNumber("FIELD_POINTING_DIR_RATE") && row.dataType("FIELD_POINTING_DIR_RATE") == TpArrayDouble) {
+    if (row.fieldNumber("FIELD_POINTING_DIR_RATE") >= 0 && 
+	row.dataType("FIELD_POINTING_DIR_RATE") == TpArrayDouble) {
 	pointingDirRateField_p.attachToRecord(row, "FIELD_POINTING_DIR_RATE");
 	handledCols(row.fieldNumber("FIELD_POINTING_DIR_RATE")) = True;
     }

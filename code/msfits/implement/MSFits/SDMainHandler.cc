@@ -263,14 +263,15 @@ void SDMainHandler::initRow(Vector<Bool> &handledCols, const Record &row)
     if (flagId_p >= 0) handledCols(flagId_p) = True;
 
     // RADECSYS is fully covered elsewhere, ignore it if it exists
-    if (row.fieldNumber("RADECSYS")) handledCols(row.fieldNumber("RADECSYS")) = True;
+    if (row.fieldNumber("RADECSYS") >= 0) handledCols(row.fieldNumber("RADECSYS")) = True;
 
     // the following fields generated when MS v 1 was converted to an SDFITS file are ignored
     // There is no CORRELATOR table in MS 2 and it should never have been used for SD data
     // in MS 1.
-    if (row.fieldNumber("MAIN_CORRELATOR_ID")) 
+    if (row.fieldNumber("MAIN_CORRELATOR_ID") >= 0) 
 	handledCols(row.fieldNumber("MAIN_CORRELATOR_ID")) = True;
     // there is no PULSAR_BIN in MS 2 and its unlikely it will have been used by
     // single dish data in MS 1
-    if (row.fieldNumber("MAIN_PULSAR_BIN")) handledCols(row.fieldNumber("MAIN_PULSAR_BIN")) = True;
+    if (row.fieldNumber("MAIN_PULSAR_BIN") >= 0) 
+	handledCols(row.fieldNumber("MAIN_PULSAR_BIN")) = True;
 }
