@@ -288,7 +288,7 @@ class LatticeExprNode
 // Functions operating on a logical expression resulting in a scalar;
 // Functions "any" (are any pixels "True") and "all" (are all pixels
 // "True") result in a Bool; functions "ntrue" and "nfalse" result 
-// in a Float.
+// in a Double.
 // <group>
    friend LatticeExprNode any   (const LatticeExprNode& expr);
    friend LatticeExprNode all   (const LatticeExprNode& expr);
