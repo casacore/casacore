@@ -343,7 +343,7 @@ template<class M>
 Array<M> ROArrayMeasColumn<M>::convert (uInt rownr, uInt refCode) const
 {
   typename M::Convert conv;
-  conv.setOut (refCode);
+  conv.setOut (typename M::Types(refCode));
   return doConvert (rownr, conv);
 }
 
