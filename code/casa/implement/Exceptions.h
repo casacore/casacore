@@ -28,7 +28,6 @@
 #if !defined (AIPS_EXCEPTIONS_H)
 #define AIPS_EXCEPTIONS_H
 
-#include <aips/Exceptions/CanDelete.h>
 #include <aips/Exceptions/Excp.h>
 #include <aips/Exceptions/Error.h>
 
