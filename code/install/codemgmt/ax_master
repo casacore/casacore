@@ -2715,3 +2715,4 @@
 10 058 src rm nrao/apps/dish/dishavg.g
 10 060 src mv aips/implement/Measures/MVBaseline.cc aips/implement/Quanta/MVBaseline.cc
 10 060 src mv aips/implement/Measures/MVBaseline.h aips/implement/Quanta/MVBaseline.h
+10 060 src mv aips/implement/Measures/MVDirection.cc aips/implement/Quanta/MVDirection.cc
