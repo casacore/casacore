@@ -37,7 +37,6 @@
 #include <aips/Logging/LogIO.h>
 #include <aips/Mathematics/Math.h>
 #include <aips/Measures/MVAngle.h>
-#include <aips/OS/Timer.h>
 #include <aips/OS/File.h>
 #include <aips/OS/Path.h>
 #include <aips/Tables/Table.h>
@@ -85,6 +84,9 @@ ImageStatistics<T>::ImageStatistics (const ImageInterface<T>& imageU,
    noExclude_p = True;
    doList_p = False;
 
+   doneSomeGoodPoints_p = False;
+   someGoodPointsValue_p = False;
+
    nxy_p.resize(0);
    statsToPlot_p.resize(0);
    range_p.resize(0);
@@ -119,6 +121,8 @@ ImageStatistics<T>::ImageStatistics(const ImageStatistics<T> &other)
                         doList_p(other.doList_p),
                         goodParameterStatus_p(other.goodParameterStatus_p),
                         needStorageImage_p(other.needStorageImage_p),
+                        doneSomeGoodPoints_p(other.doneSomeGoodPoints_p),
+                        someGoodPointsValue_p(other.someGoodPointsValue_p),
                         noInclude_p(other.noInclude_p), 
                         noExclude_p(other.noExclude_p),
                         cursorShape_p(other.cursorShape_p),
@@ -178,6 +182,8 @@ ImageStatistics<T> &ImageStatistics<T>::operator=(const ImageStatistics<T> &othe
       doList_p = other.doList_p;
       goodParameterStatus_p = other.goodParameterStatus_p;
       needStorageImage_p = other.needStorageImage_p;
+      doneSomeGoodPoints_p = other.doneSomeGoodPoints_p;
+      someGoodPointsValue_p = other.someGoodPointsValue_p;
       noInclude_p = other.noInclude_p; 
       noExclude_p = other.noExclude_p;
       cursorShape_p = other.cursorShape_p;
@@ -511,11 +517,6 @@ Bool ImageStatistics<T>::getNPts(Array<T>& stats)
 // accumulation image
 //
 {
-// Resize to zero
-
-   stats.resize(IPosition(1,0));
-
-
 // Check class status
 
    if (!goodParameterStatus_p) {
@@ -525,9 +526,10 @@ Bool ImageStatistics<T>::getNPts(Array<T>& stats)
      return False;
    }
 
-// Do it
+// Retrieve storage array statistic
 
-   retrieveStorageStatistic (stats, Int(NPTS));
+   Array<Double> slice;
+   if (retrieveStorageStatistic (slice, Int(NPTS))) copyArray (stats, slice);
 
    return True;
 }
@@ -540,11 +542,6 @@ Bool ImageStatistics<T>::getSum(Array<T>& stats)
 // accumulation image
 //
 {
-// Resize to zero
-
-   stats.resize(IPosition(1,0));
-
- 
 // Check class status
  
    if (!goodParameterStatus_p) {
@@ -554,9 +551,11 @@ Bool ImageStatistics<T>::getSum(Array<T>& stats)
      return False; 
    }
 
-// Do it
 
-   retrieveStorageStatistic (stats, Int(SUM));
+// Retrieve storage array statistic
+
+   Array<Double> slice;
+   if (retrieveStorageStatistic (slice, Int(SUM))) copyArray (stats, slice);
 
    return True;
 }
@@ -569,11 +568,7 @@ Bool ImageStatistics<T>::getSumSquared (Array<T>& stats)
 // accumulation image
 //
 {
-// Resize to zero
 
-   stats.resize(IPosition(1,0));
-
- 
 // Check class status
  
    if (!goodParameterStatus_p) {
@@ -583,9 +578,11 @@ Bool ImageStatistics<T>::getSumSquared (Array<T>& stats)
      return False; 
    }
 
-// Do it
 
-   retrieveStorageStatistic (stats, Int(SUMSQ));
+// Retrieve storage array statistic
+
+   Array<Double> slice;
+   if (retrieveStorageStatistic (slice, Int(SUMSQ))) copyArray (stats, slice);
 
    return True;
 }
@@ -597,11 +594,6 @@ Bool ImageStatistics<T>::getMin(Array<T>& stats)
 // accumulation image
 //
 {
-// Resize to zero
-
-   stats.resize(IPosition(1,0));
-
- 
 // Check class status
  
    if (!goodParameterStatus_p) {
@@ -611,9 +603,10 @@ Bool ImageStatistics<T>::getMin(Array<T>& stats)
      return False; 
     }
 
-// Do it
+// Retrieve storage array statistic
 
-   retrieveStorageStatistic (stats, Int(MIN));
+   Array<Double> slice;
+   if (retrieveStorageStatistic (slice, Int(MIN))) copyArray (stats, slice);
 
    return True;
 }
@@ -626,11 +619,6 @@ Bool ImageStatistics<T>::getMax(Array<T>& stats)
 // accumulation image
 //
 {
-// Resize to zero
-
-   stats.resize(IPosition(1,0));
-
-
 // Check class status
  
    if (!goodParameterStatus_p) {
@@ -640,9 +628,11 @@ Bool ImageStatistics<T>::getMax(Array<T>& stats)
      return False; 
    }
 
-// Do it
 
-   retrieveStorageStatistic (stats, Int(MAX));
+// Retrieve storage array statistic
+
+   Array<Double> slice;
+   if (retrieveStorageStatistic (slice, Int(MAX))) copyArray (stats, slice);
 
    return True;
 }
@@ -922,134 +912,143 @@ void ImageStatistics<T>::calculateStatistic (Array<T>& slice, const Int& ISTAT)
 // Calculate desired statistic from storage image and return in array
 //
 // Input/output:
-//  slice      The statistics are returned in this array.  SHould be of zero
-//             size on input.  WIll be of zero size on output if there 
-//             were no good points.
+//  slice      The statistics are returned in this array.  WIll be of zero 
+//             size on output if there were no good points.
 //
 {
+
+// Rezize slice to nothing first
+
+   slice.resize(IPosition(0,0));
+
 
 // Generate storage image if required
 
    if (needStorageImage_p) generateStorageImage();
 
-// Fill output
 
-   Int nDim = pStoreImage_p->ndim() - 1;
-   if (nDim == 0) {
+// Return asap if no good points
 
-// No display axes
-
-      Double nPts  = (*pStoreImage_p)(IPosition(1,NPTS));
-      if (Int(nPts+0.1) >  0) {
-         slice.resize(IPosition(1,1));
-         Double sum   = (*pStoreImage_p)(IPosition(1,SUM));
-         Double sumSq = (*pStoreImage_p)(IPosition(1,SUMSQ));
-
-         if (ISTAT == MEAN) {
-            slice(IPosition(1,0)) = sum / nPts;
-         } else if (ISTAT == SIGMA) {
-            Double var = (sumSq - sum*sum/nPts)/(nPts-1);
-            if (var > 0.0) {
-               slice(IPosition(1,0)) = sqrt(var);
-            } else {
-               slice(IPosition(1,0)) = 0.0;
-            }
-         } else if (ISTAT == RMS) {
-            slice(IPosition(1,0)) = sqrt(sumSq/nPts);
-         } else {
-           os_p << LogIO::SEVERE << "Internal error" << endl << LogIO::POST;
-          slice.resize(IPosition(1,0));
-         }
-      }
-   } else {
-
-// Some display axes present.  First resize output slice
-
-      IPosition shape(nDim);
-      for (Int i=0; i<nDim; i++) shape(i) = pStoreImage_p->shape()(i);
-      slice.resize(shape);
-      slice = 0.0;
-
-      Int nStatsAxes = cursorAxes_p.nelements();
-      Int nDisplayAxes = displayAxes_p.nelements();
-
-    
-// Iterate through storage image by planes and compute the statistics
-// which are output with a vector iterator
-
-      IPosition cursorShape(pStoreImage_p->ndim(),1);
-      cursorShape(0) = pStoreImage_p->shape()(0);
-      cursorShape(pStoreImage_p->ndim()-1) = NACCUM;
-      RO_LatticeIterator<Double> pixelIterator(*pStoreImage_p, cursorShape);
-
-      VectorIterator<T> sliceIterator(slice);
-      Int n1 = sliceIterator.vector().nelements();
-      Bool noGoodPoints = True;
-
-      for (pixelIterator.reset(); !pixelIterator.atEnd(); 
-           pixelIterator++,sliceIterator.next()) {
+   if (!someGoodPoints()) return;
 
 
-// Convert accumulations to mean, sigma, and rms. Make sure we do all calculations
-// with double precision values. 
- 
-         Matrix<Double> matrix(pixelIterator.matrixCursor());
+// Retrieve nPts statistics
 
-         if (ISTAT == MEAN) {
-            for (i=0; i<n1; i++) {
-               if (Int(matrix(i,NPTS)+0.1) > 0) {
-                  sliceIterator.vector()(i) = matrix(i,SUM) / matrix(i,NPTS);
-                  noGoodPoints = False;
-               }
-            }
-         } else if (ISTAT == SIGMA) {
-            for (i=0; i<n1; i++) {
-               if (Int(matrix(i,NPTS)+0.1) > 0) {
-                  Double tmp = (matrix(i,SUMSQ) - (matrix(i,SUM)*matrix(i,SUM)/matrix(i,NPTS))) / 
-                               (matrix(i,NPTS)-1);
-                  noGoodPoints = False;
-                  if (tmp > 0.0) sliceIterator.vector()(i) = sqrt(tmp);
-               }
-            }
-         } else if (ISTAT == RMS) {
-            for (i=0; i<n1; i++) {
-               if (Int(matrix(i,NPTS)+0.1) > 0) {
-                  sliceIterator.vector()(i) = sqrt(matrix(i,SUMSQ)/matrix(i,NPTS));
-                  noGoodPoints = False;
-               }
-            }
-         } else {
-           os_p << LogIO::SEVERE << "Internal error" << endl << LogIO::POST;
-           slice.resize(IPosition(1,0));
-         }
-      }
+   Array<Double> nPts;
+   retrieveStorageStatistic (nPts, Int(NPTS));
+   ReadOnlyVectorIterator<Double> nPtsIt(nPts);
+   Int n1 = nPtsIt.vector().nelements();
 
-// If there were no decent points return a nothing array
+// Setup
 
-      if (noGoodPoints) slice.resize(IPosition(1,0));
+   slice.resize(nPts.shape());
+   slice = 0.0;
+   VectorIterator<T> sliceIt(slice);
 
-   }
+// Do it
+
+   Int n;
+   Double tmp;
+   if (ISTAT == MEAN) {
+       Array<Double> sum;
+       retrieveStorageStatistic (sum, Int(SUM));
+       ReadOnlyVectorIterator<Double> sumIt(sum);
+
+       while (!nPtsIt.pastEnd()) {
+          for (Int i=0; i<n1; i++) {
+             n = Int(nPtsIt.vector()(i)+0.1);
+             if(n > 0) sliceIt.vector()(i) = sumIt.vector()(i) / n;
+          }
+          nPtsIt.next();
+          sumIt.next();
+          sliceIt.next();
+       }
+    } else if (ISTAT == SIGMA) {
+       Array<Double> sum;
+       retrieveStorageStatistic (sum, Int(SUM));
+       ReadOnlyVectorIterator<Double> sumIt(sum);
+
+       Array<Double> sumSq;
+       retrieveStorageStatistic (sum, Int(SUMSQ));
+       ReadOnlyVectorIterator<Double> sumSqIt(sumSq);
+
+       while (!nPtsIt.pastEnd()) {
+          for (Int i=0; i<n1; i++) {
+             n = Int(nPtsIt.vector()(i) + 0.1);
+             if(n > 0) {
+                tmp = (sumSqIt.vector()(i) -
+                   (sumIt.vector()(i)*sumIt.vector()(i)/n)) / (n-1);
+                if (tmp > 0.0) sliceIt.vector()(i) = sqrt(tmp);
+             }
+          }
+          nPtsIt.next();
+          sumIt.next();
+          sumSqIt.next();
+          sliceIt.next();
+       }
+    } else if (ISTAT == RMS) {
+       Array<Double> sumSq;
+       retrieveStorageStatistic (sumSq, Int(SUMSQ));
+       ReadOnlyVectorIterator<Double> sumSqIt(sumSq);
+
+       while (!nPtsIt.pastEnd()) {
+          for (Int i=0; i<n1; i++) {
+             n = Int(nPtsIt.vector()(i) + 0.1);
+             if(n > 0) sliceIt.vector()(i) = sqrt(sumSqIt.vector()(i)/n);
+          }
+          nPtsIt.next();
+          sumSqIt.next();
+          sliceIt.next();
+       }
+    } else {
+       os_p << LogIO::SEVERE << "Internal error" << endl << LogIO::POST;
+       slice.resize(IPosition(0,0));
+    }
 }
 
 
 
 template <class T>
-void ImageStatistics<T>::copyCursor (Array<T>&slice, const Array<Double>& cursor)
+void ImageStatistics<T>::copyArray (Array<T>&slice, const Array<Double>& cursor)
+//
+// Copy the values in the cursor to the output array
+//
 {
+
+// Resize output
+
+   slice.resize(cursor.shape());
+
+
+   if (cursor.shape().product() == 1) {
+
+// Take easy path for degenerate array
+
+      IPosition posIn(cursor.ndim(),0);
+      IPosition posOut(slice.ndim(),0);
+      slice(posOut) = cursor(posIn);
+
+   } else {
+
 // Set up to iterate by vectors 
 
-   ReadOnlyVectorIterator<Double> cursorIt(cursor);
-   VectorIterator<T> sliceIt(slice);
-   Int n1 = cursorIt.vector().nelements();
-   Int i;
+      ReadOnlyVectorIterator<Double> cursorIt(cursor);
+      VectorIterator<T> sliceIt(slice);
+      Int n1 = cursorIt.vector().nelements();
+      Int i;
 
 // Iterate and copy
 
-   while (!cursorIt.pastEnd()) {
-      for (i=0; i<n1; i++) sliceIt.vector()(i) = cursorIt.vector()(i);
+      while (!cursorIt.pastEnd()) {
 
-      cursorIt.next();
-      sliceIt.next();
+// We have to copy them element by element because
+// the types may be different (e.g. Double -> Float)
+
+         for (i=0; i<n1; i++) sliceIt.vector()(i) = cursorIt.vector()(i);
+
+         cursorIt.next();
+         sliceIt.next();
+      }
    }
 }
 
@@ -1138,39 +1137,45 @@ void ImageStatistics<T>::generateStorageImage()
 //
 // Iterate through the image and generate the accumulation image
 {
-
-// Work out dimensions of storage image
-
-   IPosition storeImageShape;
-   ImageUtilities::setStorageImageShape(storeImageShape, True, Int(NACCUM),
-                                        displayAxes_p, pInImage_p->shape());
-
 // Delete old storage image
 
    if (pStoreImage_p != 0) delete pStoreImage_p;
 
 
-// Create scratch storage image file name
+   {
 
-   Path fileName = File::newUniqueName(String("./"),String("PagedArray"));
-   SetupNewTable setup(fileName.absoluteName(), TableDesc(), Table::Scratch);
-   Table myTable(setup);
+// Find the directory of the input image and set the name of the storage image file
+ 
+      File inputImageName(pInImage_p->name());
+      const String path = inputImageName.path().dirName() + "/";
 
-// Set tile shape.   Only first and last axes should have non unit 
-// tile shape as the storage image is only ever accessed by vectors
-// along these axes 
+      Path fileName = File::newUniqueName(path, String("PagedArray"));
+      SetupNewTable setup(fileName.absoluteName(), TableDesc(), Table::Scratch);
+      Table myTable(setup);
 
-   IPosition imageTileShape(pInImage_p->niceCursorShape(pInImage_p->maxPixels()));
-   IPosition storeImageTileShape(storeImageShape.nelements(),1);
 
-   storeImageTileShape(storeImageShape.nelements()-1) = storeImageShape(storeImageShape.nelements()-1);
-   if (displayAxes_p.nelements() > 0) 
-      storeImageTileShape(0) = imageTileShape(displayAxes_p(0));
+// Work out dimensions of storage image
 
-   pStoreImage_p = new PagedArray<Double>(storeImageShape, myTable, storeImageTileShape);
-   pStoreImage_p->set(Double(0.0));
-   os_p << LogIO::NORMAL << "Created new storage image" << endl << LogIO::POST;
-   needStorageImage_p = False;     
+      IPosition storeImageShape;
+      ImageUtilities::setStorageImageShape(storeImageShape, True, Int(NACCUM),
+                                        displayAxes_p, pInImage_p->shape());
+
+// Set tile shape.   Only first and last axes should have non unit tile shape
+// as the storage image is only ever accessed by vectors along these axes.  Since 
+// the last axis is not very long (NSTATS), we can set the tile shape of the first 
+// axis to be the full  length of that axis.  Thus tiles won't be excessively big.
+
+      IPosition tileShape(storeImageShape.nelements(),1);
+      tileShape(storeImageShape.nelements()-1) = storeImageShape(storeImageShape.nelements()-1);
+      if (displayAxes_p.nelements() > 0) tileShape(0) = storeImageShape(0);
+
+// Create it
+
+      pStoreImage_p = new PagedArray<Double>(storeImageShape, myTable, tileShape);
+      pStoreImage_p->set(Double(0.0));
+
+      os_p << LogIO::NORMAL << "Created new storage image" << endl << LogIO::POST;
+   }
 
 
 // Set up min/max location variables
@@ -1199,6 +1204,9 @@ void ImageStatistics<T>::generateStorageImage()
 //      clock.update(value);
 //      value += 1.0;
    }  
+
+   needStorageImage_p = False;     
+   doneSomeGoodPoints_p = False;
 }
 
 
@@ -2081,7 +2089,7 @@ void ImageStatistics<T>::pix2World (Vector<String>& sWorld,
 
 
 template <class T>
-void ImageStatistics<T>::retrieveStorageStatistic(Array<T>& slice, const Int& ISTAT)
+Bool ImageStatistics<T>::retrieveStorageStatistic(Array<Double>& slice, const Int& ISTAT)
 //
 // Retrieve values from accumulation image
 //
@@ -2092,88 +2100,105 @@ void ImageStatistics<T>::retrieveStorageStatistic(Array<T>& slice, const Int& IS
 //   slice        The statistics; should be of zero size on input
 //
 {
+
+// Resize output array to nothing first
+
+      slice.resize(IPosition(0,0));
+
+
 // Generate storage image if required
 
    if (needStorageImage_p) generateStorageImage();
 
 
-// Fill output
+// Were there some good points ?  
 
-   Int i;
-   Int nDim = pStoreImage_p->ndim() - 1;
+   Int nDim = pStoreImage_p->ndim();
+   if (someGoodPoints()) {
 
-   if (nDim == 0) {
-      Double tmp = (*pStoreImage_p)(IPosition(1,NPTS));
-      Int nPts = Int(tmp + 0.1);
-      if (nPts > 0) {
-         slice.resize(IPosition(1,1));
-         slice(IPosition(1,0)) = (*pStoreImage_p)(IPosition(1,ISTAT));
-      }
+// Get desired statistic slice. Discard degenerate axes (requires
+// empty array on input)
+
+      Int lastAxis = nDim - 1 ;
+
+      IPosition stride(nDim,1);
+      IPosition sliceShape(pStoreImage_p->shape());
+      sliceShape(lastAxis) = 1;
+
+      IPosition blc(nDim,0);
+      blc(lastAxis) = ISTAT;
+
+      slice.resize(IPosition(0,0));
+      pStoreImage_p->getSlice(slice, blc, sliceShape, stride, True);
+      return True;
    } else {
-
-
-// Set up slice corners
-
-      Int sDim = pStoreImage_p->ndim();
-      IPosition blc(sDim,0);
-      IPosition stride(sDim,1);
-
-// Set shape of slice 
-
-      Array<Double> doubleSlice;
-      IPosition sliceShape(sDim);
-      for (i=0; i<sDim-1; i++) sliceShape(i) = pStoreImage_p->shape()(i);
-      sliceShape(sDim-1) = 1;
-      doubleSlice.resize(sliceShape);
-
-
-// Get NPTS slice
-
-      blc(sDim-1) = NPTS;
-      pStoreImage_p->getSlice(doubleSlice, blc, sliceShape, stride);
-
-
-// Were there some good points ?  If so, continue on
-
-      if (someGoodPoints(doubleSlice)) {
-
-
-// Get desired statistic slice
-
-         blc(sDim-1) = ISTAT;
-         pStoreImage_p->getSlice(doubleSlice, blc, sliceShape, stride);
-
-      }
-
-// Copy to output template type; drop the length=1 last axis on copy
-
-      sliceShape.resize(sDim-1,True);      
-      slice.resize(sliceShape);
-      copyCursor (slice, doubleSlice);
+      return False;
    }
+
 }
 
 
 template <class T>
-Bool ImageStatistics<T>::someGoodPoints (const Array<Double>& nPts)
+Bool ImageStatistics<T>::someGoodPoints ()
 //
-// If any of the points in the NPTS array are non-zero return True
+// If any of the locations in the statistics storage array contain
+// some valid points return true straight away.  DOn't bother
+// looking again if we already looked !
+//
 {
-// Set up to iterate by vectors 
 
-   ReadOnlyVectorIterator<Double> it(nPts);
-   Int n1 = it.vector().nelements();
-   Int i;
+   if (doneSomeGoodPoints_p) {
+      return someGoodPointsValue_p;
+   } else {
+      doneSomeGoodPoints_p = True;
 
-// Iterate and assess.  Bug out as soon as we can
+      if (pStoreImage_p->ndim() == 1) {
 
-   while (!it.pastEnd()) {
-      for (i=0; i<n1; i++) {
-         if(Int(it.vector()(i)+0.1) > 0) return True;
+// If storage image only 1D take cheap way out. Can't invoke
+// retrieveStorageStatistic or we will be stuck in a time loop
+
+
+         IPosition stride(1,1);
+         IPosition sliceShape(1,1);
+         Array<Double> nPts;
+         nPts.resize(sliceShape);
+
+         IPosition blc(1,0);
+         blc(0) = NPTS;
+         pStoreImage_p->getSlice(nPts, blc, sliceShape, stride);
+   
+         blc = 0;
+         if (Int(nPts(blc)+0.1) > 0) {
+            someGoodPointsValue_p = True;
+         } else {
+            someGoodPointsValue_p = False;
+         }
+         return someGoodPointsValue_p;
+      } else {
+
+// Iterate through storage image. The cursor may be of > 2 dimensions, but 
+// only the first (first display axis) and last (statistics) axes are of 
+// non-unit size, so it  is effectively a matrix.  
+
+         Int n1 = pStoreImage_p->shape()(0);
+         IPosition cursorShape(pStoreImage_p->ndim(),1);
+         cursorShape(0) = n1;
+         cursorShape(pStoreImage_p->ndim()-1) = NACCUM;
+         RO_LatticeIterator<Double> pixelIterator(*pStoreImage_p, cursorShape);
+
+         for (pixelIterator.reset(); !pixelIterator.atEnd(); pixelIterator++) {
+            Matrix<Double> matrix(pixelIterator.matrixCursor());
+            for (Int i=0; i<n1; i++) {
+               if (Int(matrix(i,NPTS)+0.1) > 0) {
+                  someGoodPointsValue_p = True;
+                  return someGoodPointsValue_p;
+               }
+            }
+         }
+         someGoodPointsValue_p = False;
+         return someGoodPointsValue_p;
       }
-      it.next();
    }
-   return False;
 }
 
 
@@ -2181,18 +2206,29 @@ Bool ImageStatistics<T>::someGoodPoints (const Array<Double>& nPts)
 template <class T>
 void ImageStatistics<T>::summStats ()
 // 
-// Print the statistics to the standard output
+// List the summary of the statistics to the logger
 //
 {
-   Double tVal = (*pStoreImage_p)(IPosition(1,NPTS));
-   Int nPts = Int(tVal + 0.1);
-   Double sum = (*pStoreImage_p)(IPosition(1,SUM));
-   Double sumSq = (*pStoreImage_p)(IPosition(1,SUMSQ));
+// Fish out statistics with a slice
+
+   IPosition shape(IPosition(1,pStoreImage_p->shape()(0)));
+   Array<Double> stats(shape);
+   pStoreImage_p->getSlice (stats, IPosition(1,0), shape, IPosition(1,1));
+
+   IPosition pos(1);
+   pos(0) = NPTS;
+   Int nPts = Int(stats(pos)+0.1);
+   pos(0) = SUM;
+   Double sum = stats(pos);
+   pos(0) = SUMSQ;
+   Double sumSq = stats(pos);
    Double mean = sum/nPts;
    Double var = (sumSq - sum*sum/nPts)/(nPts-1);
    Double rms = sqrt(sumSq/nPts);
-   Double dMin = (*pStoreImage_p)(IPosition(1,MIN));
-   Double dMax = (*pStoreImage_p)(IPosition(1,MAX));
+   pos(0) = MIN;
+   Double dMin = stats(pos);
+   pos(0) = MAX;
+   Double dMax = stats(pos);
 
 // Have to convert LogIO object to ostream before can apply
 // the manipulators
