@@ -40,7 +40,9 @@
 
 //# Forward Declarations
 class MCDirection;
+class MVPosition;
 class String;
+
 template <class T> class Vector;
 
 //# Typedefs
