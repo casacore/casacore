@@ -25,7 +25,7 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_AIPSRC)
+#if !defined(AIPS_AIPSRC_H)
 #define AIPS_AIPSRC_H
 
 #if defined(_AIX)
@@ -36,6 +36,21 @@
 #include <aips/Utilities/String.h>
 #include <aips/Containers/Block.h>
 
+//# Forward declarations
+template <class T> class AipsrcValue;
+template <class T> class AipsrcVector;
+class Aipsrc;
+
+//# Typedefs
+typedef class AipsrcValue<Double> AipsrcDouble;
+typedef class AipsrcValue<Int> AipsrcInt;
+typedef class AipsrcValue<Bool> AipsrcBool;
+typedef class Aipsrc AipsrcString;
+typedef class AipsrcVector<Double> AipsrcVDouble;
+typedef class AipsrcVector<Int> AipsrcVInt;
+typedef class AipsrcVector<Bool> AipsrcVBool;
+typedef class AipsrcVector<String> AipsrcVString;
+
 // <summary> Class to read the aipsrc general resource files </summary>
 
 // <use visibility=export>
@@ -44,7 +59,7 @@
 // </reviewed>
 
 // <prerequisite>
-//  <li> Cannot be empty
+//  <li> None
 // </prerequisite>
 //
 // <etymology>
@@ -54,13 +69,16 @@
 // <synopsis>
 // The static Aipsrc class can get information from the aipsrc resource files.
 // It has the same functionality as getrc (in use for aips++ scripts).<br>
+// In addition it acts as a central clearing house between system and
+// software.<br>
 // The format of a line in a resource file is:
 // <srcblock>
-//	# Line starting with an # is considered a comment (as is an empty line)
+//	# Line starting with an # in column 1 is a comment (as is an empty line)
 //	keyword:   value
 //	keyword:   value
 // </srcblock>
-// The keyword consists in general of keywords separated by periods:  
+// The keyword (starting at first non-blank) 
+// consists in general of keyword fields separated by periods:  
 //<srcblock>
 //	printer.ps.page
 //	measures.precession.d_interval
@@ -70,8 +88,10 @@
 // search is case sensitive) with an <src>_</src> as word-parts separator. <br>
 // The keyword and value are separated by a <src>:</src>. The value is the string
 // between the first non-whitespace character after the separator and the end of
-// the line. Interpretation of the string is the programs responsibility.<br>
-// Any part of the keyword string can be replaced with a wildcard <src>*</src>
+// the line. Interpretation of the string is in general the program's 
+// responsibility, but special <src>find()</src> calls (see below) exists to 
+// aid.<br>
+// Any part of the keyword string can be replaced by a wildcard <src>*</src>
 // to indicate all values with that structure (e.g.
 // <src>*.d_interval</src> would indicate in the example above both the
 // precession and the nutation <src>d_interval</src>.<br>
@@ -90,11 +110,25 @@
 // However, it is an error if either <em>HOME</em> or <em>AIPSPATH</em> has
 // not been set: an exception will occur.<br>
 // The basic interaction with the class is with the static keyword match function
-// <src>Aipsrc::find(String &result, const String &keyword)</src>.
+// <srcblock>Bool Aipsrc::find(String &result, const String &keyword)
+// </srcblock>
+// A set of 
+// <srcblock>Bool AipsrcValue::find(Type &result, const String &keyword, ...)
+// </srcblock>
+// are available to interpret the string value found.
+// (see <linkto class="AipsrcValue">AipsrcValue</linkto>).<br>
+// All the <src>find</src>
+// functions have the ability to set a default if there is no match,
+// while also unit conversion is possible.<br>
+// The Bool return indicates if the keyword was found, and, in the case of the
+// interpretative finds, if an 'important' format error was found (e.g.
+// '+12a' will be accepted as a Double, with a result of '12', since the
+// standard double conversion in <src>>></src> will produce this result.) 
 // <note role=caution> The search keyword (unlike the file keyword) has no
 // wildcards. The real name should, of course, be looked for.</note>
 // To aid in other places, the following (static) methods are available
-// to get the requested information:
+// to get the requested information (derived from <src>HOME</src> and
+// <src>AIPSPATH</src>, computer system information and/or aipsrc keywords):
 //  <ul>
 //   <li> const String &Aipsrc::aipsRoot()
 //   <li> const String &Aipsrc::aipsArch()
@@ -102,10 +136,27 @@
 //   <li> const String &Aipsrc::aipsHost()
 //   <li> const String &Aipsrc::aipsHome() -- <src>~/aips++</src>
 //  </ul>
+// Other, numeric, system information can be found in
+// <linkto class=AipsrcData>AipsrcData</linkt>.<br>
+//
 // Given an AIPSPATH of 
 // <srcblock>/epp/aips++ sun4sol_gnu epping norma</srcblock>
-// aipsSite will e.g. return
+// aipsSite will return
 // <srcblock>/epp/aips++/sun4sol_gnu/epping</srcblock>.
+//
+// The basic find above reacts with the aipsrc files available. If regular 
+// access is necessary (e.g. a lot of routines have to check independently a
+// certain integration time limit, keywords can be <em>registered</em> to
+// enable:
+// <ul>
+//   <li> fast access with integer code, rather than string
+//   <li> ability to set values from programs if no aipsrc information given
+//		(a dynamic default)
+//   <li> (future) option to update the <src>$HOME/.aipsrc</src> keyword list 
+// </ul>
+// <note role=tip> The registered value is never equal to zero, hence a zero
+// value can be used to chcek if registration done. Also, registering the
+// same keyword twice is safe, and will produce the same value.</note>
 // </synopsis>
 //
 // <example>
@@ -120,7 +171,17 @@
 //    Aipsrc::find(printerPage, "printer.ps.page", "notSet");
 // </srcblock>
 // Here the final argument is the default to use if the keyword is not found
-// at all.
+// at all.<br>
+// If you often want to know, dynamically, the current 'printer.ps.page'
+// value, you could do something like:
+// <srcblock>
+//	static uInt pp = Aipsrc::registerRC("printer.ps.page", "noSet");
+//	String printerPage = get(pp);
+// // Processing, and maybe somewhere else:
+//	set(pp, "nowSet");
+// // ...
+//	printerPage = get(pp);
+// </srcblock>
 // </example>
 //
 // <motivation>
@@ -128,103 +189,107 @@
 // </motivation>
 //
 // <thrown>
-//    <li> Nothing thrown by Aipsrc but used classes may.
+//    <li>AipsError if the environment variables HOME and/or AIPSPATH not set.
 // </thrown>
 //
-// <todo asof="1996/10/24">
-//   <li> Find a better way to do the keyword matching, not a real high priority
+// <todo asof="1997/08/07">
 // </todo>
 
 class Aipsrc {
 
 public:
-//# Constructors
+  //# Constructors
 
-//# Destructor
+  //# Destructor
 
-//# Copy assignment
+  //# Copy assignment
 
   //# Member functions
-  // <group>
   // <thrown>
   // <li> AipsError if HOME or AIPSPATH environment variable not set
   // </thrown> 
-// <group>
-// The <src>find()</src> functions will, given a keyword, return the value
-// with a matched keyword found in the files. If no match found the
-// function will be False. The <src>findNoHome()<src> emulates the <src>-i</src>
-// switch of getrc by bypassing the <src>~/.aipsrc</src> file.
-   static Bool find(String &value, const String &keyword);
-   static Bool findNoHome(String &value, const String &keyword);
-// </group>
+  // The <src>find()</src> functions will, given a keyword, return the value
+  // with a matched keyword found in the files. If no match found the
+  // function will be False. The <src>findNoHome()</src> emulates the <src>-i</src>
+  // switch of getrc by bypassing the <src>~/.aipsrc</src> file.
+  // <group>
+  static Bool find(String &value, const String &keyword);
+  static Bool findNoHome(String &value, const String &keyword);
+  // </group>
 
-// This find usually saves you some lines of code, since you can supply the
-// default you want to use when no such keywords is defined.
-// If the return value is False, the keyword was not found and the default
-// was used.
-// <group>
-   static Bool find(String &value, const String &keyword, 
-		    const String &deflt);
-   static Bool findNoHome(String &value, const String &keyword,
-			  const String &deflt);
-// </group>
+  // This find usually saves you some lines of code, since you can supply the
+  // default you want to use when no such keyword is defined.
+  // If the return value is False, the keyword was not found and the default
+  // was used.
+  // <group>
+  static Bool find(String &value, const String &keyword, 
+		   const String &deflt);
+  static Bool findNoHome(String &value, const String &keyword,
+			 const String &deflt);
+  // </group>
 
-// A find() which returns the file the match was
-// found in, and the complete line in that file.
-// <group>
-   static Bool find(String &value, String &fileFound,
-		    String &lineFound, const String &keyword);
-   static Bool findNoHome(String &value, String &fileFound,
-		    String &lineFound, const String &keyword);
-// </group>
+  // Functions to register keywords for later use in get() and set(). The
+  // returned value is the index for get() and set().
+  // <group>
+  static uInt registerRC(const String &keyword,
+			 const String &deflt);
+  // </group>
 
-  // Returns the appropiate AIPS variables
+  // Gets are like find, but using registered integers rather than names.
+  // <group>
+  static const String &get(uInt keyword);
+  // </group>
+
+  // Sets allow registered values to be set
+  // <group>
+  static void set(uInt keyword, const String &deflt);
+  // </group>
+
+  // Returns the appropiate AIPS++ or system variable values
   // <group>
   static const String &aipsRoot();
   static const String &aipsArch();
   static const String &aipsSite();
   static const String &aipsHost();
+  // Returns: <src>~/aips++</src>
   static const String &aipsHome();
   // </group>
-
-  // </group>
-
-// The <src>reRead()</src> function, will reinitialise the static maps and read the
-// aipsrc files again. It could be useful in some interactive or multi-processor 
-// circumstances.
-   static void reRead();
-
-// The following functions return the full lists of available data. They could
-// be useful for debugging purposes.
-// <group>
-  static const Block<String> &keywords();
+  
+  // The <src>reRead()</src> function, will reinitialise the static maps and read the
+  // aipsrc files again. It could be useful in some interactive or multi-processor 
+  // circumstances.
+  static void reRead();
+  
+  // The following functions return the full lists of available data. They could
+  // be useful for debugging purposes.
+  // <group>
   static const Block<String> &values();
-  static const Block<String> &lines();
-  static const Block<String> &files();
-  static const Block<uInt> &fileEnds();
-// </group>
-
-// The following <src>show()</src> function, useful for debugging, outputs all information
+  static const Block<String> &patterns();
+  // </group>
+  
+  // The following <src>show()</src> function, useful for debugging, outputs 
+  // all keyword/value pairs found
   static void show(ostream &oStream);
-// Prints all info on cout
+  // Prints all info on cout
   static void show();
 
+protected:
+  // Actual find function
+  static Bool find(String &value, const String &keyword,
+		   uInt start);
+  // The registration function
+  static uInt registerRC(const String &keyword, Block<String> &nlst);
+  
 private:
-//# Data
+  //# Data
   // Indicate files read
   static Bool          doInit;
-  // List of keywords found
-  static Block<String> keywordName;
   // List of values belonging to keywords found
   static Block<String> keywordValue;
   // List of patterns deducted from names
   static Block<String> keywordPattern;
-  // Full line content of keywords found
-  static Block<String> keywordLine;
-  // The names of the files found
-  static Block<String> keywordFile;
-  // The end in the keyword list for each file found
-  static Block<uInt>   fileEnd;
+  // The start of the non-home values
+  static uInt fileEnd;
   // AIPSROOT
   static String root;
   // AIPSARCH
@@ -235,28 +300,29 @@ private:
   static String host;
   // AIPSHOME
   static String home;
-  // Filled above
+  // HOME
+  static String uhome;
+  // Indicate above filled
   static Bool filled;
+  // String register list
+  // <group>
+  static Block<String> strlst;
+  static Block<String> nstrlst;
+  // </group>
 
-//# General member functions
-// Read in the aipsrc files, returning the number of lines found
-// <group>
+  //# General member functions
+  // Read in the aipsrc files, returning the number of lines found
+  // <group>
   static uInt parse();
   static uInt parse(String &fileList);
-// </group>
-
-// Locate the right keyword in the static maps
-   static Bool matchKeyword(uInt &where, const String &keyword,
-			    uInt start);
-
-// Find a match
-   static Bool find(String &value, String &fileFound,
-		    String &lineFound, const String &keyword,
-		    uInt start);
-  // Fill in root, arch, site, host and home
-  static void fillAips();
+  // </group>
+  
+  // Locate the right keyword in the static maps
+  static Bool matchKeyword(uInt &where, const String &keyword,
+			   uInt start);
+  // Fill in root, arch, site, host and home, and return requested nam
+  static const String &fillAips(const String &nam);
 };
-
 
 #endif
 

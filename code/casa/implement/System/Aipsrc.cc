@@ -29,24 +29,24 @@
 
 #include <aips/Tasking/Aipsrc.h>
 #include <aips/Exceptions.h>
+#include <aips/OS/EnvVar.h>
+#include <aips/OS/File.h>
+#include <aips/Utilities/Assert.h>
 #include <aips/Utilities/String.h>
+#include <aips/Utilities/Regex.h>
+#include <iostream.h>
 #include <fstream.h>
 #include <strstream.h>
-#include <aips/OS/EnvVar.h>
 
-// This is the function that does most of the work. It is pretty kludgy.
-// If the Maps become too large we will need to do something else, but
-// for now this should work just fine.
+// This is the function that does most of the work. It is pretty slow for
+// large maps, but no real problem.
 
-Bool Aipsrc::matchKeyword(uInt &where,
-			  const String &keyword,
+Bool Aipsrc::matchKeyword(uInt &where,  const String &keyword,
 			  uInt start) {
-   if (doInit) parse();
+  if (doInit) parse();
  
-   for (Int i=start; i<keywordName.nelements(); i++) {
-     //cerr << "*" << keyword << "*" << keyInMap << "*" <<  pattern << "*" << endl;
-     if (keywordPattern[i].length() > 1 && 
-	 keyword.contains(Regex(keywordPattern[i]))) {
+  for (Int i=start; i<keywordPattern.nelements(); i++) {
+     if (keyword.contains(Regex(keywordPattern[i]))) {
        where = i;
        return True;
      };
@@ -55,20 +55,11 @@ Bool Aipsrc::matchKeyword(uInt &where,
 } 
 
 Bool Aipsrc::find(String &value,	
-		  String &fileFound,
-		  String &lineFound,
 		  const String &keyword,
 		  uInt start) {
   uInt keyInMap;
   if (matchKeyword(keyInMap, keyword, start)) {
     value = keywordValue[keyInMap];
-    for (Int i=0; i<keywordFile.nelements(); i++) {
-      if (keyInMap < fileEnd[i]) {
-	fileFound = keywordFile[i];
-	break;
-      };
-    };
-    lineFound = keywordLine[keyInMap];
     return True;
   };
   return False; 
@@ -76,60 +67,27 @@ Bool Aipsrc::find(String &value,
 
 Bool Aipsrc::find(String &value,
 		  const String &keyword) {
-  String file, line;
-  return find(value, file, line, keyword, 0);
+  return find(value, keyword, 0);
 }
 
 Bool Aipsrc::findNoHome(String &value,
 			const String &keyword) {
-  Int n = (keywordFile.nelements()<=0 ? 0 : fileEnd[0]);
-  String file, line;
-  return find(value, file, line, keyword, n);
+  return find(value, fileEnd);
 }
 
 Bool Aipsrc::find(String &value, const String &keyword, 
 		  const String &deflt)
 {
-    Bool found = find(value, keyword);
-    if (!found) {
-	value = deflt;
-    }
-    return found;
+  return (find(value, keyword) ? True : (value = deflt, False));
 }
 
 Bool Aipsrc::findNoHome(String &value, const String &keyword,
-			  const String &deflt)
-{
-    Bool found = findNoHome(value, keyword);
-    if (!found) {
-	value = deflt;
-    }
-    return found;
-}
-
-
-Bool Aipsrc::find(String &value,	
-		  String &fileFound,
-		  String &lineFound,
-		  const String &keyword) {
-  return find(value, fileFound, lineFound, keyword, 0);
-}
-
-Bool Aipsrc::findNoHome(String &value,
-			String &fileFound,
-			String &lineFound,
-			const String &keyword) {
-  Int n = (keywordFile.nelements()<=0 ? 0 : fileEnd[0]);
-  return find(value, fileFound, lineFound, keyword, n);
+			  const String &deflt) {
+  return (findNoHome(value, keyword) ? True : (value = deflt, False));
 }
 
 void Aipsrc::reRead() {
   parse();
-};
-
-const Block<String> &Aipsrc::keywords() {
-  if (doInit) parse();
-  return keywordName;
 }
 
 const Block<String> &Aipsrc::values() {
@@ -137,28 +95,17 @@ const Block<String> &Aipsrc::values() {
   return keywordValue;
 }
 
-const Block<String> &Aipsrc::lines() {
+const Block<String> &Aipsrc::patterns() {
   if (doInit) parse();
-  return keywordLine;
+  return keywordPattern;
 }
-
-const Block<String> &Aipsrc::files() {
-  if (doInit) parse();
-  return keywordFile;
-}
-
-const Block<uInt> &Aipsrc::fileEnds() {
-  if (doInit) parse();
-  return fileEnd;
-}
-
-void Aipsrc::fillAips() {
+const String &Aipsrc::fillAips(const String &nam) {
   if (!filled) {
-    home = EnvironmentVariables::value("HOME");
-    if (home.empty())
+    uhome = EnvironmentVariables::value("HOME");
+    if (uhome.empty())
       throw(AipsError(String("The HOME environment variable has not been set") +
 		      "\n\t(see system administrator)"));
-    home += "/aips++";
+    home = uhome + "/aips++";
     String aipsPath = EnvironmentVariables::value("AIPSPATH");
     if (aipsPath.empty())
       throw(AipsError(String("The AIPSPATH environment variable has not been set") +
@@ -173,37 +120,64 @@ void Aipsrc::fillAips() {
     delete [] newdir;
     filled = True;
   };
+  return nam;
 }
 
-const String &Aipsrc:: aipsRoot() {
-  fillAips();
-  return root;
+const String &Aipsrc::aipsRoot() {
+  return fillAips(root);
 }
 
-const String &Aipsrc:: aipsArch() {
-  fillAips();
-  return arch;
+const String &Aipsrc::aipsArch() {
+  return fillAips(arch);
 }
 
-const String &Aipsrc:: aipsSite() {
-  fillAips();
-  return site;
+const String &Aipsrc::aipsSite() {
+  return fillAips(site);
 }
 
-const String &Aipsrc:: aipsHost() {
-  fillAips();
-  return host;
+const String &Aipsrc::aipsHost() {
+  return fillAips(host);
 }
 
-const String &Aipsrc:: aipsHome() {
-  fillAips();
-  return home;
+const String &Aipsrc::aipsHome() {
+  return fillAips(home);
 }
+
+uInt Aipsrc::registerRC(const String &keyword, Block<String> &nlst) {
+  uInt n;
+  for (n=0; n<nlst.nelements(); n++) {
+    if (nlst[n] == keyword) break;
+  };
+  n++;
+  if (n>nlst.nelements()) {
+    nlst.resize(n);
+  };
+  nlst[n-1] = keyword;
+  return n;
+}
+
+uInt Aipsrc::registerRC(const String &keyword,
+			const String &deflt) {
+  uInt n = Aipsrc::registerRC(keyword, nstrlst);
+  strlst.resize(n);
+  find (strlst[n-1], keyword, deflt);
+  return n;
+}
+
+const String &Aipsrc::get(uInt keyword) {
+  AlwaysAssert(keyword>0 && keyword<=strlst.nelements(), AipsError);
+  return strlst[keyword-1];
+}
+
+void Aipsrc::set(uInt keyword, const String &deflt) {
+  AlwaysAssert(keyword>0 && keyword<=strlst.nelements(), AipsError);
+  strlst[keyword-1] = deflt;
+}
+	       
 
 uInt Aipsrc::parse() {
   // This parse based on order HOME, AIPSROOT, AIPSHOST, AIPSSITE, AIPSARCH
-  fillAips();
-  String filelist (EnvironmentVariables::value("HOME") + String("/.aipsrc:"));
+  String filelist = fillAips(uhome) + String("/.aipsrc:");
   filelist += (root + String("/.aipsrc:"));
   filelist += (host + String("/aipsrc:"));
   filelist += (site + String("/aipsrc:"));
@@ -214,107 +188,71 @@ uInt Aipsrc::parse() {
 uInt Aipsrc::parse(String &fileList) {
   doInit = False;		 // Indicate parse done
   keywordValue.resize(0, True);  // Clear the old values if any
-  keywordLine.resize(0, True);
-  keywordName.resize(0, True);
   keywordPattern.resize(0, True);
-  keywordFile.resize(0, True);
-  fileEnd.resize(0, True);
+  Block<String> keywordFile;
+  fileEnd = 0;
   Int nkw = 0;			// # of keywords found
   Int nfile = 0;		// # of files found
   
   // This here be the parse function. It looks through all the directories
-  // looking for files to parse.  We can probably make it more sophisticated
-  // but it should work fine.
+  // looking for files to parse.
   
   Int dirCount(fileList.freq(':') + 1);
   String *directories = new String[dirCount];
   dirCount = split(fileList, directories, dirCount, ":");
+  keywordFile.resize(dirCount);
   for (Int i=0; i<dirCount; i++) {
-    while (i>=keywordFile.nelements()) {
-      keywordFile.resize(2*keywordFile.nelements() + 1);
-      fileEnd.resize(keywordFile.nelements());
-    };
     keywordFile[nfile] = directories[i];
-    fileEnd[nfile]= nkw;
+    if (i == 0) fileEnd = nkw;
 
-//   Ok now if we have a filename let's see if we can open it
-
-    ifstream fileAipsrc((char *)keywordFile[nfile].chars());
-    while (fileAipsrc.good()) {
-      String buffer; 
-      readline(fileAipsrc, buffer);
-      if (!buffer.empty() && buffer[0] != '#') {    // Ignore comment lines
-	String splitbuffer[2];
-	String keyword, value;
-	split(buffer, splitbuffer, 2, RXwhite);
-	keyword = splitbuffer[0];
-	value = splitbuffer[1];
-	// cerr << keyword << "=" << value << endl;
-	keyword.del(":");             // Strip that :
-	while (nkw >= keywordName.nelements()) {
-	  keywordName.resize(2*keywordName.nelements() + 1);
-	  keywordValue.resize(keywordName.nelements());
-	  keywordLine.resize(keywordName.nelements());
-	  keywordPattern.resize(keywordName.nelements());
-	};
-	keywordValue[nkw] = value;
-	keywordLine[nkw]  = buffer;
-	keywordName[nkw]  = keyword;
-	keywordPattern[nkw] = String("^");
-	for (Int j=0; j<keyword.length(); j++) { // Build the pattern cause I
-	                                         // cant figure out how to gsub it.
-	  if (keyword[j] == '*') {
-	    keywordPattern[nkw] += '.';
-	  } else if (keyword[j] == '.') {
-	    keywordPattern[nkw] += '\\';      // Work around since String/Regex
-	  };      	                 // doesn't use extended regex
-	  keywordPattern[nkw] += keyword[j];
-	};
-	nkw++;
-	fileEnd[nfile] = nkw;
-      };            
+    //   Ok now if we have a filename let's see if we can open it
+    File fil(keywordFile[nfile]);
+    if (fil.exists()) {
+      ifstream fileAipsrc(keywordFile[nfile], ios::in | ios::nocreate);
+      String buffer;
+      Char buf[8192];	// Single lines must fit in this
+      String keyword;
+      String value;
+      const Regex comm("^[ 	]*#");	// Comment line
+      const Regex defin(":[ 	]*");	// Line with value
+      const Regex lspace("^[ 	]*");	// Leading spaces
+      const String gs00(".");	// make correct patterns
+      const String gs01("\\.");
+      const String gs10("*");
+      const String gs11(".*");
+      while (fileAipsrc.getline(&buf[0], sizeof(buf))) {
+	buffer = buf;
+	if (buffer.empty() || buffer.contains(comm))	// Ignore comments
+	  continue;
+	buffer = buffer.after(lspace);
+	if (buffer.contains(defin)) {		// value defined
+	  keyword = buffer.before(defin);
+	  value = buffer.after(defin);
+	  if (keyword.length() < 1)
+	    continue;
+	  while (nkw >= keywordPattern.nelements()) {
+            keywordPattern.resize(2*keywordPattern.nelements() + 1);
+	    keywordValue.resize(keywordPattern.nelements());
+	  };
+	  keywordValue[nkw] = value;
+	  keyword.gsub(gs00, gs01);
+	  keyword.gsub(gs10, gs11);
+	  keywordPattern[nkw] = keyword;
+	  nkw++;
+	  if (i == 0) fileEnd = nkw;
+	};            
+      };
     };
     nfile++;
   };
   delete [] directories;
 
   // Resize static lists
-  keywordValue.resize(nkw, True);  // Clear the old values if any
-  keywordLine.resize(nkw, True);
-  keywordName.resize(nkw, True);
+  keywordValue.resize(nkw, True);
   keywordPattern.resize(nkw, True);
-  keywordFile.resize(nfile, True);
-  fileEnd.resize(nfile, True);
 
-  // cerr << *this << endl;
   return keywordValue.nelements();
 }
-
-//ostream & operator <<(ostream &oStream,
-//		      const Aipsrc &keysValuesEtc) {
-//  oStream << "Keyword-Value Pairs" << endl;
-//  {
-//    for(uInt i= 0; i < keysValuesEtc.keywordValue.ndefined(); i++) {
-//      oStream << keysValuesEtc.keywordValue.getKey(i) << "\t" 
-//	      << keysValuesEtc.keywordValue.getVal(i) << endl;
-//    };
-//  }
-//  oStream << endl << "Keyword-File Pairs" << endl;
-//  {
-//   / for (uInt i= 0; i < keysValuesEtc.keywordFile.ndefined(); i++) {
-//  //      oStream << keysValuesEtc.keywordFile.getKey(i) << "\t" 
-//	      << keysValuesEtc.keywordFile.getVal(i) << endl;
-//    };
-//  }
-//  oStream << endl << "Keyword-Line Pairs" << endl;
-//  {
-//    for (uInt i= 0; i < keysValuesEtc.keywordLine.ndefined(); i++) {
-//      oStream << keysValuesEtc.keywordLine.getKey(i) << "\t" 
-//	      << keysValuesEtc.keywordLine.getVal(i) << endl;
-//    };
-//  }
-//  return oStream;
-//}
 
 void Aipsrc::show() {
   show(cout);
@@ -322,42 +260,35 @@ void Aipsrc::show() {
 
 void Aipsrc::show(ostream &oStream) {
   if (doInit) parse();
-  {
-   Int start = 0;
-   for (Int i = 0; i<keywordFile.nelements(); i++) {
-     oStream << "Lines analysed on file: " << keywordFile[i] << endl;
-     for (Int j = start; j<fileEnd[i]; j++) {
-       oStream << j << ":	" << 
-	 keywordName[j] << ":	" <<
-	 keywordValue[j] << endl;
-     };
-     start = fileEnd[i];
-   };
-  }
-  {
-   Int start = 0;
-   for (Int i = 0; i<keywordFile.nelements(); i++) {
-     oStream << "Lines read on file: " << keywordFile[i] << endl;
-     for (Int j = start; j<fileEnd[i]; j++) {
-       oStream << j << ":	" << keywordLine[j] << endl;
-     };
-     start = fileEnd[i];
-   };
-  }
+  String nam;
+  const String gs00(".*");
+  const String gs01("*");
+  const String gs10("\\.");
+  const String gs11(".");
+  oStream << keywordValue.nelements() <<
+    " keyword/value pairs found:" << endl;
+  for (Int j = 0; j<keywordValue.nelements(); j++) {
+    nam = keywordPattern[j];
+    nam.gsub(gs00, gs01);
+    nam.gsub(gs10, gs11);
+    oStream << j << ":	" << 
+      nam << ":	" <<
+      keywordValue[j] << endl;
+  };
 }
 
 // Static Initializations -- Only really want to read the files once
 
 Bool Aipsrc::doInit = True;
-Block<String> Aipsrc::keywordName = Block<String>(0);
-Block<String> Aipsrc::keywordPattern = Block<String>(0);
-Block<String> Aipsrc::keywordValue = Block<String>(0);
-Block<String> Aipsrc::keywordLine = Block<String>(0);
-Block<String> Aipsrc::keywordFile = Block<String>(0);
-Block<uInt> Aipsrc::fileEnd = Block<uInt>(0);
+Block<String> Aipsrc::keywordPattern(0);
+Block<String> Aipsrc::keywordValue(0);
+uInt Aipsrc::fileEnd = 0;
 String Aipsrc::root = String();
 String Aipsrc::arch = String();
 String Aipsrc::site = String();
 String Aipsrc::host = String();
 String Aipsrc::home = String();
+String Aipsrc::uhome= String();
 Bool Aipsrc::filled = False;
+Block<String> Aipsrc::strlst(0);
+Block<String> Aipsrc::nstrlst(0);
