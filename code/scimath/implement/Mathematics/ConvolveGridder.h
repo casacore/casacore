@@ -1,5 +1,5 @@
 //# ConvolveGridder.h: Definition for Convolutional Gridder
-//# Copyright (C) 1996,1997,1999
+//# Copyright (C) 1996,1997,1999,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
