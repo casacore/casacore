@@ -1,5 +1,5 @@
 //# LatticeExprNode.cc:  this defines LatticeExprNode.cc
-//# Copyright (C) 1997,1998,1999,2000,2001,2002
+//# Copyright (C) 1997,1998,1999,2000,2001,2002,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -294,7 +294,6 @@ LatticeExprNode::LatticeExprNode (Bool constant)
 #endif
 }
 
-
 LatticeExprNode::LatticeExprNode (const Lattice<Float>& lattice) 
 : donePrepare_p   (False),
   dtype_p         (TpFloat),
@@ -304,7 +303,7 @@ LatticeExprNode::LatticeExprNode (const Lattice<Float>& lattice)
    pAttr_p = &pExprFloat_p->getAttribute();
 
 #if defined(AIPS_TRACE)
-   cout << "LatticeExprNode:: constructor (const Lattice<T>>&); pExpr_p.nrefs() = "
+   cout << "LatticeExprNode:: constructor (const Lattice<T>&); pExpr_p.nrefs() = "
 	<< pExprDouble_p.nrefs() << endl;
 #endif
 }
@@ -318,7 +317,7 @@ LatticeExprNode::LatticeExprNode (const Lattice<Double>& lattice)
    pAttr_p = &pExprDouble_p->getAttribute();
 
 #if defined(AIPS_TRACE)
-   cout << "LatticeExprNode:: constructor (const Lattice<T>>&); pExpr_p.nrefs() = "
+   cout << "LatticeExprNode:: constructor (const Lattice<T>&); pExpr_p.nrefs() = "
 	<< pExprDouble_p.nrefs() << endl;
 #endif
 }
@@ -332,7 +331,7 @@ LatticeExprNode::LatticeExprNode (const Lattice<Complex>& lattice)
    pAttr_p = &pExprComplex_p->getAttribute();
 
 #if defined(AIPS_TRACE)
-   cout << "LatticeExprNode:: constructor (const Lattice<T>>&); pExpr_p.nrefs() = "
+   cout << "LatticeExprNode:: constructor (const Lattice<T>&); pExpr_p.nrefs() = "
 	<< pExprDouble_p.nrefs() << endl;
 #endif
 }
@@ -346,7 +345,7 @@ LatticeExprNode::LatticeExprNode (const Lattice<DComplex>& lattice)
    pAttr_p = &pExprDComplex_p->getAttribute();
 
 #if defined(AIPS_TRACE)
-   cout << "LatticeExprNode:: constructor (const Lattice<T>>&); pExpr_p.nrefs() = "
+   cout << "LatticeExprNode:: constructor (const Lattice<T>&); pExpr_p.nrefs() = "
 	<< pExprDouble_p.nrefs() << endl;
 #endif
 }
@@ -375,7 +374,7 @@ LatticeExprNode::LatticeExprNode (const MaskedLattice<Float>& lattice)
    pAttr_p = &pExprFloat_p->getAttribute();
 
 #if defined(AIPS_TRACE)
-   cout << "LatticeExprNode:: constructor (const MaskedLattice<T>>&); pExpr_p.nrefs() = "
+   cout << "LatticeExprNode:: constructor (const MaskedLattice<T>&); pExpr_p.nrefs() = "
 	<< pExprDouble_p.nrefs() << endl;
 #endif
 }
@@ -389,7 +388,7 @@ LatticeExprNode::LatticeExprNode (const MaskedLattice<Double>& lattice)
    pAttr_p = &pExprDouble_p->getAttribute();
 
 #if defined(AIPS_TRACE)
-   cout << "LatticeExprNode:: constructor (const MaskedLattice<T>>&); pExpr_p.nrefs() = "
+   cout << "LatticeExprNode:: constructor (const MaskedLattice<T>&); pExpr_p.nrefs() = "
 	<< pExprDouble_p.nrefs() << endl;
 #endif
 }
@@ -403,7 +402,7 @@ LatticeExprNode::LatticeExprNode (const MaskedLattice<Complex>& lattice)
    pAttr_p = &pExprComplex_p->getAttribute();
 
 #if defined(AIPS_TRACE)
-   cout << "LatticeExprNode:: constructor (const MaskedLattice<T>>&); pExpr_p.nrefs() = "
+   cout << "LatticeExprNode:: constructor (const MaskedLattice<T>&); pExpr_p.nrefs() = "
 	<< pExprDouble_p.nrefs() << endl;
 #endif
 }
@@ -417,7 +416,7 @@ LatticeExprNode::LatticeExprNode (const MaskedLattice<DComplex>& lattice)
    pAttr_p = &pExprDComplex_p->getAttribute();
 
 #if defined(AIPS_TRACE)
-   cout << "LatticeExprNode:: constructor (const MaskedLattice<T>>&); pExpr_p.nrefs() = "
+   cout << "LatticeExprNode:: constructor (const MaskedLattice<T>&); pExpr_p.nrefs() = "
 	<< pExprDouble_p.nrefs() << endl;
 #endif
 }
@@ -845,6 +844,36 @@ Bool LatticeExprNode::getBool() const
 {
    DebugAssert (dataType() == TpBool, AipsError);
    return pExprBool_p->getScalar().value();
+}
+
+Array<Float> LatticeExprNode::getArrayFloat() const
+{
+   DebugAssert (dataType() == TpFloat, AipsError);
+   return pExprFloat_p->getArray().value();
+}
+
+Array<Double> LatticeExprNode::getArrayDouble() const
+{
+   DebugAssert (dataType() == TpDouble, AipsError);
+   return pExprDouble_p->getArray().value();
+}
+
+Array<Complex> LatticeExprNode::getArrayComplex() const
+{
+   DebugAssert (dataType() == TpComplex, AipsError);
+   return pExprComplex_p->getArray().value();
+}
+
+Array<DComplex> LatticeExprNode::getArrayDComplex() const
+{
+   DebugAssert (dataType() == TpDComplex, AipsError);
+   return pExprDComplex_p->getArray().value();
+}
+
+Array<Bool> LatticeExprNode::getArrayBool() const
+{
+   DebugAssert (dataType() == TpBool, AipsError);
+   return pExprBool_p->getArray().value();
 }
 
 
@@ -1571,6 +1600,19 @@ LatticeExprNode LatticeExprNode::operator[] (const LatticeExprNode& cond) const
    return 0;
 }
 
+LatticeExprNode indexin (const LatticeExprNode& axis,
+			 const LatticeExprNode& indexFlags)
+{ 
+#if defined(AIPS_TRACE)
+   cout << "LatticeExprNode:: 2d function indexin" << endl;
+#endif
+   Block<LatticeExprNode> arg(2);
+   arg[0] = axis;
+   arg[1] = indexFlags;
+   LELFunctionBool* ptr = new LELFunctionBool(LELFunctionEnums::INDEXIN, arg);
+   return ptr;
+}
+
 LatticeExprNode all (const LatticeExprNode& expr)
 { 
 #if defined(AIPS_TRACE)
@@ -1630,7 +1672,7 @@ LatticeExprNode nelements(const LatticeExprNode& expr)
 LatticeExprNode ndim (const LatticeExprNode& expr)
 {  
 #if defined(AIPS_TRACE)
-   cout << "LatticeExprNode:: 2d function ndim" << endl;
+   cout << "LatticeExprNode:: 1d function ndim" << endl;
 #endif
    Block<LatticeExprNode> arg(1, expr);
    LELFunctionFloat* ptr = new LELFunctionFloat(LELFunctionEnums::NDIM, arg);
