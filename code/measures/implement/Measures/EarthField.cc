@@ -1,5 +1,5 @@
 //# EarthField.cc:  EarthField class model calculations
-//# Copyright (C) 1998
+//# Copyright (C) 1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -168,8 +168,8 @@ void EarthField::calcField(const MVPosition &pos) {
     }
     break;
     default: {
-      Double slat, clat, slong, clong, x, y, z, ratio, rr, one, two, three;
-      Int l, m, n, fn, fm, j, i;
+      Double slat, clat, slong, clong, x, y, z, ratio, rr(0), one, two, three;
+      Int l, m, n, fn(0), fm, j, i;
       for (Int lp=0; lp<4; lp++) {
 	slat = cos(C::pi_2 - posv(2));
 	clat = sin(C::pi_2 - posv(2));
