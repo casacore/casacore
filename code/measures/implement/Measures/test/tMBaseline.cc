@@ -35,6 +35,7 @@
 #include <aips/Measures/MEpoch.h>
 #include <aips/Measures/MDirection.h>
 #include <aips/Measures/MPosition.h>
+#include <aips/Measures/MCBaseline.h>
 #include <aips/Measures/MBaseline.h>
 #include <aips/Measures/MCFrame.h>
 #include <aips/Arrays/ArrayMath.h>
@@ -46,6 +47,8 @@ main()
       	cout << "Test measure class MBaseline" << endl;
 	cout << "--------------------------------------" << endl;
 
+	cout << endl << "MBaseline state transition matrix:\n" << endl;
+	cout << MCBaseline::showState() << endl;
 
 	MEpoch tbm(Quantity(50927.92931, "d"));
 	MPosition pos(MVPosition(-4750915.84032, 2792906.17778, 
@@ -85,6 +88,7 @@ main()
 	cout << "--------------------------------------" << endl;
 	cout << "Testing all conversions forward/backward" << endl;
 
+	Bool isok = True;
 	Vector<Double> tvec(3);
 	tvec = 0.0;
 	for (uInt i=MBaseline::ITRF; i<MBaseline::N_Types; i++) {
@@ -101,44 +105,17 @@ main()
 		MBaseline::showType(j) << ": " <<
 		mb0.getValue().getValue().ac() -
 		backw(forw(mb0)).getValue().getValue().ac() << endl;
+	      isok = False;
 	    };
 	  };
 	};
-
-	cout << "All forward/backward conversions: ok" << endl;
+	if (isok) {
+	  cout << "All forward/backward Baseline conversions: ok" << endl;
+	} else {
+	  cout << "Some forward/backward Baseline conversions wrong" << endl;
+	};
 	cout << "------------------------------------" << endl;
 
-	cout << "Testing all MDirection conversions forward/backward" << endl;
-
- 	{
-	  MVDirection mvd0(0.5, 0.5, 0.5);
-	  Double tp;
-	  for (uInt i=MDirection::J2000; i<MDirection::N_Types; i++) {
-	    for (uInt j=MDirection::J2000; j<MDirection::N_Types; j++) {
-	      if (i == MDirection::B1950 || i == MDirection::BMEAN ||
-		  i == MDirection::BTRUE ||
-		  j == MDirection::B1950 || j == MDirection::BMEAN ||
-                  j == MDirection::BTRUE) tp = 1.7e-8;
-	      else tp = 1e-9;
-	      MDirection::Ref rin(i, mf);
-	      MDirection::Ref rout(j, mf);
-	      MDirection mb0(mvd0, rin);
-	      MDirection::Convert forw(rin, rout);
-	      MDirection::Convert backw(rout, rin);
-	      if (!allNearAbs(mb0.getValue().getValue().ac() -
-			      backw(forw(mb0)).getValue().getValue().ac(), 
-			      tvec.ac(), tp)) {
-		cout << MDirection::showType(i) << " to " <<
-		  MDirection::showType(j) << ": " <<
-		  mb0.getValue().getValue().ac() -
-		  backw(forw(mb0)).getValue().getValue().ac() << endl;
-	      };
-	    };
-	  };
-	}
-
-	cout << "All forward/backward Direction conversions: ok" << endl;
-	cout << "----------------------------------------------" << endl;
 	cout << "Exercise all MVBaseline function" << endl;
 	{
 	  MVBaseline x(mvb0);
