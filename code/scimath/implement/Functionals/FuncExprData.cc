@@ -83,6 +83,8 @@ FuncExprData::FuncExprData() :
     {LOG, 	"ln",		FUNC,	SPCPRI,		1, 1, 1, 0, SAVENV},
     {LOG2, 	"log2",		FUNC,	SPCPRI,		1, 1, 1, 0, SAVENV},
     {LOG10, 	"log",		FUNC,	SPCPRI,		1, 1, 1, 0, SAVENV},
+    {ERF, 	"erf",		FUNC,	SPCPRI,		1, 1, 1, 0, SAVENV},
+    {ERFC, 	"erfc",		FUNC,	SPCPRI,		1, 1, 1, 0, SAVENV},
     {PI, 	"pi",		FUNC,	SPCPRI,		0, 1, 1, 0, SAVENV},
     {EE, 	"ee",		FUNC,	SPCPRI,		0, 1, 1, 0, SAVENV},
     {ABS, 	"abs",		FUNC,	SPCPRI,		1, 1, 1, 0, SAVENV},

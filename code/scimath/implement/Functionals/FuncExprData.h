@@ -121,6 +121,8 @@ public:
     LOG,
     LOG10,
     LOG2,
+    ERF,
+    ERFC,
     PI,
     EE,
     ABS,

@@ -549,6 +549,12 @@ Bool FuncExpression::exec(Double &res) const {
       case FuncExprData::LOG10:
 	exec_p.back() = log10(exec_p.back());
 	break;
+      case FuncExprData::ERF:
+	exec_p.back() = erf(exec_p.back());
+	break;
+      case FuncExprData::ERFC:
+	exec_p.back() = erfc(exec_p.back());
+	break;
       case FuncExprData::PI: {
 	if (pos->state.argcnt == 0) exec_p.push_back(C::pi);
 	else exec_p.back() *= C::pi;
