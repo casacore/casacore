@@ -25,153 +25,43 @@
 //#
 //# $Id$
 
-#include <strstream.h>
 #include <trial/MeasurementEquations/VisibilityIterator.h>
 #include <trial/MeasurementEquations/VisBuffer.h>
+#include <aips/Arrays/ArrayLogical.h>
+#include <aips/Arrays/ArrayMath.h>
+#include <aips/Arrays/MaskedArray.h>
+#include <aips/Exceptions/Error.h>
+#include <aips/Functionals/ScalarSampledFunctional.h>
+#include <aips/Functionals/Interpolate1D.h>
 #include <aips/MeasurementSets/MSColumns.h>
-#include <aips/Measures.h>
-#include <aips/Measures/Measure.h>
-#include <aips/Measures/MDirection.h>
-#include <aips/Measures/MPosition.h>
-#include <aips/Measures/MEpoch.h>
 #include <aips/Measures/MVTime.h>
-#include <aips/Measures/MCDirection.h>
 #include <aips/Tables/TableDesc.h>
 #include <aips/Tables/ColDescSet.h>
-#include <aips/Tables/ExprNode.h>
-#include <aips/Arrays/ArrayMath.h>
-#include <aips/Arrays/ArrayLogical.h>
-#include <aips/Containers/Block.h>
-#include <aips/Arrays/Matrix.h>
-#include <aips/Mathematics/Constants.h>
-#include <aips/Lattices/Slicer.h>
 #include <aips/Tables/TableRecord.h>
-#include <aips/Logging/LogMessage.h>
-#include <aips/Logging/LogSink.h>
-#include <aips/Exceptions/Error.h>
-
-#ifdef __GNUG__
-typedef MeasConvert<MDirection,MVDirection,MCDirection> gpp_visiter_bug1;
-#endif
-
-Double Interval::interval_p;
-Double Interval::offset_p;
-
-Int Interval::compare(const void * obj1, const void * obj2)
-{
-    Double t1, t2;
-    t1 = *(const Double*)obj1 - offset_p;
-    t2 = *(const Double*)obj2 - offset_p;
-    return ((Int(t1/interval_p)==Int(t2/interval_p)) ? 0 : (t1 < t2) ? -1 : 1);
-}
 
 ROVisibilityIterator::ROVisibilityIterator() {}
 
 // const of MS is cast away, but we don't actually change it.
 // (just to share code between RO version and RW version of iterator)
-ROVisibilityIterator::ROVisibilityIterator(const MeasurementSet &mset,
+ROVisibilityIterator::ROVisibilityIterator(const MeasurementSet &ms,
 					   const Block<Int>& sortColumns,
 					   Double timeInterval)
-:ms((MeasurementSet&)mset), nChan_p(0),haveIter_p(False),
- first_pa_p(True),interval_p(timeInterval),
-lastUT_p(0),curChanGroup_p(0),freqCacheOK_p(False),
-preselected_p(False)
+: nChan_p(0),lastUT_p(0),curChanGroup_p(0),freqCacheOK_p(False),
+initialized_p(False),velSelection_p(False)
+{
+  Block<MeasurementSet> mss(1); mss[0]=ms;
+  msIter_p=MSIter(mss,sortColumns,timeInterval);
+  This = (ROVisibilityIterator*)this; 
+}
+
+ROVisibilityIterator::ROVisibilityIterator(const Block<MeasurementSet> &mss,
+					   const Block<Int>& sortColumns,
+					   Double timeInterval)
+: nChan_p(0),lastUT_p(0),curChanGroup_p(0),freqCacheOK_p(False),
+initialized_p(False),msIter_p(mss,sortColumns,timeInterval),
+velSelection_p(False)
 {
   This = (ROVisibilityIterator*)this; 
-  Block<Int> sortCols(sortColumns);
-  // sort on time if no sort order specified
-  if (sortCols.nelements()==0) {
-      sortCols.resize(1);
-      sortCols[0]=MS::TIME;
-  }
-  Block<String> columns(sortCols.nelements());
-  for (Int i=0; i<columns.nelements(); i++) {
-      if (sortCols[i]>0 && 
-	  sortCols[i]<MS::NUMBER_PREDEFINED_COLUMNS) {
-		columns[i] = MS::columnName(
-		    MS::PredefinedColumns(sortCols[i]));
-	    } else {
-		throw(AipsError("ROVisibilityIterator::origin() -"
-				"invalid sort column"));
-	    }
-  }
-  if (interval_p==0.0) {
-    interval_p=DBL_MAX; // semi infinite
-  }
-//#  Double startTime;
-  MSColumns msc(ms);
-//#  msc.time().get(0,startTime);
-  Interval::setInterval(interval_p);
-  // do not set the offset (all intervals zero based so we can convert
-  // times to intervals easily in other classes, e.g. TimeVarVisJones)
-  // Due to flagging, intervals may not have data over their full range
-  // anyway, so we don't really loose anything here.
-//#  Interval::setOffset(startTime);
-  // now find the time column and set the compare function
-  PtrBlock<ObjCompareFunc*> objCompFuncs(sortCols.nelements());
-  for (i=0; i<sortCols.nelements(); i++) {
-      if (sortCols[i]==MS::TIME) {
-	  objCompFuncs[i]=Interval::compare;
-      } else {
-	  objCompFuncs[i]=(ObjCompareFunc*)0;
-      }
-  }
-  Block<Int> orders(sortCols.nelements()); 
-  orders=TableIterator::DontCare;
-  tabIter_p = TableIterator(ms,columns,objCompFuncs,orders);
-
-  // check to see if we are attached to a 'reference MS' with a 
-  // DATA column that is a selection from the original DATA
-  preselected_p = msc.data().keywordSet().isDefined("CHANNEL_SELECTION");
-  if (preselected_p) {
-    // get the selection
-    Matrix<Int> selection;
-    msc.data().keywordSet().get("CHANNEL_SELECTION",selection);
-    Int nSpw=selection.ncolumn();
-    preselectedChanStart_p.resize(nSpw);
-    preselectednChan_p.resize(nSpw);
-    for (Int i=0; i<nSpw; i++) {
-      preselectedChanStart_p[i]=selection(0,i);
-      preselectednChan_p[i]=selection(1,i);
-    }
-  }
-
-  // find out the polarization reference frame.
-  // for now this is defined by the polarization of 
-  // the first entry in the feed table. Circular is the default.
-  Vector<String> polType=msc.feed().polarizationType()(0);
-  polFrame_p=Circular;
-  if (polType(0)=="X" || polType(0)=="Y") polFrame_p=Linear;
-  // setup CJones and the receptor angle.
-  // this assumes a single feed per antenna and an entry for each antenna.
-  // also assumes there's no time dependence.
-  Int arrayId=msc.arrayId()(0);
-  Double time=msc.time()(0);
-  Table& feed=ms.feed();
-  //# following gives warnings - skip for now 
-  //# Table selectedFeedTable=(feed(feed.col("ARRAY_ID")==arrayId &&
-  //# feed.col("TIME")-feed.col("INTERVAL") < time)).
-  //# sort("ANTENNA_ID");
-  Table selectedFeedTable=feed.sort(MSFeed::columnName(MSFeed::ANTENNA_ID));
-  ScalarColumn<Int> antennaId(selectedFeedTable,
-			      MSFeed::columnName(MSFeed::ANTENNA_ID));
-  Int nRow=selectedFeedTable.nrow();
-  if (nRow>0) {
-    Int maxAnt=antennaId(nRow-1);
-    CJones_p.resize(maxAnt+1);
-    receptorAngle_p.resize(maxAnt+1);
-    ArrayColumn<Complex> polResponse(selectedFeedTable,
-				     MSFeed::columnName(MSFeed::POL_RESPONSE));
-    ArrayColumn<Double> receptorAngle(selectedFeedTable,
-				  MSFeed::columnName(MSFeed::RECEPTOR_ANGLE));
-    
-    for (Int iRow=0; iRow<nRow; iRow++) {
-      Int iAnt=antennaId(iRow);
-      CJones_p(iAnt)=Matrix<Complex>(polResponse(iRow));
-      Vector<Double> angle=receptorAngle(iRow);
-      receptorAngle_p(iAnt)=angle(0);
-    }
-  }
 }
 
 ROVisibilityIterator::ROVisibilityIterator(const ROVisibilityIterator& other)
@@ -185,107 +75,105 @@ ROVisibilityIterator&
 ROVisibilityIterator::operator=(const ROVisibilityIterator& other) 
 {
   This=(ROVisibilityIterator*)this;
-  ms=other.ms;
-  tabIter_p=other.tabIter_p;
-  haveIter_p=other.haveIter_p;
-  curTable_p=other.curTable_p;
+  msIter_p=other.msIter_p;
   selTable_p=other.selTable_p;
-  time_p.resize(other.time_p.nelements()); time_p=other.time_p;
-  curFieldID_p=other.curFieldID_p;
-  lastFieldID_p=other.lastFieldID_p;
-  curSpectralWindow_p=other.curSpectralWindow_p;
-  lastSpectralWindow_p=other.lastSpectralWindow_p;
   curChanGroup_p=other.curChanGroup_p;
   curNumChanGroup_p=other.curNumChanGroup_p;
   channelGroupSize_p=other.channelGroupSize_p;
   curNumRow_p=other.curNumRow_p;
+  curTableNumRow_p=other.curTableNumRow_p;
+  curStartRow_p=other.curStartRow_p;
+  curEndRow_p=other.curEndRow_p;
   nChan_p=other.nChan_p;
   nPol_p=other.nPol_p;
   more_p=other.more_p;
-  newFieldID_p=other.newFieldID_p;
-  newSpectralWindow_p=other.newSpectralWindow_p;
   newChanGroup_p=other.newChanGroup_p;
-  moreChunks_p=other.moreChunks_p;
-  preselected_p=other.preselected_p;
-  interval_p=other.interval_p;
+  initialized_p=other.initialized_p;
   numChanGroup_p=other.numChanGroup_p;
   chanStart_p=other.chanStart_p;
   chanWidth_p=other.chanWidth_p;
   chanInc_p=other.chanInc_p;
   preselectedChanStart_p=other.preselectedChanStart_p;
   preselectednChan_p=other.preselectednChan_p;
+  
+  slicer_p=other.slicer_p;
+  weightSlicer_p=other.weightSlicer_p;
+  useSlicer_p=other.useSlicer_p;
+  time_p.resize(other.time_p.nelements()); 
+  time_p=other.time_p;
+  frequency_p.resize(other.frequency_p.nelements()); 
+  frequency_p=other.frequency_p;
+  freqCacheOK_p=other.freqCacheOK_p;
+  flagOK_p = other.flagOK_p;
+  visOK_p = other.visOK_p;
+  weightSpOK_p = other.weightSpOK_p;
+  flagCube_p.resize(other.flagCube_p.shape()); flagCube_p=other.flagCube_p;
+  visCube_p.resize(other.visCube_p.shape()); visCube_p=other.visCube_p;
+  uvwMat_p.resize(other.uvwMat_p.shape()); uvwMat_p=other.uvwMat_p;
+  pa_p.resize(other.pa_p.nelements()); pa_p=other.pa_p;
 
-  freqCacheOK_p=False;
-  first_pa_p=True;
-  lastUT_p=0;
-  // copy the cached values of things we fill in the constructor
-  mount_p=other.mount_p;
-  CJones_p=other.CJones_p;
-  receptorAngle_p=other.receptorAngle_p;
-  polFrame_p=other.polFrame_p;
+  msd_p=other.msd_p;
+  lastUT_p=other.lastUT_p;
+  nAnt_p=other.nAnt_p;
+
+  velSelection_p = other.velSelection_p;
+  vPrecise_p=other.vPrecise_p;
+  nVelChan_p=other.nVelChan_p;
+  vStart_p=other.vStart_p;
+  vInc_p=other.vInc_p;
+  // NOTE: following causes a seg violation
+  // cFromBETA_p=other.cFromBETA_p;
+  vDef_p=other.vDef_p;
+  // use this instead of assignment for the moment
+  cFromBETA_p.set(MDoppler(MVDoppler(Quantity(0.,"m/s")),
+			   MDoppler::BETA),vDef_p);
+  selFreq_p.resize(other.selFreq_p.nelements()); selFreq_p=other.selFreq_p;
 
   // column access functions
-  colSpectralWindow.reference(other.colSpectralWindow);
   colAntenna1.reference(other.colAntenna1);
   colAntenna2.reference(other.colAntenna2);
-  colFieldID.reference(other.colFieldID);
-  colChanFreq.reference(other.colChanFreq);
-  colCorrType.reference(other.colCorrType);
   colTime.reference(other.colTime);
+  colWeight.reference(other.colWeight);
+  colWeightSpectrum.reference(other.colWeightSpectrum);
   colVis.reference(other.colVis);
   colSigma.reference(other.colSigma);
-  colWeightSpectrum.reference(other.colWeightSpectrum);
-  colWeight.reference(other.colWeight);
   colFlag.reference(other.colFlag);
   colFlagRow.reference(other.colFlagRow);
   colUVW.reference(other.colUVW);
-
-  colDirection.reference(other.colDirection);
-  colAntPos.reference(other.colAntPos);
-  colMount.reference(other.colMount);
 
   return *this;
 }
 
 void ROVisibilityIterator::origin()
 {
-    if (!haveIter_p) originChunks();
+  if (!initialized_p) {
+    originChunks();
+  } else {
     curChanGroup_p=0;
     newChanGroup_p=True;
-    freqCacheOK_p=False;
     curStartRow_p=0;
+    freqCacheOK_p=False;
+    flagOK_p = visOK_p = weightSpOK_p = False;
     setSelTable();
     updateSlicer();
     more_p=ToBool(curChanGroup_p<curNumChanGroup_p);
     // invalidate any attached VisBuffer
     if (!vbStack_p.empty()) ((VisBuffer*)vbStack_p.top())->invalidate();
+  }
 }
 
 void ROVisibilityIterator::originChunks()
 {
-    // make sure we've still got the right interval
-    Interval::setInterval(interval_p);
-    if (!haveIter_p) {
-	haveIter_p=True;
-    } else {
-	tabIter_p.reset();
-    }
-    lastSpectralWindow_p=-1;
-    lastFieldID_p=-1;
-    moreChunks_p=ToBool(!tabIter_p.pastEnd());
-    setState();
-    origin();
-}
-
-void ROVisibilityIterator::setInterval(Double timeInterval)
-{
-    interval_p=timeInterval;
-    Interval::setInterval(interval_p);
+  initialized_p=True;
+  msIter_p.origin();
+  setState();
+  origin();
 }
 
 void ROVisibilityIterator::advance()
 {
-  newChanGroup_p=newSpectralWindow_p=newFieldID_p=False;
+  newChanGroup_p=False;
+  flagOK_p = visOK_p = weightSpOK_p = False;
   curStartRow_p=curEndRow_p+1;
   if (curStartRow_p>=curTableNumRow_p) {
     if (++curChanGroup_p >= curNumChanGroup_p) {
@@ -293,9 +181,9 @@ void ROVisibilityIterator::advance()
       more_p=False;
     } else {
       curStartRow_p=0;
-      updateSlicer();
       newChanGroup_p=True;
       freqCacheOK_p=False;
+      updateSlicer();
     }
   }
   if (more_p) {
@@ -307,97 +195,105 @@ void ROVisibilityIterator::advance()
 
 ROVisibilityIterator& ROVisibilityIterator::nextChunk()
 {
-  // make sure we've still got the right interval
-  Interval::setInterval(interval_p);
-  if (!tabIter_p.pastEnd()) tabIter_p.next();  
-  moreChunks_p = ToBool(!tabIter_p.pastEnd());
-  if (moreChunks_p) {
+  if (msIter_p.more()) msIter_p++;
+  if (msIter_p.more()) {
     setState();
     if (!vbStack_p.empty()) ((VisBuffer*)vbStack_p.top())->invalidate();
   }
-  more_p=moreChunks_p;
+  more_p=msIter_p.more();
   return *this;
 }
 
 void ROVisibilityIterator::setSelTable()
 {
-  // work out how many rows to return (all same time)
+  // work out how many rows to return 
+  // for the moment we return all rows with the same value for time
   for (curEndRow_p=curStartRow_p+1; curEndRow_p<curTableNumRow_p && 
   	 time_p(curEndRow_p)==time_p(curEndRow_p-1); 
        curEndRow_p++);
   curEndRow_p--;
-  //## testing
-  //##if (curStartRow_p==0) curEndRow_p=curTableNumRow_p/2; 
-  //##else curEndRow_p=curTableNumRow_p-1;
-  //## testing
 
   curNumRow_p=curEndRow_p-curStartRow_p+1;
   Vector<uInt> rows(curNumRow_p);
   indgen(rows.ac(),uInt(curStartRow_p));
-  selTable_p=curTable_p(rows);
+  selTable_p=msIter_p.table()(rows);
   // virtual call
   this->attachColumns();
 }
 
 void ROVisibilityIterator::setState()
 {
-  curTable_p = tabIter_p.table();
-  curTableNumRow_p = curTable_p.nrow();
+  curTableNumRow_p = msIter_p.table().nrow();
   // get the times for this iteration
-  ScalarColumn<Double> colTime(curTable_p,MS::columnName(MS::TIME));
+  ScalarColumn<Double> colTime(msIter_p.table(),MS::columnName(MS::TIME));
   time_p.resize(curTableNumRow_p); colTime.getColumn(time_p);
   curStartRow_p=0;
   setSelTable();
-  curSpectralWindow_p = colSpectralWindow(0);
-  newSpectralWindow_p = ToBool(curSpectralWindow_p != lastSpectralWindow_p);
-  if ( newSpectralWindow_p ) {
-    lastSpectralWindow_p = curSpectralWindow_p;
-    nChan_p = colChanFreq(curSpectralWindow_p).nelements();
+  if ( msIter_p.newSpectralWindow()) {
+    Int spw=msIter_p.spectralWindowId();
+    nChan_p = colVis.shape(0)(1);
     nPol_p = colVis.shape(0)(0);
-    if (numChanGroup_p.nelements()<= curSpectralWindow_p || 
-	numChanGroup_p[curSpectralWindow_p] == 0) {
+    if (numChanGroup_p.nelements()<= spw || 
+	numChanGroup_p[spw] == 0) {
       // no selection set yet, set default = all
-      selectChannel(1,0,nChan_p);
+      // for a reference MS this will normally be set appropriately in VisSet
+      selectChannel(1,msIter_p.startChan(),nChan_p);
     }
-    channelGroupSize_p=chanWidth_p[curSpectralWindow_p];
-    curNumChanGroup_p=numChanGroup_p[curSpectralWindow_p];
+    channelGroupSize_p=chanWidth_p[spw];
+    curNumChanGroup_p=numChanGroup_p[spw];
     freqCacheOK_p=False;
+    if (velSelection_p) {
+      // convert selected velocities to TOPO frequencies
+      // first convert observatory vel to correct frame (for this time)
+      MEpoch epoch = MS::epochMeasure(colTime);
+      epoch.set(MVEpoch(Quantity(time_p(0),"s")));
+      msd_p.setEpoch(epoch);
+      msd_p.setAntenna(-1); // set the observatory position
+      // get obs velocity in required frame
+      MRadialVelocity obsRV = msd_p.obsVel();
+      // convert to doppler in required definition and get out in m/s
+      Double obsVel=cFromBETA_p(obsRV.toDoppler()).getValue().get().getValue();
+      // Now compute corresponding TOPO freqs
+      selFreq_p.resize(nVelChan_p);
+      Double v0 = vStart_p.getValue(), dv=vInc_p.getValue();
+      for (Int i=0; i<nVelChan_p; i++) {
+	Double vTopo = v0 + i*dv - obsVel;
+	MDoppler dTopo(Quantity(vTopo,"m/s"), vDef_p);
+	selFreq_p(i) = MFrequency::fromDoppler
+	  (dTopo,msIter_p.restFrequency().getValue()).getValue().getValue();
+      }
+    }
   }
-  curFieldID_p = colFieldID(0);
-  newFieldID_p = ToBool( curFieldID_p != lastFieldID_p );
-  if ( newFieldID_p ) { 
-    lastFieldID_p = curFieldID_p;
-    // update the phase center position 
-    // (could go out of date if not always asked for)
-    // set the Measure for the phase center
-    phaseCenter_p=MS::directionMeasure(colDirection);
-    phaseCenter();
+  if (msIter_p.newField()) { 
+    msd_p.setFieldCenter(msIter_p.phaseCenter());
   }
+  // If this is a new array then set up the antenna locations
+  if (msIter_p.newArray()) {
+    This->nAnt_p = msd_p.setAntennas(msIter_p.msColumns().antenna(),
+				     msIter_p.arrayId());
+    This->pa_p.resize(nAnt_p);
+  }	
 }
 
 void ROVisibilityIterator::updateSlicer()
 {
   // set the Slicer to get the selected part of spectrum out of the table
-  Int spw=curSpectralWindow_p;
+  Int spw=msIter_p.spectralWindowId();
   Int start=chanStart_p[spw]+curChanGroup_p*chanInc_p[spw];
-  if (preselected_p) start-=preselectedChanStart_p[spw];
+  start-=msIter_p.startChan();
+  AlwaysAssert(start>=0 && start+channelGroupSize_p<=nChan_p,AipsError);
   //  slicer_p=Slicer(Slice(),Slice(start,channelGroupSize_p));
   // above is slow, use IPositions instead..
   slicer_p=Slicer(IPosition(2,0,start),
 		  IPosition(2,nPol_p,channelGroupSize_p));
+  weightSlicer_p=Slicer(IPosition(1,start),IPosition(1,channelGroupSize_p));
   useSlicer_p=ToBool(channelGroupSize_p<nChan_p);
 }
 
 void ROVisibilityIterator::attachColumns()
 {
-  colSpectralWindow.attach(selTable_p,MS::columnName(MS::SPECTRAL_WINDOW_ID));
   colAntenna1.attach(selTable_p,MS::columnName(MS::ANTENNA1));
   colAntenna2.attach(selTable_p,MS::columnName(MS::ANTENNA2));
-  colFieldID.attach(selTable_p,MS::columnName(MS::FIELD_ID));
-  colChanFreq.attach(ms.spectralWindow(),
-		     MSSpectralWindow::columnName(MSSpectralWindow::CHAN_FREQ));
-  colCorrType.attach(ms.spectralWindow(),
-		     MSSpectralWindow::columnName(MSSpectralWindow::CORR_TYPE));
   colTime.attach(selTable_p,MS::columnName(MS::TIME));
   colVis.attach(selTable_p,MS::columnName(MS::DATA));
   colUVW.attach(selTable_p,MS::columnName(MS::UVW));
@@ -408,9 +304,6 @@ void ROVisibilityIterator::attachColumns()
   const ColumnDescSet& cds=selTable_p.tableDesc().columnDescSet();
   if (cds.isDefined(MS::columnName(MS::WEIGHT_SPECTRUM))) 
     colWeightSpectrum.attach(selTable_p,MS::columnName(MS::WEIGHT_SPECTRUM));
-  colDirection.attach(ms.field(),MSField::columnName(MSField::PHASE_DIR));
-  colAntPos.attach(ms.antenna(),MSAntenna::columnName(MSAntenna::POSITION));
-  colMount.attach(ms.antenna(),MSAntenna::columnName(MSAntenna::MOUNT));
 }
 
 ROVisibilityIterator & ROVisibilityIterator::operator++(int)
@@ -441,9 +334,10 @@ Vector<Int>& ROVisibilityIterator::antenna2(Vector<Int>& ant2) const
   return ant2;
 }
 
+
 Vector<Int>& ROVisibilityIterator::channel(Vector<Int>& chan) const
 {
-  Int spw = curSpectralWindow_p;
+  Int spw = msIter_p.spectralWindowId();
   chan.resize(channelGroupSize_p);
   for (Int i=0; i<channelGroupSize_p; i++) {
     chan(i)=chanStart_p[spw]+curChanGroup_p*chanInc_p[spw]+i;
@@ -453,14 +347,23 @@ Vector<Int>& ROVisibilityIterator::channel(Vector<Int>& chan) const
 
 Vector<Int>& ROVisibilityIterator::corrType(Vector<Int>& corrTypes) const
 {
-  colCorrType.get(curSpectralWindow_p,corrTypes,True);
+  Int spw = msIter_p.spectralWindowId();
+  msIter_p.msColumns().spectralWindow().corrType().get(spw,corrTypes,True);
   return corrTypes;
 }
 
 Cube<Bool>& ROVisibilityIterator::flag(Cube<Bool>& flags) const
 {
-  if (useSlicer_p) colFlag.getColumn(slicer_p,flags,True);
-  else colFlag.getColumn(flags,True);
+  if (velSelection_p) {
+    if (!flagOK_p) {
+      // need to do the interpolation
+      getInterpolatedVisFlagWeight();
+    }
+    flags.resize(flagCube_p.shape());  flags=flagCube_p; 
+  } else {
+    if (useSlicer_p) colFlag.getColumn(slicer_p,flags,True);
+    else colFlag.getColumn(flags,True);
+  }
   return flags;
 }
 
@@ -507,26 +410,17 @@ Vector<Double>& ROVisibilityIterator::frequency(Vector<Double>& freq) const
 {
   if (!freqCacheOK_p) {
     This->freqCacheOK_p=True;
-    Int spw = curSpectralWindow_p;
+    Int spw = msIter_p.spectralWindowId();
     This->frequency_p.resize(channelGroupSize_p);
-    Vector<Double> chanFreq=colChanFreq(spw);
+    const Vector<Double>& chanFreq=msIter_p.frequency();
+    Int start=chanStart_p[spw]-msIter_p.startChan();
     for (Int i=0; i<channelGroupSize_p; i++) {
-      This->frequency_p(i)=chanFreq(chanStart_p[spw]+
-				    curChanGroup_p*chanInc_p[spw]+i);
+      This->frequency_p(i)=chanFreq(start+curChanGroup_p*chanInc_p[spw]+i);
     }
   }
   freq.resize(channelGroupSize_p);
   freq=frequency_p;
   return freq;
-}
-
-const MDirection& ROVisibilityIterator::phaseCenter() const
-{
-  if (newFieldID_p) {
-    This->phaseCenter_p.set(MVDirection
-			    (Vector<Double>(colDirection(curFieldID_p))));
-  }
-  return phaseCenter_p;
 }
 
 Vector<Double>& ROVisibilityIterator::time(Vector<Double>& t) const
@@ -539,17 +433,70 @@ Vector<Double>& ROVisibilityIterator::time(Vector<Double>& t) const
 Cube<Complex>& 
 ROVisibilityIterator::visibility(Cube<Complex>& vis) const
 {
-  if (useSlicer_p) colVis.getColumn(slicer_p,vis,True);
-  else colVis.getColumn(vis,True);
+  if (velSelection_p) {
+    if (!visOK_p) {
+      getInterpolatedVisFlagWeight();
+    }
+    vis.resize(visCube_p.shape()); vis=visCube_p;
+  } else { 
+    if (useSlicer_p) colVis.getColumn(slicer_p,vis,True);
+    else colVis.getColumn(vis,True);
+  }
   return vis;
+}
+
+void ROVisibilityIterator::getInterpolatedVisFlagWeight() const
+{
+  // get vis, flags & weights
+  // tricky.. to avoid recursion we need to set velSelection_p to False
+  // temporarily.
+  This->velSelection_p = False; 
+  visibility(This->visCube_p);
+  flag(This->flagCube_p); 
+  weightSpectrum(This->weightSpectrum_p);
+  This->velSelection_p = True;
+  // now interpolate visibilities, using selFreq as the sample points
+  Vector<Double> freq; frequency(freq);
+  // convert frequencies to float (removing offset to keep accuracy) 
+  // so we can multiply them with Complex numbers to do the interpolation.
+  Vector<Float> xfreq(nChan_p),sfreq(nVelChan_p); 
+  for (Int i=0; i<nChan_p; i++) xfreq(i)=freq(i)-freq(0);
+  for (i=0; i<nVelChan_p; i++) sfreq(i)=selFreq_p(i)-freq(0);
+  // set up the Functionals for the interpolation
+  ScalarSampledFunctional<Float> x(xfreq);
+  Vector<MaskedArray<Complex> > visPlanes(nChan_p);
+  // we should probably be using the flags for weight interpolation as well
+  // but it's not clear how to combine the 4 pol flags into one.
+  Vector<Array<Float> > wtVectors(nChan_p);
+  for (i=0; i<nChan_p; i++) {
+    visPlanes(i).
+      setData(This->visCube_p(Slice(),Slice(i,1),Slice()),
+	      (This->flagCube_p(Slice(),Slice(i,1),Slice()).ac()==False));
+    Array<Float> wtrow(This->weightSpectrum_p.row(i));
+    wtVectors(i).reference(wtrow);
+  }
+  ScalarSampledFunctional<MaskedArray<Complex> > yVis(visPlanes);
+  ScalarSampledFunctional<Array<Float> > yWt(wtVectors);
+  Interpolate1D<Float,MaskedArray<Complex> > intVis(x,yVis,True,True);
+  Interpolate1D<Float,Array<Float> > intWt(x,yWt,True,True);
+  IPosition shape(3,nPol_p,nVelChan_p,curNumRow_p);
+  This->visCube_p.resize(shape);
+  This->flagCube_p.resize(shape);
+  This->visCube_p=Complex(0.); // to make masked values come out as zero.
+  This->weightSpectrum_p.resize(nVelChan_p,curNumRow_p);
+  // now do the actual interpolation
+  for (i=0; i<nVelChan_p; i++) {
+    MaskedArray<Complex> maskedVis(intVis(sfreq(i)));
+    This->visCube_p(Slice(),Slice(i,1),Slice())=maskedVis;
+    Array<Bool> flags=(maskedVis.getMask()==False);
+    This->flagCube_p(Slice(),Slice(i,1),Slice())=flags;
+    This->weightSpectrum_p.row(i)=intWt(sfreq(i));
+  }
 }
 
 Matrix<CStokesVector>& 
 ROVisibilityIterator::visibility(Matrix<CStokesVector>& vis) const
 {
-  // We do selection on the fly here and
-  // in related member funtions (frequency, flag etc.)
-  // get out spectrum from start to start+channelGroupSize-1
   if (useSlicer_p) colVis.getColumn(slicer_p,This->visCube_p,True);
   else colVis.getColumn(This->visCube_p,True);
   vis.resize(channelGroupSize_p,curNumRow_p);
@@ -608,29 +555,7 @@ ROVisibilityIterator::uvw(Vector<RigidVector<Double,3> >& uvwvec) const
 // Fill in parallactic angle.
 const Vector<Float>& ROVisibilityIterator::feed_pa(Double time) const
 {
-  LogMessage message(LogOrigin("ROVisibilityIterator","feed_pa"));
-  // If this is the first call then set up the antenna locations
-  if (first_pa_p) {
-    This->first_pa_p=False;
-    // this assumes a single (sub)array
-    Table& anTab=(This->ms).antenna();
-    This->nAnt_p=anTab.nrow();
-    This->pa_p.resize(nAnt_p);
-    This->mount_p.resize(nAnt_p);
-    for (Int iant=0;iant<nAnt_p;iant++) {
-      // check mount (for now we cope with alt-az and equatorial)
-      This->mount_p(iant)=0; //default
-      if (colMount(iant)=="alt-az") This->mount_p(iant)=0;
-      if (colMount(iant)=="equatorial") {
-	This->mount_p(iant)=1;
-	This->pa_p(iant)=receptorAngle_p(iant);
-      }		
-    }
-  }	
-
-  // Now calculate Parallactic angle for this UT. To do this we find
-  // the AzEl Directions of the phase center and of the (HA,Dec) pole
-  // and then calculate the position angle between these two directions.
+  //  LogMessage message(LogOrigin("ROVisibilityIterator","feed_pa"));
 
   // Absolute UT
   Double ut=time;
@@ -640,68 +565,26 @@ const Vector<Float>& ROVisibilityIterator::feed_pa(Double time) const
 
     // Set up the Epoch using the absolute MJD in seconds
     // get the Epoch reference from the column keyword
-    //#    MEpoch mEpoch=MS::epochMeasure(colTime);
+        MEpoch mEpoch=MS::epochMeasure(colTime);
     //#     now set the value
-    //#    mEpoch.set(MVEpoch(Quantity(ut, "s")));
+        mEpoch.set(MVEpoch(Quantity(ut, "s")));
     //# Note the above fails for VLA data with TAI epoch, the resulting
     //# pa's are wrong (by much more than UTC-TAI), we force UTC here 
     //# for the moment
-    MEpoch mEpoch(Quantity(ut, "s"), MEpoch::Ref(MEpoch::UTC));
+    //    MEpoch mEpoch(Quantity(ut, "s"), MEpoch::Ref(MEpoch::UTC));
 
-    // Set up the MPosition for first antenna. 
-    MPosition mAntPos = MS::positionMeasure(colAntPos);
-    MVPosition antPos0(colAntPos(0));
-    mAntPos.set(antPos0);
+    This->msd_p.setEpoch(mEpoch);
 
-    // Set up the frame for this epoch and antenna. We will
-    // adjust this to effect the coordinate transformations
-    MeasFrame fAntFrame(mEpoch, mAntPos);
-
-    // Set up the reference for AzEl and HADec
-    MDirection::Ref rAzEl (MDirection::AZEL, fAntFrame);
-    MDirection::Ref rHADec(MDirection::HADEC, fAntFrame);
-
-    // Set up the Direction for this phase center
-    MDirection mRADec = phaseCenter_p;
-
-    // Make the HADec pole as expressed in HADec. The pole is the default.
-    MVDirection mPole;
-    MDirection mHADecPole(mPole, rHADec);
-
-    // Make holders for RADec positions and the HADec pole as converted into AzEl
-    MDirection mRADecInAzEl;
-    MDirection mHADecPoleInAzEl;
-
-    // Set up the machines to convert to AzEl 
-    MDirection::Convert cRADecToAzEl(mRADec,     rAzEl);
-    MDirection::Convert cHADecToAzEl(mHADecPole, rAzEl);
-
-    // Do conversion for all antennas. Can use the same conversion machine for
-    // all antennas since we just change the Frame
+    // Calculate pa for all antennas.
     for (Int iant=0;iant<nAnt_p;iant++) {
-      if (mount_p(iant)==0) {
-
-	// Now reset the reference frame used in the conversion machines to be
-	// for this antenna at this time
-        fAntFrame.resetPosition(MVPosition(colAntPos(iant)));
-
-	// Now we can do the conversions using the machines
-        mRADecInAzEl     = cRADecToAzEl();
-        mHADecPoleInAzEl = cHADecToAzEl();
-
-        // And now we finally get the parallactic angle
-        This->pa_p(iant) = mRADecInAzEl.getValue().
-	  positionAngle(mHADecPoleInAzEl.getValue());
-	This->pa_p(iant)+= receptorAngle_p(iant);
-	//#if (iant==0) 
-	//#  cout<<"Antenna "<<iant<<" at time: "<<MVTime(mEpoch.getValue())<<
-	//#  " has PA = "<<This->pa_p(iant)*57.28<<endl;
-
-      } else if (mount_p(iant)!=1) {
-        LogSink logSink;
-        message.message("unhandled mount type");
-        message.priority(LogMessage::SEVERE);
-        logSink.post(message);
+      This->msd_p.setAntenna(iant);
+      This->pa_p(iant) = This->msd_p.parAngle();
+      // add angle for receptor 0
+      This->pa_p(iant)+= msIter_p.receptorAngle()(0,iant);
+      if (aips_debug) {
+	if (iant==0) 
+	  cout<<"Antenna "<<iant<<" at time: "<<MVTime(mEpoch.getValue())<<
+	  " has PA = "<<This->pa_p(iant)*57.28<<endl;
       }
     }
   }
@@ -729,36 +612,60 @@ Vector<Float>& ROVisibilityIterator::weight(Vector<Float>& wt) const
 
 Matrix<Float>& ROVisibilityIterator::weightSpectrum(Matrix<Float>& wt) const
 {
-  if (useSlicer_p) colWeightSpectrum.getColumn(slicer_p,wt,True);
-  else colWeightSpectrum.getColumn(wt,True);
+  if (velSelection_p) {
+    if (!weightSpOK_p) {
+      getInterpolatedVisFlagWeight();
+    }
+    wt.resize(weightSpectrum_p.shape()); wt=weightSpectrum_p; 
+  } else {
+    if (useSlicer_p) colWeightSpectrum.getColumn(weightSlicer_p,wt,True);
+    else colWeightSpectrum.getColumn(wt,True);
+  }
   return wt;
 }
+
+ROVisibilityIterator& 
+ROVisibilityIterator::selectVelocity
+(Int nChan, const MVRadialVelocity& vStart, const MVRadialVelocity& vInc,
+ MRadialVelocity::Types rvType, MDoppler::Types dType, Bool precise)
+{
+  velSelection_p=True;
+  nVelChan_p=nChan;
+  vStart_p=vStart;
+  vInc_p=vInc;
+  msd_p.setVelocityFrame(rvType);
+  vDef_p=dType;
+  cFromBETA_p.set(MDoppler(MVDoppler(Quantity(0.,"m/s")),
+			   MDoppler::BETA),vDef_p);
+  vPrecise_p=precise;
+  if (precise) {
+    // set up conversion engine for full conversion
+  }
+  // have to reset the iterator so all caches get filled
+  originChunks();
+}
+
 
 ROVisibilityIterator& 
 ROVisibilityIterator::selectChannel(Int nGroup, Int start, Int width, 
 				    Int increment, Int spectralWindow)
 {
-  if (spectralWindow<0) spectralWindow = curSpectralWindow_p;
+  Int spw=spectralWindow;
+  if (spw<0) spw = msIter_p.spectralWindowId();
   Int n = numChanGroup_p.nelements();
-  if (spectralWindow >= n) {
+  if (spw >= n) {
     // we need to resize the blocks
-    Int newn = max(2,max(2*n,spectralWindow+1));
+    Int newn = max(2,max(2*n,spw+1));
     numChanGroup_p.resize(newn);
     chanStart_p.resize(newn);
     chanWidth_p.resize(newn);
     chanInc_p.resize(newn);
     for (Int i = n; i<newn; i++) numChanGroup_p[i] = 0;
   }
-  if (preselected_p) {
-    if (start<preselectedChanStart_p[spectralWindow] ||
-	(nGroup-1)*increment+width>preselectednChan_p[spectralWindow]) {
-      cerr<<" illegal selection "<<endl; return *this;
-    }
-  }
-  chanStart_p[spectralWindow] = start;
-  chanWidth_p[spectralWindow] = width;
-  chanInc_p[spectralWindow] = increment;
-  numChanGroup_p[spectralWindow] = nGroup;
+  chanStart_p[spw] = start;
+  chanWidth_p[spw] = width;
+  chanInc_p[spw] = increment;
+  numChanGroup_p[spw] = nGroup;
   return *this;
 }
 
@@ -776,7 +683,7 @@ void ROVisibilityIterator::detachVisBuffer(VisBuffer& vb)
       if (!vbStack_p.empty()) ((VisBuffer*)vbStack_p.top())->invalidate();
     } else {
       throw(AipsError("ROVisIter::detachVisBuffer - attempt to detach "
-		      "buffer that is not the last one added"));
+		      "buffer that is not the last one attached"));
     }
   }
 }
@@ -802,9 +709,10 @@ VisibilityIterator::operator=(const VisibilityIterator& other)
 {
     if (this!=&other) {
 	ROVisibilityIterator::operator=(other);
+	RWcolFlag.reference(other.RWcolFlag);
 	RWcolVis.reference(other.RWcolVis);
 	RWcolWeight.reference(other.RWcolWeight);
-	RWcolFlag.reference(other.RWcolFlag);
+	RWcolWeightSpectrum.reference(other.RWcolWeightSpectrum);
     }
     return *this;
 }
@@ -829,6 +737,44 @@ void VisibilityIterator::attachColumns()
   RWcolVis.attach(selTable_p,MS::columnName(MS::DATA));
   RWcolWeight.attach(selTable_p,MS::columnName(MS::WEIGHT));
   RWcolFlag.attach(selTable_p,MS::columnName(MS::FLAG));
+  //todo: should cache this (update once per ms)
+  const ColumnDescSet& cds=selTable_p.tableDesc().columnDescSet();
+  if (cds.isDefined(MS::columnName(MS::WEIGHT_SPECTRUM))) 
+    RWcolWeightSpectrum.attach(selTable_p,MS::columnName(MS::WEIGHT_SPECTRUM));
+}
+void VisibilityIterator::setFlag(const Matrix<Bool>& flag)
+{
+  // use same value for all polarizations
+  //#flagCube_p.resize(nPol_p,channelGroupSize_p,curNumRow_p);
+  Bool deleteIt;
+  Bool* p=flagCube_p.getStorage(deleteIt);
+  //Matrix<Bool> flagmat(nPol_p,channelGroupSize_p);
+  //Bool* pflagmat=flagmat.getStorage(deleteIt);
+  const Bool* pflag=flag.getStorage(deleteIt);
+  if (flag.nrow()!=channelGroupSize_p) {
+    throw(AipsError("VisIter::setFlag(flag) - inconsistent number of channels"));
+  }
+  
+  for (Int row=0; row<curNumRow_p; row++) {
+    //    Bool* p=pflagmat;
+    for (Int chn=0; chn<channelGroupSize_p; chn++) {
+      for (Int pol=0; pol<nPol_p; pol++) {
+	*p++=*pflag;
+      }
+      pflag++;
+    }
+    //    if (useSlicer_p) RWcolFlag.putSlice(row,slicer_p,flagmat);
+    //    else RWcolFlag.put(row,flagmat);
+  }
+  //#putColumn fails
+  if (useSlicer_p) RWcolFlag.putColumn(slicer_p,flagCube_p);
+  else RWcolFlag.putColumn(flagCube_p);
+}
+
+void VisibilityIterator::setFlag(const Cube<Bool>& flags)
+{
+  if (useSlicer_p) RWcolFlag.putColumn(slicer_p,flags);
+  else RWcolFlag.putColumn(flags);
 }
 
 void VisibilityIterator::setVis(const Matrix<CStokesVector> & vis)
@@ -839,22 +785,23 @@ void VisibilityIterator::setVis(const Matrix<CStokesVector> & vis)
   // original data, predict() always gives us 4. We save what was there
   // originally.
 
-  if (!preselected_p) {
-    throw(AipsError("VisIter::setVis(vis) - cannot change original data"));
-  }
+  //  if (!preselected_p) {
+  //    throw(AipsError("VisIter::setVis(vis) - cannot change original data"));
+  //  }
   if (vis.nrow()!=channelGroupSize_p) {
     throw(AipsError("VisIter::setVis(vis) - inconsistent number of channels"));
   }
   // we need to reform the vis matrix to a cube before we can use
   // putColumn to a Matrix column
   //# putColumn fails at present, use row by row put instead
-  //#visCube_p.resize(nPol_p,channelGroupSize_p,curNumRow_p);
-  Matrix<Complex> visMat(nPol_p,channelGroupSize_p);
+  //# putColumn now claimed to work, try it out 1997/05/25
+  visCube_p.resize(nPol_p,channelGroupSize_p,curNumRow_p);
+  //Matrix<Complex> visMat(nPol_p,channelGroupSize_p);
   Bool deleteIt;
-  //#Complex* p=visCube_p.getStorage(deleteIt);
-  Complex* pvisMat=visMat.getStorage(deleteIt);
+  Complex* p=visCube_p.getStorage(deleteIt);
+  //Complex* pvisMat=visMat.getStorage(deleteIt);
   for (Int row=0; row<curNumRow_p; row++) {
-    Complex* p=pvisMat;
+    //    Complex* p=pvisMat;
     for (Int chn=0; chn<channelGroupSize_p; chn++) {
       const CStokesVector& v=vis(chn,row);
       switch (nPol_p) {
@@ -863,10 +810,17 @@ void VisibilityIterator::setVis(const Matrix<CStokesVector> & vis)
       case 1: *p++=(v(0)+v(3))/2; break;
       }
     }
-    if (useSlicer_p) RWcolVis.putSlice(row,slicer_p,visMat);
-    else RWcolVis.put(row,visMat);
+    //    if (useSlicer_p) RWcolVis.putSlice(row,slicer_p,visMat);
+    //    else RWcolVis.put(row,visMat);
   }
-  //#RWcolVis.putColumn(slicer_p,visCube_p);
+  if (useSlicer_p) RWcolVis.putColumn(slicer_p,visCube_p);
+  else RWcolVis.putColumn(visCube_p);
+}
+
+void VisibilityIterator::setVis(const Cube<Complex>& vis)
+{
+  if (useSlicer_p) RWcolVis.putColumn(slicer_p,vis);
+  else RWcolVis.putColumn(vis);
 }
 
 void VisibilityIterator::setWeight(const Vector<Float>& weight)
@@ -874,30 +828,14 @@ void VisibilityIterator::setWeight(const Vector<Float>& weight)
     RWcolWeight.putColumn(weight);
 }
 
-void VisibilityIterator::setFlag(const Matrix<Bool>& flag)
+void VisibilityIterator::setWeightSpectrum(const Matrix<Float>& wt)
 {
-  // use same value for all polarizations
-  //#flagCube_p.resize(nPol_p,channelGroupSize_p,curNumRow_p);
-  Bool deleteIt;
-  //#Bool* pflagcube=flagCube_p.getStorage(deleteIt);
-  Matrix<Bool> flagmat(nPol_p,channelGroupSize_p);
-  Bool* pflagmat=flagmat.getStorage(deleteIt);
-  const Bool* pflag=flag.getStorage(deleteIt);
-  if (flag.nrow()!=channelGroupSize_p) {
-    throw(AipsError("VisIter::setFlag(flag) - inconsistent number of channels"));
-  }
-  
-  for (Int row=0; row<curNumRow_p; row++) {
-    Bool* p=pflagmat;
-    for (Int chn=0; chn<channelGroupSize_p; chn++) {
-      for (Int pol=0; pol<nPol_p; pol++) {
-	*p++=*pflag;
-      }
-      pflag++;
-    }
-    if (useSlicer_p) RWcolFlag.putSlice(row,slicer_p,flagmat);
-    else RWcolFlag.put(row,flagmat);
-  }
-  //#putColumn fails
-  //#RWcolFlag.putColumn(slicer_p,flagCube_p);
+  if (useSlicer_p) RWcolWeightSpectrum.putColumn(slicer_p,wt);
+  else RWcolWeightSpectrum.putColumn(wt);
 }
+
+
+
+
+
+

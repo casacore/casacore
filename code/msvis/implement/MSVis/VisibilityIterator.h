@@ -29,41 +29,75 @@
 #define TRIAL_VISIBILITYITERATOR_H
 
 #include <aips/aips.h>
-#include <aips/Measures/Stokes.h>
-#include <aips/Measures/MDirection.h>
-#include <aips/Utilities/String.h>
-#include <aips/MeasurementSets/MeasurementSet.h>
-#include <trial/MeasurementEquations/StokesVector.h>
-#include <aips/Lattices/Slicer.h>
-#include <aips/Tables/ScalarColumn.h>
-#include <aips/Tables/ArrayColumn.h>
-#include <aips/Tables/TableIter.h>
 #include <aips/Arrays/Matrix.h>
 #include <aips/Arrays/Cube.h>
-
-#include <aips/Logging/LogSink.h>
+#include <aips/Lattices/Slicer.h>
+#include <aips/MeasurementSets/MeasurementSet.h>
+#include <trial/MeasurementEquations/MSDerivedValues.h>
+#include <aips/Measures/Stokes.h>
+#include <aips/Measures/MCDoppler.h>
+#include <aips/Tables/ArrayColumn.h>
+#include <aips/Tables/ScalarColumn.h>
+#include <aips/Utilities/String.h>
+#include <trial/MeasurementEquations/StokesVector.h>
+#include <trial/MeasurementEquations/MSIter.h>
 
 //# forward decl
 class VisBuffer;
-class ROVisibilityIterator;
-class VisibilityIterator;
 
-// Small helper class to specify an 'interval' comparison for table iteration
-class Interval {
-public:
-    static void setOffset(Double offset) {offset_p=offset;}
-    static void setInterval(Double interval) {interval_p=interval;}
-    static Int compare(const void * obj1, const void * obj2);
-private:
-    static Double interval_p;
-    static Double offset_p;
-};
+// <summary>
+// ROVisibilityIterator iterates through one or more readonly MeasurementSets
+// </summary>
 
-//# To think about: BandPass calibration - should be done BEFORE averaging
-//# channels - move averaging to VisEquation::correct()?
+// <use visibility=export>
+
+// <reviewed reviewer="" date="yyyy/mm/dd" tests="" demos="">
+// </reviewed>
+
+// <prerequisite>
+//   <li> MeasurementSet
+//   <li> SomeOtherClass
+//   <li> some concept
+// </prerequisite>
+//
+// <etymology>
+// The ROVisibilityIterator is a readonly iterator returning visibilities
+// </etymology>
+//
+// <synopsis>
+// ROVisibilityIterator provides iteration with various sort orders
+// for one or more MSs. It has member functions to retrieve the fields
+// commonly needed in sythesis calibration and imaging.
+// </synopsis>
+//
+// <example>
+// <code>
+// //
+// </code>
+// </example>
+//
+// <motivation>
+// For imaging and calibration you need to access an MS in some consistent
+// order (by field, spectralwindow, time interval etc.). This class provides
+// that access.
+// </motivation>
+//
+// <thrown>
+//    <li>
+//    <li>
+// </thrown>
+//
+// <todo asof="1997/05/30">
+//   <li> cleanup the currently dual interface for visibilities and flags
+//   <li> sort out what to do with weights when interpolating
+// </todo>
+
 class ROVisibilityIterator
 {
 public:
+
+  //# the following is a copy of the enum in MSIter
+  //# can't think of a way to get one that known to the outside world from here
   enum PolFrame {
     // Circular polarization
     Circular=0,
@@ -84,9 +118,15 @@ public:
   // Using selectChannel(), a number of groups of channels can be requested.
   // At present the channel group iteration will always occur before the 
   // interval iteration.
-  ROVisibilityIterator
-      (const MeasurementSet& ms, const Block<Int>& sortColumns, 
-       Double timeInterval=0);
+  ROVisibilityIterator(const MeasurementSet& ms, 
+		       const Block<Int>& sortColumns, 
+		       Double timeInterval=0);
+
+  // Same as previous constructor, but with multiple MSs to iterate over.
+  ROVisibilityIterator(const Block<MeasurementSet>& mss,
+		       const Block<Int>& sortColumns, 
+		       Double timeInterval=0);
+
   // Copy construct. This calls the assigment operator.
   ROVisibilityIterator(const ROVisibilityIterator & other);
 
@@ -107,7 +147,8 @@ public:
   // Set or reset the time interval to use for iteration.
   // You should call originChunks() to reset the iteration after 
   // calling this.
-  void setInterval(Double timeInterval);
+  void setInterval(Double timeInterval)
+  { msIter_p.setInterval(timeInterval);}
  
   // Return False if no more data (in current chunk)
   Bool more() const;
@@ -117,7 +158,8 @@ public:
   ROVisibilityIterator & operator++();
 
   // Return False if no more 'Chunks' of data left
-  Bool moreChunks() const;
+  Bool moreChunks() const
+  { return msIter_p.more();}
 
   // Advance to the next Chunk of data
   ROVisibilityIterator& nextChunk();
@@ -141,7 +183,8 @@ public:
   const Vector<Float>& feed_pa(Double time) const;
 
   // Return the current FieldId
-  Int fieldId() const;
+  Int fieldId() const
+  { return msIter_p.fieldId(); }
 
   // Return flag for each polarization, channel and row
   Cube<Bool>& flag(Cube<Bool>& flags) const;
@@ -156,10 +199,12 @@ public:
   Vector<Double>& frequency(Vector<Double>& freq) const;
 
   // Return the current phase center as 2-vector of positions in radians.
-  const MDirection& phaseCenter() const;
+  const MDirection& phaseCenter() const
+  { return msIter_p.phaseCenter(); }
 
   // Return frame for polarization (returns PolFrame enum)
-  Int polFrame() const;
+  Int polFrame() const
+  { return msIter_p.polFrame(); }
 
   // Return the correlation type (returns Stokes enums)
   Vector<Int>& corrType(Vector<Int>& corrTypes) const;
@@ -168,7 +213,8 @@ public:
   Vector<Float>& sigma(Vector<Float>& sig) const;
 
   // Return current SpectralWindow
-  Int spectralWindow() const;
+  Int spectralWindow() const
+  { return msIter_p.spectralWindowId(); }
 
   // Return MJD 
   Vector<Double>& time(Vector<Double>& t) const;
@@ -192,10 +238,13 @@ public:
   Matrix<Float>& weightSpectrum(Matrix<Float>& wt) const;
 
   // Return True if FieldId/Source has changed since last iteration
-  Bool newFieldId() const;
+  Bool newFieldId() const
+  { return ToBool(curStartRow_p==0 && msIter_p.newField()); }
+
 
   // Return True if SpectralWindow has changed since last iteration
-  Bool newSpectralWindow() const;
+  Bool newSpectralWindow() const
+  { return ToBool(curStartRow_p==0 && msIter_p.newSpectralWindow()); }
 
   // Return the index of the first channel of the current channel group 
   // in the total (selected) spectrum.
@@ -207,6 +256,26 @@ public:
   
   // Return the number of rows in the current iteration
   Int nRow() const;
+
+  // Velocity selection - specify the output channels in velocity:
+  // nChan - number of output channels, vStart - start velocity,
+  // vInc - velocity increment. So channel i will have velocity 
+  // vStart + i*vInc (i=0,nChan-1).
+  // Specify velocities as in e.g., MVRadialVelocity(Quantity(2001.,"km/s")).
+  // The reference type and velocity definition are specified separately.
+  // Note that no averaging is performed, the visibilities will be interpolated
+  // and sampled at the specified velocities, it's up to you to choose a vInc
+  // appropriate to the channel width.
+  // The REST_FREQUENCY column in the SPECTRAL_WINDOW subtable is used to
+  // determine the velocity-frequency conversion.
+  // By default calculations are done for a single velocity with offsets 
+  // applied for the others (ok for non-rel velocities with RADIO defn), 
+  // set precise to True to do a full conversion for each output channel.
+  ROVisibilityIterator& 
+  selectVelocity(Int nChan, 
+		 const MVRadialVelocity& vStart, const MVRadialVelocity& vInc,
+		 MRadialVelocity::Types rvType = MRadialVelocity::LSR,
+		 MDoppler::Types dType = MDoppler::RADIO, Bool precise=False);
 
   // Channel selection - only the selected channels will be returned by the
   // access functions. The default spectralWindow is the current one (or 0)
@@ -238,22 +307,17 @@ protected:
   void updateSlicer();
   // attach the column objects to the currently selected table
   virtual void attachColumns();
+  // get the (velocity selected) interpolated visibilities, flags and weights
+  void getInterpolatedVisFlagWeight() const;
 
   ROVisibilityIterator* This;
-  MeasurementSet  ms;
-  TableIterator tabIter_p;
-  Bool haveIter_p; // do we have an Iterator yet
-  Table curTable_p; // as given by table iterator
+  MSIter msIter_p;
   Table selTable_p; // currently selected set of rows from curTable
-  Int curFieldID_p, lastFieldID_p, curSpectralWindow_p, lastSpectralWindow_p,
-      curChanGroup_p, curNumChanGroup_p, channelGroupSize_p, 
+  Int curChanGroup_p, curNumChanGroup_p, channelGroupSize_p, 
       curNumRow_p, curTableNumRow_p, curStartRow_p, curEndRow_p,
       nChan_p, nPol_p;
-  Bool more_p, newFieldID_p, newSpectralWindow_p, newChanGroup_p, 
-      moreChunks_p, preselected_p;
+  Bool more_p, newChanGroup_p, initialized_p;
 
-  // time selection
-  Double interval_p;
   // channel selection
   Block<Int> numChanGroup_p, chanStart_p, chanWidth_p, chanInc_p,
     preselectedChanStart_p,preselectednChan_p;
@@ -261,31 +325,36 @@ protected:
   // Stack of VisBuffer objects
   Stack<void*> vbStack_p;
 
-
   //cache for access functions
   Slicer slicer_p;
+  Slicer weightSlicer_p;
   Bool useSlicer_p;
   Vector<Double> time_p;
   Vector<Double> frequency_p;
-  Bool freqCacheOK_p;
-  MDirection phaseCenter_p;
+  Bool freqCacheOK_p, flagOK_p, visOK_p, weightSpOK_p;
   Cube<Bool> flagCube_p;
   Cube<Complex> visCube_p;
   Matrix<Double> uvwMat_p;
+  Matrix<Float> weightSpectrum_p;
   Vector<Float> pa_p;
-  Vector<Int> mount_p;
-  Vector<Double> receptorAngle_p;
-  PolFrame polFrame_p;
-  Vector<SquareMatrix<Complex,2> > CJones_p;
 
-  // cache for PA calculations
-  Bool first_pa_p;
+  // for PA calculations
+  MSDerivedValues msd_p;
   Double lastUT_p;
   Int nAnt_p;
 
+  // for velocity selection and conversion
+  Bool velSelection_p, vPrecise_p;
+  Int nVelChan_p;
+  MVRadialVelocity vStart_p;
+  MVRadialVelocity vInc_p;
+  MDoppler::Convert cFromBETA_p;
+  MDoppler::Types vDef_p;
+  Vector<Double> selFreq_p;
+
+
   // column access functions
-  ROScalarColumn<Int> colSpectralWindow, colAntenna1, colAntenna2, colFieldID;
-  ROArrayColumn<Double> colChanFreq;
+  ROScalarColumn<Int> colAntenna1, colAntenna2;
   ROScalarColumn<Double> colTime;
   ROScalarColumn<Float> colWeight;
   ROArrayColumn<Float> colWeightSpectrum;
@@ -295,28 +364,16 @@ protected:
   ROScalarColumn<Bool> colFlagRow;
   ROArrayColumn<Double> colUVW;
 
-  ROArrayColumn<Double> colDirection;
-  ROArrayColumn<Double> colAntPos;
-  ROScalarColumn<String> colMount;
-  ROArrayColumn<Int> colCorrType;
 };
 
 inline Bool ROVisibilityIterator::more() const { return more_p;}
-inline Bool ROVisibilityIterator::moreChunks() const { return moreChunks_p;}
-inline Bool ROVisibilityIterator::newFieldId() const { return newFieldID_p;}
-inline Bool ROVisibilityIterator::newSpectralWindow() const 
-{ return newSpectralWindow_p;}
-inline Int ROVisibilityIterator::fieldId() const { return curFieldID_p;}
-inline Int ROVisibilityIterator::spectralWindow() const 
-{ return curSpectralWindow_p;}
-inline Int ROVisibilityIterator::polFrame() const { return polFrame_p;}
 inline Vector<SquareMatrix<Complex,2> >& 
 ROVisibilityIterator::CJones(Vector<SquareMatrix<Complex,2> >& cjones) const 
-{ cjones.resize(CJones_p.nelements()); return cjones=CJones_p; }
+{cjones.resize(msIter_p.CJones().nelements());return cjones=msIter_p.CJones();}
 inline Int ROVisibilityIterator::channelGroupSize() const
-{ return chanWidth_p[curSpectralWindow_p]; }
+{ return chanWidth_p[msIter_p.spectralWindowId()]; }
 inline Int ROVisibilityIterator::channelIndex() const
-{ return chanInc_p[curSpectralWindow_p]*curChanGroup_p; }
+{ return chanInc_p[msIter_p.spectralWindowId()]*curChanGroup_p; }
 inline Int ROVisibilityIterator::nRow() const
 { return curNumRow_p;}
 
@@ -346,12 +403,6 @@ public:
   VisibilityIterator & operator++(int);
   VisibilityIterator & operator++();
 
-  // Set/modify the weights
-  void setWeight(const Vector<Float>& wt);
-
-  // Set/modify the weight spectrum
-  void setWeightSpectrum(const Matrix<Float>& wt);
-
   // Set/modify the flags in the data.
   // This will flag all channels in the original data that contributed to
   // the output channel in the case of channel averaging.
@@ -375,6 +426,12 @@ public:
   // Set/modify the visibilities
   // This sets the data as found in the MS, Cube(npol,nchan,nrow).
   void setVis(const Cube<Complex>& vis);
+
+  // Set/modify the weights
+  void setWeight(const Vector<Float>& wt);
+
+  // Set/modify the weight spectrum
+  void setWeightSpectrum(const Matrix<Float>& wt);
 
 protected:
   virtual void attachColumns();
