@@ -375,21 +375,23 @@ SpectralCoordinate *SpectralCoordinate::restore(
     subrec.get("system", system);
     MFrequency::Types sys;
     if (system == "REST") {
-	sys = MFrequency::REST;
+      sys = MFrequency::REST;
     } else if (system == "LSR") {
-	sys = MFrequency::LSR;
+      sys = MFrequency::LSRK;
+    } else if (system == "LSRD") {
+      sys = MFrequency::LSRD;
     } else if (system == "LSRK") {
-	sys = MFrequency::LSRK;
+      sys = MFrequency::LSRK;
     } else if (system == "BARY") {
-	sys = MFrequency::BARY;
+      sys = MFrequency::BARY;
     } else if (system == "GEO") {
-	sys = MFrequency::GEO;
+      sys = MFrequency::GEO;
     } else if (system == "TOPO") {
-	sys = MFrequency::TOPO;
+      sys = MFrequency::TOPO;
     } else if (system == "GALACTO") {
-	sys = MFrequency::GALACTO;
+      sys = MFrequency::GALACTO;
     } else {
-	return 0;
+      return 0;
     }
     if (!subrec.isDefined("restfreq")) {
 	return 0;
