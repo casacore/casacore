@@ -1,5 +1,5 @@
 //# CountedPtr2.cc: Referenced counted pointer classes (non-templated functions)
-//# Copyright (C) 1993,1994,1995,1996
+//# Copyright (C) 1993,1994,1995,1996,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -26,8 +26,9 @@
 //# $Id$
 
 #include <aips/Utilities/CountedPtr.h>
-#include <aips/Exceptions/Excp.h>
+#include <aips/Exceptions/Error.h>
+
 void throw_Null_CountedPtr_dereference_error() {
-  throw(ExcpError(60));   //# will enventually be more informative
+  throw (AipsError("CountedPtr: null dereference error"));
 }
 
