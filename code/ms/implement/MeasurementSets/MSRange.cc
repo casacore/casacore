@@ -42,7 +42,6 @@
 #include <aips/Utilities/GenSort.h>
 #include <aips/Utilities/Assert.h>
 
-static LogIO os;
 
 MSRange::MSRange():blockSize_p(10),ddId_p(UNCHECKED),
 checked_p(False)
@@ -113,6 +112,7 @@ Bool MSRange::checkSelection()
 
 GlishRecord MSRange::range(const Vector<String>& items, Bool oneBased)
 {
+  LogIO os;
   Int n=items.nelements();
   Vector<Int> keys(n);
   // translate strings to enums
@@ -134,6 +134,7 @@ GlishRecord MSRange::range(const Vector<String>& items, Bool oneBased)
 
 GlishRecord MSRange::range(const Vector<Int>& keys, Bool oneBased)
 {
+  LogIO os;
   // TODO: apply channel selection? polconversion?
 
   const Int option=Sort::HeapSort | Sort::NoDuplicates;
