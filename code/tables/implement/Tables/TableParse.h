@@ -106,31 +106,29 @@ friend AipsIO& operator>> (AipsIO&, TableParse&);
 // Parse and execute the given command.
 // It will open (and close) all tables needed.
 // It returns the resulting table. 
+// The command type (select or update) and the selected or updated
+// column names can be returned.
+// Zero or more temporary tables can be used in the command
+// using the $nnn syntax.
+// <group>
 friend Table tableCommand (const String& command);
 
-// Parse and execute the given command.
-// It is the same as above, but a temporary table can be used in the command
-// using the $nnn syntax.
 friend Table tableCommand (const String& command, const Table& tempTable);
-
-// Parse and execute the given command.
-// It is the same as above, but multiple temporary tables can be used
-// in the command using the $nnn syntax.
 friend Table tableCommand (const String& command,
 			   const PtrBlock<const Table*>& tempTables);
-
-// Parse and execute the command.
-// It will open (and close) all tables needed.
-// It returns the resulting table and the selected column names.
 friend Table tableCommand (const String& command,
 			   Vector<String>& columnNames);
-
-// Parse and execute the command.
-// It is the same as above, but multiple temporary tables can be used
-// in the command using the $nnn syntax.
+friend Table tableCommand (const String& command,
+			   Vector<String>& columnNames,
+			   String& commandType);
 friend Table tableCommand (const String& command,
 			   const PtrBlock<const Table*>& tempTables,
 			   Vector<String>& columnNames);
+friend Table tableCommand (const String& command,
+			   const PtrBlock<const Table*>& tempTables,
+			   Vector<String>& columnNames,
+			   String& commandType);
+// </group>
 
 public:
     // Default constructor for List container class.
@@ -163,7 +161,7 @@ private:
 
 
 // <summary>
-// Helper class for class TableParse
+// Helper class for values in TableParse 
 // </summary>
 
 // <use visibility=local>
@@ -204,7 +202,7 @@ public:
 
 
 // <summary>
-// Helper class for class TableParse
+// Helper class for sort keys in TableParse
 // </summary>
 
 // <use visibility=local>
@@ -259,6 +257,53 @@ private:
 
 
 // <summary>
+// Helper class for updates in TableParse
+// </summary>
+
+// <use visibility=local>
+
+// <reviewed reviewer="" date="" tests="">
+// </reviewed>
+
+// <prerequisite>
+//# Classes you should understand before using this one.
+//   <li> TableParse
+// </prerequisite>
+
+// <etymology>
+// TableParseUpdate holds a column name and an update expression.
+// </etymology>
+
+// <synopsis> 
+// A table command is parsed.
+// An object of this class is used to hold the column name and value
+// expression for the UPDATE command.
+// </synopsis> 
+
+
+class TableParseUpdate
+{
+public:
+    // Construct from a column name and expression.
+    TableParseUpdate (const String& columnName, const TableExprNode&);
+
+    ~TableParseUpdate();
+
+    // Get the column name.
+    const String& columnName() const;
+
+    // Get the expression node.
+    const TableExprNode& node() const;
+
+private:
+    String        columnName_p;
+    TableExprNode node_p;
+};
+
+
+
+
+// <summary>
 // Select-class for flex/bison scanner/parser for TableParse
 // </summary>
 
@@ -303,7 +348,8 @@ public:
 
     // Execute the select command (select/sort/projection/giving).
     // The flag tells if a set in the GIVING part is allowed.
-    void execute (Bool setInGiving);
+    // The commandType (select or update) is filled in.
+    void execute (Bool setInGiving, String& commandType);
 
     // Execute a query in a from clause and create an appropriate value
     // for the result.
@@ -322,7 +368,11 @@ public:
     // It takes over the pointer (and clears the input pointer).
     void handleSelect (TableExprNode*& node);
 
-    // Sort the resulting table.
+    // Keep the update expressions.
+    // It takes over the pointer (and clears the input pointer).
+    void handleUpdate (PtrBlock<TableParseUpdate*>*& upd);
+
+    // Keep the sort expressions.
     // It takes over the pointer (and clears the input pointer).
     void handleSort (PtrBlock<TableParseSort*>*& sortList, Bool noDuplicates,
 		     Sort::Order defaultSortOrder);
@@ -392,6 +442,9 @@ public:
 
 
 private:
+    // Do the update step.
+    void doUpdate (Table& table);
+
     // Do the sort step.
     Table doSort (const Table& table);
 
@@ -457,6 +510,8 @@ private:
     TableExprNodeSet* resultSet_p;
     //# The WHERE expression tree.
     TableExprNode* node_p;
+    //# The update list.
+    PtrBlock<TableParseUpdate*>* update_p;
     //# The sort list.
     PtrBlock<TableParseSort*>* sort_p;
     //# The noDuplicates sort switch.
@@ -480,9 +535,13 @@ inline const Table& TableParse::table() const
     { return table_p; }
 
 
-inline const TableExprNode& TableParseSort::node() const
+inline const String& TableParseUpdate::columnName() const
+    { return columnName_p; }
+inline const TableExprNode& TableParseUpdate::node() const
     { return node_p; }
 
+inline const TableExprNode& TableParseSort::node() const
+    { return node_p; }
 inline Bool TableParseSort::orderGiven() const
     { return given_p; }
 inline Sort::Order TableParseSort::order() const

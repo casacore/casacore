@@ -34,6 +34,7 @@
 #include <aips/Tables/ExprRange.h>
 #include <aips/Tables/TableColumn.h>
 #include <aips/Tables/ScalarColumn.h>
+#include <aips/Tables/ArrayColumn.h>
 #include <aips/Tables/TableRecord.h>
 #include <aips/Tables/TableDesc.h>
 #include <aips/Tables/ColumnDesc.h>
@@ -42,6 +43,7 @@
 #include <aips/Quanta/MVTime.h>
 #include <aips/Quanta/MVAngle.h>
 #include <aips/Arrays/Vector.h>
+#include <aips/Arrays/ArrayMath.h>
 #include <aips/Arrays/ArrayUtil.h>
 #include <aips/Arrays/ArrayIO.h>
 #include <aips/Utilities/Sort.h>
@@ -108,6 +110,16 @@ TableParseVal* TableParseVal::makeValue()
 
 
 
+TableParseUpdate::TableParseUpdate (const String& columnName,
+				    const TableExprNode& node)
+: columnName_p (columnName),
+  node_p       (node)
+{}
+TableParseUpdate::~TableParseUpdate()
+{}
+
+
+
 TableParseSort::TableParseSort (const TableExprNode& node)
 : node_p  (node),
   order_p (Sort::Ascending),
@@ -132,6 +144,7 @@ TableParseSelect::TableParseSelect()
 : distinct_p  (False),
   resultSet_p (0),
   node_p      (0),
+  update_p    (0),
   sort_p      (0),
   noDupl_p    (False),
   order_p     (Sort::Ascending)
@@ -145,6 +158,13 @@ TableParseSelect::~TableParseSelect()
     delete parseIter_p;
     delete parseList_p;
     delete node_p;
+    if (update_p != 0) {
+	uInt nrkey = update_p->nelements();
+	for (uInt i=0; i<nrkey; i++) {
+	    delete (*update_p)[i];
+	}
+	delete update_p;
+    }
     if (sort_p != 0) {
 	uInt nrkey = sort_p->nelements();
 	for (uInt i=0; i<nrkey; i++) {
@@ -834,7 +854,8 @@ TableParseVal* TableParseSelect::doFromQuery()
     Timer timer;
 #endif
     // Execute the nested command.
-    execute (False);
+    String cmd;
+    execute (False, cmd);
 #if defined(AIPS_TRACE)
     timer.show ("Fromquery");
 #endif
@@ -851,7 +872,8 @@ TableExprNode TableParseSelect::doSubQuery()
     Timer timer;
 #endif
     // Execute the nested command.
-    execute (True);
+    String cmd;
+    execute (True, cmd);
 #if defined(AIPS_TRACE)
     timer.show ("Subquery");
 #endif
@@ -931,6 +953,290 @@ TableExprNode TableParseSelect::makeSubSet() const
     TableExprNodeSet set(nrow, (*resultSet_p)[0]);
     return set.setOrArray();
 }
+
+void TableParseSelect::handleUpdate (PtrBlock<TableParseUpdate*>*& upd)
+{
+  update_p = upd;
+  upd      = 0;
+  columnNames_p.resize (update_p->nelements());
+  for (uInt i=0; i<update_p->nelements(); i++) {
+    columnNames_p[i] = (*update_p)[i]->columnName();
+  }
+}
+
+//# Execute the updates.
+void TableParseSelect::doUpdate (Table& table)
+{
+  //# If the table is empty, return immediately.
+  //# (the code below will fail for empty tables)
+  if (table.nrow() == 0) {
+    return;
+  }
+  // Reopen the table for write.
+  table.reopenRW();
+  if (! table.isWritable()) {
+    throw TableInvExpr ("Table " + table.tableName() + " is not writable");
+  }
+  //# First check if the update columns and values are correct.
+  const TableDesc& tabdesc = table.tableDesc();
+  uInt nrkey = update_p->nelements();
+  Block<TableColumn> cols(nrkey);
+  Block<Int> dtypeCol(nrkey);
+  for (uInt i=0; i<nrkey; i++) {
+    const TableParseUpdate& key = *(*update_p)[i];
+    //# Check if the correct table is used in the update expression.
+    //# A constant expression can be given.
+    if (! key.node().checkReplaceTable (table, True)) {
+      throw (TableInvExpr ("Incorrect table used in an UPDATE expr"));
+    }
+    //# This throws an exception for unknown data types (datetime, regex).
+    key.node().getColumnDataType();
+    const String& colName = key.columnName();
+    //# Check if the column exists and is writable.
+    if (! tabdesc.isColumn (colName)) {
+      throw TableInvExpr ("Column " + colName +
+			  " does not exist in table " +
+			  table.tableName());
+    }
+    if (! table.isColumnWritable (colName)) {
+      throw TableInvExpr ("Column " + colName +
+			  " is not writable in table " +
+			  table.tableName());
+    }
+    //# Check if the value type matches.
+    if (key.node().isScalar() != tabdesc[colName].isScalar()) {
+      throw TableInvExpr ("Value type (scalar or array) of column " +
+			  colName + " in table " +
+			  table.tableName() +
+			  " mismatches the type of the new value");
+    }
+    cols[i].attach (table, colName);
+    dtypeCol[i] = tabdesc[colName].dataType();
+  }
+  // Loop through all rows in the table and update each row.
+  TableExprId rowid(0);
+  for (uInt row=0; row<table.nrow(); row++) {
+    rowid.setRownr (row);
+    for (uInt i=0; i<nrkey; i++) {
+      TableColumn& col = cols[i];
+      const TableExprNode& node = (*update_p)[i]->node();
+      switch (node.dataType()) {
+      case TpBool:
+	if (node.isScalar()) {
+	  if (dtypeCol[i] == TpBool) {
+	    Bool value;
+	    node.get (rowid, value);
+	    col.putScalar (row, value);
+	  } else {
+	    throw TableInvExpr ("Column " + (*update_p)[i]->columnName() +
+				" has an invalid data type for an"
+				" UPDATE with a bool scalar value");
+	  }
+	} else {
+	  if (dtypeCol[i] == TpBool) {
+	    Array<Bool> value;
+	    node.get (rowid, value);
+	    ArrayColumn<Bool> acol(col);
+	    acol.put (row, value);
+	  } else {
+	    throw TableInvExpr ("Column " + (*update_p)[i]->columnName() +
+				" has an invalid data type for an"
+				" UPDATE with a bool array value");
+	  }
+	}
+	break;
+      case TpString:
+	if (node.isScalar()) {
+	  if (dtypeCol[i] == TpString) {
+	    String value;
+	    node.get (rowid, value);
+	    col.putScalar (row, value);
+	  } else {
+	    throw TableInvExpr ("Column " + (*update_p)[i]->columnName() +
+				" has an invalid data type for an"
+				" UPDATE with a string scalar value");
+	  }
+	} else {
+	  if (dtypeCol[i] == TpString) {
+	    Array<String> value;
+	    node.get (rowid, value);
+	    ArrayColumn<String> acol(col);
+	    acol.put (row, value);
+	  } else {
+	    throw TableInvExpr ("Column " + (*update_p)[i]->columnName() +
+				" has an invalid data type for an"
+				" UPDATE with a string array value");
+	  }
+	}
+	break;
+      case TpDouble:
+	if (node.isScalar()) {
+	  Double value;
+	  node.get (rowid, value);
+	  switch (dtypeCol[i]) {
+	  case TpUChar:
+	    col.putScalar (row, uChar(value));
+	    break;
+	  case TpShort:
+	    col.putScalar (row, Short(value));
+	    break;
+	  case TpUShort:
+	    col.putScalar (row, uShort(value));
+	    break;
+	  case TpInt:
+	    col.putScalar (row, Int(value));
+	    break;
+	  case TpUInt:
+	    col.putScalar (row, uInt(value));
+	    break;
+	  case TpFloat:
+	    col.putScalar (row, Float(value));
+	    break;
+	  case TpDouble:
+	    col.putScalar (row, value);
+	    break;
+	  case TpComplex:
+	    col.putScalar (row, Complex(value));
+	    break;
+	  case TpDComplex:
+	    col.putScalar (row, DComplex(value));
+	    break;
+	  default:
+	    throw TableInvExpr ("Column " + (*update_p)[i]->columnName() +
+				" has an invalid data type for an"
+				" UPDATE with a numeric scalar value");
+	  }
+	} else {
+	  Array<Double> value;
+	  node.get (rowid, value);
+	  switch (dtypeCol[i]) {
+	  case TpUChar:
+	    {
+	      Array<uChar> avalue(value.shape());
+	      convertArray (avalue, value);
+	      ArrayColumn<uChar> acol(col);
+	      acol.put (row, avalue);
+	    }
+	    break;
+	  case TpShort:
+	    {
+	      Array<Short> avalue(value.shape());
+	      convertArray (avalue, value);
+	      ArrayColumn<Short> acol(col);
+	      acol.put (row, avalue);
+	    }
+	    break;
+	  case TpUShort:
+	    {
+	      Array<uShort> avalue(value.shape());
+	      convertArray (avalue, value);
+	      ArrayColumn<uShort> acol(col);
+	      acol.put (row, avalue);
+	    }
+	    break;
+	  case TpInt:
+	    {
+	      Array<Int> avalue(value.shape());
+	      convertArray (avalue, value);
+	      ArrayColumn<Int> acol(col);
+	      acol.put (row, avalue);
+	    }
+	    break;
+	  case TpUInt:
+	    {
+	      Array<uInt> avalue(value.shape());
+	      convertArray (avalue, value);
+	      ArrayColumn<uInt> acol(col);
+	      acol.put (row, avalue);
+	    }
+	    break;
+	  case TpFloat:
+	    {
+	      Array<Float> avalue(value.shape());
+	      convertArray (avalue, value);
+	      ArrayColumn<Float> acol(col);
+	      acol.put (row, avalue);
+	    }
+	    break;
+	  case TpDouble:
+	    {
+	      ArrayColumn<Double> acol(col);
+	      acol.put (row, value);
+	    }
+	    break;
+	  case TpComplex:
+	    {
+	      Array<Complex> avalue(value.shape());
+	      convertArray (avalue, value);
+	      ArrayColumn<Complex> acol(col);
+	      acol.put (row, avalue);
+	    }
+	    break;
+	  case TpDComplex:
+	    {
+	      Array<DComplex> avalue(value.shape());
+	      convertArray (avalue, value);
+	      ArrayColumn<DComplex> acol(col);
+	      acol.put (row, avalue);
+	    }
+	    break;
+	  default:
+	    throw TableInvExpr ("Column " + (*update_p)[i]->columnName() +
+				" has an invalid data type for an"
+				" UPDATE with a numeric array value");
+	  }
+	}
+	break;
+      case TpDComplex:
+	if (node.isScalar()) {
+	  DComplex value;
+	  node.get (rowid, value);
+	  switch (dtypeCol[i]) {
+	  case TpComplex:
+	    col.putScalar (row, Complex(value));
+	    break;
+	  case TpDComplex:
+	    col.putScalar (row, value);
+	    break;
+	  default:
+	    throw TableInvExpr ("Column " + (*update_p)[i]->columnName() +
+				" has an invalid data type for an"
+				" UPDATE with a complex scalar value");
+	  }
+	} else {
+	  Array<DComplex> value;
+	  node.get (rowid, value);
+	  switch (dtypeCol[i]) {
+	  case TpComplex:
+	    {
+	      Array<Complex> avalue(value.shape());
+	      convertArray (avalue, value);
+	      ArrayColumn<Complex> acol(col);
+	      acol.put (row, avalue);
+	    }
+	    break;
+	  case TpDComplex:
+	    {
+	      Array<DComplex> avalue;
+	      convertArray (avalue, value);
+	      ArrayColumn<DComplex> acol(col);
+	      acol.put (row, avalue);
+	    }
+	    break;
+	  default:
+	    throw TableInvExpr ("Column " + (*update_p)[i]->columnName() +
+				" has an invalid data type for an"
+				" UPDATE with a complex array value");
+	  }
+	}
+	break;
+      default:
+	throw TableInvExpr ("Unknown UPDATE expression data type");
+      }
+    }
+  }
+}
+
 
 //# Execute the sort.
 Table TableParseSelect::doSort (const Table& table)
@@ -1157,11 +1463,11 @@ void TableParseSelect::handleGiving (const TableExprNodeSet& set)
 
 
 //# Execute all parts of the SELECT command.
-void TableParseSelect::execute (Bool setInGiving)
+void TableParseSelect::execute (Bool setInGiving, String& commandType)
 {
     //# Give an error if no command part has been given.
-    if (node_p == 0  &&  sort_p == 0  &&  columnNames_p.nelements() == 0
-    &&  resultSet_p == 0) {
+    if (node_p == 0  &&  update_p == 0  &&  sort_p == 0
+    &&  columnNames_p.nelements() == 0  &&  resultSet_p == 0) {
 	throw (TableError
 	    ("TableParse error: no projection, selection, sorting, "
 	     "or giving-set given"));
@@ -1194,21 +1500,29 @@ void TableParseSelect::execute (Bool setInGiving)
 //#//	}
 	table = table(*node_p);
     }
-    //# Then do the sort.
-    if (sort_p != 0) {
-	table = doSort (table);
-    }
-    //# Then do the projection.
-    if (columnNames_p.nelements() > 0) {
-	table = table.project (columnNames_p);
-	if (distinct_p) {
-	    table = doDistinct (table);
+    //# Then do the update or sort and so.
+    if (update_p != 0) {
+        doUpdate (table);
+	table.flush();
+	commandType = "update";
+    } else {
+        //# Then do the sort.
+        if (sort_p != 0) {
+	    table = doSort (table);
 	}
-    }
-    //# Finally give it the given name (and flush it).
-    if (! resultName_p.empty()) {
-	table.rename (resultName_p, Table::New);
-        table.flush();
+	//# Then do the projection.
+	if (columnNames_p.nelements() > 0) {
+	    table = table.project (columnNames_p);
+	    if (distinct_p) {
+	        table = doDistinct (table);
+	    }
+	}
+	//# Finally give it the given name (and flush it).
+	if (! resultName_p.empty()) {
+	    table.rename (resultName_p, Table::New);
+	    table.flush();
+	}
+	commandType = "select";
     }
     //# Keep the table for later.
     table_p = table;
@@ -1245,11 +1559,29 @@ Table tableCommand (const String& str, Vector<String>& cols)
     return tableCommand (str, tmp, cols);
 }
 
-//# Do the actual parsing of a command and execute it.
+Table tableCommand (const String& str,
+		    Vector<String>& cols,
+		    String& commandType)
+{
+    PtrBlock<const Table*> tmp;
+    return tableCommand (str, tmp, cols, commandType);
+}
+
 Table tableCommand (const String& str,
 		    const PtrBlock<const Table*>& tempTables,
 		    Vector<String>& cols)
 {
+    String commandType;
+    return tableCommand (str, tempTables, cols, commandType);
+}
+
+//# Do the actual parsing of a command and execute it.
+Table tableCommand (const String& str,
+		    const PtrBlock<const Table*>& tempTables,
+		    Vector<String>& cols,
+		    String& commandType)
+{
+    commandType = "error";
 #if defined(AIPS_TRACE)
     Timer timer;
 #endif
@@ -1284,7 +1616,7 @@ Table tableCommand (const String& str,
     timer.mark();
 #endif
     try {
-	p->execute (False);
+	p->execute (False, commandType);
     }catch (AipsError x) {
 	message = x.getMesg();
 	error = True;

@@ -36,6 +36,7 @@
 %}
 
 /* states */
+%s UPDATEstate
 %s EXPRstate
 %s GIVINGstate
 %s FROMstate
@@ -86,6 +87,8 @@ UASTRING   \'[^\'\n]*\n
 STRING    ({QSTRING}|{ASTRING})+
 USTRING   ({UQSTRING}|{UASTRING})+
 SELECT    [Ss][Ee][Ll][Ee][Cc][Tt]
+UPDATE    [Uu][Pp][Dd][Aa][Tt][Ee]
+SET       [Ss][Ee][Tt]
 FROM      [Ff][Rr][Oo][Mm]
 WHERE     [Ww][Hh][Ee][Rr][Ee]
 ORDERBY   [Oo][Rr][Dd][Ee][Rr]{WHITE}[Bb][Yy]
@@ -136,6 +139,16 @@ NAMETAB   ([A-Za-z0-9_./+\-~$]|(\\.))+
             tableGramPosition() += yyleng;
 	    BEGIN(EXPRstate);
 	    return SELECT;
+	  }
+{UPDATE}  {
+            tableGramPosition() += yyleng;
+	    BEGIN(UPDATEstate);
+	    return UPDATE;
+	  }
+<UPDATEstate>{SET}  {
+            tableGramPosition() += yyleng;
+	    BEGIN(EXPRstate);
+	    return UPDSET;
 	  }
 {FROM}    {
             tableGramPosition() += yyleng;

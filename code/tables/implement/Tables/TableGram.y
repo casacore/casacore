@@ -38,9 +38,13 @@ TableExprNodeSet* settp;
 PtrBlock<TableParseSort*>* sortb;
 TableParseSort* sort;
 TableParseSelect* select;
+TableParseUpdate* update;
+PtrBlock<TableParseUpdate*>* updateb;
 }
 
 %token SELECT
+%token UPDATE
+%token UPDSET
 %token FROM
 %token WHERE
 %token ORDERBY
@@ -93,6 +97,8 @@ TableParseSelect* select;
 %type <elem> range
 %type <sort>  sortexpr
 %type <sortb> sortlist
+%type <update> updexpr
+%type <updateb> updlist
 
 
 %left OR
@@ -111,12 +117,14 @@ int TableGramlex (YYSTYPE*);
 
 %%
 command:   select selrow
+         | update updrow
          ;
 
 select:    SELECT {
                TableParseSelect::newSelect();
 	   }
          ;
+
 selrow:    selcol selwh order given
          | selcol into selwh order
          ;
@@ -129,8 +137,42 @@ selcol:    columns
            }
          ;
 
-selwh:     FROM table whexpr {
+selwh:     FROM tables whexpr {
 	       TableParseSelect::currentSelect()->handleSelect ($3);
+	       delete $3;
+           }
+         ;
+
+update:    UPDATE {
+               TableParseSelect::newSelect();
+           }
+         ;
+
+updrow:    tables updpart whexpr {
+	       TableParseSelect::currentSelect()->handleSelect ($3);
+	       delete $3;
+           }
+         ;
+
+updpart:   UPDSET updlist {
+               TableParseSelect::currentSelect()->handleUpdate ($2);
+           }
+         ;
+
+updlist:   updlist COMMA updexpr {
+               $$ = $1;
+               $$->resize($$->nelements() + 1);
+	       (*$$)[$$->nelements() - 1] = $3;
+           }
+         | updexpr {
+	       $$ = new PtrBlock<TableParseUpdate*>(1);
+	       (*$$)[0] = $1;
+           }
+         ;
+
+updexpr:   NAME EQ orexpr {
+               $$ = new TableParseUpdate ($1->str, *$3);
+	       delete $1;
 	       delete $3;
            }
          ;
@@ -198,7 +240,7 @@ columns:             /* no column names given (thus take all) */
 	   }
          ;
 
-table:     NAME {                            /* table is shorthand */
+tables:    NAME {                            /* table is shorthand */
 	       TableParseSelect::currentSelect()->addTable ($1, $1->str);
 	       delete $1;
 	   }
@@ -221,25 +263,25 @@ table:     NAME {                            /* table is shorthand */
 	       delete $1;
 	       delete $3;
 	   }
-         | table COMMA NAME {
+         | tables COMMA NAME {
 	       TableParseSelect::currentSelect()->addTable ($3, $3->str);
 	       delete $3;
 	   }
-         | table COMMA tfname {
+         | tables COMMA tfname {
 	       TableParseSelect::currentSelect()->addTable ($3, "");
 	       delete $3;
 	   }
-	 | table COMMA tabname NAME {
+	 | tables COMMA tabname NAME {
 	       TableParseSelect::currentSelect()->addTable ($3, $4->str);
 	       delete $3;
 	       delete $4;
 	   }
-	 | table COMMA tabname AS NAME {
+	 | tables COMMA tabname AS NAME {
 	       TableParseSelect::currentSelect()->addTable ($3, $5->str);
 	       delete $3;
 	       delete $5;
 	   }
-	 | table COMMA NAME IN tabname {
+	 | tables COMMA NAME IN tabname {
 	       TableParseSelect::currentSelect()->addTable ($5, $3->str);
 	       delete $3;
 	       delete $5;
