@@ -117,48 +117,50 @@ template <class M> class ROScalarMeasColumn;
 
 class MEarthMagnetic : public MeasBase<MVEarthMagnetic, MeasRef<MEarthMagnetic> >  {
 
-public:
-//# Friends
-// Conversion of data
-    friend class MeasConvert<MEarthMagnetic>;
+ public:
+  //# Friends
+  // Conversion of data
+  friend class MeasConvert<MEarthMagnetic>;
 
-//# Enumerations
-// Types of known MEarthMagnetics
-// <note role=tip> The order defines the order in the translation matrix FromTo
-// in the getConvert routine in MCEarthMagnetic. Do not change the order
-// without changing the array. Additions should be made before N_types, and
-// an additional row and column should be coded in FromTo, and
-// in showType().</note>
-    enum Types {
-      ITRF,
-      J2000,
-      JMEAN,
-      JTRUE,
-      APP,
-      B1950,
-      BMEAN,
-      BTRUE,
-      GALACTIC,
-      HADEC,
-      AZEL,
-      AZELSW,
-      JNAT,
-      ECLIPTIC,  
-      MECLIPTIC,
-      TECLIPTIC,
-      SUPERGAL,
-      N_Types,
-      // Models. First one should be IGRF
-      IGRF = 32,
-      N_Models,
-      // All extra bits (for internal use only)
-      EXTRA = 32,
-      // Defaults
-      DEFAULT=IGRF,
-      // Synonyms
-      AZELNE=AZEL 
-    };
-//# Typedefs
+  //# Enumerations
+  // Types of known MEarthMagnetics
+  // <note role=tip> The order defines the order in the translation matrix
+  // FromTo
+  // in the getConvert routine in MCEarthMagnetic. Do not change the order
+  // without changing the array. Additions should be made before N_types, and
+  // an additional row and column should be coded in FromTo, and
+  // in showType().</note>
+  enum Types {
+    ITRF,
+    J2000,
+    JMEAN,
+    JTRUE,
+    APP,
+    B1950,
+    BMEAN,
+    BTRUE,
+    GALACTIC,
+    HADEC,
+    AZEL,
+    AZELSW,
+    JNAT,
+    ECLIPTIC,  
+    MECLIPTIC,
+    TECLIPTIC,
+    SUPERGAL,
+    N_Types,
+    // Models. First one should be IGRF
+    IGRF = 32,
+    N_Models,
+    // All extra bits (for internal use only)
+    EXTRA = 32,
+    // Defaults
+    DEFAULT=IGRF,
+    // Synonyms
+    AZELNE=AZEL 
+  };
+
+  //# Typedefs
   // Measure value container for this class (i.e. MEarthMagnetic::MVType)
   typedef class MVEarthMagnetic MVType;
   // Measure conversion routines for this class (i.e. MEarthMagnetic::MCType)
@@ -166,12 +168,14 @@ public:
   // Measure reference (i.e. MEarthMagnetic::Ref)
   typedef class MeasRef<MEarthMagnetic> Ref;
   // Measure Convert (i.e. MEarthMagnetic::Convert)
-    typedef class MeasConvert<MEarthMagnetic> Convert;
-// Measure table Columns (e.g., MEarthMagnetic::ROScalarColumn)
-    typedef class ROScalarMeasColumn<MEarthMagnetic> ROScalarColumn;
-    typedef class ScalarMeasColumn<MEarthMagnetic> ScalarColumn;
-    typedef class ROArrayMeasColumn<MEarthMagnetic> ROArrayColumn;
-    typedef class ArrayMeasColumn<MEarthMagnetic> ArrayColumn;
+  typedef class MeasConvert<MEarthMagnetic> Convert;
+  // Measure table Columns (e.g., MEarthMagnetic::ROScalarColumn)
+  typedef class ROScalarMeasColumn<MEarthMagnetic> ROScalarColumn;
+  typedef class ScalarMeasColumn<MEarthMagnetic> ScalarColumn;
+  typedef class ROArrayMeasColumn<MEarthMagnetic> ROArrayColumn;
+  typedef class ArrayMeasColumn<MEarthMagnetic> ArrayColumn;
+  // Reference enum Types (included originally for gcc 2.95)  
+  typedef Types Types;
 
 //# Constructors
 // <note> In the following constructors and other functions, all 

@@ -146,46 +146,49 @@ template <class M> class ROScalarMeasColumn;
 
 class MFrequency : public MeasBase<MVFrequency, MeasRef<MFrequency> > {
 
-public:
-//# Friends
-// Conversion of data
-    friend class MeasConvert<MFrequency>;
+ public:
+  //# Friends
+  // Conversion of data
+  friend class MeasConvert<MFrequency>;
 
-//# Enumerations
-// Types of known MFrequencies
-// <note role=warning> The order defines the order in the translation matrix FromTo
-// in the getConvert routine. Do not change the order without
-// changing the array. Additions should be made before N_types, and
-// an additional row and column should be coded in FromTo, and
-// in showType().</note>
-    enum Types {REST,
-		LSRK,
-		LSRD, 
-		BARY,
-		GEO,
-		TOPO,
-		GALACTO,
-		N_Types,
-		// Defaults
-		DEFAULT=LSRK,
-		// Synonyms
-		LSR=LSRK };
+  //# Enumerations
+  // Types of known MFrequencies
+  // <note role=warning> The order defines the order in the translation
+  // matrix FromTo
+  // in the getConvert routine. Do not change the order without
+  // changing the array. Additions should be made before N_types, and
+  // an additional row and column should be coded in FromTo, and
+  // in showType().</note>
+  enum Types {
+    REST,
+    LSRK,
+    LSRD, 
+    BARY,
+    GEO,
+    TOPO,
+    GALACTO,
+    N_Types,
+    // Defaults
+    DEFAULT=LSRK,
+    // Synonyms
+    LSR=LSRK };
 
-
-//# Typedefs
+  //# Typedefs
   // Measure value container for this class (i.e. MFrequency::MVType)
   typedef class MVFrequency MVType;
   // Measure conversion routines for this class (i.e. MFrequency::MCType)
   typedef class MCFrequency MCType;
   // Measure reference (i.e. MFrequency::Ref)
-    typedef class MeasRef<MFrequency> Ref;
-// Measure conversion use (i.e. MFrequency::Convert)
-    typedef class MeasConvert<MFrequency> Convert;
-// Measure table Columns (e.g., MFrequency::ROScalarColumn)
-    typedef class ROScalarMeasColumn<MFrequency> ROScalarColumn;
-    typedef class ScalarMeasColumn<MFrequency> ScalarColumn;
-    typedef class ROArrayMeasColumn<MFrequency> ROArrayColumn;
-    typedef class ArrayMeasColumn<MFrequency> ArrayColumn;
+  typedef class MeasRef<MFrequency> Ref;
+  // Measure conversion use (i.e. MFrequency::Convert)
+  typedef class MeasConvert<MFrequency> Convert;
+  // Measure table Columns (e.g., MFrequency::ROScalarColumn)
+  typedef class ROScalarMeasColumn<MFrequency> ROScalarColumn;
+  typedef class ScalarMeasColumn<MFrequency> ScalarColumn;
+  typedef class ROArrayMeasColumn<MFrequency> ROArrayColumn;
+  typedef class ArrayMeasColumn<MFrequency> ArrayColumn;
+  // Reference enum Types (included originally for gcc 2.95)  
+  typedef Types Types;
 
 //# Constructors
 // <note role=tip> In the following constructors and other functions, all 

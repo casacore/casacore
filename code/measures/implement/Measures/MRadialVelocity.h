@@ -133,44 +133,48 @@ class MVDoppler;
 
 class MRadialVelocity : public MeasBase<MVRadialVelocity, MeasRef<MRadialVelocity> > {
 
-public:
-//# Friends
-// Conversion of data
-    friend class MeasConvert<MRadialVelocity>;
+ public:
+  //# Friends
+  // Conversion of data
+  friend class MeasConvert<MRadialVelocity>;
 
-//# Enumerations
-// Types of known MRadialVelocity
-// <note role=warning> The order defines the order in the translation matrix FromTo
-// in the getConvert routine. Do not change the order without
-// changing the array. Additions should be made before N_types, and
-// an additional row and column should be coded in FromTo, and
-// in showType().</note>
-    enum Types {LSRK,
-		LSRD,
-		BARY,
-		GEO,
-		TOPO,
-		GALACTO,
-		N_Types,
-		// Defaults
-		DEFAULT=LSRK,
-		// Synonyms
-		LSR=LSRK };
+  //# Enumerations
+  // Types of known MRadialVelocity
+  // <note role=warning> The order defines the order in the translation
+  // matrix FromTo
+  // in the getConvert routine. Do not change the order without
+  // changing the array. Additions should be made before N_types, and
+  // an additional row and column should be coded in FromTo, and
+  // in showType().</note>
+  enum Types {
+    LSRK,
+    LSRD,
+    BARY,
+    GEO,
+    TOPO,
+    GALACTO,
+    N_Types,
+    // Defaults
+    DEFAULT=LSRK,
+    // Synonyms
+    LSR=LSRK };
 
-//# Typedefs
+  //# Typedefs
   // Measure value container for this class (i.e. MRadialVelocity::MVType)
   typedef class MVRadialVelocity MVType;
   // Measure conversion routines for this class (i.e. MRadialVelocity::MCType)
   typedef class MCRadialVelocity MCType;
-// Measure reference (i.e. MRadialVelocity::Ref)
-    typedef MeasRef<MRadialVelocity> Ref;
-// Measure conversion use (i.e. MRadialVelocity::Convert)
-    typedef class MeasConvert<MRadialVelocity> Convert;
-// Measure table Columns (e.g., MRadialVelocity::ROScalarColumn)
-    typedef class ROScalarMeasColumn<MRadialVelocity> ROScalarColumn;
-    typedef class ScalarMeasColumn<MRadialVelocity> ScalarColumn;
-    typedef class ROArrayMeasColumn<MRadialVelocity> ROArrayColumn;
-    typedef class ArrayMeasColumn<MRadialVelocity> ArrayColumn;
+  // Measure reference (i.e. MRadialVelocity::Ref)
+  typedef MeasRef<MRadialVelocity> Ref;
+  // Measure conversion use (i.e. MRadialVelocity::Convert)
+  typedef class MeasConvert<MRadialVelocity> Convert;
+  // Measure table Columns (e.g., MRadialVelocity::ROScalarColumn)
+  typedef class ROScalarMeasColumn<MRadialVelocity> ROScalarColumn;
+  typedef class ScalarMeasColumn<MRadialVelocity> ScalarColumn;
+  typedef class ROArrayMeasColumn<MRadialVelocity> ROArrayColumn;
+  typedef class ArrayMeasColumn<MRadialVelocity> ArrayColumn;
+  // Reference enum Types (included originally for gcc 2.95)  
+  typedef Types Types;
 
 //# Constructors
 // <note role=tip> In the following constructors and other functions, all 

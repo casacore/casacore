@@ -223,7 +223,7 @@ public:
     GLONGLAT,
     N_GTypes};
 
-//# Typedefs
+  //# Typedefs
   // Measure value container for this class (i.e. MDirection::MVType)
   typedef class MVDirection MVType;
   // Measure conversion routines for this class (i.e. MDirection::MCType)
@@ -231,12 +231,14 @@ public:
   // Measure reference (i.e. MDirection::Ref)
   typedef class MeasRef<MDirection> Ref;
   // Measure Convert (i.e. MDirection::Convert)
-    typedef class MeasConvert<MDirection> Convert;
-// Measure table Columns (e.g., MDirection::ROScalarColumn)
-    typedef class ROScalarMeasColumn<MDirection> ROScalarColumn;
-    typedef class ScalarMeasColumn<MDirection> ScalarColumn;
-    typedef class ROArrayMeasColumn<MDirection> ROArrayColumn;
-    typedef class ArrayMeasColumn<MDirection> ArrayColumn;
+  typedef class MeasConvert<MDirection> Convert;
+  // Measure table Columns (e.g., MDirection::ROScalarColumn)
+  typedef class ROScalarMeasColumn<MDirection> ROScalarColumn;
+  typedef class ScalarMeasColumn<MDirection> ScalarColumn;
+  typedef class ROArrayMeasColumn<MDirection> ROArrayColumn;
+  typedef class ArrayMeasColumn<MDirection> ArrayColumn;
+  // Reference enum Types (included originally for gcc 2.95)  
+  typedef Types Types;
 
 //# Constructors
 // <note role=tip> In the following constructors and other functions, all 

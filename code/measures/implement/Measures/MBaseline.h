@@ -83,44 +83,44 @@ template <class M> class ROScalarMeasColumn;
 
 class MBaseline : public MeasBase<MVBaseline, MeasRef<MBaseline> > {
 
-public:
-//# Friends
-// Conversion of data
-    friend class MeasConvert<MBaseline>;
+ public:
+  //# Friends
+  // Conversion of data
+  friend class MeasConvert<MBaseline>;
 
-//# Enumerations
-// Types of known MBaselines
-// <note role=warning>
-// The order defines the order in the translation matrix FromTo
-// in the getConvert routine. Do not change the order without
-// changing the array. Additions should be made before N_types, and
-// an additional row and column should be coded in FromTo, and
-// in showType().</note>
-    enum Types {
-      ITRF,
-      J2000,
-      JMEAN,
-      JTRUE,
-      APP,
-      B1950,
-      BMEAN,
-      BTRUE,
-      GALACTIC,
-      HADEC,
-      AZEL,
-      AZELSW,
-      JNAT,
-      ECLIPTIC,  
-      MECLIPTIC,
-      TECLIPTIC,
-      SUPERGAL,
-      N_Types,
-      // Defaults
-      DEFAULT=ITRF,
-      // Synonyms
-      AZELNE=AZEL};
+  //# Enumerations
+  // Types of known MBaselines
+  // <note role=warning>
+  // The order defines the order in the translation matrix FromTo
+  // in the getConvert routine. Do not change the order without
+  // changing the array. Additions should be made before N_types, and
+  // an additional row and column should be coded in FromTo, and
+  // in showType().</note>
+  enum Types {
+    ITRF,
+    J2000,
+    JMEAN,
+    JTRUE,
+    APP,
+    B1950,
+    BMEAN,
+    BTRUE,
+    GALACTIC,
+    HADEC,
+    AZEL,
+    AZELSW,
+    JNAT,
+    ECLIPTIC,  
+    MECLIPTIC,
+    TECLIPTIC,
+    SUPERGAL,
+    N_Types,
+    // Defaults
+    DEFAULT=ITRF,
+    // Synonyms
+    AZELNE=AZEL};
 
-//# Typedefs
+  //# Typedefs
   // Measure value container for this class (i.e. MBaseline::MVType)
   typedef class MVBaseline MVType;
   // Measure conversion routines for this class (i.e. MBaseline::MCType)
@@ -128,12 +128,14 @@ public:
   // Measure reference (i.e. MBaseline::Ref)
   typedef class MeasRef<MBaseline> Ref;
   // Measure Convert (i.e. MBaseline::Convert)
-    typedef class MeasConvert<MBaseline> Convert;
-// Measure table Columns (e.g., MBaseline::ROScalarColumn)
-    typedef class ROScalarMeasColumn<MBaseline> ROScalarColumn;
-    typedef class ScalarMeasColumn<MBaseline> ScalarColumn;
-    typedef class ROArrayMeasColumn<MBaseline> ROArrayColumn;
-    typedef class ArrayMeasColumn<MBaseline> ArrayColumn;
+  typedef class MeasConvert<MBaseline> Convert;
+  // Measure table Columns (e.g., MBaseline::ROScalarColumn)
+  typedef class ROScalarMeasColumn<MBaseline> ROScalarColumn;
+  typedef class ScalarMeasColumn<MBaseline> ScalarColumn;
+  typedef class ROArrayMeasColumn<MBaseline> ROArrayColumn;
+  typedef class ArrayMeasColumn<MBaseline> ArrayColumn;
+  // Reference enum Types (included originally for gcc 2.95)  
+  typedef Types Types;
 
 //# Constructors
 // <note role=tip> In the following constructors and other functions, all 

@@ -78,24 +78,26 @@ template <class M> class ROScalarMeasColumn;
 
 class MPosition : public MeasBase<MVPosition, MeasRef<MPosition> > {
 
-public:
-//# Friends
-// Conversion of data
-    friend class MeasConvert<MPosition>;
+ public:
+  //# Friends
+  // Conversion of data
+  friend class MeasConvert<MPosition>;
 
-//# Enumerations
-// Types of known MPositions
-// <note role=warning> The order defines the order in the translation matrix FromTo
-// in the getConvert routine. Do not change the order without
-// changing the array. Additions should be made before N_types, and
-// an additional row and column should be coded in FromTo, and
-// in showType().</note>
-    enum Types {ITRF,
-		WGS84,
-		N_Types,
-		DEFAULT=ITRF};
+  //# Enumerations
+  // Types of known MPositions
+  // <note role=warning> The order defines the order in the translation
+  // matrix FromTo
+  // in the getConvert routine. Do not change the order without
+  // changing the array. Additions should be made before N_types, and
+  // an additional row and column should be coded in FromTo, and
+  // in showType().</note>
+  enum Types {
+    ITRF,
+    WGS84,
+    N_Types,
+    DEFAULT=ITRF};
 
-//# Typedefs
+  //# Typedefs
   // Measure value container for this class (i.e. MPosition::MVType)
   typedef class MVPosition MVType;
   // Measure conversion routines for this class (i.e. MPosition::MCType)
@@ -103,12 +105,14 @@ public:
   // Measure reference (i.e. MPosition::Ref)
   typedef class MeasRef<MPosition> Ref;
   // Measure Convert (i.e. MPosition::Convert)
-    typedef class MeasConvert<MPosition> Convert;
-// Measure table Columns (e.g., MPosition::ROScalarColumn)
-    typedef class ROScalarMeasColumn<MPosition> ROScalarColumn;
-    typedef class ScalarMeasColumn<MPosition> ScalarColumn;
-    typedef class ROArrayMeasColumn<MPosition> ROArrayColumn;
-    typedef class ArrayMeasColumn<MPosition> ArrayColumn;
+  typedef class MeasConvert<MPosition> Convert;
+  // Measure table Columns (e.g., MPosition::ROScalarColumn)
+  typedef class ROScalarMeasColumn<MPosition> ROScalarColumn;
+  typedef class ScalarMeasColumn<MPosition> ScalarColumn;
+  typedef class ROArrayMeasColumn<MPosition> ROArrayColumn;
+  typedef class ArrayMeasColumn<MPosition> ArrayColumn;
+  // Reference enum Types (included originally for gcc 2.95)  
+  typedef Types Types;
 
 //# Constructors
 // <note role=tip> In the following constructors and other functions, all 

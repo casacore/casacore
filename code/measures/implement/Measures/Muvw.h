@@ -168,6 +168,8 @@ public:
   typedef class ScalarMeasColumn<Muvw> ScalarColumn;
   typedef class ROArrayMeasColumn<Muvw> ROArrayColumn;
   typedef class ArrayMeasColumn<Muvw> ArrayColumn;
+  // Reference enum Types (included originally for gcc 2.95)  
+  typedef Types Types;
   
   //# Constructors
   // <note role=tip> In the following constructors and other functions, all 

@@ -151,6 +151,8 @@ public:
   typedef class ScalarMeasColumn<MEpoch> ScalarColumn;
   typedef class ROArrayMeasColumn<MEpoch> ROArrayColumn;
   typedef class ArrayMeasColumn<MEpoch> ArrayColumn;
+  // Reference enum Types (included originally for gcc 2.95)  
+  typedef Types Types;
     
   //# Constructors
   // <note role=tip> In the following constructors and other functions, all 

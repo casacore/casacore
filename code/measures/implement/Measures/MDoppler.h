@@ -129,31 +129,31 @@ template <class M> class ROScalarMeasColumn;
 
 class MDoppler : public MeasBase<MVDoppler, MeasRef<MDoppler> > {
 
-public:
-//# Friends
-// Conversion of data
-    friend class MeasConvert<MDoppler>;
+ public:
+  //# Friends
+  // Conversion of data
+  friend class MeasConvert<MDoppler>;
 
-//# Enumerations
-// Types of known MDopplers
-// <note role=warning> The order defines the order in the translation matrix FromTo
-// in the getConvert routine. Do not change the order without
-// changing the array. Additions should be made before N_types, and
-// an additional row and column should be coded in FromTo, and
-// in showType().</note>
-    enum Types {
-	RADIO, 
-	Z,
-	RATIO,
-	BETA,
-	GAMMA,
-	N_Types,
-	OPTICAL=Z,
-	RELATIVISTIC=BETA,
-	DEFAULT=RADIO };
+  //# Enumerations
+  // Types of known MDopplers
+  // <note role=warning> The order defines the order in the translation
+  // matrix FromTo
+  // in the getConvert routine. Do not change the order without
+  // changing the array. Additions should be made before N_types, and
+  // an additional row and column should be coded in FromTo, and
+  // in showType().</note>
+  enum Types {
+    RADIO, 
+    Z,
+    RATIO,
+    BETA,
+    GAMMA,
+    N_Types,
+    OPTICAL=Z,
+    RELATIVISTIC=BETA,
+    DEFAULT=RADIO };
 
-
-//# Typedefs
+  //# Typedefs
   // Measure value container for this class (i.e. MDoppler::MVType)
   typedef class MVDoppler MVType;
   // Measure conversion routines for this class (i.e. MDoppler::MCType)
@@ -161,12 +161,14 @@ public:
   // Measure reference (i.e. MDoppler::Ref)
   typedef class MeasRef<MDoppler> Ref;
   // Measure Convert (i.e. MDoppler::Convert)
-    typedef MeasConvert<MDoppler> Convert;
-// Measure table Columns (e.g., MDoppler::ROScalarColumn)
-    typedef class ROScalarMeasColumn<MDoppler> ROScalarColumn;
-    typedef class ScalarMeasColumn<MDoppler> ScalarColumn;
-    typedef class ROArrayMeasColumn<MDoppler> ROArrayColumn;
-    typedef class ArrayMeasColumn<MDoppler> ArrayColumn;
+  typedef MeasConvert<MDoppler> Convert;
+  // Measure table Columns (e.g., MDoppler::ROScalarColumn)
+  typedef class ROScalarMeasColumn<MDoppler> ROScalarColumn;
+  typedef class ScalarMeasColumn<MDoppler> ScalarColumn;
+  typedef class ROArrayMeasColumn<MDoppler> ROArrayColumn;
+  typedef class ArrayMeasColumn<MDoppler> ArrayColumn;
+  // Reference enum Types (included originally for gcc 2.95)  
+  typedef Types Types;
 
 //# Constructors
 // <note role=tip> In the following constructors and other functions, all 
