@@ -231,11 +231,11 @@ ifeq "$(MAKEMODE)" "programmer"
    endif
 
    ifndef OPTLIB
-      PGMRLIBS := \
+      PGMRLIBS = \
          $(firstword $(wildcard $(LIBDBGD)/version.o $(LIBOPTD)/version.o)) \
          $(PGMRLIBR) $(XTRNLIBS) $(EXTRA_PGMRLIBS)
    else
-      PGMRLIBS := \
+      PGMRLIBS = \
          $(firstword $(wildcard $(LIBOPTD)/version.o $(LIBDBGD)/version.o)) \
          $(PGMRLIBR) $(XTRNLIBS) $(EXTRA_PGMRLIBS)
    endif
