@@ -6453,3 +6453,4 @@
 18 552 src mv trial/implement/Tables/MemoryStMan.h aips/implement/Tables/MemoryStMan.h
 18 552 src mv trial/implement/Tables/MemoryStMan.cc aips/implement/Tables/MemoryStMan.cc
 18 552 src mv trial/implement/Tables/MSMBase.cc aips/implement/Tables/MSMBase.cc
+18 552 src mv trial/implement/Tables/MSMBase.h aips/implement/Tables/MSMBase.h
