@@ -1,4 +1,4 @@
-//# ArrayLattice.h: this defines the Lattice wrapper class for Arrays.
+//# ArrayLattice.cc: this defines the Lattice wrapper class for Arrays.
 //# Copyright (C) 1995,1997
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -25,170 +25,165 @@
 //#
 //# $Id$
 
-#include <aips/aips.h>
-
 #include <trial/Lattices/ArrayLattice.h>
 #include <trial/Lattices/ArrLatticeIter.h>
 #include <trial/Lattices/LatticeIterInterface.h>
 #include <trial/Lattices/LatticeNavigator.h>
-
+#include <aips/Exceptions/Error.h>
 #include <aips/Lattices/IPosition.h>
 #include <aips/Lattices/Slicer.h>
+#include <aips/Utilities/Assert.h>
 #include <aips/Utilities/COWPtr.h>
 
-#include <iostream.h>
+template<class T> ArrayLattice<T>::
+ArrayLattice() {
+  // Nothing
+};
 
-// default ctor
-template<class T> ArrayLattice<T>::ArrayLattice() 
-{
+template<class T> ArrayLattice<T>::
+ArrayLattice(const IPosition & shape) 
+  :theData(shape) {
     // Nothing
 };
 
-// shape ctor
-template<class T> ArrayLattice<T>::ArrayLattice(const IPosition &shape) 
-: array_p(shape)
-{
+template<class T> ArrayLattice<T>::
+ArrayLattice(const Array<T> & array) 
+  :theData(array) {
     // Nothing
 };
 
-// ctor
-template<class T> ArrayLattice<T>::ArrayLattice(const Array<T> &array) 
-: array_p(array)
-{
+template<class T> ArrayLattice<T>::
+ArrayLattice(const ArrayLattice<T> &other) 
+  :theData(other.theData) {
     // Nothing
 };
 
-// copy ctor (reference semantics)
-template<class T> ArrayLattice<T>::ArrayLattice(const ArrayLattice<T> &other) 
-: array_p(other.array_p)
-{
-    // Nothing
+template<class T> ArrayLattice<T>::
+~ArrayLattice() {
+  // Nothing
 };
 
-template<class T> ArrayLattice<T>::~ArrayLattice()
-{
-    // Nothing
-};
-
-// assignment (reference semantics)
-template<class T> 
-ArrayLattice<T> &ArrayLattice<T>::operator=(const ArrayLattice<T> &other) 
-{
-  if (this != &other) 
-    array_p.reference(other.array_p);
+template<class T> ArrayLattice<T> & ArrayLattice<T>::
+operator=(const ArrayLattice<T> & other) {
+  if (this != & other) 
+    theData = other.theData;
   return *this;
 };
 
-// returns the shape of the Lattice.
-template<class T> IPosition ArrayLattice<T>::shape() const
-{
-  return array_p.shape();
+template<class T> IPosition ArrayLattice<T>::
+shape() const {
+  return theData.shape();
 }; 
 
-template<class T>
-Bool ArrayLattice<T>::getSlice(COWPtr<Array<T> > &buffer, 
-			       const IPosition &start, const IPosition &shape,
-			       const IPosition &stride,
-			       Bool removeDegenerateAxes) const
-{
-  Slicer slicer(start, shape, stride);
-  return getSlice(buffer, slicer, removeDegenerateAxes);
+template<class T> Bool ArrayLattice<T>::
+getSlice(COWPtr<Array<T> > & bufPtr, const IPosition & start, 
+	 const IPosition & shape, const IPosition & stride,
+	 Bool removeDegenerateAxes) const {
+  return Lattice<T>::getSlice(bufPtr, start, shape, stride, 
+			      removeDegenerateAxes);
 };
 
-template<class T>
-Bool ArrayLattice<T>::getSlice(COWPtr<Array<T> > &buffer, 
-			       const Slicer &theSlice, 
-			       Bool removeDegenerateAxes) const
-{
-  // caste away the constness of the datamember with pointer copies
-  Array<T> &ARRAY_P = (Array<T> &)array_p;
-  // set the COWPtr to reference the copy.
-  if (removeDegenerateAxes) 
-    buffer.set(new Array<T>(ARRAY_P(theSlice.start(), theSlice.end(), 
-				    theSlice.stride()).nonDegenerate()),
-	       True, True);
-  else 
-    buffer.set(new Array<T>(ARRAY_P(theSlice.start(), theSlice.end(), 
-				    theSlice.stride())), True, True);
+template<class T> Bool ArrayLattice<T>::
+getSlice(COWPtr<Array<T> > & bufPtr, const Slicer & section, 
+	 Bool removeDegenerateAxes) const {
+  // cast away the constness of the ArrayLattice using a pointer copy. This can
+  // be done as the COWPtr will be set to be "readonly" and hence the
+  // ArrayLattice cannot be modified without the COWPtr making a copy of the
+  // cursor
+  if (bufPtr.isNull())
+    bufPtr.set(new Array<T>());
+  ArrayLattice<T> * This = (ArrayLattice<T> *) this;
+  Bool isAref = This->getSlice(bufPtr.rwRef(), section, removeDegenerateAxes);
+  if (isAref)
+    bufPtr.setReadOnly();
+  // While the returned array is normally a reference return "False" indicating
+  // a copy as any attempt to modify the Array will result in a copy.
   return False;
 };
 
-template<class T>
-Bool ArrayLattice<T>::getSlice(Array<T> &buffer, const IPosition &start, 
-			       const IPosition &shape, const IPosition &stride,
-			       Bool removeDegenerateAxes)
-{  
-  Slicer theSlice(start, shape, stride);
-  return getSlice(buffer, theSlice, removeDegenerateAxes);
+template<class T> Bool ArrayLattice<T>::
+getSlice(Array<T> & buffer, const IPosition & start, const IPosition & shape, 
+	 const IPosition & stride, Bool removeDegenerateAxes) {  
+  return Lattice<T>::getSlice(buffer, start, shape, stride,
+			      removeDegenerateAxes);
 };
 
-template<class T>
-Bool ArrayLattice<T>::getSlice(Array<T> &buffer, const Slicer &theSlice, 
-			       Bool removeDegenerateAxes)
-{
-  if (removeDegenerateAxes) {
-    buffer.reference(array_p(theSlice.start(),theSlice.end(),
-				    theSlice.stride()).nonDegenerate());
-  } else { 
-    buffer.reference(array_p(theSlice.start(),theSlice.end(),
-				    theSlice.stride()));
+template<class T> Bool ArrayLattice<T>::
+getSlice(Array<T> & buffer, const Slicer & section, 
+	 Bool removeDegenerateAxes) {
+  // The following block checks that the supplied buffer is the right size or
+  // empty. These restrictions are not required for the rest of this function
+  // to work. I impose them because they are required by the corresponding
+  // functions in the PagedArray class. If these restrictions are a performance
+  // bottleneck they can by removed (only for optimised code please).
+  {
+    const IPosition shape=buffer.shape();
+    if (shape.product() != 0)
+      if (removeDegenerateAxes){
+	AlwaysAssert(shape.isEqual(section.length().nonDegenerate()),
+		     AipsError);
+      }
+      else {
+	AlwaysAssert(shape.isEqual(section.length()), AipsError);
+      }
   }
+  Array<T> cursor = theData(section.start(), section.end(), section.stride());
+  if (removeDegenerateAxes)
+    buffer.nonDegenerate(cursor);
+  else
+    buffer.reference(cursor);
   return True;
 };
 
-template<class T>
-void ArrayLattice<T>::putSlice(const Array<T> &sourceBuffer, 
-			       const IPosition &where, const IPosition &stride)
-{
-  array_p(where, where + sourceBuffer.shape() - 1, stride) = sourceBuffer;
+template<class T> void ArrayLattice<T>::
+putSlice(const Array<T> & sourceBuffer, const IPosition & where, 
+	 const IPosition & stride) {
+  theData(where, where + (sourceBuffer.shape()-1)*stride, stride) = 
+    sourceBuffer;
 };
 
-template<class T>
-void ArrayLattice<T>::set(const T &value)
-{
-  array_p.set(value);
+template<class T> void ArrayLattice<T>::
+putSlice(const Array <T> & sourceBuffer, const IPosition & where){
+  Lattice<T>::putSlice(sourceBuffer, where);
 };
 
-template <class T> T ArrayLattice<T>::getAt(const IPosition &where) const
-{
-  return array_p(where);
+template<class T> void ArrayLattice<T>::
+set(const T & value) {
+  theData.set(value);
 };
 
-template <class T> 
-void ArrayLattice<T>::putAt(const T &value, const IPosition &where)
-{
-  array_p(where) = value;
+template <class T> T ArrayLattice<T>::
+getAt(const IPosition & where) const {
+  return theData(where);
 };
 
-template <class T> 
-RO_LatticeIterInterface<T> *ArrayLattice<T>::makeIter(
-				            const LatticeNavigator &nav) const
-{
+template <class T> void ArrayLattice<T>::
+putAt(const T & value, const IPosition & where) {
+  theData(where) = value;
+};
+
+template <class T> RO_LatticeIterInterface<T> * ArrayLattice<T>::
+makeIter(const LatticeNavigator & nav) const {
   return new RO_ArrLatticeIter<T>(*this, nav);
 };
 
-template <class T> 
-LatticeIterInterface<T> *ArrayLattice<T>::makeIter(const LatticeNavigator &nav)
-{
+template <class T> LatticeIterInterface<T> * ArrayLattice<T>::
+makeIter(const LatticeNavigator & nav) {
   return new ArrLatticeIter<T>(*this, nav);
 };
 
-template <class T> Array<T> &ArrayLattice<T>::asArray() 
-{
-  return array_p;
+template <class T> Array<T> & ArrayLattice<T>::
+asArray() {
+  return theData;
 };
 
-template <class T> const Array<T> &ArrayLattice<T>::asArray() const 
-{
-  return array_p;
+template <class T> const Array<T> & ArrayLattice<T>::
+asArray() const {
+  return theData;
 };
 
 // Check class invariants. 
-template <class T> Bool ArrayLattice<T>::ok() const
-{
-  return array_p.ok();
+template <class T> Bool ArrayLattice<T>::
+ok() const {
+  return theData.ok();
 };
-
-
-
-
