@@ -1,5 +1,5 @@
 //# VisSet.cc: Implementation of VisSet
-//# Copyright (C) 1996,1997,1998,1999,2000
+//# Copyright (C) 1996,1997,1998,1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -43,6 +43,7 @@
 #include <aips/Tables/TableIter.h>
 #include <aips/Arrays/Slice.h>
 #include <aips/Arrays/Slicer.h>
+#include <aips/Utilities/GenSort.h>
 #include <iostream.h>
 
 #include <aips/Logging/LogMessage.h>
@@ -182,7 +183,7 @@ void VisSet::addColumns(Table& tab)
   TableDesc td(tab.tableDesc());
   Vector<String> hypercolumnNames=td.hypercolumnNames();
   Bool found=False;
-  String dataTileId="";
+  String dataHypercubeId="";
   if (hypercolumnNames.nelements()>0) {
     for (uInt i=0; i<hypercolumnNames.nelements(); i++) {
       Vector<String> dataColNames,coordColNames,idColNames;
@@ -191,8 +192,8 @@ void VisSet::addColumns(Table& tab)
 			 idColNames);
       for (uInt j=0; j<dataColNames.nelements(); j++) {
 	if (dataColNames(j)==MS::columnName(MS::DATA)) {
-	  found=ToBool(idColNames.nelements()>0);
-	  if (found) dataTileId=idColNames(0);
+	  found=idColNames.nelements()>0;
+	  if (found) dataHypercubeId=idColNames(0);
 	}
       }
     }
@@ -209,9 +210,9 @@ void VisSet::addColumns(Table& tab)
     shapeWt=IPosition(1,numChan);
   }
   if (found) {
-    idColNames(0)="MODEL_TILE_ID"; 
+    idColNames(0)="MODEL_HYPERCUBE_ID"; 
     td1.addColumn(ArrayColumnDesc<Complex>("MODEL_DATA","model data",2));
-    td1.addColumn(ScalarColumnDesc<Int>("MODEL_TILE_ID","tile index"));
+    td1.addColumn(ScalarColumnDesc<Int>("MODEL_HYPERCUBE_ID","hypercube index"));
   } else {
     idColNames.resize(0);
     td1.addColumn(ArrayColumnDesc<Complex>("MODEL_DATA","model data",shape,
@@ -222,9 +223,9 @@ void VisSet::addColumns(Table& tab)
 			idColNames);
   TableDesc td2;
   if (found) {
-    idColNames(0)="CORRECTED_TILE_ID"; 
+    idColNames(0)="CORRECTED_HYPERCUBE_ID"; 
     td2.addColumn(ArrayColumnDesc<Complex>("CORRECTED_DATA","corrected data",2));
-    td2.addColumn(ScalarColumnDesc<Int>("CORRECTED_TILE_ID","tile index"));
+    td2.addColumn(ScalarColumnDesc<Int>("CORRECTED_HYPERCUBE_ID","hypercube index"));
   } else {
     td2.addColumn(ArrayColumnDesc<Complex>("CORRECTED_DATA","corrected data",
 					   shape,ColumnDesc::Direct));
@@ -234,9 +235,9 @@ void VisSet::addColumns(Table& tab)
 			idColNames);
   TableDesc td3;
   if (found) {
-    idColNames(0)="IMAGING_WT_TILE_ID"; 
+    idColNames(0)="IMAGING_WT_HYPERCUBE_ID"; 
     td3.addColumn(ArrayColumnDesc<Float>("IMAGING_WEIGHT","imaging weight",1));
-    td3.addColumn(ScalarColumnDesc<Int>("IMAGING_WT_TILE_ID","tile index"));
+    td3.addColumn(ScalarColumnDesc<Int>("IMAGING_WT_HYPERCUBE_ID","hypercube index"));
   } else {
     td3.addColumn(ArrayColumnDesc<Float>("IMAGING_WEIGHT","imaging weight",
 					 shapeWt,ColumnDesc::Direct));
@@ -248,7 +249,6 @@ void VisSet::addColumns(Table& tab)
 
   Bool tiledData=False;
 
-  // If there's no id, assume the data is fixed shape throughout
   if (found) {
     // data shape may change
     TiledDataStMan tiledStMan1("TiledData-model");
@@ -261,31 +261,46 @@ void VisSet::addColumns(Table& tab)
     TiledDataStManAccessor modelDataAccessor(tab,"TiledData-model");
     TiledDataStManAccessor corrDataAccessor(tab,"TiledData-corrected");
     TiledDataStManAccessor imWtAccessor(tab,"TiledImagingWeight");
-    TableIterator obsIter(tab,dataTileId);
-    for (;!obsIter.pastEnd(); obsIter.next()) {
-      ScalarColumn<Int> tileId(obsIter.table(),dataTileId);
-      ArrayColumn<Complex> od(obsIter.table(),MS::columnName(MS::DATA));
-      Int numCorr=od.shape(0)(0);
-      Int numChan=od.shape(0)(1);
-      // add new hyperCube
-      Record values1; values1.define("MODEL_TILE_ID",tileId(0));
-      Record values2; values2.define("CORRECTED_TILE_ID",tileId(0));
-      Record values3; values3.define("IMAGING_WT_TILE_ID",tileId(0));
-      //      Int tileSize=(numChan+numChan/10)/(numChan/10+1);
-      // set the tileSize in the channel direction so that we
-      // read about 10% for single channel access; we also waste less than
-      // 10% at the end of the spectrum. Set the total size to 132k for data.
-      Int tileSize=numChan/10+1;
-      IPosition cubeShape(3,numCorr,numChan,obsIter.table().nrow());
-      IPosition tileShape(3,numCorr,tileSize,16384/numCorr/tileSize);
-      IPosition cubeShapeWt(2,numChan,obsIter.table().nrow());
-      IPosition tileShapeWt(2,tileSize,16384/tileSize);
-      modelDataAccessor.addHypercube(cubeShape,tileShape,values1);
-      corrDataAccessor.addHypercube(cubeShape,tileShape,values2);
-      imWtAccessor.addHypercube(cubeShapeWt,tileShapeWt,values3);
+    ArrayColumn<Complex> od(tab,MS::columnName(MS::DATA));
+    // get the hypercube ids, sort them, remove the duplicate values
+    ScalarColumn<Int> hypercubeId(tab,dataHypercubeId);
+    Vector<Int> ids=hypercubeId.getColumn();
+    Int nId=genSort(ids,Sort::QuickSort+Sort::NoDuplicates);
+    ids.resize(nId,True); // resize and copy values
+    Vector<Bool> cubeAdded(nId,False);
+    Record values1; values1.define("MODEL_HYPERCUBE_ID",hypercubeId(0));
+    Record values2; values2.define("CORRECTED_HYPERCUBE_ID",hypercubeId(0));
+    Record values3; values3.define("IMAGING_WT_HYPERCUBE_ID",hypercubeId(0));
+    Int cube;
+    for (cube=0; cube<nId; cube++) if (ids(cube)==hypercubeId(0)) break;
+    Int nRow=tab.nrow();
+    for (Int i=0; i<nRow; i++) {
+      // add new hypercube
+      if (i>0 && hypercubeId(i)!=hypercubeId(i-1)) {
+	values1.define("MODEL_HYPERCUBE_ID",hypercubeId(i));
+	values2.define("CORRECTED_HYPERCUBE_ID",hypercubeId(i));
+	values3.define("IMAGING_WT_HYPERCUBE_ID",hypercubeId(i));
+	for (cube=0; cube<nId; cube++) if (ids(cube)==hypercubeId(i)) break;
+      }
+      if (!cubeAdded(cube)) {
+	cubeAdded(cube)=True;
+	Int numCorr=od.shape(i)(0);
+	Int numChan=od.shape(i)(1);
+	Int tileSize=numChan/10+1;
+	IPosition cubeShape(3,numCorr,numChan,0);
+	IPosition tileShape(3,numCorr,tileSize,16384/numCorr/tileSize);
+	IPosition cubeShapeWt(2,numChan,0);
+	IPosition tileShapeWt(2,tileSize,16384/tileSize);
+	modelDataAccessor.addHypercube(cubeShape,tileShape,values1);
+	corrDataAccessor.addHypercube(cubeShape,tileShape,values2);
+	imWtAccessor.addHypercube(cubeShapeWt,tileShapeWt,values3);
+      }
+      modelDataAccessor.extendHypercube(1,values1);
+      corrDataAccessor.extendHypercube(1,values2);
+      imWtAccessor.extendHypercube(1,values3);
     }
   } else {
-    // fixed data shape
+  // If there's no id, assume the data is fixed shape throughout
     ArrayColumn<Complex> data(tab,MS::columnName(MS::DATA));
     Int numCorr=data.shape(0)(0);
     Int numChan=selection_p(1,0);
