@@ -26,11 +26,16 @@
 //# $Id$
 
 #include <trial/Lattices/LatticeExpr.h>
-#include <trial/Lattices/PixelBox.h>
 #include <aips/Arrays/Array.h>
-#include <aips/Utilities/COWPtr.h>
+#include <aips/Lattices/Slicer.h>
 #include <aips/Utilities/Assert.h>
 #include <aips/Exceptions/Error.h> 
+
+typedef Array<Bool> gppbug_latticeexpr_bool;
+typedef Array<Float> gppbug_latticeexpr_float;
+typedef Array<Double> gppbug_latticeexpr_double;
+typedef Array<Complex> gppbug_latticeexpr_complex;
+typedef Array<DComplex> gppbug_latticeexpr_dcomplex;
 
 
 template <class T>
@@ -110,6 +115,27 @@ Lattice<T>* LatticeExpr<T>::clone() const
 }
 
 template <class T>
+MaskedLattice<T>* LatticeExpr<T>::cloneML() const
+//
+// Return a copy of the LatticeExpr object. Uses
+// reference semantics.
+{
+   return new LatticeExpr (*this);
+}
+
+template <class T>
+Bool LatticeExpr<T>::isMasked() const
+{
+   return expr_p.isMasked();
+}
+
+template <class T>
+const LatticeRegion& LatticeExpr<T>::region() const
+{
+   return region_p;
+}
+
+template <class T>
 Bool LatticeExpr<T>::isWritable() const
 //
 // A LatticeExpr lattice is not writable
@@ -125,7 +151,7 @@ IPosition LatticeExpr<T>::shape() const
 }
   
 template <class T>
-IPosition LatticeExpr<T>::niceCursorShape (uInt) const
+IPosition LatticeExpr<T>::doNiceCursorShape (uInt) const
 {
    return expr_p.getAttribute().tileShape();
 }
@@ -137,80 +163,27 @@ LatticeCoordinates LatticeExpr<T>::coordinates() const
 }
   
 template <class T>
-Bool LatticeExpr<T>::getSlice (COWPtr<Array<T> >& buffer,
-			       const IPosition& start,
-			       const IPosition& shape,
-			       const IPosition& stride, 
-			       Bool removeDegenerateAxes) const
+Bool LatticeExpr<T>::doGetSlice (Array<T>& buffer,
+				 const Slicer& section)
 {
-   return getSlice (buffer, Slicer(start, shape, stride), 
-                    removeDegenerateAxes);
-}
-
-template<class T>
-Bool LatticeExpr<T>::getSlice (COWPtr<Array<T> >& buffer,
-			       const Slicer& section, 
-			       Bool removeDegenerateAxes) const
-{
-// I can remove the constness because the buffer is never returned by
-// reference. The COWPtr takes over the pointer to the array.
-
-   Array<T>* arr = new Array<T>;
-   LatticeExpr<T>* This = (LatticeExpr<T>*) this;
-   Bool isARef = This->getSlice (*arr, section, removeDegenerateAxes);
-   buffer = COWPtr<Array<T> > (arr, True, isARef);
+// Evaluate the expression after having resized the buffer.
+   buffer.resize (section.length());
+   expr_p.eval (buffer, section);
    return False;
 }
 
 template <class T>
-Bool LatticeExpr<T>::getSlice(Array<T>& buffer,
-			      const IPosition& start,
-			      const IPosition& shape,
-			      const IPosition& stride,
-			      Bool removeDegenerateAxes)
+Bool LatticeExpr<T>::doGetMaskSlice (Array<Bool>& buffer,
+				     const Slicer& section)
 {
-   return getSlice (buffer, Slicer(start, shape, stride), removeDegenerateAxes);
-}
-template <class T>
-Bool LatticeExpr<T>::getSlice(Array<T>& buffer,
-			      const Slicer& section,
-			      Bool removeDegenerateAxes)
-//
-// This is the version of getSlice where the implementation
-// is fundamental.  The others are implemented in terms of
-// this one
-// 
-{
-// removeDegenerateAxes is not supported.
-
-   AlwaysAssert (!removeDegenerateAxes, AipsError);
-
-// Turn the section into a PixelBox. This ensures that unspecified
-// section values are filled in. So use the box thereafter as the section.
-// Resize the buffer when empty. Otherwise check its shape.
-
-   PixelBox region(section, expr_p.shape());
-   if (buffer.nelements() == 0) {
-      buffer.resize (region.box().length());
-   } else {
-      AlwaysAssert (buffer.shape().isEqual(region.box().length()), AipsError);
-   }
-
-// Evaluate the expression
-
-   expr_p.eval (buffer, region);
-
+   buffer.resize (section.length());
+   expr_p.evalMask (buffer, section);
    return False;
 }
 
 template <class T>
-void LatticeExpr<T>::putSlice (const Array<T>&, const IPosition&)
-{
-   throw (AipsError ("LatticeExpr::putSlice - is not possible"));
-}
-template <class T>
-void LatticeExpr<T>::putSlice (const Array<T>&, const IPosition&,
-			       const IPosition&)
+void LatticeExpr<T>::doPutSlice (const Array<T>&, const IPosition&,
+				 const IPosition&)
 {
    throw (AipsError ("LatticeExpr::putSlice - is not possible"));
 }
