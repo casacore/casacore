@@ -1340,3 +1340,218 @@ C      CALL MTH_FAIL(NAME,'MTH_DPBTRS',INFO,ERROR)
       ENDDO
       RETURN
       END
+      SUBROUTINE ANTGAIN (Z,W, IANT, JANT, ZANT,WANT, NANT, NBAS,
+     $                    REF_ANT)
+C------------------------------------------------------------------------
+C CLIC
+C     Derive antenna "gains" from baseline visibilities
+C Arguments:
+C     Z(NBAS)    COMPLEX   Visibility
+C     W(NBAS)    REAL      Weight
+C     IANT(NBAS) INTEGER   antenna1 for baseline
+C     JANT(NBAS) INTEGER   antenna2 for baseline
+C     ZANT(NANT) COMPLEX   Complex antenna gain
+C     WANT(NANT) REAL      Weight
+C     NANT       INTEGER   number of antennas
+C     NBAS       INTEGER   number of baselines
+C     REF_ANT    INTEGER   reference antenna
+
+C------------------------------------------------------------------------
+* Dummy variables:
+      REAL*4 W(435), WANT(30)
+      COMPLEX Z(435), ZANT(30), CMPL2
+      INTEGER REF_ANT, IANT(435), JANT(435)
+* Local variables:
+      REAL*4 PHA(30), AMP(30), AA, FAZ, WA, ADD, AJI, AKI, AJK,
+     $PHA0(30), C(435)
+      INTEGER IB, IA, J_I, K_I, J_K, JA, KA, BASE, IREF, ITRY, I
+      LOGICAL RETRO, REFOK
+      PARAMETER (RETRO=.FALSE.)
+*------------------------------------------------------------------------
+* Code:
+*
+* Solve for phases, using retroprojection algorithm:
+*
+      REFOK = .FALSE.
+      IREF = REF_ANT
+      ITRY = 1
+      DO WHILE (.NOT.REFOK .AND. ITRY.LE.NANT)
+         DO IA=1, NANT
+            IF (IA.LT.IREF) THEN
+               IB = BASE(IA,IREF)
+               REFOK = REFOK .OR. W(IB).GT.0
+            ELSEIF (IA.GT.IREF) THEN
+               IB = BASE(IREF,IA)
+               REFOK = REFOK .OR. W(IB).GT.0
+            ENDIF
+         ENDDO
+         IF (.NOT.REFOK) THEN
+            ITRY = ITRY+1
+            IREF = MOD(IREF,NANT)+1
+         ENDIF
+      ENDDO
+      IF (.NOT.REFOK) THEN
+         DO I=1, NANT
+            PHA(I) = 0
+         ENDDO
+      ELSE
+*
+*
+         PHA0(IREF) = 0.
+         DO IA=1, NANT
+            IF (IA.LT.IREF) THEN
+               IB = BASE(IA,IREF)
+               IF (W(IB).GT.0) PHA0(IA) = -FAZ(Z(IB))
+            ELSEIF (IA.GT.IREF) THEN
+               IB = BASE(IREF,IA)
+               IF (W(IB).GT.0) PHA0(IA) = FAZ(Z(IB))
+            ENDIF
+         ENDDO
+         DO IA = 1, NANT
+            ADD = 0
+            DO JA = 1, NANT
+               IF (JA.LT.IA) THEN
+                  IB = BASE(JA,IA)
+                  IF (W(IB).GT.0) THEN
+                     ADD = ADD + FAZ(Z(IB)) - PHA0(IA) + PHA0(JA)
+                  ENDIF
+               ELSEIF (JA.GT.IA) THEN
+                  IB = BASE(IA,JA)
+                  IF (W(IB).GT.0) THEN
+                     ADD = ADD - FAZ(Z(IB)) - PHA0(IA) + PHA0(JA)
+                  ENDIF
+               ENDIF
+            ENDDO
+            ADD = MOD(ADD+31D0*PI,2D0*PI)-PI
+            PHA(IA) = PHA0(IA)+ADD/NANT
+         ENDDO
+      ENDIF
+*
+* solve for amplitudes, using retroprojection algorithm:
+c (to be checked again)
+* note:
+* to compute this way the weights must be provided by antenna,
+* not by baseline. (RL 2002-02-27)
+      IF (RETRO) THEN
+         DO IA = 1, NANT
+            WANT(IA) = 0
+            AMP(IA) = 0
+            DO IB=1, NBAS
+               IF (W(IB).GT.0) THEN
+                  IF (IANT(IB).EQ.IA .OR. JANT(IB).EQ.IA) THEN
+                     AMP(IA) = AMP(IA)+LOG(ABS(Z(IB)))*WA
+                     WANT(IA) = WANT(IA)+WA
+                  ELSE
+                     AMP(IA) = AMP(IA)-LOG(ABS(Z(IB)))*WA/(NANT-2)
+                     WANT(IA) = WANT(IA)-WA/(NANT-2)
+                  ENDIF
+               ENDIF
+            ENDDO
+            IF (WANT(IA).GT.0) THEN
+               AMP(IA) = AMP(IA)/WANT(IA)
+            ELSE
+               AMP(IA) = 0.
+            ENDIF
+            IF (R_NANT.GT.1) THEN
+               AMP(IA) = AMP(IA)/(NANT-1)
+               WANT(IA) = WANT(IA)/(NANT-1)
+            ENDIF
+            ZANT(IA) = EXP(CMPLX(AMP(IA),PHA(IA)))
+c            if (want(ia).gt.0) WANT(IA) = EXP(WANT(IA))
+         ENDDO
+      ELSE
+*
+* Solve for amplitudes
+         DO IA = 1, NANT
+            WANT(IA) = 0
+            AMP(IA) = 0
+            IF (NANT.GT.2) THEN
+               DO JA = 1, NANT
+                  IF (JA.NE.IA .AND. JA.LT.NANT) THEN
+                     DO  KA = JA+1, NANT
+                        IF (KA.NE.IA) THEN
+                           J_I = BASE(MIN(JA,IA),MAX(JA,IA))
+                           K_I = BASE(MIN(KA,IA),MAX(KA,IA))
+                           J_K = BASE(JA,KA)
+                           IF (Z(J_K).NE.0 .AND. Z(J_I).NE.0 .AND.
+     $                     Z(K_I).NE.0 .AND. W(J_K).NE.0 .AND.
+     $                     W(J_I).NE.0 .AND. W(K_I).NE.0) THEN
+                              AJI = ABS(Z(J_I))
+                              AKI = ABS(Z(K_I))
+                              AJK = ABS(Z(J_K))
+                              IF (AJI.LT.1E15 .AND. AKI.LT.1E15
+     $                        .AND. AJK.LT.1E15) THEN
+                                 AA = AJI*AKI/AJK
+                                 WA = 1./W(J_I)/ABS(Z(J_I))**2
+     $                           +1./W(K_I)/ABS(Z(K_I))**2
+     $                           +1./W(J_K)/ABS(Z(J_K))**2
+                                 WA = 1/AA**2/WA
+                                 AMP(IA) = AMP(IA) + AA*WA
+                                 WANT(IA) = WANT(IA) + WA
+                              ENDIF
+                           ENDIF
+                        ENDIF
+                     ENDDO
+                  ENDIF
+               ENDDO
+               IF (WANT(IA).NE.0) AMP(IA) = AMP(IA) / WANT(IA)
+            ENDIF
+*
+* if previous algorithm did not work, take first valid baseline
+* containing IA. This will work if there is only one operational baseline ...
+            IF (WANT(IA).LE.0) THEN
+               DO IB=1, NBAS
+                  IF (W(IB).GT.0) THEN
+                     AMP(IA) = ABS(Z(IB))
+                     WANT(IA) = W(IB)
+                  ENDIF
+               ENDDO
+            ENDIF
+            ZANT(IA) = AMP(IA) * EXP(CMPLX(0.,PHA(IA)))
+c
+c            ZANT(IA) =CMPL2(AMP(IA), PHA(IA))
+c            if (amp(ia).GT.BLANK4-D_BLANK4) want(ia) = 0
+         ENDDO
+      ENDIF
+      RETURN
+      END
+
+      FUNCTION BASE(I,J)
+C----------------------------------------------------------------------
+C Returns the number of baseline I,J (not oriented)
+C----------------------------------------------------------------------
+* Global variables:
+* Dummy variables:
+      INTEGER BASE,I,J
+* Local variables:
+*------------------------------------------------------------------------
+* Code:
+      IF (I.LT.J) THEN
+         BASE = (J-1)*(J-2)/2 + I
+      ELSE
+         BASE = (I-1)*(I-2)/2 + J
+      ENDIF
+      END
+
+
+      FUNCTION FAZ(Z)
+C------------------------------------------------------------------------
+C 	Compute the phase of a complex number Z
+C------------------------------------------------------------------------
+
+* Dummy variables:
+      COMPLEX Z
+      REAL FAZ
+      COMPLEX BLANKC
+      PARAMETER (BLANKC=(1.23456E34,1.23456E34))
+      REAL*4 BLANK4
+      PARAMETER (BLANK4=1.23456E34)
+*------------------------------------------------------------------------
+* Code:
+      IF (Z.NE.0 .AND. Z.NE.BLANKC) THEN
+         FAZ = ATAN2(AIMAG(Z),REAL(Z))
+      ELSE
+         FAZ = BLANK4
+      ENDIF
+      RETURN
+      END
