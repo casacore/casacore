@@ -42,6 +42,8 @@ StokesCoordinate::StokesCoordinate(const Vector<Int> &whichStokes)
       values_p(whichStokes.nelements()), crval_p(0), crpix_p(0), matrix_p(1),
       cdelt_p(1), name_p("Stokes"), unit_p("")
 {
+    AlwaysAssert(whichStokes.nelements()>0, AipsError);
+//
     Block<Bool> alreadyUsed(Stokes::NumberOfTypes);
     if (whichStokes.nelements() > 0) {
 	crval_p = whichStokes(0);
@@ -111,7 +113,7 @@ uInt StokesCoordinate::nWorldAxes() const
 
 Bool StokesCoordinate::toWorld(Stokes::StokesTypes &stokes, Int pixel) const
 {
-    // Avoid going to the Vector version for eficciency reasons.
+    // Avoid going to the Vector version for efficiency reasons.
     Double index = floor((pixel - crpix_p)*cdelt_p*matrix_p + 0.5);
     if (index >= 0 && index < values_p.nelements()) {
 	stokes = Stokes::type(values_p[Int(index)]);
