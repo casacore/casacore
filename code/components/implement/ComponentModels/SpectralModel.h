@@ -31,19 +31,18 @@
 #include <aips/aips.h>
 #include <trial/ComponentModels/ComponentType.h>
 #include <aips/Utilities/RecordTransformable.h>
+#include <aips/Measures/MFrequency.h>
+#include <aips/Quanta/Unit.h>
 
-class MFrequency;
 class RecordInterface;
 class String;
-class Unit;
-template <class T> class Flux;
 template <class T> class Vector;
 
-// <summary>Base class for Spectral Models</summary>
+// <summary>Base class for spectral models</summary>
 
 // <use visibility=export>
 
-// <reviewed reviewer="" date="yyyy/mm/dd" tests="tSpectralModel" demos="">
+// <reviewed reviewer="" date="yyyy/mm/dd" tests="tConstantSpectrum" demos="dSpectralModel">
 // </reviewed>
 
 // <prerequisite>
@@ -93,8 +92,8 @@ template <class T> class Vector;
 // uses the model to calculate the flux at other frequencies. This example is
 // coded in the tSpectralModel.h file.
 // <srcblock>
-// void plotSpectrum(const Flux<Double> & refFlux,
-//                   const SpectralModel & modelSpectrum) {
+// void plotSpectrum(const Flux<Double>& refFlux,
+//                   const SpectralModel& modelSpectrum) {
 //   cout << "This is a "
 //        << ComponentType::name(modelSpectrum.type())
 //        << " spectrum with a reference frequency of: "
@@ -146,48 +145,62 @@ public:
   // return the actual spectral shape.
   virtual ComponentType::SpectralShape type() const = 0;
 
+
   // set/get the reference frequency
   // <group>
-  virtual void setRefFrequency(const MFrequency & newRefFreq) = 0;
-  virtual const MFrequency & refFrequency() const = 0;
+  virtual void setRefFrequency(const MFrequency& newRefFreq);
+  virtual const MFrequency& refFrequency() const;
   // </group>
 
   // get the frequency unit, and change the default frequency unit to the
   // specified one.
   // <group>
-  virtual const Unit & frequencyUnit() const = 0;
-  virtual void convertFrequencyUnit(const Unit & freqUnit) = 0;
+  virtual const Unit& frequencyUnit() const;
+  virtual void convertFrequencyUnit(const Unit& freqUnit);
   // </group>
 
-  // Calculate the flux at the specified frequency given the flux at the
-  // reference frequency. The flux at the reference frequency must be supplied
-  // in the flux variable and the flux at the specified frequency is returned
-  // in the same variable.
-  virtual void sample(Flux<Double> & flux, 
-		      const MFrequency & centerFrequency) const = 0;
+  // Return the scaling factor that indicates what proportion of the flux is at
+  // the specified frequency. ie. if the centreFrequency arguement is the
+  // reference frequency then this function will always return one. At other
+  // frequencies it will return a non-negative number.
+  virtual Double sample(const MFrequency& centerFrequency) const = 0;
+
+  // Same as the previous function except that many frequencies can be sampled
+  // at once. The reference frame must be the same for all the specified
+  // frequencies. A default implementation of this function is available that
+  // uses the sample function described above.  However customised versions of
+  // this function will be more efficient as intermediate values only need to
+  // be computed once.
+  virtual void sample(Vector<Double>& scale, 
+                      const Vector<MFrequency::MVType>& frequencies, 
+                      const MFrequency::Ref& refFrame) const = 0;
 
   // Return a pointer to a copy of the derived object upcast to a SpectralModel
   // object. The class that uses this function is responsible for deleting the
   // pointer. This is used to implement a virtual copy constructor.
-  virtual SpectralModel * clone() const = 0;
+  virtual SpectralModel* clone() const = 0;
 
   // return the number of parameters in this spectral shape and set/get them.
   // <group>
   virtual uInt nParameters() const = 0;
-  virtual void setParameters(const Vector<Double> & newParms) = 0;
-  virtual void parameters(Vector<Double> & compParms) const = 0;
+  virtual void setParameters(const Vector<Double>& newParms) = 0;
+  virtual void parameters(Vector<Double>& compParms) const = 0;
   // </group>
 
   // These functions convert between a record and a SpectralModel. This way
   // derived classes can interpret fields in the record in a class specific
-  // way. These functions define how a spectral model is represented in glish.
-  // They return False if the record is malformed and append an error message
-  // to the supplied string giving the reason.
+  // way. They return False if the record is malformed and append an error
+  // message to the supplied string giving the reason.  These functions define
+  // how a spectral model is represented in glish. All records should have
+  // 'type' & 'frequency' fields which contain respectively; a string
+  // indicating which spectral model is actually used, and a record
+  // representation of a frequency measure.  The interpretation of all other
+  // fields depends on the specific spectral model used.
   // <group>
-  virtual Bool fromRecord(String & errorMessage, 
-			  const RecordInterface & record) = 0;
-  virtual Bool toRecord(String & errorMessage,
-			RecordInterface & record) const = 0;
+  virtual Bool fromRecord(String& errorMessage, 
+			  const RecordInterface& record) = 0;
+  virtual Bool toRecord(String& errorMessage,
+			RecordInterface& record) const = 0;
   // </group>
 
   // Convert the parameters of the spectral model to the specified units. The
@@ -196,10 +209,9 @@ public:
   // contain strings (and not Quantums) that specify the new units for these
   // parameters. The new units must have the same dimensions as the existing
   // ones. If there is any problem parsing the record then an error message is
-  // appended to the supplied string and the function returns False. If
-  // successful it returns True
-  virtual Bool convertUnit(String & errorMessage,
-			   const RecordInterface & record) = 0;
+  // appended to the supplied string and the function returns False. 
+  virtual Bool convertUnit(String& errorMessage,
+			   const RecordInterface& record) = 0;
 
   // Return the spectral shape that the supplied record represents. The
   // spectral shape is determined by parsing a 'type' field in the supplied
@@ -207,24 +219,36 @@ public:
   // (which contains a string) could not be translated into a known spectral
   // shape. It then appends an appropriate error message to the errorMessage
   // String.
-  static ComponentType::SpectralShape getType(String & errorMessage,
-					      const RecordInterface & record);
+  static ComponentType::SpectralShape getType(String& errorMessage,
+					      const RecordInterface& record);
 
   // Function which checks the internal data of this class for correct
   // dimensionality and consistant values. Returns True if everything is fine
   // otherwise returns False.
-  virtual Bool ok() const = 0;
+  virtual Bool ok() const;
 
 protected:
-  //# These functions are used by derived classes implementing concrete
-  //# versions of the toRecord and fromRecord member functions.
-  Bool addFreq(String & errorMessage, RecordInterface & record) const;
-  Bool readFreq(String & errorMessage, const RecordInterface & record);
+  // The constructors and assignment operator are protected as only derived
+  // classes should use them.
+  // <group>
+  //# The default reference frequency is at 1 GHz in the LSR frame
+  SpectralModel();
+
+  //# Construct a SpectralModel at the specified reference frequency.
+  SpectralModel(const MFrequency& refFreq);
+
+  //# The copy constructor uses copy semantics.
+  SpectralModel(const SpectralModel& other);
+
+  //# The assignment operator uses copy semantics.
+  SpectralModel& operator=(const SpectralModel& other);
+  // </group>
+
 private:
-  //# Disable any compiler generated assignment operator by defining one here
-  //# and making it inaccessible.
-  SpectralModel & operator=(const SpectralModel & other){
-    return (SpectralModel &) other;
-  };
+  //# The reference frequency of the spectral model
+  MFrequency itsRefFreq;
+  //# the units (Hz, GHz etc.) that the record functions should use for the
+  //# reference frequency. 
+  Unit itsFreqUnit;
 };
 #endif

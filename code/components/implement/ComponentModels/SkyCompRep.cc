@@ -54,7 +54,7 @@ SkyCompRep::SkyCompRep()
   AlwaysAssert(ok(), AipsError);
 }
 
-SkyCompRep::SkyCompRep(const ComponentType::Shape & shape)
+SkyCompRep::SkyCompRep(const ComponentType::Shape& shape)
   :itsShapePtr(ComponentType::construct(shape)),
    itsSpectrumPtr(new ConstantSpectrum),
    itsFlux(),
@@ -63,8 +63,8 @@ SkyCompRep::SkyCompRep(const ComponentType::Shape & shape)
   AlwaysAssert(ok(), AipsError);
 }
 
-SkyCompRep::SkyCompRep(const ComponentType::Shape & shape,
-		       const ComponentType::SpectralShape & spectrum)
+SkyCompRep::SkyCompRep(const ComponentType::Shape& shape,
+		       const ComponentType::SpectralShape& spectrum)
   :itsShapePtr(ComponentType::construct(shape)),
    itsSpectrumPtr(ComponentType::construct(spectrum)),
    itsFlux(),
@@ -73,9 +73,9 @@ SkyCompRep::SkyCompRep(const ComponentType::Shape & shape,
   AlwaysAssert(ok(), AipsError);
 }
 
-SkyCompRep::SkyCompRep(const Flux<Double> & flux,
-		       const ComponentShape & shape, 
-		       const SpectralModel & spectrum)
+SkyCompRep::SkyCompRep(const Flux<Double>& flux,
+		       const ComponentShape& shape, 
+		       const SpectralModel& spectrum)
   :itsShapePtr(shape.clone()),
    itsSpectrumPtr(spectrum.clone()),
    itsFlux(flux.copy()),
@@ -84,7 +84,7 @@ SkyCompRep::SkyCompRep(const Flux<Double> & flux,
   AlwaysAssert(ok(), AipsError);
 }
 
-SkyCompRep::SkyCompRep(const SkyCompRep & other) 
+SkyCompRep::SkyCompRep(const SkyCompRep& other) 
   :itsShapePtr(other.itsShapePtr->clone()),
    itsSpectrumPtr(other.itsSpectrumPtr->clone()),
    itsFlux(other.itsFlux.copy()),
@@ -97,7 +97,7 @@ SkyCompRep::~SkyCompRep() {
   DebugAssert(ok(), AipsError);
 }
 
-SkyCompRep & SkyCompRep::operator=(const SkyCompRep & other) {
+SkyCompRep& SkyCompRep::operator=(const SkyCompRep& other) {
   if (this != &other) {
     itsShapePtr = other.itsShapePtr->clone();
     itsSpectrumPtr = other.itsSpectrumPtr->clone();
@@ -108,69 +108,69 @@ SkyCompRep & SkyCompRep::operator=(const SkyCompRep & other) {
   return *this;
 }
 
-const Flux<Double> & SkyCompRep::flux() const {
+const Flux<Double>& SkyCompRep::flux() const {
   DebugAssert(ok(), AipsError);
   return itsFlux;
 }
 
-Flux<Double> & SkyCompRep::flux() {
+Flux<Double>& SkyCompRep::flux() {
   DebugAssert(ok(), AipsError);
   return itsFlux;
 }
 
-const ComponentShape & SkyCompRep::shape() const {
+const ComponentShape& SkyCompRep::shape() const {
   DebugAssert(ok(), AipsError);
   return *itsShapePtr;
 }
 
-ComponentShape & SkyCompRep::shape() {
+ComponentShape& SkyCompRep::shape() {
   DebugAssert(ok(), AipsError);
   return *itsShapePtr;
 }
 
-void SkyCompRep::setShape(const ComponentShape & newShape) {
+void SkyCompRep::setShape(const ComponentShape& newShape) {
   DebugAssert(ok(), AipsError);
   itsShapePtr = newShape.clone();
 }
 
-SpectralModel & SkyCompRep::spectrum() {
+SpectralModel& SkyCompRep::spectrum() {
   DebugAssert(ok(), AipsError);
   return *itsSpectrumPtr;
 }
 
-const SpectralModel & SkyCompRep::spectrum() const {
+const SpectralModel& SkyCompRep::spectrum() const {
   DebugAssert(ok(), AipsError);
   return *itsSpectrumPtr;
 }
 
-void SkyCompRep::setSpectrum(const SpectralModel & newSpectrum) {
+void SkyCompRep::setSpectrum(const SpectralModel& newSpectrum) {
   DebugAssert(ok(), AipsError);
   itsSpectrumPtr = newSpectrum.clone();
 }
 
-String & SkyCompRep::label() {
+String& SkyCompRep::label() {
   DebugAssert(ok(), AipsError);
   return itsLabel;
 }
 
-const String & SkyCompRep::label() const {
+const String& SkyCompRep::label() const {
   DebugAssert(ok(), AipsError);
   return itsLabel;
 }
 
-Flux<Double> SkyCompRep::sample(const MDirection & direction, 
-				const MVAngle & pixelSize, 
-				const MFrequency & centerFrequency) const {
+Flux<Double> SkyCompRep::sample(const MDirection& direction, 
+				const MVAngle& pixelSize, 
+				const MFrequency& centerFrequency) const {
   DebugAssert(ok(), AipsError);
-  Flux<Double> flux = itsFlux.copy();
-  itsSpectrumPtr->sample(flux, centerFrequency);
   Double scale = itsShapePtr->sample(direction, pixelSize);
+  scale *= itsSpectrumPtr->sample(centerFrequency);
+  Flux<Double> flux = itsFlux.copy();
   flux.scaleValue(scale, scale, scale, scale);
   return flux;
 }
 
-Flux<Double> SkyCompRep::visibility(const Vector<Double> & uvw,
-				    const Double & frequency) const {
+Flux<Double> SkyCompRep::visibility(const Vector<Double>& uvw,
+				    const Double& frequency) const {
   DebugAssert(ok(), AipsError);
   Flux<Double> flux = itsFlux.copy();
   Double scale = itsShapePtr->visibility(uvw, frequency).real();
@@ -180,8 +180,8 @@ Flux<Double> SkyCompRep::visibility(const Vector<Double> & uvw,
   return flux;
 }
 
-Bool SkyCompRep::fromRecord(String & errorMessage,
-			    const RecordInterface & record) {
+Bool SkyCompRep::fromRecord(String& errorMessage,
+			    const RecordInterface& record) {
   {
     const String fluxString("flux");
     if (record.isDefined(fluxString)) {
@@ -190,7 +190,7 @@ Bool SkyCompRep::fromRecord(String & errorMessage,
 	errorMessage += "The 'flux' field must be a record\n";
 	return False;
       }
-      const Record & fluxRec = record.asRecord(flux);
+      const Record& fluxRec = record.asRecord(flux);
       if (!itsFlux.fromRecord(errorMessage, fluxRec)) {
 	errorMessage += "Problem parsing the 'flux' field\n";
 	return False;
@@ -212,7 +212,7 @@ Bool SkyCompRep::fromRecord(String & errorMessage,
 	errorMessage += "\nThe 'shape' field must be a record";
 	return False;
       }      
-      const Record & shapeRec = record.asRecord(shape);
+      const Record& shapeRec = record.asRecord(shape);
       const ComponentType::Shape recType = 
 	ComponentShape::getType(errorMessage, shapeRec);
       if (recType >= ComponentType::UNKNOWN_SHAPE) {
@@ -250,7 +250,7 @@ Bool SkyCompRep::fromRecord(String & errorMessage,
 	errorMessage += "\nThe 'spectrum' field must be a record";
 	return False;
       }      
-      const Record & spectrumRec = record.asRecord(spectrum);
+      const Record& spectrumRec = record.asRecord(spectrum);
       const ComponentType::SpectralShape recType = 
 	SpectralModel::getType(errorMessage, spectrumRec);
       if (recType >= ComponentType::UNKNOWN_SPECTRAL_SHAPE) {
@@ -294,8 +294,8 @@ Bool SkyCompRep::fromRecord(String & errorMessage,
   return True;
 }
 
-Bool SkyCompRep::toRecord(String & errorMessage, 
-			  RecordInterface & record) const {
+Bool SkyCompRep::toRecord(String& errorMessage, 
+			  RecordInterface& record) const {
   {
     Record fluxRec;
     if (!itsFlux.toRecord(errorMessage, fluxRec)) {
@@ -491,5 +491,5 @@ void SkyCompRep::project(ImageInterface<Float>&) const {
 }
 
 // Local Variables: 
-// compile-command: "gmake OPTLIB=1 SkyCompRep"
+// compile-command: "gmake SkyCompRep"
 // End: 

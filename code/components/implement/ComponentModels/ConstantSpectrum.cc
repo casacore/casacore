@@ -1,4 +1,4 @@
-//# ClassFileName.cc:  this defines ClassName, which ...
+//# ConstantSpectrum.cc.cc:
 //# Copyright (C) 1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -29,22 +29,18 @@
 #include <aips/Arrays/Vector.h>
 #include <aips/Exceptions/Error.h>
 #include <aips/Containers/RecordInterface.h>
-#include <aips/Logging/LogIO.h>
-#include <aips/Logging/LogOrigin.h>
 #include <aips/Quanta/Quantum.h>
 #include <aips/Utilities/Assert.h>
 #include <aips/Utilities/String.h>
 
 ConstantSpectrum::ConstantSpectrum()
-  :itsRefFreq(Quantum<Double>(1, "GHz"), MFrequency::LSR),
-   itsFreqUnit("GHz")
+  :SpectralModel()
 {
   DebugAssert(ok(), AipsError);
 }
 
 ConstantSpectrum::ConstantSpectrum(const ConstantSpectrum& other) 
-  :itsRefFreq(other.itsRefFreq),
-   itsFreqUnit(other.itsFreqUnit)
+  :SpectralModel(other)
 {
   DebugAssert(ok(), AipsError);
 }
@@ -54,10 +50,7 @@ ConstantSpectrum::~ConstantSpectrum() {
 }
 
 ConstantSpectrum& ConstantSpectrum::operator=(const ConstantSpectrum& other) {
-  if (this != &other) {
-    itsRefFreq = other.itsRefFreq;
-    itsFreqUnit = other.itsFreqUnit;
-  }
+  SpectralModel::operator=(other);
   DebugAssert(ok(), AipsError);
   return *this;
 }
@@ -67,40 +60,22 @@ ComponentType::SpectralShape ConstantSpectrum::type() const {
   return ComponentType::CONSTANT_SPECTRUM;
 }
 
-const MFrequency& ConstantSpectrum::refFrequency() const {
+Double ConstantSpectrum::sample(const MFrequency&) const {
   DebugAssert(ok(), AipsError);
-  return itsRefFreq;
+  return 1.0;
 }
 
-void ConstantSpectrum::setRefFrequency(const MFrequency& newRefFreq) {
-  itsRefFreq = newRefFreq;
+void ConstantSpectrum::sample(Vector<Double>& scale, 
+			      const Vector<MFrequency::MVType>& frequencies, 
+			      const MFrequency::Ref& refFrame) const {
   DebugAssert(ok(), AipsError);
+  DebugAssert(scale.nelements() == frequencies.nelements(), AipsError);
+  scale = 1.0;
 }
 
-const Unit& ConstantSpectrum::frequencyUnit() const {  
+SpectralModel* ConstantSpectrum::clone() const {
   DebugAssert(ok(), AipsError);
-  return itsFreqUnit;
-}
-
-void ConstantSpectrum::convertFrequencyUnit(const Unit& freqUnit) {
-  itsFreqUnit = freqUnit;
-  DebugAssert(ok(), AipsError);
-}
-
-void ConstantSpectrum::sample(Flux<Double>& flux, 
-			      const MFrequency& centerFreq) const {
-  DebugAssert(ok(), AipsError);
-  // Use centerFreq for something to suppress a compiler warning
-  if (&centerFreq == 0) {
-  }
-  // Use flux for something to suppress a compiler warning
-  if (&flux == 0) {
-  }
-}
-
-SpectralModel * ConstantSpectrum::clone() const {
-  DebugAssert(ok(), AipsError);
-  SpectralModel * tmpPtr = new ConstantSpectrum(*this);
+  SpectralModel* tmpPtr = new ConstantSpectrum(*this);
   AlwaysAssert(tmpPtr != 0, AipsError);
   return tmpPtr;
 }
@@ -110,8 +85,7 @@ uInt ConstantSpectrum::nParameters() const {
   return 0;
 }
 
-void ConstantSpectrum::
-setParameters(const Vector<Double>& newSpectralParms) {
+void ConstantSpectrum::setParameters(const Vector<Double>& newSpectralParms) {
   DebugAssert(newSpectralParms.nelements() == nParameters(),AipsError);
   DebugAssert(ok(), AipsError);
   // Suppress compiler warning about unused variable
@@ -127,35 +101,25 @@ void ConstantSpectrum::parameters(Vector<Double>& spectralParms) const {
 
 Bool ConstantSpectrum::fromRecord(String& errorMessage, 
 				  const RecordInterface& record) {
-  if (!SpectralModel::readFreq(errorMessage, record)) return False;
-  return True;
+  const Bool retVal = SpectralModel::fromRecord(errorMessage, record);
+  DebugAssert(ok(), AipsError);
+  return retVal;
 }
 
 Bool ConstantSpectrum::toRecord(String& errorMessage,
 				RecordInterface& record) const {
-  record.define(RecordFieldId("type"), ComponentType::name(type()));
-  if (!SpectralModel::addFreq(errorMessage, record)) return False;
-  return True;
+  DebugAssert(ok(), AipsError);
+  return SpectralModel::toRecord(errorMessage, record);
 }
 
-Bool ConstantSpectrum::convertUnit(String& errorMessage,
-				   const RecordInterface& record) {
-  // Suppress compiler warning about unused variables
-  if (&errorMessage == 0) {}; 
-  if (&record == 0) {};
+Bool ConstantSpectrum::convertUnit(String&,
+				   const RecordInterface&) {
   DebugAssert(ok(), AipsError);
   return True;
 }
  
 Bool ConstantSpectrum::ok() const {
-  if (itsFreqUnit != Unit("GHz")) {
-    LogIO logErr(LogOrigin("ConstantSpectrum", "ok()"));
-    logErr << LogIO::SEVERE << "The reference frequency has units with " 
-	   << endl << " different dimensions than the Hz."
-           << LogIO::POST;
-    return False;
-  }
-  return True;
+  return SpectralModel::ok();
 }
 // Local Variables: 
 // compile-command: "gmake OPTLIB=1 ConstantSpectrum"

@@ -36,7 +36,7 @@
 #include <trial/ComponentModels/ComponentType.h>
 #include <trial/ComponentModels/SpectralModel.h>
 
-template <class T> class Flux;
+//template <class T> class Flux;
 class RecordInterface;
 class String;
 
@@ -138,80 +138,52 @@ public:
   // ConstantSpectrum class (except slower).
   SpectralIndex();
 
-  // Construct a SpectralIndex with specified reference frequency and set the
-  // Stokes::I exponent to the supplied value. The exponent for the other
-  // polarisations is zero.
-  SpectralIndex(const MFrequency & refFreq, Double exponent);
-
-  // Construct a SpectralIndex with specified reference frequency and set all
-  // the exponents to the supplied values. The Vector must have four elements
-  // which contain, in order, the exponents for the Stokes::I, Stokes::Q,
-  // Stokes::U and Stokes::V polarizations.
-  SpectralIndex(const MFrequency & refFreq, const Vector<Double> & exponents);
+  // Construct a SpectralIndex with specified reference frequency and
+  // exponent.
+  SpectralIndex(const MFrequency& refFreq, Double exponent = 0.0);
 
   // The copy constructor uses copy semantics
-  SpectralIndex(const SpectralIndex & other);
+  SpectralIndex(const SpectralIndex& other);
 
   // The destructor does nothing.
   virtual ~SpectralIndex();
 
   // The assignment operator uses copy semantics.
-  SpectralIndex & operator=(const SpectralIndex & other);
+  SpectralIndex& operator=(const SpectralIndex& other);
 
   // return the actual spectral type ie., ComponentType::SPECTRAL_INDEX
   virtual ComponentType::SpectralShape type() const;
 
-  // set/get the reference frequency
-  // <group>
-  virtual void setRefFrequency(const MFrequency & newRefFreq);
-  virtual const MFrequency & refFrequency() const;
+  // set/get the spectral index.
+  const Double& index() const;
+  void setIndex(const Double& newIndex);
   // </group>
 
-  // get the frequency unit, and change the default frequency unit to the
-  // specified one.
-  // <group>
-  virtual const Unit & frequencyUnit() const;
-  virtual void convertFrequencyUnit(const Unit & freqUnit);
-  // </group>
+  // Return the scaling factor that indicates what proportion of the flux is at
+  // the specified frequency. ie. if the centreFrequency argument is the
+  // reference frequency then this function will always return one. At other
+  // frequencies it will return a non-negative number.
+  virtual Double sample(const MFrequency& centerFrequency) const;
 
-  // set/get the spectral index. The which argument must be either Stokes::I,
-  // Stokes::Q, Stokes::U or Stokes::V. No other StokesTypes are allowed.
-  // <group>
-  const Double & index(const Stokes::StokesTypes which) const;
-  void setIndex(const Double & newIndex, const Stokes::StokesTypes which);
-  // </group>
-
-  // set/get the all the spectral indices.  The supplied vector must be of
-  // length 4 and contains, in order, the Stokes I, Q, U, and V
-  // indices. Similarly the returned vector is of length 4 with the indices in
-  // the same order.
-  // <group>
-  Vector<Double> indices() const;
-  void setIndices(const Vector<Double> & newIndices);
-  // </group>
-
-  // returns True if the Q, U & V indices are zero.
-  Bool isIonly() const;
-
-  // Calculate the flux at the specified frequency given the flux at the
-  // reference frequency. The flux at the reference frequency must be supplied
-  // in the scaledFlux variable and the flux at the specified frequency is
-  // returned in the same variable.
-  virtual void sample(Flux<Double> & scaledFlux, 
-		     const MFrequency & centerFrequency) const;
+  // Same as the previous function except that many frequencies can be sampled
+  // at once. The reference frame must be the same for all the specified
+  // frequencies. Uses a customised implementation for improved speed.
+  virtual void sample(Vector<Double>& scale, 
+                      const Vector<MFrequency::MVType>& frequencies, 
+                      const MFrequency::Ref& refFrame) const;
 
   // Return a pointer to a copy of this object upcast to a SpectralModel
   // object. The class that uses this function is responsible for deleting the
   // pointer. This is used to implement a virtual copy constructor.
-  virtual SpectralModel * clone() const;
+  virtual SpectralModel* clone() const;
 
   // return the number of parameters. There are four parameters for this
   // spectral model. They are the spectral index on each of the I, Q, U and V
   // polarisations.
   // <group>
   virtual uInt nParameters() const;
-  virtual void setParameters(const Vector<Double> & newSpectralParms);
-  virtual void parameters(Vector<Double> & spectralParms) const;
+  virtual void setParameters(const Vector<Double>& newSpectralParms);
+  virtual void parameters(Vector<Double>& spectralParms) const;
   // </group>
 
   // These functions convert between a record and a SpectralIndex. These
@@ -220,14 +192,13 @@ public:
   // <srcblock>
   // [type = 'Spectral Index',
   //  frequency = frequency record (see the measures module),
-  //  index = [1.0, 0.5, 0.4, -0.1]]
+  //  index = -0.2]
   // </srcblock>.
   // These functions return False if the record is malformed and append an
   // error message to the supplied string giving the reason.
   // <group>
-  virtual Bool fromRecord(String & errorMessage,
-			  const RecordInterface & record);
-  virtual Bool toRecord(String & errorMessage, RecordInterface & record) const;
+  virtual Bool fromRecord(String& errorMessage, const RecordInterface& record);
+  virtual Bool toRecord(String& errorMessage, RecordInterface& record) const;
   // </group>
 
   // Convert the parameters of the spectral index object to the specified
@@ -236,8 +207,8 @@ public:
   // index field is specified it must have the empty string as its value.  This
   // function always returns True unless the index field is specified and does
   // not contain an empty string.
-  virtual Bool convertUnit(String & errorMessage,
-			   const RecordInterface & record);
+  virtual Bool convertUnit(String& errorMessage,
+			   const RecordInterface& record);
 
   // Function which checks the internal data of this class for correct
   // dimensionality and consistant values. Returns True if everything is fine
@@ -245,24 +216,6 @@ public:
   virtual Bool ok() const;
 
 private:
-
-  MFrequency itsRefFreq;
-  Vector<Double> itsIndex;
-  //# The following data member is contained in the itsRefFreq data
-  //# member but are cached here to improve the speed of the sample(...)
-  //# function.
-  MFrequency::Types itsRefFrame;
-  //# This contains the actual reference frequency (ie refFreq + offset) in Hz.
-  Double itsNu0;
-  //# The following data member just caches whether the Q, U & V indices are
-  //# zero ie., we have an I only flux variation.
-  Bool itsIonly;
-  //# the following are just references into the itsIndex vector and are used
-  //# to improve the speed of the sample(...) function
-  Double & itsIindex;
-  Double & itsQindex;
-  Double & itsUindex;
-  Double & itsVindex;
-  Unit itsUnit;
+  Double itsIndex;
 };
 #endif

@@ -1,5 +1,5 @@
 //# SpectralModel.cc:
-//# Copyright (C) 1998
+//# Copyright (C) 1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -31,13 +31,14 @@
 #include <aips/Containers/RecordInterface.h>
 #include <aips/Exceptions/Error.h>
 #include <aips/Lattices/IPosition.h>
-#include <aips/Measures/MFrequency.h>
 #include <aips/Measures/MeasureHolder.h>
 #include <aips/Quanta/QuantumHolder.h>
 #include <aips/Quanta/Quantum.h>
 #include <aips/Utilities/Assert.h>
 #include <aips/Utilities/DataType.h>
 #include <aips/Utilities/String.h>
+#include <aips/Logging/LogIO.h>
+#include <aips/Logging/LogOrigin.h>
 
 SpectralModel::~SpectralModel() {
 }
@@ -65,8 +66,51 @@ getType(String & errorMessage, const RecordInterface & record) {
   return ComponentType::spectralShape(typeVal);
 }
 
-Bool SpectralModel::readFreq(String & errorMessage,
-			     const RecordInterface & record) {
+SpectralModel::SpectralModel()
+  :itsRefFreq(Quantum<Double>(1, "GHz"), MFrequency::LSR),
+   itsFreqUnit("GHz")
+{
+  DebugAssert(ok(), AipsError);
+}
+
+SpectralModel::SpectralModel(const SpectralModel& other) 
+  :itsRefFreq(other.itsRefFreq),
+   itsFreqUnit(other.itsFreqUnit)
+{
+  DebugAssert(ok(), AipsError);
+}
+
+SpectralModel& SpectralModel::operator=(const SpectralModel& other) {
+  if (this != &other) {
+    itsRefFreq = other.itsRefFreq;
+    itsFreqUnit = other.itsFreqUnit;
+  }
+  DebugAssert(ok(), AipsError);
+  return *this;
+}
+
+const MFrequency& SpectralModel::refFrequency() const {
+  DebugAssert(ok(), AipsError);
+  return itsRefFreq;
+}
+
+void SpectralModel::setRefFrequency(const MFrequency& newRefFreq) {
+  itsRefFreq = newRefFreq;
+  DebugAssert(ok(), AipsError);
+}
+
+const Unit& SpectralModel::frequencyUnit() const {  
+  DebugAssert(ok(), AipsError);
+  return itsFreqUnit;
+}
+
+void SpectralModel::convertFrequencyUnit(const Unit& freqUnit) {
+  itsFreqUnit = freqUnit;
+  DebugAssert(ok(), AipsError);
+}
+
+Bool SpectralModel::fromRecord(String& errorMessage, 
+				  const RecordInterface& record) {
   const String freqString("frequency");
   if (!record.isDefined(freqString)) {
     errorMessage += "The 'frequency' field does not exist\n";
@@ -84,7 +128,7 @@ Bool SpectralModel::readFreq(String & errorMessage,
       return False;
     }
   }
-  const Record & freqRecord = record.asRecord(frequency);
+  const Record& freqRecord = record.asRecord(frequency);
   MeasureHolder mh;
   if (!mh.fromRecord(errorMessage, freqRecord)) {
     errorMessage += "Could not parse the reference frequency\n";
@@ -98,8 +142,10 @@ Bool SpectralModel::readFreq(String & errorMessage,
   return True;
 }
 
-Bool SpectralModel::addFreq(String & errorMessage, 
-			    RecordInterface & record) const {
+Bool SpectralModel::toRecord(String& errorMessage,
+			     RecordInterface& record) const {
+  DebugAssert(ok(), AipsError);
+  record.define(RecordFieldId("type"), ComponentType::name(type()));
   Record freqRecord;
   const MeasureHolder mh(refFrequency());
   if (!mh.toRecord(errorMessage, freqRecord)) {
@@ -126,6 +172,18 @@ Bool SpectralModel::addFreq(String & errorMessage,
   record.defineRecord(RecordFieldId("frequency"), freqRecord);
   return True;
 }
+
+Bool SpectralModel::ok() const {
+  if (itsFreqUnit != Unit("GHz")) {
+    LogIO logErr(LogOrigin("SpectralModel", "ok()"));
+    logErr << LogIO::SEVERE << "The reference frequency has units with " 
+	   << endl << " different dimensions than the Hz."
+           << LogIO::POST;
+    return False;
+  }
+  return True;
+}
+
 // Local Variables: 
 // compile-command: "gmake OPTLIB=1 SpectralModel"
 // End: 

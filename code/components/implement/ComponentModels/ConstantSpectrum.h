@@ -31,12 +31,10 @@
 #include <aips/aips.h>
 #include <trial/ComponentModels/ComponentType.h>
 #include <trial/ComponentModels/SpectralModel.h>
-#include <aips/Measures/MFrequency.h>
-#include <aips/Quanta/Unit.h>
 
+class MFrequency;
 class RecordInterface;
 class String;
-template <class T> class Flux;
 template <class T> class Vector;
 
 // <summary>Model the spectral variation with a constant</summary>
@@ -111,48 +109,40 @@ public:
   ConstantSpectrum();
 
   // The copy constructor uses copy semantics
-  ConstantSpectrum(const ConstantSpectrum & other);
+  ConstantSpectrum(const ConstantSpectrum& other);
 
   // The destructor does nothing.
   virtual ~ConstantSpectrum();
 
   // The assignment operator uses copy semantics.
-  ConstantSpectrum & operator=(const ConstantSpectrum & other);
+  ConstantSpectrum& operator=(const ConstantSpectrum& other);
 
   // return the actual spectral type.
   virtual ComponentType::SpectralShape type() const;
 
-  // set/get the reference frequency
-  // <group>
-  virtual void setRefFrequency(const MFrequency & newRefFreq);
-  virtual const MFrequency & refFrequency() const;
-  // </group>
+  // Return the scaling factor that indicates what proportion of the flux is at
+  // the specified frequency. This function always returns one, as the spectrun
+  // is constant.
+  virtual Double sample(const MFrequency& centerFrequency) const;
 
-  // get the frequency unit, and change the default frequency unit to the
-  // specified one.
-  // <group>
-  virtual const Unit & frequencyUnit() const;
-  virtual void convertFrequencyUnit(const Unit & freqUnit);
-  // </group>
-
-    // Calculate the flux at the specified frequency given the flux at the
-  // reference frequency. The flux at the reference frequency must be supplied
-  // in the flux variable and the flux at the specified frequency is returned
-  // in the same variable. This function does not change the Flux.
-  virtual void sample(Flux<Double> & flux,
-		      const MFrequency & centerFrequency) const;
+  // Same as the previous function except that many frequencies can be sampled
+  // at once. The reference frame must be the same for all the specified
+  // frequencies. Uses a customised implementation.
+  virtual void sample(Vector<Double>& scale, 
+                      const Vector<MFrequency::MVType>& frequencies, 
+                      const MFrequency::Ref& refFrame) const;
 
   // Return a pointer to a copy of this object upcast to a SpectralModel
   // object. The class that uses this function is responsible for deleting the
   // pointer. This is used to implement a virtual copy constructor.
-  virtual SpectralModel * clone() const;
+  virtual SpectralModel* clone() const;
 
   // return the number of parameters. There are no parameters for this
   // spectral model.
   // <group>
   virtual uInt nParameters() const;
-  virtual void setParameters(const Vector<Double> & newSpectralParms);
-  virtual void parameters(Vector<Double> & spectralParms) const;
+  virtual void setParameters(const Vector<Double>& newSpectralParms);
+  virtual void parameters(Vector<Double>& spectralParms) const;
   // </group>
 
   // These functions convert between a record and a ConstantSpectrum. These
@@ -162,26 +152,21 @@ public:
   // necessary.  These functions return False if the record is malformed and
   // append an error message to the supplied string giving the reason.
   // <group>
-  virtual Bool fromRecord(String & errorMessage,
-			  const RecordInterface & record);
-  virtual Bool toRecord(String & errorMessage, RecordInterface & record) const;
+  virtual Bool fromRecord(String& errorMessage,
+			  const RecordInterface& record);
+  virtual Bool toRecord(String& errorMessage, RecordInterface& record) const;
   // </group>
 
   // Convert the parameters of the constant spectrum to the specified units. As
   // a constant spectrum has no parameters this function does nothing and
   // always returns True.
-  virtual Bool convertUnit(String & errorMessage,
-                           const RecordInterface & record);
+  virtual Bool convertUnit(String& errorMessage,
+                           const RecordInterface& record);
  
   // Function which checks the internal data of this class for correct
   // dimensionality and consistant values. Returns True if everything is fine
   // otherwise returns False.
   virtual Bool ok() const;
 
-private:
-  //# needed so that the refFrequency function can return a reference to
-  //# something.
-  MFrequency itsRefFreq;
-  Unit itsFreqUnit;
 };
 #endif
