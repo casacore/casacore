@@ -1,53 +1,65 @@
-/*
-Copyright (C) 1988 Free Software Foundation
-    written by Doug Lea (dl@rocky.oswego.edu)
-
-This file is part of the GNU C++ Library.  This library is free
-software; you can redistribute it and/or modify it under the terms of
-the GNU Library General Public License as published by the Free
-Software Foundation; either version 2 of the License, or (at your
-option) any later version.  This library is distributed in the hope
-that it will be useful, but WITHOUT ANY WARRANTY; without even the
-implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the GNU Library General Public License for more details.
-You should have received a copy of the GNU Library General Public
-License along with this library; if not, write to the Free Software
-Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
-*/
-
+//# Complex.h: Single and double precision complex numbers
+//# Copyright (C) 2000,2001
+//# Associated Universities, Inc. Washington DC, USA.
+//#
+//# This library is free software; you can redistribute it and/or modify it
+//# under the terms of the GNU Library General Public License as published by
+//# the Free Software Foundation; either version 2 of the License, or (at your
+//# option) any later version.
+//#
+//# This library is distributed in the hope that it will be useful, but WITHOUT
+//# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+//# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
+//# License for more details.
+//#
+//# You should have received a copy of the GNU Library General Public License
+//# along with this library; if not, write to the Free Software Foundation,
+//# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
+//#
+//# Correspondence concerning AIPS++ should be addressed as follows:
+//#        Internet email: aips2-request@nrao.edu.
+//#        Postal address: AIPS++ Project Office
+//#                        National Radio Astronomy Observatory
+//#                        520 Edgemont Road
+//#                        Charlottesville, VA 22903-2475 USA
+//#
 //# $Id$
 
-#ifndef _Complex_h
-#ifdef __GNUG__
-#pragma interface
-#endif
-#define _Complex_h 1
+
+#if !defined(AIPS_COMPLEX_H)
+#define AIPS_COMPLEX_H
 
 
+#if !defined(AIPS_USE_OLD_COMPLEX)
+
+//# Includes
 #include <aips/aips.h>
-#include <aips/Utilities/generic.h>
-#include <iostream.h>
-#include <aips/Mathematics/Math.h>
-#include <stdlib.h>
+#include <complex>
+#include <iosfwd>
 
 
-// <summary> Complex numbers </summary>
+// <summary>
+// Single precision complex numbers
+// </summary>
 
 // <synopsis>
-// This documentation is lifted straight from the libg++ info page. Our classes
-// are based on those classes, although we have made some modifications to them.
-// The ANSI/ISO standard library has a complex<t> type. Until those classes are
-// widely available, we will  use these complex classes. Although the 
-// documentation below refers to Complex; DComplex (double precision) and
-// IComplex (integral complex) also exist and freely interconvert.
-// 
-//    Class `Complex' is implemented in a way similar to that described by
-// Stroustrup. In keeping with libg++ conventions, the class is named
-// `Complex', not `complex'.  Complex arithmetic and relational operators
-// are provided (`+, -, *, /, +=, -=, *=, /=, ==, !=').  Attempted
-// division by (0, 0) triggers an exception.
-// 
-//    Complex numbers may be constructed and used in the following ways:
+// The class <src>Complex</src> is a straight typedef as the 
+// standard library <src>complex<float></src>.
+// A global functions are added for historic reasons (they were present
+// in the original complex implementation).
+//
+// In a similar way <src>DComplex</src> is typedef-ed as
+// <src>complex<double></src>.
+//
+// <linkto class=IComplex>IComplex</linkto> is defined as a specific class.
+// It is only used by <src>FITS</src> classes.
+// <src>lDComplex</src> has not been defined: <src>long double</src> is not
+// part of the standard aips++ data suite.
+//
+// See the standard library documentation for the expected behaviour of 
+// the <src>Complex</src> and <src>DComplex</src> classes.
+//
+// Complex numbers may be constructed and used in the following ways:
 // <dl>
 // <dt>Complex x;</dt>
 // <dd>  Declares an uninitialized Complex. </dd>
@@ -126,16 +138,122 @@ Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 // <dt>istream >> x;</dt>
 //  <dd> reads x in the form (re, im), or just (re) or re in which case the
 //      imaginary part is set to zero. </dd>
-// </dl>
-// 
+// </dl> 
 // </synopsis>
 
-// <group name="Complex numbers">
+//# <todo asof="2000/11/27">
+//# </todo>
 
-//# It seems as though the Sun Cfront compiler does not automatically
-//# cast parameters to binary operators (?). By defining this, MANY
-//# versions of the operators will be defined for each possibility...
-#define COMPLEX_STUPID_COMPILER
+// <group name=DComplex definition>
+typedef std::complex<Float> Complex;
+
+// <group name=Complex NaN>
+Bool isNaN (const Complex& val);
+void setNaN(Complex& val);
+// </group>
+
+// <group name=Complex comparisons>
+//# On Linux comparing the norm does not work well in debug mode
+//# for equal values. Therefore they are compared for equality first.
+inline Bool operator>= (const Complex& left, const Complex& right)
+  { return left==right  ?  True : norm(left) >= norm(right); }
+inline Bool operator>  (const Complex& left, const Complex& right)
+  { return left==right  ?  False : norm(left) > norm(right); }
+inline Bool operator<= (const Complex& left, const Complex& right)
+  { return left==right  ?  True : norm(left) <= norm(right); }
+inline Bool operator<  (const Complex& left, const Complex& right)
+  { return left==right  ?  False : norm(left) < norm(right); }
+// </group>
+// </group>
+
+
+// <summary>
+// Double precision complex numbers
+// </summary>
+
+// <synopsis>
+// The class <src>DComplex</src> is a straight typedef as the 
+// standard library <src>complex<double></src>.
+// It is defined in a similar way as <src>Complex</src>.
+// </synopsis>
+
+// <group name=DComplex definition>
+typedef std::complex<Double> DComplex;
+
+// <group name=DComplex NaN>
+Bool isNaN (const DComplex& val);
+void setNaN(DComplex& val);
+// </group>
+
+
+// <group name=DComplex comparisons>
+inline Bool operator>= (const DComplex& left, const DComplex& right)
+  { return norm(left) >= norm(right); }
+inline Bool operator>  (const DComplex& left, const DComplex& right)
+  { return norm(left) >  norm(right); }
+inline Bool operator<= (const DComplex& left, const DComplex& right)
+  { return norm(left) <= norm(right); }
+inline Bool operator<  (const DComplex& left, const DComplex& right)
+  { return norm(left) <  norm(right); }
+// </group>
+// </group>
+
+
+//# Global functions
+// <summary> Additional complex mathematical functions </summary>
+// <group name=math>
+inline Double fabs(const DComplex &val) { return abs(val); };
+inline Float fabs(const Complex &val) { return abs(val); };
+// The log10 should be in stl
+// <group>
+DComplex log10(const DComplex &val);
+Complex log10(const Complex &val);
+// </group>
+// </group>
+
+// <summary> The near functions </summary>
+// <group name=near>
+Bool near(const Complex &val1, const Complex &val2, Double tol=1.0e-5);
+Bool near(const DComplex &val1, const DComplex &val2, Double tol=1.0e-13);
+Bool nearAbs(const Complex &val1, const Complex &val2, Double tol=1.0e-5);
+Bool nearAbs(const DComplex &val1, const DComplex &val2, Double tol=1.0e-13);
+inline Bool allNear(const Complex &val1, const Complex &val2,
+		    Double tol=1.0e-5)
+  { return near(val1, val2, tol); }
+inline Bool allNear(const DComplex &val1, const DComplex &val2, 
+		    Double tol=1.0e-13)
+  { return near(val1, val2, tol); }
+inline Bool allNearAbs(const Complex &val1, const Complex &val2, 
+		       Double tol=1.0e-5)
+  { return nearAbs(val1, val2, tol); }
+inline Bool allNearAbs(const DComplex &val1, const DComplex &val2, 
+		       Double tol=1.0e-13)
+  { return nearAbs(val1, val2, tol); }
+// </group>
+
+// <summary> Max and min functions </summary>
+// <group name=maxmin>
+inline Complex max(const Complex &x, const Complex &y)
+  { return x >= y ? x : y; }
+inline DComplex max(const DComplex &x, const DComplex &y)
+  { return x >= y ? x : y; }
+
+inline Complex min(const Complex &x, const Complex &y)
+  { return x <= y ? x : y; }
+inline DComplex min(const DComplex &x, const DComplex &y)
+  { return x <= y ? x : y; }
+// </group>
+
+
+#else
+
+#include <aips/aips.h>
+#include <aips/Utilities/generic.h>
+#include <iostream.h>
+#include <aips/Mathematics/Math.h>
+#include <stdlib.h>
+
+
 
 #if defined(G_COMPLEX)
 #undef G_COMPLEX
@@ -704,17 +822,61 @@ G_COMPLEX(type)& G_COMPLEX(type)::operator /= (from y)				\
 
 class G_COMPLEX(double);
 class G_COMPLEX(float);
-class G_COMPLEX(int);
 
-g_declare2(G_COMPLEX,double,G_COMPLEX_CTOR_OP_DECL(double,int) G_COMPLEX_CTOR_OP_DECL(double,float) G_COMPLEX_ASSIGN_OP_DECLS(double,double) G_COMPLEX_ASSIGN_OP_DECL(double,float) G_COMPLEX_ASSIGN_OP_DECL(double,int) G_COMPLEX_OPEQ_DECL(double,float) G_COMPLEX_OPEQ_DECL(double,int))
+g_declare2(G_COMPLEX,double,G_COMPLEX_CTOR_OP_DECL(double,float) G_COMPLEX_ASSIGN_OP_DECL(double,float))
 typedef G_COMPLEX(double) DComplex;
-g_declare2(G_COMPLEX,float,G_COMPLEX_CAST_OP(double) G_COMPLEX_CTOR_OP_DECL(float,int) G_COMPLEX_CTOR_OP_DECL(float,double) G_COMPLEX_ASSIGN_OP_DECL(float,double) G_COMPLEX_ASSIGN_OP_DECL(float,int) G_COMPLEX_OPEQ_DECL(float,int) G_COMPLEX_OPEQ_DECL(float,double))
+g_declare2(G_COMPLEX,float,G_COMPLEX_CTOR_OP_DECL(float,double))
 typedef G_COMPLEX(float) Complex;
-g_declare2(G_COMPLEX,int,G_COMPLEX_CAST_OP(float) G_COMPLEX_CAST_OP(double) G_COMPLEX_CTOR_OP_DECL(int,float) G_COMPLEX_CTOR_OP_DECL(int,double) G_COMPLEX_ASSIGN_OP_DECL(int,double) G_COMPLEX_ASSIGN_OP_DECL(int,float) G_COMPLEX_OPEQ_DECL(int,float) G_COMPLEX_OPEQ_DECL(int,double))
-typedef G_COMPLEX(int) IComplex;
 
 typedef Complex float_complex;
 typedef DComplex double_complex;
+
+
+
+
+#define G_COMPLEX_BIN_OP_DECL(comtype,realtype)					\
+inline G_COMPLEX(comtype) operator + (const G_COMPLEX(comtype)& x, realtype y)		\
+{										\
+  return G_COMPLEX(comtype)(x.re + (comtype) y, x.im);		\
+}										\
+										\
+inline G_COMPLEX(comtype) operator + (realtype x, const G_COMPLEX(comtype)& y)		\
+{										\
+  return G_COMPLEX(comtype)((comtype) x + y.re, y.im);		\
+}										\
+										\
+inline G_COMPLEX(comtype) operator - (const G_COMPLEX(comtype)& x, realtype y)		\
+{										\
+  return G_COMPLEX(comtype)(x.re - (comtype) y, x.im);		\
+}										\
+										\
+inline G_COMPLEX(comtype) operator - (realtype x, const G_COMPLEX(comtype)& y)		\
+{										\
+  return G_COMPLEX(comtype)((comtype) x - y.re, - y.im);		\
+}										\
+										\
+inline G_COMPLEX(comtype) operator * (const G_COMPLEX(comtype)& x, realtype y)		\
+{										\
+  return G_COMPLEX(comtype)(x.re * (comtype) y, x.im * (comtype) y);	\
+}										\
+										\
+inline G_COMPLEX(comtype) operator * (realtype x, const G_COMPLEX(comtype)& y)		\
+{										\
+  return G_COMPLEX(comtype)((comtype) x * y.re, (comtype) x * y.im);	\
+}										\
+										\
+inline G_COMPLEX(comtype) operator / (const G_COMPLEX(comtype)& x, realtype y)		\
+{										\
+  return G_COMPLEX(comtype)(x.re / (comtype) y, x.im / (comtype) y);	\
+}
+
+
+G_COMPLEX_BIN_OP_DECL(double,float)
+G_COMPLEX_BIN_OP_DECL(double,int)
+G_COMPLEX_BIN_OP_DECL(float,double)
+G_COMPLEX_BIN_OP_DECL(float,int)
+
+									       
 
 /*
  * POLAR
@@ -746,221 +908,6 @@ inline Bool allNearAbs(G_COMPLEX(double) val1, G_COMPLEX(double) val2,
 		       double tol=1.0e-13)
     { return nearAbs(val1, val2, tol); }
 
-#if defined(COMPLEX_STUPID_COMPILER)
-//#***************************************************************************
-//#********************* Should not be needed, casts *************************
-//#********************* should take care of these   *************************
-//#***************************************************************************
-#define G_COMPLEX_BIN_OP_DECL(ret,left,right)					\
-/*										\
- * non-inline functions								\
- */										\
-G_COMPLEX(ret) operator /  (const G_COMPLEX(left)& x, const G_COMPLEX(right)& y);\
-G_COMPLEX(ret) operator /  (const G_COMPLEX(left)& x, right y);			\
-G_COMPLEX(ret) operator /  (left x, const G_COMPLEX(right)& y);			\
-										\
-/*										\
- * EQUALITY OPERATORS								\
- */										\
-inline int  operator == (const G_COMPLEX(left)& x, const G_COMPLEX(right)& y)	\
-{										\
-  return (ret) x.re == (ret) y.re && (ret) x.im == (ret) y.im;	\
-}										\
-										\
-inline int  operator == (const G_COMPLEX(left)& x, right y)			\
-{										\
-  return (ret) x.im == (ret) 0.0 && (ret) x.re == (ret) y;		\
-}										\
-										\
-inline int  operator != (const G_COMPLEX(left)& x, const G_COMPLEX(right)& y)	\
-{										\
-  return (ret) x.re != (ret) y.re || (ret) x.im != (ret) y.im;	\
-}										\
-										\
-inline int  operator != (const G_COMPLEX(left)& x, right y)			\
-{										\
-  return (ret) x.im != (ret) 0.0 || (ret) x.re != (ret) y;		\
-}										\
-										\
-/*										\
- * COMPARISON OPERATORS (using norm)						\
- */										\
-inline int operator >= (const G_COMPLEX(left) &x, const G_COMPLEX(right) &y) {	\
-  return norm(x) >= norm(y);							\
-}										\
-										\
-inline int operator >= (const G_COMPLEX(left) &x, const right y) {		\
-  return norm(x) >= (double) y * (double) y;					\
-}										\
-										\
-inline int operator >= (const left x, const G_COMPLEX(right) &y) {		\
-  return (double) x * (double) x >= norm(y);					\
-}										\
-										\
-inline int operator > (const G_COMPLEX(left) &x, const G_COMPLEX(right) &y) {	\
-  return norm(x) > norm(y);							\
-}										\
-										\
-inline int operator > (const G_COMPLEX(left) &x, const right y) {		\
-  return norm(x) > (double) y * (double) y;					\
-}										\
-										\
-inline int operator > (const left x, const G_COMPLEX(right) &y) {		\
-  return (double) x * (double) x > norm(y);					\
-}										\
-										\
-inline int operator <= (const G_COMPLEX(left) &x, const G_COMPLEX(right) &y) {	\
-  return norm(x) <= norm(y);							\
-}										\
-										\
-inline int operator <= (const G_COMPLEX(left) &x, const right y) {		\
-  return norm(x) <= (double) y * (double)y;					\
-}										\
-										\
-inline int operator <= (const left x, const G_COMPLEX(right) &y) {		\
-  return (double) x * (double) x <= norm(y);					\
-}										\
-										\
-inline int operator < (const G_COMPLEX(left) &x, const G_COMPLEX(right) &y) {	\
-  return norm(x) < norm(y);							\
-}										\
-										\
-inline int operator < (const G_COMPLEX(left) &x, const right y) {		\
-  return norm(x) < (double) y * (double) y;					\
-}										\
-										\
-inline int operator < (const left x, const G_COMPLEX(right) &y) {		\
-  return (double) x * (double) x < norm(y);					\
-}										\
-										\
-/*										\
- * SIMPLE NUMERIC OPERATIONS							\
- */										\
-inline G_COMPLEX(ret) operator + (const G_COMPLEX(left)& x, const G_COMPLEX(right)& y)\
-{										\
-  return G_COMPLEX(ret)((ret) x.re + (ret) y.re, (ret) x.im + (ret) y.im);\
-}										\
-										\
-inline G_COMPLEX(ret) operator + (const G_COMPLEX(left)& x, right y)		\
-{										\
-  return G_COMPLEX(ret)((ret) x.re + (ret) y, (ret) x.im);		\
-}										\
-										\
-inline G_COMPLEX(ret) operator + (left x, const G_COMPLEX(right)& y)		\
-{										\
-  return G_COMPLEX(ret)((ret) x + (ret) y.re, (ret) y.im);		\
-}										\
-										\
-inline G_COMPLEX(ret) operator - (const G_COMPLEX(left)& x, const G_COMPLEX(right)& y)\
-{										\
-  return G_COMPLEX(ret)((ret) x.re - (ret) y.re, (ret) x.im - (ret) y.im);\
-}										\
-										\
-inline G_COMPLEX(ret) operator - (const G_COMPLEX(left)& x, right y)		\
-{										\
-  return G_COMPLEX(ret)((ret) x.re - (ret) y, (ret) x.im);		\
-}										\
-										\
-inline G_COMPLEX(ret) operator - (left x, const G_COMPLEX(right)& y)		\
-{										\
-  return G_COMPLEX(ret)((ret) x - (ret) y.re, - (ret) y.im);		\
-}										\
-										\
-inline G_COMPLEX(ret) operator * (const G_COMPLEX(left)& x, const G_COMPLEX(right)& y)\
-{										\
-  return G_COMPLEX(ret)((ret) x.re * (ret) y.re - (ret) x.im * (ret) y.im,\
-                 (ret) x.re * (ret) y.im + (ret) x.im * (ret) y.re);\
-}										\
-										\
-inline G_COMPLEX(ret) operator * (const G_COMPLEX(left)& x, right y)		\
-{										\
-  return G_COMPLEX(ret)((ret) x.re * (ret) y, (ret) x.im * (ret) y);	\
-}										\
-										\
-inline G_COMPLEX(ret) operator * (left x, const G_COMPLEX(right)& y)		\
-{										\
-  return G_COMPLEX(ret)((ret) x * (ret) y.re, (ret) x * (ret) y.im);	\
-}										\
-										\
-G_COMPLEX(ret) pow(const G_COMPLEX(left) &x, const G_COMPLEX(right) &p);
-
-
-#define G_COMPLEX_BIN_OP_IMP(ret,left,right)					\
-										\
-/* from romine@xagsun.epm.ornl.gov */						\
-G_COMPLEX(ret) /* const */ operator / (const G_COMPLEX(left)& x, const G_COMPLEX(right)& y)\
-{										\
-  double den = fabs((double)y.re) + fabs((double)y.im);			\
-  if (den == 0.0) x.error ("Attempted division by zero.");			\
-  double xrden = x.re / den;						\
-  double xiden = x.im / den;						\
-  double yrden = y.re / den;						\
-  double yiden = y.im / den;						\
-  double nrm   = yrden * yrden + yiden * yiden;					\
-  return G_COMPLEX(ret)((ret)((xrden * yrden + xiden * yiden) / nrm),		\
-                 (ret)((xiden * yrden - xrden * yiden) / nrm));			\
-}										\
-										\
-G_COMPLEX(ret) /* const */ operator / (left x, const G_COMPLEX(right)& y)	\
-{										\
-  double den = norm(y);								\
-  if (den == 0.0) y.error ("Attempted division by zero.");			\
-  return G_COMPLEX(ret)((ret)((x * y.re) / den), -(ret)((x * y.im) / den));\
-}										\
-										\
-G_COMPLEX(ret) /* const */ operator / (const G_COMPLEX(left)& x, right y)	\
-{										\
-  if (y == 0.0) x.error ("Attempted division by zero.");			\
-  return G_COMPLEX(ret)((ret)(x.re / y), (ret)(x.im / y));		\
-}										\
-										\
-/* Corrections based on reports from: thc@cs.brown.edu & saito@sdr.slb.com */	\
-G_COMPLEX(ret) /* const */ pow(const G_COMPLEX(left) &x, const G_COMPLEX(right) &p)\
-{										\
-  double h = hypot((double)x.re, (double)x.im);				\
-  if (h <= 0.0) x.error("attempted power of zero magnitude number.");		\
-										\
-  double a = atan2((double)x.im, (double)x.re);				\
-  double lr = pow(h, (double)p.re);						\
-  double li = (double)p.re * a;						\
-  if (p.im != 0.0)								\
-  {										\
-    lr /= exp((double)p.im * a);						\
-    li += p.im * log(h);							\
-  }										\
-  return G_COMPLEX(ret)((ret)(lr * cos(li)), (ret)(lr * sin(li)));		\
-}										\
-										\
-
-
-#define G_COMPLEX_DO_BIN_OP_DECL		\
-/*G_COMPLEX_BIN_OP_DECL(double,double,double)*/	\
-G_COMPLEX_BIN_OP_DECL(double,double,float)	\
-G_COMPLEX_BIN_OP_DECL(double,float,double)	\
-G_COMPLEX_BIN_OP_DECL(double,double,int)	\
-G_COMPLEX_BIN_OP_DECL(double,int,double)	\
-/*G_COMPLEX_BIN_OP_DECL(float,float,float)*/	\
-G_COMPLEX_BIN_OP_DECL(float,float,int)		\
-G_COMPLEX_BIN_OP_DECL(float,int,float)		\
-/*G_COMPLEX_BIN_OP_DECL(int,int,int)*/
-
-#define G_COMPLEX_DO_BIN_OP_IMP			\
-/*G_COMPLEX_BIN_OP_IMP(double,double,double)*/	\
-G_COMPLEX_BIN_OP_IMP(double,double,float)	\
-G_COMPLEX_BIN_OP_IMP(double,float,double)	\
-G_COMPLEX_BIN_OP_IMP(double,double,int)		\
-G_COMPLEX_BIN_OP_IMP(double,int,double)		\
-/*G_COMPLEX_BIN_OP_IMP(float,float,float)*/	\
-G_COMPLEX_BIN_OP_IMP(float,float,int)		\
-G_COMPLEX_BIN_OP_IMP(float,int,float)		\
-/*G_COMPLEX_BIN_OP_IMP(int,int,int)*/
-
-G_COMPLEX_DO_BIN_OP_DECL
-//#***************************************************************************
-//#********************* Should not be needed, casts *************************
-//#********************* should take care of these   *************************
-//#***************************************************************************
-#endif
 
 // Functions to set and test for IEEE NaN's. A complex number is a NaN if either
 // the real or imaginary part is a NaN. setNaN sets both the real and imaginary
@@ -971,6 +918,9 @@ Bool isNaN(const DComplex &val);
 void setNaN(Complex &val);
 void setNaN(DComplex &val);
 // </group>
+
+
+#endif
 
 
 #endif
