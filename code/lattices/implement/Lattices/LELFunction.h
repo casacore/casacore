@@ -193,10 +193,6 @@ public:
    LELFunctionReal1D(const LELFunctionEnums::Function function,
 		     const CountedPtr<LELInterface<T> >& expr);
 
-// Constructor takes operation and expression to be operated upon
-   LELFunctionReal1D(const LELFunctionEnums::Function function,
-		     const CountedPtr<LELInterface<Bool> >& expr);
-
 // Destructor 
   ~LELFunctionReal1D();
 
