@@ -183,7 +183,7 @@ private:
     
   RedFlagger( const RedFlagger & )          {};
   RedFlagger& operator=(const RedFlagger &)  { return *this; };
-  void printAgentRecord(String &, const RecordInterface &);
+  void printAgentRecord(String &, uInt, const RecordInterface &);
 };
 
 #endif

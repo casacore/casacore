@@ -246,7 +246,7 @@ void RedFlagger::setReportPanels ( Int nx,Int ny )
 }
 void RedFlagger::summary( const RecordInterface &agents,const RecordInterface &opt,uInt ind_base ) 
 {
-	os << "Autoflag summary will report results here" << endl;
+	os << "Autoflag summary will report results here" << LogIO::POST;
 	for(uInt i=0;i<agents.nfields(); i++){
 
 		if(agents.dataType(i) != TpRecord){
@@ -254,22 +254,22 @@ void RedFlagger::summary( const RecordInterface &agents,const RecordInterface &o
 		}
                 String agent_id(downcase(agents.name(i)));
 		// cerr << i << " " << agent_id << endl;
-		printAgentRecord(agent_id, agents.asRecord(i));
+		printAgentRecord(agent_id, i, agents.asRecord(i));
 	}
 }
-void RedFlagger::printAgentRecord(String &agent_id,
+void RedFlagger::printAgentRecord(String &agent_id, uInt agentCount,
 	                          const RecordInterface &agent_rec){
    // but if an id field is set in the sub-record, use that instead
    if( agent_rec.isDefined("id") && agent_rec.dataType("id") == TpString ){
       agent_id = agent_rec.asString("id");
    }
    for(uInt i=0; i<agent_rec.nfields(); i++){
-       os << agent_id << ": ";
+       os << agent_id << "[" << agentCount+1 << "] : ";
        String myName(agent_rec.name(i));
        os << myName << ": ";
        switch(agent_rec.type(i)){
               case TpRecord :
-                     printAgentRecord(myName, agent_rec.asRecord(i));
+                     printAgentRecord(myName, i, agent_rec.asRecord(i));
                      break;
               case TpArrayBool :
                  os << agent_rec.asArrayBool(i);
@@ -795,7 +795,7 @@ void RedFlagger::printSummaryReport (RFChunkStats &chunk,const RecordInterface &
   // print per-agent flagging summary
   for( uInt i=0; i<acc.nelements(); i++ )
   {
-    String name(acc[i]->name() + ": ");
+    String name(acc[i]->name() + "["+i+"]"+": ");
     String stats( acc[i]->isActive() ? acc[i]->getStats() : String("can't process this chunk") );
     os<<name+stats<<LogIO::POST;
   }
