@@ -43,7 +43,8 @@
 #include <aips/Containers/RecordInterface.h>
 #include <aips/Logging/LogIO.h>
 #include <aips/Logging/LogOrigin.h>
-#include <trial/FITS/FITSUtil.h>
+#include <trial/FITS/FITSKeywordUtil.h>
+#include <trial/FITS/FITSSpectralUtil.h>
 
 #include <aips/strstream.h>
 
