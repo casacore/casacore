@@ -1,4 +1,4 @@
-//# CopyRecord.h: Copy all the fields from some Record to certain columns of a table.
+//# CopyRecord.h: Copy fields from a Record to a table or other record.
 //# Copyright (C) 1995,1996,1997,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -46,10 +46,7 @@ template <class T> class ScalarColumn;
 template <class T> class ArrayColumn;
 
 // <summary>
-// This class should be generalized, and made better. It is the analog of
-// RowCopier, i.e. it copies all the fields from some Record to certain
-// columns of a table. The mapping from fields to columns occurs at
-// construction of the CopyRecordToTable object.
+// Copies fields from a Record to columns of a Table.
 // </summary>
 
 // <use visibility=export>
@@ -58,9 +55,8 @@ template <class T> class ArrayColumn;
 // </reviewed>
 
 // <prerequisite>
-//   <li> SomeClass
-//   <li> SomeOtherClass
-//   <li> some concept
+//   <li> Record
+//   <li> Table
 // </prerequisite>
 //
 // <etymology>
@@ -73,23 +69,11 @@ template <class T> class ArrayColumn;
 // </example>
 //
 // <motivation>
+// This class should be generalized, and made better. It is the analog of
+// RowCopier, i.e. it copies all the fields from some Record to certain
+// columns of a table. The mapping from fields to columns occurs at
+// construction of the CopyRecordToTable object.
 // </motivation>
-//
-// <templating arg=T>
-//    <li>
-//    <li>
-// </templating>
-//
-// <thrown>
-//    <li>
-//    <li>
-// </thrown>
-//
-// <todo asof="yyyy/mm/dd">
-//   <li> add this feature
-//   <li> fix this bug
-//   <li> start discussion of this possible extension
-// </todo>
 
 class CopyRecordToTable
 {
@@ -114,7 +98,7 @@ private:
     CopyRecordToTable(const CopyRecordToTable &);
     CopyRecordToTable &operator=(const CopyRecordToTable &);
  
-    // We could just hahve a TableColumn for scalars, but we'd need all of
+    // We could just have a TableColumn for scalars, but we'd need all of
     // the array types anyway.
     PtrBlock<ScalarColumn<Bool> *> table_bool;
     PtrBlock<ScalarColumn<uChar> *> table_char;
@@ -158,7 +142,7 @@ private:
 //#!                        global functions
 
 // This function probably doesn't belong here, but I'm not yet sure where it does belong.
-//  This function adds all the fields in recordDescription to tableDescription, prefixed by "prefix".
+// This function adds all the fields in recordDescription to tableDescription, prefixed by "prefix".
 // If prefix is empty, nothing is prepended
 // otherwise the string prefix + "_" is prepended to each RecordFieldPtr name in
 // constructing the TableDesc
@@ -166,6 +150,31 @@ void addRecordDesc(TableDesc &tableDescription,
 		   const RecordDesc &recordDescription,
 		   const String &prefix);
 
+
+// <summary>
+// Copies fields between Records, possibly to fields with another name.
+// </summary>
+
+// <use visibility=export>
+
+// <reviewed reviewer="" date="yyyy/mm/dd" tests="" demos="">
+// </reviewed>
+
+// <prerequisite>
+//   <li> Record
+// </prerequisite>
+//
+// <etymology>
+// </etymology>
+//
+// <synopsis>
+// </synopsis>
+//
+// <example>
+// </example>
+//
+// <motivation>
+// </motivation>
 
 class CopyRecordToRecord
 {
