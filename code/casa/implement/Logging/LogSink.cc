@@ -253,6 +253,8 @@ Bool LogSink::nullGlobalSink( )
 
 LogSinkInterface &LogSink::globalSink()
 {
+    if ( ! LogSink::global_sink_p )
+        LogSink::global_sink_p = new CountedPtr<LogSinkInterface>(new StreamLogSink(LogMessage::NORMAL, &cerr));
     return *(*global_sink_p);
 }
 
