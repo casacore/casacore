@@ -146,7 +146,7 @@ if (! -e $ldir/${tp}.todo) then
    $uppath/UPfind +u$upswu +Q$upswQ -E ${tp}_MV
    touch $ldir/${tp}.todo
    if (-e $ldir/${tp}_MV.found) then
-	cp -f $ldir/${tp}_MV.found $ldir/${tp}.todoq
+	cp -f $ldir/${tp}_MV.found $ldir/${tp}.todo
    endif
 endif
 if (-e $ldir/${tp}.todo && -z $ldir/${tp}.todo) rm -f $ldir/${tp}.todo
