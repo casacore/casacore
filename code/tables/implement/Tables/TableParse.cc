@@ -134,8 +134,6 @@ TableParseSelect::TableParseSelect()
 {
     parseList_p = new List<TableParse>;
     parseIter_p = new ListIter<TableParse> (parseList_p);
-    parseList_p->makePermanent();
-    parseIter_p->makePermanent();
     table_p.makePermanent();
 }
 
