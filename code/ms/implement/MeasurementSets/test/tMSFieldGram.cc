@@ -37,12 +37,21 @@
 int main(int argc, char **argv)
 {
   try {
-    const String msName = "n1333.ms";
+    if(argc < 3) {
+      cout << "Please input selection string on command line " << endl;
+      exit(0);
+    } 
+    
+    const String msName = argv[1];
     MeasurementSet ms(msName);
     MeasurementSet * mssel;
     cout << "Original table has rows " << ms.nrow() << endl;
-    if(msFieldGramParseCommand(&ms, "'0328*'")==0) {
+    if(msFieldGramParseCommand(&ms, argv[2])==0) {
       const TableExprNode *node = msFieldGramParseNode();
+      if(node->isNull()) {
+	cout << "NULL node " << endl;
+	exit(0);
+      }
       cout << "TableExprNode has rows = " << node->nrow() << endl;
       Table tablesel(ms.tableName(), Table::Update);
       mssel = new MeasurementSet(tablesel(*node, node->nrow() ));
