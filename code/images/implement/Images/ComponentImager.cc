@@ -27,7 +27,7 @@
 
 #include <trial/Images/ComponentImager.h>
 #include <aips/Arrays/ArrayMath.h>
-#include <aips/Arrays/Matrix.h>
+#include <aips/Arrays/Cube.h>
 #include <aips/Arrays/Vector.h>
 #include <aips/Containers/Block.h>
 #include <aips/Exceptions/Error.h>
@@ -153,7 +153,7 @@ void ComponentImager::project(ImageInterface<Float>& image, const ComponentList&
   LatticeStepper pixelStepper(imageShape, pixelShape, LatticeStepper::RESIZE);
   LatticeIterator<Float> chunkIter(image, chunkShape);
   const uInt nDirs = chunkShape(latAxis) * chunkShape(longAxis);
-  Matrix<Flux<Double> > pixelVals(nDirs, nFreqs);
+  Cube<Double> pixelVals(4, nDirs, nFreqs);
   Vector<MVDirection> dirVals(nDirs);
   Vector<Bool> coordIsGood(nDirs);
   const uInt naxis = imageShape.nelements();
@@ -172,7 +172,8 @@ void ComponentImager::project(ImageInterface<Float>& image, const ComponentList&
     if (image.pixelMask().isWritable()) {
       doMask = True;
     } else {
-       os << LogIO::WARN << "The image is masked, but it cannot be written to" << LogIO::POST;
+       os << LogIO::WARN 
+	  << "The image is masked, but it cannot be written to" << LogIO::POST;
     }
   }
   Lattice<Bool>* pixelMaskPtr = 0;
@@ -184,7 +185,8 @@ void ComponentImager::project(ImageInterface<Float>& image, const ComponentList&
 // Iterate through sky plane of cursor and do coordinate conversions
 
     pixelStepper.subSection(chunkIter.position(), chunkIter.endPosition());
-    for (pixelStepper.reset(), d=0; !pixelStepper.atEnd(); pixelStepper++, d++) {
+    for (pixelStepper.reset(), d=0; !pixelStepper.atEnd(); 
+	 pixelStepper++, d++) {
       pixelPosition = pixelStepper.position();
       pixelDir(0) = pixelPosition(latAxis);
       pixelDir(1) = pixelPosition(longAxis);
@@ -201,7 +203,7 @@ void ComponentImager::project(ImageInterface<Float>& image, const ComponentList&
 
 // Sample model
 
-    list.sample(pixelVals, dirVals, dirRef, pixelLatSize, 
+    list.sample(pixelVals, Unit("Jy"), dirVals, dirRef, pixelLatSize, 
 		pixelLongSize, freqValues, freqRef);
 
 // Modify data by model for this chunk of data
@@ -220,18 +222,17 @@ void ComponentImager::project(ImageInterface<Float>& image, const ComponentList&
       if (coordIsGood(d)) {
         for (uInt f = 0; f < nFreqs; f++) {
           if (freqAxis >= 0) pixelPosition(freqAxis) = f;
-          const Flux<Double>& thisFlux = pixelVals(d, f);
           for (uInt s = 0; s < nStokes; s++) {
             if (polAxis >= 0) pixelPosition(polAxis) = s;
 //
             if (doMask) {
                if ((*maskPtr)(pixelPosition)) {
                  imageChunk(pixelPosition) += 
-                   static_cast<Float>(thisFlux.value(s).real());
+                   static_cast<Float>(pixelVals(s, d, f));
                }
             } else {
               imageChunk(pixelPosition) += 
-                 static_cast<Float>(thisFlux.value(s).real());
+		static_cast<Float>(pixelVals(s, d, f));
             }
           }
         }
