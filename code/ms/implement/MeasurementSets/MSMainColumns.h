@@ -178,10 +178,10 @@ protected:
   //# attach this object to the supplied table.
   void attach(const NewMeasurementSet& ms);
 
+private:
   //# Check if any optional columns exist and if so attach them.
   void attachOptionalCols(const NewMeasurementSet& ms);
   
-private:
   //# required columns
   ROScalarColumn<Int> antenna1_p;
   ROScalarColumn<Int> antenna2_p;
@@ -501,10 +501,10 @@ protected:
   //# attach this object to the supplied table.
   void attach(NewMeasurementSet& ms);
 
+private:
   //# Check if any optional columns exist and if so attach them.
   void attachOptionalCols(NewMeasurementSet& ms);
   
-private:
   //# required columns
   ScalarColumn<Int> antenna1_p;
   ScalarColumn<Int> antenna2_p;
