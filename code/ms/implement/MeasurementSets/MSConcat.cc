@@ -215,6 +215,7 @@ void MSConcat::concatenate(const MeasurementSet& otherMS)
   ScalarColumn<Int>& thisObsId = observationId();
   const ROArrayColumn<Float>& otherWeightSp = otherMainCols.weightSpectrum();
   ArrayColumn<Float>& thisWeightSp = weightSpectrum();
+  Bool copyWtSp = !(thisWeightSp.isNull() || otherWeightSp.isNull()); 
   for (uInt r = 0; r < newRows; r++, curRow++) {
     thisTime.put(curRow, otherTime, r);
     thisAnt1.put(curRow, newAntIndices[otherAnt1(r)]);
@@ -250,7 +251,7 @@ void MSConcat::concatenate(const MeasurementSet& otherMS)
     thisFlag.put(curRow, otherFlag, r);
     thisFlagCat.put(curRow, otherFlagCat, r);
     thisFlagRow.put(curRow, otherFlagRow, r);
-    thisWeightSp.put(curRow, otherWeightSp, r);
+    if (copyWtSp) thisWeightSp.put(curRow, otherWeightSp, r);
   } 
 }
 
