@@ -161,6 +161,9 @@ void NewMSPointing::init()
 	// ON_SOURCE
 	colMapDef(ON_SOURCE, "ON_SOURCE", TpBool,
 		  "On source flag","","");
+	// OVER_THE_TOP
+	colMapDef(OVER_THE_TOP, "OVER_THE_TOP", TpBool,
+		  "Antenna over the top","","");
 	// POINTING_MODEL_ID
 	colMapDef(POINTING_MODEL_ID,"POINTING_MODEL_ID",TpInt,
 		  "Pointing model id","","");
