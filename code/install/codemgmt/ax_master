@@ -3234,3 +3234,5 @@
 13 105 src rm trial/apps/gDisplay/GTkPCFiddler.cc
 13 105 src rm trial/apps/gDisplay/GTkPCFiddler.h
 13 106 src rm doc/cookbook/imaging.latex
+13 116 src rm trial/apps/gDisplay/GTkWCPolygonDrawer.h
+13 116 src rm trial/apps/gDisplay/GTkWCPolygonDrawer.cc
