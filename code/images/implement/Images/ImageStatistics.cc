@@ -308,6 +308,8 @@ Bool ImageStatistics<T>::setInExCludeRange(const Vector<T>& include,
 // Check
       
    ostrstream os;
+   Bool saveNoInclude = noInclude_p;
+   Bool saveNoExclude = noExclude_p;
    if (!setIncludeExclude(range_p, noInclude_p, noExclude_p,
                           include, exclude, os)) {
       if (haveLogger_p) os_p << LogIO::SEVERE << "Invalid pixel in/exclusion range" << LogIO::POST;
@@ -336,10 +338,13 @@ Bool ImageStatistics<T>::setInExCludeRange(const Vector<T>& include,
 // Signal that we have changed the pixel range and need a new accumulation
 // image
    
-   if ( (saveFixedMinMax != fixedMinMax_p) ||
+   if ( (saveNoInclude!=noInclude_p) ||
+        (saveNoExclude!=noExclude_p) ||
+        (saveFixedMinMax != fixedMinMax_p) ||
         (saveRange.nelements() != range_p.nelements()) ||
-        (!allEQ(saveRange.ac(), range_p.ac())) ) needStorageImage_p = True;    
-
+        (!allEQ(saveRange.ac(), range_p.ac())) ) {
+      needStorageImage_p = True;    
+   }
    return True;
 }
 
