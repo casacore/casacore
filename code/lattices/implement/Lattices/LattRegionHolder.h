@@ -174,7 +174,7 @@ inline Bool LattRegionHolder::isLCSlicer() const
 }
 inline Bool LattRegionHolder::operator!= (const LattRegionHolder& other) const
 {
-    return ToBool (! LattRegionHolder::operator== (other));
+    return ToBool (! operator== (other));
 }
 inline uInt LattRegionHolder::ndim() const
 {
