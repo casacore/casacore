@@ -773,14 +773,10 @@ uInt CoordinateSystem::nPixelAxes() const
 Bool CoordinateSystem::toWorld(Vector<Double> &world, 
 			       const Vector<Double> &pixel) const
 {
-    world.resize(nWorldAxes());
     AlwaysAssert(pixel.nelements() == nPixelAxes(), AipsError);
-
-    // This is neede so we can write into some temporaries
-    CoordinateSystem *This = (CoordinateSystem *)this;
+    if (world.nelements()!=nWorldAxes()) world.resize(nWorldAxes());
 
     const uInt nc = coordinates_p.nelements();
-
     Bool ok = True;
     for (uInt i=0; i<nc; i++) {
 	// For each coordinate, putt the appropriate pixel or
@@ -793,9 +789,9 @@ Bool CoordinateSystem::toWorld(Vector<Double> &world,
 	    Int where = pixel_maps_p[i]->operator[](j);
 	    if (where >= 0) {
 		// cerr << "i j where " << i << " " << j << " " << where <<endl;
-		This->pixel_tmps_p[i]->operator()(j) = pixel(where);
+		pixel_tmps_p[i]->operator()(j) = pixel(where);
 	    } else {
-		This->pixel_tmps_p[i]->operator()(j) = 
+		pixel_tmps_p[i]->operator()(j) = 
 		    pixel_replacement_values_p[i]->operator()(j);
 	    }
 	}
@@ -804,7 +800,7 @@ Bool CoordinateSystem::toWorld(Vector<Double> &world,
 	// cout << "toWorld # " << i << "pix=" << pixel_tmps_p[i]->ac() << endl;
 	Bool oldok = ok;
 	ok = coordinates_p[i]->toWorld(
-		       *(This->world_tmps_p[i]), *(pixel_tmps_p[i]));
+		       *(world_tmps_p[i]), *(pixel_tmps_p[i]));
 	// cout << "toWorld # " << i << "wld=" << world_tmps_p[i]->ac() << endl;
 	if (!ok) {
 	    // Transfer the error message. Note that if there is more than
@@ -825,34 +821,27 @@ Bool CoordinateSystem::toWorld(Vector<Double> &world,
     return ok;
 }
 
-// Move out of function in case it causes problems with our exception emulation.
-    static Vector<Double> pix;
 Bool CoordinateSystem::toWorld(Vector<Double> &world, 
 			       const IPosition &pixel) const
 {
-    if (pix.nelements() != pixel.nelements()) {
-	pix.resize(pixel.nelements());
+    if (pixel_tmp_p.nelements() != pixel.nelements()) {
+	pixel_tmp_p.resize(pixel.nelements());
     }
 
     uInt n = pixel.nelements();
     for (uInt i=0; i<n; i++) {
-	pix(i) = pixel(i)*1.0;
+	pixel_tmp_p(i) = pixel(i)*1.0;
     }
-
-    return toWorld(world, pix);
+    return toWorld(world, pixel_tmp_p);
 }
 
 Bool CoordinateSystem::toPixel(Vector<Double> &pixel, 
 			       const Vector<Double> &world) const
 {
-    pixel.resize(nPixelAxes());
     AlwaysAssert(world.nelements() == nWorldAxes(), AipsError);
-
-    // This is neede so we can write into some temporaries
-    CoordinateSystem *This = (CoordinateSystem *)this;
+    if (pixel.nelements()!=nPixelAxes()) pixel.resize(nPixelAxes());
 
     const uInt nc = coordinates_p.nelements();
-
     Bool ok = True;
     for (uInt i=0; i<nc; i++) {
 	// For each coordinate, putt the appropriate world or replacement values
@@ -864,15 +853,15 @@ Bool CoordinateSystem::toPixel(Vector<Double> &pixel,
 	for (j=0; j<nwra; j++) {
 	    Int where = world_maps_p[i]->operator[](j);
 	    if (where >= 0) {
-		This->world_tmps_p[i]->operator()(j) = world(where);
+		world_tmps_p[i]->operator()(j) = world(where);
 	    } else {
-		This->world_tmps_p[i]->operator()(j) = 
+		world_tmps_p[i]->operator()(j) = 
 		    world_replacement_values_p[i]->operator()(j);
 	    }
 	}
 	Bool oldok = ok;
 	ok = coordinates_p[i]->toPixel(
-			    *(This->pixel_tmps_p[i]), *(world_tmps_p[i]));
+			    *(pixel_tmps_p[i]), *(world_tmps_p[i]));
 	if (!ok) {
 	    // Transfer the error message. Note that if there is more than
 	    // one error message this transfers the last one. I suppose this
@@ -892,7 +881,6 @@ Bool CoordinateSystem::toPixel(Vector<Double> &pixel,
     return ok;
 }
 
-
 Bool CoordinateSystem::toMix(Vector<Double>& worldOut,
                              Vector<Double>& pixelOut,
                              const Vector<Double>& worldIn,
@@ -900,384 +888,78 @@ Bool CoordinateSystem::toMix(Vector<Double>& worldOut,
                              const Vector<Bool>& worldAxes,
                              const Vector<Bool>& pixelAxes) const
 {
-//
-// Validity checks
-//
    const uInt nWorld = worldAxes.nelements();
    const uInt nPixel = pixelAxes.nelements();
    AlwaysAssert(nWorld == nWorldAxes(), AipsError);
    AlwaysAssert(worldIn.nelements()==nWorld, AipsError);
    AlwaysAssert(nPixel == nPixelAxes(), AipsError);
    AlwaysAssert(pixelIn.nelements()==nPixel, AipsError);
-   Int worldAxis, pixelAxis;
-//   
-   Bool noPixelAxes = True;
-   for (uInt i=0; i<nPixel; i++) {
-      if (pixelAxes(i)) {
-         noPixelAxes = False;
 //
-// There is always a world axis for a pixel axis
+   const uInt nCoord = coordinates_p.nelements();
+   if (worldOut.nelements()!=nWorldAxes()) worldOut.resize(nWorldAxes());
+   if (pixelOut.nelements()!=nPixelAxes()) pixelOut.resize(nPixelAxes());
+
+   for (uInt i=0; i<nCoord; i++) {
+
+// For each coordinate, putt the appropriate pixel or
+// replacement values in the pixel temporary, call the
+// coordinates own toMix, and then copy the output values
+// from the world temporary to the world coordinate
+
+      const uInt nAxes = world_maps_p[i]->nelements();
+      const uInt nPixelAxes = pixel_maps_p[i]->nelements();
+      AlwaysAssert(nAxes==nPixelAxes, AipsError);
 //
-         Int worldAxis = pixelAxisToWorldAxis(i);
-         if (worldAxes(worldAxis)) {
-            set_error("CoordinateSystem::toMix - duplicate pixel/world axes");
-            return False;
+      Vector<Bool> worldAxes2(nAxes);
+      Vector<Bool> pixelAxes2(nAxes);
+//
+      for (uInt j=0; j<nAxes; j++) {
+         Int where = world_maps_p[i]->operator[](j);
+         if (where >= 0) {
+            world_tmps_p[i]->operator()(j) = worldIn(where);
+            worldAxes2(j) = worldAxes(where);
+         } else {
+            world_tmps_p[i]->operator()(j) = 
+               world_replacement_values_p[i]->operator()(j);
+            worldAxes2(j) = False;
          }
       }
-   }
-   Bool noWorldAxes = True;
-   for (uInt i=0; i<nWorld; i++) {
-      if (worldAxes(i)) {
-         noWorldAxes = False;
-         Int pixelAxis = worldAxisToPixelAxis(i);
-         if (pixelAxis!=-1 && pixelAxes(pixelAxis)) {
-            set_error("CoordinateSystem::toMix - duplicate world/pixel axes");
-            return False;
+//
+      for (uInt j=0; j<nAxes; j++) {
+         Int where = pixel_maps_p[i]->operator[](j);
+         if (where >= 0) {
+            pixel_tmps_p[i]->operator()(j) = pixelIn(where);
+            pixelAxes2(j) = pixelAxes(where);
+         } else {
+            pixel_tmps_p[i]->operator()(j) = 
+               pixel_replacement_values_p[i]->operator()(j);
+// 
+// Here I assume nPixelAxes=nWorldAxes and the order
+// is the same. This is the truth as far as I know it.
+//
+               pixelAxes2(j) = !worldAxes2(j);    
          }
       }
-   }
 //
-   if (noPixelAxes && noWorldAxes) {
-      set_error ("CoordinateSystem::toMix - you specified no pixel and no world axes");
-      return False;
-   }
-//
-// Make sure each "axis" is either a pixel axis or a world axis
-//
-   for (uInt i=0; i<nPixel; i++) {
-      worldAxis = pixelAxisToWorldAxis(i);      
-      if (!pixelAxes(i) && !worldAxes(worldAxis)) {
-         set_error ("CoordinateSystem::toMix - each coordinate must be either pixel or world");
+      Vector<Double> worldOut2(nAxes);
+      Vector<Double> pixelOut2(nAxes);
+
+      if (!coordinates_p[i]->toMix(worldOut2, pixelOut2,
+		       *(world_tmps_p[i]), *(pixel_tmps_p[i]),
+                       worldAxes2, pixelAxes2)) {
+         set_error(coordinates_p[i]->errorMessage());
          return False;
       }
-   }
-// 
-// Convert pixels to world, except for DirectionCoordinate
-// which we store up for later
-// 
-   Vector<Bool> coordMask(nCoordinates(),False);
-   Vector<Int> pixelAxesLong(nCoordinates(),-1);
-   Vector<Int> pixelAxesLat(nCoordinates(),-1);
-   Vector<Int> worldAxesLong(nCoordinates(),-1);
-   Vector<Int> worldAxesLat(nCoordinates(),-1);
-   worldOut.resize(nWorld,False);
-   pixelOut.resize(nPixel,False);
 //
-   Int coord, axisInCoord;
-   for (uInt i=0; i<nPixel; i++) {
-     if (pixelAxes(i)) {
-        findPixelAxis(coord, axisInCoord, i);
-        if (type(coord)==Coordinate::DIRECTION) {
-           coordMask(coord) = True;
-           if (axisInCoord==0) {
-              pixelAxesLong(coord) = i;      // Index into coordinate vectors
-           } else {
-              pixelAxesLat(coord) = i;
-           }
-         } else {
-           Vector<Double> pixel(this->coordinate(coord).referencePixel().copy());
-           Vector<Double> world;
-           pixel(axisInCoord) = pixelIn(i);
-           if (!this->coordinate(coord).toWorld(world, pixel)) return False;
-//
-// There is always a world axis for a pixel axis
-//
-           worldAxis = pixelAxisToWorldAxis(i);
-           worldOut(worldAxis) = world(axisInCoord);
-        }
-     }
-   }
-//
-// Convert world to pixels, except for DirectionCoordinate
-// which we store up for later.  This is a bit harder because
-// there might not be a pixel axis for our world axis.
-//
-   for (uInt i=0; i<nWorld; i++) {
-     if (worldAxes(i)) {
-        findWorldAxis(coord, axisInCoord, i);
-        if (type(coord)==Coordinate::DIRECTION) {
-           coordMask(coord) = True;
-           if (axisInCoord==0) {
-              worldAxesLong(coord) = i;      // Index into coordinate vectors
-           } else {
-              worldAxesLat(coord) = i;
-           }
-         } else {
-           Vector<Double> world(this->coordinate(coord).referenceValue().copy());
-           Vector<Double> pixel;
-           world(axisInCoord) = worldIn(i);
-           if (!this->coordinate(coord).toPixel(pixel, world)) return False;
-//
-// There is not always a world axis for a pixel axis.  If there isn't,
-// then there is nowhere to put the result
-//
-           pixelAxis = worldAxisToPixelAxis(i);
-           if (pixelAxis != -1) {
-              pixelOut(pixelAxis) = pixel(axisInCoord);
-           }
-        }
-     }
-   }
-/*
-   cout << "coordMask = " << coordMask.ac() << endl;
-   cout << "worldAxesLong, worldAxesLat = " << worldAxesLong.ac()
-        << worldAxesLat.ac() << endl;
-   cout << "pixelAxesLong, pixelAxesLat = " << pixelAxesLong.ac()
-        << pixelAxesLat.ac() << endl;
-*/
-
-//
-// All we have left to do is the DirectionCoordinate.
-//
-   for (uInt i=0; i<nCoordinates(); i++) {
-      if (coordMask(i)) {
-         if (pixelAxesLong(i)!=-1 && pixelAxesLat(i)!=-1) {
-//
-// pixel -> world
-// 
-            Vector<Double> pixel(this->coordinate(i).nPixelAxes());
-            Vector<Double> world;
-            pixel(0) = pixelIn(pixelAxesLong(i));
-            pixel(1) = pixelIn(pixelAxesLat(i));
-            if (!this->coordinate(coord).toWorld(world, pixel)) return False;
-//
-            worldAxis = pixelAxisToWorldAxis(pixelAxesLong(i));
-            worldOut(worldAxis) = world(0);
-            worldAxis = pixelAxisToWorldAxis(pixelAxesLat(i));
-            worldOut(worldAxis)  = world(1);
-         } else if (worldAxesLong(i)!=-1 && worldAxesLat(i)!=-1) {
-//
-// world -> pixel
-//
-            Vector<Double> pixel;
-            Vector<Double> world(this->coordinate(i).nWorldAxes());
-            world(0) = worldIn(worldAxesLong(i));
-            world(1) = worldIn(worldAxesLat(i));
-            if (!this->coordinate(coord).toPixel(pixel, world)) return False;
-//
-            pixelAxis = worldAxisToPixelAxis(worldAxesLong(i));
-            if (pixelAxis!=-1) pixelOut(pixelAxis) = pixel(0);
-            pixelAxis = worldAxisToPixelAxis(worldAxesLat(i));
-            if (pixelAxis!=-1) pixelOut(pixelAxis)  = pixel(1);
-         } else if (pixelAxesLong(i)!=-1 && worldAxesLat(i)!=-1) {
-//
-// pixel,world -> world,pixel
-//
-            Vector<Double> in(2);
-            Vector<Double> out;
-            in(0) = pixelIn(pixelAxesLong(i));
-            in(1) = worldIn(worldAxesLat(i));
-            DirectionCoordinate dC = directionCoordinate(i);
-            if (!dC.toMix(out, in, False)) return False;
-//
-            worldAxis = pixelAxisToWorldAxis(pixelAxesLong(i));
-            worldOut(worldAxis) = out(0);
-            pixelAxis = worldAxisToPixelAxis(worldAxesLat(i));
-            if (pixelAxis!=-1) pixelOut(pixelAxis)  = out(1);
-         } else if (worldAxesLong(i)!=-1 && pixelAxesLat(i)!=-1) {
-//
-// world,pixel -> pixel,world
-//
-            Vector<Double> in(2);
-            Vector<Double> out;
-            in(0) = worldIn(worldAxesLong(i));
-            in(1) = pixelIn(pixelAxesLat(i));
-            DirectionCoordinate dC = directionCoordinate(i);
-            if (!dC.toMix(out, in, True)) return False;
-//
-            pixelAxis = worldAxisToPixelAxis(worldAxesLong(i));
-            if (pixelAxis!=-1) pixelOut(pixelAxis) = out(0);
-            worldAxis = pixelAxisToWorldAxis(pixelAxesLat(i));
-            worldOut(worldAxis)  = out(1);
-         }
-     }
-   }
-//
-// Copy input values to output
-//
-   for (uInt i=0; i<nWorld; i++) {
-      if (worldAxes(i)) worldOut(i) = worldIn(i);
-   }
-   for (uInt i=0; i<nPixel; i++) {
-      if (pixelAxes(i)) pixelOut(i) = pixelIn(i);
+      for (uInt j=0; j<nAxes; j++) {
+         Int where = world_maps_p[i]->operator[](j);
+         if (where>=0) worldOut(where) = worldOut2(j);
+         where = pixel_maps_p[i]->operator[](j);
+         if (where>=0) pixelOut(where) = pixelOut2(j);
+      }
    }
    return True;
 }
-
-
-/*  
-Bool CoordinateSystem::toMix(Vector<Double>& worldOut,
-                             Vector<Double>& pixelOut,     
-                             const Vector<Double>& worldIn,
-                             const Vector<Double>& pixelIn,
-                             const Vector<uInt>& worldAxes,
-                             const Vector<uInt>& pixelAxes) const
-// Mixed (world/pixel) conversion.  Vector worldIn is a vector
-// of world coordinates to be converted to pixelOut (one to
-// one locational correspondence).  worldAxes specifies which
-// world axes of the CoordinateSystem correspond to the values
-// in worldIn.  Similarly for pixelIn, worldOut and pixelAxes.
-// worldIn and pixelIn can be of any length
-// up to nWorldAxes and nPixelAxes respectively.
-// You cannot specify the same axis via pixelAxes and
-// worldAxes.
-// Returns True if the conversion succeeds, otherwise it returns False and
-// <src>errorMessage()</src> contains an error message. The output vectors
-// are resized.
-{
-//
-// Validity checks
-//
-   const uInt nWorld = worldAxes.nelements();
-   const uInt nPixel = pixelAxes.nelements();
-   AlwaysAssert(nWorld == worldIn.nelements(), AipsError);
-   AlwaysAssert(nPixel == pixelIn.nelements(), AipsError);
-   worldOut.resize(nPixel,False);
-   pixelOut.resize(nWorld,False);
-//   
-   for (uInt i=0; i<nWorld; i++) {
-      AlwaysAssert(worldAxes(i) < nWorldAxes(), AipsError);
-      if (inVector(False, i, worldAxes(i), worldAxes)!=-1) {
-         set_error("CoordinateSystem::toMix - duplicate world axes");
-         return False;
-      }
-   }
-   for (uInt i=0; i<nPixel; i++) {
-      AlwaysAssert(pixelAxes(i) < nPixelAxes(), AipsError);
-      if (inVector(False, i, pixelAxes(i), pixelAxes)!=-1) {
-         set_error("CoordinateSystem::toMix - duplicate pixel axes");
-         return False;
-      }
-   }
-//
-   for (uInt i=0; i<nPixel; i++) {
-//
-// There is always a world axis for a pixel axis
-//
-      Int wAxis = pixelAxisToWorldAxis(pixelAxes(i));
-      if (inVector(True, i, wAxis, worldAxes)!=-1) {
-         set_error("Duplicate pixel/world axes");
-         return False;
-      }
-   }
-// 
-// Convert pixels to world, except for DirectionCoordinate
-// which we store up for later
-// 
-   Vector<Bool> coordMask(nCoordinates(),False);
-   Vector<Int> pixelAxesLong(nCoordinates(),-1);
-   Vector<Int> pixelAxesLat(nCoordinates(),-1);
-   Vector<Int> worldAxesLong(nCoordinates(),-1);
-   Vector<Int> worldAxesLat(nCoordinates(),-1);
-//
-   Int coord, axisInCoord;
-   for (uInt i=0; i<nPixel; i++) {
-     findPixelAxis(coord, axisInCoord, pixelAxes(i));
-     if (type(coord)==Coordinate::DIRECTION) {
-        coordMask(coord) = True;
-        if (axisInCoord==0) {
-           pixelAxesLong(coord) = i;      // Index into coordinate vectors
-        } else {
-           pixelAxesLat(coord) = i;
-        }
-      } else {
-        Vector<Double> pixel(this->coordinate(coord).referencePixel().copy());
-        Vector<Double> world;
-        pixel(axisInCoord) = pixelIn(i);
-        if (!this->coordinate(coord).toWorld(world, pixel)) return False;
-        worldOut(i) = world(axisInCoord);
-     }
-   }
-//
-// Convert world to pixels, except for DirectionCoordinate
-// which we store up for later.  This is a bit harder because
-// there might not be a pixel axis for our world axis.
-//
-   for (uInt i=0; i<nWorld; i++) {
-     findWorldAxis(coord, axisInCoord, worldAxes(i));
-     if (type(coord)==Coordinate::DIRECTION) {
-        coordMask(coord) = True;
-        if (axisInCoord==0) {
-           worldAxesLong(coord) = i;
-        } else {
-           worldAxesLat(coord) = i;
-        }
-     } else {
-//
-// If the pixel axis corresponding to this world axis
-// has been removed, a default value was left in place so
-// that the conversion can still take place.  
-//
-        Vector<Double> world(this->coordinate(coord).referenceValue().copy());
-        Vector<Double> pixel;
-        world(axisInCoord) = worldIn(i);
-        if (!this->coordinate(coord).toPixel(pixel, world)) return False;
-        pixelOut(i) = pixel(axisInCoord);
-      }
-   }
-//
-// ok, all we have left to do is he DirectionCoordinate, for which
-// we have saved up the infomration in some very difficult order.
-// It may be that we don't have any mixed DC conversions to do;
-// in that case we do them with the usual interface.
-//
-   for (uInt i=0; i<nCoordinates(); i++) {
-      if (coordMask(i)) {
-         if (pixelAxesLong(i)!=-1 && pixelAxesLat(i)!=-1) {
-//
-// pixel -> world
-// 
-            Vector<Double> pixel(this->coordinate(i).nPixelAxes());
-            Vector<Double> world;
-            pixel(0) = pixelIn(pixelAxesLong(i));
-            pixel(1) = pixelIn(pixelAxesLat(i));
-            if (!this->coordinate(coord).toWorld(world, pixel)) return False;
-            worldOut(pixelAxesLong(i)) = world(0);
-            worldOut(pixelAxesLat(i))  = world(1);
-         } else if (worldAxesLong(i)!=-1 && worldAxesLat(i)!=-1) {
-//
-// world -> pixel
-//
-            Vector<Double> pixel;
-            Vector<Double> world(this->coordinate(i).nWorldAxes());
-            world(0) = worldIn(worldAxesLong(i));
-            world(1) = worldIn(worldAxesLat(i));
-            if (!this->coordinate(coord).toPixel(pixel, world)) return False;
-            pixelOut(worldAxesLong(i)) = pixel(0);
-            pixelOut(worldAxesLat(i))  = pixel(1);
-         } else if (pixelAxesLong(i)!=-1 && worldAxesLat(i)!=-1) {
-//
-// pixel,world -> world,pixel
-//
-            Vector<Double> in(2);
-            Vector<Double> out;
-            in(0) = pixelIn(pixelAxesLong(i));
-            in(1) = worldIn(worldAxesLat(i));
-            DirectionCoordinate dC = directionCoordinate(i);
-            if (!dC.toMix(out, in, False)) return False;
-            worldOut(pixelAxesLong(i)) = out(0);
-            pixelOut(worldAxesLat(i))  = out(1);
-         } else if (worldAxesLong(i)!=-1 && pixelAxesLat(i)!=-1) {
-//
-// world,pixel -> pixel,world
-//
-            Vector<Double> in(2);
-            Vector<Double> out;
-            in(0) = worldIn(worldAxesLong(i));
-            in(1) = pixelIn(pixelAxesLat(i));
-            DirectionCoordinate dC = directionCoordinate(i);
-            if (!dC.toMix(out, in, True)) return False;
-            pixelOut(worldAxesLong(i)) = out(0);
-            worldOut(pixelAxesLat(i))  = out(1);
-         }
-     }
-   }
-//
-   return True;
-}
-
-*/
-
 
 Vector<String> CoordinateSystem::worldAxisNames() const
 {
@@ -2736,19 +2418,3 @@ Bool CoordinateSystem::fromFITSHeader(CoordinateSystem &coordsys,
     
     return ok;
 }
-/*
-Int CoordinateSystem::inVector(Bool checkSame, uInt idx, uInt target, 
-                                const Vector<uInt>& vector) const
-{
-   if (checkSame) {
-      for (uInt i=0; i<vector.nelements(); i++) {
-         if (target==vector(i)) return i;
-      }
-   } else {
-      for (uInt i=0; i<vector.nelements(); i++) {
-         if (idx!=i && target==vector(i)) return i;
-      }
-   }
-   return -1;
-}
-*/
