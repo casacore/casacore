@@ -1,5 +1,5 @@
 //# NQGaussian1D.h: A one-dimensional Gaussian class
-//# Copyright (C) 1995,1996,1997,2001
+//# Copyright (C) 1995,1996,1997,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -196,7 +196,7 @@ public NQGaussian1DParam<AutoDiff<T> > {
     NQGaussian1DParam<AutoDiff<T> >(height, center) {};
   NQGaussian1D_PS(const AutoDiff<T> &height, const AutoDiff<T> &center,
 		  const AutoDiff<T> &width) :
-    NQGaussian1DParam<AutoDiff<T> >(height, center, width) {};;
+    NQGaussian1DParam<AutoDiff<T> >(height, center, width) {};
   // </group>
 
   // Copy constructor (deep copy)

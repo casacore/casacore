@@ -1,5 +1,5 @@
 //# NQFunction1D.h: Numerical functional interface class for 1 dimension
-//# Copyright (C) 2001
+//# Copyright (C) 2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -88,7 +88,7 @@ template<class T> class NQFunction1D : public Function<T> {
   virtual ~NQFunction1D() {};
   
   // Returns the number of dimensions of function
-  virtual uInt ndim() const { return 1; };;
+  virtual uInt ndim() const { return 1; }
 
 };
 
