@@ -240,7 +240,7 @@ Bool RedFlagger::setdata(const String& mode, const Vector<Int>& nchan,
   if(dataMode_p.matches("none")) {
     cout << "Whole data set has been selected or use mode argument to select specific subset " << endl;
 
-    vs_p = new VisSet(ms,sort,noselection,timeInterval,compress);
+    vs_p = new VisSet(ms,noselection);
     //    nullSelect_p=True;
     return True;
   } else {
@@ -295,9 +295,11 @@ Bool RedFlagger::setdata(const String& mode, const Vector<Int>& nchan,
     mssel_p=0;
     
     // check that sorted table exists (it should), if not, make it now.
-    if (!ms.keywordSet().isDefined("SORTED_TABLE")) {
+    // VisSet will do a default sort if sorted table is not there or is 
+    // in non-default pattern
+    {
       //      VisSet vs(ms,sort,noselection,timeInterval,compress);
-      vs_p = new VisSet(ms,sort,noselection,timeInterval,compress);
+      vs_p = new VisSet(ms,noselection);
     }
     Table sorted=ms.keywordSet().asTable("SORTED_TABLE");
     
@@ -379,6 +381,10 @@ Bool RedFlagger::setdata(const String& mode, const Vector<Int>& nchan,
     if(mssel_p->nrow()!=ms.nrow()) {
       os << "By selection " << ms.nrow() << " rows are reduced to "
 	 << mssel_p->nrow() << LogIO::POST;
+      if(vs_p){
+	delete vs_p;
+	vs_p=0;
+      }
     }
     else {
       os << "Selection did not drop any rows" << LogIO::POST;
@@ -387,16 +393,10 @@ Bool RedFlagger::setdata(const String& mode, const Vector<Int>& nchan,
   
  
   // The following lines is similar to Imager.makeVisSet(vs_p, *mssel_p); 
-  /*
-  if(vs_p) {
-    delete vs_p;
-    vs_p=0;
-  }
-  */
   // Channel selection
   if(!vs_p) {
     //    delete vs_p;
-    vs_p = new VisSet(*mssel_p,sort,noselection,timeInterval,compress);
+    vs_p = new VisSet(*mssel_p,noselection);
   }
   selectDataChannel(*vs_p, dataspectralwindowids_p, dataMode_p,
 		    dataNchan_p, dataStart_p, dataStep_p,
