@@ -39,10 +39,10 @@
 class MDoppler;
 class MCDoppler;
 template <class M> class MeasConvert;
-template <class M, class MV> class ArrayMeasColumn;
-template <class M, class MV> class ROArrayMeasColumn;
-template <class M, class MV> class ScalarMeasColumn;
-template <class M, class MV> class ROScalarMeasColumn;
+template <class M> class ArrayMeasColumn;
+template <class M> class ROArrayMeasColumn;
+template <class M> class ScalarMeasColumn;
+template <class M> class ROScalarMeasColumn;
 
 //# Typedefs
 
@@ -162,10 +162,10 @@ public:
   // Measure Convert (i.e. MDoppler::Convert)
     typedef MeasConvert<MDoppler> Convert;
 // Measure table Columns (e.g., MDoppler::ROScalarColumn)
-    typedef class ROScalarMeasColumn<MDoppler, MVDoppler> ROScalarColumn;
-    typedef class ScalarMeasColumn<MDoppler, MVDoppler> ScalarColumn;
-    typedef class ROArrayMeasColumn<MDoppler, MVDoppler> ROArrayColumn;
-    typedef class ArrayMeasColumn<MDoppler, MVDoppler> ArrayColumn;
+    typedef class ROScalarMeasColumn<MDoppler> ROScalarColumn;
+    typedef class ScalarMeasColumn<MDoppler> ScalarColumn;
+    typedef class ROArrayMeasColumn<MDoppler> ROArrayColumn;
+    typedef class ArrayMeasColumn<MDoppler> ArrayColumn;
 
 //# Constructors
 // <note role=tip> In the following constructors and other functions, all 

@@ -39,10 +39,10 @@
 class MEarthMagnetic;
 class MCEarthMagnetic;
 template <class M> class MeasConvert;
-template <class M, class MV> class ArrayMeasColumn;
-template <class M, class MV> class ROArrayMeasColumn;
-template <class M, class MV> class ScalarMeasColumn;
-template <class M, class MV> class ROScalarMeasColumn;
+template <class M> class ArrayMeasColumn;
+template <class M> class ROArrayMeasColumn;
+template <class M> class ScalarMeasColumn;
+template <class M> class ROScalarMeasColumn;
 
 //# Typedefs
 
@@ -168,10 +168,10 @@ public:
   // Measure Convert (i.e. MEarthMagnetic::Convert)
     typedef class MeasConvert<MEarthMagnetic> Convert;
 // Measure table Columns (e.g., MEarthMagnetic::ROScalarColumn)
-    typedef class ROScalarMeasColumn<MEarthMagnetic, MVEarthMagnetic> ROScalarColumn;
-    typedef class ScalarMeasColumn<MEarthMagnetic, MVEarthMagnetic> ScalarColumn;
-    typedef class ROArrayMeasColumn<MEarthMagnetic, MVEarthMagnetic> ROArrayColumn;
-    typedef class ArrayMeasColumn<MEarthMagnetic, MVEarthMagnetic> ArrayColumn;
+    typedef class ROScalarMeasColumn<MEarthMagnetic> ROScalarColumn;
+    typedef class ScalarMeasColumn<MEarthMagnetic> ScalarColumn;
+    typedef class ROArrayMeasColumn<MEarthMagnetic> ROArrayColumn;
+    typedef class ArrayMeasColumn<MEarthMagnetic> ArrayColumn;
 
 //# Constructors
 // <note> In the following constructors and other functions, all 

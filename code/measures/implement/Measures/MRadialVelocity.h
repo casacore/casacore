@@ -39,10 +39,10 @@
 class MRadialVelocity;
 class MCRadialVelocity;
 template <class M> class MeasConvert;
-template <class M, class MV> class ArrayMeasColumn;
-template <class M, class MV> class ROArrayMeasColumn;
-template <class M, class MV> class ScalarMeasColumn;
-template <class M, class MV> class ROScalarMeasColumn;
+template <class M> class ArrayMeasColumn;
+template <class M> class ROArrayMeasColumn;
+template <class M> class ScalarMeasColumn;
+template <class M> class ROScalarMeasColumn;
 class MDoppler;
 class MVDoppler;
 
@@ -166,10 +166,10 @@ public:
 // Measure conversion use (i.e. MRadialVelocity::Convert)
     typedef class MeasConvert<MRadialVelocity> Convert;
 // Measure table Columns (e.g., MRadialVelocity::ROScalarColumn)
-    typedef class ROScalarMeasColumn<MRadialVelocity, MVRadialVelocity> ROScalarColumn;
-    typedef class ScalarMeasColumn<MRadialVelocity, MVRadialVelocity> ScalarColumn;
-    typedef class ROArrayMeasColumn<MRadialVelocity, MVRadialVelocity> ROArrayColumn;
-    typedef class ArrayMeasColumn<MRadialVelocity, MVRadialVelocity> ArrayColumn;
+    typedef class ROScalarMeasColumn<MRadialVelocity> ROScalarColumn;
+    typedef class ScalarMeasColumn<MRadialVelocity> ScalarColumn;
+    typedef class ROArrayMeasColumn<MRadialVelocity> ROArrayColumn;
+    typedef class ArrayMeasColumn<MRadialVelocity> ArrayColumn;
 
 //# Constructors
 // <note role=tip> In the following constructors and other functions, all 

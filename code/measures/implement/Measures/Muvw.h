@@ -41,10 +41,10 @@ class MCuvw;
 class MBaseline;
 class MDirection;
 template <class M> class MeasConvert;
-template <class M, class MV> class ArrayMeasColumn;
-template <class M, class MV> class ROArrayMeasColumn;
-template <class M, class MV> class ScalarMeasColumn;
-template <class M, class MV> class ROScalarMeasColumn;
+template <class M> class ArrayMeasColumn;
+template <class M> class ROArrayMeasColumn;
+template <class M> class ScalarMeasColumn;
+template <class M> class ROScalarMeasColumn;
 
 //# Typedefs
 
@@ -164,10 +164,10 @@ public:
   // MeasConvert use (i.e. Muvw::Convert)
   typedef class MeasConvert<Muvw> Convert;
   // Measure table Columns (e.g., Muvw::ROScalarColumn)
-  typedef class ROScalarMeasColumn<Muvw, MVuvw> ROScalarColumn;
-  typedef class ScalarMeasColumn<Muvw, MVuvw> ScalarColumn;
-  typedef class ROArrayMeasColumn<Muvw, MVuvw> ROArrayColumn;
-  typedef class ArrayMeasColumn<Muvw, MVuvw> ArrayColumn;
+  typedef class ROScalarMeasColumn<Muvw> ROScalarColumn;
+  typedef class ScalarMeasColumn<Muvw> ScalarColumn;
+  typedef class ROArrayMeasColumn<Muvw> ROArrayColumn;
+  typedef class ArrayMeasColumn<Muvw> ArrayColumn;
   
   //# Constructors
   // <note role=tip> In the following constructors and other functions, all 

@@ -41,10 +41,10 @@ class MCFrequency;
 class MDoppler;
 class MVDoppler;
 template <class M> class MeasConvert;
-template <class M, class MV> class ArrayMeasColumn;
-template <class M, class MV> class ROArrayMeasColumn;
-template <class M, class MV> class ScalarMeasColumn;
-template <class M, class MV> class ROScalarMeasColumn;
+template <class M> class ArrayMeasColumn;
+template <class M> class ROArrayMeasColumn;
+template <class M> class ScalarMeasColumn;
+template <class M> class ROScalarMeasColumn;
 
 //# Typedefs
 
@@ -178,10 +178,10 @@ public:
 // Measure conversion use (i.e. MFrequency::Convert)
     typedef class MeasConvert<MFrequency> Convert;
 // Measure table Columns (e.g., MFrequency::ROScalarColumn)
-    typedef class ROScalarMeasColumn<MFrequency, MVFrequency> ROScalarColumn;
-    typedef class ScalarMeasColumn<MFrequency, MVFrequency> ScalarColumn;
-    typedef class ROArrayMeasColumn<MFrequency, MVFrequency> ROArrayColumn;
-    typedef class ArrayMeasColumn<MFrequency, MVFrequency> ArrayColumn;
+    typedef class ROScalarMeasColumn<MFrequency> ROScalarColumn;
+    typedef class ScalarMeasColumn<MFrequency> ScalarColumn;
+    typedef class ROArrayMeasColumn<MFrequency> ROArrayColumn;
+    typedef class ArrayMeasColumn<MFrequency> ArrayColumn;
 
 //# Constructors
 // <note role=tip> In the following constructors and other functions, all 

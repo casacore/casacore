@@ -39,10 +39,10 @@
 class MEpoch;
 class MCEpoch;
 template <class M> class MeasConvert;
-template <class M, class MV> class ArrayMeasColumn;
-template <class M, class MV> class ROArrayMeasColumn;
-template <class M, class MV> class ScalarMeasColumn;
-template <class M, class MV> class ROScalarMeasColumn;
+template <class M> class ArrayMeasColumn;
+template <class M> class ROArrayMeasColumn;
+template <class M> class ScalarMeasColumn;
+template <class M> class ROScalarMeasColumn;
 
 //# Typedefs
 
@@ -147,10 +147,10 @@ public:
   // Measure Convert (i.e. MEpoch::Convert)
   typedef class MeasConvert<MEpoch> Convert;
   // Measure table Columns (e.g., MEpoch::ROScalarColumn)
-  typedef class ROScalarMeasColumn<MEpoch, MVEpoch> ROScalarColumn;
-  typedef class ScalarMeasColumn<MEpoch, MVEpoch> ScalarColumn;
-  typedef class ROArrayMeasColumn<MEpoch, MVEpoch> ROArrayColumn;
-  typedef class ArrayMeasColumn<MEpoch, MVEpoch> ArrayColumn;
+  typedef class ROScalarMeasColumn<MEpoch> ROScalarColumn;
+  typedef class ScalarMeasColumn<MEpoch> ScalarColumn;
+  typedef class ROArrayMeasColumn<MEpoch> ROArrayColumn;
+  typedef class ArrayMeasColumn<MEpoch> ArrayColumn;
     
   //# Constructors
   // <note role=tip> In the following constructors and other functions, all 
