@@ -28,6 +28,7 @@
 #include <aips/aips.h>
 #include <trial/Lattices/Lattice.h>
 #include <trial/Lattices/LatticeIterator.h>
+#include <trial/Lattices/LatticeStepper.h>
 #include <aips/Arrays/Array.h>
 #include <aips/Functionals/Functional.h>
 #include <aips/Lattices/IPosition.h>
