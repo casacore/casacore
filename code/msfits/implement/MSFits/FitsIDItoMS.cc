@@ -1,5 +1,5 @@
 //# FITSIDItoMS.cc: Convert a FITS-IDI binary table to an AIPS++ Table.
-//# Copyright (C) 1994,1995,1996,1997,1998,1999,2000,2001
+//# Copyright (C) 1994,1995,1996,1997,1998,1999,2000,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //# 
 //# This program is free software; you can redistribute it and/or modify
@@ -86,7 +86,9 @@
 #include <aips/Utilities/Regex.h>
 #include <aips/Utilities/GenSort.h>
 #include <aips/Utilities/Fallible.h>
-#include <trial/FITS/FITSUtil.h>
+#include <trial/FITS/FITSKeywordUtil.h>
+#include <trial/FITS/FITSSpectralUtil.h>
+#include <trial/FITS/FITSDateUtil.h>
 #include <trial/FITS/BinTable.h>
 #include <trial/Tasking/NewFile.h>
 #include <trial/Tasking/ProgressMeter.h>
