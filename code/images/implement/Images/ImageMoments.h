@@ -601,6 +601,10 @@ private:
 // device is set, the user can interact with this process.
    Bool whatIsTheNoise (T& noise,
                         ImageInterface<T>& image);
+
+// Make output Coordinates
+   CoordinateSystem makeOutputCoordinates (const CoordinateSystem& cSys,
+                                           const IPosition& shape);
 };
 
 
