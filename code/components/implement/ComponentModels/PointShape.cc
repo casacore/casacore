@@ -32,6 +32,7 @@
 #include <aips/Containers/RecordFieldId.h>
 #include <aips/Exceptions/Error.h>
 #include <aips/Mathematics/Complex.h>
+#include <aips/Mathematics/Math.h>
 #include <aips/Measures/MCDirection.h>
 #include <aips/Quanta/MVAngle.h>
 #include <aips/Measures/MeasConvert.h>
