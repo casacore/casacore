@@ -1,5 +1,5 @@
 //# tRegex.cc: Test program for the Regex class
-//# Copyright (C) 1993,1994,1995,1996,1999,2000
+//# Copyright (C) 1993,1994,1995,1996,1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -31,7 +31,6 @@
 #include <aips/Utilities/Regex.h>
 #include <aips/Arrays/Vector.h>
 #include <aips/Arrays/ArrayIO.h>
-#include <aips/IO/AipsIO.h>
 #include <aips/Exceptions/Error.h>
 #include <iostream.h>
 
@@ -47,15 +46,15 @@ void b();
 // The results are written to stdout. The script executing this program,
 // compares the results with the reference output file.
 
-main () {
-    try {
-	a();
-	b();
-    } catch (AipsError x) {
-	cout << x.getMesg() << endl;
-	return 1;
-    } 
-    return 0;                           // exit with success status
+int main () {
+  try {
+    a();
+    b();
+  } catch (AipsError x) {
+    cout << x.getMesg() << endl;
+    return 1;
+  } 
+  return 0;                           // exit with success status
 }
 
 // First do some simple Regex things.
@@ -107,12 +106,9 @@ void a() {
     vec(1) = exp5;
     vec(2) = RXalpha;
     Vector<Int> veci(10);
-    for (Int i=0; i<10; i++)
-	veci(i) = i;
+    for (Int i=0; i<10; i++) veci(i) = i;
     cout << vec << endl;
     cout << veci << endl;
-    AipsIO ios("tRegex_tmp.data", ByteIO::New);
-    ios << exp << exp5 << vec << veci;
 
     exp5 = exp2;
     cout << exp5.match("abcdbcdcdd",10) << endl;
@@ -127,13 +123,15 @@ void a() {
 
 // Do some more fancy things.
 void b() {
-    AipsIO ios("tRegex_tmp.data");
-    Regex exp5, exp2;
-    ios >> exp5 >> exp2;
+    Regex exp5("a?bcd(bcdcdd)?");
+    Regex exp2(".+");
     cout << exp5.regexp() << "   " << exp2.regexp() << endl;
-    Vector<Regex> vec;
-    Vector<Int> veci;
-    ios >> vec >> veci;
+    Vector<Regex> vec(3);
+    vec(0) = exp5;
+    vec(1) = exp2;
+    vec(2) = RXalpha;
+    Vector<Int> veci(10);
+    for (Int i=0; i<10; i++) veci(i) = i;
     cout << vec << endl;
     cout << veci << endl;
 
@@ -142,7 +140,7 @@ void b() {
     cout << String("abcdb").matches(exp5) << " ";
     cout << String("abcd").matches(exp5) << "   ";
     cout << String("bcd").matches(exp5) << "   ";
-    cout <<  exp5.regexp() << endl;
+    cout << exp5.regexp() << endl;
 
     cout << "end of b" << endl;
 }
