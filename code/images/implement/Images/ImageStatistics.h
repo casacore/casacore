@@ -285,8 +285,8 @@ public:
 // Use can use the enum in class ImageStatsBase to find out
 // which locations in the vector contain which statistics.
 // A returned vector of zero shape indicates that there 
-// were no good values. A return  value of <src>False</src> indicates that the 
-// internal state of the class is bad.
+// were no good values. A return  value of <src>False</src> 
+// indicates that the  internal state of the class is bad.
    Bool getStats (Vector<T>&,
                   const IPosition& pos,
                   const Bool posInImage=False);
@@ -364,7 +364,7 @@ private:
    void multiColourYLabel (String& label,
                            PGPlotter& plotter,
                            const String& LRLoc,
-                           const Vector<Int>& colours,
+                           const Vector<uInt>& colours,
                            const Int& nLabs);
 
 
