@@ -110,7 +110,7 @@ class FitsLogical {
 //<summary> helper class for FITS Binary Tables </summary>
 // <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="" demos="">
 // </reviewed>
-//<synopsis/
+//<synopsis>
 // This class is not intended for general use.  It only has meaning
 // in the context of FITS Binary tables.  There its use is incorporated
 // into the concept of a FitsField, where FitsBit is given a specialized
