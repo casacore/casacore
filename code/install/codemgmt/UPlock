@@ -75,18 +75,18 @@ if (! -r $ldir/${tp}.found) then
    exit 1
 endif
 
-set a = ( `wc ${tp}.found` )
+set a = ( `wc $ldir/${tp}.found` )
 echo $a[1] files in ${tp}.found
 unset a
 
 echo "Finding locked files..."
-if (-e ${tp}.locked) rm -f ${tp}.locked
-touch ${tp}.locked
+if (-e $ldir/${tp}.locked) rm -f $ldir/${tp}.locked
+touch $ldir/${tp}.locked
 foreach i (`alog -m -L -t | grep ".*/.*/" | grep  -v " "`)
-   grep $i ${tp}.found >> ${tp}.locked
+   grep $i $ldir/${tp}.found >> $ldir/${tp}.locked
 end
 
-set a = ( `wc ${tp}.locked` )
+set a = ( `wc $ldir/${tp}.locked` )
 echo $a[1] files in ${tp}.locked
 unset a
 

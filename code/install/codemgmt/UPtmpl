@@ -71,11 +71,10 @@ if ($upswn) exit 0
 cd $dir/code
 echo "Getting templated file list..."
 find . -name '*_????.cc' -print | \
-     grep tmplinst \
-     >! $ldir/${tp}.tmpinst
+     grep tmplinst >! $ldir/${tp}.tmpinst
 cd $ldir
 
-set a = ( `wc ${tp}.tmpinst` )
+set a = ( `wc $ldir/${tp}.tmpinst` )
 echo $a[1] files found in ${tp}.tmpinst
 unset a
 

@@ -46,7 +46,6 @@ set hcrea =  "<typ>.done, <typ>.error, <typ>.diff"
 #
 # Get general info
 #
-set mvarg = ("$*")
 if (! $?AIPSPATH) then
    echo "No AIPSPATH environment set, initialize aips++ first"
    exit 1
@@ -72,13 +71,9 @@ if (! $ok) exit 1
 # Get specific data
 #
 if (! -r $ldir/${tp}.sel) then
-   cp -f $ldir/${tp}.def  $ldir/${tp}_MVF.def
-   set larg = ""
-   if ($upswu) set larg = "$larg -u"
-   $uppath/UPfind -f $larg ${tp}_MVF
-   unset larg
+   $uppath/UPfind -f +u$upswu ${tp}_MVF
    if (-e $ldir/${tp}_MVF.found) then
-      cp $ldir/${tp}_MVF.found $ldir/${tp}.sel
+      cp -f $ldir/${tp}_MVF.found $ldir/${tp}.sel
    else
       echo "No files found for ${tp}.sel"
       exit 1
@@ -147,11 +142,7 @@ if (! -e $ldir/${tp}_MV.sed) then
 endif
 
 if (! -e $ldir/${tp}.todo) then
-   cp -f $ldir/${tp}.def  $ldir/${tp}_MV.def
-   set larg = ""
-   if ($upswn) set larg = "$larg -n"
-   $uppath/UPfind $larg ${tp}_MV
-   unset larg
+   $uppath/UPfind +n$upswn ${tp}_MV
    touch $ldir/${tp}.todo
    if (-e $ldir/${tp}_MV.found) then
 	mv -f $ldir/${tp}_MV.found $ldir/${tp}.todo
@@ -159,7 +150,6 @@ if (! -e $ldir/${tp}.todo) then
 endif
 
 if ($upswn) then
-    cp -f $ldir/${tp}.def  $ldir/${tp}_MV.def
     $uppath/UPchange -n ${tp}_MV
     exit 0
 endif
@@ -189,8 +179,7 @@ else
    cat $ldir/${tp}.todo >! $ldir/${tp}_MV.found
 endif
 
-cp -f $ldir/${tp}.def  $ldir/${tp}_MV.def
-if (-z $ldir/${tp}.found) then
+if (-z $ldir/${tp}_MV.found) then
     echo "No files in ${tp}.todo"
     exit 1
 endif
@@ -199,9 +188,7 @@ if (-e $ldir/${tp}.diff) rm -f $ldir/${tp}.diff
 if (-e $ldir/${tp}.done) rm -f $ldir/${tp}.done
 if (-e $ldir/${tp}.error) rm -f $ldir/${tp}.error
 set larg = ""
-if ($upswt) set larg = "$larg -t"
-$uppath/UPchange $larg ${tp}_MV
-unset larg
+$uppath/UPchange +t$upswt ${tp}_MV
 
 if (-e $ldir/${tp}_MV.diff) mv -f $ldir/${tp}_MV.diff $ldir/${tp}.diff
 if (-e $ldir/${tp}_MV.done) mv -f $ldir/${tp}_MV.done $ldir/${tp}.done

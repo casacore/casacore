@@ -61,7 +61,7 @@ else if ("$script" == "UPlock") then
 else if ("$script" == "UPmove") then
     set upsw = "it$upsw"
 else if ("$script" == "UPreident") then
-    set upsw = "z$upsw"
+    set upsw = "atz$upsw"
 else if ("$script" == "UPtmpl") then
     set upsw = "$upsw"
 else
@@ -71,7 +71,12 @@ endif
 #
 # Set all the switches to initial state
 #
-foreach i (c d h n r f g i l s t u z)
+foreach i (a c d h n r f g i l s t u z)
+    set upsw$i = 0
+end
+set upswP = 0
+foreach i (0 1 2 3 4 5 6 7 8 9)
+    set upswp0$i = 0
     set upsw$i = 0
 end
 #
@@ -86,7 +91,17 @@ while ($# > 0)
 	    if ("$upsw" =~ *"$x[1]"*) then
 		set upsw$x[1] = 1
 	    else
-	        echo "Illegal or unknown switch '$x[1]' given: discarded"
+		if ("$x[1]" == "P") then
+		    set upsw$x[1] = 1
+		else if ("$x[1]" == "0" && $upswP) then
+		    set upsw$x[1] = 1
+		else if ("123456789" =~ *"$x[1]"* && $upsw0) then
+		    set upswP = 0
+		    set upsw0 = 0
+		    set upswp0$x[1] = 1
+		else
+	            echo "Illegal or unknown switch '$x[1]' given: discarded"
+		endif
 	    endif
 	    shift x
         end
@@ -95,10 +110,12 @@ while ($# > 0)
 	shift x
 	shift x
 	while ($#x > 0)
-	    if ("$upsw" =~ *"$x[1]"*) then
-		set upsw$x[1] = 0
+	    if ("$upsw" =~ *"$x[1]"* && $#x > 1 && \
+		("$x[2]" == "0" || "$x[2]" == "1") then
+		set upsw$x[1] = $x[2]
+		shift
 	    else
-	        echo "Illegal or unknown switch '$x[1]' given: discarded"
+	        echo "Illegal or unknown +switch '$x[1]' given: discarded"
 	    endif
 	    shift x
         end
@@ -107,6 +124,10 @@ while ($# > 0)
     endif
     shift
 end
+if ($upswP || $upsw0) then
+    echo "Illegal standard pattern P* given."
+    exit 1
+endif
 #
 # Help
 #
@@ -147,14 +168,14 @@ if ($upswh) then
   cat << '_EOF_'
 
 The following UP scripts are available:
-    UPfind    [-f] [-g] [-c] [-r] [-u] [-d] [-n] <typ>
-    UPlist    [-l]      [-c] [-r] [-u] [-d] [-n] <typ>	    
-    UPlock              [-c] [-r] [-u] [-d] [-n] <typ>
-    UPchange  [-t]      [-c] [-r] [-u] [-d] [-n] <typ>
-    UPmove    [-i] [-t] [-c] [-r] [-u] [-d] [-n] <typ>
-    UPtmpl              [-c] [-r] [-u] [-d] [-n] <typ>
-    UPdup     [-s]      [-c] [-r] [-u] [-d] [-n] <typ>
-    UPreident [-z]      [-c] [-r] [-u] [-d] [-n] <typ>
+    UPfind    [-f] [-g]      [-c] [-r] [-u] [-d] [-n] <typ>
+    UPlist    [-l]           [-c] [-r] [-u] [-d] [-n] <typ>	    
+    UPlock                   [-c] [-r] [-u] [-d] [-n] <typ>
+    UPchange  [-t]           [-c] [-r] [-u] [-d] [-n] <typ>
+    UPmove    [-i] [-t]      [-c] [-r] [-u] [-d] [-n] <typ>
+    UPtmpl                   [-c] [-r] [-u] [-d] [-n] <typ>
+    UPdup     [-s]           [-c] [-r] [-u] [-d] [-n] <typ>
+    UPreident [-a] [-t] [-z] [-c] [-r] [-u] [-d] [-n] <typ>
 '_EOF_'
   exit 0
 endif
@@ -193,19 +214,20 @@ endif
 #
 # Get type
 #
+set y = 0
 if ($#arg < 1) then
     if (-r $ldir/.UpTyPe.$cdat) then
 	source $ldir/.UpTyPe.$cdat
     else
-	echo "No <typ> given for ${script}"
-	exit 1
+        set tp = t$cdat
+	set y = 1
     endif
-    if ("$tp" == "UPfind" || "$tp" == "UPchange" || \
-	"$tp" == "UPmove") then
-	echo -n "Assuming <typ> as '$tp'. OK? (y|n) [y]: "
+    if ($y || "$script" == "UPfind" || "$script" == "UPchange" || \
+	      "$script" == "UPmove" || "$script" == "UPreident") then
+	echo -n "Specify type [${tp}]: "
 	set x = "$<"
-	if ("$x" == "" || $x == "y" || "$x" == "Y") then
-	else
+	if ("$x" != "") set tp = $x
+ 	if ("$tp" == "") then
 	    echo "No <typ> given for ${script}"
 	    exit 1
 	endif
@@ -216,6 +238,11 @@ else
     set tp = $arg[1]
     shift arg
 endif
+unset y
+#
+# Get base type
+#
+set tpb = `echo $tp | sed -e 's;_[A-Z][A-Z]*$;;' `
 #
 # Save current type for today
 #
@@ -232,7 +259,7 @@ echo "Getting info..."
 # Clear info if asked
 #
 if ($upswr) then
-  if (-e $ldir/${tp}.def) rm -f $ldir/${tp}.def
+  if (-e $ldir/${tpb}.def) rm -f $ldir/${tpb}.def
 endif
 
 if ($upswu) then
@@ -254,8 +281,10 @@ if ($upswu) then
     if (-e $ldir/${tp}_MV.rcs) rm -f $ldir/${tp}_MV.rcs
   else if ("$script" == "UPlist") then 
     if (-e $ldir/${tp}.spat) rm -f $ldir/${tp}.spat
+  else if ("$script" == "UPreident") then
+    if (-e $ldir/${tp}.tsel) rm -f $ldir/${tp}.tsel
   else if ("$script" == "UPtmpl" || "$script" == "UPlock" || \
-	   "$script" == "UPdup" || "$script" == "UPreident") then
+	   "$script" == "UPdup") then
   else
     echo "Internal error: '$script' not supported"
     exit 1
@@ -264,8 +293,8 @@ endif
 #
 # Get general info
 #
-if (-r $ldir/${tp}.def) then
-   source $ldir/${tp}.def
+if (-r $ldir/${tpb}.def) then
+   source $ldir/${tpb}.def
 endif
 
 if ($?hasm) then
@@ -335,12 +364,12 @@ if ("$script" == "UPlock" && ! $upswn && ! $hasm) then
     exit 1
 endif
 
-if (! -e $ldir/${tp}.def) then
-   echo "set dir = $dir" >! $ldir/${tp}.def
-   echo "set mdir = $mdir" >> $ldir/${tp}.def
-   echo "set xao = $xao" >> $ldir/${tp}.def
-   echo "set xai = $xai" >> $ldir/${tp}.def
-   echo "set hasm = $hasm" >> $ldir/${tp}.def
+if (! -e $ldir/${tpb}.def) then
+   echo "set dir = $dir" >! $ldir/${tpb}.def
+   echo "set mdir = $mdir" >> $ldir/${tpb}.def
+   echo "set xao = $xao" >> $ldir/${tpb}.def
+   echo "set xai = $xai" >> $ldir/${tpb}.def
+   echo "set hasm = $hasm" >> $ldir/${tpb}.def
 endif 
 #
 # Correct result

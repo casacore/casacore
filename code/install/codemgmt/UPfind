@@ -70,6 +70,16 @@ if (! $ok) exit 1
 #
 # Get search pattern
 #
+# Special patterns
+#
+if ($upswp01 || $upswp02) then
+    cat >! $ldir/${tp}.spat <<EOF
+/aips/
+/trial/
+EOF
+    echo '[/]tmplinst[/]' >! $ldir/${tp}.rmpat
+endif
+
 if (! -r $ldir/${tp}.spat) then
  touch $ldir/${tp}.spat
  if (! $upswf) then
@@ -127,7 +137,12 @@ if ($upswn) exit 0
 #
 cd $dir/code
 echo "Starting find..."
-if ($upswf) then
+if ($upswp01) then
+    find . -name 'templates' -print  >! $ldir/${tp}.raw
+else if ($upswp02) then
+    find . -name 'templates' -print  | \
+	egrep -f $ldir/${tp}.spat >! $ldir/${tp}.raw
+else if ($upswf) then
   if (-e $ldir/${tp}.raw) rm -f $ldir/${tp}.raw
   touch $ldir/${tp}.raw
   set y = (`cat $ldir/${tp}.spat`)
@@ -163,7 +178,7 @@ unset a
 echo "Starting selected removal..."
 egrep -v -f $ldir/${tp}.rmpat $ldir/${tp}.raw >! $ldir/${tp}.found
 
-set a = ( `wc ${tp}.found` )
+set a = ( `wc $ldir/${tp}.found` )
 echo $a[1] files left in ${tp}.found
 unset a
 
