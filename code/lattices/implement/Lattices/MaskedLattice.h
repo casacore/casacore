@@ -1,5 +1,5 @@
 //# MaskedLattice.h: Abstract base class for array-like classes with masks
-//# Copyright (C) 1998
+//# Copyright (C) 1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -212,7 +212,7 @@ class LatticeRegion;
 //        sufficiently robust.
 // </todo>
 
-template <class T> class MaskedLattice : virtual public Lattice<T>
+template <class T> class MaskedLattice : public Lattice<T>
 {
 public: 
   // a virtual destructor is needed so that it will use the actual destructor
@@ -220,14 +220,34 @@ public:
   virtual ~MaskedLattice();
 
   // Make a copy of the object (reference semantics).
+  // <group>
   virtual MaskedLattice<T>* cloneML() const = 0;
+  virtual Lattice<T>* clone() const;
+  // </group>
 
   // Has the object really a mask?
-  virtual Bool isMasked() const = 0;
+  // The default implementation returns True if the MaskedLattice has
+  // a region with a mask.
+  virtual Bool isMasked() const;
+
+  // Is the mask writable?
+  // The default implementation returns True if the MaskedLattice has
+  // a writable region with a mask.
+  virtual Bool isMaskWritable() const;
+
+  // Get a pointer to the region used.
+  // It can return 0 meaning that the MaskedLattice is the full lattice.
+  virtual const LatticeRegion* getRegionPtr() const = 0;
 
   // Get the region used.
-  virtual const LatticeRegion& region() const = 0;
+  // This is in principle the region pointed to by <src>getRegionPtr</src>.
+  // However, if that pointer is 0, it returns a LatticeRegion for the
+  // full image.
+  LatticeRegion region() const;
 
+  // Get the mask or a slice from the mask.
+  // If there is no mask, it still works fine.
+  // In that case it sizes the buffer correctly and sets it to True.
   // <group>   
   Bool getMask (COWPtr<Array<Bool> >& buffer,
 		Bool removeDegenerateAxes=False) const;
@@ -260,6 +280,17 @@ public:
 			    Bool removeDegenerateAxes=False) const;
   // </group>
   
+  // Write (part of) the mask. They work similarly to the putSlice functions
+  // as described in class <linkto class=Lattice>Lattice</linkto>.
+  // An exception is thrown if the mask is not writable.
+  // <group>   
+  void putMaskSlice (const Array<Bool>& sourceBuffer, const IPosition& where,
+		     const IPosition& stride)
+    { doPutMaskSlice (sourceBuffer, where, stride); }
+  void putMaskSlice (const Array<Bool>& sourceBuffer, const IPosition& where);
+  void putMask (const Array<Bool>& sourceBuffer);
+  // </group>   
+
   // These functions were put in for the Gnu compiler which presently
   // (version 2.7.2.1) is unable to automatically cast a derived class to a
   // base class in a templated global function.
@@ -280,7 +311,22 @@ protected:
     { return *this; }
 
   // Get a section of the mask.
-  virtual Bool doGetMaskSlice (Array<Bool>& buffer, const Slicer& section) = 0;
+  // The default implementation gets the mask from the region
+  // and fills the buffer with True values if there is no region.
+  virtual Bool doGetMaskSlice (Array<Bool>& buffer, const Slicer& section);
+
+  // Put a section of the mask.
+  // The default implementation writes the mask of the region.
+  // It throws an exception if there is no writable region.
+  virtual void doPutMaskSlice (const Array<Bool>& buffer,
+			       const IPosition& where,
+			       const IPosition& stride);
+
+  // Get a pointer to the non-const region object.
+  // It returns 0 if the MaskedLattice has no region associated with it.
+  // The cast is safe, since the function is non-const.
+  LatticeRegion* rwRegionPtr()
+	{ return (LatticeRegion*)getRegionPtr(); }
 };
 
 
