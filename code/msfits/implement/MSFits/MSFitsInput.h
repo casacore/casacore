@@ -1,5 +1,5 @@
 //# MSFitsInput:  simple uvfits (random group) to MeasurementSet conversion
-//# Copyright (C) 1996,1997,1998,1999,2000,2001
+//# Copyright (C) 1996,1997,1998,1999,2000,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify
@@ -38,6 +38,7 @@
 #include <aips/MeasurementSets/MeasurementSet.h>
 #include <aips/Measures/MFrequency.h>
 #include <aips/Utilities/String.h>
+#include <trial/MeasurementSets/MSTileLayout.h>
 
 class FitsInput;
 class BinaryTable;
@@ -186,7 +187,8 @@ public:
 
   // Read all the data from the FITS file and create the MeasurementSet. Throws
   // an exception when it has severe trouble interpreting the FITS file.
-  void readFitsFile();
+  // 
+  void readFitsFile(Int obsType = MSTileLayout::Standard);
 
 protected:
 
@@ -200,8 +202,10 @@ protected:
 
   // Set up the MeasurementSet, including StorageManagers and fixed columns.
   // If useTSM is True, the Tiled Storage Manager will be used to store
-  // DATA, FLAG and WEIGHT_SPECTRUM
-  void setupMeasurementSet(const String& MSFileName, Bool useTSM=True);
+  // DATA, FLAG and WEIGHT_SPECTRUM. Use obsType to choose the tiling
+  // scheme.
+  void setupMeasurementSet(const String& MSFileName, Bool useTSM=True,
+			   Int obsType = MSTileLayout::Standard);
 
   // Fill the Observation and ObsLog tables
   void fillObsTables();
