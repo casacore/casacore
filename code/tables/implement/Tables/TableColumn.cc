@@ -1,5 +1,5 @@
 //# TableColumn.cc: Const access to a table column
-//# Copyright (C) 1994,1995,1996,1997,1999
+//# Copyright (C) 1994,1995,1996,1997,1999,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -46,6 +46,7 @@ ROTableColumn::ROTableColumn (const Table& tab, const String& columnName)
     }
     baseColPtr_p  = baseTabPtr_p->getColumn (columnName);
     colCachePtr_p = &(baseColPtr_p->columnCache());
+    canChangeShape_p = baseColPtr_p->canChangeShape();
 }
 
 ROTableColumn::ROTableColumn (const Table& tab, uInt columnIndex)
@@ -58,12 +59,14 @@ ROTableColumn::ROTableColumn (const Table& tab, uInt columnIndex)
     }
     baseColPtr_p  = baseTabPtr_p->getColumn (columnIndex);
     colCachePtr_p = &(baseColPtr_p->columnCache());
+    canChangeShape_p = baseColPtr_p->canChangeShape();
 }
 
 ROTableColumn::ROTableColumn (const ROTableColumn& that)
-: baseTabPtr_p  (that.baseTabPtr_p),
-  baseColPtr_p  (that.baseColPtr_p),
-  colCachePtr_p (that.colCachePtr_p)
+: baseTabPtr_p     (that.baseTabPtr_p),
+  baseColPtr_p     (that.baseColPtr_p),
+  colCachePtr_p    (that.colCachePtr_p),
+  canChangeShape_p (that.canChangeShape_p)
 {}
 
 ROTableColumn* ROTableColumn::clone() const
@@ -73,9 +76,10 @@ ROTableColumn* ROTableColumn::clone() const
 
 void ROTableColumn::reference (const ROTableColumn& that)
 {
-    baseTabPtr_p  = that.baseTabPtr_p;
-    baseColPtr_p  = that.baseColPtr_p;
-    colCachePtr_p = that.colCachePtr_p;
+    baseTabPtr_p     = that.baseTabPtr_p;
+    baseColPtr_p     = that.baseColPtr_p;
+    colCachePtr_p    = that.colCachePtr_p;
+    canChangeShape_p = that.canChangeShape_p;
 }
 
 ROTableColumn::~ROTableColumn()

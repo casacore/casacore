@@ -1,5 +1,5 @@
 //# TableColumn.h: Access to a table column
-//# Copyright (C) 1994,1995,1996,1997,1998,1999
+//# Copyright (C) 1994,1995,1996,1997,1998,1999,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -179,15 +179,21 @@ public:
     uInt nrow() const
 	{ return baseColPtr_p->nrow(); }
 
-    // Get the global #dimensions of an array (ie. for all cells in the column).
-    // This is always set for direct arrays and might be set for indirect
-    // arrays. If not, 0 will be returned.
+    // Can the shape of an already existing non-FixedShape array be changed?
+    // This depends on the storage manager. Most storage managers
+    // can handle it, but TiledDataStMan and TiledColumnStMan can not.
+    Bool canChangeShape() const
+        { return canChangeShape_p; }
+
+    // Get the global #dimensions of an array (ie. for all cells in column).
+    // This is always set for fixed shape arrays.
+    // Otherwise, 0 will be returned.
     uInt ndimColumn() const
 	{ return baseColPtr_p->ndimColumn(); }
 
     // Get the global shape of an array (ie. for all cells in the column).
-    // This is always set for direct arrays and might be set for indirect
-    // arrays. If not, a 0-dim shape will be returned.
+    // This is always set for fixed shape arrays.
+    // Otherwise, a 0-dim shape will be returned.
     IPosition shapeColumn() const
 	{ return baseColPtr_p->shapeColumn(); }
 
@@ -293,6 +299,7 @@ protected:
     BaseTable*  baseTabPtr_p;
     BaseColumn* baseColPtr_p;                //# pointer to real column object
     const ColumnCache* colCachePtr_p;
+    Bool canChangeShape_p;
 
 
     // Get the baseColPtr_p of this ROTableColumn object.
