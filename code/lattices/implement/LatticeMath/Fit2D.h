@@ -1,4 +1,4 @@
-//# Fit2D.h: Class to fit 2-D objects to Lattices are Arrays
+//# Fit2D.h: Class to fit 2-D objects to Lattices or Arrays
 //# Copyright (C) 1997,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -35,7 +35,6 @@
 #include <trial/Fitting.h>
 #include <aips/Logging.h>
 
-//class LogIO;
 template<class T> class Array;
 template<class T> class Matrix;
 template<class T> class Vector;
@@ -58,9 +57,27 @@ template<class T> class MaskedLattice;
 
 // <synopsis> 
 // This class allows you to fit different types of 2-D models
-// to either Lattices or Arrays.  These must be 2 dimensional.
+// to either Lattices or Arrays.  These must be 2 dimensional;
+// for Lattices, the appropriate 2-D Lattice can be made with
+// the SubLattice class.
+//
+// You may fit more than one model simultaneously to the data.
+// Models are added with the addModel method.   With this method,
+// you also specify the initial guesses of the parameters of
+// the model.    Any parameters involving coordinates are
+// expected in zero-relative absolute pixel coordinates (e.g. the centre of
+// a model).  Additionally with the addModel method, 
+// you may specify which parameters are to be held fixed
+// during the fitting process.  This is done with the 
+// parameterMask Vector which is in the same order as the
+// parameter Vector.  A value of True indicates the parameter
+// will be fitted for.
+// 
+// For Gaussians, the parameter Vector consists, in order, of
+// the peak, x location, y location, major axis, minor axis,
+// and position angle of the major axis.
+//
 // </synopsis> 
-
 // <example>
 // <srcblock>
 // </srcblock>
@@ -79,9 +96,9 @@ public:
 
     // Enum describing the different models you can fit
     enum Types {
-      Level = 0,
-      Disk = 1,
-      Gaussian = 2,
+      LEVEL = 0,
+      DISK = 1,
+      GAUSSIAN = 2,
       nTypes
     };
 
@@ -90,13 +107,13 @@ public:
 // ok
       OK = 0,
 // Did not converge
-      NoConverge = 1,
+      NOCONVERGE = 1,
 // Solution failed
-      Failed = 2,
+      FAILED = 2,
 // There were no unmasked points
-      NoGood = 3,
+      NOGOOD = 3,
 // No models set
-      NoModels = 4,
+      NOMODELS = 4,
 // Number of conditions
       nErrorTypes
     };
@@ -116,7 +133,9 @@ public:
     Fit2D& operator=(const Fit2D& other);
 
     // Add a model to the list to be simultaneously fit and 
-    // return its index
+    // return its index.  Specify the initial guesses for
+    // the model and a mask indicating whether the parameter
+    // is fixed (False) during the fit or not.
     //<group>
     uInt addModel (Fit2D::Types type,
                    const Vector<Double>& parameters,
@@ -124,6 +143,15 @@ public:
     uInt addModel(Fit2D::Types type,
                    const Vector<Double>& parameters);
     //</group>
+
+    // Convert mask from a string to a vector.  The string gives the parameters
+    // to keep fixed in the fit (f (flux), x (x position), y (y position),
+    // a (major axis), b (minor axis), p (position angle)
+    static Vector<Bool> convertMask (const String fixedmask,
+                                     Fit2D::Types type);
+
+    // Return number of parameters for this type of model
+    static uInt nParameters (Fit2D::Types type);
 
     // Recover number of models
     uInt nModels() const;
@@ -173,20 +201,10 @@ public:
 
     // Recover solution for either all model components or
     // a specific one.  These functions will return an empty vector
-    // if there is no valid solution.    Only adjustable parameters
-    // are included in the solution vectors.
-    //
-    //<group>
-    Vector<Double> solution() const;
-    Vector<Double> solution(uInt which);
-    //</group>
-
-    // Recover solution for either all model components or
-    // a specific one.  These functions will return an empty vector
     // if there is no valid solution.    All available parameters (fixed or
     // adjustable) are included in the solution vectors.  
     //<group>
-    Vector<Double> availableSolution () const;
+    Vector<Double> availableSolution ();
     Vector<Double> availableSolution (uInt which);
     //</group>
 
@@ -229,6 +247,7 @@ private:
    Fit2D::ErrorTypes fit(const Vector<Double>& values, const Matrix<Double>& pos,
                          const Vector<Double>& sigma);
 
+   Vector<Double> getAvailableSolution() const;
    Vector<Double> getSolution(uInt& iStart, uInt which);
 
    Vector<Double> getParams(uInt which) const;
@@ -252,7 +271,6 @@ private:
    void unNormalize (Double& value, Double& x, Double& y, 
                      Double& width, Double posNorm,
                      Double valNorm) const;
-
 };
 
 inline void Fit2D::normalize (Double& value, Double& x, Double& y, 
