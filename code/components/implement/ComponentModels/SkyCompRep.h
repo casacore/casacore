@@ -31,9 +31,11 @@
 
 #include <aips/aips.h>
 #include <trial/ComponentModels/ComponentType.h>
+#include <trial/ComponentModels/SpectralModel.h>
 
 class GlishRecord;
 class MDirection;
+class MFrequency;
 class MVAngle;
 class String;
 template <class Qtype> class Quantum;
@@ -110,12 +112,79 @@ template <class T> class Vector;
 //   <li> 
 // </todo>
 
-class SkyCompRep
+class SkyCompRep: public SpectralModel
 {
 public:
   // a virtual destructor is needed so that the actual destructor in the
-  // derived class will be used.
+  // derived class will be used. The default version of this function does
+  // nothing.
   virtual ~SkyCompRep();
+
+  // return a reference to the flux of the component. Because this is a
+  // reference, manipulation of the flux values is performed through the
+  // functions in the Flux class. eg.,
+  // <src>comp.flux().setValue(newVal)</src>. If the component Flux varies with
+  // frequency then the flux set using this function is the value at the
+  // reference freqeuncy. 
+  // <group>
+  virtual const Flux<Double> & flux() const = 0;
+  virtual Flux<Double> & flux() = 0;
+  // </group>
+
+  // get the shape of the component.  The default version of this
+  // function returns ComponentType::POINT
+  virtual ComponentType::Shape shape() const = 0;
+
+  // set/get the direction of the centre of component. Default versions of
+  // these functions do nothing.
+  // <group>
+  virtual void setDirection(const MDirection & newDirection) = 0;
+  virtual void direction(MDirection & compDirection) const = 0;
+  // </group>
+
+  // return the number of parameters in the component and set/get them.
+  // <group>
+  virtual uInt nParameters() const = 0;
+  virtual void setParameters(const Vector<Double> & newParms) = 0;
+  virtual void parameters(Vector<Double> & compParms) const = 0;
+  // </group>
+
+  // get the spectral type of the component. The default version of this
+  // function returns ComponentType::CONSTANT_SPECTRUM
+  virtual ComponentType::SpectralShape spectralShape() const;
+
+  // set/get the reference frequency. Default versions of these functions
+  // do nothing.
+  // <group>
+  virtual void setRefFrequency(const MFrequency & newRefFreq);
+  virtual const MFrequency & refFrequency() const;
+  //  virtual void refFrequency(MFrequency & refFreq) const;
+  // </group>
+
+  // Return the scaling factor used to scale the flux of the component at the
+  // specified frequency. The scaling factor is always 1 at the reference
+  // frequency. The default version of this function ignores the sampleFreq
+  // argument and always returns 1.
+  virtual Double scale(const MFrequency & sampleFreq) const;
+
+  // Return the flux (in dimensions of W/m^2/Hz) of the component at the
+  // specified frequency. The default version of this function returns the Flux
+  // at the reference frequency and ignores the sampleFreq argument.
+  virtual Flux<Double> sample(const MFrequency & sampleFreq) const;
+
+  // return the number of parameters in the spectral shape and set/get them.
+  // <group>
+  virtual uInt nSpectralParameters() const;
+  virtual void setSpectralParameters(const Vector<Double> & newParms);
+  virtual void spectralParameters(Vector<Double> & compParms) const;
+  // </group>
+
+  // set/get the label associated with this component. Default versions of
+  // these functions do nothing.
+  // <group>
+  virtual void setLabel(const String & newLabel) = 0;
+  virtual void label(String & compLabel) const = 0;
+  // </group>
 
   // Return the intensity (in Jy/pixel) of the component at the specified
   // direction. The returned Vector contains the different polarizations of the
@@ -131,20 +200,6 @@ public:
   // Stokes::I. The component is gridded equally onto all other axes of the
   // image (ie. spectral axes).
   virtual void project(ImageInterface<Float> & plane) const;
-
-  // set/get the direction of the centre of component.
-  // <group>
-  virtual void setDirection(const MDirection & newDirection) = 0;
-  virtual void direction(MDirection & compDirection) const = 0;
-  // </group>
-
-  // return a reference to the flux of the component. Because this is a
-  // reference, manipulation of the flux values is performed through the
-  // functions in the Flux class. eg., <src>comp.flux().setValue(newVal)</src>
-  // <group>
-  virtual const Flux<Double> & flux() const = 0;
-  virtual Flux<Double> & flux() = 0;
-  // </group>
 
   // Return the Fourier transform of the component at the specified point in
   // the spatial frequency domain. The point is specified by a 3 element vector
@@ -162,24 +217,6 @@ public:
   virtual Flux<Double> visibility(const Vector<Double> & uvw,
 				  const Double & frequency) const = 0;
   // </group>
-
-  // set/get the label associated with this component. The default versions do
-  // not store the labels and always return an empty string. Hence by default
-  // labels are not supported.
-  // <group>
-  virtual void setLabel(const String & newLabel);
-  virtual void label(String & compLabel) const;
-  // </group>
-
-  // return the number of parameters in the component and set/get them.
-  // <group>
-  virtual uInt nParameters() const = 0;
-  virtual void setParameters(const Vector<Double> & newParms) = 0;
-  virtual void parameters(Vector<Double> & compParms) const = 0;
-  // </group>
-
-  // get the shape of the component 
-  virtual ComponentType::Shape shape() const = 0;
 
   // This functions convert between a glish record and a SkyCompRep. This way
   // derived classes can interpret fields in the record in a class specific

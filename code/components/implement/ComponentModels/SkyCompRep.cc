@@ -62,6 +62,96 @@
 SkyCompRep::~SkyCompRep() {
 }
 
+ComponentType::Shape SkyCompRep::shape() const {
+  DebugAssert(ok(), AipsError);
+  return ComponentType::POINT;
+}
+
+void SkyCompRep::setDirection(const MDirection & newDirection) {
+  DebugAssert(ok(), AipsError);
+  // Use newDirection for something to suppress a compiler warning
+  if (&newDirection == 0) {
+  }
+}
+  
+void SkyCompRep::direction(MDirection & compDirection) const {
+  DebugAssert(ok(), AipsError);
+  // Use compDirection for something to suppress a compiler warning
+  if (&compDirection == 0) {
+  }
+}
+
+uInt SkyCompRep::nParameters() const {
+  DebugAssert(ok(), AipsError);
+  return 0;
+}
+
+void SkyCompRep::setParameters(const Vector<Double> & newParms) {
+  DebugAssert(newParms.nelements() == nParameters(), AipsError);
+}
+
+void SkyCompRep::parameters(Vector<Double> & compParms) const {
+  DebugAssert(compParms.nelements() == nParameters(), AipsError);
+}
+
+ComponentType::SpectralShape SkyCompRep::spectralShape() const {
+  DebugAssert(ok(), AipsError);
+  return SpectralModel::spectralShape();
+}
+
+void SkyCompRep::setRefFrequency(const MFrequency & newRefFreq) {
+  // Use newRefFreq for something to suppress a compiler warning
+  SpectralModel::setRefFrequency(newRefFreq);
+  DebugAssert(ok(), AipsError);
+}
+  
+const MFrequency & SkyCompRep::refFrequency() const {
+  DebugAssert(ok(), AipsError);
+  // Use refFreq for something to suppress a compiler warning
+  return SpectralModel::refFrequency();
+}
+
+Double SkyCompRep::scale(const MFrequency & sampleFreq) const {
+  DebugAssert(ok(), AipsError);
+  return SpectralModel::scale(sampleFreq);
+}
+
+Flux<Double> SkyCompRep::sample(const MFrequency & sampleFreq) const {
+  DebugAssert(ok(), AipsError);
+  Flux<Double> scaledFlux(flux().copy());
+  scaledFlux.scaleValue(SpectralModel::scale(sampleFreq));
+  return scaledFlux;
+}
+
+uInt SkyCompRep::nSpectralParameters() const {
+  DebugAssert(ok(), AipsError);
+  return SpectralModel::nSpectralParameters();
+}
+
+void SkyCompRep::setSpectralParameters(const Vector<Double> & newParms) {
+  SpectralModel::setSpectralParameters(newParms);
+  DebugAssert(ok(), AipsError);
+}
+
+void SkyCompRep::spectralParameters(Vector<Double> & compParms) const {
+  DebugAssert(ok(), AipsError);
+  SpectralModel::spectralParameters(compParms);
+}
+
+void SkyCompRep::setLabel(const String & newLabel) {
+  DebugAssert(ok(), AipsError);
+  // Use newLabel for something to suppress a compiler warning
+  if (&newLabel == 0) {
+  }
+}
+
+void SkyCompRep::label(String & compLabel) const {
+  DebugAssert(ok(), AipsError);
+  // Use compLabel for something to suppress a compiler warning
+  if (&compLabel == 0) {
+  }
+}
+
 void SkyCompRep::project(ImageInterface<Float> & image) const {
   const CoordinateSystem coords = image.coordinates();
   const IPosition imageShape = image.shape();
@@ -200,16 +290,6 @@ void SkyCompRep::project(ImageInterface<Float> & image) const {
       }
     }
   }
-}
-
-void SkyCompRep::setLabel(const String & newLabel) {
-  // Use newLabel for something to suppress a compiler warning
-  if (newLabel == "") {
-  }
-}
-
-void SkyCompRep::label(String & compLabel) const {
-  compLabel = "";
 }
 
 Bool SkyCompRep::ok() const {
