@@ -28,7 +28,7 @@
 #                          Charlottesville, VA 22903-2475 USA
 #
 #-----------------------------------------------------------------------------
-# Usage: inhale [-b] [-c|-m] [-D] [-d] [-l] [-n] [-P] [-r #] [-w #]
+# Usage: inhale [-b] [-c|-m] [-D] [-d] [-l] [-n] [-P] [-R NAME] [-r #] [-w #]
 #-----------------------------------------------------------------------------
 # inhale retrieves the latest AIPS++ update from the master ftp directories on
 # aips2.nrao.edu.  It is invoked regularly as a cron job.
@@ -51,6 +51,8 @@
 #          targets will still be remade; see also the "-d" option.
 #   -P     Use passive mode when doing FTP. Useful for firewalls etc. The
 #          FTP client being used must support passive mode.
+#   -R <NAME> instead of downloading the default distribution, get the
+#          one called <NAME>.
 #   -r #   Maximum number of ftp attempts, default 12.
 #          Set this to zero to circumvent the ftp.
 #   -w #   Set retry interval for the ftp in seconds, default 900.
@@ -161,6 +163,7 @@
 
 # Parse command input.
   BLESSED=""
+  RELEASE=
   MODE=incremental
   DINKUM=
   DOCSYS=docsys
@@ -196,6 +199,18 @@
         ;;
      -l)
         LATCHKEY=1
+        ;;
+     -R*)
+        case $1 in
+        -R)
+           shift
+           RELEASE="$1"
+           ;;
+        *)
+           RELEASE=`echo $1 | sed -e 's/^-R//'`
+           ;;
+        esac
+        MSTRFTPD=`echo $MSTRFTPD | sed "s/master$/versions\/$RELEASE\/master/"`
         ;;
      -r*)
         case $1 in
