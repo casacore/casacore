@@ -1,5 +1,5 @@
 //# LoggerHolder.cc: Class to handle a hierarchy of loggers
-//# Copyright (C) 2001
+//# Copyright (C) 2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -209,6 +209,7 @@ void LoggerHolderRep::addParent (const LoggerHolder& logger)
 void LoggerHolderRep::tempClose (Bool closeParents)
 {
   if (itsTablePtr != 0) {
+    itsTablePtr->table().unlock();
     itsSink     = LogSink();
     itsLogger   = LogIO();
     itsTablePtr = 0;
