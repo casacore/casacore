@@ -41,6 +41,7 @@
 #include <aips/Measures/MEpoch.h>
 #include <aips/Measures/Stokes.h>
 #include <aips/Tables/TableRecord.h>
+#include <aips/Logging/LogIO.h>
 
 Double MSInterval::interval_p;
 Double MSInterval::offset_p;
@@ -479,55 +480,63 @@ void MSIter::setFeedInfo()
     Vector<Double> interval=msc_p->feed().interval().getColumn();
     // Assume time dependence
     timeDepFeed_p=True;
-    // if all interval values are zero or very large, 
+    // if all interval values are <= zero or very large, 
     // there is no time dependence
-    if (allEQ(interval,0.0)||allGE(interval,1.e10)) timeDepFeed_p=False;
+    if (allLE(interval,0.0)||allGE(interval,1.e10)) timeDepFeed_p=False;
     else { 
       // check if any antennas appear more than once
-      Vector<Int> antennas=msc_p->feed().antennaId().getColumn();
-      Int nRow=antennas.nelements();
-      Int nUniq=GenSort<Int>::sort(antennas,Sort::Ascending,
-				   Sort::HeapSort | Sort::NoDuplicates);
-      if (nUniq==nRow) timeDepFeed_p=False;
-      else {
-	// check for each antenna in turn..
+      // check for each spectral window in turn..
+      String col=MSFeed::columnName(MSFeed::SPECTRAL_WINDOW_ID);
+      Bool unique = True;
+      for (TableIterator tabIter(msc_p->feed().time().table(),col);
+	   !tabIter.pastEnd(); tabIter.next()) {
+	ROMSFeedColumns msfc(MSFeed(tabIter.table()));
+	// check if any antennas appear more than once
+	Vector<Int> antennas=msfc.antennaId().getColumn();
+	Int nRow=antennas.nelements();
+	Int nUniq=GenSort<Int>::sort(antennas,Sort::Ascending,
+				     Sort::HeapSort | Sort::NoDuplicates);
+	if (nUniq!=nRow) unique=False;
       }
+      timeDepFeed_p=!unique;
     }
     Vector<Int> spwId=msc_p->feed().spectralWindowId().getColumn();
     spwDepFeed_p = !(allEQ(spwId,-1));
     first=True;
     checkFeed_p = False;
-  }  
-  if (!timeDepFeed_p) {
-    // there's no time dependence.
-    if ((spwDepFeed_p && newSpectralWindow_p) || first) {
-      Vector<Int> antennaId=msc_p->feed().antennaId().getColumn();
-      Vector<Int> feedId=msc_p->feed().feedId().getColumn();
-      Int maxAnt=max(antennaId);
-      CJones_p.resize(maxAnt+1);
-      Int maxNumReceptors=max(msc_p->feed().numReceptors().getColumn());
-      receptorAngle_p.resize(maxNumReceptors,maxAnt+1);
-      Vector<Int> spwId=msc_p->feed().spectralWindowId().getColumn();
-      for (uInt i=0; i<spwId.nelements(); i++) {
-	if (((!spwDepFeed_p) || spwId(i)==curSpectralWindow_p)
-	    &&(feedId(i)==0)) {
-	  Int iAnt=antennaId(i);
-	  if (maxNumReceptors==1) {
-	    CJones_p(iAnt)=SquareMatrix<Complex,2>
-	      ((Matrix<Complex>(msc_p->feed().polResponse()(i)))(0,0));
-	  } else {
-	    CJones_p(iAnt)=Matrix<Complex>(msc_p->feed().polResponse()(i));
-	  }
-	  receptorAngle_p.column(iAnt)=
-	    Vector<Double>(msc_p->feed().receptorAngle()(i));
+    if (timeDepFeed_p) {
+      LogIO os;
+      os << LogIO::WARN << LogOrigin("MSIter","setFeedInfo")
+	 <<" time dependent feed table encountered - not correctly handled "
+	 <<" - continuing anyway"<< LogIO::POST;
+    }
+  }
+  // assume there's no time dependence, if there is we'll end up using the
+  // last entry.
+  if ((spwDepFeed_p && newSpectralWindow_p) || first) {
+    Vector<Int> antennaId=msc_p->feed().antennaId().getColumn();
+    Vector<Int> feedId=msc_p->feed().feedId().getColumn();
+    Int maxAnt=max(antennaId);
+    CJones_p.resize(maxAnt+1);
+    Int maxNumReceptors=max(msc_p->feed().numReceptors().getColumn());
+    receptorAngle_p.resize(maxNumReceptors,maxAnt+1);
+    Vector<Int> spwId=msc_p->feed().spectralWindowId().getColumn();
+    for (uInt i=0; i<spwId.nelements(); i++) {
+      if (((!spwDepFeed_p) || spwId(i)==curSpectralWindow_p)
+	  &&(feedId(i)==0)) {
+	Int iAnt=antennaId(i);
+	if (maxNumReceptors==1) {
+	  CJones_p(iAnt)=SquareMatrix<Complex,2>
+	    ((Matrix<Complex>(msc_p->feed().polResponse()(i)))(0,0));
+	} else {
+	  CJones_p(iAnt)=Matrix<Complex>(msc_p->feed().polResponse()(i));
 	}
+	receptorAngle_p.column(iAnt)=
+	  Vector<Double>(msc_p->feed().receptorAngle()(i));
       }
-    }	
-  } else {
-    throw(AipsError("MSIter::setFeedInfo() - time dependent feed table NYI"));
+    }
   }
 }
-
 
 void MSIter::setDataDescInfo()
 {
