@@ -1,5 +1,5 @@
 //# LinearXform.h: Perform a linear transform between input and output vectors
-//# Copyright (C) 1997,1998,1999,2000,2001,2003
+//# Copyright (C) 1997-2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -31,6 +31,8 @@
 
 #include <aips/aips.h>
 #include <wcslib/lin.h>
+
+
 template<class T> class Vector;
 template<class T> class Matrix;
 class String;
@@ -50,18 +52,18 @@ class String;
 // </prerequisite>
 //
 // <synopsis>
-// This class represents the common linear part of a FITS coordinate 
+// This class represents the common linear part of a FITS coordinate
 // transformation. In particular it does the following:
 // <srcblock>
 // world = cdelt * PC * (pixel - crpix)
 // </srcblock>
-// Where PC is an NxN matrix; pixel, crpix (reference pixel) and world are 
-// length N vectors; and cdelt (increment) is an NxN diagonal matrix, 
+// Where PC is an NxN matrix; pixel, crpix (reference pixel) and world are
+// length N vectors; and cdelt (increment) is an NxN diagonal matrix,
 // represented as a length N vector.
 //
 // Normally this class isn't used directly, rather it is used indirectly through
 // a class like <linkto class=LinearCoordinate>LinearCoordinate</linkto>.
-// 
+//
 // The actual computations are performed by WCSLIB, written by Mark Calabretta
 // of the ATNF.
 // </synopsis>
@@ -72,12 +74,12 @@ class String;
 //
 // <srcblock>
 //    Vector<Double> crpix(2), cdelt(2);
-//    crpix(0) = 10.0; crpix(1) = 20.0; 
-//    cdelt(0) = 1.0; cdelt(1) = -1.0; 
+//    crpix(0) = 10.0; crpix(1) = 20.0;
+//    cdelt(0) = 1.0; cdelt(1) = -1.0;
 //    LinearXform lxf(crpix, cdelt);
 //
 //    String errMsg;
-//    Vector<Double> world, pixel(2); 
+//    Vector<Double> world, pixel(2);
 //    pixel = 10.0;
 //    Bool ok = lxf.reverse(world, pixel, errMsg);
 //    if (ok) {
@@ -100,7 +102,7 @@ class String;
 // <todo asof="1997/01/13">
 //   <li> Allow different numbers of pixel and world axes.
 // </todo>
-// 
+//
 
 
 class LinearXform
@@ -112,7 +114,7 @@ public:
     LinearXform(uInt naxis=1);
 
     // Construct the linear transformation from the supplied reference pixel
-    // and increment. The PC matrix is the unit matrix. 
+    // and increment. The PC matrix is the unit matrix.
     // <src>crpix</src> and <src>cdelt</src> must have the same number
     // of elements.
     LinearXform(const Vector<Double> &crpix, const Vector<Double> &cdelt);
@@ -137,14 +139,14 @@ public:
     // number of pixel axes.
     uInt nWorldAxes() const;
 
-    // Convert world coordinates to pixel coordinates (forward), or pixel 
+    // Convert world coordinates to pixel coordinates (forward), or pixel
     // coordinates to world (reverse). If the conversion works True is returned,
     // otherwise False is returned and errorMsg is set.  The output vectors
     // are resized appropriately.
     // <group>
-    Bool forward(Vector<Double> &pixel, const Vector<Double> &world, 
+    Bool forward(Vector<Double> &pixel, const Vector<Double> &world,
                         String &errorMsg) const;
-    Bool reverse(Vector<Double> &world, const Vector<Double> &pixel, 
+    Bool reverse(Vector<Double> &world, const Vector<Double> &pixel,
                         String &errorMsg) const;
     // </group>
 
@@ -181,21 +183,13 @@ public:
               Double tol=1e-6) const;
     // </group>
 
-    // Recover the WCS structure.  Generally this is not needed,
-    // but DirectionCoordinate needs to get at it for its
-    // interface to wcsmix().  Get this pointer and use it
-    // immediately, but do NOT delete it !
-    linprm* linprmWCS() const {return linprm_p;}
-
 private:
     // A WCSLIB C-structure.
-    linprm* linprm_p;
+    mutable linprm linprm_p;
+
     Bool isPCDiagonal_p;
-//
-    linprm* make_linprm(int naxis) const;
-    void delete_linprm(linprm *&to) const;
-    void set_linprm(linprm *to, const Vector<double> &crpix,
-                    const Vector<double> &cdelt, const Matrix<double> &pc) const;
+
+    void set_linprm();
 };
 
 #endif
