@@ -146,7 +146,7 @@ The various clauses have the following meaning:
        \\It is also possible to specify a set instead of a table name.
        This can be useful when the result of a
        \htmlref{subquery}{TAQL:SUBQUERIES} is used in the main query.
-       Such a \htmlref{set}{TAQL:SET} can contain only one element.
+       Such a \htmlref{set}{TAQL:SETS} can contain only one element.
        The parts of this element can be any expression resulting in a scalar.
 \end{description}
 Although the clauses column\_list, WHERE, and ORDERBY are optional,
@@ -154,8 +154,8 @@ at least one of them has to be used. Otherwise no operation is
 performed on the primary table (which makes no sense).
 
 
-\label{TAQL:EXPRESSIONS}
 \section{Expressions}
+\label{TAQL:EXPRESSIONS}
 An arbitrary expression can be used in the WHERE clause, as a sort
 key in the ORDERBY clause, or in the set in the GIVING clause.
 Note that the expression result must be
@@ -202,8 +202,8 @@ is used TaQL can do the following automatic conversions:
 \\- from String to DateTime
 
 
-\label{TAQL:CONSTANTS}
 \subsection{Constants}
+\label{TAQL:CONSTANTS}
 Scalar constants of the various data types can be formed as follows
 (which is very similar to Glish):
 \begin{itemize}
@@ -310,8 +310,8 @@ as such.
 \\Whenever needed it is easy to implement a Glish-like array function
 to construct a constant array.
 
-\label{TAQL:OPERATORS}
 \subsection{Operators}
+\label{TAQL:OPERATORS}
 The following operators can be used (with their normal meaning and
 precedence) for scalars:
 \begin{description}
@@ -363,8 +363,8 @@ precedence) for scalars:
 All these operators can be used in the same way for arrays
 (also a mix of scalar and array).
 
-\label{TAQL:FUNCTIONS}
 \subsection{Functions}
+\label{TAQL:FUNCTIONS}
 Some functions have 2 names. One name is the AIPS++/Glish name, while the
 other is the name as used in SQL.
 In the following tables the function names are shown in uppercase,
@@ -414,7 +414,7 @@ These functions can be used on a scalar or an array argument.
   \item[ \texttt{DateTime DATETIME(string),  DateTime CTOD(string)} ]
        Parse the string and convert it to a date/time. The syntax of
        date/time is explained in class
-       \htmladdnormallink{MVTime}{/../../aips/implement/Measures/MVTime.html}.
+       \htmladdnormallink{MVTime}{../../aips/implement/Measures/MVTime.html}.
   \item[ \texttt{DateTime MJDTODATE(double)} ]
        The double value, which has to be a MJD (ModifiedJulianDate), is
        converted to a DateTime.
@@ -570,8 +570,8 @@ These functions can only be used on arrays.
        subset from a table.
 \end{description}
 
-\label{TAQL:COLUMNS}
 \subsection{Table Columns}
+\label{TAQL:COLUMNS}
 A column can contain a scalar or an array value.
 Note that only columns in the primary table can be handled directly.
 A column in another table can be used via a subquery. E.g.
@@ -600,8 +600,8 @@ them with a backslash. E.g. \verb+\+\texttt{IN}.
 by another backslash. E.g. in Glish:
 \texttt{tab.query('DATE}\verb+\\_+\texttt{OBS$>$10MAR1996')}.
 
-\label{TAQL:KEYWORDS}
 \subsection{Table Keywords}
+\label{TAQL:KEYWORDS}
 It is possible to use table or column keywords, which can have
 a scalar or an array value. A table keyword has to be specified
 as \texttt{::key}. In an expression the \texttt{::} part can be omitted
@@ -620,8 +620,8 @@ of the table. E.g.
 A keyword can be used in any expression. It is evaluated immediately
 and transformed to a constant value.
 
-\label{TAQL:INDEXING}
 \subsection{Array Index Operator}
+\label{TAQL:INDEXING}
 It is possible to take a subsection or a
 single element from an array column, keyword or expression
 using the index operator
@@ -673,8 +673,8 @@ The second form results in reading the entire array.
 \\From this example it should be clear that indexing an array
 expression has to be done with care.
 
-\label{TAQL:SETS}
 \subsection{Sets}
+\label{TAQL:SETS}
 As in SQL the operator \texttt{IN} can be used to do a selection
 based on a set or array. E.g.
 \begin{verbatim}
@@ -743,8 +743,8 @@ discrete values, while the 3rd form results in a continuous interval.
 Another form of constructing a set is the
 \htmlref{subquery}{TAQL:SUBQUERIES} shown below.
 
-\label{TAQL:SUBQUERIES}
 \subsection{Subqueries}
+\label{TAQL:SUBQUERIES}
 As in SQL it is possible to create a set from a subquery. A
 subquery has the same syntax as a main query, but has to be
 enclosed in square brackets. Basically it looks like:
