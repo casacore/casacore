@@ -1,5 +1,5 @@
 //# ByteSink.cc: Class for write-only access to data in a given format
-//# Copyright (C) 1996
+//# Copyright (C) 1996,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -139,6 +139,13 @@ ByteSink& ByteSink::operator<< (const DComplex& value)
 ByteSink& ByteSink::operator<< (const String& value)
 {
     itsTypeIO->write (1, &value);
+    return *this;
+}
+
+ByteSink& ByteSink::operator<< (const Char* value)
+{
+    String str(value);
+    itsTypeIO->write (1, &str);
     return *this;
 }
 

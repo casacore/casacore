@@ -1,5 +1,5 @@
 //# ByteSink.h: Class for write-only access to data in a given format
-//# Copyright (C) 1996
+//# Copyright (C) 1996,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -28,9 +28,6 @@
 #if !defined(AIPS_BYTESINK_H)
 #define AIPS_BYTESINK_H
 
-#if defined (_AIX)
-#pragma implementation ("ByteSink.cc")
-#endif
 
 //# Includes
 #include <aips/aips.h>
@@ -130,6 +127,7 @@ public:
     ByteSink& operator<< (const Complex& value);
     ByteSink& operator<< (const DComplex& value);
     ByteSink& operator<< (const String& value);
+    ByteSink& operator<< (const Char* value);
     // </group>
 
     // These functions write multiple values of the given type.
