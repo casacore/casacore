@@ -293,6 +293,7 @@ void MeasConvert<M>::clear() {
   unit = Unit();
   outref = typename M::Ref();
   crout.resize(0, True);
+  cvdat->clearConvert();
   delete cvdat; cvdat = 0;
   delete offin; offin = 0;
   delete offout; offout = 0;

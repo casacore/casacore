@@ -151,7 +151,7 @@ Bool MCFrame::getTDB(Double &tdb) {
     if (!epTDBp) {
       epTDBp = new Double;
       *(epTDBp) = (*(MEpoch::Convert *)
-		   (epConvTDB))(myf.epoch()->getData()).getValue().get();
+		   (epConvTDB))().getValue().get();
     };
     tdb = *(epTDBp);
     return True;
@@ -166,7 +166,7 @@ Bool MCFrame::getLong(Double &tdb) {
       posLongp = new Vector<Double>(3);
       posITRFp = new MVPosition;
       *(posITRFp) = (*(MPosition::Convert *)
-		     (posConvLong))(myf.position()->getData()).getValue();
+		     (posConvLong))().getValue();
       *(posLongp) = posITRFp->get();
     };
     tdb = MVAngle(posLongp->operator()(1))(-0.5);
@@ -182,7 +182,7 @@ Bool MCFrame::getLat(Double &tdb) {
       posLongp = new Vector<Double>(3);
       posITRFp = new MVPosition;
       *(posITRFp) = (*(MPosition::Convert *)
-		     (posConvLong))(myf.position()->getData()).getValue();
+		     (posConvLong))().getValue();
       *(posLongp) = posITRFp->get();
     };
     tdb = posLongp->operator()(2);
@@ -198,7 +198,7 @@ Bool MCFrame::getITRF(MVPosition &tdb) {
       posLongp = new Vector<Double>(3);
       posITRFp = new MVPosition;
       *(posITRFp) = (*(MPosition::Convert *)
-		     (posConvLong))(myf.position()->getData()).getValue();
+		     (posConvLong))().getValue();
       *(posLongp) = posITRFp->get();
     };
     tdb = *posITRFp;
@@ -214,7 +214,7 @@ Bool MCFrame::getRadius(Double &tdb) {
       posLongp = new Vector<Double>(3);
       posITRFp = new MVPosition;
       *(posITRFp) = (*(MPosition::Convert *)
-		     (posConvLong))(myf.position()->getData()).getValue();
+		     (posConvLong))().getValue();
       *(posLongp) = posITRFp->get();
     };
     tdb = posLongp->operator()(0);
@@ -229,7 +229,7 @@ Bool MCFrame::getLAST(Double &tdb) {
     if (!epLASTp) {
       epLASTp = new Double;
       *(epLASTp) = (*(MEpoch::Convert *)
-		    (epConvLAST))(myf.epoch()->getData()).getValue().get();
+		    (epConvLAST))().getValue().get();
     };
     tdb = fmod(*(epLASTp),1.0);
     return True;
@@ -249,7 +249,7 @@ Bool MCFrame::getJ2000(MVDirection &tdb) {
     if (!dirJ2000p) {
       dirJ2000p = new MVDirection;
       *(dirJ2000p) = (*(MDirection::Convert *)
-		      (dirConvJ2000))(myf.direction()->getData()).getValue();
+		      (dirConvJ2000))().getValue();
     };
     tdb = *(dirJ2000p);
     return True;
@@ -263,7 +263,7 @@ Bool MCFrame::getB1950(MVDirection &tdb) {
     if (!dirB1950p) {
       dirB1950p = new MVDirection;
       *(dirB1950p) = (*(MDirection::Convert *)
-		      (dirConvB1950))(myf.direction()->getData()).getValue();
+		      (dirConvB1950))().getValue();
     };
     tdb = *(dirB1950p);
     return True;
@@ -277,7 +277,7 @@ Bool MCFrame::getApp(MVDirection &tdb) {
     if (!dirAppp) {
       dirAppp = new MVDirection;
       *(dirAppp) = (*(MDirection::Convert *)
-		    (dirConvApp))(myf.direction()->getData()).getValue();
+		    (dirConvApp))().getValue();
     };
     tdb = *(dirAppp);
     return True;
@@ -291,7 +291,7 @@ Bool MCFrame::getLSR(Double &tdb) {
     if (!radLSRp) {
       radLSRp = new Double;
       *(radLSRp) = (*(MRadialVelocity::Convert *)
-		    (radConvLSR))(myf.radialVelocity()->getData()).getValue();
+		    (radConvLSR))().getValue();
     };
     tdb = *(radLSRp);
     return True;
