@@ -1,5 +1,5 @@
-//# aips.cc: Global initialization for namespace management, standard types, etc.
-//# Copyright (C) 1993,1994,1996,1997
+//# aips.cc: Global initialization for standard types, etc.
+//# Copyright (C) 1993,1994,1996,1997,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -26,8 +26,6 @@
 //# $Id$
 
 #include <aips/aips.h>
-#include <stdio.h>
-#include <stdlib.h>
 
 #if defined(AIPS_DEBUG)
 Bool aips_debug_on = True;
