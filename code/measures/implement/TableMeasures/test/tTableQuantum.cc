@@ -42,6 +42,7 @@
 #include <aips/Arrays/Array.h>
 #include <aips/Arrays/Vector.h>
 #include <aips/Arrays/ArrayIter.h>
+#include <aips/OS/Timer.h>
 #include <aips/Exceptions.h>
 #include <iostream.h>
 
@@ -132,7 +133,7 @@ int main(int argc)
       } end_try;
 
       try {
-	// The vaiable unit's column exists but the units type isn't String
+	// The variable unit's column exists but the units type isn't String
 	ScalarColumnDesc<Int> eucol("testvarcolumn",
 		  "variable units column with incorrect type");
 	td.addColumn(eucol);
@@ -353,7 +354,7 @@ int main(int argc)
       if (doExcep) {
 	try {
 	  Array<Quantum<Double> > badShapeArr(IPosition(2,2));
-	  roaqCol.get(badShapeArr, 0, False);
+	  roaqCol.get(0, badShapeArr, False);
 	} catch (AipsError x) {
 	  cout << "The following line should be a ";
 	  cout << "Table array conformance error exception.\n";
@@ -363,7 +364,7 @@ int main(int argc)
       {
 	// This should succeed.
 	Array<Quantum<Double> > badShapeArr(IPosition(2,2));
-	roaqCol.get(badShapeArr, 0, True);
+	roaqCol.get(0, badShapeArr, True);
 	cout << badShapeArr << endl;
       }
 
@@ -373,6 +374,11 @@ int main(int argc)
       ROArrayQuantColumn<Double> roaqCol1(qtab, "ArrQuantDouble", "kHz");
       cout << roaqCol1(0) << endl;
       cout << roaqCol1(0, "Hz") << endl;
+
+      ROArrayQuantColumn<Double> roaqCol2;
+      roaqCol2.attach (qtab, "ArrQuantDouble");
+      roaqCol2.attach (qtab, "ArrQuantDouble", "kHz");
+      roaqCol2.reference (roaqCol1);
     }
     {
       // A second ArrayQuantColumn with variable units but in this case
@@ -430,7 +436,7 @@ int main(int argc)
     }
 
   } catch (AipsError x) {
-    cout << "Unexpected exception: " << x.getMesg() << endl;
+    cout << "Unexpected exception1: " << x.getMesg() << endl;
     exit(1);
   } end_try;
 
@@ -451,7 +457,56 @@ int main(int argc)
       cout << "Quantum " << i << ": " << rosqCol(i) << endl;
     }
   } catch (AipsError x) {
-    cout << "Unexpected exception: " << x.getMesg() << endl;
+    cout << "Unexpected exception2: " << x.getMesg() << endl;
+    exit(1);
+  } end_try;
+
+  // Now test the performance by putting arrays in 5000 rows.
+  try {
+    Table qtab ("tTableQuantum_tmp.tab", Table::Update);
+    qtab.addRow(5000);
+    IPosition shape(2, 3, 2);
+    Array<Quantum<Double> > aqArr(shape);
+    aqArr = Quantum<Double>(1.41212, "GHz");
+    Array<Double> tabArr(shape);
+    tabArr = 1.41212;
+    ArrayQuantColumn<Double> aqCol(qtab, "ArrQuantDouble");
+    ArrayQuantColumn<Double> aqCol2(qtab, "ArrQuantDoubleNonVar");
+    ArrayColumn<Double> tabCol(qtab, "ArrQuantDouble");
+    cout << ">>>" << endl;
+    Timer timer;
+    for (uInt i=0; i<5000; i++) {
+      aqCol.put (i, aqArr);
+    }
+    timer.show ("put tq var arrays");
+    timer.mark();
+    for (uInt i=0; i<5000; i++) {
+      aqCol2.put (i, aqArr);
+    }
+    timer.show ("put tq fix arrays");
+    timer.mark();
+    for (uInt i=0; i<5000; i++) {
+      tabCol.put (i, tabArr);
+    }
+    timer.show ("put tab    arrays");
+    timer.mark();
+    for (uInt i=0; i<5000; i++) {
+      aqCol.get (i, aqArr);
+    }
+    timer.show ("get tq var arrays");
+    timer.mark();
+    for (uInt i=0; i<5000; i++) {
+      aqCol2.get (i, aqArr);
+    }
+    timer.show ("get tq fix arrays");
+    timer.mark();
+    for (uInt i=0; i<5000; i++) {
+      tabCol.get (i, tabArr);
+    }
+    timer.show ("get tab    arrays");
+    cout << "<<<" << endl;
+  } catch (AipsError x) {
+    cout << "Unexpected exception3: " << x.getMesg() << endl;
     exit(1);
   } end_try;
 

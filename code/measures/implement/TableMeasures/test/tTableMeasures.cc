@@ -55,6 +55,7 @@
 #include <aips/Arrays/Vector.h>
 #include <aips/Utilities/ValType.h>
 #include <aips/Utilities/Assert.h>
+#include <aips/OS/Timer.h>
 #include <aips/Exceptions/Error.h>
 #include <iostream.h>
 
@@ -529,6 +530,7 @@ int main(int argc)
 	tmpCol.attach(tab, "TimeOffset");
       }
       tmpCol.throwIfNull();
+      AlwaysAssertExit (tmpCol.columnName() == "TimeOffset");
       cout << "Null MEpochScaCol successfully attached\n";
       // no assignment operator but there is a copy constructor
       MEpoch::ScalarColumn timeCol(tmpCol);
@@ -536,6 +538,15 @@ int main(int argc)
       timeCol.setDescRefCode (MEpoch::GAST);
       timeCol.setDescOffset (obsTime);
       timeCol.setDescUnits (u);
+
+      {
+	ROTableMeasColumn tmcol(tab, "Time1Arr");
+	AlwaysAssertExit (tmcol.columnName() == "Time1Arr");
+	tmcol.attach (tab, "TimeOffset");
+	AlwaysAssertExit (tmcol.columnName() == "TimeOffset");
+	tmcol.reference (ROTableMeasColumn(tab, "Time1Arr"));
+	AlwaysAssertExit (tmcol.columnName() == "Time1Arr");
+      }
 
       // print some details things about the column
       if (timeCol.measDesc().isRefCodeVariable()) {
@@ -933,6 +944,7 @@ int main(int argc)
       MEpoch::ROArrayColumn arrayCol(tab, "Time1Arr");	
       Vector<MEpoch> ew;
       arrayCol.get(0, ew, True);
+      ew = arrayCol(0);
       for (uInt i=0; i<10; i++) {
 	AlwaysAssertExit (ew(i).getRef().getType() == MEpoch::TAI);
 	const MEpoch* offptr = dynamic_cast<const MEpoch*>
@@ -1064,6 +1076,24 @@ int main(int argc)
 	MEpoch tmp = MEpoch::Convert (outArr(i), inArr(i).getRef())();
 	AlwaysAssertExit (near (tmp.get("s"), inArr(i).get("s"), 1.e-10));
       }
+      {
+	// Resetting cannot be done, since the table is not empty.
+	MEpoch::ArrayColumn arrayCol(tab, "Time1Arr");
+	Bool excp = False;
+	try {
+	  arrayCol.setDescRefCode (MEpoch::TAI);
+	} catch (AipsError) {
+	  excp = True;
+	}
+	AlwaysAssertExit (excp);
+	excp = False;
+	try {
+	  arrayCol.setDescOffset (obsTime);
+	} catch (AipsError) {
+	  excp = True;
+	}
+	AlwaysAssertExit (excp);
+      }
       // One last thing to test...test array conformance exception
       if (doExcep) {
 	try {
@@ -1075,6 +1105,11 @@ int main(int argc)
 	  cout << x.getMesg() << endl;
 	} end_try;
       }
+    }
+
+    // Do finally some performance checking.
+    {
+      Timer timer;
     }
 
     cout << "Test completed normally...bye.\n";
