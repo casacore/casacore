@@ -26,7 +26,7 @@
 //# $Id$
 
 #if !defined(AIPS_INTERPOLATE2D_H)
-#define AIPS_INTERPOLATE2D_H
+n#define AIPS_INTERPOLATE2D_H
 
 //# Includes
 #include <aips/aips.h>
@@ -83,7 +83,7 @@
 // </todo>
 
 
-template<class T> class Interpolate2D
+class Interpolate2D
 {
  public:
 
@@ -110,65 +110,75 @@ template<class T> class Interpolate2D
   // Assignment operator (copy semantics)
   Interpolate2D& operator=(const Interpolate2D& other);
 
-  // Interpolation methods return status of interpolation
-  // do one interpolation, supply Matrix, pixel coordinate
-  // and method
+  // Do one interpolation, supply Matrix/Array and mask (True is good),
+  // pixel coordinate and method.  Returns False if coordinate
+  // out of range or data are masked.
   // <group>
-  Bool  interp(T& result, 
-               const Vector<Double>& where,
-               const Matrix<T>& data, 
-               Interpolate2D<T>::Method method=Interpolate2D<T>::LINEAR) const;
-
-  // do one interpolation, supply Matrix and mask (True is good),
-  // pixel coordinate and method
-  Bool  interp(T& result, 
-               const Vector<Double>& where,
-               const Matrix<T>& data, 
-               const Matrix<Bool>& mask,
-               Interpolate2D<T>::Method method=Interpolate2D<T>::LINEAR) const;
-
-  // do one interpolation, supply Array, pixel coordinate and method
-  Bool interp(T& result, 
-              const Vector<Double>& where, 
-              const Array<T>& data, 
-              Interpolate2D<T>::Method method=Interpolate2D<T>::LINEAR) const;
-
-  // do one interpolation, supply Array and mask (True is good), pixel
-  // coordinate and method
-  Bool interp(T& result, 
-              const Vector<Double>& where, 
-              const Array<T>& data, 
-              const Array<Bool>& mask,
-              Interpolate2D<T>::Method method=Interpolate2D<T>::LINEAR) const;
+  Bool  interp (Float& result, 
+                const Vector<Double>& where,
+                const Matrix<Float>& data, 
+                Interpolate2D::Method method=Interpolate2D::LINEAR) const;
+  Bool interp (Float& result, 
+               const Vector<Double>& where, 
+               const Array<Float>& data, 
+               Interpolate2D::Method method=Interpolate2D::LINEAR) const;
+  Bool  interp (Float& result, 
+                const Vector<Double>& where,
+                const Matrix<Float>& data, 
+                const Matrix<Bool>& mask,
+                Interpolate2D::Method method=Interpolate2D::LINEAR) const;
+  Bool interp (Float& result, 
+               const Vector<Double>& where, 
+               const Array<Float>& data, 
+               const Array<Bool>& mask,
+               Interpolate2D::Method method=Interpolate2D::LINEAR) const;
   //</group>
+
+  // Do one interpolation, supply boolean Matrix (True is good),
+  // pixel coordinate and method.  Returns False if coordinate
+  // out of range. The result is False if any data value in the interpolation
+  // grid are False (bad), else True.
+  // <group>
+  Bool  interp (Bool& result, 
+                const Vector<Double>& where,
+                const Matrix<Bool>& data, 
+                Interpolate2D::Method method=Interpolate2D::LINEAR) const;
+  Bool interp (Bool& result, 
+               const Vector<Double>& where, 
+               const Array<Bool>& data, 
+               Interpolate2D::Method method=Interpolate2D::LINEAR) const;
+  // </group>
 
 // Convert string ("nearest", "linear", "cubic") to Method
 // Minimum match will do.
-  static Interpolate2D<T>::Method stringToMethod(const String& method);
+  static Interpolate2D::Method stringToMethod(const String& method);
 
 private:
 
   // Are any of the mask pixels bad ? Returns False if no mask.
-  Bool anyBadMaskPixels (const Matrix<Bool>*& mask) const;
+  Bool anyBadMaskPixels (const Matrix<Bool>*& mask, Int i1, Int i2, Int j1, Int j2) const;
 
   // nearest neighbour interpolation
-  Bool interpNearest(T& result, const Vector<Double>& where, const Matrix<T>& data,
+  Bool interpNearest(Float& result, const Vector<Double>& where, const Matrix<Float>& data,
                      const Matrix<Bool>*& maskPtr) const;
+  Bool interpNearestBool (Bool& result, const Vector<Double>& where, const Matrix<Bool>& data) const;
 
-  // bi-linear interpolation
-  Bool interpLinear(T& result, const Vector<Double>& where, const Matrix<T>& data,
+  // bi-linear interpolation 
+  Bool interpLinear(Float& result, const Vector<Double>& where, const Matrix<Float>& data,
                     const Matrix<Bool>*& maskPtr) const;
+  Bool interpLinearBool (Bool& result, const Vector<Double>& where, const Matrix<Bool>& data) const;
 
   // bi-cubic interpolation
-  Bool interpCubic(T& result, const Vector<Double>& where, const Matrix<T>& data,
+  Bool interpCubic(Float& result, const Vector<Double>& where, const Matrix<Float>& data,
                     const Matrix<Bool>*& maskPtr) const;
+  Bool interpCubicBool (Bool& result, const Vector<Double>& where, const Matrix<Bool>& data) const;
 
   // helping routine from numerical recipes
-  void bcucof (Matrix<T>& c, const Vector<T>& y, const Vector<T>& y1, 
-               const Vector<T>& y2, const Vector<T>& y12,
+  void bcucof (Matrix<Double>& c, const Vector<Double>& y, const Vector<Double>& y1, 
+               const Vector<Double>& y2, const Vector<Double>& y12,
 	       Double d1, Double d2) const;
 //
-  Interpolate2D<T>::Method itsMethod;
+  Interpolate2D::Method itsMethod;
 //
   Int itsI, itsJ;
   Int itsMinI, itsMaxI, itsMinJ, itsMaxJ;
@@ -176,8 +186,8 @@ private:
 
 // These are private temporaries for cubic interpolation
 
-  mutable Vector<T> itsY, itsY1, itsY2, itsY12;
-  mutable Matrix<T> itsC;
+  mutable Vector<Double> itsY, itsY1, itsY2, itsY12;
+  mutable Matrix<Double> itsC;
 };
 
 #endif
