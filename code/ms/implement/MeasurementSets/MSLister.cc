@@ -37,7 +37,6 @@
 #include <aips/Arrays/ArrayMath.h>
 #include <aips/Arrays/MaskedArray.h>
 #include <aips/Arrays/MaskArrMath.h>
-#include <aips/Glish/GlishArray.h>
 #include <aips/iomanip.h>
 #include <aips/iostream.h>
 
@@ -226,7 +225,7 @@ void MSLister::listHeader()
 void MSLister::getRanges()
 {
   // Get the range of values for the items specified in items_p, into
-  // a GlishRecord.
+  // a Record.
   // Assumes items_p has already been set (should add check on this)
   // **SPW**
   
@@ -234,7 +233,7 @@ void MSLister::getRanges()
   ranges_p = msr.range(items_p);		
 
   // Print out the retrieved ranges:
-  //  cout << "Printing out the GlishRecord ranges_p:" << endl;
+  //  cout << "Printing out the Record ranges_p:" << endl;
   //  cout << ranges_p << endl;
 }
 
@@ -285,7 +284,7 @@ void MSLister::list()
   mss_p.select(ranges_p);
 
   // Spectral and polarisation selection are handled separately from
-  // the GlishRecord ranges_p
+  // the Record ranges_p
   // uInt startChan=0, widthChan=1, incrChan=1;
   // if (!mss_p.selectChannel(nchan_p,startChan,widthChan,incrChan) return bb2;
   // if (!mss_p.selectPolarization(pols_p)) return boo-boo3;
@@ -305,12 +304,12 @@ void MSLister::list()
 
 Bool MSLister::selectTime (Double& inputStartTime, Double& inputStopTime)
 {
-  // First get the range of available times in the MS.  The private GlishRecord
+  // First get the range of available times in the MS.  The private Record
   // ranges_p has previously been set in getRanges(), while dataRecords_p is a
   // private Record member.
   Vector <Double> msTimeLimits(2);
-  ranges_p.toRecord(dataRecords_p);
-  dataRecords_p.get("time", msTimeLimits);
+  dataRecords_p = ranges_p;
+  msTimeLimits = dataRecords_p.asArrayDouble(RecordFieldId("time"));
 
   // Make sure requested times make sense
   Bool ok = (inputStartTime < inputStopTime &&
@@ -326,7 +325,7 @@ Bool MSLister::selectTime (Double& inputStartTime, Double& inputStopTime)
   if (inputStartTime> msTimeLimits(0)) {msTimeLimits(0) = inputStartTime;}
   if (inputStopTime < msTimeLimits(1)) {msTimeLimits(1) = inputStopTime;}
   dataRecords_p.define("time", msTimeLimits);
-  ranges_p.fromRecord(dataRecords_p);
+  ranges_p = dataRecords_p;
 
   // Signal good time selection
   os_p  << "Timerange selection made:     "
@@ -343,7 +342,7 @@ Bool MSLister::selectTime (Double& inputStartTime, Double& inputStopTime)
 void MSLister::listData()
 {
   // Now get the data for the listing.  
-  // Currently we are extracting the data through a GlishRecord 
+  // Currently we are extracting the data through a Record 
   // to a Record to Arrays using MSSelector::getData, which requires
   // a list of items, a reasonable default set of which is defined
   // here as a Vector<String> passable to MSSelector::getData 
@@ -369,8 +368,8 @@ void MSLister::listData()
   getRanges();
 
   // Now extract the selected data Record.  Note that mss_p is the *selected*
-  // data, and mss_p.getData() is an implicit GlishRecord object
-  mss_p.getData(items_p,False).toRecord(dataRecords_p);
+  // data, and mss_p.getData() is an implicit Record object
+  dataRecords_p = mss_p.getData(items_p,False);
 
   // Construct arrays for the Record items.  The V-float declaration
   // appears to be necessary (instead of V-double) despite the get()
@@ -381,6 +380,16 @@ void MSLister::listData()
   Array <Float>		ampl,phase;
   Array <Float>	        weight;
 
+  time = dataRecords_p.asArrayDouble(RecordFieldId("time"));
+  ant1 = dataRecords_p.asArrayInt(RecordFieldId("ant1"));
+  ant2 = dataRecords_p.asArrayInt(RecordFieldId("ant2"));
+  uvdist = dataRecords_p.asArrayDouble(RecordFieldId("uvdist"));
+  datadescid = dataRecords_p.asArrayInt(RecordFieldId("data_desc_id"));
+  fieldid = dataRecords_p.asArrayInt(RecordFieldId("field_id"));
+  ampl = dataRecords_p.asArrayFloat(RecordFieldId("ampl"));
+  phase = dataRecords_p.asArrayFloat(RecordFieldId("phase"));
+  weight = dataRecords_p.asArrayFloat(RecordFieldId("weight"));
+/*
   // Extract the values from the Record into the Arrays
   dataRecords_p.get("time", time);  // in sec
   dataRecords_p.get("antenna1", ant1);
@@ -392,6 +401,7 @@ void MSLister::listData()
   dataRecords_p.get("amplitude", ampl);
   dataRecords_p.get("phase", phase);  // in rad
   dataRecords_p.get("weight", weight);
+*/
 
   // Number of rows that will be listed
   Int nrows = time.nelements();
@@ -418,33 +428,33 @@ void MSLister::listData()
   Vector<Double> uvminmax(2);
   uvminmax(0)=min(uvdist);
   uvminmax(1)=max(uvdist);
-  ranges_p.add("uvdist",GlishArray(uvminmax));
+  ranges_p.define("uvdist",uvminmax);
 
   Vector<Float> amplminmax(2);
   amplminmax(0)=min(ampl(ampl>0.0f));
   amplminmax(1)=max(ampl);
-  ranges_p.add("amplitude",GlishArray(amplminmax));
+  ranges_p.define("amplitude",amplminmax);
 
   Vector<Float> phminmax(2);
   phminmax(0)=min(abs(phase(phase!=0.0f)));  // 
   phminmax(1)=max(phase);
-  ranges_p.add("phase",GlishArray(phminmax));
+  ranges_p.define("phase",phminmax);
 
   Vector<Float> wtminmax(2);
   wtminmax(0)=min(weight(weight >0.0f));
   wtminmax(1)=max(weight);
-  ranges_p.add("weight",GlishArray(wtminmax));
+  ranges_p.define("weight",wtminmax);
 
 
   //  cout << endl;
-  //  cout << "Printing out the GlishRecord ranges_p:" << endl;
+  //  cout << "Printing out the Record ranges_p:" << endl;
   //  cout << ranges_p << endl;
 
 
 
   // Make flags for showing index columns.
-  doFld_p = (ranges_p.get("field_id").nelements() > 1);
-  doSpW_p = (ranges_p.get("data_desc_id").nelements() > 1);
+  doFld_p = (ranges_p.asArrayInt(RecordFieldId("field_id")).nelements() > 1);
+  doSpW_p = (ranges_p.asArrayInt(RecordFieldId("data_desc_id")).nelements() > 1);
   doChn_p = (nchan_p > 1);
 
 

@@ -41,7 +41,7 @@
 template <class T> class ROArrayColumn;
 template <class T> class ArrayColumn;
 template <class T> class ROScalarColumn;
-class GlishRecord;
+class Record;
 class MSIter;
 
 // <summary>
@@ -55,7 +55,7 @@ class MSIter;
 
 // <prerequisite>
 //   <li> MeasurementSet
-//   <li> GlishRecord
+//   <li> Record
 // </prerequisite>
 //
 // <etymology>
@@ -82,7 +82,7 @@ class MSIter;
 // items(2)="num_chan";
 // // get the range of values for the items specified
 // MSRange msRange(msSelector.selectedTable(),msSelector.spectralWindow());
-// GlishRecord range=msRange.range(items);
+// Record range=msRange.range(items);
 // //.. change the ranges as needed
 // // now select with the new range
 // msSelector.select(range);
@@ -93,7 +93,7 @@ class MSIter;
 // dataItems(0)="data";
 // dataItems(1)="antenna1";
 // dataItems(2)="antenna2";
-// GlishRecord dataRec=msSelector.getData(items);
+// Record dataRec=msSelector.getData(items);
 // </srcblock></example>
 // </synopsis>
 //
@@ -169,7 +169,7 @@ public:
   // The format of this record is the same as that returned by range.
   // Not all possible items can be selected on, some are quietly ignored.
   // Correct for one-based indexing if oneBased is True.
-  Bool select(const GlishRecord& items, Bool oneBased=False);
+  Bool select(const Record& items, Bool oneBased=False);
 
   // Select the MS based on the TaQL selection string
   Bool select(const String& msSelect);
@@ -190,7 +190,7 @@ public:
   // channels together as well). Note that different interferometers will be
   // averaged together if ifrAxis is False.
   // Correct for one-based indexing if oneBased is True.
-  GlishRecord getData(const Vector<String>& items, Bool ifrAxis, 
+  Record getData(const Vector<String>& items, Bool ifrAxis, 
 		      Int ifrAxisGap=0, Int inc=1,
 		      Bool average=False, Bool oneBased=False);
 
@@ -200,7 +200,7 @@ public:
   // dimension matching the number of selected rows (or last two dimensions
   // matching times and interferometers, for data retrieved with ifraxis=T)
   // Channel selection is supported, but the width parameter has to be 1.
-  Bool putData(const GlishRecord& items);
+  Bool putData(const Record& items);
 
   // Set up an iterator, iterating over the specified columns, with
   // optional time interval and maximum number of rows to return at once

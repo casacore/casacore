@@ -29,14 +29,13 @@
 #include <trial/MeasurementSets/MSRange.h>
 #include <trial/MeasurementSets/MSSelector.h>
 
+#include <aips/Containers/Record.h>
 #include <aips/Arrays/ArrayLogical.h>
 #include <aips/Arrays/ArrayMath.h>
 #include <aips/Arrays/MaskArrMath.h>
 #include <aips/Arrays/Matrix.h>
 #include <aips/Arrays/Slice.h>
 #include <aips/Exceptions/Error.h>
-#include <aips/Glish/GlishArray.h>
-#include <aips/Glish/GlishRecord.h>
 #include <aips/Arrays/Slicer.h>
 #include <aips/Logging/LogIO.h>
 #include <aips/MeasurementSets/MSColumns.h>
@@ -113,7 +112,7 @@ Bool MSRange::checkShapes()
   return constantShape_p;
 }
 
-GlishRecord MSRange::range(const Vector<String>& items, 
+Record MSRange::range(const Vector<String>& items, 
 			   Bool useFlags,
 			   Bool oneBased)
 {
@@ -137,7 +136,7 @@ GlishRecord MSRange::range(const Vector<String>& items,
   return range(keys,useFlags,oneBased);
 }
 
-GlishRecord MSRange::range(const Vector<Int>& keys, 
+Record MSRange::range(const Vector<Int>& keys, 
 			   Bool useFlags,
 			   Bool oneBased)
 {
@@ -145,7 +144,7 @@ GlishRecord MSRange::range(const Vector<Int>& keys,
   const Int option=Sort::HeapSort | Sort::NoDuplicates;
   const Sort::Order order=Sort::Ascending;
 
-  GlishRecord out;
+  Record out(RecordInterface::Variable);
   if (ms_p.nrow()==0) {
     os<< LogIO::WARN << "Table is empty - nothing to do"<<LogIO::POST;
     return out;
@@ -178,7 +177,7 @@ GlishRecord MSRange::range(const Vector<Int>& keys,
       scalarRange(out,keyword,msc.antenna2(),oneBased);
       break;
     case MSS::ANTENNAS:
-      out.add(keyword,msc.antenna().name().getColumn());
+      out.define(keyword,msc.antenna().name().getColumn());
       break;
     case MSS::ARRAY_ID:
       scalarRange(out,keyword,msc.arrayId(),oneBased);
@@ -186,7 +185,7 @@ GlishRecord MSRange::range(const Vector<Int>& keys,
     case MSS::CHAN_FREQ:
       {
 	if (checkShapes()) {
-	  out.add(keyword,
+	  out.define(keyword,
 		  msc.spectralWindow().chanFreq().getColumnCells(spwId_p));
 	} else {
 	  shapeChangesWarning=True;
@@ -206,9 +205,9 @@ GlishRecord MSRange::range(const Vector<Int>& keys,
 		names(k,j)=Stokes::name(Stokes::type(corrTypes(k,j)));
 	      }
 	    }
-	    out.add(keyword,names);
+	    out.define(keyword,names);
 	  } else {
-	    out.add(keyword,corrTypes);
+	    out.define(keyword,corrTypes);
 	  }
 	} else {
 	  shapeChangesWarning=True;
@@ -236,7 +235,7 @@ GlishRecord MSRange::range(const Vector<Int>& keys,
       scalarRange(out,keyword,msc.fieldId(),oneBased);
       break;
     case MSS::FIELDS:
-      out.add(keyword,msc.field().name().getColumn());
+      out.define(keyword,msc.field().name().getColumn());
       break;
     case MSS::FLOAT_DATA:
       want(Data,ObsFloat)=True;
@@ -245,7 +244,7 @@ GlishRecord MSRange::range(const Vector<Int>& keys,
       {
 	Vector<Int> ifr=ifrNumbers(msc.antenna1(),msc.antenna2());
 	if (oneBased) ifr+=1001;
-	out.add(keyword,ifr);
+	out.define(keyword,ifr);
       }
       break;
     case MSS::IMAGINARY:
@@ -262,7 +261,7 @@ GlishRecord MSRange::range(const Vector<Int>& keys,
 	  if (!msc.imagingWeight().isNull()) {
 	    Vector<Float> range(2);
 	    ::minMax(range(0),range(1),msc.imagingWeight().getColumn());
-	    out.add(keyword,range);
+	    out.define(keyword,range);
 	  } else {
 	    os << LogIO::WARN << "IMAGING_WEIGHT column doesn't exist"<< 
 	      LogIO::POST;
@@ -275,13 +274,13 @@ GlishRecord MSRange::range(const Vector<Int>& keys,
     case MSS::NUM_CORR:
       {
 	checkShapes();
-	out.add(keyword,msc.polarization().numCorr().getColumnCells(polId_p));
+	out.define(keyword,msc.polarization().numCorr().getColumnCells(polId_p));
       }
       break;
     case MSS::NUM_CHAN:
       {
 	checkShapes();
-	out.add(keyword,msc.spectralWindow().numChan().getColumnCells(spwId_p));
+	out.define(keyword,msc.spectralWindow().numChan().getColumnCells(spwId_p));
       }
       break;
     case MSS::PHASE:
@@ -294,7 +293,7 @@ GlishRecord MSRange::range(const Vector<Int>& keys,
       break;
     case MSS::PHASE_DIR:
       {
-	GlishRecord phasedir;
+	Record phasedir(RecordInterface::Variable);
 	// return 0th order position only
 	Int nField = ms_p.field().nrow();
 	Matrix<Double> phaseDir(2,nField);
@@ -303,10 +302,10 @@ GlishRecord MSRange::range(const Vector<Int>& keys,
 	  dir=msc.field().phaseDirMeas(i).getAngle().getValue();
 	  phaseDir(0,i)=dir(0); phaseDir(1,i)=dir(1);
 	}
-	phasedir.add("direction",phaseDir);
-	phasedir.add("epoch",MDirection::showType
+	phasedir.define("direction",phaseDir);
+	phasedir.define("epoch",MDirection::showType
 		     (msc.field().phaseDirMeasCol().getMeasRef().getType()));
-	out.add(keyword,phasedir);
+	out.defineRecord(keyword,phasedir);
       }
       break;
     case MSS::REAL:
@@ -320,19 +319,18 @@ GlishRecord MSRange::range(const Vector<Int>& keys,
     case MSS::REF_FREQUENCY:
       {
 	checkShapes();
-	out.add(keyword,msc.spectralWindow().refFrequency().
+	out.define(keyword,msc.spectralWindow().refFrequency().
 		getColumnCells(spwId_p));
       }
       break;
     case MSS::ROWS:
       {
-	// Glish doesn't like uInt (like me), so convert
-	Int n=ms_p.nrow();
+	// Glish doesn't like uInt (like me), so convert Int n=ms_p.nrow();
 	Vector<uInt> rowNumbers=ms_p.rowNumbers();
 	Vector<Int> rows(n);
 	convertArray(rows,rowNumbers);
 	if (oneBased) rows+=1;
-	out.add(keyword,rows);
+	out.define(keyword,rows);
       }
       break;
     case MSS::SCAN_NUMBER:
@@ -345,7 +343,7 @@ GlishRecord MSRange::range(const Vector<Int>& keys,
 	if (sel_p) sig=sel_p->getWeight(msc.sigma(),True);
 	else sig=msc.sigma().getColumn();
 	::minMax(range(0),range(1),sig);
-	out.add(keyword,range);
+	out.define(keyword,range);
       } else {
 	shapeChangesWarning = True;
       }
@@ -354,14 +352,14 @@ GlishRecord MSRange::range(const Vector<Int>& keys,
       {
 	Vector<Double> time(2);
 	::minMax(time(0),time(1),msc.time().getColumn());
-	out.add(keyword,time);
+	out.define(keyword,time);
       }
       break;
     case MSS::TIMES:
       {
 	Vector<Double> times=msc.time().getColumn();
 	Int n=GenSort<Double>::sort (times, order, option);
-	out.add(keyword,times(Slice(0,n)));
+	out.define(keyword,times(Slice(0,n)));
       }
       break;
     case MSS::U:
@@ -372,7 +370,7 @@ GlishRecord MSRange::range(const Vector<Int>& keys,
 	Vector<Double> range(2);
 	if (uvw.nelements()==0) uvw=msc.uvw().getColumn();
 	::minMax(range(0),range(1),uvw.row(index));
-	out.add(keyword,range);
+	out.define(keyword,range);
       }	
       break;
     case MSS::UVDIST:
@@ -387,7 +385,7 @@ GlishRecord MSRange::range(const Vector<Int>& keys,
 	Vector<Double> uvrange(2);
 	::minMax(uvrange(0),uvrange(1),u2);
 	uvrange(0)=sqrt(uvrange(0)); uvrange(1)=sqrt(uvrange(1));
-	out.add(keyword,uvrange);
+	out.define(keyword,uvrange);
       }
       break;
     case MSS::WEIGHT:
@@ -397,7 +395,7 @@ GlishRecord MSRange::range(const Vector<Int>& keys,
 	if (sel_p) wt=sel_p->getWeight(msc.weight());
 	else wt=msc.weight().getColumn();
 	::minMax(range(0),range(1),wt);
-	out.add(keyword,range);
+	out.define(keyword,range);
       } else {
 	shapeChangesWarning = True;
       }
@@ -452,7 +450,7 @@ GlishRecord MSRange::range(const Vector<Int>& keys,
 	      funcName(Imag)="imaginary";
 	      for (Int funcType=Amp; funcType<=Imag; funcType++) {
 		if (want(funcType,dataType)) {
-		  out.add(name+funcName(funcType),minmax.column(funcType));
+		  out.define(name+funcName(funcType),minmax.column(funcType));
 		}
 	      }
 	    }
@@ -476,7 +474,7 @@ GlishRecord MSRange::range(const Vector<Int>& keys,
 	  if (checkShapes()) {
 	    Vector<Float> amp(2);
 	    minMax(amp(0),amp(1),msc.floatData(),msc.flag(),useFlags);
-	    out.add("float_data",amp);
+	    out.define("float_data",amp);
 	  }
 	} else {
 	  os << LogIO::WARN << "FLOAT_DATA column doesn't exist"<<LogIO::POST;
@@ -493,7 +491,7 @@ GlishRecord MSRange::range(const Vector<Int>& keys,
   return out;
 }
 
-GlishRecord MSRange::range(MSS::Field item, Bool useFlags)
+Record MSRange::range(MSS::Field item, Bool useFlags)
 {
   Vector<Int> key(1);
   key(0)=item;
@@ -505,12 +503,12 @@ void MSRange::setBlockSize(Int blockSize)
   if (blockSize>0) blockSize_p=blockSize;
 }
 
-void MSRange::scalarRange(GlishRecord& out, const String& item, 
+void MSRange::scalarRange(Record& out, const String& item, 
 		 const ROScalarColumn<Int>& id, Bool oneBased) 
 {
   Vector<Int> ids=scalarRange(id);
   if (oneBased) ids+=1;
-  out.add(item,ids);
+  out.define(item,ids);
 }
 
 Vector<Int> MSRange::scalarRange(const ROScalarColumn<Int>& id)

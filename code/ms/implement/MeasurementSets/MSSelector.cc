@@ -35,8 +35,6 @@
 #include <aips/Arrays/Cube.h>
 #include <aips/Arrays/Slice.h>
 #include <aips/Containers/Record.h>
-#include <aips/Glish/GlishArray.h>
-#include <aips/Glish/GlishRecord.h>
 #include <aips/Logging/LogIO.h>
 #include <aips/Mathematics/Constants.h>
 #include <aips/MeasurementSets/MSColumns.h>
@@ -416,7 +414,7 @@ Bool MSSelector::selectPolarization(const Vector<String>& wantedPol)
   return True;
 }
 
-Bool MSSelector::select(const GlishRecord& items, Bool oneBased)
+Bool MSSelector::select(const Record& items, Bool oneBased)
 {
   LogIO os;
   if (!checkSelection()) return False;
@@ -425,7 +423,7 @@ Bool MSSelector::select(const GlishRecord& items, Bool oneBased)
        << LogIO::POST;
     return False;
   }
-  Int n=items.nelements();
+  Int n=items.nfields();
   for (Int i=0; i<n; i++) {
     String column=items.name(i);
     MSS::Field fld=MSS::field(column);
@@ -440,8 +438,8 @@ Bool MSSelector::select(const GlishRecord& items, Bool oneBased)
     case MSS::FIELD_ID:
     case MSS::SCAN_NUMBER:
       {
-	Vector<Int> id;
-	if (GlishArray(items.get(i)).get(id) && id.nelements()>0) {
+	Vector<Int> id = items.asArrayInt(RecordFieldId(i));
+	if (id.nelements()>0) {
 	  if (oneBased) id-=1;
 	  if (id.nelements()==1) {
 	    selms_p=selms_p(selms_p.col(column) == id(0));
@@ -456,8 +454,8 @@ Bool MSSelector::select(const GlishRecord& items, Bool oneBased)
       break;
     case MSS::IFR_NUMBER:
       {
-	Vector<Int> ifrNum;
-	if (GlishArray(items.get(i)).get(ifrNum)) {
+	Vector<Int> ifrNum = items.asArrayInt(RecordFieldId(i));
+	// if (GlishArray(items.get(i)).get(ifrNum)) {
 	  if (ifrNum.nelements()>0) {
 	    // check input values for validity, squeeze out illegal values
 	    Int nAnt=selms_p.antenna().nrow();
@@ -486,16 +484,16 @@ Bool MSSelector::select(const GlishRecord& items, Bool oneBased)
 	    useIfrDefault_p=True;
 	    ifrSelection_p.resize(0);
 	  } 
-	} else {
-	  os<< LogIO::WARN << "Illegal value for item "<<downcase(column)<<
-	    LogIO::POST;
-	}
+	// } else {
+	  // os<< LogIO::WARN << "Illegal value for item "<<downcase(column)<<
+	    // LogIO::POST;
+	// }
       }
       break;
     case MSS::ROWS:
       {
-	Vector<Int> rows;
-	if (GlishArray(items.get(i)).get(rows) && rows.nelements()>0) {
+	Vector<Int> rows = items.asArrayInt(RecordFieldId(i));
+	if (rows.nelements()>0) {
 	  Int n=rows.nelements();
 	  if (oneBased) rows-=1;
 	  Vector<uInt> uRows(n);
@@ -508,8 +506,8 @@ Bool MSSelector::select(const GlishRecord& items, Bool oneBased)
       break;
     case MSS::TIME:
       {
-	Vector<Double> range;
-	if (GlishArray(items.get(i)).get(range) && range.nelements()==2) {
+	Vector<Double> range = items.asArrayDouble(RecordFieldId(i));
+	if (range.nelements()==2) {
 	  TableExprNodeSetElem elem(True,range(0),range(1),True);
 	  TableExprNodeSet set;
 	  set.add(elem);
@@ -523,8 +521,8 @@ Bool MSSelector::select(const GlishRecord& items, Bool oneBased)
     case MSS::TIMES:
       {
 	column=MS::columnName(MS::TIME);
-	Vector<Double> time;
-	if (GlishArray(items.get(i)).get(time) && time.nelements()>0) {
+	Vector<Double> time = items.asArrayDouble(RecordFieldId(i));
+	if (time.nelements()>0) {
 	  if (time.nelements()==1) {
 	    selms_p=selms_p(selms_p.col(column) == time(0));
 	  } else {
@@ -538,8 +536,8 @@ Bool MSSelector::select(const GlishRecord& items, Bool oneBased)
     case MSS::W:
       {
 	Int uvwIndex=fld-MSS::U;
-	Vector<Double> range;
-	if (GlishArray(items.get(i)).get(range) && range.nelements()==2) {
+	Vector<Double> range = items.asArrayDouble(RecordFieldId(i));
+	if (range.nelements()==2) {
 	  column=MS::columnName(MS::UVW);
 	  TableExprNodeSet interval;
 	  interval.add (TableExprNodeSetElem (True, range(0), 
@@ -554,8 +552,8 @@ Bool MSSelector::select(const GlishRecord& items, Bool oneBased)
       break;
     case MSS::UVDIST:
       {
-	Vector<Double> range;
-	if (GlishArray(items.get(i)).get(range) && range.nelements()==2) {
+	Vector<Double> range = items.asArrayDouble(RecordFieldId(i));
+	if (range.nelements()==2) {
 	  range*=range; // square
 	  ROArrayColumn<Double> uvwcol(selms_p,MS::columnName(MS::UVW));
 	  Int nrow=selms_p.nrow();
@@ -641,12 +639,12 @@ static void averageDouble(Vector<Double>& vec)
   }
 }
 
-GlishRecord MSSelector::getData(const Vector<String>& items, Bool ifrAxis,
+Record MSSelector::getData(const Vector<String>& items, Bool ifrAxis,
 				Int ifrAxisGap,
 				Int inc, Bool average, Bool oneBased)
 {
   LogIO os;
-  GlishRecord out;
+  Record out(RecordInterface::Variable);
   if (!checkSelection()) return out;
   if (selms_p.nrow()==0) {
     os << LogIO::WARN << " Selected Table is empty - use selectinit"
@@ -676,7 +674,8 @@ GlishRecord MSSelector::getData(const Vector<String>& items, Bool ifrAxis,
   if (ifrAxis && (nIfr==0 || useIfrDefault_p)) {
     // set default
     MSRange msRange(tab);
-    GlishArray(msRange.range(MSS::IFR_NUMBER).get(0)).get(ifrSelection_p);
+    ifrSelection_p = msRange.range(MSS::IFR_NUMBER).asArrayInt(0);
+    // GlishArray(msRange.range(MSS::IFR_NUMBER).get(0)).get(ifrSelection_p);
     nIfr = ifrSelection_p.nelements();
     useIfrDefault_p=True;
   }
@@ -792,13 +791,13 @@ GlishRecord MSSelector::getData(const Vector<String>& items, Bool ifrAxis,
 	ant1/=1000;
 	for (Int i=0; i<nIfr; i++) if (ifrAxis_p(i)<0) ant1(i)=-1;
 	if (oneBased) ant1+=1;
-	out.add(item,ant1);
+	out.define(item,ant1);
       }
       else {
 	Vector<Int> ant=msc.antenna1().getColumn();
 	if (average) averageId(ant);
 	if (oneBased) ant+=1;
-	out.add(item,ant);
+	out.define(item,ant);
       }
       break;
     case MSS::ANTENNA2:
@@ -808,37 +807,37 @@ GlishRecord MSSelector::getData(const Vector<String>& items, Bool ifrAxis,
 	ant2-=1000*(ifrAxis_p/1000);
 	for (Int i=0; i<nIfr; i++) if (ifrAxis_p(i)<0) ant2(i)=-1;
 	if (oneBased) ant2+=1;
-	out.add(item,ant2);
+	out.define(item,ant2);
       }
       else {
 	Vector<Int> ant= msc.antenna2().getColumn();
 	if (average) averageId(ant);
 	if (oneBased) ant+=1;
-	out.add(item,ant);
+	out.define(item,ant);
       }
       break;
     case MSS::AXIS_INFO:
       {
-	GlishRecord axis_info;
+	Record axis_info(RecordInterface::Variable);
 	// add info for the axes of the data array
 	// 1. corr info (polarizations)
-	axis_info.add("corr_axis",polSelection_p);
+	axis_info.define("corr_axis",polSelection_p);
 	// 2. freq info
-	GlishRecord freq_axis;
-	freq_axis.add("chan_freq",chanFreq_p);
-	freq_axis.add("resolution",bandwidth_p);
-	axis_info.add("freq_axis",freq_axis);
+	Record freq_axis(RecordInterface::Variable);
+	freq_axis.define("chan_freq",chanFreq_p);
+	freq_axis.define("resolution",bandwidth_p);
+	axis_info.defineRecord("freq_axis",freq_axis);
 	if (doIfrAxis) {
 	  // 3. ifr info
-	  GlishRecord ifr_axis;
+	  Record ifr_axis(RecordInterface::Variable);
 	  if (oneBased) {
 	    Vector<Int> ifr; 
 	    ifr=ifrAxis_p;
 	    ifr+=1001;
 	    for (Int i=0; i<nIfr; i++) if (ifrAxis_p(i)<0) ifr(i)=0;
-	    ifr_axis.add("ifr_number",ifr);
+	    ifr_axis.define("ifr_number",ifr);
 	  } else {
-	    ifr_axis.add("ifr_number",ifrSelection_p);
+	    ifr_axis.define("ifr_number",ifrSelection_p);
 	  }
 	  Vector<String> antName=msc.antenna().name().getColumn();
 	  Vector<String> ifrName(nIfr,"");
@@ -870,12 +869,12 @@ GlishRecord MSSelector::getData(const Vector<String>& items, Bool ifrAxis,
 			       square(antPos(2,ant2)-antPos(2,ant1)));
 	    }
 	  }
-	  ifr_axis.add("ifr_name",ifrName);
-	  ifr_axis.add("ifr_shortname",sName);
-	  ifr_axis.add("baseline",baseline);
-	  axis_info.add("ifr_axis",ifr_axis);
+	  ifr_axis.define("ifr_name",ifrName);
+	  ifr_axis.define("ifr_shortname",sName);
+	  ifr_axis.define("baseline",baseline);
+	  axis_info.defineRecord("ifr_axis",ifr_axis);
 	  // 4. time info
-	  GlishRecord time_axis;
+	  Record time_axis(RecordInterface::Variable);
 	  msd_p.setAntennas(msc.antenna());
 	  Vector<Double> time=msc.time().getColumn();
 	  Vector<Int> fieldId=msc.fieldId().getColumn();
@@ -926,13 +925,13 @@ GlishRecord MSSelector::getData(const Vector<String>& items, Bool ifrAxis,
 	      if (doLAST) last(k)=msd_p.last().getValue().get();
 	    }
 	  }
-	  time_axis.add("MJDseconds",times);
-	  if (doUT) time_axis.add("UT",ut);
-	  if (doHA) time_axis.add("HA",ha);
-	  if (doLAST) time_axis.add("LAST",last);
-	  axis_info.add("time_axis",time_axis);
+	  time_axis.define("MJDseconds",times);
+	  if (doUT) time_axis.define("UT",ut);
+	  if (doHA) time_axis.define("HA",ha);
+	  if (doLAST) time_axis.define("LAST",last);
+	  axis_info.defineRecord("time_axis",time_axis);
 	}
-	out.add("axis_info",axis_info);
+	out.defineRecord("axis_info",axis_info);
       }
       break;
     case MSS::DATA:
@@ -948,12 +947,12 @@ GlishRecord MSSelector::getData(const Vector<String>& items, Bool ifrAxis,
 	Vector<Int> id(nSlot); id=ddSlot;
 	if (average) averageId(id);
 	if (oneBased) id+=1;
-	out.add(item,id);
+	out.define(item,id);
       } else {
 	Vector<Int> col=msc.dataDescId().getColumn();
 	if (average) averageId(col);
 	if (oneBased) col+=1;
-	out.add(item,col);
+	out.define(item,col);
       }
       break;
     case MSS::FIELD_ID:
@@ -971,11 +970,11 @@ GlishRecord MSSelector::getData(const Vector<String>& items, Bool ifrAxis,
 	  }
 	  if (average) averageId(id);
 	  if (oneBased) id+=1;
-	  out.add(item,id);
+	  out.define(item,id);
 	} else {
 	  if (average) averageId(col);
 	  if (oneBased) col+=1;
-	  out.add(item,col);
+	  out.define(item,col);
 	}
       }
       break;
@@ -994,11 +993,11 @@ GlishRecord MSSelector::getData(const Vector<String>& items, Bool ifrAxis,
 	  }
 	  if (average) averageId(id);
 	  if (oneBased) id+=1;
-	  out.add(item,id);
+	  out.define(item,id);
 	} else {
 	  if (average) averageId(col);
 	  if (oneBased) col+=1;
-	  out.add(item,col);
+	  out.define(item,col);
 	}
       }
       break;
@@ -1013,9 +1012,9 @@ GlishRecord MSSelector::getData(const Vector<String>& items, Bool ifrAxis,
 	for (Int k=0; k<nRow; k++) {
 	  itFlag(ifrIndex(k),slot(k))=flagRow(k);
 	}
-	out.add(item,itFlag);
+	out.define(item,itFlag);
       } else {
-	out.add(item,msc.flagRow().getColumn());
+	out.define(item,msc.flagRow().getColumn());
       }
       break;
     case MSS::FLAG_SUM:
@@ -1029,9 +1028,9 @@ GlishRecord MSSelector::getData(const Vector<String>& items, Bool ifrAxis,
 	    ifr=ifrAxis_p;
 	    ifr+=1001;
 	    for (Int i=0; i<nIfr; i++) if (ifrAxis_p(i)<0) ifr(i)=0;
-	    out.add(item,ifr);
+	    out.define(item,ifr);
 	  } else {
-	    out.add(item,ifrAxis_p);
+	    out.define(item,ifrAxis_p);
 	  }
 	} else {
 	 Vector<Int> ant1=msc.antenna1().getColumn();
@@ -1042,7 +1041,7 @@ GlishRecord MSSelector::getData(const Vector<String>& items, Bool ifrAxis,
 	  ant1*=1000;
 	  ant1+=ant2;
 	  if (average) averageId(ant1);
-	  out.add(item,ant1);
+	  out.define(item,ant1);
 	}
       }
       break;
@@ -1077,9 +1076,9 @@ GlishRecord MSSelector::getData(const Vector<String>& items, Bool ifrAxis,
 	      weight3d(start2,end2).nonDegenerate()=
 		weight(start,end).nonDegenerate();
 	    }
-	    out.add(item,weight3d);
+	    out.define(item,weight3d);
 	  } else {
-	    out.add(item,weight);
+	    out.define(item,weight);
 	  }
 	} else {
 	  os << LogIO::WARN << "IMAGING_WEIGHT column doesn't exist"<< LogIO::POST;
@@ -1128,9 +1127,9 @@ GlishRecord MSSelector::getData(const Vector<String>& items, Bool ifrAxis,
 		sumsig(j,i)=sqrt(sumsig(j,i));
 	      }
 	    }
-	    out.add("sigma",sumsig);
+	    out.define("sigma",sumsig);
 	  } else {
-	    out.add("sigma",wts);
+	    out.define("sigma",wts);
 	  }
 	} else {
 	  if (average) {
@@ -1140,9 +1139,9 @@ GlishRecord MSSelector::getData(const Vector<String>& items, Bool ifrAxis,
 	      for (Int i=0; i<nRow; i++) {sumsig(j)+=square(sig(j,i));}
 	      sumsig(j)=sqrt(sumsig(j));
 	    }
-	    out.add("sigma",sumsig);
+	    out.define("sigma",sumsig);
 	  } else {
-	    out.add("sigma",sig);
+	    out.define("sigma",sig);
 	  }
 	}
       }
@@ -1152,11 +1151,11 @@ GlishRecord MSSelector::getData(const Vector<String>& items, Bool ifrAxis,
 	if (doIfrAxis) {
 	  Vector<Double> times; times=timeSlot;
 	  if (average) averageDouble(times);
-	  out.add(item,times);
+	  out.define(item,times);
 	} else {
 	  Vector<Double> time=msc.time().getColumn();
 	  if (average) averageDouble(time);
-	  out.add(item,time);
+	  out.define(item,time);
 	}
       }
       break;
@@ -1171,9 +1170,9 @@ GlishRecord MSSelector::getData(const Vector<String>& items, Bool ifrAxis,
 	  uvw2(1,ifr,time)=uvw(1,k);
 	  uvw2(2,ifr,time)=uvw(2,k);
 	}
-	out.add(item,uvw2);
+	out.define(item,uvw2);
       } else {
-	out.add(item,uvw);
+	out.define(item,uvw);
       }
       break;
     case MSS::U:
@@ -1187,9 +1186,9 @@ GlishRecord MSSelector::getData(const Vector<String>& items, Bool ifrAxis,
 	  for (Int k=0; k<nRow; k++) {
 	    uvw2(ifrIndex(k),slot(k))=uvw(index,k);
 	  }
-	  out.add(item,uvw2);
+	  out.define(item,uvw2);
 	} else {
-	  out.add(item,uvw.row(index));
+	  out.define(item,uvw.row(index));
 	}
       }
       break;
@@ -1209,10 +1208,10 @@ GlishRecord MSSelector::getData(const Vector<String>& items, Bool ifrAxis,
 	  Matrix<Double> uvd(nIfr,nSlot); uvd.set(0);
 	  for (Int k=0; k<nRow; k++) uvd(ifrIndex(k),slot(k))=pu2[k];
 	  u2.putStorage(pu2,deleteIt);
-	  out.add(item,uvd);
+	  out.define(item,uvd);
 	} else {
 	  u2.putStorage(pu2,deleteIt);
-	  out.add(item,u2);
+	  out.define(item,u2);
 	}
       }
       break;
@@ -1260,9 +1259,9 @@ GlishRecord MSSelector::getData(const Vector<String>& items, Bool ifrAxis,
               }
             }
           }
-          out.add("weight",sumwt);
+          out.define("weight",sumwt);
         } else {
-          out.add("weight",wts);
+          out.define("weight",wts);
         }
       }
       weights.reference(wts);
@@ -1276,9 +1275,9 @@ GlishRecord MSSelector::getData(const Vector<String>& items, Bool ifrAxis,
               sumwt(j)+=wt(j,i);
             }
           }
-          out.add("weight",sumwt);
+          out.define("weight",sumwt);
         } else {
-          out.add("weight",wt);
+          out.define("weight",wt);
         }
       }
       weights.reference(wt);
@@ -1299,7 +1298,7 @@ GlishRecord MSSelector::getData(const Vector<String>& items, Bool ifrAxis,
     }
     if (average) flags=avFlag;
     if (wantFlag && !average) {
-      out.add("flag",avFlag);
+      out.define("flag",avFlag);
     }
     if (wantFlagSum) {
       if (doIfrAxis) {
@@ -1320,7 +1319,7 @@ GlishRecord MSSelector::getData(const Vector<String>& items, Bool ifrAxis,
 	    }
 	  }
 	}
-	out.add("flag_sum",flagSum);
+	out.define("flag_sum",flagSum);
       } else {
 	Matrix<Int> flagSum(nPol,nChan);
 	flagSum=0;
@@ -1334,7 +1333,7 @@ GlishRecord MSSelector::getData(const Vector<String>& items, Bool ifrAxis,
 	    flagSum(j,k)=count;
 	  }
 	}
-	out.add("flag_sum",flagSum);
+	out.define("flag_sum",flagSum);
       }
     }
   }
@@ -1348,7 +1347,7 @@ GlishRecord MSSelector::getData(const Vector<String>& items, Bool ifrAxis,
 	reorderData(fdata,ifrIndex,nIfr,slot,nSlot,Float());
       if (average) MSSelUtil2<Float>::
 	timeAverage(dataflags,fdata,flags,weights);
-      out.add("float_data",fdata);
+      out.define("float_data",fdata);
     } else {
       os << LogIO::WARN << "FLOAT_DATA column doesn't exist"<< LogIO::POST;
     }
@@ -1423,17 +1422,17 @@ GlishRecord MSSelector::getData(const Vector<String>& items, Bool ifrAxis,
       }
       if (average) 
 	MSSelUtil2<Complex>::timeAverage(dataflags,data,flags,weights);
-      if (want(Amp,dataType)) out.add(name+"amplitude",amplitude(data));
-      if (want(Phase,dataType)) out.add(name+"phase",phase(data));
-      if (want(Real,dataType)) out.add(name+"real",real(data));
-      if (want(Imag,dataType)) out.add(name+"imaginary",imag(data));
-      if (want(Data,dataType)) out.add(name+"data",data);
+      if (want(Amp,dataType)) out.define(name+"amplitude",amplitude(data));
+      if (want(Phase,dataType)) out.define(name+"phase",phase(data));
+      if (want(Real,dataType)) out.define(name+"real",real(data));
+      if (want(Imag,dataType)) out.define(name+"imaginary",imag(data));
+      if (want(Data,dataType)) out.define(name+"data",data);
     }
   }
 
   // only have averaged flags if some data item was requested as well
   if (average && wantFlag){
-    out.add("flag",dataflags);
+    out.define("flag",dataflags);
     if (dataflags.nelements()==0) {
       os << LogIO::WARN <<"Flags not calculated because no DATA derived "
 	"item was specified" << LogIO::POST;
@@ -1442,7 +1441,7 @@ GlishRecord MSSelector::getData(const Vector<String>& items, Bool ifrAxis,
   return out;
 }
 
-Bool MSSelector::putData(const GlishRecord& items)
+Bool MSSelector::putData(const Record& items)
 {
   LogIO os;
   if (!checkSelection()) return False;
@@ -1457,7 +1456,7 @@ Bool MSSelector::putData(const GlishRecord& items)
   }
 
   MSColumns msc(selms_p);
-  Int n=items.nelements();
+  Int n=items.nfields();
   for (Int i=0; i<n; i++) {
     String item=downcase(items.name(i));
     MSS::Field fld=MSS::field(item);
@@ -1488,8 +1487,8 @@ Bool MSSelector::putData(const GlishRecord& items)
 	     << LogIO::POST;
 	  return False;
 	}
-	Array<Complex> data;
-	if (GlishArray(items.get(i)).get(data) && ! col.isNull()) {
+	Array<Complex> data = items.asArrayComplex(RecordFieldId(i));
+	if (! col.isNull()) {
 	  if (data.ndim()==4) {
 	    if (data.shape()(2)==Int(rowIndex_p.nrow()) && 
 		data.shape()(3)==Int(rowIndex_p.ncolumn())) {
@@ -1521,8 +1520,8 @@ Bool MSSelector::putData(const GlishRecord& items)
 	     << "when writing data" << LogIO::POST;
 	  return False;
 	}
-	Array<Float> data;
-	if (GlishArray(items.get(i)).get(data)) {
+	Array<Float> data = items.asArrayFloat(RecordFieldId(i));
+	//if (GlishArray(items.get(i)).get(data)) {
 	  if (data.ndim()==4) {
 	    if (data.shape()(2)==Int(rowIndex_p.nrow()) && 
 		data.shape()(3)==Int(rowIndex_p.ncolumn())) {
@@ -1538,13 +1537,13 @@ Bool MSSelector::putData(const GlishRecord& items)
 	    if (useSlicer_p) msc.floatData().putColumn(slicer_p, data);
 	    else msc.floatData().putColumn(data);
 	  }
-	}
+	//}
       }
       break;
     case MSS::FLAG:
       {
-	Array<Bool> flag;
-	if (GlishArray(items.get(i)).get(flag)) {
+	Array<Bool> flag = items.asArrayBool(RecordFieldId(i));
+	// if (GlishArray(items.get(i)).get(flag)) {
 	  if (flag.ndim()==4) {
 	    if (flag.shape()(2)==Int(rowIndex_p.nrow()) && 
 		flag.shape()(3)==Int(rowIndex_p.ncolumn())) {
@@ -1558,20 +1557,20 @@ Bool MSSelector::putData(const GlishRecord& items)
 	  if (flag.ndim()==3) {
 	    putAveragedFlag(flag, msc.flag());
 	  }
-	}
+	//}
       }
       break;
     case MSS::FLAG_ROW:
       {
-	Array<Bool> flagRow;
-	if (GlishArray(items.get(i)).get(flagRow)) {
+	Array<Bool> flagRow = items.asArrayBool(RecordFieldId(i));
+	// if (GlishArray(items.get(i)).get(flagRow)) {
 	  if (flagRow.ndim()==2) {
 	    reorderFlagRow(flagRow);
 	  }
 	  if (flagRow.ndim()==1) {
 	    msc.flagRow().putColumn(flagRow);
 	  }
-	}
+	// }
       }
       break;
     case MSS::IMAGING_WEIGHT:
@@ -1582,9 +1581,8 @@ Bool MSSelector::putData(const GlishRecord& items)
 	     << LogIO::POST;
 	  break;
 	}
-	Array<Float> weight;
-	if (GlishArray(items.get(i)).get(weight) && weight.ndim()==2 &&
-	    !msc.imagingWeight().isNull()) {
+	Array<Float> weight = items.asArrayFloat(RecordFieldId(i));
+	if (weight.ndim()==2 && !msc.imagingWeight().isNull()) {
 	  if (useSlicer_p) {
 	    Slice mySlice(chanSel_p(1),chanSel_p(0),chanSel_p(3));
 	    Slicer slicer(mySlice);
@@ -1597,8 +1595,8 @@ Bool MSSelector::putData(const GlishRecord& items)
     case MSS::SIGMA:
     case MSS::WEIGHT:
       {
-	Array<Float> weight;
-	if (GlishArray(items.get(i)).get(weight)) {
+	Array<Float> weight = items.asArrayFloat(RecordFieldId(i));
+	// if (GlishArray(items.get(i)).get(weight)) {
 	  if (weight.ndim()==3) {
 	    reorderWeight(weight);
 	  }
@@ -1606,7 +1604,7 @@ Bool MSSelector::putData(const GlishRecord& items)
 	    if (fld == MSS::SIGMA) msc.sigma().putColumn(weight);
 	    if (fld == MSS::WEIGHT) msc.weight().putColumn(weight);
 	  }
-	}
+	// }
       }
       break;
     case MSS::UNDEFINED:

@@ -121,7 +121,7 @@ MSSelection::~MSSelection()
 
 //----------------------------------------------------------------------------
 
-MSSelection::MSSelection(const GlishRecord& selectionItem) : 
+MSSelection::MSSelection(const Record& selectionItem) : 
   startTime_p(), endTime_p(), velocityStart_p(), velocityStep_p(), 
   startUV_p(0), endUV_p(0), fieldNames_p(), sourceNames_p(), 
   antennaNames_p(), corrTypes_p(), obsModes_p(), calGrps_p(), 
@@ -138,7 +138,7 @@ MSSelection::MSSelection(const GlishRecord& selectionItem) :
   selectCorrTypes_p(False), selectArrayIds_p(False), selectUVRange_p(False), 
   selectMSSelect_p(False), selectObsModes_p(False), selectCalGrps_p(False)
 {
-// Construct from a Glish record representing a selection item
+// Construct from a record representing a selection item
 // Output to private data:
 //    startTime_p               MEpoch          Start time
 //    endTime_p                 Mepoch          End time
@@ -787,16 +787,15 @@ TableExprNode MSSelection::toTableExprNode(const MeasurementSet& ms)
 
 //----------------------------------------------------------------------------
 
-void MSSelection::fromSelectionItem(const GlishRecord& selectionItem)
+void MSSelection::fromSelectionItem(const Record& selectionItem)
 {
 // Convert from an input selection data item
 // Input:
-//    selectionItem     const GlishRecord&     Selection item
+//    selectionItem     const Record&     Selection item
 // Output to private data:
 // 
   // Convert to an AIPS++ Record
-  Record selRec;
-  selectionItem.toRecord(selRec);
+  Record selRec = selectionItem;
 
   // Debug print statements
   cout << "MSSel::fromSI, at start, selRec.nfields=" << selRec.nfields()
@@ -1051,9 +1050,8 @@ Bool MSSelection::definedAndSet(const Record& inpRec, const String& fieldName)
     retval = True;
     // Now check if AIPS++ unset 
     if (inpRec.dataType(fieldName) == TpRecord) {
-      GlishRecord gr;
-      gr.fromRecord(inpRec.subRecord(fieldName));
-      retval = !Unset::isUnset(gr);
+      Record gr = inpRec.subRecord(fieldName);
+      retval = (gr.nfields() > 0);
     };
   };
   return retval;

@@ -35,7 +35,7 @@
 #include <trial/MeasurementSets/MSSelectionKeywords.h>
 template <class T> class ROArrayColumn;
 template <class T> class ROScalarColumn;
-class GlishRecord;
+class Record;
 class MSSelector;
 // <summary>
 // MSRange determines ranges of values in a MeasurementSet
@@ -48,7 +48,7 @@ class MSSelector;
 
 // <prerequisite>
 //   <li> MeasurementSet
-//   <li> GlishRecord
+//   <li> Record
 // </prerequisite>
 //
 // <etymology>
@@ -138,18 +138,18 @@ public:
   // See the enum description in MSSelector for the list of supported items.
   // Use the data flags if useFlags is True.
   // Correct for one-based indexing if oneBased is True.
-  GlishRecord range(const Vector<String>& items, 
+  Record range(const Vector<String>& items, 
 		    Bool useFlags=True,
 		    Bool OneBased=False);
 
   // Same as previous function, with Vector of MSS::Field keys instead
   // of Strings
-  GlishRecord range(const Vector<Int>& items, 
+  Record range(const Vector<Int>& items, 
 		    Bool useFlags=True,
 		    Bool OneBased=False);
 
   // Similar to above, with a single enum, for convenience
-  GlishRecord range(MSS::Field item,
+  Record range(MSS::Field item,
 		    Bool useFlags=True);
 
   // Set the block size (in Mbytes) to use when reading the data column.
@@ -165,7 +165,7 @@ protected:
 
   // get the range of a ScalarColumn<Int>, correct for 1-based 
   // indexing if oneBased is True, and add to out record.
-  void scalarRange(GlishRecord& out, const String& item, 
+  void scalarRange(Record& out, const String& item, 
 		   const ROScalarColumn<Int>& id, Bool oneBased);
 
   // get the range of a ScalarColumn<Int>

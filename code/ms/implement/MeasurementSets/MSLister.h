@@ -34,7 +34,6 @@
 #include <aips/Utilities/String.h>
 #include <aips/Arrays/Vector.h>
 #include <aips/Containers/Record.h>
-#include <aips/Glish/GlishRecord.h>
 #include <trial/MeasurementSets/MSSelector.h>
 class MeasurementSet;
 
@@ -242,8 +241,8 @@ private:
   Bool doFld_p, doSpW_p, doChn_p;
 
 
-  // The GlishRecord object containing the MSSelector ranges
-  GlishRecord ranges_p;
+  // The Record object containing the MSSelector ranges
+  Record ranges_p;
 
   // The conversion of the above to a regular Record object
   Record dataRecords_p;

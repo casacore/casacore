@@ -31,8 +31,8 @@
 #include <aips/Arrays/ArrayLogical.h>
 #include <aips/Mathematics/Constants.h>
 #include <aips/Arrays/IPosition.h>
-#include <aips/Glish/GlishArray.h>
-#include <aips/Glish/GlishRecord.h>
+#include <aips/Arrays/IPosition.h>
+#include <aips/Containers/Record.h>
 #include <aips/Logging/LogIO.h>
 #include <aips/Quanta/Unit.h>
 #include <aips/Measures/MDirection.h>
@@ -462,8 +462,10 @@ void MSSummary::listAntenna (LogIO& os, Bool verbose) const
   // Determine antennas  present in the main table
   MSRange msr(*pMS);
   Vector<Int> ant1,ant2;
-  GlishArray(msr.range(MSS::ANTENNA1).get(0)).get(ant1);
-  GlishArray(msr.range(MSS::ANTENNA2).get(0)).get(ant2);
+  ant1 = msr.range(MSS::ANTENNA1).asArrayInt(RecordFieldId(0));
+  ant2 = msr.range(MSS::ANTENNA2).asArrayInt(RecordFieldId(0));
+  //GlishArray(msr.range(MSS::ANTENNA1).get(0)).get(ant1);
+  //GlishArray(msr.range(MSS::ANTENNA2).get(0)).get(ant2);
   Vector<Int> antIds(ant1.nelements()+ant2.nelements());
   antIds(Slice(0,ant1.nelements()))=ant1;
   antIds(Slice(ant1.nelements(),ant2.nelements()))=ant2;
@@ -612,7 +614,8 @@ void MSSummary::listField (LogIO& os, Bool verbose) const
   // Determine fields present in the main table
   MSRange msr(*pMS);
   Vector<Int> fieldId;
-  GlishArray(msr.range(MSS::FIELD_ID).get(0)).get(fieldId);
+  //ant2 = msr.range(MSS::ANTENNA2).asArrayInt(RecordFieldId(0));
+  fieldId = msr.range(MSS::FIELD_ID).asArrayInt(RecordFieldId(0));
 
   if (msFC.phaseDir().nrow()<=0) {
     os << "The FIELD table is empty" << endl;
@@ -941,8 +944,8 @@ void MSSummary::listSpectralAndPolInfo (LogIO& os, Bool verbose) const
 
   // determine the data_desc_ids present in the main table
   MSRange msr(*pMS);
-  Vector<Int> ddId;
-  GlishArray(msr.range(MSS::DATA_DESC_ID).get(0)).get(ddId);
+  //ant2 = msr.range(MSS::ANTENNA2).asArrayInt(RecordFieldId(0));
+  Vector<Int> ddId = msr.range(MSS::DATA_DESC_ID).asArrayInt(RecordFieldId(0));
   Vector<uInt> uddId(ddId.nelements());
   for (uInt i=0; i<ddId.nelements(); i++) uddId(i)=ddId(i);
   // now get the corresponding spectral windows and pol setups

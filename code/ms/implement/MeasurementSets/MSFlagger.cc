@@ -35,7 +35,6 @@
 #include <aips/Arrays/Cube.h>
 #include <aips/Containers/Record.h>
 #include <aips/Exceptions/Error.h>
-#include <aips/Glish/GlishArray.h>
 #include <aips/Arrays/Slice.h>
 #include <aips/Arrays/Slicer.h>
 #include <aips/Logging/LogIO.h>
@@ -78,7 +77,7 @@ MSFlagger::~MSFlagger()
 void MSFlagger::setMSSelector(MSSelector& msSel)
 {
   msSel_p=&msSel;
-  buffer_p=GlishRecord();
+  buffer_p=Record(RecordInterface::Variable);
 }
 
 Bool MSFlagger::fillDataBuffer(const String& item, Bool ifrAxis)
@@ -119,7 +118,7 @@ Bool MSFlagger::fillDataBuffer(const String& item, Bool ifrAxis)
       items(1)="FLAG";
       items(2)="FLAG_ROW";
       buffer_p=msSel_p->getData(items,ifrAxis);
-      buffer_p.add("datafield",itm);
+      buffer_p.define("datafield",itm);
     }
     return True;
     break;
@@ -130,10 +129,10 @@ Bool MSFlagger::fillDataBuffer(const String& item, Bool ifrAxis)
   }
 }
 
-GlishRecord MSFlagger::diffDataBuffer(const String& direction, Int window,
+Record MSFlagger::diffDataBuffer(const String& direction, Int window,
 				      Bool doMedian)
 {
-  GlishRecord retVal;
+  Record retVal(RecordInterface::Variable);
   LogIO os;
   String dir=downcase(direction);
   if (dir!="time" && dir!="channel") {
@@ -144,16 +143,14 @@ GlishRecord MSFlagger::diffDataBuffer(const String& direction, Int window,
   Int win=max(1,window);
   if (win!=window) os <<LogIO::WARN<<"Setting window to "<<win<< LogIO::POST;
   if (doMedian) win=2*(win/2)+1; // make odd to keep it symmetric
-  if (!buffer_p.exists("datafield")) {
+  if (!buffer_p.isDefined("datafield")) {
     os << LogIO::WARN<<"Buffer is empty, use fillbuffer first"
        << LogIO::POST;
     return retVal;
   }
-  String item; GlishArray(buffer_p.get("datafield")).get(item);
-  Array<Bool> flag; 
-  GlishArray(buffer_p.get("flag")).get(flag);
-  Array<Bool> flagRow;
-  GlishArray(buffer_p.get("flag_row")).get(flagRow);
+  String item = buffer_p.asString(RecordFieldId("datafield"));
+  Array<Bool> flag = buffer_p.asArrayBool(RecordFieldId("flag")); 
+  Array<Bool> flagRow = buffer_p.asArrayBool(RecordFieldId("flag_row")); ;
   Int fld=MSS::field(item);
   Array<Float> diff;
   Int timeAxis=flag.ndim()-1;
@@ -165,8 +162,7 @@ GlishRecord MSFlagger::diffDataBuffer(const String& direction, Int window,
   case MSS::RESIDUAL_DATA:
   case MSS::OBS_RESIDUAL_DATA:
     {
-      Array<Complex> data;
-      GlishArray(buffer_p.get(item)).get(data);
+      Array<Complex> data = buffer_p.asArrayComplex(RecordFieldId(item));
       if (dir=="time") {
 	diff=MSSelUtil<Complex>::diffData(data,flag,flagRow,timeAxis,win,
 					  doMedian);
@@ -176,15 +172,15 @@ GlishRecord MSFlagger::diffDataBuffer(const String& direction, Int window,
 					  doMedian);
       }
       // remove data field from record
-      GlishRecord gr;
-      gr.add("flag",buffer_p.get("flag"));
-      gr.add("flag_row",buffer_p.get("flag_row"));
+      Record gr(RecordInterface::Variable);
+      gr.define("flag",buffer_p.asArrayBool(RecordFieldId("flag")));
+      gr.define("flag_row",buffer_p.asArrayBool(RecordFieldId("flag_row")));
       if (fld==MSS::DATA) item="amplitude";
       if (fld==MSS::CORRECTED_DATA) item="corrected_amplitude";
       if (fld==MSS::MODEL_DATA) item="model_amplitude";
       if (fld==MSS::RESIDUAL_DATA) item="residual_amplitude";
       if (fld==MSS::OBS_RESIDUAL_DATA) item="obs_residual_amplitude";
-      gr.add("datafield",item);
+      gr.define("datafield",item);
       buffer_p=gr;
     }
     break;
@@ -209,8 +205,7 @@ GlishRecord MSFlagger::diffDataBuffer(const String& direction, Int window,
   case MSS::RESIDUAL_REAL:
   case MSS::OBS_RESIDUAL_REAL:
     {
-      Array<Float> data;
-      GlishArray(buffer_p.get(item)).get(data);
+      Array<Float> data = buffer_p.asArrayFloat(RecordFieldId(item));
       if (dir=="time") {
 	diff=MSSelUtil<Float>::diffData(data,flag,flagRow,timeAxis,win,
 					doMedian);
@@ -224,15 +219,15 @@ GlishRecord MSFlagger::diffDataBuffer(const String& direction, Int window,
   default:
     break;
   }
-  buffer_p.add(item,diff);
+  buffer_p.define(item,diff);
   applyRowFlags(flag,flagRow); // need to apply row flags to flags for stats
   addStats(buffer_p,flag,flagRow,diff);
-  retVal.add("median",buffer_p.get("medTF"));
-  retVal.add("aad",buffer_p.get("adTF"));
+  retVal.define("median",buffer_p.asArrayFloat(RecordFieldId("medTF")));
+  retVal.define("aad",buffer_p.asArrayFloat(RecordFieldId("adTF")));
   return retVal;
 }
   
-void MSFlagger::addStats(GlishRecord& buf, const Array<Bool>& flag,
+void MSFlagger::addStats(Record& buf, const Array<Bool>& flag,
 			 const Array<Bool> flagRow, const Array<Float>& data)
 {
   // axes PFIT (Polarization, Freq, Interferometer, Time)
@@ -244,14 +239,14 @@ void MSFlagger::addStats(GlishRecord& buf, const Array<Bool>& flag,
   Array<Float> medT, medF, medTmedF, medFmedT, medTF, adT, adF, adTF;
   getStats(medTF, adTF, medT, medFmedT, adT,
 	   medF, medTmedF, adF, data, flag, flagRow);
-  buf.add("medTF",medTF);
-  buf.add("adTF",adTF);
-  buf.add("medT",medT);
-  buf.add("medFmedT",medFmedT);
-  buf.add("adT",adT);
-  buf.add("medF",medF);
-  buf.add("medTmedF",medTmedF);
-  buf.add("adF",adF);
+  buf.define("medTF",medTF);
+  buf.define("adTF",adTF);
+  buf.define("medT",medT);
+  buf.define("medFmedT",medFmedT);
+  buf.define("adT",adT);
+  buf.define("medF",medF);
+  buf.define("medTmedF",medTmedF);
+  buf.define("adF",adF);
 }
 
 void MSFlagger::applyRowFlags(Array<Bool>& flag, Array<Bool>& flagRow)
@@ -459,13 +454,12 @@ Bool MSFlagger::clipDataBuffer(Float pixelLevel, Float timeLevel,
 				Float channelLevel)
 {
   LogIO os;
-  if (!buffer_p.exists("datafield")) {
+  if (!buffer_p.isDefined("datafield")) {
     os << LogIO::WARN << "No data loaded into buffer yet"<<
       ", use fillbuffer first"<< LogIO::POST;
     return False;
   }
-  String item;
-  GlishArray(buffer_p.get("datafield")).get(item);
+  String item = buffer_p.asString(RecordFieldId("datafield"));
   if (item.contains("data")) {
     os << LogIO::WARN << "Can't clip complex data,"<<
        " use diffbuffer first or load a derived quantity"<< LogIO::POST;
@@ -473,22 +467,27 @@ Bool MSFlagger::clipDataBuffer(Float pixelLevel, Float timeLevel,
   }
 
   // retrieve the data
-  Array<Bool> flag;
-  Array<Bool> flagRow;
-  GlishArray(buffer_p.get("flag")).get(flag);
-  GlishArray(buffer_p.get("flag_row")).get(flagRow);
-  Array<Float> diff;
-  GlishArray(buffer_p.get(item)).get(diff);
+  Array<Bool> flag = buffer_p.asArrayBool(RecordFieldId("flag"));
+  Array<Bool> flagRow = buffer_p.asArrayBool(RecordFieldId("flag_row"));
+  Array<Float> diff = buffer_p.asArrayFloat(RecordFieldId(item));
 
   // retrieve the stats
   Matrix<Float> adT, adF, medTF, adTF, medFmedT, medTmedF;
   Cube<Float> medT, medF;
-  if (!buffer_p.exists("medTF")) {
+  if (!buffer_p.isDefined("medTF")) {
     // we haven't got stats yet
     applyRowFlags(flag,flagRow); // need to apply row flags to flags for stats
     addStats(buffer_p,flag,flagRow,diff);
   }
-  GlishArray(buffer_p.get("medTF")).get(medTF);
+  medTF = buffer_p.asArrayFloat("medTF");
+  adTF = buffer_p.asArrayFloat("adTF");
+  medT = buffer_p.asArrayFloat("medT");
+  medFmedT = buffer_p.asArrayFloat("medFmedT");
+  adT = buffer_p.asArrayFloat("adT");
+  medF = buffer_p.asArrayFloat("medF");
+  medTmedF = buffer_p.asArrayFloat("medTmeF");
+  adF = buffer_p.asArrayFloat("adF");
+/*
   GlishArray(buffer_p.get("adTF")).get(adTF);
   GlishArray(buffer_p.get("medT")).get(medT);
   GlishArray(buffer_p.get("medFmedT")).get(medFmedT);
@@ -496,6 +495,7 @@ Bool MSFlagger::clipDataBuffer(Float pixelLevel, Float timeLevel,
   GlishArray(buffer_p.get("medF")).get(medF);
   GlishArray(buffer_p.get("medTmedF")).get(medTmedF);
   GlishArray(buffer_p.get("adF")).get(adF);
+*/
   Bool deleteFlag, deleteFlagRow, deleteDiff;
   Bool* pflagRow = flagRow.getStorage(deleteFlagRow);
   Bool* pflag = flag.getStorage(deleteFlag);
@@ -630,29 +630,29 @@ Bool MSFlagger::clipDataBuffer(Float pixelLevel, Float timeLevel,
   flag.putStorage(pflag,deleteFlag);
   flagRow.putStorage(pflagRow,deleteFlagRow);
   diff.freeStorage(pdiff,deleteDiff);
-  buffer_p.add("flag",flag);
-  buffer_p.add("flag_row",flagRow);
-  buffer_p.add("medTF",medTF);
-  buffer_p.add("adTF",adTF);
-  buffer_p.add("medT",medT);
-  buffer_p.add("medF",medF);
-  buffer_p.add("adT",adT);
-  buffer_p.add("adF",adF);
-  buffer_p.add("medTmedF",medTmedF);
-  buffer_p.add("medFmedT",medFmedT);
+  buffer_p.define("flag",flag);
+  buffer_p.define("flag_row",flagRow);
+  buffer_p.define("medTF",medTF);
+  buffer_p.define("adTF",adTF);
+  buffer_p.define("medT",medT);
+  buffer_p.define("medF",medF);
+  buffer_p.define("adT",adT);
+  buffer_p.define("adF",adF);
+  buffer_p.define("medTmedF",medTmedF);
+  buffer_p.define("medFmedT",medFmedT);
   return True;
 }
 
-Bool MSFlagger::setDataBufferFlags(const GlishRecord& flags)
+Bool MSFlagger::setDataBufferFlags(const Record& flags)
 {
   LogIO os;
-  if (!buffer_p.exists("datafield")) {
+  if (!buffer_p.isDefined("datafield")) {
     os << LogIO::WARN <<
       "Data buffer is empty, use filldatabuffer first"<< LogIO::POST;
     return False;
   }
-  buffer_p.add("flag",flags.get("flag"));
-  buffer_p.add("flag_row",flags.get("flag_row"));
+  buffer_p.define("flag",flags.asArrayBool(RecordFieldId("flag")));
+  buffer_p.define("flag_row",flags.asArrayBool(RecordFieldId("flag_row")));
   return True;
 }
 
@@ -664,14 +664,14 @@ Bool MSFlagger::writeDataBufferFlags()
     os << LogIO::SEVERE << "MeasurementSet is not writable"<< LogIO::POST;
     return False;
   }
-  if (!buffer_p.exists("datafield")) {
+  if (!buffer_p.isDefined("datafield")) {
     os << LogIO::WARN <<
       "Data buffer is empty, use filldatabuffer first"<< LogIO::POST;
     return False;
   }
-  GlishRecord items;
-  items.add("flag_row",buffer_p.get("flag_row"));
-  items.add("flag",buffer_p.get("flag"));
+  Record items(RecordInterface::Variable);
+  items.define("flag_row",buffer_p.asArrayBool(RecordFieldId("flag_row")));
+  items.define("flag",buffer_p.asArrayBool(RecordFieldId("flag")));
   return msSel_p->putData(items);
 }
 

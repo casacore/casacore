@@ -30,11 +30,12 @@
 #define TRIAL_MSFLAGGER_H
 
 #include <aips/aips.h>
-#include <aips/Glish/GlishRecord.h>
+#include <aips/Containers/Record.h>
 
 template <class T> class Array;
 class MSSelector;
 class Table;
+class String;
 
 // <summary>
 // MSFlagger specifies selections on a MeasurementSet
@@ -119,12 +120,12 @@ public:
   // Available directions are: TIME, CHANNEL
   // Returns statistics over the buffer: median for times and channels,
   // average absolute deviation over times, channels and all pixels.
-  GlishRecord diffDataBuffer(const String& direction, Int window=1,
+  Record diffDataBuffer(const String& direction, Int window=1,
 			     Bool doMedian = False);
 
   // Return the contents of the internal data buffer, including the flags
-  // as a GlishRecord
-  GlishRecord getDataBuffer()
+  // as a Record
+  Record getDataBuffer()
   { return buffer_p;}
 
   // Clip the data buffer at a specified level by setting the corresponding
@@ -139,14 +140,14 @@ public:
   // This allows interactive flagging from glish to be written back to the
   // buffer for subsequent operations. The record should contain a
   // flag and flag_row field.
-  Bool setDataBufferFlags(const GlishRecord& flags);
+  Bool setDataBufferFlags(const Record& flags);
 
   // Write the flags in the buffer back to the table
   Bool writeDataBufferFlags();
 
   // Clear the internal data buffer, reclaiming memory
   Bool clearDataBuffer()
-  { buffer_p=GlishRecord(); return True;}
+  { buffer_p=Record(); return True;}
 
   // Create the FLAG_HISTORY column and initialize it from the
   // FLAG_ROW and FLAG columns. Returns False if FLAG_HISTORY already exists.
@@ -193,7 +194,7 @@ protected:
 		const Array<Bool>& flagRow);
 
   // add the statistics to a buffer
-  void addStats(GlishRecord& buf, const Array<Bool>& flag,
+  void addStats(Record& buf, const Array<Bool>& flag,
 		const Array<Bool> flagRow, const Array<Float>& data);
 
   // reorder from 2d to 1d (removing ifr axis)
@@ -213,7 +214,7 @@ protected:
 
 private:
   MSSelector* msSel_p; 
-  GlishRecord buffer_p;
+  Record buffer_p;
 };
 
 #endif

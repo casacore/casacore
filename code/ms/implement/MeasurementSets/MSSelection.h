@@ -33,7 +33,6 @@
 #include <aips/Utilities/String.h>
 #include <aips/Arrays/Vector.h>
 #include <aips/Arrays/Matrix.h>
-#include <aips/Glish/GlishRecord.h>
 #include <aips/Measures/MEpoch.h>
 #include <aips/Measures/MRadialVelocity.h>
 #include <aips/Tables/ExprNode.h>
@@ -81,9 +80,9 @@ class MSSelection
    MSSelection();
    virtual ~MSSelection();
 
-   // Construct from a Glish record representing a selection item
-   // at the Glish or user interface level.
-   MSSelection(const GlishRecord& selectionItem);
+   // Construct from a record representing a selection item
+   // at the or user interface level.
+   MSSelection(const Record& selectionItem);
 
    // Copy constructor
    MSSelection(const MSSelection& other);
@@ -118,9 +117,9 @@ class MSSelection
    TableExprNode toTableExprNode(const MeasurementSet& ms);
 
  private:
-   // Initialize from a GlishRecord representing a selection
-   // item from the user interface or Glish CLI
-   void fromSelectionItem(const GlishRecord& selectionItem);
+   // Initialize from a Record representing a selection
+   // item from the user interface or  CLI
+   void fromSelectionItem(const Record& selectionItem);
 
    // Check if record field exists and is not unset
    Bool definedAndSet(const Record& inpRec, const String& fieldName);
