@@ -1707,7 +1707,7 @@ void ImageMoments<T>::smoothRow (Lattice<T>* pIn,
 
   while (!inIt.atEnd()) {
     conv.linearConv(result, inIt.vectorCursor());
-    inIt.writeArray (result);
+    inIt.woCursor() = result;
     inIt++;
   }
 }

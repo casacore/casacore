@@ -1056,7 +1056,7 @@ void ImageHistograms<T>::fillMinMax (RO_LatticeIterator<T>* imageIterator,
       LatticeIterator<T> minMaxIterator(*pMinMaxImage_p, sliceShape);
 
       for (minMaxIterator.reset(); !minMaxIterator.atEnd(); minMaxIterator++) {
-         minMaxIterator.writeArray (slice);
+         minMaxIterator.woCursor() = slice;
       }
    } else {
       os_p << LogIO::NORMAL << "Finding min/max for each histogram data chunk" << LogIO::POST;

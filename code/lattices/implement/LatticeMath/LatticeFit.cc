@@ -30,7 +30,7 @@ uInt baselineFit(Lattice<Float> &outImage,
     if (whichAxis >= outImage.ndim()) {
 	throw(AipsError("::baselineFit - whichAxis does not exist in image"));
     }
-    if (fitMask.nelements() != outShape(whichAxis)) {
+    if (Int(fitMask.nelements()) != outShape(whichAxis)) {
 	throw(AipsError("::baselineFit - improperly specified mask"));
     }
 
@@ -41,7 +41,7 @@ uInt baselineFit(Lattice<Float> &outImage,
 
 
     // These selections etc will get easier when masked arrays are available.
-    uInt nPointsToFit = fitMask.nelements();
+    Int nPointsToFit = fitMask.nelements();
 
     // Set up x and sigma
     Vector<Float> x(nPointsToFit);
@@ -91,9 +91,9 @@ uInt baselineFit(Lattice<Float> &outImage,
 	    solution(ii) = (*fitter.fittedFunction())(xall(ii));
 	}
 	if (returnResiduals) {
-	    outIter.writeArray (yall.ac() - solution.ac());
+	    outIter.woCursor() = (yall.ac() - solution.ac());
 	} else {
-	    outIter.writeArray (solution);
+	    outIter.woCursor() = solution;
 	}
 	if (eventStream && eventStream->connected()) {
 	    eventStream->postEvent("progress",

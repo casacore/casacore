@@ -667,7 +667,7 @@ operator+= (const PagedImage<T> & other)
 	                        maskiter.reset(), othermaskiter.reset(); 
 	 !toiter.atEnd();
 	 toiter++, maskiter++, otheriter++, othermaskiter++) {
-      maskiter.writeArray (othermaskiter.cursor());
+      maskiter.woCursor() = othermaskiter.cursor();
       toiter.rwCursor()(othermaskiter.cursor()) += otheriter.cursor();
     }
   } else if(writeThis && !writeOther) {
