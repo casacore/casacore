@@ -30,7 +30,7 @@
 #include <aips/Functionals/Function.h>
 #include <aips/Lattices/Lattice.h>
 #include <trial/Lattices/MaskedLattice.h>
-#include <aips/Lattices/LatticeIterator.h>
+#include <trial/Lattices/MaskedLatticeIterator.h>
 #include <aips/Lattices/LatticeStepper.h>
 #include <aips/Lattices/TiledLineStepper.h>
 #include <aips/Arrays/IPosition.h>
@@ -162,7 +162,7 @@ uInt LatticeFit::fitProfiles (MaskedLattice<Float>* pFit,
 
    IPosition inTileShape = in.niceCursorShape();
    TiledLineStepper stepper (in.shape(), inTileShape, axis);
-   RO_LatticeIterator<Float> inIter(in, stepper);
+   RO_MaskedLatticeIterator<Float> inIter(in, stepper);
 //
    LatticeIterator<Float>* pFitIter = 0;
    LatticeIterator<Bool>* pFitMaskIter = 0;
@@ -206,8 +206,7 @@ uInt LatticeFit::fitProfiles (MaskedLattice<Float>* pFit,
 // Get data and mask (reflects pixelMask and region mask of SubImage)
 
       const Vector<Float>& data = inIter.vectorCursor();
-      inMask = in.getMaskSlice(inIter.position(),
-                               inIter.cursorShape(), True);
+      inMask = inIter.getMask(True);
 //
       ok = True;
       if (pSigma) {
