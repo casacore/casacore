@@ -212,6 +212,10 @@
     echo "testsuite: inhale started"
     echo ""
     inhale $INHALE_FLAG > $AIPSROOT/inhale.log 2>&1
+    echo ""
+    echo "testsuite: runtests started"
+    echo ""
+    runtests
   else
      if [ $HASPACKAGES -gt 0 -o $HASMODULES -gt 0 ] ; then
        if [ $HASPACKAGES -eq 0 ] ; then
