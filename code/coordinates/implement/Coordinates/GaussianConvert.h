@@ -1,5 +1,5 @@
 //# GaussianConvert.h: Class to convert units of Gaussians from pixel to world 
-//# Copyright (C) 1997,1998,1999
+//# Copyright (C) 1997,1998,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -123,8 +123,9 @@ public:
     // </group>
 
     // Deconvolve the parameters of a source Gaussian from a beam Gaussian 
-    // to give a model Gaussian.  The return is True of the model appears
-    // to be a point source.  If the units of the model are not given,
+    // to give a model Gaussian.  The return is True if the model appears
+    // to be a point source and the output model will be set to
+    // the parameters of the beam.  If the units of the model are not given,
     // they will be set to the units of the source.
     static Bool deconvolve(Quantum<Double>& majorAxisModel, 
                            Quantum<Double>& minorAxisModel,
@@ -134,8 +135,7 @@ public:
                            const Quantum<Double>& positionAngleSource,
                            const Quantum<Double>& majorAxisBeam,
                            const Quantum<Double>& minorAxisBeam,
-                           const Quantum<Double>& positionAngleBeam,
-                           Double tol=1e-6);
+                           const Quantum<Double>& positionAngleBeam);
 
     // Recover error messages from the conversion functions
     String errorMessage() const {return itsErrorMessage;}
