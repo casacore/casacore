@@ -1,5 +1,5 @@
 //# tHostInfo.cc: Test the HostInfo class.
-//# Copyright (C) 1997
+//# Copyright (C) 1997,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -29,6 +29,7 @@
 #include <aips/OS/HostInfo.h>
 #include <aips/Utilities/String.h>
 #include <aips/Utilities/Assert.h>
+#include <aips/iostream.h>
 
 // For sleep()
 #include <unistd.h>

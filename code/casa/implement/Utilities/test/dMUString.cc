@@ -31,6 +31,7 @@
 #include <aips/Quanta/Quantum.h>
 #include <aips/Quanta/MVAngle.h>
 #include <aips/Utilities/Regex.h>
+#include <aips/iostream.h>
 
 main()
 {
