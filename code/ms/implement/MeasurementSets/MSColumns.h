@@ -104,32 +104,40 @@ class NewMeasurementSet;
 class RONewMSColumns: public RONewMSMainColumns
 {
 public:
-
+  // Create a columns object that accesses the data in the specified MS
   RONewMSColumns(const NewMeasurementSet& ms);
 
+  // The destructor does nothing special
   ~RONewMSColumns();
 
-  // Access to subtables
+  // Access to required subtables
+  // <group>
   const RONewMSAntennaColumns& antenna() const {return antenna_p;}
   const RONewMSDataDescColumns& dataDescription() const {return dataDesc_p;}
-  const RONewMSDopplerColumns& doppler() const {return doppler_p;}
   const RONewMSFeedColumns& feed() const {return feed_p;}
   const RONewMSFieldColumns& field() const {return field_p;}
   const RONewMSFlagCmdColumns& flagCmd() const {return flagCmd_p;}
-  const RONewMSFreqOffsetColumns& freqOffset() const {return freqOffset_p;}
   const RONewMSHistoryColumns& history() const {return history_p;}
   const RONewMSObservationColumns& observation() const {return observation_p;}
   const RONewMSPointingColumns& pointing() const {return pointing_p;}
-  const RONewMSPolarizationColumns& polarization() const {return polarization_p;}
+  const RONewMSPolarizationColumns& polarization() const {
+    return polarization_p;}
   const RONewMSProcessorColumns& processor() const {return processor_p;}
   const RONewMSSourceColumns& source() const {return source_p;}
-  const RONewMSSpWindowColumns& spectralWindow() const {return spectralWindow_p;}
+  const RONewMSSpWindowColumns& spectralWindow() const {
+    return spectralWindow_p;}
   const RONewMSStateColumns& state() const {return state_p;}
+  // </group>
+
+  // Access to optional subtables
+  // <group>
+  const RONewMSDopplerColumns& doppler() const {return doppler_p;}
+  const RONewMSFreqOffsetColumns& freqOffset() const {return freqOffset_p;}
   const RONewMSSysCalColumns& sysCal() const {return sysCal_p;}
   const RONewMSWeatherColumns& weather() const {return weather_p;}
+  // </group>
 
 private:
-
   // Access to subtables
   RONewMSAntennaColumns antenna_p;
   RONewMSDataDescColumns dataDesc_p;
@@ -148,7 +156,6 @@ private:
   RONewMSStateColumns state_p;
   RONewMSSysCalColumns sysCal_p; //optional
   RONewMSWeatherColumns weather_p; //optional
-
 };
 
 // <summary>
@@ -207,19 +214,19 @@ private:
 class NewMSColumns: public NewMSMainColumns
 {
 public:
-
+  // Create a columns object that accesses the data in the specified MS
   NewMSColumns(NewMeasurementSet& ms);
 
+  // The destructor does nothing special
   ~NewMSColumns();
 
-  // Access to subtables
+  // Read-write access to required subtables
+  // <group>
   NewMSAntennaColumns& antenna() {return antenna_p;}
   NewMSDataDescColumns& dataDescription() {return dataDesc_p;}
-  NewMSDopplerColumns& doppler() {return doppler_p;}
   NewMSFeedColumns& feed() {return feed_p;}
   NewMSFieldColumns& field() {return field_p;}
   NewMSFlagCmdColumns& flagCmd() {return flagCmd_p;}
-  NewMSFreqOffsetColumns& freqOffset() {return freqOffset_p;}
   NewMSHistoryColumns& history() {return history_p;}
   NewMSObservationColumns& observation() {return observation_p;}
   NewMSPointingColumns& pointing() {return pointing_p;}
@@ -228,12 +235,47 @@ public:
   NewMSSourceColumns& source() {return source_p;}
   NewMSSpWindowColumns& spectralWindow() {return spectralWindow_p;}
   NewMSStateColumns& state() {return state_p;}
+  // </group>
+
+  // Read-write access to optional subtables
+  // <group>
+  NewMSDopplerColumns& doppler() {return doppler_p;}
+  NewMSFreqOffsetColumns& freqOffset() {return freqOffset_p;}
   NewMSSysCalColumns& sysCal() {return sysCal_p;}
   NewMSWeatherColumns& weather() {return weather_p;}
+  // </group>
 
-  // set the EPOCH reference type in all EPOCH columns in the NewMS as e.g.,
-  // MEpoch::UTC. Note that only a single EPOCH reference is allowed in the
-  // NewMS.
+  // Read-only access to required subtables
+  // <group>
+  const RONewMSAntennaColumns& antenna() const {return antenna_p;}
+  const RONewMSDataDescColumns& dataDescription() const {return dataDesc_p;}
+  const RONewMSFeedColumns& feed() const {return feed_p;}
+  const RONewMSFieldColumns& field() const {return field_p;}
+  const RONewMSFlagCmdColumns& flagCmd() const {return flagCmd_p;}
+  const RONewMSHistoryColumns& history() const {return history_p;}
+  const RONewMSObservationColumns& observation() const {return observation_p;}
+  const RONewMSPointingColumns& pointing() const {return pointing_p;}
+  const RONewMSPolarizationColumns& polarization() const {
+    return polarization_p;}
+  const RONewMSProcessorColumns& processor() const {return processor_p;}
+  const RONewMSSourceColumns& source() const {return source_p;}
+  const RONewMSSpWindowColumns& spectralWindow() const {
+    return spectralWindow_p;}
+  const RONewMSStateColumns& state() const {return state_p;}
+  // </group>
+
+  //# Read-only access to optional subtables
+  //# <group>
+  //# These are commented out untill these classes are updated so that the rw
+  //# class is derived from the ro one.
+//#   const RONewMSDopplerColumns& doppler() const {return doppler_p;}
+//#   const RONewMSFreqOffsetColumns& freqOffset() const {return freqOffset_p;}
+//#   const RONewMSSysCalColumns& sysCal() const {return sysCal_p;}
+//#   const RONewMSWeatherColumns& weather() const {return weather_p;}
+  //# </group>
+
+  // set the EPOCH reference type in all EPOCH columns in the NewMS. Note that
+  // only a single EPOCH reference is allowed in the NewMS.
   void setEpochRef(MEpoch::Types ref);
 
   // set the DIRECTION reference type for FIELD, POINTING and SOURCE tables
@@ -241,7 +283,6 @@ public:
   void setDirectionRef(MDirection::Types ref);
 
 private:
-
   // Access to subtables
   NewMSAntennaColumns antenna_p;
   NewMSDataDescColumns dataDesc_p;
@@ -260,9 +301,7 @@ private:
   NewMSStateColumns state_p;
   NewMSSysCalColumns sysCal_p; //optional
   NewMSWeatherColumns weather_p; //optional
-
 };
-
 #endif
 
 
