@@ -283,6 +283,16 @@ public:
   void setShape(const Vector<Int> & which,
 		const ComponentShape & newShape);
 
+  // set the shape on the specified components to the specified one. However
+  // this function unlike the previous one does not change the reference
+  // direction to the one specified in the newShape object.
+  // <thrown>
+  // <li> AipsError - If the index is equal to or larger than the number of
+  //                  elements in the list or less than zero
+  // </thrown>
+  void setShapeParms(const Vector<Int> & which,
+		     const ComponentShape & newShape);
+
   // set the spectrum on the specified components to the specified one.
   // <thrown>
   // <li> AipsError - If the index is equal to or larger than the number of
