@@ -194,7 +194,20 @@ void substrtest()
   String z = x.at(2, 3);
   cout << "z = x.at(2, 3) = " << z << "\n";
   assert(z.OK());
+  assert(z.length() == 3);
   assert(z == "llo");
+
+  String z1 = x.at(2, 4);
+  cout << "z1 = x.at(2, 4) = " << z1 << "\n";
+  assert(z1.OK());
+  assert(z1.length() == 3);
+  assert(z1 == "llo");
+
+  String z2 = x.at(5, 3);
+  cout << "z2 = x.at(5, 3) = " << z2 << "\n";
+  assert(z2.OK());
+  assert(z2.length() == 0);
+  assert(z2 == "");
 
   x.at(2, 2) = "r";
   cout << "x.at(2, 2) = r; x = " << x << "\n";
