@@ -31,12 +31,12 @@
 typedef Quantum<Double> gpp_mEarthMagnetic_bug1;
 #endif
 #include <aips/Exceptions.h>
+#include <aips/Utilities/Assert.h>
 #include <aips/Arrays/Vector.h>
 #include <aips/Mathematics/Math.h>
 #include <aips/Mathematics/Constants.h>
-#include <aips/Utilities/Assert.h>
+#include <aips/RTTI/Register.h>
 #include <trial/Measures/MEarthMagnetic.h>
-#include <aips/Measures/MeasData.h>
 #include <aips/Measures/RotMatrix.h>
 #include <aips/Measures/Euler.h>
 #include <aips/Measures/MVPosition.h>
@@ -101,6 +101,17 @@ const String &MEarthMagnetic::showMe() {
     return name;
 }
 
+uInt MEarthMagnetic::type() const {
+  return Register((MEarthMagnetic *)0);
+}
+
+void MEarthMagnetic::assert(const Measure &in) {
+  if (in.type() != Register((MEarthMagnetic *)0)) {
+    throw(AipsError("Illegal Measure type argument: " +
+		    MEarthMagnetic::showMe()));
+  };
+}
+
 const String &MEarthMagnetic::showType(uInt tp) {
     static const String tname[MEarthMagnetic::N_Types] = {
 	"DIPOLE",
@@ -151,6 +162,6 @@ Quantum<Vector<Double> > MEarthMagnetic::getAngle(const Unit &inunit) const {
     return (data.getAngle(inunit));
 }
 
-void *MEarthMagnetic::clone() const {
-    return ((void *) new MEarthMagnetic(*this));
+Measure *MEarthMagnetic::clone() const {
+    return (new MEarthMagnetic(*this));
 }

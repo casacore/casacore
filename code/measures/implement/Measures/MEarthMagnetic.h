@@ -35,10 +35,8 @@
 
 //# Includes
 #include <aips/aips.h>
-#include <aips/Measures/Measure.h>
 #include <aips/Measures/MeasBase.h>
 #include <aips/Measures/MeasRef.h>
-#include <aips/Measures/MeasConvert.h>
 #include <trial/Measures/MVEarthMagnetic.h>
 
 //# Forward Declarations
@@ -156,6 +154,8 @@ MVEarthMagnetic operator()(const MVPosition &pos) const;
 // <group>
     virtual const String &tellMe() const;
     static const String &showMe();
+    virtual uInt type() const;
+    static void assert(const Measure &in);
 // </group>
 // Translate reference code
     static const String &showType(uInt tp);
@@ -170,7 +170,7 @@ MVEarthMagnetic operator()(const MVPosition &pos) const;
 // </group>
 
 // Make copy
-  virtual void *clone() const;
+  virtual Measure *clone() const;
 
 private:
 //# Enumerations

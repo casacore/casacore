@@ -32,6 +32,7 @@ typedef Quantum<Double> gpp_mvEarthMagnetic_bug1;
 #endif
 #include <aips/Utilities/Assert.h>
 #include <aips/Mathematics/Math.h>
+#include <aips/RTTI/Register.h>
 #include <trial/Measures/MVEarthMagnetic.h>
 #include <aips/Measures/RotMatrix.h>
 #include <aips/Measures/UnitVal.h>
@@ -314,6 +315,16 @@ MVEarthMagnetic &MVEarthMagnetic::operator*=(Double right) {
 }
 
 //# Member functions
+
+uInt MVEarthMagnetic::type() const {
+  return Register((MVEarthMagnetic *)0);
+}
+
+void MVEarthMagnetic::assert(const MeasValue &in) {
+  if (in.type() != Register((MVEarthMagnetic *)0)) {
+    throw(AipsError("Illegal MeasValue type argument: MVEarthMagnetic"));
+  };
+}
 void MVEarthMagnetic::adjust() {}
 
 void MVEarthMagnetic::adjust(Double &res) {

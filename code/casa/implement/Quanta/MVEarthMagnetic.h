@@ -38,6 +38,9 @@
 #include <aips/Measures/Unit.h>
 #include <aips/Measures/Quantum.h>
 #include <aips/Measures/MeasValue.h>
+#ifdef __GNUG__
+typedef Quantum<Double> gpp_mvearthmag_bug2;
+#endif
 
 //# Forward Declarations
 class RotMatrix;
@@ -114,129 +117,137 @@ imported class ostream;
 // </todo>
 
 class MVEarthMagnetic : public MeasValue {	
-    public:
 
-//# Friends
+public:
 
-//# Constructors
-// Default constructor generates a (0,0,0) EarthMagnetic
-    MVEarthMagnetic();
-// Copy constructor
-    MVEarthMagnetic(const MVEarthMagnetic &other);
-// Creates a specified vector
-    MVEarthMagnetic(Double in0, Double in1, Double in2);
-// Creates a vector with specified length towards pole
-// <group>
-    MVEarthMagnetic(Double in0);
-    MVEarthMagnetic(const Quantity &l);
-// </group>
-// Creates the EarthMagnetic from specified (azimuth,elevation) angles and length
-    MVEarthMagnetic(const Quantity &l, Double angle0, Double angle1);
-// Creates the EarthMagnetic from specified angles and length. or EarthMagnetics
-// <thrown>
-//    <li> AipsError if quantities not in angle format
-// </thrown>
-// <group>
-    MVEarthMagnetic(const Quantity &l, const Quantity &angle0, 
-	      const Quantity &angle1);
-// If not enough angles: pole assumed (if none), or elevation =0 (if 1)
-    MVEarthMagnetic(const Quantum<Vector<Double> > &angle);
-    MVEarthMagnetic(const Quantity &l, const Quantum<Vector<Double> > &angle);
-// </group>
-// Create from specified length and/or angles and/or EarthMagnetic
-// <group>
-    MVEarthMagnetic(const Vector<Double> &other);
-    MVEarthMagnetic(const Vector<Quantity> &other);
-// </group>
-// Copy assignment
-    MVEarthMagnetic &operator=(const MVEarthMagnetic &other);
-
-// Destructor
-    ~MVEarthMagnetic();
-
-//# Operators
-// Multiplication defined as in-product
-// <group>
-    Double operator*(const MVEarthMagnetic &other) const;
-// </group>
-
-// Equality comparisons
-// <group>
-    Bool operator== (const MVEarthMagnetic &other) const;
-    Bool operator!= (const MVEarthMagnetic &other) const;
-    Bool near(const MVEarthMagnetic &other, Double tol=1e-13) const;
-    Bool near(const MVEarthMagnetic &other, Quantity tol) const;
-    Bool nearAbs(const MVEarthMagnetic &other, Double tol=1e-13) const;
-// </group>
-
-// Addition and subtraction
-// <group>
-    MVEarthMagnetic operator-() const;
-    MVEarthMagnetic &operator+=(const MVEarthMagnetic &right);
-    MVEarthMagnetic operator+(const MVEarthMagnetic &right) const;
-    MVEarthMagnetic &operator-=(const MVEarthMagnetic &right);
-    MVEarthMagnetic operator-(const MVEarthMagnetic &right) const;
-// </group>
-
-// Multiplication with rotation matrix (see also global functions)
-// <group>
-MVEarthMagnetic &operator*=(const RotMatrix &right);
-// </group>
-
-// Multiplication with constant
-// <group>
-MVEarthMagnetic &operator*=(Double right);
-// </group>
-
-// Obtain an element
-// <group>
-    Double &operator()(uInt which);
-    const Double &operator()(uInt which) const;
-// </group>
-
-//# General Member Functions
-// Normalise direction aspects by adjusting the length to 1
-// <group>
-    virtual void adjust();
-    virtual void adjust(Double &res);
-    virtual void readjust(Double res);
-// </group>
-// Get modulus of EarthMagnetic
-    virtual Double radius();
-// Generate a 3-vector of coordinates (length(T), angles(rad))
-    Vector<Double> get() const;
-// Generate a 3-vector of x,y,z in tesla
-    const Vector<Double> &getValue() const;
-// Generate angle 2-vector (in rad)
-    Quantum<Vector<Double> > getAngle() const;
-// and with specified units
-    Quantum<Vector<Double> > getAngle(const Unit &unit) const;
-// Generate the length
-    Quantity getLength() const;
-// and generate it with the specified units
-    Quantity getLength(const Unit &unit) const;
-// Get the EarthMagnetic angle between the directions. I.e. the angle between
-// the direction from one to the pole, and from one to the other.
-// <group>
-    Double EarthMagneticAngle(const MVEarthMagnetic &other) const;
-    Quantity EarthMagneticAngle(const MVEarthMagnetic &other, 
-				   const Unit &unit) const;
-// </group>
-// Get the angular separation between two directions.
-// <group>
-    Double separation(const MVEarthMagnetic &other) const;
-    Quantity separation(const MVEarthMagnetic &other, 
-				   const Unit &unit) const;
-// </group>
-// Print data
-    virtual void print(ostream &os) const;
-// Clone
-    virtual MeasValue *clone() const;
-
-    protected:
-//# Data
-// EarthMagnetic vector (in T)
-    Vector<Double> xyz;
+  //# Friends
+  
+  //# Constructors
+  // Default constructor generates a (0,0,0) EarthMagnetic
+  MVEarthMagnetic();
+  // Copy constructor
+  MVEarthMagnetic(const MVEarthMagnetic &other);
+  // Creates a specified vector
+  MVEarthMagnetic(Double in0, Double in1, Double in2);
+  // Creates a vector with specified length towards pole
+  // <group>
+  MVEarthMagnetic(Double in0);
+  MVEarthMagnetic(const Quantity &l);
+  // </group>
+  // Creates the EarthMagnetic from specified (azimuth,elevation) angles and length
+  MVEarthMagnetic(const Quantity &l, Double angle0, Double angle1);
+  // Creates the EarthMagnetic from specified angles and length. or EarthMagnetics
+  // <thrown>
+  //    <li> AipsError if quantities not in angle format
+  // </thrown>
+  // <group>
+  MVEarthMagnetic(const Quantity &l, const Quantity &angle0, 
+		  const Quantity &angle1);
+  // If not enough angles: pole assumed (if none), or elevation =0 (if 1)
+  MVEarthMagnetic(const Quantum<Vector<Double> > &angle);
+  MVEarthMagnetic(const Quantity &l, const Quantum<Vector<Double> > &angle);
+  // </group>
+  // Create from specified length and/or angles and/or EarthMagnetic
+  // <group>
+  MVEarthMagnetic(const Vector<Double> &other);
+  MVEarthMagnetic(const Vector<Quantity> &other);
+  // </group>
+  // Copy assignment
+  MVEarthMagnetic &operator=(const MVEarthMagnetic &other);
+  
+  // Destructor
+  ~MVEarthMagnetic();
+  
+  //# Operators
+  // Multiplication defined as in-product
+  // <group>
+  Double operator*(const MVEarthMagnetic &other) const;
+  // </group>
+  
+  // Equality comparisons
+  // <group>
+  Bool operator== (const MVEarthMagnetic &other) const;
+  Bool operator!= (const MVEarthMagnetic &other) const;
+  Bool near(const MVEarthMagnetic &other, Double tol=1e-13) const;
+  Bool near(const MVEarthMagnetic &other, Quantity tol) const;
+  Bool nearAbs(const MVEarthMagnetic &other, Double tol=1e-13) const;
+  // </group>
+  
+  // Addition and subtraction
+  // <group>
+  MVEarthMagnetic operator-() const;
+  MVEarthMagnetic &operator+=(const MVEarthMagnetic &right);
+  MVEarthMagnetic operator+(const MVEarthMagnetic &right) const;
+  MVEarthMagnetic &operator-=(const MVEarthMagnetic &right);
+  MVEarthMagnetic operator-(const MVEarthMagnetic &right) const;
+  // </group>
+  
+  // Multiplication with rotation matrix (see also global functions)
+  // <group>
+  MVEarthMagnetic &operator*=(const RotMatrix &right);
+  // </group>
+  
+  // Multiplication with constant
+  // <group>
+  MVEarthMagnetic &operator*=(Double right);
+  // </group>
+  
+  // Obtain an element
+  // <group>
+  Double &operator()(uInt which);
+  const Double &operator()(uInt which) const;
+  // </group>
+  
+  //# General Member Functions
+  
+  // Tell me your type
+  // <group>
+  virtual uInt type() const;
+  static void assert(const MeasValue &in);
+  // </group>
+  
+  // Normalise direction aspects by adjusting the length to 1
+  // <group>
+  virtual void adjust();
+  virtual void adjust(Double &res);
+  virtual void readjust(Double res);
+  // </group>
+  // Get modulus of EarthMagnetic
+  virtual Double radius();
+  // Generate a 3-vector of coordinates (length(T), angles(rad))
+  Vector<Double> get() const;
+  // Generate a 3-vector of x,y,z in tesla
+  const Vector<Double> &getValue() const;
+  // Generate angle 2-vector (in rad)
+  Quantum<Vector<Double> > getAngle() const;
+  // and with specified units
+  Quantum<Vector<Double> > getAngle(const Unit &unit) const;
+  // Generate the length
+  Quantity getLength() const;
+  // and generate it with the specified units
+  Quantity getLength(const Unit &unit) const;
+  // Get the EarthMagnetic angle between the directions. I.e. the angle between
+  // the direction from one to the pole, and from one to the other.
+  // <group>
+  Double EarthMagneticAngle(const MVEarthMagnetic &other) const;
+  Quantity EarthMagneticAngle(const MVEarthMagnetic &other, 
+			      const Unit &unit) const;
+  // </group>
+  // Get the angular separation between two directions.
+  // <group>
+  Double separation(const MVEarthMagnetic &other) const;
+  Quantity separation(const MVEarthMagnetic &other, 
+		      const Unit &unit) const;
+  // </group>
+  // Print data
+  virtual void print(ostream &os) const;
+  // Clone
+  virtual MeasValue *clone() const;
+  
+private:
+  //# Data
+  // EarthMagnetic vector (in T)
+  Vector<Double> xyz;
 };
 
 //# Global functions
