@@ -1,5 +1,5 @@
 //# <HashMap.h>: this defines HashMap, which is a hashed associative array
-//# Copyright (C) 1995,1996,1999
+//# Copyright (C) 1995,1996,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -24,15 +24,13 @@
 //#                        Charlottesville, VA 22903-2475 USA
 //#
 //# $Id$
+
 #if !defined(AIPS_HASHMAPIO_H_)
 #define AIPS_HASHMAPIO_H_
 
 
 #include <trial/Containers/HashMapIter.h>
 
-#define MAPIO_COMPATIBILITY 1
-
-class AipsIO;
 
 // <summary>
 //     HashMap/HashMapIter IO functions
@@ -53,12 +51,6 @@ class AipsIO;
 // <group name=hashmapio>
 template<class key, class val> ostream &operator<<(ostream &, const ConstHashMapIter<key,val> &);
 template<class key, class val> ostream& operator<<(ostream&, const HashMap<key,val>&);
-
-template<class key, class val> AipsIO &operator<<(AipsIO& ios, const HashMap<key,val> &map);
-template<class key, class val> AipsIO &operator>>(AipsIO& ios, HashMap<key,val> &map);
-
-template<class key, class val> AipsIO &operator<<(AipsIO& ios, const ConstHashMapIter<key,val> &map);
-template<class key, class val> AipsIO &operator>>(AipsIO& ios, HashMapIter<key,val> &map);
 // </group>
 
 #endif
