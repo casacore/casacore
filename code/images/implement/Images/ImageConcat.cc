@@ -257,8 +257,9 @@ void ImageConcat<T>::setImage (ImageInterface<T>& image, Bool relax)
       setCoordinates();
    }
 
-   // Add its log
-   logger().addParent (image.logger());
+// This is causing me problems. Append for now.
+//   logger().addParent (&(image.logger()));
+    logger().append(image.logger());
 } 
 
 
