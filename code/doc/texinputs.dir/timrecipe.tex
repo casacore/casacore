@@ -1,0 +1,50 @@
+\usepackage{longtable}
+\usepackage{array}
+\pagestyle{plain}
+
+% The following marcos are necessary for the recipe system
+
+% Define a macro for the overall recipe. We'd like the argument
+% to go into a database for searching
+\newenvironment{ahrecipe}[1]{{\Large\begin{flushleft}{\bf Recipe: #1}\end{flushleft}}}{}
+
+% What AIPS++ facilities does the recipe use?
+\newcommand{\aruses}[1]
+  {\begin{flushleft}{\Large Uses:} #1\end{flushleft}}
+
+% What are the results of the recipe?
+\newcommand{\arresults}[1]
+  {{\begin{flushleft}{{\Large Results:} #1}\end{flushleft}}}
+
+% What are the conditions for use of this recipe?
+\newcommand{\arcondition}[1]
+  {{\begin{flushleft}{{\Large Conditions:} #1}\end{flushleft}}}
+
+% Concluding remarks?
+\newcommand{\arconclusion}[1]
+  {{\begin{flushleft}{{\Large Conclusion:} #1}\end{flushleft}}}
+
+% Macro for lines of input (first argument) and comments (second
+% argument
+\newcommand{\arline}[2]
+  { \begin{tabular}{>{\ttfamily}p{2in}}
+    #1
+    \end{tabular}  & \begin{tabular}{>{\normalfont}p{2.5in}}
+                     #2 
+                     \end{tabular}
+   \\
+   \\ }
+
+% Macro for output from a command
+\newcommand{\aroutput}[1]
+  {\\
+   \multicolumn{2}{p{4.5in}}{\emph{#1}} \\ 
+   \\}
+
+% Macro for the example (consisting of \arlines's and \aroutputs)
+\newenvironment{arexample}
+  {\begin{flushleft}{\Large Example:}\end{flushleft}
+   \begin{flushleft}(\texttt{Input}, Comments, \emph{Output})\end{flushleft}
+   \setlongtables
+   \begin{longtable}{p{2in} p{2.5in}}}{\end{longtable}}
+
