@@ -150,8 +150,3 @@ Double ProgressMeter::max() const
 {
     return max_p;
 }
-
-void ProgressMeter::cleanup()
-{
-    this->ProgressMeter::~ProgressMeter();
-}

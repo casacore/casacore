@@ -1,5 +1,5 @@
 //# ProgressMeter.h: Visual indication of a tasks progress.
-//# Copyright (C) 1997
+//# Copyright (C) 1997,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -29,9 +29,10 @@
 #if !defined(AIPS_PROGRESS_METER_H)
 #define AIPS_PROGRESS_METER_H
 
+//# Includes
 #include <aips/aips.h>
-#include <aips/Exceptions/Excp.h>
 
+//# Forward Declarations
 class String;
 
 // <summary>
@@ -84,7 +85,7 @@ class String;
 //        that are only going to take a few seconds.
 // </todo>
 
-class ProgressMeter : public Cleanup
+class ProgressMeter
 {
 public:
     // Makes a null progress meter, i.e. no updates to the screen are
@@ -128,9 +129,6 @@ public:
     Double max() const;
     // </src>
 
-    // Used by the exception-handling emulation to cause this object
-    // to be destroyed if there is an exception thrown.
-    virtual void cleanup();
     friend class ObjectController;
 private:
     Int id_p;
