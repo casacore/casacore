@@ -131,7 +131,7 @@ $(DOCSAREA)/%.ps.gz : $(CODEDIR)/%.latex $(CODEDIR)/%.dir
 	      if [ "$($*)" != "" ] ; then \
 	         $(RM) -r $(basename $(basename $@)) ; \
 	         ln -s $< ; \
-	         $(LATEX2HTML) -mkdir -dir $(basename $(basename $@)) $($*) $(<F) ; \
+	         $(LATEX2HTML) -dir $(basename $(basename $@)) $($*) $(<F) ; \
                  if [ "$(ICONSERVER)" != "" -a \
                       "$(ICONS2LOCAL)" != "" ] ; then \
                       $(ICONS2LOCAL) $(CODEDIR) $(ICONSERVER) $(basename $(basename $@)) ; \
@@ -327,9 +327,9 @@ ifeq "$(MAKEMODE)" "programmer"
 	 @ TEXINPUTS=.:$*.dir:$(CODEDIR)/$*.dir:$(TEXINPUTS) ; \
 	   export TEXINPUTS ; \
 	   if [ "$($*)" != "" ] ; then \
-	      $(LATEX2HTML) -mkdir -dir ./$(basename $*) $($*) $< ; \
+	      $(LATEX2HTML) -dir ./$(basename $*) $($*) $< ; \
 	   else \
-	      $(LATEX2HTML) -mkdir -dir ./$(basename $*)  $< ; \
+	      $(LATEX2HTML) -dir ./$(basename $*)  $< ; \
 	   fi
 endif
 
