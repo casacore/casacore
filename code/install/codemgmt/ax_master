@@ -3221,3 +3221,4 @@
 13 059 src mv atnf/apps/livedata/gridzillarc.g atnf/apps/pksgridzilla/gridzillarc.g
 13 067 src rm aips/implement/Measures/MyDummy.h
 13 067 src rm aips/implement/Measures/MyDummy.cc
+13 069 src rm trial/implement/Images/ImageStatsBase.h
