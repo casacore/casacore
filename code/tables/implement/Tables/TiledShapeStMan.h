@@ -304,6 +304,8 @@ private:
     Block<uInt> posMap_p;
     // The nr of elements used in the map blocks.
     uInt nrUsedRowMap_p;
+    // The last hypercube found.
+    Int lastHC_p;
 };
 
 
