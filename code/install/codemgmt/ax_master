@@ -5714,3 +5714,4 @@
 16 100 src mv trial/implement/Tables/test/tReadAsciiTable.in_tkhc aips/implement/Tables/test/tReadAsciiTable.in_tkhc
 16 100 src mv trial/implement/Tables/MemoryLogSink.h aips/implement/Logging/MemoryLogSink.h
 16 100 src mv trial/implement/Tables/MemoryLogSink.cc aips/implement/Logging/MemoryLogSink.cc
+16 102 src rm trial/implement/Mathematics/AutoDiff2.cc
