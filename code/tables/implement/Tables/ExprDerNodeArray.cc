@@ -1,5 +1,5 @@
 //# ExprDerArrayNode.cc: Nodes representing constant arrays in table select expression tree
-//# Copyright (C) 1997,1998,1999
+//# Copyright (C) 1997,1998,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -39,7 +39,7 @@ TableExprNodeArrayConstBool::TableExprNodeArrayConstBool
 {}
 TableExprNodeArrayConstBool::~TableExprNodeArrayConstBool()
 {}
-Array<Bool> TableExprNodeArrayConstBool::getArrayBool (uInt)
+Array<Bool> TableExprNodeArrayConstBool::getArrayBool (const TableExprId&)
     { return value_p; }
 
 
@@ -92,9 +92,11 @@ TableExprNodeArrayConstDouble::TableExprNodeArrayConstDouble
 }
 TableExprNodeArrayConstDouble::~TableExprNodeArrayConstDouble()
 {}
-Array<Double> TableExprNodeArrayConstDouble::getArrayDouble (uInt)
+Array<Double> TableExprNodeArrayConstDouble::getArrayDouble
+                                                 (const TableExprId&)
     { return value_p; }
-Array<DComplex> TableExprNodeArrayConstDouble::getArrayDComplex (uInt)
+Array<DComplex> TableExprNodeArrayConstDouble::getArrayDComplex
+                                                 (const TableExprId&)
 {
     Array<DComplex> arr(value_p.shape());
     convertArray (arr, value_p);
@@ -122,7 +124,8 @@ TableExprNodeArrayConstDComplex::TableExprNodeArrayConstDComplex
 }
 TableExprNodeArrayConstDComplex::~TableExprNodeArrayConstDComplex()
 {}
-Array<DComplex> TableExprNodeArrayConstDComplex::getArrayDComplex (uInt)
+Array<DComplex> TableExprNodeArrayConstDComplex::getArrayDComplex
+                                                 (const TableExprId&)
     { return value_p; }
 
 TableExprNodeArrayConstString::TableExprNodeArrayConstString
@@ -132,7 +135,8 @@ TableExprNodeArrayConstString::TableExprNodeArrayConstString
 {}
 TableExprNodeArrayConstString::~TableExprNodeArrayConstString()
 {}
-Array<String> TableExprNodeArrayConstString::getArrayString (uInt)
+Array<String> TableExprNodeArrayConstString::getArrayString
+                                                 (const TableExprId&)
     { return value_p; }
 
 TableExprNodeArrayConstDate::TableExprNodeArrayConstDate
@@ -142,11 +146,11 @@ TableExprNodeArrayConstDate::TableExprNodeArrayConstDate
 {}
 TableExprNodeArrayConstDate::~TableExprNodeArrayConstDate()
 {}
-Array<Double> TableExprNodeArrayConstDate::getArrayDouble (uInt)
+Array<Double> TableExprNodeArrayConstDate::getArrayDouble (const TableExprId&)
 {
     Array<Double> arr(value_p.shape());
     convertArray (arr, value_p);
     return arr;
 }
-Array<MVTime> TableExprNodeArrayConstDate::getArrayDate (uInt)
+Array<MVTime> TableExprNodeArrayConstDate::getArrayDate (const TableExprId&)
     { return value_p; }

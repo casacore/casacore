@@ -1,5 +1,5 @@
 //# ExprNodeSet.h: Classes to hold multiple table expression nodes
-//# Copyright (C) 1997
+//# Copyright (C) 1997,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -137,11 +137,16 @@ public:
     // Fill a vector with the value(s) from this element.
     // This is used by the system to convert a set to a vector.
     // <group>
-    void fillVector (Vector<Bool>& vec, uInt& cnt, uInt rownr) const;
-    void fillVector (Vector<Double>& vec, uInt& cnt, uInt rownr) const;
-    void fillVector (Vector<DComplex>& vec, uInt& cnt, uInt rownr) const;
-    void fillVector (Vector<String>& vec, uInt& cnt, uInt rownr) const;
-    void fillVector (Vector<MVTime>& vec, uInt& cnt, uInt rownr) const;
+    void fillVector (Vector<Bool>& vec, uInt& cnt,
+		     const TableExprId& id) const;
+    void fillVector (Vector<Double>& vec, uInt& cnt,
+		     const TableExprId& id) const;
+    void fillVector (Vector<DComplex>& vec, uInt& cnt,
+		     const TableExprId& id) const;
+    void fillVector (Vector<String>& vec, uInt& cnt,
+		     const TableExprId& id) const;
+    void fillVector (Vector<MVTime>& vec, uInt& cnt,
+		     const TableExprId& id) const;
     // </group>
 
     // Set a flag in the match output array if the corresponding element
@@ -149,21 +154,22 @@ public:
     // This is used by the system to implement the IN operator.
     // <group>
     void matchBool     (Bool* match, const Bool* value, uInt nval,
-			uInt rownr) const;
+			const TableExprId& id) const;
     void matchDouble   (Bool* match, const Double* value, uInt nval,
-			uInt rownr) const;
+			const TableExprId& id) const;
     void matchDComplex (Bool* match, const DComplex* value, uInt nval,
-			uInt rownr) const;
+			const TableExprId& id) const;
     void matchString   (Bool* match, const String* value, uInt nval,
-			uInt rownr) const;
+			const TableExprId& id) const;
     void matchDate     (Bool* match, const MVTime* value, uInt nval,
-			uInt rownr) const;
+			const TableExprId& id) const;
     // </group>
 
     // Evaluate the element for the given row and construct a new
     // (constant) element from it.
     // This is used by the system to implement a set in a GIVING clause.
-    TableExprNodeSetElem* TableExprNodeSetElem::evaluate (uInt rownr) const;
+    TableExprNodeSetElem* TableExprNodeSetElem::evaluate
+                                            (const TableExprId& id) const;
 
     // Get the table of a node and check if the children use the same table.
     void checkTable();
@@ -321,29 +327,29 @@ public:
 
     // Get an array value for this bounded set in the given row.
     // <group>
-    virtual Array<Bool> getArrayBool         (uInt rownr);
-    virtual Array<Double> getArrayDouble     (uInt rownr);
-    virtual Array<DComplex> getArrayDComplex (uInt rownr);
-    virtual Array<String> getArrayString     (uInt rownr);
-    virtual Array<MVTime> getArrayDate       (uInt rownr);
+    virtual Array<Bool> getArrayBool         (const TableExprId& id);
+    virtual Array<Double> getArrayDouble     (const TableExprId& id);
+    virtual Array<DComplex> getArrayDComplex (const TableExprId& id);
+    virtual Array<String> getArrayString     (const TableExprId& id);
+    virtual Array<MVTime> getArrayDate       (const TableExprId& id);
     // </group>
 
     // Does a value occur in the set?
     // <group>
-    virtual Bool hasBool     (uInt rownr, Bool value);
-    virtual Bool hasDouble   (uInt rownr, Double value);
-    virtual Bool hasDComplex (uInt rownr, const DComplex& value);
-    virtual Bool hasString   (uInt rownr, const String& value);
-    virtual Bool hasDate     (uInt rownr, const MVTime& value);
-    virtual Array<Bool> hasArrayBool     (uInt rownr,
+    virtual Bool hasBool     (const TableExprId& id, Bool value);
+    virtual Bool hasDouble   (const TableExprId& id, Double value);
+    virtual Bool hasDComplex (const TableExprId& id, const DComplex& value);
+    virtual Bool hasString   (const TableExprId& id, const String& value);
+    virtual Bool hasDate     (const TableExprId& id, const MVTime& value);
+    virtual Array<Bool> hasArrayBool     (const TableExprId& id,
 					  const Array<Bool>& value);
-    virtual Array<Bool> hasArrayDouble   (uInt rownr,
+    virtual Array<Bool> hasArrayDouble   (const TableExprId& id,
 					  const Array<Double>& value);
-    virtual Array<Bool> hasArrayDComplex (uInt rownr,
+    virtual Array<Bool> hasArrayDComplex (const TableExprId& id,
 					  const Array<DComplex>& value);
-    virtual Array<Bool> hasArrayString   (uInt rownr,
+    virtual Array<Bool> hasArrayString   (const TableExprId& id,
 					  const Array<String>& value);
-    virtual Array<Bool> hasArrayDate     (uInt rownr,
+    virtual Array<Bool> hasArrayDate     (const TableExprId& id,
 					  const Array<MVTime>& value);
     // </group>
 
@@ -356,11 +362,11 @@ private:
 
     // Convert a bounded set to an Array.
     // <group>
-    Array<Bool>     toArrayBool     (uInt rownr) const;
-    Array<Double>   toArrayDouble   (uInt rownr) const;
-    Array<DComplex> toArrayDComplex (uInt rownr) const;
-    Array<String>   toArrayString   (uInt rownr) const;
-    Array<MVTime>   toArrayDate     (uInt rownr) const;
+    Array<Bool>     toArrayBool     (const TableExprId& id) const;
+    Array<Double>   toArrayDouble   (const TableExprId& id) const;
+    Array<DComplex> toArrayDComplex (const TableExprId& id) const;
+    Array<String>   toArrayString   (const TableExprId& id) const;
+    Array<MVTime>   toArrayDate     (const TableExprId& id) const;
     // </group>
 
     PtrBlock<TableExprNodeSetElem*> itsElems;

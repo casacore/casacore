@@ -1,5 +1,5 @@
 //# ExprMathArrayNode.h: Nodes representing mathematical array operators in table select expression tree
-//# Copyright (C) 1997,1999
+//# Copyright (C) 1997,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -73,7 +73,7 @@ class TableExprNodeArrayPlusDouble : public TableExprNodeArray
 public:
     TableExprNodeArrayPlusDouble (const TableExprNodeRep&);
     ~TableExprNodeArrayPlusDouble();
-    Array<Double> getArrayDouble (uInt rownr);
+    Array<Double> getArrayDouble (const TableExprId& id);
 };
 
 
@@ -104,7 +104,7 @@ class TableExprNodeArrayPlusDComplex : public TableExprNodeArray
 public:
     TableExprNodeArrayPlusDComplex (const TableExprNodeRep&);
     ~TableExprNodeArrayPlusDComplex();
-    Array<DComplex> getArrayDComplex (uInt rownr);
+    Array<DComplex> getArrayDComplex (const TableExprId& id);
 };
 
 
@@ -135,7 +135,7 @@ class TableExprNodeArrayPlusString : public TableExprNodeArray
 public:
     TableExprNodeArrayPlusString (const TableExprNodeRep&);
     ~TableExprNodeArrayPlusString();
-    Array<String> getArrayString (uInt rownr);
+    Array<String> getArrayString (const TableExprId& id);
 private:
     // Concatenate <src>nr</src> arrays of strings.
     // The increment is 0 for a scalar value. Otherwise it is 1.
@@ -171,7 +171,7 @@ class TableExprNodeArrayMinusDouble : public TableExprNodeArray
 public:
     TableExprNodeArrayMinusDouble (const TableExprNodeRep&);
     ~TableExprNodeArrayMinusDouble();
-    Array<Double> getArrayDouble (uInt rownr);
+    Array<Double> getArrayDouble (const TableExprId& id);
 };
 
 
@@ -201,7 +201,7 @@ class TableExprNodeArrayMinusDComplex : public TableExprNodeArray
 public:
     TableExprNodeArrayMinusDComplex (const TableExprNodeRep&);
     ~TableExprNodeArrayMinusDComplex();
-    Array<DComplex> getArrayDComplex (uInt rownr);
+    Array<DComplex> getArrayDComplex (const TableExprId& id);
 };
 
 
@@ -232,7 +232,7 @@ class TableExprNodeArrayTimesDouble : public TableExprNodeArray
 public:
     TableExprNodeArrayTimesDouble (const TableExprNodeRep&);
     ~TableExprNodeArrayTimesDouble();
-    Array<Double> getArrayDouble (uInt rownr);
+    Array<Double> getArrayDouble (const TableExprId& id);
 };
 
 
@@ -262,7 +262,7 @@ class TableExprNodeArrayTimesDComplex : public TableExprNodeArray
 public:
     TableExprNodeArrayTimesDComplex (const TableExprNodeRep&);
     ~TableExprNodeArrayTimesDComplex();
-    Array<DComplex> getArrayDComplex (uInt rownr);
+    Array<DComplex> getArrayDComplex (const TableExprId& id);
 };
 
 
@@ -293,7 +293,7 @@ class TableExprNodeArrayDivideDouble : public TableExprNodeArray
 public:
     TableExprNodeArrayDivideDouble (const TableExprNodeRep&);
     ~TableExprNodeArrayDivideDouble();
-    Array<Double> getArrayDouble (uInt rownr);
+    Array<Double> getArrayDouble (const TableExprId& id);
 };
 
 
@@ -323,7 +323,7 @@ class TableExprNodeArrayDivideDComplex : public TableExprNodeArray
 public:
     TableExprNodeArrayDivideDComplex (const TableExprNodeRep&);
     ~TableExprNodeArrayDivideDComplex();
-    Array<DComplex> getArrayDComplex (uInt rownr);
+    Array<DComplex> getArrayDComplex (const TableExprId& id);
 };
 
 
@@ -353,7 +353,7 @@ class TableExprNodeArrayModuloDouble : public TableExprNodeArray
 public:
     TableExprNodeArrayModuloDouble (const TableExprNodeRep&);
     ~TableExprNodeArrayModuloDouble();
-    Array<Double> getArrayDouble (uInt rownr);
+    Array<Double> getArrayDouble (const TableExprId& id);
 };
 
 
@@ -382,8 +382,8 @@ class TableExprNodeArrayMIN : public TableExprNodeArray
 public:
     TableExprNodeArrayMIN (const TableExprNodeRep&);
     ~TableExprNodeArrayMIN();
-    Array<Double>   getArrayDouble   (uInt rownr);
-    Array<DComplex> getArrayDComplex (uInt rownr);
+    Array<Double>   getArrayDouble   (const TableExprId& id);
+    Array<DComplex> getArrayDComplex (const TableExprId& id);
 };
 
 

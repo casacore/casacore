@@ -1,5 +1,5 @@
 //# ExprNode.cc: Handle class for a table column expression tree
-//# Copyright (C) 1994,1995,1996,1997,1998,1999
+//# Copyright (C) 1994,1995,1996,1997,1998,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -951,7 +951,7 @@ TableExprNode TableExprNode::newFunctionNode
     uInt npar = set.nelements();
     PtrBlock<TableExprNodeRep*> par(npar);
     for (uInt i=0; i<npar; i++) {
-	par[i] = (TableExprNodeRep*)(set[i].start());
+	par[i] = const_cast<TableExprNodeRep*>(set[i].start());
     }
     // rownrFUNC and randomFUNC are special, because they need their
     // own objects and the table.

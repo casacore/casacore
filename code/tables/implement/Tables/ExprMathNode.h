@@ -1,5 +1,5 @@
 //# ExprMathNode.h: Nodes representing scalar mathematical operators in table select expression tree
-//# Copyright (C) 1994,1995,1996,1997,1999
+//# Copyright (C) 1994,1995,1996,1997,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -71,8 +71,8 @@ class TableExprNodePlusDouble : public TableExprNodeBinary
 public:
     TableExprNodePlusDouble (const TableExprNodeRep&);
     ~TableExprNodePlusDouble();
-    Double   getDouble   (uInt rownr);
-    DComplex getDComplex (uInt rownr);
+    Double   getDouble   (const TableExprId& id);
+    DComplex getDComplex (const TableExprId& id);
 };
 
 
@@ -103,7 +103,7 @@ class TableExprNodePlusDComplex : public TableExprNodeBinary
 public:
     TableExprNodePlusDComplex (const TableExprNodeRep&);
     ~TableExprNodePlusDComplex();
-    DComplex getDComplex (uInt rownr);
+    DComplex getDComplex (const TableExprId& id);
 };
 
 
@@ -134,7 +134,7 @@ class TableExprNodePlusString : public TableExprNodeBinary
 public:
     TableExprNodePlusString (const TableExprNodeRep&);
     ~TableExprNodePlusString();
-    String getString (uInt rownr);
+    String getString (const TableExprId& id);
 };
 
 
@@ -165,8 +165,8 @@ class TableExprNodePlusDate : public TableExprNodeBinary
 public:
     TableExprNodePlusDate (const TableExprNodeRep&);
     ~TableExprNodePlusDate();
-    Double getDouble (uInt rownr);
-    MVTime getDate (uInt rownr);
+    Double getDouble (const TableExprId& id);
+    MVTime getDate (const TableExprId& id);
 };
 
 
@@ -197,8 +197,8 @@ class TableExprNodeMinusDouble : public TableExprNodeBinary
 public:
     TableExprNodeMinusDouble (const TableExprNodeRep&);
     ~TableExprNodeMinusDouble();
-    Double   getDouble   (uInt rownr);
-    DComplex getDComplex (uInt rownr);
+    Double   getDouble   (const TableExprId& id);
+    DComplex getDComplex (const TableExprId& id);
 };
 
 
@@ -228,7 +228,7 @@ class TableExprNodeMinusDComplex : public TableExprNodeBinary
 public:
     TableExprNodeMinusDComplex (const TableExprNodeRep&);
     ~TableExprNodeMinusDComplex();
-    DComplex getDComplex (uInt rownr);
+    DComplex getDComplex (const TableExprId& id);
 };
 
 
@@ -258,8 +258,8 @@ class TableExprNodeMinusDate : public TableExprNodeBinary
 public:
     TableExprNodeMinusDate (const TableExprNodeRep&);
     ~TableExprNodeMinusDate();
-    MVTime getDate   (uInt rownr);
-    Double getDouble (uInt rownr);
+    MVTime getDate   (const TableExprId& id);
+    Double getDouble (const TableExprId& id);
 };
 
 
@@ -290,8 +290,8 @@ class TableExprNodeTimesDouble : public TableExprNodeBinary
 public:
     TableExprNodeTimesDouble (const TableExprNodeRep&);
     ~TableExprNodeTimesDouble();
-    Double   getDouble   (uInt rownr);
-    DComplex getDComplex (uInt rownr);
+    Double   getDouble   (const TableExprId& id);
+    DComplex getDComplex (const TableExprId& id);
 };
 
 
@@ -321,7 +321,7 @@ class TableExprNodeTimesDComplex : public TableExprNodeBinary
 public:
     TableExprNodeTimesDComplex (const TableExprNodeRep&);
     ~TableExprNodeTimesDComplex();
-    DComplex getDComplex (uInt rownr);
+    DComplex getDComplex (const TableExprId& id);
 };
 
 
@@ -352,8 +352,8 @@ class TableExprNodeDivideDouble : public TableExprNodeBinary
 public:
     TableExprNodeDivideDouble (const TableExprNodeRep&);
     ~TableExprNodeDivideDouble();
-    Double   getDouble   (uInt rownr);
-    DComplex getDComplex (uInt rownr);
+    Double   getDouble   (const TableExprId& id);
+    DComplex getDComplex (const TableExprId& id);
 };
 
 
@@ -383,7 +383,7 @@ class TableExprNodeDivideDComplex : public TableExprNodeBinary
 public:
     TableExprNodeDivideDComplex (const TableExprNodeRep&);
     ~TableExprNodeDivideDComplex();
-    DComplex getDComplex (uInt rownr);
+    DComplex getDComplex (const TableExprId& id);
 };
 
 
@@ -412,8 +412,8 @@ class TableExprNodeModuloDouble : public TableExprNodeBinary
 public:
     TableExprNodeModuloDouble (const TableExprNodeRep&);
     ~TableExprNodeModuloDouble();
-    Double   getDouble   (uInt rownr);
-    DComplex getDComplex (uInt rownr);
+    Double   getDouble   (const TableExprId& id);
+    DComplex getDComplex (const TableExprId& id);
 };
 
 
@@ -442,8 +442,8 @@ class TableExprNodeMIN : public TableExprNodeBinary
 public:
     TableExprNodeMIN (const TableExprNodeRep&);
     ~TableExprNodeMIN();
-    Double   getDouble   (uInt rownr);
-    DComplex getDComplex (uInt rownr);
+    Double   getDouble   (const TableExprId& id);
+    DComplex getDComplex (const TableExprId& id);
 };
 
 

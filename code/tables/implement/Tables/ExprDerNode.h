@@ -1,5 +1,5 @@
-//# ExprDerNode2.h: Nodes representing scalars in table select expression tree
-//# Copyright (C) 1994,1995,1996,1997,1999
+//# ExprDerNode.h: Nodes representing scalars in table select expression tree
+//# Copyright (C) 1994,1995,1996,1997,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -73,7 +73,7 @@ class TableExprNodeConstBool : public TableExprNodeBinary
 public:
     TableExprNodeConstBool (const Bool& value);
     ~TableExprNodeConstBool();
-    Bool getBool (uInt rownr);
+    Bool getBool (const TableExprId& id);
 private:
     Bool value_p;
 };
@@ -104,8 +104,8 @@ class TableExprNodeConstDouble : public TableExprNodeBinary
 public:
     TableExprNodeConstDouble (const Double& value);
     ~TableExprNodeConstDouble();
-    Double   getDouble   (uInt rownr);
-    DComplex getDComplex (uInt rownr);
+    Double   getDouble   (const TableExprId& id);
+    DComplex getDComplex (const TableExprId& id);
 private:
     Double value_p;
 };
@@ -136,7 +136,7 @@ class TableExprNodeConstDComplex : public TableExprNodeBinary
 public:
     TableExprNodeConstDComplex (const DComplex& value);
     ~TableExprNodeConstDComplex();
-    DComplex getDComplex (uInt rownr);
+    DComplex getDComplex (const TableExprId& id);
 private:
     DComplex value_p;
 };
@@ -167,7 +167,7 @@ class TableExprNodeConstString : public TableExprNodeBinary
 public:
     TableExprNodeConstString (const String& value);
     ~TableExprNodeConstString();
-    String getString (uInt rownr);
+    String getString (const TableExprId& id);
 private:
     String value_p;
 };
@@ -198,7 +198,7 @@ class TableExprNodeConstRegex : public TableExprNodeBinary
 public:
     TableExprNodeConstRegex (const Regex& value);
     ~TableExprNodeConstRegex();
-    Regex getRegex (uInt rownr);
+    Regex getRegex (const TableExprId& id);
 private:
     Regex value_p;
 };
@@ -229,8 +229,8 @@ class TableExprNodeConstDate : public TableExprNodeBinary
 public:
     TableExprNodeConstDate (const MVTime& value);
     ~TableExprNodeConstDate();
-    Double getDouble(uInt rownr);
-    MVTime getDate  (uInt rownr);
+    Double getDouble(const TableExprId& id);
+    MVTime getDate  (const TableExprId& id);
 private:
     MVTime value_p;
 };
@@ -268,10 +268,10 @@ public:
     // Replace the Table pointer in this node.
     virtual void replaceTablePtr (const Table&, const BaseTable*);
 
-    Bool     getBool     (uInt rownr);
-    Double   getDouble   (uInt rownr);
-    DComplex getDComplex (uInt rownr);
-    String   getString   (uInt rownr);
+    Bool     getBool     (const TableExprId& id);
+    Double   getDouble   (const TableExprId& id);
+    DComplex getDComplex (const TableExprId& id);
+    String   getString   (const TableExprId& id);
     const ROTableColumn& getColumn() const;
 
     // Get the data type of this scalar column.
@@ -321,7 +321,7 @@ class TableExprNodeRownr : public TableExprNodeBinary
 public:
     TableExprNodeRownr (const BaseTable*, uInt origin);
     ~TableExprNodeRownr();
-    Double getDouble (uInt rownr);
+    Double getDouble (const TableExprId& id);
 private:
     uInt origin_p;
 };
@@ -352,7 +352,7 @@ class TableExprNodeRandom : public TableExprNodeBinary
 public:
     TableExprNodeRandom (const BaseTable*);
     ~TableExprNodeRandom();
-    Double getDouble (uInt rownr);
+    Double getDouble (const TableExprId& id);
 private:
     MLCG    generator_p;
     Uniform random_p;

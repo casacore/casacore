@@ -1,5 +1,5 @@
 //# ExprNode.h: Handle class for a table column expression tree
-//# Copyright (C) 1994,1995,1996,1997,1998
+//# Copyright (C) 1994,1995,1996,1997,1998,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -342,7 +342,7 @@ class TableExprNode
 
     // Functions operating on any array.
     // <group>
-    friend TableExprNode isDefined (const TableExprNode& array);
+    friend TableExprNode isdefined (const TableExprNode& array);
     friend TableExprNode nelements (const TableExprNode& array);
     friend TableExprNode ndim (const TableExprNode& array);
     friend TableExprNode shape (const TableExprNode& array);
@@ -430,12 +430,12 @@ public:
     // will usually invoke the get in their children and apply the
     // operator on the resulting values.
     // <group>
-    void get (uInt rownr, Bool& value) const;
-    void get (uInt rownr, Double& value) const;
-    void get (uInt rownr, DComplex& value) const;
-    void get (uInt rownr, String& value) const;
-    void get (uInt rownr, Regex& value) const;
-    void get (uInt rownr, MVTime& value) const;
+    void get (const TableExprId& id, Bool& value) const;
+    void get (const TableExprId& id, Double& value) const;
+    void get (const TableExprId& id, DComplex& value) const;
+    void get (const TableExprId& id, String& value) const;
+    void get (const TableExprId& id, Regex& value) const;
+    void get (const TableExprId& id, MVTime& value) const;
     // </group>
 
     // Get the data type for doing a getColumn on the expression.
@@ -584,18 +584,18 @@ inline const BaseTable* TableExprNode::baseTablePtr() const
     { return node_p->baseTablePtr(); }
 
 //# Get the value of an expression.
-inline void TableExprNode::get (uInt rownr, Bool& value) const
-    { value = node_p->getBool (rownr); }
-inline void TableExprNode::get (uInt rownr, Double& value) const
-    { value = node_p->getDouble (rownr); }
-inline void TableExprNode::get (uInt rownr, DComplex& value) const
-    { value = node_p->getDComplex (rownr); }
-inline void TableExprNode::get (uInt rownr, String& value) const
-    { value = node_p->getString (rownr); }
-inline void TableExprNode::get (uInt rownr, Regex& value) const
-    { value = node_p->getRegex (rownr); }
-inline void TableExprNode::get (uInt rownr, MVTime& value) const
-    { value = node_p->getDate (rownr); }
+inline void TableExprNode::get (const TableExprId& id, Bool& value) const
+    { value = node_p->getBool (id); }
+inline void TableExprNode::get (const TableExprId& id, Double& value) const
+    { value = node_p->getDouble (id); }
+inline void TableExprNode::get (const TableExprId& id, DComplex& value) const
+    { value = node_p->getDComplex (id); }
+inline void TableExprNode::get (const TableExprId& id, String& value) const
+    { value = node_p->getString (id); }
+inline void TableExprNode::get (const TableExprId& id, Regex& value) const
+    { value = node_p->getRegex (id); }
+inline void TableExprNode::get (const TableExprId& id, MVTime& value) const
+    { value = node_p->getDate (id); }
 
 inline Array<Bool>      TableExprNode::getColumnBool() const
     { return node_p->getColumnBool(); }
@@ -935,11 +935,13 @@ inline TableExprNode trim (const TableExprNode& node)
 }
 inline TableExprNode min (const TableExprNode& node)
 {
-    return TableExprNode::newFunctionNode (TableExprFuncNode::minFUNC, node);
+    return TableExprNode::newFunctionNode (TableExprFuncNode::arrminFUNC,
+					   node);
 }
 inline TableExprNode max (const TableExprNode& node)
 {
-    return TableExprNode::newFunctionNode (TableExprFuncNode::maxFUNC, node);
+    return TableExprNode::newFunctionNode (TableExprFuncNode::arrmaxFUNC,
+					   node);
 }
 inline TableExprNode sum (const TableExprNode& node)
 {

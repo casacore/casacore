@@ -1,5 +1,5 @@
 //# ExprMathNodeArray.cc: Nodes representing mathematical array operators in table select expression tree
-//# Copyright (C) 1997,1998,1999
+//# Copyright (C) 1997,1998,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -40,17 +40,18 @@ TableExprNodeArrayPlusDouble::TableExprNodeArrayPlusDouble
 {}
 TableExprNodeArrayPlusDouble::~TableExprNodeArrayPlusDouble()
 {}
-Array<Double> TableExprNodeArrayPlusDouble::getArrayDouble (uInt rownr)
+Array<Double> TableExprNodeArrayPlusDouble::getArrayDouble
+                                            (const TableExprId& id)
 {
     switch (argtype_p) {
     case ArrSca:
-	return lnode_p->getArrayDouble (rownr) + rnode_p->getDouble (rownr);
+	return lnode_p->getArrayDouble (id) + rnode_p->getDouble (id);
     case ScaArr:
-	return lnode_p->getDouble (rownr) + rnode_p->getArrayDouble (rownr);
+	return lnode_p->getDouble (id) + rnode_p->getArrayDouble (id);
     default:
 	break;
     }
-    return lnode_p->getArrayDouble (rownr) + rnode_p->getArrayDouble (rownr);
+    return lnode_p->getArrayDouble (id) + rnode_p->getArrayDouble (id);
 }
 
 TableExprNodeArrayPlusDComplex::TableExprNodeArrayPlusDComplex
@@ -59,17 +60,18 @@ TableExprNodeArrayPlusDComplex::TableExprNodeArrayPlusDComplex
 {}
 TableExprNodeArrayPlusDComplex::~TableExprNodeArrayPlusDComplex()
 {}
-Array<DComplex> TableExprNodeArrayPlusDComplex::getArrayDComplex (uInt rownr)
+Array<DComplex> TableExprNodeArrayPlusDComplex::getArrayDComplex
+                                            (const TableExprId& id)
 {
     switch (argtype_p) {
     case ArrSca:
-	return lnode_p->getArrayDComplex (rownr) + rnode_p->getDComplex (rownr);
+	return lnode_p->getArrayDComplex (id) + rnode_p->getDComplex (id);
     case ScaArr:
-	return lnode_p->getDComplex (rownr) + rnode_p->getArrayDComplex (rownr);
+	return lnode_p->getDComplex (id) + rnode_p->getArrayDComplex (id);
     default:
 	break;
     }
-    return lnode_p->getArrayDComplex (rownr) + rnode_p->getArrayDComplex (rownr);
+    return lnode_p->getArrayDComplex (id) + rnode_p->getArrayDComplex (id);
 }
 
 TableExprNodeArrayPlusString::TableExprNodeArrayPlusString
@@ -78,7 +80,8 @@ TableExprNodeArrayPlusString::TableExprNodeArrayPlusString
 {}
 TableExprNodeArrayPlusString::~TableExprNodeArrayPlusString()
 {}
-Array<String> TableExprNodeArrayPlusString::getArrayString (uInt rownr)
+Array<String> TableExprNodeArrayPlusString::getArrayString
+                                            (const TableExprId& id)
 {
     IPosition shape;
     Array<String> left;
@@ -87,22 +90,22 @@ Array<String> TableExprNodeArrayPlusString::getArrayString (uInt rownr)
     Int incrRight = 1;
     switch (argtype_p) {
     case ArrSca:
-	left = lnode_p->getArrayString (rownr);
+	left = lnode_p->getArrayString (id);
 	shape = left.shape();
 	right.resize (IPosition(1,1));
-	right.set (rnode_p->getString (rownr));
+	right.set (rnode_p->getString (id));
 	incrRight = 0;
 	break;
     case ScaArr:
 	left.resize (IPosition(1,1));
-	left.set (lnode_p->getString (rownr));
+	left.set (lnode_p->getString (id));
 	incrLeft = 0;
-	right = rnode_p->getArrayString (rownr);
+	right = rnode_p->getArrayString (id);
 	break;
     default:
-	left = lnode_p->getArrayString (rownr);
+	left = lnode_p->getArrayString (id);
 	shape = left.shape();
-	right = rnode_p->getArrayString (rownr);
+	right = rnode_p->getArrayString (id);
 	if (!shape.isEqual (right.shape())) {
 	    throw (TableInvExpr ("TableExprNodeArrayPlusString: "
 				 " mismatching array shapes"));
@@ -141,17 +144,18 @@ TableExprNodeArrayMinusDouble::TableExprNodeArrayMinusDouble
 {}
 TableExprNodeArrayMinusDouble::~TableExprNodeArrayMinusDouble()
 {}
-Array<Double> TableExprNodeArrayMinusDouble::getArrayDouble (uInt rownr)
+Array<Double> TableExprNodeArrayMinusDouble::getArrayDouble
+                                            (const TableExprId& id)
 {
     switch (argtype_p) {
     case ArrSca:
-	return lnode_p->getArrayDouble (rownr) - rnode_p->getDouble (rownr);
+	return lnode_p->getArrayDouble (id) - rnode_p->getDouble (id);
     case ScaArr:
-	return lnode_p->getDouble (rownr) - rnode_p->getArrayDouble (rownr);
+	return lnode_p->getDouble (id) - rnode_p->getArrayDouble (id);
     default:
 	break;
     }
-    return lnode_p->getArrayDouble (rownr) - rnode_p->getArrayDouble (rownr);
+    return lnode_p->getArrayDouble (id) - rnode_p->getArrayDouble (id);
 }
 
 TableExprNodeArrayMinusDComplex::TableExprNodeArrayMinusDComplex
@@ -160,17 +164,18 @@ TableExprNodeArrayMinusDComplex::TableExprNodeArrayMinusDComplex
 {}
 TableExprNodeArrayMinusDComplex::~TableExprNodeArrayMinusDComplex()
 {}
-Array<DComplex> TableExprNodeArrayMinusDComplex::getArrayDComplex (uInt rownr)
+Array<DComplex> TableExprNodeArrayMinusDComplex::getArrayDComplex
+                                            (const TableExprId& id)
 {
     switch (argtype_p) {
     case ArrSca:
-	return lnode_p->getArrayDComplex (rownr) - rnode_p->getDComplex (rownr);
+	return lnode_p->getArrayDComplex (id) - rnode_p->getDComplex (id);
     case ScaArr:
-	return lnode_p->getDComplex (rownr) - rnode_p->getArrayDComplex (rownr);
+	return lnode_p->getDComplex (id) - rnode_p->getArrayDComplex (id);
     default:
 	break;
     }
-    return lnode_p->getArrayDComplex (rownr) - rnode_p->getArrayDComplex (rownr);
+    return lnode_p->getArrayDComplex (id) - rnode_p->getArrayDComplex (id);
 }
 
 
@@ -180,17 +185,18 @@ TableExprNodeArrayTimesDouble::TableExprNodeArrayTimesDouble
 {}
 TableExprNodeArrayTimesDouble::~TableExprNodeArrayTimesDouble()
 {}
-Array<Double> TableExprNodeArrayTimesDouble::getArrayDouble (uInt rownr)
+Array<Double> TableExprNodeArrayTimesDouble::getArrayDouble
+                                            (const TableExprId& id)
 {
     switch (argtype_p) {
     case ArrSca:
-	return lnode_p->getArrayDouble (rownr) * rnode_p->getDouble (rownr);
+	return lnode_p->getArrayDouble (id) * rnode_p->getDouble (id);
     case ScaArr:
-	return lnode_p->getDouble (rownr) * rnode_p->getArrayDouble (rownr);
+	return lnode_p->getDouble (id) * rnode_p->getArrayDouble (id);
     default:
 	break;
     }
-    return lnode_p->getArrayDouble (rownr) * rnode_p->getArrayDouble (rownr);
+    return lnode_p->getArrayDouble (id) * rnode_p->getArrayDouble (id);
 }
 
 TableExprNodeArrayTimesDComplex::TableExprNodeArrayTimesDComplex
@@ -199,17 +205,18 @@ TableExprNodeArrayTimesDComplex::TableExprNodeArrayTimesDComplex
 {}
 TableExprNodeArrayTimesDComplex::~TableExprNodeArrayTimesDComplex()
 {}
-Array<DComplex> TableExprNodeArrayTimesDComplex::getArrayDComplex (uInt rownr)
+Array<DComplex> TableExprNodeArrayTimesDComplex::getArrayDComplex
+                                            (const TableExprId& id)
 {
     switch (argtype_p) {
     case ArrSca:
-	return lnode_p->getArrayDComplex (rownr) * rnode_p->getDComplex (rownr);
+	return lnode_p->getArrayDComplex (id) * rnode_p->getDComplex (id);
     case ScaArr:
-	return lnode_p->getDComplex (rownr) * rnode_p->getArrayDComplex (rownr);
+	return lnode_p->getDComplex (id) * rnode_p->getArrayDComplex (id);
     default:
 	break;
     }
-    return lnode_p->getArrayDComplex (rownr) * rnode_p->getArrayDComplex (rownr);
+    return lnode_p->getArrayDComplex (id) * rnode_p->getArrayDComplex (id);
 }
 
 
@@ -219,17 +226,18 @@ TableExprNodeArrayDivideDouble::TableExprNodeArrayDivideDouble
 {}
 TableExprNodeArrayDivideDouble::~TableExprNodeArrayDivideDouble()
 {}
-Array<Double> TableExprNodeArrayDivideDouble::getArrayDouble (uInt rownr)
+Array<Double> TableExprNodeArrayDivideDouble::getArrayDouble
+                                            (const TableExprId& id)
 {
     switch (argtype_p) {
     case ArrSca:
-	return lnode_p->getArrayDouble (rownr) / rnode_p->getDouble (rownr);
+	return lnode_p->getArrayDouble (id) / rnode_p->getDouble (id);
     case ScaArr:
-	return lnode_p->getDouble (rownr) / rnode_p->getArrayDouble (rownr);
+	return lnode_p->getDouble (id) / rnode_p->getArrayDouble (id);
     default:
 	break;
     }
-    return lnode_p->getArrayDouble (rownr) / rnode_p->getArrayDouble (rownr);
+    return lnode_p->getArrayDouble (id) / rnode_p->getArrayDouble (id);
 }
 
 TableExprNodeArrayDivideDComplex::TableExprNodeArrayDivideDComplex
@@ -238,17 +246,18 @@ TableExprNodeArrayDivideDComplex::TableExprNodeArrayDivideDComplex
 {}
 TableExprNodeArrayDivideDComplex::~TableExprNodeArrayDivideDComplex()
 {}
-Array<DComplex> TableExprNodeArrayDivideDComplex::getArrayDComplex (uInt rownr)
+Array<DComplex> TableExprNodeArrayDivideDComplex::getArrayDComplex
+                                            (const TableExprId& id)
 {
     switch (argtype_p) {
     case ArrSca:
-	return lnode_p->getArrayDComplex (rownr) / rnode_p->getDComplex (rownr);
+	return lnode_p->getArrayDComplex (id) / rnode_p->getDComplex (id);
     case ScaArr:
-	return lnode_p->getDComplex (rownr) / rnode_p->getArrayDComplex (rownr);
+	return lnode_p->getDComplex (id) / rnode_p->getArrayDComplex (id);
     default:
 	break;
     }
-    return lnode_p->getArrayDComplex (rownr) / rnode_p->getArrayDComplex (rownr);
+    return lnode_p->getArrayDComplex (id) / rnode_p->getArrayDComplex (id);
 }
 
 
@@ -258,26 +267,27 @@ TableExprNodeArrayModuloDouble::TableExprNodeArrayModuloDouble
 {}
 TableExprNodeArrayModuloDouble::~TableExprNodeArrayModuloDouble()
 {}
-Array<Double> TableExprNodeArrayModuloDouble::getArrayDouble (uInt rownr)
+Array<Double> TableExprNodeArrayModuloDouble::getArrayDouble
+                                            (const TableExprId& id)
 {
     switch (argtype_p) {
     case ArrSca:
     {
-	Array<Double> arr = lnode_p->getArrayDouble (rownr);
+	Array<Double> arr = lnode_p->getArrayDouble (id);
 	return fmod (arr,
-		     makeArray (arr.shape(), rnode_p->getDouble (rownr)));
+		     makeArray (arr.shape(), rnode_p->getDouble (id)));
     }
     case ScaArr:
     {
-	Array<Double> arr = rnode_p->getArrayDouble (rownr);
-	return fmod (makeArray (arr.shape(), lnode_p->getDouble (rownr)),
+	Array<Double> arr = rnode_p->getArrayDouble (id);
+	return fmod (makeArray (arr.shape(), lnode_p->getDouble (id)),
 		     arr);
     }
     default:
 	break;
     }
-    return fmod (lnode_p->getArrayDouble (rownr),
-		 rnode_p->getArrayDouble (rownr));
+    return fmod (lnode_p->getArrayDouble (id),
+		 rnode_p->getArrayDouble (id));
 }
 
 
@@ -286,7 +296,7 @@ TableExprNodeArrayMIN::TableExprNodeArrayMIN (const TableExprNodeRep& node)
 {}
 TableExprNodeArrayMIN::~TableExprNodeArrayMIN()
 {}
-Array<Double> TableExprNodeArrayMIN::getArrayDouble (uInt rownr)
-    { return -(lnode_p->getArrayDouble(rownr)); }
-Array<DComplex> TableExprNodeArrayMIN::getArrayDComplex (uInt rownr)
-    { return -(lnode_p->getArrayDComplex(rownr)); }
+Array<Double> TableExprNodeArrayMIN::getArrayDouble (const TableExprId& id)
+    { return -(lnode_p->getArrayDouble(id)); }
+Array<DComplex> TableExprNodeArrayMIN::getArrayDComplex (const TableExprId& id)
+    { return -(lnode_p->getArrayDComplex(id)); }

@@ -1,5 +1,5 @@
 //# ExprFuncNode.h: Class representing a function in table select expression
-//# Copyright (C) 1994,1995,1996,1997,1998
+//# Copyright (C) 1994,1995,1996,1997,1998,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -170,17 +170,17 @@ public:
     // Destructor
     ~TableExprFuncNode ();
 
-    // 'get' Functions to get te desired result of a function
+    // 'get' Functions to get the desired result of a function
     // <group>
-    Bool     getBool     (uInt rownr);
-    Double   getDouble   (uInt rownr);
-    DComplex getDComplex (uInt rownr);
-    String   getString   (uInt rownr);
-    Regex    getRegex    (uInt rownr);
-    MVTime   getDate     (uInt rownr);
-    Array<Double> getArrayDouble (uInt rownr);
-    Array<String> getArrayString (uInt rownr);
-    Array<MVTime> getArrayDate (uInt rownr);
+    Bool     getBool     (const TableExprId& id);
+    Double   getDouble   (const TableExprId& id);
+    DComplex getDComplex (const TableExprId& id);
+    String   getString   (const TableExprId& id);
+    Regex    getRegex    (const TableExprId& id);
+    MVTime   getDate     (const TableExprId& id);
+    Array<Double> getArrayDouble (const TableExprId& id);
+    Array<String> getArrayString (const TableExprId& id);
+    Array<MVTime> getArrayDate (const TableExprId& id);
     // </group>
 
     // Check the data and value types of the operands.

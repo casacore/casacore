@@ -1,5 +1,5 @@
 //# ExprMathNode.cc: Nodes representing scalar mathematical operators in table select expression tree
-//# Copyright (C) 1994,1995,1996,1997,1998,1999
+//# Copyright (C) 1994,1995,1996,1997,1998,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -36,36 +36,36 @@ TableExprNodePlusDouble::TableExprNodePlusDouble (const TableExprNodeRep& node)
 {}
 TableExprNodePlusDouble::~TableExprNodePlusDouble()
 {}
-Double TableExprNodePlusDouble::getDouble (uInt rownr)
-    { return lnode_p->getDouble(rownr) + rnode_p->getDouble(rownr); }
-DComplex TableExprNodePlusDouble::getDComplex (uInt rownr)
-    { return lnode_p->getDouble(rownr) + rnode_p->getDouble(rownr); }
+Double TableExprNodePlusDouble::getDouble (const TableExprId& id)
+    { return lnode_p->getDouble(id) + rnode_p->getDouble(id); }
+DComplex TableExprNodePlusDouble::getDComplex (const TableExprId& id)
+    { return lnode_p->getDouble(id) + rnode_p->getDouble(id); }
 
 TableExprNodePlusDComplex::TableExprNodePlusDComplex (const TableExprNodeRep& node)
 : TableExprNodeBinary (NTComplex, node, OtPlus)
 {}
 TableExprNodePlusDComplex::~TableExprNodePlusDComplex()
 {}
-DComplex TableExprNodePlusDComplex::getDComplex (uInt rownr)
-    { return lnode_p->getDComplex(rownr) + rnode_p->getDComplex(rownr); }
+DComplex TableExprNodePlusDComplex::getDComplex (const TableExprId& id)
+    { return lnode_p->getDComplex(id) + rnode_p->getDComplex(id); }
 
 TableExprNodePlusString::TableExprNodePlusString (const TableExprNodeRep& node)
 : TableExprNodeBinary (NTString, node, OtPlus)
 {}
 TableExprNodePlusString::~TableExprNodePlusString()
 {}
-String TableExprNodePlusString::getString (uInt rownr)
-    { return lnode_p->getString(rownr) + rnode_p->getString(rownr); }
+String TableExprNodePlusString::getString (const TableExprId& id)
+    { return lnode_p->getString(id) + rnode_p->getString(id); }
 
 TableExprNodePlusDate::TableExprNodePlusDate (const TableExprNodeRep& node)
 : TableExprNodeBinary (NTDate, node, OtPlus)
 {}
 TableExprNodePlusDate::~TableExprNodePlusDate()
 {}
-MVTime TableExprNodePlusDate::getDate(uInt rownr)
-{ return lnode_p->getDouble(rownr) + rnode_p->getDouble(rownr); }
-Double TableExprNodePlusDate::getDouble(uInt rownr)
-{ return lnode_p->getDouble(rownr) + rnode_p->getDouble(rownr); }
+MVTime TableExprNodePlusDate::getDate(const TableExprId& id)
+{ return lnode_p->getDouble(id) + rnode_p->getDouble(id); }
+Double TableExprNodePlusDate::getDouble(const TableExprId& id)
+{ return lnode_p->getDouble(id) + rnode_p->getDouble(id); }
 
 
 TableExprNodeMinusDouble::TableExprNodeMinusDouble (const TableExprNodeRep& node)
@@ -73,28 +73,28 @@ TableExprNodeMinusDouble::TableExprNodeMinusDouble (const TableExprNodeRep& node
 {}
 TableExprNodeMinusDouble::~TableExprNodeMinusDouble()
 {}
-Double TableExprNodeMinusDouble::getDouble (uInt rownr)
-    { return lnode_p->getDouble(rownr) - rnode_p->getDouble(rownr); }
-DComplex TableExprNodeMinusDouble::getDComplex (uInt rownr)
-    { return lnode_p->getDouble(rownr) - rnode_p->getDouble(rownr); }
+Double TableExprNodeMinusDouble::getDouble (const TableExprId& id)
+    { return lnode_p->getDouble(id) - rnode_p->getDouble(id); }
+DComplex TableExprNodeMinusDouble::getDComplex (const TableExprId& id)
+    { return lnode_p->getDouble(id) - rnode_p->getDouble(id); }
 
 TableExprNodeMinusDComplex::TableExprNodeMinusDComplex (const TableExprNodeRep& node)
 : TableExprNodeBinary (NTComplex, node, OtMinus)
 {}
 TableExprNodeMinusDComplex::~TableExprNodeMinusDComplex()
 {}
-DComplex TableExprNodeMinusDComplex::getDComplex (uInt rownr)
-    { return lnode_p->getDComplex(rownr) - rnode_p->getDComplex(rownr); }
+DComplex TableExprNodeMinusDComplex::getDComplex (const TableExprId& id)
+    { return lnode_p->getDComplex(id) - rnode_p->getDComplex(id); }
 
 TableExprNodeMinusDate::TableExprNodeMinusDate (const TableExprNodeRep& node)
 : TableExprNodeBinary (NTDate, node, OtMinus)
 {}
 TableExprNodeMinusDate::~TableExprNodeMinusDate()
 {}
-MVTime TableExprNodeMinusDate::getDate(uInt rownr)
-    { return lnode_p->getDouble(rownr) - rnode_p->getDouble(rownr); }
-Double TableExprNodeMinusDate::getDouble(uInt rownr)
-    { return lnode_p->getDouble(rownr) - rnode_p->getDouble(rownr); }
+MVTime TableExprNodeMinusDate::getDate(const TableExprId& id)
+    { return lnode_p->getDouble(id) - rnode_p->getDouble(id); }
+Double TableExprNodeMinusDate::getDouble(const TableExprId& id)
+    { return lnode_p->getDouble(id) - rnode_p->getDouble(id); }
 
 
 TableExprNodeTimesDouble::TableExprNodeTimesDouble (const TableExprNodeRep& node)
@@ -102,18 +102,18 @@ TableExprNodeTimesDouble::TableExprNodeTimesDouble (const TableExprNodeRep& node
 {}
 TableExprNodeTimesDouble::~TableExprNodeTimesDouble()
 {}
-Double TableExprNodeTimesDouble::getDouble (uInt rownr)
-    { return lnode_p->getDouble(rownr) * rnode_p->getDouble(rownr); }
-DComplex TableExprNodeTimesDouble::getDComplex (uInt rownr)
-    { return lnode_p->getDouble(rownr) * rnode_p->getDouble(rownr); }
+Double TableExprNodeTimesDouble::getDouble (const TableExprId& id)
+    { return lnode_p->getDouble(id) * rnode_p->getDouble(id); }
+DComplex TableExprNodeTimesDouble::getDComplex (const TableExprId& id)
+    { return lnode_p->getDouble(id) * rnode_p->getDouble(id); }
 
 TableExprNodeTimesDComplex::TableExprNodeTimesDComplex (const TableExprNodeRep& node)
 : TableExprNodeBinary (NTComplex, node, OtTimes)
 {}
 TableExprNodeTimesDComplex::~TableExprNodeTimesDComplex()
 {}
-DComplex TableExprNodeTimesDComplex::getDComplex (uInt rownr)
-    { return lnode_p->getDComplex(rownr) * rnode_p->getDComplex(rownr); }
+DComplex TableExprNodeTimesDComplex::getDComplex (const TableExprId& id)
+    { return lnode_p->getDComplex(id) * rnode_p->getDComplex(id); }
 
 
 TableExprNodeDivideDouble::TableExprNodeDivideDouble (const TableExprNodeRep& node)
@@ -121,18 +121,18 @@ TableExprNodeDivideDouble::TableExprNodeDivideDouble (const TableExprNodeRep& no
 {}
 TableExprNodeDivideDouble::~TableExprNodeDivideDouble()
 {}
-Double TableExprNodeDivideDouble::getDouble (uInt rownr)
-    { return lnode_p->getDouble(rownr) / rnode_p->getDouble(rownr); }
-DComplex TableExprNodeDivideDouble::getDComplex (uInt rownr)
-    { return lnode_p->getDouble(rownr) / rnode_p->getDouble(rownr); }
+Double TableExprNodeDivideDouble::getDouble (const TableExprId& id)
+    { return lnode_p->getDouble(id) / rnode_p->getDouble(id); }
+DComplex TableExprNodeDivideDouble::getDComplex (const TableExprId& id)
+    { return lnode_p->getDouble(id) / rnode_p->getDouble(id); }
 
 TableExprNodeDivideDComplex::TableExprNodeDivideDComplex (const TableExprNodeRep& node)
 : TableExprNodeBinary (NTComplex, node, OtDivide)
 {}
 TableExprNodeDivideDComplex::~TableExprNodeDivideDComplex()
 {}
-DComplex TableExprNodeDivideDComplex::getDComplex (uInt rownr)
-    { return lnode_p->getDComplex(rownr) / rnode_p->getDComplex(rownr); }
+DComplex TableExprNodeDivideDComplex::getDComplex (const TableExprId& id)
+    { return lnode_p->getDComplex(id) / rnode_p->getDComplex(id); }
 
 
 TableExprNodeModuloDouble::TableExprNodeModuloDouble (const TableExprNodeRep& node)
@@ -140,10 +140,10 @@ TableExprNodeModuloDouble::TableExprNodeModuloDouble (const TableExprNodeRep& no
 {}
 TableExprNodeModuloDouble::~TableExprNodeModuloDouble()
 {}
-Double TableExprNodeModuloDouble::getDouble (uInt rownr)
-    { return fmod (lnode_p->getDouble(rownr), rnode_p->getDouble(rownr)); }
-DComplex TableExprNodeModuloDouble::getDComplex (uInt rownr)
-    { return fmod (lnode_p->getDouble(rownr), rnode_p->getDouble(rownr)); }
+Double TableExprNodeModuloDouble::getDouble (const TableExprId& id)
+    { return fmod (lnode_p->getDouble(id), rnode_p->getDouble(id)); }
+DComplex TableExprNodeModuloDouble::getDComplex (const TableExprId& id)
+    { return fmod (lnode_p->getDouble(id), rnode_p->getDouble(id)); }
 
 
 TableExprNodeMIN::TableExprNodeMIN (const TableExprNodeRep& node)
@@ -151,7 +151,7 @@ TableExprNodeMIN::TableExprNodeMIN (const TableExprNodeRep& node)
 {}
 TableExprNodeMIN::~TableExprNodeMIN()
 {}
-Double TableExprNodeMIN::getDouble (uInt rownr)
-    { return -(lnode_p->getDouble(rownr)); }
-DComplex TableExprNodeMIN::getDComplex (uInt rownr)
-    { return -(lnode_p->getDComplex(rownr)); }
+Double TableExprNodeMIN::getDouble (const TableExprId& id)
+    { return -(lnode_p->getDouble(id)); }
+DComplex TableExprNodeMIN::getDComplex (const TableExprId& id)
+    { return -(lnode_p->getDComplex(id)); }

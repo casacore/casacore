@@ -1,5 +1,5 @@
 //# ExprLogicNode.h: Nodes representing scalar logical operators in table select expression tree
-//# Copyright (C) 1994,1995,1996,1997,1999
+//# Copyright (C) 1994,1995,1996,1997,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -70,7 +70,7 @@ class TableExprNodeEQBool : public TableExprNodeBinary
 public:
     TableExprNodeEQBool (const TableExprNodeRep&);
     ~TableExprNodeEQBool();
-    Bool getBool (uInt rownr);
+    Bool getBool (const TableExprId& id);
 };
 
 
@@ -100,7 +100,7 @@ class TableExprNodeEQDouble : public TableExprNodeBinary
 public:
     TableExprNodeEQDouble (const TableExprNodeRep&);
     ~TableExprNodeEQDouble();
-    Bool getBool (uInt rownr);
+    Bool getBool (const TableExprId& id);
     void ranges (Block<TableExprRange>&);
 };
 
@@ -131,7 +131,7 @@ class TableExprNodeEQDComplex : public TableExprNodeBinary
 public:
     TableExprNodeEQDComplex (const TableExprNodeRep&);
     ~TableExprNodeEQDComplex();
-    Bool getBool (uInt rownr);
+    Bool getBool (const TableExprId& id);
 };
 
 
@@ -161,7 +161,7 @@ class TableExprNodeEQString : public TableExprNodeBinary
 public:
     TableExprNodeEQString (const TableExprNodeRep&);
     ~TableExprNodeEQString();
-    Bool getBool (uInt rownr);
+    Bool getBool (const TableExprId& id);
 };
 
 
@@ -191,7 +191,7 @@ class TableExprNodeEQRegex : public TableExprNodeBinary
 public:
     TableExprNodeEQRegex (const TableExprNodeRep&);
     ~TableExprNodeEQRegex();
-    Bool getBool (uInt rownr);
+    Bool getBool (const TableExprId& id);
 };
 
 
@@ -221,7 +221,7 @@ class TableExprNodeEQDate : public TableExprNodeBinary
 public:
     TableExprNodeEQDate (const TableExprNodeRep&);
     ~TableExprNodeEQDate();
-    Bool getBool (uInt rownr);
+    Bool getBool (const TableExprId& id);
 };
 
 
@@ -252,7 +252,7 @@ class TableExprNodeNEBool : public TableExprNodeBinary
 public:
     TableExprNodeNEBool (const TableExprNodeRep&);
     ~TableExprNodeNEBool();
-    Bool getBool (uInt rownr);
+    Bool getBool (const TableExprId& id);
 };
 
 
@@ -282,7 +282,7 @@ class TableExprNodeNEDouble : public TableExprNodeBinary
 public:
     TableExprNodeNEDouble (const TableExprNodeRep&);
     ~TableExprNodeNEDouble();
-    Bool getBool (uInt rownr);
+    Bool getBool (const TableExprId& id);
 };
 
 
@@ -312,7 +312,7 @@ class TableExprNodeNEDComplex : public TableExprNodeBinary
 public:
     TableExprNodeNEDComplex (const TableExprNodeRep&);
     ~TableExprNodeNEDComplex();
-    Bool getBool (uInt rownr);
+    Bool getBool (const TableExprId& id);
 };
 
 
@@ -342,7 +342,7 @@ class TableExprNodeNEString : public TableExprNodeBinary
 public:
     TableExprNodeNEString (const TableExprNodeRep&);
     ~TableExprNodeNEString();
-    Bool getBool (uInt rownr);
+    Bool getBool (const TableExprId& id);
 };
 
 
@@ -372,7 +372,7 @@ class TableExprNodeNERegex : public TableExprNodeBinary
 public:
     TableExprNodeNERegex (const TableExprNodeRep&);
     ~TableExprNodeNERegex();
-    Bool getBool (uInt rownr);
+    Bool getBool (const TableExprId& id);
 };
 
 
@@ -402,7 +402,7 @@ class TableExprNodeNEDate : public TableExprNodeBinary
 public:
     TableExprNodeNEDate (const TableExprNodeRep&);
     ~TableExprNodeNEDate();
-    Bool getBool (uInt rownr);
+    Bool getBool (const TableExprId& id);
 };
 
 
@@ -433,7 +433,7 @@ class TableExprNodeGTDouble : public TableExprNodeBinary
 public:
     TableExprNodeGTDouble (const TableExprNodeRep&);
     ~TableExprNodeGTDouble();
-    Bool getBool (uInt rownr);
+    Bool getBool (const TableExprId& id);
     void ranges (Block<TableExprRange>&);
 };
 
@@ -464,7 +464,7 @@ class TableExprNodeGTDComplex : public TableExprNodeBinary
 public:
     TableExprNodeGTDComplex (const TableExprNodeRep&);
     ~TableExprNodeGTDComplex();
-    Bool getBool (uInt rownr);
+    Bool getBool (const TableExprId& id);
 };
 
 
@@ -494,7 +494,7 @@ class TableExprNodeGTString : public TableExprNodeBinary
 public:
     TableExprNodeGTString (const TableExprNodeRep&);
     ~TableExprNodeGTString();
-    Bool getBool (uInt rownr);
+    Bool getBool (const TableExprId& id);
 };
 
 
@@ -524,7 +524,7 @@ class TableExprNodeGTDate : public TableExprNodeBinary
 public:
     TableExprNodeGTDate (const TableExprNodeRep&);
     ~TableExprNodeGTDate();
-    Bool getBool (uInt rownr);
+    Bool getBool (const TableExprId& id);
 };
 
 
@@ -555,7 +555,7 @@ class TableExprNodeGEDouble : public TableExprNodeBinary
 public:
     TableExprNodeGEDouble (const TableExprNodeRep&);
     ~TableExprNodeGEDouble();
-    Bool getBool (uInt rownr);
+    Bool getBool (const TableExprId& id);
     void ranges (Block<TableExprRange>&);
 };
 
@@ -586,7 +586,7 @@ class TableExprNodeGEDComplex : public TableExprNodeBinary
 public:
     TableExprNodeGEDComplex (const TableExprNodeRep&);
     ~TableExprNodeGEDComplex();
-    Bool getBool (uInt rownr);
+    Bool getBool (const TableExprId& id);
 };
 
 
@@ -616,7 +616,7 @@ class TableExprNodeGEString : public TableExprNodeBinary
 public:
     TableExprNodeGEString (const TableExprNodeRep&);
     ~TableExprNodeGEString();
-    Bool getBool (uInt rownr);
+    Bool getBool (const TableExprId& id);
 };
 
 
@@ -646,7 +646,7 @@ class TableExprNodeGEDate : public TableExprNodeBinary
 public:
     TableExprNodeGEDate (const TableExprNodeRep&);
     ~TableExprNodeGEDate();
-    Bool getBool (uInt rownr);
+    Bool getBool (const TableExprId& id);
 };
 
 
@@ -677,7 +677,7 @@ class TableExprNodeINDouble : public TableExprNodeBinary
 public:
     TableExprNodeINDouble (const TableExprNodeRep&);
     ~TableExprNodeINDouble();
-    Bool getBool (uInt rownr);
+    Bool getBool (const TableExprId& id);
 };
 
 
@@ -707,7 +707,7 @@ class TableExprNodeINDComplex : public TableExprNodeBinary
 public:
     TableExprNodeINDComplex (const TableExprNodeRep&);
     ~TableExprNodeINDComplex();
-    Bool getBool (uInt rownr);
+    Bool getBool (const TableExprId& id);
 };
 
 
@@ -737,7 +737,7 @@ class TableExprNodeINString : public TableExprNodeBinary
 public:
     TableExprNodeINString (const TableExprNodeRep&);
     ~TableExprNodeINString();
-    Bool getBool (uInt rownr);
+    Bool getBool (const TableExprId& id);
 };
 
 
@@ -767,7 +767,7 @@ class TableExprNodeINDate : public TableExprNodeBinary
 public:
     TableExprNodeINDate (const TableExprNodeRep&);
     ~TableExprNodeINDate();
-    Bool getBool (uInt rownr);
+    Bool getBool (const TableExprId& id);
 };
 
 
@@ -796,7 +796,7 @@ class TableExprNodeOR : public TableExprNodeBinary
 public:
     TableExprNodeOR (const TableExprNodeRep&);
     ~TableExprNodeOR();
-    Bool getBool (uInt rownr);
+    Bool getBool (const TableExprId& id);
     void ranges (Block<TableExprRange>&);
 };
 
@@ -825,7 +825,7 @@ class TableExprNodeAND: public TableExprNodeBinary
 public:
     TableExprNodeAND (const TableExprNodeRep&);
     ~TableExprNodeAND();
-    Bool getBool (uInt rownr);
+    Bool getBool (const TableExprId& id);
     void ranges (Block<TableExprRange>&);
 };
 
@@ -854,7 +854,7 @@ class TableExprNodeNOT: public TableExprNodeBinary
 public:
     TableExprNodeNOT (const TableExprNodeRep&);
     ~TableExprNodeNOT();
-    Bool getBool (uInt rownr);
+    Bool getBool (const TableExprId& id);
 };
 
 

@@ -1,5 +1,5 @@
 //# ExprNodeSet.cc: Classes representing an set in table select expression
-//# Copyright (C) 1997,1999
+//# Copyright (C) 1997,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -245,7 +245,8 @@ void TableExprNodeSetElem::replaceTablePtr (const Table& table,
     }
 }
 
-TableExprNodeSetElem* TableExprNodeSetElem::evaluate (uInt rownr) const
+TableExprNodeSetElem* TableExprNodeSetElem::evaluate
+                                           (const TableExprId& id) const
 {
     TableExprNodeRep* start = 0;
     TableExprNodeRep* end = 0;
@@ -253,43 +254,43 @@ TableExprNodeSetElem* TableExprNodeSetElem::evaluate (uInt rownr) const
     switch (dataType()) {
     case NTBool:
 	if (itsStart != 0) {
-	    start = new TableExprNodeConstBool (itsStart->getBool (rownr));
+	    start = new TableExprNodeConstBool (itsStart->getBool (id));
 	}
 	break;
     case NTDouble:
 	if (itsStart != 0) {
-	    start = new TableExprNodeConstDouble (itsStart->getDouble (rownr));
+	    start = new TableExprNodeConstDouble (itsStart->getDouble (id));
 	}
 	if (itsEnd != 0) {
-	    end = new TableExprNodeConstDouble (itsEnd->getDouble (rownr));
+	    end = new TableExprNodeConstDouble (itsEnd->getDouble (id));
 	}
 	if (itsIncr != 0) {
-	    incr = new TableExprNodeConstDouble (itsIncr->getDouble (rownr));
+	    incr = new TableExprNodeConstDouble (itsIncr->getDouble (id));
 	}
 	break;
     case NTComplex:
 	if (itsStart != 0) {
 	    start = new TableExprNodeConstDComplex
-                                            (itsStart->getDComplex (rownr));
+                                            (itsStart->getDComplex (id));
 	}
 	break;
     case NTString:
 	if (itsStart != 0) {
-	    start = new TableExprNodeConstString (itsStart->getString (rownr));
+	    start = new TableExprNodeConstString (itsStart->getString (id));
 	}
 	if (itsEnd != 0) {
-	    end = new TableExprNodeConstString (itsEnd->getString (rownr));
+	    end = new TableExprNodeConstString (itsEnd->getString (id));
 	}
 	break;
     case NTDate:
 	if (itsStart != 0) {
-	    start = new TableExprNodeConstDate (itsStart->getDate (rownr));
+	    start = new TableExprNodeConstDate (itsStart->getDate (id));
 	}
 	if (itsEnd != 0) {
-	    end = new TableExprNodeConstDate (itsEnd->getDate (rownr));
+	    end = new TableExprNodeConstDate (itsEnd->getDate (id));
 	}
 	if (itsIncr != 0) {
-	    incr = new TableExprNodeConstDouble (itsIncr->getDouble (rownr));
+	    incr = new TableExprNodeConstDouble (itsIncr->getDouble (id));
 	}
 	break;
     default:
@@ -299,22 +300,22 @@ TableExprNodeSetElem* TableExprNodeSetElem::evaluate (uInt rownr) const
 }
 
 void TableExprNodeSetElem::fillVector (Vector<Bool>& vec, uInt& cnt,
-				       uInt rownr) const
+				       const TableExprId& id) const
 {
     DebugAssert (itsSingle, AipsError);
     uInt n = vec.nelements();
     if (n < cnt+1) {
 	vec.resize (cnt+1, True);
     }
-    vec(cnt++) = itsStart->getBool (rownr);
+    vec(cnt++) = itsStart->getBool (id);
 }
 void TableExprNodeSetElem::fillVector (Vector<Double>& vec, uInt& cnt,
-				       uInt rownr) const
+				       const TableExprId& id) const
 {
     DebugAssert (itsDiscrete, AipsError);
-    Double start = itsStart==0  ?  0 : itsStart->getDouble (rownr);
-    Double end   = itsEnd==0  ?  start : itsEnd->getDouble (rownr);
-    Double incr  = itsIncr==0  ?  1 : itsIncr->getDouble (rownr);
+    Double start = itsStart==0  ?  0 : itsStart->getDouble (id);
+    Double end   = itsEnd==0  ?  start : itsEnd->getDouble (id);
+    Double incr  = itsIncr==0  ?  1 : itsIncr->getDouble (id);
     if (start > end) {
 	return;
     }
@@ -329,32 +330,32 @@ void TableExprNodeSetElem::fillVector (Vector<Double>& vec, uInt& cnt,
     }
 }
 void TableExprNodeSetElem::fillVector (Vector<DComplex>& vec, uInt& cnt,
-				       uInt rownr) const
+				       const TableExprId& id) const
 {
     DebugAssert (itsSingle, AipsError);
     uInt n = vec.nelements();
     if (n < cnt+1) {
 	vec.resize (cnt+1, True);
     }
-    vec(cnt++) = itsStart->getDComplex (rownr);
+    vec(cnt++) = itsStart->getDComplex (id);
 }
 void TableExprNodeSetElem::fillVector (Vector<String>& vec, uInt& cnt,
-				       uInt rownr) const
+				       const TableExprId& id) const
 {
     DebugAssert (itsSingle, AipsError);
     uInt n = vec.nelements();
     if (n < cnt+1) {
 	vec.resize (cnt+1, True);
     }
-    vec(cnt++) = itsStart->getString (rownr);
+    vec(cnt++) = itsStart->getString (id);
 }
 void TableExprNodeSetElem::fillVector (Vector<MVTime>& vec, uInt& cnt,
-				       uInt rownr) const
+				       const TableExprId& id) const
 {
     DebugAssert (itsDiscrete, AipsError);
-    Double start = itsStart==0  ?  0 : Double(itsStart->getDate (rownr));
-    Double end   = itsEnd==0  ?  start : Double(itsEnd->getDate (rownr));
-    Double incr  = itsIncr==0  ?  1 : itsIncr->getDouble (rownr);
+    Double start = itsStart==0  ?  0 : Double(itsStart->getDate (id));
+    Double end   = itsEnd==0  ?  start : Double(itsEnd->getDate (id));
+    Double incr  = itsIncr==0  ?  1 : itsIncr->getDouble (id);
     if (start > end) {
 	return;
     }
@@ -370,10 +371,11 @@ void TableExprNodeSetElem::fillVector (Vector<MVTime>& vec, uInt& cnt,
 }
 
 void TableExprNodeSetElem::matchBool (Bool* match, const Bool* value,
-				      uInt nval, uInt rownr) const
+				      uInt nval,
+				      const TableExprId& id) const
 {
     DebugAssert (itsSingle, AipsError);
-    Bool start = itsStart->getBool (rownr);
+    Bool start = itsStart->getBool (id);
     Bool* lastVal = match + nval;
     while (match < lastVal) {
 	if (*value == start) {
@@ -384,11 +386,12 @@ void TableExprNodeSetElem::matchBool (Bool* match, const Bool* value,
     }
 }
 void TableExprNodeSetElem::matchDouble (Bool* match, const Double* value,
-					uInt nval, uInt rownr) const
+					uInt nval,
+					const TableExprId& id) const
 {
-    Double start = itsStart==0  ?  0 : itsStart->getDouble (rownr);
-    Double end   = itsEnd==0  ?  start : itsEnd->getDouble (rownr);
-    Double incr  = itsIncr==0  ?  1 : itsIncr->getDouble (rownr);
+    Double start = itsStart==0  ?  0 : itsStart->getDouble (id);
+    Double end   = itsEnd==0  ?  start : itsEnd->getDouble (id);
+    Double incr  = itsIncr==0  ?  1 : itsIncr->getDouble (id);
     if (start > end) {
 	return;
     }
@@ -428,10 +431,11 @@ void TableExprNodeSetElem::matchDouble (Bool* match, const Double* value,
     }
 }
 void TableExprNodeSetElem::matchDComplex (Bool* match, const DComplex* value,
-					  uInt nval, uInt rownr) const
+					  uInt nval,
+					  const TableExprId& id) const
 {
     DebugAssert (itsSingle, AipsError);
-    DComplex start = itsStart->getDComplex (rownr);
+    DComplex start = itsStart->getDComplex (id);
     Bool* lastVal = match + nval;
     while (match < lastVal) {
 	if (*value == start) {
@@ -442,15 +446,16 @@ void TableExprNodeSetElem::matchDComplex (Bool* match, const DComplex* value,
     }
 }
 void TableExprNodeSetElem::matchString (Bool* match, const String* value,
-					uInt nval, uInt rownr) const
+					uInt nval,
+					const TableExprId& id) const
 {
     String start;
     if (itsStart != 0) {
-	start = itsStart->getString (rownr);
+	start = itsStart->getString (id);
     }
     String end;
     if (itsEnd != 0) {
-	end = itsEnd->getString (rownr);
+	end = itsEnd->getString (id);
     }
     if (start > end) {
 	return;
@@ -479,11 +484,12 @@ void TableExprNodeSetElem::matchString (Bool* match, const String* value,
     }
 }
 void TableExprNodeSetElem::matchDate (Bool* match, const MVTime* value,
-				      uInt nval, uInt rownr) const
+				      uInt nval,
+				      const TableExprId& id) const
 {
-    Double start = itsStart==0  ?  0 : Double(itsStart->getDate (rownr));
-    Double end   = itsEnd==0  ?  start : Double(itsEnd->getDate (rownr));
-    Double incr  = itsIncr==0  ?  1 : itsIncr->getDouble (rownr);
+    Double start = itsStart==0  ?  0 : Double(itsStart->getDate (id));
+    Double end   = itsEnd==0  ?  start : Double(itsEnd->getDate (id));
+    Double incr  = itsIncr==0  ?  1 : itsIncr->getDouble (id);
     if (start > end) {
 	return;
     }
@@ -725,7 +731,7 @@ TableExprNodeRep* TableExprNodeSet::toArray() const
     return 0;               // only to satisfy the compiler
 }
 
-Array<Bool> TableExprNodeSet::toArrayBool (uInt rownr) const
+Array<Bool> TableExprNodeSet::toArrayBool (const TableExprId& id) const
 {
     DebugAssert (itsBounded, AipsError);
     // First determine (roughly) the number of values needed in
@@ -737,130 +743,131 @@ Array<Bool> TableExprNodeSet::toArrayBool (uInt rownr) const
     uInt cnt = 0;
     Vector<Bool> result (n);
     for (uInt i=0; i<n; i++) {
-	itsElems[i]->fillVector (result, cnt, rownr);
+	itsElems[i]->fillVector (result, cnt, id);
     }
     result.resize (cnt, True);
     return result;
 }
-Array<Double> TableExprNodeSet::toArrayDouble (uInt rownr) const
+Array<Double> TableExprNodeSet::toArrayDouble (const TableExprId& id) const
 {
     DebugAssert (itsBounded, AipsError);
     uInt n = nelements();
     uInt cnt = 0;
     Vector<Double> result (n);
     for (uInt i=0; i<n; i++) {
-	itsElems[i]->fillVector (result, cnt, rownr);
+	itsElems[i]->fillVector (result, cnt, id);
     }
     result.resize (cnt, True);
     return result;
 }
-Array<DComplex> TableExprNodeSet::toArrayDComplex (uInt rownr) const
+Array<DComplex> TableExprNodeSet::toArrayDComplex (const TableExprId& id) const
 {
     DebugAssert (itsBounded, AipsError);
     uInt n = nelements();
     uInt cnt = 0;
     Vector<DComplex> result (n);
     for (uInt i=0; i<n; i++) {
-	itsElems[i]->fillVector (result, cnt, rownr);
+	itsElems[i]->fillVector (result, cnt, id);
     }
     result.resize (cnt, True);
     return result;
 }
-Array<String> TableExprNodeSet::toArrayString (uInt rownr) const
+Array<String> TableExprNodeSet::toArrayString (const TableExprId& id) const
 {
     DebugAssert (itsBounded, AipsError);
     uInt n = nelements();
     uInt cnt = 0;
     Vector<String> result (n);
     for (uInt i=0; i<n; i++) {
-	itsElems[i]->fillVector (result, cnt, rownr);
+	itsElems[i]->fillVector (result, cnt, id);
     }
     result.resize (cnt, True);
     return result;
 }
-Array<MVTime> TableExprNodeSet::toArrayDate (uInt rownr) const
+Array<MVTime> TableExprNodeSet::toArrayDate (const TableExprId& id) const
 {
     DebugAssert (itsBounded, AipsError);
     uInt n = nelements();
     uInt cnt = 0;
     Vector<MVTime> result (n);
     for (uInt i=0; i<n; i++) {
-	itsElems[i]->fillVector (result, cnt, rownr);
+	itsElems[i]->fillVector (result, cnt, id);
     }
     result.resize (cnt, True);
     return result;
 }
 
-Array<Bool> TableExprNodeSet::getArrayBool (uInt rownr)
+Array<Bool> TableExprNodeSet::getArrayBool (const TableExprId& id)
 {
-    return toArrayBool (rownr);
+    return toArrayBool (id);
 }
-Array<Double> TableExprNodeSet::getArrayDouble (uInt rownr)
+Array<Double> TableExprNodeSet::getArrayDouble (const TableExprId& id)
 {
-    return toArrayDouble (rownr);
+    return toArrayDouble (id);
 }
-Array<DComplex> TableExprNodeSet::getArrayDComplex (uInt rownr)
+Array<DComplex> TableExprNodeSet::getArrayDComplex (const TableExprId& id)
 {
-    return toArrayDComplex (rownr);
+    return toArrayDComplex (id);
 }
-Array<String> TableExprNodeSet::getArrayString (uInt rownr)
+Array<String> TableExprNodeSet::getArrayString (const TableExprId& id)
 {
-    return toArrayString (rownr);
+    return toArrayString (id);
 }
-Array<MVTime> TableExprNodeSet::getArrayDate (uInt rownr)
+Array<MVTime> TableExprNodeSet::getArrayDate (const TableExprId& id)
 {
-    return toArrayDate (rownr);
+    return toArrayDate (id);
 }
 
-Bool TableExprNodeSet::hasBool (uInt rownr, Bool value)
+Bool TableExprNodeSet::hasBool (const TableExprId& id, Bool value)
 {
     Bool result = False;
     uInt n = itsElems.nelements();
     for (uInt i=0; i<n; i++) {
-	itsElems[i]->matchBool (&result, &value, 1, rownr);
+	itsElems[i]->matchBool (&result, &value, 1, id);
     }
     return result;
 }
-Bool TableExprNodeSet::hasDouble (uInt rownr, Double value)
+Bool TableExprNodeSet::hasDouble (const TableExprId& id, Double value)
 {
     Bool result = False;
     uInt n = itsElems.nelements();
     for (uInt i=0; i<n; i++) {
-	itsElems[i]->matchDouble (&result, &value, 1, rownr);
+	itsElems[i]->matchDouble (&result, &value, 1, id);
     }
     return result;
 }
-Bool TableExprNodeSet::hasDComplex (uInt rownr, const DComplex& value)
+Bool TableExprNodeSet::hasDComplex (const TableExprId& id,
+				    const DComplex& value)
 {
     Bool result = False;
     uInt n = itsElems.nelements();
     for (uInt i=0; i<n; i++) {
-	itsElems[i]->matchDComplex (&result, &value, 1, rownr);
+	itsElems[i]->matchDComplex (&result, &value, 1, id);
     }
     return result;
 }
-Bool TableExprNodeSet::hasString (uInt rownr, const String& value)
+Bool TableExprNodeSet::hasString (const TableExprId& id, const String& value)
 {
     Bool result = False;
     uInt n = itsElems.nelements();
     for (uInt i=0; i<n; i++) {
-	itsElems[i]->matchString (&result, &value, 1, rownr);
+	itsElems[i]->matchString (&result, &value, 1, id);
     }
     return result;
 }
-Bool TableExprNodeSet::hasDate (uInt rownr, const MVTime& value)
+Bool TableExprNodeSet::hasDate (const TableExprId& id, const MVTime& value)
 {
     Bool result = False;
     uInt n = itsElems.nelements();
     for (uInt i=0; i<n; i++) {
-	itsElems[i]->matchDate (&result, &value, 1, rownr);
+	itsElems[i]->matchDate (&result, &value, 1, id);
     }
     return result;
 }
-Array<Bool> TableExprNodeSet::hasArrayBool (uInt rownr,
+Array<Bool> TableExprNodeSet::hasArrayBool (const TableExprId& id,
 					    const Array<Bool>& value)
 {
-    Array<Bool> set = getArrayBool (rownr);
+    Array<Bool> set = getArrayBool (id);
     Array<Bool> result(value.shape());
     result.set (False);
     Bool deleteIn, deleteOut;
@@ -869,16 +876,16 @@ Array<Bool> TableExprNodeSet::hasArrayBool (uInt rownr,
     uInt nval = value.nelements();
     uInt n = itsElems.nelements();
     for (uInt i=0; i<n; i++) {
-	itsElems[i]->matchBool (out, in, nval, rownr);
+	itsElems[i]->matchBool (out, in, nval, id);
     }
     value.freeStorage (in, deleteIn);
     result.putStorage (out, deleteOut);
     return result;
 }
-Array<Bool> TableExprNodeSet::hasArrayDouble (uInt rownr,
+Array<Bool> TableExprNodeSet::hasArrayDouble (const TableExprId& id,
 					      const Array<Double>& value)
 {
-    Array<Double> set = getArrayDouble (rownr);
+    Array<Double> set = getArrayDouble (id);
     Array<Bool> result(value.shape());
     result.set (False);
     Bool deleteIn, deleteOut;
@@ -887,16 +894,16 @@ Array<Bool> TableExprNodeSet::hasArrayDouble (uInt rownr,
     uInt nval = value.nelements();
     uInt n = itsElems.nelements();
     for (uInt i=0; i<n; i++) {
-	itsElems[i]->matchDouble (out, in, nval, rownr);
+	itsElems[i]->matchDouble (out, in, nval, id);
     }
     value.freeStorage (in, deleteIn);
     result.putStorage (out, deleteOut);
     return result;
 }
-Array<Bool> TableExprNodeSet::hasArrayDComplex (uInt rownr,
+Array<Bool> TableExprNodeSet::hasArrayDComplex (const TableExprId& id,
 						const Array<DComplex>& value)
 {
-    Array<DComplex> set = getArrayDComplex (rownr);
+    Array<DComplex> set = getArrayDComplex (id);
     Array<Bool> result(value.shape());
     result.set (False);
     Bool deleteIn, deleteOut;
@@ -905,16 +912,16 @@ Array<Bool> TableExprNodeSet::hasArrayDComplex (uInt rownr,
     uInt nval = value.nelements();
     uInt n = itsElems.nelements();
     for (uInt i=0; i<n; i++) {
-	itsElems[i]->matchDComplex (out, in, nval, rownr);
+	itsElems[i]->matchDComplex (out, in, nval, id);
     }
     value.freeStorage (in, deleteIn);
     result.putStorage (out, deleteOut);
     return result;
 }
-Array<Bool> TableExprNodeSet::hasArrayString (uInt rownr,
+Array<Bool> TableExprNodeSet::hasArrayString (const TableExprId& id,
 					      const Array<String>& value)
 {
-    Array<String> set = getArrayString (rownr);
+    Array<String> set = getArrayString (id);
     Array<Bool> result(value.shape());
     result.set (False);
     Bool deleteIn, deleteOut;
@@ -923,16 +930,16 @@ Array<Bool> TableExprNodeSet::hasArrayString (uInt rownr,
     uInt nval = value.nelements();
     uInt n = itsElems.nelements();
     for (uInt i=0; i<n; i++) {
-	itsElems[i]->matchString (out, in, nval, rownr);
+	itsElems[i]->matchString (out, in, nval, id);
     }
     value.freeStorage (in, deleteIn);
     result.putStorage (out, deleteOut);
     return result;
 }
-Array<Bool> TableExprNodeSet::hasArrayDate (uInt rownr,
+Array<Bool> TableExprNodeSet::hasArrayDate (const TableExprId& id,
 					    const Array<MVTime>& value)
 {
-    Array<MVTime> set = getArrayDate (rownr);
+    Array<MVTime> set = getArrayDate (id);
     Array<Bool> result(value.shape());
     result.set (False);
     Bool deleteIn, deleteOut;
@@ -941,7 +948,7 @@ Array<Bool> TableExprNodeSet::hasArrayDate (uInt rownr,
     uInt nval = value.nelements();
     uInt n = itsElems.nelements();
     for (uInt i=0; i<n; i++) {
-	itsElems[i]->matchDate (out, in, nval, rownr);
+	itsElems[i]->matchDate (out, in, nval, id);
     }
     value.freeStorage (in, deleteIn);
     result.putStorage (out, deleteOut);

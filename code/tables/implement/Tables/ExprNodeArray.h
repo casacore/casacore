@@ -1,5 +1,5 @@
 //# ExprNodeArray.h: Classes representing an array in table select expression
-//# Copyright (C) 1997,1999
+//# Copyright (C) 1997,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -73,28 +73,38 @@ public:
 
     // Get the shape of the array in the given row.
     // This default implementation evaluates the value and returns its shape.
-    virtual const IPosition& getShape (uInt rownr);
+    virtual const IPosition& getShape (const TableExprId& id);
 
     // The default implementation of getArrayDComplex does
     // getArrayDouble and converts the result.
-    virtual Array<DComplex> getArrayDComplex (uInt rownr);
+    virtual Array<DComplex> getArrayDComplex (const TableExprId& id);
 
     // Get a single element from the array in the given row.
     // <group>
-    virtual Bool     getElemBool     (uInt rownr, const Slicer& index);
-    virtual Double   getElemDouble   (uInt rownr, const Slicer& index);
-    virtual DComplex getElemDComplex (uInt rownr, const Slicer& index);
-    virtual String   getElemString   (uInt rownr, const Slicer& index);
-    virtual MVTime   getElemDate     (uInt rownr, const Slicer& index);
+    virtual Bool     getElemBool     (const TableExprId& id,
+				      const Slicer& index);
+    virtual Double   getElemDouble   (const TableExprId& id,
+				      const Slicer& index);
+    virtual DComplex getElemDComplex (const TableExprId& id,
+				      const Slicer& index);
+    virtual String   getElemString   (const TableExprId& id,
+				      const Slicer& index);
+    virtual MVTime   getElemDate     (const TableExprId& id,
+				      const Slicer& index);
     // </group>
 
     // Get a slice of the array in the given row.
     // <group>
-    virtual Array<Bool>     getSliceBool     (uInt rownr, const Slicer&);
-    virtual Array<Double>   getSliceDouble   (uInt rownr, const Slicer&);
-    virtual Array<DComplex> getSliceDComplex (uInt rownr, const Slicer&);
-    virtual Array<String>   getSliceString   (uInt rownr, const Slicer&);
-    virtual Array<MVTime>   getSliceDate     (uInt rownr, const Slicer&);
+    virtual Array<Bool>     getSliceBool     (const TableExprId& id,
+					      const Slicer&);
+    virtual Array<Double>   getSliceDouble   (const TableExprId& id,
+					      const Slicer&);
+    virtual Array<DComplex> getSliceDComplex (const TableExprId& id,
+					      const Slicer&);
+    virtual Array<String>   getSliceString   (const TableExprId& id,
+					      const Slicer&);
+    virtual Array<MVTime>   getSliceDate     (const TableExprId& id,
+					      const Slicer&);
     // </group>
 
     // Get a single element for the entire column (used by sort).
@@ -110,25 +120,6 @@ public:
     virtual Array<Complex>  getElemColumnComplex  (const Slicer&);
     virtual Array<DComplex> getElemColumnDComplex (const Slicer&);
     virtual Array<String>   getElemColumnString   (const Slicer&);
-    // </group>
-
-    // Does a value occur in the array?
-    // <group>
-    virtual Bool hasBool     (uInt rownr, Bool value);
-    virtual Bool hasDouble   (uInt rownr, Double value);
-    virtual Bool hasDComplex (uInt rownr, const DComplex& value);
-    virtual Bool hasString   (uInt rownr, const String& value);
-    virtual Bool hasDate     (uInt rownr, const MVTime& value);
-    virtual Array<Bool> hasArrayBool     (uInt rownr,
-					  const Array<Bool>& value);
-    virtual Array<Bool> hasArrayDouble   (uInt rownr,
-					  const Array<Double>& value);
-    virtual Array<Bool> hasArrayDComplex (uInt rownr,
-					  const Array<DComplex>& value);
-    virtual Array<Bool> hasArrayString   (uInt rownr,
-					  const Array<String>& value);
-    virtual Array<Bool> hasArrayDate     (uInt rownr,
-					  const Array<MVTime>& value);
     // </group>
 
     // Make an array with the given shape and fill it with the value.
@@ -177,10 +168,10 @@ public:
     const ROTableColumn& getColumn() const;
 
     // Get the shape of the array in the given row.
-    virtual const IPosition& getShape (uInt rownr);
+    virtual const IPosition& getShape (const TableExprId& id);
 
     // Is the value in the given row defined?
-    virtual Bool isDefined (uInt rownr);
+    virtual Bool isDefined (const TableExprId& id);
 
     // Get the data type of this column.
     // It returns with a True status.
@@ -220,9 +211,9 @@ public:
     // Replace the Table pointer in this node.
     virtual void replaceTablePtr (const Table&, const BaseTable*);
 
-    virtual Bool getElemBool (uInt rownr, const Slicer& index);
-    virtual Array<Bool>  getArrayBool (uInt rownr);
-    virtual Array<Bool>  getSliceBool     (uInt rownr, const Slicer&);
+    virtual Bool getElemBool (const TableExprId& id, const Slicer& index);
+    virtual Array<Bool>  getArrayBool (const TableExprId& id);
+    virtual Array<Bool>  getSliceBool (const TableExprId& id, const Slicer&);
     virtual Array<Bool>  getElemColumnBool (const Slicer&);
 protected:
     ROArrayColumn<Bool> col_p;
@@ -257,9 +248,10 @@ public:
     // Replace the Table pointer in this node.
     virtual void replaceTablePtr (const Table&, const BaseTable*);
 
-    virtual Double getElemDouble (uInt rownr, const Slicer& index);
-    virtual Array<Double> getArrayDouble (uInt rownr);
-    virtual Array<Double> getSliceDouble (uInt rownr, const Slicer&);
+    virtual Double getElemDouble (const TableExprId& id, const Slicer& index);
+    virtual Array<Double> getArrayDouble (const TableExprId& id);
+    virtual Array<Double> getSliceDouble (const TableExprId& id,
+					  const Slicer&);
     virtual Array<uChar>  getElemColumnuChar (const Slicer&);
 protected:
     ROArrayColumn<uChar> col_p;
@@ -294,9 +286,10 @@ public:
     // Replace the Table pointer in this node.
     virtual void replaceTablePtr (const Table&, const BaseTable*);
 
-    virtual Double getElemDouble (uInt rownr, const Slicer& index);
-    virtual Array<Double> getArrayDouble (uInt rownr);
-    virtual Array<Double> getSliceDouble (uInt rownr, const Slicer&);
+    virtual Double getElemDouble (const TableExprId& id, const Slicer& index);
+    virtual Array<Double> getArrayDouble (const TableExprId& id);
+    virtual Array<Double> getSliceDouble (const TableExprId& id,
+					  const Slicer&);
     virtual Array<Short>  getElemColumnShort (const Slicer&);
 protected:
     ROArrayColumn<Short> col_p;
@@ -331,9 +324,10 @@ public:
     // Replace the Table pointer in this node.
     virtual void replaceTablePtr (const Table&, const BaseTable*);
 
-    virtual Double getElemDouble (uInt rownr, const Slicer& index);
-    virtual Array<Double> getArrayDouble (uInt rownr);
-    virtual Array<Double> getSliceDouble (uInt rownr, const Slicer&);
+    virtual Double getElemDouble (const TableExprId& id, const Slicer& index);
+    virtual Array<Double> getArrayDouble (const TableExprId& id);
+    virtual Array<Double> getSliceDouble (const TableExprId& id,
+					  const Slicer&);
     virtual Array<uShort> getElemColumnuShort (const Slicer&);
 protected:
     ROArrayColumn<uShort> col_p;
@@ -368,9 +362,10 @@ public:
     // Replace the Table pointer in this node.
     virtual void replaceTablePtr (const Table&, const BaseTable*);
 
-    virtual Double getElemDouble (uInt rownr, const Slicer& index);
-    virtual Array<Double> getArrayDouble (uInt rownr);
-    virtual Array<Double> getSliceDouble (uInt rownr, const Slicer&);
+    virtual Double getElemDouble (const TableExprId& id, const Slicer& index);
+    virtual Array<Double> getArrayDouble (const TableExprId& id);
+    virtual Array<Double> getSliceDouble (const TableExprId& id,
+					  const Slicer&);
     virtual Array<Int>    getElemColumnInt (const Slicer&);
 protected:
     ROArrayColumn<Int> col_p;
@@ -405,9 +400,10 @@ public:
     // Replace the Table pointer in this node.
     virtual void replaceTablePtr (const Table&, const BaseTable*);
 
-    virtual Double getElemDouble (uInt rownr, const Slicer& index);
-    virtual Array<Double> getArrayDouble (uInt rownr);
-    virtual Array<Double> getSliceDouble (uInt rownr, const Slicer&);
+    virtual Double getElemDouble (const TableExprId& id, const Slicer& index);
+    virtual Array<Double> getArrayDouble (const TableExprId& id);
+    virtual Array<Double> getSliceDouble (const TableExprId& id,
+					  const Slicer&);
     virtual Array<uInt>   getElemColumnuInt (const Slicer&);
 protected:
     ROArrayColumn<uInt> col_p;
@@ -442,9 +438,10 @@ public:
     // Replace the Table pointer in this node.
     virtual void replaceTablePtr (const Table&, const BaseTable*);
 
-    virtual Double getElemDouble (uInt rownr, const Slicer& index);
-    virtual Array<Double> getArrayDouble (uInt rownr);
-    virtual Array<Double> getSliceDouble (uInt rownr, const Slicer&);
+    virtual Double getElemDouble (const TableExprId& id, const Slicer& index);
+    virtual Array<Double> getArrayDouble (const TableExprId& id);
+    virtual Array<Double> getSliceDouble (const TableExprId& id,
+					  const Slicer&);
     virtual Array<Float>  getElemColumnFloat (const Slicer&);
 protected:
     ROArrayColumn<Float> col_p;
@@ -479,9 +476,10 @@ public:
     // Replace the Table pointer in this node.
     virtual void replaceTablePtr (const Table&, const BaseTable*);
 
-    virtual Double getElemDouble (uInt rownr, const Slicer& index);
-    virtual Array<Double> getArrayDouble (uInt rownr);
-    virtual Array<Double> getSliceDouble (uInt rownr, const Slicer&);
+    virtual Double getElemDouble (const TableExprId& id, const Slicer& index);
+    virtual Array<Double> getArrayDouble (const TableExprId& id);
+    virtual Array<Double> getSliceDouble (const TableExprId& id,
+					  const Slicer&);
     virtual Array<Double> getElemColumnDouble (const Slicer&);
 protected:
     ROArrayColumn<Double> col_p;
@@ -516,9 +514,10 @@ public:
     // Replace the Table pointer in this node.
     virtual void replaceTablePtr (const Table&, const BaseTable*);
 
-    virtual DComplex getElemDComplex (uInt rownr, const Slicer& index);
-    virtual Array<DComplex> getArrayDComplex (uInt rownr);
-    virtual Array<DComplex> getSliceDComplex (uInt rownr, const Slicer&);
+    virtual DComplex getElemDComplex (const TableExprId& id, const Slicer& index);
+    virtual Array<DComplex> getArrayDComplex (const TableExprId& id);
+    virtual Array<DComplex> getSliceDComplex (const TableExprId& id,
+					      const Slicer&);
     virtual Array<Complex>  getElemColumnComplex (const Slicer&);
 protected:
     ROArrayColumn<Complex> col_p;
@@ -553,9 +552,10 @@ public:
     // Replace the Table pointer in this node.
     virtual void replaceTablePtr (const Table&, const BaseTable*);
 
-    virtual DComplex getElemDComplex (uInt rownr, const Slicer& index);
-    virtual Array<DComplex> getArrayDComplex (uInt rownr);
-    virtual Array<DComplex> getSliceDComplex (uInt rownr, const Slicer&);
+    virtual DComplex getElemDComplex (const TableExprId& id, const Slicer& index);
+    virtual Array<DComplex> getArrayDComplex (const TableExprId& id);
+    virtual Array<DComplex> getSliceDComplex (const TableExprId& id,
+					      const Slicer&);
     virtual Array<DComplex> getElemColumnDComplex (const Slicer&);
 protected:
     ROArrayColumn<DComplex> col_p;
@@ -590,9 +590,10 @@ public:
     // Replace the Table pointer in this node.
     virtual void replaceTablePtr (const Table&, const BaseTable*);
 
-    virtual String getElemString (uInt rownr, const Slicer& index);
-    virtual Array<String> getArrayString (uInt rownr);
-    virtual Array<String> getSliceString (uInt rownr, const Slicer&);
+    virtual String getElemString (const TableExprId& id, const Slicer& index);
+    virtual Array<String> getArrayString (const TableExprId& id);
+    virtual Array<String> getSliceString (const TableExprId& id,
+					  const Slicer&);
     virtual Array<String> getElemColumnString (const Slicer&);
 protected:
     ROArrayColumn<String> col_p;
@@ -654,7 +655,7 @@ public:
     void checkIndexValues (const TableExprNodeRep* arrayNode);
 
     // Get the Slicer value for the slice.
-    const Slicer& getSlicer (uInt rownr);
+    const Slicer& getSlicer (const TableExprId& id);
 
     // Does it index a single element?
     Bool isSingle() const;
@@ -672,7 +673,7 @@ protected:
     void convertConstIndex();
 
     // Fill the slicer for this row.
-    void fillSlicer (uInt rownr);
+    void fillSlicer (const TableExprId& id);
 };
 
 
@@ -709,17 +710,17 @@ public:
     // Show the node.
     void show (ostream& os, uInt indent) const;
 
-    Bool     getBool     (uInt rownr);
-    Double   getDouble   (uInt rownr);
-    DComplex getDComplex (uInt rownr);
-    String   getString   (uInt rownr);
-    MVTime   getDate     (uInt rownr);
+    Bool     getBool     (const TableExprId& id);
+    Double   getDouble   (const TableExprId& id);
+    DComplex getDComplex (const TableExprId& id);
+    String   getString   (const TableExprId& id);
+    MVTime   getDate     (const TableExprId& id);
 
-    Array<Bool>     getArrayBool     (uInt rownr);
-    Array<Double>   getArrayDouble   (uInt rownr);
-    Array<DComplex> getArrayDComplex (uInt rownr);
-    Array<String>   getArrayString   (uInt rownr);
-    Array<MVTime>   getArrayDate     (uInt rownr);
+    Array<Bool>     getArrayBool     (const TableExprId& id);
+    Array<Double>   getArrayDouble   (const TableExprId& id);
+    Array<DComplex> getArrayDComplex (const TableExprId& id);
+    Array<String>   getArrayString   (const TableExprId& id);
+    Array<MVTime>   getArrayDate     (const TableExprId& id);
 
     // Get the data type of this column (if possible).
     // It returns with a False status when the index is not constant
@@ -749,10 +750,10 @@ inline Bool TableExprNodeIndex::isSingle() const
 {
     return isSingle_p;
 }
-inline const Slicer& TableExprNodeIndex::getSlicer (uInt rownr)
+inline const Slicer& TableExprNodeIndex::getSlicer (const TableExprId& id)
 {
     if (!isConstant()) {
-	fillSlicer (rownr);
+	fillSlicer (id);
     }
     return slicer_p;
 }

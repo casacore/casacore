@@ -1,5 +1,5 @@
 //# ExprDerArrayNode.h: Nodes representing constant arrays in table select expression tree
-//# Copyright (C) 1997,1999
+//# Copyright (C) 1997,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -61,7 +61,7 @@ class TableExprNodeArrayConstBool : public TableExprNodeArray
 public:
     TableExprNodeArrayConstBool (const Array<Bool>& value);
     ~TableExprNodeArrayConstBool();
-    Array<Bool> getArrayBool (uInt rownr);
+    Array<Bool> getArrayBool (const TableExprId& id);
 private:
     Array<Bool> value_p;
 };
@@ -98,8 +98,8 @@ public:
     TableExprNodeArrayConstDouble (const Array<Short>& value);
     TableExprNodeArrayConstDouble (const Array<uChar>& value);
     ~TableExprNodeArrayConstDouble();
-    Array<Double>   getArrayDouble   (uInt rownr);
-    Array<DComplex> getArrayDComplex (uInt rownr);
+    Array<Double>   getArrayDouble   (const TableExprId& id);
+    Array<DComplex> getArrayDComplex (const TableExprId& id);
 private:
     Array<Double> value_p;
 };
@@ -132,7 +132,7 @@ public:
     TableExprNodeArrayConstDComplex (const Array<Complex>& value);
     TableExprNodeArrayConstDComplex (const Array<Double>& value);
     ~TableExprNodeArrayConstDComplex();
-    Array<DComplex> getArrayDComplex (uInt rownr);
+    Array<DComplex> getArrayDComplex (const TableExprId& id);
 private:
     Array<DComplex> value_p;
 };
@@ -163,7 +163,7 @@ class TableExprNodeArrayConstString : public TableExprNodeArray
 public:
     TableExprNodeArrayConstString (const Array<String>& value);
     ~TableExprNodeArrayConstString();
-    Array<String> getArrayString (uInt rownr);
+    Array<String> getArrayString (const TableExprId& id);
 private:
     Array<String> value_p;
 };
@@ -194,8 +194,8 @@ class TableExprNodeArrayConstDate : public TableExprNodeArray
 public:
     TableExprNodeArrayConstDate (const Array<MVTime>& value);
     ~TableExprNodeArrayConstDate();
-    Array<Double> getArrayDouble(uInt rownr);
-    Array<MVTime> getArrayDate  (uInt rownr);
+    Array<Double> getArrayDouble(const TableExprId& id);
+    Array<MVTime> getArrayDate  (const TableExprId& id);
 private:
     Array<MVTime> value_p;
 };

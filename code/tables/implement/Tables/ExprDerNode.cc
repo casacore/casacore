@@ -1,5 +1,5 @@
 //# ExprDerNode.cc: Nodes representing scalar operators in table select expression tree
-//# Copyright (C) 1994,1995,1996,1997,1998,1999
+//# Copyright (C) 1994,1995,1996,1997,1998,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -47,7 +47,7 @@ TableExprNodeConstBool::TableExprNodeConstBool (const Bool& val)
 {}
 TableExprNodeConstBool::~TableExprNodeConstBool()
 {}
-Bool TableExprNodeConstBool::getBool (uInt)
+Bool TableExprNodeConstBool::getBool (const TableExprId&)
     { return value_p; }
 
 TableExprNodeConstDouble::TableExprNodeConstDouble (const Double& val)
@@ -56,9 +56,9 @@ TableExprNodeConstDouble::TableExprNodeConstDouble (const Double& val)
 {}
 TableExprNodeConstDouble::~TableExprNodeConstDouble()
 {}
-Double TableExprNodeConstDouble::getDouble (uInt)
+Double TableExprNodeConstDouble::getDouble (const TableExprId&)
     { return value_p; }
-DComplex TableExprNodeConstDouble::getDComplex (uInt)
+DComplex TableExprNodeConstDouble::getDComplex (const TableExprId&)
     { return value_p; }
 
 TableExprNodeConstDComplex::TableExprNodeConstDComplex (const DComplex& val)
@@ -67,7 +67,7 @@ TableExprNodeConstDComplex::TableExprNodeConstDComplex (const DComplex& val)
 {}
 TableExprNodeConstDComplex::~TableExprNodeConstDComplex()
 {}
-DComplex TableExprNodeConstDComplex::getDComplex (uInt)
+DComplex TableExprNodeConstDComplex::getDComplex (const TableExprId&)
     { return value_p; }
 
 TableExprNodeConstString::TableExprNodeConstString (const String& val)
@@ -76,7 +76,7 @@ TableExprNodeConstString::TableExprNodeConstString (const String& val)
 {}
 TableExprNodeConstString::~TableExprNodeConstString()
 {}
-String TableExprNodeConstString::getString (uInt)
+String TableExprNodeConstString::getString (const TableExprId&)
     { return value_p; }
 
 TableExprNodeConstRegex::TableExprNodeConstRegex (const Regex& val)
@@ -85,7 +85,7 @@ TableExprNodeConstRegex::TableExprNodeConstRegex (const Regex& val)
 {}
 TableExprNodeConstRegex::~TableExprNodeConstRegex()
 {}
-Regex TableExprNodeConstRegex::getRegex (uInt)
+Regex TableExprNodeConstRegex::getRegex (const TableExprId&)
     { return value_p; }
 
 TableExprNodeConstDate::TableExprNodeConstDate (const MVTime& val)
@@ -94,9 +94,9 @@ TableExprNodeConstDate::TableExprNodeConstDate (const MVTime& val)
 {}
 TableExprNodeConstDate::~TableExprNodeConstDate()
 {}
-Double TableExprNodeConstDate::getDouble (uInt)
+Double TableExprNodeConstDate::getDouble (const TableExprId&)
     { return value_p; }
-MVTime TableExprNodeConstDate::getDate (uInt)
+MVTime TableExprNodeConstDate::getDate (const TableExprId&)
     { return value_p; }
 
 
@@ -152,28 +152,28 @@ TableExprNodeColumn::~TableExprNodeColumn()
 const ROTableColumn& TableExprNodeColumn::getColumn() const
     { return *tabColPtr_p; }
 
-Bool TableExprNodeColumn::getBool (uInt rownr)
+Bool TableExprNodeColumn::getBool (const TableExprId& id)
 {
     Bool val;
-    tabColPtr_p->getScalar (rownr, val);
+    tabColPtr_p->getScalar (id.rownr(), val);
     return val;
 }
-Double TableExprNodeColumn::getDouble (uInt rownr)
+Double TableExprNodeColumn::getDouble (const TableExprId& id)
 {
     Double val;
-    tabColPtr_p->getScalar (rownr, val);
+    tabColPtr_p->getScalar (id.rownr(), val);
     return val;
 }
-DComplex TableExprNodeColumn::getDComplex (uInt rownr)
+DComplex TableExprNodeColumn::getDComplex (const TableExprId& id)
 {
     DComplex val;
-    tabColPtr_p->getScalar (rownr, val);
+    tabColPtr_p->getScalar (id.rownr(), val);
     return val;
 }
-String TableExprNodeColumn::getString (uInt rownr)
+String TableExprNodeColumn::getString (const TableExprId& id)
 {
     String val;
-    tabColPtr_p->getScalar (rownr, val);
+    tabColPtr_p->getScalar (id.rownr(), val);
     return val;
 }
 
@@ -247,9 +247,10 @@ TableExprNodeRownr::TableExprNodeRownr (const BaseTable* tabptr, uInt origin)
 {}
 TableExprNodeRownr::~TableExprNodeRownr ()
 {}
-Double TableExprNodeRownr::getDouble (uInt rownr)
+Double TableExprNodeRownr::getDouble (const TableExprId& id)
 {
-    return rownr + origin_p;
+    AlwaysAssert (id.byRow(), AipsError);
+    return id.rownr() + origin_p;
 }
 
 
@@ -263,7 +264,7 @@ TableExprNodeRandom::TableExprNodeRandom (const BaseTable* tabptr)
 {}
 TableExprNodeRandom::~TableExprNodeRandom ()
 {}
-Double TableExprNodeRandom::getDouble (uInt)
+Double TableExprNodeRandom::getDouble (const TableExprId&)
 {
     return random_p();
 }

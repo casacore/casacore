@@ -1,5 +1,5 @@
 //# ExprNodeRep.cc: Representation class for a table column expression tree
-//# Copyright (C) 1994,1995,1996,1997,1999
+//# Copyright (C) 1994,1995,1996,1997,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -37,6 +37,7 @@
 #include <aips/Tables/TableError.h>
 #include <aips/Containers/Block.h>
 #include <aips/Arrays/Array.h>
+#include <aips/Arrays/ArrayLogical.h>
 #include <iostream.h>
 
 
@@ -180,131 +181,184 @@ void TableExprNodeRep::createRange (Block<TableExprRange>& blrange,
     }
 }
 
-const IPosition& TableExprNodeRep::shape (uInt rownr)
+const IPosition& TableExprNodeRep::shape (const TableExprId& id)
 {
     if (ndim_p == 0  ||  shape_p.nelements() != 0) {
 	return shape_p;
     }
-    return getShape (rownr);
+    return getShape (id);
 }
-const IPosition& TableExprNodeRep::getShape (uInt)
+const IPosition& TableExprNodeRep::getShape (const TableExprId&)
 {
     throw (TableInvExpr ("getShape not implemented"));
     return shape_p;
 }
 
-Bool TableExprNodeRep::isDefined (uInt)
+Bool TableExprNodeRep::isDefined (const TableExprId&)
 {
     return True;
 }
 
 //# Supply the default functions for the get functions.
-Bool TableExprNodeRep::getBool (uInt)
+Bool TableExprNodeRep::getBool (const TableExprId&)
 {
     TableExprNode::throwInvDT ("(getBool not implemented)");
     return False;
 }
-Double TableExprNodeRep::getDouble (uInt)
+Double TableExprNodeRep::getDouble (const TableExprId&)
 {
     TableExprNode::throwInvDT ("(getDouble not implemented)");
     return 0;
 }
-DComplex TableExprNodeRep::getDComplex (uInt)
+DComplex TableExprNodeRep::getDComplex (const TableExprId&)
 {
     TableExprNode::throwInvDT ("(getDComplex not implemented)");
     return 0;
 }
-String TableExprNodeRep::getString (uInt)
+String TableExprNodeRep::getString (const TableExprId&)
 {
     TableExprNode::throwInvDT ("(getString not implemented)");
     return "";
 }
-Regex TableExprNodeRep::getRegex (uInt)
+Regex TableExprNodeRep::getRegex (const TableExprId&)
 {
     TableExprNode::throwInvDT ("(getRegex not implemented)");
     return Regex("");
 }
-MVTime TableExprNodeRep::getDate (uInt)
+MVTime TableExprNodeRep::getDate (const TableExprId&)
 {
     TableExprNode::throwInvDT ("(getDate not implemented)");
     return MVTime(0.);
 }
-Array<Bool> TableExprNodeRep::getArrayBool (uInt)
+Array<Bool> TableExprNodeRep::getArrayBool (const TableExprId&)
 {
     TableExprNode::throwInvDT ("(getArrayBool not implemented)");
     return Array<Bool>();
 }
-Array<Double> TableExprNodeRep::getArrayDouble (uInt)
+Array<Double> TableExprNodeRep::getArrayDouble (const TableExprId&)
 {
     TableExprNode::throwInvDT ("(getArrayDouble not implemented)");
     return Array<Double>();
 }
-Array<DComplex> TableExprNodeRep::getArrayDComplex (uInt)
+Array<DComplex> TableExprNodeRep::getArrayDComplex (const TableExprId&)
 {
     TableExprNode::throwInvDT ("(getArrayDComplex not implemented)");
     return Array<DComplex>();
 }
-Array<String> TableExprNodeRep::getArrayString (uInt)
+Array<String> TableExprNodeRep::getArrayString (const TableExprId&)
 {
     TableExprNode::throwInvDT ("(getArrayString not implemented)");
     return Array<String>();
 }
-Array<MVTime> TableExprNodeRep::getArrayDate (uInt)
+Array<MVTime> TableExprNodeRep::getArrayDate (const TableExprId&)
 {
     TableExprNode::throwInvDT ("(getArrayDate not implemented)");
     return Array<MVTime>();
 }
 
 
-Bool TableExprNodeRep::hasBool     (uInt, Bool)
+Bool TableExprNodeRep::hasBool     (const TableExprId& id, Bool value)
 {
-    TableExprNode::throwInvDT ("(hasBool not implemented)");
-    return False;
+    return anyEQ (value, getArrayBool (id));
 }
-Bool TableExprNodeRep::hasDouble   (uInt, Double)
+Bool TableExprNodeRep::hasDouble   (const TableExprId& id, Double value)
 {
-    TableExprNode::throwInvDT ("(hasDouble not implemented)");
-    return False;
+    return anyEQ (value, getArrayDouble (id));
 }
-Bool TableExprNodeRep::hasDComplex (uInt, const DComplex&)
+Bool TableExprNodeRep::hasDComplex (const TableExprId& id,
+				    const DComplex& value)
 {
-    TableExprNode::throwInvDT ("(hasDComplex not implemented)");
-    return False;
+    return anyEQ (value, getArrayDComplex (id));
 }
-Bool TableExprNodeRep::hasString   (uInt, const String&)
+Bool TableExprNodeRep::hasString   (const TableExprId& id,
+				    const String& value)
 {
-    TableExprNode::throwInvDT ("(hasString not implemented)");
-    return False;
+    return anyEQ (value, getArrayString (id));
 }
-Bool TableExprNodeRep::hasDate     (uInt, const MVTime&)
+Bool TableExprNodeRep::hasDate     (const TableExprId& id,
+				    const MVTime& value)
 {
-    TableExprNode::throwInvDT ("(hasDate not implemented)");
-    return False;
+    return anyEQ (value, getArrayDate (id));
 }
-Array<Bool> TableExprNodeRep::hasArrayBool     (uInt, const Array<Bool>&)
+Array<Bool> TableExprNodeRep::hasArrayBool (const TableExprId& id,
+					    const Array<Bool>& value)
 {
-    TableExprNode::throwInvDT ("(hasArrayBool not implemented)");
-    return Array<Bool>();
+    Array<Bool> set = getArrayBool (id);
+    Array<Bool> result(value.shape());
+    Bool deleteIn, deleteOut;
+    const Bool* in = value.getStorage (deleteIn);
+    Bool* out = result.getStorage (deleteOut);
+    uInt nval = value.nelements();
+    for (uInt i=0; i<nval; i++) {
+	out[i] = anyEQ (in[i], set);
+    }
+    value.freeStorage (in, deleteIn);
+    result.putStorage (out, deleteOut);
+    return result;
 }
-Array<Bool> TableExprNodeRep::hasArrayDouble   (uInt, const Array<Double>&)
+Array<Bool> TableExprNodeRep::hasArrayDouble (const TableExprId& id,
+					      const Array<Double>& value)
 {
-    TableExprNode::throwInvDT ("(hasArrayDouble not implemented)");
-    return Array<Bool>();
+    Array<Double> set = getArrayDouble (id);
+    Array<Bool> result(value.shape());
+    Bool deleteIn, deleteOut;
+    const Double* in = value.getStorage (deleteIn);
+    Bool* out = result.getStorage (deleteOut);
+    uInt nval = value.nelements();
+    for (uInt i=0; i<nval; i++) {
+	out[i] = anyEQ (in[i], set);
+    }
+    value.freeStorage (in, deleteIn);
+    result.putStorage (out, deleteOut);
+    return result;
 }
-Array<Bool> TableExprNodeRep::hasArrayDComplex (uInt, const Array<DComplex>&)
+Array<Bool> TableExprNodeRep::hasArrayDComplex (const TableExprId& id,
+						const Array<DComplex>& value)
 {
-    TableExprNode::throwInvDT ("(hasArrayDComplex not implemented)");
-    return Array<Bool>();
+    Array<DComplex> set = getArrayDComplex (id);
+    Array<Bool> result(value.shape());
+    Bool deleteIn, deleteOut;
+    const DComplex* in = value.getStorage (deleteIn);
+    Bool* out = result.getStorage (deleteOut);
+    uInt nval = value.nelements();
+    for (uInt i=0; i<nval; i++) {
+	out[i] = anyEQ (in[i], set);
+    }
+    value.freeStorage (in, deleteIn);
+    result.putStorage (out, deleteOut);
+    return result;
 }
-Array<Bool> TableExprNodeRep::hasArrayString   (uInt, const Array<String>&)
+Array<Bool> TableExprNodeRep::hasArrayString (const TableExprId& id,
+					      const Array<String>& value)
 {
-    TableExprNode::throwInvDT ("(hasArrayString not implemented)");
-    return Array<Bool>();
+    Array<String> set = getArrayString (id);
+    Array<Bool> result(value.shape());
+    Bool deleteIn, deleteOut;
+    const String* in = value.getStorage (deleteIn);
+    Bool* out = result.getStorage (deleteOut);
+    uInt nval = value.nelements();
+    for (uInt i=0; i<nval; i++) {
+	out[i] = anyEQ (in[i], set);
+    }
+    value.freeStorage (in, deleteIn);
+    result.putStorage (out, deleteOut);
+    return result;
 }
-Array<Bool> TableExprNodeRep::hasArrayDate     (uInt, const Array<MVTime>&)
+Array<Bool> TableExprNodeRep::hasArrayDate (const TableExprId& id,
+					    const Array<MVTime>& value)
 {
-    TableExprNode::throwInvDT ("(hasArrayDate not implemented)");
-    return Array<Bool>();
+    Array<MVTime> set = getArrayDate (id);
+    Array<Bool> result(value.shape());
+    Bool deleteIn, deleteOut;
+    const MVTime* in = value.getStorage (deleteIn);
+    Bool* out = result.getStorage (deleteOut);
+    uInt nval = value.nelements();
+    for (uInt i=0; i<nval; i++) {
+	out[i] = anyEQ (in[i], set);
+    }
+    value.freeStorage (in, deleteIn);
+    result.putStorage (out, deleteOut);
+    return result;
 }
 
 

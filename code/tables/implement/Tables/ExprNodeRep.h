@@ -30,6 +30,7 @@
 
 //# Includes
 #include <aips/aips.h>
+#include <aips/Tables/TableExprId.h>
 #include <aips/Tables/ExprRange.h>
 #include <aips/Mathematics/Complex.h>
 #include <aips/Quanta/MVTime.h>
@@ -123,7 +124,7 @@ public:
     enum OperType {OtPlus, OtMinus, OtTimes, OtDivide, OtModulo,
 		   OtEQ, OtGE, OtGT, OtNE, OtIN,
 		   OtAND, OtOR, OtNOT, OtMIN,
-		   OtColumn, OtLiteral, OtFunc, OtSlice, OtUndef,
+		   OtColumn, OtField, OtLiteral, OtFunc, OtSlice, OtUndef,
 	           OtRownr, OtRandom
     };
 
@@ -170,12 +171,12 @@ public:
     // will usually invoke the get in their children and apply the
     // operator on the resulting values.
     // <group>
-    virtual Bool getBool         (uInt rownr);
-    virtual Double getDouble     (uInt rownr);
-    virtual DComplex getDComplex (uInt rownr);
-    virtual String getString     (uInt rownr);
-    virtual Regex getRegex       (uInt rownr);
-    virtual MVTime getDate       (uInt rownr);
+    virtual Bool getBool         (const TableExprId& id);
+    virtual Double getDouble     (const TableExprId& id);
+    virtual DComplex getDComplex (const TableExprId& id);
+    virtual String getString     (const TableExprId& id);
+    virtual Regex getRegex       (const TableExprId& id);
+    virtual MVTime getDate       (const TableExprId& id);
     // </group>
 
     // Get an array value for this node in the given row.
@@ -183,29 +184,30 @@ public:
     // will usually invoke the get in their children and apply the
     // operator on the resulting values.
     // <group>
-    virtual Array<Bool> getArrayBool         (uInt rownr);
-    virtual Array<Double> getArrayDouble     (uInt rownr);
-    virtual Array<DComplex> getArrayDComplex (uInt rownr);
-    virtual Array<String> getArrayString     (uInt rownr);
-    virtual Array<MVTime> getArrayDate       (uInt rownr);
+    virtual Array<Bool> getArrayBool         (const TableExprId& id);
+    virtual Array<Double> getArrayDouble     (const TableExprId& id);
+    virtual Array<DComplex> getArrayDComplex (const TableExprId& id);
+    virtual Array<String> getArrayString     (const TableExprId& id);
+    virtual Array<MVTime> getArrayDate       (const TableExprId& id);
     // </group>
 
     // Does a value occur in an array or set?
+    // The default implementation tests if it is in an array.
     // <group>
-    virtual Bool hasBool     (uInt rownr, Bool value);
-    virtual Bool hasDouble   (uInt rownr, Double value);
-    virtual Bool hasDComplex (uInt rownr, const DComplex& value);
-    virtual Bool hasString   (uInt rownr, const String& value);
-    virtual Bool hasDate     (uInt rownr, const MVTime& value);
-    virtual Array<Bool> hasArrayBool     (uInt rownr,
+    virtual Bool hasBool     (const TableExprId& id, Bool value);
+    virtual Bool hasDouble   (const TableExprId& id, Double value);
+    virtual Bool hasDComplex (const TableExprId& id, const DComplex& value);
+    virtual Bool hasString   (const TableExprId& id, const String& value);
+    virtual Bool hasDate     (const TableExprId& id, const MVTime& value);
+    virtual Array<Bool> hasArrayBool     (const TableExprId& id,
 					  const Array<Bool>& value);
-    virtual Array<Bool> hasArrayDouble   (uInt rownr,
+    virtual Array<Bool> hasArrayDouble   (const TableExprId& id,
 					  const Array<Double>& value);
-    virtual Array<Bool> hasArrayDComplex (uInt rownr,
+    virtual Array<Bool> hasArrayDComplex (const TableExprId& id,
 					  const Array<DComplex>& value);
-    virtual Array<Bool> hasArrayString   (uInt rownr,
+    virtual Array<Bool> hasArrayString   (const TableExprId& id,
 					  const Array<String>& value);
-    virtual Array<Bool> hasArrayDate     (uInt rownr,
+    virtual Array<Bool> hasArrayDate     (const TableExprId& id,
 					  const Array<MVTime>& value);
     // </group>
 
@@ -274,12 +276,12 @@ public:
     const IPosition& shape() const;
 
     // Get the shape for the given row.
-    // It returns the fixed shape if defined, otherwise getShape(rownr).
-    const IPosition& shape (uInt rownr);
+    // It returns the fixed shape if defined, otherwise getShape(id).
+    const IPosition& shape (const TableExprId& id);
 
     // Is the value in the given row defined?
     // The default implementation returns True.
-    virtual Bool isDefined (uInt rownr);
+    virtual Bool isDefined (const TableExprId& id);
 
     // Show the expression tree.
     virtual void show (ostream&, uInt indent) const;
@@ -313,7 +315,7 @@ protected:
     IPosition         shape_p;       //# Fixed shape of node values
 
     // Get the shape for the given row.
-    virtual const IPosition& getShape (uInt rownr);
+    virtual const IPosition& getShape (const TableExprId& id);
 
     // Get pointer to REPresentation object.
     // This is used by derived classes.
