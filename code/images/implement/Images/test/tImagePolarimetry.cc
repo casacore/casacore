@@ -1,5 +1,5 @@
 //# tImagePolarimetry.cc: test ImagePolarimetry class
-//# Copyright (C) 1996,1997,1998,1999
+//# Copyright (C) 1996,1997,1998,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -53,9 +53,14 @@
 #include <iostream.h>
 
 void addNoise (Array<Float>& slice, Normal& noiseGen);
+ImageInterface<Float>* makeQUImage (Double& sigma, Double pa0, Double rm, 
+                                    uInt nchan, Double f0, Double dF);
 void setStokes (ImageInterface<Float>*& pIm, Float i, Float q, Float u, Float v, IPosition shape);
 void setStokes (ImageInterface<Float>*& pIm, uInt stokesAxis, 
-                uInt spectralAxis, Float rm);
+                uInt spectralAxis, Float rm, Float pa0);
+void traditionalRotationMeasure (Double rm, Double rmFg, Double rmMax, Double pa0,
+                                 LogIO& os);
+void fourierRotationMeasure (Double rm, const String& plotter, LogIO& os);
 
 main (int argc, char **argv)
 {
@@ -71,11 +76,13 @@ try {
    inputs.create("rm", "-9999.0", "rm (rad/m/m)");
    inputs.create("rmmax", "-1.0", "rmmax (rad/m/m)");
    inputs.create("rmfg", "0.0", "rmfg (rad/m/m)");
+   inputs.create("pa0", "-20.0", "pa0 (deg)");
    inputs.readArguments(argc, argv);
    const String plotter = inputs.getString("plotter");
    const Double rm = inputs.getDouble("rm");            // rad/m/m
    const Double rmMax = inputs.getDouble("rmmax");            // rad/m/m
    const Double rmFg = inputs.getDouble("rmfg");            // rad/m/m
+   const Double pa0 = inputs.getDouble("pa0");           // deg
 
 //
    LogOrigin or("tImagePolarimetry", "main()", WHERE);
@@ -89,7 +96,6 @@ try {
    Float iVal = sqrt(qVal*qVal + uVal*uVal + vVal*vVal);
 
 // First do what we can without noise
-
    {
      os << LogIO::NORMAL << "Tests with no noise" << LogIO::POST;
      const uInt size = 10;
@@ -102,7 +108,11 @@ try {
      AlwaysAssert(pol.shape()==shape,AipsError);
      AlwaysAssert(pol.coordinates().near(&(pIm->coordinates())),AipsError);
      AlwaysAssert(pol.isMasked()==pIm->isMasked(),AipsError);
-     AlwaysAssert(pol.singleStokesShape().isEqual(shape1),AipsError);
+//
+     CoordinateSystem dCS;
+     IPosition shape2 = pol.singleStokesShape(dCS, Stokes::I);
+     AlwaysAssert(shape2.isEqual(shape1),AipsError);
+//
      pol.summary(os);
      {
         ImageExpr<Float> ie = pol.stokesI();
@@ -248,168 +258,24 @@ try {
      delete pIm;
    }
 
-
 // Fourier Rotation Measure 
 
    {
      os << LogIO::NORMAL << "Test Fourier Rotation Measure" << LogIO::POST;
-//
-     CoordinateSystem cSys;
-     CoordinateUtil::addDirAxes(cSys);
-     Vector<Int> whichStokes(2);
-     whichStokes(0) = Stokes::Q;
-     whichStokes(1) = Stokes::U;
-     StokesCoordinate stc(whichStokes);
-     cSys.addCoordinate(stc);
-
-// Make spectral coordinate with typical ATCA configuration
-
-     const uInt nchan = 256;
-     const Double dF = 16e6;  
-     Double f0 = 5.0e9;
-     Double df = dF / nchan;
-     Double refpix = 0.0;
-     SpectralCoordinate sc(MFrequency::TOPO, f0, df, refpix, f0);
-     cSys.addCoordinate(sc);
-
-// Make Q and U image
-
-     IPosition shape(4,1,1,2,nchan);
-     ImageInterface<Float>* pIm = new TempImage<Float>(shape, cSys);
-//
-     uInt stokesAxis = 2;
-     uInt spectralAxis = 3;
-
-// Fill image with Q and U. If RM not given, pick middle of range
-
-     Double fc = f0 + -df/2.0 + dF/2.0;
-     Double lambdac = QC::c.getValue(Unit("m/s")) / fc;
-     const Float drm = C::pi * fc / 2.0 / lambdac / lambdac / dF;
-     Float rm0 = rm;
-     if (rm0==-9999.0) {
-        rm0 = nchan / 4 * drm;
-     }
-     cout << "rm=" << rm0 << " rad/m/m" << endl;
-     setStokes(pIm, stokesAxis, spectralAxis, rm0);
-
-// Make IP object and find complex polarization as a function
-// of rotation measure
-
-     ImagePolarimetry pol(*pIm);
-     IPosition shape1 = pol.singleStokesShape();
-     TempImage<Complex> polFFT(shape1, cSys);
-     pol.fourierRotationMeasure(polFFT, False);       
-
-// Where do we expect peak ?
-
-     const CoordinateSystem& cSys2 = polFFT.coordinates();
-     Double rminc = cSys2.increment()(spectralAxis);           
-     Double rmrefpix = cSys2.referencePixel()(spectralAxis);      
-
-     Int idx = floor((rm0 + rminc/2) / rminc + rmrefpix);
-     cout << "Expect signal in channel " << idx << endl;
-
-// Make sure peak in correct place of amplitude spectrum
-
-     LatticeExprNode node(abs(polFFT));
-     LatticeExpr<Float> le(node);
-     ImageExpr<Float> ie(le,"");
-     Vector<Float> amp = ie.get().reform(IPosition(1,nchan));
-//
-     IPosition minPos(1), maxPos(1);
-     Float minVal, maxVal;
-     minMax(minVal, maxVal, minPos, maxPos, amp);
-     cout << "Maximum signal  in channel " << maxPos(0) << endl;
-     AlwaysAssert(maxPos(0)==idx, AipsError);
-
-// Make a nice plot
-
-     if (!plotter.empty()) {
-       Vector<Float> rms(nchan);
-       const Coordinate& coord = cSys2.coordinate(2);
-       Vector<Double> w, p(1);
-       for (uInt i=0; i<nchan; i++) {
-         p(0) = Double(i);
-         coord.toWorld(w, p);
-         rms(i) = w(0);
-       }
-//
-       PGPlotter pl(plotter);
-       pl.env(rms(0), rms(nchan-1), minVal, maxVal, 0, 0);
-       pl.line(rms, amp);
-     }
-     delete pIm;
+     fourierRotationMeasure(rm, plotter, os);
    }
-
 
 // Traditional rotation measure
 
    {
      os << LogIO::NORMAL << "Test traditional Rotation Measure" << LogIO::POST;
-
-     CoordinateSystem cSys;
-     CoordinateUtil::addDirAxes(cSys);
-     Vector<Int> whichStokes(2);
-     whichStokes(0) = Stokes::Q;
-     whichStokes(1) = Stokes::U;
-     StokesCoordinate stc(whichStokes);
-     cSys.addCoordinate(stc);
-
-// Make spectral coordinate with typical ATCA configuration
-
-     const uInt nchan = 32;
-     const Double dF = 128e6;
-     Double f0 = 1.4e9;
-     Double df = dF / nchan;
-     Double refpix = 0.0;
-     SpectralCoordinate sc(MFrequency::TOPO, f0, df, refpix, f0);
-     cSys.addCoordinate(sc);
-
-// Make Q and U image
-
-     IPosition shape(4,1,1,2,nchan);
-     ImageInterface<Float>* pIm = new TempImage<Float>(shape, cSys);
+     traditionalRotationMeasure(rm, rmFg, rmMax, pa0, os);
 //
-     uInt stokesAxis = 2;
-     uInt spectralAxis = 3;
-
-// Fill image with Q and U. If RM not given, choose so no ambiguity
-// between channels
-
-     Float rm0 = rm;
-     Double l1, l2;
-     if (rm0==-9999.0) {
-        l1 = QC::c.getValue(Unit("m/s")) / f0;
-        l2 = QC::c.getValue(Unit("m/s")) / (f0+dF);
-        rm0 = C::pi / 2 / (l1*l1 - l2*l2);
+     Double rm0 = 10000.0;
+     Double dRm = rm0 / 9.0;
+     for (Double x=-rm0; x<rm0; x+=dRm) {
+        traditionalRotationMeasure(x, rmFg, x, pa0, os);
      }
-     cout << "rm=" << rm0 << " rad/m/m" << endl;
-     setStokes(pIm, stokesAxis, spectralAxis, rm0);
-
-// Add some noise or fitting won't work
-
-     Array<Float> slice = pIm->get();
-     Float maxVal = max(slice);
-     MLCG gen;
-     Double sigma = 0.0001 * maxVal;
-     Normal noiseGen(0.0, sigma*sigma, &gen);
-     addNoise(slice, noiseGen);
-     pIm->put(slice);
-
-// Find rm and rmerror images
-
-     ImagePolarimetry pol(*pIm);
-     IPosition shape1;
-     CoordinateSystem cSys2;
-     uInt fAxis, sAxis;
-     pol.rotationMeasureShape(shape1, cSys2, fAxis, sAxis, os, spectralAxis);
-     cout << "faxis, saxis = " << fAxis << ", " << sAxis << endl;
-     TempImage<Float> rmout(shape1, cSys2);
-     TempImage<Float> rmerrout(shape1, cSys2);
-//
-//     pol.rotationMeasure(rmout, rmerrout, -1, -1.0, Float(rmFg), Float(rmMax), C::pi);
-//     cout << "rm=" << rmout.get() << endl;
-     delete pIm;
    }
 
 
@@ -452,7 +318,7 @@ void setStokes (ImageInterface<Float>*& pIm, Float i, Float q, Float u, Float v,
 
 
 void setStokes (ImageInterface<Float>*& pIm, uInt stokesAxis, 
-                uInt spectralAxis, Float rm)
+                uInt spectralAxis, Float rm, Float pa0)
 {
 
 // Find spectral coordinate
@@ -482,7 +348,7 @@ void setStokes (ImageInterface<Float>*& pIm, uInt stokesAxis,
       Double fac = c / freq.get(Unit("Hz")).getValue();
       lambdasq = fac*fac;
 //
-      Double chi = rm*lambdasq;
+      Double chi = rm*lambdasq + pa0;
       Double q = cos(2*chi);
       Double u = sin(2*chi);
 //
@@ -504,4 +370,199 @@ void setStokes (ImageInterface<Float>*& pIm, uInt stokesAxis,
         subImage.set(u);
       }
    }
+}
+
+
+
+ImageInterface<Float>* makeQUImage (Double& sigma, Double pa0, Double rm,
+                                    uInt nchan, Double f0, Double dF)
+{
+   CoordinateSystem cSys;
+   CoordinateUtil::addDirAxes(cSys);
+   Vector<Int> whichStokes(2);
+   whichStokes(0) = Stokes::Q;
+   whichStokes(1) = Stokes::U;
+   StokesCoordinate stc(whichStokes);
+   cSys.addCoordinate(stc);
+
+// Make spectral coordinate 
+
+   Double df = dF / (nchan-1);
+   Double refpix = 0.0;
+   SpectralCoordinate sc(MFrequency::TOPO, f0, df, refpix, f0);
+   cSys.addCoordinate(sc);
+
+// Make Q and U image
+
+   IPosition shape(4,1,1,2,nchan);
+   ImageInterface<Float>* pIm = new TempImage<Float>(shape, cSys);
+//
+   uInt stokesAxis = 2;
+   uInt spectralAxis = 3;
+
+// Fill image with Q and U. If RM not given, choose so no ambiguity
+// between channels
+
+   setStokes(pIm, stokesAxis, spectralAxis, rm, pa0);
+
+// Add some noise or fitting won't work
+
+   Array<Float> slice = pIm->get();
+   Float maxVal = max(slice);
+   MLCG gen;
+   sigma = 0.0001 * maxVal;
+   Normal noiseGen(0.0, sigma*sigma, &gen);
+   addNoise(slice, noiseGen);
+   pIm->put(slice);
+//
+   return pIm;
+}
+
+
+void traditionalRotationMeasure (Double rm, Double rmFg, Double rmMax, 
+                                 Double pa0, LogIO& os)
+{
+
+// Make image with Q and U
+
+   const Double f0 = 1.4e9;
+   const Double dF = 128e6;
+   const uInt nchan = 32;
+
+// If RM not given, choose so no ambiguity between channels
+     
+   if (rm==-9999.0) {
+      Double l1 = QC::c.getValue(Unit("m/s")) / f0;
+      Double l2 = QC::c.getValue(Unit("m/s")) / (f0+dF);
+      rm = C::pi / 2 / (l1*l1 - l2*l2);
+   }
+   if (rmMax<0) rmMax = rm;
+   os << "rm, rmMax, rmFg, pa0 = " << rm << ", " << rmMax << ", " << rmFg << ", " << pa0 << LogIO::POST;
+   Double sigma;
+   pa0 *= C::pi/180.0;  // rad
+   ImageInterface<Float>* pIm = makeQUImage(sigma, pa0, rm, nchan, f0, dF);
+
+// Find rm, pa0 and error images
+
+   ImagePolarimetry pol(*pIm);
+   CoordinateSystem cSysRM;
+   Int fAxis, sAxis;
+   IPosition shapeRM = pol.rotationMeasureShape(cSysRM, fAxis, sAxis, os, -1);
+   ImageInterface<Float>* pRMOut = new TempImage<Float>(shapeRM, cSysRM);
+   ImageInterface<Float>* pRMErrOut = new TempImage<Float>(shapeRM, cSysRM);
+//
+   CoordinateSystem cSysPA;
+   IPosition shapePA = pol.positionAngleShape(cSysPA, fAxis, sAxis, os, -1);
+   ImageInterface<Float>* pPA0Out = new TempImage<Float>(shapePA, cSysPA);
+   ImageInterface<Float>* pPA0ErrOut = new TempImage<Float>(shapePA, cSysPA);
+//
+   Double maxPaErr = C::pi;
+   pol.rotationMeasure(pRMOut, pRMErrOut, pPA0Out, pPA0ErrOut, -1, 
+                       Float(rmMax), maxPaErr, Float(sigma), Float(rmFg));
+   delete pIm;
+//
+   IPosition posRM(shapeRM.nelements(),0);
+   Float rmFitted = pRMOut->get()(posRM);
+   Float rmFittedError = pRMErrOut->get()(posRM);
+//
+   IPosition posPA(shapePA.nelements(),0);
+   Float pa0Fitted = pPA0Out->get()(posPA);
+   Float pa0FittedError = pPA0ErrOut->get()(posPA);
+
+   pa0 *= 180.0 / C::pi;
+//
+   os << "Actual rm, pa0 = " << rm << " rad/m/m, " << pa0 << " deg" << endl;
+   os << "Fitted rm, error = " << rmFitted << ", " << rmFittedError << " rad/m/m/" << endl;
+   os << "Fitted pa0, error = " << pa0Fitted << ", " << pa0FittedError << " deg" << LogIO::POST;
+
+//
+   Float diff = abs(rmFitted-rm);
+   if (! (diff < 3.0*rmFittedError)) {
+      os << "Fitted Rotation Measure is wrong" << LogIO::EXCEPTION;
+   }
+   diff = abs(pa0Fitted-pa0);
+   if (! (diff < 3.0*pa0FittedError)) {
+      diff = abs(pa0Fitted-180.0-pa0);
+      if (! (diff < 3.0*pa0FittedError)) {
+         os << "Fitted position angle is wrong" << LogIO::EXCEPTION;
+      }
+   }
+//
+   delete pRMOut;  
+   delete pRMErrOut;
+   delete pPA0Out;
+   delete pPA0ErrOut;
+}
+
+
+void fourierRotationMeasure (Double rm, const String& plotter, LogIO& os)
+{
+
+// Make image with Q and U
+
+     uInt nchan = 256;
+     Double f0 = 5.0e9;
+     Double dF = 16e6;
+     Double pa0 = 0.0;
+     Double df = dF / (nchan-1);
+
+// If RM not given, pick middle of range
+
+     if (rm==-9999.0) {
+        Double fc = f0 + -df/2.0 + dF/2.0;
+        Double lambdac = QC::c.getValue(Unit("m/s")) / fc;
+        const Float drm = C::pi * fc / 2.0 / lambdac / lambdac / dF;
+        rm = nchan / 4 * drm;
+     }
+     Double sigma;
+     ImageInterface<Float>* pIm = makeQUImage(sigma, pa0, rm, nchan, f0, dF);
+     Int spectralAxis = CoordinateUtil::findSpectralAxis(pIm->coordinates());
+
+// Do it
+
+     ImagePolarimetry pol(*pIm);
+     CoordinateSystem cSys;
+     IPosition shape1 = pol.singleStokesShape(cSys, Stokes::Plinear);
+     TempImage<Complex> polFFT(shape1, cSys);
+     pol.fourierRotationMeasure(polFFT, False);       
+
+// Where do we expect peak ?
+
+     const CoordinateSystem& cSys2 = polFFT.coordinates();
+     Double rminc = cSys2.increment()(spectralAxis);           
+     Double rmrefpix = cSys2.referencePixel()(spectralAxis);      
+     Int idx = ifloor((rm + rminc/2) / rminc + rmrefpix);
+
+// Make sure peak in correct place of amplitude spectrum
+
+     LatticeExprNode node(abs(polFFT));
+     LatticeExpr<Float> le(node);
+     ImageExpr<Float> ie(le,"");
+     Vector<Float> amp = ie.get().reform(IPosition(1,nchan));
+//
+     IPosition minPos(1), maxPos(1);
+     Float minVal, maxVal;
+     minMax(minVal, maxVal, minPos, maxPos, amp);
+//
+     os << "Expect signal in channel " << idx << endl;
+     os << "Maximum signal  in channel " << maxPos(0) << LogIO::POST;
+     AlwaysAssert(maxPos(0)==idx, AipsError);
+
+// Make a nice plot
+
+     if (!plotter.empty()) {
+       Vector<Float> rms(nchan);
+       const Coordinate& coord = cSys2.coordinate(2);
+       Vector<Double> w, p(1);
+       for (uInt i=0; i<nchan; i++) {
+         p(0) = Double(i);
+         coord.toWorld(w, p);
+         rms(i) = w(0);
+       }
+//
+       PGPlotter pl(plotter);
+       pl.env(rms(0), rms(nchan-1), minVal, maxVal, 0, 0);
+       pl.line(rms, amp);
+     }
+     delete pIm;
 }
