@@ -1,5 +1,5 @@
 //# TwoSidedShape.cc:
-//# Copyright (C) 1999,2000
+//# Copyright (C) 1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -215,7 +215,16 @@ Bool TwoSidedShape::fromRecord(String& errorMessage,
     return False;
   }
   const Unit rad("rad");
-  if (majorAxis.getValue(rad) < minorAxis.getValue(rad)) {
+  const Double majorAxisInRad = majorAxis.getValue(rad);
+  const Double minorAxisInRad = minorAxis.getValue(rad);
+//   // The near function is necessary for Intel processors (and doesn't hurt for
+//   // other architectures) because of the extra precision that floating point
+//   // variables have when returned in floating point registers. See
+//   // http://aips2.nrao.edu/mail/aips2-lib/1101 for a discussion of this. The
+//   // near function was added here and in the setMinorAxis function to fix
+//   // defect AOCso00071
+  if (majorAxisInRad < minorAxisInRad && 
+      !near(minorAxisInRad, minorAxisInRad, C::dbl_epsilon)) {
     errorMessage += "The major axis cannot be smaller than the minor axis\n";
     return False;
   }
