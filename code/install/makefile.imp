@@ -273,6 +273,17 @@ $(DOCSAREA)/%.gif : $(CODEDIR)/%.gif
 	  cp $< $@
 	@ chmod 664 $@
 
+moc_%.cc: %.h 
+	$(MOC) $< -o $@
+
+$(PCKGOPTD)/moc_%.o : $(CODEDIR)/%.h
+	$(MOC) $< -o $(basename $(@F)).cc
+	cd $(PCKGOPTD) && $(C++) $(CPPOPT) $(AIPSINCL) -I. $(C++OPT) -c $(CODEDIR)/$(basename $(@F)).cc
+
+$(PCKGDBGD)/moc_%.o : $(CODEDIR)/%.h
+	$(MOC) $< -o $(basename $(@F)).cc
+	cd $(PCKGDBGD) && $(C++) $(CPPDBG) $(AIPSINCL) -I. $(C++OPT) -c $(CODEDIR)/$(basename $(@F)).cc
+
 
 # Programmer-oriented pattern rules.
 ifeq "$(MAKEMODE)" "programmer"
@@ -380,9 +391,9 @@ endif
 .PRECIOUS : %.lcc %.ycc $(LIBDBG) $(LIBOPT) \
     $(PCKGDBGD)/%.lcc $(PCKGDBGD)/%.ycc $(PCKGOPTD)/%.lcc $(PCKGOPTD)/%.ycc 
 
-.PHONY : build_lock exorcise lib instsys ranlib updatelib version
+.PHONY : build_lock exorcise lib instsys ranlib updatelib version mocs
 
-allsys : $(CODESUBS) $(LIB)
+allsys : $(CODESUBS) $(LIB) mocs
 
 ifneq "$(AIPSINST)" ""
    chkout : $(CODEDIR)/tmplinst
@@ -477,7 +488,7 @@ $(LIBOPTD)/version.o : $(AIPSCODE)/VERSION
 	   $(RM) version.cc
 	-@ $(TIMER)
 
-updatelib :
+updatelib : 
 	 @ echo "" ; updatelib $(PACKAGE)
 	-@ $(RM) -f $(PCKGDBGD)/*.[ly]cc $(PCKGOPTD)/*.[ly]cc 
 
@@ -544,7 +555,7 @@ ifeq "$(MAKEMODE)" "programmer"
                $(PGMRINCD)/%.lcc $(PGMRINCD)/%.ycc
 
    .PHONY : %.d depend dependencies inst mylib mylibs update_mylib \
-            update_mylibs
+            update_mylibs mocs
 
    all : $(PGMRINST) $(PGMRIMPS:%.cc=$(PGMRLIBR)(%.o)) update_mylib
 
@@ -633,7 +644,7 @@ ifeq "$(MAKEMODE)" "programmer"
 	     $(MAKE) -C $$i $@ ; \
 	  done
 
-   mylib : $(PGMRINST) $(PGMRLIBR) ;
+   mylib : $(PGMRINST) $(PGMRLIBR);
 
    inst : tmplinst FORCE
 	 @ $(MAKE) -f $(THISDIR)/makefile -C $< all
@@ -654,9 +665,9 @@ ifeq "$(MAKEMODE)" "programmer"
    $(PGMRLIBR) : $(PGMRIMPS:%.cc=$(PGMRLIBR)(%.o)) \
                  $(AIPSIMPS:%.cc=$(PGMRLIBR)(%.o)) update_mylib ;
 
-   update_mylib :
+   update_mylib : mocs
 	@ cd $(PGMRLIBD) ; \
-	  PGMROBJS="$(sort $(PGMRIMPS:%.cc=%.o) $(AIPSIMPS:%.cc=%.o))" ; \
+	  PGMROBJS="$(sort $(PGMRIMPS:%.cc=%.o) $(AIPSIMPS:%.cc=%.o)) moc_*.o" ; \
 	  [ "$$PGMROBJS" != "" ] && PGMROBJS=`ls $$PGMROBJS 2>/dev/null` ; \
 	  if [ "$$PGMROBJS" != "" ] ; then \
 	     $(CXXAR) $(CXXARFLAGS) $(PGMRLIBR) $$PGMROBJS ; \
