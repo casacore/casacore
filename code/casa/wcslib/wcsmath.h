@@ -1,6 +1,6 @@
 /*============================================================================
 *
-*   WCSLIB 3.2 - an implementation of the FITS WCS convention.
+*   WCSLIB 3.3 - an implementation of the FITS WCS convention.
 *   Copyright (C) 1995-2003, Mark Calabretta
 *
 *   This library is free software; you can redistribute it and/or modify it

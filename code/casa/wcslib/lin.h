@@ -1,6 +1,6 @@
 /*============================================================================
 *
-*   WCSLIB 3.2 - an implementation of the FITS WCS convention.
+*   WCSLIB 3.3 - an implementation of the FITS WCS convention.
 *   Copyright (C) 1995-2003, Mark Calabretta
 *
 *   This library is free software; you can redistribute it and/or modify it
@@ -27,7 +27,7 @@
 *
 *=============================================================================
 *
-*   WCSLIB 3.2 - C routines that implement the FITS World Coordinate System
+*   WCSLIB 3.3 - C routines that implement the FITS World Coordinate System
 *   (WCS) convention.  Refer to
 *
 *      "Representations of world coordinates in FITS",
@@ -409,8 +409,8 @@ struct linprm {
 
 
 /* Define macros for scalar invokation for compatibility with WCSLIB 2.x. */
-#define linrev_errmsg lin_errmsg;
-#define linfwd_errmsg lin_errmsg;
+#define linrev_errmsg lin_errmsg
+#define linfwd_errmsg lin_errmsg
 #define linrev(pixcrd, lin, imgcrd) linp2x(lin, 1, 1, pixcrd, imgcrd)
 #define linfwd(imgcrd, lin, pixcrd) linx2p(lin, 1, 1, imgcrd, pixcrd)
 

@@ -1,6 +1,6 @@
 /*============================================================================
 *
-*   WCSLIB 3.2 - an implementation of the FITS WCS convention.
+*   WCSLIB 3.3 - an implementation of the FITS WCS convention.
 *   Copyright (C) 1995-2003, Mark Calabretta
 *
 *   This library is free software; you can redistribute it and/or modify it
@@ -184,6 +184,7 @@ struct celprm *cel;
       /* Set default for longitude of the celestial pole. */
       if (dophip) {
          cel->ref[2] = (cel->ref[1] < cel->theta0) ? 180.0 : 0.0;
+         cel->ref[2] += cel->phi0;
       }
 
       clat0 = cosd(cel->ref[1]);

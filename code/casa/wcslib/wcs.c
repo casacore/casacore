@@ -1,6 +1,6 @@
 /*============================================================================
 *
-*   WCSLIB 3.2 - an implementation of the FITS WCS convention.
+*   WCSLIB 3.3 - an implementation of the FITS WCS convention.
 *   Copyright (C) 1995-2003, Mark Calabretta
 *
 *   This library is free software; you can redistribute it and/or modify it
@@ -502,6 +502,11 @@ const struct wcsprm *wcs;
 
    if (wcs == 0) return 1;
 
+   if (wcs->flag != WCSSET) {
+      printf("The wcsprm struct is UNINITIALIZED.\n");
+      return 0;
+   }
+
    printf("       flag: %d\n", wcs->flag);
    printf("      naxis: %d\n", wcs->naxis);
    printf("      crpix: 0x%x\n", (int)wcs->crpix);
@@ -677,9 +682,6 @@ struct wcsprm *wcs;
          if (strncmp(ctypei+5, spc_codes[k], 3) == 0) {
             /* Parse the spectral axis type. */
             wcs->spec = i;
-
-            sprintf(wcsspc->type, "%.4s", ctypei);
-            sprintf(wcsspc->code, "%.3s", ctypei+5);
             break;
          }
       }
@@ -851,6 +853,9 @@ struct wcsprm *wcs;
    /* Spectral axis present? */
    if (wcs->spec >= 0) {
       spcini(wcsspc);
+
+      sprintf(wcsspc->type, "%.4s", wcs->ctype[wcs->spec]);
+      sprintf(wcsspc->code, "%.3s", wcs->ctype[wcs->spec]+5);
 
       /* CRVALi, RESTFRQ, and RESTWAV cards. */
       wcsspc->crval = wcs->crval[wcs->spec];

@@ -1,6 +1,6 @@
 /*============================================================================
 *
-*   WCSLIB 3.2 - an implementation of the FITS WCS convention.
+*   WCSLIB 3.3 - an implementation of the FITS WCS convention.
 *   Copyright (C) 1995-2003, Mark Calabretta
 *
 *   This library is free software; you can redistribute it and/or modify it
@@ -283,6 +283,11 @@ const struct linprm *lin;
 
    if (lin == 0) return 1;
 
+   if (lin->flag != LINSET) {
+      printf("The linprm struct is UNINITIALIZED.\n");
+      return 0;
+   }
+
    printf("       flag: %d\n", lin->flag);
    printf("      naxis: %d\n", lin->naxis);
    printf("      crpix: 0x%x\n", (int)lin->crpix);
@@ -307,7 +312,7 @@ const struct linprm *lin;
    for (i = 0; i < lin->naxis; i++) {
       printf("  %- 11.4g", lin->cdelt[i]);
    }
-   printf("\n\n");
+   printf("\n");
 
    printf("      unity: %d\n", lin->unity);
 

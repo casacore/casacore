@@ -1,6 +1,6 @@
 /*============================================================================
 *
-*   WCSLIB 3.2 - an implementation of the FITS WCS convention.
+*   WCSLIB 3.3 - an implementation of the FITS WCS convention.
 *   Copyright (C) 1995-2003, Mark Calabretta
 *
 *   This library is free software; you can redistribute it and/or modify it
@@ -27,7 +27,7 @@
 *
 *=============================================================================
 *
-*   WCSLIB 3.2 - C routines that implement the FITS World Coordinate System
+*   WCSLIB 3.3 - C routines that implement the FITS World Coordinate System
 *   (WCS) convention.  Refer to
 *
 *      "Representations of world coordinates in FITS",
@@ -363,7 +363,7 @@ struct celprm {
                                 /* point and native coordinates of          */
                                 /* celestial pole.                          */
 
-   struct prjprm prj;		/* Projection parameters (see prj.c).       */
+   struct prjprm prj;		/* Projection parameters (see prj.h).       */
 
    /* Information derived from the parameters supplied.                     */
    /*-----------------------------------------------------------------------*/
