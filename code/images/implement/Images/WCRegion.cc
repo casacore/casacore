@@ -1,5 +1,5 @@
 //# WCRegion.cc: Class to define a region of interest in an image
-//# Copyright (C) 1998,2000,2001
+//# Copyright (C) 1998,2000,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -24,6 +24,7 @@
 //#                        Charlottesville, VA 22903-2475 USA
 //#
 //# $Id$
+
 
 #include <trial/Images/WCRegion.h>
 #include <trial/Lattices/RegionType.h>
@@ -263,6 +264,8 @@ void WCRegion::makeWorldAbsolute (Vector<Double>& world,
 {
 // For values that are already absolute, temporarily use rel = 0
 // The absrel vector may have any length from 0 to nWorld
+// Any relative values may be relative to ref val or image centre
+// First deal with relative to reference value
 
    Vector<Int> ar(world.nelements());   
    const uInt nAR = absRel.nelements();
@@ -274,7 +277,6 @@ void WCRegion::makeWorldAbsolute (Vector<Double>& world,
       } else {
          ar(i) = RegionType::Abs;
       }
-//
       if (ar(i) == RegionType::Abs) t(i) = 0.0;
    }
    Vector<Double> t2(t.copy());
@@ -283,9 +285,8 @@ void WCRegion::makeWorldAbsolute (Vector<Double>& world,
 
    cSys.makeWorldAbsolute(t);
 
-// Convert to absolute at image centre
+// Now deal with relative to the image centre
 
-   CoordinateSystem cSys2(cSys);
    Vector<Double> p(shape.nelements());
    for (uInt i=0; i<shape.nelements(); i++) {  
       if (shape(i)==1) {
@@ -295,13 +296,12 @@ void WCRegion::makeWorldAbsolute (Vector<Double>& world,
       }
    }
    Vector<Double> w;
-   if (!cSys2.toWorld(w,p)) {
-      throw (AipsError (cSys2.errorMessage()));
+   if (!cSys.toWorld(w,p)) {
+      throw (AipsError (cSys.errorMessage()));
    }
-   if (!cSys2.setReferenceValue(w)) {
-      throw (AipsError (cSys2.errorMessage()));
-   }
-   cSys2.makeWorldAbsolute(t2);
+
+// Make absolute w.r.t. the reference location in 'w'
+   cSys.makeWorldAbsolute(t2, w);
 
 // Overwrite result for relative values.
 
