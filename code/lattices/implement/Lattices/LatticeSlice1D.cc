@@ -100,7 +100,7 @@ LatticeSlice1D<T>& LatticeSlice1D<T>::operator=(const LatticeSlice1D<T>& other)
 template<class T>
 void LatticeSlice1D<T>::getSlice (Vector<T>& data, Vector<Bool>& mask,
                                   const PixelCurve1D& curve, uInt axis0, uInt axis1,
-                                  const IPosition& blc, const IPosition& trc)
+                                  const IPosition& coord)
 {
    AlwaysAssert(itsLatticePtr, AipsError);
 
@@ -109,8 +109,8 @@ void LatticeSlice1D<T>::getSlice (Vector<T>& data, Vector<Bool>& mask,
 
    itsAxis0 = axis0;
    itsAxis1 = axis1;
-   IPosition blcFull(blc), trcFull(trc);
-   checkCurve (blcFull, trcFull, curve);
+   IPosition blcFull, trcFull;
+   checkCurve (blcFull, trcFull, coord, curve);
 
 // Get Slice
 
@@ -169,17 +169,14 @@ void LatticeSlice1D<T>::getPosition (uInt& axis0, uInt& axis1,
 
 template<class T>
 void LatticeSlice1D<T>::checkCurve (IPosition& blc, IPosition& trc, 
-                                    const PixelCurve1D& curve)
+                                    const IPosition& coord, const PixelCurve1D& curve)
 {
 
 // Check
 
    const uInt nDim = itsLatticePtr->ndim();
-   if (blc.nelements() != nDim) {
-      throw(AipsError("blc must be of length number of image dimensions"));
-   }
-   if (trc.nelements() != nDim) {
-      throw(AipsError("trc must be of length number of image dimensions"));
+   if (coord.nelements() != nDim) {
+      throw(AipsError("coord must be of length number of image dimensions"));
    }
 
 // Check curve in domain of lattice [-0.5 -> shape-0.5]
@@ -194,21 +191,21 @@ void LatticeSlice1D<T>::checkCurve (IPosition& blc, IPosition& trc,
       throw(AipsError("x or y end of curve falls outside of lattice"));
    }
 
-// Set plane blc/trc
+// Fill in the blc/trc for the slice
 
-   blc(itsAxis0) = 0;
-   blc(itsAxis1) = 0;
-   trc(itsAxis0) = shape(itsAxis0) - 1;
-   trc(itsAxis1) = shape(itsAxis1) - 1;
-
-// Presently the blc and trc must be in a plane
-
-   uInt n = 0;
+   blc.resize(nDim);
+   trc.resize(nDim);
    for (uInt i=0; i<shape.nelements(); i++) {
-      if (trc(i)-blc(i) > 0) n++;
-   }
-   if (n > 2) {
-      throw (AipsError("blc & trc must lie in a plane"));
+      if (i==itsAxis0) {
+         blc(i) = 0;
+         trc(i) = shape(itsAxis0) - 1;
+      } else if (i==itsAxis1) {
+         blc(i) = 0;
+         trc(i) = shape(itsAxis1) - 1;
+      } else {
+        blc(i) = coord(i);
+        trc(i) = coord(i);
+      }
    }
 }
 

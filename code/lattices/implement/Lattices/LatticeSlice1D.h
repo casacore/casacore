@@ -112,16 +112,15 @@ public:
    LatticeSlice1D<T>& operator=(const LatticeSlice1D<T> &other);
 
 // Get 1-D slice.  PixelCurve1D supplies the locus of the slice in
-// the plane specified by axis0 and axis1.  The rest of the 
-// slice is supplied in the blc & trc.  The slice must lie in a 
-// cardinal axis plane.
+// the plane specified by axis0 and axis1.  The pixel coordinate for
+// the rest of the lattice is specified in <src>coord</src>.
    void getSlice (Vector<T>& data, Vector<Bool>& mask,
                   const PixelCurve1D& curve, uInt axis0, uInt axis1,
-                  const IPosition& blc, const IPosition& trc);
+                  const IPosition& coord);
 
-// Get 1-D slice between blc & trc. Start and end points must be in a cardinal plane 
-// of the lattice.  If nPts is 0 it is set automatically to
-// the length of the slice.   The slice must lie in a cardinal axis plane.
+// Get 1-D slice between blc & trc. These start and end points must be 
+// in a cardinal plane of the lattice.  If nPts is 0 it is set automatically to
+// the length of the slice.   
    void getSlice (Vector<T>& data, Vector<Bool>& mask,
                   const IPosition& blc, const IPosition& trc, uInt nPts=0);
 
@@ -137,8 +136,8 @@ public:
 
 private:
 // Check the suppliec curve is valid.
-   void checkCurve (IPosition& blc, IPosition& trc,
-                    const PixelCurve1D& curve);
+   void checkCurve (IPosition& blc, IPosition& trc, 
+                    const IPosition& coord, const PixelCurve1D& curve);
 // Find the slice plane.
    void findPlane (const IPosition& blc,
                    const IPosition& trc);
