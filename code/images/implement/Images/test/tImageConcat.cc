@@ -1,4 +1,4 @@
-//# tLatticeConcat.cc: This program tests the LatticeConcat class
+//# tImageConcat.cc: This program tests the ImageConcat class
 //# Copyright (C) 1996,1997,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -32,6 +32,7 @@
 #include <aips/Arrays/ArrayMath.h>
 #include <aips/Exceptions/Error.h>
 #include <aips/Exceptions/Excp.h>
+#include <aips/IO/FileLocker.h>
 #include <aips/Lattices/Slicer.h>
 #include <aips/Lattices/IPosition.h>
 #include <aips/Mathematics/Math.h>
@@ -95,7 +96,7 @@ int main() {
 
 // Concatenate along axis 0
 
-         ImageConcat<Float> lc (0, False);
+         ImageConcat<Float> lc (0);
          lc.setImage(im1, True);
          lc.setImage(im2, True);
 
@@ -113,9 +114,10 @@ int main() {
                                "tImageConcat_tmp3.img");
          makeMask(ml3, True, False);
 
-// Do it
+// Copy to output
 
-         lc.copyData(ml3);
+         ml3.copyData(lc);
+         ml3.putMask(lc.getMask());
 
 // Check values
 
@@ -128,7 +130,7 @@ int main() {
 
 // Concatenate along axis 1
 
-         ImageConcat<Float> lc (1, False);
+         ImageConcat<Float> lc (1);
          lc.setImage(im1, True);
          lc.setImage(im2, True);
 
@@ -146,9 +148,10 @@ int main() {
                                "tImageConcat_tmp3.img");
          makeMask(ml3, True, False);
 
-// Do it
+// Copy to output
 
-         lc.copyData(ml3);
+         ml3.copyData(lc);
+         ml3.putMask(lc.getMask());
 
 // Check values
 
@@ -161,7 +164,7 @@ int main() {
 
 // Concatenate along axis 0
 
-         ImageConcat<Float> lc (0, False);
+         ImageConcat<Float> lc (0);
          lc.setImage(im1, True);
          lc.setImage(im2, True);
          lc.setLattice(ml1);
@@ -180,9 +183,10 @@ int main() {
                                "tImageConcat_tmp3.img");
          makeMask(ml3, True, False);
 
-// Do it
+// Copy to output
 
-         lc.copyData(ml3);
+         ml3.copyData(lc);
+         ml3.putMask(lc.getMask());
 
 // Check values
 
@@ -214,7 +218,7 @@ int main() {
 
 // Concatenate along axis 0
 
-         ImageConcat<Float> lc (0, False);
+         ImageConcat<Float> lc (0);
          lc.setImage(si1, False);
          lc.setImage(si2, False);
          lc.setImage(si3, False);
@@ -231,96 +235,37 @@ int main() {
          PagedImage<Float> ml4(outShape, CoordinateUtil::defaultCoords2D(),
                                "tImageConcat_tmp4.img");
 
-// Do it
+// Copy to output
 
-         lc.copyData(ml4);
+         ml4.copyData(lc);
 
 // Check values
 
          check (0, ml4, si1, si2, si3);
       }
 
+// Test lock etc
+            
+     {
+         cout << "Testing locking" << endl;
+         ImageConcat<Float> lc2 (0);
+         lc2.setImage(im1, True);
+         lc2.setImage(im2, True);
+         AlwaysAssert(lc2.lock(FileLocker::Read, 1), AipsError);
+         AlwaysAssert(lc2.hasLock(FileLocker::Read), AipsError);
+         AlwaysAssert(lc2.lock(FileLocker::Write, 1), AipsError);
+         AlwaysAssert(lc2.hasLock(FileLocker::Write), AipsError);
+         lc2.unlock();
+         AlwaysAssert(!lc2.hasLock(FileLocker::Read), AipsError);
+         AlwaysAssert(!lc2.hasLock(FileLocker::Write), AipsError);
+     }
 
-
-
-// Test setAxis
-
-      {
-         cout << "Test setAxis" << endl;
-
-         ImageConcat<Float> lc (0, False);
-         lc.setImage(im1, True);
-         lc.setImage(im2, True);
-         lc.setAxis(1, True);
-
-// Find output shape
-
-         IPosition outShape = lc.shape();
-         AlwaysAssert(outShape.nelements()==2, AipsError);
-         AlwaysAssert(outShape(0)==shape(0), AipsError);
-         AlwaysAssert(outShape(1)==shape(1)+shape(1), AipsError);
-
-// Make output
-
-         PagedImage<Float> ml3(outShape, CoordinateUtil::defaultCoords2D(),
-                               "tImageConcat_tmp3.img");
-         makeMask(ml3, True, False);
-
-// Do it
-
-         lc.copyData(ml3);
-
-// Check values
-
-         check (1, ml3, im1, im2);
-      }
-
-// Test reset
-
-      {
-         cout << "Test reset" << endl;
-
-         ImageConcat<Float> lc (1, False);
-         lc.setImage(im1, True);
-         lc.setImage(im2, True);
-         lc.reset();
-
-// Find output shape
-
-         IPosition outShape = lc.shape();
-         AlwaysAssert(outShape.nelements()==0, AipsError);
-//
-         lc.setAxis(1, True);
-         lc.setImage(im1, True);
-         lc.setImage(im2, True);
-//
-         outShape.resize(0);
-         outShape = lc.shape();
-         AlwaysAssert(outShape.nelements()==2, AipsError);
-         AlwaysAssert(outShape(0)==shape(0), AipsError);
-         AlwaysAssert(outShape(1)==shape(1)+shape(1), AipsError);
-
-// Make output
-
-         PagedImage<Float> ml3(outShape, CoordinateUtil::defaultCoords2D(),
-                               "tImageConcat_tmp3.img");
-         makeMask(ml3, True, False);
-
-
-// Do it
-
-         lc.copyData(ml3);
-
-// Check values
-
-         check (1, ml3, im1, im2);
-      }
 
 // Test copy constructor
 
      {
          cout << "Testing copy constructor" << endl;
-         ImageConcat<Float> lc (0, False);
+         ImageConcat<Float> lc (0);
          lc.setImage(im1, True);
          lc.setImage(im2, True);
          ImageConcat<Float> lc2(lc);
@@ -336,9 +281,10 @@ int main() {
                                "tImageConcat_tmp3.img");
          makeMask(ml3, True, False);
 
-// Do it
+// Copy to output
 
-         lc2.copyData(ml3);
+         ml3.copyData(lc);
+         ml3.putMask(lc.getMask());
 
 // Check values
 
@@ -349,7 +295,7 @@ int main() {
 
      {
          cout << "Testing assignment " << endl;
-         ImageConcat<Float> lc (0, False);
+         ImageConcat<Float> lc (0);
          lc.setImage(im1, True);
          lc.setImage(im2, True);
          ImageConcat<Float> lc2;
@@ -366,9 +312,10 @@ int main() {
                                "tImageConcat_tmp3.img");
          makeMask(ml3, True, False);
 
-// Do it
+// Copy to output
 
-         lc2.copyData(ml3);
+         ml3.copyData(lc);
+         ml3.putMask(lc.getMask());
 
 // Check values
 
@@ -380,7 +327,7 @@ int main() {
       {
          cout << "Forced errors" << endl;
 
-         ImageConcat<Float> lc (10, False);
+         ImageConcat<Float> lc (10);
          Bool ok = True;
          try {
             lc.setImage(im1, True);
@@ -389,18 +336,6 @@ int main() {
          } end_try;
          if (!ok) {
             throw (AipsError("set forced failure did not work - this was unexpected"));  
-         }
-//
-         ok = True;
-         lc.setAxis(0, True);
-         lc.setImage(im1, True);
-         lc.setImage(im2, True);
-         try {
-            lc.setAxis(20, True);
-            ok = False;
-         } catch (AipsError x) {;} end_try;
-         if (!ok) {
-            throw (AipsError("setAxis forced failure did not work - this was unexpected"));  
          }
 //
          try {
