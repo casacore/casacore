@@ -1,6 +1,6 @@
 /*
     cregex.c: Extended regular expression matching and search library
-    Copyright (C) 1993,1994,1995,1996,1997
+    Copyright (C) 1993,1994,1995,1996,1997,1999
     Associated Universities, Inc. Washington DC, USA.
 
     This library is free software; you can redistribute it and/or modify it
@@ -70,7 +70,7 @@ cregex_allocator::~cregex_allocator()
 char *cregex_allocator::operator()(int nbytes)
 {
   if (pos_p >= max_allocations_p-1) { 
-    fprintf(stderr, "cregex.cc: larger allocation table needed\0");
+    fprintf(stderr, "cregex.cc: larger allocation table needed\n");
     return 0;
   }
   pos_p++;
@@ -292,7 +292,7 @@ int obscure_syntax = 0;
 /* Make sure we have at least N more bytes of space in buffer.  */
 #define GET_BUFFER_SPACE(n)						\
   {								        \
-    while (b - bufp->buffer + (n) >= bufp->allocated)			\
+    while (long(b - bufp->buffer + (n)) >= bufp->allocated)		\
       EXTEND_BUFFER;							\
   }
 
@@ -1081,7 +1081,7 @@ a2_re_compile_pattern (char *pattern, int size, struct re_pattern_buffer *bufp)
 	      if (obscure_syntax & RE_NO_BK_REFS)
                 goto normal_char;
               c1 = c - '0';
-	      if (c1 >= regnum)
+	      if (int(c1) >= regnum)
 		{
   		  if (obscure_syntax & RE_NO_EMPTY_BK_REF)
                     goto invalid_pattern;
@@ -1090,7 +1090,7 @@ a2_re_compile_pattern (char *pattern, int size, struct re_pattern_buffer *bufp)
                 }
               /* Can't back reference to a subexpression if inside of it.  */
               for (stackt = stackp - 2;  stackt > stackb;  stackt -= 4)
- 		if (*stackt == c1)
+ 		if (*stackt == int(c1))
 		  goto normal_char;
 	      laststart = b;
 	      BUFPUSH (duplicate);
@@ -1674,7 +1674,7 @@ struct register_info
       {									\
 	unsigned char **stackx;						\
 	unsigned int len = stacke - stackb;				\
-	if (len > re_max_failures * MAX_NUM_FAILURE_ITEMS)		\
+	if (int(len) > re_max_failures * MAX_NUM_FAILURE_ITEMS)		\
 	  return -2;							\
 									\
         /* Roughly double the size of the stack.  */			\
@@ -2395,6 +2395,12 @@ real_a2_re_match_2 (struct re_pattern_buffer *pbufp,
 	    }
 	  SET_REGS_MATCHED;
           break;
+
+	default:
+	  { 
+	    fprintf (stderr, "regex: internal error; unknown case label\n");
+	    exit (1);
+	  }
 	}
       continue;  /* Successfully executed one pattern command; keep going.  */
 
