@@ -494,17 +494,18 @@ void SkyCompRep::fromPixel (Double& fluxRatio, const Vector<Double>& parameters,
 // is needed regardless of the component type.  So we start by
 // Defining /beam and /pixel units to be dimensionless
 
+   Unit unitIn = brightnessUnitIn;
    UnitMap::putUser("pixel", UnitVal(1.0,String("")));
    UnitMap::putUser("beam",  UnitVal(1.0,String("")));
-   Unit unitIn = Unit(unitIn.getName());                // Tell system to update this unit
+   unitIn = Unit(unitIn.getName());                // Tell system to update this unit
 //
    Quantum<Double> peak(parameters(0), unitIn);
    if (peak.isConform(Unit("Jy"))) {
       peak.convert("Jy");   
       fluxRatio = peak.getValue() / parameters(0);
    } else {
-         os << LogIO::SEVERE << "Cannot convert units of brightness to Jy - will assume Jy"
-            << LogIO::POST;
+      os << LogIO::SEVERE << "Cannot convert units of brightness to Jy - will assume Jy"
+         << LogIO::POST;
       fluxRatio = 1.0;
    }
       
