@@ -1,5 +1,5 @@
 //# VirtColEng.cc: Abstract base class for virtual column handling
-//# Copyright (C) 1994,1995,1996
+//# Copyright (C) 1994,1995,1996,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -48,6 +48,8 @@ void VirtualColumnEngine::open (uInt, AipsIO&)
 void VirtualColumnEngine::resync (uInt)
 {}
 void VirtualColumnEngine::prepare()
+{}
+void VirtualColumnEngine::deleteManager()
 {}
 
 
