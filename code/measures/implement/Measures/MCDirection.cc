@@ -596,9 +596,9 @@ void MCDirection::doConvert(MVDirection &in,
 	MVPOS3->adjust();
 	*MVPOS3 -= in;
 	*MVPOS2 -= *MVPOS3;
-      } 
-      while (MVPOS3->radius() > 1e-10);
+      } while (MVPOS3->radius() > 1e-10);
       in = *MVPOS2;
+      in.adjust();
     }
     break;
     
@@ -712,6 +712,7 @@ void MCDirection::doConvert(MVDirection &in,
 	*MVPOS1 -= g2 * in;
 	*MVPOS1 *= (g1 / (1.0 - g2));
 	in += *MVPOS1;
+	in.adjust();
       };
     }
     break;
@@ -728,6 +729,7 @@ void MCDirection::doConvert(MVDirection &in,
       g1 = sqrt(1 - lengthE * lengthE);
       g2 = in * *MVPOS1;
       in = (g1*in + (1+g2/(1+g1)) * *MVPOS1)*(1.0/(1.0+g2));
+      in.adjust();
       // Precession
       *ROTMAT1 = PRECESFROM->operator()(tdbTime);
       // Nutation
@@ -740,10 +742,10 @@ void MCDirection::doConvert(MVDirection &in,
       ((MCFrame *)(MDirection::Ref::frameEpoch(inref, outref).
 		   getMCFramePoint()))->
 	getTDB(tdbTime);
-      // Nutation
-      *ROTMAT1 = NUTATTO->operator()(tdbTime);
       // Precession
-      *ROTMAT1 *= PRECESTO->operator()(tdbTime);
+      *ROTMAT1 = PRECESTO->operator()(tdbTime);///
+      // Nutation
+      *ROTMAT1 *= NUTATTO->operator()(tdbTime);///
       in = *ROTMAT1 * in;
       // Aberration
       *MVPOS1 = ABERTO->operator()(tdbTime);
@@ -770,6 +772,7 @@ void MCDirection::doConvert(MVDirection &in,
       }
       while (MVPOS3->radius() > 1e-10);
       in = *MVPOS2;
+      in.adjust();
     }
     break;
     
@@ -806,6 +809,7 @@ void MCDirection::doConvert(MVDirection &in,
 	}
 	while (MVPOS3->radius() > 1e-10);
 	in = *MVPOS2;
+	in.adjust();
       };
     }
     break;
@@ -840,16 +844,23 @@ void MCDirection::doConvert(MVDirection &in,
       *MVPOS1 = ABERTO->operator()(tdbTime);
       in -= *MVPOS1;
       in.adjust();
-      // Nutation
-      *ROTMAT1 = NUTATTO->operator()(tdbTime);
       // Precession
-      *ROTMAT1 *= PRECESTO->operator()(tdbTime);
+      *ROTMAT1 = PRECESTO->operator()(tdbTime);///
+      // Nutation
+      *ROTMAT1 *= NUTATTO->operator()(tdbTime);///
       in = *ROTMAT1 * in;
       // E-terms
+      // Iterate
       *MVPOS1 = MeasTable::AberETerm(0);
-      g1 = in * *MVPOS1;
-      in += g1 * in;
-      in += *MVPOS1;
+      *MVPOS2 = in;
+      do {
+        g1 = *MVPOS2 * *MVPOS1;
+        *MVPOS3 = *MVPOS2 - *MVPOS1 + (g1 * *MVPOS2);
+        MVPOS3->adjust();
+        *MVPOS3 -= in;
+        *MVPOS2 -= *MVPOS3;
+      } while (MVPOS3->radius() > 1e-10);
+      in = *MVPOS2;
       in.adjust();
     }
     break;
@@ -876,6 +887,7 @@ void MCDirection::doConvert(MVDirection &in,
       *ROTMAT1 = RotMatrix(*EULER1);
       in *= *ROTMAT1;
       in(1) = -in(1);
+      in.adjust();
     }
     break;
     
@@ -919,6 +931,7 @@ void MCDirection::doConvert(MVDirection &in,
       *ROTMAT1 = RotMatrix(*EULER1);
       in = *ROTMAT1 * in;
       in -= *MVPOS3;
+      in.adjust();
     }
     break;
     
