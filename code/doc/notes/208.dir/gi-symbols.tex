@@ -3,7 +3,7 @@
 %%% TeX definitions of mathematical symbols and names used for the %%%%%% 
 %%% Measuerement Equation of Generic Interferometer (MEGI)  %%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%\def\thisfile{~/aips++/nfra/megi-symbols.tex}
+%\newcommand\thisfile{~/aips++/nfra/megi-symbols.tex}
 
 % The following list is available as a LaTeX list of definitions. It
 % could be the start of an official AIPS++ list of symbol names, to
@@ -12,12 +12,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %   Some user-defined TeX commands:
 
-\newcommand{\tbt}[4]
-  {\left(\begin{array}{cc}#1 & #2\\ #3 & #4 \end{array}\right)}
-\newcommand{\ddp}[2]{\frac {\partial #1}{\partial #2}}
-\newcommand{\ddpn}[3]{\frac {\partial^{#3}{#1}}{\partial{#2}^{#3}}}
-\newcommand{\dirprod}[2]{{#1}\otimes{#2}^\ast}
-
+{\newcommand{\dirprod}[2]{{#1}\otimes{#2}^\ast}}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %   Naming system (method in the madness):
@@ -40,184 +35,184 @@
 
 %  \gloshead{Names of things for which there is a precise definition}
 
-\def\Receptor{{\sf receptor}}   % Converts field to voltage (e.g. dipole) 
-\def\Feed{{\sf feed}}           % Group of 1-2 receptors (usually 2) 
-\def\Antenna{{\sf antenna}}     % Combination of a \Feed with a mirror.
-\def\IFout{{\sf IF-channel}}    % Signal outputs from an \Antenna 
-\def\Telescope{{\sf telescope}} % Entire instrument (e.g. WSRT, GBT)
-\def\Interferometer{{\sf interferometer}} % Two \IFout's or two \Antenna's
-\def\Visibility{{\sf visibility}} % 1-4 complex spectra, 
+\newcommand\Receptor{{\sf receptor}}   % Converts field to voltage (e.g. dipole) 
+\newcommand\Feed{{\sf feed}}           % Group of 1-2 receptors (usually 2) 
+\newcommand\Antenna{{\sf antenna}}     % Combination of a \Feed with a mirror.
+\newcommand\IFout{{\sf IF-channel}}    % Signal outputs from an \Antenna 
+\newcommand\Telescope{{\sf telescope}} % Entire instrument (e.g. WSRT, GBT)
+\newcommand\Interferometer{{\sf interferometer}} % Two \IFout's or two \Antenna's
+\newcommand\Visibility{{\sf visibility}} % 1-4 complex spectra, 
                                   % output of an \Interferometer. 
-\def\Projected{{\sf projected}} % Projected on sky plane (or on the
+\newcommand\Projected{{\sf projected}} % Projected on sky plane (or on the
                                 % plane perpendicular to propagation)
 
 % NB: Use a closing backslash (\Antenna\ ) for interword space!                      
 
 %  \gloshead{Labels:}
 
-\def\AntI{{\sf i}}        % The `first' \Antenna in an interferometer
-\def\AntJ{{\sf j}}        % The `second' \Antenna in an interferometer
+\newcommand\AntI{{\sf i}}        % The `first' \Antenna in an interferometer
+\newcommand\AntJ{{\sf j}}        % The `second' \Antenna in an interferometer
 
-\def\RcpA{{\sf a}}        % The `first' dipole in an \Antenna
-\def\RcpB{{\sf b}}        % The `second' dipole in an \Antenna
+\newcommand\RcpA{{\sf a}}        % The `first' dipole in an \Antenna
+\newcommand\RcpB{{\sf b}}        % The `second' dipole in an \Antenna
 
-\def\IFP{{\sf p}}         % The `first' IF-channel from an \Antanna
-\def\IFQ{{\sf q}}         % The `second' IF-channel from an \Antenna
+\newcommand\IFP{{\sf p}}         % The `first' IF-channel from an \Antanna
+\newcommand\IFQ{{\sf q}}         % The `second' IF-channel from an \Antenna
 
-\def\RPol{{\sf r}}        % r-pol 
-\def\LPol{{\sf l}}        % l-pol 
+\newcommand\RPol{{\sf r}}        % r-pol 
+\newcommand\LPol{{\sf l}}        % l-pol 
 
 %  \gloshead{Coordinate frames:}
 
-\def\ccT{{\sf t}}                   % time-coord 
-\def\ccF{{\sf f}}                   % frequency-coord 
+\newcommand\ccT{{\sf t}}                   % time-coord 
+\newcommand\ccF{{\sf f}}                   % frequency-coord 
 
 %  Polarisation-frame (for electric polarisation vector):
 
-\def\ccX{{\sf x}}                   % x-coord 
-\def\ccY{{\sf y}}                   % y-coord
-\def\ccZ{{\sf z}}                   % y-coord
+\newcommand\ccX{{\sf x}}                   % x-coord 
+\newcommand\ccY{{\sf y}}                   % y-coord
+\newcommand\ccZ{{\sf z}}                   % y-coord
 
 %  Array-frame (for baseline vector):
 
-\def\ccU{{\sf u}}                   % u-coord 
-\def\ccV{{\sf v}}                   % v-coord 
-\def\ccW{{\sf w}}                   % w-coord  
+\newcommand\ccU{{\sf u}}                   % u-coord 
+\newcommand\ccV{{\sf v}}                   % v-coord 
+\newcommand\ccW{{\sf w}}                   % w-coord  
 
-\def\vvUVW{{\vec{u}}}          % Projected baseline vector
-\def\vvAntPos{{\vec{r}}}       % Projected `Antenna' position vector 
+\newcommand\vvUVW{{\vec{u}}}          % Projected baseline vector
+\newcommand\vvAntPos{{\vec{r}}}       % Projected `Antenna' position vector 
                                %   (Receptor phase centre?)
 
 %  Sky coord. frame (source positions) w.r.t. Delay Centre:  
 
-\def\ccL{{\sf l}}                   % l-coord 
-\def\ccM{{\sf m}}                   % m-coord 
-\def\ccN{{\sf n}}                   % n-coord (=sqrt[1-l^2-m^2]) 
+\newcommand\ccL{{\sf l}}                   % l-coord 
+\newcommand\ccM{{\sf m}}                   % m-coord 
+\newcommand\ccN{{\sf n}}                   % n-coord (=sqrt[1-l^2-m^2]) 
 
-\def\vvLMN{{\vec{\rho}}}             % Vector (l,m) in Sky frame 
+\newcommand\vvLMN{{\vec{\rho}}}             % Vector (l,m) in Sky frame 
 
 %  Antenna coord. frame (l',m'), projected on the Sky:
 
-\def\ccLI{{\ccL^{'}_{\AntI}}}       % l'-coord of \Ant-frame  
-\def\ccMI{{\ccM^{'}_{\AntI}}}       % m'-coord 
-\def\ccLIO{{\ccL_{\AntI{0}}}}       % l-coord of origin of \Ant-frame i
-\def\ccMIO{{\ccM_{\AntI{0}}}}       % m-coord 
+\newcommand\ccLI{{\ccL^{'}_{\AntI}}}       % l'-coord of \Ant-frame  
+\newcommand\ccMI{{\ccM^{'}_{\AntI}}}       % m'-coord 
+\newcommand\ccLIO{{\ccL_{\AntI{0}}}}       % l-coord of origin of \Ant-frame i
+\newcommand\ccMIO{{\ccM_{\AntI{0}}}}       % m-coord 
 
 %  Receptor coord. frames (l'',m''), projected on the Sky:
 
-\def\ccLIA{{\ccL^{''}_{{\AntI\RcpA}}}}  % l''-coord for \RcpA-frame 
-\def\ccMIA{{\ccM^{''}_{{\AntI\RcpA}}}}  % m''-coord 
-\def\ccLIAO{{\ccLI_{\RcpA{0}}}}         % l'-coord of origin of \RcpA-frame 
-\def\ccMIAO{{\ccMI_{\RcpA{0}}}}         % m'-coord 
+\newcommand\ccLIA{{\ccL^{''}_{{\AntI\RcpA}}}}  % l''-coord for \RcpA-frame 
+\newcommand\ccMIA{{\ccM^{''}_{{\AntI\RcpA}}}}  % m''-coord 
+\newcommand\ccLIAO{{\ccLI_{\RcpA{0}}}}         % l'-coord of origin of \RcpA-frame 
+\newcommand\ccMIAO{{\ccMI_{\RcpA{0}}}}         % m'-coord 
 
-\def\ccLIB{{\ccL^{''}_{{\AntI\RcpB}}}}  % l''-coord for \RcpB-frame 
-\def\ccMIB{{\ccM^{''}_{{\AntI\RcpB}}}}  % m''-coord 
-\def\ccLIBO{{\ccLI_{\RcpB{0}}}}         % l'-coord of origin of \RcpB-frame 
-\def\ccMIBO{{\ccMI_{\RcpB{0}}}}         % m'-coord 
+\newcommand\ccLIB{{\ccL^{''}_{{\AntI\RcpB}}}}  % l''-coord for \RcpB-frame 
+\newcommand\ccMIB{{\ccM^{''}_{{\AntI\RcpB}}}}  % m''-coord 
+\newcommand\ccLIBO{{\ccLI_{\RcpB{0}}}}         % l'-coord of origin of \RcpB-frame 
+\newcommand\ccMIBO{{\ccMI_{\RcpB{0}}}}         % m'-coord 
 
 %  Projected angles between the various coord frames: 
 
-\def\aaProj{{\gamma}}                % Projected angle 
+\newcommand\aaProj{{\gamma}}                % Projected angle 
 
-\def\aaXY{{\aaProj_{\ccX\ccY}}}      % from Pol x-axis to Pol y-axis 
-\def\aaLM{{\aaProj_{\ccL\ccM}}}      % from Sky l-axis to Sky m-axis 
-\def\aaLX{{\aaProj_{\ccL\ccX}}}      % from Sky l-axis to Pol x-axis 
-\def\aaLI{{\aaProj_{\ccL\AntI}}}     % from Sky l-axis to \Ant l'-axis 
-\def\aaIA{{\aaProj_{\AntI\RcpA}}}    % from \Ant l'-axis to \RcpA l''-axis 
-\def\aaIB{{\aaProj_{\AntI\RcpB}}}    % from \Ant l'-axis to \RcpB l''-axis 
+\newcommand\aaXY{{\aaProj_{\ccX\ccY}}}      % from Pol x-axis to Pol y-axis 
+\newcommand\aaLM{{\aaProj_{\ccL\ccM}}}      % from Sky l-axis to Sky m-axis 
+\newcommand\aaLX{{\aaProj_{\ccL\ccX}}}      % from Sky l-axis to Pol x-axis 
+\newcommand\aaLI{{\aaProj_{\ccL\AntI}}}     % from Sky l-axis to \Ant l'-axis 
+\newcommand\aaIA{{\aaProj_{\AntI\RcpA}}}    % from \Ant l'-axis to \RcpA l''-axis 
+\newcommand\aaIB{{\aaProj_{\AntI\RcpB}}}    % from \Ant l'-axis to \RcpB l''-axis 
 
-\def\aaXI{{\aaProj_{\ccX\AntI}}}     % from x-axis to \Ant l'-axis 
-\def\aaXA{{\aaProj_{\ccX\RcpA}}}     % from x-axis to \RcpA l''-axis 
-\def\aaYB{{\aaProj_{\ccY\RcpB}}}     % from y-axis (!) to \RcpB l''-axis  
+\newcommand\aaXI{{\aaProj_{\ccX\AntI}}}     % from x-axis to \Ant l'-axis 
+\newcommand\aaXA{{\aaProj_{\ccX\RcpA}}}     % from x-axis to \RcpA l''-axis 
+\newcommand\aaYB{{\aaProj_{\ccY\RcpB}}}     % from y-axis (!) to \RcpB l''-axis  
 
-\def\aaXYexp{{\pi/2}}                % from x-axis to y-axis 
-\def\aaLMexp{{\pi/2}}                % from l-axis to m-axis
-\def\aaLXexp{{\pi/2}}                % from l-axis to x-axis 
-\def\aaXIexp{{-\aaLX+\aaLI}}                % x to l' 
-\def\aaXAexp{{-\aaLX+\aaLI+\aaIA}}          % x to l''(A)  
-\def\aaYBexp{{-\aaXY-\aaLX+\aaLI+\aaIB}}    % x to l''(B) 
+\newcommand\aaXYexp{{\pi/2}}                % from x-axis to y-axis 
+\newcommand\aaLMexp{{\pi/2}}                % from l-axis to m-axis
+\newcommand\aaLXexp{{\pi/2}}                % from l-axis to x-axis 
+\newcommand\aaXIexp{{-\aaLX+\aaLI}}                % x to l' 
+\newcommand\aaXAexp{{-\aaLX+\aaLI+\aaIA}}          % x to l''(A)  
+\newcommand\aaYBexp{{-\aaXY-\aaLX+\aaLI+\aaIB}}    % x to l''(B) 
 
 
 %  \gloshead{Miscellaneous parameters:}
 
-\def\ppHA{{HA}}                  % Hour Angle
-\def\ppDEC{{DEC}}                % Declination
-\def\ppRA{{RA}}                  % Right Ascension
-\def\ppLAT{{LAT}}                % Latitude (on the Earth)
-\def\ppParall{{\beta}}           % parallactic angle (between great
+\newcommand\ppHA{{HA}}                  % Hour Angle
+\newcommand\ppDEC{{DEC}}                % Declination
+\newcommand\ppRA{{RA}}                  % Right Ascension
+\newcommand\ppLAT{{LAT}}                % Latitude (on the Earth)
+\newcommand\ppParall{{\beta}}           % parallactic angle (between great
 			         % circles through North Pole and Zenith)
 
-\def\ppFarad{{\chi}}             % Faraday rotation angle (rad)
-\def\ppAmpl{{a}}                 % Amplitude
-\def\ppPhase{{\psi}}             % Phase
-\def\ppPhaseZero{{\zeta}}        % Phase-zero
-\def\ppDiposErr{{\theta}}	       % dipole position angle error  
-\def\ppEllipt{{\phi}}            % \Receptor ellipticity
+\newcommand\ppFarad{{\chi}}             % Faraday rotation angle (rad)
+\newcommand\ppAmpl{{a}}                 % Amplitude
+\newcommand\ppPhase{{\psi}}             % Phase
+\newcommand\ppPhaseZero{{\zeta}}        % Phase-zero
+\newcommand\ppDiposErr{{\theta}}	       % dipole position angle error  
+\newcommand\ppEllipt{{\phi}}            % \Receptor ellipticity
 
-\def\ppBellipt{{\epsilon}}       % beam ellipticity factor      
-\def\ppBsigma{{\sigma}}          % sigma of gaussian beam       
+\newcommand\ppBellipt{{\epsilon}}       % beam ellipticity factor      
+\newcommand\ppBsigma{{\sigma}}          % sigma of gaussian beam       
 
 %  \gloshead{Jones Matrices (2x2):}
 
-\def\mjJones{{\sf J}}          % Jones instrumental response matrix
-\def\mjJonesEl{{\sf j}}        %   matrix element
+\newcommand\mjJones{{\sf J}}          % Jones instrumental response matrix
+\newcommand\mjJonesEl{{\sf j}}        %   matrix element
 
-\def\mjRot{{\cal R}}           % General rotation matrix R(alpha)
-\def\mjUnit{{\cal U}}          % Unit matrix
-\def\mjMult{{\cal M}}          % Multiplication matrix M(beta)=beta.U
+\newcommand\mjRot{{\cal R}}           % General rotation matrix R(alpha)
+\newcommand\mjUnit{{\cal U}}          % Unit matrix
+\newcommand\mjMult{{\cal M}}          % Multiplication matrix M(beta)=beta.U
                                % (equivalent to multiplicative factor)
-\def\mjLtoC{{\cal H}}          % Conversion from Linear to Circular pol
-\def\mjCtoL{{\mjLtoC^{-1}}}    % Conversion from Circular to Linear pol
+\newcommand\mjLtoC{{\cal H}}          % Conversion from Linear to Circular pol
+\newcommand\mjCtoL{{\mjLtoC^{-1}}}    % Conversion from Circular to Linear pol
 
-\def\mjFrot{{\sf F}}           % Faraday rotation matrix
-\def\mjFrotEl{{\sf f}}         %   matrix element of \mjFrot
+\newcommand\mjFrot{{\sf F}}           % Faraday rotation matrix
+\newcommand\mjFrotEl{{\sf f}}         %   matrix element of \mjFrot
 
-\def\mjGatm{{\sf T}}           % Atmospheric gain matrix
-\def\mjGatmEl{{\sf t}}         %   matrix element of \mjGatm
+\newcommand\mjGatm{{\sf T}}           % Atmospheric gain matrix
+\newcommand\mjGatmEl{{\sf t}}         %   matrix element of \mjGatm
 
-\def\mjProt{{\sf P}}           % Parallactic rotation (dipoles w.r.t. Sky) 
-\def\mjProtEl{{\sf p}}         %   matrix element of \mjProt
+\newcommand\mjProt{{\sf P}}           % Parallactic rotation (dipoles w.r.t. Sky) 
+\newcommand\mjProtEl{{\sf p}}         %   matrix element of \mjProt
 
-\def\mjBeam{{\sf E}}           % Antenna Voltage Beam matrix 
-\def\mjBeamEl{{\sf e}}         %   matrix element of \mjBeam
+\newcommand\mjBeam{{\sf E}}           % Antenna Voltage Beam matrix 
+\newcommand\mjBeamEl{{\sf e}}         %   matrix element of \mjBeam
 
-\def\mjBatt{{\sf B}}           % Attenuation beam matrix
-\def\mjBattEl{{\sf b}}         %   matrix element of \mjBatt
+\newcommand\mjBatt{{\sf B}}           % Attenuation beam matrix
+\newcommand\mjBattEl{{\sf b}}         %   matrix element of \mjBatt
 
-\def\mjObst{{\sf O}}           % Beam obstruction effect matrix
-\def\mjObstEl{{\sf o}}         %   matrix element of \mjObst
+\newcommand\mjObst{{\sf O}}           % Beam obstruction effect matrix
+\newcommand\mjObstEl{{\sf o}}         %   matrix element of \mjObst
 
-\def\mjLeak{{\sf D}}           % \Receptor cross-`leakage' matrix
-\def\mjLeakEl{{\sf d}}         %   matrix element of \mjLeak
+\newcommand\mjLeak{{\sf D}}           % \Receptor cross-`leakage' matrix
+\newcommand\mjLeakEl{{\sf d}}         %   matrix element of \mjLeak
 
-\def\mjHybr{{\sf H}}           % Hybrid network matrix (linear to circular)
-\def\mjHybrEl{{\sf h}}         %   matrix element
+\newcommand\mjHybr{{\sf H}}           % Hybrid network matrix (linear to circular)
+\newcommand\mjHybrEl{{\sf h}}         %   matrix element
 
-\def\mjComm{{\sf C}}           % signal-channel commutation matrix
-\def\mjCommEl{{\sf c}}         %   matrix element
+\newcommand\mjComm{{\sf C}}           % signal-channel commutation matrix
+\newcommand\mjCommEl{{\sf c}}         %   matrix element
 
-\def\mjGrec{{\sf G}}           % Receiver Gain matrix (electronics)
-\def\mjGrecEl{{\sf g}}         %   matrix element
+\newcommand\mjGrec{{\sf G}}           % Receiver Gain matrix (electronics)
+\newcommand\mjGrecEl{{\sf g}}         %   matrix element
 
-\def\mjWarr{{\sf W}}           % Fourier Transform phase weight matrix  
-\def\mjWarrEl{{\sf w}}         %   matrix element
+\newcommand\mjWarr{{\sf W}}           % Fourier Transform phase weight matrix  
+\newcommand\mjWarrEl{{\sf w}}         %   matrix element
 
-\def\mjGsum{{\sf Q}}           % Receiver gain of sum-output of tied array 
-\def\mjGsumEl{{\sf q}}         %   matrix element
+\newcommand\mjGsum{{\sf Q}}           % Receiver gain of sum-output of tied array 
+\newcommand\mjGsumEl{{\sf q}}         %   matrix element
 
 %  \gloshead{Other ME matrices and vectors:} 
 
-\def\vvIQUV{{\vec{I}}}         % Stokes vector (I,Q,U,V)
+\newcommand\vvIQUV{{\vec{I}}}         % Stokes vector (I,Q,U,V)
 
-\def\vvCoh{{\vec{V}}}          % Visibility (`coherency') vector (4)
-\def\vvCohEl{{\sf v}}          %   element of \vvCoh
+\newcommand\vvCoh{{\vec{V}}}          % Visibility (`coherency') vector (4)
+\newcommand\vvCohEl{{\sf v}}          %   element of \vvCoh
 
-\def\mmStokes{{\sf S}}         % Stokes conversion matrix (4x4) to Coherence
+\newcommand\mmStokes{{\sf S}}         % Stokes conversion matrix (4x4) to Coherence
 
-\def\mmMifr{{\sf M}}           % Multiplicative ifr-based gain 
-\def\mmMifrEl{{\sf m}}         %   element of matrix \mmMAifr
-\def\vvAifr{{\vec{A}}}         % Additive ifr-based vector (4)
-\def\vvAifrEl{{\sf a}}         %   element of \vvAifr
+\newcommand\mmMifr{{\sf M}}           % Multiplicative ifr-based gain 
+\newcommand\mmMifrEl{{\sf m}}         %   element of matrix \mmMAifr
+\newcommand\vvAifr{{\vec{A}}}         % Additive ifr-based vector (4)
+\newcommand\vvAifrEl{{\sf a}}         %   element of \vvAifr
 
 
 
@@ -226,75 +221,75 @@
 %  Secondary symbols (much-used combinations of the basic symbols above)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\def\Antennas{{{\Antenna}s}}        %   
-\def\Receptors{{{\Receptor}s}}      %   
+\newcommand\Antennas{{{\Antenna}s}}        %   
+\newcommand\Receptors{{{\Receptor}s}}      %   
 
-\def\ssI{_{\AntI}}                % subscript \Antenna I  
-\def\ssJ{_{\AntJ}}                % subscript \Antenna J  
-\def\ssP{_{\IFP}}                 % subscript \IFout P  
-\def\ssQ{_{\IFQ}}                 % subscript \IFout Q 
-\def\ssA{_{\RcpA}}                % subscript \Receptor A 
-\def\ssB{_{\RcpB}}                % subscript \Receptor B 
+\newcommand\ssI{_{\AntI}}                % subscript \Antenna I  
+\newcommand\ssJ{_{\AntJ}}                % subscript \Antenna J  
+\newcommand\ssP{_{\IFP}}                 % subscript \IFout P  
+\newcommand\ssQ{_{\IFQ}}                 % subscript \IFout Q 
+\newcommand\ssA{_{\RcpA}}                % subscript \Receptor A 
+\newcommand\ssB{_{\RcpB}}                % subscript \Receptor B 
 
-\def\ssL{^{+}}                    % superscript for linear pol  
-\def\ssC{^{\odot}}                % superscript for circular pol  
-\def\ssLI{^{+}_{\AntI}}           % sub/super  
-\def\ssCI{^{\odot}_{\AntI}}       % sub/super  
+\newcommand\ssL{^{+}}                    % superscript for linear pol  
+\newcommand\ssC{^{\odot}}                % superscript for circular pol  
+\newcommand\ssLI{^{+}_{\AntI}}           % sub/super  
+\newcommand\ssCI{^{\odot}_{\AntI}}       % sub/super  
 
-\def\ssIX{_{\AntI\ccX}}           % subscript   
-\def\ssIY{_{\AntI\ccY}}           % subscript   
-\def\ssIR{_{\AntI\RPol}}          % subscript   
-\def\ssIL{_{\AntI\LPol}}          % subscript   
-\def\ssIA{_{\AntI\RcpA}}          % subscript   
-\def\ssIB{_{\AntI\RcpB}}          % subscript   
-\def\ssIP{_{\AntI\IFP}}           % subscript   
-\def\ssIQ{_{\AntI\IFQ}}           % subscript   
+\newcommand\ssIX{_{\AntI\ccX}}           % subscript   
+\newcommand\ssIY{_{\AntI\ccY}}           % subscript   
+\newcommand\ssIR{_{\AntI\RPol}}          % subscript   
+\newcommand\ssIL{_{\AntI\LPol}}          % subscript   
+\newcommand\ssIA{_{\AntI\RcpA}}          % subscript   
+\newcommand\ssIB{_{\AntI\RcpB}}          % subscript   
+\newcommand\ssIP{_{\AntI\IFP}}           % subscript   
+\newcommand\ssIQ{_{\AntI\IFQ}}           % subscript   
 
-\def\ssIJ{_{\AntI\AntJ}}          % subscript 
-\def\ssXY{_{\ccX\ccY}}            % subscript   
-\def\ssRL{_{\RPol\LPol}}          % subscript   
-\def\ssAB{_{\RcpA\RcpB}}          % subscript   
-\def\ssPQ{_{\IFP\IFQ}}            % subscript 
+\newcommand\ssIJ{_{\AntI\AntJ}}          % subscript 
+\newcommand\ssXY{_{\ccX\ccY}}            % subscript   
+\newcommand\ssRL{_{\RPol\LPol}}          % subscript   
+\newcommand\ssAB{_{\RcpA\RcpB}}          % subscript   
+\newcommand\ssPQ{_{\IFP\IFQ}}            % subscript 
 
-\def\ssIXX{_{\AntI\ccX\ccX}}      % subscript   
-\def\ssIYX{_{\AntI\ccY\ccX}}      % subscript   
-\def\ssIXY{_{\AntI\ccX\ccY}}      % subscript   
-\def\ssIYY{_{\AntI\ccY\ccY}}      % subscript   
+\newcommand\ssIXX{_{\AntI\ccX\ccX}}      % subscript   
+\newcommand\ssIYX{_{\AntI\ccY\ccX}}      % subscript   
+\newcommand\ssIXY{_{\AntI\ccX\ccY}}      % subscript   
+\newcommand\ssIYY{_{\AntI\ccY\ccY}}      % subscript   
 
-\def\ssIRR{_{\AntI\RPol\RPol}}    % subscript   
-\def\ssILR{_{\AntI\LPol\RPol}}    % subscript   
-\def\ssIRL{_{\AntI\RPol\LPol}}    % subscript   
-\def\ssILL{_{\AntI\LPol\LPol}}    % subscript   
+\newcommand\ssIRR{_{\AntI\RPol\RPol}}    % subscript   
+\newcommand\ssILR{_{\AntI\LPol\RPol}}    % subscript   
+\newcommand\ssIRL{_{\AntI\RPol\LPol}}    % subscript   
+\newcommand\ssILL{_{\AntI\LPol\LPol}}    % subscript   
 
-\def\ssIXA{_{\AntI\ccX\RcpA}}     % subscript   
-\def\ssIYA{_{\AntI\ccY\RcpA}}     % subscript   
-\def\ssIXB{_{\AntI\ccX\RcpB}}     % subscript   
-\def\ssIYB{_{\AntI\ccY\RcpB}}     % subscript   
+\newcommand\ssIXA{_{\AntI\ccX\RcpA}}     % subscript   
+\newcommand\ssIYA{_{\AntI\ccY\RcpA}}     % subscript   
+\newcommand\ssIXB{_{\AntI\ccX\RcpB}}     % subscript   
+\newcommand\ssIYB{_{\AntI\ccY\RcpB}}     % subscript   
 
-\def\ssIRA{_{\AntI\RPol\RcpA}}    % subscript   
-\def\ssILA{_{\AntI\LPol\RcpA}}    % subscript   
-\def\ssIRB{_{\AntI\RPol\RcpB}}    % subscript   
-\def\ssILB{_{\AntI\LPol\RcpB}}    % subscript   
+\newcommand\ssIRA{_{\AntI\RPol\RcpA}}    % subscript   
+\newcommand\ssILA{_{\AntI\LPol\RcpA}}    % subscript   
+\newcommand\ssIRB{_{\AntI\RPol\RcpB}}    % subscript   
+\newcommand\ssILB{_{\AntI\LPol\RcpB}}    % subscript   
 
-\def\ssIAA{_{\AntI\RcpA\RcpA}}    % subscript   
-\def\ssIBA{_{\AntI\RcpB\RcpA}}    % subscript   
-\def\ssIAB{_{\AntI\RcpA\RcpB}}    % subscript   
-\def\ssIBB{_{\AntI\RcpB\RcpB}}    % subscript   
+\newcommand\ssIAA{_{\AntI\RcpA\RcpA}}    % subscript   
+\newcommand\ssIBA{_{\AntI\RcpB\RcpA}}    % subscript   
+\newcommand\ssIAB{_{\AntI\RcpA\RcpB}}    % subscript   
+\newcommand\ssIBB{_{\AntI\RcpB\RcpB}}    % subscript   
 
-\def\ssIAP{_{\AntI\RcpA\IFP}}     % subscript  
-\def\ssIBP{_{\AntI\RcpB\IFP}}     % subscript  
-\def\ssIAQ{_{\AntI\RcpA\IFQ}}     % subscript  
-\def\ssIBQ{_{\AntI\RcpB\IFQ}}     % subscript  
+\newcommand\ssIAP{_{\AntI\RcpA\IFP}}     % subscript  
+\newcommand\ssIBP{_{\AntI\RcpB\IFP}}     % subscript  
+\newcommand\ssIAQ{_{\AntI\RcpA\IFQ}}     % subscript  
+\newcommand\ssIBQ{_{\AntI\RcpB\IFQ}}     % subscript  
 
-\def\ssIPP{_{\AntI\IFP\IFP}}      % subscript 
-\def\ssIQP{_{\AntI\IFQ\IFP}}      % subscript 
-\def\ssIPQ{_{\AntI\IFP\IFQ}}      % subscript 
-\def\ssIQQ{_{\AntI\IFQ\IFQ}}      % subscript 
+\newcommand\ssIPP{_{\AntI\IFP\IFP}}      % subscript 
+\newcommand\ssIQP{_{\AntI\IFQ\IFP}}      % subscript 
+\newcommand\ssIPQ{_{\AntI\IFP\IFQ}}      % subscript 
+\newcommand\ssIQQ{_{\AntI\IFQ\IFQ}}      % subscript 
    
-\def\ssIPJP{_{\AntI\IFP\,\AntJ\IFP}}     % subscript 
-\def\ssIPJQ{_{\AntI\IFP\,\AntJ\IFQ}}     % subscript 
-\def\ssIQJP{_{\AntI\IFQ\,\AntJ\IFP}}     % subscript 
-\def\ssIQJQ{_{\AntI\IFQ\,\AntJ\IFQ}}     % subscript 
+\newcommand\ssIPJP{_{\AntI\IFP\,\AntJ\IFP}}     % subscript 
+\newcommand\ssIPJQ{_{\AntI\IFP\,\AntJ\IFQ}}     % subscript 
+\newcommand\ssIQJP{_{\AntI\IFQ\,\AntJ\IFP}}     % subscript 
+\newcommand\ssIQJQ{_{\AntI\IFQ\,\AntJ\IFQ}}     % subscript 
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -302,30 +297,30 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 % Added by TJC
-\def\mjKarr{{\sf K}}           		% FT matrix
-\def\mjWtarr{{\Lambda}}           	% Noise
-\def\mjSkyWtarr{{\Lambda^{\sf sky}}}        % Noise
-\def\mjConf{{\sf C}}           		% feed configuration matrix
-\def\mjConfEl{{\sf c}}         		% matrix element
-\def\mjSkyJones{{\sf J^{sky}}}          % Jones instrumental response matrix
-\def\mjVisJones{{\sf J^{vis}}}          % Jones instrumental response matrix
-\def\vvSkyCoh{{\vec{V}^{\sf sky}}}          % Visibility (`coherency') vector (4)
-\def\vvCalCoh{{\vec{V}^{\sf cal}}}          % Visibility (`coherency') vector (4)
-\def\xfnCorr{{{X}}}          	% Correlator function
-\def\MEGI{{\tt MeasurementEquation}}
-\def\SE{{\tt SkyEquation}}
-\def\VE{{\tt VisEquation}}
-\def\VisSet{{\tt VisSet}}
-\def\SkyModel{{\tt SkyModel}}
-\def\SkyJones{{\tt SkyJones}}
-\def\VisJones{{\tt VisJones}}
-\def\MIfr{{\tt MIfr}}
-\def\ACoh{{\tt ACoh}}
-\def\XCorr{{\tt XCorr}}
-\def\FTCoh{{\tt FTCoh}}
-\def\IFTCoh{{\tt IFTCoh}}
-\def\WTCoh{{\tt WTCoh}}
-\def\solve{{\tt solve}}
+\newcommand\mjKarr{{\sf K}}           		% FT matrix
+\newcommand\mjWtarr{{\Lambda}}           	% Noise
+\newcommand\mjSkyWtarr{{\Lambda^{\sf sky}}}        % Noise
+\newcommand\mjConf{{\sf C}}           		% feed configuration matrix
+\newcommand\mjConfEl{{\sf c}}         		% matrix element
+\newcommand\mjSkyJones{{\sf J^{sky}}}          % Jones instrumental response matrix
+\newcommand\mjVisJones{{\sf J^{vis}}}          % Jones instrumental response matrix
+\newcommand\vvSkyCoh{{\vec{V}^{\sf sky}}}          % Visibility (`coherency') vector (4)
+\newcommand\vvCalCoh{{\vec{V}^{\sf cal}}}          % Visibility (`coherency') vector (4)
+\newcommand\xfnCorr{{{X}}}          	% Correlator function
+\newcommand\MEGI{{\tt MeasurementEquation}}
+\newcommand\SE{{\tt SkyEquation}}
+\newcommand\VE{{\tt VisEquation}}
+\newcommand\VisSet{{\tt VisSet}}
+\newcommand\SkyModel{{\tt SkyModel}}
+\newcommand\SkyJones{{\tt SkyJones}}
+\newcommand\VisJones{{\tt VisJones}}
+\newcommand\MIfr{{\tt MIfr}}
+\newcommand\ACoh{{\tt ACoh}}
+\newcommand\XCorr{{\tt XCorr}}
+\newcommand\FTCoh{{\tt FTCoh}}
+\newcommand\IFTCoh{{\tt IFTCoh}}
+\newcommand\WTCoh{{\tt WTCoh}}
+\newcommand\solve{{\tt solve}}
 \newcommand{\visterm}[1]{{\left[\dirprod{#1\ssI}{#1\ssJ}\right]}}
 \newcommand{\skykterm}[1]{{\left[\dirprod{#1\ssI\left(\vvLMN_k\right)}{#1\ssJ\left(\vvLMN_k\right)}\right]}}
 

@@ -1,18 +1,10 @@
 %\documentclass[11pt]{article}
-\input{gi-symbols.tex}
-\newenvironment{slide}[1]
-{\LARGE\begin{center}{\bf #1}\end{center}}{\newpage}
-
-\newcommand{\Ff}[1]{   {\cal F}\left(#1\right)}
-\newcommand{\Fi}[1]{   {\cal F}^{-1}\left(#1\right)}
-
-\newcommand{\BR}{{\bf{R}}}
-\newcommand{\br}{{\bf{r}}}
-\newcommand{\ncel}{\sqrt{1-\ell^2-m^2}}
-\newcommand{\x}{{\bf{x}}}
-\newcommand{\xp}{{{\bf x}_{\rm p}}}
 
 %\begin{document}
+
+\include{gi-symbols.tex}
+
+\newenvironment{slide}[1]{\LARGE\begin{center}{\bf #1}\end{center}}{\newpage}
 
 \begin{slide}{What is AIPS++ and why are we doing it?}
 \begin{itemize}
@@ -66,14 +58,14 @@ gui-based applications.
 \item Synthesis with GUI, 
 \item various GUI tools,
 \item SDCalc
-\item Name change!
+\item Name change
 \end{itemize}
 \item[AIPS++ V1.5 {\em Q1 1998}]: Code development release
 \begin{itemize}
 \item Code development system (documentation, examples, templates). 
 \item Freeze synthesis interfaces.
 \end{itemize}
-\item[AIPS++ Developer's workshop {\em Q2 98}]:
+\item[AIPS++ Developer's workshop {\em Q2 98}]
 \item[AIPS++ V2.0 {\em Q2 98}]: Full release
 \begin{itemize}
 \item Completed connected element synthesis package
@@ -81,10 +73,10 @@ gui-based applications.
 \item Mosaicing package
 \item Contributed code
 \end{itemize}
-\item[AIPS++ User Group {\em Q3 98}]:
-\item[AIPS++ Developer's workshop {\em Q2 99}]:
-\item[AIPS++ User Group {\em Q3 99}]:
-\item[AIPS++ V3.0 {\em Q4 99}]:
+\item[AIPS++ User Group {\em Q3 98}]
+\item[AIPS++ Developer's workshop {\em Q2 99}]
+\item[AIPS++ User Group {\em Q3 99}]
+\item[AIPS++ V3.0 {\em Q4 99}]
 \begin{itemize}
 \item Complete replacement for consortium packages.
 \end{itemize}
@@ -92,7 +84,6 @@ gui-based applications.
 \end{slide}
 
 \begin{slide}{Parkes Multibeam support}
-
 \begin{itemize}
 \item AIPS++ adopted by science team as platform for reduction
 of data from Parkes 13 beam system.
@@ -311,15 +302,15 @@ cases.
 Brouw (50\%), Mark Calabretta (50\%), Tom Oosterloo (75\%) and Mark
 Wieringa (30\%).
 
-\item[BIMA/NCSA]: Dick Crutcher (25\%), Yanti Maio (50\%), John Pixton (100\%),
+\item[BIMA/NCSA]: Dick Crutcher (25\%), John Pixton (100\%),
 Harold Ravlin (100\%), Doug Roberts (65\%), Peter Teuben (25\%), and
 Taisheng Ye (50\%).  
 
-\item[NFRA group]: Ger van Diepen (100\%), Jan Noordam (25\%), Friso Olnon (50\%), 
-Henk Vosmeijer (50\%).
+\item[NFRA group]: Ger van Diepen (100\%), Jan Noordam (25\%), 
+Friso Olnon (50\%), Henk Vosmeijer (50\%).
 
 \item[NRAO]: Tim Cornwell (100\%), Bob Garwood (90\%), Brian
-Glendenning (100\%), Athol Kemball (30\% now, rising to 100\% by
+Glendenning (100\%), Athol Kemball (rising to 100\% by
 October 1997), Ralph Marson (100\%), Joe McMullin(100\%), Pat Murphy
 (30\%), Darrell Schiebel (100\%), Jeff Uphoff (100\%) and Wes Young
 (90\%). Athol and Pat both have responsibility for maintaining the
