@@ -191,7 +191,8 @@ TableExprNode::~TableExprNode ()
 
 Table TableExprNode::table() const
 {
-    return Table(const_cast<BaseTable*>(baseTablePtr()));
+    // Do not take into reference count.
+    return Table(const_cast<BaseTable*>(baseTablePtr()), False);
 }
 
 
