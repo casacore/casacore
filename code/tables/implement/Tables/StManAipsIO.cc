@@ -743,11 +743,11 @@ void StManAipsIO::addColumn (DataManagerColumn* colp)
     for (uInt i=0; i<ncolumn(); i++) {
 	if (colp == colSet_p[i]) {
 	    colSet_p[i]->doCreate (nrrow_p);
+	    setHasPut();
 	    return;
 	}
     }
     throw (DataManInternalError ("StManAipsIO::addColumn"));
-    setHasPut();
 }
 
 void StManAipsIO::removeColumn (DataManagerColumn* colp)
@@ -759,11 +759,11 @@ void StManAipsIO::removeColumn (DataManagerColumn* colp)
 	    for (; i<ncolumn(); i++) {
 		colSet_p[i-1] = colSet_p[i];
 	    }
+	    setHasPut();
 	    return;
 	}
     }
     throw (DataManInternalError ("StManAipsIO::removeColumn: no such column"));
-    setHasPut();
 }
 
 void StManAipsIO::addRow (uInt nr)
