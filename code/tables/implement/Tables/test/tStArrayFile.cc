@@ -164,8 +164,8 @@ void b (Bool canonical, uLong off1, uLong off2, uLong off3, uLong off4,
     cout << l4 << " " << shp << " " << nref << endl;
     shp4 = shp;
     cout << "Length=" << io.length() << endl;
-    cout << io.putShape (IPosition(2,10,5), offs, (String*)0) << " "
-	 << offs << endl;
+    cout << io.putShape (IPosition(2,10,5), offs, (String*)0);
+    cout << " " << offs << endl;
     cout << "Length=" << io.length() << endl;
     io.get (off3+l3, 0, 4096, sbufo);
     io.get (off3+l3, 4096, 5904, sbufo+4096);
