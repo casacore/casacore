@@ -1,5 +1,5 @@
 //# MSSelectionKeywords.cc: selection keywords for the MS
-//# Copyright (C) 1997,1998,1999,2000
+//# Copyright (C) 1997,1998,1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -64,6 +64,7 @@ void MSSelectionKeywords::initMap(SimpleOrderedMap<String,Int>*& fieldMap,
     map.define("amplitude",AMPLITUDE);
     map.define("corrected_amplitude",CORRECTED_AMPLITUDE);
     map.define("model_amplitude",MODEL_AMPLITUDE);
+    map.define("ratio_amplitude",RATIO_AMPLITUDE);
     map.define("residual_amplitude",RESIDUAL_AMPLITUDE);
     map.define("obs_residual_amplitude",OBS_RESIDUAL_AMPLITUDE);
     map.define("antenna1",ANTENNA1);
@@ -72,13 +73,12 @@ void MSSelectionKeywords::initMap(SimpleOrderedMap<String,Int>*& fieldMap,
     map.define("array_id",ARRAY_ID);
     map.define("axis_info",AXIS_INFO);
     map.define("chan_freq",CHAN_FREQ);
-    map.define("correlator_gain",CORRELATOR_GAIN);
-    map.define("obs_correlator_gain",OBS_CORRELATOR_GAIN);
     map.define("corr_names",CORR_NAMES);
     map.define("corr_types",CORR_TYPES);
     map.define("data",DATA);
     map.define("corrected_data",CORRECTED_DATA);
     map.define("model_data",MODEL_DATA);
+    map.define("ratio_data",RATIO_DATA);
     map.define("residual_data",RESIDUAL_DATA);
     map.define("obs_residual_data",OBS_RESIDUAL_DATA);
     map.define("data_desc_id",DATA_DESC_ID);
@@ -94,6 +94,7 @@ void MSSelectionKeywords::initMap(SimpleOrderedMap<String,Int>*& fieldMap,
     map.define("imaginary",IMAGINARY);
     map.define("corrected_imaginary",CORRECTED_IMAGINARY);
     map.define("model_imaginary",MODEL_IMAGINARY);
+    map.define("ratio_imaginary",RATIO_IMAGINARY);
     map.define("residual_imaginary",RESIDUAL_IMAGINARY);
     map.define("obs_residual_imaginary",OBS_RESIDUAL_IMAGINARY);
     map.define("imaging_weight",IMAGING_WEIGHT);
@@ -103,12 +104,14 @@ void MSSelectionKeywords::initMap(SimpleOrderedMap<String,Int>*& fieldMap,
     map.define("phase",PHASE);
     map.define("corrected_phase",CORRECTED_PHASE);
     map.define("model_phase",MODEL_PHASE);
+    map.define("ratio_phase",RATIO_PHASE);
     map.define("residual_phase",RESIDUAL_PHASE);
     map.define("obs_residual_phase",OBS_RESIDUAL_PHASE);
     map.define("phase_dir",PHASE_DIR);
     map.define("real",REAL);
     map.define("corrected_real",CORRECTED_REAL);
     map.define("model_real",MODEL_REAL);
+    map.define("ratio_real",RATIO_REAL);
     map.define("residual_real",RESIDUAL_REAL);
     map.define("obs_residual_real",OBS_RESIDUAL_REAL);
     map.define("ref_frequency",REF_FREQUENCY);
