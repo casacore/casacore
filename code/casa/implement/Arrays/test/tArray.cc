@@ -607,6 +607,98 @@ void oldArrayTest()
  
 }
 
+void testVector()
+{
+  // Test the Vector copy ctor for arrays with !1 dimension.
+  {
+    Array<Int> arr;
+    Array<Int> arr2(arr);
+    AlwaysAssertExit (arr2.ndim()==0  &&  arr2.nelements()==0);
+    AlwaysAssertExit (arr2.shape() == IPosition());
+    Vector<Int> vec(arr);
+    AlwaysAssertExit (vec.ndim()==1  &&  vec.nelements()==0);
+    AlwaysAssertExit (vec.shape() == IPosition(1,0));
+    Matrix<Int> mat(arr);
+    AlwaysAssertExit (mat.ndim()==2  &&  mat.nelements()==0);
+    AlwaysAssertExit (mat.shape() == IPosition(2,0));
+    Cube<Int> cub(arr);
+    AlwaysAssertExit (cub.ndim()==3  &&  cub.nelements()==0);
+    AlwaysAssertExit (cub.shape() == IPosition(3,0));
+  }
+  // Test use of a Vector from an Array with > 1 dimensions.
+  {
+    IPosition shape(4,20,21,22,23);
+    Array<Int> arr(shape);
+    indgen(arr);
+    Array<Int> arr2;
+    {
+      arr2.reference(arr(IPosition(4,0), IPosition(4,shape(0)-1,0,0,0)));
+      Vector<Int> vec(arr2);
+      AlwaysAssertExit (vec.ndim()==1  &&  vec.nelements()==uInt(shape(0)));
+      AlwaysAssertExit (vec.shape() == IPosition(1,shape(0)));
+      AlwaysAssertExit (vec.contiguousStorage());
+      for (uInt i=0; i<vec.size(); ++i) {
+	AlwaysAssertExit (vec(i) == arr(IPosition(4,i,0,0,0)));
+	AlwaysAssertExit (vec(i) == arr2(IPosition(4,i,0,0,0)));
+      }
+    }
+    {
+      // Test it for a slice.
+      arr2.reference(arr(IPosition(4,0,9,9,9), IPosition(4,shape(0)-1,9,9,9)));
+      Vector<Int> vec(arr2);
+      AlwaysAssertExit (vec.ndim()==1  &&  vec.nelements()==uInt(shape(0)));
+      AlwaysAssertExit (vec.shape() == IPosition(1,shape(0)));
+      AlwaysAssertExit (vec.contiguousStorage());
+      for (uInt i=0; i<vec.size(); ++i) {
+	AlwaysAssertExit (vec(i) == arr(IPosition(4,i,9,9,9)));
+	AlwaysAssertExit (vec(i) == arr2(IPosition(4,i,0,0,0)));
+      }
+    }
+    {
+      // Test it for a single element.
+      arr2.reference(arr(IPosition(4,9,9,9,9), IPosition(4,9,9,9,9)));
+      Vector<Int> vec(arr2);
+      AlwaysAssertExit (vec.ndim()==1  &&  vec.nelements()==1);
+      AlwaysAssertExit (vec.shape() == IPosition(1,1));
+      AlwaysAssertExit (vec.contiguousStorage());
+      AlwaysAssertExit (vec(0) == arr(IPosition(4,9,9,9,9)));
+      AlwaysAssertExit (vec(0) == arr2(IPosition(4,0,0,0,0)));
+    }
+    {
+      // Take a part of the original array.
+      arr2.reference(arr(IPosition(4,9,0,9,9), IPosition(4,9,shape(1)-1,9,9)));
+      Vector<Int> vec(arr2);
+      AlwaysAssertExit (vec.ndim()==1  &&  vec.nelements()==uInt(shape(1)));
+      AlwaysAssertExit (vec.shape() == IPosition(1,shape(1)));
+      AlwaysAssertExit (!vec.contiguousStorage());
+      for (uInt i=0; i<vec.size(); ++i) {
+	AlwaysAssertExit (vec(i) == arr(IPosition(4,9,i,9,9)));
+	AlwaysAssertExit (vec(i) == arr2(IPosition(4,0,i,0,0)));
+      }
+    }
+    {
+      Array<Int> arr3(arr(IPosition(4,1,2,3,4),
+			  IPosition(4,19,18,20,22),
+			  IPosition(4,2)));
+      IPosition shp3 = arr3.shape();
+      arr2.reference(arr3(IPosition(4,1,3,1,2),
+			  IPosition(4,1,3,shp3(2)-1,2),
+			  IPosition(4,1,1,2,1)));
+      // Note that elements 1..shp3(2)-1 with step 2 gives shp3(2)/2 elements.
+      Vector<Int> vec(arr2);
+      AlwaysAssertExit (vec.ndim()==1  &&  vec.size()==uInt(shp3(2))/2);
+      AlwaysAssertExit (vec.shape() == IPosition(1,shp3(2)/2));
+      AlwaysAssertExit (!vec.contiguousStorage());
+      for (uInt i=0; i<vec.size(); ++i) {
+	AlwaysAssertExit (vec(i) == arr3(IPosition(4,1,3,1+2*i,2)));
+	AlwaysAssertExit (vec(i) == arr2(IPosition(4,0,0,i,0)));
+	AlwaysAssertExit (&(vec(i)) == &(arr2(IPosition(4,0,0,i,0))));
+	AlwaysAssertExit (&(vec(i)) == &(arr(IPosition(4,3,8,5+4*i,8))));
+      }
+    }
+  }
+}
+
 void seeIfWeMakeMemoryLeak()
 {
     IPosition ip(5);
@@ -813,7 +905,8 @@ int main()
 	    }
 	  }
 	}
-
+	// Test some special Vector things.
+	testVector();
     } catch (AipsError x) {
 	cout << "\nCaught an exception: " << x.getMesg() << endl;
 	return 1;
