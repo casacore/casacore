@@ -207,6 +207,15 @@ template <class T> class RO_LatticeIterator
 {
 public:
 
+  // The default constructor creates an empty object which is practically
+  // unusable.
+  // It can only be used as the source or target of an assignment. It can
+  // also be used as the source for the copy constructor and the copy function.
+  // Other functions do not check if the object is empty and will usually
+  // give a segmentation fault.
+  // The function isNull() can be used to test if the object is empty.
+  RO_LatticeIterator();
+
   // Construct the Iterator with the supplied data.
   // It uses a TileStepper as the default iteration strategy.
   explicit RO_LatticeIterator (const Lattice<T>& data);
@@ -238,6 +247,10 @@ public:
   // <br>Note that if the Lattice uses a cache (e.g. PagedArray), the
   // cache is shared by the iterators.
   RO_LatticeIterator<T> copy() const;
+
+  // Is the iterator object empty?
+  Bool isNull() const
+    { return itsIterPtr.null(); }
     
   // Increment operator - increment the cursor to the next position.  These
   // functions are forwarded to the current LatticeNavigator and both
@@ -319,10 +332,6 @@ public:
 protected:
   // The pointer to the Iterator
   CountedPtr<LatticeIterInterface<T> > itsIterPtr;
-
-private:
-  // The default constructor is disallowed by making it private.
-  RO_LatticeIterator();
 };
 
 
@@ -410,6 +419,15 @@ template <class T> class LatticeIterator : public RO_LatticeIterator<T>
 {
 public:
   
+  // The default constructor creates an empty object which is practically
+  // unusable.
+  // It can only be used as the source or target of an assignment. It can
+  // also be used as the source for the copy constructor and the copy function.
+  // Other functions do not check if the object is empty and will usually
+  // give a segmentation fault.
+  // The function isNull() can be used to test if the object is empty.
+  LatticeIterator();
+
   // Construct the Iterator with the supplied data.
   // It uses a TileStepper as the default iteration strategy.
   explicit LatticeIterator (Lattice<T>& data);
@@ -473,11 +491,6 @@ public:
   // Function which checks the internals of the class for consistency.
   // Returns True if everything is fine. Otherwise returns False.
   Bool ok() const;
-
-private:
-  // The default constructor is disallowed by making it private.
-  LatticeIterator();
-
 };
 
 

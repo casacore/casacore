@@ -36,10 +36,15 @@
 #include <aips/Arrays/Matrix.h>
 #include <aips/Arrays/Cube.h>
 #include <aips/Arrays/IPosition.h>
-#include <aips/Logging/LogIO.h>
-#include <aips/Logging/LogOrigin.h>
 #include <aips/Utilities/Assert.h> 
+#include <aips/Exceptions/Error.h>
 
+
+template <class T>
+RO_LatticeIterator<T>::RO_LatticeIterator()
+{
+  DebugAssert(ok(), AipsError);
+}
 
 template <class T>
 RO_LatticeIterator<T>::RO_LatticeIterator (const Lattice<T>& lattice)
@@ -92,8 +97,10 @@ RO_LatticeIterator<T>& RO_LatticeIterator<T>::operator=
 template <class T>
 RO_LatticeIterator<T> RO_LatticeIterator<T>::copy() const
 {
-  RO_LatticeIterator<T> tmp (*this);
-  tmp.itsIterPtr = itsIterPtr->clone();
+  RO_LatticeIterator<T> tmp;
+  if (!isNull()) {
+    tmp.itsIterPtr = itsIterPtr->clone();
+  }
   return tmp;
 }
 
@@ -197,21 +204,20 @@ const Array<T>& RO_LatticeIterator<T>::cursor() const
 template <class T>
 Bool RO_LatticeIterator<T>::ok() const
 {
-  String message;
-  if (itsIterPtr.null() == True) {
-    message = "The pointer the the actual Lattice Iterator is zero!";
-  } else if (itsIterPtr->ok() == False) {
-    message = "The actual Lattice Iterator class is inconsistent";
-  }
-  if (! message.empty()) {
-    LogIO ROlogErr(LogOrigin("RO_LatticeIterator<T>", "ok()"));
-    ROlogErr << LogIO::SEVERE << message << LogIO::POST;
-    return False;
+  if (!isNull()) {
+    if (! itsIterPtr->ok()) {
+      throw AipsError ("The actual Lattice Iterator class is inconsistent");
+      return False;
+    }
   }
   return True;
 }
 
 
+
+template <class T>
+LatticeIterator<T>::LatticeIterator()
+{}
 
 template <class T>
 LatticeIterator<T>::LatticeIterator (Lattice<T>& lattice)
@@ -265,8 +271,10 @@ LatticeIterator<T>& LatticeIterator<T>::operator=
 template <class T>
 LatticeIterator<T> LatticeIterator<T>::copy() const
 {
-  LatticeIterator<T> tmp (*this);
-  tmp.itsIterPtr = itsIterPtr->clone();
+  LatticeIterator<T> tmp;
+  if (!isNull()) {
+    tmp.itsIterPtr = itsIterPtr->clone();
+  }
   return tmp;
 }
 
