@@ -672,7 +672,9 @@ PagedImage<T>& PagedImage<T>::operator+= (const Lattice<T>& other)
   // Mask is not handled in such a loop; therefore use LEL.
 */
 
-  this->copyData(LatticeExprNode(*this)+LatticeExprNode(other));
+  LatticeExpr<T> expr(*this + other);
+  copyData (expr);
+  ///  copyData (LatticeExprNode(*this)+LatticeExprNode(other));
   return *this;
 }
 
