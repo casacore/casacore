@@ -1,5 +1,5 @@
 //# BucketFile.cc: Tiled Hypercube Storage Manager for tables
-//# Copyright (C) 1995,1996
+//# Copyright (C) 1995,1996,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -37,13 +37,30 @@
 #include <string.h>               // needed for strerror
 
 
+#ifdef PABLO_IO
+#include "IOTrace.h"
+#else
+#define traceFCLOSE fclose
+#define traceFSEEK fseek
+#define traceFREAD fread
+#define traceFWRITE fwrite
+#define traceREAD read
+#define traceWRITE write
+#define trace2OPEN open
+#define traceLSEEK lseek
+#define trace3OPEN open
+#define traceCLOSE close
+#endif //PABLO_IO
+
+
+
 BucketFile::BucketFile (const String& fileName)
 : name_p       (Path(fileName).expandedName()),
   isWritable_p (True),
   fd_p         (-1)
 {
     // Create the file.
-    fd_p = ::open (name_p, O_RDWR | O_CREAT | O_TRUNC, 0644);
+    fd_p = ::trace3OPEN (name_p, O_RDWR | O_CREAT | O_TRUNC, 0644);
     if (fd_p < 0) {
 	throw (AipsError ("BucketFile: create error on file " + name_p +
 			  ": " + strerror(errno)));
@@ -65,7 +82,7 @@ BucketFile::~BucketFile()
 void BucketFile::close()
 {
     if (fd_p >= 0) {
-	::close (fd_p);
+	::traceCLOSE (fd_p);
 	fd_p = -1;
     }
 }
@@ -75,9 +92,9 @@ void BucketFile::open()
 {
     if (fd_p < 0) {
 	if (isWritable_p) {
-	    fd_p = ::open (name_p, O_RDWR);
+	    fd_p = ::trace2OPEN (name_p, O_RDWR);
 	}else{
-	    fd_p = ::open (name_p, O_RDONLY);
+	    fd_p = ::trace2OPEN (name_p, O_RDONLY);
 	}
 	if (fd_p == -1) {
 	    throw (AipsError ("BucketFile: open error on file " + name_p +
@@ -104,12 +121,12 @@ void BucketFile::setRW()
     // Try to reopen the file as read/write.
     // Throw an exception if it fails.
     if (fd_p >= 0) {
-	int fd = ::open (name_p, O_RDWR);
+	int fd = ::trace2OPEN (name_p, O_RDWR);
 	if (fd == -1) {
 	    throw (AipsError ("BucketFile: reopenRW error on file " + name_p +
 			      ": " + strerror(errno)));
 	}
-	::close (fd_p);
+	::traceCLOSE (fd_p);
 	fd_p = fd;
     }
     isWritable_p = True;
@@ -118,7 +135,7 @@ void BucketFile::setRW()
 
 uInt BucketFile::read (void* buffer, uInt length) const
 {
-    if (::read (fd_p, buffer, length)  !=  Int(length)) {
+    if (::traceREAD (fd_p, buffer, length)  !=  Int(length)) {
 	throw (AipsError ("BucketFile: read error on file " + name_p +
 	                  ": " + strerror(errno)));
     }
@@ -127,7 +144,7 @@ uInt BucketFile::read (void* buffer, uInt length) const
 
 uInt BucketFile::write (const void* buffer, uInt length)
 {
-    if (::write (fd_p, buffer, length)  !=  Int(length)) {
+    if (::traceWRITE (fd_p, buffer, length)  !=  Int(length)) {
 	throw (AipsError ("BucketFile: write error on file " + name_p +
 	                  ": " + strerror(errno)));
     }
