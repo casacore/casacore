@@ -190,9 +190,9 @@ Bool RO_LatticeIterator<T>::ok() const
 {
   String message;
   if (itsIterPtr.null() == True) {
-    message = "The pointer the the actual Lattice Iterator is zero!" 
+    message = "The pointer the the actual Lattice Iterator is zero!";
   } else if (itsIterPtr->ok() == False) {
-    message = "The actual Lattice Iterator class is inconsistent" 
+    message = "The actual Lattice Iterator class is inconsistent";
   }
   if (! message.empty()) {
     LogIO ROlogErr(LogOrigin("RO_LatticeIterator<T>", "ok()"));
