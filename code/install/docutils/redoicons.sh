@@ -65,7 +65,7 @@ done
 # Make the sed script,  how 'bout all them \\\\\'s, hey it works!
 #
 LOCALICONS=`echo $GIFPARENT/gif/latex2html | sed 's/\//\\\\\//g'`
-cat sedfile
+echo s/$ICONSERVER/$LOCALICONS/g > sedfile
 #
 # Do the translation
 #
