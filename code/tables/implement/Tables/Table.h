@@ -136,6 +136,7 @@ class Table
 friend class ROTableColumn;
 friend class BaseTable;
 friend class PlainTable;
+friend class MemoryTable;
 friend class RefTable;
 friend class TableIterator;
 friend class RODataManAccessor;
@@ -155,6 +156,13 @@ public:
 	Update,
 	// delete table
 	Delete
+    };
+
+    enum TableType {
+	// plain table (stored on disk)
+        Plain,
+	// table held in memory
+	Memory
     };
 
     enum EndianFormat {
@@ -221,6 +229,11 @@ public:
 	   const TableLock& lockOptions, TableOption = Table::Old);
     // </group>
 
+    // Make a new empty table (plain (scratch) or memory type).
+    // Columns should be added to make it a real one.
+    // Note that the endian format is only relevant for plain tables.
+    explicit Table (TableType, EndianFormat = Table::AipsrcEndian);
+
     // Make a table object for a new table, which can thereafter be used
     // for reading and writing.
     // If there are unbound columns, default storage managers an/ord virtual
@@ -238,6 +251,12 @@ public:
     // <group>
     explicit Table (SetupNewTable&, uInt nrrow = 0, Bool initialize = False,
 		    EndianFormat = Table::AipsrcEndian);
+    Table (SetupNewTable&, TableType,
+	   uInt nrrow = 0, Bool initialize = False,
+	   EndianFormat = Table::AipsrcEndian);
+    Table (SetupNewTable&, TableType, const TableLock& lockOptions,
+	   uInt nrrow = 0, Bool initialize = False,
+	   EndianFormat = Table::AipsrcEndian);
     Table (SetupNewTable&, TableLock::LockOption,
 	   uInt nrrow = 0, Bool initialize = False,
 	   EndianFormat = Table::AipsrcEndian);
@@ -769,8 +788,16 @@ public:
     // This can be used in case of specific data managers which need to
     // be created with more than one column (e.g. the tiled hypercube
     // storage managers).
+    // The data manager can be given directly or by means of a record
+    // describing the data manager in the standard way with the fields
+    // TYPE, NAME, and SPEC. The record can contain those fields itself
+    // or it can contain a single subrecord with those fields.
+    // <group>
     void addColumn (const TableDesc& tableDesc,
 		    const DataManager& dataManager);
+    void addColumn (const TableDesc& tableDesc,
+		    const Record& dataManagerInfo);
+    // <group>
 
     // Test if columns can be removed.
     // It can if the columns exist and if the data manager it is using
@@ -984,6 +1011,9 @@ inline void Table::addColumn (const ColumnDesc& columnDesc,
 inline void Table::addColumn (const TableDesc& tableDesc,
 			      const DataManager& dataManager)
     { baseTabPtr_p->addColumn (tableDesc, dataManager); }
+inline void Table::addColumn (const TableDesc& tableDesc,
+			      const Record& dataManagerInfo)
+    { baseTabPtr_p->addColumns (tableDesc, dataManagerInfo); }
 inline void Table::removeColumn (const Vector<String>& columnNames)
     { baseTabPtr_p->removeColumn (columnNames); }
 inline void Table::renameColumn (const String& newName, const String& oldName)

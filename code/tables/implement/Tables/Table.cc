@@ -26,7 +26,9 @@
 //# $Id$
 
 #include <aips/Tables/Table.h>
+#include <aips/Tables/SetupNewTab.h>
 #include <aips/Tables/PlainTable.h>
+#include <aips/Tables/MemoryTable.h>
 #include <aips/Tables/RefTable.h>
 #include <aips/Tables/NullTable.h>
 #include <aips/Tables/ExprDerNode.h>
@@ -73,7 +75,7 @@ Table::Table (const String& name, TableOption option)
   isCounted_p      (True),
   lastModCounter_p (0)
 {
-    open (name, "", option, TableLock(TableLock::DefaultLocking));
+    open (name, "", option, TableLock());
 }
 
 Table::Table (const String& name, const TableLock& lockOptions,
@@ -90,7 +92,7 @@ Table::Table (const String& name, const String& type, TableOption option)
   isCounted_p      (True),
   lastModCounter_p (0)
 {
-    open (name, type, option, TableLock(TableLock::DefaultLocking));
+    open (name, type, option, TableLock());
 }
     
 Table::Table (const String& name, const String& type,
@@ -102,6 +104,21 @@ Table::Table (const String& name, const String& type,
     open (name, type, option, lockOptions);
 }
 
+Table::Table (Table::TableType type, Table::EndianFormat endianFormat)
+: baseTabPtr_p     (0),
+  isCounted_p      (True),
+  lastModCounter_p (0)
+{
+    SetupNewTable newtab("", TableDesc(), Table::Scratch);
+    if (type == Table::Memory) {
+        baseTabPtr_p = new MemoryTable (newtab, 0, False);
+    } else {
+        baseTabPtr_p = new PlainTable (newtab, 0, False,
+				       TableLock(), endianFormat);
+    }
+    baseTabPtr_p->link();
+}
+
 Table::Table (SetupNewTable& newtab, uInt nrrow, Bool initialize,
 	      Table::EndianFormat endianFormat)
 : baseTabPtr_p     (0),
@@ -109,8 +126,38 @@ Table::Table (SetupNewTable& newtab, uInt nrrow, Bool initialize,
   lastModCounter_p (0)
 {
     baseTabPtr_p = new PlainTable (newtab, nrrow, initialize,
-				   TableLock(TableLock::DefaultLocking),
-				   endianFormat);
+				   TableLock(), endianFormat);
+    baseTabPtr_p->link();
+}
+Table::Table (SetupNewTable& newtab, Table::TableType type,
+	      uInt nrrow, Bool initialize,
+	      Table::EndianFormat endianFormat)
+: baseTabPtr_p     (0),
+  isCounted_p      (True),
+  lastModCounter_p (0)
+{
+    if (type == Table::Memory) {
+        baseTabPtr_p = new MemoryTable (newtab, nrrow, initialize);
+    } else {
+        baseTabPtr_p = new PlainTable (newtab, nrrow, initialize,
+				       TableLock(), endianFormat);
+    }
+    baseTabPtr_p->link();
+}
+Table::Table (SetupNewTable& newtab, Table::TableType type,
+	      const TableLock& lockOptions,
+	      uInt nrrow, Bool initialize,
+	      Table::EndianFormat endianFormat)
+: baseTabPtr_p     (0),
+  isCounted_p      (True),
+  lastModCounter_p (0)
+{
+    if (type == Table::Memory) {
+        baseTabPtr_p = new MemoryTable (newtab, nrrow, initialize);
+    } else {
+        baseTabPtr_p = new PlainTable (newtab, nrrow, initialize,
+				       lockOptions, endianFormat);
+    }
     baseTabPtr_p->link();
 }
 Table::Table (SetupNewTable& newtab, TableLock::LockOption lockOption,
