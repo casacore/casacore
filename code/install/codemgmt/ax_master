@@ -6558,3 +6558,4 @@
 18 602 src rm nrao/apps/e2echromepipe/makefile
 18 622 src rm trial/implement/Guiutils/displaylistbox.g
 18 622 sys rm libexec/displaylistbox.g
+18 743 src mv trial/implement/Logging/LogFilterInterface.h aips/implement/Logging/LogFilterInterface.h
