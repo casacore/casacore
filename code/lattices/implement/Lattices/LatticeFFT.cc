@@ -37,7 +37,7 @@
 #include <trial/Lattices/Lattice.h>
 #include <trial/Lattices/LatticeIterator.h>
 #include <trial/Lattices/LatticeStepper.h>
-#include <trial/Lattices/TiledStepper.h>
+#include <trial/Lattices/TiledLineStepper.h>
 
 
 void LatticeFFT::cfft2d(Lattice<Complex> & cLattice, const Bool toFrequency) {
@@ -53,9 +53,12 @@ void LatticeFFT::cfft2d(Lattice<Complex> & cLattice, const Bool toFrequency) {
     LatticeStepper ls(latticeShape, cursorShape);
     LatticeIterator<Complex> li(cLattice, ls);
     FFTServer<Float,Complex> ffts(cursorShape);
-    for (li.reset(); !li.atEnd(); li++)
-      if (!allNear(li.cursor(), cZero, 1E-6))
+    for (li.reset(); !li.atEnd(); li++) {
+       if (!allNear(li.cursor(), cZero, 1E-6)) {
 	 ffts.fft(li.matrixCursor().ac(), toFrequency);
+	 li.writeCursor();
+       }
+    }
   } // For large transforms , we do line by line FFT's
   else {
     Vector<Bool> whichAxes(ndim, False);
@@ -76,11 +79,13 @@ void LatticeFFT::cfft(Lattice<Complex> & cLattice,
 
   for (uInt dim = 0; dim < ndim; dim++) {
     if (whichAxes(dim) == True) {
-      TiledStepper ts(latticeShape, tileShape, dim);
+      TiledLineStepper ts(latticeShape, tileShape, dim);
       LatticeIterator<Complex> li(cLattice, ts);
       for (li.reset(); !li.atEnd(); li++) {
-	if (!allNear(li.cursor(), cZero, 1E-6))
+	if (!allNear(li.cursor(), cZero, 1E-6)) {
 	  ffts.fft(li.vectorCursor(), toFrequency);
+	  li.writeCursor();
+	}
       }
     }
   }
@@ -118,28 +123,36 @@ void LatticeFFT::rcfft(Lattice<Complex> & out, const Lattice<Float> & in,
     if (whichAxes(dim) == True) {
       if (dim == firstAxis) { // Do real->complex Transforms
 	RO_LatticeIterator<Float> inIter(in, 
-					 TiledStepper(inShape, tileShape,dim));
+					 TiledLineStepper(inShape,
+							  tileShape,dim));
 	LatticeIterator<Complex> outIter(out, 
-					 TiledStepper(outShape,tileShape,dim));
+					 TiledLineStepper(outShape,
+							  tileShape,dim));
 	for (inIter.reset(), outIter.reset(); 
 	     !inIter.atEnd() && !outIter.atEnd(); inIter++, outIter++) {
-	  if (allNear(inIter.cursor(), 0.0f, 1E-6))
+	  if (allNear(inIter.cursor(), 0.0f, 1E-6)) {
 	    outIter.cursor() = cZero;
-	  else
-	    if (doShift)
+	  } else {
+	    if (doShift) {
 	      ffts.fft(outIter.vectorCursor(), inIter.vectorCursor());
-	    else
+	    } else {
 	      ffts.fft0(outIter.vectorCursor(), inIter.vectorCursor());
+	    }
+	  }
+	  outIter.writeCursor();
 	}
       }
       else { // Do complex->complex transforms
 	LatticeIterator<Complex> iter(out,
-				      TiledStepper(outShape, tileShape, dim));
+				      TiledLineStepper(outShape,
+						       tileShape, dim));
 	for (iter.reset(); !iter.atEnd(); iter++) {
-	  if (doShift)
+	  if (doShift) {
 	    ffts.fft(iter.vectorCursor(), True);
-	  else
+	  } else {
 	    ffts.fft0(iter.vectorCursor(), True);
+	  }
+	  iter.writeCursor();
 	}
       }
     }
@@ -184,27 +197,36 @@ void LatticeFFT::crfft(Lattice<Float> & out, Lattice<Complex> & in,
     if (whichAxes(dim) == True) {
       if (dim != firstAxis) { // Do complex->complex Transforms
  	LatticeIterator<Complex> iter(in,
-				      TiledStepper(inShape,tileShape,dim));
+				      TiledLineStepper(inShape,
+						       tileShape, dim));
  	for (iter.reset(); !iter.atEnd(); iter++) {
-	  if (doneAnyAxis || !allNear(iter.cursor(), cZero, 1E-6))
-	    if (doShift)
+	  if (doneAnyAxis || !allNear(iter.cursor(), cZero, 1E-6)) {
+	    if (doShift) {
 	      ffts.fft(iter.vectorCursor(), False);
-	    else
+	    } else {
 	      ffts.fft0(iter.vectorCursor(), False);
+	    }
+	    iter.writeCursor();
+	  }
  	}
 	doneAnyAxis = True;
       }
       else { // Do complex->real transforms
  	RO_LatticeIterator<Complex> inIter(in, 
-					 TiledStepper(inShape, tileShape,dim));
+					   TiledLineStepper(inShape,
+							    tileShape, dim));
  	LatticeIterator<Float> outIter(out, 
-				       TiledStepper(outShape,tileShape,dim));
+				       TiledLineStepper(outShape,
+							tileShape, dim));
  	for (inIter.reset(), outIter.reset(); 
- 	     !inIter.atEnd() && !outIter.atEnd(); inIter++, outIter++)
-	  if (doShift)
+ 	     !inIter.atEnd() && !outIter.atEnd(); inIter++, outIter++) {
+	  if (doShift) {
 	    ffts.fft(outIter.vectorCursor(), inIter.vectorCursor());
-	  else
+	  } else {
 	    ffts.fft0(outIter.vectorCursor(), inIter.vectorCursor());
+	  }
+	  outIter.writeCursor();
+	}
       }
     }
   }

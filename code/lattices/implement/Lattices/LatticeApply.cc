@@ -35,7 +35,7 @@
 #include <trial/Lattices/Lattice.h>
 #include <trial/Lattices/LatticeStepper.h>
 #include <trial/Lattices/VectorCollapser.h>
-#include <trial/Lattices/TiledStepper.h>
+#include <trial/Lattices/TiledLineStepper.h>
 #include <trial/Lattices/LatticeApply.h>
 #include <trial/Lattices/LatticeIterator.h>
 #include <trial/Images/PagedImage.h>
@@ -44,16 +44,16 @@
 #include <iostream.h>
 
 template <class T>
-void LatticeApply<T>::vectorApply (Lattice<T> &latticeOut,
-				   const Lattice<T> &latticeIn,
-				   VectorCollapser<T> &collapser,
+void LatticeApply<T>::vectorApply (Lattice<T>& latticeOut,
+				   const Lattice<T>& latticeIn,
+				   VectorCollapser<T>& collapser,
 				   const Int profileAxis,
-				   const IPosition blcU,
-				   const IPosition trcU,
-////				   const IPosition incU,
+				   const IPosition& blcU,
+				   const IPosition& trcU,
+////				   const IPosition& incU,
 				   const Bool dropAxis,
 				   const Bool showProgress,
-				   const String progressTitle)
+				   const String& progressTitle)
 {
 // Verify region
 
@@ -65,10 +65,10 @@ void LatticeApply<T>::vectorApply (Lattice<T> &latticeOut,
     prepare (ioMap, blc, trc, inc, latticeIn, latticeOut, profileAxis, 
 	     dropAxis);
 
-// Input profiles are extracted with the TiledStepper.
+// Input profiles are extracted with the TiledLineStepper.
 
     IPosition inTileShape = latticeIn.niceCursorShape (latticeIn.maxPixels());
-    TiledStepper inNav(latticeIn.shape(), inTileShape, profileAxis);
+    TiledLineStepper inNav(latticeIn.shape(), inTileShape, profileAxis);
     inNav.subSection (blc, trc);
     RO_LatticeIterator<T> inIter(latticeIn, inNav);
     IPosition latticeShape = inNav.subLatticeShape();
@@ -138,16 +138,16 @@ void LatticeApply<T>::vectorApply (Lattice<T> &latticeOut,
 
 
 template <class T>
-void LatticeApply<T>::vectorMultiApply (PtrBlock<Lattice<T> *> &latticeOut,
-					const Lattice<T> &latticeIn,
+void LatticeApply<T>::vectorMultiApply (PtrBlock<Lattice<T>*>& latticeOut,
+					const Lattice<T>& latticeIn,
 					VectorCollapser<T>& collapser,
 					const Int profileAxis,
-					const IPosition blcU,
-					const IPosition trcU,
-////					const IPosition incU,
+					const IPosition& blcU,
+					const IPosition& trcU,
+////					const IPosition& incU,
 					const Bool dropAxis,
 					const Bool showProgress,
-					const String progressTitle)
+					const String& progressTitle)
 {
 
 // First verify that all the output lattices have the same shape and tile shape
@@ -171,10 +171,10 @@ void LatticeApply<T>::vectorMultiApply (PtrBlock<Lattice<T> *> &latticeOut,
     prepare (ioMap, blc, trc, inc, latticeIn, *(latticeOut[0]),
 	     profileAxis, dropAxis);
 
-// Input profiles are extracted with the TiledStepper.
+// Input profiles are extracted with the TiledLineStepper.
 
     IPosition inTileShape = latticeIn.niceCursorShape (latticeIn.maxPixels());
-    TiledStepper inNav(latticeIn.shape(), inTileShape, profileAxis);
+    TiledLineStepper inNav(latticeIn.shape(), inTileShape, profileAxis);
     inNav.subSection (blc, trc);
     RO_LatticeIterator<T> inIter(latticeIn, inNav);
     IPosition latticeShape = inNav.subLatticeShape();
