@@ -31,7 +31,6 @@
 //# Includes
 #include <aips/aips.h>
 #include <aips/Containers/Block.h>
-#include <aips/Exceptions/Excp.h>
 #include <aips/Utilities/Assert.h>
 
 //# Forward Declarations

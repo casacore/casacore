@@ -1,5 +1,5 @@
 //# CountedPtr.cc: Referenced counted pointer classes
-//# Copyright (C) 1993,1994,1995,1996,1999
+//# Copyright (C) 1993,1994,1995,1996,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -26,7 +26,7 @@
 //# $Id$
 
 #include <aips/Utilities/CountedPtr.h>
-#include <aips/Exceptions/Excp.h>
+
 
 template<class t> 
 void PtrRep<t>::freeVal() {
