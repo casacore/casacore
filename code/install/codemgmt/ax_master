@@ -5419,3 +5419,7 @@
 15 204 src rm trial/implement/Lattices/test/tCopyLattice.cc
 15 205 src rm trial/implement/MeasurementComponents/TimeAverager.h
 15 205 src rm trial/implement/MeasurementComponents/TimeAverager.cc
+15 205 src rm atnf/implement/PKSIO/PKSMS1reader.h
+15 205 src rm atnf/implement/PKSIO/PKSMS1reader.cc
+15 205 src rm atnf/implement/PKSIO/PKSMS1writer.h
+15 205 src rm atnf/implement/PKSIO/PKSMS1writer.cc
