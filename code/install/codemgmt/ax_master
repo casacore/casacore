@@ -4597,3 +4597,4 @@
 14 297 src mv trial/implement/MeasurementSets/NewMSDopplerIndex.h trial/implement/MeasurementSets/MSDopplerIndex.h
 14 297 src mv trial/implement/MeasurementSets/NewMSFeedIndex.cc trial/implement/MeasurementSets/MSFeedIndex.cc
 14 297 src mv trial/implement/MeasurementSets/NewMSFeedIndex.h trial/implement/MeasurementSets/MSFeedIndex.h
+14 297 src mv trial/implement/MeasurementSets/NewMSFitsInput.cc trial/implement/MeasurementSets/MSFitsInput.cc
