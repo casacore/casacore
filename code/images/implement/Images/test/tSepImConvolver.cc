@@ -30,6 +30,7 @@
 #include <aips/aips.h>
 #include <aips/Functionals/Gaussian1D.h>
 #include <aips/Arrays/Vector.h>
+#include <aips/Arrays/ArrayMath.h>
 #include <aips/Exceptions/Error.h>
 #include <aips/Inputs/Input.h>
 #include <aips/Logging.h>
@@ -187,6 +188,7 @@ try {
       Vector<Float> kernel = sic.getKernel(uInt(0));
       if (show) {
          cout << "Kernel = " << kernel.ac() << endl;
+         cout << "Sum of kernel = " << sum(kernel.ac()) << endl;
       }
    }
 }
