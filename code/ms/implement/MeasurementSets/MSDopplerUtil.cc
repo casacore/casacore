@@ -1,5 +1,5 @@
 //# MSDopplerUtil.cc: Implementation of MSDopplerUtil.h
-//# Copyright (C) 1996,1997,1998,1999,2000
+//# Copyright (C) 1996,1997,1998,1999,2000,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -55,7 +55,7 @@ MSDopplerUtil::~MSDopplerUtil()
 //----------------------------------------------------------------------------
 
 Bool MSDopplerUtil::dopplerInfo (Vector<Double>& restFrequency,
-				 const Int& spwid)
+				 Int spwId, Int fieldId)
 {
 // Retrieve a list of all rest frequencies used in Doppler
 // tracking of the specified spectral window id.
@@ -70,44 +70,70 @@ Bool MSDopplerUtil::dopplerInfo (Vector<Double>& restFrequency,
 
   // Accessor for the MS columns and sub-tables
   MSColumns msc (ms_p);
-  // Retrieve the doppler id.
-  if (!ms_p.doppler().isNull()) {
-    Int dopId = msc.spectralWindow().dopplerId()(spwid);
-    if (dopId >= 0) {
-      // Find all matching DOPPLER sub-table rows for this DOPPLER_ID
-      for (uInt idoprow=0; idoprow<msc.doppler().nrow(); idoprow++) {
-	if (msc.doppler().dopplerId()(idoprow) == dopId) {
-	  // Find the rest frequency information in the SOURCE subtable
-	  Int srcId = msc.doppler().sourceId()(idoprow);
-	  Int transId = msc.doppler().transitionId()(idoprow);
-	  if (!ms_p.source().isNull()) {
-	    // Use indexed access to the SOURCE sub-table
-	    MSSourceIndex sourceIndex (ms_p.source());
-	    sourceIndex.sourceId() = srcId;
-	    sourceIndex.spectralWindowId() = spwid;
-	    Vector<uInt> rows = sourceIndex.getRowNumbers();
-            for (uInt irow=0; irow<rows.nelements(); irow++) {
-	      Vector<Double> restFrq = msc.source().restFrequency()(irow);
-	      // Does this already exist in the output rest frequency array ?
-	      Bool exists = False;
-	      for (uInt k=0; k<restFrequency.nelements(); k++) {
-		if (restFrq(transId)==restFrequency(k)) {
-		  exists = True;
-		};
-	      };
-	      if (!exists) {
-		restFrequency.resize(restFrequency.nelements()+1, True);
-		restFrequency(nRestFreq) = restFrq(transId);
-		nRestFreq++;
-		found = True;
-	      };
-	    }; // for (Int irow=0..)
-	  }; // if (!ms_p.source().isNull())
-	}; // if (msc.doppler().dopplerId()..)
-      }; // for (Int idoprow=0;..)
-    }; // if (dopId >=0)
-  }; // if (!ms_p.doppler()..)
-
+  // Retrieve the doppler id & source id
+  Int dopId = (msc.spectralWindow().dopplerId().isNull() ? 
+               -1 : msc.spectralWindow().dopplerId()(spwId));
+  Int srcId = msc.field().sourceId()(fieldId);
+    // Use the doppler table if specified and it exists
+  if (dopId >= 0 && (!ms_p.doppler().isNull())) {
+    // Find the matching DOPPLER sub-table rows for this DOPPLER_ID
+    for (uInt idoprow=0; idoprow<msc.doppler().nrow(); idoprow++) {
+      if (msc.doppler().dopplerId()(idoprow) == dopId &&
+          msc.doppler().sourceId()(idoprow)== srcId) {
+        // Find the rest frequency information in the SOURCE subtable
+        Int transId = msc.doppler().transitionId()(idoprow);
+        if (!ms_p.source().isNull()) {
+          // Use indexed access to the SOURCE sub-table
+          MSSourceIndex sourceIndex (ms_p.source());
+          sourceIndex.sourceId() = srcId;
+          sourceIndex.spectralWindowId() = spwId;
+          Vector<uInt> rows = sourceIndex.getRowNumbers();
+          for (uInt irow=0; irow<rows.nelements(); irow++) {
+            Vector<Double> restFrq = msc.source().restFrequency()(irow);
+            // Does this already exist in the output rest frequency array ?
+            Bool exists = False;
+            for (uInt k=0; k<restFrequency.nelements(); k++) {
+              if (restFrq(transId)==restFrequency(k)) {
+                exists = True;
+              };
+            };
+            if (!exists) {
+              restFrequency.resize(restFrequency.nelements()+1, True);
+              restFrequency(nRestFreq) = restFrq(transId);
+              nRestFreq++;
+              found = True;
+            };
+          }; // for (Int irow=0..)
+        }; // if (!ms_p.source().isNull())
+      }; // if (msc.doppler().dopplerId()..)
+    }; // for (Int idoprow=0;..)
+  } else if (!ms_p.source().isNull()) {
+    // use just the source table if it exists
+    MSSourceIndex sourceIndex(ms_p.source());
+    sourceIndex.sourceId()= msc.field().sourceId()(fieldId);
+    sourceIndex.spectralWindowId()=spwId;
+    Vector<uInt> rows = sourceIndex.getRowNumbers();
+    if (!msc.source().restFrequency().isNull()) {
+      for (uInt irow=0; irow<rows.nelements(); irow++) {
+        Vector<Double> restFrq = msc.source().restFrequency()(irow);
+        // Does this already exist in the output rest frequency array ?
+        for (uInt transId=0; transId<restFrq.nelements(); transId++) {
+          Bool exists = False;
+          for (uInt k=0; k<restFrequency.nelements(); k++) {
+            if (restFrq(transId)==restFrequency(k)) {
+              exists = True;
+            };
+          };
+          if (!exists) {
+            restFrequency.resize(restFrequency.nelements()+1, True);
+            restFrequency(nRestFreq) = restFrq(transId);
+            nRestFreq++;
+            found = True;
+          };
+        }
+      }; // for (Int irow=0..)
+    }    
+  }
   return found;
 };
 

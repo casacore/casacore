@@ -1,5 +1,5 @@
 //# MSDopplerUtil.h: utility class for MS Doppler tracking information
-//# Copyright (C) 2000
+//# Copyright (C) 2000,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -80,8 +80,12 @@ public:
   ~MSDopplerUtil();
 
   // Retrieve a list of all rest frequencies used for a given 
-  // spectral window id.
-  Bool dopplerInfo (Vector<Double>& restFrequency, const Int& spwid);
+  // spectral window id and field id.
+  // Note that the output vector combines information for multiple spectral lines
+  // and (unlikely) multiple source table entries.
+  // If the doppler sub table doesn't exist, the information is
+  // retrieved from directly from the source sub table.
+  Bool dopplerInfo (Vector<Double>& restFrequency, Int spwId, Int fieldId);
 
 private:
   // Prohibit null constructor, copy constructor and assignment for now
