@@ -2,6 +2,8 @@
      template Bool allNearAbs(Array<Double> const &, Double const &, Double) 
 ################################################################################
 # Needed for tVelocityAligner
+1000 coordinates/Coordinates/VelocityAligner.cc 
+     template class VelocityAligner<Float> 
 1020 scimath/Mathematics/InterpolateArray1D.cc 
      template class InterpolateArray1D<Double, Float> 
 1050 casa/Utilities/BinarySearch.cc casa/Arrays/Vector.h
