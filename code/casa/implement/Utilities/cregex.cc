@@ -30,10 +30,10 @@
 
 /* Get the interface, including the syntax bits.  */
 #include <aips/Utilities/cregex.h>
-#include <string.h>
-#include <stdlib.h>
+#include <aips/string.h>
+#include <aips/stdlib.h>
 /* We write fatal error messages on standard error.  */
-#include <stdio.h>
+#include <aips/stdio.h>
 /* isalpha(3) etc. are used for the character classes.  */
 #include <ctype.h>
 /* Sequents are missing isgraph.  */

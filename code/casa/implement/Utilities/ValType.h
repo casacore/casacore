@@ -1,5 +1,5 @@
 //# ValType.h: Data types and their undefined values
-//# Copyright (C) 1993,1994,1995,1996,1998
+//# Copyright (C) 1993,1994,1995,1996,1998,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -36,7 +36,7 @@
 #include <aips/Utilities/Compare.h>
 #include <aips/OS/Conversion.h>
 #include <aips/IO/AipsIO.h>
-#include <iostream.h>
+#include <aips/aipsiosfwd.h>
 
 //# Forward Declarations
 class TableRecord;

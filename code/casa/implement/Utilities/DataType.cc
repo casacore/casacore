@@ -28,7 +28,7 @@
 #include <aips/Utilities/DataType.h>
 #include <aips/Utilities/Assert.h>
 
-#include <iostream.h>
+#include <aips/iostream.h>
 
 ostream &operator<<(ostream &os, DataType type)
 {

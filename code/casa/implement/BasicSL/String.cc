@@ -31,7 +31,7 @@
 #include <aips/Utilities/Regex.h>
 #include <algorithm>
 #include <aips/string.h>
-#include <strstream>
+#include <aips/strstream.h>
 
 // Special constructors
 String::String(ostrstream &os) :
@@ -510,8 +510,8 @@ template Char *std::transform(Char *, Char *, Char *, Int (*)(Int));
 
 #include <aips/Exceptions/Error.h>
 
-#include <strstream.h>
-#include <string.h>
+#include <aips/strstream.h>
+#include <aips/string.h>
 
 #include <ctype.h>
 #include <aips/Utilities/cregex.h>

@@ -26,7 +26,7 @@
 //# $Id$
 
 #include <aips/Utilities/BitVector.h>
-#include <iostream.h>
+#include <aips/iostream.h>
 
 
 BitVector::BitVector()

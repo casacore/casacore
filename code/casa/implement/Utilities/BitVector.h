@@ -1,5 +1,5 @@
 //# BitVector.h: Bit vectors of any size
-//# Copyright (C) 1993,1994,1995,1999,2000
+//# Copyright (C) 1993,1994,1995,1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -35,11 +35,7 @@
 
 //# Forward Declarations
 class BitVectorHelper;
-#if defined(AIPS_STDLIB)
-#include <iosfwd>
-#else
-class ostream;
-#endif
+#include <aips/aipsiosfwd.h>
 
 // The size of a unsigned Integer ( assumes 8-bit char )
 const uInt WORDSIZE = sizeof(uInt)*8;

@@ -1,5 +1,5 @@
 //# Assert.cc: Throw exception when assertion fails.
-//# Copyright (C) 1993,1994,1995
+//# Copyright (C) 1993,1994,1995,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //# 
 //# This library is free software; you can redistribute it and/or modify it
@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#include <stdio.h>
 #include <aips/Utilities/Assert.h>
+#include <aips/stdio.h>
 
 template<class t> assert_<t>::assert_(int expr, const char *msg, const char* file, Int line) {
   static char message[256];

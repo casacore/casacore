@@ -31,12 +31,12 @@
 
 #include <aips/Utilities/Regex.h>
 #include <aips/Utilities/String.h>
-#ifndef USE_OLD_STRING
+#if !defined(USE_OLD_STRING)
 #include <stdexcept>
-#include <iostream>
+#include <aips/iostream.h>
 #else
 #include <aips/Utilities/RegexError.h>
-#include <iostream.h>
+#include <aips/iostream.h>
 #include <malloc.h>
 #endif
 

@@ -983,8 +983,8 @@ inline ostream &operator<<(ostream &s, const String &x) {
 //# of line, etc.
 
 
-#include <iostream.h>
-#include <strstream.h>
+#include <aips/iostream.h>
+#include <aips/strstream.h>
 #include <aips/Utilities/Regex.h>
 
 extern void stringThrowError(const char *);
