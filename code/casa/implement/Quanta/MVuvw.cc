@@ -93,8 +93,8 @@ MVuvw::MVuvw(const Vector<Quantity> &other) :
 
 MVuvw::MVuvw(const MVBaseline &pos, const MVDirection &dr, Bool ew) :
   MVPosition() {
-    RotMatrix x(Euler(C::pi_2 - dr.get()(1), 1,
-		      -(dr.get()(0) - C::pi_2), 3));
+    RotMatrix x(Euler(-(C::pi_2 - dr.get()(1)), 1,
+		      (dr.get()(0) - C::pi_2), 3));
     if (ew) {};
     xyz = (x * pos).getValue();
   }
