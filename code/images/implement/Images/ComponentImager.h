@@ -1,5 +1,5 @@
 //# ComponentImager.h: this defines ComponentImager, which ...
-//# Copyright (C) 1999,2000
+//# Copyright (C) 1999,2000,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -117,8 +117,10 @@ public:
 
 // Project the componentlist onto the image.  If any of the coordinate
 // transformations for a particular pixel fail (e.g. coordinate system
-// is not defined for that pixel) if the image has
-// a mask, then those pixels will be masked, othereise they are just zeroed.
+// is not defined for that pixel) if the image has a writable mask, then those 
+// pixels will be masked, otherwise they are just zeroed.  Any pixels
+// that are already masked mask=F) will not have their values changed
+// (perhaps this behaviour should be changed).
   static void project(ImageInterface<Float>& image, 
 		      const ComponentList& list);
 };
