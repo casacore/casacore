@@ -1,5 +1,5 @@
 //# SetupNewTab.h: Create a new table - define shapes, data managers, etc.
-//# Copyright (C) 1994,1995,1996,1999,2001
+//# Copyright (C) 1994,1995,1996,1999,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -372,6 +372,11 @@ public:
     // Get the table description.
     const TableDesc& tableDesc() const
 	{ return newTable_p->tableDesc(); }
+
+    // Adjust the hypercolumn definitions.
+    // It renames columns as necessary.
+    void adjustHypercolumns (const SimpleOrderedMap<String, String>& old2new)
+        { return newTable_p->tableDescPtr()->adjustHypercolumns (old2new); }
 
     // Bind a column to the given data manager.
     // If already bound, the binding will be overwritten.
