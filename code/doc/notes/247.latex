@@ -541,7 +541,9 @@ Example: md.point1(14,1,archive=T)
 Reduce a pointing scan.  This function determines the antenna temperature for
 the given scan, removes a baseline, fits a gaussian, and determines the
 Az and El offsets required to peak up the pointing.  The parameter xaxis
-tells whether the scan is in RA (xaxis=0) or Dec (xaxis=1).  The basepct 
+tells whether the scan is in RA (xaxis=1) or Dec (xaxis=2).  If left to the
+default value of xaxis=0, the function will attempt to determine which is
+the applicable one.  It is almost always safe to use xaxis=0.  The basepct 
 parameter indicates the fraction of samples to use, from each edge, in
 determining the baseline.  A value of 10, for example, indicates that 10\%
 of the scan should be used from each edge, for a total of 20\% of the samples
