@@ -532,6 +532,6 @@ template<class T>
 AutoDiff<T> max(const AutoDiff<T> &left,
 		const AutoDiff<T> &right) {
   AutoDiff<T> tmp = (left.theRep()->val_p <= right.theRep()->val_p) ?
-	  left : right;
+	  right : left;
   return tmp.ref();
 }
