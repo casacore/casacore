@@ -2735,3 +2735,4 @@
 10 060 src mv aips/implement/Measures/MVuvw.h aips/implement/Quanta/MVuvw.h
 10 061 src mv aips/implement/Measures/MeasValue.cc aips/implement/Quanta/MeasValue.cc
 10 061 src mv aips/implement/Measures/MeasValue.h aips/implement/Quanta/MeasValue.h
+10 062 src rm doc/newsletters/aug98/aug98news.dir
