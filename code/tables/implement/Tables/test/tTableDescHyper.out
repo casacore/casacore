@@ -1,5 +1,5 @@
 011110
-[TSMExample1, TSMExample2, TSMExample3, TSMExample4]
+[TSMExample1, TSMExample2, TSMExample3, TSMExample4, TSMExample5, TSMExample6, TSMExample7, TSMExample8, TSMExample9, TSMExample10, TSMExample11]
 TSMExample1: ndim=4
   Data=[Data, Weight]Coord=[Pol, Freq, Baseline, Time]Id=[Id]
 TSMExample2: ndim=4
@@ -8,6 +8,20 @@ TSMExample3: ndim=3
   Data=[Data, Weight]Coord=[Pol, Freq, Time]Id=[]
 TSMExample4: ndim=2
   Data=[DataScalar]Coord=[Baseline, Time]Id=[]
+TSMExample5: ndim=4
+  Data=[Data, Weight]Coord=[, , , ]Id=[]
+TSMExample6: ndim=4
+  Data=[Data, Weight]Coord=[Pol, , , ]Id=[]
+TSMExample7: ndim=4
+  Data=[Data, Weight]Coord=[, Freq, , ]Id=[]
+TSMExample8: ndim=4
+  Data=[Data, Weight]Coord=[, , Time, ]Id=[]
+TSMExample9: ndim=4
+  Data=[Data, Weight]Coord=[, , , Baseline]Id=[]
+TSMExample10: ndim=4
+  Data=[Data, Weight]Coord=[, Freq, Time, ]Id=[]
+TSMExample11: ndim=4
+  Data=[Data, Weight]Coord=[Pol, , , Baseline]Id=[]
 Invalid description of hypercolumn TSMExample: dataColumnNames is empty
 Invalid description of hypercolumn TSMExample: ndim < 1
 Invalid description of hypercolumn TSMExample: #coordColumnNames mismatches ndim
@@ -20,6 +34,8 @@ Invalid description of hypercolumn TSMExample: coordColumn Data is not a scalar 
 Invalid description of hypercolumn TSMExample: coordinate vectors have to describe the first axes
 Invalid description of hypercolumn TSMExample: the dimensionality of data column Data0 is undefined
 Invalid description of hypercolumn TSMExample: the dimensionality of data column Weight mismatches that of previous data columns
+Invalid description of hypercolumn TSMExample: the dimensionality of the data columns mismatches nr of coordinate columns with a vector value
+Invalid description of hypercolumn TSMExample: the dimensionality of the data columns mismatches nr of coordinate columns with a vector value
 Invalid description of hypercolumn TSMExample: the dimensionality of the data columns mismatches nr of coordinate columns with a vector value
 Invalid description of hypercolumn TSMExample: idColumn TimeShort: (u)Char and (u)Short not supported
 Invalid description of hypercolumn TSMExample: idColumn Data is not a scalar
