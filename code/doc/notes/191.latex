@@ -5,14 +5,14 @@
 \parskip=5truept
 \begin{document}
 \newcommand{\aipspp}{AIPS++\ }
-%\newcommand{\defline}[1]{\cline{1-5} \multicolumn{5}{|l|}{#1} \\ \cline{1-5}}
+\newcommand{\defline}[1]{\cline{1-5} \multicolumn{5}{|l|}{#1} \\ \cline{1-5}}
 
 \newcommand{\definetable}[2]
 {
         %\clearpage
 	\vfill
-        \eject
-	\subsection{#1}
+        %\eject
+	%\subsection{#1}
         \vspace{0.15in}
         \small
 
@@ -35,9 +35,9 @@
 
 \tableofcontents
 \section{Summary}
-A MeasurementSet is an \aipspp Table containing data from a telescope.
+A MeasurementSet is an \aipspp\ Table containing data from a telescope.
 Telescopes all record data in their own way, the MeasurementSet layout
-describes how these measurements are to be stored within the \aipspp system.
+describes how these measurements are to be stored within the \aipspp\ system.
 This document describes the predefined columns and keywords (including
 subtables) of the MeasurementSet (MS). The predefined items include
 required and optional ones.
