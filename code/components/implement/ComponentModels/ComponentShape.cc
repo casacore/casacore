@@ -45,6 +45,7 @@
 #include <aips/Utilities/Assert.h>
 #include <aips/Utilities/DataType.h>
 #include <aips/Utilities/String.h>
+#include <aips/Quanta/QuantumHolder.h>
 
 ComponentShape::ComponentShape() 
   :itsDir(),
@@ -152,12 +153,15 @@ void ComponentShape::visibility(Vector<DComplex>& scale,
 
 Bool ComponentShape::fromRecord(String& errorMessage,
 				const RecordInterface& record) {
+  //#if defined(AIPS_DEBUG)
   ComponentType::Shape thisType = getType(errorMessage, record);
   if ( thisType != type()) {
     errorMessage += String("The 'type' field, in the shape record,") + 
       String(" is not the expected value of '") + 
       ComponentType::name(type()) + String("'\n");
+    return False;
   }
+  //#endif
   const String dirString("direction");
   if (!record.isDefined(dirString)) {
     // The there is no direction field then the direction is NOT changed!
@@ -179,6 +183,25 @@ Bool ComponentShape::fromRecord(String& errorMessage,
     return False;
   }
   setRefDirection(mh.asMDirection());
+  const String errorString("error");
+  if (!dirRecord.isDefined(errorString)) {
+    // The there is no error field then the error is NOT changed!
+    return True;
+  }
+  const RecordFieldId error(errorString);
+  if (dirRecord.dataType(error) != TpRecord) {
+    errorMessage += "The 'error' field must be a record\n";
+    return False;
+  }
+  const Record& errRecord = dirRecord.asRecord(error);
+
+  Quantum<Double> longErr, latErr;
+  if (!fromAngQRecord(longErr, errorMessage, "longitude", errRecord) &&
+      !fromAngQRecord(latErr, errorMessage, "latitude", errRecord)) {
+    errorMessage += "Direction error not changed\n";
+    return False;
+  }
+  setRefDirectionError(latErr, longErr);
   DebugAssert(ComponentShape::ok(), AipsError);
   return True;
 }
@@ -193,6 +216,21 @@ Bool ComponentShape::toRecord(String& errorMessage,
     errorMessage += "Could not convert the reference direction to a record\n";
     return False;
   }
+
+  Record errRec;
+  {
+    const QuantumHolder qhLong(refDirectionErrorLong());
+    const QuantumHolder qhLat(refDirectionErrorLat());
+    Record latRec, longRec;
+    if (!qhLong.toRecord(errorMessage, longRec) || 
+	!qhLat.toRecord(errorMessage, latRec)) {
+      errorMessage += "Could not convert the direction errors to a record\n";
+      return False;
+    }
+    errRec.defineRecord(RecordFieldId("longitude"), longRec);
+    errRec.defineRecord(RecordFieldId("latitude"), latRec);
+  }
+  dirRecord.defineRecord(RecordFieldId("error"), errRec);
   record.defineRecord(RecordFieldId("direction"), dirRecord);
   return True;
 }
@@ -276,6 +314,46 @@ Bool ComponentShape::differentRefs(const MeasRef<MDirection>& ref1,
 
 Bool ComponentShape::badError(const Quantum<Double>& quantum) {
   return !(quantum.check(UnitVal::ANGLE)) || (quantum.getValue() < 0.0);
+}
+
+Bool ComponentShape::fromAngQRecord(Quantum<Double>& retVal, 
+				    String& errorMessage,
+				    const String& fieldString, 
+				    const RecordInterface& record) {
+  
+  if (!record.isDefined(fieldString)) {
+    errorMessage += "The '" + fieldString + "' field does not exist\n";
+    return False;
+  }
+  const RecordFieldId field(fieldString);
+  if (!(record.dataType(field) == TpRecord || 
+	((record.dataType(field) == TpString) && 
+	 (record.shape(field) == IPosition(1,1))))) {
+    errorMessage += "The '" + fieldString + "' field must be a record\n";
+    errorMessage += "or a string (but not a vector of strings)\n";
+    return False;
+  }
+  QuantumHolder qHolder;
+  if (record.dataType(field) == TpString) {
+    if (!qHolder.fromString(errorMessage, record.asString(field))) {
+      errorMessage += "Problem parsing the '" + fieldString + "' string\n";
+      return False;
+    }
+  } else if (!qHolder.fromRecord(errorMessage, record.asRecord(field))) {
+    errorMessage += "Problem parsing the '" + fieldString +"' record\n";
+    return False;
+  }
+  if (!(qHolder.isScalar() && qHolder.isReal())) {
+    errorMessage += "The '" + fieldString + "' field is not a quantity\n";
+    return False;
+  }
+  retVal = qHolder.asQuantumDouble();
+  if (retVal.getFullUnit() != Unit("rad")) {
+    errorMessage += "The '" + fieldString + 
+      "' field must have angular units\n";
+    return False;
+  }
+  return True;
 }
 
 // Local Variables: 
