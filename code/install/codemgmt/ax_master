@@ -2793,3 +2793,10 @@
 10 102 src rm trial/apps/cal
 10 104 src rm nrao/apps/gbtutils/gbt.g
 10 104 src rm trial/scripts/gbt.g
+10 105 src rm doc/html/gettingstarted/gettingstarted.tex
+10 105 src rm doc/html/gettingstarted/gsedition2.aux
+10 105 src rm doc/html/gettingstarted/gsedition2.dvi
+10 105 src rm doc/html/gettingstarted/gsedition2.log
+10 105 src rm doc/html/gettingstarted/gsedition2.ps
+10 105 src rm doc/html/gettingstarted/gsedition2.tex~
+10 105 src rm doc/html/gettingstarted/gsedition2.toc
