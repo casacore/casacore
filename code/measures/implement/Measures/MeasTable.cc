@@ -2157,9 +2157,10 @@ const Vector<Double> &MeasTable::mulSC2000B(uInt which, Double T) {
   static Bool needInit = True;
   static Double checkT = -1e30;
   static Vector<Double> argArray[77];
+  static Polynomial<Double> polyArray[77];
   static const Long MULSC[77][6] = {
-  //             Longitude                    Obliquity
-  //    sin        t.sin       cos         cos     t.cos     sin
+  //          Longitude                Obliquity
+  //  sin       t.sin     cos     cos     t.cos   sin
   {-172064161, -174666,  33386, 92052331,  9086, 15377},   //   1
   { -13170906,   -1675, -13696,  5730336, -3015, -4587},   //   2
   {  -2276413,    -234,   2796,   978459,  -485,  1374},   //   3
@@ -2238,8 +2239,7 @@ const Vector<Double> &MeasTable::mulSC2000B(uInt which, Double T) {
   {      1405,       0,      4,     -610,     0,     2},   //  76
   {      1290,       0,      0,     -556,     0,     0}    //  77
   };
-  ///  calcMulSC(needInit, checkT, T, argArray, 106, polyArray,
-  ///	    &MULTD[0], 15, &MULSC[0]);
+  calcMulSC2000(needInit, checkT, T, argArray, 77, polyArray, &MULSC[0]);
   DebugAssert(which < 77, AipsError);
   return argArray[which];
 }
@@ -2248,10 +2248,11 @@ const Vector<Double> &MeasTable::mulSC2000A(uInt which, Double T) {
   static Bool needInit = True;
   static Double checkT = -1e30;
   static Vector<Double> argArray[678];
+  static Polynomial<Double> polyArray[678];
   // Luni-Solar nutation coefficients, unit 1e-7 arcsec
   static const Long MULSC[678][6] = {
-  //             Longitude                    Obliquity
-  //    sin        t.sin       cos         cos     t.cos     sin
+  //           Longitude                Obliquity
+  //    sin     t.sin     cos      cos    t.cos   sin
   {-172064161, -174666,  33386, 92052331,  9086, 15377},   //    1
   { -13170906,   -1675, -13696,  5730336, -3015, -4587},   //    2
   {  -2276413,    -234,   2796,   978459,  -485,  1374},   //    3
@@ -2931,8 +2932,7 @@ const Vector<Double> &MeasTable::mulSC2000A(uInt which, Double T) {
   {        -3,       0,      0,        1,     0,     0},   //  677
   {        -3,       0,      0,        2,     0,     0}    //  678
   };
-  ///  calcMulSC(needInit, checkT, T, argArray, 106, polyArray,
-  ///	    &MULTD[0], 15, &MULSC[0]);
+  calcMulSC2000(needInit, checkT, T, argArray, 678, polyArray, &MULSC[0]);
   DebugAssert(which < 678, AipsError);
   return argArray[which];
 }
@@ -2942,8 +2942,8 @@ const Vector<Double> &MeasTable::mulPlanSC2000A(uInt which, Double T) {
   static Double checkT = -1e30;
   static Vector<Double> argArray[687];
   // Luni-Solar nutation coefficients, unit 1e-7 arcsec
-  static const Long MULSC[687][6] = {
-  //             Longitude                    Obliquity
+  static const Short MULSC[687][4] = {
+  //        Longitude               Obliquity
   //    sin          cos         sin         cos
      {  1440,          0,          0,          0},   //    1
      {    56,       -117,        -42,        -40},   //    2
@@ -3633,8 +3633,7 @@ const Vector<Double> &MeasTable::mulPlanSC2000A(uInt which, Double T) {
      {     3,          0,          0,         -1},   //  686
      {     3,          0,          0,         -1}    //  687
   };
-  ///  calcMulSC(needInit, checkT, T, argArray, 106, polyArray,
-  ///	    &MULTD[0], 15, &MULSC[0]);
+  calcMulSCPlan(needInit, checkT, T, argArray, 687, &MULSC[0]);
   DebugAssert(which < 687, AipsError);
   return argArray[which];
 }
@@ -3675,12 +3674,12 @@ const Vector<Double> &MeasTable::mulSC1950(uInt which, Double T) {
     {0	,0	},
     {0	,0	},
     {45	,0	},
-    {-21	,0	},
+    {-21,0	},
     {0	,0	},
     
-    {-15	,8	},
+    {-15,8	},
     {0	,0	},
-    {-10	,5	},
+    {-10,5	},
     {-5	,3	},
     {-5	,3	},
     
@@ -3692,24 +3691,24 @@ const Vector<Double> &MeasTable::mulSC1950(uInt which, Double T) {
     
     {0	,0	},
     {0	,0	},
-    {-149	,0	},
-    {114	,-50	},
+    {-149,0	},
+    {114 ,-50	},
     {60	,0	},
     
     {58	,-31	},
-    {-57	,30	},
-    {-52	,22	},
-    {-44	,23	},
-    {-32	,14	},
+    {-57,30	},
+    {-52,22	},
+    {-44,23	},
+    {-32,14	},
     
     {28	,0	},
     {26	,-11	},
-    {-26	,11	},
+    {-26,11	},
     {25	,0	},
     {19	,-10	},
     
     {14	,-7	},
-    {-13	,7	},
+    {-13,7	},
     {-9	,5	},
     {-7	,0	},
     {7	,-3	},
@@ -3785,6 +3784,47 @@ void MeasTable::calcMulSC(Bool &need, Double &check, Double T,
       result[j](1) = poly[2*i+1](T);
       result[j](2) = (poly[2*i+0].derivative())(T);
       result[j](3) = (poly[2*i+1].derivative())(T);
+    };
+  };
+}
+
+void MeasTable::calcMulSC2000(Bool &need, Double &check, Double T,
+			      Vector<Double> result[], uInt resrow,
+			      Polynomial<Double> poly[],
+			      const Long coeffSC[][6]) {
+  if (need) {
+    need = False;
+    for (uInt i=0; i<resrow; i++) {
+      for (uInt j=0; j<2; j++) {
+	poly[2*i+j] = Polynomial<Double>(2);
+	poly[2*i+j].setCoefficient(0, coeffSC[i][0+j]*C::arcsec*1e-7);
+	poly[2*i+j].setCoefficient(1, coeffSC[i][3+j]*C::arcsec*1e-7);
+      };
+      result[i].resize(6);
+      for (uInt j=0; j<2; j++) result[i](j) = 0;
+      result[i](2) = coeffSC[i][1]*C::arcsec*1e-7;
+      result[i](3) = coeffSC[i][4]*C::arcsec*1e-7;
+      result[i](4) = coeffSC[i][2]*C::arcsec*1e-7;
+      result[i](5) = coeffSC[i][5]*C::arcsec*1e-7;
+    };
+  };
+  if (check != T) {
+    check = T;
+    for (uInt i=0; i<resrow; i++) {
+      result[i](0) = poly[2*i+0](T);
+      result[i](1) = poly[2*i+1](T);
+    };
+  };
+}
+
+void MeasTable::calcMulSCPlan(Bool &need, Double &check, Double T,
+			      Vector<Double> result[], uInt resrow,
+			      const Short coeffSC[][4]) {
+  if (need) {
+    need = False;
+    for (uInt i=0; i<resrow; i++) {
+      result[i].resize(4);
+      for (uInt j=0; j<4; j++) result[i](j) = coeffSC[i][j]*C::arcsec*1e-7;
     };
   };
 }

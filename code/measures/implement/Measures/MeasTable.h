@@ -420,12 +420,20 @@ private:
   // </group>
 
   // Calculate mulSC
+  // <group>
   static void calcMulSC(Bool &need, Double &check, Double T,
 			Vector<Double> result[], Int resrow,
 			Polynomial<Double> poly[],
 			const Long coeffTD[][5], Int TDrow,
 			const Short coeffSC[][2]);
-
+  static void calcMulSC2000(Bool &need, Double &check, Double T,
+			    Vector<Double> result[], uInt resrow,
+			    Polynomial<Double> poly[],
+			    const Long coeffSC[][6]);
+  static void calcMulSCPlan(Bool &need, Double &check, Double T,
+			    Vector<Double> result[], uInt resrow,
+			    const Short coeffSC[][4]);
+  // </group>
   //# Data
   // Observatories table data
   // <group>
