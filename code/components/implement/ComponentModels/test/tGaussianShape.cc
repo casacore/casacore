@@ -12,6 +12,8 @@
 //# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
 //# License for more details.
 //#
+//# You should have received a copy of the GNU Library General Public License
+//# along with this library; if not, write to the Free Software Foundation,
 //# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
@@ -80,8 +82,7 @@ int main() {
       sampleDir.set(sampleDirVal);
       defGaussian.sample(actualSample, sampleDir, pixelSize);
       expectedSample(0) = peak;
-      
-      AlwaysAssert(allNear(actualSample.ac(), expectedSample.ac(), 1E-1),
+      AlwaysAssert(allNear(actualSample.ac(), expectedSample.ac(), 1E-10),
 		   AipsError);
       sampleDirVal *= rotDec;
       sampleDir.set(sampleDirVal);
@@ -104,7 +105,6 @@ int main() {
       // Create a direction that is 1 mas away from the pole
       MVDirection sampleDir(Quantity(0,"deg"),
  			    Quantity(90, "deg") - Quantity(1, "mas"));
-
       // And now make another rotater that can rotate this point about the pole
       // in steps of say 40 degrees
       const RotMatrix rotater(Euler(Quantity(40, "deg").getValue("rad"), 3u));
@@ -282,8 +282,7 @@ int main() {
       AlwaysAssert(B1934.ok(), AipsError);
       AlwaysAssert(copiedComp.SkyCompRep::ok(), AipsError);
       AlwaysAssert(compRepPtr->ok(), AipsError);
-      cout << "Passed the copy and assignment tests" 
-   	   << endl;
+      cout << "Passed the copy and assignment tests" << endl;
     }
     {
       const uInt imSize = 6;
