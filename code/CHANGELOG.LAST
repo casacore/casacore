@@ -11,3 +11,17 @@ change id: 0121
  summary:  functional tool added
 A functionals tool has been provided, which encapsulates the state (parameters, type, dimension, combination) of a Function in a glish closure.
 Methods in the closure exists to get values and derivatives at single or multiple points, and to manipulate the parameters. Functions that can combine/compound a number of functions exist
+
+change id: 0122
+ author:   Wim Brouw
+ date:     2002/04/17
+ avers:    1.7
+ area:     Library
+ package:  trial
+ module:   Functionals
+ type:     Code Documentation
+ category: New
+ summary:  Added generic FunctionHolder
+A generic FunctionHolder class has been added.
+It is used in the transfer of functional related information between gliosh and C++.
+It can (and will ) be used to create a Param<Function>
