@@ -38,8 +38,8 @@
 
 #include <trial/Coordinates/CoordinateSystem.h>
 #include <trial/Images/ImageSummary.h>
-
-
+#include <trial/Images/ImageInterface.h>
+#include <trial/Lattices/MaskedLattice.h>
 
 
 template<class T>
