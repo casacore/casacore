@@ -1,5 +1,5 @@
 //# MomentCalculator.h: 
-//# Copyright (C) 1997,1999,2000
+//# Copyright (C) 1997,1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -211,10 +211,10 @@ protected:
    Double integratedScaleFactor_p;
 
 // Accumulate statistical sums from a vector
-   void accumSums(NumericTraits<T>::PrecisionType& s0,
-                  NumericTraits<T>::PrecisionType& s0Sq,
-                  NumericTraits<T>::PrecisionType& s1,
-                  NumericTraits<T>::PrecisionType& s2,
+   void accumSums(typename NumericTraits<T>::PrecisionType& s0,
+                  typename NumericTraits<T>::PrecisionType& s0Sq,
+                  typename NumericTraits<T>::PrecisionType& s1,
+                  typename NumericTraits<T>::PrecisionType& s2,
                   Int& iMin,
                   Int& iMax,
                   T& dMin,
@@ -238,7 +238,7 @@ protected:
 //  s1             sum (I*v)
 //  s2             sum (I*v*v)
 {
-   NumericTraits<T>::PrecisionType dDatum = datum;
+   typename NumericTraits<T>::PrecisionType dDatum = datum;
    s0 += dDatum;
    s0Sq += dDatum*dDatum;
    s1 += dDatum*coord;
@@ -501,11 +501,11 @@ protected:
                         T dMedian,
                         T vMedian,
                         Int nPts,
-                        NumericTraits<T>::PrecisionType s0,
-                        NumericTraits<T>::PrecisionType s1,
-                        NumericTraits<T>::PrecisionType s2,
-                        NumericTraits<T>::PrecisionType s0Sq,
-                        NumericTraits<T>::PrecisionType sumAbsDev,
+                        typename NumericTraits<T>::PrecisionType s0,
+                        typename NumericTraits<T>::PrecisionType s1,
+                        typename NumericTraits<T>::PrecisionType s2,
+                        typename NumericTraits<T>::PrecisionType s0Sq,
+                        typename NumericTraits<T>::PrecisionType sumAbsDev,
                         T dMin,
                         T dMax,
                         Int iMin,
