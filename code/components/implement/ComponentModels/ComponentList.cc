@@ -27,6 +27,7 @@
 
 #include <trial/ComponentModels/ComponentList.h>
 #include <trial/ComponentModels/ComponentType.h>
+#include <trial/ComponentModels/Flux.h>
 #include <trial/Images/ImageInterface.h>
 #include <aips/Arrays/Array.h>
 #include <aips/Arrays/ArrayMath.h>
@@ -355,10 +356,9 @@ void ComponentList::sort(ComponentList::SortCriteria criteria) {
   Bool doSort = True;
   switch (criteria) {
   case ComponentList::FLUX: {
-    Vector<Double> compFlux;
     for (uInt i = 0; i < nelements(); i++) {
-      itsList[i].flux().value(compFlux);
-      val[i] = abs(compFlux(0));
+      itsList[i].flux().convertPol(ComponentType::STOKES);
+      val[i] = abs(itsList[i].flux().value(0).re);
     }
     order = Sort::Descending;
     break;
@@ -375,7 +375,7 @@ void ComponentList::sort(ComponentList::SortCriteria criteria) {
     break;
   }
   case ComponentList::POLARISATION: {
-    Vector<Double> f;
+    Vector<Double> f(4);
     for (uInt i = 0; i < nelements(); i++) {
       itsList[i].flux().value(f);
       if (!nearAbs(f(0), 0.0, DBL_MIN)) {
@@ -503,7 +503,7 @@ void ComponentList::writeTable() {
   }
   String fluxUnits;
   fluxKeywords.get("Unit", fluxUnits);
-  Quantum<Vector<Double> > compFlux(Vector<Double>(4,0.0), fluxUnits);
+  Vector<Double>  fluxVal(4,0.0);
   String angleUnits;
   dirKeywords.get("Unit", angleUnits);
   Vector<Double> dirn;
@@ -511,8 +511,10 @@ void ComponentList::writeTable() {
   String compLabel;
   for (uInt i = 0; i < nelements(); i++) {
     typeCol.put(i, ComponentType::name(component(i).shape()));
-    component(i).flux().value(compFlux);
-    fluxCol.put(i, compFlux.getValue(fluxUnits));
+    component(i).flux().convertUnit(fluxUnits);
+    component(i).flux().convertPol(ComponentType::STOKES);
+    component(i).flux().value(fluxVal);
+    fluxCol.put(i, fluxVal);
     component(i).direction(compDir);
     if (compDir.getRef().getType() != refNum)
       compDir = MDirection::Convert(compDir, refNum)();
