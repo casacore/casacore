@@ -1,5 +1,5 @@
 //# FunctionHolder.h: A holder for Functions to enable record conversions
-//# Copyright (C) 2002
+//# Copyright (C) 2002,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -202,6 +202,7 @@ private:
   mutable Types nf_p;
   mutable Int order_p;
   mutable String text_p;
+  mutable PtrHolder<RecordInterface> mode_p;
   // </group>
   // List of known names
   mutable Vector<String> nam_p;

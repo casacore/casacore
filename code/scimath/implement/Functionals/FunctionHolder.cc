@@ -48,21 +48,31 @@
 #include <aips/Quanta/MUString.h>
 #include <aips/Mathematics/AutoDiff.h>
 #include <aips/Mathematics/AutoDiffMath.h>
-#include <aips/sstream.h>
+#include <aips/strstream.h>
 
 //# Constructors
 template <class T>
 FunctionHolder<T>::FunctionHolder() 
-  : hold_p(), nam_p(N_Types), isFilled(False) {}
+  : hold_p(), mode_p(), nam_p(N_Types), isFilled(False) {}
 
 template <class T>
 FunctionHolder<T>::FunctionHolder(const Function<T> &in) 
-  : hold_p(in.clone()), nam_p(N_Types), isFilled(False) {}
+  : hold_p(in.clone()), mode_p(), nam_p(N_Types), isFilled(False) 
+{
+    if (in.hasMode()) {
+	mode_p.set(new Record());
+	in.getMode( *(mode_p.ptr()) );
+    }
+}
+
+#include <aips/Glish/GlishRecord.h>
 
 template <class T>
 FunctionHolder<T>::FunctionHolder(const FunctionHolder<T> &other)
-  : hold_p(), nam_p(N_Types), isFilled(False) {
+  : hold_p(), mode_p(), nam_p(N_Types), isFilled(False) 
+{
   if (other.hold_p.ptr()) hold_p.set(other.hold_p.ptr()->clone());
+  if (other.mode_p.ptr()) mode_p.set(other.mode_p.ptr()->clone());
 }
 
 //# Destructor
@@ -79,6 +89,12 @@ operator=(const FunctionHolder<T> &other) {
     } else {
       hold_p.clear();
     };
+
+    if (other.mode_p.ptr()) {
+      mode_p.set(other.mode_p.ptr()->clone());
+    } else {
+      mode_p.clear();
+    }
   };
   return *this;
 }
@@ -267,6 +283,11 @@ Bool FunctionHolder<T>::toRecord(String &error, RecordInterface &out) const {
     	       hold_p.ptr()->parameters().getParameters());
     out.define(RecordFieldId("masks"),
     	       hold_p.ptr()->parameters().getParamMasks());
+
+    Record mode;
+    hold_p.ptr()->getMode(mode);
+    if (mode.nfields() > 0) out.defineRecord(RecordFieldId("mode"), mode);
+
     if (nf_p == COMBINE || nf_p == COMPOUND) {
       Int x(0);
       if (nf_p == COMBINE) {
@@ -289,7 +310,7 @@ Bool FunctionHolder<T>::toRecord(String &error, RecordInterface &out) const {
 			    (hold_p.ptr())->function(i));
 	  if (!fn.toRecord(error, fnc)) return False;
 	};
-	ostringstream oss;
+	ostrstream oss;
 	oss << "__*" << i;
 	func.defineRecord(String(oss), fnc);
       };
@@ -364,6 +385,14 @@ Bool FunctionHolder<T>::getType(String &error, Function<U> *&fn,
       in.type(in.idToNumber(RecordFieldId("progtext"))) == TpString) {
       in.get(RecordFieldId("progtext"), text_p);
   };
+
+  // mode can hold function-specific configuration data
+  if (in.isDefined(String("mode")) &&
+      in.type(in.idToNumber(RecordFieldId("mode"))) == TpRecord) 
+  {
+      mode_p.set(new Record(in.asRecord(RecordFieldId("mode"))));
+  }
+
   Int nf;
   if (in.type(in.idToNumber(RecordFieldId("type"))) == TpString) {
     String tp;
@@ -434,9 +463,10 @@ Bool FunctionHolder<T>::getType(String &error, Function<U> *&fn) {
     break;
     
   case CHEBYSHEV:
-    if (order_p >= 0) {
+    if (mode_p.ptr()) 
+      fn = (new Chebyshev<U>(order_p, *(mode_p.ptr()) ));
+    else 
       fn = (new Chebyshev<U>(order_p));
-    } else fn = (new Chebyshev<U>);
     break;
     
   case COMBINE:
