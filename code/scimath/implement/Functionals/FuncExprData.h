@@ -32,8 +32,7 @@
 //# Includes
 #include <aips/aips.h>
 #include <aips/Utilities/String.h>
-#include <aips/stdlibmap.h>
-//#include <map>
+#include <aips/stdmap.h>
 
 //# Forward Declarations
 #include <aips/iosfwd.h>
@@ -188,11 +187,10 @@ public:
   const map<String, ExprOperator> &function() const { return func_p; };
   // </group>
   // Print an operator map
-  void FuncExprData::print(ostream &os, const
-			   map<String, FuncExprData::ExprOperator> &m) const;
+  void print(ostream &os,
+	     const map<String, FuncExprData::ExprOperator> &m) const;
   // Print an operation
-  void FuncExprData::print(ostream &os, const
-			   FuncExprData::ExprOperator &pos) const;
+  void print(ostream &os, const FuncExprData::ExprOperator &pos) const;
 
 private:
   //# Data
