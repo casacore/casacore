@@ -132,7 +132,7 @@ class SpectralIndex: public SpectralModel
 {
 public:
   // The default SpectralIndex has all indices set to zero and a reference
-  // frequency of 0 Hz in the LSR frame. As such it is no different from the
+  // frequency of 1 GHz in the LSR frame. As such it is no different from the
   // ConstantSpectrum class (except slower).
   SpectralIndex();
 
