@@ -26,6 +26,7 @@
 //# $Id$
 
 #include <trial/Lattices/LatticeIterInterface.h>
+#include <aips/Utilities/DefaultValue.h>
 
 
 template <class T>
