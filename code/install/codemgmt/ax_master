@@ -1777,3 +1777,7 @@
 11 085 src rm nrao/implement/MeasurementSets/OldMeasurementSet.cc
 11 085 src rm nrao/implement/MeasurementSets/test/tOldMeasurementSet.cc
 11 085 src rm nrao/implement/MeasurementSets/test/templates
+11 086 src rm nrao/implement/SDD/SDD12mStMan.h
+11 086 src rm nrao/implement/SDD/SDD12mStMan.cc
+11 086 src rm nrao/implement/SDD/SDDStMan.h
+11 086 src rm nrao/implement/SDD/SDDStMan.cc
