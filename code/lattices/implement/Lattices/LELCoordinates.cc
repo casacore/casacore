@@ -1,5 +1,5 @@
-//# LatticeCoordinates.cc: Envelope class for Lattice coordinates
-//# Copyright (C) 1998
+//# LELCoordinates.cc: Envelope class for Lattice coordinates
+//# Copyright (C) 1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -26,33 +26,33 @@
 //# $Id$
 
 
-#include <trial/Lattices/LatticeCoordinates.h>
+#include <trial/Lattices/LELCoordinates.h>
+#include <trial/Lattices/LatticeRegion.h>
 
 
 // Default constructor
-LatticeCoordinates::LatticeCoordinates()
-: coords_p (new LattCoord())
+LELCoordinates::LELCoordinates()
+: coords_p (new LELLattCoord())
 {}
 
 // Construct the object from the given letter class.
 // It takes over the pointer and takes care of destructing
-// the LattCoord object.
-LatticeCoordinates::LatticeCoordinates (LattCoord* coordinates)
+// the LELLattCoord object.
+LELCoordinates::LELCoordinates (LELLattCoord* coordinates)
 : coords_p (coordinates)
 {}
 
 // Copy constructor 
-LatticeCoordinates::LatticeCoordinates (const LatticeCoordinates& other)
+LELCoordinates::LELCoordinates (const LELCoordinates& other)
 : coords_p (other.coords_p)
 {}
 
 // Destructor does nothing
-LatticeCoordinates::~LatticeCoordinates()
+LELCoordinates::~LELCoordinates()
 {}
 
 // Assignment 
-LatticeCoordinates& LatticeCoordinates::operator=
-                                      (const LatticeCoordinates& other)
+LELCoordinates& LELCoordinates::operator= (const LELCoordinates& other)
 {
     if (this != &other) {
 	coords_p = other.coords_p;
@@ -61,19 +61,19 @@ LatticeCoordinates& LatticeCoordinates::operator=
 }
 
 // Return the underlying letter object.
-const LattCoord& LatticeCoordinates::coordinates() const
+const LELLattCoord& LELCoordinates::coordinates() const
 {
     return *coords_p;
 }
 
 // Does it have coordinates ?
-Bool LatticeCoordinates::hasCoordinates() const
+Bool LELCoordinates::hasCoordinates() const
 {
     return coords_p->hasCoordinates();
 }
 
 // Check if the coordinates of this and that conform.
-Bool LatticeCoordinates::conform (const LatticeCoordinates& other) const
+Bool LELCoordinates::conform (const LELCoordinates& other) const
 {
     return coords_p->conform (*(other.coords_p));
 } 
