@@ -27,6 +27,7 @@
 
 
 #include <trial/Lattices/LCUnion.h>
+#include <trial/Lattices/LCBox.h>
 #include <aips/Arrays/ArrayLogical.h>
 #include <aips/Tables/TableRecord.h>
 #include <aips/Utilities/Assert.h>
@@ -37,7 +38,7 @@ LCUnion::LCUnion()
 {}
 
 LCUnion::LCUnion (const LCRegion& region1,
-				const LCRegion& region2)
+                  const LCRegion& region2)
 : LCRegionMulti (region1, region2)
 {
     defineBox();
@@ -81,6 +82,28 @@ LCUnion& LCUnion::operator= (const LCUnion& other)
     return *this;
 }
 
+Bool LCUnion::operator== (const LCRegion& other) const
+// 
+// See if this region is the same as the other region
+//
+{
+
+// Check below us
+    
+   if (LCRegionMulti::operator!=(other)) return False;
+
+   return True;
+}
+
+Bool LCUnion::operator!= (const LCRegion& other) const
+// 
+// See if this region is different from the other region
+//
+{
+   if (LCUnion::operator==(other)) return False;
+   return True;
+}
+
 LCRegion* LCUnion::cloneRegion() const
 {
     return new LCUnion (*this);
@@ -97,6 +120,11 @@ LCRegion* LCUnion::doTranslate (const Vector<Float>& translateVector,
 String LCUnion::className()
 {
     return "LCUnion";
+}
+
+String LCUnion::type() const
+{
+   return className();
 }
 
 TableRecord LCUnion::toRecord (const String& tableName) const

@@ -82,6 +82,29 @@ LCIntersection& LCIntersection::operator= (const LCIntersection& other)
     return *this;
 }
 
+Bool LCIntersection::operator== (const LCRegion& other) const
+//
+// See if this region is the same as the other region
+//
+{
+
+// Check below us
+
+   if (LCRegionMulti::operator!=(other)) return False;
+    
+ 
+   return True;
+}
+ 
+Bool LCIntersection::operator!= (const LCRegion& other) const
+//
+// See if this region is different from the other region
+//
+{
+   if (LCIntersection::operator==(other)) return False;
+   return True;
+}
+    
 LCRegion* LCIntersection::cloneRegion() const
 {
     return new LCIntersection (*this);
@@ -98,6 +121,11 @@ LCRegion* LCIntersection::doTranslate (const Vector<Float>& translateVector,
 String LCIntersection::className()
 {
     return "LCIntersection";
+}
+
+String LCIntersection::type() const
+{
+   return className();
 }
 
 TableRecord LCIntersection::toRecord (const String& tableName) const

@@ -94,6 +94,12 @@ public:
     // Assignment (copy semantics).
     LCExtension& operator= (const LCExtension& other);
 
+    // Comparison
+    // <group>
+    virtual Bool operator== (const LCRegion& other) const;
+    virtual Bool operator!= (const LCRegion& other) const;
+    // </group>
+ 
     // Make a copy of the derived object.
     virtual LCRegion* cloneRegion() const;
 
@@ -118,6 +124,9 @@ public:
     // Get the class name (to store in the record).
     static String className();
 
+    // Get the region type.  Returns the class name.
+    virtual String type() const;
+ 
     // Convert the (derived) object to a record.
     virtual TableRecord toRecord (const String& tableName) const;
 
@@ -141,7 +150,6 @@ private:
 
     // Make the bounding box and determine the offsets..
     void defineBox();
-
 
     IPosition itsExtendAxes;
     IPosition itsRegionAxes;

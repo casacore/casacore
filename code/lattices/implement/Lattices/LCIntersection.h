@@ -48,13 +48,8 @@
 // <synopsis> 
 // The LCIntersection class is a specialization of class
 // <linkto class=LCRegion>LCRegion</linkto>.
-// It makes it possible to extend a LCRegion along straight lines to
-// other dimensions. E.g. a circle in the xy-plane can be extended to
-// a cylinder in the xyz-space.
-// includes the intersection border.
-// It can only be used for a lattice of any dimensionality as long as the
-// dimensionality of the (hyper-)intersection matches the dimensionality of
-// the lattice.
+// It makes it possible to find the intersection of
+// given regions.
 // <p>
 // The center of the intersection must be inside the lattice
 // </synopsis> 
@@ -101,6 +96,12 @@ public:
     // Assignment (copy semantics).
     LCIntersection& operator= (const LCIntersection& other);
 
+    // Comparison
+    // <group>
+    virtual Bool operator== (const LCRegion& other) const;
+    virtual Bool operator!= (const LCRegion& other) const;
+    // </group>
+
     // Make a copy of the derived object.
     virtual LCRegion* cloneRegion() const;
 
@@ -112,6 +113,9 @@ public:
 
     // Get the class name (to store in the record).
     static String className();
+
+    // Get the region type.  Returns className()  
+    virtual String type() const;
 
     // Convert the (derived) object to a record.
     virtual TableRecord toRecord (const String& tableName) const;
