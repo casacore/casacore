@@ -67,7 +67,7 @@ The various clauses have the following meaning:
        The qualifying name can not contain special characters like a slash.
        Therefore a table\_name needs an explicit shorthand when it contains
        special characters.
-       The full table\_list syntax is:
+       \\The full table\_list syntax is:
        \\
        \texttt{table\_name1 [shorthand1], table\_name2 [shorthand2], etc.}
        \\The shorthand defaults to the table\_name.
@@ -77,6 +77,14 @@ The various clauses have the following meaning:
        SELECT FROM mytable my, ~user/othertable other
            WHERE my.col1>other.key
        \end{verbatim}
+       Similar to SQL and OQL the shorthand can also be given using
+       \texttt{AS} or \texttt{IN}. E.g.
+       \begin{verbatim}
+       SELECT FROM mytable AS my, other IN ~user/othertable
+       \end{verbatim}
+       Note that when using \texttt{IN}, the shorthand has to preceed
+       the table name. It can be seen as an iterator variable.
+
        There are two special ways to define a table name:
        \begin{enumerate}
        
@@ -95,14 +103,14 @@ The various clauses have the following meaning:
        is the shorthand for \texttt{mytable} and could be left out).
        \\It can also be used for another table in the main query. E.g.
        \begin{verbatim}
-       SELECT FROM mytable, tab.::key subtab
+       SELECT FROM mytable, ::key subtab
            WHERE col1 > subtab.key1
        \end{verbatim}
        In this example the keyword \texttt{key1} is taken from the
        subtable given by the table keyword \texttt{key} in the main
        table.
        \\When a keyword is used as the table name, the keyword is
-       searched for
+       searched
        in one of the tables previously given. The search starts at
        the current query level and proceeds outwards (i.e., up to the
        main query level). When a shorthand is given, only tables with
@@ -1013,8 +1021,6 @@ and classes form the programmer interface.
     seltab3 := tab.query ('col > mean([SELECT col from $tab])')
   \end{verbatim}
   These three queries give the same result.
-  \\However, be careful with the first 2 queries. It is possible to
-  lose accuracy when the glish variables are substituted.
   \\The substitution mechanism is described in more detail in the
   \htmlref{\texttt{substitute}}{utility:substitute}
   functions of module
