@@ -342,17 +342,22 @@ public:
     // return an Array reference with axes removed. The last of these functions
     // returns a reference to the 'other' array with degenerated axes removed.
     // <br>
+    // Unless throwIfError is False, an exception will be thrown if
+    // startingAxis exceeds the array's dimensionality.
+    // <br>
     // The functions with argument <src>ignoreAxes</src> do
-    // not consider the axes given in that argument..
+    // not consider the axes given in that argument.
     // <note role=caution> When the two functions returning void throw
     // are invoked on a derived object (e.g. Matrix), an exception is
     // thrown if removing the degenerate axes from other does not result
     // in a correct number of axes.
     // </note>
     // <group>
-    Array<T> nonDegenerate(uInt startingAxis=0);
-    const Array<T> nonDegenerate(uInt startingAxis=0) const;
-    void nonDegenerate(Array<T> &other, uInt startingAxis=0);
+    Array<T> nonDegenerate(uInt startingAxis=0, Bool throwIfError=True);
+    const Array<T> nonDegenerate(uInt startingAxis=0,
+				 Bool throwIfError=True) const;
+    void nonDegenerate(Array<T> &other, uInt startingAxis=0,
+		       Bool throwIfError=True);
     Array<T> nonDegenerate(const IPosition& ignoreAxes);
     const Array<T> nonDegenerate(const IPosition& ignoreAxes) const;
     void nonDegenerate(Array<T> &other, const IPosition &ignoreAxes)

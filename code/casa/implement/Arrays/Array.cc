@@ -557,29 +557,39 @@ template<class T> Array<T> Array<T>::reform(const IPosition &len) const
 }
 
 template<class T>
-const Array<T> Array<T>::nonDegenerate (uInt startingAxis) const
+const Array<T> Array<T>::nonDegenerate (uInt startingAxis,
+					Bool throwIfError) const
 {
-    return (const_cast<Array<T>*>(this))->nonDegenerate (startingAxis);
+    return (const_cast<Array<T>*>(this))->nonDegenerate (startingAxis,
+							 throwIfError);
 }
 
 template<class T>
-Array<T> Array<T>::nonDegenerate (uInt startingAxis)
+Array<T> Array<T>::nonDegenerate (uInt startingAxis, Bool throwIfError)
 {
     Array<T> tmp;
     DebugAssert(ok(), ArrayError);
-    tmp.nonDegenerate (*this, startingAxis);
+    tmp.nonDegenerate (*this, startingAxis, throwIfError);
     return tmp;
 }
 
 template<class T>
-void Array<T>::nonDegenerate (Array<T> &other, uInt startingAxis)
+void Array<T>::nonDegenerate (Array<T> &other, uInt startingAxis,
+			      Bool throwIfError)
 {
-    AlwaysAssert(startingAxis < other.ndim(), ArrayError);
-    IPosition ignoreAxes(startingAxis);
-    for (uInt i=0; i<startingAxis; i++) {
-	ignoreAxes(i) = i;
+    if (startingAxis < other.ndim()) {
+	IPosition ignoreAxes(startingAxis);
+	for (uInt i=0; i<startingAxis; i++) {
+	    ignoreAxes(i) = i;
+	}
+	nonDegenerate (other, ignoreAxes);
+    } else {
+        if (throwIfError) {
+	    AlwaysAssert(startingAxis < other.ndim(), ArrayError);
+
+	}
+	reference (other);
     }
-    nonDegenerate (other, ignoreAxes);
 }
 
 template<class T>
