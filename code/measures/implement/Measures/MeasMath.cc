@@ -61,6 +61,8 @@ MeasMath::~MeasMath() {
   delete NUTATB1950; 	NUTATB1950 = 0;
   delete PRECESIAU;  	PRECESIAU = 0;
   delete PRECESB1950; 	PRECESB1950 = 0;
+  delete inFrame_p;     inFrame_p = 0;
+  delete outFrame_p;    outFrame_p = 0;
 }
 
 //# Operators
@@ -73,18 +75,23 @@ void MeasMath::initFrame(MRBase &outref, MRBase &inref) {
   MCFrame::make(outref.getFrame());
   // Reset all calculations
   for (uInt i=0; i<N_FrameInfo; i++) infoOK_p[i] = False;
+  for (uInt i=0; i<N_FrameType; i++) frameOK_p[i] = False;
   // Get correct frame
   inOK_p = True;
   if (!inref.empty()) {
-    inFrame_p = &(inref.getFrame());
+    delete inFrame_p;
+    inFrame_p = new MeasFrame(inref.getFrame());
   } else if (!outref.empty()) {
-    inFrame_p = &(outref.getFrame());
+    delete inFrame_p;
+    inFrame_p = new MeasFrame(outref.getFrame());
   } else inOK_p = False;
   outOK_p = True;
   if (!outref.empty()) {
-    outFrame_p = &(outref.getFrame());
+    delete outFrame_p;
+    outFrame_p = new MeasFrame(outref.getFrame());
   } else if (!inref.empty()) {
-    outFrame_p = &(inref.getFrame());
+    delete outFrame_p;
+    outFrame_p = new MeasFrame(inref.getFrame());
   } else outOK_p = False;
 }
 
