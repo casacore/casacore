@@ -30,6 +30,8 @@
 #include <aips/Arrays/ArrayMath.h>
 #include <aips/Mathematics/Constants.h>
 #include <aips/Arrays/IPosition.h>
+#include <aips/Glish/GlishArray.h>
+#include <aips/Glish/GlishRecord.h>
 #include <aips/Logging/LogIO.h>
 #include <aips/Quanta/Unit.h>
 #include <aips/Measures/MDirection.h>
@@ -38,11 +40,13 @@
 #include <aips/Quanta/MVTime.h>
 #include <aips/Measures/Stokes.h>
 #include <aips/Tables/TableRecord.h>
-
+#include <aips/Tables/RefRows.h>
+#include <aips/Utilities/GenSort.h>
 #include <trial/Coordinates.h>
 #include <aips/MeasurementSets.h>
 #include <aips/MeasurementSets/MeasurementSet.h>
 #include <trial/MeasurementSets/MSSummary.h>
+#include <trial/MeasurementSets/MSRange.h>
 
 #include <aips/iomanip.h>
 #include <aips/iostream.h>
@@ -217,6 +221,18 @@ void MSSummary::listAntenna (LogIO& os, Bool verbose) const
     return;
   }
 
+  // Determine antennas  present in the main table
+  MSRange msr(*pMS);
+  Vector<Int> ant1,ant2;
+  GlishArray(msr.range(MSS::ANTENNA1).get(0)).get(ant1);
+  GlishArray(msr.range(MSS::ANTENNA2).get(0)).get(ant2);
+  Vector<Int> antIds(ant1.nelements()+ant2.nelements());
+  antIds(Slice(0,ant1.nelements()))=ant1;
+  antIds(Slice(ant1.nelements(),ant2.nelements()))=ant2;
+  const Int option=Sort::HeapSort | Sort::NoDuplicates;
+  const Sort::Order order=Sort::Ascending;
+  Int nAnt=GenSort<Int>::sort (antIds, order, option);
+  
   // Get Antenna table columns:
   ROMSAntennaColumns antCol(antennaTable);
 
@@ -224,7 +240,7 @@ void MSSummary::listAntenna (LogIO& os, Bool verbose) const
     // Detailed antenna list
 
     String title;
-    title="Antennas: "+String::toString(nrow)+":";
+    title="Antennas: "+String::toString(nAnt)+":";
     String indent("   ");
     uInt indwidth =5;
     uInt namewidth=6;
@@ -249,23 +265,24 @@ void MSSummary::listAntenna (LogIO& os, Bool verbose) const
     os.output().width(latwidth);    os << "Lat.";
     os << endl;
     
-    // For each row
-    for (uInt row=0; row<nrow; row++) {
+    // For each ant
+    for (Int i=0; i<nAnt; i++) {
 
+      Int ant=antIds(i);
       // Get diameter
-      Quantity diam=antCol.dishDiameterQuant()(row);     
+      Quantity diam=antCol.dishDiameterQuant()(ant);     
       Unit diamUnit="m";
 
       // Get position
-      MPosition mLongLat=antCol.positionMeas()(row);
+      MPosition mLongLat=antCol.positionMeas()(ant);
       MVAngle mvLong= mLongLat.getAngle().getValue()(0);
       MVAngle mvLat= mLongLat.getAngle().getValue()(1);
 
       // write the row
       os << indent;
-      os.output().width(indwidth);  os << row+1;
-      os.output().width(namewidth); os << antCol.name()(row);
-      os.output().width(statwidth); os << antCol.station()(row);
+      os.output().width(indwidth);  os << ant+1;
+      os.output().width(namewidth); os << antCol.name()(ant);
+      os.output().width(statwidth); os << antCol.station()(ant);
       os.output().precision(diamprec);
       os.output().width(diamwidth); os << diam.getValue(diamUnit)<<"m   ";
       os.output().width(longwidth); os << mvLong.string(MVAngle::ANGLE,7);
@@ -275,24 +292,25 @@ void MSSummary::listAntenna (LogIO& os, Bool verbose) const
     
   } else {
     // Horizontal list of the stations names:
-    os << "Antennas: " << nrow << endl;
+    os << "Antennas: " << nAnt << endl;
     String line, leader;
-    Int last=-1;
-    for (uInt row=0; row<nrow; row++) {
+    Int last=antIds(0)-2;
+    for (Int i=0; i<nAnt; i++) {
+      Int ant=antIds(i);
       // Build the line
-      line = line + antCol.name()(row) + "=";
-      line = line + antCol.station()(row);
+      line = line + antCol.name()(ant) + "=";
+      line = line + antCol.station()(ant);
       // Add comma if not at the end
-      if (row != (nrow-1)) line = line + ", ";
-      if (line.length()>55 || row==(nrow-1)) {
+      if (ant != (nAnt-1)) line = line + ", ";
+      if (line.length()>55 || ant==(nAnt-1)) {
 	// This line is finished, dump it after the line leader
-	leader = String::toString(last+2) +"-" +String::toString(row+1) +": ";
+	leader = String::toString(last+2) +"-" +String::toString(ant+1) +": ";
 	os << "   ID=";
         os.output().setf(ios::right, ios::adjustfield);
         os.output().width(8); os << leader;
         os << line << endl;
 	line = "";
-	last = row;
+	last = ant;
       }
     }
   }
@@ -353,11 +371,17 @@ void MSSummary::listField (LogIO& os, Bool verbose) const
   // Make a MS-field-columns object
   ROMSFieldColumns msFC(pMS->field());
 
+  // Determine fields present in the main table
+  MSRange msr(*pMS);
+  Vector<Int> fieldId;
+  GlishArray(msr.range(MSS::FIELD_ID).get(0)).get(fieldId);
+
   if (msFC.phaseDir().nrow()<=0) {
     os << "The FIELD table is empty" << endl;
-  }
-  else {
-    os << "Fields: " << msFC.phaseDir().nrow()<<endl;
+  } else if (fieldId.nelements()==0) {
+    os << "The MAIN table is empty" << endl;
+  } else {
+    os << "Fields: " << fieldId.nelements()<<endl;
     Int widthLead  =  3;	
     Int widthField =  5;	
     Int widthName  = 10;
@@ -376,24 +400,28 @@ void MSSummary::listField (LogIO& os, Bool verbose) const
     os.output().width(widthDec);	os << "Declination";
     os.output().width(widthType);	os << "Epoch";
     os << endl;
-    
-    // loop through rows
-    for (uInt row=0; row<msFC.name().nrow(); row++) {
-      MDirection mRaDec=msFC.phaseDirMeas(row);
-      MVAngle mvRa = mRaDec.getAngle().getValue()(0);
-      MVAngle mvDec= mRaDec.getAngle().getValue()(1);
+ 
+    // loop through fields
+    for (uInt i=0; i<fieldId.nelements(); i++) {
+      uInt fld=fieldId(i);
+      if (fld<msFC.phaseDir().nrow()) {
+	MDirection mRaDec=msFC.phaseDirMeas(fld);
+	MVAngle mvRa = mRaDec.getAngle().getValue()(0);
+	MVAngle mvDec= mRaDec.getAngle().getValue()(1);
 
-      os.output().setf(ios::left, ios::adjustfield);
-      os.output().width(widthLead);	os << "   ";
-      os.output().width(widthField);	os << (row+1);
-
-      os.output().width(widthName);	os << msFC.name()(row);
-      os.output().width(widthRA);	os << mvRa(0.0).string(MVAngle::TIME,8);
-      os.output().width(widthDec);	os << mvDec.string(MVAngle::DIG2,8);
-      os.output().width(widthType);
-		    os << MDirection::showType(mRaDec.getRefPtr()->getType());
-      os << endl;
-    }
+	os.output().setf(ios::left, ios::adjustfield);
+	os.output().width(widthLead);	os << "   ";
+        os.output().width(widthField);	os << (fld+1);
+	os.output().width(widthName);	os << msFC.name()(fld);
+	os.output().width(widthRA);	os << mvRa(0.0).string(MVAngle::TIME,8);
+	os.output().width(widthDec);	os << mvDec.string(MVAngle::DIG2,8);
+	os.output().width(widthType);
+	os << MDirection::showType(mRaDec.getRefPtr()->getType());
+	os << endl;
+      } else {
+	os << "Field "<<fld<<" not found in FIELD table"<<endl;
+      }
+    } 
   }
   os << endl << LogIO::POST;
 }
@@ -411,7 +439,7 @@ void MSSummary::listObservation (LogIO& os, Bool verbose) const
     os << "   Observer: " << msOC.observer()(0) << "   "
        << "   Project: " << msOC.project()(0) << "   ";
 //v2os << "   Obs Date: " << msOC.obsDate()(0) << endl
-//v2   << "   Tel name: " << msOC.telName()(0);
+//     << "   Tel name: " << msOC.telescopeName()(0);
     if (msc.observation().telescopeName().nrow()>0) {
       os<<endl << "Observation: " << msc.observation().telescopeName()(0);
     }
@@ -421,28 +449,28 @@ void MSSummary::listObservation (LogIO& os, Bool verbose) const
     if (msOC.project().nrow()>1) {
       // for version 2 of the MS
       // Line is	TelName ObsDate Observer Project
-      //Int widthLead =  3;
-      //Int widthTel  = 10;
-      //Int widthDate = 20;
-      //Int widthObs  = 15;
-      //Int widthProj = 15;
-      //os.output().setf(ios::left, ios::adjustfield);
-      //os.output().width(widthLead);	os << "   ";
-      //os.output().width(widthTel);	os << "Telescope";
-      //os.output().width(widthDate);	os << "Observation Date";
-      //os.output().width(widthObs);	os << "Observer";
-      //os.output().width(widthProj);	os << "Project";
-      //os << endl;
+      Int widthLead =  3;
+      Int widthTel  = 10;
+      Int widthDate = 20;
+      Int widthObs  = 15;
+      Int widthProj = 15;
+      os.output().setf(ios::left, ios::adjustfield);
+      os.output().width(widthLead);	os << "   ";
+      os.output().width(widthTel);	os << "Telescope";
+      os.output().width(widthDate);	os << "Observation Date";
+      os.output().width(widthObs);	os << "Observer";
+      os.output().width(widthProj);	os << "Project";
+      os << endl;
 
-      //for (uInt row=0;row<msOC.project().nrow();row++) {
-	//os.output().setf(ios::left, ios::adjustfield);
-        //os.output().width(widthLead);	os << "   ";
-	//os.output().width(widthTel);	os << msOC.telName()(row);
-	//os.output().width(widthDate);	os << msOC.obsDate()(row);
-	//os.output().width(widthObs);	os << msOC.observer()(row);
-	//os.output().width(widthProj);	os << msOC.project()(row);
-	//os << endl;
-      //}
+      for (uInt row=0;row<msOC.project().nrow();row++) {
+	os.output().setf(ios::left, ios::adjustfield);
+        os.output().width(widthLead);	os << "   ";
+	os.output().width(widthTel);	os << msOC.telescopeName()(row);
+	os.output().width(widthDate);	os << msOC.timeRange()(row);
+	os.output().width(widthObs);	os << msOC.observer()(row);
+	os.output().width(widthProj);	os << msOC.project()(row);
+	os << endl;
+      }
     }
   }
   os << LogIO::POST;
@@ -673,9 +701,23 @@ void MSSummary::listSpectralAndPolInfo (LogIO& os, Bool verbose) const
     os << "The POLARIZATION table is empty: see the FEED table" << endl;
   }
 
-  if (msDDC.nrow()>0) {
-    os << "Data descriptions: "<< msDDC.nrow();
-    os << " ("<<msSWC.nrow()<<" spectral windows and " << msPolC.nrow();
+  // determine the data_desc_ids present in the main table
+  MSRange msr(*pMS);
+  Vector<Int> ddId;
+  GlishArray(msr.range(MSS::DATA_DESC_ID).get(0)).get(ddId);
+  Vector<uInt> uddId(ddId.nelements());
+  for (uInt i=0; i<ddId.nelements(); i++) uddId(i)=ddId(i);
+  // now get the corresponding spectral windows and pol setups
+  Vector<Int> spwIds = msDDC.spectralWindowId().getColumnCells(uddId);
+  Vector<Int> polIds = msDDC.polarizationId().getColumnCells(uddId);
+  const Int option=Sort::HeapSort | Sort::NoDuplicates;
+  const Sort::Order order=Sort::Ascending;
+  Int nSpw=GenSort<Int>::sort (spwIds, order, option);
+  Int nPol=GenSort<Int>::sort (polIds, order, option);
+
+  if (ddId.nelements()>0) {
+    os << "Data descriptions: "<< ddId.nelements();
+    os << " ("<<nSpw<<" spectral windows and " << nPol;
     os << " polarization setups)"<<endl;
 
     // Define the column widths
@@ -699,13 +741,14 @@ void MSSummary::listSpectralAndPolInfo (LogIO& os, Bool verbose) const
     os << endl;
 
     // For each row of the DataDesc subtable, write the info
-    for (uInt row=0; row<msDDC.nrow(); row++) {
-      Int spw = msDDC.spectralWindowId()(row);
-      Int pol = msDDC.polarizationId()(row);
+    for (uInt i=0; i<ddId.nelements(); i++) {
+      Int dd=ddId(i);
+      Int spw = msDDC.spectralWindowId()(dd);
+      Int pol = msDDC.polarizationId()(dd);
       os.output().setf(ios::left, ios::adjustfield);
       os.output().width(widthLead);		os << "   ";
       // 1th column: Data description Id
-      os.output().width(widthDDId); os << (row+1);
+      os.output().width(widthDDId); os << (dd+1);
       // 2nd column: reference frequency
       os.output().width(widthFrqNum);
       os<< msSWC.refFrequency()(spw)/1.0e6 <<"MHz  ";
@@ -718,9 +761,9 @@ void MSSummary::listSpectralAndPolInfo (LogIO& os, Bool verbose) const
       os.output().width(widthFrqNum);
       os<< msSWC.totalBandwidth()(spw)/1000<<"kHz  ";
       // 6th column: the correlation type(s)
-      for (uInt i=0; i<msPolC.corrType()(pol).nelements(); i++) {
+      for (uInt j=0; j<msPolC.corrType()(pol).nelements(); j++) {
 	os.output().width(widthCorrType);
-      	Int index = msPolC.corrType()(pol)(IPosition(1,i));
+      	Int index = msPolC.corrType()(pol)(IPosition(1,j));
       	os << Stokes::name(Stokes::type(index));
       }
       os << endl;
@@ -899,7 +942,4 @@ void MSSummary::clearFlags(LogIO& os) const
   os.output().unsetf(ios::fixed);
 
 }
-
-
-
 
