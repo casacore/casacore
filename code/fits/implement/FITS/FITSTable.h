@@ -43,6 +43,7 @@ class String;
 class FitsInput;
 class FitsOutput;
 class FITSFieldCopier;
+class TableDesc;
 template<class T> class Vector;
 #if defined(AIPS_STDLIB)
 #include <iosfwd.h>
@@ -94,10 +95,24 @@ public:
     // Returns the description of the underlying FITS table.
     virtual const RecordDesc &description() const = 0;
     // Returns any TUNITnnn associated with a column (the field names
-    // are the column names, the field values are the TUNITnnn value for
+    // are the column names, each field value is the TUNITnnn value for
     // that field).  Note that only those columns with a non-empty
     // TUNITnnn have an entry in the units() Record. 
     virtual const Record &units() const = 0;
+    // Returns any TDISPnnn associated with a column (the field names
+    // are the column names, each field value is the TDISPnnn value for
+    // that field).  Note that only those columns with a non-empty
+    // TDISPnnn have an entry in the displayFormats() Record.
+    virtual const Record &displayFormats() const = 0;
+    // Returns any TNULLnnn associated with a column (the field names
+    // are the column names, each field value is the TNULLnnn value for
+    // that field).  Note that only those columns with a specific entry for
+    // TNULLnnn and which have not been promoted to doubles due TSCAL
+    // and TZERO values will have an entry in the nulls() Record.
+    // The meaning of TNULL is only defined for integer and byte columns. 
+    // When a column is promoted to a double because of scaling,
+    // any TNULL values will be assigned a value of NaN.
+    virtual const Record &nulls() const = 0;
 
     // Returns True if we have advanced past the end of data.
     virtual Bool pastEnd() const = 0;
@@ -133,6 +148,16 @@ public:
 
     // Helper function for retrieving the TUNITnnn from a native-FITS hdu.
     static Record unitsFromHDU(BinaryTableExtension &hdu);
+
+    // Helper function for retrieving the TDISPnnn from a native-FITS hdu.
+    static Record displayFormatsFromHDU(BinaryTableExtension &hdu);
+
+    // Helper function for retrieving the TNULLnnn from a native-FITS hdu.
+    static Record nullsFromHDU(BinaryTableExtension &hdu);
+
+    // Get a TableDesc appropriate to hold a FITSTabular
+    // the keywords, description, units, displayFormats, and nulls are all used
+    static TableDesc tableDesc(const FITSTabular &fitstabular);
 };
 
 // <summary>
@@ -186,6 +211,8 @@ public:
     virtual const TableRecord &keywords() const;
     virtual const RecordDesc &description() const;
     virtual const Record &units() const;
+    virtual const Record &displayFormats() const;
+    virtual const Record &nulls() const;
 
     virtual Bool pastEnd() const;
     virtual void next();
@@ -227,10 +254,14 @@ private:
     RecordDesc description_p;
     Record row_p;
     Record units_p;
+    Record disps_p;
+    Record nulls_p;
     Bool allKeys_p;
     // One per field in row_p, of the right type. i.e. casting required.
     Block<void *> row_fields_p;
     Block<Int> field_types_p;
+    Block<Bool> promoted_p;
+    Block<Int> tdims_p;
     // these are used by VADESC columns
     Block<Int> vatypes_p;
     Block<void *> vaptr_p;
