@@ -166,16 +166,20 @@ public:
   // Slicers with non-unit stride are not yet supported
   virtual Bool doGetMaskSlice (Array<Bool>& buffer, const Slicer& section);
 
-private:
-  IPosition doShape(const IPosition& inShape) const;
+  // Static function needed by LEL.  Applies binning factors
+  // to shape to give the shape of the output lattice.  Will
+  // give the same result as function 'shape'
+  static IPosition rebinShape (const IPosition& shapeLatticeIn,
+                                 const Vector<uInt>& bin);  
 
+private:
   Slicer findOriginalSlicer (const Slicer& section) const;
   Bool getDataAndMask (Array<T>& data, Array<Bool>& mask, const Slicer& section);
   Bool bin(Array<T>& dataOut, Array<Bool>& maskOut,
            const Array<T>& dataIn, const Array<Bool>& maskIn) const;
 //
   MaskedLattice<T>* itsLatticePtr;
-  IPosition itsBin;
+  Vector<uInt> itsBin;
   Bool itsAllUnity;
 //
   Array<T> itsData;

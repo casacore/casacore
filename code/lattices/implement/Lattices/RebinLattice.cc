@@ -67,12 +67,12 @@ RebinLattice<T>::RebinLattice (const MaskedLattice<T>& lattice,
          os << "Binning factors vector values must be positive integers" << LogIO::EXCEPTION;
       }
 //
-      itsBin(i) = bin[i];
+      itsBin[i] = bin[i];
       if (Int(bin[i])>shapeIn(i)) {
          os << LogIO::WARN << "Truncating bin to lattice shape for axis " << i+1 << LogIO::POST;
          itsBin(i) = shapeIn(i);
       }
-      if (bin(i) != 1) itsAllUnity = False;
+      if (bin[i] != 1) itsAllUnity = False;
    }
 }
 
@@ -188,7 +188,7 @@ const LatticeRegion* RebinLattice<T>::getRegionPtr() const
 template<class T>
 IPosition RebinLattice<T>::shape() const
 {
-   return doShape(itsLatticePtr->shape());
+   return rebinShape(itsLatticePtr->shape(), itsBin);
 }
 
 
@@ -358,7 +358,9 @@ Bool RebinLattice<T>::bin(Array<T>& dataOut, Array<Bool>& maskOut,
 
    const uInt nDim = latIn.ndim();
    IPosition cursorShape(latIn.shape());
-   LatticeStepper stepper (latIn.shape(), itsBin, LatticeStepper::RESIZE);
+   IPosition bin(itsBin.nelements());
+   for (uInt i=0; i<bin.nelements(); i++) bin(i) = itsBin[i];
+   LatticeStepper stepper (latIn.shape(), bin, LatticeStepper::RESIZE);
    RO_MaskedLatticeIterator<T> inIter(latIn, stepper);
 
 // Do it
@@ -396,7 +398,7 @@ Bool RebinLattice<T>::bin(Array<T>& dataOut, Array<Bool>& maskOut,
 // Write output (perhaps could redo this with an iterator)
 
       const IPosition& inPos = inIter.position();
-      outPos = inPos / itsBin;
+      outPos = inPos / bin;
 //
       dataOut(outPos) = sumData;
       if (doOutMask) {
@@ -410,13 +412,16 @@ Bool RebinLattice<T>::bin(Array<T>& dataOut, Array<Bool>& maskOut,
 
 
 template<class T>
-IPosition RebinLattice<T>::doShape(const IPosition& inShape) const
+IPosition RebinLattice<T>::rebinShape (const IPosition& inShape,
+                                       const Vector<uInt>& bin)
 {
+   AlwaysAssert(inShape.nelements()==bin.nelements(), AipsError);
+//
    const uInt nDim = inShape.nelements();
    IPosition outShape(nDim);
    for (uInt i=0; i<nDim; i++) {
-      Int n = inShape(i) / itsBin(i);
-      Int rem = inShape(i) - n*itsBin(i);
+      Int n = inShape(i) / bin(i);
+      Int rem = inShape(i) - n*bin(i);
       if (rem > 0) n += 1;                   // Allow last bin to be non-integral
       outShape(i) = n;
    }
