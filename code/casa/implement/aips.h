@@ -1,5 +1,5 @@
 //# aips.h: Global initialization for namespace management, standard types, etc.
-//# Copyright (C) 1993,1994,1995,1996
+//# Copyright (C) 1993-1997
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -73,7 +73,7 @@ typedef long Long;
 typedef unsigned long uLong;
 typedef float Float;
 typedef double Double;
-#if defined (AIPS_IRIX)
+#if defined (AIPS_IRIX) && !defined(__GNUG__)
 typedef double lDouble;
 #else
 typedef long double lDouble;
