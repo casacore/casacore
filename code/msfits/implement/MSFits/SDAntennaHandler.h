@@ -125,6 +125,7 @@ private:
     RecordFieldPtr<String> nameKey_p, stationKey_p, mountKey_p;
     RecordFieldPtr<Double> dishDiameterKey_p;
     RecordFieldPtr<Int> orbitIdKey_p, phasedIdKey_p;
+    RecordFieldPtr<Bool> flagRowKey_p;
     MSAntenna *msAnt_p;
     MSAntennaColumns *msAntCols_p;
 
@@ -145,6 +146,7 @@ private:
     RORecordFieldPtr<Int> orbitIdField_p, phasedArrayIdField_p;
     RORecordFieldPtr<Double> dishDiameterField_p;
     RORecordFieldPtr<Array<Double> > offsetField_p, positionField_p;
+    RORecordFieldPtr<Bool> flagRowField_p;
 
     // I expect these will never be used, nevertheless, put them here just in case I'm wrong
     void addPhasedArrayIdColumn();

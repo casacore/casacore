@@ -97,6 +97,7 @@ SDAntennaHandler &SDAntennaHandler::operator=(const SDAntennaHandler &other)
 	dishDiameterField_p = other.dishDiameterField_p;
 	offsetField_p = other.offsetField_p;
 	positionField_p = other.positionField_p;
+	flagRowField_p = other.flagRowField_p;
     }
     return *this;
 }
@@ -144,6 +145,9 @@ void SDAntennaHandler::fill(const Record &row)
 	}
 	if (orbitIdKey_p.isAttached()) {
 	    *orbitIdKey_p = *orbitIdField_p;
+	}
+	if (flagRowKey_p.isAttached()) {
+	    *flagRowKey_p = *flagRowField_p;
 	}
 	Vector<uInt> foundRows = index_p->getRowNumbers();
 	Bool found = False;
@@ -203,7 +207,11 @@ void SDAntennaHandler::fill(const Record &row)
 	    } else {
 		msAntCols_p->dishDiameter().put(rownr_p,0.0);
 	    }
-	    msAntCols_p->flagRow().put(rownr_p,False);
+	    if (flagRowKey_p.isAttached()) {
+		msAntCols_p->flagRow().put(rownr_p,*flagRowKey_p);
+	    } else {
+		msAntCols_p->flagRow().put(rownr_p,False);
+	    }
 	    if (mountKey_p.isAttached()) {
 		msAntCols_p->mount().put(rownr_p,*mountKey_p);
 	    } else {
@@ -264,6 +272,12 @@ void SDAntennaHandler::clearRow()
     mountField_p.detach();
     msNameField_p.detach();
     stationField_p.detach();
+    orbitIdField_p.detach();
+    phasedArrayIdField_p.detach();
+    dishDiameterField_p.detach();
+    offsetField_p.detach();
+    positionField_p.detach();
+    flagRowField_p.detach();
     siteLongFldNum_p = siteLatFldNum_p = siteElevFldNum_p = -1;
     rownr_p = -1;
 }
@@ -296,6 +310,10 @@ void SDAntennaHandler::initAll(MeasurementSet &ms, Vector<Bool> &handledCols, co
 	indxStr += ",";
 	indxStr += MSAntenna::columnName(MSAntenna::DISH_DIAMETER);
     }
+    if (flagRowField_p.isAttached()) {
+	indxStr += ",";
+	indxStr += MSAntenna::columnName(MSAntenna::FLAG_ROW);
+    }
     // ORBIT_ID and PHASED_ARRAY_ID are dealt with later, if necessary
     index_p = new ColumnsIndex(*msAnt_p, stringToVector(indxStr));
     AlwaysAssert(index_p, AipsError);
@@ -314,6 +332,10 @@ void SDAntennaHandler::initAll(MeasurementSet &ms, Vector<Bool> &handledCols, co
     if (dishDiameterField_p.isAttached()) {
 	dishDiameterKey_p.attachToRecord(index_p->accessKey(),
 					 MSAntenna::columnName(MSAntenna::DISH_DIAMETER));
+    }
+    if (flagRowField_p.isAttached()) {
+	flagRowKey_p.attachToRecord(index_p->accessKey(),
+				    MSAntenna::columnName(MSAntenna::FLAG_ROW));
     }
     // orbit_id and phased_array_id columns are dealt with elsewhere
 }
@@ -375,6 +397,11 @@ void SDAntennaHandler::initRow(Vector<Bool> &handledCols, const Record &row)
 	row.dataType("ANTENNA_POSITION") == TpArrayDouble) {
 	positionField_p.attachToRecord(row, "ANTENNA_POSITION");
 	handledCols(row.fieldNumber("ANTENNA_POSITION")) = True;
+    }
+    if (row.fieldNumber("ANTENNA_FLAG_ROW") >= 0 &&
+	row.dataType("ANTENNA_FLAG_ROW") == TpBool) {
+	flagRowField_p.attachToRecord(row, "ANTENNA_FLAG_ROW");
+	handledCols(row.fieldNumber("ANTENNA_FLAG_ROW")) = True;
     }
    // row number isn't set until the following fill
     rownr_p = -1;
