@@ -69,6 +69,7 @@ MCFrame::MCFrame(MeasFrame &inf) :
     myf.setMCFrameGetmvdir(MCFrameGetmvdir);
     myf.setMCFrameGetmvpos(MCFrameGetmvpos);
     create();
+    myf.unlock();
 }
 
 // Destructor
