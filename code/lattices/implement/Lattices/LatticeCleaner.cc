@@ -100,7 +100,8 @@ LatticeCleaner<T>::LatticeCleaner(const Lattice<T> & psf,
   
   // We need to guess the memory use. For the moment, we'll assume
   // that about 5 scales will be used, giving about 32 TempLattices
-  // in all.
+  // in all. We multiply by a priority number to bias some 
+  // to be in memory
   itsMemoryMB=Double(AppInfo::memoryInMB())/32.0;
 
   itsDirty = new TempLattice<T>(dirty.shape(), itsMemoryMB);
@@ -486,8 +487,10 @@ Bool LatticeCleaner<T>::setscales(const Vector<Float>& scaleSizes)
   
   if(itsScales.nelements()>0) {
     destroyScales();
+    os << "Deleted previous scales" << LogIO::POST;
   }
 
+  os << "Creating new scales" << LogIO::POST;
   itsScales.resize(itsNscales);
   itsDirtyConvScales.resize(itsNscales);
   itsPsfConvScales.resize((itsNscales+1)*(itsNscales+1));
@@ -529,7 +532,7 @@ Bool LatticeCleaner<T>::setscales(const Vector<Float>& scaleSizes)
     cWork.copyData(ppsExpr);
     LatticeFFT::cfft2d(cWork, False);
     itsPsfConvScales[scale] = new TempLattice<T>(itsDirty->shape(),
-						 itsMemoryMB);
+						 2*itsMemoryMB);
     AlwaysAssert(itsPsfConvScales[scale], AipsError);
     LatticeExpr<T> realWork(real(cWork));
     itsPsfConvScales[scale]->copyData(realWork);
@@ -539,7 +542,7 @@ Bool LatticeCleaner<T>::setscales(const Vector<Float>& scaleSizes)
     cWork.copyData(dpsExpr);
     LatticeFFT::cfft2d(cWork, False);
     itsDirtyConvScales[scale] = new TempLattice<T>(itsDirty->shape(),
-						   itsMemoryMB);
+						   4*itsMemoryMB);
     AlwaysAssert(itsDirtyConvScales[scale], AipsError);
     itsDirtyConvScales[scale]->copyData(realWork);
 
@@ -553,14 +556,16 @@ Bool LatticeCleaner<T>::setscales(const Vector<Float>& scaleSizes)
       cWork.copyData(ppsoExpr);
       LatticeFFT::cfft2d(cWork, False);
       itsPsfConvScales[index(scale,otherscale)] =
-	new TempLattice<T>(itsDirty->shape(), itsMemoryMB);
+	new TempLattice<T>(itsDirty->shape(), 4*itsMemoryMB);
       AlwaysAssert(itsPsfConvScales[index(scale,otherscale)], AipsError);
       itsPsfConvScales[index(scale,otherscale)]->copyData(realWork);
     }
   }
+
   itsScalesValid=True;
   for(Int scale=0; scale<itsNscales;scale++) {
     if(scaleXfr[scale]) delete scaleXfr[scale];
+    scaleXfr[scale] = 0;
   }
   return True;
 }
