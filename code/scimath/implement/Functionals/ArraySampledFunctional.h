@@ -1,5 +1,5 @@
 //# ArraySampledFunctional:
-//# Copyright (C) 1996
+//# Copyright (C) 1996,1997
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -132,16 +132,23 @@ public:
 
   // Define the functions for the SampledFunction interface
   // <group>
-  virtual T operator()(const uInt &index) const;
+  virtual T operator()(const uInt & index) const;
   virtual uInt nelements() const;
   virtual ~ArraySampledFunctional();
   // </group>
 
+  // An alternate version of the sampling function which is more effecient
+  // because it does not need to create as many temporary objects or copy the
+  // Array data.
+  // <group>
+  const T operator()(const uInt & index);
+  // </group>
+
 private:
-  T refData; 
-  IPosition shape;
-  uInt lastAxis;
-  uInt nElements;
+  T theRefData;
+  IPosition theEnd;
+  uInt theLastAxis;
+  uInt theNelements;
 };
 
 #endif
