@@ -35,16 +35,12 @@
 #include <aips/Mathematics/FFTServer.h>
 #include <aips/Mathematics/Math.h>
 #include <aips/Mathematics/NumericTraits.h>
-//# No need to include NumericTraits2.h as it is included by NumericTraits.h
 #include <aips/Mathematics/Primes.h>
 #include <aips/Mathematics/Random.h>
-//# The following are scheduled to be removed in a future AIPS++ release
-#include <aips/Mathematics/DFTServer.h>
-#include <aips/Mathematics/MathFunc.h>
 
 // <module>
 
-// <summary> Mathematical types, constants, operations, objects, etc.</summary>
+// <summary> Mathematical types, constants, operations </summary>
 
 // <prerequisite> At least high school (and preferably undergraduate
 // level) understanding of mathematics. </prerequisite>
@@ -60,31 +56,41 @@
 // </etymology>
 
 // <synopsis>
+
 // The Mathematics module has a variety of mathematical classes and functions.
 // Not all numerical operations are found herein. Very complicated operations
-// might be in their own module, such as 
-// <linkto module="Deconvolution">Deconvolution</linkto>. 
-// Many whole array operations are in the
-// <linkto file="ArrayMath.h">ArrayMath</linkto> global functions (part of the
-// <linkto module="Arrays">Arrays</linkto> module).
+// might be in their own module, such as <linkto
+// module="Deconvolution">Deconvolution</linkto>.  Many whole array operations
+// are in the <linkto file="ArrayMath.h">ArrayMath</linkto> global functions
+// (part of the <linkto module="Arrays">Arrays</linkto> module). Mathematical
+// operations on Lattices are found in the <linkto
+// module="Lattice">Lattice</linkto> module. A wide variety of special
+// Mathematical functions is planned for the <linkto
+// module="Functionals">Functional</linkto> module.
 //
 // The classes presently in this module fall into the following categories:
 // <ul>
-// <li> <linkto file="Math.h">Generic</linkto> mathematical functions
-//      (including the system math.h functions) 
-// <li> <linkto file="Complex.h">Complex</linkto> numbers
-// <li> Mathematical, numerical and physical 
-//      <linkto file="Constants.h">constants </linkto> like 
-//      pi, FLT_MAX and h (Planks constant). Many of the Physical 
-//      constants are also available with units in the 
-//      <linkto class="QC">Measures</linkto> Module.
+// <li> A wrapper around the system math.h functions called 
+//      <linkto file="Math.h">Math.h</linkto>. This contains generic
+//      mathematical functions. It is required that you always include this
+//      file rather than the system math.h file as deficiencies in the system
+//      math.h file will be implemented here.
+// <li> <linkto file="Complex.h">Complex</linkto> numbers. It is expected that
+//      we will, in a future release of AIPS++, replace this with the complex
+//      number classes in the standard template library.
+// <li> Mathematical &  numerical 
+//      <linkto file="Constants.h">constants</linkto> like pi &
+//      FLT_MAX. Physical constants have units and hence are available in the
+//      <linkto class="QC">QC</linkto> class in the 
+//      <linkto module="Quanta">Quanta</linkto> module.
 // <li> <linkto file=NumericTraits.h>Relationships</linkto>
 //      between different numerical data types.
-// <li> Numerical Fourier transforms, both 
-//      <linkto class="DFTServer">Direct Transforms</linkto>
-//      (for use with ungridded data) and 
-//      <linkto class="FFTServer">Fast Transforms</linkto> 
-//      (for gridded data)
+// <li> Multi-dimensional Fourier transforms are done in the 
+//      <linkto class="FFTServer">FFTServer</linkto> class.  This decomposes
+//      the transforms into a one-dimensional transforms which are done using
+//      the functions in the <linkto class="FFTPack">FFTPack</linkto>
+//      class. The FFTPack class also contains functions for doing
+//      one-dimensional sine, cosine, and real-symmetric transforms.
 // <li> Numerical <linkto class="Convolver">Convolution</linkto> 
 //      (both linear and circular) of multi-dimensional Arrays.
 // <li> <linkto file="Random.h">Random</linkto> numbers in a wide 
@@ -93,29 +99,9 @@
 // <li> Interpolation in one dimension is performed by the 
 //      <linkto class="Interpolate1D">Interpolate1D</linkto> class in 
 //      the <linkto module="Functionals">Functionals</linkto> module
-// <li> ``Special'' <linkto file="MathFunc.h">function</linkto> classes
 // </ul>
-// A number of classes in this module are very old and are either no longer
-// required or have been superceeded by newer classes. The following classes
-// will be removed in future AIPS++ releases.
-// <ul>
-// <li> DFTServer (ungridded Fourier Transforms are not required)
-// <li> MathFunc (this code will move into the Functionals module)
-// </ul>
-// In addition the extern_fft class will be renamed FFTPack and the Constants
-// class will move into the OS Module in a future AIPS++ release.
 // </synopsis>
 
-//# // <example>
-//# // </example>
-
-//# // <motivation>
-//# // </motivation>
-
-//# // <todo asof="yyyy/mm/dd">
-//# // </todo>
-
-//
 // </module>
 
 #endif
