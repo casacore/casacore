@@ -57,16 +57,20 @@ try {
    String name = root + "/code/trial/implement/Images/test/test_image";
    inputs.Create("in", name, "Input file name");
    inputs.Create("out", "tSepImageConv_image", "Output root image name");
-   inputs.Create("axis", "-1", "axis to convolve");
-   inputs.Create("fwhm", "3", "FWHM in pixels");
+   inputs.Create("axis", "-1", "axis to convolve (default is all)");
+   inputs.Create("width", "3", "Width in pixels");
    inputs.Create("type", "gauss", "Kernel type (box, gauss, hann");
+   inputs.Create("peakone", "F", "Normalize so peak is unity");
+   inputs.Create("show", "F", "Show kernel");
    inputs.ReadArguments(argc, argv);
 
    const String in = inputs.GetString("in");
    const String out = inputs.GetString("out");
    const String kernelType = inputs.GetString("type");
    Int axis = inputs.GetInt("axis");
-   Double fwhm = inputs.GetDouble("fwhm");
+   Double fwhm = inputs.GetDouble("width");
+   Bool peak = inputs.GetBool("peakone");
+   Bool show = inputs.GetBool("show");
 //
    if (in.empty()) {
       cout << "You must give an input image name" << endl;
@@ -105,7 +109,8 @@ try {
 
    IPosition shape = inImage.shape();
    const Double sigma = fwhm / sqrt(Double(8.0) * C::ln2);
-   const Double norm = 1.0 / (sigma * sqrt(2.0 * C::pi));
+   Double norm = 1.0 / (sigma * sqrt(2.0 * C::pi));
+   if (peak) norm = 1.0;
    LogOrigin or("tSeparableImageConvolver", "main()", WHERE);
    LogIO os(or);
    Vector<Int> types = VectorKernel::toKernelTypes(kernelType);
@@ -154,11 +159,11 @@ try {
 
       if (axis<=0) {
          for (uInt j=0; j<shape.nelements(); j++) {
-            sic.setKernel(j, type, fwhm);
+            sic.setKernel(j, type, fwhm, peak);
          }
       } else {
          axis--;
-         sic.setKernel(axis, type, fwhm);
+         sic.setKernel(axis, type, fwhm, peak);
       }
       sic.convolve(outImage2);
    }
@@ -178,8 +183,11 @@ try {
 
 // Set/Get a kernel
       
-      sic.setKernel(0, type, fwhm);
+      sic.setKernel(0, type, fwhm, peak);
       Vector<Float> kernel = sic.getKernel(uInt(0));
+      if (show) {
+         cout << "Kernel = " << kernel.ac() << endl;
+      }
    }
 }
 
