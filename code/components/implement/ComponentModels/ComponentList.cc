@@ -123,8 +123,9 @@ ComponentList& ComponentList::operator=(const ComponentList& other){
 
 Bool ComponentList::isPhysical(const Vector<Int>& indices) const {
   DebugAssert(ok(), AipsError);
-  DebugAssert(allGE(indices, 0), AipsError);
-  DebugAssert(allLT(indices, static_cast<Int>(nelements())), AipsError);
+// The static_casts are a workaround for an SGI compiler bug
+  DebugAssert(allGE(static_cast<const Vector<Int> &>(indices), 0), AipsError);
+  DebugAssert(allLT(static_cast<const Vector<Int> &>(indices), static_cast<Int>(nelements())), AipsError);
   Bool retVal = True;
   uInt c = indices.nelements();
   while (retVal && c > 0) {
