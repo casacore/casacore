@@ -3396,3 +3396,7 @@
 13 249 src rm trial/implement/Fitting/Fitting_tex2html_wrap82.gif
 13 249 src rm trial/implement/Fitting/Fitting_tex2html_wrap84.gif
 13 249 src rm trial/implement/Fitting/Fitting_tex2html_wrap86.gif
+13 249 src rm trial/implement/Fitting/LSQMethods.cc
+13 249 src rm trial/implement/Fitting/LSQMethods.h
+13 249 src rm trial/implement/Fitting/LSQMethods2.cc
+13 249 src rm trial/implement/Fitting/LSQMethods2.h
