@@ -1242,18 +1242,18 @@ Bool MomentCalcBase<T>::getLoc (T& x,
 
       if (str == "S") {
          if (!final) {
+/*
             os << LogIO::NORMAL <<
                       "You must define both ends of the range before it can be" << endl;
             os   << "applied to all subsequent spectra. Enter S to define the" << endl;
             os   << "second extremum and indicate it will be used for all " << endl;
             os   << "subsequent spectra" << LogIO::POST;
-
-/*
-            plotter.message("You must define both ends of the range before it can be");
-            plotter.message("applied to all subsequent spectra. Enter S to define the");
-            plotter.message("second extremum and indicate it will be used for all ");
-            plotter.message("subsequent spectra");
 */
+            plotter.message("You must define both ends of the range before it can be\n");
+            plotter.message("applied to all subsequent spectra. Enter S to define the\n");
+            plotter.message("second extremum and indicate it will be used for all\n ");
+            plotter.message("subsequent spectra\n");
+
             return False;
          } else {
             plotter.message("All subsequent spectra will use this window");
