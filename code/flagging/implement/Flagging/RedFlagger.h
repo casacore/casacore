@@ -38,6 +38,8 @@
 #include <measures/Measures/MDirection.h>
 #include <measures/Measures/MPosition.h>
 #include <measures/Measures/MRadialVelocity.h>
+#include <ms/MeasurementSets/MSHistory.h>
+#include <ms/MeasurementSets/MSHistoryHandler.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
@@ -218,6 +220,13 @@ public:
 			 Vector<Int>& dataStart, Vector<Int>& dataStep,
 			 MRadialVelocity& mDataStart, 
 			 MRadialVelocity& mDataStep);
+			 
+  // Methods to write to the history table of Measurement Set.
+  // Write an entry to the history table
+  void writeHistory(LogIO& os);
+  // write command line command
+  void writeCommand(LogIO& os);
+
   
 private:
     
@@ -226,6 +235,18 @@ private:
   RedFlagger& operator=(const RedFlagger &)  { return *this; };
 
   void printAgentRecord(String &, uInt, const RecordInterface &);
+  // make lock()/unlock() methods private since they are not for client to use.
+ 
+  // variables used for writting to history table
+  MSHistoryHandler *hist_p;
+  Table historytab_p;
+  Int histLockCounter_p;
+
+  // Lock the ms and its subtables
+  Bool lock();
+  // Unlock the ms and its subtables
+  Bool unlock();
+
 };
 
 
