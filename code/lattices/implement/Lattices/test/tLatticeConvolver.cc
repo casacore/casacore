@@ -30,7 +30,6 @@
 #include <aips/Arrays/Array.h>
 #include <aips/Arrays/ArrayLogical.h>
 #include <aips/Exceptions/Error.h>
-#include <aips/Exceptions/Excp.h>
 #include <aips/Arrays/IPosition.h>
 //#include <aips/Arrays/Slicer.h>
 #include <aips/Mathematics/NumericTraits.h>

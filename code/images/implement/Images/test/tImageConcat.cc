@@ -31,7 +31,6 @@
 #include <aips/Arrays/ArrayLogical.h>
 #include <aips/Arrays/ArrayMath.h>
 #include <aips/Exceptions/Error.h>
-#include <aips/Exceptions/Excp.h>
 #include <aips/IO/FileLocker.h>
 #include <aips/Arrays/Slicer.h>
 #include <aips/Arrays/IPosition.h>

@@ -29,7 +29,6 @@
 #include <aips/Arrays/ArrayLogical.h>
 #include <aips/Arrays/Vector.h>
 #include <aips/Exceptions/Error.h>
-#include <aips/Exceptions/Excp.h>
 #include <aips/Arrays/IPosition.h>
 #include <aips/Mathematics/Complex.h>
 #include <aips/Mathematics/Math.h>
