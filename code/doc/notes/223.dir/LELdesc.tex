@@ -270,9 +270,28 @@ The result of these functions is a scalar.
   \item[ \texttt{numeric MAX(numeric)}] Return maximum
     of all elements.
   \item[ \texttt{real MEDIAN(real)}]
-    Return median of all elements. For smallish lattices
+    Return median of a lattice. For smallish lattices
     (max. 512*512 elements) the median can be found in 1 pass.
     Other lattices usually require 2 passes.
+  \item[ \texttt{real FRACTILE(real,float)}]
+    Return the fractile of a lattice at the fraction given by the second
+    argument. A fraction of 0.5 is the same as the median.
+    The fraction has to be between 0 and 1.
+    For smallish lattices (max. 512*512 elements) the fractile can be
+    found in 1 pass. Other lattices usually require 2 passes.
+  \item[ \texttt{real FRACTILERANGE(real,float,float)}]
+    Return the range between the fractiles at the fraction given by
+    the second and third argument.
+    The fractions have to be between 0 and 1 and the second fraction
+    has to be greater than the first one.
+    The second fraction is optional and defaults to \texttt{1-fraction1}.
+    Thus
+    \\\texttt{FRACTILERANGE(lat, 0.1)}
+    \\\texttt{FRACTILERANGE(lat, 0.1, 0.9)}
+    \\\texttt{FRACTILE(lat,0.9) - FRACTILE(lat,0.1)}
+    \\are equal, be it that the last one is about twice as slow.
+    \\For smallish lattices (max. 512*512 elements) the fractile range
+    can be found in 1 pass. Other lattices usually require 2 passes.
   \item[ \texttt{numeric MEAN(numeric)}]
     Return mean of all elements.
   \item[ \texttt{numeric VARIANCE(numeric)}]
