@@ -866,6 +866,7 @@ template<class T> void Array<T>::validateIndex(const IPosition &i) const
 
 template<class T> Bool Array<T>::isStorageContiguous() const
 {
+    Int i;
     Int nd = ndim();
     if (nd == 0) {
 	return True;
@@ -873,7 +874,7 @@ template<class T> Bool Array<T>::isStorageContiguous() const
 
     // If we have increments, we're definitely not contiguous (unless the axis
     // length is one!)
-    for (Int i=0; i < nd; i++) {
+    for (i=0; i < nd; i++) {
 	if ((inc_p(i) != 1) && (length_p(i) != 1)) {
 	    return False;
 	}
@@ -1125,5 +1126,3 @@ template<class T, class U>
     return ( (leftShape.conform (rightShape)) && (leftShape == rightShape) )
            ? True : False;
 }
-
-

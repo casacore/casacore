@@ -39,7 +39,8 @@ Vector<String> stringToVector (const String& string, char delim)
     Vector<String> vec(nr+1);
     uInt st = 0;
     nr = 0;
-    for (uInt i=0; i<str.length(); i++) {
+    uInt i;
+    for (i=0; i<str.length(); i++) {
 	if (str[i] == delim) {
 	    vec(nr++) = str(st,i-st);
 	    st = i+1;
