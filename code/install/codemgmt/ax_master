@@ -4915,3 +4915,4 @@
 14 316 sys rm libexec/newdishresman.g
 14 316 src rm trial/apps/newdish
 14 316 src rm trial/apps/newdishplot
+14 316 src rm trial/apps/newdishplot/dish_standard.gp
