@@ -2306,3 +2306,4 @@
 11 195 src rm nfra/scripts/JEN_dsn_styles.g
 11 195 src rm nfra/scripts/JEN_dsn_testdata.g
 11 196 src mv trial/implement/Utilities/test/tRecordTransformable.cc aips/implement/Utilities/test/tRecordTransformable.cc
+11 197 src rm doc/recipes/recipe4/testrecipe.latex
