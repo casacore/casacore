@@ -2030,6 +2030,14 @@ succeeded it would be appropriate to manually delete the file
 If the checkin failed then it would be necessary to log in to
 \host{aips2.nrao.edu} and recover manually.
 
+\subsection*{Bugs}
+
+\begin{itemize}
+\item
+   Not all of the \exeref{ai} options are supported yet due to setuid
+   issues.
+\end{itemize}
+
 \subsection*{See also}
 
 The manual page for \unixexe{ci}(1), the \rcs\ checkin command.\\
@@ -2134,6 +2142,17 @@ Refer to the options for \exeref{ao}.  \exe{rao} itself has no options.
 \item
    \unixexe{rsh} is used as the transfer agent rather than \unixexe{ftp} since
    the latter requires a password to be supplied for each remote access.
+
+\item
+   \exe{rao} will prompt the user if writable copies of the files being
+   checked out exist, allowing the user to choose between replacing them
+   and aborting the check-out.  Each file will be prompted for
+   separately.
+
+\item
+   \exe{rao} will print a warning message when it removes
+   locally-unwritable (read-only) copies of files in order to replace
+   them with the checked-out copies.
 \end{itemize}
  
 \subsection*{Diagnostics}
@@ -2170,16 +2189,6 @@ would check out everything in the directory (that is, assuming that \file{RCS}
 is a symlink into the slave directory, all files currently in the slave
 directory will be checked out of the master).
 
-\subsection*{Bugs}
-
-\begin{itemize}
-\item
-   If an unwritable (i.e. read-only) copy of the file being checked out
-   exists in the target directory then \exe{rao} will fail due to the
-   underlying \unixexe{tar} command's inability to overwrite the file;
-   the file must be removed locally before any checkout is attempted.
-\end{itemize}
-
 \subsection*{See also}
  
 The manual page for \unixexe{co}(1), the \rcs\ checkout command.\\
@@ -2187,7 +2196,6 @@ The GNU manual page for \unixexe{gzip}(1).\\
 The unix manual page for \unixexe{ftp}(1).\\
 The unix manual page for \unixexe{ping}(1).\\
 The unix manual page for \unixexe{rsh}(1).\\
-The unix manual page for \unixexe{tar}(1).\\
 \exeref{ai}, \aipspp\ code checkin utility.\\
 \exeref{ao}, \aipspp\ code checkout utility.\\
 \exeref{au}, \aipspp\ code update utility.\\
