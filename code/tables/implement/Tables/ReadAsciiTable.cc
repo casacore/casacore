@@ -35,6 +35,10 @@
 #include <aips/Arrays/Vector.h>
 #include <aips/Utilities/String.h>
 #include <aips/Exceptions/Error.h>
+
+#include <aips/Logging/LogIO.h>
+#include <aips/Logging/LogOrigin.h>
+
 #include <string.h>
 #include <iostream.h>
 #include <fstream.h>             // needed for file IO
@@ -101,6 +105,8 @@ void readAsciiTable (const Char* headerfile, const Char* filein,
           Int   array, haveKeys;
 
 
+	  LogIO logger(LogOrigin("readAsciiTable", WHERE));
+
 try {
 
 // PART ONE
@@ -113,15 +119,17 @@ try {
     ifstream jFile;
     jFile.open(headerfile, ios::in);
     if (! jFile) {
-	cerr << "Cannot open " << headerfile << "for reading\n";
-	exit (-1);
+	logger << LogIO::SEVERE <<
+	    "Cannot open " << headerfile << "for reading" << LogIO::POST;
+	return;
     }
 
 // Read the first line. It will be KEYWORDS or NAMES OF VARIABLES 
 
     if (!jFile.getline(string1, lineSize)) {
-	cerr << "Cannot read the first line of " << headerfile << "\n";
-	exit (-1);
+	logger << LogIO::SEVERE <<
+	    "Cannot read the first line of " << headerfile << LogIO::POST;
+	return;
     }
 
 // If the first line shows that we have KEYWORDS skip until the
@@ -138,18 +146,20 @@ try {
 
 	    if (!jFile.getline(string1, lineSize)) {
 		lineNumber++;
-		cerr << "Incomplete keyword set in line number " << lineNumber
-		     << " of " << headerfile << "\n";
-		exit (-1);
+		logger << LogIO::SEVERE <<
+		"Incomplete keyword set in line number " << lineNumber
+		       << " of " << headerfile << LogIO::POST;
+		return;
 	    }
 
 // If we are at END of KEYWORDS read the next line to get NAMES OF VARIABLES
 
 	    if (strncmp(string1,".end",4) == 0) {
 		if (!jFile.getline(string1, lineSize)) {
-		    cerr << "Cannot read the line following '.end' in "
-			 << headerfile << "\n";
-		    exit (-1);
+		    logger << LogIO::SEVERE <<
+			"Cannot read the line following '.end' in "
+			   << headerfile << LogIO::POST;
+		    return;
 		}
 		break;
 	    }
@@ -159,8 +169,9 @@ try {
 	    done3 = readAsciiTableGetNext (string1, first, at3); 
 	    done4 = readAsciiTableGetNext (string1, second, at3); 
 	    if (done3 || done4) {
-		cerr << "Could not read line number " << lineNumber << endl;
-		exit(-1);
+		logger << LogIO::SEVERE <<
+		    "Could not read line number " << lineNumber << LogIO::POST;
+		return;
 	    }
 	    nKeys++;        
 
@@ -174,9 +185,10 @@ try {
 		array++;
 	    }
 	    if (array == 0) {
-		cerr << "No keyword values on line number "
-		     << lineNumber << endl;
-		exit(-1);
+		logger << LogIO::SEVERE <<
+		    "No keyword values on line number "
+		       << lineNumber << LogIO::POST;
+		return;
 	    }
 	    numberOfKeys[nKeys] = array;
 	}
@@ -185,9 +197,10 @@ try {
 // Now get TYPE OF VARIABLES line
 
     if (!jFile.getline(string2, lineSize)) {
-	cerr << "Cannot read the TYPE OF VARIABLE line of " 
-             << headerfile << "\n";
-	exit (-1);
+	logger << LogIO::SEVERE <<
+	    "Cannot read the TYPE OF VARIABLE line of " 
+	       << headerfile << LogIO::POST;
+	return;
     }
     jFile.close();
 
@@ -247,15 +260,17 @@ try {
 	ifstream kFile;
 	kFile.open(headerfile, ios::in);
 	if (! kFile) {
-	    cerr << "Cannot reopen " << headerfile << "\n";
-	    exit (-1);
+	    logger << LogIO::SEVERE <<
+		"Cannot reopen " << headerfile << LogIO::POST;
+	    return;
 	}
 
 // Skip the first line which has only the .key keyword on it
 
 	if (!kFile.getline(string1, lineSize)) {
-	    cerr << "Cannot reread the first line of " << headerfile << "\n";
-	    exit (-1);
+	    logger << LogIO::SEVERE <<
+		"Cannot reread the first line of " << headerfile << LogIO::POST;
+	    return;
 	}
 
 // Get the following lines
@@ -265,8 +280,9 @@ try {
 	    lineNumber++;
 	    nKeys++;
 	    if (!kFile.getline(string1, lineSize)) {
-		cerr << "Cannot reread line number " << lineNumber 
-		     <<" of " << headerfile << "\n";
+		logger << LogIO::SEVERE <<
+		    "Cannot reread line number " << lineNumber 
+		     <<" of " << headerfile << LogIO::POST;
 		break;
 	    }
 	    if (strncmp(string1,".end",4) == 0)
@@ -351,7 +367,7 @@ try {
 		if (nVals%2 != 0) {
 		    cout << "Complex keyword must have even number of values"
 			 << endl;
-		    exit(-1);
+		    return;
 		}
 		nVals /= 2;
 		Vector<Complex> vectCX(nVals); 
@@ -375,7 +391,7 @@ try {
 		if (nVals%2 != 0) {
 		    cout << "Complex keyword must have even number of values"
 			 << endl;
-		    exit(-1);
+		    return;
 		}
 		nVals /= 2;
 		Vector<Complex> vectCX(nVals); 
@@ -409,15 +425,16 @@ try {
     ifstream iFile;
     iFile.open(filein, ios::in);
     if (! iFile) {
-	cerr << "Cannot open " << filein << "for reading\n";
-	exit (-1);
+	logger << LogIO::SEVERE <<
+	    "Cannot open " << filein << "for reading" << LogIO::POST;
+	return;
     }
 
     TableColumn* tabcol = new TableColumn[entries];
     if (tabcol == 0) {
 	throw (AllocError ("readAsciiFile", entries));
     }
-    for (uInt i=0; i<entries; i++) {
+    for (Int i=0; i<entries; i++) {
 	tabcol[i].reference (TableColumn (tab, nameOfColumn[i]));
     }
     uInt rownr = 0;
@@ -459,8 +476,13 @@ try {
 		first[i7] =  0;
 	    done1 = readAsciiTableGetNext (string1, first, at1);
 	    if (done1) {
-		cerr << "Confused about input" << "\n";
-		exit (-1);
+		logger << LogIO::SEVERE <<
+		    "Confused about input. Last text seen was\n" <<
+		    string1 << endl <<
+		    "This occured at about row " << tab.nrow() <<
+		    " (excluding headers). The rest of the file is ignored." <<
+		    LogIO::POST;
+		return;
 	    }
 	    if (typeOfColumn[i6] == "I") {
 		istrstream(first, sizeof(first)) >> tempI;
