@@ -1,5 +1,5 @@
 //# FileLocker.h: Class to handle file locking
-//# Copyright (C) 1997
+//# Copyright (C) 1997,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -28,9 +28,6 @@
 #if !defined(AIPS_FILELOCKER_H)
 #define AIPS_FILELOCKER_H
 
-#if defined (_AIX)
-#pragma implementation ("FileLocker.cc")
-#endif
 
 //# Includes
 #include <aips/aips.h>
@@ -59,7 +56,7 @@ class String;
 // Otherwise lock requests may be granted incorrectly.
 // <p>
 // Acquiring a lock can be done for a read or a write lock.
-// At one time multiple locks on a file can exist as long as they are all
+// Multiple locks on a file can exist as long as they are all
 // read locks. When a write lock is involved, no other lock can exist.
 // It is possible to acquire a lock in 2 ways:
 // <ul>
@@ -69,6 +66,7 @@ class String;
 //     Note that nattempts=1 means it returns immediately when the
 //     lock request could not be granted.
 // </ul>
+// </synopsis>
 
 // <example>
 // <srcblock>
@@ -91,6 +89,14 @@ class String;
 class FileLocker
 {
 public:
+    // Define the possible lock types.
+    enum LockType {
+	// Acquire a read lock.
+	Read,
+	// Acquire a write lock.
+	Write
+    };
+
     // Default constructor creates an invalid fd.
     FileLocker();
 
@@ -107,14 +113,14 @@ public:
     // A zero value indicates an infinite number of times (i.e. wait until
     // the lock is acquired).
     // A positive value means it waits 1 second between each attempt.
-    Bool acquire (Bool write = True, uInt nattempts = 0);
+    Bool acquire (LockType = Write, uInt nattempts = 0);
 
     // Release a lock.
     // The return status indicates if an error occurred.
     Bool release();
 
     // Test if the file can be locked for read or write.
-    Bool canLock (Bool write = True);
+    Bool canLock (LockType = Write);
 
     // Is the file read locked by this process?
     // Note that a write lock implies a read lock.
