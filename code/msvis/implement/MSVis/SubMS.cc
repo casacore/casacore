@@ -138,7 +138,8 @@ Bool SubMS::makeSubMS(String& msname, String& colname){
   
   //  msOut_p.relinquishAutoLocks (True);
   //  msOut_p.unlock();
-
+  //Detaching the selected part
+  ms_p=MeasurementSet();
   delete outpointer;
   return True;
 
