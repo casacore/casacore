@@ -4,7 +4,7 @@
  <date> 2001/06/11 </date>
  <avers> 1.6 </avers>
  <area> Library </area>
- <package> aips </package>
+ <package> ms </package>
  <module> MeasurementSets </module>
  <type> Code </type>
  <category> New </category>
@@ -44,7 +44,7 @@ The code to use compression in a filler is e.g.:
  <date> 2001/06/25 </date>
  <avers> 1.6 </avers>
  <area> Tool </area>
- <package> trial </package>
+ <package> ms </package>
  <module> fitsidi2ms </module>
  <type> Code </type>
  <category> New </category>
@@ -67,7 +67,7 @@ program has also been converted to an AIPS++ DO fitsidi2ms.g.
  <date> 2001/10/25 </date>
  <avers> 1.6 </avers>
  <area> Library </area>
- <package> trial </package>
+ <package> ms </package>
  <module> MeasurementSets </module>
  <type> Code </type>
  <category> Bugfix </category>
