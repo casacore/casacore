@@ -131,6 +131,10 @@ public:
   // Make a copy of the object (reference semantics).
   virtual MaskedLattice<T>* cloneML() const;
 
+  // Is the lattice masked?
+  // It is if its parent lattice or its region is masked.
+  virtual Bool isMasked() const;
+
   // Is the SubLattice paged to disk?
   virtual Bool isPaged() const;
 
@@ -178,6 +182,9 @@ public:
 			   const IPosition& where,
 			   const IPosition& stride);
   
+  // Get a section of the mask.
+  virtual Bool doGetMaskSlice (Array<Bool>& buffer, const Slicer& section);
+
   // Get the best cursor shape.
   virtual IPosition doNiceCursorShape (uInt maxPixels) const;
 
