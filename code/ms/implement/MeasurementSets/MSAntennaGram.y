@@ -99,8 +99,7 @@ combnameorstation: namesorstations
 		     $$ = $2;}
                  ;
 namesorstations: IDENTIFIER {
-                   String identifier = String($1);
-		   $$ = MSAntennaParse().selectNameOrStation(identifier);
+               	   $$ = MSAntennaParse().selectNameOrStation(String($1));
                  }
                | namesorstations COMMA IDENTIFIER {
 		   $$ = MSAntennaParse().selectNameOrStation(String($3));
