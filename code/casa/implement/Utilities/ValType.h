@@ -1,5 +1,5 @@
 //# ValType.h: Data types and their undefined values
-//# Copyright (C) 1993,1994,1995,1996,1998,2001
+//# Copyright (C) 1993,1994,1995,1996,1998,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -153,17 +153,22 @@ public:
     // Get the size of data type (in local format).
     static int getTypeSize (DataType);
 
-    // Get the size of data type in canonical format..
-    static int getCanonicalSize (DataType);
+    // Get the size of data type in canonical format.
+    // <br>The argument <src>BECanonical</src> determines if the big-endian
+    // or little-endian canonical format is used.
+    static int getCanonicalSize (DataType, Bool BECanonical = True);
 
     // Get the functions to convert to/from canonical format.
     // These functions take the number of pixels as the length argument.
     // It returns the number of elements per value; normally this is 1,
     // but for complex values it is 2 (since they convert float/double).
+    // <br>The argument <src>BECanonical</src> determines if the big-endian
+    // or little-endian canonical format is used.
     static void getCanonicalFunc (DataType dt,
 				  Conversion::ValueFunction*& readFunc,
 				  Conversion::ValueFunction*& writeFunc,
-				  uInt& nrElementsPerValue);
+				  uInt& nrElementsPerValue,
+				  Bool BECanonical = True);
 
     // Test if a data type can be promoted to another.
     static Bool isPromotable (DataType from, DataType to);
