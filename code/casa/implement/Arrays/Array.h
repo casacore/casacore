@@ -532,7 +532,7 @@ protected:
     virtual void doNonDegenerate(Array<T> &other, const IPosition &ignoreAxes);
 
     // Make the indexing step sizes.
-    void makeIndexingConstants();
+    void makeSteps();
 
     // Number of elements in the array. Cached rather than computed.
     uInt nels_p;
