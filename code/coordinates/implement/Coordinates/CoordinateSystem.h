@@ -37,6 +37,7 @@ class DirectionCoordinate;
 class LinearCoordinate;
 class SpectralCoordinate;
 class StokesCoordinate;
+class TabularCoordinate;
 class IPosition;
 
 // <summary>
@@ -141,7 +142,8 @@ public:
     CoordinateSystem subImage(const Vector<Int> &originShift,
 			      const Vector<Int> &pixinc) const;
 
-    // Untranspose and undelete all axes. Does not undo the effects of subimaging.
+    // Untranspose and undelete all axes. Does not undo the effects of
+    // subimaging.
     void restoreOriginal();
 
     // Returns the number of coordinates that this coordinate system contains.
@@ -149,12 +151,11 @@ public:
     // transposing and removing axes.
     uInt nCoordinates() const;
 
-    // For a given coordinate say where it's world and coordinate axes are in this
-    // coordinate system. The position in the returned Vector is its position in the
-    // original coordinate system, and its value is the axis number in the coordinate
-    // system. If the value is less than zero the axis has been removed from this
-    // CoordinateSystem.
-    // <group> 
+    // For a given coordinate say where it's world and coordinate axes are in
+    // this coordinate system. The position in the returned Vector is its
+    // position in the original coordinate system, and its value is the axis
+    // number in the coordinate system. If the value is less than zero the axis
+    // has been removed from this CoordinateSystem.  <group>
     Vector<Int> worldAxes(uInt whichCoord) const;
     Vector<Int> pixelAxes(uInt whichCoord) const;
     // </group> 
@@ -172,12 +173,14 @@ public:
     const DirectionCoordinate &directionCoordinate(uInt which) const;
     const SpectralCoordinate &spectralCoordinate(uInt which) const;
     const StokesCoordinate &stokesCoordinate(uInt which) const;
+    const TabularCoordinate &tabularCoordinate(uInt which) const;
     // </group>
 
     // Replace one coordinate with another. The mapping of the coordinate axes
     // to the coordinate system axes is unchanged, therefore the number of world
-    // and pixel axes must not be changed. You can change the type of the coordinate
-    // however. For example, replace a SpectralCoordinate with a 1-D Linearcoordinate.
+    // and pixel axes must not be changed. You can change the type of the
+    // coordinate however. For example, replace a SpectralCoordinate with a 1-D
+    // Linearcoordinate.
     void replaceCoordinate(const Coordinate &newCoordinate, uInt whichCoordinate);
 
     // Find the coordinate number that corresponds to the given type.
