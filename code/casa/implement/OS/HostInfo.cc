@@ -177,7 +177,7 @@ HOSTINFO_IMPLEMENT_MEMBERS
 #elif defined(AIPS_OSF)
 #include <aips/OS/HostInfo_osf1.h>
 HOSTINFO_IMPLEMENT_MEMBERS
-#elif defined(__hpux__)
+#elif defined(AIPS_HPUX)
 #include <aips/OS/HostInfo_hpux.h>
 HOSTINFO_IMPLEMENT_MEMBERS
 #else

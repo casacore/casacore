@@ -1,3 +1,6 @@
+//# HostInfo_hpux.h: HP/UX specific memory, swap, and CPU code.
+//# $Id$
+
  /*
  **  This is a greatly MODIFIED version of a "top" machine dependent file.
  **  The only resemblance it bears to the original is with respect to the

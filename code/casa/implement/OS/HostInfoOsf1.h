@@ -1,3 +1,6 @@
+//# HostInfo_osf1.h: DEC OSF/1 specific memory, swap, and CPU code.
+//# $Id$
+
  /*
  **  This is a greatly MODIFIED version of a "top" machine dependent file.
  **  The only resemblance it bears to the original is with respect to the
@@ -87,8 +90,8 @@ friend class HostInfo;
 
 HostMachineInfo::HostMachineInfo( ) : valid(1) {
 
-    register int i = 0;
-    register int pagesize;
+    int i = 0;
+    int pagesize;
     struct tbl_sysinfo sibuf;
 
     kern_return_t ret;

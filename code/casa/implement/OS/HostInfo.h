@@ -51,13 +51,21 @@ class HostMachineInfo;
 // This class is meant to encapsulate miscellaneous information about the
 // environment that the current process is running in.
 // 
-// At present, the class can be used to obtain the hostname the process is 
-// running on, the process id of this process, and the a count of the number
-// of seconds from January 1, 1970. Generally you should use the classes
-// <linkto class=Time>Time</linkto> and <linkto class=MVTime>MVTime</linkto> if
-// your primary interest is related to time and dates. If your interest is in
-// timing, you would generally use class <linkto class=Timer>Timer</linkto>,
-// which can also report CPU times as well as "clock" times.
+// At present, the class can be used to obtain the name of the host on which
+// this process is running, the process id of this process, the amount of
+// physical memory (total, used, & free) on this host, the amount of swap
+// space (total, used, and free), the number of CPUs on this host, and a
+// count of the number of seconds from January 1, 1970. Generally you
+// should use the classes <linkto class=Time>Time</linkto> and
+// <linkto class=MVTime>MVTime</linkto> if your primary interest is related
+// to time and dates. If your interest is in timing, you would generally use
+// class <linkto class=Timer>Timer</linkto>, which can also report CPU times
+// as well as "clock" times.
+//
+// Determination of the number of CPUs, swap space, and physical memory is
+// particularly OS dependent. In cases where this functionality has not yet
+// been implemented, the memory and swap functions will return -1 and the
+// CPU function will return 0.
 // </synopsis>
 //
 // <example>
@@ -84,9 +92,8 @@ class HostMachineInfo;
 // are obtained.
 // </motivation>
 //
-// <todo asof="1997/10/07">
+// <todo asof="2002/08/01">
 //   <li> OS version?
-//   <li> Physical memory, number of CPU's?
 // </todo>
 
 class HostInfo
@@ -97,15 +104,22 @@ public:
     static Int processID();
     static Double secondsFrom1970();
 
+    // Returns 0 if unable to determine the number of CPUs.
     static Int numCPUs( );
 
+    // Returns -1 if unable to determine memory info.
+    // <group>
     static Int memoryTotal();
     static Int memoryUsed();
     static Int memoryFree();
+    // </group>
 
+    // Returns -1 if unable to determine swap info.
+    // <group>
     static Int swapTotal();
     static Int swapUsed();
     static Int swapFree();
+    // </group>
 
 private:
     // we don't want folks creating these...

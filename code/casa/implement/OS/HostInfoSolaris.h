@@ -1,3 +1,6 @@
+//# HostInfo_solaris.h: Solaris specific memory, swap, and CPU code.
+//# $Id$
+
  /*
  **  This is a greatly MODIFIED version of a "top" machine dependent file.
  **  The only resemblance it bears to the original is with respect to the
@@ -66,9 +69,6 @@
 
 /* pagetok function is really a pointer to an appropriate function */
 #define pagetok(size) ((*p_pagetok)(size))
-
-/* useful externals */
-extern void perror ();
 
 #ifndef USE_ANONINFO
 static void get_swapinfo(int *total, int *fr);
@@ -234,8 +234,8 @@ void get_swapinfo(int *total, int *fr)
     *total = anon.ani_max;
     *fr = anon.ani_max - anon.ani_resv;
 #else
-    register int cnt, i;
-    register int t, f;
+    int cnt, i;
+    int t, f;
     struct swaptable *swt;
     struct swapent *ste;
     static char path[256];
