@@ -295,6 +295,8 @@ class SpectralElement : public RecordTransformable {
 
  private:
   //#Data
+  // Sigma to FWHM conversion factor
+  static const Double sigmaToFWHM_p;
   // type of element
   SpectralElement::Types tp_p;
   // A number (like polynomial degree or number of doublet lines)
@@ -328,8 +330,8 @@ class SpectralElement : public RecordTransformable {
   // Sigma to FWHM
   // Convert from sigma to FWHM and vice versa
   // <group>
-  Double sigmaToFWHM (Double sigma) const;
-  Double sigmaFromFWHM (Double fwhm) const;
+  static Double sigmaToFWHM (const Double sigma);
+  static Double sigmaFromFWHM (const Double fwhm);
   // </group>
 
 
