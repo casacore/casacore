@@ -85,7 +85,7 @@ class CoordinateSystem;
 // based storage medium.   The storage image is deleted when the ImageStatistics class 
 // object destructs.    However, currently, if the process is terminated ungracefully,
 // the storage image will be left over.  It has a name starting with the string
-// "Scratch_ImageStatistics_" and then a unique number. You can safely delete it.
+// "ImageStatistics_Sums_" and then a unique number. You can safely delete it.
 //
 // </synopsis>
 //
