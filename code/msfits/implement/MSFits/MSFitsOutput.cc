@@ -1321,7 +1321,8 @@ Bool MSFitsOutput::writeSU(FitsOutput *output, const MeasurementSet &ms,
       	  uInt rownr = rownrs(0);
 	  // Name in SOURCE table overides name in FIELD table
       	  *source = sourceColumns->name()(rownr);
-	  *lsrvel = sourceColumns->sysvel()(rownr);
+	  if(sourceColumns->sysvel().isDefined(rownr))
+	    *lsrvel = sourceColumns->sysvel()(rownr);
       	  if (sourceColumns->properMotion().isDefined(rownr)) {
       	    Vector<Double> pm = sourceColumns->properMotion()(rownr);
       	    *pmra = pm(0);
