@@ -1,0 +1,126 @@
+#!/bin/sh
+#-----------------------------------------------------------------------------
+# rao: Remotely check out AIPS++ sources
+#-----------------------------------------------------------------------------
+#
+#   Copyright (C) 1996-1997
+#   Associated Universities, Inc. Washington DC, USA.
+#
+#   This program is free software; you can redistribute it and/or modify
+#   it under the terms of the GNU General Public License as published by
+#   the Free Software Foundation; either version 2 of the License, or
+#   (at your option) any later version.
+#
+#   This program is distributed in the hope that it will be useful,
+#   but WITHOUT ANY WARRANTY; without even the implied warranty of
+#   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#   GNU General Public License for more details.
+#
+#   You should have received a copy of the GNU General Public License
+#   along with this program; if not, write to the Free Software
+#   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+#
+#   Correspondence concerning AIPS++ should be addressed as follows:
+#          Internet email: aips2-request@nrao.edu.
+#          Postal address: AIPS++ Project Office
+#                          National Radio Astronomy Observatory
+#                          520 Edgemont Road
+#                          Charlottesville, VA 22903-2475 USA
+#
+#-----------------------------------------------------------------------------
+# Usage: rao [ao options]
+#-----------------------------------------------------------------------------
+# rao is an rsh-based front-end to 'ao'.  It allows remote checkout of AIPS++
+# sources by invoking 'ao' on the AIPS++ master machine.  This is provided as
+# an alternative to invoking 'ao' directly on a remote machine on which the
+# AIPS++ master directory is NFS mounted.
+#
+# In order to use rao an AIPS++ programmer must have an account on the AIPS++
+# master host (aips2.nrao.edu) and it must be set up for 'rsh' access from the
+# host on which rao is run.  The programmer must also have an up-to-date
+# AIPS++ workspace on the master host rooted at $HOME/aips++.
+#
+# The files checked out are transferred from the master as a gzip'd tar file.
+#
+# Options:
+#    Refer to the options for 'ao'.
+#
+# Status returns:
+#    0:  success (returned from ao_master)
+#    1:  initialization error, no check out
+#
+# Notes:
+#    1) Where the remote account name differs from the local account name an
+#       environment variable may be used to translate between them:
+#
+#          ARSH="rsh aips2.nrao.edu -l <remotename>"
+#
+#       The .rhosts file for the <remotename> account on aips2.nrao.edu should
+#       have an entry of the form
+#
+#          <localhost> <localname>
+#
+#       where <localhost> is the (case-sensitive) name by which the local host
+#       identifies itself when 'ping -s' is run on aips2.nrao.edu, and
+#       <localname> is the local account name.
+#
+# Original: 1996/08/06 by Mark Calabretta, ATNF
+# $Id$
+#=============================================================================
+# Check number of arguments.
+  if [ $# = 0 ]
+  then
+     echo "Usage: rao (arguments for ao)"
+     exit 1
+  fi
+
+# Get the work directory.
+  PGMRDIR=`pwd | sed -e 's#.*/aips++/#aips++/#'`
+
+# Make sure we've got something sensible.
+  case "$PGMRDIR" in
+  /*)
+     echo "rao: Invalid work directory - `pwd`"
+     exit 1
+     ;;
+  esac
+
+# Get file names.
+  FILES=""
+  for i
+  do
+     case $i in
+     -*)
+        continue
+        ;;
+     esac
+ 
+#    Allow wildcard checkout via an RCS symbolic link.
+     i=`echo $i | sed -e 's#^RCS/##' -e 's#,v$##'`
+ 
+     case $i in
+        */*)
+           continue
+           ;;
+ 
+        *)
+           if [ -w "$i" ]
+           then
+              printf "rao: Warning, $i is writable, continue (y/n) [n]: "
+              read ANSWER
+              affirm -o -s "$ANSWER" || exit 1
+           fi
+
+           FILES="$FILES $i"
+           ;;
+     esac
+  done
+
+# The business end.
+  ARSH=${ARSH-"rsh aips2.nrao.edu"}
+  COMMAND="cd $PGMRDIR && ao -I $* && tar cf - $FILES | gzip -q ; rm -f $FILES"
+  $ARSH /aips++/weekly/.rshexec sh -c \'\""$COMMAND"\"\' |
+  gzip -d | tar pvxf - > /dev/null
+
+
+  exit 0

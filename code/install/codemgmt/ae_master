@@ -1,0 +1,120 @@
+#!/bin/sh
+#-----------------------------------------------------------------------------
+# ae_master: Delete RCS semaphore files from the AIPS++ master repository
+#-----------------------------------------------------------------------------
+#
+#   Copyright (C) 1995,1996
+#   Associated Universities, Inc. Washington DC, USA.
+#
+#   This program is free software; you can redistribute it and/or modify
+#   it under the terms of the GNU General Public License as published by
+#   the Free Software Foundation; either version 2 of the License, or
+#   (at your option) any later version.
+#
+#   This program is distributed in the hope that it will be useful,
+#   but WITHOUT ANY WARRANTY; without even the implied warranty of
+#   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#   GNU General Public License for more details.
+#
+#   You should have received a copy of the GNU General Public License
+#   along with this program; if not, write to the Free Software
+#   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+#
+#   Correspondence concerning AIPS++ should be addressed as follows:
+#          Internet email: aips2-request@nrao.edu.
+#          Postal address: AIPS++ Project Office
+#                          National Radio Astronomy Observatory
+#                          520 Edgemont Road
+#                          Charlottesville, VA 22903-2475 USA
+#
+#-----------------------------------------------------------------------------
+# Usage: ae_master <file>
+#-----------------------------------------------------------------------------
+# Delete an RCS semaphore file from the AIPS++ master repository.
+#
+# This script should reside in $AIPSMSTR on the AIPS++ master machine
+# (aips2.nrao.edu) and be setuid to the owner of the AIPS++ master RCS version
+# files (aips2adm).
+#
+# 'ae_master' should not be accessed directly, but via the 'ae' script in the
+# $AIPSARCH/bin area which executes this.
+#
+# Status returns:
+#    0:  success
+#    1:  initialization error
+#    2:  semaphore file not found
+#    3:  failed to delete semaphore file
+#
+# Notes:
+#    1) 'ae_master' uses an AIPS++ utility called 'tract' to determine the age
+#       of the semaphore file.
+#
+# Original: 1995/02/23 by Mark Calabretta, ATNF
+# $Id$
+#=============================================================================
+# Fundamentals.
+  if [ "$AIPSPATH" = "" ]
+  then
+     echo "ae_master: AIPSPATH is not defined, abort!" 1>&2
+     exit 1
+  fi
+
+  AIPSROOT=`echo $AIPSPATH | awk '{ print $1 }'`
+
+# Define AIPS++ directory names.
+  AIPSMSTR=$AIPSROOT/master
+  MSTRETCD=$AIPSMSTR/etc
+
+# Check the number of arguments.
+  if [ "$#" != 1 ]
+  then
+     exec 1>&2
+     echo "Usage: ae_master <file>"
+     exit 1
+  fi
+
+# Get the master directory.
+  MSTRDIR=`pwd | sed -e 's#/code$#/code/#' -e "s#.*/code/#$AIPSMSTR/#"`
+
+# Check that the master directory exists.
+  if [ ! -d "$MSTRDIR" ]
+  then
+     exec 1>&2
+     echo "ae: Invalid work directory - `pwd`"
+     exit 1
+  fi
+
+# Is the semaphore file present?
+  if [ ! -f "$MSTRDIR/,$1," ]
+  then
+     exec 1>&2
+     echo "ae: No semaphore file for $1 exists in $MSTRDIR"
+     exit 2
+  fi
+
+# Is the semaphore file at least 15 minutes old?
+  AGE=`tract $MSTRDIR/,$1,`
+  if [ "$AGE" -lt 900 ]
+  then
+     SLEEP=`expr 900 - $AGE`
+     echo "ae: Waiting $SLEEP seconds for the semaphore file to age."
+     sleep $SLEEP
+
+     if [ ! -f "$MSTRDIR/,$1," ]
+     then
+        echo "ae: The semaphore file has disappeared of its own accord."
+        exit 0
+     fi
+  fi
+
+  if rm -f $MSTRDIR/,$1,
+  then
+     echo "ae: Deleted semaphore file $MSTRDIR/,$1,"
+  else
+     exec 1>&2
+     echo "ae: Failed to delete semaphore file $MSTRDIR/,$1,"
+     exit 2
+  fi
+
+
+  exit 0

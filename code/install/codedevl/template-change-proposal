@@ -1,0 +1,83 @@
+$ID$
+This is a template for proposing a change to AIPS++. It is to be
+issued only by those designated as responsible for a given area by the
+Project Manager.  
+
+The following template was that used to propose this format and should
+be informative as to the procedure. Change the items below as
+appropriate. All sections are required.
+
+------ cut here ------ cut here ------ cut here ------ cut here ------ cut here -----
+Title:                  Proposal for AIPS++ change management
+Person responsible:     Tim Cornwell (tcornwel@nrao.edu)
+Originator of proposal: Tim Cornwell (tcornwel@nrao.edu)
+Exploders targeted:     aips2-gbt, aips2-workers
+Time table:
+        Date of issue:          1996 November 28        Done
+        Comments due:           1996 December 1         Done
+        Revised proposal:       1996 December 5         Done
+        Final comments due:     1996 December 7         Done: No comments received    
+        Decision date:          1996 December 8         Accepted: this document
+
+Statement of goals:
+
+To control changes to key components of AIPS++ such as Glish, the 
+MeasurementSet, the Table system, etc. To alert users of these components 
+to proposed changes and to allow comment prior to the implementation of 
+any changes.
+
+Proposed changes:
+
+       - The Project manager will appoint a Czar to oversee change management 
+for a particular area and an exploder or exploders for the discussion. The 
+Czar may be standing or temporary.
+
+        - A Proposal for change in a particular area is sent to the Czar for
+review and possible distribution. The Czar may also originate proposals. 
+If a submitted proposal passes review by the Czar, it is sent out to 
+the designated exploder. An announcement of the commencement  
+of the proposal process is sent to aips2-workers.
+
+        - The Proposal contains:
+
+                * Descriptive title of change
+                * Name of person responsible
+                * Name of originator of proposal
+                * Exploders targeted
+                * Time table: 
+                        - date of issue, 
+                        - deadline for comments, 
+                        - expected date of revised proposal, 
+                        - deadline for final comments, 
+                        - decision date.
+                * Statement of goals
+                * Proposed changes
+                * Expected impact
+                * Proposed documentation changes
+
+        - Target dates should be expeditious (a couple of weeks at most). The
+decision date will be tracked in the AIPS++ target dates.
+
+        - The expected impact should include both positive and negative
+effects.
+
+        - A place for documenting the proposed changes must be identified.
+
+        - All comments to a proposal must be on the exploder and, when
+substantially critical, accompanied by a self-consistent counter
+proposal or modification.
+
+        - The Czar makes the final decision.
+
+Expected Impact:
+
+The positive impact will be that proposed changes are more widely advertised
+and more carefully considered by those concerned. No substantial negative 
+impact other than creeping bureaucracy. To avoid the latter, we will only
+invoke this procedure for substantial changes.
+
+Proposed documentation changes:
+
+Project management procedures must be documented somewhere. This procedure will
+be written down there. The PM will start such a document.
+

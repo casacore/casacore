@@ -1,0 +1,74 @@
+#!/bin/echo Usage: source
+#-----------------------------------------------------------------------------
+# login: .login login script for C-like shells in AIPS++
+#-----------------------------------------------------------------------------
+#
+#   Copyright (C) 1992,1993,1994,1996
+#   Associated Universities, Inc. Washington DC, USA.
+#
+#   This program is free software; you can redistribute it and/or modify
+#   it under the terms of the GNU General Public License as published by
+#   the Free Software Foundation; either version 2 of the License, or
+#   (at your option) any later version.
+#
+#   This program is distributed in the hope that it will be useful,
+#   but WITHOUT ANY WARRANTY; without even the implied warranty of
+#   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#   GNU General Public License for more details.
+#
+#   You should have received a copy of the GNU General Public License
+#   along with this program; if not, write to the Free Software
+#   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+#
+#   Correspondence concerning AIPS++ should be addressed as follows:
+#          Internet email: aips2-request@nrao.edu.
+#          Postal address: AIPS++ Project Office
+#                          National Radio Astronomy Observatory
+#                          520 Edgemont Road
+#                          Charlottesville, VA 22903-2475 USA
+#
+#-----------------------------------------------------------------------------
+# Usage: source .login
+#-----------------------------------------------------------------------------
+#
+#    WARNING! Don't make any changes to this file, they will be undone by
+#    the code distribution system.  Put changes in .login_local instead.
+#
+#-----------------------------------------------------------------------------
+# This file is read by C-shell on login after it has processed the .cshrc
+# file.
+#
+# The files are read in the following order:
+#    .cshrc
+#    .cshrc_local
+#    .login
+#    .login_local
+#
+# Original: 1992/05/01 by Mark Calabretta, ATNF
+# $Id$
+#=============================================================================
+# The AIPS++ root directory is hardcoded here.
+  setenv AIPSROOT __AIPSROOT
+
+#------------------ Do not change anything below this line -------------------
+
+# Terminal characteristics for interactive shells.
+  if ($?term && ! $?ENVIRONMENT) then
+     if ($term == network) set term = vt100
+     stty sane erase "^?" kill "^U" intr "^C"
+  endif
+
+# Environment variables.
+  if (-f $AIPSROOT/.login_local) then
+#    A local file exists.
+     source $AIPSROOT/.login_local
+  else
+#    Best guess at sensible defaults.
+     set path = (. aips_bin /usr/local/bin /usr/local/X11/bin \
+                 /usr/lang /usr/ucb /usr/bsd /usr/bin /bin)
+     setenv MANPATH "/usr/local/man:/usr/local/X11/man:/usr/lang/man:/usr/man"
+  endif
+
+# Get the AIPS++ environment.
+  if (-f $AIPSROOT/aipsinit.csh) source $AIPSROOT/aipsinit.csh
+  if ($?term) echo "AIPSPATH: $AIPSPATH"

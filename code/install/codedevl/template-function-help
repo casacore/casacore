@@ -1,0 +1,69 @@
+\documentclass{book}
+\usepackage{aips2help,html}
+\begin{document}
+%%
+%%--------------------------------------------------------------------------
+%%
+%% Function/Method template
+%%
+%%--------------------------------------------------------------------------
+%%
+
+\begin{ahfunction}{function name}{short description}
+
+\ahinclude{file to include}
+\ahsynopsis{myfunction(arg, arg, arg)}
+
+   %
+   %ahkeyword registers module keywords
+   %
+\ahkeyword{key}{label}
+
+\begin{ahdescription}
+% Text describing function goes here.
+\end{ahdescription}
+
+   %
+   % The ahargs environment, lets you describe the arguments to the function.
+   % The \ahaddarg is a command with for arguments. First argument is
+   % the name of the argument in the function, the second is a description
+   % of the function argumentent, the third is the default value of the
+   % the argument and the fourth is the allowed values of the argument.
+   % The third and fourth arguments maybe left blank i.e. {}.  Unfortunately
+   % they can't be ommitted.
+   %
+   % If you have a ... argument, using \ldots formats better.
+   %
+\begin{ahargs}
+\ahaddarg{arg name}{arg description}{default value}{allowed values}
+\end{ahargs}
+
+   %
+   %ahreturns is a command with one argument, a description of what is 
+   %   returned from function
+   %
+\ahreturns{Description of what is returned}
+
+\begin{ahexample}
+\\begin{verbatim}
+% Example of using the function goes here.
+\\end{verbatim}
+\verb!\end{verbatim}!
+\begin{verbatim}
+\end{ahexample}
+
+\begin{ahcomments}
+%comments about the function example goes here
+\end{ahcomments}
+
+   %
+   %ahseealso environment uses the \ahlink command to make a list of
+   %   see also links to labels, labels should have the form 
+   %   package.function, object.method, package.object, or function
+   %
+\begin{ahseealso}
+\ahlink{some else}{label for something else}
+\end{ahseealso}
+
+\end{ahfunction}
+\end{document}

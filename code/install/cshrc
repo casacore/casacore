@@ -1,0 +1,130 @@
+#!/bin/echo Usage: source
+#-----------------------------------------------------------------------------
+# cshrc: .cshrc initialization script for C-like shells in AIPS++
+#-----------------------------------------------------------------------------
+#
+#   Copyright (C) 1992,1993,1994
+#   Associated Universities, Inc. Washington DC, USA.
+#
+#   This program is free software; you can redistribute it and/or modify
+#   it under the terms of the GNU General Public License as published by
+#   the Free Software Foundation; either version 2 of the License, or
+#   (at your option) any later version.
+#
+#   This program is distributed in the hope that it will be useful,
+#   but WITHOUT ANY WARRANTY; without even the implied warranty of
+#   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#   GNU General Public License for more details.
+#
+#   You should have received a copy of the GNU General Public License
+#   along with this program; if not, write to the Free Software
+#   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+#
+#   Correspondence concerning AIPS++ should be addressed as follows:
+#          Internet email: aips2-request@nrao.edu.
+#          Postal address: AIPS++ Project Office
+#                          National Radio Astronomy Observatory
+#                          520 Edgemont Road
+#                          Charlottesville, VA 22903-2475 USA
+#
+#-----------------------------------------------------------------------------
+# Usage: source .cshrc
+#-----------------------------------------------------------------------------
+#
+#    WARNING! Don't make any changes to this file, they will be undone by
+#    the code distribution system.  Put changes in .cshrc_local instead.
+#
+#-----------------------------------------------------------------------------
+# These commands are executed immediately upon login and upon creation of
+# every C-shell.  Typically they should only consist of definitions of aliases
+# and C-shell variables since these are NOT inherited by subprocesses,
+# although certain important shell variables (argv, cwd, home, path, prompt,
+# shell, status, term, and user) ARE automatically set.
+#
+# Environment variable definitions should be made in the .login file since the
+# environment IS automatically inherited by every subprocess.  This includes
+# PATH and MANPATH in particular.  However, remote shells such as are
+# activated by 'rsh' do not read the .login file.  If you require environment
+# variables to be defined in such cases you should add the following line to
+# your .cshrc_local file
+#
+#    if (! $?term) source $AIPSROOT/.login
+#
+# The files are read in the following order:
+#    .cshrc
+#    .cshrc_local
+#    .login
+#    .login_local
+#
+# Original: 1992/05/01 by Mark Calabretta, ATNF
+# $Id$
+#-----------------------------------------------------------------------------
+# The AIPS++ root directory is hardcoded here.
+  setenv AIPSROOT __AIPSROOT
+
+#------------------ Do not change anything below this line -------------------
+
+# Get the host name and architecture.
+  set host = `uname -n | sed -e 's/\..*//'`
+  setenv ARCH UNKNOWN
+  if (-r $AIPSROOT/aipshosts) then
+     setenv ARCH `grep "$host" $AIPSROOT/aipshosts | awk '{ print $2 }'`
+  endif
+
+# Default file protection.
+  umask 002
+
+# Set process limits.
+  limit coredumpsize 0
+
+# Generic aliases.
+  alias cp 'cp -i'
+  alias ls 'ls -F'
+  alias mv 'mv -i'
+  alias rm 'rm -i'
+
+# Unix flavour dependences.
+  if ("$ARCH" == ibmrs) then
+     alias ll 'ls -lF'
+  else
+     alias ll 'ls -glF'
+  endif
+
+# Shell variables.
+  set history = 100
+  set noclobber
+  set savehist = 100
+
+
+# Definitions for interactive shells only.
+  if ($?term) then
+#    Generic aliases.
+     alias acd     'cd $AIPSROOT/\!*'
+     alias bd      'set tmp=$bwd; set bwd=$cwd; cd $tmp; unset tmp; dirs'
+     alias cd      'set bwd=$cwd; chdir \!*'
+     alias clr     'cd ; clear'
+     alias h       'history | more'
+     alias lo      'exit'
+     alias make    'gmake'
+     alias psg     'ps aux | grep'
+     alias psj     'ps axj | sort -r +1 | more'
+
+#    Shell variables.
+     set autologout = 30
+     set cdpath = (~)
+     set filec
+     set ignoreeof
+     set mail = /usr/spool/mail/$user
+     set notify
+     set prompt = "$host-\!% "
+
+#    Window frame label (sets shell variables).
+     if (-r $AIPSROOT/.prompt) then
+        alias cd 'set bwd=$cwd; chdir \!*; source $AIPSROOT/.prompt'
+        source $AIPSROOT/.prompt
+     endif
+  endif
+
+
+# Read any local .cshrc file.
+  if (-f $AIPSROOT/.cshrc_local) source $AIPSROOT/.cshrc_local

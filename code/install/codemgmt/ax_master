@@ -1,0 +1,2076 @@
+#!/bin/sh
+#-----------------------------------------------------------------------------
+# ax_master: Delete or rename AIPS++ sources
+#-----------------------------------------------------------------------------
+#
+#   Copyright (C) 1992,1993,1994,1995,1996,1997
+#   Associated Universities, Inc. Washington DC, USA.
+#
+#   This program is free software; you can redistribute it and/or modify
+#   it under the terms of the GNU General Public License as published by
+#   the Free Software Foundation; either version 2 of the License, or
+#   (at your option) any later version.
+#
+#   This program is distributed in the hope that it will be useful,
+#   but WITHOUT ANY WARRANTY; without even the implied warranty of
+#   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#   GNU General Public License for more details.
+#
+#   You should have received a copy of the GNU General Public License
+#   along with this program; if not, write to the Free Software
+#   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+#
+#   Correspondence concerning AIPS++ should be addressed as follows:
+#          Internet email: aips2-request@nrao.edu.
+#          Postal address: AIPS++ Project Office
+#                          National Radio Astronomy Observatory
+#                          520 Edgemont Road
+#                          Charlottesville, VA 22903-2475 USA
+#
+#-----------------------------------------------------------------------------
+# Usage: ax_master [-master | -slave | -system | -archive] [-s] [-c]
+#-----------------------------------------------------------------------------
+# ax_master deletes or renames files and directories in the AIPS++ master,
+# slave, system, or archive areas.  The action list it contains is maintained
+# by 'ax' and 'amv' and should not be modified by hand.
+#
+# ax_master is applied
+#
+#    1) to the master by 'ax' or 'amv' to delete or rename master RCS version
+#       files or directories,
+#
+#    2) to the slave  by 'inhale' immediately after each update file has been
+#       installed,
+#
+#    3) to the system by 'sneeze' before the system is remade.  An AIPS++
+#       minor version number is passed to 'sneeze' by 'inhale' so that all
+#       deletions applicable to a multi-increment update can be applied,
+#
+#    4) to the archive by 'exhale' in the process of updating the archive in
+#       preparation for a new base release.
+#
+# Options:
+#   -master  Rescind or rename files or directories in the master RCS
+#            repositories only.
+#
+#   -slave   Delete or rename files or directories in the slave RCS
+#            repositories and plain-text code directories.
+#
+#   -system  Apply deletions to the slave system.  Renaming is not done -
+#            the file or directory to be renamed is simply deleted since a
+#            system rebuild will reconstruct whatever is necessary.
+#
+#   -archive Rescind or rename files or directories in the archive RCS
+#            repositories only.
+#
+#   -c       Cumulative mode, apply all deletions or renames for this major
+#            version:
+#
+#               master)  Fatal error.
+#                slave)  Apply all actions starting from minor version 000 of
+#                        the current major version.
+#               system)  Apply all actions starting from minor version 000 of
+#                        the current major version.  All static object
+#                        libraries are also deleted.
+#              archive)  Apply all actions starting from minor version 000 of
+#                        the current major version.  This is done whether "-c"
+#                        is specified or not.
+#
+#            The current version number is that stored in:
+#
+#               master)  $AIPSMSTR/VERSION
+#                slave)  $AIPSLAVE/VERSION
+#               system)  $AIPSARCH/VERSION
+#              archive)  $AIPSARKV/VERSION
+#
+#   -s       Silent mode - don't interrogate the user.
+#
+# Notes:
+#    1) The version number in the action list corresponds to that stored in
+#       the $AIPSMSTR/VERSION file at the time the entry in this file is made.
+#
+#    2) Deletions or renames in the master are handled by a special action
+#       list deposited in $MSTRETCD by 'ax' or 'amv'.  This list is deleted
+#       after use so that the same action won't be applied twice by mistake.
+#       If, on the other hand, master deletions or renames were done from
+#       ax_master's own list then a file deleted and then recreated in the
+#       same version would again be deleted by any subsequent invokation of
+#       ax_master in the same version.
+#
+#    3) Files and directories are not actually deleted from the master or
+#       archive but instead "rescinded" by renaming them as "dot" files which
+#       makes them invisible to 'exhale'.  They are also given a prefix
+#       identifying the version at the time of their "deletion".
+#
+#    4) See the prologue comments to 'ax' for a description of usage.
+#
+# Status returns:
+#    0:  success
+#    1:  initialization error, no action
+#
+# Original: 1992/05/13 by Mark Calabretta, ATNF
+# $Id$
+#=============================================================================
+# Fundamentals.
+  if [ "$AIPSPATH" = "" ]
+  then
+     echo "ax_master: AIPSPATH is not defined, abort!" 1>&2
+     exit 1
+  fi
+
+# Parse options.
+  MODE=slave
+  SILENT=
+  VERSMIN=
+
+  while [ "$#" -gt 0 ]
+  do
+     case $1 in
+     -master)
+        MODE=master
+        ;;
+     -slave)
+        MODE=slave
+        ;;
+     -system)
+        MODE=system
+        ;;
+     -archive)
+        MODE=archive
+        ;;
+     -c)
+        VERSMIN="-1"
+        ;;
+     -s)
+        SILENT=1
+        ;;
+     *)
+        echo "Usage: ax_master [-master | -slave | -system] [-c] [-s]" 1>&2
+        exit 1
+        ;;
+     esac
+
+     [ "$2" = "" ] && break
+
+     shift
+  done
+
+  if [ "$MODE" = master -a "$VERSMIN" != "" ]
+  then
+     echo "ax_master: Cumulative mode may not be specified for the master," \
+          "abort!" 1>&2
+     exit 1
+  fi
+
+  if [ "$SILENT" = "" ]
+  then
+     echo ""
+     echo "ax_master is used by the AIPS++ code management system to delete"
+     echo "or rename AIPS++ files or directories, including RCS version"
+     echo "files, library members and executables.  It is provided so that"
+     echo "AIPS++ slave installations can keep track of the master."
+     echo ""
+     echo "ax_master contains an action list which is maintained by 'ax' (for"
+     echo "deletions) and 'amv' (for renaming).  These are the commands"
+     echo "for general use, normally ax_master should not be invoked by hand."
+     echo ""
+     echo "        ax_master IS NOT INTENDED FOR CASUAL USE!"
+     echo ""
+     echo -n "Continue (y/n) [n]: "
+     read ANSWER
+     [ "$ANSWER" = y ] || exit 1
+  fi
+
+
+# Define major AIPS++ directories.
+  AIPSROOT=`echo $AIPSPATH | awk '{ print $1 }'`
+  ARCH=`echo $AIPSPATH | awk '{ print $2 }'`
+  AIPSARCH="$AIPSROOT/$ARCH"
+  AIPSCODE="$AIPSROOT/code"
+  ARCHTMPD="$AIPSARCH/tmp"
+
+# Get account information.
+  if [ "$MODE" != archive ]
+  then
+     AIPS2MGR=`getrc -i account.manager 2> /dev/null`
+     MGRGROUP=`echo $AIPS2MGR | sed -e 's/.*\.//'`
+     ADMGROUP=aips2adm
+  else
+     ADMGROUP=aips2adm
+  fi
+
+
+# Interrupt processing.
+  trap 'rm -f $AXDELIST $TMPFILES' 0
+  trap 'exec 1>&2 ; \
+        echo "" ; \
+        echo "Cleaning up..." ; \
+        exit 1' 1 2 3 15
+
+  case $MODE in
+  master)
+#    Actions on the master.
+     AIPSMSTR="$AIPSROOT/master"
+     MSTRETCD="$AIPSMSTR/etc"
+
+#    Get the master's version number.
+     if [ ! -f "$AIPSMSTR/VERSION" ]
+     then
+        echo "ax_master: Couldn't find $AIPSMSTR/VERSION, abort!" 1>&2
+        exit 1
+     fi
+
+     MSTRVERS=`cat $AIPSMSTR/VERSION | awk '{ print $1 }'`
+     MSTRMAJ=`echo $MSTRVERS | awk -F. '{ print $1 }'`
+     MSTRMIN=`echo $MSTRVERS | awk -F. '{ print $2 }'`
+     MAJMIN=$MSTRMAJ.$MSTRMIN
+
+     if [ ! -f "$MSTRETCD/ax_list" ]
+     then
+        echo "ax_master: $MSTRETCD/ax_list not found, abort!" 1>&2
+        exit 1
+     fi
+
+     AXDELIST=$MSTRETCD/ax_master.$$
+     grep "^$MSTRMAJ $MSTRMIN" $MSTRETCD/ax_list > $AXDELIST
+     exec 3<$AXDELIST
+
+     while read VMAJ VMIN OPCODE ACTION ARG1 ARG2 ARG3 0<&3
+     do
+#       Strip off trailing "/".
+        ARG1=`echo $ARG1 | sed -e 's#//*$##'`
+        ARG2=`echo $ARG2 | sed -e 's#//*$##'`
+
+        case $ACTION in
+        rm)
+           if [ "$ARG2" != "" ]
+           then
+              echo "ax_master: Invalid deletion command -"
+              echo "           $VMAJ $VMIN $OPCODE $ACTION $ARG1 $ARG2 $ARG3"
+              continue
+           fi
+           ;;
+        mv)
+           if [ "$ARG2" = "" -o "$ARG3" != "" ]
+           then
+              echo "ax_master: Invalid rename command -"
+              echo "           $VMAJ $VMIN $OPCODE $ACTION $ARG1 $ARG2 $ARG3"
+              continue
+           fi
+           ;;
+        *)
+           echo "ax_master: Invalid action -"
+           echo "           $VMAJ $VMIN $OPCODE $ACTION $ARG1 $ARG2 $ARG3"
+           continue
+           ;;
+        esac
+
+        case $OPCODE in
+        src)
+           case $ACTION in
+           rm)
+#             Deletion in the master consists of concealing the file.
+              ARG2=`echo $ARG1 | sed -e 's#\([^/]*\)$#.'$MAJMIN'_\1#'`
+              if [ -d "$AIPSMSTR/$ARG1" ]
+              then
+#                Break extant locks.
+                 LOCKED=`rlog -L -R $AIPSMSTR/$ARG1/*,v`
+                 [ "$LOCKED" != "" ] && rcs -M -u $LOCKED
+
+                 if mv -f $AIPSMSTR/$ARG1 $AIPSMSTR/$ARG2
+                 then
+                    echo "Rescinded master directory $AIPSMSTR/$ARG1"
+                 fi
+              elif [ -f "$AIPSMSTR/$ARG1,v" ]
+              then
+#                Break extant locks.
+                 if [ "`rlog -L -R $AIPSMSTR/$ARG1,v`" != "" ]
+                 then
+                    rcs -M -u $AIPSMSTR/$ARG1,v
+                 fi
+
+                 if mv -f $AIPSMSTR/$ARG1,v $AIPSMSTR/$ARG2,v
+                 then
+                    echo "Rescinded master file $AIPSMSTR/$ARG1,v"
+                 fi
+              fi
+              ;;
+           mv)
+#             Rename the master directory or file.
+              if [ -d "$AIPSMSTR/$ARG1" ]
+              then
+#                Check that the directory doesn't already exist.
+                 if [ -d "$AIPSMSTR/$ARG2" ]
+                 then
+                    echo "Directory $AIPSMSTR/$ARG2 already exists, abort!" 1>&2
+                    continue
+                 fi
+
+#                Create the target directory if necessary.
+                 amkdir -g $ADMGROUP -p ug=rwx,o=rx,g+s -s -v $AIPSMSTR/$ARG2
+
+                 if mv -f $AIPSMSTR/$ARG1 $AIPSMSTR/$ARG2
+                 then
+                    echo "Renamed master directory"
+                    echo "   from $AIPSMSTR/$ARG1"
+                    echo "     to $AIPSMSTR/$ARG2"
+                 fi
+              elif [ -f "$AIPSMSTR/$ARG1,v" ]
+              then
+#                Check that the file doesn't already exist.
+                 if [ -f "$AIPSMSTR/$ARG2,v" ]
+                 then
+                    echo "File $AIPSMSTR/$ARG2,v already exists, abort!" 1>&2
+                    continue
+                 fi
+
+#                Create the target directory if necessary.
+                 amkdir -g $ADMGROUP -p ug=rwx,o=rx,g+s -s -v $AIPSMSTR/$ARG2
+
+                 if mv -f $AIPSMSTR/$ARG1,v $AIPSMSTR/$ARG2,v
+                 then
+                    echo "Renamed master RCS version file"
+                    echo "   from $AIPSMSTR/$ARG1,v"
+                    echo "     to $AIPSMSTR/$ARG2,v"
+                 fi
+              fi
+              ;;
+           esac
+           ;;
+
+        sys)
+#          No master system.
+           continue
+           ;;
+
+        top)
+#          Apply actions only to master files or directories.
+           case $ARG1 in
+           master/*)
+#             Explicit specification of a master file (e.g. in ../master/etc).
+              ;;
+           rcs/*)
+#             Signals an action on the master as well as the slave.
+              ARG1=`echo $ARG1 | sed -e 's#^rcs/#master/#'`
+              ARG2=`echo $ARG2 | sed -e 's#^rcs/#master/#'`
+              ;;
+           *)
+              continue
+              ;;
+           esac
+
+           case $ACTION in
+           rm)
+#             Deletion in the master consists of concealing the file.
+              ARG2=`echo $ARG1 | sed -e 's#\([^/]*\)$#.'$MAJMIN'_\1#'`
+              if [ -d "$AIPSROOT/$ARG1" ]
+              then
+#                Break extant locks.
+                 LOCKED=`rlog -L -R $AIPSROOT/$ARG1/*,v`
+                 [ "$LOCKED" != "" ] && rcs -M -u $LOCKED
+
+                 if mv -f $AIPSROOT/$ARG1 $AIPSROOT/$ARG2
+                 then
+                    echo "Rescinded master directory $AIPSROOT/$ARG1"
+                 fi
+              elif [ -f "$AIPSROOT/$ARG1" ]
+              then
+#                Break extant locks.
+                 if [ "`rlog -L -R $AIPSROOT/$ARG1`" != "" ]
+                 then
+                    rcs -M -u $AIPSROOT/$ARG1
+                 fi
+
+                 if mv -f $AIPSROOT/$ARG1 $AIPSROOT/$ARG2
+                 then
+                    echo "Rescinded master file $AIPSROOT/$ARG1"
+                 fi
+              fi
+              ;;
+           mv)
+#             Rename the master directory or file.
+              if [ -d "$AIPSROOT/$ARG1" ]
+              then
+#                Create the target directory if necessary.
+                 amkdir -g $ADMGROUP -p ug=rwx,o=rx,g+s -s -v $AIPSROOT/$ARG2
+
+                 if mv -f $AIPSROOT/$ARG1 $AIPSROOT/$ARG2
+                 then
+                    echo "Renamed master directory"
+                    echo "   from $AIPSROOT/$ARG1"
+                    echo "     to $AIPSROOT/$ARG2"
+                 fi
+              elif [ -f "$AIPSROOT/$ARG1" ]
+              then
+#                Create the target directory if necessary.
+                 amkdir -g $ADMGROUP -p ug=rwx,o=rx,g+s -s -v $AIPSROOT/$ARG2
+
+                 if mv -f $AIPSROOT/$ARG1 $AIPSROOT/$ARG2
+                 then
+                    echo "Renamed master RCS version file"
+                    echo "   from $AIPSROOT/$ARG1"
+                    echo "     to $AIPSROOT/$ARG2"
+                 fi
+              fi
+              ;;
+           esac
+           ;;
+
+        *)
+           echo "ax_master: Unknown opcode, $OPCODE"
+           ;;
+        esac
+     done
+
+     rm -f $MSTRETCD/ax_list
+     ;;
+
+  slave)
+#    Actions on the slave.
+     AIPSLAVE="$AIPSROOT/slave"
+
+#    Get the current version number.
+     if [ ! -f "$AIPSLAVE/VERSION" ]
+     then
+        echo "ax_master: Couldn't find $AIPSLAVE/VERSION, abort!" 1>&2
+        exit 1
+     fi
+
+     SLAVERS=`cat $AIPSLAVE/VERSION | awk '{ print $1 }'`
+     SLAVMAJ=`echo $SLAVERS | awk -F. '{ print $1 }'`
+     SLAVMIN=`echo $SLAVERS | awk -F. '{ print $2 }'`
+     [ "$VERSMIN" = "" ] || SLAVMIN="$VERSMIN"
+
+#    List all actions for this major version.
+     AXDELIST=$ARCHTMPD/ax_master.$$
+     grep "^$SLAVMAJ " $0 > $AXDELIST
+     exec 3<$AXDELIST
+
+     while read VMAJ VMIN OPCODE ACTION ARG1 ARG2 ARG3 0<&3
+     do
+#       Test the minor version.
+        [ "$VMIN" -lt "$SLAVMIN" ] && continue
+
+        case $ACTION in
+        rm)
+           if [ "$ARG2" != "" ]
+           then
+              echo "ax_master: Invalid deletion command -"
+              echo "           $VMAJ $VMIN $OPCODE $ACTION $ARG1 $ARG2 $ARG3"
+              continue
+           fi
+           ;;
+        mv)
+           if [ "$ARG2" = "" -o "$ARG3" != "" ]
+           then
+              echo "ax_master: Invalid rename command -"
+              echo "           $VMAJ $VMIN $OPCODE $ACTION $ARG1 $ARG2 $ARG3"
+              continue
+           fi
+           ;;
+        *)
+           echo "ax_master: Invalid action -"
+           echo "           $VMAJ $VMIN $OPCODE $ACTION $ARG1 $ARG2 $ARG3"
+           continue
+           ;;
+        esac
+
+        case $OPCODE in
+        src)
+           case $ACTION in
+           rm)
+#             Check the slave RCS repository.
+              if [ -d "$AIPSLAVE/$ARG1" ]
+              then
+                 if rm -rf $AIPSLAVE/$ARG1
+                 then
+                    echo "Deleted directory $AIPSLAVE/$ARG1"
+                 fi
+              elif [ -f "$AIPSLAVE/$ARG1,v" ]
+              then
+                 if rm -f $AIPSLAVE/$ARG1,v
+                 then
+                    echo "Deleted file $AIPSLAVE/$ARG1,v"
+                 fi
+              fi
+
+#             Check the code area.
+              if [ -d "$AIPSCODE/$ARG1" ]
+              then
+                 if rm -rf $AIPSCODE/$ARG1
+                 then
+                    echo "Deleted directory $AIPSCODE/$ARG1"
+                 fi
+              elif [ -f "$AIPSCODE/$ARG1" ]
+              then
+                 if rm -f $AIPSCODE/$ARG1
+                 then
+                    echo "Deleted file $AIPSCODE/$ARG1"
+                 fi
+              fi
+              ;;
+           mv)
+#             Check the slave RCS repository.
+              if [ -d "$AIPSLAVE/$ARG1" ]
+              then
+#                Delete the directory if it already exists.
+                 [ -d "$AIPSLAVE/$ARG2" ] && rm -rf $AIPSLAVE/$ARG2
+
+#                Create the target directory if necessary.
+                 amkdir -g $MGRGROUP -p ug=rwx,o=rx,g+s -s -v $AIPSLAVE/$ARG2
+
+                 if mv -f $AIPSLAVE/$ARG1 $AIPSLAVE/$ARG2
+                 then
+                    echo "Renamed slave directory"
+                    echo "   from $AIPSLAVE/$ARG1"
+                    echo "     to $AIPSLAVE/$ARG2"
+                 fi
+              elif [ -f "$AIPSLAVE/$ARG1,v" ]
+              then
+#                Create the target directory if necessary.
+                 amkdir -g $MGRGROUP -p ug=rwx,o=rx,g+s -s -v $AIPSLAVE/$ARG2
+
+                 if mv -f $AIPSLAVE/$ARG1,v $AIPSLAVE/$ARG2,v
+                 then
+                    echo "Renamed slave RCS version file"
+                    echo "   from $AIPSLAVE/$ARG1,v"
+                    echo "     to $AIPSLAVE/$ARG2,v"
+                 fi
+              fi
+
+#             Check the code area.
+              if [ -d "$AIPSCODE/$ARG1" ]
+              then
+#                Create the target directory if necessary.
+                 amkdir -g $MGRGROUP -p ug=rwx,o=rx,g+s -s -v $AIPSCODE/$ARG2
+
+                 if mv -f $AIPSCODE/$ARG1 $AIPSCODE/$ARG2
+                 then
+                    echo "Renamed code directory"
+                    echo "   from $AIPSCODE/$ARG1"
+                    echo "     to $AIPSCODE/$ARG2"
+
+                    echo "Delete misdirected RCS symlinks:"
+                    find $AIPSCODE/$ARG2 -name RCS -type l -print \
+                       -exec rm -f {} \;
+                 fi
+              elif [ -f "$AIPSCODE/$ARG1" ]
+              then
+#                Create the target directory if necessary.
+                 amkdir -g $MGRGROUP -p ug=rwx,o=rx,g+s -s -v $AIPSCODE/$ARG2
+
+                 if mv -f $AIPSCODE/$ARG1 $AIPSCODE/$ARG2
+                 then
+                    echo "Renamed code file"
+                    echo "   from $AIPSCODE/$ARG1"
+                    echo "     to $AIPSCODE/$ARG2"
+                 fi
+              fi
+              ;;
+           esac
+           ;;
+
+        sys)
+#          No slave system.
+           continue
+           ;;
+
+        top)
+           case $ACTION in
+           rm)
+#             Check for directory deletion.
+              if [ -d "$AIPSROOT/$ARG1" ]
+              then
+                 if rm -rf $AIPSROOT/$ARG1
+                 then
+                    echo "Deleted directory $AIPSROOT/$ARG1"
+                 fi
+              elif [ -f "$AIPSROOT/$ARG1" ]
+              then
+                 if rm -f $AIPSROOT/$ARG1
+                 then
+                    echo "Deleted file $AIPSROOT/$ARG1"
+                 fi
+              fi
+              ;;
+           mv)
+#             Check for directory renaming.
+              if [ -d "$AIPSROOT/$ARG1" ]
+              then
+#                Create the target directory if necessary.
+                 amkdir -g $MGRGROUP -p ug=rwx,o=rx,g+s -s -v $AIPSROOT/$ARG2
+
+                 if mv -f $AIPSROOT/$ARG1 $AIPSROOT/$ARG2
+                 then
+                    echo "Renamed directory"
+                    echo "   from $AIPSROOT/$ARG1"
+                    echo "     to $AIPSROOT/$ARG2"
+                 fi
+              elif [ -f "$AIPSROOT/$ARG1" ]
+              then
+#                Create the target directory if necessary.
+                 amkdir -g $MGRGROUP -p ug=rwx,o=rx,g+s -s -v $AIPSROOT/$ARG2
+
+                 if mv -f $AIPSROOT/$ARG1 $AIPSROOT/$ARG2
+                 then
+                    echo "Renamed file"
+                    echo "   from $AIPSROOT/$ARG1"
+                    echo "     to $AIPSROOT/$ARG2"
+                 fi
+              fi
+              ;;
+           esac
+           ;;
+
+        *)
+           echo "ax_master: Unknown opcode, $OPCODE"
+           ;;
+        esac
+     done
+     ;;
+
+  system)
+#    Get the code's current version number.
+     if [ ! -f "$AIPSCODE/VERSION" ]
+     then
+        echo "ax_master: Couldn't find $AIPSCODE/VERSION, abort!" 1>&2
+        exit 1
+     else
+        CODEVERS=`cat $AIPSCODE/VERSION | awk '{ print $1 }'`
+        CODEMAJ=`echo $CODEVERS | awk -F. '{ print $1 }'`
+     fi
+
+#    Get the system's current version number.
+     if [ -f "$AIPSARCH/VERSION" ]
+     then
+        SYSVERS=`cat $AIPSARCH/VERSION | awk '{ print $1 }'`
+        SYSMAJ=`echo $SYSVERS | awk -F. '{ print $1 }'`
+        SYSMIN=`echo $SYSVERS | awk -F. '{ print $2 }'`
+
+        if [ "$SYSMAJ" != "$CODEMAJ" ]
+        then
+           SYSMAJ="$CODEMAJ"
+           SYSMIN="-1"
+        else
+           [ "$VERSMIN" = "" ] || SYSMIN="$VERSMIN"
+        fi
+     else
+        SYSMAJ="$CODEMAJ"
+        SYSMIN="-1"
+     fi
+
+     if [ "$SYSMIN" -lt 0 ]
+     then
+#       Delete all static object libraries.
+        PACKAGES="`(cd $AIPSCODE ; ls -d */implement | \
+           sed -e 's#/implement##')`"
+        for PACKAGE in $PACKAGES
+        do
+           if [ -f "$AIPSARCH/lib/lib${PACKAGE}.a" ]
+           then
+              rm -f "$AIPSARCH/lib/lib${PACKAGE}.a"
+              rm -f "$AIPSARCH/lib/lib${PACKAGE}-*.a"
+              echo "Deleted $AIPSARCH/lib/lib${PACKAGE}.a"
+           fi
+
+           if [ -f "$AIPSARCH/lib/lib${PACKAGE}_c.a" ]
+           then
+              rm -f "$AIPSARCH/lib/lib${PACKAGE}_c.a"
+              rm -f "$AIPSARCH/lib/lib${PACKAGE}-*_c.a"
+              echo "Deleted $AIPSARCH/lib/lib${PACKAGE}_c.a"
+           fi
+
+           if [ -f "$AIPSARCH/lib/lib${PACKAGE}_f.a" ]
+           then
+              rm -f "$AIPSARCH/lib/lib${PACKAGE}_f.a"
+              rm -f "$AIPSARCH/lib/lib${PACKAGE}-*_f.a"
+              echo "Deleted $AIPSARCH/lib/lib${PACKAGE}_f.a"
+           fi
+
+           if [ -f "$AIPSARCH/libdbg/lib${PACKAGE}.a" ]
+           then
+              rm -f "$AIPSARCH/libdbg/lib${PACKAGE}.a"
+              rm -f "$AIPSARCH/libdbg/lib${PACKAGE}-*.a"
+              echo "Deleted $AIPSARCH/libdbg/lib${PACKAGE}.a"
+           fi
+
+           if [ -f "$AIPSARCH/libdbg/lib${PACKAGE}_c.a" ]
+           then
+              rm -f "$AIPSARCH/libdbg/lib${PACKAGE}_c.a"
+              rm -f "$AIPSARCH/libdbg/lib${PACKAGE}-*_c.a"
+              echo "Deleted $AIPSARCH/libdbg/lib${PACKAGE}_c.a"
+           fi
+
+           if [ -f "$AIPSARCH/libdbg/lib${PACKAGE}_f.a" ]
+           then
+              rm -f "$AIPSARCH/libdbg/lib${PACKAGE}_f.a"
+              rm -f "$AIPSARCH/libdbg/lib${PACKAGE}-*_f.a"
+              echo "Deleted $AIPSARCH/libdbg/lib${PACKAGE}_f.a"
+           fi
+        done
+     fi
+
+#    List all actions for this major version.
+     AXDELIST=$ARCHTMPD/ax_master.$$
+     grep "^$SYSMAJ " $0 > $AXDELIST
+     exec 3<$AXDELIST
+
+     LIBMBRS=""
+
+     while read VMAJ VMIN OPCODE ACTION ARG1 ARG2 ARG3 0<&3
+     do
+#       Test the minor version.
+        [ "$VMIN" -lt "$SYSMIN" ] && continue
+
+        case $ACTION in
+        rm)
+           if [ "$ARG2" != "" ]
+           then
+              echo "ax_master: Invalid deletion command -"
+              echo "           $VMAJ $VMIN $OPCODE $ACTION $ARG1 $ARG2 $ARG3"
+              continue
+           fi
+           ;;
+        mv)
+           if [ "$ARG2" = "" -o "$ARG3" != "" ]
+           then
+              echo "ax_master: Invalid rename command -"
+              echo "           $VMAJ $VMIN $OPCODE $ACTION $ARG1 $ARG2 $ARG3"
+              continue
+           fi
+           ;;
+        *)
+           echo "ax_master: Invalid action -"
+           echo "           $VMAJ $VMIN $OPCODE $ACTION $ARG1 $ARG2 $ARG3"
+           continue
+           ;;
+        esac
+
+        case $OPCODE in
+        src)
+#          Is it a library member?
+           case $ARG1 in
+           */implement/*/test/* | */fortran/*/test/*)
+#             Ignore test code.
+              ;;
+           */implement/*.cc | */fortran/*.f)
+              case $ARG1 in
+              */implement/*)
+                 PACKAGE=`echo $ARG1 | sed -e 's#/implement/.*##'`
+                 MEMBER=`echo $ARG1 | sed -e 's#.*/##' -e 's#\.cc#.o#'`
+                 ;;
+              */fortran/*)
+                 PACKAGE=`echo $ARG1 | sed -e 's#/fortran/.*#_f#'`
+                 MEMBER=`echo $ARG1 | sed -e 's#.*/##' -e 's#\.f#.o#'`
+                 ;;
+              esac
+
+              LIBR=lib${PACKAGE}.a
+
+              if [ -f "$AIPSARCH/lib/$LIBR" -o  -f "$AIPSARCH/libdbg/$LIBR" ]
+              then
+                 LIBMBRS="$LIBMBRS $LIBR($MEMBER)"
+              fi
+              ;;
+
+           */implement/*.h)
+#             Delete extracted documentation.
+              if [ -f "$AIPSROOT/docs/${ARG1}tml" ]
+              then
+                 if rm -f $AIPSROOT/docs/${ARG1}tml
+                 then
+                    echo "Deleted file $AIPSROOT/docs/${ARG1}tml"
+                 fi
+              fi
+              ;;
+
+           */implement/*.gif)
+#             Delete gifs associated with extracted documentation.
+              if [ -f "$AIPSROOT/docs/$ARG1" ]
+              then
+                 if rm -f $AIPSROOT/docs/$ARG1
+                 then
+                    echo "Deleted file $AIPSROOT/docs/$ARG1"
+                 fi
+              fi
+              ;;
+
+           *)
+#             Check for directory deletion or renaming.
+              if [ -d "$AIPSROOT/docs/$ARG1" ]
+              then
+                 if rm -rf $AIPSROOT/docs/$ARG1
+                 then
+                    echo "Deleted directory $AIPSROOT/docs/$ARG1"
+                 fi
+              fi
+
+#             The object libraries should also be updated for directory
+#             deletion / renaming but there's no easy way to do that.
+              ;;
+
+           esac
+           ;;
+
+        sys)
+#          Must consider library members.
+           case $ARG1 in
+           *\(*\))
+              LIBR=`echo $ARG1 | sed -e '{s#(.*##;s#.*/##;}'`
+              MEMBER=`echo $ARG1 | sed -e 's#.*(##' -e 's#)$##'`
+
+              if [ -f "$AIPSARCH/lib/$LIBR" -o  -f "$AIPSARCH/libdbg/$LIBR" ]
+              then
+                 LIBMBRS="$LIBMBRS $LIBR($MEMBER)"
+              fi
+              ;;
+
+           *)
+              if [ -d "$AIPSARCH/$ARG1" ]
+              then
+                 if rm -rf $AIPSARCH/$ARG1
+                 then
+                    echo "Deleted directory $AIPSARCH/$ARG1"
+                 fi
+              elif [ -f "$AIPSARCH/$ARG1" ]
+              then
+                 if rm -f $AIPSARCH/$ARG1
+                 then
+                    echo "Deleted file $AIPSARCH/$ARG1"
+                 fi
+              fi
+              ;;
+           esac
+           ;;
+
+        top)
+#          Only allow deletions for this host's architecture.
+           case $ARG1 in
+           $ARCH/*)
+#             Check for directory deletion.
+              if [ -d "$AIPSROOT/$ARG1" ]
+              then
+                 if rm -rf $AIPSROOT/$ARG1
+                 then
+                    echo "Deleted directory $AIPSROOT/$ARG1"
+                 fi
+              elif [ -f "$AIPSROOT/$ARG1" ]
+              then
+                 if rm -f $AIPSROOT/$ARG1
+                 then
+                    echo "Deleted file $AIPSROOT/$ARG1"
+                 fi
+              fi
+              ;;
+
+           *)
+              continue
+              ;;
+           esac
+           ;;
+
+        *)
+           echo "ax_master: Unknown opcode, $OPCODE"
+           ;;
+        esac
+     done
+
+#    Any libraries to update?
+     if [ "$LIBMBRS" != "" ]
+     then
+#       Load makedefs variables into the environment.
+        eval `gmake -f $AIPSARCH/makedefs VARS="AR ARFLAGS" eval_vars`
+        ARDFLAGS="`echo $ARFLAGS | sed -e 's/r/d/'`"
+
+#       Sort LIBMBRS removing duplicate entries.
+        LIBMBRS=`for LIBMBR in $LIBMBRS
+             do
+                echo $LIBMBR
+             done | sort -u`
+
+#       Get the list of libraries.
+        LIBS=`echo "$LIBMBRS" | sed -e 's/(.*)//' | sort -u`
+
+#       Process each library in turn.
+        for LIBR in $LIBS
+        do
+#          Find all members to be deleted from this library.
+           MEMBERS=`echo "$LIBMBRS" | sed -n -e /$LIBR'/s/.*(\(.*\))/\1/p'`
+
+#          Account for OS-dependent archive member name truncation.
+           for MEMBER in $MEMBERS
+           do
+              TMPFILES="$ARCHTMPD/$MEMBER $ARCHTMPD/libax.$$"
+              echo dummy > $ARCHTMPD/$MEMBER
+              $AR r $ARCHTMPD/libax.$$ $ARCHTMPD/$MEMBER 2> /dev/null
+              rm -f $ARCHTMPD/$MEMBER
+           done
+           MEMBERS=`$AR t $ARCHTMPD/libax.$$`
+           rm -f $ARCHTMPD/libax.$$
+
+           UPDATE=""
+
+           if [ -f "$AIPSARCH/lib/$LIBR" ]
+           then
+              echo "Members to be deleted from $AIPSARCH/lib/$LIBR:"
+              echo "$MEMBERS"
+              $AR $ARDFLAGS $AIPSARCH/lib/$LIBR $MEMBERS && UPDATE=1
+           fi
+
+           if [ -f "$AIPSARCH/libdbg/$LIBR" ]
+           then
+              echo "Members to be deleted from $AIPSARCH/libdbg/$LIBR:"
+              echo "$MEMBERS"
+              $AR $ARDFLAGS $AIPSARCH/libdbg/$LIBR $MEMBERS && UPDATE=1
+           fi
+
+#          Update the library.
+           if [ "$UPDATE" != "" ]
+           then
+              PACKAGE=`echo $LIBR | sed -e 's/lib\(.*\)\.a/\1/'`
+              updatelib -f $PACKAGE
+           fi
+        done
+     fi
+     ;;
+
+  archive)
+#    Actions on the archive.
+     AIPSARKV="$AIPSROOT/archive"
+
+#    Get the archive's version number.
+     if [ ! -f "$AIPSARKV/VERSION" ]
+     then
+        echo "ax_master: Couldn't find $AIPSARKV/VERSION, abort!" 1>&2
+        exit 1
+     fi
+
+     ARKVVERS=`cat $AIPSARKV/VERSION | awk '{ print $1 }'`
+     ARKVMAJ=`echo $ARKVVERS | awk -F. '{ print $1 }'`
+
+     AXDELIST=/tmp/ax_master.$$
+     grep "^$ARKVMAJ " $0 > $AXDELIST
+     exec 3<$AXDELIST
+
+     while read VMAJ VMIN OPCODE ACTION ARG1 ARG2 ARG3 0<&3
+     do
+#       Strip off trailing "/".
+        ARG1=`echo $ARG1 | sed -e 's#//*$##'`
+        ARG2=`echo $ARG2 | sed -e 's#//*$##'`
+
+        case $ACTION in
+        rm)
+           if [ "$ARG2" != "" ]
+           then
+              echo "ax_master: Invalid deletion command -"
+              echo "           $VMAJ $VMIN $OPCODE $ACTION $ARG1 $ARG2 $ARG3"
+              continue
+           fi
+           ;;
+        mv)
+           if [ "$ARG2" = "" -o "$ARG3" != "" ]
+           then
+              echo "ax_master: Invalid rename command -"
+              echo "           $VMAJ $VMIN $OPCODE $ACTION $ARG1 $ARG2 $ARG3"
+              continue
+           fi
+           ;;
+        *)
+           echo "ax_master: Invalid action -"
+           echo "           $VMAJ $VMIN $OPCODE $ACTION $ARG1 $ARG2 $ARG3"
+           continue
+           ;;
+        esac
+
+        MAJMIN="$VMAJ.$VMIN"
+
+        case $OPCODE in
+        src)
+           case $ACTION in
+           rm)
+#             Deletion in the archive consists of concealing the file.
+              ARG2=`echo $ARG1 | sed -e 's#\([^/]*\)$#.'$MAJMIN'_\1#'`
+              if [ -d "$AIPSARKV/$ARG1" ]
+              then
+                 if mv -f $AIPSARKV/$ARG1 $AIPSARKV/$ARG2
+                 then
+                    echo "$MAJMIN: Rescinded directory $AIPSARKV/$ARG1"
+                 fi
+              elif [ -f "$AIPSARKV/$ARG1,v" ]
+              then
+                 if mv -f $AIPSARKV/$ARG1,v $AIPSARKV/$ARG2,v
+                 then
+                    echo "$MAJMIN: Rescinded file $AIPSARKV/$ARG1,v"
+                 fi
+              fi
+              ;;
+           mv)
+#             Rename the archive directory or file.
+              if [ -d "$AIPSARKV/$ARG1" ]
+              then
+#                Check that the directory doesn't already exist.
+                 if [ -d "$AIPSARKV/$ARG2" ]
+                 then
+                    echo "Directory $AIPSARKV/$ARG2 already exists, abort!" 1>&2
+                    continue
+                 fi
+
+#                Create the target directory if necessary.
+                 amkdir -g $ADMGROUP -p ug=rwx,o=rx,g+s -s -v $AIPSARKV/$ARG2
+
+                 if mv -f $AIPSARKV/$ARG1 $AIPSARKV/$ARG2
+                 then
+                    echo "$MAJMIN: Renamed archive directory"
+                    echo "   from $AIPSARKV/$ARG1"
+                    echo "     to $AIPSARKV/$ARG2"
+                 fi
+              elif [ -f "$AIPSARKV/$ARG1,v" ]
+              then
+#                Check that the file doesn't already exist.
+                 if [ -f "$AIPSARKV/$ARG2,v" ]
+                 then
+                    echo "File $AIPSARKV/$ARG2,v already exists, abort!" 1>&2
+                    continue
+                 fi
+
+#                Create the target directory if necessary.
+                 amkdir -g $ADMGROUP -p ug=rwx,o=rx,g+s -s -v $AIPSARKV/$ARG2
+
+                 if mv -f $AIPSARKV/$ARG1,v $AIPSARKV/$ARG2,v
+                 then
+                    echo "$MAJMIN: Renamed archive RCS version file"
+                    echo "   from $AIPSARKV/$ARG1,v"
+                    echo "     to $AIPSARKV/$ARG2,v"
+                 fi
+              fi
+              ;;
+           esac
+           ;;
+
+        sys)
+#          No archive system.
+           continue
+           ;;
+
+        top)
+#          Apply actions only to master files or directories.
+           case $ARG1 in
+           master/*)
+#             Explicit specification of a master file (e.g. in ../master/etc).
+              ARG1=`echo $ARG1 | sed -e 's#^master/#archive/#'`
+              ;;
+           rcs/*)
+#             Signals an action on the master as well as the slave.
+              ARG1=`echo $ARG1 | sed -e 's#^rcs/#archive/#'`
+              ARG2=`echo $ARG2 | sed -e 's#^rcs/#archive/#'`
+              ;;
+           *)
+              continue
+              ;;
+           esac
+
+           case $ACTION in
+           rm)
+#             Deletion in the archive consists of concealing the file.
+              ARG2=`echo $ARG1 | sed -e 's#\([^/]*\)$#.'$MAJMIN'_\1#'`
+              if [ -d "$AIPSROOT/$ARG1" ]
+              then
+                 if mv -f $AIPSROOT/$ARG1 $AIPSROOT/$ARG2
+                 then
+                    echo "$MAJMIN: Rescinded directory $AIPSROOT/$ARG1"
+                 fi
+              elif [ -f "$AIPSROOT/$ARG1" ]
+              then
+                 if mv -f $AIPSROOT/$ARG1 $AIPSROOT/$ARG2
+                 then
+                    echo "$MAJMIN: Rescinded file $AIPSROOT/$ARG1"
+                 fi
+              fi
+              ;;
+           mv)
+#             Rename the archive directory or file.
+              if [ -d "$AIPSROOT/$ARG1" ]
+              then
+#                Create the target directory if necessary.
+                 amkdir -g $ADMGROUP -p ug=rwx,o=rx,g+s -s -v $AIPSROOT/$ARG2
+
+                 if mv -f $AIPSROOT/$ARG1 $AIPSROOT/$ARG2
+                 then
+                    echo "$MAJMIN: Renamed archive directory"
+                    echo "   from $AIPSROOT/$ARG1"
+                    echo "     to $AIPSROOT/$ARG2"
+                 fi
+              elif [ -f "$AIPSROOT/$ARG1" ]
+              then
+#                Create the target directory if necessary.
+                 amkdir -g $ADMGROUP -p ug=rwx,o=rx,g+s -s -v $AIPSROOT/$ARG2
+
+                 if mv -f $AIPSROOT/$ARG1 $AIPSROOT/$ARG2
+                 then
+                    echo "$MAJMIN: Renamed archive RCS version file"
+                    echo "   from $AIPSROOT/$ARG1"
+                    echo "     to $AIPSROOT/$ARG2"
+                 fi
+              fi
+              ;;
+           esac
+           ;;
+
+        *)
+           echo "ax_master: Unknown opcode, $OPCODE"
+           ;;
+        esac
+     done
+     ;;
+  esac
+
+
+# Delete the action lists.
+  rm -f $AXDELIST
+
+  exit 0
+
+#-----------------------------------------------------------------------------
+# Data section:
+# The action list is maintained by ax, do not change it by hand.
+#-----------------------------------------------------------------------------
+06 006 src mv doc/notes/185.latex doc/notes/186.latex
+06 023 src mv aips/implement/MeasurementSets/MeasurementSet.h aips/implement/MeasurementSets/OldMeasurementSet.h
+06 023 src mv aips/implement/MeasurementSets/MeasurementSet.cc aips/implement/MeasurementSets/OldMeasurementSet.cc
+06 023 src mv aips/implement/Correctors/Corrector.h aips/implement/Correctors/OldCorrector.h
+06 023 src mv aips/implement/Correctors/Corrector.cc aips/implement/Correctors/OldCorrector.cc
+06 023 src mv aips/implement/MeasurementSets/test/tMeasurementSet.cc aips/implement/MeasurementSets/test/tOldMeasurementSet.cc
+06 025 src rm trial/apps/gtablebrowser/gtablebrowser.cc
+06 025 src rm trial/apps/gtablebrowser/KeywordBrowser.h
+06 025 src rm trial/apps/gtablebrowser/KeywordBrowser.cc
+06 025 src rm trial/apps/gtablebrowser/newTableBrowser.h
+06 025 src rm trial/apps/gtablebrowser/newTableBrowser.cc
+06 025 src rm trial/apps/gtablebrowser/gtablebrowser.ad
+06 025 src rm trial/apps/gimage/gimage.cc
+06 025 src rm trial/implement/Graphics/ArrayBrowser.h
+06 025 src rm trial/implement/Graphics/ArrayBrowser.cc
+06 027 src rm trial/implement/Functionals/DeltaFunctions.cc
+06 027 src rm trial/implement/Functionals/DeltaFunctions.h
+06 027 src rm trial/implement/Functionals/Grid.cc
+06 027 src rm trial/implement/Functionals/Grid.h
+06 027 src rm trial/implement/Functionals/Grid2.cc
+06 027 src rm trial/implement/Functionals/GridFunction.cc
+06 027 src rm trial/implement/Functionals/GridFunction.h
+06 039 src mv trial/implement/Functionals.h aips/implement/Functionals.h
+06 039 src mv trial/implement/Functionals/Function1D.cc aips/implement/Functionals/Function1D.cc
+06 039 src mv trial/implement/Functionals/FunctionND.cc aips/implement/Functionals/FunctionND.cc
+06 039 src mv trial/implement/Functionals/Functional.cc aips/implement/Functionals/Functional.cc
+06 039 src mv trial/implement/Functionals/Gaussian1D.cc aips/implement/Functionals/Gaussian1D.cc
+06 039 src mv trial/implement/Functionals/Polynomial.cc aips/implement/Functionals/Polynomial.cc
+06 039 src mv trial/implement/Functionals/SumFunction1D.cc aips/implement/Functionals/SumFunction1D.cc
+06 039 src mv trial/implement/Functionals/Function1D.h aips/implement/Functionals/Function1D.h
+06 039 src mv trial/implement/Functionals/FunctionND.h aips/implement/Functionals/FunctionND.h
+06 039 src mv trial/implement/Functionals/Functional.h aips/implement/Functionals/Functional.h
+06 039 src mv trial/implement/Functionals/Gaussian1D.h aips/implement/Functionals/Gaussian1D.h
+06 039 src mv trial/implement/Functionals/Polynomial.h aips/implement/Functionals/Polynomial.h
+06 039 src mv trial/implement/Functionals/SumFunction1D.h aips/implement/Functionals/SumFunction1D.h
+06 039 src mv trial/implement/Functionals/test/tGaussian1D.cc aips/implement/Functionals/test/tGaussian1D.cc
+06 039 src mv trial/implement/Functionals/test/tPolynomial.cc aips/implement/Functionals/test/tPolynomial.cc
+06 039 src mv trial/implement/Functionals/test/tSumFunction1D.cc aips/implement/Functionals/test/tSumFunction1D.cc
+06 039 src rm trial/implement/Functionals/test/tFunction.cc
+06 039 src mv trial/implement/Functionals/Parameterized.h aips/implement/Functionals/Parameterized.h
+06 039 src mv trial/implement/Functionals/Parameterized.cc aips/implement/Functionals/Parameterized.cc
+06 039 src rm trial/implement/Functionals
+06 045 src rm trial/implement/MeasurementEquation/Iterate.h
+06 045 src rm trial/implement/MeasurementEquation/MeasurementComponents.h
+06 045 src rm trial/implement/MeasurementEquation/MeasurementEquation.cc
+06 045 src rm trial/implement/MeasurementEquation/MeasurementEquation.h
+06 045 src rm trial/implement/MeasurementEquation/SkyModel.h
+06 045 src rm trial/implement/MeasurementEquation/makefile
+06 045 src rm trial/implement/MeasurementEquation/makefile
+06 045 src rm trial/implement/MeasurementSet/test/tFitsFillerSS.cc
+06 047 src rm trial/implement/MeasurementSet/test/tSynMS.cc
+06 049 src mv trial/implement/MeasurementSet/MSFrequency.h trial/implement/MeasurementSet/MSSpectralWindow.h
+06 049 src mv trial/implement/MeasurementSet/MSFrequency.cc trial/implement/MeasurementSet/MSSpectralWindow.cc
+06 049 src mv trial/implement/MeasurementSet/MSFrequencyEnums.h trial/implement/MeasurementSet/MSSpWindowEnums.h
+06 055 src mv trial/implement/MeasurementSet/MSObservationLog.h trial/implement/MeasurementSet/MSObsLog.h
+06 055 src mv trial/implement/MeasurementSet/MSObservationLog.cc trial/implement/MeasurementSet/MSObsLog.cc
+06 055 src mv trial/implement/MeasurementSet/MSObservationLogEnums.h trial/implement/MeasurementSet/MSObsLogEnums.h
+06 057 sys rm bin/Gnuplot.g
+06 057 sys rm bin/aipsViewDisplay.g
+06 057 sys rm bin/cleantool.g
+06 057 sys rm bin/file.g
+06 057 sys rm bin/imm.g
+06 057 sys rm bin/launch.g
+06 057 sys rm bin/netscape_launch.g
+06 057 sys rm bin/oo.g
+06 057 sys rm bin/runselfcal.g
+06 057 sys rm bin/selfcal.g
+06 057 sys rm bin/tasks.g
+06 057 sys rm bin/tgImage.g
+06 057 sys rm bin/tgImageWithSpectrum.g
+06 057 sys rm bin/tgOTF.g
+06 057 sys rm bin/tgXYPlot.g
+06 060 src rm nrao/OTables/VisSet.h
+06 060 src rm nrao/OTables/VisSet.cc
+06 062 src mv trial/apps/gtablebrowser/ab.g trial/apps/gtablebrowser/arraybrowser.g
+06 062 src mv trial/apps/gtablebrowser/kwb.g trial/apps/gtablebrowser/keywordbrowser.g
+06 062 src mv trial/apps/gtablebrowser/tb.g trial/apps/gtablebrowser/tablebrowser.g
+06 062 src mv trial/apps/gtablebrowser/scroll-mechanics.g trial/apps/gtablebrowser/tb-scroll-mechanics.g
+06 062 src rm trial/apps/gtablebrowser/tbgui.g
+06 063 src rm trial/apps/gtablebrowser/tbutil.pl
+06 063 src rm trial/apps/gtablebrowser/gtablebrowser
+06 068 src rm aips/implement/test/RunTests
+06 068 src rm aips/implement/test/xyMakePlot.cc
+06 069 top rm code/trial/implement/Images/test/fits2image.cc
+06 070 src rm trial/implement/MeasurementEquation/test/makefile
+06 070 src rm trial/implement/MeasurementEquation/test
+06 070 src rm trial/implement/MeasurementEquation
+06 073 src rm trial/implement/Images/test/fits2image.cc
+06 073 src mv trial/implement/Images/PagedArray.cc trial/implement/Lattices/PagedArray.cc
+06 073 src mv trial/implement/Images/PagedArray.h trial/implement/Lattices/PagedArray.h
+06 073 src mv trial/implement/Images/test/tPagedArray.cc trial/implement/Lattices/test/tPagedArray.cc
+06 076 src mv aips/implement/Catalogs/ObjectID.h aips/implement/Tasking/ObjectID.h
+06 076 src mv aips/implement/Catalogs/ObjectID.cc aips/implement/Tasking/ObjectID.cc
+06 076 src mv aips/implement/Catalogs/test/tObjectID.cc aips/implement/Tasking/test/tObjectID.cc
+06 076 src rm aips/implement/Catalogs
+06 076 src rm aips/implement/Catalogs.h
+06 076 src mv trial/implement/Utilities/DefaultValue.h aips/implement/Utilities/DefaultValue.h
+06 076 src mv trial/implement/Utilities/test/tDefaultValue.cc aips/implement/Utilities/test/tDefaultValue.cc
+06 076 src rm nrao/apps/fftserver
+06 076 src rm nrao/apps/polyfitter
+06 080 src rm nrao/apps/arraystats
+06 091 src rm trial/implement/Functionals/test/tInterpolate.cc
+06 091 src rm aips/implement/OS/PathList.h
+06 091 src rm aips/implement/OS/PathList.cc
+06 091 src rm aips/implement/OS/test/dFile.cc
+06 091 src rm aips/implement/OS/test/d1File.cc
+06 096 src mv trial/implement/Containers/Stack2.cc aips/implement/Containers/Stack2.cc
+06 098 src rm aips/implement/OS/test/tPathList.cc
+06 099 src mv aips/implement/RTTI/Typeinfo.cc aips/implement/RTTI/Typeinfo2.cc
+06 099 src mv trial/implement/Utilities/COWPtr.h aips/implement/Utilities/COWPtr.h
+06 099 src mv trial/implement/Utilities/COWPtr.cc aips/implement/Utilities/COWPtr.cc
+06 099 src mv trial/implement/Utilities/test/tCOWPtr.cc aips/implement/Utilities/test/tCOWPtr.cc
+06 101 src rm trial/implement/Images/test/image2fits.cc
+06 110 src rm trial/implement/Images/test/createImage.cc
+06 110 src rm trial/implement/Images/test/summarizeImage.cc
+06 110 src rm trial/implement/Images/test/tMinimalCoords.cc
+06 110 src rm trial/implement/Images/test/dImage1.cc
+06 110 src rm trial/implement/Images/test/dImage2.cc
+06 110 src rm trial/implement/Images/test/dImage3.cc
+06 110 src rm trial/implement/Images/test/displayPagedArray.cc
+06 110 src rm trial/implement/Images/test/createPagedArray.cc
+06 112 src rm trial/implement/Lattices/LatticeIter.h
+06 112 src rm trial/implement/Lattices/LatticeIter.cc
+06 114 src rm trial/simulating
+06 114 src mv trial/implement/Containers/List2.cc aips/implement/Containers/List2.cc
+06 122 src rm trial/implement/Lattices/test/tLatticeIter.cc
+06 122 src rm aips/implement/Tables/TableKeySet.h
+06 122 src rm aips/implement/Tables/TableKeySet.cc
+06 122 src rm aips/implement/Tables/TableKeyVal.h
+06 122 src rm aips/implement/Tables/TableKeyVal.cc
+06 122 src rm aips/implement/Tables/TableKeywords.h
+06 122 src rm aips/implement/Tables/TableKeywords.cc
+06 122 src rm atnf/implement/pks/RCS
+06 122 src rm nrao/convert/RCS
+06 122 src rm doc/sddemo/RCS
+06 122 src rm doc/sddemo/101/RCS
+06 122 src rm trial/apps/gdate/RCS
+06 122 src rm trial/apps/gfermiplot/RCS
+06 122 src rm trial/apps/gtablebrowser/RCS
+06 122 src rm aips/implement/Keywords
+06 122 src rm aips/implement/Keywords.h
+06 124 src rm trial/apps/solver
+06 127 src mv trial/implement/Mathematics/MathFunc2.cc aips/implement/Mathematics/MathFunc2.cc
+06 132 src rm trial/apps/workspace/databrowser.g
+06 132 src rm trial/apps/workspace/dataoperations.g
+06 132 src rm trial/apps/workspace/databrowser.g
+06 132 src rm trial/apps/workspace/dataoperations.g
+06 132 src rm trial/apps/workspace/dcrPlotData.g
+06 132 src rm trial/apps/workspace/dcrUtilities.g
+06 132 src rm trial/apps/workspace/makefile
+06 132 src rm trial/apps/workspace/workspace.g
+06 132 src rm trial/apps/workspace/
+06 134 src mv trial/apps/gtablebrowser/templates aips/apps/gtable/templates
+06 135 src rm trial/implement/Measures/test/tMeasure.exec
+06 135 src rm trial/implement/Measures/test/tMeasMath.exec
+06 136 src mv doc/uvdemo/101/imager.cc.example doc/uvdemo/101/imager.cc.txt
+06 136 src mv doc/uvdemo/101/1345+125XD1.imager.log.201 doc/uvdemo/101/1345+125XD1.imager.txt
+06 140 src rm trial/apps/tablebrowser
+06 140 src mv trial/implement/Graphics/X11Intrinsic.h aips/implement/Graphics/X11Intrinsic.h
+06 145 src rm trial/implement/Lattices/design
+06 149 src rm trial/implement/distributed/MSmaker_impl.cc
+06 149 src rm trial/implement/distributed/MSmaker_impl.h
+06 149 src rm trial/implement/distributed/imagemaker_impl.h
+06 149 src rm trial/implement/distributed/MSmaker_impl.cc
+06 149 src rm trial/implement/distributed/MSmaker_impl.h
+06 149 src rm trial/implement/distributed/calibrater_impl.cc
+06 149 src rm trial/implement/distributed/calibrater_impl.h
+06 149 src rm trial/implement/distributed/corrupter_impl.cc
+06 149 src rm trial/implement/distributed/corrupter_impl.h
+06 149 src rm trial/implement/distributed/imagemaker_impl.cc
+06 149 src rm trial/implement/distributed/imagemaker_impl.h
+06 149 src rm trial/implement/distributed/imagesolver_impl.cc
+06 149 src rm trial/implement/distributed/imagesolver_impl.h
+06 149 src rm trial/implement/distributed/weighter_impl.cc
+06 149 src rm trial/implement/distributed/weighter_impl.h
+06 149 src rm trial/scripts/cleantool.g
+06 149 src rm trial/scripts/selfcal.g
+06 149 src rm trial/scripts/runselfcal.g
+06 149 src rm trial/scripts/aipsViewDisplay.g
+06 149 src rm trial/scripts/imm.g
+06 150 sys rm libexec/imm.g
+06 150 sys rm libexec/aipsViewDisplay.g
+06 150 sys rm libexec/runselfcal.g
+06 150 sys rm libexec/selfcal.g
+06 150 sys rm libexec/cleantool.g
+06 151 src rm aips/implement/SkyViews
+06 151 src rm aips/implement/Containers/Block.cc
+06 161 src rm admin/system/aips2-cv-inhale-notify.list
+06 166 top rm code/aips/implement/.gendefs.list
+06 166 top rm code/aips/implement/.gendefs.time
+06 166 top rm code/aips/implement/_aips_def.h
+06 166 top rm code/aips/implement/_aips_udef.h
+06 166 top rm code/trial/implement/.gendefs.list
+06 166 top rm code/trial/implement/.gendefs.time
+06 166 top rm code/trial/implement/_trial_def.h
+06 166 top rm code/trial/implement/_trial_udef.h
+06 166 top rm code/synthesis/implement/.gendefs.list
+06 166 top rm code/synthesis/implement/.gendefs.time
+06 166 top rm code/synthesis/implement/_synthesis_def.h
+06 166 top rm code/synthesis/implement/_synthesis_udef.h
+06 166 top rm code/dish/implement/.gendefs.list
+06 166 top rm code/dish/implement/.gendefs.time
+06 166 top rm code/dish/implement/_dish_def.h
+06 166 top rm code/dish/implement/_dish_udef.h
+06 166 top rm code/vlbi/implement/.gendefs.list
+06 166 top rm code/vlbi/implement/.gendefs.time
+06 166 top rm code/vlbi/implement/_vlbi_def.h
+06 166 top rm code/vlbi/implement/_vlbi_udef.h
+06 166 top rm code/atnf/implement/.gendefs.list
+06 166 top rm code/atnf/implement/.gendefs.time
+06 166 top rm code/atnf/implement/_atnf_def.h
+06 166 top rm code/atnf/implement/_atnf_udef.h
+06 166 top rm code/nrao/implement/.gendefs.list
+06 166 top rm code/nrao/implement/.gendefs.time
+06 166 top rm code/nrao/implement/_nrao_def.h
+06 166 top rm code/nrao/implement/_nrao_udef.h
+06 166 src rm install/gendefs
+06 166 sys rm bin/gendefs
+06 173 src rm aips/apps/aipsview/colorView.cc
+06 174 src rm trial/implement/test/test
+06 179 src rm aips/apps/gtable/tgtable.exec
+06 179 src rm aips/implement/Tables/ExprDerNode2.cc
+06 180 src mv trial/implement/Measures/loadMRefData trial/apps/loadMRefData
+06 183 src rm trial/apps/imaging/templates
+06 190 src rm trial/test
+06 196 src mv trial/implement/Arrays/Convolver.cc trial/implement/Mathematics/Convolver.cc
+06 196 src mv trial/implement/Arrays/Convolver.h trial/implement/Mathematics/Convolver.h
+06 196 src mv trial/implement/Arrays/test/tConvolver.cc trial/implement/Mathematics/test/tConvolver.cc
+06 199 src rm trial/implement/Lattices/LatticeNotice.h
+06 199 src rm trial/implement/Lattices/LatticeNotice.cc
+06 199 src mv trial/implement/Mathematics/Convolver.h aips/implement/Mathematics/Convolver.h
+06 199 src mv trial/implement/Mathematics/Convolver.cc aips/implement/Mathematics/Convolver.cc
+06 199 src mv trial/implement/Mathematics/test/tConvolver.cc aips/implement/Mathematics/test/tConvolver.cc
+06 203 src mv trial/implement/Utilities/test/templates aips/implement/Utilities/test/templates
+06 203 src mv trial/implement/Utilities/test/templateTab aips/implement/Tables/test/templates
+06 203 src mv trial/implement/Utilities/test/tT.h aips/implement/Tables/test/tTableDesc.h
+06 206 src rm doc/reference/System.dir/ComTools.texi
+06 206 src rm doc/reference/System.dir/DocExtr.texi
+06 206 src mv doc/reference/System.dir/CodeDstn.texi doc/reference/System.dir/CodeDstn.tex
+06 206 src mv doc/reference/System.dir/CodeMgmt.texi doc/reference/System.dir/CodeMgmt.tex
+06 206 src mv doc/reference/System.dir/Environment.texi doc/reference/System.dir/Environment.tex
+06 206 src mv doc/reference/System.dir/General.texi doc/reference/System.dir/General.tex
+06 206 src mv doc/reference/System.dir/Overview.texi doc/reference/System.dir/Overview.tex
+06 206 src mv doc/reference/System.dir/Printer.texi doc/reference/System.dir/Printer.tex
+06 206 src mv doc/reference/System.dir/SettingUp.texi doc/reference/System.dir/SettingUp.tex
+06 206 src mv doc/reference/System.dir/SysGen.texi doc/reference/System.dir/SysGen.tex
+06 206 src mv doc/reference/System.texi doc/reference/System.latex
+06 206 sys rm doc/info/System.info
+06 206 sys rm doc/info/System.info-1
+06 206 sys rm doc/info/System.info-2
+06 206 sys rm doc/info/System.info-3
+06 206 sys rm doc/info/System.info-4
+06 206 sys rm doc/info/System.info-5
+06 206 sys rm doc/info/System.info-6
+06 206 sys rm doc/info/System.info-7
+06 218 src rm trial/apps/sdgridder/makefile
+06 218 src rm trial/apps/sdgridder
+06 220 src mv aips/apps/gtable/tgtable.out aips/apps/gtable/tgtable.g.out
+06 246 src mv trial/implement/Lattices/test/templates aips/implement/IO/test/templates
+07 004 src mv trial/implement/Lattices/GlishTableRowHolder.h aips/apps/gtable/GlishTableRowHolder.h
+07 004 src mv trial/implement/Lattices/GlishTableRowHolder.cc aips/apps/gtable/GlishTableRowHolder.cc
+07 005 src rm trial/implement/Fitting/test/FitBaseline.cc
+07 009 src rm trial/implement/distributed/MSmaker.h
+07 009 src rm trial/implement/distributed/MSmaker.cc
+07 009 src rm trial/implement/distributed/MSmakerImpl.h
+07 009 src rm trial/implement/distributed/MSmakerImpl.cc
+07 022 src rm trial/implement/Images/ArrImageIter.cc
+07 022 src rm trial/implement/Images/ArrImageIter.h
+07 022 src rm trial/implement/Images/ArrayImage.cc
+07 022 src rm trial/implement/Images/ArrayImage.h
+07 024 src rm trial/apps/imager
+07 028 top rm code/doc/design
+07 028 src rm aips/implement/SkyViews.h
+07 030 src mv atnf/implement/ATLoad.h atnf/apps/atload/ATLoad.h
+07 030 src mv atnf/implement/ATLoad.cc atnf/apps/atload/ATLoad.cc
+07 034 top rm code/trial/implement/Images/ImageUtil.h
+07 034 top rm code/trial/implement/Images/ImageUtil.cc
+07 042 src rm trial/implement/Images/ImageUtil.h
+07 042 src rm trial/implement/Images/ImageUtil.cc
+07 042 src rm trial/implement/Lattices/PagedArray2.cc
+07 044 src rm atnf/fortran/atio.f
+07 044 src rm atnf/fortran/cvt_ieee.f
+07 044 src rm atnf/fortran/nchar.f
+07 044 src rm atnf/fortran/rpfits.inc
+07 044 src rm atnf/fortran/rpfits_tables.f
+07 044 src rm atnf/fortran/rpfitsin.f
+07 046 src rm trial/implement/FITS/GBTFITSBackend.cc
+07 046 src rm trial/implement/FITS/GBTFITSBackend.h
+07 049 src mv trial/implement/SDCalibration/PosSwitchedColumns.cc nrao/apps/otfgridder/PosSwitchedColumns.cc
+07 049 src mv trial/implement/SDCalibration/PosSwitchedColumns.h nrao/apps/otfgridder/PosSwitchedColumns.h
+07 049 src mv trial/implement/SDCalibration/PosSwitchedCorrector.h nrao/apps/otfgridder/PosSwitchedCorrector.h
+07 049 src mv trial/implement/SDCalibration/PosSwitchedCorrector.cc nrao/apps/otfgridder/PosSwitchedCorrector.cc
+07 049 src rm aips/implement/Correctors.h
+07 049 src rm aips/implement/Correctors/OldCorrector.cc
+07 049 src rm aips/implement/Correctors/OldCorrector.h
+07 049 src rm trial/implement/Correctors/Corrector.h
+07 049 src rm trial/implement/Correctors/Corrector.cc
+07 052 src rm trial/apps/gGnuplot
+07 052 src rm trial/apps/gfermiplot
+07 054 src mv trial/apps/gOTF nrao/apps/gOTF
+07 054 src rm trial/implement/Images/Image.cc
+07 054 src rm trial/implement/Images/Image.h
+07 054 src rm trial/implement/Images/ImageKludge.cc
+07 054 src rm trial/implement/Images/ImageKludge.h
+07 054 src rm trial/implement/Images/ImageKludge2.cc
+07 054 src rm trial/implement/Images/ImageKludge3.cc
+07 054 src rm aips/implement/Correctors
+07 054 src rm trial/implement/Correctors
+07 059 src rm nrao/OTables
+07 060 src rm trial/implement/Measures/test/tMRefData.exec
+07 064 src rm aips/implement/Containers/test/tSlist.cc
+07 064 src rm aips/implement/Containers/test/tSlistIO.cc
+07 072 src rm aips/data/DDTSUVBEAM
+07 072 src rm aips/data/DDTSUVMAP
+07 080 src rm trial/implement/Images/test/tArrayImage.cc
+07 080 src rm trial/implement/Images/test/tImage.cc
+07 081 src rm aips/implement/Logging.h
+07 081 src rm aips/implement/Logging/LogBoss.cc
+07 081 src rm aips/implement/Logging/LogMessage.cc
+07 081 src rm aips/implement/Logging/LogBoss.h
+07 081 src rm aips/implement/Logging/LogMessage.h
+07 081 src rm aips/implement/Logging/test/dLogging.cc
+07 081 src rm aips/implement/Logging/test/tLogBoss.cc
+07 081 src rm aips/implement/Logging/test/tLogMessage.cc
+07 081 src rm aips/implement/Logging/test/templates
+07 082 src rm trial/apps/gbtfiller/gbtmonitor.g
+07 082 src rm trial/apps/glog
+07 083 src rm atnf/fortran/makefile
+07 083 src rm atnf/fortran
+07 088 src mv aips/implement/Images/PointComponent.h aips/implement/Deconvolution/CleanComponent.h
+07 088 src mv aips/implement/Images/PointComponent.cc aips/implement/Deconvolution/CleanComponent.cc
+07 109 src mv trial/implement/distributed/calibrater.help trial/implement/distributed/calibrater.atoms
+07 109 src mv trial/implement/distributed/flagger.help trial/implement/distributed/flagger.atoms
+07 109 src mv trial/implement/distributed/weighter.help trial/implement/distributed/weighter.atoms
+07 109 src mv trial/implement/distributed/imagemaker.help trial/implement/distributed/imagemaker.atoms
+07 109 src mv trial/implement/distributed/imagesolver.help trial/implement/distributed/imagesolver.atoms
+07 118 src mv doc/user/qsg.latex doc/user/gettingstarted.latex
+07 136 src mv trial/implement/Mathematics/AutoDiff1D.h trial/implement/Mathematics/AutoDiff.h
+07 136 src mv trial/implement/Mathematics/AutoDiff1D.cc trial/implement/Mathematics/AutoDiff.cc
+07 136 src mv trial/implement/Mathematics/AutoDiff1DMath.cc trial/implement/Mathematics/AutoDiffMath.cc
+07 136 src mv trial/implement/Mathematics/AutoDiff1DMath.h trial/implement/Mathematics/AutoDiffMath.h
+07 136 src mv trial/implement/Mathematics/AutoDiff1DIO.h trial/implement/Mathematics/AutoDiffIO.h
+07 137 src rm install/docutils/dir
+07 137 sys rm doc/info/dir
+07 141 src rm trial/implement/Fitting/test/dLinearFitSVD.cc
+07 141 src rm trial/implement/Fitting/test/tLinearFit.cc
+07 141 src mv doc/help doc/aips2help
+07 142 src rm aips/implement/Mathematics/Interp.h
+07 142 src rm aips/implement/Mathematics/Interp.cc
+07 142 src rm aips/implement/Mathematics/test/tInterp.cc
+07 145 src rm aips/implement/Mathematics/test/tMathFunc.exec
+07 145 src rm aips/implement/Mathematics/test/tMathFunc.out
+07 146 src rm install/sun4
+07 146 src rm install/sun4sol
+07 146 src mv install/hpux install/hpux_gnu
+07 147 src rm trial/implement/Graphics/XRTplot1d.cc
+07 147 src rm trial/implement/Graphics/XRTplot1d.h
+07 147 src rm trial/implement/Graphics/XRTplotStyles.h
+07 149 src rm trial/implement/Mathematics/AutoDiff1D.h
+07 149 src rm trial/implement/Mathematics/AutoDiff1D.cc
+07 149 src rm trial/implement/Mathematics/AutoDiff1DMath.cc
+07 149 src rm trial/implement/Mathematics/AutoDiff1DMath.h
+07 149 src rm trial/implement/Mathematics/AutoDiff1DIO.h
+07 149 src rm trial/implement/Mathematics/AutoDiff1DIO.cc
+07 155 src rm install/docutils/ainfo
+07 155 sys rm bin/ainfo
+07 159 src rm trial/implement/Mathematics/AutoDiff1D2.cc
+07 161 src mv aips/implement/Functionals/SumFunction1D.h aips/implement/Functionals/SumFunction.h
+07 161 src mv aips/implement/Functionals/SumFunction1D.cc aips/implement/Functionals/SumFunction.cc
+07 161 src mv aips/implement/Functionals/test/tSumFunction1D.cc aips/implement/Functionals/test/tSumFunction.cc
+07 162 src rm trial/apps/gstripchart/gmultisc.g
+07 162 src rm trial/apps/gstripchart/gstripchart.ad
+07 162 src rm trial/apps/gstripchart/gstripchart.cc
+07 162 src rm trial/apps/gstripchart/gstripchart.g
+07 178 src mv trial/implement/Containers/ExprNodeRep.h aips/implement/Tables/ExprNodeRep.h
+07 178 src mv trial/implement/Containers/ExprNodeRep.cc aips/implement/Tables/ExprNodeRep.cc
+07 192 src mv trial/fortran/grd2d.f aips/fortran/grd2d.f
+07 192 src mv trial/fortran/grd2dwts.f aips/fortran/grd2dwts.f
+07 192 src mv trial/fortran/grdde2d.f aips/fortran/grdde2d.f
+07 192 src rm trial/implement/Images/PagedImageIter.cc
+07 192 src rm trial/implement/Images/PagedImageIter.h
+07 194 src rm install/codemgmt/amailcommand
+07 194 src rm install/codemgmt/new_files
+07 194 src rm install/codemgmt/new_files_m
+07 194 sys rm bin/amailcommand
+07 194 sys rm bin/new_files
+07 194 sys rm bin/new_files_m
+07 203 src rm trial/apps/aipsview2/AvFitsFile.h
+07 203 src rm trial/apps/aipsview2/AvFitsFile.cc
+07 207 src rm trial/implement/ImgCrdSys/ImageCoordinate.README
+07 212 src rm trial/apps/gstripchart
+07 215 src rm dish/apps/Gridder/makefile
+07 215 src rm nrao/apps/sampleapp/makefile
+07 218 src rm trial/apps/aipsview2/AvFitsFile.cc
+07 218 src rm trial/apps/aipsview2/AvFitsFile.h
+07 222 src rm trial/apps/aipsview2/AvGriddedGlishReader.h
+07 225 src mv trial/scripts/imager.g trial/apps/imager.g
+07 225 src mv trial/scripts/imager.atoms trial/apps/imager.atoms
+07 225 src mv trial/scripts/imager.help trial/apps/imager.help
+07 230 src rm trial/apps/imager.g
+07 230 src rm trial/apps/imager.atoms
+07 230 src rm trial/apps/imager.help
+07 230 src mv trial/implement/Measures/Aberration.cc aips/implement/Measures/Aberration.cc
+07 230 src mv trial/implement/Measures/Aberration.h aips/implement/Measures/Aberration.h
+07 230 src mv trial/implement/Measures/Euler.cc aips/implement/Measures/Euler.cc
+07 230 src mv trial/implement/Measures/MDirection.cc aips/implement/Measures/MDirection.cc
+07 230 src mv trial/implement/Measures/MDoppler.cc aips/implement/Measures/MDoppler.cc
+07 230 src mv trial/implement/Measures/MEpoch.cc aips/implement/Measures/MEpoch.cc
+07 230 src mv trial/implement/Measures/MFrequency.cc aips/implement/Measures/MFrequency.cc
+07 230 src mv trial/implement/Measures/MPosition.cc aips/implement/Measures/MPosition.cc
+07 230 src mv trial/implement/Measures/MRadialVelocity.cc aips/implement/Measures/MRadialVelocity.cc
+07 230 src mv trial/implement/Measures/MRefData.cc aips/implement/Measures/MRefData.cc
+07 230 src mv trial/implement/Measures/MVAngle.cc aips/implement/Measures/MVAngle.cc
+07 230 src mv trial/implement/Measures/MVDirection.cc aips/implement/Measures/MVDirection.cc
+07 230 src mv trial/implement/Measures/MVDoppler.cc aips/implement/Measures/MVDoppler.cc
+07 230 src mv trial/implement/Measures/MVDouble.cc aips/implement/Measures/MVDouble.cc
+07 230 src mv trial/implement/Measures/MVEpoch.cc aips/implement/Measures/MVEpoch.cc
+07 230 src mv trial/implement/Measures/MVFrequency.cc aips/implement/Measures/MVFrequency.cc
+07 230 src mv trial/implement/Measures/MVPosition.cc aips/implement/Measures/MVPosition.cc
+07 230 src mv trial/implement/Measures/MVRadialVelocity.cc aips/implement/Measures/MVRadialVelocity.cc
+07 230 src mv trial/implement/Measures/MVTime.cc aips/implement/Measures/MVTime.cc
+07 230 src mv trial/implement/Measures/MeasBase.cc aips/implement/Measures/MeasBase.cc
+07 230 src mv trial/implement/Measures/MeasConvert.cc aips/implement/Measures/MeasConvert.cc
+07 230 src mv trial/implement/Measures/MeasData.cc aips/implement/Measures/MeasData.cc
+07 230 src mv trial/implement/Measures/MeasDetail.cc aips/implement/Measures/MeasDetail.cc
+07 230 src mv trial/implement/Measures/MeasFrame.cc aips/implement/Measures/MeasFrame.cc
+07 230 src mv trial/implement/Measures/MeasIERS.cc aips/implement/Measures/MeasIERS.cc
+07 230 src mv trial/implement/Measures/MeasRef.cc aips/implement/Measures/MeasRef.cc
+07 230 src mv trial/implement/Measures/MeasValue.cc aips/implement/Measures/MeasValue.cc
+07 230 src mv trial/implement/Measures/Measure.cc aips/implement/Measures/Measure.cc
+07 230 src mv trial/implement/Measures/MeasuredValue.cc aips/implement/Measures/MeasuredValue.cc
+07 230 src mv trial/implement/Measures/Nutation.cc aips/implement/Measures/Nutation.cc
+07 230 src mv trial/implement/Measures/Precession.cc aips/implement/Measures/Precession.cc
+07 230 src mv trial/implement/Measures/RotMatrix.cc aips/implement/Measures/RotMatrix.cc
+07 230 src mv trial/implement/Measures/SkyPosition.cc aips/implement/Measures/SkyPosition.cc
+07 230 src mv trial/implement/Measures/SolarPos.cc aips/implement/Measures/SolarPos.cc
+07 230 src mv trial/implement/Measures/Euler.h aips/implement/Measures/Euler.h
+07 230 src mv trial/implement/Measures/MDirection.h aips/implement/Measures/MDirection.h
+07 230 src mv trial/implement/Measures/MDoppler.h aips/implement/Measures/MDoppler.h
+07 230 src mv trial/implement/Measures/MEpoch.h aips/implement/Measures/MEpoch.h
+07 230 src mv trial/implement/Measures/MFrequency.h aips/implement/Measures/MFrequency.h
+07 230 src mv trial/implement/Measures/MPosition.h aips/implement/Measures/MPosition.h
+07 230 src mv trial/implement/Measures/MRadialVelocity.h aips/implement/Measures/MRadialVelocity.h
+07 230 src mv trial/implement/Measures/MRefData.h aips/implement/Measures/MRefData.h
+07 230 src mv trial/implement/Measures/MVAngle.h aips/implement/Measures/MVAngle.h
+07 230 src mv trial/implement/Measures/MVDirection.h aips/implement/Measures/MVDirection.h
+07 230 src mv trial/implement/Measures/MVDoppler.h aips/implement/Measures/MVDoppler.h
+07 230 src mv trial/implement/Measures/MVDouble.h aips/implement/Measures/MVDouble.h
+07 230 src mv trial/implement/Measures/MVEpoch.h aips/implement/Measures/MVEpoch.h
+07 230 src mv trial/implement/Measures/MVFrequency.h aips/implement/Measures/MVFrequency.h
+07 230 src mv trial/implement/Measures/MVPosition.h aips/implement/Measures/MVPosition.h
+07 230 src mv trial/implement/Measures/MVRadialVelocity.h aips/implement/Measures/MVRadialVelocity.h
+07 230 src mv trial/implement/Measures/MVTime.h aips/implement/Measures/MVTime.h
+07 230 src mv trial/implement/Measures/MeasBase.h aips/implement/Measures/MeasBase.h
+07 230 src mv trial/implement/Measures/MeasConvert.h aips/implement/Measures/MeasConvert.h
+07 230 src mv trial/implement/Measures/MeasData.h aips/implement/Measures/MeasData.h
+07 230 src mv trial/implement/Measures/MeasDetail.h aips/implement/Measures/MeasDetail.h
+07 230 src mv trial/implement/Measures/MeasFrame.h aips/implement/Measures/MeasFrame.h
+07 230 src mv trial/implement/Measures/MeasIERS.h aips/implement/Measures/MeasIERS.h
+07 230 src mv trial/implement/Measures/MeasRef.h aips/implement/Measures/MeasRef.h
+07 230 src mv trial/implement/Measures/MeasValue.h aips/implement/Measures/MeasValue.h
+07 230 src mv trial/implement/Measures/Measure.h aips/implement/Measures/Measure.h
+07 230 src mv trial/implement/Measures/MeasuredValue.h aips/implement/Measures/MeasuredValue.h
+07 230 src mv trial/implement/Measures/Nutation.h aips/implement/Measures/Nutation.h
+07 230 src mv trial/implement/Measures/Precession.h aips/implement/Measures/Precession.h
+07 230 src mv trial/implement/Measures/RotMatrix.h aips/implement/Measures/RotMatrix.h
+07 230 src mv trial/implement/Measures/SkyPosition.h aips/implement/Measures/SkyPosition.h
+07 230 src mv trial/implement/Measures/SolarPos.h aips/implement/Measures/SolarPos.h
+07 231 src mv trial/implement/Measures/test/dMeasure.cc aips/implement/Measures/test/dMeasure.cc
+07 231 src mv trial/implement/Measures/test/tMRefData.cc aips/implement/Measures/test/tMRefData.cc
+07 231 src mv trial/implement/Measures/test/tMeasMath.cc aips/implement/Measures/test/tMeasMath.cc
+07 231 src mv trial/implement/Measures/test/tMeasure.cc aips/implement/Measures/test/tMeasure.cc
+07 231 src mv trial/implement/Measures/test/tMeasuredValue.cc aips/implement/Measures/test/tMeasuredValue.cc
+07 231 src mv trial/implement/Measures/test/tSkyPosition.cc aips/implement/Measures/test/tSkyPosition.cc
+07 231 src mv trial/implement/Measures/test/dMeasure.out aips/implement/Measures/test/dMeasure.out
+07 231 src mv trial/implement/Measures/test/tMRefData.out aips/implement/Measures/test/tMRefData.out
+07 231 src mv trial/implement/Measures/test/tMeasMath.out aips/implement/Measures/test/tMeasMath.out
+07 231 src mv trial/implement/Measures/test/tMeasure.out aips/implement/Measures/test/tMeasure.out
+07 231 src mv trial/implement/Measures/test/dMeasure.in aips/implement/Measures/test/dMeasure.in
+07 231 src mv trial/implement/Measures/test/tMRefData.in aips/implement/Measures/test/tMRefData.in
+07 231 src rm trial/implement/Measures/test/templates
+07 231 src rm trial/implement/Measures/test/makefile
+07 232 src rm install/codedevl/qdeps
+07 232 src rm install/codedevl/qhelp
+07 232 src rm install/codedevl/qmake
+07 232 src rm install/codedevl/qmake.help
+07 232 src rm install/codedevl/qmake.readme
+07 232 src rm install/codedevl/qsedscr
+07 232 sys rm bin/qdeps
+07 232 sys rm bin/qhelp
+07 232 sys rm bin/qmake
+07 232 sys rm bin/qsedscr
+07 238 src rm trial/implement/MeasurementSet/MSCorrelatorEnums.h
+07 238 src rm trial/implement/MeasurementSet/MSFlagEnums.h
+07 240 src mv aips/implement/Measures/SkyPosition.h trial/implement/Measures/SkyPosition.h
+07 240 src mv aips/implement/Measures/SkyPosition.cc trial/implement/Measures/SkyPosition.cc
+07 240 src mv aips/implement/Measures/MeasuredValue.h trial/implement/Measures/MeasuredValue.h
+07 240 src mv aips/implement/Measures/MeasuredValue.cc trial/implement/Measures/MeasuredValue.cc
+07 240 src mv aips/implement/Measures/test/tSkyPosition.cc trial/implement/Measures/test/tSkyPosition.cc
+07 240 src mv aips/implement/Measures/test/tMeasuredValue.cc trial/implement/Measures/test/tMeasuredValue.cc
+07 241 src rm aips/implement/Measures/MeasureMath.cc-old
+07 241 src rm aips/implement/Measures/UnitExpress.cc-old
+07 241 src rm aips/implement/Measures/Coordinate.cc-old
+07 241 src rm aips/implement/Measures/test/tDuration.cc-old
+07 241 src rm aips/implement/Measures/test/tDirection.cc-old
+07 242 src rm trial/apps/ssfitsfiller
+07 247 src rm atnf/implement/PKSRPreader.cc
+07 247 src rm atnf/implement/PKSRPreader.h
+07 247 src rm atnf/implement/PKSMSwriter.cc
+07 247 src rm atnf/implement/PKSMSwriter.h
+07 247 src rm atnf/implement/MultiGridder.cc
+07 247 src rm atnf/implement/MultiGridder.h
+07 256 src mv trial/implement/Fitting/test/tLinearFitConstriantLU.cc trial/implement/Fitting/test/tLinearFitConstraintLU.cc
+07 259 src mv trial/implement/Tasking/Aipsrc.cc aips/implement/Tasking/Aipsrc.cc
+07 259 src mv trial/implement/Tasking/Aipsrc.h aips/implement/Tasking/Aipsrc.h
+07 259 src mv trial/implement/Tasking/test/tAipsrc.cc aips/implement/Tasking/test/tAipsrc.cc
+07 259 src mv aips/apps/gtable/table.g aips/apps/gtable/tableserver.g
+07 259 src mv trial/implement/Functionals/SampledFunctional.h aips/implement/Functionals/SampledFunctional.h
+07 259 src mv trial/implement/Functionals/ScalarSampledFunctional.h aips/implement/Functionals/ScalarSampledFunctional.h
+07 259 src mv trial/implement/Functionals/BlockSampledFunctional.h aips/implement/Functionals/BlockSampledFunctional.h
+07 259 src mv trial/implement/Functionals/Interpolate1D.h aips/implement/Functionals/Interpolate1D.h
+07 259 src mv trial/implement/Functionals/Interpolate1D.cc aips/implement/Functionals/Interpolate1D.cc
+07 259 src mv trial/implement/Functionals/ArraySampledFunctional.h aips/implement/Functionals/ArraySampledFunctional.h
+07 259 src mv trial/implement/Functionals/test/tInterpolate1D.cc aips/implement/Functionals/test/tInterpolate1D.cc
+07 259 src mv trial/implement/Functionals/ArraySampledFunctional.cc aips/implement/Functionals/ArraySampledFunctional.cc
+07 260 src rm trial/implement/MeasurementSet/test/tSynMSIter.cc
+07 262 src rm trial/implement/Tasking/ApplicationEnvironment.h
+07 262 src rm trial/implement/Tasking/Application2Environment.cc
+07 262 src rm trial/implement/Tasking/TestObject.h
+07 262 src rm trial/implement/test/templates
+07 262 src rm trial/implement/test/templates
+07 263 src rm aips/implement/Functionals/BlockSampledFunctional.h
+07 263 src rm atnf/implement/PKSrealtime.cc
+07 263 src rm atnf/implement/PKSrealtime.h
+07 264 src mv trial/implement/Functionals/test/dInterpolate1D.cc aips/implement/Functionals/test/dInterpolate1D.cc
+07 264 src mv trial/implement/Functionals/test/dInterpolate1D.g aips/implement/Functionals/test/dInterpolate1D.g
+07 265 src rm trial/implement/Tasking/test/templates
+07 272 src rm trial/implement/MeasurementEquations/MeasurementEquation.h
+07 272 src rm trial/implement/MeasurementEquations/MeasurementEquation.cc
+07 274 src mv doc/user/Refman doc/user/Refman.dir
+07 274 src mv trial/implement/Functionals/Gaussian2D.h aips/implement/Functionals/Gaussian2D.h
+07 274 src mv trial/implement/Functionals/Gaussian2D.cc aips/implement/Functionals/Gaussian2D.cc
+07 274 src mv trial/implement/Functionals/test/tGaussian2D.cc aips/implement/Functionals/test/tGaussian2D.cc
+07 275 src mv trial/implement/Functionals/test/tGaussianND.cc aips/implement/Functionals/test/tGaussianND.cc
+07 275 src mv trial/implement/Functionals/GaussianND.cc aips/implement/Functionals/GaussianND.cc
+07 275 src mv trial/implement/Functionals/GaussianND.h aips/implement/Functionals/GaussianND.h
+07 275 src mv trial/implement/Functionals/test/dGaussianND.cc aips/implement/Functionals/test/dGaussianND.cc
+07 282 src rm trial/implement/Tasking/logging.g
+07 291 src rm trial/apps/imager/dimager.g
+07 291 src mv aips/implement/Functionals/Gaussian1D2.h trial/implement/Functionals/Gaussian1D2.h
+07 291 src mv aips/implement/Functionals/Gaussian1D2.cc trial/implement/Functionals/Gaussian1D2.cc
+07 294 src rm trial/implement/distributed/fft_server.cc
+07 294 src rm trial/implement/distributed/fft_server.g
+07 294 src rm trial/implement/distributed/fft_server.h
+07 294 src rm trial/implement/distributed/fft_server_impl.cc
+07 294 src rm trial/implement/distributed/fft_server_impl.h
+07 294 src rm trial/implement/distributed/moment.cc
+07 294 src rm trial/implement/distributed/moment.g
+07 294 src rm trial/implement/distributed/moment.h
+07 294 src rm trial/implement/distributed/momentImpl.cc
+07 294 src rm trial/implement/distributed/momentImpl.h
+07 294 src rm trial/implement/distributed/poly_fitter.cc
+07 294 src rm trial/implement/distributed/poly_fitter.g
+07 294 src rm trial/implement/distributed/poly_fitter.h
+07 294 src rm trial/implement/distributed/poly_fitter_impl.cc
+07 294 src rm trial/implement/distributed/poly_fitter_impl.h
+07 294 src rm trial/implement/distributed/interpolate_1d.cc
+07 294 src rm trial/implement/distributed/interpolate_1d.g
+07 294 src rm trial/implement/distributed/interpolate_1d.h
+07 294 src rm trial/implement/distributed/interpolate_1d_impl.cc
+07 294 src rm trial/implement/distributed/interpolate_1d_impl.h
+07 294 src rm doc/notes/197.ps
+07 297 src mv trial/implement/distributed/SDIterFieldCopier.cc trial/implement/MeasurementSet/SDIterFieldCopier.cc
+07 297 src mv trial/implement/distributed/SDIterFieldCopier.h trial/implement/MeasurementSet/SDIterFieldCopier.h
+07 299 src mv trial/scripts/image.g trial/scripts/oldimage.g
+07 309 src rm trial/apps/wsrtfiller
+07 324 src rm trial/apps/world
+07 329 src rm trial/apps/gimage
+07 331 src rm trial/implement/Images/imheadhelper.h
+07 331 src rm trial/implement/Images/imheadhelper.cc
+07 331 src mv trial/implement/Images/imomenthelper.h trial/implement/Images/ImageMoments.h
+07 331 src mv trial/implement/Images/imomenthelper.cc trial/implement/Images/ImageMoments.cc
+07 331 src rm nfra/apps/wsrtfiller/CanonicalConversion.h
+07 331 src rm nfra/apps/wsrtfiller/CanonicalConversion.cc
+07 331 src rm nfra/apps/wsrtfiller/IBMConversion.h
+07 331 src rm nfra/apps/wsrtfiller/IBMConversion.cc
+07 332 src mv aips/implement/OS/test/tByteIO.cc aips/implement/IO/test/tByteIO.cc
+07 332 src mv aips/implement/OS/test/tByteIO.out aips/implement/IO/test/tByteIO.out
+07 332 src mv aips/implement/OS/test/tByteSink.out aips/implement/IO/test/tByteSink.out
+07 332 src mv aips/implement/OS/test/tByteSink.cc aips/implement/IO/test/tByteSink.cc
+07 332 src mv aips/implement/OS/test/tByteSinkSource.cc aips/implement/IO/test/tByteSinkSource.cc
+07 332 src mv aips/implement/OS/test/tByteSinkSource.out aips/implement/IO/test/tByteSinkSource.out
+07 332 src mv aips/implement/OS/test/tTypeIO.cc aips/implement/IO/test/tTypeIO.cc
+07 332 src mv aips/implement/OS/CanonicalConv.cc aips/implement/OS/CanonicalConversion.cc
+07 332 src mv aips/implement/OS/CanonicalConv.h aips/implement/OS/CanonicalConversion.h
+07 332 src mv aips/implement/OS/IBMConv.h aips/implement/OS/IBMConversion.h
+07 332 src mv aips/implement/OS/IBMConv.cc aips/implement/OS/IBMConversion.cc
+07 332 src rm trial/apps/imhead/templates
+07 344 src rm trial/apps/sdcalc/workspace.g
+07 344 src rm trial/apps/sdcalc/fitGaussDialog.g
+07 344 src rm trial/apps/sdcalc/dataoperations.g
+07 344 src rm trial/apps/sdcalc/databrowser.g
+07 344 src rm trial/apps/sdcalc/dcrDataExtractor.g
+07 344 src rm trial/apps/sdcalc/dcrPlotData.g
+07 348 src mv doc/notes/196.dir/g++_notes.tex doc/notes/196.dir/body196.tex
+07 354 src rm trial/implement/Fitting/LSQMethods3.cc
+07 354 src rm trial/implement/Fitting/LSQMethods3.h
+07 354 src rm trial/implement/Fitting/specializations
+07 359 src rm trial/apps/imoment/templates
+07 360 src rm trial/apps/imaging
+07 362 src rm trial/scripts/display.atoms
+07 362 src rm trial/scripts/image.atoms
+07 362 src rm trial/scripts/inputs.atoms
+07 362 src rm trial/scripts/statistics.atoms
+07 362 src rm trial/scripts/synthesis.atoms
+07 362 src rm trial/scripts/aips++menu.g
+07 362 src rm trial/scripts/clock.g
+07 363 src rm trial/apps/imstat/templates
+07 366 src rm trial/implement/distributed/sditer_server.cc
+07 366 src rm trial/implement/distributed/sditer_server.g
+07 366 src rm trial/implement/distributed/sditer_server.h
+07 366 src rm trial/implement/distributed/sditer_serverImpl.cc
+07 366 src rm trial/implement/distributed/sditer_serverImpl.h
+07 366 src rm trial/implement/distributed/test/tsditer_server.cc
+07 366 src rm trial/implement/distributed/test/templates
+07 374 src rm aips/implement/OS/ToLocal.h
+07 374 src rm aips/implement/OS/ToLocal.cc
+07 374 src rm aips/implement/OS/FromLocal.h
+07 374 src rm aips/implement/OS/FromLocal.cc
+07 374 src rm aips/implement/OS/TFLocal.h
+07 374 src rm aips/implement/OS/TFLocal.cc
+07 374 src rm aips/implement/OS/TFLocalError.h
+07 374 src rm aips/implement/OS/TFLocalError.cc
+07 374 src rm aips/implement/IO/AipsIOError.h
+07 374 src rm aips/implement/IO/AipsIOError.cc
+07 374 src rm aips/implement/Tables/StManMirAIO.h
+07 374 src rm aips/implement/Tables/StManMirAIO.cc
+07 374 src rm aips/implement/Tables/StArrMirAIO.h
+07 374 src rm aips/implement/Tables/StArrMirAIO.cc
+07 374 src rm aips/implement/Tables/StColMirAIO.h
+07 374 src rm aips/implement/Tables/StColMirAIO.cc
+07 374 src rm aips/implement/Tables/StIndMirAIO.h
+07 374 src rm aips/implement/Tables/StIndMirAIO.cc
+07 374 src rm aips/implement/Tables/StColMirData.h
+07 374 src rm aips/implement/Tables/StColMirData.cc
+07 374 src rm aips/implement/Tables/StColMirString.h
+07 374 src rm aips/implement/Tables/StColMirString.cc
+07 374 src rm aips/implement/Tables/test/tTableMirAIO.cc
+07 374 src rm aips/implement/Tables/test/tTableMirAIO.out
+07 375 src rm trial/implement/MeasurementSet/test/templates
+07 375 src rm trial/apps/sditerator/templates
+07 375 src rm trial/apps/numerics/units.g
+07 375 src rm trial/apps/gbug
+07 377 src rm trial/implement/Measures/DO_units.h
+07 377 src rm trial/implement/Measures/DO_units.cc
+07 382 src rm trial/apps/numerics/units.g
+07 392 src rm nrao/implement/WindowApp
+07 394 src rm aips/implement/OS/test/tToFromLocal.cc
+07 399 src rm trial/scripts/file.g
+07 399 src rm trial/apps/sdcalc/sdcalc
+07 399 src rm trial/scripts/helper.g
+07 399 src rm trial/apps/imhist/templates
+07 399 src rm trial/apps/aipsview2/AvScalarArray.cc
+07 399 src rm trial/apps/aipsview2/AvScalarArray.h
+07 400 src rm trial/implement/distributed/test/tMoment.cc
+07 400 src rm trial/implement/distributed/test/tMoment.g
+07 401 src rm trial/apps/aipsview2/AvGrid.h
+07 402 src rm trial/implement/distributed/sdgridder.cc
+07 402 src rm trial/implement/distributed/sdgridder.h
+07 402 src rm trial/implement/distributed/sdgridder.g
+07 402 src rm trial/implement/distributed/sdgridderImpl.cc
+07 402 src rm trial/implement/distributed/sdgridderImpl.h
+07 404 src mv trial/apps/image2fits/image2fits.cc trial/implement/Images/test/image2fits.cc
+07 404 src mv trial/apps/imhead/imhead.cc trial/implement/Images/test/imhead.cc
+07 404 src mv trial/apps/imoment/imoment.cc trial/implement/Images/test/imoment.cc
+07 404 src mv trial/apps/fits2image/fits2image.cc trial/implement/Images/test/fits2image.cc
+07 404 src mv trial/apps/imhist/imhist.cc trial/implement/Images/test/imhist.cc
+07 404 src mv trial/apps/imstat/imstat.cc trial/implement/Images/test/imstat.cc
+07 404 src rm trial/apps/image2fits
+07 404 src rm trial/apps/imhead
+07 404 src rm trial/apps/imoment
+07 404 src rm trial/apps/fits2image
+07 404 src rm trial/apps/gfitpoly
+07 404 src rm trial/apps/sdfits2ms
+07 404 src rm trial/apps/imhist
+07 404 src rm trial/apps/imstat
+07 404 src rm trial/scripts/netscape_launch.g
+07 404 src rm trial/scripts/launch.g
+07 404 src rm trial/scripts/oldimage.g
+07 404 src rm trial/scripts/oo.g
+07 405 src rm trial/apps/gtablebrowser/todo-tablebrowser
+07 410 top rm /code/trial/scripts/image.help
+07 429 src rm aips/implement/Containers/ExtendHash.h
+07 429 src rm aips/implement/Containers/ExtendHash.cc
+07 429 src rm aips/implement/Containers/test/tExtendHash.cc
+07 430 src rm trial/apps/sdcalc/resultsManager.g
+07 430 src rm trial/apps/sdcalc/combobox.g
+07 446 src rm trial/implement/Measures/test/units.g
+07 446 src rm trial/implement/Measures/test/units.cc
+07 454 src rm doc/design
+07 454 src rm doc/reference/Design.dir
+07 458 src rm doc/aips2help
+07 458 src rm doc/reference/Coding.texi
+07 458 src rm doc/reference/Introaips.texi
+07 458 src rm doc/reference/The-Glossary.texi
+07 458 src rm doc/reference/The-Glossary.dir
+07 458 src rm doc/reference/Design.texi
+07 458 src rm doc/reference/Coding.dir/ArrayUse.texi
+07 458 src rm doc/reference/Coding.dir/Arrays.texi
+07 458 src rm doc/reference/Coding.dir/DFTServ.texi
+07 458 src rm doc/reference/Coding.dir/Document.texi
+07 458 src rm doc/reference/Coding.dir/Exceptns.texi
+07 458 src rm doc/reference/Coding.dir/FFTServ.texi
+07 458 src rm doc/reference/Coding.dir/Fundmntl.texi
+07 458 src rm doc/reference/Coding.dir/GridTool.texi
+07 458 src rm doc/reference/Coding.dir/Guide.texi
+07 458 src rm doc/reference/Coding.dir/Intro.texi
+07 458 src rm doc/reference/Coding.dir/IntroPrg.texi
+07 458 src rm doc/reference/Coding.dir/MathFunc.texi
+07 458 src rm doc/reference/Coding.dir/RTTI.texi
+07 458 src rm doc/reference/Coding.dir/Standards.texi
+07 458 src rm doc/reference/Coding.dir/UserIntf.texi
+07 458 src rm doc/reference/Coding.dir/Warnings.texi
+07 462 src rm aips/implement/Images/DummyImage.cc
+07 462 src rm aips/implement/Images/DummyImage.h
+07 462 src rm aips/implement/ImgCrdSys.h
+07 462 src rm aips/implement/ImgCrdSys/ImgCrdSys.cc-old
+07 462 src rm aips/implement/ImgCrdSys/ImgCrdSys.h-old
+07 462 src rm aips/implement/ImgCrdSys/PixImgTF.cc-old
+07 462 src rm aips/implement/ImgCrdSys/PixImgTF.h-old
+07 462 src rm aips/implement/ImgCrdSys/PixPixTF.cc-old
+07 462 src rm aips/implement/ImgCrdSys/PixPixTF.h-old
+07 462 src rm aips/implement/ImgCrdSys/test/tImgCrdSys.cc-old
+07 462 src rm trial/implement/Coordinates/AxesLinearMapping.cc
+07 462 src rm trial/implement/Coordinates/AxesMapping.cc
+07 462 src rm trial/implement/Coordinates/AxesMappingSequence.cc
+07 462 src rm trial/implement/Coordinates/CelestialProjection.cc
+07 462 src rm trial/implement/Coordinates/CombinedIndependentMappings.cc
+07 462 src rm trial/implement/Coordinates/CoordinateSystem.cc
+07 462 src rm trial/implement/Coordinates/RemovedAxes.cc
+07 462 src rm trial/implement/Coordinates/SpectralAxis.cc
+07 462 src rm trial/implement/Coordinates/AxesLinearMapping.h
+07 462 src rm trial/implement/Coordinates/AxesMapping.h
+07 462 src rm trial/implement/Coordinates/AxesMappingSequence.h
+07 462 src rm trial/implement/Coordinates/CelestialProjection.h
+07 462 src rm trial/implement/Coordinates/CombinedIndependentMappings.h
+07 462 src rm trial/implement/Coordinates/CoordinateSystem.h
+07 462 src rm trial/implement/Coordinates/RemovedAxes.h
+07 462 src rm trial/implement/Coordinates/SpectralAxis.h
+07 462 src rm trial/implement/Coordinates/test/dCoordinateSystem.cc
+07 468 src rm aips/implement/Mathematics/specializations
+07 474 src rm trial/apps/imager/imager.eps
+07 482 src rm trial/implement/distributed/calibrater.atoms
+07 482 src rm trial/implement/distributed/corrupter.atoms
+07 482 src rm trial/implement/distributed/flagger.atoms
+07 482 src rm trial/implement/distributed/imagemaker.atoms
+07 482 src rm trial/implement/distributed/msmaker.atoms
+07 482 src rm trial/implement/distributed/weighter.atoms
+07 482 src rm trial/apps/imager/imager.atoms
+07 482 src rm trial/apps/aips2help/help.atoms
+07 482 src rm trial/apps/gplot1d/gplot1d.atoms
+07 482 src rm trial/apps/plotter/plotter.atoms
+07 484 src rm aips/apps/aipsview
+07 485 src mv trial/apps/aipsview2/aipsview2.cc trial/apps/aipsview.cc
+07 485 src mv trial/apps/aipsview.cc trial/apps/aipsview2/aipsview.cc
+07 485 src mv trial/apps/aipsview2 trial/apps/aipsview
+07 485 src mv trial/implement/Utilities/ExprNodeArray.h aips/implement/Tables/ExprNodeArray.h
+07 485 src mv trial/implement/Utilities/ExprNodeArray.cc aips/implement/Tables/ExprNodeArray.cc
+07 485 src mv trial/implement/Utilities/ExprFuncNode.h aips/implement/Tables/ExprFuncNode.h
+07 485 src mv trial/implement/Utilities/ExprFuncNode.cc aips/implement/Tables/ExprFuncNode.cc
+07 487 src rm aips/implement/Tables/gvandiep
+07 487 src rm trial/apps/simulating
+07 487 src rm aips/implement/Measures/Coordinate.h
+07 493 src rm aips/implement/Tasking/wyoung
+07 502 src mv aips/implement/Logging/test/dLogging.cc aips/implement/Logging/test/dLogging2.cc
+07 505 src rm trial/implement/ImgCrdSys
+07 505 src rm aips/implement/ImgCrdSys
+07 507 src rm aips/glish/glish/Makefile.in
+07 507 src rm aips/glish/editline/Makefile.in
+07 507 src rm aips/glish/npd/include/Npd/auth.h
+07 507 src rm aips/glish/npd/include/Npd/md5.h
+07 507 src rm aips/glish/npd/include/Npd/util.h
+07 507 src rm aips/glish/rivet/rivet/Makefile.in
+07 507 src rm aips/glish/rivet/tcl/Makefile.in
+07 507 src rm aips/glish/rivet/tk/Makefile.in
+07 507 src rm aips/glish/sds/include/Sds/sds_errstrings.h
+07 508 src rm aips/glish/sds/include/Sds/sds_lisd.h
+07 508 src rm aips/glish/sds/include/Sds/sds_list.h
+07 508 src rm aips/glish/sds/include/Sds/sds_object.h
+07 508 src rm aips/glish/sds/include/Sds/sds_reqd.h
+07 508 src rm aips/glish/sds/include/Sds/sds_requests.h
+07 508 src rm aips/glish/sds/include/Sds/sds_res.h
+07 508 src rm aips/glish/sds/include/Sds/sds_tree.h
+07 508 src rm aips/glish/sds/include/Sds/sdsv1compat.h
+07 508 src rm aips/glish/sds/include/Sds/syb_types.h
+07 508 src rm aips/glish/sds/Makefile.in
+07 508 src rm aips/glish/npd/Makefile.in
+07 530 src rm trial/apps/gmisc/gmisc.help
+07 538 src rm trial/implement/Lattices/LatticeLayout.cc
+07 538 src rm trial/implement/Lattices/LatticeLayout.h
+07 538 src rm trial/implement/Lattices/test/tLatticeLayout.cc
+07 540 src mv trial/implement/MeasurementSet/MSAntenna.cc aips/implement/MeasurementSets/MSAntenna.cc
+07 540 src mv trial/implement/MeasurementSet/MSAntenna.h aips/implement/MeasurementSets/MSAntenna.h
+07 540 src mv trial/implement/MeasurementSet/MSAntennaColumns.cc aips/implement/MeasurementSets/MSAntennaColumns.cc
+07 540 src mv trial/implement/MeasurementSet/MSAntennaColumns.h aips/implement/MeasurementSets/MSAntennaColumns.h
+07 540 src mv trial/implement/MeasurementSet/MSAntennaEnums.h aips/implement/MeasurementSets/MSAntennaEnums.h
+07 540 src mv trial/implement/MeasurementSet/MSArray.h aips/implement/MeasurementSets/MSArray.h
+07 540 src mv trial/implement/MeasurementSet/MSArrayColumns.cc aips/implement/MeasurementSets/MSArrayColumns.cc
+07 540 src mv trial/implement/MeasurementSet/MSArrayColumns.h aips/implement/MeasurementSets/MSArrayColumns.h
+07 540 src mv trial/implement/MeasurementSet/MSArrayEnums.h aips/implement/MeasurementSets/MSArrayEnums.h
+07 540 src mv trial/implement/MeasurementSet/MSColumns.cc aips/implement/MeasurementSets/MSColumns.cc
+07 540 src mv trial/implement/MeasurementSet/MSColumns.h aips/implement/MeasurementSets/MSColumns.h
+07 540 src mv trial/implement/MeasurementSet/MSFeed.cc aips/implement/MeasurementSets/MSFeed.cc
+07 540 src mv trial/implement/MeasurementSet/MSFeed.h aips/implement/MeasurementSets/MSFeed.h
+07 540 src mv trial/implement/MeasurementSet/MSFeedColumns.cc aips/implement/MeasurementSets/MSFeedColumns.cc
+07 540 src mv trial/implement/MeasurementSet/MSFeedColumns.h aips/implement/MeasurementSets/MSFeedColumns.h
+07 540 src mv trial/implement/MeasurementSet/MSFeedEnums.h aips/implement/MeasurementSets/MSFeedEnums.h
+07 540 src mv trial/implement/MeasurementSet/MSField.cc aips/implement/MeasurementSets/MSField.cc
+07 540 src mv trial/implement/MeasurementSet/MSField.h aips/implement/MeasurementSets/MSField.h
+07 540 src mv trial/implement/MeasurementSet/MSFieldColumns.cc aips/implement/MeasurementSets/MSFieldColumns.cc
+07 540 src mv trial/implement/MeasurementSet/MSFieldColumns.h aips/implement/MeasurementSets/MSFieldColumns.h
+07 540 src mv trial/implement/MeasurementSet/MSFieldEnums.h aips/implement/MeasurementSets/MSFieldEnums.h
+07 540 src mv trial/implement/MeasurementSet/MSMainEnums.h aips/implement/MeasurementSets/MSMainEnums.h
+07 540 src mv trial/implement/MeasurementSet/MSObsLog.cc aips/implement/MeasurementSets/MSObsLog.cc
+07 540 src mv trial/implement/MeasurementSet/MSObsLog.h aips/implement/MeasurementSets/MSObsLog.h
+07 540 src mv trial/implement/MeasurementSet/MSObsLogColumns.cc aips/implement/MeasurementSets/MSObsLogColumns.cc
+07 540 src mv trial/implement/MeasurementSet/MSObsLogColumns.h aips/implement/MeasurementSets/MSObsLogColumns.h
+07 540 src mv trial/implement/MeasurementSet/MSObsLogEnums.h aips/implement/MeasurementSets/MSObsLogEnums.h
+07 540 src mv trial/implement/MeasurementSet/MSObservation.cc aips/implement/MeasurementSets/MSObservation.cc
+07 540 src mv trial/implement/MeasurementSet/MSObservation.h aips/implement/MeasurementSets/MSObservation.h
+07 540 src mv trial/implement/MeasurementSet/MSObservationColumns.cc aips/implement/MeasurementSets/MSObservationColumns.cc
+07 540 src mv trial/implement/MeasurementSet/MSObservationColumns.h aips/implement/MeasurementSets/MSObservationColumns.h
+07 540 src mv trial/implement/MeasurementSet/MSObservationEnums.h aips/implement/MeasurementSets/MSObservationEnums.h
+07 540 src mv trial/implement/MeasurementSet/MSSource.cc aips/implement/MeasurementSets/MSSource.cc
+07 540 src mv trial/implement/MeasurementSet/MSSource.h aips/implement/MeasurementSets/MSSource.h
+07 540 src mv trial/implement/MeasurementSet/MSSourceColumns.cc aips/implement/MeasurementSets/MSSourceColumns.cc
+07 540 src mv trial/implement/MeasurementSet/MSSourceColumns.h aips/implement/MeasurementSets/MSSourceColumns.h
+07 540 src mv trial/implement/MeasurementSet/MSSourceEnums.h aips/implement/MeasurementSets/MSSourceEnums.h
+07 540 src mv trial/implement/MeasurementSet/MSSpWindowColumns.cc aips/implement/MeasurementSets/MSSpWindowColumns.cc
+07 540 src mv trial/implement/MeasurementSet/MSSpWindowColumns.h aips/implement/MeasurementSets/MSSpWindowColumns.h
+07 540 src mv trial/implement/MeasurementSet/MSSpWindowEnums.h aips/implement/MeasurementSets/MSSpWindowEnums.h
+07 540 src mv trial/implement/MeasurementSet/MSSpectralWindow.cc aips/implement/MeasurementSets/MSSpectralWindow.cc
+07 540 src mv trial/implement/MeasurementSet/MSSpectralWindow.h aips/implement/MeasurementSets/MSSpectralWindow.h
+07 540 src mv trial/implement/MeasurementSet/MSSysCal.cc aips/implement/MeasurementSets/MSSysCal.cc
+07 540 src mv trial/implement/MeasurementSet/MSSysCal.h aips/implement/MeasurementSets/MSSysCal.h
+07 540 src mv trial/implement/MeasurementSet/MSSysCalColumns.cc aips/implement/MeasurementSets/MSSysCalColumns.cc
+07 540 src mv trial/implement/MeasurementSet/MSSysCalColumns.h aips/implement/MeasurementSets/MSSysCalColumns.h
+07 540 src mv trial/implement/MeasurementSet/MSSysCalEnums.h aips/implement/MeasurementSets/MSSysCalEnums.h
+07 540 src mv trial/implement/MeasurementSet/MSTable.cc aips/implement/MeasurementSets/MSTable.cc
+07 540 src mv trial/implement/MeasurementSet/MSTable.h aips/implement/MeasurementSets/MSTable.h
+07 540 src mv trial/implement/MeasurementSet/MSTable2.cc aips/implement/MeasurementSets/MSTable2.cc
+07 540 src mv trial/implement/MeasurementSet/MSTableImpl.cc aips/implement/MeasurementSets/MSTableImpl.cc
+07 540 src mv trial/implement/MeasurementSet/MSTableImpl.h aips/implement/MeasurementSets/MSTableImpl.h
+07 540 src mv trial/implement/MeasurementSet/MSWeather.cc aips/implement/MeasurementSets/MSWeather.cc
+07 540 src mv trial/implement/MeasurementSet/MSWeather.h aips/implement/MeasurementSets/MSWeather.h
+07 540 src mv trial/implement/MeasurementSet/MSWeatherColumns.cc aips/implement/MeasurementSets/MSWeatherColumns.cc
+07 540 src mv trial/implement/MeasurementSet/MSWeatherColumns.h aips/implement/MeasurementSets/MSWeatherColumns.h
+07 540 src mv trial/implement/MeasurementSet/MSWeatherEnums.h aips/implement/MeasurementSets/MSWeatherEnums.h
+07 540 src mv trial/implement/MeasurementSet/MeasurementSet.cc aips/implement/MeasurementSets/MeasurementSet.cc
+07 540 src mv trial/implement/MeasurementSet/MeasurementSet.h aips/implement/MeasurementSets/MeasurementSet.h
+07 540 src mv trial/implement/MeasurementSet/MSArray.cc aips/implement/MeasurementSets/MSArray.cc
+07 540 src mv trial/implement/MeasurementSets.h aips/implement/MeasurementSets.h
+07 540 src mv trial/implement/MeasurementSet/test/tMeasurementSet.cc aips/implement/MeasurementSets/test/tMeasurementSet.cc
+07 546 src rm trial/scripts/make_helpsystem.sh
+07 546 src mv aips/implement/MeasurementSets/OldMeasurementSet.h nrao/implement/MeasurementSet/OldMeasurementSet.h
+07 546 src mv aips/implement/MeasurementSets/OldMeasurementSet.cc nrao/implement/MeasurementSet/OldMeasurementSet.cc
+07 546 src mv nrao/implement/MeasurementSet nrao/implement/MeasurementSets
+07 546 src rm bima/miriad/bimafiller
+07 554 src mv trial/implement/Images/test/imhead.cc trial/implement/Images/test/dImageSummary.cc
+07 554 src mv trial/implement/Images/test/imhist.cc trial/implement/Images/test/dImageHistograms.cc
+07 554 src mv trial/implement/Images/test/imstat.cc trial/implement/Images/test/dImageStatistics.cc
+07 554 src mv trial/implement/Images/test/imoment.cc trial/implement/Images/test/dImageMoments.cc
+07 557 src rm trial/apps/gdate
+07 561 src mv aips/implement/MeasurementSets/test/tOldMeasurementSet.cc nrao/implement/MeasurementSets/test/tOldMeasurementSet.cc
+07 561 src mv aips/implement/MeasurementSets/test/templates nrao/implement/MeasurementSets/test/templates
+07 561 src mv trial/apps/sdcalc/averaging_manager.g nrao/apps/sdcalc/averaging_manager.g
+07 561 src mv trial/apps/sdcalc/dialogbox.g nrao/apps/sdcalc/dialogbox.g
+07 561 src mv trial/apps/sdcalc/evalwindow.g nrao/apps/sdcalc/evalwindow.g
+07 561 src mv trial/apps/sdcalc/fitting_manager.g nrao/apps/sdcalc/fitting_manager.g
+07 561 src mv trial/apps/sdcalc/makefile nrao/apps/sdcalc/makefile
+07 561 src mv trial/apps/sdcalc/sdavg.g nrao/apps/sdcalc/sdavg.g
+07 561 src mv trial/apps/sdcalc/sdavg_app.g nrao/apps/sdcalc/sdavg_app.g
+07 561 src mv trial/implement/FITS/GBTAzEl.cc nrao/implement/FITS/GBTAzEl.cc
+07 561 src mv trial/apps/sdcalc/tracewindow.g nrao/apps/sdcalc/tracewindow.g
+07 561 src mv trial/implement/FITS/GBTAzEl.h nrao/implement/FITS/GBTAzEl.h
+07 561 src mv trial/apps/sdcalc/working_set_manager.g nrao/apps/sdcalc/working_set_manager.g
+07 561 src mv trial/apps/gbtmsfiller/GBTMSFillerInputs.cc nrao/apps/gbtmsfiller/GBTMSFillerInputs.cc
+07 561 src mv trial/apps/gbtmsfiller/GBTMSFillerInputs.h nrao/apps/gbtmsfiller/GBTMSFillerInputs.h
+07 561 src mv trial/implement/FITS/GBTBackend.cc nrao/implement/FITS/GBTBackend.cc
+07 561 src mv trial/apps/gbtmsfiller/GBTMSFillerState.cc nrao/apps/gbtmsfiller/GBTMSFillerState.cc
+07 561 src mv trial/implement/FITS/GBTBackend.h nrao/implement/FITS/GBTBackend.h
+07 561 src mv trial/apps/gbtmsfiller/GBTMSFillerState.h nrao/apps/gbtmsfiller/GBTMSFillerState.h
+07 561 src mv trial/implement/FITS/GBTBackendTable.cc nrao/implement/FITS/GBTBackendTable.cc
+07 561 src mv trial/apps/gbtmsfiller/gbtmsfiller.cc nrao/apps/gbtmsfiller/gbtmsfiller.cc
+07 561 src mv trial/implement/FITS/GBTBackendTable.h nrao/implement/FITS/GBTBackendTable.h
+07 561 src mv trial/apps/gbtmsfiller/gbtmsfiller.g nrao/apps/gbtmsfiller/gbtmsfiller.g
+07 561 src mv trial/apps/gbtmsfiller/makefile nrao/apps/gbtmsfiller/makefile
+07 561 src mv trial/implement/FITS/GBTPositionTable.cc nrao/implement/FITS/GBTPositionTable.cc
+07 561 src mv trial/implement/FITS/GBTPositionTable.h nrao/implement/FITS/GBTPositionTable.h
+07 561 src mv trial/apps/gbtlogfiller/gbtlogfiller.cc nrao/apps/gbtlogfiller/gbtlogfiller.cc
+07 561 src mv trial/implement/FITS/GBTRaDec.cc nrao/implement/FITS/GBTRaDec.cc
+07 561 src mv trial/apps/gbtlogfiller/makefile nrao/apps/gbtlogfiller/makefile
+07 561 src mv trial/implement/FITS/GBTRaDec.h nrao/implement/FITS/GBTRaDec.h
+07 561 src mv trial/apps/gbtfiller/GBTFillerInputs.cc nrao/apps/gbtfiller/GBTFillerInputs.cc
+07 561 src mv trial/implement/FITS/GBTWeather.cc nrao/implement/FITS/GBTWeather.cc
+07 561 src mv trial/apps/gbtfiller/GBTFillerInputs.h nrao/apps/gbtfiller/GBTFillerInputs.h
+07 561 src mv trial/implement/FITS/GBTWeather.h nrao/implement/FITS/GBTWeather.h
+07 561 src mv trial/apps/gbtfiller/GBTFillerState.h nrao/apps/gbtfiller/GBTFillerState.cc
+07 561 src mv nrao/apps/gbtfiller/GBTFillerState.cc nrao/apps/gbtfiller/GBTFillerState.cc.tmp
+07 561 src mv trial/apps/gbtfiller/GBTFillerState.cc nrao/apps/gbtfiller/GBTFillerState.cc
+07 561 src mv trial/apps/gbtfiller/gbtfiller.cc nrao/apps/gbtfiller/gbtfiller.cc
+07 561 src mv trial/apps/gbtfiller/gbtfiller.g nrao/apps/gbtfiller/gbtfiller.g
+07 561 src mv trial/apps/gbtfiller/gbtfillerGUI.g nrao/apps/gbtfiller/gbtfillerGUI.g
+07 561 src mv trial/apps/fits trial/apps/iofits
+07 561 src mv trial/apps/gbtfiller/gbtfiller_base.g nrao/apps/gbtfiller/gbtfiller_base.g
+07 563 src mv trial/apps/gbtfiller/makefile nrao/apps/gbtfiller/makefile
+07 563 src mv nrao/apps/gbtfiller/GBTFillerState.cc.tmp nrao/apps/gbtfiller/GBTFillerState.h
+07 563 src mv trial/implement/MeasurementSet/SDIterFieldCopier.cc nrao/implement/MeasurementSets/SDIterFieldCopier.cc
+07 563 src mv trial/implement/MeasurementSet/SDIterFieldCopier.h nrao/implement/MeasurementSets/SDIterFieldCopier.h
+07 563 src mv trial/implement/MeasurementSet/SDIterator.cc nrao/implement/MeasurementSets/SDIterator.cc
+07 563 src mv trial/implement/MeasurementSet/SDIterator.h nrao/implement/MeasurementSets/SDIterator.h
+07 563 src mv trial/implement/MeasurementSet/SDRecord.cc nrao/implement/MeasurementSets/SDRecord.cc
+07 563 src mv trial/implement/MeasurementSet/SDRecord.h nrao/implement/MeasurementSets/SDRecord.h
+07 563 src mv trial/apps/sditerator nrao/apps/sditerator
+07 563 src mv trial/implement/MeasurementSet/test/tSDIterator.cc nrao/implement/MeasurementSets/test/tSDIterator.cc
+07 563 src mv trial/implement/MeasurementSet/test/tSDRecord.cc nrao/implement/MeasurementSets/test/tSDRecord.cc
+07 566 src rm atnf/implement/PKSLoad.cc
+07 566 src rm atnf/implement/PKSLoad.h
+07 567 src rm trial/apps/uvfitsfiller
+07 567 src rm trial/fortran/minmax.f
+07 569 src rm trial/apps/imagemodeler
+07 572 src mv trial/apps/gbtfiller/gbtfiller_base.g nrao/apps/gbtfiller/gbtfiller_base.g
+07 572 src rm trial/apps/gbtfiller
+07 572 src rm trial/apps/gbtlogfiller
+07 572 src rm trial/apps/gbtmsfiller
+07 572 src rm trial/apps/sdcalc
+07 573 src rm doc/user/aipsview.latex
+07 581 src mv doc/notes/200.dir/vlbi++103.tex doc/notes/200.dir/vlbapp103.tex
+07 582 src mv doc/user/Aipsview.dir/avLogo.gif doc/gif/avLogo.gif
+07 584 src rm trial/apps/simulater

@@ -1,0 +1,237 @@
+#!/bin/sh
+#-----------------------------------------------------------------------------
+# mkinst: Generate template instantiation files from a list
+#-----------------------------------------------------------------------------
+#
+#   Copyright (C) 1996
+#   Associated Universities, Inc. Washington DC, USA.
+#
+#   This program is free software; you can redistribute it and/or modify
+#   it under the terms of the GNU General Public License as published by
+#   the Free Software Foundation; either version 2 of the License, or
+#   (at your option) any later version.
+#
+#   This program is distributed in the hope that it will be useful,
+#   but WITHOUT ANY WARRANTY; without even the implied warranty of
+#   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#   GNU General Public License for more details.
+#
+#   You should have received a copy of the GNU General Public License
+#   along with this program; if not, write to the Free Software
+#   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+#
+#   Correspondence concerning AIPS++ should be addressed as follows:
+#          Internet email: aips2-request@nrao.edu.
+#          Postal address: AIPS++ Project Office
+#                          National Radio Astronomy Observatory
+#                          520 Edgemont Road
+#                          Charlottesville, VA 22903-2475 USA
+#
+#-----------------------------------------------------------------------------
+# Usage: mkinst [-q] <file>
+#-----------------------------------------------------------------------------
+# mkinst generates a template instantiation file for each entry in the
+# specified file, ("templates" by default).  It leaves the resulting .cc files
+# in the current directory.
+#
+# The format of the entries in the templates file is
+#
+#   <ident> <.cc file> <.h file> [<extra .h files>] <template declaration>
+#
+# or
+#
+#   <ident> <.h file> [<extra .h files>] <template declaration>
+#
+# The latter form is for instantiation of purely inline functions.  The .cc
+# and .h files are expressed as relative pathnames with respect to
+# $AIPSROOT/code/include.  For example:
+#
+#  1050 aips/Set/Set.cc template class Set<Int>
+#  1040 aips/Set/Set.cc aips/Cube/Cube.h template class Set<Cube>
+#  1060 aips/Set/Set.cc template operator+(Set<Int> const &, Set<Int> const &)
+#  1060 aips/Set/Set.cc template union(Set<Int> const &, Set<Int> const &)
+#
+# The ident contains a 4-digit number which is unique amongst all templates
+# based on a particular class implementation .cc or .h file.  The name of the
+# template instantiation .cc file is composed of the name of the class .cc or
+# .h file and the ident, for example, the instantiation file for the first
+# entry above would be Set_1050.cc.
+#
+# Comments in the templates file are signalled by a "#" in the first field.
+# Blank lines are also allowed.
+#
+# Any template instantiation .cc file in the current directory which does not
+# correspond to an entry in the templates file will be deleted.  These files
+# are recognized by having names of the form "*_[0-9][0-9][0-9][0-9].cc".
+#
+# Options:
+#   -q     Run quietly.
+#
+# Status returns:
+#    0:  success
+#    1:  the templates file contains one or more bad entries
+#
+# Notes:
+#    1) The templates file is normally sorted on the name of the .cc or .h
+#       file so that it can easily be checked that the idents are unique.
+#
+#    2) If a templates file entry is changed then its ident should also be
+#       changed to force its instantiation file to be regenerated.
+#
+# Original: 1996/04/17 by Mark Calabretta, ATNF after a perl script by
+#           Shelby Yang, NRAO.
+# $Id$
+#-----------------------------------------------------------------------------
+
+  echo "mkinst: Processing template instantiation files..."
+
+  [ -f templates ] && exec 3<templates
+
+# Parse options.
+  VERBOSE=1
+  while [ "$#" -gt 0 ]
+  do
+     case $1 in
+     -q)
+        VERBOSE=
+        ;;
+     -)
+        exec 3<&0
+        break
+        ;;
+     *)
+        exec 3<$1
+        break
+        ;;
+     esac
+
+     [ "$2" = "" ] && break
+
+     shift
+  done
+
+  rm -f before after
+  trap 'echo "Cleaning up..." ; \
+        rm -f before after ; \
+        trap 0 ; \
+        exit' 0 1 2 3 15
+
+  ls -1 *_[0-9][0-9][0-9][0-9].cc > before 2>/dev/null
+  touch after
+
+  STATUS=0
+
+  OLD=0
+  REPL=0
+  NEW=0
+  BAD=0
+
+  while read ENTRY 0<&3
+  do
+     [ "$ENTRY" = "" ] && continue
+
+#    Disable filename generation.
+     set -f
+
+     set $ENTRY
+     case $1 in
+     \#*)
+        continue
+        ;;
+     esac
+
+     BASENAME=`echo $2 | sed -e '{s#.*/##;s#\.cc$##;s#\.h$##;}'`
+     if [ "$BASENAME" = "" -o "$BASENAME" = "$2" ]
+     then
+        echo "   Bad entry skipped:" 1>&2
+        echo "        $ENTRY" 1>&2
+        BAD=`expr $BAD + 1`
+        STATUS=1
+        continue
+     fi
+
+     TFILE="${BASENAME}_$1.cc"
+
+#    Check for duplicates.
+     if grep "^$TFILE" after >/dev/null 2>&1
+     then
+        echo "   Duplicate entry skipped:" 1>&2
+        echo "        $ENTRY" 1>&2
+        BAD=`expr $BAD + 1`
+        STATUS=1
+        continue
+     fi
+     echo "$TFILE" >> after
+
+     if [ -f "$TFILE" ]
+     then
+        if [ "`sed 1q $TFILE`" = "// $*" ]
+        then
+           [ "$VERBOSE" ] && echo "   $TFILE unchanged"
+           OLD=`expr $OLD + 1`
+           continue
+        else
+           echo "   Replacing $TFILE"
+           REPL=`expr $REPL + 1`
+        fi
+     fi
+
+     NEW=`expr $NEW + 1`
+     echo "// $*" > $TFILE
+
+     shift
+
+     for TOKEN
+     do
+        case $TOKEN in
+        *.cc | *.h)
+           echo "#include <$TOKEN>" >> $TFILE
+           ;;
+        template)
+           echo "$*;" >> $TFILE
+           shift
+           [ "$VERBOSE" ] && echo "$*"
+           break
+           ;;
+        *)
+           echo "   Bad entry for ${TFILE}:" 1>&2
+           echo "        $ENTRY" 1>&2
+           rm -f $TFILE
+           NEW=`expr $NEW - 1`
+           BAD=`expr $BAD + 1`
+           STATUS=1
+           break
+           ;;
+        esac
+
+        shift
+     done
+  done
+
+# Delete defunct template instantiation files.
+  ZAP=0
+  sort after | diff - before | sed -n -e 's/^> //p' |
+  {
+     while read ENTRY
+     do
+        rm -f $ENTRY
+        echo "   Removed $ENTRY"
+        ZAP=`expr $ZAP + 1`
+     done
+
+     echo "   Old: $OLD unchanged"
+     case "$REPL" in
+     1)
+        echo "   New: $NEW ($REPL replacement)"
+        ;;
+     *)
+        echo "   New: $NEW ($REPL replacements)"
+        ;;
+     esac
+     echo "   Bad: $BAD syntax errors"
+     echo "   Zap: $ZAP removed"
+  }
+
+  rm -f before after
+  trap 0
+  exit $STATUS

@@ -1,0 +1,151 @@
+#!/bin/sh
+
+#-----------------------------------------------------------------------------
+# unmap:  Unmap names from aliases, specified in a map file.
+#
+# Original: 1993/12/06 by Jim Horstkotte, NRAO
+# $Id$
+
+#-----------------------------------------------------------------------------
+#
+#   Copyright (C) 1993
+#   Associated Universities, Inc. Washington DC, USA.
+#  
+#   This program is free software; you can redistribute it and/or modify
+#   it under the terms of the GNU General Public License as published by
+#   the Free Software Foundation; either version 2 of the License, or
+#   (at your option) any later version.
+#  
+#   This program is distributed in the hope that it will be useful,
+#   but WITHOUT ANY WARRANTY; without even the implied warranty of
+#   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#   GNU General Public License for more details.
+#  
+#   You should have received a copy of the GNU General Public License
+#   along with this program; if not, write to the Free Software
+#   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+#  
+#   Correspondence concerning AIPS++ should be addressed as follows:
+#          Internet email: aips2-request@nrao.edu.
+#          Postal address: AIPS++ Project Office
+#                          National Radio Astronomy Observatory
+#                          520 Edgemont Road
+#                          Charlottesville, VA 22903-2475 USA
+#
+
+#-----------------------------------------------------------------------------
+# Usage:
+#   unmap map_file file_1 [file_2 . . . ]
+#
+#   The files file_i are written to standard out, with file names inside
+#   of them unmapped from their aliases.  The file name must be in a word
+#   by itself.  File names which are the basename of a directory path
+#   will be recognized and unmapped.
+#
+# Arguments:
+#   map_file:  The name of the file containing the name mappings.
+#
+#   file_i:  The name of files whose contents are to be unmapped.
+#
+#   Any one of the map_file and file_i can be standard input, specified
+#   by the character "-" used as the file name.
+#
+# Options:
+#   none
+#
+
+#-----------------------------------------------------------------------------
+# The companion program to this program is "map".
+#
+# "Map" and "unmap" are used to implement "mar", and will primarily be used
+# inside of other programs.  They will not typically be used interactively.
+#
+# The map files are created and maintained by the AIPS++ programs "mar"
+# and "ar_cpadd", and programs which use them, e.g. "do_ar_cpadd".
+#
+#=============================================================================
+
+## Debug.
+## set -x
+
+# Get program name and arguments.
+pgm=`basename $0`
+full_command="$0 $*"
+
+
+if [ $# -lt 2 ]
+then
+    echo "$pgm. ERROR.  Need at least two arguments." >&2
+    echo "Full command was:" >&2
+    echo "    $full_command" >&2
+    exit 1
+fi
+
+
+# First file is the unmap file.
+# Succeeding files are files to be unmapped.
+
+# If the map file is not standard input,
+# check to see if it has something in it.
+if [ "$1" = "-" ]
+then
+    FILTER="YES"
+    PRECMD="YES"
+elif [ `cat $1 | wc -c` -gt 0 ]
+then
+    FILTER="YES"
+    PRECMD="NO"
+else
+    FILTER="NO"
+    PRECMD="NO"
+fi
+
+if [ "$FILTER" = "NO" ]
+then
+    awk '{   for (j = 1; j <= NF; j++) { \
+                 printf ("%s", $j); \
+                 if (j < NF) printf (FS); \
+             } \
+             printf ("\n"); \
+         }' $*
+elif [ "$PRECMD" = "YES" ]
+then
+    ( echo "bogus bogus"; cat - ) | \
+    awk 'BEGIN {file1 = ""} \
+         file1 == "" {file1 = FILENAME} \
+         file1 == FILENAME {unmap [$2] = $1} \
+         file1 != FILENAME { \
+             for (j = 1; j <= NF; j++) { \
+                 ni = split ($j, iarr, "/"); \
+                 for (i = 1; i < ni; i++) { \
+                     printf ("%s", iarr [i]); \
+                     printf ("/"); \
+                 } \
+                 if (length (unmap [iarr [ni]]) > 0) \
+                     printf ("%s", unmap [iarr [ni]]); \
+                 else \
+                     printf ("%s", iarr [ni]); \
+                 if (j < NF) printf (FS); \
+             } \
+             printf ("\n"); \
+         }' $*
+else
+    awk 'BEGIN {file1 = ""} \
+         file1 == "" {file1 = FILENAME} \
+         file1 == FILENAME {unmap [$2] = $1} \
+         file1 != FILENAME { \
+             for (j = 1; j <= NF; j++) { \
+                 ni = split ($j, iarr, "/"); \
+                 for (i = 1; i < ni; i++) { \
+                     printf ("%s", iarr [i]); \
+                     printf ("/"); \
+                 } \
+                 if (length (unmap [iarr [ni]]) > 0) \
+                     printf ("%s", unmap [iarr [ni]]); \
+                 else \
+                     printf ("%s", iarr [ni]); \
+                 if (j < NF) printf (FS); \
+             } \
+             printf ("\n"); \
+         }' $*
+fi

@@ -1,0 +1,70 @@
+#!/bin/sh
+#-----------------------------------------------------------------------------
+# Usage: runtests
+#-----------------------------------------------------------------------------
+# runtests runs the AIPS++ test programs and mails the results to the AIPS++
+# email exploders.
+#
+# Options:
+#   none
+#
+# Status returns:
+#    0:  success
+#    1:  initialization error
+#
+# Notes:
+#    1) Failures are only counted for the "aips" package.
+#
+# Original: 1997/01/29 by Mark Calabretta, ATNF
+# $Id$
+#-----------------------------------------------------------------------------
+# Fundamentals.
+  if [ "$AIPSPATH" = "" ] ; then
+     echo "runtests: AIPSPATH is undefined, abort!" 1>&2
+     exit 1
+  fi
+ 
+  AIPSROOT=`echo $AIPSPATH | awk '{ print $1 }'`
+  BINTESTD=`echo $AIPSPATH | awk '{printf("%s/%s/bintest",$1,$2)}'`
+ 
+# Get the current version number.
+  VERSION=`avers | awk '{printf("%.6s",$1)}'`
+ 
+ 
+# Do it, sending the results to aips2-inhale.
+  {  exec 2>&1
+
+     echo ""
+     echo "runtests: $AIPSPATH"
+     echo ""
+     echo "runtests: Validating $VERSION."
+ 
+#    Initiate the test suite, preserving the log.
+     cd $AIPSROOT
+     gmake -C code TESTOPT=opt NODEP=1 runtests > $BINTESTD/runtests.log 2>&1
+ 
+#    Check for failures in the aips package only (nobody relies on trial).
+     cd $BINTESTD
+     FAILED=`grep '^aips-.*FAIL (' runtests.report | wc -l`
+     FAILED=`echo $FAILED`
+     echo ""
+     echo "runtests: Version $VERSION finished with $FAILED failures."
+     echo ""
+     echo "runtests: runtests summary and complete log are appended."
+     echo ""
+     cat $BINTESTD/runtests.report
+     echo ""
+     cat $BINTESTD/runtests.log
+  } | mail aips2-inhale@nrao.edu
+
+ 
+# Mail a summary to aips2-workers.
+  (echo "runtests: $AIPSPATH" ;
+   echo "" ;
+   echo "A full report can be found in the aips2-inhale email archive or in" ;
+   echo "$BINTESTD on aips2.nrao.edu (for those with access)." ;
+   echo "") |
+     cat - runtests.report |
+     mail -s "AIPS++ test results" aips2-workers@nrao.edu
+ 
+  exit 0

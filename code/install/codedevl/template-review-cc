@@ -1,0 +1,79 @@
+$Id$
+
+Class reviewed:
+Reviewer(s):
+Date of review:
+
+The format here follows Paul Shannon's note 167: AIPS++ Programming:
+Standards and Guidelines.
+===========================================================================
+General comments
+----------------
+
+
+===========================================================================
+Code Organization
+-----------------
+
+*** Classes: header, implementation, test files present?
+
+*** Modules: necessary and present?
+
+*** Global Functions 
+
+*** File Size not too large?
+
+*** Function Length not too large?
+
+===========================================================================
+Documentation and Naming
+------------------------
+
+*** Documentation in Header Files
+
+*** Documentation in Implementation Files
+
+*** Names for Classes, Functions and Variables
+
+*** Names for Files
+
+*** Format for Dates
+
+===========================================================================
+Coding
+------
+
+*** Forward Declarations, Use of Includes necessary?
+
+*** Protected Data Members necessary?
+
+*** Access to Private Data not allowed?
+
+*** Are All Virtual Functions Labelled Explicitly?
+
+*** Are Loose Ends Documented?
+
+*** Are Standard Class Member Functions present?
+
+*** Is The Order of Function Arguments correct?
+
+*** Are Formal Arguments and Default Parameters in declarations?
+
+*** Are Return Types specified?
+
+*** Is use of Exceptions correct?
+
+*** Compiler Warnings (using g++ and optionally any other compiler)
+
+(The following three items can be found using testcenter, either at the
+       author or the reviewers site)
+*** Memory Access Errors
+
+*** Memory Leaks
+
+*** test program coverage of class (should be at least 80%)
+===========================================================================
+Other comments
+--------------
+
+===========================================================================

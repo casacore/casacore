@@ -1,0 +1,108 @@
+#!/bin/sh
+#-----------------------------------------------------------------------------
+# av: Validate an AIPS++ filename
+#-----------------------------------------------------------------------------
+#
+#   Copyright (C) 1994,1996
+#   Associated Universities, Inc. Washington DC, USA.
+#
+#   This program is free software; you can redistribute it and/or modify
+#   it under the terms of the GNU General Public License as published by
+#   the Free Software Foundation; either version 2 of the License, or
+#   (at your option) any later version.
+#
+#   This program is distributed in the hope that it will be useful,
+#   but WITHOUT ANY WARRANTY; without even the implied warranty of
+#   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#   GNU General Public License for more details.
+#
+#   You should have received a copy of the GNU General Public License
+#   along with this program; if not, write to the Free Software
+#   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+#
+#   Correspondence concerning AIPS++ should be addressed as follows:
+#          Internet email: aips2-request@nrao.edu.
+#          Postal address: AIPS++ Project Office
+#                          National Radio Astronomy Observatory
+#                          520 Edgemont Road
+#                          Charlottesville, VA 22903-2475 USA
+#
+#-----------------------------------------------------------------------------
+# Usage: av file1 [file2,...]
+#-----------------------------------------------------------------------------
+# av validates an AIPS++ class implementation filename against those already
+# in the system to ensure uniqueness in the first 15 characters.  It consults
+# a cache of AIPS++ pathnames maintained by other AIPS++ code management
+# utilities.  Any matches found are printed on stdout.
+#
+# Status returns:
+#    0:  success
+#    1:  initialization error
+#    2:  cache file not accessible
+#
+# Original: 1994/11/11 by Mark Calabretta, ATNF
+# $Id$
+#=============================================================================
+# Fundamentals.
+  if [ ! "$AIPSPATH" ]
+  then
+     echo "av: AIPSPATH is not defined, abort!"
+     exit 1
+  fi
+
+  AIPSROOT=`echo $AIPSPATH | awk '{ print $1 }'`
+
+# Define AIPS++ directory names.
+  AIPSMSTR=$AIPSROOT/master
+  MSTRETCD=$AIPSMSTR/etc
+
+# Check number of arguments.
+  if [ $# = 0 ]
+  then
+     echo "Usage: av file1 [file2,...]"
+     echo "       Consult the AIPS++ System manual for usage and options."
+     exit 1
+  fi
+
+# Check that the master directories are accessible.
+  while [ ! -f "$MSTRETCD/av_cache.gz" ]
+  do
+     echo "av: $AIPSMSTR is not responding, trying..." 1>&2
+     sleep 15
+  done
+
+# Check that the pathname cache is accessible.
+  if [ ! -r "$MSTRETCD/av_cache.gz" ]
+  then
+     echo "av: Couldn't access pathname cache, abort!" 1>&2
+     exit 2
+  fi
+
+# Construct a regular expression for the search.
+  EXPR=""
+  for TARGET
+  do
+#    Truncate the target names to 15 characters.
+     TARGET=`echo $TARGET | \
+                sed -e 's#.*/##' \
+                    -e 's#\..*##' \
+                    -e 's#\(...............\).*#\1#'`
+
+#    Use alternation for a one-pass search through the cache.
+     [ "$EXPR" != "" ] && EXPR="$EXPR|"
+
+     case $TARGET in
+     ???????????????)
+        EXPR="$EXPR/$TARGET[^/]*\$"
+        ;;
+     *)
+        EXPR="$EXPR/$TARGET\$"
+        ;;
+     esac
+  done
+
+# Look for a match.
+  gunzip -c $AIPSMSTR/etc/av_cache*.gz | egrep "$EXPR"
+
+
+  exit 0

@@ -1,0 +1,158 @@
+#!/bin/sh
+#-----------------------------------------------------------------------------
+# rai: Remotely check in AIPS++ sources
+#-----------------------------------------------------------------------------
+#
+#   Copyright (C) 1996
+#   Associated Universities, Inc. Washington DC, USA.
+#
+#   This program is free software; you can redistribute it and/or modify
+#   it under the terms of the GNU General Public License as published by
+#   the Free Software Foundation; either version 2 of the License, or
+#   (at your option) any later version.
+#
+#   This program is distributed in the hope that it will be useful,
+#   but WITHOUT ANY WARRANTY; without even the implied warranty of
+#   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#   GNU General Public License for more details.
+#
+#   You should have received a copy of the GNU General Public License
+#   along with this program; if not, write to the Free Software
+#   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+#
+#   Correspondence concerning AIPS++ should be addressed as follows:
+#          Internet email: aips2-request@nrao.edu.
+#          Postal address: AIPS++ Project Office
+#                          National Radio Astronomy Observatory
+#                          520 Edgemont Road
+#                          Charlottesville, VA 22903-2475 USA
+#
+#-----------------------------------------------------------------------------
+# Usage: rai [ai options]
+#-----------------------------------------------------------------------------
+# rai is an rsh-based front-end to 'ai'.  It allows remote checkin of AIPS++
+# sources by invoking 'ai' on the AIPS++ master machine.  This contrasts to
+# the usual method where 'ai' is invoked on a remote machine on which the
+# AIPS++ master directory is NFS mounted.
+#
+# Options:
+#    Refer to the options for 'ai'.
+#
+# Status returns:
+#    0:  success (returned from ai_master)
+#    1:  initialization error, no check out
+#    2:  checkout failure
+#
+# Notes:
+#    1) Where the remote account name differs from the local account name an
+#       environment variable may be used to translate between them:
+#
+#          ARSH="rsh aips2.nrao.edu -l <remotename>"
+#
+#       The .rhosts file for the <remotename> account on aips2.nrao.edu should
+#       have an entry of the form
+#
+#          <localhost> <localname>
+#
+#       where <localhost> is the (case-sensitive) name by which the local host
+#       identifies itself when 'ping -s' is run on aips2.nrao.edu, and
+#       <localname> is the local account name.
+#
+# Original: 1996/08/06 by Mark Calabretta, ATNF
+# $Id$
+#=============================================================================
+# Check number of arguments.
+  if [ $# = 0 ]
+  then
+     echo "Usage: rai (arguments for ai)"
+     exit 1
+  fi
+
+# Get the work directory.
+  PGMRDIR=`pwd | sed -e 's#.*/aips++/#aips++/#'`
+
+# Make sure we've got something sensible.
+  case "$PGMRDIR" in
+  /*)
+     echo "rai: Invalid work directory - `pwd`"
+     exit 1
+     ;;
+  esac
+
+# Get file names.
+  ARGS=
+  AU=
+  OPER="chmod a-w"
+  FILES=
+  DIRS=
+  for i
+  do
+     case $i in
+     -au)
+        AU=1
+        ;;
+     *)
+        ARGS="$ARGS $i"
+        ;;
+     esac
+
+     case $i in
+     -l)
+        OPER=":"
+        continue
+        ;;
+     -u)
+        continue
+        ;;
+     -*)
+        continue
+        ;;
+     esac
+ 
+#    Allow wildcard checkout via an RCS symbolic link.
+     i=`echo $i | sed -e 's#^RCS/##' -e 's#,v$##'`
+ 
+     case $i in
+        */*)
+           continue
+           ;;
+ 
+        *)
+           if [ -f "$i" ]
+           then
+              FILES="$FILES $i"
+           elif [ -d "$i" ]
+           then
+              DIRS="$DIRS $i"
+           fi
+           ;;
+     esac
+  done
+
+# Transmit files to the master host.
+  ARSH=${ARSH-"rsh aips2.nrao.edu"}
+
+  if [ "$FILES" != "" ]
+  then
+     COMMAND="cd $PGMRDIR && gzip -d | tar pvxf - > /dev/null"
+     tar cf - $FILES | gzip -q |
+     $ARSH /aips++/weekly/.rshexec sh -c \'\""$COMMAND"\"\'
+  fi
+
+# Transmit directories to the master host.
+  if [ "$DIRS" != "" ]
+  then
+     COMMAND="cd $PGMRDIR && mkdir $DIRS"
+     $ARSH /aips++/weekly/.rshexec sh -c \'\""$COMMAND"\"\'
+  fi
+
+# Invoke 'ai' on the master host.
+  COMMAND="cd $PGMRDIR && ai -I $ARGS && rm -f $FILES"
+  $ARSH /aips++/weekly/.rshexec sh -c \'\""$COMMAND"\"\'
+  $OPER $FILES
+
+# Update the local installation?
+  [ "$AU" ] && rau $FILES $DIRS
+
+
+  exit 0

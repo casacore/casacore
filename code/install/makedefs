@@ -1,0 +1,1101 @@
+#-----------------------------------------------------------------------------
+# makedefs: Default values of variables required by AIPS++ makefiles
+#-----------------------------------------------------------------------------
+#
+#   Copyright (C) 1992-1997
+#   Associated Universities, Inc. Washington DC, USA.
+#
+#   This program is free software; you can redistribute it and/or modify
+#   it under the terms of the GNU General Public License as published by
+#   the Free Software Foundation; either version 2 of the License, or
+#   (at your option) any later version.
+#
+#   This program is distributed in the hope that it will be useful,
+#   but WITHOUT ANY WARRANTY; without even the implied warranty of
+#   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#   GNU General Public License for more details.
+#
+#   You should have received a copy of the GNU General Public License
+#   along with this program; if not, write to the Free Software
+#   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+#
+#   Correspondence concerning AIPS++ should be addressed as follows:
+#          Internet email: aips2-request@nrao.edu.
+#          Postal address: AIPS++ Project Office
+#                          National Radio Astronomy Observatory
+#                          520 Edgemont Road
+#                          Charlottesville, VA 22903-2475 USA
+#
+#-----------------------------------------------------------------------------
+#
+#     The AIPS++ makefiles require version 3.71 (or later) of GNU make.
+#
+#-----------------------------------------------------------------------------
+# This GNU makefile is included by all other AIPS++ makefiles so that
+# installation specific variables can be defined in one place.  However,
+#
+#                      DO NOT MODIFY THIS FILE
+#
+# since changes will be lost when the code distribution system installs a
+# newer version.  Overriding definitions should instead be made in the site-
+# specific makedefs file, $AIPSSITE/makedefs, which is included by this file.
+#
+# The default values defined here for library and include directories are
+# unlikely to be correct, but they do at least indicate what is required.
+#
+# Certain subdirectories are defined here in terms of ROOT directories using
+# "recursively expanded" variables (defined with '=') rather than "simply
+# expanded" (defined with ':=').  This allows the site-specific makedefs file
+# to redefine the ROOT directory possibly without having to redefine the
+# subdirectories.  However, you should always use simply expanded variables
+# in your site-specific makedefs file.
+#
+# Also, certain variables with names of the form EXTRA_* are included in some
+# programmer-oriented variable definitions made here (see below).  These are
+# intended to make it easy to supplement the standard definitions for compiler
+# flags, include directories, etc. on the gmake command line.  Note that these
+# do not apply to system-oriented variables which may only be redefined
+# statically in the site makedefs. 
+#
+# Original: 1992/05/01 by Mark Calabretta, ATNF
+# $Id$
+#=============================================================================
+
+# Immutable variables.
+#---------------------
+override SHELL    := /bin/sh
+override PID      := $(shell echo $$$$)
+override JOBIDENT := $(USER)@$(word 4, $(AIPSPATH)):$(PID)
+override comma    := ,
+override null     :=
+override space    := $(null) $(null)
+override tab      := $(null)	$(null)
+
+# Variable $; consists of a single newline.
+override define ;
+
+
+endef
+
+
+# AIPS++ fundamentals.
+#---------------------
+AIPSROOT := $(word 1, $(AIPSPATH))
+AIPSARCH := $(AIPSROOT)/$(word 2, $(AIPSPATH))
+AIPSSITE := $(AIPSARCH)/$(word 3, $(AIPSPATH))
+AIPSHOST := $(AIPSSITE)/$(word 4, $(AIPSPATH))
+
+THISDIR  := $(shell pwd | sed -e 's=^/tmp_mnt/=/=')
+CODESUBD := $(shell echo $(THISDIR)/ | sed -e '{s=^.*/code/==;s=/*$$==;}')
+
+PACKAGE  := $(word 1, $(subst /,$(space),$(CODESUBD)))
+
+
+#=============================================================================
+#                        START OF DEFAULT DEFINITIONS
+#=============================================================================
+
+# Libraries and include paths.
+#-----------------------------------------------------------------------------
+
+# The C++ compiler.
+#------------------
+C++ROOT  := /usr/local/C++
+C++DEFS  :=
+C++INCD   = $(C++ROOT)/include
+C++LIBD   = $(C++ROOT)/lib
+C++LIB   :=
+
+
+# General external libraries.
+#----------------------------
+# GLISH (supplied with AIPS++).
+GLISHROOT := $(AIPSROOT)/code/aips/glish
+GLISHDEFS :=
+GLISHINCD  = $(GLISHROOT)/include
+GLISHLIBD  = $(AIPSARCH)/lib
+GLISHLIB  := -lglish -ledit -lsds -lnpd
+
+# WCSLIB (supplied with AIPS++).
+WCSLIBROOT := $(AIPSROOT)/code/aips/wcslib
+WCSLIBDEFS :=
+WCSLIBINCD  = $(AIPSROOT)/code/aips
+WCSLIBLIBD  = $(AIPSARCH)/lib
+WCSLIBLIB  := -lwcs
+
+# PGPLOT (FORTRAN plotting package).
+PGPLOTROOT := /usr/local
+PGPLOTDEFS :=
+PGPLOTINCD  = $(PGPLOTROOT)/include
+PGPLOTLIBD  = $(PGPLOTROOT)/lib
+PGPLOTLIB  := -lXmPgplot -lcpgplot -lpgplot
+
+# TCL (version 7.6 or later).
+TCLROOT  := /usr/local
+TCLDEFS  := -DTCL
+TCLINCD   = $(TCLROOT)/include
+TCLLIBD   = $(TCLROOT)/lib
+TCLLIB   := -ltcl
+
+# Motif.
+MotifROOT := /usr/local/X11
+MotifDEFS :=
+MotifINCD  = $(MotifROOT)/include
+MotifLIBD  = $(MotifROOT)/lib
+MotifLIB  := -lXm
+
+# X11.
+X11ROOT  := /usr/local/X11
+X11DEFS  :=
+X11INCD   = $(X11ROOT)/include
+X11LIBD   = $(X11ROOT)/lib
+X11LIB   := -lXt -lXmu -lX11 -lXext
+
+# LAPACK (FORTRAN Linear Algebra Package).
+LAPACKROOT := /usr/local
+LAPACKDEFS :=
+LAPACKINCD  =
+LAPACKLIBD  = $(LAPACKROOT)/lib
+LAPACKLIB  := -llapack -lblas
+
+# FORTRAN compiler.
+F77ROOT  :=
+F77DEFS  :=
+F77INCD  :=
+F77LIBD   =
+F77LIB   := -lF77
+
+# Platform-specific libraries - always added.
+ARCHLIBS :=
+
+
+# External libraries required by particular AIPS++ packages.
+#-----------------------------------------------------------
+# RPFITS (required by ATNF).
+RPFITSROOT := /usr/local
+RPFITSDEFS :=
+RPFITSINCD  =
+RPFITSLIBD  = $(RPFITSROOT)/lib
+RPFITSLIB  := -lrpfits
+
+
+#-----------------------------------------------------------------------------
+# Construct library lists and include paths; XLIBLIST contains a list of all
+# required libraries.  It may be defined in the including makefile or on the
+# command line.  "Computed" variables are used to build the lists.
+#-----------------------------------------------------------------------------
+# If your C++ compiler needs to be told where to find its own library then
+# make sure that C++LIBD and C++LIB are correctly defined above and add the
+# following line at this point:
+#
+#    XLIBLIST += C++
+#
+# This sad state of affairs may arise, for example, when running multiple
+# versions of the Sun compiler.
+#
+# You shouldn't need to modify any of the following four variables.
+
+# List of directories in which to search for libraries.
+XLIBPATH  = $(addprefix -L,$(foreach XLIB,$(XLIBLIST),$($(XLIB)LIBD)))
+
+# All required external libraries.
+XTRNLIBS  = $(XLIBPATH) $(foreach XLIB,$(XLIBLIST),$($(XLIB)LIB)) $(ARCHLIBS)
+
+# Preprocessor defines for all required external libraries.
+XTRNDEFS  = $(foreach XLIB,$(XLIBLIST),$($(XLIB)DEFS))
+
+# Include path for system compilations.
+#--------------------------------------
+AIPSINCL  = $(addprefix -I,  \
+               $(AIPSCODE)/include   \
+               $(foreach LIB,$(XLIBLIST),$($(LIB)INCD)))
+
+
+#-----------------------------------------------------------------------------
+# Compilation and linkage variables
+#-----------------------------------------------------------------------------
+
+# Source code checkout.
+CO       := co
+COFLAGS  := -f
+
+# Preprocessor flags for system debug/optimized compilations.  CPPMODU is for
+# the use of module-, and application-directory makefiles only.  Do not
+# redefine it in the site makedefs.
+CPP       = $(C++) -E
+CPPDBG    = -D__cplusplus -DAIPS_DEBUG $(XTRNDEFS) $(CPPMODU)
+CPPOPT    = -D__cplusplus $(XTRNDEFS) $(CPPMODU)
+
+# C compiler flags for system debug/optimized compilations.
+CC       := cc
+CDBGLVL  := -g
+CDBG      = $(CDBGLVL)
+COPTLVL  := -O
+COPT      = $(COPTLVL)
+
+# C++ compiler flags for system debug/optimized compilations.
+C++      := CC
+PTRDBGD  :=
+PTROPTD  :=
+C++DBGLVL := -g
+C++DBG     = $(C++DBGLVL)
+C++OPTLVL := -O
+C++OPT     = $(C++OPTLVL)
+
+# Set to "diy" to enable do-it-yourself template instantiation, e.g. for g++.
+TEMPLATES := compiler
+
+# FORTRAN compiler flags for system debug/optimized compilations.
+FC       := f77
+FCDBGLVL := -g
+FCDBG     = $(FCDBGLVL)
+FCOPTLVL := -O
+FCOPT     = $(FCOPTLVL)
+
+# Link flags for system debug/optimized compilations; these are passed to
+# the C++ compiler.
+LDDBG    :=
+LDOPT    :=
+
+# Parser-generators.
+BISON    := bison
+FLEX     := flex
+
+# Object library utilities.
+AR       := ar
+ARFLAGS  := rv
+RANLIB   := ranlib
+
+# C++ template-instantiating class implementation archiver.
+CXXAR     = $(AR)
+CXXAROPT  = $(ARFLAGS)
+CXXARDBG  = $(ARFLAGS)
+
+# Batching parameter for updatelib; this limits the number of modules inserted
+# into an object library in one go in order to limit system resource usage.
+UPDBATCH := 2000
+
+# Linker and link flags used in producing sharable libraries, for example
+#
+#        OS               LDSOPTS
+#    -----------     -----------------
+#    SunOS 4.x       -assert pure-text
+#    SunOS 5.x       -dy -G
+#
+# Note that in both SunOS 4.x and SunOS 5.x, the "-PIC" option must be
+# included as a compilation option (do not use "-pic").
+LD       := ld
+LDSOPTS  :=
+
+# Suffixes for static and shared libraries.
+SFXSTAT  := a
+SFXSHAR  := so
+
+# Control table for building AIPS++ libraries.  Four keywords are recognized:
+#
+#    defeat:  The library will not be built (and if an old version exists it
+#             will be deleted).
+#
+#    static:  The static library is built and is the one linked to.
+#
+#    shatic:  The static and shared libraries are built but the static library
+#             is the one linked to.
+#
+#    shared:  The static and shared libraries are built and the shared library
+#             is the one linked to.
+#
+# Note that the AUXILIARY and CONSORTIUM variables must also be set to compile
+# non-standard packages.
+# 
+#                    C++            C          FORTRAN
+#                 dbg    opt    dbg    opt    dbg    opt
+#               ------------- ------------- -------------
+#                                                          Kernel
+LIBaips      := static static defeat defeat static static
+#                                                          Standard
+LIBdish       = static static defeat defeat defeat defeat
+LIBsynthesis  = defeat defeat defeat defeat defeat defeat
+LIBvlbi       = defeat defeat defeat defeat defeat defeat
+#                                                          Auxiliary
+LIBcontrib    = defeat defeat defeat defeat defeat defeat
+LIBtrial      = defeat defeat defeat defeat defeat defeat
+#                                                          Consortium
+LIBatnf       = defeat defeat defeat defeat defeat defeat
+LIBbima       = defeat defeat defeat defeat defeat defeat
+LIBhia        = defeat defeat defeat defeat defeat defeat
+LIBnfra       = defeat defeat defeat defeat defeat defeat
+LIBnral       = defeat defeat defeat defeat defeat defeat
+LIBnrao       = defeat defeat defeat defeat defeat defeat
+LIBtifr       = defeat defeat defeat defeat defeat defeat
+
+# Control variables for constructing AIPS++ library link lists.  These consist
+# of a list of AIPS++ package names, the current package should be first with
+# "aips" last.  These variables describe dependencies between standard AIPS++
+# packages and should not need to be redefined in the site makedefs.
+LINKaips      := aips
+
+LINKdish      := dish aips
+LINKsynthesis := synthesis aips
+LINKvlbi      := vlbi synthesis aips
+
+LINKcontrib   := contrib vlbi synthesis dish aips
+LINKtrial     := trial aips
+
+LINKatnf      := atnf aips
+LINKbima      := bima aips
+LINKhia       := hia  aips
+LINKnfra      := nfra aips
+LINKnral      := nral aips
+LINKnrao      := nrao aips
+LINKtifr      := tifr aips
+
+# Document compilers.
+TEX      := tex
+LATEX    := latex
+BIBTEX   := bibtex
+DVIPS    := dvips
+TEXINDEX := texindex
+LATEX2HTML := latex2html
+MAKEINDEX  := makeindex
+
+# Absolute pathnames of perl-4 and perl-5 executables (if available).
+PERL4    :=
+PERL5    :=
+
+# How to delete files.
+RM       := rm -f
+
+
+# TeX, dvips, and MetaFont paths.
+#--------------------------------
+TEXROOT   := /usr/local/lib
+
+TEXFONTS   = $(AIPSARCH)/tex/fonts/tfm:$(TEXROOT)/tex/fonts/tfm
+TEXFORMATS = $(AIPSARCH)/tex/formats:$(TEXROOT)/tex/formats
+TEXINPUTS  = $(AIPSARCH)/tex/inputs:$(TEXROOT)/tex/inputs
+TEXPOOL    = $(AIPSARCH)/tex:$(TEXROOT)/tex
+
+TEXPKS     = $(AIPSARCH)/tex/fonts/pk:$(TEXROOT)/tex/fonts/pk
+
+MFBASES    = $(AIPSARCH)/mf/bases:$(TEXROOT)/mf/bases
+MFINPUTS   = $(AIPSARCH)/mf/inputs:$(TEXROOT)/mf/inputs
+MFPOOL     = $(AIPSARCH)/mf:$(TEXROOT)/mf
+
+
+# Variables which tell the makefiles what to do and how to do it
+#-----------------------------------------------------------------------------
+# Internally set command line options.
+INTRA_MAKEFLAGS := --no-print-directory -i
+
+# Command for benchmarking the rebuild (usually 'adate -l').
+TIMER     :=
+
+# Unset this to defeat document compilation.
+DOCSYS    := doc
+
+# Unset this to defeat document extraction from C++ sources.
+DOCEXTR   := docscan docextr
+
+# What auxiliary packages to build (contrib trial).
+AUXILIARY :=
+
+# What consortium packages to build (atnf bima hia nfra nral nrao tifr).
+CONSORTIA :=
+
+# If the debug "aips" library is being maintained then setting this will cause
+# the debug template repository to be filled via "allsys".
+DBGPTFIL  := 1
+
+# Set to "opt" to compile test programs optimized rather than debug.
+TESTOPT   := dbg
+
+# Set to "bin" to force test programs to be compiled via "allsys".
+BINTEST   :=
+
+# Setting this to "@" quietens system maintenance targets such as "cleancode".
+Q := @
+
+
+#-----------------------------------------------------------------------------
+# The remaining definitions are programmer variables for code development.
+# These are not required for production-line systems.
+#-----------------------------------------------------------------------------
+# Conventions applying to programmer compilations
+# -----------------------------------------------
+# Specifying OPT=1 (or 2, 3, 4, ...) on the command line signals that all
+# programmer compilations are to be done at the corresponding optimization
+# level (however, alternate levels of optimization must be implemented in the
+# site makedefs).  Programmer executables will be linked to the optimized
+# system libraries (if they exist).  It is also possible to store programmer
+# binaries for different levels of optimization in different directories.
+# See the explanation of PGMRLIBD, etc. below.
+#
+# The OPT variable does not (or should not) effect system compilations.
+#
+# Another convention in use for programmer compilations is that of setting
+# compiler *FLAGS variables on the command line to "alt1", ("alt2", ...), for
+# example, C++FLAGS=alt1.  This is a signal to the site makedefs to substitute
+# a predefined, locally standard, set of compiler options.  By convention,
+# "alt1" always does an optimized compilation of the same level as the system
+# optimized compilation.
+#
+# These conventions must be implemented within the site makedefs.  Since
+# considerable latitude is available in their precise interpretation a
+# "show_prg" rule has been provided to print the values of all variables
+# likely to be affected.  The following fragment shows a realistic example of
+# how the C++FLAGS variable might be handled:
+#
+#    ifdef OPT
+#       C++FLAGS := -ptr$(PGMRPTRD) -pta -O$(OPT) +p -pipe -ptv
+#    else
+#       C++FLAGS := -ptr$(PGMRPTRD) $(C++DBG)
+#    endif
+#
+#    ifeq "$(C++FLAGS)" "alt1"
+#       override C++FLAGS := -ptr$(PGMRPTRD) $(C++OPT)
+#    endif
+#
+#    ifeq "$(C++FLAGS)" "alt2"
+#       override C++FLAGS := -ptr$(PGMRPTRD) $(C++DBG) -ptv
+#    endif
+#
+#    C++FLAGS += $(EXTRA_C++FLAGS)
+#
+# An important point to note here is that if C++FLAGS is defined on the
+# command line then a redefinition within makedefs has no effect unless the
+# "override" directive is used.
+#-----------------------------------------------------------------------------
+# AIPS++ programmer fundamentals.
+#--------------------------------
+PGMRROOT := $(word 1, $(subst /code/,$(space),$(THISDIR)/))
+PGMRCODE  = $(PGMRROOT)/code
+PGMRARCH  = $(PGMRROOT)/$(word 2, $(AIPSPATH))
+
+# Is this a system or programmer invocation?
+ifeq "$(shell cd $(PGMRROOT) ; /bin/pwd)" "$(shell cd $(AIPSROOT) ; /bin/pwd)"
+   MAKEMODE := system
+else
+   MAKEMODE := programmer
+endif
+
+
+# Include path for programmer compilations.
+#------------------------------------------
+PGMRINCL  = $(addprefix -I,  \
+               $(EXTRA_PGMRINCL) \
+               $(PGMRCODE)/include    \
+               $(wildcard $(PGMRINCD))) \
+            $(AIPSINCL)
+
+
+# Compilation and linkage variables.
+#-----------------------------------
+# Preprocessor flags for programmer compilations.
+ifdef OPT
+   CPPFLAGS  = $(CPPOPT) $(EXTRA_CPPFLAGS)
+else
+   CPPFLAGS  = $(CPPDBG) $(EXTRA_CPPFLAGS)
+endif
+
+# C compiler flags for programmer compilations.
+ifdef OPT
+   CFLAGS    = $(COPT) $(EXTRA_CFLAGS)
+else
+   CFLAGS    = $(CDBG) $(EXTRA_CFLAGS)
+endif
+
+# C++ compiler flags for programmer compilations.
+ifdef OPT
+   C++FLAGS  = $(C++OPT) $(EXTRA_C++FLAGS)
+else
+   C++FLAGS  = $(C++DBG) $(EXTRA_C++FLAGS)
+endif
+
+# FORTRAN compiler flags for programmer compilations.
+ifdef OPT
+   FFLAGS    = $(FCOPT) $(EXTRA_FFLAGS)
+else
+   FFLAGS    = $(FCDBG) $(EXTRA_FFLAGS)
+endif
+
+# Linker flags for programmer compilations.
+ifdef OPT
+   LDFLAGS   = $(LDOPT) $(EXTRA_LDFLAGS)
+else
+   LDFLAGS   = $(LDDBG) $(EXTRA_LDFLAGS)
+endif
+
+# C++ archiver flags for programmer compilations.
+ifdef OPT
+   CXXARFLAGS = $(CXXAROPT) $(EXTRA_CXXARFLAGS)
+else
+   CXXARFLAGS = $(CXXARDBG) $(EXTRA_CXXARFLAGS)
+endif
+
+
+# Where to put binaries for programmer compilations.  By default, the
+# $(PGMRARCH)/lib and $(PGMRARCH)/bin directories will be used if they exist.
+# These variables must specify an absolute pathname, or be blank.  If blank,
+# binaries will be left in the programmer source code directories.  Note that
+# this facility uses the "-o" compiler option for object modules so PGMRLIBD
+# must not be set for compilers which do not support it.
+#
+# The site makedefs may wish to redefine these variables so that the binaries
+# are put in different places depending on the value of OPT.  The default is
+# to put debug and optimized binaries in the same place.
+PGMRINCD := $(wildcard $(PGMRARCH))
+PGMRLIBD := $(wildcard $(PGMRARCH)/lib)
+PGMRBIND := $(wildcard $(PGMRARCH)/bin)
+PGMRAUXD := $(wildcard $(PGMRARCH)/aux)
+
+# Programmer template repository.  Warning: this is recursively deleted by
+# the "cleanest" rule.
+PGMRPTRD  = $(PGMRARCH)/ptrepository
+
+# Reset programmer flags; "-k" or "-i" can be added on the command line.
+ifeq "$(MAKEMODE)" "programmer"
+   INTRA_MAKEFLAGS := --no-print-directory
+endif
+
+#=============================================================================
+#                         END OF DEFAULT DEFINITIONS
+#=============================================================================
+
+
+# Declare this as the default rule.
+ifeq "$(MAKEMODE)" "programmer"
+   all : ;
+else
+   allsys : ;
+endif
+
+
+#-----------------------------------------------------------------------------
+# Site-specific redefinitions of the defaults defined above.
+#-----------------------------------------------------------------------------
+# The name of the site makedefs file may be specified by making an overriding
+# definition of SITEDEFS on the gmake command line.
+SITEDEFS := makedefs
+-include $(AIPSSITE)/$(SITEDEFS)
+
+ifeq "$(MAKEMODE)" "programmer"
+   # Programmer-specific definitions.
+   -include $(PGMRARCH)/makedefs
+endif
+
+# Add internally set options to MAKEFLAGS.
+MAKEFLAGS := $(INTRA_MAKEFLAGS) $(MAKEFLAGS)
+
+# Indentation levels.
+I1 := $(tab)
+I2 := $(I1)$(null)    $(null)
+I3 := $(I1)$(tab)
+I4 := $(I3)$(null)    $(null)
+I5 := $(I3)$(tab)
+I6 := $(I5)$(null)    $(null)
+I7 := $(I5)$(tab)
+I8 := $(I7)$(null)    $(null)
+MAKEINDENT := $(I$(MAKELEVEL))
+
+# Document extraction requires perl5.
+ifeq "$(PERL5)" ""
+   DOCEXTR :=
+endif
+
+
+# Static variables which can be changed on the command line only.
+#----------------------------------------------------------------
+# Source code directory definitions.
+AIPSMSTR := $(AIPSROOT)/master
+AIPSLAVE := $(AIPSROOT)/slave
+AIPSCODE := $(AIPSROOT)/code
+AIPSDOCS := $(AIPSROOT)/docs
+
+CODEINSD := $(AIPSCODE)/install
+CODEINCD := $(AIPSCODE)/include
+
+INSTARCH := $(CODEINSD)/$(word 2, $(AIPSPATH))
+
+# System directory definitions.
+ARCHAUXD := $(AIPSARCH)/aux
+ARCHTMPD := $(AIPSARCH)/tmp
+ARCHBIND := $(AIPSARCH)/bin
+ARCHDOCD := $(AIPSARCH)/doc
+ARCHMAN1 := $(ARCHDOCD)/man1
+
+LIBDBGD  := $(AIPSARCH)/libdbg
+LIBOPTD  := $(AIPSARCH)/lib
+LIBEXECD := $(AIPSARCH)/libexec
+BINDBGD  := $(AIPSARCH)/bindbg
+BINOPTD  := $(AIPSARCH)/bin
+BINTESTD := $(AIPSARCH)/bintest
+
+# All system directories.
+SYSDIRS  := $(AIPSARCH) $(AIPSSITE) $(AIPSHOST) \
+            $(ARCHAUXD) $(ARCHTMPD) \
+            $(ARCHDOCD) $(ARCHMAN1) \
+            $(LIBDBGD)  $(LIBOPTD)  $(LIBEXECD) \
+            $(BINDBGD)  $(BINOPTD)  $(BINTESTD)
+
+
+# Dynamic variables, can be changed on the command line only.
+#------------------------------------------------------------
+# This determines whether the RCS source repositories are present.
+AIPSRCS  := $(wildcard $(AIPSROOT)/rcs)
+
+CODEDIR  := $(patsubst %/,%,$(AIPSCODE)/$(CODESUBD))
+
+ifdef AIPSRCS
+   RCSDIR   := $(patsubst %/,%,$(AIPSRCS)/$(CODESUBD))
+   CHKDIR   := $(CODEDIR)
+else
+   RCSDIR   :=
+   CHKDIR   :=
+endif
+
+# Subdirectories which contain a makefile.
+ifdef AIPSRCS
+   SUBDIRS  := $(wildcard $(RCSDIR)/*/makefile,v)
+   SUBDIRS  := $(notdir $(patsubst %/makefile$(comma)v,%,$(SUBDIRS)))
+else
+   SUBDIRS  := $(wildcard $(CODEDIR)/*/makefile)
+   SUBDIRS  := $(notdir $(patsubst %/makefile,%,$(SUBDIRS)))
+endif
+
+CODESUBS := $(addprefix $(CODEDIR)/,$(SUBDIRS))
+
+# All sources in this directory.
+ifdef AIPSRCS
+   AIPSSRCS := $(subst $(comma)v,,$(notdir $(wildcard $(RCSDIR)/*,v)))
+else
+   AIPSSRCS := $(filter-out $(SUBDIRS),$(notdir $(wildcard $(CODEDIR)/*)))
+endif
+
+# Set/unset NODEP to circumvent/enforce dependency analysis.
+ifeq "$(MAKEMODE)" "system"
+   NODEP :=
+else
+   NODEP := 1
+endif
+
+
+#-----------------------------------------------------------------------------
+# Variables destined for propagation to the environment must be simply
+# expanded and must not have non-alphanumeric characters in their names;
+# convert them now.
+#-----------------------------------------------------------------------------
+# Subdirectories (used within rule command sequences).
+export SUBDIRS
+export CODESUBS
+
+# These are for 'depend'.
+export CPP      := $(CPP)
+export CPPOPT   := $(CPPOPT)
+export AIPSINCL := $(AIPSINCL)
+
+# These are for 'updatelib'.
+export AR       := $(AR)
+export ARFLAGS  := $(ARFLAGS)
+export RANLIB   := $(RANLIB)
+export CXXAR    := $(CXXAR)
+export CXXARDBG := $(CXXARDBG)
+export CXXAROPT := $(CXXAROPT)
+export LD       := $(LD)
+export LDSOPTS  := $(LDSOPTS)
+export SFXSTAT  := $(SFXSTAT)
+export SFXSHAR  := $(SFXSHAR)
+export LIBaips      := $(LIBaips)
+export LIBdish      := $(LIBdish)
+export LIBsynthesis := $(LIBsynthesis)
+export LIBvlbi      := $(LIBvlbi)
+export LIBcontrib   := $(LIBcontrib)
+export LIBtrial     := $(LIBtrial)
+export LIBatnf      := $(LIBatnf)
+export LIBbima      := $(LIBbima)
+export LIBhia       := $(LIBhia)
+export LIBnfra      := $(LIBnfra)
+export LIBnral      := $(LIBnral)
+export LIBnrao      := $(LIBnrao)
+export LIBtifr      := $(LIBtifr)
+
+# This is for PGPLOT.
+export PGPLOT_FONT := $(PGPLOT_FONT)
+
+# These are for TeX.
+export TEXFONTS   := $(TEXFONTS)
+export TEXFORMATS := $(TEXFORMATS)
+export TEXINPUTS  := $(TEXINPUTS)
+export TEXPOOL    := $(TEXPOOL)
+export TEXPKS     := $(TEXPKS)
+export MFBASES    := $(MFBASES)
+export MFINPUTS   := $(MFINPUTS)
+export MFPOOL     := $(MFPOOL)
+
+
+#-----------------------------------------------------------------------------
+# Pattern rules applicable to all AIPS++ makefiles.
+#-----------------------------------------------------------------------------
+ifdef AIPSRCS
+#  General rule for checkout if the RCS repositories exist.
+   $(AIPSCODE)/% :: $(AIPSRCS)/%,v
+	@ $(CO) $(COFLAGS) $< $@ 2>&1 | \
+	     sed -n \
+	         -e '1N' \
+	         -e '2s/.*\//	/' \
+	         -e '2s/\nrevision//' \
+	         -e '2s/$$//p'
+	@ chmod 444 $@
+
+   %:: RCS/%,v
+
+   %,v : ;
+endif
+
+
+#-----------------------------------------------------------------------------
+# General static rules applicable to all AIPS++ makefiles.
+#
+# Some general rules, particularly the cleanup rules, have as a dependency
+# a phony target of the same name preceded by a "." which may be defined in
+# the including makefile to do additional specific operations (the including
+# makefile is that which includes makedefs).  These phony targets are also
+# declared in makedefs to save having to do that in the including makefile if
+# they don't have an additional function.
+#-----------------------------------------------------------------------------
+# General phony targets.
+.PHONY : all allsys chkout clean cleaner cleanest cleancode cleandocs \
+    cleansys command dependsys diagnostics docextr docscan docsys eval_vars \
+    FORCE null printenv recurse runtests show_all show_aux show_global \
+    show_local show_prg show_sys show_vars sysdirs test_all test_aux \
+    test_global test_prg test_sys versions
+
+# Specific phony targets.
+.PHONY : .clean .cleaner .cleanest .cleancode .cleansys
+
+
+# At the minimum the allsys rule checks out sources if the RCS repositories
+# exist.  Additional dependencies may be defined for allsys in the including
+# makefile.
+allsys : $(CHKDIR)
+
+
+# Target without any dependencies or commands which when used as a dependency
+# forces a target to be remade.
+FORCE :
+
+# Useful for just remaking included files, especially dependency lists.
+null : ;
+
+
+# Rules for updating makedefs and the makefile itself.
+#-----------------------------------------------------
+ifdef AIPSRCS
+   ifneq "$(wildcard $(AIPSRCS)/install/makedefs,v)" ""
+      $(AIPSARCH)/makedefs : $(AIPSROOT)/rcs/install/makedefs,v
+	 -@ $(CO) $(COFLAGS) $< $@
+	 -@ chmod 664 $@
+   endif
+
+   ifneq "$(wildcard $(RCSDIR)/makefile,v)" ""
+      makefile : $(RCSDIR)/makefile,v
+	  @ $(CO) $(COFLAGS) $< $@
+	  @ chmod 444 $@
+   endif
+else
+   ifneq "$(wildcard $(AIPSROOT)/code/install/makedefs)" ""
+      $(AIPSARCH)/makedefs : $(AIPSROOT)/code/install/makedefs
+	 -@ $(RM) $@
+	 -  cp $< $@
+	 -@ chmod 664 $@
+   endif
+endif
+
+
+# Rules for checking out sources if the RCS repositories exist.
+#--------------------------------------------------------------
+ifdef AIPSRCS
+   chkout : $(CODEDIR)
+	-@ for i in $$SUBDIRS ; do \
+           if [ "$Q" != "@" -o "$(MAKELEVEL)" = 0 ] ; then \
+	      echo "" ; \
+	      echo gmake[$(MAKELEVEL)]: $(MAKE) -C $(CODEDIR)/$$i $@ ; \
+	   else \
+	      echo $@[$(MAKELEVEL)]:"$(MAKEINDENT)"$$i ; \
+	   fi ; \
+	   $(MAKE) -C $$i $@ ; \
+	done
+
+   $(CODEDIR) : $(AIPSSRCS:%=$(CODEDIR)/%)
+endif
+
+
+# Rules for processing subdirectories.
+#-------------------------------------
+ifdef SUBDIRS
+   $(CODESUBS) : FORCE
+	 @ if [ ! -d $@ ] ; then \
+	      mkdir $@ ; \
+	      chmod ug=rwx,g+s,o=rx $@ ; \
+	      echo "" ; \
+	      echo "Created directory $@" ; \
+	   fi
+        ifdef AIPSRCS
+	   @ if [ ! -d $@/RCS ] ; then \
+	      ln -s $(subst $(CODEDIR),$(RCSDIR),$@) $@/RCS ; \
+	      echo "Created symlink   $@/RCS" ; \
+	   fi
+        endif
+	-@ echo ""
+	-@ echo gmake[$(MAKELEVEL)]: $(MAKE) -C $(@F) allsys
+	-@ $(MAKE) -C $@ allsys
+
+   $(SUBDIRS) : FORCE
+	 @ if [ ! -d $@ ] ; then \
+	      mkdir $@ ; \
+	      chmod ug=rwx,g+s,o=rx $@ ; \
+	      echo "" ; \
+	      echo "Created directory $@" ; \
+	   fi
+        ifdef AIPSRCS
+	   @ if [ ! -d $@/RCS ] ; then \
+	      ln -s $(RCSDIR)/$@ $@/RCS ; \
+	      echo "Created symlink   $@/RCS" ; \
+	   fi
+        endif
+	-@ echo ""
+	-@ echo gmake[$(MAKELEVEL)]: $(MAKE) -C $@
+	-@ $(MAKE) -C $@
+endif
+
+
+# Rules for creating system directories.
+#---------------------------------------
+sysdirs : $(SYSDIRS)
+
+$(SYSDIRS) :
+	 @ [ -d $@ ] || mkdir $@
+	 @ chmod ug=rwx,g+s,o=rx $@
+	-@ echo ""
+	-@ echo "Created directory $@"
+
+
+# General rules for cleaning up.
+#-------------------------------
+cleancode : .cleancode
+	-$Q cd $(CODEDIR) && $(RM) ,*, *~ *% a.out core
+	-@ for i in $$SUBDIRS ; do \
+           if [ "$Q" != "@" -o "$(MAKELEVEL)" = 0 ] ; then \
+	      echo "" ; \
+	      echo gmake[$(MAKELEVEL)]: $(MAKE) -C $(CODEDIR)/$$i $@ ; \
+	   else \
+	      echo $@[$(MAKELEVEL)]:"$(MAKEINDENT)"$$i ; \
+	   fi ; \
+	   $(MAKE) -C $$i $@ ; \
+	done
+
+cleansys : .cleansys
+	-@ for i in $$SUBDIRS ; do \
+           if [ "$Q" != "@" -o "$(MAKELEVEL)" = 0 ] ; then \
+	      echo "" ; \
+	      echo gmake[$(MAKELEVEL)]: $(MAKE) -C $(CODEDIR)/$$i $@ ; \
+	   else \
+	      echo $@[$(MAKELEVEL)]:"$(MAKEINDENT)"$$i ; \
+	   fi ; \
+	   $(MAKE) -C $$i $@ ; \
+	done
+
+ifeq "$(MAKEMODE)" "programmer"
+   clean : .clean
+	-$(RM) *~ *% a.out core
+
+   cleaner : clean .cleaner ;
+        ifdef AIPSRCS
+	   -@ FILES="$(wildcard $(AIPSSRCS))" ; DLIST="" ; \
+	      for i in $$FILES ; do \
+	         [ -w $$i ] || DLIST="$$i $$DLIST" ; \
+	      done ; \
+	      if [ "$$DLIST" != "" ] ; then \
+	         echo "" ; \
+	         echo "Delete up-to-date, checked-in file(s):" ; \
+	         echo $$DLIST ; \
+	         $(RM) $$DLIST ; \
+	      fi
+        endif
+
+   cleanest : cleaner .cleanest ;
+endif
+
+
+# Document compilation.
+#----------------------
+docsys  : $(DOCEXTR)
+docextr :
+docscan :
+
+
+# Recursive rule for dependency analysis.
+#----------------------------------------
+dependsys :
+	@ for i in $$SUBDIRS ; do \
+	     $(MAKE) -C $$i $@ ; \
+	  done
+
+
+# Rule to invoke a non-recursive rule recursively.
+#-------------------------------------------------
+recurse : $(TARGET)
+	@ for i in $$SUBDIRS ; do \
+	     if [ "$(MAKELEVEL)" = 0 ] ; then \
+	        echo "" ; \
+	        echo gmake[$(MAKELEVEL)]: $(MAKE) -C $$i TARGET=$(TARGET) $@ ; \
+	     else \
+	        echo $(TARGET)[$(MAKELEVEL)]:"$(MAKEINDENT)"$$i ; \
+	     fi ; \
+	     $(MAKE) -C $$i $@ ; \
+	  done
+
+
+# Diagnostics rules.
+#-------------------
+# DIY rule.
+command :
+	$(COMMAND)
+
+# Run all test programs.
+runtests :
+
+# Print the environment as seen by makefile rules.
+printenv :
+	-@ printenv | sort
+
+# Rule for eval'ing variable definitions into environment variables.
+eval_vars :
+        ifdef VARS
+	   @ echo "$(foreach V,$(VARS),$V=\"$($V)\") ; export $(VARS)"
+        endif
+
+# Standard diagnostics report.
+diagnostics : versions test_global ;
+
+# Report versions of installed software.
+versions :
+	-@ echo ""
+	-  uname -a
+	-@ echo ""
+	-  gzip --version
+	-@ echo ""
+	-  $(FLEX) -V
+	-@ echo ""
+	-  $(BISON) --version
+	-@ echo ""
+	-  $(MAKE) --version
+
+# Print specified variable definitions.
+show_vars :
+	@ $(foreach V, $(VARS), \
+		@ echo $V=$($V) $;)
+
+# Print/test all variables.
+show_all : show_global show_local
+
+test_all : test_global show_local
+
+# Print/test all makedefs variables.
+show_global :
+	-@ $(MAKE) -f $(CODEINSD)/testdefs DO_TEST=  global
+
+test_global :
+	-@ $(MAKE) -f $(CODEINSD)/testdefs DO_TEST=1 global
+
+# Print/test makedefs variables used in system rebuilds.
+show_sys :
+	-@ $(MAKE) -f $(CODEINSD)/testdefs DO_TEST=  system
+
+test_sys :
+	-@ $(MAKE) -f $(CODEINSD)/testdefs DO_TEST=1 system
+
+# Print/test makedefs variables of particular interest to programmers.
+show_prg :
+	-@ $(MAKE) -f $(CODEINSD)/testdefs DO_TEST=  programmer
+
+test_prg :
+	-@ $(MAKE) -f $(CODEINSD)/testdefs DO_TEST=1 programmer
+
+# Print/test auxiliary makedefs variables used in system rebuilds.
+show_aux :
+	-@ $(MAKE) -f $(CODEINSD)/testdefs DO_TEST=  auxiliary
+
+test_aux :
+	-@ $(MAKE) -f $(CODEINSD)/testdefs DO_TEST=1 auxiliary
+
+# Print all variables defined in the including makefile.
+show_local :
+
+
+# Help.
+#------
+
+help ::
+	-@ echo ""
+	-@ echo "General targets defined in makedefs"
+	-@ echo "==================================="
+	-@ echo ""
+	-@ echo "This list of targets while incomplete does include all those"
+	-@ echo "likely to be of use.  Where a target is defined as a variable"
+	-@ echo "(given in upper case) the value of the variable may be"
+	-@ echo "printed via the 'show_all' target."
+	-@ echo ""
+	-@ echo "There are two main types of target, programmer-oriented for"
+	-@ echo "code development, and system-oriented for building the AIPS++"
+	-@ echo "system."
+	-@ echo ""
+	-@ echo "System"
+	-@ echo "------"
+	-@ echo "     allsys: (default target) recursively rebuild everything."
+	-@ echo "  (SUBDIRS): create the subdirectory if necessary and"
+	-@ echo "             initiate a 'gmake allsys' in it."
+	-@ echo " (CODESUBS): create the directory if necessary and"
+	-@ echo "             initiate a 'gmake allsys' in it."
+	-@ echo "       null: do nothing except to update the makefile and"
+	-@ echo "             all included files as a side effect."
+	-@ echo "     chkout: recursively checkout all sources."
+	-@ echo "    sysdirs: create all system directories."
+	-@ echo "  (SYSDIRS): create a system directory."
+	-@ echo "  cleancode: recursively delete files from the code"
+	-@ echo "             directories which shouldn't be there."
+	-@ echo "   cleansys: recursively purge selected files from the"
+	-@ echo "             system directories, usually in preparation for"
+	-@ echo "             a complete rebuild."
+	-@ echo "  dependsys: recursively build system dependency lists."
+	-@ echo "    recurse: invoke TARGET recursively."
+	-@ echo ""
+	-@ echo "Programmer"
+	-@ echo "----------"
+	-@ echo "        all: (default target) rebuild all in this directory."
+	-@ echo "  (SUBDIRS): create the subdirectory if necessary and"
+	-@ echo "             initiate a 'gmake all' in it."
+	-@ echo "      clean: delete intermediate files."
+	-@ echo "    cleaner: clean, and also delete source files checked out"
+	-@ echo "             without a lock (no write permission)."
+	-@ echo ""
+	-@ echo "Diagnostics"
+	-@ echo "-----------"
+	-@ echo "    command: execute COMMAND."
+	-@ echo "diagnostics: versions show_global"
+	-@ echo "  eval_vars: print variables specified by VARS in a form"
+	-@ echo "             suitable for eval'ing into the environment."
+	-@ echo "   printenv: print the environment as seen by makefile"
+	-@ echo "             commands."
+	-@ echo "   show_all: show_global show_local"
+	-@ echo "show_global: show_sys show_prg show_aux"
+	-@ echo "test_global: test_sys test_prg test_aux"
+	-@ echo "   show_sys: print all makedefs system variables."
+	-@ echo "   test_sys: test all makedefs system variables."
+	-@ echo "   show_prg: print all makedefs programmer variables."
+	-@ echo "   test_prg: test all makedefs programmer variables."
+	-@ echo "   show_aux: print all makedefs auxiliary variables."
+	-@ echo "   test_aux: test all makedefs auxiliary variables."
+	-@ echo " show_local: print local makefile variables."
+	-@ echo "  show_vars: print variables specified by VARS."
+	-@ echo "       help: print this."
+	-@ echo "   versions: print version of installed utilities."

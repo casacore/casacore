@@ -1,0 +1,165 @@
+#!/bin/sh
+#-----------------------------------------------------------------------------
+# assay: Invoke an AIPS++ test program and verify its output
+#-----------------------------------------------------------------------------
+#
+#   Copyright (C) 1995,1996
+#   Associated Universities, Inc. Washington DC, USA.
+#
+#   This program is free software; you can redistribute it and/or modify
+#   it under the terms of the GNU General Public License as published by
+#   the Free Software Foundation; either version 2 of the License, or
+#   (at your option) any later version.
+#
+#   This program is distributed in the hope that it will be useful,
+#   but WITHOUT ANY WARRANTY; without even the implied warranty of
+#   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#   GNU General Public License for more details.
+#
+#   You should have received a copy of the GNU General Public License
+#   along with this program; if not, write to the Free Software
+#   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+#
+#   Correspondence concerning AIPS++ should be addressed as follows:
+#          Internet email: aips2-request@nrao.edu.
+#          Postal address: AIPS++ Project Office
+#                          National Radio Astronomy Observatory
+#                          520 Edgemont Road
+#                          Charlottesville, VA 22903-2475 USA
+#
+#-----------------------------------------------------------------------------
+# Usage: assay <testexe and arguments>
+#-----------------------------------------------------------------------------
+# assay invokes an AIPS++ test program.  If the test program has an associated
+# .exec file then it simply invokes it.  Otherwise assay invokes the test
+# executable directly, and, if there is a corresponding .out file, compares
+# its output with that.
+#
+# If there is a .in file associated with the test program then assay will
+# redirect stdin from it.
+#
+# assay recognizes Glish test scripts via their .g suffix and invokes glish
+# on them.
+#
+# It is permissable for a .exec to invoke assay (presubably with arguments for
+# the test executable) - the potential infinite recursion is trapped.
+#
+# Options:
+#   none
+#
+# Status returns:
+#    0:  success
+#    1:  test execution failed
+#    2:  test output disagreement
+#    3:  untested (as returned from a .exec)
+#  130:  interrupt
+#
+# Notes:
+#    1) It is assumed that the test executable exists in the current PATH.
+#       If an environment variable called ASSAYBIN exists then ".:$ASSAYBIN"
+#       is added to the start of PATH.  The AIPS++ system bintest directory is
+#       always appended to PATH.
+#
+# Original: 1995/11/01 by Mark Calabretta, ATNF
+# $Id$
+#=============================================================================
+# Fundamentals.
+  if [ "$AIPSPATH" = "" ]
+  then
+     echo "assay: AIPSPATH is not defined, abort!" 1>&2
+     exit 1
+  fi
+
+# Add the bintest directory to PATH.
+  BINTESTD=`echo $AIPSPATH | awk '{printf("%s/%s/bintest",$1,$2)}'`
+  PATH="${PATH}:${BINTESTD}"
+  [ "$ASSAYBIN" != "" ] && PATH=".:${ASSAYBIN}:${PATH}"
+  export PATH
+
+# If there's a .exec file then use it.
+  CLEANUP=
+  if [ ! -f "$1.exec" ]
+  then
+#    We don't give in easily.
+     if [ -f "RCS/$1.exec,v" ]
+     then
+        CLEANUP="$1.exec"
+        co $1.exec
+     fi
+  fi
+
+  if [ -f "$1.exec" ]
+  then
+#    Set a trap in case the .exec file invokes assay.
+     if [ "$ASSAY" != "trap" ]
+     then
+        ASSAY=trap ; export ASSAY
+        sh $1.exec
+        STATUS=$?
+        [ "$CLEANUP" != "" ] && rm -f $1.exec
+        exit $STATUS
+     fi
+  fi
+
+# Define exit and interrupt handler.
+  trap 'rm -rf $CLEANUP core ${1}_tmp* ; \
+        trap 0 ; \
+        exit $STATUS' 0 1 2 3 15
+
+  COMMAND="$@"
+  set $@
+
+# Is there a .in file?
+  if [ -f "$1.in" ]
+  then
+     COMMAND="$COMMAND < $1.in"
+  else
+     if [ -f "RCS/$1.in,v" ]
+     then
+        COMMAND="$COMMAND < $1.in"
+        CLEANUP="$CLEANUP $1.in"
+        co $1.in
+     fi
+  fi
+
+# Check for glish scripts.
+  case $1 in
+  *.g)
+     COMMAND="glish $COMMAND"
+     ;;
+  esac
+
+  if eval "$COMMAND" > ${1}_tmp.out
+  then
+     if [ -f $1.out ]
+     then
+        CAT=cat
+     elif [ -f RCS/$1.out,v ]
+     then
+        CAT='co -p -q'
+     else
+        echo "PASS (execution succeeded): $*"
+        STATUS=0
+        exit
+     fi
+  else
+     echo "FAIL (execution failure): $*"
+     STATUS=1
+     exit
+  fi
+
+# Strip out demarked text.
+  sed -e '/^>>>/,/^<<</d' ${1}_tmp.out > ${1}_tmp.out2
+  mv -f ${1}_tmp.out2 ${1}_tmp.out
+
+# Compare with the expected output.
+  if $CAT $1.out | sed -e '/^>>>/,/^<<</d' | diff ${1}_tmp.out -
+  then
+     echo "PASS (output verified): $*"
+     STATUS=0
+     exit
+  else
+     echo "FAIL (output not verified): $*"
+     STATUS=2
+     exit
+  fi

@@ -1,0 +1,21 @@
+
+This code is a subset of the MIRIAD I/O library. The MIRIAD package is a package
+developed for BIMA and actively being used by BIMA and ATNF for their offline
+calibration and data reduction needs.
+
+More details on the MIRIAD package can be found on:
+
+	http://bima.astro.umd.edu/bima/miriad/
+or	http://www.atnf.csiro.au/Software/Analysis/miriad/
+
+Although the BIMA and ATNF versions use a slightly different directory
+structure (January 1997), the source code is the same. You should be
+able to find all subroutines in $MIR/src/sub, except for miriad.h, which
+was specifically generated for the AIPS++ project.
+
+Most of the low level C code was developed by Bob Sault (rsault@atnf.csiro.au).
+
+Correspondence concerning MIRLIB may also be directed to 
+Peter Teuben (teuben@astro.umd.edu)
+
+
