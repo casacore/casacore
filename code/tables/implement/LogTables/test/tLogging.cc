@@ -1,5 +1,5 @@
 //# tLogging.cc: Test the logging classes
-//# Copyright (C) 1996,1997,1998
+//# Copyright (C) 1996,1997,1998,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -81,10 +81,25 @@ void testLogFilter()
     AlwaysAssertExit(low.pass(message) && normal.pass(message) &&
 		     warn.pass(message) && !severe.pass(message));
 
-    // LogFilter &lowestPriority(LogMessage::Priority newPriority);
-    tmp.lowestPriority(LogMessage::DEBUGGING);
-    AlwaysAssertExit(tmp.lowestPriority() == LogMessage::DEBUGGING);
-
+    // LogFilter(const String& expr);
+    LogFilter expr1
+               ("LOCATION=='::abc' && !(PRIORITY in ['NORMAL','DEBUGGING'])");
+    LogFilter expr2
+               ("LOCATION=='::abc' && PRIORITY in ['NORMAL','DEBUGGING']");
+    LogFilter expr(expr2);
+    expr = expr1;
+    AlwaysAssertExit (!expr.pass(LogMessage(String("abc"),
+					    LogMessage::NORMAL)));
+    AlwaysAssertExit (!expr.pass(LogMessage(String("abc"),
+					    LogMessage::DEBUGGING)));
+    AlwaysAssertExit (expr.pass(LogMessage(String("abc"),
+					   LogMessage::WARN)));
+    AlwaysAssertExit (expr.pass(LogMessage(String("abc"),
+					   LogMessage::SEVERE)));
+    AlwaysAssertExit (!expr.pass(LogMessage(String("abcd"),
+					    LogMessage::WARN)));
+    AlwaysAssertExit (!expr.pass(LogMessage(String("abcd"),
+					    LogMessage::SEVERE)));
     // ~LogFilter() at end of block
 }
 
