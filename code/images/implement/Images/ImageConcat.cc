@@ -353,7 +353,7 @@ const RecordInterface& ImageConcat<T>::miscInfo() const
    for (uInt i=0; i<n; i++) {
       if (isImage_p(i)) {
          const ImageInterface<T>* pIm = (ImageInterface<T>*)(latticeConcat_p.lattice(i));
-         x.defineRecord(i, pIm->miscInfo());
+         x.merge(pIm->miscInfo(), RecordInterface::RenameDuplicates);
       }
    }
    rec_p.defineRecord(0,x);
