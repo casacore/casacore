@@ -201,7 +201,7 @@ void SubLattice<T>::setPtr (Lattice<T>* latticePtr,
 template<class T>
 void SubLattice<T>::setRegion (const LatticeRegion& region)
 {
-  if (itsLatticePtr->shape() != region.region().latticeShape()) {
+  if (!(itsLatticePtr->shape().isEqual(region.region().latticeShape()))) {
     throw (AipsError ("SubLattice::SubLattice - "
 		      "shape of lattice mismatches lattice shape in region"));
   }
