@@ -878,7 +878,13 @@ void ImageSummary<T>::listStokes (LogIO& os,
 
 // SOme protections against funny axes
 
-            if (ok) sName += Stokes::name(Stokes::type(iStokes));
+            String temp;
+            if (ok) {
+               temp = Stokes::name(Stokes::type(iStokes));
+            } else {
+               temp = "?";
+            }
+            if (sName.length()+temp.length() < widthRefValue_p) sName += temp;
          }
          os << sName;
       } else {
@@ -887,9 +893,11 @@ void ImageSummary<T>::listStokes (LogIO& os,
          Int i = Int(coord.referencePixel()(axisInCoordinate));
          Bool ok = coord.toWorld(iStokes, i);
 
-// SOme protections against funny axes
-
-         if (ok) sName = Stokes::name(Stokes::type(iStokes));
+         if (ok) {
+            sName = Stokes::name(Stokes::type(iStokes));
+         } else {
+            sName = "?";
+         }
          os << sName;
       }
    }
