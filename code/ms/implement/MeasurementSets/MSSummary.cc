@@ -501,7 +501,7 @@ void MSSummary::listAntenna (LogIO& os, Bool verbose) const
     // Horizontal list of the stations names:
     os << "Antennas: " << nAnt << endl;
     String line, leader;
-    Int last=antIds(0)-2;
+    Int last=antIds(0)-1;
     for (Int i=0; i<nAnt; i++) {
       Int ant=antIds(i);
       // Build the line
