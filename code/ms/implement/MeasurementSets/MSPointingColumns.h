@@ -137,6 +137,9 @@ public:
   // returns -1 if no match was found
   Int pointingIndex(Int antenna, Double time) const;
 
+  // Convenience function that returns the number of rows in any of the columns
+  uInt nrow() const {return antennaId_p.nrow();}
+
 protected:
   //# default constructor creates a object that is not usable. Use the attach
   //# function correct this.

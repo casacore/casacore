@@ -84,6 +84,9 @@ public:
   const ROScalarColumn<Int>& numCorr() const {return numCorr_p;}
   // </group>
 
+  // Convenience function that returns the number of rows in any of the columns
+  uInt nrow() const {return corrProduct_p.nrow();}
+
 protected:
   //# default constructor creates a object that is not usable. Use the attach
   //# function correct this.
@@ -98,6 +101,7 @@ private:
   RONewMSPolarizationColumns(const RONewMSPolarizationColumns&);
   RONewMSPolarizationColumns& operator=(const RONewMSPolarizationColumns&);
 
+  //# required columns
   ROArrayColumn<Int> corrProduct_p;
   ROArrayColumn<Int> corrType_p;
   ROScalarColumn<Bool> flagRow_p;
@@ -180,6 +184,7 @@ private:
   NewMSPolarizationColumns(const NewMSPolarizationColumns&);
   NewMSPolarizationColumns& operator=(const NewMSPolarizationColumns&);
 
+  //# required columns
   ArrayColumn<Int> corrProduct_p;
   ArrayColumn<Int> corrType_p;
   ScalarColumn<Bool> flagRow_p;
