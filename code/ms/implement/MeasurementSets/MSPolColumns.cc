@@ -25,34 +25,82 @@
 //#
 //# $Id$
 
-//# Includes
 #include <aips/MeasurementSets/NewMSPolColumns.h>
+#include <aips/MeasurementSets/NewMSPolarization.h>
+#include <aips/Utilities/String.h>
 
-NewMSPolarizationColumns::NewMSPolarizationColumns(NewMSPolarization& msPolarization):
-corrProduct_p(msPolarization,
-	      NewMSPolarization::columnName(NewMSPolarization::CORR_PRODUCT)),
-corrType_p(msPolarization,
-	   NewMSPolarization::columnName(NewMSPolarization::CORR_TYPE)),
-flagRow_p(msPolarization,
-	  NewMSPolarization::columnName(NewMSPolarization::FLAG_ROW)),
-numCorr_p(msPolarization,
-	  NewMSPolarization::columnName(NewMSPolarization::NUM_CORR))
-{}
-
-NewMSPolarizationColumns::~NewMSPolarizationColumns() {}
-
-RONewMSPolarizationColumns::RONewMSPolarizationColumns(const NewMSPolarization& msPolarization):
-corrProduct_p(msPolarization,
-	      NewMSPolarization::columnName(NewMSPolarization::CORR_PRODUCT)),
-corrType_p(msPolarization,
-	   NewMSPolarization::columnName(NewMSPolarization::CORR_TYPE)),
-flagRow_p(msPolarization,
-	  NewMSPolarization::columnName(NewMSPolarization::FLAG_ROW)),
-numCorr_p(msPolarization,
-	  NewMSPolarization::columnName(NewMSPolarization::NUM_CORR))
+RONewMSPolarizationColumns::
+RONewMSPolarizationColumns(const NewMSPolarization& msPolarization):
+  corrProduct_p(msPolarization, NewMSPolarization::
+		columnName(NewMSPolarization::CORR_PRODUCT)),
+  corrType_p(msPolarization, NewMSPolarization::
+	     columnName(NewMSPolarization::CORR_TYPE)),
+  flagRow_p(msPolarization, NewMSPolarization::
+	    columnName(NewMSPolarization::FLAG_ROW)),
+  numCorr_p(msPolarization, NewMSPolarization::
+	    columnName(NewMSPolarization::NUM_CORR))
 {}
 
 RONewMSPolarizationColumns::~RONewMSPolarizationColumns() {}
 
+RONewMSPolarizationColumns::RONewMSPolarizationColumns():
+  corrProduct_p(),
+  corrType_p(),
+  flagRow_p(),
+  numCorr_p()
+{
+}
 
+void RONewMSPolarizationColumns::
+attach(const NewMSPolarization& msPolarization)
+{
+  corrProduct_p.attach(msPolarization, NewMSPolarization::
+		       columnName(NewMSPolarization::CORR_PRODUCT));
+  corrType_p.attach(msPolarization, NewMSPolarization::
+		    columnName(NewMSPolarization::CORR_TYPE));
+  flagRow_p.attach(msPolarization, NewMSPolarization::
+		   columnName(NewMSPolarization::FLAG_ROW));
+  numCorr_p.attach(msPolarization, NewMSPolarization::
+		   columnName(NewMSPolarization::NUM_CORR));
+}
 
+NewMSPolarizationColumns::
+NewMSPolarizationColumns(NewMSPolarization& msPolarization):
+  RONewMSPolarizationColumns(msPolarization),
+  corrProduct_p(msPolarization, NewMSPolarization::
+		columnName(NewMSPolarization::CORR_PRODUCT)),
+  corrType_p(msPolarization, NewMSPolarization::
+	   columnName(NewMSPolarization::CORR_TYPE)),
+  flagRow_p(msPolarization, NewMSPolarization::
+	  columnName(NewMSPolarization::FLAG_ROW)),
+  numCorr_p(msPolarization, NewMSPolarization::
+	    columnName(NewMSPolarization::NUM_CORR))
+{}
+
+NewMSPolarizationColumns::~NewMSPolarizationColumns() {}
+
+NewMSPolarizationColumns::NewMSPolarizationColumns():
+  RONewMSPolarizationColumns(),
+  corrProduct_p(),
+  corrType_p(),
+  flagRow_p(),
+  numCorr_p()
+{
+}
+
+void NewMSPolarizationColumns::
+attach(NewMSPolarization& msPolarization)
+{
+  RONewMSPolarizationColumns::attach(msPolarization);
+  corrProduct_p.attach(msPolarization, NewMSPolarization::
+		       columnName(NewMSPolarization::CORR_PRODUCT));
+  corrType_p.attach(msPolarization, NewMSPolarization::
+		    columnName(NewMSPolarization::CORR_TYPE));
+  flagRow_p.attach(msPolarization, NewMSPolarization::
+		   columnName(NewMSPolarization::FLAG_ROW));
+  numCorr_p.attach(msPolarization, NewMSPolarization::
+		   columnName(NewMSPolarization::NUM_CORR));
+}
+// Local Variables: 
+// compile-command: "gmake NewMSPolColumns"
+// End: 
