@@ -98,6 +98,16 @@ int main() {
 
     ParAngleMachine pam(dir);
     pam.set(frame);
+    pam.setInterval(0.0);
+    for (uInt i=0; i<10; i+=2) {
+      if (i>0) cout << ", ";
+      cout << setprecision(4) << pam(MVEpoch(dat+i/24./15./10.)).get("deg");
+    };
+    cout << endl;
+
+    cout << "--------------- Fast machine through HADEC --" << endl;
+
+    pam.setInterval(0.04);
     for (uInt i=0; i<10; i+=2) {
       if (i>0) cout << ", ";
       cout << setprecision(4) << pam(MVEpoch(dat+i/24./15./10.)).get("deg");
@@ -147,11 +157,19 @@ int main() {
     };
     cout << "Full AZEL  for N=" << N << ": " << tim.real() << endl;
 
+    pam.setInterval(0.0);
     tim.mark();
     for (uInt i=0; i<N; ++i) {
       Quantity x(pam(MVEpoch(dat+i/24./15./10.)).get("deg"));
     };
     cout << "Full HADEC for N=" << N << ": " << tim.real() << endl; 
+
+    pam.setInterval(0.04);
+    tim.mark();
+    for (uInt i=0; i<N; ++i) {
+      Quantity x(pam(MVEpoch(dat+i/24./15./10.)).get("deg"));
+    };
+    cout << "Fast HADEC for N=" << N << ": " << tim.real() << endl; 
 
     cout << "<<<" << endl;
 
