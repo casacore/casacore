@@ -3,16 +3,15 @@
 
 \begin{document}
 
-\title{NOTE 209 -- AIPS++ OPERATIONS PLAN}
+\title{NOTE 209 -- AIPS++ OPERATIONS}
   
+\author{Tim Cornwell and Gustaaf van Moorsel}
 
-\author{Gustaaf van Moorsel and Tim Cornwell}
-
-\date{Draft 21 May 1997}
+\date{18 July 1997}
 
 \maketitle
 \begin{htmlonly}
-\htmladdnormallink{A postscript version of this note is available (100kB).}{../209.ps}
+\htmladdnormallink{A postscript version of this note is available (112kB).}{../209.ps}
 \end{htmlonly}
 
 \tableofcontents
