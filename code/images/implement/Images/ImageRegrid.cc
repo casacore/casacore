@@ -582,10 +582,7 @@ Bool ImageRegrid<T>::insert (ImageInterface<T>& outImage,
    SubImage<T> outSub(outImage, outBox, True);
 //
    if (outIsMasked) {
-      Lattice<Bool>& outMask = outImage.pixelMask();
-      outMask.set(False);
-      SubLattice<Bool> outSubMask(outMask, outBox, True);
-      copyDataAndMask(outSub, inSub);
+      LatticeUtilities::copyDataAndMask(os, outSub, inSub);
    } else {
       outSub.copyData(inSub);
    }
@@ -2173,38 +2170,6 @@ void ImageRegrid<T>::findMaps (uInt nDim,
    }
 }   
 
-
-
-template<class T>
-void ImageRegrid<T>::copyDataAndMask(MaskedLattice<T>& out,
-                                     MaskedLattice<T>& in) const
-{   
-// Use the same stepper for input and output.
-   
-   IPosition cursorShape = out.niceCursorShape(); 
-   LatticeStepper stepper (out.shape(), cursorShape, LatticeStepper::RESIZE);
-   Bool doMask = out.isMasked() && out.hasPixelMask() && out.pixelMask().isWritable();
-   if (itsShowLevel>0) {
-      cerr << "outIsMasked = " << out.isMasked() << endl;
-      cerr << "out.pixelMask.isWritable" << out.pixelMask().isWritable() << endl;
-      cerr << "doMask=" << doMask << endl;
-   }
-   
-// Create an iterator for the output to setup the cache.
-// It is not used, because using putSlice directly is faster and as easy.
- 
-   LatticeIterator<T> dummyIter(out);
-   RO_LatticeIterator<T> iter(in, stepper);
-   Lattice<Bool>* maskOutPtr = 0;
-   if (doMask) maskOutPtr = &out.pixelMask();
-   for (iter.reset(); !iter.atEnd(); iter++) {
-      out.putSlice (iter.cursor(), iter.position());
-      if (doMask) {
-         maskOutPtr->putSlice(in.getMaskSlice(iter.position(),
-                              iter.cursorShape()), iter.position());
-      }
-   }
-}
 
 
 template<class T>
