@@ -37,8 +37,11 @@
 #include <trial/Mathematics/AutoDiff.h>
 
 //# Forward declarations
-imported class ostream;
-
+#if defined(AIPS_STDLIB)
+#include <iosfwd.h>
+#else
+class ostream;
+#endif
 
 template<class T> ostream &operator << (ostream &, const AutoDiff<T> &);
 

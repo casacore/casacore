@@ -47,7 +47,11 @@ class HeaderDataUnit;
 class FITSFieldCopier;
 template<class T> class PrimaryGroup;
 template<class T> class Vector;
-imported class ostream;
+#if defined(AIPS_STDLIB)
+#include <iosfwd.h>
+#else
+class ostream;
+#endif
 
 // <summary>
 // Simplified interface to FITS tables with AIPS++ Look and Feel.

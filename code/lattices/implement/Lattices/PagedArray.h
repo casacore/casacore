@@ -48,7 +48,11 @@ template <class T> class RO_LatticeIterInterface;
 template <class T> class LatticeIterInterface;
 template <class T> class RO_PagedArrIter;
 template <class T> class PagedArrIter;
+#if defined(AIPS_STDLIB)
+#include <iosfwd.h>
+#else
 class ostream;
+#endif
 
 // <summary>A Lattice that is read from or written to disk</summary>
 //

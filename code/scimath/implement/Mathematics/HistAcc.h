@@ -32,11 +32,15 @@
 #include <aips/aips.h>
 #include <aips/Utilities/Fallible.h>
 #include <trial/Mathematics/StatAcc.h>
+#include <aips/Containers/Block.h>
 
 // forward declarations:
 template <class T> class Array;
-template <class T> class Block;
-imported class ostream;
+#if defined(AIPS_STDLIB)
+#include <iosfwd.h>
+#else
+class ostream;
+#endif
 class String;
 
 // <reviewed reviewer="" date="" tests="tHistAcc" demos="">

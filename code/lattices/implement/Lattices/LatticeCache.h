@@ -41,7 +41,11 @@ typedef Vector<Float> gppbug1;
 #endif
 
 //# predeclarations
+#if defined(AIPS_STDLIB)
+#include <iosfwd.h>
+#else
 class ostream;
+#endif
 template <class T> class Block;
 template <class T> class Lattice;
 
