@@ -381,6 +381,16 @@ void MeasMath::deapplyHADECtoAZEL(MVPosition &in) {
   in = RotMatrix(Euler(C::pi_2 - info_p[LAT] , 2u, C::pi, 3u)) * in;
 }
 
+void MeasMath::applyHADECtoAZELGEO(MVPosition &in) {
+  getInfo(LAT);   
+  in *= RotMatrix(Euler(C::pi_2 - info_p[LAT] , 2u, C::pi, 3u));
+}
+
+void MeasMath::deapplyHADECtoAZELGEO(MVPosition &in) {
+  getInfo(LAT); 
+  in = RotMatrix(Euler(C::pi_2 - info_p[LAT] , 2u, C::pi, 3u)) * in;
+}
+
 void MeasMath::applyJ2000toB1950(MVPosition &in, Bool doin) {
   // Frame rotation
   in *= MeasData::MToB1950(4);

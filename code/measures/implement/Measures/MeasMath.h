@@ -1,5 +1,5 @@
 //# MeasMath.h: Measure conversion aid routines
-//# Copyright (C) 1998,2000
+//# Copyright (C) 1998,2000,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -166,6 +166,8 @@ public:
   void deapplyHADECtoITRF(MVPosition &in);
   void applyHADECtoAZEL(MVPosition &in);
   void deapplyHADECtoAZEL(MVPosition &in);
+  void applyHADECtoAZELGEO(MVPosition &in);
+  void deapplyHADECtoAZELGEO(MVPosition &in); 
   void applyJ2000toB1950(MVPosition &in, Bool doin=True);
   void deapplyJ2000toB1950(MVPosition &in, Bool doin=True);
   void applyETerms(MVPosition &in, Bool doin=True);
@@ -182,7 +184,7 @@ public:
   void deapplyPolarMotion(MVPosition &in);
   void applyPolarMotionLong(MVPosition &in);
   void deapplyPolarMotionLong(MVPosition &in);
-  void applyAZELtoAZELSW(MVPosition &in);
+  void applyAZELtoAZELSW(MVPosition &in); 
   void applyECLIPtoJ2000(MVPosition &in);
   void deapplyECLIPtoJ2000(MVPosition &in);
   void applyMECLIPtoJMEAN(MVPosition &in);
