@@ -34,7 +34,7 @@
 #include <trial/Lattices/LELUnary.h>
 
 #include <trial/Lattices/ArrayLattice.h>
-#include <trial/Lattices/PixelBox.h>
+#include <aips/Lattices/Slicer.h>
 
 #include <aips/Arrays/Array.h>
 #include <aips/Arrays/ArrayLogical.h>
@@ -1871,7 +1871,7 @@ Bool compareScalarFloat (const LatticeExprNode expr,
       Array<Float> Arr2(shape);
       Float Result, Result2;
       IPosition origin(shape); origin = 0;
-      PixelBox region(origin, shape-1, shape);
+      Slicer region(origin, shape);
       Bool ok = True;
 
       if (expr.isScalar() != expr2.isScalar()) {
@@ -1925,7 +1925,7 @@ Bool compareScalarDouble (const LatticeExprNode expr,
       Array<Double> Arr2(shape);
       Double Result, Result2;
       IPosition origin(shape); origin = 0;
-      PixelBox region(origin, shape-1, shape);
+      Slicer region(origin, shape);
       Bool ok = True;
 
       if (expr.isScalar() != expr2.isScalar()) {
@@ -1980,7 +1980,7 @@ Bool compareScalarComplex (const LatticeExprNode expr,
       Array<Complex> Arr2(shape);
       Complex Result, Result2;
       IPosition origin(shape); origin = 0;
-      PixelBox region(origin, shape-1, shape);
+      Slicer region(origin, shape);
       Bool ok = True;
 
       if (expr.isScalar() != expr2.isScalar()) {
@@ -2035,7 +2035,7 @@ Bool compareScalarDComplex (const LatticeExprNode expr,
       Array<DComplex> Arr2(shape);
       DComplex Result, Result2;
       IPosition origin(shape); origin = 0;
-      PixelBox region(origin, shape-1, shape);
+      Slicer region(origin, shape);
       Bool ok = True;
 
       if (expr.isScalar() != expr2.isScalar()) {
@@ -2092,7 +2092,7 @@ Bool compareScalarBool (const LatticeExprNode expr,
       Array<Bool> Arr2(shape);
       Bool Result, Result2;
       IPosition origin(shape); origin = 0;
-      PixelBox region(origin, shape-1, shape);
+      Slicer region(origin, shape);
       Bool ok = True;
 
       if (expr.isScalar() != expr2.isScalar()) {
@@ -2149,7 +2149,7 @@ Bool checkFloat (const LatticeExprNode& expr,
     Float Result2;
     Array<Float> Arr(shape);
     IPosition origin(shape); origin = 0;
-    PixelBox region(origin, shape-1, shape);
+    Slicer region(origin, shape);
 
     if (shouldBeScalar && !expr.isScalar()) {
        cout << "   Result should be scalar" << endl;
@@ -2208,7 +2208,7 @@ Bool checkDouble (const LatticeExprNode& expr,
     Double Result2;
     Array<Double> Arr(shape);
     IPosition origin(shape); origin = 0;
-    PixelBox region(origin, shape-1, shape);
+    Slicer region(origin, shape);
 
     if (shouldBeScalar && !expr.isScalar()) {
        cout << "   Result should be scalar" << endl;
@@ -2267,7 +2267,7 @@ Bool checkComplex (const LatticeExprNode& expr,
     Complex Result2;
     Array<Complex> Arr(shape);
     IPosition origin(shape); origin = 0;
-    PixelBox region(origin, shape-1, shape);
+    Slicer region(origin, shape);
 
     if (shouldBeScalar && !expr.isScalar()) {
        cout << "   Result should be scalar" << endl;
@@ -2326,7 +2326,7 @@ Bool checkDComplex (const LatticeExprNode& expr,
     DComplex Result2;
     Array<DComplex> Arr(shape);
     IPosition origin(shape); origin = 0;
-    PixelBox region(origin, shape-1, shape);
+    Slicer region(origin, shape);
 
     if (shouldBeScalar && !expr.isScalar()) {
        cout << "   Result should be scalar" << endl;
@@ -2386,7 +2386,7 @@ Bool checkBool (const LatticeExprNode& expr,
     Bool Result2;
     Array<Bool> Arr(shape);
     IPosition origin(shape); origin = 0;
-    PixelBox region(origin, shape-1, shape);
+    Slicer region(origin, shape);
 
     if (shouldBeScalar && !expr.isScalar()) {
        cout << "   Result should be scalar" << endl;
