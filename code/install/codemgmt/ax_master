@@ -4688,3 +4688,4 @@
 14 302 src rm /nrao/apps/oldvlafiller
 14 302 src mv trial/apps/oldms/newms_meta.g trial/apps/oldms/oldms_meta.g
 14 304 src rm trial/apps/sdfits2ms/MSWriter.cc
+14 304 src rm trial/apps/sdfits2ms/MSWriter.h
