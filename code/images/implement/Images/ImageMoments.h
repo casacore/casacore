@@ -1,5 +1,5 @@
 //# ImageMoments.h: generate moments from images
-//# Copyright (C) 1996,1997,1998,1999,2000
+//# Copyright (C) 1996,1997,1998,1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -49,14 +49,7 @@ class CoordinateSystem;
 class IPosition;
 class String;
 class Unit;
-
-
-#if defined(AIPS_STDLIB)
-#include <iosfwd>
-#else
-class ostream;
-#endif
-
+#include <aips/iosfwd.h>
 
 // <summary>
 // This class generates moments from an image.

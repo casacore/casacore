@@ -36,11 +36,8 @@
 #include <aips/Quanta/Quantum.h>
 #include <aips/Utilities/String.h>
 
-#if defined(AIPS_STDLIB)
-#include <iosfwd>
-#else
-class ostream;
-#endif
+//# Forward declarations
+#include <aips/iosfwd.h>
 
 // <summary>
 // Miscellaneous information related to an image.

@@ -39,8 +39,7 @@
 //# Forward Declarations
 template <class T> class ImageInterface;
 class IPosition;
-class ostrstream;
-
+#include <aips/iosstrfwd.h>
 
 // <summary>
 // Displays various statistics from an image.
