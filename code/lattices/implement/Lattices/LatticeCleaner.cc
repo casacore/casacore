@@ -521,9 +521,7 @@ Bool LatticeCleaner<T>::clean(Lattice<T>& model,
 
     // Continuing: subtract the peak that we found from all dirty images
     // Define a subregion so that that the peak is centered
-    // For the dirty images, we only update within the
-    // support region (this saves a lot of time).
-    IPosition support(model.shape()/10);
+    IPosition support(model.shape());
     support(0)=max(Int(itsScaleSizes(itsNscales-1)+0.5), support(0));
     support(1)=max(Int(itsScaleSizes(itsNscales-1)+0.5), support(1));
 
