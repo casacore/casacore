@@ -52,7 +52,7 @@ void MCBase::makeState(Bool &made, uInt *state,
       tcnt[j] = 0;
       visit[j] = False;
       for (uInt i=0; i<ntyp; i++) {
-	mcnt[i*ntyp + j]  = nrout;
+	mcnt[i*ntyp + j]  = 100*nrout;
 	state[i*ntyp + j] = nrout;
       };
     };
@@ -92,10 +92,10 @@ Bool MCBase::findState(uInt &len, uInt *state, uInt *mcnt, Bool &okall,
 		       const uInt list[][3]) {
   // Check loop
   if (visit[in]) return False;
-  uInt minlen = nrout;
+  uInt minlen = 100*nrout;
   uInt res = nrout;
   // Check if path already known
-  if (mcnt[in*ntyp + out] != nrout) {
+  if (mcnt[in*ntyp + out] != 100*nrout) {
     minlen = mcnt[in*ntyp + out];
     res = state[in*ntyp + out];
   } else {
@@ -114,7 +114,7 @@ Bool MCBase::findState(uInt &len, uInt *state, uInt *mcnt, Bool &okall,
     };
     visit[in] = False;
   };
-  if (minlen == nrout) return False;
+  if (minlen == 100*nrout) return False;
   if (len == 0 || okall) {
     mcnt[in*ntyp + out] = minlen;
     state[in*ntyp + out]= res;
