@@ -1,5 +1,5 @@
 //# CompositeNumber.h: generate a composite number
-//# Copyright (C) 2000
+//# Copyright (C) 2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -27,6 +27,7 @@
 
 #include <trial/Utilities/CompositeNumber.h>
 #include <aips/Utilities/GenSort.h>
+#include <aips/Mathematics/Math.h>
 
 CompositeNumber::CompositeNumber(const uInt maxval) {
 
