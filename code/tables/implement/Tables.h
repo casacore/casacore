@@ -1,5 +1,5 @@
 //# Tables.h: The Tables module - AIPS++ data storage
-//# Copyright (C) 1994,1995,1996,1997,1998,1999
+//# Copyright (C) 1994,1995,1996,1997,1998,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -1203,11 +1203,11 @@
 // Multiple concurrent readers and writers (also via NFS) of a
 // table are supported by means of a locking/synchronization mechanism.
 // This mechanism is not very sophisticated in the sense that it is
-// very coarse grained. When locking, the entire table gets locked.
+// very coarsely grained. When locking, the entire table gets locked.
 // A special lock file is used to lock the table. This lock file also
 // contains some synchronization data.
 // <p>
-// Three ways of locking are supported (see class
+// Five ways of locking are supported (see class
 // <linkto class=TableLock>TableLock</linkto>):
 // <dl>
 //  <dt> TableLock::PermanentLocking(Wait)
@@ -1218,6 +1218,14 @@
 //       This mode makes it possible that a table is shared amongst
 //       processes without the user needing to write any special code.
 //       It also means that a lock is only released when needed.
+//  <dt> TableLock::AutoNoReadLocking
+//  <dd> is similar to AutoLocking. However, no lock is acquired when
+//       reading the table making it possible to read the table while
+//       another process holds a write-lock. It also means that for read
+//       purposes no automatic synchronization is done when the table is
+//       updated in another process.
+//       Explicit synchronization can be done by means of the function
+//       <src>Table::resync</src>.
 //  <dt> TableLock::UserLocking
 //  <dd> requires that the programmer explicitly acquires and releases
 //       a lock on the table. This makes some kind of transaction
@@ -1225,6 +1233,9 @@
 //       write all data into the row and release the lock.
 //       The Table functions <src>lock</src> and <src>unlock</src>
 //       have to be used to acquire and release a (read or write) lock.
+//  <dt> TableLock::UserNoReadLocking
+//  <dd> is similar to UserLocking. However, similarly to AutoNoReadLocking
+//       no lock is needed to read the table.
 // </dl>
 // Synchronization of the processes accessing the same table is done
 // by means of the lock file. When a lock is released, the storage
@@ -1234,6 +1245,8 @@
 // This information is read when another process acquires the lock
 // and is used to determine which storage managers have to refresh
 // their internal caches.
+// <br>Note that for the NoReadLocking modes (see above) explicit
+// synchronization might be needed using <src>Table::resync</src>.
 // <p>
 // The function <src>Table::hasDataChanged</src> can be used to check
 // if a table is (being) changed by another process. In this way
