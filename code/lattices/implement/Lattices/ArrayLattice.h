@@ -147,9 +147,15 @@ public:
   ArrayLattice();
 
   // Construct an ArrayLattice with the specified shape.
+  // This results in a writable lattice.
   ArrayLattice (const IPosition& shape);
 
   // Construct an ArrayLattice that references the given Array.
+  // This results in a writable lattice.
+  ArrayLattice (Array<T>& array);
+
+  // Construct an ArrayLattice that references the given Array.
+  // This results in a non-writable lattice.
   ArrayLattice (const Array<T>& array);
 
   // the copy constructor which uses reference semantics.
@@ -160,6 +166,12 @@ public:
 
   // the assignment operator which uses copy semantics.
   ArrayLattice& operator= (const ArrayLattice& other);
+
+  // Make a copy of the object (reference semantics).
+  virtual Lattice<T>* clone() const;
+
+  // Is the lattice writable?
+  virtual Bool isWritable() const;
 
   // returns the shape of the ArrayLattice.
   virtual IPosition shape() const; 
@@ -259,8 +271,14 @@ public:
   virtual LatticeIterInterface<T>* makeIter(
 				   const LatticeNavigator& navigator) const;
 
+  // Get a slice in an optimized way (specifically for ArrLatticeIter).
+  // It returns in <src>buffer</src> a reference to the lattice array.
+  void getIterSlice (Array<T>& buffer, const IPosition& start,
+		     const IPosition& end, const IPosition& incr);
+
 private:
-  Array<T> theData;
+  Array<T> itsData;
+  Bool     itsWritable;
 };
 
 
