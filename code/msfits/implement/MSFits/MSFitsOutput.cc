@@ -1092,7 +1092,6 @@ Bool MSFitsOutput::writeAN(FitsOutput *output, const MeasurementSet &ms,
       if (doRot) corstabxyz = product(posRot,corstabxyz);
       if (doRefl) corstabxyz(1)=-corstabxyz(1);
       *stabxyz = corstabxyz;
-      cout << corstabxyz << endl;
 
       *nosta = id[antnum];
       String mount = upcase(inantmount(antnum));
