@@ -28,7 +28,6 @@
 #if !defined(AIPS_DFTSERVER_H)
 #define AIPS_DFTSERVER_H
 
-#include <iostream.h>
 
 #include <aips/aips.h>
 #include <aips/Mathematics/Math.h>
