@@ -28,6 +28,8 @@
 #include <casa/Quanta/Quantum.h>
 #include <casa/iostream.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 istream &operator>> (istream &is, Quantity &ku) {
   String str;
   is >> str;
@@ -40,4 +42,7 @@ istream &operator>> (istream &is, Quantity &ku) {
   };
   return is;
 }
+
+
+} //# NAMESPACE CASA - END
 

@@ -43,6 +43,8 @@
 #include <tables/Tables/TableRecord.h>
 #include <casa/BasicSL/String.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 class MSSource;
 
 // <summary>
@@ -428,4 +430,7 @@ private:
   ArrayQuantColumn<Double> restFrequencyQuant_p;
   ArrayQuantColumn<Double> sysvelQuant_p;
 };
+
+} //# NAMESPACE CASA - END
+
 #endif

@@ -30,6 +30,8 @@
 
 #include <casa/sstream.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 LogMessage::LogMessage(Priority prio)
   : priority_p(prio)
 {
@@ -191,3 +193,6 @@ ostream &operator<<(ostream &os, const LogMessage &message)
     os << message.toString() << endl;
     return os;
 }
+
+} //# NAMESPACE CASA - END
+

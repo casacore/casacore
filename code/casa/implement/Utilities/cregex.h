@@ -44,6 +44,7 @@ extern "C" {
 
 #define BYTEWIDTH 8
 
+namespace casa { //# NAMESPACE CASA - BEGIN
 
 /* Maximum number of duplicates an interval can allow. */
 /* Has been changed to copy from the limits.h file
@@ -296,5 +297,8 @@ extern char *re_syntax_table;
 extern int re_max_failures;
 }
 #endif
+
+
+} //# NAMESPACE CASA - END
 
 #endif /* !__REGEXP_LIBRARY */

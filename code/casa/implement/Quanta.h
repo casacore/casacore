@@ -37,6 +37,8 @@
 #include <casa/Quanta/QMath.h>
 #include <casa/Quanta/QLogical.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 // <module>
 // 
 
@@ -594,6 +596,9 @@
 
 //# Dummy class definition for extractor
 //# class Quanta {};
+
+
+} //# NAMESPACE CASA - END
 
 #endif
 

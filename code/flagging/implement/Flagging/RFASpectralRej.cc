@@ -37,6 +37,8 @@
 #include <casa/stdio.h>
 #include <casa/stdlib.h>
     
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 void RFASpectralRej::addSegment ( Int spwid,Double fq0,Double fq1,Int ch0,Int ch1 )
 {
   Segment seg = { spwid,fq0,fq1,ch0,ch1 };
@@ -304,8 +306,8 @@ RFA::IterMode RFASpectralRej::iterRow ( uInt irow )
           data(ich) = mapValue(ich,irow);
         
         PGPlotterInterface &pgp( debug.pgp() );
-        Float vmax = ::max( ::max(static_cast<Array<Float> >(y1),static_cast<Array<Float> >(yfit)) );
-        Float vmin = ::min( ::min(static_cast<Array<Float> >(y1),static_cast<Array<Float> >(yfit)) ); 
+        Float vmax = ::casa::max( ::casa::max(static_cast<Array<Float> >(y1),static_cast<Array<Float> >(yfit)) );
+        Float vmin = ::casa::min( ::casa::min(static_cast<Array<Float> >(y1),static_cast<Array<Float> >(yfit)) ); 
         for( Bool redraw=True; redraw;  )
         {
           pgp.ask(False);
@@ -420,4 +422,7 @@ const RecordInterface & RFASpectralRej::getDefaults ()
 }
 
   
+
+
+} //# NAMESPACE CASA - END
 

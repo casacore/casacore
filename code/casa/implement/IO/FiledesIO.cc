@@ -49,6 +49,8 @@
 #define traceCLOSE close
 #endif // PABLO_IO
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 FiledesIO::FiledesIO()
 : itsSeekable (False),
   itsReadable (False),
@@ -217,3 +219,6 @@ void FiledesIO::close (int fd)
 			  + strerror(errno)));
     }
 }
+
+} //# NAMESPACE CASA - END
+

@@ -33,6 +33,8 @@
 #include <casa/aips.h>
 #include <casa/BasicSL/String.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Forward Declarations
 class Table;
 class ImageRegion;
@@ -183,6 +185,9 @@ public:
 };
 
 
+
+
+} //# NAMESPACE CASA - END
 
 #endif
 

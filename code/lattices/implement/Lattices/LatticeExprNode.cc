@@ -54,6 +54,8 @@
 
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 // Default constructor
 LatticeExprNode::LatticeExprNode()
 : donePrepare_p   (False),
@@ -2277,3 +2279,6 @@ Int LatticeExprNode::makeEqualDim (LatticeExprNode& expr0,
   }
   return result;
 }
+
+} //# NAMESPACE CASA - END
+

@@ -29,6 +29,8 @@
 #include <casa/OS/CanonicalConversion.h>
 #include <casa/IO/ByteIO.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 CanonicalIO::CanonicalIO (ByteIO* byteIO, uInt bufferLength, Bool takeOver)
 : TypeIO          (byteIO, takeOver), 
   itsBuffer       (new char[bufferLength]),
@@ -460,3 +462,6 @@ uInt CanonicalIO::read (uInt nvalues, String* value)
 {
     return TypeIO::read (nvalues, value);
 }
+
+} //# NAMESPACE CASA - END
+

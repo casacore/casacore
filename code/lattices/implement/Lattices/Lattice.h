@@ -33,6 +33,8 @@
 #include <lattices/Lattices/LatticeBase.h>
 #include <casa/Arrays/Slicer.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Forward Declarations
 class IPosition;
 class LatticeNavigator;
@@ -421,5 +423,8 @@ template<> inline
 void Lattice<Bool>::handleMathTo (Lattice<Bool>& to, int oper) const
   { throwBoolMath(); }
 
+
+
+} //# NAMESPACE CASA - END
 
 #endif

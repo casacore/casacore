@@ -34,6 +34,8 @@
 #include <casa/string.h>           // for memmove, etc.
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 // <summary>
 // Copy objects from one C-style array to another.
 // </summary>
@@ -242,5 +244,8 @@ template<class T> void objset (T* to, T fillValue, uInt n, uInt toStride);
 // </group>
 
 // </group>
+
+
+} //# NAMESPACE CASA - END
 
 #endif

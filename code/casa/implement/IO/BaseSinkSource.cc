@@ -29,6 +29,8 @@
 #include <casa/IO/BaseSinkSource.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 BaseSinkSource::BaseSinkSource()
 : itsTypeIO ()
 {}
@@ -91,3 +93,6 @@ Bool BaseSinkSource::isNull() const
 {
     return itsTypeIO.null();
 }
+
+} //# NAMESPACE CASA - END
+

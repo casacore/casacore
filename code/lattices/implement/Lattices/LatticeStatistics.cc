@@ -65,6 +65,8 @@
 
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 template <class T>
 LatticeStatistics<T>::LatticeStatistics (const MaskedLattice<T>& lattice,
                                          LogIO& os,  
@@ -2797,3 +2799,6 @@ void StatsTiledCollapser<T,U>::minMaxPos(IPosition& minPos, IPosition& maxPos)
    maxPos.resize(maxPos_p.nelements());
    maxPos = maxPos_p;
 }
+
+} //# NAMESPACE CASA - END
+

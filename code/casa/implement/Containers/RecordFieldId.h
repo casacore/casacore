@@ -34,6 +34,8 @@
 #include <casa/aips.h>
 #include <casa/BasicSL/String.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Forward Declarations
 class RecordInterface;
 
@@ -147,5 +149,8 @@ inline Bool RecordFieldId::byName() const
     return byName_p;
 }
 
+
+
+} //# NAMESPACE CASA - END
 
 #endif

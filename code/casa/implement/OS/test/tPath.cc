@@ -35,6 +35,7 @@
 #include <unistd.h>
 
 
+#include <casa/namespace.h>
 // <summary>
 // Test program for class Path.
 // </summary>

@@ -34,6 +34,8 @@
 #include <casa/Logging/LogIO.h>
 #include <casa/Arrays/Array.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Forward Declarations
 template <class T> class ImageInterface;
 template <class T> class Lattice;
@@ -163,5 +165,8 @@ private:
                           Bool warnOnly) const;
 };
 
+
+
+} //# NAMESPACE CASA - END
 
 #endif

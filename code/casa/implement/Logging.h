@@ -35,6 +35,8 @@
 //#include <aips/LogTables/TableLogSink.h>
 #include <casa/Logging/LogIO.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 // <module> 
 //
 // <summary> 
@@ -415,5 +417,8 @@
 // </todo>
 
 // </module>
+
+
+} //# NAMESPACE CASA - END
 
 #endif

@@ -39,6 +39,8 @@
 #include <casa/Arrays/Vector.h>
 #include <casa/BasicSL/String.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 // <summary>
 // Error class for <linkto class=MathFunc>MathFunc</linkto> class
 // </summary>
@@ -532,5 +534,8 @@ private:
     T sup_width, scale, exponent, sincpByPi;
 };
 
+
+
+} //# NAMESPACE CASA - END
 
 #endif //AIPS_MATHFUNC_H

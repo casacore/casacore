@@ -34,6 +34,8 @@
 #include <casa/Containers/Block.h>
 #include <casa/Utilities/DataType.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Forward Declarations
 class RecordDesc;
 class RecordInterface;
@@ -143,5 +145,8 @@ protected:
 };
 
 
+
+
+} //# NAMESPACE CASA - END
 
 #endif

@@ -33,6 +33,8 @@
 #include <tables/Tables/TVecTemp.h>
 #include <tables/Tables/TableError.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Construct an empty table vector.
 template<class T>
 ROTableVector<T>::ROTableVector()
@@ -181,3 +183,6 @@ TableVector<T>::~TableVector()
 template<class T>
 void TableVector<T>::reference (const TableVector<T>& that)
     { ROTableVector<T>::reference (that); }
+
+} //# NAMESPACE CASA - END
+

@@ -53,6 +53,8 @@
 #include <lattices/Lattices/LELCoordinates.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 template<class T>
 ImageConcat<T>::ImageConcat()
 : latticeConcat_p(),
@@ -814,3 +816,6 @@ IPosition ImageConcat<T>::shape() const
 {
   return latticeConcat_p.shape();
 }
+
+} //# NAMESPACE CASA - END
+

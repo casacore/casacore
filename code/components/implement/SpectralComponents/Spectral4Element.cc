@@ -31,6 +31,8 @@
 #include <casa/Exceptions/Error.h>
 #include <casa/BasicSL/String.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Member templates
 template <class MT>
 void SpectralElement::set(SpectralElement::Types tp,
@@ -79,3 +81,6 @@ template void SpectralElement::set<Double>(SpectralElement::Types tp,
 				   Vector<Double> const &);
 template void SpectralElement::set<Float>(SpectralElement::Types tp,
 				   Vector<Float> const &);
+
+} //# NAMESPACE CASA - END
+

@@ -40,6 +40,7 @@
 
 #include <casa/iostream.h>
 
+#include <casa/namespace.h>
 TabularCoordinate makeLinearCoordinate(String& axisName,
                                        String& axisUnit,
                                        Double& crval,

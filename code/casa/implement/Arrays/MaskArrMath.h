@@ -38,6 +38,8 @@
 #include <casa/BasicSL/Complex.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 // <summary> Mathematical operations for MaskedArrays (and with Arrays) </summary>
 // <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="tMaskArrMath0 tMaskArrMath1 tMaskArrMath2 tMaskArrExcp">
 //
@@ -423,5 +425,8 @@ template<class T> MaskedArray<T> square(const MaskedArray<T> &val);
 template<class T> MaskedArray<T> cube(const MaskedArray<T> &val);
 
 // </group>
+
+
+} //# NAMESPACE CASA - END
 
 #endif

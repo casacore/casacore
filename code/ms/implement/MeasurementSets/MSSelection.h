@@ -38,6 +38,8 @@
 #include <tables/Tables/ExprNode.h>
 #include <ms/MeasurementSets/MeasurementSet.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 // <summary> 
 // MSSelection: Class to represent a selection on an MS
 // </summary>
@@ -148,6 +150,9 @@ class MSSelection
      selectCorrTypes_p, selectArrayIds_p, selectUVRange_p, 
      selectMSSelect_p, selectObsModes_p, selectCalGrps_p;
 };
+
+
+} //# NAMESPACE CASA - END
 
 #endif
    

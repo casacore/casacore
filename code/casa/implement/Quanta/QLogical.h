@@ -32,9 +32,11 @@
 //# Includes
 #include <casa/aips.h>
 #include <casa/Quanta/Quantum.h>
+#include <casa/Arrays/LogiArrayFwd.h>
+
+namespace casa { //# NAMESPACE CASA - BEGIN
 
 //# Forward Declarations
-#include <casa/Arrays/LogiArrayFwd.h>
 
 //# Typedefs
 
@@ -204,5 +206,8 @@ Bool QMakeBool(const LogicalArray &val);
 //# Inline Implementations
 
 // </group>
+
+
+} //# NAMESPACE CASA - END
 
 #endif

@@ -46,6 +46,8 @@
 
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 SpectralCoordinate::SpectralCoordinate(MFrequency::Types freqType,
                                        MDoppler::Types velType,
                                        const Vector<Double>& velocities,
@@ -351,3 +353,6 @@ void SpectralCoordinate::convertFromMany (Matrix<Double>& world) const
        *jWorld  = (*pConversionMachineFrom_p)(*jWorld).get(unit_p).getValue();
     }
 }
+
+} //# NAMESPACE CASA - END
+

@@ -69,6 +69,8 @@
 #include <casa/fstream.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 template<class T>
 ImageRegrid<T>::ImageRegrid()
 : itsShowLevel(0),
@@ -2174,4 +2176,7 @@ void ImageRegrid<T>::set2DCoordinateGrid (const Cube<Double> &grid,
    itsUser2DCoordinateGridMask = gridMask;
 }
 
+
+
+} //# NAMESPACE CASA - END
 

@@ -33,6 +33,8 @@
 //# Includes
 #include <casa/aips.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Forward Declarations
 class RecordInterface;
 class TableExprData;
@@ -193,5 +195,8 @@ inline Bool TableExprId::byData() const
 }
 
 
+
+
+} //# NAMESPACE CASA - END
 
 #endif

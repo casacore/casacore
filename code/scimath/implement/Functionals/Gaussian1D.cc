@@ -29,6 +29,8 @@
 #include <scimath/Functionals/Gaussian1D.h>
 #include <casa/BasicMath/Math.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Constructors
 
 //# Operators
@@ -39,3 +41,6 @@ T Gaussian1D<T>::eval(typename Function1D<T>::FunctionArg x) const {
 }
 
 //# Member functions
+
+} //# NAMESPACE CASA - END
+

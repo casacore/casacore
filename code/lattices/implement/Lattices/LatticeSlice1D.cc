@@ -39,6 +39,8 @@
 #include <casa/Exceptions/Error.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 template <class T>
 LatticeSlice1D<T>::LatticeSlice1D()
 : itsLatticePtr(0),
@@ -319,3 +321,6 @@ typename LatticeSlice1D<T>::Method LatticeSlice1D<T>::stringToMethod (const Stri
 //
    return method2;
 }
+
+} //# NAMESPACE CASA - END
+

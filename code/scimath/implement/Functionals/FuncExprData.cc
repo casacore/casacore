@@ -31,6 +31,8 @@
 #include <casa/iostream.h>
 #include <casa/iomanip.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Constructors
 FuncExprData::FuncExprData() :
   una2_p(), una1_p(), bin2_p(), bin1_p(),
@@ -169,3 +171,6 @@ ostream &operator<<(ostream &os, const FuncExprData &ed) {
   ed.print(os, ed.function());
   return os;
 }
+
+} //# NAMESPACE CASA - END
+

@@ -54,6 +54,8 @@
 #include <casa/BasicSL/String.h>
 #include <casa/iostream.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 template <class T> 
 Image2DConvolver<T>::Image2DConvolver ()
 {}
@@ -543,4 +545,7 @@ void Image2DConvolver<T>::fillGaussian (T& maxVal, T& volume,
       }
    } 
 }
+
+
+} //# NAMESPACE CASA - END
 

@@ -32,6 +32,8 @@
 
 #include <casa/aips.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 class ConstFitsKeywordList;
 class FitsKeywordList;
 class String;
@@ -169,5 +171,8 @@ public:
     // </group>
 
 };
+
+
+} //# NAMESPACE CASA - END
 
 #endif

@@ -34,6 +34,8 @@
 #include <casa/Arrays/Array.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 // <summary>
 //    Logical valued Arrays.
 // </summary>
@@ -80,5 +82,8 @@
 //# This is empty.  Everything is done by the include files.
 
 // </group>
+
+
+} //# NAMESPACE CASA - END
 
 #endif

@@ -39,6 +39,8 @@
 #include <casa/Arrays/Vector.h>
 #include <casa/Exceptions/Error.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 MSDoppler::MSDoppler():hasBeenDestroyed_p(True) { }
 
 MSDoppler::MSDoppler(const String &tableName, 
@@ -194,3 +196,6 @@ MSDoppler MSDoppler::referenceCopy(const String& newTableName,
     return MSDoppler(MSTable<PredefinedColumns,PredefinedKeywords>::
 		     referenceCopy(newTableName,writableColumns));
 }
+
+} //# NAMESPACE CASA - END
+

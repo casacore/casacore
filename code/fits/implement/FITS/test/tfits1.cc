@@ -36,6 +36,8 @@
 
 # include <casa/Arrays/Vector.h>
 
+#include <casa/namespace.h>
+
 // # include <casa/string.h> // test
 
 // Display basic info and the keyword list

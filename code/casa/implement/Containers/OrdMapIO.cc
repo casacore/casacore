@@ -26,3 +26,9 @@
 //# $Id$
 
 #include <casa/Containers/OrdMapIO.h>
+
+namespace casa { //# NAMESPACE CASA - BEGIN
+
+
+} //# NAMESPACE CASA - END
+

@@ -33,6 +33,8 @@
 #include <casa/Arrays/Slicer.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 // <summary>
 // Class to define a rectangular mask as a region
 // </summary>
@@ -107,5 +109,8 @@ private:
     LCBox itsBox;
 };
 
+
+
+} //# NAMESPACE CASA - END
 
 #endif

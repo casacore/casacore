@@ -29,8 +29,13 @@
 #include <casa/BasicSL/IComplex.h>
 #include <casa/iostream.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 ostream& operator<< (ostream& os, const IComplex& val)
 {
   os << "(" << val.real() << "," << val.imag() << ")";
   return os;
 }
+
+} //# NAMESPACE CASA - END
+

@@ -30,6 +30,8 @@
 #include <casa/Utilities/MUString.h>
 #include <casa/iostream.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Constants
 
 //# Constructors
@@ -63,7 +65,10 @@ Bool Measure::isModel() const {
 }
 
 //# Global functions
-ostream &operator<<(ostream &os, const Measure &meas) {
+std::ostream &operator<<(std::ostream &os, const Measure &meas) {
   meas.print(os);
   return os;
 }
+
+} //# NAMESPACE CASA - END
+

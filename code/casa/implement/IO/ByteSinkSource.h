@@ -32,6 +32,8 @@
 #include <casa/IO/ByteSink.h>
 #include <casa/IO/ByteSource.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 class TypeIO;
 
 // <summary>Class for read/write access to data in a given format.</summary>
@@ -109,5 +111,8 @@ public:
     ~ByteSinkSource();
 };
 
+
+
+} //# NAMESPACE CASA - END
 
 #endif

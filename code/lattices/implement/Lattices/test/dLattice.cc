@@ -46,6 +46,7 @@
 #include <lattices/Lattices/LatticeStepper.h>
 #include <casa/iostream.h>
 
+#include <casa/namespace.h>
 Complex latMean(const Lattice<Complex> & lat) {
   Complex currentSum = 0.0f;
   uInt nPixels = 0u;

@@ -29,6 +29,8 @@
 #include <scimath/Mathematics/AutoDiffIO.h>
 #include <scimath/Functionals/Function.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Constants
 // Default convergence criterium
 template<class T>
@@ -82,3 +84,6 @@ void NonLinearFit<T>::setMaxIter(uInt maxIter) {
   maxiter_p = (maxIter > 0 ? maxIter : 1);
   curiter_p = (curiter_p > maxiter_p ? maxiter_p : curiter_p);
 }
+
+} //# NAMESPACE CASA - END
+

@@ -40,6 +40,7 @@
 #include <casa/Utilities/Assert.h>
 #include <casa/BasicSL/String.h>
 
+#include <casa/namespace.h>
 int main()
 {
     Vector<String> vs(5);

@@ -28,6 +28,9 @@
 //# Includes
 #include <scimath/Functionals/CompoundFunction.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
+//# Constructors
 
 //# Operators
 template <class T>
@@ -109,3 +112,6 @@ void CompoundFunction<AutoDiff<T> >::toParam_p() {
     param_p.mask(i) = functionPtr_p[funpar_p[i]]->mask(locpar_p[i]);
   };
 }
+
+} //# NAMESPACE CASA - END
+

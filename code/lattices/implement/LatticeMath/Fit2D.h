@@ -35,6 +35,8 @@
 #include <scimath/Fitting/NonLinearFitLM.h>
 #include <casa/Logging/LogIO.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 template<class T> class Array;
 template<class T> class Matrix;
 template<class T> class Vector;
@@ -316,6 +318,9 @@ inline Bool Fit2D::includeIt (Float value, const Vector<Float>& range,
 }
 
 
+
+
+} //# NAMESPACE CASA - END
 
 #endif
 

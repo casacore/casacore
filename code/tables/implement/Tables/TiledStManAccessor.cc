@@ -34,6 +34,8 @@
 #include <casa/BasicSL/String.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 ROTiledStManAccessor::ROTiledStManAccessor (const Table& table,
 					    const String& dataManagerName)
 : dataManPtr_p (0)
@@ -188,3 +190,6 @@ void ROTiledStManAccessor::showCacheStatistics (ostream& os) const
 {
     dataManPtr_p->showCacheStatistics (os);
 }
+
+} //# NAMESPACE CASA - END
+

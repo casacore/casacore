@@ -34,6 +34,8 @@
 #include <casa/fstream.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 TableInfo::TableInfo()
 : writeIt_p (True)
 {}
@@ -197,3 +199,6 @@ String TableInfo::subType(Type tableType)
     default: return "";
     };
 }
+
+} //# NAMESPACE CASA - END
+

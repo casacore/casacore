@@ -32,6 +32,8 @@
 //# Includes
 #include <casa/aips.h>
 #include <casa/BasicSL/Complex.h>
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 template <class T> class Vector;
 template <class T> class Array;
 template <class T> class Lattice;
@@ -133,6 +135,9 @@ public:
    static Bool minMax (Complex& dataMin, Complex& dataMax, const MaskedLattice<Complex>* pLattice,
                        const Vector<Complex>& range, Bool noInclude, Bool noExclude);
 };
+
+
+} //# NAMESPACE CASA - END
 
 #endif
 

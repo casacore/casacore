@@ -33,6 +33,8 @@
 #include <scimath/Functionals/Function1D.h>
 #include <casa/Utilities/Assert.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Forward declarations
 template<class T> class Vector;
 
@@ -149,5 +151,8 @@ protected:
 public:
   using Function1D<T>::nparameters;
 };
+
+
+} //# NAMESPACE CASA - END
 
 #endif

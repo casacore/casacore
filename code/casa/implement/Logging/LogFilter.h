@@ -33,6 +33,8 @@
 #include <casa/Logging/LogFilterInterface.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 // <summary>
 // Filter LogMessages on message priority.
 // </summary>
@@ -114,5 +116,8 @@ inline LogMessage::Priority LogFilter::lowestPriority() const
   return lowest_p;
 }
 
+
+
+} //# NAMESPACE CASA - END
 
 #endif

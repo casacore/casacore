@@ -63,6 +63,8 @@
 #include <casa/iostream.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 template <class T>
 ImageSourceFinder<T>::ImageSourceFinder (const ImageInterface<T>& image)
 : pImage_p(image.cloneII())
@@ -543,3 +545,6 @@ ComponentList ImageSourceFinder<T>::findSources (LogIO& os,
    } 
    return listOut;
 }
+
+} //# NAMESPACE CASA - END
+

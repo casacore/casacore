@@ -37,6 +37,8 @@
 #include <casa/stdio.h>
 #include <casa/stdlib.h>
     
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 RFAUVBinner::RFAUVBinner  ( RFChunkStats &ch,const RecordInterface &parm ) : 
     RFAFlagCubeBase(ch,parm),
     RFDataMapper(parm.asArrayString(RF_EXPR),parm.asString(RF_COLUMN)),
@@ -587,3 +589,6 @@ void RFAUVBinner::makePlot ( PGPlotterInterface &pgp,uInt ich )
   plot_py.resize();
   plot_prob.resize();
 }
+
+} //# NAMESPACE CASA - END
+

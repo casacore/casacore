@@ -43,6 +43,8 @@
 #include <measures/Measures/MFrequency.h>
 #include <ms/MeasurementSets/MeasurementSet.h>
 #include <casa/BasicSL/String.h> 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 class MSColumns;
 class FitsInput;
 
@@ -331,6 +333,9 @@ private:
     // Convert the MS-specific keywords in the FITS binary table.
     void convertMSKeywords();
 };
+
+
+} //# NAMESPACE CASA - END
 
 #endif
 

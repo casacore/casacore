@@ -32,6 +32,8 @@
 #include <casa/OS/CanonicalConversion.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 // Define the IBM sizes of the built-in data types.
 
 #define SIZE_IBM_CHAR     1
@@ -360,5 +362,8 @@ inline void IBMConversion::fromLocal (void* to, const unsigned int* from,
 }
 
 
+
+
+} //# NAMESPACE CASA - END
 
 #endif

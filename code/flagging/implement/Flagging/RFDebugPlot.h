@@ -29,6 +29,8 @@
     
 #include <flagging/Flagging/RFCommon.h>
     
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 class PGPlotter;
 class PGPlotterInterface;
     
@@ -97,4 +99,7 @@ public:
   
 };
  
+
+} //# NAMESPACE CASA - END
+
 #endif

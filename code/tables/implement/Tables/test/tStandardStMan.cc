@@ -46,6 +46,7 @@
 #include <casa/iostream.h>
 #include <casa/sstream.h>
 
+#include <casa/namespace.h>
 // <summary>
 // Test program for the StandardStMan storage manager
 // </summary>

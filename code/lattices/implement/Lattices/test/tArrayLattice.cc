@@ -44,6 +44,7 @@
 
 #include <casa/iostream.h>
 
+#include <casa/namespace.h>
 Int const_arg_func(const Int &val)
 {
   return 3*val;

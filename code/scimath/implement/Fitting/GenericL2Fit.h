@@ -39,6 +39,8 @@
 #include <scimath/Functionals/FunctionTraits.h>
 #include <scimath/Mathematics/AutoDiff.h>
 
+namespace casa { // begin namespace casa
+
 //# Forward declarations
 template <class T> class Array;
 template <class T, class U> class Function;
@@ -556,4 +558,5 @@ template<class T> class GenericL2Fit : public LSQaips {
 
 };
 
+} //# End namespace casa
 #endif

@@ -44,6 +44,7 @@
 #include <casa/iostream.h>
 
 
+#include <casa/namespace.h>
 main(int argc, char *argv[])
 {
   try {

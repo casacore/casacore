@@ -33,6 +33,8 @@
 #include <casa/Exceptions/Error.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# This header file defines the error classes belonging to the table
 //# descriptor class and its associated classes.
 
@@ -453,5 +455,8 @@ public:
     ~TableParseError () throw();
 };
 
+
+
+} //# NAMESPACE CASA - END
 
 #endif

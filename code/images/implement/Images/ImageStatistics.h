@@ -37,6 +37,8 @@
 #include <lattices/Lattices/LatticeStatistics.h>
 #include <scimath/Mathematics/NumericTraits.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Forward Declarations
 template <class T> class ImageInterface;
 class IPosition;
@@ -185,6 +187,9 @@ public:
   using LatticeStatistics<T>::MAX;
 };
 
+
+
+} //# NAMESPACE CASA - END
 
 #endif
 

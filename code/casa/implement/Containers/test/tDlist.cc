@@ -30,6 +30,7 @@
 #include <casa/Containers/Dlist.h>
 #include <casa/iostream.h>
 
+#include <casa/namespace.h>
 main() {
 
   Dlist<int> one;

@@ -39,6 +39,8 @@
 #include <measures/Measures/MeasMath.h>
 #include <casa/Quanta/MVDirection.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Forward Declarations
 class MCuvw;
 class String;
@@ -216,6 +218,9 @@ private:
   void fromPole(MVPosition &in);
 
 };
+
+
+} //# NAMESPACE CASA - END
 
 #endif
 

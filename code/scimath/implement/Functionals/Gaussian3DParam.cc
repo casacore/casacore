@@ -33,6 +33,8 @@
 #include <casa/BasicMath/Math.h>
 #include <scimath/Functionals/Function.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 template<class Type> 
 Gaussian3DParam<Type>::Gaussian3DParam() 
   : Function<Type>(NPAR)
@@ -320,4 +322,7 @@ void Gaussian3DParam<Type>::settrigvals() const
   sinTcosP_p = sinT_p * cosP_p;
   sinTsinP_p = sinT_p * sinP_p;
 }
+
+
+} //# NAMESPACE CASA - END
 

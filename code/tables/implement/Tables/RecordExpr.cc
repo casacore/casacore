@@ -37,6 +37,8 @@
 #include <casa/Exceptions/Error.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 TableExprNode makeRecordExpr (const RecordDesc& desc,
 			      Int fieldNumber)
 {
@@ -103,3 +105,6 @@ TableExprNode makeRecordExpr (const RecordInterface& record,
   }
   return new TableExprNodeRecordField (desc.type(fld), fieldNrs);
 }
+
+} //# NAMESPACE CASA - END
+

@@ -158,6 +158,7 @@
 
 # indicate start
   TFILE=""
+  NAMESPACE="notset"
   while read ENTRY 0<&3
   do
     [ "$ENTRY" = "" ] && continue
@@ -176,6 +177,12 @@
         BAD=`expr $BAD + 1`
         STATUS=1
         continue
+      fi
+
+      if [ "$NAMESPACE" = "notset" ]
+      then
+        NAMESPACE="casa"
+        echo "namespace casa { //# NAMESPACE CASA - BEGIN" >> tmp1.$$
       fi
       echo "$*" >> tmp1.$$
       continue
@@ -201,6 +208,11 @@
         STATUS=1
         continue
       fi
+      if [ "$NAMESPACE" = "notset" ]
+      then
+        NAMESPACE="casa"
+        echo "namespace casa { //# NAMESPACE CASA - BEGIN" >> tmp1.$$
+      fi
       echo "$*" >> tmp1.$$
       continue
       ;;
@@ -212,6 +224,11 @@
         BAD=`expr $BAD + 1`
         STATUS=1
         continue
+      fi
+      if [ "$NAMESPACE" = "notset" ]
+      then
+        NAMESPACE="casa"
+        echo "namespace casa { //# NAMESPACE CASA - BEGIN" >> tmp1.$$
       fi
       echo "$*;" >> tmp1.$$
       continue
@@ -263,13 +280,26 @@
 	shift
 	shift
       fi
+      if [ "$NAMESPACE" = "notset" ]
+      then
+        NAMESPACE="casa"
+        echo "namespace casa { //# NAMESPACE CASA - BEGIN" >> tmp1.$$
+      fi
+
+
       echo "$*;" >> tmp1.$$
+
       continue
       ;;
     \#*)
       continue
       ;;
     [0-9][0-9][0-9][0-9])
+      if [ "$NAMESPACE" = "casa" ]
+      then
+        NAMESPACE="notset"
+        echo "} //# NAMESPACE CASA - END" >> tmp1.$$
+      fi
       if [ "$TFILE" != "" ]
       then
 	if [ -f "$TFILE" ]
@@ -305,6 +335,7 @@
         continue
       fi
       TFILE="${BASENAME}_$1.cc"
+      NAMESPACE="notset"
 #    Check for duplicates.
       if grep "^$TFILE" after >/dev/null 2>&1
       then
@@ -353,6 +384,11 @@
     esac
 
   done
+  if [ "$NAMESPACE" = "casa" ]
+  then
+     NAMESPACE="notset"
+     echo "} //# NAMESPACE CASA - END" >> tmp1.$$
+  fi
 
 # Write last
   if [ "$TFILE" != "" ]

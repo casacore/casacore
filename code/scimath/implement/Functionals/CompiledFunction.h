@@ -35,6 +35,8 @@
 #include <casa/BasicSL/Complex.h>
 #include <casa/BasicMath/Math.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Forward declarations
 
 // <summary>
@@ -155,5 +157,8 @@ template <class T> class CompiledFunction : public CompiledParam<T> {
   // </group>
   
 };
+
+
+} //# NAMESPACE CASA - END
 
 #endif

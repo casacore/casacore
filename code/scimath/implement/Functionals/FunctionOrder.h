@@ -36,6 +36,8 @@
 #include <scimath/Functionals/Function.h>
 #include <casa/BasicSL/String.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Forward declarations
 class RecordInterface;
 #include <casa/iosfwd.h>
@@ -159,6 +161,9 @@ ostream &operator<<(ostream &os, const FunctionOrder<T> &par);
 template<class T>
 inline ostream &operator<<(ostream &os, const FunctionOrder<T> &par) {
   return par.print(os); };
+
+
+} //# NAMESPACE CASA - END
 
 #endif
 

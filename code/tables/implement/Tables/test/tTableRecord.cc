@@ -42,6 +42,7 @@
 #include <casa/IO/AipsIO.h>
 #include <casa/iostream.h>
 
+#include <casa/namespace.h>
 // This program tests the TableRecord and TableRecordRep classes.
 // Its expected output (which only consists of exception text)
 // is stored in tTableRecord.out and can be checked using assay.

@@ -36,6 +36,8 @@
 #include <scimath/Mathematics/MedianSlider.h>
 #include <casa/stdio.h>
     
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 RFRowClipper::RFRowClipper( RFChunkStats &ch,RFFlagCube &fl,Float clip,uInt hw,uInt maxp ) :
   chunk(ch),flag(fl),clip_level(clip),halfwin(hw),maxpass(maxp),
   os(fl.logSink())
@@ -220,3 +222,6 @@ Float RFRowClipper::updateSigma (uInt &ifrmax,uInt &itmax,Bool flag_rows )
 
   return dmax;
 }
+
+} //# NAMESPACE CASA - END
+

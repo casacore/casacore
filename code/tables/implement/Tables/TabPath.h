@@ -34,6 +34,8 @@
 #include <casa/Containers/Block.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 // <summary>
 // Search path for table files
 // </summary>
@@ -81,5 +83,8 @@ private:
     uInt           nrDir_p;            // # directories
 };
 
+
+
+} //# NAMESPACE CASA - END
 
 #endif

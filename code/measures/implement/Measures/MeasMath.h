@@ -37,6 +37,8 @@
 #include <casa/Quanta/MVDirection.h>
 #include <measures/Measures/MeasFrame.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Forward Declarations
 class Measure;
 class MRBase;
@@ -306,5 +308,8 @@ private:
 		   const FrameInfo lng, const FrameInfo lat,
 		   Bool doin);
 };
+
+
+} //# NAMESPACE CASA - END
 
 #endif

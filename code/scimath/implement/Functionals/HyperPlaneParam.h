@@ -33,6 +33,8 @@
 #include <casa/aips.h>
 #include <scimath/Functionals/Function.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 // <summary> Parameter handling for a hyper plane function.
 // </summary>
 //
@@ -143,5 +145,8 @@ protected:
 public:
   using Function<T>::nparameters;
 };
+
+
+} //# NAMESPACE CASA - END
 
 #endif

@@ -32,6 +32,8 @@
 #include <casa/aips.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 // <summary>
 // Hold and delete pointers not deleted by object destructors
 // </summary>
@@ -143,5 +145,8 @@ private:
     //# If space were critical, we could make isCarray_p a char
     Bool isCarray_p;
 };
+
+
+} //# NAMESPACE CASA - END
 
 #endif

@@ -37,6 +37,8 @@
 #include <casa/BasicSL/String.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 TSMCoordColumn::TSMCoordColumn (const TSMColumn& column, uInt axisNr)
 : TSMColumn (column),
   axisNr_p  (axisNr)
@@ -224,3 +226,6 @@ TSMCOORDCOLUMN_GETPUT(uInt,uIntV)
 TSMCOORDCOLUMN_GETPUT(double,doubleV)
 TSMCOORDCOLUMN_GETPUT(Complex,ComplexV)
 TSMCOORDCOLUMN_GETPUT(DComplex,DComplexV)
+
+} //# NAMESPACE CASA - END
+

@@ -35,6 +35,8 @@
 
 #include <casa/stdio.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 Bool RFADiffBase::dummy_Bool;
 
 // -----------------------------------------------------------------------
@@ -493,3 +495,6 @@ void RFADiffBase::makePlot ()
   }
   pgp.ask(True);
 }
+
+} //# NAMESPACE CASA - END
+

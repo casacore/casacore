@@ -43,6 +43,8 @@
 #include <casa/Utilities/Assert.h>
 #include <casa/BasicSL/String.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 GaussianShape::GaussianShape()
   :TwoSidedShape(),
    itsShape(1.0, 0.0, 0.0, Quantity(1,"'").getValue("rad"), 1.0, 0.0),
@@ -266,3 +268,6 @@ void GaussianShape::updateFT() {
 // Local Variables: 
 // compile-command: "gmake GaussianShape"
 // End: 
+
+} //# NAMESPACE CASA - END
+

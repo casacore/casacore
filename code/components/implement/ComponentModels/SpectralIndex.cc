@@ -42,6 +42,8 @@
 #include <casa/Utilities/DataType.h>
 #include <casa/BasicSL/String.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 SpectralIndex::SpectralIndex()
   :SpectralModel(),
    itsIndex(0.0),
@@ -284,3 +286,6 @@ Bool SpectralIndex::ok() const {
 // Local Variables: 
 // compile-command: "gmake SpectralIndex"
 // End: 
+
+} //# NAMESPACE CASA - END
+

@@ -30,6 +30,8 @@
 
 //# Includes
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Forward Declarations
 template<class T> class Array;
 class IPosition;
@@ -149,5 +151,8 @@ void retypedArrayEngineGet (Array<TargetType>& out,
 
 // </group>
 
+
+
+} //# NAMESPACE CASA - END
 
 #endif

@@ -35,6 +35,8 @@
 #include <casa/string.h>               // needed for strerror
 #include <casa/stdlib.h>               // needed for system
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 SymLink::SymLink()
 : File()
 {}
@@ -186,3 +188,6 @@ Path SymLink::followSymLink() const
     } while (file.isSymLink());
     return result;
 }
+
+} //# NAMESPACE CASA - END
+

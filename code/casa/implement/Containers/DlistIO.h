@@ -31,6 +31,8 @@
 #include <casa/aips.h>
 #include <casa/Containers/Dlist.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 class AipsIO;
 
 // <summary> Global IO functions </summary>
@@ -46,5 +48,8 @@ template<class t> AipsIO &operator>>(AipsIO &, DlistIter<t> &);
 template<class t> ostream &operator<<(ostream &, const Dlist<t> &);
 template<class t> ostream &operator<<(ostream &, const DlistIter<t> &);
 // </group>
+
+
+} //# NAMESPACE CASA - END
 
 #endif

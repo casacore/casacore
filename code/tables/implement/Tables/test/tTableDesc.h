@@ -32,6 +32,7 @@
 #include <casa/aips.h>
 #include <casa/BasicSL/String.h>
 
+#include <casa/namespace.h>
 // <summary>
 // Example for a non-standard column in a table description
 // </summary>

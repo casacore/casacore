@@ -34,6 +34,8 @@
 #include <casa/Logging/LogIO.h>
 #include <casa/Containers/Record.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 // <summary>
 // Abstract RedFlagger Agent base class
 // </summary>
@@ -192,5 +194,8 @@ inline const String & RFABase::name ()
 {
   return myname;
 }
+
+
+} //# NAMESPACE CASA - END
 
 #endif

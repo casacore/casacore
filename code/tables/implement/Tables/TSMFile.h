@@ -32,6 +32,8 @@
 #include <casa/aips.h>
 #include <casa/IO/BucketFile.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Forward Declarations
 class TiledStMan;
 class AipsIO;
@@ -149,5 +151,8 @@ inline void TSMFile::open()
     { file_p->open(); }
 
 
+
+
+} //# NAMESPACE CASA - END
 
 #endif

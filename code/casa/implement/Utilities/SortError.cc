@@ -27,6 +27,8 @@
 
 #include <casa/Utilities/SortError.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 // Implementation of Sort error classes.
 
 SortError::SortError (Category c) : AipsError("Sort error",c)
@@ -60,3 +62,6 @@ SortInvOpt::SortInvOpt (Category c) : SortError ("Invalid sort option given",c)
 { ; }
 SortInvOpt::~SortInvOpt () throw()
 { ; }
+
+} //# NAMESPACE CASA - END
+

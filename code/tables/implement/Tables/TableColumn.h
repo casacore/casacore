@@ -36,6 +36,8 @@
 #include <casa/BasicSL/String.h>
 #include <casa/Arrays/IPosition.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Forward Declarations
 class Table;
 class BaseTable;
@@ -503,5 +505,8 @@ private:
 };
 
 
+
+
+} //# NAMESPACE CASA - END
 
 #endif

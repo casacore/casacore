@@ -52,6 +52,8 @@
 
 #include <casa/iostream.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 // <summary> 
 // </summary>
 
@@ -407,4 +409,7 @@ void VisSetUtil::Sensitivity(VisSet &vs, Quantity& pointsourcesens, Double& rela
   pointsourcesens=Quantity(sqrt(sumwtsq)/sumwt, "Jy");
   relativesens=sqrt(sumwtsq)/sumwt/naturalsens;
 }
+
+
+} //# NAMESPACE CASA - END
 

@@ -45,6 +45,8 @@
 #endif
 #include <casa/aips.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 // <summary>Mathematical and numerical constants.</summary>
 
 // <use visibility=export>
@@ -584,5 +586,8 @@ namespace C {
   //# <group>
   
 };
+
+
+} //# NAMESPACE CASA - END
 
 #endif

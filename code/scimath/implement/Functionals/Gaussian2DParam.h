@@ -32,6 +32,8 @@
 #include <casa/aips.h>
 #include <scimath/Functionals/Function.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Forward declarations
 template<class T> class Vector;
 
@@ -284,5 +286,8 @@ protected:
 public:
   using Function<T>::nparameters;
 };
+
+
+} //# NAMESPACE CASA - END
 
 #endif

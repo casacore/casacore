@@ -33,6 +33,8 @@
 #include <lattices/Lattices/LELLattCoordBase.h>
 #include <casa/BasicSL/String.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Forward Declarations
 class LatticeExprNode;
 class LattRegionHolder;
@@ -119,6 +121,9 @@ public:
   virtual Int doCompare (const LELImageCoord& other) const;
 };
 
+
+
+} //# NAMESPACE CASA - END
 
 #endif
 

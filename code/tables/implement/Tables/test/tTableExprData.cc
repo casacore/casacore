@@ -34,6 +34,7 @@
 #include <casa/Exceptions/Error.h>
 #include <casa/iostream.h>
 
+#include <casa/namespace.h>
 // <summary>
 // Test program for class TableExprData.
 // </summary>

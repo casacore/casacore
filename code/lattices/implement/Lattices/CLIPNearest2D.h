@@ -33,6 +33,8 @@
 #include <lattices/Lattices/CLInterpolator2D.h>
 #include <casa/Arrays/AxesMapping.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Forward Declarations
 template<class T> class Lattice;
 
@@ -101,5 +103,8 @@ protected:
   using CLInterpolator2D<T>::itsLatticePtr;
 };
 
+
+
+} //# NAMESPACE CASA - END
 
 #endif 

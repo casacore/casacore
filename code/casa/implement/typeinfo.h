@@ -36,4 +36,9 @@
 #include <casa/aips.h>
 #include <typeinfo>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
+
+} //# NAMESPACE CASA - END
+
 #endif

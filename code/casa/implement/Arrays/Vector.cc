@@ -35,6 +35,8 @@
 #include <casa/iostream.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 template<class T> Vector<T>::Vector()
   : Array<T>(IPosition(1,0))
 {
@@ -98,7 +100,7 @@ template<class T> void Vector<T>::initVector(const Block<T> &other, Int nr)
 	this->resize(n);
     }
     for (uInt i=0; i < n; i++) {
-	this->begin_p[i] = other[i];
+	begin_p[i] = other[i];
     }
     return;
 }
@@ -115,7 +117,7 @@ template<class T> Vector<T>::Vector(const Vector<T> &other)
 template<class T> Vector<T>::Vector(const Array<T> &other)
 : Array<T>(other)
 {
-    if (this->ndim() != 1)
+    if (ndim() != 1)
 	throw(ArrayNDimError(1, other.ndim(), "Vector<T>::Vector"
 			     " (const Array<T> &) : ndim != 1"));
     DebugAssert(ok(), ArrayError);
@@ -164,8 +166,8 @@ template<class T> void Vector<T>::resize(const IPosition &l, Bool copyValues)
         Vector<T> oldref(*this);
 	Array<T>::resize(l);
 	uInt minNels = min(this->nelements(), oldref.nelements());
-	objcopy(this->begin_p, oldref.begin_p, minNels,
-		uInt(this->inc_p(0)), uInt(oldref.inc_p(0)));
+	objcopy(begin_p, oldref.begin_p, minNels,
+		uInt(inc_p(0)), uInt(oldref.inc_p(0)));
     } else {
 	Array<T>::resize(l);
     }
@@ -205,19 +207,18 @@ template<class T> Vector<T> &Vector<T>::operator=(const Vector<T> &other)
         return *this;
 
     Bool Conform = conform(other);
-    if (Conform == False && this->length_p(0) != 0)
+    if (Conform == False && length_p(0) != 0)
 	validateConformance(other);  // We can't overwrite, so throw exception
 
     if (Conform != True) { // copy in place
-        this->data_p = new Block<T>(other.length_p(0));
-        this->begin_p = this->data_p->storage();
-        this->length_p = other.length_p;
-	this->nels_p = other.nels_p;
-	this->originalLength_p = this->length_p;
-	this->makeSteps();
+        data_p = new Block<T>(other.length_p(0));
+        begin_p = data_p->storage();
+        length_p = other.length_p;
+	nels_p = other.nels_p;
+	originalLength_p = length_p;
+	makeSteps();
     }
-    objcopy(this->begin_p, other.begin_p, this->nels_p,
-	    this->inc_p(0), other.inc_p(0));
+    objcopy(begin_p, other.begin_p, nels_p, inc_p(0), other.inc_p(0));
     return *this;
 }
 
@@ -225,10 +226,10 @@ template<class T> Vector<T> &Vector<T>::operator=(const Vector<T> &other)
 template<class T> void Vector<T>::toBlock(Block<T> & other) const
 {
     DebugAssert(ok(), ArrayError);
-    uInt vec_length = this->nelements();
+    uInt vec_length = nelements();
     // Make sure the block has enough space, but there is no need to copy elements
     other.resize(vec_length, True, False);
-    objcopy(other.storage(), this->begin_p, this->nels_p, 1U, this->inc_p(0));
+    objcopy(other.storage(), begin_p, nels_p, 1U, inc_p(0));
 }
 
 template<class T> Array<T> &Vector<T>::operator=(const Array<T> &a)
@@ -248,7 +249,7 @@ template<class T> Vector<T> Vector<T>::operator()(const Slice &slice)
     Int b, l, s;       // begin length step
     if (slice.all()) {
 	b = 0;
-	l = this->length_p(0);
+	l = length_p(0);
 	s = 1;
     } else {
 	b = slice.start();
@@ -261,7 +262,7 @@ template<class T> Vector<T> Vector<T>::operator()(const Slice &slice)
 	throw(ArrayError("Vector<T>::operator()(Slice) : step < 1"));
     } else if (l < 0) {
 	throw(ArrayError("Vector<T>::operator()(Slice) : length < 0"));
-    } else if (b+(l-1)*s >= this->length_p(0)) {
+    } else if (b+(l-1)*s >= length_p(0)) {
 	throw(ArrayError("Vector<T>::operator()(Slice) : Desired slice extends"
 			 " beyond the end of the array"));
     } else if (b < 0) {
@@ -317,5 +318,8 @@ void Vector<T>::takeStorage(const IPosition &shape, const T *storage)
 
 template<class T> Bool Vector<T>::ok() const
 {
-    return ( (this->ndim() == 1) ? (Array<T>::ok()) : False );
+    return ( (ndim() == 1) ? (Array<T>::ok()) : False );
 }
+
+} //# NAMESPACE CASA - END
+

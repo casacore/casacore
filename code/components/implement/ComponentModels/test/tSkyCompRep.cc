@@ -54,13 +54,14 @@
 
 #include <casa/iostream.h>
 
+#include <casa/namespace.h>
 Bool pixelReflection (const SkyCompRep& sky, const CoordinateSystem& cSys,
                       const Vector<Quantum<Double> >& beam, const Unit& unit,
                       Double tol=1.0e-5);
 
 int main() {
   try {
-//  SkyCompRep();
+    //  SkyCompRep();
     const SkyCompRep constComp;
 //   virtual const Flux<Double> & flux() const;
     AlwaysAssert(near(constComp.flux().value(0), 1.0, C::dbl_epsilon), 
@@ -168,12 +169,14 @@ int main() {
 //   virtual Flux<Double> sample(const MDirection & direction, 
 // 			      const MVAngle & pixelSize, 
 // 			      const MFrequency & centerFrequency) const;
+//   virtual void project(ImageInterface<Float> & plane) const;
 //   virtual Flux<Double> visibility(const Vector<Double> & uvw,
 // 				  const Double & frequency) const;
 //   virtual Bool fromRecord(String & errorMessage, 
 // 			  const RecordInterface & record);
 //   virtual Bool toRecord(String & errorMessage, 
 // 			RecordInterface & record) const;
+
 //   virtual Bool ok() const;
     {
       AlwaysAssert(constComp.ok() == True, AipsError);

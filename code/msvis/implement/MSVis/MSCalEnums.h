@@ -36,6 +36,8 @@
 #include <casa/BasicSL/String.h>
 #include <casa/Utilities/DataType.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 // <summary> 
 // MSCalEnums: Field name dictionary for MeasurementSet and calibration tables
 // </summary>
@@ -269,6 +271,9 @@ class MSCalEnums
   // Enum => Basic data type
   static SimpleOrderedMap <Int, DataType> theirTypeMap;
 };
+
+
+} //# NAMESPACE CASA - END
 
 #endif
    

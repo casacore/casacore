@@ -47,6 +47,8 @@
 #include <casa/BasicSL/String.h>
 #include <casa/Quanta/QuantumHolder.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 ComponentShape::ComponentShape() 
   :itsDir(),
    itsDirErrLat(0, "rad"),
@@ -350,3 +352,6 @@ Bool ComponentShape::fromAngQRecord(Quantum<Double>& retVal,
 // Local Variables: 
 // compile-command: "gmake ComponentShape"
 // End: 
+
+} //# NAMESPACE CASA - END
+

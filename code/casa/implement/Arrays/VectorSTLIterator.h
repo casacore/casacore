@@ -33,6 +33,8 @@
 #include <casa/Arrays/Vector.h>
 #include <iterator>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Forward Declarations
 
 // <summary> AIPS++ Vector iterator </summary>
@@ -158,5 +160,8 @@ class VectorSTLIterator
   // Current element pointer
   pointer iter_p;
 };
+
+
+} //# NAMESPACE CASA - END
 
 #endif

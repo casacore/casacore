@@ -33,6 +33,8 @@
 #include <scimath/Functionals/FunctionFactoryErrors.h>
 #include <scimath/Functionals/SerialHelper.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 // <summary>
 //
 //
@@ -129,6 +131,9 @@ private:
 
     String ftype;
 };
+
+
+} //# NAMESPACE CASA - END
 
 #endif
 

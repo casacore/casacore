@@ -31,6 +31,8 @@
 #include <casa/stdio.h>                  // needed for sprintf
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 uInt hashFunc(const ObjectID &key)
 {
     // We should check to see if this hash is any good
@@ -81,3 +83,6 @@ String ObjectID::extractIDs (Block<ObjectID>& objectIDs,
     result += str;
     return result;
 }
+
+} //# NAMESPACE CASA - END
+

@@ -36,6 +36,8 @@
 
 #include <casa/iostream.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Constants
 const Double SpectralElement::SigmaToFWHM = sqrt(8.0*C::ln2);
 
@@ -452,4 +454,7 @@ Double SpectralElement::sigmaToFWHM (const Double sigma) {
 Double SpectralElement::sigmaFromFWHM(const Double fwhm) {
   return fwhm / SigmaToFWHM;
 }
+
+
+} //# NAMESPACE CASA - END
 

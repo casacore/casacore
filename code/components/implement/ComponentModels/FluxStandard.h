@@ -35,6 +35,8 @@
 #include <measures/Measures/MFrequency.h>
 #include <components/ComponentModels/Flux.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 // <summary> 
 // FluxStandard: Compute flux densities for standard reference sources
 // </summary>
@@ -111,5 +113,8 @@ class FluxStandard
   FluxStandard::FluxScale itsFluxScale;
 
 };
+
+
+} //# NAMESPACE CASA - END
 
 #endif

@@ -40,5 +40,8 @@
 // Define the special aips++ macros
 #include <casa/aipsdef.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
+} //# NAMESPACE CASA - END
 
 #endif

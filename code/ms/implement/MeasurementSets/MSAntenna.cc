@@ -38,6 +38,8 @@
 #include <casa/Arrays/Vector.h>
 #include <casa/Exceptions/Error.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 MSAntenna::MSAntenna():hasBeenDestroyed_p(True) { }
 
 MSAntenna::MSAntenna(const String &tableName, TableOption option) 
@@ -196,3 +198,6 @@ MSAntenna MSAntenna::referenceCopy(const String& newTableName,
     return MSAntenna(MSTable<PredefinedColumns,PredefinedKeywords>::
 		     referenceCopy(newTableName,writableColumns));
 }
+
+} //# NAMESPACE CASA - END
+

@@ -34,6 +34,7 @@
 #include <tables/Tables/ScalarColumn.h>
 
 
+#include <casa/namespace.h>
 class VSCExample
 {
 public:

@@ -32,6 +32,8 @@
 #include <casa/BasicSL/Complex.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 // <summary>C++ Interface to the Sgi/Cray Scientific Library (SCSL)</summary>
 // <synopsis>
 // These are C++ wrapper functions for the transform routines in the SGI/Cray 
@@ -2214,4 +2216,7 @@ static void zdfft3d(Int isign, Int n1, Int n2, Int n3, Double scale,
 		    isys); 
 // </group>
 };
+
+} //# NAMESPACE CASA - END
+
 #endif

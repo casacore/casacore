@@ -34,6 +34,8 @@
 #include <casa/iostream.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 ObjectID::ObjectID(Bool makeNull)
   : sequence_number_p(0), process_id_p(0), creation_time_p(0), hostname_p("")
 {
@@ -215,3 +217,6 @@ ostream &operator<<(ostream &os, const ObjectID &id)
     os << "[" << tmp << "]";
     return os;
 }
+
+} //# NAMESPACE CASA - END
+

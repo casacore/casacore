@@ -33,6 +33,8 @@
 #include <casa/Arrays/IPosition.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 // <summary>
 // A helper class for stepping through Lattices.
 // </summary>
@@ -260,5 +262,8 @@ inline uInt LatticeIndexer::nelements() const
 }
 
 
+
+
+} //# NAMESPACE CASA - END
 
 #endif

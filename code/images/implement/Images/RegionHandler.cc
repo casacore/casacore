@@ -36,6 +36,8 @@
 #include <casa/sstream.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 RegionHandler::~RegionHandler()
 {}
 
@@ -138,3 +140,6 @@ String RegionHandler::makeUniqueRegionName (const String& rootName,
   }
   return String();
 }
+
+} //# NAMESPACE CASA - END
+

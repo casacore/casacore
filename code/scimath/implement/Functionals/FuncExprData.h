@@ -37,6 +37,8 @@
 //# Forward Declarations
 #include <casa/iosfwd.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 // <summary> Data and enumerations for functional expressions
 // </summary>
 
@@ -258,6 +260,9 @@ private:
 // Show a list of all defined operators and functions
 ostream &operator<<(ostream &os, const FuncExprData &ed);
 // </group>
+
+
+} //# NAMESPACE CASA - END
 
 #endif
 

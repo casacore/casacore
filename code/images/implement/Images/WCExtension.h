@@ -32,6 +32,8 @@
 #include <images/Images/WCCompound.h>
 #include <casa/Arrays/IPosition.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Forward declarations
 class WCBox;
 
@@ -140,5 +142,8 @@ private:
 		   IPosition& stretchRegionAxes) const;
 };
 
+
+
+} //# NAMESPACE CASA - END
 
 #endif

@@ -30,6 +30,8 @@
 
 #include <casa/Containers/Map.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 class AipsIO;
 
 // <summary>
@@ -56,5 +58,8 @@ class AipsIO;
 template<class key, class value> ostream& operator<<(ostream&, const Map<key,value>&);
 template<class key, class value> ostream &operator<<(ostream &, const ConstMapIter<key,value> &);
 // </group>
+
+
+} //# NAMESPACE CASA - END
 
 #endif

@@ -34,6 +34,8 @@
 #include <casa/Quanta/MVDirection.h>
 #include <casa/Quanta/Unit.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 // A different file so that apps which don't need measures don't link them all
 // in (measures bring in tables and lots of other stuff)
 
@@ -80,3 +82,6 @@ Bool DirectionCoordinate::toPixel(Vector<Double> &pixel,
 //
    return toPixel(pixel, world_tmp);
 }
+
+} //# NAMESPACE CASA - END
+

@@ -31,6 +31,8 @@
 #include <casa/Utilities/Copy.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 // Copy the entire target array to the source array.
 // It will check if the shapes and sizes match.
 template<class SourceType, class TargetType>
@@ -109,3 +111,6 @@ void retypedArrayEngineGet (Array<TargetType>& out,
     in.freeStorage (dataIn, deleteIn);
     out.putStorage (dataOut, deleteOut);
 }
+
+} //# NAMESPACE CASA - END
+

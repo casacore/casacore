@@ -34,6 +34,8 @@
 #include <casa/Exceptions/Error.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 template <class T>
 LELCondition<T>::LELCondition (const CountedPtr<LELInterface<T> >& expr,
 	                       const CountedPtr<LELInterface<Bool> >& cond)
@@ -143,3 +145,6 @@ void LELCondition<T>::resync()
     pExpr_p->resync();
     pCond_p->resync();
 }
+
+} //# NAMESPACE CASA - END
+

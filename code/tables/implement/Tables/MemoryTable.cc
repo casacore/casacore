@@ -38,6 +38,8 @@
 #include <casa/OS/HostInfo.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 MemoryTable::MemoryTable (SetupNewTable& newtab, uInt nrrow, Bool initialize)
 : BaseTable   (newtab.name(), newtab.option(), 0),
   colSetPtr_p (0),
@@ -316,3 +318,6 @@ DataManager* MemoryTable::findDataManager (const String& dataManagerName) const
 {
   return colSetPtr_p->findDataManager (dataManagerName);
 }
+
+} //# NAMESPACE CASA - END
+

@@ -30,6 +30,8 @@
 
 #include <casa/Containers/Link.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 // <summary>abstract base class for notices</summary> 
 // <use visibility=export>
 // <reviewed reviewer="Friso Olnon" date="1995/03/16" tests="" demos="">
@@ -228,6 +230,9 @@ protected:
     // </group>
     
 };
+
+
+} //# NAMESPACE CASA - END
 
 #endif
 

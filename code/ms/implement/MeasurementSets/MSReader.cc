@@ -37,6 +37,8 @@
 #include <tables/Tables/TableRecord.h>
 #include <casa/Utilities/Assert.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 MSReader::MSReader(const MeasurementSet &ms)
     : itsMS(ms), itsMSCols(ms), itsSecUnit("s"), itsIds(ms), itsTabId(-1),
       itsMainId(-1), itsAnt1Id(-1), itsAnt2Id(-1), itsDDId(-1), itsDopplerId(-1),
@@ -536,3 +538,6 @@ const Table &MSReader::table(const String &name) const
     Int tabId = itsTabId(name);
     return itsTabRows[tabId].table();
 }
+
+} //# NAMESPACE CASA - END
+

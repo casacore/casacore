@@ -35,6 +35,7 @@
 #include <casa/iostream.h>
 #include <casa/sstream.h>
 
+#include <casa/namespace.h>
 // Generally used variables
 String X = "Hello";
 String Y = "world";

@@ -33,6 +33,8 @@
 #include <casa/System/PGPlotterInterface.h>
 #include <casa/Utilities/CountedPtr.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 class String;
 template<class T> class Vector;
 
@@ -294,5 +296,8 @@ public:
     // Throws an exception if !isAttached()
     void ok() const;
 };
+
+
+} //# NAMESPACE CASA - END
 
 #endif

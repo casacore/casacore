@@ -33,6 +33,8 @@
 #include <casa/iostream.h>
 #include <casa/iomanip.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 // Constructors:
 
 template<class T> 
@@ -347,4 +349,7 @@ void StatAcc<T>::printSummaryList (ostream& os, const String& caption) const
 
 
 
+
+
+} //# NAMESPACE CASA - END
 

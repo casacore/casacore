@@ -36,6 +36,8 @@
 #include <casa/BasicSL/Complex.h>
 #include <casa/IO/ByteIO.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Forward Declarations
 class TypeIO;
 class ByteIO;
@@ -450,5 +452,8 @@ inline void AipsIO::testgetLength()
     }
 }
 
+
+
+} //# NAMESPACE CASA - END
 
 #endif

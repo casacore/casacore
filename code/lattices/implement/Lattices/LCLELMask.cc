@@ -30,6 +30,8 @@
 #include <casa/Exceptions/Error.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 LCLELMask::LCLELMask()
 {}
 
@@ -135,3 +137,6 @@ TableRecord LCLELMask::toRecord (const String&) const
   throw (AipsError ("LCLELMask::toRecord is not supported"));
   return TableRecord();
 }
+
+} //# NAMESPACE CASA - END
+

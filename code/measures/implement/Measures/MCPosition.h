@@ -37,6 +37,8 @@
 #include <measures/Measures/MConvertBase.h>
 #include <measures/Measures/MPosition.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Forward Declarations
 class MCPosition;
 class String;
@@ -157,5 +159,8 @@ private:
 		 const MConvertBase &mc);
   
 };
+
+
+} //# NAMESPACE CASA - END
 
 #endif

@@ -34,6 +34,9 @@
 
 //# Forward declarations
 #include <casa/iosfwd.h>
+
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 class AipsIO;
 class LogIO;
 class IPosition;
@@ -343,5 +346,8 @@ void writeAsciiVector (const Vector<T>& vec, const Char* fileName);
 
 // </group>
 
+
+
+} //# NAMESPACE CASA - END
 
 #endif

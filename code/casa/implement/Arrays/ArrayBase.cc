@@ -30,6 +30,8 @@
 #include <casa/Utilities/Assert.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 ArrayBase::ArrayBase()
 : nels_p       (0),
   ndimen_p     (0),
@@ -501,3 +503,6 @@ void ArrayBase::checkCubeShape()
     baseMakeSteps();
   }
 }
+
+} //# NAMESPACE CASA - END
+

@@ -33,6 +33,8 @@
 #include <images/Images/WCBox.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 // <summary>
 // Combine multiple ImageRegion's into a new dimension.
 // </summary>
@@ -161,5 +163,8 @@ private:
     WCBox itsExtendBox;
 };
 
+
+
+} //# NAMESPACE CASA - END
 
 #endif

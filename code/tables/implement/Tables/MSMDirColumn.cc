@@ -37,6 +37,8 @@
 #include <tables/Tables/DataManError.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 MSMDirColumn::MSMDirColumn (MSMBase* smptr, int dataType)
 : MSMColumn (smptr, dataType, True),
   nrelem_p  (0)
@@ -278,3 +280,6 @@ void MSMDirColumn::deleteArray (uInt rownr)
   void* datap = getArrayPtr (rownr);
   deleteData (datap, False);
 }
+
+} //# NAMESPACE CASA - END
+

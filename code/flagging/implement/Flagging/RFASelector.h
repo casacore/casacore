@@ -31,6 +31,8 @@
 #include <flagging/Flagging/RFDataMapper.h>
 #include <casa/Arrays/LogiVector.h>
     
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 // <summary>
 // RFASelector: flags pixels/rows based on a specified selection
 // </summary>
@@ -116,4 +118,7 @@ protected:
 
     
     
+
+} //# NAMESPACE CASA - END
+
 #endif

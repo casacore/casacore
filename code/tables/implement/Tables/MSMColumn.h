@@ -38,6 +38,8 @@
 #include <casa/Arrays/IPosition.h>
 #include <casa/BasicSL/String.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Forward declarations
 class MSMBase;
 
@@ -288,5 +290,8 @@ private:
   MSMColumn& operator= (const MSMColumn&);
 };
 
+
+
+} //# NAMESPACE CASA - END
 
 #endif

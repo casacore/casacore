@@ -40,6 +40,8 @@
 
 #include <casa/sstream.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 LinearCoordinate::LinearCoordinate(uInt naxis)
 : Coordinate(),
   transform_p(naxis), 
@@ -458,7 +460,7 @@ Bool LinearCoordinate::near(const Coordinate& other,
    }
    for (i=0; i<crval_p.nelements(); i++) {
       if (!exclude(i)) {
-         if (!::near(crval_p[i],lCoord.crval_p[i],tol)) {
+         if (!::casa::near(crval_p[i],lCoord.crval_p[i],tol)) {
             oss << "The LinearCoordinates have differing reference values for axis "
                 << i;
             set_error(String(oss));
@@ -636,4 +638,7 @@ void LinearCoordinate::setDefaultWorldMixRanges ()
 {
    Coordinate::setDefaultWorldMixRanges (worldMin_p, worldMax_p);
 }
+
+
+} //# NAMESPACE CASA - END
 

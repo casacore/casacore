@@ -29,6 +29,9 @@
 # include <fits/FITS/blockio.h>
 # include <casa/string.h>
 #include <unistd.h>
+
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //======================================================================================
 void BlockIO::errmsg(IOErrs e, char *s) { 
     ostringstream msgline;
@@ -333,3 +336,6 @@ BlockOutput::BlockOutput(const char *f, int r, int n,
 BlockOutput::BlockOutput(int f, int r, int n, 
 			 FITSErrorHandler errhandler) :
 	BlockIO(f,r,n,errhandler) { }
+
+} //# NAMESPACE CASA - END
+

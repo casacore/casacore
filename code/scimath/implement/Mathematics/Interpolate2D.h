@@ -31,6 +31,8 @@
 //# Includes
 #include <casa/aips.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Forward declarations
 template <typename T> class Vector;
 template <typename T> class Matrix;
@@ -236,6 +238,9 @@ class Interpolate2D {
   FuncPtrBool itsFuncPtrBool;
 
 };
+
+
+} //# NAMESPACE CASA - END
 
 #endif
 

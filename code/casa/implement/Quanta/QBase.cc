@@ -29,6 +29,8 @@
 #include <casa/Exceptions/Error.h>
 #include <casa/Quanta/QBase.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 QBase::QBase() 
 : qUnit() {}
 
@@ -68,3 +70,6 @@ ostream &operator<<(ostream &os, const QBase &meas) {
   meas.print(os);
   return os;
 }
+
+} //# NAMESPACE CASA - END
+

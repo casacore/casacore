@@ -31,6 +31,8 @@
 //# Includes
 #include <casa/Arrays/Vector.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Forward Declarations
 class Slicer;
 
@@ -242,5 +244,8 @@ private:
 };
 
 
+
+
+} //# NAMESPACE CASA - END
 
 #endif

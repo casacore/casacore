@@ -28,6 +28,8 @@
 //# Includes
 #include <scimath/Functionals/HyperPlane.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Constructors
 
 //# Operators
@@ -40,3 +42,6 @@ T HyperPlane<T>::eval(typename Function<T>::FunctionArg x) const {
 }
 
 //# Member functions
+
+} //# NAMESPACE CASA - END
+

@@ -38,6 +38,8 @@
 #include <casa/Arrays/Vector.h>
 #include <casa/Exceptions/Error.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 MSDataDescription::MSDataDescription():hasBeenDestroyed_p(True) { }
 
 MSDataDescription::MSDataDescription(const String &tableName, 
@@ -167,3 +169,6 @@ MSDataDescription MSDataDescription::referenceCopy(const String& newTableName,
     return MSDataDescription(MSTable<PredefinedColumns,PredefinedKeywords>::
 		     referenceCopy(newTableName,writableColumns));
 }
+
+} //# NAMESPACE CASA - END
+

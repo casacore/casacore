@@ -35,6 +35,8 @@
 #include <casa/Arrays/IPosition.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 // <summary>
 // Traverse a Lattice by cursor shape
 // </summary>
@@ -472,5 +474,8 @@ private:
   uInt itsPolicy;           //# what to do if the cursor does hang over
 };
 
+
+
+} //# NAMESPACE CASA - END
 
 #endif

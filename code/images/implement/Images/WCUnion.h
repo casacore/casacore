@@ -32,6 +32,8 @@
 #include <images/Images/WCCompound.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 // <summary>
 // Make the union of 2 or more image regions.
 // </summary>
@@ -142,5 +144,8 @@ protected:
 				    const IPosition& outOrder) const;
 };
 
+
+
+} //# NAMESPACE CASA - END
 
 #endif

@@ -30,6 +30,8 @@
 #include <casa/OS/LECanonicalConversion.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 LECanonicalDataConversion::~LECanonicalDataConversion()
 {}
 
@@ -341,3 +343,6 @@ unsigned int LECanonicalDataConversion::externalSize (const double*) const
 {
     return SIZE_LECAN_DOUBLE;
 }
+
+} //# NAMESPACE CASA - END
+

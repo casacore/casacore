@@ -29,6 +29,8 @@
 
 #include <casa/Quanta/UnitMap.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# constants
 
 // IAU definition of light time (s) unit distance to calculate IAU units
@@ -117,3 +119,6 @@ void UnitMap::initUMSI2() {
 						 UnitVal(24.*3600.*36525,"s"),
 						 "century")));
 }
+
+} //# NAMESPACE CASA - END
+

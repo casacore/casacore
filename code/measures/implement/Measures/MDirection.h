@@ -35,6 +35,8 @@
 #include <measures/Measures/MeasRef.h>
 #include <casa/Quanta/MVDirection.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Forward Declarations
 class MDirection;
 class MCDirection;
@@ -381,6 +383,9 @@ private:
 //# Member functions
 
 };
+
+
+} //# NAMESPACE CASA - END
 
 #endif
 

@@ -40,6 +40,8 @@
 #include <casa/Exceptions/Error.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 template <class T>
 RO_LatticeIterator<T>::RO_LatticeIterator()
 {
@@ -333,3 +335,6 @@ Array<T>& LatticeIterator<T>::woCursor()
 {
   return itsIterPtr->cursor (False, True);
 }
+
+} //# NAMESPACE CASA - END
+

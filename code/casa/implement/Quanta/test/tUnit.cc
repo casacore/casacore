@@ -34,6 +34,7 @@
 #include <casa/Quanta/UnitName.h>
 #include <casa/iostream.h>
 
+#include <casa/namespace.h>
 int main () {
     try {
 	cout << "Test units class (Unit)..." << endl;

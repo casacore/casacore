@@ -49,6 +49,8 @@
 #include <lattices/Lattices/LatticeCache.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 template <class T>
 LatticeCache<T>::LatticeCache(const LatticeCache<T> & other)
 {
@@ -321,4 +323,7 @@ Int LatticeCache<T>::getFreeTile(Bool readonly) {
   return foundTile;
 }
 
+
+
+} //# NAMESPACE CASA - END
 

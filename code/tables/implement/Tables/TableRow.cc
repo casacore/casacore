@@ -39,6 +39,8 @@
 #include <tables/Tables/TableError.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 ROTableRow::ROTableRow()
 : itsRecord (0)
 {
@@ -988,3 +990,6 @@ Bool TableRow::namesConform (const TableRecord& that) const
     }
     return True;
 }
+
+} //# NAMESPACE CASA - END
+

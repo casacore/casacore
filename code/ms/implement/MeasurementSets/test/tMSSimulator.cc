@@ -38,6 +38,7 @@
 #include <measures/Measures/MDirection.h>
 #include <casa/BasicSL/Constants.h>
 
+#include <casa/namespace.h>
 int main()
 {
     try {

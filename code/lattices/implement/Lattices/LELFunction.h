@@ -35,6 +35,8 @@
 #include <lattices/Lattices/LELFunctionEnums.h>
 #include <casa/Containers/Block.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Forward Declarations
 
 
@@ -854,5 +856,8 @@ private:
 };
 
 
+
+
+} //# NAMESPACE CASA - END
 
 #endif

@@ -41,6 +41,8 @@
 #include <casa/Utilities/Assert.h>
 #include <casa/Exceptions/Error.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 ImageRegion::ImageRegion()
 : LattRegionHolder (uInt(0)),
   itsWC            (0)
@@ -243,3 +245,6 @@ LattRegionHolder* ImageRegion::makeComplement() const
     }
     return LattRegionHolder::makeComplement();
 }
+
+} //# NAMESPACE CASA - END
+

@@ -30,6 +30,9 @@
 #include <scimath/Mathematics.h>
 #include <casa/Utilities/Assert.h>
 #include <casa/Exceptions/Error.h>
+
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 #if ! defined(HAVE_SCSL)
 #define PN(a)
 #else
@@ -374,3 +377,6 @@ void SCSL::zdfft3d(Int PN(isign), Int PN(n1), Int PN(n2), Int PN(n3),
 	   (double*) work, (int*) &isys); 
 #endif
 }
+
+} //# NAMESPACE CASA - END
+

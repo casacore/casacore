@@ -28,6 +28,8 @@
 #include <ms/MeasurementSets/MSColumns.h>
 #include <ms/MeasurementSets/MeasurementSet.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 ROMSColumns::ROMSColumns(const MeasurementSet& ms):
   ROMSMainColumns(ms),
   antenna_p(ms.antenna()),
@@ -112,3 +114,6 @@ void MSColumns::setDirectionRef(MDirection::Types ref)
 // Local Variables: 
 // compile-command: "gmake MSColumns"
 // End: 
+
+} //# NAMESPACE CASA - END
+

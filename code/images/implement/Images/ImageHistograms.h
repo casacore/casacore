@@ -36,6 +36,8 @@
 #include <casa/BasicSL/String.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Forward Declarations
 template <class T> class ImageInterface;
 class IPosition;
@@ -205,5 +207,8 @@ protected:
   using LatticeHistograms<T>::cursorAxes_p;
 };
 
+
+
+} //# NAMESPACE CASA - END
 
 #endif

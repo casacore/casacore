@@ -34,6 +34,8 @@
 #include <casa/Arrays/Vector.h>
 #include <casa/Quanta/Quantum.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Forward Declarations
 
 
@@ -199,6 +201,9 @@ private:
     static Vector<Double> makeRad(const Quantum<Vector<Double> > &in);
 // </group>
 };
+
+
+} //# NAMESPACE CASA - END
 
 #endif
 

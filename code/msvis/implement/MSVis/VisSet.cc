@@ -55,6 +55,8 @@
 #include <casa/Logging/LogSink.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 VisSet::VisSet(MeasurementSet& ms,const Block<Int>& columns, 
 	       const Matrix<Int>& chanSelection, Double timeInterval,
 	       Bool compress)
@@ -460,4 +462,7 @@ void VisSet::removeCalSet(MeasurementSet& ms) {
     };
   };
 }
+
+
+} //# NAMESPACE CASA - END
 

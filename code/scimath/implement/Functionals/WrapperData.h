@@ -32,6 +32,8 @@
 #include <casa/aips.h>
 #include <scimath/Functionals/WrapperBase.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Forward declarations
 
 // <summary> Aid in constructing function objects from C++ functions 
@@ -468,5 +470,6 @@ protected:
 
 #undef WrapperData_FF
 
+} //# NAMESPACE CASA - END
 
 #endif

@@ -41,6 +41,8 @@
 #include <measures/Measures/MEpoch.h>
 #include <casa/Quanta/Quantum.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 class LogIO;
 class MVFrequency;
 class VelocityMachine;
@@ -601,5 +603,8 @@ private:
    void updateVelocityMachine (const String& velUnit, 
                                MDoppler::Types velType);
 };
+
+
+} //# NAMESPACE CASA - END
 
 #endif

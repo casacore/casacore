@@ -31,6 +31,8 @@
 #include <casa/BasicMath/Math.h>
 #include <casa/Exceptions/Error.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 TableExprRange::TableExprRange()
 : tabColPtr_p(0)
 {}
@@ -177,3 +179,6 @@ void TableExprRange::mixOr (const TableExprRange& that)
 	eval_p = etmp(Slice(0,nrres));
     }
 }
+
+} //# NAMESPACE CASA - END
+

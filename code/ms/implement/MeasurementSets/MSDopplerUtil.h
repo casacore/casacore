@@ -31,6 +31,8 @@
 #include <casa/aips.h>
 #include <ms/MeasurementSets/MeasurementSet.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 // <summary>
 // A utility class for MS Doppler tracking information
 // </summary>
@@ -96,6 +98,9 @@ private:
   // Underlying MeasurementSet
   MeasurementSet ms_p;
 };
+
+
+} //# NAMESPACE CASA - END
 
 #endif
 

@@ -28,6 +28,8 @@
 #include <ms/MeasurementSets/MSStateColumns.h>
 #include <ms/MeasurementSets/MSState.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 ROMSStateColumns::ROMSStateColumns(const MSState& msState):
   cal_p(msState, MSState::columnName(MSState::CAL)),
   flagRow_p(msState, MSState::columnName(MSState::FLAG_ROW)),
@@ -111,3 +113,6 @@ void MSStateColumns::attach(MSState& msState)
 // Local Variables: 
 // compile-command: "gmake MSStateColumns"
 // End: 
+
+} //# NAMESPACE CASA - END
+

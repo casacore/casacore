@@ -51,6 +51,8 @@
 #include <scimath/Mathematics/AutoDiffMath.h>
 #include <casa/sstream.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Constructors
 template <class T>
 FunctionHolder<T>::FunctionHolder() 
@@ -344,7 +346,7 @@ Bool FunctionHolder<T>::putType(String &error, RecordInterface &out) const {
     order_p = Int(-3.0+sqrt(1.0+8.0*hold_p.ptr()->nparameters())+0.1)/2;
   } else if (dynamic_cast<const HyperPlane<T> *>(hold_p.ptr())) {
     nf_p = HYPERPLANE;
-    order_p = hold_p.ptr()->nparameters();
+    order_p = hold_p.ptr()->nparameters()-1;
   } else if (dynamic_cast<const Polynomial<T> *>(hold_p.ptr())) {
     nf_p = POLYNOMIAL;
     order_p = hold_p.ptr()->nparameters()-1;
@@ -517,3 +519,6 @@ void FunctionHolder<T>::setParameters(Function<AutoDiff<T> > *&fn,
     (*fn)[i] = AutoDiff<T>(params[i], fn->nparameters(), i);
   };
 }
+
+} //# NAMESPACE CASA - END
+

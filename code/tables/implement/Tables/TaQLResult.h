@@ -28,10 +28,13 @@
 #ifndef TABLES_TAQLRESULT_H
 #define TABLES_TAQLRESULT_H
 
+
 //# Includes
 #include <casa/aips.h>
 #include <tables/Tables/Table.h>
 #include <tables/Tables/ExprNode.h>
+
+namespace casa {
 
 // <summary>
 // Class to hold the result of a TaQL command.
@@ -93,5 +96,5 @@ private:
   TableExprNode itsNode;
 };
 
-
+}
 #endif

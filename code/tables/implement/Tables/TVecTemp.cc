@@ -31,6 +31,8 @@
 #include <casa/Arrays/Vector.h>
 #include <tables/Tables/TableError.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Construct from a vector.
 template<class T>
 TabVecTemp<T>::TabVecTemp (const Vector<T>& vec)
@@ -77,3 +79,6 @@ void TabVecTemp<T>::putVal (uInt i, const T& val)
 template<class T>
 void TabVecTemp<T>::set (const T& val)
     { vecPtr_p->set (val); }
+
+} //# NAMESPACE CASA - END
+

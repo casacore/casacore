@@ -36,6 +36,8 @@
 #include <casa/Containers/Block.h>
 #include <casa/BasicSL/String.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Forward Declarations
 class ForwardColumnEngine;
 class BaseColumn;
@@ -515,5 +517,8 @@ inline const String& ForwardColumnEngine::suffix() const
 inline void ForwardColumnEngine::setSuffix (const String& suffix)
     { suffix_p = suffix; }
 
+
+
+} //# NAMESPACE CASA - END
 
 #endif

@@ -28,6 +28,8 @@
 #include <casa/BasicSL/Constants.h>
 #include <scimath/Mathematics/MathFunc.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //
 // Define static members of MathFunc<T> for g++
 //
@@ -387,3 +389,6 @@ float sphfn(Int ialf, Int im, float eta)
   sphfn(&ialphahold, &imhold, &iflaghold, &etahold, &psihold, &ierrhold);
   return psihold;
 }
+
+} //# NAMESPACE CASA - END
+

@@ -33,6 +33,8 @@
 #include <casa/Arrays/IPosition.h>
 #include <casa/Arrays/Slicer.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Forward Declarations
 class TableRecord;
 class RecordInterface;
@@ -261,5 +263,8 @@ inline Bool LCRegion::operator!= (const LCRegion& other) const
 }
 
 
+
+
+} //# NAMESPACE CASA - END
 
 #endif

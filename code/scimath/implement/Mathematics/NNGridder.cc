@@ -30,6 +30,8 @@
 #include <casa/BasicSL/Constants.h>
 #include <casa/Arrays/ArrayMath.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 // Constructor
 template <class Domain, class Range>
 NNGridder<Domain, Range>::NNGridder(const IPosition& shape,
@@ -90,4 +92,7 @@ Range NNGridder<Domain, Range>::correctionFactor1D(Int loc, Int len)
     return 1.0;
   }
 }
+
+
+} //# NAMESPACE CASA - END
 

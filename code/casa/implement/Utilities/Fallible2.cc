@@ -32,8 +32,13 @@
 #include <casa/Utilities/Fallible.h>
 #include <casa/Exceptions/Error.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 void AccessInvalidFallibleObject()
 {
     throw(AipsError("Fallible<T>:: invalid object accessed. Sorry I don't know"
 		    " from where"));
 }
+
+} //# NAMESPACE CASA - END
+

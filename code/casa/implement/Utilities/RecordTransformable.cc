@@ -28,6 +28,8 @@
 #include <casa/Utilities/RecordTransformable.h>
 #include <casa/BasicSL/String.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 RecordTransformable::~RecordTransformable() {
   // Nothing
 }
@@ -46,3 +48,6 @@ const String &RecordTransformable::ident() const {
 // Local Variables: 
 // compile-command: "gmake OPTLIB=1 RecordTransformable"
 // End: 
+
+} //# NAMESPACE CASA - END
+

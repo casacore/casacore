@@ -31,6 +31,8 @@
 
 #include <scimath/Mathematics/Gridder.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 // <summary>
 // Does convolutional gridding
 // </summary>
@@ -88,4 +90,7 @@ protected:
   using Gridder<Domain,Range>::centerVec;
   using Gridder<Domain,Range>::fillCorrectionVectors;
 };
+
+} //# NAMESPACE CASA - END
+
 #endif

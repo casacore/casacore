@@ -31,6 +31,8 @@
 //# Includes
 #include <casa/BasicSL/Complex.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 // <summary>
 // Templated functions to convert scalars from one type to another.
 // </summary>
@@ -52,5 +54,8 @@ template<class T, class F> inline void convertScalar (T& out, F in)
 inline void convertScalar (Complex& out, DComplex in)
   { out = Complex(in.real(), in.imag()); }
 // </group>
+
+
+} //# NAMESPACE CASA - END
 
 #endif

@@ -48,6 +48,7 @@
 
 #include <casa/iostream.h>
 
+#include <casa/namespace.h>
 DirectionCoordinate makeCoordinate(MDirection::Types type,
                                    Projection& proj,
                                    Vector<Double>& crval,

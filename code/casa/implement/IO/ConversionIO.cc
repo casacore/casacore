@@ -31,6 +31,8 @@
 #include <casa/IO/ByteIO.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 ConversionIO::ConversionIO (DataConversion* dataConversion,
 			    ByteIO* byteIO, uInt bufferLength, Bool takeOver)
 : TypeIO          (byteIO, takeOver),
@@ -186,3 +188,6 @@ CONVERSIONIO_DOIT(Int64)
 CONVERSIONIO_DOIT(uInt64)
 CONVERSIONIO_DOIT(Float)
 CONVERSIONIO_DOIT(Double)
+
+} //# NAMESPACE CASA - END
+

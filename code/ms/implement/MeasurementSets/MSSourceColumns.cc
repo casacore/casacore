@@ -33,6 +33,8 @@
 #include <measures/Measures/MFrequency.h>
 #include <measures/Measures/MRadialVelocity.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 ROMSSourceColumns::ROMSSourceColumns(const MSSource& msSource):
   isNull_p(True),
   calibrationGroup_p(),
@@ -332,3 +334,6 @@ void MSSourceColumns::setRadialVelocityRef(MRadialVelocity::Types ref)
 // Local Variables: 
 // compile-command: "gmake MSSourceColumns"
 // End: 
+
+} //# NAMESPACE CASA - END
+

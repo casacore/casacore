@@ -40,6 +40,7 @@
 #include <casa/iostream.h>
 
 
+#include <casa/namespace.h>
 Bool checkFloat (const LatticeExprNode& expr, 
 		 const Array<Float>& result,
 		 Float scalarResult,

@@ -48,6 +48,8 @@
 #include <casa/OS/Memory.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 // <module>
 //
 // <summary>
@@ -139,5 +141,8 @@
 // </todo>
 
 // </module>
+
+
+} //# NAMESPACE CASA - END
 
 #endif

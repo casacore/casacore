@@ -32,6 +32,7 @@
 #include <coordinates/Coordinates.h>
 #include <casa/iostream.h>
 
+#include <casa/namespace.h>
 void list (Bool ok, Bool ok2, Vector<Int>& wmap, Vector<Int>& wtranspose,
            Vector<Int>& pmap, Vector<Int>& ptranspose,
            CoordinateSystem& cSys1,

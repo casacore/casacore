@@ -41,6 +41,8 @@
 #include <casa/Exceptions/Error.h> 
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 // LELFunction1D
 template <class T>
 LELFunction1D<T>::LELFunction1D(const LELFunctionEnums::Function function,
@@ -1042,3 +1044,6 @@ void LELFunctionND<T>::resync()
     arg_p[i].resync();
   }
 }
+
+} //# NAMESPACE CASA - END
+

@@ -52,6 +52,8 @@
 
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 ImageFFT::ImageFFT()
 : itsTempImagePtr(0),
   itsInImagePtrFloat(0),
@@ -693,3 +695,6 @@ Bool ImageFFT::findSky(LogIO& os, Int& dC, Vector<Int>& pixelAxes,
    }
    return ok;
 }
+
+} //# NAMESPACE CASA - END
+

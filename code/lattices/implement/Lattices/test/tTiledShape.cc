@@ -34,6 +34,7 @@
 #include <casa/sstream.h>
 
 
+#include <casa/namespace.h>
 // <summary>
 // Test program for TiledShape class.
 // </summary>

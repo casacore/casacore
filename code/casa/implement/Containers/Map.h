@@ -33,6 +33,8 @@
 #include <casa/aips.h>
 #include <casa/Exceptions/Error.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //
 // Work around bugs in SUN\'s stupid compiler
 //
@@ -601,14 +603,14 @@ public:
   //
   //+grp
   value &define(const key &ky, const value &val) {
-    if (!this->isValid())
+    if (!isValid())
       throw_invalid_mapiter_error();
-    return(this->Rep->define(ky,val));
+    return(Rep->define(ky,val));
   }
   void remove(const key &ky) {
-    if (!this->isValid())
+    if (!isValid())
       throw_invalid_mapiter_error();
-    this->Rep->remove(ky);
+    Rep->remove(ky);
   }
   //-grp
 
@@ -623,9 +625,9 @@ public:
   }
 
   value &defaultVal() {
-    if (!this->isValid())
+    if (!isValid())
       throw_invalid_mapiter_error();
-    return this->Rep->defaultVal();
+    return Rep->defaultVal();
   }
   //-grp
 
@@ -633,9 +635,9 @@ public:
   // Clear all of the mappings.
   //
   void clear() {
-    if (!this->isValid())
+    if (!isValid())
       throw_invalid_mapiter_error();
-    this->Rep->clear();
+    Rep->clear();
   }
 
   //
@@ -650,9 +652,9 @@ public:
   }
 
   value &operator()(const key &ky) {
-    if (!this->isValid())
+    if (!isValid())
       throw_invalid_mapiter_error();
-    return(this->Rep->operator()(ky));
+    return(Rep->operator()(ky));
   }
   //-grp
 
@@ -669,9 +671,9 @@ public:
   }
 
   value *isDefined(const key &ky) {
-    if (!this->isValid())
+    if (!isValid())
       throw_invalid_mapiter_error();
-    return(this->Rep->isDefined(ky));
+    return(Rep->isDefined(ky));
   }
   //-grp
 
@@ -736,7 +738,7 @@ public:
   //
   //+grp
   Map<key,value> &container() { 
-    return(this->Rep->container());}
+    return(Rep->container());}
   const Map<key,value> &container() const {
     return(ConstMapIter<key,value>::container());}
   //-grp
@@ -768,5 +770,8 @@ protected:
   //-grp
 
 };
+
+
+} //# NAMESPACE CASA - END
 
 #endif

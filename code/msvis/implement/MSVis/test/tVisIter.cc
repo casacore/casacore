@@ -33,6 +33,7 @@
 #include <msvis/MSVis/VisibilityIterator.h>
 #include <casa/OS/Timer.h>
 #include <casa/iomanip.h>
+#include <casa/namespace.h>
 using namespace std;
 
 int main(int argc, char **argv) {

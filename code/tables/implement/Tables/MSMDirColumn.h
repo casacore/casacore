@@ -35,6 +35,8 @@
 #include <casa/Arrays/IPosition.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 // <summary>
 // Memory storage manager for table arrays
 // </summary>
@@ -232,5 +234,8 @@ private:
 };
 
 
+
+
+} //# NAMESPACE CASA - END
 
 #endif

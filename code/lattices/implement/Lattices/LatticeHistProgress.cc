@@ -34,6 +34,8 @@
 
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 LatticeHistProgress::~LatticeHistProgress()
 {
     delete itsMeter;
@@ -70,4 +72,7 @@ void LatticeHistProgress::done()
 }
  
 
+
+
+} //# NAMESPACE CASA - END
 

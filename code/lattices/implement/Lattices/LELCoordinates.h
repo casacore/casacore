@@ -33,6 +33,8 @@
 #include <casa/aips.h>
 #include <casa/Utilities/CountedPtr.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Forward Declarations
 class LELLattCoordBase;
 
@@ -164,5 +166,8 @@ private:
     CountedPtr<LELLattCoordBase> coords_p;
 };
 
+
+
+} //# NAMESPACE CASA - END
 
 #endif

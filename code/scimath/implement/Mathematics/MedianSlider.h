@@ -31,6 +31,8 @@
 
 #include <casa/Arrays/Vector.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Forward Declarations
 
 // <summary>
@@ -146,5 +148,8 @@ inline Float MedianSlider::midpoint ( Bool &flag )
   return prevVal(halfwin+1,flag);
 }
 
+
+
+} //# NAMESPACE CASA - END
 
 #endif

@@ -31,6 +31,8 @@
 #include <casa/Arrays/ArrayLogical.h>
 #include <casa/Arrays/ArrayUtil.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //-------------------------------------------------------------------------
 
 MSFieldIndex::MSFieldIndex(const MSField& field)
@@ -135,4 +137,7 @@ Vector<Int> MSFieldIndex::matchSourceId(const Vector<Int>& sourceIds)
 
 //-------------------------------------------------------------------------
 
+
+
+} //# NAMESPACE CASA - END
 

@@ -29,4 +29,9 @@
 
 #include <casa/Containers/RecordFieldId.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Everything is inlined
+
+} //# NAMESPACE CASA - END
+

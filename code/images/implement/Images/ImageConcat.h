@@ -37,6 +37,8 @@
 #include <lattices/Lattices/LatticeConcat.h>
 #include <images/Images/ImageInterface.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Forward Declarations
 class CoordinateSystem;
 template <class T> class ImageSummary;
@@ -283,5 +285,8 @@ protected:
   using ImageInterface<T>::setMiscInfoMember;
 };
 
+
+
+} //# NAMESPACE CASA - END
 
 #endif

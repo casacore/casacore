@@ -36,8 +36,12 @@
 #include <casa/iostream.h>
 #include <sstream>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 using std::ostringstream;
 using std::istringstream;
 using std::stringstream;
+
+} //# NAMESPACE CASA - END
 
 #endif

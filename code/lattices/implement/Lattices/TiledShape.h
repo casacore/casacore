@@ -31,6 +31,8 @@
 //# Includes
 #include <casa/Arrays/IPosition.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Forward Declarations
 template<class T> class Vector;
 
@@ -173,5 +175,8 @@ inline IPosition TiledShape::tileShape (uInt nrPixelsPerTile,
 	                       defaultTileShape (nrPixelsPerTile, tolerance));
 }
 
+
+
+} //# NAMESPACE CASA - END
 
 #endif

@@ -34,6 +34,8 @@
 #include <casa/Arrays/Vector.h>
 #include <coordinates/Coordinates/Coordinate.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 template<class Domain, class Range> class Interpolate1D;
 template<class T> class Quantum;
 class LogIO;
@@ -322,5 +324,8 @@ private:
                                         const Vector<Double> &worldValues);
 };
 
+
+
+} //# NAMESPACE CASA - END
 
 #endif

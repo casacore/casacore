@@ -37,6 +37,8 @@
 #include <casa/Containers/Block.h>
 #include <casa/OS/Conversion.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Forward declarations
 
 
@@ -319,5 +321,8 @@ inline void SSMColumn::setColNr (uInt aColNr)
   itsColNr = aColNr;
 }
 
+
+
+} //# NAMESPACE CASA - END
 
 #endif

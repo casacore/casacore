@@ -46,6 +46,7 @@
 #include <casa/Utilities/Assert.h>
 #include <casa/iostream.h>
 
+#include <casa/namespace.h>
 int main (Int argc, Char** argv) {
 
   uChar tp = '0';			// # of constraints

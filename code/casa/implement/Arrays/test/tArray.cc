@@ -57,6 +57,7 @@
 #include <casa/BasicMath/Functional.h>
 
 
+#include <casa/namespace.h>
 //# Define a simple functional class doing the square.
 class FuncSqr: public Functional<Float,Float>
 {

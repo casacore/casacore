@@ -43,6 +43,8 @@
 #include <casa/BasicSL/String.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 template<class M>
 ROArrayMeasColumn<M>::ROArrayMeasColumn()
 : itsDataCol      (0),
@@ -686,3 +688,6 @@ void ArrayMeasColumn<M>::put (uInt rownr, const Array<M>& meas)
     itsArrOffsetCol->put (rownr, offsetArr);
   }
 }
+
+} //# NAMESPACE CASA - END
+

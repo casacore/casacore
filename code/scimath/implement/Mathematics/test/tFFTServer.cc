@@ -42,6 +42,7 @@
 #include <casa/Utilities/Assert.h>
 #include <casa/iostream.h>
 
+#include <casa/namespace.h>
 int main() {
   try {
     FFTServer<Float, Complex> server(IPosition(1,8));

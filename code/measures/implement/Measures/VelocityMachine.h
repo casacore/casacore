@@ -36,6 +36,8 @@
 #include <measures/Measures/MCDoppler.h>
 #include <measures/Measures/MeasConvert.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Forward Declarations
 class MeasFrame;
 template <class T> class Vector;
@@ -312,5 +314,8 @@ private:
   // Copy data members
   void copy(const VelocityMachine &other);
 };
+
+
+} //# NAMESPACE CASA - END
 
 #endif

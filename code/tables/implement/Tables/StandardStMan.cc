@@ -29,6 +29,8 @@
 #include <tables/Tables/StandardStMan.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 StandardStMan::StandardStMan (Int bucketSize,
 			      uInt cacheSize)
 : SSMBase (bucketSize, cacheSize)
@@ -42,3 +44,6 @@ StandardStMan::StandardStMan (const String& dataManagerName,
 
 StandardStMan::~StandardStMan()
 {}
+
+} //# NAMESPACE CASA - END
+

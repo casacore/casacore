@@ -32,6 +32,9 @@
 #include <casa/aips.h>
 #include <casa/Arrays/Vector.h>
 #include <measures/Measures/Measure.h>
+#include <casa/iosfwd.h>
+
+namespace casa { //# NAMESPACE CASA - BEGIN
 
 //# Forward Declarations
 class MVEpoch;
@@ -42,7 +45,6 @@ class MeasComet;
 class FrameRep;
 template <class T> class Vector;
 template <class Qtype> class Quantum;
-#include <casa/iosfwd.h>
 
 // <summary> Container for Measure frame </summary>
 
@@ -416,5 +418,8 @@ private:
 // Output a frame
 ostream &operator<<(ostream &os, MeasFrame &mf);
 // </group>
+
+
+} //# NAMESPACE CASA - END
 
 #endif

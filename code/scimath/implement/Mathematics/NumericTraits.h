@@ -32,6 +32,8 @@
 #include <casa/aips.h>
 #include <casa/BasicSL/Complex.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //
 // <summary> Relationships between numeric data types </summary>
 // <use visibility=export>
@@ -396,5 +398,8 @@ public:
 };
 
 #undef NumericTraits_DC
+
+
+} //# NAMESPACE CASA - END
 
 #endif

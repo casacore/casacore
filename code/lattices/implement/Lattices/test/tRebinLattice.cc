@@ -43,6 +43,7 @@
 #include <casa/iostream.h>
 
 
+#include <casa/namespace.h>
 void doit1 (const IPosition& shape, const IPosition& factors);
 void doit2 ();
 void doit3 ();

@@ -34,6 +34,8 @@
 //# Needed to get the proper Complex typedef's
 #include <casa/BasicSL/Complex.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 template<class T> class Matrix;
 
 // <summary>
@@ -567,5 +569,8 @@ uInt partialFuncHelper (Int& nelemCont,
 			const IPosition& collapseAxes);
 // </group>
 
+
+
+} //# NAMESPACE CASA - END
 
 #endif

@@ -35,6 +35,8 @@
 #include <casa/iostream.h>
 #include <casa/sstream.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 LCEllipsoid::LCEllipsoid()
 {}
 
@@ -323,3 +325,6 @@ void LCEllipsoid::defineMask()
     mask.putStorage (maskData, deleteIt);
     setMask (mask);
 }
+
+} //# NAMESPACE CASA - END
+

@@ -35,6 +35,8 @@
 #include <casa/BasicSL/Complex.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //<summary>
 //    Linear algebra functions on Vectors and Matrices.
 // </summary>
@@ -158,5 +160,8 @@ inline void getri(const int *m, DComplex *a, const int *lda, const int *ipiv,
 		  DComplex *work, const int *lwork, int *info)
    { zgetri(m, a, lda, ipiv, work, lwork, info); }
 
+
+
+} //# NAMESPACE CASA - END
 
 #endif

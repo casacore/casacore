@@ -27,6 +27,11 @@
 
 #include <casa/Containers/Dlist.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 int Dlist_deprecated_flag = 0;
 int ConstDlistIter_deprecated_flag = 0;
 int DlistIter_deprecated_flag = 0;
+
+} //# NAMESPACE CASA - END
+

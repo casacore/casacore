@@ -32,6 +32,8 @@
 #include <casa/aips.h>
 #include <casa/Containers/Block.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Forward declarations
 
 // <summary>
@@ -148,5 +150,8 @@ private:
 
   //# Member functions
 };
+
+
+} //# NAMESPACE CASA - END
 
 #endif

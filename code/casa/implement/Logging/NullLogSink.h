@@ -32,6 +32,8 @@
 #include <casa/aips.h>
 #include <casa/Logging/LogSinkInterface.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 // <summary>
 // Throw away all messages.
 // </summary>
@@ -90,6 +92,9 @@ public:
     // Returns the id of the LogSink in use...
     String id( ) const;
 };
+
+
+} //# NAMESPACE CASA - END
 
 #endif
 

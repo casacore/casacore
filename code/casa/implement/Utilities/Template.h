@@ -33,6 +33,8 @@
 #include <casa/Containers/Block.h>
 #include <casa/BasicSL/String.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Forward declarations
 class Regex;
 template <class T> class Vector;
@@ -259,5 +261,8 @@ class Template {
   static const String reposName;
 
 };
+
+
+} //# NAMESPACE CASA - END
 
 #endif

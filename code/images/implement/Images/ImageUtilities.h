@@ -35,6 +35,8 @@
 #include <measures/Measures/Stokes.h>
 #include <casa/Utilities/PtrHolder.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 template <class T> class ImageInterface;
 template <class T> class Vector;
 template <class T> class Quantum;
@@ -290,5 +292,8 @@ private:
                                              const IPosition& pixelAxes);
 };
 
+
+
+} //# NAMESPACE CASA - END
 
 #endif

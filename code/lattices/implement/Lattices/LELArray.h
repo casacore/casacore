@@ -33,6 +33,8 @@
 #include <lattices/Lattices/LELArrayBase.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 // <summary>
 // This LEL class holds an array with a mask.
 // </summary>
@@ -148,5 +150,8 @@ private:
    LELArrayRef<T>& operator= (const LELArrayRef<T>& other);
 };
 
+
+
+} //# NAMESPACE CASA - END
 
 #endif

@@ -34,6 +34,8 @@
 #include <scimath/Functionals/Function.h>
 #include <casa/BasicSL/String.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Forward declarations
 class FuncExpression;
 
@@ -149,5 +151,8 @@ protected:
   FuncExpression *functionPtr_p;
 
 };
+
+
+} //# NAMESPACE CASA - END
 
 #endif

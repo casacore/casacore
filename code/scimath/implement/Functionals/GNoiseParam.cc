@@ -28,6 +28,8 @@
 //# Includes
 #include <scimath/Functionals/GNoiseParam.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 template<class T>
 GNoiseParam<T>::GNoiseParam() :
   Function<T>(0), genit_p(), noise_p(&genit_p, 0.0, 1.0) {}
@@ -54,3 +56,6 @@ GNoiseParam<T> &GNoiseParam<T>::operator=(const GNoiseParam<T> &other) {
   };
   return *this;
 }
+
+} //# NAMESPACE CASA - END
+

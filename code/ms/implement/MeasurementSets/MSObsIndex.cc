@@ -31,6 +31,8 @@
 #include <casa/Arrays/ArrayLogical.h>
 #include <casa/Arrays/ArrayUtil.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //-------------------------------------------------------------------------
 
 MSObservationIndex::MSObservationIndex(const MSObservation& observationTable)
@@ -73,4 +75,7 @@ Vector<Int> MSObservationIndex::matchProjectCode(const String& projectCode)
 
 //-------------------------------------------------------------------------
 
+
+
+} //# NAMESPACE CASA - END
 

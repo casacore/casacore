@@ -34,6 +34,8 @@
 #include <tables/Tables/TableDesc.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 // <summary>
 // Helper class for tiled access to an array in a file.
 // </summary>
@@ -108,5 +110,8 @@ private:
   TableDesc itsDesc;
 };
 
+
+
+} //# NAMESPACE CASA - END
 
 #endif

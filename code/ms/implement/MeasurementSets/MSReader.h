@@ -49,6 +49,8 @@
 #include <casa/Quanta/Unit.h>
 #include <casa/BasicSL/String.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 // <summary>
 // Read from an MS, coordinating all of the subtables in the process
 // </summary>
@@ -141,6 +143,9 @@ private:
     MSReader(const MSReader &);
     MSReader& operator=(const MSReader &);
 };
+
+
+} //# NAMESPACE CASA - END
 
 #endif
 

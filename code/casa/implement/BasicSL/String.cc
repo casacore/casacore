@@ -32,6 +32,8 @@
 #include <casa/string.h>
 #include <casa/sstream.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 // Special constructors
 String::String(ostringstream &os) {
   *this = os.str();
@@ -509,3 +511,6 @@ template string::iterator std::transform<string::iterator>(string::iterator, str
 #endif
 
 #endif
+
+} //# NAMESPACE CASA - END
+

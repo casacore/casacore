@@ -29,6 +29,8 @@
 #include <lattices/Lattices/LCRegionFixed.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 LCRegionFixed::LCRegionFixed()
 {}
 
@@ -66,3 +68,6 @@ void LCRegionFixed::setMask (const Array<Bool>& mask)
     itsMask = mask;
     setMaskPtr (itsMask);
 }
+
+} //# NAMESPACE CASA - END
+

@@ -34,6 +34,8 @@
 #include <lattices/Lattices/PagedArray.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 // <summary>
 // Class to define a rectangular mask as a region
 // </summary>
@@ -196,5 +198,8 @@ private:
     PagedArray<Bool> itsMask;
 };
 
+
+
+} //# NAMESPACE CASA - END
 
 #endif

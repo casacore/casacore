@@ -29,6 +29,8 @@
 #include <lattices/Lattices/CLInterpolator2D.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 template<class T>
 CLInterpolator2D<T>::~CLInterpolator2D()
 {}
@@ -72,3 +74,6 @@ void CLInterpolator2D<T>::set (MaskedLattice<T>* lattice,
 template<class T>
 void CLInterpolator2D<T>::preset()
 {}
+
+} //# NAMESPACE CASA - END
+

@@ -35,6 +35,8 @@
 #include <casa/BasicSL/String.h>
 #include <casa/Arrays/Vector.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 // <summary>
 //  View multiple FITS files as a single table
 // </summary>
@@ -136,5 +138,8 @@ private:
 
     FITSTabular* defaultMaker(const String& fileName);
 };
+
+
+} //# NAMESPACE CASA - END
 
 #endif

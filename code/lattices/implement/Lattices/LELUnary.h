@@ -34,6 +34,8 @@
 #include <lattices/Lattices/LELScalar.h>
 #include <lattices/Lattices/LELUnaryEnums.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Forward Declarations
 
 
@@ -314,5 +316,8 @@ private:
 };
 
 
+
+
+} //# NAMESPACE CASA - END
 
 #endif

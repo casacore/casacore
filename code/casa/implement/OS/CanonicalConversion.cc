@@ -31,6 +31,8 @@
 #include <casa/iostream.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 unsigned int CanonicalConversion::toLocalChar (void* to, const void* from,
 					       unsigned int nr)
 {
@@ -216,3 +218,6 @@ CANONICALCONVERSION_DO (CONVERT_CAN_FLOAT,  SIZE_CAN_FLOAT,
 CANONICALCONVERSION_DO (CONVERT_CAN_DOUBLE, SIZE_CAN_DOUBLE,
 			toLocalDouble, fromLocalDouble,
 			byteToLocalDouble, byteFromLocalDouble, double)
+
+} //# NAMESPACE CASA - END
+

@@ -55,6 +55,7 @@
 #include <casa/Arrays/Slice.h>
 #include <casa/iostream.h>
 
+#include <casa/namespace.h>
 // <summary> Test program for virtual column engine </summary>
 
 // This program tests the class DummyVirtualEngine and related classes.

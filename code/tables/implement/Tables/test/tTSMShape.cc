@@ -28,6 +28,7 @@
 #include <tables/Tables/TSMShape.h>
 #include <casa/iostream.h>
 
+#include <casa/namespace.h>
 // <summary>
 // Test program for class tTSMShape.
 // </summary>

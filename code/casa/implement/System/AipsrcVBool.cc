@@ -33,6 +33,8 @@
 #include <casa/Arrays/Vector.h>
 #include <casa/sstream.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Data
 AipsrcVector<Bool> AipsrcVector<Bool>::myp_p;
 
@@ -102,3 +104,6 @@ void AipsrcVector<Bool>::save(uInt keyword) {
   };
   Aipsrc::save((myp_p.ntlst)[keyword-1], String(oss));
 }
+
+} //# NAMESPACE CASA - END
+

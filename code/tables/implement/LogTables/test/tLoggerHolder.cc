@@ -32,6 +32,7 @@
 #include <casa/Utilities/Assert.h>
 #include <casa/iostream.h>
 
+#include <casa/namespace.h>
 void doIt (Bool tempClose)
 {
   LoggerHolder sublogger (False);

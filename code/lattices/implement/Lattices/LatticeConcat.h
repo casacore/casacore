@@ -33,6 +33,8 @@
 #include <lattices/Lattices/MaskedLattice.h>
 #include <casa/Containers/Block.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Forward Declarations
 class IPosition;
 class Slicer;
@@ -275,5 +277,8 @@ private:
                        uInt nLattices);
 };
 
+
+
+} //# NAMESPACE CASA - END
 
 #endif

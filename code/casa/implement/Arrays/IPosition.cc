@@ -32,6 +32,8 @@
 #include <casa/Exceptions/Error.h>
 #include <casa/iostream.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 // <thrown>
 //    <item> AllocError
 // </thrown>
@@ -964,7 +966,7 @@ Bool operator >= (Int val, const IPosition& right)
     return result;
 }
 
-ostream& operator<< (ostream& os, const IPosition& ip)
+std::ostream& operator<< (std::ostream& os, const IPosition& ip)
 {
     os << "[";
     for (uInt i=0; i<ip.nelements(); i++) {
@@ -1111,3 +1113,6 @@ void IPosition::throwIndexError() const
     // defined symbols with the current objectcenter.
     throw(AipsError("IPosition::operator() - index error"));
 }
+
+} //# NAMESPACE CASA - END
+

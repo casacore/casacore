@@ -37,6 +37,8 @@
 #include <tables/Tables/TableSyncData.h>
 #include <casa/IO/AipsIO.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Forward Declarations
 class SetupNewTable;
 class TableLock;
@@ -281,5 +283,8 @@ private:
                                        //# False = little endian canonical
 };
 
+
+
+} //# NAMESPACE CASA - END
 
 #endif

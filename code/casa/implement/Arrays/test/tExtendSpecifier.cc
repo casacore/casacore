@@ -31,6 +31,7 @@
 #include <casa/Exceptions/Error.h>
 #include <casa/iostream.h>
 
+#include <casa/namespace.h>
 void doIt()
 {
   {

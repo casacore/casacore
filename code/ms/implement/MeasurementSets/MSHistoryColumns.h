@@ -36,6 +36,8 @@
 #include <measures/TableMeasures/ScalarQuantColumn.h>
 #include <casa/BasicSL/String.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 class MSHistory;
 // <summary>
 // A class to provide easy read-only access to MSHistory columns
@@ -254,4 +256,7 @@ private:
   //# Access to Quantum columns
   ScalarQuantColumn<Double> timeQuant_p;
 };
+
+} //# NAMESPACE CASA - END
+
 #endif

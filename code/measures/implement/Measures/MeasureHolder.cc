@@ -48,6 +48,8 @@
 #include <casa/Logging/LogIO.h>
 #include <casa/Logging/LogOrigin.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Constructors
 MeasureHolder::MeasureHolder() 
   : hold_p(), mvhold_p(0), convertmv_p(False) {
@@ -466,4 +468,7 @@ void MeasureHolder::createMV(uInt n) {
   for (uInt i=0; i<mvhold_p.nelements(); i++) mvhold_p[i] = 0;
 }
 
+
+
+} //# NAMESPACE CASA - END
 

@@ -31,6 +31,8 @@
 #include <tables/Tables/ColDescSet.h>
 #include <casa/BasicSL/String.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 ROMSProcessorColumns::
 ROMSProcessorColumns(const MSProcessor& msProcessor):
   flagRow_p(msProcessor, MSProcessor::columnName(MSProcessor::FLAG_ROW)),
@@ -129,3 +131,6 @@ void MSProcessorColumns::attachOptionalCols(MSProcessor& msProcessor)
 // Local Variables: 
 // compile-command: "gmake MSProcessorColumns"
 // End: 
+
+} //# NAMESPACE CASA - END
+

@@ -39,6 +39,7 @@
 #include <casa/iostream.h>
 
 
+#include <casa/namespace.h>
 Bool checkFloat(Lattice<Float>& expr, 
                 const Float result,
                 const IPosition shape,

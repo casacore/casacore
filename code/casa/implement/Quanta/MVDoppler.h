@@ -35,9 +35,11 @@
 #include <casa/Quanta/QC.h>
 #include <casa/Quanta/Quantum.h>
 #include <casa/Quanta/MeasValue.h>
+#include <casa/iosfwd.h>
+
+namespace casa { //# NAMESPACE CASA - BEGIN
 
 //# Forward Declarations
-#include <casa/iosfwd.h>
 
 // <summary> Internal value for MDoppler </summary>
 
@@ -175,5 +177,8 @@ private:
   // Get correct data type conversion factor from input Quantum
   Double makeD(Double v, const Unit &dt, Bool rev=False) const;
 };
+
+
+} //# NAMESPACE CASA - END
 
 #endif

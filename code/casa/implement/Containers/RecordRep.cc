@@ -34,6 +34,8 @@
 #include <casa/Utilities/Assert.h>
 #include <casa/Exceptions/Error.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 // Tweaked for SUN NTV compiler.  Added the const_cast<void*> to give a hint to the Solaris compiler.
 
 
@@ -1079,3 +1081,6 @@ void RecordRep::getArrayKeys (AipsIO& os)
 	getDataField (os, TpArrayString, data_p[fieldNumber (name)]);
     }
 }
+
+} //# NAMESPACE CASA - END
+

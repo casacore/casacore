@@ -43,6 +43,7 @@
 #include <casa/iostream.h>
 
 
+#include <casa/namespace.h>
 int main() {
   int i;
   // construct a linear combination of functions: a(0)+a(1)*x+a(2)*x^2    

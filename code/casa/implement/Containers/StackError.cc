@@ -28,9 +28,14 @@
 #include <casa/Containers/StackError.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 // The normal constructor when throwing the exception.
 EmptyStackError::EmptyStackError (const char *msg,Category c) : 
           AipsError(msg ? msg : "Invalid operation on an empty Stack.",c) {}
 
 EmptyStackError::~EmptyStackError () throw()
 { ; }
+
+} //# NAMESPACE CASA - END
+

@@ -33,6 +33,8 @@
 #include <casa/Containers/RecordField.h>
 #include <casa/Arrays/Array.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 // <summary> Record field writer.  Base class for the copiers.
 // </summary>
 
@@ -162,5 +164,8 @@ private:
   // is inline.
   PtrBlock<RecordFieldWriter *> writers_p;
 };
+
+
+} //# NAMESPACE CASA - END
 
 #endif

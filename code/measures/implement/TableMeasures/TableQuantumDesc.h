@@ -32,6 +32,8 @@
 #include <casa/Arrays/Vector.h>
 #include <casa/BasicSL/String.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Forward Declarations
 class TableDesc;
 class Table;
@@ -353,5 +355,8 @@ private:
   void checkUnitsColumn (const TableDesc& td) const;
 };
 
+
+
+} //# NAMESPACE CASA - END
 
 #endif

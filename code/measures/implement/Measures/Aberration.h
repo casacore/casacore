@@ -34,6 +34,8 @@
 #include <casa/Quanta/MVPosition.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 // <summary>
 // Aberration class and calculations
 // </summary>
@@ -174,6 +176,9 @@ private:
 // Calculate Aberration angles for time t
     void calcAber(Double t);
 };
+
+
+} //# NAMESPACE CASA - END
 
 #endif
 

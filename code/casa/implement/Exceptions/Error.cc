@@ -29,6 +29,8 @@
 #include <casa/iostream.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 template<class t>
 indexError<t>::indexError( t oI, const Char *str, Category c )
 : IndexError(str,c),
@@ -61,4 +63,7 @@ duplError<t>::duplError(t oI, const String &str,Category c)
 template<class t>
 duplError<t>::~duplError() throw()
 {}
+
+
+} //# NAMESPACE CASA - END
 

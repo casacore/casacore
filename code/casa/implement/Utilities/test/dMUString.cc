@@ -34,6 +34,7 @@
 #include <casa/iostream.h>
 #include <casa/sstream.h>
 
+#include <casa/namespace.h>
 int main()
 {
     try {

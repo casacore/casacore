@@ -43,6 +43,7 @@
 #include <casa/iostream.h>
 
 
+#include <casa/namespace.h>
 int main()
 {
   // Test for a Float array written in big endian canonical format starting

@@ -36,6 +36,8 @@
 #include <casa/Quanta/Unit.h>
 #include <casa/Quanta/Quantum.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 class DirectionCoordinate;
 class MDirection;
 class MVAngle;
@@ -346,4 +348,7 @@ private:
                                      const Vector<Double>& pixelCen) const;
 
 };
+
+} //# NAMESPACE CASA - END
+
 #endif

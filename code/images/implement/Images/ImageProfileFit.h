@@ -41,6 +41,8 @@
 #include <casa/Utilities/PtrHolder.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 // Forward declarations
 template<class T> class ImageInterface;
 template<class T> class MaskedLattice;
@@ -298,5 +300,8 @@ private:
                  const ImageInterface<Float>& image,
                  const Slicer& sl, Bool average);
 };
+
+
+} //# NAMESPACE CASA - END
 
 #endif

@@ -31,6 +31,8 @@
 #include <casa/aips.h>
 #include <tables/Tables/ScalarColumn.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 class MSDataDescription;
 // <summary>
 // A class to provide easy read-only access to MSDataDesc columns
@@ -224,4 +226,7 @@ private:
   //# optional columns
   ScalarColumn<Int> lagId_p;
 };
+
+} //# NAMESPACE CASA - END
+
 #endif

@@ -31,6 +31,8 @@
 #include <lattices/Lattices/TempLattice.h> 
 #include <lattices/Lattices/LatticeIterator.h> 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 // <summary>
 // RFCubeLatticeIterator: iterator over a cubic lattice
 // </summary>
@@ -198,5 +200,8 @@ public:
   RFCubeLatticeIterator<T>  newIter();
 };
 
+
+
+} //# NAMESPACE CASA - END
 
 #endif

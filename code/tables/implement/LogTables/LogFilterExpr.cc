@@ -34,6 +34,8 @@
 #include <casa/Exceptions/Error.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 LogFilterExpr::LogFilterExpr (const String& expr)
 : itsExpr (0)
 {
@@ -126,3 +128,6 @@ DataType LogFilterExpr::dataType (const Block<Int>& fieldNrs) const
     throw (AipsError("LogFilterExpr::dataType"));
   }
 }
+
+} //# NAMESPACE CASA - END
+

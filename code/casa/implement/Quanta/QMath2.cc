@@ -31,6 +31,8 @@
 #include <casa/BasicMath/Math.h>
 #include <casa/Arrays/ArrayMath.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 Int ceil(const Int &val) {
     return (val);
 }
@@ -74,3 +76,6 @@ Array<Int> operator *(const Array<Int> &in, Double f) {
 Array<Int> operator /(const Array<Int> &in, Double f) {
   return in / Int(f);
 }
+
+} //# NAMESPACE CASA - END
+

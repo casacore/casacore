@@ -37,6 +37,8 @@
 #include <casa/BasicSL/String.h>
 #include <sys/types.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Forward declarations
 class FiledesIO;
 class MemoryIO;
@@ -374,5 +376,8 @@ inline const Block<Int>& LockFile::reqIds() const
     return itsReqId;
 }
 
+
+
+} //# NAMESPACE CASA - END
 
 #endif

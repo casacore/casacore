@@ -38,6 +38,8 @@
 #include <casa/OS/File.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 SetupNewTable::SetupNewTable (const String& tableName,
 			      const String& tableDescName,
 			      Table::TableOption opt)
@@ -348,3 +350,6 @@ void SetupNewTableRep::setShapeColumn (const String& columnName,
     }
     col->setShapeColumn (shape);
 }
+
+} //# NAMESPACE CASA - END
+

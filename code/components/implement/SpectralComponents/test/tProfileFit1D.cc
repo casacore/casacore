@@ -37,6 +37,7 @@
 
 #include <casa/iostream.h>
 
+#include <casa/namespace.h>
 void makeData (Vector<Double>& x, Vector<Double>& y, Vector<Bool>& m, 
                Double& amp, Double& cen, Double& sigma, 
                Double& p0, Double& p1);

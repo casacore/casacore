@@ -49,6 +49,8 @@
 #include <components/ComponentModels/ComponentList.h>
 #include <trial/ComponentModels/DOcomponentlist.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 // <module>
 //
 // <summary>classes that define a functional representation of the sky brightness</summary>
@@ -122,5 +124,8 @@
 //#!
 
 // </module>
+
+
+} //# NAMESPACE CASA - END
 
 #endif

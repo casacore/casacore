@@ -35,6 +35,8 @@
 #include <scimath/Mathematics/AutoDiff.h>
 #include <scimath/Mathematics/AutoDiffMath.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Forward Declarations
 
 // <summary> A function class that defines a Chebyshev polynomial
@@ -326,5 +328,8 @@ public:
     ///// </group>
 
 };
+
+
+} //# NAMESPACE CASA - END
 
 #endif

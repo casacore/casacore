@@ -39,9 +39,14 @@
 #include <casa/iostream.h>
 #else
 #include <istream>
-
+namespace casa { //# NAMESPACE CASA - BEGIN
 using std::istream;
 using std::ws;
-
+} //# NAMESPACE CASA - END
 #endif
+
+namespace casa { //# NAMESPACE CASA - BEGIN
+
+} //# NAMESPACE CASA - END
+
 #endif

@@ -32,6 +32,8 @@
 #include <casa/iostream.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Constructors
 
 //# Destructor
@@ -46,3 +48,6 @@ ostream &operator<<(ostream &os, const MRBase &meas) {
   meas.print(os);
   return os;
 }
+
+} //# NAMESPACE CASA - END
+

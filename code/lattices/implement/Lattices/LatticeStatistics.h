@@ -45,6 +45,8 @@
 #include <casa/Logging/LogIO.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Forward Declarations
 template <class T> class MaskedLattice;
 template <class T> class TempLattice;
@@ -633,4 +635,7 @@ private:
     uInt n1_p;
     uInt n3_p;
 };
+
+} //# NAMESPACE CASA - END
+
 #endif

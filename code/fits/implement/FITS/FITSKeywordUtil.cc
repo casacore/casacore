@@ -49,6 +49,8 @@
 #include <ctype.h>
 #include <casa/stdlib.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 // Do a reverse lookup since the FITS classes need it.
 static Bool findReservedName(FITS::ReservedName &name, const String &basename)
 {
@@ -1044,3 +1046,6 @@ void FITSKeywordUtil::addHistory(RecordInterface &header, const String &comment)
 {
     addText(header, comment, "history");
 }
+
+} //# NAMESPACE CASA - END
+

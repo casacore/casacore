@@ -34,6 +34,8 @@
 #include <casa/BasicSL/String.h>
 #include <iostream>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Forward Declarations
 template<class T> class Vector;
 
@@ -98,5 +100,8 @@ private:
 
 };
 
+
+
+} //# NAMESPACE CASA - END
 
 #endif

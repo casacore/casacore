@@ -33,6 +33,8 @@
 #include <lattices/Lattices/ArrayLattice.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 // <summary>
 // Abstract base class to define a fixed region.
 // </summary>
@@ -105,5 +107,8 @@ private:
     ArrayLattice<Bool> itsMask;
 };
 
+
+
+} //# NAMESPACE CASA - END
 
 #endif

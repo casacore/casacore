@@ -32,10 +32,15 @@
 #include <casa/Arrays/ArrayIO.h>
 #include <casa/iostream.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 template<class T>
 ostream &operator<<(ostream &os, const AutoDiff<T> &ad) {
   os << "(" << ad.value() << ", " << ad.derivatives() << ")";
   return os;
 }
 
+
+
+} //# NAMESPACE CASA - END
 

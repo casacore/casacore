@@ -33,6 +33,8 @@
 #include <casa/Exceptions/Error.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 LCUnion::LCUnion()
 {}
 
@@ -189,3 +191,6 @@ void LCUnion::multiGetSlice (Array<Bool>& buffer,
 	}
     }
 }
+
+} //# NAMESPACE CASA - END
+

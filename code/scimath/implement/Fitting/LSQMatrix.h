@@ -32,6 +32,8 @@
 #include <casa/aips.h>
 #include <algorithm>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Forward Declarations
 
 // <summary> Support class for the LSQ package </summary>
@@ -154,5 +156,8 @@ class LSQMatrix {
 
   //
 };
+
+
+} //# NAMESPACE CASA - END
 
 #endif

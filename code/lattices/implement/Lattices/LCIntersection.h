@@ -32,6 +32,8 @@
 #include <lattices/Lattices/LCRegionMulti.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 // <summary>
 // Make the intersection of 2 or more regions.
 // </summary>
@@ -134,5 +136,8 @@ private:
     Block<IPosition> itsOffsets;
 };
 
+
+
+} //# NAMESPACE CASA - END
 
 #endif

@@ -40,6 +40,7 @@
 #include <casa/Utilities/Assert.h>
 #include <casa/Utilities/Regex.h>
 
+#include <casa/namespace.h>
 int main()
 {
     try {

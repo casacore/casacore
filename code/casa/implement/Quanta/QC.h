@@ -35,6 +35,8 @@
 #include <casa/Quanta/Quantum.h>
 #include <casa/Quanta/UnitMap.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Forward Declarations
 
 //# Typedefs
@@ -269,5 +271,8 @@ static QC_init qc_init;
 // </group>
 
 //# Inline Implementations
+
+
+} //# NAMESPACE CASA - END
 
 #endif

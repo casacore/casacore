@@ -33,6 +33,7 @@
 
 #include <casa/iostream.h>
 
+#include <casa/namespace.h>
 // Define a simple function a^3*b^3*x
 
 template <class T> class f {

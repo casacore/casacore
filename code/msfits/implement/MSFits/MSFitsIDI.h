@@ -36,6 +36,8 @@
 #include <casa/OS/Path.h>
 #include <casa/Arrays/Vector.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 // <summary> 
 // MSFitsIDI: Convert FITS-IDI data to MS format
 // </summary>
@@ -117,6 +119,9 @@ class MSFitsIDI
   Bool itsAllFilesSelected;
 
 };
+
+
+} //# NAMESPACE CASA - END
 
 #endif
    

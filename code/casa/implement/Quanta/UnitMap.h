@@ -38,6 +38,8 @@
 #include <casa/Quanta/UnitVal.h>
 #include <casa/Quanta/UnitName.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Forward Declarations
 
 //* Constants
@@ -347,5 +349,8 @@ public:
 };
 
 //# Inline Implementations
+
+
+} //# NAMESPACE CASA - END
 
 #endif

@@ -35,6 +35,8 @@
 #include <casa/Containers/Block.h>
 #include <casa/Utilities/Compare.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Forward Declarations
 class AipsIO;
 template<class T> class Vector;
@@ -414,5 +416,8 @@ inline void Sort::swap (Int i, Int j, uInt* inx) const
     inx[j] = t;
 }
 
+
+
+} //# NAMESPACE CASA - END
 
 #endif

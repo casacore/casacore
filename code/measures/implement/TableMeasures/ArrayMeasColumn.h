@@ -32,6 +32,8 @@
 #include <measures/TableMeasures/TableMeasColumn.h>
 #include <measures/Measures/MeasRef.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Forward Declarations
 template <class T> class ROArrayColumn;
 template <class T> class ArrayColumn;
@@ -355,5 +357,8 @@ protected:
 };
 
 
+
+
+} //# NAMESPACE CASA - END
 
 #endif

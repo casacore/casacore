@@ -45,6 +45,7 @@
 #include <casa/BasicSL/String.h>
 #include <casa/iostream.h>
 
+#include <casa/namespace.h>
 int main() {
   try {
     ComponentShape* shapePtr = 0;

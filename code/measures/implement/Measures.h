@@ -36,6 +36,8 @@
 #include <measures/Measures/MeasRef.h>
 #include <measures/Measures/MeasConvert.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 // <module>
 // 
 
@@ -802,5 +804,8 @@
 
 //# Dummy class definition for extractor
 //# class Measures {};
+
+
+} //# NAMESPACE CASA - END
 
 #endif

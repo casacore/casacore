@@ -33,6 +33,8 @@
 #include <casa/Arrays/Array.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 // 
 // <summary> Iterate an Array cursor through another Array. </summary>
 // <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="" demos="">
@@ -165,5 +167,8 @@ private:
     ArrayIterator<T> ai;
 };
 
+
+
+} //# NAMESPACE CASA - END
 
 #endif

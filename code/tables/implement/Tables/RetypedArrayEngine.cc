@@ -41,6 +41,8 @@
 #include <casa/Utilities/Copy.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 template<class S, class T>
 RetypedArrayEngine<S,T>::RetypedArrayEngine (const String& sourceColumnName,
 					     const String& targetColumnName)
@@ -378,3 +380,6 @@ void RetypedArrayEngine<S,T>::putColumnSlice (const Slicer& slicer,
     copyOnPut (array, target);
     rwColumn().putColumn (targetSlicer(slicer), target);
 }
+
+} //# NAMESPACE CASA - END
+

@@ -49,6 +49,8 @@
 #include <casa/stdio.h>                     // for sprintf
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 DataManager::DataManager()
 : nrcol_p (0),
   seqnr_p (0),
@@ -428,3 +430,6 @@ void DataManager::registerAllCtor ()
     CompressComplexSD::registerClass();
     ForwardColumnEngine::registerClass();
 }
+
+} //# NAMESPACE CASA - END
+

@@ -32,6 +32,8 @@
 #include <casa/aips.h>
 #include <casa/Exceptions/Error.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 // <summary>Iteration error class </summary>
 // <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="" demos="">
 // </reviewed>
@@ -71,5 +73,8 @@ public:
   InvalidIterError(const char *msg = 0, Category c=GENERAL);      // normal constructor
   ~InvalidIterError () throw();
 };
+
+
+} //# NAMESPACE CASA - END
 
 #endif

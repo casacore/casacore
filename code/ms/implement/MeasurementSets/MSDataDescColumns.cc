@@ -31,6 +31,8 @@
 #include <tables/Tables/ColDescSet.h>
 #include <tables/Tables/TableDesc.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 ROMSDataDescColumns::ROMSDataDescColumns()
   :flagRow_p(),
    polarizationId_p(),
@@ -155,3 +157,6 @@ attachOptionalCols(MSDataDescription& msDataDesc)
 // Local Variables: 
 // compile-command: "gmake MSDataDescColumns"
 // End: 
+
+} //# NAMESPACE CASA - END
+

@@ -34,6 +34,8 @@
 #include <casa/Utilities/ValType.h>
 #include <casa/Exceptions/Error.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 SSMStringHandler::SSMStringHandler (SSMBase* aBase):
   itsSSMPtr          (aBase),
   itsCurrentBucket   (-1),
@@ -588,3 +590,6 @@ void SSMStringHandler::resync()
   AlwaysAssert (!isChanged,AipsError);
   itsCurrentBucket = -1;
 }
+
+} //# NAMESPACE CASA - END
+

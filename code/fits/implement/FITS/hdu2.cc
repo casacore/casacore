@@ -34,6 +34,8 @@
 # include <casa/sstream.h>
 //# include <casa/strsteam.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //== FitsBit specializations ==================================================
 FitsField<FitsBit>::FitsField(int n) : FitsBase(FITS::BIT,n), field(0) { }
 FitsField<FitsBit>::~FitsField() {
@@ -2172,3 +2174,6 @@ int * FitsArray<FitsBit>::vdim() {
 	return dimn;
 }
 //================================================
+
+} //# NAMESPACE CASA - END
+

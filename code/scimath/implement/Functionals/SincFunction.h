@@ -33,6 +33,8 @@
 #include <scimath/Functionals/SincParam.h>
 #include <scimath/Functionals/Function.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Forward declarations
 
 // <summary> A one dimensional sin(x)/x
@@ -132,5 +134,8 @@ public:
   using SincParam<T>::WIDTH;
   using SincParam<T>::HEIGHT;
 };
+
+
+} //# NAMESPACE CASA - END
 
 #endif

@@ -39,6 +39,8 @@
 #include <casa/Utilities/Assert.h>
 #include <casa/Exceptions/Error.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Forward Declarations
 class TableDesc;
 class SetupNewTable;
@@ -275,5 +277,8 @@ inline LogSink TableLogSink::makeSink (LogMessage::Priority filter,
 				       const String& fileName)
   { return makeSink (LogFilter(filter), fileName); }
 
+
+
+} //# NAMESPACE CASA - END
 
 #endif

@@ -49,6 +49,7 @@
 #include <casa/iostream.h>
 
 
+#include <casa/namespace.h>
 Bool checkAttribute (const LELAttribute& attr,
 		     const Bool isMasked,
                      const Bool isScalar,

@@ -37,6 +37,8 @@
 #include <casa/Containers/Queue.h>
 #include <casa/Arrays/LogiVector.h>
     
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 // <summary>
 // RFASpectralRej: Spectral rejection agent
 // </summary>
@@ -104,5 +106,8 @@ protected:
   
   Double     xnorm;
 };
+
+
+} //# NAMESPACE CASA - END
 
 #endif

@@ -35,6 +35,8 @@
 #include <casa/string.h>               // needed for strerror
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 // This ifdef lets us instruments the IO system using PABLO
 // see www-pablo.cs.uiuc.edu for more about pablo, also peek in
 // FilebufIO.cc for the other bits of pablo used in the system.
@@ -131,3 +133,6 @@ String RegularFileIO::fileName() const
 {
     return itsRegularFile.path().expandedName();
 }
+
+} //# NAMESPACE CASA - END
+

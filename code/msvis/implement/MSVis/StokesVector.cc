@@ -33,6 +33,8 @@
 #include <casa/Exceptions/Error.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 // The following sqrt functions are required for Image to
 // work. Ug-ly.
 //CStokesVector& sqrt(const CStokesVector& v) {
@@ -63,4 +65,7 @@ Float StokesVector::minEigenValue() const {
 Float StokesVector::determinant() const {
   return square(v_p[0])-(square(v_p[1])+square(v_p[2])+square(v_p[3]));
 }
+
+
+} //# NAMESPACE CASA - END
 

@@ -32,6 +32,8 @@
 #include <tables/Tables/ExprNodeArray.h>
 #include <tables/Tables/ExprFuncNode.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Forward Declarations
 
 
@@ -130,5 +132,8 @@ private:
 };
 
 
+
+
+} //# NAMESPACE CASA - END
 
 #endif

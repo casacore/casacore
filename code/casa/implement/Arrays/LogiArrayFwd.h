@@ -31,6 +31,8 @@
 
 #include <casa/aips.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 // <summary>
 //    Forward declarations for LogicalArrays.
 // </summary>
@@ -97,5 +99,8 @@ typedef Array<LogicalArrayElem> LogicalArray;
 
 
 // </group>
+
+
+} //# NAMESPACE CASA - END
 
 #endif

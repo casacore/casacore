@@ -31,6 +31,7 @@
 #include <casa/Utilities/Assert.h>
 #include <casa/iostream.h>
 
+#include <casa/namespace.h>
 // Test the non-cache functions.
 
 void primesNoncacheTests (uInt number, Bool shouldBePrime, uInt numberOfFactors)

@@ -30,6 +30,8 @@
 #include <tables/Tables/ExternalLockSync.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 ExternalLockSync::ExternalLockSync (const TableLock& lockOptions)
 : itsLock  (lockOptions, releaseCallBack, this),
   itsNrrow (0)
@@ -60,3 +62,6 @@ MemoryIO* ExternalLockSync::releaseCallBack (void* lockSyncObject, Bool always)
 {
     return (*(ExternalLockSync*)lockSyncObject).doReleaseCallBack (always);
 }
+
+} //# NAMESPACE CASA - END
+

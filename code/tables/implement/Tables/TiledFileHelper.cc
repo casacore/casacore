@@ -33,6 +33,8 @@
 #include <casa/Arrays/Vector.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 TiledFileHelper::TiledFileHelper (const String& fileName,
 				  const IPosition& shape,
 				  DataType dtype,
@@ -120,3 +122,6 @@ void TiledFileHelper::readHeader (uInt, Bool)
 {
   throw AipsError ("TileFileHelper::readHeader - not implemented");
 }
+
+} //# NAMESPACE CASA - END
+

@@ -33,6 +33,8 @@
 #include <casa/aips.h>
 #include <tables/Tables/DataManager.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Forward Declarations
 class MSMColumn;
 
@@ -180,5 +182,8 @@ private:
 };
 
 
+
+
+} //# NAMESPACE CASA - END
 
 #endif

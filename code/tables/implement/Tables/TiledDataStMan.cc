@@ -37,6 +37,8 @@
 
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 TiledDataStMan::TiledDataStMan ()
 : TiledStMan     (),
   nrUsedRowMap_p (0),
@@ -247,3 +249,6 @@ TSMCube* TiledDataStMan::getHypercube (uInt rownr, IPosition& position)
     position(nrdim_p - 1) = rowDiff + posMap_p[index];
     return hypercube;
 }
+
+} //# NAMESPACE CASA - END
+

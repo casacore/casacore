@@ -40,6 +40,8 @@
 #include <tables/Tables/TableRecord.h>
 #include <casa/Quanta/Unit.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Forward Declarations
 template <class T> class LatticeIterInterface;
 template <class T> class Vector;
@@ -377,5 +379,8 @@ private:
 
 };
 
+
+
+} //# NAMESPACE CASA - END
 
 #endif

@@ -34,6 +34,8 @@
 #include <ms/MeasurementSets/MSSource.h>
 #include <tables/Tables/TableError.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 MSSourceIndex::MSSourceIndex() 
   : MSTableIndex(), msSourceCols_p(0)
 {;}
@@ -149,3 +151,6 @@ Int MSSourceIndex::compare (const Block<void*>& fieldPtrs,
   }
   return 0;
 }
+
+} //# NAMESPACE CASA - END
+

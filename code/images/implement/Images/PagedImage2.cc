@@ -31,6 +31,8 @@
 #include <tables/Tables/ColumnDesc.h>
 #include <casa/Exceptions/Error.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 DataType imagePixelType(const String &fileName)
 {
     DataType retval = TpOther;
@@ -47,3 +49,6 @@ DataType imagePixelType(const String &fileName)
     }
     return retval;
 }
+
+} //# NAMESPACE CASA - END
+

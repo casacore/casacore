@@ -34,6 +34,8 @@
 #include <casa/Utilities/Regex.h>
 #include <casa/Arrays/IPosition.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 template<class StorageType>
 void ReadFITSin(PrimaryArray<StorageType> &fitsdata,
 	      Array<Float> &data,
@@ -136,3 +138,6 @@ void ReadFITSin(PrimaryArray<StorageType> &fitsdata,
        (*objectName) = (*objectName).before(trailing);
     }
 }
+
+} //# NAMESPACE CASA - END
+

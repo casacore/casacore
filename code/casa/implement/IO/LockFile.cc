@@ -67,6 +67,7 @@
 #define NRREQID 32u
 #define SIZEREQID ((1 + 2*NRREQID) * SIZEINT)
 
+namespace casa { //# NAMESPACE CASA - BEGIN
 
 LockFile::LockFile (const String& fileName, double inspectInterval,
 		    Bool create, Bool setRequestFlag, Bool mustExist,
@@ -424,3 +425,6 @@ uInt LockFile::showLock (uInt& pid, Bool& permLocked, const String& fileName)
     }
     return result;
 }
+
+} //# NAMESPACE CASA - END
+

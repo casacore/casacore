@@ -39,6 +39,8 @@
 #include <casa/Containers/RecordFieldId.h>
 #include <casa/Arrays/Array.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Forward Declarations
 class RecordDesc;
 class IPosition;
@@ -595,5 +597,8 @@ inline Int RecordNotice::fieldNumber() const
 }
 
 
+
+
+} //# NAMESPACE CASA - END
 
 #endif

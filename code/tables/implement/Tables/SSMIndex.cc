@@ -36,6 +36,8 @@
 #include <casa/iostream.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 SSMIndex::SSMIndex (SSMBase* aSSMPtr, uInt rowsPerBucket) 
 : itsSSMPtr           (aSSMPtr),
   itsNUsed            (0),
@@ -309,3 +311,6 @@ void SSMIndex::find (uInt aRowNumber, uInt& aBucketNr,
     aStartRow = itsLastRow[anIndex-1]+1;
   }
 }
+
+} //# NAMESPACE CASA - END
+

@@ -32,6 +32,8 @@
 #include <casa/aips.h>
 #include <casa/Quanta/MVPosition.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Forward De
 
 // <summary> Vector of three direction cosines </summary>
@@ -243,5 +245,8 @@ protected:
 // Rotate a position vector
 MVDirection operator*(const RotMatrix &left, const MVDirection&right);
 MVDirection  operator*(const MVDirection &left, const RotMatrix &right);
+
+
+} //# NAMESPACE CASA - END
 
 #endif

@@ -32,6 +32,8 @@
 //# Includes
 #include <measures/TableMeasures/TableMeasDescBase.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Forward Declarations
 class String;
 class Table;
@@ -288,5 +290,8 @@ public:
   TableMeasDesc<M>& operator= (const TableMeasDesc<M>& that);
 };
 
+
+
+} //# NAMESPACE CASA - END
 
 #endif

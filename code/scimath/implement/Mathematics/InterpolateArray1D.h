@@ -31,6 +31,8 @@
 
 #include <casa/aips.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 template <class T> class PtrBlock;
 template <class T> class Block;
 template <class T> class Array;
@@ -230,5 +232,8 @@ private:
 				      Int order);
 };
 
+
+
+} //# NAMESPACE CASA - END
 
 #endif

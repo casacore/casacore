@@ -32,6 +32,8 @@
 #include <casa/aips.h>
 #include <scimath/Functionals/Function.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Forward declarations
 
 // <summary> A one dimensional Kaiser-Bessel function
@@ -109,5 +111,8 @@ public:
 protected:
   using Function<T>::param_p;
 };
+
+
+} //# NAMESPACE CASA - END
 
 #endif

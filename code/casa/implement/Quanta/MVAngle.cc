@@ -35,6 +35,8 @@
 #include <casa/Utilities/MUString.h>
 #include <casa/System/AppInfo.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 // MVAngle class
 //# Static members
 MVAngle::Format MVAngle::defaultFormat = MVAngle::Format();
@@ -85,8 +87,8 @@ const MVAngle &MVAngle::operator()(Double norm) {
     if (t < 0 || t >=1) {
       // Next statement necessary for Linux gnu; val -= expr; gives incorrect
       // result of order 2e-11
-      Double df = floor(t)*C::_2pi;
-      val -= df;  /// val - = floor(t)*C::_2pi;
+      Double df = std::floor(t)*C::_2pi;
+      val -= df;  /// val - = std::floor(t)*C::_2pi;
     };
     return *this;
 }
@@ -225,7 +227,7 @@ void MVAngle::print(ostream &oss,
 	t = MVAngle::timeZone() * 24.0;
       } else {
 	t = val/C::circle;
-	t = (t - floor(t)) * 24.;
+	t = (t - std::floor(t)) * 24.;
 	if (((intyp & MVAngle::DIG2) == MVAngle::DIG2) && t > 12) {
 	  t -= 24.0;
 	};
@@ -238,7 +240,7 @@ void MVAngle::print(ostream &oss,
     if (inprec > 2) t1 /= 60.;
     if (inprec > 4) t1 /= 60.;
     // The next (Double)s necessary for wrong choice of pow
-    if (inprec > 6) t1 /= pow(Double(10), Double(inprec-6));
+    if (inprec > 6) t1 /= std::pow(Double(10), Double(inprec-6));
     if (i1 == MVAngle::ANGLE || ((intyp & MVAngle::DIG2) == MVAngle::DIG2)) {
 	if (t < 0) {
 	  oss << '-';
@@ -250,7 +252,7 @@ void MVAngle::print(ostream &oss,
 	};
     };
     // The next 0.1 necessary for some rounding errors
-    t = abs((floor(abs(t)/t1+0.5)+0.1)*t1);
+    t = std::abs((std::floor(std::abs(t)/t1+0.5)+0.1)*t1);
     Int h = ifloor(t);
     if ((intyp & MVAngle::NO_D) != MVAngle::NO_D) {
 	if (i1 == MVAngle::ANGLE) {
@@ -285,7 +287,7 @@ void MVAngle::print(ostream &oss,
 	oss << sep;
     };
     if (inprec > 2) {
-	t = fmod(t,1.0) *60.;
+	t = std::fmod(t,1.0) *60.;
 	h = ifloor(t);
 	if ((intyp & MVAngle::NO_DM) != MVAngle::NO_DM) {
 	    oss << setfill('0') << setw(2) << h;
@@ -299,12 +301,12 @@ void MVAngle::print(ostream &oss,
 	oss << sep;
     };
     if (inprec > 4 && inprec < 7) {
-	t = fmod(t,1.0) *60.;
+	t = std::fmod(t,1.0) *60.;
 	h = ifloor(t);
 	oss << setfill('0') << setw(2) << h;
     };
     if (inprec > 6) {
-      t = abs((fmod(t, 1.0) - 6.0*t1)*60.);
+      t = std::abs((std::fmod(t, 1.0) - 6.0*t1)*60.);
       // The following was necessary since abs(0) becomes -0 (Solaris at least)
       if (t <= 0.0) t = 0;
       Int oprec = oss.precision();
@@ -326,7 +328,7 @@ void MVAngle::print(ostream &oss,
 const MVAngle &MVAngle::binorm(Double norm) {
     Double t = val/C::pi - norm;
     if (t < 0 || t >=1) {
-      Double df = floor(t)*C::pi;
+      Double df = std::floor(t)*C::pi;
       val -= df;
     };
     return *this;
@@ -478,3 +480,6 @@ ostream &operator<<(ostream &os, const MVAngle::Format &form) {
     MVAngle::interimSet = True;
     return os;
 }
+
+} //# NAMESPACE CASA - END
+

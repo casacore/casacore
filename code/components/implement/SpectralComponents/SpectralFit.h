@@ -33,6 +33,8 @@
 #include <casa/aips.h>
 #include <components/SpectralComponents/SpectralList.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Forward Declarations
 class SpectralElement;
 template <class T> class Vector;
@@ -169,6 +171,9 @@ class SpectralFit {
 	     const Vector<Bool> *mask);
   // </group>
 };
+
+
+} //# NAMESPACE CASA - END
 
 #endif
 

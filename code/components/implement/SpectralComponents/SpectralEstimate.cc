@@ -30,6 +30,8 @@
 
 #include <casa/BasicMath/Math.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Constructors
 SpectralEstimate::SpectralEstimate(const uInt maxpar) :
   useWindow_p(False), rms_p(0), cutoff_p(0),
@@ -121,3 +123,6 @@ void SpectralEstimate::setWindowing(const Bool win) {
 void SpectralEstimate::setMaxN(const uInt maxpar) {
   slist_p.set(maxpar);
 }
+
+} //# NAMESPACE CASA - END
+

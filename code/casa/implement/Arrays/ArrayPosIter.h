@@ -32,6 +32,8 @@
 //# Change the following to a forward declare?
 #include <casa/Arrays/IPosition.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 // 
 // <summary> Iterate an IPosition through the shape of an Array </summary>
 // <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="" demos="">
@@ -126,5 +128,8 @@ inline Bool ArrayPositionIterator::pastEnd() const
 {
 	return atOrBeyondEnd;
 }
+
+
+} //# NAMESPACE CASA - END
 
 #endif

@@ -35,6 +35,8 @@
 #include <measures/Measures/Stokes.h>      
 #include <components/ComponentModels/ComponentType.h>      
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Forward Declarations
 template <class T> class ImageInterface;
 template <class T> class Vector;
@@ -134,5 +136,8 @@ private:
                               Double cutoff, Bool absFind, Bool doPoint,
                               Int width);
 };
+
+
+} //# NAMESPACE CASA - END
 
 #endif

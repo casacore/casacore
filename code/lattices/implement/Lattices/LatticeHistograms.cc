@@ -62,6 +62,8 @@
 
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 // Public functions
 
 template <class T>
@@ -1337,3 +1339,6 @@ void HistTiledCollapser<T>::endAccumulator(Array<T>& result,
     result.putStorage (res, deleteRes);
     delete pHist_p;
 }      
+
+} //# NAMESPACE CASA - END
+

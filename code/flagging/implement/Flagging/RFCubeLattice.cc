@@ -27,6 +27,8 @@
 #include <lattices/Lattices/LatticeStepper.h>
 #include <flagging/Flagging/RFCubeLattice.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 template<class T> RFCubeLatticeIterator<T>::RFCubeLatticeIterator ()
 {
   curs=NULL;
@@ -129,4 +131,7 @@ template<class T> Matrix<T> * RFCubeLattice<T>::reset ( Bool r,Bool w )
 {
   return iter.reset(r,w);
 }
+
+
+} //# NAMESPACE CASA - END
 

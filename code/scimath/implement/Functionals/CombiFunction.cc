@@ -28,6 +28,8 @@
 //# Includes
 #include <scimath/Functionals/CombiFunction.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Constructors
 
 //# Operators
@@ -41,3 +43,6 @@ T CombiFunction<T>::eval(typename Function<T>::FunctionArg x) const {
 }
 
 //# Member functions
+
+} //# NAMESPACE CASA - END
+

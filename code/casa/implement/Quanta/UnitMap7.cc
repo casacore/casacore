@@ -29,6 +29,8 @@
 
 #include <casa/Quanta/UnitMap.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 // Initialise the maps
 void UnitMap::initUMCust3() {
   UnitMap::mapCust->insert(map<String, UnitName>::value_type
@@ -156,3 +158,6 @@ void UnitMap::initUMCust3() {
 						 UnitVal(1.,UnitDim::Dnon),
 						 "lambda")));
 }
+
+} //# NAMESPACE CASA - END
+

@@ -33,6 +33,8 @@
 #include <ms/MeasurementSets/MSTable.h>
 #include <ms/MeasurementSets/MSPointingEnums.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 // <summary> 
 // A Table intended to hold a MeasurementSet POINTING table.
 // </summary>
@@ -132,6 +134,9 @@ private:
     // required by the need to throw an exception in the destructor
     Bool hasBeenDestroyed_p;
 };
+
+
+} //# NAMESPACE CASA - END
 
 #endif
 

@@ -64,6 +64,8 @@
 #include <lattices/Lattices/LatticeStepper.h>
 #include <casa/iostream.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 void ComponentImager::project(ImageInterface<Float>& image, const ComponentList& list) 
 {
   const CoordinateSystem& coords = image.coordinates();
@@ -324,3 +326,6 @@ void ComponentImager::project(ImageInterface<Float>& image, const ComponentList&
 // Local Variables: 
 // compile-command: "gmake ComponentImager"
 // End: 
+
+} //# NAMESPACE CASA - END
+

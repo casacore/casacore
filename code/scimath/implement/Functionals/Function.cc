@@ -29,6 +29,8 @@
 #include <scimath/Functionals/Function.h>
 #include <casa/Containers/RecordInterface.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 template<class T, class U>
 U Function<T,U>::operator()(const Vector<ArgType> &x) const {
   DebugAssert(ndim()<=x.nelements(), AipsError);
@@ -64,4 +66,7 @@ void Function<T,U>::getMode(RecordInterface& mode) const { }
 
 template<class T, class U>
 Bool Function<T,U>::hasMode() const { return False; }
+
+
+} //# NAMESPACE CASA - END
 

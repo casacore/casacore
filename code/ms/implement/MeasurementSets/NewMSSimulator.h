@@ -41,6 +41,8 @@
 #include <measures/Measures/MDirection.h>
 #include <tables/Tables/TiledDataStManAccessor.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Forward Declarations
 class MeasurementSet;
 
@@ -209,6 +211,9 @@ private:
   void defaults();
 
 };
+
+
+} //# NAMESPACE CASA - END
 
 #endif
 

@@ -35,6 +35,7 @@
 #include <casa/BasicSL/String.h>
 #include <casa/iostream.h>
 
+#include <casa/namespace.h>
 void putData(MSDataDescColumns& cols) {
   // test the spectralWindowId functions.
   cols.spectralWindowId().put(0, 0);

@@ -33,6 +33,7 @@
 #include <casa/Containers/MapIO.h>
 #include <casa/iostream.h>
 
+#include <casa/namespace.h>
 //template<class key,class value> void print(const OrderedMap<key,value> &);
 
 main() {

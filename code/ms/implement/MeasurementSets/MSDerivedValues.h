@@ -37,6 +37,8 @@
 #include <measures/Measures/MCRadialVelocity.h>
 #include <measures/Measures/MPosition.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Forward Declarations
 class ROMSAntennaColumns;
 class String;
@@ -185,5 +187,8 @@ private:
  
 
 };
+
+
+} //# NAMESPACE CASA - END
 
 #endif

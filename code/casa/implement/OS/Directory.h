@@ -33,6 +33,8 @@
 #include <casa/OS/Path.h>
 #include <casa/OS/File.h>
    
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 template<class T> class Vector;
 class Regex;
 class String;
@@ -238,5 +240,8 @@ inline uInt Directory::freeSpaceInMB() const
     return uInt (0.5 + freeSpace() / (1024*1024));
 }
 
+
+
+} //# NAMESPACE CASA - END
 
 #endif

@@ -32,6 +32,8 @@
 #include <casa/aips.h>
 #include <casa/Quanta/MVPosition.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Forward Declarations
 
 // <summary> A 3D vector on Earth </summary>
@@ -251,5 +253,8 @@ Double operator*(const MVBaseline &left, const Vector<Double> &right);
 Double operator*(const MVPosition &left, const MVBaseline &right);
 Double operator*(const MVBaseline &left, const MVPosition &right);
 // </group>
+
+
+} //# NAMESPACE CASA - END
 
 #endif

@@ -34,6 +34,8 @@
 #include <casa/Arrays/Vector.h>
 #include <casa/Quanta/MVPosition.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Forward Declarations
 
 //# Constants
@@ -218,6 +220,9 @@ public:
 
 };
   
+
+} //# NAMESPACE CASA - END
+
 #endif
 
 

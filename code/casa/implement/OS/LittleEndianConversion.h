@@ -33,6 +33,8 @@
 #include <casa/OS/CanonicalConversion.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 // <summary>
 // A class with static functions to convert littleEndian format
 // </summary>
@@ -338,5 +340,8 @@ inline void LittleEndianConversion::fromLocal (void* to, double from)
 }
 
 
+
+
+} //# NAMESPACE CASA - END
 
 #endif

@@ -38,6 +38,8 @@
 #include <measures/TableMeasures/TableMeasValueDesc.h>
 #include <measures/TableMeasures/TableQuantumDesc.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 // <module> 
 
 // <summary> 
@@ -136,5 +138,8 @@
 //# </todo>
 
 // </module>
+
+
+} //# NAMESPACE CASA - END
 
 #endif

@@ -33,6 +33,8 @@
 #include <tables/Tables/StManAipsIO.h>
 #include <casa/Arrays/IPosition.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Forward Declarations
 class AipsIO;
 
@@ -271,5 +273,8 @@ private:
 };
 
 
+
+
+} //# NAMESPACE CASA - END
 
 #endif

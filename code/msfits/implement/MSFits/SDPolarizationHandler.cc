@@ -43,6 +43,8 @@
 #include <casa/Containers/SimOrdMap.h>
 #include <casa/Arrays/ArrayLogical.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 SDPolarizationHandler::SDPolarizationHandler() 
     : index_p(0), msPol_p(0), msPolCols_p(0), rownr_p(-1)
 {;}
@@ -300,3 +302,6 @@ void SDPolarizationHandler::stokesKeys(Int stokesValue, Int &key1, Int &key2)
 	break;
     }
 }
+
+} //# NAMESPACE CASA - END
+

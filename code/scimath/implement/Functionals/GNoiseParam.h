@@ -33,6 +33,8 @@
 #include <scimath/Functionals/Function.h>
 #include <casa/BasicMath/Random.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Forward declarations
 
 // <summary> A one dimensional normal distribution 
@@ -112,5 +114,8 @@ protected:
 protected:
   using Function<T>::param_p;
 };
+
+
+} //# NAMESPACE CASA - END
 
 #endif

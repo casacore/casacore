@@ -37,6 +37,8 @@
 #include <casa/Arrays/Vector.h>
 #include <casa/Containers/Block.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Forward Declarations
 class LatticeCleanProgress;
 template <class T> class TempLattice;
@@ -276,4 +278,7 @@ private:
 
 
 };
+
+} //# NAMESPACE CASA - END
+
 #endif

@@ -33,6 +33,7 @@
 #include <casa/aips.h>
 #include <casa/Arrays/IPosition.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
 
 // <summary>
 // A global enum used by some Array constructors.
@@ -223,5 +224,7 @@ uInt ArrayIndexOffset (uInt Ndim, const Int* Shape,
 // </group>
 
 // </group>
+
+} //# NAMESPACE CASA - END
 
 #endif

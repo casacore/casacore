@@ -31,6 +31,8 @@
 #include <casa/Utilities/Register.h>
 #include <measures/Measures/MEpoch.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Constructors
 MEpoch::MEpoch() : 
   MeasBase<MVEpoch, MEpoch::Ref>() {}
@@ -264,3 +266,6 @@ Quantity MEpoch::get(const Unit &inunit) const {
 Measure *MEpoch::clone() const {
   return (new MEpoch(*this));
 }
+
+} //# NAMESPACE CASA - END
+

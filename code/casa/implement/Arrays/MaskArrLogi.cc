@@ -29,6 +29,8 @@
 #include <casa/Arrays/ArrayError.h>
 #include <casa/Arrays/ArrayLogical.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 #define MARRLOGI_B_ALLFUNC_MA(ALLFUNC,OP,STRALLFUNC) \
 template<class T> \
 Bool ALLFUNC (const MaskedArray<T> &left, const Array<T> &right) \
@@ -1470,4 +1472,7 @@ MaskedLogicalArray operator || (const T &val,
     return result;
 }
 
+
+
+} //# NAMESPACE CASA - END
 

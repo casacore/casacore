@@ -41,6 +41,8 @@
 #include <casa/Logging/LogIO.h>
 #include <casa/iostream.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 Bool AppInfo::need_init_p = True;
 uInt AppInfo::memory_r = 0;
 uInt AppInfo::nproc_r = 0;
@@ -158,3 +160,6 @@ void AppInfo::init() {
   AlwaysAssert(numcpu > 0, AipsError);
   AlwaysAssert(tz >= -0.625 && tz <= 0.625, AipsError);
 }
+
+} //# NAMESPACE CASA - END
+

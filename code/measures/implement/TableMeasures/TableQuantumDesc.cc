@@ -38,6 +38,8 @@
 #include <casa/Exceptions.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 TableQuantumDesc::TableQuantumDesc (const TableDesc& td, const String& column)
 : itsColName(column)
 {
@@ -177,3 +179,6 @@ Bool TableQuantumDesc::hasQuanta (const ROTableColumn& column)
   return ( column.keywordSet().isDefined ("QuantumUnits")  ||
 	   column.keywordSet().isDefined ("VariableUnits"));
 }
+
+} //# NAMESPACE CASA - END
+

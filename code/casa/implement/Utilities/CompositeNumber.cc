@@ -29,6 +29,8 @@
 #include <casa/Utilities/GenSort.h>
 #include <casa/BasicMath/Math.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 CompositeNumber::CompositeNumber(const uInt maxval) {
 
   itsMaxComplete = maxval;
@@ -170,4 +172,7 @@ Bool CompositeNumber::isComposite(const uInt testValue) {
   }
   return False;
 }; 
+
+
+} //# NAMESPACE CASA - END
 

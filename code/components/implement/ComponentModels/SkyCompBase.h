@@ -34,6 +34,8 @@
 #include <casa/Utilities/RecordTransformable.h>
 #include <casa/BasicSL/Complexfwd.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 class MFrequency;
 class MVFrequency;
 class MDirection;
@@ -275,4 +277,7 @@ public:
   // otherwise returns False.
   virtual Bool ok() const = 0;
 };
+
+} //# NAMESPACE CASA - END
+
 #endif

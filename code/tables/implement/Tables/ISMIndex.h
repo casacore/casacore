@@ -32,6 +32,8 @@
 #include <casa/aips.h>
 #include <casa/Containers/Block.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Forward declarations
 class ISMBase;
 
@@ -144,5 +146,8 @@ private:
 };
 
 
+
+
+} //# NAMESPACE CASA - END
 
 #endif

@@ -34,6 +34,7 @@
 #include <casa/OS/RegularFile.h>
 #include <casa/OS/Path.h>
 
+#include <casa/namespace.h>
 const Int nrOfTests = 1;
 
 int main ()

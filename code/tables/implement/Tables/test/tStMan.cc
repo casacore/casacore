@@ -46,6 +46,7 @@
 #include <casa/sstream.h>
 #include <casa/stdio.h>
 
+#include <casa/namespace.h>
 // <summary>
 // Test program for the various storage managers.
 // </summary>

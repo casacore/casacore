@@ -45,6 +45,8 @@
 /* Get the RE_DUP_MAX value */
 #include <limits.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 // Hack to avoid requiring alloca. Define an instance of this at the beginning
 // of your function and call it alloca.
 class cregex_allocator
@@ -2524,3 +2526,6 @@ re_exec (char *s)
   return 0 <= a2_re_search (&re_comp_buf, s, len, 0, len,
 			 static_cast<struct re_registers *>(0));
 }
+
+} //# NAMESPACE CASA - END
+

@@ -37,6 +37,8 @@
 #include <casa/Containers/Record.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 ForwardColumnEngine::ForwardColumnEngine (const String& dataManagerName,
 					  const Record& spec)
 : refColumns_p (0),
@@ -444,3 +446,6 @@ FORWARDCOLUMN_GETPUT(Complex,ComplexV)
 FORWARDCOLUMN_GETPUT(DComplex,DComplexV)
 FORWARDCOLUMN_GETPUT(String,StringV)
 FORWARDCOLUMN_GETPUT(void,OtherV)
+
+} //# NAMESPACE CASA - END
+

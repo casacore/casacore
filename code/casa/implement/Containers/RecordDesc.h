@@ -36,6 +36,8 @@
 #include <casa/Containers/RecordInterface.h>
 #include <casa/Utilities/COWPtr.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Forward Declarations
 class AipsIO;
 #include <casa/iosfwd.h>
@@ -511,5 +513,8 @@ inline AipsIO& operator>> (AipsIO& os, RecordDesc& desc)
 
 
 
+
+
+} //# NAMESPACE CASA - END
 
 #endif

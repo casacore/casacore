@@ -33,6 +33,8 @@
 #include <casa/Utilities/Assert.h>
 #include <casa/Exceptions/Error.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 MSDerivedValues::MSDerivedValues() 
 {
   init();
@@ -240,4 +242,7 @@ void MSDerivedValues::init()
 }
 
 
+
+
+} //# NAMESPACE CASA - END
 

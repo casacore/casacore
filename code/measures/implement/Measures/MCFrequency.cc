@@ -34,6 +34,8 @@
 #include <measures/Measures/Aberration.h>
 #include <measures/Measures/MeasTable.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Statics
 Bool MCFrequency::stateMade_p = False;
 uInt MCFrequency::ToRef_p[N_Routes][3] = {
@@ -395,3 +397,6 @@ String MCFrequency::showState() {
 			   MFrequency::N_Types, MCFrequency::N_Routes,
 			   MCFrequency::ToRef_p);
 }
+
+} //# NAMESPACE CASA - END
+

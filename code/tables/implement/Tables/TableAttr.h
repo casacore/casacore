@@ -33,6 +33,8 @@
 #include <casa/BasicSL/String.h>
 #include <tables/Tables/TableLock.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Forward Declarations
 class Table;
 
@@ -126,5 +128,8 @@ private:
     TableLock lockOptions_p;
 };
 
+
+
+} //# NAMESPACE CASA - END
 
 #endif

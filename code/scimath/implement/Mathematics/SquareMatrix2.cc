@@ -28,6 +28,8 @@
 //# Includes
 #include <scimath/Mathematics/SquareMatrix.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 SquareMatrix<Complex,4>& 
 directProduct(SquareMatrix<Complex,4>& result,
 	      const SquareMatrix<Complex,2>& left,
@@ -123,3 +125,6 @@ directProduct(SquareMatrix<Complex,4>& result,
     // NOTREACHED
     return result;
 }
+
+} //# NAMESPACE CASA - END
+

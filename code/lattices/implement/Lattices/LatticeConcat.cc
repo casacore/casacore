@@ -40,6 +40,8 @@
 #include <casa/Utilities/Assert.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 template<class T>
 LatticeConcat<T>::LatticeConcat()
 : axis_p(0),
@@ -874,3 +876,6 @@ Bool LatticeConcat<T>::getMaskSlice2 (Array<Bool>& buffer,
 
    return False;
 }
+
+} //# NAMESPACE CASA - END
+

@@ -32,6 +32,8 @@
 #include <casa/aips.h>
 #include <casa/Containers/SimOrdMap.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Forward Declarations
 class PlainTable;
 
@@ -124,5 +126,8 @@ private:
     SimpleOrderedMap<String,void*> tableMap_p;
 };
 
+
+
+} //# NAMESPACE CASA - END
 
 #endif

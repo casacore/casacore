@@ -31,6 +31,8 @@
 #include <casa/aips.h>
 #include <casa/Containers/SimOrdMap.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 // Class declarations.
 class AipsIO;
 #include <casa/iosfwd.h>
@@ -53,5 +55,8 @@ AipsIO& operator>>(AipsIO&, SimpleOrderedMap<K,V>&);
 template<class K, class V>
 ostream& operator<<(ostream&, const SimpleOrderedMap<K,V>&);
 // </group>
+
+
+} //# NAMESPACE CASA - END
 
 #endif

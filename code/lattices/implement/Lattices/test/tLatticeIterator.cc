@@ -45,6 +45,7 @@
 #include <casa/iostream.h>
 
 
+#include <casa/namespace.h>
 void testVectorROIter (const Lattice<Int>& lattice, Bool useRef)
 {
     cout << "  Testing using a Vector cursor" << endl;

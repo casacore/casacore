@@ -39,6 +39,8 @@
 #include <casa/OS/LECanonicalConversion.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 ISMColumn::ISMColumn (ISMBase* parent, int dataType, uInt colnr)
 : StManColumn   (dataType),
   stmanPtr_p    (parent),
@@ -1384,3 +1386,6 @@ uInt ISMColumn::readStringLE (void* out, const void* in, uInt n)
 {
     return toString (out, in, n, LECanonicalConversion::toLocalUInt);
 }
+
+} //# NAMESPACE CASA - END
+

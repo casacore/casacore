@@ -32,6 +32,8 @@
 #include <casa/BasicSL/String.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 ImageMomentsProgress::~ImageMomentsProgress()
 {
     delete itsMeter;
@@ -57,3 +59,6 @@ void ImageMomentsProgress::done()
 }
  
  
+
+} //# NAMESPACE CASA - END
+

@@ -30,6 +30,7 @@
 #include <casa/Utilities/CompositeNumber.h>
 
 
+#include <casa/namespace.h>
 int main()
 {
 

@@ -52,6 +52,7 @@
 #include <casa/iostream.h>
 #include <casa/stdio.h>
 
+#include <casa/namespace.h>
 // <summary>
 // Test program for the Table classes
 // </summary>

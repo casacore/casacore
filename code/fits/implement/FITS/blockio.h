@@ -40,6 +40,9 @@ extern "C"{
 #include <fcntl.h>
 
 #include <fits/FITS/FITSError.h>
+
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //----------------------------------------------------------------------------
 //<category lib=aips module=FITS sect="Blocked I/O">   
 //<summary> fixed-length blocked sequentual I/O base class </summary> 
@@ -193,6 +196,8 @@ class BlockOutput : public BlockIO {
 	// to a logical record
 	virtual int write(char *);
 };
+
+} //# NAMESPACE CASA - END
 
 # endif
 

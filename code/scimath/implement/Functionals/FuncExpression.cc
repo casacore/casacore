@@ -35,6 +35,8 @@
 #include <casa/BasicSL/Constants.h>
 #include <casa/BasicMath/Math.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Constructors
 FuncExpression::FuncExpression() :
   exd(), error_p(), code_p(), rps_p(),
@@ -550,10 +552,10 @@ Bool FuncExpression::exec(Double &res) const {
 	exec_p.back() = log10(exec_p.back());
 	break;
       case FuncExprData::ERF:
-	exec_p.back() = erf(exec_p.back());
+	exec_p.back() = ::erf(exec_p.back());
 	break;
       case FuncExprData::ERFC:
-	exec_p.back() = erfc(exec_p.back());
+	exec_p.back() = ::erfc(exec_p.back());
 	break;
       case FuncExprData::PI: {
 	if (pos->state.argcnt == 0) exec_p.push_back(C::pi);
@@ -629,3 +631,6 @@ ostream &operator<<(ostream &os, const FuncExpression &ed) {
   ed.print(os);
   return os;
 }
+
+} //# NAMESPACE CASA - END
+

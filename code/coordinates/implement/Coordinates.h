@@ -39,6 +39,8 @@
 #include <coordinates/Coordinates/StokesCoordinate.h>
 #include <coordinates/Coordinates/CoordinateUtil.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 // <module>
 //
 // <summary>
@@ -269,5 +271,8 @@
 // </todo>
 
 // </module>
+
+
+} //# NAMESPACE CASA - END
 
 #endif

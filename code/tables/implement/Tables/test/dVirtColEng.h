@@ -33,6 +33,7 @@
 #include <tables/Tables/VirtScaCol.h>
 #include <tables/Tables/VirtArrCol.h>
 
+#include <casa/namespace.h>
 //# Forward Declarations
 class DummyVirtualEngine;
 template<class T> class ROScalarColumn;

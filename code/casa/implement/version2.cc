@@ -31,6 +31,8 @@
 #include <casa/iostream.h>
 #include <casa/iomanip.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 void VersionInfo::report(ostream &os)
 {
     int major1 = majorVersion()/10;
@@ -54,3 +56,6 @@ void VersionInfo::report(ostream &os)
 	os << " - " << ptr;
     }
 }
+
+} //# NAMESPACE CASA - END
+

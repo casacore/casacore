@@ -30,6 +30,8 @@
 #include <casa/Exceptions/Error.h>
 #include <casa/Utilities/Assert.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 LatticeNavigator::~LatticeNavigator()
 {
     // Nothing
@@ -111,3 +113,6 @@ uInt LatticeNavigator::calcCacheSize (const ROTiledStManAccessor* accessor,
 {
     return (accessor == 0  ?  0 : calcCacheSize (*accessor, rowNumber));
 }
+
+} //# NAMESPACE CASA - END
+

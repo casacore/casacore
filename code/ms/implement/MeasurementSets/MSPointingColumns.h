@@ -37,6 +37,8 @@
 #include <tables/Tables/ArrayColumn.h>
 #include <tables/Tables/ScalarColumn.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 class MSPointing;
 
 // <summary>
@@ -409,4 +411,7 @@ private:
   ScalarQuantColumn<Double> timeQuant_p;
   ScalarQuantColumn<Double> timeOriginQuant_p;
 };
+
+} //# NAMESPACE CASA - END
+
 #endif

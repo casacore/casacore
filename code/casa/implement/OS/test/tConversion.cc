@@ -33,6 +33,7 @@
 #include <casa/iostream.h>
 
 
+#include <casa/namespace.h>
 // This program tests the class Conversion.
 
 

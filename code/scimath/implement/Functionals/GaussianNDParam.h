@@ -34,6 +34,8 @@
 #include <casa/Arrays/Vector.h>
 #include <casa/Arrays/Matrix.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 // <summary> A Multi-dimensional Gaussian parameter handling. </summary>
 
 // <use visibility=local>
@@ -270,5 +272,8 @@ protected:
 public:
   using Function<T>::nparameters;
 };
+
+
+} //# NAMESPACE CASA - END
 
 #endif

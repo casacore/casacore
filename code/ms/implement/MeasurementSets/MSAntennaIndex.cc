@@ -31,6 +31,8 @@
 #include <casa/Arrays/ArrayLogical.h>
 #include <casa/Arrays/ArrayUtil.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //-------------------------------------------------------------------------
 
 MSAntennaIndex::MSAntennaIndex(const MSAntenna& antenna)
@@ -111,4 +113,7 @@ Vector<Int> MSAntennaIndex::matchAntennaNameAndStation(const String& name,
 }; 
 
 //-------------------------------------------------------------------------
+
+
+} //# NAMESPACE CASA - END
 

@@ -41,6 +41,8 @@
 #include <casa/Logging/LogOrigin.h>
 #include <casa/iostream.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 SpectralModel::SpectralModel()
   :itsRefFreq(Quantum<Double>(1, "GHz"), MFrequency::DEFAULT),
    itsFreqUnit("GHz"),
@@ -237,3 +239,6 @@ Bool SpectralModel::badError(const Quantum<Double>& quantum) {
 // Local Variables: 
 // compile-command: "gmake SpectralModel"
 // End: 
+
+} //# NAMESPACE CASA - END
+

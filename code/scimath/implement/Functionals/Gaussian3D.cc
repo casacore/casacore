@@ -35,6 +35,8 @@
 #include <casa/BasicMath/Math.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 template<class T> 
 Gaussian3D<T>::Gaussian3D()   
 : Gaussian3DParam<T>()
@@ -112,4 +114,7 @@ T Gaussian3D<T>::sq(T v) const
 {
   return v*v;
 }
+
+
+} //# NAMESPACE CASA - END
 

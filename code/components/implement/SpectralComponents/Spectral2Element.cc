@@ -36,6 +36,8 @@
 #include <casa/BasicSL/String.h>
 #include <casa/Utilities/DataType.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Member functions 
 Bool SpectralElement::toRecord(String &error, RecordInterface &out) const {
   out.define(RecordFieldId("type"), fromType(tp_p));
@@ -180,3 +182,6 @@ Bool SpectralElement::fromString(String &error, const String &in) {
 						      Vector<Double>());
   return True;
 }
+
+} //# NAMESPACE CASA - END
+

@@ -32,6 +32,8 @@
 #include <casa/BasicSL/String.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 DataManager* RODataManAccessor::findDataManager (const Table& table,
 					  const String& dataManagerName) const
 {
@@ -42,3 +44,6 @@ DataManager* RODataManAccessor::findDataManager (const Table& table,
     }
     return dmptr;
 }
+
+} //# NAMESPACE CASA - END
+

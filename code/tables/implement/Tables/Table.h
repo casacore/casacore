@@ -36,6 +36,8 @@
 #include <casa/Utilities/DataType.h>
 #include <casa/Utilities/Sort.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Forward Declarations
 class SetupNewTable;
 class TableDesc;
@@ -1035,5 +1037,8 @@ inline DataManager* Table::findDataManager (const String& name) const
     return baseTabPtr_p->findDataManager (name);
 }
 
+
+
+} //# NAMESPACE CASA - END
 
 #endif

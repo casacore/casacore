@@ -37,6 +37,8 @@
 #include <casa/Exceptions/Error.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 template <class T>
 uInt LatticeFractile<T>::findBin (uInt& fractileInx,
 				  T& stv, T& endv,
@@ -863,3 +865,6 @@ Vector<T> LatticeFractile<T>::smallMaskedFractiles
   result(1) = GenSort<T>::kthLargest (buffer.storage(), npts, rightInx);
   return result;
 }
+
+} //# NAMESPACE CASA - END
+

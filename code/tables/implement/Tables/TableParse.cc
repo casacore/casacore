@@ -57,6 +57,8 @@
 #include <casa/ostream.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 static const PtrBlock<const Table*>* theTempTables;
 
 
@@ -2250,3 +2252,6 @@ TaQLResult tableCommand (const String& str,
     delete p;
     return table;
 }
+
+} //# NAMESPACE CASA - END
+

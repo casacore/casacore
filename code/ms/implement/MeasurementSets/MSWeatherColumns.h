@@ -34,6 +34,8 @@
 #include <measures/TableMeasures/ScalarQuantColumn.h>
 #include <tables/Tables/ScalarColumn.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 class MSWeather;
 
 // <summary>
@@ -402,4 +404,7 @@ private:
   ScalarQuantColumn<Float> windDirectionQuant_p;
   ScalarQuantColumn<Float> windSpeedQuant_p;
 };
+
+} //# NAMESPACE CASA - END
+
 #endif

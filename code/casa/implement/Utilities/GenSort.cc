@@ -33,6 +33,8 @@
 #include <casa/Containers/Block.h>
 #include <casa/Exceptions/Error.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 // Do a quicksort in ascending order.
 // All speedups are from Sedgewick; Algorithms in C.
 template<class T>
@@ -777,3 +779,6 @@ void GenSortIndirect<T>::heapDescSiftDown (uInt* inx, Int low, Int up,
 	swapInx (inx[c], inx[i]);
     }
 }
+
+} //# NAMESPACE CASA - END
+

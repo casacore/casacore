@@ -32,9 +32,11 @@
 #include <casa/aips.h>
 #include <casa/Utilities/PtrHolder.h>
 #include <casa/Utilities/RecordTransformable.h>
+#include <casa/BasicSL/Complexfwd.h>
+
+namespace casa { //# NAMESPACE CASA - BEGIN
 
 //# Forward Declarations
-#include <casa/BasicSL/Complexfwd.h>
 class QBase;
 class String;
 class RecordInterface;
@@ -233,5 +235,8 @@ private:
   // Convert scalar to Array
   void toArray();
 };
+
+
+} //# NAMESPACE CASA - END
 
 #endif

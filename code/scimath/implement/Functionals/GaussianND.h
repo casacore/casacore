@@ -32,6 +32,8 @@
 #include <scimath/Functionals/GaussianNDParam.h>
 #include <scimath/Functionals/Function.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Forward declarations
 
 // <summary> A Multi-dimensional Gaussian functional. </summary>
@@ -229,5 +231,8 @@ public:
   using GaussianNDParam<T>::HEIGHT;
   using GaussianNDParam<T>::CENTER;
 };
+
+
+} //# NAMESPACE CASA - END
 
 #endif

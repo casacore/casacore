@@ -63,6 +63,8 @@
 
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 static String toFITSDate(const MVTime &time)
 {
   String date, timesys;
@@ -1682,7 +1684,7 @@ Bool MSFitsOutput::writeGC(FitsOutput *output, const MeasurementSet &ms,
   header.define("NO_BAND", Int(nrif));             // NO_BAND
   header.define("NO_CHAN", nchan);                 // NO_CHAN
   header.define("REF_FREQ", refFreq);              // REF_FREQ
-  header.define("CHAN_BW", abs(chanbw));                // CHAN_BW
+  header.define("CHAN_BW", abs(chanbw));      // CHAN_BW
   header.define("REF_PIXL", Double(1+refPixelFreq)); // REF_PIXL (==CRPIX4)
   header.define("NO_TABS", shape(0));              // NO_TABS
   header.define("TABREV", 2);                      // TABREV
@@ -1964,3 +1966,6 @@ Int MSFitsOutput::makeIdMap (Block<Int>& map, Vector<Int>& selids,
 // Local Variables: 
 // compile-command: "gmake MSFitsOutput"
 // End: 
+
+} //# NAMESPACE CASA - END
+

@@ -181,6 +181,7 @@
 
 #include <casa/iostream.h>
 
+#include <casa/namespace.h>
 enum defaults {IN, MOMENTS, AXIS, REGION, METHOD, SMOOTH, RANGE, SNR, OUT, SMOUT, 
                PLOTTING, NDEFAULTS};
 

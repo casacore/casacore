@@ -39,6 +39,8 @@
 #include <casa/BasicSL/String.h>
 #include <casa/IO/ByteIO.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Forward clarations
 class AipsIO;
 class StManAipsIO;
@@ -495,5 +497,8 @@ private:
 };
 
 
+
+
+} //# NAMESPACE CASA - END
 
 #endif

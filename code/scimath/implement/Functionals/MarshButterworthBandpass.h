@@ -33,6 +33,8 @@
 #include <scimath/Functionals/SimButterworthBandpass.h>
 #include <scimath/Functionals/FunctionMarshallable.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Forward Declarations
 
 // <summary> A Butterworth function class that supports serialization
@@ -161,5 +163,8 @@ public:
 	return new MarshButterworthBandpass<T>(*this); 
     };
 };
+
+
+} //# NAMESPACE CASA - END
 
 #endif

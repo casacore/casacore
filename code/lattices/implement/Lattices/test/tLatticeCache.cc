@@ -51,6 +51,7 @@
 #include <casa/stdlib.h>
 #include <casa/iostream.h>
 
+#include <casa/namespace.h>
 void a() {
     Int arraySize=2048;
     cout<<"Array Size?   "; cin>>arraySize; 

@@ -38,6 +38,8 @@
 #include <casa/IO/AipsIO.h>
 #include <casa/iosfwd.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Forward Declarations
 class TableRecord;
 
@@ -511,6 +513,9 @@ inline int ValType::isDefined (const String* value,   const String* undef)
 inline int ValType::isDefined (const void*, const void*)
     {return 1;}
 
+
+
+} //# NAMESPACE CASA - END
 
 #endif
 

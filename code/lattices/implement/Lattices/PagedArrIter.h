@@ -33,6 +33,8 @@
 #include <lattices/Lattices/PagedArray.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 // <summary>
 // A read/write Lattice iterator for PagedArrays.
 // </summary>
@@ -127,5 +129,8 @@ private:
   PagedArray<T> itsData;
 };
 
+
+
+} //# NAMESPACE CASA - END
 
 #endif

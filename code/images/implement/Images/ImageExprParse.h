@@ -36,6 +36,8 @@
 #include <casa/Utilities/DataType.h>
 #include <casa/vector.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Forward Declarations
 template<class T> class Block;
 template<class T> class PtrBlock;
@@ -309,5 +311,8 @@ public:
     String   itsSval;              //# lattice name; function name
 };
 
+
+
+} //# NAMESPACE CASA - END
 
 #endif

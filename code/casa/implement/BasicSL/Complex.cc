@@ -31,13 +31,15 @@
 #include <casa/BasicMath/Math.h>
 #include <casa/BasicSL/Constants.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 // Math functions
 /// Should be in stl
 
 #if defined(NEEDS_LOG10_COMPLEX)
 DComplex log10(const DComplex &val)
 {
-  return DComplex(log(val)*C::log10e);
+  return DComplex(std::log(val)*C::log10e);
 }
 
 /// Should be in stl
@@ -45,7 +47,7 @@ Complex log10(const Complex &val)
 {
   // Need to make log10e a Float for it to compile
   // with picky compilers
-  return Complex(log(val)*Float(C::log10e));
+  return Complex(std::log(val)*Float(C::log10e));
 }
 #endif
 
@@ -57,29 +59,29 @@ Bool near(const Complex &val1, const Complex &val2, Double tol)
 {
   if (tol <= 0) return val1 == val2;
   if (val1 == val2) return True;
-  if (abs(val1) == 0) return abs(val2) <= (1+tol)*FLT_MIN;
-  else if (abs(val2) == 0) return abs(val1) <= (1+tol)*FLT_MIN;
-  Float aval1(abs(val1)), aval2(abs(val2));
-  return abs(val1-val2) <= tol * (aval1 < aval2 ? aval2 : aval1);
+  if (std::abs(val1) == 0) return std::abs(val2) <= (1+tol)*FLT_MIN;
+  else if (std::abs(val2) == 0) return std::abs(val1) <= (1+tol)*FLT_MIN;
+  Float aval1(std::abs(val1)), aval2(std::abs(val2));
+  return std::abs(val1-val2) <= tol * (aval1 < aval2 ? aval2 : aval1);
 }
 
 Bool near(const DComplex &val1, const DComplex &val2, Double tol)
 {
   if (tol <= 0) return val1 == val2;
   if (val1 == val2) return True;
-  if (abs(val1) == 0) return abs(val2) <= (1+tol)*DBL_MIN;
-  else if (abs(val2) == 0) return abs(val1) <= (1+tol)*DBL_MIN;
-  Double aval1(abs(val1)), aval2(abs(val2));
-  return abs(val1-val2) <= tol * (aval1 < aval2 ? aval2 : aval1);
+  if (std::abs(val1) == 0) return std::abs(val2) <= (1+tol)*DBL_MIN;
+  else if (std::abs(val2) == 0) return std::abs(val1) <= (1+tol)*DBL_MIN;
+  Double aval1(std::abs(val1)), aval2(std::abs(val2));
+  return std::abs(val1-val2) <= tol * (aval1 < aval2 ? aval2 : aval1);
 }
 
 Bool nearAbs(const Complex &val1, const Complex &val2, Double tol)
 {
-  return abs(val2 - val1) <= tol;
+  return std::abs(val2 - val1) <= tol;
 }
 Bool nearAbs(const DComplex &val1, const DComplex &val2, Double tol)
 {
-  return abs(val2 - val1) <= tol;
+  return std::abs(val2 - val1) <= tol;
 }
 
 // NaN functions
@@ -108,52 +110,52 @@ void setNaN(DComplex &val)
 // fmod functions
 
 DComplex fmod(const DComplex &in, const DComplex &f) {
-  return DComplex(fmod(real(in), real(f)), imag(in)); }
+  return DComplex(std::fmod(real(in), real(f)), imag(in)); }
 Complex fmod(const Complex &in, const Complex &f) {
-  return Complex(fmod(real(in), real(f)), imag(in)); }
+  return Complex(std::fmod(real(in), real(f)), imag(in)); }
 
 // Inverse trigonometry (see Abromowitz)
 DComplex atan(const DComplex &in) {
   const Double n = norm(in);
-  return DComplex(0.5*atan(2.0*real(in)/(1.0-n)),
-		  0.25*log((1.0+n+2*imag(in))/(1.0+n-2*imag(in))));
+  return DComplex(0.5*std::atan(2.0*real(in)/(1.0-n)),
+		  0.25*std::log((1.0+n+2*imag(in))/(1.0+n-2*imag(in))));
 }
 Complex atan(const Complex &in) {
   const Float n = norm(in);
-  return Complex(0.5*atan(2.0*real(in)/(1.0-n)),
-		 0.25*log((1.0+n+2*imag(in))/(1.0+n-2*imag(in))));
+  return Complex(0.5*std::atan(2.0*real(in)/(1.0-n)),
+		 0.25*std::log((1.0+n+2*imag(in))/(1.0+n-2*imag(in))));
 }
 DComplex asin(const DComplex &in) {
   const Double n = norm(in);
-  Double a = 0.5*sqrt(1.0+n+2*real(in));
-  const Double c = 0.5*sqrt(1.0+n-2*real(in));
+  Double a = 0.5*std::sqrt(1.0+n+2*real(in));
+  const Double c = 0.5*std::sqrt(1.0+n-2*real(in));
   const Double b = a-c;
   a += c;
-  return DComplex(asin(b), log(a+sqrt(a*a-1.0)));
+  return DComplex(std::asin(b), std::log(a+std::sqrt(a*a-1.0)));
 }
 Complex asin(const Complex &in) {
   const Float n = norm(in);
-  Float a = 0.5*sqrt(1.0+n+2*real(in));
+  Float a = 0.5*std::sqrt(1.0+n+2*real(in));
   const Float c = 0.5*sqrt(1.0+n-2*real(in));
   const Float b = a-c;
   a += c;
-  return Complex(asin(b), log(a+sqrt(a*a-1.0)));
+  return Complex(std::asin(b), std::log(a+std::sqrt(a*a-1.0)));
 }
 DComplex acos(const DComplex &in) {
   const Double n = norm(in);
-  Double a = 0.5*sqrt(1.0+n+2*real(in));
-  const Double c = 0.5*sqrt(1.0+n-2*real(in));
+  Double a = 0.5*std::sqrt(1.0+n+2*real(in));
+  const Double c = 0.5*std::sqrt(1.0+n-2*real(in));
   const Double b = a-c;
   a += c;
-  return DComplex(acos(b), -log(a+sqrt(a*a-1.0)));
+  return DComplex(std::acos(b), -std::log(a+std::sqrt(a*a-1.0)));
 }
 Complex acos(const Complex &in) {
   const Float n = norm(in);
-  Float a = 0.5*sqrt(1.0+n+2*real(in));
-  const Float c = 0.5*sqrt(1.0+n-2*real(in));
+  Float a = 0.5*std::sqrt(1.0+n+2*real(in));
+  const Float c = 0.5*std::sqrt(1.0+n-2*real(in));
   const Float b = a-c;
   a += c;
-  return Complex(acos(b), -log(a+sqrt(a*a-1.0)));
+  return Complex(std::acos(b), -std::log(a+std::sqrt(a*a-1.0)));
 }
 DComplex atan2(const DComplex &in, const DComplex &t2) {
   if (norm(t2) == 0) return DComplex(C::pi_2);
@@ -169,21 +171,22 @@ Complex atan2(const Complex &in, const Complex &t2) {
 }
 /// Temporary solutions only
 DComplex erf(const DComplex &in) {
-  return erf(in.real());
+  return ::erf(in.real());
 }
 Complex erf(const Complex &in) {
-  return erf(in.real());
+  return ::erf(in.real());
 }
 DComplex erfc(const DComplex &in) {
-  return erfc(in.real());
+  return ::erfc(in.real());
 }
 Complex erfc(const Complex &in) {
-  return erfc(in.real());
+  return ::erfc(in.real());
 }
 
 /// Temporary for now, likely should go into templates (or in a macro
 // preferably in define.h)
 
+#ifdef NAMESPACE_WORKING
 #if defined(AIPS_SUN_NATIVE)
 
 template Complex std::log10(const Complex&);
@@ -223,3 +226,6 @@ template DComplex std::sin(const DComplex&);
 template Complex std::sinh(const Complex&);
 template DComplex std::sinh(const DComplex&);
 #endif
+#endif
+} //# NAMESPACE CASA - END
+

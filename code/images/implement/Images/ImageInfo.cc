@@ -42,6 +42,8 @@
 #include <casa/iostream.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 ImageInfo::ImageInfo()
 : itsRestoringBeam(defaultRestoringBeam()),
   itsImageType(defaultImageType())
@@ -531,3 +533,6 @@ ImageInfo::ImageTypes ImageInfo::MiriadImageType (const String& type)
 //
    return typeOut;
 }
+
+} //# NAMESPACE CASA - END
+

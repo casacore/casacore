@@ -37,6 +37,8 @@
 #include <casa/Arrays/Vector.h>
 #include <casa/Exceptions/Error.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 MSObservation::MSObservation():hasBeenDestroyed_p(True) { }
 
 MSObservation::MSObservation(const String &tableName, TableOption option) 
@@ -186,3 +188,6 @@ MSObservation MSObservation::referenceCopy(const String& newTableName,
   return MSObservation(MSTable<PredefinedColumns,PredefinedKeywords>::referenceCopy
 		 (newTableName,writableColumns));
 }
+
+} //# NAMESPACE CASA - END
+

@@ -83,11 +83,13 @@
   INFO=`cat $AIPSCODE/VERSION | \
            awk 'BEGIN {FS = ""} {printf("%s\n",substr($1,45,36))}'`
 
+  echo "namespace casa { //# NAMESPACE CASA - BEGIN"
   echo "extern const int   aips_major_version = $MAJOR;"
   echo "extern const int   aips_minor_version = $MINOR;"
   echo "extern const int   aips_patch_version = $PATCH;"
   echo "extern const char* aips_version_date  = \"$DATE\";"
   echo "extern const char* aips_version_info  = \"$INFO\";"
+  echo "} //# NAMESPACE CASA - END"
 
   cat << EOT
 
@@ -96,6 +98,8 @@
 #include <iomanip>
 
 using namespace std;
+
+namespace casa { //# NAMESPACE CASA
 
 void report_aips_version(ostream &os)
 {
@@ -114,6 +118,8 @@ void report_aips_version(ostream &os)
       << setw(0)  << aips_version_info
       << endl;
 }
+
+} //# NAMESPACE CASA - END
 EOT
 
   exit 0

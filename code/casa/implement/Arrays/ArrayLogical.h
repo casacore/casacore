@@ -33,6 +33,8 @@
 #include <casa/Arrays/Array.h>
 #include <casa/Arrays/LogiArray.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Forward Declarations
 template <class T> class Vector;
 template <class T> class Matrix;
@@ -416,5 +418,8 @@ template<class T> Array<uInt> partialNFalse (const Array<T>& array,
 // </group>
 
 // </group>
+
+
+} //# NAMESPACE CASA - END
 
 #endif

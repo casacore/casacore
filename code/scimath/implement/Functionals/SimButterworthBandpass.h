@@ -34,6 +34,8 @@
 #include <casa/Containers/Block.h>
 #include <scimath/Functionals/Function1D.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Forward Declarations
 template<class T> class Vector;
 
@@ -260,5 +262,8 @@ protected:
 public:
   using Function<T>::nparameters;
 };
+
+
+} //# NAMESPACE CASA - END
 
 #endif

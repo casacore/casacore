@@ -31,6 +31,8 @@
 #include <casa/Arrays/Array.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 ROTableColumn::ROTableColumn ()
 : baseTabPtr_p(0),
   baseColPtr_p(0)
@@ -364,3 +366,6 @@ void TableColumn::putColumn (const ROTableColumn& that)
 	put (i, that, i);
     }
 }
+
+} //# NAMESPACE CASA - END
+

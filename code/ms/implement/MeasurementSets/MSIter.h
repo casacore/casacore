@@ -38,6 +38,8 @@
 #include <casa/BasicSL/String.h>
 #include <scimath/Mathematics/SquareMatrix.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# forward decl
 class ROMSColumns;
 class TableIterator;
@@ -378,4 +380,7 @@ inline const Vector<SquareMatrix<Complex,2> >& MSIter::CJones() const
 inline const Matrix<Double>& MSIter::receptorAngle() const 
 {return receptorAngle_p;}
 inline Int MSIter::startChan() const {return startChan_p;}
+
+} //# NAMESPACE CASA - END
+
 #endif

@@ -37,6 +37,8 @@
 #include <casa/iostream.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 Vector<Int> LatticeStatsBase::toStatisticTypes (const String& statsU, 
                                                 const Regex& delimiter)
 { 
@@ -202,4 +204,7 @@ void LatticeStatsBase::stretchMinMax (Float& dMin,
    }
 }
 
+
+
+} //# NAMESPACE CASA - END
 

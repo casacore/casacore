@@ -28,6 +28,8 @@
 #include <casa/System/PGPlotter.h>
 #include <casa/stdio.h>
         
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 RFDebugPlot::RFDebugPlot () :
   enable(False),plotter(NULL),dch(-1),difr(-1),dit(-1)
 {}
@@ -79,3 +81,6 @@ Bool RFDebugPlot::queryPlotLimits ( Float &ymin,Float &ymax )
   }
   return True;
 }
+
+} //# NAMESPACE CASA - END
+

@@ -41,6 +41,8 @@
 
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 // Implement the constants for each data type.
 
 TableExprNodeConstBool::TableExprNodeConstBool (const Bool& val)
@@ -288,3 +290,6 @@ Double TableExprNodeRandom::getDouble (const TableExprId&)
 {
     return random_p();
 }
+
+} //# NAMESPACE CASA - END
+

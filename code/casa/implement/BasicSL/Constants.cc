@@ -27,6 +27,8 @@
 
 #include <casa/BasicSL/Constants.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 // Been changed for SUN CC port
 
 //----------------------------------------------------------------------------
@@ -148,4 +150,7 @@ const Double C::second		= 1.0;
 const Double C::minute		= 60.0;
 const Double C::hour		= 3600.0;
 const Double C::day		= 86400.0;
+
+
+} //# NAMESPACE CASA - END
 

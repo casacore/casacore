@@ -45,6 +45,7 @@
 #include <casa/iostream.h>
 
 
+#include <casa/namespace.h>
 // void plotSpectrum(const Flux<Double> & refFlux,
 // 		  const SpectralModel & modelSpectrum);
 int main() {

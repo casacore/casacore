@@ -37,6 +37,8 @@
 #include <measures/Measures/MConvertBase.h>
 #include <measures/Measures/MDoppler.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Forward Declarations
 class MCDoppler;
 class String;
@@ -170,5 +172,8 @@ private:
 		 const MConvertBase &mc);
   
 };
+
+
+} //# NAMESPACE CASA - END
 
 #endif

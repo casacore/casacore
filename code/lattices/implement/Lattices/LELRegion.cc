@@ -34,6 +34,8 @@
 #include <casa/Exceptions/Error.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 LELRegion::LELRegion (const LattRegionHolder& region)
 : region_p (region.clone())
 {
@@ -182,3 +184,6 @@ String LELRegionAsBool::className() const
 {
     return "LELRegionAsBool";
 }
+
+} //# NAMESPACE CASA - END
+

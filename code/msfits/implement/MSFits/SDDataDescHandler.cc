@@ -38,6 +38,8 @@
 #include <casa/Exceptions/Error.h>
 #include <casa/BasicSL/String.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 SDDataDescHandler::SDDataDescHandler() 
     : index_p(0), msDataDesc_p(0), msDataDescCols_p(0), rownr_p(-1)
 {;}
@@ -136,3 +138,6 @@ void SDDataDescHandler::initAll(MeasurementSet &ms)
     rownr_p = -1;
     // nothing depends directly on the row, no columns are handled here
 }
+
+} //# NAMESPACE CASA - END
+

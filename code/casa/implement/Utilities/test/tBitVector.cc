@@ -29,6 +29,7 @@
 #include <casa/Utilities/BitVector.h>
 #include <casa/iostream.h>
 
+#include <casa/namespace.h>
 void doIt()
 {
     uInt maxbits=35;

@@ -32,6 +32,8 @@
 #include <casa/aips.h>
 #include <msvis/MSVis/VisBuffer.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 // <summary> 
 // </summary>
 
@@ -59,5 +61,8 @@
 
 // Make PSF VisBuffer
 void makePSFVisBuffer(VisBuffer& vb);
+
+} //# NAMESPACE CASA - END
+
 #endif
 

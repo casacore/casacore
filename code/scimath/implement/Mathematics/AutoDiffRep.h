@@ -33,6 +33,8 @@
 #include <casa/aips.h>
 #include <casa/Arrays/Vector.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Forward declarations
 
 // <summary>
@@ -140,5 +142,8 @@ template <class T> class AutoDiffRep {
   // The derivatives
   Vector<T> grad_p;
 };
+
+
+} //# NAMESPACE CASA - END
 
 #endif

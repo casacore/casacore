@@ -33,6 +33,8 @@
 #include <casa/Containers/Block.h>
 #include <casa/BasicSL/String.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Define a macro to cast kvblk[i] to OrderedPair<K,V>*.
 //# This is needed because the compiler outlines the inline functions pair.
 #define KVBLKpair(INX) ((OrderedPair<K,V>*)(kvblk[INX]))
@@ -224,5 +226,8 @@ protected:
 //#	{ return (OrderedPair<K,V>*)(kvblk[i]); }
     //-grp
 };
+
+
+} //# NAMESPACE CASA - END
 
 #endif

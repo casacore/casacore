@@ -35,6 +35,8 @@
 #include <casa/Arrays/IPosition.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 // <summary>
 // traverse a tiled Lattice optimally with a tile cursor
 // </summary>
@@ -281,5 +283,8 @@ private:
   Bool itsStart;                 //# Is the cursor at the beginning?
 };
 
+
+
+} //# NAMESPACE CASA - END
 
 #endif

@@ -56,6 +56,7 @@
 #include <casa/Arrays/MaskArrMath.h>
 
 
+#include <casa/namespace.h>
 main()
 {
     try {

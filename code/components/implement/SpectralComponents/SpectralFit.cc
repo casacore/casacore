@@ -29,6 +29,8 @@
 #include <components/SpectralComponents/SpectralFit.h>
 #include <components/SpectralComponents/SpectralElement.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Constructors
 SpectralFit::SpectralFit() :
   slist_p(0), iter_p(0) {}
@@ -69,3 +71,6 @@ void SpectralFit::clear() {
   slist_p.clear();
   iter_p = 0;
 }
+
+} //# NAMESPACE CASA - END
+

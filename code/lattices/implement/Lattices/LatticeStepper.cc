@@ -33,6 +33,8 @@
 #include <casa/sstream.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 LatticeStepper::LatticeStepper (const IPosition& latticeShape,
 				const IPosition& cursorShape,
 				const uInt hangOverPolicy)
@@ -554,3 +556,6 @@ Bool LatticeStepper::ok() const
   // Otherwise it has passed all the tests
   return True;
 }
+
+} //# NAMESPACE CASA - END
+

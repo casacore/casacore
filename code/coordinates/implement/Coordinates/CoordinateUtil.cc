@@ -58,6 +58,8 @@
 
 #include <casa/sstream.h>
 
+namespace casa { // begin namespace casa
+
 
 void CoordinateUtil::addDirAxes(CoordinateSystem & coords){
   Matrix<Double> xform(2, 2); xform = 0.0; xform.diagonal() = 1.0;
@@ -1763,3 +1765,5 @@ String CoordinateUtil::axisLabel (const Coordinate& coord, uInt axis,
   }
   return base;
 }
+
+} // end namespace casa

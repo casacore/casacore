@@ -37,6 +37,8 @@
 #include <measures/Measures/MeasComet.h>
 #include <casa/iostream.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 // Representation class
 class FrameRep {
 public:
@@ -715,3 +717,6 @@ ostream &operator<<(ostream &os, MeasFrame &mf) {
   };
   return os;
 }
+
+} //# NAMESPACE CASA - END
+

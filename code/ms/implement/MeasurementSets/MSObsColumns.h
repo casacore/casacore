@@ -38,6 +38,8 @@
 #include <tables/Tables/ScalarColumn.h>
 #include <casa/BasicSL/String.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 class MSObservation;
 
 // <summary>
@@ -275,4 +277,7 @@ private:
   ScalarQuantColumn<Double> releaseDateQuant_p;
   ArrayQuantColumn<Double> timeRangeQuant_p;
 };
+
+} //# NAMESPACE CASA - END
+
 #endif

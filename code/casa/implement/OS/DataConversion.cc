@@ -29,5 +29,10 @@
 #include <casa/OS/DataConversion.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 DataConversion::~DataConversion()
 {}
+
+} //# NAMESPACE CASA - END
+

@@ -37,6 +37,8 @@
 #include <tables/Tables/TableRecord.h>
 #include <casa/Containers/SimOrdMap.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 // <summary> 
 // BinaryTable is used to translate a FITS binary table to an aips++ Table.
 // </summary>
@@ -176,5 +178,8 @@ private:
     // this is the function that fills each row in as needed
     void fillRow();
 };
+
+
+} //# NAMESPACE CASA - END
 
 #endif

@@ -31,6 +31,8 @@
 #include <casa/Containers/Block.h>
 #include <casa/iostream.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 // First implement a simple stderr based progress meter that just prints out
 // 0%....10....20....30....40....50....60....70....80....90....100%
 // cerr is better than cout because it isn't buffered usually, so the above
@@ -158,4 +160,7 @@ Double ProgressMeter::max() const
 }
 
 
+
+
+} //# NAMESPACE CASA - END
 

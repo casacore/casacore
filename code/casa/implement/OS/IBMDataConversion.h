@@ -32,6 +32,8 @@
 #include <casa/OS/DataConversion.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 // <summary>
 // A class with virtual functions to convert IBM format.
 // </summary>
@@ -201,5 +203,8 @@ public:
 inline IBMDataConversion::IBMDataConversion()
 {}
 
+
+
+} //# NAMESPACE CASA - END
 
 #endif

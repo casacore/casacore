@@ -33,6 +33,7 @@
 #include <scimath/Functionals/Function.h>
 #include <scimath/Functionals/HyperPlane.h>
 
+namespace casa {  //# Begin namespace casa
 //# Constants
 // Default svd collinearity
 
@@ -659,3 +660,5 @@ buildResidual(Vector<typename FunctionTraits<T>::BaseType> &y,
   };
   return True;
 }
+
+} //#End namesapce casa

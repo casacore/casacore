@@ -30,6 +30,8 @@
 
 #include <casa/Utilities/RegSequence.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 // <summary> 
 //    Primitive Run Time Type Information (<em>RTTI</em>)
 // </summary>
@@ -125,5 +127,8 @@ template<class t> uInt Register(const t *);
 // template<class t> inline uInt Register(const t &v) {
 //   return Register(&v);
 // }
+
+
+} //# NAMESPACE CASA - END
 
 #endif

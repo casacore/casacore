@@ -33,6 +33,8 @@
 #include <casa/Utilities/ValType.h>
 #include <casa/Utilities/Assert.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 SSMIndStringColumn::SSMIndStringColumn (SSMBase* aParent, int aDataType, 
 					uInt aColNr): 
 SSMDirColumn   (aParent,aDataType,aColNr)
@@ -132,4 +134,7 @@ void SSMIndStringColumn::putArrayStringV (uInt aRowNr,
     putValue(aRowNr, buf);
   }
 }
+
+
+} //# NAMESPACE CASA - END
 

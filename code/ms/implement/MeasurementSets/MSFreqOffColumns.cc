@@ -28,6 +28,8 @@
 #include <ms/MeasurementSets/MSFreqOffColumns.h>
 #include <ms/MeasurementSets/MSFreqOffset.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 ROMSFreqOffsetColumns::
 ROMSFreqOffsetColumns(const MSFreqOffset& msFreqOffset):
   isNull_p(True),
@@ -166,3 +168,6 @@ void MSFreqOffsetColumns::attach(MSFreqOffset& msFreqOffset)
 // Local Variables: 
 // compile-command: "gmake MSFreqOffColumns"
 // End: 
+
+} //# NAMESPACE CASA - END
+

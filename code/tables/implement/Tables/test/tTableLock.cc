@@ -28,6 +28,7 @@
 #include <tables/Tables/TableLock.h>
 #include <casa/Utilities/Assert.h>
 
+#include <casa/namespace.h>
 // <summary>
 // Test program for the TableLock class.
 // </summary>

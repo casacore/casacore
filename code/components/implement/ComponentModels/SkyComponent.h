@@ -35,6 +35,8 @@
 #include <components/ComponentModels/SkyCompBase.h>
 #include <measures/Measures/Stokes.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 class ComponentShape;
 class CoordinateSystem;
 class MDirection;
@@ -266,4 +268,7 @@ public:
 private:
   CountedPtr<SkyCompRep> itsCompPtr;
 };
+
+} //# NAMESPACE CASA - END
+
 #endif

@@ -32,8 +32,10 @@
 #include <casa/aips.h>
 #include <casa/BasicSL/String.h>
 #include <casa/System/ObjectID.h>
-
 #include <casa/iosfwd.h>
+
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 class SourceLocation;
 
 // <summary> 
@@ -199,5 +201,8 @@ struct SourceLocation
 #define WHERE SourceLocation::canonicalize(__FILE__, __LINE__)
 
 // </group>
+
+
+} //# NAMESPACE CASA - END
 
 #endif

@@ -78,6 +78,8 @@
 
 #define bytetok(x)	(((x) + 512) >> 10)
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 class HostMachineInfo {
 friend class HostInfo;
   
@@ -202,5 +204,8 @@ void HostMachineInfo::update_info( )
     }
 }
 
+} //# NAMESPACE CASA - END
+
 # endif
+
 #endif

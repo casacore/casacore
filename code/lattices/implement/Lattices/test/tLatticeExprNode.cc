@@ -54,6 +54,7 @@
 
 #include <casa/iostream.h>
 
+#include <casa/namespace.h>
 Bool checkInfo (const LatticeExprNode& expr,
 		const IPosition& shape,
 		const Bool shouldBeScalar,

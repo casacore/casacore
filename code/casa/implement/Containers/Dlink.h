@@ -31,6 +31,8 @@
 #include <casa/aips.h>
 #include <casa/Containers/Link.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 // <summary><b>Deprecated</b> use <linkto class=Link>Link</linkto> instead</summary>
 // <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="" demos="">
 // </reviewed>
@@ -39,8 +41,11 @@
 template<class t> class Dlink : public Link<t> {
   public:
     Dlink(t e,Dlink<t> *p=0,Dlink<t> *n=0);
-    Dlink<t> *&prev() {return (Dlink<t>*&)(this->Prev);}
-    const Dlink<t> *prev() const {return (Dlink<t>*)(this->Prev);}
+    Dlink<t> *&prev() {return (Dlink<t>*&) Prev;}
+    const Dlink<t> *prev() const {return (Dlink<t>*) Prev;}
 };
+
+
+} //# NAMESPACE CASA - END
 
 #endif

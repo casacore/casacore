@@ -28,6 +28,8 @@
 #include <casa/OS/ModcompDataConversion.h>
 #include <casa/OS/ModcompConversion.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 ModcompDataConversion::~ModcompDataConversion(){
 }
 
@@ -293,3 +295,6 @@ uInt ModcompDataConversion::externalSize (const Double*) const {
 // Local Variables: 
 // compile-command: "gmake OPTLIB=1 ModcompDataConversion"
 // End: 
+
+} //# NAMESPACE CASA - END
+

@@ -35,6 +35,8 @@
 #include <measures/Measures/MeasRef.h>
 #include <casa/Quanta/MVEpoch.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Forward Declarations
 class MEpoch;
 class MCEpoch;
@@ -247,5 +249,8 @@ private:
   //# Member functions
   
 };
+
+
+} //# NAMESPACE CASA - END
 
 #endif

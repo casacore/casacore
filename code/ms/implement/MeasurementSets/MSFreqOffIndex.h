@@ -33,6 +33,8 @@
 
 #include <casa/Containers/RecordField.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# forward declarations
 class MSFreqOffset;
 
@@ -101,6 +103,9 @@ private:
 
   void attachIds();
 };
+
+
+} //# NAMESPACE CASA - END
 
 #endif
     

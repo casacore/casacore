@@ -34,6 +34,8 @@
 #include <casa/stdexcept.h>
 #include <casa/iostream.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 Regex::Regex() {
   create("",0,0,0);
 }
@@ -366,3 +368,6 @@ const Regex RXlowercase("[a-z]+", 1);
 const Regex RXuppercase("[A-Z]+", 1);
 const Regex RXalphanum("[0-9A-Za-z]+", 1);
 const Regex RXidentifier("[A-Za-z_][A-Za-z0-9_]*", 1);
+
+} //# NAMESPACE CASA - END
+

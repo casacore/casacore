@@ -56,6 +56,7 @@
 // #include <lattices/Lattices/LCComplement.h>
 // #include <lattices/Lattices/LCExtension.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
 
 // <module>
 
@@ -454,6 +455,9 @@
 // </todo>
 
 // </module>
+
+
+} //# NAMESPACE CASA - END
 
 #endif
 

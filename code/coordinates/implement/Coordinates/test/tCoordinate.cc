@@ -34,6 +34,7 @@
 
 
 
+#include <casa/namespace.h>
 int main()
 {
   try {

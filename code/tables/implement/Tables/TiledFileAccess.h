@@ -33,6 +33,8 @@
 #include <tables/Tables/TSMCube.h>
 #include <casa/Utilities/DataType.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Forward Declarations
 class TiledFileHelper;
 class Slicer;
@@ -238,5 +240,8 @@ private:
   DataType         itsDataType;
 };
 
+
+
+} //# NAMESPACE CASA - END
 
 #endif

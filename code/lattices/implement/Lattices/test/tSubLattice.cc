@@ -45,6 +45,7 @@
 #include <casa/iostream.h>
 
 
+#include <casa/namespace.h>
 void testVectorROIter (const Lattice<Int>& sublat,
 		       const Lattice<Int>& lattice,
 		       const Slicer& slicer)

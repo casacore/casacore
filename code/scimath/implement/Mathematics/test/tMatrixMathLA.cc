@@ -33,6 +33,7 @@
 #include <casa/Utilities/Assert.h>
 #include <casa/iostream.h>
 
+#include <casa/namespace.h>
 int main()
 {
     Matrix<Double> ind(3,3);

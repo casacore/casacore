@@ -32,6 +32,8 @@
 #include <images/Images/WCCompound.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 // <summary>
 // Make the complement of an image region.
 // </summary>
@@ -123,5 +125,8 @@ protected:
 				    const IPosition& outOrder) const;
 };
 
+
+
+} //# NAMESPACE CASA - END
 
 #endif

@@ -48,6 +48,8 @@
 #include <casa/sstream.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 Fit2D::Fit2D(LogIO& logger)
 : itsLogger(logger),
   itsValid(False),
@@ -1081,4 +1083,7 @@ void Fit2D::piRange (Double& pa) const
     pa2();
     pa = pa2.radian();
 }
+
+
+} //# NAMESPACE CASA - END
 

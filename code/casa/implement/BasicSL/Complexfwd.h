@@ -45,11 +45,15 @@
 namespace std {
   template<class T> class complex;
 }
+
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 typedef std::complex<Float>  Complex;
 typedef std::complex<Double> DComplex;
 
 class IComplex;
 // </group>
 
+} //# NAMESPACE CASA - END
 
 #endif

@@ -32,6 +32,8 @@
 #include <casa/Containers/HashMapIter.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 // <summary>
 //     HashMap/HashMapIter IO functions
 // </summary>
@@ -52,5 +54,8 @@
 template<class key, class val> ostream &operator<<(ostream &, const ConstHashMapIter<key,val> &);
 template<class key, class val> ostream& operator<<(ostream&, const HashMap<key,val>&);
 // </group>
+
+
+} //# NAMESPACE CASA - END
 
 #endif

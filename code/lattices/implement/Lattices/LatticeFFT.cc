@@ -44,6 +44,8 @@
 #include <casa/System/AppInfo.h>
 #include <casa/iostream.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 void LatticeFFT::cfft2d(Lattice<Complex>& cLattice, const Bool toFrequency) {
   const uInt ndim = cLattice.ndim();
   DebugAssert(ndim > 1, AipsError);
@@ -368,3 +370,6 @@ void LatticeFFT::crfft(Lattice<Float>& out, const Lattice<Complex>& in,
 // Local Variables: 
 // compile-command: "gmake OPTLIB=1 LatticeFFT"
 // End: 
+
+} //# NAMESPACE CASA - END
+

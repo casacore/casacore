@@ -33,6 +33,10 @@
 #include <scimath/Fitting/LSQFit.h>
 #include <algorithm>
 
+using namespace std;
+
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Static values
 
 //# Constructors
@@ -820,3 +824,6 @@ void LSQFit::copyDiagonal(U &errors, LSQComplex) {
       (error_p[CHI2]);
   };
 }
+
+} //# NAMESPACE CASA - END
+

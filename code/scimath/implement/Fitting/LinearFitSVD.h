@@ -32,6 +32,8 @@
 #include <casa/aips.h>
 #include <scimath/Fitting/LinearFit.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 // <summary> 
 // Linear least-squares fit using Singular Value Decomposition method. 
 // </summary>
@@ -90,5 +92,8 @@ protected:
   using LinearFit<T>::svd_p;
   using LinearFit<T>::COLLINEARITY;
 };
+
+
+} //# NAMESPACE CASA - END
 
 #endif

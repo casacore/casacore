@@ -27,6 +27,10 @@
     $Id$
 */
 
+%{
+using namespace casa;
+%}
+
 %pure_parser                /* make parser re-entrant */
 
 %union {
@@ -93,6 +97,8 @@ TableExprNodeSet* settp;
 
 
 %{
+namespace casa { //# NAMESPACE CASA - BEGIN
+} //# NAMESPACE CASA - END
 int RecordGramlex (YYSTYPE*);
 %}
 

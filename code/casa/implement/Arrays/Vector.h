@@ -31,6 +31,8 @@
 //# Includes
 #include <casa/Arrays/Array.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Forward declarations
 //template <class T, class U> class vector; 
 #if defined(WHATEVER_VECTOR_FORWARD_DEC)
@@ -157,7 +159,7 @@ public:
     // Resize without argument is equal to resize(0, False).
     // <group>
     void resize(uInt len, Bool copyValues = False)
-      { if (len != this->nelements()) resize (IPosition(1,len), copyValues); }
+      { if (len != nelements()) resize (IPosition(1,len), copyValues); }
     void resize(const IPosition &len, Bool copyValues);
     virtual void resize();
     virtual void resize(const IPosition &len);
@@ -192,9 +194,9 @@ public:
     // bounds checking is performed (not for [])..
     // <group>
     T &operator[](uInt index)
-      { return (this->contiguous_p  ?  this->begin_p[index] : this->begin_p[index*this->inc_p(0)]); }
+      { return (contiguous_p  ?  begin_p[index] : begin_p[index*inc_p(0)]); }
     const T &operator[](uInt index) const
-      { return (this->contiguous_p  ?  this->begin_p[index] : this->begin_p[index*this->inc_p(0)]); }
+      { return (contiguous_p  ?  begin_p[index] : begin_p[index*inc_p(0)]); }
     T &operator()(const IPosition &i)
       { return Array<T>::operator()(i); }
     const T &operator()(const IPosition &i) const 
@@ -206,9 +208,9 @@ public:
 	//# CFront 3.0.1 doesn't like that.
 	IPosition IndexCopy(1);
 	IndexCopy(0) = index;
-	this->validateIndex(IndexCopy);   //# Throws an exception on failure
+	validateIndex(IndexCopy);   //# Throws an exception on failure
 #endif
-        return *(this->begin_p + index*this->inc_p(0));
+        return *(begin_p + index*inc_p(0));
       }
 
     const T &operator()(uInt index) const
@@ -218,9 +220,9 @@ public:
 	//# CFront 3.0.1 doesn't like that.
 	IPosition IndexCopy(1);
 	IndexCopy(0) = index;
-	this->validateIndex(IndexCopy);   //# Throws an exception on failure
+	validateIndex(IndexCopy);   //# Throws an exception on failure
 #endif
-        return *(this->begin_p + index*this->inc_p(0));
+        return *(begin_p + index*inc_p(0));
       }
     // </group>
 
@@ -281,9 +283,9 @@ public:
     // The length of the Vector.
     // <group>
     void shape(Int &Shape) const
-      { Shape = this->length_p(0); }
+      { Shape = length_p(0); }
     const IPosition &shape() const
-      { return this->length_p; }
+      { return length_p; }
     // </group>
 
     // Replace the data values with those in the pointer <src>storage</src>.
@@ -310,5 +312,8 @@ private:
     // Helper functions for constructors.
     void initVector(const Block<T> &, Int nr);      // copy semantics
 };
+
+
+} //# NAMESPACE CASA - END
 
 #endif

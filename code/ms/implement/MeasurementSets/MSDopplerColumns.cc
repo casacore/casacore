@@ -28,6 +28,8 @@
 #include <ms/MeasurementSets/MSDopplerColumns.h>
 #include <ms/MeasurementSets/MSDoppler.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 ROMSDopplerColumns::ROMSDopplerColumns(const MSDoppler& msDoppler):
   isNull_p(True),
   dopplerId_p(),
@@ -122,3 +124,6 @@ void MSDopplerColumns::setVelDefRef(MDoppler::Types ref)
 // Local Variables: 
 // compile-command: "gmake MSDopplerColumns"
 // End: 
+
+} //# NAMESPACE CASA - END
+

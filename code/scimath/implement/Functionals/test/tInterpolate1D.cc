@@ -39,6 +39,8 @@
 
 #include <casa/iostream.h>
 
+#include <casa/namespace.h>
+
 // Main program to test the Interpolate1D class
 
 int main()

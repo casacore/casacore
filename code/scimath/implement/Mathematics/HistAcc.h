@@ -33,10 +33,12 @@
 #include <casa/Utilities/Fallible.h>
 #include <scimath/Mathematics/StatAcc.h>
 #include <casa/Containers/Block.h>
+#include <casa/iosfwd.h>
+
+namespace casa { //# NAMESPACE CASA - BEGIN
 
 // forward declarations:
 template <class T> class Array;
-#include <casa/iosfwd.h>
 class String;
 
 // <reviewed reviewer="" date="" tests="tHistAcc" demos="">
@@ -221,6 +223,9 @@ template<class T>
 inline void HistAcc<T>::put(const T v) {
     put1(v);            
 }
+
+
+} //# NAMESPACE CASA - END
 
 #endif
 

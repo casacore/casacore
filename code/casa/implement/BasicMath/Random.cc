@@ -33,6 +33,8 @@
 #include <casa/Utilities/PtrHolder.h>
 #include <casa/Arrays/Vector.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 RNG::~RNG() {
 }
 
@@ -570,7 +572,7 @@ Double DiscreteUniform::operator()() {
 }
 
 Int DiscreteUniform::asInt() {
-  return itsLow + static_cast<Int>(floor(itsDelta * itsRNG->asDouble()));
+  return itsLow + static_cast<Int>(std::floor(itsDelta * itsRNG->asDouble()));
 }
 
 void DiscreteUniform::low(Int x) {
@@ -806,7 +808,7 @@ LogNormal::~LogNormal() {
 
 //      See Simulation, Modelling & Analysis by Law & Kelton, pp260
 Double LogNormal::operator()() {
-  return pow(C::e, this->Normal::operator()() );
+  return std::pow(C::e, this->Normal::operator()() );
 }
 
 void LogNormal::mean(Double x) {
@@ -989,7 +991,7 @@ Weibull::Weibull(RNG* gen, Double alpha, Double beta)
 }
 
 Double Weibull::operator()() {
-  return pow(itsBeta * ( - log(1.0 - itsRNG->asDouble()) ), itsInvAlpha);
+  return std::pow(itsBeta * ( - log(1.0 - itsRNG->asDouble()) ), itsInvAlpha);
 }
 
 void Weibull::alpha(Double x) {
@@ -1028,3 +1030,6 @@ void Weibull::setState() {
 // Local Variables: 
 // compile-command: "gmake XLIBLIST=0 Random"
 // End: 
+
+} //# NAMESPACE CASA - END
+

@@ -42,6 +42,8 @@
 #include <casa/Exceptions/Error.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 TableMeasDescBase::TableMeasDescBase()
 {}
 
@@ -204,3 +206,6 @@ Bool TableMeasDescBase::hasMeasures (const ROTableColumn& column)
 {
   return column.keywordSet().isDefined ("MEASINFO");
 }
+
+} //# NAMESPACE CASA - END
+

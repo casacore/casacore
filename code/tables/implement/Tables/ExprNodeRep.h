@@ -36,13 +36,15 @@
 #include <casa/Quanta/MVTime.h>
 #include <casa/Utilities/DataType.h>
 #include <casa/Utilities/Regex.h>
+#include <casa/iosfwd.h>
+
+namespace casa { //# NAMESPACE CASA - BEGIN
 
 //# Forward Declarations
 class TableExprNode;
 class BaseTable;
 class TableExprNodeColumn;
 template<class T> class Block;
-#include <casa/iosfwd.h>
 
 
 // <summary>
@@ -573,5 +575,8 @@ inline TableExprNodeRep* TableExprNodeRep::link()
     count_p++;
     return this;
 }
+
+
+} //# NAMESPACE CASA - END
 
 #endif

@@ -31,6 +31,8 @@
 
 #include <casa/aips.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 class String;
 class HostMachineInfo;
 
@@ -143,5 +145,8 @@ inline Bool HostInfo::bigEndian()
 #endif
 }
 
+
+
+} //# NAMESPACE CASA - END
 
 #endif

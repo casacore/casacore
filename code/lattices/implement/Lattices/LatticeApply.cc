@@ -46,6 +46,8 @@
 #include <casa/iostream.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 template <class T, class U>
 void LatticeApply<T,U>::lineApply (MaskedLattice<U>& latticeOut,
 				 const MaskedLattice<T>& latticeIn,
@@ -663,3 +665,6 @@ IPosition LatticeApply<T,U>::prepare (const IPosition& inShape,
     }
     return ioMap;
 }
+
+} //# NAMESPACE CASA - END
+

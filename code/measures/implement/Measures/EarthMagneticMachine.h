@@ -36,6 +36,8 @@
 #include <measures/Measures/EarthField.h>
 #include <casa/Quanta/MVEarthMagnetic.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Forward Declarations
 class MeasFrame;
 class MPosition;
@@ -261,5 +263,8 @@ private:
   // Calculate field
   void calculate();
 };
+
+
+} //# NAMESPACE CASA - END
 
 #endif

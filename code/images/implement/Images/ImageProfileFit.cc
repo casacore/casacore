@@ -60,6 +60,8 @@
 #include <casa/ostream.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 ImageProfileFit::ImageProfileFit()
 : itsImagePtr(0),
   itsSigmaImagePtr(0),
@@ -1057,4 +1059,7 @@ SpectralList ImageProfileFit::filterList (const SpectralList& listIn) const
 //
    return listOut;
 }
+
+
+} //# NAMESPACE CASA - END
 

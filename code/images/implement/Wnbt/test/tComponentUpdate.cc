@@ -39,6 +39,7 @@
 
 #include <casa/iostream.h>
 
+#include <casa/namespace.h>
 int main() {
   cout << "Test ComponentUpdate" << endl;
   cout << "-------------------------------------------------------" << endl;

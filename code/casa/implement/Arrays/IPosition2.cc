@@ -38,6 +38,8 @@
 #include <casa/Exceptions/Error.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 IPosition::IPosition (const Array<Int> &other)
 : size_p (other.nelements()),
   data_p (0)
@@ -102,3 +104,6 @@ AipsIO& operator>> (AipsIO& aio, IPosition& ip)
     DebugAssert (ip.ok(), AipsError);
     return aio;
 }
+
+} //# NAMESPACE CASA - END
+

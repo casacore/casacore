@@ -32,6 +32,8 @@
 #include <casa/Utilities/Register.h>
 #include <measures/Measures/MDirection.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Constructors
 MDirection::MDirection() :
   MeasBase<MVDirection, MDirection::Ref>() {}
@@ -414,3 +416,6 @@ void MDirection::shiftAngle(Double off, Double pa) {
 Measure *MDirection::clone() const {
     return (new MDirection(*this));
 }
+
+} //# NAMESPACE CASA - END
+

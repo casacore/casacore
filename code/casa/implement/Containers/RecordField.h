@@ -35,6 +35,8 @@
 #include <casa/Containers/Record.h>
 #include <casa/Utilities/Notice.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Forward Declarations
 class TableRecord;
 class Table;
@@ -298,5 +300,8 @@ inline void* attachRecordFieldPtr (RecordInterface* parent, Int fieldNumber,
 }
 
 
+
+
+} //# NAMESPACE CASA - END
 
 #endif

@@ -28,6 +28,8 @@
 //# Includes
 #include <scimath/Functionals/Polynomial.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Constructors
 
 //# Operators
@@ -52,3 +54,6 @@ Polynomial<T> Polynomial<T>::derivative() const {
 }
 
 //# Member functions
+
+} //# NAMESPACE CASA - END
+

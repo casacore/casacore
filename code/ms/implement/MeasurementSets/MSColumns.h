@@ -50,6 +50,8 @@
 #include <ms/MeasurementSets/MSSysCalColumns.h>
 #include <ms/MeasurementSets/MSWeatherColumns.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 class MeasurementSet;
 
 // <summary>
@@ -308,6 +310,9 @@ private:
   MSSysCalColumns sysCal_p; //optional
   MSWeatherColumns weather_p; //optional
 };
+
+} //# NAMESPACE CASA - END
+
 #endif
 
 

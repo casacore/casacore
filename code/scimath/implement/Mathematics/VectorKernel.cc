@@ -39,6 +39,8 @@
 #include <casa/Utilities/Regex.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 Vector<Double> VectorKernel::make(KernelTypes kernelType, Double width, 
                                   uInt shape, Bool useShapeExactly, Bool peakIsUnity)
 {
@@ -181,4 +183,7 @@ String VectorKernel::fromKernelType (KernelTypes kernelType)
    return type;
 }
 
+
+
+} //# NAMESPACE CASA - END
 

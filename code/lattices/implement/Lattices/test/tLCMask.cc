@@ -39,6 +39,7 @@
 #include <casa/iostream.h>
 
 
+#include <casa/namespace.h>
 void testVectorROIter (const Lattice<Bool>& lattice, Bool firstValue,
 		       Bool alternates)
 {

@@ -34,6 +34,8 @@
 #include <lattices/Lattices/Lattice.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 // <summary>
 // Class to define a rectangular mask as a temporary region
 // </summary>
@@ -196,5 +198,8 @@ private:
   Lattice<Bool>* itsMask;
 };
 
+
+
+} //# NAMESPACE CASA - END
 
 #endif

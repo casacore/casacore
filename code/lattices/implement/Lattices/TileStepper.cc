@@ -32,6 +32,8 @@
 #include <casa/sstream.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 TileStepper::TileStepper(const IPosition& latticeShape, 
 			 const IPosition& tileShape)
 : itsBlc(latticeShape.nelements(), 0),
@@ -481,3 +483,6 @@ Bool TileStepper::ok() const
   // Otherwise it has passed all the tests
   return True;
 }
+
+} //# NAMESPACE CASA - END
+

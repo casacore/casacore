@@ -31,6 +31,8 @@
 
 #include <casa/aips.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 template <class K, class V> class SimpleOrderedMap;
 template <class T> class Block;
 // forward declare the class so we can typedef it
@@ -251,5 +253,8 @@ protected:
   static void initMap(SimpleOrderedMap<String,Int>*& fieldMap,
 		      Block<Int>*& reverseMap);
 };
+
+
+} //# NAMESPACE CASA - END
 
 #endif

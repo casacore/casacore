@@ -34,6 +34,8 @@
 #include <tables/Tables/TableLock.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 // <summary>
 // Class to hold a (user) lock on a table.
 // </summary>
@@ -141,5 +143,8 @@ inline Bool TableLocker::hasLock (FileLocker::LockType type) const
     return itsTable.hasLock (type);
 }
 
+
+
+} //# NAMESPACE CASA - END
 
 #endif

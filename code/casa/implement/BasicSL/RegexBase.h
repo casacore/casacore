@@ -33,6 +33,8 @@
 #include <casa/aips.h>
 #include <casa/BasicSL/String.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Forward declarations
 
 // <summary>
@@ -163,6 +165,9 @@ class RegexBase {
  private:
 
 };
+
+
+} //# NAMESPACE CASA - END
 
 #endif
 

@@ -42,6 +42,8 @@
 #include <measures/Measures/MeasConvert.h>
 #include <measures/Measures/MeasComet.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 // MCFrame class
  
 //# Constructors
@@ -822,3 +824,6 @@ Bool MCFrameGetuint(void *dmf, uInt tp, uInt &result) {
   result = 0;
   return False;
 }
+
+} //# NAMESPACE CASA - END
+

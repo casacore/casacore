@@ -35,6 +35,7 @@
 #include <tables/LogTables/LoggerHolder.h>
 #include <casa/Utilities/Assert.h>
 
+#include <casa/namespace.h>
 int main()
 {
     try {	

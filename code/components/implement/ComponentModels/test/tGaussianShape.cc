@@ -52,6 +52,7 @@
 #include <casa/BasicSL/String.h>
 #include <casa/iostream.h>
 
+#include <casa/namespace.h>
 void pixelWorldConversion ();
 
 Bool pixelReflection (const TwoSidedShape& shp, const DirectionCoordinate& dCoord, 

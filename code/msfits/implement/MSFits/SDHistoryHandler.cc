@@ -41,6 +41,8 @@
 #include <measures/Measures/MEpoch.h>
 #include <casa/Quanta/MVTime.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 SDHistoryHandler::SDHistoryHandler() 
     : msHis_p(0), msHisCols_p(0)
 {;}
@@ -144,3 +146,6 @@ void SDHistoryHandler::initRow(const Vector<Bool> &handledCols, const Record &ro
 	timesys_p.attachToRecord(row, "TIMESYS");
     }
 }
+
+} //# NAMESPACE CASA - END
+

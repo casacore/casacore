@@ -32,6 +32,8 @@
 #include <casa/aips.h>
 #include <scimath/Functionals/WrapperParam.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Forward declarations
 template <class T> class Vector;
 template <class T> class WrapperBase;
@@ -141,5 +143,8 @@ protected:
 protected:
   using WrapperParam<T>::param_p;
 };
+
+
+} //# NAMESPACE CASA - END
 
 #endif

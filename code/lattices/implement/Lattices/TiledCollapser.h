@@ -34,6 +34,8 @@
 #include <scimath/Mathematics/NumericTraits.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Forward Declarations
 template <class T> class Array;
 class IPosition;
@@ -154,5 +156,8 @@ public:
 				 const IPosition& shape) = 0;
 };
 
+
+
+} //# NAMESPACE CASA - END
 
 #endif

@@ -31,6 +31,8 @@
 #include <casa/BasicMath/Math.h>
 #include <casa/iostream.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 static Bool ArrayMinMaxPrinted = False;
 
 void ArrayMinMaxPrintOnceDeprecated ()
@@ -509,3 +511,6 @@ uInt partialFuncHelper (Int& nelemCont,
   }
   return stax;
 }
+
+} //# NAMESPACE CASA - END
+

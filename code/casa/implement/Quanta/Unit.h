@@ -34,6 +34,8 @@
 #include <casa/BasicSL/String.h>
 #include <casa/Quanta/UnitVal.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Forward Declarations
 
 // <summary>
@@ -236,5 +238,8 @@ private:
 };
 
 //# Inline Implementations
+
+
+} //# NAMESPACE CASA - END
 
 #endif

@@ -41,6 +41,7 @@
 #include <casa/sstream.h>
 
 
+#include <casa/namespace.h>
 // <summary>
 // Test program for the SSMStringHandler part of the 
 // StandardStMan storage manager

@@ -33,6 +33,8 @@
 # include <fits/FITS/fitsio.h>
 # include <string.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //============================================================================
 
 template <class TYPE>
@@ -1151,7 +1153,7 @@ void FitsField<TYPE>::setaddr(void **addr) {
 }
 //===================================================================================
 template <class TYPE>
-void FitsField<TYPE>::show(ostream &o) {
+void FitsField<TYPE>::show(std::ostream &o) {
 	int i;
 	unsigned char *s;
 	char *p;
@@ -1245,3 +1247,6 @@ inline TYPE & FitsArray<TYPE>::operator () (int d0, int d1, int d2, int d3,
 		       (factor[3]*d3) + (factor[4]*d4)]; 
 }
 //=============================================================================
+
+} //# NAMESPACE CASA - END
+

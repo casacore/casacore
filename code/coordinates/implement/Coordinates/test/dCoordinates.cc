@@ -40,6 +40,7 @@
 
 #include <casa/iostream.h>
 
+#include <casa/namespace.h>
 //# Enumerated lines are in the Coordinates.h module header. If you
 //# change them, change Coordinates.h to match.
 

@@ -37,6 +37,8 @@
 #include <casa/BasicSL/String.h>
 #include <measures/Measures/Stokes.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 class ComponentShape;
 class CoordinateSystem;
 class DirectionCoordinate;
@@ -332,4 +334,7 @@ private:
   Flux<Double> itsFlux;
   String itsLabel;
 };
+
+} //# NAMESPACE CASA - END
+
 #endif

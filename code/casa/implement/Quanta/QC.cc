@@ -29,6 +29,8 @@
 #include <casa/Quanta/QC.h>
 #include <casa/Quanta/UnitMap.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 Quantum<Double> QC::c(C::c,"m/s");
 Quantum<Double> QC::G(6.67259e-11,"N.m2/kg2");
 Quantum<Double> QC::h(6.6260755e-34,"J.s");
@@ -64,3 +66,6 @@ QC_init::~QC_init() {
 
 void QC::init() {
 }
+
+} //# NAMESPACE CASA - END
+

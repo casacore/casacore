@@ -33,6 +33,8 @@
 #include <errno.h>
 #include <casa/string.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 FileLocker::FileLocker()
 : itsFD          (-1),
   itsError       (0),
@@ -213,3 +215,6 @@ String FileLocker::lastMessage() const
     }
     return strerror(itsError);
 }
+
+} //# NAMESPACE CASA - END
+

@@ -73,6 +73,8 @@
 #include <casa/sstream.h>
 #include <ms/MeasurementSets/MSTileLayout.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 const uInt nCat = 6; // Number of Flag categories
 
 const String sigmaCol = "sigmaHyperColumn";
@@ -1181,3 +1183,6 @@ String NewMSSimulator::formatTime(const Double time) {
   MVTime mvtime(Quantity(time, "s"));
   return mvtime.string(MVTime::DMY,7);
 }
+
+} //# NAMESPACE CASA - END
+

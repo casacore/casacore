@@ -30,6 +30,8 @@
 
 #include <casa/aips.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# forward decl
 class IPosition;
 class String;
@@ -124,5 +126,8 @@ public:
 			     Int observationType,
 			     const String& array);
 };
+
+
+} //# NAMESPACE CASA - END
 
 #endif

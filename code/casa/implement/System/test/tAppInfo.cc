@@ -38,6 +38,7 @@
 
 #include <casa/OS/Memory.h>
 
+#include <casa/namespace.h>
 int main()
 {
     // Not much testing is possible!

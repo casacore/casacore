@@ -29,6 +29,8 @@
 #include <casa/Exceptions/Error.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 ByteIO::~ByteIO()
 {}
 
@@ -39,3 +41,6 @@ void ByteIO::reopenRW()
 	throw (AipsError ("ByteIO: reopenRW is not possible"));
     }
 }
+
+} //# NAMESPACE CASA - END
+

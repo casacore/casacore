@@ -31,6 +31,8 @@
 #include <casa/iostream.h>
 #include <limits.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 // Constructors 
 SofaTest::SofaTest() :
@@ -76,7 +78,7 @@ void SofaTest::put(const Double in) {
   max_p = max(in, max_p);
   min_p = min(in, min_p);
   if (hstep_p <= 0.0) hstep_p = 0.001/hsize_p/2.0;
-  while (std::abs(in/hstep_p)>hsize_p) {
+  while (abs(in/hstep_p)>hsize_p) {
     hstep_p *= 2.0;
     for (uInt i=0; i<hsize_p/2; i++) {
       histo_p[hsize_p+i] = histo_p[hsize_p+2*i] + histo_p[hsize_p+2*i+1];
@@ -145,3 +147,6 @@ void SofaTest::copy(const SofaTest &other) {
   histo_p = new Int[hwidth_p];
   for (uInt i=0; i<hwidth_p; i++) histo_p[i] = other.histo_p[i];
 }
+
+} //# NAMESPACE CASA - END
+

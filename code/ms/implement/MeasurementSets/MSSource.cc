@@ -37,6 +37,8 @@
 #include <casa/Arrays/Vector.h>
 #include <casa/Exceptions/Error.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 MSSource::MSSource():hasBeenDestroyed_p(True) { }
 
 MSSource::MSSource(const String &tableName, TableOption option) 
@@ -213,3 +215,6 @@ MSSource MSSource::referenceCopy(const String& newTableName,
     return MSSource(MSTable<PredefinedColumns,PredefinedKeywords>::
 		     referenceCopy(newTableName,writableColumns));
 }
+
+} //# NAMESPACE CASA - END
+

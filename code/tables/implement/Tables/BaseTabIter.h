@@ -34,6 +34,8 @@
 #include <casa/Utilities/Compare.h>
 #include <casa/Containers/Block.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Forward Declarations
 class TableColumn;
 class RefTable;
@@ -124,5 +126,8 @@ private:
     BaseTableIterator& operator= (const BaseTableIterator&);
 };
 
+
+
+} //# NAMESPACE CASA - END
 
 #endif

@@ -41,6 +41,8 @@
 
 #include <casa/iostream.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 template <class T> 
 ImageTwoPtCorr<T>::ImageTwoPtCorr()
 {}
@@ -245,4 +247,7 @@ IPosition ImageTwoPtCorr<T>::setUpShape (const IPosition& inShape, const IPositi
 {
    return LatticeTwoPtCorr<T>::setUpShape (inShape, axes);
 }
+
+
+} //# NAMESPACE CASA - END
 

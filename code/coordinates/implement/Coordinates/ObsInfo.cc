@@ -37,6 +37,8 @@
 
 #include <casa/iostream.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 String ObsInfo::defaultTelescope()
 {
     return "UNKNOWN";
@@ -453,4 +455,7 @@ ostream &operator<<(ostream &os, const ObsInfo &info)
         " Pointing Center: " << info.pointingCenter();
     return os;
 }
+
+
+} //# NAMESPACE CASA - END
 

@@ -43,6 +43,8 @@
 #include <tables/Tables/TableDesc.h>
 #include <casa/BasicMath/Math.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 SDObservationHandler::SDObservationHandler() 
     : index_p(0), msObs_p(0), msObsCols_p(0), rownr_p(-1)
 {;}
@@ -340,3 +342,6 @@ void SDObservationHandler::updateTimeRange(const Vector<Double> &timeRange)
 	msObsCols_p->timeRange().put(rownr_p, oldTimeRange);
     }
 }
+
+} //# NAMESPACE CASA - END
+

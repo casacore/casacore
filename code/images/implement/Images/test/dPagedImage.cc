@@ -40,6 +40,7 @@
 #include <casa/stdlib.h>
 #include <casa/iostream.h>
 
+#include <casa/namespace.h>
 main()
 {
     cout << "untested" << endl;

@@ -32,6 +32,7 @@
 #include <casa/Quanta/MVAngle.h>
 #include <casa/Quanta/MVTime.h>
 
+#include <casa/namespace.h>
 int main(int argc, char **argv)
 {
   try {

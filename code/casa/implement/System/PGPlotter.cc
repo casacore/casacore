@@ -31,6 +31,8 @@
 #include <casa/Arrays/Vector.h>
 #include <casa/Containers/Record.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Default is no create function, thus use createLocal.
 PGPlotter::CreateFunction* PGPlotter::creator_p = 0;
 
@@ -802,3 +804,6 @@ void PGPlotter::wedg(const String &side, Float disp, Float width,
     worker_p->wedg(side, disp, width, fg, bg, label);
     if (!worker_p->isAttached()) worker_p = 0;
 }
+
+} //# NAMESPACE CASA - END
+

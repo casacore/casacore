@@ -28,6 +28,8 @@
 #include <casa/Utilities/DynBuffer.h>
 #include <casa/Exceptions/Error.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 // This is the implementation of the DynBuffer class.
 
 // Construct the class.
@@ -143,3 +145,6 @@ Bool DynBuffer::next (uInt& len, Char*& ptr)
 	return True;
     }
 }
+
+} //# NAMESPACE CASA - END
+

@@ -38,6 +38,8 @@
 #include <casa/Logging/LogIO.h>
 #include <casa/Arrays/Vector.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Forward Declarations
 template <class T> class Matrix;
 template <class T> class MomentCalcBase;
@@ -622,5 +624,8 @@ private:
                                            const IPosition& inShape,
                                            Int momentAxis, Bool removeAxis);
 };
+
+
+} //# NAMESPACE CASA - END
 
 #endif

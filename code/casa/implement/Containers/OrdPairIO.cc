@@ -28,6 +28,8 @@
 #include <casa/Containers/OrdPairIO.h>
 #include <casa/iostream.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 template<class key, class value> AipsIO& operator<< (AipsIO& ios, const OrderedPair<key,value>& op) {
     ios << op.x() << op.y();
     return ios;
@@ -41,3 +43,6 @@ template<class key, class value> ostream& operator<< (ostream& ios, const Ordere
   ios << "(" << op.x() << "," << op.y() << ")";
   return ios;
 }
+
+} //# NAMESPACE CASA - END
+

@@ -31,6 +31,8 @@
 #include <casa/sstream.h>
 #include <casa/iomanip.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Constructors
 
 //# Destructor
@@ -148,3 +150,6 @@ String MCBase::showState(Bool &made, uInt *state,
   };
   return String(oss);
 }
+
+} //# NAMESPACE CASA - END
+

@@ -37,6 +37,8 @@
 #include <casa/Arrays/Matrix.h>
 #include <casa/BasicSL/String.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# forward declarations
 
 // <summary>
@@ -101,6 +103,9 @@ private:
   Vector<Int> observationIds_p;
   Int nrows_p;
 };
+
+
+} //# NAMESPACE CASA - END
 
 #endif
     

@@ -46,6 +46,8 @@
 #include <casa/iostream.h>
 */
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 template <class T>
 LatticeTwoPtCorr<T>::LatticeTwoPtCorr()
 {}
@@ -339,4 +341,7 @@ void LatticeTwoPtCorr<T>::check (LogIO& os, const MaskedLattice<T>& latOut,
       os << "Output lattice has wrong shape" << LogIO::EXCEPTION;
    }
 }
+
+
+} //# NAMESPACE CASA - END
 

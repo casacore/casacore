@@ -33,6 +33,8 @@
 #include <casa/Containers/Block.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Forward declarations
 template <class T> class Vector;
 template <class T> class AipsrcValue;
@@ -399,6 +401,9 @@ private:
   // Fill in root, arch, site, host and home, and return requested nam
   static const String &fillAips(const String &nam);
 };
+
+
+} //# NAMESPACE CASA - END
 
 #endif
 

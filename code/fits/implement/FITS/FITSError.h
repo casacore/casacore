@@ -32,6 +32,8 @@
 //#! Includes go here
 #include <casa/aips.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 // <summary>
 // default FITS error handling function, typdef, and enumeration
 // </summary>
@@ -110,6 +112,9 @@ typedef void (*FITSErrorHandler) (const char* errMessage,
 				  FITSError::ErrorLevel severity);
 
  
+
+} //# NAMESPACE CASA - END
+
 #endif
 
 

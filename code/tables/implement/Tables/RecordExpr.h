@@ -35,6 +35,8 @@
 
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 // <summary>
 // Global functions to make a expression node for a record field.
 // </summary>
@@ -82,5 +84,8 @@ TableExprNode makeRecordExpr (const RecordInterface& record,
 // </group>
 
 
+
+
+} //# NAMESPACE CASA - END
 
 #endif

@@ -34,6 +34,8 @@
 #include <measures/Measures/Measure.h>
 #include <measures/Measures/MeasFrame.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Forward Declarations
 class MVDirection;
 class MVPosition;
@@ -255,5 +257,8 @@ Bool MCFrameGetmvpos(void *dmf, uInt tp, MVPosition &result);
 // Get uint value for MeasFrame
 Bool MCFrameGetuint(void *dmf, uInt tp, uInt &result);
 // </group>
+
+
+} //# NAMESPACE CASA - END
 
 #endif

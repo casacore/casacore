@@ -36,6 +36,8 @@
 #include <casa/BasicSL/String.h>
 #include <fits/FITS/FITSKeywordUtil.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 // <summary>
 // Virtual base class for copying RORecordFields to FitsFields
 // </summary>
@@ -326,5 +328,8 @@ private:
     VariableArrayFITSFieldCopier &operator=(
 			    const VariableArrayFITSFieldCopier<recordType,fitsType> &other);
 };
+
+
+} //# NAMESPACE CASA - END
 
 #endif

@@ -35,6 +35,8 @@
 #include <casa/Exceptions/Error.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 template <class T>
 MaskedLattice<T>::MaskedLattice (const MaskedLattice<T>& that)
 : itsDefRegPtr (0)
@@ -281,3 +283,6 @@ Bool MaskedLattice<T>::doGetMaskSlice (Array<Bool>& buffer,
   }
   return const_cast<LatticeRegion*>(ptr)->doGetSlice (buffer, section);
 }
+
+} //# NAMESPACE CASA - END
+

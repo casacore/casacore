@@ -48,6 +48,8 @@
 
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 void LattStatsSpecialize::accumulate (Double& nPts, Double& sum,
                                       Double& sumSq, Float& dataMin,
                                       Float& dataMax, Int& minPos,
@@ -238,22 +240,22 @@ DComplex LattStatsSpecialize::getRms (DComplex sumsq, DComplex n)
 
 Float LattStatsSpecialize::min(Float v1, Float v2)
 {
-   return ::min(v1, v2);
+   return min(v1, v2);
 }
 
 Complex LattStatsSpecialize::min(Complex v1, Complex v2)
 {
-   return Complex(::min(real(v1),real(v2)),::min(imag(v1),imag(v2)));
+   return Complex(min(real(v1),real(v2)),min(imag(v1),imag(v2)));
 }
 
 Float LattStatsSpecialize::max(Float v1, Float v2)
 {
-   return ::max(v1, v2);
+   return max(v1, v2);
 }
 
 Complex LattStatsSpecialize::max(Complex v1, Complex v2)
 {
-   return Complex(::max(real(v1),real(v2)),::max(imag(v1),imag(v2)));
+   return Complex(max(real(v1),real(v2)),max(imag(v1),imag(v2)));
 }
 
 Float LattStatsSpecialize::getNodeScalarValue(const LatticeExprNode& node, Float dummy)
@@ -527,4 +529,7 @@ Bool LattStatsSpecialize::minMax(Complex& dataMin, Complex& dataMax, const Maske
    }
    return ok;
 }
+
+
+} //# NAMESPACE CASA - END
 

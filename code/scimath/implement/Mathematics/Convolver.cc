@@ -30,6 +30,8 @@
 #include <casa/Arrays/ArrayMath.h>
 #include <casa/Arrays/ArrayIter.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 template<class FType> Convolver<FType>::
 Convolver(const Array<FType>& psf, Bool cachePsf){
   //  if (cachePsf) thePsf = psf;
@@ -342,3 +344,6 @@ setFastConvolve(){
   doFast_p=True;
 
 }
+
+} //# NAMESPACE CASA - END
+

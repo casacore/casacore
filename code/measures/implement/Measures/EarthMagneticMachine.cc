@@ -34,6 +34,8 @@
 #include <measures/Measures/MCFrame.h>
 #include <measures/Measures/MeasConvert.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Constructors
 EarthMagneticMachine::EarthMagneticMachine() :
   fex_p(False), pex_p(False), fil_p(0), cumf_p(0), clx_p(False) {
@@ -373,3 +375,6 @@ void EarthMagneticMachine::calculate() {
   fex_p = False;
   clx_p = True;
 }
+
+} //# NAMESPACE CASA - END
+

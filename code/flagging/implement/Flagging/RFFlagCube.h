@@ -35,6 +35,8 @@
 #include <casa/Arrays/LogiVector.h>
 #include <casa/Logging/LogIO.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 typedef RFCubeLatticeIterator<RFlagWord> FlagCubeIterator;
 
 class PGPlotterInterface;
@@ -340,5 +342,8 @@ inline Int RFFlagCube::getMaxMem ()
 
 inline LogIO & RFFlagCube::logSink ()
 { return os; }
+
+
+} //# NAMESPACE CASA - END
 
 #endif

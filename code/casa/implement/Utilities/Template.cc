@@ -38,6 +38,8 @@
 #include <casa/Utilities/Regex.h>
 #include <casa/Utilities/Sort.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Static constants
 // Patterns to analyse an input line
 const Regex Template::spaces	= String("^[[:space:]]*$");
@@ -859,3 +861,6 @@ void Template::setOutput(const String &txt) {
   if (count_p >= output_p.nelements()) output_p.resize(count_p+100);
   output_p[count_p++] = txt;
 }
+
+} //# NAMESPACE CASA - END
+

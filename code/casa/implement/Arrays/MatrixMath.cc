@@ -32,6 +32,8 @@
 #include <casa/iostream.h>
 #include <casa/math.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
                                       // the vector dot/scalar/inner product
 template<class T> T innerProduct (const Vector<T> &A, const Vector<T> &B) {
                                    // check for correct dimensions
@@ -151,3 +153,6 @@ Matrix<T> directProduct(const  Matrix<T> &A, const Matrix<T> &B) {
     }
     return dpAB;
 }
+
+} //# NAMESPACE CASA - END
+

@@ -36,6 +36,8 @@
 #include <scimath/Mathematics/AutoDiff.h>
 #include <scimath/Mathematics/AutoDiffMath.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 // <summary> A hyper plane function.
 // </summary>
 //
@@ -191,5 +193,8 @@ public:
 };
 
 #undef HyperPlane_PS
+
+
+} //# NAMESPACE CASA - END
 
 #endif

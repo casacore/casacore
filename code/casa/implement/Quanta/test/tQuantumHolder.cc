@@ -37,6 +37,7 @@
 #include <casa/Containers/Record.h>
 #include <casa/iostream.h>
 
+#include <casa/namespace.h>
 int main() {
   try {
     cout << "Test QuantumHolder  " << endl;

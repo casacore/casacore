@@ -31,6 +31,8 @@
 #include <casa/aips.h>
 #include <complex>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Forward Declarations
 
 // <summary> Typing support classes for LSQ classes </summary>
@@ -158,5 +160,8 @@ template <> class LSQTraits_CF<std::complex<Float> > {
   enum { size = 2 };
 };
 #undef LSQTraits_CF
+
+
+} //# NAMESPACE CASA - END
 
 #endif

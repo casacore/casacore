@@ -32,6 +32,7 @@
 #include <casa/sstream.h>
 #include <casa/iostream.h>
 
+#include <casa/namespace.h>
 // <summary>
 // Simulation program for bucket behaviour of IncrementalStman.
 // </summary>

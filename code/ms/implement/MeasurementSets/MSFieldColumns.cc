@@ -41,6 +41,8 @@
 #include <tables/Tables/TableDesc.h>
 #include <casa/Utilities/Assert.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 ROMSFieldColumns::ROMSFieldColumns(const MSField& msField):
   name_p(msField, MSField::columnName(MSField::NAME)),
   code_p(msField, MSField::columnName(MSField::CODE)),
@@ -336,3 +338,6 @@ void MSFieldColumns::setDirectionRef(MDirection::Types ref) {
 // Local Variables: 
 // compile-command: "gmake MSFieldColumns"
 // End: 
+
+} //# NAMESPACE CASA - END
+

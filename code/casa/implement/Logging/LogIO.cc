@@ -33,6 +33,8 @@
 
 #include <casa/sstream.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 LogIO::LogIO()
     : sink_p(), text_p(0)
 {}
@@ -228,3 +230,6 @@ LogIO &operator<<(LogIO &os, Bool item)
     os.output() << (item ? 1:0);
     return os;
 }
+
+} //# NAMESPACE CASA - END
+

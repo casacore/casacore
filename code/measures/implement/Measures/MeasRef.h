@@ -33,11 +33,13 @@
 #include <casa/aips.h>
 #include <measures/Measures/MRBase.h>
 #include <measures/Measures/MeasFrame.h>
+#include <casa/iosfwd.h>
+
+namespace casa { //# NAMESPACE CASA - BEGIN
 
 //# Forward Declarations
 class String;
 template <class Ms> class MeasRef;
-#include <casa/iosfwd.h>
 
 // <summary> Reference frame for physical measures </summary>
 
@@ -204,5 +206,8 @@ private:
   // Copy an instance
   MeasRef copy();
 };
+
+
+} //# NAMESPACE CASA - END
 
 #endif

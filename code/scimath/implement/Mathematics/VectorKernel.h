@@ -33,6 +33,8 @@
 #include <casa/aips.h>
 #include <casa/Arrays/Vector.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Forward Declarations
 class Regex;
 
@@ -123,6 +125,9 @@ enum KernelTypes {
    static VectorKernel::KernelTypes toKernelType (const String& kernel);
    static String fromKernelType (KernelTypes kernelType);
 };
+
+
+} //# NAMESPACE CASA - END
 
 #endif
 

@@ -34,6 +34,8 @@
 #include <casa/Quanta/Quantum.h>
 #include <casa/Quanta/Euler.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Forward Declarations
 
 // <summary> Nutation class and calculations </summary>
@@ -232,6 +234,9 @@ class Nutation {
   // Calculate Nutation angles for time t; also derivatives if True given
   void calcNut(Double t, Bool calcDer = False);
 };
+
+
+} //# NAMESPACE CASA - END
 
 #endif
 

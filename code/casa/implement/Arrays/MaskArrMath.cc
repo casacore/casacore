@@ -35,12 +35,14 @@
 #include <casa/Arrays/VectorIter.h>
 #include <casa/Utilities/GenSort.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 // Some test programs seem to want this. It doesn't seem to make
 // any sense!
 #if defined(AIPS_STDLIB)
 inline Int atan2(Int a1, Int a2)
 {
-  return Int(atan2(double(a1),double(a2)));
+  return Int(std::atan2(double(a1),double(a2)));
 }
 #endif
 
@@ -1635,4 +1637,6 @@ template<class T> MaskedArray<T> cube(const MaskedArray<T> &left)
     return result;
 }
 
+
+} //# NAMESPACE CASA - END
 

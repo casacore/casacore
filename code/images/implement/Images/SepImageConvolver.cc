@@ -55,6 +55,8 @@
 #include <casa/iomanip.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 template <class T> 
 SepImageConvolver<T>::SepImageConvolver (ImageInterface<T>& image,
                                          LogIO &os, Bool showProgress)
@@ -403,4 +405,7 @@ Bool SepImageConvolver<T>::isTempImage (const ImageInterface<Float>* pIm) const
    if (tmp!=0) isTemp = True;
    return isTemp;
 }
+
+
+} //# NAMESPACE CASA - END
 

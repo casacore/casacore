@@ -34,6 +34,8 @@
 #include <casa/Utilities/Assert.h>
 #include <casa/BasicSL/String.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 CopyRecordToTable::CopyRecordToTable(Table &outputTable,
                                      const RecordInterface &inputBuffer,
                                      const Vector<Int> inputMap)
@@ -964,3 +966,6 @@ void CopyRecordToRecord::copy()
 	*(out_record_array_string[i]) = *(in_record_array_string[i]);
     }
 }
+
+} //# NAMESPACE CASA - END
+

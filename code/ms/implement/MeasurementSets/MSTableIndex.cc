@@ -40,6 +40,8 @@
 #include <casa/BasicSL/String.h>
 #include <casa/BasicMath/Math.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 MSTableIndex::MSTableIndex()
     : timeVals_p(0), intervalVals_p(0), key_p(0), time_p(0.0), interval_p(0.0),
       lastTime_p(0.0), lastInterval_p(0.0), lastNearest_p(0), nearestFound_p(False), 
@@ -386,4 +388,7 @@ Bool MSTableIndex::keysChanged()
     if (!result && hasInterval_p && interval_p != lastInterval_p) result = True;
     return result;
 }
+
+
+} //# NAMESPACE CASA - END
 

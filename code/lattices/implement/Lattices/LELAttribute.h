@@ -34,6 +34,8 @@
 #include <lattices/Lattices/LELCoordinates.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 // <summary>
 // Ancillary information for the LEL letter classes.
 // </summary>
@@ -144,5 +146,8 @@ private:
    LELCoordinates coords_p;
 };
 
+
+
+} //# NAMESPACE CASA - END
 
 #endif

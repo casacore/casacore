@@ -32,6 +32,8 @@
 #include <unistd.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 TableLockData::TableLockData (const TableLock& lockOptions,
 			      TableLockData::ReleaseCallBack* releaseCallBack,
 			      void* releaseParentObject)
@@ -134,3 +136,6 @@ void TableLockData::release (Bool always)
 	}
     }
 }
+
+} //# NAMESPACE CASA - END
+

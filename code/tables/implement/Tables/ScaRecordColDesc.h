@@ -34,6 +34,8 @@
 #include <tables/Tables/BaseColDesc.h>
 #include <casa/Containers/SimOrdMap.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Forward Declarations
 class PlainColumn;
 class ColumnSet;
@@ -177,5 +179,8 @@ public:
       (SimpleOrderedMap<String, BaseColumnDesc* (*)(const String&)>&);
 };
 
+
+
+} //# NAMESPACE CASA - END
 
 #endif

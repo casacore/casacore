@@ -37,6 +37,8 @@
 #include <tables/Tables/ScalarColumn.h>
 #include <casa/BasicSL/String.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 class MSAntenna;
 
 // <summary>
@@ -338,4 +340,7 @@ private:
   ArrayQuantColumn<Double> positionQuant_p;
 
 };
+
+} //# NAMESPACE CASA - END
+
 #endif

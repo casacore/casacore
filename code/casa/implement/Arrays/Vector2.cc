@@ -28,6 +28,8 @@
 #include <casa/Arrays/Vector.h>
 #include <casa/vector.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 template<class T>
 template<class U>
 Vector<T>::Vector(const vector<T, U> &other)
@@ -52,4 +54,7 @@ void Array<T>::tovector(vector<T, U> &out) const {
 #define AIPS_VECTOR2_AUX_TEMPLATES(X) \
 template Vector<X>::Vector(const vector<X> &); \
 template void Array<X>::tovector(vector<X> &) const;
+
+
+} //# NAMESPACE CASA - END
 

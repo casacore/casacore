@@ -34,6 +34,8 @@
 #include <tables/Tables/TableError.h>
 #include <casa/OS/Path.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 TableKeyword::TableKeyword (const String& tableDescName)
 : table_p         (new Table),
   tableDescName_p (tableDescName)
@@ -154,3 +156,6 @@ Bool TableKeyword::conform (const Table& that) const
     }
     return True;
 }
+
+} //# NAMESPACE CASA - END
+

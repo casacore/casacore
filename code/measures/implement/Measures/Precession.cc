@@ -31,6 +31,8 @@
 #include <casa/BasicMath/Math.h>
 #include <casa/System/AipsrcValue.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Constants
 const Double Precession::INTV = 0.1;
 
@@ -194,3 +196,6 @@ void Precession::calcPrec(Double t) {
     };
   }
 }
+
+} //# NAMESPACE CASA - END
+

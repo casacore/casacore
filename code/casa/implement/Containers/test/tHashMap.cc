@@ -31,6 +31,7 @@
 #include <casa/iostream.h>
 #include <casa/stdlib.h>
 
+#include <casa/namespace.h>
 #define DIAGNOSTICS 1
 #define OUTPUT 1
 #define COMPLETE 0

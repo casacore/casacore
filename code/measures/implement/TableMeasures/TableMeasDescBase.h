@@ -35,6 +35,8 @@
 #include <casa/Quanta/Unit.h>
 #include <casa/Arrays/Vector.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Forward Declarations
 class String;
 class Table;
@@ -206,5 +208,8 @@ private:
   Vector<Unit>  itsUnits;
 };
 
+
+
+} //# NAMESPACE CASA - END
 
 #endif

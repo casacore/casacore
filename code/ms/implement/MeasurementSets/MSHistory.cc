@@ -37,6 +37,8 @@
 #include <casa/Arrays/Vector.h>
 #include <casa/Exceptions/Error.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 MSHistory::MSHistory():hasBeenDestroyed_p(True) { }
 
 MSHistory::MSHistory(const String &tableName, TableOption option) 
@@ -182,3 +184,6 @@ MSHistory MSHistory::referenceCopy(const String& newTableName,
   return MSHistory(MSTable<PredefinedColumns,PredefinedKeywords>::referenceCopy
 		 (newTableName,writableColumns));
 }
+
+} //# NAMESPACE CASA - END
+

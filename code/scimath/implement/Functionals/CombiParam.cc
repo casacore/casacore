@@ -28,6 +28,8 @@
 //# Includes
 #include <scimath/Functionals/CombiParam.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 template <class T>
 CombiParam<T>::CombiParam() : 
   Function<T>(), ndim_p(0), functionPtr_p(0) {}
@@ -80,3 +82,6 @@ uInt CombiParam<T>::addFunction(const Function<T> &newFunction) {
   for (uInt j=0; j<i+1; ++j) this->param_p[j] = T(1.0);
   return i;
 }
+
+} //# NAMESPACE CASA - END
+

@@ -28,6 +28,8 @@
 //# Includes
 #include <scimath/Functionals/DiracDParam.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 template<class T>
 DiracDParam<T>::DiracDParam() :
   Function<T>(2) {
@@ -62,3 +64,6 @@ DiracDParam<T> &DiracDParam<T>::operator=(const DiracDParam<T> &other) {
   if (this != &other) Function<T>::operator=(other);
   return *this;
 }
+
+} //# NAMESPACE CASA - END
+

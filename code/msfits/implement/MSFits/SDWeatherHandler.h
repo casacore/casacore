@@ -32,6 +32,8 @@
 #include <casa/aips.h>
 #include <casa/Containers/RecordField.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Forward Declarations
 class MeasurementSet;
 class MSWeather;
@@ -133,6 +135,9 @@ private:
     // intialize the row related stuff
     void initRow(Vector<Bool> &handledCols, const Record &row);
 };
+
+
+} //# NAMESPACE CASA - END
 
 #endif
 

@@ -94,5 +94,9 @@
 # endif
 #endif
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
+
+} //# NAMESPACE CASA - END
 
 #endif

@@ -36,6 +36,8 @@
 #include <casa/Arrays/Vector.h>
 #include <casa/Quanta/Quantum.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Forward Declarations
 class LCRegion;
 class TableRecord;
@@ -180,5 +182,8 @@ private:
   LatticeExprNode*   itsLattNode;
 };
 
+
+
+} //# NAMESPACE CASA - END
 
 #endif

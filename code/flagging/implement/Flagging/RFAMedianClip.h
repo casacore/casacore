@@ -30,6 +30,8 @@
 #include <flagging/Flagging/RFADiffBase.h> 
 #include <scimath/Mathematics/MedianSlider.h> 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 // <summary>
 // RFATimeMedian: RedFlagger Agent for clipping relative to median over time
 // </summary>
@@ -129,5 +131,8 @@ protected:
   uInt halfwin;
 
 };
+
+
+} //# NAMESPACE CASA - END
 
 #endif

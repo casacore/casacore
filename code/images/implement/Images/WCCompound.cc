@@ -35,6 +35,8 @@
 #include <casa/Exceptions/Error.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 WCCompound::WCCompound (const ImageRegion& region1,
 			const ImageRegion& region2)
 {
@@ -259,3 +261,6 @@ void WCCompound::unmakeRecord (PtrBlock<const WCRegion*>& regions,
 	regions[i] = WCRegion::fromRecord (rec.asRecord (i), tableName);
     }
 }
+
+} //# NAMESPACE CASA - END
+

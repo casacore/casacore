@@ -32,6 +32,8 @@
 
 
 #ifndef MSVIS_SUBMS_H
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 #define MSVIS_SUBMS_H
 
 // <summary>
@@ -130,6 +132,9 @@ class SubMS
   Bool doChanAver_p;
 
 };
+
+
+} //# NAMESPACE CASA - END
 
 #endif
 

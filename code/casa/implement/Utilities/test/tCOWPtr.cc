@@ -37,6 +37,7 @@
 
 #include <casa/iostream.h>
 
+#include <casa/namespace.h>
 static Bool testFunc(Array<Float> *ptr, const Array<Float> &array, 
 		     Bool deleteIt, Bool constant) 
 {

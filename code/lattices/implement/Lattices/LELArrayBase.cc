@@ -29,6 +29,8 @@
 #include <lattices/Lattices/LELArrayBase.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 LELArrayBase::LELArrayBase (const LELArrayBase& other)
 : itsMaskPtr (0)
 {
@@ -203,3 +205,6 @@ void LELArrayBase::combineOrAnd (Bool desiredValue, Array<Bool>& value,
    temp.freeStorage (tmp, deleteTemp);
    tempMask.freeStorage (tm, deleteTempMask);
 }
+
+} //# NAMESPACE CASA - END
+

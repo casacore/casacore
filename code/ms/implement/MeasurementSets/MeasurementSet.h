@@ -50,6 +50,8 @@
 #include <ms/MeasurementSets/MSSysCal.h>
 #include <ms/MeasurementSets/MSWeather.h>
  
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Forward Declarations, more could be if they weren't part of the
 //# static classes 
 class SetupNewTable;
@@ -376,5 +378,8 @@ private:
   TableLock mainLock_p;
 
 };
+
+
+} //# NAMESPACE CASA - END
 
 #endif

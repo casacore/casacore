@@ -28,6 +28,8 @@
 //# Includes
 #include <scimath/Functionals/HyperPlaneParam.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 template<class T>
 HyperPlaneParam<T>::HyperPlaneParam(uInt m) :
   Function<T>(m) {}
@@ -45,3 +47,6 @@ HyperPlaneParam<T>::operator=(const HyperPlaneParam<T> &other) {
   if (this != &other) Function<T>::operator=(other);
   return *this;
 }
+
+} //# NAMESPACE CASA - END
+

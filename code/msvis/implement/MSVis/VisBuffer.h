@@ -39,6 +39,8 @@
 #include <msvis/MSVis/VisibilityIterator.h>
 #include <msvis/MSVis/MSCalEnums.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //#forward
 
 //<summary>VisBuffers encapulsate one chunk of visibility data for processing.</summary>
@@ -384,6 +386,9 @@ private:
   Matrix<Float> weightMat_p;
 
 };
+
+
+} //# NAMESPACE CASA - END
 
 #endif
 

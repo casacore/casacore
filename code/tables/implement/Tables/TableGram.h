@@ -31,6 +31,8 @@
 //# Includes
 #include <casa/BasicSL/String.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Forward Declarations
 
 
@@ -88,5 +90,8 @@ String tableGramRemoveQuotes (const String& in);
 
 // </group>
 
+
+
+} //# NAMESPACE CASA - END
 
 #endif

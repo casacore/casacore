@@ -30,6 +30,8 @@
 #include <casa/BasicSL/Constants.h>
 #include <casa/BasicMath/Math.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Statics
 ///template<class T>
 ///const T Gaussian1DParam<T>::fwhm2int = T(1.0)/sqrt(log(T(16.0)));
@@ -101,3 +103,6 @@ template<class T>
 void Gaussian1DParam<T>::setFlux(const T &flux) {
   param_p[HEIGHT] = flux*T(C::_1_sqrtpi)/abs(param_p[WIDTH])/fwhm2int;
 }
+
+} //# NAMESPACE CASA - END
+

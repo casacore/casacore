@@ -31,6 +31,8 @@
 #include <casa/Inputs/Input.h>
 #include <casa/Inputs/Param.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 // <module> 
 //
 // <summary> 
@@ -262,6 +264,9 @@
 // </todo>
 
 // </module>
+
+
+} //# NAMESPACE CASA - END
 
 #endif
 

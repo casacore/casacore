@@ -34,6 +34,7 @@
 #include <casa/sstream.h>
 #include <casa/stdio.h>                           // for sprintf
 
+#include <casa/namespace.h>
 // <summary> Test program for the StManArrayFile class </summary>
 
 // This program tests the class StManArrayFile.

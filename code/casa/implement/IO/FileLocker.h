@@ -32,6 +32,8 @@
 //# Includes
 #include <casa/aips.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Forward Declarations
 class String;
 
@@ -162,6 +164,9 @@ inline int FileLocker::lastError() const
     return itsError;
 }
 
+
+
+} //# NAMESPACE CASA - END
 
 #endif
 

@@ -44,6 +44,7 @@
 #include <casa/iostream.h>
 #include <casa/iomanip.h>
 
+#include <casa/namespace.h>
 int main() {
 
   try {

@@ -32,10 +32,15 @@
 #include <components/ComponentModels/ComponentShape.h>
 #include <components/ComponentModels/SpectralModel.h>
 #include <components/ComponentModels/Flux.h>
+// #include <coordinates/Coordinates/CoordinateUtil.h>
+// #include <coordinates/Coordinates/CoordinateSystem.h>
+// #include <coordinates/Coordinates/DirectionCoordinate.h>
+// #include <trial/Images/PagedImage.h>
 #include <casa/Arrays/Vector.h>
 #include <casa/Arrays/Array.h>
 #include <casa/Arrays/ArrayLogical.h>
 #include <casa/Exceptions/Error.h>
+// #include <casa/Arrays/IPosition.h>
 #include <casa/BasicMath/Math.h>
 #include <casa/BasicSL/Constants.h>
 #include <casa/Quanta/Quantum.h>
@@ -47,6 +52,7 @@
 #include <casa/BasicSL/String.h>
 #include <casa/iostream.h>
 
+#include <casa/namespace.h>
 int main() {
   try {
     {
@@ -247,8 +253,76 @@ int main() {
       AlwaysAssert(near(sampledFlux(2), 0.0, 1E-10), AipsError);
       AlwaysAssert(near(sampledFlux(3), 0.0, 1E-10), AipsError);
 
-       cout << "Passed the sampling tests" << endl;
+//       const uInt imSize = 84;
+//       const uInt nPol = 4;
+//       const uInt nFreq = 1;
+//       CoordinateSystem imCoords;
+//       {
+//  	DirectionCoordinate dirCoord(CoordinateUtil::defaultCoords2D()
+// 				     .directionCoordinate(0));
+//  	Vector<String> units(2); units = "deg";
+//   	dirCoord.setWorldAxisUnits(units);
+//   	Vector<Double> refValue(2);
+//   	refValue(0) = 12.5/24*360.0;
+//   	refValue(1) = -60.0;
+//   	dirCoord.setReferenceValue(refValue);
+//   	Vector<Double> inc(2); inc = .1;
+//   	dirCoord.setIncrement(inc);
+//   	Vector<Double> refPixel(2);
+//   	refPixel = Double(imSize+1)/2.0;
+//   	dirCoord.setReferencePixel(refPixel);
+//  	imCoords.addCoordinate(dirCoord);
+//       }
+//       CoordinateUtil::addIQUVAxis(imCoords);
+//       CoordinateUtil::addFreqAxis(imCoords);
+//       PagedImage<Float> image(IPosition(4,imSize,imSize,nPol,nFreq), 
+//   			      imCoords, "tComponentList_tmp.image");
+//       image.set(0.0f);
+//       crux.project(image);
+//       AlwaysAssert(near(image(IPosition(4, 39, 12, 0, 0)), 0.235f, 1E-5), 
+// 		   AipsError);
+//       AlwaysAssert(near(image(IPosition(4, 39, 12, 1, 0)), 0.0f, 1E-5),
+// 		   AipsError);
+//       AlwaysAssert(near(image(IPosition(4, 39, 12, 2, 0)), 0.0f, 1E-5),
+// 		   AipsError);
+//       AlwaysAssert(near(image(IPosition(4, 39, 12, 3, 0)), 0.235f, 1E-5),
+// 		   AipsError);
+//       AlwaysAssert(near(image(IPosition(4, 39, 11, 0, 0)), 0.147f, 1E-5),
+// 		   AipsError);
+//       AlwaysAssert(near(image(IPosition(4, 39, 11, 1, 0)), 0.147f, 1E-5),
+// 		   AipsError);
+//       AlwaysAssert(near(image(IPosition(4, 39, 11, 2, 0)), 0.0f, 1E-5),
+// 		   AipsError);
+//       AlwaysAssert(near(image(IPosition(4, 39, 11, 3, 0)), 0.0f, 1E-5),
+// 		   AipsError);
+//       AlwaysAssert(near(image(IPosition(4, 65, 45, 0, 0)), 0.318f, 1E-5),
+// 		   AipsError);
+//       AlwaysAssert(near(image(IPosition(4, 65, 45, 1, 0)), 0.0f, 1E-5),
+// 		   AipsError);
+//       AlwaysAssert(near(image(IPosition(4, 65, 45, 2, 0)), 0.318f, 1E-5),
+// 		   AipsError);
+//       AlwaysAssert(near(image(IPosition(4, 65, 45, 3, 0)), 0.0f, 1E-5),
+// 		   AipsError);
+//       AlwaysAssert(near(image(IPosition(4, 9, 11, 0, 0)), 0.0f, 1E-5), 
+// 		   AipsError);
+//       AlwaysAssert(near(image(IPosition(4, 9, 11, 1, 0)), 0.0f, 1E-5),
+// 		   AipsError);
+//       AlwaysAssert(near(image(IPosition(4, 9, 11, 2, 0)), 0.0f, 1E-5),
+// 		   AipsError);
+//       AlwaysAssert(near(image(IPosition(4, 9, 11, 3, 0)), 0.0f, 1E-5),
+// 		   AipsError);
+//       AlwaysAssert(!near(image(IPosition(4, 44, 73, 0, 0)), 0.0f, 1E-5),
+// 		   AipsError);
+//       AlwaysAssert(near(image(IPosition(4, 44, 73, 1, 0)), 0.0f, 1E-5),
+// 		   AipsError);
+//       AlwaysAssert(near(image(IPosition(4, 44, 73, 2, 0)), 0.0f, 1E-5),
+// 		   AipsError);
+//       AlwaysAssert(near(image(IPosition(4, 44, 73, 3, 0)), 0.0f, 1E-5),
+// 		   AipsError);
+
+       cout << "Passed the sampling & projection tests" << endl;
        crux.rename(Path(String("tComponentList_tmp.model")), Table::New);
+       //       image.table().markForDelete();
     }
      {
        // Create a model by reading the previous one from disk
@@ -368,17 +442,8 @@ int main() {
 			   expectedFlux.value(), C::dbl_epsilon),
 		   AipsError);
       cout << "Passed the copy and assignment tests" << endl;
-    }
-
-// Clean up
-
-    {
-       String n("tComponentList_tmp_copied.model");
-       Table t(n, Table::Delete);
-    }
-    {
-       String n("tComponentList_tmp_renamed.model");
-       Table t(n, Table::Delete);
+      //      original.rename("junk.model", Table::Scratch);
+      //      modified.rename("more_junk.model", Table::Scratch);
     }
   } 
   catch (AipsError x) {
@@ -389,3 +454,6 @@ int main() {
   cout << "OK" << endl;
   return 0;
 }
+// Local Variables: 
+// compile-command: "gmake OPTLIB=1 tComponentList"
+// End: 

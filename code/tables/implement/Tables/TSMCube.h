@@ -37,6 +37,8 @@
 #include <casa/Arrays/IPosition.h>
 #include <casa/OS/Conversion.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Forward declarations
 class TiledStMan;
 class TSMFile;
@@ -449,5 +451,8 @@ inline void TSMCube::setLastColSlice (const IPosition& slice)
 }
 
 
+
+
+} //# NAMESPACE CASA - END
 
 #endif

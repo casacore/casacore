@@ -40,6 +40,8 @@
 #include <casa/BasicMath/Math.h>
 #include <casa/Arrays/ArrayLogical.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 SDSysCalHandler::SDSysCalHandler() 
     : msSysCal_p(0), msSysCalCols_p(0), rownr_p(-1), nrecpt_p(0),
       tcalId_p(-1), tsysId_p(-1), trxId_p(-1), hasTsysCol_p(False),
@@ -377,3 +379,6 @@ void SDSysCalHandler::initRow(Vector<Bool> &handledCols, const Record &row)
     if (row.fieldNumber("SYSCAL_NUM_RECEPTORS") >= 0) 
 	handledCols(row.fieldNumber("SYSCAL_NUM_RECEPTORS")) = True;
 }
+
+} //# NAMESPACE CASA - END
+

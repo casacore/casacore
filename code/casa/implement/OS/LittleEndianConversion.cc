@@ -30,6 +30,8 @@
 #include <assert.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 void LittleEndianConversion::toLocal (char* to, const void* from,
 				      unsigned int nr)
 {
@@ -235,3 +237,6 @@ void LittleEndianConversion::fromLocal (void* to, const double* from,
 	data += 8;
     }
 }
+
+} //# NAMESPACE CASA - END
+

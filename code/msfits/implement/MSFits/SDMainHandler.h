@@ -32,6 +32,8 @@
 #include <casa/aips.h>
 #include <casa/Utilities/DataType.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Forward Declarations
 class MeasurementSet;
 class MSMainColumns;
@@ -134,6 +136,9 @@ private:
     // intialize the row related stuff
     void initRow(Vector<Bool> &handledCols, const Record &row);
 };
+
+
+} //# NAMESPACE CASA - END
 
 #endif
 

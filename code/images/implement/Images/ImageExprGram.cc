@@ -46,9 +46,6 @@
 #include <ImageExprGram.lcc>                  // bison output
 
 
-//# Declare a file global pointer to a char* for the input string.
-static const char*  strpImageExprGram = 0;
-static Int          posImageExprGram = 0;
 
 
 // Define the yywrap function for flex.
@@ -56,6 +53,12 @@ int ImageExprGramwrap()
 {
     return 1;
 }
+
+namespace casa { //# NAMESPACE CASA - BEGIN
+
+//# Declare a file global pointer to a char* for the input string.
+static const char*  strpImageExprGram = 0;
+static Int          posImageExprGram = 0;
 
 //# Parse the command.
 //# Do a yyrestart(yyin) first to make the flex scanner reentrant.
@@ -126,3 +129,6 @@ String imageExprGramRemoveQuotes (const String& in)
     }
     return out;
 }
+
+} //# NAMESPACE CASA - END
+

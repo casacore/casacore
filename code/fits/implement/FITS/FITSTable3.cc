@@ -45,6 +45,8 @@
 #include <casa/iomanip.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 FITSGroupWriter::FITSGroupWriter(const String &fileName,
 				 const RecordDesc &description,
 				 uInt nrows,
@@ -293,3 +295,6 @@ void FITSGroupWriter::check_error(const char *extra_info)
 	LogSink::postGloballyThenThrow(msg);
     }
 }
+
+} //# NAMESPACE CASA - END
+

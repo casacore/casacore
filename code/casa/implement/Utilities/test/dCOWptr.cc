@@ -31,6 +31,7 @@
 #include <casa/Utilities/COWPtr.h>
 #include <casa/iostream.h> 
 
+#include <casa/namespace.h>
 int main()
 {
   // create an array of dimension 1, length 4

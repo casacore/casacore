@@ -37,6 +37,8 @@
 #include <casa/iostream.h>
 #include <casa/iomanip.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 void Timer::mark()
 {
 #if defined (DOS) || defined (MSDOS)
@@ -294,3 +296,6 @@ void Timer::show (ostream &os, const String& s) const
     os << s;
     show(os);
 }
+
+} //# NAMESPACE CASA - END
+

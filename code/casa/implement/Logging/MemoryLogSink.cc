@@ -30,6 +30,8 @@
 #include <casa/Exceptions/Error.h>
 #include <casa/Utilities/Assert.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 String MemoryLogSink::localId( ) {
     return String("MemoryLogSink");
 }
@@ -171,3 +173,6 @@ void MemoryLogSink::resize (uInt nrnew)
   location_p.resize (nrnew);
   objectID_p.resize (nrnew);
 }
+
+} //# NAMESPACE CASA - END
+

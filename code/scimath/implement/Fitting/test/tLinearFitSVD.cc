@@ -41,6 +41,7 @@
 
 #include <casa/iostream.h>
 
+#include <casa/namespace.h>
 // Some C++ functions
 // To use them in Fitting, have to have parameters and also AutoDiff
 static Double func0(const Vector<Double> &) {return 1;};            // 1

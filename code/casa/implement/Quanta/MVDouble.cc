@@ -32,6 +32,8 @@
 #include <casa/Quanta/MVDouble.h>
 #include <casa/BasicMath/Math.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 // MVDouble class
 
 //# Constructors
@@ -121,11 +123,11 @@ void MVDouble::assure(const MeasValue &in) {
 }
 
 Bool MVDouble::near(const MVDouble &other, Double tol) const {
-  return ::near(val, other.val, tol);
+  return ::casa::near(val, other.val, tol);
 }
 
 Bool MVDouble::nearAbs(const MVDouble &other, Double tol) const {
-  return ::nearAbs(val, other.val, tol);
+  return ::casa::nearAbs(val, other.val, tol);
 }
 
 // Member functions
@@ -168,3 +170,6 @@ Bool MVDouble::putValue(const Vector<Quantum<Double> > &in) {
   };
   return True;
 }
+
+} //# NAMESPACE CASA - END
+

@@ -34,6 +34,8 @@
 #include <casa/Containers/Block.h>
 #include <scimath/Mathematics/NumericTraits.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Forward Declarations
 template <class T, class U> class TiledCollapser;
 template <class T, class U> class LineCollapser;
@@ -247,5 +249,8 @@ private:
 			      Int newOutAxis);
 };
 
+
+
+} //# NAMESPACE CASA - END
 
 #endif

@@ -29,6 +29,8 @@
 #include <scimath/Functionals/CompiledParam.h>
 #include <scimath/Functionals/FuncExpression.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 template <class T>
 CompiledParam<T>::CompiledParam() : 
   Function<T>(), ndim_p(0), msg_p(), text_p(),
@@ -82,3 +84,6 @@ Bool CompiledParam<T>::setFunction(const String &newFunction) {
   text_p = newFunction;
   return True;
 }
+
+} //# NAMESPACE CASA - END
+

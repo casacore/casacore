@@ -34,6 +34,8 @@
 #include <casa/Exceptions/Error.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 template <class T>
 RO_MaskedLatticeIterator<T>::RO_MaskedLatticeIterator()
 : itsMaskLattPtr (0)
@@ -147,3 +149,6 @@ Bool RO_MaskedLatticeIterator<T>::getMask (Array<Bool>& arr,
   return itsMaskLattPtr->getMaskSlice (arr, position(), cursorShape(),
 				       removeDegenerateAxes);
 }
+
+} //# NAMESPACE CASA - END
+

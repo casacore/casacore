@@ -37,6 +37,8 @@
 #include <measures/Measures/MFrequency.h>
 #include <scimath/Functionals/Polynomial.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Forward Declarations
 class RotMatrix;
 class Euler;
@@ -506,5 +508,8 @@ private:
   // </group>
 
 };
+
+
+} //# NAMESPACE CASA - END
 
 #endif

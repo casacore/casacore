@@ -38,6 +38,8 @@
 #include <casa/BasicSL/String.h>
 #include <casa/Utilities/Assert.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 // MVTime class
 //# Static members
 MVTime::Format MVTime::defaultFormat = MVTime::Format();
@@ -558,3 +560,6 @@ ostream &operator<<(ostream &os, const MVTime::Format &form) {
     MVTime::interimSet = True;
     return os;
 }
+
+} //# NAMESPACE CASA - END
+

@@ -36,6 +36,8 @@
 #include <flagging/Flagging/RFASelector.h>
 #include <casa/stdio.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 // -----------------------------------------------------------------------
 // reformRange
 // Reforms an array of 2N elements into a [2,N] matrix
@@ -928,3 +930,6 @@ const RecordInterface & RFASelector::getDefaults ()
   }
   return rec;
 }
+
+} //# NAMESPACE CASA - END
+

@@ -31,6 +31,8 @@
 
 #include <casa/BasicSL/Complex.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 // <summary> A specialisation for T=Float of the NumericTraits class </summary>
 // <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="" demos="">
 // </reviewed>
@@ -88,5 +90,8 @@ public:
   static const Double & minimum;
   static const Double & maximum;
 };
+
+
+} //# NAMESPACE CASA - END
 
 #endif

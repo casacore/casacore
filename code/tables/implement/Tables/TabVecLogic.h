@@ -34,6 +34,8 @@
 #include <tables/Tables/TVecLogic.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 // <summary>
 // Comparison between two table vectors
 // </summary>
@@ -241,5 +243,8 @@ Bool anyNE (const T &val, const ROTableVector<T>& tv)
     return (allEQ (val, tv)  ?  False : True);
 }
 
+
+
+} //# NAMESPACE CASA - END
 
 #endif

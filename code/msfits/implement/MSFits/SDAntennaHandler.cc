@@ -47,6 +47,8 @@
 #include <tables/Tables/TableDesc.h>
 #include <casa/Arrays/ArrayUtil.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 SDAntennaHandler::SDAntennaHandler() 
     : index_p(0), msAnt_p(0), msAntCols_p(0), rownr_p(-1),
       siteLongFldNum_p(-1), siteLatFldNum_p(-1), siteElevFldNum_p(-1)
@@ -505,3 +507,6 @@ void SDAntennaHandler::addOrbitIdColumn()
 	}
     }
 }
+
+} //# NAMESPACE CASA - END
+

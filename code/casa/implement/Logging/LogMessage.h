@@ -32,8 +32,9 @@
 #include <casa/aips.h>
 #include <casa/Logging/LogOrigin.h>
 #include <casa/OS/Time.h>
-
 #include <casa/iosfwd.h>
+
+namespace casa { //# NAMESPACE CASA - BEGIN
 
 // <summary>
 // Informational log messages with with time, priority, and origin.
@@ -215,5 +216,8 @@ private:
 ostream &operator<<(ostream &os, const LogMessage &message);
 // </group>
 
+
+
+} //# NAMESPACE CASA - END
 
 #endif

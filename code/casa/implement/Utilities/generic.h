@@ -20,6 +20,8 @@ Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #ifndef CASA_GENERIC_H
 #define CASA_GENERIC_H
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 /*
  *	See the CPP manual, argument prescan section for explanation
  */
@@ -59,5 +61,8 @@ typedef int (*GPT)(int,char*);
 #define g_callerror(gen,type,a,b) (*g_errorhandler(gen,type))(a,b)
 
 // </group>
+
+
+} //# NAMESPACE CASA - END
 
 #endif

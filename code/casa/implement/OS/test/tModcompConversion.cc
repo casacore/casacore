@@ -32,6 +32,7 @@
 #include <casa/iostream.h>
 #include <casa/iomanip.h>
 
+#include <casa/namespace.h>
 // This program tests the Modcomp conversion functions.
 
 void compare(Int& error, Char exp, Char res) {

@@ -42,6 +42,7 @@
 #include <casa/iostream.h>
 
 
+#include <casa/namespace.h>
 void check (uInt axis, MaskedLattice<Float>& ml,
             MaskedLattice<Float>& ml1, MaskedLattice<Float>& ml2);
 void check2 (MaskedLattice<Float>& ml,

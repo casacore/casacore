@@ -36,6 +36,8 @@
 #include <ieeefp.h>
 #endif
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 Bool near(uInt val1, uInt val2, Double tol) {
   if (tol <= 0) {
     return (val1 == val2);
@@ -59,8 +61,8 @@ Bool near(Int val1, Int val2, Double tol) {
   if ((0<val1) != (0<val2)) {
     return False;
   }
-  const Int aval1 = abs(val1);
-  const Int aval2 = abs(val2);
+  const Int aval1 = std::abs(val1);
+  const Int aval2 = std::abs(val2);
   return (Double(aval1-aval2) <= tol*Double(max(aval1,aval2)));
 }
 
@@ -121,7 +123,7 @@ Bool nearAbs(uInt val1, uInt val2, Double tol) {
 }
 
 Bool nearAbs(Int val1, Int val2, Double tol) {
-  return (tol > Double(abs(val2 - val1)));
+  return (tol > Double(std::abs(val2 - val1)));
 }
 
 Bool nearAbs(Float val1, Float val2, Double tol) {
@@ -295,3 +297,6 @@ void setInf(Double& val) {
 // Local Variables: 
 // compile-command: "gmake Math"
 // End: 
+
+} //# NAMESPACE CASA - END
+

@@ -34,6 +34,8 @@
 
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 TiledDataStManAccessor::TiledDataStManAccessor (const Table& table,
 						const String& dataManagerName)
 : ROTiledStManAccessor (table, dataManagerName),
@@ -87,3 +89,6 @@ void TiledDataStManAccessor::extendHypercube (uInt incrInLastDim,
 {
     tiledDataManPtr_p->extendHypercube (incrInLastDim, values);
 }
+
+} //# NAMESPACE CASA - END
+

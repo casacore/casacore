@@ -37,6 +37,8 @@
 #include <casa/stdlib.h>               // needed for system
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 RegularFile::RegularFile ()
 : File()
 {}
@@ -168,3 +170,6 @@ Int64 RegularFile::size() const
 {
   return itsFile.size();
 }
+
+} //# NAMESPACE CASA - END
+

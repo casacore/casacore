@@ -35,6 +35,7 @@
 #include <casa/BasicSL/Constants.h>
 #include <casa/iostream.h>
 
+#include <casa/namespace.h>
 Float sumPixels(const ImageInterface<Float>& image){
   uInt rowLength = image.shape()(0);
   IPosition rowShape(image.ndim());

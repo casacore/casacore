@@ -32,11 +32,13 @@
 #include <casa/aips.h>
 #include <casa/BasicMath/Math.h>
 #include <casa/Utilities/Fallible.h>
+#include <casa/iosfwd.h>
+
+namespace casa { //# NAMESPACE CASA - BEGIN
 
 // forward declarations:
 template <class T> class Array;
 template <class T> class Block;
-#include <casa/iosfwd.h>
 class String;
 
 // <reviewed reviewer="" date="" tests="tStatAcc" demos="">
@@ -174,9 +176,9 @@ public:
     // LineHeader gives a one-line explanation of the numbers.
     // List uses a separate line for each result (mean, max etc).
     // <group>
-    void printSummaryList(ostream&, const String& caption) const; 
-    void printSummaryLine(ostream&, const String& caption) const;  
-    void printSummaryLineHeader(ostream&, const String& caption) const; 
+    void printSummaryList(std::ostream&, const String& caption) const; 
+    void printSummaryLine(std::ostream&, const String& caption) const;  
+    void printSummaryLineHeader(std::ostream&, const String& caption) const; 
     // </group>
 	
 private:
@@ -209,6 +211,9 @@ inline void StatAcc<T>::put(const T v, const Float w) {
     put1(v, w);
 }    
 
+
+
+} //# NAMESPACE CASA - END
 
 #endif
 

@@ -38,6 +38,8 @@
 #include <casa/Arrays/Vector.h>
 #include <casa/Exceptions/Error.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 MSState::MSState():hasBeenDestroyed_p(True) { }
 
 MSState::MSState(const String &tableName, 
@@ -177,3 +179,6 @@ MSState MSState::referenceCopy(const String& newTableName,
     return MSState(MSTable<PredefinedColumns,PredefinedKeywords>::
 		     referenceCopy(newTableName,writableColumns));
 }
+
+} //# NAMESPACE CASA - END
+

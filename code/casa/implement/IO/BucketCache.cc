@@ -32,6 +32,8 @@
 #include <casa/iostream.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 BucketCache::BucketCache (BucketFile* file, Int64 startOffset,
 			  uInt bucketSize, uInt nrOfBuckets,
 			  uInt cacheSize, void* ownerObject,
@@ -416,3 +418,6 @@ void BucketCache::initStatistics()
     ninit_p   = 0;
     nwrite_p  = 0;
 }
+
+} //# NAMESPACE CASA - END
+

@@ -40,6 +40,7 @@
 
 #include <casa/iostream.h>
 
+#include <casa/namespace.h>
 void setValues (IPosition& blcI,
                 IPosition& trcI,
                 IPosition& shape,

@@ -33,6 +33,8 @@
 #include <casa/aips.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 // <summary>
 // A caching object for a table column.
 // </summary>
@@ -153,5 +155,8 @@ inline uInt ColumnCache::incr() const
     return itsIncr;
 }
 */
+
+
+} //# NAMESPACE CASA - END
 
 #endif

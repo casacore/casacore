@@ -38,6 +38,8 @@
 #include <measures/Measures/MDirection.h>
 #include <measures/Measures/MeasMath.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Forward Declarations
 class MCDirection;
 class MVPosition;
@@ -221,6 +223,9 @@ private:
 		 const MConvertBase &mc);
   
 };
+
+
+} //# NAMESPACE CASA - END
 
 #endif
 

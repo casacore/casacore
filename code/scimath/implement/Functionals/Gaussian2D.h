@@ -35,6 +35,8 @@
 #include <scimath/Mathematics/AutoDiff.h>
 #include <scimath/Mathematics/AutoDiffMath.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Forward declarations
 template<class T> class Vector;
 
@@ -310,5 +312,8 @@ public:
 };
 
 #undef Gaussian2D_PS
+
+
+} //# NAMESPACE CASA - END
 
 #endif

@@ -35,6 +35,8 @@
 #include <casa/System/PGPlotter.h>
 #include <scimath/Mathematics/MedianSlider.h> 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 // <summary>
 // RFANewMedianClip:RedFlagger Agent;clips relative to median over time slots
 // </summary>
@@ -105,5 +107,8 @@ inline MedianSlider & RFANewMedianClip::slider (uInt ich,uInt ifr)
 {
   return msl[ ifr*num(CHAN) + ich ];
 }
+
+
+} //# NAMESPACE CASA - END
 
 #endif

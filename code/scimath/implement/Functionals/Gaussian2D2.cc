@@ -29,6 +29,8 @@
 #include <scimath/Functionals/Gaussian2D.h>
 #include <casa/BasicMath/Math.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Constructors
 
 //# Operators
@@ -97,3 +99,6 @@ eval(typename Function<AutoDiff<T> >::FunctionArg x) const {
 }
 
 //# Member functions
+
+} //# NAMESPACE CASA - END
+

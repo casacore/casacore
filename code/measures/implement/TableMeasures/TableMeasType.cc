@@ -32,6 +32,8 @@
 #include <casa/Exceptions/Error.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 TableMeasType::TableMeasType()
 : itsNtypes(0),
   itsStypes(0),
@@ -114,3 +116,6 @@ void TableMeasType::toRecord (RecordInterface& rec)
   String error;
   itsMeasHolder.toType (error, rec);
 }
+
+} //# NAMESPACE CASA - END
+

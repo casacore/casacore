@@ -43,6 +43,7 @@
 
 #include <casa/iostream.h>
 
+#include <casa/namespace.h>
 // Make near zero zero
 Double Y(const Double in) {
   return (abs(in)<1e-15 ? Double(0.0) : in);

@@ -35,6 +35,8 @@
 
 #include <casa/iostream.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Constructors
 SpectralList::SpectralList() :
   nmax_p(0), list_p(0) {}
@@ -215,4 +217,7 @@ ostream &operator<<(ostream &os, const SpectralList &lst) {
   return os;
 }
 
+
+
+} //# NAMESPACE CASA - END
 

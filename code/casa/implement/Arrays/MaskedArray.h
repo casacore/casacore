@@ -36,6 +36,8 @@
 #include <casa/Arrays/LogiArrayFwd.h>
 #include <casa/Arrays/MaskLogiArrFwd.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Forward declarations
 //# <note role=warning>
 //#   Array.h cannot be included in this header file.  Anything needed
@@ -719,5 +721,8 @@ template<class T, class U>
 //   </group>
 
 // </group>
+
+
+} //# NAMESPACE CASA - END
 
 #endif

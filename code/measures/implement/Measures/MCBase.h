@@ -32,6 +32,8 @@
 //# Includes
 #include <casa/aips.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Forward Declarations
 class MeasValue;
 class MCBase;
@@ -183,5 +185,8 @@ private:
   // </group>
 
 };
+
+
+} //# NAMESPACE CASA - END
 
 #endif

@@ -26,6 +26,7 @@
 //# $Id$
 
 #include <casa/aips.h>
+#include <casa/namespace.h>
 // #include <trial/MeasurementSets/MSMainBuffer.h>
 // #include <ms/MeasurementSets/MeasurementSet.h>
 // #include <casa/Arrays/ArrayLogical.h>

@@ -32,6 +32,8 @@
 #include <casa/aips.h>
 #include <casa/BasicSL/String.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 // <summary>
 // Do checks for a new (non-existent) file.
 // </summary>
@@ -93,5 +95,8 @@ private:
     Bool delete_p;
 };
 
+
+
+} //# NAMESPACE CASA - END
 
 #endif

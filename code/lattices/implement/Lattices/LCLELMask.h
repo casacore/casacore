@@ -35,6 +35,8 @@
 #include <lattices/Lattices/LatticeExpr.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Forward Declarations
 class TableRecord;
 class IPosition;
@@ -151,5 +153,8 @@ private:
   LatticeExpr<Bool> itsExpr;
 };
 
+
+
+} //# NAMESPACE CASA - END
 
 #endif

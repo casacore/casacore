@@ -37,6 +37,8 @@
 #include <casa/Containers/SimOrdMap.h>
 #include <casa/IO/ByteIO.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Forward Declarations
 class DataManager;
 class DataManagerColumn;
@@ -960,5 +962,8 @@ private:
     DataManagerColumn& operator= (const DataManagerColumn&);
 };
 
+
+
+} //# NAMESPACE CASA - END
 
 #endif

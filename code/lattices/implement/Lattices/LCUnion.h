@@ -32,6 +32,8 @@
 #include <lattices/Lattices/LCRegionMulti.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 // <summary>
 // Make the union of 2 or more regions.
 // </summary>
@@ -135,5 +137,8 @@ private:
     void defineBox();
 };
 
+
+
+} //# NAMESPACE CASA - END
 
 #endif

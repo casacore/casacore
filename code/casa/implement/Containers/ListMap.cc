@@ -28,6 +28,8 @@
 #include <casa/Containers/ListMap.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 template<class key, class value> value *ListMapRep<key,value>::isDefined(const key &kv) {
   if (!list.atEnd() && list.getRight().x() == kv) {
     value &ret = list.getRight().y();
@@ -122,8 +124,7 @@ MapIterRep<key,value> *ListMapRep<key,value>::getRep(Map<key,value> *container) 
 
 template<class key, class value>
 MapRep<key,value> *ListMapRep<key,value>::Clone() const {
-  ListMapRep<key,value> *ret = new ListMapRep<key,value>(this->DefaultVal,
-							 deforder);
+  ListMapRep<key,value> *ret = new ListMapRep<key,value>(DefaultVal,deforder);
   ConstListIter<OrderedPair<key,value> > listp = list;
 
   ret->list.toStart();
@@ -147,3 +148,6 @@ void ListMapIterRep<key,value>::operator++(int) {
     throw(AipsError("ListMap::operator++ - at end"));
   ++listp;
 }
+
+} //# NAMESPACE CASA - END
+

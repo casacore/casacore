@@ -33,6 +33,8 @@
 //# Includes
 #include <casa/aips.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 // <summary>
 // Linear search a linear data structure.
 // </summary>
@@ -135,5 +137,8 @@ Int linearSearchBrackets (Bool& found, const Container& container,
 // </group>
 // </group>
 
+
+
+} //# NAMESPACE CASA - END
 
 #endif

@@ -28,6 +28,8 @@
 
 #include <casa/Utilities/PtrHolder.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 template<class T> PtrHolder<T>::PtrHolder()
 : ptr_p     (0),
   isCarray_p(False)
@@ -72,3 +74,6 @@ template<class T> PtrHolder<T>::~PtrHolder()
 {
     delete_pointer_if_necessary();
 }
+
+} //# NAMESPACE CASA - END
+

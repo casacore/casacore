@@ -32,6 +32,8 @@
 #include <casa/Quanta/Quantum.h>
 #include <casa/sstream.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 template <> 
 Bool AipsrcValue<String>::find(String &value,
 			       const String &keyword,
@@ -40,3 +42,6 @@ Bool AipsrcValue<String>::find(String &value,
   Bool x = Aipsrc::find(res, keyword, 0);
   return x;
 }
+
+} //# NAMESPACE CASA - END
+

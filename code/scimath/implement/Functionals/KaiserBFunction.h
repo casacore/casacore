@@ -33,6 +33,8 @@
 #include <scimath/Functionals/KaiserBParam.h>
 #include <scimath/Functionals/Function.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Forward declarations
 
 // <summary> A one dimensional Kaiser-Bessel function
@@ -123,5 +125,8 @@ public:
   using KaiserBParam<T>::WIDTH;
   using KaiserBParam<T>::HEIGHT;
 };
+
+
+} //# NAMESPACE CASA - END
 
 #endif

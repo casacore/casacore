@@ -35,6 +35,8 @@
 #include <lattices/Lattices/TiledShape.h>
 #include <casa/Utilities/CountedPtr.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Forward Declarations
 class Table;
 
@@ -289,5 +291,8 @@ private:
   mutable Bool                    itsIsClosed;
 };
 
+
+
+} //# NAMESPACE CASA - END
 
 #endif

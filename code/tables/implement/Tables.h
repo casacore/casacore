@@ -89,6 +89,8 @@
 #include <tables/Tables/TabVecLogic.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 // <module>
 
 // <summary>
@@ -1443,5 +1445,8 @@
 // </synopsis>
 // </module>
 
+
+
+} //# NAMESPACE CASA - END
 
 #endif

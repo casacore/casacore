@@ -38,6 +38,8 @@
 
 #include <casa/sstream.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 StokesCoordinate::StokesCoordinate(const Vector<Int> &whichStokes)
 : Coordinate(),
   values_p(whichStokes.nelements()), 
@@ -586,7 +588,7 @@ Bool StokesCoordinate::toPixel(Double& pixel,  const Double world) const
     Bool found = False;
     Int index;
     for (index=0; index<nValues_p; index++) {
-	found = ::near(world, Double(values_p[index]));
+	found = ::casa::near(world, Double(values_p[index]));
 	if (found) break;
     }
     if (!found) {
@@ -617,3 +619,6 @@ void StokesCoordinate::setDefaultWorldMixRanges ()
    pixel(0) = nValues_p - 1;
    toWorld(worldMax_p, pixel);
 }
+
+} //# NAMESPACE CASA - END
+

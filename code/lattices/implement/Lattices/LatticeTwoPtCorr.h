@@ -33,6 +33,8 @@
 #include <casa/aips.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Forward Declarations
 
 template <class T> class MaskedLattice;
@@ -143,5 +145,8 @@ private:
 // Compute structure function
    T structureFunction (T d1, T d2) const {return square(d1 - d2);};
 };
+
+
+} //# NAMESPACE CASA - END
 
 #endif

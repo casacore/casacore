@@ -40,6 +40,7 @@
 #include <measures/Measures/MDoppler.h>
 
 
+#include <casa/namespace.h>
 int main (int argc, char **argv)
 {
 try {

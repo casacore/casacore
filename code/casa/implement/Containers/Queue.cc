@@ -29,6 +29,8 @@
 #include <casa/Utilities/Copy.h>
 #include <casa/Exceptions/Error.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 template<class T> Queue<T>::Queue() : first_p(0), next_p(0), data_p(1)
 {
     // Nothing
@@ -119,3 +121,6 @@ template<class T> T Queue<T>::operator()()
     dequeue(value);
     return value;
 }
+
+} //# NAMESPACE CASA - END
+

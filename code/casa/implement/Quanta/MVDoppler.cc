@@ -32,6 +32,8 @@
 #include <casa/Quanta/MVDoppler.h>
 #include <casa/BasicMath/Math.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 // MVDoppler class
 
 //# Constructors
@@ -112,11 +114,11 @@ Bool MVDoppler::operator!=(const MVDoppler &other) const {
 }
 
 Bool MVDoppler::near(const MVDoppler &other, Double tol) const {
-  return ::near(val, other.val, tol);
+  return ::casa::near(val, other.val, tol);
 }
 
 Bool MVDoppler::nearAbs(const MVDoppler &other, Double tol) const {
-  return ::nearAbs(val, other.val, tol);
+  return ::casa::nearAbs(val, other.val, tol);
 }
 
 // Member functions
@@ -216,3 +218,6 @@ Double MVDoppler::makeD(Double v, const Unit &dt, Bool rev) const{
   if (rev) return (v/x);
   return (v*x);
 }
+
+} //# NAMESPACE CASA - END
+

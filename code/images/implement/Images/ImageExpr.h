@@ -35,6 +35,8 @@
 #include <casa/Containers/Record.h>
 #include <casa/Quanta/Unit.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Forward Declarations
 class IPosition;
 class Slicer;
@@ -207,5 +209,8 @@ private:
 };
 
 
+
+
+} //# NAMESPACE CASA - END
 
 #endif

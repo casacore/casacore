@@ -33,6 +33,8 @@
 #include <casa/Exceptions/Error.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 PixelCurve1D::PixelCurve1D (double x1, double y1, double x2, double y2,
 			    uInt npoints)
 {
@@ -50,7 +52,7 @@ PixelCurve1D::PixelCurve1D (const Function1D<float,float>& func,
   // Calculate the length of the curve numerically.
   // Analytically it is the integral of (sqrt(1 + sqr(df/dx)).
   // Use 1000 times the number of pixels in x or y for the numeric calculation.
-  uInt np = uInt(1000 * std::max(abs(x2-x1), abs(func(x2) - func(x1))));
+  uInt np = uInt(1000 * max(abs(x2-x1), abs(func(x2) - func(x1))));
   Vector<double> x(np), y(np);
   double step = (double(x2)-x1) / (np-1);
   for (uInt i=0; i<np; i++) {
@@ -185,3 +187,6 @@ void PixelCurve1D::getPixelCoord (Vector<float>& x, Vector<float>& y,
     start += incr;
   }
 }  
+
+} //# NAMESPACE CASA - END
+

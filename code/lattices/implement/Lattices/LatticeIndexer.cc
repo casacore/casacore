@@ -33,6 +33,8 @@
 #include <casa/sstream.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 LatticeIndexer::LatticeIndexer()
 : itsFullShape (IPosition(1,1)), 
   itsNdim      (1),
@@ -413,3 +415,6 @@ Bool LatticeIndexer::ok() const
   }
   return True;
 }
+
+} //# NAMESPACE CASA - END
+

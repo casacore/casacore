@@ -39,6 +39,7 @@
 #include <casa/sstream.h>
 
 
+#include <casa/namespace.h>
 void doIt (const String& name, double interval)
 {
     cout << "Choose between 2 locknrs (i.e. parts of file to lock)." << endl;

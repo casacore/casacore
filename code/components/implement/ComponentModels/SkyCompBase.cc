@@ -27,8 +27,13 @@
 
 #include <components/ComponentModels/SkyCompBase.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 SkyCompBase::~SkyCompBase() {
 }
 // Local Variables: 
 // compile-command: "gmake SkyCompBase"
 // End: 
+
+} //# NAMESPACE CASA - END
+

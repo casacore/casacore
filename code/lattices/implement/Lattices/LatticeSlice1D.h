@@ -34,6 +34,8 @@
 #include <casa/Arrays/Vector.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Forward Declarations
 template <class T> class MaskedLattice;
 class IPosition;
@@ -158,5 +160,8 @@ private:
    uInt itsAxis0;
    uInt itsAxis1;
 };
+
+
+} //# NAMESPACE CASA - END
 
 #endif

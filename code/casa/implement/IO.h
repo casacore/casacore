@@ -44,6 +44,8 @@
 #include <casa/IO/MemoryIO.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 // <module>
 
 // <summary>
@@ -121,6 +123,9 @@
 
 // </module>
 
+
+
+} //# NAMESPACE CASA - END
 
 #endif
 

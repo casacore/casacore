@@ -46,25 +46,47 @@
 #else
 # include <cmath>
 # if !defined(AIPS_INTELCC)
+namespace casa { //# NAMESPACE CASA - BEGIN
     using std::abs;
+} //# NAMESPACE CASA - END
 # endif
 # if !(defined(AIPS_KAICC) || defined(AIPS_GCC3) || defined(AIPS_INTELCC))
 #  define NEEDS_POWFLOATFLOAT
 # endif
 #endif
 
-#if defined(AIPS_SUN_NATIVE)
-using std::pow;
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 using std::abs;
-#define NEEDS_POWFLOATFLOAT
-#endif
-
-
+using std::fabs;
+using std::cos;
+using std::cosh;
+using std::sin;
+using std::sinh;
+using std::tan;
+using std::tanh;
+using std::asin;
+using std::acos;
+using std::atan;
+using std::atan2;
+using std::exp;
+using std::log;
+using std::log10;
+using std::sqrt;
+using std::pow;
+using std::floor;
+using std::ceil;
+using std::fmod;
+using ::erf;
+using ::erfc;
 // The following is not yet part of some of the cmath include file. Should be
 // removed at some stage
 # if defined(NEEDS_POWFLOATFLOAT)
    inline Float pow(Float f1, Float f2)
      { return Float(pow(Double(f1), Double(f2))); };
 # endif
+
+
+} //# NAMESPACE CASA - END
 
 #endif

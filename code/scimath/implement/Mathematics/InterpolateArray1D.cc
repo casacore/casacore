@@ -34,6 +34,8 @@
 #include <casa/Utilities/BinarySearch.h>
 #include <casa/Utilities/GenSort.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 template <class Domain, class Range>
 void InterpolateArray1D<Domain,Range>::interpolate(Array<Range>& yout, 
 						   const Vector<Domain>& xout,
@@ -577,3 +579,6 @@ void InterpolateArray1D<Domain,Range>::polynomialInterpolation
     }
   }
 }
+
+} //# NAMESPACE CASA - END
+

@@ -32,6 +32,8 @@
 #include <casa/Utilities/Assert.h>
 #include <casa/Containers/RecordInterface.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Constructors
 template <class T>
 SimButterworthBandpass<T>::SimButterworthBandpass() :
@@ -151,4 +153,7 @@ void SimButterworthBandpass<T>::getMode(RecordInterface& out) const {
     out.define(RecordFieldId("minOrder"), getMinOrder());
     out.define(RecordFieldId("maxOrder"), getMaxOrder());
 }
+
+
+} //# NAMESPACE CASA - END
 

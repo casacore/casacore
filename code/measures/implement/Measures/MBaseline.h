@@ -36,6 +36,8 @@
 #include <measures/Measures/MeasRef.h>
 #include <casa/Quanta/MVBaseline.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Forward Declarations
 class MBaseline;
 class MCBaseline;
@@ -247,5 +249,8 @@ private:
 //# Member functions
 
 };
+
+
+} //# NAMESPACE CASA - END
 
 #endif

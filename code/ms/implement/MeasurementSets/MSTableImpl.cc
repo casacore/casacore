@@ -61,6 +61,8 @@
 
 #include <casa/iostream.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 void MSTableImpl::addMeasColumn(TableDesc& td, const String& column, 
 				const String& measure, const String& refCol) {
   String meas = measure;
@@ -590,4 +592,7 @@ void MSTableImpl::init()
 
 
 
+
+
+} //# NAMESPACE CASA - END
 

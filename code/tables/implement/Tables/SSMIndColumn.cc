@@ -38,6 +38,8 @@
 #include <tables/Tables/DataManError.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 SSMIndColumn::SSMIndColumn (SSMBase* aParent, int aDataType, uInt aColNr)
 : SSMColumn    (aParent, aDataType, aColNr),
   isShapeFixed (False),
@@ -244,3 +246,6 @@ void SSMIndColumn::init()
   itsNrCopy = 1;
   itsExternalSizeBits = 8*itsExternalSizeBytes;
 }
+
+} //# NAMESPACE CASA - END
+

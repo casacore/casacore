@@ -30,6 +30,8 @@
 #include <casa/Arrays/IPosition.h>
 #include <casa/Utilities/DataType.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 const String SerialHelper::FUNCTYPE("functype");
 const String SerialHelper::gtype[] = {
     "Bool", "Byte", "Short", "Int", "Float", 
@@ -495,3 +497,6 @@ void getArray(Array<V> &val, Int gtype, const Record& gr,
 				   SerialHelper::gtype[gv.elementType()]);
 }
 */
+
+} //# NAMESPACE CASA - END
+

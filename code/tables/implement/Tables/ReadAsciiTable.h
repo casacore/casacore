@@ -35,6 +35,8 @@
 
 // # Forward Declarations
 #include <casa/iosfwd.h>
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 class Regex;
 class IPosition;
 class LogIO;
@@ -354,5 +356,8 @@ private:
 			   TableColumn& tabcol, uInt rownr);
 };
 
+
+
+} //# NAMESPACE CASA - END
 
 #endif

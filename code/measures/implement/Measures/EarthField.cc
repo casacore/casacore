@@ -34,6 +34,8 @@
 #include <casa/BasicMath/Math.h>
 #include <casa/System/AipsrcValue.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Constants
 const Double EarthField::INTV = 50000;
 
@@ -268,3 +270,6 @@ void EarthField::calcField(const MVPosition &pos) {
     };
   };
 }
+
+} //# NAMESPACE CASA - END
+

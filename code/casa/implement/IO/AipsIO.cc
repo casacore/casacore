@@ -34,6 +34,8 @@
 #include <casa/BasicSL/Complex.h>
 #include <casa/Utilities/Assert.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 // This is the implementation of the AipsIO class.
 // Operator << and >> for the built-in data types are inline functions
 // and defined in AipsIO.h.
@@ -1009,3 +1011,6 @@ void AipsIO::testgeterr()
     { throw (AipsError ("AipsIO: no getstart done")); }
 void AipsIO::testgeterrLength()
     { throw (AipsError ("AipsIO: read beyond end of object")); }
+
+} //# NAMESPACE CASA - END
+

@@ -33,6 +33,8 @@
 #include <casa/Arrays/Vector.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 // <summary>
 // Define an N-dimensional ellipsoidal region of interest.
 // </summary>
@@ -169,5 +171,8 @@ inline const Vector<Float>& LCEllipsoid::radii() const
     return itsRadii;
 }
 
+
+
+} //# NAMESPACE CASA - END
 
 #endif

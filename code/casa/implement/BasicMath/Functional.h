@@ -31,6 +31,8 @@
 //# Includes
 #include <casa/aips.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Forward declaration
 template<class T> class Lattice;
 
@@ -127,5 +129,8 @@ template<class Domain, class Range> class Functional {
   // Map a Domain <src>x</src> into a Range <src>y</src> value.
   virtual Range operator()(const Domain &x) const = 0;
 };
+
+
+} //# NAMESPACE CASA - END
 
 #endif

@@ -31,6 +31,8 @@
 #include <casa/aips.h>
 #include <casa/Containers/Block.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 // 
 
 // <summary> 
@@ -133,5 +135,8 @@ private:
     Int first_p;
     Block<T> data_p;
 };
+
+
+} //# NAMESPACE CASA - END
 
 #endif

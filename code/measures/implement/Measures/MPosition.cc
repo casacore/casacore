@@ -33,6 +33,8 @@
 #include <measures/Measures/MPosition.h>
 #include <casa/Utilities/Assert.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Constructors
 MPosition::MPosition() :
   MeasBase<MVPosition, MPosition::Ref>() {}
@@ -249,3 +251,6 @@ Quantum<Vector<Double> > MPosition::getAngle(const Unit &inunit) const {
 Measure *MPosition::clone() const {
   return (new MPosition(*this));
 }
+
+} //# NAMESPACE CASA - END
+

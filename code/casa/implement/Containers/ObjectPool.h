@@ -33,6 +33,8 @@
 #include <casa/Containers/PoolStack.h>
 #include <casa/Containers/SimOrdMap.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Forward declarations
 
 // <summary>
@@ -153,5 +155,8 @@ private:
 
   //# Member functions
 };
+
+
+} //# NAMESPACE CASA - END
 
 #endif

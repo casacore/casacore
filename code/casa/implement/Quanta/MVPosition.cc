@@ -39,6 +39,8 @@
 #include <casa/Arrays/MatrixMath.h>
 #include <casa/Arrays/ArrayLogical.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Constants
 const Double MVPosition::loLimit = 743.568;
 const Double MVPosition::hiLimit = 743.569;
@@ -83,10 +85,10 @@ MVPosition::MVPosition(Double in0, Double in1, Double in2) :
 
 MVPosition::MVPosition(const Quantity &l, Double angle0, Double angle1) : 
   xyz(3) {
-  Double loc = cos(angle1);
-  xyz(0) = cos(angle0)*loc;
-  xyz(1) = sin(angle0)*loc;
-  xyz(2) = sin(angle1);
+  Double loc = std::cos(angle1);
+  xyz(0) = std::cos(angle0)*loc;
+  xyz(1) = std::sin(angle0)*loc;
+  xyz(2) = std::sin(angle1);
   Double t(l.getBaseValue());
   if (t<0 && t>-7.0e6) t = t/1.0e7 + hiLimit;
   else if (t>loLimit && t<hiLimit) t += 0.001;
@@ -301,7 +303,7 @@ void MVPosition::assure(const MeasValue &in) {
 void MVPosition::adjust() {}
 
 void MVPosition::adjust(Double &res) {
-  res = sqrt(operator*(*this));
+  res = std::sqrt(operator*(*this));
   if (res != 0.0 && res != 1.0) {
     xyz /= res;
   };
@@ -316,7 +318,7 @@ void MVPosition::readjust(Double res) {
 }
 
 Double MVPosition::radius() {
-  return (sqrt(operator*(*this)));
+  return (std::sqrt(operator*(*this)));
 }
 
 Vector<Double> MVPosition::get() const{
@@ -348,7 +350,7 @@ Quantum<Vector<Double> > MVPosition::getAngle(const Unit &unit) const{
 
 Double MVPosition::getLong() const {
   return ((xyz(0) != 0 || xyz(1) != 0) ?
-	  atan2(xyz(1),xyz(0)) : 0.0);
+	  std::atan2(xyz(1),xyz(0)) : 0.0);
 }
 
 Quantity MVPosition::getLong(const Unit &unit) const {
@@ -360,7 +362,7 @@ Double MVPosition::getLat() const {
 }
 
 Double MVPosition::getLat(Double ln) const {
-  return asin(xyz(2)/((ln == 0) ? 1.0 : ln));
+  return std::asin(xyz(2)/((ln == 0) ? 1.0 : ln));
 }
 
 Quantity MVPosition::getLat(const Unit &unit) const {
@@ -368,7 +370,7 @@ Quantity MVPosition::getLat(const Unit &unit) const {
 }
 
 Quantity MVPosition::getLength() const{
-  Double tmp = sqrt(operator*(*this));
+  Double tmp = std::sqrt(operator*(*this));
   return Quantity(tmp, "m");
 }
 
@@ -382,10 +384,10 @@ Double MVPosition::positionAngle(const MVPosition &other) const {
   Double slat1(xyz(2)/ln);
   ln = norm(other.xyz);
   Double slat2(other.xyz(2)/ln);
-  Double clat2(sqrt(fabs(1.0 - slat2*slat2)));
-  Double s1(-clat2 * sin(longDiff));
-  Double c1(sqrt(fabs(1.0 - slat1*slat1))*slat2 - slat1*clat2*cos(longDiff));
-  return ((s1 != 0 || c1 != 0) ? atan2(s1, c1): 0.0);
+  Double clat2(std::sqrt(std::fabs(1.0 - slat2*slat2)));
+  Double s1(-clat2 * std::sin(longDiff));
+  Double c1(std::sqrt(std::fabs(1.0 - slat1*slat1))*slat2 - slat1*clat2*std::cos(longDiff));
+  return ((s1 != 0 || c1 != 0) ? std::atan2(s1, c1): 0.0);
 }
 
 Quantity MVPosition::positionAngle(const MVPosition &other, 
@@ -398,10 +400,10 @@ Double MVPosition::separation(const MVPosition &other) const {
   l1 = l1 > 0 ? l1 : 1.0; 
   Double l2(norm(other.xyz));
   l2 = l2 > 0 ? l2 : 1.0;
-  Double d1 = sqrt(square(xyz(0)/l1 - other.xyz(0)/l2) + 
+  Double d1 = std::sqrt(square(xyz(0)/l1 - other.xyz(0)/l2) + 
 		   square(xyz(1)/l1 - other.xyz(1)/l2) +
 		   square(xyz(2)/l1 - other.xyz(2)/l2))/2.0; 
-  return 2*asin(d1 < 1.0 ? d1 : 1.0);
+  return 2*std::asin(d1 < 1.0 ? d1 : 1.0);
 }
 
 Quantity MVPosition::separation(const MVPosition &other, 
@@ -549,3 +551,6 @@ Double operator*(const MVPosition &left, const Vector<Double> &right) {
   MVPosition tmp(right);
   return (tmp * left);
 }
+
+} //# NAMESPACE CASA - END
+

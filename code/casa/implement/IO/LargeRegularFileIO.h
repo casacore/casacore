@@ -34,6 +34,8 @@
 #include <casa/OS/RegularFile.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 // <summary> 
 // Class for IO on a regular large file.
 // </summary>
@@ -112,5 +114,8 @@ private:
     LargeRegularFileIO& operator= (const LargeRegularFileIO& that);
 };
 
+
+
+} //# NAMESPACE CASA - END
 
 #endif

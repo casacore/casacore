@@ -27,6 +27,7 @@
 #ifndef LATTICES_LELUNARYENUMS_H
 #define LATTICES_LELUNARYENUMS_H
 
+namespace casa { //# NAMESPACE CASA - BEGIN
 
 // <summary> Each LEL unary operation is described in this enum  </summary>
 //
@@ -78,5 +79,8 @@ public:
 };
 
 };
+
+
+} //# NAMESPACE CASA - END
 
 #endif

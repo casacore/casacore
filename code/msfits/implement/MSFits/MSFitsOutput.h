@@ -31,6 +31,8 @@
 //# Includes
 #include <casa/aips.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Forward Declarations
 class String;
 class FitsOutput;
@@ -129,5 +131,8 @@ private:
 			const Vector<Int>& allids, Bool isSubset);
 };
 
+
+
+} //# NAMESPACE CASA - END
 
 #endif

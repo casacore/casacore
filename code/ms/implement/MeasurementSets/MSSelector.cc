@@ -54,6 +54,8 @@
 #include <casa/iostream.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 MSSelector::MSSelector():msIter_p(0),initSel_p(False),dataDescId_p(0),
 			 lastDataDescId_p(1,-1),useSlicer_p(False),
 			 haveSlicer_p(False),wantedOne_p(-1),convert_p(False),
@@ -865,8 +867,8 @@ Record MSSelector::getData(const Vector<String>& items, Bool ifrAxis,
 		sName(k)=ifrName(k);
 	      }
 	      baseline(k)=sqrt(square(antPos(0,ant2)-antPos(0,ant1))+
-			       square(antPos(1,ant2)-antPos(1,ant1))+
-			       square(antPos(2,ant2)-antPos(2,ant1)));
+			            square(antPos(1,ant2)-antPos(1,ant1))+
+			            square(antPos(2,ant2)-antPos(2,ant1)));
 	    }
 	  }
 	  ifr_axis.define("ifr_name",ifrName);
@@ -2037,4 +2039,7 @@ Bool MSSelector::checkSelection() {
   }
   return initSel_p;
 }
+
+
+} //# NAMESPACE CASA - END
 

@@ -30,6 +30,8 @@
 #include <casa/Logging/LogFilter.h>
 #include <casa/Exceptions/Error.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 String LogSinkInterface::localId( )
 {
     return String( "LogSinkInterface" );
@@ -125,3 +127,6 @@ void LogSinkInterface::writeLocally (Double,
 
 void LogSinkInterface::clearLocally ()
 {}
+
+} //# NAMESPACE CASA - END
+

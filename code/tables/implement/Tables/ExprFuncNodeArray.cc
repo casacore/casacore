@@ -39,6 +39,8 @@
 #include <casa/Utilities/Assert.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 TableExprFuncNodeArray::TableExprFuncNodeArray
                              (TableExprFuncNode::FunctionType ftype,
 			      NodeDataType dtype, ValueType vtype,
@@ -1453,3 +1455,6 @@ Array<MVTime> TableExprFuncNodeArray::getArrayDate (const TableExprId& id)
     }
     return Array<MVTime>();
 }
+
+} //# NAMESPACE CASA - END
+

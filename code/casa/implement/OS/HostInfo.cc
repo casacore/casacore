@@ -49,6 +49,7 @@ extern "C" { int gettimeofday(struct timeval *tp, void*); };
 extern "C" { int getclock(int clock_type, struct timespec* tp); };
 #endif
 
+namespace casa { //# NAMESPACE CASA - BEGIN
 
 String HostInfo::hostName()
 {
@@ -164,26 +165,53 @@ int HostInfo::swapFree( )				\
     return info->valid ? info->swap_free : -1;		\
 }
 
+
+} //# NAMESPACE CASA - END
+
 #define HOSTINFO_DO_IMPLEMENT
 #if defined(AIPS_LINUX)
 #include <casa/OS/HostInfoLinux.h>
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 HOSTINFO_IMPLEMENT_MEMBERS
+} //# NAMESPACE CASA - END
+
 #elif defined(AIPS_SOLARIS)
 #include <casa/OS/HostInfoSolaris.h>
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 HOSTINFO_IMPLEMENT_MEMBERS
+} //# NAMESPACE CASA - END
+
 #elif defined(AIPS_IRIX)
 #include <casa/OS/HostInfoIrix.h>
 HOSTINFO_IMPLEMENT_MEMBERS
+} //# NAMESPACE CASA - END
+
 #elif defined(AIPS_OSF)
 #include <casa/OS/HostInfoOsf1.h>
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 HOSTINFO_IMPLEMENT_MEMBERS
+} //# NAMESPACE CASA - END
+
 #elif defined(AIPS_HPUX)
 #include <casa/OS/HostInfoHpux.h>
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 HOSTINFO_IMPLEMENT_MEMBERS
+} //# NAMESPACE CASA - END
+
 #elif defined(__APPLE__)
 #include <casa/OS/HostInfoDarwin.h>
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 HOSTINFO_IMPLEMENT_MEMBERS
+} //# NAMESPACE CASA - END
+
 #else
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 Int HostInfo::numCPUs( ) { return 0; }
 Int HostInfo::memoryTotal( ) { return -1; }
 Int HostInfo::memoryUsed( ) { return -1; }
@@ -191,6 +219,13 @@ Int HostInfo::memoryFree( ) { return -1; }
 Int HostInfo::swapTotal( ) { return -1; }
 int HostInfo::swapUsed( ) { return -1; }
 int HostInfo::swapFree( ) { return -1; }
+
+} //# NAMESPACE CASA - END
+
 #endif
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 HostMachineInfo *HostInfo::info = 0;
+
+} //# NAMESPACE CASA - END

@@ -33,6 +33,8 @@
 #include <measures/Measures/MCDoppler.h>
 #include <measures/Measures/MeasConvert.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Constructors
 MFrequency::MFrequency() :
   MeasBase<MVFrequency, MFrequency::Ref>() {}
@@ -296,3 +298,6 @@ MFrequency MFrequency::toRest(const Measure &in, const Measure &dop) {
 Measure *MFrequency::clone() const {
   return (new MFrequency(*this));
 }
+
+} //# NAMESPACE CASA - END
+

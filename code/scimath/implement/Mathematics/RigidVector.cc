@@ -28,6 +28,8 @@
 #include <scimath/Mathematics/RigidVector.h>
 #include <scimath/Mathematics/SquareMatrix.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 template <class T, Int n>
 RigidVector<T,n>& 
 RigidVector<T,n>::operator*=(const SquareMatrix<T,n>& m) {
@@ -100,4 +102,7 @@ RigidVector<T,n> sqrt(const RigidVector<T,n>& v) {
 // 	throw (DataManError ("RigidVector<T,n>::get"));
 //     }
 // }
+
+
+} //# NAMESPACE CASA - END
 

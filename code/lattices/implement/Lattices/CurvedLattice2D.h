@@ -35,6 +35,8 @@
 #include <lattices/Lattices/CLInterpolator2D.h>
 #include <casa/Arrays/AxesMapping.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Forward Declarations
 
 
@@ -201,5 +203,8 @@ private:
   AxesMapping             itsAxesMap;
 };
 
+
+
+} //# NAMESPACE CASA - END
 
 #endif

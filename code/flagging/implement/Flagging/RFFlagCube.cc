@@ -37,6 +37,8 @@
 
 #include <casa/System/PGPlotterInterface.h>
         
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 RFCubeLattice<RFlagWord> RFFlagCube::flag; // global flag lattice
 FlagMatrix RFFlagCube::flagrow;   
 Int RFFlagCube::pos_get_flag=-1,RFFlagCube::pos_set_flag=-1;
@@ -881,4 +883,7 @@ template<class T> LogicalArray  maskBits  ( const Array<T> &arr,const T &val)
 template Array<RFlagWord> operator & ( const Array<RFlagWord> &arr,const RFlagWord &val);
 template LogicalArray maskBits  ( const Array<RFlagWord> &arr,const RFlagWord &val);
 
+
+
+} //# NAMESPACE CASA - END
 

@@ -35,6 +35,8 @@
 #include <casa/BasicMath/ConvertScalar.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 template <class T, class F>
 LELConvert<T,F>::LELConvert(const CountedPtr<LELInterface<F> >& expr)
 : pExpr_p (expr)
@@ -126,3 +128,6 @@ void LELConvert<T,F>::resync()
 {
     pExpr_p->resync();
 }
+
+} //# NAMESPACE CASA - END
+

@@ -42,6 +42,8 @@
 #include <casa/fstream.h>
 #include <casa/sstream.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 // This is the function that does most of the work. It is pretty slow for
 // large maps, but no real problem.
 
@@ -556,3 +558,6 @@ Block<String> Aipsrc::strlst(0);
 Block<String> Aipsrc::nstrlst(0);
 Block<uInt> Aipsrc::codlst(0);
 Block<String> Aipsrc::ncodlst(0);
+
+} //# NAMESPACE CASA - END
+

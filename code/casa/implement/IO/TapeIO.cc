@@ -40,6 +40,8 @@
 #include <sys/types.h>            // needed for ioctl
 #endif
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 TapeIO::TapeIO()
   :ByteIO(),
    itsDevice(-1),
@@ -332,3 +334,6 @@ void TapeIO::fillSeekable() {
 // Local Variables: 
 // compile-command: "gmake OPTLIB=1 TapeIO; cd test; gmake OPTLIB=1 tTapeIO"
 // End: 
+
+} //# NAMESPACE CASA - END
+

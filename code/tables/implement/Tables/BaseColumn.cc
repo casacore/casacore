@@ -29,6 +29,8 @@
 #include <casa/Arrays/IPosition.h>
 #include <tables/Tables/TableError.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 BaseColumn::BaseColumn (const BaseColumnDesc* cdp)
 : colDescPtr_p(cdp),
     // The following cast is safe, because this class uses colDesc_p
@@ -823,3 +825,6 @@ void BaseColumn::putScalar (uInt rownr, const TableRecord& value)
 	throw (TableInvDT ("invalid type promotion in putScalar(TableRecord)"));
     }
 }
+
+} //# NAMESPACE CASA - END
+

@@ -40,6 +40,8 @@
 #include <casa/Exceptions/Error.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 Vector<Bool> DOos::isValidPathName (const Vector<String>& pathName)
 {
   Vector<Bool> result(pathName.nelements());
@@ -383,3 +385,6 @@ Vector<Int> DOos::lockInfo (const String& tableName)
   result(2) = (permLocked  ?  1 : 0);
   return result;
 }
+
+} //# NAMESPACE CASA - END
+

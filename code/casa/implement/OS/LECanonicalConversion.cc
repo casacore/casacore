@@ -31,6 +31,8 @@
 #include <casa/iostream.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 unsigned int LECanonicalConversion::toLocalChar (void* to, const void* from,
 						 unsigned int nr)
 {
@@ -217,3 +219,6 @@ LECANONICALCONVERSION_DO (CONVERT_LECAN_FLOAT,  SIZE_LECAN_FLOAT,
 LECANONICALCONVERSION_DO (CONVERT_LECAN_DOUBLE, SIZE_LECAN_DOUBLE,
 			  toLocalDouble, fromLocalDouble,
 			  byteToLocalDouble, byteFromLocalDouble, double)
+
+} //# NAMESPACE CASA - END
+

@@ -38,6 +38,8 @@
 #include <tables/Tables/DataManError.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 StManColumn::StManColumn (int dataType)
 : dtype_p (dataType)
 {}
@@ -1069,3 +1071,6 @@ Timer timer; \
     } \
 timer.show("a"); \
 */
+
+} //# NAMESPACE CASA - END
+

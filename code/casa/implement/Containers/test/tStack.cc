@@ -31,6 +31,7 @@
 #include <casa/Containers/StackError.h>
 #include <casa/iostream.h>
 
+#include <casa/namespace.h>
 main() {
 
   Stack<int> one;

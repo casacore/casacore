@@ -59,6 +59,7 @@
 // #include <casa/BasicSL/Complex.h>
 // #include <casa/BasicMath/Math.h>
 
+#include <casa/namespace.h>
 int main() {
   try {
     const uInt nx = 4;

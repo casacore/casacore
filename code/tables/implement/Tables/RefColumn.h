@@ -34,6 +34,8 @@
 #include <tables/Tables/BaseColumn.h>
 #include <tables/Tables/ColumnCache.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Forward Declarations
 class RefTable;
 class BaseColumnDesc;
@@ -270,5 +272,8 @@ protected:
 };
 
 
+
+
+} //# NAMESPACE CASA - END
 
 #endif

@@ -33,6 +33,8 @@
 #include <measures/TableMeasures/ScalarQuantColumn.h>
 #include <casa/BasicSL/String.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 class MSState;
 
 // <summary>
@@ -205,4 +207,7 @@ private:
   ScalarQuantColumn<Double> calQuant_p;
   ScalarQuantColumn<Double> loadQuant_p;
 };
+
+} //# NAMESPACE CASA - END
+
 #endif

@@ -32,6 +32,8 @@
 #include <casa/Exceptions/Error.h>
 #include <components/SpectralComponents/SpectralElement.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Member templates
 template <class MT>
 void SpectralList::evaluate(Vector<MT> &y) const {
@@ -86,3 +88,6 @@ template void SpectralList::evaluate<Double>(Vector<Double> &,
 				     Vector<Double> const &) const; 
 template void SpectralList::evaluate<Float>(Vector<Float> &,
 				     Vector<Float> const &) const; 
+
+} //# NAMESPACE CASA - END
+

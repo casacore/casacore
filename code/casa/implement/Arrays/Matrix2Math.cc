@@ -34,6 +34,8 @@
 #include <casa/Arrays/ArrayError.h>
 #include <casa/iostream.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 Matrix<Double> Rot3D(Int axis, Double angle) 
 {
   if (axis<0 || axis>2) 
@@ -42,8 +44,8 @@ Matrix<Double> Rot3D(Int axis, Double angle)
   
   Matrix<Double> Rot(3,3);
   Rot=0;
-  Double cosa=cos(angle); 
-  Double sina=sin(angle);
+  Double cosa=std::cos(angle); 
+  Double sina=std::sin(angle);
   
   Rot(axis,axis)=1;
   Rot((axis+1)%3,(axis+1)%3)=cosa;
@@ -118,31 +120,31 @@ Matrix<DComplex> adjoint (const Matrix<DComplex> &A)
 // Int Vector magnitude/norm
 Int norm (const Vector<Int> &A) 
 {
-  return Int(sqrt(Double(innerProduct(A,A))));
+  return Int(std::sqrt(Double(innerProduct(A,A))));
 }
 
 // Float Vector magnitude/norm
 Float norm (const Vector<Float> &A) 
 {
-  return sqrt(innerProduct(A,A));
+  return std::sqrt(innerProduct(A,A));
 }
 
 // Double Vector magnitude/norm
 Double norm (const Vector<Double> &A) 
 {
-  return sqrt(innerProduct(A,A));
+  return std::sqrt(innerProduct(A,A));
 }
 
 // Complex vector magnitude/norm
 Float norm (const Vector<Complex> &A) 
 {
-  return sqrt(real(innerProduct(A,A)));
+  return std::sqrt(real(innerProduct(A,A)));
 }
 
 // DComplex vector magnitude/norm
 Double norm (const Vector<DComplex> &A) 
 {
-  return sqrt(real(innerProduct(A,A)));
+  return std::sqrt(real(innerProduct(A,A)));
 }
 
 // The infinity norm of a matrix
@@ -351,3 +353,6 @@ Matrix<Float> adjoint (const Matrix<Float> &A){
   return transpose(A);};
 Matrix<Double> adjoint (const Matrix<Double> &A){
   return transpose(A);};
+
+} //# NAMESPACE CASA - END
+

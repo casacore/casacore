@@ -32,6 +32,8 @@
 #include <tables/Tables/ForwardCol.h>
 #include <tables/Tables/ScalarColumn.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Forward Declarations
 class ForwardColumnIndexedRowEngine;
 
@@ -401,5 +403,8 @@ inline uInt ForwardColumnIndexedRowEngine::convertRownr (uInt rownr)
 inline uInt ForwardColumnIndexedRow::convertRownr (uInt rownr)
     { return enginePtr_p->convertRownr (rownr); }
 
+
+
+} //# NAMESPACE CASA - END
 
 #endif

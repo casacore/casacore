@@ -35,6 +35,8 @@
 #include <casa/Containers/SimOrdMap.h>
 #include <casa/BasicSL/String.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Forward Declarations
 class TableDesc;
 class ColumnSet;
@@ -458,5 +460,8 @@ private:
 	{ newTable_p->handleUnbound(); }
 };
 
+
+
+} //# NAMESPACE CASA - END
 
 #endif

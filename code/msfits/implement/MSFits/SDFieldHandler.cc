@@ -42,6 +42,8 @@
 #include <casa/BasicMath/Math.h>
 #include <tables/Tables/ColumnsIndex.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 SDFieldHandler::SDFieldHandler() 
     : msField_p(0), msFieldCols_p(0), rownr_p(-1), index_p(0)
 {;}
@@ -372,3 +374,6 @@ void SDFieldHandler::initRow(Vector<Bool> &handledCols, const Record &row)
 	handledCols(row.fieldNumber("FIELD_FLAG_ROW")) = True;
     }
 }
+
+} //# NAMESPACE CASA - END
+

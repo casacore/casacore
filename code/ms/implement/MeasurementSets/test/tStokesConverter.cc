@@ -32,6 +32,7 @@
 #include <ms/MeasurementSets/StokesConverter.h>
 #include <casa/iostream.h>
 
+#include <casa/namespace.h>
 int main() 
 {
   Int err=0;

@@ -54,6 +54,8 @@
 
 #include <kstat.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 // <summary>
 // HostInfo for Solaris machines.
 // </summary>
@@ -315,6 +317,9 @@ void get_swapinfo(int *total, int *fr)
 #endif /* SC_AINFO */
 }
 #endif /* USE_ANONINFO */
+
+
+} //# NAMESPACE CASA - END
 
 # endif
 #endif

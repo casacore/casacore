@@ -33,6 +33,8 @@
 #include <casa/Exceptions/Error.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 LCRegionMulti::LCRegionMulti()
 {}
 
@@ -342,3 +344,6 @@ IPosition LCRegionMulti::doNiceCursorShape (uInt maxPixels) const
     }
     return Lattice<Bool>::doNiceCursorShape (maxPixels);
 }
+
+} //# NAMESPACE CASA - END
+

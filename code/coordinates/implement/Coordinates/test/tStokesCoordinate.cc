@@ -40,6 +40,7 @@
 
 #include <casa/iostream.h>
 
+#include <casa/namespace.h>
 StokesCoordinate makeCoordinate(Vector<Int>& whichStokes,
                                 Vector<String>& stokesStrings);
 

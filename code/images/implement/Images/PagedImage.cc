@@ -64,6 +64,8 @@
 #include <casa/sstream.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 template <class T> 
 PagedImage<T>::PagedImage (const TiledShape& shape, 
 			   const CoordinateSystem& coordinateInfo, 
@@ -929,3 +931,6 @@ void PagedImage<T>::restoreImageInfo (const TableRecord& rec)
     }
   }
 }
+
+} //# NAMESPACE CASA - END
+

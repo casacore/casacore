@@ -30,6 +30,8 @@
 #include <casa/Exceptions/Error.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 template<class key> HashClass<key>::HashClass() { }
 template<class key> HashClass<key>::~HashClass() { }
 
@@ -217,4 +219,7 @@ template<class t> const t &defaultHashValue(const t *) {
     static t val;
     return val;
 }
+
+
+} //# NAMESPACE CASA - END
 

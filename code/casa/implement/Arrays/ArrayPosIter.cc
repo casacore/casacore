@@ -28,6 +28,8 @@
 #include <casa/Arrays/ArrayPosIter.h>
 #include <casa/Arrays/ArrayError.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 ArrayPositionIterator::ArrayPositionIterator(const IPosition &shape, 
 					     const IPosition &origin,
 					     uInt byDim)
@@ -135,3 +137,6 @@ uInt ArrayPositionIterator::nextStep()
     }
     return iterDim;
 }
+
+} //# NAMESPACE CASA - END
+

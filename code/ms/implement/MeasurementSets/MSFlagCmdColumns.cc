@@ -28,6 +28,8 @@
 #include <ms/MeasurementSets/MSFlagCmdColumns.h>
 #include <ms/MeasurementSets/MSFlagCmd.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 ROMSFlagCmdColumns::ROMSFlagCmdColumns(const MSFlagCmd& msFlagCmd):
   applied_p(msFlagCmd, MSFlagCmd::columnName(MSFlagCmd::APPLIED)),
   command_p(msFlagCmd, MSFlagCmd::columnName(MSFlagCmd::COMMAND)),
@@ -134,3 +136,6 @@ void MSFlagCmdColumns::attach(MSFlagCmd& msFlagCmd)
 // Local Variables: 
 // compile-command: "gmake MSFlagCmdColumns"
 // End: 
+
+} //# NAMESPACE CASA - END
+

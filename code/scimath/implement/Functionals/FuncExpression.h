@@ -37,6 +37,8 @@
 
 //# Forward Declarations
 #include <casa/iosfwd.h>
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 class MUString;
 template <class T> class Vector;
 
@@ -168,5 +170,8 @@ ostream &operator<<(ostream &os, const FuncExpression &ed);
 template <class T>
 T FuncExecute(const Vector<T> &x, const Vector<T> &par);
 // </group>
+
+
+} //# NAMESPACE CASA - END
 
 #endif

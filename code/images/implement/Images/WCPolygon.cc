@@ -44,6 +44,8 @@
 #include <casa/BasicSL/String.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 WCPolygon::WCPolygon()
 //
 //Default constructor
@@ -615,4 +617,7 @@ void WCPolygon::convertPixel(Double& pixel,
       pixel += Double(shape)/2;
    }                     
 }
+
+
+} //# NAMESPACE CASA - END
 

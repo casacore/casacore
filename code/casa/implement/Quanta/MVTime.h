@@ -32,9 +32,11 @@
 //# Includes
 #include <casa/aips.h>
 #include <casa/Quanta/Quantum.h>
+#include <casa/iosfwd.h>
+
+namespace casa { //# NAMESPACE CASA - BEGIN
 
 //# Forward Declarations
-#include <casa/iosfwd.h>
 class String;
 class MVEpoch;
 class Time;
@@ -428,5 +430,8 @@ ostream &operator<<(ostream &os, const MVTime::Format &form);
 inline Bool operator==(const MVTime &lh, const MVTime &rh) 
 { return (lh.operator Double() == rh.operator Double());}
 
+
+
+} //# NAMESPACE CASA - END
 
 #endif

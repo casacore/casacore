@@ -49,6 +49,8 @@
 #include <casa/BasicSL/String.h>
 #include <casa/iostream.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 MeasurementSet::MeasurementSet():hasBeenDestroyed_p(True) { }
 
 MeasurementSet::MeasurementSet(const String &tableName,
@@ -857,4 +859,7 @@ void MeasurementSet::checkVersion()
     throw(AipsError("These data are not in MSv2 format - use ms1toms2 to convert"));
   }
 }
+
+
+} //# NAMESPACE CASA - END
 

@@ -33,6 +33,8 @@
 #include <casa/Arrays/Vector.h>
 #include <casa/Arrays/Matrix.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 class IPosition;
 
 // <summary>
@@ -77,7 +79,7 @@ public:
 
 protected:
 
-  Int nint(Double val) {return Int(floor(val+0.5));};
+  Int nint(Double val) {return Int(std::floor(val+0.5));};
 
   virtual void fillCorrectionVectors();
 
@@ -102,4 +104,7 @@ protected:
   Vector <Vector<Range> > correctionVectors;
 
 };
+
+} //# NAMESPACE CASA - END
+
 #endif

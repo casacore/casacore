@@ -31,6 +31,8 @@
 #include <casa/Arrays/Vector.h>
 #include <scimath/Functionals/WrapperData.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Constructors
 template <class T>
 FunctionWrapper<T>::FunctionWrapper() :
@@ -121,3 +123,6 @@ template <class T>
 uInt FunctionWrapper<T>::ndim() const {
   return (doit_p ? doit_p->ndim() : 0);
 }
+
+} //# NAMESPACE CASA - END
+

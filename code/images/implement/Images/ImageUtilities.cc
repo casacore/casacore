@@ -71,6 +71,8 @@
 
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 ImageUtilities::ImageTypes ImageUtilities::imageType (const String& name)
 {
   File file(name);
@@ -913,4 +915,7 @@ void ImageUtilities::copyMask (ImageInterface<Float>& out,
                             maskIter.cursorShape()),  maskIter.position());
    }   
 }  
+
+
+} //# NAMESPACE CASA - END
 

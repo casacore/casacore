@@ -29,6 +29,8 @@
 #include <scimath/Functionals/MarshallableChebyshev.h>
 #include <casa/Arrays/Array.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 template<class T> 
 const String MarshallableChebyshev<T>::modenames[] = 
         { "default", "zeroth", "extrapolate", "cyclic", "edge" };
@@ -92,3 +94,6 @@ MarshallableChebyshev<T>::MarshallableChebyshev(const Record& gr)
 	this->setInterval(mn, mx);
     }
 }
+
+} //# NAMESPACE CASA - END
+

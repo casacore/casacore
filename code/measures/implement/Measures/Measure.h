@@ -31,6 +31,9 @@
 
 //# Includes
 #include <casa/aips.h>
+#include <casa/iosfwd.h>
+
+namespace casa { //# NAMESPACE CASA - BEGIN
 
 //# Forward Declarations
 class String;
@@ -39,7 +42,6 @@ class MeasValue;
 class MRBase;
 template <class T> class Quantum;
 template <class T> class Vector;
-#include <casa/iosfwd.h>
 
 // <summary>
 // Physical quantities within reference frame
@@ -265,7 +267,7 @@ public:
   // 	friend class MeasConvert<a_Measure, its_MV, its_MC>;
   // </srcblock>
   // Output a Measure
-  friend ostream &operator<<(ostream &os, const Measure &meas);
+  friend std::ostream &operator<<(std::ostream &os, const Measure &meas);
   
   //# Constructors
   
@@ -411,7 +413,7 @@ public:
   virtual MRBase *getRefPtr() const = 0;
   
   // Print a Measure
-  virtual void print(ostream &os) const = 0;
+  virtual void print(std::ostream &os) const = 0;
   // Create a copy
   // <group>
   virtual Measure *clone() const = 0;
@@ -454,7 +456,10 @@ private:
 // <summary> Global functions </summary>
 // <group name=Output>
 // Output declaration
-ostream &operator<<(ostream &os, const Measure &meas);
+std::ostream &operator<<(std::ostream &os, const Measure &meas);
 // </group>
+
+
+} //# NAMESPACE CASA - END
 
 #endif

@@ -33,6 +33,8 @@
 #include <casa/aips.h>
 #include <tables/Tables/TableColumn.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Forward Declarations
 class RefRows;
 template<class T> class Array;
@@ -532,5 +534,8 @@ private:
 };
 
 
+
+
+} //# NAMESPACE CASA - END
 
 #endif

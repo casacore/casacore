@@ -38,6 +38,8 @@
 #include <scimath/Mathematics/Primes.h>
 #include <casa/BasicMath/Random.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 // <module>
 
 // <summary> Mathematical types, constants, operations </summary>
@@ -103,5 +105,8 @@
 // </synopsis>
 
 // </module>
+
+
+} //# NAMESPACE CASA - END
 
 #endif

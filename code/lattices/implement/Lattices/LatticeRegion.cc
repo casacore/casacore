@@ -34,6 +34,8 @@
 #include <casa/Exceptions/Error.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 LatticeRegion::LatticeRegion()
 : itsRegion (0),
   itsHasRegionMask (False)
@@ -293,3 +295,6 @@ IPosition LatticeRegion::convert (const IPosition& position) const
     }
     return result;
 }
+
+} //# NAMESPACE CASA - END
+

@@ -34,6 +34,8 @@
 #include <measures/Measures/MeasIERS.h>
 #include <measures/Measures/MeasTable.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Constants
 const Double Nutation::INTV = 0.04;
 
@@ -489,4 +491,7 @@ void Nutation::calcNut(Double t, Bool calcDer) {
     }
   };
 }
+
+
+} //# NAMESPACE CASA - END
 

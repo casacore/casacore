@@ -41,6 +41,8 @@
 
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 // LELFunctionFloat
 LELFunctionFloat::LELFunctionFloat(const LELFunctionEnums::Function function,
 				   const Block<LatticeExprNode>& exp)
@@ -2071,3 +2073,6 @@ void LELFunctionBool::resync()
     arg_p[i].resync();
   }
 }
+
+} //# NAMESPACE CASA - END
+

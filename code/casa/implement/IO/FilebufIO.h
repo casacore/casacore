@@ -34,6 +34,8 @@
 #include <casa/BasicSL/String.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 // <summary>Class for buffered file IO.</summary>
 
 // <use visibility=export>
@@ -203,5 +205,8 @@ inline uInt FilebufIO::bufferSize() const
     return itsBufSize;
 }
 
+
+
+} //# NAMESPACE CASA - END
 
 #endif

@@ -29,6 +29,8 @@
 #include <casa/Containers/SimOrdMap.h>
 #include <casa/BasicSL/String.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 MSSelectionKeywords::Field MSSelectionKeywords::field(const String& itemName)
 {
   // static map with enum to string mapping for fields
@@ -137,3 +139,6 @@ void MSSelectionKeywords::initMap(SimpleOrderedMap<String,Int>*& fieldMap,
   fieldMap=&map;
   reverseMap=&revMap;
 }
+
+} //# NAMESPACE CASA - END
+

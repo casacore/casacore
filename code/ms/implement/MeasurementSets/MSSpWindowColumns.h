@@ -38,6 +38,8 @@
 #include <measures/TableMeasures/ArrayQuantColumn.h>
 #include <casa/BasicSL/String.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 class MSSpectralWindow;
 
 // <summary>
@@ -423,4 +425,7 @@ private:
   ArrayQuantColumn<Double> resolutionQuant_p;
   ScalarQuantColumn<Double> totalBandwidthQuant_p;
 };
+
+} //# NAMESPACE CASA - END
+
 #endif

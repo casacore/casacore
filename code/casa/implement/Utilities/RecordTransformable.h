@@ -31,6 +31,8 @@
 
 #include <casa/aips.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 class String;
 class RecordInterface;
 
@@ -136,5 +138,8 @@ public:
   // default implementation returns a empty string.
   virtual const String &ident() const;
 };
+
+
+} //# NAMESPACE CASA - END
 
 #endif

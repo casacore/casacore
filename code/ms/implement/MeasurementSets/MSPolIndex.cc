@@ -31,6 +31,8 @@
 #include <casa/Arrays/ArrayLogical.h>
 #include <casa/Arrays/ArrayUtil.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //-------------------------------------------------------------------------
 
 MSPolarizationIndex::MSPolarizationIndex(const MSPolarization& 
@@ -98,3 +100,6 @@ Vector<Int> MSPolarizationIndex::matchCorrTypeAndProduct(const Vector<Int>&
 };
 
 //-------------------------------------------------------------------------
+
+} //# NAMESPACE CASA - END
+

@@ -38,6 +38,8 @@
 #include <casa/Utilities/Compare.h>
 #include <casa/OS/Conversion.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Forward declarations
 class ISMBucket;
 
@@ -421,5 +423,8 @@ inline uInt ISMColumn::nelements() const
     return nrelem_p;
 }
 
+
+
+} //# NAMESPACE CASA - END
 
 #endif

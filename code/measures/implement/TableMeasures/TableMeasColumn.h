@@ -32,6 +32,8 @@
 #include <tables/Tables/TableColumn.h>
 #include <casa/Utilities/CountedPtr.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Forward Declarations
 class String;
 class Table;
@@ -167,5 +169,8 @@ private:
   ROTableMeasColumn& operator= (const ROTableMeasColumn& that);
 };
 
+
+
+} //# NAMESPACE CASA - END
 
 #endif

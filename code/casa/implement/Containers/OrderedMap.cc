@@ -27,6 +27,8 @@
 
 #include <casa/Containers/OrderedMap.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //rtti_imp_mbrf_a2(OrderedMap);
 
 template<class key, class value>
@@ -52,7 +54,7 @@ OrderedMapRep<key,value>::OrderedMapRep (const value& dflt)
 template<class key, class value>
 MapRep<key,value> *OrderedMapRep<key,value>::Clone () const
 {
-  OrderedMapRep<key,value> *ret = new OrderedMapRep<key,value>(this->DefaultVal);
+  OrderedMapRep<key,value> *ret = new OrderedMapRep<key,value>(DefaultVal);
 //lastRef = 0;
   ret->nrtot   = ret->kvblk.nelements();
   if (ret->nrtot < nrtot) {
@@ -360,4 +362,7 @@ void OrderedMapIterRep<key,value>::notify(const Notice &note) {
     }
   }
 }
+
+
+} //# NAMESPACE CASA - END
 

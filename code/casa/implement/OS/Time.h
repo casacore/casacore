@@ -33,6 +33,8 @@
 #include <casa/BasicSL/String.h>
 #include <casa/iosfwd.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 // <Summary> date and time enquiry functions, with some operations.
 // </summary>
 //
@@ -184,6 +186,9 @@ class Time {
    double mJulianDayfrac;
 
 };
+
+
+} //# NAMESPACE CASA - END
 
 #endif
 //# roel's original comments -- these may be useful in creating demo

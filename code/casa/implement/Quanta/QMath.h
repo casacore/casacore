@@ -34,6 +34,8 @@
 #include <casa/BasicSL/Complex.h>
 #include <casa/Quanta/Quantum.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Forward Declarations
 template <class T> class Array;
 
@@ -234,5 +236,8 @@ Array<Int> operator /(const Array<Int> &in, Double f);
 //# Inline Implementations
 
 // </group>
+
+
+} //# NAMESPACE CASA - END
 
 #endif

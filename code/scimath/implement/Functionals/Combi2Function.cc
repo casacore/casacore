@@ -28,6 +28,8 @@
 //# Includes
 #include <scimath/Functionals/CombiFunction.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Constructors
 
 //# Operators
@@ -54,3 +56,6 @@ eval(typename Function<AutoDiff<T> >::FunctionArg x) const {
 }
 
 //# Member functions
+
+} //# NAMESPACE CASA - END
+

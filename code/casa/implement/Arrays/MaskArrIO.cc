@@ -32,6 +32,8 @@
 #include <casa/Arrays/MaskedArray.h>
 #include <casa/Arrays/ArrayIO.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 template<class T>
 ostream & operator<< (ostream &s, const MaskedArray<T> &a)
 {
@@ -45,4 +47,7 @@ ostream & operator<< (ostream &s, const MaskedArray<T> &a)
 
     return s;
 }
+
+
+} //# NAMESPACE CASA - END
 

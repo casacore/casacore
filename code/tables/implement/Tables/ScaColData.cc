@@ -39,6 +39,8 @@
 
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 template<class T>
 ScalarColumnData<T>::ScalarColumnData (const ScalarColumnDesc<T>* cd,
 				       ColumnSet* csp)
@@ -309,3 +311,6 @@ void ScalarColumnData<T>::getFileDerived (AipsIO& ios,
     dataManPtr_p = colset.getDataManager (seqnr);
     createDataManagerColumn();
 }
+
+} //# NAMESPACE CASA - END
+

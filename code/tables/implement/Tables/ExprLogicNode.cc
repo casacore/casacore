@@ -34,6 +34,8 @@
 #include <limits.h>                     // for DBL_MAX
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 // Implement the comparison operators for each data type.
 
 TableExprNodeEQBool::TableExprNodeEQBool (const TableExprNodeRep& node)
@@ -468,3 +470,6 @@ void TableExprNodeAND::ranges (Block<TableExprRange>& blrange)
 	}
     }
 }
+
+} //# NAMESPACE CASA - END
+

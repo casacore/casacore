@@ -37,6 +37,8 @@
 #include <casa/Containers/IterError.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 // The function which throws an exception for advancing the internal
 // cursor past the end of a list
 void throw_list_end_error();
@@ -639,15 +641,13 @@ public:
     // current cursor position.
     //
     void addRight(t e) { 
-	AlwaysAssert(this->isValid(),InvalidIterError);
-	Link<t> *c = this->cur;
-	Link<t> *p = this->prev;
-	this->cur = newLink(e,this->prev,this->cur);
-	// Allow container to update
-	(*this->container_).added(this->prev,this->cur);
-	ListNotice<t> state(ListNotice<t>::ADD,c,p,this->cur,this->prev,
-			    this->curPos);
-	(*this->container_).notify(state);
+	AlwaysAssert(isValid(),InvalidIterError);
+	Link<t> *c = cur;
+	Link<t> *p = prev;
+	cur = newLink(e,prev,cur);
+	(*container_).added(prev,cur);        // Allow container to update
+	ListNotice<t> state(ListNotice<t>::ADD,c,p,cur,prev,curPos);
+	(*container_).notify(state);
     }
 
     //
@@ -671,9 +671,9 @@ public:
     //
     // <group>
     t &getRight() {
-	AlwaysAssert(this->isValid(),InvalidIterError);
-	if (!this->cur) throw_list_end_error();
-	return((*this->cur).val());}
+	AlwaysAssert(isValid(),InvalidIterError);
+	if (!cur) throw_list_end_error();
+	return((*cur).val());}
 
     const t &getRight() const { return(ConstListIter<t>::getRight());}
     // </group>
@@ -745,5 +745,8 @@ private:
 
 // enum outside class because of compiler errors on HPUX
 enum {ConstListIterVersion = 1};
+
+
+} //# NAMESPACE CASA - END
 
 #endif

@@ -32,6 +32,8 @@
 #include <casa/Exceptions/Error.h>
 #include <casa/Utilities/Assert.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 // reorder from 3d to 4d (adding ifr axis)
 template <class T>
 void MSSelUtil2<T>::reorderData(Array<T>& data,
@@ -163,4 +165,7 @@ template class MSSelUtil2<Float>;
 
 
 
+
+
+} //# NAMESPACE CASA - END
 

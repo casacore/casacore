@@ -33,6 +33,8 @@
 #include <images/Images/ImageInterface.h>
 #include <casa/Arrays/AxesSpecifier.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Forward Declarations
 class IPosition;
 class LattRegionHolder;
@@ -257,5 +259,8 @@ protected:
   using ImageInterface<T>::setCoordsMember;
 };
 
+
+
+} //# NAMESPACE CASA - END
 
 #endif

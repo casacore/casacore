@@ -98,6 +98,8 @@
 #include <casa/OS/File.h>
 #include <casa/Quanta/MVTime.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //local debug switch 
 int mydebug = 0;
 #ifdef MYDEBUG
@@ -3757,4 +3759,7 @@ void FITSIDItoMS1::readFitsFile(const String& msFile)
 
 
 
+
+
+} //# NAMESPACE CASA - END
 

@@ -55,6 +55,7 @@
 #include <casa/Arrays/LogiVector.h>
 
 
+#include <casa/namespace.h>
 main()
 {
     try {

@@ -29,6 +29,8 @@
 #ifndef MS_MSHISTORYENUMS_H
 #define MS_MSHISTORYENUMS_H
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 // <use visibility=export>
 
 // <summary> Enums for the MeasurementSet HISTORY table </summary>
@@ -105,4 +107,7 @@ public:
     NUMBER_PREDEFINED_KEYWORDS=0
     };
 };
+
+} //# NAMESPACE CASA - END
+
 #endif

@@ -30,6 +30,8 @@
 #include <scimath/Mathematics/Primes.h>
 #include <casa/BasicMath/Math.h>			// For sqrt only
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //The minimum size for the cacheTable
 const uInt MINSIZE = 31; 
 
@@ -168,3 +170,6 @@ void Primes::initializeCache()
     cacheTable[28] = 536870923; 
     cacheTable[29] = 1073741827;
 }
+
+} //# NAMESPACE CASA - END
+

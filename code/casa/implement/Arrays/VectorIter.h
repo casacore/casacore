@@ -33,6 +33,8 @@
 #include <casa/Arrays/ArrayIter.h>
 #include <casa/Arrays/Vector.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 // 
 // <summary> Iterate an Vector cursor through another Array. </summary>
 // <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="" demos="">
@@ -80,7 +82,7 @@ public:
     VectorIterator<T> &operator=(const VectorIterator<T> &);
 
     // Return a Vector at the current position.
-    Vector<T> &vector() {return *(Vector<T> *)(this->ap);}
+    Vector<T> &vector() {return *(Vector<T> *)ap;}
 };
 
 // 
@@ -118,5 +120,8 @@ public:
 private:
     VectorIterator<T> vi;
 };
+
+
+} //# NAMESPACE CASA - END
 
 #endif

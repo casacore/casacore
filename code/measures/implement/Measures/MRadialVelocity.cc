@@ -35,6 +35,8 @@
 #include <measures/Measures/MCDoppler.h>
 #include <measures/Measures/MeasConvert.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Constructors
 MRadialVelocity::MRadialVelocity() :
   MeasBase<MVRadialVelocity, MRadialVelocity::Ref>() {}
@@ -278,3 +280,6 @@ MRadialVelocity MRadialVelocity::fromDoppler(const Measure &dop,
 Measure *MRadialVelocity::clone() const {
     return (new MRadialVelocity(*this));
 }
+
+} //# NAMESPACE CASA - END
+

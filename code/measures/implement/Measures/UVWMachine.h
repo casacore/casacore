@@ -34,6 +34,8 @@
 #include <casa/Quanta/MVPosition.h>
 #include <casa/Quanta/RotMatrix.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Forward Declarations
 class MeasFrame;
 template <class T> class Vector;
@@ -281,6 +283,9 @@ class UVWMachine {
   // Copy data members
   void copy(const UVWMachine &other);
 };
+
+
+} //# NAMESPACE CASA - END
 
 #endif
 

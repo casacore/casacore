@@ -32,6 +32,8 @@
 #include <casa/aips.h>
 #include <tables/Tables/DataManager.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Forward Declarations
 
 
@@ -209,6 +211,9 @@ private:
     // </group>
 };
 
+
+
+} //# NAMESPACE CASA - END
 
 #endif
 

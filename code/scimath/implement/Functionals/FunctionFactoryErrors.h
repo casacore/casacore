@@ -31,6 +31,8 @@
 
 #include <casa/Exceptions/Error.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 class FunctionFactoryError : public AipsError {
 public:
     FunctionFactoryError(const String& message,Category c=GENERAL) : AipsError(message,c) {}
@@ -82,5 +84,8 @@ public:
 private:
     String fname;
 };
+
+
+} //# NAMESPACE CASA - END
 
 #endif

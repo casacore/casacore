@@ -44,6 +44,8 @@
 #include <casa/Utilities/Regex.h>
 #include <casa/sstream.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 template <class Qtype>
 Quantum<Qtype>::Quantum() :
     QBase() { qVal = Qtype();}
@@ -384,4 +386,7 @@ template <class Qtype>
 uInt Quantum<Qtype>::myType() {
   return Register(static_cast<Quantum<Qtype> *>(0));
 }
+
+
+} //# NAMESPACE CASA - END
 

@@ -34,6 +34,8 @@
 #include <casa/Exceptions/Error.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 LCRegion::LCRegion()
 {}
 
@@ -206,3 +208,6 @@ void LCRegion::copyData (const Lattice<Bool>&)
 {
     throw (AipsError ("LCRegion: copyData is not possible"));
 }
+
+} //# NAMESPACE CASA - END
+

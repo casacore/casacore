@@ -33,6 +33,8 @@
 #include <casa/BasicSL/String.h>
 
 #include <casa/iosfwd.h>
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 class Table;
 template<class T> class Array;
 template<class T> class Quantum;
@@ -240,5 +242,8 @@ Bool isComplex(DataType type);
 Bool isNumeric(DataType type);
 
 // </group>
+
+
+} //# NAMESPACE CASA - END
 
 #endif

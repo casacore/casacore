@@ -33,6 +33,8 @@
 #include <tables/Tables/Table.h>
 #include <casa/Utilities/Compare.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Forward Declarations
 class BaseTableIterator;
 class String;
@@ -219,5 +221,8 @@ inline void TableIterator::operator++(int)
     { next(); }
 
 
+
+
+} //# NAMESPACE CASA - END
 
 #endif

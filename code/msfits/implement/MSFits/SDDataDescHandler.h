@@ -31,6 +31,8 @@
 
 #include <casa/Containers/RecordField.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Forward Declarations
 class ColumnsIndex;
 class MeasurementSet;
@@ -124,6 +126,9 @@ private:
     // initialize everything
     void initAll(MeasurementSet &ms);
 };
+
+
+} //# NAMESPACE CASA - END
 
 #endif
 

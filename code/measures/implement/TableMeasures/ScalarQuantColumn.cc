@@ -38,6 +38,8 @@
 #include <casa/BasicSL/String.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 template<class T>
 ROScalarQuantColumn<T>::ROScalarQuantColumn()
 : itsDataCol (0),
@@ -296,3 +298,6 @@ void ScalarQuantColumn<T>::put (uInt rownr, const Quantum<T>& q)
     itsDataCol->put (rownr, q.getValue(itsUnit));
   }
 }
+
+} //# NAMESPACE CASA - END
+

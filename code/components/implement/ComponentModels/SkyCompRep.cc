@@ -59,6 +59,8 @@
 #include <components/ComponentModels/SpectralModel.h>
 #include <casa/iostream.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 SkyCompRep::SkyCompRep() 
   :itsShapePtr(new PointShape),
    itsSpectrumPtr(new ConstantSpectrum),
@@ -872,3 +874,6 @@ Double SkyCompRep::convertToJy (const Unit& brightnessUnit)
 // Local Variables: 
 // compile-command: "gmake SkyCompRep"
 // End: 
+
+} //# NAMESPACE CASA - END
+

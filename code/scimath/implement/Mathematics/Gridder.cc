@@ -39,6 +39,8 @@
 #include <casa/Arrays/IPosition.h>
 #include <casa/sstream.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 template <class Domain, class Range>
 Gridder<Domain, Range>::Gridder() {};
 
@@ -187,4 +189,7 @@ void Gridder<Domain, Range>::fillCorrectionVectors()
   }
 }
 
+
+
+} //# NAMESPACE CASA - END
 

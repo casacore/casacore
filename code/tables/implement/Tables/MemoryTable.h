@@ -35,6 +35,8 @@
 #include <casa/BasicSL/String.h>
 #include <casa/Arrays/Vector.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Forward Declarations
 class SetupNewTable;
 class ColumnSet;
@@ -232,5 +234,8 @@ private:
   void setup (BaseTable* btp);
 };
 
+
+
+} //# NAMESPACE CASA - END
 
 #endif

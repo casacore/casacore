@@ -35,6 +35,8 @@
 #include <casa/Exceptions/Error.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 TableMeasRefDesc::TableMeasRefDesc (uInt referenceCode)
 : itsRefCode(referenceCode),
   itsOffset (0)
@@ -167,3 +169,6 @@ void TableMeasRefDesc::resetOffset (const Measure& offset)
 			"the offset is not fixed for the entire column"));
     }
 }
+
+} //# NAMESPACE CASA - END
+

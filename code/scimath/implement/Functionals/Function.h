@@ -38,6 +38,8 @@
 
 //# Forward declarations
 #include <casa/iosfwd.h>
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 class RecordInterface;
 
 // <summary> Numerical functional interface class
@@ -322,5 +324,8 @@ ostream &operator<<(ostream &os, const Function<T,U> &fun);
 template<class T, class U>
 inline ostream &operator<<(ostream &os, const Function<T,U> &fun) {
   return fun.print(os); };
+
+
+} //# NAMESPACE CASA - END
 
 #endif

@@ -34,6 +34,8 @@
 #include <ms/MeasurementSets/MeasurementSet.h>
 #include <casa/Arrays/IPosition.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 class TableDesc;
 class ROMSMainColumns;
 class ROMSDataDescColumns;
@@ -120,6 +122,9 @@ private:
   Quantum<Double> itsDirTol;
   Vector<Bool> itsChanReversed;
 };
+
+} //# NAMESPACE CASA - END
+
 #endif
 
 

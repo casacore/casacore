@@ -35,6 +35,8 @@
 #include <casa/Quanta/UnitMap.h>
 #include <casa/Utilities/Regex.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 int UnitVal_static_initializer::initialized = 0;
 
 //# Constants
@@ -244,3 +246,6 @@ Bool UnitVal::field(MUString &str, UnitVal &res) {
   };
   return False;
 }
+
+} //# NAMESPACE CASA - END
+

@@ -47,6 +47,7 @@
 
 #include <casa/iostream.h>
 
+#include <casa/namespace.h>
 void doMinMax();
 void doCollapse();
 void doCopy();

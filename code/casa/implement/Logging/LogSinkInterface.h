@@ -34,6 +34,8 @@
 #include <casa/Logging/LogFilterInterface.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 // <summary>
 //Accepts LogMessages and posts them to some destination
 // </summary>
@@ -155,5 +157,8 @@ private:
   LogFilterInterface* filter_p;
 };
 
+
+
+} //# NAMESPACE CASA - END
 
 #endif

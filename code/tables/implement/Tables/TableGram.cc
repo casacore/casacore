@@ -39,11 +39,6 @@
 #include <tables/Tables/TableParse.h>       // routines used by bison actions
 #include <tables/Tables/TableError.h>
 
-//# Declare a switch to be able to recognize a table name (containing
-//# e.g. slashes) after a query in the FROM part.
-//# It is used in the .l and .y file.
-static Bool theFromQueryDone = False;
-
 //# stdlib.h is needed for bison 1.28 and needs to be included here
 //# (before the flex/bison files).
 #include <casa/stdlib.h>
@@ -51,16 +46,18 @@ static Bool theFromQueryDone = False;
 #include <TableGram.lcc>                  // bison output
 
 
-//# Declare a file global pointer to a char* for the input string.
-static const char*  strpTableGram = 0;
-static Int          posTableGram = 0;
-
-
 // Define the yywrap function for flex.
 int TableGramwrap()
 {
     return 1;
 }
+
+namespace casa { //# NAMESPACE CASA - BEGIN
+
+//# Declare a file global pointer to a char* for the input string.
+static const char*  strpTableGram = 0;
+static Int          posTableGram = 0;
+
 
 //# Parse the command.
 //# Do a yyrestart(yyin) first to make the flex scanner reentrant.
@@ -131,3 +128,6 @@ String tableGramRemoveQuotes (const String& in)
     }
     return out;
 }
+
+} //# NAMESPACE CASA - END
+

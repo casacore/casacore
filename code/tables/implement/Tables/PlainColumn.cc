@@ -36,6 +36,8 @@
 #include <tables/Tables/TableError.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 PlainColumn::PlainColumn (const BaseColumnDesc* cdp, ColumnSet* csp)
 : BaseColumn    (cdp),
   dataManPtr_p  (0),
@@ -149,3 +151,6 @@ void PlainColumn::checkValueLength (const Array<String>* value) const
 	iter.next();
     }
 }
+
+} //# NAMESPACE CASA - END
+

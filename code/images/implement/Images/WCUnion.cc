@@ -32,6 +32,8 @@
 #include <tables/Tables/TableRecord.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 WCUnion::WCUnion (const ImageRegion& region1,
                   const ImageRegion& region2)
 : WCCompound (region1, region2)
@@ -119,3 +121,6 @@ WCUnion* WCUnion::fromRecord (const TableRecord& rec,
     unmakeRecord (regions, rec.asRecord("regions"), tableName);
     return new WCUnion (True, regions);
 }
+
+} //# NAMESPACE CASA - END
+

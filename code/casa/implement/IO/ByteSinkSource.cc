@@ -29,6 +29,8 @@
 #include <casa/IO/ByteSinkSource.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 ByteSinkSource::ByteSinkSource ()
 {}
 
@@ -48,3 +50,6 @@ ByteSinkSource& ByteSinkSource::operator= (const ByteSinkSource& sinkSource)
 
 ByteSinkSource::~ByteSinkSource()
 {}
+
+} //# NAMESPACE CASA - END
+

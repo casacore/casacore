@@ -37,6 +37,8 @@
 #include <casa/Arrays/Vector.h>
 #include <casa/Exceptions/Error.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 MSFlagCmd::MSFlagCmd():hasBeenDestroyed_p(True) { }
 
 MSFlagCmd::MSFlagCmd(const String &tableName, TableOption option) 
@@ -180,4 +182,7 @@ MSFlagCmd MSFlagCmd::referenceCopy(const String& newTableName,
     return MSFlagCmd(MSTable<PredefinedColumns,PredefinedKeywords>::
 		     referenceCopy(newTableName,writableColumns));
 }
+
+
+} //# NAMESPACE CASA - END
 

@@ -40,6 +40,8 @@
 
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 CompressComplex::CompressComplex (const String& sourceColumnName,
 				  const String& targetColumnName,
 				  Float scale, Float offset)
@@ -802,3 +804,6 @@ void CompressComplexSD::scaleOnPut (Float scale, Float offset,
   array.freeStorage (in, deleteIn);
   target.putStorage (out, deleteOut);
 }
+
+} //# NAMESPACE CASA - END
+

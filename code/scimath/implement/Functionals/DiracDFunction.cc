@@ -29,6 +29,8 @@
 #include <casa/BasicSL/Constants.h>
 #include <casa/BasicMath/Math.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Constructors
 
 //# Operators
@@ -40,3 +42,6 @@ T DiracDFunction<T>::eval(typename Function<T>::FunctionArg x) const {
 }
 
 //# Member functions
+
+} //# NAMESPACE CASA - END
+

@@ -37,6 +37,8 @@
 #include <casa/Containers/RecordDesc.h>
 #include <casa/Utilities/COWPtr.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Forward Declarations
 template<class T> class Array;
 class IPosition;
@@ -456,5 +458,8 @@ inline void Record::getData (AipsIO& os, uInt version)
 }
 
 
+
+
+} //# NAMESPACE CASA - END
 
 #endif

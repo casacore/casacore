@@ -35,6 +35,8 @@
 #include <casa/Exceptions/Error.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 Array<Bool> RecordInterface::toArrayBool (const RecordFieldId& id) const
 {
   return asArrayBool(id).copy();
@@ -360,3 +362,6 @@ Array<String> RecordInterface::toArrayString (const RecordFieldId& id) const
 {
   return asArrayString(id).copy();
 }
+
+} //# NAMESPACE CASA - END
+

@@ -34,6 +34,8 @@
 #include <casa/Arrays/IPosition.h>
 #include <casa/BasicSL/String.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Forward Declarations
 
 
@@ -135,5 +137,8 @@ private:
 };
 
 
+
+
+} //# NAMESPACE CASA - END
 
 #endif

@@ -33,6 +33,8 @@
 #include <scimath/Functionals/Function1D.h>
 #include <casa/Arrays/Vector.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Forward Declarations
 
 
@@ -140,5 +142,8 @@ private:
   Vector<double> itsY;
 };
 
+
+
+} //# NAMESPACE CASA - END
 
 #endif

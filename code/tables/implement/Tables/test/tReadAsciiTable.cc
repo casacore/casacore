@@ -38,6 +38,7 @@
 #include <casa/iostream.h>
 #include <casa/fstream.h>
 
+#include <casa/namespace.h>
 // <summary> Test program for the ReadAsciiTable functions </summary>
 
 // This program tests the functions in ReadAsciiTable.h.

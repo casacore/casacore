@@ -35,6 +35,8 @@
 #include <casa/BasicMath/Random.h>
 #include <casa/Utilities/Regex.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Forward Declarations
 class ROTableColumn;
 class Table;
@@ -395,5 +397,8 @@ private:
 };
 
 
+
+
+} //# NAMESPACE CASA - END
 
 #endif

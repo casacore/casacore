@@ -29,6 +29,8 @@
 #include <casa/Quanta/MVTime.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 // Implement the arithmetic operators for each data type.
 
 TableExprNodePlusDouble::TableExprNodePlusDouble (const TableExprNodeRep& node)
@@ -141,9 +143,9 @@ TableExprNodeModuloDouble::TableExprNodeModuloDouble (const TableExprNodeRep& no
 TableExprNodeModuloDouble::~TableExprNodeModuloDouble()
 {}
 Double TableExprNodeModuloDouble::getDouble (const TableExprId& id)
-    { return fmod (lnode_p->getDouble(id), rnode_p->getDouble(id)); }
+    { return std::fmod (lnode_p->getDouble(id), rnode_p->getDouble(id)); }
 DComplex TableExprNodeModuloDouble::getDComplex (const TableExprId& id)
-    { return fmod (lnode_p->getDouble(id), rnode_p->getDouble(id)); }
+    { return std::fmod (lnode_p->getDouble(id), rnode_p->getDouble(id)); }
 
 
 TableExprNodeMIN::TableExprNodeMIN (const TableExprNodeRep& node)
@@ -155,3 +157,6 @@ Double TableExprNodeMIN::getDouble (const TableExprId& id)
     { return -(lnode_p->getDouble(id)); }
 DComplex TableExprNodeMIN::getDComplex (const TableExprId& id)
     { return -(lnode_p->getDComplex(id)); }
+
+} //# NAMESPACE CASA - END
+

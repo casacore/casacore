@@ -32,6 +32,8 @@
 #include <casa/Utilities/Assert.h>
 #include <casa/sstream.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Data
 AipsrcValue<Bool> AipsrcValue<Bool>::myp_p;
 
@@ -83,3 +85,6 @@ void AipsrcValue<Bool>::save(uInt keyword) {
   };
   Aipsrc::save((myp_p.ntlst)[keyword-1], String(oss));
 }
+
+} //# NAMESPACE CASA - END
+

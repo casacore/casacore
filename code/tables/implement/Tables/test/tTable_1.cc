@@ -34,6 +34,7 @@
 #include <casa/Exceptions/Error.h>
 #include <casa/sstream.h>
 
+#include <casa/namespace.h>
 // <summary> Test program for the SetupNewTable class </summary>
 
 // This program tests the class SetupNewTable and related classes.

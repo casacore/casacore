@@ -28,6 +28,8 @@
 //# Includes
 #include <casa/Containers/PoolStack.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Constructors
 template <class T, class Key>
 PoolStack<T, Key>::PoolStack() :
@@ -68,4 +70,7 @@ void PoolStack<T, Key>::clear() {
 
 
 
+
+
+} //# NAMESPACE CASA - END
 

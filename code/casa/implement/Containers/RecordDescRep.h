@@ -37,6 +37,8 @@
 #include <casa/Containers/SimOrdMap.h>
 #include <casa/Arrays/IPosition.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Forward Declarations
 class RecordDesc;
 class AipsIO;
@@ -319,7 +321,7 @@ inline Bool RecordDescRep::isArray (Int whichField) const
 
 inline Bool RecordDescRep::isScalar (Int whichField) const
 {
-    return ::isScalar (DataType(types_p[whichField]));
+    return isScalar (DataType(types_p[whichField]));
 }
 
 inline Bool RecordDescRep::isSubRecord (Int whichField) const
@@ -343,5 +345,8 @@ inline const String& RecordDescRep::tableDescName (Int whichField) const
     return tableDescNames_p[whichField];
 }
 
+
+
+} //# NAMESPACE CASA - END
 
 #endif

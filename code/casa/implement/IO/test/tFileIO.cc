@@ -35,6 +35,7 @@
 #include <casa/sstream.h>
 
 
+#include <casa/namespace.h>
 int main (int argc, char** argv)
 {
     int nr = 100;

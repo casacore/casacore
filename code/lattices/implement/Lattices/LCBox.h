@@ -34,6 +34,8 @@
 #include <casa/Arrays/Vector.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 // <summary>
 // Class to define a rectangular box of interest.
 // </summary>
@@ -160,5 +162,8 @@ inline Vector<Float> LCBox::trc() const
     return itsTrc;
 }
 
+
+
+} //# NAMESPACE CASA - END
 
 #endif

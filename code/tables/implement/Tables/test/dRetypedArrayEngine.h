@@ -35,6 +35,7 @@
 #include <casa/BasicSL/Complex.h>
 #include <tables/Tables/RetypedArraySetGet.h>
 
+#include <casa/namespace.h>
 //# Forward Declarations
 class TableRecord;
 template<class T> class Array;

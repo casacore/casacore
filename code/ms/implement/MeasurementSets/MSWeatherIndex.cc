@@ -30,6 +30,8 @@
 #include <casa/Arrays/ArrayUtil.h>
 #include <ms/MeasurementSets/MSWeather.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 MSWeatherIndex::MSWeatherIndex() 
     : MSTableIndex()
 {;}
@@ -64,4 +66,7 @@ void MSWeatherIndex::attachIds()
 {
     antennaId_p.attachToRecord(accessKey(), "ANTENNA_ID");
 }
+
+
+} //# NAMESPACE CASA - END
 

@@ -31,6 +31,8 @@
 
 #include <casa/Containers/RecordField.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Forward Declarations
 class ColumnsIndex;
 class MeasurementSet;
@@ -148,6 +150,9 @@ private:
     // initialize the stuff dependent on the row
     void initRow(Vector<Bool> &handledCols, const Record &row);
 };
+
+
+} //# NAMESPACE CASA - END
 
 #endif
 

@@ -31,6 +31,8 @@
 #include <casa/aips.h>
 #include <images/Images/ImageInterface.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 class CoordinateSystem;
 class IPosition;
 template<class T> class Vector;
@@ -232,4 +234,7 @@ private:
                         const Vector<Bool>& axes,
                         const IPosition& shape);
 };
+
+} //# NAMESPACE CASA - END
+
 #endif

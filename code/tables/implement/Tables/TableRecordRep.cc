@@ -39,6 +39,8 @@
 #include <casa/Exceptions/Error.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 TableRecordRep::TableRecordRep ()
 : RecordRep()
 {}
@@ -484,3 +486,6 @@ void TableRecordRep::getTableKeySet (AipsIO& os, uInt version,
 	AlwaysAssert (n==0, AipsError);
     }
 }
+
+} //# NAMESPACE CASA - END
+

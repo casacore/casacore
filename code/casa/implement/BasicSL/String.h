@@ -36,11 +36,14 @@
 
 using std::string;
 
+#include <casa/iosstrfwd.h>
+#include <casa/sstream.h>
+
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Forward Declarations
 class String;
 class RegexBase;
-#include <casa/iosstrfwd.h>
-#include <casa/sstream.h>
 
 // <summary> SubString help class to be used in at, before, ... </summary>
 // <synopsis>
@@ -966,5 +969,8 @@ inline Bool String::matches(const string &str, Int pos) const {
 	  index(str, pos) == static_cast<size_type>(pos)) ; }
 inline ostream &operator<<(ostream &s, const String &x) {
   s << x.c_str(); return s; }
+
+
+} //# NAMESPACE CASA - END
 
 #endif

@@ -34,6 +34,8 @@
 #include <coordinates/Coordinates/LinearXform.h>
 #include <casa/Arrays/Vector.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 template<class T> class Quantum;
 
 
@@ -268,5 +270,8 @@ private:
     // The reference value.
     Block<Double> crval_p;
 };
+
+
+} //# NAMESPACE CASA - END
 
 #endif

@@ -31,6 +31,7 @@
 #include <scimath/Functionals/Gaussian3D.h>
 #include <casa/iostream.h>
 
+#include <casa/namespace.h>
 void printfparameters(Function<Double> &f);
 void printparameters(Matrix<Double> &m);
 void createdata(Matrix<Double> &pos, Vector<Double> &f, Float range, uInt n,

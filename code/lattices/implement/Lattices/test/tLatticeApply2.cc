@@ -52,6 +52,7 @@
 #include <casa/iostream.h>
 
 
+#include <casa/namespace.h>
 class MyLineCollapser : public LineCollapser<Float>
 {
 public:

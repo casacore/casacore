@@ -35,6 +35,8 @@
 #include <casa/Containers/RecordDesc.h>
 #include <casa/Containers/RecordInterface.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Forward Declarations
 class AipsIO;
 class IPosition;
@@ -310,5 +312,8 @@ inline void RecordRep::renameField (const String& newName, Int whichField)
 }
 
 
+
+
+} //# NAMESPACE CASA - END
 
 #endif

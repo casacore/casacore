@@ -33,6 +33,8 @@
 #include <lattices/Lattices/LCBox.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 // <summary>
 // Combine multiple LCRegion's into a new dimension.
 // </summary>
@@ -182,5 +184,8 @@ inline const LCBox& LCConcatenation::extendBox() const
     return itsExtendBox;
 }
 
+
+
+} //# NAMESPACE CASA - END
 
 #endif

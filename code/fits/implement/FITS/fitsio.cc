@@ -32,6 +32,8 @@
 # include <casa/string.h>
 # include <casa/sstream.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 // using cfitsio of NASA
 // can't use "" to replace <>.
 // The following is included through fitsio.h-->blockio.h already! 
@@ -1254,3 +1256,6 @@ FitsInput::FitsInput(FITSErrorHandler errhandler) : FitsIO(errhandler),
 {
     init();
 }
+
+} //# NAMESPACE CASA - END
+

@@ -30,7 +30,7 @@
 
 
 //# Includes
-#include <casa/Arrays/ArrayBase.h>
+#include <casa/aips.h>
 #include <casa/Containers/Block.h>
 #include <casa/Utilities/CountedPtr.h>
 #include <casa/Arrays/ArrayIO.h>
@@ -38,6 +38,14 @@
 #include <casa/Arrays/MaskLogiArrFwd.h>
 #include <casa/Arrays/IPosition.h>
 #include <casa/ostream.h>
+
+#if defined(WHATEVER_VECTOR_FORWARD_DEC)
+WHATEVER_VECTOR_FORWARD_DEC;
+#else
+#include <casa/vector.h>
+#endif
+
+namespace casa { //# NAMESPACE CASA - BEGIN
 
 //# Forward Declarations
 class AipsIO;
@@ -47,11 +55,27 @@ template<class T> class ArrayIterator;
 template<class T> class MaskedArray;
 template<class Domain, class Range> class Functional;
 //template <class T, class U> class vector; 
-#if defined(WHATEVER_VECTOR_FORWARD_DEC)
-WHATEVER_VECTOR_FORWARD_DEC;
-#else
-#include <casa/vector.h>
-#endif
+
+// <summary>
+// A global enum used by some Array constructors.
+// </summary>
+// <synopsis>
+// StorageInitPolicy is used in functions where an array is formed from
+// a shape and an ordinary pointer. This enum should be in Array but that
+// causes gcc to be unhappy.
+// </synopsis>
+enum StorageInitPolicy {
+  // COPY is used when an internal copy of the storage is to be made.
+  // The array is NOT responsible for deleting the external storage.
+  COPY,
+  // TAKE_OVER is used to indicate that the Array should just use the
+  // external storage (i.e., no copy is made). The Array class is now
+  // responsible for deleting the storage (hence it must have come from
+  // a call to new[]).
+  TAKE_OVER,
+  // Share means that the Array will just use the pointer (no copy), however
+  // the Array will NOT delete it upon destruction.
+  SHARE};
 
 
 // <summary> A templated N-D Array class with zero origin </summary>
@@ -167,7 +191,7 @@ WHATEVER_VECTOR_FORWARD_DEC;
 //        base class.
 // </todo>
 
-template<class T> class Array : public ArrayBase
+template<class T> class Array
 {
 public:
 
@@ -410,6 +434,14 @@ public:
     // arrays handle all of the references for you.
     uInt nrefs() const;
 
+    // The dimensionality of this array.
+    uInt ndim() const
+        { return ndimen_p; }
+
+    // How many elements does this array have? Product of all axis lengths.
+    uInt nelements() const
+        { return nels_p; }
+
     // Check to see if the Array is consistent. This is about the same thing
     // as checking for invariants. If AIPS_DEBUG is defined, this is invoked
     // after construction and on entry to most member functions.
@@ -417,10 +449,23 @@ public:
 
     // Are the shapes identical?
     // <group>
-    Bool conform (const Array<T> &other) const
-      { return conform2(other); }
+    Bool conform (const Array<T> &other) const;
     Bool conform (const MaskedArray<T> &other) const;
     // </group>
+
+    // The length of each axis.
+    const IPosition &shape() const
+        { return length_p; }
+
+    // A convenience function: endPosition(i) = shape(i) - 1; i.e. this
+    // is the IPosition of the last element of the Array.
+    IPosition endPosition() const;
+
+    // Are the array data contiguous?
+    // If they are not contiguous, <src>getStorage</src> (see below)
+    // needs to make a copy.
+    Bool contiguousStorage() const
+        { return contiguous_p; }
 
     // Get a pointer to the beginning of the array.
     // Note that the array may not be contiguous.
@@ -430,6 +475,13 @@ public:
     T* const data() const
       { return begin_p; }
     // </group>
+
+    // Return steps to be made if stepping one element in a dimension.
+    // This is the 'physical' step, thus it also works correctly for
+    // non-contiguous arrays. E.g. <src>data() + steps(0)</src> gives
+    // the second element of the first axis.
+    const IPosition& steps() const
+      { return steps_p; }
 
     // Generally use of this should be shunned, except to use a FORTRAN routine
     // or something similar. Because you can't know the state of the underlying
@@ -484,6 +536,12 @@ public:
 
     // Needed to be a friend for Matrix<T>::reference()
     friend class Matrix<T>;
+
+    // Array version for major change (used by ArrayIO).
+    // enum did not work properly with cfront 3.0.1), so replaced
+    // by a static inline function. Users won't normally use this.
+    static uInt arrayVersion()
+        {return 3;}
 
 
     // <group name=STL-iterator>
@@ -558,19 +616,19 @@ public:
       IteratorSTL (Array<T>& arr)
 	: ConstIteratorSTL (arr) {}
       T& operator*()
-        { return *const_cast<T*>(ConstIteratorSTL::itsPos); }
+        { return *const_cast<T*>(itsPos); }
 
-      bool operator== (const T* const position) const
-        { return ConstIteratorSTL::itsPos == position; }
+      bool operator== (const T* const pos) const
+        { return itsPos == pos; }
 
-      bool operator!= (const T* const position) const
-        { return ConstIteratorSTL::itsPos != position; }
+      bool operator!= (const T* const pos) const
+        { return itsPos != pos; }
 
       bool operator== (const IteratorSTL& other) const
-        { return ConstIteratorSTL::itsPos == other.ConstIteratorSTL::itsPos; }
+        { return itsPos == other.itsPos; }
 
       bool operator!= (const IteratorSTL& other) const
-        { return ConstIteratorSTL::itsPos != other.ConstIteratorSTL::itsPos; }
+        { return itsPos != other.itsPos; }
 
     };
     // </group>
@@ -626,6 +684,22 @@ protected:
     // the "hide virtual function" message when compiling derived classes.
     virtual void doNonDegenerate(Array<T> &other, const IPosition &ignoreAxes);
 
+    // Make the indexing step sizes.
+    void makeSteps();
+
+
+    // Number of elements in the array. Cached rather than computed.
+    uInt nels_p;
+
+    // Dimensionality of the array.
+    uInt ndimen_p;
+
+    // Used to hold the shape, increment into the underlying storage
+    // and originalLength of the array.
+    IPosition length_p, inc_p, originalLength_p;
+
+    // Used to hold the step to next element in each dimension.
+    IPosition steps_p;
 
     // Reference counted block that contains the storage.
     CountedPtr<Block<T> > data_p;
@@ -636,13 +710,19 @@ protected:
     // into the block.
     T *begin_p;
 
+    // A switch to tell if the array data are contiguous.
+    Bool contiguous_p;
+
     // The end for an STL-style iteration.
     T* end_p;
 
 
-    // Fill the steps and the end for a derived class.
-    void makeSteps()
-      { baseMakeSteps(); this->setEndIter(); }
+    // Various helper functions.
+    // <group>
+    void validateConformance(const Array<T> &) const;
+    void validateIndex(const IPosition &) const;
+    Bool isStorageContiguous() const;
+    // </group>
 
     // Set the end iterator.
     void setEndIter()
@@ -650,5 +730,54 @@ protected:
 		  begin_p + length_p(ndim()-1) * steps_p(ndim()-1))); }
 };
 
+
+// <summary> General global functions for Arrays. </summary>
+// <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="tArray">
+//
+// <prerequisite>
+//   <li> <linkto class=Array>Array</linkto>
+// </prerequisite>
+//
+// <synopsis>
+// These are generally useful global functions which operate on all
+// Arrays.
+// </synopsis>
+//
+// <linkfrom anchor="Array general global functions" classes="Array Vector Matrix Cube">
+//   <here>Array general global functions</here> -- General global functions
+//   for Arrays.
+// </linkfrom>
+//
+// <group name="Array general global functions">
+
+// 
+// What is the volume of an N-dimensional array. 
+// Shape[0]*Shape[1]*...*Shape[N-1]. An Array helper function.
+uInt ArrayVolume(uInt Ndim, const Int *Shape);
+
+// 
+// What is the linear index into an "Ndim" dimensional array of the given
+// "Shape", "Origin", and "Increment" for a given IPosition Index.
+//  An Array helper function.
+// <group>
+uInt ArrayIndexOffset(uInt Ndim, const Int *Shape, 
+		      const Int *Origin, const Int *Inc, 
+		      const IPosition &Index);
+uInt ArrayIndexOffset(uInt Ndim, const Int *Shape, 
+		      const Int *Inc, const IPosition &Index);
+// </group>
+
+// 
+// Test conformance for two arrays of different types.
+// Are the shapes identical?
+// <group name=conform2>
+template<class T, class U>
+  Bool conform2 (const Array<T> &left, const Array<U> &right);
+// </group>
+
+// </group>
+
+
+} //# NAMESPACE CASA - END
 
 #endif

@@ -32,6 +32,7 @@
 #include <casa/sstream.h>
 #include <casa/stdlib.h>
 
+#include <casa/namespace.h>
 //# Forward Declarations
 Bool sortarr (Int*, uInt nr, int);
 Bool sortall (Int*, uInt nr, uInt type);

@@ -34,6 +34,8 @@
 #include <casa/Containers/SimOrdMap.h>
 #include <casa/BasicSL/String.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Forward Declarations
 #include <casa/iosfwd.h>
 
@@ -200,5 +202,8 @@ private:
 };
 
 
+
+
+} //# NAMESPACE CASA - END
 
 #endif

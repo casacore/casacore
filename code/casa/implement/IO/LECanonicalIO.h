@@ -32,6 +32,8 @@
 #include <casa/IO/TypeIO.h>
 #include <casa/BasicSL/Complexfwd.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 class ByteIO;
 class String;
 
@@ -135,5 +137,8 @@ private:
     uInt itsBufferLength;
 };
 
+
+
+} //# NAMESPACE CASA - END
 
 #endif

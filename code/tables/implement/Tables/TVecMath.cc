@@ -32,6 +32,8 @@
 #include <casa/Arrays/ArrayError.h>
 #include <casa/BasicMath/Math.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Add, subtract, multiply, divide table vector.
 //# Define it for a vector and scalar, 2 vectors, 2 vectors with assign.
 #define TVECMATHOPER(NAME,OP,OPA) \
@@ -289,3 +291,6 @@ TabVecRep<T>& tabVecRepcrossproduct (const TabVecRep<T>& tvl,
     vec(2) = tvl.value(0) * tvr.value(1)  -  tvl.value(1) * tvr.value(0);
     return vec;
 }
+
+} //# NAMESPACE CASA - END
+

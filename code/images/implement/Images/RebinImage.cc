@@ -33,6 +33,8 @@
 #include <casa/Utilities/Assert.h>
 #include <casa/Exceptions/Error.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 template<class T>
 RebinImage<T>::RebinImage ()
 : itsImagePtr (0),
@@ -252,3 +254,6 @@ void RebinImage<T>::reopen()
 {
   itsImagePtr->reopen();
 }
+
+} //# NAMESPACE CASA - END
+

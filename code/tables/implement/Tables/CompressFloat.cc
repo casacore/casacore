@@ -39,6 +39,8 @@
 #include <casa/BasicSL/String.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 CompressFloat::CompressFloat (const String& sourceColumnName,
 			      const String& targetColumnName,
 			      Float scale, Float offset)
@@ -522,3 +524,6 @@ void CompressFloat::putColumnSlice (const Slicer& slicer,
     }
   }
 }
+
+} //# NAMESPACE CASA - END
+

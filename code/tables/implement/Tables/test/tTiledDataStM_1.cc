@@ -45,6 +45,7 @@
 #include <casa/sstream.h>
 
 
+#include <casa/namespace.h>
 // <summary>
 // Test program for performance of TiledDataStMan class.
 // </summary>

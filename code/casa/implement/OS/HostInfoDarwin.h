@@ -51,6 +51,8 @@
 
 #include <mach/mach.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 // <summary>
 // HostInfo for Darwin machines.
 // </summary>
@@ -173,6 +175,8 @@ void HostMachineInfo::update_info( ) {
 			  vmstats.wire_count + vmstats.free_count );
 }
 
+
+} //# NAMESPACE CASA - END
 
 # endif
 #endif

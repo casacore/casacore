@@ -50,6 +50,8 @@
 #include <casa/Utilities/Assert.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 template <typename T, typename U> 
 void ImageUtilities::copyMiscellaneous (ImageInterface<T>& out,
                                         const ImageInterface<U>& in)
@@ -283,3 +285,6 @@ void ImageUtilities::fitProfiles (ImageInterface<T>*& pFit,
     cerr << "Number not converged = " << nConv << endl;
     cerr << "Number failed        = " << nFail << endl;
 }
+
+} //# NAMESPACE CASA - END
+

@@ -32,11 +32,13 @@
 
 //# Includes
 #include <casa/aips.h>
+#include <casa/iosfwd.h>
+
+namespace casa { //# NAMESPACE CASA - BEGIN
 
 //# Forward Declarations
 template <class Qtype> class Quantum;
 template <class T> class Vector;
-#include <casa/iosfwd.h>
 
 // <summary>
 // Base class for values in a Measure
@@ -207,5 +209,8 @@ private:
 // Output declaration
 ostream &operator<<(ostream &os, const MeasValue &meas);
 // </group>
+
+
+} //# NAMESPACE CASA - END
 
 #endif

@@ -32,6 +32,8 @@
 #include <tables/Tables/BaseMappedArrayEngine.h>
 #include <tables/Tables/TableRecord.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Forward Declarations
 
 
@@ -612,5 +614,8 @@ public:
 				    const Record& spec);
 };
 
+
+
+} //# NAMESPACE CASA - END
 
 #endif

@@ -30,6 +30,8 @@
 #include <lattices/Lattices/LatticeProgress.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 LatticeProgress::~LatticeProgress()
 {}
 
@@ -47,3 +49,6 @@ void LatticeProgress::nstepsDone (uInt)
 
 void LatticeProgress::done()
 {}
+
+} //# NAMESPACE CASA - END
+

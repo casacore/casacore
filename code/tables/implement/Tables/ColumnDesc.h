@@ -36,6 +36,8 @@
 #include <casa/BasicSL/String.h>
 #include <casa/Arrays/IPosition.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Forward Declarations
 class PlainColumn;
 class RefColumn;
@@ -425,5 +427,8 @@ inline ColumnDesc::ColumnDesc()
 : colPtr_p(0),
   allocated_p (False)
 {}
+
+
+} //# NAMESPACE CASA - END
 
 #endif

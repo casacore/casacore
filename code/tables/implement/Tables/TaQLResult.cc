@@ -30,6 +30,8 @@
 #include <casa/Utilities/Assert.h>
 #include <casa/Exceptions/Error.h>
 
+namespace casa {
+
 TaQLResult::TaQLResult (const Table& table)
 : itsTable (table)
 {}
@@ -52,3 +54,5 @@ TableExprNode TaQLResult::node() const
   AlwaysAssert (!isTable(), AipsError);
   return itsNode;
 }
+ 
+} //#NAMESPACE CASA - END

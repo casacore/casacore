@@ -33,6 +33,8 @@
 #include <wcslib/lin.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 template<class T> class Vector;
 template<class T> class Matrix;
 class String;
@@ -191,6 +193,9 @@ private:
 
     void set_linprm();
 };
+
+
+} //# NAMESPACE CASA - END
 
 #endif
 

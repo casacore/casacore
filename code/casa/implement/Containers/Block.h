@@ -38,6 +38,8 @@
 #include <casa/Exceptions/Error.h>
 #endif
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 // <summary>
 // Collected error messages for Block<T>::*
 // </summary>
@@ -376,5 +378,8 @@ public:
 private:
     Block<void*> block_p;
 };
+
+
+} //# NAMESPACE CASA - END
 
 #endif

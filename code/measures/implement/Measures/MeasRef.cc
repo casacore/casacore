@@ -32,6 +32,8 @@
 #include <casa/iostream.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Constructors
 template<class Ms> MeasRef<Ms>::MeasRef() :
   rep(0) {}
@@ -259,3 +261,6 @@ void MeasRef<Ms>::print(ostream &os) const {
     os << "," << endl << ((MeasRef<Ms> *)(this))->getFrame();
   };
 }
+
+} //# NAMESPACE CASA - END
+

@@ -31,6 +31,8 @@
 #include <tables/Tables/TableRecord.h>
 #include <tables/Tables/ColDescSet.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 ROMSFeedColumns::ROMSFeedColumns(const MSFeed& msFeed):
   antennaId_p(msFeed, MSFeed::columnName(MSFeed::ANTENNA_ID)),
   beamId_p(msFeed, MSFeed::columnName(MSFeed::BEAM_ID)),
@@ -259,3 +261,6 @@ void MSFeedColumns::attachOptionalCols(MSFeed& msFeed)
 // Local Variables: 
 // compile-command: "gmake MSFeedColumns"
 // End: 
+
+} //# NAMESPACE CASA - END
+

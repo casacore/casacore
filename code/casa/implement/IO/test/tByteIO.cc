@@ -37,6 +37,7 @@
 #include <fcntl.h>
 
 
+#include <casa/namespace.h>
 void checkLength (ByteIO& fio, uInt& curLength, uInt addLength)
 {
     curLength += addLength;

@@ -36,6 +36,8 @@
 #include <measures/Measures/MCFrame.h>
 #include <casa/Quanta/MVPosition.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Statics
 Bool MCEarthMagnetic::stateMade_p = False;
 uInt MCEarthMagnetic::ToRef_p[N_Routes][3] = {
@@ -508,3 +510,6 @@ String MCEarthMagnetic::showState() {
 			   MEarthMagnetic::N_Types, MCEarthMagnetic::N_Routes,
 			   MCEarthMagnetic::ToRef_p);
 }
+
+} //# NAMESPACE CASA - END
+

@@ -42,6 +42,8 @@
 #include <casa/fstream.h>
 #include <casa/sstream.h>           // needed for internal IO
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 template<class T>
 ostream &operator<<(ostream &s, const Array<T> &a)
 {
@@ -701,4 +703,7 @@ Bool readArrayBlock(istream &s, Bool &trans,
   };
   return how;
 }
+
+
+} //# NAMESPACE CASA - END
 

@@ -38,6 +38,7 @@
 #include <casa/BasicSL/Constants.h>
 #include <casa/Containers/Record.h>
 
+#include <casa/namespace.h>
 int main() {
     SimButterworthBandpass<Double> butt(1.0,1.0,-1.0,1.0,0.0,1.0);
 

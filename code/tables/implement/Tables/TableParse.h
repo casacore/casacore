@@ -38,6 +38,8 @@
 #include <casa/Containers/List.h>
 #include <casa/Containers/Block.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Forward Declarations
 class TableExprNodeSet;
 class TableExprNodeIndex;
@@ -666,5 +668,8 @@ inline Sort::Order TableParseSelect::getOrder (const TableParseSort& key) const
     { return (key.orderGiven()  ?  key.order() : order_p); }
 
 
+
+
+} //# NAMESPACE CASA - END
 
 #endif

@@ -33,6 +33,8 @@
 #include <casa/Containers/Block.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 // <summary>
 // Store data in dynamically allocated buffers
 // </summary>
@@ -193,5 +195,8 @@ inline uInt DynBuffer::alloc (uInt nrOfValues, uInt valueSize, Char*& ptr)
     return n;
 }
 
+
+
+} //# NAMESPACE CASA - END
 
 #endif

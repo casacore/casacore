@@ -28,6 +28,8 @@
 #include <casa/Utilities/CountedPtr.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 template<class t> 
 void PtrRep<t>::freeVal() {
   if (val && deletable)
@@ -80,3 +82,6 @@ CountedPtr<t>::CountedPtr(const CountedPtr<t> &val)
   SimpleCountedPtr<t>(val),
   CountedConstPtr<t>(val)
 {}
+
+} //# NAMESPACE CASA - END
+

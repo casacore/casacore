@@ -31,6 +31,8 @@
 #include <casa/Utilities/ValTypeId.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 template<class T>
 VirtualScalarColumn<T>::~VirtualScalarColumn()
 {}
@@ -157,3 +159,6 @@ void VirtualScalarColumn<T>::putBlock (uInt rownr, uInt nrmax, const T* dataPtr)
 	nrmax--;
     }
 }
+
+} //# NAMESPACE CASA - END
+

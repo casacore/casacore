@@ -34,6 +34,8 @@
 #include <measures/TableMeasures/ScalarQuantColumn.h>
 #include <tables/Tables/ScalarColumn.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 class MSFreqOffset;
 
 // <summary>
@@ -265,5 +267,8 @@ private:
   ScalarQuantColumn<Double> offsetQuant_p;
   ScalarQuantColumn<Double> timeQuant_p;
 };
+
+
+} //# NAMESPACE CASA - END
 
 #endif

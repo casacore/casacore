@@ -39,6 +39,8 @@
 #include <casa/Utilities/Fallible.h>
 #include <casa/Arrays/Vector.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Forward declarations
 class SetupNewTable;
 
@@ -170,5 +172,8 @@ public:
 private:
     static Bool initialized_p;
 };
+
+
+} //# NAMESPACE CASA - END
 
 #endif

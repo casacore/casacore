@@ -36,6 +36,8 @@
 #include <casa/Exceptions/Error.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 WCConcatenation::WCConcatenation (const PtrBlock<const ImageRegion*>& regions,
 				  const WCBox& extendBox)
 : WCCompound   (regions),
@@ -184,3 +186,6 @@ WCConcatenation* WCConcatenation::fromRecord (const TableRecord& rec,
     DebugAssert (boxptr->type() == WCBox::className(), AipsError);
     return new WCConcatenation (True, regions, *(const WCBox*)boxptr);
 }
+
+} //# NAMESPACE CASA - END
+

@@ -38,6 +38,8 @@
 #include <tables/Tables/ScalarColumn.h>
 #include <casa/BasicSL/String.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 class MVDirection;
 class MSField;
 template <class Qtype> class Quantum;
@@ -366,5 +368,8 @@ private:
   ScalarQuantColumn<Double> timeQuant_p;
 
 };
+
+
+} //# NAMESPACE CASA - END
 
 #endif

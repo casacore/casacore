@@ -27,6 +27,8 @@
 
 #include <scimath/Functionals/ArraySampledFunctional.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 template<class T> ArraySampledFunctional<T>::
 ArraySampledFunctional()
   :theRefData(),
@@ -104,3 +106,6 @@ template<class T> ArraySampledFunctional<T>::
 // Local Variables: 
 // compile-command: "gmake OPTLIB=1 ArraySampledFunctional"
 // End: 
+
+} //# NAMESPACE CASA - END
+

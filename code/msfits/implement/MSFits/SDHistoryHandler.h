@@ -31,6 +31,8 @@
 
 #include <casa/Containers/RecordField.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Forward Declarations
 class MeasurementSet;
 class MSHistory;
@@ -126,5 +128,8 @@ private:
     // initialize stuff which depends on the row
     void initRow(const Vector<Bool> &handledCols, const Record &row);
 };
+
+
+} //# NAMESPACE CASA - END
 
 #endif

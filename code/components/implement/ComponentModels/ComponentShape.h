@@ -35,6 +35,8 @@
 #include <casa/Utilities/RecordTransformable.h>
 #include <components/ComponentModels/ComponentType.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 class DirectionCoordinate;
 class MVAngle;
 class RecordInterface;
@@ -319,4 +321,7 @@ private:
   Quantum<Double> itsDirErrLat;
   Quantum<Double> itsDirErrLong;
 };
+
+} //# NAMESPACE CASA - END
+
 #endif

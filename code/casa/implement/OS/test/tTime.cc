@@ -30,6 +30,7 @@
 #include <casa/stdlib.h>
 #include <casa/math.h>
 
+#include <casa/namespace.h>
 main() {
 
   Time t;

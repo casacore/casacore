@@ -33,6 +33,8 @@
 #include <casa/aips.h>
 #include <casa/Quanta/Unit.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Forward Declarations
 
 //# Typedefs
@@ -145,5 +147,8 @@ protected:
 // Output declaration
 ostream &operator<<(ostream &os, const QBase &meas);
 // </group>
+
+
+} //# NAMESPACE CASA - END
 
 #endif

@@ -30,6 +30,8 @@
 #include <tables/Tables/DataManError.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 template<class T>
 VSCEngine<T>::VSCEngine ()
 : sourceName_p ("")
@@ -86,3 +88,6 @@ DataManagerColumn* VSCEngine<T>::makeScalarColumn (const String& columnName,
     }
     return this;
 }
+
+} //# NAMESPACE CASA - END
+

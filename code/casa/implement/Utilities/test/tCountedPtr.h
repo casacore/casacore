@@ -36,6 +36,7 @@
 #include <casa/aips.h>
 #include <casa/iostream.h>
 
+#include <casa/namespace.h>
 // <summary>
 // Example class for test of CountedPtr class
 // </summary>

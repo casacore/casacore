@@ -32,6 +32,8 @@
 //# Includes
 #include <casa/Logging/LogFilterInterface.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Forward Declarations
 class LogFilterExpr;
 
@@ -109,5 +111,8 @@ private:
   LogFilterExpr* expr_p;
 };
 
+
+
+} //# NAMESPACE CASA - END
 
 #endif

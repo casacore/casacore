@@ -32,6 +32,8 @@
 #include <casa/aips.h>
 #include <casa/Quanta/MVPosition.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Forward Declarations
 class MVDirection;
 class MVBaseline;
@@ -254,5 +256,8 @@ Double operator*(const MVuvw &left, const Vector<Double> &right);
 Double operator*(const MVPosition &left, const MVuvw &right);
 Double operator*(const MVuvw &left, const MVPosition &right);
 // </group>
+
+
+} //# NAMESPACE CASA - END
 
 #endif

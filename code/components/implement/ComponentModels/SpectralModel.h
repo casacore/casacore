@@ -35,6 +35,8 @@
 #include <casa/Quanta/Unit.h>
 #include <casa/Quanta/Quantum.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 class RecordInterface;
 class String;
 template <class T> class Vector;
@@ -287,4 +289,7 @@ private:
   Unit itsFreqUnit;
   Quantity itsFreqErr;
 };
+
+} //# NAMESPACE CASA - END
+
 #endif

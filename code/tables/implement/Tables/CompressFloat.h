@@ -34,6 +34,8 @@
 #include <casa/Arrays/Array.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 // <summary>
 // Virtual column engine to scale a table float array
 // </summary>
@@ -343,5 +345,8 @@ inline Float CompressFloat::getOffset (uInt rownr)
   return (fixed_p  ?  offset_p : (*offsetColumn_p)(rownr));
 }
 
+
+
+} //# NAMESPACE CASA - END
 
 #endif

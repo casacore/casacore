@@ -29,6 +29,8 @@
 #include <casa/Arrays/Slice.h>
 #include <casa/Arrays/ArrayError.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 Slicer::Slicer()
 : asEnd_p (endIsLength),
   start_p (1,MimicSource),
@@ -294,3 +296,6 @@ ostream  &operator << (ostream &stream, const Slicer &slicer)
 
   return stream;
 }
+
+} //# NAMESPACE CASA - END
+

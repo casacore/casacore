@@ -31,6 +31,8 @@
 #include <casa/aips.h>
 #include <casa/Utilities/Sort.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Forward declarations.
 template<class T> class Array;
 template<class T> class Vector;
@@ -371,7 +373,7 @@ uInt genSort (Block<T>& data, Sort::Order order, int options)
     { return GenSort<T>::sort (data, data.nelements(), order, options); }
 template<class T>
 inline
-uInt genSort (Block<T>& data, uInt nr, Sort::Order order, int options)
+uInt genSort (Block<T>& data, uInt nr, Sort::Order, int options)
     { return GenSort<T>::sort (data, nr, order, options); }
 // </group>
 
@@ -509,7 +511,7 @@ uInt genSort (Vector<uInt>& indexVector, const Block<T>& data,
 template<class T>
 inline
 uInt genSort (Vector<uInt>& indexVector, const Block<T>& data, uInt nr,
-	      Sort::Order order, int options)
+	      Sort::Order, int options)
     { return GenSortIndirect<T>::sort (indexVector, data, nr,
 				       order, options); }
 // </group>
@@ -546,5 +548,8 @@ inline int GenSortIndirect<T>::isDescending (const T* data, Int i, Int j)
     return (data[i] < data[j]  ||  (data[i] == data[j]  &&  i > j));
 }
 
+
+
+} //# NAMESPACE CASA - END
 
 #endif

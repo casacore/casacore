@@ -35,6 +35,8 @@
 #include <scimath/Mathematics/AutoDiff.h>
 #include <scimath/Mathematics/AutoDiffMath.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Forward declarations
 
 // <summary>
@@ -188,5 +190,8 @@ public:
 };
 
 #undef CombiFunction_PS
+
+
+} //# NAMESPACE CASA - END
 
 #endif

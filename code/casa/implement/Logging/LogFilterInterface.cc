@@ -28,5 +28,10 @@
 #include <casa/Logging/LogFilterInterface.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 LogFilterInterface::~LogFilterInterface()
 {}
+
+} //# NAMESPACE CASA - END
+

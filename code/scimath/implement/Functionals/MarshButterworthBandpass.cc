@@ -29,6 +29,8 @@
 #include <scimath/Functionals/MarshButterworthBandpass.h>
 #include <casa/Arrays/Array.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 template<class T> 
 const String MarshButterworthBandpass<T>::FUNCTYPE("butterworthbp");
 
@@ -87,3 +89,6 @@ MarshButterworthBandpass<T>::MarshButterworthBandpass(const Record& gr)
 	this->setPeak(peak);
     }
 }
+
+} //# NAMESPACE CASA - END
+

@@ -34,6 +34,8 @@
 #include <components/ComponentModels/ComponentType.h>
 #include <components/ComponentModels/TwoSidedShape.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 class MDirection;
 class MVAngle;
 template <class Qtype> class Quantum;
@@ -247,5 +249,8 @@ private:
   Double itsHeight;
   // </group>
 };
+
+
+} //# NAMESPACE CASA - END
 
 #endif

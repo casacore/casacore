@@ -36,6 +36,8 @@
 #include <measures/Measures/MFrequency.h>
 #include <scimath/Mathematics/Interpolate2D.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 template<class T> class MaskedLattice;
 template<class T> class ImageInterface;
 template<class T> class Lattice;
@@ -359,5 +361,8 @@ public:
 };
 
  
+
+} //# NAMESPACE CASA - END
+
 #endif
 

@@ -33,6 +33,8 @@
 #include <casa/Containers/Block.h>
 #include <casa/Utilities/Assert.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Forward Declarations
 class BitVectorHelper;
 #include <casa/iosfwd.h>
@@ -337,6 +339,9 @@ inline const BitVectorHelper& BitVectorHelper::operator=
 }
 
 
+
+
+} //# NAMESPACE CASA - END
 
 #endif
 

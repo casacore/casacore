@@ -34,6 +34,8 @@
 #include <ms/MeasurementSets/MSFeedColumns.h>
 #include <casa/Containers/RecordField.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# forward declarations
 class MSFeed;
 
@@ -123,6 +125,9 @@ private:
 
   void attachIds();
 };
+
+
+} //# NAMESPACE CASA - END
 
 #endif
     

@@ -37,6 +37,8 @@
 #include <casa/Arrays/Vector.h>
 #include <casa/Quanta/Quantum.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Forward Declarations
 class LCRegion;
 class LCPolygon;
@@ -286,5 +288,8 @@ private:
 
 };
 
+
+
+} //# NAMESPACE CASA - END
 
 #endif

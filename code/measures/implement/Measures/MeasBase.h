@@ -34,6 +34,8 @@
 #include <measures/Measures/Measure.h>
 #include <casa/Quanta/Quantum.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Forward Declarations
 template <class T> class Vector;
 
@@ -145,7 +147,7 @@ public:
   virtual const MeasValue * const getData() const;
   
   // Print a Measure
-  virtual void print(ostream &os) const;
+  virtual void print(std::ostream &os) const;
   
 protected:
   //# Enumerations
@@ -167,5 +169,8 @@ private:
   void clear();
   
 };
+
+
+} //# NAMESPACE CASA - END
 
 #endif

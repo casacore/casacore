@@ -35,6 +35,8 @@
 #include <casa/BasicMath/Math.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Statics
 ///template<class T>
 ///const T Gaussian2DParam<T>::fwhm2int = T(1.0)/sqrt(log(T(16.0)));
@@ -252,3 +254,6 @@ void Gaussian2DParam<T>::setPA(const T &pa) {
   theCpa = cos(param_p[PANGLE]);
   theSpa = sin(param_p[PANGLE]);
 }
+
+} //# NAMESPACE CASA - END
+

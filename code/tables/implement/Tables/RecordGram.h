@@ -32,6 +32,8 @@
 #include <casa/BasicSL/String.h>
 #include <tables/Tables/TableGram.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Forward Declarations
 class TableExprNode;
 class TableExprNodeSet;
@@ -165,5 +167,8 @@ private:
     static TableExprNode*         theirNodePtr;
 };
 
+
+
+} //# NAMESPACE CASA - END
 
 #endif

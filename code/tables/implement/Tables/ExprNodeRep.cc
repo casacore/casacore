@@ -42,6 +42,8 @@
 
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 // The constructor to be used by the derived classes.
 TableExprNodeRep::TableExprNodeRep (NodeDataType dtype, ValueType vtype,
 				    OperType optype,
@@ -910,3 +912,6 @@ TableExprNodeRep::NodeDataType TableExprNodeMulti::checkDT
     }
     return dtOut;
 }
+
+} //# NAMESPACE CASA - END
+

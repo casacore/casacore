@@ -45,6 +45,7 @@ int main()
 #include <casa/IO/AipsIO.h>
 
 
+#include <casa/namespace.h>
 DummyVirtualEngine::DummyVirtualEngine()
 : data1_p (this, 1.0),
   data2_p (this, 1.0)

@@ -33,6 +33,8 @@
 #include <casa/aips.h>
 #include <casa/Containers/Block.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Forward Declarations
 class SpectralElement;
 class RecordInterface;
@@ -179,7 +181,10 @@ class SpectralList {
 // <summary> Global functions </summary>
 // <group name=Output>
 // Output declaration
-ostream &operator<<(ostream &os, const SpectralList &lst);
+std::ostream &operator<<(std::ostream &os, const SpectralList &lst);
 // </group>
+
+
+} //# NAMESPACE CASA - END
 
 #endif

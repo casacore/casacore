@@ -35,6 +35,8 @@
 #include <casa/Exceptions.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 TableMeasOffsetDesc::TableMeasOffsetDesc (const TableMeasDescBase& column,
 					  Bool asArray)
 : itsTMDesc(column.clone()),
@@ -166,3 +168,6 @@ void TableMeasOffsetDesc::resetOffset (const Measure& offset)
   }
   itsMeasure = MeasureHolder(offset);
 }
+
+} //# NAMESPACE CASA - END
+

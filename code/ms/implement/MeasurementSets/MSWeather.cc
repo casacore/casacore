@@ -37,6 +37,8 @@
 #include <casa/Arrays/Vector.h>
 #include <casa/Exceptions/Error.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 MSWeather::MSWeather():hasBeenDestroyed_p(True) { }
 
 MSWeather::MSWeather(const String &tableName, TableOption option) 
@@ -210,3 +212,6 @@ MSWeather MSWeather::referenceCopy(const String& newTableName,
     return MSWeather(MSTable<PredefinedColumns,PredefinedKeywords>::
 		     referenceCopy(newTableName,writableColumns));
 }
+
+} //# NAMESPACE CASA - END
+

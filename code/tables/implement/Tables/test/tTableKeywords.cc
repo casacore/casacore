@@ -35,6 +35,7 @@
 #include <unistd.h>
 
 
+#include <casa/namespace.h>
 // This program tests some aspects of the table keywords, mainly
 // if writing them and reading them back works fine.
 // It was originally written by Mark Wieringa to track down a problem.

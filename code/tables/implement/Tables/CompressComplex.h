@@ -35,6 +35,8 @@
 #include <casa/BasicSL/Complex.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 // <summary>
 // Virtual column engine to scale a table Complex array
 // </summary>
@@ -514,5 +516,8 @@ inline Float CompressComplex::getOffset (uInt rownr)
   return (fixed_p  ?  offset_p : (*offsetColumn_p)(rownr));
 }
 
+
+
+} //# NAMESPACE CASA - END
 
 #endif

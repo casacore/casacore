@@ -33,6 +33,8 @@
 #include <casa/Quanta/UnitVal.h>
 #include <casa/Quanta/QMath.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 // Euler class
 
 //# Constructors
@@ -254,3 +256,6 @@ ostream &operator<<(ostream &os, const Euler &eul) {
     os << eul.euler;
     return os;
 }
+
+} //# NAMESPACE CASA - END
+

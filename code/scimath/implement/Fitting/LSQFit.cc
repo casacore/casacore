@@ -29,6 +29,8 @@
 #include <scimath/Fitting/LSQFit.h>
 #include <algorithm>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Static values
 LSQFit::Real      LSQFit::REAL      = LSQFit::Real();
 LSQFit::Complex   LSQFit::COMPLEX   = LSQFit::Complex();
@@ -683,3 +685,6 @@ void LSQFit::getWorkSOL() {
 void LSQFit::getWorkCOV() {
   if (!wcov_p) wcov_p = new Double[n_p*n_p];
 }
+
+} //# NAMESPACE CASA - END
+

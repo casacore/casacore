@@ -37,6 +37,8 @@
 #include <casa/System/Aipsrc.h>
 #include <tables/Tables/TableDesc.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Constants
 
 //# Member functions
@@ -317,3 +319,6 @@ Int MeasJPL::np = 2;
 Int MeasJPL::nv = 3;
 Double MeasJPL::twot = 0.;
 Double MeasJPL::vfac = 0.;
+
+} //# NAMESPACE CASA - END
+

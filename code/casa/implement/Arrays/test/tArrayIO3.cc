@@ -37,6 +37,7 @@
 #include <casa/sstream.h>
 
 
+#include <casa/namespace.h>
 // This test program tests the ArrayIO istream extract functions.
 // It reads from stdin (the test version from tArraIO3.in) and prints
 // the result.

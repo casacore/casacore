@@ -31,6 +31,7 @@
 #include <casa/OS/RegularFile.h>
 #include <casa/iostream.h>
 
+#include <casa/namespace.h>
 // <summary>
 // Test program for the BucketFile class
 // </summary>

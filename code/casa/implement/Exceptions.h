@@ -31,6 +31,8 @@
 
 #include <casa/Exceptions/Error.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 // <module>
 //
 // <summary>
@@ -70,5 +72,8 @@
 // </srcblock>
 // </example>
 // </module>
+
+
+} //# NAMESPACE CASA - END
 
 #endif

@@ -52,6 +52,8 @@
 
 #include <images/Images/ImageSummary.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 template <class T>
 ImageSummary<T>::ImageSummary (const ImageInterface<T>& image)
 : cSys_p(image.coordinates()),
@@ -490,3 +492,6 @@ String ImageSummary<T>::makeRegionsString() const
    } 
    return String(oss);
 }
+
+} //# NAMESPACE CASA - END
+

@@ -29,6 +29,8 @@
 #include <flagging/Flagging/RFAMedianClip.h>
 #include <casa/Arrays/ArrayMath.h>
     
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 // -----------------------------------------------------------------------
 // RFATimeMedian
 // Accumulator class for computing sliding median per channels over time.
@@ -394,3 +396,6 @@ const RecordInterface & RFAFreqMedian::getDefaults ()
   }
   return rec;
 }
+
+} //# NAMESPACE CASA - END
+

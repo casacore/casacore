@@ -37,6 +37,8 @@
 #include <casa/Arrays/Vector.h>
 #include <casa/BasicSL/String.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# forward declarations
 
 // <summary>
@@ -110,6 +112,9 @@ private:
   Vector<Int> spWindowIds_p;
   Int nrows_p;
 };
+
+
+} //# NAMESPACE CASA - END
 
 #endif
     

@@ -38,6 +38,8 @@
 #include <casa/System/AipsrcValue.h>
 #include <casa/BasicSL/String.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Constants
 const Double MeasIERS::INTV = 5;
 
@@ -396,3 +398,6 @@ const String MeasIERS::tp[MeasIERS::N_Files] = {"IERSeop97", "IERSpredict"};
 uInt MeasIERS::sizeNote = 0;
 uInt MeasIERS::nNote = 0;
 MeasIERS::CLOSEFUN *MeasIERS::toclose = 0;
+
+} //# NAMESPACE CASA - END
+

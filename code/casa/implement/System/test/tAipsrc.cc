@@ -30,6 +30,7 @@
 #include <casa/Utilities/Assert.h>
 #include <casa/iostream.h>
 
+#include <casa/namespace.h>
 int main(){
   String aipsrcKeyword("printer.ps1.paper");
   String aipsrcValue;

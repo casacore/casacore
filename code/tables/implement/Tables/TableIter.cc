@@ -32,6 +32,8 @@
 #include <tables/Tables/TableError.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 TableIterator::TableIterator()
 : tabIterPtr_p (0)
 {}
@@ -124,3 +126,6 @@ void TableIterator::next()
 {
     subTable_p = Table(tabIterPtr_p->next());
 }
+
+} //# NAMESPACE CASA - END
+

@@ -33,6 +33,8 @@
 #include <casa/BasicSL/String.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 // <summary>
 // Class to specify which mask to use in an image.
 // </summary>
@@ -97,5 +99,8 @@ private:
     String itsName;
 };
 
+
+
+} //# NAMESPACE CASA - END
 
 #endif

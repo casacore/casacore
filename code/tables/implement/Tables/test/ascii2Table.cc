@@ -37,6 +37,7 @@
 #include <casa/Exceptions/Error.h>
 #include <casa/iostream.h>
 
+#include <casa/namespace.h>
 // <summary>
 // program to load an ASCII file into a table
 // </summary>

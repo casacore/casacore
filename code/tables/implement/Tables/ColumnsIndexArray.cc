@@ -40,6 +40,8 @@
 #include <tables/Tables/TableError.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 ColumnsIndexArray::ColumnsIndexArray (const Table& table,
 				      const String& columnName)
 : itsLowerKeyPtr (0),
@@ -650,3 +652,6 @@ void ColumnsIndexArray::fillRownrs (uInt npts, const Block<uInt>& nrel)
     }
   }
 }
+
+} //# NAMESPACE CASA - END
+

@@ -35,6 +35,7 @@
 
 #include <casa/iostream.h>
 
+#include <casa/namespace.h>
 // a bogus test case of a specializtion for Strings
 static void defaultValue(String &val)
 {

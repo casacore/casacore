@@ -35,6 +35,7 @@
 
 #include <casa/iostream.h>
 
+#include <casa/namespace.h>
 int main() {
   // Size test cube
   const uInt N0=10;

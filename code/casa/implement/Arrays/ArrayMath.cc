@@ -37,6 +37,8 @@
 #include <casa/BasicMath/ConvertScalar.h>
 #include <casa/Utilities/GenSort.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 // <thrown>
 //   <item> ArrayError
 // </thrown>
@@ -2095,3 +2097,6 @@ template<class T> Array<T> partialFractiles (const Array<T>& array,
   result.putStorage (resData, deleteRes);
   return result;
 }
+
+} //# NAMESPACE CASA - END
+

@@ -29,6 +29,8 @@
 #include <casa/OS/Path.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 TableCache::TableCache()
 : tableMap_p(static_cast<void*>(0))
 {}
@@ -87,3 +89,6 @@ void TableCache::rename (const String& newName, const String& oldName)
 	tableMap_p.rename (newnm, oldnm);
     }
 }
+
+} //# NAMESPACE CASA - END
+

@@ -29,6 +29,8 @@
 
 #include <casa/Quanta/UnitMap.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 // Initialise the maps
 void UnitMap::initUMCust1() {
   UnitMap::mapCust->insert(map<String, UnitName>::value_type
@@ -104,3 +106,6 @@ void UnitMap::initUMCust1() {
 						 UnitVal(5.,"mJy"),
 						 "WSRT flux unit")));
 }
+
+} //# NAMESPACE CASA - END
+

@@ -30,6 +30,8 @@
 
 #include <casa/OS/DataConversion.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 // <summary>A DataConversion class to convert between Modcomp format.</summary>
 
 // <use visibility=export>
@@ -161,4 +163,7 @@ public:
 
 inline ModcompDataConversion::ModcompDataConversion() {
 }
+
+} //# NAMESPACE CASA - END
+
 #endif

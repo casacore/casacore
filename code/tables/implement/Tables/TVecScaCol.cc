@@ -31,6 +31,8 @@
 #include <tables/Tables/TableError.h>
 #include <casa/BasicSL/String.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Construct a table column vector.
 template<class T>
 TabVecScaCol<T>::TabVecScaCol (const ROTableColumn& column)
@@ -94,3 +96,6 @@ void TabVecScaCol<T>::set (const T& val)
 	colPtrPut_p->put (i, val);
     }
 }
+
+} //# NAMESPACE CASA - END
+

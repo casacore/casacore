@@ -35,6 +35,8 @@
 #include <lattices/Lattices/TempLattice.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 // <summary>
 // Temporary astronomical images.
 // </summary>
@@ -308,5 +310,8 @@ protected:
   using ImageInterface<T>::setCoordsMember;
 };
 
+
+
+} //# NAMESPACE CASA - END
 
 #endif

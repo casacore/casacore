@@ -39,6 +39,8 @@
 
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 FITSMask::FITSMask (TiledFileAccess* tiledFile)
 : itsTiledFilePtr(tiledFile),
   itsScale(1.0),
@@ -164,4 +166,7 @@ void FITSMask::doPutSlice (const Array<Bool>& sourceBuffer,
 {
    throw(AipsError("FITSMask object is not writable"));
 }
+
+
+} //# NAMESPACE CASA - END
 

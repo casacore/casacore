@@ -71,6 +71,8 @@
 #include <casa/Utilities/Sort.h>
 #include <casa/BasicSL/String.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 const String fluxName = "Flux";
 const String fluxUnitName = "Flux_Unit";
 const String fluxPolName = "Flux_Polarisation";
@@ -1000,3 +1002,6 @@ void ComponentList::readTable(const Path& fileName, const Bool readOnly) {
 // Local Variables: 
 // compile-command: "gmake ComponentList"
 // End: 
+
+} //# NAMESPACE CASA - END
+

@@ -117,6 +117,7 @@
 
 #include <casa/iostream.h>
 
+#include <casa/namespace.h>
 enum defaults {AXES, REGION, STATS, RANGE, PLOTTING, NDEFAULTS=5};
 
 

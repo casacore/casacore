@@ -30,6 +30,8 @@
 #include <tables/Tables/TableError.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 TableLock::TableLock (LockOption option)
 : itsOption            (option),
   itsReadLocking       (True),
@@ -113,3 +115,6 @@ void TableLock::merge (const TableLock& that)
     }
   }
 }
+
+} //# NAMESPACE CASA - END
+

@@ -30,6 +30,8 @@
 #include <casa/Arrays/ArrayUtil.h>
 #include <ms/MeasurementSets/MSSysCal.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 MSSysCalIndex::MSSysCalIndex() 
     : MSTableIndex()
 {;}
@@ -66,4 +68,7 @@ void MSSysCalIndex::attachIds()
     feedId_p.attachToRecord(accessKey(), "FEED_ID");
     spwId_p.attachToRecord(accessKey(), "SPECTRAL_WINDOW_ID");
 }
+
+
+} //# NAMESPACE CASA - END
 

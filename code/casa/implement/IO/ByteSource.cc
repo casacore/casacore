@@ -30,6 +30,8 @@
 #include <casa/Exceptions/Error.h>
 #include <casa/IO/TypeIO.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 ByteSource::ByteSource()
 {}
 
@@ -209,3 +211,6 @@ void ByteSource::read (uInt nvalues, String* value)
 {
     itsTypeIO->read (nvalues, value);
 }
+
+} //# NAMESPACE CASA - END
+

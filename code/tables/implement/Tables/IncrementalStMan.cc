@@ -29,6 +29,8 @@
 #include <tables/Tables/IncrementalStMan.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 IncrementalStMan::IncrementalStMan (uInt bucketSize, Bool checkBucketSize,
 				    uInt cacheSize)
 : ISMBase (bucketSize, checkBucketSize, cacheSize)
@@ -42,3 +44,6 @@ IncrementalStMan::IncrementalStMan (const String& dataManagerName,
 
 IncrementalStMan::~IncrementalStMan()
 {}
+
+} //# NAMESPACE CASA - END
+

@@ -32,6 +32,8 @@
 #include <casa/Utilities/Assert.h>
 #include <casa/Exceptions/Error.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Constants
 const Double MeasData::MJD2000 =   51544.5;
 const Double MeasData::MJDB1950 =  33281.92345905;
@@ -219,3 +221,6 @@ Double MeasData::eps0J2000() {
   static const Double data = 84381.448*C::arcsec;
   return data;
 }
+
+} //# NAMESPACE CASA - END
+

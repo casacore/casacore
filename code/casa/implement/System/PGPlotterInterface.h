@@ -31,6 +31,8 @@
 
 #include <casa/aips.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 class Record;
 class String;
 template<class T> class Vector;
@@ -265,5 +267,8 @@ public:
     virtual void wnad(Float x1, Float x2, Float y1, Float y2) = 0;
     // </group>
 };
+
+
+} //# NAMESPACE CASA - END
 
 #endif

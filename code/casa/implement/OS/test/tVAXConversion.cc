@@ -31,6 +31,7 @@
 #include <casa/iostream.h>
 
 
+#include <casa/namespace.h>
 // This program test the VAX conversion functions.
 
 

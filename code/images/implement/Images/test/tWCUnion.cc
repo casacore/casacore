@@ -37,6 +37,7 @@
 #include <casa/iostream.h>
 
 
+#include <casa/namespace.h>
 void doIt()
 {
     // Create a dummy box to make the special units known to UnitMap.

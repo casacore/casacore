@@ -31,6 +31,8 @@
 #include <flagging/Flagging/RFABase.h> 
 #include <flagging/Flagging/RFFlagCube.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 // <summary>
 // Abstract RedFlagger Agent class with a flag cube
 // </summary>
@@ -87,5 +89,8 @@ protected:
 // flag cube lattice
   RFFlagCube  flag;   // flag cube lattice  
 };
+
+
+} //# NAMESPACE CASA - END
 
 #endif

@@ -34,6 +34,8 @@
 #include <casa/aips.h>
 #include <casa/Utilities/DataType.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Forward Declarations
 class String;
 class IPosition;
@@ -243,5 +245,8 @@ public:
 };
 
 
+
+
+} //# NAMESPACE CASA - END
 
 #endif

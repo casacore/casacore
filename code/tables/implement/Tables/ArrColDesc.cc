@@ -35,6 +35,8 @@
 #include <casa/iostream.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 template<class T>
 ArrayColumnDesc<T>::ArrayColumnDesc (const String& name,
 				     Int ndim, int opt)
@@ -250,3 +252,6 @@ PlainColumn* ArrayColumnDesc<T>::makeColumn (ColumnSet* csp) const
     }
     return bcp;
 }
+
+} //# NAMESPACE CASA - END
+

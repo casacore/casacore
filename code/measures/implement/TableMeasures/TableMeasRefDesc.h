@@ -33,6 +33,8 @@
 #include <casa/Quanta/Unit.h>
 #include <casa/BasicSL/String.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Forward Declarations
 class TableMeasDescBase;
 class Table;
@@ -255,5 +257,8 @@ private:
   void checkColumn (const TableDesc& td) const;
 };
 
+
+
+} //# NAMESPACE CASA - END
 
 #endif

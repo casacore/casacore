@@ -37,6 +37,8 @@
 #include <dirent.h>                          // needed for DIR
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 // <summary>  
 // Traverse the contents of a directory
 // </summary>
@@ -166,5 +168,8 @@ private:
     Regex itsExpression;
 };
 
+
+
+} //# NAMESPACE CASA - END
 
 #endif

@@ -34,6 +34,8 @@
 #include <casa/iostream.h>
 #include <casa/iomanip.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 // Constructor: Fully automatic bin definition
 
 template<class T> 
@@ -542,4 +544,7 @@ void HistAcc<T>::printHistogram (ostream& os, const String& caption)
 
 
 
+
+
+} //# NAMESPACE CASA - END
 

@@ -34,6 +34,8 @@
 #include <casa/Utilities/Assert.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 TableRecord::TableRecord()
 : RecordInterface (),
   rep_p    (new TableRecordRep),
@@ -427,3 +429,6 @@ void TableRecord::setTableAttr (const TableRecord& other,
     }
   }
 }
+
+} //# NAMESPACE CASA - END
+

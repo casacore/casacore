@@ -39,6 +39,8 @@
 #include <casa/Arrays/MaskedArray.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 // <summary>
 //    Masked LogicalArrays.
 // </summary>
@@ -76,5 +78,7 @@
 //# This is empty.  Everything is done by the include files.
 
 // </group>
+
+} //# NAMESPACE CASA - END
 
 #endif

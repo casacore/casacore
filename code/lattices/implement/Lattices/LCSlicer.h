@@ -32,6 +32,8 @@
 #include <lattices/Lattices/RegionType.h>
 #include <casa/Arrays/Vector.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Forward Declarations
 class IPosition;
 class Slicer;
@@ -276,5 +278,8 @@ inline void LCSlicer::setComment (const String& comment)
     itsComment = comment;
 }
 
+
+
+} //# NAMESPACE CASA - END
 
 #endif

@@ -36,6 +36,8 @@
 #include <casa/Utilities/Assert.h>
 #include <casa/BasicSL/String.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 Bool FITSSpectralUtil::fromFITSHeader(Int &spectralAxis,
 				      Double &referenceChannel,
 				      Double &referenceFrequency,
@@ -501,3 +503,6 @@ Bool FITSSpectralUtil::tagFromFrame(String &tag,
     }
     return result;
 }
+
+} //# NAMESPACE CASA - END
+

@@ -30,6 +30,8 @@
 #include <casa/Exceptions/Error.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 unsigned int ModcompConversion::toLocal (Int64* to, const void* from,
 					 unsigned int nr)
 {
@@ -441,3 +443,6 @@ uInt ModcompConversion::fromLocal(void* to, const Double* from, uInt nr) {
 // Local Variables: 
 // compile-command: "gmake OPTLIB=1 ModcompConversion; cd test; gmake tModcompConversion"
 // End: 
+
+} //# NAMESPACE CASA - END
+

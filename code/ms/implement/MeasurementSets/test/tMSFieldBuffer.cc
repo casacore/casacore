@@ -26,6 +26,7 @@
 //# $Id$
 
 #include <casa/aips.h>
+#include <casa/namespace.h>
 // #include <casa/Exceptions/Error.h>
 // #include <aips/Exceptions/Excp.h>
 // #include <casa/Utilities/Assert.h>

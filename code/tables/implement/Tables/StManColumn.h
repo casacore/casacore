@@ -33,6 +33,8 @@
 #include <casa/aips.h>
 #include <tables/Tables/DataManager.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Forward Declarations
 template<class T> class Vector;
 
@@ -792,5 +794,8 @@ private:
 };
 
 
+
+
+} //# NAMESPACE CASA - END
 
 #endif

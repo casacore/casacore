@@ -42,6 +42,7 @@
 #include <casa/iostream.h>
 
 
+#include <casa/namespace.h>
 void doIt (MaskedLattice<Int>& lat, uInt axis1, uInt axis2, uInt curveAxis)
 {
   // Make a straight line from (1,0) to the trc.

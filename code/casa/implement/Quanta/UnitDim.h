@@ -31,12 +31,14 @@
 
 //# Includes
 #include <casa/aips.h>
+#include <casa/iosfwd.h>
+
+namespace casa { //# NAMESPACE CASA - BEGIN
 
 //# Forward Declarations
 class String;
 class UnitVal;
 class UnitMap;
-#include <casa/iosfwd.h>
 
 // 
 // <summary>
@@ -162,5 +164,8 @@ private:
 //# Global definitions
 // Output
     ostream& operator<<(ostream &os, const UnitDim &du);
+
+
+} //# NAMESPACE CASA - END
 
 #endif

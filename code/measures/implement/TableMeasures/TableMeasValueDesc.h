@@ -31,6 +31,8 @@
 //# Includes
 #include <casa/BasicSL/String.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Forward Declarations
 class ColumnDesc;
 class Table;
@@ -153,5 +155,8 @@ private:
   void checkColumn (const TableDesc& td) const;
 };
 
+
+
+} //# NAMESPACE CASA - END
 
 #endif

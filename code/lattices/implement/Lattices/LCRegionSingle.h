@@ -32,6 +32,8 @@
 #include <lattices/Lattices/LCRegion.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 // <summary>
 // Abstract base class to define a single region.
 // </summary>
@@ -139,5 +141,8 @@ private:
     Lattice<Bool>* itsMaskPtr;
 };
 
+
+
+} //# NAMESPACE CASA - END
 
 #endif

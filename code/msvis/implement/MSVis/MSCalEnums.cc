@@ -28,6 +28,8 @@
 
 #include <msvis/MSVis/MSCalEnums.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //----------------------------------------------------------------------------
 
 // Static data initialization
@@ -293,4 +295,7 @@ DataType MSCalEnums::basicType (Int enumField)
 
 
 
+
+
+} //# NAMESPACE CASA - END
 

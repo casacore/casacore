@@ -39,9 +39,11 @@
 #include <casa/Quanta/RotMatrix.h>
 #include <wcslib/wcs.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 class celprm;
 class prjprm;
-class wcsprm;
+class ::wcsprm;
 class MVDirection;
 class MVAngle;
 class LogIO;
@@ -578,7 +580,7 @@ private:
     // that do toPixel and toWorld (which have const signature)
     // require a non const wcs structure.  so either all of these
     // virtual functions lose their const or we use mutable...
-    mutable wcsprm wcs_p;
+    mutable ::wcsprm wcs_p;
 
     // WCS computes in degrees - use this to convert back and forth between
     // current DirectionCoordinate units and degrees or radians
@@ -678,5 +680,8 @@ private:
    void setRotationMatrix (RotMatrix& rot, Double lon, Double lat) const;
    // </group>
 };
+
+
+} //# NAMESPACE CASA - END
 
 #endif

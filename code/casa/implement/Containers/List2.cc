@@ -28,6 +28,8 @@
 #include <casa/Containers/List.h>
 #include <casa/Containers/IterError.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 void throw_list_end_error(){
   throw(IterBoundaryError("List operation performed with cursor past the "
 			  "end of the list."));
@@ -42,3 +44,6 @@ void throw_list_swapright_same_error() {
 void throw_list_start_error(){
   throw(IterBoundaryError("Iterator backed past the beginning of the list."));
 }
+
+} //# NAMESPACE CASA - END
+

@@ -64,6 +64,8 @@
 
 #include <casa/aips.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 template <class T> class ImageInterface;
 class ComponentList;
 class Unit;
@@ -124,6 +126,9 @@ public:
   static void project(ImageInterface<Float>& image, 
 		      const ComponentList& list);
 };
+
+
+} //# NAMESPACE CASA - END
 
 #endif
 

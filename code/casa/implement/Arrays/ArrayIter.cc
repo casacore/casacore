@@ -28,6 +28,8 @@
 #include <casa/Arrays/ArrayIter.h>
 #include <casa/Arrays/ArrayError.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 template<class T> ArrayIterator<T>::ArrayIterator(Array<T> &a, uInt byDim)
 : ArrayPositionIterator(a.shape(), byDim),
   ap(0),
@@ -151,3 +153,6 @@ template<class T> ArrayIterator<T>::~ArrayIterator()
     if (pOriginalArray) delete pOriginalArray;
     if (ap) delete ap;
 }
+
+} //# NAMESPACE CASA - END
+

@@ -35,6 +35,8 @@
 #include <casa/Arrays/IPosition.h>
 #include <casa/Arrays/AxesMapping.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Forward Declarations
 
 
@@ -155,5 +157,8 @@ private:
   Bool      itsKeep;
 };
 
+
+
+} //# NAMESPACE CASA - END
 
 #endif

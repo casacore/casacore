@@ -31,6 +31,8 @@
 #include <casa/aips.h>
 #include <casa/BasicSL/String.h>
 #include <ms/MeasurementSets/MSColumns.h>
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 class MeasurementSet;
 class LogIO;
 
@@ -152,5 +154,8 @@ private:
    void clearFlags (LogIO& os) const;
 
 };
+
+
+} //# NAMESPACE CASA - END
 
 #endif

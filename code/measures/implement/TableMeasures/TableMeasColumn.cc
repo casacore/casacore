@@ -35,6 +35,8 @@
 #include <casa/BasicSL/String.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 ROTableMeasColumn::ROTableMeasColumn()
 : itsNvals      (0),
   itsVarRefFlag (False),
@@ -111,3 +113,6 @@ Bool ROTableMeasColumn::isScalar() const
   }
   return False;
 }
+
+} //# NAMESPACE CASA - END
+

@@ -27,6 +27,8 @@
 
 #include <tables/Tables/DataManError.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 // Implementation of DataManager error classes.
 
 DataManError::DataManError ()
@@ -88,3 +90,6 @@ TSMError::TSMError (const String& s)
 { ; }
 TSMError::~TSMError () throw()
 { ; }
+
+} //# NAMESPACE CASA - END
+

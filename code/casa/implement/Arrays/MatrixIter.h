@@ -33,6 +33,8 @@
 #include <casa/Arrays/ArrayIter.h>
 #include <casa/Arrays/Matrix.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 // 
 // <summary> Iterate a Matrix cursor through another Array. </summary>
 // <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="" demos="">
@@ -79,7 +81,7 @@ public:
     MatrixIterator<T> &operator=(const MatrixIterator<T> &);
 
     // Return the matrix at the current position.
-    Matrix<T> &matrix() {return *(Matrix<T> *)(this->ap);}
+    Matrix<T> &matrix() {return *(Matrix<T> *)ap;}
 };
 
 // 
@@ -117,5 +119,8 @@ public:
 private:
     MatrixIterator<T> mi;
 };
+
+
+} //# NAMESPACE CASA - END
 
 #endif

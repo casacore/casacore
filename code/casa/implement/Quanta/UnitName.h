@@ -34,9 +34,11 @@
 #include <casa/BasicSL/String.h>
 #include <casa/Quanta/Unit.h>
 #include <casa/Quanta/UnitVal.h>
+#include <casa/iosfwd.h>
+
+namespace casa { //# NAMESPACE CASA - BEGIN
 
 //# Forward Declarations
-#include <casa/iosfwd.h>
 
 //# Constants
 // <note role=warning>
@@ -173,5 +175,8 @@ private:
 };
 
 //# Inline Implementations
+
+
+} //# NAMESPACE CASA - END
 
 #endif

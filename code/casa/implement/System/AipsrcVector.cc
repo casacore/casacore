@@ -34,6 +34,8 @@
 #include <casa/Quanta/Quantum.h>
 #include <casa/sstream.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Data
 template <class T>
 AipsrcVector<T> AipsrcVector<T>::myp_p;
@@ -146,3 +148,6 @@ void AipsrcVector<T>::save(uInt keyword) {
   for (Int i=0; i<n; i++) oss << " " << ((myp_p.tlst)[keyword-1])(i);
   Aipsrc::save((myp_p.ntlst)[keyword-1], String(oss));
 }
+
+} //# NAMESPACE CASA - END
+

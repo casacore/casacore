@@ -32,6 +32,8 @@
 #include <casa/Utilities/Regex.h>
 #include <casa/iostream.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 void UnitMap::initUM() {
   static Bool needInit = True;
   if (!needInit) return;
@@ -406,3 +408,6 @@ map<String, UnitName> *UnitMap::mapCust;
 map<String, UnitName> *UnitMap::mapUser;
 map<String, UnitVal> *UnitMap::mapCache;
 Bool UnitMap::doneFITS;
+
+} //# NAMESPACE CASA - END
+

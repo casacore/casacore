@@ -39,6 +39,8 @@
 #include <casa/string.h>
 #include <casa/iostream.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 TSMDataColumn::TSMDataColumn (const TSMColumn& column)
 : TSMColumn (column)
 {
@@ -834,3 +836,6 @@ TSMDATACOLUMN_GETPUT(uInt,uIntV)
 TSMDATACOLUMN_GETPUT(double,doubleV)
 TSMDATACOLUMN_GETPUT(Complex,ComplexV)
 TSMDATACOLUMN_GETPUT(DComplex,DComplexV)
+
+} //# NAMESPACE CASA - END
+

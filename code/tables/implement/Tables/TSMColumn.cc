@@ -34,6 +34,8 @@
 
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 TSMColumn::TSMColumn (TiledStMan* stman, int dataType,
 		      const String& columnName)
 : StManColumn (dataType),
@@ -93,3 +95,6 @@ TSMColumn* TSMColumn::unlink()
     colPtr_p = 0;               // do not delete linked object in destructor
     return ptr;
 }
+
+} //# NAMESPACE CASA - END
+

@@ -30,6 +30,8 @@
 #include <casa/Arrays/ArrayError.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 ArrayError::ArrayError(Category c) : AipsError("ArrayError",c) {}
 
 ArrayError::ArrayError(const Char *m,Category c) : AipsError(m,c) {}
@@ -132,3 +134,6 @@ ArraySlicerError::ArraySlicerError(const String &m,Category c)
 : ArrayError("Slicer error:" + m,c) {}
 
 ArraySlicerError::~ArraySlicerError() throw(){}
+
+} //# NAMESPACE CASA - END
+

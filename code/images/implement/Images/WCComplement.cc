@@ -32,6 +32,8 @@
 #include <tables/Tables/TableRecord.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 WCComplement::WCComplement (const ImageRegion& region)
 : WCCompound (&region)
 {}
@@ -103,3 +105,6 @@ WCComplement* WCComplement::fromRecord (const TableRecord& rec,
     unmakeRecord (regions, rec.asRecord("regions"), tableName);
     return new WCComplement (True, regions);
 }
+
+} //# NAMESPACE CASA - END
+

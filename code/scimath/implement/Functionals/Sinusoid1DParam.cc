@@ -28,6 +28,8 @@
 //# Includes
 #include <scimath/Functionals/Sinusoid1DParam.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 template<class T>
 Sinusoid1DParam<T>::Sinusoid1DParam() :
   Function1D<T>(3) {
@@ -75,3 +77,6 @@ Sinusoid1DParam<T>::operator=(const Sinusoid1DParam<T> &other) {
   if (this != &other) Function1D<T>::operator=(other);
   return *this;
 }
+
+} //# NAMESPACE CASA - END
+

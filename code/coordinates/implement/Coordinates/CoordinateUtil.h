@@ -39,6 +39,8 @@
 #include <measures/Measures/MFrequency.h>
 #include <measures/Measures/MeasConvert.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 class CoordinateSystem;
 class DirectionCoordinate;
 class ObsInfo;
@@ -497,5 +499,8 @@ static Bool dropRemovedAxes (CoordinateSystem& cSysOut, const CoordinateSystem& 
                                                       const CoordinateSystem& cSysIn,
                                                       Bool failOnStokes=False);
 };
+
+
+} //# NAMESPACE CASA - END
 
 #endif

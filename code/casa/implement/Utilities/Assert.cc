@@ -28,6 +28,8 @@
 #include <casa/Utilities/Assert.h>
 #include <casa/stdio.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 template<class t> assert_<t>::assert_(int expr, const char *msg, const char* file, Int line) {
   static char message[256];
   if (! expr) {
@@ -43,3 +45,6 @@ template<class t> assert_<t>::assert_(const void *ptr, const char *msg, const ch
     throw(t(message));
   }
 }
+
+} //# NAMESPACE CASA - END
+

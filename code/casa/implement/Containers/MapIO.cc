@@ -29,6 +29,8 @@
 #include <casa/Containers/MapIO.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 template<class key, class value> ostream &operator<<(ostream &ios, const Map<key,value> &map) {
 #if !defined(AIPS_STUPID_SUN)
   ConstMapIter<key,value> mapP(map);
@@ -58,3 +60,6 @@ template<class key, class value> ostream &operator<<(ostream &ios, const ConstMa
   return operator<<(ios,map.container());
 
 }
+
+} //# NAMESPACE CASA - END
+

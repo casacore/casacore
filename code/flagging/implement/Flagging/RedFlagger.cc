@@ -67,6 +67,8 @@
 
 #include <flagging/Flagging/RFANewMedianClip.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
  LogIO RedFlagger::os( LogOrigin("RedFlagger") );
  static char str[256];
  uInt debug_ifr=9999,debug_itime=9999;
@@ -103,12 +105,8 @@ RedFlagger::~RedFlagger ()
     ms.relinquishAutoLocks(True);
     ms.unlock();
   }
-  if(vs_p) 
-    delete vs_p;
-  vs_p = 0;
-  if(mssel_p)
-    delete mssel_p;
-  mssel_p = 0;
+  delete vs_p;
+  delete mssel_p;
 }
 
 // -----------------------------------------------------------------------
@@ -236,31 +234,24 @@ Bool RedFlagger::setdata(const String& mode, const Vector<Int>& nchan,
   Bool compress=False;
 
   dataMode_p=mode;
-
   if(dataMode_p.matches("none")) {
-    cout << "Whole data set has been selected or use mode argument to select specific subset " << endl;
+    cout << "No data selection applied" << endl;
 
     vs_p = new VisSet(ms,noselection);
     //    nullSelect_p=True;
     return True;
-  } else {
+  }
 
-    nullSelect_p=False;
-    /*
-    dataNchan_p.resize();
-    dataStart_p.resize();
-    dataStep_p.resize();
-    */
-    dataNchan_p=nchan;
-    dataStart_p=start;
-    dataStep_p=step;
-    
-    mDataStart_p=mStart;
-    mDataStep_p=mStep;
-    dataspectralwindowids_p.resize(spectralwindowids.nelements());
-    dataspectralwindowids_p=spectralwindowids;
-    datafieldids_p.resize(fieldids.nelements());
-    datafieldids_p=fieldids;
+  nullSelect_p=False;
+  dataNchan_p=nchan;
+  dataStart_p=start;
+  dataStep_p=step;
+  mDataStart_p=mStart;
+  mDataStep_p=mStep;
+  dataspectralwindowids_p.resize(spectralwindowids.nelements());
+  dataspectralwindowids_p=spectralwindowids;
+  datafieldids_p.resize(fieldids.nelements());
+  datafieldids_p=fieldids;
   
   //	if (fieldids.nelements() > 1) {
   //	multiFields_p = True;
@@ -309,10 +300,10 @@ Bool RedFlagger::setdata(const String& mode, const Vector<Int>& nchan,
     String colf=MS::columnName(MS::FIELD_ID);
     String cols=MS::columnName(MS::DATA_DESC_ID);
     
-    if(datafieldids_p.nelements()>0 && datadescids_p.nelements()>0){
+    if(datafieldids_p.nelements()>0&&datadescids_p.nelements()>0){
       condition=sorted.col(colf).in(datafieldids_p)&&
 	sorted.col(cols).in(datadescids_p);
-      os << "Selecting on field ids and spectral window ids" << LogIO::POST;
+      os << "Selecting on field and spectral window ids" << LogIO::POST;
     }
     else if(datadescids_p.nelements()>0) {
       condition=sorted.col(cols).in(datadescids_p);
@@ -322,12 +313,13 @@ Bool RedFlagger::setdata(const String& mode, const Vector<Int>& nchan,
       condition=sorted.col(colf).in(datafieldids_p);
       os << "Selecting on field id" << LogIO::POST;
     }
-
+    
     // Remake the selected ms
     mssel_p = new MeasurementSet(sorted(condition));
     AlwaysAssert(mssel_p, AipsError);
     msname_p = ms.tableName();
     mssel_p->rename(msname_p+"/SELECTED_TABLE", Table::Scratch);
+  
     if(mssel_p->nrow()==0) {
       delete mssel_p; mssel_p=0;
       os << LogIO::WARN
@@ -350,12 +342,12 @@ Bool RedFlagger::setdata(const String& mode, const Vector<Int>& nchan,
       }
     }
     */
+    
     Int len = msSelect.length();
     Int nspace = msSelect.freq (' ');
     Bool nullSelect=(msSelect.empty() || nspace==len);
     if (!nullSelect) {
       MeasurementSet* mssel_p2;
-
       // Apply the TAQL selection string, to remake the selected MS
       String parseString="select from $1 where " + msSelect;
       mssel_p2=new MeasurementSet(tableCommand(parseString,*mssel_p));
@@ -372,12 +364,14 @@ Bool RedFlagger::setdata(const String& mode, const Vector<Int>& nchan,
 	if (mssel_p) {
 	  delete mssel_p; 
 	  mssel_p=mssel_p2;
+	  delete mssel_p2;
 	  mssel_p->flush();
 	}
       }
     } else {
-      os << "No msselect string given" << LogIO::POST;
+      os << "No selection string given" << LogIO::POST;
     }
+    
     if(mssel_p->nrow()!=ms.nrow()) {
       os << "By selection " << ms.nrow() << " rows are reduced to "
 	 << mssel_p->nrow() << LogIO::POST;
@@ -403,8 +397,8 @@ Bool RedFlagger::setdata(const String& mode, const Vector<Int>& nchan,
 		    mDataStart_p, mDataStep_p);
   
   ms = *mssel_p;
-  //  cout << " Current ms is "  << mssel_p->tableName() << endl;
-  }
+  cout << " Current ms  "  << mssel_p->tableName() << endl;
+  
   return True;
 }
 
@@ -545,8 +539,8 @@ uInt RedFlagger::ifrNumber ( Int ant1,Int ant2 ) const
 // computes vector of IFR indeces, given two antennas
 Vector<Int> RedFlagger::ifrNumbers ( Vector<Int> ant1,Vector<Int> ant2 ) const
 {
-  Vector<Int> a1( ::max(static_cast<Array<Int> >(ant1),static_cast<Array<Int> >(ant2)) ),
-             a2( ::min(static_cast<Array<Int> >(ant1),static_cast<Array<Int> >(ant2)) );
+  Vector<Int> a1( ::casa::max(static_cast<Array<Int> >(ant1),static_cast<Array<Int> >(ant2)) ),
+             a2( ::casa::min(static_cast<Array<Int> >(ant1),static_cast<Array<Int> >(ant2)) );
   return a1*(a1+1)/2 + a2;
 }
 
@@ -718,7 +712,6 @@ void RedFlagger::run ( const RecordInterface &agents,const RecordInterface &opt,
     return;
   }
 
-  
   if( !nant )
     os<<"No Measurement Set has been attached\n"<<LogIO::EXCEPTION;
   RFABase::setIndexingBase(ind_base);  
@@ -754,8 +747,13 @@ void RedFlagger::run ( const RecordInterface &agents,const RecordInterface &opt,
     cout << "vi created " << endl;
   }
   */
+
+  
+
   VisibilityIterator &vi(vs_p->iter()); 
+
   //VisibilityIterator vi(ms, sortCol, 1000000000);
+
   VisBuffer vb(vi);
   RFChunkStats chunk(vi,vb,*this,&pgp_screen,&pgp_report);
 
@@ -775,10 +773,10 @@ void RedFlagger::run ( const RecordInterface &agents,const RecordInterface &opt,
 // generate new array of agents by iterating through agents record
   Record agcounts; // record of agent instance counts
   acc.resize(agents.nfields());
-
   acc.set(NULL);
   uInt nacc = 0;
-  for( uInt i=0; i<agents.nfields(); i++ ) {
+  for( uInt i=0; i<agents.nfields(); i++ ) 
+  {
     if(  agents.dataType(i) != TpRecord )
       os<<"Unrecognized field '"<<agents.name(i)<<"' in agents\n"<<LogIO::EXCEPTION;
     const RecordInterface & agent_rec( agents.asRecord(i) );
@@ -791,7 +789,7 @@ void RedFlagger::run ( const RecordInterface &agents,const RecordInterface &opt,
     // check that this is agent really exists
     if( !agent_defaults.isDefined(agent_id) ){
       os<<"Unknown flagging method '"<<agents.name(i)<<"'\n"<<LogIO::EXCEPTION;
-    }
+     }
     // create parameter record by taking agent defaults, and merging in global
     // and specified options
     const RecordInterface & defparms(agent_defaults.asRecord(agent_id));
@@ -802,15 +800,15 @@ void RedFlagger::run ( const RecordInterface &agents,const RecordInterface &opt,
     parms.define(RF_RESET,reset_flags);
     // see if this is a different instance of an already activated agent
     if( agcounts.isDefined(agent_id) )
-      {
-	// increment the instance counter
-	Int count = agcounts.asInt(agent_id)+1;
-	agcounts.define(agent_id,count);
-	// modify the agent name to include an instance count
-	char s[128];
-	sprintf(s,"%s#%d",defparms.asString(RF_NAME).chars(),count);
-	parms.define(RF_NAME,s);
-      }
+    {
+      // increment the instance counter
+      Int count = agcounts.asInt(agent_id)+1;
+      agcounts.define(agent_id,count);
+      // modify the agent name to include an instance count
+      char s[128];
+      sprintf(s,"%s#%d",defparms.asString(RF_NAME).chars(),count);
+      parms.define(RF_NAME,s);
+    }
     else
       agcounts.define(agent_id,1);
     // create agent based on name
@@ -819,12 +817,12 @@ void RedFlagger::run ( const RecordInterface &agents,const RecordInterface &opt,
       os<<"Unrecognized method name '"<<agents.name(i)<<"'\n"<<LogIO::EXCEPTION;
     agent->init();
     String inp,st;
-    //    agent->logSink()<<agent->getDesc()<<endl<<LogIO::POST;
+//    agent->logSink()<<agent->getDesc()<<endl<<LogIO::POST;
     acc[nacc++] = agent;
   }
+  acc.resize(nacc);
 
-  acc.resize(nacc, True);
-  // begin iterating over chunks
+// begin iterating over chunks
   uInt nchunk=0;
 // process just the first chunk because something's screwy  
 //  vi.originChunks(); 
@@ -832,7 +830,6 @@ void RedFlagger::run ( const RecordInterface &agents,const RecordInterface &opt,
   for( vi.originChunks(); vi.moreChunks(); vi.nextChunk(),nchunk++ ) 
   {
     chunk.newChunk();
-
 // limit frequency of progmeter updates (duh!)
     Int pm_update_freq = chunk.num(TIME)/200;
 // How much memory do we have?
@@ -860,32 +857,29 @@ void RedFlagger::run ( const RecordInterface &agents,const RecordInterface &opt,
         availmem -= flagmem;
       }
     }
-    // call newChunk() for all accumulators; determine which ones are active
+// call newChunk() for all accumulators; determine which ones are active
     Vector<Int> iter_mode(acc.nelements(),RFA::DATA);
     Vector<Bool> active(acc.nelements());
-
     for( uInt i = 0; i<acc.nelements(); i++ ) 
     {
       Int maxmem;
       maxmem = availmem;
       if( ! (active(i) = acc[i]->newChunk(maxmem))  ) // refused this chunk?
-	{
-	  iter_mode(i) = RFA::STOP;  // skip over it
-	}
+        iter_mode(i) = RFA::STOP;  // skip over it
       else
-	{ // active, so reserve its memory 
-	  if( debug_level>0 )
-	    dprintf(os,"%s reserving %d MB of memory, %d left in pool\n",
-		    acc[i]->name().chars(),availmem-maxmem,maxmem);
-	  availmem = maxmem>0 ? maxmem : 0;
-	}
+      { // active, so reserve its memory 
+        if( debug_level>0 )
+          dprintf(os,"%s reserving %d MB of memory, %d left in pool\n",
+              acc[i]->name().chars(),availmem-maxmem,maxmem);
+        availmem = maxmem>0 ? maxmem : 0;
+      }
     }
     if( !sum(active) )
-      {
-	os<<LogIO::WARN<<"Unable to process this chunk with any active method.\n"<<LogIO::POST;
-	continue;
-      }
-    // initially active agents
+    {
+      os<<LogIO::WARN<<"Unable to process this chunk with any active method.\n"<<LogIO::POST;
+      continue;
+    }
+// initially active agents
     Vector<Bool> active_init = active;
 // start executing passes    
     char subtitle[128];
@@ -1301,3 +1295,6 @@ int dprintf( LogIO &os,const char *format, ...)
   return ret;
 }
  
+
+} //# NAMESPACE CASA - END
+

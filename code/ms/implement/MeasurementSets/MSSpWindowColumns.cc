@@ -40,6 +40,8 @@
 #include <tables/Tables/TableDesc.h>
 #include <casa/Utilities/Assert.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 ROMSSpWindowColumns::
 ROMSSpWindowColumns(const MSSpectralWindow& msSpWindow):
   chanFreq_p(msSpWindow, MSSpectralWindow::
@@ -545,4 +547,7 @@ attachOptionalCols(MSSpectralWindow& msSpWindow)
 // Local Variables: 
 // compile-command: "gmake MSSpWindowColumns"
 // End: 
+
+
+} //# NAMESPACE CASA - END
 

@@ -31,6 +31,8 @@
 #include <casa/Exceptions/Error.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 AxesSpecifier::AxesSpecifier()
 : itsKeep (True)
 {}
@@ -118,3 +120,6 @@ AxesMapping AxesSpecifier::apply (const IPosition& shape) const
   }
   return AxesMapping(axisToNew);
 }
+
+} //# NAMESPACE CASA - END
+

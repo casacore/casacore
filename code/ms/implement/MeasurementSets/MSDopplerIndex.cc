@@ -30,6 +30,8 @@
 #include <casa/Arrays/ArrayUtil.h>
 #include <ms/MeasurementSets/MSDoppler.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 MSDopplerIndex::MSDopplerIndex() 
     : MSTableIndex()
 {;}
@@ -65,4 +67,7 @@ void MSDopplerIndex::attachIds()
     dopplerId_p.attachToRecord(accessKey(), "DOPPLER_ID");
     sourceId_p.attachToRecord(accessKey(), "SOURCE_ID");
 }
+
+
+} //# NAMESPACE CASA - END
 

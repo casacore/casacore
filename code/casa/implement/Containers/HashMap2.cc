@@ -29,6 +29,8 @@
 #include <casa/Exceptions/Error.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 uInt hashFunc(const String &s) {
     const char *ptr = s.chars();
     uInt hv = 0;
@@ -97,3 +99,6 @@ void throw_invalid_hashmapiter_error() {
 void throw_hashmapiter_init_error() {
   throw(AipsError("Bad initialization of HashMap iterator"));
 }
+
+} //# NAMESPACE CASA - END
+

@@ -36,6 +36,8 @@
  
 #include <casa/iostream.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 GaussianConvert::GaussianConvert()
 : itsValid(False)
 {
@@ -539,4 +541,7 @@ Bool GaussianConvert::deconvolve(Quantum<Double>& majorAxisModel,
    return isPointSource;
 }
 
+
+
+} //# NAMESPACE CASA - END
 

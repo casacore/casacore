@@ -37,6 +37,8 @@
 #include <casa/BasicSL/Complex.h>
 #include <casa/Utilities/Assert.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 // Statics
 const Int ComponentUpdate::N_unknown[N_Solve] = {
   3 
@@ -164,4 +166,7 @@ void ComponentUpdate::clean() {
 
 
 
+
+
+} //# NAMESPACE CASA - END
 

@@ -35,6 +35,8 @@
 //# Forward declarations
 #include <casa/iosfwd.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 // <summary>
 // Version information for AIPS++
 // </summary>
@@ -160,6 +162,9 @@ inline const char *VersionInfo::info()
     extern const char* aips_version_info;
     return aips_version_info;
 }
+
+
+} //# NAMESPACE CASA - END
 
 #endif
 

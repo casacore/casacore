@@ -52,6 +52,8 @@
 #include <casa/sstream.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 // Public functions
 
 template <class T>
@@ -410,3 +412,6 @@ void ImageStatistics<T>::listMinMax(ostringstream& osMin,
       os_p.post();
    }
 }
+
+} //# NAMESPACE CASA - END
+

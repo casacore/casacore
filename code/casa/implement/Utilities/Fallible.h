@@ -30,6 +30,8 @@
 
 #include <casa/aips.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# The following function is to be found in Fallible2.cc not Fallible.cc
 //# because it's a non-templated function and template instantiators normally
 //# do not like them in the same .cc file with templated functions.
@@ -150,6 +152,9 @@ private:
     T value_p;
     Bool isValid_p;
 };
+
+
+} //# NAMESPACE CASA - END
 
 #endif
 

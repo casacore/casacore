@@ -41,6 +41,8 @@
 #include <casa/Exceptions/Error.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 WCRegion* WCRegion::fromRecord (const TableRecord& rec,
                                 const String& tableName)
 {
@@ -80,3 +82,6 @@ WCRegion* WCRegion::fromRecord (const TableRecord& rec,
     }
     return regPtr;
 }
+
+} //# NAMESPACE CASA - END
+

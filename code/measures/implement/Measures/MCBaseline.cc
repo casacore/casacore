@@ -34,6 +34,8 @@
 #include <casa/Arrays/ArrayMath.h>
 #include <measures/Measures/MCFrame.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Statics
 Bool MCBaseline::stateMade_p = False;
 uInt MCBaseline::ToRef_p[N_Routes][3] = {
@@ -427,3 +429,6 @@ String MCBaseline::showState() {
 			   MBaseline::N_Types, MCBaseline::N_Routes,
 			   MCBaseline::ToRef_p);
 }
+
+} //# NAMESPACE CASA - END
+

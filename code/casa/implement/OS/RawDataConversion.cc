@@ -29,6 +29,8 @@
 #include <casa/OS/RawDataConversion.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 RawDataConversion::~RawDataConversion()
 {}
 
@@ -77,3 +79,6 @@ RAWDATACONVERSION_DOIT(Int64)
 RAWDATACONVERSION_DOIT(uInt64)
 RAWDATACONVERSION_DOIT(float)
 RAWDATACONVERSION_DOIT(double)
+
+} //# NAMESPACE CASA - END
+

@@ -29,6 +29,8 @@
 #ifndef MS_MSOBSENUMS_H
 #define MS_MSOBSENUMS_H
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 // <use visibility=export>
 
 // <summary> Enums for the MeasurementSet OBSERVATION table </summary>
@@ -104,4 +106,7 @@ public:
     NUMBER_PREDEFINED_KEYWORDS=UNDEFINED_KEYWORD
     };
 };
+
+} //# NAMESPACE CASA - END
+
 #endif

@@ -36,6 +36,8 @@
 #include <tables/Tables/TableError.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 template<class T>
 ROScalarColumn<T>::ROScalarColumn()
 : ROTableColumn(),
@@ -329,3 +331,6 @@ void ScalarColumn<T>::putColumn (const ROScalarColumn<T>& that)
 	put (i, that, i);
     }
 }
+
+} //# NAMESPACE CASA - END
+

@@ -34,6 +34,7 @@
 #include <casa/Utilities/Assert.h>
 #include <casa/iostream.h>
 
+#include <casa/namespace.h>
 void Foo(Int x)
 {
     AlwaysAssertExit(x == 5);

@@ -33,6 +33,8 @@
 #include <casa/iostream.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Initialize the static variable for the DataManager registration.
 Bool ColumnDescSet::registrationDone_p = False;
 
@@ -290,3 +292,6 @@ void ColumnDescSet::show (ostream& os) const
 	os << endl;
     }
 }
+
+} //# NAMESPACE CASA - END
+

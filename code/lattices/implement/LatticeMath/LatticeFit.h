@@ -34,6 +34,8 @@
 #include <scimath/Fitting/LinearFit.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 // <summary> 
 // Fit every line of pixels parallel to any axis in a Lattice.
 // </summary>
@@ -117,5 +119,8 @@ public:
                            LinearFit<Float>& fitter, 
                            uInt axis, Bool showProgress=False);
 };
+
+
+} //# NAMESPACE CASA - END
 
 #endif

@@ -38,6 +38,8 @@
 #include <tables/Tables/TableRecord.h>
 #include <casa/System/Aipsrc.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Constructors
 MeasComet::MeasComet() :
   tab_p(), measFlag_p(True), measured_p(False),
@@ -235,3 +237,6 @@ Bool MeasComet::fillMeas(Double utf) const {
   };
   return True;
 }
+
+} //# NAMESPACE CASA - END
+

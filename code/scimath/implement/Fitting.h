@@ -34,6 +34,8 @@
 #include <scimath/Fitting/NonLinearFit.h>
 #include <scimath/Fitting/NonLinearFitLM.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 // <module>
 //
 // <summary>
@@ -196,6 +198,9 @@
 //
 // </module>
 //
+
+} //# NAMESPACE CASA - END
+
 #endif
 
 

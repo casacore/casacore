@@ -44,6 +44,8 @@
 #include <measures/Measures/MeasConvert.h>
 #include <casa/Arrays/ArrayLogical.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 SDPointingHandler::SDPointingHandler() 
     : msPointing_p(0), msPointingCols_p(0), time_p(0.0), antId_p(-1), directionRate_p(2),
       name_p(""), rownr_p(-1)
@@ -281,3 +283,6 @@ void SDPointingHandler::initRow(Vector<Bool> &handledCols, const Record &row)
 	handledCols(row.fieldNumber("POINTING_TRACKING")) = True;
     }
 }
+
+} //# NAMESPACE CASA - END
+

@@ -40,6 +40,8 @@
 #include <casa/Utilities/Assert.h>
 #include <casa/Exceptions/Error.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 LattRegionHolder::LattRegionHolder (uInt ndim)
 : itsLC     (0),
   itsSlicer (0),
@@ -193,3 +195,6 @@ LattRegionHolder* LattRegionHolder::makeComplement() const
     return new LattRegionHolder
            (new LCComplement (*asLCRegionPtr()));
 }
+
+} //# NAMESPACE CASA - END
+

@@ -35,6 +35,8 @@
 #include <lattices/Lattices/LatticeRegion.h>
 #include <casa/Arrays/Slicer.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Forward Declarations
 template <class T> class Array;
 template <class T> class LELArray;
@@ -240,5 +242,8 @@ template<> inline
 void LatticeExpr<Bool>::handleMathTo (Lattice<Bool>& to, int oper) const
   { throwBoolMath(); }
 
+
+
+} //# NAMESPACE CASA - END
 
 #endif

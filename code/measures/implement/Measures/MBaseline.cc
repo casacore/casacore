@@ -34,6 +34,8 @@
 #include <casa/Utilities/Register.h>
 #include <casa/Utilities/Assert.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Constructors
 MBaseline::MBaseline() :
   MeasBase<MVBaseline, MBaseline::Ref>() {}
@@ -304,3 +306,6 @@ Quantum<Vector<Double> > MBaseline::getAngle(const Unit &inunit) const {
 Measure *MBaseline::clone() const {
     return (new MBaseline(*this));
 }
+
+} //# NAMESPACE CASA - END
+

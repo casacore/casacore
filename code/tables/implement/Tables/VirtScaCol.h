@@ -32,6 +32,8 @@
 #include <casa/aips.h>
 #include <tables/Tables/DataManager.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Forward Declarations
 template<class T> class Vector;
 
@@ -326,5 +328,8 @@ inline void putVirtualScalarColumn (DataManagerColumn* col, uInt,
     { col->throwPut(); }
 // </group>
 
+
+
+} //# NAMESPACE CASA - END
 
 #endif

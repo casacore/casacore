@@ -30,9 +30,14 @@
 #include <casa/Utilities/ValType.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 template <class T>
 LELScalar<T>::LELScalar()
 : itsMask(False)
 {
     ValType::getUndef (&itsValue);
 }
+
+} //# NAMESPACE CASA - END
+

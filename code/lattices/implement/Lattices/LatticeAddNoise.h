@@ -36,6 +36,8 @@
 #include <casa/BasicMath/Random.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Forward Declarations
 
 template <class T> class MaskedLattice;
@@ -130,5 +132,8 @@ private:
 // Make noise generator
    void makeDistribution ();
 };
+
+
+} //# NAMESPACE CASA - END
 
 #endif

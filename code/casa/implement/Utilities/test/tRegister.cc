@@ -29,6 +29,7 @@
 #include <casa/Utilities/test/tRegister.h>
 #include <casa/iostream.h>
 
+#include <casa/namespace.h>
 main() {
   
   foo *ap = 0;

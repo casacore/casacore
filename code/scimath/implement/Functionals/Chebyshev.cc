@@ -28,6 +28,8 @@
 //# Includes
 #include <scimath/Functionals/Chebyshev.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Constructors
 
 //# Operators
@@ -94,3 +96,6 @@ Chebyshev<T> Chebyshev<T>::derivative() const {
 }
 
 //# Member functions
+
+} //# NAMESPACE CASA - END
+

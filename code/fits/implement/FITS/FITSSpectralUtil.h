@@ -34,6 +34,8 @@
 #include <measures/Measures/MDoppler.h>
 #include <measures/Measures/MFrequency.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 class RecordInterface;
 class String;
 template<class T> class Vector;
@@ -185,5 +187,8 @@ public:
 			     MFrequency::Types referenceFrame);
 			  
 };
+
+
+} //# NAMESPACE CASA - END
 
 #endif

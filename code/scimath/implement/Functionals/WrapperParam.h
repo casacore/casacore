@@ -33,6 +33,8 @@
 #include <scimath/Functionals/Function.h>
 #include <casa/Arrays/Vector.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Forward declarations
 
 // <summary>  Parameter handling for wrapped function objects 
@@ -103,5 +105,8 @@ protected:
   //# Make members of parent classes known.
   using Function<T>::param_p;
 };
+
+
+} //# NAMESPACE CASA - END
 
 #endif

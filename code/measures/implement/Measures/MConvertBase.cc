@@ -29,6 +29,8 @@
 #include <measures/Measures/MConvertBase.h>
 #include <casa/iostream.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Constructors
 
 //# Destructor
@@ -43,3 +45,6 @@ ostream &operator<<(ostream &os, const MConvertBase &mc) {
   mc.print(os);
   return os;
 }
+
+} //# NAMESPACE CASA - END
+

@@ -27,6 +27,8 @@
 
 #include <casa/Utilities/Notice.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 Notice::~Notice()
 {
     // Nothing
@@ -95,4 +97,7 @@ void NoticeTarget::link(const NoticeTarget *other) {
     valid = True;
   }
 }
+
+
+} //# NAMESPACE CASA - END
 

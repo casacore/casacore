@@ -34,6 +34,8 @@
 
 #include <stdexcept>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 using std::exception;
 using std::logic_error;
 using std::domain_error;
@@ -44,5 +46,7 @@ using std::runtime_error;
 using std::range_error;
 using std::overflow_error;
 using std::underflow_error;
+
+} //# NAMESPACE CASA - END
 
 #endif

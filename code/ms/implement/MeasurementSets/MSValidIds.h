@@ -32,6 +32,8 @@
 #include <casa/aips.h>
 #include <ms/MeasurementSets/MeasurementSet.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Forward declarations
 class ROMSColumns;
 
@@ -131,5 +133,8 @@ private:
 
     Bool checkRow(uInt rownr) const {return rownr < ms_p.nrow();}
 };
+
+
+} //# NAMESPACE CASA - END
 
 #endif

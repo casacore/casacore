@@ -36,11 +36,15 @@
 #include <casa/aips.h>
 #include <iomanip>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 using std::setw;
 using std::setfill;
 using std::setprecision;
 using std::setbase;
 using std::resetiosflags;
 using std::setiosflags;
+
+} //# NAMESPACE CASA - END
 
 #endif

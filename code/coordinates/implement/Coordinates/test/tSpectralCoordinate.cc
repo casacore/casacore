@@ -49,6 +49,7 @@
 
 #include <casa/iostream.h>
 
+#include <casa/namespace.h>
 SpectralCoordinate makeLinearCoordinate(MFrequency::Types type,
                                         Double& crval,
                                         Double& cdelt,

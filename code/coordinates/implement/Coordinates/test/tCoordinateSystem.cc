@@ -50,6 +50,7 @@
 
 #include <casa/iostream.h>
 
+#include <casa/namespace.h>
 DirectionCoordinate makeDirectionCoordinate(Bool unitsAreDegrees=True,
                                             MDirection::Types type=MDirection::J2000);
 SpectralCoordinate makeSpectralCoordinate ();

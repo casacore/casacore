@@ -39,6 +39,7 @@
 #include <casa/Exceptions/Error.h>
 #include <casa/iostream.h>
 
+#include <casa/namespace.h>
 void test0 ();
 void test0Complex ();
 void test1 (Random::Types type);

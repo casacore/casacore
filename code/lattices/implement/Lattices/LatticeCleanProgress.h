@@ -38,6 +38,8 @@
 #include <casa/Arrays/Vector.h>
 #include <casa/Arrays/Matrix.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Forward Declarations
 template <class T> class Vector;
 template <class T> class Matrix;
@@ -160,5 +162,8 @@ private:
 
 };
 
+
+
+} //# NAMESPACE CASA - END
 
 #endif

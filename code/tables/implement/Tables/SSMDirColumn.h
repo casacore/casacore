@@ -33,6 +33,8 @@
 #include <casa/aips.h>
 #include <tables/Tables/SSMColumn.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Forward declarations
 
 
@@ -134,5 +136,8 @@ private:
   SSMDirColumn& operator= (const SSMDirColumn&);
 };
 
+
+
+} //# NAMESPACE CASA - END
 
 #endif

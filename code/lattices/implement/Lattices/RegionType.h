@@ -28,6 +28,7 @@
 #ifndef LATTICES_REGIONTYPE_H
 #define LATTICES_REGIONTYPE_H
 
+namespace casa { //# NAMESPACE CASA - BEGIN
 
 // <summary>
 // Define the various region types.
@@ -83,5 +84,8 @@ public:
 
 };
 
+
+
+} //# NAMESPACE CASA - END
 
 #endif

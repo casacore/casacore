@@ -28,7 +28,12 @@
 #include <casa/Utilities/CountedPtr.h>
 #include <casa/Exceptions/Error.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 void throw_Null_CountedPtr_dereference_error() {
   throw (AipsError("CountedPtr: null dereference error"));
 }
+
+
+} //# NAMESPACE CASA - END
 

@@ -34,6 +34,8 @@
 #include <casa/Arrays/ArrayMath.h>
 #include <measures/Measures/MCFrame.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Statics
 Bool MCuvw::stateMade_p = False;
 uInt MCuvw::ToRef_p[N_Routes][3] = {
@@ -656,3 +658,6 @@ void MCuvw::fromPole(MVPosition &in) {
   in = RotMatrix(Euler(-C::pi_2 + MVDIR1.getLat(), 2u,
 		       -MVDIR1.getLong(), 3u)) * in;
 }
+
+} //# NAMESPACE CASA - END
+

@@ -32,6 +32,8 @@
 //# Includes
 #include <lattices/Lattices/LELInterface.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Forward Declarations
 template <class T> class Lattice;
 template <class T> class MaskedLattice;
@@ -134,5 +136,8 @@ private:
    MaskedLattice<T>* pLattice_p;
 };
 
+
+
+} //# NAMESPACE CASA - END
 
 #endif

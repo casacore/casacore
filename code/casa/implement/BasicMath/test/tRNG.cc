@@ -32,6 +32,7 @@
 
 #include <casa/BasicMath/Random.h>
 
+#include <casa/namespace.h>
 int main() {
   try {
     uInt i;

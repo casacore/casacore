@@ -39,6 +39,8 @@
 #include <casa/Utilities/CountedPtr.h>
 #include <casa/Utilities/DataType.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Forward Declarations
 template <class T> class LatticeExpr;
 template <class T> class Lattice;
@@ -705,5 +707,8 @@ private:
    CountedPtr<LELInterface<Bool> >     pExprBool_p;
 };
 
+
+
+} //# NAMESPACE CASA - END
 
 #endif

@@ -35,6 +35,8 @@
 #include <casa/Containers/RecordInterface.h>
 #include <casa/Utilities/MUString.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Constructors
 template <class T>
 ChebyshevParam<T>::ChebyshevParam() :
@@ -393,4 +395,7 @@ void ChebyshevParamModeImpl<AutoDiffA<T> >::getMode(RecordInterface& out) const
     out.define(RecordFieldId("default"), this->getDefault().value());
     out.define(RecordFieldId("intervalMode"), this->modes_s(this->getOutOfIntervalMode()));
 }
+
+
+} //# NAMESPACE CASA - END
 

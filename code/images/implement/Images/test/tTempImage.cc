@@ -41,6 +41,7 @@
 #include <casa/iostream.h>
 
 
+#include <casa/namespace.h>
 void doIt (TempImage<Int>& scratch)
 {
   IPosition shape(3,1);    

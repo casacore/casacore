@@ -40,6 +40,8 @@
 #include <casa/Quanta/MVTime.h>
 #include <casa/Containers/Record.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 SDMainHandler::SDMainHandler() 
     : ms_p(0), msCols_p(0),
       scanNumberId_p(-1), arrayIdId_p(-1), sigmaId_p(-1), flagRowId_p(-1),
@@ -245,3 +247,6 @@ void SDMainHandler::initRow(Vector<Bool> &handledCols, const Record &row)
     if (row.fieldNumber("MAIN_PULSAR_BIN") >= 0) 
 	handledCols(row.fieldNumber("MAIN_PULSAR_BIN")) = True;
 }
+
+} //# NAMESPACE CASA - END
+

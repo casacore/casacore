@@ -51,6 +51,8 @@
 #include <casa/Utilities/ValType.h>
 #include <casa/Utilities/cregex.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 // <module>
 //
 // <summary> Classes and global functions for general use </summary>
@@ -144,6 +146,9 @@
 //# </todo>
 
 // </module>
+
+
+} //# NAMESPACE CASA - END
 
 #endif
 

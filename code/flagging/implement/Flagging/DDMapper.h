@@ -32,6 +32,8 @@
 #include <casa/Exceptions/Error.h>
 #include <measures/Measures/Stokes.h> 
     
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 // <summary>
 // Abstract Derived Data Mapper class
 // </summary>
@@ -204,5 +206,8 @@ public:
 
 // helper function to split an expression into elements
 Vector<String> splitExpression( const Vector<String> &expr0 );
+
+
+} //# NAMESPACE CASA - END
 
 #endif

@@ -35,6 +35,8 @@
 #include <casa/Arrays/Vector.h>
 #include <casa/Containers/Record.h>
 #include <ms/MeasurementSets/MSSelector.h>
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 class MeasurementSet;
 
 // <summary> List visibility records from a Measurement Set </summary>
@@ -250,5 +252,8 @@ private:
   // Clear the formatting flags
   void clearFlags();
 };
+
+
+} //# NAMESPACE CASA - END
 
 #endif

@@ -40,6 +40,8 @@
 #include <casa/Arrays/MatrixMath.h>
 #include <casa/Arrays/ArrayLogical.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 // MVDirection class
 
 //# Constructors
@@ -65,16 +67,16 @@ MVDirection::MVDirection(Double in0, Double in1, Double in2) :
 
 MVDirection::MVDirection(Double in0) :
   MVPosition() {
-    xyz(0) = cos(in0);
-    xyz(1) = sin(in0);
+    xyz(0) = std::cos(in0);
+    xyz(1) = std::sin(in0);
   }
 
 MVDirection::MVDirection(Double angle0, Double angle1) : 
   MVPosition() {
-    Double loc = cos(angle1);
-    xyz(0) = cos(angle0)*loc;
-    xyz(1) = sin(angle0)*loc;
-    xyz(2) = sin(angle1);
+    Double loc = std::cos(angle1);
+    xyz(0) = std::cos(angle0)*loc;
+    xyz(1) = std::sin(angle0)*loc;
+    xyz(2) = std::sin(angle1);
   }
 
 MVDirection::MVDirection(const Quantity &angle0) :
@@ -150,7 +152,7 @@ void MVDirection::assure(const MeasValue &in) {
 }
 
 void MVDirection::adjust() {
-  Double length = sqrt(operator*(*this));
+  Double length = std::sqrt(operator*(*this));
   if (length == 0) {
     xyz(2) = 1.0;
   } else if (length != 1.0) {
@@ -159,7 +161,7 @@ void MVDirection::adjust() {
 }
 
 void MVDirection::adjust(Double &res) {
-  res = sqrt(operator*(*this));
+  res = std::sqrt(operator*(*this));
   if (res == 0) {
     xyz(2) = 1.0;
   } else if (res != 1.0) {
@@ -169,9 +171,9 @@ void MVDirection::adjust(Double &res) {
 
 Vector<Double> MVDirection::get() const {
   Vector<Double> tmp(2);
-  if (xyz(0) != 0 || xyz(1) != 0) tmp(0) = atan2(xyz(1),xyz(0));
+  if (xyz(0) != 0 || xyz(1) != 0) tmp(0) = std::atan2(xyz(1),xyz(0));
   else tmp(0) = 0.0;
-  tmp(1) = asin(xyz(2));
+  tmp(1) = std::asin(xyz(2));
   return tmp;
 }    
 
@@ -242,10 +244,10 @@ Bool MVDirection::putValue(const Vector<Quantum<Double> > &in) {
 }
 
 void MVDirection::setAngle(Double angle0, Double angle1) { 
-  Double loc = cos(angle1);
-  xyz(0) = cos(angle0)*loc;
-  xyz(1) = sin(angle0)*loc;
-  xyz(2) = sin(angle1);
+  Double loc = std::cos(angle1);
+  xyz(0) = std::cos(angle0)*loc;
+  xyz(1) = std::sin(angle0)*loc;
+  xyz(2) = std::sin(angle1);
 }
 
 Double MVDirection::positionAngle(const MVPosition &other) const {
@@ -253,21 +255,21 @@ Double MVDirection::positionAngle(const MVPosition &other) const {
   Double slat1(xyz(2));
   Double ln(norm(other.getValue())); 
   Double slat2(other.getValue()(2)/ln);
-  Double clat2(sqrt(fabs(1.0 - slat2*slat2)));
-  Double s1(-clat2 * sin(longDiff));
-  Double c1(sqrt(fabs(1.0 - slat1*slat1))*slat2 - slat1*clat2*cos(longDiff));
-  return ((s1 != 0 || c1 != 0) ? atan2(s1, c1): 0.0);
+  Double clat2(std::sqrt(std::fabs(1.0 - slat2*slat2)));
+  Double s1(-clat2 * std::sin(longDiff));
+  Double c1(std::sqrt(std::fabs(1.0 - slat1*slat1))*slat2 - slat1*clat2*std::cos(longDiff));
+  return ((s1 != 0 || c1 != 0) ? std::atan2(s1, c1): 0.0);
 }
 
 Double MVDirection::positionAngle(const MVDirection &other) const {
   const Double longDiff(getLong() - other.getLong());
   const Double slat1(xyz(2));
   const Double slat2(other.xyz(2));
-  const Double clat2(sqrt(fabs(1.0 - slat2*slat2)));
-  const Double s1(-clat2 * sin(longDiff));
-  const Double c1(sqrt(fabs(1.0 - slat1*slat1))*slat2 -
-		  slat1*clat2*cos(longDiff));
-  return ((s1 != 0 || c1 != 0) ? atan2(s1, c1): 0.0);
+  const Double clat2(std::sqrt(std::fabs(1.0 - slat2*slat2)));
+  const Double s1(-clat2 * std::sin(longDiff));
+  const Double c1(std::sqrt(std::fabs(1.0 - slat1*slat1))*slat2 -
+		  slat1*clat2*std::cos(longDiff));
+  return ((s1 != 0 || c1 != 0) ? std::atan2(s1, c1): 0.0);
 }
 
 Quantity MVDirection::positionAngle(const MVPosition &other, 
@@ -284,17 +286,17 @@ Double MVDirection::separation(const MVPosition &other) const {
   const Vector<Double> &otherxyz = other.getValue();
   Double l2(norm(otherxyz));
   l2 = l2 > 0 ? l2 : 1.0;
-  Double d1 = sqrt(square(xyz(0) - otherxyz(0)/l2) + 
+  Double d1 = std::sqrt(square(xyz(0) - otherxyz(0)/l2) + 
 		   square(xyz(1) - otherxyz(1)/l2) +
 		   square(xyz(2) - otherxyz(2)/l2))/2.0; 
-  return 2*asin(d1 < 1.0 ? d1 : 1.0);
+  return 2*std::asin(d1 < 1.0 ? d1 : 1.0);
 }
 
 Double MVDirection::separation(const MVDirection &other) const {
-  Double d1 = sqrt(square(xyz(0) - other.xyz(0)) + 
+  Double d1 = std::sqrt(square(xyz(0) - other.xyz(0)) + 
 		   square(xyz(1) - other.xyz(1)) +
 		   square(xyz(2) - other.xyz(2)))/2.0; 
-  return 2*asin(d1 < 1.0 ? d1 : 1.0);
+  return 2*std::asin(d1 < 1.0 ? d1 : 1.0);
 }
 
 Quantity MVDirection::separation(const MVPosition &other, 
@@ -366,10 +368,10 @@ void MVDirection::shiftAngle(const Quantum<Double> &off,
 void MVDirection::shiftAngle(Double off, Double pa) {
   Vector<Double> x(2);
   x = get();
-  Double nlat = asin(cos(off)*sin(x(1)) + sin(off)*cos(x(1))*cos(pa));
-  Double nlng = sin(off)*sin(pa);
-  if (cos(nlat) != 0) {
-    nlng = asin(nlng/cos(nlat));
+  Double nlat = std::asin(std::cos(off)*std::sin(x(1)) + std::sin(off)*std::cos(x(1))*std::cos(pa));
+  Double nlng = std::sin(off)*std::sin(pa);
+  if (std::cos(nlat) != 0) {
+    nlng = std::asin(nlng/std::cos(nlat));
   } else nlng = 0;
   *this = MVDirection(x(0)+nlng, nlat);
 }
@@ -395,3 +397,6 @@ MVDirection operator*(const MVDirection &left, const RotMatrix &right) {
   result *= right;
   return result;
 }
+
+} //# NAMESPACE CASA - END
+

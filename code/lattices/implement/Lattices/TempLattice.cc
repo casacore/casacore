@@ -35,6 +35,8 @@
 #include <casa/System/AppInfo.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 template<class T>
 TempLattice<T>::TempLattice() 
 : itsTablePtr (0),
@@ -331,3 +333,6 @@ LatticeIterInterface<T>* TempLattice<T>::makeIter (const LatticeNavigator& nav,
   doReopen();
   return itsLatticePtr->makeIter (nav, useRef);
 }
+
+} //# NAMESPACE CASA - END
+

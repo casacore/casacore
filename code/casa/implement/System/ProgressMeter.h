@@ -32,6 +32,8 @@
 //# Includes
 #include <casa/aips.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Forward Declarations
 class String;
 
@@ -147,6 +149,9 @@ private:
     ProgressMeter(const ProgressMeter &);
     ProgressMeter &operator=(const ProgressMeter &);
 };
+
+
+} //# NAMESPACE CASA - END
 
 #endif
 

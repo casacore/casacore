@@ -33,6 +33,8 @@
 #include <casa/aips.h>
 #include <casa/Arrays/Array.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Forward Declarations
 template <class T> class ArrayBaseAccessor;
 //# Next one suffices as declaration: only (part) specialisations allowed
@@ -384,8 +386,8 @@ public ArrayBaseAccessor<T> {
   // Assign from other compile-time accessor along same axis
   ArrayAccessor &operator=(const ArrayAccessor<T, Axis<U> > &other) {
     if (&other != this) {
-      ArrayBaseAccessor<T>::operator=(other); this->step_p = other.step_p;
-      this->begin_p = other.begin_p; this->end_p = other.end_p;
+      ArrayBaseAccessor<T>::operator=(other); step_p = other.step_p;
+      begin_p = other.begin_p; end_p = other.end_p;
     }; return *this; }
   // Assign from other compile-time accessor along another axis
   template <uInt X>
@@ -403,8 +405,8 @@ public ArrayBaseAccessor<T> {
 
   // Reset to start of dimension or to specified pointer
   // <group>
-  void reset() { this->ptr_p = const_cast<T *>(this->begin_p); }
-  void reset(const T * p) { this->ptr_p = const_cast<T *>(p); initStep(); }
+  void reset() { ptr_p = const_cast<T *>(begin_p); }
+  void reset(const T * p) { ptr_p = const_cast<T *>(p); initStep(); }
   // </group>
 
   // Indexing  operations along another axis than the one of the current
@@ -416,30 +418,30 @@ public ArrayBaseAccessor<T> {
   // <group>
   template <class X>
     const T &next() const
-    { return *(this->ptr_p + this->arrayPtr_p->steps()[X::N]); }
+    { return *(ptr_p + arrayPtr_p->steps()[X::N]); }
   template <class X>
-    T &next() { return *(this->ptr_p + this->arrayPtr_p->steps()[X::N]); }
+    T &next() { return *(ptr_p + arrayPtr_p->steps()[X::N]); }
   // </group>
   // Get the value 'previous' along the specified axis (e.g. with 
   // <src>a.prev<Axis<2> >()</src>)
   // <group>
   template <class X>
     const T &prev() const
-    { return *(this->ptr_p - this->arrayPtr_p->steps()[X::N]); }
+    { return *(ptr_p - arrayPtr_p->steps()[X::N]); }
   template <class X>
-    T &prev() { return *(this->ptr_p - this->arrayPtr_p->steps()[X::N]); }
+    T &prev() { return *(ptr_p - arrayPtr_p->steps()[X::N]); }
   // </group>
   // Get the next or previous along the specified run-time axis. E.g.
   // <src>a.prev(AxisN(2))</src>.
   // <group>
   const T &next(const AxisN ax) const
-    { return *(this->ptr_p + this->arrayPtr_p->steps()[ax.N]); }
+    { return *(ptr_p + arrayPtr_p->steps()[ax.N]); }
   T &next(const AxisN ax)
-    { return *(this->ptr_p + this->arrayPtr_p->steps()[ax.N]); }
+    { return *(ptr_p + arrayPtr_p->steps()[ax.N]); }
   const T &prev(const AxisN ax) const
-    { return *(this->ptr_p - this->arrayPtr_p->steps()[ax.N]); }
+    { return *(ptr_p - arrayPtr_p->steps()[ax.N]); }
   T &prev(const AxisN ax)
-    { return *(this->ptr_p - this->arrayPtr_p->steps()[ax.N]); }
+    { return *(ptr_p - arrayPtr_p->steps()[ax.N]); }
   // </group>
   // Give the value indexed with respect to the current accessor value
   // along the axis specified as either a compile-time or a run-time
@@ -448,14 +450,14 @@ public ArrayBaseAccessor<T> {
   // <group>
   template <class X>
     const T &index(const Int ix) const 
-    { return *(this->ptr_p + ix*this->arrayPtr_p->steps()[X::N]); }
+    { return *(ptr_p + ix*arrayPtr_p->steps()[X::N]); }
   template <class X>
     T &index(const Int ix)
-    { return *(this->ptr_p + ix*this->arrayPtr_p->steps()[X::N]); }
+    { return *(ptr_p + ix*arrayPtr_p->steps()[X::N]); }
   const T &index(const Int ix, const AxisN ax) const 
-    { return *(this->ptr_p + ix*this->arrayPtr_p->steps()[ax.N]); }
+    { return *(ptr_p + ix*arrayPtr_p->steps()[ax.N]); }
   T &index(const Int ix, const AxisN ax)
-    { return *(this->ptr_p + ix*this->arrayPtr_p->steps()[ax.N]); }
+    { return *(ptr_p + ix*arrayPtr_p->steps()[ax.N]); }
   // </group>
   // </group>
   
@@ -463,25 +465,24 @@ public ArrayBaseAccessor<T> {
   // value. They can be used to control loops.
   // <group>
   Bool operator==(const ArrayAccessor<T, Axis<U> > &other) const {
-    return this->ptr_p == other.ptr_p; }
+    return ptr_p == other.ptr_p; }
   Bool operator!=(const ArrayAccessor<T, Axis<U> > &other) const {
-    return this->ptr_p != other.ptr_p; }
-  Bool operator==(const T *other) const { return this->ptr_p == other; }
-  Bool operator!=(const T *other) const { return this->ptr_p != other; }
+    return ptr_p != other.ptr_p; }
+  Bool operator==(const T *other) const { return ptr_p == other; }
+  Bool operator!=(const T *other) const { return ptr_p != other; }
   // </group>
   
  private:
   // Get proper offset
   Int initOff(Int x, uInt ax) {
-    uInt st = this->arrayPtr_p->steps()[ax];
+    uInt st = arrayPtr_p->steps()[ax];
     return ((st) ? (ax == Axis<U>::N ? x/st : initOff(x%st, ax-1)) : 0); }
   // Initialize some internal values
   void initStep() {
-    this->step_p = this->arrayPtr_p->steps()[Axis<U>::N];
-    this->begin_p = this->end_p = this->ptr_p
-                    - initOff(this->ptr_p - this->arrayPtr_p->data(),
-			      this->arrayPtr_p->ndim()-1)*this->step_p;
-    this->end_p += this->arrayPtr_p->shape()[Axis<U>::N]*this->step_p; }
+    step_p = arrayPtr_p->steps()[Axis<U>::N];
+    begin_p = end_p = ptr_p - initOff(ptr_p-arrayPtr_p->data(),
+				      arrayPtr_p->ndim()-1)*step_p;
+    end_p += arrayPtr_p->shape()[Axis<U>::N]*step_p; }
   
 };
 
@@ -506,7 +507,7 @@ public ArrayBaseAccessor<T> {
   // Constructors
   // <group>
   explicit ArrayAccessor_RT(const AxisN ax=AxisN(0)) :
-    ArrayBaseAccessor<T>() { this->axis_p = ax.N; }
+    ArrayBaseAccessor<T>() { axis_p = ax.N; }
   explicit ArrayAccessor_RT(Array<T> &arr, const AxisN ax=AxisN(0)) :
     ArrayBaseAccessor<T>(arr, ax.N) { initStep(); }
   ArrayAccessor_RT(ArrayAccessor_RT<T, AxisN> &other) :
@@ -543,8 +544,8 @@ public ArrayBaseAccessor<T> {
 
   // Reset to start of dimension or to specified pointer
   // <group>
-  void reset() { this->ptr_p = const_cast<T *>(this->begin_p); }
-  void reset(const T *p) { this->ptr_p = const_cast<T *>(p); initStep(); }
+  void reset() { ptr_p = const_cast<T *>(begin_p); }
+  void reset(const T *p) { ptr_p = const_cast<T *>(p); initStep(); }
   // </group>
 
   // Indexing  operations along another axis than the one of the current
@@ -553,59 +554,61 @@ public ArrayBaseAccessor<T> {
   // <group>
   template <class X>
     const T &next() const
-    { return *(this->ptr_p + this->arrayPtr_p->steps()[X::N]); }
+    { return *(ptr_p + arrayPtr_p->steps()[X::N]); }
   template <class X>
-    T &next() { return *(this->ptr_p + this->arrayPtr_p->steps()[X::N]); }
+    T &next() { return *(ptr_p + arrayPtr_p->steps()[X::N]); }
   template <class X>
     const T &prev() const
-    { return *(this->ptr_p - this->arrayPtr_p->steps()[X::N]); }
+    { return *(ptr_p - arrayPtr_p->steps()[X::N]); }
   template <class X>
-    T &prev() { return *(this->ptr_p - this->arrayPtr_p->steps()[X::N]); }
+    T &prev() { return *(ptr_p - arrayPtr_p->steps()[X::N]); }
   const T &next(const AxisN ax) const
-    { return *(this->ptr_p + this->arrayPtr_p->steps()[ax.N]); }
+    { return *(ptr_p + arrayPtr_p->steps()[ax.N]); }
   T &next(const AxisN ax)
-    { return *(this->ptr_p + this->arrayPtr_p->steps()[ax.N]); }
+    { return *(ptr_p + arrayPtr_p->steps()[ax.N]); }
   const T &prev(const AxisN ax) const
-    { return *(this->ptr_p - this->arrayPtr_p->steps()[ax.N]); }
+    { return *(ptr_p - arrayPtr_p->steps()[ax.N]); }
   T &prev(const AxisN ax)
-    { return *(this->ptr_p - this->arrayPtr_p->steps()[ax.N]); }
+    { return *(ptr_p - arrayPtr_p->steps()[ax.N]); }
   template <class X>
     const T &index(const Int ix) const 
-    { return *(this->ptr_p + ix*this->arrayPtr_p->steps()[X::N]); }
+    { return *(ptr_p + ix*arrayPtr_p->steps()[X::N]); }
   template <class X>
     T &index(const Int ix)
-    { return *(this->ptr_p + ix*this->arrayPtr_p->steps()[X::N]); }
+    { return *(ptr_p + ix*arrayPtr_p->steps()[X::N]); }
   const T &index(const Int ix, const AxisN(ax)) const 
-    { return *(this->ptr_p + ix*this->arrayPtr_p->steps()[ax.N]); }
+    { return *(ptr_p + ix*arrayPtr_p->steps()[ax.N]); }
   T &index(const Int ix, const AxisN(ax))
-    { return *(this->ptr_p + ix*this->arrayPtr_p->steps()[ax.N]); }
+    { return *(ptr_p + ix*arrayPtr_p->steps()[ax.N]); }
   // </group>
 
   // Comparisons
   // <group>
   Bool operator==(const ArrayAccessor_RT<T, AxisN> &other) const {
-    return this->ptr_p == other.ptr_p; }
+    return ptr_p == other.ptr_p; }
   Bool operator!=(const ArrayAccessor_RT<T, AxisN> &other) const {
-    return this->ptr_p != other.ptr_p; }
-  Bool operator==(const T *other) const { return this->ptr_p == other; }
-  Bool operator!=(const T *other) const { return this->ptr_p != other; }
+    return ptr_p != other.ptr_p; }
+  Bool operator==(const T *other) const { return ptr_p == other; }
+  Bool operator!=(const T *other) const { return ptr_p != other; }
   // </group>
 
  private: 
   // Get proper offset
   Int initOff(Int x, uInt ax) {
-    uInt st = this->arrayPtr_p->steps()[ax];
-    return ((st) ? (ax == this->axis_p ? x/st : initOff(x%st, ax-1)) : 0); }
+    uInt st = arrayPtr_p->steps()[ax];
+    return ((st) ? (ax == axis_p ? x/st : initOff(x%st, ax-1)) : 0); }
   // Initialize some internal values
   void initStep() {
-    this->step_p = this->arrayPtr_p->steps()[this->axis_p];
-    this->begin_p = this->end_p = this->ptr_p
-                    - initOff(this->ptr_p - this->arrayPtr_p->data(),
-			      this->arrayPtr_p->ndim()-1)*this->step_p;
-    this->end_p += this->arrayPtr_p->shape()[this->axis_p]*this->step_p; }
+    step_p = arrayPtr_p->steps()[axis_p];
+    begin_p = end_p = ptr_p - initOff(ptr_p-arrayPtr_p->data(),
+				      arrayPtr_p->ndim()-1)*step_p;
+    end_p += arrayPtr_p->shape()[axis_p]*step_p; }
   
 };
 
 #undef ArrayAccessor_RT
+
+
+} //# NAMESPACE CASA - END
 
 #endif

@@ -44,6 +44,7 @@
 
 #include <casa/iostream.h>
 
+#include <casa/namespace.h>
 Bool allNear (const Array<Float>& data, const Array<Bool>& dataMask,
               const Array<Float>& fits, const Array<Bool>& fitsMask, Float tol=1.0e-5);
 

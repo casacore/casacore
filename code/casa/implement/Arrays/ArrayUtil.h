@@ -34,6 +34,8 @@
 #include <casa/Arrays/Vector.h>
 #include <casa/BasicSL/String.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Forward Declarations
 class Regex;
 
@@ -242,5 +244,8 @@ uInt reorderArrayHelper (IPosition& newShape, IPosition& incr,
 			 const IPosition& shape, const IPosition& newAxisOrder);
 // </group>
 
+
+
+} //# NAMESPACE CASA - END
 
 #endif

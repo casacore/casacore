@@ -42,6 +42,8 @@
 #include <casa/BasicMath/Math.h>
 #include <casa/iostream.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Forward Declarations
 class StokesVector;
 // <summary>
@@ -398,5 +400,8 @@ inline StokesVector applyScircInv(const CStokesVector& v) {
 //StokesVector& sqrt(const StokesVector& v);
 
 //CStokesVector& sqrt(const CStokesVector& v);
+
+
+} //# NAMESPACE CASA - END
 
 #endif

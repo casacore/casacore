@@ -35,6 +35,8 @@
 #include <measures/Measures/MeasRef.h>
 #include <casa/Quanta/MVEarthMagnetic.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Forward Declarations
 class MEarthMagnetic;
 class MCEarthMagnetic;
@@ -282,5 +284,8 @@ class MEarthMagnetic : public MeasBase<MVEarthMagnetic, MeasRef<MEarthMagnetic> 
   //# Member functions
   
 };
+
+
+} //# NAMESPACE CASA - END
 
 #endif

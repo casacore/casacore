@@ -33,6 +33,8 @@
 #include <lattices/Lattices/LCBox.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 // <summary>
 // Extend an LCRegion along straight lines to other dimensions
 // </summary>
@@ -167,5 +169,8 @@ inline const LCBox& LCExtension::extendBox() const
     return itsExtendBox;
 }
 
+
+
+} //# NAMESPACE CASA - END
 
 #endif

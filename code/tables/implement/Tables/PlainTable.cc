@@ -43,6 +43,8 @@
 #include <casa/System/AipsrcValue.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Initialize the static TableCache object.
 TableCache PlainTable::tableCache = TableCache();
 
@@ -724,3 +726,6 @@ void PlainTable::setEndian (int endianFormat)
 	}
     }
 }
+
+} //# NAMESPACE CASA - END
+

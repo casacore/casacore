@@ -34,6 +34,8 @@
 #include <measures/TableMeasures/ScalarMeasColumn.h>
 #include <measures/TableMeasures/ScalarQuantColumn.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 class MSDoppler;
 
 // <summary>
@@ -222,5 +224,8 @@ private:
   //# Access to Quantum columns
   ScalarQuantColumn<Double> velDefQuant_p;
 };
+
+
+} //# NAMESPACE CASA - END
 
 #endif

@@ -41,6 +41,7 @@
 #include <casa/Quanta/UnitMap.h>
 #include <casa/iostream.h>
 
+#include <casa/namespace.h>
 int main ()
 {
     Quantity A(5,"m"), B(2.,"yd");

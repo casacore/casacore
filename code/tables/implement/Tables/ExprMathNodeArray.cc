@@ -32,6 +32,8 @@
 #include <casa/Quanta/MVTime.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 // Implement the arithmetic operators for each data type.
 
 TableExprNodeArrayPlusDouble::TableExprNodeArrayPlusDouble
@@ -300,3 +302,6 @@ Array<Double> TableExprNodeArrayMIN::getArrayDouble (const TableExprId& id)
     { return -(lnode_p->getArrayDouble(id)); }
 Array<DComplex> TableExprNodeArrayMIN::getArrayDComplex (const TableExprId& id)
     { return -(lnode_p->getArrayDComplex(id)); }
+
+} //# NAMESPACE CASA - END
+

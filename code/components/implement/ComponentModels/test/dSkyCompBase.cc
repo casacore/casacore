@@ -39,6 +39,7 @@
 #include <components/ComponentModels/SpectralIndex.h>
 #include <casa/iostream.h>
 
+#include <casa/namespace.h>
 void printComponent(const SkyCompBase & comp);
 
 int main() {

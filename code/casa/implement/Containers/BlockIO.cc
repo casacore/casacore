@@ -30,6 +30,8 @@
 #include <casa/IO/AipsIOCarray.h>
 #include <casa/iostream.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 template<class T> void putBlock (AipsIO& ios, const Block<T>& blk, Int nr)
 {
     if (nr < 0) {
@@ -70,3 +72,6 @@ template<class T> void showBlock (ostream& ios, const Block<T>& blk, Int nr)
     }
     ios << "]";
 }
+
+} //# NAMESPACE CASA - END
+

@@ -29,6 +29,8 @@
 
 #include <casa/Quanta/UnitMap.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 // Initialise the maps
 void UnitMap::initUMCust2() {
   UnitMap::mapCust->insert(map<String, UnitName>::value_type
@@ -140,3 +142,6 @@ void UnitMap::initUMCust2() {
 						 UnitVal(1.0e-7,"J"),
 						 "erg")));
 }
+
+} //# NAMESPACE CASA - END
+

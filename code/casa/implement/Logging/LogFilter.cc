@@ -28,6 +28,8 @@
 #include <casa/Logging/LogFilter.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 LogFilter::LogFilter (LogMessage::Priority lowest)
 : lowest_p(lowest)
 {}
@@ -58,3 +60,5 @@ Bool LogFilter::pass (const LogMessage& message) const
 }
 
 
+
+} //# NAMESPACE CASA - END

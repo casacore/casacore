@@ -33,6 +33,8 @@
 #include <tables/Tables/VirtScaCol.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 // <summary>
 // Base virtual column for a scalar column with any type
 // </summary>
@@ -361,5 +363,8 @@ private:
     String         sourceName_p;           //# source column name
 };
 
+
+
+} //# NAMESPACE CASA - END
 
 #endif

@@ -29,6 +29,8 @@
 #include <casa/BasicSL/Constants.h>
 #include <casa/BasicMath/Math.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Constructors
 
 //# Operators
@@ -38,3 +40,6 @@ T GNoiseFunction<T>::eval(typename Function<T>::FunctionArg ) const {
 }
 
 //# Member functions
+
+} //# NAMESPACE CASA - END
+

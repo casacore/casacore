@@ -33,6 +33,8 @@
 #include <msvis/MSVis/VisibilityIterator.h>
 #include <measures/Measures/MDirection.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 // Define functions for mapping a VisBuffer to obsevred, model and corrected
 // visibility cubes
 #define CubeMapper(name,method) \
@@ -240,9 +242,12 @@ void RFDataMapper::setVisBuffer ( VisBuffer &vb )
   if( sin_dec>=-1 )
   {
     sin_dec = sin( MDirection::Convert( vb.phaseCenter(),
-                                     MDirection::Ref(MDirection::J2000)
-                   )().getAngle().getBaseValue()(1) );
+                                             MDirection::Ref(MDirection::J2000)
+                      )().getAngle().getBaseValue()(1) );
   }
 }
 
+
+
+} //# NAMESPACE CASA - END
 

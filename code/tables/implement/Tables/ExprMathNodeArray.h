@@ -33,6 +33,8 @@
 #include <tables/Tables/ExprNodeArray.h>
 #include <casa/Arrays/Array.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Forward Declarations
 
 //# This file defines classes derived from TableExprNode representing
@@ -387,5 +389,8 @@ public:
 };
 
 
+
+
+} //# NAMESPACE CASA - END
 
 #endif

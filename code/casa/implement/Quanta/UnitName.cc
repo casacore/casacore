@@ -30,6 +30,8 @@
 #include <casa/Quanta/UnitName.h>
 #include <casa/iomanip.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 UnitName::UnitName() :
     basicKind(),
     basicTag(""),
@@ -86,3 +88,6 @@ ostream& operator<< (ostream &os, const UnitName &name) {
 				setprecision(i);
     return os;
 }
+
+} //# NAMESPACE CASA - END
+

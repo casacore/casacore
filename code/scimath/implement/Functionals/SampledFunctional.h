@@ -31,6 +31,8 @@
 #include <casa/aips.h>
 #include <casa/BasicMath/Functional.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 // <summary> A base class for indexing into arbitrary data types </summary>
 
 // <use visibility=export>
@@ -107,5 +109,8 @@ public:
   // The virtual destructor does nothing
   virtual ~SampledFunctional(){};
 };
+
+
+} //# NAMESPACE CASA - END
 
 #endif

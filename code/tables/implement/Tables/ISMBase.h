@@ -34,6 +34,8 @@
 #include <tables/Tables/DataManager.h>
 #include <casa/Containers/Block.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Forward declarations
 class BucketCache;
 class BucketFile;
@@ -400,5 +402,8 @@ inline ISMColumn& ISMBase::getColumn (uInt colnr)
     return *(colSet_p[colnr]);
 }
 
+
+
+} //# NAMESPACE CASA - END
 
 #endif

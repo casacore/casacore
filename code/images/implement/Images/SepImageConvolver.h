@@ -37,6 +37,8 @@
 #include <images/Images/ImageInterface.h>
 #include <scimath/Mathematics/VectorKernel.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Forward Declarations
 template <class T> class Quantum;
 class String;
@@ -158,5 +160,8 @@ private:
                         const Vector<T>& psf);
 };
 
+
+
+} //# NAMESPACE CASA - END
 
 #endif

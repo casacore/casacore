@@ -33,6 +33,8 @@
 #include <tables/Tables/ScalarColumn.h>
 #include <measures/Measures/Stokes.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 class MSPolarization;
 template <class T> class Vector;
 template <class T> class Matrix;
@@ -207,4 +209,7 @@ private:
   ScalarColumn<Bool> flagRow_p;
   ScalarColumn<Int> numCorr_p;
 };
+
+} //# NAMESPACE CASA - END
+
 #endif

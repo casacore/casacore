@@ -31,6 +31,8 @@
 //# Includes
 #include <tables/Tables/ExprNodeRep.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Forward Declarations
 class TableExprNodeSet;
 
@@ -254,5 +256,8 @@ private:
 };
 
 
+
+
+} //# NAMESPACE CASA - END
 
 #endif

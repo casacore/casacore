@@ -31,6 +31,8 @@
 #include <casa/Containers/List.h>
 #include <casa/Containers/Dlink.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 template<class t> class DlistIter;
 
 
@@ -140,4 +142,7 @@ public:
   enum {DlistIterVersion = 2};
 
 };
+
+} //# NAMESPACE CASA - END
+
 #endif

@@ -34,6 +34,8 @@
 #include <casa/Exceptions/Error.h>
 #include <casa/BasicSL/String.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 LinearXform LinearXform::fourierInvert (const Vector<Bool>& axes, 
                                         const Vector<Double>& crpix, 
                                         const Vector<Double>& scale) const
@@ -77,3 +79,6 @@ LinearXform LinearXform::fourierInvert (const Vector<Bool>& axes,
    }
    return LinearXform(crpix0, cdelt0, pc0);
 }
+
+} //# NAMESPACE CASA - END
+

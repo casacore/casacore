@@ -32,6 +32,7 @@
 #include <scimath/Mathematics/HistAcc.h>
 #include <casa/Exceptions/Error.h>
 
+#include <casa/namespace.h>
 main()
 {
     try {

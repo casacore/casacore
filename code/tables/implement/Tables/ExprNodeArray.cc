@@ -36,6 +36,8 @@
 #include <casa/Exceptions/Error.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 TableExprNodeArray::TableExprNodeArray (NodeDataType dtype, OperType otype)
 : TableExprNodeBinary (dtype, VTArray, otype, 0)
 {
@@ -1368,3 +1370,6 @@ Array<String>   TableExprNodeArrayPart::getColumnString()
     return dynamic_cast<TableExprNodeArray*>(lnode_p)->getElemColumnString
                                    (indexNode_p->getSlicer(0));
 }
+
+} //# NAMESPACE CASA - END
+

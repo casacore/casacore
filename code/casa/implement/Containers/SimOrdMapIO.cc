@@ -29,6 +29,8 @@
 #include <casa/IO/AipsIO.h>
 #include <casa/iostream.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 // Write an OrderedMap into an AipsIO styream.
 template<class K, class V>
 AipsIO& operator<< (AipsIO& ios, const SimpleOrderedMap<K,V>& map)
@@ -89,3 +91,6 @@ ostream& operator<< (ostream& ios, const SimpleOrderedMap<K,V>& map)
     }
     return ios;
 }
+
+} //# NAMESPACE CASA - END
+

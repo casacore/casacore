@@ -29,6 +29,8 @@
 #include <casa/System/PGPlotterInterface.h>
 #include <casa/Logging/LogIO.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 PGPlotterInterface::~PGPlotterInterface()
 {
     // Nothing
@@ -47,3 +49,6 @@ Bool PGPlotterInterface::isAttached() const
 {
     return True;
 }
+
+} //# NAMESPACE CASA - END
+

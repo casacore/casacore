@@ -36,6 +36,8 @@
 #include <casa/aips.h>
 #include <casa/Arrays/LogiArrayFwd.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 // <summary>
 //    Forward declarations for MaskedLogicalArrays.
 // </summary>
@@ -95,5 +97,8 @@ typedef MaskedArray<LogicalArrayElem> MaskedLogicalArray;
 
 
 // </group>
+
+
+} //# NAMESPACE CASA - END
 
 #endif

@@ -33,6 +33,8 @@
 #include <ms/MeasurementSets/MSTable.h>
 #include <ms/MeasurementSets/MSAntennaEnums.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 // <summary> 
 // A Table intended to hold a MeasurementSet ANTENNA table.
 // </summary>
@@ -133,5 +135,8 @@ private:
     Bool hasBeenDestroyed_p;
 
 };
+
+
+} //# NAMESPACE CASA - END
 
 #endif

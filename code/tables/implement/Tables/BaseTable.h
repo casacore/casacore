@@ -37,6 +37,8 @@
 #include <casa/BasicSL/String.h>
 #include <casa/IO/FileLocker.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Forward Declarations
 class RefTable;
 // class TableDesc;  !Forward declaration not recognized SGI compiler
@@ -525,5 +527,8 @@ private:
 };
 
 
+
+
+} //# NAMESPACE CASA - END
 
 #endif

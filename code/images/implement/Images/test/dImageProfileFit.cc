@@ -42,6 +42,7 @@
 
 
 
+#include <casa/namespace.h>
 main (int argc, char **argv)
 {
 

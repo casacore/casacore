@@ -42,6 +42,8 @@
 #include <casa/System/PGPlotter.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 uInt LatticeHistSpecialize::bin(Float datum, Float dmin, Float width, uInt nBins)
 {
    return min(nBins-1, uInt((datum-dmin)/width));
@@ -398,4 +400,7 @@ Complex LatticeHistSpecialize::setBinWidth (Complex dmin, Complex dmax, uInt nBi
 
 
 
+
+
+} //# NAMESPACE CASA - END
 

@@ -31,13 +31,15 @@
 
 //# Includes
 #include <casa/aips.h>
+#include <casa/iosfwd.h>
+
+namespace casa { //# NAMESPACE CASA - BEGIN
 
 //# Forward Declarations
 class Unit;
 class MeasValue;
 class Measure;
 class MRBase;
-#include <casa/iosfwd.h>
 
 //# Typedefs
 
@@ -186,5 +188,8 @@ private:
 // Output decalration
 ostream &operator<<( ostream &os, const MConvertBase &mc);
 // </group>
+
+
+} //# NAMESPACE CASA - END
 
 #endif

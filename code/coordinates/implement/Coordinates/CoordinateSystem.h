@@ -36,6 +36,8 @@
 #include <casa/Containers/Block.h>
 #include <measures/Measures/MDoppler.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 template<class T> class Matrix;
 class DirectionCoordinate;
 class LinearCoordinate;
@@ -906,5 +908,8 @@ private:
                            MDoppler::Types velocityType, const String& velUnits) const;
     // </group>
 };
+
+
+} //# NAMESPACE CASA - END
 
 #endif

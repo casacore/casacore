@@ -29,6 +29,8 @@
 #include <casa/Arrays/IPosition.h>
 #include <casa/Arrays/ArrayError.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 // This probably isn't of interest to normal users. It returns the "volume" of
 // an array (i.e. "nelements").
 uInt ArrayVolume (uInt Ndim, const Int *Shape)
@@ -88,3 +90,6 @@ uInt ArrayIndexOffset (uInt Ndim, const Int *Shape,
 
     return offset;
 }
+
+} //# NAMESPACE CASA - END
+

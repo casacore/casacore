@@ -27,9 +27,14 @@
 
 #include <casa/Utilities/Compare.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 template<class T>
 int ObjCompare<T>::compare (const void* obj1, const void* obj2)
 {
     return (*(const T*)obj1  < *(const T*)obj2  ?  -1 :
 	   (*(const T*)obj1 == *(const T*)obj2  ?  0 : 1));
 }
+
+} //# NAMESPACE CASA - END
+

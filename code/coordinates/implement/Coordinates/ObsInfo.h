@@ -39,6 +39,8 @@
 //# Forward declarations
 #include <casa/iosfwd.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 // <summary>
 // Store miscellaneous information related to an observation.
 // </summary>
@@ -212,5 +214,8 @@ private:
 // Output declaration - useful for debugging.
 ostream &operator<<(ostream &os, const ObsInfo &info);
 // </group>
+
+
+} //# NAMESPACE CASA - END
 
 #endif

@@ -32,6 +32,8 @@
 #include <tables/Tables/DataManError.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 MSMBase::MSMBase()
 : DataManager (),
   nrrow_p     (0),
@@ -262,3 +264,6 @@ void MSMBase::resync (uInt nrrow)
 
 void MSMBase::deleteManager()
 {}
+
+} //# NAMESPACE CASA - END
+

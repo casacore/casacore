@@ -29,6 +29,8 @@
 #include <casa/Arrays/Matrix.h>
 #include <casa/Arrays/Vector.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 template <typename T>
 Bool Interpolate2D::interpNearest(T &result, 
 				  const Vector<Double> &where,
@@ -244,3 +246,6 @@ Bool Interpolate2D::interpCubic(T &result,
    //
    return True;
 };
+
+} //# NAMESPACE CASA - END
+

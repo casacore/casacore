@@ -33,6 +33,8 @@
 #include <scimath/Functionals/GNoiseParam.h>
 #include <scimath/Functionals/Function.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Forward declarations
 
 // <summary> A one dimensional normal distribution 
@@ -117,5 +119,8 @@ protected:
 public:
   using GNoiseParam<T>::noise_p;
 };
+
+
+} //# NAMESPACE CASA - END
 
 #endif

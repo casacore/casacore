@@ -29,6 +29,8 @@
 
 #include <casa/sstream.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 LogOrigin::LogOrigin()
   : function_p(""), class_p(""), id_p(True), line_p(0), file_p("")
 {
@@ -210,4 +212,7 @@ const SourceLocation *SourceLocation::canonicalize(const char *file, Int line)
     permanent.lineNumber = line;
     return &permanent;
 }
+
+
+} //# NAMESPACE CASA - END
 

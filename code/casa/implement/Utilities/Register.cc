@@ -27,8 +27,13 @@
 
 #include <casa/Utilities/Register.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 template<class t> uInt Register(const t *) {
   static uInt type = 0;
   if (!type) type = RegSequence::SgetNext();
   return type;
 }
+
+} //# NAMESPACE CASA - END
+

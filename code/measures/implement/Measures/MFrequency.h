@@ -35,6 +35,8 @@
 #include <measures/Measures/MeasRef.h>
 #include <casa/Quanta/MVFrequency.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Forward Declarations
 class MFrequency;
 class MCFrequency;
@@ -315,5 +317,8 @@ class MFrequency : public MeasBase<MVFrequency, MeasRef<MFrequency> > {
   //# Member functions
   
 };
+
+
+} //# NAMESPACE CASA - END
 
 #endif

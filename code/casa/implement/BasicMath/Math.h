@@ -38,6 +38,8 @@
 #include <ieeefp.h>
 #endif
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 
 // <summary>
 // AIPS++ interface to math.h and other scalar math functions
@@ -136,9 +138,9 @@
 // library. But many compilers are not good enough to automatically do the type
 // promotion. Hence these functions are explicitly defined.
 // <group>
-inline Float pow(Float f1, Double f2) {return Float(pow(Double(f1), f2));}
-inline Float pow(Double f1, Float f2) {return Float(pow(f1, Double(f2)));}
-inline Int pow(Int f1, Int f2) {return Int(pow(Double(f1), Double(f2)));}
+inline Float pow(Float f1, Double f2) {return Float(std::pow(Double(f1), f2));}
+inline Float pow(Double f1, Float f2) {return Float(std::pow(f1, Double(f2)));}
+inline Int pow(Int f1, Int f2) {return Int(std::pow(Double(f1), Double(f2)));}
 // </group>
 
 // Return the integer "less than" point (i.e. the one further from zero if
@@ -304,5 +306,8 @@ void setInf(Float& val);
 void setInf(Double& val);
 // </group>
 // </group>
+
+
+} //# NAMESPACE CASA - END
 
 #endif

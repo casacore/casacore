@@ -33,6 +33,8 @@
 #include <casa/Exceptions/Error.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 ExtendSpecifier::ExtendSpecifier()
 {}
 
@@ -178,3 +180,6 @@ IPosition ExtendSpecifier::convertNew (const IPosition& shape) const
   }
   return newShape;
 }
+
+} //# NAMESPACE CASA - END
+

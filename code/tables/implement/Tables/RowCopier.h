@@ -32,6 +32,8 @@
 //# Includes
 #include <casa/aips.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Forward Declarations
 class Table;
 template<class T> class Vector;
@@ -202,5 +204,8 @@ private:
 inline Bool RowCopier::copy (uInt rownr)
     { return copy (rownr, rownr); }
 
+
+
+} //# NAMESPACE CASA - END
 
 #endif

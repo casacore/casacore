@@ -37,6 +37,8 @@
 #include <casa/Utilities/DataType.h>
 #include <casa/IO/FileLocker.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Forward Declarations
 template <class T> class LELScalar;
 template <class T> class LELArray;
@@ -207,6 +209,9 @@ private:
    LELAttribute attr_p;
 };
 
+
+
+} //# NAMESPACE CASA - END
 
 #endif
 

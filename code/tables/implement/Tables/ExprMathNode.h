@@ -33,6 +33,8 @@
 #include <tables/Tables/ExprNodeRep.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# This file defines classes derived from TableExprNode representing
 //# the data type and operator in a table expression.
 //#
@@ -447,5 +449,8 @@ public:
 };
 
 
+
+
+} //# NAMESPACE CASA - END
 
 #endif

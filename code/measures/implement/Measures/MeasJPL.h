@@ -36,6 +36,8 @@
 #include <tables/Tables/ArrayColumn.h>
 #include <casa/Containers/RecordField.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Forward Declarations
 class String;
 class MVEpoch;
@@ -263,5 +265,8 @@ private:
 };
 
 //# Inline Implementations
+
+
+} //# NAMESPACE CASA - END
 
 #endif

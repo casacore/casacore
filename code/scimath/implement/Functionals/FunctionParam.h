@@ -35,6 +35,8 @@
 //# Forward declarations
 #include <casa/iosfwd.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 // <summary>Container of function parameters with masking flags
 // </summary>
 //
@@ -190,6 +192,9 @@ ostream &operator<<(ostream &os, const FunctionParam<T> &par);
 template<class T>
 inline ostream &operator<<(ostream &os, const FunctionParam<T> &par) {
   return par.print(os); };
+
+
+} //# NAMESPACE CASA - END
 
 #endif
 

@@ -38,6 +38,8 @@
 #include <measures/Measures/MConvertBase.h>
 #include <measures/Measures/MeasMath.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Forward Declarations
 class MCBaseline;
 class String;
@@ -202,6 +204,9 @@ private:
 		 const MConvertBase &mc);
   
 };
+
+
+} //# NAMESPACE CASA - END
 
 #endif
 

@@ -46,6 +46,7 @@
 #include <casa/iostream.h>
 
 
+#include <casa/namespace.h>
 void testTempClose()
 {
   PagedArray<Int> scratch(IPosition(3,64,64,257), "tPagedArray_tmp.scr");

@@ -44,6 +44,7 @@
 #include <casa/iostream.h>
 
 
+#include <casa/namespace.h>
 Table theTable;
 
 Table& getTable (void*, Bool)

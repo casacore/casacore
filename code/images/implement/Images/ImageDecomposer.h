@@ -40,6 +40,8 @@
 #include <images/Images/ImageInterface.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 // <summary>
 // A tool to separate a complex image into individual components.
 // </summary>
@@ -463,4 +465,7 @@ private:
 // </group>
 
 };
+
+} //# NAMESPACE CASA - END
+
 #endif

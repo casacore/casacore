@@ -37,6 +37,8 @@
 #include <casa/Utilities/CountedPtr.h>
 #include <components/ComponentModels/ComponentType.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 class RecordInterface;
 template <class Qtype> class Quantum;
 
@@ -710,5 +712,8 @@ public:
 private:
   CountedPtr<FluxRep<T> > itsFluxPtr;
 };
+
+
+} //# NAMESPACE CASA - END
 
 #endif

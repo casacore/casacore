@@ -32,12 +32,14 @@
 //# Includes
 #include <casa/aips.h>
 #include <casa/Quanta/UnitDim.h>
+#include <casa/iosfwd.h>
+
+namespace casa { //# NAMESPACE CASA - BEGIN
 
 //# Forward Declarations
 class String;
 class MUString;
 class UnitMap;
-#include <casa/iosfwd.h>
 
 // 
 // <summary>
@@ -322,6 +324,9 @@ static class UnitVal_static_initializer {
  private:
     static int initialized;
 } unitval_static_initializer;
+
+
+} //# NAMESPACE CASA - END
 
 #endif
 

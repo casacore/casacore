@@ -32,6 +32,8 @@
 #include <casa/Exceptions/Error.h>
 #include <scimath/Functionals/Function.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 template<class T>
 NonLinearFitLM<T>::NonLinearFitLM(Bool svd) :
   NonLinearFit<T>(svd),
@@ -95,7 +97,6 @@ fitIt(Vector<typename FunctionTraits<T>::BaseType> &sol,
   invert(nr_p, True);
   solve(condEq_p);
   sol_p += condEq_p;
-  fillSVDConstraints();
   getErrors(err_p);
   errors_p = True;
   for (uInt i=0, k=0; i<pCount_p; i++) {
@@ -105,3 +106,6 @@ fitIt(Vector<typename FunctionTraits<T>::BaseType> &sol,
   solved_p = converge_p;
   return converge_p;
 }
+
+} //# NAMESPACE CASA - END
+

@@ -35,6 +35,8 @@
 #include <measures/Measures/MeasRef.h>
 #include <casa/Quanta/MVPosition.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Forward Declarations
 class MPosition;
 class MCPosition;
@@ -223,5 +225,8 @@ class MPosition : public MeasBase<MVPosition, MeasRef<MPosition> > {
   //# Member functions
   
 };
+
+
+} //# NAMESPACE CASA - END
 
 #endif

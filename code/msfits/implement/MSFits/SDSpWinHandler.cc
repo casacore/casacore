@@ -48,6 +48,8 @@
 #include <casa/Arrays/ArrayUtil.h>
 #include <casa/Arrays/ArrayLogical.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 SDSpWindowHandler::SDSpWindowHandler()
     : fNCachePtr_p(0), f0CachePtr_p(0), bwCachePtr_p(0), index_p(0), theCache_p(0),
       msSpWin_p(0), msSpWinCols_p(0), nextCacheRow_p(0), cacheSize_p(1000), rownr_p(-1), 
@@ -435,3 +437,6 @@ void SDSpWindowHandler::initRow(Vector<Bool> &handledCols, const Record &row)
     // row number isn't set until the following fill
     rownr_p = -1;
 }
+
+} //# NAMESPACE CASA - END
+

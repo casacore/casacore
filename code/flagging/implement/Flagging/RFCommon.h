@@ -33,6 +33,8 @@
 #include <casa/Containers/RecordInterface.h>
 #include <casa/Logging/LogIO.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
  // RFAs use bitwise flags
 typedef uInt RFlagWord;
 typedef Vector<RFlagWord> FlagVector;
@@ -262,5 +264,8 @@ inline String stringUpper ( const String &in )
 
 // a debug-printf function, for printf-ing debug messages
 int dprintf( LogIO &os, const char *format, ... );
+
+
+} //# NAMESPACE CASA - END
 
 #endif

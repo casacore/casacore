@@ -34,6 +34,8 @@
 #include <scimath/Fitting/LSQTraits.h>
 #include <complex>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Forward Declarations
  
 // <summary> Basic class for the least squares fitting </summary>
@@ -717,5 +719,8 @@ class LSQFit {
   // </group>
   //
 };
+
+
+} //# NAMESPACE CASA - END
 
 #endif

@@ -34,6 +34,8 @@
 #include <tables/Tables/TableLock.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 // <summary> 
 // Class to hold table lock data.
 // </summary>
@@ -154,5 +156,8 @@ inline void TableLockData::putInfo (const MemoryIO& info)
     itsLock->putInfo (info);
 }
 
+
+
+} //# NAMESPACE CASA - END
 
 #endif

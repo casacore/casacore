@@ -34,6 +34,7 @@
 #include <unistd.h>
 
 
+#include <casa/namespace.h>
 int main (int argc, char** argv)
 {
   try {

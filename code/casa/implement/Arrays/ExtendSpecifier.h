@@ -34,6 +34,8 @@
 #include <casa/aips.h>
 #include <casa/Arrays/IPosition.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Forward Declarations
 class Slicer;
 template<class T> class Block;
@@ -157,5 +159,8 @@ private:
   IPosition itsOldNewAxes;
 };
 
+
+
+} //# NAMESPACE CASA - END
 
 #endif

@@ -30,6 +30,8 @@
 
 #include <casa/aips.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 // <summary> virtual templated base class for sequences </summary>
 // <use visibility=export>
 // <reviewed reviewer="Friso Olnon" date="1995/03/17" tests="" demos="">
@@ -72,6 +74,9 @@ public:
 private:
     static uInt num;
 };
+
+
+} //# NAMESPACE CASA - END
 
 #endif
 

@@ -32,6 +32,8 @@
 #include <casa/BasicSL/String.h>
 #include <measures/Measures/MeasureHolder.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Forward Declarations
 class TableMeasDescBase;
 class Measure;
@@ -208,5 +210,8 @@ private:
   void writeKeys (TableRecord& measInfo, const String& prefix);
 };
 
+
+
+} //# NAMESPACE CASA - END
 
 #endif

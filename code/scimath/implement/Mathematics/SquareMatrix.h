@@ -34,6 +34,8 @@
 #include <casa/Arrays/Matrix.h>
 #include <casa/iosfwd.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# forward declarations
 template <class T, Int n> class RigidVector;
 
@@ -311,5 +313,8 @@ ostream& operator<<(ostream& os, const SquareMatrix<Float,2>& m);
 ostream& operator<<(ostream& os, const SquareMatrix<Float,4>& m);
 // </group>
 
+
+
+} //# NAMESPACE CASA - END
 
 #endif

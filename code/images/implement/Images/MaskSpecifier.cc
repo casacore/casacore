@@ -30,4 +30,9 @@
 #include <images/Images/MaskSpecifier.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# All functions are inlined.
+
+} //# NAMESPACE CASA - END
+

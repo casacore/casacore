@@ -33,6 +33,8 @@
 #include <tables/Tables/ISMBase.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 // <summary>
 // The Incremental Storage Manager
 // </summary>
@@ -216,5 +218,8 @@ private:
     IncrementalStMan& operator= (const IncrementalStMan& that);
 };
 
+
+
+} //# NAMESPACE CASA - END
 
 #endif

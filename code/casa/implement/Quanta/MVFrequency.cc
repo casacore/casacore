@@ -34,6 +34,8 @@
 #include <casa/Exceptions/Error.h>
 #include <casa/BasicMath/Math.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 // MVFrequency class
 
 //# Constructors
@@ -114,11 +116,11 @@ Bool MVFrequency::operator!=(const MVFrequency &other) const {
 }
 
 Bool MVFrequency::near(const MVFrequency &other, Double tol) const {
-  return ::near(val, other.val, tol);
+  return ::casa::near(val, other.val, tol);
 }
 
 Bool MVFrequency::nearAbs(const MVFrequency &other, Double tol) const {
-  return ::nearAbs(val, other.val, tol);
+  return ::casa::nearAbs(val, other.val, tol);
 }
 
 // Member functions
@@ -251,3 +253,6 @@ Double MVFrequency::makeF(Double v, const Unit &dt, Bool rev) const{
   if (rev) return (v/x);
   return (v*x);
 }
+
+} //# NAMESPACE CASA - END
+

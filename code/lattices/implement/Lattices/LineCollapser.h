@@ -33,6 +33,8 @@
 #include <casa/aips.h>
 #include <scimath/Mathematics/NumericTraits.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Forward Declarations
 template <class T> class Vector;
 class IPosition;
@@ -134,5 +136,8 @@ public:
 			       const IPosition& pos) = 0;
 };
 
+
+
+} //# NAMESPACE CASA - END
 
 #endif

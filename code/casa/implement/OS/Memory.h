@@ -32,6 +32,8 @@
 //# The following is used to get size_t.
 #include <casa/stdlib.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 // <summary>Memory related information and utilities.</summary>
 
 // use visibility=export>
@@ -132,6 +134,9 @@ public:
     static void setMemoryOptions();
     static int  setMemoryOption(int, int);
 };
+
+
+} //# NAMESPACE CASA - END
 
 #endif
 

@@ -33,6 +33,8 @@
 #include <casa/Arrays/Array.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 // <summary>
 // Base class for LELArray holding the mask.
 // </summary>
@@ -135,5 +137,8 @@ private:
    Array<Bool>* itsMaskPtr;
 };
 
+
+
+} //# NAMESPACE CASA - END
 
 #endif

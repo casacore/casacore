@@ -33,6 +33,8 @@
 #include <casa/aips.h>
 #include <measures/Measures/MEpoch.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 class String;
 class MVTime;
 
@@ -118,5 +120,8 @@ public:
     // it may be called by anyone.
     static uInt findPrecision(const String &fitsDate);
 };
+
+
+} //# NAMESPACE CASA - END
 
 #endif

@@ -30,6 +30,8 @@
 #include <casa/IO/AipsIO.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 ostream& RecordDesc::put (ostream &os) const
 {
     Int i;
@@ -135,3 +137,6 @@ AipsIO& RecordDesc::get (AipsIO& os)
     os.getend();
     return os;
 }
+
+} //# NAMESPACE CASA - END
+

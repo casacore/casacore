@@ -48,6 +48,7 @@
 #include <casa/iostream.h>
 
 
+#include <casa/namespace.h>
 void* RetypedArrayEx1::newCopyInfo (const TableRecord&, const IPosition&)
 { return 0; }
 void RetypedArrayEx1::deleteCopyInfo (void*)
@@ -456,6 +457,7 @@ void c()
 #include <casa/Utilities/CountedPtr.cc>
 #include <casa/Utilities/ValTypeId.h>
 
+#include <casa/namespace.h>
 template class ArrayColumnData<RetypedArrayEx1>;
 template class ArrayColumnDesc<RetypedArrayEx1>;
 template class Array<RetypedArrayEx1>;

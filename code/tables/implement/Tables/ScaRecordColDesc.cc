@@ -32,6 +32,8 @@
 #include <casa/iostream.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 ScalarRecordColumnDesc::ScalarRecordColumnDesc (const String& name)
 : BaseColumnDesc (name, "", "", "",
 		  TpRecord, "TableRecord", 0,
@@ -135,3 +137,6 @@ PlainColumn* ScalarRecordColumnDesc::makeColumn (ColumnSet* csp) const
 {
     return new ScalarRecordColumnData (this, csp);
 }
+
+} //# NAMESPACE CASA - END
+

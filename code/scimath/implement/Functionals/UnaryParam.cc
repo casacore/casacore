@@ -28,6 +28,8 @@
 //# Includes
 #include <scimath/Functionals/UnaryParam.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 template<class T>
 UnaryParam<T>::UnaryParam() :
   Function<T>(3) {
@@ -74,3 +76,6 @@ UnaryParam<T> &UnaryParam<T>::operator=(const UnaryParam<T> &other) {
   if (this != &other) Function<T>::operator=(other);
   return *this;
 }
+
+} //# NAMESPACE CASA - END
+

@@ -33,6 +33,8 @@
 #include <casa/aips.h>
 #include <tables/Tables/PlainColumn.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Forward Declarations
 class ColumnSet;
 class ScalarRecordColumnDesc;
@@ -202,5 +204,8 @@ private:
     // </group>
 };
 
+
+
+} //# NAMESPACE CASA - END
 
 #endif

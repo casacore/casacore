@@ -46,6 +46,8 @@
 #include <casa/Utilities/DataType.h>
 #include <tables/Tables/ExprNodeArray.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 TableExprNode::TableExprNode() : node_p(0)
 {}
 
@@ -1095,3 +1097,6 @@ DataType TableExprNode::dataType() const
     throwInvDT ("(of expression result)");
     return TpOther;   // just here to get rid of that warning
 }
+
+} //# NAMESPACE CASA - END
+

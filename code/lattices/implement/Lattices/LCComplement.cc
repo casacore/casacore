@@ -32,6 +32,8 @@
 #include <casa/Exceptions/Error.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 LCComplement::LCComplement()
 {}
 
@@ -139,3 +141,6 @@ void LCComplement::multiGetSlice (Array<Bool>& buffer,
 	buffer(stbuf,endbuf) = !tmpbuf;
     }
 }
+
+} //# NAMESPACE CASA - END
+

@@ -32,6 +32,8 @@
 #include <casa/Exceptions/Error.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 // <summary>Utility class for Assert macros.</summary>
 // <use visibility=export>
 // <reviewed reviewer="Friso Olnon" date="1995/03/13" tests="" demos="">
@@ -184,5 +186,8 @@ public:
 #define DebugAssertExit(expr)
 
 #endif
+
+
+} //# NAMESPACE CASA - END
 
 #endif

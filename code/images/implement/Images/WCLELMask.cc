@@ -36,6 +36,8 @@
 #include <casa/Exceptions/Error.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 WCLELMask::WCLELMask()
 : itsImageExpr (0),
   itsLattExpr  (0),
@@ -276,3 +278,6 @@ String WCLELMask::type() const
 {
    return className();
 }
+
+} //# NAMESPACE CASA - END
+

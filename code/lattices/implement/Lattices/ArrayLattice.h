@@ -34,6 +34,8 @@
 #include <casa/Arrays/Array.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 // <summary>
 // A memory resident Lattice
 // </summary>
@@ -228,5 +230,8 @@ private:
   Bool     itsWritable;
 };
 
+
+
+} //# NAMESPACE CASA - END
 
 #endif

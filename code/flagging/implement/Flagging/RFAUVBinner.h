@@ -35,6 +35,8 @@
 #include <scimath/Mathematics/RigidVector.h>
 #include <casa/System/PGPlotter.h>
     
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 // <summary>
 // RFAUVBinner: flagging via UV binning
 // </summary>
@@ -116,5 +118,8 @@ protected:
 
   RFDebugPlot   debug;
 };
+
+
+} //# NAMESPACE CASA - END
 
 #endif

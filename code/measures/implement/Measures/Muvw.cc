@@ -33,6 +33,8 @@
 #include <casa/Utilities/Register.h>
 #include <casa/Utilities/Assert.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Constructors
 Muvw::Muvw() :
   MeasBase<MVuvw, Muvw::Ref>() {}
@@ -304,3 +306,6 @@ Quantum<Vector<Double> > Muvw::getAngle(const Unit &inunit) const {
 Measure *Muvw::clone() const {
     return (new Muvw(*this));
 }
+
+} //# NAMESPACE CASA - END
+

@@ -59,6 +59,8 @@
 #include <mach/host_info.h>
 #include <sys/table.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 // <summary>
 // HostInfo for OSF1 machines.
 // </summary>
@@ -179,4 +181,7 @@ void HostMachineInfo::update_info( ) {
 }
 
 # endif
+
+} //# NAMESPACE CASA - END
+
 #endif

@@ -33,6 +33,8 @@
 #include <casa/aips.h>
 #include <casa/Arrays/IPosition.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Forward Declarations
 class Slice;
 
@@ -424,7 +426,7 @@ private:
 // <summary>IO functions for Slicer's</summary>
 // <group name="Slicer IO">
 // Print the contents of the specified Slicer to the specified stream.
-ostream& operator << (ostream& stream, const Slicer& slicer);
+std::ostream& operator << (std::ostream& stream, const Slicer& slicer);
 // </group>
 
 
@@ -447,6 +449,9 @@ inline const IPosition& Slicer::length() const
 inline Bool Slicer::isFixed() const
     { return fixed_p; }
 
+
+
+} //# NAMESPACE CASA - END
 
 #endif
 

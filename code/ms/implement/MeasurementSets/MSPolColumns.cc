@@ -34,6 +34,8 @@
 #include <casa/Utilities/Assert.h>
 #include <casa/BasicSL/String.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 ROMSPolarizationColumns::
 ROMSPolarizationColumns(const MSPolarization& msPolarization):
   corrProduct_p(msPolarization, MSPolarization::
@@ -157,3 +159,6 @@ attach(MSPolarization& msPolarization)
 // Local Variables: 
 // compile-command: "gmake MSPolColumns"
 // End: 
+
+} //# NAMESPACE CASA - END
+

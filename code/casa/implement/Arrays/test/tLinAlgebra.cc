@@ -39,6 +39,7 @@
 #include <casa/iostream.h>
 #include <casa/math.h>
 
+#include <casa/namespace.h>
 main()
 {
   try{

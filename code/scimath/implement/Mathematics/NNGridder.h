@@ -31,6 +31,8 @@
 
 #include <scimath/Mathematics/Gridder.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 // <summary>
 // A non-negative gridding class
 // </summary>
@@ -64,4 +66,7 @@ protected:
   using Gridder<Domain,Range>::fillCorrectionVectors;
   using Gridder<Domain,Range>::onGrid;
 };
+
+} //# NAMESPACE CASA - END
+
 #endif

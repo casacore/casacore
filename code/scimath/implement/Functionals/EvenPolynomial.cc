@@ -28,6 +28,8 @@
 //# Includes
 #include <scimath/Functionals/EvenPolynomial.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Constructors
 
 //# Operators
@@ -44,3 +46,6 @@ T EvenPolynomial<T>::eval(typename Function1D<T>::FunctionArg x) const {
 }
 
 //# Member functions
+
+} //# NAMESPACE CASA - END
+

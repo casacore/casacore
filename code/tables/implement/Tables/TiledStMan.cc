@@ -48,6 +48,8 @@
 
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 TiledStMan::TiledStMan ()
 : DataManager       (),
   nrrow_p           (0),
@@ -1131,3 +1133,6 @@ TSMFile* TiledStMan::getFile (uInt sequenceNumber)
     }
     return fileSet_p[sequenceNumber];
 }
+
+} //# NAMESPACE CASA - END
+

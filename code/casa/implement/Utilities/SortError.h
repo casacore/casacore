@@ -32,6 +32,8 @@
 #include <casa/Exceptions/Error.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 // <summary> Generic Sort exception </summary>
 // <use visibility=export>
 // <reviewed reviewer="Friso Olnon" date="1995/03/01" tests="" demos="">
@@ -111,5 +113,8 @@ public:
     SortInvOpt (Category c=INVALID_ARGUMENT);
     ~SortInvOpt () throw();
 };
+
+
+} //# NAMESPACE CASA - END
 
 #endif

@@ -31,6 +31,8 @@
 #include <casa/Exceptions/Error.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 LatticeBase::~LatticeBase()
 {}
 
@@ -145,3 +147,6 @@ void LatticeBase::throwBoolMath() const
 {
   throw AipsError ("Operator +=, etc. cannot be used for a Boolean lattice");
 }
+
+} //# NAMESPACE CASA - END
+

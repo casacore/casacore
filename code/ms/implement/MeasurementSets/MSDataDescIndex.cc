@@ -31,6 +31,8 @@
 #include <casa/Arrays/ArrayLogical.h>
 #include <casa/Arrays/ArrayUtil.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //-------------------------------------------------------------------------
 
 MSDataDescIndex::MSDataDescIndex(const MSDataDescription& dataDescription)
@@ -116,4 +118,7 @@ Vector<Int> MSDataDescIndex::matchSpwIdAndPolznId(const Int& spwId,
 //-------------------------------------------------------------------------
 
 
+
+
+} //# NAMESPACE CASA - END
 

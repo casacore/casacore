@@ -34,9 +34,11 @@
 #include <casa/Arrays/Vector.h>
 #include <casa/Quanta/Quantum.h>
 #include <casa/Quanta/MeasValue.h>
+#include <casa/iosfwd.h>
+
+namespace casa { //# NAMESPACE CASA - BEGIN
 
 //# Forward Declarations
-#include <casa/iosfwd.h>
 
 //# Constants (SUN compiler does not accept non-simple default arguments)
 
@@ -155,5 +157,8 @@ private:
   // Value
   Double val;
 };
+
+
+} //# NAMESPACE CASA - END
 
 #endif

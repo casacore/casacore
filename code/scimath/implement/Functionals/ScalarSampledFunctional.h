@@ -33,6 +33,8 @@
 #include <scimath/Functionals/SampledFunctional.h>
 #include <casa/Arrays/Vector.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 template<class T> class Block;
 
 // <summary> A unified interface for indexing into Vectors or Blocks </summary>
@@ -152,6 +154,9 @@ public:
 private:
   Vector<T> refData;
 };
+
+
+} //# NAMESPACE CASA - END
 
 #endif
 

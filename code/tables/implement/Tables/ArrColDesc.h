@@ -35,6 +35,8 @@
 #include <casa/Arrays/IPosition.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Forward Declarations
 class PlainColumn;
 class ColumnSet;
@@ -277,5 +279,8 @@ protected:
     virtual void getDesc (AipsIO&);
 };
 
+
+
+} //# NAMESPACE CASA - END
 
 #endif

@@ -32,6 +32,8 @@
 #include <casa/Exceptions/Error.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 RefRows::RefRows (const Vector<uInt>& rowNumbers, Bool isSliced,
 		  Bool collapse)
 : itsRows   (rowNumbers),
@@ -220,3 +222,6 @@ void RefRowsSliceIter::next()
 	}
     }
 }
+
+} //# NAMESPACE CASA - END
+

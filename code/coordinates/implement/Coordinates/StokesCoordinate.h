@@ -36,6 +36,8 @@
 #include <casa/Arrays/Vector.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 // <summary>
 // Interconvert between pixel and Stokes value.
 // </summary>
@@ -288,5 +290,8 @@ private:
     // Undefined and inaccessible
     StokesCoordinate();
 };
+
+
+} //# NAMESPACE CASA - END
 
 #endif

@@ -32,6 +32,8 @@
 #include <casa/aips.h>
 #include <scimath/Functionals/Function1D.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Forward declarations
 
 // <summary> Parameter handling for one dimensional Sinusoid class
@@ -159,5 +161,8 @@ protected:
 public:
   using Function1D<T>::nparameters;
 };
+
+
+} //# NAMESPACE CASA - END
 
 #endif

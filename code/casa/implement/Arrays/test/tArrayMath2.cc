@@ -36,6 +36,7 @@
 #include <casa/iostream.h>
 
 
+#include <casa/namespace.h>
 typedef Array<Double> PartFunc (const Array<Double>&, const IPosition& axes);
 typedef Double FullFunc (const Array<Double>&);
 

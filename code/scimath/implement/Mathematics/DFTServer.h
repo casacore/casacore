@@ -39,6 +39,8 @@
 #include <casa/BasicSL/Constants.h> 
 #include <casa/math.h> 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 template<class T> class Matrix;
 
 // <summary>
@@ -128,5 +130,8 @@ private:
    Matrix<T> getMatrix(Array<T> &);
 
 };
+
+
+} //# NAMESPACE CASA - END
 
 #endif //DFT_SERVER

@@ -41,6 +41,8 @@
 #include <tables/Tables/DataManError.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 #define EXTBLSZ 32
 
 StManColumnAipsIO::StManColumnAipsIO (StManAipsIO* smptr,
@@ -913,3 +915,6 @@ void StManAipsIO::deleteManager()
     DOos::remove (fileName() + 'i', False, False);
     DOos::remove (fileName(), False, False);
 }
+
+} //# NAMESPACE CASA - END
+

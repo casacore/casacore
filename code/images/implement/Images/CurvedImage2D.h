@@ -32,6 +32,8 @@
 //# Includes
 #include <images/Images/ImageInterface.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Forward Declarations
 template <class T> class CurvedLattice2D;
 template <class T> class CLInterpolator2D;
@@ -239,5 +241,8 @@ protected:
   using ImageInterface<T>::setCoordsMember;
 };
 
+
+
+} //# NAMESPACE CASA - END
 
 #endif

@@ -31,6 +31,8 @@
 #include <casa/aips.h>
 #include <casa/BasicSL/String.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 // <summary>
 // This class allows for getting enviroment variables
 // </summary>
@@ -76,6 +78,9 @@ private:
   EnvironmentVariable();
 };
 
+
+
+} //# NAMESPACE CASA - END
 
 #endif
 

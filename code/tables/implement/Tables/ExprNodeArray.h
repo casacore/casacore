@@ -34,6 +34,8 @@
 #include <tables/Tables/ArrayColumn.h>
 #include <casa/Arrays/Slicer.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Forward Declarations
 class TableExprNodeSet;
 
@@ -796,6 +798,9 @@ inline const TableExprNodeIndex* TableExprNodeArrayPart::getIndexNode() const
     { return indexNode_p; }
 
 
+
+
+} //# NAMESPACE CASA - END
 
 #endif
 

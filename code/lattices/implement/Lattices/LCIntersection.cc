@@ -32,6 +32,8 @@
 #include <casa/Exceptions/Error.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 LCIntersection::LCIntersection()
 {}
 
@@ -201,3 +203,6 @@ void LCIntersection::multiGetSlice (Array<Bool>& buffer,
     }
     buffer.putStorage (buf, deleteBuf);
 }
+
+} //# NAMESPACE CASA - END
+

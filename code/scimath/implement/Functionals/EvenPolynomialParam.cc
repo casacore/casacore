@@ -29,6 +29,8 @@
 #include <scimath/Functionals/EvenPolynomialParam.h>
 #include <casa/Arrays/Vector.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 template<class T>
 EvenPolynomialParam<T>::EvenPolynomialParam() :
   Function1D<T>(1) {}
@@ -60,3 +62,6 @@ template<class T>
 void EvenPolynomialParam<T>::setCoefficients(const Vector<T> &coefficients) {
   param_p.setParameters(coefficients);
 }
+
+} //# NAMESPACE CASA - END
+

@@ -33,6 +33,8 @@
 #include <casa/aips.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 // <summary>
 // This LEL class holds a scalar with a mask.
 // </summary>
@@ -81,5 +83,8 @@ private:
    Bool itsMask;
 };
 
+
+
+} //# NAMESPACE CASA - END
 
 #endif

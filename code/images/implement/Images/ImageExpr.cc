@@ -42,6 +42,8 @@
 #include <casa/iostream.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 template <class T>
 ImageExpr<T>::ImageExpr()
 {} 
@@ -225,3 +227,6 @@ void ImageExpr<T>::reopen()
 {
   latticeExpr_p.reopen();
 }
+
+} //# NAMESPACE CASA - END
+

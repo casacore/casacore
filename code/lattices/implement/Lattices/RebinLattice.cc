@@ -37,6 +37,8 @@
 #include <casa/Exceptions/Error.h> 
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 template<class T>
 RebinLattice<T>::RebinLattice ()
 : itsLatticePtr (0),
@@ -427,4 +429,7 @@ Slicer RebinLattice<T>::findOriginalSlicer (const Slicer& section) const
    IPosition strideOrig(nDim,1);
    return Slicer(blcOrig, trcOrig, strideOrig, Slicer::endIsLast);
 }
+
+
+} //# NAMESPACE CASA - END
 

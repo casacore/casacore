@@ -35,6 +35,8 @@
 #include <casa/Utilities/Assert.h>
 #include <casa/Utilities/GenSort.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 VisBuffer::VisBuffer():visIter_p(static_cast<ROVisibilityIterator*>(0)),
 twoWayConnection_p(False),This(this),nChannel_p(0),nRow_p(0)
 {validate();}
@@ -657,3 +659,6 @@ Vector<Int> VisBuffer::unique(const Vector<Int>& indices) const
   };
   return uniqIndices;
 };
+
+} //# NAMESPACE CASA - END
+

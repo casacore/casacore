@@ -51,6 +51,8 @@
 #include <casa/iostream.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 Table::ScratchCallback* Table::scratchCallback_p = 0;
 
 Table::ScratchCallback* Table::setScratchCallback
@@ -792,3 +794,6 @@ ostream& operator<< (ostream& ios, const Table& tab)
     ios << endl;
     return ios;
 }
+
+} //# NAMESPACE CASA - END
+

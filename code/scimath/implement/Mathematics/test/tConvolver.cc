@@ -35,6 +35,7 @@
 #include <scimath/Mathematics/Convolver.h>
 #include <casa/iostream.h>
 
+#include <casa/namespace.h>
 int main() {
   Bool anyFailures = False;
   {

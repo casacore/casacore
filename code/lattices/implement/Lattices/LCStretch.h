@@ -33,6 +33,8 @@
 #include <lattices/Lattices/LCBox.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 // <summary>
 // Stretch length 1 axes in an LCRegion along straight lines
 // </summary>
@@ -164,5 +166,8 @@ inline const LCBox& LCStretch::stretchBox() const
     return itsStretchBox;
 }
 
+
+
+} //# NAMESPACE CASA - END
 
 #endif

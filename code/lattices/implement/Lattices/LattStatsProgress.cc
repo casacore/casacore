@@ -33,6 +33,8 @@
 #include <casa/BasicSL/String.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 LattStatsProgress::~LattStatsProgress()
 {
     delete itsMeter;
@@ -69,4 +71,7 @@ void LattStatsProgress::done()
     itsMeter = 0;
 }
 
+
+
+} //# NAMESPACE CASA - END
 

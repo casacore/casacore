@@ -42,6 +42,8 @@
 #include <casa/Utilities/DataType.h>
 #include <casa/iostream.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //----------------------------------------------------------------------------
 
 MSSelection::MSSelection() : 
@@ -1069,4 +1071,7 @@ Bool MSSelection::definedAndSet(const Record& inpRec, const String& fieldName)
 
 
 
+
+
+} //# NAMESPACE CASA - END
 

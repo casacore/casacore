@@ -33,6 +33,8 @@
 #include <casa/Containers/Block.h>
 #include <casa/BasicSL/String.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Forward declarations
 class ISMBase;
 #include <casa/iosfwd.h>
@@ -322,5 +324,8 @@ inline uInt& ISMBucket::indexUsed (uInt colnr)
     return indexUsed_p[colnr];
 }
 
+
+
+} //# NAMESPACE CASA - END
 
 #endif

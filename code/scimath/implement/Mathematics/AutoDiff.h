@@ -34,6 +34,8 @@
 #include <scimath/Mathematics/AutoDiffRep.h>
 #include <casa/Containers/ObjectPool.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Forward declarations
 template <class T> class Vector;
 template <class T> class AutoDiff;
@@ -366,5 +368,8 @@ template <class T> class AutoDiff {
   };
 
 };
+
+
+} //# NAMESPACE CASA - END
 
 #endif

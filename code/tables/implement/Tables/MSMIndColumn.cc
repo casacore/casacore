@@ -34,6 +34,8 @@
 #include <tables/Tables/DataManError.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Define a macro which gets the pointer for the given row
 //# and casts it to the block.
 #define MSMINDCOLUMN_GETDATA(rownr) \
@@ -316,3 +318,6 @@ void MSMIndColumn::Data::clear (int dtype)
   }
   data_p = 0;
 }
+
+} //# NAMESPACE CASA - END
+

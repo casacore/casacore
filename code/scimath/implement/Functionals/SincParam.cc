@@ -28,6 +28,8 @@
 //# Includes
 #include <scimath/Functionals/SincParam.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 template<class T>
 SincParam<T>::SincParam() :
   Function<T>(3) {
@@ -74,3 +76,6 @@ SincParam<T> &SincParam<T>::operator=(const SincParam<T> &other) {
   if (this != &other) Function<T>::operator=(other);
   return *this;
 }
+
+} //# NAMESPACE CASA - END
+

@@ -44,6 +44,8 @@
 #define traceLSEEK lseek
 #endif
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 BucketFile::BucketFile (const String& fileName)
 : name_p       (Path(fileName).expandedName()),
   isWritable_p (True),
@@ -153,3 +155,6 @@ void BucketFile::seek (Int64 offset) const
 
 Int64 BucketFile::fileSize () const
     { return ::traceLSEEK (fd_p, 0, SEEK_END); }
+
+} //# NAMESPACE CASA - END
+

@@ -42,6 +42,8 @@
 #include <casa/Utilities/Regex.h>
 #include <casa/BasicSL/String.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 uInt FITSHistoryUtil::getHistoryGroup(Vector<String> &strings, 
 				      String &groupType,
 				      ConstFitsKeywordList &in)
@@ -330,3 +332,6 @@ uInt FITSHistoryUtil::toHISTORY(Vector<String>& history, Bool& aipsppFormat,
     firstLine += aipsppFormat ? nstrings/2 : nstrings;
     return firstLine;
 }
+
+} //# NAMESPACE CASA - END
+

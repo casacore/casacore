@@ -32,6 +32,8 @@
 #include <casa/aips.h>
 #include <casa/OS/Conversion.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 // <summary>
 // Abstract base class with functions to convert any format
 // </summary>
@@ -225,5 +227,8 @@ public:
 inline DataConversion::DataConversion()
 {}
 
+
+
+} //# NAMESPACE CASA - END
 
 #endif

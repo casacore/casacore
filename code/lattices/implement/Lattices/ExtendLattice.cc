@@ -32,6 +32,8 @@
 #include <casa/Exceptions/Error.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 template<class T>
 ExtendLattice<T>::ExtendLattice()
 : itsLatticePtr   (0),
@@ -351,3 +353,6 @@ Bool ExtendLattice<T>::ok() const
 {
   return itsLatticePtr->ok();
 }
+
+} //# NAMESPACE CASA - END
+

@@ -32,6 +32,8 @@
 #include <casa/aips.h>
 #include <tables/Tables/TVec.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Forward Declarations
 class ROTableColumn;
 class TableColumn;
@@ -123,5 +125,8 @@ protected:
     ScalarColumn<T>*    colPtrPut_p;
 };
 
+
+
+} //# NAMESPACE CASA - END
 
 #endif

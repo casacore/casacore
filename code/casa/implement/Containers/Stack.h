@@ -31,6 +31,8 @@
 #include <casa/aips.h>
 #include <casa/Containers/Link.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 extern void throw_empty_Stack_error(const char *msg = 0);
 
 //  This class, Stack<t>, defines an implementation of a stack using
@@ -168,5 +170,8 @@ public:
   //
   Bool empty() const { return(topOfStack ? False : True);}
 };
+
+
+} //# NAMESPACE CASA - END
 
 #endif

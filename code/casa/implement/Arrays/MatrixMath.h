@@ -35,6 +35,8 @@
 #include <casa/BasicSL/Complex.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //<summary>
 //    Linear algebra functions on Vectors and Matrices.
 // </summary>
@@ -184,6 +186,9 @@ Matrix<Double> adjoint (const Matrix<Double> &A);
 //
   Matrix<Float> rproduct (const Matrix<Complex>&, const Matrix<Complex>&);
 
+
+
+} //# NAMESPACE CASA - END
 
 #endif
 

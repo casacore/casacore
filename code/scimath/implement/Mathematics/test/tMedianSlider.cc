@@ -31,6 +31,7 @@
 #include <casa/iostream.h>
 #include <scimath/Mathematics/MedianSlider.h>
 
+#include <casa/namespace.h>
 int main(){
   MedianSlider me;
   cout << "Create a MedianSlider me by means of call to MedianSlider () with default arguments" << endl;

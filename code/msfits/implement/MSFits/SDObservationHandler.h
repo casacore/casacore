@@ -32,6 +32,8 @@
 #include <casa/Containers/RecordField.h>
 #include <tables/Tables/ScalarColumn.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Forward Declarations
 class ColumnsIndex;
 class MeasurementSet;
@@ -150,6 +152,9 @@ private:
     // initialize the index
     void makeIndex();
 };
+
+
+} //# NAMESPACE CASA - END
 
 #endif
 

@@ -31,6 +31,8 @@
 #include <casa/aips.h>
 #include <msvis/MSVis/VisBuffer.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 // <summary>
 // A class to average VisBuffers in time
 // </summary>
@@ -122,6 +124,9 @@ private:
   // Averaging buffer
   VisBuffer avBuf_p;
 };
+
+
+} //# NAMESPACE CASA - END
 
 #endif
 

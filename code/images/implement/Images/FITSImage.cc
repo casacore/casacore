@@ -59,6 +59,8 @@
 
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 FITSImage::FITSImage (const String& name)
 : ImageInterface<Float>(),
   name_p      (name),
@@ -569,3 +571,6 @@ void FITSImage::getImageAttributes (CoordinateSystem& cSys,
        throw (AipsError(errorMessage));
     }
 }
+
+} //# NAMESPACE CASA - END
+

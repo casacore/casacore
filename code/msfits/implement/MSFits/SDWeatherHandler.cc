@@ -39,6 +39,8 @@
 #include <tables/Tables/TableDesc.h>
 #include <casa/BasicMath/Math.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 SDWeatherHandler::SDWeatherHandler() 
     : msWeather_p(0), msWeatherCols_p(0), rownr_p(-1), humidityId_p(-1),
       tambientId_p(-1), pressureId_p(-1), dewpointId_p(-1), windspeeId_p(-1),
@@ -411,3 +413,6 @@ void SDWeatherHandler::initRow(Vector<Bool> &handledCols, const Record &row)
 
     rownr_p = -1;
 }
+
+} //# NAMESPACE CASA - END
+

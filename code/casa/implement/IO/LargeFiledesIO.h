@@ -33,6 +33,8 @@
 #include <casa/IO/ByteIO.h>
 #include <casa/BasicSL/String.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 // <summary>
 // Class for IO on a large file descriptor.
 // </summary>
@@ -163,5 +165,8 @@ private:
 };
 
 
+
+
+} //# NAMESPACE CASA - END
 
 #endif

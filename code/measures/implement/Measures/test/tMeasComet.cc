@@ -47,6 +47,7 @@
 #include <casa/sstream.h>
 #include <casa/iomanip.h>
 
+#include <casa/namespace.h>
 main() {
   try {
     cout << "Test MeasComet..." << endl;

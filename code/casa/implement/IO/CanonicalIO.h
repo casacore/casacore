@@ -35,6 +35,8 @@
 //# forward declarations when Complex and DComplex are no longer typedefs.
 #include <casa/BasicSL/Complex.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 class ByteIO;
 class String;
 
@@ -138,5 +140,8 @@ private:
     uInt itsBufferLength;
 };
 
+
+
+} //# NAMESPACE CASA - END
 
 #endif

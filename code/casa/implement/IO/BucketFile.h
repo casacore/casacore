@@ -34,6 +34,8 @@
 #include <unistd.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 // <summary>
 // File object for the bucket cache.
 // </summary>
@@ -170,5 +172,8 @@ inline int BucketFile::fd()
 inline void BucketFile::seek (Int offset) const
     { seek (Int64(offset)); }
 
+
+
+} //# NAMESPACE CASA - END
 
 #endif

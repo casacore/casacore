@@ -29,6 +29,8 @@
 #include <lattices/Lattices/LELArray.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 template <class T>
 LELArray<T>::LELArray (const IPosition& shape)
 : itsValue (shape)
@@ -54,3 +56,6 @@ LELArray<T>& LELArray<T>::operator= (const LELArray<T>& other)
     }
     return *this;
 }
+
+} //# NAMESPACE CASA - END
+

@@ -31,7 +31,7 @@
 //# Includes
 #include <casa/aips.h>
 #include <scimath/Fitting/GenericL2Fit.h>
-
+namespace casa { //# begin namesapce casa
 //# Forward declarations
 
 //
@@ -244,4 +244,5 @@ protected:
   using GenericL2Fit<T>::fillSVDConstraints;
 };
 
+} //# End namespace casa
 #endif

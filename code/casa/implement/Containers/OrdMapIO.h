@@ -52,4 +52,9 @@
 #include <casa/Containers/MapIO.h>
 #include <casa/Containers/OrderedMap.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 #endif
+
+} //# NAMESPACE CASA - END
+

@@ -40,6 +40,7 @@
 
 #include <casa/iostream.h>
 
+#include <casa/namespace.h>
 int main() {
   //     Sinusoid1D();
   Sinusoid1D<Double> null;

@@ -35,6 +35,8 @@
 #include <casa/Containers/Block.h>
 #include <casa/Containers/Record.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Forward Declarations
 class String;
 
@@ -417,5 +419,8 @@ inline Record& ColumnsIndex::accessUpperKey()
     return *itsUpperKeyPtr;
 }
 
+
+
+} //# NAMESPACE CASA - END
 
 #endif

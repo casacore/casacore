@@ -35,6 +35,8 @@
 #include <ms/MeasurementSets/MeasurementSet.h>
 #include <msvis/MSVis/VisSet.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 // <summary> 
 // Utilities for operating on VisSets.
 // </summary>
@@ -94,6 +96,9 @@ public:
 			  Double& sumwt);
 
 };
+
+} //# NAMESPACE CASA - END
+
 #endif
 
 

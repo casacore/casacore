@@ -28,6 +28,7 @@
 #include <lattices/Lattices/LELAttribute.h>
 #include <casa/Utilities/Assert.h>
 
+#include <casa/namespace.h>
 void doIt()
 {
   {

@@ -35,6 +35,8 @@
 #include <casa/BasicSL/Complexfwd.h>
 #include <casa/complex.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 // <summary>
 // Single and double precision complex numbers
 // </summary>
@@ -213,8 +215,8 @@ inline Bool operator<  (const DComplex& left, const DComplex& right)
 // <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="" demos="">
 // </reviewed>
 // <group name=math>
-inline Double fabs(const DComplex &val) { return abs(val); };
-inline Float fabs(const Complex &val) { return abs(val); };
+inline Double fabs(const DComplex &val) { return std::abs(val); };
+inline Float fabs(const Complex &val) { return std::abs(val); };
 
 // The log10 should be in stl
 // <group>
@@ -225,7 +227,7 @@ DComplex log10(const DComplex &val);
 // </group>
 
 // ArrayMath::pow needs this pow function (on SGI).
-inline Complex pow(const Complex& val, Double p) { return pow(val,Float(p)); }
+inline Complex pow(const Complex& val, Double p) { return std::pow(val,Float(p)); }
 
 // QMath needs these operators * and / (on SGI).
 // <group>
@@ -277,14 +279,14 @@ inline DComplex min(const DComplex &x, const DComplex &y)
   { return x <= y ? x : y; }
 
 inline Complex floor(const Complex &x) {
-  return Complex(floor(x.real()), floor(x.imag())); }
+  return Complex(std::floor(x.real()), std::floor(x.imag())); }
 inline DComplex floor(const DComplex &x) {
-  return DComplex(floor(x.real()), floor(x.imag())); }
+  return DComplex(std::floor(x.real()), std::floor(x.imag())); }
 
 inline Complex ceil(const Complex &x) {
-  return Complex(ceil(x.real()), ceil(x.imag())); }
+  return Complex(std::ceil(x.real()), std::ceil(x.imag())); }
 inline DComplex ceil(const DComplex &x) {
-  return DComplex(ceil(x.real()), ceil(x.imag())); }
+  return DComplex(std::ceil(x.real()), std::ceil(x.imag())); }
 // </group>
 
 // <summary> fmod </summary>
@@ -321,5 +323,8 @@ Complex erf(const Complex &in);
 DComplex erfc(const DComplex &in);
 Complex erfc(const Complex &in);
 // </group>
+
+
+} //# NAMESPACE CASA - END
 
 #endif

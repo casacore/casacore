@@ -38,6 +38,8 @@
 #include <ms/MeasurementSets/MSDerivedValues.h>
 #include <ms/MeasurementSets/MSSelectionKeywords.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 template <class T> class ROArrayColumn;
 template <class T> class ArrayColumn;
 template <class T> class ROScalarColumn;
@@ -324,6 +326,9 @@ inline Int MSSelector::nrow() const { return selms_p.nrow();}
 inline Vector<Int> MSSelector::dataDescId() const { return dataDescId_p;}
 inline Table MSSelector::selectedTable() const {return selms_p;}
 inline Bool MSSelector::selected() const {return initSel_p;}
+
+
+} //# NAMESPACE CASA - END
 
 #endif
 

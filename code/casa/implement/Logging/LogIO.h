@@ -35,6 +35,8 @@
 #include <casa/Logging/LogSink.h>
 #include <casa/BasicSL/Complex.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Forward Declarations
 class LogSink;
 class LogOrigin;
@@ -284,5 +286,8 @@ inline const LogSinkInterface &LogIO::localSink() const
 {
     return sink_p.localSink();
 }
+
+
+} //# NAMESPACE CASA - END
 
 #endif

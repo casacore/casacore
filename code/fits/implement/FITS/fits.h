@@ -36,6 +36,8 @@
 # include <casa/BasicSL/IComplex.h>
 # include <fits/FITS/FITSError.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# All FITS code seems to assume longs are 4 bytes. To take care of machines 
 //# for which this isn't true use FitsLong instead of Long in the FITS code
 //# where it matters.
@@ -1034,5 +1036,8 @@ public:
     static void setNaN(float &val);
     // </group>
 };
+
+
+} //# NAMESPACE CASA - END
 
 # endif

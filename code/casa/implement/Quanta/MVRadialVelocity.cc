@@ -35,6 +35,8 @@
 #include <casa/Utilities/Assert.h>
 #include <casa/Utilities/Register.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 // MVRadialVelocity class
 
 //# Constructors
@@ -115,11 +117,11 @@ Bool MVRadialVelocity::operator!=(const MVRadialVelocity &other) const {
 }
 
 Bool MVRadialVelocity::near(const MVRadialVelocity &other, Double tol) const {
-  return ::near(val, other.val, tol);
+  return ::casa::near(val, other.val, tol);
 }
 
 Bool MVRadialVelocity::nearAbs(const MVRadialVelocity &other, Double tol) const {
-  return ::nearAbs(val, other.val, tol);
+  return ::casa::nearAbs(val, other.val, tol);
 }
 
 // Member functions
@@ -232,3 +234,6 @@ Double MVRadialVelocity::makeF(const Unit &dt) const{
   Quantity(1.0,dt).assure(Velocity);
   return (dt.getValue().getFac());
 }
+
+} //# NAMESPACE CASA - END
+

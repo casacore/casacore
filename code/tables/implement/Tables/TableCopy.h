@@ -33,6 +33,8 @@
 #include <tables/Tables/Table.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 // <summary>
 // Class with static functions for copying a table.
 // </summary>
@@ -125,5 +127,8 @@ public:
   static void adjustTSM (TableDesc& tabDesc, Record& dminfo);
 };
 
+
+
+} //# NAMESPACE CASA - END
 
 #endif

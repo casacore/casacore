@@ -34,6 +34,8 @@
 #include <casa/Arrays/Vector.h>
 #include <casa/Utilities/RecordTransformable.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Forward Declarations
 class String;
 #include <casa/iosfwd.h>
@@ -364,6 +366,9 @@ class SpectralElement : public RecordTransformable {
 // Output declaration
 ostream &operator<<(ostream &os, const SpectralElement &elem);
 // </group>
+
+
+} //# NAMESPACE CASA - END
 
 #endif
 

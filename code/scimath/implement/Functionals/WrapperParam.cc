@@ -28,6 +28,8 @@
 //# Includes
 #include <scimath/Functionals/WrapperParam.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Constructors
 template<class T>
 WrapperParam<T>::WrapperParam() :
@@ -58,3 +60,6 @@ WrapperParam<T>::operator=(const WrapperParam<T> &other) {
   if (this != &other) Function<T>::operator=(other);
   return *this;
 }
+
+} //# NAMESPACE CASA - END
+

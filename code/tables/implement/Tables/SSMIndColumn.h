@@ -35,6 +35,8 @@
 #include <tables/Tables/StIndArray.h>
 #include <casa/Arrays/IPosition.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Forward Declarations
 class StManArrayFile;
 class AipsIO;
@@ -269,5 +271,8 @@ private:
   StIndArray      itsIndArray;
 };
 
+
+
+} //# NAMESPACE CASA - END
 
 #endif

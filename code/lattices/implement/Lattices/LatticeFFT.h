@@ -32,6 +32,8 @@
 #include <casa/aips.h>
 #include <casa/BasicSL/Complex.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 template <class T> class Vector;
 template <class T> class Lattice;
 
@@ -116,4 +118,7 @@ public:
 		    const Bool doShift=True, Bool doFast=False);
   // </group>
 };
+
+} //# NAMESPACE CASA - END
+
 #endif

@@ -32,7 +32,7 @@
 //# Includes
 #include <casa/aips.h>
 #include <scimath/Fitting/NonLinearFit.h>
-
+namespace casa { //# begin namespace casa
 //# Forward declarations
 
 //
@@ -143,4 +143,5 @@ protected:
 
 };
 
+} //# End namespace casa
 #endif

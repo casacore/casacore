@@ -855,7 +855,7 @@
      template class GenericL2Fit<Float> 
 1000 scimath/Fitting/LSQFit2.cc 
      = algorithm 
-     template Double *std::swap_ranges<Double *, Double *>(Double *, Double *, Double *) 
+     template casa::Double *swap_ranges<casa::Double *, casa::Double *>(casa::Double *, casa::Double *, casa::Double *) 
 1010 scimath/Fitting/LSQFit2.cc 
      = casa/Arrays/VectorSTLIterator.h 
      template void LSQFit::makeNorm<Double, VectorSTLIterator<Double> >(VectorSTLIterator<Double> const &, Double const &, Double const &, Bool, Bool) 

@@ -28,6 +28,8 @@
 #include <casa/Containers/ListIO.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //
 //  Outputs a doubly linked list to the specified ostream stream.
 //
@@ -57,3 +59,6 @@ template<class t> ostream &operator<<(ostream &ios, const ConstListIter<t> &list
   }
   return(ios);
 }
+
+} //# NAMESPACE CASA - END
+

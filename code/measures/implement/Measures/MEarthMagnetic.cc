@@ -39,6 +39,8 @@
 #include <casa/Quanta/MVDirection.h>
 #include <casa/Quanta/QMath.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Constructors
 MEarthMagnetic::MEarthMagnetic() :
   MeasBase<MVEarthMagnetic, MEarthMagnetic::Ref>() {}
@@ -317,3 +319,6 @@ Quantum<Vector<Double> > MEarthMagnetic::getAngle(const Unit &inunit) const {
 Measure *MEarthMagnetic::clone() const {
     return (new MEarthMagnetic(*this));
 }
+
+} //# NAMESPACE CASA - END
+

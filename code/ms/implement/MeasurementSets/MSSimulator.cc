@@ -71,6 +71,8 @@
 #include <ms/MeasurementSets/MSTileLayout.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 MSSimulator::MSSimulator() :
   fractionBlockageLimit_p(1.0e-6),
   elevationLimit_p(Quantity(10.0, "deg")),
@@ -1039,4 +1041,7 @@ void MSSimulator::blockage(Double &fraction1, Double &fraction2,
   return;
 };
 
+
+
+} //# NAMESPACE CASA - END
 

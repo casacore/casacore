@@ -33,6 +33,8 @@
 #include <casa/aips.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 // <summary>Ordered pair class</summary>
 // <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="" demos="">
 // </reviewed>
@@ -90,5 +92,8 @@ private:
 
     enum {OrderedPairVersion = 1};
 };
+
+
+} //# NAMESPACE CASA - END
 
 #endif

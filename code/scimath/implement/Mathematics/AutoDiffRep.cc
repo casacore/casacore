@@ -28,6 +28,8 @@
 //# Includes
 #include <scimath/Mathematics/AutoDiffRep.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Constructors
 template <class T>
 AutoDiffRep<T>::AutoDiffRep() :
@@ -94,4 +96,7 @@ AutoDiffRep<T> &AutoDiffRep<T>::operator=(const AutoDiffRep<T> &other) {
   };
   return *this;
 }
+
+
+} //# NAMESPACE CASA - END
 

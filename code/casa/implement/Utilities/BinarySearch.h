@@ -33,6 +33,8 @@
 //# Includes
 #include <casa/aips.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 // <summary>
 // Binary search a sorted, linear, data structure.
 // </summary>
@@ -147,5 +149,8 @@ template<class Container, class ElType>
 			      const ElType &value, uInt n, Int lower=0);
 // </group>
 // </group>
+
+
+} //# NAMESPACE CASA - END
 
 #endif

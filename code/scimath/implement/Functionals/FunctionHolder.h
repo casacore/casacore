@@ -36,6 +36,8 @@
 #include <casa/Arrays/Vector.h>
 #include <casa/BasicSL/String.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Forward Declarations
 
 // <summary> A holder for Functions to enable record conversions </summary>
@@ -215,5 +217,8 @@ private:
 					const Vector<T> &params);
   // </group>
 };
+
+
+} //# NAMESPACE CASA - END
 
 #endif

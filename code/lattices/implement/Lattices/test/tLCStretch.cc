@@ -37,6 +37,7 @@
 #include <casa/iostream.h>
 
 
+#include <casa/namespace.h>
 void doIt (const LCRegion& region,
 	   const IPosition& axes,
 	   const IPosition& blc,

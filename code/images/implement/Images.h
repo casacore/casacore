@@ -33,6 +33,8 @@
 #include <casa/Arrays/Slice.h>
 #include <casa/Arrays/Slicer.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 // #include <aips/Arrays/ArrayLattice.h>
 // #include <aips/Arrays/PagedArray.h>
 // #include <aips/Arrays/TempLattice.h>
@@ -87,5 +89,8 @@
 // </todo>
 
 // </module>
+
+
+} //# NAMESPACE CASA - END
 
 #endif

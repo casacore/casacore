@@ -32,6 +32,8 @@
 #include <casa/aips.h>
 #include <casa/IO/ByteIO.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 // <summary>Class for IO to a memory buffer.</summary>
 
 // <use visibility=export>
@@ -267,5 +269,8 @@ inline uInt64 MemoryIO::expandSize() const
     return itsExpandSize;
 }
 
+
+
+} //# NAMESPACE CASA - END
 
 #endif

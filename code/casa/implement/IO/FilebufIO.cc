@@ -46,6 +46,8 @@
 #endif // PABLO_IO
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 FilebufIO::FilebufIO()
 : itsSeekable   (False),
   itsReadable   (False),
@@ -414,3 +416,6 @@ Bool FilebufIO::isSeekable() const
 {
   return itsSeekable;
 }
+
+} //# NAMESPACE CASA - END
+

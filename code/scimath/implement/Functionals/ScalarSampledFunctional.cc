@@ -28,6 +28,8 @@
 #include <scimath/Functionals/ScalarSampledFunctional.h>
 #include <casa/Containers/Block.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 template<class T> ScalarSampledFunctional<T>::
 ScalarSampledFunctional(){
 }
@@ -86,3 +88,6 @@ nelements() const {
 template<class T> ScalarSampledFunctional<T>::
 ~ScalarSampledFunctional(){
 }
+
+} //# NAMESPACE CASA - END
+

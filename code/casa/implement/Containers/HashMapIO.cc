@@ -32,6 +32,8 @@
 #undef AIPS_STUPID_SUN
 #endif
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 
 template<class key, class val> ostream &operator<<(ostream &ios, const HashMap<key,val> &map) {
 #if !defined(AIPS_STUPID_SUN)
@@ -62,3 +64,6 @@ template<class key, class val> ostream &operator<<(ostream &ios, const ConstHash
   return operator<<(ios,map.container());
 
 }
+
+} //# NAMESPACE CASA - END
+

@@ -35,6 +35,8 @@
 #include <casa/Utilities/Compare.h>
 #include <casa/BasicSL/Complex.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Forward Declarations
 class BaseColumnDesc;
 class ColumnCache;
@@ -326,5 +328,8 @@ protected:
 };
 
 
+
+
+} //# NAMESPACE CASA - END
 
 #endif

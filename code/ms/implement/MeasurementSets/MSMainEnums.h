@@ -31,6 +31,8 @@
 
 #include <casa/aips.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 // <use visibility=export>
 
 // <summary> Enums for the MeasurementSet main table </summary>
@@ -305,5 +307,8 @@ public:
     NUMBER_PREDEFINED_KEYWORDS=WEATHER
     };
 };
+
+} //# NAMESPACE CASA - END
+
 #endif
 

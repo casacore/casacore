@@ -39,6 +39,8 @@
 #include <tables/Tables/TableError.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 ColumnsIndex::ColumnsIndex (const Table& table, const String& columnName,
 			    Compare* compareFunction, Bool noSort)
 : itsLowerKeyPtr (0),
@@ -701,3 +703,6 @@ void ColumnsIndex::setChanged (const String& columnName)
     }
   }
 }
+
+} //# NAMESPACE CASA - END
+

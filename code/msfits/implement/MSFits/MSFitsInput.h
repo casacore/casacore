@@ -40,6 +40,8 @@
 #include <casa/BasicSL/String.h>
 #include <ms/MeasurementSets/MSTileLayout.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 class FitsInput;
 class BinaryTable;
 class MSColumns;
@@ -271,5 +273,8 @@ private:
   Bool addSourceTable_p;
   LogIO itsLog;
 };
+
+
+} //# NAMESPACE CASA - END
 
 #endif

@@ -31,6 +31,8 @@
 #include <casa/Containers/OrderedPair.h>
 #include <casa/iosfwd.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 class AipsIO;
 
 //
@@ -47,5 +49,8 @@ template<class key, class value> AipsIO& operator>>(AipsIO& ios, OrderedPair<key
 
 template<class key, class value> ostream& operator<<(ostream& ios, const OrderedPair<key,value>&);
 // </group>
+
+
+} //# NAMESPACE CASA - END
 
 #endif

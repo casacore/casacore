@@ -32,6 +32,8 @@
 #include <casa/Exceptions/Error.h>
 #include <casa/Utilities/Assert.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 template<class T> 
 Array<Float> MSSelUtil<T>::diffData(const Array<T>& data,
 				    const Array<Bool>& flag,
@@ -163,3 +165,6 @@ Array<Float> MSSelUtil<T>::diffData(const Array<T>& data,
 // declare the two instantiations we need
 template class MSSelUtil<Float>;
 template class MSSelUtil<Complex>;
+
+} //# NAMESPACE CASA - END
+

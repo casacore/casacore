@@ -29,6 +29,8 @@
 #include <tables/Tables/TVec.h>
 #include <tables/Tables/TableError.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 #define TVECLOGICOPER(NAME,OP) \
 template<class T> \
 Bool aips_name2(tabVecReptv,NAME) (const TabVecRep<T>& l, const TabVecRep<T>& r) \
@@ -77,3 +79,6 @@ TVECLOGICOPER(GE,>=)
 TVECLOGICOPER(GT,>)
 TVECLOGICOPER(EQ,==)
 TVECLOGICOPER(NE,!=)
+
+} //# NAMESPACE CASA - END
+

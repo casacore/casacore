@@ -32,6 +32,8 @@
 #include <casa/BasicSL/Constants.h>
 #include <casa/Utilities/Assert.h>
 
+namespace casa { //#Begin namespace casa
+
 
 //# Member templates
 template <class MT>
@@ -306,3 +308,5 @@ template SpectralElement SpectralEstimate::convertElement<Double>(Vector<Double>
 template void SpectralEstimate::findga<Double>(Vector<Double> const &);
 template uInt SpectralEstimate::window<Double>(Vector<Double> const &);
 template void SpectralEstimate::findc2<Double>(Vector<Double> const &);
+
+} //# End namesace casa

@@ -27,6 +27,10 @@
     $Id$
 */
 
+%{
+using namespace casa;
+%}
+
 %pure_parser                /* make parser re-entrant */
 
 %union {
@@ -127,6 +131,9 @@ PtrBlock<TableParseUpdate*>* updateb;
 
 
 %{
+namespace casa { //# NAMESPACE CASA - BEGIN
+Bool theFromQueryDone;
+} //# NAMESPACE CASA - END
 int TableGramlex (YYSTYPE*);
 %}
 

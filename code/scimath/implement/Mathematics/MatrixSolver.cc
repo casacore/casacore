@@ -35,6 +35,8 @@
 
 #include <casa/sstream.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 MatrixSolver::MatrixSolver():SolTolerance(0.0), MaxIterations(0), solved(False),
    gain(1.0){}
 
@@ -138,4 +140,7 @@ Bool MatrixSolver::accurateSolution() {
   }
   return Solved();
 }
+
+
+} //# NAMESPACE CASA - END
 

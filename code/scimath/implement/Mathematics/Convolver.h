@@ -36,6 +36,8 @@
 #include <casa/Arrays/IPosition.h>
 #include <scimath/Mathematics/NumericTraits.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 // Forward Declarations
 template <class FType> class Convolver;
 
@@ -318,4 +320,7 @@ private:
   Bool doFast_p;
   void validate();
 };
+
+} //# NAMESPACE CASA - END
+
 #endif

@@ -38,6 +38,7 @@
 #include <casa/IO/AipsIO.h>
 #include <casa/iostream.h>
 
+#include <casa/namespace.h>
 // This program tests the Record and RecordRep classes.
 // Its expected output (which only consists of exception text)
 // is stored in tRecord.out and can be checked using assay.

@@ -38,6 +38,8 @@
 #include <measures/Measures/MRBase.h>
 #include <casa/BasicMath/Math.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Constructors
 MeasMath::MeasMath() :
   inOK_p(False), outOK_p(False),
@@ -739,3 +741,6 @@ void MeasMath::getB1950(MVPosition &out) {
   getInfo(B1950DIR);
   out = infomvd_p[B1950DIR-N_FrameDInfo];
 }
+
+} //# NAMESPACE CASA - END
+

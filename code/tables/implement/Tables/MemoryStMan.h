@@ -34,6 +34,8 @@
 #include <tables/Tables/MSMBase.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 // <summary>
 // Memory-based table storage manager class
 // </summary>
@@ -91,5 +93,8 @@ public:
   ~MemoryStMan();
 };
 
+
+
+} //# NAMESPACE CASA - END
 
 #endif

@@ -28,6 +28,8 @@
 #include <ms/MeasurementSets/MSHistoryColumns.h>
 #include <ms/MeasurementSets/MSHistory.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 ROMSHistoryColumns::ROMSHistoryColumns(const MSHistory& msHistory):
   application_p(msHistory, MSHistory::
 		columnName(MSHistory::APPLICATION)),
@@ -143,3 +145,6 @@ void MSHistoryColumns::attach(MSHistory& msHistory)
 // Local Variables: 
 // compile-command: "gmake MSHistoryColumns"
 // End: 
+
+} //# NAMESPACE CASA - END
+

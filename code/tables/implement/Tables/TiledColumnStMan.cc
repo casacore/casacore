@@ -41,6 +41,8 @@
 #include <tables/Tables/DataManError.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Allocate an empty record to avoid reconstructing it over and over
 //# again when addRow is called many times.
 static Record emptyRecord;
@@ -230,3 +232,6 @@ TSMCube* TiledColumnStMan::getHypercube (uInt rownr, IPosition& position)
     position(nrdim_p-1) = rownr;
     return cubeSet_p[0];
 }
+
+} //# NAMESPACE CASA - END
+

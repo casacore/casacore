@@ -30,6 +30,8 @@
 #include <casa/Arrays/Array.h>
 #include <casa/Arrays/IPosition.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Constructors
 
 //# Destructor
@@ -53,4 +55,7 @@ Bool LSQaips::solveLoop(Double &fit, uInt &nRank,
 }
 
 
+
+
+} //# NAMESPACE CASA - END
 

@@ -37,6 +37,8 @@
 #include <casa/Arrays/Vector.h>
 #include <casa/Exceptions/Error.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 MSPointing::MSPointing():hasBeenDestroyed_p(True) { }
 
 MSPointing::MSPointing(const String &tableName, TableOption option) 
@@ -204,3 +206,6 @@ MSPointing MSPointing::referenceCopy(const String& newTableName,
     return MSPointing(MSTable<PredefinedColumns,PredefinedKeywords>::
 		     referenceCopy(newTableName,writableColumns));
 }
+
+} //# NAMESPACE CASA - END
+

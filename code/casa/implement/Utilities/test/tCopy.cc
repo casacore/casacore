@@ -36,6 +36,7 @@
 #include <casa/Containers/Block.h>
 
 
+#include <casa/namespace.h>
 // This program tests all functions in Copy.h (objset, objcopy and objmove).
 // Especially objmove is tested in all kinds of circumstances
 // (overlapping, non-overlapping, strides).

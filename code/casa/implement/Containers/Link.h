@@ -30,6 +30,8 @@
 
 #include <casa/aips.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 // <summary>doubly linked list primitive</summary>
 // <use visibility=export>
 //
@@ -198,5 +200,8 @@ public:
 };
 
 typedef Link<int> Link_int;
+
+
+} //# NAMESPACE CASA - END
 
 #endif

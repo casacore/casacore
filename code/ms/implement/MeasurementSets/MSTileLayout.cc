@@ -30,6 +30,8 @@
 #include <casa/BasicMath/Math.h>
 #include <casa/BasicSL/String.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 IPosition MSTileLayout::tileShape(const IPosition& dataShape,
 				  Int observationType, Int nIfr, Int nInt)
 {
@@ -71,3 +73,6 @@ IPosition MSTileLayout::tileShape(const IPosition& dataShape,
   if (array=="DRAO") nIfr=21;
   return tileShape(dataShape,observationType,nIfr);
 }
+
+} //# NAMESPACE CASA - END
+

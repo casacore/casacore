@@ -33,6 +33,7 @@
 #include <measures/Measures/MDirection.h>
 #include <casa/iostream.h>
 
+#include <casa/namespace.h>
 int main()
 {
     try {

@@ -31,28 +31,45 @@
 #include <casa/Exceptions/Error.h>
 #include <components/SpectralComponents/SpectralEstimate.h>
 #include <components/SpectralComponents/SpectralElement.h>
-#include <casa/Utilities/DataType.h>
 #include <casa/Utilities/Assert.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 template <class T> 
 ProfileFit1D<T>::ProfileFit1D()
-{
-   checkType();
-}
+{;}
 
 template <class T> 
 ProfileFit1D<T>::ProfileFit1D(const ProfileFit1D& other)
 {
-   checkType();
-   copy(other);
+   operator=(other);
 }
 
 template <class T> 
 ProfileFit1D<T>& ProfileFit1D<T>::operator=(const ProfileFit1D& other)
 {
   if (this != &other) {
-     copy(other);
+     itsX.resize(0);
+     itsX = other.itsX;
+//
+     itsY.resize(0);
+     itsY = other.itsY;
+//
+     itsWeight.resize(0);
+     itsWeight = other.itsWeight;
+//
+     itsDataMask.resize(0);
+     itsDataMask = other.itsDataMask;
+//
+     itsRangeMask.resize(0);
+     itsRangeMask = other.itsRangeMask;
+//
+     itsList = other.itsList;
+//
+     itsFitter = other.itsFitter;
+//
+     itsError = other.itsError;
   }
   return *this;
 }
@@ -62,8 +79,8 @@ ProfileFit1D<T>::~ProfileFit1D()
 {;}
 
 template <class T> 
-Bool ProfileFit1D<T>::setData (const Vector<Double>& x, const Vector<T>& y, 
-                               const Vector<Bool>& mask, const Vector<Double>& weight)
+Bool ProfileFit1D<T>::setData (const Vector<T>& x, const Vector<T>& y, 
+                               const Vector<Bool>& mask, const Vector<T>& weight)
 {
    if (x.nelements()==0) {
       itsError = "The X vector must have some elements";
@@ -110,15 +127,15 @@ Bool ProfileFit1D<T>::setData (const Vector<Double>& x, const Vector<T>& y,
 
 
 template <class T> 
-Bool ProfileFit1D<T>::setData (const Vector<Double>& x, const Vector<T>& y, 
+Bool ProfileFit1D<T>::setData (const Vector<T>& x, const Vector<T>& y, 
                                const Vector<Bool>& mask)
 {
-   Vector<Double> weight;
+   Vector<T> weight;
    return setData (x, y, mask, weight);
 }
 
 template <class T> 
-Bool ProfileFit1D<T>::setData (const Vector<Double>& x, const Vector<T>& y)
+Bool ProfileFit1D<T>::setData (const Vector<T>& x, const Vector<T>& y)
 {
    Vector<Bool> mask(x.nelements(), True);
    return setData (x, y, mask);
@@ -419,35 +436,5 @@ Vector<Bool> ProfileFit1D<T>::makeTotalMask () const
    return mask;
 }
 
-template <class T> 
-void ProfileFit1D<T>::copy(const ProfileFit1D& other)
-{
-  itsX.resize(0);
-  itsX = other.itsX;
-//
-  itsY.resize(0);
-  itsY = other.itsY;
-//
-  itsWeight.resize(0);
-  itsWeight = other.itsWeight;
-//
-  itsDataMask.resize(0);
-  itsDataMask = other.itsDataMask;
-//
-  itsRangeMask.resize(0);
-  itsRangeMask = other.itsRangeMask;
-//
-  itsList = other.itsList;
-//
-  itsFitter = other.itsFitter;
-//
-  itsError = other.itsError;
-}
-
-template <class T> 
-void ProfileFit1D<T>::checkType() const
-{
-   T* p;
-   AlwaysAssert(whatType(p)==TpDouble,AipsError);
-}
+} //# NAMESPACE CASA - END
 

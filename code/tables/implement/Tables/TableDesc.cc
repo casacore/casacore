@@ -35,6 +35,8 @@
 #include <casa/OS/File.h>
 #include <casa/iostream.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# This is the implementation of the class TableDesc.
 //#
 //# It uses the class TabPath to find which directory contains
@@ -647,3 +649,6 @@ void TableDesc::removeIDhypercolumns (const Vector<String>& hcNames)
     }      
   }
 }
+
+} //# NAMESPACE CASA - END
+

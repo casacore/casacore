@@ -30,6 +30,8 @@
 #include <assert.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 // VAX has almost identical format to IEEE (but no NaN)
 // which is SEEEEEEE EFFFFFFF ...
 // The VAX exponent is 2 higher.
@@ -159,3 +161,6 @@ void VAXConversion::fromLocal (void* to, const double* from,
 	from++;
     }
 }
+
+} //# NAMESPACE CASA - END
+

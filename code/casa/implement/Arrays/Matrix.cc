@@ -34,6 +34,8 @@
 #include <casa/iostream.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 template<class T> Matrix<T>::Matrix()
 : Array<T>(IPosition(2, 0))
 {
@@ -83,7 +85,21 @@ template<class T> Matrix<T>::Matrix(const Matrix<T> &other)
 template<class T> Matrix<T>::Matrix(const Array<T> &other)
 : Array<T>(other)
 {
-    this->checkMatrixShape();
+    if (ndim() > 2)
+	throw(ArrayNDimError(2, other.ndim(), "Matrix<T>::Matrix"
+			     "(const Array<T> &): ndim of other > 2"));
+    // We need to fiddle a bit if the ndim is == 1
+    if (ndim() == 1) {
+	ndimen_p = 2;
+	length_p.resize(2); 
+	inc_p.resize(2);
+	originalLength_p.resize(2);
+	length_p(1) = 1;
+	inc_p(1) = 1;
+	originalLength_p(1) = 1;
+	makeSteps();
+    }
+    nels_p = length_p.product();
     makeIndexingConstants();
     DebugAssert(ok(), ArrayError);
 }
@@ -135,8 +151,23 @@ template<class T> void Matrix<T>::assign (const Array<T>& other)
 template<class T> void Matrix<T>::reference(Array<T> &other)
 {
     DebugAssert(ok(), ArrayError);
-    Array<T>::reference(other);
-    this->checkMatrixShape();
+    if (other.ndim() == 2) {
+	Array<T>::reference(other);
+    } else if (other.ndim() == 1) {
+	length_p(0) = other.length_p(0);
+	length_p(1) = 1;
+	nels_p = other.nels_p;
+	originalLength_p(0) = other.originalLength_p(0);
+	originalLength_p(1) = 1;
+	inc_p(0) = other.inc_p(0);
+	inc_p(1) = 1;
+	makeSteps();
+	data_p = other.data_p;
+	begin_p = other.begin_p; 
+    } else {
+	throw(ArrayNDimError(2, other.ndim(), "Matrix<T>::reference()"
+			     " - attempt to reference non-Matrix"));
+    }
     makeIndexingConstants();
 }
 
@@ -147,7 +178,7 @@ template<class T> Matrix<T> &Matrix<T>::operator=(const Matrix<T> &other)
         return *this;
 
     Bool Conform = conform(other);
-    if (Conform == False && this->nelements() != 0)
+    if (Conform == False && nelements() != 0)
 	validateConformance(other);  // We can't overwrite, so throw exception
 
     Array<T>::operator=(other);
@@ -185,7 +216,7 @@ template<class T> Matrix<T> Matrix<T>::operator()(const Slice &sliceX,
     Int b1, l1, s1, b2, l2, s2;       // begin length step
     if (sliceX.all()) {
 	b1 = 0;
-	l1 = this->length_p(0);
+	l1 = length_p(0);
 	s1 = 1;
     } else {
 	b1 = sliceX.start();
@@ -194,7 +225,7 @@ template<class T> Matrix<T> Matrix<T>::operator()(const Slice &sliceX,
     }
     if (sliceY.all()) {
 	b2 = 0;
-	l2 = this->length_p(1);
+	l2 = length_p(1);
 	s2 = 1;
     } else {
 	b2 = sliceY.start();
@@ -207,8 +238,8 @@ template<class T> Matrix<T> Matrix<T>::operator()(const Slice &sliceX,
 	throw(ArrayError("Matrix<T>::operator()(Slice,Slice) : step < 1"));
     } else if (l1 < 0  || l2 < 0) {
 	throw(ArrayError("Matrix<T>::operator()(Slice,Slice) : length < 0"));
-    } else if ((b1+(l1-1)*s1 >= this->length_p(0)) || 
-	       (b2+(l2-1)*s2 >= this->length_p(1))) {
+    } else if ((b1+(l1-1)*s1 >= length_p(0)) || 
+	       (b2+(l2-1)*s2 >= length_p(1))) {
 	throw(ArrayError("Matrix<T>::operator()(Slice,Slice): desired slice"
 			 " extends beyond the end of the array"));
     } else if (b1 < 0 || b2 < 0) {
@@ -230,13 +261,13 @@ template<class T> Matrix<T> Matrix<T>::operator()(const Slice &sliceX,
 template<class T> Vector<T> Matrix<T>::row(uInt n)
 {
     DebugAssert(ok(), ArrayError);
-    if (Int(n) >= this->length_p(0)) {
+    if (Int(n) >= length_p(0)) {
 	throw(ArrayConformanceError("Matrix<T>::row - row < 0 or > end"));
     }
     Matrix<T> tmp((*this)(n, Slice())); // A reference
     tmp.ndimen_p = 1;
     tmp.length_p(0) = tmp.length_p(1);
-    tmp.inc_p(0) = this->inc_p(1)*this->length_p(0)*this->inc_p(0);
+    tmp.inc_p(0) = inc_p(1)*length_p(0)*inc_p(0);
     // "Lie" about the original length so that ok() doesn't spuriously fail
     // the test length[i] < originalLength (basically we've "swapped" axes).
     tmp.originalLength_p(0) = tmp.length_p(0)*tmp.inc_p(0);
@@ -255,7 +286,7 @@ template<class T> Vector<T> Matrix<T>::row(uInt n)
 template<class T> Vector<T> Matrix<T>::column(uInt n)
 {
     DebugAssert(ok(), ArrayError);
-    if (Int(n) >= this->length_p(1)) {
+    if (Int(n) >= length_p(1)) {
 	throw(ArrayConformanceError("Matrix<T>::column - column < 0 or > end"));
     }
     Matrix<T> tmp((*this)(Slice(), n)); // A reference
@@ -279,11 +310,11 @@ template<class T> Vector<T> Matrix<T>::diagonal(Int n)
     Int absn;
     if (n < 0) absn = -n; else absn = n;
 
-    if (this->length_p(0) != this->length_p(1))
+    if (length_p(0) != length_p(1))
 	throw(ArrayConformanceError("Matrix<T>::diagonal() - "
 				    "non-square matrix"));
 
-    if (absn >= this->length_p(0))
+    if (absn >= length_p(0))
 	throw(ArrayConformanceError("Matrix<T>::diagonal() - "
 				    "diagonal out of range"));
 
@@ -295,7 +326,7 @@ template<class T> Vector<T> Matrix<T>::diagonal(Int n)
 	r = 0;
 	c = absn;
     }
-    Int len = this->length_p(0) - absn;
+    Int len = length_p(0) - absn;
     Matrix<T> tmp((*this)(Slice(r,len), Slice(c)));
     tmp.ndimen_p = 1;
     tmp.length_p.resize (1);
@@ -303,7 +334,7 @@ template<class T> Vector<T> Matrix<T>::diagonal(Int n)
     tmp.originalLength_p.resize (1);
     tmp.nels_p = tmp.length_p(0);
     if (tmp.nels_p > 1) {
-        tmp.inc_p(0) += this->inc_p(0)*this->length_p(0);
+        tmp.inc_p(0) += inc_p(0)*length_p(0);
 	tmp.contiguous_p = False;
     }
     tmp.makeSteps();
@@ -359,8 +390,8 @@ template<class T> void Matrix<T>::makeIndexingConstants()
 {
     // No lAssert since the Matrix often isn't constructed yet when
     // calling this
-    xinc_p = this->inc_p(0);
-    yinc_p = this->inc_p(1)*this->originalLength_p(0);
+    xinc_p = inc_p(0);
+    yinc_p = inc_p(1)*originalLength_p(0);
 }
 
 
@@ -379,7 +410,7 @@ void Matrix<T>::doNonDegenerate (Array<T> &other, const IPosition &ignoreAxes)
 
 template<class T> Bool Matrix<T>::ok() const
 {
-    return ( (this->ndim() == 2) ? (Array<T>::ok()) : False );
+    return ( (ndim() == 2) ? (Array<T>::ok()) : False );
 }
 
 
@@ -417,3 +448,6 @@ void Matrix<T>::takeStorage(const IPosition &shape, const T *storage)
     Array<T>::takeStorage(shape, storage);
     makeIndexingConstants();
 }
+
+} //# NAMESPACE CASA - END
+

@@ -33,6 +33,8 @@
 #include <scimath/Functionals/Function.h>
 #include <casa/Arrays/Vector.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Forward declarations
 
 // <summary> Aid in constructing function objects from C++ functions 
@@ -98,5 +100,8 @@ template<class T> class WrapperBase {
   // </group>
 
 };
+
+
+} //# NAMESPACE CASA - END
 
 #endif

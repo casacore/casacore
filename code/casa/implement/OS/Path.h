@@ -34,6 +34,8 @@
 #include <casa/BasicSL/String.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 // <summary>
 // Path name of a file
 // </summary>
@@ -258,5 +260,8 @@ inline const String& Path::originalName() const
     return itsOriginalPathName;
 }
 
+
+
+} //# NAMESPACE CASA - END
 
 #endif

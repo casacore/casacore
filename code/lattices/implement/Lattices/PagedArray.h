@@ -37,6 +37,8 @@
 #include <casa/BasicSL/String.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 // <summary>
 // A Lattice that is read from or written to disk.
 // </summary>
@@ -662,5 +664,8 @@ void PagedArray<T>::doReopen() const
   }
 }
 
+
+
+} //# NAMESPACE CASA - END
 
 #endif

@@ -40,6 +40,7 @@
 
 #include <casa/iostream.h>
 
+#include <casa/namespace.h>
 int main() {
   Gaussian1D<Double> null;
   AlwaysAssertExit(null.height() == 1.0 && 

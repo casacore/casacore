@@ -35,6 +35,7 @@
 #include <casa/Utilities/Assert.h>
 #include <casa/iostream.h>
 
+#include <casa/namespace.h>
 int main(){
   String aipsrcKeyword("my.double.test");
   String aipsrcKeyword1("mine.double.test");

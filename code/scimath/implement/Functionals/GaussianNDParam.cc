@@ -34,6 +34,8 @@
 #include <casa/BasicSL/Constants.h>
 #include <casa/Utilities/Assert.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 template<class T> 
 GaussianNDParam<T>::GaussianNDParam() : 
   Function<T>(6), itsDim(2),
@@ -263,3 +265,6 @@ void GaussianNDParam<T>::repack(Matrix<T> &covar) const {
     };
   };
 }
+
+} //# NAMESPACE CASA - END
+

@@ -32,6 +32,8 @@
 #include <casa/aips.h>
 #include <casa/Arrays/Vector.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 class DirectionCoordinate;
 
 // <summary>
@@ -204,5 +206,8 @@ private:
 //#---------- Inlines --------------------------------------------------------------
 inline Projection::Type Projection::type() const {return which_p;}
 inline const Vector<Double> & Projection::parameters() const {return parameters_p;}
+
+
+} //# NAMESPACE CASA - END
 
 #endif

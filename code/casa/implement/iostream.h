@@ -36,6 +36,8 @@
 #include <casa/aips.h>
 #include <iostream>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 using std::istream;
 using std::ostream;
 using std::iostream;
@@ -72,5 +74,7 @@ using std::skipws;
 using std::noskipws;
 using std::uppercase;
 using std::nouppercase;
+
+} //# NAMESPACE CASA - END
 
 #endif

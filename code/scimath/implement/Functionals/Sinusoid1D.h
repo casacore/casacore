@@ -35,6 +35,8 @@
 #include <scimath/Mathematics/AutoDiff.h>
 #include <scimath/Mathematics/AutoDiffMath.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Forward declarations
 
 // <summary> A one dimensional Sinusoid class.
@@ -228,5 +230,6 @@ protected:
 
 #undef Sinusoid1D_PS
 
+} //# NAMESPACE CASA - END
 
 #endif

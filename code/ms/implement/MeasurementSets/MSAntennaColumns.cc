@@ -40,6 +40,8 @@
 #include <casa/Quanta/UnitVal.h>
 #include <casa/Utilities/Assert.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 ROMSAntennaColumns::ROMSAntennaColumns(const MSAntenna& msAntenna):
   dishDiameter_p(msAntenna, MSAntenna::
 		 columnName(MSAntenna::DISH_DIAMETER)),
@@ -336,3 +338,6 @@ void MSAntennaColumns::setOffsetRef(MPosition::Types ref)
 // Local Variables: 
 // compile-command: "gmake MSAntennaColumns"
 // End: 
+
+} //# NAMESPACE CASA - END
+

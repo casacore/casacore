@@ -36,6 +36,8 @@
 #include <components/ComponentModels/ComponentList.h>
 #include <casa/BasicSL/Complexfwd.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Forward declarations
 template <class T> class Array;
 template <class T> class Vector;
@@ -201,5 +203,8 @@ private:
   // Empty the list of fitting areas
   void clean();
 };
+
+
+} //# NAMESPACE CASA - END
 
 #endif

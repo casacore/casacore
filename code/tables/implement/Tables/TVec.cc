@@ -31,6 +31,8 @@
 #include <tables/Tables/TableError.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Construct
 template<class T>
 TabVecRep<T>::TabVecRep()
@@ -76,3 +78,6 @@ void TabVecRep<T>::assign (const TabVecRep<T>& that)
 	putVal (i, that.value(i));
     }
 }
+
+} //# NAMESPACE CASA - END
+

@@ -34,6 +34,8 @@
 #include <casa/Quanta/Euler.h>
 #include <scimath/Functionals/Polynomial.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Forward Declarations
 
 // <summary> Precession class and calculations </summary>
@@ -206,5 +208,8 @@ class Precession {
   // Calculate precession angles for time t
   void calcPrec(Double t);
 };
+
+
+} //# NAMESPACE CASA - END
 
 #endif

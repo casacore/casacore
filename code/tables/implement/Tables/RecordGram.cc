@@ -48,6 +48,14 @@
 #include <RecordGram.lcc>                  // bison output
 
 
+// Define the yywrap function for flex.
+int RecordGramwrap()
+{
+    return 1;
+}
+
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Declare a file global pointer to a char* for the input string.
 static const char*  strpRecordGram = 0;
 static Int          posRecordGram = 0;
@@ -58,12 +66,6 @@ const RecordInterface* RecordGram::theirRecPtr = 0;
 TableExprNode* RecordGram::theirNodePtr = 0;
 const Table* RecordGram::theirTabPtr = 0;
 
-
-// Define the yywrap function for flex.
-int RecordGramwrap()
-{
-    return 1;
-}
 
 //# Parse the command.
 //# Do a yyrestart(yyin) first to make the flex scanner reentrant.
@@ -164,3 +166,6 @@ TableExprNode RecordGram::handleFunc (const String& name,
   return TableParseSelect::makeFuncNode (name, arguments,
 					 Vector<Int>(), *theirTabPtr);
 }
+
+} //# NAMESPACE CASA - END
+

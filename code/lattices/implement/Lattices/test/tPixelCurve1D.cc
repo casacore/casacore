@@ -33,6 +33,7 @@
 #include <scimath/Functionals/Polynomial.h>
 
 
+#include <casa/namespace.h>
 int main()
 {
   Vector<Float> x,y;

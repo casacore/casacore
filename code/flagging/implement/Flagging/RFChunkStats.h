@@ -35,6 +35,8 @@
 #include <lattices/Lattices/LatticeIterator.h> 
 #include <flagging/Flagging/RFCommon.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 class RedFlagger;
 class MeasurementSet;
 class VisibilityIterator;
@@ -208,5 +210,8 @@ const uInt num_active_stats = 3;
 
 // global function for finding polarization by index
 Int findCorrType( Stokes::StokesTypes type,const Vector<Int> &corr );
+
+
+} //# NAMESPACE CASA - END
 
 #endif

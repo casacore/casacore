@@ -33,6 +33,8 @@
 #include <casa/IO/AipsIO.h>
 #include <casa/iostream.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 SubTableDesc::SubTableDesc (const String& name, const String& comment,
 			    const String& descname, int opt)
 : BaseColumnDesc(name, comment, "", "", TpTable, "", opt, 1, IPosition(),
@@ -238,3 +240,6 @@ void SubTableDesc::show (ostream& os) const
 
 PlainColumn* SubTableDesc::makeColumn (ColumnSet*) const
     { return 0; }
+
+} //# NAMESPACE CASA - END
+

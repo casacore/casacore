@@ -33,6 +33,8 @@
 #include <casa/Utilities/Assert.h>
 #include <casa/BasicSL/String.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 ConstantSpectrum::ConstantSpectrum()
   :SpectralModel()
 {
@@ -134,3 +136,6 @@ Bool ConstantSpectrum::ok() const {
 // Local Variables: 
 // compile-command: "gmake OPTLIB=1 ConstantSpectrum"
 // End:
+
+} //# NAMESPACE CASA - END
+

@@ -33,6 +33,8 @@
 #include <casa/BasicSL/String.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 ROIncrementalStManAccessor::ROIncrementalStManAccessor (const Table& table,
 					    const String& dataManagerName)
 : dataManPtr_p (0)
@@ -82,3 +84,6 @@ void ROIncrementalStManAccessor::showCacheStatistics (ostream& os) const
 {
     dataManPtr_p->showCacheStatistics (os);
 }
+
+} //# NAMESPACE CASA - END
+

@@ -41,6 +41,8 @@
 #include <tables/Tables/ScalarColumn.h>
 #include <casa/BasicSL/String.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 class MSFeed;
 
 // <summary>
@@ -377,4 +379,7 @@ private:
   //# optional Quantum columns
   ScalarQuantColumn<Double> focusLengthQuant_p;
 };
+
+} //# NAMESPACE CASA - END
+
 #endif

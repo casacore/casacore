@@ -32,6 +32,8 @@
 #include <casa/aips.h>
 #include <tables/Tables/DataManager.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Forward Declarations
 template<class T> class Array;
 class Slicer;
@@ -327,5 +329,8 @@ private:
 };
 
 
+
+
+} //# NAMESPACE CASA - END
 
 #endif

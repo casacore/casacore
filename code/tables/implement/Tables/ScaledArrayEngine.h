@@ -31,6 +31,8 @@
 //# Includes
 #include <tables/Tables/BaseMappedArrayEngine.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Forward Declarations
 template<class T> class ROScalarColumn;
 
@@ -319,5 +321,8 @@ public:
 				    const Record& spec);
 };
 
+
+
+} //# NAMESPACE CASA - END
 
 #endif

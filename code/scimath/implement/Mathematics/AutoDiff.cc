@@ -31,6 +31,8 @@
 #include <casa/Arrays/ArrayMath.h>
 #include <casa/BasicMath/Math.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Statics
 template <class T>
 ObjectPool<AutoDiffRep<T>, uInt> AutoDiff<T>::pool;
@@ -209,3 +211,6 @@ template <class T> void AutoDiff<T>::derivatives(Vector<T> &res) const {
   res.resize(rep_p->nd_p);
   res = rep_p->grad_p;
 }
+
+} //# NAMESPACE CASA - END
+

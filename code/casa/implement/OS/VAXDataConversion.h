@@ -32,6 +32,8 @@
 #include <casa/OS/DataConversion.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 // <summary>
 // A class with virtual functions to convert VAX format
 // </summary>
@@ -185,5 +187,8 @@ public:
 inline VAXDataConversion::VAXDataConversion()
 {}
 
+
+
+} //# NAMESPACE CASA - END
 
 #endif

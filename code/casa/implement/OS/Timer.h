@@ -53,6 +53,7 @@ extern "C" int ftime(struct timeb*);
 #include <sys/resource.h>
 #endif
 
+namespace casa { //# NAMESPACE CASA - BEGIN
 
 // Class declaration.
 class String;
@@ -188,5 +189,8 @@ private:
     timeb   real0;          //# elapsed real time at last mark
 #endif
 };
+
+
+} //# NAMESPACE CASA - END
 
 #endif

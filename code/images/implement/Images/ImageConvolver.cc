@@ -46,6 +46,8 @@
 #include <casa/iostream.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 template <class T> 
 ImageConvolver<T>::ImageConvolver ()
 {}
@@ -273,3 +275,6 @@ void ImageConvolver<T>::checkCoordinates (LogIO& os, const CoordinateSystem& cSy
      }
    }
 }
+
+} //# NAMESPACE CASA - END
+

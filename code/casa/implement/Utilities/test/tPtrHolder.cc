@@ -32,6 +32,7 @@
 #include <casa/Utilities/Assert.h>
 #include <casa/iostream.h>
 
+#include <casa/namespace.h>
 // This program should not have any memory leaks.
 
 void do_nothing(Int *dummy)

@@ -43,6 +43,8 @@
 #include <sys/timeb.h>
 #endif
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 inline double daysFrom1970()
 {
     return HostInfo::secondsFrom1970() / C::day;
@@ -791,3 +793,6 @@ String Time::timeZoneName () {
 // time zone.
   return isDST () ? tzname[1] : tzname[0];
 }
+
+} //# NAMESPACE CASA - END
+

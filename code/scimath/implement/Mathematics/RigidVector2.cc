@@ -28,6 +28,8 @@
 #include <scimath/Mathematics/RigidVector.h>
 #include <scimath/Mathematics/SquareMatrix.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 RigidVector<Complex,4> operator*(const SquareMatrix<Complex,4>& m,
 				 const RigidVector<Float,4>& v) {
     Complex v0,v1,v2,v3;
@@ -59,4 +61,7 @@ RigidVector<Complex,4> operator*(const SquareMatrix<Complex,4>& m,
     }
     return RigidVector<Complex,4>(v0,v1,v2,v3);
 }
+
+
+} //# NAMESPACE CASA - END
 

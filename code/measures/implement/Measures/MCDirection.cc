@@ -38,6 +38,8 @@
 #include <measures/Measures/Nutation.h>
 #include <measures/Measures/MeasTable.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Statics
 Bool MCDirection::stateMade_p = False;
 uInt MCDirection::ToRef_p[N_Routes][3] = {
@@ -583,3 +585,6 @@ String MCDirection::showState() {
 			   MDirection::N_Types, MCDirection::N_Routes,
 			   MCDirection::ToRef_p);
 }
+
+} //# NAMESPACE CASA - END
+

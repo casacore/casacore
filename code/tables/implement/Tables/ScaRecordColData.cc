@@ -41,6 +41,8 @@
 #include <casa/Utilities/Assert.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 ScalarRecordColumnData::ScalarRecordColumnData
                                    (const ScalarRecordColumnDesc* cd,
 				    ColumnSet* csp)
@@ -262,3 +264,6 @@ void ScalarRecordColumnData::getFileDerived (AipsIO& ios,
     dataManPtr_p = colset.getDataManager (seqnr);
     createDataManagerColumn();
 }
+
+} //# NAMESPACE CASA - END
+

@@ -44,6 +44,8 @@
 #include <casa/BasicSL/String.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 template <typename T>
 void FITSImage::crackHeader (CoordinateSystem& cSys,
                              IPosition& shape, ImageInfo& imageInfo,
@@ -200,3 +202,6 @@ template void FITSImage::crackHeader<Double> (CoordinateSystem &, IPosition &, I
 template void FITSImage::crackHeader<Float> (CoordinateSystem &, IPosition &, ImageInfo &, Unit &, RecordInterface &, Float &, Float &, Short &, Int &, Bool &, LogIO &, FitsInput &);
 template void FITSImage::crackHeader<Int> (CoordinateSystem &, IPosition &, ImageInfo &, Unit &, RecordInterface &, Float &, Float &, Short &, Int &, Bool &, LogIO &, FitsInput &);
 template void FITSImage::crackHeader<Short> (CoordinateSystem &, IPosition &, ImageInfo &, Unit &, RecordInterface &, Float &, Float &, Short &, Int &, Bool &, LogIO &, FitsInput &);
+
+} //# NAMESPACE CASA - END
+

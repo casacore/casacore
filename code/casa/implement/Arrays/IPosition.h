@@ -30,14 +30,15 @@
 
 //# Includes
 #include <casa/aips.h>
+#include <casa/iosfwd.h>
+
+namespace casa { //# NAMESPACE CASA - BEGIN
 
 //# Forward Declarations
 class AipsIO;
 class LogIO;
 template<class T> class Array;
 template<class T> class Vector;
-#include <casa/iosfwd.h>
-
 
 // <summary> A Vector of integers, for indexing into Array<T> objects. </summary>
 
@@ -269,7 +270,7 @@ public:
     Bool isSubSet (const IPosition& other) const;
 
     // Write an IPosition to an ostream in a simple text form.
-    friend ostream& operator<<(ostream& os, const IPosition& ip);
+    friend std::ostream& operator<<(std::ostream& os, const IPosition& ip);
 
     // Write an IPosition to an AipsIO stream in a binary format.
     friend AipsIO& operator<<(AipsIO& aio, const IPosition& ip);
@@ -480,4 +481,7 @@ inline Bool IPosition::conform(const IPosition& other) const
     return  (size_p == other.size_p);
 }
 // </group>
+
+} //# NAMESPACE CASA - END
+
 #endif

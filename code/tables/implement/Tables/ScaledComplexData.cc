@@ -43,6 +43,8 @@
 #include <casa/Utilities/ValTypeId.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 template<class S, class T>
 ScaledComplexData<S,T>::ScaledComplexData (const String& sourceColumnName,
 					   const String& targetColumnName,
@@ -596,3 +598,6 @@ Slicer ScaledComplexData<S,T>::targetSlicer (const Slicer& sourceSlicer) const
 		   IPosition(1,1).concatenate (sourceSlicer.stride()),
 		   Slicer::endIsLast);
 }
+
+} //# NAMESPACE CASA - END
+

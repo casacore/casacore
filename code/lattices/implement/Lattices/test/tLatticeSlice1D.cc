@@ -44,6 +44,7 @@
 #include <casa/iostream.h>
 
 
+#include <casa/namespace.h>
 void doit1 ();
 void doit2 ();
 void doit3 ();

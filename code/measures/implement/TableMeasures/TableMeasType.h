@@ -33,6 +33,8 @@
 #include <casa/aips.h>
 #include <measures/Measures/MeasureHolder.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Forward Declarations
 class String;
 class Table;
@@ -116,5 +118,8 @@ private:
   MeasureHolder itsMeasHolder;	        //# Holds the measure
 };
 
+
+
+} //# NAMESPACE CASA - END
 
 #endif

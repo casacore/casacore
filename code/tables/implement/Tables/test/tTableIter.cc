@@ -39,6 +39,7 @@
 #include <casa/sstream.h>
 
 
+#include <casa/namespace.h>
 // <summary> Test program for table iterators </summary>
 
 // This program tests the table iterators..

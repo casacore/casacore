@@ -89,6 +89,8 @@
 #include <ms/MeasurementSets/MSTileLayout.h>
 #include <ms/MeasurementSets/MSSourceIndex.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 // Returns the 0-based position of the key string in the map,
 // which is a list of strings.  Looks for the "Which" occurrance
 // of the key.
@@ -1891,3 +1893,6 @@ void MSFitsInput::fixEpochReferences() {
 // Local Variables: 
 // compile-command: "gmake MSFitsInput"
 // End: 
+
+} //# NAMESPACE CASA - END
+

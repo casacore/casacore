@@ -64,6 +64,7 @@
 #include <casa/iostream.h>
 
 
+#include <casa/namespace.h>
 void showKeys (const TableRecord& record, uInt indent)
 {
   for (uInt i=0; i<record.nfields(); i++) {

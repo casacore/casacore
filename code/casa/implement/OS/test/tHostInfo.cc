@@ -34,6 +34,7 @@
 // For sleep()
 #include <unistd.h>
 
+#include <casa/namespace.h>
 int main()
 {
     cout << "Host: " << HostInfo::hostName() << endl;

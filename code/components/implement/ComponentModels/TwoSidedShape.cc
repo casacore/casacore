@@ -43,6 +43,8 @@
 #include <casa/Utilities/Assert.h>
 #include <casa/BasicSL/String.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 TwoSidedShape::~TwoSidedShape() {
   DebugAssert(ok(), AipsError);
 }
@@ -637,4 +639,7 @@ MDirection TwoSidedShape::directionFromCartesian (Double width, Double pa,
 // Local Variables: 
 // compile-command: "gmake OPTLIB=1 TwoSidedShape"
 // End: 
+
+
+} //# NAMESPACE CASA - END
 

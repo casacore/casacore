@@ -30,6 +30,8 @@
 #include <casa/iostream.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 AipsError::AipsError(const Char *str,Category c)
   : message(str), category(c)
 {}
@@ -73,3 +75,6 @@ AbortError::AbortError(const String &str,Category c)
 
 AbortError::~AbortError() throw()
 {}
+
+} //# NAMESPACE CASA - END
+

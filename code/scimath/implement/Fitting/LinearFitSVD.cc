@@ -27,6 +27,8 @@
 
 #include <scimath/Fitting/LinearFitSVD.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 template<class T>
 LinearFitSVD<T>::LinearFitSVD() :
   LinearFit<T>() {
@@ -46,3 +48,6 @@ LinearFitSVD<T> &LinearFitSVD<T>::operator=(const LinearFitSVD &other) {
 
 template<class T>
 LinearFitSVD<T>::~LinearFitSVD() {}
+
+} //# NAMESPACE CASA - END
+

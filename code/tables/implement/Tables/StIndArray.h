@@ -34,6 +34,8 @@
 #include <casa/Arrays/IPosition.h>
 #include <casa/BasicSL/Complex.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Forward Declarations
 class Slicer;
 template<class T> class Array;
@@ -410,5 +412,8 @@ private:
 };
 
 
+
+
+} //# NAMESPACE CASA - END
 
 #endif

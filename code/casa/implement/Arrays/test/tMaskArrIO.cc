@@ -50,6 +50,7 @@
 #include <casa/Arrays/Cube.h>
 #include <casa/Arrays/ArrayError.h>
 
+#include <casa/namespace.h>
 int main ()
 {
     try {

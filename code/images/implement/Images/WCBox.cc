@@ -49,6 +49,8 @@
 #include <casa/iostream.h>
 #include <casa/sstream.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 WCBox::WCBox()
 //
 //Default constructor
@@ -762,3 +764,6 @@ void WCBox::convertPixel(Double& pixel,
       }
    }
 }
+
+} //# NAMESPACE CASA - END
+

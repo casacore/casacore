@@ -34,6 +34,8 @@
 #include <lattices/Lattices/LatticeIterInterface.h>
 #include <casa/Utilities/CountedPtr.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Forward Declarations
 class IPosition;
 class LatticeNavigator;
@@ -515,5 +517,8 @@ protected:
   using RO_LatticeIterator<T>::itsIterPtr;
 };
 
+
+
+} //# NAMESPACE CASA - END
 
 #endif

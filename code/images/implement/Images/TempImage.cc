@@ -38,6 +38,8 @@
 #include <casa/Exceptions/Error.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 template <class T>
 TempImage<T>::TempImage()
 : ImageInterface<T> (RegionHandlerMemory()),
@@ -425,4 +427,7 @@ LatticeIterInterface<T>* TempImage<T>::makeIter
 {
   return mapPtr_p->makeIter (navigator, useRef);
 }
+
+
+} //# NAMESPACE CASA - END
 

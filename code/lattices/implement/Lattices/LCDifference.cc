@@ -33,6 +33,8 @@
 #include <casa/Exceptions/Error.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 LCDifference::LCDifference()
 {}
 
@@ -157,3 +159,6 @@ void LCDifference::multiGetSlice (Array<Bool>& buffer,
 	tmpbuf.freeStorage (tmp, deleteTmp);
     }
 }
+
+} //# NAMESPACE CASA - END
+

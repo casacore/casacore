@@ -48,6 +48,8 @@
 #include <casa/iostream.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 template<class T>
 PagedArray<T>::PagedArray()
 : itsIsClosed (True),
@@ -581,3 +583,6 @@ void PagedArray<T>::tempReopen() const
     itsIsClosed = False;
   }
 }
+
+} //# NAMESPACE CASA - END
+

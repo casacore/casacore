@@ -65,6 +65,8 @@
 #include <mirlib/maxdimc.h>
 #include <mirlib/miriad.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //   set this to 1 or 0 to benchmark tiled access vs. xyio(native miriad) access
 #define USE_TILE  1
 
@@ -680,9 +682,9 @@ void MIRIADImage::getImageAttributes (CoordinateSystem& cSys,
     } else {
       Double epoch;
       rdhdd_c(tno_p,"epoch", &epoch, 2000.0);
-      if (::near(epoch, 1950.0)) {
+      if (::casa::near(epoch, 1950.0)) {
 	radecsys = MDirection::B1950;
-      } else if (::near(epoch, 2000.0)) {
+      } else if (::casa::near(epoch, 2000.0)) {
 	radecsys = MDirection::J2000;
       }
     }	
@@ -707,13 +709,13 @@ void MIRIADImage::getImageAttributes (CoordinateSystem& cSys,
     // multiplied by cdelt before its used and in this case, that
     // doesn't matter since other pixels on that axis are never used.
     
-    if (::near(cdelt(latAxis), 0.0) && 
-	::near(crpix(latAxis)+offset, 1.0) && rotationAxis < 0) {
+    if (::casa::near(cdelt(latAxis), 0.0) && 
+	::casa::near(crpix(latAxis)+offset, 1.0) && rotationAxis < 0) {
       cdelt(latAxis) = 1.0;            // degrees
     }
     //
-    if (::near(cdelt(longAxis), 0.0) && 
-	::near(crpix(longAxis)+offset, 1.0) && rotationAxis < 0) {
+    if (::casa::near(cdelt(longAxis), 0.0) && 
+	::casa::near(crpix(longAxis)+offset, 1.0) && rotationAxis < 0) {
       cdelt(longAxis) = 1.0;          // degrees
     }
 
@@ -1107,4 +1109,7 @@ void MIRIADImage::getImageAttributes (CoordinateSystem& cSys,
   xyclose_c(tno_p);
 }
 
+
+
+} //# NAMESPACE CASA - END
 

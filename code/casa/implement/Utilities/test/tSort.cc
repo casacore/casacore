@@ -33,6 +33,7 @@
 #include <casa/stdlib.h>
 #include <casa/iostream.h>
 
+#include <casa/namespace.h>
 // This program test the class Sort.
 // It sorts some data in ascending and/or descending order.
 // The results are written to stdout. A script executing this program,

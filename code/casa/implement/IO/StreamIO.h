@@ -31,6 +31,8 @@
 #include <casa/aips.h>
 #include <casa/IO/ByteIO.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 class String;
 
 // <summary>Class for IO on connection oriented socket</summary>
@@ -107,4 +109,7 @@ private:
 
   int itsSockDesc;
 };
+
+} //# NAMESPACE CASA - END
+
 #endif

@@ -41,6 +41,8 @@
 #include <casa/Arrays/ArrayMath.h>
 #include <casa/Arrays/ArrayLogical.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 // MVuvw class
 
 //# Constructors
@@ -182,7 +184,7 @@ void MVuvw::assure(const MeasValue &in) {
 void MVuvw::adjust() {}
 
 void MVuvw::adjust(Double &res) {
-  res = sqrt(operator*(*this));
+  res = std::sqrt(operator*(*this));
   if (res != 0.0 && res != 1.0) {
     xyz /= res;
   };
@@ -197,20 +199,20 @@ void MVuvw::readjust(Double res) {
 }
 
 Double MVuvw::radius() {
-  return (sqrt(operator*(*this)));
+  return (std::sqrt(operator*(*this)));
 }
 
 Vector<Double> MVuvw::get() const{
   Vector<Double> tmp(3);
-  tmp(0) = sqrt(operator*(*this));
+  tmp(0) = std::sqrt(operator*(*this));
   Double ln = (tmp(0) == 0.0 ? 1.0 : tmp(0));
   Double loc = xyz(0)/ln;
   if (loc == 0) {
-    tmp(1) = asin(xyz(1)/ln);
+    tmp(1) = std::asin(xyz(1)/ln);
   } else {
-    tmp(1) = atan2(xyz(1),xyz(0));
+    tmp(1) = std::atan2(xyz(1),xyz(0));
   };
-  tmp(2) = asin(xyz(2)/ln);
+  tmp(2) = std::asin(xyz(2)/ln);
   return tmp;
 }
 
@@ -231,7 +233,7 @@ Quantum<Vector<Double> > MVuvw::getAngle(const Unit &unit) const{
 }
 
 Quantity MVuvw::getLength() const{
-  Double tmp = sqrt(operator*(*this));
+  Double tmp = std::sqrt(operator*(*this));
   return Quantity(tmp,"m");
 }
 
@@ -245,11 +247,11 @@ Double MVuvw::uvwAngle(const MVuvw &other) const {
   t1 = get();
   t2 = other.get();
   Double s1,c1;
-  c1 = cos(t1(2)) * sin(t2(2)) -
-    sin(t1(2)) * cos(t2(2)) * cos(t1(1) - t2(1));
-  s1 = -cos(t2(2)) * sin(t1(1) - t2(1));
+  c1 = std::cos(t1(2)) * std::sin(t2(2)) -
+    std::sin(t1(2)) * std::cos(t2(2)) * std::cos(t1(1) - t2(1));
+  s1 = -std::cos(t2(2)) * std::sin(t1(1) - t2(1));
   if (s1 != 0 || c1 != 0) {
-    return atan2(s1, c1);
+    return std::atan2(s1, c1);
   } else {
     return Double(0.0);
   };
@@ -267,7 +269,7 @@ Double MVuvw::separation(const MVuvw &other) const {
   t1 -= t2;
   Double d1 = t1.radius()/2.0;
   d1 = (d1 < 1.0 ? d1 : 1.0);
-  return (2*asin(d1));
+  return (2*std::asin(d1));
 }
 
 Quantity MVuvw::separation(const MVuvw &other, 
@@ -415,3 +417,6 @@ Double operator*(const MVuvw &left, const MVPosition &right) {
   MVuvw tmp(right);
   return (tmp * left);
 }
+
+} //# NAMESPACE CASA - END
+

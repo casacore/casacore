@@ -29,6 +29,8 @@
 #include <casa/Arrays/ArrayError.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 TSMShape::TSMShape()
 : data_p (),
   size_p (0)
@@ -148,3 +150,6 @@ IPosition TSMShape::offsetIncrement (const IPosition& subShape,
     }
     return incr;
 }
+
+} //# NAMESPACE CASA - END
+

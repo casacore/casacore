@@ -35,6 +35,8 @@
 #include <casa/BasicSL/String.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 template<class SourceType, class TargetType>
 BaseMappedArrayEngine<SourceType, TargetType>::BaseMappedArrayEngine ()
 : sourceName_p   (""),
@@ -270,3 +272,6 @@ Bool BaseMappedArrayEngine<SourceType, TargetType>::canChangeShape() const
 {
     return (roColumn_p == 0  ?  False : roColumn_p->canChangeShape());
 }
+
+} //# NAMESPACE CASA - END
+

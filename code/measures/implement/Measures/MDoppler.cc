@@ -33,6 +33,8 @@
 #include <casa/Utilities/Assert.h>
 #include <casa/Utilities/Register.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Constructors
 MDoppler::MDoppler() :
   MeasBase<MVDoppler, MDoppler::Ref>() {}
@@ -248,3 +250,6 @@ MDoppler::shiftFrequency(const Quantum<Vector<Double> > &freq) const {
   };
   return Quantum<Vector<Double> >(tmp, freq.getFullUnit());
 }
+
+} //# NAMESPACE CASA - END
+

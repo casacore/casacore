@@ -39,6 +39,8 @@
 #include <casa/BasicSL/String.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 LatticeAddNoise::LatticeAddNoise()
 : itsParameters(0),
   itsNoise(0)
@@ -181,3 +183,6 @@ void LatticeAddNoise::makeDistribution ()
       }
    }
 }
+
+} //# NAMESPACE CASA - END
+

@@ -34,6 +34,8 @@
 #include <casa/Arrays/MaskedArray.h>
 #include <casa/Arrays/MaskLogiArr.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 // <summary>
 //    Logical operations for MaskedArrays, and between MaskedArrays and Arrays.
 // </summary>
@@ -464,5 +466,8 @@ template<class T> Bool anyOR (const T &val, const MaskedArray<T> &array);
 // </group>
 
 // </group>
+
+
+} //# NAMESPACE CASA - END
 
 #endif

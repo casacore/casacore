@@ -34,6 +34,8 @@
 #include <casa/aips.h>
 #include <casa/Arrays/Vector.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Forward Declarations
 class String;
 
@@ -182,5 +184,8 @@ public:
   static Vector<Int> lockInfo (const String& tableName);
 };
 
+
+
+} //# NAMESPACE CASA - END
 
 #endif

@@ -48,6 +48,8 @@
 #include <casa/sstream.h>
 #include <casa/stdio.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 Bool isSDFitsColumn(FITS::ReservedName name) {
     if (name == FITS::AUTHOR || name == FITS::CDELT || name == FITS::CROTA ||
 	name == FITS::CRPIX || name == FITS::CRVAL || name == FITS::CTYPE ||
@@ -1040,3 +1042,6 @@ const Table &BinaryTable::nextRow()
     fillRow();
     return (*currRowTab);
 }
+
+} //# NAMESPACE CASA - END
+

@@ -34,6 +34,8 @@
 #include <casa/aips.h>
 #include <casa/Arrays/IPosition.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Forward Declarations
 class Slicer;
 
@@ -156,5 +158,8 @@ private:
   Bool      itsReordered;
 };
 
+
+
+} //# NAMESPACE CASA - END
 
 #endif

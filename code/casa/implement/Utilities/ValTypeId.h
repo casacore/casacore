@@ -30,6 +30,8 @@
 
 #include <casa/Utilities/ValType.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 // <summary>
 // The id-string of a value type
 // </summary>
@@ -82,6 +84,9 @@ inline String valDataTypeId (const TableRecord* obj)
     { return ValType::getTypeStr (obj); }
 
 // </group>
+
+} //# NAMESPACE CASA - END
+
 #endif
 
 

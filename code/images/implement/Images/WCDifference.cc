@@ -32,6 +32,8 @@
 #include <tables/Tables/TableRecord.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 WCDifference::WCDifference (const ImageRegion& region1,
 			    const ImageRegion& region2)
 : WCCompound (region1, region2)
@@ -105,3 +107,6 @@ WCDifference* WCDifference::fromRecord (const TableRecord& rec,
     unmakeRecord (regions, rec.asRecord("regions"), tableName);
     return new WCDifference (True, regions);
 }
+
+} //# NAMESPACE CASA - END
+

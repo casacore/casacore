@@ -49,6 +49,7 @@
 #include <casa/BasicSL/String.h>
 #include <casa/iostream.h>
 
+#include <casa/namespace.h>
 int main() {
   try {
     TwoSidedShape* shapePtr = 0;

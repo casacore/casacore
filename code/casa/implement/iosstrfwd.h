@@ -37,7 +37,12 @@
 #include <casa/aips.h>
 #include <casa/iosfwd.h>
 
+
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 using std::istringstream;
 using std::ostringstream;
+
+} //# NAMESPACE CASA - END
 
 #endif

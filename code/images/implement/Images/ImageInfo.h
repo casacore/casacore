@@ -38,6 +38,8 @@
 
 //# Forward declarations
 #include <casa/iosfwd.h>
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 class LoggerHolder;
 
 // <summary>
@@ -216,6 +218,9 @@ private:
 ostream &operator<<(ostream &os, const ImageInfo &info);
 // </group>
 
+
+
+} //# NAMESPACE CASA - END
 
 #endif
 

@@ -28,6 +28,8 @@
 //# Includes
 #include <scimath/Functionals/CompoundParam.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 template <class T>
 CompoundParam<T>::CompoundParam() : 
   Function<T>(), ndim_p(0),
@@ -117,3 +119,6 @@ uInt CompoundParam<T>::addFunction(const Function<T> &newFunction) {
   };
   return i;
 }
+
+} //# NAMESPACE CASA - END
+

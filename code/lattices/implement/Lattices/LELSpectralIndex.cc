@@ -38,6 +38,8 @@
 #include <casa/Exceptions/Error.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 template <class T>
 LELSpectralIndex<T>::LELSpectralIndex (const Block<LatticeExprNode>& expr)
 {
@@ -235,3 +237,6 @@ Bool LELSpectralIndex<T>::prepareScalarExpr()
 #endif
   return False;
 }
+
+} //# NAMESPACE CASA - END
+

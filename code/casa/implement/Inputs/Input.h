@@ -33,6 +33,8 @@
 #include <casa/Inputs/Param.h>
 #include <casa/Containers/List.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 template<class T> class Vector;
 
 // <summary> 
@@ -353,6 +355,9 @@ private:
   // count of program parameters
   Int p_count;                 
 };
+
+
+} //# NAMESPACE CASA - END
 
 #endif
 

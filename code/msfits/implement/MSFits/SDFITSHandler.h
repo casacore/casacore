@@ -34,6 +34,8 @@
 #include <measures/TableMeasures/ScalarQuantColumn.h>
 #include <measures/TableMeasures/ScalarMeasColumn.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Forward Declarations
 class CopyRecordToTable;
 class MeasurementSet;
@@ -136,6 +138,9 @@ private:
     // get the required table desc given the unhandled columns and the row
     TableDesc requiredTableDesc(Vector<Bool> &handledCols, Vector<String> &colNames, const Record &row);
 };
+
+
+} //# NAMESPACE CASA - END
 
 #endif
 

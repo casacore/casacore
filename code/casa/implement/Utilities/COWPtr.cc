@@ -28,6 +28,8 @@
 
 #include <casa/Utilities/COWPtr.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 template <class T> COWPtr<T>::COWPtr(T *obj, Bool deleteIt, Bool readOnly)
 : obj_p(obj, deleteIt), const_p(readOnly)
 {
@@ -57,4 +59,7 @@ template <class T> Bool COWPtr<T>::makeUnique()
 
 
 
+
+
+} //# NAMESPACE CASA - END
 

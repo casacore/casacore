@@ -36,6 +36,7 @@
 # include <casa/stdio.h>
 # include <string.h>
 
+#include <casa/namespace.h>
 // Display basic info and the keyword list
 void show(HeaderDataUnit *h) {
 	cout << "Data type   " << h->datatype() << "\n"

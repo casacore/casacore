@@ -35,6 +35,8 @@
 #include <casa/Arrays/Array.h>
 #include <lattices/Lattices/LatticeNavigator.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Forward Declarations
 template <class T> class Vector;
 template <class T> class Matrix;
@@ -323,5 +325,8 @@ inline IPosition LatticeIterInterface<T>::cursorShape() const
   return itsNavPtr->cursorShape();
 }
 
+
+
+} //# NAMESPACE CASA - END
 
 #endif

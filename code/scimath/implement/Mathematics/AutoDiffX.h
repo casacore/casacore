@@ -33,6 +33,8 @@
 #include <casa/aips.h>
 #include <scimath/Mathematics/AutoDiff.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Forward declarations
 template <class T> class Vector;
 
@@ -162,5 +164,8 @@ template <class T> class AutoDiffX : public AutoDiff<T> {
   //# Data
 
 };
+
+
+} //# NAMESPACE CASA - END
 
 #endif

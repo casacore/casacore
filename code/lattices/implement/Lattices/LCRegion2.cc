@@ -43,6 +43,8 @@
 #include <casa/Exceptions/Error.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 LCRegion* LCRegion::fromRecord (const TableRecord& rec,
 				const String& tableName)
 {
@@ -86,3 +88,6 @@ LCRegion* LCRegion::fromRecord (const TableRecord& rec,
     }
     return regPtr;
 }
+
+} //# NAMESPACE CASA - END
+

@@ -34,6 +34,8 @@
 #include <casa/Arrays/Array.h>
 #include <casa/Arrays/IPosition.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 // <summary> Index into an array using the longest axis </summary>
 
 // <use visibility=export>
@@ -146,5 +148,8 @@ private:
   uInt theLastAxis;
   uInt theNelements;
 };
+
+
+} //# NAMESPACE CASA - END
 
 #endif

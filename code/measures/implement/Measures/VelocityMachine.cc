@@ -33,6 +33,8 @@
 #include <measures/Measures/MeasFrame.h>
 #include <measures/Measures/MeasConvert.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Constructors
 
 VelocityMachine::VelocityMachine(const MFrequency::Ref &freqRef, 
@@ -260,3 +262,6 @@ void VelocityMachine::copy(const VelocityMachine &other) {
   vref_p = other.vref_p;
   vun_p = other.vun_p;
 }
+
+} //# NAMESPACE CASA - END
+

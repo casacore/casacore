@@ -33,6 +33,8 @@
 #include <casa/OS/LittleEndianConversion.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 // Define the canonical sizes of the built-in data types.
 // These are the same for all machine architectures.
 
@@ -384,5 +386,8 @@ inline void VAXConversion::moveFloat (void* to, const void* from)
 #endif
 }
 
+
+
+} //# NAMESPACE CASA - END
 
 #endif

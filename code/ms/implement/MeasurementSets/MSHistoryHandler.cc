@@ -32,6 +32,8 @@
 #include <casa/ostream.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 MSHistoryHandler::MSHistoryHandler(MeasurementSet& ms, String app){
   histTable_p = ms.history();
   msHistCol_p= new MSHistoryColumns(histTable_p);
@@ -178,3 +180,6 @@ void MSHistoryHandler::cliCommand(LogSinkInterface& sink){
 
 
 }
+
+} //# NAMESPACE CASA - END
+

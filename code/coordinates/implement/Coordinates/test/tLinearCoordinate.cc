@@ -39,6 +39,7 @@
 
 #include <casa/iostream.h>
 
+#include <casa/namespace.h>
 LinearCoordinate makeCoordinate(Vector<String>& names,
                                 Vector<String>& units,
                                 Vector<Double>& crpix,

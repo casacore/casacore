@@ -38,6 +38,8 @@
 #include <casa/Arrays/Vector.h>
 #include <casa/Exceptions/Error.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 MSSpectralWindow::MSSpectralWindow():hasBeenDestroyed_p(True) { }
 
 MSSpectralWindow::MSSpectralWindow(const String &tableName, TableOption option) 
@@ -232,3 +234,6 @@ MSSpectralWindow MSSpectralWindow::referenceCopy(const String& newTableName,
     return MSSpectralWindow(MSTable<PredefinedColumns,PredefinedKeywords>::
 		     referenceCopy(newTableName,writableColumns));
 }
+
+} //# NAMESPACE CASA - END
+

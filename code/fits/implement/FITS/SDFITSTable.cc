@@ -33,6 +33,8 @@
 #include <casa/Arrays/Slice.h>
 #include <casa/Utilities/Assert.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 Block<String> SDFITSTable::kwNames;
 
 void SDFITSTable::init_kwNames()
@@ -140,3 +142,6 @@ void SDFITSTable::sdfits_shuffle()
     }
   }
 }
+
+} //# NAMESPACE CASA - END
+

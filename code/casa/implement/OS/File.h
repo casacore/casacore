@@ -34,6 +34,8 @@
 #include <casa/BasicSL/String.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 // <summary> 
 // Class to get file information and a base for other file classes.
 // </summary>
@@ -291,5 +293,8 @@ inline void File::getstat (void* buf) const
 }
 
 
+
+
+} //# NAMESPACE CASA - END
 
 #endif

@@ -33,6 +33,8 @@
 #include <tables/Tables/SSMBase.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 // <summary>
 // The Standard Storage Manager
 // </summary>
@@ -184,5 +186,8 @@ private:
     StandardStMan& operator= (const StandardStMan& that);
 };
 
+
+
+} //# NAMESPACE CASA - END
 
 #endif

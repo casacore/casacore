@@ -38,6 +38,8 @@
 
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 template<class T>
 ArrayColumnData<T>::ArrayColumnData (const ArrayColumnDesc<T>* cd,
 				     ColumnSet* csp)
@@ -354,3 +356,6 @@ void ArrayColumnData<T>::getFileDerived (AipsIO& ios,
     dataManPtr_p = colset.getDataManager (seqnr);
     createDataManagerColumn();
 }
+
+} //# NAMESPACE CASA - END
+

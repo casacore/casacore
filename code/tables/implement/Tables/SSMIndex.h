@@ -33,6 +33,8 @@
 #include <casa/Containers/SimOrdMap.h>
 #include <casa/Arrays/Vector.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Forward Declarations
 class SSMBase;
 
@@ -176,5 +178,8 @@ inline uInt SSMIndex::getRowsPerBucket() const
   return itsRowsPerBucket;
 }
 
+
+
+} //# NAMESPACE CASA - END
 
 #endif

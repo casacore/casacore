@@ -33,6 +33,8 @@
 #include <casa/aips.h>
 #include <scimath/Fitting/GenericL2Fit.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Forward declarations
 
 // <summary> Class for linear least-squares fit.
@@ -256,6 +258,9 @@ protected:
   using GenericL2Fit<T>::buildConstraint;
   using GenericL2Fit<T>::fillSVDConstraints;
 };
+
+
+} //# NAMESPACE CASA - END
 
 #endif
 

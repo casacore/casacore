@@ -37,6 +37,8 @@
 #include <casa/Arrays/Vector.h>
 #include <casa/Exceptions/Error.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 MSFeed::MSFeed():hasBeenDestroyed_p(True) { }
 
 MSFeed::MSFeed(const String &tableName, TableOption option) 
@@ -210,3 +212,6 @@ MSFeed MSFeed::referenceCopy(const String& newTableName,
     return MSFeed(MSTable<PredefinedColumns,PredefinedKeywords>::referenceCopy
 		  (newTableName,writableColumns));
 }
+
+} //# NAMESPACE CASA - END
+

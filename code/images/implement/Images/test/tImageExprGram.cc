@@ -48,6 +48,7 @@
 #include <casa/iostream.h>
 
 
+#include <casa/namespace.h>
 //# This function simulates the same function in DOImage2.cc.
 String substituteOID (Block<LatticeExprNode>& nodes,
 		      String& exprName,

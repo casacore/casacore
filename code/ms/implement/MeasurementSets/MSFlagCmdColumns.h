@@ -35,6 +35,8 @@
 #include <tables/Tables/ScalarColumn.h>
 #include <casa/BasicSL/String.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 class MSFlagCmd;
 
 // <summary>
@@ -253,4 +255,7 @@ private:
   ScalarQuantColumn<Double> intervalQuant_p;
   ScalarQuantColumn<Double> timeQuant_p;
 };
+
+} //# NAMESPACE CASA - END
+
 #endif

@@ -28,6 +28,8 @@
 #include <casa/IO/AipsIOCarray.h>
 #include <casa/Exceptions/Error.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 // Put a C-array of n elements.
 template<class T>
 void putAipsIO (AipsIO& ios, uInt n, const T* data)
@@ -59,3 +61,6 @@ void getnewAipsIO (AipsIO& ios, uInt& n, T** data)
     }
     getAipsIO (ios, n, *data);
 }
+
+} //# NAMESPACE CASA - END
+

@@ -37,6 +37,8 @@
 #include <measures/Measures/MConvertBase.h>
 #include <measures/Measures/MRadialVelocity.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Forward Declarations
 class MCRadialVelocity;
 class MDoppler;
@@ -180,5 +182,8 @@ private:
 		 const MConvertBase &mc);
   
 };
+
+
+} //# NAMESPACE CASA - END
 
 #endif

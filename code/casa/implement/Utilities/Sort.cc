@@ -38,6 +38,8 @@
 
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 SortKey::SortKey (const void* dat, ObjCompareFunc* cmpfunc, uInt inc,
 		  int opt)
 : order_p   (opt),
@@ -466,3 +468,6 @@ int Sort::compare (uInt i1, uInt i2) const
 	return 1;                           // equal keys; in order
     return -1;                              // equal keys; out-of-order
 }
+
+} //# NAMESPACE CASA - END
+

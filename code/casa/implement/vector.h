@@ -36,10 +36,14 @@
 
 #if !defined(AIPS_SGI)
 #include <vector>
+namespace casa { //# NAMESPACE CASA - BEGIN
 using std::vector;
+} //# NAMESPACE CASA - END
 #else
 #include <vector.h>
 #endif
+
+namespace casa { //# NAMESPACE CASA - BEGIN
 
 // A special macro to create the auxilliary template definitions for
 // various compilers
@@ -128,5 +132,8 @@ template void std::fill<T*, T >(T*, T*, const T&);
 #else
 # define AIPS_VECTOR_AUX_TEMPLATES(T)
 #endif
+
+
+} //# NAMESPACE CASA - END
 
 #endif

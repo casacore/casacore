@@ -33,6 +33,8 @@
 #include <lattices/Lattices/LELFunction.h>
 #include <casa/Containers/Block.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Forward Declarations
 
 
@@ -109,5 +111,8 @@ private:
   LatticeExprNode arg1_p;
 };
 
+
+
+} //# NAMESPACE CASA - END
 
 #endif

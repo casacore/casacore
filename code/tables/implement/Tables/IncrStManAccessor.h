@@ -31,13 +31,15 @@
 //# Includes
 #include <casa/aips.h>
 #include <tables/Tables/DataManAccessor.h>
+#include <casa/iosfwd.h>
+
+namespace casa { //# NAMESPACE CASA - BEGIN
 
 //# Forward Declarations
 class ISMBase;
 class DataManager;
 class Table;
 class String;
-#include <casa/iosfwd.h>
 
 // <summary>
 // Give access to some IncrementalStMan functions
@@ -138,5 +140,8 @@ private:
     ISMBase* dataManPtr_p;
 };
 
+
+
+} //# NAMESPACE CASA - END
 
 #endif

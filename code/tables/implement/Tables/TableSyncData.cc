@@ -30,6 +30,8 @@
 #include <tables/Tables/TableSyncData.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 TableSyncData::TableSyncData()
 : itsNrrow              (0),
   itsNrcolumn           (-1),
@@ -160,4 +162,7 @@ Bool TableSyncData::read (uInt& nrrow, uInt& nrcolumn, Bool& tableChanged,
     }
     return True;
 }
+
+
+} //# NAMESPACE CASA - END
 

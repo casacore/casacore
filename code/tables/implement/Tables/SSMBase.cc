@@ -51,6 +51,8 @@
 #include <casa/iostream.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 SSMBase::SSMBase (Int aBucketSize, uInt aCacheSize)
 : DataManager          (),
   itsDataManName       ("SSM"),
@@ -1132,3 +1134,6 @@ uInt SSMBase::setBucketSize()
   }
   return rowsPerBucket;
 }
+
+} //# NAMESPACE CASA - END
+

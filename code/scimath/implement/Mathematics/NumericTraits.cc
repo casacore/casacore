@@ -28,6 +28,8 @@
 #include <scimath/Mathematics/NumericTraits.h>
 #include <casa/BasicSL/Constants.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 const Double & NumericTraits<Float>::epsilon = C::flt_epsilon;
 const Double & NumericTraits<Double>::epsilon = C::dbl_epsilon;
 const Double & NumericTraits<Complex>::epsilon = C::flt_epsilon;
@@ -42,3 +44,6 @@ const Double & NumericTraits<Float>::maximum = C::flt_max;
 const Double & NumericTraits<Double>::maximum = C::dbl_max;
 const Double & NumericTraits<Complex>::maximum = C::flt_max;
 const Double & NumericTraits<DComplex>::maximum = C::dbl_max;
+
+} //# NAMESPACE CASA - END
+

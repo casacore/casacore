@@ -40,6 +40,8 @@
 #include <tables/Tables/ColDescSet.h>
 #include <tables/Tables/TableRecord.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 ROVisibilityIterator::ROVisibilityIterator() {}
 
 // const of MS is cast away, but we don't actually change it.
@@ -1393,4 +1395,7 @@ void VisibilityIterator::putDataColumn(DataColumn whichOne,
 };  
 
 
+
+
+} //# NAMESPACE CASA - END
 

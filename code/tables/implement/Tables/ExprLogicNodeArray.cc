@@ -34,6 +34,8 @@
 
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 TableExprNodeArrayEQBool::TableExprNodeArrayEQBool
                                             (const TableExprNodeRep& node)
 : TableExprNodeArray (node, NTBool, OtEQ)
@@ -519,3 +521,6 @@ Array<Bool> TableExprNodeArrayNOT::getArrayBool (const TableExprId& id)
 {
     return !(lnode_p->getArrayBool(id));
 }
+
+} //# NAMESPACE CASA - END
+

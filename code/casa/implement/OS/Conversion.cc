@@ -30,6 +30,8 @@
 #include <casa/OS/Conversion.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 unsigned int Conversion::boolToBit (void* to, const void* from,
 				    unsigned int nvalues)
 {
@@ -223,3 +225,6 @@ void* Conversion::mymemcpy (void* to, const void* from, unsigned int nbytes)
 {
     return memcpy (to, from, nbytes);
 }
+
+} //# NAMESPACE CASA - END
+

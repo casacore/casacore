@@ -45,7 +45,11 @@
 // a global boolean variable (so it can be turned on and off in a debugger) 
 // which is initialized to True.
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 extern Bool aips_debug_on;
+
+} //# NAMESPACE CASA - END
 
 #if !defined(AIPS_DEBUG)
 #define aips_debug (0)
@@ -96,6 +100,5 @@ namespace std {};
 #else
 #define WHATEVER_VECTOR_FORWARD_DEC template <class T, class U> class vector
 #endif
-
 
 #endif

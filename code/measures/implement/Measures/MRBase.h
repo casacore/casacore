@@ -32,10 +32,12 @@
 //# Includes
 #include <casa/aips.h>
 #include <measures/Measures/MeasFrame.h>
+#include <casa/iosfwd.h>
+
+namespace casa { //# NAMESPACE CASA - BEGIN
 
 //# Forward Declarations
 class String;
-#include <casa/iosfwd.h>
 
 // <summary> Base for Reference frame for physical measures </summary>
 
@@ -177,5 +179,8 @@ private:
 // Output declaration
 ostream &operator<<(ostream &os, const MRBase &meas);
 // </group>
+
+
+} //# NAMESPACE CASA - END
 
 #endif

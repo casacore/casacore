@@ -29,6 +29,8 @@
 #include <lattices/Lattices/LineCollapser.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 template<class T, class U>
 LineCollapser<T,U>::~LineCollapser()
 {}
@@ -38,3 +40,6 @@ Bool LineCollapser<T,U>::canHandleNullMask() const
 {
     return False;
 }
+
+} //# NAMESPACE CASA - END
+

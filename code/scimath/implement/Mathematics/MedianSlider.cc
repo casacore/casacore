@@ -2,6 +2,8 @@
 #include <casa/Exceptions/Error.h>
 #include <stdlib.h>    
     
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 MedianSlider::MedianSlider () 
   : buf(0),index(0),valid(0)
 {
@@ -189,3 +191,6 @@ Bool MedianSlider::assure ()
   }
   return True;
 }
+
+} //# NAMESPACE CASA - END
+

@@ -35,6 +35,8 @@
 #include <casa/Exceptions/Error.h> 
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 template <class T>
 LatticeExpr<T>::LatticeExpr()
 : lastChunkPtr_p (0)
@@ -296,3 +298,6 @@ void LatticeExpr<T>::handleMathTo (Lattice<T>& to, int oper) const
     Lattice<T>::handleMathTo (to, oper);
   }
 }
+
+} //# NAMESPACE CASA - END
+

@@ -35,6 +35,8 @@
 #include <casa/BasicSL/String.h>
 #include <exception>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 // <summary>Base class for all AIPS++ library errors</summary>
 // <use visibility=export>
 //
@@ -359,5 +361,8 @@ public:
   ~AbortError() throw();
 };
 
+
+
+} //# NAMESPACE CASA - END
 
 #endif

@@ -38,6 +38,8 @@
 # include <stdio.h>
 #include <assert.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //	Discussion of Reserved FitsKeyword Table
 //
 //	1. The reserved name itself (name_) is not unique;  there may 
@@ -2582,3 +2584,6 @@ void FitsFPUtil::setNaN(float &val)
 	cptr[i] = 0xff;
     }
 }
+
+} //# NAMESPACE CASA - END
+

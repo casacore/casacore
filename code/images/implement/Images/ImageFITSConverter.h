@@ -32,6 +32,8 @@
 
 #include <casa/aips.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 template<class T> class PagedImage;
 template<class T> class ImageInterface;
 class IPosition;
@@ -254,5 +256,8 @@ public:
 
 };
 
+
+
+} //# NAMESPACE CASA - END
 
 #endif

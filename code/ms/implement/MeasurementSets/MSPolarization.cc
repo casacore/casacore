@@ -37,6 +37,8 @@
 #include <casa/Arrays/Vector.h>
 #include <casa/Exceptions/Error.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 MSPolarization::MSPolarization():hasBeenDestroyed_p(True) { }
 
 MSPolarization::MSPolarization(const String &tableName, TableOption option) 
@@ -170,3 +172,6 @@ MSPolarization MSPolarization::referenceCopy(const String& newTableName,
     return MSPolarization(MSTable<PredefinedColumns,PredefinedKeywords>::
 		     referenceCopy(newTableName,writableColumns));
 }
+
+} //# NAMESPACE CASA - END
+

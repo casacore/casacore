@@ -9,6 +9,7 @@
 
 #include <casa/iostream.h>
 
+#include <casa/namespace.h>
 Matrix<Double> qfn(Int nlevels, Double thresh, Double dcoff)
 {
   // works for odd numbers of levels

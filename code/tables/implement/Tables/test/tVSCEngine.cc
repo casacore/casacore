@@ -43,6 +43,7 @@
 #include <casa/iostream.h>
 
 
+#include <casa/namespace.h>
 // <summary> Test program for class VSCEngine </summary>
 
 // This program tests the virtual column engine VSCEngine.

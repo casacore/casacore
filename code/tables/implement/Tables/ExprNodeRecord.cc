@@ -35,6 +35,8 @@
 #include <casa/Exceptions/Error.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 TableExprNodeRecordField::TableExprNodeRecordField
                                             (DataType dtype,
 					     const Block<Int>& fieldNumbers)
@@ -333,3 +335,6 @@ const RecordInterface& TableExprNodeRecordFieldArray::getRecord
   }
   return *recPtr;
 }
+
+} //# NAMESPACE CASA - END
+

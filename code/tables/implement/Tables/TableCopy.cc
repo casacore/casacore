@@ -39,6 +39,8 @@
 #include <casa/BasicSL/String.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 Table TableCopy::makeEmptyTable (const String& newName,
 				 const Record& dataManagerInfo,
 				 const Table& tab,
@@ -211,3 +213,6 @@ void TableCopy::copySubTables (TableRecord& outKeys,
     }
   }
 }
+
+} //# NAMESPACE CASA - END
+

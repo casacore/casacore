@@ -37,6 +37,8 @@
 #include <casa/Utilities/Assert.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 String TableLogSink::localId( ) {
     return String("TableLogSink");
 }
@@ -324,3 +326,6 @@ LogSink TableLogSink::makeSink (const LogFilterInterface &filter,
 					     fileName);
   return LogSink (filter, CountedPtr<LogSinkInterface>(sink));
 }
+
+} //# NAMESPACE CASA - END
+

@@ -34,6 +34,8 @@
 #include <components/SpectralComponents/SpectralElement.h>
 #include <components/SpectralComponents/SpectralList.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Forward Declarations
 template <class T> class Vector;
 
@@ -215,6 +217,9 @@ class SpectralEstimate {
   template <class MT> SpectralElement convertElement (const Vector<MT>& abcissa,
                                                       const SpectralElement& el) const;
 };
+
+
+} //# NAMESPACE CASA - END
 
 #endif
 

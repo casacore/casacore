@@ -32,6 +32,8 @@
 //# Includes
 #include <lattices/Lattices/Lattice.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Forward Declarations
 class LatticeRegion;
 
@@ -318,5 +320,8 @@ private:
   mutable LatticeRegion* itsDefRegPtr;
 };
 
+
+
+} //# NAMESPACE CASA - END
 
 #endif

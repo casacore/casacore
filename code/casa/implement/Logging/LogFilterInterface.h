@@ -34,6 +34,8 @@
 #include <casa/Logging/LogMessage.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 // <summary>
 // Abstract base class for filtering LogMessages.
 // </summary>
@@ -105,5 +107,8 @@ private:
   // </group>
 };
 
+
+
+} //# NAMESPACE CASA - END
 
 #endif

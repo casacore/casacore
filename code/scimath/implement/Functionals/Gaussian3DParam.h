@@ -35,6 +35,8 @@ template<class Type> class Vector;
 #include <scimath/Functionals/Function.h>
 #include <scimath/Mathematics/AutoDiff.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 // <summary> Parameter handling for 3 dimensional Gaussian class
 // </summary>
 
@@ -259,6 +261,9 @@ protected:
 public:
   using Function<Type>::nparameters;
 };
+
+
+} //# NAMESPACE CASA - END
 
 #endif
 

@@ -33,6 +33,8 @@
 #include <scimath/Functionals/Function.h>
 #include <casa/Containers/Block.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 // <summary> Parameters for sum of parameterized Functions
 // </summary>
 
@@ -162,5 +164,8 @@ protected:
 public:
   using Function<T>::nparameters;
 };
+
+
+} //# NAMESPACE CASA - END
 
 #endif

@@ -35,6 +35,8 @@
 #include <measures/Measures/MeasTable.h>
 #include <measures/Measures/MDoppler.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Statics
 Bool MCRadialVelocity::stateMade_p = False;
 uInt MCRadialVelocity::ToRef_p[N_Routes][3] = {
@@ -365,3 +367,6 @@ String MCRadialVelocity::showState() {
 			   MRadialVelocity::N_Types, MCRadialVelocity::N_Routes,
 			   MCRadialVelocity::ToRef_p);
 }
+
+} //# NAMESPACE CASA - END
+

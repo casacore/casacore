@@ -40,6 +40,7 @@
 // Test the Block class
 #include <assert.h>
 
+#include <casa/namespace.h>
 void doit()
 {
     // We do the tests in another function to make it easier to check for

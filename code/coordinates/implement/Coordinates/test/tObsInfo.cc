@@ -36,6 +36,7 @@
 #include <casa/sstream.h>
 
 
+#include <casa/namespace.h>
 int main()
 {
 // Default constructor

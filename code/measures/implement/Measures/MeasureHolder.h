@@ -34,6 +34,8 @@
 #include <casa/Utilities/RecordTransformable.h>
 #include <casa/Containers/Block.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Forward Declarations
 class Measure;
 class MDirection;
@@ -240,5 +242,8 @@ private:
   // Make a MeasValue block of pointers of length n
   void createMV(uInt n);
 };
+
+
+} //# NAMESPACE CASA - END
 
 #endif

@@ -10,6 +10,7 @@
 #include <casa/stdlib.h>
 
 
+#include <casa/namespace.h>
 int main(int argc, char** argv)
 {
   Double height = 9.0;

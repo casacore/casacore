@@ -33,6 +33,8 @@
 #include <casa/BasicSL/String.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 // <summary>
 // Table type, subtype and further info
 // </summary>
@@ -238,5 +240,8 @@ inline const String& TableInfo::readme() const
 }
 
 
+
+
+} //# NAMESPACE CASA - END
 
 #endif

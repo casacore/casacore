@@ -38,6 +38,8 @@
 #include <casa/iosfwd.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 // <summary>
 // Define the type of the static read and write function.
 // </summary>
@@ -408,5 +410,8 @@ inline uInt BucketCache::nFreeBucket() const
     { return its_NrOfFree; }
 
 
+
+
+} //# NAMESPACE CASA - END
 
 #endif

@@ -28,6 +28,8 @@
 #include <scimath/Functionals/FunctionParam.h>
 #include <casa/iostream.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 template<class T>
 FunctionParam<T>::FunctionParam()
   : npar_p(0),
@@ -164,3 +166,6 @@ ostream &FunctionParam<T>::print(ostream &os) const {
   os << "]";
   return os;
 }
+
+} //# NAMESPACE CASA - END
+

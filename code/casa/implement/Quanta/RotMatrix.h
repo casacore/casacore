@@ -33,10 +33,12 @@
 #include <casa/aips.h>
 #include <casa/Arrays/Matrix.h>
 #include <casa/Arrays/Vector.h>
+#include <casa/iosfwd.h>
+
+namespace casa { //# NAMESPACE CASA - BEGIN
 
 //# Forward Declarations
 class Euler;
-#include <casa/iosfwd.h>
 
 //# Constants (SUN compiler does not accept non-simple default arguments)
 
@@ -138,5 +140,8 @@ class RotMatrix
 // axis which (0 or 1 or 2).
     void applySingle(Double angle, Int which);
 };
+
+
+} //# NAMESPACE CASA - END
 
 #endif

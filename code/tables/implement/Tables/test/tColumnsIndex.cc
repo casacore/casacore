@@ -42,6 +42,7 @@
 #include <casa/stdio.h>
 
 
+#include <casa/namespace.h>
 // <summary>
 // Test program for the ColumnsIndex class
 // </summary>

@@ -35,6 +35,8 @@
 #include <casa/Arrays/IPosition.h>
 #include <casa/IO/ByteIO.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Forward Declarations
 class AipsIO;
 class StManArrayFile;
@@ -279,5 +281,8 @@ private:
 };
 
 
+
+
+} //# NAMESPACE CASA - END
 
 #endif

@@ -36,6 +36,8 @@
 #include <tables/Tables/DataManError.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 #define EXTBLSZ 32
 
 MSMColumn::MSMColumn (MSMBase* smptr, int dataType, Bool byPtr)
@@ -514,3 +516,6 @@ void MSMColumn::putArrayPtr (uInt rownr, void* ptr)
   uInt extnr = findExt(rownr, False);
   ((void**)(data_p[extnr])) [rownr-ncum_p[extnr-1]] = ptr;
 }
+
+} //# NAMESPACE CASA - END
+

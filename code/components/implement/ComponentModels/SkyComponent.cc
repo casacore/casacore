@@ -41,6 +41,8 @@
 #include <casa/Utilities/Assert.h>
 #include <casa/BasicSL/String.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 SkyComponent::SkyComponent()
   :itsCompPtr(new SkyCompRep) 
 {
@@ -235,3 +237,6 @@ Bool SkyComponent::ok() const {
 // Local Variables: 
 // compile-command: "gmake SkyComponent"
 // End: 
+
+} //# NAMESPACE CASA - END
+

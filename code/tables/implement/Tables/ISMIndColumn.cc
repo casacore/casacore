@@ -40,6 +40,8 @@
 
 #include <casa/stdio.h>                     // for sprintf
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 ISMIndColumn::ISMIndColumn (ISMBase* smptr, int dataType, uInt colnr)
 : ISMColumn     (smptr, dataType, colnr),
   seqnr_p       (smptr->uniqueNr()),
@@ -339,3 +341,6 @@ void ISMIndColumn::handleRemove (uInt, const char* value)
 	tmp.decrementRefCount (*iosfile_p);
     }
 }
+
+} //# NAMESPACE CASA - END
+

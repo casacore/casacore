@@ -33,6 +33,8 @@
 #include <casa/iostream.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 template<class T>
 ScalarColumnDesc<T>::ScalarColumnDesc (const String& name,
 				       int opt)
@@ -196,3 +198,6 @@ PlainColumn* ScalarColumnDesc<T>::makeColumn (ColumnSet* csp) const
     }
     return bcp;
 }
+
+} //# NAMESPACE CASA - END
+

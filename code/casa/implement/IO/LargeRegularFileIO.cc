@@ -36,6 +36,8 @@
 #include <casa/string.h>               // needed for strerror
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 LargeRegularFileIO::LargeRegularFileIO (const RegularFile& regularFile,
 					ByteIO::OpenOption option,
 					uInt bufferSize)
@@ -123,3 +125,6 @@ String LargeRegularFileIO::fileName() const
 {
     return itsRegularFile.path().expandedName();
 }
+
+} //# NAMESPACE CASA - END
+

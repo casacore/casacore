@@ -45,6 +45,8 @@
 #include <sys/sysmp.h>
 #include <sys/sysinfo.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 // <summary>
 // HostInfo for IRIX machines.
 // </summary>
@@ -135,4 +137,7 @@ void HostMachineInfo::update_info( ) {
 }
 
 # endif
+
+} //# NAMESPACE CASA - END
+
 #endif

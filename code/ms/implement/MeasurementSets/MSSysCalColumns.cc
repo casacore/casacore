@@ -31,6 +31,8 @@
 #include <tables/Tables/TableDesc.h>
 #include <casa/BasicSL/String.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 ROMSSysCalColumns::ROMSSysCalColumns(const MSSysCal& msSysCal):
   isNull_p(True),
   antennaId_p(),
@@ -435,3 +437,6 @@ void MSSysCalColumns::attach(MSSysCal& msSysCal)
 // Local Variables: 
 // compile-command: "gmake MSSysCalColumns"
 // End: 
+
+} //# NAMESPACE CASA - END
+

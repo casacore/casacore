@@ -31,6 +31,8 @@
 //# Includes
 #include <casa/Containers/Record.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Forward Declarations
 class LCRegion;
 class CoordinateSystem;
@@ -243,5 +245,8 @@ inline const Record& WCRegion::getAxesDesc() const
     return itsAxesDesc;
 }
 
+
+
+} //# NAMESPACE CASA - END
 
 #endif

@@ -30,6 +30,7 @@
 #include <casa/OS/Memory.h>
 #include <casa/Utilities/Assert.h>
 
+#include <casa/namespace.h>
 int main()
 {
     size_t base = Memory::allocatedMemoryInBytes();

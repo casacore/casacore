@@ -30,6 +30,8 @@
 
 #include <casa/aips.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Forward declarations.
 template<class T> class Block;
 class AipsIO;
@@ -85,9 +87,9 @@ template<class T> void getBlock (AipsIO&, Block<T>&);
 // of the <src>Block</src> will be written out.
 //
 // <group>
-template<class T> void showBlock (ostream&, const Block<T>&, Int nr);
+template<class T> void showBlock (std::ostream&, const Block<T>&, Int nr);
 
-template<class T> void showBlock (ostream& ios, const Block<T>& blk)
+template<class T> void showBlock (std::ostream& ios, const Block<T>& blk)
     { showBlock (ios, blk, (Int)(blk.nelements())); }
 // </group>
 
@@ -110,7 +112,7 @@ template<class T> AipsIO& operator>> (AipsIO& ios, Block<T>& blk)
     return ios;
 }
 
-template<class T> ostream& operator<< (ostream& ios, const Block<T>& blk)
+template<class T> std::ostream& operator<< (std::ostream& ios, const Block<T>& blk)
 {
     showBlock (ios, blk, (Int)(blk.nelements()));
     return ios;
@@ -129,5 +131,8 @@ inline void getBlock (AipsIO&, Block<void*>&)
 inline void showBlock (AipsIO&, const Block<void*>&, Int)
 {}
 
+
+
+} //# NAMESPACE CASA - END
 
 #endif

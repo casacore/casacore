@@ -32,6 +32,8 @@
 //# Includes
 #include <casa/aips.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Forward Declarations
 class IPosition;
 class ROTiledStManAccessor;
@@ -362,5 +364,8 @@ inline Bool LatticeNavigator::operator--()
   return operator--(0);
 }
 
+
+
+} //# NAMESPACE CASA - END
 
 #endif

@@ -43,6 +43,8 @@
 #include <casa/System/ProgressMeter.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 uInt LatticeFit::fitProfiles (Lattice<Float> &outImage,
                               Vector<Float> &fittedParameters,
                               LinearFit<Float> &fitter, 
@@ -272,3 +274,6 @@ uInt LatticeFit::fitProfiles (MaskedLattice<Float>* pFit,
    return nFail;
 }
   
+
+} //# NAMESPACE CASA - END
+

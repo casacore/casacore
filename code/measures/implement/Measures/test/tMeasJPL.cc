@@ -41,6 +41,7 @@
 #include <measures/Measures/MEpoch.h>
 #include <casa/iostream.h>
 
+#include <casa/namespace.h>
 int main()
 {
   const MVEpoch dat = 51116;

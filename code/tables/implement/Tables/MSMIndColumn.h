@@ -36,6 +36,8 @@
 #include <casa/Arrays/IPosition.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 // <summary>
 // Mmeory storage manager for variable shaped table arrays
 // </summary>
@@ -233,5 +235,8 @@ private:
   MSMIndColumn& operator= (const MSMIndColumn&);
 };
 
+
+
+} //# NAMESPACE CASA - END
 
 #endif

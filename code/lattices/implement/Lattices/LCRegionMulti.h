@@ -34,6 +34,8 @@
 #include <casa/Containers/Block.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 // <summary>
 // Make the intersection of 2 or more regions.
 // </summary>
@@ -170,5 +172,8 @@ inline const PtrBlock<const LCRegion*>& LCRegionMulti::regions() const
     return itsRegions;
 }
 
+
+
+} //# NAMESPACE CASA - END
 
 #endif

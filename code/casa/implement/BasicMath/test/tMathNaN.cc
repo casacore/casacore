@@ -38,6 +38,7 @@
 #include <casa/iomanip.h>
 
 
+#include <casa/namespace.h>
 #define	isnanfmacro(x)	(((*(Int *)&(x) & 0x7f800000) == 0x7f800000) && \
 			    ((*(Int *)&(x) & 0x007fffff) != 0x00000000))
 

@@ -32,6 +32,8 @@
 
 #include <casa/aips.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 class ConstFitsKeywordList;
 class FitsKeywordList;
 class RecordInterface;
@@ -199,5 +201,8 @@ public:
     static void addHistory(RecordInterface &header, const String &history);
     // </group>
 };
+
+
+} //# NAMESPACE CASA - END
 
 #endif

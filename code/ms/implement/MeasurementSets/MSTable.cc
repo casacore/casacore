@@ -29,6 +29,8 @@
 #include <ms/MeasurementSets/MSTableImpl.h>
 #include <tables/Tables/TableRecord.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# These statics cannot be compiled with egcs 1.0.3a.
 #if !defined(__GNUG__) || (defined(__GNUG__) && (__GNUG__ == 2) && (__GNUC_MINOR__ >= 91)) || defined(AIPS_GCC3)
 template <class ColEnum, class KeyEnum> 
@@ -276,4 +278,7 @@ Table MSTable<ColEnum,KeyEnum>::referenceCopy(const String& newTableName,
 {
     return MSTableImpl::referenceCopy(*this, newTableName, writableColumns);
 }
+
+
+} //# NAMESPACE CASA - END
 

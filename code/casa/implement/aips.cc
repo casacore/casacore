@@ -27,8 +27,13 @@
 
 #include <casa/aips.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 #if defined(AIPS_DEBUG)
 Bool aips_debug_on = True;
 #else
 Bool aips_debug_on = False;
 #endif
+
+} //# NAMESPACE CASA - END
+

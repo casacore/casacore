@@ -32,9 +32,11 @@
 //# Includes
 #include <casa/aips.h>
 #include <casa/Quanta/Quantum.h>
+#include <casa/iosfwd.h>
+
+namespace casa { //# NAMESPACE CASA - BEGIN
 
 //# Forward Declarations
-#include <casa/iosfwd.h>
 class String;
 class MUString;
 
@@ -389,5 +391,8 @@ ostream &operator<<(ostream &os, const MVAngle &meas);
 ostream &operator>>(ostream &is, MVAngle &meas);
 ostream &operator<<(ostream &os, const MVAngle::Format &form);
 // </group>
+
+
+} //# NAMESPACE CASA - END
 
 #endif

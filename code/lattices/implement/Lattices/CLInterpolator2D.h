@@ -32,6 +32,8 @@
 //# Includes
 #include <casa/Arrays/AxesMapping.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Forward Declarations
 template<class T> class MaskedLattice;
 
@@ -138,5 +140,8 @@ protected:
   Bool              itsIsRef;       // True = lattice returns array reference
 };
 
+
+
+} //# NAMESPACE CASA - END
 
 #endif 

@@ -49,6 +49,8 @@
 #include <lattices/Lattices/SubLattice.h>
 #include <lattices/Lattices/TiledShape.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 template <class T> 
 ImageInterface<T>::ImageInterface()
 : regHandPtr_p (0)
@@ -367,3 +369,6 @@ Bool ImageInterface<T>::fromRecord(String& error, const RecordInterface& inRec)
    error = "";
    return True;
 }
+
+} //# NAMESPACE CASA - END
+

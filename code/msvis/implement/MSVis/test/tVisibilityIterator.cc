@@ -36,6 +36,7 @@
 
 #include <tables/Tables/ForwardCol.h>
 
+#include <casa/namespace.h>
 Int main(int argc, char **argv)
 {
 // register forward col engine

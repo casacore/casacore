@@ -41,6 +41,7 @@
 #include <casa/Utilities/Assert.h>
 #include <casa/iostream.h>
 
+#include <casa/namespace.h>
 // <summary> Test program for the TableDesc class </summary>
 
 // This program tests the class TableDesc and related classes.

@@ -34,6 +34,8 @@
 #include <casa/iostream.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 Param::Param()			// default constructor; doesn't do anything
 {}
 
@@ -302,4 +304,7 @@ AipsIO & operator>> (AipsIO &os, Param& p) {
     cerr << "==>Got to implement >> operator for Param now; " << p << endl;
     return os;
 }
+
+
+} //# NAMESPACE CASA - END
 

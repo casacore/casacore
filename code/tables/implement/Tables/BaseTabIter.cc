@@ -32,6 +32,8 @@
 #include <casa/Utilities/Sort.h>
 #include <tables/Tables/TableError.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 // BaseTableIterator is the base class for the table iterators.
 // It is a letter class of the envelope TableIterator.
 //
@@ -163,3 +165,6 @@ BaseTable* BaseTableIterator::next()
     sortTab_p->adjustRownrs (itp->nrow(), rownrs, False);
     return itp;
 }
+
+} //# NAMESPACE CASA - END
+

@@ -35,6 +35,8 @@
 #include <casa/BasicSL/String.h>
 #include <casa/stdio.h>		// for sprintf
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 TSMFile::TSMFile (const TiledStMan* stman, uInt fileSequenceNr)
 : fileSeqnr_p (fileSequenceNr),
   file_p      (0),
@@ -102,3 +104,6 @@ void TSMFile::getObject (AipsIO& ios)
         ios >> length_p;
     }
 }
+
+} //# NAMESPACE CASA - END
+

@@ -34,6 +34,8 @@
 #include <casa/Containers/OrderedPair.h>
 #include <casa/Exceptions/Error.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Forward Declarations
 template<class key,class val> class ConstHashMapIter;
 extern void throw_invalid_hashmapiter_error();
@@ -516,5 +518,8 @@ private:
     HashClass<key> *hashClass;
     val dfltVal;
 };
+
+
+} //# NAMESPACE CASA - END
 
 #endif

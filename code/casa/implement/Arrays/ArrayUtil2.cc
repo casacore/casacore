@@ -29,6 +29,8 @@
 #include <casa/Utilities/Regex.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 Vector<String> stringToVector (const String& string, char delim)
 {
     if (string.empty()) {
@@ -114,3 +116,6 @@ uInt reorderArrayHelper (IPosition& newShape, IPosition& incr,
   }
   return contAxes;
 }
+
+} //# NAMESPACE CASA - END
+

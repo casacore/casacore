@@ -29,6 +29,8 @@
 #include <casa/Arrays/ArrayError.h>
 #include <casa/Utilities/Assert.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 template<class T> 
 Matrix<T> invert(const Matrix<T> &in){
   Matrix<T> out;
@@ -218,3 +220,6 @@ template<class T> void CholeskySolve(Matrix<T> &A, Vector<T> &diag,
     x(i) = sum/diag(i);
   }
 }
+
+} //# NAMESPACE CASA - END
+

@@ -29,6 +29,8 @@
 #include <casa/Exceptions/Error.h>
 #include <casa/Utilities/Regex.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 SysEvent::~SysEvent() {
     if (rep) delete rep;
 }
@@ -111,3 +113,6 @@ void throw_sysevent_systarget_mismatch() {
 void throw_sysevent_init_error() {
     throw(AipsError("Event Initialization Error"));
 }
+
+} //# NAMESPACE CASA - END
+

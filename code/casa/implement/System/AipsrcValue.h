@@ -33,6 +33,8 @@
 #include <casa/Containers/Block.h>
 #include <casa/System/Aipsrc.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Forward declarations
 class Unit;
 
@@ -268,5 +270,8 @@ private:
 };
 
 #undef AipsrcValue_Bool
+
+
+} //# NAMESPACE CASA - END
 
 #endif

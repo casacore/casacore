@@ -37,6 +37,8 @@
 // #include <aips/Tables/DataManError.h>
 #include <casa/iosfwd.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# forward
 template <class T, Int n> class SquareMatrix;
 // <summary> Fast Vector classes with fixed (templated) length </summary>
@@ -280,4 +282,7 @@ inline RigidVector<Complex,4> operator*(const SquareMatrix<Complex,4>& m,
     return result*=m;
 }
 // </group>
+
+} //# NAMESPACE CASA - END
+
 #endif

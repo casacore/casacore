@@ -33,6 +33,8 @@
 #include <tables/Tables/PlainColumn.h>
 #include <casa/Arrays/IPosition.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Forward Declarations
 class ColumnSet;
 template<class T> class ArrayColumnDesc;
@@ -273,5 +275,8 @@ private:
 };
 
 
+
+
+} //# NAMESPACE CASA - END
 
 #endif

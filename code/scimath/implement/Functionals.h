@@ -49,6 +49,8 @@
 #include <scimath/Functionals/ArraySampledFunctional.h>
 #include <scimath/Functionals/ScalarSampledFunctional.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 // <module>
 //
 // <summary>A module that represents various function-like classes.</summary>
@@ -286,6 +288,9 @@
 // </todo>
 
 // </module>
+
+
+} //# NAMESPACE CASA - END
 
 #endif
 

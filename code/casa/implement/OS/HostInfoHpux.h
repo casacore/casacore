@@ -42,6 +42,8 @@
 #include <sys/param.h>
 #include <sys/pstat.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 // <summary>
 // HostInfo for HP-UX machines.
 // </summary>
@@ -132,4 +134,7 @@ void HostMachineInfo::update_info( ) {
 }
 
 # endif
+
+} //# NAMESPACE CASA - END
+
 #endif

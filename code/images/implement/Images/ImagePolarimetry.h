@@ -39,6 +39,8 @@
 #include <scimath/Fitting/LinearFitSVD.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Forward Declarations
 template <class T> class SubImage;
 template <class T> class ImageExpr;
@@ -434,5 +436,7 @@ private:
 
 };
 
+
+} //# NAMESPACE CASA - END
 
 #endif

@@ -51,6 +51,8 @@
 #include <casa/Utilities/Assert.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 // The constructor of the derived class should call unmarkForDelete
 // when the construction ended succesfully.
 BaseTable::BaseTable (const String& name, int option, uInt nrrow)
@@ -927,3 +929,6 @@ void BaseTable::checkRowNumberThrow (uInt rownr) const
 		       String::toString(nrrow_p+nrrowToAdd_p)
 		       + " in table " + tableName()));
 }
+
+} //# NAMESPACE CASA - END
+

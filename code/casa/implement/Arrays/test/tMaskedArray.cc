@@ -57,6 +57,7 @@
 #include <casa/Arrays/LogiCube.h>
 
 
+#include <casa/namespace.h>
 main()
 {
     try {

@@ -30,6 +30,8 @@
 #include <casa/Exceptions/Error.h>
 #include <unistd.h>                    // for system call access
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# This is the implementation of the class TabPath.
 
 TabPath::TabPath()
@@ -77,3 +79,6 @@ const String& TabPath::dir (uInt dirnr) const
     }
     return tabDir_p[dirnr];
 }
+
+} //# NAMESPACE CASA - END
+

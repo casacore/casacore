@@ -27,6 +27,8 @@
 
 #include <casa/Utilities/Sequence.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 /*
    // Inlined this in Sequence.h so this is now
    // just a dummy file
@@ -35,3 +37,6 @@ template<class T> Sequence<T>::~Sequence()
     // Nothing
 }
 */
+
+} //# NAMESPACE CASA - END
+

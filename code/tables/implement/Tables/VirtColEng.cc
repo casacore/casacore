@@ -29,6 +29,8 @@
 #include <tables/Tables/DataManError.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 VirtualColumnEngine::~VirtualColumnEngine()
 {}
 
@@ -75,3 +77,6 @@ DataManagerColumn* VirtualColumnEngine::makeDirArrColumn
 					        int dataType,
 						const String& dataTypeId)
     { return makeIndArrColumn (columnName, dataType, dataTypeId); }
+
+} //# NAMESPACE CASA - END
+

@@ -34,6 +34,7 @@
 #include <casa/iostream.h>
 
 
+#include <casa/namespace.h>
 void doIt (const IPosition& latticeShape,
 	   const Vector<Float>& x,
 	   const Vector<Float>& y)

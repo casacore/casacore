@@ -31,6 +31,8 @@
 #include <scimath/Functionals/Function1D.h>
 #include <casa/Containers/Block.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 template<class Range> class SampledFunctional;
 
 // <summary> Interpolate in one dimension </summary>
@@ -207,5 +209,8 @@ private:
   Block<Range> y2Values; // The numerical second derivates (only for splines)
 
 };
+
+
+} //# NAMESPACE CASA - END
 
 #endif

@@ -33,6 +33,8 @@
 #include <measures/Measures/MDirection.h>
 #include <casa/Arrays/Matrix.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Forward Declarations
 class MeasurementSet;
 class MSPointing;
@@ -160,6 +162,9 @@ private:
     // initialize everythign which depends on row
     void initRow(Vector<Bool> &handledCols, const Record &row);
 };
+
+
+} //# NAMESPACE CASA - END
 
 #endif
 

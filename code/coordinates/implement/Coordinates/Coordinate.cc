@@ -49,6 +49,8 @@
 #include <casa/sstream.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 Coordinate::Coordinate()
 {}
 
@@ -511,7 +513,7 @@ Vector<String> Coordinate::make_Direction_FITS_ctype (Bool& isNCP, const Project
 // This is either "real" SIN or NCP
 
               AlwaysAssert(projParameters.nelements() == 2, AipsError);
-              if (::near(projParameters(0), 0.0) && ::near(projParameters(1), 0.0)) {
+              if (::casa::near(projParameters(0), 0.0) && ::casa::near(projParameters(1), 0.0)) {
                   // True SIN
                   name = name + "-" + proj.name();
               } else {
@@ -521,8 +523,8 @@ Vector<String> Coordinate::make_Direction_FITS_ctype (Bool& isNCP, const Project
 // a real DirectionCoordinate as you better not have observed at
 // lat=0 with an EW array
 
-                  if (::near(projParameters(0), 0.0) &&
-                      ::near(projParameters(1), 1.0/tan(refLat))) {
+                  if (::casa::near(projParameters(0), 0.0) &&
+                      ::casa::near(projParameters(1), 1.0/tan(refLat))) {
                       isNCP = True;
                       name = name + "-NCP";
                   } else {
@@ -663,7 +665,7 @@ void Coordinate::makeWorldAbsRelMany (Matrix<Double>& value, Bool toAbs) const
        same = True;
        for (i.reset(),k=0; i!=i.end(); i++,k++) {
           col[k] = *i;
-          if (l==0 || (l!=0 && !::near(col[k],lastInCol[k]))) same = False;
+          if (l==0 || (l!=0 && !::casa::near(col[k],lastInCol[k]))) same = False;
        }
        lastInCol = col;
 //
@@ -702,7 +704,7 @@ void Coordinate::makePixelAbsRelMany (Matrix<Double>& value, Bool abs) const
        same = True;
        for (i.reset(),k=0; i!=i.end(); i++,k++) {
           col[k] = *i;
-          if (l==0 || (l!=0 && !::near(col[k],lastInCol[k]))) same = False;
+          if (l==0 || (l!=0 && !::casa::near(col[k],lastInCol[k]))) same = False;
        }
        lastInCol = col;
 //
@@ -903,7 +905,7 @@ Bool Coordinate::doNearPixel (const Coordinate& other,
 
 // Ref val
 
-         if (!::near(thisRefVal(i), otherRefVal(i), tol)) {
+         if (!::casa::near(thisRefVal(i), otherRefVal(i), tol)) {
             oss << "The Coordinates have differing reference values for axis "
                  << i;
             set_error(String(oss));
@@ -912,7 +914,7 @@ Bool Coordinate::doNearPixel (const Coordinate& other,
 
 // Increment
 
-         if (!::near(thisInc(i), otherInc(i), tol)) {
+         if (!::casa::near(thisInc(i), otherInc(i), tol)) {
             oss << "The Coordinates have differing increments for axis "
                  << i;
             set_error(String(oss));
@@ -921,7 +923,7 @@ Bool Coordinate::doNearPixel (const Coordinate& other,
 
 // Ref pix
  
-         if (!::near(thisRefPix(i), otherRefPix(i), tol)) {
+         if (!::casa::near(thisRefPix(i), otherRefPix(i), tol)) {
             oss << "The Coordinates have differing reference pixels for axis "
                  << i;
             set_error(String(oss));
@@ -940,13 +942,13 @@ Bool Coordinate::doNearPixel (const Coordinate& other,
          Vector<Double> r1 = thisPC.row(i);
          Vector<Double> r2 = otherPC.row(i);
          for (uInt j=0; j<r1.nelements(); j++) {
-            if (!::near(r1(j),r2(j),tol)) return False;
+            if (!::casa::near(r1(j),r2(j),tol)) return False;
          }
 //
          Vector<Double> c1 = thisPC.column(i);
          Vector<Double> c2 = otherPC.column(i);
          for (uInt j=0; j<r1.nelements(); j++) {
-            if (!::near(c1(j),c2(j),tol)) return False;
+            if (!::casa::near(c1(j),c2(j),tol)) return False;
          }
       }
    }
@@ -955,4 +957,7 @@ Bool Coordinate::doNearPixel (const Coordinate& other,
    return True;
 }
 
+
+
+} //# NAMESPACE CASA - END
 

@@ -27,8 +27,13 @@
 
 #include <casa/Utilities/RegSequence.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 uInt RegSequence::num = 0;
 
 uInt RegSequence::getNext() {
   return ++num;
 }
+
+} //# NAMESPACE CASA - END
+

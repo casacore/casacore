@@ -32,6 +32,8 @@
 #include <casa/Exceptions/Error.h> 
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 LELAttribute::LELAttribute()
 : isScalar_p  (True),
   isReduced_p (True),
@@ -219,3 +221,6 @@ Int LELAttribute::compareCoord (const LELAttribute& other) const
   }
   return result;
 }
+
+} //# NAMESPACE CASA - END
+

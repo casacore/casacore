@@ -40,6 +40,8 @@
 #include <casa/Utilities/ValTypeId.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 template<class S, class T>
 ScaledArrayEngine<S,T>::ScaledArrayEngine (const String& sourceColumnName,
 					   const String& targetColumnName,
@@ -431,3 +433,6 @@ void ScaledArrayEngine<S,T>::putColumnSlice (const Slicer& slicer,
     scaleColumnOnPut (array, target);
     rwColumn().putColumn (slicer, target);
 }
+
+} //# NAMESPACE CASA - END
+

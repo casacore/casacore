@@ -41,6 +41,8 @@
 #include <time.h>                   // needed for asctime/localtime on linux
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# The ifdef's below are similar to those in IO/LargeIOFuncDef.h.
 #if !defined(AIPS_NOLARGEFILE)
 # ifdef AIPS_LINUX
@@ -414,3 +416,6 @@ void File::checkTarget (Path& targetName, Bool overwrite,
 	}
     }
 }
+
+} //# NAMESPACE CASA - END
+

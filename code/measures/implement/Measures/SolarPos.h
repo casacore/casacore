@@ -34,6 +34,8 @@
 #include <casa/Quanta/MVPosition.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 // <summary> Solar position class and calculations </summary>
 
 // <use visibility=export>
@@ -190,5 +192,8 @@ private:
 // Calculate heliocentric barycentre position
     void calcSun(Double t);
 };
+
+
+} //# NAMESPACE CASA - END
 
 #endif

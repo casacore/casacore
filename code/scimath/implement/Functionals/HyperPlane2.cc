@@ -28,6 +28,8 @@
 //# Includes
 #include <scimath/Functionals/HyperPlane.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Constructors
 
 //# Operators
@@ -56,3 +58,6 @@ eval(typename Function<AutoDiff<T> >::FunctionArg x) const {
 }
 
 //# Member functions
+
+} //# NAMESPACE CASA - END
+

@@ -34,9 +34,11 @@
 #include <casa/Arrays/Vector.h>
 #include <casa/Quanta/Quantum.h>
 #include <casa/Quanta/MeasValue.h>
+#include <casa/iosfwd.h>
+
+namespace casa { //# NAMESPACE CASA - BEGIN
 
 //# Forward Declarations
-#include <casa/iosfwd.h>
 template <class T> class Vector;
 template <class T> class Quantum;
 
@@ -186,5 +188,8 @@ private:
   // Get correct data type conversion factor from input Quantum
   Double makeF(const Unit &dt) const;
 };
+
+
+} //# NAMESPACE CASA - END
 
 #endif

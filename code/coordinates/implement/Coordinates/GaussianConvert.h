@@ -33,6 +33,8 @@
 #include <casa/Arrays/Vector.h>
 #include <coordinates/Coordinates/CoordinateSystem.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 template<class T> class Quantum;
 
 
@@ -162,5 +164,8 @@ private:
    Double positionAngleRange(Double pa);
 
 };
+
+
+} //# NAMESPACE CASA - END
 
 #endif

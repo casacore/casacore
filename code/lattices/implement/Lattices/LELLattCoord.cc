@@ -35,6 +35,8 @@
 #include <casa/Exceptions/Error.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 LELLattCoord::LELLattCoord()
 {}
 
@@ -118,3 +120,6 @@ uInt LELLattCoord::getSpectralInfo (Vector<Double>&, const IPosition&) const
 		   "no spectral coordinates available");
   return 0;
 }
+
+} //# NAMESPACE CASA - END
+

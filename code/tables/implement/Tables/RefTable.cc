@@ -40,6 +40,8 @@
 #include <casa/Utilities/Assert.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 RefTable::RefTable (AipsIO& ios, const String& name, uInt nrrow, int opt,
 		    const TableLock& lockOptions)
 : BaseTable    (name, opt, nrrow),
@@ -806,3 +808,6 @@ void RefTable::refNot (uInt nr, const uInt* inx, uInt nrtot)
     }
     changed_p = True;
 }
+
+} //# NAMESPACE CASA - END
+

@@ -32,6 +32,8 @@
 #include <components/ComponentModels/ComponentType.h>
 #include <components/ComponentModels/SpectralModel.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 class MFrequency;
 class RecordInterface;
 class String;
@@ -237,4 +239,7 @@ private:
   Double itsIndex;
   Double itsError;
 };
+
+} //# NAMESPACE CASA - END
+
 #endif

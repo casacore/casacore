@@ -32,6 +32,8 @@
 //# Includes
 #include <casa/aips.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Forward Declarations
 class RotMatrix;
 
@@ -152,5 +154,8 @@ private:
   // ~MeasData();
   //# General member functions
 };
+
+
+} //# NAMESPACE CASA - END
 
 #endif

@@ -36,6 +36,8 @@
 #include <casa/Arrays/Vector.h>
 #include <casa/Containers/SimOrdMap.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Forward Declarations
 class RefColumn;
 class AipsIO;
@@ -335,5 +337,8 @@ inline uInt RefTable::rootRownr (uInt rnr) const
     { return rows_p[rnr]; }
 
 
+
+
+} //# NAMESPACE CASA - END
 
 #endif

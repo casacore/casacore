@@ -34,6 +34,8 @@
 #include <casa/Containers/Record.h>
 #include <casa/Containers/RecordField.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 // <summary>
 // </summary>
 
@@ -138,4 +140,7 @@ private:
     void initNowRecord(const RecordDesc& desc);
     void initNextRecord(const RecordDesc& desc);
 };
+
+} //# NAMESPACE CASA - END
+
 #endif

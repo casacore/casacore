@@ -34,6 +34,8 @@
 #include <casa/Utilities/Assert.h>
 #endif
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 // <summary> define a (start,length,increment) along an axis </summary>
 // <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="" demos="">
 // </reviewed>
@@ -162,5 +164,8 @@ inline Int Slice::end() const
     // return -1 if all()
     return startp + lengthp - 1;
 }
+
+
+} //# NAMESPACE CASA - END
 
 #endif

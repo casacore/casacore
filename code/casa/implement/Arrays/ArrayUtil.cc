@@ -30,6 +30,8 @@
 #include <casa/Utilities/Copy.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 template<class T>
 Array<T> concatenateArray (const Array<T>& left, const Array<T>& right)
 {
@@ -118,3 +120,6 @@ Array<T> reorderArray (const Array<T>& array,
   result.putStorage (resData, deleteRes);
   return result;
 }
+
+} //# NAMESPACE CASA - END
+

@@ -38,6 +38,7 @@
 #include <casa/iostream.h>
 
 
+#include <casa/namespace.h>
 void equalBeams(const Vector<Quantum<Double> >& b1, const Vector<Quantum<Double> >& b2)
 {
     AlwaysAssertExit(b1.nelements()==b2.nelements());

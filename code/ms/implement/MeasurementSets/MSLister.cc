@@ -41,6 +41,8 @@
 #include <casa/iostream.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //
 // Null constructor merely sets private formatting string
 //
@@ -664,3 +666,6 @@ void MSLister::clearFlags()
   os_p.output().unsetf(ios::fixed);
 
 }
+
+} //# NAMESPACE CASA - END
+

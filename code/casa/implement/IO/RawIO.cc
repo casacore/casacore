@@ -28,6 +28,8 @@
 #include <casa/IO/RawIO.h>
 #include <casa/IO/ByteIO.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 RawIO::RawIO (ByteIO* byteIO, Bool takeOver)
 : TypeIO (byteIO, takeOver)
 {}
@@ -208,3 +210,6 @@ uInt RawIO::read (uInt nvalues, String* value)
 {
     return TypeIO::read (nvalues, value);
 }
+
+} //# NAMESPACE CASA - END
+

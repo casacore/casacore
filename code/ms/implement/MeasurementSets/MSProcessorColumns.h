@@ -32,6 +32,8 @@
 #include <ms/MeasurementSets/MSProcessor.h>
 #include <tables/Tables/ScalarColumn.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 class MSProcessor;
 
 // <summary>
@@ -221,4 +223,7 @@ private:
   //# optional columns
   ScalarColumn<Int> passId_p;
 };
+
+} //# NAMESPACE CASA - END
+
 #endif

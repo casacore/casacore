@@ -40,6 +40,8 @@
 #include <casa/Logging/LogSink.h>
 #include <casa/Exceptions/Error.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 NewFile::NewFile(Bool deleteIfExists) : delete_p(deleteIfExists)
 {
     // Nothing
@@ -145,3 +147,6 @@ Bool NewFile::valueOK(const String &value, String &error) const
 
     return retval;
 }
+
+} //# NAMESPACE CASA - END
+

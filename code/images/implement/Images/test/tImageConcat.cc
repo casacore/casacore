@@ -50,6 +50,7 @@
 
 
 
+#include <casa/namespace.h>
 void check (uInt axis, MaskedLattice<Float>& ml,
             MaskedLattice<Float>& ml1, 
             MaskedLattice<Float>& ml2);

@@ -30,6 +30,8 @@
 #include <casa/Arrays/ArrayUtil.h>
 #include <ms/MeasurementSets/MSPointing.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 MSPointingIndex::MSPointingIndex() 
     : MSTableIndex()
 {;}
@@ -64,4 +66,7 @@ void MSPointingIndex::attachIds()
 {
     antennaId_p.attachToRecord(accessKey(), "ANTENNA_ID");
 }
+
+
+} //# NAMESPACE CASA - END
 

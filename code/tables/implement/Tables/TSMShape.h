@@ -32,6 +32,8 @@
 #include <casa/aips.h>
 #include <casa/Arrays/IPosition.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Forward Declarations
 
 
@@ -174,5 +176,8 @@ inline Bool TSMShape::conform (const TSMShape& other) const
     return data_p.conform (other.data_p);
 }
 
+
+
+} //# NAMESPACE CASA - END
 
 #endif

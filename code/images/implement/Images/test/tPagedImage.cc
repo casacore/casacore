@@ -54,6 +54,7 @@
 #include <casa/stdlib.h>
 #include <casa/iostream.h>
 
+#include <casa/namespace.h>
 Float const_arg_func(const Float& val)
 {
   return 3.0*val;

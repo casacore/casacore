@@ -37,6 +37,8 @@
 #include <casa/Arrays/ArrayMath.h>
 #include <casa/Arrays/ArrayLogical.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 // MVEarthMagnetic class
 
 //# Constructors
@@ -72,10 +74,10 @@ MVEarthMagnetic::MVEarthMagnetic(const Quantity &l, Double angle0, Double angle1
     static UnitVal testUnit = UnitVal::MASS/UnitVal::TIME/UnitVal::TIME/
       UnitVal::CURRENT;
     l.assure(testUnit);
-    Double loc = cos(angle1);
-    xyz(0) = cos(angle0)*loc;
-    xyz(1) = sin(angle0)*loc;
-    xyz(2) = sin(angle1);
+    Double loc = std::cos(angle1);
+    xyz(0) = std::cos(angle0)*loc;
+    xyz(1) = std::sin(angle0)*loc;
+    xyz(2) = std::sin(angle1);
     readjust(l.getBaseValue());
 }
 
@@ -240,7 +242,7 @@ void MVEarthMagnetic::assure(const MeasValue &in) {
 void MVEarthMagnetic::adjust() {}
 
 void MVEarthMagnetic::adjust(Double &res) {
-  res = sqrt(operator*(*this));
+  res = std::sqrt(operator*(*this));
   if (res != 0.0 && res != 1.0) {
     xyz /= res;
   };
@@ -255,20 +257,20 @@ void MVEarthMagnetic::readjust(Double res) {
 }
 
 Double MVEarthMagnetic::radius() {
-  return (sqrt(operator*(*this)));
+  return (std::sqrt(operator*(*this)));
 }
 
 Vector<Double> MVEarthMagnetic::get() const{
   Vector<Double> tmp(3);
-  tmp(0) = sqrt(operator*(*this));
+  tmp(0) = std::sqrt(operator*(*this));
   Double ln = (tmp(0) == 0.0 ? 1.0 : tmp(0));
   Double loc = xyz(0)/ln;
   if (loc == 0) {
-    tmp(1) = asin(xyz(1)/ln);
+    tmp(1) = std::asin(xyz(1)/ln);
   } else {
-    tmp(1) = atan2(xyz(1),xyz(0));
+    tmp(1) = std::atan2(xyz(1),xyz(0));
   };
-  tmp(2) = asin(xyz(2)/ln);
+  tmp(2) = std::asin(xyz(2)/ln);
   return tmp;
 }
 
@@ -289,7 +291,7 @@ Quantum<Vector<Double> > MVEarthMagnetic::getAngle(const Unit &unit) const{
 }
 
 Quantity MVEarthMagnetic::getLength() const{
-  Double tmp = sqrt(operator*(*this));
+  Double tmp = std::sqrt(operator*(*this));
   return Quantity(tmp,"nT");
 }
 
@@ -303,11 +305,11 @@ Double MVEarthMagnetic::earthMagneticAngle(const MVEarthMagnetic &other) const {
   t1 = get();
   t2 = other.get();
   Double s1,c1;
-  c1 = cos(t1(2)) * sin(t2(2)) -
-    sin(t1(2)) * cos(t2(2)) * cos(t1(1) - t2(1));
-  s1 = -cos(t2(2)) * sin(t1(1) - t2(1));
+  c1 = std::cos(t1(2)) * std::sin(t2(2)) -
+    std::sin(t1(2)) * std::cos(t2(2)) * std::cos(t1(1) - t2(1));
+  s1 = -std::cos(t2(2)) * std::sin(t1(1) - t2(1));
   if (s1 != 0 || c1 != 0) {
-    return atan2(s1, c1);
+    return std::atan2(s1, c1);
   } else {
     return Double(0.0);
   };
@@ -325,7 +327,7 @@ Double MVEarthMagnetic::separation(const MVEarthMagnetic &other) const {
   t1 -= t2;
   Double d1 = t1.radius()/2.0;
   d1 = (d1 < 1.0 ? d1 : 1.0);
-  return (2*asin(d1));
+  return (2*std::asin(d1));
 }
 
 Quantity MVEarthMagnetic::separation(const MVEarthMagnetic &other, 
@@ -469,3 +471,6 @@ Double operator*(const MVEarthMagnetic &left, const MVPosition &right) {
   MVEarthMagnetic tmp(right);
   return (tmp * left);
 }
+
+} //# NAMESPACE CASA - END
+

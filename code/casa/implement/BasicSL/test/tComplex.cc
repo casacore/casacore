@@ -36,6 +36,7 @@
 #include <casa/fstream.h>
 #include <unistd.h>
 
+#include <casa/namespace.h>
 int main() {
 
   Complex f1(23.9,1.8), f2(9.2,8.2), f3(2.7,1.8), fo(237.561,0.9312), fi;

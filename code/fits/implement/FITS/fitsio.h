@@ -60,6 +60,8 @@
 //</srcblock>
 //</example>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 class FitsIO {
     public:
 	virtual ~FitsIO();
@@ -317,5 +319,8 @@ class FitsTape9Output : public BlockOutput {
 			FITSErrorHandler errhandler = FITSError::defaultHandler);
 	~FitsTape9Output();
 };
+
+
+} //# NAMESPACE CASA - END
 
 # endif

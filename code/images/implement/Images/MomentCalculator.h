@@ -39,6 +39,8 @@
 #include <casa/Arrays/Vector.h>
 #include <casa/Logging/LogIO.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Forward Declarations
 template <class T> class ImageMoments;
 
@@ -1059,6 +1061,7 @@ protected:
 };
 
 
+
 template<class T>
 inline uInt MomentCalcBase<T>::nFailedFits() const
 {
@@ -1151,5 +1154,6 @@ inline Double MomentCalcBase<T>::getMomentCoord(ImageMoments<T>& iMom,
    return worldOut(iMom.worldMomentAxis_p);
 }
 
+} //# NAMESPACE CASA - END
 
 #endif

@@ -41,6 +41,8 @@
 #include <casa/Utilities/Assert.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 StManArrayFile::StManArrayFile (const String& fname, ByteIO::OpenOption fop,
 				uInt version, Bool bigEndian,
 				uInt bufferSize)
@@ -460,3 +462,6 @@ void StManArrayFile::putRefCount (uInt refCount, Int64 offset)
 	put (refCount);
     }
 }
+
+} //# NAMESPACE CASA - END
+

@@ -30,6 +30,7 @@
 #include <casa/Containers/Dlink.h>
 #include <casa/iostream.h>
 
+#include <casa/namespace.h>
 main() {
   Dlink<int> *hed = new Dlink<int>(23);
 

@@ -35,6 +35,8 @@
 #include <msvis/MSVis/StokesVector.h>
 #include <msvis/MSVis/VisibilityIterator.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 // <summary> 
 // The interface to the MeasurementSet for synthesis processing
 // </summary>
@@ -193,6 +195,9 @@ private:
   VisIter* iter_p;
   Matrix<Int> selection_p;
 };
+
+
+} //# NAMESPACE CASA - END
 
 #endif
 

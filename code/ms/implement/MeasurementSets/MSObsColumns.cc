@@ -28,6 +28,8 @@
 #include <ms/MeasurementSets/MSObsColumns.h>
 #include <ms/MeasurementSets/MSObservation.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 ROMSObservationColumns::
 ROMSObservationColumns(const MSObservation& msObservation):
   flagRow_p(msObservation, MSObservation::
@@ -194,3 +196,6 @@ void MSObservationColumns::attach(MSObservation& msObservation)
 // Local Variables: 
 // compile-command: "gmake MSObsColumns"
 // End: 
+
+} //# NAMESPACE CASA - END
+

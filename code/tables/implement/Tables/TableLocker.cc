@@ -30,6 +30,8 @@
 #include <tables/Tables/TableError.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 TableLocker::TableLocker (Table& table,
 			  FileLocker::LockType type,
 			  uInt nattempts)
@@ -54,3 +56,6 @@ TableLocker::~TableLocker()
     itsTable.unlock();
   }
 }
+
+} //# NAMESPACE CASA - END
+

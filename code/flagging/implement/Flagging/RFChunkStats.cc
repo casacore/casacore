@@ -34,6 +34,8 @@
 #include <casa/sstream.h>
 #include <casa/System/PGPlotter.h>
     
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 // when no plotter is specified for screen/report,
 // use a null (unattached plotter)
 static class PGPlotter nullPGPlotter;
@@ -247,4 +249,7 @@ Int findCorrType( Stokes::StokesTypes type,const Vector<Int> &corr )
       return j;
   return -1;
 }
+
+
+} //# NAMESPACE CASA - END
 

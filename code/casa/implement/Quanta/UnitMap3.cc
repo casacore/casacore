@@ -29,6 +29,8 @@
 
 #include <casa/Quanta/UnitMap.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# constants
 
 // Initialise the maps
@@ -139,3 +141,6 @@ void UnitMap::initUMSI1() {
 					  UnitVal(1.,"Wb.m-2"),
 					  "tesla")));
 }  
+
+} //# NAMESPACE CASA - END
+

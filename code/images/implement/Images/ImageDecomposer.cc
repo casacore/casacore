@@ -43,6 +43,8 @@
 #include <images/Images/SubImage.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 // Constructors, Destructor, Operators
 // -----------------------------------
 
@@ -2443,4 +2445,7 @@ inline void ImageDecomposer<T>::decrement(IPosition& pos) const
         thisArray.putStorage(pThis, deleteThis);
      }
 */
+
+
+} //# NAMESPACE CASA - END
 

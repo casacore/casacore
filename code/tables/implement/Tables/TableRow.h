@@ -35,6 +35,8 @@
 #include <casa/Containers/Block.h>
 #include <casa/BasicSL/String.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Forward Declarations
 class ROTableColumn;
 template<class T> class Vector;
@@ -497,5 +499,8 @@ inline void TableRow::put (uInt rownr)
     putRecord (rownr);
 }
 
+
+
+} //# NAMESPACE CASA - END
 
 #endif

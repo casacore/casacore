@@ -36,9 +36,13 @@
 #include <casa/aips.h>
 #include <fstream>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 using std::fstream;
 using std::ifstream;
 using std::ofstream;
 using std::filebuf;
+
+} //# NAMESPACE CASA - END
 
 #endif

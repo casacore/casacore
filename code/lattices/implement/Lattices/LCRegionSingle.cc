@@ -34,6 +34,8 @@
 #include <casa/Exceptions/Error.h>
 #include <lattices/Lattices/LatticeIterator.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 LCRegionSingle::LCRegionSingle()
 {}
 
@@ -188,3 +190,6 @@ void LCRegionSingle::copyData (const Lattice<Bool>& from)
     AlwaysAssert (hasMask() && isWritable(), AipsError);
     itsMaskPtr->copyData (from);
 }
+
+} //# NAMESPACE CASA - END
+

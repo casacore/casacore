@@ -28,6 +28,8 @@
 #include <casa/Containers/List.h>
 #include <casa/Containers/IterError.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 template<class t> uInt ListNotice<t>::type() const  {
   return Register(this);
 }
@@ -252,14 +254,14 @@ ListIter<t>::ListIter(const ListIter<t> &other) : ConstListIter<t>((const ConstL
 
 template<class t>
 ListIter<t>::~ListIter() {
-  if (own && this->container_)
-    delete this->container_;
+  if (own && container_)
+    delete container_;
 }
 
 template<class t>
 ListIter<t> &ListIter<t>::assign(List<t> *other,Bool OWN) {
-  if (other && own && this->container_) {
-    delete this->container_;
+  if (other && own && container_) {
+    delete container_;
   }
   own = OWN;
   ConstListIter<t>::operator=(other);
@@ -274,8 +276,8 @@ Link<t> *ListIter<t>::newLink(t &e, Link<t> *p, Link<t> *n) {
 
 template<class t>
 ListIter<t> &ListIter<t>::operator=(List<t> &other) {
-  if (own && this->container_)
-    delete this->container_;
+  if (own && container_)
+    delete container_;
   ConstListIter<t>::operator=(other);
   own = False;
   return *this;
@@ -283,8 +285,8 @@ ListIter<t> &ListIter<t>::operator=(List<t> &other) {
 
 template<class t>
 ListIter<t> &ListIter<t>::operator=(List<t> *other) {
-  if (other && own && this->container_)
-    delete this->container_;
+  if (other && own && container_)
+    delete container_;
   ConstListIter<t>::operator=(other);
   own = False;
   return *this;
@@ -292,8 +294,8 @@ ListIter<t> &ListIter<t>::operator=(List<t> *other) {
 
 template<class t>
 ListIter<t> &ListIter<t>::operator=(const ListIter<t> &other) {
-  if (other.isValid() && own && this->container_)
-    delete this->container_;
+  if (other.isValid() && own && container_)
+    delete container_;
   ConstListIter<t>::operator=(other);
   own = False;
   return *this;
@@ -301,8 +303,8 @@ ListIter<t> &ListIter<t>::operator=(const ListIter<t> &other) {
 
 template<class t>
 ListIter<t> &ListIter<t>::operator=(const ListIter<t> *other) {
-  if (other && (*other).isValid() && own && this->container_)
-    delete this->container_;
+  if (other && (*other).isValid() && own && container_)
+    delete container_;
   ConstListIter<t>::operator=(other);
   own = False;
   return *this;
@@ -310,49 +312,47 @@ ListIter<t> &ListIter<t>::operator=(const ListIter<t> *other) {
 
 template<class t> void ListIter<t>::removeRight() {
 
-  AlwaysAssert(this->isValid(),InvalidIterError);
+  AlwaysAssert(isValid(),InvalidIterError);
 
-  if (this->cur != 0) {
-    Link<t> *c = this->cur;
-    Link<t> *p = this->prev;
-    this->cur = (*this->cur).unlink(this->prev);  // Link<t>::unlink: 
+  if (cur != 0) {
+    Link<t> *c = cur;
+    Link<t> *p = prev;
+    cur = (*cur).unlink(prev);          // Link<t>::unlink: 
                                         //         * sets links for deletion
                                         //         * returns next
-    // Allow container to update
-    (*this->container_).removed(c,this->prev,this->cur);
-    ListNotice<t> state(ListNotice<t>::REMOVE,c,p,this->cur,this->prev,
-			this->curPos);
-    (*this->container_).notify(state);
+    (*container_).removed(c,prev,cur);   // Allow container to update
+    ListNotice<t> state(ListNotice<t>::REMOVE,c,p,cur,prev,curPos);
+    (*container_).notify(state);
     delete c;
   } else throw_list_end_error();
 }
 
 template<class t> void ListIter<t>::swapRight(ListIter<t> &swapee){
-  if (this->container_ == swapee.container_) throw_list_swapright_same_error();
-  Link<t> *mc = this->cur;
-  Link<t> *mp = this->prev;
+  if (container_ == swapee.container_) throw_list_swapright_same_error();
+  Link<t> *mc = cur;
+  Link<t> *mp = prev;
   Link<t> *sc = swapee.cur;
   Link<t> *sp = swapee.prev;
-  Link<t> *tmpTail = (*this->container_).tail;
-  if (this->prev != 0) {
-    (*this->prev).next() = swapee.cur;
+  Link<t> *tmpTail = (*container_).tail;
+  if (prev != 0) {
+    (*prev).next() = swapee.cur;
     if (swapee.cur) {
-      (*swapee.cur).prev() = this->prev;
-      (*this->container_).tail = (*swapee.container_).tail;
+      (*swapee.cur).prev() = prev;
+      (*container_).tail = (*swapee.container_).tail;
     } else {
-      (*this->container_).tail = this->prev;
+      (*container_).tail = prev;
     }
   } else {
-    (*this->container_).head = swapee.cur;
+    (*container_).head = swapee.cur;
     if (swapee.cur) {
       (*swapee.cur).prev() = 0;
-      (*this->container_).tail = (*swapee.container_).tail;
+      (*container_).tail = (*swapee.container_).tail;
     } else {
-      (*this->container_).tail = this->prev;
+      (*container_).tail = prev;
     }
   }
-  Link<t> *tmp = this->cur;
-  this->cur = swapee.cur;
+  Link<t> *tmp = cur;
+  cur = swapee.cur;
   if (swapee.prev != 0) {
     (*swapee.prev).next() = tmp;
     if (tmp) {
@@ -373,18 +373,14 @@ template<class t> void ListIter<t>::swapRight(ListIter<t> &swapee){
   swapee.cur = tmp;
 
   // Adjust lengths
-  uInt tmpLen = (*this->container_).length;
-  (*this->container_).length = (this->curPos - 1) + swapee.len() -
-                               (swapee.pos() - 1);
-  (*swapee.container_).length = (swapee.pos() - 1) + tmpLen -
-                                (this->curPos - 1);
+  uInt tmpLen = (*container_).length;
+  (*container_).length = (curPos - 1) + swapee.len() - (swapee.pos() - 1);
+  (*swapee.container_).length = (swapee.pos() - 1) + tmpLen - (curPos - 1);
 
-  ListNotice<t> mstate(ListNotice<t>::SWAP,mc,mp,this->cur,this->prev,
-		       this->curPos,swapee.curPos);
-  (*this->container_).notify(mstate);
+  ListNotice<t> mstate(ListNotice<t>::SWAP,mc,mp,cur,prev,curPos,swapee.curPos);
+  (*container_).notify(mstate);
 
-  ListNotice<t> sstate(ListNotice<t>::SWAP,sc,sp,swapee.cur,swapee.prev,
-		       swapee.curPos,this->curPos);
+  ListNotice<t> sstate(ListNotice<t>::SWAP,sc,sp,swapee.cur,swapee.prev,swapee.curPos,curPos);
   (*swapee.container_).notify(sstate);
 }
 
@@ -408,3 +404,6 @@ template<class t>
 ConstListIter<t> &ListIter<t>::operator=(const ConstListIter<t> *) {
   throw_list_init_error();
   return *this;}
+
+} //# NAMESPACE CASA - END
+

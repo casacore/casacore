@@ -39,6 +39,8 @@
 #include <casa/Quanta/MVEpoch.h>
 #include <casa/Arrays/Vector.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Forward Declarations
 class MeasFrame;
 
@@ -201,5 +203,8 @@ private:
   // Calculate position angle
   Double calcAngle(const Double ep) const;
 };
+
+
+} //# NAMESPACE CASA - END
 
 #endif

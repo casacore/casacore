@@ -31,6 +31,8 @@
 #include <casa/aips.h>
 #include <casa/Containers/Block.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 // <summary> Creates a reference table of prime numbers, and some functions </summary>
 //
 // <reviewed reviewer="Gareth Hunt" date="94/08/19" tests="tPrimes">
@@ -174,5 +176,8 @@ private:
     //This is the table which stores the prime numbers.
     static Block<uInt> cacheTable;
 };
+
+
+} //# NAMESPACE CASA - END
 
 #endif

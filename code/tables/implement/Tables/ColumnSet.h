@@ -36,6 +36,8 @@
 #include <casa/Containers/SimOrdMap.h>
 #include <casa/BasicSL/String.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Forward Declarations
 class SetupNewTable;
 class Table;
@@ -344,5 +346,8 @@ inline Block<Bool>& ColumnSet::dataManChanged()
 }
 
 
+
+
+} //# NAMESPACE CASA - END
 
 #endif

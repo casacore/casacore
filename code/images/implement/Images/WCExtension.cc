@@ -37,6 +37,8 @@
 #include <casa/Exceptions/Error.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 WCExtension::WCExtension (const ImageRegion& region,
 			  const WCBox& extendBox)
 : WCCompound (region, ImageRegion(extendBox))
@@ -240,3 +242,6 @@ WCExtension* WCExtension::fromRecord (const TableRecord& rec,
     unmakeRecord (regions, rec.asRecord("regions"), tableName);
     return new WCExtension (True, regions);
 }
+
+} //# NAMESPACE CASA - END
+

@@ -33,6 +33,8 @@
 #include <casa/Exceptions/Error.h> 
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 template<class T>
 CurvedLattice2D<T>::CurvedLattice2D()
 : itsLatticePtr   (0),
@@ -276,3 +278,6 @@ Bool CurvedLattice2D<T>::ok() const
 {
   return itsLatticePtr->ok();
 }
+
+} //# NAMESPACE CASA - END
+

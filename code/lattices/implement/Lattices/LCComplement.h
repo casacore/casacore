@@ -32,6 +32,8 @@
 #include <lattices/Lattices/LCRegionMulti.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 // <summary>
 // Make the complement of a region.
 // </summary>
@@ -118,5 +120,8 @@ private:
     void defineBox();
 };
 
+
+
+} //# NAMESPACE CASA - END
 
 #endif

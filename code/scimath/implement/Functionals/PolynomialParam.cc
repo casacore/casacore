@@ -29,6 +29,8 @@
 #include <scimath/Functionals/PolynomialParam.h>
 #include <casa/Arrays/Vector.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 template<class T>
 PolynomialParam<T>::PolynomialParam() :
   Function1D<T>(1) {}
@@ -60,3 +62,6 @@ template<class T>
 void PolynomialParam<T>::setCoefficients(const Vector<T> &coefficients) {
   param_p.setParameters(coefficients);
 }
+
+} //# NAMESPACE CASA - END
+

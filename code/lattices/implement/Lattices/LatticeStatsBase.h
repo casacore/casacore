@@ -30,6 +30,8 @@
 
 #include <casa/aips.h>
 #include <casa/Arrays/Vector.h>
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 class IPosition;
 class Regex;
 
@@ -173,6 +175,9 @@ enum StatisticsTypes {
 // Stretch a range by 10%
    static void stretchMinMax (Float& min, Float& max);
 };
+
+
+} //# NAMESPACE CASA - END
 
 #endif
 

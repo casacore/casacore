@@ -32,6 +32,7 @@
 #include <casa/stdlib.h>
 
 #if defined(AIPS_STUPID_SUN)
+#include <casa/namespace.h>
 #undef AIPS_STUPID_SUN
 #endif
 

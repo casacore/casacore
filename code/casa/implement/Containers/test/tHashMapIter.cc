@@ -32,6 +32,7 @@
 #include <casa/iostream.h>
 #include <casa/stdlib.h>
 
+#include <casa/namespace.h>
 //# for GNU compile in trial:
 //#
 //#	 gmake tHashMapIter 'EXTRA_PGMRLIBS=-llapack -lblas -L/opt/SUNWspro/SC3.0.1/lib -lF77 -lsunmath'

@@ -33,6 +33,8 @@
 #include <casa/Arrays/Matrix.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 // <summary>
 //    Logical valued Matrices.
 // </summary>
@@ -76,5 +78,8 @@ typedef Matrix<LogicalArrayElem> LogicalMatrix;
 
 
 // </group>
+
+
+} //# NAMESPACE CASA - END
 
 #endif

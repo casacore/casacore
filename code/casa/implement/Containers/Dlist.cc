@@ -28,6 +28,8 @@
 #include <casa/Containers/Dlist.h>
 #include <casa/iostream.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 extern int Dlist_deprecated_flag;
 
 template<class t>
@@ -217,3 +219,6 @@ template<class t>
 ConstDlistIter<t> &DlistIter<t>::operator=(const ConstDlistIter<t> *) {
   throw_list_init_error();
   return *this;}
+
+} //# NAMESPACE CASA - END
+

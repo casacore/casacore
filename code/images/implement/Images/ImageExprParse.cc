@@ -47,6 +47,8 @@
 #include <casa/Exceptions/Error.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Define pointer blocks holding temporary lattices and regions.
 static const Block<LatticeExprNode>* theTempLattices;
 static const PtrBlock<const ImageRegion*>* theTempRegions;
@@ -781,4 +783,7 @@ LatticeExprNode ImageExprParse::makeRegionNode() const
     }
     return *((*theTempRegions)[regnr]);
 }
+
+
+} //# NAMESPACE CASA - END
 

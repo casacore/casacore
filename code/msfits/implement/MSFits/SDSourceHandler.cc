@@ -39,6 +39,8 @@
 #include <tables/Tables/TableDesc.h>
 #include <casa/Arrays/ArrayLogical.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 SDSourceHandler::SDSourceHandler() 
     : index_p(0), msSource_p(0), msSourceCols_p(0), sourceId_p(-1),
       nextSourceId_p(0), restfreq_p(-1), vframe_p(-1),
@@ -443,3 +445,6 @@ void SDSourceHandler::initRow(Vector<Bool> &handledCols, const Record &row)
     tmp = row.fieldNumber("SPECTRAL_WINDOW_REST_FREQUENCY");
     if (tmp >= 0) handledCols(tmp) = True;
 }
+
+} //# NAMESPACE CASA - END
+

@@ -32,6 +32,8 @@
 #include <casa/aips.h>
 #include <casa/BasicSL/String.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 template<class T> class Quantum;
 template<class T> class Matrix;
 template<class T> class Vector;
@@ -524,5 +526,8 @@ inline const String& Coordinate::errorMessage() const
 {
     return error_p;
 }
+
+
+} //# NAMESPACE CASA - END
 
 #endif

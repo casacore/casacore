@@ -33,6 +33,8 @@
 #include <scimath/Functionals/DiracDParam.h>
 #include <scimath/Functionals/Function.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Forward declarations
 
 // <summary> A one dimensional Dirac delta function
@@ -128,5 +130,8 @@ public:
   using DiracDParam<T>::HEIGHT;
   using DiracDParam<T>::CENTER;
 };
+
+
+} //# NAMESPACE CASA - END
 
 #endif

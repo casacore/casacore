@@ -37,6 +37,8 @@
 #include <casa/aips.h>
 #include <iosfwd>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 using std::ios;
 using std::istream;
 using std::ostream;
@@ -48,5 +50,7 @@ using std::ofstream;
 using std::fstream;
 using std::fpos;
 using std::streampos;
+
+} //# NAMESPACE CASA - END
 
 #endif

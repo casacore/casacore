@@ -39,6 +39,8 @@
 //# Forward declarations
 #include <casa/iosfwd.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 // <summary> 
 // A simple keyword/value pair with internal help Strings.
 // </summary>
@@ -238,6 +240,9 @@ private:
   Int index;
 };
 
+
+
+} //# NAMESPACE CASA - END
 
 #endif
 

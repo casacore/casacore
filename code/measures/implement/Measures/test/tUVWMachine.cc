@@ -36,6 +36,7 @@
 #include <casa/BasicMath/Math.h>
 #include <casa/iostream.h>
 
+#include <casa/namespace.h>
 int main() {
   try {
     cout << "Test UVWMachine class" << endl;

@@ -31,6 +31,8 @@
 //# For scalar near() functions.
 #include <casa/BasicMath/Math.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 template<class T>
 Bool allEQ (const Array<T> &l, const Array<T> &r)
 {
@@ -1211,3 +1213,6 @@ template<class T> Array<uInt> partialNFalse (const Array<T>& array,
   }
   return result;
 }
+
+} //# NAMESPACE CASA - END
+

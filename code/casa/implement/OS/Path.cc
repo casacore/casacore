@@ -39,6 +39,8 @@
 #include <ctype.h>                  // needed for isprint
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 // The maximum number of bytes in a pathname is 255 (_POSIX_PATH_MAX)
 // Definition for POSIX systems
 #if defined (_POSIX_PATH_MAX)
@@ -522,3 +524,6 @@ String Path::addDirectory (const String& name, const String& otherName)
     }
     return tName;
 }
+
+} //# NAMESPACE CASA - END
+

@@ -31,12 +31,14 @@
 #include <casa/Exceptions/Error.h>
 #include <casa/iostream.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 inline Float real(Float r) { return r;}
 inline Float conj(Float r) { return r;}
-#if defined(AIPS_USE_NEW_SGI) || defined(AIPS_KCC)
-inline Complex real(Complex c) { return std::real(c);}
-inline Complex conj(Complex c) { return std::conj(c);}
-#endif
+//#if defined(AIPS_USE_NEW_SGI) || defined(AIPS_KCC)
+inline Complex real(Complex c) { return ::std::real(c);}
+inline Complex conj(Complex c) { return ::std::conj(c);}
+//#endif
 
 template <class T, Int n> 
 SquareMatrix<T,n>& 
@@ -335,17 +337,17 @@ template <class T, Int n>
 SquareMatrix<T,n>& SquareMatrix<T,n>::conj() {
     switch (type_p) {
         case ScalarId: {
-	    a_p[0][0]=::conj(a_p[0][0]);
+            a_p[0][0]=::casa::conj(a_p[0][0]);
 	    return *this;
 	}
         case Diagonal: {
-	    for (Int i=0; i<n; i++) a_p[i][i]=::conj(a_p[i][i]);
+	    for (Int i=0; i<n; i++) a_p[i][i]=::casa::conj(a_p[i][i]);
 	    return *this;
 	}
 //      case General: 
 	default: {
 	    for (Int i=0; i<n; i++)
-		for (Int j=0; j<n; j++) a_p[i][j]=::conj(a_p[i][j]);
+		for (Int j=0; j<n; j++) a_p[i][j]=::casa::conj(a_p[i][j]);
 	    return *this;
 	}
     }
@@ -355,19 +357,19 @@ template <class T, Int n>
 SquareMatrix<T,n>& SquareMatrix<T,n>::adjoint() {
     switch (type_p) {
         case ScalarId: {
-	    a_p[0][0]=::conj(a_p[0][0]);
+	    a_p[0][0]=::casa::conj(a_p[0][0]);
 	    return *this;
 	}
         case Diagonal: {
-	    for (Int i=0; i<n; i++) a_p[i][i]=::conj(a_p[i][i]);
+	    for (Int i=0; i<n; i++) a_p[i][i]=::casa::conj(a_p[i][i]);
 	    return *this;
 	}
         case General: {
 	    for (Int i=0; i<n; i++) {
-		a_p[i][i]=::conj(a_p[i][i]);
+		a_p[i][i]=::casa::conj(a_p[i][i]);
 		for (Int j=i+1; j<n; j++) {
-		    T tmp=::conj(a_p[i][j]);
-		    a_p[i][j]=::conj(a_p[j][i]);
+		    T tmp=::casa::conj(a_p[i][j]);
+		    a_p[i][j]=::casa::conj(a_p[j][i]);
 		    a_p[j][i]=tmp;
 		}
 	    }
@@ -378,7 +380,7 @@ SquareMatrix<T,n>& SquareMatrix<T,n>::adjoint() {
 }
 
 template <class T, Int n> 
-SquareMatrix<T,n> SquareMatrix<T,n>::conj(const SquareMatrix<T,n>& other) {
+SquareMatrix<T,n> SquareMatrix<T,n>::casa::conj(const SquareMatrix<T,n>& other) {
   SquareMatrix<T,n> result(other);
   return conj(result);
 }
@@ -483,4 +485,6 @@ T& SquareMatrix<T,n>::throwInvAccess() {
     // following just to make signature ok.
     return a_p[0][0];
 }
+
+} //# NAMESPACE CASA - END
 

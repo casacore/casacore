@@ -29,6 +29,8 @@
 #include <measures/Measures/Stokes.h>
 #include <casa/BasicSL/String.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 Stokes::StokesTypes Stokes::type(Int stokesNumber) 
 {
    StokesTypes val = Undefined;
@@ -184,3 +186,6 @@ Stokes::StokesTypes Stokes::fromFITSValue(Int which)
    }
    return retval;
 }
+
+} //# NAMESPACE CASA - END
+

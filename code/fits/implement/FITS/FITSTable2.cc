@@ -41,6 +41,8 @@
 
 #include <casa/stdio.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 uInt sizeofStringField(const RecordDesc &description, const Record &sizes,
 		       uInt whichField)
 {
@@ -632,3 +634,6 @@ FitsOutput *FITSTableWriter::makeWriter(const String &fileName)
 
     return file;
 }
+
+} //# NAMESPACE CASA - END
+

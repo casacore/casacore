@@ -36,6 +36,8 @@
 #include <casa/iostream.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 BaseColumnDesc::BaseColumnDesc (const String& name, const String& comment,
 				const String& dataManType,
 				const String& dataManGroup,
@@ -307,3 +309,6 @@ RefColumn* BaseColumnDesc::makeRefColumn (RefTable* rtp, BaseColumn* bcp) const
     RefColumn* rcp = new RefColumn (this, rtp, bcp);
     return rcp;
 }
+
+} //# NAMESPACE CASA - END
+

@@ -31,6 +31,8 @@
 #include <casa/Utilities/LinearSearch.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 template<class Container, class ElType>
 Int linearSearch (Bool& found, const Container& container, 
 		  const ElType& value, uInt n, uInt lower)
@@ -90,3 +92,6 @@ Int linearSearchBrackets1 (const Container& container, const ElType& value,
     }
     return -1;
 }
+
+} //# NAMESPACE CASA - END
+

@@ -28,6 +28,8 @@
 #ifndef CASA_AIPSTYPE_H
 #define CASA_AIPSTYPE_H
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 // Define the standard types used by aips++
 
 typedef bool Bool;
@@ -45,5 +47,7 @@ typedef unsigned long uLong;
 typedef float Float;
 typedef double Double;
 typedef long double lDouble;
+
+} //# NAMESPACE CASA - END
 
 #endif

@@ -32,6 +32,8 @@
 #include <scimath/Mathematics/RigidVector.h>
 #include <casa/Containers/Block.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 class RFDataMapper;
 class VisBuffer;
 
@@ -158,5 +160,8 @@ inline Double RFDataMapper::getValueCycle ()
 { return full_cycle; }
 inline Double RFDataMapper::getValueBase ()
 { return cycle_base; }
+
+
+} //# NAMESPACE CASA - END
 
 #endif

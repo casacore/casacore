@@ -33,6 +33,8 @@
 #include <measures/Measures/MCBase.h>
 #include <measures/Measures/MRBase.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Constructors
 template<class M>
 MeasConvert<M>::MeasConvert() :
@@ -470,3 +472,6 @@ void MeasConvert<M>::print(ostream &os) const {
   if (model) os << " Template Measure" << *model;
   if (!outref.empty()) os << " Output reference" << outref;
 }
+
+} //# NAMESPACE CASA - END
+

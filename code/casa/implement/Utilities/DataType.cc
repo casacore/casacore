@@ -30,6 +30,8 @@
 
 #include <casa/iostream.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 ostream &operator<<(ostream &os, DataType type)
 {
     switch (type) {
@@ -126,3 +128,6 @@ DataType asArray(DataType type)
     }
     return tmp;
 }
+
+} //# NAMESPACE CASA - END
+

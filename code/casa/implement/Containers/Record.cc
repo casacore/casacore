@@ -32,6 +32,8 @@
 #include <casa/Exceptions/Error.h>
 #include <casa/Utilities/Assert.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 Record::Record()
 : RecordInterface (),
   rep_p    (new RecordRep),
@@ -295,3 +297,6 @@ void Record::getRecord (AipsIO& os)
     rwRef().getRecord (os, type);
     recordType() = (RecordInterface::RecordType)type;
 }
+
+} //# NAMESPACE CASA - END
+

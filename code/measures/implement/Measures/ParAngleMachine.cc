@@ -36,6 +36,8 @@
 #include <casa/BasicMath/Math.h>
 #include <casa/Quanta/Unit.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Constructors
 ParAngleMachine::ParAngleMachine() :
   indir_p(0), convdir_p(0), frame_p(0),
@@ -228,3 +230,6 @@ Double ParAngleMachine::calcAngle(const Double ep) const {
     return -mvdir_p.positionAngle(zenith_p);
   };
 }
+
+} //# NAMESPACE CASA - END
+

@@ -38,6 +38,8 @@
 #include <casa/Arrays.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 template<class T>
 SubImage<T>::SubImage()
 : itsImagePtr  (0),
@@ -415,3 +417,6 @@ void SubImage<T>::convertIPosition(Vector<Float>& x, const IPosition& pos) const
   x.resize(pos.nelements());
   for (uInt i=0; i<x.nelements(); i++) x[i] = Float(pos(i));
 }
+
+} //# NAMESPACE CASA - END
+

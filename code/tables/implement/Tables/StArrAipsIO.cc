@@ -36,6 +36,8 @@
 #include <tables/Tables/DataManError.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 StManColumnArrayAipsIO::StManColumnArrayAipsIO (StManAipsIO* smptr,
 						int dataType)
 : StManColumnAipsIO (smptr, dataType, True),
@@ -417,3 +419,6 @@ void StManColumnArrayAipsIO::getData (void* dp, uInt inx, uInt nrval,
 	break;
     }
 }
+
+} //# NAMESPACE CASA - END
+

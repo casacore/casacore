@@ -41,6 +41,8 @@
 #include <casa/Utilities/Assert.h>
 #include <casa/BasicSL/String.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 PointShape::PointShape() 
   :ComponentShape()
 {
@@ -241,5 +243,5 @@ Double PointShape::dirIsInPixel (Double longSize, Double latSize, Double nearSiz
 // compile-command: "gmake PointShape"
 // End: 
 
-
+} //# NAMESPACE CASA - END
 

@@ -34,6 +34,8 @@
 #include <measures/Measures/MPosition.h>
 #include <casa/Arrays/Array.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Forward Declarations
 class ColumnsIndex;
 class MeasurementSet;
@@ -164,6 +166,9 @@ private:
     // initialize the things which depend on the row
     void initRow(Vector<Bool> &handledCols, const Record &row);
 };
+
+
+} //# NAMESPACE CASA - END
 
 #endif
 

@@ -45,6 +45,8 @@
 #include <casa/iostream.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 // Find out if local size is a multiple of 4, so we can move as integers.
 #define TSMCube_FindMult \
   uInt localPixelWords = 0; \
@@ -1457,4 +1459,7 @@ void TSMCube::accessStrided (const IPosition& start, const IPosition& end,
         }
     }
 }
+
+
+} //# NAMESPACE CASA - END
 

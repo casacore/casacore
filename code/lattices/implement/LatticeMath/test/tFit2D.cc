@@ -41,6 +41,7 @@
 #include <casa/Utilities/Assert.h>
 #include <casa/iostream.h>
 
+#include <casa/namespace.h>
 Gaussian2D<Double> addModel (Array<Float>& pixels, Double height, Double x, Double y, 
                                Double major,  Double minor, Double pa);
 

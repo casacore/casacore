@@ -34,6 +34,8 @@
 #include <casa/Arrays/Slicer.h>
 #include <lattices/Lattices/MaskedLattice.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Forward Declarations
 
 class IPosition;
@@ -187,5 +189,8 @@ private:
   Slicer      itsSlicer;
 };
 
+
+
+} //# NAMESPACE CASA - END
 
 #endif

@@ -32,6 +32,8 @@
 #include <casa/Exceptions/Error.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 RegionHandlerMemory::RegionHandlerMemory()
 {
   itsMaps[0] = 0;
@@ -300,3 +302,6 @@ ImageRegion RegionHandlerMemory::makeMask (const LatticeBase& lattice,
   LCMask* mask = new LCMask (lattice.shape());
   return ImageRegion(mask);
 }
+
+} //# NAMESPACE CASA - END
+

@@ -31,10 +31,11 @@
 //# Includes
 #include <casa/aips.h>
 #include <casa/BasicSL/RegexBase.h>
-
-//# Forward declarations.
 #include <casa/iosfwd.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
+//# Forward declarations.
 struct re_pattern_buffer;
 struct re_registers;
 
@@ -322,5 +323,8 @@ extern const Regex RXlowercase;      // = "[a-z]+"
 extern const Regex RXuppercase;      // = "[A-Z]+"
 extern const Regex RXalphanum;       // = "[0-9A-Za-z]+"
 extern const Regex RXidentifier;     // = "[A-Za-z_][A-Za-z0-9_]*"
+
+
+} //# NAMESPACE CASA - END
 
 #endif

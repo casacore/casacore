@@ -71,6 +71,8 @@
 #include <casa/stdio.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 Directory::Directory()
 : File()                         // sets to working directory
 {}
@@ -418,4 +420,7 @@ Vector<String> Directory::shellExpand (const Vector<String>& files, Bool stripPa
 
    return expInNames;
 }
+
+
+} //# NAMESPACE CASA - END
 

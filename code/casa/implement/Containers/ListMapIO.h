@@ -52,4 +52,9 @@
 #include <casa/Containers/ListMap.h>
 #include <casa/Containers/MapIO.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 #endif
+
+} //# NAMESPACE CASA - END
+

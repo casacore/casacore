@@ -26,6 +26,8 @@
 //# $Id$
 #include <casa/Containers/HashMapIter.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 template<class key, class val> void ConstHashMapIter<key,val>::toStart() {
     if (!isValid())
 	throw_invalid_hashmapiter_error();
@@ -142,13 +144,13 @@ template<class key, class val> ConstHashMapIter<key,val>::~ConstHashMapIter() {}
 
 template<class key, class val> val &HashMapIter<key,val>::getVal() {
 
-    if ( this->iter.atEnd() && this->iter.isValid() )
+    if ( iter.atEnd() && iter.isValid() )
 	((HashMapIter<key,val>*)this)->step();
 
-    if ( ! this->isValid() || ! this->iter.isValid() || this->atEnd() )
+    if ( ! isValid() || ! iter.isValid() || atEnd() )
 	throw_invalid_hashmapiter_error();
 
-    return this->iter.getRight().y();
+    return iter.getRight().y();
 }
 
 template<class key, class val> const val &HashMapIter<key,val>::getVal() const {
@@ -175,3 +177,6 @@ HashMapIter<key,val> &HashMapIter<key,val>::operator=(const HashMapIter<key,val>
 }
 
 template<class key, class val> HashMapIter<key,val>::~HashMapIter() {}
+
+} //# NAMESPACE CASA - END
+

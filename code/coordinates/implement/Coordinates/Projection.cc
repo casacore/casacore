@@ -30,6 +30,8 @@
 #include <casa/BasicMath/Math.h>
 #include <casa/Exceptions/Error.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 Projection::Projection(Projection::Type which) 
 : which_p(which), parameters_p(0)
 {
@@ -209,7 +211,7 @@ Bool Projection::near(const Projection &other, Double tol) const
    if (parameters_p.nelements() != other.parameters_p.nelements()) return False;
    
    for (uInt i=0; i<parameters_p.nelements(); i++) {
-     if (!::near(parameters_p(i),other.parameters_p(i),tol)) return False;
+     if (!::casa::near(parameters_p(i),other.parameters_p(i),tol)) return False;
    }
    
    return True;
@@ -239,4 +241,7 @@ void Projection::validate()
     }
 }
 
+
+
+} //# NAMESPACE CASA - END
 

@@ -29,6 +29,8 @@
 #include <casa/Arrays/Array.h>
 #include <casa/Containers/Record.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 template<class T> 
 EclecticFunctionFactory<T>::EclecticFunctionFactory() :
     FunctionFactory<T>(), 
@@ -77,4 +79,7 @@ void EclecticFunctionFactory<T>::addFactory(const String& type,
     lookup.define(type, 
 		  OrderedPair<FunctionFactory<T>*, Bool>(factory, own));
 }
+
+
+} //# NAMESPACE CASA - END
 

@@ -35,6 +35,8 @@
 #include <casa/Arrays/VectorSTLIterator.h>
 #include <scimath/Fitting/LSQFit.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Forward Declarations
 
 // <summary>
@@ -179,5 +181,8 @@ private:
   //# Data
 
 };
+
+
+} //# NAMESPACE CASA - END
 
 #endif

@@ -31,6 +31,8 @@
 #include <casa/BasicSL/Constants.h>
 #include <measures/Measures/MeasBase.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Constructors
 template <class Mv, class Mr>
 MeasBase<Mv,Mr>::MeasBase() :
@@ -164,6 +166,9 @@ MRBase *MeasBase<Mv,Mr>::getRefPtr() const {
 }
 
 template <class Mv, class Mr>
-void MeasBase<Mv,Mr>::print(ostream &os) const {
+void MeasBase<Mv,Mr>::print(std::ostream &os) const {
   os << tellMe() << ": " << data;
 }
+
+} //# NAMESPACE CASA - END
+

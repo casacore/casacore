@@ -34,6 +34,8 @@
 #include <lattices/Lattices/LatticeProgress.h>
 #include <casa/System/ProgressMeter.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 // <summary> Provides a progress meter for the ImageMoments class </summary>
 // <use visibility=export>
 // 
@@ -87,5 +89,8 @@ public:
 private:
     ProgressMeter* itsMeter;
 };
+
+
+} //# NAMESPACE CASA - END
 
 #endif

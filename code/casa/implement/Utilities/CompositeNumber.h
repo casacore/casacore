@@ -32,6 +32,8 @@
 #include <casa/aips.h>
 #include <casa/Containers/Block.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 // <summary> This class generates composite numbers </summary>
 // <use visibility=export>
 
@@ -92,5 +94,8 @@ public:
   void generate(const uInt maxval);
 
 };
+
+
+} //# NAMESPACE CASA - END
 
 #endif

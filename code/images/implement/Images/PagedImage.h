@@ -39,6 +39,8 @@
 //# Forward Declarations
 #include <casa/iosfwd.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 // <summary>
 // Read, store, and manipulate astronomical images.
 // </summary>
@@ -471,5 +473,8 @@ inline const Table& PagedImage<T>::table() const
   return const_cast<PagedImage<T>*>(this)->table();
 }
 
+
+
+} //# NAMESPACE CASA - END
 
 #endif

@@ -43,6 +43,7 @@
 #include <casa/iostream.h>
 #include <casa/iomanip.h>
 
+#include <casa/namespace.h>
 void plotSpectrum(const SpectralModel& modelSpectrum) {
   cout << "This is a "
        << ComponentType::name(modelSpectrum.type())

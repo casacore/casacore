@@ -35,6 +35,8 @@
 #include <lattices/Lattices/TempLattice.h>
 #include <casa/Arrays/IPosition.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Forward Declarations
 //template <class T> class LatticeConvolver;
 class IPosition;
@@ -232,5 +234,8 @@ private:
   Bool itsCachedPsf;
   Bool doFast_p;
 };
+
+} //# NAMESPACE CASA - END
+
 #endif
 

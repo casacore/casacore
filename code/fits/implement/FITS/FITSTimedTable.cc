@@ -31,6 +31,8 @@
 #include <casa/Exceptions/Error.h>
 #include <casa/Utilities/Assert.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 FITSTimedTable::FITSTimedTable()
     : atStart_p(True), hasChanged_p(False), changePending_p(False), 
       table_p(0), row_now_p(0), row_next_p(0), how_past_end_p(0),
@@ -341,3 +343,6 @@ void FITSTimedTable::initNextRecord(const RecordDesc& desc)
     AlwaysAssert(row_next_p, AipsError);
     time_next_p.attachToRecord(*row_next_p, timeColumn_p);
 }    
+
+} //# NAMESPACE CASA - END
+

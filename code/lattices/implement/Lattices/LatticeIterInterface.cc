@@ -36,6 +36,8 @@
 #include <casa/Exceptions/Error.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 template <class T>
 LatticeIterInterface<T>::LatticeIterInterface()
 : itsNavPtr   (0),
@@ -437,3 +439,6 @@ Bool LatticeIterInterface<T>::ok() const
   }
   return flag;
 }
+
+} //# NAMESPACE CASA - END
+

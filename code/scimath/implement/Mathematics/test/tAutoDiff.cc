@@ -39,6 +39,7 @@
 
 #include <casa/iostream.h>
 
+#include <casa/namespace.h>
 // Made some minor changes, so we don't compare floating point values directly, i.e. use ==
 // but rather use nearAbs, as the floating point between chips won't necessarily give the
 // same answer. wky 23-aug-2004

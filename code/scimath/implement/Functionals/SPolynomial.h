@@ -35,6 +35,8 @@
 #include <scimath/Mathematics/AutoDiff.h>
 #include <scimath/Mathematics/AutoDiffMath.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Forward declarations
 
 // <summary> A one dimensional scaled polynomial class
@@ -119,5 +121,8 @@ public:
   using SPolynomialParam<T>::nparameters;
   using SPolynomialParam<T>::mask;
 };
+
+
+} //# NAMESPACE CASA - END
 
 #endif

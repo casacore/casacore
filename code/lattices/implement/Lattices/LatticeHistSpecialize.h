@@ -33,6 +33,8 @@
 #include <casa/aips.h>
 #include <casa/BasicSL/Complex.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Forward Declarations
 template <class T> class Vector;
 template <class T> class Block;
@@ -135,5 +137,8 @@ private:
                          const Vector<Float>& y,
                          PGPlotter& plotter);
 };
+
+
+} //# NAMESPACE CASA - END
 
 #endif

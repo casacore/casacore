@@ -46,6 +46,7 @@
 #include <casa/Utilities/Assert.h>
 #include <casa/iostream.h>
 
+#include <casa/namespace.h>
 // <summary> Test program for class ScaledComplexData </summary>
 
 // This program tests the virtual column engine ScaledComplexData.

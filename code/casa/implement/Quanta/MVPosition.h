@@ -35,10 +35,12 @@
 #include <casa/Quanta/Unit.h>
 #include <casa/Quanta/Quantum.h>
 #include <casa/Quanta/MeasValue.h>
+#include <casa/iosfwd.h>
+
+namespace casa { //# NAMESPACE CASA - BEGIN
 
 //# Forward Declarations
 class RotMatrix;
-#include <casa/iosfwd.h>
 
 //# Constants (SUN compiler does not accept non-simple default arguments)
 
@@ -290,5 +292,8 @@ MVPosition operator*(const MVPosition &left, Double right);
 Double operator*(const Vector<Double> &left, const MVPosition &right);
 Double operator*(const MVPosition &left, const Vector<Double> &right);
 // </group>
+
+
+} //# NAMESPACE CASA - END
 
 #endif

@@ -33,6 +33,8 @@
 #include <casa/Arrays/Vector.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 // <summary>
 // Enumeration of possible table vectors
 // </summary>
@@ -207,5 +209,8 @@ inline TabVecTag TabVecRep<T>::getTag() const
     { return tag_p; }
 
 
+
+
+} //# NAMESPACE CASA - END
 
 #endif

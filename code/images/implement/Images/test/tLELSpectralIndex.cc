@@ -43,6 +43,7 @@
 
 
 
+#include <casa/namespace.h>
 Bool doIt()
 {
   Bool ok = True;

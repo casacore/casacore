@@ -40,6 +40,8 @@
 #include <casa/iostream.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 ISMBucket::ISMBucket (ISMBase* parent, const char* bucketStorage)
 : stmanPtr_p (parent),
   uIntSize_p (parent->uIntSize()),
@@ -611,3 +613,6 @@ void ISMBucket::show (ostream& os) const
 	cout << endl;
     }
 }
+
+} //# NAMESPACE CASA - END
+

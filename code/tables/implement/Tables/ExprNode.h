@@ -37,6 +37,8 @@
 #include <casa/BasicSL/Complex.h>
 #include <casa/Utilities/Regex.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Forward Declarations
 class BaseTable;
 class Table;
@@ -1292,5 +1294,8 @@ inline TableExprNodeRep* TableExprNode::getRep()
     return node_p;
 }
 
+
+
+} //# NAMESPACE CASA - END
 
 #endif

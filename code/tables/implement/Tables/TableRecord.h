@@ -37,6 +37,8 @@
 #include <casa/Containers/RecordDesc.h>
 #include <casa/Utilities/COWPtr.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Forward Declarations
 template<class T> class Array;
 class IPosition;
@@ -502,5 +504,8 @@ inline Bool TableRecord::areTablesMultiUsed() const
     return ref().areTablesMultiUsed();
 }
 
+
+
+} //# NAMESPACE CASA - END
 
 #endif

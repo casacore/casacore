@@ -37,6 +37,8 @@
 #include <casa/Arrays/Vector.h>
 #include <casa/Exceptions/Error.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 MSField::MSField():hasBeenDestroyed_p(True) { }
 
 MSField::MSField(const String &tableName, TableOption option) 
@@ -193,3 +195,6 @@ MSField MSField::referenceCopy(const String& newTableName,
     return MSField(MSTable<PredefinedColumns,PredefinedKeywords>::
 		     referenceCopy(newTableName,writableColumns));
 }
+
+} //# NAMESPACE CASA - END
+

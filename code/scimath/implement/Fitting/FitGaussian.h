@@ -32,6 +32,8 @@
 #include <casa/Arrays/Matrix.h>
 #include <casa/Logging/LogIO.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 // <summary>Multidimensional fitter class for Gaussians.</summary>
 
 // <reviewed reviewer="" date="" tests="tFitGaussian">
@@ -215,6 +217,9 @@ class FitGaussian
   uInt countFreeParameters();
 };
 
+
+
+} //# NAMESPACE CASA - END
 
 #endif
 

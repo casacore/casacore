@@ -39,6 +39,8 @@
 #include <measures/Measures/MPosition.h>
 #include <measures/Measures/MRadialVelocity.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 class VisSet;
 class RFABase;
 class PGPlotter;
@@ -225,5 +227,8 @@ private:
 
   void printAgentRecord(String &, uInt, const RecordInterface &);
 };
+
+
+} //# NAMESPACE CASA - END
 
 #endif

@@ -32,9 +32,11 @@
 //# Includes
 #include <casa/aips.h>
 #include <casa/BasicSL/String.h>
+#include <casa/iosfwd.h>
+
+namespace casa { //# NAMESPACE CASA - BEGIN
 
 //# Forward declarations
-#include <casa/iosfwd.h>
 template<class T> class Block;
 
 // <summary> 
@@ -168,5 +170,8 @@ inline const String &ObjectID::hostName() const
 {
     return hostname_p;
 }
+
+
+} //# NAMESPACE CASA - END
 
 #endif

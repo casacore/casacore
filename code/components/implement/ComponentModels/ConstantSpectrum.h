@@ -32,6 +32,8 @@
 #include <components/ComponentModels/ComponentType.h>
 #include <components/ComponentModels/SpectralModel.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 class MFrequency;
 class RecordInterface;
 class String;
@@ -189,4 +191,7 @@ public:
   // values. Returns True if everything is fine otherwise returns False.
   virtual Bool ok() const;
 };
+
+} //# NAMESPACE CASA - END
+
 #endif

@@ -30,6 +30,8 @@
 #include <casa/BasicSL/String.h>
 #include <casa/Quanta/UnitDim.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 void UnitDim::init() {
     for (Int i=0; i<UNITDIM_DLNUMBER; i++) {
 	unitLong[i] = 0;
@@ -158,3 +160,6 @@ ostream& operator<< (ostream &os, const UnitDim &du) {
     };
     return os;
 }
+
+} //# NAMESPACE CASA - END
+

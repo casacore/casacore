@@ -33,6 +33,8 @@
 #include <casa/aips.h>
 #include <casa/System/AipsrcValue.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Forward declarations
 class String;
 template<class T> class Vector;
@@ -178,5 +180,8 @@ inline uInt AppInfo::nProcessors() {if (need_init_p) init();
                           return (uInt) AipsrcValue<Int>::get(nproc_r);};
 inline Double AppInfo::timeZone() {if (need_init_p) init();
 	                  return AipsrcValue<Double>::get(tz_r);};
+
+
+} //# NAMESPACE CASA - END
 
 #endif

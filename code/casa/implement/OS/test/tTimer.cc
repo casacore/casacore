@@ -31,6 +31,7 @@
 #include <casa/BasicSL/String.h>
 #include <casa/iostream.h>
 
+#include <casa/namespace.h>
 int main(void)
 {
   float x[4096];  // data array

@@ -50,6 +50,7 @@
 
 #include <casa/iostream.h>
 
+#include <casa/namespace.h>
 SkyComponent makeSkyComponent (const Vector<Double>& pixel, 
                                const Flux<Double>& flux,
                                const Quantum<Double>& maj,

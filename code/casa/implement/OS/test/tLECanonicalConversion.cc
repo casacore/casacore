@@ -32,6 +32,7 @@
 #include <casa/iomanip.h>
 
 
+#include <casa/namespace.h>
 // Check if all conversion definitions are set correctly.
 // It write error messages to cout and exits (with status 1)
 // when errors are found.

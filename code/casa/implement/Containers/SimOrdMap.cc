@@ -28,6 +28,8 @@
 #include <casa/Containers/SimOrdMap.h>
 #include <casa/Exceptions/Error.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 template<class K, class V>
 SimpleOrderedMap<K,V>::SimpleOrderedMap (const V& dflt, uInt incr)
 : kvblk(incr),
@@ -254,3 +256,6 @@ Bool SimpleOrderedMap<K,V>::ok() const
     }
     return True;
 }
+
+} //# NAMESPACE CASA - END
+

@@ -30,6 +30,8 @@
 
 #include <casa/Containers/HashMap.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 // <summary>
 //     Step through a const HashMap
 // </summary>
@@ -268,14 +270,14 @@ public:
     //
     // <group>
     val &define(const key &k, const val &v) {
-      if (!this->isValid())
+      if (!isValid())
         throw_invalid_hashmapiter_error();
-      return(this->Container->define(k,v));
+      return(Container->define(k,v));
     }
     void remove(const key &k) {
-      if (!this->isValid())
+      if (!isValid())
         throw_invalid_hashmapiter_error();
-      this->Container->remove(k);
+      Container->remove(k);
     }
     // </group>
 
@@ -290,9 +292,9 @@ public:
     }
 
     val &defaultVal() {
-      if (!this->isValid())
+      if (!isValid())
         throw_invalid_hashmapiter_error();
-      return this->Container->defaultVal();
+      return Container->defaultVal();
     }
     // </group>
 
@@ -300,9 +302,9 @@ public:
     // Clear all of the mappings.
     //
     void clear() {
-      if (!this->isValid())
+      if (!isValid())
         throw_invalid_hashmapiter_error();
-      this->Container->clear();
+      Container->clear();
     }
 
     //
@@ -317,9 +319,9 @@ public:
     }
 
     val &operator()(const key &ky) {
-      if (!this->isValid())
+      if (!isValid())
         throw_invalid_hashmapiter_error();
-      return(this->Container->operator()(ky));
+      return(Container->operator()(ky));
     }
     // </group>
 
@@ -366,14 +368,14 @@ public:
     //
     // <group>
     HashMap<key,val> &container() {
-      if (!this->isValid())
+      if (!isValid())
         throw_invalid_hashmapiter_error();
-      return(*this->Container);
+      return(*Container);
     }
     const HashMap<key,val> &container() const {
-      if (!this->isValid())
+      if (!isValid())
         throw_invalid_hashmapiter_error();
-      return(*this->Container);
+      return(*Container);
     }
     // </group>
 
@@ -397,5 +399,8 @@ protected:
     // </group>
 
 };
+
+
+} //# NAMESPACE CASA - END
 
 #endif

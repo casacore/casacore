@@ -32,6 +32,8 @@
 #include <casa/Arrays/Vector.h>
 #include <casa/Quanta/Quantum.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Forward Declarations
 class Table;
 template <class T> class ROArrayColumn;
@@ -415,5 +417,8 @@ protected:
 };
 
 
+
+
+} //# NAMESPACE CASA - END
 
 #endif

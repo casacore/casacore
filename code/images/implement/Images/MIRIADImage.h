@@ -40,6 +40,8 @@
 #include <casa/Utilities/DataType.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Forward Declarations
 template <class T> class Array;
 template <class T> class Lattice;
@@ -289,5 +291,8 @@ private:
 // </group>
 };
 
+
+
+} //# NAMESPACE CASA - END
 
 #endif

@@ -35,6 +35,8 @@
 #include <casa/Exceptions/Error.h>
 #include <scimath/Functionals/AbstractFunctionFactory.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Forward Declarations
 
 class Record;
@@ -145,6 +147,9 @@ protected:
 private:
     ListMap<String, OrderedPair<FunctionFactory<T>*, Bool> > lookup;
 };
+
+
+} //# NAMESPACE CASA - END
 
 #endif
 

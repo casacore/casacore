@@ -30,6 +30,8 @@
 #include <tables/Tables/ColumnCache.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 ColumnCache::ColumnCache()
 : itsIncr (1)
 {
@@ -43,3 +45,6 @@ void ColumnCache::set (uInt startRow, uInt endRow, const void* dataPtr)
     itsEnd   = endRow;
     itsData  = dataPtr;
 }
+
+} //# NAMESPACE CASA - END
+

@@ -30,6 +30,8 @@
 #include <casa/Utilities/Copy.h>
 #include <casa/Utilities/Assert.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 template<class outType, class inType>
 RecordFieldCopier<outType,inType>::RecordFieldCopier(RecordInterface &outRecord, 
 						     RecordFieldId whichOutField,
@@ -68,3 +70,6 @@ void UnequalShapeCopier<T>::writeField()
     (*out_p).putStorage(out, deleteOut);
     (*in_p).freeStorage(in, deleteIn);
 }
+
+} //# NAMESPACE CASA - END
+

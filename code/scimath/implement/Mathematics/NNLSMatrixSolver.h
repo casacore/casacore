@@ -32,6 +32,8 @@
 #include <casa/aips.h>
 #include <scimath/Mathematics/MatrixSolver.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //<summary>
 // NNLSMatrixSolver.h: the base class for NNLS solvers of linear equations AX=B
 //</summary>
@@ -92,5 +94,8 @@ protected:
 private:
 
 };
+
+
+} //# NAMESPACE CASA - END
 
 #endif

@@ -29,6 +29,8 @@
 #include <components/ComponentModels/FluxStandard.h>
 #include <casa/BasicMath/Math.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //----------------------------------------------------------------------------
 
 FluxStandard::FluxStandard (FluxStandard::FluxScale scale) : 
@@ -343,4 +345,7 @@ String FluxStandard::standardName (const FluxStandard::FluxScale& stdEnum)
 //----------------------------------------------------------------------------
 
 
+
+
+} //# NAMESPACE CASA - END
 

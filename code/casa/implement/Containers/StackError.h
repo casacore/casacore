@@ -32,6 +32,8 @@
 #include <casa/aips.h>
 #include <casa/Exceptions/Error.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 // <summary> Error class for the Stack class </summary>
 // <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="" demos="">
 // </reviewed>
@@ -40,5 +42,8 @@ public:
   EmptyStackError(const char *msg = 0,Category c=BOUNDARY);      // normal constructor
   ~EmptyStackError () throw();
 };
+
+
+} //# NAMESPACE CASA - END
 
 #endif

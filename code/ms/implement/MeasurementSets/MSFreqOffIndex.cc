@@ -30,6 +30,8 @@
 #include <casa/Arrays/ArrayUtil.h>
 #include <ms/MeasurementSets/MSFreqOffset.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 MSFreqOffIndex::MSFreqOffIndex() 
     : MSTableIndex()
 {;}
@@ -67,4 +69,7 @@ void MSFreqOffIndex::attachIds()
     feedId_p.attachToRecord(accessKey(), "FEED_ID");
     spwId_p.attachToRecord(accessKey(), "SPECTRAL_WINDOW_ID");
 }
+
+
+} //# NAMESPACE CASA - END
 

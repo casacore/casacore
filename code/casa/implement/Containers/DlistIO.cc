@@ -29,6 +29,8 @@
 #include <casa/Containers/ListIO.h>
 #include <casa/IO/AipsIO.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //
 //  Outputs a doubly linked list to the specified AipsIO stream.
 //
@@ -73,3 +75,6 @@ template<class t> ostream &operator<<(ostream &ios, const Dlist<t> &list) {
 template<class t> ostream &operator<<(ostream &ios, const DlistIter<t> &list) {
   return operator<<(ios,(const ListIter<t> &) list);
 }
+
+} //# NAMESPACE CASA - END
+

@@ -29,6 +29,8 @@
 #include <scimath/Functionals/SPolynomialParam.h>
 #include <casa/Arrays/Vector.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 template<class T>
 SPolynomialParam<T>::SPolynomialParam() :
   Function<T>(4) {
@@ -70,3 +72,6 @@ template<class T>
 void SPolynomialParam<T>::setCoefficients(const Vector<T> &coefficients) {
   for (uInt i=3; i<nparameters(); ++i) param_p[i] = coefficients[i-3];
 }
+
+} //# NAMESPACE CASA - END
+

@@ -51,6 +51,7 @@
 #include <casa/Utilities/PtrHolder.h>
 #include <casa/iostream.h>
 
+#include <casa/namespace.h>
 void doOpens()
 {
    Directory dir("tImageUtilities_tmp");

@@ -27,6 +27,8 @@
 
 #include <casa/Containers/Link.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 template<class t> Link<t> *Link<t>::unlink(Link<t> *) {
   Link<t> *nxt = Next;
   if (Prev) (*Prev).Next = Next;
@@ -39,4 +41,7 @@ template<class t> Link<t> *Link<t>::unlink(Link<t> *) {
 // Destructor needs to be out-of-line because of recursive call to delete
 template<class t> Link<t>::~Link() {
   if (Next != 0) delete Next;}
+
+
+} //# NAMESPACE CASA - END
 

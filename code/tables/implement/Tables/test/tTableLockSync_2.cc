@@ -49,6 +49,7 @@
 #include <casa/sstream.h>
 #include <unistd.h>
 
+#include <casa/namespace.h>
 // <summary>
 // Test program for the Table classes
 // </summary>

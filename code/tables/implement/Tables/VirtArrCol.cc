@@ -35,6 +35,8 @@
 #include <casa/Utilities/ValTypeId.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 template<class T>
 VirtualArrayColumn<T>::~VirtualArrayColumn()
 {}
@@ -271,3 +273,6 @@ IPosition VirtualArrayColumn<T>::shape (uInt)
     throw (DataManInvOper ("VirtualArrayColumn::shape not possible"));
     return IPosition(0);
 }
+
+} //# NAMESPACE CASA - END
+

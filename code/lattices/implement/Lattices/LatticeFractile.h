@@ -32,6 +32,8 @@
 //# Includes
 #include <casa/aips.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Forward Declarations
 template<class T> class Lattice;
 template<class T> class MaskedLattice;
@@ -168,5 +170,8 @@ private:
 		       T step, const Block<uInt>& hist);
 };
 
+
+
+} //# NAMESPACE CASA - END
 
 #endif

@@ -34,6 +34,8 @@
 #include <measures/Measures/MCPosition.h>
 #include <measures/Measures/MeasTable.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Statics
 Bool MCPosition::stateMade_p = False;
 uInt MCPosition::ToRef_p[N_Routes][3] = {
@@ -191,3 +193,6 @@ String MCPosition::showState() {
 			   MPosition::N_Types, MCPosition::N_Routes,
 			   MCPosition::ToRef_p);
 }
+
+} //# NAMESPACE CASA - END
+

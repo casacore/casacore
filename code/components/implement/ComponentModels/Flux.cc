@@ -43,6 +43,8 @@
 #include <casa/BasicSL/String.h>
 #include <casa/iostream.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 template<class T> FluxRep<T>::
 FluxRep()
   :itsVal(4, typename NumericTraits<T>::ConjugateType(0,0)),
@@ -1145,3 +1147,6 @@ circularToLinear(Vector<typename NumericTraits<T>::ConjugateType>& out,
 // Local Variables: 
 // compile-command: "gmake Flux"
 // End: 
+
+} //# NAMESPACE CASA - END
+

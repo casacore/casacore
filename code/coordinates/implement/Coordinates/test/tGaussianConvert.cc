@@ -42,6 +42,7 @@
 
 #include <casa/iostream.h>
 
+#include <casa/namespace.h>
 void doit (Double majorPixels, Double minorPixels, const Quantum<Double>& pa1,
            const CoordinateSystem& cSys,
            const Vector<uInt>& worldAxes,

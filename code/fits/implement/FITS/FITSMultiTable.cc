@@ -42,6 +42,8 @@
 #include <casa/Arrays/Slice.h>
 #include <casa/Utilities/GenSort.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 // Used for debug print statements
 // #include <casa/Arrays/ArrayIO.h
 
@@ -272,3 +274,6 @@ Time FITSMultiTable::timeFromFile(const String &fileName)
 	10*(fbase[17] - zero);
     return Time(year, month, day, hour, minutes, seconds*1.0);
 }
+
+} //# NAMESPACE CASA - END
+

@@ -42,6 +42,8 @@
 
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 TiledCellStMan::TiledCellStMan ()
 : TiledStMan ()
 {}
@@ -221,3 +223,6 @@ TSMCube* TiledCellStMan::getHypercube (uInt rownr, IPosition& position)
     position = hypercube->cubeShape();
     return hypercube;
 }
+
+} //# NAMESPACE CASA - END
+

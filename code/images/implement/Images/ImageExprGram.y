@@ -27,6 +27,10 @@
     $Id$
 */
 
+%{
+using namespace casa;
+%}
+
 %pure_parser                /* make parser re-entrant */
 
 %union {

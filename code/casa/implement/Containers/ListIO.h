@@ -31,6 +31,8 @@
 #include <casa/Containers/List.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 // <summary>
 // Input/output operators for Lists.
 // </summary>
@@ -56,5 +58,8 @@
 template<class t> ostream &operator<<(ostream &, const List<t> &);
 template<class t> ostream &operator<<(ostream &, const ConstListIter<t> &);
 // </group>
+
+
+} //# NAMESPACE CASA - END
 
 #endif

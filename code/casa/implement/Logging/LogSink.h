@@ -36,6 +36,8 @@
 #include <casa/Utilities/PtrHolder.h>
 #include <casa/iosfwd.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 // <summary>
 // Distribute LogMessages to their destination(s)
 // </summary>
@@ -264,5 +266,8 @@ private:
   CountedPtr<LogSinkInterface> local_ref_to_global_p;
 };
 
+
+
+} //# NAMESPACE CASA - END
 
 #endif

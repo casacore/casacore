@@ -36,6 +36,8 @@
 #include <casa/string.h>               // needed for strerror
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 LargeFilebufIO::LargeFilebufIO()
 : itsSeekable   (False),
   itsReadable   (False),
@@ -404,3 +406,6 @@ Bool LargeFilebufIO::isSeekable() const
 {
   return itsSeekable;
 }
+
+} //# NAMESPACE CASA - END
+

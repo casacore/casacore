@@ -37,6 +37,8 @@
 #include <tables/Tables/TableError.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 template<class T>
 ROArrayColumn<T>::ROArrayColumn()
 : ROTableColumn (),
@@ -786,3 +788,6 @@ void ArrayColumn<T>::putColumn (const ROArrayColumn<T>& that)
 	put (i, that, i);
     }
 }
+
+} //# NAMESPACE CASA - END
+

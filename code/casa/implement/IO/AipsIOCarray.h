@@ -32,6 +32,8 @@
 #include <casa/IO/AipsIO.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 // <summary> 
 // Templated functions to get/put a C-style array from/into AipsIO.
 // </summary>
@@ -149,5 +151,8 @@ AIPSIO_FUNC_SPEC(Complex)
 AIPSIO_FUNC_SPEC(DComplex)
 AIPSIO_FUNC_SPEC(String)
 
+
+
+} //# NAMESPACE CASA - END
 
 #endif

@@ -31,6 +31,8 @@
 #include <casa/System/PGPlotterInterface.h>
 
 #include <casa/stdio.h>    
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 // -----------------------------------------------------------------------
 // RFANewMedianClip
 // Accumulator class for computing the median per channels over time.
@@ -342,4 +344,7 @@ String RFANewMedianClip::getDesc ()
   desc += s;
   return RFAFlagCubeBase::getDesc()+s;
 }
+
+
+} //# NAMESPACE CASA - END
 

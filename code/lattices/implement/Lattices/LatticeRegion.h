@@ -34,6 +34,8 @@
 #include <lattices/Lattices/Lattice.h>
 #include <casa/Arrays/Slicer.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Forward Declarations
 class LCRegion;
 
@@ -243,5 +245,8 @@ inline const Slicer& LatticeRegion::slicer() const
     return itsSlicer;
 }
 
+
+
+} //# NAMESPACE CASA - END
 
 #endif

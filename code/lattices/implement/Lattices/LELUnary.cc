@@ -35,6 +35,8 @@
 
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 template <class T>
 LELUnaryConst<T>::LELUnaryConst()
 {
@@ -189,3 +191,6 @@ void LELUnary<T>::resync()
 {
     pExpr_p->resync();
 }
+
+} //# NAMESPACE CASA - END
+

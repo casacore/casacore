@@ -35,6 +35,7 @@
 #include <casa/stdlib.h>
 #include <casa/iomanip.h>
 
+#include <casa/namespace.h>
 void sortall (Int*, uInt, int, Sort::Order, Bool);
 
 main(int argc, char** argv)

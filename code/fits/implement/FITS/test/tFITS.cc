@@ -44,6 +44,7 @@
 #include <casa/Containers/OrderedMap.h>
 #include <casa/iostream.h>
 
+#include <casa/namespace.h>
 int main()
 {
     const char *file = "test.fits";

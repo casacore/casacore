@@ -39,6 +39,8 @@
 #include <casa/Utilities/Assert.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 TableExprNodeSetElem::TableExprNodeSetElem (const TableExprNode& value)
 : TableExprNodeRep (NTDouble, VTSetElem, OtUndef, 0),
   itsStart (0),
@@ -1271,3 +1273,6 @@ Array<Bool> TableExprNodeSet::hasArrayDate (const TableExprId& id,
     result.putStorage (out, deleteOut);
     return result;
 }
+
+} //# NAMESPACE CASA - END
+

@@ -30,6 +30,8 @@
 #include <casa/OS/CanonicalConversion.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 CanonicalDataConversion::~CanonicalDataConversion()
 {}
 
@@ -341,3 +343,6 @@ unsigned int CanonicalDataConversion::externalSize (const double*) const
 {
     return SIZE_CAN_DOUBLE;
 }
+
+} //# NAMESPACE CASA - END
+

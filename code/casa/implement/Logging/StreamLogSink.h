@@ -34,6 +34,8 @@
 
 #include <casa/iosfwd.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 // <summary>
 // Send log messages to an ostream.
 // </summary>
@@ -113,5 +115,8 @@ public:
 private:
     ostream *stream_p;
 };
+
+
+} //# NAMESPACE CASA - END
 
 #endif

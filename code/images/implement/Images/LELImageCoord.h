@@ -36,6 +36,8 @@
 #include <casa/Quanta/Unit.h>
 #include <casa/Utilities/CountedPtr.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Forward Declarations
 class LatticeExprNode;
 class LattRegionHolder;
@@ -163,5 +165,8 @@ inline const TableRecord& LELImageCoord::miscInfo() const
   return miscInfo_p;
 }
 
+
+
+} //# NAMESPACE CASA - END
 
 #endif

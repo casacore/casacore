@@ -32,6 +32,8 @@
 #include <casa/aips.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 // <summary>Abstract base class for IO on a byte stream.</summary>
 
 // <use visibility=export>
@@ -161,5 +163,8 @@ inline Int64 ByteIO::seek (Int offset, ByteIO::SeekOption option)
 {
     return doSeek (Int64(offset), option);
 }
+
+
+} //# NAMESPACE CASA - END
 
 #endif

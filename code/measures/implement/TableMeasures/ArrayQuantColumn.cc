@@ -39,6 +39,8 @@
 #include <casa/BasicSL/String.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 template<class T>
 ROArrayQuantColumn<T>::ROArrayQuantColumn()
 : itsDataCol    (0),
@@ -509,3 +511,6 @@ void ArrayQuantColumn<T>::put (uInt rownr, const Array<Quantum<T> >& q)
   
   q.freeStorage(q_p, deleteQuant);
 }
+
+} //# NAMESPACE CASA - END
+

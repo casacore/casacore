@@ -53,6 +53,7 @@
 #include <casa/Arrays/LogiArray.h>
 #include <casa/Arrays/LogiVector.h>
 
+#include <casa/namespace.h>
 int main ()
 {
   try {

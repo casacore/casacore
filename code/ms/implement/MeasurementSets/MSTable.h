@@ -37,6 +37,8 @@
 #include <casa/BasicSL/String.h>
 #include <tables/Tables/ColumnDesc.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Forward Declarations, more could be if they weren't part of the
 //# static classes 
 class TableRecord;
@@ -286,5 +288,8 @@ protected:
     Table referenceCopy(const String& newTableName, 
 			const Block<String>& writableColumns) const;
 };
+
+
+} //# NAMESPACE CASA - END
 
 #endif

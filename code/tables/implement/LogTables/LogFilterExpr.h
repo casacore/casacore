@@ -32,6 +32,8 @@
 //# Includes
 #include <tables/Tables/TableExprData.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Forward Declarations
 class TableExprNode;
 class LogMessage;
@@ -79,5 +81,8 @@ private:
   const LogMessage* itsMessage;
 };
 
+
+
+} //# NAMESPACE CASA - END
 
 #endif

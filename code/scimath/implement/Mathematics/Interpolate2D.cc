@@ -33,6 +33,8 @@
 #include <casa/Utilities/Assert.h>
 #include <casa/BasicSL/String.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 Interpolate2D::Interpolate2D(Interpolate2D::Method method) {
 
 // Set up function pointers to correct method
@@ -284,3 +286,6 @@ Bool Interpolate2D::anyBadMaskPixels (const Matrix<Bool>* &maskPtr,
   };
   return False;
 }  
+
+} //# NAMESPACE CASA - END
+

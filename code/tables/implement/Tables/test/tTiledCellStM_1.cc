@@ -47,6 +47,7 @@
 #ifdef PABLO_IO
 #include "IOTrace.h"
 #include "PabloTrace.h"
+#include <casa/namespace.h>
 extern "C" Int setTraceFileName(char *);
 extern "C" Int endTracing(void);
 #endif // PABLO_IO
@@ -112,6 +113,7 @@ int main (int argc, char** argv)
 
 #ifdef PABLO_IO
 #include <casa/Utilities/Regex.h>
+#include <casa/namespace.h>
 void openPablo (char** argv)
 {
   // We set the name of the trace file here.  Typically, you want the

@@ -31,6 +31,8 @@
 
 #include <casa/aips.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 // <summary>
 // A templated function which sets a variable to a default value.
 // </summary>
@@ -102,6 +104,9 @@ template <class T> inline void defaultValue(T &theValue)
 };
 
 // </group>
+
+
+} //# NAMESPACE CASA - END
 
 #endif
 

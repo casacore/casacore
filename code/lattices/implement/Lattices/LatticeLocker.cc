@@ -30,6 +30,8 @@
 #include <casa/Exceptions/Error.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 LatticeLocker::LatticeLocker (LatticeBase& lattice,
 			      FileLocker::LockType type,
 			      uInt nattempts)
@@ -62,3 +64,6 @@ LatticeLocker::~LatticeLocker()
 	}
     }
 }
+
+} //# NAMESPACE CASA - END
+

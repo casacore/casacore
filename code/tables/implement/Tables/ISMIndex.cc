@@ -34,6 +34,8 @@
 #include <casa/Exceptions/Error.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 ISMIndex::ISMIndex (ISMBase* parent)
 : stmanPtr_p (parent),
   nused_p    (1),
@@ -154,3 +156,6 @@ Bool ISMIndex::nextBucketNr (uInt& cursor, uInt& bucketStartRow,
     bucketNr       = bucketNr_p[cursor++];
     return True;
 }
+
+} //# NAMESPACE CASA - END
+

@@ -36,6 +36,8 @@
 #include <casa/Containers/Block.h>
 #include <fits/FITS/hdu.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 class String;
 class FitsInput;
 class FitsOutput;
@@ -479,4 +481,7 @@ private:
     // Checks error status of writer_p and group_p. Cleans up and throws an exception if bad.
     void check_error(const char *extra_info = 0);
 };
+
+} //# NAMESPACE CASA - END
+
 #endif

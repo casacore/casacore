@@ -35,6 +35,8 @@
 #include <casa/Exceptions/Error.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 RegionHandlerTable::RegionHandlerTable (GetCallback* callback,
 					void* objectPtr)
 : itsCallback  (callback),
@@ -345,3 +347,6 @@ ImageRegion RegionHandlerTable::makeMask (const LatticeBase& lattice,
 				       lattice.name() + '/' + name);
   return ImageRegion(mask);
 }
+
+} //# NAMESPACE CASA - END
+

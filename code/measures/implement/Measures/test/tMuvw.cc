@@ -45,6 +45,7 @@
 #include <casa/Arrays/ArrayLogical.h>
 #include <casa/iostream.h>
 
+#include <casa/namespace.h>
 int main()
 {
     try {

@@ -52,6 +52,8 @@
 #include <casa/Containers/StackError.h>
 #include <casa/Containers/IterError.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 // <module>
 //
 // <summary>
@@ -79,5 +81,8 @@
 // </synopsis>
 //
 // </module>
+
+
+} //# NAMESPACE CASA - END
 
 #endif

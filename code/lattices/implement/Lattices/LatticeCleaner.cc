@@ -67,6 +67,8 @@
 
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 template<class T> 
 Bool LatticeCleaner<T>::validatePsf(const Lattice<T> & psf)
 {
@@ -1098,4 +1100,7 @@ void LatticeCleaner<T>::addTo(Lattice<T>& to, const Lattice<T>& add)
     toIter.rwCursor()+=addIter.cursor();
   }
 }
+
+
+} //# NAMESPACE CASA - END
 

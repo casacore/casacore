@@ -30,6 +30,8 @@
 #ifndef CASA_AIPSENV_H
 #define CASA_AIPSENV_H
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 // AIPS++ project compiler
 #if defined(AIPS_GCC)
 #undef AIPS_GCC
@@ -151,6 +153,7 @@
 #endif
 #endif
 
+
 //  If needed, define the LFS variables (needed in code using cfitsio).
 #ifndef AIPS_NOLARGEFILE
 # undef _FILE_OFFSET_BITS
@@ -163,4 +166,5 @@
 # endif
 #endif
 
+} //# NAMESPACE CASA - END
 #endif

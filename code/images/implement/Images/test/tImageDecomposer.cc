@@ -42,6 +42,7 @@
 #include <images/Images/ImageDecomposer.h>
 #include <casa/OS/Timer.h>
 
+#include <casa/namespace.h>
 typedef Double imagetype;
 
 TempImage<imagetype>& createtestimage(const Matrix<imagetype>& components,

@@ -38,6 +38,8 @@
 
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 template <class T>
 LELLattice<T>::LELLattice(const Lattice<T>& lattice) 
 : pLattice_p (new SubLattice<T> (lattice))
@@ -157,4 +159,7 @@ void LELLattice<T>::resync()
 {
     pLattice_p->resync();
 }
+
+
+} //# NAMESPACE CASA - END
 

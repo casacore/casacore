@@ -30,6 +30,8 @@
 #define COMPONENTS_COMPONENTTYPE_H
 
 #include <casa/aips.h>
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 class String;
 class SkyCompRep;
 class ComponentShape;
@@ -151,4 +153,7 @@ private:
   // this function is responsible for deleting the pointer. 
   static SpectralModel* construct(ComponentType::SpectralShape spectralEnum);
 };
+
+} //# NAMESPACE CASA - END
+
 #endif

@@ -35,6 +35,8 @@
 #include <casa/BasicSL/String.h>
 #include <casa/Arrays/Array.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Forward Declarations.
 class SSMBase;
 
@@ -256,5 +258,8 @@ inline Int SSMStringHandler::lastStringBucket() const
   return itsLastBucket; 
 }  
 
+
+
+} //# NAMESPACE CASA - END
 
 #endif

@@ -34,6 +34,8 @@
 #include <casa/BasicSL/String.h>
 #include <casa/Containers/SimOrdMap.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 // <summary>
 // Class for keeping regions in memory.
 // </summary>
@@ -185,5 +187,8 @@ private:
 };
 
 
+
+
+} //# NAMESPACE CASA - END
 
 #endif

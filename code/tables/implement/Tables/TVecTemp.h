@@ -32,6 +32,8 @@
 #include <casa/aips.h>
 #include <tables/Tables/TVec.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Forward Declarations
 template<class T> class Vector;
 
@@ -135,5 +137,8 @@ template<class T>
 inline T& TabVecTemp<T>::operator() (uInt index)
     { return (*vecPtr_p)(index); }
 
+
+
+} //# NAMESPACE CASA - END
 
 #endif

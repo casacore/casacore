@@ -32,6 +32,8 @@
 #include <casa/aips.h>
 #include <scimath/Functionals/Function1D.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Forward Declarations
 template<class T> class Vector;
 class RecordInterface;
@@ -523,6 +525,9 @@ public:
 };
 
 
+
+
+} //# NAMESPACE CASA - END
 
 #endif
 

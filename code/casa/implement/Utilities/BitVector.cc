@@ -29,6 +29,8 @@
 #include <casa/iostream.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 BitVector::BitVector()
 : size_p (0),
   bits_p   (0)
@@ -272,3 +274,6 @@ ostream& operator<< (ostream& os, const BitVector& vector)
     os << "]" << endl;
     return os;
 }
+
+} //# NAMESPACE CASA - END
+

@@ -42,6 +42,7 @@
 #include <casa/iostream.h>
 
 
+#include <casa/namespace.h>
 void doIt (TypeIO* io)
 {
     // Save current file position.

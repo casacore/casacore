@@ -35,6 +35,8 @@
 #include <casa/BasicSL/Constants.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Forward Declarations
 
 // <summary>
@@ -221,7 +223,7 @@ private:
     // Predict a zero-lag value given the indicated first threshold level
     // for n=3.
     static Double predictN3(Double threshhold)
-    { return erfc(threshhold/sqrt(2.0));}
+    { return ::erfc(threshhold/sqrt(2.0));}
 
     // implementation of dcoff for the 3-level case
     static Bool dcoff3(Double &dcoffset, Double &threshold,
@@ -232,5 +234,8 @@ inline
 Double VanVleck::r(const Double rho)
 { return (*itsInterp)(rho);}
 
+
+
+} //# NAMESPACE CASA - END
 
 #endif

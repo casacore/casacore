@@ -32,6 +32,8 @@
 //# Includes
 #include <casa/BasicSL/String.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Forward Declarations
 
 
@@ -89,5 +91,8 @@ String imageExprGramRemoveQuotes (const String& in);
 
 // </group>
 
+
+
+} //# NAMESPACE CASA - END
 
 #endif

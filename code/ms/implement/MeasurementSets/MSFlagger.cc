@@ -55,6 +55,8 @@
 #include <casa/iostream.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 MSFlagger::MSFlagger():msSel_p(0)
 {}
 
@@ -1018,4 +1020,7 @@ Bool MSFlagger::check()
 }
 
 
+
+
+} //# NAMESPACE CASA - END
 

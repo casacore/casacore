@@ -32,6 +32,8 @@
 #include <casa/string.h>                       // needed for memcpy
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 // <summary>
 // A class with general conversion definitions
 // </summary>
@@ -154,5 +156,8 @@ inline Conversion::ByteFunction* Conversion::getmemcpy()
 #endif
 }
 
+
+
+} //# NAMESPACE CASA - END
 
 #endif

@@ -67,6 +67,8 @@
 #include <casa/iomanip.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 Bool ImageFITSConverter::FITSToImage(ImageInterface<Float> *&newImage,
 				     String &error,
 				     const String &imageName,
@@ -391,8 +393,8 @@ Bool ImageFITSConverter::ImageToFITS(String &error,
 
 // Make sure bscale does not come out to be zero
 
-        if (::near(minPix, maxPix)) {
-           if (::near(Float(0.0), maxPix)) {
+        if (::casa::near(minPix, maxPix)) {
+           if (::casa::near(Float(0.0), maxPix)) {
               maxPix = 1.0;
            } else {
               maxPix = maxPix + 0.01*maxPix;
@@ -1145,3 +1147,6 @@ void ImageFITSConverter::restoreHistory (LoggerHolder& logger,
     }
 }
  
+
+} //# NAMESPACE CASA - END
+

@@ -29,6 +29,7 @@
 #include <casa/Arrays/Vector.h>
 #include <casa/iostream.h>
 
+#include <casa/namespace.h>
 int main(){
   cout << "The example from the Header File" << endl;
   uInt ndim = 2;

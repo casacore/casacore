@@ -39,6 +39,8 @@
 #include <casa/OS/LECanonicalConversion.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 SSMColumn::SSMColumn (SSMBase* aParent, int aDataType, uInt aColNr)
 : StManColumn    (aDataType),
   itsSSMPtr      (aParent),
@@ -749,3 +751,6 @@ void SSMColumn::resync (uInt)
     // Invalidate the last value read.
     columnCache().invalidate();
 }
+
+} //# NAMESPACE CASA - END
+

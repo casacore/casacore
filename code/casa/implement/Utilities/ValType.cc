@@ -31,6 +31,8 @@
 #include <casa/BasicSL/Constants.h>
 #include <limits.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# This is the implementation of the ValType class.
 //# Most functions are inlined in the header file.
 
@@ -437,3 +439,6 @@ ObjCompareFunc* ValType::getCmpFunc (DataType dt)
     }
     return 0;
 }
+
+} //# NAMESPACE CASA - END
+

@@ -35,6 +35,8 @@
 #include <casa/OS/File.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 // <summary>  
 // Get information about, and manipulate symbolic links
 // </summary>
@@ -196,5 +198,8 @@ inline void SymLink::move (const String& target, Bool overwrite)
     move (Path(target), overwrite);
 }
 
+
+
+} //# NAMESPACE CASA - END
 
 #endif

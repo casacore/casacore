@@ -31,6 +31,8 @@
 #include <tables/Tables/TableDesc.h>
 #include <casa/BasicSL/String.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 ROMSWeatherColumns::ROMSWeatherColumns(const MSWeather& msWeather):
   isNull_p(True),
   antennaId_p(),
@@ -380,3 +382,6 @@ void MSWeatherColumns::attach(MSWeather& msWeather)
 // Local Variables: 
 // compile-command: "gmake MSWeatherColumns"
 // End: 
+
+} //# NAMESPACE CASA - END
+

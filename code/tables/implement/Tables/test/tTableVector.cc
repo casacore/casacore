@@ -40,6 +40,7 @@
 #include <casa/sstream.h>
 
 
+#include <casa/namespace.h>
 // This program tests the table vectors..
 // It creates a description and a table.
 // It creates various vectors, operates on them and checks the results.

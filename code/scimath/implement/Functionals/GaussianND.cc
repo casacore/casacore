@@ -32,6 +32,8 @@
 #include <casa/Exceptions/Error.h>
 #include <casa/BasicMath/Math.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 template<class T> 
 T GaussianND<T>::eval(typename Function<T>::FunctionArg x) const {
   Vector<T> norm(itsDim);
@@ -50,3 +52,6 @@ T GaussianND<T>::eval(typename Function<T>::FunctionArg x) const {
   };
   return param_p[HEIGHT] * exp(-exponent/T(2));
 }
+
+} //# NAMESPACE CASA - END
+

@@ -57,6 +57,8 @@
 #include <casa/iostream.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //
 // Constructor assigns pointer.  If MS goes out of scope you
 // will get rubbish.  Also sets string to separate subtable output.
@@ -1213,4 +1215,7 @@ void MSSummary::clearFlags(LogIO& os) const
   os.output().unsetf(ios::fixed);
 
 }
+
+
+} //# NAMESPACE CASA - END
 

@@ -46,6 +46,7 @@
 #include <casa/iostream.h>
 
 
+#include <casa/namespace.h>
 void doitFloat(LogIO& os);
 void do1DFloat (const Array<Float>& inArr,
                 LogIO& os);

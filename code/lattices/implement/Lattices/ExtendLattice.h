@@ -35,6 +35,8 @@
 #include <lattices/Lattices/MaskedLattice.h>
 #include <casa/Arrays/ExtendSpecifier.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Forward Declarations
 
 
@@ -206,5 +208,8 @@ private:
   ExtendSpecifier      itsExtendSpec;
 };
 
+
+
+} //# NAMESPACE CASA - END
 
 #endif

@@ -31,6 +31,7 @@
 #include <casa/Utilities/CountedPtr.h>
 #include <casa/iostream.h>
 
+#include <casa/namespace.h>
 // class myobj is defined in tCountedPtr.h
 
 const char *prt(CountedConstPtr<myobj> &obj) {

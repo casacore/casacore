@@ -31,6 +31,8 @@
 #include <casa/Quanta/Unit.h>
 #include <casa/Utilities/Regex.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 Unit::Unit() 
 : uName(), uVal() {}
 
@@ -113,3 +115,6 @@ void Unit::check() {
     uName.gsub(bp, sbp);
     uName.gsub(ep, ebp);
 }
+
+} //# NAMESPACE CASA - END
+

@@ -35,6 +35,8 @@
 #include <casa/iostream.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 // initial values for the static data members
 
 Interpolate1D<Double, Double> *VanVleck::itsInterp = NULL;
@@ -379,14 +381,14 @@ Double VanVleck::threshNgt3(Int n, Double zerolag)
     f = zerolag;
     if (odd) {
       for (Int k=1;k<=(n-1)/2;k++) {
-	f -= (2*k-1)*erfc((2*k-1)*x/sqrt2);
+	f -= (2*k-1)*::erfc((2*k-1)*x/sqrt2);
 	Double twoKm1 = 2*k-1;
 	fp += sqrt2dpi*twoKm1*twoKm1*exp(-0.5*(twoKm1*x)*(twoKm1*x));
       }
     } else {
       f -= 1.0;
       for (Int k=1;k<=(n-2)/2;k++) {
-	f -= 8*k*erfc(k*x/sqrt2);
+	f -= 8*k*::erfc(k*x/sqrt2);
 	fp += 8*k*k*sqrt2dpi*exp(-0.5*(k*x)*(k*x));
       }
     }
@@ -508,13 +510,13 @@ Double VanVleck::predictNgt3(Int n, Double threshhold)
   if (n%2 == 0) {
     // even n
     for (Int k=1;k<=(n-2)/2;k++) {
-      result += erfc(k*threshhold/sqrt(2.0));
+      result += ::erfc(k*threshhold/sqrt(2.0));
     }
     result = 1.0 + 8.0*result;
   } else {
     // odd n
     for (Int k=1;k<=(n-1)/2;k++) {
-      result += (2*k-1)*erfc((2*k-1)*threshhold/sqrt(2.0));
+      result += (2*k-1)*::erfc((2*k-1)*threshhold/sqrt(2.0));
     }
   }
   return result;
@@ -559,3 +561,6 @@ Bool VanVleck::dcoff3(Double &dcoffset, Double &threshold,
     }
     return result;
 }
+
+} //# NAMESPACE CASA - END
+

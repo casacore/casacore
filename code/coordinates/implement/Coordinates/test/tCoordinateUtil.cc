@@ -35,6 +35,7 @@
 
 #include <casa/iostream.h>
 
+#include <casa/namespace.h>
 void test0();
 void test1();
 void test2();

@@ -38,6 +38,8 @@
 #include <measures/Measures/MConvertBase.h>
 #include <measures/Measures/MeasMath.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Forward Declarations
 class MCEarthMagnetic;
 class MVPosition;
@@ -211,6 +213,9 @@ private:
 		 const MConvertBase &mc);
   
 };
+
+
+} //# NAMESPACE CASA - END
 
 #endif
 

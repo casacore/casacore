@@ -33,6 +33,8 @@
 #include <tables/Tables/TableAttr.h>
 #include <casa/BasicSL/String.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Forward Declarations
 class Table;
 
@@ -222,5 +224,8 @@ inline Bool TableKeyword::conform (const TableKeyword& that) const
     return conform (that.table());
 }
 
+
+
+} //# NAMESPACE CASA - END
 
 #endif

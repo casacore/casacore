@@ -31,6 +31,9 @@
 //# Includes
 #include <casa/aips.h>
 #include <tables/Tables/DataManAccessor.h>
+#include <casa/iosfwd.h>
+
+namespace casa { //# NAMESPACE CASA - BEGIN
 
 //# Forward Declarations
 class TiledStMan;
@@ -39,7 +42,6 @@ class Table;
 class IPosition;
 class String;
 class Record;
-#include <casa/iosfwd.h>
 
 // <summary>
 // Give access to some TiledStMan functions
@@ -288,5 +290,8 @@ private:
 };
 
 
+
+
+} //# NAMESPACE CASA - END
 
 #endif

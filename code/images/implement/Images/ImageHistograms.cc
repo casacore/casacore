@@ -36,6 +36,8 @@
 
 #include <casa/sstream.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 // Public functions
 
 template <class T>
@@ -154,4 +156,7 @@ String ImageHistograms<T>::writeCoordinates(const IPosition& histPos) const
    return String(oss);
 }
 
+
+
+} //# NAMESPACE CASA - END
 

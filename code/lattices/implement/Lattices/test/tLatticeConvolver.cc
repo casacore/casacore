@@ -42,6 +42,7 @@
 #include <lattices/Lattices/PagedArray.h>
 #include <casa/iostream.h>
 
+#include <casa/namespace.h>
 void print(const Lattice<Float> & psf, const Lattice<Float> & model,
 	   const Lattice<Float> & result) {
   cout << "Psf: " << psf.get() << endl;

@@ -36,6 +36,8 @@
 #include <casa/Utilities/Assert.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 RecordInterface::RecordInterface ()
 : checkFunction_p (0),
   checkArgument_p (0),
@@ -660,3 +662,6 @@ int RecordNotice::operator== (const Notice& that) const
     return (changeType_p  == ((const RecordNotice&)that).changeType_p)
 	&& (fieldNumber_p == ((const RecordNotice&)that).fieldNumber_p);
 }
+
+} //# NAMESPACE CASA - END
+

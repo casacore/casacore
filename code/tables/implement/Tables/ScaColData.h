@@ -32,6 +32,8 @@
 #include <casa/aips.h>
 #include <tables/Tables/PlainColumn.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Forward Declarations
 class ColumnSet;
 template<class T> class ScalarColumnDesc;
@@ -211,5 +213,8 @@ private:
 		      ObjCompareFunc* cmpFunc, Int order);
 };
 
+
+
+} //# NAMESPACE CASA - END
 
 #endif

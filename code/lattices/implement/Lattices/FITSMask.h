@@ -33,6 +33,8 @@
 #include <casa/Arrays/Array.h>
 #include <lattices/Lattices/Lattice.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Forward Declarations
 class TiledFileAccess;
 
@@ -154,5 +156,8 @@ private:
   Bool itsHasIntBlanks;
 };
 
+
+
+} //# NAMESPACE CASA - END
 
 #endif

@@ -35,6 +35,7 @@
 #include <casa/iostream.h>
 
 
+#include <casa/namespace.h>
 // <summary>
 // Test of functions in ArrayUtil.h.
 // </summary>

@@ -37,6 +37,8 @@
 #include <measures/Measures/MConvertBase.h>
 #include <measures/Measures/MFrequency.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Forward Declarations
 class MCFrequency;
 class MDoppler;
@@ -183,5 +185,8 @@ private:
 		 const MConvertBase &mc);
   
 };
+
+
+} //# NAMESPACE CASA - END
 
 #endif

@@ -40,6 +40,7 @@ int main()
 #include <casa/Exceptions/Error.h>
 
 
+#include <casa/namespace.h>
 VSCExampleVSCEngine::VSCExampleVSCEngine()
 {}
 
@@ -141,6 +142,7 @@ void VSCExampleVSCEngine::registerClass()
 #include <casa/Utilities/CountedPtr.cc>
 #include <casa/Utilities/ValTypeId.h>
 
+#include <casa/namespace.h>
 template class Array<VSCExample>;
 template class MaskedArray<VSCExample>;
 template class Vector<VSCExample>;

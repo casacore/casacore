@@ -61,6 +61,8 @@
 #include <casa/iostream.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 CoordinateSystem::CoordinateSystem()
 : coordinates_p(0), 
   world_maps_p(0), world_tmps_p(0), world_replacement_values_p(0),
@@ -2834,7 +2836,7 @@ Bool CoordinateSystem::toFITSHeader(RecordInterface &header,
     if (skyCoord >=0 && !isNCP && projp.nelements() > 0) {
 	if (!writeWCS) {
 	    for (uInt k=0; k<projp.nelements(); k++) {
-		if (!::nearAbs(projp(k), 0.0)) {
+		if (!::casa::nearAbs(projp(k), 0.0)) {
 		    os << LogIO::NORMAL << 
 			"PROJPn not all zero.Information lost in FITS"
 			" conversion. Try WCS?." <<
@@ -3003,7 +3005,7 @@ Bool CoordinateSystem::toFITSHeaderGenerateKeywords (LogIO& os,
       Double rholat = atan2(-pc(longAxis, latAxis)*C::pi/180.0,
 			pc(latAxis, latAxis)*C::pi/180.0)*180.0/C::pi;
       crota[latAxis] = (rholong + rholat)/2.0;
-      if (!::near(rholong, rholat)) {
+      if (!::casa::near(rholong, rholat)) {
          os << LogIO::WARN << sprefix + "rota is not very accurate." 
             <<  " PC matrix is not a pure rotation.";
          if (!writeWCS) {
@@ -3201,7 +3203,7 @@ Bool CoordinateSystem::fromFITSHeader(Int& stokesFITSValue,
 	    if (i == j) {
 		continue;
 	    } else {
-		if (!::near(pc(i,j), 0.0)) {
+		if (!::casa::near(pc(i,j), 0.0)) {
 		    if (rotationAxis < 0 || (i == longAxis && j == latAxis) ||
 			(i == latAxis  && j == longAxis)) {
 			continue;
@@ -3355,9 +3357,9 @@ Bool CoordinateSystem::fromFITSHeader(Int& stokesFITSValue,
 		 header.dataType("epoch") == TpFloat || 
 		 header.dataType("epoch") == TpInt)) {
 		Double epoch = header.asdouble("epoch");
-		if (::near(epoch, 1950.0)) {
+		if (::casa::near(epoch, 1950.0)) {
 		    radecsys = MDirection::B1950;
-		} else if (::near(epoch, 2000.0)) {
+		} else if (::casa::near(epoch, 2000.0)) {
 		    radecsys = MDirection::J2000;
 		}
 	    } else if (header.isDefined("equinox") && 
@@ -3365,9 +3367,9 @@ Bool CoordinateSystem::fromFITSHeader(Int& stokesFITSValue,
 			header.dataType("equinox") == TpDouble ||
 			header.dataType("equinox") == TpInt)) {
 		Double epoch = header.asdouble("equinox");
-		if (::near(epoch, 1950.0)) {
+		if (::casa::near(epoch, 1950.0)) {
 		    radecsys = MDirection::B1950;
-		} else if (::near(epoch, 2000.0)) {
+		} else if (::casa::near(epoch, 2000.0)) {
 		    radecsys = MDirection::J2000;
 		}
 	    } else {
@@ -3392,13 +3394,13 @@ Bool CoordinateSystem::fromFITSHeader(Int& stokesFITSValue,
 // doesn't matter since other pixels on that axis are never used.
 
         if (!hasCD) {
-          if (::near(cdelt(latAxis), 0.0) && 
-              ::near(crpix(latAxis)+offset, 1.0) && rotationAxis < 0) {
+          if (::casa::near(cdelt(latAxis), 0.0) && 
+              ::casa::near(crpix(latAxis)+offset, 1.0) && rotationAxis < 0) {
              cdelt(latAxis) = 1.0;            // degrees
           }
 //
-          if (::near(cdelt(longAxis), 0.0) && 
-              ::near(crpix(longAxis)+offset, 1.0) && rotationAxis < 0) {
+          if (::casa::near(cdelt(longAxis), 0.0) && 
+              ::casa::near(crpix(longAxis)+offset, 1.0) && rotationAxis < 0) {
              cdelt(longAxis) = 1.0;          // degrees
           }
         }
@@ -3562,7 +3564,7 @@ Bool CoordinateSystem::fromFITSHeader(Int& stokesFITSValue,
 	}
 //
         for (uInt j=0; j<nlin; j++) {
-           if (::near(lincdelt(j),0.0)) {
+           if (::casa::near(lincdelt(j),0.0)) {
               lincdelt(j) = 1.0;
               os << "For the LinearCoordinate, axis " << j+1 << " the increment is zero." << endl;
               os << "I am setting this increment arbitrarily to unity" << LogIO::WARN;
@@ -3957,7 +3959,7 @@ void CoordinateSystem::getPCFromHeader(LogIO& os, Int& rotationAxis,
 // We can only handle one non-zero angle
 
       for (uInt i=0; i<crota.nelements(); i++) {
-         if (!::near(crota(i), 0.0)) {
+         if (!::casa::near(crota(i), 0.0)) {
             if (rotationAxis >= 0) {
                os << LogIO::SEVERE << "Can only convert one non-zero"
                    " angle from " << sprefix << 
@@ -5336,3 +5338,6 @@ void CoordinateSystem::deleteTemps (const uInt which)
    delete worldMax_tmps_p[which]; 
    worldMax_tmps_p[which] = 0;
 }
+
+} //# NAMESPACE CASA - END
+

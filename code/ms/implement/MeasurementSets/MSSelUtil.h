@@ -33,6 +33,8 @@
 #include <casa/Arrays/Matrix.h>
 #include <casa/BasicSL/Complex.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 // <summary> 
 // Helper class for MSFlagger with templated static function
 // </summary>
@@ -91,6 +93,9 @@ template <class T> class MSSelUtil2
 			  const Array<Bool>& flag, const Array<Float>& weight);
 
 };
+
+} //# NAMESPACE CASA - END
+
 #endif
 
 

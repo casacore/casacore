@@ -29,6 +29,8 @@
 #include <measures/Measures/UVWMachine.h>
 #include <casa/Quanta/Euler.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Constructors
 UVWMachine::UVWMachine(const MDirection::Ref &out, const MDirection &in,
 		       Bool EW, Bool project) 
@@ -320,3 +322,6 @@ void UVWMachine::copy(const UVWMachine &other) {
   rot3_p = other.rot3_p;
   rot4_p = other.rot4_p;
 }
+
+} //# NAMESPACE CASA - END
+

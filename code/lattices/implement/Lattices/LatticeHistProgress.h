@@ -32,6 +32,8 @@
 //# Includes
 #include <casa/aips.h>
 #include <lattices/Lattices/LatticeProgress.h>
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 class ProgressMeter;
 
 
@@ -89,6 +91,9 @@ private:
     ProgressMeter* itsMeter;
 };
 
+
+
+} //# NAMESPACE CASA - END
 
 #endif
 

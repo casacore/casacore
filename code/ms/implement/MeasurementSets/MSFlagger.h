@@ -32,6 +32,8 @@
 #include <casa/aips.h>
 #include <casa/Containers/Record.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 template <class T> class Array;
 class MSSelector;
 class Table;
@@ -216,6 +218,9 @@ private:
   MSSelector* msSel_p; 
   Record buffer_p;
 };
+
+
+} //# NAMESPACE CASA - END
 
 #endif
 

@@ -34,6 +34,8 @@
 #include <tables/Tables/ColDescSet.h>
 #include <casa/IO/AipsIO.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Forward Declarations
 class TableRecord;
 class TableAttr;
@@ -577,6 +579,9 @@ inline void TableDesc::checkSubTableDesc () const
    { col_p.checkSubTableDesc(); }
 
 
+
+
+} //# NAMESPACE CASA - END
 
 #endif
 

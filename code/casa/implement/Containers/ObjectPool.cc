@@ -28,6 +28,8 @@
 //# Includes
 #include <casa/Containers/ObjectPool.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Constructors
 template <class T, class Key>
 ObjectPool<T, Key>::ObjectPool() :
@@ -89,3 +91,6 @@ void ObjectPool<T, Key>::clear() {
     };
   };
 }
+
+} //# NAMESPACE CASA - END
+

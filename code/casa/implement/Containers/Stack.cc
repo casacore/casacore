@@ -29,6 +29,8 @@
 #include <casa/Containers/StackError.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 template<class elem> Stack<elem>::~Stack() {
     if ( topOfStack )
 	delete topOfStack;
@@ -61,3 +63,6 @@ template<class elem> Stack<elem> &Stack<elem>::operator=(const Stack<elem> &othe
 
     return *this;
 }
+
+} //# NAMESPACE CASA - END
+

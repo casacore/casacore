@@ -51,6 +51,8 @@
 #include <casa/System/AipsrcValue.h>
 #include <casa/Utilities/Assert.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Constants
 
 //# Data
@@ -6441,3 +6443,6 @@ Double MeasTable::dUT1(Double utc) {
   };
   return res;
 }
+
+} //# NAMESPACE CASA - END
+

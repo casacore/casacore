@@ -31,6 +31,8 @@
 
 #include <casa/aips.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 template <class T> class Array;
 template <class T> class Lattice;
 template <class T> class MaskedLattice;
@@ -172,6 +174,9 @@ class LatticeUtilities
                const Lattice<T>& lat);
 
 
+
+
+} //# NAMESPACE CASA - END
 
 #endif
 

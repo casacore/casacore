@@ -33,6 +33,8 @@
 #include <scimath/Functionals/UnaryParam.h>
 #include <scimath/Functionals/Function.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Forward declarations
 
 // <summary> A one dimensional unary function
@@ -132,5 +134,8 @@ public:
   using UnaryParam<T>::WIDTH;
   using UnaryParam<T>::HEIGHT;
 };
+
+
+} //# NAMESPACE CASA - END
 
 #endif

@@ -33,6 +33,8 @@
 #include <lattices/Lattices/LELInterface.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 // <summary>
 // Class to convert a LEL node from one numerical type to another
 // </summary>
@@ -124,5 +126,8 @@ private:
    CountedPtr<LELInterface<F> > pExpr_p;
 };
 
+
+
+} //# NAMESPACE CASA - END
 
 #endif

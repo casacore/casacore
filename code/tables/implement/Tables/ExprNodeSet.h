@@ -33,6 +33,8 @@
 #include <tables/Tables/ExprNodeArray.h>
 #include <casa/Containers/Block.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Forward Declarations
 class TableExprNode;
 class IPosition;
@@ -439,5 +441,8 @@ inline const TableExprNodeSetElem&
 }
 
 
+
+
+} //# NAMESPACE CASA - END
 
 #endif

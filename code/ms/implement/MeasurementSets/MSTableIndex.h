@@ -36,6 +36,8 @@
 #include <tables/Tables/ScalarColumn.h>
 #include <tables/Tables/ColumnsIndex.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Forward declarations
 class Record;
 // class ColumnsIndex;
@@ -170,6 +172,9 @@ private:
     void getInternals();
     void nearestTime();
 };
+
+
+} //# NAMESPACE CASA - END
 
 #endif
     

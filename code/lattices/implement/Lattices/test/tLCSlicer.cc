@@ -34,6 +34,7 @@
 #include <casa/iostream.h>
 
 
+#include <casa/namespace.h>
 void doIt()
 {
     // Construct a simple LCSlicer.

@@ -50,6 +50,8 @@
 #include <casa/iostream.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 SpectralCoordinate::SpectralCoordinate()
 : Coordinate(),
   type_p(MFrequency::TOPO), 
@@ -667,7 +669,7 @@ Bool SpectralCoordinate::near(const Coordinate& other,
       return False;
    }
 //
-   if (!::near(restFrequency(), sCoord.restFrequency(), tol)) {
+   if (!::casa::near(restFrequency(), sCoord.restFrequency(), tol)) {
       set_error("The SpectralCoordinates have differing active rest frequencies");
       return False;
    }
@@ -682,7 +684,7 @@ Bool SpectralCoordinate::near(const Coordinate& other,
    }
 //
    for (uInt i=0; i<restfreqs_p.nelements(); i++) {
-      if (!::near(restfreqs_p(i),rfs(i),tol)) {
+      if (!::casa::near(restfreqs_p(i),rfs(i),tol)) {
          set_error("The SpectralCoordinates have differing lists of rest frequencies");
          return False;
       }
@@ -1067,7 +1069,7 @@ Bool SpectralCoordinate::fromFITS(SpectralCoordinate &out, String &,
 					       'c',
 					       oneRelative);
 //
-    if (::near(deltaFrequency,Double(0.0), Double(1.0e-6))) {
+    if (::casa::near(deltaFrequency,Double(0.0), Double(1.0e-6))) {
        logger << LogIO::WARN << "The increment is zero.  Arbitrarily setting to 10% of the reference value" << LogIO::POST;
        deltaFrequency = referenceFrequency / 10.0;
     }
@@ -1286,7 +1288,7 @@ String SpectralCoordinate::formatRestFrequencies () const
          oss << " [";
          uInt j = 0;
          for (uInt i=0; i<n; i++) {
-            if (!::near(rfs(i), rf)) {
+            if (!::casa::near(rfs(i), rf)) {
                if (j > 0) oss << ", ";
                oss << rfs(i);
                j++;
@@ -1300,4 +1302,7 @@ String SpectralCoordinate::formatRestFrequencies () const
 //
    return String(oss);
 }
+
+
+} //# NAMESPACE CASA - END
 

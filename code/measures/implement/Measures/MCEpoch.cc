@@ -33,6 +33,8 @@
 #include <measures/Measures/Nutation.h>
 #include <measures/Measures/MeasTable.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Statics
 Bool MCEpoch::stateMade_p = False;
 uInt MCEpoch::ToRef_p[N_Routes][3] = {
@@ -325,3 +327,6 @@ String MCEpoch::showState() {
 			   MEpoch::N_Types, MCEpoch::N_Routes,
 			   MCEpoch::ToRef_p);
 }
+
+} //# NAMESPACE CASA - END
+

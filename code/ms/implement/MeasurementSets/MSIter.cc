@@ -44,6 +44,8 @@
 #include <casa/Logging/LogIO.h>
 #include <casa/iostream.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 Double MSInterval::interval_p;
 Double MSInterval::offset_p;
  
@@ -597,3 +599,6 @@ void MSIter::setFieldInfo()
     };
   }
 }
+
+} //# NAMESPACE CASA - END
+

@@ -31,6 +31,7 @@
 #include <casa/Containers/ListMapIO.h>
 #include <casa/iostream.h>
 
+#include <casa/namespace.h>
 // This test program creates an OrderedMap, which is written to
 // disk and read back. It outputs to stdout. A script executing
 // this test program makes a diff of the output and a reference output.

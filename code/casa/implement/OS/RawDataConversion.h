@@ -32,6 +32,8 @@
 #include <casa/OS/DataConversion.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 // <summary>
 // A class with virtual functions to copy without conversion
 // </summary>
@@ -187,5 +189,8 @@ public:
 inline RawDataConversion::RawDataConversion()
 {}
 
+
+
+} //# NAMESPACE CASA - END
 
 #endif

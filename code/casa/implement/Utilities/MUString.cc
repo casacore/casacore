@@ -32,6 +32,8 @@
 #include <casa/Arrays/Vector.h>
 #include <casa/Utilities/Regex.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 // Constructors
 MUString::MUString() :
   str(), ptr(0), len(0), stack(0), stpt(0), stat(True), lget() {}
@@ -497,3 +499,6 @@ ostream &operator<<(ostream &os, const MUString &in) {
   if (in.ptr < in.len) os << String(in.str).from(Int(in.ptr));
   return os;
 }
+
+} //# NAMESPACE CASA - END
+

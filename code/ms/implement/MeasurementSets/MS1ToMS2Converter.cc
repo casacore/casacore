@@ -57,6 +57,8 @@
 
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 MS1ToMS2Converter::MS1ToMS2Converter(const String& ms2,
 				     const String& ms1,
 				     Bool inPlace)
@@ -937,3 +939,6 @@ Bool MS1ToMS2Converter::convert()
   os_p << LogIO::NORMAL << "Conversion done" << LogIO::POST;
   return True;
 }
+
+} //# NAMESPACE CASA - END
+

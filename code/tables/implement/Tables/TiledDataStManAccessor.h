@@ -32,6 +32,8 @@
 #include <casa/aips.h>
 #include <tables/Tables/TiledStManAccessor.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Forward Declarations
 class TiledDataStMan;
 class Table;
@@ -151,5 +153,8 @@ private:
 };
 
 
+
+
+} //# NAMESPACE CASA - END
 
 #endif

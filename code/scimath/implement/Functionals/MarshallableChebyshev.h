@@ -33,6 +33,8 @@
 #include <scimath/Functionals/Chebyshev.h>
 #include <scimath/Functionals/FunctionMarshallable.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Forward Declarations
 
 // <summary> A Chebyshev function class that supports serialization
@@ -195,5 +197,8 @@ public:
 	return new MarshallableChebyshev<T>(*this); 
     };
 };
+
+
+} //# NAMESPACE CASA - END
 
 #endif

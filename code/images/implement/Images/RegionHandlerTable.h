@@ -32,6 +32,8 @@
 //# Includes
 #include <images/Images/RegionHandler.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Forward declarations
 class Table;
 
@@ -193,5 +195,8 @@ private:
 };
 
 
+
+
+} //# NAMESPACE CASA - END
 
 #endif

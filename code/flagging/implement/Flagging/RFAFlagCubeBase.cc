@@ -28,6 +28,8 @@
 #include <casa/iostream.h>
 #include <casa/stdio.h>
    
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 uInt RFABase::indexing_base = 0;
  
 // -----------------------------------------------------------------------
@@ -215,4 +217,7 @@ void RFAFlagCubeBase::plotFlaggingReport ( PGPlotterInterface &pgp )
   flag.plotStats(pgp);
 }
 
+
+
+} //# NAMESPACE CASA - END
 

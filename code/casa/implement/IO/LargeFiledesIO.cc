@@ -36,6 +36,8 @@
 #include <casa/string.h>               // needed for strerror
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 LargeFiledesIO::LargeFiledesIO()
 : itsSeekable (False),
   itsReadable (False),
@@ -205,3 +207,6 @@ void LargeFiledesIO::close (int fd)
 			  + strerror(errno)));
     }
 }
+
+} //# NAMESPACE CASA - END
+

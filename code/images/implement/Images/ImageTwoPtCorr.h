@@ -32,6 +32,8 @@
 #include <images/Images/ImageInterface.h>
 #include <lattices/Lattices/LatticeTwoPtCorr.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 class IPosition;
 
 // <summary>
@@ -142,4 +144,7 @@ private:
    void setUnit (ImageInterface<T>& out) const;
 
 };
+
+} //# NAMESPACE CASA - END
+
 #endif

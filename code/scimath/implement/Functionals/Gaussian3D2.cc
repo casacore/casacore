@@ -34,6 +34,8 @@
 #include <casa/BasicSL/Constants.h>
 #include <casa/BasicMath/Math.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 template<class T> 
 Gaussian3D<AutoDiff<T> >::Gaussian3D()   
 : Gaussian3DParam<AutoDiff<T> >()
@@ -221,4 +223,7 @@ T Gaussian3D<AutoDiff<T> >::sq(T v) const
 
 
 
+
+
+} //# NAMESPACE CASA - END
 

@@ -33,6 +33,8 @@
 #include <casa/Arrays/Vector.h>
 #include <ms/MeasurementSets/MeasurementSet.h>
 #include <ms/MeasurementSets/MSSelectionKeywords.h>
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 template <class T> class ROArrayColumn;
 template <class T> class ROScalarColumn;
 class Record;
@@ -211,6 +213,9 @@ private:
   Bool constantShape_p;
   const MSSelector* sel_p;
 };
+
+
+} //# NAMESPACE CASA - END
 
 #endif
 

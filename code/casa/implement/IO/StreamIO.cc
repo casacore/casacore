@@ -36,6 +36,8 @@
 #include <unistd.h>               // needed for ::close
 #include <netdb.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 StreamIO::StreamIO(const String& hostname, uShort portNumber) 
   :ByteIO(),
    itsSockDesc(-1)
@@ -143,3 +145,6 @@ Bool StreamIO::isSeekable() const {
 // Local Variables: 
 // compile-command: "gmake StreamIO; cd test; gmake OPTLIB=1 tStreamIO"
 // End: 
+
+} //# NAMESPACE CASA - END
+

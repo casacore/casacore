@@ -35,6 +35,8 @@
 #include <casa/Arrays/Array.h>
 #include <scimath/Mathematics/VectorKernel.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Forward Declarations
 template <class T> class ImageInterface;
 template <class T> class Matrix;
@@ -162,6 +164,9 @@ private:
    uInt sizeOfGaussian (Double width, Double nSigma) const;
 };
 
+
+
+} //# NAMESPACE CASA - END
 
 #endif
 

@@ -28,6 +28,8 @@
 #include <casa/Containers/Dlink.h>
 #include <casa/iostream.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 int Dlink_deprecated_flag = 0;
 
 template<class t> Dlink<t>::Dlink(t e,Dlink<t> *p,Dlink<t> *n) : Link<t>(e,p,n) {
@@ -36,3 +38,6 @@ template<class t> Dlink<t>::Dlink(t e,Dlink<t> *p,Dlink<t> *n) : Link<t>(e,p,n) 
 	Dlink_deprecated_flag++;
     }
 }
+
+} //# NAMESPACE CASA - END
+

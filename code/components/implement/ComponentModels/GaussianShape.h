@@ -35,6 +35,8 @@
 #include <components/ComponentModels/ComponentType.h>
 #include <components/ComponentModels/TwoSidedShape.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 class MDirection;
 class MVAngle;
 template <class Qtype> class Quantum;
@@ -247,4 +249,7 @@ private:
   //# The FT of a Gaussian is also a Gaussian. Its parameters are stored here
   Gaussian2D<Double> itsFT;
 };
+
+} //# NAMESPACE CASA - END
+
 #endif

@@ -44,6 +44,7 @@
 
 #include <casa/iostream.h>
 
+#include <casa/namespace.h>
 void checkNumbers (const ImageInterface<Float>& rIn,
                    const ImageInterface<Float>& rOut,
                    const ImageInterface<Float>& iOut,

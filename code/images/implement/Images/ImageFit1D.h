@@ -32,13 +32,13 @@
 //# Includes
 #include <casa/aips.h>
 #include <casa/Arrays/Vector.h>
-#include <scimath/Mathematics/NumericTraits.h>
-
 #include <measures/Measures/MDirection.h>
 #include <measures/Measures/MFrequency.h>
 #include <measures/Measures/MDoppler.h>
 #include <coordinates/Coordinates/CoordinateSystem.h>
 #include <components/SpectralComponents/ProfileFit1D.h>
+
+namespace casa { //# NAMESPACE CASA - BEGIN
 
 class SpectralElement;
 class SpectralList;
@@ -213,9 +213,10 @@ public:
     // condition exists (e.g. asking for fit before you do one). In this
     // case an error message can be recovered with function <src>errorMessage</src>.
     //<group>
-    Vector<T> getEstimate (Int which=-1) const;
-    Vector<T> getFit (Int which=-1) const;
-    Vector<T> getResidual (Int which=-1, Bool fit=True)  const;
+    Vector<T> getEstimate (Int which=-1) const {return itsFitter.getEstimate(which);};
+    Vector<T> getFit (Int which=-1) const {return itsFitter.getFit(which);};
+    Vector<T> getResidual (Int which=-1, Bool fit=True)  const 
+       {return itsFitter.getResidual(which, fit);};
     //</group>
 
     // Get Total Mask (data and range mask)
@@ -233,12 +234,7 @@ private:
    ImageInterface<T>* itsImagePtr;
    ImageInterface<T>* itsWeightPtr;
    uInt itsAxis;
-
-// In the future I will be able to template the fitter on T. For now
-// it must be Double.
-
-   typedef typename NumericTraits<T>::PrecisionType FitterType;
-   ProfileFit1D<FitterType> itsFitter;
+   ProfileFit1D<T> itsFitter;
    CoordinateSystem itsCS;
 //
    mutable String itsError;                // Error message
@@ -246,11 +242,12 @@ private:
 // Functions
    
    void check() const;
-   void checkType() const;
-   void copy (const ImageFit1D<T>& other);
-   Bool makeAbcissa (Vector<Double>& x, ImageFit1D<T>::AbcissaType type, Bool doAbs);
+   Bool makeAbcissa (Vector<T>& x, ImageFit1D<T>::AbcissaType type, Bool doAbs);
    void setWeightsImage (const ImageInterface<T>& im);
 
 };
+
+
+} //# NAMESPACE CASA - END
 
 #endif

@@ -72,6 +72,8 @@
 
 #include <casa/sstream.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 // Public functions
 
 ImagePolarimetry::ImagePolarimetry (const ImageInterface<Float>& image)
@@ -1995,3 +1997,6 @@ Bool ImagePolarimetry::dealWithMask (Lattice<Bool>*& pMask, ImageInterface<Float
    }
    return isMasked;
 }
+
+} //# NAMESPACE CASA - END
+

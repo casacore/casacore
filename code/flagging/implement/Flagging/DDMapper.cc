@@ -29,6 +29,8 @@
 #include <flagging/Flagging/RFChunkStats.h>
 #include <casa/Utilities/Regex.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 DDFunc::DDFunc( FuncSignature fsig,const String &corrstr )
   : DDMapper(),icorr(-1),func(fsig)
 {
@@ -246,4 +248,7 @@ DDMapper * DDFunc::getMapper ( String &descr,const Vector<String> &expr0,Bool th
   }
   return NULL;
 }
+
+
+} //# NAMESPACE CASA - END
 

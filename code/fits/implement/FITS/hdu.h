@@ -37,6 +37,8 @@
 
 //# # include <stdarg.h> // If we ever wan to put varargs support back
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 class FitsInput;
 class FitsOutput;
 
@@ -72,7 +74,7 @@ class FitsOutput;
 
 
 class HeaderDataUnit {
-	friend ostream & operator << (ostream &, HeaderDataUnit &);
+	friend std::ostream & operator << (std::ostream &, HeaderDataUnit &);
     public:
 	virtual ~HeaderDataUnit();
 
@@ -223,7 +225,7 @@ class HeaderDataUnit {
 	int write_all_data(FitsOutput &, char *);
 };
 
-inline ostream & operator << (ostream &o, HeaderDataUnit &h) {
+inline std::ostream & operator << (std::ostream &o, HeaderDataUnit &h) {
 	return o << h.kwlist_; }
 inline void HeaderDataUnit::mk(FITS::ReservedName k, Bool v, const char *c) {
 	posEnd(); kwlist_.mk(k,v,c); }
@@ -780,7 +782,7 @@ class FitsBase {
 	static FitsBase *make(FitsBase &);
 
 	FitsBase & operator = (FitsBase &);
-	virtual void show(ostream &) = 0;
+	virtual void show(std::ostream &) = 0;
 
     protected:
 	int no_elements; // the number of elements in the field
@@ -788,7 +790,7 @@ class FitsBase {
 	virtual void setaddr(void **) = 0;
 };
 
-inline ostream & operator << (ostream &o, FitsBase &x) {
+inline std::ostream & operator << (std::ostream &o, FitsBase &x) {
 	x.show(o); return o;
 }
 
@@ -816,7 +818,7 @@ class FitsField : public FitsBase {
 
 	void *data();
 
-	void show(ostream &);
+	void show(std::ostream &);
 
     protected:
 	TYPE **field;
@@ -868,7 +870,7 @@ template <> class FitsField<FitsBit> : public FitsBase {
 
 	void *data();
 
-	void show(ostream &);
+	void show(std::ostream &);
 
     protected:
 	FitsBit **field;
@@ -1130,5 +1132,7 @@ class AsciiTableExtension : public BinaryTableExtension {
 	void at_assign();
 };
 
+
+} //# NAMESPACE CASA - END
 
 # endif

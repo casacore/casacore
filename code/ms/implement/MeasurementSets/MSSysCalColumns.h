@@ -36,6 +36,8 @@
 #include <tables/Tables/ArrayColumn.h>
 #include <tables/Tables/ScalarColumn.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 class MSSysCal;
 
 // <summary>
@@ -461,4 +463,7 @@ private:
   ArrayQuantColumn<Float> tsysQuant_p;
   ArrayQuantColumn<Float> tsysSpectrumQuant_p;
 };
+
+} //# NAMESPACE CASA - END
+
 #endif

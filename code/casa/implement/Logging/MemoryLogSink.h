@@ -35,6 +35,8 @@
 #include <casa/Containers/Block.h>
 #include <casa/BasicSL/String.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Forward Declarations
 
 // <summary>
@@ -130,5 +132,8 @@ private:
   Block<String> objectID_p;
 };
 
+
+
+} //# NAMESPACE CASA - END
 
 #endif

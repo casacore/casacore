@@ -34,6 +34,8 @@
 #include <tables/Tables/TableLock.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 // <summary>
 // Class to hold a (user) lock on a lattice.
 // </summary>
@@ -156,5 +158,8 @@ inline Bool LatticeLocker::hasLock (FileLocker::LockType type) const
     return itsLatticePtr->hasLock (type);
 }
 
+
+
+} //# NAMESPACE CASA - END
 
 #endif

@@ -32,6 +32,8 @@
 #include <scimath/Functionals/Function.h>
 #include <scimath/Functionals/FunctionFactoryErrors.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Forward Declarations
 class Record;
 
@@ -103,6 +105,9 @@ public:
 	return *this;
     }
 };
+
+
+} //# NAMESPACE CASA - END
 
 #endif
 

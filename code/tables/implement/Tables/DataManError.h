@@ -32,6 +32,8 @@
 #include <casa/aips.h>
 #include <casa/Exceptions/Error.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# This header file defines the error classes used in the
 //# data manager classes.
 
@@ -192,5 +194,8 @@ public:
     ~TSMError () throw();
 };
 
+
+
+} //# NAMESPACE CASA - END
 
 #endif

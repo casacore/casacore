@@ -37,6 +37,7 @@
 #include <casa/Inputs.h>
 #include <casa/IO/TapeIO.h>
 
+#include <casa/namespace.h>
 int main(int argc, char* argv[]) {
   try {
     Input inputs(1);

@@ -52,6 +52,8 @@
 #include <casa/sstream.h>           // needed for internal IO
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 const Int lineSize = 32768;
 
 
@@ -1339,3 +1341,6 @@ String readAsciiTable (const String& headerfile, const String& filein,
 			      separator, commentMarkerRegex,
 			      firstLine, lastLine);
 }
+
+} //# NAMESPACE CASA - END
+

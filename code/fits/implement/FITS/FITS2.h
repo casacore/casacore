@@ -34,6 +34,8 @@
 #include <casa/Containers/Map.h>
 #include <fits/FITS/hdu.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 class String;        // Forward declaration
 
 
@@ -58,4 +60,7 @@ void ReadFITSin(PrimaryArray<StorageType> &fitsdata,
 	      Map<String, Double> *keywords,
               String *objectName);
 //</group>
+
+} //# NAMESPACE CASA - END
+
 #endif

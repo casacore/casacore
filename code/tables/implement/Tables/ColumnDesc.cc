@@ -42,6 +42,8 @@
 #include <casa/iostream.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 ColumnDesc::ColumnDesc (const BaseColumnDesc& cold)
 : colPtr_p   (cold.clone()),
   allocated_p(True)
@@ -273,3 +275,6 @@ void ColumnDesc::registerColumnDesc()
 
     SubTableDesc std(registerMap);
 }
+
+} //# NAMESPACE CASA - END
+

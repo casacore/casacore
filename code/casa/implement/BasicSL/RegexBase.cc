@@ -29,6 +29,8 @@
 //# Includes
 #include <casa/BasicSL/RegexBase.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Destructor
 RegexBase::~RegexBase() {}
 
@@ -60,3 +62,6 @@ String::size_type RegexBase::match(const Char *s,
   };
   return String::npos;
 }
+
+} //# NAMESPACE CASA - END
+

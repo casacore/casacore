@@ -32,6 +32,8 @@
 #include <casa/aips.h>
 #include <casa/Arrays/Vector.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Forward Declarations
 class ROTableColumn;
 
@@ -132,5 +134,8 @@ inline const Vector<double>& TableExprRange::start() const
 inline const Vector<double>& TableExprRange::end() const
     { return eval_p; }
 
+
+
+} //# NAMESPACE CASA - END
 
 #endif

@@ -30,6 +30,8 @@
 #include <casa/Containers/RecordField.h>
 #include <casa/Utilities/Assert.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 template<class T>
 RecordFieldPtr<T>::RecordFieldPtr()
 : fieldPtr_p   (0),
@@ -162,3 +164,6 @@ void RecordFieldPtr<T>::notify (const Notice& notice)
 	AlwaysAssert (0, AipsError);
     }
 }
+
+} //# NAMESPACE CASA - END
+

@@ -36,6 +36,8 @@
 
 //# Forward Declarations
 #include <casa/iosfwd.h>
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 template <class T> class Block;
 template <class T> class Lattice;
 
@@ -153,5 +155,8 @@ protected:
 
   Lattice<T>* image_p;
 };
+
+
+} //# NAMESPACE CASA - END
 
 #endif

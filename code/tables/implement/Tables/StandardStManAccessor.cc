@@ -33,6 +33,8 @@
 #include <casa/BasicSL/String.h>
 #include <casa/Utilities/Assert.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 ROStandardStManAccessor::ROStandardStManAccessor (const Table& aTable,
 					    const String& aDataManagerName)
 : itsSSMPtr (0)
@@ -94,3 +96,6 @@ void ROStandardStManAccessor::showIndexStatistics (ostream& anOs) const
 {
     itsSSMPtr->showIndexStatistics (anOs);
 }
+
+} //# NAMESPACE CASA - END
+

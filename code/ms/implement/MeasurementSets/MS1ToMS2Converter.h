@@ -33,6 +33,8 @@
 #include <tables/Tables/Table.h>
 #include <casa/Logging/LogIO.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Forward declarations
 class String;
 
@@ -104,5 +106,8 @@ private:
   LogIO os_p;
 };
 
+
+
+} //# NAMESPACE CASA - END
 
 #endif

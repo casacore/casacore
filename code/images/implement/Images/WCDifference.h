@@ -32,6 +32,8 @@
 #include <images/Images/WCCompound.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 // <summary>
 // Make the difference of 2 image regions.
 // </summary>
@@ -129,5 +131,8 @@ protected:
 				    const IPosition& outOrder) const;
 };
 
+
+
+} //# NAMESPACE CASA - END
 
 #endif

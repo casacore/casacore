@@ -31,10 +31,12 @@
 
 //# Includes
 #include <casa/aips.h>
+#include <casa/iosfwd.h>
+
+namespace casa { //# NAMESPACE CASA - BEGIN
 
 //# Forward declarations
 template <class T> class AutoDiff;
-#include <casa/iosfwd.h>
 
 // <summary>
 // Implements all IO operators and functions for AutoDiff.
@@ -60,5 +62,8 @@ template<class T>
 ostream &operator << (ostream &os, const AutoDiff<T> &ad);
 // </group>
 
+
+
+} //# NAMESPACE CASA - END
 
 #endif

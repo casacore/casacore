@@ -30,6 +30,8 @@
 
 #include <casa/Utilities/Sequence.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 // <summary> Sequence for the Register() template functions </summary>
 // <use visibility=export>
 // <reviewed reviewer="Friso Olnon" date="1995/03/17" tests="" demos="">
@@ -59,6 +61,9 @@ public:
 private:
     static uInt num;
 };
+
+
+} //# NAMESPACE CASA - END
 
 #endif
 

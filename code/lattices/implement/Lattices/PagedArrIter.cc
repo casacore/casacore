@@ -37,6 +37,8 @@
 #include <casa/Exceptions/Error.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 template<class T>
 PagedArrIter<T>::PagedArrIter (const PagedArray<T>& data,
 			       const LatticeNavigator& nav,
@@ -84,3 +86,6 @@ void PagedArrIter<T>::setupTileCache()
 					     itsData.rowNumber());
   itsData.setCacheSizeInTiles (cacheSize);
 }
+
+} //# NAMESPACE CASA - END
+

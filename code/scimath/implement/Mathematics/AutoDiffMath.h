@@ -35,6 +35,8 @@
 #include <casa/BasicMath/Math.h>
 #include <scimath/Mathematics/AutoDiff.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 // <summary>
 // Implements all mathematical operators and functions for AutoDiff.
 // </summary>
@@ -220,5 +222,8 @@ template<class T> AutoDiff<T> max(const AutoDiff<T> &left,
 // </group>
 
 // </group>
+
+
+} //# NAMESPACE CASA - END
 
 #endif

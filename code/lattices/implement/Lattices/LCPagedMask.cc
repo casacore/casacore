@@ -33,6 +33,8 @@
 #include <casa/Exceptions/Error.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 LCPagedMask::LCPagedMask()
 {}
 
@@ -278,3 +280,6 @@ Bool LCPagedMask::isWritable() const
 {
     return itsMask.isWritable();
 }
+
+} //# NAMESPACE CASA - END
+

@@ -40,6 +40,8 @@
 #include <casa/Utilities/Assert.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 TableExprFuncNode::TableExprFuncNode (FunctionType ftype, NodeDataType dtype,
 				      ValueType vtype,
 				      const TableExprNodeSet& source)
@@ -206,7 +208,7 @@ Double TableExprFuncNode::getDouble (const TableExprId& id)
 	return log10    (operands_p[0]->getDouble(id));
     case powFUNC:
 	return pow      (operands_p[0]->getDouble(id),
-		         operands_p[1]->getDouble(id));
+		              operands_p[1]->getDouble(id));
     case squareFUNC:
       {
 	Double val = operands_p[0]->getDouble(id);
@@ -921,3 +923,6 @@ TableExprNodeRep::NodeDataType TableExprFuncNode::checkOperands
     }
     return NTNumeric;
 }
+
+} //# NAMESPACE CASA - END
+

@@ -32,6 +32,8 @@
 #include <casa/aips.h>
 #include <tables/Tables/TSMColumn.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Forward declarations
 
 
@@ -172,5 +174,8 @@ private:
 };
 
 
+
+
+} //# NAMESPACE CASA - END
 
 #endif

@@ -33,6 +33,8 @@
 #include <casa/Utilities/Fallible.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 // <summary>
 // Stokes parameter definitions for interface to table data.
 // </summary>
@@ -163,6 +165,9 @@ public:
     // </group>
 private:
 };
+
+
+} //# NAMESPACE CASA - END
 
 #endif
 

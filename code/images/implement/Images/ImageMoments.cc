@@ -85,6 +85,8 @@
 #include <casa/iomanip.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 template <class T> 
 ImageMoments<T>::ImageMoments (ImageInterface<T>& image, 
                                LogIO &os,
@@ -1799,3 +1801,6 @@ CoordinateSystem ImageMoments<T>::makeOutputCoordinates (IPosition& outShape,
 //
    return cSysOut;
 }
+
+} //# NAMESPACE CASA - END
+

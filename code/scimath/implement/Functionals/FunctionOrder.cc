@@ -29,6 +29,8 @@
 #include <casa/Containers/Record.h>
 #include <casa/iostream.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 template<class T>
 FunctionOrder<T>::FunctionOrder()
   : int_p(0), double_p(0), string_p(""), function_p(0),
@@ -233,3 +235,6 @@ const String &FunctionOrder<T>::ident() const {
   static String myid = "fncord";
   return myid;
 }
+
+} //# NAMESPACE CASA - END
+

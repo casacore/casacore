@@ -34,6 +34,8 @@
 #include <casa/BasicSL/String.h>
 #include <casa/vector.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Constructors
 
 //# Operators
@@ -249,3 +251,6 @@ T CompiledFunction<T>::eval(typename Function<T>::FunctionArg x) const {
 
   return res;
 }
+
+} //# NAMESPACE CASA - END
+

@@ -47,6 +47,8 @@
 #include <msvis/MSVis/StokesVector.h>
 #include <ms/MeasurementSets/MSIter.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# forward decl
 class VisBuffer;
 
@@ -630,5 +632,8 @@ protected:
   ScalarColumn<Bool> RWcolFlagRow;
 
 };
+
+
+} //# NAMESPACE CASA - END
 
 #endif

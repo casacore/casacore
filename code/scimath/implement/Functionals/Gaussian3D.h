@@ -36,6 +36,8 @@ template<class T> class Vector;
 #include <scimath/Mathematics/AutoDiff.h>
 #include <scimath/Mathematics/AutoDiffMath.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 // <summary> A three dimensional Gaussian class.</summary>
 
 // <use visibility=export>
@@ -270,6 +272,9 @@ public:
 };
 
 #undef Gaussian3D_PS
+
+
+} //# NAMESPACE CASA - END
 
 #endif
 

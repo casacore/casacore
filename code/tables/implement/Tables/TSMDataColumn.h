@@ -38,6 +38,8 @@
 #include <casa/BasicSL/String.h>
 #include <casa/OS/Conversion.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Forward Declarations
 class Slicer;
 
@@ -614,5 +616,8 @@ inline void TSMDataColumn::writeTile (void* to, const void* from,
     writeFunc_p (to, from, nrPixels * convPixelSize_p);
 }
 
+
+
+} //# NAMESPACE CASA - END
 
 #endif

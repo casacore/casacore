@@ -33,6 +33,8 @@
 #include <casa/Arrays/IPosition.h>
 #include <casa/Containers/Block.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Forward Declarations
 template <class T> class Array;
 template <class S> class Matrix;
@@ -352,4 +354,7 @@ private:
   //# This buffer is also used as temporary storage when flipping the data.
   Block<S> itsBuffer;
 };
+
+} //# NAMESPACE CASA - END
+
 #endif

@@ -35,6 +35,8 @@
 #include <casa/BasicSL/String.h>
 #include <casa/BasicSL/Complex.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Forward Declarations
 class IPosition;
 
@@ -340,5 +342,8 @@ inline uInt StManArrayFile::get (uInt& value)
     return iofil_p->read (1, &value);
 }
 
+
+
+} //# NAMESPACE CASA - END
 
 #endif

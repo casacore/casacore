@@ -31,6 +31,8 @@
 
 #include <scimath/Functionals/FunctionFactoryErrors.h>
 #include <casa/Containers/Record.h>
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 template<class T> class Array;
 
 template <class V>
@@ -207,5 +209,8 @@ private:
 
     Record gr;
 };
+
+
+} //# NAMESPACE CASA - END
 
 #endif

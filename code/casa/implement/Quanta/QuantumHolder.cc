@@ -37,6 +37,8 @@
 #include <casa/BasicSL/Complex.h>
 #include <casa/Arrays/Vector.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Constructors
 QuantumHolder::QuantumHolder() 
   : hold_p() {};
@@ -701,3 +703,6 @@ const String &QuantumHolder::ident() const {
   static String myid = "quant";
   return myid;
 }
+
+} //# NAMESPACE CASA - END
+

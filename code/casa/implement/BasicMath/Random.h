@@ -30,6 +30,8 @@
 
 #include <casa/aips.h>
 #include <casa/BasicMath/Math.h>
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 class String;
 template<class T> class Vector;
 
@@ -1387,5 +1389,8 @@ inline Double Weibull::alpha() const {
 inline Double Weibull::beta() const {
   return itsBeta; 
 }
+
+
+} //# NAMESPACE CASA - END
 
 #endif

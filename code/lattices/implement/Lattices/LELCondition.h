@@ -33,6 +33,8 @@
 #include <lattices/Lattices/LELInterface.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 // <summary>
 // Class to make a mask from a condition.
 // </summary>
@@ -124,5 +126,8 @@ private:
    CountedPtr<LELInterface<Bool> > pCond_p;
 };
 
+
+
+} //# NAMESPACE CASA - END
 
 #endif

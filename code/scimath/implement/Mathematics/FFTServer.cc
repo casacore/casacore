@@ -36,6 +36,8 @@
 #include <casa/Utilities/Assert.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 template<class T, class S> Int FFTServer<T,S>::
 phaseRotate(Matrix<S> & cData, Bool toZero)
 {
@@ -752,3 +754,6 @@ flip(Array<T> & rData, const Bool toZero, const Bool isHermitian) {
 // Local Variables: 
 // compile-command: "cd test; gmake OPTLIB=1 inst"
 // End: 
+
+} //# NAMESPACE CASA - END
+

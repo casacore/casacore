@@ -32,6 +32,8 @@
 #include <casa/aips.h>
 #include <casa/iosfwd.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 // <summary>  Wrapping of IAU SOFA Fortran routines and test class</summary>
 // <use visibility=export>
 //
@@ -287,5 +289,8 @@ extern "C" void
 IAUR(cr)(Double *r, Double *c);
 
 // </group>
+
+
+} //# NAMESPACE CASA - END
 
 #endif

@@ -31,6 +31,8 @@
 //# Includes
 #include <casa/aips.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Forward Declarations
 template<class T> class TabVecRep;
 
@@ -119,5 +121,8 @@ template<class T>
     Bool tabVecRepvallNE (const T& left, const TabVecRep<T>& right);
 // </group>
 
+
+
+} //# NAMESPACE CASA - END
 
 #endif

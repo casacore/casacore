@@ -33,6 +33,8 @@
 #include <casa/aips.h>
 #include <casa/BasicSL/String.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Forward Declarations
 class LELImageCoord;
 class IPosition;
@@ -104,6 +106,9 @@ public:
     virtual Int doCompare (const LELImageCoord& other) const = 0;
 };
 
+
+
+} //# NAMESPACE CASA - END
 
 #endif
 

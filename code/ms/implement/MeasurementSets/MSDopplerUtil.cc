@@ -31,6 +31,8 @@
 #include <ms/MeasurementSets/MSSourceIndex.h>
 #include <casa/Exceptions/Error.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //----------------------------------------------------------------------------
 
 MSDopplerUtil::MSDopplerUtil(const MeasurementSet& ms)
@@ -142,4 +144,7 @@ Bool MSDopplerUtil::dopplerInfo (Vector<Double>& restFrequency,
 };
 
 //----------------------------------------------------------------------------
+
+
+} //# NAMESPACE CASA - END
 

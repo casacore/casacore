@@ -27,4 +27,9 @@
 
 #include <tables/Tables/TabVecLogic.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# All functions are inlined, so there is no actual code.
+
+} //# NAMESPACE CASA - END
+

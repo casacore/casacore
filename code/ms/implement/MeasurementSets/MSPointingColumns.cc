@@ -33,6 +33,8 @@
 #include <tables/Tables/TableRecord.h>
 #include <casa/BasicSL/String.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 ROMSPointingColumns::
 ROMSPointingColumns(const MSPointing& msPointing):
   antennaId_p(msPointing, MSPointing::
@@ -402,3 +404,6 @@ void MSPointingColumns::setEncoderDirectionRef(MDirection::Types ref)
 // Local Variables: 
 // compile-command: "gmake MSPointingColumns"
 // End: 
+
+} //# NAMESPACE CASA - END
+

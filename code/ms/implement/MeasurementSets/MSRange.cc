@@ -48,6 +48,8 @@
 #include <casa/iostream.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 MSRange::MSRange():blockSize_p(10),ddId_p(0),constantShape_p(False),sel_p(0)
 {}
 
@@ -260,7 +262,7 @@ Record MSRange::range(const Vector<Int>& keys,
 	if (checkShapes()) {
 	  if (!msc.imagingWeight().isNull()) {
 	    Vector<Float> range(2);
-	    ::minMax(range(0),range(1),msc.imagingWeight().getColumn());
+	    ::casa::minMax(range(0),range(1),msc.imagingWeight().getColumn());
 	    out.define(keyword,range);
 	  } else {
 	    os << LogIO::WARN << "IMAGING_WEIGHT column doesn't exist"<< 
@@ -342,7 +344,7 @@ Record MSRange::range(const Vector<Int>& keys,
 	Array<Float> sig;
 	if (sel_p) sig=sel_p->getWeight(msc.sigma(),True);
 	else sig=msc.sigma().getColumn();
-	::minMax(range(0),range(1),sig);
+	::casa::minMax(range(0),range(1),sig);
 	out.define(keyword,range);
       } else {
 	shapeChangesWarning = True;
@@ -351,7 +353,7 @@ Record MSRange::range(const Vector<Int>& keys,
     case MSS::TIME:
       {
 	Vector<Double> time(2);
-	::minMax(time(0),time(1),msc.time().getColumn());
+	::casa::minMax(time(0),time(1),msc.time().getColumn());
 	out.define(keyword,time);
       }
       break;
@@ -369,7 +371,7 @@ Record MSRange::range(const Vector<Int>& keys,
 	Int index=fld-MSS::U;
 	Vector<Double> range(2);
 	if (uvw.nelements()==0) uvw=msc.uvw().getColumn();
-	::minMax(range(0),range(1),uvw.row(index));
+	::casa::minMax(range(0),range(1),uvw.row(index));
 	out.define(keyword,range);
       }	
       break;
@@ -383,7 +385,7 @@ Record MSRange::range(const Vector<Int>& keys,
         v2*=v2;
         u2+=v2;
 	Vector<Double> uvrange(2);
-	::minMax(uvrange(0),uvrange(1),u2);
+	::casa::minMax(uvrange(0),uvrange(1),u2);
 	uvrange(0)=sqrt(uvrange(0)); uvrange(1)=sqrt(uvrange(1));
 	out.define(keyword,uvrange);
       }
@@ -394,7 +396,7 @@ Record MSRange::range(const Vector<Int>& keys,
 	Array<Float> wt;
 	if (sel_p) wt=sel_p->getWeight(msc.weight());
 	else wt=msc.weight().getColumn();
-	::minMax(range(0),range(1),wt);
+	::casa::minMax(range(0),range(1),wt);
 	out.define(keyword,range);
       } else {
 	shapeChangesWarning = True;
@@ -539,17 +541,17 @@ void MSRange::minMax(Float& mini, Float& maxi,
       Array<Float> avData;
       sel_p->getAveragedData(avData,flags,data,rowSlicer);
       if (useFlags) {
-	::minMax(minf,maxf,avData(!avFlag));
+	::casa::minMax(minf,maxf,avData(!avFlag));
       } else {
-	::minMax(minf,maxf,avData);
+	::casa::minMax(minf,maxf,avData);
       }	
     } else {
       Array<Float> tData=data.getColumnRange(rowSlicer);
       if (useFlags) {
 	Array<Bool> tFlag=flag.getColumnRange(rowSlicer);
-	::minMax(minf,maxf,tData(!tFlag));
+	::casa::minMax(minf,maxf,tData(!tFlag));
       } else {
-	::minMax(minf,maxf,tData);
+	::casa::minMax(minf,maxf,tData);
       }
     }
     if (start==0) {
@@ -614,20 +616,19 @@ void MSRange::minMax(Matrix<Float>& minmax,
 	avData.reference(tData);
       }
     }
-
     // If any unflagged data, get min/max
     if (avData.nelements() > 0) {
 
-      if (funcSel[0]) ::minMax(minf[0],maxf[0],amplitude(avData));
-      if (funcSel[1]) ::minMax(minf[1],maxf[1],phase(avData));
-      if (funcSel[2]) ::minMax(minf[2],maxf[2],real(avData));
-      if (funcSel[3]) ::minMax(minf[3],maxf[3],imag(avData));
+      if (funcSel[0]) ::casa::minMax(minf[0],maxf[0],amplitude(avData));
+      if (funcSel[1]) ::casa::minMax(minf[1],maxf[1],phase(avData));
+      if (funcSel[2]) ::casa::minMax(minf[2],maxf[2],real(avData));
+      if (funcSel[3]) ::casa::minMax(minf[3],maxf[3],imag(avData));
       if (start==0) {
 	minmax.row(0)=minf; minmax.row(1)=maxf;
       } else {
-	minmax.row(0)=::min(static_cast<Array<Float> >(minmax.row(0)),
+	minmax.row(0)=::casa::min(static_cast<Array<Float> >(minmax.row(0)),
 			    static_cast<Array<Float> >(minf));
-	minmax.row(1)=::max(static_cast<Array<Float> >(minmax.row(1))
+	minmax.row(1)=::casa::max(static_cast<Array<Float> >(minmax.row(1))
 			    ,static_cast<Array<Float> >(maxf));
       }
     }
@@ -647,3 +648,6 @@ Vector<Int> MSRange::ifrNumbers(const ROScalarColumn<Int>& ant1,
   Int n=GenSort<Int>::sort (a1, order, option);
   return a1(Slice(0,n));
 }
+
+} //# NAMESPACE CASA - END
+

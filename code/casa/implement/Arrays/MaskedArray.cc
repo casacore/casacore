@@ -31,6 +31,8 @@
 #include <casa/Arrays/ArrayLogical.h>
 #include <casa/Utilities/Assert.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 template<class T> 
 MaskedArray<T>::MaskedArray ()
 : pArray (0), pMask (0), nelemValid (0), nelemValidIsOK (False), 
@@ -1078,4 +1080,7 @@ template<class T, class U>
     return ( (leftShape.conform (rightShape)) && (leftShape == rightShape) )
            ? True : False;
 }
+
+
+} //# NAMESPACE CASA - END
 

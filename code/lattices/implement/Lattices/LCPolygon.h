@@ -32,6 +32,8 @@
 #include <lattices/Lattices/LCRegionFixed.h>
 #include <casa/Arrays/Vector.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Forward Declarations
 template<class T> class Matrix;
 
@@ -185,5 +187,8 @@ inline const Vector<Float>& LCPolygon::y() const
     return itsY;
 }
 
+
+
+} //# NAMESPACE CASA - END
 
 #endif

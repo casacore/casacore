@@ -34,6 +34,8 @@
 #include <tables/Tables/BaseTable.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 // <summary>
 // Class indicating a null Table object
 // </summary>
@@ -143,5 +145,8 @@ private:
 };
 
 
+
+
+} //# NAMESPACE CASA - END
 
 #endif

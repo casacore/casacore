@@ -36,6 +36,8 @@
 #include <casa/OS/Directory.h>
 #include <casa/IO/TapeIO.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //----------------------------------------------------------------------------
 
 MSFitsIDI::MSFitsIDI(const Path& tapeDevice, const String& msOut, 
@@ -383,4 +385,7 @@ void MSFitsIDI::createOutputMS()
 
 //----------------------------------------------------------------------------
 
+
+
+} //# NAMESPACE CASA - END
 

@@ -32,6 +32,8 @@
 #include <casa/IO/ByteIO.h>
 #include <casa/BasicSL/String.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 class Path;
 
 // <summary>Class for IO on a tape device</summary>
@@ -212,5 +214,8 @@ private:
 };
 
 
+
+
+} //# NAMESPACE CASA - END
 
 #endif

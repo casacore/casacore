@@ -34,6 +34,7 @@
 # include <casa/iostream.h>
 # include <casa/stdlib.h>
 
+#include <casa/namespace.h>
 int main()
 {
 	cout << "Test to create a binary table\n";

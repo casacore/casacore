@@ -39,6 +39,8 @@
 #include <coordinates/Coordinates/ObsInfo.h>
 #include <images/Images/ImageInfo.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Forward Declarations
 template <class T> class ImageInterface;
 template <class T> class Vector;
@@ -217,5 +219,8 @@ private:
     String makeMasksString() const;
     String makeRegionsString() const;
 };
+
+
+} //# NAMESPACE CASA - END
 
 #endif

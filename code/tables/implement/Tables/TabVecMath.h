@@ -38,6 +38,8 @@
 #include <tables/Tables/TVecMath.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 // <summary>
 // Basic math for table vectors.
 // </summary>
@@ -416,5 +418,8 @@ TableVector<T> crossProduct (const ROTableVector<T>& l,
 			     const ROTableVector<T>& r)
     { return TableVector<T> (tabVecRepcrossproduct (l.tabVec(), r.tabVec())); }
 
+
+
+} //# NAMESPACE CASA - END
 
 #endif

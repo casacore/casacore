@@ -29,6 +29,8 @@
 
 #include <casa/Quanta/UnitMap.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 // Initialise the maps
 void UnitMap::initUMPrefix() {
   UnitMap::mapPref->insert(map<String, UnitName>::value_type
@@ -72,3 +74,6 @@ void UnitMap::initUMPrefix() {
   UnitMap::mapPref->insert(map<String, UnitName>::value_type
 			   ("y", UnitName("y", C::yocto, "yocto")));
 }
+
+} //# NAMESPACE CASA - END
+

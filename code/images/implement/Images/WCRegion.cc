@@ -40,6 +40,8 @@
 #include <casa/Exceptions/Error.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 WCRegion::WCRegion()
 {}
 
@@ -313,3 +315,6 @@ void WCRegion::makeWorldAbsolute (Vector<Double>& world,
       }  
    }
 }
+
+} //# NAMESPACE CASA - END
+

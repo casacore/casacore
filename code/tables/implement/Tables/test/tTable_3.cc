@@ -46,6 +46,7 @@
 #include <casa/stdio.h>
 
 
+#include <casa/namespace.h>
 // <summary>
 // Program to test some performance aspects of the table system.
 // </summary>

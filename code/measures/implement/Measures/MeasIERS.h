@@ -35,6 +35,8 @@
 #include <tables/Tables/TableRecord.h>
 #include <casa/Containers/RecordField.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Forward Declarations
 class String;
 
@@ -256,5 +258,8 @@ private:
 };
 
 //# Inline Implementations
+
+
+} //# NAMESPACE CASA - END
 
 #endif

@@ -32,6 +32,8 @@
 #include <casa/aips.h>
 #include <casa/Utilities/DataType.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 // <summary> signature of comparison functions </summary>
 // <use visibility=export>
 // <reviewed reviewer="Friso Olnon" date="1995/02/24" tests="" demos="">
@@ -78,5 +80,8 @@ public:
     // that it can be used in the <linkto class="Sort">Sort</linkto> class.
     static int compare (const void* obj1, const void* obj2);
 };
+
+
+} //# NAMESPACE CASA - END
 
 #endif

@@ -43,6 +43,8 @@
 #include <casa/Utilities/Assert.h>
 #include <casa/BasicSL/String.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 DiskShape::DiskShape()
   :TwoSidedShape(),
    itsMajValue(Quantity(1,"'").getValue("rad")),
@@ -317,3 +319,6 @@ Double DiskShape::calcSample(const MDirection::MVType& compDirValue,
 // Local Variables: 
 // compile-command: "gmake DiskShape"
 // End: 
+
+} //# NAMESPACE CASA - END
+

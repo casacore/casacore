@@ -34,6 +34,8 @@
 #include <casa/Containers/Block.h>
 #include <casa/Containers/RecordField.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Forward Declarations
 
 class Table;
@@ -241,6 +243,9 @@ private:
     Block<RecordFieldPtr<Array<DComplex> > > out_record_array_dcomplex;
     Block<RecordFieldPtr<Array<String> > > out_record_array_string;
 };
+
+
+} //# NAMESPACE CASA - END
 
 #endif
 

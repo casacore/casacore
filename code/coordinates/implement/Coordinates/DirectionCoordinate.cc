@@ -55,6 +55,8 @@
 #include <casa/sstream.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 DirectionCoordinate::DirectionCoordinate()
 : Coordinate(),
   type_p(MDirection::J2000), 
@@ -1291,12 +1293,12 @@ Bool DirectionCoordinate::near(const Coordinate& other,
 
 // {lon,lat}poles
 
-    if (!::near(Double(wcs_p.lonpole), Double(dCoord.wcs_p.lonpole))) {
+    if (!::casa::near(Double(wcs_p.lonpole), Double(dCoord.wcs_p.lonpole))) {
        oss << "The DirectionCoordinates have differing lonpoles";
        set_error(String(oss));
        return False;      
     }
-    if (!::near(Double(wcs_p.latpole), Double(dCoord.wcs_p.latpole))) {
+    if (!::casa::near(Double(wcs_p.latpole), Double(dCoord.wcs_p.latpole))) {
        oss << "The DirectionCoordinates have differing latpoles";
        set_error(String(oss));
        return False;      
@@ -1314,7 +1316,7 @@ Bool DirectionCoordinate::near(const Coordinate& other,
       }
       for (uInt i=0; i<thisVal.nelements(); i++) {
          if (!exclude[i]) {
-            if (!::near(thisVal[i],thatVal[i])) {
+            if (!::casa::near(thisVal[i],thatVal[i])) {
                oss << "The DirectionCoordinates have differing reference values for axis "
                    << i;
                set_error(String(oss));
@@ -2157,3 +2159,6 @@ void DirectionCoordinate::xFormToPC (wcsprm& wcs, const Matrix<Double>& xform) c
      }
    }
 }
+
+} //# NAMESPACE CASA - END
+

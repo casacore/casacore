@@ -37,6 +37,8 @@
 #include <casa/Containers/Block.h>
 #include <tables/Tables/Table.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 class String;
 class Path;
 class MVDirection;
@@ -431,5 +433,8 @@ private:
   Block<Bool> itsSelectedFlags;
   Block<uInt> itsOrder;
 };
+
+} //# NAMESPACE CASA - END
+
 #endif
 

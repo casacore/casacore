@@ -32,6 +32,8 @@
 #include <casa/aips.h>
 #include <casa/Utilities/CountedPtr.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 // <summary>
 // Copy-On-Write-Pointer class - allows control of copy based on constness.
 // </summary>
@@ -339,5 +341,8 @@ template <class T> inline Bool COWPtr<T>::isUnique() const
   return (const_p || obj_p.nrefs()>1) ? False : True;
 }
 
+
+
+} //# NAMESPACE CASA - END
 
 #endif

@@ -33,6 +33,8 @@
 #include <tables/Tables/VirtArrCol.h>
 #include <casa/Arrays/IPosition.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Forward Declarations
 template<class T> class ROArrayColumn;
 template<class T> class ArrayColumn;
@@ -444,5 +446,8 @@ inline ArrayColumn<TargetType>&
 BaseMappedArrayEngine<SourceType, TargetType>::rwColumn()
     { return *column_p; }
 
+
+
+} //# NAMESPACE CASA - END
 
 #endif

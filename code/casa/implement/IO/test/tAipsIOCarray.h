@@ -32,6 +32,7 @@
 #include <casa/IO/AipsIOCarray.h>
 
 
+#include <casa/namespace.h>
 // <summary>
 // Example class for use in AipsIOCarray functions
 // </summary>

@@ -37,6 +37,8 @@
 #include <measures/Measures/MConvertBase.h>
 #include <measures/Measures/MEpoch.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Forward Declarations
 class MCEpoch;
 class Nutation;
@@ -188,5 +190,8 @@ private:
 		 const MConvertBase &mc);
   
 };
+
+
+} //# NAMESPACE CASA - END
 
 #endif

@@ -33,6 +33,7 @@
 
 #include <casa/BasicMath/Math.h>
 
+#include <casa/namespace.h>
 int main() {
   try {
     {

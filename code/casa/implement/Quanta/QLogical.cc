@@ -32,6 +32,8 @@
 #include <casa/Arrays/ArrayLogical.h>
 #include <casa/Exceptions/Error.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 template <class Qtype>
 Bool operator==(const Quantum<Qtype> &left, const Quantum<Qtype> &other) {
     if (left.getFullUnit().getValue() == other.getFullUnit().getValue() ){
@@ -233,4 +235,7 @@ template <class Qtype>
 Bool operator>=(const Qtype &left, const Quantum<Qtype> &other) {
     return QMakeBool(!(left < other));
 }
+
+
+} //# NAMESPACE CASA - END
 

@@ -34,6 +34,8 @@
 #include <components/ComponentModels/ComponentType.h>
 #include <casa/BasicSL/Complex.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 class MVAngle;
 class MDirection;
 class RecordInterface;
@@ -259,4 +261,7 @@ private:
                                     const MDirection::MVType& dirValue,
                                     const MDirection::MVType* compDirValue) const;
 };
+
+} //# NAMESPACE CASA - END
+
 #endif

@@ -39,6 +39,8 @@
 #include <casa/Utilities/DataType.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Forward Declarations
 template <class T> class Array;
 template <class T> class Lattice;
@@ -274,5 +276,8 @@ private:
                      Int& magicLong, Bool& hasBlanks, LogIO& os, FitsInput& infile);
 };
 
+
+
+} //# NAMESPACE CASA - END
 
 #endif

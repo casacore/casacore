@@ -36,6 +36,7 @@
 #include <casa/iostream.h>
 
 
+#include <casa/namespace.h>
 // This test program tests the AipsIO class.
 // It writes all kind of stuff, reads it back and writes it to stdout.
 // A script compares this output with a reference output file.

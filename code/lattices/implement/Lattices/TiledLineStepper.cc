@@ -34,6 +34,8 @@
 #include <casa/sstream.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 TiledLineStepper::TiledLineStepper (const IPosition& latticeShape, 
 				    const IPosition& tileShape,
 				    const uInt axis)
@@ -568,3 +570,6 @@ Bool TiledLineStepper::ok() const
   // Otherwise it has passed all the tests
   return True;
 }
+
+} //# NAMESPACE CASA - END
+

@@ -32,6 +32,8 @@
 #include <casa/Arrays/ArrayMath.h>
 #include <casa/sstream.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 template <class Qtype>
 Quantum<Qtype> operator+(const Quantum<Qtype> &left,
 			 const Qtype &other) {
@@ -131,7 +133,7 @@ template <class Qtype>
 Quantum<Qtype> root(const Quantum<Qtype> &left, Int p) {
   if (p == 0) throw (AipsError("Quantum::root exponent zero"));
   Quantum<Qtype> res;
-  res.setValue(::pow(left.getValue(), 1.0/Double(p)));
+  res.setValue(casa::pow(left.getValue(), 1.0/Double(p)));
   UnitVal vres(left.getFullUnit().getValue().root(p));
   ostringstream oss;
   oss << vres.getDim();
@@ -315,3 +317,6 @@ Quantum<Qtype> exp(const Quantum<Qtype> &left) {
     res.setUnit("");
     return (res);
 }
+
+} //# NAMESPACE CASA - END
+

@@ -32,10 +32,12 @@
 //# Includes
 #include <casa/aips.h>
 #include <casa/Quanta/QBase.h>
+#include <casa/iosstrfwd.h>
+
+namespace casa { //# NAMESPACE CASA - BEGIN
 
 //# Forward Declarations
 template <class T> class Quantum;
-#include <casa/iosstrfwd.h>
 
 //# Typedefs
 typedef Quantum<Double> Quantity;
@@ -425,5 +427,8 @@ private:
 // only Quantity is supported on input
 istream& operator>> (istream &is, Quantity &ku);
 // </group>
+
+
+} //# NAMESPACE CASA - END
 
 #endif

@@ -31,6 +31,8 @@
 #include <casa/Exceptions/Error.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 MemoryIO::MemoryIO (uInt64 initialSize, uInt64 expandSize)
 : itsBuffer     (0),
   itsAlloc      (initialSize),
@@ -258,3 +260,6 @@ uChar* MemoryIO::setBuffer (uInt64 length)
   itsUsed = length;
   return itsBuffer;
 }
+
+} //# NAMESPACE CASA - END
+

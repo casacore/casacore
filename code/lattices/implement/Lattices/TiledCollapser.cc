@@ -29,6 +29,8 @@
 #include <lattices/Lattices/TiledCollapser.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 template<class T, class U>
 TiledCollapser<T,U>::~TiledCollapser()
 {}
@@ -38,3 +40,6 @@ Bool TiledCollapser<T,U>::canHandleNullMask() const
 {
     return False;
 }
+
+} //# NAMESPACE CASA - END
+

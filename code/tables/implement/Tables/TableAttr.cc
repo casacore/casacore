@@ -31,6 +31,8 @@
 #include <tables/Tables/Table.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 TableAttr::TableAttr()
 : openWritable_p (False)
 {}
@@ -78,3 +80,6 @@ void TableAttr::set (const Table& table)
     openWritable_p = table.isWritable();
     lockOptions_p  = table.lockOptions();
 }
+
+} //# NAMESPACE CASA - END
+

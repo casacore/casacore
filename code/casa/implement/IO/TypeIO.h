@@ -36,6 +36,8 @@
 //# forward declarations when Complex and DComplex are no longer typedefs.
 #include <casa/BasicSL/Complex.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 class String;
 
 // <summary>Abstract base class for IO of data in a type-dependent format</summary>
@@ -161,5 +163,8 @@ protected:
 };
 
 
+
+
+} //# NAMESPACE CASA - END
 
 #endif

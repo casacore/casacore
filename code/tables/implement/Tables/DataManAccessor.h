@@ -31,6 +31,8 @@
 //# Includes
 #include <casa/aips.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Forward Declarations
 class DataManager;
 class Table;
@@ -110,5 +112,8 @@ inline RODataManAccessor& RODataManAccessor::operator=
 { return *this; }
 
 
+
+
+} //# NAMESPACE CASA - END
 
 #endif

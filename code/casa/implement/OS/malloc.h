@@ -616,7 +616,6 @@ do {                                                                          \
 */
 
 /* #define HAVE_USR_INCLUDE_MALLOC_H */
-
 #if HAVE_USR_INCLUDE_MALLOC_H
 #include "/usr/include/malloc.h"
 #else
@@ -657,6 +656,7 @@ struct mallinfo {
 #define M_KEEP    4    /* UNUSED in this malloc */
 
 #endif
+
 
 /* mallopt options that actually do something */
 

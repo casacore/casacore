@@ -37,6 +37,8 @@
 #include <scimath/Mathematics/MedianSlider.h> 
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 // min number of deviations for which average is considered valid
 const int   RFA_MIN_NAD = 20;
 // significant change in accumulated average
@@ -194,4 +196,7 @@ protected:
   void setupMapper () 
     { RFDataMapper::setVisBuffer(chunk.visBuf()); }
 };
+
+} //# NAMESPACE CASA - END
+
 #endif

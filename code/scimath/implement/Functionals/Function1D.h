@@ -32,6 +32,8 @@
 #include <casa/aips.h>
 #include <scimath/Functionals/Function.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Forward declarations
 
 // <summary> Numerical functional interface class for 1 dimension
@@ -98,5 +100,8 @@ public:
   using Function<T,U>::nparameters;
   using Function<T,U>::setMode;
 };
+
+
+} //# NAMESPACE CASA - END
 
 #endif

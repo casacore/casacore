@@ -35,6 +35,8 @@
 #include <casa/IO/FileLocker.h>
 #include <casa/BasicSL/String.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Forward Declarations
 class LogIO;
 
@@ -247,5 +249,8 @@ protected:
   void throwBoolMath() const;
 };
 
+
+
+} //# NAMESPACE CASA - END
 
 #endif

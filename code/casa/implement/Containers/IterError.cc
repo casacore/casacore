@@ -28,6 +28,8 @@
 #include <casa/Containers/IterError.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 // The normal constructor when throwing the exception.
 IterError::IterError (const char *msg,Category c) : 
           AipsError(msg ? msg : "Iterator Error.",c) {}
@@ -56,3 +58,6 @@ InvalidIterError::InvalidIterError (const char *msg,Category c) :
 
 InvalidIterError::~InvalidIterError () throw()
 { ; }
+
+} //# NAMESPACE CASA - END
+

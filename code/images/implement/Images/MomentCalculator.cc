@@ -44,6 +44,8 @@
 
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 // Base class MomentCalcBase 
 
 template <class T> 
@@ -2973,4 +2975,7 @@ void MomentFit<T>::multiProcess(Vector<T>& moments,
       momentsMask(i) = calcMomentsMask_p(selectMoments_p(i));
    }
 }
+
+
+} //# NAMESPACE CASA - END
 

@@ -35,6 +35,8 @@
 #include <casa/BasicSL/Complex.h>
 #include <measures/Measures/Stokes.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 // <summary>
 // StokesConverter converts any set of polarizations into any other one
 // </summary>
@@ -177,5 +179,8 @@ private:
   Matrix<Float> wtConv_p;
   Matrix<Complex> polConv_p;
 };
+
+
+} //# NAMESPACE CASA - END
 
 #endif

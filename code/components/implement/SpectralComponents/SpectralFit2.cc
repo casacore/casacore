@@ -36,6 +36,8 @@
 #include <scimath/Functionals/Gaussian1D.h>
 #include <scimath/Functionals/Polynomial.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Templated member functions
 
 template <class MT>
@@ -147,4 +149,7 @@ template Bool SpectralFit::fit<Float>(Vector<Float> const &,
 			       Vector<Float> const &,
 			       Vector<Float> const &,
 			       Vector<Bool> const &);
+
+
+} //# NAMESPACE CASA - END
 

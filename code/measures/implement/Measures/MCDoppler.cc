@@ -28,6 +28,8 @@
 //# Includes
 #include <measures/Measures/MCDoppler.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Statics
 Bool MCDoppler::stateMade_p = False;
 uInt MCDoppler::ToRef_p[N_Routes][3] = {
@@ -161,3 +163,6 @@ String MCDoppler::showState() {
 			   MDoppler::N_Types, MCDoppler::N_Routes,
 			   MCDoppler::ToRef_p);
 }
+
+} //# NAMESPACE CASA - END
+

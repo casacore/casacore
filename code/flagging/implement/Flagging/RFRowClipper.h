@@ -32,6 +32,8 @@
 #include <casa/Arrays/Vector.h>
 #include <casa/Arrays/Matrix.h>
     
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 class RFFlagCube;
 class RFChunkStats;
 class RFDebugPlot;
@@ -122,5 +124,8 @@ inline void RFRowClipper::markSigma (uInt ifr)
 {
   sigupdated(ifr) = True;
 }
+
+
+} //# NAMESPACE CASA - END
 
 #endif

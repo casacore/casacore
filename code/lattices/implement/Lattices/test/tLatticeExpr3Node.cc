@@ -45,6 +45,7 @@
 #include <casa/iostream.h>
 
 
+#include <casa/namespace.h>
 Bool checkFloat (const LatticeExprNode& expr, 
 		 const SubLattice<Float>& lat,
 		 const LCRegion& region)

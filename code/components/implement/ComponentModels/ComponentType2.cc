@@ -34,6 +34,8 @@
 #include <components/ComponentModels/SpectralIndex.h>
 #include <components/ComponentModels/SpectralModel.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 // The functions declared below are contained in a seperate .cc file to prevent
 // all the derived classes from unnecessarily being linked in when they are not
 // needed.
@@ -66,3 +68,6 @@ construct(ComponentType::SpectralShape spectralEnum) {
 // Local Variables: 
 // compile-command: "gmake ComponentType2"
 // End: 
+
+} //# NAMESPACE CASA - END
+

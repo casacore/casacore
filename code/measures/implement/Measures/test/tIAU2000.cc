@@ -45,6 +45,7 @@
 #include <casa/BasicSL/String.h>
 #include <casa/iostream.h>
 
+#include <casa/namespace.h>
 // Print separation line of given (default 75) length
 void SEPAR(const uInt l=75) {
   cout << String(l, '-') << endl;

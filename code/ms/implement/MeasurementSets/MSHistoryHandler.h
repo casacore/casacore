@@ -33,6 +33,8 @@
 #include <ms/MeasurementSets/MSHistory.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 class MSHistoryColumns;
 class LogIO;
 class LogSinkInterface;
@@ -90,5 +92,8 @@ class MSHistoryHandler
   String application_p;
 
 };
+
+
+} //# NAMESPACE CASA - END
 
 #endif

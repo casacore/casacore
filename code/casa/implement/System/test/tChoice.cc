@@ -31,6 +31,7 @@
 #include <casa/Utilities/Assert.h>
 #include <iostream>
 
+#include <casa/namespace.h>
 int main()
 {
   Vector<String> choices(3);

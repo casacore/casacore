@@ -46,6 +46,8 @@
 #include <casa/sstream.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 TabularCoordinate::TabularCoordinate()
 : Coordinate(),
   crval_p(0), 
@@ -514,19 +516,19 @@ Bool TabularCoordinate::near(const Coordinate& other,
 // than working through the table so check them anyway.
 
    const TabularCoordinate& tCoord = dynamic_cast<const TabularCoordinate&>(other);
-   if (!::near(crval_p,tCoord.crval_p,tol)) {
+   if (!::casa::near(crval_p,tCoord.crval_p,tol)) {
       set_error("The TabularCoordinates have differing average reference values");
       return False;
    }
-   if (!::near(crpix_p,tCoord.crpix_p,tol)) {
+   if (!::casa::near(crpix_p,tCoord.crpix_p,tol)) {
       set_error("The TabularCoordinates have differing average reference pixels");
       return False;
    }
-   if (!::near(cdelt_p,tCoord.cdelt_p,tol)) {
+   if (!::casa::near(cdelt_p,tCoord.cdelt_p,tol)) {
       set_error("The TabularCoordinates have differing average increments");
       return False;
    }
-   if (!::near(matrix_p,tCoord.matrix_p,tol)) {
+   if (!::casa::near(matrix_p,tCoord.matrix_p,tol)) {
 
 // It's really just one component of the matrix
 
@@ -546,7 +548,7 @@ Bool TabularCoordinate::near(const Coordinate& other,
    }
    uInt i;
    for (i=0; i<data1.nelements(); i++) {
-      if (!::near(data1(i),data2(i),tol)) {
+      if (!::casa::near(data1(i),data2(i),tol)) {
          set_error("The TabularCoordinates have differing pixel value tables");
          return False;
       }
@@ -559,7 +561,7 @@ Bool TabularCoordinate::near(const Coordinate& other,
       return False;
    }
    for (i=0; i<data1.nelements(); i++) {
-      if (!::near(data1(i),data2(i),tol)) {
+      if (!::casa::near(data1(i),data2(i),tol)) {
          set_error("The TabularCoordinates have differing world value tables");
          return False;
       }
@@ -805,4 +807,7 @@ void TabularCoordinate::setDefaultWorldMixRanges ()
    Coordinate::setDefaultWorldMixRanges (worldMin_p, worldMax_p);
 }
 
+
+
+} //# NAMESPACE CASA - END
 

@@ -32,6 +32,8 @@
 #include <casa/Arrays/Vector.h>
 #include <casa/iostream.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 #define NEED_UNDERSCORES
 #if defined(NEED_UNDERSCORES)
 #define grdsf grdsf_
@@ -55,6 +57,7 @@
 #define fdgrd1d fdgrd1d_
 #define fdgrd2d fdgrd2d_
 #define fdgrd3d fdgrd3d_
+
 #endif
 
 extern "C" { 
@@ -438,4 +441,5 @@ Int& ConvolveGridder<Domain, Range>::cSampling() {
   return sampling;
 }
 
+} //# NAMESPACE CASA - END
 

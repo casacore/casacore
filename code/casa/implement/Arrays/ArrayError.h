@@ -34,6 +34,8 @@
 #include <casa/Arrays/IPosition.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 // <summary> The base class for all Array exception classes. </summary>
 // <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="" demos="">
 // </reviewed>
@@ -198,5 +200,8 @@ public:
     ArraySlicerError(const String &m,Category c=GENERAL);
     ~ArraySlicerError() throw();
 };
+
+
+} //# NAMESPACE CASA - END
 
 #endif

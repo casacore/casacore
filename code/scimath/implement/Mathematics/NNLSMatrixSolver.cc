@@ -35,6 +35,8 @@
 #include <casa/sstream.h>
 
 #if !defined(NEED_FORTRAN_UNDERSCORES)
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 #define NEED_FORTRAN_UNDERSCORES 1
 #endif
 
@@ -114,4 +116,7 @@ Bool NNLSMatrixSolver::solve() // Solve AX=B for X
   }
   return Solved();
 }
+
+
+} //# NAMESPACE CASA - END
 

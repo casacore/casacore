@@ -37,6 +37,8 @@
 #include <casa/Arrays/Vector.h>
 #include <casa/Exceptions/Error.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 MSProcessor::MSProcessor():hasBeenDestroyed_p(True) { }
 
 MSProcessor::MSProcessor(const String &tableName, TableOption option) 
@@ -172,3 +174,6 @@ MSProcessor MSProcessor::referenceCopy(const String& newTableName,
     return MSProcessor(MSTable<PredefinedColumns,PredefinedKeywords>::
 		     referenceCopy(newTableName,writableColumns));
 }
+
+} //# NAMESPACE CASA - END
+

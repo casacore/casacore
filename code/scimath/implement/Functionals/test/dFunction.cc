@@ -39,6 +39,7 @@
 #include <casa/OS/Timer.h>
 #include <casa/iostream.h>
 
+#include <casa/namespace.h>
 // 3 flavours of calculating a Gaussian
 // The inputs are the parameters and the x value
 

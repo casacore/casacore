@@ -40,6 +40,8 @@
 #include <casa/iostream.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 CountedPtr<LogSinkInterface> *LogSink::global_sink_p = 0;
 
 String LogSink::localId( ) {
@@ -297,3 +299,6 @@ void LogSink::flush (Bool global)
         (*global_sink_p)->flush(False);
     }
 }
+
+} //# NAMESPACE CASA - END
+

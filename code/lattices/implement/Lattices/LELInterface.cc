@@ -32,6 +32,8 @@
 #include <casa/Exceptions/Error.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 template<class T>
 LELInterface<T>::~LELInterface()
 {}
@@ -104,4 +106,7 @@ Bool LELInterface<T>::hasLock (FileLocker::LockType) const
 template<class T>
 void LELInterface<T>::resync()
 {}
+
+
+} //# NAMESPACE CASA - END
 

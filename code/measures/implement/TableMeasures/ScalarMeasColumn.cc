@@ -40,6 +40,8 @@
 #include <casa/Utilities/Assert.h>
 #include <casa/BasicSL/String.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 template<class M>
 ROScalarMeasColumn<M>::ROScalarMeasColumn()
 : itsArrDataCol(0),
@@ -486,3 +488,6 @@ Bool ScalarMeasColumn<M>::equalRefs (const MRBase& r1, const MRBase& r2) const
 {
   return ((r1.getType() == r2.getType()) && (r1.offset() == r2.offset()));
 }
+
+} //# NAMESPACE CASA - END
+

@@ -31,6 +31,8 @@
 
 #include <casa/aips.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 // <use visibility=export>
 
 // <summary> Enums for the MeasurementSet SYSCAL table </summary>
@@ -156,5 +158,8 @@ public:
     NUMBER_PREDEFINED_KEYWORDS=0
     };
 };
+
+} //# NAMESPACE CASA - END
+
 #endif
 

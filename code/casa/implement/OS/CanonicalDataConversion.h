@@ -32,6 +32,8 @@
 #include <casa/OS/DataConversion.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 // <summary>
 // A class with virtual functions to convert canonical format.
 // </summary>
@@ -186,5 +188,8 @@ public:
 inline CanonicalDataConversion::CanonicalDataConversion()
 {}
 
+
+
+} //# NAMESPACE CASA - END
 
 #endif

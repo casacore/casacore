@@ -31,6 +31,8 @@
 #include <casa/Quanta/RotMatrix.h>
 #include <casa/Quanta/Euler.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 // RotMatrix class
 
 //# Constructors
@@ -165,3 +167,6 @@ applySingle(Double angle, Int which) {
     this->operator*=(tmp);
   }
 }
+
+} //# NAMESPACE CASA - END
+

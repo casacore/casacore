@@ -35,6 +35,8 @@
 #include <tables/Tables/ColumnSet.h>
 #include <tables/Tables/TableRecord.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Forward Declarations
 class TableAttr;
 class BaseColumnDesc;
@@ -189,5 +191,8 @@ inline void PlainColumn::checkWriteLock (Bool wait) const
 inline void PlainColumn::autoReleaseLock() const
     { colSetPtr_p->autoReleaseLock(); }
 
+
+
+} //# NAMESPACE CASA - END
 
 #endif

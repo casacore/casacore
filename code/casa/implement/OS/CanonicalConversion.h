@@ -33,6 +33,8 @@
 #include <casa/OS/Conversion.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 // Define the canonical sizes of the built-in data types.
 // These are the same for all machine architectures.
 // Also define the maximum size.
@@ -967,5 +969,8 @@ inline unsigned int CanonicalConversion::canonicalSize (const double*)
 //#//    {return SIZE_CAN_LDOUBLE;}
 
 
+
+
+} //# NAMESPACE CASA - END
 
 #endif

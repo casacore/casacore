@@ -38,6 +38,8 @@
 #include <casa/IO/MemoryIO.h>
 #include <casa/Utilities/Assert.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 #define BLOCKDATAMANVAL(I) ((DataManager*)(blockDataMan_p[I]))
 #define COLMAPVAL(I)       ((PlainColumn*)(colMap_p.getVal(I)))
 #define COLMAPNAME(NAME)   ((PlainColumn*)(colMap_p(NAME)))
@@ -889,3 +891,6 @@ void ColumnSet::syncColumns (const ColumnSet& other,
 	oldKeySet = newKeySet;
     }
 }
+
+} //# NAMESPACE CASA - END
+

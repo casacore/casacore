@@ -35,6 +35,8 @@
 #include <casa/Utilities/CountedPtr.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 // <summary>
 // A readonly iterator for masked Lattices.
 // </summary>
@@ -204,5 +206,8 @@ private:
   CountedPtr<MaskedLattice<T> > itsMaskLattPtr;
 };
 
+
+
+} //# NAMESPACE CASA - END
 
 #endif

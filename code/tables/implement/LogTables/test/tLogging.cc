@@ -45,6 +45,7 @@
 #include <casa/sstream.h>
 #include <casa/iostream.h>
 
+#include <casa/namespace.h>
 void testLogFilter()
 {
     // LogFilter(LogMessage::Priority lowest=LogMessage::DEBUGGING);

@@ -36,6 +36,8 @@
 #include <casa/Arrays/Vector.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 // this class is used internally by RowCopier and is what really does the work.
 
 class ColumnHolder {
@@ -178,3 +180,6 @@ RowCopier::~RowCopier()
 	columns_p = 0;
     }
 }
+
+} //# NAMESPACE CASA - END
+

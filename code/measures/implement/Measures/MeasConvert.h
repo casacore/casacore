@@ -35,6 +35,8 @@
 #include <measures/Measures/MConvertBase.h>
 #include <casa/Quanta/Quantum.h>
 #include <measures/Measures/Measure.h>
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 /// #include <measures/Measures/MeasRef.h>
 
 //# Forward Declarations
@@ -277,5 +279,8 @@ private:
 };
 
 //# Global functions
+
+
+} //# NAMESPACE CASA - END
 
 #endif

@@ -31,6 +31,8 @@
 #include <casa/stdlib.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 Bool EnvironmentVariable::isDefined (const String& name)
 {
   return getenv (name.chars());
@@ -54,3 +56,6 @@ void EnvironmentVariable::set (const String& name, const String& value)
   // Note that putenv takes over the pointer, so we should not delete str.
   AlwaysAssert (putenv(str) == 0, AipsError);
 }
+
+} //# NAMESPACE CASA - END
+

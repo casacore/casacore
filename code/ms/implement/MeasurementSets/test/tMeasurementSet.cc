@@ -45,6 +45,7 @@
 #include <casa/iostream.h>
 
 
+#include <casa/namespace.h>
 // test functions, all return the number of errors unless otherwise stated
 // test PredefinedColumns static functions in MeasurementSet
 

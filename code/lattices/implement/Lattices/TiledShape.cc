@@ -33,6 +33,8 @@
 #include <casa/Exceptions/Error.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 TiledShape::TiledShape()
 : itsTileDefined (True)
 {}
@@ -279,3 +281,6 @@ IPosition TiledShape::defaultTileShape (uInt nrPixelsPerTile,
     }
     return bestShape;
 }
+
+} //# NAMESPACE CASA - END
+

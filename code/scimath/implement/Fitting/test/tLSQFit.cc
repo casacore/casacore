@@ -35,6 +35,7 @@
 #include <casa/BasicMath/Random.h>
 #include <casa/iostream.h>
 
+#include <casa/namespace.h>
 Double Y(const Double x, const Double y=3e-15) {
   return (abs(x) < y) ? 0 : x;
 }

@@ -35,6 +35,8 @@
 #include <casa/Exceptions/Error.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 TableMeasValueDesc::TableMeasValueDesc()
 {}
 
@@ -92,3 +94,6 @@ void TableMeasValueDesc::checkColumn (const TableDesc& td) const
 		      "must be Double: " + itsColumn));
   }
 }
+
+} //# NAMESPACE CASA - END
+

@@ -37,6 +37,8 @@
 #include <sys/types.h>
 #include <sys/time.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 extern void throw_invalid_sysevent();
 extern void throw_sysevent_systarget_mismatch();
 extern void throw_sysevent_init_error();
@@ -338,5 +340,8 @@ public:
     TargetType type() const { return tgtProc ? ProcTgt : ClassTgt; }
     virtual uInt id() const { return Register(this); }
 };
+
+
+} //# NAMESPACE CASA - END
 
 #endif

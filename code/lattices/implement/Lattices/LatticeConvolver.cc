@@ -37,6 +37,8 @@
 #include <casa/OS/HostInfo.h>
 #include <casa/iostream.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 const Int maxLatSize = HostInfo::memoryTotal()/1024/8;
 
 template<class T> LatticeConvolver<T>::
@@ -465,3 +467,6 @@ setFastConvolve(){
 // Local Variables: 
 // compile-command: "cd test; gmake OPTLIB=1 inst tLatticeConvolver"
 // End: 
+
+} //# NAMESPACE CASA - END
+

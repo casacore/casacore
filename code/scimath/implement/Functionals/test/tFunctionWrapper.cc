@@ -36,6 +36,7 @@
 
 #include <casa/iostream.h>
 
+#include <casa/namespace.h>
 // Some C++ functions
 static Double func0(const Vector<Double> &) {return 1;};            // 1
 static Double func1(const Vector<Double> &x) {return x(0);};         // x

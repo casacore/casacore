@@ -35,6 +35,7 @@
 #include <casa/Exceptions/Error.h>
 #include <casa/iostream.h>
 
+#include <casa/namespace.h>
 // <summary> Test program for hypercolumns in TableDesc </summary>
 
 // This program tests the hypercolumn functionality in class TableDesc.

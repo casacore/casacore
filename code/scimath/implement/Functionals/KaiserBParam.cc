@@ -28,6 +28,8 @@
 //# Includes
 #include <scimath/Functionals/KaiserBParam.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 template<class T>
 KaiserBParam<T>::KaiserBParam() :
   Function<T>(4) {
@@ -59,3 +61,6 @@ KaiserBParam<T> &KaiserBParam<T>::operator=(const KaiserBParam<T> &other) {
   if (this != &other) Function<T>::operator=(other);
   return *this;
 }
+
+} //# NAMESPACE CASA - END
+

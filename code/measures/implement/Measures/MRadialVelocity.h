@@ -35,6 +35,8 @@
 #include <measures/Measures/MeasRef.h>
 #include <casa/Quanta/MVRadialVelocity.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Forward Declarations
 class MRadialVelocity;
 class MCRadialVelocity;
@@ -291,5 +293,8 @@ class MRadialVelocity : public MeasBase<MVRadialVelocity, MeasRef<MRadialVelocit
   //# Member functions
   
 };
+
+
+} //# NAMESPACE CASA - END
 
 #endif

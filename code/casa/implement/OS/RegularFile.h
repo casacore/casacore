@@ -35,6 +35,8 @@
 #include <casa/BasicSL/String.h>
 	
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 // <summary> 
 // Manipulate and get information about regular files
 // </summary>
@@ -191,5 +193,8 @@ inline void RegularFile::move (const String& target, Bool overwrite)
     move (Path(target), overwrite);
 }
 
+
+
+} //# NAMESPACE CASA - END
 
 #endif

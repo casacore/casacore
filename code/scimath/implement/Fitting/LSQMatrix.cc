@@ -28,6 +28,8 @@
 //# Includes
 #include <scimath/Fitting/LSQMatrix.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //# Constructors
 LSQMatrix::LSQMatrix() 
   : n_p(0),
@@ -129,3 +131,6 @@ void LSQMatrix::mulDiagonal(uInt n, Double fac) {
   fac += 1.0;
   for (uInt i=0; i<n; ++i) *diag(i) *= fac;
 }
+
+} //# NAMESPACE CASA - END
+

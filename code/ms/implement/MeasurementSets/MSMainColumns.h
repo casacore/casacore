@@ -37,6 +37,8 @@
 #include <measures/TableMeasures/ScalarQuantColumn.h>
 #include <measures/TableMeasures/ArrayQuantColumn.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 class MeasurementSet;
 class String;
 template <class T> class Vector;
@@ -597,6 +599,9 @@ private:
   ArrayQuantColumn<Double> uvw2Quant_p;
 
 };
+
+
+} //# NAMESPACE CASA - END
 
 #endif
 

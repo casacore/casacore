@@ -32,6 +32,8 @@
 #include <tables/Tables/TableRecord.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 WCIntersection::WCIntersection (const ImageRegion& region1,
 				const ImageRegion& region2)
 : WCCompound (region1, region2)
@@ -120,3 +122,6 @@ WCIntersection* WCIntersection::fromRecord (const TableRecord& rec,
     unmakeRecord (regions, rec.asRecord("regions"), tableName);
     return new WCIntersection (True, regions);
 }
+
+} //# NAMESPACE CASA - END
+

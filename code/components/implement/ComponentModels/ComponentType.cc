@@ -28,6 +28,8 @@
 #include <components/ComponentModels/ComponentType.h>
 #include <casa/BasicSL/String.h>
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 String ComponentType::name(ComponentType::Shape shapeEnum) {
   switch (shapeEnum) {
   case ComponentType::POINT: 
@@ -114,3 +116,6 @@ ComponentType::SpectralShape ComponentType::spectralShape(const String &
 // Local Variables: 
 // compile-command: "gmake OPTLIB=1 ComponentType"
 // End: 
+
+} //# NAMESPACE CASA - END
+

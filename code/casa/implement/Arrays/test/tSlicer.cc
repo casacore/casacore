@@ -33,6 +33,7 @@
 #include <casa/Arrays/ArrayError.h>
 #include <casa/iostream.h>
 
+#include <casa/namespace.h>
 // <summary> Test the Slicer class </summary>
 
 //# Forward Declarations

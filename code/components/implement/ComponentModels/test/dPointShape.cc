@@ -39,6 +39,7 @@
 #include <casa/BasicSL/String.h>
 #include <casa/iostream.h>
 
+#include <casa/namespace.h>
 void printShape(const ComponentShape& theShape) {
   cout << "This is a " << ComponentType::name(theShape.type())
        << " shape " << endl 

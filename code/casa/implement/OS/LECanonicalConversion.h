@@ -33,6 +33,8 @@
 #include <casa/OS/Conversion.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 // Define the little endian canonical sizes of the built-in data types.
 // These are the same for all machine architectures.
 
@@ -971,5 +973,8 @@ inline unsigned int LECanonicalConversion::canonicalSize (const double*)
 //#//    {return SIZE_LECAN_LDOUBLE;}
 
 
+
+
+} //# NAMESPACE CASA - END
 
 #endif

@@ -35,6 +35,8 @@
 #include <casa/Arrays/IPosition.h>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 // <summary>
 // Step a Vector cursor optimally through a tiled Lattice.
 // </summary>
@@ -345,5 +347,8 @@ private:
   Bool itsStart;                 //# Is the cursor at the beginning?
 };
 
+
+
+} //# NAMESPACE CASA - END
 
 #endif

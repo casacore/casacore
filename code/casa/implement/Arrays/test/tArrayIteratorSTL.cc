@@ -31,6 +31,7 @@
 #include <casa/iostream.h>
 
 
+#include <casa/namespace.h>
 void testSub (Array<Int>& arr1, const IPosition& blc,
 	      const IPosition& trc, const IPosition& inc)
 {
