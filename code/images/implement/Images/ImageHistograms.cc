@@ -517,16 +517,13 @@ Bool ImageHistograms<T>::getHistograms (Array<Float>& values,
    cursorShape(0) = pHistImage_p->shape()(0);
 
    IPosition vectorAxis(1); vectorAxis(0) = 0;
-
-   IPosition axisPath(pHistImage_p->ndim());
-   for (Int i=0; i<axisPath.nelements(); i++) axisPath(i) = i;
    
 // Make the stepper explicitly so we can specify the cursorAxes
 // and then vectorCursor will cope with an axis of length 1
 // (it is possible the user could ask for a histogram with one bin !)
 
    LatticeStepper histStepper(pHistImage_p->shape(), cursorShape,
-                          vectorAxis, axisPath);
+                          vectorAxis, IPosition::makeAxisPath(pHistImage_p->ndim()));
    RO_LatticeIterator<Int> histIterator(*pHistImage_p, histStepper);
 
 
@@ -728,16 +725,12 @@ Bool ImageHistograms<T>::displayHistograms ()
 
    IPosition vectorAxis(1); vectorAxis(0) = 0;
 
-   IPosition axisPath(pHistImage_p->ndim());
-   for (Int i=0; i<axisPath.nelements(); i++) axisPath(i) = i;
-   
-
 // Make the stepper explicitly so we can specify the cursorAxes
 // and then vectorCursor will cope with an axis of length 1
 // (it is possible the user could ask for a histogram with one bin !)
 
    LatticeStepper histStepper(pHistImage_p->shape(), cursorShape,
-                          vectorAxis, axisPath);
+                              vectorAxis, IPosition::makeAxisPath(pHistImage_p->ndim()));
    RO_LatticeIterator<Int> histIterator(*pHistImage_p, histStepper);
 
 
@@ -854,7 +847,7 @@ Bool ImageHistograms<T>::displayOneHistogram (const Float &linearSum,
 
          for (Int j=0; j<nDisplayAxes; j++) {
             const Int worldAxis = 
-              ImageUtilities::pixelAxisToWorldAxis(pInImage_p->coordinates(), displayAxes_p(j));
+              pInImage_p->coordinates().pixelAxisToWorldAxis(displayAxes_p(j));
             const String name = pInImage_p->coordinates().worldAxisNames()(worldAxis);
             pixels(0) = Double(locHistInImage(histPos)(j+1));
 
@@ -1315,7 +1308,7 @@ Bool ImageHistograms<T>::generateStorageImage()
      
    Double meterMax = Double(latticeShape.product())/Double(pPixelIterator->cursor().shape().product());
    ProgressMeter clock(0.0, meterMax, String("Generate Storage Image"), String(""),
-                       String(""), String(""), True, Int(meterMax/10));
+                       String(""), String(""), True, max(1,Int(meterMax/10)));
    Double meterValue = 0.0;
 
    os_p << LogIO::NORMAL << "Begin accumulating histograms" << LogIO::POST;
@@ -1775,7 +1768,7 @@ Bool ImageHistograms<T>::writeDispAxesValues (const IPosition& histPos,
                                      displayAxes_p(j), cursorAxes_p,
                                      blc_p, trc_p, pixels, -1)) return False;
          Int worldAxis = 
-           ImageUtilities::pixelAxisToWorldAxis(pInImage_p->coordinates(), displayAxes_p(j));
+           pInImage_p->coordinates().pixelAxisToWorldAxis(displayAxes_p(j));
          String name = pInImage_p->coordinates().worldAxisNames()(worldAxis);
 
          oss << "  " << ImageUtilities::shortAxisName(name)

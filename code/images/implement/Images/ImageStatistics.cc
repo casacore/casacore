@@ -488,11 +488,8 @@ Bool ImageStatistics<T>::display()
    IPosition matrixAxes(2);
    matrixAxes(0) = 0; matrixAxes(1) = pStoreImage_p->ndim()-1;
 
-   IPosition axisPath(pStoreImage_p->ndim());
-   for (Int i=0; i<axisPath.nelements(); i++) axisPath(i) = i;
-
    LatticeStepper stepper(pStoreImage_p->shape(), cursorShape,
-                          matrixAxes, axisPath);
+                          matrixAxes, IPosition::makeAxisPath(pStoreImage_p->ndim()));
    RO_LatticeIterator<Double> pixelIterator(*pStoreImage_p, stepper);
 
    for (pixelIterator.reset(); !pixelIterator.atEnd(); pixelIterator++) {
@@ -501,7 +498,7 @@ Bool ImageStatistics<T>::display()
 // calculations with double precision values. 
  
       Matrix<Double>  matrix(pixelIterator.matrixCursor());   // Reference semantics
-      for (i=0; i<n1; i++) {
+      for (Int i=0; i<n1; i++) {
          const Int nPts = Int(matrix(i,NPTS)+0.1);
          if (nPts > 0) {
             ord(i,MEAN) = matrix(i,SUM) / matrix(i,NPTS);
@@ -1292,10 +1289,9 @@ Bool ImageStatistics<T>::generateStorageImage()
 
 // Iterate through image and accumulate statistical sums
 
-
    Double meterMax = Double(latticeShape.product())/Double(pPixelIterator->cursor().shape().product());
    ProgressMeter clock(0.0, meterMax, String("Generate Storage Image"), String(""), 
-                       String(""), String(""), True, Int(meterMax/10));
+                       String(""), String(""), True, max(1,Int(meterMax/10)));
    Double meterValue = 0.0;
 
    os_p << LogIO::NORMAL << "Begin accumulation" << LogIO::POST;
@@ -1416,7 +1412,7 @@ Bool ImageStatistics<T>::listStats (const IPosition& dPos,
 
       for (j=1; j<nDisplayAxes; j++) {
          Int worldAxis = 
-            ImageUtilities::pixelAxisToWorldAxis(pInImage_p->coordinates(), displayAxes_p(j));
+            pInImage_p->coordinates().pixelAxisToWorldAxis(displayAxes_p(j));
          String name = pInImage_p->coordinates().worldAxisNames()(worldAxis);
          pixels(0) = Double(locInImage(dPos)(j));
 
@@ -1852,7 +1848,7 @@ Bool ImageStatistics<T>::plotStats (const IPosition& dPos,
 
       for (Int j=1; j<displayAxes_p.nelements(); j++) {
          Int worldAxis = 
-            ImageUtilities::pixelAxisToWorldAxis(pInImage_p->coordinates(), displayAxes_p(j));
+            pInImage_p->coordinates().pixelAxisToWorldAxis(displayAxes_p(j));
          String name = pInImage_p->coordinates().worldAxisNames()(worldAxis);
          pixels(0) = Double(locInImage(dPos)(j));
 
@@ -2168,15 +2164,12 @@ Bool ImageStatistics<T>::someGoodPoints ()
          IPosition matrixAxes(2);
          matrixAxes(0) = 0; matrixAxes(1) = pStoreImage_p->ndim()-1;
 
-         IPosition axisPath(pStoreImage_p->ndim());
-         for (Int i=0; i<axisPath.nelements(); i++) axisPath(i) = i;
-
          LatticeStepper stepper(pStoreImage_p->shape(), cursorShape,
-                                matrixAxes, axisPath);
+                                matrixAxes, IPosition::makeAxisPath(pStoreImage_p->ndim()));
          RO_LatticeIterator<Double> pixelIterator(*pStoreImage_p, stepper);
 
          for (pixelIterator.reset(); !pixelIterator.atEnd(); pixelIterator++) {
-            for (i=0; i<n1; i++) {
+            for (Int i=0; i<n1; i++) {
                if (Int(pixelIterator.matrixCursor()(i,NPTS)+0.1) > 0) {
                   someGoodPointsValue_p = True;
                   return someGoodPointsValue_p;
