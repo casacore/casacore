@@ -69,14 +69,14 @@ void ImageFITSConverterImpl<HDUType>::FITSToImage(PagedImage<Float>*& newImage,
 {
     LogIO os(LogOrigin("ImageFITSConverterImpl", "FITSToImage", WHERE));
 
-    // Crack the header and get what we need out of it.  DOn't get tricked
-    // by the fact that HDUType is referring to the template type, not
-    // to the enum HDUType in class FITS !
+// Crack the header and get what we need out of it.  DOn't get tricked
+// by the fact that HDUType is referring to the template type, not
+// to the enum HDUType in class FITS !
 
-    // ndim
+// ndim
     const uInt ndim = fitsImage.dims();
 
-    // shape
+// shape
     IPosition shape(ndim);
     for (Int i=0; i<Int(ndim); i++) {
 	shape(i) = fitsImage.dim(i);
@@ -128,7 +128,7 @@ void ImageFITSConverterImpl<HDUType>::FITSToImage(PagedImage<Float>*& newImage,
 	return;
     }
 
-    // Set the unit if possible
+// Set the unit if possible
     if (header.isDefined("bunit") && header.dataType("bunit") == TpString) {
 	String unitString;
 	header.get("bunit", unitString);
@@ -146,11 +146,11 @@ void ImageFITSConverterImpl<HDUType>::FITSToImage(PagedImage<Float>*& newImage,
     Int bitpix;
     header.get("bitpix", bitpix);
 
-    // BLANK Find out if we are blanked.  This is only relevant to
-    // BITPIX > 0  For 32 bit floating point is is not required 
-    // by FITS (illegal ?) and aips++ does not write it out.
-    // Other packages may write it out, so a bit of code below
-    // to handle it.
+// BLANK Find out if we are blanked.  This is only relevant to
+// BITPIX > 0  For 32 bit floating point is is not required 
+// by FITS (illegal ?) and aips++ does not write it out.
+// Other packages may write it out, so a bit of code below
+// to handle it.
     Bool isBlanked = fitsImage.isablank();
     Int blankVal = fitsImage.blank();
 
@@ -214,10 +214,12 @@ void ImageFITSConverterImpl<HDUType>::FITSToImage(PagedImage<Float>*& newImage,
     }
 
 // Put whatever is left in the header into the MiscInfo bucket
+
     newImage->setMiscInfo(header);
 
-    // Restore the logtable from HISTORY (this could be moved to non-templated
-    // code.
+// Restore the logtable from HISTORY (this could be moved to non-templated
+// code.
+
     if (newImage->logSink().localSink().isTableLogSink()) {
 	TableLogSink &logTable = 
 	    newImage->logSink().localSink().castToTableLogSink();
@@ -236,7 +238,8 @@ void ImageFITSConverterImpl<HDUType>::FITSToImage(PagedImage<Float>*& newImage,
 	}
     }
 
-    // Cool, now we just need to write it.
+// Cool, now we just need to write it.
+
     IPosition cursorShape(ndim), cursorOrder(ndim);
     String report;
     cursorShape = 
