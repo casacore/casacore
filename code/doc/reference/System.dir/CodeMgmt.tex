@@ -2,7 +2,7 @@
 \label{Code management}
 \index{code management}
 
-\aipspp\ source code management utilities \footnote{Last change:
+\aipspp\ source code management utilities \footnote{Most recent change:
 $ $Id$ $}.
 
 % ----------------------------------------------------------------------------
@@ -2366,7 +2366,7 @@ Search for and examine \aipspp\ sources.
 
 \begin{synopsis}
    \code{\exe{squiz} [\exe{-c} category] [\exe{-e}|\exe{-E} expression]
-      [\exe{-F}] [\exe{-p} package] [file]}
+      [\exe{-l}] [\exe{-F}] [\exe{-p} package] [file]}
 \end{synopsis}
 
 \subsection*{Description}
@@ -2400,12 +2400,17 @@ If no file is specified the default is to search for (i.e. list) all files.
 \item[\exe{-e} expression]
    Perform a case-insensitive search for the specified expression in all
    selected files.  \unixexe{grep}-type regular expressions are allowed.
+   See also the \exe{-l} option.
 
 \item[\exe{-E} expression]
    Case-sensitive version of the \exe{-e} option.
 
 \item[\exe{-F}]
    Do a case-sensitive search for the files named.
+
+\item[\exe{-l}]
+   Only list the names of files that contain a match to the expression 
+   as specified in \exe{-e}.
 
 \item[\exe{-p} package]
    Restrict the search to a particular package (see \sref{Code directories}).
@@ -2442,6 +2447,14 @@ The following simply counts the number of files in the \file{doc} package:
    squiz -p doc | wc -l
 \end{verbatim}
 
+\noindent
+Finally, this example will list out all files that contain the expression
+``plonk'':
+
+\begin{verbatim}
+   squiz -l -e plonk
+\end{verbatim}
+
 \subsection*{See also}
 
 The unix manual page for \unixexe{grep}(1).\\
@@ -2449,7 +2462,8 @@ The unix manual page for \unixexe{grep}(1).\\
 
 \subsection*{Author}
 
-Original: 1994/07/28 by Mark Calabretta, ATNF
+Original: 1994/07/28 by Mark Calabretta, ATNF\\
+Modified: 1997/05/30 by Pat Murphy, NRAO
 
 % ----------------------------------------------------------------------------
 
