@@ -1,5 +1,5 @@
 //# dPagedArray.cc:  this contains the examples from the PagedArray.h file
-//# Copyright (C) 1997
+//# Copyright (C) 1997,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -124,7 +124,7 @@ int main(){
       const IPosition latticeShape = da.shape();
       const nx = latticeShape(0);
       const ny = latticeShape(1);
-      const npol = latticeShape(2);
+///      const npol = latticeShape(2);
       const nchan = latticeShape(3);
       IPosition cursorShape = da.niceCursorShape (da.maxPixels());
       cursorShape(2) = 1;
