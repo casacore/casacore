@@ -32,7 +32,7 @@
   VERSION=`avers | awk '{printf("%.6s",$1)}'`
 
 # HP-UX needs to use mailx (for the -s switch). Other systems use mail.
-  if [ `uname` = "HP-UX" ] ; then
+  if [ `uname` = "HP-UX" || `uname` == "OSF1" ] ; then
     MAILCMD=mailx
   else
     MAILCMD=mail
