@@ -293,9 +293,13 @@ uInt SpectralCoordinate::nWorldAxes() const
 Bool SpectralCoordinate::toWorld(Vector<Double> &world, 
 				 const Vector<Double> &pixel) const
 {
-    Bool ok = worker_p.toWorld(world, pixel);
-    if (ok) convertTo(world);    
-    return ok;
+    if (worker_p.toWorld(world, pixel)) {
+       convertTo(world);    
+       return True;
+    } else {
+       set_error (worker_p.errorMessage());
+       return False;
+    }
 }
 
 Bool SpectralCoordinate::toWorld(Double& world, const Double& pixel) const
@@ -320,7 +324,12 @@ Bool SpectralCoordinate::toPixel(Vector<Double> &pixel,
 //
     world_tmp1(0) = world(0);
     convertFrom(world_tmp1);    
-    return worker_p.toPixel(pixel, world_tmp1);
+    if (worker_p.toPixel(pixel, world_tmp1)) {
+       return True;
+    } else {
+       set_error (worker_p.errorMessage());
+       return False;
+    }
 }
 
 
@@ -344,9 +353,13 @@ Bool SpectralCoordinate::toWorldMany(Matrix<Double>& world,
                              const Matrix<Double>& pixel,
                              Vector<Bool>& failures) const
 {
-   Bool ok = worker_p.toWorldMany(world, pixel, failures);
-   convertToMany(world);    
-   return ok;
+   if (worker_p.toWorldMany(world, pixel, failures)) {
+      convertToMany(world);    
+      return True;
+   } else {
+      set_error (worker_p.errorMessage());
+      return False;
+   }
 }
    
 Bool SpectralCoordinate::toPixelMany(Matrix<Double>& pixel,
@@ -355,9 +368,13 @@ Bool SpectralCoordinate::toPixelMany(Matrix<Double>& pixel,
 {
    Matrix<Double> world_tmp(world.copy());
    convertFromMany(world_tmp);
-   return worker_p.toPixelMany(pixel, world_tmp, failures);
+   if (worker_p.toPixelMany(pixel, world_tmp, failures)) {
+      return True;
+   } else {
+      set_error (worker_p.errorMessage());
+      return False;
+   }
 }
-
 
 
 Vector<String> SpectralCoordinate::worldAxisNames() const
@@ -392,14 +409,18 @@ Vector<Double> SpectralCoordinate::referenceValue() const
 
 Bool SpectralCoordinate::setWorldAxisNames(const Vector<String> &names)
 {
-    return worker_p.setWorldAxisNames(names);
+    if (worker_p.setWorldAxisNames(names)) {
+       return True;
+    } else {
+      set_error (worker_p.errorMessage());
+      return False;
+    }
 }
 
 Bool SpectralCoordinate::setWorldAxisUnits(const Vector<String> &units)
 {
     Double before = increment()(0);
-    Bool ok = worker_p.setWorldAxisUnits(units);
-    if (ok) {
+    if (worker_p.setWorldAxisUnits(units)) {
 	Double after = increment()(0);
         restfreqs_p *= after / before;
 //
@@ -409,9 +430,11 @@ Bool SpectralCoordinate::setWorldAxisUnits(const Vector<String> &units)
            pConversionMachineFrom_p->set(Unit(units(0)));
         }
         unit_p = Unit(String(units(0)));
+        return True;
+    } else {
+      set_error (worker_p.errorMessage());
+      return False;
     }
-//
-    return ok;
 }
 
 
@@ -445,7 +468,7 @@ Bool SpectralCoordinate::setReferenceConversion (MFrequency::Types conversionTyp
    if (ok==-1) {
 
 // Trial conversion failed.  The machines will be deleted so we must set the
-// conversion machines back to what they were before thi calamity.
+// conversion machines back to what they were before this calamity.
 
       makeConversionMachines(type_p, conversionType_p, epoch_p, 
                              position_p, direction_p);
@@ -463,22 +486,42 @@ Bool SpectralCoordinate::setReferenceConversion (MFrequency::Types conversionTyp
 
 Bool SpectralCoordinate::setReferencePixel(const Vector<Double> &refPix)
 {
-    return worker_p.setReferencePixel(refPix);
+    if (worker_p.setReferencePixel(refPix)) {
+       return True;
+    } else {
+      set_error (worker_p.errorMessage());
+      return False;
+    }
 }
 
 Bool SpectralCoordinate::setLinearTransform(const Matrix<Double> &xform)
 {
-    return worker_p.setLinearTransform(xform);
+    if (worker_p.setLinearTransform(xform)) {
+       return True;
+    } else {
+      set_error (worker_p.errorMessage());
+      return False;
+    }
 }
 
 Bool SpectralCoordinate::setIncrement(const Vector<Double> &inc) 
 {
-    return worker_p.setIncrement(inc);
+    if (worker_p.setIncrement(inc)) {
+       return True;
+    } else {
+      set_error (worker_p.errorMessage());
+      return False;
+    }
 }
 
 Bool SpectralCoordinate::setReferenceValue(const Vector<Double> &refval)
 {
-    return worker_p.setReferenceValue(refval);
+    if (worker_p.setReferenceValue(refval)) {
+       return True;
+    } else {
+      set_error (worker_p.errorMessage());
+      return False;
+    }
 }
 
 Double SpectralCoordinate::restFrequency() const
