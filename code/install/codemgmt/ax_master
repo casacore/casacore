@@ -5704,3 +5704,4 @@
 16 064 src mv trial/implement/Tables/CompressFloat.cc aips/implement/Tables/CompressFloat.cc
 16 064 src mv trial/implement/Tables/test/tCompressFloat.cc aips/implement/Tables/test/tCompressFloat.cc
 16 064 src mv trial/implement/Tables/CompressComplex.h aips/implement/Tables/CompressComplex.h
+16 064 src mv trial/implement/Tables/CompressComplex.cc aips/implement/Tables/CompressComplex.cc
