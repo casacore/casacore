@@ -7,7 +7,7 @@
 #   This utility is part of AIPS++, a software project centered at
 #   the National Radio Astronomy Observatory.
 #
-#   Copyright (C) 1995
+#   Copyright (C) 1995,1997
 #   Associated Universities, Inc. Washington DC, USA.
 # 
 #   This program is free software; you can redistribute it and/or modify it
@@ -129,7 +129,7 @@ while ($_ = @ARGV[0], (/^-/)) {
 	print STDERR "This is $PACKAGE Version $VERSION\PL$PATCHLEVEL\n";
 	print STDERR "Correspondence to $PACKAGE\@nrao.edu\n";
 	print STDERR "Created by Darrell Schiebel <drs\@nrao.edu>\n";
-	print STDERR "Copyright (C) 1995 Associated Universities, Inc. Washington DC, USA.\n";
+	print STDERR "Copyright (C) 1995,1997 Associated Universities, Inc. Washington DC, USA.\n";
 	next;
     }
 
@@ -516,7 +516,7 @@ sub dumpModule {
     }
 
     foreach (keys %$db) {
-	$modules{$1} = $$db{$_} if /s\*$module\*(.*)/;
+	$modules{$1} = $$db{$_} if /s\*\Q$module\E\*(.*)/;
     }
 
     foreach (sort keys %modules) {
