@@ -1,0 +1,111 @@
+#!/usr/bin/env tcsh
+#-----------------------------------------------------------------------------
+# UPdup script
+#-----------------------------------------------------------------------------
+# Copyright (C) 2001
+# Associated Universities, Inc. Washington DC, USA.
+#
+# This program is free software; you can redistribute it and/or modify it
+# under the terms of the GNU General Public License as published by the Free
+# Software Foundation; either version 2 of the License, or (at your option)
+# any later version.
+#
+# This program is distributed in the hope that it will be useful, but WITHOUT
+# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
+# more details.
+#
+# You should have received a copy of the GNU General Public License along
+# with this program; if not, write to the Free Software Foundation, Inc.,
+# 675 Massachusetts Ave, Cambridge, MA 02139, USA.
+#
+# Correspondence concerning AIPS++ should be addressed as follows:
+#        Internet email: aips2-request@nrao.edu.
+#        Postal address: AIPS++ Project Office
+#                        National Radio Astronomy Observatory
+#                        520 Edgemont Road
+#                        Charlottesville, VA 22903-2475 USA
+#
+# $Id$
+#
+# UPdup script (must have x allowed)
+#
+set script = "UPdup"
+set usage = 'UPdup [-s] [-c] [-r] [-u] [-d] [-n] <typ>'
+set htxt  = ("Determine the template duplicates between the package and" \
+	     "application/test programs. The result will be in <typ>.dup.")
+set hsw   = ("-s show only the system template files that can cause" \
+	     "   problems in the aips++ system")
+set huse  =  "<typ>.def"
+set hcrea =  "<typ>.dup"
+#
+# Get general info
+#
+if (! $?AIPSPATH) then
+   echo "No AIPSPATH environment set, initialize aips++ first"
+   exit 1
+endif
+set x = "`which UPfind`"
+if (-x "$x") then
+   set uppath = $x:h
+else
+   set x = ( $AIPSPATH )
+   set uppath = $x[1]/$x[2]/bin
+endif
+unset x
+if ("$uppath" == ".") then
+    set uppath = `pwd`
+endif
+if (! -r $uppath/UPinfo) then
+   echo "Cannot find the UPinfo source script in $uppath"
+   echo "Check your aips++ installation"
+endif
+source $uppath/UPinfo
+if (! $ok) exit 1
+#
+# Get specific data
+#
+
+if ($upswn) exit 0
+#
+# Execute
+#
+cd $dir/code
+
+if (-e $ldir/${tp}.dup) rm -f $ldir/${tp}.dup
+touch $ldir/${tp}.dup
+set smod = ""
+if ($upsws) set smod = "-s"
+
+if (! $upswQ) echo "Starting package aips..."
+echo "******* Package aips against aips repository" >> $ldir/${tp}.dup
+duplicates $smod -u aips \
+    $dir/code/aips/implement/_ReposFiller/templates  >>& $ldir/${tp}.dup
+
+if (! $upswQ) echo "Starting package trial..."
+echo "******* Package trial against aips and trial repository" >> \
+		$ldir/${tp}.dup
+duplicates $smod -u trial \
+    $dir/code/trial/implement/_ReposFiller/templates  \
+    $dir/code/aips/implement/_ReposFiller/templates >>& $ldir/${tp}.dup
+
+
+foreach i (*)
+  if ("$i" != "aips" && "$i" != "trial" && "$i" != "doc" && \
+      "$i" != "include" && "$i" != "test" && \
+      -d $i && (-e $i/implement || -e $i/apps)) then 
+    if (! $upswQ) echo "Starting package $i..."
+    echo "******* Package $i against aips repository" >> $ldir/${tp}.dup
+    duplicates $smod -u $i \
+	$dir/code/aips/implement/_ReposFiller/templates >>& $ldir/${tp}.dup
+    if (! $upswQ) then
+	echo "******* Package $i against trial repository" >> $ldir/${tp}.dup
+    endif
+    duplicates $smod -u $i \
+	$dir/code/trial/implement/_ReposFiller/templates >>& $ldir/${tp}.dup
+  endif
+end
+unset smod
+
+exit 0
+#
