@@ -280,6 +280,7 @@ String LELFunction1D<T>::className() const
 
 
 
+
 // LELFunctionReal1D
 template <class T>
 LELFunctionReal1D<T>::LELFunctionReal1D
@@ -410,4 +411,193 @@ template <class T>
 String LELFunctionReal1D<T>::className() const
 {
    return String("LELFunctionReal1D");
+}
+
+
+
+
+// LELFunctionND
+template <class T>
+LELFunctionND<T>::LELFunctionND(const LELFunctionEnums::Function function,
+				const Block<LatticeExprNode>& exp)
+: function_p(function), arg_p(exp)
+{
+   switch (function_p) {
+   case LELFunctionEnums::IIF :
+   {
+      if (arg_p.nelements() != 3) {
+         throw (AipsError ("LELFunctionFloat::constructor - "
+			   "function IIF should have 3 arguments"));
+      }
+      //# The 1st argument must be Bool, the 2nd and 3rd must be T.
+      //# The arguments do not need to be lattices.
+      Block<Int> argType(3);
+      argType[0] = TpBool;
+      argType[1] = whatType((T*)0);
+      argType[2] = whatType((T*)0);
+      setAttr (LatticeExprNode::checkArg (arg_p, argType, False));
+      break;
+   }
+   default:
+      throw (AipsError ("LELFunctionND::constructor - unknown function"));
+   }
+
+#if defined(AIPS_TRACE)
+   cout << "LELFunctionND: constructor" << endl;
+#endif
+}
+
+template <class T>
+LELFunctionND<T>::~LELFunctionND()
+{
+#if defined(AIPS_TRACE)
+   cout << "LELFunctionND: destructor" << endl;
+#endif
+}
+
+
+template <class T>
+void LELFunctionND<T>::eval(Array<T>& result,
+			    const PixelRegion& region) const
+{
+#if defined(AIPS_TRACE)
+   cout << "LELFunctionND:: eval" << endl;
+#endif
+
+   switch (function_p) {
+   case LELFunctionEnums::IIF :
+   {
+      //# Evaluation is not difficult, but there are many scalar/lattice
+      //# combinations.
+      if (arg_p[0].isScalar()) {
+	 T tmp;
+	 Bool tmpb;
+	 arg_p[0].eval (tmpb);
+	 if (tmpb) {
+	    if (arg_p[1].isScalar()) {
+	       arg_p[1].eval (tmp);
+	       result = tmp;
+	    } else {
+	       arg_p[1].eval (result, region);
+	    }
+	 } else {
+	    if (arg_p[2].isScalar()) {
+	       arg_p[2].eval (tmp);
+	       result = tmp;
+	    } else {
+	       arg_p[2].eval (result, region);
+	    }
+	 }
+      } else {
+	 Array<Bool> tmpb(result.shape());
+	 arg_p[0].eval (tmpb, region);
+	 Bool deleteTmpb;
+	 const Bool* tmpbData = tmpb.getStorage (deleteTmpb);
+	 const Bool* tmpbPtr = tmpbData;
+	 const Bool* tmpbEnd = tmpbPtr + result.nelements();
+	 Bool deleteRes;
+	 T* resData = result.getStorage (deleteRes);
+	 T* resPtr = resData;
+	 T tmp1, tmp2;
+	 if (arg_p[1].isScalar()) {
+	    arg_p[1].eval (tmp1);
+	    if (arg_p[2].isScalar()) {
+	       arg_p[2].eval (tmp2);
+	       while (tmpbPtr < tmpbEnd) {
+		  if (*tmpbPtr++) {
+		     *resPtr = tmp1;
+		  } else {
+		     *resPtr = tmp2;
+		  }
+		  resPtr++;
+	       }
+	    } else {
+	       arg_p[2].eval (result, region);
+	       while (tmpbPtr < tmpbEnd) {
+		  if (*tmpbPtr++) {
+		     *resPtr = tmp1;
+		  }
+		  resPtr++;
+	       }
+	    }
+	 } else {
+	    arg_p[1].eval (result, region);
+	    if (arg_p[2].isScalar()) {
+	       arg_p[2].eval (tmp2);
+	       while (tmpbPtr < tmpbEnd) {
+		  if (! *tmpbPtr++) {
+		     *resPtr = tmp2;
+		  }
+		  resPtr++;
+	       }
+	    } else {
+	       Array<T> tmp(result.shape());
+	       arg_p[2].eval (tmp, region);
+	       Bool deleteTmp;
+	       const T* tmpData = tmp.getStorage (deleteTmp);
+	       const T* tmpPtr = tmpData;
+	       while (tmpbPtr < tmpbEnd) {
+		  if (! *tmpbPtr++) {
+		     *resPtr = *tmpPtr;
+		  }
+		  resPtr++;
+		  tmpPtr++;
+	       }
+	       tmp.freeStorage (tmpData, deleteTmp);
+	    }
+	 }
+	 tmpb.freeStorage (tmpbData, deleteTmpb);
+	 result.putStorage (resData, deleteRes);
+      }
+      break;
+   }
+   default:
+      throw(AipsError("LELFunctionND::eval - unknown function"));
+   }
+}
+
+template <class T>
+T LELFunctionND<T>::getScalar() const
+{
+#if defined(AIPS_TRACE)
+   cout << "LELFunctionND:: getScalar" << endl;
+#endif
+
+// Apply the ND function
+
+   T tmp;
+   switch(function_p) {
+   case LELFunctionEnums::IIF :
+   {
+      Bool tmpb;
+      arg_p[0].eval (tmpb);
+      if (tmpb) {
+	 arg_p[1].eval (tmp);
+      } else {
+	 arg_p[2].eval (tmp);
+      }
+      return tmp;
+   }
+   default:
+      throw(AipsError("LELFunctionND::getScalar - unknown function"));
+   }
+   return tmp;                      // to make compiler happy
+}
+
+template <class T>
+void LELFunctionND<T>::prepare()
+{
+#if defined(AIPS_TRACE)
+   cout << "LELFunctionND::prepare" << endl;
+#endif
+
+   for (uInt i=0; i<arg_p.nelements(); i++) {
+       arg_p[i].replaceScalarExpr();
+   }
+}
+
+template <class T>
+String LELFunctionND<T>::className() const
+{
+   return String("LELFunctionND");
 }
