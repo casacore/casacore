@@ -67,7 +67,7 @@
 // The string has <src>len</src> characters and the test starts at
 // position <src>pos</src>. The string may contain null characters.
 // </dl>
-// The base class provides also base implementations of a few other methods
+// The base class provides also default implementations of a few other methods
 // used in the String classes' aips++ extensions. These implementations
 // can, of course, be overwritten with more efficient specialised ones if
 // necessary:
@@ -79,6 +79,8 @@
 // or String::npos if there is no match, or in case of an internal error.
 // The string has <src>len</src> characters and the test starts at
 // position <src>pos</src>. The string may contain null characters.
+// The default implementation checks if the regular expression is found
+// at position <src>pos</src> and with length (<src>len-pos</src>.
 //  <dt> String::size_type rfind(const Char *s, String::size_type len,
 //               Int &matchlen, String::size_type pos=npos) const;
 //  <dd> Test if the regular expression occurs in string <src>s</src>,
@@ -88,7 +90,11 @@
 // The length of that substring is returned in <src>matchlen</src>.
 // The string has <src>len</src> characters and the test starts at
 // position <src>pos</src> (or at end of string).
-// The string may contain null characters.
+// The string may contain null characters. The default implementation
+// starts checking for the regular expression at <src>pos</src> (or at
+// the end of the string if that is less), and loops until it is
+// found. Looping is by decrementing the search position until begin of
+// string.
 //  <dt> String::size_type search(const Char *s, String::size_type len,
 //               Int &matchlen, Int pos=0) const;
 //  <dd> Test if the regular expression occurs in string <src>s</src>.
@@ -98,7 +104,9 @@
 // The string has <src>len</src> characters and the test starts at
 // position <src>pos</src>. The string may contain null characters.
 // Following the special rule for aips++ string methods extensions:
-// a negative position will indicate a reverse find.
+// a negative position will indicate a reverse find. The default implementation
+// checks for the sign of <src>pos</src> and calls either <src>find</src>
+// or <src>rfind</src>.
 // </dl>
 //
 // It is advisable to provide (static) methods to create strings from
