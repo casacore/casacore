@@ -80,7 +80,10 @@ void TableLock::init()
 {
   if (itsOption == DefaultLocking) {
     itsOption           = AutoLocking;
-    itsIsDefaultLocking = True;
+    //// temporary commented out until all cases where a reopen with
+    //// default locking mode are handled properly.
+    //// For the time the old behaviour (default= always Auto) supported.
+    //////    itsIsDefaultLocking = True;
   } else if (itsOption == AutoNoReadLocking) {
     itsOption      = AutoLocking;
     itsReadLocking = False;
@@ -94,7 +97,7 @@ void TableLock::init()
 void TableLock::merge (const TableLock& that)
 {
   if (! that.itsIsDefaultLocking) {
-    if (itsIsDefaultLocking  ||  that.itsOption < itsOption) {
+    if (itsIsDefaultLocking  ||  that.itsOption <= itsOption) {
       itsOption  = that.itsOption;
       itsMaxWait = that.itsMaxWait;
       itsIsDefaultLocking = that.itsIsDefaultLocking;

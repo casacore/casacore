@@ -127,7 +127,9 @@ int main()
   {
     TableLock lock (TableLock::UserLocking);
     lock.merge (TableLock());
-    AlwaysAssertExit (lock.option() == TableLock::UserLocking);
+    //// commented out until temporary hack in TableLock.cc is removed.
+    ////    AlwaysAssertExit (lock.option() == TableLock::UserLocking);
+    AlwaysAssertExit (lock.option() == TableLock::AutoLocking);
     AlwaysAssertExit (lock.readLocking());
     AlwaysAssertExit (! lock.isPermanent());
     lock.merge (TableLock(TableLock::AutoLocking, 20, 2));
