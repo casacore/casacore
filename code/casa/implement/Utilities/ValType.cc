@@ -1,5 +1,5 @@
 //# ValType.cc: Class describing the data types and their undefined values
-//# Copyright (C) 1993,1994,1995,1996,1998,1999
+//# Copyright (C) 1993,1994,1995,1996,1998,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -207,8 +207,8 @@ void ValType::getCanonicalFunc (DataType dt,
     switch (dt) {
     case TpBool:
     case TpArrayBool:
-	readFunc  = Conversion::bitToBool;
-	writeFunc = Conversion::boolToBit;
+	readFunc  = &Conversion::bitToBool;
+	writeFunc = &Conversion::boolToBit;
 	break;
     case TpChar:
     case TpArrayChar:

@@ -728,8 +728,8 @@ void SSMColumn::init()
   } else if (aDT == TpBool) {
     itsExternalSizeBytes = (itsNrElem + 7) / 8;
     itsExternalSizeBits  = itsNrElem;
-    itsReadFunc  = Conversion::bitToBool;
-    itsWriteFunc = Conversion::boolToBit;
+    itsReadFunc  = &Conversion::bitToBool;
+    itsWriteFunc = &Conversion::boolToBit;
   } else {
     if (asCanonical) {
       itsExternalSizeBytes = ValType::getCanonicalSize (aDT);

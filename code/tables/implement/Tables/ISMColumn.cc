@@ -1,5 +1,5 @@
 //# ISMColumn.cc: The Column of the Incremental Storage Manager
-//# Copyright (C) 1996,1997,1998,1999
+//# Copyright (C) 1996,1997,1998,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -1179,8 +1179,8 @@ void ISMColumn::init()
     switch (dt) {
     case TpBool:
 	{
-	    readFunc_p  = Conversion::bitToBool;
-	    writeFunc_p = Conversion::boolToBit;
+	    readFunc_p  = &Conversion::bitToBool;
+	    writeFunc_p = &Conversion::boolToBit;
 	    compareFunc_p = ObjCompare<Bool>::compare;
 	    lastValue_p   = new Bool [nrelem_p];
 	    Bool undef = False;

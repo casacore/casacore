@@ -1,5 +1,5 @@
 //# TSMDataColumn.cc: Tiled Hypercube Storage Manager for data columns
-//# Copyright (C) 1995,1996,1997,1998,1999
+//# Copyright (C) 1995,1996,1997,1998,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -45,8 +45,8 @@ TSMDataColumn::TSMDataColumn (const TSMColumn& column)
     localPixelSize_p = ValType::getTypeSize (dt);
     convPixelSize_p  = 1;
     if (dt == TpBool) {
-	readFunc_p  = Conversion::bitToBool;
-	writeFunc_p = Conversion::boolToBit;
+	readFunc_p  = &Conversion::bitToBool;
+	writeFunc_p = &Conversion::boolToBit;
 	tilePixelSize_p = 0;
     }else{
 	if (stmanPtr_p->asCanonical()) {
