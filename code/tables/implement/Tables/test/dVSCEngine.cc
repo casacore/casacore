@@ -119,3 +119,47 @@ void VSCExampleVSCEngine::registerClass()
 {
     DataManager::registerCtor ("VSCExampleVSCEngine", makeObject);
 }
+
+
+// Instantiate the templates here and not by means of the templates file.
+// This is needed in case -f_no-implicit-templates is not used.
+// In that case weak symbols are also created for Vector<bool>, etc.
+// Thereafter the linker wants to eliminate double defined weak symbols,
+// and also takes the dRetypedArrayEngine symbols into account.
+// That is fine when linking dRetypedArrayEngine, but gives undefined
+// linkonce symbols for other test programs which might use Vector<bool> or so.
+#include <aips/Arrays/Array.cc>
+#include <aips/Arrays/MaskedArray.cc>
+#include <aips/Arrays/Vector.cc>
+#include <aips/Containers/Block.h>
+#include <aips/Tables/ScaColData.cc>
+#include <aips/Tables/ScaColDesc.cc>
+#include <aips/Tables/ScalarColumn.cc>
+#include <aips/Tables/VirtScaCol.cc>
+#include <aips/Utilities/Compare.cc>
+#include <aips/Utilities/Copy.cc>
+#include <aips/Utilities/CountedPtr.cc>
+#include <aips/Utilities/ValTypeId.h>
+
+template class Array<VSCExample>;
+template class MaskedArray<VSCExample>;
+template class Vector<VSCExample>;
+template class Block<VSCExample>;
+template class ScalarColumnData<VSCExample>;
+template class ScalarColumnDesc<VSCExample>;
+template class ROScalarColumn<VSCExample>;
+template class ScalarColumn<VSCExample>;
+template class VSCEngine<VSCExample>;
+template class VirtualScalarColumn<VSCExample>;
+template class ObjCompare<VSCExample>;
+template void objcopy(VSCExample *, VSCExample const *, uInt);
+template void objcopy(VSCExample *, VSCExample const *, uInt, uInt, uInt);
+template void objset(VSCExample *, VSCExample, uInt);
+template void objset(VSCExample *, VSCExample, uInt, uInt);
+template void objmove(VSCExample *, VSCExample const *, uInt);
+template class CountedConstPtr<Block<VSCExample> >;
+template class CountedPtr<Block<VSCExample> >;
+template class PtrRep<Block<VSCExample> >;
+template class SimpleCountedConstPtr<Block<VSCExample> >;
+template class SimpleCountedPtr<Block<VSCExample> >;
+template String valDataTypeId(VSCExample const *);

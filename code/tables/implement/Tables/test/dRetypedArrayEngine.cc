@@ -429,3 +429,89 @@ void c()
     }
   }
 }
+
+
+// Instantiate the templates here and not by means of the templates file.
+// This is needed in case -f_no-implicit-templates is not used.
+// In that case weak symbols are also created for Vector<bool>, etc.
+// Thereafter the linker wants to eliminate double defined weak symbols,
+// and also takes the dRetypedArrayEngine symbols into account.
+// That is fine when linking dRetypedArrayEngine, but gives undefined
+// linkonce symbols for other test programs which might use Vector<bool> or so.
+#include <aips/Arrays/Array.cc>
+#include <aips/Arrays/ArrayIter.cc>
+#include <aips/Arrays/ArrayLogical.cc>
+#include <aips/Arrays/MaskedArray.cc>
+#include <aips/Arrays/Matrix.cc>
+#include <aips/Arrays/Vector.cc>
+#include <aips/Containers/Block.h>
+#include <aips/Tables/ArrColData.cc>
+#include <aips/Tables/ArrColDesc.cc>
+#include <aips/Tables/ArrayColumn.cc>
+#include <aips/Tables/BaseMappedArrayEngine.cc>
+#include <aips/Tables/RetypedArraySetGet.cc>
+#include <aips/Tables/RetypedArrayEngine.cc>
+#include <aips/Tables/VirtArrCol.cc>
+#include <aips/Utilities/Copy.cc>
+#include <aips/Utilities/CountedPtr.cc>
+#include <aips/Utilities/ValTypeId.h>
+
+template class ArrayColumnData<RetypedArrayEx1>;
+template class ArrayColumnDesc<RetypedArrayEx1>;
+template class Array<RetypedArrayEx1>;
+template class ArrayIterator<RetypedArrayEx1>;
+template class ReadOnlyArrayIterator<RetypedArrayEx1>;
+template Bool allEQ(Array<RetypedArrayEx1> const &, Array<RetypedArrayEx1> const &);
+template class ArrayColumn<RetypedArrayEx1>;
+template class ROArrayColumn<RetypedArrayEx1>;
+template class BaseMappedArrayEngine<RetypedArrayEx1, Float>;
+template class MaskedArray<RetypedArrayEx1>;
+template class Matrix<RetypedArrayEx1>;
+template class Vector<RetypedArrayEx1>;
+template class Block<RetypedArrayEx1>;
+template class RetypedArrayEngine<RetypedArrayEx1, Float>;
+template void retypedArrayEngineGet(Array<Float> &, Array<RetypedArrayEx1> const &);
+template void retypedArrayEngineSet(Array<RetypedArrayEx1> &, Array<Float> const &);
+template class VirtualArrayColumn<RetypedArrayEx1>;
+template void objcopy(RetypedArrayEx1 *, RetypedArrayEx1 const *, uInt);
+template void objcopy(RetypedArrayEx1 *, RetypedArrayEx1 const *, uInt, uInt, uInt);
+template void objset(RetypedArrayEx1 *, RetypedArrayEx1, uInt);
+template void objset(RetypedArrayEx1 *, RetypedArrayEx1, uInt, uInt);
+template void objmove(RetypedArrayEx1 *, RetypedArrayEx1 const *, uInt);
+template class CountedPtr<Block<RetypedArrayEx1> >;
+template class PtrRep<Block<RetypedArrayEx1> >;
+template class SimpleCountedConstPtr<Block<RetypedArrayEx1> >;
+template class SimpleCountedPtr<Block<RetypedArrayEx1> >;
+template class CountedConstPtr<Block<RetypedArrayEx1> >;
+template String valDataTypeId(RetypedArrayEx1 const *);
+
+template class ArrayColumnData<RetypedArrayEx2>;
+template class ArrayColumnDesc<RetypedArrayEx2>;
+template class Array<RetypedArrayEx2>;
+template class ArrayIterator<RetypedArrayEx2>;
+template class ReadOnlyArrayIterator<RetypedArrayEx2>;
+template Bool allEQ(Array<RetypedArrayEx2> const &, Array<RetypedArrayEx2> const &);
+template class ArrayColumn<RetypedArrayEx2>;
+template class ROArrayColumn<RetypedArrayEx2>;
+template class BaseMappedArrayEngine<RetypedArrayEx2, DComplex>;
+template class MaskedArray<RetypedArrayEx2>;
+template class Matrix<RetypedArrayEx2>;
+template class Vector<RetypedArrayEx2>;
+template class Block<RetypedArrayEx2>;
+template class RetypedArrayEngine<RetypedArrayEx2, DComplex>;
+template void retypedArrayEngineGet(Array<DComplex> &, Array<RetypedArrayEx2> const &);
+template void retypedArrayEngineGet(Array<DComplex> &, Array<RetypedArrayEx2> const &, IPosition const &, void const *);
+template void retypedArrayEngineSet(Array<RetypedArrayEx2> &, Array<DComplex> const &);
+template void retypedArrayEngineSet(Array<RetypedArrayEx2> &, Array<DComplex> const &, IPosition const &, void const *);
+template class VirtualArrayColumn<RetypedArrayEx2>;
+template void objcopy(RetypedArrayEx2 *, RetypedArrayEx2 const *, uInt);
+template void objcopy(RetypedArrayEx2 *, RetypedArrayEx2 const *, uInt, uInt, uInt);
+template void objset(RetypedArrayEx2 *, RetypedArrayEx2, uInt);
+template void objset(RetypedArrayEx2 *, RetypedArrayEx2, uInt, uInt);
+template void objmove(RetypedArrayEx2 *, RetypedArrayEx2 const *, uInt);
+template class CountedPtr<Block<RetypedArrayEx2> >;
+template class PtrRep<Block<RetypedArrayEx2> >;
+template class SimpleCountedConstPtr<Block<RetypedArrayEx2> >;
+template class SimpleCountedPtr<Block<RetypedArrayEx2> >;
+template class CountedConstPtr<Block<RetypedArrayEx2> >;
+template String valDataTypeId(RetypedArrayEx2 const *);
