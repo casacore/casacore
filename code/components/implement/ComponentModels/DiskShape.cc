@@ -228,12 +228,15 @@ void DiskShape::visibility(Vector<DComplex>& scale,
     u = uvw(0, i);
     v = uvw(1, i);
     DComplex& thisVis = scale(i);
-    thisVis.imag() = 0.0;
+    ///    thisVis.imag() = 0.0;
     if (near(u + v, 0.0)) {
-      thisVis.real() = 1.0; // avoids dividing by zero in calcVis(...)
+      ///      thisVis.real() = 1.0; // avoids dividing by zero in calcVis(...)
+      thisVis = DComplex(1.0, 0.0); // avoids dividing by zero
+      // in calcVis(...)
     } else {
       if (doRotation) rotateVis(u, v, cpa, spa);
-      thisVis.real() = calcVis(u, v, factor);
+      ///      thisVis.real() = calcVis(u, v, factor);
+      thisVis = DComplex(calcVis(u, v, factor), 0.0);
     }
   }
 }
