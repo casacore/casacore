@@ -79,7 +79,7 @@ SpectralCoordinate::SpectralCoordinate(MFrequency::Types type,
 {
    AlwaysAssert(restFrequency>=0.0, AipsError);
    restfreqs_p.resize(1);
-   restfreqs_p(0) = restFrequency;
+   restfreqs_p(0) = max(0.0, restFrequency);
 //
    makeVelocityMachine (String("km/s"), prefVelType_p, 
                         worker_p.worldAxisUnits()(0),   
@@ -113,7 +113,7 @@ SpectralCoordinate::SpectralCoordinate(MFrequency::Types type,
 //
    AlwaysAssert(restFrequency.getValue(hz)>=0.0, AipsError);
    restfreqs_p.resize(1);
-   restfreqs_p(0) = restFrequency.getValue(hz);
+   restfreqs_p(0) = max(0.0, restFrequency.getValue(hz));
 //
    worker_p = TabularCoordinate(f0.getValue(hz), inc.getValue(hz),
                                 refPix, "Hz", "Frequency");
@@ -137,7 +137,7 @@ SpectralCoordinate::SpectralCoordinate(MFrequency::Types type,
 {
    AlwaysAssert(restFrequency>=0.0, AipsError);
    restfreqs_p.resize(1);
-   restfreqs_p(0) = restFrequency;
+   restfreqs_p(0) = max(0.0, restFrequency);
 //
    Vector<Double> channels(freqs.nelements());
    indgen(channels);
@@ -170,7 +170,7 @@ SpectralCoordinate::SpectralCoordinate(MFrequency::Types type,
 //
    AlwaysAssert(restFrequency.getValue(hz)>=0.0, AipsError);
    restfreqs_p.resize(1);
-   restfreqs_p(0) = restFrequency.getValue(hz);
+   restfreqs_p(0) = max(0.0, restFrequency.getValue(hz));
 //
    Vector<Double> freqs2 = freqs.getValue(hz);
    Vector<Double> channels(freqs2.nelements());
@@ -202,8 +202,10 @@ SpectralCoordinate &SpectralCoordinate::operator=(const SpectralCoordinate &othe
     if (this != &other) {
         Coordinate::operator=(other);
 	type_p = other.type_p;
+//
         restfreqs_p.resize(0);
         restfreqs_p = other.restfreqs_p;
+//
 	restfreqIdx_p = other.restfreqIdx_p;
 	worker_p = other.worker_p;
 //
@@ -401,22 +403,13 @@ void  SpectralCoordinate::setFrequencySystem(MFrequency::Types type)
 
 Bool SpectralCoordinate::setRestFrequency(Double newFrequency, Bool append)
 {
-    AlwaysAssert(newFrequency>=0.0, AipsError);
+    newFrequency = max(0.0, newFrequency);
     if (append) {
        uInt n = restfreqs_p.nelements();
        restfreqs_p.resize(n+1, True);
        restfreqs_p(n) = newFrequency;
        restfreqIdx_p = n;
     } else {
-
-// Null constructor makes empty list of rest frequencies
-
-       if (restfreqs_p.nelements()==0) {
-          restfreqs_p.resize(1);
-          restfreqIdx_p = 0;
-       }
-//
-       AlwaysAssert(restfreqIdx_p < restfreqs_p.nelements(), AipsError)
        restfreqs_p(restfreqIdx_p) = newFrequency;
     }
 //
@@ -631,6 +624,13 @@ SpectralCoordinate *SpectralCoordinate::restore(const RecordInterface &container
     if (subrec.isDefined("restfreqs")) {                   // optional
        Vector<Double> restFreqs;
        subrec.get("restfreqs", restFreqs);
+
+// Old images might have a negative restfreq. Don't propagate that
+
+        for (uInt i=0; i<restFreqs.nelements(); i++) {
+           restFreqs(i) = max(0.0,restFreqs(i));
+        }
+//
        retval->setRestFrequencies(restFreqs, 0, False);
        retval->selectRestFrequency(restfreq);
     } else {
