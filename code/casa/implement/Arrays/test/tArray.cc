@@ -1,5 +1,5 @@
 //# tArray.cc: Test program for the Array class
-//# Copyright (C) 1993,1994,1995,1996,1997,1998,1999,2000,2001
+//# Copyright (C) 1993,1994,1995,1996,1997,1998,1999,2000,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -53,7 +53,7 @@
 #include <aips/Arrays/Cube.h>
 #include <aips/Arrays/Slice.h>
 #include <aips/Arrays/ArrayError.h>
-#include <aips/Functionals/Polynomial.h>
+#include <aips/Functionals/NQPolynomial.h>
 
 Int zero(Int)
 {
@@ -112,7 +112,7 @@ void oldArrayTest()
 	{
 	    Vector<Float> vi(10);
 	    indgen(vi);
-	    Polynomial<Float> pi(2);
+	    NQPolynomial<Float> pi(2);
 	    pi.setCoefficient(2, 1.0f);
 	    vi.apply(pi);
 	    for (uInt i=0; i < 10; i++) {
