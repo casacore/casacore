@@ -1,4 +1,4 @@
-//# Copyright (C) 1997,1998
+//# Copyright (C) 1997,1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -25,33 +25,34 @@
 //# $Id$
 
 //# Includes
-#include <iostream.h>
-#include <string.h>
-#include <trial/TableMeasures/ArrayMeasColumn.h>
-#include <trial/TableMeasures/ScalarMeasColumn.h>
-#include <trial/TableMeasures/TableMeasDesc.h>
 #include <aips/Arrays/Array.h>
 #include <aips/Arrays/Vector.h>
 #include <aips/Lattices/IPosition.h>
-#include <aips/Measures/MeasConvert.h>
-#include <aips/Measures/MeasRef.h>
-#include <aips/Quanta/MeasValue.h>
+#include <aips/Measures/MBaseline.h>
 #include <aips/Measures/MDirection.h>
 #include <aips/Measures/MDoppler.h>
+#include <aips/Measures/MEarthMagnetic.h>
 #include <aips/Measures/MEpoch.h>
 #include <aips/Measures/MFrequency.h>
 #include <aips/Measures/MPosition.h>
 #include <aips/Measures/MRadialVelocity.h>
-#include <aips/Measures/MBaseline.h>
 #include <aips/Measures/Muvw.h>
-#include <aips/Measures/MEarthMagnetic.h>
+#include <aips/Measures/MeasConvert.h>
+#include <aips/Measures/MeasRef.h>
+#include <aips/Quanta/MeasValue.h>
+#include <trial/TableMeasures/ArrayMeasColumn.h>
+#include <trial/TableMeasures/ScalarMeasColumn.h>
+#include <trial/TableMeasures/TableMeasDesc.h>
+#include <trial/TableMeasures/TableMeasOffsetDesc.h>
+#include <trial/TableMeasures/TableMeasRefDesc.h>
 #include <aips/Tables/ArrayColumn.h>
+#include <aips/Tables/ColumnDesc.h>
 #include <aips/Tables/ScalarColumn.h>
 #include <aips/Tables/Table.h>
 #include <aips/Tables/TableDesc.h>
-#include <aips/Tables/ColumnDesc.h>
 #include <aips/Tables/TableError.h>
 #include <aips/Utilities/Assert.h>
+#include <aips/Utilities/String.h>
 
 template<class M, class MV>
 ROArrayMeasColumn<M, MV>::ROArrayMeasColumn()
@@ -111,11 +112,11 @@ ROArrayMeasColumn<M, MV>::ROArrayMeasColumn(const Table& tab,
     if (tmDesc->hasOffset()) {
 	if (tmDesc->isOffsetVariable()) {
 	    const String refColName = tmDesc->offsetColumnName();
-	    if (tab.tableDesc().columnDesc(refColName).isScalar()) {
-		itsOffsetCol = new ROScalarMeasColumn<M, MV>(tab, refColName);
-	    } else {
+	    if (tmDesc->isOffsetArray()) {
 		itsArrOffsetCol = 
 		  new ROArrayMeasColumn<M, MV>(tab, refColName);
+	    } else {
+		itsOffsetCol = new ROScalarMeasColumn<M, MV>(tab, refColName);
     	    }
 	    itsVarOffsetFlag = True;
 	} else {
@@ -154,6 +155,9 @@ ROArrayMeasColumn<M, MV>::ROArrayMeasColumn(
     }
     if (itsArrRefStrCol != 0) {
 	itsArrRefStrCol = new ROArrayColumn<String>(*itsArrRefStrCol);
+    }
+    if (itsOffsetCol != 0) {
+	itsOffsetCol = new ROScalarMeasColumn<M, MV>(*itsOffsetCol);
     }
     if (itsArrOffsetCol != 0) {
 	itsArrOffsetCol = new ROArrayMeasColumn<M, MV>(*itsArrOffsetCol);
@@ -249,8 +253,8 @@ void ROArrayMeasColumn<M, MV>::get(uInt rownr, Array<M>& meas,
     Bool deleteMeas;
     M* meas_p = meas.getStorage(deleteMeas);
 
-    // Set up get for reference component of measure.  Three possibilities:
-    //   1. A column reference is used.
+    // Set up get() for reference component of measure.  Three possibilities:
+    //   1. A column reference is used (itsMeasRef)
     //   2. The reference varies per row and is stored in a ScalarColumn.
     //   3. Ref varies per element of array (hence stored in an ArrayColumn).
     // With options 2 and 3 the reference could be either stored as a string 
@@ -297,6 +301,7 @@ void ROArrayMeasColumn<M, MV>::get(uInt rownr, Array<M>& meas,
 	}
     }
     
+    // Fill the measure array
     uInt n = meas.nelements();
     Vector<Double> tmpVec(mvlen);
     MV measVal;
@@ -307,24 +312,29 @@ void ROArrayMeasColumn<M, MV>::get(uInt rownr, Array<M>& meas,
 	}
 	measVal.putVector(tmpVec);
 	// the reference
+	MeasRef<M> finalMRef;
 	if (refPerElem) {
 	    if (strRefs) {
-		(meas_p+1)->giveMe(locMRef, *(sr_p+i));
+		(meas_p+1)->giveMe(finalMRef, *(sr_p+i));
 	    } else {
-		locMRef.set(*(r_p+i));
+		finalMRef.set(*(r_p+i));
 	    }
+	} else {
+	    finalMRef = locMRef;
 	}
 	// the offset
 	if (offsetPerElem) {
-	    locMRef.set(*(os_p+i));
+	    finalMRef.set(*(os_p+i));
 	}
-	(meas_p+i)->set(measVal, locMRef);
+	(meas_p+i)->set(measVal, finalMRef);
 	d_p += mvlen;
     }    
     d_p = d_p - (n * mvlen);
 
-    tmpDataCol.freeStorage(d_p, deleteData);
+
+    // clean up
     meas.putStorage(meas_p, deleteMeas);
+    tmpDataCol.freeStorage(d_p, deleteData);
     if (refPerElem) {
 	if (strRefs) {
 	    strRefArr.freeStorage(sr_p, deleteRef);
@@ -346,10 +356,17 @@ Array<M> ROArrayMeasColumn<M, MV>::operator()(uInt rownr) const
 }
 
 template<class M, class MV>
-const MeasRef<M>& ROArrayMeasColumn<M, MV>::getRef() const
+Bool ROArrayMeasColumn<M, MV>::isDefined(uInt rownr) const 
+{ 
+    return itsDataCol->isDefined(rownr); 
+}
+
+template<class M, class MV>
+const MeasRef<M>& ROArrayMeasColumn<M, MV>::getMeasRef() const
 {
     return itsMeasRef;
 }
+
 
 template<class M, class MV>
 void ROArrayMeasColumn<M, MV>::throwIfNull() const
@@ -412,11 +429,11 @@ ArrayMeasColumn<M, MV>::ArrayMeasColumn(const Table& tab,
     if (tmDesc->hasOffset()) {
 	if (tmDesc->isOffsetVariable()) {
 	    const String refColName = tmDesc->offsetColumnName();
-	    if (tab.tableDesc().columnDesc(refColName).isScalar()) {
-		itsOffsetCol = new ScalarMeasColumn<M, MV>(tab, refColName);
-	    } else {
+	    if (tmDesc->isOffsetArray()) {
 		itsArrOffsetCol = 
 		  new ArrayMeasColumn<M, MV>(tab, refColName);
+	    } else {
+		itsOffsetCol = new ScalarMeasColumn<M, MV>(tab, refColName);
     	    }
 	} else {
 	    itsMeasRef.set(tmDesc->getOffset());
@@ -451,6 +468,9 @@ ArrayMeasColumn<M, MV>::ArrayMeasColumn(const ArrayMeasColumn<M, MV>& that)
     }
     if (itsArrRefStrCol != 0) {
 	itsArrRefStrCol = new ArrayColumn<String>(*itsArrRefStrCol);
+    }
+    if (itsOffsetCol != 0) {
+	itsOffsetCol = new ScalarMeasColumn<M, MV>(*itsOffsetCol);
     }
     if (itsArrOffsetCol != 0) {
 	itsArrOffsetCol = new ArrayMeasColumn<M, MV>(*itsArrOffsetCol);
@@ -501,6 +521,9 @@ void ArrayMeasColumn<M, MV>::reference(const ArrayMeasColumn<M, MV>& that)
     }
     if (itsArrRefStrCol != 0) {
 	itsArrRefStrCol = new ArrayColumn<String>(*itsArrRefStrCol);
+    }
+    if (itsOffsetCol != 0) {
+	itsOffsetCol = new ScalarMeasColumn<M, MV>(*itsOffsetCol);
     }
     if (itsArrOffsetCol != 0) {
 	itsArrOffsetCol = new ArrayMeasColumn<M, MV>(*itsArrOffsetCol);
@@ -555,10 +578,10 @@ void ArrayMeasColumn<M, MV>::put(uInt rownr, const Array<M>& meas)
     Bool deleteRef;
     if (refPerElem) {
 	if (strRefs) {
-	    strRefArr(meas.shape());
+	    strRefArr.resize(meas.shape());
 	    sr_p = strRefArr.getStorage(deleteRef);
 	} else {
-	    intRefArr(meas.shape());
+	    intRefArr.resize(meas.shape());
 	    r_p = intRefArr.getStorage(deleteRef);
 	}
     } else {
@@ -576,7 +599,7 @@ void ArrayMeasColumn<M, MV>::put(uInt rownr, const Array<M>& meas)
     M *os_p;
     Bool deleteOffset;
     if (offsetPerElem) {
-	offsetArr(meas.shape());
+	offsetArr.resize(meas.shape());
 	os_p = offsetArr.getStorage(deleteOffset);
     } else {
 	if (itsOffsetCol != 0) {
@@ -603,8 +626,9 @@ void ArrayMeasColumn<M, MV>::put(uInt rownr, const Array<M>& meas)
 	}
 	// put the offset
 	if (offsetPerElem) {
-	    offset = (meas_p+i)->getRef().offset();
-	    *(os_p+i) = offset;
+	    if ((meas_p+i)->getRef().offset() != 0) {
+		*(os_p+i) = (meas_p+i)->getRef().offset();
+	    }
 	}
     }
     d_p = d_p - (n * mvlen);
