@@ -1,5 +1,5 @@
 //# RecordTransformable.h: Interface class for converting to/from records
-//# Copyright (C) 1998
+//# Copyright (C) 1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -151,7 +151,8 @@ public:
   // supplied string. It returns True if the conversion succeeded.
   Bool fromGlishRecord(String & error, const GlishValue & inValue);
 
-  // Specify the identification of the record (e.g. 'meas', 'quant').
+  // Specify the identification of the record (e.g. 'meas', 'quant'). The
+  // default implementation returns a empty string.
   virtual const String &ident() const;
 };
 
