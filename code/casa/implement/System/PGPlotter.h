@@ -149,6 +149,14 @@ public:
     virtual void box(const String &xopt, Float xtick, Int nxsub, 
 	     const String &yopt, Float ytick, Int nysub);
     virtual void circ(Float xcent, Float ycent, Float radius);
+    virtual void conl(const Matrix<Float> &a, Float c,
+		      const Vector<Float> &tr, const String &label,
+		      Int intval, Int minint);
+    virtual void cont(const Matrix<Float> &a, const Vector<Float> &c,
+		      Bool nc, const Vector<Float> &tr);
+    virtual void ctab(const Vector<Float> &l, const Vector<Float> &r,
+		      const Vector<Float> &g, const Vector<Float> &b,
+		      Float contra, Float bright);
     virtual void draw(Float x, Float y);
     virtual void ebuf();
     virtual void env(Float xmin, Float xmax, Float ymin, Float ymax, Int just,
@@ -158,8 +166,13 @@ public:
 	      const Vector<Float> &e, Float t);
     virtual void erry(const Vector<Float> &x, const Vector<Float> &y1,
 	      const Vector<Float> &y2, Float t);
+    virtual void gray(const Matrix<Float> &a, Float fg, Float bg,
+		      const Vector<Float> &tr); 
     virtual void hist(const Vector<Float> &data, Float datmin, Float datmax, 
 		    Int nbin, Int pcflag);
+    virtual void iden();
+    virtual void imag(const Matrix<Float> &a, Float a1, Float a2,
+		      const Vector<Float> &tr);
     virtual void lab(const String &xlbl, const String &ylbl, 
 		   const String &toplbl);
     virtual void line(const Vector<Float> &xpts, const Vector<Float> &ypts);
@@ -173,6 +186,8 @@ public:
     virtual void ptxt(Float x, Float y, Float angle, Float fjust, 
 		    const String &text);
     virtual Int qci();
+    virtual Vector<Int> qcir();
+    virtual Vector<Int> qcol();
     virtual Int qtbg();
     virtual Vector<Float> qtxt(Float x, Float y, Float angle, Float fjust, 
 		    const String &text);
@@ -182,8 +197,10 @@ public:
     virtual void save();
     virtual void sch(Float size);
     virtual void sci(Int ci);
+    virtual void scir(Int icilo, Int icihi);
     virtual void scr(Int ci, Float cr, Float cg, Float cb);
     virtual void sfs(Int fs);
+    virtual void sitf(Int itf);
     virtual void sls(Int ls);
     virtual void slw(Int lw);
     virtual void stbg(Int tbci);

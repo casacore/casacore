@@ -34,6 +34,7 @@
 class Record;
 class String;
 template<class T> class Vector;
+template<class T> class Matrix;
 
 // <summary>
 // Abstract base class for PGPLOT style plotting.
@@ -129,6 +130,14 @@ public:
     virtual void box(const String &xopt, Float xtick, Int nxsub, 
 	     const String &yopt, Float ytick, Int nysub) = 0;
     virtual void circ(Float xcent, Float ycent, Float radius) = 0;
+    virtual void conl(const Matrix<Float> &a, Float c,
+		      const Vector<Float> &tr, const String &label,
+		      Int intval, Int minint) = 0;
+    virtual void cont(const Matrix<Float> &a, const Vector<Float> &c,
+		      Bool nc, const Vector<Float> &tr) = 0;
+    virtual void ctab(const Vector<Float> &l, const Vector<Float> &r,
+		      const Vector<Float> &g, const Vector<Float> &b,
+		      Float contra, Float bright) = 0;
     virtual void draw(Float x, Float y) = 0;
     virtual void ebuf() = 0;
     virtual void env(Float xmin, Float xmax, Float ymin, Float ymax, Int just,
@@ -138,8 +147,13 @@ public:
 	      const Vector<Float> &e, Float t) = 0;
     virtual void erry(const Vector<Float> &x, const Vector<Float> &y1,
 	      const Vector<Float> &y2, Float t) = 0;
+    virtual void gray(const Matrix<Float> &a, Float fg, Float bg,
+		      const Vector<Float> &tr) = 0; 
     virtual void hist(const Vector<Float> &data, Float datmin, Float datmax, 
 		    Int nbin, Int pcflag) = 0;
+    virtual void iden() = 0;
+    virtual void imag(const Matrix<Float> &a, Float a1, Float a2,
+		      const Vector<Float> &tr) = 0;
     virtual void lab(const String &xlbl, const String &ylbl, 
 		   const String &toplbl) = 0;
     virtual void line(const Vector<Float> &xpts, const Vector<Float> &ypts) = 0;
@@ -153,6 +167,8 @@ public:
     virtual void ptxt(Float x, Float y, Float angle, Float fjust, 
 		    const String &text) = 0;
     virtual Int qci() = 0;
+    virtual Vector<Int> qcir() = 0;
+    virtual Vector<Int> qcol() = 0;
     virtual Int qtbg() = 0;
     virtual Vector<Float> qtxt(Float x, Float y, Float angle, Float fjust, 
 		    const String &text) = 0;
@@ -162,8 +178,10 @@ public:
     virtual void save() = 0;
     virtual void sch(Float size) = 0;
     virtual void sci(Int ci) = 0;
+    virtual void scir(Int icilo, Int icihi) = 0;
     virtual void scr(Int ci, Float cr, Float cg, Float cb) = 0;
     virtual void sfs(Int fs) = 0;
+    virtual void sitf(Int itf) = 0;
     virtual void sls(Int ls) = 0;
     virtual void slw(Int lw) = 0;
     virtual void stbg(Int tbci) = 0;

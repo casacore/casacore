@@ -340,3 +340,69 @@ void PGPlotter::ok() const
 	throw(AipsError("Attempt to plot to an unattached PGPlotter!"));
     }
 }
+
+void PGPlotter::conl(const Matrix<Float> &a, Float c,
+		      const Vector<Float> &tr, const String &label,
+		      Int intval, Int minint)
+{
+    ok();
+    worker_p->conl(a, c, tr, label, intval, minint);
+}
+
+void PGPlotter::cont(const Matrix<Float> &a, const Vector<Float> &c,
+		      Bool nc, const Vector<Float> &tr)
+{
+    ok();
+    worker_p->cont(a, c, nc, tr);
+}
+
+void PGPlotter::ctab(const Vector<Float> &l, const Vector<Float> &r,
+		      const Vector<Float> &g, const Vector<Float> &b,
+		      Float contra, Float bright)
+{
+    ok();
+    worker_p->ctab(l, r, g, b, contra, bright);
+}
+void PGPlotter::gray(const Matrix<Float> &a, Float fg, Float bg,
+		      const Vector<Float> &tr)
+{
+    ok();
+    worker_p->gray(a, fg, bg, tr);
+} 
+
+void PGPlotter::iden()
+{
+    ok();
+    worker_p->iden();
+}
+
+void PGPlotter::imag(const Matrix<Float> &a, Float a1, Float a2,
+		      const Vector<Float> &tr)
+{
+    ok();
+    worker_p->imag(a, a1, a2, tr);
+}
+
+Vector<Int> PGPlotter::qcir()
+{
+    ok();
+    return worker_p->qcir();
+}
+
+Vector<Int> PGPlotter::qcol()
+{
+    ok();
+    return worker_p->qcol();
+}
+
+void PGPlotter::scir(Int icilo, Int icihi)
+{
+    ok();
+    worker_p->scir(icilo, icihi);
+}
+
+void PGPlotter::sitf(Int itf)
+{
+    ok();
+    worker_p->sitf(itf);
+}
