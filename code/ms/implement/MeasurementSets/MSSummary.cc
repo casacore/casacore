@@ -742,21 +742,21 @@ void MSSummary::listHistory (LogIO& os, Bool verbose) const
     else {
       uInt nmessages = msHis.time().nrow();
       os << "History table entries: " << nmessages << endl;
-      double starttime = ((msHis.time()).getColumn())(0);
       for (uInt i=0 ; i < nmessages; i++) {
-	double time = ((msHis.time()).getColumn())(i);
-	if (time >= starttime) { // kludge to skip improperly filled rows
-	  os << formatTime(((msHis.time()).getColumn())(i))
-	     << "|" << ((msHis.origin()).getColumn())(i);
-	    //<< ((msHis.application()).getColumn())(i) << " | "
-	    //<< (msHis.appParams())(i) << " | "
-	  os << (msHis.cliCommand())(i);
-	  os << ((msHis.message()).getColumn())(i)
-	    //<< ((msHis.priority()).getColumn())(i) << " | "
-	    //<< (msHis.timeQuant())(i) << " | "
-	    //<< (msHis.timeMeas())(i)
-	     << endl;
+	os << formatTime(((msHis.time()).getColumn())(i))
+	   << "|" << ((msHis.origin()).getColumn())(i);
+	//<< ((msHis.application()).getColumn())(i) << " | "
+	//<< (msHis.appParams())(i) << " | "
+	try {
+	  os << " " << (msHis.cliCommand())(i) << " ";
+	} catch ( AipsError x ) {
+	  os << " ";
 	}
+	os << ((msHis.message()).getColumn())(i)
+	  //<< ((msHis.priority()).getColumn())(i) << " | "
+	  //<< (msHis.timeQuant())(i) << " | "
+	  //<< (msHis.timeMeas())(i)
+	   << endl;
       }
       os << LogIO::POST;
     }
