@@ -151,8 +151,11 @@ public:
   Bool isQuantumVectorComplex() const;
   Bool isQuantumVectorDComplex() const;
   // </group>
-  // Get number of numeric elements (0 if holder empty, 1 if scalar, else
+  // Get number of numeric elements (1 if scalar, else
   // vector length)
+  // <thrown>
+  //  <li> AipsError if holder empty
+  // </thrown>
   Int nelements() const;
 
   // Get a Quantum from the holder (with lifetime as long 

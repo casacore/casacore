@@ -153,7 +153,7 @@ Bool QuantumHolder::isQuantumVectorDComplex() const {
 
 Int QuantumHolder::nelements() const {
   if (!hold_p.ptr()) {
-    return 0;
+    throw(AipsError("Empty QuantumHolder argument for nelements"));
   } else if (isQuantumVectorDouble()) {
     return ((Quantum<Vector<Double> > *)(hold_p.ptr()))->getValue().nelements();
   } else if (isQuantumVectorFloat()) {
