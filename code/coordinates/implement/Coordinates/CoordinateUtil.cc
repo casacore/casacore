@@ -154,7 +154,7 @@ void CoordinateUtil::addLinearAxes(CoordinateSystem & coords,
        } else {
           refPix(i) = 0.0;
        }
-       units(i) = String("arcsec");
+       units(i) = String("km");
     } 
     Matrix<Double> pc(n, n);
     pc = 0.0; 
