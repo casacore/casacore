@@ -248,14 +248,18 @@ public:
 // A return value of <src>False</src> indicates invalid plotting arguments
 // or that the internal state of the class is bad.  If you don't call this function,
 // the default state of the class is to not make plots.
-   Bool setPlotting(const Vector<Int>& statsToPlot,
-                    const PGPlotter& plotter,
+   Bool setPlotting(PGPlotter& plotter,
+                    const Vector<Int>& statsToPlot,
                     const Vector<Int>& nxy);
 
 // Display the statistics by listing and/or plotting them.  If you don't call
 // this function then you won't see anything !  A return value of <src>False</src>
 // indicates an invalid plotting device, or that the internal state of the class is bad.
    Bool display ();
+
+// CLose plotter
+   void closePlotting();
+
 
 // Return the display axes.  The returned vector will be valid only if <src>setAxes</src>
 // has been called, or if one of the active "display" or "get*" methods has been called. 
@@ -353,7 +357,7 @@ private:
 
 // List the statistics
    Bool listStats         (const IPosition& dPos,
-                           const Matrix<Float>& ord);
+                           const Matrix<T>& ord);
 
 // Given a location in the storage image, convert those locations on the   
 // non-statistics axis (the last one) to account for the lattice subsectioning
