@@ -26,10 +26,6 @@
 //# $Id$
 
 //# Includes
-#ifdef __GNUG__
-#include <aips/Quanta/Quantum.h>
-typedef Quantum<Double> gpp_measiers_bug1;
-#endif
 #include <aips/Measures/MeasIERS.h>
 #include <aips/Quanta/Quantum.h>
 #include <aips/Quanta/MVTime.h>

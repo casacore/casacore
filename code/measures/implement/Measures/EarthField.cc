@@ -26,10 +26,6 @@
 //# $Id$
 
 //# Includes
-#ifdef __GNUG__
-#include <aips/Quanta/Quantum.h>
-typedef Quantum<Double> gpp_earthfield__bug1;
-#endif
 #include <aips/Measures/EarthField.h>
 #include <aips/Measures/MeasTable.h>
 #include <aips/Quanta/MVPosition.h>

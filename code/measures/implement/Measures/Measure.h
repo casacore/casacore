@@ -1,5 +1,5 @@
 //# Measure.h: Physical quantities within reference frame
-//# Copyright (C) 1995,1996,1997,1998
+//# Copyright (C) 1995,1996,1997,1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -37,12 +37,7 @@ class String;
 class Unit;
 class MeasValue;
 class MRBase;
-//# g++ 2.7.2.1.f.1 needs Quantum's to be included even though it shouldn't!
-#ifdef __GNUG__
-#include <aips/Quanta/Quantum.h>
-#else
 template <class T> class Quantum;
-#endif
 template <class T> class Vector;
 #if defined(AIPS_STDLIB)
 #include <iosfwd.h>

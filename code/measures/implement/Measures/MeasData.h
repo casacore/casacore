@@ -145,11 +145,8 @@ private:
   MeasData &operator=(const MeasData &other);
   
   //# Destructor
-  //  Destructor, NOT defined (GNU does not like it)
-#ifdef __GNUG__
-#else
-  ~MeasData();
-#endif
+  //  Destructor (NOT defined) and not declared to stop warning
+  // ~MeasData();
   //# General member functions
 };
 

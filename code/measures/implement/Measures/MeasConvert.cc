@@ -1,5 +1,5 @@
 //# MeasConvert.cc:  Conversion of Measures
-//# Copyright (C) 1995,1996,1997,1998
+//# Copyright (C) 1995,1996,1997,1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -26,10 +26,6 @@
 //# $Id$
 
 //# Includes
-#ifdef __GNUG__
-#include <aips/Quanta/Quantum.h>
-typedef Quantum<Double> gpp_MeasConvert_bug1;
-#endif
 #include <aips/Exceptions/Error.h>
 #include <aips/Measures/MeasBase.h>
 #include <aips/Measures/MeasConvert.h>

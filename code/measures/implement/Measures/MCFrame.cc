@@ -26,10 +26,6 @@
 //# $Id$
 
 //# Includes
-#ifdef __GNUG__
-#include <aips/Quanta/Quantum.h>
-typedef Quantum<Double> gpp_MCFrame_bug1;
-#endif
 #include <aips/Exceptions/Error.h>
 #include <aips/Mathematics/Math.h>
 #include <aips/Mathematics/Constants.h>
@@ -44,12 +40,6 @@ typedef Quantum<Double> gpp_MCFrame_bug1;
 #include <aips/Measures/MCRadialVelocity.h>
 #include <aips/Measures/MCFrame.h>
 #include <aips/Measures/MeasConvert.h>
-#ifdef __GNUG__
-typedef MeasConvert<MEpoch,MVEpoch,MCEpoch> gpp_mcframe_bug2;
-typedef MeasConvert<MPosition,MVPosition,MCPosition> gpp_mcframe_bug3;
-typedef MeasConvert<MDirection,MVDirection,MCDirection> gpp_mcframe_bug4;
-typedef MeasConvert<MRadialVelocity,MVRadialVelocity,MCRadialVelocity> gpp_mcframe_bug5;
-#endif
 
 // MCFrame class
  

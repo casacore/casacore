@@ -198,11 +198,8 @@ private:
   MeasJPL &operator=(const MeasJPL &other);
   
   //# Destructor
-  //  Destructor, NOT defined (GNU does not like it)
-#ifdef __GNUG__
-#else
-  ~MeasJPL();
-#endif
+  //  Destructor, NOT defined and not declared to stop warning
+  // ~MeasJPL();
   
   //# General member functions
   // Initialise tables

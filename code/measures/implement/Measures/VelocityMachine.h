@@ -1,5 +1,5 @@
 //# VelocityMachine.h: Converts between velocities and frequencies
-//# Copyright (C) 1998
+//# Copyright (C) 1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -35,10 +35,6 @@
 #include <aips/Measures/MCFrequency.h>
 #include <aips/Measures/MCDoppler.h>
 #include <aips/Measures/MeasConvert.h>
-#ifdef __GNUG__
-typedef MeasConvert<MFrequency,MVFrequency,MCFrequency> gpp_velmachine_bug1;
-typedef MeasConvert<MDoppler,MVDoppler,MCDoppler> gpp_velmachine_bug2;
-#endif
 
 //# Forward Declarations
 class MeasFrame;

@@ -351,11 +351,8 @@ private:
   MeasTable &operator=(const MeasTable &other);
   
   //# Destructor
-  //  Destructor, NOT defined (GNU does not like it)
-#ifdef __GNUG__
-#else
-  ~MeasTable();
-#endif
+  //  Destructor, NOT defined and not declared to stop warning
+  // ~MeasTable();
 
   //# General member functions
 

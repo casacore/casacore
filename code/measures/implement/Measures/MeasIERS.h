@@ -188,11 +188,8 @@ private:
   MeasIERS &operator=(const MeasIERS &other);
   
   //# Destructor
-  //  Destructor, NOT defined (GNU does not like it)
-#ifdef __GNUG__
-#else
-  ~MeasIERS();
-#endif
+  //  Destructor, NOT defined and not declared to stop warning
+  // ~MeasIERS();
   
   //# General member functions
   // Initialise tables

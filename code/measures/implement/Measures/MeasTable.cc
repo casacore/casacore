@@ -26,10 +26,6 @@
 //# $Id$
 
 //# Includes
-#ifdef __GNUG__
-#include <aips/Quanta/Quantum.h>
-typedef Quantum<Double> gpp_MeasTable_bug1;
-#endif
 #include <aips/Measures/MeasTable.h>
 #include <aips/Quanta/UnitVal.h>
 #include <aips/Quanta/RotMatrix.h>

@@ -1,5 +1,5 @@
 //# Muvw.cc:  A Measure: uvw on Earth
-//# Copyright (C) 1998
+//# Copyright (C) 1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -26,10 +26,6 @@
 //# $Id$
 
 //# Includes
-#ifdef __GNUG__
-#include <aips/Quanta/Quantum.h>
-typedef Quantum<Double> gpp_muvw_bug1;
-#endif
 #include <aips/Measures/Muvw.h>
 #include <aips/Exceptions.h>
 #include <aips/Arrays/Vector.h>
