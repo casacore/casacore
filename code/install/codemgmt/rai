@@ -130,7 +130,11 @@
   done
 
 # Transmit files to the master host.
-  ARSH=${ARSH-"ssh -C aips2.nrao.edu"}
+  REMOTE_USER=""
+  if [ "$AUID" ] ; then
+     REMOTE_USER="-l $AUID"
+  fi
+  ARSH=${ARSH-"ssh -C aips2.nrao.edu $REMOTE_USER"}
 
   if [ "$FILES" != "" ]
   then
