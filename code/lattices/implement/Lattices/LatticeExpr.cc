@@ -56,9 +56,10 @@ LatticeExpr<T>::LatticeExpr (const LatticeExprNode& expr, uInt)
     if (expr.dataType() == thisDT) {
 	expr_p = expr;
     } else {
-	if (expr.dataType() != TpBool) {
+	if (expr.dataType() == TpBool) {
 	    throw (AipsError ("LatticeExpr::constructor - "
-			      "Bool cannot be converted to a numeric type"));
+			      "Bool expression cannot be converted to "
+			      "a numeric type"));
 	}
 	switch (thisDT) {
 	case TpFloat:
