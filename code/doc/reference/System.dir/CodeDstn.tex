@@ -283,7 +283,8 @@ Retrieve \aipspp\ source code updates.
 
 \begin{synopsis}
    \code{\exe{inhale} [\exe{-b}] [\exe{-c|-m}] [\exe{-D}] [\exe{-d}]
-	[\exe{-l}] [\exe{-n}] [\exe{-P}] [\exe{-R} NAME] [\exe{-r}\#] [\exe{-w}\#]}
+	[\exe{-l}] [\exe{-n}] [\exe{-P}] [\exe{-R} NAME] [\exe{-r}\#]
+        [\exe{-w}\#] [\exe{-cvsup} data|docs|all] [\exe{binary}]}
 \end{synopsis}
 
 \subsection*{Description}
@@ -366,6 +367,11 @@ the last slave and code updates (see \exeref{avers}).
    Force a cumulative update.  This should be done regularly (usually once a
    week) to guarantee that the slave copy does not deviate from the master.
 
+\item[\exe{-cvsup} data|docs|all]
+   Update the data, docs or both using cvsup.  Cvsup must be in the PATH for
+   this option to work.  If a supfile exists it will be used otherwise the 
+   supfile will be created.
+
 \item[\exe{-D}]
    Fetch the latest update which has passed the \exeref{testsuite}.
 
@@ -408,6 +414,12 @@ the last slave and code updates (see \exeref{avers}).
 
 \item[\exe{-w} interval]
    Set the retry interval for the ftp transfer in seconds, default is 900.
+
+\item[\exe{binary}]
+   This option will download the latest stable linux binary executables,
+   libraries and scripts. /aips++/stable must exist (typically as a symbolic
+   link) for the binaries to work.
+
 \end{description}
 
 \subsection*{Resources}
