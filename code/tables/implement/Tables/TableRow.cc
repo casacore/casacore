@@ -1,5 +1,5 @@
 //# TableRow.cc: Access to a table row
-//# Copyright (C) 1996,1997,1998,1999
+//# Copyright (C) 1996,1997,1998,1999,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -987,27 +987,4 @@ Bool TableRow::namesConform (const TableRecord& that) const
 	}
     }
     return True;
-}
-
-
-void copyRows (Table& out, const Table& in, uInt startout, uInt startin,
-	       uInt nrrow)
-{
-    uInt i;
-    ROTableRow inrow(in, True);
-    Vector<String> columns = inrow.columnNames();
-    for (i=0; i<columns.nelements(); i++) {
-	if (! out.tableDesc().isColumn (columns(i))) {
-	    throw (TableError ("copyTable: column " + columns(i) +
-			       " does not exist in output table"));
-	}
-    }
-    if (startout + nrrow > out.nrow()) {
-	out.addRow (startout + nrrow - out.nrow());
-    }
-    TableRow outrow(out, columns);
-    for (i=0; i<nrrow; i++) {
-	inrow.get (startin + i);
-	outrow.put (startout + i, inrow.record(), False);
-    }
 }
