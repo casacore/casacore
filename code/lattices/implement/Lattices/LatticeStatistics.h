@@ -44,10 +44,12 @@
 #include <aips/Utilities/String.h>
 #include <aips/Logging/LogIO.h>
 
+
 //# Forward Declarations
 template <class T> class MaskedLattice;
 template <class T> class TempLattice;
 class IPosition;
+class ostream;
 
 
 // <summary>
@@ -464,6 +466,10 @@ protected:
                            const Vector<T>& include,
                            const Vector<T>& exclude,
                            ostream& os);
+
+// set stream manipulators
+   void setStream (ostream& os, Int oPrec);
+
 
 // Find the shape of slice from the statistics lattice at one
 // spatial pixel
