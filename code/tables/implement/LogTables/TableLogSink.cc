@@ -1,5 +1,5 @@
 //# TableLogSink.h: save log messages in an AIPS++ Table
-//# Copyright (C) 1996,1997,1998,1999,2000,2001
+//# Copyright (C) 1996,1997,1998,1999,2000,2001,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -37,9 +37,23 @@
 #include <aips/Utilities/Assert.h>
 
 
-TableLogSink::TableLogSink (const LogFilter& filter, const String& fileName,
+TableLogSink::TableLogSink (LogMessage::Priority filter,
+			    const String& fileName,
+			    Bool useSSM)
+: LogSinkInterface(LogFilter(filter))
+{
+    init (fileName, useSSM);
+}
+
+TableLogSink::TableLogSink (const LogFilterInterface& filter,
+			    const String& fileName,
 			    Bool useSSM)
 : LogSinkInterface(filter)
+{
+    init (fileName, useSSM);
+}
+
+void TableLogSink::init (const String& fileName, Bool useSSM)
 {
     LogMessage logMessage(LogOrigin("TableLogSink", "TableLogSink", WHERE));
     if (fileName.empty()) {
@@ -72,7 +86,7 @@ TableLogSink::TableLogSink (const LogFilter& filter, const String& fileName,
 }
 
 TableLogSink::TableLogSink (const String& fileName)
-: LogSinkInterface(LogFilter())
+: LogSinkInterface()
 {
     LogMessage logMessage(LogOrigin("TableLogSink", "TableLogSink", WHERE));
     if (! Table::isReadable (fileName)) {
@@ -171,7 +185,7 @@ void TableLogSink::attachCols()
     }
 }
 
-void TableLogSink::reopenRW (const LogFilter& aFilter)
+void TableLogSink::reopenRW (const LogFilterInterface& aFilter)
 {
     log_table_p.reopenRW();
     filter (aFilter);
@@ -262,14 +276,9 @@ TableDesc TableLogSink::logTableDescription()
   return desc;
 }
 
-void TableLogSink::flush()
+void TableLogSink::flush(Bool)
 {
   log_table_p.flush();
-}
-
-Bool TableLogSink::isTableLogSink() const
-{
-  return True;
 }
 
 void TableLogSink::writeLocally (Double mtime,
@@ -297,4 +306,13 @@ void TableLogSink::clearLocally()
   SetupNewTable setup (fileName, logTableDescription(), Table::New);
   makeTable (setup, True);
   attachCols();
+}
+
+
+LogSink TableLogSink::makeSink (const LogFilterInterface &filter,
+				const String &fileName)
+{
+  LogSinkInterface* sink = new TableLogSink (LogFilter(LogMessage::DEBUGGING),
+					     fileName);
+  return LogSink (filter, CountedPtr<LogSinkInterface>(sink));
 }
