@@ -2448,3 +2448,9 @@
 09 393 src rm trial/implement/Lattices/PixelPrism.cc
 09 393 src rm trial/implement/Lattices/PixelRegion.h
 09 393 src rm trial/implement/Lattices/PixelRegion.cc
+09 393 src rm trial/implement/Lattices/test/tPixelPolygon.cc
+09 393 src rm trial/implement/Lattices/test/tPixelPolygon.out
+09 393 src rm trial/implement/Lattices/test/tPixelPrism.cc
+09 393 src rm trial/implement/Lattices/test/tPixelPrism.out
+09 393 src rm trial/implement/Lattices/test/tPixelRegion.cc
+09 393 src rm trial/implement/Lattices/test/tPixelRegion.out
