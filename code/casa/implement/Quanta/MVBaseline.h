@@ -112,7 +112,7 @@ public:
   // Default constructor generates a (0,0,0) Baseline
   MVBaseline();
   // Copy constructor
-  MVBaseline(const MVBaseline &other);
+  MVBaseline(const MVPosition &other);
   // Creates a specified vector
   MVBaseline(Double in0, Double in1, Double in2);
   // Creates a vector with specified length towards pole
@@ -141,7 +141,6 @@ public:
   // Baseline as difference between positions (first - second (default(0,0,0))
   // <group>
   MVBaseline(const MVPosition &pos, const MVPosition &base);
-  MVBaseline(const MVPosition &pos);
   // </group>
   // Copy assignment
   MVBaseline &operator=(const MVBaseline &other);
@@ -173,7 +172,7 @@ public:
   MVBaseline operator-(const MVBaseline &right) const;
   // </group>
   
-  // Multiplication with rotation matrix (see also global functions)
+/*///  // Multiplication with rotation matrix (see also global functions)
   // <group>
   MVBaseline &operator*=(const RotMatrix &right);
   // </group>
@@ -182,13 +181,7 @@ public:
   // <group>
   MVBaseline &operator*=(Double right);
   // </group>
-  
-  // Obtain an element
-  // <group>
-  Double &operator()(uInt which);
-  const Double &operator()(uInt which) const;
-  // </group>
-  
+  *///
   //# General Member Functions
   
   // Tell me your type
@@ -252,10 +245,6 @@ public:
   // Set the internal value if correct values and dimensions
   virtual Bool putValue(const Vector<Quantum<Double> > &in);
   
-protected:
-  //# Data
-  // Baseline vector (in m)
-  Vector<Double> xyz;
 };
 
 //# Global functions

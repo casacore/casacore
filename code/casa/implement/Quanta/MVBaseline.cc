@@ -47,14 +47,7 @@ typedef Quantum<Double> gpp_mvBaseline_bug1;
 
 //# Constructors
 MVBaseline::MVBaseline() :
-  xyz(3) {
-    xyz = Double(0.0);
-}
-
-MVBaseline::MVBaseline(const MVBaseline &other) : 
-  xyz(3) {
-    xyz = other.xyz;
-  }
+  MVPosition() {}
 
 MVBaseline &MVBaseline::operator=(const MVBaseline &other) {
   if (this != &other) {
@@ -64,138 +57,45 @@ MVBaseline &MVBaseline::operator=(const MVBaseline &other) {
 }
 
 MVBaseline::MVBaseline(Double in) :
-  xyz(3) {
-    xyz = Double(0.0);
-    xyz(2) = in;
-  }
+  MVPosition(in) {}
 
 MVBaseline::MVBaseline(const Quantity &l) :
-  xyz(3) {
-    xyz = Double(0.0);
-    l.assert(UnitVal::LENGTH);
-    xyz(2) = l.getBaseValue();
-  }
+  MVPosition(l) {}
 
 MVBaseline::MVBaseline(Double in0, Double in1, Double in2) : 
-  xyz(3) {
-    xyz(0) = in0;
-    xyz(1) = in1;
-    xyz(2) = in2;
-  }
+  MVPosition(in0, in1, in2) {}
 
 MVBaseline::MVBaseline(const Quantity &l, Double angle0, Double angle1) : 
-  xyz(3) {
-    Double loc = cos(angle1);
-    xyz(0) = cos(angle0)*loc;
-    xyz(1) = sin(angle0)*loc;
-    xyz(2) = sin(angle1);
-    readjust(l.getBaseValue());
-  }
+  MVPosition(l, angle0, angle1) {}
 
 MVBaseline::MVBaseline(const Quantity &l, const Quantity &angle0, 
 		       const Quantity &angle1) : 
-  xyz(3) {
-    Double loc = (cos(angle1)).getValue();
-    xyz(0) = ((cos(angle0)).getValue()) * loc;
-    xyz(1) = ((sin(angle0)).getValue()) * loc;
-    xyz(2) = (sin(angle1)).getValue();
-    l.assert(UnitVal::LENGTH);
-    readjust(l.getBaseValue());
-  }
+  MVPosition(l, angle0, angle1) {}
 
 MVBaseline::MVBaseline(const Quantum<Vector<Double> > &angle) :
-  xyz(3) {
-    uInt i; i = angle.getValue().nelements();
-    if (i > 3 ) {
-      throw (AipsError("Illegeal vector length in MVBaseline constructor"));
-    } else if (i == 3) {
-      angle.assert(UnitVal::LENGTH);
-      xyz = angle.getBaseValue();
-    } else {
-      Vector<Double> tsin = (sin(angle)).getValue(); 
-      Vector<Double> tcos = (cos(angle)).getValue(); 
-      xyz = Double(0.0);
-      if (i > 1) {
-	xyz(0) = tcos(0) * tcos(1);
-	xyz(1) = tsin(0) * tcos(1);
-	xyz(2) = tsin(1);
-      } else if (i > 0) {
-	xyz(0) = tcos(0);
-	xyz(1) = tsin(0);
-      } else {
-	xyz(2)=1.0;
-      }
-    }
-  }
+  MVPosition(angle) {}
 
 MVBaseline::MVBaseline(const Quantity &l, 
 		       const Quantum<Vector<Double> > &angle) :
-  xyz(3) {
-    uInt i; i = angle.getValue().nelements();
-    if (i > 3 ) {
-      throw (AipsError("Illegal vector length in MVBaseline constructor"));
-    } else if (i == 3) {
-      angle.assert(UnitVal::NODIM);
-      xyz = angle.getValue();
-    } else {
-      Vector<Double> tsin = (sin(angle)).getValue(); 
-      Vector<Double> tcos = (cos(angle)).getValue(); 
-      xyz = Double(0.0);
-      if (i > 1) {
-	xyz(0) = tcos(0) * tcos(1);
-	xyz(1) = tsin(0) * tcos(1);
-	xyz(2) = tsin(1);
-      } else if (i > 0) {
-	xyz(0) = tcos(0);
-	xyz(1) = tsin(0);
-      } else {
-	xyz(2)=1.0;
-      }
-    }
-    l.assert(UnitVal::LENGTH);
-    readjust(l.getBaseValue());
-  }
+  MVPosition(l, angle) {}
 
 MVBaseline::MVBaseline(const Vector<Double> &other) :
-  xyz(3) {
-    uInt i; i = other.nelements();
-    if (i > 3 ) {
-      throw (AipsError("Illegal vector length in MVBaseline constructor"));
-    } else if (i == 3) {
-      xyz = other;
-    } else {
-      Vector<Double> tsin = (sin(other.ac()));
-      Vector<Double> tcos = (cos(other.ac()));
-      xyz = Double(0.0);
-      if (i > 1) {
-	xyz(0) = tcos(0) * tcos(1);
-	xyz(1) = tsin(0) * tcos(1);
-	xyz(2) = tsin(1);
-      } else if (i > 0) {
-	xyz(0) = tcos(0);
-	xyz(1) = tsin(0);
-      } else {
-	xyz(2)=1.0;
-      }
-    }
-  }
+  MVPosition(other) {}
 
 MVBaseline::MVBaseline(const Vector<Quantity> &other) :
-  xyz(3) {
+  MVPosition() {
     if (!putValue(other)) {
       throw (AipsError("Illegal quantum vector in MVBaseline constructor"));
     };
   }
 
 MVBaseline::MVBaseline(const MVPosition &pos, const MVPosition &base) :
-  xyz(3) {
-    xyz = pos.getValue();
+  MVPosition(pos) {
     xyz.ac() -= base.getValue().ac();
 }
 
-MVBaseline::MVBaseline(const MVPosition &pos) : xyz(3) {
-  xyz = pos.getValue();
-}
+MVBaseline::MVBaseline(const MVPosition &other) :
+  MVPosition(other) {}
 
 //# Destructor
 MVBaseline::~MVBaseline() {}
@@ -235,16 +135,6 @@ operator*(const MVBaseline &other) const {
   return tmp;
 }
 
-Double &MVBaseline::operator()(uInt which) {
-  DebugAssert(which < 3, AipsError);
-  return (xyz(which));
-}
-
-const Double &MVBaseline::operator()(uInt which) const {
-  DebugAssert(which < 3, AipsError);
-  return (xyz(which));
-}
-
 MVBaseline MVBaseline::operator-() const {
   MVBaseline tmp; tmp = *this;
   tmp.xyz.ac() = -xyz.ac();
@@ -272,7 +162,7 @@ MVBaseline MVBaseline::operator-(const MVBaseline &right) const{
   tmp -= right;
   return tmp;
 }
-
+/*///
 MVBaseline &MVBaseline::operator*=(const RotMatrix &right) {
   MVBaseline result;
   for (Int i=0; i<3; i++) {
@@ -291,7 +181,7 @@ MVBaseline &MVBaseline::operator*=(Double right) {
   }
   return *this;
 }
-
+*///
 //# Member functions
 
 uInt MVBaseline::type() const {
@@ -425,7 +315,7 @@ void MVBaseline::putVector(const Vector<Double> &in) {
     xyz = in;
   } else {
     xyz = 0.0;
-    for (Int i=0; i<in.nelements();i++) xyz(i) = in(i);
+    for (uInt i=0; i<in.nelements();i++) xyz(i) = in(i);
   };
 }
 
@@ -448,20 +338,18 @@ Vector<Quantum<Double> > MVBaseline::getXRecordValue() const {
 }
 
 Bool MVBaseline::putValue(const Vector<Quantum<Double> > &in) {
-  uInt i; i = in.nelements();
+  uInt i = in.nelements();
   if (i != 3 ) return False;
   if (in(0).check(UnitVal::LENGTH)) {
     if (in(1).check(UnitVal::LENGTH) &&
 	in(2).check(UnitVal::LENGTH)) {
-      Int j;
-      for (j = 0; j<i; j++) {
+      for (uInt j = 0; j<i; j++) {
 	xyz(j) = in(j).getBaseValue();
       };
     } else if (in(1).check(UnitVal::ANGLE) &&
 	       in(2).check(UnitVal::ANGLE)) {
       Vector<Double> tsin(2), tcos(2);
-      Int j;
-      for (j=1; j < i; j++) {
+      for (uInt j=1; j < i; j++) {
 	tsin(j-1) = (sin(in(j))).getValue(); 
 	tcos(j-1) = (cos(in(j))).getValue(); 
       };
