@@ -141,11 +141,11 @@ const MeasFrame &MeasRef<Ms>::framePosition(MRBase &ref1,
   if (!ref1.empty() && ref1.getFrame().position()) {
     return ref1.getFrame();
   } else if (!ref2.empty() && ref2.getFrame().position()) {
-    return ref2.getFrame();
   } else {
     throw(AipsError("No MeasFrame specified for conversion of " + 
 		    Ms::showMe()));
   };
+  return ref2.getFrame();
 }
 
 template<class Ms>
@@ -154,11 +154,11 @@ const MeasFrame &MeasRef<Ms>::frameEpoch(MRBase &ref1,
   if (!ref1.empty() && ref1.getFrame().epoch()) {
     return ref1.getFrame();
   } else if (!ref2.empty() && ref2.getFrame().epoch()) {
-    return ref2.getFrame();
   } else {
     throw(AipsError("No MeasFrame specified for conversion of " + 
 		    Ms::showMe()));
   };
+  return ref2.getFrame();
 }
 
 template<class Ms>
@@ -167,11 +167,11 @@ const MeasFrame &MeasRef<Ms>::frameDirection(MRBase &ref1,
   if (!ref1.empty() && ref1.getFrame().direction()) {
     return ref1.getFrame();
   } else if (!ref2.empty() && ref2.getFrame().direction()) {
-    return ref2.getFrame();
   } else {
     throw(AipsError("No MeasFrame specified for conversion of " + 
 		    Ms::showMe()));
   };
+  return ref2.getFrame();
 }
 
 template<class Ms>
@@ -180,11 +180,11 @@ const MeasFrame &MeasRef<Ms>::frameRadialVelocity(MRBase &ref1,
   if (!ref1.empty() && ref1.getFrame().radialVelocity()) {
     return ref1.getFrame();
   } else if (!ref2.empty() && ref2.getFrame().radialVelocity()) {
-    return ref2.getFrame();
   } else {
     throw(AipsError("No MeasFrame specified for conversion of " + 
 		    Ms::showMe()));
   };
+  return ref2.getFrame();
 }
 
 template<class Ms>
