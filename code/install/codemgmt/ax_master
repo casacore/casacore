@@ -6285,3 +6285,4 @@
 17 304 src mv trial/implement/OS/LECanonicalConversion.cc aips/implement/OS/LECanonicalConversion.cc
 17 304 src mv trial/implement/OS/LECanonicalDataConversion.cc aips/implement/OS/LECanonicalDataConversion.cc
 17 304 src mv trial/implement/OS/LECanonicalDataConversion.h aips/implement/OS/LECanonicalDataConversion.h
+17 304 src mv trial/implement/IO/LECanonicalIO.h aips/implement/IO/LECanonicalIO.h
