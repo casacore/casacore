@@ -64,13 +64,13 @@
 // ImageDecomposer is an image decomposition tool that performs several tasks,
 // with the end result being that a strongly blended image is separated into
 // components - both in the sense that it determines the parameters for each
-// parameter (assuming a Gaussian model) and that is physically assigns each
+// component (assuming a Gaussian model) and that it physically assigns each
 // pixel in the image to an individual object.  The products of these two
 // operations are called the component list and the component map, 
 // respectively.  The fitting process (which determines the component list) and
 // the pixel-decomposition process (which determines the component map) are
 // designed to work cooperatively to increase the efficiency and accuracy of
-// both.
+// both, though each can operate without the other if necessary.
 // 
 // The algorithm between the decomposition is based on the function clfind
 // described in Williams et al 1994, which uses a contouring procedure whereby
@@ -144,8 +144,8 @@ public:
 // Destructor
    ~ImageDecomposer();
 
-// Tell the decomposer what image to decompose ("target image")
-// This resets internal component map.
+// Tell the decomposer what image to decompose ("target image").
+// Also resets the internal component map.
    void setImage (ImageInterface<T>& image);
 
 // Tells the program whether or not to use the contour-based deblender. If not,
@@ -389,7 +389,9 @@ private:
 // Finds a rough estimate of the width of each component by scanning to find
 // the full width at quarter maximum.
 // Requires the location of each component.
-// This function is now obsolete and is no longer used.
+// This function is mostly obsolete, and is only used when the contour 
+// deblender is off (since the component map is necessary to determine the
+// moments).
   void estimateComponentWidths(Matrix<T>& width,
                                const Block<IPosition>& maxvalpos) const;
 
@@ -424,17 +426,17 @@ private:
   Int getContourVal(Int x, Int y, Int z, const Vector<T>& clevels) const;
   Int getContourVal(Int x, Int y, const Vector<T>& clevels) const;
   Int getContourVal(T val, const Vector<T>& clevels) const;
-// <//group>
+// </group>
 
-// Fits multiple gaussians to a single region.  First performs  a local 
+// Fits multiple gaussians to a single region.  First performs a local 
 // maximum scan to estimate the number of components in the region.
   Matrix<T> fitRegion(Int region);
 
-// Fits gaussians to an image; multiple gaussians per region in the pmap.
-// The regions are fit sequentially and independently, so this function 
-// can be used on the main image.
-// If the map is not yet thresholded, will fit to the entire image as if it
-// were a single composite object, which will be very slow.
+// Fits gaussians to an image; multiple gaussians per region in the component
+// map.  The regions are fit sequentially and independently, so this function 
+// can be used on the main image.  If the map is not yet thresholded, will fit
+// to the entire image as if it  were a single composite object, which will be
+// very slow.
   void fitRegions();
 
 // Fits gaussians to an image; one gaussian per region in the pmap.
@@ -447,9 +449,8 @@ private:
 // an individual component and will fit that many gaussians to the image
   void fitComponents();
 
-// Estimate the component parameters based on the properties of the component
-// map.  Currently this function is still rather primitive and cannot estimate
-// rotation.
+// Estimate the component parameters based on moments calculated using 
+// the component map.
   Matrix<T> estimateComponents();
 
 // Fits the specified number of 3D gaussians to the data, and returns 
