@@ -37,7 +37,10 @@
 template<class T> class MaskedLattice;
 template<class T> class ImageInterface;
 template<class T> class Lattice;
+template<class T> class LatticeIterator;
 template<class T> class Vector;
+template<class T> class Matrix;
+template<class T> class Cube;
 
 class CoordinateSystem;
 class DirectionCoordinate;
@@ -45,6 +48,7 @@ class Coordinate;
 class ObsInfo;
 class IPosition;
 class Unit;
+class ProgressMeter;
 
 // <summary>This regrids one image to match the coordinate system of another</summary>
 
@@ -197,6 +201,7 @@ public:
   // Regrid one Coordinate
    void regridOneCoordinate (LogIO& os, IPosition& outShape2,
                              Vector<Bool>& doneOutPixelAxes,
+                             MaskedLattice<T>* &finalOutPtr,  
                              MaskedLattice<T>* &inPtr,   
                              MaskedLattice<T>* &outPtr,  
                              CoordinateSystem& outCoords,
@@ -245,7 +250,7 @@ public:
    void make2DCoordinateGrid (Cube<Double>& in2DPos,
                               Double& minInX, Double& minInY, 
                               Double& maxInX, Double& maxInY,
-                              const Vector<Float>& pixelScale, 
+                              const Vector<Double>& pixelScale, 
                               uInt xInAxis, uInt yInAxis,
                               uInt xOutAxis, uInt yOutAxis,
                               uInt xInCorrAxis, uInt yInCorrAxis,
@@ -282,6 +287,27 @@ public:
                  MFrequency::Convert& machine,
                  Bool replicate,
                  Bool useMachine, Bool showProgress);
+
+//
+   void regrid2DMatrix(Lattice<T>& outCursor,
+                       LatticeIterator<Bool>*& outMaskIterPtr,
+                       const Interpolate2D& interp,  
+                                    ProgressMeter*& pProgress,
+                                    Double& iPix,
+                                    uInt nDim,
+                                    uInt xInAxis, uInt yInAxis,
+                                    uInt xOutAxis, uInt yOutAxis,
+                                    Double scale,
+                                    Bool inIsMasked, Bool outIsMasked,
+                                    const IPosition& outPos,
+                                    const IPosition& outCursorShape,
+                                    const IPosition& inChunkShape,
+                                    const IPosition& inChunkBlc,
+                                    const IPosition& pixelAxisMap2,
+                                    Array<T>& inDataChunk,
+                                    Array<Bool>*& inMaskChunkPtr,
+                                    const Cube<Double>& pix2DPos,
+                                    const Matrix<Bool>& failed);
 };
 
  
