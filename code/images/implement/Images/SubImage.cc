@@ -119,7 +119,8 @@ SubImage<T>::SubImage (MaskedImage<T>& image,
 {
   itsSubLatPtr = new SubLattice<T> (image,
 				    region.toLatticeRegion (image.coordinates(),
-							    image.shape()));
+							    image.shape()),
+				    writableIfPossible);
   const Slicer& slicer = itsSubLatPtr->region().slicer();
   coords_p = image.coordinates().subImage (slicer.start().asVector(),
 					   slicer.stride().asVector());
