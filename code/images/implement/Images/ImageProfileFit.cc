@@ -300,6 +300,13 @@ Bool ImageProfileFit::getElements (RecordInterface& rec,
    return getElements(rec, xAbsOut, xUnitOut, dopplerOut, list);
 }
 
+const SpectralList& ImageProfileFit::getList () const
+{
+   const SpectralList& list = itsSpectralFitPtr->list();
+   return list;
+}
+
+
 
 Bool ImageProfileFit::getElements (RecordInterface& rec,
                                    Bool xAbsOut,
@@ -363,18 +370,6 @@ Bool ImageProfileFit::getElements (RecordInterface& rec,
 //
    return True;
 }
-
-
-
-void ImageProfileFit::listElements(LogIO& os, const SpectralList& list) const
-{
-   const uInt n = list.nelements();
-   for (uInt i=0; i<n; i++) {
-     SpectralElement se = list[i];
-     os.output() << se << endl;
-   }
-}
-
 
 
 void ImageProfileFit::reset () 
@@ -491,40 +486,53 @@ void ImageProfileFit::model(Vector<Float>& model) const
 void ImageProfileFit::collapse (Vector<Float>& profile, Vector<Bool>& mask,
                                 uInt profileAxis, const MaskedLattice<Float>& lat) const
 {
-   AlwaysAssert(profileAxis<lat.ndim(), AipsError);
-   LatticeStatistics<Float> stats(lat, False, False);
-   IPosition excludeAxes(1, profileAxis);
-   IPosition axes = IPosition::otherAxes(lat.ndim(), excludeAxes);
-   stats.setAxes(axes.asVector());
+   if (lat.ndim()==1) {
+
+// Nothing to collapse
+
+      profile.resize(0);
+      mask.resize(0);
+      profile = lat.get();
+      mask = lat.getMask();
+   } else {
+
+// Use LatticeStatistics to do the collapsing
+
+      AlwaysAssert(profileAxis<lat.ndim(), AipsError);
+      LatticeStatistics<Float> stats(lat, False, False);
+      IPosition excludeAxes(1, profileAxis);
+      IPosition axes = IPosition::otherAxes(lat.ndim(), excludeAxes);
+      stats.setAxes(axes.asVector());
 //
-   Array<Float> tmp;
-   Bool dropDegenerateAxes = True;
-   stats.getMean(tmp, dropDegenerateAxes);
-   if (tmp.nelements()==0) {
-      throw(AipsError("There were no good points in the region"));
-   }
-   Array<Float> nPts;
-   stats.getNPts(nPts, dropDegenerateAxes);
+      Array<Float> tmp;
+      Bool dropDegenerateAxes = True;
+      stats.getMean(tmp, dropDegenerateAxes);
+      if (tmp.nelements()==0) {
+         throw(AipsError("There were no good points in the region"));
+      }
+      Array<Float> nPts;
+      stats.getNPts(nPts, dropDegenerateAxes);
 //
-   uInt n = tmp.shape()(0);
-   profile.resize(n);
-   mask.resize(n);
+      uInt n = tmp.shape()(0);  
+      profile.resize(n);
+      mask.resize(n);
 //
-   profile = tmp.reform(IPosition(1,n));
+      profile = tmp.reform(IPosition(1,n));
 
 // Handle mask in rather ugly way...
 
-   Bool deleteN, deleteM;
-   const Float* pN = nPts.getStorage(deleteN);
-   Bool* pM = mask.getStorage(deleteM);
+      Bool deleteN, deleteM;
+      const Float* pN = nPts.getStorage(deleteN);
+      Bool* pM = mask.getStorage(deleteM);
 //
-   for (uInt i=0; i<n; i++) {
-      pM[i] = True;
-      if (pN[i] < 0.5) pM[i] = False;
-   }   
+      for (uInt i=0; i<n; i++) {
+         pM[i] = True;
+         if (pN[i] < 0.5) pM[i] = False;
+      }   
 //  
-   nPts.freeStorage(pN, deleteN);
-   mask.putStorage(pM, deleteM);
+      nPts.freeStorage(pN, deleteN);
+      mask.putStorage(pM, deleteM);
+   }
  }
 
 
