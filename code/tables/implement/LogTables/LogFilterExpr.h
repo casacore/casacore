@@ -25,6 +25,10 @@
 //#
 //# $Id$
 
+#if !defined(AIPS_LOGFILTEREXPR_H)
+#define AIPS_LOGFILTEREXPR_H
+
+
 //# Includes
 #include <aips/Tables/TableExprData.h>
 
@@ -72,3 +76,6 @@ private:
   TableExprNode*    itsExpr;
   const LogMessage* itsMessage;
 };
+
+
+#endif
