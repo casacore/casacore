@@ -88,7 +88,7 @@
 // <li> 
 //   <linkto class="SampledFunctional">SampledFunctional</linkto>: 
 //   This is the base class for discrete, regularly sampled one-dimensional 
-//   functions. It inherits from <src>Functional<uInt, Range>
+//   functions. It inherits from <src>Functional<uInt, Range></src>.
 // <li> 
 //   <linkto class="FunctionWithDerivs">FunctionWithDerivs</linkto>:
 //   This is the base class for functions which can calculate their
