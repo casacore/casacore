@@ -33,67 +33,67 @@
 
 template<class T> FluxRep<T>::
 FluxRep()
-  :itsFlux(4, NumericTraits<T>::ConjugateType(0,0)),
+  :itsVal(4, NumericTraits<T>::ConjugateType(0,0)),
    itsPol(ComponentType::STOKES),
    itsUnit("Jy")
 {
-  itsFlux(0).re = T(1);
+  itsVal(0).re = T(1);
   DebugAssert(ok(), AipsError);
 }
 
 template<class T> FluxRep<T>::
 FluxRep(T i) 
-  :itsFlux(4, NumericTraits<T>::ConjugateType(0,0)),
+  :itsVal(4, NumericTraits<T>::ConjugateType(0,0)),
    itsPol(ComponentType::STOKES),
    itsUnit("Jy")
 {
-  itsFlux(0).re = i;
+  itsVal(0).re = i;
   DebugAssert(ok(), AipsError);
 }
 
 template<class T> FluxRep<T>::
 FluxRep(T i, T q, T u, T v)
-  :itsFlux(4, NumericTraits<T>::ConjugateType(0,0)),
+  :itsVal(4, NumericTraits<T>::ConjugateType(0,0)),
    itsPol(ComponentType::STOKES),
    itsUnit("Jy")
 {
-  itsFlux(0).re = i;
-  itsFlux(1).re = q;
-  itsFlux(2).re = u;
-  itsFlux(3).re = v;
+  itsVal(0).re = i;
+  itsVal(1).re = q;
+  itsVal(2).re = u;
+  itsVal(3).re = v;
   DebugAssert(ok(), AipsError);
 }
 
 template<class T> FluxRep<T>::
 FluxRep(const Vector<T> & flux)
-  :itsFlux(4, NumericTraits<T>::ConjugateType(0,0)),
+  :itsVal(4, NumericTraits<T>::ConjugateType(0,0)),
    itsPol(ComponentType::STOKES),
    itsUnit("Jy")
 {
   DebugAssert(flux.nelements() == 4, AipsError);
   for (uInt i = 0 ; i < 4; i++) {
-    itsFlux(i).re = flux(i);
+    itsVal(i).re = flux(i);
   }
   DebugAssert(ok(), AipsError);
 }
 
 template<class T> FluxRep<T>::
 FluxRep(const Quantum<Vector<T> > & flux)
-  :itsFlux(4, NumericTraits<T>::ConjugateType(0,0)),
+  :itsVal(4, NumericTraits<T>::ConjugateType(0,0)),
    itsPol(ComponentType::STOKES),
    itsUnit(flux.getFullUnit())
 {
   const Vector<T> & fluxVal(flux.getValue());
   DebugAssert(fluxVal.nelements() == 4, AipsError);
   for (uInt s = 0; s < 4; s++) {
-    itsFlux(s).re = fluxVal(s);
+    itsVal(s).re = fluxVal(s);
   }
   DebugAssert(ok(), AipsError);
 }
 
 template<class T> FluxRep<T>::
 FluxRep(const FluxRep<T> & other) 
-  :itsFlux(other.itsFlux.copy()),
+  :itsVal(other.itsVal.copy()),
    itsPol(other.itsPol),
    itsUnit(other.itsUnit)
 {
@@ -108,7 +108,7 @@ template<class T> FluxRep<T>::
 template<class T> FluxRep<T> & FluxRep<T>::
 operator=(const FluxRep<T> & other) {
   if (this != &other) {
-    itsFlux = other.itsFlux;
+    itsVal = other.itsVal;
     itsPol = other.itsPol;
     itsUnit = other.itsUnit;
   }
@@ -137,9 +137,9 @@ setUnit(const Unit & unit) {
 template<class T> void FluxRep<T>::
 convertUnit(const Unit & unit) {
   if (unit.getName() != itsUnit.getName()) {
-    T factor = unit.getValue().getFac()/itsUnit.getValue().getFac();
+    T factor = itsUnit.getValue().getFac()/unit.getValue().getFac();
     for (uInt i = 0; i < 4; i++) {
-      itsFlux(i) *= factor;
+      itsVal(i) *= factor;
     }
     itsUnit = unit;
   }
@@ -170,23 +170,23 @@ convertPol(const ComponentType::Polarisation & pol) {
     switch (pol){
     case ComponentType::STOKES:
       if (itsPol == ComponentType::LINEAR) {
- 	Flux<T>::linearToStokes(itsFlux, itsFlux);
+ 	Flux<T>::linearToStokes(itsVal, itsVal);
       } else {
- 	Flux<T>::circularToStokes(itsFlux, itsFlux);
+ 	Flux<T>::circularToStokes(itsVal, itsVal);
       }
       break;
     case ComponentType::LINEAR:
       if (itsPol == ComponentType::STOKES) {
- 	Flux<T>::stokesToLinear(itsFlux, itsFlux);
+ 	Flux<T>::stokesToLinear(itsVal, itsVal);
       } else {
- 	Flux<T>::circularToLinear(itsFlux, itsFlux);
+ 	Flux<T>::circularToLinear(itsVal, itsVal);
       }
       break;
     case ComponentType::CIRCULAR:
       if (itsPol == ComponentType::STOKES) {
- 	Flux<T>::stokesToCircular(itsFlux, itsFlux);
+ 	Flux<T>::stokesToCircular(itsVal, itsVal);
       } else {
- 	Flux<T>::linearToCircular(itsFlux, itsFlux);
+ 	Flux<T>::linearToCircular(itsVal, itsVal);
       }
       break;
     default:
@@ -196,13 +196,6 @@ convertPol(const ComponentType::Polarisation & pol) {
   DebugAssert(ok(), AipsError);
 }
 
-template<class T> T FluxRep<T>::
-value() {
-  convertPol(ComponentType::STOKES);
-  DebugAssert(ok(), AipsError);
-  return itsFlux(0).re;
-}
-
 template<class T> void FluxRep<T>::
 value(Vector<T> & value) {
   const uInt len = value.nelements();
@@ -210,7 +203,7 @@ value(Vector<T> & value) {
   if (len == 0) value.resize(4);
   convertPol(ComponentType::STOKES);
   for (uInt s = 0 ; s < 4; s++) {
-    value(s) = itsFlux(s).re;
+    value(s) = itsVal(s).re;
   }
   DebugAssert(ok(), AipsError);
 }
@@ -223,7 +216,7 @@ value(Quantum<Vector<T> > & value) {
   convertPol(ComponentType::STOKES);
   Vector<T> & newValue = value.getValue();
   for (uInt s = 0 ; s < 4; s++) {
-    newValue(s) = itsFlux(s).re;
+    newValue(s) = itsVal(s).re;
   }
   DebugAssert(ok(), AipsError);
 }
@@ -231,9 +224,9 @@ value(Quantum<Vector<T> > & value) {
 template<class T> void FluxRep<T>::
 setValue(T value) {
   for (uInt i = 0; i < 4; i++) {
-    itsFlux(i).im = itsFlux(i).re = T(0.0);
+    itsVal(i).im = itsVal(i).re = T(0.0);
   }
-  itsFlux(0).re = value;
+  itsVal(0).re = value;
   itsPol = ComponentType::STOKES;
   DebugAssert(ok(), AipsError);
 }
@@ -242,8 +235,8 @@ template<class T> void FluxRep<T>::
 setValue(const Vector<T> & value) {
   DebugAssert (value.nelements() == 4, AipsError);
   for (uInt i = 0; i < 4; i++) {
-    itsFlux(i).re = value(i);
-    itsFlux(i).im = T(0.0);
+    itsVal(i).re = value(i);
+    itsVal(i).im = T(0.0);
   }
   itsPol = ComponentType::STOKES;
   DebugAssert(ok(), AipsError);
@@ -254,8 +247,8 @@ setValue(const Quantum<Vector<T> > & value) {
   DebugAssert (value.getValue().nelements() == 4, AipsError);
   const Vector<T> & val = value.getValue();
   for (uInt s = 0; s < 4; s++) {
-    itsFlux(s).re = val(s);
-    itsFlux(s).im = T(0);
+    itsVal(s).re = val(s);
+    itsVal(s).im = T(0);
   }
   itsUnit = value.getFullUnit();
   itsPol = ComponentType::STOKES;
@@ -265,7 +258,7 @@ setValue(const Quantum<Vector<T> > & value) {
 template<class T> void FluxRep<T>::
 scaleValue(const T & factor) {
   for (uInt i = 0; i < 4; i++) {
-    itsFlux(i) *= factor;
+    itsVal(i) *= factor;
   }
   DebugAssert(ok(), AipsError);
 }
@@ -275,7 +268,7 @@ ok() const {
   // The LogIO class is only constructed if an Error is detected for
   // performance reasons. Both function static and file static variables
   // where considered and rejected for this purpose.
-  if (itsFlux.nelements() != 4) {
+  if (itsVal.nelements() != 4) {
     LogIO logErr(LogOrigin("FluxRep", "ok()"));
     logErr << LogIO::SEVERE << "The flux does not have 4 elements"
  	   << " (corresponding to four polarisations)"
@@ -404,12 +397,6 @@ template<class T> void Flux<T>::
 convertPol(const ComponentType::Polarisation & pol) {
   DebugAssert(ok(), AipsError);
   itsFluxPtr->convertPol(pol);
-}
-
-template<class T> T Flux<T>::
-value() {
-  DebugAssert(ok(), AipsError);
-  return itsFluxPtr->value();
 }
 
 template<class T> void Flux<T>::

@@ -104,14 +104,14 @@ public:
 	  NumericTraits<T>::ConjugateType xy,
 	  NumericTraits<T>::ConjugateType yx,
 	  NumericTraits<T>::ConjugateType yy, ComponentType::Polarisation pol)
-    :itsFlux(4),
+    :itsVal(4),
      itsPol(pol),
      itsUnit("Jy") 
     {
-      itsFlux(0) = xx;
-      itsFlux(1) = xy;
-      itsFlux(2) = yx;
-      itsFlux(3) = yy;
+      itsVal(0) = xx;
+      itsVal(1) = xy;
+      itsVal(2) = yx;
+      itsVal(3) = yy;
       DebugAssert(ok(), AipsError);
     };
   
@@ -121,7 +121,7 @@ public:
   // units are Jy.
   FluxRep(const Vector<NumericTraits<T>::ConjugateType> & flux,
   		const ComponentType::Polarisation & pol)
-    :itsFlux(flux.copy()),
+    :itsVal(flux.copy()),
      itsPol(pol),
      itsUnit("Jy")
     {
@@ -134,7 +134,7 @@ public:
   // Fully Specified
   FluxRep(const Quantum<Vector<NumericTraits<T>::ConjugateType> > & flux,
 	  const ComponentType::Polarisation & pol)
-    :itsFlux(flux.getValue().copy()),
+    :itsVal(flux.getValue().copy()),
      itsPol(pol),
      itsUnit(flux.getFullUnit())
     {
@@ -168,8 +168,26 @@ public:
 
   // get the flux value assuming ...
   // <group>
-  // user wants I flux only
-  T value();
+  // the current units and polarisation
+  const Vector<NumericTraits<T>::ConjugateType> & value() const {
+    DebugAssert(ok(), AipsError);
+    return itsVal;
+  };
+//   Vector<NumericTraits<T>::ConjugateType> & value() {
+//     DebugAssert(ok(), AipsError);
+//     return itsVal;
+//   };
+  // the current units and polarisation only return the specified polarisation.
+  const NumericTraits<T>::ConjugateType & value(uInt p) const {
+    DebugAssert(p < 4, AipsError);
+    DebugAssert(ok(), AipsError);
+    return itsVal(p);
+  };
+//   NumericTraits<T>::ConjugateType & value(uInt p) {
+//     DebugAssert(p < 4, AipsError);
+//     DebugAssert(ok(), AipsError);
+//     return itsVal(p);
+//   };
   // Stokes representation & current unit
   void value(Vector<T> & value);
   // current unit and pol
@@ -177,7 +195,7 @@ public:
     DebugAssert(ok(), AipsError);
     uInt len = value.nelements();
     DebugAssert (len == 4 || len == 0, AipsError);
-    value = itsFlux;
+    value = itsVal;
   };
   // Stokes pol.
   void value(Quantum<Vector<T> > & value);
@@ -188,7 +206,7 @@ public:
     DebugAssert(len == 4 || len == 0, AipsError);
     convertUnit(value.getFullUnit());
     convertPol(pol);
-    value.setValue(itsFlux);
+    value.setValue(itsVal);
     DebugAssert(ok(), AipsError);
   };
   // </group>
@@ -202,7 +220,7 @@ public:
   // the current unit and pol
   void setValue(const Vector<NumericTraits<T>::ConjugateType> & value) {
     DebugAssert (value.nelements() == 4, AipsError);
-    itsFlux = value;
+    itsVal = value;
     DebugAssert(ok(), AipsError);
   };
   // a Stokes pol
@@ -211,7 +229,7 @@ public:
   void setValue(const Quantum<Vector<NumericTraits<T>::ConjugateType> >& value,
  	       const ComponentType::Polarisation & pol) {
     DebugAssert (value.getValue().nelements() == 4, AipsError);
-    itsFlux = value.getValue();
+    itsVal = value.getValue();
     itsUnit = value.getFullUnit();
     itsPol = pol;
     DebugAssert(ok(), AipsError);
@@ -222,12 +240,12 @@ public:
   // <group>
   void scaleValue(const T & factor);
   void scaleValue(const NumericTraits<T>::ConjugateType & factor) {
-    itsFlux.ac() *= factor;
+    itsVal.ac() *= factor;
     DebugAssert(ok(), AipsError);
   };
   void scaleValue(const Vector<NumericTraits<T>::ConjugateType> & factor) {
     DebugAssert (factor.nelements() == 4, AipsError);
-    itsFlux.ac() *= factor.ac();
+    itsVal.ac() *= factor.ac();
     DebugAssert(ok(), AipsError);
   };
   // </group>
@@ -238,7 +256,7 @@ public:
   Bool ok() const;
 
 private:
-  Vector<NumericTraits<T>::ConjugateType> itsFlux;
+  Vector<NumericTraits<T>::ConjugateType> itsVal;
   ComponentType::Polarisation itsPol;
   Unit itsUnit;
 };
@@ -359,7 +377,24 @@ public:
   // get the flux value assuming ...
   // <group>
   // user wants I flux only
-  T value();
+  // the current units and polarisation
+  const Vector<NumericTraits<T>::ConjugateType> & value() const {
+    DebugAssert(ok(), AipsError);
+    return itsFluxPtr->value();
+  };
+//   Vector<NumericTraits<T>::ConjugateType> & value() {
+//     DebugAssert(ok(), AipsError);
+//     return itsFluxPtr->value();
+//   };
+  // the current units and polarisation only return the specified polarisation.
+  const NumericTraits<T>::ConjugateType & value(uInt p) const {
+    DebugAssert(ok(), AipsError);
+    return itsFluxPtr->value(p);
+  };
+//   NumericTraits<T>::ConjugateType & value(uInt p) {
+//     DebugAssert(ok(), AipsError);
+//     return itsFluxPtr->value(p);
+//   };
   // Stokes representation & current unit
   void value(Vector<T> & value);
   // current unit and pol
