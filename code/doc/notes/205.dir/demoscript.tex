@@ -191,77 +191,148 @@ the left
 \section{Single Dish}
 
 \begin{itemize}
-\item Start the single dish environment
+\item Start the single dish environment, dish
 \begin{verbatim}
 include 'dish.g'
 \end{verbatim}
+If someone has previously used dish from the same account, then dish
+will start up in the same state as it was when last used.  This can
+be pointed out after the dish GUI appears.  If you want to guarantee
+a pristine, default state then you must remove the directory which
+holds that state - \$HOME/aips++/dishstate.  Note that if you do start with
+some previously set state which was arrived at after following this
+demo, you may be able to skip the steps involving opening data sets
+(i.e. check first to see if it is already opened).  Also, it is probably
+a good idea to clean out the Results Manager periodically if giving
+this demo repeatedly so that it doesn't become too cluttered with the
+results of past demonstrations.  Just select what you want to forget
+and press the ``Delete'' button in the Results Manager.
 \item Create the demo data tables for reading
 \begin{verbatim}
+include 'dish.g'
 dishdemo()
 \end{verbatim}
-\item Load one of the demo tables using the File menu (select Open)
-\item Browse
+This will create the demo data in the current directory.  If the demo data 
+already exists this will do nothing. It is quite safe to repeat it
+if you aren't sure the demo data exists.  It takes a while.  It sends
+messages to the logger as it processes each SDFITS file
+with fits2table.
+
+The current demo data consists of the following tables:
 \begin{itemize}
+\item {\tt dishdemo1} and {\tt dishdemo1}.  These are simulated data sets which are
+especially useful for demonstrating the averaging operations.
+\item {\tt dishparkes}.  This is some sample data from Parkes.  This is useful
+for showing how the dish plotter displays multi-polarization data.
+\item {\tt dishmopra}.  This is some sample Mopra data.  This is used in
+the command line portion of this demonstration.  It consists of 4 scans
+of position switched total power data.  The first two scans are ``on''
+scans at two separate frequencies and the last two scans are the
+corresponding ``off'' scans at those same frequencies.
+\item {\tt dishspecproc}.  This is some GBT Spectral Processor data taken using
+the 140' earlier this year.  It is useful for showing real data.  It can
+be used in the selection and averaging part of this demonstration but
+because it was used without the benefit of all of the GBT Monitor and
+Control devices and software it lacks several important header parameters
+(no telescope position, no system temperature information, and no
+velocity frame and rest frequency information).
+\end{itemize}
+\item Load the Parkes table ({\tt dishparkes}) using the File menu (select Open
+and Read Only)
+\item Browse it
+\begin{itemize}
+\item Select it in the Results Manager
+\item Press the ``Browse'' button.
+\item Once the browser has come up, you can move around in the browser
+by selecting different records, by using the up and down arrow keys as well
+as the Home and End keys.
 \item Look at a number of records and see how the plot changes
-\item Look at record 65 of dishdemo.table (it's bad!)
-\item Select ``Browse record''
+\item The first and fourth records have two polarizations.
+\item Play with plotting options in DISHPLOT (Styles, Coordinates,
+Statistics, and Options are the most useful).
+\item Play with the browser options.
+\item Select ``Browse record'' in the browser.
 \begin{itemize}
 \item Change to a different coordinate system for ``Direction'' by pushing
-the button labelled ``B1950'' and selecting ``J2000'' (button label should
+the button labeled ``B1950'' and selecting ``J2000'' (button label should
 change).
 \item Change to a different format for the Time display by pushing the
-button labelled ``Time'' and selecting ``dmy''.
-\item Change to a different time system by pushing the button labelled
-``UTC'' and selecting ``LAST''.
-\item Experiment with the other buttons (e.g. the telescope Position).
-\item Display the data values by pressing the ``arr'' button.
-\item Show the ns\_header and history by pressing those buttons.
+button labeled ``Time'' and selecting ``dmy''.
+\item Change to a different time system by pushing the button labeled
+``UTC'' and selecting ``GAST'' for example.  Note that some conversions
+will not be possible with this data set because the telescope position is
+not in the header (e.g., a conversion to LST is impossible).
+\item Experiment with the other buttons.
+\item Display the data values by pressing the ``Browse arr'' button.
+\item Show the history by pressing that button (scroll down first).
 \end{itemize}
 \item Click on any number of other records in the ``SD Working Set Browser''
 window to see them update the record browser window and the plotter.
 \end{itemize}
+\item Dismiss the browser windows.
+\item Open the {\tt dishspecproc} data set.
 \item Select two operations: Selection and Averaging (Operations menu).
 \begin{itemize}
-\item In the Record region of the selection pane, enter [1,64][66,256]
-to avoid the bad record
-\item Press the ``Average selected spectra'' button and look at the result
+\item Press some of the ``All'' buttons on the Selection window to show all 
+of the unique values for those quantities in this data set.  Make sure you
+push the ``Object'' field's ``All'' button.
+\item In the Object entry enter ``1328*'' to select both 1328+305 and 
+1328+305SBT
+\item Turn on the Object selector by pressing the box between the combobox down
+pointer and the ``All'' button.
+\item Press the ``Apply'' button on the Selection window.  This produces a
+new working set (in the Results Manager as well as in the Selection window).
+\item In the Averaging window, turn off the ``Make selection before averaging'' option
+since we have just made the selection (it turns out that it doesn't
+matter in this case since the act of making the selection clears the
+selectors and when the selectors are clear, no selection happens and the
+entire current working set is used - which is what we want).
+\item Press the ``Apply'' button in the averager and look at the result
 (the result will appear in the plotter and be selected in the result manager).
+You may want to manually adjust the Y axis range on the plotter.
+\begin{itemize}
+\item Under the Options menu select Scaling and then Manual
+\item Enter the appropriate limits for the Y axis.  For this example,
+MinY of 0.4 and MaxY of 0.6 seem to work well.
+\item Press return in the MaxY or MinY entry fields or press the Redraw
+button to have these ranges take effect.  Be sure to point out during
+this operation that cursor-driven zoom is expected very soon.
+\end{itemize}
 \item Browse (this just brings up the individual record browser when the focus
 is on an individual record).  Look at the history of this result.
-\item Try different alignment and weighting options.
-\item You can browse the intermediate working sets created as a result of
+\item Note that because of the limitations of this data set discussed
+above, if you want to play with other alignment options it is best to use
+one of the fake data sets (dishdemo1 and dishdemo2).  For this data set,
+you really can only choose no alignment or align by x-axis.  You can
+not choose tsys weighting because there are no tsys values.
+\item You can browse the working set created as a result of
 the selection operation.  You can browse more than one thing at a time.
-\item Overlay two of these results
-\begin{itemize}
-\item Select one of the average results in the results manager.
-\item On the plotter, in the Active Plot menu, select ``2''
-\item Select another of the results in the results manager.
-\item On the plotter, in the Overlays menu, select ``1'' 
-(overlaying will become simpler eventually)
-\end{itemize}
 \end{itemize}
 \item Any of these results can be examined at the glish prompt.
-For example, type ``print criteria1'' at the glish prompt.  This shows
-the selection criteria.  The named values in the results manager are all
-global values available at the glish prompt.
-\item You can rename a variable in the results manager by typing in a
+For example, type ``print average1.hist'' at the glish prompt.  This shows
+the history.  Type ``print average1.data.desc''.  This shows the 
+axis description.
+\item You can rename any variable in the results manager by typing in a
 new name and hitting return.
 \item Now do some smoothing (turn ``off'' the other operation GUIs to
-conserve real estate on your desktop)
+conserve real estate on your desktop by pressing their ``Dismiss'' buttons).
 \begin{itemize}
 \item Select a record (either the result of a previous operation, or
 through the browser on a working set).  This operation works on the
-most recently displayed record.
+most recently displayed record (as do all operations which work on single
+records).
 \item Try different types of smoothing.
 \item Try Hanning or Boxcar with and without ``decimation''
 \item Do a Gaussian smooth.
 \begin{itemize}
 \item Select ``Gaussian''
+\item Make sure that the displayed units are ``Channels'' and not
+``x-axis units'' (press that menu to select Channels).
 \item Enter a width in channels
 \item Convert it to x-axis units by pushing the ``Convert'' button.
 \item Enter a different width.
 \item Oops, you meant that to be in channels, push the menu button
-labelled ``X-axis Units'' and select ``Channels'' (the value you just
+labeled ``X-axis Units'' and select ``Channels'' (the value you just
 typed in has not changed, but the label has).
 \item Actually do the smooth.
 \end{itemize}
@@ -269,19 +340,19 @@ typed in has not changed, but the label has).
 \item Fit some baselines.
 \begin{itemize}
 \item Select ``Polynomial'' 
+(``Sinusoidal'' also works, but, as with most sinusoidal fitters, its
+fairly sensitive to the initial conditions.  It tends to work best if
+the initial guess at a period is longer than the suspected period in the data.)
 \item Choose an order.
-\item Chose the x-axis ranges to include in the fit, using the plotter
-\item ``Sinusoidal'' also works, but, as with most sinusoidal fitters, its
-fairly sensative to the initial conditions.  It tends to work best if
-the initial guess at a period is longer than the suspected period in the data.
+\item Chose the x-axis ranges to include in the fit, using the plotter.
 \begin{itemize}
 \item click on ``Cursor active'' at the bottom of the Baselines GUI.
 \item Mark some ranges with the cursor - left mouse to start and end, right
 mouse to cancel.
-\item The height of a range box is 2x the local RMS, the center Y of a 
-range box is the local mean.
+\item The height of each range box is 2x the RMS within that box, the 
+center Y of a range box is the local mean.
 \item Notice that these ranges are also displayed in the Baselines GUI.
-\item You can convert to X-axis units in the Baselines GUI.
+\item You can convert to X-axis units in the Baselines GUI in DISH.
 \end{itemize}
 \item With the ``Recalculate'' and ``Show'' options selected, press ``Apply''.
 \item Note the RMS in the GUI, the fit overlaying the data on the 
@@ -289,31 +360,32 @@ plotter and the original record still selected.  The RMS value is the
 RMS of the data with respect to the fit over the baseline regions.
 \item Change the order and/or the ranges
 \item Ranges can be edited in the Baselines GUI entry - these changes will
-noy appear on the plotter until the ``Apply'' button is pressed although
-the contents of the ranges entry are used as is whenever Apply is
-pressed (even if you haven't previous hit return).
+not appear on the plotter until the ``Apply'' button is pressed or you hit
+the Enter/Return key.  The contents of the ranges entry are used ``as 
+is'' whenever ``Apply'' is pressed (even if you haven't previous hit return).
 \item When you are satisfied that this is a baseline you want to remove,
 turn off the ``Recalculate'' button and select the ``Subtract'' option
-and press ``Apply''.
+and press ``Apply''.  Note that if manual scaling is in effect as recommended
+above then you will need to re-scale at this point,  -0.1 to 0.1 seems to
+work well.
 \end{itemize}
 \item Function on data - with a record selected and plotted try the following
 (comments appear after the \verb_#_), you might want to return to the original
 record before each application of a function on the data.
 \begin{itemize}
-\item ARR*ARR  \verb_#_ square of the data array, press Apply
-\item ARR * HEADER.tsys  \verb_#_ multiply by tsys in the header record
-\item sqrt(ARR) \verb_#_ take the sqrt of the data
-\item Any valid glish, ARR is replaced by the data array, HEADER by
-the header record, NS\_HEADER by the ns\_header record, DESC by the 
-desc record, and DATA by the data record.  The operations must return
+\item {\tt ARR*ARR}  \verb_#_ square of the data array, press ``Apply''
+\item {\tt ARR * 10}  \verb_#_ scale the data by 10.0
+\item {\tt sqrt(ARR)} \verb_#_ take the sqrt of the data
+\item Any valid glish can be used here. {\tt ARR} is replaced by the data 
+array, {\tt HEADER} by
+the {\tt header} record, {\tt NS\_HEADER} by the {\tt ns\_header} 
+record, {\tt DESC} by the 
+{\tt desc} record, and {\tt DATA} by the {\tt data} record.  
+The operations must return
 an array of the same shape as the input data array.  Any global glish
 variable can be used here (including functions).
 \end{itemize}
-\item Play with plotting options on plotting window (Styles, Coordinates,
-Statistics, and Options are the most useful).
 \item Turn on the ``Trace'' option and try some of these operations again.
-Note: these will eventually be equivalent to what the program is doing
-at the glish level, they are only there now to illustrate the concept.
 \item Select ``Open Eval Window'' from the ``Tools'' menu.
 \begin{itemize}
 \item Type any valid glish in the eval window.
@@ -323,23 +395,54 @@ started from.
 \end{itemize}
 \item Try the Multi-Operation Operation.
 \begin{itemize}
-\item You now have parameters set in each of the operation windows, clicking
-on one of the ``Add'' buttons add that operation to the operation
+\item Clicking
+on one of the ``Add:'' buttons adds that operation to the operation
 cache.  Clicking on ``Do multi-op sequence'' executes this sequence,
 doing those operations in order using the parameters as currently set
 in each operation window (even those which aren't currently displayed).
 \item Add the operations ``Average'', ``Baseline'', and ``Smoothing'' to
 the cache and do that sequence.
-\item Store that sequency to a variable by a name by which it will be known 
+\item Store that sequence by giving it a name by which it will be known 
 in the ``Store Cache'' entry and press the ``Store Cache'' button.
 \item Reverse the order of the baseline and smoothing operations by
-first deleteing baseline and then adding it back in.
+first deleting baseline and then adding it back in.
 \item Do this sequence and save it with a different name.
 \item Restore the first sequence by selecting it (clicking on it) in the
 list of stored caches.
 \item Our current thinking is that once the user gets various parameters
 set up that DISH will be often ``driven'' from this multi-operation
 operation menu.
+\end{itemize}
+\item A simple command-line example.
+In this example you will be taking two total power scans, one on-source
+and one off-source, constructing the difference spectra and
+placing the result back in the results manager where GUI operations
+on it could continue.
+\begin{itemize}
+\item Open the {\tt dishmopra} data set
+\item At the glish command line, type the following (the comments are not
+necessary, obviously)
+\begin{verbatim}
+dishmopra.setlocation(1)  # point the iterator at record 1
+on := dishmopra.get()     # get the ``on source'' data
+dishmopra.setlocation(3)  # point the iterator at record 3
+off := dishmopra.get()    # get the ``off source'' data
+result := on              # initialize the result to have
+                          # the same structure and header
+                          # values as on
+result.data.arr :=
+   (on.data.arr - off.data.arr)/off.data
+                          # the difference spectra
+dish.rm().add('result'    # add it to the results manager by name
+              'Difference of rows 1 and 3'   # description
+              result      # the value
+              'SDRECORD') # its type - dish knows how to plot these
+\end{verbatim}
+\item In the Results Manager you should see a new variable named
+``result1''.  Select it.  It should now be displayed.
+\item Some manual scaling is necessary - the values at the end are
+unreliable due to the overall bandpass shape of on and off.
+A range of -0.01 to 0.01 works well here.
 \end{itemize}
 \end{itemize}
 
