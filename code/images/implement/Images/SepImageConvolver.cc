@@ -1,5 +1,5 @@
 //# SepImageConvolver.cc:  separable convolution of an image
-//# Copyright (C) 1995,1996,1997,1998,1999,2000
+//# Copyright (C) 1995,1996,1997,1998,1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -128,14 +128,14 @@ void SepImageConvolver<T>::setKernel(uInt axis, const Vector<T>& kernel)
 template <class T>
 void SepImageConvolver<T>::setKernel(uInt axis, VectorKernel::KernelTypes kernelType,  
                                      const Quantum<Double>& width, Bool autoScale,
-                                     Double scale)
+                                     Bool useImageShapeExactly, Double scale)
 {
 // Catch pixel units
 
    UnitMap::putUser("pix",UnitVal(1.0), "pixel units");
    String sunit = width.getFullUnit().getName();
    if (sunit==String("pix")) {
-      setKernel (axis, kernelType, width.getValue(), autoScale, scale);
+      setKernel (axis, kernelType, width.getValue(), autoScale, useImageShapeExactly, scale);
       return;
    }
 //
@@ -154,20 +154,22 @@ void SepImageConvolver<T>::setKernel(uInt axis, VectorKernel::KernelTypes kernel
             << unit.getName() << LogIO::EXCEPTION;
    }
    Double width2 = abs(width.getValue(unit)/inc);
-   setKernel(axis, kernelType, width2, autoScale, scale);
+   setKernel(axis, kernelType, width2, autoScale, useImageShapeExactly, scale);
 }
 
 template <class T>
 void SepImageConvolver<T>::setKernel(uInt axis, VectorKernel::KernelTypes kernelType,  
-                                     Double width, Bool autoScale, Double scale)
+                                     Double width, Bool autoScale, 
+                                     Bool useImageShapeExactly, Double scale)
 {
    checkAxis(axis);
 //
 // T can only be Float or Double
 //
    Bool peakIsUnity = !autoScale;
-   Vector<T> x = VectorKernel::make(kernelType, T(width), 
-                                    itsImagePtr->shape()(axis), peakIsUnity);
+   uInt shape = itsImagePtr->shape()(axis);
+   Vector<T> x = VectorKernel::make(kernelType, T(width), shape, 
+                                    useImageShapeExactly, peakIsUnity);
    if (!autoScale && !near(scale,1.0)) x *= Float(scale);
    uInt n = itsVectorKernels.nelements() + 1;
    itsVectorKernels.resize(n, True);
@@ -189,6 +191,19 @@ Vector<T> SepImageConvolver<T>::getKernel(uInt axis)
    itsOs << "There is no kernel for the specified axis" << LogIO::EXCEPTION;
 //
    return Vector<T>(0);
+}
+
+template <class T>
+uInt SepImageConvolver<T>::getKernelShape(uInt axis) 
+{
+   for (uInt i=0; i<itsAxes.nelements(); i++) {
+      if (axis==itsAxes(i)) {
+         return itsVectorKernels[i]->nelements();
+      }
+   }
+   itsOs << "There is no kernel for the specified axis" << LogIO::EXCEPTION;
+//
+   return 0;
 }
 
 

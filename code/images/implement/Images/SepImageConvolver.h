@@ -1,5 +1,5 @@
 //# SepImageConvolver.h: separable convolution of an image
-//# Copyright (C) 1996,1997,1998,1999,2000
+//# Copyright (C) 1996,1997,1998,1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -110,17 +110,23 @@ public:
 
 // Set convolution kernel.  The specified axis is convolved
 // by the given kernel.  If autoScale is True then kernel volume is unity,
-// else kernel peak is 1 * scale
+// else kernel peak is 1 * scale. If useImageShapeExactly is True, the kernel
+// will be the shape of the axis, else it will be big enough 
+// to accomodate the kernel width (e.g. +/- 5sigma for Gaussian)
 // <group>
    void setKernel(uInt axis, VectorKernel::KernelTypes kernelType,
                   const Quantum<Double>& width, Bool autoScale,
-                  Double scale=1.0);
+                  Bool useImageShapeExactly=True, Double scale=1.0);
    void setKernel(uInt axis, VectorKernel::KernelTypes kernelType,
-                  Double width, Bool autoScale, Double scale=1.0);
+                  Double width, Bool autoScale, 
+                  Bool useImageShapeExactly=True, Double scale=1.0);
 // </group>
 
 // Get the convolution kernel for the specified axis
    Vector<T> getKernel(uInt axis);
+
+// Get the convolution kernel shape for the specified axis
+   uInt  getKernelShape(uInt axis);
 
 // Perform the convolution.    The error checking for the
 // convolution parameters is done when you call this
