@@ -86,7 +86,8 @@ AIPSSITE := $(AIPSARCH)/$(word 3, $(AIPSPATH))
 AIPSHOST := $(AIPSSITE)/$(word 4, $(AIPSPATH))
 ARCHBIND := $(AIPSARCH)/bin
 
-THISDIR  := $(shell if [ -f $(ARCHBIND)/Pwd -a -x $(ARCHBIND)/Pwd ]; then $(ARCHBIND)/Pwd; else pwd; fi )
+THISDIR  := $(shell if [ -f $(ARCHBIND)/Pwd -a -x $(ARCHBIND)/Pwd ]; then $(ARCHBIND)/Pwd; else pwd | sed -e 's=^/tmp_mnt/=/='; fi )
+
 CODESUBD := $(shell echo $(THISDIR)/ | sed -e '{s=^.*/code/==;s=/*$$==;}')
 
 PACKAGE  := $(word 1, $(subst /,$(space),$(CODESUBD)))
