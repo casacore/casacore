@@ -24,18 +24,18 @@
 //#                        Charlottesville, VA 22903-2475 USA
 //#
 //# $Id$
-
+/// Remove error Array cast
 //# Includes
 #include <trial/Mathematics/AutoDiffIO.h>
 #include <trial/Mathematics/AutoDiff.h>
+#include <aips/Arrays/Vector.h>
 #include <aips/Arrays/ArrayIO.h>
 #include <aips/iostream.h>
 
 template<class T>
-ostream &operator<<(ostream &s, const AutoDiff<T> &ad)
-{
-    s << "(" << ad.value() << "," << (Array<T>&)ad.derivatives() << ")";
-    return s;
+ostream &operator<<(ostream &s, const AutoDiff<T> &ad) {
+  s << "(" << ad.value() << "," << ad.derivatives() << ")";
+  return s;
 }
 
 
