@@ -112,8 +112,9 @@ void SDFITSHandler::clearRow()
 
 void SDFITSHandler::initAll(MeasurementSet &ms, Vector<Bool> &handledCols, const Record &row)
 {
+    // static_cast is a workaround for an SGI compiler bug! wky 2000/11/02
     // don't bother unless there are some unhandled columns
-    if (anyEQ(handledCols, False)) {
+    if (anyEQ(static_cast<Vector<Bool> >(handledCols), False)) {
 	Vector<String> colNames;
 	TableDesc td = requiredTableDesc(handledCols, colNames, row);
 	// is there already an SDFITS table, or is one needed
