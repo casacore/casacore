@@ -152,6 +152,10 @@ inline uInt min(uInt a, uInt b){ if (a>b) return b; else return a; }
 
 inline Double max(Double a, Double b) { if (a > b) return a; else return b; } 
 inline Double min(Double a, Double b) { if (a > b) return b; else return a; }
+inline Double max(Double a, Float b) { if (a > b) return a; else return b; } 
+inline Double min(Double a, Float b) { if (a > b) return b; else return a; }
+inline Double max(Float a, Double b) { if (a > b) return a; else return b; } 
+inline Double min(Float a, Double b) { if (a > b) return b; else return a; }
 
 inline Float max(Float a, Float b) { if (a > b) return a; else return b; } 
 inline Float min(Float a, Float b) { if (a > b) return b; else return a; }
