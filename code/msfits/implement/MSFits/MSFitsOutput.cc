@@ -39,6 +39,7 @@
 #include <trial/FITS/FITSUtil.h>
 #include <aips/Arrays/Matrix.h>
 #include <aips/Arrays/ArrayMath.h>
+#include <aips/Arrays/MatrixMath.h>
 #include <aips/Arrays/ArrayLogical.h>
 #include <aips/Utilities/GenSort.h>
 #include <aips/Mathematics/Constants.h>
@@ -174,7 +175,8 @@ Bool MSFitsOutput::writeFitsFile(const String& fitsfile,
   }
 
   // Write the SOURCE table.
-  if (ok && !ms.source().isNull()) {
+  //  if (ok && !ms.source().isNull()) {
+  if (ok) {
     os << LogIO::NORMAL << "Writing AIPS SU table" << LogIO::POST;
     ok = writeSU(fitsOutput, ms, fieldidMap, nrfield);
     if (!ok) {
@@ -393,7 +395,7 @@ FitsOutput *MSFitsOutput::writeMain(Int& refPixelFreq, Double& refFreq,
       os << "Writing CORRECTED_DATA column" << LogIO::POST;
     } else {
       columnName=MS::columnName(MS::DATA);
-      os << LogIO::SEVERE << "CORRECTED_DATA does not exist, writing DATA"
+      os << LogIO::NORMAL << "CORRECTED_DATA does not exist, writing DATA"
 	 << LogIO::POST;
     }
   } else {
@@ -778,6 +780,9 @@ Bool MSFitsOutput::writeFQ(FitsOutput *output, const MeasurementSet &ms,
 				   MSSpectralWindow::columnName(MSSpectralWindow::CHAN_FREQ));
   ROScalarColumn<Double> intotbw(specTable,
 				 MSSpectralWindow::columnName(MSSpectralWindow::TOTAL_BANDWIDTH));
+  ROScalarColumn<Int> insideband(specTable,
+				 MSSpectralWindow::columnName(MSSpectralWindow::NET_SIDEBAND));
+
 
   // ##### Header
   Record header;
@@ -832,11 +837,7 @@ Bool MSFitsOutput::writeFQ(FitsOutput *output, const MeasurementSet &ms,
 	(*ifwidth)(inx) = intotbw(i);
       }
       (*totbw)(inx) = intotbw(i);
-      if (freqs(1) < freqs(0)) {
-	(*sideband)(inx) = -1;
-      } else {
-	(*sideband)(inx) = 1;
-      }
+      (*sideband)(inx) = insideband(i);
       // Write the current row if not combined.
       if (combineSpw) {
 	inx(0)++;
@@ -861,19 +862,15 @@ Bool MSFitsOutput::writeAN(FitsOutput *output, const MeasurementSet &ms,
   ROScalarColumn<String> inarrayname(obsTable,
 				     MSObservation::columnName
 				     (MSObservation::TELESCOPE_NAME));
-  ROArrayColumn<Double> inarraypos(ms.antenna(),
-				   MSAntenna::columnName(MSAntenna::POSITION));
+
   const uInt narray = obsTable.nrow();
   if (narray == 0) {
     os << LogIO::SEVERE << "No Observation info!" << LogIO::POST;
     return False;
   }
 
-  os << LogIO::NORMAL
-     << "Writing minimal AIPS AN table (position and names only)"
-     << LogIO::POST;
-
   // Calculate GSTIA0, DEGPDY, UT1UTC, and IATUTC.
+
   ROScalarQuantColumn<Double> intime(ms, MS::columnName(MS::TIME));
   MEpoch utctime (intime(0), MEpoch::UTC);
   MEpoch iattime = MEpoch::Convert (utctime, MEpoch::IAT) ();
@@ -911,7 +908,23 @@ Bool MSFitsOutput::writeAN(FitsOutput *output, const MeasurementSet &ms,
     MPosition pos;
     MeasTable::Observatory(pos, obsName);
     // Use this position in a frame
+
     Vector<Double> arraypos = pos.getValue().getValue(); 
+
+    // Prepare handling of peculiar UVFITS antenna position conventions:
+    // VLA requires rotation into local frame:
+    Bool doVLARot=(inarrayname(arraynum)=="VLA");
+    Matrix<Double> posRot=Rot3D(0,0.0);
+
+    if (doVLARot) {
+      // form rotation around Z-axis by VLA longitude:
+      Double vlaLong=atan2(arraypos(1),arraypos(0));
+      posRot=Rot3D(2,-vlaLong);  // opposite rotation cf MSFitsInput
+    }
+    // "VLBI" (==arraypos<1000m) requires y-axis reflection:
+    //   (ATCA looks like VLBI in UVFITS, but is already RHed.)
+    Bool doVLBIRefl=((inarrayname(arraynum)!="ATCA") && allLE(abs(arraypos),1000.0));
+
     // #### Header
     Record header;
     header.define("EXTNAME", "AIPS AN");             // EXTNAME
@@ -922,7 +935,7 @@ Bool MSFitsOutput::writeAN(FitsOutput *output, const MeasurementSet &ms,
     header.define("GSTIA0", gstdeg);                 // GSTIA0
     header.define("DEGPDY", degpdy);                 // DEGPDY
     header.define("FREQ", refFreq);                  // FREQ
-    header.define("RDATE", toFITSDate(intime(0)/C::day));   // RDATE
+    header.define("RDATE", toFITSDate(intime(0)));   // RDATE
     header.define("POLARX", -polarMotion(0) * 6356752.31);  // POLARX
     header.define("POLARY", -polarMotion(1) * 6356752.31);  // POLARY
     header.define("UT1UTC", ut1sec-utcsec);          // UT1UTC
@@ -1040,7 +1053,15 @@ Bool MSFitsOutput::writeAN(FitsOutput *output, const MeasurementSet &ms,
     }
     for (uInt antnum=0; antnum<nant; antnum++) {
       *anname = inantname(antnum);
-      *stabxyz = inantposition(antnum) - arraypos;
+
+      Vector<Double> corstabxyz = inantposition(antnum) - arraypos;
+
+      // Do UVFITS-dependent position corrections:
+      if (doVLARot) corstabxyz = product(posRot,corstabxyz);
+      if (doVLBIRefl) corstabxyz(1)=-corstabxyz(1);
+
+      *stabxyz = corstabxyz;
+
       *nosta = id[antnum];
       String mount = upcase(inantmount(antnum));
       if (mount.contains("ALT-AZ")) {
@@ -1093,11 +1114,24 @@ Bool MSFitsOutput::writeSU(FitsOutput *output, const MeasurementSet &ms,
   // Basically we make the FIELD_ID the source ID.
   MSField fieldTable(ms.field());
   ROMSFieldColumns msfc(fieldTable);
-  const ROScalarColumn<Int>& insrcid=msfc.sourceId();
+  //  const ROScalarColumn<Int>& insrcid=msfc.sourceId();
   const ROScalarColumn<String>& inname=msfc.name();
 
-  MSSource sourceTable(ms.source());
-  ROMSSourceColumns sourceColumns (sourceTable);
+  // If source table exists, access it
+  //  MSSource sourceTable();
+  //  ROMSSourceColumns sourceColumns();
+  //  ColumnsIndex srcInx();
+  //  RecordFieldPtr<Int> srcInxFld();
+  //  if (!ms.source().isNull()) {
+  //    sourceTable=ms.source();
+  //   sourceColumns = ROMSSourceColumns(sourceTable);
+    // Create an index for the SOURCE table.
+    // Make a RecordFieldPtr for the SOURCE_ID field in the index key record.
+  //    srcInx=ColumnsIndex(sourceTable, "SOURCE_ID");
+  //   srcInxFld=RecordFieldPtr<Int>(srcInx.accessKey(), "SOURCE_ID");
+
+  //  }
+
   MSSpectralWindow spectralTable(ms.spectralWindow());
 
   const uInt nrow = fieldTable.nrow();
@@ -1198,8 +1232,8 @@ Bool MSFitsOutput::writeSU(FitsOutput *output, const MeasurementSet &ms,
   // worrying about it.
   *idno = 0;
   *source = "";
-  *qual = 1;
-  *calcode = "";
+  *qual = 0;
+  *calcode = "    ";
   *iflux = 0.0;
   *qflux = 0.0;
   *uflux = 0.0;
@@ -1218,13 +1252,8 @@ Bool MSFitsOutput::writeSU(FitsOutput *output, const MeasurementSet &ms,
 
   MDirection dir;
 
-  // Create an index for the SOURCE table.
-  // Make a RecordFieldPtr for the SOURCE_ID field in the index key record.
   // Only take those fields which are part of the fieldidMap
   // (which represents the fields written in the main table).
-  ColumnsIndex srcInx(sourceTable, "SOURCE_ID");
-  RecordFieldPtr<Int> srcInxFld(srcInx.accessKey(), "SOURCE_ID");
-
   for (uInt fieldnum=0; fieldnum<nrow; fieldnum++) {
     if (fieldnum < fieldidMap.nelements()  &&  fieldidMap[fieldnum] >= 0) {
       *idno = 1 + fieldidMap[fieldnum];
@@ -1237,28 +1266,32 @@ Bool MSFitsOutput::writeSU(FitsOutput *output, const MeasurementSet &ms,
       // Use info from SOURCE table if available.
       // Try to find the SOURCE_ID in the SOURCE table.
       // If multiple rows found, use the first one.
-      *srcInxFld = insrcid(fieldnum);
-      Vector<uInt> rownrs = srcInx.getRowNumbers();
-      if (rownrs.nelements() > 0) {
-	uInt rownr = rownrs(0);
-	*source = sourceColumns.name()(rownr);
-	*lsrvel = sourceColumns.sysvel()(rownr);
-	if (sourceColumns.properMotion().isDefined(rownr)) {
-	  Vector<Double> pm = sourceColumns.properMotion()(rownr);
-	  *pmra = pm(0);
-	  *pmdec = pm(1);
-	}
-	*qual = sourceColumns.calibrationGroup()(rownr);
-	*calcode = sourceColumns.code()(rownr);
-	
-	// Directions have to be converted from radians to degrees.
-	if (sourceColumns.direction().isDefined(rownr)) {
-	  dir = sourceColumns.directionMeas()(rownr);
-	}
-	if (dir.type()==MDirection::B1950) {
-	    *epoch = 1950.;
-	}
-      }
+      //      if (!sourceTable.isNull()) {
+      //	*srcInxFld = insrcid(fieldnum);
+      //	Vector<uInt> rownrs = srcInx.getRowNumbers();
+      ///	if (rownrs.nelements() > 0) {
+      //	  uInt rownr = rownrs(0);
+      //	  *source = sourceColumns.name()(rownr);
+      //	  *lsrvel = sourceColumns.sysvel()(rownr);
+      //	  if (sourceColumns.properMotion().isDefined(rownr)) {
+      //	    Vector<Double> pm = sourceColumns.properMotion()(rownr);
+      //	    *pmra = pm(0);
+      //	    *pmdec = pm(1);
+      //	  }
+      //	  *qual = sourceColumns.calibrationGroup()(rownr);
+      //	  *calcode = sourceColumns.code()(rownr);
+      //	  
+      //	  // Directions have to be converted from radians to degrees.
+      //	  if (sourceColumns.direction().isDefined(rownr)) {
+      //	    dir = sourceColumns.directionMeas()(rownr);
+      //	  }
+      //	  if (dir.type()==MDirection::B1950) {
+      //	    *epoch = 1950.;
+      //	  }
+      //	}
+      //      }
+
+
       // Write ra/dec as epoch and apparent (in degrees).
       // Use the time in the field table to calculate apparent.
       {
