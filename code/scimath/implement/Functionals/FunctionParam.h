@@ -104,6 +104,11 @@ template<class T> class FunctionParam {
   T &operator[](const uInt n) { return param_p[n]; };
   const T &operator[](const uInt n) const { return param_p[n]; };
   // </group>
+  // Compare two parameter sets for equal size, values and masks.
+  // <group>
+  Bool operator==(const FunctionParam<T> &other) const;
+  Bool operator!=(const FunctionParam<T> &other) const;
+  // </group>
 
   //# Member functions
   // Return the number of parameters

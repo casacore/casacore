@@ -76,6 +76,21 @@ FunctionParam<T> &FunctionParam<T>::operator=(const FunctionParam<T> &other) {
   return *this;
 }
 
+template<class T>
+Bool FunctionParam<T>::operator==(const FunctionParam<T> &other) const {
+  if (npar_p != other.npar_p) return False;
+  for (uInt i=0; i<npar_p; ++i) {
+    if (param_p[i] != other.param_p[i] ||
+	mask_p[i] != other.mask_p[i]) return False;
+  };
+  return True;
+}
+
+template<class T>
+Bool FunctionParam<T>::operator!=(const FunctionParam<T> &other) const {
+  return (!((*this) == other));
+}
+
 //# Member functions
 template<class T>
 Bool &FunctionParam<T>::mask(const uInt n) {
