@@ -202,14 +202,16 @@ void SepImageConvolver<T>::convolve(ImageInterface<T>& imageOut)
 
    LCPagedMask* pMask = 0;
    if (itsImagePtr->isMasked()) {
-      String maskName = imageOut.makeUniqueRegionName (String("mask0"), 0);
-      pMask = new LCPagedMask(RegionHandler::makeMask(imageOut, maskName));
-      imageOut.defineRegion (maskName, ImageRegion(*pMask), RegionHandler::Masks);
-      imageOut.setDefaultMask(maskName);
-//
-      itsOs << LogIO::NORMAL << "Created mask " << maskName << " and make it the default" << endl;
-   } else {
-      itsOs << "input is not masked" << endl;
+      if (imageOut.canDefineRegion()) {
+         String maskName = imageOut.makeUniqueRegionName (String("mask0"), 0);
+         pMask = new LCPagedMask(RegionHandler::makeMask(imageOut, maskName));
+         imageOut.defineRegion (maskName, ImageRegion(*pMask), RegionHandler::Masks);
+         imageOut.setDefaultMask(maskName);
+         itsOs << LogIO::NORMAL << "Created mask " << maskName 
+               << " and make it the default" << LogIO::POST;
+      } else {
+         itsOs << LogIO::NORMAL << "Cannot create a mask for this output image" << LogIO::POST;
+      }
    }
 
 // First copy input to output. We must replace masked pixels by zeros.  These reflect 
@@ -271,7 +273,7 @@ template <class T>
 void SepImageConvolver<T>::copyAndZero(ImageInterface<T>& out,
                                        ImageInterface<T>& in)
 {
-   if (in.isMasked() && out.isMasked()) {
+   if (in.isMasked()) {
       itsOs << LogIO::NORMAL << "Copy input (and zero masked pixels) to smoothed image" << LogIO::POST;
 //
       LatticeIterator<T> outIter(out);
@@ -279,7 +281,8 @@ void SepImageConvolver<T>::copyAndZero(ImageInterface<T>& out,
       IPosition shape = outIter.woCursor().shape();
       Array<T> dataIn(shape);
       Array<Bool> maskIn(shape);
-      Lattice<Bool>& maskOut = out.pixelMask();
+      Lattice<Bool>& maskOut;
+      if (out.isMasked()) maskOut = out.pixelMask();
 //       
       for (outIter.reset(); !outIter.atEnd(); outIter++) {
          shape = outIter.woCursor().shape();
@@ -299,7 +302,7 @@ void SepImageConvolver<T>::copyAndZero(ImageInterface<T>& out,
             pDataOut[i] = pDataIn[i];
             if (!pMaskIn[i]) pDataOut[i] = 0.0;
          }
-         maskOut.putSlice(maskIn, outIter.position());
+         if (out.isMasked()) maskOut.putSlice(maskIn, outIter.position());
 //
          dataIn.freeStorage(pDataIn, deleteDataIn);
          maskIn.freeStorage(pMaskIn, deleteMaskIn);
