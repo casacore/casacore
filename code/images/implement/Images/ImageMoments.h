@@ -33,6 +33,7 @@
 
 #include <aips/aips.h>
 #include <aips/Measures/QMath.h>
+#include <trial/Tasking/PGPlotter.h>
 
 template <class T> class Array;
 template <class T> class Matrix;
@@ -45,7 +46,6 @@ template <class T> class Lattice;
 class CoordinateSystem;
 class IPosition;
 class LogIO;
-class PGPlotter;
 class String;
 class Unit;
 #if defined(AIPS_STDLIB)
