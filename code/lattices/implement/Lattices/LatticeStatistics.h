@@ -339,6 +339,9 @@ public:
 // lattice had an invalid type or that the internal state of the class is bad.
    Bool setNewLattice(const MaskedLattice<T>& lattice);
 
+// Did we construct with a logger ?
+   Bool hasLogger () const {return haveLogger_p;};
+
 protected:
 
    LogIO os_p;
