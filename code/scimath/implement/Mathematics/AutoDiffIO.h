@@ -25,15 +25,15 @@
 //#
 //# $Id$
 
-#if !defined (AIPS_AUTO_DIFF__IO_H)
-#define AIPS_AUTO_DIFF__IO_H
+#if !defined (AIPS_AUTODIFFIO_H)
+#define AIPS_AUTODIFFIO_H
 
 
 //# Includes
 #include <aips/aips.h>
-#include <trial/Mathematics/AutoDiff.h>
 
 //# Forward declarations
+template <class T> class AutoDiff;
 #include <aips/iosfwd.h>
 
 // <summary>
@@ -51,11 +51,13 @@
 // Implements all IO operators and functions for AutoDiff.
 // </etymology>
 //
-// <todo asof="yyyy/mm/dd">
+// <todo asof="2001/08/12">
+//  <li> Nothing I know of
 // </todo>
  
 // <group name="AutoDiff IO operations">
-template<class T> ostream &operator << (ostream &, const AutoDiff<T> &);
+template<class T>
+ostream &operator << (ostream &os, const AutoDiff<T> &ad);
 // </group>
 
 
