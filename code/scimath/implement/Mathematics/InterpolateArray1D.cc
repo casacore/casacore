@@ -84,7 +84,7 @@ void InterpolateArray1D<Domain,Range>::interpolate(Array<Range>& yout,
   const Bool* pyinFlags=yinFlags.getStorage(deleteYinFlags);
   Int yStep=1; 
   Int i;
-  for (Int i=0; i<Int(yin.ndim())-1; i++) yStep*=yinShape(i);
+  for (i=0; i<Int(yin.ndim())-1; i++) yStep*=yinShape(i);
   IPosition youtShape=yinShape;
   youtShape(yout.ndim()-1)=nxout;
   yout.resize(youtShape);
