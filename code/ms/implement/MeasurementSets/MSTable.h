@@ -210,7 +210,8 @@ public:
     // Add the compress option for the given column to the TableDesc.
     static void addColumnCompression (TableDesc& td, ColEnum which,
 				      Bool autoScale = True);
- 
+
+    // </group>
 
 protected:
     // These constructors mirror the Table ones
