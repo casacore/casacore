@@ -1,5 +1,5 @@
 //# WCRegion.cc: Implementation of WCRegion::fromRecord
-//# Copyright (C) 1998
+//# Copyright (C) 1998,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -29,6 +29,7 @@
 #include <trial/Images/WCBox.h>
 ///#include <trial/Images/WCEllipsoid.h>
 #include <trial/Images/WCPolygon.h>
+#include <trial/Images/WCLELMask.h>
 #include <trial/Images/WCUnion.h>
 #include <trial/Images/WCIntersection.h>
 #include <trial/Images/WCDifference.h>
@@ -56,6 +57,8 @@ WCRegion* WCRegion::fromRecord (const TableRecord& rec,
 ///        regPtr = WCEllipsoid::fromRecord (rec, tableName);
     } else if (name == WCPolygon::className()) {
         regPtr = WCPolygon::fromRecord (rec, tableName);
+    } else if (name == WCLELMask::className()) {
+        regPtr = WCLELMask::fromRecord (rec, tableName);
     } else if (name == WCUnion::className()) {
         regPtr = WCUnion::fromRecord (rec, tableName);
     } else if (name == WCIntersection::className()) {
