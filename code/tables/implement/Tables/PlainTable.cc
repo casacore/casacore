@@ -30,6 +30,7 @@
 #include <aips/Tables/SetupNewTab.h>
 #include <aips/Tables/Table.h>
 #include <aips/Tables/TableDesc.h>
+#include <aips/Tables/TableLockData.h>
 #include <aips/Tables/ColumnSet.h>
 #include <aips/Tables/PlainColumn.h>
 #include <aips/Tables/TableError.h>
@@ -41,9 +42,12 @@
 TableCache PlainTable::tableCache = TableCache();
 
 
-PlainTable::PlainTable (SetupNewTable& newtab, uInt nrrow, Bool initialize)
-: BaseTable  (newtab.name(), newtab.option(), 0),
-  colSetPtr_p(0)
+PlainTable::PlainTable (SetupNewTable& newtab, uInt nrrow, Bool initialize,
+			const TableLock& lockOptions)
+: BaseTable      (newtab.name(), newtab.option(), 0),
+  colSetPtr_p    (0),
+  lockPtr_p      (0),
+  tableChanged_p (True)
 {
     // Set initially to no write in destructor.
     // At the end it is reset. In this way nothing is written if
@@ -56,9 +60,18 @@ PlainTable::PlainTable (SetupNewTable& newtab, uInt nrrow, Bool initialize)
 	             ("SetupNewTable object already used for another Table"));
     }
     //# Check if a table with this name is not in the table cache.
-    if (tableCache(newtab.name()) != 0) {
-	throw (TableInvOper ("SetupNewTable " + newtab.name() +
+    if (tableCache(name_p) != 0) {
+	throw (TableInvOper ("SetupNewTable " + name_p +
 			     " is already opened (is in the table cache)"));
+    }
+    //# If the table already exists, exit if we cannot get a write lock.
+    if (Table::isReadable (name_p)) {
+	TableLockData tlock (TableLock (TableLock::UserLocking, 0));
+	tlock.makeLock (name_p, False, True);
+	if (! tlock.acquire (0, True, 1)) {
+	    throw (TableError ("Table " + name_p + " cannot be created; "
+			       "it is locked by another user"));
+	}
     }
     //# Create the data managers for unbound columns.
     //# Check if there are no data managers with equal names.
@@ -69,16 +82,18 @@ PlainTable::PlainTable (SetupNewTable& newtab, uInt nrrow, Bool initialize)
     colSetPtr_p  = newtab.columnSetPtr();
     //# Create the table directory (or delete files) as needed.
     makeTableDir();
+    //# Create the lock object.
+    //# When needed, it sets a permanent write lock.
+    //# Acquire a write lock.
+    lockPtr_p = new TableLockData (lockOptions, releaseCallBack, this);
+    lockPtr_p->makeLock (name_p, True, True);
+    lockPtr_p->acquire (0, True, 1);
+    colSetPtr_p->linkToLockObject (this, lockPtr_p);
     //# Initialize the data managers.
     //# Set SetupNewTable object to in use.
     Table tab(this, False);
     colSetPtr_p->initDataManagers (nrrow, tab);
     newtab.setInUse();
-    //# Determine the number of rows.
-    //# This may be more than the given number of rows if, for instance,
-    //# the underlying data managers only reference another table.
-    Bool more;
-    sync (more);
     //# Initialize the columns if needed.
     if (initialize) {
 	colSetPtr_p->initialize (0, nrrow-1);
@@ -86,6 +101,10 @@ PlainTable::PlainTable (SetupNewTable& newtab, uInt nrrow, Bool initialize)
     //# Nrrow_p has to be set here, otherwise data managers may use the
     //# incorrect number of rows (similar behaviour as in function addRow).
     nrrow_p = nrrow;
+    //# Release the write lock if UserLocking is used.
+    if (lockPtr_p->option() == TableLock::UserLocking) {
+	lockPtr_p->release();
+    }
     //# The destructor can (in principle) write.
     delete_p  = newtab.isMarkedForDelete();
     noWrite_p = False;
@@ -94,16 +113,28 @@ PlainTable::PlainTable (SetupNewTable& newtab, uInt nrrow, Bool initialize)
 }
 
 
-PlainTable::PlainTable (AipsIO& ios, const String& tabname,
+PlainTable::PlainTable (AipsIO& ios, uInt version, const String& tabname,
 			const String& type, uInt nrrow, int opt,
-			uInt version)
-: BaseTable  (tabname, opt, nrrow),
-  colSetPtr_p(0)
+			const TableLock& lockOptions)
+: BaseTable      (tabname, opt, nrrow),
+  colSetPtr_p    (0),
+  lockPtr_p      (0),
+  tableChanged_p (False)
 {
-    // Set initially to no write in destructor.
-    // At the end it is reset. In this way nothing is written if
-    // an exception is thrown during initialization.
-    noWrite_p  = True;
+    //# Set initially to no write in destructor.
+    //# At the end it is reset. In this way nothing is written if
+    //# an exception is thrown during initialization.
+    noWrite_p = True;
+    //# Create the lock object.
+    //# When needed, it sets a permanent (read or write) lock.
+    //# Otherwise acquire a read lock to read in the table.
+    lockPtr_p = new TableLockData (lockOptions, releaseCallBack, this);
+    lockPtr_p->makeLock (name_p, False, ToBool (opt != Table::Old));
+    lockPtr_p->acquire (&(lockSync_p.memoryIO()), False, 0);
+    uInt ncolumn;
+    Bool tableChanged;
+    Block<Bool> dmChanged;
+    lockSync_p.read (nrrow_p, ncolumn, tableChanged, dmChanged);
     tdescPtr_p = new TableDesc ("", TableDesc::Scratch);
     if (tdescPtr_p == 0) {
 	throw (AllocError ("PlainTable::PlainTable",1));
@@ -128,12 +159,17 @@ PlainTable::PlainTable (AipsIO& ios, const String& tabname,
     if (colSetPtr_p == 0) {
 	throw (AllocError ("PlainTable(AipsIO&)", 1));
     }
+    colSetPtr_p->linkToLockObject (this, lockPtr_p);
     //# Create a Table object to be used internally by the data managers.
     //# Do not count it, otherwise a mutual dependency exists.
     Table tab(this, False);
-    colSetPtr_p->getFile (ios, tab);
+    colSetPtr_p->getFile (ios, tab, nrrow_p);
     //# Read the TableInfo object.
     getTableInfo();
+    //# Release the read lock if UserLocking is used.
+    if (lockPtr_p->option() == TableLock::UserLocking) {
+	lockPtr_p->release();
+    }
     //# The destructor can (in principle) write.
     unmarkForDelete();
     noWrite_p = False;
@@ -144,16 +180,17 @@ PlainTable::PlainTable (AipsIO& ios, const String& tabname,
 
 PlainTable::~PlainTable()
 {
-    //# When needed, write the table files if not marked for delete
+    //# When needed, write and sync the table files if not marked for delete
     if (!isMarkedForDelete()) {
 	if (openedForWrite()  &&  !shouldNotWrite()) {
-	    putFile();
+	    lockPtr_p->release (True);
 	}
     }
     //# Remove it from the table cache.
     tableCache.remove (name_p);
     //# Delete everything.
     delete colSetPtr_p;
+    delete lockPtr_p;
 }
 
 //# Read description and #rows.
@@ -173,17 +210,12 @@ void PlainTable::reopenRW()
 	throw (TableError ("Table " + tableName() +
 			   " cannot be opened for read/write"));
     }
+    // When a permanent lock is in use, turn it into a write lock.
+    lockPtr_p->makeLock (name_p, False, True);
     // Reopen the storage managers and the subtables in all keyword sets.
     colSetPtr_p->reopenRW();
     keywordSet().reopenRW();
     option_p = Table::Update;
-}
-
-void PlainTable::flush()
-{
-    if (openedForWrite()) {
-	putFile();
-    }
 }
 
 void PlainTable::renameSubTables (const String& newName,
@@ -193,17 +225,87 @@ void PlainTable::renameSubTables (const String& newName,
     colSetPtr_p->renameTables (newName, oldName);
 }
 
+const TableLock& PlainTable::lockOptions() const
+{
+    return *lockPtr_p;
+}
+void PlainTable::mergeLock (const TableLock& lockOptions)
+{
+    lockPtr_p->merge (lockOptions);
+}
+Bool PlainTable::hasLock (Bool write) const
+{
+    return lockPtr_p->hasLock (write);
+}
+Bool PlainTable::lock (Bool write, uInt nattempts)
+{
+    //# When the table is already locked (read locked is sufficient),
+    //# no synchronization is needed (other processes could not write).
+    Bool noSync = hasLock (False);
+    if (! lockPtr_p->acquire (&(lockSync_p.memoryIO()), write, nattempts)) {
+	return False;
+    }
+    if (!noSync) {
+	uInt ncolumn;
+	Bool tableChanged;
+	lockSync_p.read (nrrow_p, ncolumn, tableChanged,
+			 colSetPtr_p->dataManChanged());
+	colSetPtr_p->resync (nrrow_p);
+    }
+    return True;
+}
+void PlainTable::unlock()
+{
+    lockPtr_p->release();
+}
 
-void PlainTable::putFile()
+uInt PlainTable::getModifyCounter() const
+{
+    return lockSync_p.getModifyCounter();
+}
+
+
+void PlainTable::flush (Bool fsync)
+{
+    if (openedForWrite()) {
+	putFile (False);
+    }
+}
+
+
+Bool PlainTable::putFile (Bool always)
 {
     AipsIO ios;
-    writeStart (ios);
-    ios << "PlainTable";
-    tdescPtr_p->putFile (ios, tableName());       // write description
-    colSetPtr_p->putFile (ios, tableName());      // write column data
-    writeEnd (ios);
-    //# Write the TableInfo.
-    flushTableInfo();
+    if (always  ||  tableChanged_p) {
+	writeStart (ios);
+	ios << "PlainTable";
+	tdescPtr_p->putFile (ios, tableName());         // write description
+	colSetPtr_p->putFile (True, ios, tableName(),
+			      False);                   // write column data
+	writeEnd (ios);
+	//# Write the TableInfo.
+	flushTableInfo();
+	tableChanged_p = False;
+	return True;
+    }
+    //# Only tell the data managers to write their data.
+    colSetPtr_p->putFile (False, ios, tableName(), False);
+    return False;
+}
+
+MemoryIO* PlainTable::releaseCallBack (void* plainTableObject, Bool always)
+{
+    return (*(PlainTable*)plainTableObject).doReleaseCallBack (always);
+}
+MemoryIO* PlainTable::doReleaseCallBack (Bool always)
+{
+    if (!openedForWrite()) {
+	return 0;
+    }
+    Bool tableWritten = putFile (always);
+    lockSync_p.write (nrrow_p, tdescPtr_p->ncolumn(), tableWritten,
+		      colSetPtr_p->dataManChanged());
+    return &(lockSync_p.memoryIO());
 }
 
 
@@ -219,14 +321,13 @@ Bool PlainTable::isWritable() const
 
 //# Get access to the keyword set.
 TableRecord& PlainTable::keywordSet()
-    { return tdescPtr_p->keywordSet(); }
+    { return tdescPtr_p->rwKeywordSet(); }
 
-Bool PlainTable::needToSync() const
-    { return colSetPtr_p->needToSync(); }
-uInt PlainTable::sync (Bool& moreToExpect)
+TableRecord& PlainTable::rwKeywordSet()
 {
-    nrrow_p = colSetPtr_p->sync (moreToExpect);
-    return nrrow_p;
+    colSetPtr_p->checkLock (True, True);
+    tableChanged_p = True;
+    return tdescPtr_p->rwKeywordSet();
 }
     
     
@@ -250,16 +351,19 @@ Bool PlainTable::canRemoveColumn (const String& columnName) const
 
 //# Add rows.
 void PlainTable::addRow (uInt nrrw, Bool initialize)
-
 {
     if (! isWritable()) {
 	throw (TableInvOper ("Table::addRow; table is not writable"));
     }
+    //# Locking has to be done here, otherwise nrrow_p is not up-to-date
+    //# when autoReleaseLock releases the lock and writes the data.
+    colSetPtr_p->checkLock (True, True);
     colSetPtr_p->addRow (nrrw);
     if (initialize) {
 	colSetPtr_p->initialize (nrrow_p, nrrow_p+nrrw-1);
     }
     nrrow_p += nrrw;
+    colSetPtr_p->autoReleaseLock();
 }
 
 void PlainTable::removeRow (uInt rownr)
@@ -267,8 +371,12 @@ void PlainTable::removeRow (uInt rownr)
     if (! isWritable()) {
 	throw (TableInvOper ("Table::removeRow; table is not writable"));
     }
+    //# Locking has to be done here, otherwise nrrow_p is not up-to-date
+    //# when autoReleaseLock releases the lock and writes the data.
+    colSetPtr_p->checkLock (True, True);
     colSetPtr_p->removeRow (rownr);
     nrrow_p--;
+    colSetPtr_p->autoReleaseLock();
 }
 
 void PlainTable::addColumn (const ColumnDesc& columnDesc)

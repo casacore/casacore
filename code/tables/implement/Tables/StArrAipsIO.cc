@@ -1,5 +1,5 @@
 //# StArrAipsIO.cc: Read/write a table column of arrays array using AipsIO
-//# Copyright (C) 1994,1995,1996
+//# Copyright (C) 1994,1995,1996,1997
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -102,6 +102,7 @@ void StManColumnArrayAipsIO::putArrayfloatV (uInt rownr,
     const float* data = arr->getStorage (deleteIt);
     objcopy ((float*)(getArrayPtr (rownr)), data, nrelem_p);
     arr->freeStorage (data, deleteIt);
+    stmanPtr_p->setHasPut();
 }
 void StManColumnArrayAipsIO::getSlicefloatV (uInt rownr, const Slicer& ns,
 					     Array<float>* arr)
@@ -118,6 +119,7 @@ void StManColumnArrayAipsIO::putSlicefloatV (uInt rownr, const Slicer& ns,
     IPosition blc, trc, inc;
     ns.inferShapeFromSource (shape_p, blc, trc, inc);
     tabarr(blc, trc, inc) = *arr;
+    stmanPtr_p->setHasPut();
 }
 
 #define STMANCOLUMNARRAYAIPSIO_GETPUT(T,NM) \
@@ -136,6 +138,7 @@ void StManColumnArrayAipsIO::aips_name2(putArray,NM) (uInt rownr, \
     const T* data = arr->getStorage (deleteIt); \
     objcopy ((T*)(getArrayPtr (rownr)), data, nrelem_p); \
     arr->freeStorage (data, deleteIt); \
+    stmanPtr_p->setHasPut(); \
 } \
 void StManColumnArrayAipsIO::aips_name2(getSlice,NM) \
                           (uInt rownr, const Slicer& ns, Array<T>* arr) \
@@ -152,6 +155,7 @@ void StManColumnArrayAipsIO::aips_name2(putSlice,NM) \
     IPosition blc, trc, inc; \
     ns.inferShapeFromSource (shape_p, blc, trc, inc); \
     tabarr(blc, trc, inc) = *arr; \
+    stmanPtr_p->setHasPut(); \
 }
 
 STMANCOLUMNARRAYAIPSIO_GETPUT(Bool,BoolV)
@@ -169,8 +173,6 @@ STMANCOLUMNARRAYAIPSIO_GETPUT(String,StringV)
 
 void StManColumnArrayAipsIO::getArrayColumnfloatV (Array<float>* arr)
 {
-//#// Shouldn't this be
-//#// uInt nrmax = arr->nelements();
     uInt nrmax = arr->shape()(arr->ndim()-1);
     Bool deleteItTarget;
     float* target = arr->getStorage (deleteItTarget);
@@ -204,6 +206,7 @@ void StManColumnArrayAipsIO::putArrayColumnfloatV (const Array<float>* arr)
 	}
     }
     arr->freeStorage (target, deleteItTarget);
+    stmanPtr_p->setHasPut();
 }
 #define STMANCOLUMNARRAYAIPSIO_GETPUTCOLUMN(T,NM) \
 void StManColumnArrayAipsIO::aips_name2(getArrayColumn,NM) \
@@ -243,6 +246,7 @@ void StManColumnArrayAipsIO::aips_name2(putArrayColumn,NM) \
 	} \
     } \
     arr->freeStorage (target, deleteItTarget); \
+    stmanPtr_p->setHasPut(); \
 }
 
 STMANCOLUMNARRAYAIPSIO_GETPUTCOLUMN(Bool,BoolV)

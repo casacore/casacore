@@ -200,8 +200,8 @@ void BaseTable::prepareCopyRename (const String& newName,
 {
     // Options Delete and Old are wrong.
     if (tableOption == Table::Old  ||  tableOption == Table::Delete) {
-	throw (TableInvOpt ("BaseTable::copy/rename",
-		       "must be Table::New, NewNoReplace, Scratch or Update"));
+	throw (TableInvOpt ("BaseTable::rename",
+		      "must be Table::New, NewNoReplace, Scratch or Update"));
     }
     // Do not do anything when the new name is the same as the old name.
     if (newName == name_p) {
@@ -212,12 +212,6 @@ void BaseTable::prepareCopyRename (const String& newName,
     File fileNew(newName);
     if (fileNew.exists()) {
 	if (!fileNew.isDirectory()) {
-	    throw (TableDuplFile(newName,
-				 " (and is not a true table directory)"));
-	}
-	// Check if file table.dat exist in it.
-	File mfile (Table::fileName(newName));
-	if (! mfile.exists()) {
 	    throw (TableDuplFile(newName,
 				 " (and is not a true table directory)"));
 	}
@@ -282,17 +276,18 @@ void BaseTable::copy (const String& newName, int tableOption) const
 	//# Throw an exception when directories do not exist yet.
 	if (!madeDir_p) {
 	    throw (TableError
-		          ("BaseTable::copy: no input table files exist"));
+		   ("BaseTable::copy: no input table files exist"));
 	}
 	//# Flush the data (cast is necesaary to bypass non-constness).
-	((BaseTable*)this)->flush();
+	((BaseTable*)this)->flush (True);
 	//# Copy the files (thus recursively the entire directory).
 	//# Set user write permission after the copy.
 	prepareCopyRename (newName, tableOption);
 	Directory fileOld(name_p);
-	fileOld.copy (newName, True, True);
+//#//	fileOld.copy (newName, True, True);
+	fileOld.copy (newName);
 	//# Okay, the table file have been copied.
-	//# Now rename all its subtables.
+	//# Now rename the subtables in its keywords (where needed).
 	Table tab(newName, Table::Update);
 	tab.baseTablePtr()->renameSubTables (newName, name_p);
     }
@@ -701,7 +696,7 @@ uInt BaseTable::logicRows (uInt*& inx, Bool& allsw)
 	for (uInt i=0; i<nr; i++) {
 	    ptr2[i] = inx[ptr1[i]];         // now store rownrs in ptr2
 	}
-	delete ptr1;
+	delete [] ptr1;
 	inx = ptr2;                         // set inx to sorted rownrs
 	allsw = True;
     }

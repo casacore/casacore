@@ -1,5 +1,5 @@
 //# TiledCellStMan.cc: Storage manager for tables using tiled hypercubes
-//# Copyright (C) 1995,1996
+//# Copyright (C) 1995,1996,1997
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -112,26 +112,37 @@ void TiledCellStMan::create (uInt nrrow)
 }
 	    
 
-void TiledCellStMan::close (AipsIO&)
+Bool TiledCellStMan::flush (AipsIO&, Bool fsync)
 {
+    // Flush the caches.
+    // Exit if nothing has changed.
+    if (! flushCaches (fsync)) {
+	return False;
+    }
     // Create the header file and write data in it.
+    // A zero pointer is returned when nothing has changed, thus nothing
+    // has to be written.
     AipsIO* headerFile = headerFileCreate();
+    if (headerFile == 0) {
+	return False;
+    }
     headerFile->putstart ("TiledCellStMan", 1);
     *headerFile << defaultTileShape_p;
     // Let the base class write its data.
     headerFilePut (*headerFile, nrrow_p);
     headerFile->putend();
     headerFileClose (headerFile);
+    return True;
 }
 
-void TiledCellStMan::open (uInt tabNrrow, AipsIO&)
+void TiledCellStMan::readHeader (uInt tabNrrow, Bool firstTime)
 {
     // Open the header file and read data from it.
     AipsIO* headerFile = headerFileOpen();
     headerFile->getstart ("TiledCellStMan");
     *headerFile >> defaultTileShape_p;
     // Let the base class read and initialize its data.
-    headerFileGet (*headerFile, tabNrrow);
+    headerFileGet (*headerFile, tabNrrow, firstTime);
     headerFile->getend();
     headerFileClose (headerFile);
 }
@@ -162,6 +173,7 @@ void TiledCellStMan::addRow (uInt nrow)
 	}
     }
     nrrow_p += nrow;
+    setDataChanged();
 }
 
 

@@ -30,6 +30,7 @@
 #include <aips/Tables/RefTable.h>
 #include <aips/Tables/ExprDerNode.h>
 #include <aips/Tables/TableDesc.h>
+#include <aips/Tables/TableLock.h>
 #include <aips/Tables/TableError.h>
 #include <aips/Tables/StManColumn.h>
 #include <aips/Tables/ExprNode.h>
@@ -41,25 +42,56 @@
 
 
 Table::Table()
-: baseTabPtr_p(0),
-  isCounted_p (True)
+: baseTabPtr_p     (0),
+  isCounted_p      (True),
+  lastModCounter_p (0)
 {}
 
 Table::Table (const String& name, TableOption option)
-: baseTabPtr_p(0),
-  isCounted_p (True)
-    { open (name, "", option); }
+: baseTabPtr_p     (0),
+  isCounted_p      (True),
+  lastModCounter_p (0)
+    { open (name, "", option, TableLock(TableLock::AutoLocking)); }
+
+Table::Table (const String& name, const TableLock& lockOptions,
+	      TableOption option)
+: baseTabPtr_p     (0),
+  isCounted_p      (True),
+  lastModCounter_p (0)
+    { open (name, "", option, lockOptions); }
     
 Table::Table (const String& name, const String& type, TableOption option)
-: baseTabPtr_p(0),
-  isCounted_p (True)
-    { open (name, type, option); }
+: baseTabPtr_p     (0),
+  isCounted_p      (True),
+  lastModCounter_p (0)
+    { open (name, type, option, TableLock(TableLock::AutoLocking)); }
     
+Table::Table (const String& name, const String& type,
+	      const TableLock& lockOptions, TableOption option)
+: baseTabPtr_p     (0),
+  isCounted_p      (True),
+  lastModCounter_p (0)
+    { open (name, type, option, lockOptions); }
+
 Table::Table (SetupNewTable& newtab, uInt nrrow, Bool initialize)
-: baseTabPtr_p(0),
-  isCounted_p (True)
+: baseTabPtr_p     (0),
+  isCounted_p      (True),
+  lastModCounter_p (0)
 {
-    baseTabPtr_p = new PlainTable (newtab, nrrow, initialize);
+    baseTabPtr_p = new PlainTable (newtab, nrrow, initialize,
+				   TableLock(TableLock::AutoLocking));
+    if (baseTabPtr_p == 0) {
+	throw (AllocError ("Table::Table(SetupNewTable&)", 1));
+    }
+    baseTabPtr_p->link();
+}
+Table::Table (SetupNewTable& newtab, const TableLock& lockOptions,
+	      uInt nrrow, Bool initialize)
+: baseTabPtr_p     (0),
+  isCounted_p      (True),
+  lastModCounter_p (0)
+{
+    baseTabPtr_p = new PlainTable (newtab, nrrow, initialize, lockOptions);
     if (baseTabPtr_p == 0) {
 	throw (AllocError ("Table::Table(SetupNewTable&)", 1));
     }
@@ -67,8 +99,9 @@ Table::Table (SetupNewTable& newtab, uInt nrrow, Bool initialize)
 }
 
 Table::Table (BaseTable* btp, Bool countIt)
-: baseTabPtr_p(btp),
-  isCounted_p (countIt)
+: baseTabPtr_p     (btp),
+  isCounted_p      (countIt),
+  lastModCounter_p (0)
 {
     if (isCounted_p  &&  baseTabPtr_p != 0) {
 	baseTabPtr_p->link();
@@ -76,8 +109,9 @@ Table::Table (BaseTable* btp, Bool countIt)
 }
 
 Table::Table (const Table& that)
-: baseTabPtr_p(that.baseTabPtr_p),
-  isCounted_p (that.isCounted_p)
+: baseTabPtr_p     (that.baseTabPtr_p),
+  isCounted_p      (that.isCounted_p),
+  lastModCounter_p (that.lastModCounter_p)
 {
     if (isCounted_p  &&  baseTabPtr_p != 0) {
 	baseTabPtr_p->link();
@@ -106,8 +140,9 @@ Table& Table::operator= (const Table& that)
     if (isCounted_p  &&  baseTabPtr_p != 0) {
 	BaseTable::unlink (baseTabPtr_p);
     }
-    baseTabPtr_p = that.baseTabPtr_p;
-    isCounted_p  = that.isCounted_p;
+    baseTabPtr_p     = that.baseTabPtr_p;
+    isCounted_p      = that.isCounted_p;
+    lastModCounter_p = that.lastModCounter_p;
     if (isCounted_p  &&  baseTabPtr_p != 0) {
 	baseTabPtr_p->link();
     }
@@ -147,22 +182,27 @@ uInt Table::getLayout (TableDesc& desc, const String& tableName)
 
 
 //# Open the table file and read it in if necessary.
-void Table::open (const String& name, const String& type, int opt)
+void Table::open (const String& name, const String& type, int tableOption,
+		  const TableLock& lockOptions)
 {
     //# Look if the table is already in the cache.
     //# If so, link to it.
     //# If delete, mark the table for delete.
-    BaseTable* btp = lookCache (name, opt);
+    BaseTable* btp = lookCache (name, tableOption, lockOptions);
     if (btp != 0) {
 	baseTabPtr_p = btp;
 	baseTabPtr_p->link();
-	if (opt == Table::Delete) {
+	if (tableOption == Table::Delete) {
 	    markForDelete();
 	}
 	return;
     }
+    //# Check if the table exists.
+    if (! Table::isReadable (name)) {
+	throw (TableNoFile (name));
+    }
     //# Delete the table (when it is a table indeed).
-    if (opt == Table::Delete) {
+    if (tableOption == Table::Delete) {
 	if (Table::isReadable (name)) {
 	    Directory directory(name);
 	    directory.removeRecursive();
@@ -172,7 +212,7 @@ void Table::open (const String& name, const String& type, int opt)
     //# Determine the file option for the table.
     //# Only existing tables can be opened.
     //# This is guaranteed by the calling functions.
-    ByteIO::OpenOption fopt = PlainTable::toAipsIOFoption (opt);
+    ByteIO::OpenOption fopt = PlainTable::toAipsIOFoption (tableOption);
     //# Open the file.
     AipsIO ios (Table::fileName(name), fopt);
     //# Determine the kind of table by reading the type.
@@ -183,14 +223,14 @@ void Table::open (const String& name, const String& type, int opt)
     ios >> format;
     ios >> tp;
     if (tp == "PlainTable") {
-	baseTabPtr_p = new PlainTable (ios, name, type, nrrow, opt, version);
+	baseTabPtr_p = new PlainTable (ios, version, name, type, nrrow,
+				       tableOption, lockOptions);
+    } else if (tp == "RefTable") {
+	baseTabPtr_p = new RefTable (ios, name, nrrow, tableOption,
+				     lockOptions);
     }else{
-	if (tp == "RefTable") {
-	    baseTabPtr_p = new RefTable (ios, name, nrrow, opt);
-	}else{
-	    throw (TableInternalError
-		                 ("Table::open: unknown table kind " + tp));
-	}
+	throw (TableInternalError
+	       ("Table::open: unknown table kind " + tp));
     }
     if (baseTabPtr_p == 0) {
 	throw (AllocError("Table::open",1));
@@ -199,7 +239,8 @@ void Table::open (const String& name, const String& type, int opt)
     baseTabPtr_p->link();
 }
 
-BaseTable* Table::lookCache (const String& name, int tableOption)
+BaseTable* Table::lookCache (const String& name, int tableOption,
+			     const TableLock& lockOptions)
 {
     //# Exit if table is not in cache yet.
     PlainTable* btp = PlainTable::tableCache(name);
@@ -211,23 +252,22 @@ BaseTable* Table::lookCache (const String& name, int tableOption)
     //# Note that class PlainTable already throws an exception if
     //# a new table is created with the same name as an open table.
     int cachedTableOption = btp->tableOption();
-    if (tableOption == cachedTableOption)
+    if ((tableOption == cachedTableOption)
+    ||  ((cachedTableOption == Table::New
+      ||  cachedTableOption == Table::NewNoReplace
+      ||  cachedTableOption == Table::Update)
+     &&  (tableOption == Table::Update
+      ||  tableOption == Table::Old))) {
+	btp->mergeLock (lockOptions);
 	return btp;
-    if (cachedTableOption == Table::New
-    ||  cachedTableOption == Table::NewNoReplace
-    ||  cachedTableOption == Table::Update) {
-	if (tableOption == Table::Update
-	||  tableOption == Table::Old) {
-	    return btp;
-	}
-    } else if (cachedTableOption == Table::Old) {
-	if (tableOption == Table::Update) {
-	    btp->reopenRW();
-	    return btp;
-	}
+    }
+    if (cachedTableOption == Table::Old  &&  tableOption == Table::Update) {
+	btp->mergeLock (lockOptions);
+	btp->reopenRW();
+	return btp;
     }
     throw (TableInvOper ("Table " + name +
-			 " cannot be opended/created (already in cache)"));
+			 " cannot be opened/created (already in cache)"));
     return 0;
 }
 
@@ -237,6 +277,28 @@ void Table::throwIfNull() const
     if (isNull()) {
 	throw (TableInvOper ("Table is null"));
     }
+}
+
+
+// Check if the table data has changed.
+Bool Table::hasDataChanged()
+{
+    // If the table is not read locked try to get one (without waiting).
+    // If not succeeding, another process is writing, thus data is changing.
+    // Otherwise unlock immediately.
+    if (! hasLock (False)) {
+	if (! lock (False, 1)) {
+	    return True;
+	}
+	unlock();
+    }
+    // Get the modify counter. If different, data have changed.
+    uInt counter = baseTabPtr_p->getModifyCounter();
+    if (counter != lastModCounter_p) {
+	lastModCounter_p = counter;
+	return True;
+    }
+    return False;
 }
 
 
@@ -298,7 +360,7 @@ TableExprNode Table::keyCol (const String& name, Bool isArray) const
     }
 }
 
-TableExprNode Table::nodeRownr (uInt origin) const
+TableExprNode Table::nodeRownr(uInt origin) const
 {
     return TableExprNode::newRownrNode (baseTabPtr_p, origin);
 }
@@ -307,6 +369,7 @@ TableExprNode Table::nodeRandom () const
 {
     return TableExprNode::newRandomNode (baseTabPtr_p);
 }
+
 
 //# Select rows based on an expression.
 Table Table::operator() (const TableExprNode& expr) const

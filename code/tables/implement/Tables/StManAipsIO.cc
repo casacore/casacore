@@ -1,5 +1,5 @@
 //# StManAipsIO.cc: Storage manager for tables using AipsIO
-//# Copyright (C) 1994,1995,1996
+//# Copyright (C) 1994,1995,1996,1997
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -144,6 +144,7 @@ void StManColumnAipsIO::aips_name2(put,NM) (uInt rownr, const T* value) \
 { \
     uInt extnr = findExt(rownr); \
     ((T*)(data_p[extnr])) [rownr-ncum_p[extnr-1]] = *value; \
+    stmanPtr_p->setHasPut(); \
 } \
 uInt StManColumnAipsIO::aips_name2(getBlock,NM) (uInt rownr, uInt nrmax, T* value) \
 { \
@@ -175,6 +176,7 @@ void StManColumnAipsIO::aips_name2(putBlock,NM) (uInt rownr, uInt nrmax, const T
 	rownr  = ncum_p[extnr]; \
 	extnr++; \
     } \
+    stmanPtr_p->setHasPut(); \
 }
 
 STMANCOLUMNAIPSIO_GETPUT(Bool,BoolV)
@@ -551,6 +553,7 @@ void StManColumnAipsIO::putArrayPtr (uInt rownr, void* ptr)
 {
     uInt extnr = findExt(rownr);
     ((void**)(data_p[extnr])) [rownr-ncum_p[extnr-1]] = ptr;
+    stmanPtr_p->setHasPut();
 }
 
 
@@ -560,6 +563,7 @@ StManAipsIO::StManAipsIO ()
 : DataManager (),
   uniqnr_p    (0),
   nrrow_p     (0),
+  hasPut_p    (False),
   colSet_p    (0)
 {}
 
@@ -568,6 +572,7 @@ StManAipsIO::StManAipsIO (const String& storageManagerName)
   stmanName_p (storageManagerName),
   uniqnr_p    (0),
   nrrow_p     (0),
+  hasPut_p    (False),
   colSet_p    (0)
 {}
 
@@ -680,6 +685,7 @@ void StManAipsIO::addColumn (DataManagerColumn* colp)
 	}
     }
     throw (DataManInternalError ("StManAipsIO::addColumn"));
+    setHasPut();
 }
 
 void StManAipsIO::removeColumn (DataManagerColumn* colp)
@@ -695,6 +701,7 @@ void StManAipsIO::removeColumn (DataManagerColumn* colp)
 	}
     }
     throw (DataManInternalError ("StManAipsIO::removeColumn: no such column"));
+    setHasPut();
 }
 
 void StManAipsIO::addRow (uInt nr)
@@ -704,6 +711,7 @@ void StManAipsIO::addRow (uInt nr)
 	colSet_p[i]->addRow (nrrow_p+nr, nrrow_p);
     }
     nrrow_p += nr;
+    setHasPut();
 }
 
 
@@ -713,11 +721,16 @@ void StManAipsIO::removeRow (uInt rownr)
 	colSet_p[i]->remove (rownr);
     }
     nrrow_p--;
+    setHasPut();
 }
 
 
-void StManAipsIO::close (AipsIO&)
+Bool StManAipsIO::flush (AipsIO&, Bool fsync)
 {
+    //# Do not write if nothing has been put..
+    if (! hasPut_p) {
+	return False;
+    }
     uInt i;
     AipsIO ios(fileName(), ByteIO::New);
     ios.putstart ("StManAipsIO", 2);           // version 2
@@ -735,6 +748,8 @@ void StManAipsIO::close (AipsIO&)
 	colSet_p[i]->putFile (nrrow_p, ios);
     }
     ios.putend();
+    hasPut_p = False;
+    return True;
 }
 
 void StManAipsIO::create (uInt nrrow)
@@ -744,11 +759,16 @@ void StManAipsIO::create (uInt nrrow)
     for (uInt i=0; i<ncolumn(); i++) {
 	colSet_p[i]->doCreate (nrrow);
     }
+    setHasPut();
 }
 
 void StManAipsIO::open (uInt tabNrrow, AipsIO&)
 {
-    nrrow_p = tabNrrow;
+    resync (tabNrrow);
+}
+void StManAipsIO::resync (uInt nrrow)
+{
+    nrrow_p = nrrow;
     AipsIO ios(fileName());
     uInt version = ios.getstart ("StManAipsIO");
     //# Get and check the number of rows and columns and the column types.

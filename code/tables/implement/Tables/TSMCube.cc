@@ -59,14 +59,14 @@ TSMCube::TSMCube (TiledStMan* stman, TSMFile* file,
                   const IPosition& cubeShape,
                   const IPosition& tileShape,
                   const Record& values)
-: stmanPtr_p    (stman),
-  filePtr_p     (file),
-  fileOffset_p  (0),
-  nrdim_p       (0),
-  tileSize_p    (0),
-  values_p      (values),
-  extensible_p  (ToBool (cubeShape(cubeShape.nelements()-1) == 0)),
-  cache_p       (0)
+: stmanPtr_p   (stman),
+  filePtr_p    (file),
+  fileOffset_p (0),
+  nrdim_p      (0),
+  tileSize_p   (0),
+  values_p     (values),
+  extensible_p (ToBool (cubeShape(cubeShape.nelements()-1) == 0)),
+  cache_p      (0)
 {
     setShape (cubeShape, tileShape);
 }
@@ -75,16 +75,7 @@ TSMCube::TSMCube (TiledStMan* stman, AipsIO& ios)
 : stmanPtr_p (stman),
   cache_p    (0)
 {
-    uInt version;
-    uInt fileSeqnr;
-    ios >> version;
-    ios >> values_p;
-    ios >> extensible_p;
-    ios >> nrdim_p;
-    ios >> cubeShape_p;
-    ios >> tileShape_p;
-    ios >> fileSeqnr;
-    ios >> fileOffset_p;
+    uInt fileSeqnr = getObject (ios);
     filePtr_p = stmanPtr_p->getFile (fileSeqnr);
     // Calculate the various variables.
     setup();
@@ -98,10 +89,14 @@ TSMCube::~TSMCube()
 
 void TSMCube::clearCache()
 {
-    // Clear the cache by resizing and clearing it.
+    if (cache_p != 0) {
+        cache_p->clear();
+    }
+}
+void TSMCube::emptyCache()
+{
     if (cache_p != 0) {
         cache_p->resize (0);
-        cache_p->clear();
     }
 }
 
@@ -169,12 +164,14 @@ void TSMCube::setShape (const IPosition& cubeShape, const IPosition& tileShape)
     filePtr_p->extend (nrTiles_p * bucketSize_p);
     // Initialize the coordinate columns (as far as needed).
     stmanPtr_p->initCoordinates (this);
+    // Set flag if writing.
+    stmanPtr_p->setDataChanged();
 }
 
 
 void TSMCube::putObject (AipsIO& ios)
 {
-    flush();
+    flushCache();
     ios << 1;                          // version 1
     ios << values_p;
     ios << extensible_p;
@@ -184,6 +181,21 @@ void TSMCube::putObject (AipsIO& ios)
     ios << filePtr_p->sequenceNumber();
     ios << fileOffset_p;
 }
+uInt TSMCube::getObject (AipsIO& ios)
+{
+    uInt version;
+    uInt fileSeqnr;
+    ios >> version;
+    ios >> values_p;
+    ios >> extensible_p;
+    ios >> nrdim_p;
+    ios >> cubeShape_p;
+    ios >> tileShape_p;
+    ios >> fileSeqnr;
+    ios >> fileOffset_p;
+    return fileSeqnr;
+}
+
 
 void TSMCube::setup()
 {
@@ -223,10 +235,10 @@ void TSMCube::makeCache()
     }
 }
 
-void TSMCube::flush()
+void TSMCube::flushCache()
 {
     if (cache_p != 0) {
-        cache_p->flush();
+	cache_p->flush();
     }
 }
 
@@ -254,7 +266,7 @@ void TSMCube::extend (uInt nr, const Record& coordValues,
     if (lastCoordColumn != 0) {
         extendCoordinates (coordValues, lastCoordColumn->columnName(),
                            cubeShape_p(lastDim));
-    }   
+    }
 }
 
 void TSMCube::extendCoordinates (const Record& coordValues,
@@ -678,6 +690,10 @@ void TSMCube::accessSection (const IPosition& start, const IPosition& end,
                              char* section, uInt colnr,
                              uInt localPixelSize, Bool writeFlag)
 {
+    // Set flag if writing.
+    if (writeFlag) {
+	stmanPtr_p->setDataChanged();
+    }
     // Prepare for the iteration through the necessary tiles.
     IPosition nrTiles (nrdim_p);               // #tiles needed for the section
     IPosition startTile (nrdim_p);             // first tile needed
@@ -1057,6 +1073,10 @@ void TSMCube::accessStrided (const IPosition& start, const IPosition& end,
                              char* section, uInt colnr,
                              uInt localPixelSize, Bool writeFlag)
 {
+    // Set flag if writing.
+    if (writeFlag) {
+	stmanPtr_p->setDataChanged();
+    }
     // If all strides are 1, use accessSection.
     uInt i, j;
     Bool contiguous = True;

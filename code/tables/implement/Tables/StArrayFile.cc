@@ -43,7 +43,8 @@ StManArrayFile::StManArrayFile (const String& fname, ByteIO::OpenOption fop,
 				uInt version, Bool canonical,
 				uInt bufferSize)
 : leng_p    (16),
-  version_p (version)
+  version_p (version),
+  hasPut_p  (False)
 {
     // The maximum version is 1.
     if (version_p > 1) {
@@ -60,10 +61,13 @@ StManArrayFile::StManArrayFile (const String& fname, ByteIO::OpenOption fop,
     AlwaysAssert (iofil_p != 0, AipsError);
     swput_p = iofil_p->isWritable();
     //# Get the version and length for an existing file.
+    //# Otherwise set put-flag.
     if (iofil_p->seek (0, ByteIO::End) > 0) {
 	setpos (0);
 	get (version_p);
 	iofil_p->read (1, &leng_p);
+    }else{
+	hasPut_p = True;
     }
     if (canonical) {
 	sizeChar_p   = CanonicalConversion::canonicalSize ((Char*)0);
@@ -96,15 +100,23 @@ StManArrayFile::StManArrayFile (const String& fname, ByteIO::OpenOption fop,
 StManArrayFile::~StManArrayFile ()
 {
     //# Write the version and file length at the beginning.
-    if (swput_p) {
-	setpos (0);
-	put (version_p);
-	iofil_p->write (1, &leng_p);
-    }
+    flush (False);
     delete iofil_p;
     delete file_p;
 }
 
+
+Bool StManArrayFile::flush (Bool fsync)
+{
+    if (hasPut_p) {
+	setpos (0);
+	put (version_p);
+	iofil_p->write (1, &leng_p);
+	hasPut_p = False;
+	return True;
+    }
+    return False;
+}
 
 void StManArrayFile::setpos (uLong pos)
 {
@@ -120,6 +132,7 @@ void StManArrayFile::put (uLong fileOff, uInt arrayOff, uInt nr,
 {
     setpos (fileOff + arrayOff*sizeFloat_p);
     iofil_p->write (nr, data);
+    hasPut_p = True;
 }
 
 uInt StManArrayFile::putShape (const IPosition& shape, uLong& offset,
@@ -143,6 +156,7 @@ void StManArrayFile::put (uLong fileOff, uInt arrayOff, uInt nr, \
 { \
     setpos (fileOff + arrayOff*SIZEDTYPE); \
     iofil_p->write (nr, data); \
+    hasPut_p = True; \
 } \
 uInt StManArrayFile::putShape (const IPosition& shape, uLong& offset, \
 			       const T*) \
@@ -194,6 +208,7 @@ void StManArrayFile::put (uLong fileOff, uInt arrayOff, uInt nr,
     Conversion::boolToBit (buf, data, stbit, nr);
     setpos (fileOff + start);
     iofil_p->write (end - start, buf);
+    hasPut_p = True;
     delete [] buf;
 }
 uInt StManArrayFile::putShape (const IPosition& shape, uLong& offset,
@@ -240,12 +255,14 @@ void StManArrayFile::put (uLong fileOff, uInt arrayOff, uInt nr,
 {
     setpos (fileOff + arrayOff*2*sizeFloat_p);
     iofil_p->write (2*nr, (const Float*)data);
+    hasPut_p = True;
 }
 void StManArrayFile::put (uLong fileOff, uInt arrayOff, uInt nr,
 			  const DComplex* data)
 {
     setpos (fileOff + arrayOff*2*sizeDouble_p);
     iofil_p->write (2*nr, (const Double*)data);
+    hasPut_p = True;
 }
 
 //# Put a string at the given file offset.
@@ -258,7 +275,7 @@ void StManArrayFile::put (uLong fileOff, uInt arrayOff, uInt nr,
     uInt buf[4096];
     uInt i, n;
     while (nr > 0) {
-	n   = (nr < 4096  ?  nr : 4096);
+	n = (nr < 4096  ?  nr : 4096);
 	setpos (leng_p);                            // position at end of file
 	for (i=0; i<n; i++) {
 	    buf[i] = leng_p;
@@ -269,6 +286,7 @@ void StManArrayFile::put (uLong fileOff, uInt arrayOff, uInt nr,
 	//# Write the offsets.
 	setpos (offs);
 	offs += iofil_p->write (n, buf);
+	hasPut_p = True;
 	nr   -= n;
     }
 }
@@ -342,6 +360,7 @@ void StManArrayFile::copyData (uLong to, uLong from, uInt length)
 	from += iofil_p->read (n, buffer);
 	setpos (to);
 	to += iofil_p->write  (n, buffer);
+	hasPut_p = True;
     }
 }
 
@@ -371,6 +390,7 @@ uInt StManArrayFile::putRes (const IPosition& shape, uLong& offset,
     setpos (leng_p - 1);
     Char c = 0;
     iofil_p->write (1, &c);
+    hasPut_p = True;
     return n;
 }
 

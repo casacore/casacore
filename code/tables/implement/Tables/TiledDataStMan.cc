@@ -1,5 +1,5 @@
 //# TiledDataStMan.cc: Storage manager for tables using tiled hypercubes
-//# Copyright (C) 1995,1996
+//# Copyright (C) 1995,1996,1997
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -85,8 +85,13 @@ void TiledDataStMan::create (uInt nrrow)
 }
 	    
 
-void TiledDataStMan::close (AipsIO&)
+Bool TiledDataStMan::flush (AipsIO&, Bool fsync)
 {
+    // Flush the caches.
+    // Exit if nothing has changed.
+    if (! flushCaches (fsync)) {
+	return False;
+    }
     // Create the header file and write data in it.
     AipsIO* headerFile = headerFileCreate();
     headerFile->putstart ("TiledDataStMan", 1);
@@ -100,15 +105,16 @@ void TiledDataStMan::close (AipsIO&)
     putBlock (*headerFile, posMap_p,  Int(nrUsedRowMap_p));
     headerFile->putend();
     headerFileClose (headerFile);
+    return True;
 }
 
-void TiledDataStMan::open (uInt tabNrrow, AipsIO&)
+void TiledDataStMan::readHeader (uInt tabNrrow, Bool firstTime)
 {
     // Open the header file and read data from it.
     AipsIO* headerFile = headerFileOpen();
     headerFile->getstart ("TiledDataStMan");
     // Let the base class read and initialize its data.
-    headerFileGet (*headerFile, tabNrrow);
+    headerFileGet (*headerFile, tabNrrow, firstTime);
     // Read the data for this object.
     *headerFile >> nrrowLast_p;
     *headerFile >> nrUsedRowMap_p;
@@ -123,6 +129,7 @@ void TiledDataStMan::open (uInt tabNrrow, AipsIO&)
 void TiledDataStMan::addRow (uInt nrow)
 {
     nrrow_p += nrow;
+    setDataChanged();
 }
 
 
@@ -149,6 +156,7 @@ void TiledDataStMan::addHypercube (const IPosition& cubeShape,
     cubeSet_p[ncube] = hypercube;
     // Update the row map with the number of pixels in last dimension.
     updateRowMap (ncube, cubeShape(nrdim_p-1));
+    setDataChanged();
 }
 
 void TiledDataStMan::extendHypercube (uInt incrInLastDim,
@@ -169,6 +177,7 @@ void TiledDataStMan::extendHypercube (uInt incrInLastDim,
     checkCoordinates (lastCoord, lastDim, values);
     cubeSet_p[cubeNr]->extend (incrInLastDim, values, lastCoord[0]);
     updateRowMap (cubeNr, incrInLastDim);
+    setDataChanged();
 }
 
 

@@ -1,5 +1,5 @@
-//# RefTable.cc: Class representing reference tables resulting from a selection, etc.
-//# Copyright (C) 1994,1995,1996
+//# RefTable.cc: Class for a table as a view of another table
+//# Copyright (C) 1994,1995,1996,1997
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -29,6 +29,7 @@
 #include <aips/Tables/RefColumn.h>
 #include <aips/Tables/Table.h>
 #include <aips/Tables/TableDesc.h>
+#include <aips/Tables/TableLock.h>
 #include <aips/Arrays/Vector.h>
 #include <aips/Containers/SimOrdMapIO.h>
 #include <aips/Utilities/Copy.h>
@@ -37,7 +38,8 @@
 #include <aips/Tables/TableError.h>
 
 
-RefTable::RefTable (AipsIO& ios, const String& name, uInt nrrow, int opt)
+RefTable::RefTable (AipsIO& ios, const String& name, uInt nrrow, int opt,
+		    const TableLock& lockOptions)
 : BaseTable(name, opt, nrrow),
   nameMap_p(""),
   colMap_p ((RefColumn*)0),
@@ -50,7 +52,7 @@ RefTable::RefTable (AipsIO& ios, const String& name, uInt nrrow, int opt)
     // At the end it is reset. In this way nothing is written if
     // an exception is thrown during initialization.
     noWrite_p = True;
-    getRef (ios, opt);
+    getRef (ios, opt, lockOptions);
     unmarkForDelete();
     noWrite_p = False;
 }
@@ -173,7 +175,7 @@ RefTable::~RefTable()
     //# When needed, write the table files if not marked for delete
     if (!isMarkedForDelete()) {
 	if (openedForWrite()  &&  !shouldNotWrite()) {
-	    writeRefTable();
+	    writeRefTable (True);
 	}
     }
     //# Delete all RefColumn objects.
@@ -190,11 +192,37 @@ void RefTable::reopenRW()
     option_p = Table::Update;
 }
 
-void RefTable::flush()
+const TableLock& RefTable::lockOptions() const
+{
+    return baseTabPtr_p->lockOptions();
+}
+void RefTable::mergeLock (const TableLock& lockOptions)
+{
+    baseTabPtr_p->mergeLock (lockOptions);
+}
+Bool RefTable::hasLock (Bool write) const
+{
+    return baseTabPtr_p->hasLock (write);
+}
+Bool RefTable::lock (Bool write, uInt nattempts)
+{
+    return baseTabPtr_p->lock (write, nattempts);
+}
+void RefTable::unlock()
+{
+    baseTabPtr_p->unlock();
+}
+
+void RefTable::flush (Bool sync)
 {
     if (openedForWrite()) {
-	writeRefTable();
+	writeRefTable (sync);
     }
+}
+
+uInt RefTable::getModifyCounter() const
+{
+    return baseTabPtr_p->getModifyCounter();
 }
 
 
@@ -218,7 +246,7 @@ Bool RefTable::adjustRownrs (uInt nr, uInt* rownrs, Bool determineOrder) const
 
 
 //# Write a reference table into a file.
-void RefTable::writeRefTable()
+void RefTable::writeRefTable (Bool sync)
 {
     //# Write name and type of root and write object data.
     //# Do this only when something has changed.
@@ -240,10 +268,12 @@ void RefTable::writeRefTable()
     }
     //# Write the TableInfo.
     flushTableInfo();
+    //# Write the data in the referred table.
+    baseTabPtr_p->flush (sync);
 }
 
 //# Read a reference table from a file and read the associated table.
-void RefTable::getRef (AipsIO& ios, int opt)
+void RefTable::getRef (AipsIO& ios, int opt, const TableLock& lockOptions)
 {
     //# Open the file, read name and type of root and read object data.
     String rootName;
@@ -265,9 +295,9 @@ void RefTable::getRef (AipsIO& ios, int opt)
     //# we can do to make sure the referenced rows are still the same.
     Table tab;
     if (opt == Table::Old) {
-	tab = Table(rootName);
+	tab = Table(rootName, lockOptions, Table::Old);
     }else{
-	tab = Table(rootName, Table::Update);
+	tab = Table(rootName, lockOptions, Table::Update);
     }
     baseTabPtr_p = tab.baseTablePtr();
     if (rootNrow > baseTabPtr_p->nrow()) {
@@ -377,14 +407,10 @@ Bool RefTable::isWritable() const
 TableRecord& RefTable::keywordSet()
     { return baseTabPtr_p->keywordSet(); }
 
-Bool RefTable::needToSync() const
-    { return False; }
-uInt RefTable::sync (Bool& moreToExpect)
-{
-    moreToExpect = False;
-    return nrow();
-}
-    
+//# Get the keyword set.
+TableRecord& RefTable::rwKeywordSet()
+    { return baseTabPtr_p->rwKeywordSet(); }
+
 BaseColumn* RefTable::getColumn (const String& columnName) const
 {
     tdescPtr_p->columnDesc(columnName);             // check if column exists

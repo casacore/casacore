@@ -1,5 +1,5 @@
 //# TiledColumnStMan.cc: Storage manager for tables using tiled hypercubes
-//# Copyright (C) 1995,1996
+//# Copyright (C) 1995,1996,1997
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -102,8 +102,13 @@ void TiledColumnStMan::create (uInt nrrow)
 }
 	    
 
-void TiledColumnStMan::close (AipsIO&)
+Bool TiledColumnStMan::flush (AipsIO&, Bool fsync)
 {
+    // Flush the caches.
+    // Exit if nothing has changed.
+    if (! flushCaches (fsync)) {
+	return False;
+    }
     // Create the header file and write data in it.
     AipsIO* headerFile = headerFileCreate();
     headerFile->putstart ("TiledColumnStMan", 1);
@@ -112,16 +117,17 @@ void TiledColumnStMan::close (AipsIO&)
     headerFilePut (*headerFile, 1);
     headerFile->putend();
     headerFileClose (headerFile);
+    return True;
 }
 
-void TiledColumnStMan::open (uInt tabNrrow, AipsIO&)
+void TiledColumnStMan::readHeader (uInt tabNrrow, Bool firstTime)
 {
     // Open the header file and read data from it.
     AipsIO* headerFile = headerFileOpen();
     headerFile->getstart ("TiledColumnStMan");
     *headerFile >> tileShape_p;
     // Let the base class read and initialize its data.
-    headerFileGet (*headerFile, tabNrrow);
+    headerFileGet (*headerFile, tabNrrow, firstTime);
     headerFile->getend();
     headerFileClose (headerFile);
 }
@@ -154,6 +160,7 @@ void TiledColumnStMan::addRow (uInt nrow)
 {
     cubeSet_p[0]->extend (nrow, Record(), coordColSet_p[nrdim_p - 1]);
     nrrow_p += nrow;
+    setDataChanged();
 }
 
 

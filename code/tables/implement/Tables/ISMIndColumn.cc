@@ -1,5 +1,5 @@
 //# ISMIndColumn.cc: Column of Incremental storage manager for indirect arrays
-//# Copyright (C) 1996
+//# Copyright (C) 1996,1997
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -66,7 +66,7 @@ void ISMIndColumn::doCreate (ISMBucket* bucket)
     uInt leng = writeFunc_p (buffer, lastValue_p, 1);
     bucket->addData (colnr_p, 0, 0, buffer, leng);
 }
-void ISMIndColumn::getFile (uInt)
+void ISMIndColumn::getFile (uInt nrrow)
 {
     init();
     //# Create the type 1 file to hold the arrays in the column.
@@ -78,6 +78,11 @@ void ISMIndColumn::getFile (uInt)
     if (iosfile_p == 0) {
 	throw (AllocError ("ISMIndColumn::doCreate", 1));
     }
+    lastRowPut_p = nrrow;
+}
+Bool ISMIndColumn::flush (uInt, Bool fsync)
+{
+    return iosfile_p->flush (fsync);
 }
 void ISMIndColumn::reopenRW()
 {

@@ -33,7 +33,7 @@
 #include <aips/Mathematics/Complex.h>
 #include <aips/Utilities/String.h>
 #include <aips/Tables/DataManError.h>
-#include <stdio.h>
+#include <stdio.h>                            //# for sprintf
 
 
 //# Define a macro which gets the pointer for the given row
@@ -147,34 +147,54 @@ Bool StManColumnIndArrayAipsIO::canAccessSlice (Bool& reask) const
 
 
 void StManColumnIndArrayAipsIO::getArrayfloatV (uInt rownr, Array<float>* arr)
-    { getShape(rownr)->getArrayfloatV (*iosfile_p, arr); }
+{
+    getShape(rownr)->getArrayfloatV (*iosfile_p, arr);
+}
 
 void StManColumnIndArrayAipsIO::putArrayfloatV (uInt rownr,
 						const Array<float>* arr)
-    { getShape(rownr)->putArrayfloatV (*iosfile_p, arr); }
+{
+    getShape(rownr)->putArrayfloatV (*iosfile_p, arr);
+    stmanPtr_p->setHasPut();
+}
 
 void StManColumnIndArrayAipsIO::getSlicefloatV (uInt rownr, const Slicer& ns,
 						Array<float>* arr)
-    { getShape(rownr)->getSlicefloatV (*iosfile_p, ns, arr); }
+{
+    getShape(rownr)->getSlicefloatV (*iosfile_p, ns, arr);
+}
 
 void StManColumnIndArrayAipsIO::putSlicefloatV (uInt rownr, const Slicer& ns,
 						const Array<float>* arr)
-    { getShape(rownr)->putSlicefloatV (*iosfile_p, ns, arr); }
+{
+    getShape(rownr)->putSlicefloatV (*iosfile_p, ns, arr);
+    stmanPtr_p->setHasPut();
+}
     
 
 #define STMANCOLUMNINDARRAYAIPSIO_GETPUT(T,NM) \
 void StManColumnIndArrayAipsIO::aips_name2(getArray,NM) (uInt rownr, \
 							 Array<T>* arr) \
-    { getShape(rownr)->aips_name2(getArray,NM) (*iosfile_p, arr); } \
+{ \
+    getShape(rownr)->aips_name2(getArray,NM) (*iosfile_p, arr); \
+} \
 void StManColumnIndArrayAipsIO::aips_name2(putArray,NM) (uInt rownr, \
 						         const Array<T>* arr) \
-    { getShape(rownr)->aips_name2(putArray,NM) (*iosfile_p, arr); } \
+{ \
+    getShape(rownr)->aips_name2(putArray,NM) (*iosfile_p, arr); \
+    stmanPtr_p->setHasPut(); \
+} \
 void StManColumnIndArrayAipsIO::aips_name2(getSlice,NM) \
                              (uInt rownr, const Slicer& ns, Array<T>* arr) \
-    { getShape(rownr)->aips_name2(getSlice,NM) (*iosfile_p, ns, arr); } \
+{ \
+    getShape(rownr)->aips_name2(getSlice,NM) (*iosfile_p, ns, arr); \
+} \
 void StManColumnIndArrayAipsIO::aips_name2(putSlice,NM) \
                         (uInt rownr, const Slicer& ns, const Array<T>* arr) \
-    { getShape(rownr)->aips_name2(putSlice,NM) (*iosfile_p, ns, arr); }
+{ \
+    getShape(rownr)->aips_name2(putSlice,NM) (*iosfile_p, ns, arr); \
+    stmanPtr_p->setHasPut(); \
+}
 
 STMANCOLUMNINDARRAYAIPSIO_GETPUT(Bool,BoolV)
 STMANCOLUMNINDARRAYAIPSIO_GETPUT(uChar,uCharV)

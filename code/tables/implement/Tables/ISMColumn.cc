@@ -113,10 +113,12 @@ void ISMColumn::addRow (uInt, uInt)
     //# Nothing to do.
 }
 
-void ISMColumn::remove (uInt bucketRownr, ISMBucket* bucket, uInt bucketNrrow)
+void ISMColumn::remove (uInt bucketRownr, ISMBucket* bucket, uInt bucketNrrow,
+			uInt newNrrow)
 {
     uInt inx, stint, endint, offset;
-    // Get the index where to remove the new value.
+    // Get the index where to remove the value.
+    // When the rownr is not the start of the interval, index is one further.
     inx = bucket->getInterval (colnr_p, bucketRownr, bucketNrrow,
 			       stint, endint, offset);
 #ifdef AIPS_TRACE
@@ -141,10 +143,20 @@ void ISMColumn::remove (uInt bucketRownr, ISMBucket* bucket, uInt bucketNrrow)
 	bucket->shiftLeft (inx, 1, rowIndex, offIndex, nused, fixedLength_p);
 	//# We can also test if previous and next value are equal and
 	//# shift left one more. However, that is not implemented.
+    } else {
+	// When not single, start of this interval does not change.
+	// The index has to be incremented when row is at start of interval.
+	if (bucketRownr == stint) {
+	    inx++;
+	}
     }
     // Decrement the row number for all following rows.
     for (uInt i=inx; i<nused; i++) {
 	rowIndex[i]--;
+    }
+    // Decrement lastRowPut if beyond last row now.
+    if (lastRowPut_p > newNrrow) {
+	lastRowPut_p = newNrrow+1;
     }
 }
 
@@ -1000,8 +1012,17 @@ void ISMColumn::getFile (uInt nrrow)
     init();
     lastRowPut_p = nrrow;
 }
-void ISMColumn::flush (uInt)
-{}
+Bool ISMColumn::flush (uInt, Bool)
+{
+    return False;
+}
+void ISMColumn::resync (uInt nrrow)
+{
+    // Invalidate the last value read.
+    startRow_p   = -1;
+    endRow_p     = -1;
+    lastRowPut_p = nrrow;
+}
 void ISMColumn::reopenRW()
 {}
 

@@ -29,19 +29,23 @@
 #include <aips/Tables/SetupNewTab.h>
 #include <aips/Tables/PlainColumn.h>
 #include <aips/Tables/TableDesc.h>
+#include <aips/Tables/PlainTable.h>
 #include <aips/Tables/DataManager.h>
 #include <aips/Tables/TableError.h>
 #include <aips/IO/MemoryIO.h>
+#include <aips/Utilities/Assert.h>
 
 #define BLOCKDATAMANVAL(I) ((DataManager*)(blockDataMan_p[I]))
 #define COLMAPVAL(I)       ((PlainColumn*)(colMap_p.getVal(I)))
 #define COLMAPNAME(NAME)   ((PlainColumn*)(colMap_p(NAME)))
 
 ColumnSet::ColumnSet (TableDesc* tdesc)
-: tdescPtr_p    (tdesc),
-  colMap_p      ((void *)0, tdesc->ncolumn()),
-  seqCount_p    (0),
-  blockDataMan_p(0)
+: tdescPtr_p      (tdesc),
+  plainTablePtr_p (0),
+  lockPtr_p       (0),
+  colMap_p        ((void *)0, tdesc->ncolumn()),
+  seqCount_p      (0),
+  blockDataMan_p  (0)
 {
     //# Loop through all columns in the description and create
     //# a column out of them.
@@ -150,38 +154,19 @@ void ColumnSet::prepareSomeDataManagers (uInt from)
 }
 
 
-//# Does a data manager need synchronization?
-Bool ColumnSet::needToSync() const
+void ColumnSet::resync (uInt nrrow)
 {
-    for (uInt i=0; i<blockDataMan_p.nelements(); i++) {
-	if (BLOCKDATAMANVAL(i)->needToSync()) {
-	    return True;
+    //# There may be no sync data (when new table locked for first time).
+    if (dataManChanged_p.nelements() > 0) {
+	AlwaysAssert (dataManChanged_p.nelements() ==
+		                   blockDataMan_p.nelements(), AipsError);
+	for (uInt i=0; i<blockDataMan_p.nelements(); i++) {
+	    if (dataManChanged_p[i]  ||  nrrow != nrrow_p) {
+		BLOCKDATAMANVAL(i)->resync (nrrow);
+	    }
 	}
-    }
-    return False;
-}
-uInt ColumnSet::sync (Bool& moreToExpect)
-{
-    //# Synchronize by polling all data managers.
-    //# The resulting number of rows is the lowest number (except 0).
-    //# The flag moreToExpect is set if one of the data managers sets it.
-    moreToExpect = False;
-    Bool more;
-    uInt nrrow = 0;
-    uInt nr;
-    for (uInt i=0; i<blockDataMan_p.nelements(); i++) {
-	nr = BLOCKDATAMANVAL(i)->sync (more);
-	if (nrrow == 0  ||  (nr != 0  &&  nr < nrrow)) {
-	    nrrow = nr;
-	}
-	if (more) {
-	    moreToExpect = True;
-	}
-    }
-    if (nrrow != 0) {
 	nrrow_p = nrrow;
     }
-    return nrrow_p;
 }
 
 //# Do all data managers allow to add and remove rows and columns?
@@ -293,6 +278,7 @@ void ColumnSet::addColumn (const ColumnDesc& columnDesc,
 void ColumnSet::doAddColumn (const ColumnDesc& columnDesc,
 			     DataManager* dataManPtr)
 {
+    checkLock (True, True);
     //# When the column already exists, TableDesc::addColumn throws
     //# an exception.
     //# The creation and binding of a column will always succeed.
@@ -335,6 +321,7 @@ void ColumnSet::doAddColumn (const ColumnDesc& columnDesc,
     if (error) {
 	throw (AipsError (msg));
     }
+    autoReleaseLock();
 }
 
 void ColumnSet::addColumn (const ColumnDesc& columnDesc,
@@ -348,6 +335,7 @@ void ColumnSet::addColumn (const ColumnDesc& columnDesc,
 void ColumnSet::addColumn (const TableDesc& tableDesc,
 			   const DataManager& dataManager, Table& tab)
 {
+    checkLock (True, True);
     // Check if the data manager name has not been used already.
     checkDataManagerName (dataManager.dataManagerName(), 0);
     // Add the new table description to the current one.
@@ -390,6 +378,7 @@ void ColumnSet::addColumn (const TableDesc& tableDesc,
     if (error) {
 	throw (AipsError (msg));
     }
+    autoReleaseLock();
 }
 
 
@@ -459,47 +448,53 @@ void ColumnSet::renameTables (const String& newName, const String& oldName)
 }
 
 
-void ColumnSet::putFile (AipsIO& ios, const String& tableName)
+void ColumnSet::putFile (Bool writeTable, AipsIO& ios,
+			 const String& tableName, Bool fsync)
 {
+    //# Only write the table data when the flag is set.
+    dataManChanged_p.resize (blockDataMan_p.nelements());
     uInt i;
-    //# The first version of ColumnSet did not put a version.
-    //# Therefore a negative number is put as the version
-    //# (because nrrow_p is always positive).
-    ios << -2;          // version (must be negative !!!)
-    ios << nrrow_p;
-    ios << seqCount_p;
-    //# Start with writing the data manager types.
-    //# Only write with columns in them (thus count first).
-    uInt nr=0;
-    for (i=0; i<blockDataMan_p.nelements(); i++) {
-	if (BLOCKDATAMANVAL(i)->ncolumn() > 0) {
-	    nr++;
+    if (writeTable) {
+	//# The first version of ColumnSet did not put a version.
+	//# Therefore a negative number is put as the version
+	//# (because nrrow_p is always positive).
+	ios << -2;          // version (must be negative !!!)
+	ios << nrrow_p;
+	ios << seqCount_p;
+	//# Start with writing the data manager types.
+	//# Only write with columns in them (thus count first).
+	uInt nr=0;
+	for (i=0; i<blockDataMan_p.nelements(); i++) {
+	    if (BLOCKDATAMANVAL(i)->ncolumn() > 0) {
+		nr++;
+	    }
 	}
-    }
-    ios << nr;
-    for (i=0; i<blockDataMan_p.nelements(); i++) {
-	if (BLOCKDATAMANVAL(i)->ncolumn() > 0) {
-	    ios << BLOCKDATAMANVAL(i)->dataManagerType();
-	    ios << BLOCKDATAMANVAL(i)->sequenceNr();
+	ios << nr;
+	for (i=0; i<blockDataMan_p.nelements(); i++) {
+	    if (BLOCKDATAMANVAL(i)->ncolumn() > 0) {
+		ios << BLOCKDATAMANVAL(i)->dataManagerType();
+		ios << BLOCKDATAMANVAL(i)->sequenceNr();
+	    }
 	}
-    }
-    //# Now write all columns.
-    for (i=0; i<colMap_p.ndefined(); i++) {
-	getColumn(i)->putFile (ios, tableName);
+	//# Now write all columns.
+	for (i=0; i<colMap_p.ndefined(); i++) {
+	    getColumn(i)->putFile (ios, tableName);
+	}
     }
     //# Now write out the data in all data managers.
     MemoryIO memio;
     AipsIO aio(&memio);
     for (i=0; i<blockDataMan_p.nelements(); i++) {
-////	ios << BLOCKDATAMANVAL(i)->dataManagerName();
-	BLOCKDATAMANVAL(i)->close (aio);
-	ios.put (uInt(memio.length()), memio.getBuffer());
+	dataManChanged_p[i] = BLOCKDATAMANVAL(i)->flush (aio, fsync);
+	if (writeTable) {
+	    ios.put (uInt(memio.length()), memio.getBuffer());
+	}
 	memio.clear();
     }
 }
 
 
-void ColumnSet::getFile (AipsIO& ios, Table& tab)
+void ColumnSet::getFile (AipsIO& ios, Table& tab, uInt nrrow)
 {
     //# When the first value is negative, it is the version.
     //# Otherwise it is nrrow_p.
@@ -514,6 +509,8 @@ void ColumnSet::getFile (AipsIO& ios, Table& tab)
 	nrrow_p = version;
 	version = 1;
     }
+    //# Use nrrow from caller, since that is most accurate.
+    nrrow_p = nrrow;
     ios >> nrman;
     ios >> nr;
     //# Construct the various data managers.
@@ -572,4 +569,20 @@ DataManager* ColumnSet::getDataManager (uInt seqnr) const
     }
     throw (TableInternalError ("ColumnSet::getDataManager"));
     return 0;
+}
+
+
+void ColumnSet::doLock (Bool write, Bool wait)
+{
+    if (lockPtr_p->option() != TableLock::AutoLocking) {
+	throw (TableError ("ColumnSet::checkLock: table should be locked "
+			   "when using PermenentLocking or UserLocking"));
+    }
+    uInt nattempts = (wait  ?  plainTablePtr_p->lockOptions().maxWait() : 1);
+    plainTablePtr_p->lock (write, nattempts);
+}
+
+void ColumnSet::setTableChanged()
+{
+    plainTablePtr_p->setTableChanged();
 }

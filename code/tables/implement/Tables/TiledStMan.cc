@@ -1,5 +1,5 @@
 //# TiledStMan.cc: Storage manager for tables using tiled hypercubes
-//# Copyright (C) 1995,1996
+//# Copyright (C) 1995,1996,1997
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -54,7 +54,8 @@ TiledStMan::TiledStMan ()
   persMaxCacheSize_p(0),
   maxCacheSize_p    (0),
   fileSet_p         (1, (TSMFile*)0),
-  userSetCache_p    (False)
+  userSetCache_p    (False),
+  dataChanged_p     (False)
 {}
 
 TiledStMan::TiledStMan (const String& hypercolumnName, uInt maximumCacheSize)
@@ -66,7 +67,8 @@ TiledStMan::TiledStMan (const String& hypercolumnName, uInt maximumCacheSize)
   maxCacheSize_p    (maximumCacheSize),
   fileSet_p         (1, (TSMFile*)0),
   hypercolumnName_p (hypercolumnName),
-  userSetCache_p    (False)
+  userSetCache_p    (False),
+  dataChanged_p     (False)
 {}
 
 TiledStMan::~TiledStMan()
@@ -217,11 +219,11 @@ void TiledStMan::setCacheSize (uInt rownr, uInt nbytes, Bool forceSmaller)
     userSetCache_p = True;
 }
 
-void TiledStMan::clearCaches()
+void TiledStMan::emptyCaches()
 {
     for (uInt i=0; i<cubeSet_p.nelements(); i++) {
 	if (cubeSet_p[i] != 0) {
-	    cubeSet_p[i]->clearCache();
+	    cubeSet_p[i]->emptyCache();
 	}
     }
     userSetCache_p = False;
@@ -553,6 +555,7 @@ void TiledStMan::initCoordinates (TSMCube* hypercube)
 	    hypercube->extendCoordinates (Record(),
 					  coordColSet_p[i]->columnName(),
 					  hypercube->cubeShape()(i));
+	    dataChanged_p = True;
 	}
     }
 }
@@ -597,6 +600,7 @@ TSMCube* TiledStMan::makeHypercube (const IPosition& cubeShape,
     if (getCubeIndex (values) >= 0) {
 	throw (TSMError ("addHypercube with already existing id values"));
     }
+    dataChanged_p = True;
     // Pick a TSMFile object for the hypercube.
     // Non-extensible cubes share the first file; others get their own file.
     uInt filenr = 0;
@@ -705,6 +709,38 @@ uInt TiledStMan::addedNrrow (const IPosition& shape, uInt incrInLastDim) const
 }
 
 
+void TiledStMan::open (uInt nrrow, AipsIO&)
+{
+    // Read the header info (for the first time).
+    readHeader (nrrow, True);
+}
+void TiledStMan::resync (uInt nrrow)
+{
+    // Reread the header info.
+    readHeader (nrrow, False);
+}
+
+Bool TiledStMan::flushCaches (Bool fsync)
+{
+    if (!dataChanged_p) {
+	return False;
+    }
+    dataChanged_p = False;
+    uInt i;
+    for (i=0; i<cubeSet_p.nelements(); i++) {
+	if (cubeSet_p[i] != 0) {
+	    cubeSet_p[i]->flushCache();
+	}
+    }
+    if (fsync) {
+	for (i=0; i<fileSet_p.nelements(); i++) {
+	    fileSet_p[i]->bucketFile()->fsync();
+	}
+    }
+    return True;
+}
+
+
 AipsIO* TiledStMan::headerFileCreate()
 {
     AipsIO* file = new AipsIO (fileName(), ByteIO::New);
@@ -722,7 +758,6 @@ AipsIO* TiledStMan::headerFileOpen()
     }
     return file;
 }
-
 
 
 void TiledStMan::headerFilePut (AipsIO& headerFile, uInt nrCube)
@@ -757,7 +792,8 @@ void TiledStMan::headerFilePut (AipsIO& headerFile, uInt nrCube)
     headerFile.putend();
 }
 
-void TiledStMan::headerFileGet (AipsIO& headerFile, uInt tabNrrow)
+void TiledStMan::headerFileGet (AipsIO& headerFile, uInt tabNrrow,
+				Bool firstTime)
 {
     nrrow_p = tabNrrow;
     uInt i;
@@ -782,8 +818,10 @@ void TiledStMan::headerFileGet (AipsIO& headerFile, uInt tabNrrow)
     headerFile >> hypercolumnName_p;
     headerFile >> persMaxCacheSize_p;
     maxCacheSize_p = persMaxCacheSize_p;
-    // Setup the various things (i.e. initialize other variables).
-    setup();
+    if (firstTime) {
+	// Setup the various things (i.e. initialize other variables).
+	setup();
+    }
     uInt nrdim;
     headerFile >> nrdim;
     if (nrdim != nrdim_p) {
@@ -793,23 +831,41 @@ void TiledStMan::headerFileGet (AipsIO& headerFile, uInt tabNrrow)
     uInt nrFile;
     Bool flag;
     headerFile >> nrFile;
+    uInt nrold;
+    nrold = fileSet_p.nelements();
     fileSet_p.resize (nrFile);
+    for (i=nrold; i<nrFile; i++) {
+	fileSet_p[i] = 0;
+    }
     for (i=0; i<nrFile; i++) {
 	headerFile >> flag;
 	if (flag) {
-	    fileSet_p[i] = new TSMFile (this, headerFile, i);
 	    if (fileSet_p[i] == 0) {
-		throw (AllocError ("TiledStMan::headerFileGet" ,1));
+		fileSet_p[i] = new TSMFile (this, headerFile, i);
+		if (fileSet_p[i] == 0) {
+		    throw (AllocError ("TiledStMan::headerFileGet" ,1));
+		}
+	    }else{
+		fileSet_p[i]->getObject (headerFile);
 	    }
 	}
     }
     uInt nrCube;
     headerFile >> nrCube;
+    nrold = cubeSet_p.nelements();
     cubeSet_p.resize (nrCube);
+    for (i=nrold; i<nrCube; i++) {
+	cubeSet_p[i] = 0;
+    }
     for (i=0; i<nrCube; i++) {
-	cubeSet_p[i] = new TSMCube (this, headerFile);
 	if (cubeSet_p[i] == 0) {
-	    throw (AllocError ("TiledStMan::headerFileGet" ,1));
+	    cubeSet_p[i] = new TSMCube (this, headerFile);
+	    if (cubeSet_p[i] == 0) {
+		throw (AllocError ("TiledStMan::headerFileGet" ,1));
+	    }
+	}else{
+	    cubeSet_p[i]->getObject (headerFile);
+	    cubeSet_p[i]->clearCache();
 	}
     }
     headerFile.getend();
