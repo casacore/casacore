@@ -61,7 +61,7 @@ SpectralCoordinate::SpectralCoordinate(MFrequency::Types freqType,
    Quantum<Vector<Double> > frequencies = pVelocityMachine_p->makeFrequency(velocities);
   
 // Construct
-   
+
    Vector<Double> channels(velocities.nelements());
    indgen(channels);
    worker_p = TabularCoordinate(channels, frequencies.getValue(), "Hz", "Frequency");
@@ -161,10 +161,7 @@ Bool SpectralCoordinate::frequencyToVelocity (Vector<Double>& velocity, const Ve
 
 {
    velocity.resize(frequency.nelements());
-   static Quantum<Double> velQ;
-   for (uInt i=0; i<frequency.nelements(); i++) {
-      velocity(i) = pVelocityMachine_p->makeVelocity(frequency(i)).getValue();
-   }
+   velocity = pVelocityMachine_p->makeVelocity(frequency).getValue();
 //
    return True;
 }
