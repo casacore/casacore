@@ -156,9 +156,6 @@ public:
   Int itsShowLevel;
   Bool itsDisableConversions;
   
-  // Find if any of the mask pixels are bad
-  Bool anyBadPixels(uInt width, const Matrix<Bool>& mask);
-
   // Check shape and axes.  Exception if no good.  If pixelAxes
   // of length 0, set to all axes according to shape
   void checkAxes(IPosition& outPixelAxes,
