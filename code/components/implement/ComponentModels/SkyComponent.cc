@@ -26,16 +26,17 @@
 //# $Id$
 
 #include <trial/ComponentModels/SkyComponent.h>
-#include <trial/ComponentModels/SkyCompRep.h>
+#include <trial/ComponentModels/ComponentShape.h>
 #include <trial/ComponentModels/Flux.h>
-// #include <trial/Images/ImageInterface.h>
+#include <trial/ComponentModels/SkyCompRep.h>
+#include <trial/ComponentModels/SpectralModel.h>
 #include <aips/Arrays/Vector.h>
-#include <aips/Exceptions/Error.h>
 #include <aips/Containers/RecordInterface.h>
-#include <aips/Logging/LogOrigin.h>
+#include <aips/Exceptions/Error.h>
 #include <aips/Logging/LogIO.h>
+#include <aips/Logging/LogOrigin.h>
 #include <aips/Measures/MDirection.h>
-// #include <aips/Measures/MFrequency.h>
+#include <aips/Measures/MFrequency.h>
 #include <aips/Measures/MVAngle.h>
 #include <aips/Utilities/Assert.h>
 #include <aips/Utilities/String.h>
@@ -46,15 +47,23 @@ SkyComponent::SkyComponent()
   DebugAssert(ok(), AipsError);
 }
 
-SkyComponent::SkyComponent(ComponentType::Shape shape)   
-  :itsCompPtr(new SkyCompRep(shape, ComponentType::CONSTANT_SPECTRUM))
+SkyComponent::SkyComponent(const ComponentType::Shape & shape)   
+  :itsCompPtr(new SkyCompRep(shape))
 {
   DebugAssert(ok(), AipsError);
 }
 
-SkyComponent::SkyComponent(ComponentType::Shape shape,
-			   ComponentType::SpectralShape spectralModel) 
+SkyComponent::SkyComponent(const ComponentType::Shape & shape,
+			   const ComponentType::SpectralShape & spectralModel) 
   :itsCompPtr(new SkyCompRep(shape, spectralModel))
+{
+  DebugAssert(ok(), AipsError);
+}
+
+SkyComponent::SkyComponent(const Flux<Double> & flux,
+			   const ComponentShape & shape, 
+			   const SpectralModel & spectrum)
+  :itsCompPtr(new SkyCompRep(flux, shape, spectrum))
 {
   DebugAssert(ok(), AipsError);
 }
@@ -62,7 +71,7 @@ SkyComponent::SkyComponent(ComponentType::Shape shape,
 SkyComponent::SkyComponent(const SkyComponent & other) 
   :itsCompPtr(other.itsCompPtr)
 { 
-  AlwaysAssert(ok(), AipsError);
+  DebugAssert(ok(), AipsError);
 }
 
 SkyComponent::~SkyComponent() {
@@ -76,31 +85,80 @@ SkyComponent & SkyComponent::operator=(const SkyComponent & other) {
   return *this;
 }
 
+Flux<Double> & SkyComponent::flux() {
+  DebugAssert(ok(), AipsError);
+  return itsCompPtr->flux();
+}
+
+const Flux<Double> & SkyComponent::flux() const {
+  DebugAssert(ok(), AipsError);
+  return itsCompPtr->flux();
+}
+
+const ComponentShape & SkyComponent::shape() const {
+  DebugAssert(ok(), AipsError);
+  return itsCompPtr->shape();
+}
+
+ComponentShape & SkyComponent::shape() {
+  DebugAssert(ok(), AipsError);
+  return itsCompPtr->shape();
+}
+
+const SpectralModel & SkyComponent::spectrum() const {
+  DebugAssert(ok(), AipsError);
+  return itsCompPtr->spectrum();
+}
+
+SpectralModel & SkyComponent::spectrum() {
+  DebugAssert(ok(), AipsError);
+  return itsCompPtr->spectrum();
+}
+
+Flux<Double> SkyComponent::sample(const MDirection & direction, 
+			      const MVAngle & pixelSize, 
+			      const MFrequency & centerFrequency) const {
+  DebugAssert(ok(), AipsError);
+  return itsCompPtr->sample(direction, pixelSize, centerFrequency);
+}
+
+// void SkyComponent::project(ImageInterface<Float> & plane) const {
+//   itsCompPtr->project(plane);
+//   DebugAssert(ok(), AipsError);
+// }
+
+Flux<Double> SkyComponent::visibility(const Vector<Double> & uvw,
+ 				      const Double & frequency) const {
+  DebugAssert(ok(), AipsError);
+  return itsCompPtr->visibility(uvw, frequency);
+}
+
+void SkyComponent::setLabel(const String & newLabel) {
+  itsCompPtr->setLabel(newLabel);
+  DebugAssert(ok(), AipsError);
+}
+
+const String & SkyComponent::label() const {
+  return itsCompPtr->label();
+  DebugAssert(ok(), AipsError);
+}
+
+Bool SkyComponent::fromRecord(String & errorMessage, 
+ 			      const RecordInterface & record) {
+  DebugAssert(ok(), AipsError);
+  return itsCompPtr->fromRecord(errorMessage, record);
+}
+
+Bool SkyComponent::toRecord(String & errorMessage,
+ 			    RecordInterface & record) const {
+  DebugAssert(ok(), AipsError);
+  return itsCompPtr->toRecord(errorMessage, record);
+}
+
 SkyComponent SkyComponent::copy() const {
   DebugAssert(ok(), AipsError);
-  SkyComponent newComp(shape(), spectralShape());
-  {
-    newComp.flux() = flux().copy();
-  }
-  {
-    newComp.setRefDirection(refDirection());
-  }
-  {
-    Vector<Double> thisParameters(nShapeParameters());
-    shapeParameters(thisParameters);
-    newComp.setShapeParameters(thisParameters);
-  }
-  {
-    newComp.setRefFrequency(refFrequency());
-  }
-  {
-    Vector<Double> thisParameters(nSpectralParameters());
-    spectralParameters(thisParameters);
-    newComp.setSpectralParameters(thisParameters);
-  }
-  {
-    newComp.setLabel(label());
-  }
+  SkyComponent newComp(flux().copy(), shape(), spectrum());
+  newComp.setLabel(label());
   return newComp;
 }
 
@@ -119,7 +177,6 @@ Bool SkyComponent::ok() const {
   }
   return True;
 }
-
 // Local Variables: 
 // compile-command: "gmake OPTLIB=1 SkyComponent"
 // End: 
