@@ -141,6 +141,10 @@ Bool RegionHandler::renameRegion (Table& table, const String& oldName,
   }
   TableRecord& regs = keys.rwSubRecord(oldGroupField);
   regs.renameField (newName, oldName);
+  // Rename the default mask name if that is the renamed region.
+  if (RegionHandler::getDefaultMask(table) == oldName) {
+      keys.define ("Image_defaultmask", newName);
+  }
   return True;
 }
 
