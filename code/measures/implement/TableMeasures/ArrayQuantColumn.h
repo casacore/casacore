@@ -52,7 +52,7 @@ class String;
 
 // <prerequisite>
 //# Classes you should understand before using this one.
-//   <li> <linkto class=TableQuantDesc>TableQuantDesc</linkto>
+//   <li> <linkto class=TableQuantumDesc>TableQuantumDesc</linkto>
 //   <li> <linkto class=Table>Table</linkto>
 //   <li> <linkto class=ROArrayColumn>ROArrayColumn</linkto>
 //   <li> <linkto class=Quantum>Quantum</linkto>
@@ -266,7 +266,7 @@ private:
 
 // <prerequisite>
 //# Classes you should understand before using this one.
-//   <li> <linkto class=TableQuantDesc>TableQuantDesc</linkto>
+//   <li> <linkto class=TableQuantumDesc>TableQuantumDesc</linkto>
 //   <li> <linkto class=Table>Table</linkto>
 //   <li> <linkto class=ArrayColumn>ArrayColumn</linkto>
 //   <li> <linkto class=Quantum>Quantum</linkto>
@@ -290,7 +290,7 @@ private:
 // If the Quantum column's Unit is fixed then writing quanta converts
 // the data to that unit. If the column's unit is variable, the data is
 // written unconverted and the unit is written into the unit column
-// defined in the TableQuantDesc object.
+// defined in the TableQuantumDesc object.
 // <br>See
 // <linkto class=TableQuantumDesc>TableQuantumDesc</linkto> for more details.
 // </synopsis>

@@ -50,7 +50,7 @@ class Unit;
 
 // <prerequisite>
 //# Classes you should understand before using this one.
-//   <li> <linkto class=TableQuantDesc>TableQuantDesc</linkto>
+//   <li> <linkto class=TableQuantumDesc>TableQuantumDesc</linkto>
 //   <li> <linkto class=Table>Table</linkto>
 //   <li> <linkto class=ROScalarColumn>ROScalarColumn</linkto>
 //   <li> <linkto class=Quantum>Quantum</linkto>
@@ -237,7 +237,7 @@ private:
 // </reviewed>
 
 // <prerequisite>
-//   <li> <linkto class=TableQuantDesc>TableQuantDesc</linkto>
+//   <li> <linkto class=TableQuantumDesc>TableQuantumDesc</linkto>
 //   <li> <linkto class=Table>Table</linkto>
 //   <li> <linkto class=ScalarColumn>ScalarColumn</linkto>
 //   <li> <linkto class=Quantum>Quantum</linkto>
@@ -259,7 +259,7 @@ private:
 // If the Quantum column's Unit is fixed then writing quanta converts
 // the data to that unit. If the column's unit is variable, the data is
 // written unconverted and the unit is written into the unit column
-// defined in the TableQuantDesc object.
+// defined in the TableQuantumDesc object.
 // </synopsis>
 
 // <example>
@@ -318,7 +318,7 @@ public:
 
   // Put a quantum into the table.  If the column supports variable units
   // the q's unit is stored into the unit column defined in the
-  // TableQuantDesc object.  If units are fixed for the column, the
+  // TableQuantumDesc object.  If units are fixed for the column, the
   // quantum is converted as needed.
   void put (uInt rownr, const Quantum<T>& q);
 
