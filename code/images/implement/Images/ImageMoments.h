@@ -65,7 +65,7 @@ class ostream;
 //   <li> <linkto class="MaskedImage">ImageInterface</linkto>
 //   <li> <linkto class="ImageInterface">ImageInterface</linkto>
 //   <li> <linkto class="LatticeApply">LatticeApply</linkto>   
-//   <li> <linkto class="MomentCalculator">MomentCalculator</linkto>
+//   <li> <linkto class="MomentCalcBase">MomentCalcBase</linkto>
 // </prerequisite>
 //
 // <etymology>
