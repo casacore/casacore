@@ -60,6 +60,8 @@ template <class T> class ImageSummary;
 // This is a class designed to concatenate images along a specified 
 // pre-existing axis.  This means you can join them together.  E.g., join 
 // images of shape  [10,20,30] and [10,20,40] into an image of shape [10,20,70]
+//
+// You can also concatenate  a lattice to an image.  
 // </synopsis>
 //
 // <example>
@@ -122,7 +124,7 @@ template <class T> class ImageSummary;
 //   <li> Helper function dealing with input image file names.
 //   <li> This class is probably better to be derived from ImageInterface
 //        like the LEL classes.    Then it would contain a LatticeConcat
-//        object.
+//        object instead of deriving from it
 // </todo>
 
 
@@ -154,11 +156,17 @@ public:
 // a warning.  
    void setAxis(uInt axis, Bool relax);
 
-// Sets a new lattice into the list to be concatenated.  
+// Sets a new image into the list to be concatenated.  
 // If relax is False, throws an exception if the coordinates
 // of the images are not consistent.  If True, just issues
 // a warning.  
    void setImage (ImageInterface<T>& image, Bool relax);
+
+// Sets a new lattice into the list to be concatenated.  
+// You can only concatenate a lattice with an image if
+// you have first used setImage to set an image (this
+// provides the CooridinateSystem information)
+   void setLattice (MaskedLattice<T>& lattice);
 
 // Resets the state of the object to axis=0, no lattices,
 // and no progress meter

@@ -105,7 +105,17 @@ ImageConcat<T>& ImageConcat<T>::operator= (const ImageConcat<T>& other)
 template<class T>
 void ImageConcat<T>::setAxis(uInt pixelAxis, Bool relax)
 {
+   const uInt n = itsLattices.nelements();
 
+// LatticeConcat allows the dimensionality to increase by
+// one, but ImageConcat can't do that yet - so an extra
+// test here.
+
+   if (n>0) {
+      if (pixelAxis>= itsLattices[0]->ndim()) {
+         throw(AipsError("Axis number and image dimensions are inconsistent"));
+      }
+   }
 
 // Changes state of LC object as needed
 
@@ -116,10 +126,8 @@ void ImageConcat<T>::setAxis(uInt pixelAxis, Bool relax)
 // Since we don't know what value of relax was used
 // last time, we always make these checks
 
-   const uInt n = itsLattices.nelements();
-//
    if (n > 1) {
-      LogIO os(LogOrigin("ImageConcat", "setImage(...)", WHERE));    
+      LogIO os(LogOrigin("ImageConcat", "setAxis(...)", WHERE));    
 //
       for (uInt j=1; j<n; j++) {
    
@@ -140,14 +148,24 @@ void ImageConcat<T>::setAxis(uInt pixelAxis, Bool relax)
    } 
 }
 
+
 template<class T>
 void ImageConcat<T>::setImage(ImageInterface<T>& image, Bool relax)
 {
-    LogIO os(LogOrigin("ImageConcat", "setImage(...)", WHERE));
+   LogIO os(LogOrigin("ImageConcat", "setImage(...)", WHERE));
 
 // How many images have we set so far ?
 
    const uInt nIm = itsLattices.nelements();
+
+// LatticeConcat allows the dimensionality to increase by
+// one, but ImageConcat can't do that yet - so an extra
+// test here.
+
+   if (itsAxis >= image.ndim()) {
+      throw(AipsError("Axis number and image dimension are inconsistent"));
+   }
+
 
 // Do Lattice relevant things. This makes shape checks and
 // sets the lattice pointers
@@ -214,6 +232,39 @@ void ImageConcat<T>::setImage(ImageInterface<T>& image, Bool relax)
                         os, sum1, sum2, itsAxis, relax);
    }
 } 
+
+
+template<class T>
+void ImageConcat<T>::setLattice(MaskedLattice<T>& lattice)
+{
+   LogIO os(LogOrigin("ImageConcat", "setLattice(...)", WHERE));
+
+// How many images have we set so far ?
+
+   const uInt nIm = itsLattices.nelements();
+
+// Must have already set an image before we can set a lattice
+
+   if (nIm==0) {
+      throw(AipsError("You must call setImage before you can call setLattice"));
+    }
+
+
+// LatticeConcat allows the dimensionality to increase by
+// one, but ImageConcat can't do that yet - so an extra
+// test here.
+
+   if (itsAxis >= lattice.ndim()) {
+      throw(AipsError("Axis number and lattice dimension are inconsistent"));
+   }
+
+
+// Do Lattice relevant things. This makes shape checks and
+// sets the lattice pointers
+
+   LatticeConcat<T>::setLattice(lattice);
+} 
+
 
 template<class T>
 void ImageConcat<T>::reset()
