@@ -1,4 +1,4 @@
-//# imhist.cc: This program generates histograms from images
+//# dImageHistograms.cc: This program generates histograms from images
 //#
 //# Copyright (C) 1996,1997
 //# Associated Universities, Inc. Washington DC, USA.
@@ -82,7 +82,7 @@
 //
 //            The default is False.
 //
-//   device   The PGPLOT device.
+//   plotter  The PGPLOT device.
 //
 //            The default is /xs
 //
@@ -96,14 +96,18 @@
 //   storage image
 //
 #include <aips/aips.h>
-#include <aips/Arrays/Vector.h>
+#include <aips/Arrays.h>
 #include <aips/Exceptions/Error.h>
 #include <aips/Inputs/Input.h>
 #include <aips/Logging.h>
 #include <aips/Utilities/String.h>
 
 #include <trial/Images/PagedImage.h>
+#include <trial/Images/SubImage.h>
+#include <trial/Images/ImageRegion.h>
 #include <trial/Images/ImageHistograms.h>
+#include <trial/Images/ImageUtilities.h>
+#include <trial/Lattices/LCBox.h>
 #include <trial/Tasking/PGPlotter.h>
 
 #include <iostream.h>
@@ -133,7 +137,7 @@ try {
    inputs.Create("cumu", "False", "Plot cumulative histogram ?");
    inputs.Create("log", "False", "Take log of y axis ?");
    inputs.Create("list", "False", "List statistics for each histogram");
-   inputs.Create("device", "/xs", "Plot device");
+   inputs.Create("plotter", "/xs", "Plot device");
    inputs.Create("nxy", "1,1", "Number of subplots in x & y");
    inputs.ReadArguments(argc, argv);
 
@@ -149,7 +153,7 @@ try {
    const Block<Double> includeB = inputs.GetDoubleArray("include");
    const Bool doList = inputs.GetBool("list");
    const Block<Int> nxyB(inputs.GetIntArray("nxy"));
-   const String device = inputs.GetString("device");
+   const String device = inputs.GetString("plotter");
 
 
 // Create defaults array
@@ -172,11 +176,12 @@ try {
 
 // Convert cursor axes array to a vector (0 relative)
   
-   Vector<Int> cursorAxes(cursorAxesB);
-   if (cursorAxes.nelements() == 1 && cursorAxes(0) == -10) {
+   Vector<Int> cursorAxes;
+   if (cursorAxesB.nelements() == 1 && cursorAxesB[0] == -10) {
       cursorAxes.resize(0);   
    } else {
-      for (Int i=0; i<cursorAxes.nelements(); i++) cursorAxes(i)--;
+      cursorAxes.resize(cursorAxesB.nelements());
+      for (uInt i=0; i<cursorAxes.nelements(); i++) cursorAxes(i) = cursorAxesB[i] - 1;
       validInputs(AXES) = True;
    }
 
@@ -189,27 +194,30 @@ try {
       blc.resize(0);
    } else {
       blc.resize(blcB.nelements());
-      for (Int i=0; i<blcB.nelements(); i++) blc(i) = blcB[i] - 1;
+      for (uInt i=0; i<blcB.nelements(); i++) blc(i) = blcB[i] - 1;
       validInputs(REGION) = True;
    }
    if (trcB.nelements() == 1 && trcB[0] == -10) {
       trc.resize(0);
    } else {
       trc.resize(trcB.nelements());
-      for (Int i=0; i<trcB.nelements(); i++) trc(i) = trcB[i] - 1;
+      for (uInt i=0; i<trcB.nelements(); i++) trc(i) = trcB[i] - 1;
       validInputs(REGION) = True;
    }
    if (incB.nelements() == 1 && incB[0] == -10) {
       inc.resize(0);
    } else {
       inc.resize(incB.nelements());
-      for (Int i=0; i<incB.nelements(); i++) inc(i) = incB[i];
+      for (uInt i=0; i<incB.nelements(); i++) inc(i) = incB[i];
       validInputs(REGION) = True;
    }
 
 // Convert inclusion range to vector
    
-   Vector<Double> include(includeB);
+   Vector<Float> include(includeB.nelements());
+   for (uInt i=0;i<include.nelements(); i++) {
+     include(i) = includeB[i]; 
+   }
    if (include.nelements() == 1 && include(0)==0) {
       include.resize(0);
    } else {
@@ -217,9 +225,15 @@ try {
    }
 
 
-// Plotting
-
-   Vector<Int> nxy(nxyB);
+// Plotting things
+ 
+   Vector<Int> nxy;
+   if (nxyB.nelements() == 1 && nxyB[0] == -1) {
+      nxy.resize(0);
+   } else {
+      nxy.resize(nxyB.nelements());
+      for (i=0;i<nxy.nelements(); i++) nxy(i) = nxyB[i];
+   }
 
 
 // Do the work 
@@ -230,19 +244,29 @@ try {
 // Construct image
      
       PagedImage<Float> inImage(in);
+      SubImage<Float>* pSubImage = 0;
+  
+      if (validInputs(REGION)) {   
+         ImageUtilities::verifyRegion(blc, trc, inc, inImage.shape());  
+         cout << "Selected region : " << blc+1<< " to "
+              << trc+1 << endl;
+         const LCBox region(blc, trc, inImage.shape());
+   
+         pSubImage = new SubImage<Float>(inImage, ImageRegion(region));
+      } else {
+         pSubImage = new SubImage<Float>(inImage);
+      }
+
   
 // Construct histogram object
   
-      ImageHistograms<Float> histo(inImage, os);
+      ImageHistograms<Float> histo(*pSubImage, os, True);
 
    
 // Set state
       
       if (validInputs(AXES)) {
          if (!histo.setAxes(cursorAxes)) return 1;
-      }
-      if (validInputs(REGION)) {
-         if (!histo.setRegion(blc, trc, inc)) return 1;
       }
       if (!histo.setNBins(nBins)) return 1;
       if (validInputs(RANGE)) {
@@ -254,14 +278,35 @@ try {
       PGPlotter plotter(device);
       if (!histo.setPlotting(plotter, nxy)) return 1;
 
+// Display histograms
+
+      Bool ok = histo.display();
+
 
 // Get histograms   
 
       Array<Float> values, counts;
       os << LogIO::NORMAL << "Recovering histogram arrays" << LogIO::POST;
-      Bool ok = histo.getHistograms(values,counts);
-//      os << "values=" << values.ac() << endl;
-//      os << "counts=" << counts.ac() << endl;
+      ok = histo.getHistograms(values,counts);
+      if (!ok) {
+        os << LogIO::SEVERE << "Error recovering histograms" << LogIO::POST;
+        return 1;
+      }
+//      cout << "values=" << values.ac() << endl;
+//      cout << "counts=" << counts.ac() << endl;
+
+ 
+      os << LogIO::NORMAL << "Recovering individual histogram arrays" << LogIO::POST;
+      Vector<Float> valuesV, countsV;
+      IPosition pos(histo.displayAxes().nelements(),0);
+      ok = histo.getHistogram(valuesV,countsV,pos,False);
+      if (!ok) {
+        os <<  LogIO::SEVERE <<  "Error recovering individual histograms" << LogIO::POST;
+        return 1;
+      }
+//      cout << "values=" << valuesV.ac() << endl;
+//      cout << "counts=" << countsV.ac() << endl;
+
 
 
 // Test copy constructor
@@ -273,12 +318,6 @@ try {
 
       os << "Applying assignment operator" << LogIO::POST;
       histo = histo2;
-
-
-// Display histograms
-
-      ok = histo.display();
-
 
    } else {
       os << "images of type " << imageType << " not yet supported" << endl;
