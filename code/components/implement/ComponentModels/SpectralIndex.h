@@ -102,7 +102,7 @@ public:
   SpectralIndex & operator=(const SpectralIndex & other);
 
   // return the actual spectral type.
-  virtual ComponentType::SpectralShape spectralShape() const;
+  virtual ComponentType::SpectralShape type() const;
 
   // set/get the reference frequency
   // <group>
@@ -136,15 +136,15 @@ public:
   // Return a pointer to a copy of this object upcast to a SpectralModel
   // object. The class that uses this function is responsible for deleting the
   // pointer. This is used to implement a virtual copy constructor.
-  virtual SpectralModel * cloneSpectrum() const;
+  virtual SpectralModel * clone() const;
 
   // return the number of parameters. There are four parameters for this
   // spectral model. They are the spectral index on each of the I, Q, U and V
   // polarisations.
   // <group>
-  virtual uInt nSpectralParameters() const;
-  virtual void setSpectralParameters(const Vector<Double> & newSpectralParms);
-  virtual void spectralParameters(Vector<Double> & spectralParms) const;
+  virtual uInt nParameters() const;
+  virtual void setParameters(const Vector<Double> & newSpectralParms);
+  virtual void parameters(Vector<Double> & spectralParms) const;
   // </group>
 
   // This functions convert between a record and a SpectralModel. This way

@@ -129,7 +129,7 @@ SpectralIndex & SpectralIndex::operator=(const SpectralIndex & other) {
   return *this;
 }
 
-ComponentType::SpectralShape SpectralIndex::spectralShape() const {
+ComponentType::SpectralShape SpectralIndex::type() const {
   DebugAssert(ok(), AipsError);
   return ComponentType::SPECTRAL_INDEX;
 }
@@ -227,21 +227,21 @@ void SpectralIndex::sample(Flux<Double> & scaledFlux,
   }
 }
 
-SpectralModel * SpectralIndex::cloneSpectrum() const {
+SpectralModel * SpectralIndex::clone() const {
   DebugAssert(ok(), AipsError);
   SpectralModel * tmpPtr = new SpectralIndex(*this);
   AlwaysAssert(tmpPtr != 0, AipsError);
   return tmpPtr;
 }
 
-uInt SpectralIndex::nSpectralParameters() const {
+uInt SpectralIndex::nParameters() const {
   DebugAssert(ok(), AipsError);
   return 4;
 }
 
 void SpectralIndex::
-setSpectralParameters(const Vector<Double> & newSpectralParms) {
-  DebugAssert(newSpectralParms.nelements() == nSpectralParameters(),AipsError);
+setParameters(const Vector<Double> & newSpectralParms) {
+  DebugAssert(newSpectralParms.nelements() == nParameters(),AipsError);
   itsIindex = newSpectralParms(0);
   itsQindex = newSpectralParms(1);
   itsUindex = newSpectralParms(2);
@@ -249,9 +249,9 @@ setSpectralParameters(const Vector<Double> & newSpectralParms) {
   DebugAssert(ok(), AipsError);
 }
 
-void SpectralIndex::spectralParameters(Vector<Double> & spectralParms) const {
+void SpectralIndex::parameters(Vector<Double> & spectralParms) const {
   DebugAssert(ok(), AipsError);
-  DebugAssert(spectralParms.nelements() == nSpectralParameters(),AipsError);
+  DebugAssert(spectralParms.nelements() == nParameters(),AipsError);
   spectralParms(0) = itsIindex;
   spectralParms(1) = itsQindex;
   spectralParms(2) = itsUindex;
@@ -299,7 +299,7 @@ Bool SpectralIndex::fromRecord(String & errorMessage,
 Bool SpectralIndex::toRecord(String & errorMessage,
 			     RecordInterface & record) const {
   DebugAssert(ok(), AipsError);
-  record.define(RecordFieldId("type"), ComponentType::name(spectralShape()));
+  record.define(RecordFieldId("type"), ComponentType::name(type()));
   if (!SpectralModel::addFreq(errorMessage, record)) return False;
   {
     Vector<Double> indicies(4);
