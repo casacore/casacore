@@ -6420,3 +6420,5 @@
 18 452 src mv doc/recipes/General/General.latex doc/recipes/General/RGeneral.latex
 18 461 src rm aips/implement/Lattices/ArrLatticeIter.h
 18 461 src rm aips/implement/Lattices/ArrLatticeIter.cc
+18 478 src rm trial/apps/measures/measures_data.g
+18 478 src rm trial/apps/measures/measures_IERS.g
