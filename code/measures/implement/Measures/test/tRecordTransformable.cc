@@ -31,7 +31,6 @@
 #include <aips/Containers/Record.h>
 #include <aips/Containers/RecordInterface.h>
 #include <aips/Exceptions/Error.h>
-#include <aips/Exceptions/Excp.h>
 #include <aips/Glish/GlishRecord.h>
 #include <aips/Measures/MDirection.h>
 #include <aips/Utilities/Assert.h>
