@@ -32,10 +32,27 @@
 #include <aips/IO/AipsIOCarray.h>
 
 
+// <summary>
+// Example class for use in AipsIOCarray functions
+// </summary>
+
+// <use visibility=local>
+
+// <reviewed reviewer="Gareth Hunt" date="95Feb24" tests="" demos="">
+
+// <prerequisite>
+//# Classes you should understand before using this one.
+//   <li> AipsIOCarray
+// </prerequisite>
+
+// <synopsis> 
+// Make a class AipsIOCarrayEx1 to construct an array of non-standard objects
+// to be used with AipsIOCarray functions.
+// </synopsis> 
+
 // This file defines an example class used in tAipsIOCarray.cc
 
 
-//# Make a class AipsIOCarrayEx1 to construct an array of non-standard objects.
 class AipsIOCarrayEx1 
 {
 public:
