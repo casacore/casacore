@@ -48,7 +48,6 @@
 template <class T> class MaskedLattice;
 template <class T> class TempLattice;
 class IPosition;
-class CoordinateSystem;
 
 
 // <summary>
