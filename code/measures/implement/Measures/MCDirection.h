@@ -1,5 +1,5 @@
 //# MCDirection.h: MDirection conversion routines 
-//# Copyright (C) 1995,1996,1997,1998
+//# Copyright (C) 1995,1996,1997,1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -86,7 +86,7 @@ public:
 
   //# Friends
   // Conversion of data
-  friend class MeasConvert<MDirection,MVDirection,MCDirection>;
+  friend class MDirection::Convert;
   
   //# Constructors
   // Default constructor
