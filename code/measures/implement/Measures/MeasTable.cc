@@ -1907,6 +1907,7 @@ const Vector<Char> &MeasTable::mulPosEarthXYArg(uInt which) {
 	Int i,j;
 	for (i=0; i<189; i++) {
 	    argArray[i].resize(12);
+	    argArray[i].makePermanent();
 	    for (j=0; j<12; j++) {
 		argArray[i](j) = POSXYARG[i][j];
 	    }
