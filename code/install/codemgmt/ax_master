@@ -2256,3 +2256,4 @@
 11 173 src mv nrao/apps/dishplot trial/apps/dishplot
 11 173 src mv nrao/apps/dish trial/apps/dish
 11 173 src mv doc/user/gettingstarted/f01-logger.ps doc/user/f01-logger.ps
+11 173 src mv trial/apps/dish/dish.help trial/apps/dish/dishenv.help
