@@ -30,6 +30,7 @@
 
 //# Includes
 #include <trial/Lattices/LCRegionMulti.h>
+#include <trial/Lattices/LCBox.h>
 
 
 // <summary>
@@ -70,20 +71,24 @@ class LCExtension: public LCRegionMulti
 public:
     LCExtension();
 
-    // Extend the given region along the <src>extendAxes</src>
-    // from <src>extendBlc</src> to <src>extendTrc</src> inclusive.
-    // The sum of the dimensionality of the region and the length of the
-    // <src>extend</src> vectors must be equal to the lattice dimensionality.
-    // Blc/trc defaults to the entire lattices for the <src>extendAxes</src>.
-    // <group>
+    // Extend the given region along axes as given by <src>extendAxes</src>
+    // from the bottom left corner (blc) to the top right corner (trc)
+    // as given by <src>extendBox</src>.
+    // Every kind of box (absolute, relative, fractional, unspecified)
+    // can be used to define the extension blc and trc.
+    // The sum of the dimensionality of the region and the extend box
+    // make up the dimensionality of the LCExtension region.
+    // Similarly the lattice shapes in region and box are combined.
+    // <br>
+    // The second version takes over the pointer when the switch is true.
+    // <group> 
     LCExtension (const LCRegion& region,
 		 const IPosition& extendAxes,
-		 const IPosition& latticeShape);
-    LCExtension (const LCRegion& region,
+		 const LCBox& extendBox);
+    LCExtension (Bool takeOver,
+		 const LCRegion* region,
 		 const IPosition& extendAxes,
-		 const IPosition& extendBlc,
-		 const IPosition& extendTrc,
-		 const IPosition& latticeShape);
+		 const LCBox& extendBox);
     // </group>
 
     // Copy constructor (copy semantics).
@@ -103,20 +108,11 @@ public:
     // Get the original region.
     const LCRegion& region() const;
     
-     // Get the new axes.
-    const IPosition& axes() const;
+     // Get the extend axes.
+    const IPosition& extendAxes() const;
 
-    // Get the blc of the new axes.
-    const IPosition& blc() const;
-
-    // Get the trc of the new axes.
-    const IPosition& trc() const;
-
-    // Construct another LCRegion (for e.g. another lattice) by moving
-    // this one. It recalculates the bounding box and mask.
-    // A positive translation value indicates "to right".
-    virtual LCRegion* doTranslate (const Vector<Float>& translateVector,
-				   const IPosition& newLatticeShape) const;
+    // Get the extend box.
+    const LCBox& extendBox() const;
 
     // Get the class name (to store in the record).
     static String className();
@@ -132,6 +128,12 @@ public:
 				    const String& tableName);
 
 protected:
+    // Construct another LCRegion (for e.g. another lattice) by moving
+    // this one. It recalculates the bounding box and mask.
+    // A positive translation value indicates "to right".
+    virtual LCRegion* doTranslate (const Vector<Float>& translateVector,
+				   const IPosition& newLatticeShape) const;
+
     // Do the actual getting of the mask.
     virtual void multiGetSlice (Array<Bool>& buffer, const Slicer& section);
 
@@ -140,18 +142,15 @@ protected:
     virtual IPosition doNiceCursorShape (uInt maxPixels) const;
 
 private:
-    // Construct from multiple regions given as a Block..
-    // When <src>takeOver</src> is True, the destructor will delete the
-    // given regions. Otherwise a copy of the regions is made.
-    LCExtension (Bool takeOver, const PtrBlock<const LCRegion*>& regions);
-
-    // Make the bounding box and determine the offsets..
-    void defineBox();
+    // Fill the object.
+    // <group>
+    void fillRegionAxes();
+    void fill();
+    // </group>
 
     IPosition itsExtendAxes;
     IPosition itsRegionAxes;
-    IPosition itsBlc;
-    IPosition itsTrc;
+    LCBox     itsExtendBox;
 };
 
 
@@ -159,17 +158,13 @@ inline const LCRegion& LCExtension::region() const
 {
     return *(regions()[0]);
 }
-inline const IPosition& LCExtension::axes() const
+inline const IPosition& LCExtension::extendAxes() const
 {
     return itsExtendAxes;
 }
-inline const IPosition& LCExtension::blc() const
+inline const LCBox& LCExtension::extendBox() const
 {
-    return itsBlc;
-}
-inline const IPosition& LCExtension::trc() const
-{
-    return itsTrc;
+    return itsExtendBox;
 }
 
 
