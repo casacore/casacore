@@ -201,6 +201,9 @@ TableRecord& MemoryTable::rwKeywordSet()
   return tdescPtr_p->rwKeywordSet();
 }
 
+void MemoryTable::flushTableInfo()
+{}
+
 BaseColumn* MemoryTable::getColumn (uInt columnIndex) const
 {
   return colSetPtr_p->getColumn (columnIndex);

@@ -158,6 +158,9 @@ public:
   // Get read/write access to the table keyword set.
   virtual TableRecord& rwKeywordSet();
 
+  // Write the TableInfo object. It does not do anything.
+  virtual void flushTableInfo();
+
   // Get a column object using its index.
   virtual BaseColumn* getColumn (uInt columnIndex) const;
 

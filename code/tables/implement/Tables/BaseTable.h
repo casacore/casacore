@@ -269,7 +269,7 @@ public:
     static TableInfo tableInfo (const String& tableName);
 
     // Write the TableInfo object.
-    void flushTableInfo();
+    virtual void flushTableInfo();
 
     // Get number of rows.
     uInt nrow() const
