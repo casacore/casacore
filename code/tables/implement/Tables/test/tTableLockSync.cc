@@ -38,6 +38,7 @@
 #include <aips/Tables/StandardStMan.h>
 #include <aips/Tables/IncrementalStMan.h>
 #include <aips/Tables/TiledCellStMan.h>
+#include <aips/Tables/TiledShapeStMan.h>
 #include <aips/Arrays/Vector.h>
 #include <aips/Arrays/Matrix.h>
 #include <aips/Arrays/ArrayMath.h>
@@ -66,10 +67,14 @@ void a()
 					  ColumnDesc::FixedShape));
     td.addColumn (ArrayColumnDesc<float> ("Freq", 1, ColumnDesc::FixedShape));
     td.addColumn (ArrayColumnDesc<float> ("Data", 2, ColumnDesc::FixedShape));
+    td.addColumn (ArrayColumnDesc<float> ("Data2", 2, ColumnDesc::FixedShape));
     td.defineHypercolumn ("TSMExample",
 			  2,
 			  stringToVector ("Data"),
 			  stringToVector ("Pol,Freq"));
+    td.defineHypercolumn ("TSMExample2",
+			  3,
+			  stringToVector ("Data2"));
     td.rwKeywordSet().define ("k0", Int(0));
 
     // Now create a new table from the description.
@@ -78,13 +83,16 @@ void a()
     StandardStMan sm2(128);
     IncrementalStMan sm3;
     TiledCellStMan sm4 ("TSMExample", IPosition(2,5,6));
+    TiledShapeStMan sm5 ("TSMExample2", IPosition(2,5,6));
     newtab.setShapeColumn ("Freq", IPosition(1,25));
     newtab.setShapeColumn ("Data", IPosition(2,16,25));
+    newtab.setShapeColumn ("Data2", IPosition(2,16,25));
     newtab.bindAll (sm4);
     newtab.bindColumn ("col1", sm1);
     newtab.bindColumn ("col2", sm2);
     newtab.bindColumn ("cols", sm2);
     newtab.bindColumn ("col3", sm3);
+    newtab.bindColumn ("Data2", sm5);
     Table tab(newtab, 1);
 }
 
@@ -100,7 +108,6 @@ void b (Bool noReadLocking, Bool permLocking)
     Table tab("tTableLockSync_tmp.tab", lt, Table::Update);
     try {
 	TableLocker lock1 (tab, FileLocker::Write, 1);
-	tab.addRow();
     } catch (AipsError x) {
 	cout << "table is write-locked" << endl;
     } 
@@ -111,10 +118,12 @@ void b (Bool noReadLocking, Bool permLocking)
     ArrayColumn<float> freq (tab, "Freq");
     ArrayColumn<float> pol (tab, "Pol");
     ArrayColumn<float> data (tab, "Data");
+    ArrayColumn<float> data2 (tab, "Data2");
 
     Vector<float> freqValues(25);
     Vector<float> polValues(16);
     Matrix<float> dataValues(IPosition(2,16,25));
+    Matrix<float> data2Values(IPosition(2,16,25));
     Int opt, rownr, val;
     while (True) {
 	cout << "0=quit, 1=quit/delete, 2=rdlock, 3=rdlockw, 4=wrlock, 5=wrlockw, 6=unlock" << endl;
@@ -184,9 +193,11 @@ void b (Bool noReadLocking, Bool permLocking)
 		    indgen (freqValues, float(val+2));
 		    indgen (polValues, float(val+3));
 		    indgen (dataValues, float(val+4));
+		    indgen (data2Values, float(val+5));
 		    data.put (rownr, dataValues);
 		    freq.put (rownr, freqValues);
 		    pol.put (rownr, polValues);
+		    data2.put (rownr, data2Values);
 		}else{
 		    if (rownr >= Int(tab.nrow())) {
 		        cout << "Only " << tab.nrow()
@@ -200,7 +211,9 @@ void b (Bool noReadLocking, Bool permLocking)
 			     << pol(rownr)(IPosition(1,0)) << '-'
 			     << pol(rownr)(IPosition(1,15)) - 15 << ' '
 			     << data(rownr)(IPosition(2,0,0)) << '-'
-			     << data(rownr)(IPosition(2,15,24)) - 399 << endl;
+			     << data(rownr)(IPosition(2,15,24)) - 399 << ' '
+			     << data2(rownr)(IPosition(2,0,0)) << '-'
+			     << data2(rownr)(IPosition(2,15,24)) - 399 << endl;
 		    }
 		}
 	    }
