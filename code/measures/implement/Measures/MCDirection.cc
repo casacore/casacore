@@ -1,5 +1,5 @@
 //# MCDirection.cc:  MDirection conversion routines 
-//# Copyright (C) 1995,1996,1997
+//# Copyright (C) 1995,1996,1997,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -651,7 +651,7 @@ void MCDirection::doConvert(MVDirection &in,
 		   getMCFramePoint()))->
 	getTDB(tdbTime);
       // Nutation
-      *ROTMAT1 *= NUTATFROM->operator()(tdbTime);
+      *ROTMAT1 = NUTATFROM->operator()(tdbTime);
       in *= *ROTMAT1;
     }
     break;
@@ -671,7 +671,7 @@ void MCDirection::doConvert(MVDirection &in,
 		   getMCFramePoint()))->
 	getTDB(tdbTime);
       // Nutation
-      *ROTMAT1 *= NUTATFROM->operator()(tdbTime);
+      *ROTMAT1 = NUTATFROM->operator()(tdbTime);
       in *= *ROTMAT1;
     }
     break;
@@ -681,7 +681,7 @@ void MCDirection::doConvert(MVDirection &in,
 		   getMCFramePoint()))->
 	getTDB(tdbTime);
       // Nutation
-      *ROTMAT1 *= NUTATTO->operator()(tdbTime);
+      *ROTMAT1 = NUTATTO->operator()(tdbTime);
       in = *ROTMAT1 * in;
     }
     break;
@@ -691,7 +691,7 @@ void MCDirection::doConvert(MVDirection &in,
 		   getMCFramePoint()))->
 	getTDB(tdbTime);
       // Nutation
-      *ROTMAT1 *= NUTATTO->operator()(tdbTime);
+      *ROTMAT1 = NUTATTO->operator()(tdbTime);
       in = *ROTMAT1 * in;
     }
     break;
