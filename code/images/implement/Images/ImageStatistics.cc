@@ -88,6 +88,7 @@ ImageStatistics<T>::ImageStatistics (const ImageInterface<T>& image,
   fixedMinMax_p(False),
   forceDisk_p(forceDisk)
 {
+
    nxy_p.resize(0);
    statsToPlot_p.resize(0);   
    range_p.resize(0);
@@ -104,6 +105,10 @@ ImageStatistics<T>::ImageStatistics (const ImageInterface<T>& image,
    } else {
       goodParameterStatus_p = False;
    }
+
+// Avoid double deletion by LogIO::cleanup
+   os_p.makePermanent();
+
 }
 
 
