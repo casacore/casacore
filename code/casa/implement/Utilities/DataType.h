@@ -31,7 +31,6 @@
 #include <aips/aips.h>
 #include <aips/Mathematics/Complex.h>
 #include <aips/Utilities/String.h>
-#include <aips/Quanta/Quantum.h>
 
 #if defined(AIPS_STDLIB)
 #include <iosfwd>
@@ -40,6 +39,7 @@ imported class ostream;
 #endif
 class Table;
 template<class T> class Array;
+template<class T> class Quantum;
 class String;
 class Record;
 
@@ -210,8 +210,9 @@ inline DataType whatType(const Array<Complex> *) {return TpArrayComplex ; }
 inline DataType whatType(const Array<DComplex> *) {return TpArrayDComplex ; }
 inline DataType whatType(const Array<String> *) {return TpArrayString ; }
 inline DataType whatType(const Record *) {return TpRecord ; }
-inline DataType whatType(const Quantity *) {return TpQuantity ; }
-inline DataType whatType(const Array<Quantity> *) {return TpArrayQuantity ; }
+inline DataType whatType(const Quantum<Double> *) {return TpQuantity ; }
+inline DataType whatType(const Array<Quantum<Double> > *)
+                                                  {return TpArrayQuantity ; }
 // </group>
 
 // It is sometimes useful to discover what the corresponding
