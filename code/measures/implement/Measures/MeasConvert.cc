@@ -1,5 +1,5 @@
 //# MeasConvert.cc:  Conversion of Measures
-//# Copyright (C) 1995,1996,1997,1998,1999
+//# Copyright (C) 1995,1996,1997,1998,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -85,7 +85,7 @@ MeasConvert<M>::MeasConvert(const Measure &ep, const typename M::Ref &mr) :
 }
 
 template<class M>
-MeasConvert<M>::MeasConvert(const M &ep, uInt mr) :
+MeasConvert<M>::MeasConvert(const M &ep, typename M::Types mr) :
   model(0), unit(ep.unit), outref(),
   offin(0), offout(0), crout(0), cvdat(0), lres(0), locres(0) {
   init();
@@ -107,7 +107,7 @@ MeasConvert<M>::MeasConvert(const typename M::Ref &mrin,
 
 template<class M>
 MeasConvert<M>::MeasConvert(const typename M::Ref &mrin,
-			    uInt mr) :
+			    typename M::Types mr) :
   model(0), unit(), outref(),
   offin(0), offout(0), crout(0), cvdat(0), lres(0), locres(0) {
   init();
@@ -117,7 +117,7 @@ MeasConvert<M>::MeasConvert(const typename M::Ref &mrin,
 }
 
 template<class M>
-MeasConvert<M>::MeasConvert(uInt mrin,
+MeasConvert<M>::MeasConvert(typename M::Types mrin,
 			    const typename M::Ref &mr) :
   model(0), unit(), outref(),
   offin(0), offout(0), crout(0), cvdat(0), lres(0), locres(0) {
@@ -128,8 +128,8 @@ MeasConvert<M>::MeasConvert(uInt mrin,
 }
 
 template<class M>
-MeasConvert<M>::MeasConvert(uInt mrin,
-			    uInt mr) :
+MeasConvert<M>::MeasConvert(typename M::Types mrin,
+			    typename M::Types mr) :
   model(0), unit(), outref(),
   offin(0), offout(0), crout(0), cvdat(0), lres(0), locres(0) {
   init();
@@ -151,7 +151,7 @@ MeasConvert<M>::MeasConvert(const Unit &inunit, const typename M::Ref &mrin,
 
 template<class M>
 MeasConvert<M>::MeasConvert(const Unit &inunit, const typename M::Ref &mrin,
-			    uInt mr) :
+			    typename M::Types mr) :
   model(0), unit(inunit), outref(),
   offin(0), offout(0), crout(0), cvdat(0), lres(0), locres(0) {
   init();
@@ -161,7 +161,7 @@ MeasConvert<M>::MeasConvert(const Unit &inunit, const typename M::Ref &mrin,
 }
 
 template<class M>
-MeasConvert<M>::MeasConvert(const Unit &inunit, uInt mrin,
+MeasConvert<M>::MeasConvert(const Unit &inunit, typename M::Types mrin,
 			    const typename M::Ref &mr) :
   model(0), unit(inunit), outref(),
   offin(0), offout(0), crout(0), cvdat(0), lres(0), locres(0) {
@@ -172,8 +172,8 @@ MeasConvert<M>::MeasConvert(const Unit &inunit, uInt mrin,
 }
 
 template<class M>
-MeasConvert<M>::MeasConvert(const Unit &inunit, uInt mrin,
-			    uInt mr) :
+MeasConvert<M>::MeasConvert(const Unit &inunit, typename M::Types mrin,
+			    typename M::Types mr) :
   model(0), unit(inunit), outref(),
   offin(0), offout(0), crout(0), cvdat(0), lres(0), locres(0) {
   init();
@@ -247,7 +247,7 @@ const M &MeasConvert<M>::operator()(const M &val, const typename M::Ref &mr) {
 }
 
 template<class M>
-const M &MeasConvert<M>::operator()(const M &val, uInt mr) {
+const M &MeasConvert<M>::operator()(const M &val, typename M::Types mr) {
   set(val,mr);
   return operator()(*(typename M::MVType*)(model->getData()));
 }
@@ -259,7 +259,7 @@ const M &MeasConvert<M>::operator()(const typename M::Ref &mr) {
 }
 
 template<class M>
-const M &MeasConvert<M>::operator()(uInt mr) {
+const M &MeasConvert<M>::operator()(typename M::Types mr) {
   setOut(mr);
   return operator()(*(typename M::MVType*)(model->getData()));
 }
@@ -321,7 +321,7 @@ void MeasConvert<M>::create() {
       (typename M::MVType *)(model->getRefPtr()->offset()->getData());
     // Next due to compiler error (gcc)
     MRBase *rptmp(model->getRefPtr());
-    uInt tptmp = rptmp->getType();
+    typename M::Types tptmp = static_cast<typename M::Types>(rptmp->getType());
     MeasFrame mftmp = rptmp->getFrame();
     typename M::Ref rtmp(tptmp, mftmp);
     typename M::Ref mrtmp(*(typename M::Ref*)(model->getRefPtr()->
@@ -401,7 +401,7 @@ void MeasConvert<M>::setOut(const typename M::Ref &mr) {
 }
 
 template<class M>
-void MeasConvert<M>::setOut(uInt mr) {
+void MeasConvert<M>::setOut(typename M::Types mr) {
   outref = typename M::Ref(mr);
   create();
 }
@@ -416,7 +416,7 @@ void MeasConvert<M>::set(const M &val, const typename M::Ref &mr) {
 }
 
 template<class M>
-void MeasConvert<M>::set(const M &val, uInt mr) {
+void MeasConvert<M>::set(const M &val, typename M::Types mr) {
   delete model; model = 0;
   model = new M(val);
   unit = val.unit;

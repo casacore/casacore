@@ -1,5 +1,5 @@
 //# MeasConvert.h: Conversion of Measures
-//# Copyright (C) 1995,1996,1997,1998,1999
+//# Copyright (C) 1995,1996,1997,1998,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -145,10 +145,7 @@ public:
   //# Constructors
   // <note role=tip> In the following constructors and other functions, all 
   // <em>MeasRef</em> can be replaced with simple <src>Measure::TYPE</src>
-  // where no offsets or frames are needed in the reference. For reasons
-  // of compiler limitations the formal arguments had to be specified as
-  // <em>uInt</em> rather than the Measure enums that should be used as actual 
-  // arguments.</note>
+  // where no offsets or frames are needed in the reference.</note>
   // Construct an empty MeasConvert. It is not usable, unless a setModel, and
   // probably a setOut has been done.
   MeasConvert();
@@ -162,19 +159,19 @@ public:
   MeasConvert(const M &ep);
   MeasConvert(const M &ep, const typename M::Ref &mr);
   MeasConvert(const Measure &ep, const typename M::Ref &mr);
-  MeasConvert(const M &ep, uInt mr);
+  MeasConvert(const M &ep, typename M::Types mr);
   MeasConvert(const typename M::Ref &mrin, const typename M::Ref &mr);
-  MeasConvert(const typename M::Ref &mrin, uInt mr);
-  MeasConvert(uInt mrin, const typename M::Ref &mr);
-  MeasConvert(uInt mrin, uInt mr);
+  MeasConvert(const typename M::Ref &mrin, typename M::Types mr);
+  MeasConvert(typename M::Types mrin, const typename M::Ref &mr);
+  MeasConvert(typename M::Types mrin, typename M::Types mr);
   MeasConvert(const Unit &inunit, const typename M::Ref &mrin, 
 	      const typename M::Ref &mr);
   MeasConvert(const Unit &inunit, const typename M::Ref &mrin, 
-	      uInt mr);
-  MeasConvert(const Unit &inunit, uInt mrin, 
+	      typename M::Types mr);
+  MeasConvert(const Unit &inunit, typename M::Types mrin, 
 	      const typename M::Ref &mr);
-  MeasConvert(const Unit &inunit, uInt mrin, 
-	      uInt mr);
+  MeasConvert(const Unit &inunit, typename M::Types mrin, 
+	      typename M::Types mr);
   // </group>
   
   //# Destructor
@@ -192,9 +189,9 @@ public:
   const M &operator()(const typename M::MVType &val);
   const M &operator()(const M &val);
   const M &operator()(const M &val, const typename M::Ref &mr);
-  const M &operator()(const M &val, uInt mr);
+  const M &operator()(const M &val, typename M::Types mr);
   const M &operator()(const typename M::Ref &mr);
-  const M &operator()(uInt mr);
+  const M &operator()(typename M::Types mr);
   // </group>
   
   //# General Member Functions
@@ -203,12 +200,12 @@ public:
   // Set a new output reference
   // <group>
   void setOut(const typename M::Ref &mr);
-  void setOut(uInt mr);
+  void setOut(typename M::Types mr);
   // </group>
   // Set a new model and reference
   // <group>
   void set(const M &val, const typename M::Ref &mr);
-  void set(const M &val, uInt mr);
+  void set(const M &val, typename M::Types mr);
   // </group>
   // Set a new model value only
   virtual void set(const MeasValue &val);
