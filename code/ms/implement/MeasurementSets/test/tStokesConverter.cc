@@ -1,5 +1,5 @@
 //# tStokesConverter.cc: test program for StokesConverter class
-//# Copyright (C) 1997
+//# Copyright (C) 1997,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -24,7 +24,7 @@
 //#                        Charlottesville, VA 22903-2475 USA
 //#
 //#
-//# $Id$#include <trial/MeasurementSet/StokesConverter.h>
+//# $Id$
 
 #include <aips/Arrays/ArrayLogical.h>
 #include <aips/Arrays/ArrayIO.h>
