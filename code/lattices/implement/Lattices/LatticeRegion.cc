@@ -1,5 +1,5 @@
 //# LatticeRegion.cc: An optionally strided region in a lattice
-//# Copyright (C) 1998,1999
+//# Copyright (C) 1998,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -100,10 +100,41 @@ Bool LatticeRegion::isWritable() const
     return itsRegion->isWritable();
 }
 
+
+Bool LatticeRegion::lock (FileLocker::LockType type, uInt nattempts)
+{
+    // Llock the PagedArray containing the mask.
+    return itsRegion->lock (type, nattempts);
+}
 void LatticeRegion::unlock()
 {
+    // Unlock the PagedArray containing the mask.
     itsRegion->unlock();
 }
+Bool LatticeRegion::hasLock (FileLocker::LockType type) const
+{
+    return itsRegion->hasLock (type);
+}
+void LatticeRegion::resync()
+{
+    itsRegion->resync();
+}
+
+void LatticeRegion::flush()
+{
+    itsRegion->flush();
+}
+
+void LatticeRegion::tempClose()
+{
+    itsRegion->tempClose();
+}
+
+void LatticeRegion::reopen()
+{
+    itsRegion->reopen();
+}
+
 
 IPosition LatticeRegion::shape() const
 {

@@ -107,8 +107,29 @@ public:
     // Has the region a mask?
     Bool hasMask() const;
 
-    // Unlock the tables possibly associated with this region.
-    void unlock();
+    // Handle the (un)locking.
+    // <group>
+    virtual Bool lock (FileLocker::LockType, uInt nattempts);
+    virtual void unlock();
+    virtual Bool hasLock (FileLocker::LockType) const;
+    // </group>
+
+    // Resynchronize the PagedArray object with the lattice file.
+    // This function is only useful if no read-locking is used, ie.
+    // if the table lock option is UserNoReadLocking or AutoNoReadLocking.
+    // In that cases the table system does not acquire a read-lock, thus
+    // does not synchronize itself automatically.
+    virtual void resync();
+
+    // Flush the data (but do not unlock).
+    virtual void flush();
+
+    // Temporarily close the lattice.
+    // It will be reopened automatically on the next access.
+    virtual void tempClose();
+
+    // Explicitly reopen the temporarily closed lattice.
+    virtual void reopen();
 
     // Get the LCRegion object describing the region.
     // Note that it does not contain strides, even if this LatticeRegion

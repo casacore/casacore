@@ -60,6 +60,12 @@ Bool LatticeBase::hasLock (FileLocker::LockType) const
 }
 void LatticeBase::resync()
 {}
+void LatticeBase::flush()
+{}
+void LatticeBase::tempClose()
+{}
+void LatticeBase::reopen()
+{}
 
 String LatticeBase::name (Bool) const
 {

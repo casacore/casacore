@@ -556,6 +556,16 @@ public:
   // does not synchronize itself automatically.
   virtual void resync();
 
+  // Flush the data (but do not unlock).
+  virtual void flush();
+
+  // Temporarily close the lattice.
+  // It will be reopened automatically on the next access.
+  virtual void tempClose();
+
+  // Explicitly reopen the temporarily closed lattice.
+  virtual void reopen();
+
 private:
   // Set the data in the TableInfo file
   void setTableType();
@@ -570,14 +580,23 @@ private:
   // Create the writable ArrayColumn object.
   // It reopens the table for write when needed.
   void makeRWArray();
+  // Do the reopen of the table (if not open already).
+  // <group>
+  void doReopen() const;
+  void tempReopen() const;
+  // </group>
 
-  Table  itsTable;
-  String itsColumnName;
-  uInt   itsRowNumber;
-  ArrayColumn<T>       itsRWArray;
-  ROArrayColumn<T>     itsROArray;
-  ROTiledStManAccessor itsAccessor;
-  LogIO  itsLog;
+  mutable Table     itsTable;
+          String    itsColumnName;
+          uInt      itsRowNumber;
+  mutable Bool      itsIsClosed;
+          String    itsTableName;
+          Bool      itsWritable;
+          TableLock itsLockOpt;
+  mutable ArrayColumn<T>       itsRWArray;
+  mutable ROArrayColumn<T>     itsROArray;
+  mutable ROTiledStManAccessor itsAccessor;
+          LogIO itsLog;
 };
 
 
@@ -593,7 +612,7 @@ inline ArrayColumn<T>& PagedArray<T>::getRWArray()
 template<class T>
 inline const String& PagedArray<T>::tableName() const
 {
-  return itsTable.tableName();
+  return itsTableName;
 }
 
 template<class T>
@@ -626,6 +645,13 @@ inline uInt PagedArray<T>::defaultRow()
   return 0;
 }
 
+template<class T>
+void PagedArray<T>::doReopen() const
+{
+  if (itsIsClosed) {
+    tempReopen();
+  }
+}
 
 
 #endif

@@ -141,11 +141,41 @@ void LCPagedMask::handleRename (const String& newName, Bool overwrite)
     }
 }
 
+
+Bool LCPagedMask::lock (FileLocker::LockType type, uInt nattempts)
+{
+    // Llock the PagedArray containing the mask.
+    return itsMask.lock (type, nattempts);
+}
 void LCPagedMask::unlock()
 {
     // Unlock the PagedArray containing the mask.
     itsMask.unlock();
 }
+Bool LCPagedMask::hasLock (FileLocker::LockType type) const
+{
+    return itsMask.hasLock (type);
+}
+void LCPagedMask::resync()
+{
+    itsMask.resync();
+}
+
+void LCPagedMask::flush()
+{
+    itsMask.flush();
+}
+
+void LCPagedMask::tempClose()
+{
+    itsMask.tempClose();
+}
+
+void LCPagedMask::reopen()
+{
+    itsMask.reopen();
+}
+
 
 LCRegion* LCPagedMask::doTranslate (const Vector<Float>&,
 				    const IPosition&) const

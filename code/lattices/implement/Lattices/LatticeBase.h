@@ -118,6 +118,19 @@ public:
   // <br>By default the function does not do anything at all.
   virtual void resync();
 
+  // Flush the data (but do not unlock).
+  // <br>By default the function does not do anything at all.
+  virtual void flush();
+
+  // Temporarily close the lattice.
+  // It will be reopened automatically on the next access.
+  // <br>By default the function does not do anything at all.
+  virtual void tempClose();
+
+  // Explicitly reopen the temporarily closed lattice.
+  // <br>By default the function does not do anything at all.
+  virtual void reopen();
+
   // Return the name of the current Lattice object. This will generally 
   // be a file name for lattices that have a persistent form.  Any path
   // before the actual file name can be optionally stripped off.
