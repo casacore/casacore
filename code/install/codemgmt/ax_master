@@ -3304,3 +3304,4 @@
 13 214 src mv npoi/implement/HDS/HDSFile.cc npoi/implement/HDS/HDSFileData.cc
 13 214 src mv npoi/implement/HDS/HDSFile.h npoi/implement/HDS/HDSFileData.h
 13 214 src mv trial/apps/dish/dish_tabDialog.g trial/implement/Widgets/tabdialog.g
+13 214 src mv npoi/implement/HDS/HDSFileData.cc npoi/implement/HDS/HDSDataFile.cc
