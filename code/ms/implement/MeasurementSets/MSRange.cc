@@ -27,8 +27,11 @@
 //# $Id$
 
 #include <trial/MeasurementSets/MSRange.h>
+#include <trial/MeasurementSets/MSSelector.h>
 
+#include <aips/Arrays/ArrayLogical.h>
 #include <aips/Arrays/ArrayMath.h>
+#include <aips/Arrays/MaskArrMath.h>
 #include <aips/Arrays/Matrix.h>
 #include <aips/Arrays/Slice.h>
 #include <aips/Exceptions/Error.h>
@@ -45,12 +48,18 @@
 
 
 MSRange::MSRange():blockSize_p(10),ddId_p(UNCHECKED),
-checked_p(False)
+		   checked_p(False),sel_p(0)
 {}
 
 MSRange::MSRange(const MeasurementSet& ms, Int dataDescriptionId)
 :ms_p(ms),blockSize_p(10),ddId_p(dataDescriptionId),
-checked_p(False)
+ checked_p(False),sel_p(0)
+{
+}
+
+MSRange::MSRange(const MSSelector& msSel)
+  :ms_p(msSel.selectedTable()),blockSize_p(10),
+	ddId_p(msSel.dataDescId()),checked_p(False),sel_p(&msSel)
 {
 }
 
@@ -65,6 +74,7 @@ MSRange& MSRange::operator=(const MSRange& other)
   blockSize_p=other.blockSize_p;
   ddId_p=other.ddId_p;
   checked_p=other.checked_p;
+  sel_p=other.sel_p;
   return *this;
 }
 
@@ -73,6 +83,7 @@ void MSRange::setMS(const MeasurementSet& ms, Int dataDescriptionId)
   ms_p=ms;
   ddId_p=dataDescriptionId;
   checked_p=False;
+  sel_p=0;
 }
 
 Bool MSRange::checkSelection()
@@ -111,7 +122,9 @@ Bool MSRange::checkSelection()
   return (ddId_p>=ALL);
 }
 
-GlishRecord MSRange::range(const Vector<String>& items, Bool oneBased)
+GlishRecord MSRange::range(const Vector<String>& items, 
+			   Bool useFlags,
+			   Bool oneBased)
 {
   LogIO os;
   Int n=items.nelements();
@@ -130,13 +143,14 @@ GlishRecord MSRange::range(const Vector<String>& items, Bool oneBased)
     }
   }
   keys.resize(k,True); // squeeze out the UNDEFINEDs
-  return range(keys,oneBased);
+  return range(keys,useFlags,oneBased);
 }
 
-GlishRecord MSRange::range(const Vector<Int>& keys, Bool oneBased)
+GlishRecord MSRange::range(const Vector<Int>& keys, 
+			   Bool useFlags,
+			   Bool oneBased)
 {
   LogIO os;
-  // TODO: apply channel selection? polconversion?
 
   const Int option=Sort::HeapSort | Sort::NoDuplicates;
   const Sort::Order order=Sort::Ascending;
@@ -454,22 +468,22 @@ GlishRecord MSRange::range(const Vector<Int>& keys, Bool oneBased)
 	// 1-4 items at once if needed.
 	if (wantAmp) {
 	  Vector<Float> amp(2);
-	  minMax(amp(0),amp(1),amplitude,msc.data());
+	  minMax(amp(0),amp(1),amplitude,msc.data(),msc.flag(),useFlags);
 	  out.add("amplitude",amp);
 	}
 	if (wantPhase) {
 	  Vector<Float> phas(2);
-	  minMax(phas(0),phas(1),phase,msc.data());
+	  minMax(phas(0),phas(1),phase,msc.data(),msc.flag(),useFlags);
 	  out.add("phase",phas);
 	}
 	if (wantReal) {
 	  Vector<Float> re(2);
-	  minMax(re(0),re(1),real,msc.data());
+	  minMax(re(0),re(1),real,msc.data(),msc.flag(),useFlags);
 	  out.add("real",re);
 	}
 	if (wantImag) {
 	  Vector<Float> im(2);
-	  minMax(im(0),im(1),imag,msc.data());
+	  minMax(im(0),im(1),imag,msc.data(),msc.flag(),useFlags);
 	  out.add("imaginary",im);
 	}
 	if (wantData) {
@@ -488,7 +502,7 @@ GlishRecord MSRange::range(const Vector<Int>& keys, Bool oneBased)
     if (!msc.floatData().isNull()) {
       if (checkSelection()) {
 	Vector<Float> amp(2);
-	minMax(amp(0),amp(1),msc.floatData());
+	minMax(amp(0),amp(1),msc.floatData(),msc.flag(),useFlags);
 	out.add("float_data",amp);
       }
     }
@@ -500,22 +514,22 @@ GlishRecord MSRange::range(const Vector<Int>& keys, Bool oneBased)
 	// get the data
 	if (wantCAmp) {
 	  Vector<Float> amp(2);
-	  minMax(amp(0),amp(1),amplitude,msc.correctedData());
+	  minMax(amp(0),amp(1),amplitude,msc.correctedData(),msc.flag(),useFlags);
 	  out.add("corrected_amplitude",amp);
 	}
 	if (wantCPhase) {
 	  Vector<Float> phas(2);
-	  minMax(phas(0),phas(1),phase,msc.correctedData());
+	  minMax(phas(0),phas(1),phase,msc.correctedData(),msc.flag(),useFlags);
 	  out.add("corrected_phase",phas);
 	}
 	if (wantCReal) {
 	  Vector<Float> re(2);
-	  minMax(re(0),re(1),real,msc.correctedData());
+	  minMax(re(0),re(1),real,msc.correctedData(),msc.flag(),useFlags);
 	  out.add("corrected_real",re);
 	}
 	if (wantCImag) {
 	  Vector<Float> im(2);
-	  minMax(im(0),im(1),imag,msc.correctedData());
+	  minMax(im(0),im(1),imag,msc.correctedData(),msc.flag(),useFlags);
 	  out.add("corrected_imaginary",im);
 	}
 	if (wantCData) {
@@ -535,22 +549,22 @@ GlishRecord MSRange::range(const Vector<Int>& keys, Bool oneBased)
 	// get the data
 	if (wantMAmp) {
 	  Vector<Float> amp(2);
-	  minMax(amp(0),amp(1),amplitude,msc.modelData());
+	  minMax(amp(0),amp(1),amplitude,msc.modelData(),msc.flag(),useFlags);
 	  out.add("model_amplitude",amp);
 	}
 	if (wantMPhase) {
 	  Vector<Float> phas(2);
-	  minMax(phas(0),phas(1),phase,msc.modelData());
+	  minMax(phas(0),phas(1),phase,msc.modelData(),msc.flag(),useFlags);
 	  out.add("model_phase",phas);
 	}
 	if (wantMReal) {
 	  Vector<Float> re(2);
-	  minMax(re(0),re(1),real,msc.modelData());
+	  minMax(re(0),re(1),real,msc.modelData(),msc.flag(),useFlags);
 	  out.add("model_real",re);
 	}
 	if (wantMImag) {
 	  Vector<Float> im(2);
-	  minMax(im(0),im(1),imag,msc.modelData());
+	  minMax(im(0),im(1),imag,msc.modelData(),msc.flag(),useFlags);
 	  out.add("model_imaginary",im);
 	}
 	if (wantMData) {
@@ -571,11 +585,11 @@ GlishRecord MSRange::range(const Vector<Int>& keys, Bool oneBased)
   return out;
 }
 
-GlishRecord MSRange::range(MSS::Field item)
+GlishRecord MSRange::range(MSS::Field item, Bool useFlags)
 {
   Vector<Int> key(1);
   key(0)=item;
-  return range(key);
+  return range(key,useFlags);
 }
 
 void MSRange::setBlockSize(Int blockSize)
@@ -602,7 +616,9 @@ Vector<Int> MSRange::scalarRange(const ROScalarColumn<Int>& id)
 }
 
 void MSRange::minMax(Float& mini, Float& maxi, 
-		     const ROArrayColumn<Float>& data)
+		     const ROArrayColumn<Float>& data,
+		     const ROArrayColumn<Bool>& flag,
+		     Bool useFlags)
 {
   IPosition shp=data.shape(0);
   Int nrow=data.nrow();
@@ -610,7 +626,26 @@ void MSRange::minMax(Float& mini, Float& maxi,
   for (Int start=0; start<nrow; start+=numrow) {
     Int n=min(numrow,nrow-start);
     Float minf, maxf;
-    ::minMax(minf,maxf,data.getColumnRange(Slicer(Slice(start,n))));
+    Slicer rowSlicer(Slice(start,n));
+    if (sel_p) {
+      Array<Float> avData;
+      sel_p->getAveragedData(avData,data,rowSlicer);
+      if (useFlags) {
+	Array<Bool> avFlag;
+	sel_p->getAveragedFlag(avFlag,flag,rowSlicer);
+	::minMax(minf,maxf,avData(!avFlag));
+      } else {
+	::minMax(minf,maxf,avData);
+      }	
+    } else {
+      Array<Float> tData=data.getColumnRange(rowSlicer);
+      if (useFlags) {
+	Array<Bool> tFlag=flag.getColumnRange(rowSlicer);
+	::minMax(minf,maxf,tData(!tFlag));
+      } else {
+	::minMax(minf,maxf,tData);
+      }
+    }
     if (start==0) {
       mini=minf; maxi=maxf;
     } else {
@@ -622,7 +657,9 @@ void MSRange::minMax(Float& mini, Float& maxi,
 
 void MSRange::minMax(Float& mini, Float& maxi, 
 		     Array<Float> (*func)(const Array<Complex>&),
-		     const ROArrayColumn<Complex>& data)
+		     const ROArrayColumn<Complex>& data,
+		     const ROArrayColumn<Bool>& flag,
+		     Bool useFlags)
 {
   IPosition shp=data.shape(0);
   Int nrow=data.nrow();
@@ -630,7 +667,26 @@ void MSRange::minMax(Float& mini, Float& maxi,
   for (Int start=0; start<nrow; start+=numrow) {
     Int n=min(numrow,nrow-start);
     Float minf, maxf;
-    ::minMax(minf,maxf,func(data.getColumnRange(Slicer(Slice(start,n)))));
+    Slicer rowSlicer(Slice(start,n));
+    if (sel_p) {
+      Array<Complex> avData;
+      sel_p->getAveragedData(avData,data,rowSlicer);
+      if (useFlags) {
+	Array<Bool> avFlag;
+	sel_p->getAveragedFlag(avFlag,flag,rowSlicer);
+      ::minMax(minf,maxf,func(avData(!avFlag).getCompressedArray()));
+      } else {
+	::minMax(minf,maxf,func(avData));
+      }
+    } else {
+      Array<Complex> tData=data.getColumnRange(rowSlicer);
+      if (useFlags) {
+	Array<Bool> tFlag=flag.getColumnRange(rowSlicer);
+	::minMax(minf,maxf,func(tData(!tFlag).getCompressedArray()));
+      } else {
+	::minMax(minf,maxf,func(tData));
+      }
+    }
     if (start==0) {
       mini=minf; maxi=maxf;
     } else {
