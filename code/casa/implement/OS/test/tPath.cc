@@ -1,5 +1,5 @@
 //# tPath.cc: Test program for class Path
-//# Copyright (C) 1993,1994,1995,1996,1998
+//# Copyright (C) 1993,1994,1995,1996,1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //# 
 //# This library is free software; you can redistribute it and/or modify it
@@ -111,7 +111,7 @@ void doIt (Bool doExcp, Bool& success)
     // Test the resulting expanded and absolute name.
     check ("~", home, home, success);
     check ("$HOME", home, home, success);
-    check ("/$HOME/", "/"+home+"/", "/"+home+"/", success);
+    check ("/$HOME/", "/"+home+"/", home, success);
     check ("~/testx", home+"/testx", home+"/testx", success);
     check ("$HOME/testx", home+"/testx", home+"/testx", success);
     check ("~" + user, home, home, success);
@@ -122,7 +122,7 @@ void doIt (Bool doExcp, Bool& success)
     check ("testx", "testx", curr + "/testx", success);
     check (user, user, curr + "/" + user, success);
     check ("$tPath_Env_Test1/$HOME", home + "/" +  home,
-	   home + "/" + home, success);
+	   home + home, success);
 
     // Check copy ctor and assignment (also self-assignment).
     String str;
@@ -201,12 +201,12 @@ void doIt (Bool doExcp, Bool& success)
     AlwaysAssertExit (tpath.originalName() == "/abc/");
     tpath.append ("/abc");
     AlwaysAssertExit (tpath.originalName() == "/abc//abc");
-    AlwaysAssertExit (tpath.absoluteName() == "/abc//abc");
+    AlwaysAssertExit (tpath.absoluteName() == "/abc/abc");
     tpath.append ("abc");
     AlwaysAssertExit (tpath.originalName() == "/abc//abc/abc");
     tpath.append ("/abc");
     AlwaysAssertExit (tpath.originalName() == "/abc//abc/abc/abc");
-    AlwaysAssertExit (tpath.absoluteName() == "/abc//abc/abc/abc");
+    AlwaysAssertExit (tpath.absoluteName() == "/abc/abc/abc/abc");
 
     // Test the strip/addDirectory functionality.
     AlwaysAssertExit (Path::stripDirectory ("././abc", "././././abc/de")
