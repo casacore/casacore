@@ -200,8 +200,9 @@ public:
 // formatting (e.g. RA is  shown as HH:MM:SS.S).  
 // For spectral axes, both frequency and velocity information is listed. You
 // can specify what velocity definition you want with <src>velocityType</src>
-   void list(LogIO& os, 
-             const MDoppler::Types velocityType=MDoppler::RADIO);
+// If postLocally is True, the formatted strings are returned in the return value
+   Vector<String> list(LogIO& os, const MDoppler::Types velocityType=MDoppler::RADIO,
+                       Bool postLocally=False);
 
 // Set a new image
    Bool setNewImage (const ImageInterface<T>& image);

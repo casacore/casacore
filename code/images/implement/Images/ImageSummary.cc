@@ -361,8 +361,8 @@ String ImageSummary<T>::imageType  () const
 }
 
 template <class T> 
-void ImageSummary<T>::list (LogIO& os,
-                            const MDoppler::Types velocityType)
+Vector<String> ImageSummary<T>::list (LogIO& os, const MDoppler::Types velocityType,
+                                      Bool postLocally)
 //
 // List information about an image to the logger
 //
@@ -370,6 +370,11 @@ void ImageSummary<T>::list (LogIO& os,
 //   velocityType  Speciy velocity definition
 //
 {
+   LogSinkInterface& lsi = os.localSink();
+   uInt n = lsi.nelements();
+   Int iStart  =  0;
+   if (n>0) iStart = n - 1;
+//
    os << LogIO::NORMAL << endl;
    MEpoch epoch;
    obsDate(epoch);
@@ -397,11 +402,18 @@ void ImageSummary<T>::list (LogIO& os,
       rb(2).convert(Unit("deg"));
       os.output() << "Restoring Beam   : " << rb(0) << ", " << rb(1) << ", " << rb(2) << endl;
    } 
-   os.post();
+//
+   if (postLocally) {
+      os.postLocally();
+   } else {
+      os.post();
+   }
 
-// List CoordinateSystem
+// List CoordinateSystem.  The messages that were posted locally will
+// be still be stored in the sink and this function will fish them out.
 
-   Vector<String> messages = cSys_p.list(os, velocityType, shape(), tileShape(), False);
+   const Vector<String>& messages = cSys_p.list(os, velocityType, shape(), tileShape(), postLocally);
+   return messages;
 }
 
 
