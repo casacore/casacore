@@ -1061,8 +1061,7 @@ void TiledStMan::headerFileGet (AipsIO& headerFile, uInt tabNrrow,
 		throw (AllocError ("TiledStMan::headerFileGet" ,1));
 	    }
 	}else{
-	    cubeSet_p[i]->getObject (headerFile);
-	    cubeSet_p[i]->clearCache();
+	    cubeSet_p[i]->resync (headerFile);
 	}
     }
     headerFile.getend();
