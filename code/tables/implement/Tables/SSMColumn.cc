@@ -178,15 +178,13 @@ void SSMColumn::deleteRow(uInt aRowNr)
 
 void SSMColumn::shiftRows(char* aValue, uInt aRowNr, uInt aSRow, uInt anERow)
 {
-  char* aToPtr = aValue + (aRowNr-aSRow)
-    * itsExternalSizeBytes;
-  char* aFromPtr = aValue + (aRowNr+1-aSRow)
-    * itsExternalSizeBytes;
-  
-  // decrement anEndrow
+  // Shift from aRrowNr on 1 to the left.
+  char* aToPtr = aValue + (aRowNr-aSRow) * itsExternalSizeBytes;
+  char* aFromPtr = aToPtr + itsExternalSizeBytes;
   uInt aLength = (anERow - aRowNr) * itsExternalSizeBytes;
   memmove(aToPtr,aFromPtr,aLength);
-  memset (aFromPtr, 0, itsExternalSizeBytes);
+  // Clear last entry (so a putString on a new row finds zeroes).
+  memset (aToPtr + aLength, 0, itsExternalSizeBytes);
 }
 
 
