@@ -2700,3 +2700,4 @@
 10 020 src mv trial/apps/datalinetool/dlt_col.g trial/implement/Datalinetool/dlt_col.g
 10 020 src mv trial/apps/datalinetool/dlt_style.g trial/implement/Datalinetool/dlt_style.g
 10 020 src mv trial/apps/datalinetool/dlt_zoom.g trial/implement/Datalinetool/dlt_zoom.g
+10 020 src mv trial/apps/datalinetool/dltplot.g trial/implement/Datalinetool/dltplot.g
