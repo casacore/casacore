@@ -2537,3 +2537,4 @@
 11 374 src mv trial/scripts/plugins.help trial/implement/Utilities/plugins.help
 11 374 src mv trial/scripts/unset.g trial/implement/Tasking/unset.g
 11 374 src mv trial/scripts/illegal.g trial/implement/Tasking/illegal.g
+11 374 src mv trial/scripts/app.g trial/implement/Tasking/app.g
