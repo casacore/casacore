@@ -87,7 +87,7 @@ static void make_celprm_and_prjprm(celprm *&celprm_p, prjprm *&prjprm_p,
 
 }
 
-static void copy_celprm_and_prjprm(celprm *&tocel, prjprm *&toprj, Projection::Type fromproj,
+static void copy_celprm_and_prjprm(celprm *&tocel, prjprm *&toprj,
 				   const celprm *fromcel, const prjprm *fromprj)
 {
     AlwaysAssert(fromcel != 0 && fromprj != 0, AipsError);
@@ -105,6 +105,35 @@ static void copy_celprm_and_prjprm(celprm *&tocel, prjprm *&toprj, Projection::T
     *tocel = *fromcel;
     *toprj = *fromprj;
 }
+
+DirectionCoordinate::DirectionCoordinate()
+  : type_p(MDirection::J2000), projection_p(Projection(Projection::CAR)),
+    celprm_p(0), prjprm_p(0), linear_p(1),
+    names_p(2), units_p(2)
+{
+    // Initially we are in radians
+    to_degrees_p[0] = 180.0 / C::pi;
+    to_degrees_p[1] = to_degrees_p[0];
+    units_p = "rad";
+
+    Vector<Double> crval(2), cdelt(2), crpix(2);
+    crval = 0.0;
+    cdelt = 1.0;
+    crpix = 0.0;
+    Matrix<Double> xform(2,2); 
+    xform = 0.0;
+    xform.diagonal() = 1.0;
+
+    toDegrees(crval);
+    toDegrees(cdelt);
+    linear_p = LinearXform(crpix, cdelt, xform);
+    
+
+    make_celprm_and_prjprm(celprm_p, prjprm_p, projection_p.type(),
+			   crval(0), crval(1), projection_p.parameters(), 
+			   999.0, 999.0);
+}
+
 
 DirectionCoordinate::DirectionCoordinate(MDirection::Types directionType,
  			const Projection &projection,
@@ -143,7 +172,7 @@ DirectionCoordinate::DirectionCoordinate(const DirectionCoordinate &other)
 {
     to_degrees_p[0] = other.to_degrees_p[0];
     to_degrees_p[1] = other.to_degrees_p[1];
-    copy_celprm_and_prjprm(celprm_p, prjprm_p, projection_p.type(),
+    copy_celprm_and_prjprm(celprm_p, prjprm_p,
 			   other.celprm_p, other.prjprm_p);
 }
 
@@ -153,7 +182,7 @@ DirectionCoordinate &DirectionCoordinate::operator=(const DirectionCoordinate &o
     if (this != &other) {
 	type_p = other.type_p;
 	projection_p = other.projection_p;
-	copy_celprm_and_prjprm(celprm_p, prjprm_p, projection_p.type(),
+	copy_celprm_and_prjprm(celprm_p, prjprm_p,
 			       other.celprm_p, other.prjprm_p);
 	linear_p = other.linear_p;
 	names_p = other.names_p;
@@ -473,10 +502,6 @@ void DirectionCoordinate::getPrecision (Int& precision,
                                         const Int defPrecFixed,
                                         const Int defPrecTime) const
 {
-// Find global DirectionCoordinate type
-
-   MDirection::GlobalTypes gtype = MDirection::globalType(type_p);
-
 // Fill in DEFAULT
 
    checkFormat(format, absolute);
@@ -701,7 +726,7 @@ Bool DirectionCoordinate::near(const Coordinate* pOther,
    Vector<Bool> exclude(nPixelAxes());   
    exclude = False;
    Int j = 0;
-   for (Int i=0; i<nPixelAxes(); i++) {
+   for (uInt i=0; i<nPixelAxes(); i++) {
       if(ImageUtilities::inVector(i,excludeAxes) >=0) exclude(j++) = True;
    }
 
@@ -810,19 +835,8 @@ Bool DirectionCoordinate::save(RecordInterface &container,
     if (ok) {
 	Record subrec;
 	Projection proj = projection();
-	String system = "unknown";
-	switch (type_p) {
-	case MDirection::J2000: system = "J2000"; break;
-	case MDirection::JMEAN: system = "JMEAN"; break;
-	case MDirection::JTRUE: system = "JTRUE"; break;
-	case MDirection::APP: system = "APP"; break;
-	case MDirection::B1950: system = "B1950"; break;
-	case MDirection::BMEAN: system = "BMEAN"; break;
-	case MDirection::BTRUE: system = "BTRUE"; break;
-	case MDirection::GALACTIC: system = "GALACTIC"; break;
-	case MDirection::HADEC: system = "HADEC"; break;
-	case MDirection::AZEL: system = "AZEL"; break;
-	}
+	String system = MDirection::showType(type_p);
+
 	subrec.define("system", system);
 	subrec.define("projection", proj.name());
 	subrec.define("projection_parameters", proj.parameters());
@@ -838,8 +852,9 @@ Bool DirectionCoordinate::save(RecordInterface &container,
     return ok;
 }
 
-DirectionCoordinate *DirectionCoordinate::restore(const RecordInterface &container,
-					   const String &fieldName)
+DirectionCoordinate *DirectionCoordinate::restore(const 
+						  RecordInterface &container,
+						  const String &fieldName)
 {
     if (! container.isDefined(fieldName)) {
 	return 0;
@@ -855,27 +870,9 @@ DirectionCoordinate *DirectionCoordinate::restore(const RecordInterface &contain
     String system;
     subrec.get("system", system);
     MDirection::Types sys;
-    if (system == "J2000") {
-	sys = MDirection::J2000;
-    } else if (system == "JMEAN") {
-	sys = MDirection::JMEAN;
-    } else if (system == "JTRUE") {
-	sys = MDirection::JTRUE;
-    } else if (system == "APP") {
-	sys = MDirection::APP;
-    } else if (system == "B1950") {
-	sys = MDirection::B1950;
-    } else if (system == "BMEAN") {
-	sys = MDirection::BMEAN;
-    } else if (system == "BTRUE") {
-	sys = MDirection::BTRUE;
-    } else if (system == "GALACTIC") {
-	sys = MDirection::GALACTIC;
-    } else if (system == "HADEC") {
-	sys = MDirection::HADEC;
-    } else if (system == "AZEL") {
-	sys = MDirection::AZEL;
-    } else {
+    MDirection::Ref mref;
+    Bool ok = MDirection::getType(sys, system);
+    if (!ok) {
 	return 0;
     }
     
