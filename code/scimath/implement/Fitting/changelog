@@ -43,3 +43,21 @@ The high-level fitting (LinearFit, NonLinearFit) classes have been changed. They
 The major change for the use of these classes is the similarity between Linear and nonLinear solutions (no need to combine many polynomial terms), and the fact that the FuncWithDerivs are no longer necessary: any function derived from the Function class can be used to solve for its parameters
  </description>
 </change>
+
+<change id=0164>
+ <author> Wim Brouw </author>
+ <date> 2005/02/15 </date>
+ <avers> 1.9 </avers>
+ <area> Library </area>
+ <package> scimath </package>
+ <module> Fitting </module>
+ <type> Code </type>
+ <category> New </category>
+ <defects>  </defects>
+ <summary>
+Merge separate normal equations
+ </summary>
+ <description>
+Added merge() option to LSQFit (and derived classes) to merge separately created normal equations (e.g. on multi-processor machines)
+ </description>
+</change>
