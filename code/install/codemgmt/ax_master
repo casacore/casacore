@@ -2717,3 +2717,4 @@
 10 060 src mv aips/implement/Measures/MVBaseline.h aips/implement/Quanta/MVBaseline.h
 10 060 src mv aips/implement/Measures/MVDirection.cc aips/implement/Quanta/MVDirection.cc
 10 060 src mv aips/implement/Measures/MVDirection.h aips/implement/Quanta/MVDirection.h
+10 060 src mv aips/implement/Measures/MVDoppler.cc aips/implement/Quanta/MVDoppler.cc
