@@ -50,9 +50,9 @@ public:
     // Linear convolution
     LINEAR,
     // Circular Convolution
-    CIRCULAR,
-    // Real to Real transforms with symmetric Arrays.
-    REALSYMMETRIC
+    CIRCULAR
+    //# Assume the point spread function is symmetric
+    //#REALSYMMETRIC
   };
 };
 
@@ -96,8 +96,8 @@ public:
 template<class T> class LatticeConvolver
 {
 public:
-  // The default constructor creates a Convolver that will convolve your data
-  // with a point spread function (psf) that zero everywhere except at the
+  // The default constructor creates a LatticeConvolver that will convolve your
+  // data with a point spread function (psf) that zero everywhere except at the
   // centre where it is one. Convolving with this psf will not change your
   // data.
   LatticeConvolver();
@@ -107,29 +107,29 @@ public:
   LatticeConvolver(const Lattice<T> & psf);
 
   // Create a convolver that is initialised to do linear convolution with the
-  // specified transfer function. The size of the image you will convolve with
-  // must be specified. 
-  LatticeConvolver(const Lattice<T> & psf, const IPosition & imageSize);
+  // specified point spread function. The size of the model you will convolve
+  // with must be specified.
+  LatticeConvolver(const Lattice<T> & psf, const IPosition & modelShape);
 
-  // The copy constructor 
-  LatticeConvolver(const LatticeConvolver<T> & other);
-
-  // The destructor does nothing.
+  // The destructor does nothing special.
   ~LatticeConvolver();
 
-  // The assignment operator
-  LatticeConvolver<T> & operator=(const LatticeConvolver<T> & other); 
-
-  // Perform linear convolution of the model with the previously
-  // specified psf. Return the answer in result. 
+  // Perform linear convolution of the model with the previously specified
+  // psf. The supplied Lattices must be the same shape and currently this must
+  // be the same as the model shape specified when the class was
+  // constructed. In the future this restriction will be relaxed and the class
+  // will automatically adjust if the Lattices are different sizes.
   void linear(Lattice<T> & result, const Lattice<T> & model);
 
   // Perform in-place linear convolution of the model with the previously
-  // specified psf. Return the result in the same Lattice as the model.
+  // specified psf. Return the result in the same Lattice as the
+  // model. Currently the supplied Lattice must be the same as the model shape
+  // specified when the class was constructed. In the future this restriction
+  // will be relaxed and the class will automatically adjust if the Lattices
   void linear(Lattice<T> & modelAndResult);
 
   // Perform circular convolution of the model with the previously
-  // specified psf. Return the answer in result. 
+  // specified psf. Return the answer in result.
   void circular(Lattice<T> & result, const Lattice<T> & model);
 
   // Perform in-place linear convolution of the model with the previously
@@ -137,25 +137,82 @@ public:
   void circular(Lattice<T> & modelAndResult);
 
   // Perform convolution on the specified model using the currently initialised
-  // convolution type (linear or circular) and image for linear convolution the
-  // initilaised input model shape.
-  // The convolution may be either in-place or not.
+  // convolution type (linear or circular) and model for linear convolution the
+  // initialised input model shape. These functions will not resize the
+  // LatticeConvolver if the supplied Lattice is the wrong shape. If the
+  // LatticeConvolver is setup for circular Convolution then any size Lattice
+  // (with the same number of dimensions as the specified psf) can be used. If
+  // the LatticeConvolver is setup to do linear convolution the the input and
+  // output Lattices must have the same shape as the result from the shape()
+  // member function. The convolution may be either in-place or not.
   // <group>
-  //  void convolve(Lattice<T> & modelAndResult) const;
-  //  void convolve(Lattice<T> & result, const Lattice<T> & model) const;
+  void convolve(Lattice<T> & modelAndResult) const;
+  void convolve(Lattice<T> & result, const Lattice<T> & model) const;
   // </group>
 
-  // Return the psf currently used by this convolver. The Lattice must be the
-  // correct shape.
+  // Return the psf currently used by this convolver. The supplied Lattice must
+  // be the correct shape ie., the same as returned by the psfShape member
+  // function.
   void getPsf(Lattice<T> & psf) const;
 
-private:
-  void pad(TempLattice<T> & paddedModel, const Lattice<T> & model) const;
-  void unpad(Lattice<T> & result, const TempLattice<T> & paddedResult) const;
+  // Resize the LatticeConvolver to do convolutions of the specified type and
+  // shape. The supplied function must always have the same number of
+  // dimensions as the internal point spread function (which can be found using
+  // the shape member function). The LatticeConvolver will be set up to do
+  // circular convolutions if the supplied IPosition has zero length on all
+  // axes. The LatticeConvolver will be set up to do linear convolutions if the
+  // supplied IPosition has positive values on all axes. Then the supplied
+  // shape is the shape of the model Lattices (eg., used in the linear member
+  // function).
+  void resize(const IPosition & modelShape);
 
+  // Returns the shape of the Lattices that the convolver will convolve. This
+  // shape will always have as many dimensions as the psf that was used to
+  // initialise the LatticeConvolver. If the LatticeConvolver is setup to do
+  // circular convolutions then every axis of the returned IPosition will be
+  // zero length. If the LatticeConvolver is setup to do linear convolutions
+  // then the returned IPosition will have a positive values on each axis that
+  // indicate the expected shape of the input model.
+  IPosition shape() const;
+
+  // Returns the shape of the FFT's that the LatticeConvolver will do when
+  // performing the convolution. Not really useful except as a diagnostic
+  // tool. If the shape contains a lot of poorly factorisable lengths then the
+  // convolution will be slow.
+  IPosition fftShape() const;
+
+  // Returns the shape of the point spread function that the LatticeConvolver
+  // was initialised with.
+  IPosition psfShape() const;
+
+private:
+  //# The following functions are defined to avoid default versions being
+  //# generated by the compiler. They are made private to prevent users from
+  //# using them.
+  //# <group>
+  LatticeConvolver(const LatticeConvolver<T> & other);
+  LatticeConvolver<T> & operator=(const LatticeConvolver<T> & other); 
+  //# </group>
+
+  //# The following functions are used in various places in the code and are
+  //# documented in the .cc file. Static functions are used when the functions
+  //# do not modify the object state. They ensure that implicit assumptions
+  //# about the current state and implicit side-effects are not possible
+  //# because all information must be supliied in the input arguments
+  static void pad(Lattice<T> & paddedLat, const Lattice<T> & inLat);
+  static void unpad(Lattice<T> & result, const Lattice<T> & paddedResult);
+  void makeXfr(const Lattice<T> & psf);
+  void makePsf(Lattice<T> & psf) const;
+  static IPosition calcFFTShape(const IPosition & psfShape, 
+				const IPosition & modelShape);
+
+  IPosition itsPsfShape;
+  IPosition itsModelShape;
   IPosition itsFFTShape;
   TempLattice<NumericTraits<T>::ConjugateType> itsXfr;
-
+  TempLattice<T> itsPsf;
+  Bool itsCachedPsf;
+  
 //   void makeXfr(const Lattice<T> & psf, const IPosition & imageSize,
 // 	       const Bool & linear, const Bool & fullSize);
 };
