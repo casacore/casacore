@@ -6369,3 +6369,4 @@
 18 214 src mv doc/project/r1.62.gif doc/project/dev16report.dir/r1.62.gif
 18 214 src mv doc/project/r1.63.eps doc/project/dev16report.dir/r1.63.eps
 18 214 src mv doc/project/r1.63.gif doc/project/dev16report.dir/r1.63.gif
+18 218 src rm doc/presentations/public/ppt_scripting_files
