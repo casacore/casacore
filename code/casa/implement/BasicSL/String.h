@@ -683,7 +683,8 @@ class String : public string {
   // Extract the string "at" the argument's position. ** aips++ addition
   // <group name=at>
   SubString at(size_type pos, size_type len);
-  String at(size_type pos, size_type len) const;
+  String at(size_type pos, size_type len) const {
+    return String(*this, pos, len); }
   SubString at(const string &str, Int startpos = 0);
   String at(const string &str, Int startpos = 0) const;
   SubString at(const Char *s, Int startpos = 0);
