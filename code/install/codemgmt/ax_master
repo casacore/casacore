@@ -3843,3 +3843,4 @@
 14 065 src mv trial/implement/Display/WorldCanvasHolder.h trialdisplay/implement/Display/WorldCanvasHolder.h
 14 065 src mv trial/implement/Display/WorldCanvasPGPlotDriver.h trialdisplay/implement/Display/WorldCanvasPGPlotDriver.h
 14 065 src mv trial/implement/Display/X11PCDLClear.h trialdisplay/implement/Display/X11PCDLClear.h
+14 065 src mv trial/implement/Display/X11PCDLClearRegion.h trialdisplay/implement/Display/X11PCDLClearRegion.h
