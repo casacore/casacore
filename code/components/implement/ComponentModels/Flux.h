@@ -30,15 +30,17 @@
 #define AIPS_FLUX_H
 
 #include <aips/aips.h>
-#include <aips/Utilities/CountedPtr.h>
-#include <aips/Measures/Unit.h>
 #include <aips/Arrays/Vector.h>
-#include <aips/Arrays/Array.h>
-#include <aips/Arrays/ArrayMath.h>
+#include <aips/Exceptions/Error.h>
 #include <aips/Mathematics/NumericTraits.h>
+#include <aips/Measures/Unit.h>
+#include <aips/Utilities/CountedPtr.h>
 #include <trial/ComponentModels/ComponentType.h>
 
-template <class Qtype> class Quantum;
+#include <aips/Arrays/Array.h>
+#include <aips/Arrays/ArrayMath.h>
+#include <aips/Measures/Quantum.h>
+#include <aips/Utilities/Assert.h>
 
 // <summary>A class that represents the Flux (copy semantics)</summary>
 
