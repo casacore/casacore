@@ -1,5 +1,5 @@
 //# LELFunction.h:  LELFunction.h
-//# Copyright (C) 1997,1998,1999,2000
+//# Copyright (C) 1997,1998,1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -219,30 +219,16 @@ public:
 // Get class name
    virtual String className() const;
 
-  // Handle locking/syncing of a lattice in a lattice expression.
-  // <group>
-  virtual Bool lock (FileLocker::LockType, uInt nattempts);
-  virtual void unlock();
-  virtual Bool hasLock (FileLocker::LockType) const;
-  virtual void resync();
-  // </group>
-
-// Determine the median of the given lattice by making successive histograms.
-// When <src>smallsize</src> elements are left, an in-memory algorithm
-// will be used to finish.
-// The number of passes made over the data is undetermined, but
-// a typical number is 2 passes.
+// Handle locking/syncing of a lattice in a lattice expression.
    // <group>
-   static LELScalar<T> unmaskedMedian (const Lattice<T>& lattice,
-				       uInt smallSize = 512*512);
-   static LELScalar<T> maskedMedian (const MaskedLattice<T>& lattice,
-				     uInt smallSize = 512*512);
+   virtual Bool lock (FileLocker::LockType, uInt nattempts);
+   virtual void unlock();
+   virtual Bool hasLock (FileLocker::LockType) const;
+   virtual void resync();
    // </group>
 
-private:
-   // Determine the median for a small masked lattice.
-   static LELScalar<T> smallMaskedMedian (const MaskedLattice<T>& lattice);
 
+private:
    LELFunctionEnums::Function function_p;
    CountedPtr<LELInterface<T> > pExpr_p;
 };
