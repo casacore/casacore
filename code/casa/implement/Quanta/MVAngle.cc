@@ -1,5 +1,5 @@
 //# MVAngle.cc: Class to handle angle type conversions and I/O
-//# Copyright (C) 1996,1997,1998
+//# Copyright (C) 1996,1997,1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -242,7 +242,7 @@ void MVAngle::print(ostream &oss,
     t1 = 1.0;
     if (inprec > 2) t1 /= 60.;
     if (inprec > 4) t1 /= 60.;
-    if (inprec > 6) t1 /= pow(10., Double(inprec-6));
+    if (inprec > 6) t1 /= pow(Double(10), Double(inprec-6));
     if (i1 == MVAngle::ANGLE || ((intyp & MVAngle::DIG2) == MVAngle::DIG2)) {
 	if (t < 0) {
 	  oss << '-';
