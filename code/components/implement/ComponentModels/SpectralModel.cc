@@ -31,17 +31,11 @@
 #include <aips/Exceptions/Error.h>
 #include <aips/Exceptions/Excp.h>
 #include <aips/Lattices/IPosition.h>
-#include <aips/Measures/MFrequency.h>
 #include <aips/Utilities/Assert.h>
 #include <aips/Utilities/String.h>
 
 SpectralModel::~SpectralModel() {
   DebugAssert(ok(), AipsError);
-}
-
-void SpectralModel::refFrequency(MFrequency & refFreq) const {
-  DebugAssert(ok(), AipsError);
-  refFreq = refFrequency();
 }
 
 ComponentType::SpectralShape SpectralModel::
@@ -67,7 +61,6 @@ getType(String & errorMessage, const RecordInterface & record) {
   } end_try;
   return ComponentType::spectralShape(typeVal);
 }
-
 // Local Variables: 
 // compile-command: "gmake OPTLIB=1 SpectralModel"
 // End: 
