@@ -1,5 +1,5 @@
 //# tImageExpr2Gram.cc: Test program for WC regions in image expression parser
-//# Copyright (C) 1999
+//# Copyright (C) 1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -104,7 +104,7 @@ main (int argc, char *argv[])
       cout << endl;
       cout << "Expr:  $1" << endl;
       LatticeExpr<Float> expr (ImageExprParse::command
-			       ("$1", temps, tempRegs));
+			       ("$OBJ#1#O", temps, tempRegs));
       Array<Float> result;
       expr.get (result);
       if (! allEQ (result, arr)) {
@@ -117,8 +117,8 @@ main (int argc, char *argv[])
       cout << endl;
       cout << "Expr:  $1[$region || $region && $region]" << endl;
       LatticeExpr<Float> expr (ImageExprParse::command
-			       ("$1[$REGION#1 || $REGION#1 && $REGION#1]",
-				temps, tempRegs));
+			     ("$OBJ#1#O[$REGION#1 || $REGION#1 && $REGION#1]",
+			      temps, tempRegs));
       Array<Float> result;
       expr.get (result);
       if (! allEQ (result, arr)) {
@@ -131,7 +131,7 @@ main (int argc, char *argv[])
       cout << endl;
       cout << "Expr:  nelements($1)" << endl;
       LatticeExprNode expr (ImageExprParse::command
-			    ("nelements($1)", temps, tempRegs));
+			    ("nelements($OBJ#1#O)", temps, tempRegs));
       Double result = expr.getDouble();
       if (result != shape.product()-1) {
 	cout << "Result should be " << shape.product()-1 << endl;

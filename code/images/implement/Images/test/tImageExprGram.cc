@@ -247,7 +247,8 @@ main (int argc, char *argv[])
     temps[2] = LatticeExprNode(d);
     PtrBlock<const ImageRegion*> regions(1);
     regions[0] = new ImageRegion(LCBox(shape));
-    LatticeExpr<Double> expr(ImageExprParse::command ("$1+($2+$3)[$REGION#1]",
+    LatticeExpr<Double> expr(ImageExprParse::command
+         ("$OBJ#1#O + ($OBJ#2#O + $OBJ#3#O)[$REGION#1]",
 						      temps, regions));
     delete regions[0];
     a.copyData(expr);
