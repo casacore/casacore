@@ -1,5 +1,5 @@
 //# List.h: Singly linked list classes
-//# Copyright (C) 1993,1994,1995,1996
+//# Copyright (C) 1993,1994,1995,1996,1997
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -72,6 +72,7 @@ friend class ConstListIter<t>;
 friend class ListIter<t>;
 friend class List<t>;
 public:
+    enum modification { DELETE, ADD, REMOVE, SWAP };
     //
     // This function returns the Notice "type", which is retrieved
     // from the "type registry". The registry information is maintained 
@@ -88,30 +89,35 @@ public:
     int operator==(const Notice &op) const;
 
 private:
-    Bool deleted;
+    modification mod;
     Link<t> *ocur;
     Link<t> *oprev;
     Link<t> *ncur;
     Link<t> *nprev;
+    int off;
+    int otherOff;
 
     //
     // This is used to construct a list notice. The parameters are:
     // <ul>
+    //    <li> (m) what was done to the list
     //    <li> (oc) the old current position
     //    <li> (op) the old previous position
     //    <li> (nc) the new current position
     //    <li> (np) the new previous position
+    //    <li> (of) current offset;
+    //    <li> (nf) other offset (only used with SWAP mod)
     // </ul>
     //
-    ListNotice(Link<t> *oc,Link<t> *op,Link<t> *nc,Link<t> *np) : 
-		deleted(False),oprev(op),ocur(oc),nprev(np),ncur(nc) {}
+    ListNotice(modification m, Link<t> *oc,Link<t> *op,Link<t> *nc,Link<t> *np, int of, int nf=0) : 
+		mod(m),oprev(op),ocur(oc),nprev(np),ncur(nc), off(of), otherOff(nf) {}
 
     //
     // This constructor is used to initialize a notice for a deleted
     // "List". 
     //
-    ListNotice() : deleted(True), oprev(0),ocur(0),
-			nprev(0),ncur(0) {}
+    ListNotice() : mod(DELETE), oprev(0),ocur(0),
+			nprev(0),ncur(0),off(0),otherOff(0) {}
 
 };
 
@@ -652,7 +658,7 @@ public:
 	Link<t> *p = prev;
 	cur = newLink(e,prev,cur);
 	(*container_).added(prev,cur);        // Allow container to update
-	ListNotice<t> state(c,p,cur,prev);
+	ListNotice<t> state(ListNotice<t>::ADD,c,p,cur,prev,curPos);
 	(*container_).notify(state);
     }
 

@@ -1,5 +1,5 @@
 //# List.cc: Singly linked list classes
-//# Copyright (C) 1993,1994,1995
+//# Copyright (C) 1993,1994,1995,1997
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -37,8 +37,8 @@ template<class t> int ListNotice<t>::operator==(const Notice &op) const {
     return 0;
   } else {
     const ListNotice<t> &opD = (const ListNotice<t> &) op;
-    return (ocur == opD.ocur && oprev == opD.oprev && 
-	    deleted == opD.deleted);
+    return (mod == opD.mod && ocur == opD.ocur && oprev == opD.oprev && 
+	    off == opD.off && otherOff == opD.otherOff );
   }
 }
 
@@ -195,10 +195,20 @@ ConstListIter<t> &ConstListIter<t>::operator=(const ConstListIter<t> *other) {
 template<class t> void ConstListIter<t>::notify(const Notice &note) {
   if (Register((ListNotice<t> *) 0) == note.type()) {
     const ListNotice<t> &opD = (const ListNotice<t> &) note;
-    if (!opD.deleted) {
+    if ( opD.mod != ListNotice<t>::DELETE ) {
       if (cur == opD.ocur && prev == opD.oprev) {
 	cur = opD.ncur;
 	prev = opD.nprev;
+      }
+      if ( curPos > opD.off ) {
+	switch ( opD.mod ) {
+	case ListNotice<t>::ADD:
+		++curPos; break;
+	case ListNotice<t>::REMOVE:
+		--curPos; break;
+	case ListNotice<t>::SWAP:
+		curPos += opD.otherOff - opD.off; break;
+	}
       }
     } else {
       invalidate();
@@ -302,7 +312,7 @@ template<class t> void ListIter<t>::removeRight() {
                                         //         * sets links for deletion
                                         //         * returns next
     (*container_).removed(c,prev,cur);   // Allow container to update
-    ListNotice<t> state(c,p,cur,prev);
+    ListNotice<t> state(ListNotice<t>::REMOVE,c,p,cur,prev,curPos);
     (*container_).notify(state);
     delete c;
   } else throw_list_end_error();
@@ -358,10 +368,10 @@ template<class t> void ListIter<t>::swapRight(ListIter<t> &swapee){
   (*container_).length = (curPos - 1) + swapee.len() - (swapee.pos() - 1);
   (*swapee.container_).length = (swapee.pos() - 1) + tmpLen - (curPos - 1);
 
-  ListNotice<t> mstate(mc,mp,cur,prev);
+  ListNotice<t> mstate(ListNotice<t>::SWAP,mc,mp,cur,prev,curPos,swapee.curPos);
   (*container_).notify(mstate);
 
-  ListNotice<t> sstate(sc,sp,swapee.cur,swapee.prev);
+  ListNotice<t> sstate(ListNotice<t>::SWAP,sc,sp,swapee.cur,swapee.prev,swapee.curPos,curPos);
   (*swapee.container_).notify(sstate);
 }
 
