@@ -33,6 +33,7 @@
 #include <aips/Tables/ISMIndex.h>
 #include <aips/Tables/StArrayFile.h>
 #include <aips/Tables/Table.h>
+#include <aips/Containers/Record.h>
 #include <aips/Utilities/ValType.h>
 #include <aips/Utilities/Assert.h>
 #include <aips/IO/BucketCache.h>
@@ -87,6 +88,36 @@ ISMBase::ISMBase (const String& dataManagerName,
   tempBuffer_p      (0)
 {}
 
+ISMBase::ISMBase (const String& dataManagerName, const Record& spec)
+: DataManager       (),
+  dataManName_p     (dataManagerName),
+  version_p         (3),
+  iosfile_p         (0),
+  uniqnr_p          (0),
+  cache_p           (0),
+  file_p            (0),
+  index_p           (0),
+  persCacheSize_p   (1),
+  cacheSize_p       (0),
+  nbucketInit_p     (1),
+  nFreeBucket_p     (0),
+  firstFree_p       (-1),
+  bucketSize_p      (32768),
+  checkBucketSize_p (False),
+  dataChanged_p     (False),
+  tempBuffer_p      (0)
+{
+    if (spec.isDefined ("BUCKETSIZE")) {
+        bucketSize_p = spec.asuInt ("BUCKETSIZE");
+    }
+    if (spec.isDefined ("CHECKBUCKETSIZE")) {
+        checkBucketSize_p = spec.asBool ("CHECKBUCKETSIZE");
+    }
+    if (spec.isDefined ("CACHESIZE")) {
+        persCacheSize_p = spec.asuInt ("CACHESIZE");
+    }
+}
+
 ISMBase::ISMBase (const ISMBase& that)
 : DataManager       (),
   dataManName_p     (that.dataManName_p),
@@ -133,6 +164,14 @@ String ISMBase::dataManagerName() const
     return dataManName_p;
 }
 
+Record ISMBase::dataManagerSpec() const
+{
+  Record rec;
+  rec.define ("BUCKETSIZE", bucketSize_p);
+  rec.define ("CACHESIZE", persCacheSize_p);
+  return rec;
+}
+
 void ISMBase::clearCache()
 {
     if (cache_p != 0) {
@@ -159,9 +198,6 @@ DataManagerColumn* ISMBase::makeScalarColumn (const String&,
 	colSet_p.resize (colSet_p.nelements() + 32);
     }
     ISMColumn* colp = new ISMColumn (this, dataType, ncolumn());
-    if (colp == 0) {
-	throw (AllocError ("ISMBase::makeScalarColumn", 1));
-    }
     colSet_p[ncolumn()] = colp;
     return colp;
 }
@@ -180,18 +216,15 @@ DataManagerColumn* ISMBase::makeIndArrColumn (const String&,
 	colSet_p.resize (colSet_p.nelements() + 32);
     }
     ISMColumn* colp = new ISMIndColumn (this, dataType, ncolumn());
-    if (colp == 0) {
-	throw (AllocError ("ISMBase::makeIndArrColumn", 1));
-    }
     colSet_p[ncolumn()] = colp;
     return colp;
 }
 
-DataManager* ISMBase::makeObject (const String& group)
+DataManager* ISMBase::makeObject (const String& group, const Record& spec)
 {
     // This function is called when reading a table back.
     // Construct it with the default bucket size and cache size.
-    return new ISMBase (group, 0, False, 0);
+    return new ISMBase (group, spec);
 }
 
 void ISMBase::setCacheSize (uInt cacheSize)

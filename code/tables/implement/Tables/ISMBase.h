@@ -96,8 +96,13 @@ public:
     // The bucket size has to be given in bytes and the cache size in buckets.
     // The bucket size is checked or calculated as described in
     // IncrementalStMan.h.
-   ISMBase (const String& dataManagerName,
-	    uInt bucketSize, Bool checkBucketSize, uInt cacheSize);
+    ISMBase (const String& dataManagerName,
+	     uInt bucketSize, Bool checkBucketSize, uInt cacheSize);
+
+    // Create an incremental storage manager with the given name.
+    // The specifications are in the record (as created by dataManagerSpec).
+    ISMBase (const String& aDataManName,
+	     const Record& spec);
 
     ~ISMBase();
 
@@ -111,6 +116,9 @@ public:
 
     // Get the name given to the storage manager (in the constructor).
     virtual String dataManagerName() const;
+
+    // Record a record containing data manager specifications.
+    virtual Record dataManagerSpec() const;
 
     // Get the version of the class.
     uInt version() const;
@@ -179,7 +187,8 @@ public:
     // Make the object from the type name string.
     // This function gets registered in the DataManager "constructor" map.
     // The caller has to delete the object.
-    static DataManager* makeObject (const String& dataManagerType);
+    static DataManager* makeObject (const String& dataManagerType,
+				    const Record& spec);
 
     // Get access to the given column.
     ISMColumn& getColumn (uInt colnr);

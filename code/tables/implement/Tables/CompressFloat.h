@@ -163,11 +163,20 @@ public:
 		 const String& offsetColumnName,
 		 Bool autoScale = True);
 
+  // Construct from a record specification as created by getmanagerSpec().
+  CompressFloat (const Record& spec);
+
   // Destructor is mandatory.
   ~CompressFloat();
 
   // Return the type name of the engine (i.e. its class name).
   virtual String dataManagerType() const;
+
+  // Get the name given to the engine (is the source column name).
+  virtual String dataManagerName() const;
+  
+  // Record a record containing data manager specifications.
+  virtual Record dataManagerSpec() const;
 
   // Return the name of the class.
   // This includes the names of the template arguments.
@@ -178,10 +187,6 @@ public:
   static void registerClass();
 
 private:
-  // The default constructor is required for reconstruction of the
-  // engine when a table is read back.
-  CompressFloat();
-
   // Copy constructor is only used by clone().
   // (so it is made private).
   CompressFloat (const CompressFloat&);
@@ -324,7 +329,8 @@ public:
   // If the engine is commonly used, its registration can be added
   // to the registerAllCtor function in DataManager.cc. 
   // That function gets automatically invoked by the table system.
-  static DataManager* makeObject (const String& dataManagerType);
+  static DataManager* makeObject (const String& dataManagerType,
+				  const Record& spec);
 };
 
 

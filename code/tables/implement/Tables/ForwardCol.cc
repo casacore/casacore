@@ -34,20 +34,18 @@
 #include <aips/Tables/ColumnDesc.h>
 #include <aips/Tables/DataManError.h>
 #include <aips/Tables/TableRecord.h>
+#include <aips/Containers/Record.h>
 
 
-ForwardColumnEngine::ForwardColumnEngine()
-: refColumns_p (0)
-{}
-
-ForwardColumnEngine::ForwardColumnEngine (const Table& referencedTable,
-					  const String& dataManagerName,
-					  const String& suffix)
+ForwardColumnEngine::ForwardColumnEngine (const String& dataManagerName,
+					  const Record& spec)
 : refColumns_p (0),
-  refTable_p   (referencedTable),
-  dataManName_p(dataManagerName),
-  suffix_p     (suffix)
-{}
+  dataManName_p(dataManagerName)
+{
+  if (spec.isDefined ("FORWARDTABLE")) {
+    refTable_p = Table(spec.asString ("FORWARDTABLE"));
+  }
+}
 
 ForwardColumnEngine::ForwardColumnEngine (const Table& referencedTable,
 					  const String& dataManagerName)
@@ -83,9 +81,6 @@ SetupNewTable ForwardColumn::setupNewTable (const Table& table,
 DataManager* ForwardColumnEngine::clone() const
 {
     DataManager* dmPtr = new ForwardColumnEngine (refTable_p, dataManName_p);
-    if (dmPtr == 0) {
-	throw (AllocError ("ForwardColumnEngine::clone()", 1));
-    }
     return dmPtr;
 }
 
@@ -157,9 +152,6 @@ DataManagerColumn* ForwardColumnEngine::makeScalarColumn (const String& name,
 {
     ForwardColumn* colp = new ForwardColumn (this, name, dataType,
 					     dataTypeId, refTable_p);
-    if (colp == 0) {
-	throw (AllocError ("ForwardColumnEngine::makeScalarColumn", 1));
-    }
     addForwardColumn (colp);
     return colp;
 }
@@ -215,12 +207,10 @@ void ForwardColumnEngine::reopenRW()
     }
 }
 
-DataManager* ForwardColumnEngine::makeObject (const String&)
+DataManager* ForwardColumnEngine::makeObject (const String& dataManagerName,
+					      const Record& spec)
 {
-    DataManager* dmPtr = new ForwardColumnEngine();
-    if (dmPtr == 0) {
-	throw (AllocError ("ForwardColumnEngine::makeObject()", 1));
-    }
+    DataManager* dmPtr = new ForwardColumnEngine (dataManagerName, spec);
     return dmPtr;
 }
 void ForwardColumnEngine::registerClass()
@@ -237,6 +227,12 @@ String ForwardColumnEngine::dataManagerType() const
     return "ForwardColumnEngine";
 }
 
+Record ForwardColumnEngine::dataManagerSpec() const
+{
+  Record spec;
+  spec.define ("FORWARDTABLE", refTable_p.tableName());
+  return spec;
+}
 
 
 ForwardColumn::ForwardColumn (ForwardColumnEngine* enginePtr,

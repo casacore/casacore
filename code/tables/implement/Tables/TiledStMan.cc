@@ -277,6 +277,14 @@ IPosition TiledStMan::makeTileShape (const IPosition& hypercubeShape,
 String TiledStMan::dataManagerName() const
     { return hypercolumnName_p; }
 
+Record TiledStMan::dataManagerSpec() const
+{
+  Record rec;
+  rec.define ("DEFAULTTILESHAPE", defaultTileShape().asVector());
+  rec.define ("MAXIMUMCACHESIZE", persMaxCacheSize_p);
+  return rec;
+}
+
 void TiledStMan::setShape (uInt, TSMCube*, const IPosition&, const IPosition&)
 {
     throw (TSMError ("setShape is not possible for TSM " + hypercolumnName_p));
@@ -487,9 +495,6 @@ DataManagerColumn* TiledStMan::makeIndArrColumn (const String& columnName,
 	colSet_p.resize (colSet_p.nelements() + 32);
     }
     TSMColumn* colp = new TSMColumn (this, dataType, columnName);
-    if (colp == 0) {
-	throw (AllocError ("TiledStMan::makeIndArrColumn", 1));
-    }
     colSet_p[ncolumn()] = colp;
     return colp;
 }
@@ -795,18 +800,12 @@ TSMCube* TiledStMan::makeHypercube (const IPosition& cubeShape,
     // Its data will be written at the end of the file.
     TSMCube* hypercube = new TSMCube (this, fileSet_p[filenr],
 				      cubeShape, tileShape, values);
-    if (hypercube == 0) {
-	throw (AllocError ("TiledStMan::addHypercube", 1));
-    }
     return hypercube;
 }
 
 void TiledStMan::createFile (uInt index)
 {
     TSMFile* file = new TSMFile (this, index);
-    if (file == 0) {
-	throw (AllocError ("TiledStMan::addHypercube", 1));
-    }
     fileSet_p[index] = file;
 }
 
@@ -926,18 +925,12 @@ Bool TiledStMan::flushCaches (Bool fsync)
 AipsIO* TiledStMan::headerFileCreate()
 {
     AipsIO* file = new AipsIO (fileName(), ByteIO::New);
-    if (file == 0) {
-	throw (AllocError ("TiledStMan::headerFileCreate", 1));
-    }
     return file;
 }
 
 AipsIO* TiledStMan::headerFileOpen()
 {
     AipsIO* file = new AipsIO (fileName());
-    if (file == 0) {
-	throw (AllocError ("TiledStMan::headerFileCreate", 1));
-    }
     return file;
 }
 
@@ -1036,9 +1029,6 @@ void TiledStMan::headerFileGet (AipsIO& headerFile, uInt tabNrrow,
 	if (flag) {
 	    if (fileSet_p[i] == 0) {
 		fileSet_p[i] = new TSMFile (this, headerFile, i);
-		if (fileSet_p[i] == 0) {
-		    throw (AllocError ("TiledStMan::headerFileGet" ,1));
-		}
 	    }else{
 		fileSet_p[i]->getObject (headerFile);
 	    }
@@ -1057,9 +1047,6 @@ void TiledStMan::headerFileGet (AipsIO& headerFile, uInt tabNrrow,
     for (i=0; i<nrCube; i++) {
 	if (cubeSet_p[i] == 0) {
 	    cubeSet_p[i] = new TSMCube (this, headerFile);
-	    if (cubeSet_p[i] == 0) {
-		throw (AllocError ("TiledStMan::headerFileGet" ,1));
-	    }
 	}else{
 	    cubeSet_p[i]->resync (headerFile);
 	}

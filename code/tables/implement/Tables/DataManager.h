@@ -42,6 +42,7 @@ class DataManager;
 class DataManagerColumn;
 class SetupNewTable;
 class Table;
+class Record;
 class IPosition;
 class Slicer;
 class RefRows;
@@ -63,7 +64,8 @@ class AipsIO;
 // DataManagerCtor is the type of the constructor functions.
 // </synopsis>
 // <group name=DataManagerCtor>
-typedef DataManager* (*DataManagerCtor) (const String& dataManagerType);
+typedef DataManager* (*DataManagerCtor) (const String& dataManagerType,
+					 const Record& spec);
 // </group>
 
 
@@ -226,6 +228,10 @@ public:
     // This is used by the open/flush mechanism to be able to reconstruct
     // the correct data manager.
     virtual String dataManagerType() const = 0;
+
+    // Record a record containing data manager specifications.
+    // The default impementation returns an empty record.
+    virtual Record dataManagerSpec() const;
 
     // Is the data manager a storage manager?
     // The default is yes.
@@ -418,13 +424,11 @@ private:
     // The default implementation does nothing.
     virtual void prepare();
 
-    //*display 8
     // Declare the mapping of the data manager type name to a static
     // "makeObject" function.
     static SimpleOrderedMap<String,DataManagerCtor> registerMap;
 
 public:
-    //*display 4
     // Register a mapping of a data manager type to its static "constructor".
     static void registerCtor (const String& dataManagerType,
 			      DataManagerCtor fn);
@@ -435,20 +439,19 @@ public:
     // Test if the data manager is registered.
     static Bool isRegistered (const String& dataManagerType);
 
-    //*display 8
     // Register all mappings.
     // This will be a bunch of register calls. It is implemented in
     // DataManReg.cc. In this way it is easier to add new functions
     // to it (or maybe eventually automate that process).
     static void registerAllCtor();
 
-    //*display 8
     // Serve as default function for registerMap, which catches all
     // unknown data manager types.
     // <thrown>
     //   <li> TableUnknownDataManager
     // </thrown>
-    static DataManager* unknownDataManager (const String& dataManagerType);
+    static DataManager* unknownDataManager (const String& dataManagerType,
+					    const Record& spec);
 
     // Has the object already been cloned?
     DataManager* getClone() const

@@ -1,5 +1,5 @@
 //# RetypedArrayEngine.h: Virtual column engine to retype and reshape arrays
-//# Copyright (C) 1995,1996,1999
+//# Copyright (C) 1995,1996,1999,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -460,11 +460,20 @@ public:
 			const IPosition& sourceElementShape,
 			const TableRecord& extraInformation);
 
+    // Construct from a record specification as created by getmanagerSpec().
+    RetypedArrayEngine (const Record& spec);
+
     // Destructor is mandatory.
     ~RetypedArrayEngine();
 
     // Return the type name of the engine (i.e. its class name).
-    String dataManagerType() const;
+    virtual String dataManagerType() const;
+
+    // Get the name given to the engine (is the source column name).
+    virtual String dataManagerName() const;
+  
+    // Record a record containing data manager specifications.
+    virtual Record dataManagerSpec() const;
 
     // Return the name of the class.
     // This includes the names of the template arguments.
@@ -479,10 +488,6 @@ public:
     static void registerClass();
 
 private:
-    // The default constructor is required for reconstruction of the
-    // engine when a table is read back.
-    RetypedArrayEngine();
-
     // Copy constructor is only used by clone().
     // (so it is made private).
     RetypedArrayEngine (const RetypedArrayEngine<SourceType,TargetType>&);
@@ -594,7 +599,8 @@ public:
     // If the engine is commonly used, its registration can be added
     // to the registerAllCtor function in DataManReg.cc. 
     // That function gets automatically invoked by the table system.
-    static DataManager* makeObject (const String& dataManagerType);
+    static DataManager* makeObject (const String& dataManagerType,
+				    const Record& spec);
 };
 
 

@@ -118,6 +118,9 @@ public:
     // This is the name of the hypercolumn.
     String dataManagerName() const;
 
+    // Record a record containing data manager specifications.
+    virtual Record dataManagerSpec() const;
+
     // Set the flag to "data has changed since last flush".
     void setDataChanged();
 
@@ -339,6 +342,9 @@ public:
 
 
 protected:
+    // Set the persistent maximum cache size.
+    void setPersMaxCacheSize (uInt nbytes);
+
     // Get the bindings of the columns with the given names.
     // If bound, the pointer to the TSMColumn object is stored in the block.
     // If mustExist is True, an exception is thrown if the column
@@ -500,6 +506,12 @@ inline const TSMCube* TiledStMan::getTSMCube (uInt hypercube) const
 
 inline const TSMCube* TiledStMan::getHypercube (uInt rownr) const
     { return const_cast<TiledStMan*>(this)->getHypercube (rownr); }
+
+inline void TiledStMan::setPersMaxCacheSize (uInt nbytes)
+{
+    persMaxCacheSize_p = nbytes;
+    maxCacheSize_p = nbytes;
+}
 
 
 

@@ -165,6 +165,11 @@ public:
 		    Int aBucketSize=0,
 		    uInt aCacheSize=1);
   
+  // Create a Standard storage manager with the given name.
+  // The specifications are part of the record (as created by dataManagerSpec).
+  SSMBase (const String& aDataManName,
+	   const Record& spec);
+  
   ~SSMBase();
   
   // Clone this object.
@@ -178,6 +183,9 @@ public:
   // Get the name given to the storage manager (in the constructor).
   virtual String dataManagerName() const;
   
+  // Record a record containing data manager specifications.
+  virtual Record dataManagerSpec() const;
+
   // Get the version of the class.
   uInt getVersion() const;
   
@@ -224,7 +232,8 @@ public:
   // Make the object from the type name string.
   // This function gets registered in the DataManager "constructor" map.
   // The caller has to delete the object.
-  static DataManager* makeObject (const String& aDataManType);
+  static DataManager* makeObject (const String& aDataManType,
+				  const Record& spec);
   
   // Get access to the given column.
   SSMColumn& getColumn (uInt aColNr);

@@ -1,5 +1,5 @@
 //# TiledColumnStMan.cc: Storage manager for tables using tiled hypercubes
-//# Copyright (C) 1995,1996,1997,1999,2000
+//# Copyright (C) 1995,1996,1997,1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -58,6 +58,18 @@ TiledColumnStMan::TiledColumnStMan (const String& hypercolumnName,
   tileShape_p (tileShape)
 {}
 
+TiledColumnStMan::TiledColumnStMan (const String& hypercolumnName,
+				    const Record& spec)
+: TiledStMan  (hypercolumnName, 0)
+{
+    if (spec.isDefined ("TILESHAPE")) {
+        tileShape_p = IPosition (spec.asArrayInt ("TILESHAPE"));
+    }
+    if (spec.isDefined ("MAXIMUMCACHESIZE")) {
+        setPersMaxCacheSize (spec.asuInt ("MAXIMUMCACHESIZE"));
+    }
+}
+
 TiledColumnStMan::~TiledColumnStMan()
 {}
 
@@ -66,23 +78,26 @@ DataManager* TiledColumnStMan::clone() const
     TiledColumnStMan* smp = new TiledColumnStMan (hypercolumnName_p,
 						  tileShape_p,
 						  maximumCacheSize());
-    if (smp == 0) {
-	throw (AllocError ("TiledColumnStMan::clone", 1));
-    }
     return smp;
 }
 
-DataManager* TiledColumnStMan::makeObject (const String& group)
+DataManager* TiledColumnStMan::makeObject (const String& group,
+					   const Record& spec)
 {
-    TiledColumnStMan* smp = new TiledColumnStMan (group, IPosition());
-    if (smp == 0) {
-	throw (AllocError ("TiledColumnStMan::makeObject", 1));
-    }
+    TiledColumnStMan* smp = new TiledColumnStMan (group, spec);
     return smp;
 }
 
 String TiledColumnStMan::dataManagerType() const
     { return "TiledColumnStMan"; }
+
+Record TiledColumnStMan::dataManagerSpec() const
+{
+  Record rec;
+  rec.define ("TILESHAPE", defaultTileShape().asVector());
+  rec.define ("MAXIMUMCACHESIZE", persMaxCacheSize_p);
+  return rec;
+}
 
 
 void TiledColumnStMan::create (uInt nrrow)
@@ -104,9 +119,6 @@ void TiledColumnStMan::create (uInt nrrow)
     cubeSet_p.resize (1);
     cubeSet_p[0] = new TSMCube (this, fileSet_p[0],
 				cubeShape, tileShape_p, emptyRecord);
-    if (cubeSet_p[0] == 0) {
-	throw (AllocError ("TiledColumnStMan::create", 1));
-    }
     // Add the rows for the given number of rows.
     addRow (nrrow);
 }

@@ -34,22 +34,10 @@
 #include <aips/Tables/DataManError.h>
 #include <aips/Arrays/ArrayIter.h>
 #include <aips/Arrays/Slicer.h>
+#include <aips/Containers/Record.h>
 #include <aips/Mathematics/Math.h>
 #include <aips/Utilities/String.h>
-#include <aips/IO/AipsIO.h>
 
-
-CompressFloat::CompressFloat ()
-: BaseMappedArrayEngine<Float,Short> (),
-  scale_p         (1.0),
-  offset_p        (0.0),
-  fixed_p         (True),
-  autoScale_p     (False),
-  scaleColumn_p   (0),
-  offsetColumn_p  (0),
-  rwScaleColumn_p (0),
-  rwOffsetColumn_p(0)
-{}
 
 CompressFloat::CompressFloat (const String& sourceColumnName,
 			      const String& targetColumnName,
@@ -82,6 +70,33 @@ CompressFloat::CompressFloat (const String& sourceColumnName,
   rwScaleColumn_p (0),
   rwOffsetColumn_p(0)
 {}
+
+CompressFloat::CompressFloat (const Record& spec)
+: BaseMappedArrayEngine<Float,Short> (),
+  scale_p         (1.0),
+  offset_p        (0.0),
+  fixed_p         (True),
+  autoScale_p     (False),
+  scaleColumn_p   (0),
+  offsetColumn_p  (0),
+  rwScaleColumn_p (0),
+  rwOffsetColumn_p(0)
+{
+  if (spec.isDefined("SOURCENAME")  &&  spec.isDefined("TARGETNAME")) {
+    setNames (spec.asString("SOURCENAME"), spec.asString("TARGETNAME"));
+    if (spec.isDefined("SCALE")  &&  spec.isDefined("OFFSET")) {
+      spec.get ("SCALE", scale_p);
+      spec.get ("OFFSET", offset_p);
+    } else {
+      spec.get ("SCALENAME", scaleName_p);
+      spec.get ("OFFSETNAME", offsetName_p);
+      fixed_p = False;
+    }
+    if (spec.isDefined("AUTOSCALE")) {
+      spec.get ("AUTOSCALE", autoScale_p);
+    }
+  }
+}
 
 CompressFloat::CompressFloat (const CompressFloat& that)
 : BaseMappedArrayEngine<Float,Short> (that),
@@ -124,9 +139,30 @@ String CompressFloat::className()
   return "CompressFloat";
 }
 
-DataManager* CompressFloat::makeObject (const String&)
+String CompressFloat::dataManagerName() const
 {
-  return new CompressFloat();
+  return sourceName();
+}
+
+Record CompressFloat::dataManagerSpec() const
+{
+  Record spec;
+  spec.define ("SOURCENAME", sourceName());
+  spec.define ("TARGETNAME", targetName());
+  if (fixed_p) {
+    spec.define ("SCALE", scale_p);
+    spec.define ("OFFSET", offset_p);
+  } else {
+    spec.define ("SCALENAME", scaleName_p);
+    spec.define ("OFFSETNAME", offsetName_p);
+  }
+  spec.define ("AUTOSCALE", autoScale_p);
+  return spec;
+}
+
+DataManager* CompressFloat::makeObject (const String&, const Record& spec)
+{
+  return new CompressFloat(spec);
 }
 void CompressFloat::registerClass()
 {

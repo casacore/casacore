@@ -34,6 +34,7 @@
 #include <aips/Tables/SSMStringHandler.h>
 #include <aips/Tables/StArrayFile.h>
 #include <aips/Tables/Table.h>
+#include <aips/Containers/Record.h>
 #include <aips/Utilities/ValType.h>
 #include <aips/Utilities/Assert.h>
 #include <aips/IO/BucketCache.h>
@@ -121,6 +122,48 @@ SSMBase::SSMBase (const String& aDataManName,
   }
 }
 
+SSMBase::SSMBase (const String& aDataManName,
+		  const Record& spec)
+: DataManager          (),
+  itsDataManName       (aDataManName),
+  itsVersion           (2),
+  itsIosFile           (0),
+  itsNrRows            (0),
+  itsCache             (0),
+  itsFile              (0),
+  itsStringHandler     (0),
+  itsPersCacheSize     (2),
+  itsCacheSize         (0),
+  itsNrBuckets         (0), 
+  itsNrIdxBuckets      (0),
+  itsFirstIdxBucket    (-1),
+  itsIdxBucketOffset   (0),
+  itsLastStringBucket  (-1),
+  itsIndexLength       (0),
+  itsFreeBucketsNr     (0),
+  itsFirstFreeBucket   (-1),
+  itsBucketSize        (0),
+  itsBucketRows        (0),
+  isDataChanged        (False)
+{ 
+  // Determine the data format (local or canonical).
+  // For the moment it is always canonical (until Table supports it).
+  isCanonical = True;
+  if (spec.isDefined ("BUCKETROWS")) {
+    itsBucketRows = spec.asuInt ("BUCKETROWS");
+  }
+  if (itsBucketRows == 0) {
+    if (spec.isDefined ("BUCKETSIZE")) {
+      itsBucketSize = spec.asuInt ("BUCKETSIZE");
+    } else {
+      itsBucketRows = 32;
+    }
+  }
+  if (spec.isDefined ("CACHESIZE")) {
+    itsPersCacheSize = max(2u, spec.asuInt ("CACHESIZE"));
+  }
+}
+
 SSMBase::SSMBase (const SSMBase& that)
 : DataManager          (),
   itsDataManName       (that.itsDataManName),
@@ -173,6 +216,14 @@ String SSMBase::dataManagerType() const
 String SSMBase::dataManagerName() const
 {
   return itsDataManName;
+}
+
+Record SSMBase::dataManagerSpec() const
+{
+  Record rec;
+  rec.define ("BUCKETSIZE", itsBucketSize);
+  rec.define ("CACHESIZE", itsPersCacheSize);
+  return rec;
 }
 
 void SSMBase::clearCache()
@@ -269,11 +320,11 @@ DataManagerColumn* SSMBase::makeIndArrColumn (const String&,
   return aColumn;
 }
 
-DataManager* SSMBase::makeObject (const String& group)
+DataManager* SSMBase::makeObject (const String& group, const Record& spec)
 {
   // This function is called when reading a table back.
   // Construct it with the default bucket size and cache size.
-  return new SSMBase (group);
+  return new SSMBase (group, spec);
 }
 
 void SSMBase::setCacheSize (uInt aCacheSize)

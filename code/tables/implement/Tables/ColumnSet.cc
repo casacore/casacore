@@ -267,7 +267,8 @@ void ColumnSet::addColumn (const ColumnDesc& columnDesc, Table& tab)
     // Create the default storage manager and add the column to it.
     // Make sure the data manager name is not already used.
     dmptr = DataManager::getCtor(columnDesc.dataManagerType())
-                      (uniqueDataManagerName (columnDesc.dataManagerGroup()));
+                      (uniqueDataManagerName (columnDesc.dataManagerGroup()),
+		       Record());
     addColumn (columnDesc, *dmptr, tab);
     delete dmptr;
 }
@@ -302,7 +303,8 @@ void ColumnSet::addColumn (const ColumnDesc& columnDesc,
     // Create one of this type and add the column to it.
     // Use the data manager as the data manager name.
     dmptr = DataManager::getCtor(dataManager)
-                                   (uniqueDataManagerName(dataManager));
+                                   (uniqueDataManagerName(dataManager),
+				    Record());
     addColumn (columnDesc, *dmptr, tab);
     delete dmptr;
 }
@@ -594,6 +596,7 @@ Record ColumnSet::dataManagerInfo() const
 	Record subrec;
 	subrec.define ("TYPE", dmPtr->dataManagerType());
 	subrec.define ("NAME", dmPtr->dataManagerName());
+	subrec.defineRecord ("SPEC", dmPtr->dataManagerSpec());
 	// Loop through all columns with this data manager and add
 	// its name to the vector.
 	uInt ncol = colMap_p.ndefined();
@@ -737,7 +740,7 @@ void ColumnSet::getFile (AipsIO& ios, Table& tab, uInt nrrow)
 	//# Add it to the data manager list and set its sequence nr.
 	ios >> str;
 	ios >> seqnr;
-	DataManager* dmp = DataManager::getCtor(str)(str);
+	DataManager* dmp = DataManager::getCtor(str)(str, Record());
 	addDataManager (dmp);
         dmp->setSeqnr (seqnr);
     }

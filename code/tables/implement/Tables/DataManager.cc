@@ -42,6 +42,7 @@
 #include <aips/Tables/Table.h>
 #include <aips/Tables/PlainTable.h>
 #include <aips/Arrays/IPosition.h>
+#include <aips/Containers/Record.h>
 #include <aips/Utilities/String.h>
 #include <aips/Tables/DataManError.h>
 #include <aips/stdio.h>                     // for sprintf
@@ -64,6 +65,9 @@ DataManager::~DataManager()
 
 String DataManager::dataManagerName() const
     { return String(); }
+
+Record DataManager::dataManagerSpec() const
+    { return Record(); }
 
 Bool DataManager::isStorageManager() const
     { return True; }
@@ -233,9 +237,10 @@ DataManagerCtor DataManager::getCtor (const String& type)
 }
 
 //# The default "ctor" function for unknown data manager type names.
-DataManager* DataManager::unknownDataManager (const String& type)
+DataManager* DataManager::unknownDataManager (const String& type,
+					      const Record& spec)
 {
-    throw (DataManUnknownCtor ("Data Manager class " +type+ 
+    throw (DataManUnknownCtor ("Data Manager class " + type + 
 			       " is not registered"));
     return 0;
 }

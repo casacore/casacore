@@ -1,5 +1,5 @@
 //# ForwardCol.h: Virtual Column Engine to forward to other columns
-//# Copyright (C) 1995,1996,1997
+//# Copyright (C) 1995,1996,1997,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -365,7 +365,7 @@ public:
 
     // The default constructor is required for reconstruction of the
     // engine when a table is read back.
-    ForwardColumnEngine();
+    ForwardColumnEngine (const String& dataManagerName, const Record& spec);
 
     // Create the engine.
     // The columns using this engine will reference the given table.
@@ -391,6 +391,9 @@ public:
     // Return the type of the engine (i.e. its class name ForwardColumnEngine).
     String dataManagerType() const;
 
+    // Record a record containing data manager specifications.
+    virtual Record dataManagerSpec() const;
+
     // Get the suffix to be used for names.
     const String& suffix() const;
 
@@ -399,11 +402,8 @@ public:
     static void registerClass();
 
 protected:
-    // Create the engine for a derived class.
-    // It sets the suffix to be used for names.
-    ForwardColumnEngine (const Table& referencedTable,
-			 const String& dataManagerName,
-			 const String& suffix);
+    // Set the suffix.
+    void setSuffix (const String& suffix);
 
     // Add a ForwardColumn object to the block.
     void addForwardColumn (ForwardColumn* colp);
@@ -503,13 +503,17 @@ public:
     // If the engine is commonly used, its registration can be added
     // into the registerAllCtor function in DataManReg.cc. 
     // This function gets automatically invoked by the table system.
-    static DataManager* makeObject (const String& dataManagerType);
+    static DataManager* makeObject (const String& dataManagerType,
+				    const Record& spec);
 };
 
 
 
 inline const String& ForwardColumnEngine::suffix() const
     { return suffix_p; }
+
+inline void ForwardColumnEngine::setSuffix (const String& suffix)
+    { suffix_p = suffix; }
 
 
 #endif

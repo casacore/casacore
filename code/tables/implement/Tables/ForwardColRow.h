@@ -1,5 +1,5 @@
 //# ForwardColRow.h: Virtual Column Engine to forward to other rows/columns
-//# Copyright (C) 1995,1996,1997
+//# Copyright (C) 1995,1996,1997,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -289,7 +289,8 @@ public:
 
     // The default constructor is required for reconstruction of the
     // engine when a table is read back.
-    ForwardColumnIndexedRowEngine();
+    ForwardColumnIndexedRowEngine (const String& dataManagerName,
+				   const Record& spec);
 
     // Create the engine.
     // The columns using this engine will reference the given table.
@@ -319,6 +320,9 @@ public:
     // Return the type name of the engine
     // (i.e. its class name ForwardColumnIndexedRowEngine).
     String dataManagerType() const;
+
+    // Record a record containing data manager specifications.
+    virtual Record dataManagerSpec() const;
 
     // Register the class name and the static makeObject "constructor".
     // This will make the engine known to the table system.
@@ -377,7 +381,8 @@ public:
     // If the engine is commonly used, its registration can be added
     // into the registerAllCtor function in DataManReg.cc. 
     // This function gets automatically invoked by the table system.
-    static DataManager* makeObject (const String& dataManagerType);
+    static DataManager* makeObject (const String& dataManagerName,
+				    const Record& spec);
 
     // Convert the rownr to the rownr in the underlying table.
     uInt convertRownr (uInt rownr);

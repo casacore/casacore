@@ -1,5 +1,5 @@
 //# RetypedArrayEngine.cc: Virtual column engine to retype and reshape arrays
-//# Copyright (C) 1995,1996,1999
+//# Copyright (C) 1995,1996,1999,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -34,17 +34,11 @@
 #include <aips/Arrays/Vector.h>
 #include <aips/Arrays/Array.h>
 #include <aips/Arrays/ArrayIter.h>
+#include <aips/Containers/Record.h>
 #include <aips/Utilities/String.h>
 #include <aips/Utilities/ValTypeId.h>
 #include <aips/Utilities/Copy.h>
 
-
-template<class S, class T>
-RetypedArrayEngine<S,T>::RetypedArrayEngine ()
-: BaseMappedArrayEngine<S,T> (),
-  isSourceFixedShape_p (False),
-  copyInfo_p (0)
-{}
 
 template<class S, class T>
 RetypedArrayEngine<S,T>::RetypedArrayEngine (const String& sourceColumnName,
@@ -66,6 +60,26 @@ RetypedArrayEngine<S,T>::RetypedArrayEngine (const String& sourceColumnName,
   record_p   (extraInformation),
   copyInfo_p (0)
 {}
+
+template<class S, class T>
+RetypedArrayEngine<S,T>::RetypedArrayEngine (const Record& spec)
+: BaseMappedArrayEngine<S,T> (),
+  isSourceFixedShape_p (False),
+  copyInfo_p (0)
+{
+    if (spec.isDefined("SOURCENAME")  &&  spec.isDefined("TARGETNAME")) {
+        setNames (spec.asString("SOURCENAME"), spec.asString("TARGETNAME"));
+	if (spec.isDefined("SHAPE")) {
+	    Vector<Int> shp;
+	    spec.get ("SHAPE", shp);
+	    shape_p.resize (shp.nelements());
+	    shape_p = IPosition(shp);
+	}
+	if (spec.isDefined("RECORD")) {
+	    record_p = spec.asRecord ("RECORD");
+	}
+    }
+}
 
 template<class S, class T>
 RetypedArrayEngine<S,T>::RetypedArrayEngine
@@ -90,9 +104,6 @@ template<class S, class T>
 DataManager* RetypedArrayEngine<S,T>::clone() const
 {
     DataManager* dmPtr = new RetypedArrayEngine<S,T> (*this);
-    if (dmPtr == 0) {
-	throw (AllocError ("RetypedArrayEngine::clone()", 1));
-    }
     return dmPtr;
 }
 
@@ -103,6 +114,7 @@ String RetypedArrayEngine<S,T>::dataManagerType() const
 {
     return className();
 }
+
 //# Return the class name.
 //# Get the data type names using class ValType.
 template<class S, class T>
@@ -113,12 +125,29 @@ String RetypedArrayEngine<S,T>::className()
 }
 
 template<class S, class T>
-DataManager* RetypedArrayEngine<S,T>::makeObject (const String&)
+String RetypedArrayEngine<S,T>::dataManagerName() const
 {
-    DataManager* dmPtr = new RetypedArrayEngine<S,T>();
-    if (dmPtr == 0) {
-	throw (AllocError ("RetypedArrayEngine::makeObject()", 1));
+    return sourceName();
+}
+
+template<class S, class T>
+Record RetypedArrayEngine<S,T>::dataManagerSpec() const
+{
+    Record spec;
+    spec.define ("SOURCENAME", sourceName());
+    spec.define ("TARGETNAME", targetName());
+    spec.define ("SHAPE", shape_p.asVector());
+    if (record_p.nfields() > 0) {
+        spec.defineRecord ("RECORD", record_p);
     }
+    return spec;
+}
+
+template<class S, class T>
+DataManager* RetypedArrayEngine<S,T>::makeObject (const String&,
+						  const Record& spec)
+{
+    DataManager* dmPtr = new RetypedArrayEngine<S,T>(spec);
     return dmPtr;
 }
 template<class S, class T>

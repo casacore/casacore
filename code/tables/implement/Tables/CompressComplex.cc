@@ -34,22 +34,11 @@
 #include <aips/Tables/DataManError.h>
 #include <aips/Arrays/ArrayIter.h>
 #include <aips/Arrays/Slicer.h>
+#include <aips/Containers/Record.h>
 #include <aips/Mathematics/Math.h>
 #include <aips/Utilities/String.h>
-#include <aips/IO/AipsIO.h>
 
 
-CompressComplex::CompressComplex ()
-: BaseMappedArrayEngine<Complex,Int> (),
-  scale_p         (1.0),
-  offset_p        (0.0),
-  fixed_p         (True),
-  autoScale_p     (False),
-  scaleColumn_p   (0),
-  offsetColumn_p  (0),
-  rwScaleColumn_p (0),
-  rwOffsetColumn_p(0)
-{}
 
 CompressComplex::CompressComplex (const String& sourceColumnName,
 				  const String& targetColumnName,
@@ -82,6 +71,33 @@ CompressComplex::CompressComplex (const String& sourceColumnName,
   rwScaleColumn_p (0),
   rwOffsetColumn_p(0)
 {}
+
+CompressComplex::CompressComplex (const Record& spec)
+: BaseMappedArrayEngine<Complex,Int> (),
+  scale_p         (1.0),
+  offset_p        (0.0),
+  fixed_p         (True),
+  autoScale_p     (False),
+  scaleColumn_p   (0),
+  offsetColumn_p  (0),
+  rwScaleColumn_p (0),
+  rwOffsetColumn_p(0)
+{
+  if (spec.isDefined("SOURCENAME")  &&  spec.isDefined("TARGETNAME")) {
+    setNames (spec.asString("SOURCENAME"), spec.asString("TARGETNAME"));
+    if (spec.isDefined("SCALE")  &&  spec.isDefined("OFFSET")) {
+      spec.get ("SCALE", scale_p);
+      spec.get ("OFFSET", offset_p);
+    } else {
+      spec.get ("SCALENAME", scaleName_p);
+      spec.get ("OFFSETNAME", offsetName_p);
+      fixed_p = False;
+    }
+    if (spec.isDefined("AUTOSCALE")) {
+      spec.get ("AUTOSCALE", autoScale_p);
+    }
+  }
+}
 
 CompressComplex::CompressComplex (const CompressComplex& that)
 : BaseMappedArrayEngine<Complex,Int> (that),
@@ -124,9 +140,30 @@ String CompressComplex::className()
   return "CompressComplex";
 }
 
-DataManager* CompressComplex::makeObject (const String&)
+String CompressComplex::dataManagerName() const
 {
-  return new CompressComplex();
+  return sourceName();
+}
+
+Record CompressComplex::dataManagerSpec() const
+{
+  Record spec;
+  spec.define ("SOURCENAME", sourceName());
+  spec.define ("TARGETNAME", targetName());
+  if (fixed_p) {
+    spec.define ("SCALE", scale_p);
+    spec.define ("OFFSET", offset_p);
+  } else {
+    spec.define ("SCALENAME", scaleName_p);
+    spec.define ("OFFSETNAME", offsetName_p);
+  }
+  spec.define ("AUTOSCALE", autoScale_p);
+  return spec;
+}
+
+DataManager* CompressComplex::makeObject (const String&, const Record& spec)
+{
+  return new CompressComplex(spec);
 }
 void CompressComplex::registerClass()
 {

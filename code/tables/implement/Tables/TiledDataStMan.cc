@@ -1,5 +1,5 @@
 //# TiledDataStMan.cc: Storage manager for tables using tiled hypercubes
-//# Copyright (C) 1995,1996,1997,1998,1999,2000
+//# Copyright (C) 1995,1996,1997,1998,1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -50,6 +50,17 @@ TiledDataStMan::TiledDataStMan (const String& hypercolumnName,
   nrrowLast_p    (0)
 {}
 
+TiledDataStMan::TiledDataStMan (const String& hypercolumnName,
+				const Record& spec)
+: TiledStMan     (hypercolumnName, 0),
+  nrUsedRowMap_p (0),
+  nrrowLast_p    (0)
+{
+    if (spec.isDefined ("MAXIMUMCACHESIZE")) {
+        setPersMaxCacheSize (spec.asuInt ("MAXIMUMCACHESIZE"));
+    }
+}
+
 TiledDataStMan::~TiledDataStMan()
 {}
 
@@ -57,18 +68,13 @@ DataManager* TiledDataStMan::clone() const
 {
     TiledDataStMan* smp = new TiledDataStMan (hypercolumnName_p,
 					      maximumCacheSize());
-    if (smp == 0) {
-	throw (AllocError ("TiledDataStMan::clone", 1));
-    }
     return smp;
 }
 
-DataManager* TiledDataStMan::makeObject (const String& group)
+DataManager* TiledDataStMan::makeObject (const String& group,
+					 const Record& spec)
 {
-    TiledDataStMan* smp = new TiledDataStMan (group);
-    if (smp == 0) {
-	throw (AllocError ("TiledDataStMan::makeObject", 1));
-    }
+    TiledDataStMan* smp = new TiledDataStMan (group, spec);
     return smp;
 }
 

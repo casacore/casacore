@@ -149,6 +149,10 @@ public:
     // construct a Table object.
     void bindAll (const DataManager&, Bool rebind=False);
 
+    // Create data managers and bind the columns using the specifications
+    // in the given record (which is obtained using Table::dataManagerInfo()).
+    void bindCreate (const Record& spec);
+
     // Define the shape of fixed shaped arrays in a column.
     // The shape of those arrays has to be known before the table
     // can be constructed. It has to be defined via this function,
@@ -400,6 +404,11 @@ public:
     // construct a Table object.
     void bindAll (const DataManager& dm, Bool rebind=False)
 	{ newTable_p->bindAll (dm, rebind); }
+
+    // Create data managers and bind the columns using the specifications
+    // in the given record (which is obtained using Table::dataManagerInfo()).
+    void bindCreate (const Record& spec)
+        { newTable_p->bindCreate (spec); }
 
     // Define the shape of fixed shaped arrays in a column.
     // The shape of those arrays has to be known before the table

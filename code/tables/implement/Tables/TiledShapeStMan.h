@@ -1,5 +1,5 @@
 //# TiledShapeStMan.h: Tiled Data Storage Manager using the shape as id
-//# Copyright (C) 1998,2000
+//# Copyright (C) 1998,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -188,9 +188,16 @@ public:
     // thus will be reused when the table is read back. Note that the class
     // <linkto class=ROTiledStManAccessor>ROTiledStManAccessor</linkto>
     // allows one to overwrite the maximum cache size temporarily.
+    // <br>The constructor taking a Record expects fields in the record with
+    // the name of the arguments in uppercase. If not defined, their
+    // default value is used.
+    // <group>
     TiledShapeStMan (const String& hypercolumnName,
 		     const IPosition& defaultTileShape,
 		     uInt maximumCacheSize = 0);
+    TiledShapeStMan (const String& hypercolumnName,
+		     const Record& spec);
+    // </group>
 
     ~TiledShapeStMan();
 
@@ -211,7 +218,8 @@ public:
 
     // Make the object from the type name string.
     // This function gets registered in the DataManager "constructor" map.
-    static DataManager* makeObject (const String& dataManagerType);
+    static DataManager* makeObject (const String& dataManagerType,
+				    const Record& spec);
 
 private:
     // Create a TiledShapeStMan.

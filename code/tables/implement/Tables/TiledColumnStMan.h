@@ -1,5 +1,5 @@
 //# TiledColumnStMan.h: Tiled Column Storage Manager
-//# Copyright (C) 1995,1996,1997,1999
+//# Copyright (C) 1995,1996,1997,1999,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -157,15 +157,23 @@ public:
     // attribute set.
     // The hypercolumn name is also the name of the storage manager.
     // The given tile shape will be used.
-    // The given maximum cache size (default is unlimited) is persistent,
-    // thus will be reused when the table is read back. Note that the class
+    // The given maximum cache size in bytes (default is unlimited) is
+    // persistent, thus will be reused when the table is read back.
+    // Note that the class
     // <linkto class=ROTiledStManAccessor>ROTiledStManAccessor</linkto>
     // allows one to overwrite the maximum cache size temporarily.
     // Its description contains a discussion about the effects of
     // setting a maximum cache.
+    // <br>The constructor taking a Record expects fields in the record with
+    // the name of the arguments in uppercase. If not defined, their
+    // default value is used.
+    // <group>
     TiledColumnStMan (const String& hypercolumnName,
 		      const IPosition& tileShape,
 		      uInt maximumCacheSize = 0);
+    TiledColumnStMan (const String& hypercolumnName,
+		      const Record& spec);
+    // </group>
 
     ~TiledColumnStMan();
 
@@ -176,9 +184,13 @@ public:
     // Get the type name of the data manager (i.e. TiledColumnStMan).
     String dataManagerType() const;
 
+    // Record a record containing data manager specifications.
+    virtual Record dataManagerSpec() const;
+
     // Make the object from the type name string.
     // This function gets registered in the DataManager "constructor" map.
-    static DataManager* makeObject (const String& dataManagerType);
+    static DataManager* makeObject (const String& dataManagerType,
+				    const Record& spec);
 
 private:
     // Create a TiledColumnStMan.

@@ -367,7 +367,12 @@ public:
     // Create an AipsIO storage manager with the given name.
     // Its name can be used later in e.g. Table::addColumn to
     // add a column to this storage manager.
+    // <br> Note that the 2nd constructor is needed for table creation
+    // from a record specification.
+    // <group>
     StManAipsIO (const String& storageManagerName);
+    StManAipsIO (const String& storageManagerName, const Record&);
+    // </group>
 
     ~StManAipsIO();
 
@@ -410,7 +415,8 @@ public:
 
     // Make the object from the string.
     // This function gets registered in the DataManager "constructor" map.
-    static DataManager* makeObject (const String& dataManagerType);
+    static DataManager* makeObject (const String& dataManagerType,
+				    const Record& spec);
 
     // Open (if needed) the file for indirect arrays with the given mode.
     // Return a pointer to the object.

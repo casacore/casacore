@@ -1,5 +1,5 @@
 //# TiledCellStMan.cc: Storage manager for tables using tiled hypercubes
-//# Copyright (C) 1995,1996,1997,1998,1999,2000
+//# Copyright (C) 1995,1996,1997,1998,1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -53,6 +53,18 @@ TiledCellStMan::TiledCellStMan (const String& hypercolumnName,
   defaultTileShape_p (defaultTileShape)
 {}
 
+TiledCellStMan::TiledCellStMan (const String& hypercolumnName,
+				const Record& spec)
+: TiledStMan  (hypercolumnName, 0)
+{
+    if (spec.isDefined ("DEFAULTTILESHAPE")) {
+        defaultTileShape_p = IPosition (spec.asArrayInt ("DEFAULTTILESHAPE"));
+    }
+    if (spec.isDefined ("MAXIMUMCACHESIZE")) {
+        setPersMaxCacheSize (spec.asuInt ("MAXIMUMCACHESIZE"));
+    }
+}
+
 TiledCellStMan::~TiledCellStMan()
 {}
 
@@ -61,18 +73,13 @@ DataManager* TiledCellStMan::clone() const
     TiledCellStMan* smp = new TiledCellStMan (hypercolumnName_p,
 					      defaultTileShape_p,
 					      maximumCacheSize());
-    if (smp == 0) {
-	throw (AllocError ("TiledCellStMan::clone", 1));
-    }
     return smp;
 }
 
-DataManager* TiledCellStMan::makeObject (const String& group)
+DataManager* TiledCellStMan::makeObject (const String& group,
+					 const Record& spec)
 {
-    TiledCellStMan* smp = new TiledCellStMan (group, IPosition());
-    if (smp == 0) {
-	throw (AllocError ("TiledCellStMan::makeObject", 1));
-    }
+    TiledCellStMan* smp = new TiledCellStMan (group, spec);
     return smp;
 }
 
@@ -181,9 +188,6 @@ void TiledCellStMan::addRow (uInt nrow)
     }
     for (uInt i=nrrow_p; i<nrrow_p+nrow; i++) {
 	TSMCube* hypercube = new TSMCube (this, fileSet_p[0]);
-	if (hypercube == 0) {
-	    throw (AllocError ("TiledCellStMan::addRow", 1));
-	}
 	cubeSet_p[i] = hypercube;
 	if (fixedCellShape_p.nelements() > 0) {
 	    hypercube->setShape (fixedCellShape_p, defaultTileShape_p);

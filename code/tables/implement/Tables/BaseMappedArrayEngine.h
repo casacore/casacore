@@ -290,6 +290,12 @@ protected:
     BaseMappedArrayEngine
 	              (const BaseMappedArrayEngine<SourceType, TargetType>&);
 
+    // Set the source and target column name.
+    void setNames (const String& sourceName, const String& targetName);
+
+    // Get the target name.
+    const String& targetName() const;
+
     // Give readonly access to the target column.
     // This can be used by the derived classes to get data.
     inline ROArrayColumn<TargetType>& roColumn();
@@ -407,6 +413,20 @@ template<class SourceType, class TargetType>
 inline const String&
 BaseMappedArrayEngine<SourceType, TargetType>::sourceName() const
     { return sourceName_p; }
+
+template<class SourceType, class TargetType>
+inline const String&
+BaseMappedArrayEngine<SourceType, TargetType>::targetName() const
+    { return targetName_p; }
+
+template<class SourceType, class TargetType>
+inline void
+BaseMappedArrayEngine<SourceType, TargetType>::setNames
+                    (const String& sourceName, const String& targetName)
+{
+    sourceName_p = sourceName;
+    targetName_p = targetName;
+}
 
 template<class SourceType, class TargetType>
 inline ROArrayColumn<TargetType>&

@@ -1,5 +1,5 @@
 //# TiledCellStMan.h: Tiled Cell Storage Manager
-//# Copyright (C) 1995,1996,1997,1998,1999
+//# Copyright (C) 1995,1996,1997,1998,1999,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -167,9 +167,16 @@ public:
     // allows one to overwrite the maximum cache size temporarily.
     // Its description contains a discussion about the effects of
     // setting a maximum cache.
+    // <br>The constructor taking a Record expects fields in the record with
+    // the name of the arguments in uppercase. If not defined, their
+    // default value is used.
+    // <group>
     TiledCellStMan (const String& hypercolumnName,
 		    const IPosition& defaultTileShape,
 		    uInt maximumCacheSize = 0);
+    TiledCellStMan (const String& hypercolumnName,
+		    const Record& spec);
+    // </group>
 
     ~TiledCellStMan();
 
@@ -190,7 +197,8 @@ public:
 
     // Make the object from the type name string.
     // This function gets registered in the DataManager "constructor" map.
-    static DataManager* makeObject (const String& dataManagerType);
+    static DataManager* makeObject (const String& dataManagerType,
+				    const Record& spec);
 
 private:
     // Create a TiledCellStMan.

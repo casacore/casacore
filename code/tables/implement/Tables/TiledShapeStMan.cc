@@ -1,5 +1,5 @@
 //# TiledShapeStMan.cc: Tiled Data Storage Manager using the shape as id
-//# Copyright (C) 1998,1999,2000
+//# Copyright (C) 1998,1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -60,6 +60,19 @@ TiledShapeStMan::TiledShapeStMan (const String& hypercolumnName,
   nrUsedRowMap_p     (0)
 {}
 
+TiledShapeStMan::TiledShapeStMan (const String& hypercolumnName,
+				  const Record& spec)
+: TiledStMan  (hypercolumnName, 0),
+  nrUsedRowMap_p     (0)
+{
+    if (spec.isDefined ("DEFAULTTILESHAPE")) {
+        defaultTileShape_p = IPosition (spec.asArrayInt ("DEFAULTTILESHAPE"));
+    }
+    if (spec.isDefined ("MAXIMUMCACHESIZE")) {
+        setPersMaxCacheSize (spec.asuInt ("MAXIMUMCACHESIZE"));
+    }
+}
+
 TiledShapeStMan::~TiledShapeStMan()
 {}
 
@@ -68,18 +81,13 @@ DataManager* TiledShapeStMan::clone() const
     TiledShapeStMan* smp = new TiledShapeStMan (hypercolumnName_p,
 						defaultTileShape_p,
 						maximumCacheSize());
-    if (smp == 0) {
-	throw (AllocError ("TiledShapeStMan::clone", 1));
-    }
     return smp;
 }
 
-DataManager* TiledShapeStMan::makeObject (const String& group)
+DataManager* TiledShapeStMan::makeObject (const String& group,
+					  const Record& spec)
 {
-    TiledShapeStMan* smp = new TiledShapeStMan (group, IPosition());
-    if (smp == 0) {
-	throw (AllocError ("TiledShapeStMan::makeObject", 1));
-    }
+    TiledShapeStMan* smp = new TiledShapeStMan (group, spec);
     return smp;
 }
 

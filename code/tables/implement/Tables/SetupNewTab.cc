@@ -33,10 +33,9 @@
 #include <aips/Tables/PlainColumn.h>
 #include <aips/Tables/DataManager.h>
 #include <aips/Tables/TableError.h>
+#include <aips/Containers/Record.h>
+#include <aips/Arrays/Vector.h>
 #include <aips/OS/File.h>
-
-
-//# This is the implementation of the SetupNewTable class.
 
 
 SetupNewTable::SetupNewTable (const String& tableName,
@@ -196,6 +195,32 @@ DataManager* SetupNewTableRep::getDataManager (const DataManager& dataMan)
     return dmp;
 }
 
+void SetupNewTableRep::bindCreate (const Record& spec)
+{
+    //# Test if object is already in use for a table.
+    if (isUsed()) {
+	throw (TableInvOper
+	       ("SetupNewTable::bindCreate, object already used by Table"));
+    }
+    for (uInt i=0; i<spec.nfields(); i++) {
+        const Record& rec = spec.subRecord(i);
+	if (rec.isDefined("TYPE")  &&  rec.isDefined("NAME")
+	&&  rec.isDefined("SPEC")  &&  rec.isDefined("COLUMNS")) {
+	    String dmType = rec.asString ("TYPE");
+	    String dmGroup = rec.asString ("NAME");
+	    const Record& sp = rec.subRecord ("SPEC");;
+	    Vector<String> cols (rec.asArrayString ("COLUMNS"));
+	    DataManager* dataMan = DataManager::getCtor(dmType) (dmGroup, sp);
+	    // Bind the columns to this data manager.
+	    for (uInt j=0; j<cols.nelements(); j++) {
+	        bindColumn (cols(j), *dataMan);
+	    }
+	    delete dataMan;
+	}
+    }
+}
+
+
 void SetupNewTableRep::bindAll (const DataManager& dataMan, Bool rebind)
 {
     //# Test if object is already in use for a table.
@@ -285,7 +310,8 @@ void SetupNewTableRep::handleUnbound()
 	    //# Clone and add DataManager object.
 	    String dmType = coldes.dataManagerType();
 	    String dmGroup = coldes.dataManagerGroup();
-	    DataManager* dataMan = DataManager::getCtor(dmType) (dmGroup);
+	    DataManager* dataMan = DataManager::getCtor(dmType) (dmGroup,
+								 Record());
 	    DataManager* dataManPtr = getDataManager (*dataMan);
 	    delete dataMan;
 	    //# Bind the column.

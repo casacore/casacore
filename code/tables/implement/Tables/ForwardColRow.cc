@@ -1,5 +1,5 @@
 //# ForwardColRow.cc: Virtual Column Engine forwarding to another row/column
-//# Copyright (C) 1995,1996,1997
+//# Copyright (C) 1995,1996,1997,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -34,29 +34,41 @@
 #include <aips/Tables/ColumnDesc.h>
 #include <aips/Tables/DataManError.h>
 #include <aips/Tables/TableRecord.h>
+#include <aips/Containers/Record.h>
 
 
-ForwardColumnIndexedRowEngine::ForwardColumnIndexedRowEngine()
-: ForwardColumnEngine (Table(), "", "_Row"),
+ForwardColumnIndexedRowEngine::ForwardColumnIndexedRowEngine
+                                           (const String& dataManagerName,
+					    const Record& spec)
+: ForwardColumnEngine (dataManagerName, spec),
   lastRow_p           (-1)
-{}
+{
+  setSuffix ("_Row");
+  if (spec.isDefined("COLUMNNAME")) {
+    spec.get ("COLUMNNAME", rowColumnName_p);
+  }
+}
 
 ForwardColumnIndexedRowEngine::ForwardColumnIndexedRowEngine
                                                (const Table& referencedTable,
 						const String& rowColumnName,
 						const String& dataManagerName)
-: ForwardColumnEngine (referencedTable, dataManagerName, "_Row"),
+: ForwardColumnEngine (referencedTable, dataManagerName),
   rowColumnName_p     (rowColumnName),
   lastRow_p           (-1)
-{}
+{
+  setSuffix ("_Row");
+}
 
 ForwardColumnIndexedRowEngine::ForwardColumnIndexedRowEngine
                                                (const Table& referencedTable,
 						const String& rowColumnName)
-: ForwardColumnEngine (referencedTable, "", "_Row"),
+: ForwardColumnEngine (referencedTable, ""),
   rowColumnName_p     (rowColumnName),
   lastRow_p           (-1)
-{}
+{
+  setSuffix ("_Row");
+}
 
 ForwardColumnIndexedRowEngine::~ForwardColumnIndexedRowEngine()
 {}
@@ -67,9 +79,6 @@ DataManager* ForwardColumnIndexedRowEngine::clone() const
     DataManager* dmPtr = new ForwardColumnIndexedRowEngine (refTable(),
 							    rowColumnName_p,
 							    dataManagerName());
-    if (dmPtr == 0) {
-	throw (AllocError ("ForwardColumnIndexedRowEngine::clone()", 1));
-    }
     return dmPtr;
 }
 
@@ -82,10 +91,6 @@ DataManagerColumn* ForwardColumnIndexedRowEngine::makeScalarColumn
     ForwardColumnIndexedRow* colp = new ForwardColumnIndexedRow
 	                                          (this, name, dataType,
 						   dataTypeId, refTable());
-    if (colp == 0) {
-	throw (AllocError ("ForwardColumnIndexedRowEngine::makeScalarColumn",
-			   1));
-    }
     addForwardColumn (colp);
     return colp;
 }
@@ -123,12 +128,12 @@ void ForwardColumnIndexedRowEngine::reopenRW()
 {}
 
 
-DataManager* ForwardColumnIndexedRowEngine::makeObject (const String&)
+DataManager* ForwardColumnIndexedRowEngine::makeObject
+                                          (const String& dataManagerName,
+					   const Record& spec)
 {
-    DataManager* dmPtr = new ForwardColumnIndexedRowEngine();
-    if (dmPtr == 0) {
-	throw (AllocError ("ForwardColumnIndexedRowEngine::makeObject()", 1));
-    }
+    DataManager* dmPtr = new ForwardColumnIndexedRowEngine (dataManagerName,
+							    spec);
     return dmPtr;
 }
 void ForwardColumnIndexedRowEngine::registerClass()
@@ -139,6 +144,13 @@ void ForwardColumnIndexedRowEngine::registerClass()
 String ForwardColumnIndexedRowEngine::dataManagerType() const
 {
     return "ForwardColumnIndexedRowEngine";
+}
+
+Record ForwardColumnIndexedRowEngine::dataManagerSpec() const
+{
+  Record spec = ForwardColumnEngine::dataManagerSpec();
+  spec.define ("COLUMNNAME", rowColumnName_p);
+  return spec;
 }
 
 

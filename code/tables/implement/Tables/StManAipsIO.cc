@@ -421,9 +421,6 @@ void* StManColumnAipsIO::allocData (uInt nrval, Bool byPtr)
 	    throw DataManInvDT();
 	}
     }
-    if (datap == 0) {
-	throw (AllocError ("StManColumnAipsIO::allocData", nrval));
-    }
     return datap;
 }
 	
@@ -647,6 +644,16 @@ StManAipsIO::StManAipsIO (const String& storageManagerName)
   iosfile_p   (0)
 {}
 
+StManAipsIO::StManAipsIO (const String& storageManagerName, const Record&)
+: DataManager (),
+  stmanName_p (storageManagerName),
+  uniqnr_p    (0),
+  nrrow_p     (0),
+  colSet_p    (0),
+  hasPut_p    (False),
+  iosfile_p   (0)
+{}
+
 StManAipsIO::~StManAipsIO()
 {
     for (uInt i=0; i<ncolumn(); i++) {
@@ -658,18 +665,13 @@ StManAipsIO::~StManAipsIO()
 DataManager* StManAipsIO::clone() const
 {
     StManAipsIO* smp = new StManAipsIO (stmanName_p);
-    if (smp == 0) {
-	throw (AllocError ("StManAipsIO::clone", 1));
-    }
     return smp;
 }
 
-DataManager* StManAipsIO::makeObject (const String& storageManagerName)
+DataManager* StManAipsIO::makeObject (const String& storageManagerName,
+				      const Record& spec)
 {
-    StManAipsIO* smp = new StManAipsIO (storageManagerName);
-    if (smp == 0) {
-	throw (AllocError ("StManAipsIO::makeObject", 1));
-    }
+    StManAipsIO* smp = new StManAipsIO (storageManagerName, spec);
     return smp;
 }
 
@@ -706,9 +708,6 @@ DataManagerColumn* StManAipsIO::makeScalarColumn (const String& columnName,
 	colSet_p.resize (colSet_p.nelements() + 32);
     }
     StManColumnAipsIO* colp = new StManColumnAipsIO (this, dataType, False);
-    if (colp == 0) {
-	throw (AllocError ("StManAipsIO::makeScalarColumn", 1));
-    }
     colSet_p[ncolumn()] = colp;
     return colp;
 }
@@ -722,9 +721,6 @@ DataManagerColumn* StManAipsIO::makeDirArrColumn (const String& columnName,
 	colSet_p.resize (colSet_p.nelements() + 32);
     }
     StManColumnAipsIO* colp = new StManColumnArrayAipsIO (this, dataType);
-    if (colp == 0) {
-	throw (AllocError ("StManAipsIO::makeDirArrColumn", 1));
-    }
     colSet_p[ncolumn()] = colp;
     return colp;
 }
@@ -738,9 +734,6 @@ DataManagerColumn* StManAipsIO::makeIndArrColumn (const String& columnName,
 	colSet_p.resize (colSet_p.nelements() + 32);
     }
     StManColumnAipsIO* colp = new StManColumnIndArrayAipsIO (this, dataType);
-    if (colp == 0) {
-	throw (AllocError ("StManAipsIO::makeIndArrColumn", 1));
-    }
     colSet_p[ncolumn()] = colp;
     return colp;
 }

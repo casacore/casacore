@@ -1,5 +1,5 @@
 //# TiledDataStMan.h: Tiled Data Storage Manager
-//# Copyright (C) 1995,1996,1997,1999
+//# Copyright (C) 1995,1996,1997,1999,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -356,8 +356,15 @@ public:
     // thus will be reused when the table is read back. Note that the class
     // <linkto class=ROTiledStManAccessor>ROTiledStManAccessor</linkto>
     // allows one to overwrite the maximum cache size temporarily.
+    // <br>The constructor taking a Record expects fields in the record with
+    // the name of the arguments in uppercase. If not defined, their
+    // default value is used.
+    // <group>
     TiledDataStMan (const String& hypercolumnName,
 		    uInt maximumCacheSize = 0);
+    TiledDataStMan (const String& hypercolumnName,
+		    const Record& spec);
+    // </group>
 
     ~TiledDataStMan();
 
@@ -370,7 +377,8 @@ public:
 
     // Make the object from the type name string.
     // This function gets registered in the DataManager "constructor" map.
-    static DataManager* makeObject (const String& dataManagerType);
+    static DataManager* makeObject (const String& dataManagerType,
+				    const Record& spec);
 
 private:
     // Create a TiledDataStMan.
