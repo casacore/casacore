@@ -425,36 +425,34 @@ Bool ImageFITSConverter::ImageToFITS(String &error,
     header.setComment("BUNIT", "Brightness (pixel) unit");
 //
     IPosition shapeCopy = shape;
+    Record saveHeader(header);
     Bool ok = coordsys.toFITSHeader(header, shapeCopy, True, 'c', False, 
 				    preferVelocity, opticalVelocity);
 
     if (!ok) {
 	log << LogIO::SEVERE << "Could not make a standard FITS header. Setting"
 	    " a simple linear coordinate system." << LogIO::POST;
+//
 	uInt n = coordsys.nWorldAxes();
 	Matrix<Double> pc(n,n); pc=0.0; pc.diagonal() = 1.0;
-
 	LinearCoordinate linear(coordsys.worldAxisNames(), 
 				coordsys.worldAxisUnits(),
 				coordsys.referenceValue(),
 				coordsys.increment(),
 				coordsys.linearTransform(),
 				coordsys.referencePixel());
+	CoordinateSystem linCS;
+	linCS.addCoordinate(linear);
 
-	CoordinateSystem empty;
-	coordsys = empty;
-	coordsys.addCoordinate(linear);
+// Recover old header before it got mangled by toFITSHeader
 
-	Record empty2;
-	header = empty2;
-
+	header = saveHeader;
 	IPosition shapeCopy = shape;
-	Bool ok = coordsys.toFITSHeader(header, shapeCopy, True);
+	Bool ok = linCS.toFITSHeader(header, shapeCopy, True);
 	if (!ok) {
 	    error = "Fallback linear coordinate system fails also.";
 	    return False;
 	}
-
     }
 
 // When this if test is True, it means some pixel axes had been removed from 
