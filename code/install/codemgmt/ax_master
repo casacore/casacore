@@ -4686,3 +4686,4 @@
 14 302 src rm nrao/implement/VLA/OldVLAFiller.h
 14 302 src rm nrao/implement/VLA/OldVLAFiller.cc
 14 302 src rm /nrao/apps/oldvlafiller
+14 302 src mv trial/apps/oldms/newms_meta.g trial/apps/oldms/oldms_meta.g
