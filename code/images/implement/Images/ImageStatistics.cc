@@ -353,35 +353,33 @@ String ImageStatistics<T>::formatCoordinate (const IPosition& pos)
 {
    const CoordinateSystem& cS = pInImage_p->coordinates();
    CoordinateSystem cSys(cS);                 // Non-const
+   Vector<Double> world;
    Vector<Double> pixel(cSys.nPixelAxes());
-   Vector<Double> world(cSys.nWorldAxes());
    for (uInt i=0; i<pixel.nelements(); i++) pixel(i) = pos(i);
+//
    if (!cSys.toWorld(world, pixel)) {
       String err = String("Error converting coordinate position because ") + cSys.errorMessage();
       throw(AipsError(err));
    }
 //
-   Vector<String> s(cSys.nPixelAxes(),"");
-   Vector<String> u(cSys.nPixelAxes(),"");
+   String s, s2, u;
    for (uInt i=0; i<world.nelements(); i++) {
-      Int pixelAxis = cSys.worldAxisToPixelAxis(i);
-      String tmp = cSys.format(u(pixelAxis), Coordinate::DEFAULT, world(i), i, 
+      String tmp = cSys.format(u, Coordinate::DEFAULT, world(i), i, 
                                True, True, -1);
-      if (u(pixelAxis).empty()) {
-        s(pixelAxis) = tmp;
+//
+      if (u.empty()) {
+        s = tmp;
       } else {
-        s(pixelAxis) = tmp + u(pixelAxis);
+        s = tmp + u;
+      }
+//
+      if (i==0) {
+         s2 += s;
+      } else {
+         s2 += String(", ") + s;
       }
    }
 //
-   String s2;
-   for (uInt i=0; i<cSys.nPixelAxes(); i++) {
-     if (i==0) {
-        s2 += s(i);
-     } else {
-        s2 += String(", ") + s(i);
-     }
-   }
    return s2;
 }
 
