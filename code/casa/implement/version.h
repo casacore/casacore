@@ -1,5 +1,5 @@
 //# version.h: Version information for AIPS++
-//# Copyright (C) 1996,1997,1999,2000,2001,2002
+//# Copyright (C) 1996,1997,1999,2000,2001,2002,2004
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -122,7 +122,7 @@ public:
     // Extra information about this release, e.g. "beta release."
     static const char *info();
     // Summarize the above into an ostream. Note that an 
-    // <src>ostrstream</src> can be converted to a 
+    // <src>ostringstream</src> can be converted to a 
     // <linkto class="String">String</linkto> via a constructor.
     // This information is NOT prepended with "AIPS++ version:" or anything
     // like that. You may wish to add this yourself. The date is also not
