@@ -176,20 +176,20 @@ class MFrequency : public MeasBase<MVFrequency, MeasRef<MFrequency> > {
 
   //# Typedefs
   // Measure value container for this class (i.e. MFrequency::MVType)
-  typedef class MVFrequency MVType;
+  typedef MVFrequency MVType;
   // Measure conversion routines for this class (i.e. MFrequency::MCType)
-  typedef class MCFrequency MCType;
+  typedef MCFrequency MCType;
   // Measure reference (i.e. MFrequency::Ref)
-  typedef class MeasRef<MFrequency> Ref;
+  typedef MeasRef<MFrequency> Ref;
   // Measure conversion use (i.e. MFrequency::Convert)
-  typedef class MeasConvert<MFrequency> Convert;
+  typedef MeasConvert<MFrequency> Convert;
   // Measure table Columns (e.g., MFrequency::ROScalarColumn)
-  typedef class ROScalarMeasColumn<MFrequency> ROScalarColumn;
-  typedef class ScalarMeasColumn<MFrequency> ScalarColumn;
-  typedef class ROArrayMeasColumn<MFrequency> ROArrayColumn;
-  typedef class ArrayMeasColumn<MFrequency> ArrayColumn;
+  typedef ROScalarMeasColumn<MFrequency> ROScalarColumn;
+  typedef ScalarMeasColumn<MFrequency> ScalarColumn;
+  typedef ROArrayMeasColumn<MFrequency> ROArrayColumn;
+  typedef ArrayMeasColumn<MFrequency> ArrayColumn;
   // Reference enum Types (included originally for gcc 2.95)  
-  typedef Types Types;
+  typedef WHATEVER_SUN_TYPEDEF(MFrequency) Types Types;
 
   //# Constructors
   // <note role=tip> In the following constructors and other functions, all 

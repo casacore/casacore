@@ -230,20 +230,20 @@ public:
 
   //# Typedefs
   // Measure value container for this class (i.e. MDirection::MVType)
-  typedef class MVDirection MVType;
+  typedef MVDirection MVType;
   // Measure conversion routines for this class (i.e. MDirection::MCType)
-  typedef class MCDirection MCType;
+  typedef MCDirection MCType;
   // Measure reference (i.e. MDirection::Ref)
-  typedef class MeasRef<MDirection> Ref;
+  typedef MeasRef<MDirection> Ref;
   // Measure Convert (i.e. MDirection::Convert)
-  typedef class MeasConvert<MDirection> Convert;
+  typedef MeasConvert<MDirection> Convert;
   // Measure table Columns (e.g., MDirection::ROScalarColumn)
-  typedef class ROScalarMeasColumn<MDirection> ROScalarColumn;
-  typedef class ScalarMeasColumn<MDirection> ScalarColumn;
-  typedef class ROArrayMeasColumn<MDirection> ROArrayColumn;
-  typedef class ArrayMeasColumn<MDirection> ArrayColumn;
+  typedef ROScalarMeasColumn<MDirection> ROScalarColumn;
+  typedef ScalarMeasColumn<MDirection> ScalarColumn;
+  typedef ROArrayMeasColumn<MDirection> ROArrayColumn;
+  typedef ArrayMeasColumn<MDirection> ArrayColumn;
   // Reference enum Types (included originally for gcc 2.95)  
-  typedef Types Types;
+  typedef WHATEVER_SUN_TYPEDEF(MDirection) Types Types;
 
 //# Constructors
 // <note role=tip> In the following constructors and other functions, all 

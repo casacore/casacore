@@ -155,20 +155,20 @@ class MDoppler : public MeasBase<MVDoppler, MeasRef<MDoppler> > {
 
   //# Typedefs
   // Measure value container for this class (i.e. MDoppler::MVType)
-  typedef class MVDoppler MVType;
+  typedef MVDoppler MVType;
   // Measure conversion routines for this class (i.e. MDoppler::MCType)
-  typedef class MCDoppler MCType;
+  typedef MCDoppler MCType;
   // Measure reference (i.e. MDoppler::Ref)
-  typedef class MeasRef<MDoppler> Ref;
+  typedef MeasRef<MDoppler> Ref;
   // Measure Convert (i.e. MDoppler::Convert)
   typedef MeasConvert<MDoppler> Convert;
   // Measure table Columns (e.g., MDoppler::ROScalarColumn)
-  typedef class ROScalarMeasColumn<MDoppler> ROScalarColumn;
-  typedef class ScalarMeasColumn<MDoppler> ScalarColumn;
-  typedef class ROArrayMeasColumn<MDoppler> ROArrayColumn;
-  typedef class ArrayMeasColumn<MDoppler> ArrayColumn;
+  typedef ROScalarMeasColumn<MDoppler> ROScalarColumn;
+  typedef ScalarMeasColumn<MDoppler> ScalarColumn;
+  typedef ROArrayMeasColumn<MDoppler> ROArrayColumn;
+  typedef ArrayMeasColumn<MDoppler> ArrayColumn;
   // Reference enum Types (included originally for gcc 2.95)  
-  typedef Types Types;
+  typedef WHATEVER_SUN_TYPEDEF(MDoppler) Types Types;
 
 //# Constructors
 // <note role=tip> In the following constructors and other functions, all 

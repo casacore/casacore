@@ -1,5 +1,5 @@
 //# MPosition.h: A Measure: position on Earth
-//# Copyright (C) 1995,1996,1997,1998,1999,2000
+//# Copyright (C) 1995,1996,1997,1998,1999,2000,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -99,20 +99,20 @@ class MPosition : public MeasBase<MVPosition, MeasRef<MPosition> > {
 
   //# Typedefs
   // Measure value container for this class (i.e. MPosition::MVType)
-  typedef class MVPosition MVType;
+  typedef MVPosition MVType;
   // Measure conversion routines for this class (i.e. MPosition::MCType)
-  typedef class MCPosition MCType;
+  typedef MCPosition MCType;
   // Measure reference (i.e. MPosition::Ref)
-  typedef class MeasRef<MPosition> Ref;
+  typedef MeasRef<MPosition> Ref;
   // Measure Convert (i.e. MPosition::Convert)
-  typedef class MeasConvert<MPosition> Convert;
+  typedef MeasConvert<MPosition> Convert;
   // Measure table Columns (e.g., MPosition::ROScalarColumn)
-  typedef class ROScalarMeasColumn<MPosition> ROScalarColumn;
-  typedef class ScalarMeasColumn<MPosition> ScalarColumn;
-  typedef class ROArrayMeasColumn<MPosition> ROArrayColumn;
-  typedef class ArrayMeasColumn<MPosition> ArrayColumn;
+  typedef ROScalarMeasColumn<MPosition> ROScalarColumn;
+  typedef ScalarMeasColumn<MPosition> ScalarColumn;
+  typedef ROArrayMeasColumn<MPosition> ROArrayColumn;
+  typedef ArrayMeasColumn<MPosition> ArrayColumn;
   // Reference enum Types (included originally for gcc 2.95)  
-  typedef Types Types;
+  typedef WHATEVER_SUN_TYPEDEF(MPosition) Types Types;
 
   //# Constructors
   // <note role=tip> In the following constructors and other functions, all 

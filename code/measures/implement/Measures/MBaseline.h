@@ -127,20 +127,20 @@ class MBaseline : public MeasBase<MVBaseline, MeasRef<MBaseline> > {
 
   //# Typedefs
   // Measure value container for this class (i.e. MBaseline::MVType)
-  typedef class MVBaseline MVType;
+  typedef MVBaseline MVType;
   // Measure conversion routines for this class (i.e. MBaseline::MCType)
-  typedef class MCBaseline MCType;
+  typedef MCBaseline MCType;
   // Measure reference (i.e. MBaseline::Ref)
-  typedef class MeasRef<MBaseline> Ref;
+  typedef MeasRef<MBaseline> Ref;
   // Measure Convert (i.e. MBaseline::Convert)
-  typedef class MeasConvert<MBaseline> Convert;
+  typedef MeasConvert<MBaseline> Convert;
   // Measure table Columns (e.g., MBaseline::ROScalarColumn)
-  typedef class ROScalarMeasColumn<MBaseline> ROScalarColumn;
-  typedef class ScalarMeasColumn<MBaseline> ScalarColumn;
-  typedef class ROArrayMeasColumn<MBaseline> ROArrayColumn;
-  typedef class ArrayMeasColumn<MBaseline> ArrayColumn;
+  typedef ROScalarMeasColumn<MBaseline> ROScalarColumn;
+  typedef ScalarMeasColumn<MBaseline> ScalarColumn;
+  typedef ROArrayMeasColumn<MBaseline> ROArrayColumn;
+  typedef ArrayMeasColumn<MBaseline> ArrayColumn;
   // Reference enum Types (included originally for gcc 2.95)  
-  typedef Types Types;
+  typedef WHATEVER_SUN_TYPEDEF(MBaseline) Types Types;
 
 //# Constructors
 // <note role=tip> In the following constructors and other functions, all 

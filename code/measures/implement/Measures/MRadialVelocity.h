@@ -161,20 +161,20 @@ class MRadialVelocity : public MeasBase<MVRadialVelocity, MeasRef<MRadialVelocit
   
   //# Typedefs
   // Measure value container for this class (i.e. MRadialVelocity::MVType)
-  typedef class MVRadialVelocity MVType;
+  typedef MVRadialVelocity MVType;
   // Measure conversion routines for this class (i.e. MRadialVelocity::MCType)
-  typedef class MCRadialVelocity MCType;
+  typedef MCRadialVelocity MCType;
   // Measure reference (i.e. MRadialVelocity::Ref)
   typedef MeasRef<MRadialVelocity> Ref;
   // Measure conversion use (i.e. MRadialVelocity::Convert)
-  typedef class MeasConvert<MRadialVelocity> Convert;
+  typedef MeasConvert<MRadialVelocity> Convert;
   // Measure table Columns (e.g., MRadialVelocity::ROScalarColumn)
-  typedef class ROScalarMeasColumn<MRadialVelocity> ROScalarColumn;
-  typedef class ScalarMeasColumn<MRadialVelocity> ScalarColumn;
-  typedef class ROArrayMeasColumn<MRadialVelocity> ROArrayColumn;
-  typedef class ArrayMeasColumn<MRadialVelocity> ArrayColumn;
+  typedef ROScalarMeasColumn<MRadialVelocity> ROScalarColumn;
+  typedef ScalarMeasColumn<MRadialVelocity> ScalarColumn;
+  typedef ROArrayMeasColumn<MRadialVelocity> ROArrayColumn;
+  typedef ArrayMeasColumn<MRadialVelocity> ArrayColumn;
   // Reference enum Types (included originally for gcc 2.95)  
-  typedef Types Types;
+  typedef WHATEVER_SUN_TYPEDEF(MRadialVelocity) Types Types;
   
   //# Constructors
   // <note role=tip> In the following constructors and other functions, all 

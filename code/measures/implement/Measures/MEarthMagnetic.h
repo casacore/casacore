@@ -166,20 +166,20 @@ class MEarthMagnetic : public MeasBase<MVEarthMagnetic, MeasRef<MEarthMagnetic> 
 
   //# Typedefs
   // Measure value container for this class (i.e. MEarthMagnetic::MVType)
-  typedef class MVEarthMagnetic MVType;
+  typedef MVEarthMagnetic MVType;
   // Measure conversion routines for this class (i.e. MEarthMagnetic::MCType)
-  typedef class MCEarthMagnetic MCType;
+  typedef MCEarthMagnetic MCType;
   // Measure reference (i.e. MEarthMagnetic::Ref)
-  typedef class MeasRef<MEarthMagnetic> Ref;
+  typedef MeasRef<MEarthMagnetic> Ref;
   // Measure Convert (i.e. MEarthMagnetic::Convert)
-  typedef class MeasConvert<MEarthMagnetic> Convert;
+  typedef MeasConvert<MEarthMagnetic> Convert;
   // Measure table Columns (e.g., MEarthMagnetic::ROScalarColumn)
-  typedef class ROScalarMeasColumn<MEarthMagnetic> ROScalarColumn;
-  typedef class ScalarMeasColumn<MEarthMagnetic> ScalarColumn;
-  typedef class ROArrayMeasColumn<MEarthMagnetic> ROArrayColumn;
-  typedef class ArrayMeasColumn<MEarthMagnetic> ArrayColumn;
+  typedef ROScalarMeasColumn<MEarthMagnetic> ROScalarColumn;
+  typedef ScalarMeasColumn<MEarthMagnetic> ScalarColumn;
+  typedef ROArrayMeasColumn<MEarthMagnetic> ROArrayColumn;
+  typedef ArrayMeasColumn<MEarthMagnetic> ArrayColumn;
   // Reference enum Types (included originally for gcc 2.95)  
-  typedef Types Types;
+  typedef WHATEVER_SUN_TYPEDEF(MEarthMagnetic) Types Types;
 
   //# Constructors
   // <note> In the following constructors and other functions, all 

@@ -1,5 +1,5 @@
 //# MEpoch.h: A Measure: instant in time
-//# Copyright (C) 1995,1996,1997,1998,1999,2000
+//# Copyright (C) 1995,1996,1997,1998,1999,2000,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -139,20 +139,20 @@ public:
   
   //# Typedefs
   // Measure value container for this class (i.e. MEpoch::MVType)
-  typedef class MVEpoch MVType;
+  typedef MVEpoch MVType;
   // Measure conversion routines for this class (i.e. MEpoch::MCType)
-  typedef class MCEpoch MCType;
+  typedef MCEpoch MCType;
   // Measure reference (i.e. MEpoch::Ref)
-  typedef class MeasRef<MEpoch> Ref;
+  typedef MeasRef<MEpoch> Ref;
   // Measure Convert (i.e. MEpoch::Convert)
-  typedef class MeasConvert<MEpoch> Convert;
+  typedef MeasConvert<MEpoch> Convert;
   // Measure table Columns (e.g., MEpoch::ROScalarColumn)
-  typedef class ROScalarMeasColumn<MEpoch> ROScalarColumn;
-  typedef class ScalarMeasColumn<MEpoch> ScalarColumn;
-  typedef class ROArrayMeasColumn<MEpoch> ROArrayColumn;
-  typedef class ArrayMeasColumn<MEpoch> ArrayColumn;
+  typedef ROScalarMeasColumn<MEpoch> ROScalarColumn;
+  typedef ScalarMeasColumn<MEpoch> ScalarColumn;
+  typedef ROArrayMeasColumn<MEpoch> ROArrayColumn;
+  typedef ArrayMeasColumn<MEpoch> ArrayColumn;
   // Reference enum Types (included originally for gcc 2.95)  
-  typedef Types Types;
+  typedef WHATEVER_SUN_TYPEDEF(MEpoch) Types Types;
     
   //# Constructors
   // <note role=tip> In the following constructors and other functions, all 

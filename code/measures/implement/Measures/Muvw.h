@@ -157,20 +157,20 @@ public:
   
   //# Typedefs
   // Measure value container for this class (i.e. Muvw::MVType)
-  typedef class MVuvw MVType;
+  typedef MVuvw MVType;
   // Measure conversion routines for this class (i.e. Muvw::MCType)
-  typedef class MCuvw MCType;
+  typedef MCuvw MCType;
   // Measure reference (i.e. Muvw::Ref)
-  typedef class MeasRef<Muvw> Ref;
+  typedef MeasRef<Muvw> Ref;
   // MeasConvert use (i.e. Muvw::Convert)
-  typedef class MeasConvert<Muvw> Convert;
+  typedef MeasConvert<Muvw> Convert;
   // Measure table Columns (e.g., Muvw::ROScalarColumn)
-  typedef class ROScalarMeasColumn<Muvw> ROScalarColumn;
-  typedef class ScalarMeasColumn<Muvw> ScalarColumn;
-  typedef class ROArrayMeasColumn<Muvw> ROArrayColumn;
-  typedef class ArrayMeasColumn<Muvw> ArrayColumn;
+  typedef ROScalarMeasColumn<Muvw> ROScalarColumn;
+  typedef ScalarMeasColumn<Muvw> ScalarColumn;
+  typedef ROArrayMeasColumn<Muvw> ROArrayColumn;
+  typedef ArrayMeasColumn<Muvw> ArrayColumn;
   // Reference enum Types (included originally for gcc 2.95)  
-  typedef Types Types;
+  typedef WHATEVER_SUN_TYPEDEF(Muvw) Types Types;
   
   //# Constructors
   // <note role=tip> In the following constructors and other functions, all 
