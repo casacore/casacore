@@ -1129,7 +1129,7 @@ Bool ImageHistograms<T>::generateStorageImage()
 //      latticeShape = imageNavigator.subLatticeShape();
       latticeShape = imageNavigator.latticeShape();
       blc_p = 0;
-      trc_p = 0;
+      trc_p = pInImage_p->shape() - 1;
                
 // Create the image iterator
  
