@@ -83,17 +83,8 @@ LCIntersection& LCIntersection::operator= (const LCIntersection& other)
 }
 
 Bool LCIntersection::operator== (const LCRegion& other) const
-//
-// See if this region is the same as the other region
-//
 {
-
-// Check below us
-
-   if (!LCRegionMulti::operator==(other)) return False;
-    
- 
-   return True;
+    return LCRegionMulti::operator== (other);
 }
  
     
@@ -147,8 +138,8 @@ void LCIntersection::defineBox()
     uInt nr = regions().nelements();
     itsOffsets.resize (nr, True);
     for (i=0; i<nr; i++) {
-	const IPosition& regblc = regions()[i]->box().start();
-	const IPosition& regtrc = regions()[i]->box().end();
+	const IPosition& regblc = regions()[i]->boundingBox().start();
+	const IPosition& regtrc = regions()[i]->boundingBox().end();
 	for (uInt j=0; j<nrdim; j++) {
 	    if (regtrc(j) < blc(j)  ||  regblc(j) > trc(j)) {
 	        throw (AipsError ("LCIntersection::LCIntersection - "
@@ -162,12 +153,12 @@ void LCIntersection::defineBox()
 	    }
 	}
     }
-    // Set the box in the parent object.
-    setBox (Slicer(blc, trc, Slicer::endIsLast));
-    // Now determine where box starts in constituting regions.
+    // Set the bounding box in the parent object.
+    setBoundingBox (Slicer(blc, trc, Slicer::endIsLast));
+    // Now determine where bounding box starts in constituting regions.
     itsOffsets.resize (nr);
     for (i=0; i<nr; i++) {
-        itsOffsets[i] = blc - regions()[i]->box().start();
+        itsOffsets[i] = blc - regions()[i]->boundingBox().start();
     }
     // Fill the hasMask switch.
     fillHasMask();
@@ -193,8 +184,8 @@ void LCIntersection::multiGetSlice (Array<Bool>& buffer,
     for (uInt i=1; i<nr; i++) {
         LCRegion* reg = (LCRegion*)(regions()[i]);
         reg->doGetSlice (tmpbuf, Slicer(section.start()+itsOffsets[i],
-				      section.length(),
-				      section.stride()));
+					section.length(),
+					section.stride()));
         const Bool* tmp = tmpbuf.getStorage (deleteTmp);
 	const Bool* tmpptr = tmp;
 	Bool* bufptr = buf;
