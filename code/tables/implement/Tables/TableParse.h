@@ -369,8 +369,11 @@ public:
     // The mustSelect flag tells if a SELECT command must do something.
     // Usually that is required, but not for a SELECT in an INSERT command.
     // The commandType (select or update) is filled in.
+    // Optionally the maximum nr of rows to be selected can be given.
+    // It will be used as the default value for the LIMIT clause.
+    // 0 = no maximum.
     void execute (Bool setInGiving, String& commandType,
-		  Bool mustSelect=True);
+		  Bool mustSelect=True, uInt maxRow=0);
 
     // Execute a query in a from clause and create an appropriate value
     // for the result.
@@ -378,6 +381,11 @@ public:
 
     // Execute a subquery and create an appropriate node for the result.
     TableExprNode doSubQuery();
+
+    // Test if a subquery has sufficient elements.
+    // It uses default LIMIT=1, but that can be overidden in the subquery.
+    // The flag tells if NOT EXISTS or EXISTS was given.
+    TableExprNode doExists (Bool noexists);
 
     // Show the expression tree.
     void show (ostream& os) const;
