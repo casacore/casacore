@@ -1,5 +1,5 @@
 //# Stokes.cc: Stokes parameter definitions for interface to table data
-//# Copyright (C) 1994,1995,1997,2000
+//# Copyright (C) 1994,1995,1997,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -41,38 +41,40 @@ Stokes::StokesTypes Stokes::type(Int stokesNumber)
 Stokes::StokesTypes Stokes::type(const String &stokesName) 
 {
    StokesTypes val = Undefined;
-   if      (stokesName == "I")  val = I;
-   else if (stokesName == "Q")  val = Q;
-   else if (stokesName == "U")  val = U;
-   else if (stokesName == "V")  val = V;
-   else if (stokesName == "RR") val = RR;
-   else if (stokesName == "RL") val = RL;
-   else if (stokesName == "LR") val = LR;
-   else if (stokesName == "LL") val = LL;
-   else if (stokesName == "XX") val = XX;
-   else if (stokesName == "XY") val = XY;
-   else if (stokesName == "YX") val = YX;
-   else if (stokesName == "YY") val = YY;
-   else if (stokesName == "RX") val = RX;
-   else if (stokesName == "RY") val = RY;
-   else if (stokesName == "LX") val = LX;
-   else if (stokesName == "LY") val = LY;
-   else if (stokesName == "XR") val = XR;
-   else if (stokesName == "XL") val = XL;
-   else if (stokesName == "YR") val = YR;
-   else if (stokesName == "YL") val = YL;
-   else if (stokesName == "PP") val = PP;
-   else if (stokesName == "PQ") val = PQ;
-   else if (stokesName == "QP") val = QP;
-   else if (stokesName == "QQ") val = QQ;
-   else if (stokesName == "RCircular") val = RCircular;
-   else if (stokesName == "LCircular") val = LCircular;
-   else if (stokesName == "Linear") val = Linear;
-   else if (stokesName == "Ptotal") val = Ptotal;
-   else if (stokesName == "Plinear") val = Plinear;
-   else if (stokesName == "PFtotal") val = PFtotal;
-   else if (stokesName == "PFlinear") val = PFlinear;
-   else if (stokesName == "Pangle") val = Pangle;
+   String name = stokesName;
+   name.upcase();
+   if      (name == "I")  val = I;
+   else if (name == "Q")  val = Q;
+   else if (name == "U")  val = U;
+   else if (name == "V")  val = V;
+   else if (name == "RR") val = RR;
+   else if (name == "RL") val = RL;
+   else if (name == "LR") val = LR;
+   else if (name == "LL") val = LL;
+   else if (name == "XX") val = XX;
+   else if (name == "XY") val = XY;
+   else if (name == "YX") val = YX;
+   else if (name == "YY") val = YY;
+   else if (name == "RX") val = RX;
+   else if (name == "RY") val = RY;
+   else if (name == "LX") val = LX;
+   else if (name == "LY") val = LY;
+   else if (name == "XR") val = XR;
+   else if (name == "XL") val = XL;
+   else if (name == "YR") val = YR;
+   else if (name == "YL") val = YL;
+   else if (name == "PP") val = PP;
+   else if (name == "PQ") val = PQ;
+   else if (name == "QP") val = QP;
+   else if (name == "QQ") val = QQ;
+   else if (name == "RCIRCULAR") val = RCircular;
+   else if (name == "LCIRCULAR") val = LCircular;
+   else if (name == "LINEAR") val = Linear;
+   else if (name == "PTOTAL") val = Ptotal;
+   else if (name == "PLINEAR") val = Plinear;
+   else if (name == "PFTOTAL") val = PFtotal;
+   else if (name == "PFLINEAR") val = PFlinear;
+   else if (name == "PANGLE") val = Pangle;
    return val;
 }
 
