@@ -284,6 +284,10 @@ private:
 //     <here> Global functions </here> for SquareMatrix.
 // </linkfrom>
 // <group name=SqM-global-functions>  
+// <summary>
+// Various global math and IO functions.
+// </summary>
+
 // Calculate direct product of two SquareMatrices.
 SquareMatrix<Complex,4> 
 directProduct(const SquareMatrix<Complex,2>& left, 
