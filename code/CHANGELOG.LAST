@@ -65,3 +65,22 @@ This is now used for storing inputs. I also plan to offer
 a GUI interface to allow all records to be saved automatically
 
 Tim
+
+change id: 0040
+ author:   Tim Cornwell
+ date:     2000/08/27
+ avers:    1.4
+ area:     Tool
+ package:  trial
+ module:   toolmanager
+ type:     Code
+ category: Change
+ summary:  Cleanup of implementation
+
+Toolmanager has been cleaned up internally. It has been split into a
+couple of files:
+
+	- toolmanager: public interface that public should see
+	- toolmanagersupport: functional interface used by GUIs and CLIs
+
+Tim
