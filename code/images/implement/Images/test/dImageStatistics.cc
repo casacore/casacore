@@ -238,7 +238,7 @@ try {
 
 // Plotting things
 
-   Vector<Int> statisticTypes = ImageStatsBase::toStatisticTypes(statsToPlot);
+   Vector<Int> statisticTypes = ImageStatsBase::toStatisticTypes(statsToPlot, ",");
    Vector<Int> nxy(nxyB);
    if (nxy.nelements() == 1 && nxy(0) == -1) nxy.resize(0);
     if (device != "none" && 
