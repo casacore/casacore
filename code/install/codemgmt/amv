@@ -389,7 +389,11 @@
   echo ""
   cat ax_list
   echo ""
-  echo -n "Continue (y/n) [n]: "
+  if [ "`echo -n X`" = "X" ] ; then
+     echo -n "Continue (y/n) [n]: "
+  else
+     echo "Continue (y/n) [n]: \c"
+  fi
   read ANSWER
   [ "$ANSWER" = y ] || exit 0
 
