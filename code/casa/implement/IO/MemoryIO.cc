@@ -251,5 +251,6 @@ uChar* MemoryIO::setBuffer(uInt length) {
   if (!expand (length)) {
     throw(AipsError ("MemoryIO::setBuffer - buffer cannot be expanded"));
   }
+  itsUsed = length;
   return itsBuffer;
 }
