@@ -1,5 +1,5 @@
 //# tByteSinkSource.cc: Test program for class ByteSinkSource
-//# Copyright (C) 1996
+//# Copyright (C) 1996,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -52,7 +52,7 @@ int main ()
 	ByteSinkSource sinkSource(&canonicalIO);
 	ByteSinkSource sinkSource1(sinkSource);
 	sinkSource1 = sinkSource; 
-	ByteSinkSource sinkSource2(&(sinkSource.getTypeIO()));
+	ByteSinkSource sinkSource2(&(sinkSource.typeIO()));
     }
     {
 	Bool     testBool = True;
