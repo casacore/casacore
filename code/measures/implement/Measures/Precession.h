@@ -40,7 +40,8 @@
 
 // <use visibility=export>
 
-// <reviewed reviewer="" date="yyyy/mm/dd" tests="tMeasMath" demos="">
+// <reviewed reviewer="Tim Cornwell" date="1996/07/01" tests="tMeasMath"
+//	 demos="">
 // </reviewed>
 
 // <prerequisite>
@@ -56,10 +57,14 @@
 //
 // <synopsis>
 // Precession forms the class for precession calculations. It is a simple
-// container with the selected method, and the mean epoch.<br>
-// The method is selected from one of the following:
+// container with the selected method, and the mean epoch. It acts as a cache
+// for values and their derivatives, to enable fast calculations for time
+// epochs close together (see the <em>aipsrc</em> variable
+// <em>measures.precession.d_interval</em>. <br>
+// The calculation method is selected from one of the following:
 // <ul>
-//   <li> Precession::STANDARD  (at 1995/09/04 the IAU1976 definition)
+//   <li> Precession::STANDARD  (at 1995/09/04 the IAU1976 definition,
+//			at 2004/01/01 the IAU2000 defeinition))
 //   <li> Precession::NONE	(precession of zero returned
 //   <li> Precession::IAU1976
 //   <li> Precession::B1950
@@ -69,13 +74,14 @@
 // MeasData::MJD2000 and MeasData::MJD1950 or the actual MJD),
 // leading to the following constructors:
 // <ul>
-//   <li> Precession() default; assuming JD2000, IAU1976
+//   <li> Precession() default; assuming JD2000, STANDARD
 //   <li> Precession(method) assuming the correct default epoch of 
-//		JD2000 or JD1950
+//		JD2000 or JD1950 depending on method
 //   <li> Precession(method,epoch) with epoch Double(MJD) (Note: not
 //		valid for IAU2000: in that case always JD2000 assumed)
 // </ul>
-// Actual precession for a certain Epoch is calculated by the () operator
+// Actual precession for a certain Epoch (TT for IAU2000) is calculated by
+// the () operator
 // as Precession(epoch), with epoch Double MJD. Values returned  as an 
 // <linkto class=Euler>Euler</linkto>.
 // The derivative (d<sup>-1</sup>) can be obtained as well by 
@@ -91,7 +97,7 @@
 // <ul>
 //  <li> measures.precession.d_interval: approximation interval as time 
 //	(fraction of days is default unit) over which linear approximation
-//	is used
+//	is used (default is 0.1 day).
 // </ul>
 // </synopsis>
 //
@@ -115,7 +121,8 @@
 // Using MJD (JD-2400000.5) rather than JD is for precision reasons.
 // </motivation>
 //
-// <todo asof="1996/02/04">
+// <todo asof="2003/09/18">
+//   <li> Adjust on 2004/01/01
 // </todo>
 
 class Precession {
@@ -125,7 +132,9 @@ class Precession {
   static const Double INTV;
   
   //# Enumerations
-  // Types of known precession calculations (at 1995/09/04 STANDARD == IAU1976)
+  // Types of known precession calculations (at 1995/09/04 STANDARD ==
+  //	 IAU1976), from 2004/01/01 will be IAU2000)
+
   enum PrecessionTypes {
     NONE, IAU1976, B1950, IAU2000,
     IAU2000A = IAU2000, IAU2000B = IAU2000,
@@ -134,18 +143,19 @@ class Precession {
   //# Constructors
   // Default constructor, generates default J2000 precession identification
   Precession();
-  // Copy constructor
+  // Copy constructor (deep copy)
   Precession(const Precession &other);
   // Constructor with epoch in Julian days
   explicit Precession(PrecessionTypes type, Double catepoch=0);
-  // Copy assignment
+  // Copy assignment (deep copy)
   Precession &operator=(const Precession &other);
   
   //# Destructor
   ~Precession();
   
   //# Operators
-  // Return the precession angles
+  // Return the precession angles (for IAU2000 including
+  // the IAU 2000 corrections) at the specified epoch (in MJD; TT for IAU2000).
   const Euler &operator()(Double epoch);
   
   //# General Member Functions
@@ -162,32 +172,32 @@ class Precession {
  private:
   //# Data members
   // Method to be used
-  PrecessionTypes method;
+  PrecessionTypes method_p;
   // Fixed epoch to be used (MJD)
-  Double fixedEpoch;
+  Double fixedEpoch_p;
   // Fixed epoch in centuries from base epoch
-  Double T;
-  // Length of century
-  Double cent;
+  Double T_p;
+  // Length of century (depending on Bessel or Julian days)
+  Double cent_p;
   // Reference epoch;
-  Double refEpoch;
+  Double refEpoch_p;
   // Check epoch
-  Double checkEpoch;
+  Double checkEpoch_p;
   // Polynomial coefficients for zeta,z,theta
-  Polynomial<Double> zeta[3];
+  Polynomial<Double> zeta_p[3];
   // Cached calculated angles
-  Double pval[3];
+  Double pval_p[3];
   // Cached derivatives
-  Double dval[3];
+  Double dval_p[3];
   // To reference results, and use a few in interim calculations, results are
-  // calculated in a circular buffer.
+  // saced in a circular buffer.
   // Current result pointer
-  Int lres;
+  Int lres_p;
   // Last calculation
-  Euler result[4];
-  // Interpolation interval
-  static uInt interval_reg;
-  
+  Euler result_p[4];
+  // Interpolation interval aipsrc registration
+  static uInt myInterval_reg;
+
   //# Member functions
   // Make a copy
   void copy(const Precession &other);
@@ -198,5 +208,3 @@ class Precession {
 };
 
 #endif
-
-

@@ -35,11 +35,11 @@
 const Double Precession::INTV = 0.1;
 
 //# Static data
-uInt Precession::interval_reg = 0;
+uInt Precession::myInterval_reg = 0;
 
 //# Constructors
 Precession::Precession() :
-method(Precession::STANDARD), fixedEpoch(MeasData::MJD2000), lres(0) {
+method_p(Precession::STANDARD), fixedEpoch_p(MeasData::MJD2000), lres_p(0) {
   fillEpoch();
 }
 
@@ -48,7 +48,7 @@ Precession::Precession(const Precession &other) {
 }
 
 Precession::Precession(PrecessionTypes type, Double catepoch) :
-method(type), fixedEpoch(catepoch), lres(0) {
+method_p(type), fixedEpoch_p(catepoch), lres_p(0) {
   fillEpoch();
 }
 
@@ -60,14 +60,14 @@ Precession &Precession::operator=(const Precession &other) {
 }
 
 void Precession::init() {
-  method = Precession::STANDARD;
-  fixedEpoch = MeasData::MJD2000;
+  method_p = Precession::STANDARD;
+  fixedEpoch_p = MeasData::MJD2000;
   fillEpoch();
 }
 
 void Precession::init(PrecessionTypes type, Double catepoch) {
-  method = type;
-  fixedEpoch = catepoch;
+  method_p = type;
+  fixedEpoch_p = catepoch;
   fillEpoch();
 }
 
@@ -78,123 +78,120 @@ Precession::~Precession() {}
 // Calculate precession Euler angles
 const Euler &Precession::operator()(Double epoch) {
   calcPrec(epoch);
-  Double dt = epoch - checkEpoch;
-  lres++; lres %= 4;
-  for (Int i=0; i<3; i++) {
-    result[lres](i) = pval[i] + dt*dval[i];
+  Double dt = epoch - checkEpoch_p;
+  lres_p++; lres_p %= 4;
+  for (uInt i=0; i<3; ++i) {
+    result_p[lres_p](i) = pval_p[i] + dt*dval_p[i];
   };
-  return result[lres];
+  return result_p[lres_p];
 }
 
 //# Member functions
 // Calculate derivative of precession Euler angles
 const Euler &Precession::derivative(Double epoch) {
   calcPrec(epoch);
-  lres++; lres %= 4;
-  for (Int i=0; i<3; i++) {
-    result[lres](i) = dval[i];
-  };
-  return result[lres];
+  ++lres_p; lres_p %= 4;
+  for (uInt i=0; i<3; ++i) result_p[lres_p](i) = dval_p[i];
+  return result_p[lres_p];
 }
 
 void Precession::copy(const Precession &other) {
-  method = other.method;
-  fixedEpoch = other.fixedEpoch;
-  T = other.T;
-  cent = other.cent;
-  refEpoch = other.refEpoch;
-  checkEpoch = other.checkEpoch;
-  for (Int i=0; i<3; i++) {
-    zeta[i] = other.zeta[i];
-    pval[i] = other.pval[i];
-    dval[i] = other.dval[i];
+  method_p = other.method_p;
+  fixedEpoch_p = other.fixedEpoch_p;
+  T_p = other.T_p;
+  cent_p = other.cent_p;
+  refEpoch_p = other.refEpoch_p;
+  checkEpoch_p = other.checkEpoch_p;
+  for (uInt i=0; i<3; ++i) {
+    zeta_p[i] = other.zeta_p[i];
+    pval_p[i] = other.pval_p[i];
+    dval_p[i] = other.dval_p[i];
   };
-  for (Int j=0; j<4; j++) {
-    result[j] = other.result[j];
-  };
+  for (uInt i=0; i<4; ++i) result_p[i] = other.result_p[i];
 }
 
 void Precession::fillEpoch() {
   // Get the interpolation interval
-  if (!Precession::interval_reg) {
-    interval_reg = 
+  if (!Precession::myInterval_reg) {
+    myInterval_reg = 
       AipsrcValue<Double>::registerRC(String("measures.precession.d_interval"),
 				      Unit("d"), Unit("d"),
 				      Precession::INTV);
   };
   
-  checkEpoch = 1e30;
-  switch (method) {
+  checkEpoch_p = 1e30;
+  switch (method_p) {
   case B1950: 
-    refEpoch = MeasData::MJDB1850;
-    cent = MeasData::TROPCEN;
+    refEpoch_p = MeasData::MJDB1850;
+    cent_p = MeasData::TROPCEN;
     break;
   default: 
-    refEpoch = MeasData::MJD2000;
-    cent = MeasData::JDCEN;
+    refEpoch_p = MeasData::MJD2000;
+    cent_p = MeasData::JDCEN;
     break;
   };
-  if (fixedEpoch == 0) {
-    switch (method) {
+  if (fixedEpoch_p == 0) {
+    switch (method_p) {
     case B1950:
-      fixedEpoch = MeasData::MJDB1950;
+      fixedEpoch_p = MeasData::MJDB1950;
       break;
     default:
-      fixedEpoch = refEpoch;
+      fixedEpoch_p = refEpoch_p;
       break;
     };
   };
-  switch (method) {
+  switch (method_p) {
   case IAU2000:
-    for (Int i=0; i<3; i++) zeta[i] = Polynomial<Double>(5);
+    for (uInt i=0; i<3; ++i) zeta_p[i] = Polynomial<Double>(5);
     break;
   default:
-    for (Int i=0; i<3; i++) zeta[i] = Polynomial<Double>(3);
+    for (uInt i=0; i<3; ++i) zeta_p[i] = Polynomial<Double>(3);
     break;
   }
-  T = (fixedEpoch - refEpoch)/cent;
-  switch (method) {
+  T_p = (fixedEpoch_p - refEpoch_p)/cent_p;
+  switch (method_p) {
   case B1950:
-    MeasTable::precessionCoef1950(T, zeta);
+    MeasTable::precessionCoef1950(T_p, zeta_p);
   case NONE:
     break;
   case IAU2000:
-    MeasTable::precessionCoef2000(zeta);
+    MeasTable::precessionCoef2000(zeta_p);
     break;
   default:
-    MeasTable::precessionCoef(T, zeta);
+    MeasTable::precessionCoef(T_p, zeta_p);
     break;
   }
-  for (Int j=0; j<4; j++) {
-    result[j].set(3,2,3);
-  };
+  for (uInt i=0; i<4; ++i) result_p[i].set(3,2,3);
 }
 
 void Precession::refresh() {
-  checkEpoch = 1e30;
+  checkEpoch_p = 1e30;
 }
 
 void Precession::calcPrec(Double t) {
-  if (!nearAbs(t, checkEpoch,
-	       AipsrcValue<Double>::get(Precession::interval_reg))) {
-    checkEpoch = t;
-    switch (method) {
+  if (!nearAbs(t, checkEpoch_p,
+	       AipsrcValue<Double>::get(Precession::myInterval_reg))) {
+    checkEpoch_p = t;
+    switch (method_p) {
     case B1950:
-      t = (t - refEpoch)/cent - T;
+      t = (t - refEpoch_p)/cent_p - T_p;
       break;
     default:
-      t = (t - fixedEpoch)/cent;
+      t = (t - fixedEpoch_p)/cent_p;
       break;
     };
-    for (Int i=0; i<3; i++) {
-      pval[i] = (zeta[i])(t);
-      dval[i] = ((zeta[i]).derivative())(t);
-      switch (method) {
+    for (uInt i=0; i<3; ++i) {
+      pval_p[i] = (zeta_p[i])(t);
+      dval_p[i] = ((zeta_p[i]).derivative())(t);
+      switch (method_p) {
       case B1950:
-	dval[i] = dval[i]/MeasData::TROPCEN;
+	dval_p[i] = dval_p[i]/MeasData::TROPCEN;
 	break;
+      case IAU2000:
+	pval_p[i] += MeasTable::precRate00(i)*checkEpoch_p;
+	dval_p[i] += MeasTable::precRate00(i);
       default:
-	dval[i] = dval[i]/MeasData::JDCEN;
+	dval_p[i] = dval_p[i]/MeasData::JDCEN;
 	break;
       };
     };
