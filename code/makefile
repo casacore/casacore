@@ -104,7 +104,14 @@ atoms :
 	$(MAKE) -C $(addprefix $(CODEDIR)/, doc/user) atoms
 
 resolvedocs :
-	find $(addprefix $(CODEDIR)/, doc) -name "*.latex" -exec touch {} \;
+	grep externallabels $(addprefix $(CODEDIR)/, doc/*/*.latex)  | awk -F: '{print $$1}' | sort -u> $(ARCHTMPD)/labels.file ; \
+	grep externallabels $(addprefix $(CODEDIR)/, doc/*/*/*.latex)  | awk -F: '{print $$1}' | sort -u>> $(ARCHTMPD)/labels.file ; \
+	for filename in `cat $(ARCHTMPD)/labels.file` ; do \
+	  echo $$filename ; \
+          chmod u+w $$filename ; \
+          touch $$filename ; \
+          chmod u-w $$filename ; \
+	done
 	$(MAKE) -C $(addprefix $(CODEDIR)/, doc)
 
 docscan docextr :
