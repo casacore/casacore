@@ -82,11 +82,12 @@ T Gaussian3D<T>::eval(typename Function<T>::FunctionArg x) const
 
   T v;
 
-  if (stoT != param_p[THETA] || stoP != param_p[PHI]) settrigvals();
+  if (stoT_p != param_p[THETA] || stoP_p != param_p[PHI]) settrigvals();
 
-  v = param_p[H] * exp( - sq((cosTcosP*Nx + sinT*Ny - cosTsinP*Nz)/param_p[AX])
-	                - sq((-sinTcosP*Nx + cosT*Ny +sinTsinP*Nz)/param_p[AY])
-                        - sq((sinP*Nx + cosP*Nz)/param_p[AZ]));
+  v = param_p[H] 
+        * exp( - sq((cosTcosP_p*Nx + sinT_p*Ny - cosTsinP_p*Nz)/param_p[AX])
+	       - sq((-sinTcosP_p*Nx + cosT_p*Ny +sinTsinP_p*Nz)/param_p[AY])
+               - sq((sinP_p*Nx + cosP_p*Nz)/param_p[AZ]));
   return v;
   
 
