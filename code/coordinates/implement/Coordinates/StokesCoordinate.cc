@@ -241,21 +241,29 @@ Vector<Double> StokesCoordinate::referenceValue() const
 
 Bool StokesCoordinate::setWorldAxisNames(const Vector<String> &names)
 {
-    AlwaysAssert(names.nelements() == 1, AipsError);
-    name_p = names(0);
-    return True;
+    Bool ok = ToBool(names.nelements()==1);
+    if (!ok) {
+       set_error ("names vector must be of length 1");
+    } else {
+       name_p = names(0);
+    }
+    return ok;
 }
 
 Bool StokesCoordinate::setWorldAxisUnits(const Vector<String> &units,
 					   Bool adjust)
 {
-    AlwaysAssert(units.nelements() == 1, AipsError);
-    if (units(0) == "") {
-        return True;
-    }
-    Bool ok = Coordinate::setWorldAxisUnits(units, adjust);
-    if (ok) {
-	unit_p = units(0);
+    Bool ok = ToBool(units.nelements()==1);
+    if (!ok) {
+       set_error ("units vector must be of length 1");
+    } else {
+       if (units(0) == "") {
+           return True;
+       }
+       Bool ok = Coordinate::setWorldAxisUnits(units, adjust);
+       if (ok) {
+          unit_p = units(0);
+       }
     }
     return ok;
 }
@@ -263,16 +271,24 @@ Bool StokesCoordinate::setWorldAxisUnits(const Vector<String> &units,
 
 Bool StokesCoordinate::setReferencePixel(const Vector<Double> &refPix)
 {
-    AlwaysAssert(refPix.nelements() == 1, AipsError);
-    crpix_p = refPix(0);
-    return True;
+    Bool ok = ToBool(refPix.nelements()==1);
+    if (!ok) {
+       set_error ("reference pixel vector must be of length 1");
+    } else {
+       crpix_p = refPix(0);
+    }
+    return ok;
 }
 
 Bool StokesCoordinate::setLinearTransform(const Matrix<Double> &xform)
 {
-    AlwaysAssert(xform.nelements() == 1, AipsError);
-    matrix_p = xform(0,0);
-    return True;
+    Bool ok = ToBool(xform.nelements()==1);
+    if (!ok) {
+       set_error ("linear transform matrix must be of length 1");
+    } else {
+       matrix_p = xform(0,0);
+    }
+    return ok;
 }
 
 Bool StokesCoordinate::setIncrement(const Vector<Double> &inc) 
@@ -284,9 +300,13 @@ Bool StokesCoordinate::setIncrement(const Vector<Double> &inc)
 
 Bool StokesCoordinate::setReferenceValue(const Vector<Double> &refval)
 {
-    AlwaysAssert(refval.nelements() == 1, AipsError);
-    crval_p = refval(0);
-    return True;
+    Bool ok = ToBool(refval.nelements()==1);
+    if (!ok) {
+       set_error ("reference value vector must be of length 1");
+    } else {
+       crval_p = refval(0);
+    }
+    return ok;
 }
 
 
