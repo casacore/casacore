@@ -27,7 +27,7 @@
 
 #include <trial/ComponentModels/ComponentList.h>
 #include <trial/MeasurementEquations/StokesVector.h>
-#include <aips/Measures/MCDirection.h>
+#include <aips/Measures.h>
 #include <aips/Tables/TableDesc.h>
 #include <aips/Tables/ScaColDesc.h>
 #include <aips/Tables/ArrColDesc.h>
@@ -41,6 +41,9 @@
 #include <trial/MeasurementEquations/StokesVector.h>
 #include <aips/Exceptions/Error.h>
 #include <iostream.h>
+#ifdef __GNUG__
+typedef MeasConvert<MDirection,MVDirection,MCDirection> gpp_complist_bug1;
+#endif
 
 ComponentList::
 ComponentList()
@@ -139,14 +142,14 @@ ComponentList::
 
       ArrayColumnDesc<Float> fluxCol("Flux" ,"Stokes I,Q,U,V flux in Jy",
 				     IPosition(1,4),  ColumnDesc::Direct);
-      fluxCol.rwKeywordSet().define ("Unit", "Jy");
+      fluxCol.keywordSet().define ("Unit", "Jy");
       td.addColumn(fluxCol);
 
       ArrayColumnDesc<Double> dirCol("Direction" ,"RA/Dec in "
 				     + angleUnits + " ("+refFrame+")",
 				     IPosition(1,2),  ColumnDesc::Direct);
-      dirCol.rwKeywordSet().define ("Unit", angleUnits);
-      dirCol.rwKeywordSet().define ("Frame", refFrame);
+      dirCol.keywordSet().define ("Unit", angleUnits);
+      dirCol.keywordSet().define ("Frame", refFrame);
       td.addColumn(dirCol);
       
       ArrayColumnDesc<Double> 
