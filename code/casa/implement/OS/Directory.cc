@@ -39,8 +39,15 @@
 #include <sys/stat.h>               // needed for mkdir
 #include <errno.h>                  // needed for errno
 #include <string.h>                 // needed for strerror
+
 #if defined(AIPS_SOLARIS) || defined(AIPS_OSF)
+#  if defined(AIPS_OSF)
+    extern "C" {                    // missing in system include file
+#  endif
 #  include <sys/statvfs.h>          // needed for statvfs
+#  if defined(AIPS_OSF)
+    }
+#  endif
 #  define statfs statvfs
 #else
 #  include <sys/vfs.h>
@@ -156,7 +163,7 @@ uLong Directory::freeSpace() const
 			  ": " + strerror(errno)));
     }
 #if defined(AIPS_SOLARIS) || defined(AIPS_OSF)
-    //# On Solaris the fragment size usually contains the true block size.
+    //# The fragment size usually contains the true block size.
     if (buf.f_frsize > 0) {
 	return buf.f_frsize * buf.f_bavail;
     }
