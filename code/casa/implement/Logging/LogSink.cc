@@ -87,7 +87,7 @@ LogSink &LogSink::operator=(const LogSink &other)
 
 LogSink::~LogSink()
 {
-    flush();
+       flush();
 }
 
 Bool LogSink::post(const LogMessage &message) 
@@ -191,6 +191,8 @@ Bool LogSink::postLocally(const LogMessage &message)
 
 void LogSink::flush()
 {
-    local_sink_p->flush();
-    global_sink_p->flush();
+    if(!local_sink_p.null())
+       local_sink_p->flush();
+    if(!global_sink_p.null())
+       global_sink_p->flush();
 }
