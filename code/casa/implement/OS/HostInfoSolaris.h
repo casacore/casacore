@@ -50,7 +50,7 @@
 #include <kvm.h>
 #include <sys/types.h>
 #include <sys/sysinfo.h>
-//#include <sys/swap.h>
+#include <sys/swap.h>
 
 #include <kstat.h>
 

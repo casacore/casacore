@@ -177,7 +177,7 @@ HOSTINFO_IMPLEMENT_MEMBERS
 } //# NAMESPACE CASA - END
 
 #elif defined(AIPS_SOLARIS)
-#include "HostInfoSolaris.h"
+#include <casa/OS/HostInfoSolaris.h>
 namespace casa { //# NAMESPACE CASA - BEGIN
 
 HOSTINFO_IMPLEMENT_MEMBERS
