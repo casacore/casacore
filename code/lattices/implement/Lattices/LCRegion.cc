@@ -1,5 +1,5 @@
 //# LCRegion.cc: Abstract base class to define a region of interest
-//# Copyright (C) 1997,1998,1999
+//# Copyright (C) 1997,1998,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -85,8 +85,6 @@ Lattice<Bool>* LCRegion::clone() const
 void LCRegion::handleDelete()
 {}
 void LCRegion::handleRename (const String&, Bool)
-{}
-void LCRegion::unlock()
 {}
 
 LCRegion* LCRegion::translate (const IPosition& translateVector,
