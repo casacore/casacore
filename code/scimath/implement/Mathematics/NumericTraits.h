@@ -60,9 +60,17 @@
 // And the following characteristics:
 // <dl> 
 // <dt> <src>epsilon</src>
-// <dd> the smallest value such that 1+epsilon is different from 1
+// <dd> A Double containing the smallest value such that 1+epsilon is different
+//      from 1.
+// <dt> <src>minimum</src>
+// <dd> A Double containing the smallest positive representable number,
+//      excluding denormalised numbers.
+// <dt> <src>maximum</src>
+// <dd> A Double containing the largest representable number.
 // </dl>
-// 
+//
+// For complex numbers these values are applicable to the real or imaginary
+// components separately.
 // 
 // The use of this class is best illustrated in a number of examples.
 // </synopsis>
@@ -112,21 +120,31 @@
 // <h4>Example 3:</h4>
 // Suppose you have a templated class that needs to use the <src>allNear</src>
 // functions from <linkto class="ArrayMath">ArrayMath</linkto> to determine if
-// a templated Array is near zero. The tolerance argument to the allNear
-// function will depend on the template type and this is not known untill the
+// a templated Array is near one. The tolerance argument to the allNear
+// function will depend on the template type and this is not known until the
 // template is instantiated. The epsilon trait can be used to supply this
 // value.
 // <srcblock> 
 // template<class T> void myClass<T>::myFunction(Array<T> & aArray) {
-//   if (allNearAbs(aArray, T(0), NumericTraits<T>::epsilon))
+//   if (allNear(aArray, T(1), NumericTraits<T>::epsilon))
 //     return;
 // // Do something
 // }
 // </srcblock>
-// epsilon is defined as FLT_EPSILON for Float and Complex types and
-// DBL_EPSILON for Double and DComplex data types. See the <linkto
-// class="Constants">Constants</linkto> class for the values of these
-// variables.
+
+// <dl>
+// <dt><src>NumericTraits<T>::epsilon</src> 
+// <dd> is FLT_EPSILON for Float and Complex types and DBL_EPSILON for Double
+// and DComplex data types.
+// <dt><src>NumericTraits<T>::minimum</src>
+// <dd>is FLT_MIN for Float and complex Types and DBL_MIN for Double and
+// DComplex data types.
+// <dt><src>NumericTraits<T>::maximum</src>
+// <dd>is FLT_MAX for Float and complex Types and DBL_MAX for Double and
+// DComplex data types.
+// </dl>
+// See the <linkto class="Constants">Constants</linkto> class for the values of
+// these variables.
 // </example>
 //
 // <motivation>
@@ -150,6 +168,8 @@
 // <src>NumericTraits<ArbitraryType>::PrecisionType</src> returns 
 //   <src>ArbitraryType</src><br>
 // <src>NumericTraits<ArbitraryType>::epsilon</src> is undefined
+// <src>NumericTraits<ArbitraryType>::minimum</src> is undefined
+// <src>NumericTraits<ArbitraryType>::maximum</src> is undefined
 // </templating>
 //
 // <thrown>
