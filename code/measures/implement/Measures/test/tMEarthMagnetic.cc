@@ -42,7 +42,7 @@
 #include <aips/Arrays/ArrayMath.h>
 #include <aips/Arrays/ArrayLogical.h>
 
-Int main() {
+int main() {
 
     try {
 	cout << "Test Earth Magnetic field" << endl;
@@ -53,10 +53,11 @@ Int main() {
 
 	MEarthMagnetic vl;
 	MVTime dat(1998,5,18);
-	MPosition obs(MVPosition(Quantity(3828488.86, "m").getBaseValue(),
-				 Quantity(443253.42, "m").getBaseValue(),
-				 Quantity(5064977.78, "m").getBaseValue()));
-	MeasFrame frame(MEpoch(MVEpoch(dat.day())),obs);
+	MVPosition mvobs(Quantity(3828488.86, "m").getBaseValue(),
+			 Quantity(443253.42, "m").getBaseValue(),
+			 Quantity(5064977.78, "m").getBaseValue());
+	MPosition obs(mvobs);
+	MeasFrame frame((MEpoch(MVEpoch(dat.day()))), obs);
 
 	cout << "Date:      " << dat.string(MVTime::YMD +
 					    MVTime::NO_TIME, 6) <<

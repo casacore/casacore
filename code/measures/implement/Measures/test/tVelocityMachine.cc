@@ -38,18 +38,19 @@
 #include <aips/Measures/MDoppler.h>
 #include <aips/Arrays/Vector.h>
 
-Int main() {
+int main() {
 
   try {
     cout << "Test Velocity<->Frequency machine" << endl;
     cout << "--------------------------------------" << endl;
     MVTime dat(1998,5,10);
-    MPosition obs(MVPosition(Quantity(3828488.86, "m").getBaseValue(),
-			     Quantity(443253.42, "m").getBaseValue(),
-			     Quantity(5064977.78, "m").getBaseValue()));
-    MDirection dir(MVDirection(Quantity(0, "deg"),
-			       Quantity(80, "deg")));
-    MeasFrame frame(MEpoch(MVEpoch(dat.day())), obs, dir);
+    MVPosition mvobs(Quantity(3828488.86, "m").getBaseValue(),
+		     Quantity(443253.42, "m").getBaseValue(),
+		     Quantity(5064977.78, "m").getBaseValue());
+    MPosition obs(mvobs);
+    MDirection dir((MVDirection(Quantity(0, "deg"),
+			       Quantity(80, "deg"))));
+    MeasFrame frame((MEpoch(MVEpoch(dat.day()))), obs, dir);
     
     cout << "Date:      " << dat.string(MVTime::YMD +
 					MVTime::NO_TIME, 6) <<

@@ -34,7 +34,7 @@
 #include <aips/Measures/MEpoch.h>
 #include <aips/Quanta/RotMatrix.h>
 
-Int main() {
+int main() {
   try {
     cout << "Test UVWMachine class" << endl;
     cout << "--------------------------------------" << endl;
@@ -45,8 +45,8 @@ Int main() {
 					       3554915), 
 				    MPosition::ITRF);
     // A time and position frame
-    MeasFrame mFrame(MEpoch(Quantity(4.1216294e+09, "s"),
-			    MEpoch::TAI),
+    MeasFrame mFrame((MEpoch(Quantity(4.1216294e+09, "s"),
+			    MEpoch::TAI)),
 		     mLocation);
     // A source position
     Vector<Double> d1(2);
@@ -214,11 +214,11 @@ Int main() {
     cout << "-------------- deproject -----------------" << endl;
     // Output direction 
     MDirection::Ref oref(MDirection::J2000);
-    MDirection odir(MVDirection(Quantity(30, "deg"),
-				Quantity(37, "deg")), oref);
+    MDirection odir((MVDirection(Quantity(30, "deg"),
+				 Quantity(37, "deg"))), oref);
     // Main direction
-    MDirection indir(MVDirection(Quantity(26, "deg"),
-				 Quantity(34, "deg")),
+    MDirection indir((MVDirection(Quantity(26, "deg"),
+				  Quantity(34, "deg"))),
 		     MDirection::Ref(MDirection::J2000));
     // A UVW machine without projection
     UVWMachine um(odir, indir, False, False);
