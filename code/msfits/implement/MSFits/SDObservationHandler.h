@@ -119,6 +119,9 @@ public:
 private:
     ColumnsIndex *index_p;
     RecordFieldPtr<String> telescopeKey_p, observerKey_p, projectKey_p, ns_obsidKey_p;
+    RecordFieldPtr<Double> releaseDateKey_p;
+    RecordFieldPtr<Bool> flagRowKey_p;
+
     MSObservation *msObs_p;
     MSObservationColumns *msObsCols_p;
 
@@ -128,6 +131,9 @@ private:
 
     // pointers to fields in record, only used if attached
     RORecordFieldPtr<String> observer_p, projid_p, obsid_p;
+    RORecordFieldPtr<Double> releaseDate_p;
+    RORecordFieldPtr<Bool> flagRow_p;
+    RORecordFieldPtr<Array<Double> > timeRange_p;
 
     // cleanup everything
     void clearAll();

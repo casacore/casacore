@@ -140,8 +140,12 @@ private:
 
     RORecordFieldPtr<String> objectField_p;
 
-    // this might come from an MS v1 table
+    // these might come from an MS table
+    // this can just come from an MS v1 table
     RORecordFieldPtr<Array<Double> > pointingDirRateField_p;
+    RORecordFieldPtr<Double> intervalField_p, timeField_p;
+    RORecordFieldPtr<String> nameField_p;
+    RORecordFieldPtr<Bool> trackingField_p;
 
     // cleanup everything
     void clearAll();

@@ -34,6 +34,7 @@
 #include <aips/MeasurementSets/MSObservation.h>
 #include <aips/Containers/Record.h>
 #include <aips/Arrays/Vector.h>
+#include <aips/Arrays/ArrayLogical.h>
 #include <aips/Tables/ArrayColumn.h>
 #include <aips/Utilities/Assert.h>
 #include <aips/Exceptions/Error.h>
@@ -75,6 +76,10 @@ SDObservationHandler &SDObservationHandler::operator=(const SDObservationHandler
 	if (index_p->accessKey().fieldNumber("NS_OBSID") >= 0) {
 	    ns_obsidKey_p.attachToRecord(index_p->accessKey(), "NS_OBSID");
 	}
+	releaseDateKey_p.attachToRecord(index_p->accessKey(),
+					MSObservation::columnName(MSObservation::RELEASE_DATE));
+	flagRowKey_p.attachToRecord(index_p->accessKey(),
+				    MSObservation::columnName(MSObservation::FLAG_ROW));
 	msObs_p = new MSObservation(*(other.msObs_p));
 	AlwaysAssert(msObs_p, AipsError);
 	msObsCols_p = new MSObservationColumns(*msObs_p);
@@ -89,6 +94,9 @@ SDObservationHandler &SDObservationHandler::operator=(const SDObservationHandler
 	observer_p = other.observer_p;
 	projid_p = other.projid_p;
 	obsid_p = other.obsid_p;
+	releaseDate_p = other.releaseDate_p;
+	flagRow_p = other.flagRow_p;
+	timeRange_p = other.timeRange_p;
     }
     return *this;
 }
@@ -124,9 +132,6 @@ void SDObservationHandler::fill(const Record &row, const String &telescopeName,
 		makeIndex();
 	    }
 	    *ns_obsidKey_p = *obsid_p;
-	} else if (ns_obsidKey_p.isAttached()) {
-	    // fill with the empty string
-	    *ns_obsidKey_p = "";
 	}
 	*telescopeKey_p = telescopeName;
 	if (observer_p.isAttached()) {
@@ -143,27 +148,58 @@ void SDObservationHandler::fill(const Record &row, const String &telescopeName,
 	    // just use an empty string as the project key
 	    *projectKey_p = "";
 	}
-	Bool found;
-	uInt whichRow = index_p->getRowNumber(found);
+	if (releaseDate_p.isAttached()) {
+	    *releaseDateKey_p = *releaseDate_p;
+	} else {
+	    // use a time of 0.0 as the default release date
+	    *releaseDateKey_p = 0.0;
+	}
+	if (flagRow_p.isAttached()) {
+	    *flagRowKey_p = *flagRow_p;
+	} else {
+	    // default is not flag the row
+	    *flagRowKey_p = False;
+	}
+	Bool found = False;
+	uInt whichRow =0;
+
+	// if there is a time range field, there may be more than one matching row
+	if (timeRange_p.isAttached()) {
+	    Vector<uInt> rows = index_p->getRowNumbers();
+	    uInt whichElement = 0;
+	    while (!found && whichElement < rows.nelements()) {
+		whichRow = rows(whichElement++);
+		if (allEQ(*timeRange_p, msObsCols_p->timeRange()(whichRow))) found = True;
+	    }
+	} else {
+	    // otherwise, there should be just a single match
+	    whichRow = index_p->getRowNumber(found);
+	}
 
 	if (found) {
 	    // we have a winner
 	    rownr_p = whichRow;
-	    updateTimeRange(timeRange);
+	    if (!timeRange_p.isAttached()) {
+		updateTimeRange(timeRange);
+	    }
 	} else {
 	    // we need to add one
 	    rownr_p = msObs_p->nrow();
 	    msObs_p->addRow();
 	    Vector<String> emptySVec(1);
-	    msObsCols_p->flagRow().put(rownr_p, False);
+	    msObsCols_p->flagRow().put(rownr_p, *flagRowKey_p);
 	    msObsCols_p->log().put(rownr_p, emptySVec);
 	    msObsCols_p->observer().put(rownr_p, *observerKey_p);
 	    msObsCols_p->project().put(rownr_p, *projectKey_p);
-	    msObsCols_p->releaseDate().put(rownr_p,0.0);
+	    msObsCols_p->releaseDate().put(rownr_p, *releaseDateKey_p);
 	    msObsCols_p->schedule().put(rownr_p,emptySVec);
 	    msObsCols_p->scheduleType().put(rownr_p,"");
 	    msObsCols_p->telescopeName().put(rownr_p, *telescopeKey_p);
-	    msObsCols_p->timeRange().put(rownr_p, timeRange);
+	    if (timeRange_p.isAttached()) {
+		msObsCols_p->timeRange().put(rownr_p, *timeRange_p);
+	    } else {
+		msObsCols_p->timeRange().put(rownr_p, timeRange);
+	    }
 	    // the NS_OBSID column if available
 	    if (!nsObsIdCol_p.isNull()) {
 		nsObsIdCol_p.put(rownr_p, *ns_obsidKey_p);
@@ -191,6 +227,9 @@ void SDObservationHandler::clearRow()
     observer_p.detach();
     projid_p.detach();
     obsid_p.detach();
+    releaseDate_p.detach();
+    flagRow_p.detach();
+    timeRange_p.detach();
 
     rownr_p = -1;
 }
@@ -217,26 +256,32 @@ void SDObservationHandler::makeIndex()
     delete index_p;
     index_p = 0;
 
-    Int nKeys = 3;
+    Int nKeys = 5;
     if (!nsObsIdCol_p.isNull()) nKeys++;
 
     Vector<String> keys(nKeys);
     keys(0) = MSObservation::columnName(MSObservation::TELESCOPE_NAME);
     keys(1) = MSObservation::columnName(MSObservation::OBSERVER);
     keys(2) = MSObservation::columnName(MSObservation::PROJECT);
+    keys(3) = MSObservation::columnName(MSObservation::RELEASE_DATE);
+    keys(4) = MSObservation::columnName(MSObservation::FLAG_ROW);
     if (!nsObsIdCol_p.isNull()) {
-	keys(3) = "NS_OBSID";
+	keys(5) = "NS_OBSID";
     }
     index_p = new ColumnsIndex(*msObs_p, keys);
     AlwaysAssert(index_p, AipsError);
     
 
     telescopeKey_p.attachToRecord(index_p->accessKey(),
-			     MSObservation::columnName(MSObservation::TELESCOPE_NAME));
+				  MSObservation::columnName(MSObservation::TELESCOPE_NAME));
     observerKey_p.attachToRecord(index_p->accessKey(),
-			     MSObservation::columnName(MSObservation::OBSERVER));
+				 MSObservation::columnName(MSObservation::OBSERVER));
     projectKey_p.attachToRecord(index_p->accessKey(),
-			     MSObservation::columnName(MSObservation::PROJECT));
+				MSObservation::columnName(MSObservation::PROJECT));
+    releaseDateKey_p.attachToRecord(index_p->accessKey(),
+				    MSObservation::columnName(MSObservation::RELEASE_DATE));
+    flagRowKey_p.attachToRecord(index_p->accessKey(),
+				MSObservation::columnName(MSObservation::FLAG_ROW));
     if (!nsObsIdCol_p.isNull()) {
 	ns_obsidKey_p.attachToRecord(index_p->accessKey(),"NS_OBSID");
     }
@@ -259,6 +304,21 @@ void SDObservationHandler::initRow(Vector<Bool> &handledCols, const Record &row)
     if (row.fieldNumber("OBSID") >= 0) {
 	obsid_p.attachToRecord(row, "OBSID");
 	handledCols(row.fieldNumber("OBSID")) = True;
+    }
+
+    if (row.fieldNumber("OBSERVATION_FLAG_ROW") >= 0) {
+	flagRow_p.attachToRecord(row, "OBSERVATION_FLAG_ROW");
+	handledCols(row.fieldNumber("OBSERVATION_FLAG_ROW")) = True;
+    }
+
+    if (row.fieldNumber("OBSERVATION_RELEASE_DATE") >= 0) {
+	releaseDate_p.attachToRecord(row, "OBSERVATION_RELEASE_DATE");
+	handledCols(row.fieldNumber("OBSERVATION_RELEASE_DATE")) = True;
+    }
+
+    if (row.fieldNumber("OBSERVATION_TIME_RANGE") >= 0) {
+	timeRange_p.attachToRecord(row, "OBSERVATION_TIME_RANGE");
+	handledCols(row.fieldNumber("OBSERVATION_TIME_RANGE")) = True;
     }
 
     // ignore MAIN_OBSERVATION_ID

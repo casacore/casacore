@@ -114,8 +114,10 @@ public:
     // get the current spWindow ID
     Int spWindowId() {return rownr_p;}
 private:
-    RecordFieldPtr<Int> nchanKey_p, freqRefTypeKey_p, ifConvChainKey_p;
+    RecordFieldPtr<Int> nchanKey_p, freqRefTypeKey_p, ifConvChainKey_p,
+	freqGroupKey_p, netSidebandKey_p;
     RecordFieldPtr<Double> freqresKey_p, bwKey_p, f0Key_p, fdeltKey_p;
+    RecordFieldPtr<Bool> flagRowKey_p;
     // the cache table is the one that is indexed
     ColumnsIndex *index_p;
     // temporary table to hold the fields we are indexing on, can't index on array column
@@ -125,7 +127,8 @@ private:
 
     // the columns in the cache table
     TableColumn idCol_p, nchanCol_p, freqRefTypeCol_p, 
-	bwCol_p, f0Col_p, fdeltCol_p, freqresCol_p, ifConvChainCol_p;
+	bwCol_p, f0Col_p, fdeltCol_p, freqresCol_p, ifConvChainCol_p,
+	freqGroupCol_p, netSidebandCol_p, flagRowCol_p;
 
     // the next row number to use in the cached
     uInt nextCacheRow_p;
@@ -141,7 +144,9 @@ private:
     Int bandwidField_p, freqresField_p;
 
     // fields from a previous life as a MS
-    RORecordFieldPtr<Int> spWinIdField_p, ifConvChainField_p;
+    RORecordFieldPtr<Int> spWinIdField_p, ifConvChainField_p, freqGroupField_p,
+	netSidebandField_p;
+    RORecordFieldPtr<Bool> flagRowField_p;
 
     // cleanup everything
     void clearAll();

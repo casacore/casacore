@@ -121,6 +121,7 @@ private:
     // from a pre-existing MS
     RORecordFieldPtr<Int> numCorrField_p;
     RORecordFieldPtr<Array<Int> > corrTypeField_p, corrProductField_p;
+    RORecordFieldPtr<Bool> flagRowField_p;
 
     // decompose a stokes value into constituent parts for use
     // in making the CORR_PRODUCT matrix

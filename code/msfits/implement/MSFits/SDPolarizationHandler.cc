@@ -77,6 +77,7 @@ SDPolarizationHandler &SDPolarizationHandler::operator=(const SDPolarizationHand
 	numCorrField_p = other.numCorrField_p;
 	corrTypeField_p = other.corrTypeField_p;
 	corrProductField_p = other.corrProductField_p;
+	flagRowField_p = other.flagRowField_p;
     }
     return *this;
 }
@@ -103,7 +104,8 @@ void SDPolarizationHandler::fill(const Record &, const Vector<Int> &stokes)
 	Vector<uInt> foundRows = index_p->getRowNumbers();
 	uInt whichOne = 0;
 	while (!found && whichOne<foundRows.nelements()) {
-	    if (allEQ(stokes, msPolCols_p->corrType()(foundRows(whichOne)))) {
+	    if (allEQ(stokes, msPolCols_p->corrType()(foundRows(whichOne))) &&
+		(!flagRowField_p.isAttached() || *flagRowField_p == msPolCols_p->flagRow()(foundRows(whichOne)))) {
 		// we have a winner
 		found = True;
 	    } else {
@@ -149,7 +151,11 @@ void SDPolarizationHandler::fill(const Record &, const Vector<Int> &stokes)
 	    }
 	    // and insert it into the table
 	    msPolCols_p->corrProduct().put(rownr_p, corrProduct);
-	    msPolCols_p->flagRow().put(rownr_p, False);
+	    if (flagRowField_p.isAttached()) {
+		msPolCols_p->flagRow().put(rownr_p, *flagRowField_p);
+	    } else {
+		msPolCols_p->flagRow().put(rownr_p, False);
+	    }
 	}
     }
 }
@@ -216,7 +222,11 @@ void SDPolarizationHandler::initRow(Vector<Bool> &handledCols, const Record &row
 	corrProductField_p.attachToRecord(row, corrProductId);
 	handledCols(corrProductId) = True;
     }
-	
+    Int flagRowId = row.fieldNumber("POLARIZATION_FLAG_ROW");
+    if (flagRowId >= 0) {
+	flagRowField_p.attachToRecord(row, flagRowId);
+	handledCols(flagRowId) = True;
+    }	
 }
 
 void SDPolarizationHandler::stokesKeys(Int stokesValue, Int &key1, Int &key2)
