@@ -1,5 +1,5 @@
 //# Convolver.h: this defines Convolver a class for doing convolution
-//# Copyright (C) 1996,1997
+//# Copyright (C) 1996,1997,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -33,9 +33,10 @@
 #include <aips/aips.h>
 #include <aips/Mathematics/NumericTraits.h>
 #include <trial/Lattices/TempLattice.h>
+#include <aips/Lattices/IPosition.h>
 
 //# Forward Declarations
-template <class T> class LatticeConvolver;
+//template <class T> class LatticeConvolver;
 class IPosition;
 
 // <summary>Lists the different types of Convolutions that can be done</summary>
@@ -149,8 +150,10 @@ public:
   void getPsf(Lattice<T> & psf) const;
 
 private:
-  //  IPosition itsPsfSize;
-  //  IPosition itsFFTSize;
+  void pad(TempLattice<T> & paddedModel, const Lattice<T> & model) const;
+  void unpad(Lattice<T> & result, const TempLattice<T> & paddedResult) const;
+
+  IPosition itsFFTShape;
   TempLattice<NumericTraits<T>::ConjugateType> itsXfr;
 
 //   void makeXfr(const Lattice<T> & psf, const IPosition & imageSize,
