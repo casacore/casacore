@@ -51,96 +51,60 @@ template<class T> class Vector;
 
 // <etymology> 
 // A Gaussian3D functional is designed exclusively for calculating a
-// Gaussian (or Normal) distribution in two dimensions. Other classes exist
-// for calculating these functions in two
-// (<linkto class=Gaussian1D>Gaussian1D</linkto>) and N 
+// Gaussian (or Normal) distribution in three dimensions. Other classes exist
+// for calculating these functions in one
+// (<linkto class=Gaussian1D>Gaussian1D</linkto>), two
+// (<linkto class=Gaussian2D>Gaussian2D</linkto>), and N
 // (<linkto class=GaussianND>GaussianND</linkto>) dimensions.
 // </etymology>
 
 // <synopsis> 
 // A <src>Gaussian3D</src> is described by a height, center, and width,
-// and position angle. Its fundamental operation is evaluating itself
-// at some <src>(x,y)</src>
-// coordinate. Its parameters (height, center and width, position angle) may
+// and position angles. Its fundamental operation is evaluating itself
+// at some <src>(x,y,z)</src>
+// coordinate. Its parameters (height, center and width, position angles) may
 // be changed at run time.
-//
-// The width of the Gaussian (for the constructors or the <src> setWidth
-// </src> function) is always specified in terms of the full width at half
-// maximum (FWHM). The major axis is parallel with the y axis when the
-// position angle is zero. The major axis will always have a larger width
-// than the minor axis. 
-//
-// It is not possible to set the width of the major axis (using the <src>
-// setMajorAxis </src> function) smaller than the width of the current minor
-// axis. Similarly it is not possible to set the width of the minor axis
-// (using the <src> setMinorAxis </src> function) to be larger than the
-// current major axis. Exceptions are thrown if these rules are violated or
-// if the either the major or minor axis is set to a non-positive width. To
-// set both axis in one hit use the <src> setWidth </src> function. All
-// these restrictions can be overcome when the parameters interface is used
-// (see below).
-//
-// The position angle is the angle between the y axis and the major axis and
-// is measured counterclockwise, so a position angle of 45 degrees rotates
-// the major axis to the line where y=-x. The position angle is always
-// specified and returned in radians. When using the <src> setPA </src>
-// function its value must be between -2pi and + 2pi, and the returned value
-// from the <src> pa </src> function will always be a value between 0 and
-// pi. 
-//
-// The axial ratio can be used as an alternative to specifying the width of
-// the minor axis. It is the ratio between the minor and major axis
-// widths. The axial ratio is constrained to be between zero and one, and
-// specifying something different (using setAxialRatio) will throw an
-// exception.
-//
-// The peak height of the Gaussian can be specified at construction time or
-// by using the <src> setHeight </src> function. Alternatively the <src>
-// setFlux </src> function can be used to implicitly set the peak height by
-// specifying the integrated area under the Gaussian. The height (or flux)
-// can be positive, negative or zero, as this class makes no assumptions on
-// what quantity the height represents. 
-//
-// <note role=tip> Changing the width of the Gaussian will not affect
-// its peak height but will change its flux. So you should always set the
-// width before setting the flux. </note>
-//
+
+// The width of the Gaussian is *not* specified in terms of the full width 
+// at half maximum (FWHM) like the 2D Gaussian.  The width factors correspond
+// to the sigma term in the standard Gaussian equation.
+
+// The three axis values refer to the x, y, and z axes, and unlike with the
+// 2D Gaussian any of the three axes may be the longest; instead, the position
+// angles are restricted.  The first position angle, theta, is the longitudinal
+// angle, referring to the rotation (counterclockwise) around the z-axis.  The
+// second, phi, is the latidudinal  angle, referring to the rotation around 
+// the theta-rotated y axis.  The domain of both angles is -pi/4 < A < pi/4,
+// although the user is allowed to set the parameters to angles within 
+// -pi/2 < theta < pi/2 and -pi < phi < pi without throwing an exception and
+// the angles are not constrained at all when fitting.
+// (Note that the use of theta and phi corresponds to the mathematical
+// convention for these angles, not the physics convention.)
+
+// Currently no function is available to set the Gaussian parameters based
+// on flux, but one could be easily added.
+
 // The parameter interface (see 
 // <linkto class="Gaussian3DParam">Gaussian3DParam</linkto> class), 
 // is used to provide an interface to the
 // <linkto module="Fitting">Fitting</linkto> classes. 
 //
-// There are 6 parameters that are used to describe the Gaussian:
+// There are 9 parameters that are used to describe the Gaussian:
 // <ol>
-// <li> The height of the Gaussian. This is identical to the value 
+// <li> The height of the Gaussian. This is identical to the value
 //      returned using the <src> height </src> member function.
 // <li> The center of the Gaussian in the x direction. This is identical to
-//      the value returned using the <src> xCenter </src> member function. 
+//      the value returned using the <src> xCenter </src> member function.
 // <li> The center of the Gaussian in the y direction. This is identical to
-//      the value returned using the <src> yCenter </src> member function. 
-// <li> The width (FWHM) of the Gaussian on one axis. Initially this will be
-//      the major axis, but if the parameters are adjusted by a Fitting
-//      class, it may become the axis with the smaller width. To aid
-//      convergence of the non-linear fitting routines this parameter is
-//      allowed to be negative. This does not affect the shape of the
-//      Gaussian as the squares of the widths are used when evaluating the
-//      function.
-// <li> A modified axial ratio. This parameter is the ratio of the width on
-//      the 'other' axis (which initially is the minor axis) and axis given
-//      by parameter YWIDTH. Because these internal widths are allowed to be
-//      negative and because there is no constraints on which axis is the
-//      larger one the modified axial ratio is not constrained to be between
-//      zero and one.
-// <li> The position angle. This represents the angle (in radians) between
-//      the axis used by parameter 4, and the y axis, measured
-//      counterclockwise. If parameter 4 represents the major axis width
-//      then this parameter will be identical to the position angle,
-//      otherwise it will be different by 90 degrees. The tight constraints
-//      on the value of the rotation angle enforced by the setPA() function
-//      are relaxed so that any value between -6000 and 6000 is allowed. It
-//      is still interpreted in radians. 
-// </ol>
-//
+//      the value returned using the <src> yCenter </src> member function.
+// <li> The center of the Gaussian in the z direction. This is identical to
+//      the value returned using the <src> zCenter </src> member function.
+// <li> The width of the Gaussian along the x-axis.
+// <li> The width of the Gaussian along the y-axis.
+// <li> The width of the Gaussian along the z-axis.
+// <li> The longitudinal position angle, theta (in radians)
+// <li> The latitudinal position angle, phi (also in radians). 
+
 // An enumeration for the parameter index is provided, enabling the setting
 // and reading of parameters with the <src>[]</src> operator. The 
 // <src>mask()</src> methods can be used to check and set the parameter masks.
@@ -149,12 +113,17 @@ template<class T> class Vector;
 
 // <example>
 // <srcblock>
-//   Gaussian3D<Double> g(10.0, 0.0, 0.0, 2.0, 1.0, 0.0);
-//   Vector<Double> x(2);
-//   x(0) = 1.0; x(1) = 0.5;
-//   cout << "g(" << x(0) << "," << x(1) << ") = " << g(x) << endl;
+// Gaussian3D<Double> g(9.0, 0.0, 0.0, 0.0, 1.0, 1.0, 1.0, 0.0, 0.0);
+// Vector<Double> x(3);
+// x(0) = 1.0; x(1) = 0.5; x(2) = 0.0
+// cout << "g(" << x(0) << "," << x(1) << "," << x(2) << ")=" << g(x) << endl;
 // </srcblock>
 // </example>
+
+// <motivation>
+// The GaussianND class does not contain derivatives
+// and was insufficient for fitting 3D Gaussians to data.
+// </motivation>
 
 // <templating arg=T>
 //  <li> T should have standard numerical operators and exp() function. Current
@@ -180,18 +149,34 @@ public:
   // the xWidth, yWidth, and zWidth parameters are not adjusted for FWHM;
   // they are identical to the parameters used in the function.
 
+  // #Constructors
+  // Constructs the three-dimensional Gaussians.  Defaults:
+  // height = 1, center = {0,0,0}, width = {1,1,1}, theta = phi = 0.
+  // The center and width vectors must have three elements.
+  // <group>
   Gaussian3D();
   Gaussian3D(T height, const Vector<T>& center, 
 	     const Vector<T>& width, T theta, T phi);
   Gaussian3D(T height, T xCenter, T yCenter, T zCenter,
              T xWidth, T yWidth, T zWidth, T theta, T phi);
+  // </group>
+
+  // Copy constructor
   Gaussian3D(const Gaussian3D<T> &other);
+
+  // Destructor
   virtual ~Gaussian3D();
 
+  // Assignment operator
   Gaussian3D<T> &operator=(const Gaussian3D<T> &other);
 
+  // #Operators
+  // Evaluate the Gaussian at <src>x</src>.
   virtual T eval(typename Function<T>::FunctionArg x) const;
 
+  // #Member functions
+  // Return a copy of this object from the heap.  The caller is responsible
+  // for deleting this pointer.
   virtual Function<T> *clone() const;
 
 private:
@@ -240,3 +225,8 @@ private:
 #undef Gaussian3D_PS
 
 #endif
+
+
+
+
+
