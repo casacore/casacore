@@ -70,3 +70,20 @@ For example:
 
 As can be seen in the example the TaQL expression is passed to the constructor as a string. The expression can be as complex as one likes.
 Care has to be taken not to delete a column used in such an expression. The system is not robust enough (yet) to cope with that.
+
+change id: 0166
+ author:   Ger van Diepen
+ date:     2005/04/04
+ avers:    1.9
+ area:     Library
+ package:  casa
+ module:   Arrays
+ type:     Code
+ category: New
+ summary:  Vector accepts Array with > 1 dimensions
+The Vector constructor taking an Array has been changed such that now it accepts an Array with more than one dimensions as long as at most one dimensions has a length > 1. In this way one can easily make a Vector from a 1-dim slice of an Array without having to use the reform function.
+
+Furthermore the reference function has been changed to accept a const Array
+object. It makes it possible to use a temporary Array object (e.g. a slice) directly instead of having to create an intermediate Array object. Several Array examples already contained this until now incorrect behaviour.
+
+Finally The Matrix and Cube constructor accepting an Array can now correctly handle a 0-dim Array.
