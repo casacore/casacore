@@ -2118,3 +2118,4 @@
 11 105 src mv trial/implement/Lattices/ScaRecordColDesc.cc aips/implement/Tables/ScaRecordColDesc.cc
 11 105 src mv trial/implement/Lattices/ScaRecordColData.cc aips/implement/Tables/ScaRecordColData.cc
 11 105 src mv trial/implement/Lattices/ScaRecordColData.h aips/implement/Tables/ScaRecordColData.h
+11 105 src mv trial/implement/Lattices/test/tScalarRecordColumn.cc aips/implement/Tables/test/tScalarRecordColumn.cc
