@@ -61,7 +61,7 @@ class Slicer;
 // It can handle arrays of any type supported by the tiled storage
 // managers. The array can be in local or in canonical format.
 // <p>
-// See <linkto class=TiledStManAccessor>TiledStManAccessor</linkto>
+// See <linkto class=ROTiledStManAccessor>ROTiledStManAccessor</linkto>
 // for a more detailed discussion.
 // </synopsis> 
 
