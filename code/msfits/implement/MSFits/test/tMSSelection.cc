@@ -26,8 +26,8 @@
 int main(int argc, char **argv)
 {
     try {
-        const String name = "5921.ms.raw";
-        MeasurementSet ms(name);
+        const String msName = "3C273XC1.ms";
+        MeasurementSet ms(msName);
 
         MSSelection select;
         select.setUVDistExpr("uvdist='3727km:5%'");
