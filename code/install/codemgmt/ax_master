@@ -3459,3 +3459,4 @@
 13 283 src mv trial/implement/Display/WCDataScaleHandler.h trial/implement/DisplayCanvas/WCDataScaleHandler.h
 13 283 src mv trial/implement/Display/WCDataScaleHandler.cc trial/implement/DisplayCanvas/WCDataScaleHandler.cc
 13 283 src mv trial/implement/Display/WCLinearScaleHandler.cc trial/implement/DisplayCanvas/WCLinearScaleHandler.cc
+13 283 src mv trial/implement/Display/WCLinearScaleHandler.h trial/implement/DisplayCanvas/WCLinearScaleHandler.h
