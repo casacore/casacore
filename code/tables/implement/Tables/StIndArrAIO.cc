@@ -68,16 +68,21 @@ StManColumnIndArrayAipsIO::~StManColumnIndArrayAipsIO()
 //# Create the given nr of rows in it.
 void StManColumnIndArrayAipsIO::doCreate (uInt nrrow)
 {
-    //# Create the file to hold the arrays in the column.
-    char strc[8];
-    sprintf (strc, "i%i", seqnr_p);
-    iosfile_p = new StManArrayFile (stmanPtr_p->fileName() + strc,
-				    stmanPtr_p->fileOption());
-    if (iosfile_p == 0) {
-	throw (AllocError ("StManColumnIndArrayAipsIO::doCreate", 1));
-    }
+    //# Create the file.
+    openFile (ByteIO::New);
     //# Add the nr of rows.
     addRow (nrrow, 0);
+}
+
+void StManColumnIndArrayAipsIO::openFile (ByteIO::OpenOption opt)
+{
+    //# Open/create the file holding the arrays in the column.
+    char strc[8];
+    sprintf (strc, "i%i", seqnr_p);
+    iosfile_p = new StManArrayFile (stmanPtr_p->fileName() + strc, opt);
+    if (iosfile_p == 0) {
+	throw (AllocError ("StManColumnIndArrayAipsIO::openFile", 1));
+    }
 }
 
 void StManColumnIndArrayAipsIO::reopenRW()
@@ -262,9 +267,9 @@ void StManColumnIndArrayAipsIO::getFile (uInt nrval, AipsIO& ios)
 {
     int dtype;
     ios.getstart ("StManColumnIndArrayAipsIO");
-    ios >> dtype;                   // for backward compatibility
+    ios >> dtype;                          // for backward compatibility
     ios >> seqnr_p;
-    doCreate (0);                   // open the array file
+    openFile (stmanPtr_p->fileOption());   // open the array file
     StManColumnAipsIO::getFile (nrval, ios);
     ios.getend();
 }
