@@ -30,6 +30,7 @@
 
 #include <aips/aips.h>
 #include <aips/Arrays/Array.h>
+#include <aips/Arrays/Vector.h>
 #include <aips/Arrays/ArrayMath.h>
 #include <aips/Arrays/ArrayPosIter.h>
 #include <aips/Containers/Block.h>
@@ -43,6 +44,8 @@
 #include <aips/Mathematics/Math.h>
 #include <aips/Mathematics/Convolver.h>
 #include <aips/Quanta/Unit.h>
+#include <aips/Quanta/UnitMap.h>
+#include <aips/Quanta/Quantum.h>
 #include <aips/Quanta/QMath.h>
 #include <aips/OS/Directory.h>
 #include <aips/OS/File.h>
@@ -114,12 +117,14 @@ ImageMoments<T>::ImageMoments (ImageInterface<T>& image,
    nxy_p.resize(0);
    selectRange_p.resize(0);
    smoothAxes_p.resize(0);
-
+//
    if (setNewImage(image)) {
       goodParameterStatus_p = True;
    } else {
       goodParameterStatus_p = False;
    }
+//
+   UnitMap::putUser("pix",UnitVal(1.0), "pixel units");
 }
 
 template <class T>
@@ -158,18 +163,18 @@ ImageMoments<T> &ImageMoments<T>::operator=(const ImageMoments<T> &other)
       pInImage_p = other.pInImage_p->cloneII();
  
 // Do the rest
-      
+
       os_p = other.os_p;
       showProgress_p = other.showProgress_p;
       momentAxis_p = other.momentAxis_p;
       worldMomentAxis_p = other.worldMomentAxis_p;
       momentAxisDefault_p = other.momentAxisDefault_p;
-      kernelTypes_p = other.kernelTypes_p;
-      kernelWidths_p = other.kernelWidths_p;
-      nxy_p = other.nxy_p;
-      moments_p = other.moments_p;
-      selectRange_p = other.selectRange_p;
-      smoothAxes_p = other.smoothAxes_p;
+      kernelTypes_p = other.kernelTypes_p.copy();
+      kernelWidths_p = other.kernelWidths_p.copy();
+      nxy_p = other.nxy_p.copy();
+      moments_p = other.moments_p.copy();
+      selectRange_p = other.selectRange_p.copy();
+      smoothAxes_p = other.smoothAxes_p.copy();
       peakSNR_p = other.peakSNR_p;
       stdDeviation_p = other.stdDeviation_p;
       yMin_p = other.yMin_p;
@@ -349,6 +354,19 @@ template <class T>
 Bool ImageMoments<T>::setSmoothMethod(const Vector<Int>& smoothAxesU,
                                       const Vector<Int>& kernelTypesU,
                                       const Vector<Double>& kernelWidthsU)
+{
+   const uInt n = kernelWidthsU.nelements();
+   Vector<Quantum<Double> > t(n);
+   for (uInt i=0; i<n; i++) {
+      t(i) = Quantum<Double>(kernelWidthsU(i),String("pix"));
+   }
+   return setSmoothMethod(smoothAxesU, kernelTypesU, t);
+}
+
+template <class T>
+Bool ImageMoments<T>::setSmoothMethod(const Vector<Int>& smoothAxesU,
+                                      const Vector<Int>& kernelTypesU,
+                                      const Vector<Quantum<Double> >& kernelWidthsU)
 //
 // Assign the desired smoothing parameters. 
 //
@@ -413,9 +431,10 @@ Bool ImageMoments<T>::setSmoothMethod(const Vector<Int>& smoothAxesU,
    for (i=0; i<Int(smoothAxes_p.nelements()); i++) {
       if (kernelTypes_p(i) == VectorKernel::HANNING) {
 
-// For Hanning, width is always 3
+// For Hanning, width is always 3pix
 
-         kernelWidths_p(i) = 3;
+         Quantum<Double> tmp(3.0, String("pix"));
+         kernelWidths_p(i) = tmp;
       } else if (kernelTypes_p(i) == VectorKernel::BOXCAR) {
 
 // For box must be odd number greater than 1
@@ -425,16 +444,7 @@ Bool ImageMoments<T>::setSmoothMethod(const Vector<Int>& smoothAxesU,
             goodParameterStatus_p = False;
             return False;
          } else {
-            Int intKernelWidth = Int(kernelWidthsU(i)+0.5);
-            if (intKernelWidth < 2) {
-               ostrstream oss;
-               oss << "Boxcar kernel width of " << intKernelWidth << 
-                      " is too small" << endl;
-               error_p = String(oss); 
-               goodParameterStatus_p = False;
-               return False;
-            }
-            kernelWidths_p(i) = intKernelWidth;
+            kernelWidths_p(i) = kernelWidthsU(i);
          }
       } else if (kernelTypes_p(i) == VectorKernel::GAUSSIAN) {
          if (i > nK-1) {
@@ -442,16 +452,7 @@ Bool ImageMoments<T>::setSmoothMethod(const Vector<Int>& smoothAxesU,
             goodParameterStatus_p = False;
             return False;
          } else {
-            if (kernelWidthsU(i) < 1.5) {
-               ostrstream oss;
-               oss << "Gaussian kernel width of " << kernelWidthsU(i) << 
-                      " is too small" << endl;
-               error_p = String(oss);
-               goodParameterStatus_p = False;
-               return False;
-            } else {
-               kernelWidths_p(i) = kernelWidthsU(i);
-            }
+            kernelWidths_p(i) = kernelWidthsU(i);
          }
       } else {
          error_p = "Internal logic error";
