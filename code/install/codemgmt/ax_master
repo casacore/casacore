@@ -2688,3 +2688,4 @@
 11 409 src rm install/docutils/html
 11 409 src rm install/docutils/class
 11 411 src mv trial/implement/mathematics.g trial/implement/Mathematics/mathematics.g
+11 411 src mv trial/implement/mathematics.help trial/implement/Mathematics/mathematics.help
