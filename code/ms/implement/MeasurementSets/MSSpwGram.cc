@@ -72,7 +72,7 @@ int msSpwGramParseCommand (const MeasurementSet& ms, const String& command)
 }
 
 //# Give the table expression node
-const TableExprNode& msSpwGramParseNode()
+const TableExprNode* msSpwGramParseNode()
 {
     return MSSpwParse::node();
 }

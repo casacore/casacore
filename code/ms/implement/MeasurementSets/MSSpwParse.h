@@ -92,13 +92,14 @@ public:
     // Associate the ms and the shorthand.
     MSSpwParse (const MeasurementSet& ms);
 
-    TableExprNode *selectSpwIds(const Vector<Int>& spwids);
-    TableExprNode *selectSpwName(const String& name);
+    const TableExprNode *selectSpwIds(const Vector<Int>& spwids);
+    const TableExprNode *selectSpwName(const String& name);
+
     // Get table expression node object.
-    static TableExprNode& node();
+    static const TableExprNode* node();
 
 private:
-    static TableExprNode node_p;
+    static TableExprNode* node_p;
 };
 
 } //# NAMESPACE CASA - END

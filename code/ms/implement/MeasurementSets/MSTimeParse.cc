@@ -31,7 +31,7 @@
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
-TableExprNode MSTimeParse::node_p;
+TableExprNode* MSTimeParse::node_p = 0x0;
 
 //# Constructor
 MSTimeParse::MSTimeParse ()
@@ -43,39 +43,40 @@ MSTimeParse::MSTimeParse ()
 MSTimeParse::MSTimeParse (const MeasurementSet& ms)
 : MSParse(ms, "Time"), colName(MS::columnName(MS::TIME))
 {
-    node_p = TableExprNode();
+    if(node_p) delete node_p;
+    node_p = new TableExprNode();
 }
 
-TableExprNode *MSTimeParse::selectStartTime(const MEpoch& startTime)
+const TableExprNode *MSTimeParse::selectStartTime(const MEpoch& startTime)
 {
     MVTime mvStart(startTime.getValue());
 
     TableExprNode condition = (ms()->col(colName) >= mvStart);
 
-    if(node().isNull())
-        node() = condition;
+    if(node_p->isNull())
+        *node_p = condition;
     else
-        node() = node() && condition;
+        *node_p = *node_p && condition;
 
-    return &node();
+    return node_p;
 }
 
-TableExprNode *MSTimeParse::selectEndTime(const MEpoch& endTime)
+const TableExprNode *MSTimeParse::selectEndTime(const MEpoch& endTime)
 {
     MVTime mvEnd(endTime.getValue());
  
     TableExprNode condition = (ms()->col(colName) <= mvEnd);
 
-    if(node().isNull())
-        node() = condition;
+    if(node_p->isNull())
+        *node_p = condition;
     else
-        node() = node() && condition;
+        *node_p = *node_p && condition;
 
-    return &node();
+    return node_p;
 }
 
-TableExprNode *MSTimeParse::selectRange(const MEpoch& startTime,
-                                        const MEpoch& endTime)
+const TableExprNode *MSTimeParse::selectRange(const MEpoch& startTime,
+                                              const MEpoch& endTime)
 {
     MVTime mvStart(startTime.getValue());
     MVTime mvEnd(endTime.getValue());
@@ -83,15 +84,15 @@ TableExprNode *MSTimeParse::selectRange(const MEpoch& startTime,
     TableExprNode condition = (ms()->col(colName) >= mvStart) &&
                               (ms()->col(colName) <= mvEnd);
 
-    if(node().isNull())
-        node() = condition;
+    if(node_p->isNull())
+        *node_p = condition;
     else
-        node() = node() && condition;
+        *node_p = *node_p && condition;
 
-    return &node();
+    return node_p;
 }
 
-TableExprNode& MSTimeParse::node()
+const TableExprNode* MSTimeParse::node()
 {
     return node_p;
 }

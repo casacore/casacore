@@ -30,7 +30,7 @@
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
-TableExprNode MSAntennaParse::node_p;
+TableExprNode* MSAntennaParse::node_p = 0x0;
 
 //# Constructor
 MSAntennaParse::MSAntennaParse ()
@@ -46,23 +46,24 @@ MSAntennaParse::MSAntennaParse (const MeasurementSet& ms)
   colName1(MS::columnName(MS::ANTENNA1)),
   colName2(MS::columnName(MS::ANTENNA2))
 {
-    node_p = TableExprNode();
+    if(node_p) delete node_p;
+    node_p = new TableExprNode();
 }
 
-TableExprNode* MSAntennaParse::selectAntennaIds(const Vector<Int>& antennaIds)
+const TableExprNode* MSAntennaParse::selectAntennaIds(const Vector<Int>& antennaIds)
 {
     TableExprNode condition = ms()->col(colName1).in(antennaIds) ||
                               ms()->col(colName2).in(antennaIds);
 
-    if(node().isNull())
-        node() = condition;
+    if(node_p->isNull())
+        *node_p = condition;
     else
-        node() = node() && condition;
+        *node_p = *node_p && condition;
 
-    return &node();
+    return node();
 }
 
-TableExprNode* MSAntennaParse::selectAntennaName(const Vector<String>& antennaNames)
+const TableExprNode* MSAntennaParse::selectAntennaName(const Vector<String>& antennaNames)
 {
     MSAntennaIndex msAI(ms()->antenna());
 
@@ -70,15 +71,15 @@ TableExprNode* MSAntennaParse::selectAntennaName(const Vector<String>& antennaNa
         ms()->col(colName1).in(msAI.matchAntennaName(antennaNames)) ||
         ms()->col(colName2).in(msAI.matchAntennaName(antennaNames));
 
-    if(node().isNull())
-        node() = condition;
+    if(node_p->isNull())
+        *node_p = condition;
     else
-        node() = node() && condition;
+        *node_p = *node_p && condition;
 
-    return &node();
+    return node();
 }
 
-TableExprNode& MSAntennaParse::node()
+const TableExprNode* MSAntennaParse::node()
 {
     return node_p;
 }

@@ -72,7 +72,7 @@ int msAntennaGramParseCommand (const MeasurementSet& ms, const String& command)
 }
 
 //# Give the table expression node
-const TableExprNode& msAntennaGramParseNode()
+const TableExprNode* msAntennaGramParseNode()
 {
     return MSAntennaParse::node();
 }

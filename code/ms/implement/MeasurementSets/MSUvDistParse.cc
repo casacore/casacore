@@ -30,7 +30,7 @@
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
-TableExprNode MSUvDistParse::node_p;
+TableExprNode* MSUvDistParse::node_p = 0x0;
 
 //# Constructor
 MSUvDistParse::MSUvDistParse ()
@@ -42,10 +42,11 @@ MSUvDistParse::MSUvDistParse ()
 MSUvDistParse::MSUvDistParse (const MeasurementSet& ms)
 : MSParse(ms, "UvDist")
 {
-    node_p = TableExprNode();
+    if(node_p) delete node_p;
+    node_p = new TableExprNode();
 }
 
-TableExprNode *MSUvDistParse::selectUVRange(const Double& startUV,
+const TableExprNode *MSUvDistParse::selectUVRange(const Double& startUV,
                                             const Double& endUV)
 {
     // Column accessors
@@ -73,15 +74,15 @@ TableExprNode *MSUvDistParse::selectUVRange(const Double& startUV,
 
     TableExprNode condition = (ms()->nodeRownr().in(rowsel));
 
-    if(node().isNull())
-        node() = condition;
+    if(node_p->isNull())
+        *node_p = condition;
     else
-        node() = node() && condition;
+        *node_p = *node_p && condition;
 
-    return &node();
+    return node_p;
 }
 
-TableExprNode& MSUvDistParse::node()
+const TableExprNode* MSUvDistParse::node()
 {
     return node_p;
 }

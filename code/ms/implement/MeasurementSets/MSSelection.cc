@@ -195,32 +195,32 @@ TableExprNode MSSelection::toTableExprNode(const MeasurementSet& ms)
       case ANTENNA_EXPR:
         if(antennaExpr_p != "" &&
            msAntennaGramParseCommand(ms, antennaExpr_p))
-          node = msAntennaGramParseNode();
+          node = *msAntennaGramParseNode();
         break;
       case CORR_EXPR:
         if(corrExpr_p != "" &&
            msCorrGramParseCommand(ms, corrExpr_p))
-          node = msCorrGramParseNode();
+          node = *msCorrGramParseNode();
         break;
       case FIELD_EXPR:
         if(fieldExpr_p != "" &&
            msFieldGramParseCommand(ms, fieldExpr_p))
-          node = msFieldGramParseNode();
+          node = *msFieldGramParseNode();
         break;
       case SPW_EXPR:
         if(spwExpr_p != "" &&
            msSpwGramParseCommand(ms, spwExpr_p))
-          node = msSpwGramParseNode();
+          node = *msSpwGramParseNode();
         break;
       case TIME_EXPR:
         if(timeExpr_p != "" &&
            msTimeGramParseCommand(ms, timeExpr_p))
-          node = msTimeGramParseNode();
+          node = *msTimeGramParseNode();
         break;
       case UVDIST_EXPR:
         if(uvDistExpr_p != "" &&
            msUvDistGramParseCommand(ms, uvDistExpr_p))
-          node = msUvDistGramParseNode();
+          node = *msUvDistGramParseNode();
         break;
       case NO_EXPR:
       default:

@@ -37,7 +37,7 @@ using namespace casa;
 %pure_parser                /* make parser re-entrant */
 
 %union {
-  TableExprNode *node;
+  const TableExprNode *node;
   Block<TableExprNode>* exprb;
   TableExprNodeSetElem* elem;
   TableExprNodeSet* settp;

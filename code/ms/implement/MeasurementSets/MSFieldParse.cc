@@ -30,7 +30,7 @@
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
-TableExprNode MSFieldParse::node_p;
+TableExprNode* MSFieldParse::node_p = 0x0;
 
 //# Constructor
 MSFieldParse::MSFieldParse ()
@@ -42,37 +42,38 @@ MSFieldParse::MSFieldParse ()
 MSFieldParse::MSFieldParse (const MeasurementSet& ms)
 : MSParse(ms, "Field"), colName(MS::columnName(MS::FIELD_ID))
 {
-    node_p = TableExprNode();
+    if(node_p) delete node_p;
+    node_p = new TableExprNode();
 }
 
-TableExprNode *MSFieldParse::selectFieldIds(const Vector<Int>& fieldIds)
+const TableExprNode *MSFieldParse::selectFieldIds(const Vector<Int>& fieldIds)
 {
     TableExprNode condition = (ms()->col(colName).in(fieldIds));
 
-    if(node().isNull())
-        node() = condition;
+    if(node_p->isNull())
+        *node_p = condition;
     else
-        node() = node() && condition;
+        *node_p = *node_p && condition;
 
-    return &node();
+    return node_p;
 }
 
-TableExprNode *MSFieldParse::selectFieldNames(const Vector<String>& fieldNames)
+const TableExprNode *MSFieldParse::selectFieldNames(const Vector<String>& fieldNames)
 {
     MSFieldIndex msFI(ms()->field());
 
     TableExprNode condition =
         (ms()->col(colName).in(msFI.matchFieldName(fieldNames)));
 
-    if(node().isNull())
-        node() = condition;
+    if(node_p->isNull())
+        *node_p = condition;
     else
-        node() = node() && condition;
+        *node_p = *node_p && condition;
 
-    return &node();
+    return node_p;
 }
 
-TableExprNode& MSFieldParse::node()
+const TableExprNode* MSFieldParse::node()
 {
     return node_p;
 }

@@ -72,7 +72,7 @@ int msTimeGramParseCommand (const MeasurementSet& ms, const String& command)
 }
 
 //# Give the table expression node
-const TableExprNode& msTimeGramParseNode()
+const TableExprNode* msTimeGramParseNode()
 {
     return MSTimeParse::node();
 }

@@ -77,7 +77,7 @@ int msFieldGramParseCommand (const MeasurementSet &ms, const String& command);
 void MSFieldGramerror (char*);
 
 // Give the table expression node.
-const TableExprNode &msFieldGramParseNode();
+const TableExprNode *msFieldGramParseNode();
 
 // Give the current position in the string.
 // This can be used when parse errors occur.

@@ -29,7 +29,7 @@
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
-TableExprNode MSCorrParse::node_p;
+TableExprNode* MSCorrParse::node_p = 0x0;
 
 //# Constructor
 MSCorrParse::MSCorrParse ()
@@ -41,10 +41,11 @@ MSCorrParse::MSCorrParse ()
 MSCorrParse::MSCorrParse (const MeasurementSet& ms)
 : MSParse(ms, "Corr")
 {
-    node_p = TableExprNode();
+    if(node_p) delete node_p;
+    node_p = new TableExprNode();
 }
 
-TableExprNode& MSCorrParse::node()
+const TableExprNode* MSCorrParse::node()
 {
     return node_p;
 }

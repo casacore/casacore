@@ -93,10 +93,10 @@ public:
     MSCorrParse (const MeasurementSet& ms);
 
     // Get table expression node object.
-    static TableExprNode& node();
+    static const TableExprNode* node();
 
 private:
-    static TableExprNode node_p;
+    static TableExprNode *node_p;
 };
 
 } //# NAMESPACE CASA - END

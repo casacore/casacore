@@ -77,7 +77,7 @@ int msSpwGramParseCommand (const MeasurementSet &ms, const String& command);
 void MSSpwGramerror (char*);
 
 // Give the table expression node.
-const TableExprNode &msSpwGramParseNode();
+const TableExprNode *msSpwGramParseNode();
 
 // Give the current position in the string.
 // This can be used when parse errors occur.

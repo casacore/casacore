@@ -44,7 +44,7 @@ int main(int argc, char **argv)
     MeasurementSet * mssel;
     cout << "Original table has rows " << ms.nrow() << endl;
     if(msUvDistGramParseCommand(ms, "'3727km:5%'")==0) {
-      const TableExprNode *node = &msUvDistGramParseNode();
+      const TableExprNode *node = msUvDistGramParseNode();
       cout << "TableExprNode has rows = " << node->nrow() << endl;
       Table tablesel(ms.tableName(), Table::Update);
       mssel = new MeasurementSet(tablesel(*node, node->nrow() ));

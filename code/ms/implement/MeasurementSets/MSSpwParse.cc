@@ -31,7 +31,7 @@
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
-TableExprNode MSSpwParse::node_p;
+TableExprNode* MSSpwParse::node_p = 0x0;
 
 //# Constructor
 MSSpwParse::MSSpwParse ()
@@ -43,10 +43,11 @@ MSSpwParse::MSSpwParse ()
 MSSpwParse::MSSpwParse (const MeasurementSet& ms)
 : MSParse(ms, "SPW")
 {
-    node_p = TableExprNode();
+    if(node_p) delete node_p;
+    node_p = new TableExprNode();
 }
 
-TableExprNode *MSSpwParse::selectSpwIds(const Vector<Int>& spwIds)
+const TableExprNode *MSSpwParse::selectSpwIds(const Vector<Int>& spwIds)
 {
     // Look-up in DATA_DESC sub-table
     MSDataDescIndex msDDI(ms()->dataDescription());
@@ -55,15 +56,15 @@ TableExprNode *MSSpwParse::selectSpwIds(const Vector<Int>& spwIds)
    TableExprNode condition =
        (ms()->col(colName).in(msDDI.matchSpwId(spwIds)));
 
-    if(node().isNull())
-        node() = condition;
+    if(node_p->isNull())
+        *node_p = condition;
     else
-        node() = node() && condition;
+        *node_p = *node_p && condition;
 
-    return &node();
+    return node_p;
 }
 
-TableExprNode *MSSpwParse::selectSpwName(const String& name)
+const TableExprNode *MSSpwParse::selectSpwName(const String& name)
 {
     const String colName = MS::columnName(MS::DATA_DESC_ID);
     bool selectName;
@@ -87,15 +88,15 @@ TableExprNode *MSSpwParse::selectSpwName(const String& name)
         condition = 0;
 
 
-    if(node().isNull())
-        node() = condition;
+    if(node_p->isNull())
+        *node_p = condition;
     else
-        node() = node() && condition;
+        *node_p = *node_p && condition;
 
-    return &node();
+    return node_p;
 }
 
-TableExprNode& MSSpwParse::node()
+const TableExprNode* MSSpwParse::node()
 {
     return node_p;
 }

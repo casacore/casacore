@@ -93,14 +93,14 @@ public:
     // Associate the ms and the shorthand.
     MSFieldParse (const MeasurementSet& ms);
 
-    TableExprNode *selectFieldIds(const Vector<Int>& fieldIds);
-    TableExprNode *selectFieldNames(const Vector<String>& fieldNames);
+    const TableExprNode *selectFieldIds(const Vector<Int>& fieldIds);
+    const TableExprNode *selectFieldNames(const Vector<String>& fieldNames);
 
     // Get table expression node object.
-    static TableExprNode& node();
+    static const TableExprNode* node();
 
 private:
-    static TableExprNode node_p;
+    static TableExprNode* node_p;
     const String colName;
 };
 

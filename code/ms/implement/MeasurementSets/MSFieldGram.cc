@@ -74,7 +74,7 @@ int msFieldGramParseCommand (const MeasurementSet& ms, const String& command)
 }
 
 //# Give the table expression node
-const TableExprNode& msFieldGramParseNode()
+const TableExprNode* msFieldGramParseNode()
 {
     return MSFieldParse::node();
 }

@@ -77,7 +77,7 @@ int msTimeGramParseCommand (const MeasurementSet &ms, const String& command);
 void MSTimeGramerror (char*);
 
 // Give the table expression node.
-const TableExprNode &msTimeGramParseNode();
+const TableExprNode *msTimeGramParseNode();
 
 // Give the current position in the string.
 // This can be used when parse errors occur.

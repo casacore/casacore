@@ -93,16 +93,16 @@ public:
     // Associate the ms and the shorthand.
     MSTimeParse (const MeasurementSet& ms);
 
-    TableExprNode *selectStartTime(const MEpoch& startTime);
-    TableExprNode *selectEndTime(const MEpoch& endTime);
-    TableExprNode *selectRange(const MEpoch& startTime,
-                               const MEpoch& endTime);
+    const TableExprNode *selectStartTime(const MEpoch& startTime);
+    const TableExprNode *selectEndTime(const MEpoch& endTime);
+    const TableExprNode *selectRange(const MEpoch& startTime,
+                                     const MEpoch& endTime);
 
     // Get table expression node object.
-    static TableExprNode& node();
+    static const TableExprNode* node();
 
 private:
-    static TableExprNode node_p;
+    static TableExprNode* node_p;
     const String colName;
 };
 

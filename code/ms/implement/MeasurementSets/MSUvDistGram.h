@@ -78,7 +78,7 @@ int msUvDistGramParseCommand (const MeasurementSet &ms, const String& command);
 void MSUvDistGramerror (char*);
 
 // Give the table expression node.
-const TableExprNode &msUvDistGramParseNode();
+const TableExprNode *msUvDistGramParseNode();
 
 // Give the current position in the string.
 // This can be used when parse errors occur.

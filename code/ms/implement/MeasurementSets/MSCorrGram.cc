@@ -72,7 +72,7 @@ int msCorrGramParseCommand (const MeasurementSet& ms, const String& command)
 }
 
 //# Give the table expression node
-const TableExprNode& msCorrGramParseNode()
+const TableExprNode* msCorrGramParseNode()
 {
     return MSCorrParse::node();
 }

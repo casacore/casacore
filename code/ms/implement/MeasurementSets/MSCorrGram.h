@@ -77,7 +77,7 @@ int msCorrGramParseCommand (const MeasurementSet &ms, const String& command);
 void MSCorrGramerror (char*);
 
 // Give the table expression node.
-const TableExprNode &msCorrGramParseNode();
+const TableExprNode *msCorrGramParseNode();
 
 // Give the current position in the string.
 // This can be used when parse errors occur.
