@@ -29,6 +29,8 @@
 #include <trial/Lattices/LattStatsProgress.h>
 
 #include <aips/Mathematics/Math.h>
+#include <trial/Tasking/ProgressMeter.h>
+#include <aips/Utilities/String.h>
 
 
 LattStatsProgress::~LattStatsProgress()
