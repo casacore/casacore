@@ -41,6 +41,7 @@
 #include <aips/Mathematics/Math.h>
 #include <aips/Mathematics/Convolver.h>
 #include <aips/Measures/Unit.h>
+#include <aips/Measures/QMath.h>
 #include <aips/OS/Directory.h>
 #include <aips/OS/File.h>
 #include <aips/OS/Path.h>
@@ -1196,26 +1197,28 @@ Bool ImageMoments<T>::checkMethod ()
 
 
 template <class T> 
-void ImageMoments<T>::drawHistogram (const Vector<Float>& x,
-                                     const Vector<Float>& y,
+void ImageMoments<T>::drawHistogram (const Vector<T>& x,
+                                     const Vector<T>& y,
                                      PGPlotter& plotter)
 {
    plotter.box ("BCNST", 0.0, 0, "BCNST", 0.0, 0);
    plotter.lab ("Intensity", "Number", "");
 
-   const Float width = (x(1) - x(0)) / 2.0;
-   Float xx;
+   const Float width = convertT(x(1) - x(0)) / 2.0;
+   Float xx, yy;
+
    for (uInt i=0; i<x.nelements(); i++) {
-      xx = x(i) - width;
+      xx = convertT(x(i)) - width;
+      yy = convertT(y(i));
    
       plotter.move (xx, 0.0);
-      plotter.draw (xx, y(i));   
+      plotter.draw (xx, yy);
          
-      plotter.move (xx, y(i));
+      plotter.move (xx, yy);
       xx = x(i) + width;
-      plotter.draw (xx, y(i));
+      plotter.draw (xx, yy);
    
-      plotter.move (xx, y(i));
+      plotter.move (xx, yy);
       plotter.draw (xx, 0.0);
     }
 }
@@ -1235,8 +1238,8 @@ void ImageMoments<T>::drawVertical (const T& loc,
    ci = plotter.qci();
    if (ci!=0) plotter.sci (3);
 
-   plotter.move (Float(loc), Float(yMin));
-   plotter.draw (Float(loc), Float(yMax));
+   plotter.move (convertT(loc), convertT(yMin));
+   plotter.draw (convertT(loc), convertT(yMax));
    plotter.updt();
    plotter.sci (ci);
 }
@@ -1257,8 +1260,8 @@ void ImageMoments<T>::drawLine (const Vector<T>& x,
    Vector<Float> xData(n);
    Vector<Float> yData(n);
    for (uInt i=0; i<n; i++) {
-      xData(i) = x(i);
-      yData(i) = y(i);
+      xData(i) = convertT(x(i));
+      yData(i) = convertT(y(i));
    }
    plotter.line (xData, yData);
    plotter.updt ();
@@ -1271,8 +1274,8 @@ Bool ImageMoments<T>::getLoc (T& x,
                               T& y,
                               PGPlotter& plotter)
 //
-// Read the PGPLOT cursor and return its coordinates if not off the plot
-// and any button other than last pushed
+// Read the PGPLOT cursor and return its coordinates if not 
+// off the plot and any button other than last pushed
 //
 {
 // Fish out window
@@ -1282,8 +1285,8 @@ Bool ImageMoments<T>::getLoc (T& x,
 
 // Position and read cursor
 
-   Float xx = x;
-   Float yy = y;
+   Float xx = convertT(x);
+   Float yy = convertT(y);
    String str;
 
    readCursor(plotter, xx, yy, str);
@@ -1324,25 +1327,25 @@ void ImageMoments<T>::makePSF (Array<T>& psf,
 //
 {
 
-   Int i, j, k;
+   uInt i, j, k;
 
 // Find the largest axis number the user wants to smooth
 
-   const Int psfDim = max(smoothAxes_p.ac()) + 1;
+   const uInt psfDim = max(smoothAxes_p.ac()) + 1;
 
 
 // Work out the shape of the PSF.
 
    IPosition psfShape(psfDim);
    for (i=0,k=0; i<psfDim; i++) {
-      if (ImageUtilities::inVector(i, smoothAxes_p)==-1) {
+      if (ImageUtilities::inVector(Int(i), smoothAxes_p)==-1) {
          psfShape(i) = 1;
       } else {
          if (kernelTypes_p(k) == GAUSSIAN) { 
             const Double sigma = kernelWidths_p(k) / sqrt(Double(8.0) * C::ln2);
             psfShape(i) = (Int(5*sigma + 0.5) + 1) * 2;
          } else if (kernelTypes_p(k) == BOXCAR) {
-            const Int intKernelWidth = Int(kernelWidths_p(k)+0.5);
+            const uInt intKernelWidth = uInt(kernelWidths_p(k)+0.5);
             psfShape(i) = intKernelWidth + 1;
          } else if (kernelTypes_p(k) == HANNING) {
             psfShape(i) = 4;
@@ -1354,8 +1357,8 @@ void ImageMoments<T>::makePSF (Array<T>& psf,
 
 // Resize separable PSF matrix
 
-   Int nAxes = psfDim;
-   Int nPts = max(psfShape.asVector().ac());
+   const uInt nAxes = psfDim;
+   const uInt nPts = max(psfShape.asVector().ac());
    psfSep.resize(nPts,nAxes);
 
 
@@ -1363,7 +1366,7 @@ void ImageMoments<T>::makePSF (Array<T>& psf,
 
    for (i=0,k=0; i<psfDim; i++) {
 
-      if (ImageUtilities::inVector(i, smoothAxes_p)==-1) {
+      if (ImageUtilities::inVector(Int(i), smoothAxes_p)==-1) {
 
 // If this axis is not in the user's list, make the shape
 // of the PSF array 1
@@ -1383,14 +1386,14 @@ void ImageMoments<T>::makePSF (Array<T>& psf,
             const Gaussian1D<Double> gauss(norm, Double(refPix), gWidth);
 //            os_p << LogIO::NORMAL << "Volume = " << 1/norm << LogIO::POST;
 
-            for (j=0; j<psfShape(i); j++) psfSep(j,i) = gauss(Double(j));
+            for (j=0; j<uInt(psfShape(i)); j++) psfSep(j,i) = gauss(Double(j));
          } else if (kernelTypes_p(k) == BOXCAR) {
             const Int intKernelWidth = Int(kernelWidths_p(k)+0.5);
             const Int refPix = psfShape(i)/2;
 
             const Int iw = (intKernelWidth-1) / 2;
-            for (j=0; j<psfShape(i); j++) {
-               if (abs(j-refPix) > iw) {
+            for (j=0; j<uInt(psfShape(i)); j++) {
+               if (abs(Int(j)-refPix) > iw) {
                   psfSep(j,i) = 0.0;
                } else {
                   psfSep(j,i) = 1.0 / Float(intKernelWidth);
@@ -1423,7 +1426,7 @@ void ImageMoments<T>::makePSF (Array<T>& psf,
 
    Float val;
    Float sum = 0.0;
-   int index;
+   uInt index;
    for (posIterator.origin(); !posIterator.pastEnd(); posIterator.next()) {
       for (i=0,val=1.0; i<psfDim; i++) {
          index = posIterator.pos()(i);
@@ -1742,23 +1745,19 @@ Bool ImageMoments<T>::whatIsTheNoise (T& sigma,
 // Determine the noise level in the image by first making a histogram of 
 // the image, then fitting a Gaussian between the 25% levels to give sigma
 //
-// This function is a messy mixture of T/FLoat at present,.
-// Fix this up when I change IH to handle masks and to return
-// <T> Arrays instead of <FLoat>
-//
 {
 
 // Find a histogram of the image
 
-   ImageHistograms<T> histo(image, os_p);
-   const Int nBins = 100;
+   ImageHistograms<T> histo(image, False);
+   const uInt nBins = 100;
    histo.setNBins(nBins);
 
 // It is safe to use Vector rather than Array because 
 // we are binning the whole image and ImageHistograms will only resize
 // these Vectors to a 1-D shape
 
-   Vector<Float> values, counts;
+   Vector<T> values, counts;
    if (!histo.getHistograms(values, counts)) {
       os_p << LogIO::SEVERE << "Unable to make histogram of image" << LogIO::POST;
       return False;
@@ -1767,20 +1766,23 @@ Bool ImageMoments<T>::whatIsTheNoise (T& sigma,
 
 // Enter into a plot/fit loop
 
-   Float binWidth = values(1) - values(0);
-   Float xMin, xMax, yMin, yMax;
+   T binWidth = values(1) - values(0);
+   T xMin, xMax, yMin, yMax;
    xMin = values(0) - binWidth;
    xMax = values(nBins-1) + binWidth;
-   ImageUtilities::stretchMinMax(xMin, xMax);
+   Float xMinF = convertT(xMin);
+   Float xMaxF = convertT(xMax);
+   ImageUtilities::stretchMinMax(xMinF, xMaxF);
 
    IPosition yMinPos(1), yMaxPos(1);
    minMax (yMin, yMax, yMinPos, yMaxPos, counts.ac());
-   yMin = 0.0;
-   yMax += yMax/20.0;
+   Float yMinF = 0.0;
+   Float yMaxF = convertT(yMax);
+   yMaxF += yMaxF/20;
 
    if (plotter_p.isAttached()) {
       plotter_p.subp(1,1);
-      plotter_p.swin (xMin, xMax, yMin, yMax);
+      plotter_p.swin (xMinF, xMaxF, yMinF, yMaxF);
    }
 
 
@@ -1847,13 +1849,13 @@ Bool ImageMoments<T>::whatIsTheNoise (T& sigma,
          while (i1==i2) {
             while (!getLoc(x1, y1, plotter_p)) {};
             i1 = Int((x1 - (values(0) - binWidth/2))/binWidth);
-            i1 = min(nBins-1,max(0,i1));
+            i1 = min(Int(nBins-1),max(0,i1));
             drawVertical (values(i1), yMin, yMax, plotter_p);
 
             T x2 = x1;
             while (!getLoc(x2, y1, plotter_p)) {};
             i2 = Int((x2 - (values(0) - binWidth/2))/binWidth);
-            i2 = min(nBins-1,max(0,i2));
+            i2 = min(Int(nBins-1),max(0,i2));
             drawVertical (values(i2), yMin, yMax, plotter_p);
 
             if (i1 == i2) {
@@ -1873,7 +1875,7 @@ Bool ImageMoments<T>::whatIsTheNoise (T& sigma,
 // Now generate the distribution we want to fit.  Normalize to
 // peak 1 to help fitter.  
 
-      uInt nPts2 = iMax - iMin + 1; 
+      const uInt nPts2 = iMax - iMin + 1; 
       Vector<T> xx(nPts2);
       Vector<T> yy(nPts2);
 
@@ -1955,8 +1957,8 @@ Bool ImageMoments<T>::whatIsTheNoise (T& sigma,
       if (plotter_p.isAttached()) {
          plotter_p.message("Accept (click left), redo (click middle), give up (click right)");
 
-         Float xx = float(xMin+xMax)/2;
-         Float yy = float(yMin+yMax)/2;
+         Float xx = convertT(xMin+xMax)/2;
+         Float yy = convertT(yMin+yMax)/2;
          String str;
          readCursor(plotter_p, xx, yy, str);
          str.upcase();
