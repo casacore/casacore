@@ -27,18 +27,8 @@
 
 #include <trial/Lattices/LCRegion.h>
 #include <trial/Lattices/RegionType.h>
-#include <aips/Arrays/Array.h>
+#include <aips/Arrays/Vector.h>
 #include <aips/Arrays/ArrayLogical.h>
-#include <trial/Lattices/LCBox.h>
-#include <trial/Lattices/LCEllipsoid.h>
-#include <trial/Lattices/LCPolygon.h>
-#include <trial/Lattices/LCMask.h>
-#include <trial/Lattices/LCPagedMask.h>
-#include <trial/Lattices/LCIntersection.h>
-#include <trial/Lattices/LCUnion.h>
-#include <trial/Lattices/LCComplement.h>
-#include <trial/Lattices/LCDifference.h>
-#include <trial/Lattices/LCExtension.h>
 #include <aips/Tables/TableRecord.h>
 #include <aips/Utilities/Assert.h>
 #include <aips/Exceptions/Error.h>
@@ -52,16 +42,18 @@ LCRegion::LCRegion (const IPosition& latticeShape)
 {}
 
 LCRegion::LCRegion (const LCRegion& other)
-: itsShape (other.itsShape),
-  itsBox   (other.itsBox)
+: itsShape       (other.itsShape),
+  itsBoundingBox (other.itsBoundingBox),
+  itsComment     (other.itsComment)
 {}
 
 LCRegion& LCRegion::operator= (const LCRegion& other)
 {
     if (this != &other) {
 	itsShape.resize (other.itsShape.nelements());
-	itsShape = other.itsShape;
-	itsBox   = other.itsBox;
+	itsShape       = other.itsShape;
+	itsBoundingBox = other.itsBoundingBox;
+	itsComment     = other.itsComment;
     }
     return *this;
 }
@@ -69,22 +61,16 @@ LCRegion& LCRegion::operator= (const LCRegion& other)
 Bool LCRegion::operator== (const LCRegion& other) const
 {
 
-// Type check (not essential)
-
-    if (type() != other.type()) return False;
-
-// Compare bounding boxes, which also takes care of dimensionality.
-
-   if (!(itsBox.length().isEqual(other.itsBox.length())) ||
-       !(itsBox.start().isEqual(other.itsBox.start()))) {
-      return False;
-   }
-
-// Lattice shape
-
-   if (!(itsShape.isEqual(other.itsShape))) return False;
-
-   return True;
+    // Type check.
+    if (type() != other.type()) {
+	return False;
+    }
+    // Compare bounding boxes, which also takes care of dimensionality.
+    if (! itsBoundingBox.length().isEqual (other.itsBoundingBox.length())
+    ||  ! itsBoundingBox.start().isEqual (other.itsBoundingBox.start())) {
+	return False;
+    }
+    return itsShape.isEqual (other.itsShape);
 }
 
 
@@ -97,29 +83,52 @@ Lattice<Bool>* LCRegion::clone() const
 }
 
 LCRegion* LCRegion::translate (const IPosition& translateVector,
-		     const IPosition& newLatticeShape) const
+			       const IPosition& newLatticeShape) const
 {
     uInt nr = translateVector.nelements();
     Vector<Float> vec (nr);
     for (uInt i=0; i<nr; i++) {
         vec(i) = translateVector(i);
     }
-    return doTranslate (vec, newLatticeShape);
+    return translate (vec, newLatticeShape);
+}
+LCRegion* LCRegion::translate (const Vector<Float>& translateVector,
+			       const IPosition& newLatticeShape) const
+{
+    if (translateVector.nelements() != newLatticeShape.nelements()) {
+	throw (AipsError ("LCRegion::translate - "
+			  "translateVector and newLatticeShape vectors "
+			  "do not have same length"));
+    }
+    if (newLatticeShape.nelements() < latticeShape().nelements()) {
+	throw (AipsError ("LCRegion::translate - "
+			  "length of newLatticeShape vector less than "
+			  "dimensionality of region"));
+    }
+    return doTranslate (translateVector, newLatticeShape);
 }
 
-void LCRegion::setBox (const Slicer& box)
+void LCRegion::setBoundingBox (const Slicer& box)
 {
     IPosition blc, trc, inc;
     box.inferShapeFromSource (itsShape, blc, trc, inc);
-    itsBox = Slicer (blc, trc, inc, Slicer::endIsLast);
+    itsBoundingBox = Slicer (blc, trc, inc, Slicer::endIsLast);
+}
+void LCRegion::setShapeAndBoundingBox (const IPosition& latticeShape,
+				       const Slicer& boundingBox)
+{
+    AlwaysAssert (latticeShape.nelements() == boundingBox.ndim(), AipsError);
+    itsShape.resize (latticeShape.nelements());
+    itsShape = latticeShape;
+    setBoundingBox (boundingBox);
 }
 
 Slicer LCRegion::expand (const Slicer& slicer) const
 {
     IPosition blc, trc, inc;
-    IPosition shape = slicer.inferShapeFromSource (itsBox.length(),
+    IPosition shape = slicer.inferShapeFromSource (itsBoundingBox.length(),
 						   blc, trc, inc);
-    const IPosition& start = itsBox.start();
+    const IPosition& start = itsBoundingBox.start();
     uInt ndim = itsShape.nelements();
     for (uInt i=0; i<ndim; i++) {
 	blc(i) += start(i);
@@ -131,9 +140,9 @@ IPosition LCRegion::expand (const IPosition& index) const
     uInt ndim = itsShape.nelements();
     DebugAssert (index.nelements() == ndim, AipsError);
     IPosition result (ndim);
-    const IPosition& start = itsBox.start();
+    const IPosition& start = itsBoundingBox.start();
     for (uInt i=0; i<ndim; i++) {
-	DebugAssert (index(i) < itsBox.length()(i), AipsError);
+	DebugAssert (index(i) < itsBoundingBox.length()(i), AipsError);
 	result(i) = start(i) + index(i);
     }
     return result;
@@ -144,48 +153,18 @@ void LCRegion::defineRecordFields (RecordInterface& record,
 {
     record.define ("isRegion", Int(RegionType::LC));
     record.define ("name", className);
+    record.define ("comment", itsComment);
 }
 
-LCRegion* LCRegion::fromRecord (const TableRecord& rec,
-				const String& tableName)
+
+uInt LCRegion::ndim() const
 {
-    if (!rec.isDefined("isRegion")
-    ||  rec.asInt("isRegion") != RegionType::LC) {
-	throw (AipsError ("LCRegion::fromRecord - "
-			  "record does not contain an LC region"));
-    }
-    const String& name = rec.asString ("name");
-    if (name == LCBox::className()) {
-	return LCBox::fromRecord (rec, tableName);
-    } else if (name == LCEllipsoid::className()) {
-	return LCEllipsoid::fromRecord (rec, tableName);
-    } else if (name == LCPolygon::className()) {
-      	return LCPolygon::fromRecord (rec, tableName);
-    } else if (name == LCMask::className()) {
-      	return LCMask::fromRecord (rec, tableName);
-    } else if (name == LCPagedMask::className()) {
-      	return LCPagedMask::fromRecord (rec, tableName);
-    } else if (name == LCIntersection::className()) {
-      	return LCIntersection::fromRecord (rec, tableName);
-    } else if (name == LCUnion::className()) {
-      	return LCUnion::fromRecord (rec, tableName);
-    } else if (name == LCComplement::className()) {
-      	return LCComplement::fromRecord (rec, tableName);
-    } else if (name == LCDifference::className()) {
-      	return LCDifference::fromRecord (rec, tableName);
-    } else if (name == LCExtension::className()) {
-        return LCExtension::fromRecord (rec, tableName);
-    } else {
-	throw (AipsError ("LCRegion::fromRecord - " + name +
-			  " is unknown derived LCRegion class"));
-    }
-    return 0;
+    return itsShape.nelements();
 }
-
 
 IPosition LCRegion::shape() const
 {
-    return itsBox.length();
+    return itsBoundingBox.length();
 }
 
 Bool LCRegion::isWritable() const
