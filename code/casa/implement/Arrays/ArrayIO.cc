@@ -38,9 +38,9 @@
 #include <aips/Utilities/Regex.h>
 #include <aips/Logging/LogIO.h>
 #include <aips/Utilities/Register.h>
-#include <iostream.h>
-#include <fstream.h>
-#include <strstream.h>           // needed for internal IO
+#include <aips/iostream.h>
+#include <aips/fstream.h>
+#include <aips/strstream.h>           // needed for internal IO
 
 template<class T>
 ostream &operator<<(ostream &s, const Array<T> &a)

@@ -36,7 +36,7 @@
 #include <aips/Arrays/MatrixMath.h>
 #include <aips/Arrays/ArrayLogical.h>
 #include <aips/Arrays/ArrayMath.h>
-#include <iostream.h>
+#include <aips/iostream.h>
 #include <aips/math.h>
 
 main()

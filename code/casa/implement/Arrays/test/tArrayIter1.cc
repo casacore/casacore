@@ -1,5 +1,5 @@
 //# tArrayIter1.cc: This program test the Array-based iterators
-//# Copyright (C) 1993,1994,1995,1996,1998,1999
+//# Copyright (C) 1993,1994,1995,1996,1998,1999,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -27,7 +27,7 @@
 
 //# Includes
 
-#include <iostream.h>
+#include <aips/iostream.h>
 
 #include <aips/aips.h>
 #include <aips/Arrays/Array.h>

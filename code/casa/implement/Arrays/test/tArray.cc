@@ -35,7 +35,7 @@
 #define AIPS_ARRAY_INDEX_CHECK
 #endif
 
-#include <iostream.h>
+#include <aips/iostream.h>
 
 #include <aips/aips.h>
 #include <aips/Utilities/String.h>

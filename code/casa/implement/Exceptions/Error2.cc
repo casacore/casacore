@@ -27,7 +27,7 @@
 
 #include <aips/Exceptions/Error.h>
 #include <aips/stdlib.h>
-#include <iostream.h>
+#include <aips/iostream.h>
 
 
 AipsError::AipsError(const Char *str)

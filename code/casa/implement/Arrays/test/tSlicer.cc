@@ -1,5 +1,5 @@
 //# tSlicer.cc: This program tests the Slicer class
-//# Copyright (C) 1994,1995,1996,1999,2000
+//# Copyright (C) 1994,1995,1996,1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -31,7 +31,7 @@
 #include <aips/Arrays/Slice.h>
 #include <aips/Arrays/IPosition.h>
 #include <aips/Arrays/ArrayError.h>
-#include <iostream.h>
+#include <aips/iostream.h>
 
 // <summary> Test the Slicer class </summary>
 

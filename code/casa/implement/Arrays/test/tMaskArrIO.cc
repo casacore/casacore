@@ -1,5 +1,5 @@
 //# tMaskArrIO.cc: Test program for MaskedArray IO
-//# Copyright (C) 1994,1995,1996,1998,1999,2000
+//# Copyright (C) 1994,1995,1996,1998,1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -35,7 +35,7 @@
 #define AIPS_ARRAY_INDEX_CHECK
 #endif
 
-#include <iostream.h>
+#include <aips/iostream.h>
 
 #include <aips/aips.h>
 #include <aips/Arrays/MaskedArray.h>

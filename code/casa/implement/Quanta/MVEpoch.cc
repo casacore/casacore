@@ -26,7 +26,7 @@
 //# $Id$
 
 //# Includes
-#include <iostream.h>
+#include <aips/iostream.h>
 #include <aips/iomanip.h>
 #include <aips/Exceptions/Error.h>
 #include <aips/Quanta/Unit.h>

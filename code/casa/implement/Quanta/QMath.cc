@@ -1,5 +1,5 @@
 //# QMath.cc: class to manipulate physical, dimensioned quantities
-//# Copyright (C) 1994,1995,1996,1997,1998,1999,2000
+//# Copyright (C) 1994,1995,1996,1997,1998,1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -30,7 +30,7 @@
 #include <aips/Quanta/QMath.h>
 #include <aips/Mathematics/Math.h>
 #include <aips/Arrays/ArrayMath.h>
-#include <strstream.h>
+#include <aips/strstream.h>
 
 template <class Qtype>
 Quantum<Qtype> operator+(const Quantum<Qtype> &left,

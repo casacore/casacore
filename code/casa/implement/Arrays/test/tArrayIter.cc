@@ -1,5 +1,5 @@
 //# tArrayIter.cc: This program tests Array iteration
-//# Copyright (C) 1993,1994,1995,1999
+//# Copyright (C) 1993,1994,1995,1999,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -39,7 +39,7 @@
 #include <aips/Utilities/String.h>
 #include <aips/Utilities/Assert.h>
 
-#include <iostream.h>
+#include <aips/iostream.h>
 
 main()
 {

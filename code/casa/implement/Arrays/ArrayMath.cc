@@ -25,7 +25,7 @@
 //#
 //# $Id$
 
-#include <iostream.h>
+#include <aips/iostream.h>
 
 #include <aips/Arrays/ArrayMath.h>
 #include <aips/Mathematics/Math.h>

@@ -27,7 +27,7 @@
 
 //# Includes
 #include <aips/Quanta/MVAngle.h>
-#include <strstream.h>
+#include <aips/strstream.h>
 #include <aips/iomanip.h>
 #include <aips/Mathematics/Math.h>
 #include <aips/Mathematics/Constants.h>

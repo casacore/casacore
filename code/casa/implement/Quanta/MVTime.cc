@@ -30,7 +30,7 @@
 #include <aips/Quanta/MVAngle.h>
 #include <aips/Quanta/MVEpoch.h>
 #include <aips/Quanta/MUString.h>
-#include <strstream.h>
+#include <aips/strstream.h>
 #include <aips/iomanip.h>
 #include <aips/OS/Time.h>
 #include <aips/Mathematics/Math.h>

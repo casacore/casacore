@@ -1,5 +1,5 @@
 //# MaskArrIO.cc: Write out an ascii reporesentation of a MaskedArray.
-//# Copyright (C) 1993,1994,1995
+//# Copyright (C) 1993,1994,1995,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -25,7 +25,7 @@
 //#
 //# $Id$
 
-#include <iostream.h>
+#include <aips/iostream.h>
 
 #include <aips/aips.h>
 #include <aips/Arrays/MaskArrIO.h>

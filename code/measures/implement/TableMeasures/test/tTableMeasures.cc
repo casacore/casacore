@@ -61,7 +61,7 @@
 #include <aips/Utilities/Assert.h>
 #include <aips/OS/Timer.h>
 #include <aips/Exceptions/Error.h>
-#include <iostream.h>
+#include <aips/iostream.h>
 
 
 void showKeys (const TableRecord& record, uInt indent)
