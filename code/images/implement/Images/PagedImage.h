@@ -317,6 +317,7 @@ inline void PagedImage<T>::reopenRW()
   //# Open for write if not done yet and if writable.
   if (!table_p.isWritable()  &&  isWritable()) {
     table_p.reopenRW();
+    attach_logtable();
   }
 }
 
