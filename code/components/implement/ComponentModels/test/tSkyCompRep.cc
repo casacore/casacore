@@ -28,6 +28,7 @@
 #include <aips/aips.h>
 #include <aips/Arrays/Matrix.h>
 #include <aips/Arrays/Vector.h>
+#include <aips/Arrays/ArrayLogical.h>
 #include <aips/Exceptions/Error.h>
 #include <aips/Mathematics/Constants.h>
 #include <aips/Mathematics/Math.h>
@@ -54,7 +55,8 @@
 #include <aips/iostream.h>
 
 Bool pixelReflection (const SkyCompRep& sky, const CoordinateSystem& cSys,
-                      const Vector<Quantum<Double> >& beam, const Unit& unit);
+                      const Vector<Quantum<Double> >& beam, const Unit& unit,
+                      Double tol=1.0e-5);
 
 int main() {
   try {
@@ -188,12 +190,19 @@ int main() {
 
       Matrix<Double> xform(2,2);
       xform = 0.0; xform.diagonal() = 1.0;
-      DirectionCoordinate dC(MDirection::J2000, Projection::SIN, 0.0, 0.0,
-                             -1.0e-3, 1.0e-3, xform, 0.0, 0.0);
-      SpectralCoordinate sC;
+      Vector<Double> incr(2), rp(2), rv(2);
+      incr(0) = -3.8785096e-05;
+      incr(1) = 5.817764e-05;
+      rp(0) = 55.0;
+      rp(1) = 37.0;
+      rv(0) = 0.0;
+      rv(1) = 0.0;
+      DirectionCoordinate dC(MDirection::J2000, Projection::SIN, 
+                             rv(0), rv(1),
+                             incr(0), incr(1), 
+                             xform, rp(0), rp(1));
       CoordinateSystem cSys;
       cSys.addCoordinate(dC);
-      cSys.addCoordinate(sC);
 
 // Make beam
 
@@ -206,47 +215,22 @@ int main() {
 // Now Flux and shape
 
       Flux<Double> flux(100.0, 0.1, 0.2, 0.01);
-      Quantum<Double> majorAxis(20.0, String("arcmin"));
-      Quantum<Double> minorAxis(5.0, String("arcmin"));
-      Quantum<Double> pa(0.0, String("deg"));
+      Quantum<Double> majorAxis(100.0, String("arcsec"));
+      Quantum<Double> minorAxis(50.0, String("arcsec"));
+      Quantum<Double> pa(120.0, String("deg"));
       ConstantSpectrum cs;
 
-// Try reflection test for a few directions
+// Try reflection test for just one case.  We are only testing
+// the flux conversion part of it here.  The shape stuff is tested
+// much harder in tGaussianShape.cc
 
       {
-         MDirection dir(MVDirection(0.0, 0.0), MDirection::J2000);
+         MDirection dir(MVDirection(0.01, -0.01), MDirection::J2000);
          GaussianShape gc(dir, majorAxis, minorAxis, pa);
          SkyCompRep sky(flux, gc, cs);
-         Bool ok = pixelReflection(sky, cSys, beam, unit);
+         Bool ok = pixelReflection(sky, cSys, beam, unit, 1.0e-3);
       }
-      {
-         MDirection dir(MVDirection(-0.5, 0.5), MDirection::J2000);
-         GaussianShape gc(dir, majorAxis, minorAxis, pa);
-         SkyCompRep sky(flux, gc, cs);
-         Bool ok = pixelReflection(sky, cSys, beam, unit);
-      }
-/*
-      {
-         MDirection dir(MVDirection(0.5, -0.5), MDirection::J2000);
-         GaussianShape gc(dir, majorAxis, minorAxis, pa);
-         SkyCompRep sky(flux, gc, cs);
-         Bool ok = pixelReflection(sky, cSys, beam, unit);
-      }
-      {
-         MDirection dir(MVDirection(-0.5, -0.5), MDirection::J2000);
-         GaussianShape gc(dir, majorAxis, minorAxis, pa);
-         SkyCompRep sky(flux, gc, cs);
-         Bool ok = pixelReflection(sky, cSys, beam, unit);
-      }
-      {
-         MDirection dir(MVDirection(0.5, 0.5), MDirection::J2000);
-         GaussianShape gc(dir, majorAxis, minorAxis, pa);
-         SkyCompRep sky(flux, gc, cs);
-         Bool ok = pixelReflection(sky, cSys, beam, unit);
-      }
-*/
-      cout << "Passed the {to,from}Pixel handling test" << endl;
-
+//
       {
 
 // Peak<->Integral conversions
@@ -300,9 +284,9 @@ int main() {
 }
 
 Bool pixelReflection (const SkyCompRep& sky, const CoordinateSystem& cSys,
-                      const Vector<Quantum<Double> >& beam, const Unit& unit)
+                      const Vector<Quantum<Double> >& beam, const Unit& unit,
+                      Double tol)
 {
-
    Vector<Double> pars1 = sky.toPixel(unit, beam, cSys, Stokes::I);
    AlwaysAssert(pars1.nelements()==6, AipsError);
 //
@@ -310,7 +294,11 @@ Bool pixelReflection (const SkyCompRep& sky, const CoordinateSystem& cSys,
    Double ratio;
    sky2.fromPixel (ratio, pars1, unit, beam, cSys, ComponentType::GAUSSIAN, Stokes::I);
    Vector<Double> pars2 = sky2.toPixel(unit, beam, cSys, Stokes::I);
-//      for (uInt i=0; i<6; i++) AlwaysAssert(near(pars1(i), pars2(i), 1.0e-5), AipsError);
+/*
+   cerr << pars1 << endl;
+   cerr << pars2 << endl;
+*/
+   AlwaysAssert(allNear(pars1, pars2, tol), AipsError);
    AlwaysAssert(near(ratio,1.0), AipsError);
    return True;
 }

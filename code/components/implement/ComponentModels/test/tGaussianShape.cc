@@ -1,5 +1,5 @@
 //# tGaussianShape.cc: Test program for the GaussianShape & TwoSidedShape classes
-//# Copyright (C) 1996,1997,1998,1999,2000,2001
+//# Copyright (C) 1996,1997,1998,1999,2000,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -30,6 +30,7 @@
 #include <trial/ComponentModels/GaussianShape.h>
 #include <trial/ComponentModels/TwoSidedShape.h>
 #include <trial/Coordinates/DirectionCoordinate.h>
+#include <aips/Arrays/ArrayLogical.h>
 #include <aips/Arrays/Vector.h>
 #include <aips/Arrays/Matrix.h>
 #include <aips/Containers/Record.h>
@@ -50,6 +51,12 @@
 #include <aips/Utilities/Assert.h>
 #include <aips/Utilities/String.h>
 #include <aips/iostream.h>
+
+void pixelWorldConversion ();
+
+Bool pixelReflection (const TwoSidedShape& shp, const DirectionCoordinate& dCoord, 
+                     Double tol=1.0e-5);
+
 
 int main() {
   try {
@@ -431,31 +438,9 @@ int main() {
     }
     delete shapePtr;
 
-   {
-      MDirection dir(MVDirection(0.0, 0.0), MDirection::J2000);
-      Quantum<Double> majorAxis(10.0, String("deg"));
-      Quantum<Double> minorAxis(300.0, String("arcmin"));
-      Quantum<Double> pa(20.0, String("deg"));
-      GaussianShape gc(dir, majorAxis, minorAxis, pa);
-//
-      Matrix<Double> xform(2,2);
-      xform = 0.0; xform.diagonal() = 1.0;
-      DirectionCoordinate dC(MDirection::J2000, Projection::SIN, 0.0, 0.0,
-                             1.0e-4, 1.0e-4, xform, 0.0, 0.0);
-//
-      Vector<Double> pars1 = gc.toPixel(dC);
-      AlwaysAssert(pars1.nelements()==5, AipsError);
-      GaussianShape gc2;
-      gc2.fromPixel(pars1, dC);
-      AlwaysAssert(near(gc2.majorAxis().getValue("deg"), 10.0), AipsError);
-      AlwaysAssert(near(gc2.minorAxis().getValue("arcmin"), 300.0), AipsError);
-      AlwaysAssert(near(gc2.positionAngle().getValue("deg"), 20.0), AipsError);
-//
-      Vector<Double> pars2 = gc2.toPixel(dC);
-      for (uInt i=0; i<5; i++) AlwaysAssert(near(pars1(i), pars2(i)), AipsError);
-      cout << "Passed the {to,from}Pixel handling test" << endl;
-    }
+// pixel<->world conversions
 
+   pixelWorldConversion();
 
   } catch (AipsError x) {
     cerr << x.getMesg() << endl;
@@ -469,6 +454,103 @@ int main() {
   }
   cout << "OK" << endl;
 }
+
+
+
+void pixelWorldConversion ()
+{
+         
+// Make DirectionCoordinate
+       
+      Matrix<Double> xform(2,2);
+      xform = 0.0; xform.diagonal() = 1.0;
+      Vector<Double> incr(2), rp(2), rv(2);
+      incr(0) = -3.8785096e-05;
+      incr(1) = 5.817764e-05;
+      rp(0) = 55.0;
+      rp(1) = 37.0;
+      rv(0) = 0.0;
+      rv(1) = 0.0;
+      DirectionCoordinate dirCoord(MDirection::J2000, Projection::SIN,
+                                   rv(0), rv(1),
+                                   incr(0), incr(1),   
+                                   xform, rp(0), rp(1)); 
+// Now shape
+         
+      Quantum<Double> majorAxis(72.0, String("arcsec"));
+      Quantum<Double> minorAxis(60.0, String("arcsec"));
+      Quantum<Double> pa(111.0, String("deg"));
+       
+// Try reflection test for a few directions
+
+      {
+         cerr << "0 0" << endl;
+         MDirection dir(MVDirection(0.0, 0.0), MDirection::J2000);
+         GaussianShape gc(dir, majorAxis, minorAxis, pa);
+         pixelReflection(gc, dirCoord);
+      }
+      {
+         cerr << "2*inc" << endl;
+         MDirection dir(MVDirection(2*incr(0), 2*incr(1)), MDirection::J2000);
+         GaussianShape gc(dir, majorAxis, minorAxis, pa); 
+         pixelReflection(gc, dirCoord);
+      }
+      {
+         cerr << "10*inc" << endl;
+         MDirection dir(MVDirection(10*incr(0), 10*incr(1)), MDirection::J2000);
+         GaussianShape gc(dir, majorAxis, minorAxis, pa);
+         pixelReflection(gc, dirCoord);
+      }   
+      {
+         cerr << "100*inc" << endl;
+         MDirection dir(MVDirection(100*incr(0), 100*incr(1)), MDirection::J2000);
+         GaussianShape gc(dir, majorAxis, minorAxis, pa);
+         pixelReflection(gc, dirCoord, 1.0e-3);
+      }
+      {
+         cerr << "-0.1 0.1" << endl;
+         MDirection dir(MVDirection(-0.1, 0.1), MDirection::J2000);
+         GaussianShape gc(dir, majorAxis, minorAxis, pa);
+         pixelReflection(gc, dirCoord, 1.e-2);
+      }   
+      {
+         cerr << "0.1 -0.1" << endl;
+         MDirection dir(MVDirection(0.1, -0.1), MDirection::J2000);
+         GaussianShape gc(dir, majorAxis, minorAxis, pa);
+         pixelReflection(gc, dirCoord, 1.0e-2);
+      }
+      {
+         cerr << "-0.1 -0.1" << endl;
+         MDirection dir(MVDirection(-0.1, -0.1), MDirection::J2000);
+         GaussianShape gc(dir, majorAxis, minorAxis, pa);
+         pixelReflection(gc, dirCoord, 1.0e-2);
+      }  
+      {
+         cerr << "0.1 0.1" << endl;
+         MDirection dir(MVDirection(0.1, 0.1), MDirection::J2000);
+         GaussianShape gc(dir, majorAxis, minorAxis, pa);
+         pixelReflection(gc, dirCoord, 1.0e-2);
+      }
+}
+
+
+Bool pixelReflection (const TwoSidedShape& shp, const DirectionCoordinate& dirCoord, Double tol)
+{
+   Vector<Double> pars1 = shp.toPixel(dirCoord);
+   AlwaysAssert(pars1.nelements()==5, AipsError);
+//
+   GaussianShape shp2;
+   shp2.fromPixel (pars1, dirCoord);
+// 
+   Vector<Double> pars2 = shp2.toPixel(dirCoord);
+/*
+   cerr << pars1 << endl;
+   cerr << pars2 << endl;
+*/
+   AlwaysAssert(allNear(pars1, pars2, tol), AipsError);
+   return True;
+}
+
 // Local Variables: 
 // compile-command: "gmake OPTLIB=1 tGaussianShape"
 // End:
