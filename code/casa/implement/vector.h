@@ -68,7 +68,14 @@ void vector<T, allocator<T> >:: \
 _M_assign_aux(T const *, T const *, forward_iterator_tag);
 
 #else
+#if defined(AIPS_SUN_NATIVE)
+#define AIPS_VECTOR_AUX_TEMPLATES(T) \
+template T* std::copy_backward<T*, T* >(T*, T*, T*);\
+template T* std::copy<T*, T* >(T*, T*, T*);\
+template void std::fill<T*, T >(T*, T*, const T&);
+#else
 #define AIPS_VECTOR_AUX_TEMPLATES(T)
+#endif
 #endif
 
 #endif
