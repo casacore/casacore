@@ -61,6 +61,10 @@ MSConcat::MSConcat(MeasurementSet& ms):
   itsMS(ms),
   itsFixedShape(isFixedShape(ms.tableDesc()))
 {
+  if (ms.tableInfo().subType() != "UVFITS") {
+    throw(AipsError("MSConcat::MSConcat(..) - Measurement set was not created"
+		    " from a UVFITS file."));
+  }
 }
 
 IPosition MSConcat::isFixedShape(const TableDesc& td) {
@@ -109,6 +113,10 @@ IPosition MSConcat::isFixedShape(const TableDesc& td) {
 void MSConcat::concatenate(const MeasurementSet& otherMS)
 {
   LogIO log(LogOrigin("MSConcat", "concatenate"));
+  if (otherMS.tableInfo().subType() != "UVFITS") {
+    itsLog << "Measurement set was not created from a UVFITS file."
+	   << LogIO::EXCEPTION;
+  }
   log << "Appending " << otherMS.tableName() 
       << " to " << itsMS.tableName() << endl;
   const ROMSMainColumns otherMainCols(otherMS);
