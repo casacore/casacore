@@ -446,6 +446,11 @@ FitsOutput *MSFitsOutput::writeMain(Int& refPixelFreq, Double& refFreq,
   Bool hasWeightArray = rawms.tableDesc().
                            isColumn(MS::columnName(MS::WEIGHT_SPECTRUM));
 
+  if(hasWeightArray){
+    ROMSMainColumns tempCols(rawms);
+    if(!tempCols.weightSpectrum().isDefined(0))
+      hasWeightArray=False;
+  }
 
   IPosition dataShape(6, 3, numcorr0, nchan, 1, 1, 1);
   if (combineSpw) {
