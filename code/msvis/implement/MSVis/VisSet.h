@@ -34,6 +34,7 @@
 #include <aips/Arrays/Matrix.h>
 #include <trial/MeasurementEquations/StokesVector.h>
 #include <trial/MeasurementEquations/VisibilityIterator.h>
+
 // <summary> 
 // The interface to the MeasurementSet for synthesis processing
 // </summary>
@@ -156,7 +157,7 @@ private:
   void removeColumns(Table& tab);
   
   MeasurementSet ms_p;
-  VisIter iter_p;
+  VisIter* iter_p;
   Matrix<Int> selection_p;
 };
 

@@ -95,9 +95,9 @@ VisSet::VisSet(MeasurementSet& ms,const Block<Int>& columns,
       mcd.rwKeywordSet().define("CHANNEL_SELECTION",selection_p);
     }
 
-    iter_p=VisIter(ms_p,columns,timeInterval);
+    iter_p=new VisIter(ms_p,columns,timeInterval);
     for (uInt spw=0; spw<selection_p.ncolumn(); spw++) {
-      iter_p.selectChannel(1,selection_p(0,spw),selection_p(1,spw),0,spw);
+      iter_p->selectChannel(1,selection_p(0,spw),selection_p(1,spw),0,spw);
     }
 }
 
@@ -108,37 +108,39 @@ VisSet::VisSet(const VisSet& vs,const Block<Int>& columns,
     selection_p.resize(vs.selection_p.shape());
     selection_p=vs.selection_p;
 
-    iter_p=VisIter(ms_p,columns,timeInterval);
+    iter_p=new VisIter(ms_p,columns,timeInterval);
     for (uInt spw=0; spw<selection_p.ncolumn(); spw++) {
-      iter_p.selectChannel(1,selection_p(0,spw),selection_p(1,spw),0,spw);
+      iter_p->selectChannel(1,selection_p(0,spw),selection_p(1,spw),0,spw);
     }
 }
 
 VisSet& VisSet::operator=(const VisSet& other) 
 {
+    if (this == &other) return *this;
     ms_p=other.ms_p;
     selection_p.resize(other.selection_p.shape());
     selection_p=other.selection_p;
-    iter_p=other.iter_p;
+    *iter_p=*(other.iter_p);
     return *this;
 }
 
 VisSet::~VisSet() {
   ms_p.flush();
+  delete iter_p; iter_p=0;
 };
 
 void VisSet::flush() {
   ms_p.flush();
 };
 
-VisIter& VisSet::iter() { return iter_p; }
+VisIter& VisSet::iter() { return *iter_p; }
 
 // Set or reset the channel selection on all iterators
 void VisSet::selectChannel(Int nGroup,Int start, Int width, Int increment, 
 			   Int spectralWindow)
 {
-  iter_p.selectChannel(nGroup,start,width,increment,spectralWindow); 
-  iter_p.origin();
+  iter_p->selectChannel(nGroup,start,width,increment,spectralWindow); 
+  iter_p->origin();
 }
 Int VisSet::numberAnt() const 
 {
