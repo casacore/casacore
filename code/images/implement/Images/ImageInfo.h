@@ -71,7 +71,7 @@ class ostream;
 // object (rather like cout).
 // <srcblock>
 //    ImageInfo ii;
-//    ii.setRestoringBeam(Quantity(10,"arcsec"), Quantity(30,"arcsec"),
+//    ii.setRestoringBeam(Quantity(30,"arcsec"), Quantity(10,"arcsec"),
 //                        Quantity(-18,"deg"));
 //    ...
 //    cout << "The restoring beam is : " << oi.restoringBeam().ac() << endl;
@@ -99,7 +99,8 @@ public:
     // Assignment (copy semantics)
     ImageInfo &operator=(const ImageInfo &other);
 
-    // Set and get the restoring beam 
+    // Set and get the restoring beam.  Vector beam in order
+    // major axis, minor axis, position angle.
     // <group>
     Vector<Quantum<Double> > restoringBeam() const;
     ImageInfo& setRestoringBeam(const Vector<Quantum<Double> >& beam);
