@@ -36,7 +36,7 @@
 #include <aips/Arrays/ArrayMath.h>
 #include <aips/Exceptions/Error.h>
 
-#include <stdexcept>
+#include <aips/stdexcept.h>
 #include <unistd.h>                 // needed for rmdir, unlink
 #include <sys/stat.h>               // needed for mkdir
 #include <errno.h>                  // needed for errno
