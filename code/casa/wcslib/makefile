@@ -37,7 +37,7 @@ endif
 $(WCSLIB).$(SFXSTAT)(%.o) : $(CODEDIR)/%.c
 	-@ echo ""
 	-@ echo "$%"
-	 @ cd $(WCSTMPD) && $(CC) -fPIC $(WCSLIBDEFS) -I$(CODEDIR) $(COPT) -c $<
+	 @ cd $(WCSTMPD) && $(CC) $(WCSLIBDEFS) -I$(CODEDIR) $(COPT) -c $<
 	-@ $(TIMER)
 
 
