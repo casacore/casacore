@@ -1,5 +1,5 @@
 //# ImageInterface.cc: defines the Image base class non pure virtual stuff
-//# Copyright (C) 1996,1997
+//# Copyright (C) 1996,1997,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -46,21 +46,18 @@
 
 
 template <class T> 
-ImageInterface<T>::ImageInterface (Bool masking)
-: throughmask_p(masking)
+ImageInterface<T>::ImageInterface()
 {
   logSink() << LogOrigin("ImageInterface<T>",
-	    "ImageInterface(Bool masking)",
+	    "ImageInterface()",
 			 WHERE) << LogIO::DEBUGGING <<
-    "Creating ImageInterfac with masking="
-	    << masking << LogIO::POST;
+    "Creating ImageInterface" << LogIO::POST;
 }
 
 template <class T> 
 ImageInterface<T>::ImageInterface (const ImageInterface& other)
-: throughmask_p(other.throughmask_p),
-  coords_p     (other.coords_p),
-  log_p        (other.log_p)
+: coords_p (other.coords_p),
+  log_p    (other.log_p)
 {
   logSink() << LogOrigin("ImageInterface<T>",
 	    "ImageInterface(const ImageInterface&)",
@@ -71,9 +68,8 @@ template <class T>
 ImageInterface<T>& ImageInterface<T>::operator= (const ImageInterface& other)
 {
   if (this != &other) {
-    throughmask_p = other.throughmask_p;
-    coords_p      = other.coords_p;
-    log_p         = other.log_p;
+    coords_p = other.coords_p;
+    log_p    = other.log_p;
   }
   return *this;
 }
@@ -145,32 +141,3 @@ LatticeCoordinates ImageInterface<T>::latticeCoordinates() const
 {
     return LatticeCoordinates (new ImageCoord (coords_p));
 }
-
-
-// function to toggle the ability to write through the image mask.
-// True => writes to Image will alter the map and return True, 
-// False => writes to Image will fail and return False.
-template <class T> void ImageInterface<T>::writeThroughMask(Bool newValue)
-{
-    logSink() << LogOrigin("ImageInterface<T>", 
-			   "writeThroughMask(Bool newValue)", WHERE);
-    logSink() << "newValue is " << newValue << " changes to the image will be ";
-    if (newValue) {
-        logSink() << "recorded ignoring mask values";
-    } else {
-        logSink() << "recorded only where the mask is False";
-    }
-    logSink() << LogIO::POST;
-    throughmask_p = newValue;
-}
-
-// function return the value of the mask toggle
-template <class T> Bool ImageInterface<T>::writeThroughMask() const
-{
-  return throughmask_p;
-}
-
-template<class T> void ImageInterface<T>::
-putSlice(const Array <T> & sourceBuffer, const IPosition & where){
-  Lattice<T>::putSlice(sourceBuffer, where);
-};
