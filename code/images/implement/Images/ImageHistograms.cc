@@ -47,6 +47,7 @@
 #include <trial/Tasking/PGPlotter.h>
 #include <aips/Utilities/Assert.h>
 #include <aips/Utilities/DataType.h>
+#include <aips/Utilities/ValType.h>
 #include <aips/Utilities/String.h>
 
 #include <iomanip.h>
@@ -1251,11 +1252,21 @@ void ImageHistograms<T>::makeHistograms()
    if (pStoreImage_p != 0) delete pStoreImage_p;
 
 
-// Create new histogram storage image.    The first axis
-// is the histogram axis, the higher axes are the display axes
-                             
-   Table myTable = ImageUtilities::setScratchTable(pInImage_p->name(),
-                            String("ImageHistograms::"));
+// Find size of storage image in Mb
+   
+   T tmp;
+   DataType dataType = whatType(&tmp);
+   Int size0 = storeImageShape.product() * ValType::getTypeSize(dataType);
+   size0 = max(0,size0/1000000);
+   uInt size = size0;
+ 
+// Create Table descriptor
+ 
+   Table myTable = ImageUtilities::setScratchTable(String("ImageStatistics::"), size);
+
+
+// Create storage image
+ 
    pStoreImage_p = new PagedArray<T>(TiledShape(storeImageShape, tileShape),
                                       myTable);
 
