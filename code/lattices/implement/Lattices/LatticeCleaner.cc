@@ -50,6 +50,9 @@
 #include <trial/Tasking/ApplicationEnvironment.h>
 #include <trial/Tasking/PGPlotter.h>
 #include <trial/Tasking/ObjectController.h>
+#include <aips/Arrays/ArrayError.h>
+#include <aips/Arrays/ArrayIter.h>
+#include <aips/Arrays/VectorIter.h>
 
 #include <aips/Utilities/String.h>
 #include <aips/Utilities/Assert.h>
@@ -62,6 +65,12 @@
 
 #include <aips/Arrays/ArrayMath.h>
 #include <aips/Arrays/Matrix.h>
+
+
+void minMaxMask(Float &minVal, Float &maxVal, IPosition &minPos,
+		IPosition &maxPos, const Array<Float> &array, 
+		const Array<Float> &mask);
+
 
 
 template<class T> 
@@ -83,6 +92,7 @@ Bool LatticeCleaner<T>::validatePsf(const Lattice<T> & psf)
 template<class T> 
 LatticeCleaner<T>::LatticeCleaner(const Lattice<T> & psf,
 				  const Lattice<T> &dirty):
+  itsMask(0),
   itsChoose(True)
 {
   AlwaysAssert(validatePsf(psf), AipsError);
@@ -115,6 +125,7 @@ LatticeCleaner(const LatticeCleaner<T> & other):
    itsCleanType(other.itsCleanType),
    itsDirty(other.itsDirty),
    itsXfr(other.itsXfr),
+   itsMask(other.itsMask),
    itsScales(other.itsScales),
    itsPsfConvScales(other.itsPsfConvScales),
    itsDirtyConvScales(other.itsDirtyConvScales)
@@ -126,6 +137,7 @@ operator=(const LatticeCleaner<T> & other) {
   if (this != &other) {
     itsCleanType = other.itsCleanType;
     itsXfr = other.itsXfr;
+    itsMask = other.itsMask;
     itsDirty = other.itsDirty;
     itsScales = other.itsScales;
     itsPsfConvScales = other.itsPsfConvScales;
@@ -140,7 +152,26 @@ template<class T> LatticeCleaner<T>::
   destroyScales();
   if(itsDirty) delete itsDirty;
   if(itsXfr) delete itsXfr;
+  if(itsMask) delete itsMask;
 }
+
+
+// add a mask image
+template<class T> 
+void LatticeCleaner<T>::setMask(Lattice<T> & mask) 
+{
+  IPosition maskShape = mask.shape();
+  IPosition dirtyShape = itsDirty->shape();
+  
+  AlwaysAssert((mask.shape() == itsDirty->shape()), AipsError);
+
+  itsMemoryMB=Double(AppInfo::memoryInMB())/10.0;
+  itsMask = new TempLattice<T>(mask.shape(), itsMemoryMB);
+  itsMask->copyData(mask);
+};
+
+
+
 
 // Set up the control parameters
 template <class T>
@@ -189,6 +220,7 @@ Bool LatticeCleaner<T>::clean(Lattice<T>& model,
   Int scale;
   for (scale=0;scale<nScalesToClean;scale++) {
     IPosition positionPeakPsfConvScales(model.shape().nelements(), 0);
+
     findMaxAbsLattice(*itsPsfConvScales[scale], maxPsfConvScales(scale),
 		      positionPeakPsfConvScales);
     if(nScalesToClean==1) {
@@ -210,6 +242,9 @@ Bool LatticeCleaner<T>::clean(Lattice<T>& model,
     if(trcDirty(i)<0) trcDirty(i)=1;
   }
   LCBox centerBox(blcDirty, trcDirty, model.shape());
+
+  SubLattice<T> *maskSub = 0;
+  if (itsMask)  maskSub =  new SubLattice<T>(*itsMask, centerBox);
 
   // Start the iteration
   Vector<Float> maxima(nScalesToClean);
@@ -233,7 +268,14 @@ Bool LatticeCleaner<T>::clean(Lattice<T>& model,
       SubLattice<T> dirtySub(*itsDirtyConvScales[scale], centerBox);
       maxima(scale)=0;
       posMaximum[scale]=IPosition(model.shape().nelements(), 0);
-      findMaxAbsLattice(dirtySub, maxima(scale), posMaximum[scale]);
+
+
+      if (itsMask) {
+	findMaxAbsMaskLattice(dirtySub, *maskSub, maxima(scale), posMaximum[scale]);
+      } else {
+	findMaxAbsLattice(dirtySub, maxima(scale), posMaximum[scale]);
+      }
+
       // Remember to adjust the position for the window and for 
       // the flux scale
       maxima(scale)/=maxPsfConvScales(scale);
@@ -311,6 +353,8 @@ Bool LatticeCleaner<T>::clean(Lattice<T>& model,
   }
   // End of iteration
 
+  if(maskSub) delete maskSub;
+
   // Finish off the plot, etc.
   if(progress) {
     progress->info(True, iteration, itsNiter, model, maxima, posMaximum,
@@ -364,6 +408,49 @@ Bool LatticeCleaner<T>::findMaxAbsLattice(const Lattice<T>& lattice,
 
   return True;
 }
+
+
+
+
+template<class T>
+Bool LatticeCleaner<T>::findMaxAbsMaskLattice(const Lattice<T>& lattice,
+					      const Lattice<T>& mask,
+					      T& maxAbs,
+					      IPosition& posMaxAbs)
+{
+
+  posMaxAbs = IPosition(lattice.shape().nelements(), 0);
+  maxAbs=0.0;
+  const IPosition tileShape = lattice.niceCursorShape();
+  TiledLineStepper ls(lattice.shape(), tileShape, 0);
+  {
+    RO_LatticeIterator<T> li(lattice, ls);
+    RO_LatticeIterator<T> mi(mask, ls);
+    for(li.reset(),mi.reset();!li.atEnd();li++, mi++) {
+      IPosition posMax=li.position();
+      IPosition posMin=li.position();
+      Float maxVal=0.0;
+      Float minVal=0.0;
+      
+      minMaxMask(minVal, maxVal, posMin, posMax, li.cursor(), mi.cursor());
+      if(abs(minVal)>abs(maxAbs)) {
+        maxAbs=minVal;
+	posMaxAbs=li.position();
+	posMaxAbs(0)=posMin(0);
+      }
+      if(abs(maxVal)>abs(maxAbs)) {
+        maxAbs=maxVal;
+	posMaxAbs=li.position();
+	posMaxAbs(0)=posMax(0);
+      }
+    }
+  }
+
+  return True;
+}
+
+
+
 
 template<class T>
 Bool LatticeCleaner<T>::setscales(const Int nscales, const Float scaleInc)
@@ -579,5 +666,55 @@ Bool LatticeCleaner<T>::stopnow() {
   else {
     return False;
   }
+}
+
+
+void minMaxMask(Float &minVal, Float &maxVal, 
+	    IPosition &minPos, IPosition &maxPos,
+	    const Array<Float> &array, const Array<Float> &mask) 
+{
+    if (minPos.nelements() != array.ndim() ||
+	maxPos.nelements() != array.ndim() ) {
+      throw(ArrayError("void minMaxMasked(T &min, T &max, IPosition &minPos,"
+		       "IPosition &maxPos, const Array<T> &array) - "
+                       "minPos, maxPos dimensionality inconsistent with array"));
+    }
+    if (array.nelements() == 0) {
+      throw(ArrayError("void minMaxMasked(T &min, T &max, IPosition &minPos,"
+		       "IPosition &maxPos, const Array<T> &array) - "
+		       "Array has no elements"));	
+    }
+    if (array.shape() != mask.shape()) {
+      throw(ArrayConformanceError("void minMaxMasked(T &min, T &max,"
+				  "IPosition &minPos, IPosition &maxPos, const Array<T> &array, "
+				  "const Array<T> &mask) - " 
+				  "array and mask do not have the same shape()"));
+    } 
+
+    ReadOnlyVectorIterator<Float> ai(array);
+    ReadOnlyVectorIterator<Float> mi(mask);
+    Float val;
+
+    // Initialize
+    minPos = maxPos = IPosition (array.ndim(), 0);
+    minVal = maxVal = array(minPos) * mask(minPos);
+    uInt n = ai.vector().nelements();
+
+    while (! ai.pastEnd()) {
+	for (uInt i=0; i<n; i++) {
+	    val = (ai.vector()(i)) * (mi.vector()(i));
+	    if (val < minVal) {
+	        minVal = val;
+		minPos = ai.pos();
+		minPos(0) += i;
+	    }
+	    if (val > maxVal) {
+	        maxVal = val;
+		maxPos = ai.pos();
+		maxPos(0) += i;
+	    }
+	}
+	ai.next(); 
+    }
 }
 

@@ -123,6 +123,9 @@ public:
   // Clean an image. 
   Bool clean(Lattice<T> & model, LatticeCleanerProgress<T>* progress=0);
 
+  // Set the mask
+  void setMask(Lattice<T> & mask);
+
 private:
   //# The following functions are used in various places in the code and are
   //# documented in the .cc file. Static functions are used when the functions
@@ -134,6 +137,7 @@ private:
 
   TempLattice<T>* itsDirty;
   TempLattice<Complex>* itsXfr;
+  TempLattice<T>* itsMask;
 
   Int itsNscales;
 
@@ -171,6 +175,9 @@ private:
 
   Bool findMaxAbsLattice(const Lattice<T>& lattice,
 			 T& maxAbs, IPosition& posMax);
+
+  Bool findMaxAbsMaskLattice(const Lattice<T>& lattice, const Lattice<T>& mask,
+			     T& maxAbs, IPosition& posMax);
 
   Bool validatePsf(const Lattice<T> & psf);
 
