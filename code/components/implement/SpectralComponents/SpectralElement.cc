@@ -59,7 +59,7 @@ SpectralElement::SpectralElement(SpectralElement::Types tp, const Double ampl,
   };
   par_p(0) = ampl;
   par_p(1) = center;
-  par_p(2) = sigma;
+  par_p(2) = abs(sigma);
   err_p = 0;
   fix_p = False;
   check();
@@ -96,6 +96,7 @@ SpectralElement::SpectralElement(SpectralElement::Types tp,
   err_p.resize(n);
   fix_p.resize(n);
   par_p = param;
+  if (tp_p == GAUSSIAN && par_p(2) < 0.0) par_p[2] = -par_p[2];
   err_p = 0;
   fix_p = False;
   check();
@@ -105,6 +106,7 @@ SpectralElement::SpectralElement(const SpectralElement &other) :
   tp_p(other.tp_p), n_p(other.n_p),
   par_p(0), err_p(0), fix_p(0) {
   par_p = other.par_p;
+  if (tp_p == GAUSSIAN && par_p(2) < 0.0) par_p[2] = -par_p[2];
   err_p = other.err_p;
   fix_p = other.fix_p;
   check();
@@ -117,6 +119,7 @@ SpectralElement &SpectralElement::operator=(const SpectralElement &other) {
     tp_p = other.tp_p;
     n_p = other.n_p;
     par_p = other.par_p;
+    if (tp_p == GAUSSIAN && par_p(2) < 0.0) par_p[2] = -par_p[2];
     err_p = other.err_p;
     fix_p = other.fix_p;
     check();
@@ -259,6 +262,7 @@ void SpectralElement::setCenter(Double center) {
 void SpectralElement::setSigma(Double sigma) {
   checkGauss();
   par_p(2) = sigma;
+  if (tp_p == GAUSSIAN && par_p(2) < 0.0) par_p[2] = -par_p[2];
   err_p(2) = 0;
   check();
 }
@@ -349,7 +353,7 @@ void SpectralElement::checkPoly() const {
 
 void SpectralElement::check() const {
   if (tp_p == GAUSSIAN && par_p(2) <= 0.0) {
-    throw(AipsError("SpectralElement: An illegal non-positive sigma was "
+    throw(AipsError("SpectralElement: An illegal zero sigma was "
 		    "specified for a gaussian SpectralElement"));
   };
 }
