@@ -1,5 +1,5 @@
 //# tNQPolynomial.cc: Test the one-dimensional polynomial class
-//# Copyright (C) 1995,1996,1999,2001
+//# Copyright (C) 1995,1996,1999,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -108,8 +108,8 @@ int main() {
     AlwaysAssertExit(der2.order() == 2 && der2.coefficient(0) == 1.0f &&
 		     der2.coefficient(1) == 4.0f && der2.coefficient(2) == 
 		     9.0f);
-//     virtual Function1D<T,T> *cloneFunction1D() const;
-//     ~NQPolynomial();
+    //	clone()
+    //     ~NQPolynomial();
     Function<Float> *tmp3ptr = tmp2.clone();
     AlwaysAssertExit(tmp3ptr->nparameters() == 4 &&
 		     (*tmp3ptr)[0] == 0.0f &&

@@ -1,5 +1,5 @@
 //# tNQCombiFunction.cc: Test the NQCombiFunction class
-//# Copyright (C) 2001
+//# Copyright (C) 2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -63,7 +63,6 @@ int main() {
   // just added.  In the meantime, the coefficient a(i) which is also the
   // ith available parameter, and the mask for the "available parameter" are 
   // initialized with "one" and "True," respectively.
-  // uInt addFunction(const FunctionND<T, T> &newFunction);
   combination.addFunction(constant);
   combination.addFunction(linear);
   combination.addFunction(square);
@@ -107,7 +106,6 @@ int main() {
   AlwaysAssertExit(allEQ(combination.parameters().getParameters(), v));
   
   // Return a reference to a specific Function in the combination.
-  //const FunctionND<T, T>& function(uInt which) const;
   // f(x) = 10 + 11*x + 12*x^2
   AlwaysAssertExit((combination.function(0))(10) == Double(1));
   AlwaysAssertExit((combination.function(1))(10) == Double(10));

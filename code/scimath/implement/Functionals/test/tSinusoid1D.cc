@@ -1,5 +1,5 @@
 //# tNQSinusoid1D: Test the NQSinusoid1D class
-//# Copyright (C) 2001
+//# Copyright (C) 2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -134,7 +134,7 @@ int main() {
   s1.parameters().setParameters(parms);
   AlwaysAssertExit(allEQ(s1.parameters().getParameters(), 11.0));
   
-  //   virtual Function1D<T,T> *cloneFunction1D() const;
+  // clone()
   //   ~NQSinusoid1D();
   Function<Double> *s4ptr = s1.clone();
 

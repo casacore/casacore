@@ -1,5 +1,5 @@
 //# tNQGaussian1D: Test the Gaussian1D class
-//# Copyright (C) 1995,1996,1997,1999,2001
+//# Copyright (C) 1995,1996,1997,1999,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -163,7 +163,7 @@ int main() {
   gauss1.parameters().setParameters(parms);
   AlwaysAssertExit(allEQ(gauss1.parameters().getParameters(), 11.0));
   
-  //     virtual Function1D<T,T> *cloneFunction1D() const;
+  // clone();
   //     ~NQGaussian1D();
   Function<Double> *gauss4ptr = gauss1.clone();
   AlwaysAssertExit(allEQ(gauss4ptr->parameters().getParameters(), 11.0));
