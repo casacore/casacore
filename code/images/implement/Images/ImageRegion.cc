@@ -1,5 +1,5 @@
 //# ImageRegion.cc: Class to hold a region of interest in an image
-//# Copyright (C) 1998,1999
+//# Copyright (C) 1998,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -108,7 +108,7 @@ ImageRegion& ImageRegion::operator= (const ImageRegion& other)
     return *this;
 }
 
-LattRegionHolder* ImageRegion::clone() const
+ImageRegion* ImageRegion::clone() const
 {
     return new ImageRegion (*this);
 }
@@ -133,6 +133,14 @@ const WCRegion* ImageRegion::asWCRegionPtr() const
 {
     AlwaysAssert (isWCRegion(), AipsError);
     return itsWC;
+}
+
+LCRegion& ImageRegion::asMask()
+{
+    AlwaysAssert (isLCRegion(), AipsError);
+    LCRegion* regPtr = const_cast<LCRegion*>(asLCRegionPtr());
+    AlwaysAssert (regPtr->isWritable(), AipsError);
+    return *regPtr;
 }
 
 LatticeRegion ImageRegion::toLatticeRegion (const CoordinateSystem& cSys,
