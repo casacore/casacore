@@ -96,6 +96,7 @@ protected:
   Vector<Int>  ifr_nums;
   Vector<Int>  corrtypes;
   Vector<Double> freq;
+  String       corr_string;
   Double       start_time,end_time,current_time;
   uInt chunk_no,pass_no;
   Int itime;
@@ -160,6 +161,8 @@ public:
   
 // returns mask with all correlations
   RFlagWord fullCorrMask () { return (1<<num(CORR))-1; };
+// returns string of correlations
+  const String & getCorrString () { return corr_string; }
 
 // returns IFR index corresponding to current VisBuffer rows
   uInt ifrNum( uInt nr )  { return ifr_nums(nr); };

@@ -183,10 +183,10 @@ String RFFlagCube::getSummary ()
 void RFFlagCube::printStats ()
 {
   if( tot_fl_raised )
-    fprintf(stderr,"%d pixel flags; %d raised this pass, %d cleared\n",
+    dprintf(os,"%d pixel flags; %d raised this pass, %d cleared\n",
         tot_fl_raised,fl_raised,fl_cleared);
   if( tot_row_fl_raised )
-    fprintf(stderr,"%d row flags; %d raised this pass, %d cleared\n",
+    dprintf(os,"%d row flags; %d raised this pass, %d cleared\n",
         tot_row_fl_raised,row_fl_raised,row_fl_cleared);
 }
 

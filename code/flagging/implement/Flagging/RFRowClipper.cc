@@ -37,7 +37,8 @@
 #include <aips/stdio.h>
     
 RFRowClipper::RFRowClipper( RFChunkStats &ch,RFFlagCube &fl,Float clip,uInt hw,uInt maxp ) :
-  chunk(ch),flag(fl),clip_level(clip),halfwin(hw),maxpass(maxp)
+  chunk(ch),flag(fl),clip_level(clip),halfwin(hw),maxpass(maxp),
+  os(fl.logSink())
 {}
 
 void RFRowClipper::setDebug ( const RFDebugPlot &dbg )
@@ -176,13 +177,13 @@ Float RFRowClipper::updateSigma (uInt &ifrmax,uInt &itmax,Bool flag_rows )
           }
         }
         String ifrid( chunk.ifrString(ifr) );
-//        fprintf(stderr,"IFR %d (%s): %d rows flagged, recalc=%d\n",ifr,ifrid.chars(),nbad,(Int)recalc);
+//        dprintf(os,"IFR %d (%s): %d rows flagged, recalc=%d\n",ifr,ifrid.chars(),nbad,(Int)recalc);
   // produce debug plot, if needed
         if( debug_plot )
         {
           PGPlotterInterface &pgp( debug.pgp() );
           Float vmin=0,vmax=max(sigma(goodsigma)); 
-          fprintf(stderr,"Max sigma is %f\n",vmax);
+          dprintf(os,"Max sigma is %f\n",vmax);
           while( debug_plot )
           {
             pgp.ask(False);
@@ -214,7 +215,7 @@ Float RFRowClipper::updateSigma (uInt &ifrmax,uInt &itmax,Bool flag_rows )
 
   sig0 = sig;
       
-//  fprintf(stderr,"Max diff (%f) at ifr %d (%s), it %d: new sigma is %f\n",
+//  dprintf(os,"Max diff (%f) at ifr %d (%s), it %d: new sigma is %f\n",
 //      dmax,ifrmax,chunk.ifrString(ifrmax).chars(),itmax,sig0(itmax,ifrmax));
 
   return dmax;

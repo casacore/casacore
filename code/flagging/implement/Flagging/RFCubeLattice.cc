@@ -101,7 +101,7 @@ template<class T> void RFCubeLattice<T>::init ( uInt nchan,uInt nifr,uInt ntime,
       planesize = iter_shape.product()*sizeof(T),
       ntile = (uInt)(tilesize/(Float)planesize+.2);
   tile_shape = IPosition(3,nchan,nifr,ntile);
-  cerr<<"Using "<<ntile<<" planes ("<<tile_shape.product()*sizeof(T)/(1024*1024.)<<"MB) tile\n";
+//  cerr<<"Using "<<ntile<<" planes ("<<tile_shape.product()*sizeof(T)/(1024*1024.)<<"MB) tile\n";
   lat = TempLattice<T>( TiledShape(lat_shape,iter_shape),maxmem );
   iter = RFCubeLatticeIterator<T>( lat,iter_shape );
 }

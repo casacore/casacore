@@ -287,7 +287,7 @@ RFA::IterMode RFADiffBase::endDry ()
   uInt ifrmax,itmax;
   Float dmax =   rowclipper.updateSigma(ifrmax,itmax);
   
-  fprintf(stderr,"Max diff (%f) at ifr %d (%s), it %d: new sigma is %f\n",
+  dprintf(os,"Max diff (%f) at ifr %d (%s), it %d: new sigma is %f\n",
       dmax,ifrmax,chunk.ifrString(ifrmax).chars(),itmax,rowclipper.sigma0(ifrmax,itmax));
 
   if( debug.enabled() )
@@ -309,7 +309,7 @@ void RFADiffBase::startDataRow (uInt ifr)
 void RFADiffBase::endDataRow (uInt ifr)
 {
 //  if( !idiffrow )
-//    fprintf(stderr,"No data points at ifr %d\n",ifr);
+//    dprintf(os,"No data points at ifr %d\n",ifr);
   Float sigma = idiffrow ? median( diffrow( Slice(0,idiffrow) ) ) : -1;
   uInt it = diff.position();
   rowclipper.setSigma(ifr,it,sigma);

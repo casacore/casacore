@@ -103,6 +103,8 @@ private:
   uInt nifr,ntime;
   Matrix<Float> sig,sig0;
   Vector<Bool> sigupdated;
+  
+  LogIO &os;
 };
 
 inline Float RFRowClipper::sigma0 (uInt ifr,uInt it)

@@ -644,7 +644,7 @@ RFASelector::RFASelector ( RFChunkStats &ch,const RecordInterface &parm ) :
     addString(desc_str,"all");
   }
   
-  cerr<<"Selector: "<<desc_str<<endl;
+//  cerr<<"Selector: "<<desc_str<<endl;
 }
 
 

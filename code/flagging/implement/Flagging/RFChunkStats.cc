@@ -110,13 +110,13 @@ void RFChunkStats::newChunk ()
   nf_chan_ifr.set(0);
       
 // build up description of correlations
-  String corrstr("correlations");
+  corr_string = "";
   for( uInt i=0; i<corrtypes.nelements(); i++ )
-    corrstr += " " + Stokes::name( Stokes::type(corrtypes(i)) );
+    corr_string += " " + Stokes::name( Stokes::type(corrtypes(i)) );
   char s[256];
   
-  sprintf(s,"Chunk %d: %s, %d chans, %d times, %d rows\n",
-            chunk_no,corrstr.chars(),num(CHAN),num(TIME),num(ROW));
+  sprintf(s,"Chunk %d: %s, %d channels, %d time slots, %d baselines, %d rows\n",
+            chunk_no,corr_string.chars(),num(CHAN),num(TIME),num(IFR),num(ROW));
   RedFlagger::logSink()<<s<<LogIO::POST;
 }
 
@@ -141,7 +141,7 @@ void RFChunkStats::newTime ()
   if( current_time>end_time )
     end_time = current_time;
   itime++;
-//  fprintf(stderr,"newTime: %d\n",itime);
+//  dprintf(os,"newTime: %d\n",itime);
 }
 
 

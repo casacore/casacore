@@ -311,7 +311,7 @@ RFA::IterMode RFAFreqMedian::iterRow ( uInt irow )
   {
     if( debug.type()==CHAN && debug.index(0,iifr,it) >= 0 ) 
     { 
-      fprintf(stderr,"FreqMedian: IFR %d, time slot %d is flagged, no plot.\n",iifr,it); 
+      dprintf(os,"FreqMedian: IFR %d, time slot %d is flagged, no plot.\n",iifr,it); 
     }
   }  
   else // row not flagged

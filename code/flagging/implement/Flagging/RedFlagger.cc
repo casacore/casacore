@@ -138,9 +138,22 @@ void RedFlagger::attach( const MeasurementSet &mset )
       ifr2ant1(ifr) = i1;
       ifr2ant2(ifr) = i2;
     }
-  sprintf(str,"attached MS %s: %d rows, %d times, %d IFRs\n",ms.tableName().chars(),nrows,ntime,nifr);
+  sprintf(str,"attached MS %s: %d rows, %d times, %d baselines\n",ms.tableName().chars(),nrows,ntime,nifr);
   os<<str<<LogIO::POST;
 }    
+
+// -----------------------------------------------------------------------
+// RedFlagger::detach
+// detaches from MS
+// -----------------------------------------------------------------------
+void RedFlagger::detach()
+{
+  if( !ms.tableName().length() )
+    os<<"no measurement set was attached"<<LogIO::POST;
+  else
+    os<<"detaching from MS "<<ms.tableName()<<LogIO::POST;
+  ms = MeasurementSet();
+}
 
 // computes IFR index, given two antennas
 uInt RedFlagger::ifrNumber ( Int ant1,Int ant2 ) const
@@ -210,7 +223,7 @@ void RedFlagger::setReportPanels ( Int nx,Int ny )
     pgprep_nx=pgprep_ny=0;
   if( pgp_report.isAttached() && (pgprep_nx!=nx || pgprep_ny!=ny) )
   {  
-//    fprintf(stderr,"pgp_report.subp(%d,%d)\n",nx,ny);
+//    dprintf(os,"pgp_report.subp(%d,%d)\n",nx,ny);
     pgp_report.subp(pgprep_nx=nx,pgprep_ny=ny);
   }
 }
@@ -322,7 +335,7 @@ void RedFlagger::run ( const RecordInterface &agents,const RecordInterface &opt,
     Int availmem = opt.isDefined("maxmem") ? 
         opt.asInt("maxmem") : AppInfo::memoryInMB();
     if( debug_level>0 )
-      fprintf(stderr,"%d MB memory available\n",availmem);
+      dprintf(os,"%d MB memory available\n",availmem);
 // see if a flag cube is being used, and tell it to use/not use memory
     if( RFFlagCube::numInstances() )
     {
@@ -331,14 +344,14 @@ void RedFlagger::run ( const RecordInterface &agents,const RecordInterface &opt,
       if( flagmem>.75*availmem )
       {
         if( debug_level>0 )
-          fprintf(stderr,"%d MB flag cube: using disk\n",flagmem);
+          dprintf(os,"%d MB flag cube: using disk\n",flagmem);
         RFFlagCube::setMaxMem(0);
         availmem -= 2; // reserve 2 MB for the iterator
       }
       else // else use an in-memory cube
       {
         if( debug_level>0 )
-          fprintf(stderr,"%d MB flag cube: using memory\n",flagmem);
+          dprintf(os,"%d MB flag cube: using memory\n",flagmem);
         RFFlagCube::setMaxMem(availmem);
         availmem -= flagmem;
       }
@@ -355,7 +368,7 @@ void RedFlagger::run ( const RecordInterface &agents,const RecordInterface &opt,
       else
       { // active, so reserve its memory 
         if( debug_level>0 )
-          fprintf(stderr,"%s reserving %d MB of memory, %d left in pool\n",
+          dprintf(os,"%s reserving %d MB of memory, %d left in pool\n",
               acc[i]->name().chars(),availmem-maxmem,maxmem);
         availmem = maxmem>0 ? maxmem : 0;
       }
@@ -559,6 +572,7 @@ void RedFlagger::run ( const RecordInterface &agents,const RecordInterface &opt,
     throw x;
   }  
   cleanupPlotters();
+  ms.flush();
   os<<"Flagging complete\n"<<LogIO::POST;
 }
 
@@ -656,8 +670,9 @@ void RedFlagger::plotSummaryReport ( PGPlotterInterface &pgp,RFChunkStats &chunk
   for( uInt i=0; i<chunk.num(IFR); i++ )
     if( chunk.nrowPerIfr(i) )
       n++;
-  sprintf(s,"%d rows by %d channels by %d correlations. %d time slots, %d active IFRs",
-      chunk.num(ROW),chunk.num(CHAN),chunk.num(CORR),chunk.num(TIME),n);
+  sprintf(s,"%s, %d channels, %d time slots, %d baselines, %d rows\n",
+      chunk.getCorrString().chars(),chunk.num(CHAN),chunk.num(TIME),
+      chunk.num(IFR),chunk.num(ROW));
   pgp.text(0,y0-=dy,s);
   if( isFieldSet(opt,RF_TRIAL) )
   {
@@ -673,9 +688,11 @@ void RedFlagger::plotSummaryReport ( PGPlotterInterface &pgp,RFChunkStats &chunk
   n0 = chunk.num(ROW);
   sprintf(s,"%d (%0.2f%%) rows have been flagged.",n,n*100.0/n0);
   pgp.text(0,y0-=dy,s);
+  os<<s<<LogIO::POST;
   n  = sum(chunk.nfIfrTime());
   n0 = chunk.num(ROW)*chunk.num(CHAN)*chunk.num(CORR);
   sprintf(s,"%d of %d (%0.2f%%) pixels have been flagged.",n,n0,n*100.0/n0);
+  os<<s<<LogIO::POST;
   pgp.text(0,y0-=dy,s);
   pgp.line(vec01,Vector<Float>(2,y0-dy/4));
 
@@ -707,3 +724,19 @@ void RedFlagger::plotAgentReports( PGPlotterInterface &pgp )
     acc[i]->plotFlaggingReport(pgp);
 }
 
+
+// -----------------------------------------------------------------------
+// dprintf
+// Function for printfing stuff to a debug stream
+// -----------------------------------------------------------------------
+int dprintf( LogIO &os,const char *format, ...) 
+{
+  char str[512];
+  va_list ap;
+  va_start(ap,format);
+  int ret = vsprintf(str,format,ap);
+  va_end(ap);
+  os<<LogIO::DEBUGGING<<str<<LogIO::POST;
+  return ret;
+}
+ 

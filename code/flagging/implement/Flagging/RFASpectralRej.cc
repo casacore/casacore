@@ -281,7 +281,7 @@ RFA::IterMode RFASpectralRej::iterRow ( uInt irow )
       }
     }
     if( dbg )
-      fprintf(stderr,"Row %d: %d points can be fitted\n",irow,np);
+      dprintf(os,"Row %d: %d points can be fitted\n",irow,np);
 // check that we have enough points to constrain the fit
     if( np > ndeg+2 )
     {
@@ -299,8 +299,8 @@ RFA::IterMode RFASpectralRej::iterRow ( uInt irow )
         for( uInt i=0; i<y1.nelements(); i++ )
           yfit(i) = poly(x1(i));
         
-        cerr<<"Sigma: "<<sigma<<endl;
-        fprintf(stderr,"Row %d: chisq=%f\n",irow,chisq);
+        cerr<<"Sigma: "<<sigma<<LogIO::POST;
+        dprintf(os,"Row %d: chisq=%f\n",irow,chisq);
  
         Vector<Float> data(num(CHAN));
         for( uInt ich=0; ich<num(CHAN); ich++ )
@@ -336,7 +336,7 @@ RFA::IterMode RFASpectralRej::iterRow ( uInt irow )
   } // endif( !rowfl )
   else if( dbg )// a row flag
   {
-    fprintf(stderr,"Row %d is flagged, so ignoring\n",irow);
+    dprintf(os,"Row %d is flagged, so ignoring\n",irow);
   }
   
   return RFA::CONT;

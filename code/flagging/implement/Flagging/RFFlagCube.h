@@ -92,6 +92,8 @@ public:
   RFFlagCube ( RFChunkStats &ch,Bool ignore=False,Bool reset=False,LogIO &os=default_sink );
   ~RFFlagCube ();
 
+// returns reference to logsink
+  LogIO & logSink ();
 // returns estimated size of flag cube for a given chunk.
   static uInt estimateMemoryUse ( const RFChunkStats &ch );
 // creates flag cube for current chunk. name is name of agent.
@@ -335,5 +337,8 @@ inline void RFFlagCube::setMaxMem ( Int maxmem )
 
 inline Int RFFlagCube::getMaxMem ()
 { return maxmemuse; }
+
+inline LogIO & RFFlagCube::logSink ()
+{ return os; }
 
 #endif

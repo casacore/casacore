@@ -130,6 +130,9 @@ public:
 // Change or set the MS this RedFlagger refers to.
   void attach( const MeasurementSet &ms );
   
+// Detaches from the MS  
+  void detach();
+  
 // Runs the flagger. agent is a record of agents (name+options). opt is a
 // record of additional options.
 // Set indexing_base to 1 if agent options use 1-based indexing.  usually,

@@ -30,6 +30,8 @@
 #include <aips/Arrays/Vector.h>
 #include <aips/Arrays/Matrix.h>
 #include <aips/Containers/RecordInterface.h>
+#include <aips/Containers/RecordInterface.h>
+#include <aips/Logging/LogIO.h>
 
  // RFAs use bitwise flags
 typedef uInt RFlagWord;
@@ -251,5 +253,8 @@ inline String stringUpper ( const String &in )
 {
   return upcase(in);
 }
+
+// a debug-printf function, for printf-ing debug messages
+int dprintf( LogIO &os, const char *format, ... );
 
 #endif
