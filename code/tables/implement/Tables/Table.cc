@@ -39,6 +39,7 @@
 #include <aips/IO/AipsIO.h>
 #include <aips/OS/File.h>
 #include <aips/OS/Directory.h>
+#include <aips/OS/DirectoryIterator.h>
 
 
 Table::Table()
@@ -147,6 +148,61 @@ Table& Table::operator= (const Table& that)
 	baseTabPtr_p->link();
     }
     return *this;
+}
+
+
+Bool Table::canDeleteTable (const String& tableName)
+{
+    if (! isWritable (tableName)) {
+	return False;
+    }
+    if (isOpened (tableName)) {
+	return False;
+    }
+    Table table(tableName);
+    if (table.isMultiUsed()) {
+	return False;
+    }
+    return True;
+}
+
+
+void Table::deleteTable (const String& tableName)
+{
+    if (! isWritable (tableName)) {
+	throw (TableError ("Table " + tableName + " cannot be deleted: "
+			   "it is not writable"));
+    }
+    if (isOpened (tableName)) {
+	throw (TableError ("Table " + tableName + " cannot be deleted: "
+			   "it is still open in this process"));
+    }
+    Table table(tableName);
+    if (table.isMultiUsed()) {
+	throw (TableError ("Table " + tableName + " cannot be deleted: "
+			   "it is still open in another process"));
+    }
+    table.markForDelete();
+}
+
+
+Vector<String> Table::nonWritableFiles (const String& tableName)
+{
+    if (! isReadable (tableName)) {
+	throw (TableError ("Table::nonWritableFiles: Table " + tableName +
+			   " does not exist"));
+    }
+    uInt n=0;
+    Vector<String> names;
+    DirectoryIterator iter(tableName);
+    while (! iter.pastEnd()) {
+	if (! iter.file().isWritable()) {
+	    names.resize (n+1, True);
+	    names(n++) = iter.name();
+	}
+	iter++;
+    }
+    return names;
 }
 
 
@@ -382,21 +438,20 @@ Table Table::sort (const Block<String>& names,
 //# Create an expression node to handle a keyword.
 //# The code to handle this is in TableExprNode, because there the
 //# differentation between data types is being made.
-TableExprNode Table::key (const String& name, Bool isArray) const
-    { return TableExprNode::newKeyConst (keywordSet(), name, isArray); }
+TableExprNode Table::key (const String& name) const
+    { return TableExprNode::newKeyConst (keywordSet(), name); }
 
 //# Create an expression node for a column.
-TableExprNode Table::col (const String& name, Bool isArray) const
-    { return TableExprNode::newColumnNode (*this, baseTabPtr_p,
-					   name, isArray); }
+TableExprNode Table::col (const String& name) const
+    { return TableExprNode::newColumnNode (*this, baseTabPtr_p, name); }
 
 //# Create an expression node for either a keyword or column.
-TableExprNode Table::keyCol (const String& name, Bool isArray) const
+TableExprNode Table::keyCol (const String& name) const
 {
     if (tableDesc().isColumn (name)) {
-	return col (name, isArray);
+	return col (name);
     }else{
-	return key (name, isArray);
+	return key (name);
     }
 }
 
