@@ -30,16 +30,13 @@
 #include <aips/Arrays/Vector.h>
 #include <aips/Mathematics/Constants.h>
 #include <aips/Mathematics/Math.h>
-#include <trial/Wnbt/SpectralElement.h>
 
 //# Constructors
 SpectralEstimate::SpectralEstimate() :
   useWindow_p(False), rms_p(0), cutoff_p(0),
   windowLow_p(0), windowEnd_p(0),
   q_p(2), sigmin_p(0),
-  maxpar_p(200), deriv_p(0), pars_p(0), npar_p(0) {
-  pars_p = new SpectralElement[maxpar_p];
-}
+  maxpar_p(200), deriv_p(0), pars_p(0), npar_p(0) {}
 
 SpectralEstimate::SpectralEstimate(const Double ampl,
 				   const Double center, const Double sigma) {
@@ -69,8 +66,6 @@ uInt SpectralEstimate::estimate(const Vector<Float> &prof) {
   // Limit window
   windowEnd_p = min(windowEnd_p+q_p , Int(prof.nelements())-1); 
   windowLow_p = max(windowLow_p-q_p , 0 );
-  windowEnd_p = prof.nelements()-1;
-  windowLow_p = 0;   
   // Get the second derivatives
   findc2(prof);
   // Find the estimates
@@ -143,7 +138,7 @@ uInt SpectralEstimate::window(const Vector<Float> &prof) {
 
 void SpectralEstimate::findc2(const Vector<Float> &prof) {
   delete [] deriv_p; deriv_p = 0;
-  deriv_p = new Double(prof.nelements());
+  deriv_p = new Double[prof.nelements()];
   // Save the smoothing data
   static Int oldq = -1;
   static Double a, b;
@@ -170,7 +165,9 @@ void SpectralEstimate::findc2(const Vector<Float> &prof) {
 }
 
 Int SpectralEstimate::findga(const Vector<Float> &prof) {
-  delete [] pars_p; pars_p = 0; npar_p = 0;
+  if (pars_p) {
+    delete [] pars_p; pars_p = 0; npar_p = 0;
+  };
   pars_p = new SpectralElement[maxpar_p];
   Int i(windowLow_p-1);
   // Window on Gaussian
@@ -242,8 +239,8 @@ Int SpectralEstimate::findga(const Vector<Float> &prof) {
 	  if (pg > cutoff_p) {
 	    if (r < maxpar_p) {
 	      pars_p[r].setAmpl(pg);
-	      pars_p[r].setCenter(sg);
-	      pars_p[r].setSigma(xm);
+	      pars_p[r].setCenter(xm);
+	      pars_p[r].setSigma(sg);
 	    };
 	    // Count Gaussians
 	    r += 1;

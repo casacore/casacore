@@ -31,9 +31,9 @@
 
 //# Includes
 #include <aips/aips.h>
+#include <trial/Wnbt/SpectralElement.h>
 
 //# Forward Declarations
-class SpectralElement;
 template <class T> class Vector;
 
 // <summary>
