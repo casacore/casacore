@@ -146,6 +146,8 @@ public:
 					 MRBase &ref2);
   static const MeasFrame &frameRadialVelocity(MRBase &ref1,
 					      MRBase &ref2);
+  static const MeasFrame &frameComet(MRBase &ref1,
+				     MRBase &ref2);
   // </group>
   // Return the offset (or 0)
   virtual const Measure *const offset() const;

@@ -1,5 +1,5 @@
 //# MeasRef.cc:  Reference frame for physical measures
-//# Copyright (C) 1995,1996,1997,1998,1999
+//# Copyright (C) 1995,1996,1997,1998,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -176,6 +176,19 @@ const MeasFrame &MeasRef<Ms>::frameRadialVelocity(MRBase &ref1,
   if (!ref1.empty() && ref1.getFrame().radialVelocity()) {
     return ref1.getFrame();
   } else if (!ref2.empty() && ref2.getFrame().radialVelocity()) {
+  } else {
+    throw(AipsError("No MeasFrame specified for conversion of " + 
+		    Ms::showMe()));
+  };
+  return ref2.getFrame();
+}
+
+template<class Ms>
+const MeasFrame &MeasRef<Ms>::frameComet(MRBase &ref1,
+					 MRBase &ref2) {
+  if (!ref1.empty() && ref1.getFrame().comet()) {
+    return ref1.getFrame();
+  } else if (!ref2.empty() && ref2.getFrame().comet()) {
   } else {
     throw(AipsError("No MeasFrame specified for conversion of " + 
 		    Ms::showMe()));
