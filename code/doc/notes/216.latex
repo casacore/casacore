@@ -17,9 +17,9 @@
 \begin{document}
 
 \title{NOTE 216 --
-Lattice Expression Language}
+Lattice Expression Language Implementation}
 \author {Neil Killeen (ATNF) and Ger van Diepen (NFRA)}
-\date {1998 January 22}
+\date {1998 January 20}
 \maketitle
 %%---------------------------------------------------------------------------
 \begin{htmlonly}
