@@ -69,7 +69,8 @@ class SpectralElement;
 // <example>
 // <srcblock>
 // const uInt n = 512;
-// Vector<Float> x(n), y(n);
+// Vector<Double> x(n);
+// Vector<Double> y(n);
 // Vector<Bool> m(n);
 // 
 // // Code to fill data vectors x,y,m
@@ -85,6 +86,14 @@ class SpectralElement;
 // <todo asof="2004/07/10">
 //   <li> Add constraints
 // </todo>
+//
+//
+//  <note role=caution>
+//  At the moment, because of templating limitations of the underlying
+//  fitting classes, you must use template type Double.  This restriction
+//  will be lifted in the future.
+//  </note>
+//
 
 template <class T> class ProfileFit1D 
 {
@@ -107,10 +116,10 @@ public:
     // created as all good.
     // Status is returned, if False, error message can be recovered with <src>errorMessage</src>
     // <group>
-    Bool setData (const Vector<T>& x, const Vector<T>& y, const Vector<Bool>& mask,
-                  const Vector<T>& weight);
-    Bool setData (const Vector<T>& x, const Vector<T>& y, const Vector<Bool>& mask);
-    Bool setData (const Vector<T>& x, const Vector<T>& y);
+    Bool setData (const Vector<Double>& x, const Vector<T>& y, const Vector<Bool>& mask,
+                  const Vector<Double>& weight);
+    Bool setData (const Vector<Double>& x, const Vector<T>& y, const Vector<Bool>& mask);
+    Bool setData (const Vector<Double>& x, const Vector<T>& y);
     // </group>
 
     // Set a SpectralList of SpectralElements to fit for.
@@ -201,9 +210,9 @@ public:
     String errorMessage () const {return itsError;};
 
 private:
-   Vector<T> itsX;                         // Abcissa (really should not be type T)
+   Vector<Double> itsX;                    // Abcissa (really should not be type T)
    Vector<T> itsY;                         // Ordinate 
-   Vector<T> itsWeight;                    // Weights 
+   Vector<Double> itsWeight;               // Weights 
    Vector<Bool> itsDataMask;               // Data mask
    Vector<Bool> itsRangeMask;              // Mask associated with ranges
 //
@@ -215,6 +224,8 @@ private:
 // Functions
    Vector<Bool> makeTotalMask() const;
    SpectralList getSubsetList (const SpectralList& list, Int which)  const;
+   void checkType() const;
+   void copy(const ProfileFit1D<T>& other);
 };
 
 #endif
