@@ -6133,3 +6133,4 @@
 17 168 src rm hia/implement/GSDDataSource/gsd/gsdGet1x.o
 17 168 src rm hia/implement/GSDDataSource/gsd/gsdInqSize.o
 17 168 src rm hia/implement/GSDDataSource/gsd/gsdItem.o
+17 168 src rm hia/implement/GSDDataSource/gsd/gsdOpenRead.o
