@@ -528,7 +528,7 @@ main()
 	    Int i;
 
 	    Array<Int> ai1;                      // Array<T>()
-	    AlwaysAssertExit(ai1.ndim() == 1);             // ndim()
+	    AlwaysAssertExit(ai1.ndim() == 0);             // ndim()
 	    AlwaysAssertExit(ai1.nelements() == 0);        // nelements()
 	    
 	    IPosition ip1(5,1,2,3,4,5);
