@@ -187,9 +187,6 @@ void Precession::calcPrec(Double t) {
       case B1950:
 	dval_p[i] = dval_p[i]/MeasData::TROPCEN;
 	break;
-      case IAU2000:
-	pval_p[i] += MeasTable::precRate00(i)*checkEpoch_p;
-	dval_p[i] += MeasTable::precRate00(i);
       default:
 	dval_p[i] = dval_p[i]/MeasData::JDCEN;
 	break;
