@@ -64,10 +64,12 @@ class LogIO;
 
 // <synopsis>
 // This class provides methods to find sources in an image.
-// Currently just a simple strong point source finder is available.
-// In finding these point sources, it does make a  rough estimate of
-// gaussian parameters; one can return these if desired, but they
-// are not very precise.
+// 
+// The finding procedes in two stages.  First, strong point sources
+// are found via an efficient algorithm producing POINT components. 
+// If you wish, you can further request a Gaussian fit to these 
+// found point sources and then return the parameters of the 
+// fit (as a GAUSIAN component).
 // </synopsis>
 
 // <example>
@@ -100,17 +102,23 @@ public:
    ImageSourceFinder<T> &operator=(const ImageSourceFinder<T> &other);
 
 // Find strong (point) sources.  If doPoint=True, the returned components
-// are of type POINT.  If doPoint=False, some rough shape information is 
-// returned as well (and the components are of type GAUSSIAN). Because 
-// the flux of the component is integrated, this rough shape influences the 
-// flux values as well.
+// are of type POINT.  If doPoint=False, the position and shape information is 
+// returned via a Gaussian fit (and components will be of
+// type GAUSSIAN) to the point sources initially found.    The parameter width
+// specifies the half-width of a square grid of pixels centered on the initial
+// point source location to be used in the fit.  If you set doPoint=False and width=0,
+// a default width of 3 and position 0 is returned in the GAUSSIAN component.
+// Because  the flux of the component is integrated, this rough shape influences the 
+// flux values as well.  A width of 0 will 
    ComponentList findSources (LogIO& os, 
                               Int nMax, 
-                              Double cutoff, Bool absFind, Bool doPoint=True);
+                              Double cutoff, Bool absFind, Bool doPoint=True,
+                              Int width=4);
 
 // Find one source in sky plane.  Exception if no sky
    SkyComponent findSourceInSky (LogIO& os, Vector<Double>& absPixel,
-                                 Double cutoff, Bool absFind, Bool doPoint=True);
+                                 Double cutoff, Bool absFind, 
+                                 Bool doPoint=True, Int width=4);
 
 // Set a new image
    Bool setNewImage (const ImageInterface<T>& image);
@@ -121,7 +129,8 @@ private:
 // Find strong (point) sources
    ComponentList findSources (LogIO& os, const ImageInterface<T>& image,
                               Int nMax, 
-                              Double cutoff, Bool absFind, Bool doPoint);
+                              Double cutoff, Bool absFind, Bool doPoint,
+                              Int width);
 };
 
 #endif
