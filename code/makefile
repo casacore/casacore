@@ -87,6 +87,10 @@ allsys : symlinks sysdirs $(ALLSYSD) $(DOCEXTR)
 
 .cleansys ::
 	-$Q cd $(ARCHAUXD) && $(RM) docscan docscan.* docextr.*
+	   for tmplinstd in `find $(CODEDIR) -name tmplinst -print` ;\
+           do \
+              rm $$tmplinstd/*.cc ; \
+           done
 
 symlinks : $(SYMDIR) $(INCLINKS) ;
 
