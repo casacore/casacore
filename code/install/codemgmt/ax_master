@@ -4521,3 +4521,4 @@
 14 296 src mv aips/implement/MeasurementSets/NewMSObservation.h aips/implement/MeasurementSets/MSObservation.h
 14 296 src mv aips/implement/MeasurementSets/NewMSPointing.cc aips/implement/MeasurementSets/MSPointing.cc
 14 296 src mv aips/implement/MeasurementSets/NewMSPointing.h aips/implement/MeasurementSets/MSPointing.h
+14 296 src mv aips/implement/MeasurementSets/NewMSPointingColumns.cc aips/implement/MeasurementSets/MSPointingColumns.cc
