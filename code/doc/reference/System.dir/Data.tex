@@ -163,8 +163,10 @@ group. In addition, CVS and SSH must be installed on your local system. These
 packages are widely available.
 
 With \unixexe{ssh} you create your pair of keys using \unixexe{ssh-keygen}.
-This will create \verb+~+\file{/.ssh/identity.pub} on your local machine. You
-then add the contents of this file to \verb+~+\file{/.ssh/authorized\_keys}
+This will create \verb+~+\file{/.ssh/identity.pub} on your local machine
+(or \verb+~+\file{/.ssh/id\_dsa.pub} for ssh2 based versions)
+You then add the contents of this file to \verb+~+\file{/.ssh/authorized\_keys}
+(\verb+~+\file{/.ssh/authorized\_keys2} for ssh2 based)
 on \host{aips2.nrao.edu}.Make sure \file{authorized\_keys} is readable only by
 the user. After that, you are ready to try \unixexe{ssh}; try something like:
 
