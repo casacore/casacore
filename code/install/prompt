@@ -58,7 +58,9 @@
 
 #    Encode an escape sequence in "prompt" to change the window label.
      set aipspath
-     if ($?AIPSPATH) set aipspath = "$AIPSPATH"
+     if ($?AIPSPATH) then
+        set aipspath = "$AIPSPATH"
+     endif
      if ("$term" == xterm) then
         set idpl = "]2;$prlvl  $aipspath  $cwd"
      else if ("$term" == sun-cmd) then
