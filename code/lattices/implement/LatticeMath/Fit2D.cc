@@ -765,6 +765,9 @@ Vector<Double> Fit2D::estimate(Fit2D::Types type,
    } else if (type==Fit2D::LEVEL) {
       itsLogger << LogIO::SEVERE << "Level models are not currently supported" << LogIO::POST;
    }
+// 
+   parameters(3) *= 0.95;   // In case estimate is circular
+//
    return parameters;
 }
 
