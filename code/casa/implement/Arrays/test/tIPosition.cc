@@ -280,6 +280,15 @@ main()
     assert (IPosition(6,2,1,1,3,1,4).isEqual (IPosition(5,2,3,4,1,1), True));
     assert (IPosition(3,2,3,4).isEqual (IPosition(5,2,1,3,1,4), True));
 
+    assert (IPosition(3,2,3,4).nonDegenerate().isEqual (IPosition(3,2,3,4)));
+    assert (IPosition(4,1,2,3,4).nonDegenerate().isEqual (IPosition(3,2,3,4)));
+    assert (IPosition(5,1,1,2,3,4).nonDegenerate().isEqual
+	                                             (IPosition(3,2,3,4)));
+    assert (IPosition(6,1,1,2,3,1,4).nonDegenerate().isEqual
+	                                             (IPosition(3,2,3,4)));
+    assert (IPosition(6,1,1,2,3,1,4).nonDegenerate(2).isEqual
+	                                             (IPosition(5,1,1,2,3,4)));
+
     AipsIO io("tIPosition_tmp.data", ByteIO::New);   // AipsIO << and >>
     IPosition iptmp1;
     io << ip1 << ip2 << iptmp1;
