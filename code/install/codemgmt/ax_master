@@ -1393,3 +1393,4 @@
 11 074 src rm trial/apps/deconvolver/templates
 11 074 src rm trial/implement/MeasurementEquations/DOpimager.h
 11 074 src rm trial/implement/MeasurementEquations/DOpimager.cc
+11 074 src rm trial/apps/pimager
