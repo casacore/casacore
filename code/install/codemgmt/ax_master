@@ -1878,3 +1878,4 @@
 08 003 sys rm libexec/workspace.g
 08 004 top rm docs/user/synthesis-ifits.ps
 08 004 top rm docs/user/synthesis-fits.ps
+08 004 top rm docs/user/aipsview
