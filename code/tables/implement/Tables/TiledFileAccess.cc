@@ -205,16 +205,17 @@ void TiledFileAccess::get (Array<DComplex>& buffer, const Slicer& section)
 
 
 Array<Float> TiledFileAccess::getFloat (const Slicer& section,
-					Float scale, Float offset,
-					Short deleteValue)
+					Double scale, Double offset,
+					Short deleteValue, Bool examineForDeleteValues)
 {
   Array<Float> arr;
-  get (arr, section, scale, offset, deleteValue);
+  get (arr, section, scale, offset, deleteValue, examineForDeleteValues);
   return arr;
 }
 
 void TiledFileAccess::get (Array<Float>& buffer, const Slicer& section,
-			   Float scale, Float offset, Short deleteValue)
+			   Double scale, Double offset, Short deleteValue,
+                           Bool examineForDeleteValues)
 {
   Array<Short> arr = getShort (section);
   buffer.resize (arr.shape());
@@ -222,10 +223,16 @@ void TiledFileAccess::get (Array<Float>& buffer, const Slicer& section,
   const Short* arrPtr = arr.getStorage (deleteArr);
   Float* bufPtr = buffer.getStorage (deleteBuf);
   uInt n = arr.nelements();
-  for (uInt i=0; i<n; i++) {
-    if (arrPtr[i] == deleteValue) {
-      setNaN (bufPtr[i]);
-    } else {
+  if (examineForDeleteValues) {
+    for (uInt i=0; i<n; i++) {
+      if (arrPtr[i] == deleteValue) {
+        setNaN (bufPtr[i]);
+      } else {
+        bufPtr[i] = arrPtr[i] * scale + offset;
+      }
+    }
+  } else {
+    for (uInt i=0; i<n; i++) {
       bufPtr[i] = arrPtr[i] * scale + offset;
     }
   }
