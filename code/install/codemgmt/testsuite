@@ -205,8 +205,8 @@
   if [ $INHALE -gt 0 ] ; then
     echo ""
     echo "testsuite: inhale started"
-    echo inhale -c
     echo ""
+    inhale -c
   fi
 
   if [ $HASPACKAGES -gt 0 -o $HASMODULES -gt 0 ] ; then
