@@ -458,7 +458,7 @@ void MIRIADImage::getImageAttributes (CoordinateSystem& cSys,
   Int rotationAxis = -1;
   
 
-  xyopen_c(&tno_p, name.chars(), "old", naxis, axes);    // open miriad file
+  xyopen_c(&tno_p, const_cast<char *>(name.chars()), "old", naxis, axes);    // open miriad file
   rdhdi_c(tno_p,"naxis",&ndim,0);                // for convenience, get ndim
 
 #if 0
@@ -500,20 +500,20 @@ void MIRIADImage::getImageAttributes (CoordinateSystem& cSys,
   // get the miriad axes descriptors
   for (i=0; i<ndim; i++) {
       tmps = "ctype" + digit.toString(i+1);
-      rdhda_c(tno_p,tmps.chars(), tmps64, "", 64);
+      rdhda_c(tno_p,const_cast<char*>(tmps.chars()), tmps64, "", 64);
       ctype(i) = tmps64;
       // cerr << tmps << "=>" << ctype(i) << endl;
 
       tmps = "crval" + digit.toString(i+1);
-      rdhdd_c(tno_p,tmps.chars(), &crval(i), 0.0);
+      rdhdd_c(tno_p,const_cast<char *>(tmps.chars()), &crval(i), 0.0);
       // cerr << tmps << "=>" << crval(i) << endl;
 
       tmps = "cdelt" + digit.toString(i+1);
-      rdhdd_c(tno_p,tmps.chars(), &cdelt(i), 0.0);
+      rdhdd_c(tno_p,const_cast<char *>(tmps.chars()), &cdelt(i), 0.0);
       // cerr << tmps << "=>" << cdelt(i) << endl;
 
       tmps = "crpix" + digit.toString(i+1);
-      rdhdd_c(tno_p,tmps.chars(), &crpix(i), 0.0);
+      rdhdd_c(tno_p,const_cast<char*>(tmps.chars()), &crpix(i), 0.0);
       crpix(i) -= offset;
       // cerr << tmps << "=>" << crpix(i) << endl;
   }
