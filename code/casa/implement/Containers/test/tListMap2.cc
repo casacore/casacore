@@ -39,11 +39,11 @@ main () {
     Int i;
     i=-32768;
     ListMap<Int,Int> Name(i);
-    MapIter<Int,Int> name = Name;
+    MapIter<Int,Int> name (&Name);
     ListMap<String,Int> Nams(32767);
-    MapIter<String,Int> nams = Nams;
+    MapIter<String,Int> nams (&Nams);
     ListMap<String,Int> Nam1(32767);
-    MapIter<String,Int> nam1 = Nam1;
+    MapIter<String,Int> nam1(&Nam1);
 
     i=1;
     cout << i << name.atEnd() << "end\n";
@@ -89,7 +89,7 @@ main () {
     cout << Nams << endl;
 
     ListMap<String,Int> Nam2 = Nams;        // copy the map
-    MapIter<String,Int> nam2 = Nam2;        // copy the map
+    MapIter<String,Int> nam2(&Nam2);        // copy the map
     cout << Nam2 << endl;                   // and show it
     nam2.remove("Ger");
     cout << Nam2 << endl;

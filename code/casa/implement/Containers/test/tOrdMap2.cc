@@ -39,11 +39,11 @@ main () {
     Int i;
     i=-32768;
     OrderedMap<Int,Int> Name(i);
-    MapIter<Int,Int> name = Name;
+    MapIter<Int,Int> name (&Name);
     OrderedMap<String,Int> Nams(32767,4);
-    MapIter<String,Int> nams = Nams;
+    MapIter<String,Int> nams (&Nams);
     OrderedMap<String,Int> Nam1(32767,2);
-    MapIter<String,Int> nam1 = Nam1;
+    MapIter<String,Int> nam1 (&Nam1);
     i=1;
     cout << i << name.atEnd() << "end\n";
     name.define(2,10);
@@ -87,7 +87,7 @@ main () {
     cout << "Ger " << nams("Ger") << " Darrell " << nams("Darrell") << " Zomaar " << nams("Zomaar") << " Brian " << nams("Brian") << endl;
     cout << Nams << endl;
     OrderedMap<String,Int> Nam2 = Nams;     // copy the map
-    MapIter<String,Int> nam2 = Nam2;
+    MapIter<String,Int> nam2 (&Nam2);
     cout << Nam2 << endl;                           // and show it
     nam2.remove("Ger");
     cout << Nam2 << endl;

@@ -41,7 +41,7 @@ main() {
   CountedPtr<myobj> var = new myobj("fred");
   CountedPtr<myobj> var2 = var;
   CountedPtr<myobj> var3 = var;
-  CountedConstPtr<myobj> var4 = var;
+  CountedConstPtr<myobj> var4 (var);
 
   cout << (*var).name() << ".." <<
     (*var2).name() << ".." <<
