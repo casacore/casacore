@@ -31,7 +31,7 @@
 template<class T>
 T Function<T>::operator()(const Vector<ArgType> &x) const {
   DebugAssert(ndim()<=x.nelements(), AipsError);
-  if (x.contiguousStorage()) return this->eval(&(x[0]));
+  if (x.contiguousStorage() || ndim()<2) return this->eval(&(x[0]));
   uInt j=ndim();
   arg_p.resize(j);
   for (uInt i=0; i<j; ++i) arg_p[i] = x[i];
