@@ -163,6 +163,13 @@ Flux<Double> SkyComponent::visibility(const Vector<Double>& uvw,
   return itsCompPtr->visibility(uvw, frequency);
 }
 
+void SkyComponent::visibility(Cube<DComplex>& visibilities,
+			      const Matrix<Double>& uvws,
+			      const Vector<Double>& frequencies) const {
+  DebugAssert(ok(), AipsError);
+  itsCompPtr->visibility(visibilities, uvws, frequencies);
+}
+
 Bool SkyComponent::fromRecord(String& errorMessage, 
  			      const RecordInterface& record) {
   DebugAssert(ok(), AipsError);
