@@ -320,15 +320,15 @@ void String::del(const Regex &r, size_type startpos) {
 Int String::gsub(const Regex &pat, const string &repl) {
   Int nmatches(0);
   if (length() == 0) return nmatches;
-  size_type si(0);
   Int pl;
-  while (length()-si > 0) {
+  size_type si(0);
+  while (length() > si) {
     size_type pos = pat.search(c_str(), length(), pl, si);
     if (pos == npos || pl <=0) break;
     else {
       nmatches++;
       replace(pos, pl, repl);
-      si = pos + repl.length();
+      si = pos + pl;
     };
   };
   return nmatches;
