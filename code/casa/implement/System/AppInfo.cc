@@ -1,5 +1,5 @@
 //# AppInfo.cc: General information for applications
-//# Copyright (C) 1996,1997,1998
+//# Copyright (C) 1996,1997,1998,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -29,6 +29,7 @@
 #include <aips/Tasking/AppInfo.h>
 
 #include <aips/Arrays/Vector.h>
+#include <aips/Arrays/MaskedArray.h>
 #include <aips/Tasking/Aipsrc.h>
 #include <aips/Tasking/AipsrcVector.h>
 #include <aips/Utilities/Assert.h>
