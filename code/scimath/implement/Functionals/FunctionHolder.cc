@@ -188,8 +188,9 @@ Bool FunctionHolder<T>::getRecord(String &error, Function<U> *&fn,
 	in.isDefined(String("params")) &&
 	in.type(in.idToNumber(RecordFieldId("ndim"))) == TpInt &&
 	in.type(in.idToNumber(RecordFieldId("npar"))) == TpInt &&
-	in.type(in.idToNumber(RecordFieldId("params"))) ==
-	TpArrayDouble))) {
+	(in.type(in.idToNumber(RecordFieldId("params"))) ==
+	 TpArrayDouble || in.type(in.idToNumber(RecordFieldId("params"))) ==
+	 TpArrayDComplex)))) {
     if (!getType(error, fn, in)) return False;
     if ((nf_p == COMBINE || nf_p == COMPOUND) &&
 	in.isDefined(String("nfunc")) &&
@@ -218,7 +219,8 @@ Bool FunctionHolder<T>::getRecord(String &error, Function<U> *&fn,
       };
     };
     if (in.isDefined(String("params")) &&
-	in.type(in.idToNumber(RecordFieldId("params"))) == TpArrayDouble) {
+	(in.type(in.idToNumber(RecordFieldId("params"))) == TpArrayDouble ||
+	 in.type(in.idToNumber(RecordFieldId("params"))) == TpArrayDComplex)) {
       Vector<T> params;
       in.get(RecordFieldId("params"), params);
       setParameters(fn, params);
