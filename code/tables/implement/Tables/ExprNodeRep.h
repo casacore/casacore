@@ -138,7 +138,7 @@ public:
 	Constant,
 	// A variable (i.e. row dependent) subexpression which
 	// has to be evaluated for each table row.
-	Variable,
+	Variable
 	// An expensive constant subexpression which should only be
 	// evaluated when needed (e.g. a subquery).
 //	Lazy
