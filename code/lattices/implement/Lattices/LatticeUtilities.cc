@@ -97,7 +97,7 @@ void LatticeUtilities::collapse (Array<T>& out, const IPosition& axes,
                                  Bool dropDegenerateAxes) 
 { 
    LatticeStatistics<T> stats(in, False, False);
-   stats.setAxes(axes.asVector());
+   AlwaysAssert(stats.setAxes(axes.asVector()), AipsError);
    stats.getMean(out, dropDegenerateAxes);
 }
 
@@ -131,20 +131,15 @@ void LatticeUtilities::collapse(Array<T>& data, Array<Bool>& mask,
       stats.getNPts(n, dropDegenerateAxes);
       mask.resize(n.shape());
 //
-      Bool deleteN, deleteM;
-      const T* pN = n.getStorage(deleteN);
-      Bool* pM = mask.getStorage(deleteM);
-//
       T lim(0.5);
-      for (Int i=0; i<n.shape().product(); i++) {
-         pM[i] = True;
-         if (pN[i] < lim) pM[i] = False;   
+      typename Array<T>::const_iterator it;
+      typename Array<Bool>::iterator mIt;
+      for (it=n.begin(),mIt=mask.begin(); it!=n.end(); it++,mIt++) {
+         *mIt = True;
+         if (*it < lim) *mIt = False;
       }
-//
-      n.freeStorage(pN, deleteN);
-      mask.putStorage(pM, deleteM);
    } else {
-      mask.resize(IPosition(0,0));
+      mask.resize();
    }
  }
 
@@ -153,6 +148,10 @@ template <class T>
 void LatticeUtilities::copyDataAndMask(LogIO& os, MaskedLattice<T>& out,
                                        const MaskedLattice<T>& in, 
                                        Bool zeroMasked)
+//
+// This function coould be implemented with LEL
+// but requires two passes if zeroMask=True so
+// we leave it as it is
 {  
 
 // Do we need to stuff about with masks ?  Even if the input
@@ -178,39 +177,32 @@ void LatticeUtilities::copyDataAndMask(LogIO& os, MaskedLattice<T>& out,
    LatticeStepper stepper (out.shape(), cursorShape, LatticeStepper::RESIZE);
 
 // Create an iterator for the output to setup the cache.
-// It is not used, because using putSlice directly is faster and as easy.
 
-   Bool deletePixels, deleteMask;
    LatticeIterator<T> dummyIter(out);
    RO_MaskedLatticeIterator<T> iter(in, stepper);
    for (iter.reset(); !iter.atEnd(); iter++) {
 
 // Put the pixels
 
+      typename Array<Bool>::const_iterator mIt;
+      typename Array<T>::iterator dIt;
       IPosition cursorShape = iter.cursorShape();
       if (zeroMasked) {
          Array<T> pixels = iter.cursor().copy();
-         Array<Bool> mask = in.getMask();
+         const Array<Bool>& mask = iter.getMask();
 //
-         T* pPixels = pixels.getStorage(deletePixels);
-         const Bool* pMask = mask.getStorage(deleteMask);
-         for (Int i=0; i<cursorShape.product(); i++) {
-            if (!pMask[i]) pPixels[i] = 0.0;
+         for (dIt=pixels.begin(),mIt=mask.begin(); dIt!=pixels.end(); dIt++,mIt++) {
+            if (!(*mIt)) *dIt = 0.0;
          }
-         pixels.putStorage(pPixels, deletePixels);
-         mask.freeStorage(pMask, deleteMask);
-//
          out.putSlice(pixels, iter.position());
       } else {
-         out.putSlice(in.getSlice(iter.position(),
-                      iter.cursorShape()), iter.position());
+         out.putSlice(iter.cursor(), iter.position());
       }
 
 // Put the mask
 
       if (doMask) {
-         pMaskOut->putSlice(in.getMaskSlice(iter.position(),
-                            iter.cursorShape()), iter.position());
+         pMaskOut->putSlice(iter.getMask(), iter.position());
       }
    }
 }
