@@ -1,5 +1,5 @@
 //# NumericTraits.h: Defines relationships between numeric data types 
-//# Copyright (C) 1996,1997
+//# Copyright (C) 1996,1997,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -184,12 +184,16 @@
 // A default template class is required by the C++ standard (Annotated C++
 // reference Manual by Ellis & Stroustrup pg. 348). It should never be used,
 // except through the specialisations in 
-// <linkto file="NumericTraits2.h#NumericTraits">NumericTraits2.h</linkto>
+// <linkto file="NumericTraits2.h#NumericTraits">NumericTraits2.h</linkto>. 
+// The default types for ConjugateType and PrecisionType are deliberatly set to
+// a non-numeric type to further discourage the use of the non-specialised
+// class defined below. It also helps when using this class with the Sun native
+// compiler.
 
 template <class T> class NumericTraits {
 public:
-  typedef T ConjugateType; 
-  typedef T PrecisionType;      
+  typedef Char ConjugateType; 
+  typedef Char PrecisionType;      
   static const Double & epsilon;
   static const Double & minimum;
   static const Double & maximum;
