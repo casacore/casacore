@@ -298,11 +298,6 @@ void ImageRegrid<T>::regridOneCoordinate (LogIO& os, IPosition& outShape2,
 // Now we need to break the polymorphic nature  of coordinates.  
 
     if (type==Coordinate::DIRECTION) {
-       ostringstream oss;
-       oss << "Regridding output axes " << outPixelAxes + 1 
-           << " which are of Coordinate type " 
-           << outCoords.showType(outCoordinate) << endl;
-       os << LogIO::NORMAL << String(oss) << LogIO::POST;
 
 // Note that we will do two pixel axes in this pass
 
@@ -408,11 +403,6 @@ void ImageRegrid<T>::regridOneCoordinate (LogIO& os, IPosition& outShape2,
                  outPixelAxes, pixelAxisMap1, pixelAxisMap2, method,
                  machine, replicate, decimate, madeIt, showProgress, scale);
     } else {
-       ostringstream oss;
-       oss << "Regridding output axis " << outPixelAxis+1 
-           << " which is of Coordinate type " 
-           << outCoords.showType(outCoordinate) << endl;
-       os << LogIO::NORMAL << String(oss) << LogIO::POST;
 
 // Note that will do one pixel axis in this pass
 
