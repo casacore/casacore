@@ -383,7 +383,7 @@ Bool SubMS::fillDDTables(){
 	newPolId[k]=j;
     }
   }
-  for(uInt k=0; k < nPol; ++k){
+  for(uInt k=0; k < newPolId.nelements(); ++k){
     msOut_p.polarization().addRow();
     msPol.numCorr().put(k,numCorr(polId(spw_p[k])));
     msPol.corrType().put(k,corrType(polId(spw_p[k])));
