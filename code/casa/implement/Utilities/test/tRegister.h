@@ -28,6 +28,25 @@
 #if !defined(AIPS_TEST_TREGISTER_H)
 #define AIPS_TEST_TREGISTER_H
 
+// <summary>
+// Example classes for test of Register class
+// </summary>
+
+// <use visibility=local>
+
+// <reviewed reviewer="" date="" tests="" demos="">
+// </reviewed>
+
+// <prerequisite>
+//# Classes you should understand before using this one.
+//   <li> Register
+// </prerequisite>
+
+// <synopsis> 
+// Make some classes to test the templated class Register.
+// </synopsis> 
+
+
 class foo {};
 
 class bar {};

@@ -32,6 +32,25 @@
 #include <aips/aips.h>
 #include <aips/iostream.h>
 
+// <summary>
+// Example class for test of CountedPtr class
+// </summary>
+
+// <use visibility=local>
+
+// <reviewed reviewer="Friso Olnon" date="1995/03/15" tests="tCountedPtr" demos="">
+// </reviewed>
+
+// <prerequisite>
+//# Classes you should understand before using this one.
+//   <li> CountedPtr
+// </prerequisite>
+
+// <synopsis> 
+// Make a class to test the templated class CountedPtr.
+// </synopsis> 
+
+
 class myobj {
     char *store;
 public:

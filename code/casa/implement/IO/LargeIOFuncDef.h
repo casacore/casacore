@@ -29,11 +29,23 @@
 #define AIPS_LARGEIOFUNCDEF_H
 
 
-// This ifdef lets us instruments the IO system using PABLO
-// see www-pablo.cs.uiuc.edu for more about pablo.
+// <summary>
+// Defines for correct name of functions to access large files.
+// </summary>
+
+// <use visibility=local>
+
+// <reviewed reviewer="" date="" tests="" demos="">
+// </reviewed>
+
+// </synopsis> 
+// The defines in this file let us instrument the IO system using PABLO.
+// See www-pablo.cs.uiuc.edu for more about pablo.
 //
 // If AIPS_NOLARGEFILE is not defined, use the large file functions.
 // Define _LARGEFILE64_SOURCE for Linux systems.
+// <synopsis> 
+
 
 #if !defined(AIPS_NOLARGEFILE)
 #if defined(AIPS_LINUX)
