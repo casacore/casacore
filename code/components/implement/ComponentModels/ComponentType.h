@@ -1,5 +1,5 @@
 //# ComponentType.h: Enumerators common to the Components Module
-//# Copyright (C) 1997,1998
+//# Copyright (C) 1997,1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -54,18 +54,23 @@ class componentlist;
 // <ul>
 // <li> static functions which convert between these enumerators and strings.
 // <li> static functions which construct the appropriate derived object given
-//      an enumerator. 
+//      an enumerator. Note that these functions are only accessible by the
+//      friend classes <linkto class=SkyCompRep>SkyCompRep</linkto> and
+//      <linkto class=componentlist>componentlist</linkto> and should be
+//      considered an implementation detail.
 // </ul>
 // The first element in the enumerator must be represented by zero and every
-// enumerator must contain as the second last and last elements an UNKNOWN and
-// NUMBER element.
+// enumerator must contain as the second last and last elements an UNKNOWN_*
+// and NUMBER_* element.  
 // </synopsis>
 
 // <example>
 // See the documentation for the ComponentModels classes for examples on the
-// use of these enumerations.
+// use of these enumerator and functions. For example the 
+// <linkto class=ComponentShape>ComponentShape</linkto> class.
 // </example>
-// <todo asof="1997/06/17">
+
+// <todo asof="1999/11/15">
 // <li> Nothing I can think of.
 // </todo>
 //
@@ -110,7 +115,7 @@ public:
     CONSTANT_SPECTRUM = 0,
     // The flux varies as I = I_0 * (\nu / \nu_0)^\alpha
     SPECTRAL_INDEX,
-    // an unknown spectral types
+    // an unknown spectral type
     UNKNOWN_SPECTRAL_SHAPE,
     // The number of spectral types in this enumerator
     NUMBER_SPECTRAL_SHAPES
@@ -118,17 +123,17 @@ public:
   // Convert the Shape enumerator to a string
   static String name(ComponentType::Shape shapeEnum);
   // Convert a given String to a Shape enumerator
-  static ComponentType::Shape shape(const String & shapeName);
+  static ComponentType::Shape shape(const String& shapeName);
 
   // Convert the Polarisation enumerator to a string
   static String name(ComponentType::Polarisation fluxEnum);
   // Convert a given String to a Polarisation enumerator
-  static ComponentType::Polarisation polarisation(const String & 
+  static ComponentType::Polarisation polarisation(const String& 
 						  polarisationName);
   // Convert the SpectralShape enumerator to a string
   static String name(ComponentType::SpectralShape spectralEnum);
   // Convert a given String to a SpectralShape enumerator
-  static ComponentType::SpectralShape spectralShape(const String &
+  static ComponentType::SpectralShape spectralShape(const String&
 						    spectralName);
 private:
 
@@ -136,17 +141,14 @@ private:
   // object). Returns a null pointer if the object could not be
   // constructed. This will occur is the enumerator is UNKNOWN_SHAPE or
   // NUMBER_SHAPES or there is insufficient memory. The caller of this function
-  // is responsible for deleting the pointer. This function is only accessible
-  // by the friend classes and should be considered an implementation detail.
-  static ComponentShape * construct(ComponentType::Shape shapeEnum);
+  // is responsible for deleting the pointer. 
+  static ComponentShape* construct(ComponentType::Shape shapeEnum);
 
   // Convert the SpectralShape enumerator to a spectral model object (upcast to
   // the base object). Returns a null pointer if the object could not be
   // constructed. This will occur is the enumerator is UNKNOWN_SPECTRAL_SHAPE
   // or NUMBER_SPECTRAL_SHAPES or there is insufficient memory. The caller of
-  // this function is responsible for deleting the pointer. This function is
-  // only accessible by the friend classes and should be considered an
-  // implementation detail.
-  static SpectralModel * construct(ComponentType::SpectralShape spectralEnum);
+  // this function is responsible for deleting the pointer. 
+  static SpectralModel* construct(ComponentType::SpectralShape spectralEnum);
 };
 #endif
