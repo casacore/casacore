@@ -34,10 +34,6 @@
 #include <aips/Arrays/Array.h>
 #include <aips/Arrays/Vector.h>
 
-#ifdef __GNUG__
-typedef Vector<Float> gppbug1;
-#endif
-
 //# Forward Declarations
 #if defined(AIPS_STDLIB)
 #include <iosfwd.h>
