@@ -54,7 +54,7 @@ RONewMSDataDescColumns(const NewMSDataDescription& msDataDesc):
 
 RONewMSDataDescColumns::~RONewMSDataDescColumns() {}
 
-Int RONewMSDataDescColumns::match(uInt spwId, uInt polId, Int tryRow=-1) {
+Int RONewMSDataDescColumns::match(uInt spwId, uInt polId, Int tryRow) {
   uInt r = nrow();
   if (r == 0) return -1;
   const Int spw = spwId;
