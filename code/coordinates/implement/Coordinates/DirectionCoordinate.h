@@ -170,6 +170,35 @@ public:
     static Vector<String> axisNames(MDirection::Types type, 
 				    Bool FITSName = False);
 
+    // Format a DirectionCoordinate coordinate world value nicely through the
+    // common format interface.  Formatting types that are allowed are
+    // <src>Coordinate::SCIENTIFIC, Coordinate::FIXED, Coordinate::TIME</src>
+    // If you ask for format type <src>Coordinate::DEFAULT</src> then the
+    // selected format depends upon what the value of the enum 
+    // <src>MDirection::GlobalTypes</src> is for this DirectionCoordinate.
+    // For example, if it is <src>GRADEC</src> or <src>GHADEC</src> you would
+    // get <src>Coordinate::TIME</src> style formatting (DD:MM:SS.SS), otherwise
+    // you would get <src>Coordinate::FIXED</src> formatting by default.
+    //
+    // <src>worldAxis</src> says which axis in this Coordinate we are formatting.  
+    // We have to know this because we may format, say, RA and DEC differently.  
+    // For <src>Coordinate::TIME</src> style formatting, <src>precision</src>
+    // refers to the places after the decimal in the SS field.
+    //<group>
+    virtual void getPrecision (Int& precision, 
+                               Coordinate::formatType& format,
+                               const Bool absolute, 
+                               const Int defPrecScientific,
+                               const Int defPrecFixed,
+                               const Int defPrecTime) const;
+    virtual String format(String& units,
+                          const Coordinate::formatType format, 
+                          const Double worldValue, 
+                          const uInt worldAxis, 
+                          const Bool absolute,
+                          const Int precision = -1) const;
+    //</group>
+
     // Save ourself into the supplised record using the supplied field name.
     // The field must not exist, otherwise <src>False</src> is returned.
     virtual Bool save(RecordInterface &container,
@@ -212,6 +241,10 @@ private:
     void toDegrees(Vector<Double> &other) const;
     void toOther(Vector<Double> &degrees) const;
     // </group>
+
+    // Check formatting types
+    void checkFormat(Coordinate::formatType& format,
+                     const Bool absolute) const;
 
     // Undefined and inaccessible
     DirectionCoordinate();
