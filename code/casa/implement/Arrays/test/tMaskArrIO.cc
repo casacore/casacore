@@ -1,5 +1,5 @@
 //# tMaskArrIO.cc: Test program for MaskedArray IO
-//# Copyright (C) 1994,1995,1996
+//# Copyright (C) 1994,1995,1996,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -70,8 +70,8 @@ int main ()
         }
 
         {
-//          Matrix<Int> a(10,3,-1, -2);
-            Matrix<Int> a(10,3);
+//          Matrix<Int> a(10u,3u,-1, -2);
+            Matrix<Int> a(10u,3u);
             cout << endl;
             for (Int orig0=0; orig0 < 5; orig0++) {
                 indgen (a.ac(), orig0);

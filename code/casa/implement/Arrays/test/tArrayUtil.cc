@@ -1,5 +1,5 @@
 //# tArrayUtil.cc: Test program for functions in ArrayUtil.h
-//# Copyright (C) 1995,1996
+//# Copyright (C) 1995,1996,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //# 
 //# This library is free software; you can redistribute it and/or modify it
@@ -84,9 +84,9 @@ Bool testVectorToString (Bool)
 Bool testConcatenateArray (Bool doExcp)
 {
     Bool ok = True;
-    Matrix<Int> matrix1 (3,4);
-    Matrix<Int> matrix2 (3,5);
-    Matrix<Int> matrix3 (4,4);
+    Matrix<Int> matrix1 (3u,4u);
+    Matrix<Int> matrix2 (3u,5u);
+    Matrix<Int> matrix3 (4u,4u);
     Vector<Int> vector1 (4);
     Vector<Int> vector2 (6);
     indgen (matrix1.ac());

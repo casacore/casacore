@@ -1,5 +1,5 @@
 //# tArray.cc: Test program for the Array class
-//# Copyright (C) 1993,1994,1995,1996,1997
+//# Copyright (C) 1993,1994,1995,1996,1997,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -246,8 +246,8 @@ void oldArrayTest()
 
         {
 
-            Matrix<Float> a(10,3);
-            Matrix<Bool> mask(10,3);
+            Matrix<Float> a(10u,3u);
+            Matrix<Bool> mask(10u,3u);
 
             Float val;
             for (Int j=0; j<3; j++) {
@@ -415,7 +415,7 @@ void oldArrayTest()
  
     {
 	cout << "Simple matrix tests..................";
-	Matrix<Int> a(5,5), b;
+	Matrix<Int> a(5u,5u), b;
 	a = 3;
 	AlwaysAssertExit(a.nrow() == a.ncolumn() && a.nrow() == 5);
 	AlwaysAssertExit(allEQ(a.ac(), 3));
@@ -438,7 +438,7 @@ void oldArrayTest()
 	for (int i = 0; i < 5; i++)
 	    for (int j = 0; j < 5; j++)
 		AlwaysAssertExit(a(i,j) == d(i + j*5));
-	Matrix<Int> y1(5,6, 4);
+	Matrix<Int> y1(5u,6u, 4u);
 	AlwaysAssertExit (allEQ(y1.ac(), 4));
 	
 	
@@ -498,7 +498,7 @@ void oldArrayTest()
 
     {
 	cout << "Raw pointer test.....................";
-	Matrix<Int> m(8,8);
+	Matrix<Int> m(8u,8u);
 	m = -1;
 	Bool deleteIt;
 	Int *storage;
