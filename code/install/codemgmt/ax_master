@@ -6015,3 +6015,5 @@
 17 069 src rm trial/implement/Functionals/test/tSinusoid1D.cc
 17 069 src rm trial/implement/Functionals/Chebyshev.cc
 17 069 src rm trial/implement/Functionals/Chebyshev.h
+17 069 src rm trial/implement/Functionals/SimButterworthBandpass.cc
+17 069 src rm trial/implement/Functionals/SimButterworthBandpass.h
