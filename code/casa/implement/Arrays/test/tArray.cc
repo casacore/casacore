@@ -145,6 +145,17 @@ void oldArrayTest()
         a4.unique();
 	AlwaysAssertExit(allEQ (a4, 11.0F));
 
+	Array<Float> ab1(IPosition(4,5,6,7,8));
+	Array<Float> ab2 (ab1(IPosition(4,1,2,1,3), IPosition(4,2,2,5,7),
+			     IPosition(4,1,1,2,3)).reform (IPosition(3,2,3,2)));
+	for (uInt i=0; i<2; i++) {
+	    for (uInt j=0; j<3; j++) {
+		for (uInt k=0; k<2; k++) {
+		    AlwaysAssertExit (&(ab2(IPosition(3,i,j,k)))
+				  ==  &(ab1(IPosition(4,1+i,2,1+j*2,3+k*3))));
+		}
+	    }
+	}
 
 	cout << "OK\n";
     }
