@@ -1,5 +1,5 @@
 //# Math.h: AIPS++ interface to <math.h> and other scalar math functions
-//# Copyright (C) 1993,1994,1995,1996,1997,1998,1999
+//# Copyright (C) 1993,1994,1995,1996,1997,1998,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -29,7 +29,15 @@
 #define AIPS_MATH_H
 
 #include <aips/aips.h>
+#if defined(AIPS_IRIX)
 #include <math.h>
+// Get the abs value for floats. Can be removed as soon as sgi system uses
+// the standard switch.
+inline Float abs(Float Val) {if (Val >= 0) return Val; else return -Val;}
+inline Double abs(Double Val) {return fabs(Val);}
+#else
+#include <cmath>
+#endif
 //# The following is to get abs(int)
 #include <stdlib.h>
 
@@ -161,12 +169,10 @@ inline Float max(Float a, Float b) { if (a > b) return a; else return b; }
 inline Float min(Float a, Float b) { if (a > b) return b; else return a; }
 // </group>
 
-// Get the absolute value of Float or Double values. Should already be defined
+// Get the absolute value of uInt. Should already be defined
 // for integers in <src><stdlib.h></src>.  Define it for uInts so that certain
 // compilers can resolve the ambiguity when used in a templated class.
 // <group>
-inline Float abs(Float Val) {if (Val >= 0) return Val; else return -Val;}
-inline Double abs(Double Val) {return fabs(Val);}
 inline uInt abs(uInt Val) {return Val;}
 // </group>
 
