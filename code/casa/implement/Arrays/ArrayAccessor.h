@@ -53,26 +53,6 @@ namespace {
   };
 };
 
-// <summary> Temporary until Array ok</summary>
-template <class T> class ArrayIndexInfo {
- public:
-  static const T *data() { return begin_p; }
-  static const IPosition &steps() { return steps_p; }
-  static uInt len(uInt ix) { return shape_p[ix]; }
-  static void fill(const Array<T> &arr) {
-    emptyIP_p = IPosition(arr.ndim(), 0);
-    begin_p = &arr(emptyIP_p);
-    steps_p = IPosition(arr.ndim(), 0);
-    for (uInt i=0; i<arr.ndim(); ++i) {
-      emptyIP_p[i]++; steps_p[i] = &arr(emptyIP_p)-begin_p;
-      emptyIP_p[i]--; shape_p = arr.shape(); }; }
- private:
-  static IPosition emptyIP_p;
-  static const T *begin_p;
-  static IPosition steps_p;
-  static IPosition shape_p;
-};
-
 // <summary> Fast 1D accessor/iterator for nD array classes </summary>
 
 //  <use visibility=export>
@@ -225,7 +205,6 @@ template <class T> class ArrayIndexInfo {
 //   <li> change the <src>T</src> template to <src>Array</src> (with
 //		implicit T) rather than the array type. This could
 //		help in creating Accessors for say Lattices
-//   <li> Remove the Info class
 // </todo>
 
 template <class T, class U=Axis<0> > class ArrayAccessor :
@@ -284,14 +263,12 @@ template <class T> class ArrayBaseAccessor {
     arrayPtr_p(0), axis_p(0) {;}
   explicit ArrayBaseAccessor(const Array<T> &arr) :
     ptr_p(0), step_p(0), begin_p(0), end_p(0),
-    arrayPtr_p(&arr), axis_p(0) { ArrayIndexInfo<T>::fill(*arrayPtr_p);
-    begin_p = ArrayIndexInfo<T>::data();
-    ptr_p =  const_cast<T*>(ArrayIndexInfo<T>::data()); }
+    arrayPtr_p(&arr), axis_p(0) { begin_p = arrayPtr_p->data();
+    ptr_p =  const_cast<T*>(begin_p); }
   ArrayBaseAccessor(const Array<T> &arr, const uInt ax) :
     ptr_p(0), step_p(0), begin_p(0), end_p(0),
-    arrayPtr_p(&arr), axis_p(ax) { ArrayIndexInfo<T>::fill(*arrayPtr_p);
-    begin_p = ArrayIndexInfo<T>::data();
-    ptr_p =  const_cast<T*>(ArrayIndexInfo<T>::data()); }
+    arrayPtr_p(&arr), axis_p(ax) { begin_p = arrayPtr_p->data();
+    ptr_p =  const_cast<T*>(begin_p); }
   // Copy constructor (copy semantics)
   // <group>
   ArrayBaseAccessor(const ArrayBaseAccessor<T> &other) :
@@ -316,9 +293,8 @@ template <class T> class ArrayBaseAccessor {
   
   // Initialize
   void init(const Array<T> &arr) { arrayPtr_p = &arr;
-  ArrayIndexInfo<T>::fill(*arrayPtr_p);
-  begin_p = ArrayIndexInfo<T>::data();
-  ptr_p = const_cast<T*>(ArrayIndexInfo<T>::data()); }
+  begin_p = arrayPtr_p->data();
+  ptr_p = const_cast<T*>(begin_p); }
   
  public:
   //# Operators
@@ -426,32 +402,32 @@ public ArrayBaseAccessor<T> {
   // <group>
   template <class X>
     const T &next() const
-    { return *(ptr_p + ArrayIndexInfo<T>::steps()[X::N]); }
+    { return *(ptr_p + arrayPtr_p->steps()[X::N]); }
   template <class X>
-    T &next() { return *(ptr_p + ArrayIndexInfo<T>::steps()[X::N]); }
+    T &next() { return *(ptr_p + arrayPtr_p->steps()[X::N]); }
   template <class X>
     const T &prev() const
-    { return *(ptr_p - ArrayIndexInfo<T>::steps()[X::N]); }
+    { return *(ptr_p - arrayPtr_p->steps()[X::N]); }
   template <class X>
-    T &prev() { return *(ptr_p - ArrayIndexInfo<T>::steps()[X::N]); }
+    T &prev() { return *(ptr_p - arrayPtr_p->steps()[X::N]); }
   const T &next(const AxisN ax) const
-    { return *(ptr_p + ArrayIndexInfo<T>::steps()[ax.N]); }
+    { return *(ptr_p + arrayPtr_p->steps()[ax.N]); }
   T &next(const AxisN ax)
-    { return *(ptr_p + ArrayIndexInfo<T>::steps()[axN]); }
+    { return *(ptr_p + arrayPtr_p->steps()[axN]); }
   const T &prev(const AxisN ax) const
-    { return *(ptr_p - ArrayIndexInfo<T>::steps()[ax.N]); }
+    { return *(ptr_p - arrayPtr_p->steps()[ax.N]); }
   T &prev(const AxisN ax)
-    { return *(ptr_p - ArrayIndexInfo<T>::steps()[ax.N]); }
+    { return *(ptr_p - arrayPtr_p->steps()[ax.N]); }
   template <class X>
     const T &index(const Int ix) const 
-    { return *(ptr_p + ix*ArrayIndexInfo<T>::steps()[X::N]); }
+    { return *(ptr_p + ix*arrayPtr_p->steps()[X::N]); }
   template <class X>
     T &index(const Int ix)
-    { return *(ptr_p + ix*ArrayIndexInfo<T>::steps()[X::N]); }
+    { return *(ptr_p + ix*arrayPtr_p->steps()[X::N]); }
   const T &index(const Int ix, const AxisN(ax)) const 
-    { return *(ptr_p + ix*ArrayIndexInfo<T>::steps()[ax.N]); }
+    { return *(ptr_p + ix*arrayPtr_p->steps()[ax.N]); }
   T &index(const Int ix, const AxisN(ax))
-    { return *(ptr_p + ix*ArrayIndexInfo<T>::steps()[ax.N]); }
+    { return *(ptr_p + ix*arrayPtr_p->steps()[ax.N]); }
   // </group>
   
   // Comparison
@@ -466,9 +442,8 @@ public ArrayBaseAccessor<T> {
   
  private: 
   // Initialize
-  void initStep() { step_p = ArrayIndexInfo<T>::steps()[Axis<U>::N];
-  end_p = ptr_p +
-    ArrayIndexInfo<T>::len(Axis<U>::N)*step_p; }
+  void initStep() { step_p = arrayPtr_p->steps()[Axis<U>::N];
+  end_p = ptr_p + arrayPtr_p->shape()[Axis<U>::N]*step_p; }
   
 };
 
@@ -511,32 +486,32 @@ public ArrayBaseAccessor<T> {
   // <group>
   template <class X>
     const T &next() const
-    { return *(ptr_p + ArrayIndexInfo<T>::steps()[X::N]); }
+    { return *(ptr_p + arrayPtr_p->steps()[X::N]); }
   template <class X>
-    T &next() { return *(ptr_p + ArrayIndexInfo<T>::steps()[X::N]); }
+    T &next() { return *(ptr_p + arrayPtr_p->steps()[X::N]); }
   template <class X>
     const T &prev() const
-    { return *(ptr_p - ArrayIndexInfo<T>::steps()[X::N]); }
+    { return *(ptr_p - arrayPtr_p->steps()[X::N]); }
   template <class X>
-    T &prev() { return *(ptr_p - ArrayIndexInfo<T>::steps()[X::N]); }
+    T &prev() { return *(ptr_p - arrayPtr_p->steps()[X::N]); }
   const T &next(const AxisN ax) const
-    { return *(ptr_p + ArrayIndexInfo<T>::steps()[ax.N]); }
+    { return *(ptr_p + arrayPtr_p->steps()[ax.N]); }
   T &next(const AxisN ax)
-    { return *(ptr_p + ArrayIndexInfo<T>::steps()[ax.N]); }
+    { return *(ptr_p + arrayPtr_p->steps()[ax.N]); }
   const T &prev(const AxisN ax) const
-    { return *(ptr_p - ArrayIndexInfo<T>::steps()[ax.N]); }
+    { return *(ptr_p - arrayPtr_p->steps()[ax.N]); }
   T &prev(const AxisN ax)
-    { return *(ptr_p - ArrayIndexInfo<T>::steps()[ax.N]); }
+    { return *(ptr_p - arrayPtr_p->steps()[ax.N]); }
   template <class X>
     const T &index(const Int ix) const 
-    { return *(ptr_p + ix*ArrayIndexInfo<T>::steps()[X::N]); }
+    { return *(ptr_p + ix*arrayPtr_p->steps()[X::N]); }
   template <class X>
     T &index(const Int ix)
-    { return *(ptr_p + ix*ArrayIndexInfo<T>::steps()[X::N]); }
+    { return *(ptr_p + ix*arrayPtr_p->steps()[X::N]); }
   const T &index(const Int ix, const AxisN(ax)) const 
-    { return *(ptr_p + ix*ArrayIndexInfo<T>::steps()[ax.N]); }
+    { return *(ptr_p + ix*arrayPtr_p->steps()[ax.N]); }
   T &index(const Int ix, const AxisN(ax))
-    { return *(ptr_p + ix*ArrayIndexInfo<T>::steps()[ax.N]); }
+    { return *(ptr_p + ix*arrayPtr_p->steps()[ax.N]); }
   // </group>
 
   // Comparisons
@@ -551,20 +526,10 @@ public ArrayBaseAccessor<T> {
 
  private: 
   // Initialize
-  void initStep() { step_p = ArrayIndexInfo<T>::steps()[axis_p];
-  end_p = ptr_p + ArrayIndexInfo<T>::len(axis_p)*step_p; }
+  void initStep() { step_p = arrayPtr_p->steps()[axis_p];
+  end_p = ptr_p + arrayPtr_p->shape()[axis_p]*step_p; }
   
 };
-
-IPosition ArrayIndexInfo<Double>::emptyIP_p = IPosition(0);
-const Double *ArrayIndexInfo<Double>::begin_p = 0;
-IPosition ArrayIndexInfo<Double>::steps_p = IPosition(0);
-IPosition ArrayIndexInfo<Double>::shape_p = IPosition(0);
-
-IPosition ArrayIndexInfo<Int>::emptyIP_p = IPosition(0);
-const Int *ArrayIndexInfo<Int>::begin_p = 0;
-IPosition ArrayIndexInfo<Int>::steps_p = IPosition(0);
-IPosition ArrayIndexInfo<Int>::shape_p = IPosition(0);
 
 #endif
 
