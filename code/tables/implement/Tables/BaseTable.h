@@ -132,6 +132,9 @@ public:
     // Flush the table, i.e. write it to disk.
     virtual void flush (Bool sync) = 0;
 
+    // Resync the Table object with the table file.
+    virtual void resync() = 0;
+
     // Get the modify counter.
     virtual uInt getModifyCounter() const = 0;
 
