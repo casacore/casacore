@@ -112,9 +112,15 @@ TableParseVal* TableParseVal::makeValue()
 
 
 
+TableParseSort::TableParseSort (const TableExprNode& node)
+: node_p  (node),
+  order_p (Sort::Ascending),
+  given_p (False)
+{}
 TableParseSort::TableParseSort (const TableExprNode& node, Sort::Order order)
 : node_p  (node),
-  order_p (order)
+  order_p (order),
+  given_p (True)
 {}
 TableParseSort::~TableParseSort()
 {}
@@ -130,7 +136,8 @@ TableParseSelect::TableParseSelect()
 : resultSet_p (0),
   node_p      (0),
   sort_p      (0),
-  noDupl_p    (False)
+  noDupl_p    (False),
+  order_p     (Sort::Ascending)
 {
     parseList_p = new List<TableParse>;
     parseIter_p = new ListIter<TableParse> (parseList_p);
@@ -773,7 +780,7 @@ Table TableParseSelect::doSort (const Table& table)
                                             (key.node().getColumnBool());
 		arrays[i] = array;
 		const Bool* data = array->getStorage (deleteIt);
-		sort.sortKey (data, TpBool, 0, key.order());
+		sort.sortKey (data, TpBool, 0, getOrder(key));
 		array->freeStorage (data, deleteIt);
 	    }
 	    break;
@@ -783,7 +790,7 @@ Table TableParseSelect::doSort (const Table& table)
                                             (key.node().getColumnuChar());
 		arrays[i] = array;
 		const uChar* data = array->getStorage (deleteIt);
-		sort.sortKey (data, TpUChar, 0, key.order());
+		sort.sortKey (data, TpUChar, 0, getOrder(key));
 		array->freeStorage (data, deleteIt);
 	    }
 	    break;
@@ -793,7 +800,7 @@ Table TableParseSelect::doSort (const Table& table)
                                             (key.node().getColumnShort());
 		arrays[i] = array;
 		const Short* data = array->getStorage (deleteIt);
-		sort.sortKey (data, TpShort, 0, key.order());
+		sort.sortKey (data, TpShort, 0, getOrder(key));
 		array->freeStorage (data, deleteIt);
 	    }
 	    break;
@@ -803,7 +810,7 @@ Table TableParseSelect::doSort (const Table& table)
                                             (key.node().getColumnuShort());
 		arrays[i] = array;
 		const uShort* data = array->getStorage (deleteIt);
-		sort.sortKey (data, TpUShort, 0, key.order());
+		sort.sortKey (data, TpUShort, 0, getOrder(key));
 		array->freeStorage (data, deleteIt);
 	    }
 	    break;
@@ -813,7 +820,7 @@ Table TableParseSelect::doSort (const Table& table)
                                             (key.node().getColumnInt());
 		arrays[i] = array;
 		const Int* data = array->getStorage (deleteIt);
-		sort.sortKey (data, TpInt, 0, key.order());
+		sort.sortKey (data, TpInt, 0, getOrder(key));
 		array->freeStorage (data, deleteIt);
 	    }
 	    break;
@@ -823,7 +830,7 @@ Table TableParseSelect::doSort (const Table& table)
                                             (key.node().getColumnuInt());
 		arrays[i] = array;
 		const uInt* data = array->getStorage (deleteIt);
-		sort.sortKey (data, TpUInt, 0, key.order());
+		sort.sortKey (data, TpUInt, 0, getOrder(key));
 		array->freeStorage (data, deleteIt);
 	    }
 	    break;
@@ -833,7 +840,7 @@ Table TableParseSelect::doSort (const Table& table)
                                             (key.node().getColumnFloat());
 		arrays[i] = array;
 		const Float* data = array->getStorage (deleteIt);
-		sort.sortKey (data, TpFloat, 0, key.order());
+		sort.sortKey (data, TpFloat, 0, getOrder(key));
 		array->freeStorage (data, deleteIt);
 	    }
 	    break;
@@ -843,7 +850,7 @@ Table TableParseSelect::doSort (const Table& table)
                                             (key.node().getColumnDouble());
 		arrays[i] = array;
 		const Double* data = array->getStorage (deleteIt);
-		sort.sortKey (data, TpDouble, 0, key.order());
+		sort.sortKey (data, TpDouble, 0, getOrder(key));
 		array->freeStorage (data, deleteIt);
 	    }
 	    break;
@@ -853,7 +860,7 @@ Table TableParseSelect::doSort (const Table& table)
                                             (key.node().getColumnComplex());
 		arrays[i] = array;
 		const Complex* data = array->getStorage (deleteIt);
-		sort.sortKey (data, TpComplex, 0, key.order());
+		sort.sortKey (data, TpComplex, 0, getOrder(key));
 		array->freeStorage (data, deleteIt);
 	    }
 	    break;
@@ -863,7 +870,7 @@ Table TableParseSelect::doSort (const Table& table)
                                             (key.node().getColumnDComplex());
 		arrays[i] = array;
 		const DComplex* data = array->getStorage (deleteIt);
-		sort.sortKey (data, TpDComplex, 0, key.order());
+		sort.sortKey (data, TpDComplex, 0, getOrder(key));
 		array->freeStorage (data, deleteIt);
 	    }
 	    break;
@@ -873,7 +880,7 @@ Table TableParseSelect::doSort (const Table& table)
                                             (key.node().getColumnString());
 		arrays[i] = array;
 		const String* data = array->getStorage (deleteIt);
-		sort.sortKey (data, TpString, 0, key.order());
+		sort.sortKey (data, TpString, 0, getOrder(key));
 		array->freeStorage (data, deleteIt);
 	    }
 	    break;

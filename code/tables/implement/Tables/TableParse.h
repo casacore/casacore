@@ -1,5 +1,5 @@
 //# TableParse.h: Classes to hold results from table grammar parser
-//# Copyright (C) 1994,1995,1997,1998
+//# Copyright (C) 1994,1995,1997,1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -230,6 +230,10 @@ public:
 class TableParseSort
 {
 public:
+    // Construct from a given expression.
+    // The order is not given.
+    explicit TableParseSort (const TableExprNode&);
+
     // Construct from a given expression and for the given order.
     TableParseSort (const TableExprNode&, Sort::Order);
 
@@ -241,9 +245,13 @@ public:
     // Get the sort order.
     Sort::Order order() const;
 
+    // Is the order given?
+    Bool orderGiven() const;
+
 private:
     TableExprNode node_p;
     Sort::Order   order_p;
+    Bool          given_p;
 };
 
 
@@ -307,7 +315,8 @@ public:
 
     // Sort the resulting table.
     // It takes over the pointer (and clears the input pointer).
-    void handleSort (PtrBlock<TableParseSort*>*& sortList, Bool noDuplicates);
+    void handleSort (PtrBlock<TableParseSort*>*& sortList, Bool noDuplicates,
+		     Sort::Order defaultSortOrder);
 
     // Add a table name to the linked list.
     void addTable (const TableParseVal* name, const String& shorthand);
@@ -363,6 +372,10 @@ private:
     // Do the sort step.
     Table doSort (const Table& table);
 
+    // Get the order for this key. Use the default order_p if not
+    // explicitly given with the key.
+    Sort::Order getOrder (const TableParseSort& key) const;
+
     // Make a set from the results of the subquery.
     TableExprNode makeSubSet() const;
 
@@ -415,8 +428,10 @@ private:
     TableExprNode* node_p;
     //# The sort list.
     PtrBlock<TableParseSort*>* sort_p;
-    //# The noDuplicates switch.
+    //# The noDuplicates sort switch.
     Bool  noDupl_p;
+    //# The default sort order.
+    Sort::Order order_p;
     //# The resulting table.
     Table table_p;
 };
@@ -437,6 +452,8 @@ inline const Table& TableParse::table() const
 inline const TableExprNode& TableParseSort::node() const
     { return node_p; }
 
+inline Bool TableParseSort::orderGiven() const
+    { return given_p; }
 inline Sort::Order TableParseSort::order() const
     { return order_p; }
 
@@ -454,12 +471,22 @@ inline void TableParseSelect::handleSelect (TableExprNode*& node)
 }
 
 inline void TableParseSelect::handleSort (PtrBlock<TableParseSort*>*& sort,
-					  Bool noDuplicates)
+					  Bool noDuplicates,
+					  Sort::Order order)
 {
     noDupl_p = noDuplicates;
-    sort_p = sort;
-    sort = 0;
+    order_p  = order;
+    sort_p   = sort;
+    sort     = 0;
 }
+
+inline Sort::Order TableParseSelect::getOrder (const TableParseSort& key) const
+{
+  Sort::Order tmp =  (key.orderGiven()  ?   key.order() : order_p);
+  cout << "sortorder = " << tmp << endl;
+  return tmp;
+}
+///    { return (key.orderGiven()  ?   key.order() : order_p); }
 
 inline TableParseSelect* TableParseSelect::currentSelect()
     { return blockSelect_p[currentSelect_p-1]; }
