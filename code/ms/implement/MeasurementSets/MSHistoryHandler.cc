@@ -67,7 +67,6 @@ void MSHistoryHandler::addMessage(MeasurementSet& ms, String message,
     // No need to record an entry.
     return;
   }
-
   MSHistory histTable=ms.history();
   Int row = histTable.nrow();
   MSHistoryColumns msHistCol(histTable);
@@ -77,7 +76,11 @@ void MSHistoryHandler::addMessage(MeasurementSet& ms, String message,
   msHistCol.timeMeas().put(row, now);
   msHistCol.observationId().put(row,-1);
   msHistCol.priority().put(row,"NORMAL");
-  msHistCol.origin().put(row,origin);
+  if (origin.length() != 0) {
+    msHistCol.origin().put(row,origin);
+  } else {
+    msHistCol.origin().put(row,"MSHistoryHandler::addMessage()");
+  }
   msHistCol.message().put(row,message);
   msHistCol.application().put(row,app);
   Vector<String> cliseq(1);
@@ -104,7 +107,11 @@ void MSHistoryHandler::addMessage(String message, String cliComm,
   msHistCol_p->timeMeas().put(row, now);
   msHistCol_p->observationId().put(row,-1);
   msHistCol_p->priority().put(row,"NORMAL");
-  msHistCol_p->origin().put(row,origin);
+  if (origin.length() != 0) {
+    msHistCol_p->origin().put(row,origin);
+  } else {
+    msHistCol_p->origin().put(row,"MSHistoryHandler::addMessage()");
+  }
   msHistCol_p->message().put(row,message);
   msHistCol_p->application().put(row,application_p);
   Vector<String> cliseq(1);
@@ -172,6 +179,7 @@ void MSHistoryHandler::cliCommand(LogSinkInterface& sink){
  uInt numCliComm=sink.nelements();
  if (numCliComm == 0)
    return;
+
  String emptyMessage("");
  Int row = histTable_p.nrow();
  histTable_p.addRow();

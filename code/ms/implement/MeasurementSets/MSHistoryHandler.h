@@ -86,6 +86,8 @@ class MSHistoryHandler
 
  private: 
 
+  // Prevent use of default constructor
+  MSHistoryHandler() {};
 
   MSHistoryColumns *msHistCol_p;
   MSHistory  histTable_p;
