@@ -2581,3 +2581,4 @@
 09 464 src mv trial/implement/Measures/test/tQuantumHolder.cc aips/implement/Measures/test/tQuantumHolder.cc
 09 464 src mv trial/implement/Measures/test/tMeasureHolder.cc aips/implement/Measures/test/tMeasureHolder.cc
 09 464 src mv trial/implement/Measures/test/tMeasureHolder.out aips/implement/Measures/test/tMeasureHolder.out
+09 475 src mv doc/memos/memos.dir/index.tex doc/memos/memos.dir/mindex.tex
