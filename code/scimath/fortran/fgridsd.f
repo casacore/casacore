@@ -31,16 +31,18 @@ C Grid a number of visibility records: single dish gridding
 C but with complex images
 C
       subroutine ggridsd (xy, values, nvispol, nvischan,
-     $   dowt, flag, weight, nrow, irow,
-     $   grid, nx, ny, npol, nchan, 
+     $   dowt, flag, rflag, weight, nrow, irow,
+     $   grid, wgrid, nx, ny, npol, nchan, 
      $   support, sampling, convFunc, chanmap, polmap, sumwt)
 
       implicit none
       integer nx, ny, npol, nchan, nvispol, nvischan, nrow
       complex values(nvispol, nvischan, nrow)
       complex grid(nx, ny, npol, nchan)
+      real wgrid(nx, ny, npol, nchan)
       double precision xy(2,nrow)
       integer flag(nvispol, nvischan, nrow)
+      integer rflag(nrow)
       real weight(nvischan, nrow)
       double precision sumwt(npol, nchan)
       integer irow
@@ -71,6 +73,7 @@ C
       end if
 
       do irow=rbeg, rend
+         if(rflag(irow).eq.0) then
          call sgridsd(xy(1,irow), sampling, pos, loc, off)
          if (ogridsd(nx, ny, loc, support)) then
             do ichan=1, nvischan
@@ -97,6 +100,9 @@ C
                               grid(loc(1)+ix,loc(2)+iy,apol,achan)=
      $                             grid(loc(1)+ix,loc(2)+iy,apol,achan)+
      $                             nvalue*wt
+                              wgrid(loc(1)+ix,loc(2)+iy,apol,achan)=
+     $                          wgrid(loc(1)+ix,loc(2)+iy,apol,achan)+
+     $                          weight(ichan,irow)*wt
                               norm=norm+wt
                            end do
                         end do
@@ -107,6 +113,7 @@ C
                end if
             end do
          end if
+         end if
       end do
       return
       end
@@ -114,7 +121,7 @@ C
 C Degrid a number of visibility records: single dish gridding
 C
       subroutine dgridsd (xy, values, nvispol, nvischan, flag, 
-     $     nrow, irow, grid, nx, ny, npol, nchan, 
+     $     rflag, nrow, irow, grid, nx, ny, npol, nchan, 
      $     support, sampling, convFunc, chanmap, polmap)
 
       implicit none
@@ -123,6 +130,7 @@ C
       complex grid(nx, ny, npol, nchan)
       double precision xy(2, nrow)
       integer flag(nvispol, nvischan, nrow)
+      integer rflag(nrow)
       integer irow
       integer support, sampling
       integer chanmap(*), polmap(*)
@@ -150,6 +158,7 @@ C
       end if
 
       do irow=rbeg, rend
+         if(rflag(irow).eq.0) then
          call sgridsd(xy(1, irow), sampling, pos, loc, off)
          if (ogridsd(nx, ny, loc, support)) then
             do ichan=1, nvischan
@@ -160,25 +169,23 @@ C
                      if((flag(ipol,ichan,irow).ne.1).and.
      $                    (apol.ge.1).and.(apol.le.npol)) then
                         nvalue=0.0
-                        norm=0.0
                         do iy=-support,support
                            rloc(2)=sampling*iy+off(2)
                            do ix=-support,support
                               rloc(1)=sampling*ix+off(1)
                               irad=sqrt(rloc(1)**2+rloc(2)**2)+1
                               wt=convFunc(irad)
-                              norm=norm+wt
                               nvalue=nvalue+wt*
      $                             grid(loc(1)+ix,loc(2)+iy,apol,achan)
                            end do
                         end do
                         values(ipol,ichan,irow)=conjg(nvalue)
-     $                       /norm
                      end if
                   end do
                end if
             end do
          end if
+         endif
       end do
       return
       end

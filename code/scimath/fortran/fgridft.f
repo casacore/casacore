@@ -30,7 +30,7 @@ C
 C Grid a number of visibility records
 C
       subroutine ggridft (uvw, dphase, values, nvispol, nvischan,
-     $   dopsf, flag, weight, nrow, rownum,
+     $   dopsf, flag, rflag, weight, nrow, rownum,
      $   scale, offset, grid, nx, ny, npol, nchan, freq, c,
      $   support, sampling, convFunc, chanmap, polmap, sumwt)
 
@@ -40,9 +40,10 @@ C
       complex grid(nx, ny, npol, nchan)
       double precision uvw(3, nrow), freq(nvischan), c, scale(2),
      $     offset(2)
-      double precision dphase(nrow)
+      double precision dphase(nrow), uvdist
       complex phasor
       integer flag(nvispol, nvischan, nrow)
+      integer rflag(nrow)
       real weight(nvischan, nrow)
       double precision sumwt(npol, nchan)
       integer rownum
@@ -75,6 +76,7 @@ C
       end if
 
       do irow=rbeg, rend
+         if(rflag(irow).eq.0) then 
          do ichan=1, nvischan
             achan=chanmap(ichan)+1
             if((achan.ge.1).and.(achan.le.nchan).and.
@@ -115,13 +117,15 @@ C rotate but we do want to reproject uvw
                end if
             end if
          end do
+         end if
       end do
       return
       end
 C
 C Degrid a number of visibility records
 C
-      subroutine dgridft (uvw, dphase, values, nvispol, nvischan, flag, 
+      subroutine dgridft (uvw, dphase, values, nvispol, nvischan,
+     $     flag, rflag,
      $     nrow, rownum, scale, offset, grid, nx, ny, npol, nchan, freq,
      $     c, support, sampling, convFunc, chanmap, polmap)
 
@@ -131,9 +135,10 @@ C
       complex grid(nx, ny, npol, nchan)
       double precision uvw(3, nrow), freq(nvischan), c, scale(2),
      $     offset(2)
-      double precision dphase(nrow)
+      double precision dphase(nrow), uvdist
       complex phasor
       integer flag(nvispol, nvischan, nrow)
+      integer rflag(nrow)
       integer rownum
       integer support, sampling
       integer chanmap(*), polmap(*)
@@ -163,6 +168,7 @@ C
       end if
 
       do irow=rbeg, rend
+         if(rflag(irow).eq.0) then
          do ichan=1, nvischan
             achan=chanmap(ichan)+1
             if((achan.ge.1).and.(achan.le.nchan)) then
@@ -194,6 +200,7 @@ C
                end if
             end if
          end do
+         end if
       end do
       return
       end
