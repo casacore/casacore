@@ -29,7 +29,6 @@
 #include <trial/Measures/MeasureHolder.h>
 #include <trial/Measures/QuantityHolder.h>
 #include <aips/Exceptions.h>
-#include <aips/RTTI/Register.h>
 #include <aips/Measures.h>
 #include <aips/Measures/MDirection.h>
 #include <aips/Measures/MDoppler.h>
@@ -77,94 +76,88 @@ Bool MeasureHolder::isMeasure() const {
 }
 
 Bool MeasureHolder::isMDirection() const {
-  return ToBool(hold.ptr() && hold.ptr()->type() == Register((MDirection *)0));
+  return ToBool(hold.ptr() && hold.ptr()->type() == MDirection::myType());
 }
 
 Bool MeasureHolder::isMDoppler() const {
-  return ToBool(hold.ptr() && hold.ptr()->type() == Register((MDoppler *)0));
+  return ToBool(hold.ptr() && hold.ptr()->type() == MDoppler::myType());
 }
 
 Bool MeasureHolder::isMEpoch() const {
-  return ToBool(hold.ptr() && hold.ptr()->type() == Register((MEpoch *)0));
+  return ToBool(hold.ptr() && hold.ptr()->type() == MEpoch::myType());
 }
 
 Bool MeasureHolder::isMFrequency() const {
-  return ToBool(hold.ptr() && hold.ptr()->type() == Register((MFrequency *)0));
+  return ToBool(hold.ptr() && hold.ptr()->type() == MFrequency::myType());
 }
 
 Bool MeasureHolder::isMPosition() const {
-  return ToBool(hold.ptr() && hold.ptr()->type() == Register((MPosition *)0));
+  return ToBool(hold.ptr() && hold.ptr()->type() == MPosition::myType());
 }
 
 Bool MeasureHolder::isMRadialVelocity() const {
-  return ToBool(hold.ptr() && hold.ptr()->type() == Register((MRadialVelocity *)0));
+  return ToBool(hold.ptr() && hold.ptr()->type() == MRadialVelocity::myType());
 }
 
 const Measure &MeasureHolder::asMeasure() const {
   if (!hold.ptr()) {
-    throw(AipsError("Empty MeasureHolder argument for asMDirection"));
+    throw(AipsError("Empty MeasureHolder argument for asMeasure"));
   };
   return *hold.ptr();
 }
 
-const MDirection &MeasureHolder::asMDirection() const {
-  if (!hold.ptr()) {
-    throw(AipsError("Empty MeasureHolder argument for asMDirection"));
+/// const MDirection &MeasureHolder::asMDirection() const {
+MDirection MeasureHolder::asMDirection() const {
+  if (!hold.ptr() || !isMDirection()) {
+    throw(AipsError("Empty or wrong MeasureHolder for asMDirection"));
   };
-  MDirection::assert(*hold.ptr());
-  /// Next lines to get rid of errors and warnings (awaiting dynamic_cast)
-  MDirection *y = (MDirection *) (void *) hold.ptr();
-  return *y;
+  /// return dynamic_cast<MDirection &>(*hold.ptr());
+  return MDirection(hold.ptr());
 }
 
-const MDoppler &MeasureHolder::asMDoppler() const {
-  if (!hold.ptr()) {
-    throw(AipsError("Empty MeasureHolder argument for asMDoppler"));
+/// const MDoppler &MeasureHolder::asMDoppler() const {
+MDoppler MeasureHolder::asMDoppler() const {
+  if (!hold.ptr() || !isMDoppler()) {
+    throw(AipsError("Empty or wrong MeasureHolder for asMDoppler"));
   };
-  MDoppler::assert(*hold.ptr());
-  /// Next lines to get rid of errors and warnings (awaiting dynamic_cast)
-  MDoppler *y = (MDoppler *) (void *) hold.ptr();
-  return *y;
+  /// return dynamic_cast<MDoppler &>(*hold.ptr());
+  return MDoppler(hold.ptr());
 }
 
-const MEpoch &MeasureHolder::asMEpoch() const {
-  if (!hold.ptr()) {
-    throw(AipsError("Empty MeasureHolder argument for asMEpoch"));
+/// const MEpoch &MeasureHolder::asMEpoch() const {
+MEpoch MeasureHolder::asMEpoch() const {
+  if (!hold.ptr() || !isMEpoch()) {
+    throw(AipsError("Empty or wrong MeasureHolder for asMEpoch"));
   };
-  MEpoch::assert(*hold.ptr());
-  /// Next lines to get rid of errors and warnings (awaiting dynamic_cast)
-  MEpoch *y = (MEpoch *) (void *) hold.ptr();
-  return *y;
+  /// return dynamic_cast<MEpoch &>(*hold.ptr());
+  return MEpoch(hold.ptr());
 }
 
-const MFrequency &MeasureHolder::asMFrequency() const {
-  if (!hold.ptr()) {
-    throw(AipsError("Empty MeasureHolder argument for asMFrequency"));
+/// const MFrequency &MeasureHolder::asMFrequency() const {
+MFrequency MeasureHolder::asMFrequency() const {
+  if (!hold.ptr() || !isMFrequency()) {
+    throw(AipsError("Empty or wrong MeasureHolder for asMFrequency"));
   };
-  MFrequency::assert(*hold.ptr());
-  /// Next lines to get rid of errors and warnings (awaiting dynamic_cast)
-  MFrequency *y = (MFrequency *) (void *) hold.ptr();
-  return *y;
+  /// return dynamic_cast<MFrequency &>(*hold.ptr());
+  return MFrequency(hold.ptr());
 }
 
-const MPosition &MeasureHolder::asMPosition() const {
-  if (!hold.ptr()) {
-    throw(AipsError("Empty MeasureHolder argument for asMPosition"));
+/// const MPosition &MeasureHolder::asMPosition() const {
+MPosition MeasureHolder::asMPosition() const {
+  if (!hold.ptr() || !isMPosition()) {
+    throw(AipsError("Empty or wrong MeasureHolder for asMPosition"));
   };
-  MPosition::assert(*hold.ptr());
-  /// Next lines to get rid of errors and warnings (awaiting dynamic_cast)
-  MPosition *y = (MPosition *) (void *) hold.ptr();
-  return *y;
+  /// return dynamic_cast<MPosition &>(*hold.ptr());
+  return MPosition(hold.ptr());
 }
 
-const MRadialVelocity &MeasureHolder::asMRadialVelocity() const {
-  if (!hold.ptr()) {
-    throw(AipsError("Empty MeasureHolder argument for asMRadialVelocity"));
+/// const MRadialVelocity &MeasureHolder::asMRadialVelocity() const {
+MRadialVelocity MeasureHolder::asMRadialVelocity() const {
+  if (!hold.ptr() || !isMRadialVelocity()) {
+    throw(AipsError("Empty or wrong MeasureHolder for asMRadialVelocity"));
   };
-  MRadialVelocity::assert(*hold.ptr());
-  /// Next lines to get rid of errors and warnings (awaiting dynamic_cast)
-  MRadialVelocity *y = (MRadialVelocity *) (void *) hold.ptr();
-  return *y;
+  /// return dynamic_cast<MRadialVelocity &>(*hold.ptr());
+  return MRadialVelocity(hold.ptr());
 }
 
 Bool MeasureHolder::fromRecord(String &error,

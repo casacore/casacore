@@ -92,6 +92,7 @@ class GlishRecord;
 // </motivation>
 //
 // <todo asof="1998/04/14">
+//   <li> use dynamic_cast once turned on to improve speed
 //   <li> possible change if GlishRecord derived from RecordInterface
 // </todo>
 
@@ -138,14 +139,18 @@ public:
   // <li> AipsError if holder empty
   // <li> AipsError if holder contains wrong Measure
   // </thrown>
+  // Note that the following can be used once there is dynamic_cast
+  // const MDirection &asMDirection() const;
+  //
+  // etc.
   // <group>
   const Measure &asMeasure() const;
-  const MDirection &asMDirection() const;
-  const MDoppler &asMDoppler() const;
-  const MEpoch &asMEpoch() const;
-  const MFrequency &asMFrequency() const;
-  const MPosition &asMPosition() const;
-  const MRadialVelocity &asMRadialVelocity() const;
+  MDirection asMDirection() const;
+  MDoppler asMDoppler() const;
+  MEpoch asMEpoch() const;
+  MFrequency asMFrequency() const;
+  MPosition asMPosition() const;
+  MRadialVelocity asMRadialVelocity() const;
   // </group>
   // Create a Measure from a record
   // <group>
