@@ -84,7 +84,7 @@ void FitsInput::errmsg(FitsErrs e, char *s) {
     else
 	msgline << "File " << fin.fname();
     msgline << " Physical record " << fin.blockno()
-	    << " logical record " << fin.recno() << " --\n\t" << s << ends;
+	    << " logical record " << fin.recno() << " --\n\t" << s;
     err_status = e;
     // all FitsIO messages are SEVERE
     const char * mptr = msgline.str().data();
@@ -148,7 +148,7 @@ void FitsOutput::errmsg(FitsErrs e, char *s) {
     else
 	msgline << "File " << fout.fname();
     msgline << " Physical record " << fout.blockno()
-	    << " logical record " << fout.recno() << " --\n\t" << s << ends;
+	    << " logical record " << fout.recno() << " --\n\t" << s;
     err_status = e;
     // all FitsIO messages are SEVERE
     const char * mptr = msgline.str().data();
