@@ -2452,3 +2452,9 @@
 11 292 src rm trial/implement/Display/MotifAppTools.h
 11 292 src rm trial/implement/Display/MotifAppTools.cc
 11 304 src mv doc/newsletters/feb99/dishrecipe.tex doc/newsletters/feb99/dishrecipe.latex
+11 308 src rm trial/implement/Widgets/fileentry.help
+11 308 src rm trial/implement/Widgets/measureentry.help
+11 308 src rm trial/implement/Widgets/quantityentry.help
+11 308 src rm trial/implement/Widgets/rangeentry.help
+11 308 src rm trial/implement/Widgets/regionentry.help
+11 308 src rm trial/implement/Widgets/scalarentry.help
