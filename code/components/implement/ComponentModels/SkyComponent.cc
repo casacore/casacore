@@ -26,6 +26,7 @@
 //# $Id$
 
 #include <trial/ComponentModels/SkyComponent.h>
+#include <trial/ComponentModels/Flux.h>
 #include <trial/ComponentModels/SkyCompRep.h>
 #include <trial/ComponentModels/PointCompRep.h>
 #include <trial/ComponentModels/GaussianCompRep.h>
@@ -94,34 +95,13 @@ void SkyComponent::project(ImageInterface<Float> & plane) const {
   DebugAssert(ok(), AipsError);
 }
 
-void SkyComponent::setFlux(const Quantum<Vector<Double> > & newFlux) {
-  itsCompPtr->setFlux(newFlux);
+Flux<Double> SkyComponent::flux() {
   DebugAssert(ok(), AipsError);
+  return itsCompPtr->flux();
 }
-
-void SkyComponent::flux(Quantum<Vector<Double> > & compFlux) const {
-  itsCompPtr->flux(compFlux);
+const Flux<Double> SkyComponent::flux() const {
   DebugAssert(ok(), AipsError);
-}
-
-void SkyComponent::setFluxLinear(const Quantum<Vector<DComplex> > & newFlux) {
-  itsCompPtr->setFluxLinear(newFlux);
-  DebugAssert(ok(), AipsError);
-}
-
-void SkyComponent::fluxLinear(Quantum<Vector<DComplex> > & compFlux) const {
-  itsCompPtr->fluxLinear(compFlux);
-  DebugAssert(ok(), AipsError);
-}
-
-void SkyComponent::setFluxCircular(const Quantum<Vector<DComplex> > & newFlux){
-  itsCompPtr->setFluxCircular(newFlux);
-  DebugAssert(ok(), AipsError);
-}
-
-void SkyComponent::fluxCircular(Quantum<Vector<DComplex> > & compFlux) const {
-  itsCompPtr->fluxCircular(compFlux);
-  DebugAssert(ok(), AipsError);
+  return itsCompPtr->flux();
 }
 
 void SkyComponent::setDirection(const MDirection & newDir) {
@@ -134,25 +114,10 @@ void SkyComponent::direction(MDirection & compDir) const {
   DebugAssert(ok(), AipsError);
 }
 
-void SkyComponent::visibility(Vector<DComplex> & vis,
-			      const Vector<Double> & uvw,
-			      const Double & frequency) const {
-  itsCompPtr->visibility(vis, uvw, frequency);
-  DebugAssert(ok(), AipsError);
-}
-
-void SkyComponent::visibilityLinear(Vector<DComplex> & vis, 
-				    const Vector<Double> & uvw,
-				    const Double & frequency) const {
-  itsCompPtr->visibilityLinear(vis, uvw, frequency);
-  DebugAssert(ok(), AipsError);
-}
-
-void SkyComponent::visibilityCircular(Vector<DComplex> & vis, 
-				      const Vector<Double> & uvw,
+Flux<Double> SkyComponent::visibility(const Vector<Double> & uvw,
 				      const Double & frequency) const {
-  itsCompPtr->visibilityCircular(vis, uvw, frequency);
   DebugAssert(ok(), AipsError);
+  return itsCompPtr->visibility(uvw, frequency);
 }
 
 void SkyComponent::setLabel(const String & newLabel) {
@@ -243,9 +208,7 @@ SkyComponent SkyComponent::copy() const {
   DebugAssert(ok(), AipsError);
   SkyComponent newComp(shape());
   {
-    Quantum<Vector<Double> > thisFlux;
-    flux(thisFlux);
-    newComp.setFlux(thisFlux);
+    newComp.flux() = flux().copy();
   }
   {
     MDirection thisDirection;

@@ -26,6 +26,7 @@
 //# $Id$
 
 #include <trial/ComponentModels/SkyCompRep.h>
+#include <trial/ComponentModels/Flux.h>
 #include <trial/Coordinates/Coordinate.h>
 #include <trial/Coordinates/CoordinateSystem.h>
 #include <trial/Coordinates/CoordinateUtil.h>
@@ -157,10 +158,6 @@ void SkyCompRep::project(ImageInterface<Float> & image) const {
 	dirVal(1).setValue(worldCoord(1));
 	pixelDir.set(MVDirection(dirVal));
 	sample(pixelVal, pixelDir, pixelSize);
-// 	cout << pixelCoord.ac() 
-// 	     << ": " << worldCoord.ac() 
-// 	     << ": " << pixelDir.getAngle("'")
-// 	     << ": " << pixelVal.ac() << endl;
 	if (nStokes == 1) {
 	  switch (stokes(0)) {
 	  case Stokes::I:
@@ -274,7 +271,7 @@ Bool SkyCompRep::readFlux(String & errorMessage, const GlishRecord & record) {
     errorMessage += "\nThe 'flux' field must be a record";
     return False;
   }
-  Quantum<Vector<Double> > flux;
+  Flux<Double> thisFlux = flux();
   const GlishRecord fluxRec = record.get("flux");
   {
     if (!fluxRec.exists("value")) {
@@ -302,7 +299,7 @@ Bool SkyCompRep::readFlux(String & errorMessage, const GlishRecord & record) {
 	String("in the flux record for an unknown reason");
       return False;
     }
-    flux.setValue(fluxVal);
+    thisFlux.setValue(fluxVal);
   }
   {
     if (!fluxRec.exists("unit")) {
@@ -335,18 +332,51 @@ Bool SkyCompRep::readFlux(String & errorMessage, const GlishRecord & record) {
 	String("\nThey must be the same as the Jansky.");
       return False;
     }
-    flux.setUnit(fluxUnits);
+    thisFlux.setUnit(fluxUnits);
   }
-  setFlux(flux);
+  {
+    if (!fluxRec.exists("polarisation")) {
+      errorMessage += "\nThe 'flux' record must have a 'polarisation' field";
+      return False;
+    }
+    if (fluxRec.get("polarisation").type() != GlishValue::ARRAY) {
+      errorMessage += "\nThe 'polarisation' field cannot be a record";
+      return False;
+    }
+    const GlishArray polField = fluxRec.get("polarisation");
+    if (polField.elementType() != GlishArray::STRING) {
+      errorMessage += "\nThe 'polarisation' field must be a string";
+      return False;
+    }
+    if (polField.shape().product() != 1) {
+      errorMessage += String("\nThe 'polarisation' field cannot be an array ");
+      return False;
+    }
+    String polVal;
+    if (!polField.get(polVal)) {
+      errorMessage += String("\nCould not read the 'polarisation' field ") + 
+	String("in the flux record for an unknown reason");
+      return False;
+    }
+    const ComponentType::Polarisation pol(ComponentType::polarisation(polVal));
+    if (pol == ComponentType::UNKNOWN_POLARISATION) {
+      errorMessage += String("\nThe polarisation type is not known. ") +
+	String("\nCommon values are 'Stokes', 'Linear' & 'Circular'");
+      return False;
+    }
+    thisFlux.setPol(pol);
+  }
   return True;
 }
 
 Bool SkyCompRep::addFlux(String & errorMessage, GlishRecord & record) const {
-  Quantum<Vector<Double> > compFlux(Vector<Double>(4), "Jy");
-  flux(compFlux);
+  const Flux<Double> & thisFlux = flux();
+  Vector<DComplex> fluxVal(4);
+  thisFlux.value(fluxVal);
   GlishRecord fluxRec;
-  fluxRec.add("value", GlishArray(compFlux.getValue("Jy").ac()));
-  fluxRec.add("unit", "Jy");
+  fluxRec.add("value", GlishArray(fluxVal.ac()));
+  fluxRec.add("unit", thisFlux.unit().getName());
+  fluxRec.add("polarisation", ComponentType::name(thisFlux.pol()));
   record.add("flux", fluxRec);
   if (errorMessage == ""); // Suppress compiler warning about unused variable
   return True;
@@ -388,205 +418,6 @@ Bool SkyCompRep::addLabel(String & errorMessage, GlishRecord & record) const {
   return True;
 }
 
-void SkyCompRep::setFluxLinear(const Quantum<Vector<DComplex> > & compFlux) {
-  AlwaysAssert(compFlux.isConform("Jy") == True, AipsError);
-  const Vector<DComplex> & fluxLinear = compFlux.getValue();
-  AlwaysAssert(fluxLinear.nelements() == 4, AipsError);
-  // NOTE: Precision is LOST here because we do not yet have double precision
-  // version of the conversions available.
-  StokesConverter sc;
-  {
-    Vector<Int> stokes(4), linear(4);
-    stokes(0) = Stokes::I;
-    stokes(1) = Stokes::Q;
-    stokes(2) = Stokes::U;
-    stokes(3) = Stokes::V;
-    linear(0) = Stokes::XX;
-    linear(1) = Stokes::XY;
-    linear(2) = Stokes::YX;
-    linear(3) = Stokes::YY;
-    sc.setConversion(stokes, linear);
-  }
-  Vector<Complex> singleLinear(4), complexStokes(4);
-  for (uInt s = 0; s < 4; s++) {
-    singleLinear(s) = fluxLinear(s);
-  }
-  sc.convert(complexStokes, singleLinear);
-
-  Vector<Double> fluxStokes(4);
-  for (uInt i = 0; i < 4; i++) {
-    fluxStokes(i) = real(complexStokes(i));
-  }
-  setFlux(Quantum<Vector<Double> >(fluxStokes, compFlux.getFullUnit()));
-}
-
-void SkyCompRep::fluxLinear(Quantum<Vector<DComplex> > & compFlux) const {
-  // NOTE: Precision is LOST here because we do not yet have double precision
-  // version of the conversions available.
-  StokesConverter sc;
-  {
-    Vector<Int> stokes(4), linear(4);
-    stokes(0) = Stokes::I;
-    stokes(1) = Stokes::Q;
-    stokes(2) = Stokes::U;
-    stokes(3) = Stokes::V;
-    linear(0) = Stokes::XX;
-    linear(1) = Stokes::XY;
-    linear(2) = Stokes::YX;
-    linear(3) = Stokes::YY;
-    sc.setConversion(linear, stokes);
-  }
-  Quantum<Vector<Double> > fluxStokes;
-  flux(fluxStokes);
-  Vector<Complex> complexStokes(4), singleLinear(4);
-  for (uInt i = 0; i < 4; i++) {
-    complexStokes(i) = Complex(fluxStokes.getValue()(i), 0.0f);
-  }
-
-  sc.convert(singleLinear, complexStokes);
-
-  Vector<DComplex> doubleLinear(4);
-  for (uInt s = 0; s < 4; s++) {
-    doubleLinear(s) = singleLinear(s);
-  }
-  compFlux.setValue(doubleLinear);
-  compFlux.setUnit(fluxStokes.getFullUnit());
-}
-
-void SkyCompRep::setFluxCircular(const Quantum<Vector<DComplex> > & compFlux) {
-  AlwaysAssert(compFlux.isConform("Jy") == True, AipsError);
-  const Vector<DComplex> & fluxCircular = compFlux.getValue();
-  AlwaysAssert(fluxCircular.nelements() == 4, AipsError);
-  // NOTE: Precision is LOST here because we do not yet have double precision
-  // version of the conversions available.
-  StokesConverter sc;
-  {
-    Vector<Int> stokes(4), circular(4);
-    stokes(0) = Stokes::I;
-    stokes(1) = Stokes::Q;
-    stokes(2) = Stokes::U;
-    stokes(3) = Stokes::V;
-    circular(0) = Stokes::RR;
-    circular(1) = Stokes::RL;
-    circular(2) = Stokes::LR;
-    circular(3) = Stokes::LL;
-    sc.setConversion(stokes, circular);
-  }
-  Vector<Complex> singleCircular(4), complexStokes(4);
-  for (uInt s = 0; s < 4; s++) {
-    singleCircular(s) = fluxCircular(s);
-  }
-  sc.convert(complexStokes, singleCircular);
-
-  Vector<Double> fluxStokes(4);
-  for (uInt i = 0; i < 4; i++) {
-    fluxStokes(i) = real(complexStokes(i));
-  }
-  setFlux(Quantum<Vector<Double> >(fluxStokes, compFlux.getFullUnit()));
-}
-
-void SkyCompRep::fluxCircular(Quantum<Vector<DComplex> > & compFlux) const {
-  // NOTE: Precision is LOST here because we do not yet have double precision
-  // version of the conversions available.
-  StokesConverter sc;
-  {
-    Vector<Int> stokes(4), circular(4);
-    stokes(0) = Stokes::I;
-    stokes(1) = Stokes::Q;
-    stokes(2) = Stokes::U;
-    stokes(3) = Stokes::V;
-    circular(0) = Stokes::RR;
-    circular(1) = Stokes::RL;
-    circular(2) = Stokes::LR;
-    circular(3) = Stokes::LL;
-    sc.setConversion(circular, stokes);
-  }
-  Quantum<Vector<Double> > fluxStokes;
-  flux(fluxStokes);
-  Vector<Complex> complexStokes(4), singleCircular(4);
-  for (uInt i = 0; i < 4; i++) {
-    complexStokes(i) = Complex(fluxStokes.getValue()(i), 0.0f);
-  }
-
-  sc.convert(singleCircular, complexStokes);
-
-  Vector<DComplex> doubleCircular(4);
-  for (uInt s = 0; s < 4; s++) {
-    doubleCircular(s) = singleCircular(s);
-  }
-  compFlux.setValue(doubleCircular);
-  compFlux.setUnit(fluxStokes.getFullUnit());
-}
-
-void SkyCompRep::visibilityLinear(Vector<DComplex> & vis, 
- 				  const Vector<Double> & uvw,
- 				  const Double & frequency) const {
-  DebugAssert(vis.nelements() == 4 || vis.nelements() == 0, AipsError);
-  // NOTE: Precision is LOST here because we do not yet have double precision
-  // version of the conversions available.
-  StokesConverter sc;
-  {
-    Vector<Int> stokes(4), linear(4);
-    stokes(0) = Stokes::I;
-    stokes(1) = Stokes::Q;
-    stokes(2) = Stokes::U;
-    stokes(3) = Stokes::V;
-    linear(0) = Stokes::XX;
-    linear(1) = Stokes::XY;
-    linear(2) = Stokes::YX;
-    linear(3) = Stokes::YY;
-    sc.setConversion(linear, stokes);
-  }
-  Vector<DComplex> doubleStokes(4);
-  visibility(doubleStokes, uvw, frequency);
-  Vector<Complex> singleStokes(4);
-  for (uInt i = 0; i < 4; i++) {
-    singleStokes(i) = doubleStokes(i);
-  }
-
-  Vector<Complex> singleLinear(4);
-  sc.convert(singleLinear, singleStokes);
-
-  vis.resize(4);
-  for (uInt s = 0; s < 4; s++) {
-    vis(s) = singleLinear(s);
-  }
-}
-
-void SkyCompRep::visibilityCircular(Vector<DComplex> & vis, 
- 				    const Vector<Double> & uvw,
- 				    const Double & frequency) const {
-  DebugAssert(vis.nelements() == 4 || vis.nelements() == 0, AipsError);
-  // NOTE: Precision is LOST here because we do not yet have double precision
-  // version of the conversions available.
-  StokesConverter sc;
-  {
-    Vector<Int> stokes(4), circular(4);
-    stokes(0) = Stokes::I;
-    stokes(1) = Stokes::Q;
-    stokes(2) = Stokes::U;
-    stokes(3) = Stokes::V;
-    circular(0) = Stokes::RR;
-    circular(1) = Stokes::RL;
-    circular(2) = Stokes::LR;
-    circular(3) = Stokes::LL;
-    sc.setConversion(circular, stokes);
-  }
-  Vector<DComplex> doubleStokes(4);
-  visibility(doubleStokes, uvw, frequency);
-  Vector<Complex> singleStokes(4);
-  for (uInt i = 0; i < 4; i++) {
-    singleStokes(i) = doubleStokes(i);
-  }
-
-  Vector<Complex> singleCircular(4);
-  sc.convert(singleCircular, singleStokes);
-
-  vis.resize(4);
-  for (uInt s = 0; s < 4; s++) {
-    vis(s) = singleCircular(s);
-  }
-}
 // Local Variables: 
 // compile-command: "gmake OPTLIB=1 SkyCompRep"
 // End: 

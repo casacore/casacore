@@ -29,10 +29,6 @@
 #if !defined(AIPS_SKYCOMPREP_H)
 #define AIPS_SKYCOMPREP_H
 
-#if defined(_AIX)
-#pragma implementation ("SkyCompRep.cc")
-#endif
-
 #include <aips/aips.h>
 #include <trial/ComponentModels/ComponentType.h>
 
@@ -40,11 +36,11 @@ class GlishRecord;
 class MDirection;
 class MVAngle;
 class String;
-template<class T> class ImageInterface;
+class Unit;
 template <class Qtype> class Quantum;
-template<class T> class Vector;
-class doubleG_COMPLEX;
-typedef doubleG_COMPLEX DComplex;
+template <class T> class Flux;
+template <class T> class ImageInterface;
+template <class T> class Vector;
 
 // <summary>A component of a model of the sky</summary>
 
@@ -129,41 +125,35 @@ public:
   // image (ie. spectral axes).
   virtual void project(ImageInterface<Float> & plane) const;
 
-  // set/get the integrated flux of the component. The Vector specifies all the
-  // polarizations of the radiation. The <src>setFlux</src> and <src>flux</src>
-  // functions expect the flux to be represented using Stokes parameters,
-  // ie. I,Q,U,V respectively. The flux can also be represented using linear
-  // polarisations, ie. XX,XY,YX,YY resp. with the <src>{setF,f}luxLinear</src>
-  // functions (the parrallactic angle is assumed to be zero). Alternately the
-  // flux can be represented using circular polarisations, ie., RR, RL, LR, LL
-  // resp. using the <src>{setF,f}luxCircular</src> functions. It is expected
-  // that these six functions will be coalesced into two once a Measure that
-  // represents flux is available. The units must be something has the same
-  // dimensions as Jansky's.  
-  // <group>
-  virtual void setFlux(const Quantum<Vector<Double> > & newFlux) = 0;
-  virtual void flux(Quantum<Vector<Double> > & compflux) const = 0;
-  virtual void setFluxCircular(const Quantum<Vector<DComplex> > & compFlux);
-  virtual void fluxCircular(Quantum<Vector<DComplex> > & compFlux) const;
-  virtual void setFluxLinear(const Quantum<Vector<DComplex> > & compFlux);
-  virtual void fluxLinear(Quantum<Vector<DComplex> > & compFlux) const;
-  // </group>
-
-  // set/get the direction (usually the centre) of the component.
+  // set/get the direction of the centre of component.
   // <group>
   virtual void setDirection(const MDirection & newDirection) = 0;
   virtual void direction(MDirection & compDirection) const = 0;
   // </group>
 
+  // return a reference to the flux of the component. Because this is a
+  // reference, manipulation of the flux values is performed through the
+  // functions in the Flux class. eg., <src>comp.flux().setValue(newVal)</src>
   // <group>
-  virtual void visibility(Vector<DComplex> & vis, const Vector<Double> & uvw,
-			  const Double & frequency) const = 0;
-  virtual void visibilityLinear(Vector<DComplex> & vis, 
-   				const Vector<Double> & uvw,
-   				const Double & frequency) const;
-  virtual void visibilityCircular(Vector<DComplex> & vis, 
-   				  const Vector<Double> & uvw,
-   				  const Double & frequency) const;
+  virtual const Flux<Double> flux() const = 0;
+  virtual Flux<Double> flux() = 0;
+  // </group>
+
+  // Return the Fourier transform of the component at the specified point in
+  // the spatial frequency domain. The point is specified by a 3 element vector
+  // (u,v,w) that has units of meters and the frequency of the observation, in
+  // Hertz. These two quantities can be used to derive the required spatial
+  // frequency <src>(s = uvw*freq/c)</src>. The w component is not used in
+  // these functions.
+  //
+  // The reference position for the transform is the direction of the
+  // component. Hence the transform is always a real value and there is no
+  // phase variation due to the spatial structure if the component has a
+  // symmetric shape. The returned visibility values may still be Complex if a
+  // polarisation representation other than Stokes is used.
+  // <group>
+  virtual Flux<Double> visibility(const Vector<Double> & uvw,
+				  const Double & frequency) const = 0;
   // </group>
 
   // set/get the label associated with this component. The default versions do

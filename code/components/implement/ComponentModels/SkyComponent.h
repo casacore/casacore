@@ -36,8 +36,6 @@
 #include <aips/aips.h>
 #include <aips/Utilities/CountedPtr.h>
 #include <trial/ComponentModels/ComponentType.h>
-// This should be forward declared but I cannot make it work!
-#include <aips/Mathematics/Complex.h>
 
 class GlishRecord;
 template<class T> class ImageInterface;
@@ -46,8 +44,8 @@ class MVAngle;
 class SkyCompRep;
 class String;
 template<class T> class Vector;
+template<class T> class Flux;
 template<class Qtype> class Quantum;
-// class DComplex;
 
 // <summary>A component of a model of the sky </summary>
 
@@ -138,52 +136,37 @@ public:
   // image (ie. spectral axes).
   virtual void project(ImageInterface<Float> & plane) const;
 
-  // set/get the integrated flux of the component. The Vector specifies all the
-  // polarizations of the radiation. The <src>setFlux</src> and <src>flux</src>
-  // function require the flux to be represented in Stokes parameters,
-  // ie. I,Q,U,V respectively. The flux can also be represented using linear
-  // polarisations, ie. XX,XY,YX,YY resp. using the
-  // <src>{setF,f}luxLinear</src> functions (the Parrallactic angle is assumed
-  // to be zero). Similarly the flux can be represented with Circular
-  // polarisations, ie., RR, RL, LR, LL resp. using the
-  // <src>{setF,f}luxCircular</src> functions. It is expected that these six
-  // functions will be coalesced into two once a Measure that represents flux
-  // is available.
-  // <group>
-  virtual void setFlux(const Quantum<Vector<Double> > & newFlux);
-  virtual void flux(Quantum<Vector<Double> > & compflux) const;
-  virtual void setFluxLinear(const Quantum<Vector<DComplex> > & newFlux);
-  virtual void fluxLinear(Quantum<Vector<DComplex> > & compflux) const;
-  virtual void setFluxCircular(const Quantum<Vector<DComplex> > & newFlux);
-  virtual void fluxCircular(Quantum<Vector<DComplex> > & compflux) const;
-  // </group>
-
   // set/get the direction of (usually the centre) of the component.
   // <group>
   virtual void setDirection(const MDirection & newPos);
   virtual void direction(MDirection & compDir) const;
   // </group>
 
+  // return a reference to the flux of the component. Because this is a
+  // reference, manipulation of the flux values is performed through the
+  // functions in the Flux class. eg., <src>comp.flux().setValue(newVal)</src>
+  // <group>
+  virtual Flux<Double> flux();
+  virtual const Flux<Double> flux() const;
+  // </group>
+
   // Return the Fourier transform of the component at the specified point in
   // the spatial frequency domain. The point is specified by a 3 element vector
-  // (u,v,w) that has units of wavelengths. The reference position for the
-  // transform is the direction of the component. Hence the transform is always
-  // a real value for a symmentric component. The vis Vector must initially
-  // have zero or four elements and is always returned with four elements that
-  // represent the flux in the four polarisations. Depending on which function
-  // is used the representation is I,Q,U,V, for the <src>visibility</src>
-  // function, XX,XY,YX,YY for the <src>visibilityLinear</src> function, or
-  // RR,RL,LR,LL for the <src>visibilityCircular</src> function. The units are
-  // always Jansky's
+  // (u,v,w) that has units of meters and the frequency of the observation, in
+  // Hertz. These two quantities can be used to derive the required spatial
+  // frequency <src>(s = uvw*freq/c)</src>. The w component is not used in
+  // these functions.
+  //
+  // The reference position for the transform is the direction of the
+  // component. Hence the transform is always a real value and there is no
+  // phase variation due to the spatial structure if the component has a
+  // symmetric shape. The returned visibility values may still be Complex if a
+  // polarisation representation other than Stokes is used.
   // <group>
-  virtual void visibility(Vector<DComplex> & vis, const Vector<Double> & uvw,
-			  const Double & frequency) const;
-  virtual void visibilityLinear(Vector<DComplex> & vis, 
-   				const Vector<Double> & uvw,
-   				const Double & frequency) const;
-  virtual void visibilityCircular(Vector<DComplex> & vis, 
-   				  const Vector<Double> & uvw,
-   				  const Double & frequency) const;
+  virtual Flux<Double> visibility(const Vector<Double> & uvw,
+				  const Double & frequency) const;
+  // </group>
+
   // </group>
   // set/get the label associated with this component.
   // <group>
