@@ -1,5 +1,5 @@
 //# image2fits.cc: conversion from aips++ native tables to FITS
-//# Copyright (C) 1994,1995
+//# Copyright (C) 1994,1995,1997
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -54,10 +54,13 @@ Int main(int argc, char *argv[])
 	inp.Version(" ");
 	inp.Create("in", "in.image", "Input AIPS++ Image name", "string");
 	inp.Create("out", "out.fits", "Output FITS file name", "string");
+	inp.Create("overwrite", "False", "Allow output to be overwritten?",
+		   "Bool");
 	inp.Create("verbose", "False", "Verbose?", "Bool");
 	inp.ReadArguments(argc, argv);
     
 	Bool verbose=inp.GetBool("verbose");
+	Bool overwrite=inp.GetBool("overwrite");
     
 	File inputFile(inp.GetString("in"));
 	if (!inputFile.isReadable()) 
@@ -76,7 +79,9 @@ Int main(int argc, char *argv[])
 	}
 
 	String error;
-	Bool ok = ImageFITSConverter::ImageToFITS(error, image, out);
+	Bool ok = ImageFITSConverter::ImageToFITS(error, image, out,
+						  64, True, True, -32, 1, -1,
+						  overwrite);
 	if (!ok) {
 	    cout << "Error writing FITS file: " << error << endl;
 	    return 1;
