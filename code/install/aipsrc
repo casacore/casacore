@@ -105,6 +105,9 @@
 # sneeze.<host>.<aipsext>.logmail:
   sneeze.*.*.logfile:
   sneeze*logmail:		aips2-inhale@nrao.edu
+# Mail delivery program to use for log mailings.
+# sneeze.<host>.<aipsext>.mailer:
+  sneeze*mailer:		mail
 
 # Preserve documentation when a new base release is installed?
   sneeze.base.docs.preserve:	true
