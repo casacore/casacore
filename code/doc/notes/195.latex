@@ -9,9 +9,9 @@
 \begin{document}
 
 \title{NOTE 195\\
-       Getting Started with Glish}
+       Getting Started with Glish \\ for AIPS++}
 \author {Rick Fisher, NRAO}
-\date {Text last updated : 1997 March 27}
+\date {Text last updated : 1999 April 30 by Jim Braatz}
 \maketitle
 %%---------------------------------------------------------------------------
 \htmladdnormallink{A postscript version of this note is available.}{../195.ps}
