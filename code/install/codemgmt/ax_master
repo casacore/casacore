@@ -1361,3 +1361,4 @@
 11 027 sys rm libexec/pksmeasurementset.g
 11 028 src mv trial/apps/psky trial/apps/pimager
 11 034 src mv trial/implement/Guiutils/progress.g aips/implement/Guiutils/progress.g
+11 034 src mv trial/implement/Guiutils/progress.help aips/implement/Guiutils/progress.help
