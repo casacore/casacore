@@ -207,7 +207,7 @@ convolve(Lattice<T> & result, const Lattice<T> & model) const {
       resultPtr = &resultSlice;
     }
     // Do the forward transform
-    LatticeFFT::rcfft(fftModel.lc(), *modelPtr);
+    LatticeFFT::rcfft(fftModel, *modelPtr);
     { // Multiply the transformed model with the transfer function
       IPosition tileShape(itsXfr.niceCursorShape());
       const IPosition otherTileShape(fftModel.niceCursorShape());
@@ -225,7 +225,7 @@ convolve(Lattice<T> & result, const Lattice<T> & model) const {
       }
     }
     // Do the inverse transform
-    LatticeFFT::crfft(*resultPtr, fftModel.lc());
+    LatticeFFT::crfft(*resultPtr, fftModel);
     if (doPadding) { // Unpad the result
       unpad(resultSlice, *resultPtr);
     }
