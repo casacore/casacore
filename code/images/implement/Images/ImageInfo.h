@@ -107,6 +107,7 @@ public:
     ImageInfo& setRestoringBeam(const Quantum<Double>& major,
                                 const Quantum<Double>& minor,
                                 const Quantum<Double>& pa);
+    ImageInfo& removeRestoringBeam();
     // </group>
 
     // Functions to interconvert between an ImageInfo and a record. These 
