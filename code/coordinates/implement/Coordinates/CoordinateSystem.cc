@@ -1700,12 +1700,27 @@ Bool CoordinateSystem::fromFITSHeader(CoordinateSystem &coordsys,
 	if (proj.contains("GLON")) {
 	    isGalactic = True;
 	}
-	proj.gsub(Regex("^.*-"), "");  // Get rid of, e.g., RA---
+	// Get rid of the first 4 characters, e.g., RA--
+	proj.gsub(Regex("^...."), "");  
 	String proj2 = ctype(latAxis);
-	proj2.gsub(Regex("^.*-"), "");
+	proj2.gsub(Regex("^...."), "");  
+	// Get rid of leading -'s
+	proj.gsub(Regex("^-*"), "");
+	proj2.gsub(Regex("^-*"), "");
+	proj.gsub(Regex(" *"), "");    // Get rid of spaces
+	proj2.gsub(Regex(" *"), "");
+	if (proj == "" && proj2 == "") {
+	    // Default to cartesian if no projection is defined.
+	    proj = Projection::name(Projection::CAR); proj2 = proj;
+	    os << WHERE << LogIO::WARN << 
+	      "No projection has been defined (e.g., SIN), assuming\n"
+	      "cartesian (CAR). Some FITS readers will not recognize\n"
+	       "the CAR projection." << LogIO::POST;
+	}
 	if (proj != proj2) {
+	    // Maybe instead I should switch to CAR, or use the first?
 	    os << LogIO::SEVERE << "Longitude and latitude axes have different"
-		" projections (" << proj << "!=" << proj2 << ")";
+	        " projections (" << proj << "!=" << proj2 << ")" << LogIO::POST;
 	    return False;
 	}
 
@@ -1877,8 +1892,11 @@ Bool CoordinateSystem::fromFITSHeader(CoordinateSystem &coordsys,
     if (specAxis >= 0) {nlin--;}
     if (stokesAxis >= 0) {nlin--;}
     if (nlin > 0) {
-	os << LogIO::NORMAL << "Assuming no rotation/skew/... in linear axes." 
-	   << LogIO::POST;
+        if (nlin > 1) {
+	    os << LogIO::NORMAL << 
+	      "Assuming no rotation/skew/... in linear axes." 
+	       << LogIO::POST;
+	}
 	Matrix<Double> linpc(nlin, nlin); linpc = 0; linpc.diagonal() = 1.0;
 	Vector<Double> lincrpix(nlin), lincdelt(nlin), lincrval(nlin);
 	Vector<String> linctype(nlin), lincunit(nlin);
