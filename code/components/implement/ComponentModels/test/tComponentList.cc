@@ -73,9 +73,9 @@ int main() {
 	  SkyCompGauss.setFlux(newFlux);
 	}
 	{
-	  MDirection newPosition(Quantity(30, "deg"), Quantity(89, "deg"),
+	  MDirection newDirection(Quantity(30, "deg"), Quantity(89, "deg"),
 				 MDirection::J2000);
-	  SkyCompGauss.setPosition(newPosition);
+	  SkyCompGauss.setDirection(newDirection);
 	}
 	{
 	  Vector<Double> newParameters(3);
@@ -101,14 +101,14 @@ int main() {
 //       {
 // 	cout << "List has " << model.nelements() << " elements" << endl;
 // 	Vector<Double> flux(4);
-// 	MDirection position;
+// 	MDirection direction;
 // 	for (uInt n = 0; n < model.nelements(); n++){
 // 	  SkyComponent tmpComp = model.component(n);
 // 	  tmpComp.flux(flux);
-// 	  tmpComp.position(position);
+// 	  tmpComp.direction(direction);
 // 	  cout << n << ": " << ComponentType::name(tmpComp.type())
 // 	       << " Flux:" << flux 
-// 	       << position
+// 	       << direction
 // 	       << endl;
 // 	}
 //       }
@@ -152,47 +152,47 @@ int main() {
     }
     {
       ComponentList crux;
-      MDirection samplePosition1, samplePosition2, samplePosition3;
+      MDirection sampleDirection1, sampleDirection2, sampleDirection3;
       {
  	Vector<Double> flux(4);
 	flux = 0.0; flux(0) = 0.235; flux(3) = flux(0);
-	MDirection position(Quantity(12.0/24*360, "deg")
+	MDirection direction(Quantity(12.0/24*360, "deg")
  			    + Quantity(26.0/24*360, "'") 
 			    + Quantity(35.9/24*360, "''"), 
 			    Quantity(-63, "deg") 
 			    - Quantity(5, "'")
 			    - Quantity(56, "''"), MDirection::J2000);
-	PointComponent alpha1Crux(flux, position);
+	PointComponent alpha1Crux(flux, direction);
 	crux.add(alpha1Crux);
       }
       {
 	Vector<Double> flux(4);
 	flux = 0.0; flux(0) = 0.147; flux(1) = flux(0);
-	MDirection position(Quantity(12.0/24*360, "deg")
+	MDirection direction(Quantity(12.0/24*360, "deg")
 			    + Quantity(26.0/24*360, "'")
 			    + Quantity(36.5/24*360, "''"), 
 			    Quantity(-63, "deg") 
 			    - Quantity(5, "'")
 			    - Quantity(58, "''"), MDirection::J2000);
-	PointComponent alpha2Crux(flux, position);
+	PointComponent alpha2Crux(flux, direction);
 	crux.add(alpha2Crux);
       }
       {
 	Vector<Double> flux(4);
 	flux = 0.0; flux(0) = 0.318; flux(2) = flux(0);
-	MDirection position(Quantity(12.0/24*360, "deg")
+	MDirection direction(Quantity(12.0/24*360, "deg")
 			    + Quantity(47.0/24*360, "'")
 			    + Quantity(43.3/24*360, "''"), 
 			    Quantity(-59, "deg")
 			    - Quantity(41, "'")
 			    - Quantity(19, "''"), MDirection::J2000);
-	PointComponent betaCrux(flux, position);
+	PointComponent betaCrux(flux, direction);
 	crux.add(betaCrux);
       }
       {
 	Vector<Double> flux(4);
 	flux = 0.0; flux(0) = 0.225;
-	MDirection position(Quantity(12.0/24*360, "deg")
+	MDirection direction(Quantity(12.0/24*360, "deg")
 			    + Quantity(31.0/24*360, "'")
 			    + Quantity(16.7/24*360, "''"), 
 			    Quantity(-57, "deg")
@@ -201,49 +201,49 @@ int main() {
 	//	MVAngle width(Quantity(35, "mas"));
 	MVAngle width(Quantity(10, "'"));
 	MVAngle pa(Quantity(0, "deg"));
-	GaussianComponent gammaCrux(flux, position, width, 1.0, pa);
+	GaussianComponent gammaCrux(flux, direction, width, 1.0, pa);
 	crux.add(gammaCrux);
-	samplePosition1 = position;
+	sampleDirection1 = direction;
       }
       {
 	Vector<Double> flux(4);
 	flux = 0.0; flux(0) = 0.0769;
-	MDirection position(Quantity(12.0/24*360, "deg")
+	MDirection direction(Quantity(12.0/24*360, "deg")
 			    + Quantity(15.0/24*360, "'")
 			    + Quantity(8.6/24*360, "''"), 
 			    Quantity(-58, "deg")
 			    - Quantity(44, "'")
 			    - Quantity(56, "''"), MDirection::J2000);
-	PointComponent deltaCrux(flux, position);
+	PointComponent deltaCrux(flux, direction);
 	crux.add(deltaCrux);
-	samplePosition2 = position;
+	sampleDirection2 = direction;
       }
       {
 	Vector<Double> flux(4);
 	flux = 0.0; flux(0) = 0.0373;
-	MDirection position(Quantity(12.0/24*360, "deg")
+	MDirection direction(Quantity(12.0/24*360, "deg")
 			    + Quantity(21.0/24*360, "'")
 			    + Quantity(21.5/24*360, "''"),
 			    Quantity(-60, "deg")
 			    - Quantity(24, "'")
 			    - Quantity(4, "''"), MDirection::J2000);
-	PointComponent epsilonCrux(flux, position);
+	PointComponent epsilonCrux(flux, direction);
 	crux.add(epsilonCrux);
-	samplePosition3 = position;
+	sampleDirection3 = direction;
       }
       const MVAngle pixelSize(Quantity(1.0, "'"));
       Vector<Double> sampledFlux(4);
-      crux.sample(sampledFlux, samplePosition1, pixelSize);
+      crux.sample(sampledFlux, sampleDirection1, pixelSize);
       AlwaysAssert(!near(sampledFlux(0), 0.0, 1E-2), AipsError);
       AlwaysAssert(near(sampledFlux(1), 0.0, 1E-10), AipsError);
       AlwaysAssert(near(sampledFlux(2), 0.0, 1E-10), AipsError);
       AlwaysAssert(near(sampledFlux(3), 0.0, 1E-10), AipsError);
-      crux.sample(sampledFlux, samplePosition2, pixelSize);
+      crux.sample(sampledFlux, sampleDirection2, pixelSize);
       AlwaysAssert(near(sampledFlux(0), 0.0769, 1E-10), AipsError);
       AlwaysAssert(near(sampledFlux(1), 0.0, 1E-10), AipsError);
       AlwaysAssert(near(sampledFlux(2), 0.0, 1E-10), AipsError);
       AlwaysAssert(near(sampledFlux(3), 0.0, 1E-10), AipsError);
-      crux.sample(sampledFlux, samplePosition3, pixelSize);
+      crux.sample(sampledFlux, sampleDirection3, pixelSize);
       AlwaysAssert(near(sampledFlux(0), 0.0373, 1E-10), AipsError);
       AlwaysAssert(near(sampledFlux(1), 0.0, 1E-10), AipsError);
       AlwaysAssert(near(sampledFlux(2), 0.0, 1E-10), AipsError);
