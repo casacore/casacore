@@ -457,7 +457,7 @@ Float ImagePolarimetry::sigmaLinPolInt(Float clip, Float sigma)
       os << "This image does not have Stokes Q and U so cannot provide linear polarization" << LogIO::EXCEPTION;
    }
 
-// Make expression 
+// Get value
 
    Float sigma2 = 0.0;
    if (sigma > 0) {
@@ -550,7 +550,7 @@ Float ImagePolarimetry::sigma(Float clip)
    LogIO os(LogOrigin("ImagePolarimetry", "noise(...)", WHERE));
    Float sigma2 = 0.0;
    if (itsStokesPtr[ImagePolarimetry::V]!=0) {
-      os << LogIO::NORMAL << "Determed noise from V image to be ";
+      os << LogIO::NORMAL << "Determined noise from V image to be ";
       sigma2 = ImagePolarimetry::sigma(ImagePolarimetry::V, clip);
    } else if (itsStokesPtr[ImagePolarimetry::Q]!=0 &&
               itsStokesPtr[ImagePolarimetry::U]!=0) {
@@ -1199,6 +1199,45 @@ IPosition ImagePolarimetry::singleStokesShape(CoordinateSystem& cSys, Stokes::St
 //
    return shape;
 }
+
+
+ImageExpr<Float> ImagePolarimetry::depolarizationRatio (const ImageInterface<Float>& im1, 
+                                                        const ImageInterface<Float>& im2,
+                                                        Bool debias, Float clip, Float sigma)
+{
+   ImagePolarimetry p1 = ImagePolarimetry(im1);
+   ImagePolarimetry p2 = ImagePolarimetry(im2);
+//
+   ImageExpr<Float> m1(p1.fracLinPol(debias, clip, sigma));
+   ImageExpr<Float> m2(p2.fracLinPol(debias, clip, sigma));
+   LatticeExprNode n1(m1/m2);
+   LatticeExpr<Float> le(n1);
+   ImageExpr<Float> depol(le, String("DepolarizationRatio"));
+   return depol;
+}
+
+ImageExpr<Float> ImagePolarimetry::sigmaDepolarizationRatio (const ImageInterface<Float>& im1, 
+                                                             const ImageInterface<Float>& im2,
+                                                             Bool debias, Float clip, Float sigma)
+ {
+   ImagePolarimetry p1 = ImagePolarimetry(im1);
+   ImagePolarimetry p2 = ImagePolarimetry(im2);
+//
+   ImageExpr<Float> m1 = p1.fracLinPol(debias, clip, sigma);
+   ImageExpr<Float> sm1 = p1.sigmaFracLinPol (clip, sigma);
+//
+   ImageExpr<Float> m2 = p2.fracLinPol(debias, clip, sigma);
+   ImageExpr<Float> sm2 = p2.sigmaFracLinPol (clip, sigma);
+//
+   LatticeExprNode n0(m1/m2);
+   LatticeExprNode n1(sm1*sm1/m1/m1);   
+   LatticeExprNode n2(sm2*sm2/m2/m2);
+   LatticeExprNode n3(n0 * sqrt(n1+n2));
+   LatticeExpr<Float> le(n3);
+   ImageExpr<Float> sigmaDepol(le, String("DepolarizationRatioError"));
+   return sigmaDepol;
+}
+
 
 
 // Private functions

@@ -157,42 +157,42 @@ public:
 // Complex fractional linear polarization
    ImageExpr<Complex> complexFractionalLinearPolarization ();
 
-// <group>
 // Get the Stokes I image and the standard deviation of the
 // I image.  This  is worked out by first clipping 
 // outliers from the mean at the specified level.
+// <group>
    ImageExpr<Float> stokesI() const;
    Float sigmaStokesI (Float clip=10.0);
 // </group>
 
-// <group>
 // Get the Stokes Q image and the standard deviation 
 // of the Q image.  This  is worked out by first clipping 
 // outliers from the mean at the specified level.
+// <group>
    ImageExpr<Float> stokesQ() const;
    Float sigmaStokesQ (Float clip=10.0);
 // </group>
 
-// <group>
 // Get the Stokes U image and the standard deviation 
 // of the U image.  This  is worked out by first clipping 
 // outliers from the mean at the specified level.
+// <group>
    ImageExpr<Float> stokesU() const;
    Float sigmaStokesU (Float clip=10.0);
 // </group>
 
-// <group>
 // Get the Stokes V image and the standard deviation 
 // of the V image.  This  is worked out by first clipping 
 // outliers from the mean at the specified level.
+// <group>
    ImageExpr<Float> stokesV() const;
    Float sigmaStokesV (Float clip=10.0);
 // </group>
 
-// <group>
 // Get the specified Stokes image and the standard deviation 
 // of the image.  This  is worked out by first clipping 
 // outliers from the mean at the specified level.
+// <group>
    ImageExpr<Float> stokes(ImagePolarimetry::StokesTypes index) const;
    Float sigmaStokes (ImagePolarimetry::StokesTypes index, Float clip=10.0);
 // </group>
@@ -205,17 +205,16 @@ public:
 // and lastly I to give you its noise estimate
    Float sigma (Float clip=10.0);
 
-// <group>
 // Get the linearly polarized intensity image and its
 // standard deviation.  If wish to debias the image, you
 // can either provide <src>sigma<\src> (the standard 
 // deviation of the termal noise ) or if <src>sigma</src> is non-positive, 
 // it will  be worked out for you with a clipped mean algorithm.
+// <group>
    ImageExpr<Float> linPolInt(Bool debias, Float clip=10.0, Float sigma=-1.0);
    Float sigmaLinPolInt (Float clip=10.0, Float sigma=-1.0);
 // </group>
 
-// <group>
 // Get the total polarized intensity (from whatever combination
 // of Q, U, and V the construction image has) image and its error 
 // (standard deviation).  If wish to debias the image, you
@@ -223,36 +222,36 @@ public:
 // of the thermal noise) or if <src>sigma</src> is 
 // non-positive, it will be worked out for you with a 
 // clipped mean algorithm.
+// <group>
    ImageExpr<Float> totPolInt(Bool debias, Float clip=10.0, Float sigma=-1.0);
    Float sigmaTotPolInt (Float clip=10.0, Float sigma=-1.0);
 // </group>
 
-// <group>
 // Get linearly polarized position angle (degrees or radians) image
 // and error (standard deviation).   If you provide 
 // <src>sigma<\src> it is the  standard deviation of 
 // the termal noise.  If <src>sigma</src> is non-positive, it will be 
 // worked out for you with a  clipped mean algorithm.
+// <group>
    ImageExpr<Float> linPolPosAng(Bool radians) const;
    ImageExpr<Float> sigmaLinPolPosAng (Bool radians, Float clip=10.0, Float sigma=-1.0);
 // </group>
 
-
-// <group>
 // Get fractional linear polarization image 
 // and error (standard deviation).   If wish to debias the image, you
 // can either provide <src>sigma<\src> (the standard 
 // deviation of the termal noise) or if <src>sigma</src> is non-positive, 
 // it will  be worked out for you with a clipped mean algorithm.
+// <group>
    ImageExpr<Float> fracLinPol(Bool debias, Float clip=10.0, Float sigma=-1.0);
    ImageExpr<Float> sigmaFracLinPol (Float clip=10.0, Float sigma=-1.0);
 // </group>
 
-// <group>
 // Get Fractional total polarization and error (standard deviation)
 // <src>var<\src> is the standard deviation  of the thermal noise.
 // If <src>sigma</src> is non-positive, 
 // it will  be worked out for you with a clipped mean algorithm.
+// <group>
    ImageExpr<Float> fracTotPol(Bool debias, Float clip=10.0, Float sigma=-1.0);
    ImageExpr<Float> sigmaFracTotPol (Float clip=10.0, Float sigma=-1.0);
 // </group>
@@ -320,6 +319,17 @@ public:
                         Int spectralAxis,  Float rmMax, Float maxPaErr=1.0e30,
                         Float sigma=-1.0, Float rmFg=0.0, Bool showProgress=False);
 
+// Depolarization ratio image and error.  Requires two images hence static
+// functions.
+// <group>
+   static ImageExpr<Float> depolarizationRatio (const ImageInterface<Float>& im1,
+                                                const ImageInterface<Float>& im2,
+                                                Bool debias, Float clip=10.0, Float sigma=-1.0);
+
+   static ImageExpr<Float> sigmaDepolarizationRatio (const ImageInterface<Float>& im1,
+                                                     const ImageInterface<Float>& im2,
+                                                     Bool debias, Float clip=10.0, Float sigma=-1.0);
+// </group>
 
 private:
    const ImageInterface<Float>* itsInImagePtr;
