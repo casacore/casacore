@@ -137,6 +137,10 @@ public:
   // reconstruct an image from a pre-existing file
   PagedImage(const String &filename, uInt rowNumber = 0);
   
+  // reconstruct an image from a pre-existing file with Locking
+  PagedImage(const String &filename, const TableLock& lockOptions,
+     uInt rowNumber = 0);
+  
   // the copy constructor. (reference semantics)
   PagedImage(const PagedImage<T> &other);
 
@@ -305,6 +309,8 @@ private:
   void check_conformance(const Lattice<T> &other);
   void openTable(const String &filename);
   void openTable(const String &filename) const;
+  void openTable(const String &filename, const TableLock& lockOptions);
+  void openTable(const String &filename, const TableLock& lockOptions) const;
   void setTableType();
 
   Table table_p;
