@@ -132,7 +132,7 @@ touch $ldir/${tp}.error
 #
 # Do the real change or do a dry run of it
 #
-if (! $upswQ) then
+if (! $upswQE) then
   set a = (`wc $ldir/${tp}.found`)
   echo "$a[1] files will be changed and checked in/out"
   unset a
@@ -179,7 +179,7 @@ end
 
 cd $ldir
 
-if (! $upswQ) then
+if (! $upswQE) then
   set a = ( `wc $ldir/${tp}.done` )
   echo $a[1] files in ${tp}.done
   unset a
