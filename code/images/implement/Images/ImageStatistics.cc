@@ -63,8 +63,7 @@ ImageStatistics<T>::ImageStatistics (const ImageInterface<T>& image,
 // Constructor
 //
 : LatticeStatistics<T>(image, os, showProgress, forceDisk),
-  pInImage_p(0),
-  lelExpr_p("")
+  pInImage_p(0)
 {
    if (!setNewImage(image)) {
       os_p << error_p << LogIO::EXCEPTION;
@@ -80,8 +79,7 @@ ImageStatistics<T>::ImageStatistics (const ImageInterface<T>& image,
 // Constructor
 //
 : LatticeStatistics<T>(image, showProgress, forceDisk),
-  pInImage_p(0),
-  lelExpr_p("")
+  pInImage_p(0)
 {
    if (!setNewImage(image)) {
       os_p << error_p << LogIO::EXCEPTION;
@@ -113,7 +111,6 @@ ImageStatistics<T> &ImageStatistics<T>::operator=(const ImageStatistics<T> &othe
 //
       if (pInImage_p!=0) delete pInImage_p;
       pInImage_p = other.pInImage_p->cloneII();
-      lelExpr_p = other.lelExpr_p;
    }
    return *this;
 }
@@ -190,7 +187,7 @@ Bool ImageStatistics<T>::getBeamArea (Double& beamArea) const
 
 template <class T>
 Bool ImageStatistics<T>::listStats (Bool hasBeam, const IPosition& dPos,
-                                    const Matrix<T>& stats)
+                                    const Matrix<AccumType>& stats)
 //
 // List the statistics for this row to the logger
 //
@@ -283,7 +280,6 @@ Bool ImageStatistics<T>::listStats (Bool hasBeam, const IPosition& dPos,
    if (doRobust_p) os_p.output() << setw(oDWidth) << "Median"; 
    os_p.output() << setw(oDWidth) << "Rms";
    os_p.output() << setw(oDWidth) << "Std dev";
-   if (doneLEL_p) os_p.output() << setw(oDWidth) << "LEL"; 
    os_p.output() << setw(oDWidth) << "Minimum";
    os_p.output() << setw(oDWidth) << "Maximum" << endl;
 
@@ -296,8 +292,8 @@ Bool ImageStatistics<T>::listStats (Bool hasBeam, const IPosition& dPos,
 //
    for (uInt j=0; j<n1; j++) pixels(j) = Double(j);
    if (!ImageUtilities::pixToWorld(sWorld, cSys,
-                              displayAxes_p(0), cursorAxes_p, 
-                              blc, trc, pixels, -1)) return False;
+                                   displayAxes_p(0), cursorAxes_p, 
+                                   blc, trc, pixels, -1)) return False;
 
 
 // Write statistics to logger.  We write the pixel location
@@ -330,13 +326,11 @@ Bool ImageStatistics<T>::listStats (Bool hasBeam, const IPosition& dPos,
          os4 << stats.column(SIGMA)(j);
          os5 << stats.column(MIN)(j);
          os6 << stats.column(MAX)(j);
-         os9 << stats.column(LEL)(j);
 //
          os_p.output() << setw(oDWidth)   << String(os0);
          if (hasBeam) os_p.output() << setw(oDWidth)   << String(os1);
          os_p.output() << setw(oDWidth)   << String(os2);
          if (doRobust_p) os_p.output() << setw(oDWidth)   << String(os8);
-         if (doneLEL_p) os_p.output() << setw(oDWidth)   << String(os9);
          os_p.output() << setw(oDWidth)   << String(os3);
          os_p.output() << setw(oDWidth)   << String(os4);
          os_p.output() << setw(oDWidth)   << String(os5);
@@ -416,20 +410,3 @@ void ImageStatistics<T>::listMinMax(ostringstream& osMin,
       os_p.post();
    }
 }
-
-template <class T>
-Bool ImageStatistics<T>::getLEL (Array<T>& stats, const String& expr, Bool dropDeg)
-{
-   if (expr.empty()) {
-      os_p << LogIO::WARN << "The expression string is empty" << LogIO::POST;
-      stats.resize();
-      return True;
-   } 
-//
-   LatticeExprNode node = ImageExprParse::command (expr);
-   Bool newExpr = (expr!=lelExpr_p);
-   lelExpr_p = expr;
-   return getLELNode (stats, node, dropDeg, newExpr);
-}
-
-

@@ -35,6 +35,7 @@
 #include <aips/Utilities/DataType.h>
 #include <aips/Logging/LogIO.h>
 #include <trial/Lattices/LatticeStatistics.h>
+#include <aips/Mathematics/NumericTraits.h>
 
 //# Forward Declarations
 template <class T> class ImageInterface;
@@ -131,16 +132,12 @@ public:
 // image had an invalid type or that the internal state of the class is bad.
    Bool setNewImage (const ImageInterface<T>& image);
 
-// Get LEL statistics
-   Bool getLEL (Array<T>& stats, const String& expr, Bool dropDeg=True);
-
 private:
 
 // Data
 
    LogIO os_p;
    const ImageInterface<T>* pInImage_p;
-   String lelExpr_p;
 
 // Virtual functions.  See LatticeStatistics for more information
 // about these, or see the implementation.
@@ -157,8 +154,9 @@ private:
                             Int oWidth, DataType type);
 
 // List the statistics
+   typedef typename NumericTraits<T>::PrecisionType AccumType;
    virtual Bool listStats (Bool hasBeam, const IPosition& dPos,
-                           const Matrix<T>& ord);
+                           const Matrix<AccumType>& ord);
 };
 
 
