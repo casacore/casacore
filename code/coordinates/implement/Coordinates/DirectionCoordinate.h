@@ -1,5 +1,5 @@
 //# DirectionCoordinate.h: Interconvert pixel positions and directions (e.g. RA/DEC)
-//# Copyright (C) 1997,1998,1999,2000,2001,2002,2003
+//# Copyright (C) 1997,1998,1999,2000,2001,2002,2003,2004
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -479,20 +479,6 @@ public:
     // angle. The units are initially "rad" (radians).
     virtual Bool setWorldAxisUnits(const Vector<String> &units);
 
-
-    // Set and recover the preferred world axis units.  These can be used to specify
-    // a favoured unit for conversions for example.  The given units must be empty
-    // or dimensionally consistent with the native world axis units, else
-    // False is returned and <src>errorMessage()</src>
-    // has an error message for you.  The preferred units are empty strings
-    // until you explicitly set them.  The only functions in the Coordinates classes
-    // which uses the preferred unit are <src>format, save, and restore</src>.
-    // <group>
-    virtual Bool setPreferredWorldAxisUnits (const Vector<String>& units);
-    virtual Vector<String> preferredWorldAxisUnits() const;
-    // </group>
-
-
     // Return canonical axis names for the given MDirection type,
     // giving FITS names if desired.
     // BEG think this should be in the MDirection class, but WNB
@@ -517,7 +503,7 @@ public:
     // common format interface.  See <linkto class=Coordinate>Coordinate</linkto>
     // for basics.
     //
-    //Formatting types that are allowed are
+    // Formatting types that are allowed are
     // Coordinate::SCIENTIFIC, Coordinate::FIXED, Coordinate::TIME
     // If you ask for format type Coordinate::DEFAULT then the
     // selected format depends upon what the value of the enum 
@@ -530,6 +516,8 @@ public:
     // We have to know this because we may format Longitude and Latitude differently.  
     // For Coordinate::TIME style formatting, precision
     // refers to the places after the decimal in the SS field.
+    //
+    // If you leave <src>units</src> empty, then it makes up a nice unit for you.
     //<group>
     virtual void getPrecision (Int& precision, 
                                Coordinate::formatType& format,
@@ -602,9 +590,6 @@ private:
 
     // Current units.
     Vector<String> units_p;
-
-    // Preferred units
-    Vector<String> prefUnits_p;
 
     // toMix ranges
     Vector<Double> worldMin_p, worldMax_p;

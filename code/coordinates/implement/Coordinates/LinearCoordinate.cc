@@ -1,5 +1,5 @@
 //# LinearCoordinate.cc: this defines LinearCoordinate
-//# Copyright (C) 1997,1998,1999,2000,2001,2003
+//# Copyright (C) 1997,1998,1999,2000,2001,2003,2004
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -45,7 +45,6 @@ LinearCoordinate::LinearCoordinate(uInt naxis)
   transform_p(naxis), 
   names_p(naxis), 
   units_p(naxis), 
-  prefUnits_p(naxis), 
   crval_p(naxis)
 {
     crval_p.set(0.0);
@@ -62,7 +61,6 @@ LinearCoordinate::LinearCoordinate(const Vector<String>& names,
   transform_p(refPix, inc, pc), 
   names_p(names.nelements()),
   units_p(names.nelements()), 
-  prefUnits_p(names.nelements()), 
   crval_p(names.nelements())
 {
     uInt naxis = names.nelements();
@@ -90,7 +88,6 @@ LinearCoordinate::LinearCoordinate(const Vector<String>& names,
 : Coordinate(),
   names_p(names.nelements()),
   units_p(names.nelements()), 
-  prefUnits_p(names.nelements()), 
   crval_p(names.nelements())
 {
 // Check dimensions
@@ -130,7 +127,6 @@ LinearCoordinate::LinearCoordinate(const LinearCoordinate &other)
   transform_p(other.transform_p), 
   names_p(other.names_p.copy()),
   units_p(other.units_p.copy()), 
-  prefUnits_p(other.prefUnits_p.copy()), 
   worldMin_p(other.worldMin_p.copy()),
   worldMax_p(other.worldMax_p.copy()),
   crval_p(other.crval_p)
@@ -148,8 +144,6 @@ LinearCoordinate &LinearCoordinate::operator=(const LinearCoordinate &other)
         names_p = other.names_p;
 	units_p.resize(naxis); 
         units_p = other.units_p;
-	prefUnits_p.resize(naxis); 
-        prefUnits_p = other.prefUnits_p;
 	crval_p = other.crval_p;
 	transform_p = other.transform_p;
         worldMin_p.resize(naxis);
@@ -295,19 +289,6 @@ Bool LinearCoordinate::overwriteWorldAxisUnits(const Vector<String> &units)
       set_error ("units vector has the wrong size");
    }
    return ok;
-}
-
-Bool LinearCoordinate::setPreferredWorldAxisUnits (const Vector<String>& units)
-{
-    if (!Coordinate::setPreferredWorldAxisUnits(units)) return False;
-//
-    prefUnits_p = units;
-    return True;
-}
-
-Vector<String> LinearCoordinate::preferredWorldAxisUnits () const
-{
-   return prefUnits_p;
 }
 
 Bool LinearCoordinate::setReferencePixel(const Vector<Double> &refPix)
@@ -510,8 +491,7 @@ Bool LinearCoordinate::save(RecordInterface &container,
 	subrec.define("pc", linearTransform());
 	subrec.define("axes", worldAxisNames());
 	subrec.define("units", worldAxisUnits());
-	subrec.define("preferredunits", preferredWorldAxisUnits());
-
+//
 	container.defineRecord(fieldName, subrec);
     }
     return ok;
@@ -567,12 +547,6 @@ LinearCoordinate *LinearCoordinate::restore(const RecordInterface &container,
 	new LinearCoordinate(axes, units, crval, cdelt, pc, crpix);
     AlwaysAssert(retval, AipsError);
 //
-    if (subrec.isDefined("preferredunits")) {                // optional
-       Vector<String> prefUnits;
-       subrec.get("preferredunits", prefUnits);
-       retval->setPreferredWorldAxisUnits(prefUnits);
-    }
-//							  
     return retval;
 }
 

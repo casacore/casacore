@@ -1,5 +1,5 @@
 //# LinearCoordinate.h: Assume a general linear relation between pixel and world axes.
-//# Copyright (C) 1997,1998,1999,2000,2001,2002,2003
+//# Copyright (C) 1997,1998,1999,2000,2001,2002,2003,2004
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -202,18 +202,6 @@ public:
     // checks or adjustment.
     Bool overwriteWorldAxisUnits(const Vector<String> &units);
 
-    // Set and recover the preferred world axis units.  These can be used to specify
-    // a favoured unit for conversions for example.  The given units must be empty
-    // or dimensionally consistent with the native world axis units, else
-    // False is returned and <src>errorMessage()</src>
-    // has an error message for you.  The preferred units are empty strings
-    // until you explicitly set them.  The only functions in the Coordinates classes
-    // which uses the preferred unit are <src>format, save, and restore</src>.
-    // <group>
-    virtual Bool setPreferredWorldAxisUnits (const Vector<String>& units);
-    virtual Vector<String> preferredWorldAxisUnits() const;
-    // </group>
-
     // Set the world min and max ranges, for use in function <src>toMix</src>, 
     // for  a lattice of the given shape (for this coordinate).   
     // The implementation here gives world coordinates dangling 25% off the
@@ -274,7 +262,6 @@ private:
     // <group>
     Vector<String> names_p;
     Vector<String> units_p;
-    Vector<String> prefUnits_p;
     Vector<Double> worldMin_p, worldMax_p;
     // </group>
 

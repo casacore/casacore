@@ -1,5 +1,5 @@
-//# Coordinate.cc: this defines the Coordinate class
-//# Copyright (C) 1997,1998,1999,2000,2001,2002,2003
+//#Coordinate.cc: this defines the Coordinate class
+//# Copyright (C) 1997,1998,1999,2000,2001,2002,2003,2004
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -358,19 +358,11 @@ String Coordinate::format(String& units,
       }
    } 
 
-
-// If units are empty used preferred unit.
+// If units are empty, use native unit.
 // Convert to specified unit if possible
 
    String nativeUnit = worldAxisUnits()(worldAxis);
-   if (units.empty()) {
-      String prefUnit = preferredWorldAxisUnits()(worldAxis);
-      if (prefUnit.empty()) {
-         units = nativeUnit;
-      } else {
-         units = prefUnit;
-      }
-   }
+   if (units.empty()) units = nativeUnit;
 
 // Now check validity of unit
 
@@ -830,34 +822,6 @@ void Coordinate::setDefaultWorldMixRanges (Vector<Double>& worldMin,
    worldMax.resize(n);
    worldMin = -1.0e99;
    worldMax =  1.0e99;
-}
-
-Bool Coordinate::setPreferredWorldAxisUnits (const Vector<String>& prefUnits)
-//
-// The derived class must set the private data
-//
-{
-    if (prefUnits.nelements() != nWorldAxes()) {
-	set_error("Wrong number of elements in preferred units vector");
-	return False;
-    }
-
-// Check units consistency.  New preferred units must be empty
-// or dimensionally consistent with actual units
-
-    Vector<String> currUnits = worldAxisUnits();
-    const uInt n = nWorldAxes();
-    for (uInt i=0; i<n; i++) {
-       if (!prefUnits(i).empty()) {
-          Unit u0(prefUnits(i));
-          Unit u1(currUnits(i));
-          if (u0!=u1) {
-             set_error("Preferred units are not dimensionally consistent with actual units");
-             return False;
-          }
-       }
-    }
-    return True;
 }
 
 

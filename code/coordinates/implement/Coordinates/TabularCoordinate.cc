@@ -1,5 +1,5 @@
 //# TabularCoordinate.cc: Table lookup 1-D coordinate, with interpolation
-//# Copyright (C) 1997,1998,1999,2000,2001,2002,2003
+//# Copyright (C) 1997,1998,1999,2000,2001,2002,2003,2004
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -53,7 +53,6 @@ TabularCoordinate::TabularCoordinate()
   crpix_p(0), 
   matrix_p(1.0), 
   unit_p(""),
-  prefUnit_p(""),
   name_p("Tabular"), 
   channel_corrector_p(0), 
   channel_corrector_rev_p(0)
@@ -69,7 +68,6 @@ TabularCoordinate::TabularCoordinate(Double refval, Double inc, Double refpix,
   crpix_p(refpix), 
   matrix_p(1.0), 
   unit_p(unit),
-  prefUnit_p(""),
   name_p(axisName), 
   channel_corrector_p(0), 
   channel_corrector_rev_p(0)
@@ -83,7 +81,6 @@ TabularCoordinate::TabularCoordinate(const Quantum<Double>& refval,
 : Coordinate(),
   crpix_p(refpix), 
   matrix_p(1.0), 
-  prefUnit_p(""),
   name_p(axisName), 
   channel_corrector_p(0), 
   channel_corrector_rev_p(0)
@@ -114,7 +111,6 @@ TabularCoordinate::TabularCoordinate(const Vector<Double> &pixelValues,
   crpix_p(0.0), 
   matrix_p(0.0), 
   unit_p(unit), 
-  prefUnit_p(""),
   name_p(axisName), 
   channel_corrector_p(0), 
   channel_corrector_rev_p(0)
@@ -131,7 +127,6 @@ TabularCoordinate::TabularCoordinate(const Vector<Double>& pixelValues,
   cdelt_p(0.0), 
   crpix_p(0.0), 
   matrix_p(0.0), 
-  prefUnit_p(""),
   name_p(axisName), 
   channel_corrector_p(0), 
   channel_corrector_rev_p(0)
@@ -147,7 +142,6 @@ void TabularCoordinate::clear_self()
 {
     crval_p = cdelt_p = crpix_p = matrix_p = -999.0;
     unit_p = "UNSET";
-    prefUnit_p = "UNSET";
     name_p = "UNSET";
     if (channel_corrector_p) {
 	delete channel_corrector_p;
@@ -168,7 +162,6 @@ void TabularCoordinate::copy(const TabularCoordinate &other)
     cdelt_p = other.cdelt_p;
     crpix_p = other.crpix_p;
     unit_p = other.unit_p;    
-    prefUnit_p = other.prefUnit_p;
     name_p = other.name_p;
     matrix_p = other.matrix_p;
     if (other.channel_corrector_p != 0) {
@@ -189,7 +182,6 @@ TabularCoordinate::TabularCoordinate(const TabularCoordinate &other)
   crpix_p(0.0), 
   matrix_p(0.0), 
   unit_p("UNSET"),
-  prefUnit_p("UNSET"),
   name_p("UNSET"), 
   channel_corrector_p(0), 
   channel_corrector_rev_p(0)
@@ -340,13 +332,6 @@ Vector<String> TabularCoordinate::worldAxisUnits() const
     return tmp;
 }
 
-Vector<String> TabularCoordinate::preferredWorldAxisUnits() const
-{
-    Vector<String> tmp(1);
-    tmp(0) = prefUnit_p;
-    return tmp;
-}
-
 Vector<Double> TabularCoordinate::referencePixel() const
 {
     Vector<Double> tmp(1);
@@ -414,15 +399,6 @@ Bool TabularCoordinate::overwriteWorldAxisUnits(const Vector<String> &units)
       set_error ("units vector must be of length 1");
    }
    return ok;
-}
-
-
-Bool TabularCoordinate::setPreferredWorldAxisUnits(const Vector<String> &units)
-{
-    if (!Coordinate::setPreferredWorldAxisUnits(units)) return False;
-//
-    prefUnit_p = units(0);
-    return True;
 }
 
 
@@ -606,7 +582,6 @@ Bool TabularCoordinate::save(RecordInterface &container,
 	subrec.define("pc", linearTransform());
 	subrec.define("axes", worldAxisNames());
 	subrec.define("units", worldAxisUnits());
-	subrec.define("preferredunits", preferredWorldAxisUnits());
 	if (channel_corrector_p) {
 	    subrec.define("pixelvalues", pixelValues());
 	    subrec.define("worldvalues", worldValues());
@@ -681,12 +656,6 @@ TabularCoordinate *TabularCoordinate::restore(const RecordInterface &container,
 	retval = new TabularCoordinate(crval(0), cdelt(0), crpix(0), units(0),
 				       axes(0));
     }
-//
-    if (subrec.isDefined("preferredunits")) {                // optional
-       Vector<String> prefUnits;
-       subrec.get("preferredunits", prefUnits);
-       retval->setPreferredWorldAxisUnits(prefUnits);
-    }           
 //
     return retval;
 }

@@ -1,5 +1,5 @@
 //# Coordinate.h: Interface for converting between world and pixel coordinates
-//# Copyright (C) 1997,1999,2000,2001,2002,2003
+//# Copyright (C) 1997,1999,2000,2001,2002,2003,2004
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -360,18 +360,6 @@ public:
                       Double tol=1.0e-6) const = 0;
     // </group>
 
-    // Set and recover the preferred world axis units.  These can be used to specify
-    // a favoured unit for conversions for example.  The given units must be empty
-    // or dimensionally consistent with the native world axis units, else
-    // False is returned and <src>errorMessage()</src>
-    // has an error message for you.  The preferred units are empty strings
-    // until you explicitly set them.  The only functions in the Coordinates classes 
-    // which uses the preferred unit are <src>format, save, and restore</src>.
-    // <group>
-    virtual Bool setPreferredWorldAxisUnits (const Vector<String>& units);
-    virtual Vector<String> preferredWorldAxisUnits() const = 0;
-    // </group>
-
 
     // Provide a common interface to getting formatted representations of
     // coordinate values.    Different derived Coordinate types are formatted
@@ -412,10 +400,8 @@ public:
     //
     // <src>units</src> specifies the units in which the input world value
     // will be formatted.  
-    // If <src>units</src> is empty, the units given by the
-    // units specified by <src>setPreferredWorldAxisUnits</src> is used.
-    // If those preferred units are empty, the native units of
-    // the Coordinate are used.
+    // If <src>units</src> is empty, the native unit for the given axis 
+    // is used.
     //
     // Some derived classes will format in units different from the 
     // native unit of the Coordinate. The units of
@@ -536,5 +522,3 @@ inline const String& Coordinate::errorMessage() const
 }
 
 #endif
-
-
