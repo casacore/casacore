@@ -4056,7 +4056,11 @@ void CoordinateSystem::listHeader (LogIO& os,  Coordinate* pc, uInt& widthAxis, 
                } else {
                   temp = "?";
                }
-               sName += temp;
+               if (i>0) {
+                  sName += String(" ") + temp;
+               } else {
+                  sName += temp;
+               }
             }
          } else {
             pixel(0) =pc->referencePixel()(axisInCoordinate);
