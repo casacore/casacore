@@ -1009,31 +1009,31 @@ test_all : test_global show_local
 
 # Print/test all makedefs variables.
 show_global :
-	-@ $(MAKE) -f $(AIPSARCH)/testdefs DO_TEST=  global
+	-@ $(MAKE) -f $(CODEINSD)/testdefs DO_TEST=  global
 
 test_global :
-	-@ $(MAKE) -f $(AIPSARCH)/testdefs DO_TEST=1 global
+	-@ $(MAKE) -f $(CODEINSD)/testdefs DO_TEST=1 global
 
 # Print/test makedefs variables used in system rebuilds.
 show_sys :
-	-@ $(MAKE) -f $(AIPSARCH)/testdefs DO_TEST=  system
+	-@ $(MAKE) -f $(CODEINSD)/testdefs DO_TEST=  system
 
 test_sys :
-	-@ $(MAKE) -f $(AIPSARCH)/testdefs DO_TEST=1 system
+	-@ $(MAKE) -f $(CODEINSD)/testdefs DO_TEST=1 system
 
 # Print/test makedefs variables of particular interest to programmers.
 show_prg :
-	-@ $(MAKE) -f $(AIPSARCH)/testdefs DO_TEST=  programmer
+	-@ $(MAKE) -f $(CODEINSD)/testdefs DO_TEST=  programmer
 
 test_prg :
-	-@ $(MAKE) -f $(AIPSARCH)/testdefs DO_TEST=1 programmer
+	-@ $(MAKE) -f $(CODEINSD)/testdefs DO_TEST=1 programmer
 
 # Print/test auxiliary makedefs variables used in system rebuilds.
 show_aux :
-	-@ $(MAKE) -f $(AIPSARCH)/testdefs DO_TEST=  auxiliary
+	-@ $(MAKE) -f $(CODEINSD)/testdefs DO_TEST=  auxiliary
 
 test_aux :
-	-@ $(MAKE) -f $(AIPSARCH)/testdefs DO_TEST=1 auxiliary
+	-@ $(MAKE) -f $(CODEINSD)/testdefs DO_TEST=1 auxiliary
 
 # Print all variables defined in the including makefile.
 show_local :

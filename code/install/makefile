@@ -45,7 +45,7 @@ include $(AIPSARCH)/makedefs
 DOTFILES := cshrc exrc login profile prompt
 DOTEXECS := rshexec
 AIPSINIT := aipsinit.csh aipsinit.es aipsinit.rc aipsinit.sh
-ARCHSCRP := aipsrc makedefs testdefs
+ARCHSCRP := aipsrc makedefs
 SCRIPTS  := adate affirm amkdir assay avers depend doover mkinst updatelib
 
 AIPSEXES := $(basename $(filter %.c,$(AIPSSRCS)))
@@ -113,7 +113,7 @@ $(addprefix $(AIPSROOT)/.,$(DOTEXECS)) : $(AIPSROOT)/.% : $(CODEDIR)/%
 # Root level include-scripts and databases.
 $(AIPSINIT) : % : $(AIPSROOT)/% ;
 
-# Default aipsrc and makedefs and also testdefs.
+# Default aipsrc and makedefs files.
 $(ARCHSCRP) : % : $(AIPSARCH)/% ;
 
 # Scripts.
@@ -169,7 +169,7 @@ help ::
 	-@ echo " (DOTFILES): install root level dot files."
 	-@ echo " (DOTEXECS): install root level executables."
 	-@ echo " (AIPSINIT): install root level aipsinit scripts."
-	-@ echo " (ARCHSCRP): install aipsrc, makedefs, and testdefs."
+	-@ echo " (ARCHSCRP): install aipsrc and makedefs."
 	-@ echo "  (SCRIPTS): install general purpose scripts."
 	-@ echo "      bin/%: compile and install an (AIPSEXES) executable."
 	-@ echo ""
