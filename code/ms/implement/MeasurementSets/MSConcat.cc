@@ -207,6 +207,9 @@ void MSConcat::concatenate(const MeasurementSet& otherMS)
   ArrayColumn<Bool>& thisFlag = flag();
   const ROArrayColumn<Bool>& otherFlagCat = otherMainCols.flagCategory();
   ArrayColumn<Bool>& thisFlagCat = flagCategory();
+  Bool copyFlagCat = !(thisFlagCat.isNull() || otherFlagCat.isNull());
+  copyFlagCat = copyFlagCat && thisFlagCat.isDefined(0) 
+    && otherFlagCat.isDefined(0);
   const ROScalarColumn<Bool>& otherFlagRow = otherMainCols.flagRow();
   ScalarColumn<Bool>& thisFlagRow = flagRow();
   // This needs to be fixed when I relaxe the restriction that the input MS
@@ -216,6 +219,9 @@ void MSConcat::concatenate(const MeasurementSet& otherMS)
   const ROArrayColumn<Float>& otherWeightSp = otherMainCols.weightSpectrum();
   ArrayColumn<Float>& thisWeightSp = weightSpectrum();
   Bool copyWtSp = !(thisWeightSp.isNull() || otherWeightSp.isNull()); 
+  copyWtSp = copyWtSp && thisWeightSp.isDefined(0) 
+    && otherWeightSp.isDefined(0);
+
   for (uInt r = 0; r < newRows; r++, curRow++) {
     thisTime.put(curRow, otherTime, r);
     thisAnt1.put(curRow, newAntIndices[otherAnt1(r)]);
@@ -249,7 +255,7 @@ void MSConcat::concatenate(const MeasurementSet& otherMS)
     thisSigma.put(curRow, otherSigma, r);
     thisWeight.put(curRow, otherWeight, r);
     thisFlag.put(curRow, otherFlag, r);
-    thisFlagCat.put(curRow, otherFlagCat, r);
+    if (copyFlagCat) thisFlagCat.put(curRow, otherFlagCat, r);
     thisFlagRow.put(curRow, otherFlagRow, r);
     if (copyWtSp) thisWeightSp.put(curRow, otherWeightSp, r);
   } 
