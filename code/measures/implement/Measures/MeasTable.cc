@@ -1,5 +1,5 @@
 //# MeasTable.cc: MeasTable provides Measure computing database data
-//# Copyright (C) 1995,1996,1997,1998,1999
+//# Copyright (C) 1995,1996,1997,1998,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -55,6 +55,9 @@
 Bool MeasTable::obsNeedInit = True;
 Vector<String> MeasTable::obsNams(0);
 Vector<MPosition> MeasTable::obsPos(0);
+Bool MeasTable::lineNeedInit = True;
+Vector<String> MeasTable::lineNams(0);
+Vector<MFrequency> MeasTable::linePos(0);
 Bool MeasTable::srcNeedInit = True;
 Vector<String> MeasTable::srcNams(0);
 Vector<MDirection> MeasTable::srcPos(0);
@@ -848,6 +851,37 @@ const Bool MeasTable::Observatory(MPosition &obs, const String &nam) {
   uInt i=MUString::minimaxNC(nam, MeasTable::obsNams);
   if (i < MeasTable::obsNams.nelements()) {
     obs = MeasTable::obsPos(i);
+    return True;
+  };
+  return False;
+}
+
+// Source data
+void MeasTable::initLines() {
+  if (lineNeedInit) {
+    const uInt N = 2;
+    lineNeedInit = False;
+    lineNams.resize(N);
+    linePos.resize(N);
+    MFrequency::Ref mr(MFrequency::REST);
+    MFrequency tmp;
+    lineNams(0)  = "HI"; 
+    linePos (0)  = MFrequency(QC::HI, mr);
+    lineNams(1)  = "OH1612"; 
+    linePos (1)  = MFrequency(MVFrequency(Quantity(1612.231000, "MHz")), mr);
+  };
+}
+
+const Vector<String> &MeasTable::Lines() {
+  MeasTable::initLines();
+  return MeasTable::lineNams;
+}
+
+const Bool MeasTable::Line(MFrequency &obs, const String &nam) {
+  MeasTable::initLines();
+  uInt i=MUString::minimaxNC(nam, MeasTable::lineNams);
+  if (i < MeasTable::lineNams.nelements()) {
+    obs = MeasTable::linePos(i);
     return True;
   };
   return False;

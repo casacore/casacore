@@ -1,5 +1,5 @@
 //# MeasTable.h: MeasTable provides Measure computing database data
-//# Copyright (C) 1995,1996,1997,1998,1999
+//# Copyright (C) 1995,1996,1997,1998,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -34,6 +34,7 @@
 #include <aips/Measures/MeasData.h>
 #include <aips/Measures/MPosition.h>
 #include <aips/Measures/MDirection.h>
+#include <aips/Measures/MFrequency.h>
 #include <aips/Functionals/Polynomial.h>
 
 //# Forward Declarations
@@ -196,7 +197,7 @@ public:
   static void initObservatories();
   // Get list of all observatories
   static const Vector<String> &Observatories();
-  // get position of observatory nam (False if not present)
+  // Get position of observatory nam (False if not present)
   static const Bool Observatory(MPosition &obs, const String &nam);
   // </group>
 
@@ -210,6 +211,16 @@ public:
   static const Bool Source(MDirection &obs, const String &nam);
   // </group>
   
+  // Rest frequencies
+  // <group>
+  // Initialise list from internal Table for now
+  static void initLines();
+  // Get list of all frequencies
+  static const Vector<String> &Lines();
+  // Get frequency of line name (False if not present)
+  static const Bool Line(MFrequency &obs, const String &nam);
+  // </group>
+
   // Earth magnetic field (IGRF) data
   // <group>
   // Get the harmonic terms for specified time (mjd)
@@ -378,6 +389,12 @@ private:
   static Bool obsNeedInit;
   static Vector<String> obsNams;
   static Vector<MPosition> obsPos;
+  // </group>
+  // Spectral line table data
+  // <group>
+  static Bool lineNeedInit;
+  static Vector<String> lineNams;
+  static Vector<MFrequency> linePos;
   // </group>
   // Sources table data
   // <group>
