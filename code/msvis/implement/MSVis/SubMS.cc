@@ -1,247 +1,287 @@
-	//# SubMS.cc 
-	//# Copyright (C) 1996,1997,1998,1999,2000,2001,2002,2003
-	//# Associated Universities, Inc. Washington DC, USA.
-	//#
-	//# This program is free software; you can redistribute it and/or modify
-	//# it under the terms of the GNU General Public License as published by
-	//# the Free Software Foundation; either version 2 of the License, or
-	//# (at your option) any later version.
-	//#
-	//# This program is distributed in the hope that it will be useful,
-	//# but WITHOUT ANY WARRANTY; without even the implied warranty of
-	//# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-	//# GNU General Public License for more details.
-	//# 
-	//# You should have received a copy of the GNU General Public License
-	//# along with this program; if not, write to the Free Software
-	//# Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
-	//#
-	//# Correspondence concerning AIPS++ should be addressed as follows:
-	//#        Internet email: aips2-request@nrao.edu.
-	//#        Postal address: AIPS++ Project Office
-	//#                        National Radio Astronomy Observatory
-	//#                        520 Edgemont Road
-	//#                        Charlottesville, VA 22903-2475 USA
-	//#
-	//# $Id$
-	#include <msvis/MSVis/SubMS.h>
-	#include <ms/MeasurementSets/MSSelection.h>
-	#include <tables/Tables/ExprNode.h>
-	#include <tables/Tables/RefRows.h>
-	#include <ms/MeasurementSets/MSColumns.h>
-	#include <casa/Arrays/Matrix.h>
-	#include <casa/Arrays/Cube.h>
-	#include <casa/Arrays/ArrayMath.h>
-	#include <casa/Arrays/ArrayUtil.h>
-	#include <casa/Logging/LogIO.h>
-	#include <casa/OS/File.h>
-	#include <casa/OS/HostInfo.h>
-	#include <casa/Containers/Record.h>
-	#include <casa/BasicSL/String.h>
-	#include <casa/Utilities/Assert.h>
-	#include <msvis/MSVis/VisSet.h>
-	#include <msvis/MSVis/VisBuffer.h>
-	#include <msvis/MSVis/VisibilityIterator.h>
+//# SubMS.cc 
+//# Copyright (C) 1996,1997,1998,1999,2000,2001,2002,2003
+//# Associated Universities, Inc. Washington DC, USA.
+//#
+//# This program is free software; you can redistribute it and/or modify
+//# it under the terms of the GNU General Public License as published by
+//# the Free Software Foundation; either version 2 of the License, or
+//# (at your option) any later version.
+//#
+//# This program is distributed in the hope that it will be useful,
+//# but WITHOUT ANY WARRANTY; without even the implied warranty of
+//# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+//# GNU General Public License for more details.
+//# 
+//# You should have received a copy of the GNU General Public License
+//# along with this program; if not, write to the Free Software
+//# Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+//#
+//# Correspondence concerning AIPS++ should be addressed as follows:
+//#        Internet email: aips2-request@nrao.edu.
+//#        Postal address: AIPS++ Project Office
+//#                        National Radio Astronomy Observatory
+//#                        520 Edgemont Road
+//#                        Charlottesville, VA 22903-2475 USA
+//#
+//# $Id$
+#include <msvis/MSVis/SubMS.h>
+#include <ms/MeasurementSets/MSSelection.h>
+#include <tables/Tables/ExprNode.h>
+#include <tables/Tables/RefRows.h>
+#include <ms/MeasurementSets/MSColumns.h>
+#include <casa/Arrays/Matrix.h>
+#include <casa/Arrays/Cube.h>
+#include <casa/Arrays/ArrayMath.h>
+#include <casa/Arrays/ArrayUtil.h>
+#include <casa/Logging/LogIO.h>
+#include <casa/OS/File.h>
+#include <casa/OS/HostInfo.h>
+#include <casa/Containers/Record.h>
+#include <casa/BasicSL/String.h>
+#include <casa/Utilities/Assert.h>
+#include <msvis/MSVis/VisSet.h>
+#include <msvis/MSVis/VisBuffer.h>
+#include <msvis/MSVis/VisibilityIterator.h>
 
-	#include <tables/Tables/IncrementalStMan.h>
-	#include <tables/Tables/ScalarColumn.h>
-	#include <tables/Tables/ScaColDesc.h>
-	#include <tables/Tables/SetupNewTab.h>
-	#include <tables/Tables/StandardStMan.h>
-	#include <tables/Tables/Table.h>
-	#include <tables/Tables/TableDesc.h>
-	#include <tables/Tables/TableInfo.h>
-	#include <tables/Tables/TableLock.h>
-	#include <tables/Tables/TableRecord.h>
-	#include <tables/Tables/TableCopy.h>
-	#include <tables/Tables/TiledColumnStMan.h>
-	#include <tables/Tables/TiledShapeStMan.h>
-	#include <tables/Tables/TiledDataStMan.h>
-	#include <tables/Tables/TiledStManAccessor.h>
-	#include <ms/MeasurementSets/MSTileLayout.h>
-
-
-
-	#include <casa/sstream.h>
-
-	namespace casa {
-
-	SubMS::SubMS(String& theMS){
-	 
-	  ms_p=MeasurementSet(theMS, Table::Update);
-	  mssel_p=ms_p;
-	  doChanAver_p=False;
-	}
-
-	SubMS::SubMS(MeasurementSet& ms){
+#include <tables/Tables/IncrementalStMan.h>
+#include <tables/Tables/ScalarColumn.h>
+#include <tables/Tables/ScaColDesc.h>
+#include <tables/Tables/SetupNewTab.h>
+#include <tables/Tables/StandardStMan.h>
+#include <tables/Tables/Table.h>
+#include <tables/Tables/TableDesc.h>
+#include <tables/Tables/TableInfo.h>
+#include <tables/Tables/TableLock.h>
+#include <tables/Tables/TableRecord.h>
+#include <tables/Tables/TableCopy.h>
+#include <tables/Tables/TiledColumnStMan.h>
+#include <tables/Tables/TiledShapeStMan.h>
+#include <tables/Tables/TiledDataStMan.h>
+#include <tables/Tables/TiledStManAccessor.h>
+#include <ms/MeasurementSets/MSTileLayout.h>
 
 
-	  ms_p=ms;
-	  mssel_p=ms_p;
-	  doChanAver_p=False;
-	}
 
-	SubMS::~SubMS(){
+#include <casa/sstream.h>
 
-	  msOut_p.flush();
+namespace casa {
+  
+  SubMS::SubMS(String& theMS){
+    
+    ms_p=MeasurementSet(theMS, Table::Update);
+    mssel_p=ms_p;
+    doChanAver_p=False;
+  }
+  
+  SubMS::SubMS(MeasurementSet& ms){
+    
+    
+    ms_p=ms;
+    mssel_p=ms_p;
+    doChanAver_p=False;
+  }
 
-	}
+  SubMS::~SubMS(){
+    
+    msOut_p.flush();
+    
+  }
 
 
-	void SubMS::selectSpw(Vector<Int> spw, Vector<Int> nchan, Vector<Int> start, 
+  void SubMS::selectSpw(Vector<Int> spw, Vector<Int> nchan, Vector<Int> start, 
 			 Vector<Int> step, Bool averchan) {
 
-
-	  spw_p.resize();
-	  spw_p=spw;
-
-	  //Check size of start, step, nchan
-
-
-	  nchan_p.resize();
-	  nchan_p=nchan;
-	  chanStart_p.resize();
-	  chanStart_p=start;
-	  chanStep_p.resize();
-	  chanStep_p=step;
-	  averageChannel_p=averchan;
-
-
-
-	}
-
-	void SubMS::selectSource(Vector<Int> fieldid){
-
-	  fieldid_p.resize();
-	  fieldid_p=fieldid;
-
-	}
-
-
-	Bool SubMS::makeSubMS(String& msname, String& colname){
-
-	  LogIO os(LogOrigin("SubMS", "makeSubMS()", WHERE));
-
-	  if(max(fieldid_p) >= ms_p.field().nrow()){
-	    os << LogIO::SEVERE 
-	       << "Field selection contains elements that do not exist in "
-	       << "this MS"
-	       << LogIO::POST;
-	    ms_p=MeasurementSet();
-	    return False;
-
-
-	  }
-	  if(max(spw_p) >= ms_p.spectralWindow().nrow()){
-	    os << LogIO::SEVERE 
-	       << "SpectralWindow selection contains elements that do not exist in "
-	       << "this MS"
-	       << LogIO::POST;
-	    ms_p=MeasurementSet();
-	    return False;
-
-
-	  }
-
-	  if(!makeSelection()){
-	    os << LogIO::SEVERE 
-	       << "Failed on selection: combination of spw and field chosen may be"
-	       << " invalid" 
-	       << LogIO::POST;
-	    ms_p=MeasurementSet();
-	    return False;
-	  }
-	  mscIn_p=new MSColumns(mssel_p);
-	  MeasurementSet* outpointer=setupMS(msname, nchan_p[0], npol_p[0],  
-					     mscIn_p->observation().telescopeName()(0));
-	  msOut_p= *outpointer;
-	  msc_p=new MSColumns(msOut_p);
-	  // fill or update
-	  if(!fillDDTables()){
-	    delete outpointer;
-	    //Detaching the selected part
-	    ms_p=MeasurementSet();
-	    return False;
-	    
-	  }
-	  fillFieldTable();
-	  copyAntenna();
-	  copyFeed();
-	  copyObservation();
-	  fillMainTable(colname);
-	  
-	  //  msOut_p.relinquishAutoLocks (True);
-	  //  msOut_p.unlock();
-	  //Detaching the selected part
-	  ms_p=MeasurementSet();
-	  delete outpointer;
-	  return True;
-
-	}
-
-
-	Bool SubMS::makeSelection(){
-
-	  LogIO os(LogOrigin("SubMS", "makeSelection()", WHERE));
-
-	  //VisSet/MSIter will check if the SORTED exists
-	  //and resort if necessary
-	  {
-	    Matrix<Int> noselection;
-	    VisSet vs(ms_p,noselection);
-	  }
-	  const MeasurementSet sorted=ms_p.keywordSet().asTable("SORTED_TABLE");
-
-	  MSSelection thisSelection;
-	  if(fieldid_p.nelements() > 0)
-	    thisSelection.setFieldExpr(MSSelection::indexExprStr(fieldid_p));
-	  if(spw_p.nelements() > 0)
-	    thisSelection.setSpwExpr(MSSelection::indexExprStr(spw_p));
-
-	  TableExprNode exprNode=thisSelection.toTableExprNode(&sorted);
-
-  {
-
-    MSDataDescription ddtable=ms_p.dataDescription();
-    ROScalarColumn<Int> polId(ddtable, 
-			      MSDataDescription::columnName(MSDataDescription::POLARIZATION_ID));
-    MSPolarization poltable= ms_p.polarization();
-    ROArrayColumn<Int> pols(poltable, 
-			    MSPolarization::columnName(MSPolarization::CORR_TYPE));
     
-    npol_p.resize(spw_p.shape()); 
-    for (uInt k=0; k < npol_p.nelements(); ++k){  
-      npol_p[k]=pols(polId(spw_p[k])).nelements();
+    spw_p.resize();
+    spw_p=spw;
+    
+    //check for default
+    if(spw_p.nelements() == 1 && spw_p[0] < 0){
+      spw_p.resize(ms_p.spectralWindow().nrow());
+      for (uInt k =0 ; k < spw_p.nelements() ; ++k){
+	spw_p[k]=k;
+      
+      }
     }
+
+    //Check size of start, step, nchan
+    
+    
+    nchan_p.resize();
+    nchan_p=nchan;
+    chanStart_p.resize();
+    chanStart_p=start;
+    chanStep_p.resize();
+    chanStep_p=step;
+    averageChannel_p=averchan;
+    // check for defaults
+    if(nchan_p[0]<0 || (nchan_p.nelements() != spw_p.nelements())){
+      nchan_p.resize(spw_p.nelements());
+      ROMSSpWindowColumns mySpwTab(ms_p.spectralWindow());
+      for (uInt k =0; k < spw_p.nelements(); ++k)
+	   nchan_p[k]=mySpwTab.numChan()(spw_p[k]);
+      chanStart_p.resize(spw_p.nelements());
+      chanStep_p.resize(spw_p.nelements());
+      if(chanStart_p.nelements() == start.nelements()){
+	chanStart_p=start;
+      }
+      else{
+	chanStart_p.set(start[0]);
+      }
+      if(chanStep_p.nelements() == step.nelements()){
+	chanStep_p=step;
+      }
+      else{
+	chanStep_p.set(step[0]);
+      }
+      
+
+    }
+
+
   }
 
-  // Now remake the selected ms
-  mssel_p = MeasurementSet(sorted(exprNode));
-  mssel_p.rename(ms_p.tableName()+"/SELECTED_TABLE", Table::Scratch);
-  if(mssel_p.nrow()==0){
-    return False;
+  void SubMS::selectSource(Vector<Int> fieldid){
+    
+    
+    fieldid_p.resize();
+    fieldid_p=fieldid;
+    if(fieldid.nelements()==1 && fieldid(0)<0){
+      fieldid_p.resize(ms_p.field().nrow());
+      for (uInt k =0 ; k < fieldid_p.nelements() ; ++k){
+	fieldid_p[k]=k;
+      
+      }
+    }
+
+  }
+  
+  
+  Bool SubMS::makeSubMS(String& msname, String& colname){
+    
+    LogIO os(LogOrigin("SubMS", "makeSubMS()", WHERE));
+    
+    if(max(fieldid_p) >= ms_p.field().nrow()){
+      os << LogIO::SEVERE 
+	 << "Field selection contains elements that do not exist in "
+	 << "this MS"
+	 << LogIO::POST;
+      ms_p=MeasurementSet();
+      return False;
+      
+      
+    }
+    if(max(spw_p) >= ms_p.spectralWindow().nrow()){
+      os << LogIO::SEVERE 
+	 << "SpectralWindow selection contains elements that do not exist in "
+	 << "this MS"
+	 << LogIO::POST;
+      ms_p=MeasurementSet();
+      return False;
+      
+      
+    }
+    
+    if(!makeSelection()){
+      os << LogIO::SEVERE 
+	 << "Failed on selection: combination of spw and field chosen may be"
+	 << " invalid" 
+	 << LogIO::POST;
+      ms_p=MeasurementSet();
+      return False;
+    }
+    mscIn_p=new MSColumns(mssel_p);
+    MeasurementSet* outpointer=setupMS(msname, nchan_p[0], npol_p[0],  
+				       mscIn_p->observation().telescopeName()(0));
+    msOut_p= *outpointer;
+    msc_p=new MSColumns(msOut_p);
+    // fill or update
+    if(!fillDDTables()){
+      delete outpointer;
+      //Detaching the selected part
+      ms_p=MeasurementSet();
+      return False;
+      
+    }
+    fillFieldTable();
+    copyAntenna();
+    copyFeed();
+    copyObservation();
+    fillMainTable(colname);
+    
+    //  msOut_p.relinquishAutoLocks (True);
+    //  msOut_p.unlock();
+    //Detaching the selected part
+    ms_p=MeasurementSet();
+    delete outpointer;
+    return True;
+    
+  }
+  
+  
+  Bool SubMS::makeSelection(){
+    
+    LogIO os(LogOrigin("SubMS", "makeSelection()", WHERE));
+    
+    //VisSet/MSIter will check if the SORTED exists
+    //and resort if necessary
+    {
+      Matrix<Int> noselection;
+      VisSet vs(ms_p,noselection);
+    }
+    const MeasurementSet sorted=ms_p.keywordSet().asTable("SORTED_TABLE");
+    
+    MSSelection thisSelection;
+    if(fieldid_p.nelements() > 0)
+      thisSelection.setFieldExpr(MSSelection::indexExprStr(fieldid_p));
+    if(spw_p.nelements() > 0)
+      thisSelection.setSpwExpr(MSSelection::indexExprStr(spw_p));
+    
+    TableExprNode exprNode=thisSelection.toTableExprNode(&sorted);
+    
+    {
+      
+      MSDataDescription ddtable=ms_p.dataDescription();
+      ROScalarColumn<Int> polId(ddtable, 
+				MSDataDescription::columnName(MSDataDescription::POLARIZATION_ID));
+      MSPolarization poltable= ms_p.polarization();
+      ROArrayColumn<Int> pols(poltable, 
+			      MSPolarization::columnName(MSPolarization::CORR_TYPE));
+      
+      npol_p.resize(spw_p.shape()); 
+      for (uInt k=0; k < npol_p.nelements(); ++k){  
+	npol_p[k]=pols(polId(spw_p[k])).nelements();
+      }
+    }
+
+    // Now remake the selected ms
+    mssel_p = MeasurementSet(sorted(exprNode));
+    mssel_p.rename(ms_p.tableName()+"/SELECTED_TABLE", Table::Scratch);
+    if(mssel_p.nrow()==0){
+      return False;
+    }
+
+    return True;
+    
   }
 
-  return True;
-
-}
-
-MeasurementSet* SubMS::setupMS(String MSFileName, Int nchan, Int nCorr, String telescop, Int obsType ){
+  MeasurementSet* SubMS::setupMS(String MSFileName, Int nchan, Int nCorr, 
+				 String telescop, Int obsType ){
 
   
 
-  // Make the MS table
-  TableDesc td = MS::requiredTableDesc();
-  
-  // Even though we know the data is going to be the same shape throughout I'll
-  // still create a column that has a variable shape as this will permit MS's
-  // with other shapes to be appended.
-  MS::addColumnToDesc(td, MS::DATA, 2);
-
-  // add this optional column because random group fits has a
-  // weight per visibility
-  MS::addColumnToDesc(td, MS::WEIGHT_SPECTRUM, 2);
-
+    // Make the MS table
+    TableDesc td = MS::requiredTableDesc();
+    
+    // Even though we know the data is going to be the same shape throughout I'll
+    // still create a column that has a variable shape as this will permit MS's
+    // with other shapes to be appended.
+    MS::addColumnToDesc(td, MS::DATA, 2);
+    
+    // add this optional column because random group fits has a
+    // weight per visibility
+    MS::addColumnToDesc(td, MS::WEIGHT_SPECTRUM, 2);
+    
     td.defineHypercolumn("TiledData",3,
  			 stringToVector(MS::columnName(MS::DATA)));
     td.defineHypercolumn("TiledFlag",3,
@@ -256,29 +296,29 @@ MeasurementSet* SubMS::setupMS(String MSFileName, Int nchan, Int nCorr, String t
 			 stringToVector(MS::columnName(MS::WEIGHT)));
     td.defineHypercolumn("TiledSigma", 2,
 			 stringToVector(MS::columnName(MS::SIGMA)));
-  
-  SetupNewTable newtab(MSFileName, td, Table::New);
-  
-  // Set the default Storage Manager to be the Incr one
-  IncrementalStMan incrStMan ("ISMData");
-  newtab.bindAll(incrStMan, True);
-
-  // Bind ANTENNA1, ANTENNA2 and DATA_DESC_ID to the standardStMan 
-  // as they may change sufficiently frequently to make the
-  // incremental storage manager inefficient for these columns.
-
-  StandardStMan aipsStMan(32768);
-  newtab.bindColumn(MS::columnName(MS::ANTENNA1), aipsStMan);
-  newtab.bindColumn(MS::columnName(MS::ANTENNA2), aipsStMan);
-  newtab.bindColumn(MS::columnName(MS::DATA_DESC_ID), aipsStMan);
-
+    
+    SetupNewTable newtab(MSFileName, td, Table::New);
+    
+    // Set the default Storage Manager to be the Incr one
+    IncrementalStMan incrStMan ("ISMData");
+    newtab.bindAll(incrStMan, True);
+    
+    // Bind ANTENNA1, ANTENNA2 and DATA_DESC_ID to the standardStMan 
+    // as they may change sufficiently frequently to make the
+    // incremental storage manager inefficient for these columns.
+    
+    StandardStMan aipsStMan(32768);
+    newtab.bindColumn(MS::columnName(MS::ANTENNA1), aipsStMan);
+    newtab.bindColumn(MS::columnName(MS::ANTENNA2), aipsStMan);
+    newtab.bindColumn(MS::columnName(MS::DATA_DESC_ID), aipsStMan);
+    
     // Choose an appropriate tileshape
     IPosition dataShape(2,nCorr,nchan);
     IPosition tileShape = MSTileLayout::tileShape(dataShape,obsType, telescop);
     //    itsLog << LogOrigin("MSFitsInput", "setupMeasurementSet");
     //itsLog << LogIO::NORMAL << "Using tile shape "<<tileShape <<" for "<<
     //  array_p<<" with obstype="<< obsType<<LogIO::POST;
- 
+    
     TiledShapeStMan tiledStMan1("TiledData",tileShape);
     TiledShapeStMan tiledStMan1f("TiledFlag",tileShape);
     TiledShapeStMan tiledStMan1fc("TiledFlagCategory",
