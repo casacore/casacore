@@ -646,10 +646,6 @@ Bool ImageStatistics<T>::getMean(Array<T>& stats)
 // accumulation image
 //
 {
-// Resize to zero
-
-   stats.resize(IPosition(1,0));
-
 
 // Check class status
  
@@ -675,11 +671,7 @@ Bool ImageStatistics<T>::getSigma(Array<T>& stats)
 // accumulation image
 //
 {
-// Resize to zero
 
-   stats.resize(IPosition(1,0));
-
- 
 // Check class status
  
    if (!goodParameterStatus_p) {
@@ -704,10 +696,6 @@ Bool ImageStatistics<T>::getRms(Array<T>& stats)
 // accumulation image
 //
 {
-// Resize to zero
-
-   stats.resize(IPosition(1,0));
-
  
 // Check class status
  
@@ -969,13 +957,13 @@ void ImageStatistics<T>::calculateStatistic (Array<T>& slice, const Int& ISTAT)
        ReadOnlyVectorIterator<Double> sumIt(sum);
 
        Array<Double> sumSq;
-       retrieveStorageStatistic (sum, Int(SUMSQ));
+       retrieveStorageStatistic (sumSq, Int(SUMSQ));
        ReadOnlyVectorIterator<Double> sumSqIt(sumSq);
 
        while (!nPtsIt.pastEnd()) {
           for (Int i=0; i<n1; i++) {
              n = Int(nPtsIt.vector()(i) + 0.1);
-             if(n > 0) {
+             if(n > 1) {
                 tmp = (sumSqIt.vector()(i) -
                    (sumIt.vector()(i)*sumIt.vector()(i)/n)) / (n-1);
                 if (tmp > 0.0) sliceIt.vector()(i) = sqrt(tmp);
