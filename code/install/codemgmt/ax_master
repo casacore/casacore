@@ -4208,3 +4208,4 @@
 14 065 src mv trial/apps/viewer/viewerstandardgui.help trialdisplay/apps/viewer/viewerstandardgui.help
 14 065 src mv trial/apps/viewer/viewertest.g trialdisplay/apps/viewer/viewertest.g
 14 065 src mv trial/apps/viewer/viewertool.help trialdisplay/apps/viewer/viewertool.help
+14 067 src mv trial/implement/Display/changelog trialdisplay/implement/Display/changelog
