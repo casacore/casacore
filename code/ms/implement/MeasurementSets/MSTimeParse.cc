@@ -56,7 +56,7 @@ const TableExprNode *MSTimeParse::selectStartTime(const MEpoch& startTime)
     if(node_p->isNull())
         *node_p = condition;
     else
-        *node_p = *node_p && condition;
+        *node_p = *node_p || condition;
 
     return node_p;
 }
@@ -70,7 +70,7 @@ const TableExprNode *MSTimeParse::selectEndTime(const MEpoch& endTime)
     if(node_p->isNull())
         *node_p = condition;
     else
-        *node_p = *node_p && condition;
+        *node_p = *node_p || condition;
 
     return node_p;
 }
@@ -87,7 +87,7 @@ const TableExprNode *MSTimeParse::selectRange(const MEpoch& startTime,
     if(node_p->isNull())
         *node_p = condition;
     else
-        *node_p = *node_p && condition;
+        *node_p = *node_p || condition;
 
     return node_p;
 }

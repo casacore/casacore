@@ -58,7 +58,7 @@ const TableExprNode* MSAntennaParse::selectAntennaIds(const Vector<Int>& antenna
     if(node_p->isNull())
         *node_p = condition;
     else
-        *node_p = *node_p && condition;
+        *node_p = *node_p || condition;
 
     return node();
 }
@@ -74,7 +74,7 @@ const TableExprNode* MSAntennaParse::selectAntennaName(const Vector<String>& ant
     if(node_p->isNull())
         *node_p = condition;
     else
-        *node_p = *node_p && condition;
+        *node_p = *node_p || condition;
 
     return node();
 }

@@ -77,7 +77,7 @@ const TableExprNode *MSUvDistParse::selectUVRange(const Double& startUV,
     if(node_p->isNull())
         *node_p = condition;
     else
-        *node_p = *node_p && condition;
+        *node_p = *node_p || condition;
 
     return node_p;
 }

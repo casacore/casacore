@@ -53,7 +53,7 @@ const TableExprNode *MSFieldParse::selectFieldIds(const Vector<Int>& fieldIds)
     if(node_p->isNull())
         *node_p = condition;
     else
-        *node_p = *node_p && condition;
+        *node_p = *node_p || condition;
 
     return node_p;
 }
@@ -68,7 +68,7 @@ const TableExprNode *MSFieldParse::selectFieldNames(const Vector<String>& fieldN
     if(node_p->isNull())
         *node_p = condition;
     else
-        *node_p = *node_p && condition;
+        *node_p = *node_p || condition;
 
     return node_p;
 }

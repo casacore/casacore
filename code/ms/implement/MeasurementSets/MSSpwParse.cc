@@ -59,7 +59,7 @@ const TableExprNode *MSSpwParse::selectSpwIds(const Vector<Int>& spwIds)
     if(node_p->isNull())
         *node_p = condition;
     else
-        *node_p = *node_p && condition;
+        *node_p = *node_p || condition;
 
     return node_p;
 }
@@ -91,7 +91,7 @@ const TableExprNode *MSSpwParse::selectSpwName(const String& name)
     if(node_p->isNull())
         *node_p = condition;
     else
-        *node_p = *node_p && condition;
+        *node_p = *node_p || condition;
 
     return node_p;
 }
