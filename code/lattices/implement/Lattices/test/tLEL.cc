@@ -1906,10 +1906,47 @@ int main (int argc, char *argv[])
     }
 
     {
-    cout << "   Function imag" << endl;     
+      cout << "   Function imag" << endl;
     LELFunctionFloat expr(LELFunctionEnums::IMAG, argb);
     FResult = imag(bCVal);
     if (!checkFloat (expr, FResult, String("LELFunctionFloat"), shape, False, suppress)) ok = False;
+    }
+
+    {
+    cout << "   Function fractile" << endl;
+    Block<LatticeExprNode> arg(2);
+    arg[0] = LatticeExprNode(bF);
+    arg[1] = LatticeExprNode(Float(0.5));
+    LELFunctionFloat expr(LELFunctionEnums::FRACTILE1D, arg);
+    bF.getSlice(FArr, IPosition(FArr.ndim(),0), 
+                FArr.shape(), IPosition(FArr.ndim(),1));
+    FResult = fractile(FArr, 0.5);
+    if (!checkFloat (expr, FResult, String("LELFunctionFloat"), shape, True, suppress)) ok = False;
+    }
+
+    {
+    cout << "   Function fractilerange 2" << endl;
+    Block<LatticeExprNode> arg(2);
+    arg[0] = LatticeExprNode(bF);
+    arg[1] = LatticeExprNode(Float(0.2));
+    LELFunctionFloat expr(LELFunctionEnums::FRACTILERANGE1D, arg);
+    bF.getSlice(FArr, IPosition(FArr.ndim(),0), 
+                FArr.shape(), IPosition(FArr.ndim(),1));
+    FResult = fractile(FArr, 0.8) - fractile(FArr, 0.2);
+    if (!checkFloat (expr, FResult, String("LELFunctionFloat"), shape, True, suppress)) ok = False;
+    }
+
+    {
+    cout << "   Function fractilerange 3" << endl;
+    Block<LatticeExprNode> arg(3);
+    arg[0] = LatticeExprNode(bF);
+    arg[1] = LatticeExprNode(Float(0.2));
+    arg[2] = LatticeExprNode(Float(0.7));
+    LELFunctionFloat expr(LELFunctionEnums::FRACTILERANGE1D, arg);
+    bF.getSlice(FArr, IPosition(FArr.ndim(),0), 
+                FArr.shape(), IPosition(FArr.ndim(),1));
+    FResult = fractile(FArr, 0.7) - fractile(FArr, 0.2);
+    if (!checkFloat (expr, FResult, String("LELFunctionFloat"), shape, True, suppress)) ok = False;
     }
   }
 //
@@ -2023,6 +2060,43 @@ int main (int argc, char *argv[])
     LELFunctionDouble expr(LELFunctionEnums::NELEM, argc);
     DResult = shape.product();
     if (!checkDouble(expr, DResult, String("LELFunctionDouble"), shape, True, suppress)) ok = False;
+    }
+
+    {
+    cout << "   Function fractile" << endl;
+    Block<LatticeExprNode> arg(2);
+    arg[0] = LatticeExprNode(bD);
+    arg[1] = LatticeExprNode(Float(0.5));
+    LELFunctionDouble expr(LELFunctionEnums::FRACTILE1D, arg);
+    bD.getSlice(DArr, IPosition(DArr.ndim(),0), 
+                DArr.shape(), IPosition(DArr.ndim(),1));
+    DResult = fractile(DArr, 0.5);
+    if (!checkDouble (expr, DResult, String("LELFunctionDouble"), shape, True, suppress)) ok = False;
+    }
+
+    {
+    cout << "   Function fractilerange 2" << endl;
+    Block<LatticeExprNode> arg(2);
+    arg[0] = LatticeExprNode(bD);
+    arg[1] = LatticeExprNode(Float(0.2));
+    LELFunctionDouble expr(LELFunctionEnums::FRACTILERANGE1D, arg);
+    bD.getSlice(DArr, IPosition(DArr.ndim(),0), 
+                DArr.shape(), IPosition(DArr.ndim(),1));
+    DResult = fractile(DArr, 0.8) - fractile(DArr, 0.2);
+    if (!checkDouble (expr, DResult, String("LELFunctionDouble"), shape, True, suppress)) ok = False;
+    }
+
+    {
+    cout << "   Function fractilerange 3" << endl;
+    Block<LatticeExprNode> arg(3);
+    arg[0] = LatticeExprNode(bD);
+    arg[1] = LatticeExprNode(Float(0.2));
+    arg[2] = LatticeExprNode(Float(0.7));
+    LELFunctionDouble expr(LELFunctionEnums::FRACTILERANGE1D, arg);
+    bD.getSlice(DArr, IPosition(DArr.ndim(),0), 
+                DArr.shape(), IPosition(DArr.ndim(),1));
+    DResult = fractile(DArr, 0.7) - fractile(DArr, 0.2);
+    if (!checkDouble (expr, DResult, String("LELFunctionDouble"), shape, True, suppress)) ok = False;
     }
   }
 //

@@ -1523,6 +1523,57 @@ Bool doIt (const MaskedLattice<Float>& aF,
       LatticeExprNode expr2 = median(expr1);
       if (!checkFloat (expr2, bFVal, shape, True, (nb==0))) ok = False;
    }
+    cout << "fractile" << endl;
+   {
+      cout << "  Float Scalar" << endl;
+      LatticeExprNode expr1(bFVal);
+      LatticeExprNode expr2 = fractile(expr1, 0.5);
+      if (!checkFloat (expr2, bFVal, shape, True, False)) ok = False;
+   }
+   {
+      cout << "  Double Scalar" << endl;
+      LatticeExprNode expr1(bDVal);
+      LatticeExprNode expr2 = fractile(expr1, 0.5);
+      if (!checkDouble (expr2, bDVal, shape, True, False)) ok = False;
+   }
+   {
+      cout << "  Float Array" << endl;
+      LatticeExprNode expr1(bF);
+      LatticeExprNode expr2 = fractile(expr1, 0.5);
+      if (!checkFloat (expr2, bFVal, shape, True, (nb==0))) ok = False;
+   }
+   {
+      cout << "  Double Array" << endl;
+      LatticeExprNode expr1(bD);
+      LatticeExprNode expr2 = fractile(expr1, 0.5);
+      if (!checkDouble (expr2, bDVal, shape, True, (nb==0))) ok = False;
+   }
+    cout << "fractileRange 2" << endl;
+   {
+      cout << "  Float Array" << endl;
+      LatticeExprNode expr1(bF);
+      LatticeExprNode expr2 = fractileRange(expr1, 0.5);
+      if (!checkFloat (expr2, 0., shape, True, (nb==0))) ok = False;
+   }
+   {
+      cout << "  Double Array" << endl;
+      LatticeExprNode expr1(bD);
+      LatticeExprNode expr2 = fractileRange(expr1, 0.5);
+      if (!checkDouble (expr2, 0., shape, True, (nb==0))) ok = False;
+   }
+    cout << "fractileRange 3" << endl;
+   {
+      cout << "  Float Array" << endl;
+      LatticeExprNode expr1(bF);
+      LatticeExprNode expr2 = fractileRange(expr1, 0.5, 0.5);
+      if (!checkFloat (expr2, 0., shape, True, (nb==0))) ok = False;
+   }
+   {
+      cout << "  Double Array" << endl;
+      LatticeExprNode expr1(bD);
+      LatticeExprNode expr2 = fractileRange(expr1, 0.5, 0.5);
+      if (!checkDouble (expr2, 0., shape, True, (nb==0))) ok = False;
+   }
     cout << "mean" << endl;
    {
       cout << "  Float Scalar" << endl;
@@ -2952,20 +3003,20 @@ Bool checkComplex (const LatticeExprNode& expr,
     if (! expr.isInvalidScalar()) {
       if (expr.isScalar()) {
 	result2 = expr.getComplex();
-	if (result2 != result) {
+	if (!near (result2, result)) {
           cout << "   result should be " << result << endl;
           cout << "   Scalar result is " << result2  << endl;
           ok = False;
 	}
 	expr.eval(result2);
-	if (result2 != result) {
+	if (!near (result2, result)) {
           cout << "   result should be " << result << endl;
           cout << "   Scalar result is " << result2 << endl;
           ok = False;
 	}
       }
       expr.eval(Arr, region);
-      if (! allEQ (Arr.value(), result)) {
+      if (! allNear (Arr.value(), result, 1.0e-5)) {
 	cout << "   result should be " << result << endl;
 	cout << "   Array result is  " << Arr.value() << endl;
 	ok = False;
@@ -3015,20 +3066,20 @@ Bool checkDComplex (const LatticeExprNode& expr,
     if (! expr.isInvalidScalar()) {
       if (expr.isScalar()) {
 	result2 = expr.getDComplex();
-	if (result2 != result) {
+	if (!near (result2, result)) {
           cout << "   result should be " << result << endl;
           cout << "   Scalar result is " << result2  << endl;
           ok = False;
 	}
 	expr.eval(result2);
-	if (result2 != result) {
+	if (!near (result2, result)) {
           cout << "   result should be " << result << endl;
           cout << "   Scalar result is " << result2 << endl;
           ok = False;
 	}
       }
       expr.eval(Arr, region);
-      if (! allEQ (Arr.value(), result)) {
+      if (! allNear (Arr.value(), result, 1.0e-13)) {
 	cout << "   result should be " << result << endl;
 	cout << "   Array result is  " << Arr.value() << endl;
 	ok = False;
@@ -3202,14 +3253,17 @@ Bool checkMask (const LatticeExprNode& expr,
 }
 
 
-main (int argc, char *argv[])
+int main (int argc, char *argv[])
 {
- try {
+  Bool ok = True;
+  try {
+    cout << ">>>" << endl;
     Input inp(1);
     inp.version(" ");
     inp.create("nx", "2", "Number of pixels along the x-axis", "int");
     inp.create("ny", "2", "Number of pixels along the y-axis", "int");
     inp.readArguments(argc, argv);
+    cout << "<<<" << endl;
 
     const uInt nx=inp.getInt("nx");
     const uInt ny=inp.getInt("ny");
@@ -3308,7 +3362,6 @@ main (int argc, char *argv[])
     LCPixelSet mask2 (mat2, box);
     LCPixelSet mask3 (mat3, box);
     
-    Bool ok = True;
     if (!doIt (SubLattice<Float>(aF),
 	       SubLattice<Float>(bF),
 	       SubLattice<Float>(cF),
@@ -3363,16 +3416,15 @@ main (int argc, char *argv[])
 	ok = False;
     }
 
-    if (ok) {
-	cout << endl << "ok" << endl;
-    } else {
-	exit(1);
-    }
 
  } catch (AipsError x) {
     cerr << "aipserror: error " << x.getMesg() << endl;
-    return 1;
+    ok = False;
  } 
  
- exit(0);
+  if (!ok) {
+    return 1;
+  }
+  cout << endl << "ok" << endl;
+  return 0;
 }

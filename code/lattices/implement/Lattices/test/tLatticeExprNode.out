@@ -1,4 +1,6 @@
-tLatticeExprNode: Version  
+>>>
+/export/home/gvd/aips++/sun4sol_egcs/bindbg/tLatticeExprNode: Version  
+<<<
 
 Constant contructors, get*, eval, shape, dataType, isScalar
 LatticeExprNode (constant T) 
@@ -218,6 +220,17 @@ round
 median
   Float Scalar
   Float Array
+fractile
+  Float Scalar
+  Double Scalar
+  Float Array
+  Double Array
+fractileRange 2
+  Float Array
+  Double Array
+fractileRange 3
+  Float Array
+  Double Array
 mean
   Float Scalar
   Complex Scalar
@@ -587,6 +600,17 @@ round
 median
   Float Scalar
   Float Array
+fractile
+  Float Scalar
+  Double Scalar
+  Float Array
+  Double Array
+fractileRange 2
+  Float Array
+  Double Array
+fractileRange 3
+  Float Array
+  Double Array
 mean
   Float Scalar
   Complex Scalar
@@ -956,6 +980,17 @@ round
 median
   Float Scalar
   Float Array
+fractile
+  Float Scalar
+  Double Scalar
+  Float Array
+  Double Array
+fractileRange 2
+  Float Array
+  Double Array
+fractileRange 3
+  Float Array
+  Double Array
 mean
   Float Scalar
   Complex Scalar

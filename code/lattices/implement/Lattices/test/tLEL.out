@@ -1,5 +1,5 @@
 >>>
-/home/rzmws0/gvd/aips++/sun4sol_gnu/bin/tLEL: Version  
+/export/home/gvd/aips++/sun4sol_egcs/bindbg/tLEL: Version  
 <<<
 LELAttribute
 
@@ -345,6 +345,12 @@ LELFunctionFloat
       Caught expected exception; message is: LELLattice::getScalar - cannot be used
    Function imag
       Caught expected exception; message is: LELLattice::getScalar - cannot be used
+   Function fractile
+      Caught expected exception; message is: LELFunctionFloat::eval - unknown Float function
+   Function fractilerange 2
+      Caught expected exception; message is: LELFunctionFloat::eval - unknown Float function
+   Function fractilerange 3
+      Caught expected exception; message is: LELFunctionFloat::eval - unknown Float function
 
 LELFunctionDouble
    Function min
@@ -370,6 +376,12 @@ LELFunctionDouble
    Function nfalse
       Caught expected exception; message is: LELFunctionDouble::eval - unknown Double function
    Function nelements
+      Caught expected exception; message is: LELFunctionDouble::eval - unknown Double function
+   Function fractile
+      Caught expected exception; message is: LELFunctionDouble::eval - unknown Double function
+   Function fractilerange 2
+      Caught expected exception; message is: LELFunctionDouble::eval - unknown Double function
+   Function fractilerange 3
       Caught expected exception; message is: LELFunctionDouble::eval - unknown Double function
 
 LELFunctionComplex
