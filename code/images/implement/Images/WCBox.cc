@@ -36,7 +36,7 @@
 #include <trial/Lattices/LCBox.h>
 #include <trial/Lattices/LCRegion.h>
 #include <aips/Mathematics/Math.h>
-#include <aips/Measures/Unit.h>
+#include <aips/Quanta/Unit.h>
 #include <aips/Tables/TableRecord.h>
 #include <aips/Utilities/Assert.h>
 #include <aips/Utilities/LinearSearch.h>
