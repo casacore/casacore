@@ -139,7 +139,10 @@ class SpectralElement {
   // Get center value
   Double getCenter() const { return center_p; }
   // Get the width
+  // <group>
   Double getSigma() const { return sigma_p; }
+  Double getFWHM() const;
+  // </group>
   // Get the degree of e.g. polynomial
   uInt getDegree() const { return n_p; }
   // </group>

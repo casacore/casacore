@@ -107,6 +107,10 @@ Bool SpectralElement::toType(SpectralElement::Types &tp,
   return True;
 }
 
+Double SpectralElement::getFWHM() const {
+  return sqrt(8.0*log(16.0))*sigma_p;
+}
+
 void SpectralElement::set(SpectralElement::Types tp, const Double ampl,
 			  const Double center, const Double sigma) {
   tp_p = tp;
