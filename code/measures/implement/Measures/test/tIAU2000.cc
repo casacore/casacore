@@ -76,40 +76,6 @@ Double checkRot(const RotMatrix &rm1, RotMatrix rm2) {
   return 0.;
 }
 
-// Calculate EqEqCT2000
-Double measEqEqCT2000(Double tt) {
-  tt -= MeasData::MJD2000;
-  tt /= MeasData::JDCEN;
-  Vector<Double> pfa(14), pdfa(14);
-  Double dtmp, ddtmp;
-  Double neval(0), deval(0);
-  for (uInt i=0; i<14; i++) {
-    pfa(i) = MeasTable::planetaryArg2000(i)(tt);
-    pdfa(i) = (MeasTable::planetaryArg2000(i).derivative())(tt);
-  };
-  for (Int i=32; i>=0; --i) {
-    dtmp = ddtmp = 0;
-    for (uInt j=0; j<14; j++) {
-      dtmp += MeasTable::mulArgEqEqCT2000(i)[j] * pfa[j];
-      ddtmp += MeasTable::mulPlanArg2000A(i)[j] * pdfa[j];
-    };
-    neval += MeasTable::mulSCEqEqCT2000(i)[0] * sin(dtmp);
-    neval += MeasTable::mulSCEqEqCT2000(i)[1] * cos(dtmp);
-    deval += MeasTable::mulSCEqEqCT2000(i)[0] * cos(dtmp) -
-      MeasTable::mulSCEqEqCT2000(i)[1] * sin(dtmp) * ddtmp;
-  };
-  dtmp = ddtmp = 0;
-  for (uInt j=0; j<14; j++) {
-    dtmp += MeasTable::mulArgEqEqCT2000(33)[j] * pfa[j];
-    ddtmp += MeasTable::mulPlanArg2000A(33)[j] * pdfa[j];
-  };
-  neval += tt*MeasTable::mulSCEqEqCT2000(33)[0] * sin(dtmp);
-  neval += tt*MeasTable::mulSCEqEqCT2000(33)[1] * cos(dtmp);
-  deval += MeasTable::mulSCEqEqCT2000(33)[0] * cos(dtmp) -
-    MeasTable::mulSCEqEqCT2000(33)[1] * sin(dtmp) * ddtmp;;;
-  return neval*C::arcsec;
-}
-
 int main() {
   try {
     // Init
@@ -196,6 +162,11 @@ int main() {
       checkRot(nbrm, cnbrm) << endl;
     cout << "(This should be 0.422 uas, due to different definition of\n"
       "\tthe fundamental arguments)" << endl;
+    cout << "Equation of equinoxes (IAU2000A)(SOFA, aips++, diff): " <<
+      endl;
+    cout << "    " << IAUR(ee00a)(MJD0, tMJD) << ", " <<
+      n00a.eqox(tMJD) << ", " <<
+      IAUR(ee00a)(MJD0, tMJD) - n00a.eqox(tMJD) << endl;
     SEPAR();
 
     Double y,tta,ttb,uta,utb;
@@ -274,8 +245,7 @@ int main() {
 	"J2000A " << AipsrcBool::get(iau2000a_reg) << endl;
       cout << mcv2() << endl;
       cout << "Difference: " << (mcv2().getValue().getValue()
-	- mdcv.getValue().getValue())*200000. << endl;
-      
+				 - mdcv.getValue().getValue())*200000. << endl;
       SEPAR();
     }
 
@@ -286,6 +256,7 @@ int main() {
       Double gmst = IAUR(gmst00)(uta,utb,tta,ttb);
       Double sp   = IAUR(sp00)(tta,ttb);
       Double eect = IAUR(eect00)(tta,ttb);
+      Nutation nuta(Nutation::IAU2000A);
       cout << "UT: " << (uta-2451545.0)+utb << ", " <<
 	utb-MeasData::MJD2000 << endl; 
       cout << "TT: " << (tta-2451545.0)+ttb << ", " <<
@@ -308,8 +279,8 @@ int main() {
 	utb+MeasTable::GMST0(utb)/MeasData::SECinDAY -
 	ttb-MeasTable::GMST00(utb, ttb)/C::_2pi << endl;
       cout << "EqEqCT00 (Sofa, aips++, diff): " <<
-	eect << ", " << measEqEqCT2000(ttb) << ", " <<
-	eect-measEqEqCT2000(ttb) << endl;
+	eect << ", " << nuta.eqoxCT(ttb) << ", " <<
+	eect-nuta.eqoxCT(ttb) << endl;
       SEPAR();
     }
 
