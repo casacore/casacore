@@ -118,7 +118,7 @@ PlainTable::PlainTable (SetupNewTable& newtab, uInt nrrow, Bool initialize,
 }
 
 
-PlainTable::PlainTable (AipsIO& ios, uInt version, const String& tabname,
+PlainTable::PlainTable (AipsIO&, uInt version, const String& tabname,
 			const String& type, uInt nrrow, int opt,
 			const TableLock& lockOptions,
 			Bool addToCache, uInt locknr)
@@ -148,6 +148,20 @@ PlainTable::PlainTable (AipsIO& ios, uInt version, const String& tabname,
     if (tdescPtr_p == 0) {
 	throw (AllocError ("PlainTable::PlainTable",1));
     }
+
+    //# Reopen the file to be sure that the internal stdio buffer is not reused.
+    //# This is a terrible hack, but it works.
+    //# However, One time a better solution is needed.
+    //# Probably stdio should not be used, but class RegularFileIO or
+    //# FilebufIO should do its own buffering and have a sync function.
+    AipsIO ios (Table::fileName(tabname), ByteIO::Old);
+    String tp;
+    uInt version = ios.getstart ("Table");
+    uInt nrrow, format;
+    ios >> nrrow;
+    ios >> format;
+    ios >> tp;
+    
     tdescPtr_p->getFile (ios, isWritable(), tableName());  // read description
     // Check if the given table type matches the type in the file.
     if ((! type.empty())  &&  type != tdescPtr_p->getType()) {
