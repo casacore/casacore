@@ -172,6 +172,16 @@ public:
   {return lsrFreqOK_p ? lsrFrequency_p : fillLSRFreq();}
   const Vector<Double>& lsrFrequency() const {return This->lsrFrequency();}
 
+
+  //the following method is to convert the observed frequencies
+  // This conversion may not be accurate for some frame 
+  // conversion like topo to lsr except if the spw is in the actual buffer
+
+  void lsrFrequency(const Int& spw, Vector<Double>& freq)
+    { visIter_p->lsrFrequency(spw, freq);}
+
+  void lsrFrequency(const Int& spw, Vector<Double>& freq) const
+    { visIter_p->lsrFrequency(spw, freq);}
   MDirection& phaseCenter() 
   { return phaseCenterOK_p ? phaseCenter_p : fillPhaseCenter();}
   const MDirection& phaseCenter() const {return This->phaseCenter();}
@@ -284,6 +294,15 @@ public:
   // Access the current ROMSColumns object via VisIter
   const ROMSColumns& msColumns() const
     { return visIter_p->msColumns();}
+
+  // Get all selected spectral windows not just the one in the actual buffer
+  void allSelectedSpectralWindows(Vector<Int>& spws, Vector<Int>& nvischan){
+    visIter_p->allSelectedSpectralWindows(spws, nvischan);
+  }
+
+  void allSelectedSpectralWindows(Vector<Int>& spws, Vector<Int>& nvischan) const { This->allSelectedSpectralWindows(spws, nvischan);}
+
+  //
 
 private:
 
