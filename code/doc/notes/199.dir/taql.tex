@@ -9,7 +9,7 @@ columns and keywords. It supports arbitrary complex
 expressions including regular expressions and many functions.
 TaQL also makes sorting and column selection possible.
 \\
-The first section explain the syntax and show the options.
+The first sections explain the syntax and show the options.
 The last sections show the interface to TaQL using Glish or C++.
 The Glish interface makes it possible to embed Glish
 variables and expressions in a TaQL command.
@@ -85,7 +85,7 @@ The various clauses have the following meaning:
        Note that when using \texttt{IN}, the shorthand has to preceed
        the table name. It can be seen as an iterator variable.
 
-       There are two special ways to define a table name:
+       There are three special ways to specify a table:
        \begin{enumerate}
        
        \item
@@ -116,6 +116,35 @@ The various clauses have the following meaning:
        main query level). When a shorthand is given, only tables with
        that shorthand are taken into account. When no shorthand is
        given, only primary tables are taken into account.
+
+       \item
+       Like in OQL it is possible to use a
+       \htmlref{nested query}{TAQL:SUBQUERIES}
+       command in the FROM clause. This is a normal query command
+       enclosed in square brackets. It results in a temporary table
+       which can thereafter be used as a table in the rest of the
+       query command. A shorthand has to be defined for it in order
+       to be able to refer to that table.
+       \\Use of a query in the FROM command can be useful to avoid
+       multiple equal subqueries. E.g.
+       \begin{verbatim}
+  select from
+   [select from MS where sumsqr(UVW[1:2]) < 625]
+    as TIMESEL
+   where TIME in [select TIME from TIMESEL]
+    &&  any([ANTENNA1,ANTENNA2] in
+             [select from TIMESEL giving
+              [iif(UVW[3] < 0, ANTENNA1, ANTENNA2)]])
+       \end{verbatim}
+       is a command to find shadowed antennas for the VLA.
+       Without the query in the FROM command the subqueries in the
+       remainder of the command would have been more complex.
+       Furthermore, it would have been necessary to execute that
+       select twice.
+       \\The command is quite complex and cannot be fully understood
+       before reading the rest of this note.
+       Note, however, that the command uses the shorthand \texttt{TIMESEL}
+       to be able to use the temporary table in the subqueries.
 
        \item
        Normally only persistent tables (i.e. tables on disk) can
@@ -189,6 +218,8 @@ The various clauses have the following meaning:
        \htmlref{subquery}{TAQL:SUBQUERIES} is used in the main query.
        Such a \htmlref{set}{TAQL:SETS} can contain only one element.
        The parts of this element can be any expression resulting in a scalar.
+       \\In the main query and in a query in the FROM command the
+       GIVING clause can only result in a table.
 \end{description}
 Although the clauses column\_list, WHERE, and ORDERBY are optional,
 at least one of them has to be used. Otherwise no operation is
@@ -1102,6 +1133,23 @@ that indexing arrays should be done with care.
       \\\texttt{giving [TIME-INTERVAL/2 =:= TIME+INTERVAL/2]]}
       \\finds all rows in a measurement set observing sources with a
       rest frequency less than 180 Mhz.
+  \item[] \texttt{ select from}
+      \\\texttt{[select from MS where sumsqr(UVW[1:2]) < 625] as TIMESEL}
+      \\\texttt{ where TIME in [select TIME from TIMESEL]}
+      \\\texttt{   \&\& any([ANTENNA1,ANTENNA2] in [select from TIMESEL giving}
+      \\\texttt{                      [iif(UVW[3] < 0, ANTENNA1, ANTENNA2)]])}
+      \\finds all antennas which are shadowed at a given time.
+      \\The query in the FROM command finds all rows where an antenna
+      is shadowed (i.e. its UV-distance less than 25 meters). Thereafter
+      
+  \item[] \texttt{ select from MS}
+      \\\texttt{where DATA\_DESC\_ID in [select from ::DATA\_DESCRIPTION}
+      \\\texttt{where SPECTRAL\_WINDOW\_ID in [select from ::SPECTRAL\_WINDOW}
+      \\\texttt{where NET\_SIDEBAND==1 giving [ROWID()]] giving [ROWID()]]}
+      \\finds all rows in the MeasurementSet with the given
+      NET\_SIDEBAND.
+      \\The MeasurementSet uses a table to map spectral-window-id to
+      data-desc-id. Hence tow nested subqueries are needed.
 \end{description}
 
 \section{\label{TAQL:GLISHC}Interface to TaQL}
