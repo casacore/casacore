@@ -32,13 +32,14 @@ be able to do some basic things.
 
 \medskip\noindent LEL operates on lattices, which are a generalization
 of arrays.  As said above a particular type of lattice is an image; they
-will be used most often.  Because lattices can be very large, an
+will be used most often.  Because lattices can be very large and
+usually reside on disk, an
 expression is only evaluated when a chunk of its data is requested. 
 This is similar to reading only the requested chunk of data from a disk
 file. 
 
 \medskip\noindent LEL is quite efficient and can therefore be used well
-in C++ and glish code.  However, it can never be as efficient as
+in C++ and glish code.  Note however, that it can never be as efficient as
 carefully constructed C++ code. 
 
 \medskip\noindent \htmladdnormallink{Note 216}{../216/216.html} gives a
@@ -139,7 +140,7 @@ Scalar constants of the various data types can be formed as follows
     \end{verbatim}
 \end{itemize}
 The functions \texttt{pi()} and \texttt{e()} should be
-used to specify the constants pi and e. They form a Double constant,
+used to specify the constants pi and e. Note that they form a Double constant,
 so when using e.g. pi with a Float lattice, it could make a lot of sense
 to convert pi to a Float. Otherwise the lattice is converted to a
 Double, which is time-consuming. However, one may have very valid
