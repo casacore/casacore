@@ -2172,18 +2172,11 @@ CountedPtr<LELInterface<Bool> > LatticeExprNode::makeBool() const
 Int LatticeExprNode::makeEqualDim (LatticeExprNode& expr0,
 				   LatticeExprNode& expr1)
 {
+  // Compare the coordinates (and shapes).
   const LELAttribute& attr0 = expr0.getAttribute();
   const LELAttribute& attr1 = expr1.getAttribute();
-  if (attr0.isScalar()  ||  attr1.isScalar()) {
-    return 0;
-  }
-  // If the coordinates are equal, check if shapes are also equal.
-  Int result = attr0.coordinates().compare (attr1.coordinates());
-  if (result == 0) {
-    if (! attr0.shape().isEqual (attr1.shape())) {
-      throw AipsError ("LatticeExprNode - shapes of operands mismatch");
-    }
-  } else if (result == -1) {
+  Int result = attr0.compareCoord (attr1);
+  if (result == -1) {
     // left is subset of right, so extend left.
     const LELLattCoordBase* cbptr = &(attr0.coordinates().coordinates());
     const LELLattCoord* cptr = dynamic_cast<const LELLattCoord*>(cbptr);
@@ -2199,7 +2192,7 @@ Int LatticeExprNode::makeEqualDim (LatticeExprNode& expr0,
     expr1 = cptr->makeExtendLattice (expr1,
 				     attr0.shape(),
 				     attr0.coordinates().coordinates());
-  } else {
+  } else if (result != 0) {
     throw AipsError ("LatticeExprNode - coordinates of operands mismatch");
   }
   return result;

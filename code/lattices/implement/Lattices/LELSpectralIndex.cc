@@ -76,12 +76,9 @@ LELSpectralIndex<T>::LELSpectralIndex (const Block<LatticeExprNode>& expr)
       itsLogFreq[i] = 1/logFreq(i);
     }
   }
-  // If the coordinates are equal, check if shapes are also equal.
-  Int result = attr0.coordinates().compare (attr1.coordinates());
+  // Compare the coordinates and shapes.
+  Int result = attr0.compareCoord (attr1);
   if (result == 0) {
-    if (! attr0.shape().isEqual (attr1.shape())) {
-      throw AipsError ("LELSpectralIndex - shapes of operands mismatch");
-    }
     AlwaysAssert (itsFreqAxis == freqAxis1, AipsError);
   } else if (result == -1) {
     // left is subset of right, so extend left.
