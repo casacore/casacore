@@ -3287,3 +3287,4 @@
 13 213 src mv aips/implement/Lattices/IPosition2.cc aips/implement/Arrays/IPosition2.cc
 13 213 src mv aips/implement/Lattices/Slicer.cc aips/implement/Arrays/Slicer.cc
 13 213 src mv aips/implement/Lattices/test/tIPosition.cc aips/implement/Arrays/test/tIPosition.cc
+13 213 src mv aips/implement/Lattices/test/tSlicer.cc aips/implement/Arrays/test/tSlicer.cc
