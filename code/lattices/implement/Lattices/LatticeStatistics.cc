@@ -2886,8 +2886,8 @@ void StatsTiledCollapser<T>::init (uInt nOutPixelsPerCollapse)
 template <class T>
 void StatsTiledCollapser<T>::initAccumulator (uInt n1, uInt n3)
 {
-   pSum_p = new Block<NumericTraits<T>::PrecisionType>(n1*n3);
-   pSumSq_p = new Block<NumericTraits<T>::PrecisionType>(n1*n3);
+   pSum_p = new Block<typename NumericTraits<T>::PrecisionType>(n1*n3);
+   pSumSq_p = new Block<typename NumericTraits<T>::PrecisionType>(n1*n3);
    pNPts_p = new Block<T>(n1*n3);
    pMin_p = new Block<T>(n1*n3);
    pMax_p = new Block<T>(n1*n3);

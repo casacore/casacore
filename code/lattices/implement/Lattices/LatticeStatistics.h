@@ -629,8 +629,8 @@ private:
 // Accumulators for sum, sum squared, number of points
 // minimum, and maximum
 
-    Block<NumericTraits<T>::PrecisionType>* pSum_p;
-    Block<NumericTraits<T>::PrecisionType>* pSumSq_p;
+    Block<typename NumericTraits<T>::PrecisionType>* pSum_p;
+    Block<typename NumericTraits<T>::PrecisionType>* pSumSq_p;
     Block<T>* pNPts_p;
     Block<T>* pMin_p;
     Block<T>* pMax_p;
