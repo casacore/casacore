@@ -82,7 +82,7 @@ Double PointShape::sample(const MDirection& direction,
   const MDirection::MVType* compDirValue = &(compDir.getValue());
   Bool deleteValue = False;
   // Convert direction to the same frame as the reference direction
-  if (direction.getRef() != compDirFrame) {
+  if (ComponentShape::differentRefs(direction.getRef(), compDirFrame)) {
     compDirValue = new MDirection::MVType
       (MDirection::Convert(compDir, direction.getRef())().getValue());
     deleteValue = True;

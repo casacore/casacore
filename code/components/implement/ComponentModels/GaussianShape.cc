@@ -157,12 +157,10 @@ Double GaussianShape::sample(const MDirection& direction,
   const MDirection::MVType* compDirValue = &(compDir.getValue());
   Bool deleteValue = False;
   // Convert direction to the same frame as the reference direction
-  if (direction.getRef() != compDirFrame) {
-    if (ComponentShape::differentRefs(direction.getRef(), compDirFrame)) {
-      compDirValue = new MDirection::MVType
-	(MDirection::Convert(compDir, direction.getRef())().getValue());
-      deleteValue = True;
-    }
+  if (ComponentShape::differentRefs(direction.getRef(), compDirFrame)) {
+    compDirValue = new MDirection::MVType
+      (MDirection::Convert(compDir, direction.getRef())().getValue());
+    deleteValue = True;
   }
   const MDirection::MVType& dirValue = direction.getValue();
   const Double separation = compDirValue->separation(dirValue);
@@ -266,5 +264,5 @@ void GaussianShape::updateFT() {
 }
 
 // Local Variables: 
-// compile-command: "gmake OPTLIB=1 GaussianShape"
+// compile-command: "gmake GaussianShape"
 // End: 

@@ -148,7 +148,7 @@ Double DiskShape::sample(const MDirection& direction,
   const MDirection::MVType* compDirValue = &(compDir.getValue());
   Bool deleteValue = False;
   // Convert direction to the same frame as the reference direction
-  if (direction.getRef() != compDirFrame) {
+  if (ComponentShape::differentRefs(direction.getRef(), compDirFrame)) {
     compDirValue = new MDirection::MVType
       (MDirection::Convert(compDir, direction.getRef())().getValue());
     deleteValue = True;
@@ -312,5 +312,5 @@ Double DiskShape::calcSample(const MDirection::MVType& compDirValue,
 }
 
 // Local Variables: 
-// compile-command: "gmake OPTLIB=1 DiskShape"
+// compile-command: "gmake DiskShape"
 // End: 
