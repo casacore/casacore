@@ -219,7 +219,7 @@ int main() {
 	  MEarthMagnetic::Types tp;
 	  MEarthMagnetic::Ref mr;
 	  cout << "getType:        " << MEarthMagnetic::getType(tp, s0) << ", ";
-	  cout << tp << endl;
+	  cout << Int(tp) << endl;
 	  cout << "giveMe:         " << mb.giveMe(mr, s0) << ", ";
 	  cout << mr << endl;
 	  cout << "setRefString:   " << mb.setRefString("hadec") << ", ";
