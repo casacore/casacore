@@ -437,175 +437,6 @@ currently used to choose the default target and to circumvent certain time
 consuming system dependency analyses which are not required for programmer
 compilations.
 
-\subsubsection*{Library control variables}
-
-Although \file{makedefs} is intended to be self-documenting, a set of
-variables referred to as the {\em library control} variables deserves a
-separate mention.
-
-An \aipspp\ installation may be configured to maintain a debug version of the
-object libraries, an optimized version, or both as determined by the setting
-of these variables.  They have names of the form \code{LIB<\textit{package}>},
-for example \code{LIBaips}, and their values consist of six fields
-corresponding to the debug and optimized \code{C++}, \code{C}, and
-\textsc{fortran} libraries in that order,
-
-\begin{verbatim}
-   #                    C++            C          FORTRAN
-   #                 dbg    opt    dbg    opt    dbg    opt
-   #               ------------- ------------- -------------
-   LIBaips      := static static defeat defeat static static
-\end{verbatim}
-
-\noindent
-If the entry for a library has been set to ``\code{defeat}'' then the library
-will not be built (and if an old version exists it will be deleted).
-Otherwise, if set to ``\code{static}'' or ``\code{shared}'' the static library
-will be built.  If ``\code{shared}'', the shared library will also be built
-and is the one linked to.
-
-The library control variables are used by the \aipspp\ \filref{makefiles} to
-determine whether to compile the debug and/or optimized versions of an object
-module, and which libraries an executable may be linked with.  The library
-updating procedure, \exeref{updatelib}, also uses them to determine which
-sharable libraries to build.
-
-\subsubsection*{Conventions for \file{makedefs} variable definitions}
-
-Some features of the \aipspp\ programmer compilations are defined as
-conventions for variable usage which are implemented within \file{makedefs}
-itself.
-
-\textbf{Optimized programmer compilations:}
-
-By default, programmer compilations are usually done in debug mode.
-Specifying \code{OPT=1} (or \code{2}, \code{3}, \code{4}, ...) on the
-\exeref{gmake} command line signals that programmer compilations are to be
-done at the corresponding optimization level.  For example
-
-\begin{verbatim}
-   gmake OPT=1 Foo.o
-\end{verbatim}
-
-\noindent
-If the \code{OPT} variable is defined the default \file{makedefs} will set all
-programmer compile options to be the same as used for optimized system
-compilations.  However, alternate levels of optimization must be implemented
-in the site-specific \file{makedefs}; the example below shows how this might
-be done.  If \code{OPT} has been set then programmer executables will be
-linked to the optimized system libraries (if they exist).
-
-The \code{OPT} variable is not intended to (and should not be made to) affect
-system compilations.
-
-\textbf{Alternate programmer compilation options:}
-
-Another convention in use for programmer compilations is that of setting
-compiler \code{*FLAGS} variables on the command line to \code{alt1},
-(\code{alt2}, ...).  For example,
-
-\begin{verbatim}
-   gmake C++FLAGS=alt1 Foo.o
-\end{verbatim}
-
-\noindent
-This is a signal to the site-specific \file{makedefs} to substitute a
-predefined, locally standard, set of compiler options.  By convention,
-\code{alt1} should be defined to do an optimized compilation of the same level
-as the system optimized compilation.
-
-\textbf{Adding extra programmer compilation options:}
-
-Programmers may supplement the compilation options defined within
-\file{makedefs} by use of \code{EXTRA\_*FLAGS}, for example
-
-\begin{verbatim}
-   gmake EXTRA_C++FLAGS="+p -pipe" Foo.o
-\end{verbatim}
-
-\noindent
-which would cause "\code{+p -pipe}" to be appended to the value of
-\code{C++FLAGS} defined within \file{makedefs}.  If any of the extra options
-are incompatible with, or contradict the options set in \file{makedefs} then
-compiler-specific behaviour will result.
-
-\textbf{Redefining programmer compilation options in full:}
-
-Strictly speaking this is not a \file{makedefs} convention, but nevertheless
-it's worth pointing out that \file{makedefs} must not prevent programmer
-variables from being redefined in full on the \exeref{gmake} command line.  In
-practice this simply means that \file{makedefs} must not use the
-\code{override} directive when defining programmer compilation variables
-(except in implementing the alternate options as described below).
-
-\textbf{Implementing the conventions:}
-
-The conventions on programmer compilation options must be implemented within
-the site-specific \file{makedefs}.  However, they need not be implemented if
-they are not required.  Since considerable latitude is available in their
-precise interpretation a \code{show\_prg} target has been provided for
-programmers to print the values of all variables likely to be affected.  The
-following fragment shows a realistic example of how the \code{C++FLAGS}
-variable might be defined in the site-specific \file{makedefs}:
-
-\begin{verbatim}
-   ifdef OPT
-      C++FLAGS := -ptr$(PGMRPTRD) -pta -O$(OPT) +p -pipe -ptv
-   else
-      C++FLAGS := -ptr$(PGMRPTRD) $(C++DBG)
-   endif
-
-   ifeq "$(C++FLAGS)" "alt1"
-      override C++FLAGS := -ptr$(PGMRPTRD) $(C++OPT)
-   endif
-
-   ifeq "$(C++FLAGS)" "alt2"
-      override C++FLAGS := -ptr$(PGMRPTRD) $(C++DBG) -ptv
-   endif
-
-   C++FLAGS += $(EXTRA_C++FLAGS)
-\end{verbatim}
-
-\noindent
-An important point to note here is that if \code{C++FLAGS} is defined on the
-command line then a redefinition within \file{makedefs} has no effect unless
-the \code{override} directive is used.  The variables which define programmer
-compilation options are \code{CPPFLAGS}, \code{CFLAGS}, \code{C++FLAGS},
-\code{FFLAGS}, and \code{LDFLAGS}.
-
-\textbf{Programmer binary directories:}
-
-The \code{PGMRINCD}, \code{PGMRAUXD}, \code{PGMRLIBD}, and \code{PGMRBIND}
-variables specify where the output from programmer compilations is to be
-deposited.  \code{PGMRINCD} is used for the output of the \unixexe{lex} and
-\unixexe{bison} parser/generators, and \code{PGMRAUXD} contains the results of
-programmer dependency analyses.  The default \file{makedefs} sets these, and
-also \code{PGMRPTRD}, to
-
-\begin{verbatim}
-   PGMRINCD := $(wildcard $(PGMRARCH))
-   PGMRAUXD := $(wildcard $(PGMRARCH)/aux)
-   PGMRLIBD := $(wildcard $(PGMRARCH)/lib)
-   PGMRBIND := $(wildcard $(PGMRARCH)/bin)
-   PGMRPTRD  = $(PGMRARCH)/ptrepository
-\end{verbatim}
-
-\noindent
-In other words, the \file{\$(PGMRARCH)}, \file{\$(PGMRARCH)/aux},
-\code{\$(PGMRARCH)/lib}, and \code{\$(PGMRARCH)/bin} directories will be used
-{\em if they exist}.  If they don't, then \code{PGMRINCD}, \code{PGMRLIBD}
-and/or \code{PGMRBIND} will be blank and the corresponding output will be
-left in the programmer's source code directories.  The site-specific
-\file{makedefs} files can reset these variables as it sees fit, except that
-if they're not blank, then they must specify absolute pathnames.  Note that
-this facility uses the \exe{-o} compiler option for object modules so
-\code{PGMRLIBD} must not be set for compilers which do not support it.
-
-The site-specific \file{makedefs} may wish to redefine \code{PGMRLIBD} and
-\code{PGMRBIND} depending on the value of \code{OPT} in order to separate the
-binaries produced for different levels of optimization.  The default is to put
-debug and optimized binaries in the same place.
-
 \subsubsection*{Other variables defined within \file{makedefs}}
 
 The default \file{makedefs} defines a collection of variables which are not
@@ -778,12 +609,141 @@ The \gnu\ manual page for \unixexe{gmake}.\\
 \aipspp\ variable names (\sref{variables}).\\
 \exeref{configure}, the \aipspp\ installation script.\\
 \exeref{gmake}, \gnu\ make.\\
+\filref{makedefs adjuncts}, Per-sourcefile makedefs definitions.\\
 \filref{makefiles}, \gnu\ makefiles used to rebuild \aipspp.\\
 \filref{testdefs}, test \file{makedefs} definitions.
 
 \subsection*{Author}
 
 Original: 1992/05/01 by Mark Calabretta, ATNF
+
+% ----------------------------------------------------------------------------
+
+\newpage
+\section{\file{makedefs} adjuncts}
+\label{makedefs adjuncts}
+\index{makedefs -- adjuncts}
+ 
+Per-sourcefile makedefs definitions.
+ 
+\subsection*{Description}
+
+The \file{app}, \file{imp}, \file{ftn} and \file{tst} makefiles
+(\sref{makefiles}) look for and, if found, include an adjunct \filref{makedefs}
+file which may contain definitions (or, in principle, rules) which apply to a
+particular source code directory.  The adjunct files are architecture-specific
+and are primarily intended to control compiler options on a per-sourcefile
+basis.
+
+The adjunct files reside in \code{\$INSTARCH} (see \sref{variables}) and have
+names of the following form
+
+\begin{verbatim}
+                           Form                       Examples
+            ---------------------------------   ---------------------
+   imp      <package>[-<module>].defs           aips.defs
+                                                aips-Tables.defs
+   tst      <package>[-<module>]-test.defs      aips-Tables-test.defs
+   ftn      <package>-fortran[-<module>].defs   aips-fortran.defs
+   app      <package>_<app>.defs                aips_gtable.defs
+\end{verbatim}
+
+\noindent
+As a simple example of the use of a \file{makedefs} adjunct, the applications
+makefile uses a variable called \code{BIN} as a hook to allow conditional
+compilation of an application.  If \code{BIN} is set to blank in an adjunct
+file for a particular architecture then compilation of that particular
+application will be skipped during a recursive system build.
+
+The following adjunct \file{makedefs} decreases the optimization level for
+TSMCube.cc for the \gnu\ \cplusplus\ compiler running under \textsc{OSF/1}.
+The file, \file{\$(AIPSCODE)/install/alpha\_gnu/aips-Tables.defs}, is included
+by the implement makefile, and it illustrates the general scheme:
+
+\begin{verbatim}
+   # Switch off optimization for TSMCube.
+ 
+   LVL  := $(C++OPTLVL)
+   LVL0 := -O0
+ 
+   TSMCube := 0
+ 
+   C++OPTLVL = $(LVL$($*))
+\end{verbatim}
+
+\noindent
+Although this is a non-trivial construct the general form should be easy to
+follow.  The operative part is the last line in which \code{C++OPTLVL}, a
+recursively expanded \file{makedefs} variable which determines the \cplusplus
+optimization level, is evaluated as a ``computed'' variable within the pattern
+rule which compiles TSMCube.o from TSMCube.cc:
+
+\begin{enumerate}
+   \item Within the pattern rule, \code{\$*} is an ``automatic'' variable
+         which evaluates to the stem with which the pattern rule matches, in
+         this case \code{TSMCube}.  After the first round of translation
+         \code{C++OPTLVL} would be set to \code{\$(LVL\$(TSMCube))}.
+
+   \item \code{\$(TSMCube)} is evaluated in the second round of translation
+         after which \code{C++OPTLVL} would become \code{\$(LVL0)}.
+
+   \item The required result, \code{C++OPTLVL~=~-O0}, is achieved after the
+         third round of translation.
+\end{enumerate}
+
+\noindent
+For any other source file in the \file{\$(AIPSCODE)/aips/implement/Tables/}
+directory, say Table.cc, the sequence would be as follows:
+ 
+\begin{enumerate}
+   \item After the first round of translation \code{C++OPTLVL} would be set to
+         \code{\$(LVL\$(Table))}.
+ 
+   \item In the second round of translation \code{\$(Table)} is undefined and
+         evaluates to an empty string whence \code{C++OPTLVL} would become
+         \code{\$(LVL)}.
+ 
+   \item After the third round of translation \code{C++OPTLVL} is set to its
+         original value by virtue of the simply expanded variable assignment
+         of \code{LVL} at the start of the adjunct makedefs.
+\end{enumerate}
+
+\noindent
+The default case relied on \code{Table} being undefined as a makefile
+variable.  This is a safe assumption since makefile variable names are
+case-sensitive and while \aipspp\ source file names contain a mixture of
+upper- and lower-case characters, the \file{makedefs} and \file{makefile}
+variables in \aipspp\ are all upper-case.
+
+The \file{makedefs} variables which specify debug or optimization flags for
+the various compilers are
+
+\begin{description}
+   \item[\code{C++DBGLVL}]  ...\cplusplus\ debug flags
+   \item[\code{C++OPTLVL}]  ...\cplusplus\ optimization flags
+   \item[\code{CDBGLVL}]    ...\textsc{c} debug flags
+   \item[\code{COPTLVL}]    ...\textsc{c} optimization flags
+   \item[\code{FCDBGLVL}]   ...\textsc{fortran} debug flags
+   \item[\code{FCOPTLVL}]   ...\textsc{fortran} optimization flags
+\end{description}
+
+\noindent
+These variables are not used directly in the makefiles but are instead used as
+components in the definition of variables which contain all of the compiler
+flags.  An imporant prerequisite for this system is that these variables,
+namely \code{C++DBG}, \code{C++OPT}, \code{CDBG}, \code{COPT}, \code{FCDBG},
+and \code{FCOPT}, be recursively expanded.  This also applies for the
+programmer compilation option variables \code{C++FLAGS}, \code{CFLAGS}, and
+\code{FCFLAGS}.
+
+\subsection*{See also}
+ 
+The \textit{GNU make} manual.\\
+The \gnu\ manual page for \unixexe{gmake}.\\
+\aipspp\ variable names (\sref{variables}).\\
+\exeref{gmake}, \gnu\ make.\\
+\filref{makedefs}, \aipspp\ makefile definitions.\\
+\filref{makefiles}, \gnu\ makefiles used to rebuild \aipspp.
 
 % ----------------------------------------------------------------------------
 
@@ -926,115 +886,6 @@ The generic and special-purpose makefiles are collectively referred to below
 as {\em specific} makefiles, as opposed to the general makefile,
 \file{makedefs}.
 
-\subsection*{\file{makedefs} adjuncts}
-
-The \file{app}, \file{imp}, \file{ftn} and \file{tst} makefiles look for and,
-if found, include an adjunct \file{makedefs} file which may contain
-definitions (or, in principle, rules) which apply to a particular source code
-directory.  The adjunct files are architecture-specific and are primarily
-intended to control compiler options on a per-sourcefile basis.
-
-The adjunct files reside in \code{\$INSTARCH} (see \sref{variables}) and have
-names of the following form
-
-\begin{verbatim}
-                           Form                       Examples
-            ---------------------------------   ---------------------
-   imp      <package>[-<module>].defs           aips.defs
-                                                aips-Tables.defs
-   tst      <package>[-<module>]-test.defs      aips-Tables-test.defs
-   ftn      <package>-fortran[-<module>].defs   aips-fortran.defs
-   app      <package>_<app>.defs                aips_gtable.defs
-\end{verbatim}
-
-\noindent
-As a simple example of the use of a \file{makedefs} adjunct, the applications
-makefile uses a variable called \code{BIN} as a hook to allow conditional
-compilation of an application.  If \code{BIN} is set to blank in an adjunct
-file for a particular architecture then compilation of that particular
-application will be skipped during a recursive system build.
-
-The following adjunct \file{makedefs} decreases the optimization level for
-TSMCube.cc for the \gnu\ \cplusplus\ compiler running under \textsc{OSF/1}.
-The file, \file{\$(AIPSCODE)/install/alpha\_gnu/aips-Tables.defs}, is included
-by the implement makefile, and it illustrates the general scheme:
-
-\begin{verbatim}
-   # Switch off optimization for TSMCube.
- 
-   LVL  := $(C++OPTLVL)
-   LVL0 := -O0
- 
-   TSMCube := 0
- 
-   C++OPTLVL = $(LVL$($*))
-\end{verbatim}
-
-\noindent
-Although this is a non-trivial construct the general form should be easy to
-follow.  The operative part is the last line in which \code{C++OPTLVL}, a
-recursively expanded \file{makedefs} variable which determines the \cplusplus
-optimization level, is evaluated as a ``computed'' variable within the pattern
-rule which compiles TSMCube.o from TSMCube.cc:
-
-\begin{enumerate}
-   \item Within the pattern rule, \code{\$*} is an ``automatic'' variable
-         which evaluates to the stem with which the pattern rule matches, in
-         this case \code{TSMCube}.  After the first round of translation
-         \code{C++OPTLVL} would be set to \code{\$(LVL\$(TSMCube))}.
-
-   \item \code{\$(TSMCube)} is evaluated in the second round of translation
-         after which \code{C++OPTLVL} would become \code{\$(LVL0)}.
-
-   \item The required result, \code{C++OPTLVL~=~-O0}, is achieved after the
-         third round of translation.
-\end{enumerate}
-
-\noindent
-For any other source file in the \file{\$(AIPSCODE)/aips/implement/Tables/}
-directory, say Table.cc, the sequence would be as follows:
- 
-\begin{enumerate}
-   \item After the first round of translation \code{C++OPTLVL} would be set to
-         \code{\$(LVL\$(Table))}.
- 
-   \item In the second round of translation \code{\$(Table)} is undefined and
-         evaluates to an empty string whence \code{C++OPTLVL} would become
-         \code{\$(LVL)}.
- 
-   \item After the third round of translation \code{C++OPTLVL} is set to its
-         original value by virtue of the simply expanded variable assignment
-         of \code{LVL} at the start of the adjunct makedefs.
-\end{enumerate}
-
-\noindent
-The default case relied on \code{Table} being undefined as a makefile
-variable.  This is a safe assumption since makefile variable names are
-case-sensitive and while \aipspp\ source file names contain a mixture of
-upper- and lower-case characters, the \file{makedefs} and \file{makefile}
-variables in \aipspp\ are all upper-case.
-
-The \file{makedefs} variables which specify debug or optimization flags for
-the various compilers are
-
-\begin{description}
-   \item[\code{C++DBGLVL}]  ...\cplusplus\ debug flags
-   \item[\code{C++OPTLVL}]  ...\cplusplus\ optimization flags
-   \item[\code{CDBGLVL}]    ...\textsc{c} debug flags
-   \item[\code{COPTLVL}]    ...\textsc{c} optimization flags
-   \item[\code{FCDBGLVL}]   ...\textsc{fortran} debug flags
-   \item[\code{FCOPTLVL}]   ...\textsc{fortran} optimization flags
-\end{description}
-
-\noindent
-These variables are not used directly in the makefiles but are instead used as
-components in the definition of variables which contain all of the compiler
-flags.  An imporant prerequisite for this system is that these variables,
-namely \code{C++DBG}, \code{C++OPT}, \code{CDBG}, \code{COPT}, \code{FCDBG},
-and \code{FCOPT}, be recursively expanded.  This also applies for the
-programmer compilation option variables \code{C++FLAGS}, \code{CFLAGS}, and
-\code{FCFLAGS}.
-
 \subsection*{File suffixes recognized by the \file{makefiles}}
 
 The generic makefiles recognize the following source file types:
@@ -1101,6 +952,292 @@ Section \sref{System generation makefile rules} describes the makefile rules
 used to process these source files and the type of files produced.
 
 % ----------------------------------------------------------------------------
+
+\newpage
+\section{Object libraries}
+\label{Object libraries}
+\index{compilation -- object libraries}
+\index{libraries -- object}
+\index{library control variables}
+\index{object libraries}
+\index{variables -- library control}
+
+Generation of \aipspp\ object libraries and usage of external libraries in
+\aipspp.
+
+\subsection*{Library control variables}
+
+An \aipspp\ installation may be configured to maintain a debug version of the
+object libraries, an optimized version, or both as determined by the setting
+of these variables.  They have names of the form \code{LIB<\textit{package}>},
+for example \code{LIBaips}, and their values consist of six fields
+corresponding to the debug and optimized \code{C++}, \code{C}, and
+\textsc{fortran} libraries in that order,
+
+\begin{verbatim}
+   #                    C++            C          FORTRAN
+   #                 dbg    opt    dbg    opt    dbg    opt
+   #               ------------- ------------- -------------
+   LIBaips      := static static defeat defeat static static
+\end{verbatim}
+
+\noindent
+Four keywords are recognized:
+\begin{itemize}
+\item
+   \textbf{defeat}: The library will not be built (and if an old version
+   exists it will be deleted).
+\item
+   \textbf{static}: The static library is built and is the one linked to.
+\item
+   \textbf{shatic}: The static and shared libraries are built but the static
+   library is the one linked to.
+\item
+   \textbf{shared}: The static and shared libraries are built and the shared
+   library is the one linked to.
+\end{itemize}
+
+The library control variables are used by the \aipspp\ \filref{makefiles} to
+determine whether to compile the debug and/or optimized versions of an object
+module, and which libraries an executable may be linked with.  The library
+updating procedure, \exeref{updatelib}, also uses them to determine which
+sharable libraries to build.
+
+\subsection*{External libraries}
+\index{XLIBLIST}
+\index{CPPMODU}
+
+\aipspp\ uses many external libraries such as \code{PGPLOT}, \code{LAPACK},
+and \code{X11}.  These are expected to be installed separately from \aipspp.
+Other libraries such as \code{Glish} and \code{WCSLIB} while bundled with
+\aipspp\ are nevertheless treated by \filref{makedefs} as though they were
+external.
+
+\filref{makedefs} contains a set of variables for each external library.  For
+example, for \code{Tcl} the variables are
+
+\begin{verbatim}
+   TCLROOT  := /usr/local
+   TCLDEFS  := -DTCL
+   TCLINCD   = $(TCLROOT)/include
+   TCLLIBD   = $(TCLROOT)/lib
+   TCLLIB   := -ltcl
+\end{verbatim}
+
+\noindent
+The corresponding variables for \code{Glish} and \code{WCSLIB} are set to
+point to the \aipspp\ system directories where they are installed.
+
+The per-directory makefile for a class implementation module, an application
+or test program registers its usage of one or more external libraries via the
+\code{XLIBLIST} variable.  For example,
+
+\begin{verbatim}
+   XLIBLIST := GLISH WCSLIB F77
+   include $(word 1, $(AIPSPATH))/code/install/makefile.app
+\end{verbatim}
+
+\noindent
+This examples tells \filref{makedefs} to construct compile and link options
+using \code{Glish}, \code{WCSLIB}, and \code{FORTRAN}.  Note that the order
+is important, \code{WCSLIB} comes {\em before} \code{F77} in the list since
+it uses \code{F77} and not vice versa.  It is valid for a library to be
+repeated although that should not be necessary.
+
+Note also that the mnemonics used for the external libraries are
+case-sensitive.  Most are all-uppercase, \code{Motif} is the one exception.
+
+The \code{*ROOT} variables in the external library definitions are not used
+directly by \filref{makedefs} but may allow the site-specific \file{makedefs}
+to provide a simple redefinition as explained elsewhere (\sref{makedefs}).
+The other four variables are only used within \file{makedefs} as follows:
+\begin{itemize}
+\item
+   The \code{*DEFS} variables are collected into a variable called
+   \code{XTRNDEFS} which is appended to the C-preprocessor options
+   (\code{CPPDBG} and \code{CPPOPT}) in \filref{makedefs}.  \code{XTRNDEFS}
+   is not used outside \file{makedefs}.
+\item
+   The \code{*INCD} variables are given a \code{-I} prefix and collected
+   together after \code{\$(AIPSCODE)/include} in a variable called
+   \code{AIPSINCL} which is used as a compiler option in the generic
+   makefiles.
+\item
+   The \code{*LIBD} variables are collected into a variable called
+   \code{XLIBPATH} which is only used within \filref{makedefs} to construct
+   \code{XTRNLIBS} (see next item).
+\item
+   The \code{*LIB} variables are appended to \code{\$(XLIBPATH)} and there
+   followed by \code{\$(ARCHLIBS)} (platform-specific unix system libraries)
+   to form \code{XTRNLIBS}.  \code{XTRNLIBS} is used in the link list by the
+   \code{app} and \code{tst} makefiles.
+\end{itemize}
+
+While external libraries may have preprocessor definitions associated with
+them, it is also possible to add preprocessor directives to a per-directory
+makefile via the \code{CPPMODU} variable.  \code{CPPMODU} is processed within
+\file{makedefs} the same way as preprocessor definitions defined for each
+external library, that is, they are appended to the C-preprocessor options
+\code{CPPDBG} and \code{CPPOPT} and not otherwise used outside
+\file{makedefs}.  An example of its usage
+
+\begin{verbatim}
+   XLIBLIST := GLISH WCSLIB F77
+   CPPMODU  := -DAIPS_UNAME
+   include $(word 1, $(AIPSPATH))/code/install/makefile.app
+\end{verbatim}
+
+\noindent
+Note that preprocessor macro definitions made via \code{CPPMODU} must not be
+platform-specific since this would impede portability.  Any such definitions
+should be made in \file{makedefs}.
+
+\subsection*{See also}
+
+\filref{makedefs}, \aipspp\ makefile definitions.\\
+\filref{testdefs}, test \file{makedefs} definitions.\\
+\exeref{updatelib}, update an \aipspp\ object library.
+
+% ----------------------------------------------------------------------------
+ 
+\newpage
+\section{Template instantiation}
+\label{Template instantiation}
+\index{compilation -- templates}
+\index{instantiation -- templates}
+\index{specialization -- templates}
+\index{system generation -- templates}
+\index{templates -- instantiation}
+\index{templates -- specialization}
+\index{types -- parameterized}
+\index{parameterized types}
+
+\cplusplus\ template instantiation in \aipspp
+ 
+\subsection*{C++ template classes}
+
+\aipspp\ makes heavy use of \cplusplus\ template classes, also referred to as
+``parameterized types''.  These are typically used to implement ``container''
+classes, for example \code{Set}, \code{List}, and \code{Array} classes, which
+serve to aggregate objects of another type.  In \cplusplus\, \code{Set} would
+be defined in ``template'' form as \code{Set<T>}, where the template type (or
+parameter), \code{T}, represents some as yet unspecified data type.  This
+saves having to code \code{Set} classes separately for \code{int},
+\code{float}, or general \code{Object} data types. 
+
+The \cplusplus\ compiler ``instantiates'' the \code{Set<T>} class template for
+objects of type \code{float} (say) when it compiles a piece of code which
+declares that it wants to use \code{Set<float>}.
+
+Global functions can also be templated.  The argument list and return value
+may be defined in terms of template type \code{T}, where \code{T} often (but
+not necessarily) refers to a template class.
+
+It often happens that particular template classes and functions can be
+implemented more efficiently for a particular template type by manual coding
+rather than by instantiation of the class or function template.  \cplusplus
+allows ``template specializations'' to be written for particular instances of
+template classes, but some compilers may require these to be registered in
+a particular way.
+ 
+\subsection*{Instantiation mechanisms}
+
+While no two \cplusplus\ compilers use exactly the same template instantiation
+mechanism there are two basic types:
+
+\begin{description}
+\item[automatic:]
+   Some compilers deduce what templates need to be instantiated, the only
+   outside intervention needed being provided by compile-line options.  These
+   compilers maintain a ``template repository'' which holds intermediate files
+   generated in the instantiation process.  Older \textsc{cfront}-based
+   compilers did all template instantiation at link time, but more modern
+   ``native'' compilers do as much as possible when the object library is
+   generated.  They include template object files together with those
+   generated from the class implementation files in order to speed up the
+   linking phase.
+
+   Since the compiler needs to locate all \cplusplus\ class implementation and
+   header files required for the instantiation this is a non-trivial operation
+   and this method is notoriously bug-ridden.
+
+\item[manual:]
+   The \gnu\ \cplusplus\ compiler, \unixexe{g++}, cannot deduce what templates
+   need to be instantiated.  However, it does accept a small \cplusplus\ source
+   file which includes the necessary class implementation and header files and
+   declares the template of the desired type.
+\end{description}
+
+The proliferation of template instantiation mechanisms has presented a
+significant challenge for the \aipspp\ system, particularly in avoiding the
+introduction of compiler-specific procedures.
+
+\subsubsection*{Template repositories}
+
+Compilers which maintain template repositories have mostly been accomodated
+via the use of \code{PTRDBGD}, \code{PTROPTD} variables in \file{makedefs},
+and also in distinguishing between the archiver used for \cplusplus\ object
+libraries (\code{CXXAR}) and other libraries (\code{AR}).
+
+\subsubsection*{Template specialization and the Sun native compiler}
+
+The Sun native compiler requires template specializations to be registered in
+the template instantiation options file, \file{Template.opt}, which resides in
+the template repository.  Within \aipspp\ these specializations are registered
+in \file{specializations} files which reside in the same directory as the
+\cplusplus\ code.  A \code{specialize} rule is supplied with the initial
+version of \file{makedefs} supplied for \code{sun4sol\_ntv} installations, and
+\code{specialize} is added as a dependency of \code{allsys}.  The
+\code{specialize} rule checks for the existence of a \file{specializations}
+file and if found merges its contents into \file{Template.opt}.  In this way
+the compiler specific behaviour is isolated to the local makedefs file and a
+set of \file{specializations} files which are ignored by other compilers.
+
+\subsubsection*{Do-it-yourself (diy) templates}
+
+The \gnu\ \cplusplus\ compiler, \unixexe{g++}, must have template
+instantiation files supplied to it.  This ``do-it-yourself'' mode is enabled
+by setting the \code{TEMPLATES} variable in \filref{makedefs} to \code{diy}.
+
+Templates to be instantiated are discovered during code development via the
+list of unresolved symbols which results when attempting to compile a program.
+The linker reports the mangled names of the templates and these may be
+demangled with the \gnu\ version of \unixexe{c++filt} (the name mangling
+scheme used by \unixexe{g++} differs from other compilers).
+
+It is up to the programmer to supply the name of the class implementation file
+and any required header files for each template to be instantiated.  This
+information is recorded as a one-line entry in the \file{templates} file as
+described in the entry for \exeref{mkinst}.  The \file{templates} files are
+maintained within the \aipspp\ system and programmers may also create private
+copies for code development.
+
+\file{templates} files may reside in any \file{imp}, \file{app} or \file{tst}
+directory.  However, these are handled in different ways when compiling the
+system (see chapter~\ref{Code development} for programmer usage):
+\begin{itemize}
+\item
+   Template instantiations generated in an \file{implement} directory are
+   added to the related system object library so that they may be shared by
+   all applications and test programs which use that library.  By convention
+   such \file{templates} files are restricted to the \file{\_ReposFiller}
+   ``module'' for each \aipspp\ package.
+\item
+   \file{app} directories contain only a single application so the template
+   instantiation files generated therein are not pre-compiled but instead are
+   added to the compilation command for the application.
+\item
+   Since \file{tst} directories may contain several test programs the template
+   instantiation files are pre-compiled and inserted into a temporary object
+   library which is deleted after all test programs have been compiled.
+\end{itemize}
+ 
+\subsection*{See also}
+ 
+\exeref{mkinst}, Generate template instantiation files from a list.\\
+\exeref{reident}, Remake the idents in a \file{templates} list.
+
+% ----------------------------------------------------------------------------
  
 \newpage
 \section{System generation makefile rules}
@@ -1133,6 +1270,7 @@ used to process these source files and the type of files produced.
 \index{makefile.pkg}
 \index{makefile.scr}
 \index{makefile.tst}
+\index{perl scripts -- installation}
  
 \gnu\ makefile rules used to rebuild \aipspp
  
@@ -1301,6 +1439,13 @@ plain-text sources are updated from the \rcs\ repository first if necessary.
    corresponding \file{\$(AIPSRCS)} directories (if the \rcs\ repositories
    are present).
 
+   In installations which use do-it-yourself template instantiation
+   (\sref{Template instantiation}) the \code{chkout} rule also generates
+   template instantiation files in the \file{tmplinst} subdirectory by
+   invoking \exeref{mkinst}.  (These \file{tmplinst} subdirectories are
+   maintained by the makefile in their parent directory and should not contain
+   their own makefile.)
+
    The \code{chkout} target for the \code{doc} makefile explicitly handles all
    subdirectories with names of the form \file{.dir} so that these
    subdirectories need not and should not contain a makefile.
@@ -1400,8 +1545,9 @@ plain-text sources are updated from the \rcs\ repository first if necessary.
       \file{top}: (none)
    \item
       \file{tst}: Test executables and reports in \file{\$(BINTESTD)}
-      generated by the \code{runtests} rule.  Also, the intermediate object
-      library produced when compiling all test executables in the directory.
+      generated by the \code{runtests} rule (see section \sref{Diagnostic
+      makefile rules}).  Also, the intermediate object library produced when
+      compiling all test executables in the directory.
    \end{itemize}
 
 \item
@@ -1411,17 +1557,6 @@ plain-text sources are updated from the \rcs\ repository first if necessary.
    \item
       \file{imp}: Delete defunct and unrecognized files from the corresponding
       subdirectory of \file{\$(AIPSDOCS)}.
-   \end{itemize}
-
-\item
-   \code{cleanfail} : (specific)
-   \\ Delete reports for failed tests, see \code{runtests} below.
-   \begin{itemize}
-   \item
-      \file{tst}: Delete reports for failed tests in \file{\$(BINTESTD)}.  The
-      deletion of these files will cause the \code{runtests} rule to
-      selectively redo those tests.  The list of failed tests is determined
-      from \file{\$(BINTESTD)/runtests.report}.
    \end{itemize}
 
 \item
@@ -1620,60 +1755,6 @@ plain-text sources are updated from the \rcs\ repository first if necessary.
       program in \file{\$(CODEDIR)}.  Delete the intermediate object library
       which may be produced for template instantiations created from a
       \file{templates} file.
-   \end{itemize}
-
-\item
-   \code{\%.report} : (specific, pattern rule)
-   \\ Compile and exercise a test program.
-   \begin{itemize}
-   \item
-      \file{tst}: Compile a test program and invoke \exeref{assay} to exercise
-      it.  If necessary for the compilation, template instantiation files will
-      be created from a \file{templates} file and compiled into an object
-      library (which is retained).  The executable and \file{.report} file,
-      which contains the output from \aipsexe{assay}, are deposited in
-      \file{\$(BINTESTD)}.  The \file{.report} file for each test program is
-      used as a dependency file so the test will not be done if the
-      \file{.report} file exists and is newer than the source files and
-      libraries used to generate the test executable.  The \code{cleanfail}
-      rule can be used to selectively delete reports for failed tests.  A
-      one-line summary of the test result is reported by the rule which also
-      collates and maintains these in \file{\$(BINTESTD)/runtests.report}.
-      The test executable will be deleted when gmake terminates (unless an
-      up-to-date executable already existed in \file{\$(BINTESTD)} when the
-      rule was invoked).
-   \end{itemize}
-
-\item
-   \code{runtests} : (general/specific)
-   \\ The general rule does nothing.  Specific makefiles behave as follows:
-   \begin{itemize}
-   \item
-      \file{app}: (none)
-   \item
-      \file{aps}: (none)
-   \item
-      \file{chk}: (none)
-   \item
-      \file{doc}: (none)
-   \item
-      \file{ftn}: (none)
-   \item
-      \file{imp}: Recurse into every package subdirectory.
-   \item
-      \file{ins}: (none)
-   \item
-      \file{pkg}: Recurse into the \file{implement} subdirectory.
-   \item
-      \file{scr}: (none)
-   \item
-      \file{top}: Recurse into every package subdirectory then print a summary
-      of results.
-   \item
-      \file{tst}: Invoke the \code{\%.report} pattern rule for every test
-      program in the directory.  The intermediate object library containing
-      template instantiations (if any) is deleted when all tests have been
-      done.
    \end{itemize}
 
 \item
@@ -1972,74 +2053,6 @@ files in a subdirectory (\file{tmplinst}) of the directory where the
  
 Original: 1996/04/17 by Mark Calabretta, ATNF after a \unixexe{perl} script by
 Shelby Yang, NRAO.
-
-% ----------------------------------------------------------------------------
- 
-\newpage
-\section{Template instantiation}
-\label{Template instantiation}
-\index{compilation -- template instantiation}
-\index{instantiation -- templates}
-\index{system generation -- template instantiation}
-\index{templates -- instantiation}
-
-\cplusplus\ template instantiation in \aipspp
- 
-\subsection*{\cplusplus\ template classes}
-
-\aipspp\ makes heavy use of \cplusplus\ template classes.  These are typically
-used to implement ``container'' classes, for example \code{Set}, \code{List},
-and \code{Array} classes, which contain serve to aggregate objects of another
-type.
-
-Rather than separately define, say, \code{Set} classes for \code{int},
-\code{float}, or general \code{Object} data types, \cplusplus\ allows
-\code{Set} to be defined in ``template'' form, say \code{Set<T>} where the
-template type, \code{T}, represents some as yet unspecified data type.
-
-The \code{Set<T>} template is said to be ``instantiated'' by the compiler for
-objects of type \code{float} (say) when a piece of \cplusplus\ code declares
-that it wants to use Set<float>.
- 
-\subsection*{Instantiation mechanisms}
-
-While no two \cplusplus\ compilers use exactly the same template instantiation
-mechanism there are two basic types:
-
-\begin{description}
-\item[automatic:]
-   Some compilers deduce what templates need to be instantiated, the only
-   outside intervention needed being provided by compile-line options.  These
-   compilers maintain a ``template repository'' which holds intermediate files
-   generated in the instantiation process.  Older \textsc{cfront}-based
-   compilers did all template instantiation at link time, but more modern
-   ``native'' compilers do as much as possible when the object library is
-   generated.  They include template object files together with those
-   generated from the class implementation files in order to speed up the
-   linking phase.
-
-   Since the compiler needs to locate all \cplusplus\ class implementation and
-   header files required for the instantiation this is a non-trivial operation
-   and this method is notoriously bug-ridden.
-
-\item[manual:]
-   The \gnu\ \cplusplus\ compiler, \unixexe{g++}, must be told what templates
-   to instantiate.  It accepts a small \cplusplus\ source file which includes
-   the necessary class implementation and header files and declares the
-   template of the desired type.
-\end{description}
-
-The proliferation of template instantiation mechanisms has presented a
-significant challenge for the \aipspp\ system, particularly in avoiding the
-introduction of compiler-specific procedures.
-
-Compilers which maintain template repositories have mostly been accomodated
-via the use of \code{PTRDBGD}, \code{PTROPTD} variables in \file{makedefs},
-and also in distinguishing between the archiver used for \cplusplus\ object
-libraries (\code{CXXAR}) and other libraries (\code{AR}).
-
-% >>>
-...to be continued
  
 % ----------------------------------------------------------------------------
 
@@ -2114,6 +2127,24 @@ with names of the form \file{updatelib.*}.  These are described below.
 \subsection*{Notes}
 
 \begin{itemize}
+\item
+   When building the system the implement makefile recurses through all module
+   subdirectories, compiling object modules and accumulating them in a
+   temporary directory.  The object library is only updated after all modules
+   have been compiled.  The alternative of updating the object library after
+   processing each software module imposes a large overhead because of the
+   large size of the object library, particularly the debug version.
+ 
+   However, the large number of object modules in some \aipspp\ packages may
+   cause problems for \exe{updatelib} simply by causing the argument list to
+   exceed the maximum imposed by the unix kernel.  This is particularly
+   troublesome for systems which use do-it-yourself template instantiation 
+   (\sref{Template instantiation}), or have a small value of \code{ARG\_MAX}
+   in \file{limits.h} (e.g. HPUX).
+
+   To circumvent this \exe{updatelib} recognizes an \code{UPDBATCH} makedefs
+   variable which causes it to process object modules in batches no bigger
+   than the specified size.
 \item
    \exe{updatelib} should not be terminated with a \code{SIGKILL}
    (``\code{kill -9}'') since this would prevent it from cleaning up its
