@@ -6332,3 +6332,4 @@
 18 130 src mv aips/implement/OS/HostInfo_irix.h aips/implement/OS/HostInfoIrix.h
 18 130 src mv aips/implement/OS/HostInfo_linux.h aips/implement/OS/HostInfoLinux.h
 18 130 src mv aips/implement/OS/HostInfo_osf1.h aips/implement/OS/HostInfoOsf1.h
+18 130 src mv aips/implement/OS/HostInfo_solaris.h aips/implement/OS/HostInfoSolaris.h
