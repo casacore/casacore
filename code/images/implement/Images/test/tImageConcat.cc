@@ -443,6 +443,7 @@ void testLogger()
 {
   // Make a concatenated image and make sure the image objects are gone.
    ImageConcat<Float> lc (0, True);
+   ImageConcat<Float> lc2 (0, True);
    {
 // Make some Arrays
 
@@ -466,11 +467,14 @@ void testLogger()
                             "tImageConcat_tmp2.imga");
       im1.put(a1); 
       im2.put(a2);
+      lc.setImage(im1, True);
+      lc.setImage(im2, True);
+      lc2.setImage(im2, True);
+      lc2.setImage(im1, True);
+      lc2.setImage(im2, True);
       im1.logger().logio() << "message1a" << LogIO::POST;
       im1.logger().logio() << "message1b" << LogIO::POST;
       im2.logger().logio() << "message2" << LogIO::POST;
-      lc.setImage(im1, True);
-      lc.setImage(im2, True);
    }
    // Add a message and check if the concatenation has 4 messages.
    LoggerHolder& logger = lc.logger();
@@ -481,4 +485,29 @@ void testLogger()
       nmsg++;
    }
    AlwaysAssertExit (nmsg == 4);
+
+   // If it also works well with the copy ctor and the assignent operator.
+   {
+     ImageConcat<Float> ic2(lc2);
+     {
+       LoggerHolder& logger = ic2.logger();
+       logger.logio() << "message_conc2" << LogIO::POST;
+       uInt nmsg=0;
+       for (LoggerHolder::const_iterator iter = logger.begin(); iter != logger.end(); iter++) {
+	 cout << iter->message() << endl;
+	 nmsg++;
+       }
+       AlwaysAssertExit (nmsg == 5);
+     }
+     ic2 = lc;
+     {
+       LoggerHolder& logger = ic2.logger();
+       uInt nmsg=0;
+       for (LoggerHolder::const_iterator iter = logger.begin(); iter != logger.end(); iter++) {
+	 cout << iter->message() << endl;
+	 nmsg++;
+       }
+       AlwaysAssertExit (nmsg == 4);
+     }
+   }
 }
