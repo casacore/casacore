@@ -909,7 +909,47 @@ LatticeExprNode amp (const LatticeExprNode& left,
    cout << "LatticeExprNode:: 2d function amp" << endl;
 #endif
 
-   return sqrt(pow(left,2.0) + pow(right,2.0));
+// There is no way in the system to convert "2" to
+// a given DataType
+
+   LatticeExprNode leftExpr;
+   switch (left.dataType()) {
+   case TpFloat:
+      leftExpr = pow(left,Float(2.0));
+      break;
+   case TpDouble:
+      leftExpr = pow(left,Double(2.0));
+      break;
+   case TpComplex:
+      leftExpr = pow(left,Complex(2.0,0.0));
+      break;
+   case TpDComplex:
+      leftExpr = pow(left,DComplex(2.0,0.0));
+      break;
+   default:
+      throw (AipsError
+            ("LatticeExprNode::amp - Unknown data type"));
+   }
+   LatticeExprNode rightExpr;
+   switch (right.dataType()) {
+   case TpFloat:
+      rightExpr = pow(right,Float(2.0));
+      break;
+   case TpDouble:
+      rightExpr = pow(right,Double(2.0));
+      break;
+   case TpComplex:
+      rightExpr = pow(right,Complex(2.0,0.0));
+      break;
+   case TpDComplex:
+      rightExpr = pow(right,DComplex(2.0,0.0));
+      break;
+   default:
+      throw (AipsError
+            ("LatticeExprNode::amp - Unknown data type"));
+   }
+
+   return sqrt(leftExpr+rightExpr);
 }
 
 
