@@ -306,6 +306,9 @@ public:
   virtual IPosition increment() const;
   // </group>
 
+  // Return the axis path.
+  virtual const IPosition & axisPath() const = 0;
+
   // Function which returns a pointer to dynamic memory of an exact copy 
   // of this LatticeNavigator. It is the responsibility of the caller to
   // release this memory. 
