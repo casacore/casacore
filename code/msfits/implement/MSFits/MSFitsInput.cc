@@ -637,6 +637,7 @@ void MSFitsInput::fillMSMainTable(Int& nField, Int& nSpW)
   Matrix<Complex> vis(nCorr,nChan);
   Vector<Float> sigma(nCorr);
   Matrix<Float> weightSpec(nCorr, nChan);
+  Vector<Float> weight(nCorr);
   const Int nCat = 3; // three initial categories
   // define the categories
   Vector<String> cat(nCat);
@@ -684,7 +685,6 @@ void MSFitsInput::fillMSMainTable(Int& nField, Int& nSpW)
   lastAnt1=-1; lastAnt2=-1; lastArray=-1; lastSpW=-1; lastSourceId=-1;
   Double lastTime=0;
   Bool lastRowFlag=False;
-  Float lastWeight=0.0;
   for (Int group=0; group<nGroups; group++) {
     // Read next group and
     // get time in MJD seconds
@@ -707,9 +707,11 @@ void MSFitsInput::fillMSMainTable(Int& nField, Int& nSpW)
       // keep track of minimum which is the only one
       Double tempint;
       tempint=time-lastTime;
-      // if interval larger than precision (and zero):
+      // if interval larger than UVFITS precision (and zero):
       if (tempint > 0.01) {
 	interval=tempint;
+        // assume exposure=interval (wrong for pulsar gating!)
+        exposure=interval;
       }
     }
 
@@ -737,30 +739,6 @@ void MSFitsInput::fillMSMainTable(Int& nField, Int& nSpW)
       // IFs go to separate rows in the MS
       ms_p.addRow(); 
       row++;
-      
-      for (Int ix=0; ix<nx; ix++) {
-	for (Int iy=0; iy<ny; iy++) {
- 	  const Float visReal = priGroup_p(count++);
- 	  const Float visImag = priGroup_p(count++);
- 	  const Float wt = priGroup_p(count++); 
-	  const Int pol = (polFastest ? corrIndex_p[iy] : corrIndex_p[ix]);
-	  const Int chan = (polFastest ? ix : iy);
- 	  if (wt <= 0.0) {
-	    weightSpec(pol, chan) = -wt;
-	    flag(pol, chan) = True;
-	  } else {
-	    weightSpec(pol, chan) = wt;
-	    flag(pol, chan) = False;
-	  }
-	  vis(pol, chan) = Complex(visReal, visImag);
- 	}
-      }
-
-      // If available, fill in exposure and interval columns for this row
-      if (iInttim > -1) {
- 	msc.interval().put(row,interval);
- 	msc.exposure().put(row,exposure);
-      }
 
       // fill in values for all the unused columns
       if (row==0) {
@@ -772,22 +750,48 @@ void MSFitsInput::fillMSMainTable(Int& nField, Int& nSpW)
  	msc.processorId().put(row,-1);
  	msc.observationId().put(row,0);
  	msc.stateId().put(row,-1);
- 	Vector<Float> tmp(nCorr); tmp=1.0;
- 	msc.sigma().put(row,tmp);
- 	msc.weight().put(row,tmp);
- 	lastWeight=1.0;
       }
-      msc.data().put(row,vis);
-      // single channel case: make weight and weightSpectrum identical.
-      // multichannel case: weight should not be used.
-      if (nChan==1) { 
- 	const Vector<Float> weight(weightSpec.column(0).copy()); 
- 	if (weight(0)!=lastWeight) {
- 	  msc.weight().put(row,weight);
- 	  lastWeight=weight(0);
+
+      weight=0.0;
+      // Loop over chans and corrs:
+      for (Int ix=0; ix<nx; ix++) {
+	for (Int iy=0; iy<ny; iy++) {
+ 	  const Float visReal = priGroup_p(count++);
+ 	  const Float visImag = priGroup_p(count++);
+ 	  const Float wt = priGroup_p(count++); 
+	  const Int pol = (polFastest ? corrIndex_p[iy] : corrIndex_p[ix]);
+	  const Int chan = (polFastest ? ix : iy);
+ 	  if (wt <= 0.0) {
+	    weightSpec(pol, chan) = abs(wt);
+	    flag(pol, chan) = True;
+	  } else {
+	    weightSpec(pol, chan) = wt;
+	    flag(pol, chan) = False;
+	  }
+          // weight column is sum of weight_spectrum (each pol):
+          weight(pol)+=wt;
+	  vis(pol, chan) = Complex(visReal, visImag);
  	}
       }
+
+      // calculate sigma (weight = inverse variance)
+      for (Int nc=0; nc<nCorr; nc++) {
+        if (weight(nc)>0.0) {
+	  sigma(nc)=sqrt(1.0/weight(nc));
+	} else {
+	  sigma(nc)=0.0;
+	}
+      }
+
+      msc.interval().put(row,interval);
+      msc.exposure().put(row,exposure);
+
+      msc.data().put(row,vis);
+
+      msc.weight().put(row,weight);
+      msc.sigma().put(row,sigma);
       msc.weightSpectrum().put(row,weightSpec); 
+
       msc.flag().put(row,flag);
       msc.flagCategory().put(row,flagCat);
       Bool rowFlag=allEQ(flag,True);
