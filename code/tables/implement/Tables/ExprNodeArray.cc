@@ -183,7 +183,7 @@ TableExprNodeArrayBool::~TableExprNodeArrayBool()
 {}
 Bool TableExprNodeArrayBool::getElemBool (uInt rownr, const IPosition& index)
 {
-    Array<Bool> arr = col_p.getSlice (rownr, index);
+    Array<Bool> arr = col_p.getSlice (rownr, Slicer(index));
     Bool deleteIt;
     const Bool* f = arr.getStorage (deleteIt);
     Bool val = *f;
@@ -205,7 +205,7 @@ TableExprNodeArrayuChar::~TableExprNodeArrayuChar()
 double TableExprNodeArrayuChar::getElemDouble (uInt rownr,
 					       const IPosition& index)
 {
-    Array<uChar> arr = col_p.getSlice (rownr, index);
+    Array<uChar> arr = col_p.getSlice (rownr, Slicer(index));
     Bool deleteIt;
     const uChar* f = arr.getStorage (deleteIt);
     uChar val = *f;
@@ -228,7 +228,7 @@ TableExprNodeArrayShort::~TableExprNodeArrayShort()
 double TableExprNodeArrayShort::getElemDouble (uInt rownr,
 					       const IPosition& index)
 {
-    Array<Short> arr = col_p.getSlice (rownr, index);
+    Array<Short> arr = col_p.getSlice (rownr, Slicer(index));
     Bool deleteIt;
     const Short* f = arr.getStorage (deleteIt);
     Short val = *f;
@@ -251,7 +251,7 @@ TableExprNodeArrayuShort::~TableExprNodeArrayuShort()
 double TableExprNodeArrayuShort::getElemDouble (uInt rownr,
 						const IPosition& index)
 {
-    Array<uShort> arr = col_p.getSlice (rownr, index);
+    Array<uShort> arr = col_p.getSlice (rownr, Slicer(index));
     Bool deleteIt;
     const uShort* f = arr.getStorage (deleteIt);
     uShort val = *f;
@@ -274,7 +274,7 @@ TableExprNodeArrayInt::~TableExprNodeArrayInt()
 double TableExprNodeArrayInt::getElemDouble (uInt rownr,
 					     const IPosition& index)
 {
-    Array<Int> arr = col_p.getSlice (rownr, index);
+    Array<Int> arr = col_p.getSlice (rownr, Slicer(index));
     Bool deleteIt;
     const Int* f = arr.getStorage (deleteIt);
     Int val = *f;
@@ -296,7 +296,7 @@ TableExprNodeArrayuInt::~TableExprNodeArrayuInt()
 double TableExprNodeArrayuInt::getElemDouble (uInt rownr,
 					      const IPosition& index)
 {
-    Array<uInt> arr = col_p.getSlice (rownr, index);
+    Array<uInt> arr = col_p.getSlice (rownr, Slicer(index));
     Bool deleteIt;
     const uInt* f = arr.getStorage (deleteIt);
     uInt val = *f;
@@ -318,7 +318,7 @@ TableExprNodeArrayFloat::~TableExprNodeArrayFloat()
 double TableExprNodeArrayFloat::getElemDouble (uInt rownr,
 					       const IPosition& index)
 {
-    Array<Float> arr = col_p.getSlice (rownr, index);
+    Array<Float> arr = col_p.getSlice (rownr, Slicer(index));
     Bool deleteIt;
     const Float* f = arr.getStorage (deleteIt);
     Float val = *f;
@@ -341,7 +341,7 @@ TableExprNodeArrayDouble::~TableExprNodeArrayDouble()
 double TableExprNodeArrayDouble::getElemDouble (uInt rownr,
 						const IPosition& index)
 {
-    Array<double> arr = col_p.getSlice (rownr, index);
+    Array<double> arr = col_p.getSlice (rownr, Slicer(index));
     Bool deleteIt;
     const double* f = arr.getStorage (deleteIt);
     double val = *f;
@@ -364,7 +364,7 @@ TableExprNodeArrayComplex::~TableExprNodeArrayComplex()
 DComplex TableExprNodeArrayComplex::getElemDComplex (uInt rownr,
 						     const IPosition& index)
 {
-    Array<Complex> arr = col_p.getSlice (rownr, index);
+    Array<Complex> arr = col_p.getSlice (rownr, Slicer(index));
     Bool deleteIt;
     const Complex* f = arr.getStorage (deleteIt);
     DComplex val;
@@ -389,7 +389,7 @@ TableExprNodeArrayDComplex::~TableExprNodeArrayDComplex()
 DComplex TableExprNodeArrayDComplex::getElemDComplex (uInt rownr,
 						      const IPosition& index)
 {
-    Array<DComplex> arr = col_p.getSlice (rownr, index);
+    Array<DComplex> arr = col_p.getSlice (rownr, Slicer(index));
     Bool deleteIt;
     const DComplex* f = arr.getStorage (deleteIt);
     DComplex val = *f;
@@ -412,7 +412,7 @@ TableExprNodeArrayString::~TableExprNodeArrayString()
 String TableExprNodeArrayString::getElemString (uInt rownr,
 						const IPosition& index)
 {
-    Array<String> arr = col_p.getSlice (rownr, index);
+    Array<String> arr = col_p.getSlice (rownr, Slicer(index));
     Bool deleteIt;
     const String* f = arr.getStorage (deleteIt);
     String val = *f;
