@@ -668,7 +668,7 @@ void MSSummary::listSpectralAndPolInfo (LogIO& os, Bool verbose) const
       os << msSWC.resolution()(spw)(IPosition(1,0))/1000<<"kHz  ";
       // 5th column: total bandwidth of the spectral window
       os.output().width(widthFrqNum);
-      os<< msSWC.totalBandwidth()(row)/1000<<"kHz  ";
+      os<< msSWC.totalBandwidth()(spw)/1000<<"kHz  ";
       // 6th column: the correlation type(s)
       for (uInt i=0; i<msPolC.corrType()(pol).nelements(); i++) {
 	os.output().width(widthCorrType);
