@@ -2382,3 +2382,9 @@
 11 213 src rm aips/implement/Mathematics/FourierTool.cc
 11 213 src rm aips/implement/Mathematics/GridTool.h
 11 213 src rm aips/implement/Mathematics/GridTool.cc
+11 213 src rm aips/implement/Mathematics/test/tGridTool.in
+11 213 src rm aips/implement/Mathematics/test/tGridTool.cc
+11 213 src rm aips/implement/Mathematics/test/tGridTool.out
+11 213 src rm aips/implement/Mathematics/test/tConvVector.in
+11 213 src rm aips/implement/Mathematics/test/tConvVector.cc
+11 213 src rm aips/implement/Mathematics/test/tConvVector.out
