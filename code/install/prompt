@@ -57,13 +57,16 @@
      endif
 
 #    Encode an escape sequence in "prompt" to change the window label.
+     set aipspath
+     if ($?AIPSPATH) set aipspath = "$AIPSPATH"
      if ("$term" == xterm) then
-        set idpl = "]2;$prlvl  $AIPSPATH  $cwd"
+        set idpl = "]2;$prlvl  $aipspath  $cwd"
      else if ("$term" == sun-cmd) then
-        set idpl = "]l$prlvl  $AIPSPATH  $cwd\"
+        set idpl = "]l$prlvl  $aipspath  $cwd\"
      else if ("$term" == sun && "`tty`" != /dev/console) then
-        set idpl = "]l$prlvl  $AIPSPATH  $cwd\"
+        set idpl = "]l$prlvl  $aipspath  $cwd\"
      endif
+     unset aipspath
 
      if ($?idpl) then
         if ($?noAutoWinLabel) then
