@@ -267,7 +267,7 @@ TableRecord WCPolygon::toRecord(const String&) const
    rec.define ("x", itsXWC);
    rec.define ("y", itsYWC);
    rec.define ("worldAxes", itsWorldAxes);
-   rec.define ("offset", itsIsOffset);
+   rec.define ("isOffset", itsIsOffset);
    if (!itsCSys.save(rec, "coordinates")) {
       throw (AipsError ("WCPolygon::toRecord: could not save Coordinate System"));
    }
@@ -294,7 +294,7 @@ WCPolygon* WCPolygon::fromRecord (const TableRecord& rec,
       return new WCPolygon(Vector<Double>(rec.asArrayDouble ("x")),
                            Vector<Double>(rec.asArrayDouble ("y")),
                            Vector<Int>(rec.asArrayInt ("worldAxes")),
-                           *pCSys, rec.asBool("offset"));
+                           *pCSys, rec.asBool("isOffset"));
    } else if (rec.isDefined("pixelAxes")) {
 //
 // Convert pixel axes to world axes
@@ -313,7 +313,7 @@ WCPolygon* WCPolygon::fromRecord (const TableRecord& rec,
 // 
          return new WCPolygon(Vector<Double>(rec.asArrayDouble ("x")),
                               Vector<Double>(rec.asArrayDouble ("y")),
-                              worldAxes, *pCSys, rec.asBool("offset"));
+                              worldAxes, *pCSys, rec.asBool("isOffset"));
       }
    } else {
       throw (AipsError ("WCPolygon::fromRecord - record has neither worldAxes nor pixelAxes fields defined"));
