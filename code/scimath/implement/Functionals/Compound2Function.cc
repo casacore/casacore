@@ -79,3 +79,32 @@ void NQCompoundFunction<AutoDiff<T> >::fromParam_p() const {
     parset_p = False;
   };
 }
+
+template <class T>
+void NQCompoundFunction<AutoDiff<T> >::toParam_p() {
+  for (uInt i=0; i<nparameters(); ++i) {
+    uInt k = functionPtr_p[funpar_p[i]]->nparameters();
+    uInt l = (*functionPtr_p[funpar_p[i]])[locpar_p[i]].nDerivatives();
+    // Set correct number of derivatives
+    if (nparameters() ==
+	(*functionPtr_p[funpar_p[i]])[locpar_p[i]].nDerivatives()) {
+      if (k != l) {
+	param_p[i] = AutoDiff<T>(T(0), k);
+	///	(*functionPtr_p[funpar_p[i]])[locpar_p[i]] =
+	l = k;
+      };
+    } else if ((*functionPtr_p[funpar_p[i]])[locpar_p[i]].nDerivatives()
+	       == 0 && l != 0) {
+      param_p[i] = AutoDiff<T>();
+      ///      (*functionPtr_p[funpar_p[i]])[locpar_p[i]] = AutoDiff<T>();
+      l = 0;
+    };
+    // Set the parameter data
+    for (uInt j=0; j<l; ++j) {
+      param_p[i].deriv(j+paroff_p[funpar_p[i]]) =
+	(*functionPtr_p[funpar_p[i]])[locpar_p[i]].deriv(j);
+    };
+    param_p[i].value() = (*functionPtr_p[funpar_p[i]])[locpar_p[i]].value();
+    param_p.mask(i) = functionPtr_p[funpar_p[i]]->mask(locpar_p[i]);
+  };
+}

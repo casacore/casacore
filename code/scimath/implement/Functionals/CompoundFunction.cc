@@ -50,3 +50,11 @@ void NQCompoundFunction<T>::fromParam_p() const {
     };
   };
 }
+
+template <class T>
+void NQCompoundFunction<T>::toParam_p() {
+  for (uInt i=0; i<nparameters(); ++i) {
+    param_p[i] = (*functionPtr_p[funpar_p[i]])[locpar_p[i]];
+    param_p.mask(i) = functionPtr_p[funpar_p[i]]->mask(locpar_p[i]);
+  };
+}

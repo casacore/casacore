@@ -62,6 +62,13 @@
 //
 // Member functions are added with the <src>addFunction()</src> method.
 //
+// In general the interaction with the function parameters should be through
+// the overall function parameters (i.e. through the parameters of the
+// <src>NQCompoundFunction</src>). If for any reason you want to set the
+// parameters of an individual function (see e.g. the example in the
+// <linkto class=Fit2D>Fit2D</a>), call <src>consolidate()</src> before and
+// after the actual setting.
+//
 // <note role=tip>
 // Check <linkto class=NQCompoundFunction>NQCombiFunction</linkto> class
 // for a simple linear combination of function objects </note>
@@ -127,8 +134,11 @@ template <class T> class NQCompoundFunction : public NQCompoundParam<T> {
   
   //# Member functions
   // Consolidate the parameter settings. This could be necessary if
-  // parameters have been set, and a copy constructor called.
-  NQCompoundFunction<T> &consolidate() { fromParam_p(); return *this; };
+  // parameters have been set, and a copy constructor called. This is
+  // necessary before and after the setting of <em>local</em> parameters; i.e.
+  // the parameters of the individual functions.
+  NQCompoundFunction<T> &consolidate() { fromParam_p();
+  toParam_p(); return *this; };
   // Return a copy of this object from the heap. The caller is responsible for
   // deleting the pointer.
   // <group>
@@ -140,7 +150,8 @@ private:
   //# Member functions
   // Copy the local parameters from general block
   void fromParam_p() const;
-
+  // Make the general block from local parameters
+  void toParam_p();
 };
 
 #define NQCompoundFunction_PS NQCompoundFunction
@@ -183,9 +194,11 @@ public NQCompoundParam<AutoDiff<T> > {
   
   //# Member functions
   // Consolidate the parameter settings. This could be necessary if
-  // parameters have been set, and a copy constructor called.
+  // parameters have been set, and a copy constructor called. This is
+  // necessary before and after the setting of <em>local</em> parameters; i.e.
+  // the parameters of the individual functions.
   NQCompoundFunction_PS<AutoDiff<T> > &consolidate() { fromParam_p();
-  return *this; };
+  toParam_p(); return *this; };
   // Return a copy of this object from the heap. The caller is responsible for
   // deleting the pointer.
   // <group>
@@ -197,6 +210,8 @@ public NQCompoundParam<AutoDiff<T> > {
   //# Member functions
   // Copy the local parameters to/from general block
   void fromParam_p() const;
+  // Make the general block from local parameters
+  void toParam_p();
 
 };
 
