@@ -42,7 +42,8 @@
 # Only have these rules if we are in programmer mode!
 #
 ifeq "$(MAKEMODE)" "programmer"
-   override TEXINPUTS := $(CODEDIR):$(EXTRA_TEXINPUTS):$(AIPSCODE)/doc/texinputs.dir:$(AIPSDOCS)/docs/user/helpfiles:$(TEXINPUTS)
+   override TEXINPUTS := $(CODEDIR):$(EXTRA_TEXINPUTS):$(AIPSCODE)/doc/texinputs.dir//:$(AIPSDOCS)/docs/user/helpfiles:$(TEXINPUTS)
+   override PATH := $(TEXBINROOT):$(PATH)
    %.htex : %.help
 	@ help2tex $< > $@
    %.dvi : %.htex
