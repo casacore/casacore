@@ -299,7 +299,7 @@ main()
 	mrvback = MRadialVelocity::Convert(rvLSR,
 					   MRadialVelocity::BARY)()
 	  .getValue();
-	if (nearAbs(mrvback, 0.0)) mrvback = 0;
+	if (nearAbs(mrvback, 0.0, 3e-13)) mrvback = 0;
 	cout << "and back: " << mrvback << endl;
     }
     
