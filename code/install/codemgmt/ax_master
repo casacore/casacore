@@ -3885,3 +3885,4 @@
 14 065 src mv trial/implement/Display/AttributeBuffer.cc trialdisplay/implement/Display/AttributeBuffer.cc
 14 065 src mv trial/implement/Display/ColorConversion.cc trialdisplay/implement/Display/ColorConversion.cc
 14 065 src mv trial/implement/Display/ColorDistribution.cc trialdisplay/implement/Display/ColorDistribution.cc
+14 065 src mv trial/implement/Display/Colormap.cc trialdisplay/implement/Display/Colormap.cc
