@@ -72,7 +72,7 @@ class CoordinateSystem;
 // the size of each dimension is always the size of the corresponding image axis.
 // The statistics are displayed as a function of location of the axes not
 // used to evaluate the statistics over.  The axes which you evaluate the statistics
-// over are called the cursor axes, the others are called the display axwes.
+// over are called the cursor axes, the others are called the display axes.
 //
 // For example, consider an image cube (call the axes xyz or [0,1,2]).  You could 
 // display statistics from xy planes (cursor axes [0,1]) as a function of z (display
@@ -92,11 +92,11 @@ class CoordinateSystem;
 //
 // This class generates a "storage image" into which it writes the accumulated
 // statistical sums.  It is from this storage image that the plotting and retrieval
-// arrays are drawn.  The storage image is actually put in a PagedArray.  This is a disk 
-// based storage medium.   The storage image is deleted when the ImageStatistics class 
+// arrays are drawn.  The storage image is actually put in a <src>PagedArray</src>.  This is a disk 
+// based storage medium.   The storage image is deleted when the <src>ImageStatistics</src> class 
 // object destructs.    However, currently, if the process is terminated ungracefully,
 // the storage image will be left over.  It has a name starting with the string
-// "ImageStatistics_Sums_" and then a unique number. You can safely delete it.
+// "ImageStatistics::" and then a unique number. You can safely delete it.
 //
 // </synopsis>
 //
@@ -257,7 +257,8 @@ public:
 // indicates an invalid plotting device, or that the internal state of the class is bad.
    Bool display ();
 
-// Return the display axes
+// Return the display axes.  The returned vector will be valid only if <src>setAxes</src>
+// has been called, or if one of the active "display" or "get*" methods has been called. 
    Vector<Int> displayAxes() const {return displayAxes_p;} 
 
 // These functions retrieve the designated statistics into an array.  The shape of the
