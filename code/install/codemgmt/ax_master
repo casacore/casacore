@@ -4913,3 +4913,4 @@
 14 316 sys rm libexec/newdishplot.g
 14 316 src rm trial/apps/newdish/newdishresman.g
 14 316 sys rm libexec/newdishresman.g
+14 316 src rm trial/apps/newdish
