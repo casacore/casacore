@@ -28,6 +28,13 @@
 #include <ms/MeasurementSets/MSSpwParse.h>
 #include <ms/MeasurementSets/MSDataDescIndex.h>
 #include <ms/MeasurementSets/MSSpWindowIndex.h>
+#include <ms/MeasurementSets/MSPolIndex.h>
+#include <casa/Logging/LogIO.h>
+#include <casa/Arrays/Slicer.h>
+#include <casa/Arrays/IPosition.h>
+#include <tables/Tables/ArrColDesc.h>
+#include <tables/Tables/ArrayColumn.h>
+
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
@@ -49,10 +56,12 @@ MSSpwParse::MSSpwParse (const MeasurementSet* ms)
 
 const TableExprNode *MSSpwParse::selectSpwIds(const Vector<Int>& spwIds)
 {
+  LogIO os(LogOrigin("MSSpwParse", "selectSpwIds()", WHERE));
     // Look-up in DATA_DESC sub-table
     MSDataDescIndex msDDI(ms()->dataDescription());
     String colName = MS::columnName(MS::DATA_DESC_ID);
 
+    os << " vector length " << msDDI.matchSpwId(spwIds).nelements() <<LogIO::POST;
    TableExprNode condition =
        (ms()->col(colName).in(msDDI.matchSpwId(spwIds)));
 
@@ -62,6 +71,156 @@ const TableExprNode *MSSpwParse::selectSpwIds(const Vector<Int>& spwIds)
         *node_p = *node_p || condition;
 
     return node_p;
+}
+
+const TableExprNode *MSSpwParse::selectChaninASpw(const Int spw, const Int channel) 
+{
+
+  LogIO os(LogOrigin("MSSpwParse", "selectChaninASpw()", WHERE)); 
+  /////////     work space        //////////////////
+  MeasurementSet selms= Table(ms()->tableName(), Table::Update);
+  if(!selms.isWritable()) {
+    os << "Table is not writable " << LogIO::POST;
+    exit(0);
+  } 
+
+  IPosition rowShape;
+  Slicer slicer;
+
+  ROArrayColumn<Complex> data(selms, MS::columnName(MS::DATA));
+  TableDesc tdSel;
+  String colSel = "SELECTED_DATA";
+
+  if(selms.tableDesc().isColumn("SELECTED_DATA")) {
+    selms.removeColumn("SELECTED_DATA");
+  }
+
+  ColumnDesc & cdSel = tdSel.addColumn(ArrayColumnDesc<Complex>(colSel," selected data", 2));					
+  selms.addColumn(cdSel);
+  
+  ArrayColumn<Complex> selData(selms, "SELECTED_DATA");
+
+  ROMSPolarizationColumns polc(selms.polarization());
+  Array<Int> corrtypeArray = polc.corrType().getColumn().nonDegenerate();
+  IPosition ip = corrtypeArray.shape();
+
+  Vector<Int> nCorr(corrtypeArray);
+
+  for (uInt row=0; row < selms.nrow(); row++) {
+    rowShape=data.shape(row);
+    selData.setShape(row,IPosition(2, rowShape(0), 1) );
+  }
+
+  //  Vector<Int> corrtype(nCorr);
+  slicer = Slicer(IPosition(2, 0, channel-1), IPosition(2, nCorr.nelements()-1, channel-1 ), IPosition(2, 1, 1), Slicer::endIsLast);   
+
+  Array<Complex> datacol = data.getColumn(slicer);
+
+  selData.putColumn( Slicer(IPosition(2, 0, 0), IPosition(2, rowShape(0)-1, 0 ), IPosition(2, 1, 1), Slicer::endIsLast), datacol);
+  
+  // To tableExprNode
+  MSDataDescIndex msDDI(selms.dataDescription());
+  String colName = MS::columnName(MS::DATA_DESC_ID);
+
+  TableExprNode condition =
+    (ms()->col(colName).in(msDDI.matchSpwId(spw)));
+  ///////////////////////////////////////////////////////////////
+  os<< " single channel selection "<<LogIO::POST;
+  if(node_p->isNull())
+    *node_p = condition;
+  else
+    *node_p = *node_p || condition;
+  
+  return node_p;
+}
+
+const TableExprNode *MSSpwParse::selectChanRangeinASpw(const Int spw, const Int startChan, const Int endChan) 
+{
+  ////////////////// work space /////////////////////////////
+  LogIO os(LogOrigin("MSSpwParse", "selectChanRangeinASpw()", WHERE)); 
+  MeasurementSet selms= Table(ms()->tableName(), Table::Update);
+  if(!selms.isWritable()) {
+    os << "Table is not writable " << endl;
+    exit(0);
+  } 
+
+  IPosition rowShape;
+  Slicer slicer;
+
+  ROArrayColumn<Complex> data(selms, MS::columnName(MS::DATA));
+  TableDesc tdSel;
+  String colSel = "SELECTED_DATA";
+
+  if(selms.tableDesc().isColumn("SELECTED_DATA")) {
+    selms.removeColumn("SELECTED_DATA");
+  }
+
+  ColumnDesc & cdSel = tdSel.addColumn(ArrayColumnDesc<Complex>(colSel," selected data", 2));					
+  selms.addColumn(cdSel);
+  
+  ArrayColumn<Complex> selData(selms, "SELECTED_DATA");
+
+  ROMSPolarizationColumns polc(selms.polarization());
+  Array<Int> corrtypeArray = polc.corrType().getColumn().nonDegenerate();
+  IPosition ip = corrtypeArray.shape();
+
+  Vector<Int> nCorr(corrtypeArray);
+
+  for (uInt row=0; row < selms.nrow(); row++) {
+    rowShape=data.shape(row);
+    selData.setShape(row,IPosition(2, rowShape(0), endChan-startChan+1) );
+  }
+
+  //  Vector<Int> corrtype(nCorr);
+  slicer = Slicer(IPosition(2, 0, startChan-1), IPosition(2, nCorr.nelements()-1, endChan-1 ), IPosition(2, 1, 1), Slicer::endIsLast);   
+
+  Array<Complex> datacol = data.getColumn(slicer);
+
+  selData.putColumn( Slicer(IPosition(2, 0, 0), IPosition(2, rowShape(0)-1, endChan-startChan ), IPosition(2, 1, 1), Slicer::endIsLast), datacol);
+  
+  // To tableExprNode
+  MSDataDescIndex msDDI(selms.dataDescription());
+  String colName = MS::columnName(MS::DATA_DESC_ID);
+
+  TableExprNode condition =
+    (ms()->col(colName).in(msDDI.matchSpwId(spw)));
+  ///////////////////////////////////////////////////////////////
+  os<< " Channel range selection "<<LogIO::POST;
+
+  if(node_p->isNull())
+    *node_p = condition;
+  else
+    *node_p = *node_p || condition;
+  
+  return node_p;
+}
+
+const TableExprNode *MSSpwParse::selectVelRangeinASpw(const Int spw, const Double startVel, const Double endVel) 
+{
+  LogIO os(LogOrigin("MSSpwParse", "selectVelRangeinASpw()", WHERE)); 
+  TableExprNode condition;
+  os << " velocity range selection is not available " << LogIO::POST;
+  exit(0);
+  if(node_p->isNull())
+    *node_p = condition;
+  else
+    *node_p = *node_p || condition;
+  
+  return node_p;
+}
+
+const TableExprNode *MSSpwParse::selectFreRangeinASpw(const Int spw, const Double startFreq, const Double endFreq) 
+{
+  LogIO os(LogOrigin("MSSpwParse", "selectFreRangeinASpw()", WHERE)); 
+  TableExprNode condition;
+  os << " frequency range selection is not available " << LogIO::POST;
+  exit(0);
+  if(node_p->isNull())
+    *node_p = condition;
+  else
+    *node_p = *node_p || condition;
+  
+  return node_p;
 }
 
 const TableExprNode *MSSpwParse::selectSpwName(const String& name)

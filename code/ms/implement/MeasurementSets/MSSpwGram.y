@@ -61,8 +61,9 @@ using namespace casa;
 %token COLON
 
 %type <node> spwstatement
-%type <node> spwexpr
-%type <node> indexlist
+%type <node> nameexpr
+%type <node> combindexexpr
+%type <node> indexexpr
 
 %left OR
 %nonassoc EQ EQASS GT GE LT LE NE COMMA SLASH
@@ -77,31 +78,41 @@ int MSSpwGramlex (YYSTYPE*);
 %}
 
 %%
-spwstatement: indexlist {
-                $$ = $1;
-              }
-            | SQUOTE spwexpr SQUOTE {
-                $$ = $2;
-              }
+spwstatement: SQUOTE nameexpr SQUOTE {
+                $$ = $2;}
+            | combindexexpr
             ;
 
-indexlist: INDEX {
+combindexexpr: indexexpr {
+                 $$ = $1;}
+             | indexexpr COMMA indexexpr {
+                 $$ = new TableExprNode ($1 || $3);}
+             ;
+indexexpr: INDEX {
              Vector<Int> spwids(1);
              spwids[0] = $1;
              $$ = MSSpwParse().selectSpwIds(spwids);
+             }
+         | INDEX COLON INDEX {
+	     $$ = MSSpwParse().selectChaninASpw($1, $3);
+	     }
+         | INDEX COLON INDEX DASH INDEX {
+             $$ = MSSpwParse().selectChanRangeinASpw($1, $3, $5);
+	     }
+         | INDEX COLON NUMBER DASH NUMBER VELOCITYUNIT {
+             $$ = MSSpwParse().selectVelRangeinASpw($1, $3, $5);
+	     }
+         | INDEX COLON NUMBER DASH NUMBER FREQUENCYUNIT {
+             $$ = MSSpwParse().selectFreRangeinASpw($1, $3, $5);
+	     }
+         ;
+nameexpr:  SPWNAME {
+             String name($1);
+             $$ = MSSpwParse().selectSpwName(name);
            }
-         | indexlist COMMA INDEX {
-             Vector<Int> spwids(1);
-             spwids[0] = $3;
-             $$ = MSSpwParse().selectSpwIds(spwids);
-           }
+        |  nameexpr COMMA SPWNAME {
+             $$ = new TableExprNode ($1 || $3);}
         ;
-
-spwexpr: SPWNAME {
-           String name($1);
-           $$ = MSSpwParse().selectSpwName(name);
-         }
-       ;
 
 %%
 

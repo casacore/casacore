@@ -93,6 +93,22 @@ public:
     MSSpwParse (const MeasurementSet* ms);
 
     const TableExprNode *selectSpwIds(const Vector<Int>& spwids);
+    // add various selections
+    // Single channel selection
+    const TableExprNode *selectChaninASpw(const Int spw, const Int channel);
+    // Channel Range
+    const TableExprNode *selectChanRangeinASpw(const Int spw, 
+					       const Int startChan, 
+					       const Int endChan);
+    // Velocity Range
+    const TableExprNode *selectVelRangeinASpw(const Int spw, 
+					      const Double startVel,
+					      const Double endVel); 
+    //Frequency Range
+    const TableExprNode *selectFreRangeinASpw(const Int spw, 
+					      const Double startFreq, 
+					      const Double endFreq); 
+    //Select by name
     const TableExprNode *selectSpwName(const String& name);
 
     // Get table expression node object.
