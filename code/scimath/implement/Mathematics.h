@@ -31,14 +31,13 @@
 #include <aips/Mathematics/Complex.h>
 #include <aips/Mathematics/Constants.h>
 #include <aips/Mathematics/Convolver.h>
+#include <aips/Mathematics/FFTPack.h>
 #include <aips/Mathematics/FFTServer.h>
 #include <aips/Mathematics/Math.h>
 #include <aips/Mathematics/NumericTraits.h>
 //# No need to include NumericTraits2.h as it is included by NumericTraits.h
 #include <aips/Mathematics/Primes.h>
 #include <aips/Mathematics/Random.h>
-//# The following will be renamed FFTPack in a future release
-#include <aips/Mathematics/extern_fft.h>
 //# The following are scheduled to be removed in a future AIPS++ release
 #include <aips/Mathematics/DFTServer.h>
 #include <aips/Mathematics/MathFunc.h>
