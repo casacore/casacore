@@ -8,6 +8,7 @@
 #include <ms/MeasurementSets/MeasurementSet.h>
 
 #include <ms/MeasurementSets/MSSelection.h>
+/*
 #include <ms/MeasurementSets/MSExpr.h>
 #include <ms/MeasurementSets/MSAntennaExpr.h>
 #include <ms/MeasurementSets/MSCorrExpr.h>
@@ -15,7 +16,7 @@
 #include <ms/MeasurementSets/MSSPWExpr.h>
 #include <ms/MeasurementSets/MSTimeExpr.h>
 #include <ms/MeasurementSets/MSUVDistExpr.h>
-
+*/
 #include <casa/iostream.h>
 
 
