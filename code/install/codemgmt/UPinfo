@@ -2,7 +2,7 @@
 #-----------------------------------------------------------------------------
 # UPinfo: help and general parameters for UP scripts
 #-----------------------------------------------------------------------------
-# Copyright (C) 2000,2001
+# Copyright (C) 2000,2001,2002
 # Associated Universities, Inc. Washington DC, USA.
 #
 # This program is free software; you can redistribute it and/or modify it
@@ -244,6 +244,7 @@ if ($#arg < 1) then
      endif
 else
     set tp = $arg[1]
+    set tp = $tp:r
     shift arg
 endif
 unset y
