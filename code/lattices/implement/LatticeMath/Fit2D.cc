@@ -131,19 +131,19 @@ uInt Fit2D::addModel (Fit2D::Types type,
    itsTypeList.resize(nModels,True);
 //
    if (type==Fit2D::LEVEL) {
-      itsLogger << LogIO::SEVERE << "Fit2D - Level fitting not yet implemented" << LogIO::POST;
+      itsLogger <<  "Fit2D - Level fitting not yet implemented" << LogIO::EXCEPTION;
    } else if (type==Fit2D::DISK) {
-      itsLogger << LogIO::SEVERE << "Fit2D - Disk fitting not yet implemented" << LogIO::POST;
+      itsLogger << "Fit2D - Disk fitting not yet implemented" << LogIO::EXCEPTION;
    } else if (type==Fit2D::GAUSSIAN) {
 // 
 // Create functional
 //
       Gaussian2D<AutoDiff<Double> > gauss2d;
       if (parameters.nelements() != gauss2d.nAvailableParams()) {
-         itsLogger << LogIO::SEVERE << "Fit2D - illegal number of parameters" << LogIO::POST;
+         itsLogger << "Fit2D - illegal number of parameters in addModel" << LogIO::EXCEPTION;
       }
       if (parameterMask.nelements() != gauss2d.nAvailableParams()) {
-         itsLogger << LogIO::SEVERE << "Fit2D - illegal number of mask parameters" << LogIO::POST;
+         itsLogger << "Fit2D - illegal number of mask parameters in addModel" << LogIO::EXCEPTION;
       }
 //
 // Set parameters.  0 (flux), 1 (x), 2 (y), 3 (major), 4 (minor), 
@@ -241,7 +241,7 @@ Fit2D::ErrorTypes Fit2D::fit(const MaskedLattice<Float>& data,
    Array<Float> pixels = data.get(True);
    IPosition shape = pixels.shape();
    if (shape.nelements() !=2) {
-      itsLogger << LogIO::SEVERE << "Fit2D::fit - Region must be 2-dimensional" << LogIO::POST;
+      itsLogger << "Fit2D::fit - Region must be 2-dimensional" << LogIO::EXCEPTION;
    }
    Array<Bool> mask = data.getMask(True);
 //
@@ -271,7 +271,7 @@ Fit2D::ErrorTypes Fit2D::fit(const Lattice<Float>& data,
    Array<Float> pixels = data.get(True);
    IPosition shape = pixels.shape();
    if (shape.nelements() !=2) {
-      itsLogger << LogIO::SEVERE << "Fit2D::fit - Region must be 2-dimensional" << LogIO::POST;
+      itsLogger << "Fit2D::fit - Region must be 2-dimensional" << LogIO::EXCEPTION;
    }
    Array<Bool> mask;
 //
@@ -294,11 +294,11 @@ Fit2D::ErrorTypes Fit2D::fit(const Array<Float>& data,
       return Fit2D::NOMODELS;
    }
    if (data.ndim() !=2) {
-      itsLogger << LogIO::SEVERE << "Fit2D::fit - Array must be 2-dimensional" << LogIO::POST;
+      itsLogger << "Fit2D::fit - Array must be 2-dimensional" << LogIO::EXCEPTION;
    }
    if (sigma.nelements() !=0) {
       if (!data.shape().isEqual(sigma.shape())) {
-         itsLogger << LogIO::SEVERE << "Fit2D::fit - Sigma and pixel arrays must have the same shape" << LogIO::POST;
+         itsLogger << "Fit2D::fit - Sigma and pixel arrays must have the same shape" << LogIO::EXCEPTION;
       }
    }
 //
@@ -328,16 +328,16 @@ Fit2D::ErrorTypes Fit2D::fit(const Array<Float>& data,
       return Fit2D::NOMODELS;
    }
    if (data.ndim() !=2) {
-      itsLogger << LogIO::SEVERE << "Fit2D::fit - Array must be 2-dimensional" << LogIO::POST;
+      itsLogger << "Fit2D::fit - Array must be 2-dimensional" << LogIO::EXCEPTION;
    }
    if (mask.nelements() !=0) {
       if (!data.shape().isEqual(mask.shape())) {
-         itsLogger << LogIO::SEVERE << "Fit2D::fit - Mask and pixel arrays must have the same shape" << LogIO::POST;
+         itsLogger << "Fit2D::fit - Mask and pixel arrays must have the same shape" << LogIO::EXCEPTION;
       }
    }
    if (sigma.nelements() !=0) {
       if (!data.shape().isEqual(sigma.shape())) {
-         itsLogger << LogIO::SEVERE << "Fit2D::fit - Sigma and pixel arrays must have the same shape" << LogIO::POST;
+         itsLogger << "Fit2D::fit - Sigma and pixel arrays must have the same shape" << LogIO::EXCEPTION;
       }
    }
 //
@@ -369,7 +369,7 @@ Fit2D::ErrorTypes Fit2D::residual(Array<Float>& resid,
    }
 //
    if (data.ndim() !=2) {
-      itsLogger << LogIO::SEVERE << "Fit2D::fit - Array must be 2-dimensional" << LogIO::POST;
+      itsLogger << "Fit2D::fit - Array must be 2-dimensional" << LogIO::EXCEPTION;
    }
    IPosition shape = data.shape();
 //
@@ -377,7 +377,7 @@ Fit2D::ErrorTypes Fit2D::residual(Array<Float>& resid,
       resid.resize(shape);
    } else {
       if (!shape.isEqual(resid.shape())) {
-         itsLogger << LogIO::SEVERE << "Fit2D::fit - Residual and pixel arrays must have the same shape" << LogIO::POST;
+         itsLogger << "Fit2D::fit - Residual and pixel arrays must have the same shape" << LogIO::EXCEPTION;
       }
    }
 //
@@ -478,7 +478,7 @@ Fit2D::Types Fit2D::type(const String& type)
 Fit2D::Types Fit2D::type(uInt which) 
 {
    if (which+1 > itsFunction.nFunctions()) {
-      itsLogger << LogIO::SEVERE << "Fit2D::type - illegal model index" << LogIO::POST;
+      itsLogger << "Fit2D::type - illegal model index" << LogIO::EXCEPTION;
    }
    return (Fit2D::Types)itsTypeList(which);
 }
@@ -518,7 +518,7 @@ Vector<Double> Fit2D::availableSolution (uInt which)
    }
 //
    if (which+1 > itsFunction.nFunctions()) {
-      itsLogger << LogIO::SEVERE << "Fit2D::solution - illegal model index" << LogIO::POST;
+      itsLogger << "Fit2D::solution - illegal model index" << LogIO::EXCEPTION;
    }
 //
 // Find the mask and parameters for this model. Recover these when the 
@@ -638,7 +638,7 @@ Vector<Double> Fit2D::estimate(Fit2D::Types type,
                                const MaskedLattice<Float>& data) 
 {
    if (data.shape().nelements() !=2) {
-      itsLogger << LogIO::SEVERE << "Fit2D::estimate - Lattice must be 2-dimensional" << LogIO::POST;
+      itsLogger << "Fit2D::estimate - Lattice must be 2-dimensional" << LogIO::EXCEPTION;
    }
    Array<Float> pixels = data.get(True);
    Array<Bool> mask = data.getMask(True);
@@ -649,7 +649,7 @@ Vector<Double> Fit2D::estimate(Fit2D::Types type,
                                const Lattice<Float>& data) 
 {
    if (data.shape().nelements() !=2) {
-      itsLogger << LogIO::SEVERE << "Fit2D::estimate - Lattice must be 2-dimensional" << LogIO::POST;
+      itsLogger << "Fit2D::estimate - Lattice must be 2-dimensional" << LogIO::EXCEPTION;
    }
    Array<Float> pixels = data.get(True);
    Array<Bool> mask(pixels.shape(),True);
@@ -660,7 +660,7 @@ Vector<Double> Fit2D::estimate(Fit2D::Types type,
                                const Array<Float>& data)
 {
    if (data.shape().nelements() !=2) {
-      itsLogger << LogIO::SEVERE << "Fit2D::estimate - Array must be 2-dimensional" << LogIO::POST;
+      itsLogger << "Fit2D::estimate - Array must be 2-dimensional" << LogIO::EXCEPTION;
    }
    Array<Bool> mask(data.shape(),True);
    return estimate(type, data, mask);
@@ -679,18 +679,16 @@ Vector<Double> Fit2D::estimate(Fit2D::Types type,
 //
 {
    if (type!=Fit2D::GAUSSIAN  && type==Fit2D::DISK) {
-      itsLogger << LogIO::SEVERE << "Only Gaussian and disk models are currently supported" << LogIO::POST;
+      itsLogger << "Only Gaussian and disk models are currently supported" << LogIO::EXCEPTION;
    }
 //
    Vector<Double> parameters;
    IPosition shape = data.shape();
    if (shape.nelements() !=2) {
-      itsLogger << LogIO::SEVERE << "Fit2D::estimate - Array must be 2-dimensional" << LogIO::POST;
-      return parameters;
+      itsLogger << "Fit2D::estimate - Array must be 2-dimensional" << LogIO::EXCEPTION;
    }
    if (mask.shape().nelements() !=2) {
-      itsLogger << LogIO::SEVERE << "Fit2D::estimate - Mask must be 2-dimensional" << LogIO::POST;
-      return parameters;
+      itsLogger << "Fit2D::estimate - Mask must be 2-dimensional" << LogIO::EXCEPTION;
    }
 // 
 // Find min and max
@@ -773,7 +771,7 @@ Vector<Double> Fit2D::estimate(Fit2D::Types type,
       if (SP<0) sn = -1.0;
       parameters(0) = sn * fac * P / ( C::pi * parameters(3) * parameters(4));
    } else if (type==Fit2D::LEVEL) {
-      itsLogger << LogIO::SEVERE << "Level models are not currently supported" << LogIO::POST;
+      itsLogger << "Level models are not currently supported" << LogIO::EXCEPTION;
    }
 // 
    parameters(3) *= 0.95;   // In case estimate is circular
@@ -937,9 +935,9 @@ void Fit2D::normalizeModels (uInt direction)
 //
       if (direction==0) {
          if (type==Fit2D::LEVEL) {
-            itsLogger << LogIO::SEVERE << "Fit2D - Level fitting not yet implemented" << LogIO::POST;
+            itsLogger << "Fit2D - Level fitting not yet implemented" << LogIO::EXCEPTION;
          } else if (type==Fit2D::DISK) {
-            itsLogger << LogIO::SEVERE << "Fit2D - Disk fitting not yet implemented" << LogIO::POST;
+            itsLogger << "Fit2D - Disk fitting not yet implemented" << LogIO::EXCEPTION;
          } else if (type==Fit2D::GAUSSIAN) {
             normalize (params(0), params(1), params(2), params(3),
                        itsNormPos, itsNormVal);
@@ -947,9 +945,9 @@ void Fit2D::normalizeModels (uInt direction)
          }
       } else {
          if (type==Fit2D::LEVEL) {
-            itsLogger << LogIO::SEVERE << "Fit2D - Level fitting not yet implemented" << LogIO::POST;
+            itsLogger << "Fit2D - Level fitting not yet implemented" << LogIO::EXCEPTION;
          } else if (type==Fit2D::DISK) {
-            itsLogger << LogIO::SEVERE << "Fit2D - Disk fitting not yet implemented" << LogIO::POST;
+            itsLogger << "Fit2D - Disk fitting not yet implemented" << LogIO::EXCEPTION;
          } else if (type==Fit2D::GAUSSIAN) {
             unNormalize (params(0), params(1), params(2), params(3),
                          itsNormPos, itsNormVal);
@@ -1039,9 +1037,9 @@ void Fit2D::normalizeSolution()
       Fit2D::Types type = (Fit2D::Types)itsTypeList(i);
 //
       if (type==Fit2D::LEVEL) {
-         itsLogger << LogIO::SEVERE << "Fit2D - Level fitting not yet implemented" << LogIO::POST;
+         itsLogger << "Fit2D - Level fitting not yet implemented" << LogIO::EXCEPTION;
       } else if (type==Fit2D::DISK) {
-         itsLogger << LogIO::SEVERE << "Fit2D - Disk fitting not yet implemented" << LogIO::POST;
+         itsLogger << "Fit2D - Disk fitting not yet implemented" << LogIO::EXCEPTION;
       } else if (type==Fit2D::GAUSSIAN) {
          uInt idx = 0;
          if (mask(0)) {                         // Value
@@ -1092,7 +1090,7 @@ Vector<Double> Fit2D::getSolution(uInt& iStart, uInt which)
    uInt nP = itsFunction.function(which)->getParameters().nelements();
    if (itsSolution.nelements() < iStart+nP) {
       itsLogger << LogIO::SEVERE 
-                << "Fit2D::getSolution - solution vector is not long enough; did you call function fit ?"    
+                << "Fit2D::getSolution - solution vector is not long enough; did you call function fit ?"
                 << LogIO::POST;
    }
 //
