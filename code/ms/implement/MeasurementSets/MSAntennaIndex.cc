@@ -1,5 +1,5 @@
 //# MSAntennaIndex.cc: implementation of MSAntennaIndex.h
-//# Copyright (C) 2000,2001
+//# Copyright (C) 2000,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -78,7 +78,7 @@ Vector<Int> MSAntennaIndex::matchAntennaName(const Vector<String>& names)
 //
   Vector<Int> matchedAntennaIds;
   // Match each antenna name individually
-  for (Int fld=0; fld<names.nelements(); fld++) {
+  for (uInt fld=0; fld<names.nelements(); fld++) {
     // Add to list of antenna id's
     Vector<Int> currentMatch = matchAntennaName(names(fld));
     if (currentMatch.nelements() > 0) {
@@ -90,6 +90,25 @@ Vector<Int> MSAntennaIndex::matchAntennaName(const Vector<String>& names)
   };
   return matchedAntennaIds;
 };
+
+//-------------------------------------------------------------------------
+
+Vector<Int> MSAntennaIndex::matchAntennaNameAndStation(const String& name,
+						       const String& station)
+{
+// Match a antenna and station name pair to a set of antenna id's
+// Input:
+//    name                         const String&  Antenna name to match
+//    station                      const String&  Station name to match
+// Output:
+//    matchAntennaNameAndStation   Vector<Int>    Matching antenna id's
+//
+  LogicalArray maskArray = (msAntennaCols_p.name().getColumn()==name &&
+			    msAntennaCols_p.station().getColumn()==station &&
+			    !msAntennaCols_p.flagRow().getColumn());
+  MaskedArray<Int> maskAntennaId(antennaIds_p, maskArray);
+  return maskAntennaId.getCompressedArray();
+}; 
 
 //-------------------------------------------------------------------------
 

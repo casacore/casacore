@@ -1,5 +1,5 @@
 //# MSAntennaIndex: index or lookup in a MeasurementSet ANTENNA subtable
-//# Copyright (C) 2000,2001
+//# Copyright (C) 2000,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -89,6 +89,10 @@ public:
   // Look up ANTENNA_ID's for a given antenna name, or set of antenna names
   Vector<Int> matchAntennaName(const String& name);
   Vector<Int> matchAntennaName(const Vector<String>& names);
+
+  // Look up ANTENNA_ID's for a given antenna and station name pair
+  Vector<Int> matchAntennaNameAndStation(const String& name,
+					 const String& station);
 
 private:
   // Disallow null constructor
