@@ -200,5 +200,11 @@ protected:
   //# versions of the toRecord and fromRecord member functions.
   Bool addFreq(String & errorMessage, RecordInterface & record) const;
   Bool readFreq(String & errorMessage, const RecordInterface & record);
+private:
+  //# Disable any compiler generated assignment operator by defining one here
+  //# and making it inaccessible.
+  SpectralModel & operator=(const SpectralModel & other){
+    return (SpectralModel &) other;
+  };
 };
 #endif

@@ -197,5 +197,11 @@ protected:
   //# versions of the toRecord and fromRecord member functions.
   Bool addDir(String & errorMessage, RecordInterface & record) const;
   Bool readDir(String & errorMessage, const RecordInterface & record);
+private:
+  //# Disable any compiler generated assignment operator by defining one here
+  //# and making it inaccessible.
+  ComponentShape & operator=(const ComponentShape & other){
+    return (ComponentShape &) other;
+  };
 };
 #endif
