@@ -168,6 +168,12 @@ void ImageInterface<T>::removeRegion (const String&,
 				      RegionHandler::GroupType,
 				      Bool)
 {}
+template<class T> 
+Vector<String> ImageInterface<T>::regionNames (RegionHandler::GroupType) const
+{
+  return Vector<String>();
+}
+
 template <class T>
 void ImageInterface<T>::setDefaultMask (const String&)
 {}

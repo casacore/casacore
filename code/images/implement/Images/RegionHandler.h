@@ -38,6 +38,8 @@ class ImageRegion;
 class LatticeBase;
 class LCPagedMask;
 class String;
+template<class T> class Vector;
+
 
 // <summary>
 // Handle regions stored as table keywords.
@@ -141,6 +143,10 @@ public:
     static Bool removeRegion (Table& table, const String& name,
 			      RegionHandler::GroupType = Any,
 			      Bool throwIfUnknown = True);
+
+    // Get the names of all regions/masks.
+    static Vector<String> regionNames (const Table& table,
+				       RegionHandler::GroupType = Any);
 
     // Find field number of the region group to which a region belongs
     // (i.e. the field number of the "regions" or "masks" field).

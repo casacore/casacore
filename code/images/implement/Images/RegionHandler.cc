@@ -32,6 +32,7 @@
 #include <trial/Lattices/TiledShape.h>
 #include <aips/Tables/Table.h>
 #include <aips/Tables/TableRecord.h>
+#include <aips/Arrays/Vector.h>
 #include <aips/Utilities/String.h>
 #include <aips/Exceptions/Error.h>
 
@@ -127,6 +128,39 @@ Bool RegionHandler::removeRegion (Table& table, const String& name,
     keys.rwSubRecord(groupField).removeField (name);
   }
   return True;
+}
+
+Vector<String> RegionHandler::regionNames (const Table& table,
+					   RegionHandler::GroupType type)
+{
+  uInt nreg = 0;
+  uInt nmask = 0;
+  const RecordDesc* regs = 0;
+  const RecordDesc* masks = 0;
+  const TableRecord& keys = table.keywordSet();
+  if (type != RegionHandler::Masks) {
+    Int field = keys.fieldNumber ("regions");
+    if (field >= 0) {
+      regs = &(keys.subRecord(field).description());
+      nreg = regs->nfields();
+    }
+  }
+  if (type != RegionHandler::Regions) {
+    Int field = keys.fieldNumber ("masks");
+    if (field >= 0) {
+      masks = &(keys.subRecord(field).description());
+      nmask = masks->nfields();
+    }
+  }
+  Vector<String> names(nreg + nmask);
+  uInt i;
+  for (i=0; i<nreg; i++) {
+    names(i) = regs->name(i);
+  }
+  for (i=0; i<nmask; i++) {
+    names(i+nreg) = masks->name(i);
+  }
+  return names;
 }
 
 ImageRegion* RegionHandler::getRegion (const Table& table, const String& name,
