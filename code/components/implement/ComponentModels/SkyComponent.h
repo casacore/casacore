@@ -101,8 +101,15 @@ public:
   // Construct a SkyComponent of the specified shape. The default direction is
   // the J2000 north pole and the default flux is 1 Jy in the I polarisation
   // only. Use the setFlux and SetDirection functions to change this after
-  // construction. 
-  SkyComponent(ComponentType::Shape type);
+  // construction. The spectral variation is assumed to be constant.
+  SkyComponent(ComponentType::Shape shape);
+  
+  // Construct a SkyComponent of the specified spatial and spectral shapes. The
+  // default direction is the J2000 north pole and the default flux is 1 Jy in
+  // the I polarisation only. Use the setFlux and SetDirection functions to
+  // change this after construction.
+  SkyComponent(ComponentType::Shape shape, 
+	       ComponentType::SpectralShape spectralModel);
   
   // The copy Constructor uses reference semantics
   SkyComponent(const SkyComponent & other);
@@ -176,9 +183,11 @@ public:
   virtual void parameters(Vector<Double> & compParms) const;
   // </group>
 
-  // get the actual type of the component 
-  // (as an ComponentTypes::ComponentTypes enum)
+  // get the spatial shape model for this component
   virtual ComponentType::Shape shape() const;
+
+  // get the spectral model for this component 
+  virtual ComponentType::SpectralShape spectralShape() const;
 
   // This functions convert between a glish record and a SkyComponent. This way
   // derived classes can interpret fields in the record in a class specific
@@ -191,11 +200,22 @@ public:
   virtual Bool toRecord(String & errorMessage, GlishRecord & record) const;
   // </group>
   
-  // return the type of component that the supplied record represents. Returns 
-  // ComponentType::UNKNOWN if the record could not be parsed correctly and the
-  // appropriate error message is appended to the errorMessage String.
+  // Return the shape of component that the supplied record represents. Returns
+  // ComponentType::POINT if there is no shape field in the component record &
+  // ComponentType::UNKNOWN_SHAPE if the shape record could not be parsed
+  // correctly (it then appends an appropriate error message to the
+  // errorMessage String).
   static ComponentType::Shape getShape(String & errorMessage,
 				       const GlishRecord & record);
+
+  // Return the spectral shape of component that the supplied record
+  // represents. Returns ComponentType::CONSTANT_SPECTRUM if there is no
+  // spectrum field in the component record &
+  // ComponentType::UNKNOWN_SPECTRAL_SHAPE if the spectrum record could not be
+  // parsed correctly (it then appends an appropriate error message to the
+  // errorMessage String).
+  static ComponentType::SpectralShape getSpectralShape(String & errorMessage,
+                                                   const GlishRecord & record);
 
   // Return a distinct copy of this component. As both the assignment operator
   // and the copy constructor use reference semantics this is the only way to
@@ -217,13 +237,18 @@ protected:
   SkyCompRep * rawPtr(); 
   const SkyCompRep * rawPtr() const;
 
-  //# Check that the type in the glishRecord matches the type of this
+  //# Check that the shape in the glishRecord matches the shape of this
   //# component. Returns False if not and appends a reason in the errorMessage
   //# String
   Bool checkShape(String & errorMessage, const GlishRecord & record) const;
 
+  //# Check that the shape in the glishRecord matches the shape of this
+  //# component. Returns False if not and appends a reason in the errorMessage
+  //# String
+  Bool checkSpectralShape(String & errorMessage,
+			  const GlishRecord & record) const;
+
 private:
   CountedPtr<SkyCompRep> itsCompPtr;
 };
-
 #endif
