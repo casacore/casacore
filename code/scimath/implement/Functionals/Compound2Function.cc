@@ -36,15 +36,6 @@ AutoDiff<T> NQCompoundFunction<AutoDiff<T> >::
 eval(typename Function<AutoDiff<T> >::FunctionArg x) const {
   if (parset_p) fromParam_p();
   AutoDiff<T> tmp(T(0), nparameters());
-  ///  for (uInt i=0; i<nFunctions(); ++i) {
-  ///    for (uInt j=0; j<function(i).nparameters(); ++j) {
-  ///      if (function(i)[j].nDerivatives() > 0) {
-  ///	tmp = function(i)[j];
-  ///	break;
-  ///      };
-  ///    };
-  ///    if (tmp.nDerivatives() > 0) break;
-  ///  };
   tmp.value() = 0;
   for (uInt j=0; j<tmp.nDerivatives(); j++) tmp.deriv(j) = 0.0;
   // function value
@@ -59,15 +50,6 @@ eval(typename Function<AutoDiff<T> >::FunctionArg x) const {
 }
 
 //# Member functions
-/// Note not correct
-template <class T>
-void NQCompoundFunction<AutoDiff<T> >::toParam_p() const {
-  for (uInt i=0; i<nparameters(); ++i) {
-    const_cast<FunctionParam<AutoDiff<T> > &>(param_p)[i] =
-      (*functionPtr_p[funpar_p[i]])[locpar_p[i]];
-  };
-}
-
 template <class T>
 void NQCompoundFunction<AutoDiff<T> >::fromParam_p() const {
   if (parset_p) {

@@ -129,11 +129,8 @@ template <class T> class NQCompoundFunction : public NQCompoundParam<T> {
   
 private:
   //# Member functions
-  // Copy the local parameters to/from general block
-  // <group>
-  void toParam_p() const;
+  // Copy the local parameters from general block
   void fromParam_p() const;
-  // </group>
 
 };
 

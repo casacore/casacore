@@ -41,14 +41,6 @@ T NQCompoundFunction<T>::eval(typename Function<T>::FunctionArg x) const {
 
 //# Member functions
 template <class T>
-void NQCompoundFunction<T>::toParam_p() const {
-  for (uInt i=0; i<nparameters(); ++i) {
-    const_cast<FunctionParam<T> &>(param_p)[i] =
-      (*functionPtr_p[funpar_p[i]])[locpar_p[i]];
-  };
-}
-
-template <class T>
 void NQCompoundFunction<T>::fromParam_p() const {
   if (parset_p) {
     parset_p = False;
