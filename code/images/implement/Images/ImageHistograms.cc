@@ -1150,7 +1150,7 @@ void ImageHistograms<T>::generateStorageImage()
 
 
       Table myTable = ImageUtilities::setScratchTable(pInImage_p->name(),
-                          String("Scratch_ImageHistograms_"));
+                          String("ImageHistograms_Hist"));
       pHistImage_p = new PagedArray<Int>(storeImageShape, myTable, tileShape);
       pHistImage_p->set(0);
    }
@@ -1183,7 +1183,7 @@ void ImageHistograms<T>::generateStorageImage()
 // Create new min/max storage image.   
 
       Table myTable = ImageUtilities::setScratchTable(pInImage_p->name(),
-                          String("Scratch_ImageHistograms_"));
+                          String("ImageHistograms_MinMax_"));
       pMinMaxImage_p = new PagedArray<T>(storeImageShape, myTable, tileShape);
       pMinMaxImage_p->set(T(0.0)); 
    }
@@ -1212,7 +1212,7 @@ void ImageHistograms<T>::generateStorageImage()
 // Create new statistics storage image.   
 
       Table myTable = ImageUtilities::setScratchTable(pInImage_p->name(),
-                          String("Scratch_ImageHistograms_"));
+                          String("ImageHistograms_Sums"));
       pStatsImage_p = new PagedArray<Double>(storeImageShape, myTable, tileShape);
       pStatsImage_p->set(Double(0.0));
    }
