@@ -706,20 +706,29 @@ GlishRecord MSSelector::getData(const Vector<String>& items, Bool ifrAxis,
     // of slots is < number of times. Ok if at least one antenna is there
     // for the whole block
     Vector<Double> time=msc.time().getColumn();
+    Vector<Int> dd=msc.dataDescId().getColumn();
     Matrix<Double> times(nIfr,nSlot,0);
+    Matrix<Int> dds(nIfr,nSlot,-1);
     for (Int k=0; k<nRow; k++) {
       times(ifrIndex(k),slot(k))=time(k);
+      dds(ifrIndex(k),slot(k))=dd(k);
     }
 
     for (Int sl=nSlot-1; sl>=0; sl--) {
       // find latest time in this slot
-      Double ltime=max(times.column(sl));
+      IPosition minPos(1),maxPos(1);
+      Double minVal,maxVal;
+      minMax(minVal,maxVal,minPos,maxPos,times.column(sl));
+      //      Double ltime=max(times.column(sl));
+      Double ltime=maxVal;
+      Int ddAtMax=dds(maxPos(0),sl);
       for (Int i=0; i<nIfr; i++) {
 	if (ifrAxis_p(i)>=0) { // ifr exists
 	  if (times(i,sl)==0) { // found a hole
 	    Int sl2=sl;
 	    while (sl2>0 && times(i,sl2)==0) sl2--;
-	    if (sl2>=0 && times(i,sl2)==ltime) {
+	    if (sl2>=0 && times(i,sl2)==ltime &&
+		dds(i,sl2)==ddAtMax) {
 	      // move from sl2 to sl to align in time
 	      Int row=rowIndex_p(i,sl2);
 	      rowIndex_p(i,sl)=row;
@@ -1966,3 +1975,4 @@ Bool MSSelector::checkSelection() {
   }
   return initSel_p;
 }
+
