@@ -45,9 +45,7 @@ void Memory::releaseMemory()
 {
 #if defined(AIPS_RELEASEMEM)
     AIPS_RELEASEMEM;
-#else if defined(AIPS_LINUX)
+#elif defined(AIPS_LINUX)
     malloc_trim(0);
 #endif
 }
-
-
