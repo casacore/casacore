@@ -6307,3 +6307,4 @@
 17 392 src rm trial/implement/Measures/test/templates
 17 396 src mv trial/implement/Functionals/FunctionOrder.h aips/implement/Functionals/FunctionOrder.h
 17 396 src mv trial/implement/Functionals/FunctionOrder.cc aips/implement/Functionals/FunctionOrder.cc
+17 396 src mv trial/implement/Functionals/FunctionOrder2.cc aips/implement/Functionals/FunctionOrder2.cc
