@@ -3548,3 +3548,4 @@
 13 308 src mv trial/implement/OS/ExprNodeRecord.cc aips/implement/Tables/ExprNodeRecord.cc
 13 308 src mv trial/implement/OS/test/tRecordGram.cc aips/implement/Tables/test/tRecordGram.cc
 13 308 src mv trial/implement/OS/test/tRecordExpr.cc aips/implement/Tables/test/tRecordExpr.cc
+13 308 src mv trial/implement/OS/TableExprId.h aips/implement/Tables/TableExprId.h
