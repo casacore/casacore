@@ -4142,3 +4142,4 @@
 14 065 src mv trial/apps/gDisplay/GTkWCPanner.cc trialdisplay/apps/gDisplay/GTkWCPanner.cc
 14 065 src mv trial/apps/gDisplay/GTkWCPanner.h trialdisplay/apps/gDisplay/GTkWCPanner.h
 14 065 src mv trial/apps/gDisplay/GTkWorldCanvas.cc trialdisplay/apps/gDisplay/GTkWorldCanvas.cc
+14 065 src mv trial/apps/gDisplay/GTkWorldCanvas.h trialdisplay/apps/gDisplay/GTkWorldCanvas.h
