@@ -53,29 +53,40 @@ template<class T> class Vector;
 // </reviewed>
 
 // <prerequisite> 
-// <li> MDirection 
+// <li> <linkto class=Flux>Flux</linkto>
+// <li> <linkto class=ComponentShape>ComponentShape</linkto>
+// <li> <linkto class=SpectralModel>SpectralModel</linkto>
 // </prerequisite>
-//
 
 // <synopsis> 
 
-// This base class is used by a number of classes that provide
-// components used to represent the sky brightness. It abstracts the
-// commonality between different components of a model like
-// GaussianComponent, PointComponent, and perhaps in the future
-// DiskComponent & SpheroidComponent. In particular it allows the user to
-// sample the component at any specified direction in the sky as well as grid
-// the component onto a specified image.
+// This class is concrete implementation of a class that represents a component
+// of a model of the sky brightness. 
 
-// The functions in this class basically allow the user to sample the intensity
-// of the component by specifying either a direction or an image onto which the
-// component should be projected. 
+// The base class (<linkto class="SkyCompBase">SkyCompBase</linkto>) contains a
+// description of components and all the member functions used to manipulate
+// them and hence will not be discussed here. But the base class does not
+// include any constructors or a description of the copy semantics. This will
+// be discussed below.
 
-// The type function returns a string stating the actual type of component
-// that is used.
+// A SkyComponent is an "envelope" class in the sense that it can contain one
+// of a variety of different component shapes and spectral models. It is
+// necessary to specify the which shape and spectral model you want at
+// construction time. This can be done either with enumerators or by
+// constructing the classes derived from ComponentShape & SpectralModel and
+// supplying them as construction arguments.
+
+// This class uses reference semantics for both the copy constructor and the
+// assignment operator. Becuase of this the only way to make a true copy of a
+// SkyComponent is to use the <src>copy</src> member function.
+
 // </synopsis>
 
 // <example>
+// These examples are coded in the tSkyCompRep.h file.
+// <h4>Example 1:</h4>
+// In this example a SkyCompRep object is created and used to calculate the
+// ...
 // <srcblock>
 // </srcblock>
 // </example>
@@ -83,18 +94,25 @@ template<class T> class Vector;
 // <motivation>
 // Model fitting is an important part of astronomical data
 // reduction/interpretation. This class defines a model component. Many
-// components can be strung together (using the class ComponentList) to
-// construct a model. 
+// components can be strung together (using the ComponentList class) to
+// construct a model. It is expected that this class will eventually allow you
+// to solve for parameters of the model.
 // </motivation>
 
 // <thrown>
-// Exceptions are not directly thrown by this class
+// <li> AipsError - If an internal inconsistancy is detected, when compiled in 
+// debug mode only.
 // </thrown>
 //
-// <todo asof="1997/05/01">
-//   <li> 
+// <todo asof="1998/05/22">
+//   <li> Add time variability
+//   <li> Add the ability to solve for component parameters.
 // </todo>
 
+// <linkfrom anchor="SkyComponent" classes="SkyCompRep SkyCompBase">
+//  <here>SkyComponent</here> - Models the sky brightness (reference semantics)
+// </linkfrom>
+ 
 class SkyComponent: public SkyCompBase
 {
 public:
@@ -199,7 +217,7 @@ public:
 
   // See the corresponding functions in the
   // <linkto class="SkyCompBase">SkyCompBase</linkto>
-  // class for a description of these functions.
+  // class for a description of this function.
   Bool ok() const;
 
 private:

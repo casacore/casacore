@@ -60,60 +60,62 @@ template <class T> class Vector;
 // <synopsis> 
 
 // This class is concrete implementation of a class that represents a component
-// of a model of the sky brightness. Please see the synopsis of the base
-// class (<linkto class="SkyCompBase">SkyCompBase</linkto>) for a more detailed
-// description of a component and how it is manipulated. 
+// of a model of the sky brightness. 
 
-// The base class also contains a description of components and all the member
-// functions used to manipulate them and hence will not be repeated here. As
-// the base class does not include any constructors or a description of the
-// copy semantics that will be discussed.
+// The base class (<linkto class="SkyCompBase">SkyCompBase</linkto>) contains a
+// description of components and all the member functions used to manipulate
+// them and hence will not be discussed here. But the base class does not
+// include any constructors or a description of the copy semantics. This will
+// be discussed below.
 
 // A SkyCompRep is an "envelope" class in the sense that it can contain one of
 // a variety of different component shapes and spectral models. It is necessary
 // to specify the which shape and spectral model you want at construction
 // time. This can be done either with enumerators or by constructing the
-// ComponentShape and SpectralModel classes elswhere and supplying them as
+// classes derived from ComponentShape & SpectralModel and supplying them as
 // construction arguments.
 
 // This class uses copy semantics for both the copy constructor and the
-// assugnment operator. 
+// assignment operator. 
 
 // </synopsis>
 
 // <example>
-// Because this is a virtual base class this example will be inside a
-// function. 
+// These examples are coded in the tSkyCompRep.h file.
+// <h4>Example 1:</h4>
+// In this example a SkyCompRep object is created and used to calculate the
+// ...
 // <srcblock>
-// void printComponent(SkyCompRep & component){
-//   Quantum<Vector<Double> > compFlux(Vector<Double>(4), "Jy");
-//   component.flux().value(compFlux);
-//   cout << "Component has a total flux [I,Q,U,V] of " << compFlux;
-//   MDirection compDir;
-//   component.direction(compDir);
-//   cout << ", is centred at " << compDir.getValue("deg");
-//   Vector<Double> peak(4);
-//   component.sample(peak, compDir, MVAngle(Quantity(1, "arcsec")));
-//   cout << " and an peak intensity of " << peak << " Jy/arcsec" << endl;
-// }
 // </srcblock>
 // </example>
+//
+// <thrown>
+// <li> AipsError - If an internal inconsistancy is detected, when compiled in 
+// debug mode only.
+// </thrown>
 //
 // <motivation>
 // Model fitting is an important part of astronomical data
 // reduction/interpretation. This class defines a model component. Many
 // components can be strung together (using the ComponentList class) to
-// construct a model. 
+// construct a model. It is expected that this class will eventually allow you
+// to solve for parameters of the model.
 // </motivation>
 
 // <thrown>
-// Exceptions are not directly thrown by this class
+// <li> AipsError - If an internal inconsistancy is detected, when compiled in 
+// debug mode only.
 // </thrown>
 //
-// <todo asof="1996/09/01">
-//   <li> 
+// <todo asof="1998/05/22">
+//   <li> Add time variability
+//   <li> Add the ability to solve for component parameters.
 // </todo>
 
+// <linkfrom anchor="SkyCompRep" classes="SkyComponent SkyCompBase">
+//  <here>SkyCompRep</here> - Models the sky brightness (copy semantics)
+// </linkfrom>
+ 
 class SkyCompRep: public SkyCompBase
 {
 public:
@@ -125,12 +127,20 @@ public:
   // Construct a SkyCompRep of the specified shape. The resultant component
   // has a constant spectrum and a shape given by the default constructor of
   // the specified ComponentShape class.
+  // <thrown>
+  // AipsError - if the shape is UNKNOWN_SHAPE or NUMBER_SHAPES
+  // </thrown>
   SkyCompRep(const ComponentType::Shape & shape);
   
   // Construct a SkyCompRep with the user specified model for the shape and
   // spectrum. The resultant component has a shape given by the default
   // constructor of the specified ComponentShape class and a spectrum given by
   // the default constructor of the specified SpectralModel class
+  // <thrown>
+  // AipsError - if the shape is UNKNOWN_SHAPE or NUMBER_SHAPES
+  // AipsError - if the spectrum is UNKNOWN_SPECTRAL_SHAPE or
+  // NUMBER_SPECTRAL_SHAPES
+  // </thrown>
   SkyCompRep(const ComponentType::Shape & shape,
  	     const ComponentType::SpectralShape & spectrum);
 
