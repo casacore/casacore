@@ -66,10 +66,6 @@ Bool SpectralFit::fit(const Vector<MT> &y,
   // Initial guess
   Vector<MT> v(npar);
   Vector<Bool> vb(npar);
-  // Next one necessary as long as no correct Functionals
-  Vector<MT> corsol(npar);
-  corsol = 1.0;
-  MT fc = 1./sqrt(log(16.0));
   uInt j(0);
   for (uInt i=0; i<slist_p.nelements(); i++) {
     if (slist_p[i].getType() == SpectralElement::GAUSSIAN) {
@@ -78,7 +74,6 @@ Bool SpectralFit::fit(const Vector<MT> &y,
       vb(j)  = !slist_p[i].fixedCenter();
       v(j++) = slist_p[i].getCenter();
       vb(j)  = !slist_p[i].fixedFWHM();
-      corsol(j) = fc;
       v(j++) = slist_p[i].getFWHM();
     } else if (slist_p[i].getType() == SpectralElement::POLYNOMIAL) {
       for (uInt k=0; k<slist_p[i].getDegree()+1; k++) {
@@ -99,7 +94,7 @@ Bool SpectralFit::fit(const Vector<MT> &y,
   Vector<MT> err;
   Vector<MT> sigma(x.nelements());
   sigma = 1.0;
-  sol = fitter.fit(x, y, sigma, mask, &corsol);
+  sol = fitter.fit(x, y, sigma, mask);
   err = fitter.errors();
   // Number of iterations
   iter_p = fitter.currentIteration();
