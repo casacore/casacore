@@ -240,6 +240,10 @@ set:       LBRACKET elems RBRACKET {
                $$ = new TableExprNode ($2->setOrArray());
                delete $2;
            }
+         | LPAREN elems RPAREN {
+               $$ = new TableExprNode ($2->setOrArray());
+               delete $2;
+           }
          ;
 
 elemlist:  elems
