@@ -30,6 +30,7 @@
 #include <trial/ComponentModels/Flux.h>
 #include <trial/ComponentModels/SpectralIndex.h>
 #include <aips/Arrays/ArrayLogical.h>
+#include <aips/Arrays/ArrayMath.h>
 #include <aips/Arrays/Vector.h>
 #include <aips/Exceptions/Error.h>
 #include <aips/Containers/Record.h>
