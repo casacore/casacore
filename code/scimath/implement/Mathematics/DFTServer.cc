@@ -1,5 +1,5 @@
 //# DFTServer.cc: This class contains methods for doing n-D slow Fourier transforms
-//# Copyright (C) 1994,1995,1996
+//# Copyright (C) 1994,1995,1996,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -25,7 +25,7 @@
 //#
 //# $Id$
 
-#include <aips/Mathematics/DFTServer.h>
+#include <trial/Mathematics/DFTServer.h>
 #include <aips/Arrays/Matrix.h>
 
 template<class T> 

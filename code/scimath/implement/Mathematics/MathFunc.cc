@@ -1,5 +1,5 @@
 //# MathFunc.cc: Templated letter/envelope classes for single dependent variable functions
-//# Copyright (C) 1993,1994,1995,1996,1998
+//# Copyright (C) 1993,1994,1995,1996,1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -27,7 +27,7 @@
 
 #include <aips/Mathematics/Constants.h>
 #include <aips/Exceptions/Error.h>
-#include <aips/Mathematics/MathFunc.h>
+#include <trial/Mathematics/MathFunc.h>
 
 //
 // This file implements an abstract base class of MathFunc objects

@@ -1,5 +1,5 @@
 //# MathFunc2.cc: non templated static data for MathFunc
-//# Copyright (C) 1993,1994,1995,1996
+//# Copyright (C) 1993,1994,1995,1996,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -26,7 +26,7 @@
 //# $Id$
 
 #include <aips/Mathematics/Constants.h>
-#include <aips/Mathematics/MathFunc.h>
+#include <trial/Mathematics/MathFunc.h>
 
 //
 // Define static members of MathFunc<T> for g++
