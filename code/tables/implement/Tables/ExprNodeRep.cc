@@ -259,106 +259,51 @@ Array<MVTime> TableExprNodeRep::getArrayDate (const TableExprId&)
 
 Bool TableExprNodeRep::hasBool     (const TableExprId& id, Bool value)
 {
-    return anyEQ (value, getArrayBool (id));
+    return (value == getBool(id));
 }
 Bool TableExprNodeRep::hasDouble   (const TableExprId& id, Double value)
 {
-    return anyEQ (value, getArrayDouble (id));
+    return (value == getDouble(id));
 }
 Bool TableExprNodeRep::hasDComplex (const TableExprId& id,
 				    const DComplex& value)
 {
-    return anyEQ (value, getArrayDComplex (id));
+    return (value == getDComplex(id));
 }
 Bool TableExprNodeRep::hasString   (const TableExprId& id,
 				    const String& value)
 {
-    return anyEQ (value, getArrayString (id));
+    return (value == getString(id));
 }
 Bool TableExprNodeRep::hasDate     (const TableExprId& id,
 				    const MVTime& value)
 {
-    return anyEQ (value, getArrayDate (id));
+    return (value == getDate(id));
 }
 Array<Bool> TableExprNodeRep::hasArrayBool (const TableExprId& id,
 					    const Array<Bool>& value)
 {
-    Array<Bool> set = getArrayBool (id);
-    Array<Bool> result(value.shape());
-    Bool deleteIn, deleteOut;
-    const Bool* in = value.getStorage (deleteIn);
-    Bool* out = result.getStorage (deleteOut);
-    uInt nval = value.nelements();
-    for (uInt i=0; i<nval; i++) {
-	out[i] = anyEQ (in[i], set);
-    }
-    value.freeStorage (in, deleteIn);
-    result.putStorage (out, deleteOut);
-    return result;
+    return (getBool(id) == value);
 }
 Array<Bool> TableExprNodeRep::hasArrayDouble (const TableExprId& id,
 					      const Array<Double>& value)
 {
-    Array<Double> set = getArrayDouble (id);
-    Array<Bool> result(value.shape());
-    Bool deleteIn, deleteOut;
-    const Double* in = value.getStorage (deleteIn);
-    Bool* out = result.getStorage (deleteOut);
-    uInt nval = value.nelements();
-    for (uInt i=0; i<nval; i++) {
-	out[i] = anyEQ (in[i], set);
-    }
-    value.freeStorage (in, deleteIn);
-    result.putStorage (out, deleteOut);
-    return result;
+    return (getDouble(id) == value);
 }
 Array<Bool> TableExprNodeRep::hasArrayDComplex (const TableExprId& id,
 						const Array<DComplex>& value)
 {
-    Array<DComplex> set = getArrayDComplex (id);
-    Array<Bool> result(value.shape());
-    Bool deleteIn, deleteOut;
-    const DComplex* in = value.getStorage (deleteIn);
-    Bool* out = result.getStorage (deleteOut);
-    uInt nval = value.nelements();
-    for (uInt i=0; i<nval; i++) {
-	out[i] = anyEQ (in[i], set);
-    }
-    value.freeStorage (in, deleteIn);
-    result.putStorage (out, deleteOut);
-    return result;
+    return (getDComplex(id) == value);
 }
 Array<Bool> TableExprNodeRep::hasArrayString (const TableExprId& id,
 					      const Array<String>& value)
 {
-    Array<String> set = getArrayString (id);
-    Array<Bool> result(value.shape());
-    Bool deleteIn, deleteOut;
-    const String* in = value.getStorage (deleteIn);
-    Bool* out = result.getStorage (deleteOut);
-    uInt nval = value.nelements();
-    for (uInt i=0; i<nval; i++) {
-	out[i] = anyEQ (in[i], set);
-    }
-    value.freeStorage (in, deleteIn);
-    result.putStorage (out, deleteOut);
-    return result;
+    return (getString(id) == value);
 }
 Array<Bool> TableExprNodeRep::hasArrayDate (const TableExprId& id,
 					    const Array<MVTime>& value)
 {
-    Array<MVTime> set = getArrayDate (id);
-    Array<Bool> result(value.shape());
-    Bool deleteIn, deleteOut;
-    const MVTime* in = value.getStorage (deleteIn);
-    Bool* out = result.getStorage (deleteOut);
-    uInt nval = value.nelements();
-    for (uInt i=0; i<nval; i++) {
-	out[i] = anyEQ (in[i], set);
-    }
-    value.freeStorage (in, deleteIn);
-    result.putStorage (out, deleteOut);
-    return result;
+    return (getDate(id) == value);
 }
 
 
