@@ -248,7 +248,7 @@ fft0(Array<S> & cResult, Array<T> & rData, const Bool constInput) {
     cResult.resize(resultShape);
   }
   // Early exit if the Array is all zero;
-  if (allNearAbs(rData, T(0), NumericTraits<T>::epsilon)) {
+  if (allNearAbs(rData, T(0), NumericTraits<T>::minimum)) {
     cResult = S(0);
     return;
   }
@@ -349,7 +349,7 @@ fft0(Array<T> & rResult, Array<S> & cData, const Bool constInput) {
   const IPosition rShape = determineShape(rResult.shape(), cCopy);
   rResult.resize(rShape);
   // Early exit if the Array is all zero;
-  if (allNearAbs(cData, S(0), NumericTraits<S>::epsilon)) {
+  if (allNearAbs(cData, S(0), NumericTraits<S>::minimum)) {
     rResult = T(0);
     return;
   }
@@ -436,7 +436,7 @@ fft0(Array<T> & rResult, const Array<S> & cData) {
 template<class T, class S> void FFTServer<T,S>::
 fft0(Array<S> & cValues, const Bool toFrequency) {
   // Early exit if the Array is all zero;
-  if (allNearAbs(cValues, S(0), NumericTraits<S>::epsilon)){
+  if (allNearAbs(cValues, S(0), NumericTraits<S>::minimum)){
     return;
   }
   // resize the server if necessary
