@@ -27,8 +27,6 @@
 
 #include <aips/MeasurementSets/NewMSColumns.h>
 #include <aips/MeasurementSets/NewMeasurementSet.h>
-#include <aips/Tables/TableRecord.h>
-#include <aips/Utilities/String.h>
 
 RONewMSColumns::RONewMSColumns(const NewMeasurementSet& ms):
   RONewMSMainColumns(ms),
@@ -83,47 +81,21 @@ void NewMSColumns::setEpochRef(MEpoch::Types ref)
   // Adjust the relevant columns in the main table
   NewMSMainColumns::setEpochRef(ref);
   // Now the same for the subtables.
-  //  feed().setEpochRef(ref);
+  feed().setEpochRef(ref);
   field().setEpochRef(ref);
-//   flagCmd().setEpochRef(ref);
-//   history().setEpochRef(ref);
-//   observation().setEpochRef(ref);
+  flagCmd().setEpochRef(ref);
+  history().setEpochRef(ref);
+  observation().setEpochRef(ref);
   pointing().setEpochRef(ref);
-//   source().setEpochRef(ref);
-//   if (!sysCal_p.isNull()) {
-//     syscal().setEpochRef(ref);
-//   }
-//   if (!weather_p.isNull()) {
-//     weather().setEpochRef(ref);
-//   }
-
-  const String timsys(MEpoch::showType(ref));
-  const String k1("MEASINFO");
-  const String k2("Type");
-  const String fld("refer");
-  feed_p.time().rwKeywordSet().rwSubRecord(k1).rwSubRecord(k2).
-    define(fld,timsys);
-  flagCmd_p.time().rwKeywordSet().rwSubRecord(k1).rwSubRecord(k2).
-    define(fld,timsys);
+  source().setEpochRef(ref);
   if (!freqOffset_p.isNull()) {
-    freqOffset_p.time().rwKeywordSet().rwSubRecord(k1).rwSubRecord(k2).
-      define(fld,timsys);
+    freqOffset_p.setEpochRef(ref);
   }
-  history_p.time().rwKeywordSet().rwSubRecord(k1).rwSubRecord(k2).
-    define(fld,timsys);
-  observation_p.timeRange().rwKeywordSet().rwSubRecord(k1).rwSubRecord(k2).
-    define(fld,timsys);
-  observation_p.releaseDate().rwKeywordSet().rwSubRecord(k1).rwSubRecord(k2).
-    define(fld,timsys);
-  source_p.time().rwKeywordSet().rwSubRecord(k1).rwSubRecord(k2).
-    define(fld,timsys);
   if (!sysCal_p.isNull()) {
-    sysCal_p.time().rwKeywordSet().rwSubRecord(k1).rwSubRecord(k2).
-      define(fld,timsys);
+    sysCal_p.setEpochRef(ref);
   }
   if (!weather_p.isNull()) {
-    weather_p.time().rwKeywordSet().rwSubRecord(k1).rwSubRecord(k2).
-      define(fld,timsys);
+    weather_p.setEpochRef(ref);
   }
 }
 
@@ -131,10 +103,7 @@ void NewMSColumns::setDirectionRef(MDirection::Types ref)
 {
   field().setDirectionRef(ref);
   pointing().setDirectionRef(ref);
-//   source().setDirectionRef(ref);
-
-  source_p.direction().rwKeywordSet().rwSubRecord("MEASINFO").
-    rwSubRecord("Type").define("refer",MDirection::showType(ref));
+  source().setDirectionRef(ref);
 }
 // Local Variables: 
 // compile-command: "gmake NewMSColumns"
