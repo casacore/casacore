@@ -26,9 +26,89 @@
 //# $Id$
 
 #include <aips/aips.h>
+#include <stdio.h>
+#include <stdlib.h>
 
 #if defined(AIPS_DEBUG)
 Bool aips_debug_on = True;
 #else
 Bool aips_debug_on = False;
+#endif
+
+static size_t total = 0;
+const size_t &aipsalloc(total);
+
+// Replace global operator new/delete unless the user says to do otherwise.
+// We do this to keep track of memory use.
+#if !defined(AIPS_STDNEW)
+#include <new.h>
+
+// Assume everything aligns on 8 byte boundaries. No portable way to determine
+// this. We store the allocation size "before" the new'd pointer in an area this
+// long
+const int offset = 8;
+
+// When we have modern compilers we should throw an exception if the new_handler
+// fails.
+
+void *operator new (size_t size)
+{
+    char *ptr;
+    while ((ptr = (char *)malloc(size+offset)) == 0) {
+	new_handler handler;
+	handler = set_new_handler(0);
+	set_new_handler(handler); // Put it back before trying it
+	if (handler) {
+	    (*handler)();
+	} else {
+	    return 0;
+	}
+    }
+    *((size_t *)ptr) = size;
+    total += size;
+    return ptr+offset;
+}
+
+void operator delete (void *ptr)
+{
+    if (ptr) {
+	char *alias = (char *)ptr;
+	alias -= offset;
+	size_t size = *((size_t*)alias);
+	total -= size;
+	free(alias);
+    }
+}
+
+//------ Just copies of the above
+
+void *operator new[] (size_t size)
+{
+    char *ptr;
+    while ((ptr = (char *)malloc(size+offset)) == 0) {
+	new_handler handler;
+	handler = set_new_handler(0);
+	set_new_handler(handler); // Put it back before trying it
+	if (handler) {
+	    (*handler)();
+	} else {
+	    return 0;
+	}
+    }
+    *((size_t *)ptr) = size;
+    total += size;
+    return ptr+offset;
+}
+
+void operator delete[] (void *ptr)
+{
+    if (ptr) {
+	char *alias = (char *)ptr;
+	alias -= offset;
+	size_t size = *((size_t*)alias);
+	total -= size;
+	free(alias);
+    }
+}
+
 #endif
