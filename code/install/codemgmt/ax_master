@@ -6528,3 +6528,4 @@
 18 590 src mv trial/implement/MeasurementComponents/CalDescColumns.cc trial/implement/CalTables/CalDescColumns.cc
 18 590 src mv trial/implement/MeasurementComponents/CalHistoryColumns.h trial/implement/CalTables/CalHistoryColumns.h
 18 590 src mv trial/implement/MeasurementComponents/CalHistoryColumns.cc trial/implement/CalTables/CalHistoryColumns.cc
+18 594 src mv trial/implement/MeasurementComponents/VisJonesDesc.h trial/implement/CalTables/VisJonesDesc.h
