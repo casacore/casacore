@@ -139,25 +139,45 @@
   fi
   ARSH="ssh aips2.nrao.edu $REMOTE_USER"
 
+# Entire command is now collected and handled
+# as one ssh to avoid loosing stdin.
+  COMMAND=
   if [ "$FILES" != "" ]
   then
      rm -f a.tmp.tar && tar cf a.tmp.tar $FILES
      scp -qpC a.tmp.tar $AUID@aips2.nrao.edu:$PGMRDIR/a.tmp.tar
      rm -f a.tmp.tar
-     COMMAND="cd $PGMRDIR && tar pvxf a.tmp.tar > /dev/null && rm -f a.tmp.tar"
-     $ARSH /aips++/weekly/.rshexec sh -c \'\""$COMMAND"\"\'
+     if [ "$COMMAND" ]
+     then
+        COMMAND="$COMMAND &&"
+     else
+        COMMAND="cd $PGMRDIR &&"
+     fi
+     COMMAND="$COMMAND tar pvxf a.tmp.tar > /dev/null && rm -f a.tmp.tar"
   fi
 
 # Transmit directories to the master host.
   if [ "$DIRS" != "" ]
   then
-     COMMAND="cd $PGMRDIR && mkdir $DIRS"
-     $ARSH /aips++/weekly/.rshexec sh -c \'\""$COMMAND"\"\'
+     if [ "$COMMAND" ]
+     then
+        COMMAND="$COMMAND &&"
+     else
+        COMMAND="cd $PGMRDIR &&"
+     fi
+     COMMAND="$COMMAND mkdir $DIRS"
   fi
 
 # Invoke 'ai' on the master host.
-  COMMAND="cd $PGMRDIR && ai -I $ARGS && rm -f $FILES"
+  if [ "$COMMAND" ]
+  then
+     COMMAND="$COMMAND &&"
+  else
+     COMMAND="cd $PGMRDIR &&"
+  fi
+  COMMAND="$COMMAND ai -I $ARGS && rm -f $FILES"
   $ARSH /aips++/weekly/.rshexec sh -c \'\""$COMMAND"\"\'
+
   [ "$FILES" ] && $OPER $FILES
 
 # Update the local installation?
