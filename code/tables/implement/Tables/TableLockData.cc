@@ -28,6 +28,8 @@
 
 #include <aips/Tables/TableLockData.h>
 #include <aips/Tables/TableError.h>
+#include <aips/Logging/LogIO.h>
+#include <unistd.h>
 
 
 TableLockData::TableLockData (const TableLock& lockOptions,
@@ -76,8 +78,41 @@ void TableLockData::makeLock (const String& name, Bool create, Bool write)
 
 Bool TableLockData::acquire (MemoryIO* info, Bool write, uInt nattempts)
 {
-    //# Throw an exception if it failed while we had to wait.
-    Bool status = itsLock->doAcquire (info, write, nattempts);
+    //# Try to acquire a lock.
+    //# Show a message when we have to wait for a long time.
+    //# Start with n attempts, show a message and continue thereafter.
+    uInt n = 30;
+    if (nattempts > 0  &&  nattempts < n) {
+	n = nattempts;
+    }
+    Bool status = itsLock->doAcquire (info, write, n);
+    if (!status  &&  n != nattempts) {
+	String s = "read";
+	if (write) {
+	    s = "write";
+	}
+	LogIO os;
+	os << "Process " << uInt(getpid()) << ": waiting for "
+	   << s << "-lock on file " << itsLock->name();
+	os.post();
+	if (nattempts > 0) {
+	    nattempts -= n;
+	}
+	status = itsLock->doAcquire (info, write, nattempts);
+	if (status) {
+	    os << "Process " << uInt(getpid()) << ": acquired "
+	       << s << "-lock on file " << itsLock->name();
+	    os.post();
+	}else{
+	    if (nattempts > 0) {
+		os << "Process " << uInt(getpid()) << ": gave up acquiring "
+		   << s << "-lock on file " << itsLock->name()
+		   << " after " << nattempts << " seconds";
+		os.post();
+	    }
+	}
+    }
+    //# Throw exception when error while we had to wait forever.
     if (!status) {
 	if (nattempts == 0) {
 	    throw (TableError ("Error (" + itsLock->lastMessage() +
