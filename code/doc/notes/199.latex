@@ -11,11 +11,11 @@
 \title{NOTE 199 --
 Table Query Language}
 \author {Ger van Diepen, NFRA Dwingeloo}
-\date {1997 August 25}
+\date {1997 September 22}
 \maketitle
 %%---------------------------------------------------------------------------
 \begin{htmlonly}
-\htmladdnormallink{A postscript version of this note is available (110kB).}{../199.ps}
+\htmladdnormallink{A postscript version of this note is available (116kB).}{../199.ps}
 \end{htmlonly}
 \input{taql}
 \end{document}
