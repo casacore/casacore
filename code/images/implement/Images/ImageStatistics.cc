@@ -1,5 +1,5 @@
 //# ImageStatistics.cc: generate statistics from an image
-//# Copyright (C) 1996,1997,1998,1999,2000,2001,2002,2003
+//# Copyright (C) 1996,1997,1998,1999,2000,2001,2002,2003,2004
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -314,7 +314,7 @@ Bool ImageStatistics<T>::listStats (Bool hasBeam, const IPosition& dPos,
 //
       if (LattStatsSpecialize::hasSomePoints(stats.column(NPTS)(j))) {
 
-// I hate ostrstreams.  The bloody things are one shot.
+// Convert to strings.
    
          ostringstream os0, os1, os2, os3, os4, os5, os6, os7, os8, os9;
          setStream(os0, oPrec); setStream(os1, oPrec); setStream(os2, oPrec);

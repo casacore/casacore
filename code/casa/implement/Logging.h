@@ -1,5 +1,5 @@
 //# Logging.h: Send, record, and filter informational messages
-//# Copyright (C) 1996,1997
+//# Copyright (C) 1996,1997,2004
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -103,7 +103,7 @@
 // message if he decides that's the most appropriate thing to do. Note that
 // it is always wrong to write directly to <src>cout</src> or </cerr> (other
 // then for debugging) - use an <src>ostream</src>, so the caller can replace
-// it with, for example, an <src>ostrstream</src>.
+// it with, for example, an <src>ostringstream</src>.
 //
 // Once you decide to use logging, the application programmer only has
 // to decide at every location he wants to log:

@@ -1,5 +1,5 @@
 //# LatticeStatistics.cc: generate statistics from a MaskedLattice
-//# Copyright (C) 1996,1997,1998,1999,2000,2001,2002,2003
+//# Copyright (C) 1996,1997,1998,1999,2000,2001,2002,2003,2004
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -774,10 +774,14 @@ Bool LatticeStatistics<T>::getStatistic (Array<T>& stats,
       return getMin(stats, dropDeg);
    } else if (type==LatticeStatsBase::MAX) {
       return getMax(stats, dropDeg);
+   } else if (type==LatticeStatsBase::MEAN) {
+      return getMean(stats, dropDeg);
    } else if (type==LatticeStatsBase::VARIANCE) {
       return getVariance(stats, dropDeg);
    } else if (type==LatticeStatsBase::SIGMA) {
       return getSigma(stats, dropDeg);
+   } else if (type==LatticeStatsBase::RMS) {
+      return getRms(stats, dropDeg);
    } else if (type==LatticeStatsBase::FLUX) {
       return getFluxDensity(stats, dropDeg);
    }
@@ -1594,7 +1598,7 @@ Bool LatticeStatistics<T>::listStats (Bool hasBeam, const IPosition& dPos,
 // Have to convert LogIO object to ostream before can apply
 // the manipulators. Also formatting Complex numbers with
 // the setw manipulator fails, so I go to a lot of trouble
-// with ostrstreams (which are useable only once).
+// with ostringstreams (which are useable only once).
 
    Int oPrec = 6;   
    setStream(os_p.output(), oPrec);
@@ -1670,7 +1674,7 @@ Bool LatticeStatistics<T>::listStats (Bool hasBeam, const IPosition& dPos,
 //
       if (LattStatsSpecialize::hasSomePoints(stats.column(NPTS)(j))) {
 
-// I hate ostrstreams.  The bloody things are one shot.
+// Convert to strings.
 
          ostringstream os0, os1, os2, os3, os4, os5, os6, os7, os8, os9;
          setStream(os0, oPrec); setStream(os1, oPrec); setStream(os2, oPrec); 
@@ -2756,7 +2760,7 @@ void LatticeStatistics<T>::summStats ()
 // Have to convert LogIO object to ostream before can apply
 // the manipulators.  Also formatting Complex numbers with
 // the setw manipulator fails, so I go to a lot of trouble
-// with ostrstreams (which are useable only once).
+// with ostringstreams (which are useable only once).
 
    const Int oPrec = 6;
    Int oWidth = 14;
