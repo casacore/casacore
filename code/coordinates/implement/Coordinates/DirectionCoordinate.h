@@ -87,6 +87,11 @@ class prjprm;
 class DirectionCoordinate : public Coordinate
 {
 public:
+    // The default constructor creates a J2000 direction coordinate with a
+    // CARtesion projection with longitude,latitude 0,0 at pixel 0,0 and an
+    // increment of +1 radian per pixel on both axes.
+    DirectionCoordinate();
+
     // Define the direction coordinate transformation. refLong and refLat will
     // normally the the RA/DEC of the pixel described by refX/refY. incLat/incLong
     // are the increment per pixel (RA is usually negative!), and the xform
@@ -258,9 +263,6 @@ private:
     // Check formatting types
     void checkFormat(Coordinate::formatType& format,
                      const Bool absolute) const;
-
-    // Undefined and inaccessible
-    DirectionCoordinate();
 };
 
 #endif
