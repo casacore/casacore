@@ -241,11 +241,6 @@ class Table;
 class ImageUtilities {
 public:
 
-// Return, 0 relative, the number of the first pixel axis in an image which is a spectral axis
-// A return value of -1 indicates no spectral axis was found
-   static Int findSpectralAxis (const IPosition& imageShape,
-                                const CoordinateSystem& coordinate);
-
 // Convert comma or space delimitered substrings into an
 // array of strings.  
    static Vector<String> getStrings (const String& string);
