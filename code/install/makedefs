@@ -86,7 +86,7 @@ AIPSSITE := $(AIPSARCH)/$(word 3, $(AIPSPATH))
 AIPSHOST := $(AIPSSITE)/$(word 4, $(AIPSPATH))
 ARCHBIND := $(AIPSARCH)/bin
 
-ifeq "$(shell echo `pwd | sed -e 's=^$(shell cd $(AIPSROOT); pwd)/==' -e 's=^/.*=='`)" ""
+ifeq "$(shell echo `pwd | sed -e 's=^$(shell cd $(AIPSROOT); pwd)/==' -e 's=^/.*=='` -e 's=[ 	]==g')" ""
    MAKEMODE := programmer
    THISDIR := $(shell pwd)
 else
