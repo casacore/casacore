@@ -199,9 +199,7 @@ Bool LatticeExpr<T>::doGetSlice (Array<T>& buffer,
 				 const Slicer& section)
 {
 // Evaluate the expression if not accessing the same section again.
-   if (!(section.start().isEqual (lastSlicer_p.start())
-     &&  section.end().isEqual (lastSlicer_p.end())
-     &&  section.stride().isEqual (lastSlicer_p.stride()))) {
+   if (!(section==lastSlicer_p)) {
       delete lastChunkPtr_p;
       lastChunkPtr_p = new LELArray<T> (section.length());
       lastSlicer_p = section;
@@ -217,9 +215,7 @@ Bool LatticeExpr<T>::doGetMaskSlice (Array<Bool>& buffer,
 {
 // Evaluate if masked and if different section.
    if (expr_p.isMasked()) {
-      if (!(section.start().isEqual (lastSlicer_p.start())
-        &&  section.end().isEqual (lastSlicer_p.end())
-        &&  section.stride().isEqual (lastSlicer_p.stride()))) {
+      if (!(section==lastSlicer_p)) {
 	 delete lastChunkPtr_p;
 	 lastChunkPtr_p = new LELArray<T> (section.length());
 	 lastSlicer_p = section;
