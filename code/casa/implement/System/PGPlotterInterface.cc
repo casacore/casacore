@@ -39,7 +39,7 @@ void PGPlotterInterface::message(const String &text)
     // On the logger we want to suppres blank lines.
     if (text != "") {
 	LogIO os;
-	os << text;
+	os << text << LogIO::POST;
     }
 }
 
