@@ -140,7 +140,7 @@ sub fetch_raw_help{
            print "help::pkg.$opt_package$packd := '$1';\n";
         }
       } else {
-        s/\\ahpackage{$mtext}/
+        s/\\ahpackage{($mtext)}/
         \\begin{htmlonly}
         \\htmladdnormallink{Postscript file available}{$psfile}
         \\vspace{.10in}
