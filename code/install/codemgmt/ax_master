@@ -3958,3 +3958,4 @@
 14 065 src mv trial/implement/Display/test/tAttribute.cc trialdisplay/implement/Display/test/tAttribute.cc
 14 065 src mv trial/implement/Display/test/dMultichannelRaster.exec trialdisplay/implement/Display/test/dMultichannelRaster.exec
 14 065 src mv trial/implement/Display/test/dPSLatticeAsRaster.exec trialdisplay/implement/Display/test/dPSLatticeAsRaster.exec
+14 065 src mv trial/implement/Display/test/dPSWorldCanvasApp.exec trialdisplay/implement/Display/test/dPSWorldCanvasApp.exec
