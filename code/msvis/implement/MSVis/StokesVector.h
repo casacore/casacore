@@ -40,7 +40,7 @@
 #include <trial/Arrays/SquareMatrix.h>
 #include <aips/Arrays/IPosition.h>
 #include <aips/Mathematics/Math.h>
-#include <iostream.h>
+#include <aips/iostream.h>
 
 //# Forward Declarations
 class StokesVector;
