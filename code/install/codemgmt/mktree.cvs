@@ -222,6 +222,7 @@
 	           cp $myDir/CVS/* $newdir/CVS
                    if [  "$CVSROOT" ]
                    then
+                     chmod u+w $newdir/CVS/Root
                      echo $CVSROOT > $newdir/CVS/Root
                    fi
                    fi
