@@ -410,7 +410,8 @@ static Bool dropRemovedAxes (CoordinateSystem& cSysOut, const CoordinateSystem& 
 
 // Set Direction conversion layer of DirectionCoordinate in CoordinateSystem
 // so that pixel<->world go to the specified direction system (a valid
-// MDirection::Types string)
+// MDirection::Types string).  Returns False with error if direction
+// system invalid.  If no DirectionCoordinate returns True
    static Bool setDirectionConversion (String& errorMsg, CoordinateSystem& cSys,
                                       const String directionSystem);
 
@@ -429,7 +430,8 @@ static Bool dropRemovedAxes (CoordinateSystem& cSysOut, const CoordinateSystem& 
 
 // Set Spectral conversion layer of SpectralCoordinate in CoordinateSystem
 // so that pixel<->world go to the specified frequency system (a valid
-// MFrequency::Types string)
+// MFrequency::Types string).  Returns False if frequency system invalid
+// or if no DirectionCoordinate or if cant get Date/Epoch
    static Bool setSpectralConversion (String& errorMsg, CoordinateSystem& cSys,
                                       const String frequencySystem);
 
