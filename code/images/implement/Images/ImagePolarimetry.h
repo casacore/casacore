@@ -263,8 +263,8 @@ public:
 // function singleStokesShape (ask for type STokes::Plinear).  
 // Howeverm this function will replace the SpectralCoordinate 
 // by a LinearCoordinate describing  the Rotation Measure.  
-// ImageInfo, MiscInfo, Units, and
-// history are copied to the output.  If the output has a mask,
+// ImageInfo, and Units are copied to the output.  MiscInfo and
+// history are not.  If the output has a mask,
 // and the input is masked, the mask is copied.  If the output
 // has a mask, it should already have been initialized to True
    void fourierRotationMeasure(ImageInterface<Complex>& pol,
@@ -305,8 +305,7 @@ public:
 // not accessed so you can select which output images you want.
 // Any output images not masked will be given a mask.
 // The position angles are all in degrees. The RM images in rad/m/m.
-// ImageInfo, MiscInfo, Units, and
-// history are copied to the output.
+// ImageInfo and Units, are copied to the output.  MiscInfo and history are not.
 // You specify which axis houses the frequencies, the noise level of
 // Q and U  if you  know it (by default it is worked out for you) 
 // for error images, the value of the foreground RM if you know it
@@ -339,9 +338,6 @@ private:
 // Copy data and mask
    void copyDataAndMask(ImageInterface<Float>& out,
                         ImageInterface<Float>& in) const;
-
-// Copy MiscInfo, ImagInfo, History
-   void copyMiscellaneous (ImageInterface<Float>& out) const;
 
 // For traiditional RM approach, give output a mask if possible
    Bool dealWithMask (Lattice<Bool>*& pMask, ImageInterface<Float>*& pIm, LogIO& os, const String& type) const;
