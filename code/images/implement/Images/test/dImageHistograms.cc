@@ -104,6 +104,7 @@
 
 #include <trial/Images/PagedImage.h>
 #include <trial/Images/ImageHistograms.h>
+#include <trial/Tasking/PGPlotter.h>
 
 #include <iostream.h>
 
@@ -250,7 +251,8 @@ try {
       if (!histo.setGaussian (doGauss)) return 1;
       if (!histo.setForm(doLog, doCumu)) return 1;
       if (!histo.setStatsList(doList)) return 1;
-      if (!histo.setPlotting(device, nxy)) return 1;
+      PGPlotter plotter(device);
+      if (!histo.setPlotting(plotter, nxy)) return 1;
 
 
 // Get histograms   
