@@ -1,5 +1,5 @@
 //# TableColumn.cc: Const access to a table column
-//# Copyright (C) 1994,1995,1996
+//# Copyright (C) 1994,1995,1996,1997
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -43,7 +43,8 @@ ROTableColumn::ROTableColumn (const Table& tab, const String& columnName)
     if (baseTabPtr_p == 0) {
 	throw (TableInvOper ("TableColumn: no table in Table object"));
     }
-    baseColPtr_p = baseTabPtr_p->getColumn (columnName);
+    baseColPtr_p  = baseTabPtr_p->getColumn (columnName);
+    colCachePtr_p = &(baseColPtr_p->columnCache());
 }
 
 ROTableColumn::ROTableColumn (const Table& tab, uInt columnIndex)
@@ -54,12 +55,14 @@ ROTableColumn::ROTableColumn (const Table& tab, uInt columnIndex)
     if (baseTabPtr_p == 0) {
 	throw (TableInvOper ("TableColumn: no table in Table object"));
     }
-    baseColPtr_p = baseTabPtr_p->getColumn (columnIndex);
+    baseColPtr_p  = baseTabPtr_p->getColumn (columnIndex);
+    colCachePtr_p = &(baseColPtr_p->columnCache());
 }
 
 ROTableColumn::ROTableColumn (const ROTableColumn& that)
-: baseTabPtr_p (that.baseTabPtr_p),
-  baseColPtr_p (that.baseColPtr_p)
+: baseTabPtr_p  (that.baseTabPtr_p),
+  baseColPtr_p  (that.baseColPtr_p),
+  colCachePtr_p (that.colCachePtr_p)
 {}
 
 ROTableColumn* ROTableColumn::clone() const
@@ -69,8 +72,9 @@ ROTableColumn* ROTableColumn::clone() const
 
 void ROTableColumn::reference (const ROTableColumn& that)
 {
-    baseTabPtr_p = that.baseTabPtr_p;
-    baseColPtr_p = that.baseColPtr_p;
+    baseTabPtr_p  = that.baseTabPtr_p;
+    baseColPtr_p  = that.baseColPtr_p;
+    colCachePtr_p = that.colCachePtr_p;
 }
 
 ROTableColumn::~ROTableColumn()

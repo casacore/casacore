@@ -1,5 +1,5 @@
 //# TableColumn.h: Access to a table column
-//# Copyright (C) 1994,1995,1996
+//# Copyright (C) 1994,1995,1996,1997
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -288,6 +288,7 @@ public:
 protected:
     BaseTable*  baseTabPtr_p;
     BaseColumn* baseColPtr_p;                //# pointer to real column object
+    const ColumnCache* colCachePtr_p;
 
 
     // Get the baseColPtr_p of this ROTableColumn object.
