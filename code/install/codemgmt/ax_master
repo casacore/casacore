@@ -4897,3 +4897,4 @@
 14 316 src rm trial/apps/newdish/makefile
 14 316 src rm trial/apps/newdish/newdish.g
 14 316 sys rm libexec/newdish.g
+14 316 src rm trial/apps/newdish/newdish_granges.g
