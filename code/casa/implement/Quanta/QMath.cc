@@ -1,5 +1,5 @@
 //# QMath.cc: class to manipulate physical, dimensioned quantities
-//# Copyright (C) 1994,1995,1996,1997,1998
+//# Copyright (C) 1994,1995,1996,1997,1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -139,7 +139,7 @@ template <class Qtype>
 Quantum<Qtype> abs(const Quantum<Qtype> &left) {
     Qtype tmp = left.getValue(); 
     Qtype ret;
-    at_c(ret) = abs(at_cc(tmp));
+    (ret) = abs((tmp));
     return (Quantum<Qtype>(ret,left));
 }
 
@@ -147,7 +147,7 @@ template <class Qtype>
 Quantum<Qtype> ceil(const Quantum<Qtype> &left) {
     Qtype tmp = left.getValue(); 
     Qtype ret;
-    at_c(ret) = ceil(at_cc(tmp));
+    (ret) = ceil((tmp));
     return (Quantum<Qtype>(ret,left));
 }
 
@@ -155,7 +155,7 @@ template <class Qtype>
 Quantum<Qtype> floor(const Quantum<Qtype> &left) {
     Qtype tmp = left.getValue(); 
     Qtype ret;
-    at_c(ret) = floor(at_cc(tmp));
+    (ret) = floor((tmp));
     return (Quantum<Qtype>(ret,left));
 }
 
@@ -167,7 +167,7 @@ Quantum<Qtype> sin(const Quantum<Qtype> &left) {
 			 left.getUnit() + "'"));
     }
     res.setValue(left.getBaseValue());
-    res.setValue(sin(at_cc(res.getValue())));
+    res.setValue(sin((res.getValue())));
     res.setUnit("");
     return (res);
 }
@@ -180,7 +180,7 @@ Quantum<Qtype> cos(const Quantum<Qtype> &left) {
 			 left.getUnit() + "'"));
     }
     res.setValue(left.getBaseValue());
-    res.setValue(cos(at_cc(res.getValue())));
+    res.setValue(cos((res.getValue())));
     res.setUnit("");
     return (res);
 }
@@ -193,7 +193,7 @@ Quantum<Qtype> tan(const Quantum<Qtype> &left) {
 			 left.getUnit() + "'"));
     }
     res.setValue(left.getBaseValue());
-    res.setValue(tan(at_cc(res.getValue())));
+    res.setValue(tan((res.getValue())));
     res.setUnit("");
     return (res);
 }
@@ -206,7 +206,7 @@ Quantum<Qtype> asin(const Quantum<Qtype> &left) {
 			 left.getUnit() + "'"));
     }
     res.setValue(left.getBaseValue());
-    res.setValue(asin(at_cc(res.getValue())));
+    res.setValue(asin((res.getValue())));
     res.setUnit("rad");
     return (res);
 }
@@ -219,7 +219,7 @@ Quantum<Qtype> acos(const Quantum<Qtype> &left) {
 			 left.getUnit() + "'"));
     }
     res.setValue(left.getBaseValue());
-    res.setValue(acos(at_cc(res.getValue())));
+    res.setValue(acos((res.getValue())));
     res.setUnit("rad");
     return (res);
 }
@@ -232,7 +232,7 @@ Quantum<Qtype> atan(const Quantum<Qtype> &left) {
 			 left.getUnit() + "'"));
     }
     res.setValue(left.getBaseValue());
-    res.setValue(atan(at_cc(res.getValue())));
+    res.setValue(atan((res.getValue())));
     res.setUnit("rad");
     return (res);
 }
@@ -248,7 +248,7 @@ Quantum<Qtype> atan2(const Quantum<Qtype> &left,
     }
     Qtype tmp; tmp = other.getBaseValue();
     res.setValue(left.getBaseValue());
-    res.setValue(atan2(at_cc(res.getValue()),at_cc(tmp)));
+    res.setValue(atan2((res.getValue()),(tmp)));
     res.setUnit("rad");
     return (res);
 }
