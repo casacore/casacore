@@ -32,9 +32,11 @@
 #include <aips/aips.h>
 #include <aips/Utilities/String.h>
 #include <aips/Arrays/Vector.h>
+#include <aips/Measures/MDirection.h>
 
 template<class T> class Matrix;
 class RecordInterface;
+class Projection;
 
 // <summary>
 // Interface for converting between world and pixel coordinates.
@@ -346,6 +348,9 @@ protected:
     Bool find_scale_factor(String &error, Vector<Double> &factor, 
 			   const Vector<String> &units, 
 			   const Vector<String> &oldUnits);
+    Vector<String> make_Direction_FITS_ctype (const Projection& proj,
+                                              const Vector<String>& axisNames,
+                                              Double refLat, Bool printError) const;
 private:
     mutable String error_p;
     mutable Vector<Double> pixel_tmp_p;
@@ -354,6 +359,8 @@ private:
     // Check format type
     void checkFormat(Coordinate::formatType& format,         
                      const Bool absolute) const;
+
+
 
 };
 

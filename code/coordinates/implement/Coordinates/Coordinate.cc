@@ -27,12 +27,17 @@
 //# $Id$
 
 #include <trial/Coordinates/Coordinate.h>
+
 #include <aips/Arrays/Matrix.h>
 #include <aips/Arrays/Vector.h>
-#include <aips/Utilities/Assert.h>
-#include <aips/Quanta/Unit.h>
 #include <aips/Arrays/ArrayMath.h>
 #include <aips/Arrays/ArrayLogical.h>
+#include <trial/Coordinates/Projection.h>
+#include <aips/Logging/LogIO.h>
+#include <aips/Mathematics/Constants.h>
+#include <aips/Measures/MDirection.h>
+#include <aips/Quanta/Unit.h>
+#include <aips/Utilities/Assert.h>
 
 #include <iomanip.h>  
 #include <strstream.h>
@@ -413,3 +418,71 @@ void Coordinate::set_error(const String &errorMsg) const
 }
 
 
+
+
+
+Vector<String> Coordinate::make_Direction_FITS_ctype (const Projection& proj,
+                                                      const Vector<String>& axisNames,
+                                                      Double refLat, Bool printError) const
+{
+    LogIO os(LogOrigin("Coordinate", "make_Direction_FITS_ctype", WHERE));
+    Vector<String> ctype(2);
+    Vector<Double> projParameters = proj.parameters();
+//
+    Bool isNCP = False;
+    for (uInt i=0; i<2; i++) {
+       String name = axisNames(i);
+       while (name.length() < 4) {
+           name += "-";
+       }
+       switch(proj.type()) {
+          case Projection::TAN:  // Fallthrough
+          case Projection::ARC:
+              name = name + "-" + proj.name();
+              break;
+          case Projection::SIN:
+
+// This is either "real" SIN or NCP
+
+              AlwaysAssert(projParameters.nelements() == 2, AipsError);
+              if (::near(projParameters(0), 0.0) && ::near(projParameters(1), 0.0)) {
+                  // True SIN
+                  name = name + "-" + proj.name();
+              } else {
+                  // NCP?
+                  // From Greisen and Calabretta
+                  if (::near(projParameters(0), 0.0) &&
+                      ::near(projParameters(1), 1.0/tan(refLat*C::pi/180.0))) {
+                      // Is NCP
+                      isNCP = True;
+                      name = name + "-NCP";
+                  } else {
+                      // Doesn't appear to be NCP
+                      // Only print this once
+                      if (!isNCP) {
+                          os << LogIO::WARN << "SIN projection with non-zero"
+                              " projp does not appear to be NCP." << endl <<
+                              "However, assuming NCP anyway." << LogIO::POST;
+                      }
+                      name = name + "-NCP";
+                      isNCP = True;
+                  }
+              }
+              break;
+          default:
+             if (i == 0) {
+
+// Only print the message once for long/lat
+                if (printError) {
+                   os << LogIO::WARN << proj.name()
+                      << " is not known to standard FITS (it is known to WCS)."
+                      << LogIO::POST;
+                }
+             }
+             name = name + "-" + proj.name();
+             break;
+       }
+       ctype(i) = name;
+    }
+    return ctype;
+}
