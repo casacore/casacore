@@ -39,6 +39,7 @@
 #include <trial/Lattices/LatticeProgress.h>
 #include <trial/Lattices/TiledCollapser.h>
 #include <aips/Mathematics/NumericTraits.h>
+#include <aips/Measures/QMath.h>
 #include <trial/Tasking/PGPlotter.h>
 #include <trial/Tasking/ProgressMeter.h>
 #include <aips/Utilities/String.h>
@@ -332,6 +333,12 @@ private:
 
 // Calculate statistic from accumulation image and return in an array
    Bool calculateStatistic (Array<T>& slice, const Int& ISTAT);
+
+// Convert a <T> to a <Float> for plotting
+   static Float convertT (const T value) {return Float(real(value));};
+ 
+// Convert a <Float> (from plotting) to a <T>
+   static T convertF (const Float value) {return T(value);};
 
 // Find the next good or bad point in an array
    Bool findNextDatum     (uInt& iFound,
