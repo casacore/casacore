@@ -47,7 +47,7 @@ class Euler;
 
 // <use visibility=local>
 
-// <reviewed reviewer="" date="yyyy/mm/dd" tests="tMeasMath" demos="">
+// <reviewed reviewer="tcornwel" date="yyyy/mm/dd" tests="tMeasMath" demos="">
 // </reviewed>
 
 // <prerequisite>
@@ -74,6 +74,8 @@ class Euler;
 // <br> M. Soma, Th. Hirayama and H. Kinoshita, Celest. Mech. 41, p389, 1988
 // <br> V.S. Gubanov, Astron. Zh. 49, p1112, 1992
 //
+// Where strings are passed in as arguments (observatory names, sources), they
+// will be case insensitive, and minimum match.
 // </synopsis>
 //
 // <example>
