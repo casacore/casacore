@@ -1,0 +1,23 @@
+\documentclass[11pt]{article}
+\usepackage{html, epsf}
+%%-----------------------------------------------------------------------------
+
+\begin{document}
+
+\title{NOTE 220 -- AIPS++ SYSTEM PLAN}
+  
+
+\author{Ger van Diepen}
+
+\date{24 September 1998}
+
+\maketitle
+%%---------------------------------------------------------------------------
+\begin{htmlonly}
+\htmladdnormallink{A postscript version of this note is available (72kB).}{../220.ps}
+\end{htmlonly}
+
+\tableofcontents
+      
+\input{systemplan.latex}
+\end{document}
