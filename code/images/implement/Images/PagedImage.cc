@@ -68,22 +68,24 @@ PagedImage(const IPosition & shape, const CoordinateSystem & coordinateInfo,
    map_p(shape, table, "map", rowNumber), 
    mask_p((PagedArray<Bool> *) 0)
 {
-  sink_p << LogOrigin("PagedImage<T>", 
+  AlwaysAssert(setCoordinateInfo(coordinateInfo), AipsError);
+
+  logSink() << LogOrigin("PagedImage<T>", 
 			 "PagedImage(const IPosition & shape,  "
 			 "const CoordinateSystem & coordinateInfo, "
 			 "Table & table, Bool masking, uInt)", WHERE);
   
-  sink_p << LogIO::DEBUGGING 
+  logSink() << LogIO::DEBUGGING 
 	    << "Creating an image in row " << rowNumber 
 	    << " of an existing table called"
 	    << " '" << name() << "'" << endl
 	    << "The image shape is " << shape << endl;
   if (masking) {
     mask_p = new PagedArray<Bool>(shape, table, "mask", rowNumber);
-    sink_p << "A mask was created" << LogIO::POST;
+    logSink() << "A mask was created" << LogIO::POST;
   }
   else
-    sink_p << "No mask is was created" << LogIO::POST;
+    logSink() << "No mask is was created" << LogIO::POST;
   ::defaultValue(defaultvalue_p); 
   setTableType();
 };
@@ -94,11 +96,12 @@ PagedImage(const IPosition & shape, const CoordinateSystem & coordinateInfo,
   :ImageInterface<T>(coordinateInfo, True),
    mask_p((PagedArray<Bool> *) 0)
 {
-  sink_p << LogOrigin("PagedImage<T>", 
+  AlwaysAssert(setCoordinateInfo(coordinateInfo), AipsError);
+  logSink() << LogOrigin("PagedImage<T>", 
 			 "PagedImage(const IPosition & shape,  "
 			 "const CoordinateSystem & coordinateInfo, "
 			 "const String & filename, Bool masking, uInt rowNumber)", WHERE);
-  sink_p << LogIO::DEBUGGING
+  logSink() << LogIO::DEBUGGING
 	    << "Creating an image in row " << rowNumber 
 	    << " of a new table called"
 	    << " '" << filename << "'" << endl
@@ -108,10 +111,10 @@ PagedImage(const IPosition & shape, const CoordinateSystem & coordinateInfo,
   map_p = PagedArray<T> (shape, table_p, "map", rowNumber);
   if (masking) {
     mask_p = new PagedArray<Bool>(shape, table_p, "mask", rowNumber);
-    sink_p << "A mask was created" << LogIO::POST;
+    logSink() << "A mask was created" << LogIO::POST;
   }
   else
-    sink_p << "No mask is was created" << LogIO::POST;
+    logSink() << "No mask is was created" << LogIO::POST;
   ::defaultValue(defaultvalue_p); 
   setTableType();
 };
@@ -122,10 +125,10 @@ PagedImage(Table & table, uInt rowNumber)
    map_p(table, "map", rowNumber),
    mask_p((PagedArray<Bool> *)0)
 {
-  sink_p << LogOrigin("PagedImage<T>", 
+  logSink() << LogOrigin("PagedImage<T>", 
 			 "PagedImage(Table & table, "
 			 "uInt rowNumber)", WHERE);
-  sink_p << LogIO::NORMAL 
+  logSink() << LogIO::NORMAL 
 	    << "Reading an image from row " << rowNumber 
 	    << " of a table called"
 	    << " '" << name() << "'" << endl
@@ -137,10 +140,10 @@ PagedImage(Table & table, uInt rowNumber)
 
   if (table_p.tableDesc().isColumn("mask")) {
     mask_p = new PagedArray<Bool>(table_p, "mask", rowNumber);
-    sink_p << "A mask was also read" << LogIO::POST;
+    logSink() << "A mask was also read" << LogIO::POST;
   }
   else
-    sink_p << "No mask is defined" << LogIO::POST;
+    logSink() << "No mask is defined" << LogIO::POST;
   throughmask_p = False;
   ::defaultValue(defaultvalue_p); 
   setTableType();
@@ -151,16 +154,16 @@ template <class T> PagedImage<T>::
 PagedImage(const String & filename, uInt rowNumber)
   :mask_p((PagedArray<Bool> *) 0)
 {
-  sink_p << LogOrigin("PagedImage<T>", 
+  logSink() << LogOrigin("PagedImage<T>", 
 			 "PagedImage(const String & filename, "
 			 "uInt rowNumber)", WHERE);
-  sink_p << LogIO::DEBUGGING
+  logSink() << LogIO::DEBUGGING
 	 << "Reading an image from row " << rowNumber 
 	 << " of a file called"
 	 << " '" << filename << "'" << endl;
   openTable(filename);
   map_p = PagedArray<T>(table_p, "map", rowNumber);
-  sink_p << "The image shape is " << map_p.shape() << endl;
+  logSink() << "The image shape is " << map_p.shape() << endl;
 
   CoordinateSystem * restoredCoords =
     CoordinateSystem::restore(table_p.keywordSet(), "coords");
@@ -168,10 +171,10 @@ PagedImage(const String & filename, uInt rowNumber)
   coords_p = * restoredCoords;
   if (table_p.tableDesc().isColumn("mask")) {
     mask_p = new PagedArray<Bool>(table_p, "mask", 0);
-    sink_p << "A mask was also read" << LogIO::POST;
+    logSink() << "A mask was also read" << LogIO::POST;
   }
   else
-    sink_p << "No mask is defined" << LogIO::POST;
+    logSink() << "No mask is defined" << LogIO::POST;
   throughmask_p = False;
   ::defaultValue(defaultvalue_p); 
   setTableType();
@@ -184,9 +187,9 @@ PagedImage(const PagedImage<T> & other)
    table_p(other.table_p), 
    map_p(other.map_p), 
    mask_p((PagedArray<Bool> *)0),
-   defaultvalue_p(other.defaultvalue_p),
-   sink_p(other.sink_p)
+   defaultvalue_p(other.defaultvalue_p)
 {
+  log_p = other.log_p;
   if (other.mask_p != 0) 
     mask_p = new PagedArray<Bool>(*(other.mask_p));
 };
@@ -207,6 +210,7 @@ template <class T> PagedImage<T>::
 template <class T> PagedImage<T> & PagedImage<T>::
 operator=(const PagedImage<T> & other) {
   if (this != &other) {
+    log_p = other.log_p;
     coords_p = other.coords_p;
     units_p = other.units_p;
     throughmask_p = other.throughmask_p;
@@ -251,7 +255,7 @@ resize(const IPosition & newShape) {
 
 template <class T> Bool PagedImage<T>::
 setCoordinateInfo(const CoordinateSystem & coords) {
-  sink_p << LogOrigin ("PagedImage<T>", "setCoordinateInfo(const "
+  logSink() << LogOrigin ("PagedImage<T>", "setCoordinateInfo(const "
 			  "CoordinateSystem & coords)",  WHERE);
   
   Bool ok = ImageInterface<T>::setCoordinateInfo(coords);
@@ -261,23 +265,19 @@ setCoordinateInfo(const CoordinateSystem & coords) {
       if (table_p.keywordSet().isDefined("coords"))
 	table_p.rwKeywordSet().removeField("coords");
       if (!(coords_p.save(table_p.rwKeywordSet(), "coords"))) {
-	sink_p << LogIO::SEVERE << "Error saving coordinates in table"
+	logSink() << LogIO::SEVERE << "Error saving coordinates in table"
 		  << LogIO::POST;
 	ok = False;
       }
     } 
     else
-      sink_p << LogIO::SEVERE
+      logSink() << LogIO::SEVERE
 		<< "Table is not writable: not saving coordinates to disk."
 		<< LogIO::POST;
   }
   return ok;
 }
 
-template<class T> LogIO & PagedImage<T>::
-logSink() {
-  return sink_p;
-}
   
 template <class T> Bool PagedImage<T>::
 getSlice(COWPtr<Array<T> > & buffer, 
@@ -522,13 +522,13 @@ PagedImage() {
 
 template <class T> PagedImage<T> & PagedImage<T>::
 operator+=(const PagedImage<T> & other) {
-  sink_p << LogOrigin("PagedImage<T>", 
+  logSink() << LogOrigin("PagedImage<T>", 
 			 "operator+=(const PagedImage<T> & other)",
 			 WHERE) << LogIO::DEBUGGING;
-  sink_p << "Adding other to our pixels" << endl;
+  logSink() << "Adding other to our pixels" << endl;
   report_mask();
   check_conformance(other);
-  sink_p << LogIO::POST;
+  logSink() << LogIO::POST;
   
   IPosition cursorShape(this->niceCursorShape(this->maxPixels() - 1));
   LatticeIterator<T> toiter(*this, cursorShape);
@@ -587,13 +587,13 @@ operator+=(const PagedImage<T> & other) {
 
 template <class T> PagedImage<T> & PagedImage<T>::
 operator+=(const Lattice<T> & other) {
-  sink_p << LogOrigin("PagedImage<T>", 
+  logSink() << LogOrigin("PagedImage<T>", 
 			 "operator+=(const Lattice<T> & other)", WHERE) <<
     LogIO::DEBUGGING << "Adding other to our pixels" << endl;
   
   report_mask();
   check_conformance(other);
-  sink_p << LogIO::POST;
+  logSink() << LogIO::POST;
   
   IPosition cursorShape(this->niceCursorShape(this->maxPixels() - 1));
   LatticeIterator<T> toiter(*this, cursorShape);
@@ -616,12 +616,12 @@ operator+=(const Lattice<T> & other) {
 
 template <class T> PagedImage<T> & PagedImage<T>::
 operator+=(const T & val) {
-  sink_p << LogOrigin("PagedImage<T>", "operator+=(const T & val)", 
+  logSink() << LogOrigin("PagedImage<T>", "operator+=(const T & val)", 
 			 WHERE) << LogIO::DEBUGGING;
-  sink_p << "Modifying pixels, val=" << val << " ";
+  logSink() << "Modifying pixels, val=" << val << " ";
   
   report_mask();
-  sink_p << LogIO::POST;
+  logSink() << LogIO::POST;
   
   IPosition cursorShape(this->niceCursorShape(this->maxPixels() - 1));
   LatticeIterator<T> toiter(*this, cursorShape);
@@ -653,11 +653,11 @@ save_units() {
 
 template<class T> void PagedImage<T>::
 restore_units() {
-  sink_p << LogOrigin("PagedImage<T>", "restore_units()", WHERE);
+  logSink() << LogOrigin("PagedImage<T>", "restore_units()", WHERE);
   String unitName;
   if (table_p.keywordSet().isDefined("units")) {
     if (table_p.keywordSet().dataType("units") != TpString) {
-      sink_p << 
+      logSink() << 
 	"'units' keyword in image table is not a string! Units not restored." 
 		<< LogIO::SEVERE << LogIO::POST;
     } else {
@@ -683,7 +683,7 @@ restore_units() {
   }
   if (! UnitVal::check(unitName)) {
     // I give up!
-    sink_p << LogIO::SEVERE << "Unit '" << unitName << "' is unknown."
+    logSink() << LogIO::SEVERE << "Unit '" << unitName << "' is unknown."
       " Not restoring units" << LogIO::POST;
     return;
   }
@@ -693,14 +693,14 @@ restore_units() {
 
 template<class T> void PagedImage<T>::
 report_mask() {
-  sink_p << "\tmasking=" << isMasked() << ", " <<
+  logSink() << "\tmasking=" << isMasked() << ", " <<
     "writeThrough=" << throughmask_p;
 };
 
 template<class T> void PagedImage<T>::
 check_conformance(const Lattice<T> & other) {
   if (! this->conform(other))
-    sink_p << "this and other do not conform (" << this->shape() 
+    logSink() << "this and other do not conform (" << this->shape() 
 	   << " != " << other.shape() << ")" << LogIO::EXCEPTION;
 };
 
