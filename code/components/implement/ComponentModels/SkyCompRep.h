@@ -30,10 +30,11 @@
 #define AIPS_SKYCOMPREP_H
 
 #include <aips/aips.h>
-#include <trial/ComponentModels/ComponentType.h>
 #include <trial/ComponentModels/ComponentShape.h>
-#include <trial/ComponentModels/SpectralModel.h>
+#include <trial/ComponentModels/ComponentType.h>
 #include <trial/ComponentModels/Flux.h>
+#include <trial/ComponentModels/SkyCompBase.h>
+#include <trial/ComponentModels/SpectralModel.h>
 #include <aips/Utilities/String.h>
 #include <aips/Utilities/CountedPtr.h>
 
@@ -42,7 +43,7 @@ class MFrequency;
 class MVAngle;
 class RecordInterface;
 template <class T> class Vector;
-// template <class T> class ImageInterface;
+template <class T> class ImageInterface;
 
 // <summary>A model component of the sky brightness</summary>
 
@@ -113,22 +114,28 @@ template <class T> class Vector;
 //   <li> 
 // </todo>
 
-class SkyCompRep: public RecordTransformable
+class SkyCompRep: public SkyCompBase
 {
 public:
-
-  // The default SkyCompRep is a point source with a constant spectrum. See the
-  // default constructors in the PointShape, ConstantSpectrum and Flux classes
-  // for the default values for the flux, shape and spectrum.
+  // The default SkyCompRep is a point source with a constant spectrum. See
+  // the default constructors in the PointShape, ConstantSpectrum and Flux
+  // classes for the default values for the flux, shape and spectrum.
   SkyCompRep();
   
+  // Construct a SkyCompRep of the specified shape. The resultant component
+  // has a constant spectrum and a shape given by the default constructor of
+  // the specified ComponentShape class.
+  SkyCompRep(const ComponentType::Shape & shape);
+  
   // Construct a SkyCompRep with the user specified model for the shape and
-  // spectrum.
+  // spectrum. The resultant component has a shape given by the default
+  // constructor of the specified ComponentShape class and a spectrum given by
+  // the default constructor of the specified SpectralModel class
   SkyCompRep(const ComponentType::Shape & shape,
  	     const ComponentType::SpectralShape & spectrum);
 
-  // Construct a SkyCompRep with a fully specified model for the shape and
-  // spectrum and Flux.
+  // Construct a SkyCompRep with a fully specified model for the shape, 
+  // spectrum and flux.
   SkyCompRep(const Flux<Double> & flux,
  	     const ComponentShape & shape, 
  	     const SpectralModel & spectrum);
@@ -136,7 +143,8 @@ public:
   // The copy constructor uses copy semantics
   SkyCompRep(const SkyCompRep & other);
   
-  ~SkyCompRep();
+  // The destructor does not appear to do much
+  virtual ~SkyCompRep();
 
   // The assignment operator uses copy semantics.
   SkyCompRep & operator=(const SkyCompRep & other);
@@ -144,29 +152,43 @@ public:
   // return a reference to the flux of the component. Because this is a
   // reference, manipulation of the flux values is performed through the
   // functions in the Flux class. eg.,
-  // <src>comp.flux().setValue(newVal)</src>. If the component flux varies with
-  // frequency then the flux set using this function is the value at the
-  // reference frequency.
+  // <src>comp.flux().setValue(newVal)</src>.
   // <group>
-  const Flux<Double> & flux() const;
-  Flux<Double> & flux();
+  virtual const Flux<Double> & flux() const;
+  virtual Flux<Double> & flux();
   // </group>
 
-  // get the shape of the component.
-  ComponentType::Shape shape() const;
-
-  // set/get the reference direction of the component
+  // return a reference to the shape of the component. Because this is a
+  // reference, manipulation of the shape of the component is performed through
+  // the functions in the ComponentShape (or derived) class. eg.,
+  // <src>comp.shape().setRefDirection(newVal)</src>.
   // <group>
-  void setRefDirection(const MDirection & newDirection);
-  const MDirection & refDirection() const;
+  virtual const ComponentShape & shape() const;
+  virtual ComponentShape & shape();
   // </group>
-
-  // Calculate the flux at the specified direction, in a pixel of specified
-  // size.  The frequency is assumed to be the reference frequency.
+  
+  // return a reference to the spectrum of the component. Because this is a
+  // reference, manipulation of the spectrum of the component is performed
+  // through the functions in the SpectralModel (or derived) class. eg.,
+  // <src>refFreq = comp.spectrum().refFrequency()</src>.
   // <group>
-  Flux<Double> sample(const MDirection & direction,
-		      const MVAngle & pixelSize) const;
+  virtual const SpectralModel & spectrum() const;
+  virtual SpectralModel & spectrum();
   // </group>
+  
+  // Calculate the flux at the specified direction & frequency, in a pixel of
+  // specified size.
+  virtual Flux<Double> sample(const MDirection & direction, 
+			      const MVAngle & pixelSize, 
+			      const MFrequency & centerFrequency) const;
+
+  //# Project the component onto an Image. The default implementation calls the
+  //# sample function once for the centre of each pixel. The image needs
+  //# only have a one (and only one) direction axis. Other axes are optionaland
+  //# if there is no Stokes axes then it is assumed that the polarization is
+  //# Stokes::I. The component is gridded equally onto all other axes of the
+  //# image (ie. spectral axes).
+  //# void project(ImageInterface<Float> & plane) const;
 
   // Return the Fourier transform of the component at the specified point in
   // the spatial frequency domain. The point is specified by a 3-element vector
@@ -179,53 +201,18 @@ public:
   // component. This means, for symmetric components where the reference
   // direction is at the centre, that the Fourier transform will always be
   // real.
-  // <group>
-  Flux<Double> visibility(const Vector<Double> & uvw,
-			  const Double & frequency) const;
-  // </group>
-
-  // return the number of shape parameters in the component and set/get them.
-  // <group>
-  uInt nShapeParameters() const;
-  void setShapeParameters(const Vector<Double> & newParms);
-  void shapeParameters(Vector<Double> & compParms) const;
-  // </group>
-
-  // get the spectral type of the component.
-  ComponentType::SpectralShape spectralShape() const;
-
-  // set/get the reference frequency.
-  // <group>
-  void setRefFrequency(const MFrequency & newFrequency);
-  const MFrequency & refFrequency() const;
-  // </group>
-
-  // Calculate the flux at the specified frequency. The direction is assumed to
-  // be the reference direction.
-  Flux<Double> sample(const MFrequency & centerFrequency) const;
-
-  // return the number of parameters in the spectral shape and set/get them.
-  // <group>
-  uInt nSpectralParameters() const;
-  void setSpectralParameters(const Vector<Double> & newParms);
-  void spectralParameters(Vector<Double> & compParms) const;
-  // </group>
-
-  // Calculate the flux at the specified direction & frequency, in a pixel of
-  // specified size.
-  Flux<Double> sample(const MDirection & direction, 
-		      const MVAngle & pixelSize, 
-		      const MFrequency & centerFrequency) const;
+  virtual Flux<Double> visibility(const Vector<Double> & uvw,
+				  const Double & frequency) const;
 
   // set/get the label associated with this component. The label is a simple
   // string for general use.
   // <group>
-  void setLabel(const String & newLabel);
-  const String & label() const;
+  virtual void setLabel(const String & newLabel);
+  virtual const String & label() const;
   // </group>
 
-  // This functions convert between a record and a SkyCompRep. This way derived
-  // classes can interpret fields in the record in a class specific way. These
+  // This functions convert between a record and a component.  Derived classes
+  // can interpret fields in the record in a class specific way. These
   // functions define how a component is represented in glish.  They return
   // False if the record is malformed and append an error message to the
   // supplied string giving the reason.
@@ -241,15 +228,10 @@ public:
   // otherwise returns False.
   virtual Bool ok() const;
 
-  //# Project the component onto an Image. The default implementation calls the
-  //# sample function once for the centre of each pixel. The image needs
-  //# only have a one (and only one) direction axis. Other axes are optionaland
-  //# if there is no Stokes axes then it is assumed that the polarization is
-  //# Stokes::I. The component is gridded equally onto all other axes of the
-  //# image (ie. spectral axes).
-  //# void project(ImageInterface<Float> & plane) const;
-
 private:
+  void initShape(ComponentType::Shape shape);
+  void initSpectrum(ComponentType::SpectralShape spectrum);
+
   CountedPtr<ComponentShape> itsShapePtr;
   CountedPtr<SpectralModel> itsSpectrumPtr;
   Flux<Double> itsFlux;
