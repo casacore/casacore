@@ -5363,3 +5363,4 @@
 15 063 src rm aips/implement/Exceptions/Excp.cc
 15 065 src rm aips/implement/Exceptions/Excp2.cc
 15 067 src rm aips/implement/RTTI/test/tRtti.cc
+15 090 src mv trial/implement/Tables/ConvertScalar.h aips/implement/Mathematics/ConvertScalar.h
