@@ -1,5 +1,5 @@
 //# tDirectionCoordinate.cc: Test program for DirectionCoordinate
-//# Copyright (C) 1998,1999,2000,2001
+//# Copyright (C) 1998,1999,2000,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -885,7 +885,7 @@ void doit7 ()
    DirectionCoordinate lc = makeCoordinate(MDirection::J2000,
                                            proj, crval, crpix,
                                            cdelt, xform);
-   lc.setConversionDirectionType(MDirection::GALACTIC);
+   lc.setConversion(MDirection::GALACTIC);
    Vector<String> units = lc.worldAxisUnits().copy();
    units = String("deg");
    lc.setWorldAxisUnits(units);
