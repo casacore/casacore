@@ -710,51 +710,77 @@ void DirectionCoordinate::getPrecision (Int& precision,
 String DirectionCoordinate::format(String& units,
                                    Coordinate::formatType format,
                                    Double worldValue,
-                                   uInt axis,
-                                   Bool absolute,
-                                   Int precision,
-                                   Bool nativeU) 
-//
-// native=T means radians !
-// native=F means degrees, or hours
-//
+                                   uInt worldAxis,
+                                   Bool isAbsolute,
+                                   Bool showAsAbsolute,
+                                   Int precision)
 {
-   AlwaysAssert(axis< nWorldAxes(), AipsError);
+   AlwaysAssert(worldAxis< nWorldAxes(), AipsError);
    AlwaysAssert(nWorldAxes()==2, AipsError);
 
+// Convert given world value to absolute or relative as needed
+   
+   static Vector<Double> world;
+   if (world.nelements()!=nWorldAxes()) world.resize(nWorldAxes());
+//
+   if (showAsAbsolute) {
+      if (!isAbsolute) {
+         world = 0.0;
+         world(worldAxis) = worldValue;
+         makeWorldAbsolute(world);
+         worldValue = world(worldAxis);
+      }
+   } else {
+      if (isAbsolute) {
+         world = referenceValue();
+         world(worldAxis) = worldValue;
+         makeWorldRelative(world);
+         worldValue = world(worldAxis);
+      }
+   } 
+     
 // Fill in DEFAULT format
 
    Coordinate::formatType form = format;
 
-// Check format.  If absolute==F, TIME formatting is switched off
+// Check format.  If showAsAbsolute==F, TIME formatting is switched off
 
-   checkFormat(form, absolute);
-   Bool native = nativeU;   
-   if (form==Coordinate::TIME) native = False;
+   checkFormat(form, showAsAbsolute);
 
 // Set default precision if needed
 
    Int prec = precision;
-   if (prec < 0) getPrecision(prec, form, absolute, -1, -1, -1);
+   if (prec < 0) getPrecision(prec, form, showAsAbsolute, -1, -1, -1);
 
 // Set global DirectionCoordinate type
 
    MDirection::GlobalTypes gtype = MDirection::globalType(type_p);
-   
-// Convert to radians first
 
-   Double worldValue2 = C::degree * worldValue * to_degrees_p[axis];
+// Check units
+
+   static Unit unitRAD("rad");
+   if (!units.empty()) {
+      Unit unitCurrent(units);
+      if (unitCurrent != unitRAD) {
+         throw (AipsError("Specified unit is invalid"));
+      }
+   }
+   
+// Convert value to radians first so we can make an MVAngle from it
+
+   static Double worldValue2;
+   worldValue2 = C::degree * worldValue * to_degrees_p[worldAxis];
    MVAngle mVA(worldValue2);
-   units = "rad";
 
 // We need to put the longitudes into the correct convention
 // All latitudes better be -90 -> 90 and we don't need to fiddle them
+// If the units are empty, the formatters will make something up
 
    String string;
-   if (axis==0) {
-      string = formatLongitude (units, mVA, gtype, absolute, native, form, prec);
+   if (worldAxis==0) {
+      string = formatLongitude (units, mVA, gtype, showAsAbsolute, form, prec);
    } else {
-      string = formatLatitude (units, mVA, absolute, native, form, prec);
+      string = formatLatitude (units, mVA, showAsAbsolute, form, prec);
    }
 
 // Only return actual units if not TIME formatting
@@ -767,73 +793,18 @@ String DirectionCoordinate::format(String& units,
 
 String DirectionCoordinate::formatLongitude (String& units, MVAngle& mVA,
                                              MDirection::GlobalTypes gtype,
-                                             Bool absolute, Bool native,
+                                             Bool absolute, 
                                              Coordinate::formatType form,
                                              Int prec) const
 {
    ostrstream oss;         
    MVAngle mVA2(mVA);
-   Double value = mVA2.get().getValue();     // Radians
-//
-   if (gtype==MDirection::GRADEC){ 
-      if (absolute) mVA2 = mVA(0.0);                   // 0->2pi (0->360)
-      if (!native) {
-         value = mVA2.get(Unit("deg")).getValue();
-         units = "deg";
-      } else {
-         value = mVA2.get().getValue(); 
-      }
-   } else if (gtype==MDirection::GHADEC) {
-      if (absolute) mVA2 = mVA();                      // -pi->pi (-180->180)
-      if (!native) {
-         value = mVA2.get().getValue() * 24.0 / C::_2pi;
-         units = "h";
-      } else {
-         value = mVA2.get().getValue(); 
-      }
-   } else if (gtype==MDirection::GAZEL) {
-      if (absolute) mVA2 = mVA(0.0);                   // 0->2pi (0->360)
-      if (!native) {
-         value = mVA2.get(Unit("deg")).getValue();
-         units = "deg";
-      } else {
-         value = mVA2.get().getValue();
-      }
-   } else if (gtype==MDirection::GLONGLAT) {
-      if (type_p==MDirection::ECLIPTIC ||
-          type_p==MDirection::MECLIPTIC ||
-          type_p==MDirection::TECLIPTIC) {
-         if (absolute) mVA2 = mVA();                  // -pi->pi (-180->180)
-      } else {
-         if (absolute) mVA2 = mVA(0.0);               // 0->2pi (0->360)
-      }
-      if (!native) {
-         value = mVA2.get(Unit("deg")).getValue();
-         units = "deg";
-      } else {
-         value = mVA2.get().getValue();
-      }
-   } else {
-      if (absolute) mVA2 = mVA(0.0);                  // 0->2pi (0->360)
-      value = mVA2.get().getValue();
-   }
-//
-   if (!absolute) {
-      if (units=="deg") value *= 3600.0;
-      units = "arcsec";
-   }
-//
-   if (form==Coordinate::SCIENTIFIC) {
-      oss.setf(ios::scientific, ios::floatfield);
-      oss.precision(prec);
-      oss << value;
-   } else if (form==Coordinate::FIXED) {
-      oss.setf(ios::fixed, ios::floatfield);
-      oss.precision(prec);
-      oss << value;
-   } else if (form==Coordinate::TIME) {
 
-// Format with mVA2.  TIME formatting really only makes
+// Time formatting we can do straight away
+
+   if (form==Coordinate::TIME) {
+
+// Format with mVA2. TIME formatting really only makes
 // sense for RA and HA, but we do something with the others
 // TIME formatting is only possible for absolute=T
 
@@ -847,29 +818,69 @@ String DirectionCoordinate::formatLongitude (String& units, MVAngle& mVA,
       } else if (gtype==MDirection::GLONGLAT) {
          oss << mVA2.string(MVAngle::ANGLE,prec);
       }
-   }
 //
-   oss << ends;
-   return String(oss);
-}
+      oss << ends;
+      return String(oss);
+   }
 
-String DirectionCoordinate::formatLatitude (String& units, MVAngle& mVA,
-                                            Bool absolute, Bool native,
-                                            Coordinate::formatType form,
-                                            Int prec) const
-{
-   ostrstream oss;         
-   MVAngle mVA2(mVA);
-   Double value = mVA2.get().getValue();     // Radians
+// Continue on with other format types
+
+   static Double value;
+   static Bool emptyUnits;
 //
-   if (!native) {
-      value = mVA2.get(Unit("deg")).getValue();
-      units = "deg";
+   value = mVA2.get().getValue();     // Radians
+   emptyUnits = units.empty();
+//
+   if (gtype==MDirection::GRADEC){ 
+      if (absolute) mVA2 = mVA(0.0);                   // 0->2pi (0->360)
+      if (emptyUnits) {
+         value = mVA2.get(Unit("deg")).getValue();
+         units = "deg";
+      } else {
+         value = mVA2.get(Unit(units)).getValue();
+      }
+   } else if (gtype==MDirection::GHADEC) {
+      if (absolute) mVA2 = mVA();                      // -pi->pi (-180->180)
+      if (emptyUnits) {
+         value = mVA2.get().getValue() * 24.0 / C::_2pi;
+         units = "h";
+      } else {
+         value = mVA2.get(Unit(units)).getValue();
+      }
+   } else if (gtype==MDirection::GAZEL) {
+      if (absolute) mVA2 = mVA(0.0);                   // 0->2pi (0->360)
+      if (emptyUnits) {
+         value = mVA2.get(Unit("deg")).getValue();
+         units = "deg";
+      } else {
+         value = mVA2.get(Unit(units)).getValue();
+      }
+   } else if (gtype==MDirection::GLONGLAT) {
+      if (type_p==MDirection::ECLIPTIC ||
+          type_p==MDirection::MECLIPTIC ||
+          type_p==MDirection::TECLIPTIC) {
+         if (absolute) mVA2 = mVA();                  // -pi->pi (-180->180)
+      } else {
+         if (absolute) mVA2 = mVA(0.0);               // 0->2pi (0->360)
+      }
+      if (emptyUnits) {
+         value = mVA2.get(Unit("deg")).getValue();
+         units = "deg";
+      } else {
+         value = mVA2.get(Unit(units)).getValue();
+      }
+   } else {
+      if (absolute) mVA2 = mVA(0.0);                  // 0->2pi (0->360)
+      value = mVA2.get(Unit(units)).getValue();
    }
-//
+
+// For relative coordinates, use arcsec if user didnt specify
+
    if (!absolute) {
-      if (units=="deg") value *= 3600.0;
-      units = "arcsec";
+      if (emptyUnits&& units=="deg") {
+         value *= 3600.0;
+         units = "arcsec";
+      }
    }
 //
    if (form==Coordinate::SCIENTIFIC) {
@@ -880,12 +891,54 @@ String DirectionCoordinate::formatLatitude (String& units, MVAngle& mVA,
       oss.setf(ios::fixed, ios::floatfield);
       oss.precision(prec);
       oss << value;
-   } else if (form==Coordinate::TIME) {
+   }
+//
+   oss << ends;
+   return String(oss);
+}
 
-// Format with mVA2.  
+String DirectionCoordinate::formatLatitude (String& units, MVAngle& mVA,
+                                            Bool absolute, 
+                                            Coordinate::formatType form,
+                                            Int prec) const
+{
+   ostrstream oss;         
+   MVAngle mVA2(mVA);
 
+// TIME formatting we can do straight away
+
+   if (form==Coordinate::TIME) {
       prec += 6;
       oss << mVA2.string(MVAngle::ANGLE+MVAngle::DIG2,prec);
+   }
+
+// Continue on with other format types
+
+   Double value = mVA2.get().getValue();     // Radians
+   Bool emptyUnits = units.empty();
+//
+   if (!emptyUnits) {
+      value = mVA2.get(Unit(units)).getValue();
+   } else {
+      value = mVA2.get(Unit("deg")).getValue();
+      units = "deg";
+   }
+//
+   if (!absolute) {
+      if (emptyUnits && units=="deg") {
+         value *= 3600.0;
+         units = "arcsec";
+      }
+   }
+//
+   if (form==Coordinate::SCIENTIFIC) {
+      oss.setf(ios::scientific, ios::floatfield);
+      oss.precision(prec);
+      oss << value;
+   } else if (form==Coordinate::FIXED) {
+      oss.setf(ios::fixed, ios::floatfield);
+      oss.precision(prec);
+      oss << value;
    }
    oss << ends;
    return String(oss);
