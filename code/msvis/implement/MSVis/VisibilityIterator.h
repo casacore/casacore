@@ -33,12 +33,16 @@
 #include <aips/Arrays/Cube.h>
 #include <aips/Lattices/Slicer.h>
 #include <aips/MeasurementSets/MeasurementSet.h>
-#include <trial/MeasurementSet/MSDerivedValues.h>
 #include <aips/Measures/Stokes.h>
+#include <aips/Measures/MeasConvert.h>
+#include <aips/Quanta/MVDoppler.h>
 #include <aips/Measures/MCDoppler.h>
+#include <aips/Measures/MDoppler.h>
 #include <aips/Tables/ArrayColumn.h>
 #include <aips/Tables/ScalarColumn.h>
 #include <aips/Utilities/String.h>
+
+#include <trial/MeasurementSet/MSDerivedValues.h>
 #include <trial/MeasurementEquations/StokesVector.h>
 #include <trial/MeasurementSet/MSIter.h>
 
