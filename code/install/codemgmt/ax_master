@@ -5623,3 +5623,5 @@
 15 274 src rm trialdisplay/apps/gDisplay/GTkWorldCanvas.cc
 15 274 src rm trialdisplay/apps/gDisplay/GTkWorldCanvas.h
 15 274 src rm trialdisplay/apps/gDisplay/GTkSlicePD.cc~
+15 274 src rm trialdisplay/apps/gDisplay/GTkWCPanner.cc
+15 274 src rm trialdisplay/apps/gDisplay/GTkWCPanner.h
