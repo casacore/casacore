@@ -19,5 +19,5 @@
 
 \tableofcontents
       
-\input{aips++_gbt.tex}
+\input{aips2_gbt.tex}
 \end{document}
