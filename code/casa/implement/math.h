@@ -39,13 +39,10 @@
 # include <math.h>
 #else
 # include <cmath>
-# if defined(AIPS_INTELCC)
-    inline float  abs (float  x) { return fabs (x); }
-    inline double abs (double x) { return fabs (x); }
-# else
+# if !defined(AIPS_INTELCC)
     using std::abs;
 # endif
-# if !(defined(AIPS_KAICC) || defined(AIPS_GCC3))
+# if !(defined(AIPS_KAICC) || defined(AIPS_GCC3) || defined(AIPS_INTELCC))
 #  define NEEDS_POWFLOATFLOAT
 # endif
 #endif
