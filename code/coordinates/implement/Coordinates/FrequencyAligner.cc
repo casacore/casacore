@@ -116,6 +116,7 @@ FrequencyAligner<T>::~FrequencyAligner()
 
 
 
+
 template<class T>
 Bool FrequencyAligner<T>::align (Vector<T>& yOut, Vector<Bool>& maskOut,
                                 const Vector<T>& yIn, const Vector<Bool>& maskIn,
@@ -143,12 +144,53 @@ Bool FrequencyAligner<T>::align (Vector<T>& yOut, Vector<Bool>& maskOut,
    }
    maxDiff /= abs(itsRefFreqX[1]-itsRefFreqX[0]);      // Max diff as a fraction of a channel
 
-// Regrid to reference velocity abcissa. 
+// Regrid to reference frequency abcissa. 
 
    Bool ok = regrid (yOut, maskOut, itsRefFreqX, itsFreqX, yIn, maskIn,
                      method, extrapolate, maxDiff);
    return ok;
 }
+
+
+template<class T>
+Bool FrequencyAligner<T>::align (Vector<T>& yOut, Vector<Bool>& maskOut,
+                                 const Vector<Double>& xIn, const Vector<T>& yIn, const Vector<Bool>& maskIn,
+                                 const MEpoch& epoch, Bool useCachedAbcissa,
+                                 typename InterpolateArray1D<Double,T>::InterpolationMethod method,
+                                 Bool extrapolate)
+{
+   const uInt nPixels = itsRefFreqX.nelements();
+   AlwaysAssert(nPixels>1, AipsError);
+   AlwaysAssert(xIn.nelements()==nPixels,AipsError);
+   AlwaysAssert(yIn.nelements()==nPixels,AipsError);
+   AlwaysAssert(maskIn.nelements()==nPixels,AipsError);
+
+// Update epoch in FrequencyMachine
+
+   itsRefOut.getFrame().resetEpoch(epoch);
+   itsMachine.setOut(itsRefOut);
+
+// The user provided abcissa is in the input Frame. Convert it to the output 
+// Frame at the specfied Epoch
+
+   Double maxDiff = -1;
+   if (useCachedAbcissa) {
+      maxDiff = abs(itsFreqX[0]-itsRefFreqX[0]);
+   } else {
+      for (uInt i=0; i<nPixels; i++) {
+         itsFreqX[i] = itsMachine(xIn[i]).getValue().getValue();
+         maxDiff = max(abs(itsFreqX[i]-itsRefFreqX[i]),maxDiff);
+      }
+   }
+   maxDiff /= abs(itsRefFreqX[1]-itsRefFreqX[0]);      // Max diff as a fraction of a channel
+
+// Regrid to reference frequency abcissa. 
+
+   Bool ok = regrid (yOut, maskOut, itsRefFreqX, itsFreqX, yIn, maskIn,
+                     method, extrapolate, maxDiff);
+   return ok;
+}
+
 
 
 template<class T>
@@ -284,7 +326,6 @@ void FrequencyAligner<T>::makeMachine (const MEpoch& refEpoch,
    frameOut.set(pos);
    itsRefOut = MFrequency::Ref(freqSystem, frameOut);
 }
-
 
 template<class T>
 Double FrequencyAligner<T>::makeAbcissa (Vector<Double>& freq, Bool doDiff)

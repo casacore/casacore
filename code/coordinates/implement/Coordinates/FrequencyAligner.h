@@ -61,8 +61,7 @@ class String;
 //   <item> <linkto class=Array>Array</linkto>
 // </list>
 // </prerequisite>
-//
-// <synopsis> 
+//// <synopsis> 
 // Spectra are converted to the specified reference frame and aligned at 
 // a specified instant in time.
 //
@@ -92,12 +91,9 @@ public:
 // be aligned, a reference epoch to which all spectra will
 // be aligned, a direction on the sky,  a position on the earth (the observatory),
 // and desired frequency system to align in.  
-   FrequencyAligner(const SpectralCoordinate& specCoord,
-                   uInt nPixels,
-                   const MEpoch& refEpoch,
-                   const MDirection& dir, 
-                   const MPosition& pos,
-                   MFrequency::Types freqSystem);
+   FrequencyAligner(const SpectralCoordinate& specCoord, uInt nPixels,
+                    const MEpoch& refEpoch, const MDirection& dir, 
+                    const MPosition& pos,  MFrequency::Types freqSystem);
 
 // Copy constructor (copy semantics)
    FrequencyAligner (const FrequencyAligner<T>& other);
@@ -132,6 +128,22 @@ public:
 // <src>setTolerance</src>. 
   Bool align (Vector<T>& yOut, Vector<Bool>& maskOut,
               const Vector<T>& yIn, const Vector<Bool>& maskIn,
+              const MEpoch& epoch, Bool useCachedAbcissa,
+              typename InterpolateArray1D<Double,T>::InterpolationMethod method,
+              Bool extrapolate=False);              
+
+// This function is the same as the previous except that you can specify the input abcissa as well 
+// as the data and mask.  The input abcissa must be in the same units as the Construction
+// SpectralCoordinate.  The abcissa values must be in the same base reference frame
+// as the  Construction SpectralCoordinate.  So instead of the abcissa (in the
+// output reference frame) being computed from the Construction SC, you get to specify
+// the abcissa directly.  This might be useful if you have more than one set of
+// spectra to align, all in the same Frame, but with different attributes such
+// as reference value/pixel etc.   The output spectrum is still regridded to the
+// abcissa at the reference time generated at construction.
+// from the current 
+  Bool align (Vector<T>& yOut, Vector<Bool>& maskOut,
+              const Vector<Double>& xIn, const Vector<T>& yIn, const Vector<Bool>& maskIn,
               const MEpoch& epoch, Bool useCachedAbcissa,
               typename InterpolateArray1D<Double,T>::InterpolationMethod method,
               Bool extrapolate=False);              
