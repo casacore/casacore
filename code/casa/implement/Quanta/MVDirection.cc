@@ -283,7 +283,7 @@ void MVDirection::shiftLatitude(Double lat, Bool trueAngle) {
 
 void MVDirection::shift(const MVDirection &shft, Bool trueAngle) {
   Vector<Double> x(2);
-  x = get();
+  x = shft.get();
   shift(x(0), x(1), trueAngle);
 }
 
