@@ -457,11 +457,11 @@ Bool FITSKeywordUtil::getKeywords(RecordInterface &out,
     in.first();
 
     const Regex kw1D("^[a-z0-9]*[a-z][1-9]+"); // We can have X3F, but not XF3
-    const Regex trailingNumber("[0-9]+$");
     // This fails with more than 99 axes.
     const Regex kw2D("^[a-z0-9]*[a-z]0[0-9][0-9]0[0-9][0-9]");
     const Regex crota("crota");
     const Regex trailing(" *$");
+    const Regex cd("^cd[0-9]+_[0-9]+");
     const String empty;
 
     // The complication in this function springs from the fact that we want to
@@ -480,6 +480,9 @@ Bool FITSKeywordUtil::getKeywords(RecordInterface &out,
     // header cracking routines expect all the vector fields to be length naxis
     // The CROTA vector will be 0, except for the actual axis that had a CROTA
 
+    // CD is another special case.  It is left as scalar keywords to be interpreted
+    // by the CoordinateSystem methods according to rules coded there.
+
     
     SimpleOrderedMap<String, Int> min1D(99999), max1D(0), min2Drow(99999), 
 	min2Dcol(99999), max2Drow(0), max2Dcol(0);
@@ -489,22 +492,26 @@ Bool FITSKeywordUtil::getKeywords(RecordInterface &out,
 //
     Bool foundCROTA = False;
     String baseCROTA;
+
     Int naxis = -1;
 
     while(key) {
 	String name = downcase(key->name());
 	if (name == "naxis" && !key->isindexed()) {
-           if (key->type()==FITS::LONG) {
-              naxis = key->asInt();
-           }
+	    if (key->type()==FITS::LONG) {
+		naxis = key->asInt();
+	    }
         }
 //
         if (name.contains(crota)) {
-             foundCROTA = True;
-             baseCROTA = name;
+	    foundCROTA = True;
+	    baseCROTA = name;
         }
 //
-	if (name.contains(kw1D) || key->isindexed()) {
+
+	// without the cd check, cd1_2 and the like would appear as vector
+	// keywords.
+	if (key->isindexed() || (name.contains(kw1D) && !name.contains(cd))) {
 	    String base;
 	    Int num;
 	    if (key->isindexed()) {
@@ -526,16 +533,16 @@ Bool FITSKeywordUtil::getKeywords(RecordInterface &out,
 	    if (nrow > max2Drow(base)) {max2Drow(base) = nrow;}
 	    if (ncol < min2Dcol(base)) {min2Dcol(base) = ncol;}
 	    if (ncol > max2Dcol(base)) {max2Dcol(base) = ncol;}
-        }
+        } 
 	key = in.next();
     }
 
     if (foundCROTA) {
-      if (naxis==-1) {
-        os << LogIO::SEVERE << "Failed to decode naxis keyword" << LogIO::EXCEPTION;
-      }
-      min1D(baseCROTA) = 1;
-      max1D(baseCROTA) = naxis;
+	if (naxis==-1) {
+	    os << LogIO::SEVERE << "Failed to decode naxis keyword" << LogIO::EXCEPTION;
+	}
+	min1D(baseCROTA) = 1;
+	max1D(baseCROTA) = naxis;
     }
 
     // OK, now step through actually writing all the keywords
@@ -553,7 +560,7 @@ Bool FITSKeywordUtil::getKeywords(RecordInterface &out,
 	}
 
 	// OK, it's a keyword we have to process
-	if (fullName.contains(kw1D) || key->isindexed()) {
+	if (key->isindexed() || (fullName.contains(kw1D) && !fullName.contains(cd))){
             String base;
 	    Int num;
 	    if (key->isindexed()) {
