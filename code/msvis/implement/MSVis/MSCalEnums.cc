@@ -1,5 +1,5 @@
 //# MSCalEnums.cc: Implementation of MSCalEnums.h
-//# Copyright (C) 1996,1997,1998,2000,2001
+//# Copyright (C) 1996,1997,1998,2000,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -32,10 +32,11 @@
 
 // Static data initialization
 SimpleOrderedMap <Int, String> MSCalEnums::theirFieldMap ("");
+SimpleOrderedMap <Int, DataType> MSCalEnums::theirTypeMap (TpOther);
 
 //----------------------------------------------------------------------------
 
-void MSCalEnums::initMap ()
+void MSCalEnums::initMaps ()
 {
 // Initialize the static map containing the field names.
 // Skip this step if already initialized.
@@ -113,6 +114,84 @@ void MSCalEnums::initMap ()
     theirFieldMap.define (SB_DELAY, "SB_DELAY");
     theirFieldMap.define (DELAY_RATE, "DELAY_RATE");
   };
+
+// Initialize the static map containing the basic field data types
+// Skip this step if already initialized.
+//
+  if (!theirTypeMap.ndefined()) {
+    theirTypeMap.define (ANTENNA1, TpInt);
+    theirTypeMap.define (ANTENNA2, TpInt);
+    theirTypeMap.define (FEED1, TpInt);
+    theirTypeMap.define (FEED2, TpInt);
+    theirTypeMap.define (PULSAR_BIN, TpInt);
+    theirTypeMap.define (SCAN_NUMBER, TpInt);
+    theirTypeMap.define (TIME, TpDouble);
+    theirTypeMap.define (TIME_EXTRA_PREC, TpDouble);
+    theirTypeMap.define (INTERVAL, TpDouble);
+    theirTypeMap.define (ARRAY_ID, TpInt);
+    theirTypeMap.define (PROCESSOR_ID, TpInt);
+    theirTypeMap.define (FIELD_ID, TpInt);
+    theirTypeMap.define (OBSERVATION_ID, TpInt);
+    theirTypeMap.define (PULSAR_GATE_ID, TpInt);
+    theirTypeMap.define (SPECTRAL_WINDOW_ID, TpInt);
+    theirTypeMap.define (PHASE_ID, TpInt);
+    theirTypeMap.define (STATE_ID, TpInt);
+
+    theirTypeMap.define (FREQ_GROUP, TpInt);
+    theirTypeMap.define (FREQ_GROUP_NAME, TpString);
+    theirTypeMap.define (FIELD_NAME, TpString);
+    theirTypeMap.define (FIELD_CODE, TpString);
+    theirTypeMap.define (SOURCE_NAME, TpString);
+    theirTypeMap.define (SOURCE_CODE, TpString);
+    theirTypeMap.define (CALIBRATION_GROUP, TpInt);
+
+    theirTypeMap.define (GAIN, TpComplex);
+    theirTypeMap.define (REF_ANT, TpInt);
+    theirTypeMap.define (REF_FEED, TpInt); 
+    theirTypeMap.define (REF_RECEPTOR, TpInt);
+    theirTypeMap.define (REF_FREQUENCY, TpDouble);
+    theirTypeMap.define (MEAS_FREQ_REF, TpInt);
+    theirTypeMap.define (REF_DIRECTION, TpDouble);
+    theirTypeMap.define (MEAS_DIR_REF, TpInt);
+    theirTypeMap.define (CAL_DESC_ID, TpInt);
+    theirTypeMap.define (CAL_HISTORY_ID, TpInt);
+    
+    theirTypeMap.define (TOTAL_SOLUTION_OK, TpBool);
+    theirTypeMap.define (TOTAL_FIT, TpFloat);
+    theirTypeMap.define (TOTAL_FIT_WEIGHT, TpFloat);
+    theirTypeMap.define (SOLUTION_OK, TpBool);
+    theirTypeMap.define (FIT, TpFloat);
+    theirTypeMap.define (FIT_WEIGHT, TpFloat);
+    
+    theirTypeMap.define (NUM_SPW, TpInt);
+    theirTypeMap.define (NUM_CHAN, TpInt);
+    theirTypeMap.define (NUM_RECEPTORS, TpInt);
+    theirTypeMap.define (N_JONES, TpInt);
+    theirTypeMap.define (CHAN_FREQ, TpDouble);
+    theirTypeMap.define (CHAN_WIDTH, TpDouble); 
+    theirTypeMap.define (CHAN_RANGE, TpInt);
+    theirTypeMap.define (JONES_TYPE, TpString);
+    theirTypeMap.define (POLARIZATION_TYPE, TpString);
+    theirTypeMap.define (MS_NAME, TpString);
+    
+    theirTypeMap.define (CAL_PARMS, TpString);
+    theirTypeMap.define (CAL_TABLES, TpString);
+    theirTypeMap.define (CAL_SELECT, TpString);
+    theirTypeMap.define (CAL_NOTES, TpString);
+    
+    theirTypeMap.define (CAL_DESC, TpTable);
+    theirTypeMap.define (CAL_HISTORY, TpTable);
+    
+    theirTypeMap.define (ROT_MEASURE, TpFloat);
+    theirTypeMap.define (ROT_MEASURE_ERROR, TpFloat);
+    theirTypeMap.define (IONOSPH_TEC, TpFloat);
+    theirTypeMap.define (IONOSPH_TEC_ERROR, TpFloat);
+
+    theirTypeMap.define (PHASE_OFFSET, TpFloat);
+    theirTypeMap.define (SB_DELAY, TpFloat);
+    theirTypeMap.define (DELAY_RATE, TpFloat);
+  };
+
 };
 
 //----------------------------------------------------------------------------
@@ -128,7 +207,7 @@ String MSCalEnums::fieldName (Int enumField)
 //    Exception if invalid field enumeration.
 //
   // Initialize map if empty
-  if (!theirFieldMap.ndefined()) initMap();
+  if (!theirFieldMap.ndefined()) initMaps();
   
   // Return the column name
   return theirFieldMap (enumField);
@@ -136,6 +215,24 @@ String MSCalEnums::fieldName (Int enumField)
 
 //----------------------------------------------------------------------------
 
+DataType MSCalEnums::basicType (Int enumField)
+{
+// Static function to look up the basic field data type:
+// Inputs:
+//    enumField   Int        Field enumeration.
+// Outputs:
+//    basicType   DataType   Basic data type
+// Exceptions:
+//    Exception if invalid field enumeration.
+//
+  // Initialize map if empty
+  if (!theirTypeMap.ndefined()) initMaps();
+  
+  // Return the column name
+  return theirTypeMap (enumField);
+};
+
+//----------------------------------------------------------------------------
 
 
 

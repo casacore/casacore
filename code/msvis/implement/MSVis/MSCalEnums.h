@@ -1,5 +1,5 @@
 //# MSCalEnums.h: Field name dictionary for MS and CAL tables
-//# Copyright (C) 1996,1997,1998,2000,2001
+//# Copyright (C) 1996,1997,1998,2000,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -24,7 +24,7 @@
 //#                        Charlottesville, VA 22903-2475 USA
 //#
 //#
-//# $Id: 
+//# $Id$
 
 #if !defined(TRIAL_MSCALENUMS_H)
 #define TRIAL_MSCALENUMS_H
@@ -32,6 +32,7 @@
 #include <aips/aips.h>
 #include <aips/Containers/SimOrdMap.h>
 #include <aips/Utilities/String.h>
+#include <aips/Utilities/DataType.h>
 
 // <summary> 
 // MSCalEnums: Field name dictionary for MeasurementSet and calibration tables
@@ -234,14 +235,17 @@ class MSCalEnums
 
   // Access functions for column/keyword description data
   static String fieldName (Int enumField);
+  static DataType basicType (Int enumField);
  
  private:
-  // Initialize static map
-  static void initMap();
+  // Initialize the static maps
+  static void initMaps();
   
   // Static ordered maps containing field descriptions
   // Enum => Field Name
   static SimpleOrderedMap <Int, String> theirFieldMap;
+  // Enum => Basic data type
+  static SimpleOrderedMap <Int, DataType> theirTypeMap;
 };
 
 #endif
