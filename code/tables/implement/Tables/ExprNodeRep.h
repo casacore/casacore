@@ -35,6 +35,7 @@
 #include <aips/Mathematics/Complex.h>
 #include <aips/Quanta/MVTime.h>
 #include <aips/Utilities/DataType.h>
+#include <aips/Utilities/Regex.h>
 
 //# Forward Declarations
 class TableExprNode;
