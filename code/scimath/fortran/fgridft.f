@@ -14,7 +14,7 @@ C
      $     offset(2)
       double precision dphase(nrow)
       complex phasor
-      logical flag(nvispol, nvischan, nrow)
+      integer flag(nvispol, nvischan, nrow)
       real weight(nvischan, nrow), sumwt(npol, nchan)
       integer irow
       integer support, sampling
@@ -53,7 +53,7 @@ C
                if (ogridft(nx, ny, loc, support)) then
                   do ipol=1, nvispol
                      apol=polmap(ipol)+1
-                     if((.not.flag(ipol,ichan,irow)).and.
+                     if((flag(ipol,ichan,irow).ne.1).and.
      $                    (apol.ge.1).and.(apol.le.npol)) then
 C If we are making a PSF then we don't want to phase
 C rotate but we do want to reproject uvw
@@ -102,7 +102,7 @@ C
      $     offset(2)
       double precision dphase(nrow)
       complex phasor
-      logical flag(nvispol, nvischan, nrow)
+      integer flag(nvispol, nvischan, nrow)
       integer irow
       integer support, sampling
       integer chanmap(*), polmap(*)
@@ -138,7 +138,7 @@ C
                if (ogridft(nx, ny, loc, support)) then
                   do ipol=1, nvispol
                      apol=polmap(ipol)+1
-                     if((.not.flag(ipol,ichan,irow)).and.
+                     if((flag(ipol,ichan,irow).ne.1).and.
      $                    (apol.ge.1).and.(apol.le.npol)) then
                         nvalue=0.0
                         norm=0.0
