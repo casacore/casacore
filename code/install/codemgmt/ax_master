@@ -3210,3 +3210,4 @@
 13 058 src mv doc/newsletters/sept99/makefile doc/newsletters/sep99/makefile
 13 058 src mv doc/newsletters/sept99/sept99news.html doc/newsletters/sep99/sep99news.html
 13 058 src mv doc/newsletters/sept99/sept99news.latex doc/newsletters/sep99/sep99news.latex
+13 058 src mv doc/newsletters/sept99/side_bar.gif doc/newsletters/sep99/side_bar.gif
