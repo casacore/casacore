@@ -33,8 +33,8 @@
 
 # include <aips/Utilities/String.h>
 
-# include <iostream.h>
-# include <stdlib.h>
+# include <aips/iostream.h>
+# include <aips/stdlib.h>
 
 // Display basic info and the keyword list
 void show(HeaderDataUnit *h) {

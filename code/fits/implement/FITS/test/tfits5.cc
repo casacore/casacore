@@ -1,5 +1,5 @@
 //# tfits5.cc: FITS test program to read and display values from a FITS file
-//# Copyright (C) 1993,1994,1998
+//# Copyright (C) 1993,1994,1998,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -31,9 +31,9 @@
 # include <aips/FITS/fitsio.h>
 # include <aips/FITS/hdu.h>
 
-# include <iostream.h>
-# include <stdlib.h>
-# include <stdio.h>
+# include <aips/iostream.h>
+# include <aips/stdlib.h>
+# include <aips/stdio.h>
 # include <string.h>
 
 // Display basic info and the keyword list
