@@ -363,6 +363,11 @@ protected:
   virtual void attachColumns();
   // get the (velocity selected) interpolated visibilities, flags and weights
   void getInterpolatedVisFlagWeight(DataColumn whichOne) const;
+  // get the visibility data (observed, corrected or model);
+  // deals with Float and Complex observed data (DATA or FLOAT_DATA)
+  void getDataColumn(DataColumn whichOne, const Slicer& slicer, 
+		     Cube<Complex>& data);
+  void getDataColumn(DataColumn whichOne, Cube<Complex>& data);
 
   ROVisibilityIterator* This;
   MSIter msIter_p;
@@ -393,6 +398,7 @@ protected:
   Matrix<Float> imagingWeight_p;
   Vector<Float> pa_p;
   Vector<MDirection> azel_p;
+  Bool floatDataFound_p;
 
   // for PA calculations
   MSDerivedValues msd_p;
@@ -417,9 +423,9 @@ protected:
   ROArrayColumn<Float> colWeight;
   ROArrayColumn<Float> colImagingWeight;
   ROArrayColumn<Complex> colVis;
+  ROArrayColumn<Float> colFloatVis;
   ROArrayColumn<Complex> colModelVis;
   ROArrayColumn<Complex> colCorrVis;
-  PtrBlock<ROArrayColumn<Complex>* > colVisPtr;
   ROArrayColumn<Float> colSigma;
   ROArrayColumn<Bool> colFlag;
   ROScalarColumn<Bool> colFlagRow;
@@ -558,12 +564,17 @@ protected:
   void setInterpolatedVisFlag(const Cube<Complex>& vis, 
 			      const Cube<Bool>& flag);
   void setInterpolatedWeight(const Matrix<Float>& wt); 
+  // Write the data column (observed, model or corrected);
+  // deals with Float or Complex observed data (DATA and FLOAT_DATA).
+  void putDataColumn(DataColumn whichOne, const Slicer& slicer, 
+		     const Cube<Complex>& data);
+  void putDataColumn(DataColumn whichOne, const Cube<Complex>& data);
 
   // column access functions
   ArrayColumn<Complex> RWcolVis;
+  ArrayColumn<Float> RWcolFloatVis;
   ArrayColumn<Complex> RWcolModelVis;
   ArrayColumn<Complex> RWcolCorrVis;
-  PtrBlock<ArrayColumn<Complex>* > RWcolVisPtr;
   ArrayColumn<Float> RWcolWeight;
   ArrayColumn<Float> RWcolSigma;
   ArrayColumn<Float> RWcolImagingWeight;
