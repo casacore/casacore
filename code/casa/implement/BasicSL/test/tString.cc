@@ -425,12 +425,13 @@ void hashtest()
    ""
   };
 
+  //# remove cout's of hash values because they can differ between arch's
+  for (xp=x; xp->length() > 0; xp++)  xp->hash(); 
+  //  cout << "hash(" << *xp << ") = " << xp->hash() << "\n";
+  
 
-  for (xp=x; xp->length() > 0; xp++)
-    cout << "hash(" << *xp << ") = " << xp->hash() << "\n";
-
-  a = "";
-  cout << "hash() = " << a.hash() << "\n";
+  a = ""; a.hash();
+  //  cout << "hash() = " << a.hash() << "\n";
   
 }
 
