@@ -2645,3 +2645,4 @@
 11 401 src mv doc/html/navpages/learnmore doc/learnmore
 11 401 src mv doc/html/navpages/glish doc/glish
 11 401 src mv doc/html/navpages/search doc/search
+11 401 src rm doc/learnmore
