@@ -429,8 +429,7 @@ Bool ImageFITSConverter::ImageToFITS(String &error,
   
     IPosition shapeCopy = shape;
     Bool ok = coordsys.toFITSHeader(header, shapeCopy, True, 'c', False, 
-				    preferVelocity,
-				    opticalVelocity);
+				    preferVelocity, opticalVelocity);
 
     if (!ok) {
 	log << LogIO::SEVERE << "Could not make a standard FITS header. Setting"
@@ -1045,7 +1044,7 @@ ImageInfo ImageFITSConverter::getImageInfo (RecordInterface& header)
       bminq.convert(Unit("arcsec"));
       ii.setRestoringBeam(bmajq, bminq, Quantum<Double>(bpa, "deg"));
 //
-      FITSKeywordUtil::removeKeywords(header, ObsInfo::keywordNamesFITS());
+      FITSKeywordUtil::removeKeywords(header, ImageInfo::keywordNamesFITS());
    }
    return ii;
 }
