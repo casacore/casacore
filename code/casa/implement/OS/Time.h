@@ -165,8 +165,6 @@ class Time {
 
    uInt dayOfYear ();
 
-   static uInt leapSeconds ();
-
    static uInt howManyDaysInMonth ();
 
    static uInt howManyDaysInMonth (uInt month);
@@ -356,6 +354,9 @@ class Time {
 //#
 //# The function leapSeconds() return leap seconds.
 //# We have the next datas
+//#
+//# -Note: leapSeconds() removed 1997.10.07 by Jeff Uphoff, after
+//# -recommendation by Wim Brouw.
 //#
 //#  leapsec=10;
 //#
