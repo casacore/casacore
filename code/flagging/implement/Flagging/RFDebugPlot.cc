@@ -24,7 +24,7 @@
 //#                        Charlottesville, VA 22903-2475 USA
 //#
 //# $Id$
-#include <trial/RedFlagger/RFDebugPlot.h>
+#include <trial/Flagging/RFDebugPlot.h>
 #include <trial/Tasking/PGPlotter.h>
 #include <aips/stdio.h>
         

@@ -27,7 +27,7 @@
 #if !defined(AIPS_RFA_MEDIANCLIP_H)
 #define AIPS_RFA_MEDIANCLIP_H
 
-#include <trial/RedFlagger/RFADiffBase.h> 
+#include <trial/Flagging/RFADiffBase.h> 
 #include <trial/Mathematics/MedianSlider.h> 
 
 // <summary>

@@ -25,7 +25,7 @@
 //#
 //# $Id$
 #include <aips/Lattices/LatticeStepper.h>
-#include <trial/RedFlagger/RFCubeLattice.h>
+#include <trial/Flagging/RFCubeLattice.h>
 
 template<class T> RFCubeLatticeIterator<T>::RFCubeLatticeIterator ()
 {

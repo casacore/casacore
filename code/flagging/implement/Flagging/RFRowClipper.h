@@ -27,8 +27,8 @@
 #if !defined(AIPS_RF_ROWCLIPPER_H)
 #define AIPS_RF_ROWCLIPPER_H
 
-#include <trial/RedFlagger/RFCommon.h>
-#include <trial/RedFlagger/RFDebugPlot.h>
+#include <trial/Flagging/RFCommon.h>
+#include <trial/Flagging/RFDebugPlot.h>
 #include <aips/Arrays/Vector.h>
 #include <aips/Arrays/Matrix.h>
     

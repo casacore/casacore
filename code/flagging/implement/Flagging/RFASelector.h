@@ -27,7 +27,7 @@
 #if !defined(AIPS_RFA_SELECTOR_H)
 #define AIPS_RFA_SELECTOR_H
 
-#include <trial/RedFlagger/RFAFlagCubeBase.h> 
+#include <trial/Flagging/RFAFlagCubeBase.h> 
 #include <aips/Arrays/LogiVector.h>
     
 // <summary>

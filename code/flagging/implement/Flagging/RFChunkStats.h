@@ -33,7 +33,7 @@
 #include <aips/Arrays/Cube.h> 
 #include <aips/Containers/Block.h> 
 #include <aips/Lattices/LatticeIterator.h> 
-#include <trial/RedFlagger/RFCommon.h>
+#include <trial/Flagging/RFCommon.h>
 
 class RedFlagger;
 class MeasurementSet;

@@ -29,11 +29,11 @@
 
 #include <aips/Arrays/LogiVector.h>
 #include <aips/Containers/RecordInterface.h>
-#include <trial/RedFlagger/RFAFlagCubeBase.h> 
-#include <trial/RedFlagger/RFDataMapper.h> 
-#include <trial/RedFlagger/RFCubeLattice.h>
-#include <trial/RedFlagger/RFRowClipper.h>
-#include <trial/RedFlagger/RFDebugPlot.h>
+#include <trial/Flagging/RFAFlagCubeBase.h> 
+#include <trial/Flagging/RFDataMapper.h> 
+#include <trial/Flagging/RFCubeLattice.h>
+#include <trial/Flagging/RFRowClipper.h>
+#include <trial/Flagging/RFDebugPlot.h>
 #include <trial/Mathematics/MedianSlider.h> 
 
 

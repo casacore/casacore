@@ -28,8 +28,8 @@
 #define AIPS_RFA_FLAGCUBEBASE_H
 
 #include <aips/Containers/RecordInterface.h>
-#include <trial/RedFlagger/RFABase.h> 
-#include <trial/RedFlagger/RFFlagCube.h>
+#include <trial/Flagging/RFABase.h> 
+#include <trial/Flagging/RFFlagCube.h>
 
 // <summary>
 // Abstract RedFlagger Agent class with a flag cube

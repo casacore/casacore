@@ -30,7 +30,7 @@
 #include <aips/Arrays/Cube.h> 
 #include <aips/Lattices/TempLattice.h> 
 #include <aips/Lattices/LatticeIterator.h> 
-#include <trial/RedFlagger/RFChunkStats.h>
+#include <trial/Flagging/RFChunkStats.h>
 #include <aips/Logging/LogIO.h>
 #include <aips/Containers/Record.h>
 

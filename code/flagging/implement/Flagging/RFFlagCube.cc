@@ -24,7 +24,7 @@
 //#                        Charlottesville, VA 22903-2475 USA
 //#
 //# $Id$
-#include <trial/RedFlagger/RFFlagCube.h>
+#include <trial/Flagging/RFFlagCube.h>
 #include <aips/Exceptions/Error.h>
 #include <trial/MeasurementEquations/VisBuffer.h>
 #include <aips/Arrays/ArrayLogical.h>

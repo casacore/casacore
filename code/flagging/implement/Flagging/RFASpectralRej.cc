@@ -24,7 +24,7 @@
 //#                        Charlottesville, VA 22903-2475 USA
 //#
 //# $Id$
-#include <trial/RedFlagger/RFASpectralRej.h> 
+#include <trial/Flagging/RFASpectralRej.h> 
 #include <aips/Functionals/Polynomial.h>
 #include <trial/MeasurementEquations/VisibilityIterator.h>
 #include <trial/MeasurementEquations/VisBuffer.h>

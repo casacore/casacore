@@ -25,8 +25,8 @@
 //#
 //# $Id$
 #include <aips/Exceptions/Error.h>
-#include <trial/RedFlagger/DDMapper.h>
-#include <trial/RedFlagger/RFChunkStats.h>
+#include <trial/Flagging/DDMapper.h>
+#include <trial/Flagging/RFChunkStats.h>
 #include <aips/Utilities/Regex.h>
 
 DDFunc::DDFunc( FuncSignature fsig,const String &corrstr )

@@ -27,9 +27,9 @@
 #ifndef AIPS_RF_FLAGCUBE_H
 #define AIPS_RF_FLAGCUBE_H
     
-#include <trial/RedFlagger/RedFlagger.h>
-#include <trial/RedFlagger/RFCubeLattice.h>
-#include <trial/RedFlagger/RFChunkStats.h>
+#include <trial/Flagging/RedFlagger.h>
+#include <trial/Flagging/RFCubeLattice.h>
+#include <trial/Flagging/RFChunkStats.h>
 #include <aips/Arrays/ArrayLogical.h>
 #include <aips/Arrays/LogiMatrix.h>
 #include <aips/Arrays/LogiVector.h>

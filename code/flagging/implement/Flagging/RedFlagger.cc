@@ -33,11 +33,11 @@
 #include <aips/Measures/Stokes.h>
 #include <aips/Utilities/Regex.h>
 #include <aips/Tasking/AppInfo.h>
-#include <trial/RedFlagger/RedFlagger.h>
-#include <trial/RedFlagger/RFAMedianClip.h>
-#include <trial/RedFlagger/RFASpectralRej.h>
-#include <trial/RedFlagger/RFASelector.h>
-#include <trial/RedFlagger/RFAUVBinner.h>
+#include <trial/Flagging/RedFlagger.h>
+#include <trial/Flagging/RFAMedianClip.h>
+#include <trial/Flagging/RFASpectralRej.h>
+#include <trial/Flagging/RFASelector.h>
+#include <trial/Flagging/RFAUVBinner.h>
 #include <trial/MeasurementEquations/VisibilityIterator.h>
 #include <trial/MeasurementEquations/VisBuffer.h>
 #include <trial/Tasking/PGPlotter.h>

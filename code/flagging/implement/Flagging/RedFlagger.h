@@ -30,7 +30,7 @@
 #include <aips/Arrays/Vector.h>
 #include <aips/Containers/Record.h>
 #include <aips/MeasurementSets/MeasurementSet.h>
-#include <trial/RedFlagger/RFChunkStats.h>
+#include <trial/Flagging/RFChunkStats.h>
 #include <aips/Logging/LogIO.h>
 
 class RFABase;

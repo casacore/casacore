@@ -27,11 +27,11 @@
 #if !defined(AIPS_RFA_UVBINNER_H)
 #define AIPS_RFA_UVBINNER_H
 
-#include <trial/RedFlagger/RFAFlagCubeBase.h> 
-#include <trial/RedFlagger/RFDataMapper.h> 
-#include <trial/RedFlagger/RFFlagCube.h> 
-#include <trial/RedFlagger/RFRowClipper.h> 
-#include <trial/RedFlagger/RFDebugPlot.h> 
+#include <trial/Flagging/RFAFlagCubeBase.h> 
+#include <trial/Flagging/RFDataMapper.h> 
+#include <trial/Flagging/RFFlagCube.h> 
+#include <trial/Flagging/RFRowClipper.h> 
+#include <trial/Flagging/RFDebugPlot.h> 
 #include <trial/Arrays/RigidVector.h>
 #include <trial/Tasking/PGPlotter.h>
     

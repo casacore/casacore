@@ -24,7 +24,7 @@
 //#                        Charlottesville, VA 22903-2475 USA
 //#
 //# $Id$
-#include <trial/RedFlagger/RFAUVBinner.h> 
+#include <trial/Flagging/RFAUVBinner.h> 
 #include <aips/Mathematics/Math.h>
 #include <aips/Mathematics/Constants.h>
 #include <aips/Arrays/ArrayMath.h>

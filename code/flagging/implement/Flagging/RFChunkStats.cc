@@ -26,8 +26,8 @@
 //# $Id$
 #include <aips/Arrays/ArrayMath.h>
 #include <aips/Exceptions/Error.h>
-#include <trial/RedFlagger/RFChunkStats.h>
-#include <trial/RedFlagger/RedFlagger.h>
+#include <trial/Flagging/RFChunkStats.h>
+#include <trial/Flagging/RedFlagger.h>
 #include <trial/MeasurementEquations/VisibilityIterator.h>
 #include <trial/MeasurementEquations/VisBuffer.h>
 #include <stdio.h>

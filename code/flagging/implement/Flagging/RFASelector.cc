@@ -31,7 +31,7 @@
 #include <aips/Quanta/MVTime.h>
 #include <trial/MeasurementEquations/VisibilityIterator.h>
 #include <trial/MeasurementEquations/VisBuffer.h>
-#include <trial/RedFlagger/RFASelector.h>
+#include <trial/Flagging/RFASelector.h>
 #include <aips/stdio.h>
     
 // -----------------------------------------------------------------------

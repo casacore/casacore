@@ -26,8 +26,8 @@
 # if !defined(AIPS_RF_DATAMAPPER_H)
 #define AIPS_RF_DATAMAPPER_H
 
-#include <trial/RedFlagger/RFChunkStats.h> 
-#include <trial/RedFlagger/DDMapper.h> 
+#include <trial/Flagging/RFChunkStats.h> 
+#include <trial/Flagging/DDMapper.h> 
 #include <aips/Arrays/Cube.h>
     
 class VisBuffer;
