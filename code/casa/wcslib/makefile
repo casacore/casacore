@@ -45,11 +45,10 @@ $(WCSLIB).$(SFXSTAT)(%.o) : $(CODEDIR)/%.c
 $(WCSLIB).$(SFXSTAT)(%.o) : $(CODEDIR)/%.l
 	-@ echo ""
 	-@ echo "$%"
-	 @ cd $(WCSTMPD)
-	 @ $(FLEX) $(FLFLAGS) -P$* $<
-	 @ mv -f lex.$*.c $*.c
-	 @ $(CC) $(WCSLIBDEFS) -I$(CODEDIR) $(COPT) -c $*.c
-	-@ $(RM) $*.c
+	-@ $(RM) $(WCSTMPD)/$*.c
+	 @ $(FLEX) $(FLFLAGS) -P$* -t $< > $(WCSTMPD)/$*.c
+	 @ cd $(WCSTMPD) && $(CC) $(WCSLIBDEFS) -I$(CODEDIR) $(COPT) -c $*.c
+	-@ $(RM) $(WCSTMPD)/$*.c
 	-@ $(TIMER)
 
 
