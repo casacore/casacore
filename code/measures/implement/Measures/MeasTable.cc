@@ -3098,8 +3098,9 @@ Double MeasTable::dUTC(Double utc) {
 			 String("dUTC(Double)"),
 			 WHERE));
       os << LogIO::SEVERE <<
-	String("Leap second table TAI_UTC seems out-of-date: ") +
-	"regenerate" << LogIO::POST;
+	String("Leap second table TAI_UTC seems out-of-date. \n") +
+	"Until table is updated (see aips++ manager) times and coordinates\n" +
+	"derived from UTC could be wrong by 1s or more." << LogIO::POST;
     };
     LEAP = (Double (*)[4])(new Double[4*N]);
     for (Int i=0; i < N; i++) {
