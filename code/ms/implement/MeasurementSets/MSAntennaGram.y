@@ -46,7 +46,6 @@ using namespace casa;
 
 %token EQASS
 %token SQUOTE
-%token <ival> NUMBER
 %token <str> IDENTIFIER
 %token COMMA
 
@@ -59,9 +58,11 @@ using namespace casa;
 
 %token STAR
 %token COLON
+%token SEMICOLON
 
 %type <node> antennastatement
 %type <node> antennaexpr
+%type <node> subantennaexpr
 %type <node> combnameorstation
 %type <node> namesorstations
 %type <node> indexcombexpr
@@ -86,12 +87,16 @@ antennastatement: indexcombexpr
                   }
                 ;
 
-antennaexpr: combnameorstation 
-           | combnameorstation AMPERSAND combnameorstation {
-                  $$ = new TableExprNode ($1 || $3) ;}
-           | combnameorstation AMPERSAND STAR {
-                  $$ = $1;}
+antennaexpr: subantennaexpr
+           | antennaexpr SEMICOLON subantennaexpr {
+               $$ = $3;
+             }
            ;
+
+subantennaexpr: combnameorstation 
+              | combnameorstation AMPERSAND combnameorstation {
+                  $$ = new TableExprNode ($1 || $3) ;}
+              ;
 
 combnameorstation: namesorstations 
                  | LPAREN namesorstations RPAREN {
@@ -114,7 +119,10 @@ namesorstations: IDENTIFIER {
 		 free($1);
 		 free($3);
 		 $$ = MSAntennaParse().selectNameOrStation(antennanms);	   
-	       }
+	         }
+               | STAR {
+                   $$ = MSAntennaParse().selectNameOrStation(String("*"));
+                 }
                ;
 		  
 indexcombexpr  : IDENTIFIER {

@@ -50,7 +50,7 @@ UASTRING   \'[^\'\n]*\n
 STRING    ({QSTRING}|{ASTRING})+
 USTRING   ({UQSTRING}|{UASTRING})+
 
-IDENTIFIER  [A-Za-z:0-9]*|[A-Za-z:0-9]*"*"
+IDENTIFIER  [A-Za-z:0-9]+|[A-Za-z:0-9]+"*"
 
 REGEX1    m"/"[^/]+"/"
 REGEX2    m%[^%]+%
@@ -74,6 +74,8 @@ REGEX     {REGEX1}|{REGEX2}|{REGEX3}
           }
 ":"       { msAntennaGramPosition() += yyleng;
             return COLON; }
+";"       { msAntennaGramPosition() += yyleng;
+            return SEMICOLON; }
 "=="      { msAntennaGramPosition() += yyleng;
             return EQ; }
 "="       { msAntennaGramPosition() += yyleng;
