@@ -15,3 +15,18 @@ containing this code was executed on simulated ALMA data and the
 resulting profile files were analyzed with gprof to locate code
 needing optimizations.  The results were given to Kumar for further
 action.
+
+change id: 0148
+ author:   Raymond Rusk
+ date:     2003/04/14
+ avers:    1.8
+ area:     Library
+ package:  alma
+ module:   MeasurementSets
+ type:     Code Test
+ category: New
+ summary:  Performance profiling of AlmaTI2MS, almati2ms and almatifiller.
+Test program tAlmaTI2MS.cc written.  "gprof"
+profiling of AlmaTI2MS and the glish client
+almati2ms done.  IRAM data (g067) from
+07-feb-1997* used to profile almatifiller.
