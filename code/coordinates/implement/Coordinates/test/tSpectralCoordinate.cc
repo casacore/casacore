@@ -92,6 +92,41 @@ int main()
          }
      } 
 
+// Test Quantum constructor interfaces
+   
+     {
+        Double crval = 1.4e9;
+        Double crpix = 1.0;
+        Double cdelt = 1.0e3;
+        Double restFreq = 1.41e9;
+        SpectralCoordinate sc1(MFrequency::TOPO, crval, cdelt, crpix, restFreq);
+//
+        Quantum<Double> crval2(100*crval, "cHz");
+        Quantum<Double> cdelt2(100*cdelt, "cHz");
+        Quantum<Double> restFreq2(100*restFreq, "cHz");
+        SpectralCoordinate sc2(MFrequency::TOPO, crval2, cdelt2, crpix, restFreq2);
+//
+        if (!sc1.near(&sc2)) {  
+           throw(AipsError(String("Quantum interface (1) constructor failed consistencey test")));
+        }
+      }
+
+      {
+        Vector<Double> freqs(3);
+        freqs(0) = 1.4e9; freqs(1) = 1.5e9; freqs(2) = 1.7e9;
+        Double restFreq = 1.41e9;
+        SpectralCoordinate sc1(MFrequency::TOPO, freqs, restFreq);
+//
+        Quantum<Vector<Double> > freqs2(100.0*freqs, "cHz");
+        Quantum<Double> restFreq2(100.0*restFreq, "cHz");
+        SpectralCoordinate sc2(MFrequency::TOPO, freqs2, restFreq2);
+//
+        if (!sc1.near(&sc2)) {  
+           throw(AipsError(String("Quantum interface (2) constructor failed consistencey test")));
+        }
+      }
+
+
 // Test copy constructor
 
      {
