@@ -2093,3 +2093,4 @@
 11 096 src rm doc/texinputs.dir/pstricks
 11 097 src rm trial/scripts/synthesisio.g
 11 097 src rm trial/scripts/synthesisio.help
+11 097 src rm trial/scripts/synthesisdos.help
