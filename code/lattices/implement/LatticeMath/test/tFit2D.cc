@@ -26,9 +26,6 @@
 //# $Id$
 
 #include <aips/Fitting.h>
-#include <trial/Coordinates/CoordinateSystem.h>
-#include <trial/Coordinates/CoordinateUtil.h>
-#include <trial/Images/PagedImage.h>
 #include <trial/Fitting/Fit2D.h>
 #include <trial/Tasking/PGPlotter.h>
 #include <aips/Functionals/Gaussian2D.h>
@@ -70,7 +67,6 @@ int main(int argc, char **argv)
    inputs.create("mask", "1,1,1,1,1,1", "Mask");
    inputs.create("include", "0.0", "include");
    inputs.create("exclude", "0.0", "exclude");
-   inputs.create("outfile", "", "outfile");
 //
    inputs.readArguments(argc, argv);
    const Int nModels  = inputs.getInt("nmodels");   
@@ -85,7 +81,6 @@ int main(int argc, char **argv)
    const Block<Int> mask = inputs.getIntArray("mask");
    const Block<Double> includeRange = inputs.getDoubleArray("include");
    const Block<Double> excludeRange = inputs.getDoubleArray("exclude");
-   const String outfile = inputs.getString("outfile");
 //
    LogOrigin lor("tFit2D", "main()", WHERE);
    LogIO logger(lor);
@@ -182,14 +177,6 @@ int main(int argc, char **argv)
 // Add noise
  
    addNoise (pixels, sigma, noise);
-
-// Save image
-
-   if (outfile!=String("")) {
-       CoordinateSystem cSys = CoordinateUtil::defaultCoords2D();
-       PagedImage<Float> im(shape, cSys, outfile);
-       im.put(pixels);  
-   }
 
 // Set other state of fitter
 
