@@ -70,120 +70,91 @@ Coordinate::~Coordinate()
 {}
 
 
-uInt Coordinate::toWorldMany(Matrix<Double>& world, 
-			     const Matrix<Double>& pixel, 
-			     Vector<Int>& failures) const
+Bool Coordinate::toWorldMany(Matrix<Double>& world,
+                             const Matrix<Double>& pixel,
+                             Vector<Bool>& failures) const
 {
     AlwaysAssert(nPixelAxes()==pixel.nrow(), AipsError);
     const uInt nTransforms = pixel.ncolumn();
     world.resize(nWorldAxes(), nTransforms);
-//
+    failures.resize(nTransforms);
+//   
     Vector<Double> pixTmp(nPixelAxes());
-    Vector<Double> lastPix(nPixelAxes());
     Vector<Double> worldTmp(nWorldAxes());
 //
     ArrayAccessor<Double, Axis<1> > jPixel(pixel);
     ArrayAccessor<Double, Axis<1> > jWorld(world);
-//
+// 
     String errorMsg;
     uInt nError = 0;
     uInt k,l;
-    Bool same;
     ArrayAccessor<Double, Axis<0> > iPixel, iWorld;
 //
     for (jPixel.reset(),jWorld.reset(),l=0; jPixel!=jPixel.end(); ++jPixel,++jWorld,l++) {
        iPixel = jPixel;            // Partial assignment
-       same = True;
        for (iPixel.reset(),k=0; iPixel!=iPixel.end(); ++iPixel,k++) {
-          pixTmp[k] = *iPixel;
-          if (l==0 || (l!=0 && !::near(pixTmp[k],lastPix[k]))) same = False;
+          pixTmp[k] = *iPixel;   
        }
 //
-       iWorld = jWorld;            // Partial assigment
-       if (same) {
-          for (iWorld.reset(),k=0; iWorld!=iWorld.end(); ++iWorld,k++) {
-             *iWorld = worldTmp[k];         // Copy last conversion
-          }
-       } else {
-          if (!toWorld (worldTmp, pixTmp)) {
-             nError++;
-             if (nError > failures.nelements()) {
-                failures.resize(2*nError, True);
-             }
-             failures(nError-1) = l;
-             if (nError == 1) errorMsg = errorMessage();    // Save the first error message
-           } else {
-              for (iWorld.reset(),k=0; iWorld!=iWorld.end(); ++iWorld,k++) {
-                 *iWorld = worldTmp[k];
-              }
+       failures[l] = !toWorld (worldTmp, pixTmp);
+       if (failures[l]) {
+          nError++;
+          if (nError == 1) errorMsg = errorMessage();    // Save the first error message
+        } else {
+           iWorld = jWorld;      // Partial assigment
+           for (iWorld.reset(),k=0; iWorld!=iWorld.end(); ++iWorld,k++) {
+              *iWorld = worldTmp[k];
            }
         }
-//
-        lastPix = pixTmp;
     }
 //
     if (nError != 0) set_error(errorMsg); // put back the first error
-    return nError;
+    return (nError==0);
+        
+} 
 
-}
 
-
-
-uInt Coordinate::toPixelMany(Matrix<Double>& pixel, 
-			     const Matrix<Double>& world,
-			     Vector<Int>& failures) const
+Bool Coordinate::toPixelMany(Matrix<Double>& pixel,
+                             const Matrix<Double>& world,
+                             Vector<Bool>& failures) const
 {
     AlwaysAssert(nWorldAxes()==world.nrow(), AipsError);
     const uInt nTransforms = world.ncolumn();
     pixel.resize(nPixelAxes(), nTransforms);
-//
+    failures.resize(nTransforms);
+//   
     Vector<Double> pixTmp(nPixelAxes());
     Vector<Double> worldTmp(nWorldAxes());
-    Vector<Double> lastWorld(nWorldAxes());
 //
     ArrayAccessor<Double, Axis<1> > jPixel(pixel);
     ArrayAccessor<Double, Axis<1> > jWorld(world);
-//
+//          
     String errorMsg;
     uInt nError = 0;
     uInt k,l;
-    Bool same;
-    ArrayAccessor<Double, Axis<0> > iPixel, iWorld;
+    ArrayAccessor<Double, Axis<0> > iPixel, iWorld;  
 //
     for (jWorld.reset(),jPixel.reset(),l=0; jWorld!=jWorld.end(); ++jWorld,++jPixel,l++) {
        iWorld = jWorld;           // Partial assigment
-       same = True;
        for (iWorld.reset(),k=0; iWorld!=iWorld.end(); ++iWorld,k++) {
           worldTmp[k] = *iWorld;
-          if (l==0 || (l!=0 && !::near(worldTmp[k],lastWorld[k]))) same = False;
        }
-//
-       iPixel = jPixel;          // Partial assignment
-       if (same) {
-          for (iPixel.reset(),k=0; iPixel!=iPixel.end(); ++iPixel,k++) {
-             *iPixel= pixTmp[k];       // Copy last conversion
-           }
-       } else {
-          if (!toPixel(pixTmp, worldTmp)) {
-             nError++;
-             if (nError > failures.nelements()) {
-                failures.resize(2*nError, True);
-             }
-             failures(nError-1) = l;
-             if (nError == 1) errorMsg = errorMessage();    // Save the first error message
-           } else {
-              for (iPixel.reset(),k=0; iPixel!=iPixel.end(); ++iPixel,k++) {
-                 *iPixel= pixTmp[k];
-              }
+// 
+       failures[l] = !toPixel(pixTmp, worldTmp);
+       if (failures[l]) {
+          nError++;
+          if (nError == 1) errorMsg = errorMessage();    // Save the first error message
+        } else {
+           iPixel = jPixel;      // Partial assignment
+           for (iPixel.reset(),k=0; iPixel!=iPixel.end(); ++iPixel,k++) {
+              *iPixel= pixTmp[k];
            }
         }
-//
-        lastWorld = worldTmp;
     }
 //
     if (nError != 0) set_error(errorMsg); // put back the first error
-    return nError;
-}
+    return (nError==0);
+} 
 
 
 
@@ -457,10 +428,12 @@ Bool Coordinate::find_scale_factor(String &error, Vector<Double> &factor,
 {
     factor.resize(units.nelements());
     Bool ok = (units.nelements() == oldUnits.nelements());
-    if (! ok) {
+    if (!ok) {
 	error = "units and oldUnits are different sizes!";
     } else {
-	// Try to find the scaling factors between the old and new units
+
+// Try to find the scaling factors between the old and new units
+
 	uInt n = units.nelements();
 	for (uInt i=0; i<n && ok; i++) {
 	    if (UnitVal::check(oldUnits(i)) && UnitVal::check(units(i))) {
