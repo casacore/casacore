@@ -30,9 +30,9 @@
 #define AIPS_LCLELMASK_H
 
 //# Includes
-#include <trial/Lattices/LCRegionSingle.h>
-#include <trial/Lattices/LCBox.h>
-#include <trial/Lattices/LatticeExpr.h>
+#include <lattices/Lattices/LCRegionSingle.h>
+#include <lattices/Lattices/LCBox.h>
+#include <lattices/Lattices/LatticeExpr.h>
 
 
 //# Forward Declarations

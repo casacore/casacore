@@ -25,10 +25,10 @@
 //#
 //# $Id$
 
-#include <aips/IO/ByteSource.h>
-#include <aips/BasicSL/String.h>
-#include <aips/Exceptions/Error.h>
-#include <aips/IO/TypeIO.h>
+#include <casa/IO/ByteSource.h>
+#include <casa/BasicSL/String.h>
+#include <casa/Exceptions/Error.h>
+#include <casa/IO/TypeIO.h>
 
 ByteSource::ByteSource()
 {}

@@ -25,10 +25,10 @@
 //#
 //# $Id$
 
-#include <aips/Mathematics/FFTPack.h>
-#include <aips/BasicSL/Complex.h>
-#include <aips/Utilities/Assert.h>
-#include <aips/Exceptions/Error.h>
+#include <scimath/Mathematics/FFTPack.h>
+#include <casa/BasicSL/Complex.h>
+#include <casa/Utilities/Assert.h>
+#include <casa/Exceptions/Error.h>
 
 extern "C" {
   void cffti_(int*, float*);

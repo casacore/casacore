@@ -25,17 +25,17 @@
 //#
 //# $Id$
 
-#include <aips/aips.h>
-#include <aips/Exceptions/Error.h>
-#include <aips/Utilities/Assert.h>
-#include <aips/BasicSL/String.h>
-#include <aips/OS/Path.h>
-#include <aips/iostream.h>
-#include <aips/iomanip.h>
-#include <aips/OS/Timer.h>
-#include <aips/BasicMath/Random.h>
-#include <aips/Inputs.h>
-#include <trial/IO/TapeIO.h>
+#include <casa/aips.h>
+#include <casa/Exceptions/Error.h>
+#include <casa/Utilities/Assert.h>
+#include <casa/BasicSL/String.h>
+#include <casa/OS/Path.h>
+#include <casa/iostream.h>
+#include <casa/iomanip.h>
+#include <casa/OS/Timer.h>
+#include <casa/BasicMath/Random.h>
+#include <casa/Inputs.h>
+#include <casa/IO/TapeIO.h>
 
 int main(int argc, char* argv[]) {
   try {

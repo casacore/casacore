@@ -25,10 +25,10 @@
 //#
 //# $Id$
 
-#include <aips/Utilities/DataType.h>
-#include <aips/Utilities/Assert.h>
+#include <casa/Utilities/DataType.h>
+#include <casa/Utilities/Assert.h>
 
-#include <aips/iostream.h>
+#include <casa/iostream.h>
 
 ostream &operator<<(ostream &os, DataType type)
 {

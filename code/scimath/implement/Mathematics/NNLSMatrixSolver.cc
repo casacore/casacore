@@ -25,14 +25,14 @@
 //#
 //# $Id$
 
-#include <aips/aips.h>
-#include <trial/Mathematics/NNLSMatrixSolver.h>
-#include <aips/Arrays/MatrixMath.h>
+#include <casa/aips.h>
+#include <scimath/Mathematics/NNLSMatrixSolver.h>
+#include <casa/Arrays/MatrixMath.h>
 
-#include <aips/Logging/LogSink.h>
-#include <aips/Logging/LogMessage.h>
+#include <casa/Logging/LogSink.h>
+#include <casa/Logging/LogMessage.h>
 
-#include <aips/sstream.h>
+#include <casa/sstream.h>
 
 #if !defined(NEED_FORTRAN_UNDERSCORES)
 #define NEED_FORTRAN_UNDERSCORES 1

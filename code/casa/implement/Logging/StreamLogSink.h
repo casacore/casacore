@@ -29,10 +29,10 @@
 #if !defined(AIPS_STREAM_LOG_SINK_H)
 #define AIPS_STREAM_LOG_SINK_H
 
-#include <aips/aips.h>
-#include <aips/Logging/LogSinkInterface.h>
+#include <casa/aips.h>
+#include <casa/Logging/LogSinkInterface.h>
 
-#include <aips/iosfwd.h>
+#include <casa/iosfwd.h>
 
 // <summary>
 // Send log messages to an ostream.

@@ -26,7 +26,7 @@
 //# $Id$
 
 //# Includes
-#include <trial/Functionals/KaiserBParam.h>
+#include <scimath/Functionals/KaiserBParam.h>
 
 template<class T>
 KaiserBParam<T>::KaiserBParam() :

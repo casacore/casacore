@@ -28,12 +28,12 @@
 //# Includes
 
 
-#include <aips/Utilities/Copy.h>
-#include <aips/Utilities/Assert.h>
-#include <aips/iostream.h>
+#include <casa/Utilities/Copy.h>
+#include <casa/Utilities/Assert.h>
+#include <casa/iostream.h>
 
 // A random class to copy
-#include <aips/Containers/Block.h>
+#include <casa/Containers/Block.h>
 
 
 // This program tests all functions in Copy.h (objset, objcopy and objmove).

@@ -30,10 +30,10 @@
 
 
 //# Includes
-#include <aips/Lattices/LELCoordinates.h>
-#include <aips/Arrays/IPosition.h>
-#include <aips/IO/FileLocker.h>
-#include <aips/BasicSL/String.h>
+#include <lattices/Lattices/LELCoordinates.h>
+#include <casa/Arrays/IPosition.h>
+#include <casa/IO/FileLocker.h>
+#include <casa/BasicSL/String.h>
 
 //# Forward Declarations
 class LogIO;

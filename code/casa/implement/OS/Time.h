@@ -29,9 +29,9 @@
 #if !defined(AIPS_TIME_H)
 #define AIPS_TIME_H
 
-#include <aips/aips.h>
-#include <aips/BasicSL/String.h>
-#include <aips/iosfwd.h>
+#include <casa/aips.h>
+#include <casa/BasicSL/String.h>
+#include <casa/iosfwd.h>
 
 // <Summary> date and time enquiry functions, with some operations.
 // </summary>

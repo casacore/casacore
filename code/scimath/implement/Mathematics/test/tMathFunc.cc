@@ -27,13 +27,13 @@
 
 //# Includes
 
-#include <aips/BasicMath/Math.h>
-#include <aips/iostream.h>
-#include <aips/BasicSL/Constants.h>
-#include <aips/Exceptions/Error.h>
-#include <trial/Mathematics/MathFunc.h>
+#include <casa/BasicMath/Math.h>
+#include <casa/iostream.h>
+#include <casa/BasicSL/Constants.h>
+#include <casa/Exceptions/Error.h>
+#include <scimath/Mathematics/MathFunc.h>
 
-#include <aips/Utilities/Assert.h>
+#include <casa/Utilities/Assert.h>
 
 main()
 {

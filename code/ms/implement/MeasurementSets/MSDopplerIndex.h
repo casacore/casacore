@@ -29,9 +29,9 @@
 #if !defined(AIPS_MSDOPPLERINDEX_H)
 #define AIPS_MSDOPPLERINDEX_H
 
-#include <trial/MeasurementSets/MSTableIndex.h>
+#include <ms/MeasurementSets/MSTableIndex.h>
 
-#include <aips/Containers/RecordField.h>
+#include <casa/Containers/RecordField.h>
 
 //# forward declarations
 class MSDoppler;

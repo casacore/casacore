@@ -25,7 +25,7 @@
 //#
 //#
 //# $Id$
-#include <trial/Functionals/FunctionFactoryErrors.h>
+#include <scimath/Functionals/FunctionFactoryErrors.h>
 
 const String InvalidSerializationError::preamble("Invalid function description in record: ");
 

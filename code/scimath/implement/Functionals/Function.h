@@ -29,15 +29,15 @@
 #define AIPS_FUNCTION_H
 
 //# Includes
-#include <aips/aips.h>
-#include <aips/BasicMath/Functional.h>
-#include <aips/Functionals/FunctionParam.h>
-#include <aips/Functionals/FunctionTraits.h>
-#include <aips/Arrays/Vector.h>
-#include <aips/Utilities/Assert.h>
+#include <casa/aips.h>
+#include <casa/BasicMath/Functional.h>
+#include <scimath/Functionals/FunctionParam.h>
+#include <scimath/Functionals/FunctionTraits.h>
+#include <casa/Arrays/Vector.h>
+#include <casa/Utilities/Assert.h>
 
 //# Forward declarations
-#include <aips/iosfwd.h>
+#include <casa/iosfwd.h>
 class RecordInterface;
 
 // <summary> Numerical functional interface class
@@ -92,10 +92,10 @@ class RecordInterface;
 // time(<em>x</em>) could be:
 // <srcblock>
 //   //# Sinusoid.h
-//   #include <aips/aips.h>
-//   #include <aips/Functionals/Function.h>
-//   #include <aips/BasicSL/Constants.h>
-//   #include <aips/BasicMath/Math.h>
+//   #include <casa/aips.h>
+//   #include <scimath/Functionals/Function.h>
+//   #include <casa/BasicSL/Constants.h>
+//   #include <casa/BasicMath/Math.h>
 //   // The sinusoid class
 //   template<class T> class Sinusoid : public Function<T> {
 //    public:
@@ -139,10 +139,10 @@ class RecordInterface;
 // could be:
 // <srcblock>
 //   //# Sinusoid.h
-//   #include <aips/aips.h>
-//   #include <aips/Functionals/Function.h>
-//   #include <aips/BasicSL/Constants.h>
-//   #include <aips/BasicMath/Math.h>
+//   #include <casa/aips.h>
+//   #include <scimath/Functionals/Function.h>
+//   #include <casa/BasicSL/Constants.h>
+//   #include <casa/BasicMath/Math.h>
 //   template<class T> class Sinusoid : public Function<T> {
 //    public:
 //     enum { AMPL=0, FREQ };

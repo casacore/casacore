@@ -26,13 +26,13 @@
 //# $Id$
 
 
-#include <trial/Images/WCCompound.h>
-#include <trial/Images/ImageRegion.h>
-#include <trial/Lattices/RegionType.h>
-#include <aips/Tables/TableRecord.h>
-#include <aips/Arrays/Vector.h>
-#include <aips/Utilities/Assert.h>
-#include <aips/Exceptions/Error.h>
+#include <images/Images/WCCompound.h>
+#include <images/Images/ImageRegion.h>
+#include <lattices/Lattices/RegionType.h>
+#include <tables/Tables/TableRecord.h>
+#include <casa/Arrays/Vector.h>
+#include <casa/Utilities/Assert.h>
+#include <casa/Exceptions/Error.h>
 
 
 WCCompound::WCCompound (const ImageRegion& region1,

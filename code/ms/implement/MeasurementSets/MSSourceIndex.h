@@ -29,10 +29,10 @@
 #if !defined(AIPS_MSSOURCEINDEX_H)
 #define AIPS_MSSOURCEINDEX_H
 
-#include <trial/MeasurementSets/MSTableIndex.h>
-#include <aips/MeasurementSets/MSSourceColumns.h>
+#include <ms/MeasurementSets/MSTableIndex.h>
+#include <ms/MeasurementSets/MSSourceColumns.h>
 
-#include <aips/Containers/RecordField.h>
+#include <casa/Containers/RecordField.h>
 
 //# forward declarations
 class MSSource;

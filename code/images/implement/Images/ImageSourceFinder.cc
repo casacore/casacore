@@ -25,42 +25,42 @@
 //#
 //# $Id$
 //
-#include <trial/Images/ImageSourceFinder.h>
+#include <images/Images/ImageSourceFinder.h>
 
-#include <aips/aips.h>
-#include <aips/Arrays/Vector.h>
-#include <aips/Arrays/Matrix.h>
-#include <aips/Arrays/IPosition.h>
-#include <aips/Arrays/Slicer.h>
-#include <trial/Arrays/AxesSpecifier.h>
-#include <aips/Containers/Block.h>
-#include <trial/Coordinates/CoordinateSystem.h>
-#include <trial/Coordinates/DirectionCoordinate.h>
-#include <trial/Coordinates/StokesCoordinate.h>
-#include <trial/Coordinates/CoordinateUtil.h>
-#include <trial/ComponentModels/ComponentShape.h>
-#include <trial/ComponentModels/ComponentList.h>
-#include <trial/ComponentModels/SkyComponent.h>
-#include <aips/Fitting/FitLSQ.h>
-#include <trial/Fitting/NonLinearFitLM.h>
-#include <trial/LatticeMath/Fit2D.h>
-#include <aips/Functionals/Gaussian2D.h>
-#include <trial/Images/ImageInterface.h>
-#include <trial/Images/ImageInfo.h>
-#include <trial/Images/ImageUtilities.h>
-#include <trial/Images/SubImage.h>
-#include <trial/Lattices/LatticeStatistics.h>
-#include <trial/Lattices/LCBox.h>
-#include <aips/Logging/LogIO.h>
-#include <aips/Mathematics/AutoDiff.h> 
-#include <aips/Mathematics/NumericTraits.h> 
-#include <aips/Measures/Stokes.h>
-#include <aips/Quanta/Quantum.h>
-#include <aips/Quanta/MVAngle.h>
-#include <aips/Quanta/Unit.h>
-#include <aips/Utilities/COWPtr.h>
-#include <aips/BasicMath/Math.h>
-#include <aips/iostream.h>
+#include <casa/aips.h>
+#include <casa/Arrays/Vector.h>
+#include <casa/Arrays/Matrix.h>
+#include <casa/Arrays/IPosition.h>
+#include <casa/Arrays/Slicer.h>
+#include <casa/Arrays/AxesSpecifier.h>
+#include <casa/Containers/Block.h>
+#include <coordinates/Coordinates/CoordinateSystem.h>
+#include <coordinates/Coordinates/DirectionCoordinate.h>
+#include <coordinates/Coordinates/StokesCoordinate.h>
+#include <coordinates/Coordinates/CoordinateUtil.h>
+#include <components/ComponentModels/ComponentShape.h>
+#include <components/ComponentModels/ComponentList.h>
+#include <components/ComponentModels/SkyComponent.h>
+#include <scimath/Fitting/FitLSQ.h>
+#include <scimath/Fitting/NonLinearFitLM.h>
+#include <lattices/LatticeMath/Fit2D.h>
+#include <scimath/Functionals/Gaussian2D.h>
+#include <images/Images/ImageInterface.h>
+#include <images/Images/ImageInfo.h>
+#include <images/Images/ImageUtilities.h>
+#include <images/Images/SubImage.h>
+#include <lattices/Lattices/LatticeStatistics.h>
+#include <lattices/Lattices/LCBox.h>
+#include <casa/Logging/LogIO.h>
+#include <scimath/Mathematics/AutoDiff.h> 
+#include <scimath/Mathematics/NumericTraits.h> 
+#include <measures/Measures/Stokes.h>
+#include <casa/Quanta/Quantum.h>
+#include <casa/Quanta/MVAngle.h>
+#include <casa/Quanta/Unit.h>
+#include <casa/Utilities/COWPtr.h>
+#include <casa/BasicMath/Math.h>
+#include <casa/iostream.h>
 
 
 template <class T>

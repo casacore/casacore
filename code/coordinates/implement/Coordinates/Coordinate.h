@@ -29,8 +29,8 @@
 #if !defined(AIPS_COORDINATE_H)
 #define AIPS_COORDINATE_H
 
-#include <aips/aips.h>
-#include <aips/BasicSL/String.h>
+#include <casa/aips.h>
+#include <casa/BasicSL/String.h>
 
 template<class T> class Quantum;
 template<class T> class Matrix;

@@ -26,17 +26,17 @@
 //#
 //# $Id$
 
-#include <trial/Coordinates/StokesCoordinate.h>
-#include <aips/Arrays/Vector.h>
-#include <aips/Arrays/Matrix.h>
-#include <aips/Arrays/ArrayMath.h>
+#include <coordinates/Coordinates/StokesCoordinate.h>
+#include <casa/Arrays/Vector.h>
+#include <casa/Arrays/Matrix.h>
+#include <casa/Arrays/ArrayMath.h>
 
-#include <aips/Containers/Record.h>
-#include <aips/Utilities/Assert.h>
-#include <aips/Utilities/LinearSearch.h>
-#include <aips/BasicMath/Math.h>
+#include <casa/Containers/Record.h>
+#include <casa/Utilities/Assert.h>
+#include <casa/Utilities/LinearSearch.h>
+#include <casa/BasicMath/Math.h>
 
-#include <aips/sstream.h>
+#include <casa/sstream.h>
 
 StokesCoordinate::StokesCoordinate(const Vector<Int> &whichStokes)
 : Coordinate(),

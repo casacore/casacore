@@ -26,13 +26,13 @@
 //# $Id$
 
 //# Includes
-#include <aips/Functionals/GaussianND.h>
-#include <aips/BasicSL/Constants.h>
-#include <aips/Arrays/Vector.h>
-#include <aips/Arrays/ArrayMath.h>
-#include <aips/Mathematics/MatrixMathLA.h>
-#include <aips/Arrays/ArrayLogical.h>
-#include <aips/iostream.h>
+#include <scimath/Functionals/GaussianND.h>
+#include <casa/BasicSL/Constants.h>
+#include <casa/Arrays/Vector.h>
+#include <casa/Arrays/ArrayMath.h>
+#include <scimath/Mathematics/MatrixMathLA.h>
+#include <casa/Arrays/ArrayLogical.h>
+#include <casa/iostream.h>
 
 int main(){
   try {

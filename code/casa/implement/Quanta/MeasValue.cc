@@ -26,9 +26,9 @@
 //# $Id$
 
 //# Includes
-#include <aips/Quanta/MeasValue.h>
-#include <aips/Quanta/Quantum.h>
-#include <aips/Arrays/Vector.h>
+#include <casa/Quanta/MeasValue.h>
+#include <casa/Quanta/Quantum.h>
+#include <casa/Arrays/Vector.h>
 
 //# Constants
 

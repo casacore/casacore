@@ -28,10 +28,10 @@
 #if !defined(AIPS_MSPOLCOLUMNS_H)
 #define AIPS_MSPOLCOLUMNS_H
 
-#include <aips/aips.h>
-#include <aips/Tables/ArrayColumn.h>
-#include <aips/Tables/ScalarColumn.h>
-#include <aips/Measures/Stokes.h>
+#include <casa/aips.h>
+#include <tables/Tables/ArrayColumn.h>
+#include <tables/Tables/ScalarColumn.h>
+#include <measures/Measures/Stokes.h>
 
 class MSPolarization;
 template <class T> class Vector;

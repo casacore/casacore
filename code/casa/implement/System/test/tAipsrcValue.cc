@@ -25,15 +25,15 @@
 //#
 //# $Id$
 
-#include <aips/aips.h>
-#include <aips/System/AipsrcValue.h>
-#include <aips/System/AipsrcVector.h>
-#include <aips/Arrays/Vector.h>
-#include <aips/Arrays/ArrayIO.h>
-#include <aips/Quanta/Unit.h>
-#include <aips/Quanta/MVTime.h>
-#include <aips/Utilities/Assert.h>
-#include <aips/iostream.h>
+#include <casa/aips.h>
+#include <casa/System/AipsrcValue.h>
+#include <casa/System/AipsrcVector.h>
+#include <casa/Arrays/Vector.h>
+#include <casa/Arrays/ArrayIO.h>
+#include <casa/Quanta/Unit.h>
+#include <casa/Quanta/MVTime.h>
+#include <casa/Utilities/Assert.h>
+#include <casa/iostream.h>
 
 int main(){
   String aipsrcKeyword("my.double.test");

@@ -26,8 +26,8 @@
 //# $Id$
 
 //# Includes
-#include <aips/Measures/UVWMachine.h>
-#include <aips/Quanta/Euler.h>
+#include <measures/Measures/UVWMachine.h>
+#include <casa/Quanta/Euler.h>
 
 //# Constructors
 UVWMachine::UVWMachine(const MDirection::Ref &out, const MDirection &in,

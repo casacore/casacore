@@ -29,9 +29,9 @@
 #if !defined(AIPS_MSANTENNA_H)
 #define AIPS_MSANTENNA_H
 
-#include <aips/aips.h>
-#include <aips/MeasurementSets/MSTable.h>
-#include <aips/MeasurementSets/MSAntennaEnums.h>
+#include <casa/aips.h>
+#include <ms/MeasurementSets/MSTable.h>
+#include <ms/MeasurementSets/MSAntennaEnums.h>
 
 // <summary> 
 // A Table intended to hold a MeasurementSet ANTENNA table.

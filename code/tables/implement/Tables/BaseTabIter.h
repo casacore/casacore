@@ -29,10 +29,10 @@
 #define AIPS_BASETABITER_H
 
 //# Includes
-#include <aips/aips.h>
-#include <aips/Tables/Table.h>
-#include <aips/Utilities/Compare.h>
-#include <aips/Containers/Block.h>
+#include <casa/aips.h>
+#include <tables/Tables/Table.h>
+#include <casa/Utilities/Compare.h>
+#include <casa/Containers/Block.h>
 
 //# Forward Declarations
 class TableColumn;

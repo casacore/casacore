@@ -96,26 +96,26 @@
 //
 //
 //
-#include <aips/aips.h>
-#include <aips/System/Aipsrc.h>
-#include <aips/Arrays/Array.h>
-#include <aips/Arrays/Matrix.h>
-#include <aips/Exceptions/Error.h>
-#include <aips/Inputs/Input.h>
-#include <aips/Logging.h>
-#include <aips/BasicSL/String.h>
-#include <aips/Utilities/Regex.h>
+#include <casa/aips.h>
+#include <casa/System/Aipsrc.h>
+#include <casa/Arrays/Array.h>
+#include <casa/Arrays/Matrix.h>
+#include <casa/Exceptions/Error.h>
+#include <casa/Inputs/Input.h>
+#include <casa/Logging.h>
+#include <casa/BasicSL/String.h>
+#include <casa/Utilities/Regex.h>
   
-#include <trial/Images/ImageStatistics.h>
-#include <trial/Images/PagedImage.h>
-#include <trial/Images/SubImage.h>
-#include <trial/Images/ImageRegion.h>
-#include <trial/Lattices/LatticeStatsBase.h>
-#include <trial/Lattices/LCSlicer.h>
-#include <trial/Lattices/LCBox.h>
-#include <trial/System/PGPlotter.h>
+#include <images/Images/ImageStatistics.h>
+#include <images/Images/PagedImage.h>
+#include <images/Images/SubImage.h>
+#include <images/Images/ImageRegion.h>
+#include <lattices/Lattices/LatticeStatsBase.h>
+#include <lattices/Lattices/LCSlicer.h>
+#include <lattices/Lattices/LCBox.h>
+#include <casa/System/PGPlotter.h>
 
-#include <aips/iostream.h>
+#include <casa/iostream.h>
 
 enum defaults {AXES, REGION, STATS, RANGE, PLOTTING, NDEFAULTS=5};
 

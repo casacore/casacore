@@ -26,8 +26,8 @@
 //# $Id$
 
 //# Includes
-#include <trial/Functionals/EvenPolynomialParam.h>
-#include <aips/Arrays/Vector.h>
+#include <scimath/Functionals/EvenPolynomialParam.h>
+#include <casa/Arrays/Vector.h>
 
 template<class T>
 EvenPolynomialParam<T>::EvenPolynomialParam() :

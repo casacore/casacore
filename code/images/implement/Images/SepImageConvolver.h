@@ -30,12 +30,12 @@
 
 
 //# Includes
-#include <aips/aips.h>
-#include <aips/Logging/LogIO.h>
-#include <aips/Arrays/Vector.h>
-#include <aips/Containers/Block.h>
-#include <trial/Images/ImageInterface.h>
-#include <trial/Mathematics/VectorKernel.h>
+#include <casa/aips.h>
+#include <casa/Logging/LogIO.h>
+#include <casa/Arrays/Vector.h>
+#include <casa/Containers/Block.h>
+#include <images/Images/ImageInterface.h>
+#include <scimath/Mathematics/VectorKernel.h>
 
 //# Forward Declarations
 template <class T> class Quantum;

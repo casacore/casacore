@@ -25,10 +25,10 @@
 //#
 //# $Id$
 
-#include <aips/IO/RegularFileIO.h>
-#include <aips/OS/RegularFile.h>
-#include <aips/Utilities/Assert.h>
-#include <aips/iostream.h>
+#include <casa/IO/RegularFileIO.h>
+#include <casa/OS/RegularFile.h>
+#include <casa/Utilities/Assert.h>
+#include <casa/iostream.h>
 #include <unistd.h>
 #include <fcntl.h>
 

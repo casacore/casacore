@@ -25,14 +25,14 @@
 //#
 //# $Id$
 
-#include <aips/MeasurementSets/MSPolColumns.h>
-#include <aips/MeasurementSets/MSPolarization.h>
-#include <aips/Arrays/ArrayLogical.h>
-#include <aips/Arrays/Matrix.h>
-#include <aips/Arrays/Vector.h>
-#include <aips/Exceptions/Error.h>
-#include <aips/Utilities/Assert.h>
-#include <aips/BasicSL/String.h>
+#include <ms/MeasurementSets/MSPolColumns.h>
+#include <ms/MeasurementSets/MSPolarization.h>
+#include <casa/Arrays/ArrayLogical.h>
+#include <casa/Arrays/Matrix.h>
+#include <casa/Arrays/Vector.h>
+#include <casa/Exceptions/Error.h>
+#include <casa/Utilities/Assert.h>
+#include <casa/BasicSL/String.h>
 
 ROMSPolarizationColumns::
 ROMSPolarizationColumns(const MSPolarization& msPolarization):

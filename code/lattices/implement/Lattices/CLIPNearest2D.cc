@@ -26,10 +26,10 @@
 //# $Id$
 
 
-#include <trial/Lattices/CLIPNearest2D.h>
-#include <trial/Lattices/PixelCurve1D.h>
-#include <trial/Lattices/MaskedLattice.h>
-#include <aips/Arrays/ArrayIter.h>
+#include <lattices/Lattices/CLIPNearest2D.h>
+#include <lattices/Lattices/PixelCurve1D.h>
+#include <lattices/Lattices/MaskedLattice.h>
+#include <casa/Arrays/ArrayIter.h>
 
 
 template<class T>

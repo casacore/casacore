@@ -30,10 +30,10 @@
  
  
 //# Includes
-#include <aips/aips.h>
-#include <aips/OS/Conversion.h>
-#include <aips/BasicSL/String.h>
-#include <aips/Arrays/Array.h>
+#include <casa/aips.h>
+#include <casa/OS/Conversion.h>
+#include <casa/BasicSL/String.h>
+#include <casa/Arrays/Array.h>
 
 //# Forward Declarations.
 class SSMBase;

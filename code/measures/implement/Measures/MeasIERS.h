@@ -29,11 +29,11 @@
 #define AIPS_MEASIERS_H
 
 //# Includes
-#include <aips/aips.h>
-#include <aips/Tables/Table.h>
-#include <aips/Tables/TableRow.h>
-#include <aips/Tables/TableRecord.h>
-#include <aips/Containers/RecordField.h>
+#include <casa/aips.h>
+#include <tables/Tables/Table.h>
+#include <tables/Tables/TableRow.h>
+#include <tables/Tables/TableRecord.h>
+#include <casa/Containers/RecordField.h>
 
 //# Forward Declarations
 class String;

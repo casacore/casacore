@@ -29,10 +29,10 @@
 #if !defined(TRIAL_MSRANGE_H)
 #define TRIAL_MSRANGE_H
 
-#include <aips/aips.h>
-#include <aips/Arrays/Vector.h>
-#include <aips/MeasurementSets/MeasurementSet.h>
-#include <trial/MeasurementSets/MSSelectionKeywords.h>
+#include <casa/aips.h>
+#include <casa/Arrays/Vector.h>
+#include <ms/MeasurementSets/MeasurementSet.h>
+#include <ms/MeasurementSets/MSSelectionKeywords.h>
 template <class T> class ROArrayColumn;
 template <class T> class ROScalarColumn;
 class Record;

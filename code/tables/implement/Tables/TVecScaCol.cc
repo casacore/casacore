@@ -25,11 +25,11 @@
 //#
 //# $Id$
 
-#include <aips/aips.h>
-#include <aips/Tables/TVecScaCol.h>
-#include <aips/Tables/ScalarColumn.h>
-#include <aips/Tables/TableError.h>
-#include <aips/BasicSL/String.h>
+#include <casa/aips.h>
+#include <tables/Tables/TVecScaCol.h>
+#include <tables/Tables/ScalarColumn.h>
+#include <tables/Tables/TableError.h>
+#include <casa/BasicSL/String.h>
 
 //# Construct a table column vector.
 template<class T>

@@ -25,7 +25,7 @@
 //#
 //# $Id$
 
-#include <trial/Fitting/LinearFitSVD.h>
+#include <scimath/Fitting/LinearFitSVD.h>
 
 template<class T>
 LinearFitSVD<T>::LinearFitSVD() :

@@ -29,8 +29,8 @@
 #define AIPS_RECORDGRAM_H
 
 //# Includes
-#include <aips/BasicSL/String.h>
-#include <aips/Tables/TableGram.h>
+#include <casa/BasicSL/String.h>
+#include <tables/Tables/TableGram.h>
 
 //# Forward Declarations
 

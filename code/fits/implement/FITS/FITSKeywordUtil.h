@@ -30,7 +30,7 @@
 #if !defined(AIPS_FITS_KEYWORD_UTIL_H)
 #define AIPS_FITS_KEYWORD_UTIL_H
 
-#include <aips/aips.h>
+#include <casa/aips.h>
 
 class ConstFitsKeywordList;
 class FitsKeywordList;

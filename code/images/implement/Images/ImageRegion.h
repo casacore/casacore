@@ -29,7 +29,7 @@
 #define AIPS_IMAGEREGION_H
 
 //# Includes
-#include <trial/Lattices/LattRegionHolder.h>
+#include <lattices/Lattices/LattRegionHolder.h>
 
 //# Forward Declarations
 class CoordinateSystem;

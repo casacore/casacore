@@ -25,10 +25,10 @@
 //#
 //#
 //# $Id$
-#include <trial/Functionals/SerialHelper.h>
-#include <aips/Arrays/Array.h>
-#include <aips/Arrays/IPosition.h>
-#include <aips/Utilities/DataType.h>
+#include <scimath/Functionals/SerialHelper.h>
+#include <casa/Arrays/Array.h>
+#include <casa/Arrays/IPosition.h>
+#include <casa/Utilities/DataType.h>
 
 const String SerialHelper::FUNCTYPE("functype");
 const String SerialHelper::gtype[] = {
@@ -64,7 +64,7 @@ void SerialHelper::checkFuncType(const String& ftype) const
 }
 
 //
-// Definition needs to go into aips/aipsdef.h but Ger has it locked right now.
+// Definition needs to go into casa/aipsdef.h but Ger has it locked right now.
 //
 
 #if defined(AIPS_SUN_NATIVE)

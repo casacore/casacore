@@ -26,11 +26,11 @@
 //# $Id$
 
 //# Includes
-#include <trial/SpectralComponents/SpectralEstimate.h>
+#include <components/SpectralComponents/SpectralEstimate.h>
 
-#include <aips/BasicMath/Math.h>
-#include <aips/BasicSL/Constants.h>
-#include <aips/Utilities/Assert.h>
+#include <casa/BasicMath/Math.h>
+#include <casa/BasicSL/Constants.h>
+#include <casa/Utilities/Assert.h>
 
 
 //# Member templates

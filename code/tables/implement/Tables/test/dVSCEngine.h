@@ -30,8 +30,8 @@
 
 
 //# Includes
-#include <aips/Tables/VSCEngine.h>
-#include <aips/Tables/ScalarColumn.h>
+#include <tables/Tables/VSCEngine.h>
+#include <tables/Tables/ScalarColumn.h>
 
 
 class VSCExample

@@ -25,17 +25,17 @@
 //#
 //# $Id$
 
-#include <aips/Tables/SetupNewTab.h>
-#include <aips/Tables/Table.h>
-#include <aips/Tables/TableDesc.h>
-#include <aips/Tables/ColumnSet.h>
-#include <aips/Tables/ColumnDesc.h>
-#include <aips/Tables/PlainColumn.h>
-#include <aips/Tables/DataManager.h>
-#include <aips/Tables/TableError.h>
-#include <aips/Containers/Record.h>
-#include <aips/Arrays/Vector.h>
-#include <aips/OS/File.h>
+#include <tables/Tables/SetupNewTab.h>
+#include <tables/Tables/Table.h>
+#include <tables/Tables/TableDesc.h>
+#include <tables/Tables/ColumnSet.h>
+#include <tables/Tables/ColumnDesc.h>
+#include <tables/Tables/PlainColumn.h>
+#include <tables/Tables/DataManager.h>
+#include <tables/Tables/TableError.h>
+#include <casa/Containers/Record.h>
+#include <casa/Arrays/Vector.h>
+#include <casa/OS/File.h>
 
 
 SetupNewTable::SetupNewTable (const String& tableName,

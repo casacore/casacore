@@ -29,7 +29,7 @@
 #if !defined(AIPS_MSDATADESCENUMS_H)
 #define AIPS_MSDATADESCENUMS_H
 
-#include <aips/aips.h>
+#include <casa/aips.h>
 
 // <use visibility=export>
 

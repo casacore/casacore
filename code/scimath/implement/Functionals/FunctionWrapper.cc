@@ -27,9 +27,9 @@
 //# $Id$
 
 //# Includes
-#include <aips/Functionals/FunctionWrapper.h>
-#include <aips/Arrays/Vector.h>
-#include <aips/Functionals/WrapperData.h>
+#include <scimath/Functionals/FunctionWrapper.h>
+#include <casa/Arrays/Vector.h>
+#include <scimath/Functionals/WrapperData.h>
 
 //# Constructors
 template <class T>

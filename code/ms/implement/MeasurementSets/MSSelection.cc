@@ -26,21 +26,21 @@
 //# $Id: 
 //----------------------------------------------------------------------------
 
-#include <trial/MeasurementSets/MSSelection.h>
-#include <trial/MeasurementSets/MSFieldIndex.h>
-#include <trial/MeasurementSets/MSDataDescIndex.h>
-#include <trial/MeasurementSets/MSSourceIndex.h>
-#include <trial/MeasurementSets/MSAntennaIndex.h>
-#include <trial/MeasurementSets/MSSpWindowIndex.h>
-#include <aips/MeasurementSets/MSMainColumns.h>
-#include <aips/Measures/MeasureHolder.h>
-#include <aips/Measures/MEpoch.h>
-#include <aips/Quanta/MVTime.h>
-#include <aips/Quanta/QuantumHolder.h>
-#include <aips/Arrays/ArrayMath.h>
-#include <aips/Containers/Record.h>
-#include <aips/Utilities/DataType.h>
-#include <aips/iostream.h>
+#include <ms/MeasurementSets/MSSelection.h>
+#include <ms/MeasurementSets/MSFieldIndex.h>
+#include <ms/MeasurementSets/MSDataDescIndex.h>
+#include <ms/MeasurementSets/MSSourceIndex.h>
+#include <ms/MeasurementSets/MSAntennaIndex.h>
+#include <ms/MeasurementSets/MSSpWindowIndex.h>
+#include <ms/MeasurementSets/MSMainColumns.h>
+#include <measures/Measures/MeasureHolder.h>
+#include <measures/Measures/MEpoch.h>
+#include <casa/Quanta/MVTime.h>
+#include <casa/Quanta/QuantumHolder.h>
+#include <casa/Arrays/ArrayMath.h>
+#include <casa/Containers/Record.h>
+#include <casa/Utilities/DataType.h>
+#include <casa/iostream.h>
 
 //----------------------------------------------------------------------------
 

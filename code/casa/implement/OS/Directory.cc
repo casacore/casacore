@@ -26,21 +26,21 @@
 //# $Id$
 
 
-#include <aips/OS/Directory.h>
-#include <aips/OS/DirectoryIterator.h>
-#include <aips/OS/RegularFile.h>
-#include <aips/OS/SymLink.h>
+#include <casa/OS/Directory.h>
+#include <casa/OS/DirectoryIterator.h>
+#include <casa/OS/RegularFile.h>
+#include <casa/OS/SymLink.h>
 
-#include <aips/Arrays/Vector.h>
-#include <aips/Arrays/Slice.h>
-#include <aips/Arrays/ArrayMath.h>
-#include <aips/Exceptions/Error.h>
+#include <casa/Arrays/Vector.h>
+#include <casa/Arrays/Slice.h>
+#include <casa/Arrays/ArrayMath.h>
+#include <casa/Exceptions/Error.h>
 
-#include <aips/stdexcept.h>
+#include <casa/stdexcept.h>
 #include <unistd.h>                 // needed for rmdir, unlink
 #include <sys/stat.h>               // needed for mkdir
 #include <errno.h>                  // needed for errno
-#include <aips/string.h>            // needed for strerror
+#include <casa/string.h>            // needed for strerror
 
 #if defined(AIPS_SOLARIS) || defined(AIPS_OSF)
 #  if defined(AIPS_OSF)
@@ -64,7 +64,7 @@
 
 // Shouldn't be needed, but is needed to get rename under linux. The
 // man page claims it's in unistd.h.
-#include <aips/stdio.h>
+#include <casa/stdio.h>
 
 
 Directory::Directory()

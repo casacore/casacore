@@ -25,9 +25,9 @@
 //#
 //# $Id$
 
-#include <aips/Containers/DlistIO.h>
-#include <aips/Containers/ListIO.h>
-#include <aips/IO/AipsIO.h>
+#include <casa/Containers/DlistIO.h>
+#include <casa/Containers/ListIO.h>
+#include <casa/IO/AipsIO.h>
 
 //
 //  Outputs a doubly linked list to the specified AipsIO stream.

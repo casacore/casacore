@@ -26,14 +26,14 @@
 //# $Id$
 
 
-#include <trial/Lattices/LCEllipsoid.h>
-#include <aips/Tables/TableRecord.h>
-#include <aips/Arrays/ArrayMath.h>
-#include <aips/Arrays/ArrayIO.h>
-#include <aips/Exceptions/Error.h>
-#include <aips/Utilities/Assert.h>
-#include <aips/iostream.h>
-#include <aips/sstream.h>
+#include <lattices/Lattices/LCEllipsoid.h>
+#include <tables/Tables/TableRecord.h>
+#include <casa/Arrays/ArrayMath.h>
+#include <casa/Arrays/ArrayIO.h>
+#include <casa/Exceptions/Error.h>
+#include <casa/Utilities/Assert.h>
+#include <casa/iostream.h>
+#include <casa/sstream.h>
 
 LCEllipsoid::LCEllipsoid()
 {}

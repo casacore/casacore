@@ -25,14 +25,14 @@
 //#
 //# $Id$
 
-#include <aips/IO/RegularFileIO.h>
-#include <aips/IO/FiledesIO.h>
-#include <aips/IO/LargeRegularFileIO.h>
-#include <aips/IO/LargeFiledesIO.h>
-#include <aips/OS/Timer.h>
-#include <aips/BasicSL/String.h>
-#include <aips/iostream.h>
-#include <aips/sstream.h>
+#include <casa/IO/RegularFileIO.h>
+#include <casa/IO/FiledesIO.h>
+#include <casa/IO/LargeRegularFileIO.h>
+#include <casa/IO/LargeFiledesIO.h>
+#include <casa/OS/Timer.h>
+#include <casa/BasicSL/String.h>
+#include <casa/iostream.h>
+#include <casa/sstream.h>
 
 
 int main (int argc, char** argv)

@@ -25,10 +25,10 @@
 //#
 //# $Id$
 
-#include <aips/aips.h>
-#include <aips/System/Aipsrc.h>
-#include <aips/Utilities/Assert.h>
-#include <aips/iostream.h>
+#include <casa/aips.h>
+#include <casa/System/Aipsrc.h>
+#include <casa/Utilities/Assert.h>
+#include <casa/iostream.h>
 
 int main(){
   String aipsrcKeyword("printer.ps1.paper");

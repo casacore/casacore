@@ -29,8 +29,8 @@
 #if !defined(AIPS_CHEBYSHEVPARAM_H)
 #define AIPS_CHEBYSHEVPARAM_H
 
-#include <aips/aips.h>
-#include <aips/Functionals/Function1D.h>
+#include <casa/aips.h>
+#include <scimath/Functionals/Function1D.h>
 
 //# Forward Declarations
 template<class T> class Vector;

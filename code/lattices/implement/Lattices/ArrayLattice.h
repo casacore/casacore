@@ -30,8 +30,8 @@
 #define AIPS_ARRAYLATTICE_H
 
 //# Includes
-#include <aips/Lattices/Lattice.h>
-#include <aips/Arrays/Array.h>
+#include <lattices/Lattices/Lattice.h>
+#include <casa/Arrays/Array.h>
 
 
 // <summary>

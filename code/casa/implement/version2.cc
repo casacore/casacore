@@ -26,10 +26,10 @@
 //#
 //# $Id$
 
-#include <aips/version.h>
+#include <casa/version.h>
 
-#include <aips/iostream.h>
-#include <aips/iomanip.h>
+#include <casa/iostream.h>
+#include <casa/iomanip.h>
 
 void VersionInfo::report(ostream &os)
 {

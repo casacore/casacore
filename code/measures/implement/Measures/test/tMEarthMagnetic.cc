@@ -26,22 +26,22 @@
 //# $Id$
 
 //# Includes
-#include <aips/aips.h>
-#include <aips/Exceptions/Error.h>
-#include <aips/Measures.h>
-#include <aips/Quanta/RotMatrix.h>
-#include <aips/Quanta/Euler.h>
-#include <aips/Measures/MEarthMagnetic.h>
-#include <aips/Measures/MCEarthMagnetic.h>
-#include <aips/Measures/EarthField.h>
-#include <aips/Quanta/MVTime.h>
-#include <aips/Measures/MDirection.h>
-#include <aips/Measures/MPosition.h>
-#include <aips/Measures/MEpoch.h>
-#include <aips/Arrays/Vector.h>
-#include <aips/Arrays/ArrayMath.h>
-#include <aips/Arrays/ArrayLogical.h>
-#include <aips/iostream.h>
+#include <casa/aips.h>
+#include <casa/Exceptions/Error.h>
+#include <measures/Measures.h>
+#include <casa/Quanta/RotMatrix.h>
+#include <casa/Quanta/Euler.h>
+#include <measures/Measures/MEarthMagnetic.h>
+#include <measures/Measures/MCEarthMagnetic.h>
+#include <measures/Measures/EarthField.h>
+#include <casa/Quanta/MVTime.h>
+#include <measures/Measures/MDirection.h>
+#include <measures/Measures/MPosition.h>
+#include <measures/Measures/MEpoch.h>
+#include <casa/Arrays/Vector.h>
+#include <casa/Arrays/ArrayMath.h>
+#include <casa/Arrays/ArrayLogical.h>
+#include <casa/iostream.h>
 
 int main() {
 

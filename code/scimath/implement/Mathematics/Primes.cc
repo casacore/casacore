@@ -27,8 +27,8 @@
 
 //# Includes
 
-#include <aips/Mathematics/Primes.h>
-#include <aips/BasicMath/Math.h>			// For sqrt only
+#include <scimath/Mathematics/Primes.h>
+#include <casa/BasicMath/Math.h>			// For sqrt only
 
 //The minimum size for the cacheTable
 const uInt MINSIZE = 31; 

@@ -28,12 +28,12 @@
 #if !defined(AIPS_BYTESOURCE_H)
 #define AIPS_BYTESOURCE_H
 
-#include <aips/aips.h>
-#include <aips/IO/BaseSinkSource.h>
+#include <casa/aips.h>
+#include <casa/IO/BaseSinkSource.h>
 //# The following should be a forward declaration. But our Complex & DComplex
 //# classes are a typedef hence this does not work. Replace the following with
 //# forward declarations when Complex and DComplex are no longer typedefs.
-#include <aips/BasicSL/Complex.h>
+#include <casa/BasicSL/Complex.h>
 
 class TypeIO;
 class String;

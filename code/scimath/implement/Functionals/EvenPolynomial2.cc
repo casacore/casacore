@@ -26,7 +26,7 @@
 //# $Id$
 
 //# Includes
-#include <trial/Functionals/EvenPolynomial.h>
+#include <scimath/Functionals/EvenPolynomial.h>
 
 //# Constructors
 

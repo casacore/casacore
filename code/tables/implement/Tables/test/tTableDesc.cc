@@ -26,20 +26,20 @@
 //# $Id$
 
 #include <tTableDesc.h>
-#include <aips/Tables/TableDesc.h>
-#include <aips/Tables/ScaColDesc.h>
-#include <aips/Tables/ScaRecordColDesc.h>
-#include <aips/Tables/ArrColDesc.h>
-#include <aips/Tables/SubTabDesc.h>
-#include <aips/Tables/DataManager.h>
-#include <aips/Tables/TableRecord.h>
-#include <aips/Arrays/IPosition.h>
-#include <aips/Arrays/Vector.h>
-#include <aips/Arrays/Array.h>
-#include <aips/Arrays/Matrix.h>
-#include <aips/Arrays/ArrayIO.h>
-#include <aips/Utilities/Assert.h>
-#include <aips/iostream.h>
+#include <tables/Tables/TableDesc.h>
+#include <tables/Tables/ScaColDesc.h>
+#include <tables/Tables/ScaRecordColDesc.h>
+#include <tables/Tables/ArrColDesc.h>
+#include <tables/Tables/SubTabDesc.h>
+#include <tables/Tables/DataManager.h>
+#include <tables/Tables/TableRecord.h>
+#include <casa/Arrays/IPosition.h>
+#include <casa/Arrays/Vector.h>
+#include <casa/Arrays/Array.h>
+#include <casa/Arrays/Matrix.h>
+#include <casa/Arrays/ArrayIO.h>
+#include <casa/Utilities/Assert.h>
+#include <casa/iostream.h>
 
 // <summary> Test program for the TableDesc class </summary>
 

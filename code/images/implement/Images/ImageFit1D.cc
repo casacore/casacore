@@ -25,20 +25,20 @@
 //#
 //#   $Id$
 
-#include <trial/Images/ImageFit1D.h>
+#include <images/Images/ImageFit1D.h>
 
-#include <aips/Arrays/ArrayMath.h>
-#include <aips/Exceptions/Error.h>
-#include <trial/Coordinates/CoordinateUtil.h>
-#include <trial/Coordinates/CoordinateSystem.h>
-#include <trial/Coordinates/SpectralCoordinate.h>
-#include <trial/Images/ImageInterface.h>
-#include <trial/Images/SubImage.h>
-#include <trial/Images/ImageRegion.h>
-#include <trial/Lattices/LatticeUtilities.h>
-#include <trial/SpectralComponents/SpectralEstimate.h>
-#include <trial/SpectralComponents/SpectralElement.h>
-#include <aips/Utilities/Assert.h>
+#include <casa/Arrays/ArrayMath.h>
+#include <casa/Exceptions/Error.h>
+#include <coordinates/Coordinates/CoordinateUtil.h>
+#include <coordinates/Coordinates/CoordinateSystem.h>
+#include <coordinates/Coordinates/SpectralCoordinate.h>
+#include <images/Images/ImageInterface.h>
+#include <images/Images/SubImage.h>
+#include <images/Images/ImageRegion.h>
+#include <lattices/Lattices/LatticeUtilities.h>
+#include <components/SpectralComponents/SpectralEstimate.h>
+#include <components/SpectralComponents/SpectralElement.h>
+#include <casa/Utilities/Assert.h>
 
 
 template <class T> 

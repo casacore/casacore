@@ -30,8 +30,8 @@
 
 
 //# Includes
-#include <aips/Functionals/Function1D.h>
-#include <aips/Arrays/Vector.h>
+#include <scimath/Functionals/Function1D.h>
+#include <casa/Arrays/Vector.h>
 
 //# Forward Declarations
 

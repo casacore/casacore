@@ -26,15 +26,15 @@
 //#
 //# $Id$
 
-#include <trial/FITS/FITSSpectralUtil.h>
+#include <fits/FITS/FITSSpectralUtil.h>
 
-#include <aips/Arrays/Vector.h>
-#include <aips/Containers/RecordInterface.h>
-#include <aips/Logging/LogIO.h>
-#include <aips/Logging/LogOrigin.h>
-#include <aips/BasicSL/Constants.h>
-#include <aips/Utilities/Assert.h>
-#include <aips/BasicSL/String.h>
+#include <casa/Arrays/Vector.h>
+#include <casa/Containers/RecordInterface.h>
+#include <casa/Logging/LogIO.h>
+#include <casa/Logging/LogOrigin.h>
+#include <casa/BasicSL/Constants.h>
+#include <casa/Utilities/Assert.h>
+#include <casa/BasicSL/String.h>
 
 Bool FITSSpectralUtil::fromFITSHeader(Int &spectralAxis,
 				      Double &referenceChannel,

@@ -26,7 +26,7 @@
 //# $Id$
 
 //# Includes
-#include <trial/Functionals/GNoiseParam.h>
+#include <scimath/Functionals/GNoiseParam.h>
 
 template<class T>
 GNoiseParam<T>::GNoiseParam() :

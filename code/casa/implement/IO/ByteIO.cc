@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#include <aips/IO/ByteIO.h>
-#include <aips/Exceptions/Error.h>
+#include <casa/IO/ByteIO.h>
+#include <casa/Exceptions/Error.h>
 
 
 ByteIO::~ByteIO()

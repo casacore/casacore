@@ -26,7 +26,7 @@
 //# $Id$
 
 
-#include <aips/Containers/MapIO.h>
+#include <casa/Containers/MapIO.h>
 
 
 template<class key, class value> ostream &operator<<(ostream &ios, const Map<key,value> &map) {

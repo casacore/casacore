@@ -34,15 +34,15 @@ int main()
 
 
 //# Includes
-#include <aips/Tables/test/dVirtColEng.h>
-#include <aips/Tables/Table.h>
-#include <aips/Tables/ScalarColumn.h>
-#include <aips/Tables/ArrayColumn.h>
-#include <aips/Tables/DataManError.h>
-#include <aips/Arrays/IPosition.h>
-#include <aips/Arrays/Array.h>
-#include <aips/BasicSL/String.h>
-#include <aips/IO/AipsIO.h>
+#include <tables/Tables/test/dVirtColEng.h>
+#include <tables/Tables/Table.h>
+#include <tables/Tables/ScalarColumn.h>
+#include <tables/Tables/ArrayColumn.h>
+#include <tables/Tables/DataManError.h>
+#include <casa/Arrays/IPosition.h>
+#include <casa/Arrays/Array.h>
+#include <casa/BasicSL/String.h>
+#include <casa/IO/AipsIO.h>
 
 
 DummyVirtualEngine::DummyVirtualEngine()

@@ -25,43 +25,43 @@
 //#
 //# $Id$
 
-#include <trial/Images/PagedImage.h>
-#include <trial/Images/ImageRegion.h>
-#include <trial/Images/RegionHandlerTable.h>
-#include <trial/Images/ImageInfo.h>
-#include <aips/Lattices/ArrayLattice.h>
-#include <aips/Lattices/LatticeNavigator.h>
-#include <aips/Lattices/LatticeStepper.h>
-#include <aips/Lattices/LatticeIterator.h>
-#include <aips/Lattices/PagedArrIter.h>
-#include <trial/Lattices/LatticeExprNode.h>
-#include <trial/Lattices/LatticeExpr.h>
-#include <trial/Lattices/LatticeRegion.h>
-#include <aips/Logging/LogIO.h>
-#include <aips/Logging/LogMessage.h>
+#include <images/Images/PagedImage.h>
+#include <images/Images/ImageRegion.h>
+#include <images/Images/RegionHandlerTable.h>
+#include <images/Images/ImageInfo.h>
+#include <lattices/Lattices/ArrayLattice.h>
+#include <lattices/Lattices/LatticeNavigator.h>
+#include <lattices/Lattices/LatticeStepper.h>
+#include <lattices/Lattices/LatticeIterator.h>
+#include <lattices/Lattices/PagedArrIter.h>
+#include <lattices/Lattices/LatticeExprNode.h>
+#include <lattices/Lattices/LatticeExpr.h>
+#include <lattices/Lattices/LatticeRegion.h>
+#include <casa/Logging/LogIO.h>
+#include <casa/Logging/LogMessage.h>
 
-#include <aips/Arrays/Array.h>
-#include <aips/Arrays/ArrayMath.h>
-#include <aips/Arrays/ArrayLogical.h>
-#include <aips/Arrays/LogiArray.h>
-#include <aips/Exceptions/Error.h>
-#include <aips/OS/File.h>
-#include <aips/OS/Path.h>
-#include <aips/Arrays/IPosition.h>
-#include <aips/Arrays/Slicer.h>
-#include <aips/Tables/SetupNewTab.h>
-#include <aips/Tables/TableLock.h>
-#include <aips/Tables/Table.h>
-#include <aips/Tables/TableDesc.h>
-#include <aips/Tables/TableRecord.h>
-#include <aips/Tables/TableInfo.h>
-#include <aips/Tables/TableColumn.h>
-#include <aips/BasicSL/String.h>
-#include <aips/Utilities/Assert.h>
-#include <aips/Quanta/UnitMap.h>
+#include <casa/Arrays/Array.h>
+#include <casa/Arrays/ArrayMath.h>
+#include <casa/Arrays/ArrayLogical.h>
+#include <casa/Arrays/LogiArray.h>
+#include <casa/Exceptions/Error.h>
+#include <casa/OS/File.h>
+#include <casa/OS/Path.h>
+#include <casa/Arrays/IPosition.h>
+#include <casa/Arrays/Slicer.h>
+#include <tables/Tables/SetupNewTab.h>
+#include <tables/Tables/TableLock.h>
+#include <tables/Tables/Table.h>
+#include <tables/Tables/TableDesc.h>
+#include <tables/Tables/TableRecord.h>
+#include <tables/Tables/TableInfo.h>
+#include <tables/Tables/TableColumn.h>
+#include <casa/BasicSL/String.h>
+#include <casa/Utilities/Assert.h>
+#include <casa/Quanta/UnitMap.h>
 
-#include <aips/iostream.h>
-#include <aips/sstream.h>
+#include <casa/iostream.h>
+#include <casa/sstream.h>
 
 
 template <class T> 

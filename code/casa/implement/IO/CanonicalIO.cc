@@ -25,9 +25,9 @@
 //#
 //# $Id$
 
-#include <aips/IO/CanonicalIO.h>
-#include <aips/OS/CanonicalConversion.h>
-#include <aips/IO/ByteIO.h>
+#include <casa/IO/CanonicalIO.h>
+#include <casa/OS/CanonicalConversion.h>
+#include <casa/IO/ByteIO.h>
 
 CanonicalIO::CanonicalIO (ByteIO* byteIO, uInt bufferLength, Bool takeOver)
 : TypeIO          (byteIO, takeOver), 

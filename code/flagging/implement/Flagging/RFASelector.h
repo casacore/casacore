@@ -27,9 +27,9 @@
 #if !defined(AIPS_RFA_SELECTOR_H)
 #define AIPS_RFA_SELECTOR_H
 
-#include <trial/Flagging/RFAFlagCubeBase.h> 
-#include <trial/Flagging/RFDataMapper.h>
-#include <aips/Arrays/LogiVector.h>
+#include <flagging/Flagging/RFAFlagCubeBase.h> 
+#include <flagging/Flagging/RFDataMapper.h>
+#include <casa/Arrays/LogiVector.h>
     
 // <summary>
 // RFASelector: flags pixels/rows based on a specified selection

@@ -26,11 +26,11 @@
 //# $Id$
 
 
-#include <trial/Lattices/PixelCurve1D.h>
-#include <aips/Arrays/ArrayIO.h>
-#include <aips/Utilities/Assert.h>
-#include <aips/Functionals/Sinusoid1D.h>
-#include <aips/Functionals/Polynomial.h>
+#include <lattices/Lattices/PixelCurve1D.h>
+#include <casa/Arrays/ArrayIO.h>
+#include <casa/Utilities/Assert.h>
+#include <scimath/Functionals/Sinusoid1D.h>
+#include <scimath/Functionals/Polynomial.h>
 
 
 int main()

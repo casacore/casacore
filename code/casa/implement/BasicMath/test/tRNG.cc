@@ -24,13 +24,13 @@
 //#                        Charlottesville, VA 22903-2475 USA
 //#
 
-#include <aips/aips.h>
-#include <aips/Exceptions/Error.h>
-#include <aips/BasicSL/String.h>
-#include <aips/iostream.h>
-#include <aips/iomanip.h>
+#include <casa/aips.h>
+#include <casa/Exceptions/Error.h>
+#include <casa/BasicSL/String.h>
+#include <casa/iostream.h>
+#include <casa/iomanip.h>
 
-#include <aips/BasicMath/Random.h>
+#include <casa/BasicMath/Random.h>
 
 int main() {
   try {

@@ -26,9 +26,9 @@
 //# $Id$
 
 //# Includes
-#include <aips/Functionals/Sinusoid1D.h>
-#include <aips/BasicSL/Constants.h>
-#include <aips/BasicMath/Math.h>
+#include <scimath/Functionals/Sinusoid1D.h>
+#include <casa/BasicSL/Constants.h>
+#include <casa/BasicMath/Math.h>
 
 //# Constructors
 

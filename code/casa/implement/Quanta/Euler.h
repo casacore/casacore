@@ -30,9 +30,9 @@
 
 
 //# Includes
-#include <aips/aips.h>
-#include <aips/Arrays/Vector.h>
-#include <aips/Quanta/Quantum.h>
+#include <casa/aips.h>
+#include <casa/Arrays/Vector.h>
+#include <casa/Quanta/Quantum.h>
 
 //# Forward Declarations
 

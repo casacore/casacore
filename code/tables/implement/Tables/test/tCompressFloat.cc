@@ -25,23 +25,23 @@
 //#
 //# $Id$
 
-#include <aips/Tables/TableDesc.h>
-#include <aips/Tables/SetupNewTab.h>
-#include <aips/Tables/Table.h>
-#include <aips/Tables/ScaColDesc.h>
-#include <aips/Tables/ArrColDesc.h>
-#include <aips/Tables/CompressFloat.h>
-#include <aips/Tables/ArrayColumn.h>
-#include <aips/Tables/ScalarColumn.h>
-#include <aips/Arrays/Cube.h>
-#include <aips/Arrays/IPosition.h>
-#include <aips/Arrays/ArrayMath.h>
-#include <aips/Arrays/ArrayLogical.h>
-#include <aips/Arrays/ArrayIO.h>
-#include <aips/Arrays/Slicer.h>
-#include <aips/OS/Timer.h>
-#include <aips/Tables/TableError.h>
-#include <aips/iostream.h>
+#include <tables/Tables/TableDesc.h>
+#include <tables/Tables/SetupNewTab.h>
+#include <tables/Tables/Table.h>
+#include <tables/Tables/ScaColDesc.h>
+#include <tables/Tables/ArrColDesc.h>
+#include <tables/Tables/CompressFloat.h>
+#include <tables/Tables/ArrayColumn.h>
+#include <tables/Tables/ScalarColumn.h>
+#include <casa/Arrays/Cube.h>
+#include <casa/Arrays/IPosition.h>
+#include <casa/Arrays/ArrayMath.h>
+#include <casa/Arrays/ArrayLogical.h>
+#include <casa/Arrays/ArrayIO.h>
+#include <casa/Arrays/Slicer.h>
+#include <casa/OS/Timer.h>
+#include <tables/Tables/TableError.h>
+#include <casa/iostream.h>
 
 // <summary> Test program for class CompressFloat </summary>
 

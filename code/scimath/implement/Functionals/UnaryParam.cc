@@ -26,7 +26,7 @@
 //# $Id$
 
 //# Includes
-#include <trial/Functionals/UnaryParam.h>
+#include <scimath/Functionals/UnaryParam.h>
 
 template<class T>
 UnaryParam<T>::UnaryParam() :

@@ -25,7 +25,7 @@
 //#
 //# $Id$
 
-#include <aips/aips.h>
+#include <casa/aips.h>
 
 #if defined(AIPS_DEBUG)
 Bool aips_debug_on = True;

@@ -26,8 +26,8 @@
 //#
 //# $Id$
 
-#include <aips/Logging/NullLogSink.h>
-#include <aips/Logging/LogFilter.h>
+#include <casa/Logging/NullLogSink.h>
+#include <casa/Logging/LogFilter.h>
 
 String NullLogSink::localId( ) {
     return String("NullLogSink");

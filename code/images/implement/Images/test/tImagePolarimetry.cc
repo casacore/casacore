@@ -26,31 +26,31 @@
 //# $Id$
 // 
 //
-#include <trial/Images/ImagePolarimetry.h>
+#include <images/Images/ImagePolarimetry.h>
 
-#include <aips/aips.h>
-#include <aips/Arrays/ArrayLogical.h>
-#include <aips/Arrays/ArrayMath.h>
-#include <aips/Exceptions/Error.h>
-#include <trial/Coordinates/CoordinateUtil.h>
-#include <trial/Coordinates/CoordinateSystem.h>
-#include <trial/Coordinates/SpectralCoordinate.h>
-#include <trial/Coordinates/StokesCoordinate.h>
-#include <trial/Images/PagedImage.h>
-#include <trial/Images/TempImage.h>
-#include <trial/Images/ImageExpr.h>
-#include <trial/Images/SubImage.h>
-#include <aips/Inputs/Input.h>
-#include <aips/Logging.h>
-#include <aips/BasicMath/Math.h>
-#include <aips/BasicMath/Random.h>
-#include <aips/Measures/MFrequency.h>
-#include <aips/Quanta/QC.h>
-#include <aips/System/Aipsrc.h>
-#include <trial/System/PGPlotter.h>
-#include <aips/BasicSL/String.h>
+#include <casa/aips.h>
+#include <casa/Arrays/ArrayLogical.h>
+#include <casa/Arrays/ArrayMath.h>
+#include <casa/Exceptions/Error.h>
+#include <coordinates/Coordinates/CoordinateUtil.h>
+#include <coordinates/Coordinates/CoordinateSystem.h>
+#include <coordinates/Coordinates/SpectralCoordinate.h>
+#include <coordinates/Coordinates/StokesCoordinate.h>
+#include <images/Images/PagedImage.h>
+#include <images/Images/TempImage.h>
+#include <images/Images/ImageExpr.h>
+#include <images/Images/SubImage.h>
+#include <casa/Inputs/Input.h>
+#include <casa/Logging.h>
+#include <casa/BasicMath/Math.h>
+#include <casa/BasicMath/Random.h>
+#include <measures/Measures/MFrequency.h>
+#include <casa/Quanta/QC.h>
+#include <casa/System/Aipsrc.h>
+#include <casa/System/PGPlotter.h>
+#include <casa/BasicSL/String.h>
 
-#include <aips/iostream.h>
+#include <casa/iostream.h>
 
 void addNoise (Array<Float>& slice, Normal& noiseGen);
 ImageInterface<Float>* makeQUImage (Double& sigma, Double pa0, Double rm, 

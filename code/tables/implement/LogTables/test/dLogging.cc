@@ -27,18 +27,18 @@
 
 //#!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 //#!!
-//#!! If you modify this file, change aips/Logging.h to reflect the changes.
+//#!! If you modify this file, change casa/Logging.h to reflect the changes.
 //#!!
 //#!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
-//##### This file is documented in aips/Logging.h.
+//##### This file is documented in casa/Logging.h.
 
-#include <aips/Logging.h>
-#include <aips/LogTables/TableLogSink.h>
-#include <aips/Arrays.h>
+#include <casa/Logging.h>
+#include <tables/LogTables/TableLogSink.h>
+#include <casa/Arrays.h>
 
-#include <aips/sstream.h>
-#include <aips/iostream.h>
+#include <casa/sstream.h>
+#include <casa/iostream.h>
 
 class DataClass
 {

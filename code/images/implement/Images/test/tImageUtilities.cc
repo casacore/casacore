@@ -26,30 +26,30 @@
 //#
 //# $Id$
 
-#include <aips/Arrays/IPosition.h>
-#include <aips/Arrays/ArrayMath.h>
-#include <aips/Arrays/ArrayLogical.h>
-#include <aips/Arrays/MaskedArray.h>
-#include <trial/Coordinates/CoordinateSystem.h>
-#include <trial/Coordinates/LinearCoordinate.h>
-#include <trial/Coordinates/CoordinateUtil.h>
-#include <trial/Coordinates/SpectralCoordinate.h>
-#include <trial/Images/ImageUtilities.h>
-#include <trial/Images/PagedImage.h>
-#include <trial/Images/ImageFITSConverter.h>
-#include <trial/Images/TempImage.h>
-#include <aips/Lattices/PagedArray.h>
-#include <aips/Lattices/ArrayLattice.h>
-#include <trial/Lattices/LatticeUtilities.h>
-#include <aips/Logging/LogIO.h>
-#include <aips/Logging/LogOrigin.h>
-#include <aips/OS/RegularFile.h>
-#include <aips/OS/Directory.h>
-#include <aips/IO/RegularFileIO.h>
-#include <aips/Quanta/Quantum.h>
-#include <aips/Utilities/Assert.h>
-#include <aips/Utilities/PtrHolder.h>
-#include <aips/iostream.h>
+#include <casa/Arrays/IPosition.h>
+#include <casa/Arrays/ArrayMath.h>
+#include <casa/Arrays/ArrayLogical.h>
+#include <casa/Arrays/MaskedArray.h>
+#include <coordinates/Coordinates/CoordinateSystem.h>
+#include <coordinates/Coordinates/LinearCoordinate.h>
+#include <coordinates/Coordinates/CoordinateUtil.h>
+#include <coordinates/Coordinates/SpectralCoordinate.h>
+#include <images/Images/ImageUtilities.h>
+#include <images/Images/PagedImage.h>
+#include <images/Images/ImageFITSConverter.h>
+#include <images/Images/TempImage.h>
+#include <lattices/Lattices/PagedArray.h>
+#include <lattices/Lattices/ArrayLattice.h>
+#include <lattices/Lattices/LatticeUtilities.h>
+#include <casa/Logging/LogIO.h>
+#include <casa/Logging/LogOrigin.h>
+#include <casa/OS/RegularFile.h>
+#include <casa/OS/Directory.h>
+#include <casa/IO/RegularFileIO.h>
+#include <casa/Quanta/Quantum.h>
+#include <casa/Utilities/Assert.h>
+#include <casa/Utilities/PtrHolder.h>
+#include <casa/iostream.h>
 
 void doOpens()
 {

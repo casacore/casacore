@@ -28,7 +28,7 @@
 #if !defined(AIPS_LINK_H)
 #define AIPS_LINK_H
 
-#include <aips/aips.h>
+#include <casa/aips.h>
 
 // <summary>doubly linked list primitive</summary>
 // <use visibility=export>
@@ -56,7 +56,7 @@
 //     This example makes <src>Link</src> behave like a stack:
 //     <srcblock>
 // #include <iostream>
-//     #include <aips/Containers/Link.h>
+//     #include <casa/Containers/Link.h>
 //
 //     main() {
 //         Link<int> *hed = new Link<int>(23);
@@ -87,7 +87,7 @@
 //     instead of a stack:
 //     <srcblock>
 // #include <iostream>
-//     #include <aips/Containers/Link.h>
+//     #include <casa/Containers/Link.h>
 //
 //     main() {
 //         Link<int> *hed = new Link<int>(23);

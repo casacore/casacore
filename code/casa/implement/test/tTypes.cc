@@ -28,7 +28,7 @@
 //# Includes
 
 
-#include <aips/Utilities/Assert.h>
+#include <casa/Utilities/Assert.h>
 
 int main()
 {

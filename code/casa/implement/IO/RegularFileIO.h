@@ -29,9 +29,9 @@
 #define AIPS_REGULARFILEIO_H
 
 //# Includes
-#include <aips/aips.h>
-#include <aips/IO/FilebufIO.h>
-#include <aips/OS/RegularFile.h>
+#include <casa/aips.h>
+#include <casa/IO/FilebufIO.h>
+#include <casa/OS/RegularFile.h>
 
 
 // <summary> 

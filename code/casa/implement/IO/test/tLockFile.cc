@@ -26,17 +26,17 @@
 //# $Id$
 
 
-#include <aips/IO/LockFile.h>
-#include <aips/IO/MemoryIO.h>
-#include <aips/OS/RegularFile.h>
-#include <aips/IO/RegularFileIO.h>
-#include <aips/OS/Path.h>
-#include <aips/OS/Timer.h>
-#include <aips/BasicSL/String.h>
-#include <aips/Utilities/Assert.h>
-#include <aips/Exceptions/Error.h>
-#include <aips/iostream.h>
-#include <aips/sstream.h>
+#include <casa/IO/LockFile.h>
+#include <casa/IO/MemoryIO.h>
+#include <casa/OS/RegularFile.h>
+#include <casa/IO/RegularFileIO.h>
+#include <casa/OS/Path.h>
+#include <casa/OS/Timer.h>
+#include <casa/BasicSL/String.h>
+#include <casa/Utilities/Assert.h>
+#include <casa/Exceptions/Error.h>
+#include <casa/iostream.h>
+#include <casa/sstream.h>
 
 
 void doIt (const String& name, double interval)

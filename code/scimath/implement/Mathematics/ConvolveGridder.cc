@@ -26,11 +26,11 @@
 //#
 //# $Id$
 
-#include <trial/Mathematics/ConvolveGridder.h>
-#include <aips/BasicSL/Constants.h>
-#include <aips/Arrays/ArrayMath.h>
-#include <aips/Arrays/Vector.h>
-#include <aips/iostream.h>
+#include <scimath/Mathematics/ConvolveGridder.h>
+#include <casa/BasicSL/Constants.h>
+#include <casa/Arrays/ArrayMath.h>
+#include <casa/Arrays/Vector.h>
+#include <casa/iostream.h>
 
 #define NEED_UNDERSCORES
 #if defined(NEED_UNDERSCORES)

@@ -29,9 +29,9 @@
 #if !defined(TRIAL_MSSELUTIL_H)
 #define TRIAL_MSSELUTIL_H
 
-#include <aips/aips.h>
-#include <aips/Arrays/Matrix.h>
-#include <aips/BasicSL/Complex.h>
+#include <casa/aips.h>
+#include <casa/Arrays/Matrix.h>
+#include <casa/BasicSL/Complex.h>
 
 // <summary> 
 // Helper class for MSFlagger with templated static function

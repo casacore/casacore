@@ -26,19 +26,19 @@
 //# $Id$
 
 //# Includes
-#include <aips/Utilities/Assert.h>
-#include <aips/BasicMath/Math.h>
-#include <aips/Quanta/Euler.h>
-#include <aips/Quanta/RotMatrix.h>
-#include <aips/Utilities/Assert.h>
-#include <aips/Utilities/Register.h>
-#include <aips/Quanta/MVDirection.h>
-#include <aips/Quanta/UnitVal.h>
-#include <aips/Quanta/QMath.h>
-#include <aips/Quanta/Unit.h>
-#include <aips/Arrays/ArrayMath.h>
-#include <aips/Arrays/MatrixMath.h>
-#include <aips/Arrays/ArrayLogical.h>
+#include <casa/Utilities/Assert.h>
+#include <casa/BasicMath/Math.h>
+#include <casa/Quanta/Euler.h>
+#include <casa/Quanta/RotMatrix.h>
+#include <casa/Utilities/Assert.h>
+#include <casa/Utilities/Register.h>
+#include <casa/Quanta/MVDirection.h>
+#include <casa/Quanta/UnitVal.h>
+#include <casa/Quanta/QMath.h>
+#include <casa/Quanta/Unit.h>
+#include <casa/Arrays/ArrayMath.h>
+#include <casa/Arrays/MatrixMath.h>
+#include <casa/Arrays/ArrayLogical.h>
 
 // MVDirection class
 

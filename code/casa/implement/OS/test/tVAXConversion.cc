@@ -26,9 +26,9 @@
 //# $Id$
 
 
-#include <aips/OS/VAXConversion.h>
-#include <aips/BasicMath/Math.h>
-#include <aips/iostream.h>
+#include <casa/OS/VAXConversion.h>
+#include <casa/BasicMath/Math.h>
+#include <casa/iostream.h>
 
 
 // This program test the VAX conversion functions.

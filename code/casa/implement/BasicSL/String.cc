@@ -25,12 +25,12 @@
 //#
 //# $Id$
 
-#include <aips/BasicSL/String.h>
+#include <casa/BasicSL/String.h>
 
-#include <aips/BasicSL/RegexBase.h>
+#include <casa/BasicSL/RegexBase.h>
 #include <algorithm>
-#include <aips/string.h>
-#include <aips/sstream.h>
+#include <casa/string.h>
+#include <casa/sstream.h>
 
 // Special constructors
 String::String(ostringstream &os) {

@@ -29,11 +29,11 @@
 #if !defined(AIPS_ECLECTICFUNCTIONFACTORY_H)
 #define AIPS_ECLECTICFUNCTIONFACTORY_H
 
-#include <aips/Functionals/Function.h>
-#include <aips/Containers/ListMap.h>
-#include <aips/Containers/OrderedPair.h>
-#include <aips/Exceptions/Error.h>
-#include <trial/Functionals/AbstractFunctionFactory.h>
+#include <scimath/Functionals/Function.h>
+#include <casa/Containers/ListMap.h>
+#include <casa/Containers/OrderedPair.h>
+#include <casa/Exceptions/Error.h>
+#include <scimath/Functionals/AbstractFunctionFactory.h>
 
 //# Forward Declarations
 

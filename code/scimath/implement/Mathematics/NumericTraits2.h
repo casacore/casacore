@@ -29,7 +29,7 @@
 #if !defined(AIPS_NUMERICTRAITS2_H)
 #define AIPS_NUMERICTRAITS2_H
 
-#include <aips/BasicSL/Complex.h>
+#include <casa/BasicSL/Complex.h>
 
 // <summary> A specialisation for T=Float of the NumericTraits class </summary>
 // <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="" demos="">

@@ -25,21 +25,21 @@
 //#
 //# $Id$
 
-#include <aips/aips.h>
-// #include <aips/Exceptions/Error.h>
+#include <casa/aips.h>
+// #include <casa/Exceptions/Error.h>
 // #include <aips/Exceptions/Excp.h>
-// #include <aips/Utilities/Assert.h>
-// #include <aips/BasicSL/String.h>
+// #include <casa/Utilities/Assert.h>
+// #include <casa/BasicSL/String.h>
 // #include <iostream.h>
 
 // #include <trial/MeasurementSets/MSFieldBuffer.h>
-// #include <aips/Arrays/ArrayLogical.h>
-// #include <aips/Arrays/IPosition.h>
-// #include <aips/Arrays/Matrix.h>
-// #include <aips/BasicSL/Constants.h>
-// #include <aips/BasicMath/Math.h>
-// #include <aips/Measures/MDirection.h>
-// #include <aips/Measures/MEpoch.h>
+// #include <casa/Arrays/ArrayLogical.h>
+// #include <casa/Arrays/IPosition.h>
+// #include <casa/Arrays/Matrix.h>
+// #include <casa/BasicSL/Constants.h>
+// #include <casa/BasicMath/Math.h>
+// #include <measures/Measures/MDirection.h>
+// #include <measures/Measures/MEpoch.h>
 
 int main() {
 //   const String filename = "tMSFieldBuffer_tmp.table";

@@ -27,13 +27,13 @@
 #if !defined(AIPS_RF_CHUNKSTATS_H)
 #define AIPS_RF_CHUNKSTATS_H
 
-#include <aips/Measures/Stokes.h> 
-#include <aips/Arrays/Vector.h> 
-#include <aips/Arrays/Matrix.h> 
-#include <aips/Arrays/Cube.h> 
-#include <aips/Containers/Block.h> 
-#include <aips/Lattices/LatticeIterator.h> 
-#include <trial/Flagging/RFCommon.h>
+#include <measures/Measures/Stokes.h> 
+#include <casa/Arrays/Vector.h> 
+#include <casa/Arrays/Matrix.h> 
+#include <casa/Arrays/Cube.h> 
+#include <casa/Containers/Block.h> 
+#include <lattices/Lattices/LatticeIterator.h> 
+#include <flagging/Flagging/RFCommon.h>
 
 class RedFlagger;
 class MeasurementSet;

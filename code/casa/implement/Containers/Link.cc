@@ -25,7 +25,7 @@
 //#
 //# $Id$
 
-#include <aips/Containers/Link.h>
+#include <casa/Containers/Link.h>
 
 template<class t> Link<t> *Link<t>::unlink(Link<t> *) {
   Link<t> *nxt = Next;

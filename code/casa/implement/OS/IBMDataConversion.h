@@ -29,7 +29,7 @@
 #define AIPS_IBMDATACONVERSION_H
 
 //# Includes
-#include <aips/OS/DataConversion.h>
+#include <casa/OS/DataConversion.h>
 
 
 // <summary>

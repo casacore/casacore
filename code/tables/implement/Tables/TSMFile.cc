@@ -27,13 +27,13 @@
 
 
 //# Includes
-#include <aips/Tables/TSMFile.h>
-#include <aips/Tables/TiledStMan.h>
-#include <aips/Tables/Table.h>
-#include <aips/Tables/DataManError.h>
-#include <aips/IO/AipsIO.h>
-#include <aips/BasicSL/String.h>
-#include <aips/stdio.h>		// for sprintf
+#include <tables/Tables/TSMFile.h>
+#include <tables/Tables/TiledStMan.h>
+#include <tables/Tables/Table.h>
+#include <tables/Tables/DataManError.h>
+#include <casa/IO/AipsIO.h>
+#include <casa/BasicSL/String.h>
+#include <casa/stdio.h>		// for sprintf
 
 TSMFile::TSMFile (const TiledStMan* stman, uInt fileSequenceNr)
 : fileSeqnr_p (fileSequenceNr),

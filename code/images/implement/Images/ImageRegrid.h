@@ -29,12 +29,12 @@
 #if !defined(TRIAL_IMAGEREGRID_H)
 #define TRIAL_IMAGEREGRID_H
 
-#include <aips/aips.h>
-#include <aips/Arrays/Matrix.h>
-#include <aips/Arrays/Cube.h>
-#include <aips/Measures/MDirection.h>
-#include <aips/Measures/MFrequency.h>
-#include <trial/Mathematics/Interpolate2D.h>
+#include <casa/aips.h>
+#include <casa/Arrays/Matrix.h>
+#include <casa/Arrays/Cube.h>
+#include <measures/Measures/MDirection.h>
+#include <measures/Measures/MFrequency.h>
+#include <scimath/Mathematics/Interpolate2D.h>
 
 template<class T> class MaskedLattice;
 template<class T> class ImageInterface;

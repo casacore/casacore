@@ -25,9 +25,9 @@
 //#
 //# $Id$
 
-#include <aips/OS/SysEvent.h>
-#include <aips/Exceptions/Error.h>
-#include <aips/Utilities/Regex.h>
+#include <casa/OS/SysEvent.h>
+#include <casa/Exceptions/Error.h>
+#include <casa/Utilities/Regex.h>
 
 SysEvent::~SysEvent() {
     if (rep) delete rep;

@@ -27,8 +27,8 @@
 
 
 #if defined(__GNUG__) && (__GNUG__ == 2) && (__GNUC_MINOR__ < 91)
-#include <aips/MeasurementSets/MSTable.h>
-#include <aips/MeasurementSets/MeasurementSet.h>
+#include <ms/MeasurementSets/MSTable.h>
+#include <ms/MeasurementSets/MeasurementSet.h>
  
 #define MSTableStatics(ColEnum,KeyEnum) \
 SimpleOrderedMap<Int, String> MSTable<ColEnum,KeyEnum>::columnMap_p(""); \

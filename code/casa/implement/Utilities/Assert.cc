@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#include <aips/Utilities/Assert.h>
-#include <aips/stdio.h>
+#include <casa/Utilities/Assert.h>
+#include <casa/stdio.h>
 
 template<class t> assert_<t>::assert_(int expr, const char *msg, const char* file, Int line) {
   static char message[256];

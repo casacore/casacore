@@ -26,28 +26,28 @@
 //# $Id$
 
 
-#include <aips/aips.h>
-#include <aips/Arrays/Vector.h> // Put these early to work around g++ bug
-#include <aips/Arrays/Matrix.h>
+#include <casa/aips.h>
+#include <casa/Arrays/Vector.h> // Put these early to work around g++ bug
+#include <casa/Arrays/Matrix.h>
 
-#include <trial/Coordinates/StokesCoordinate.h>
+#include <coordinates/Coordinates/StokesCoordinate.h>
 
-#include <trial/Images/ImageInterface.h>
-#include <trial/Images/LELImageCoord.h>
-#include <trial/Images/ImageRegion.h>
-#include <trial/Lattices/LCRegion.h>
-#include <trial/Lattices/LCBox.h>
-#include <trial/Lattices/SubLattice.h>
-#include <aips/Lattices/LatticeIterator.h>
+#include <images/Images/ImageInterface.h>
+#include <images/Images/LELImageCoord.h>
+#include <images/Images/ImageRegion.h>
+#include <lattices/Lattices/LCRegion.h>
+#include <lattices/Lattices/LCBox.h>
+#include <lattices/Lattices/SubLattice.h>
+#include <lattices/Lattices/LatticeIterator.h>
 
-#include <aips/Arrays/ArrayMath.h>
-#include <aips/Containers/RecordInterface.h>
-#include <aips/Utilities/Assert.h>
-#include <aips/sstream.h>
-#include <aips/Containers/Record.h>
-#include <trial/Lattices/LCBox.h>
-#include <trial/Lattices/SubLattice.h>
-#include <aips/Lattices/TiledShape.h>
+#include <casa/Arrays/ArrayMath.h>
+#include <casa/Containers/RecordInterface.h>
+#include <casa/Utilities/Assert.h>
+#include <casa/sstream.h>
+#include <casa/Containers/Record.h>
+#include <lattices/Lattices/LCBox.h>
+#include <lattices/Lattices/SubLattice.h>
+#include <lattices/Lattices/TiledShape.h>
 
 template <class T> 
 ImageInterface<T>::ImageInterface()

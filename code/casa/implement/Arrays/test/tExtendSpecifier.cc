@@ -26,10 +26,10 @@
 //#
 //# $Id$
 
-#include <trial/Arrays/ExtendSpecifier.h>
-#include <aips/Arrays/Slicer.h>
-#include <aips/Exceptions/Error.h>
-#include <aips/iostream.h>
+#include <casa/Arrays/ExtendSpecifier.h>
+#include <casa/Arrays/Slicer.h>
+#include <casa/Exceptions/Error.h>
+#include <casa/iostream.h>
 
 void doIt()
 {

@@ -29,9 +29,9 @@
 #define AIPS_DIRECTORY_H
 
 //# Includes
-#include <aips/aips.h>
-#include <aips/OS/Path.h>
-#include <aips/OS/File.h>
+#include <casa/aips.h>
+#include <casa/OS/Path.h>
+#include <casa/OS/File.h>
    
 template<class T> class Vector;
 class Regex;

@@ -28,9 +28,9 @@
 #if !defined(AIPS_LECANONICALIO_H)
 #define AIPS_LECANONICALIO_H
 
-#include <aips/aips.h>
-#include <aips/IO/TypeIO.h>
-#include <aips/BasicSL/Complexfwd.h>
+#include <casa/aips.h>
+#include <casa/IO/TypeIO.h>
+#include <casa/BasicSL/Complexfwd.h>
 
 class ByteIO;
 class String;

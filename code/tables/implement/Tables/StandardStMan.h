@@ -29,8 +29,8 @@
 #define AIPS_STANDARDSTMAN_H
 
 //# Includes
-#include <aips/aips.h>
-#include <aips/Tables/SSMBase.h>
+#include <casa/aips.h>
+#include <tables/Tables/SSMBase.h>
 
 
 // <summary>

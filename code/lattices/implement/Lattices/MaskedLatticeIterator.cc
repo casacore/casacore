@@ -25,13 +25,13 @@
 //#
 //# $Id$
 
-#include <aips/aips.h>
+#include <casa/aips.h>
 
-#include <trial/Lattices/MaskedLatticeIterator.h>
-#include <aips/Arrays/Array.h>
-#include <aips/Arrays/IPosition.h>
-#include <aips/Utilities/Assert.h> 
-#include <aips/Exceptions/Error.h>
+#include <lattices/Lattices/MaskedLatticeIterator.h>
+#include <casa/Arrays/Array.h>
+#include <casa/Arrays/IPosition.h>
+#include <casa/Utilities/Assert.h> 
+#include <casa/Exceptions/Error.h>
 
 
 template <class T>

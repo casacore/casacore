@@ -26,14 +26,14 @@
 //# $Id$
 
 //# Includes
-#include <aips/aips.h>
-#include <aips/Arrays/ArrayAccessor.h>
-#include <aips/Arrays/ArrayMath.h>
-#include <aips/Arrays/Cube.h>
-#include <aips/Exceptions/Error.h>
-#include <aips/Utilities/Assert.h>
+#include <casa/aips.h>
+#include <casa/Arrays/ArrayAccessor.h>
+#include <casa/Arrays/ArrayMath.h>
+#include <casa/Arrays/Cube.h>
+#include <casa/Exceptions/Error.h>
+#include <casa/Utilities/Assert.h>
 
-#include <aips/iostream.h>
+#include <casa/iostream.h>
 
 int main() {
   // Size test cube

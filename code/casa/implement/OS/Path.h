@@ -30,8 +30,8 @@
 #define AIPS_PATH_H
 
 //# Includes
-#include <aips/aips.h>
-#include <aips/BasicSL/String.h>
+#include <casa/aips.h>
+#include <casa/BasicSL/String.h>
 
 
 // <summary>

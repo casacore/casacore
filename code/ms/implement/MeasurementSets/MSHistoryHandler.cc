@@ -25,11 +25,11 @@
 //#
 //# $Id$
 
-#include <trial/MeasurementSets/MSHistoryHandler.h>
-#include <aips/Logging/LogIO.h>
-#include <aips/Measures/MEpoch.h>
-#include <aips/MeasurementSets/MSColumns.h>
-#include <aips/ostream.h>
+#include <ms/MeasurementSets/MSHistoryHandler.h>
+#include <casa/Logging/LogIO.h>
+#include <measures/Measures/MEpoch.h>
+#include <ms/MeasurementSets/MSColumns.h>
+#include <casa/ostream.h>
 
 
 MSHistoryHandler::MSHistoryHandler(MeasurementSet& ms, String app){

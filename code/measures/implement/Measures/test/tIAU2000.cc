@@ -25,25 +25,25 @@
 //#
 //# $Id$
 
-#include <aips/Measures/SofaTest.h>
-#include <aips/Arrays/ArrayMath.h>
-#include <aips/Arrays/Vector.h>
-#include <aips/Exceptions/Error.h>
-#include <aips/BasicSL/Constants.h>
-#include <aips/Measures/MDirection.h>
-#include <aips/Measures/MeasConvert.h>
-#include <aips/Measures/MeasData.h>
-#include <aips/Measures/MEpoch.h>
-#include <aips/Measures/MeasFrame.h>
-#include <aips/Measures/MeasRef.h>
-#include <aips/Measures/MeasTable.h>
-#include <aips/Measures/Nutation.h>
-#include <aips/Measures/Precession.h>
-#include <aips/OS/Time.h>
-#include <aips/Quanta/RotMatrix.h>
-#include <aips/System/AipsrcValue.h>
-#include <aips/BasicSL/String.h>
-#include <aips/iostream.h>
+#include <measures/Measures/SofaTest.h>
+#include <casa/Arrays/ArrayMath.h>
+#include <casa/Arrays/Vector.h>
+#include <casa/Exceptions/Error.h>
+#include <casa/BasicSL/Constants.h>
+#include <measures/Measures/MDirection.h>
+#include <measures/Measures/MeasConvert.h>
+#include <measures/Measures/MeasData.h>
+#include <measures/Measures/MEpoch.h>
+#include <measures/Measures/MeasFrame.h>
+#include <measures/Measures/MeasRef.h>
+#include <measures/Measures/MeasTable.h>
+#include <measures/Measures/Nutation.h>
+#include <measures/Measures/Precession.h>
+#include <casa/OS/Time.h>
+#include <casa/Quanta/RotMatrix.h>
+#include <casa/System/AipsrcValue.h>
+#include <casa/BasicSL/String.h>
+#include <casa/iostream.h>
 
 // Print separation line of given (default 75) length
 void SEPAR(const uInt l=75) {

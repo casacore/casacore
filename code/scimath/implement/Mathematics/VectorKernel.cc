@@ -26,17 +26,17 @@
 //# $Id$
 //   
 
-#include <trial/Mathematics/VectorKernel.h>
+#include <scimath/Mathematics/VectorKernel.h>
 
-#include <aips/aips.h>
-#include <aips/Arrays/Vector.h>
-#include <aips/Arrays/ArrayUtil.h>
-#include <aips/Exceptions/Error.h>
-#include <aips/Functionals/Gaussian1D.h>
-#include <aips/Logging/LogIO.h>
-#include <aips/BasicSL/Constants.h>
-#include <aips/BasicMath/Math.h>
-#include <aips/Utilities/Regex.h>
+#include <casa/aips.h>
+#include <casa/Arrays/Vector.h>
+#include <casa/Arrays/ArrayUtil.h>
+#include <casa/Exceptions/Error.h>
+#include <scimath/Functionals/Gaussian1D.h>
+#include <casa/Logging/LogIO.h>
+#include <casa/BasicSL/Constants.h>
+#include <casa/BasicMath/Math.h>
+#include <casa/Utilities/Regex.h>
 
 
 Vector<Double> VectorKernel::make(KernelTypes kernelType, Double width, 

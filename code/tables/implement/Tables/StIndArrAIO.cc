@@ -25,15 +25,15 @@
 //#
 //# $Id$
 
-#include <aips/Tables/StIndArrAIO.h>
-#include <aips/Tables/StArrayFile.h>
-#include <aips/Tables/StIndArray.h>
-#include <aips/Utilities/DataType.h>
-#include <aips/IO/AipsIO.h>
-#include <aips/BasicSL/Complex.h>
-#include <aips/BasicSL/String.h>
-#include <aips/Tables/DataManError.h>
-#include <aips/stdio.h>                            //# for sprintf
+#include <tables/Tables/StIndArrAIO.h>
+#include <tables/Tables/StArrayFile.h>
+#include <tables/Tables/StIndArray.h>
+#include <casa/Utilities/DataType.h>
+#include <casa/IO/AipsIO.h>
+#include <casa/BasicSL/Complex.h>
+#include <casa/BasicSL/String.h>
+#include <tables/Tables/DataManError.h>
+#include <casa/stdio.h>                            //# for sprintf
 
 
 //# Define a macro which gets the pointer for the given row

@@ -25,14 +25,14 @@
 //#
 //# $Id$
 
-#include <aips/aips.h>
-#include <aips/IO/FilebufIO.h>
-#include <aips/Utilities/Assert.h>
-#include <aips/Exceptions/Error.h>
+#include <casa/aips.h>
+#include <casa/IO/FilebufIO.h>
+#include <casa/Utilities/Assert.h>
+#include <casa/Exceptions/Error.h>
 #include <unistd.h>
 #include <fcntl.h>
 #include <errno.h>                // needed for errno
-#include <aips/string.h>          // needed for strerror
+#include <casa/string.h>          // needed for strerror
 
 #ifdef PABLO_IO
 #include "IOTrace.h"

@@ -28,8 +28,8 @@
 #if !defined(AIPS_PRIMES_H)
 #define AIPS_PRIMES_H
 
-#include <aips/aips.h>
-#include <aips/Containers/Block.h>
+#include <casa/aips.h>
+#include <casa/Containers/Block.h>
 
 // <summary> Creates a reference table of prime numbers, and some functions </summary>
 //
@@ -69,8 +69,8 @@
 //
 // <example>
 // <srcblock>
-// #include <aips/Mathematics/Primes.h>
-// #include <aips/Utilities/Assert.h>
+// #include <scimath/Mathematics/Primes.h>
+// #include <casa/Utilities/Assert.h>
 // #include <iostream>
 //
 // // Refer also to tPrimes.cc

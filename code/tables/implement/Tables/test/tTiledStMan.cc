@@ -25,12 +25,12 @@
 //#
 //# $Id$
 
-#include <aips/Tables/TiledStMan.h>
-#include <aips/Arrays/Vector.h>
-#include <aips/Arrays/ArrayUtil.h>
-#include <aips/Exceptions/Error.h>
-#include <aips/iostream.h>
-#include <aips/sstream.h>
+#include <tables/Tables/TiledStMan.h>
+#include <casa/Arrays/Vector.h>
+#include <casa/Arrays/ArrayUtil.h>
+#include <casa/Exceptions/Error.h>
+#include <casa/iostream.h>
+#include <casa/sstream.h>
 
 
 // <summary>

@@ -26,13 +26,13 @@
 //#
 //# $Id$
 
-#include <trial/Coordinates/DirectionCoordinate.h>
-#include <aips/Arrays/Vector.h>
-#include <aips/BasicSL/Constants.h>
-#include <aips/Measures/MDirection.h>
-#include <aips/Quanta/Quantum.h>
-#include <aips/Quanta/MVDirection.h>
-#include <aips/Quanta/Unit.h>
+#include <coordinates/Coordinates/DirectionCoordinate.h>
+#include <casa/Arrays/Vector.h>
+#include <casa/BasicSL/Constants.h>
+#include <measures/Measures/MDirection.h>
+#include <casa/Quanta/Quantum.h>
+#include <casa/Quanta/MVDirection.h>
+#include <casa/Quanta/Unit.h>
 
 // A different file so that apps which don't need measures don't link them all
 // in (measures bring in tables and lots of other stuff)

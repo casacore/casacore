@@ -29,9 +29,9 @@
 #if !defined(AIPS_PGPLOTTER_H)
 #define AIPS_PGPLOTTER_H
 
-#include <aips/aips.h>
-#include <trial/System/PGPlotterInterface.h>
-#include <aips/Utilities/CountedPtr.h>
+#include <casa/aips.h>
+#include <casa/System/PGPlotterInterface.h>
+#include <casa/Utilities/CountedPtr.h>
 
 class String;
 template<class T> class Vector;

@@ -29,8 +29,8 @@
 #define AIPS_MVBASELINE_H
 
 //# Includes
-#include <aips/aips.h>
-#include <aips/Quanta/MVPosition.h>
+#include <casa/aips.h>
+#include <casa/Quanta/MVPosition.h>
 
 //# Forward Declarations
 

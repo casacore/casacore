@@ -25,42 +25,42 @@
 //#
 //# $Id$
 
-#include <trial/Images/MIRIADImage.h>
+#include <images/Images/MIRIADImage.h>
 
-#include <trial/Images/ImageInfo.h>
-#include <trial/Images/MaskSpecifier.h>
-#include <aips/Lattices/TiledShape.h>
-#include <aips/Lattices/TempLattice.h>
-#include <trial/Tables/TiledFileAccess.h>
-#include <trial/Coordinates/CoordinateSystem.h>
+#include <images/Images/ImageInfo.h>
+#include <images/Images/MaskSpecifier.h>
+#include <lattices/Lattices/TiledShape.h>
+#include <lattices/Lattices/TempLattice.h>
+#include <tables/Tables/TiledFileAccess.h>
+#include <coordinates/Coordinates/CoordinateSystem.h>
 
-#include <trial/Coordinates/Coordinate.h>
-#include <trial/Coordinates/LinearCoordinate.h>
-#include <trial/Coordinates/DirectionCoordinate.h>
-#include <trial/Coordinates/SpectralCoordinate.h>
-#include <trial/Coordinates/TabularCoordinate.h>
-#include <trial/Coordinates/StokesCoordinate.h>
-#include <trial/Coordinates/Projection.h>
+#include <coordinates/Coordinates/Coordinate.h>
+#include <coordinates/Coordinates/LinearCoordinate.h>
+#include <coordinates/Coordinates/DirectionCoordinate.h>
+#include <coordinates/Coordinates/SpectralCoordinate.h>
+#include <coordinates/Coordinates/TabularCoordinate.h>
+#include <coordinates/Coordinates/StokesCoordinate.h>
+#include <coordinates/Coordinates/Projection.h>
 
-#include <aips/Arrays/Array.h>
-#include <aips/Arrays/Matrix.h>
-#include <aips/Arrays/IPosition.h>
-#include <aips/Arrays/Slicer.h>
-#include <aips/Containers/Record.h>
-#include <aips/Logging/LogIO.h>
-#include <aips/BasicMath/Math.h>
-#include <aips/OS/File.h>
-#include <aips/Quanta/Unit.h>
-#include <aips/Quanta/UnitMap.h>
-#include <aips/Utilities/CountedPtr.h>
-#include <aips/Utilities/ValType.h>
-#include <aips/Utilities/Regex.h>
-#include <aips/BasicSL/String.h>
-#include <aips/Utilities/Assert.h>
-#include <aips/Exceptions/Error.h>
-#include <trial/FITS/FITSSpectralUtil.h>
+#include <casa/Arrays/Array.h>
+#include <casa/Arrays/Matrix.h>
+#include <casa/Arrays/IPosition.h>
+#include <casa/Arrays/Slicer.h>
+#include <casa/Containers/Record.h>
+#include <casa/Logging/LogIO.h>
+#include <casa/BasicMath/Math.h>
+#include <casa/OS/File.h>
+#include <casa/Quanta/Unit.h>
+#include <casa/Quanta/UnitMap.h>
+#include <casa/Utilities/CountedPtr.h>
+#include <casa/Utilities/ValType.h>
+#include <casa/Utilities/Regex.h>
+#include <casa/BasicSL/String.h>
+#include <casa/Utilities/Assert.h>
+#include <casa/Exceptions/Error.h>
+#include <fits/FITS/FITSSpectralUtil.h>
 
-#include <aips/iostream.h>
+#include <casa/iostream.h>
 
 #include <mirlib/maxdimc.h>
 #include <mirlib/miriad.h>

@@ -25,15 +25,15 @@
 //#
 //# $Id$
 
-#include <aips/Tables/BaseColDesc.h>
-#include <aips/Tables/ColumnDesc.h>
-#include <aips/Tables/RefColumn.h>
-#include <aips/Tables/DataManager.h>
-#include <aips/Tables/TableRecord.h>
-#include <aips/Tables/TableError.h>
-#include <aips/IO/AipsIO.h>
-#include <aips/Arrays/IPosition.h>
-#include <aips/iostream.h>
+#include <tables/Tables/BaseColDesc.h>
+#include <tables/Tables/ColumnDesc.h>
+#include <tables/Tables/RefColumn.h>
+#include <tables/Tables/DataManager.h>
+#include <tables/Tables/TableRecord.h>
+#include <tables/Tables/TableError.h>
+#include <casa/IO/AipsIO.h>
+#include <casa/Arrays/IPosition.h>
+#include <casa/iostream.h>
 
 
 BaseColumnDesc::BaseColumnDesc (const String& name, const String& comment,

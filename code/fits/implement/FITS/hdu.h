@@ -28,8 +28,8 @@
 # if !defined(AIPS_FITS_HDU_H)
 # define AIPS_FITS_HDU_H
 
-# include <aips/FITS/fits.h>
-# include <aips/aips.h>
+# include <fits/FITS/fits.h>
+# include <casa/aips.h>
 
 //# # include <stdarg.h> // If we ever wan to put varargs support back
 

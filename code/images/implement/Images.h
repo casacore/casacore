@@ -29,9 +29,9 @@
 #define AIPS_IMAGES_H
 
 
-#include <aips/Arrays/IPosition.h>
-#include <aips/Arrays/Slice.h>
-#include <aips/Arrays/Slicer.h>
+#include <casa/Arrays/IPosition.h>
+#include <casa/Arrays/Slice.h>
+#include <casa/Arrays/Slicer.h>
 
 // #include <aips/Arrays/ArrayLattice.h>
 // #include <aips/Arrays/PagedArray.h>
@@ -42,20 +42,20 @@
 // #include <aips/Arrays/TileStepper.h>
 // #include <aips/Arrays/TiledLineStepper.h>
 
-// #include <trial/Lattices/SubLattice.h>
-// #include <trial/Lattices/LatticeExpr.h>
+// #include <lattices/Lattices/SubLattice.h>
+// #include <lattices/Lattices/LatticeExpr.h>
 
-// #include <trial/Lattices/LatticeRegion.h>
-// #include <trial/Lattices/LCSlicer.h>
-// #include <trial/Lattices/LCBox.h>
-// #include <trial/Lattices/LCEllipsoid.h>
-// #include <trial/Lattices/LCPolygon.h>
-// #include <trial/Lattices/LCUnion.h>
-// #include <trial/Lattices/LCIntersection.h>
-// #include <trial/Lattices/LCDifference.h>
-// #include <trial/Lattices/LCConcatenation.h>
-// #include <trial/Lattices/LCComplement.h>
-// #include <trial/Lattices/LCExtension.h>
+// #include <lattices/Lattices/LatticeRegion.h>
+// #include <lattices/Lattices/LCSlicer.h>
+// #include <lattices/Lattices/LCBox.h>
+// #include <lattices/Lattices/LCEllipsoid.h>
+// #include <lattices/Lattices/LCPolygon.h>
+// #include <lattices/Lattices/LCUnion.h>
+// #include <lattices/Lattices/LCIntersection.h>
+// #include <lattices/Lattices/LCDifference.h>
+// #include <lattices/Lattices/LCConcatenation.h>
+// #include <lattices/Lattices/LCComplement.h>
+// #include <lattices/Lattices/LCExtension.h>
 
 
 // <module>

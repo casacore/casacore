@@ -25,17 +25,17 @@
 //#
 //# $Id$
 
-#include <aips/aips.h>
-#include<trial/SpectralComponents/ProfileFit1D.h>
+#include <casa/aips.h>
+#include<components/SpectralComponents/ProfileFit1D.h>
 
-#include<aips/Arrays/Vector.h>
-#include<aips/Arrays/ArrayMath.h>
-#include<aips/Arrays/ArrayLogical.h>
-#include<aips/Arrays/IPosition.h>
-#include<trial/SpectralComponents/SpectralElement.h>
-#include<aips/Utilities/Assert.h>
+#include<casa/Arrays/Vector.h>
+#include<casa/Arrays/ArrayMath.h>
+#include<casa/Arrays/ArrayLogical.h>
+#include<casa/Arrays/IPosition.h>
+#include<components/SpectralComponents/SpectralElement.h>
+#include<casa/Utilities/Assert.h>
 
-#include <aips/iostream.h>
+#include <casa/iostream.h>
 
 void makeData (Vector<Float>& x, Vector<Float>& y, Vector<Bool>& m, 
                Double& amp, Double& cen, Double& sigma, 

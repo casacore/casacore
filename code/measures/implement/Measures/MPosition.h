@@ -30,10 +30,10 @@
 #define AIPS_MPOSITION_H
 
 //# Includes
-#include <aips/aips.h>
-#include <aips/Measures/MeasBase.h>
-#include <aips/Measures/MeasRef.h>
-#include <aips/Quanta/MVPosition.h>
+#include <casa/aips.h>
+#include <measures/Measures/MeasBase.h>
+#include <measures/Measures/MeasRef.h>
+#include <casa/Quanta/MVPosition.h>
 
 //# Forward Declarations
 class MPosition;

@@ -26,8 +26,8 @@
 //# $Id$
 
 //# Includes
-#include <aips/Functionals/Function.h>
-#include <aips/Containers/RecordInterface.h>
+#include <scimath/Functionals/Function.h>
+#include <casa/Containers/RecordInterface.h>
 
 template<class T, class U>
 U Function<T,U>::operator()(const Vector<ArgType> &x) const {

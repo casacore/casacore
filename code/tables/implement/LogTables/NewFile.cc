@@ -26,19 +26,19 @@
 //#
 //# $Id$
 
-#include <aips/LogTables/NewFile.h>
-#include <aips/System/Choice.h>
+#include <tables/LogTables/NewFile.h>
+#include <casa/System/Choice.h>
 
-#include <aips/OS/File.h>
-#include <aips/OS/RegularFile.h>
-#include <aips/OS/Directory.h>
-#include <aips/OS/SymLink.h>
-#include <aips/Arrays/Vector.h>
-#include <aips/Tables/Table.h>
+#include <casa/OS/File.h>
+#include <casa/OS/RegularFile.h>
+#include <casa/OS/Directory.h>
+#include <casa/OS/SymLink.h>
+#include <casa/Arrays/Vector.h>
+#include <tables/Tables/Table.h>
 
-#include <aips/Logging/LogMessage.h>
-#include <aips/Logging/LogSink.h>
-#include <aips/Exceptions/Error.h>
+#include <casa/Logging/LogMessage.h>
+#include <casa/Logging/LogSink.h>
+#include <casa/Exceptions/Error.h>
 
 NewFile::NewFile(Bool deleteIfExists) : delete_p(deleteIfExists)
 {

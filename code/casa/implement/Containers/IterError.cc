@@ -25,7 +25,7 @@
 //#
 //# $Id$
 
-#include <aips/Containers/IterError.h>
+#include <casa/Containers/IterError.h>
 
 
 // The normal constructor when throwing the exception.

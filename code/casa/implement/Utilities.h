@@ -29,27 +29,27 @@
 #if !defined (AIPS_MODULE_UTILITIES_H)
 #define AIPS_MODULE_UTILITIES_H
 
-#include <aips/Utilities/Assert.h>
-#include <aips/Utilities/BinarySearch.h>
-#include <aips/Utilities/BitVector.h>
-#include <aips/Utilities/Compare.h>
-#include <aips/Utilities/Copy.h>
-#include <aips/Utilities/CountedPtr.h>
-#include <aips/Utilities/DataType.h>
-#include <aips/Utilities/DynBuffer.h>
-#include <aips/Utilities/Fallible.h>
-#include <aips/Utilities/GenSort.h>
-#include <aips/Utilities/Notice.h>
-#include <aips/Utilities/PtrHolder.h>
-#include <aips/Utilities/RegSequence.h>
-#include <aips/Utilities/Regex.h>
-#include <aips/Utilities/Register.h>
-#include <aips/Utilities/Sequence.h>
-#include <aips/Utilities/Sort.h>
-#include <aips/Utilities/SortError.h>
-#include <aips/BasicSL/String.h>
-#include <aips/Utilities/ValType.h>
-#include <aips/Utilities/cregex.h>
+#include <casa/Utilities/Assert.h>
+#include <casa/Utilities/BinarySearch.h>
+#include <casa/Utilities/BitVector.h>
+#include <casa/Utilities/Compare.h>
+#include <casa/Utilities/Copy.h>
+#include <casa/Utilities/CountedPtr.h>
+#include <casa/Utilities/DataType.h>
+#include <casa/Utilities/DynBuffer.h>
+#include <casa/Utilities/Fallible.h>
+#include <casa/Utilities/GenSort.h>
+#include <casa/Utilities/Notice.h>
+#include <casa/Utilities/PtrHolder.h>
+#include <casa/Utilities/RegSequence.h>
+#include <casa/Utilities/Regex.h>
+#include <casa/Utilities/Register.h>
+#include <casa/Utilities/Sequence.h>
+#include <casa/Utilities/Sort.h>
+#include <casa/Utilities/SortError.h>
+#include <casa/BasicSL/String.h>
+#include <casa/Utilities/ValType.h>
+#include <casa/Utilities/cregex.h>
 
 // <module>
 //

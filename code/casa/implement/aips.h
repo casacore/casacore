@@ -29,16 +29,16 @@
 #define AIPS_AIPS_H
 
 // Define compiler specific flags
-#include <aips/aipsenv.h>
+#include <casa/aipsenv.h>
 
 // Define the standard types used by AIPS++.
-#include <aips/aipstype.h>
+#include <casa/aipstype.h>
 
 // Define the extra non-standard types used by aips++
-#include <aips/aipsxtype.h>
+#include <casa/aipsxtype.h>
 
 // Define the special aips++ macros
-#include <aips/aipsdef.h>
+#include <casa/aipsdef.h>
 
 
 #endif

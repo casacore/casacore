@@ -29,14 +29,14 @@
 #if !defined(TRIAL_MSSELECTION_H)
 #define TRIAL_MSSELECTION_H
 
-#include <aips/aips.h>
-#include <aips/BasicSL/String.h>
-#include <aips/Arrays/Vector.h>
-#include <aips/Arrays/Matrix.h>
-#include <aips/Measures/MEpoch.h>
-#include <aips/Measures/MRadialVelocity.h>
-#include <aips/Tables/ExprNode.h>
-#include <aips/MeasurementSets/MeasurementSet.h>
+#include <casa/aips.h>
+#include <casa/BasicSL/String.h>
+#include <casa/Arrays/Vector.h>
+#include <casa/Arrays/Matrix.h>
+#include <measures/Measures/MEpoch.h>
+#include <measures/Measures/MRadialVelocity.h>
+#include <tables/Tables/ExprNode.h>
+#include <ms/MeasurementSets/MeasurementSet.h>
 
 // <summary> 
 // MSSelection: Class to represent a selection on an MS

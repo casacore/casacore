@@ -25,14 +25,14 @@
 //#
 //# $Id$
 
-#include <aips/Tables/TableDesc.h>
-#include <aips/Tables/SetupNewTab.h>
-#include <aips/Tables/Table.h>
-#include <aips/Tables/ScaColDesc.h>
-#include <aips/Tables/ArrColDesc.h>
-#include <aips/Tables/StManAipsIO.h>
-#include <aips/Exceptions/Error.h>
-#include <aips/sstream.h>
+#include <tables/Tables/TableDesc.h>
+#include <tables/Tables/SetupNewTab.h>
+#include <tables/Tables/Table.h>
+#include <tables/Tables/ScaColDesc.h>
+#include <tables/Tables/ArrColDesc.h>
+#include <tables/Tables/StManAipsIO.h>
+#include <casa/Exceptions/Error.h>
+#include <casa/sstream.h>
 
 // <summary> Test program for the SetupNewTable class </summary>
 

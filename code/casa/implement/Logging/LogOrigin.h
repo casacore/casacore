@@ -29,11 +29,11 @@
 #if !defined(AIPS_LOG_ORIGIN_H)
 #define AIPS_LOG_ORIGIN_H
 
-#include <aips/aips.h>
-#include <aips/BasicSL/String.h>
-#include <aips/System/ObjectID.h>
+#include <casa/aips.h>
+#include <casa/BasicSL/String.h>
+#include <casa/System/ObjectID.h>
 
-#include <aips/iosfwd.h>
+#include <casa/iosfwd.h>
 class SourceLocation;
 
 // <summary> 

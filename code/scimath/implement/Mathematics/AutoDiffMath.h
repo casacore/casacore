@@ -31,9 +31,9 @@
 
 //# Includes
 
-#include <aips/aips.h>
-#include <aips/BasicMath/Math.h>
-#include <aips/Mathematics/AutoDiff.h>
+#include <casa/aips.h>
+#include <casa/BasicMath/Math.h>
+#include <scimath/Mathematics/AutoDiff.h>
 
 // <summary>
 // Implements all mathematical operators and functions for AutoDiff.

@@ -29,8 +29,8 @@
 #if !defined(AIPS_NULL_LOG_SINK_H)
 #define AIPS_NULL_LOG_SINK_H
 
-#include <aips/aips.h>
-#include <aips/Logging/LogSinkInterface.h>
+#include <casa/aips.h>
+#include <casa/Logging/LogSinkInterface.h>
 
 // <summary>
 // Throw away all messages.

@@ -29,10 +29,10 @@
 #define AIPS_HASHMAP_H_
 
 //# Includes
-#include <aips/Containers/Block.h>
-#include <aips/Containers/List.h>
-#include <aips/Containers/OrderedPair.h>
-#include <aips/Exceptions/Error.h>
+#include <casa/Containers/Block.h>
+#include <casa/Containers/List.h>
+#include <casa/Containers/OrderedPair.h>
+#include <casa/Exceptions/Error.h>
 
 //# Forward Declarations
 template<class key,class val> class ConstHashMapIter;
@@ -222,8 +222,8 @@ public:
 // <example>
 //    <srcblock>
 //    #include <aips/Containers/HashMap.h>
-//    #include <aips/BasicSL/String.h>
-//    #include <aips/iostream.h>
+//    #include <casa/BasicSL/String.h>
+//    #include <casa/iostream.h>
 //   
 //    main() {
 //      HashMap<String,Int> hash;

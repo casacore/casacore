@@ -25,20 +25,20 @@
 //#
 //# $Id$
 
-#include <trial/Images/WCRegion.h>
-#include <trial/Images/WCBox.h>
+#include <images/Images/WCRegion.h>
+#include <images/Images/WCBox.h>
 ///#include <trial/Images/WCEllipsoid.h>
-#include <trial/Images/WCPolygon.h>
-#include <trial/Images/WCLELMask.h>
-#include <trial/Images/WCUnion.h>
-#include <trial/Images/WCIntersection.h>
-#include <trial/Images/WCDifference.h>
-#include <trial/Images/WCComplement.h>
-#include <trial/Images/WCExtension.h>
-#include <trial/Images/WCConcatenation.h>
-#include <trial/Lattices/RegionType.h>
-#include <aips/Tables/TableRecord.h>
-#include <aips/Exceptions/Error.h>
+#include <images/Images/WCPolygon.h>
+#include <images/Images/WCLELMask.h>
+#include <images/Images/WCUnion.h>
+#include <images/Images/WCIntersection.h>
+#include <images/Images/WCDifference.h>
+#include <images/Images/WCComplement.h>
+#include <images/Images/WCExtension.h>
+#include <images/Images/WCConcatenation.h>
+#include <lattices/Lattices/RegionType.h>
+#include <tables/Tables/TableRecord.h>
+#include <casa/Exceptions/Error.h>
 
 
 WCRegion* WCRegion::fromRecord (const TableRecord& rec,

@@ -27,9 +27,9 @@
 #if !defined(AIPS_INTERPOLATE1D_H)
 #define AIPS_INTERPOLATE1D_H
 
-#include <aips/aips.h>
-#include <aips/Functionals/Function1D.h>
-#include <aips/Containers/Block.h>
+#include <casa/aips.h>
+#include <scimath/Functionals/Function1D.h>
+#include <casa/Containers/Block.h>
 
 template<class Range> class SampledFunctional;
 

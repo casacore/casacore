@@ -25,14 +25,14 @@
 //#
 //# $Id$
 
-#include <aips/aips.h>
-#include <aips/IO/FiledesIO.h>
-#include <aips/IO/RegularFileIO.h>
-#include <aips/IO/MemoryIO.h>
-#include <aips/OS/RegularFile.h>
-#include <aips/Utilities/Assert.h>
-#include <aips/Exceptions/Error.h>
-#include <aips/iostream.h>
+#include <casa/aips.h>
+#include <casa/IO/FiledesIO.h>
+#include <casa/IO/RegularFileIO.h>
+#include <casa/IO/MemoryIO.h>
+#include <casa/OS/RegularFile.h>
+#include <casa/Utilities/Assert.h>
+#include <casa/Exceptions/Error.h>
+#include <casa/iostream.h>
 #include <unistd.h>
 #include <fcntl.h>
 

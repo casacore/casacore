@@ -26,29 +26,29 @@
 //# $Id$
 // 
 //
-#include <aips/aips.h>
-#include <aips/Arrays/Matrix.h>
-#include <aips/Arrays/Vector.h>
-#include <aips/BasicSL/Constants.h>
-#include <aips/BasicMath/Math.h>
-#include <aips/Exceptions/Error.h>
-#include <aips/Logging.h>
-#include <aips/Quanta/Quantum.h>
-#include <aips/Quanta/Unit.h>
-#include <aips/BasicSL/String.h>
-#include <trial/Images/TempImage.h>
-#include <trial/Images/PagedImage.h>
-#include <trial/Images/ComponentImager.h>
-#include <trial/Images/ImageSourceFinder.h>
-#include <trial/Coordinates/CoordinateSystem.h>
-#include <trial/Coordinates/DirectionCoordinate.h>
-#include <trial/ComponentModels/GaussianShape.h>
-#include <trial/ComponentModels/ConstantSpectrum.h>
-#include <trial/ComponentModels/Flux.h>
-#include <trial/ComponentModels/SkyComponent.h>
-#include <trial/ComponentModels/ComponentList.h>
+#include <casa/aips.h>
+#include <casa/Arrays/Matrix.h>
+#include <casa/Arrays/Vector.h>
+#include <casa/BasicSL/Constants.h>
+#include <casa/BasicMath/Math.h>
+#include <casa/Exceptions/Error.h>
+#include <casa/Logging.h>
+#include <casa/Quanta/Quantum.h>
+#include <casa/Quanta/Unit.h>
+#include <casa/BasicSL/String.h>
+#include <images/Images/TempImage.h>
+#include <images/Images/PagedImage.h>
+#include <images/Images/ComponentImager.h>
+#include <images/Images/ImageSourceFinder.h>
+#include <coordinates/Coordinates/CoordinateSystem.h>
+#include <coordinates/Coordinates/DirectionCoordinate.h>
+#include <components/ComponentModels/GaussianShape.h>
+#include <components/ComponentModels/ConstantSpectrum.h>
+#include <components/ComponentModels/Flux.h>
+#include <components/ComponentModels/SkyComponent.h>
+#include <components/ComponentModels/ComponentList.h>
 
-#include <aips/iostream.h>
+#include <casa/iostream.h>
 
 SkyComponent makeSkyComponent (const Vector<Double>& pixel, 
                                const Flux<Double>& flux,

@@ -26,12 +26,12 @@
 //# $Id$
 
 //# Includes
-#include <trial/FITS/FITSDateUtil.h>
+#include <fits/FITS/FITSDateUtil.h>
 
-#include <aips/BasicMath/Math.h>
-#include <aips/Exceptions/Error.h>
-#include <aips/Quanta/MVTime.h>
-#include <aips/Utilities/Assert.h>
+#include <casa/BasicMath/Math.h>
+#include <casa/Exceptions/Error.h>
+#include <casa/Quanta/MVTime.h>
+#include <casa/Utilities/Assert.h>
 
 #include <iostream.h>
 

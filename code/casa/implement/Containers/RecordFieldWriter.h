@@ -29,9 +29,9 @@
 #if !defined(AIPS_RECORD_FIELD_WRITER_H)
 #define AIPS_RECORD_FIELD_WRITER_H
 
-#include <aips/aips.h>
-#include <aips/Containers/RecordField.h>
-#include <aips/Arrays/Array.h>
+#include <casa/aips.h>
+#include <casa/Containers/RecordField.h>
+#include <casa/Arrays/Array.h>
 
 // <summary> Record field writer.  Base class for the copiers.
 // </summary>

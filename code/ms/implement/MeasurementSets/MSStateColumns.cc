@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#include <aips/MeasurementSets/MSStateColumns.h>
-#include <aips/MeasurementSets/MSState.h>
+#include <ms/MeasurementSets/MSStateColumns.h>
+#include <ms/MeasurementSets/MSState.h>
 
 ROMSStateColumns::ROMSStateColumns(const MSState& msState):
   cal_p(msState, MSState::columnName(MSState::CAL)),

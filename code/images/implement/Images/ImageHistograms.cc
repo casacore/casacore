@@ -25,16 +25,16 @@
 //#
 //# $Id$
 
-#include <trial/Images/ImageHistograms.h>
+#include <images/Images/ImageHistograms.h>
 
-#include <aips/aips.h>
-#include <trial/Images/ImageInterface.h>
-#include <trial/Images/ImageUtilities.h>
-#include <trial/Lattices/LatticeHistograms.h>
-#include <aips/Logging/LogIO.h>
-#include <aips/BasicSL/String.h>
+#include <casa/aips.h>
+#include <images/Images/ImageInterface.h>
+#include <images/Images/ImageUtilities.h>
+#include <lattices/Lattices/LatticeHistograms.h>
+#include <casa/Logging/LogIO.h>
+#include <casa/BasicSL/String.h>
 
-#include <aips/sstream.h>
+#include <casa/sstream.h>
 
 // Public functions
 

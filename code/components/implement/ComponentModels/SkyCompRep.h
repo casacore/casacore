@@ -29,13 +29,13 @@
 #if !defined(AIPS_SKYCOMPREP_H)
 #define AIPS_SKYCOMPREP_H
 
-#include <aips/aips.h>
-#include <trial/ComponentModels/ComponentType.h>
-#include <trial/ComponentModels/Flux.h>
-#include <trial/ComponentModels/SkyCompBase.h>
-#include <aips/Utilities/CountedPtr.h>
-#include <aips/BasicSL/String.h>
-#include <aips/Measures/Stokes.h>
+#include <casa/aips.h>
+#include <components/ComponentModels/ComponentType.h>
+#include <components/ComponentModels/Flux.h>
+#include <components/ComponentModels/SkyCompBase.h>
+#include <casa/Utilities/CountedPtr.h>
+#include <casa/BasicSL/String.h>
+#include <measures/Measures/Stokes.h>
 
 class ComponentShape;
 class CoordinateSystem;

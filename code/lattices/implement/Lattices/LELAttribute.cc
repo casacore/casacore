@@ -26,10 +26,10 @@
 //# $Id$
 
 
-#include <trial/Lattices/LELAttribute.h>
-#include <trial/Lattices/LELLattCoord.h>
-#include <aips/Utilities/Assert.h>
-#include <aips/Exceptions/Error.h> 
+#include <lattices/Lattices/LELAttribute.h>
+#include <lattices/Lattices/LELLattCoord.h>
+#include <casa/Utilities/Assert.h>
+#include <casa/Exceptions/Error.h> 
 
 
 LELAttribute::LELAttribute()

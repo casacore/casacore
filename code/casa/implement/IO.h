@@ -29,19 +29,19 @@
 #define AIPS_IO_H
 
 //# Includes for object persistency.
-#include <aips/IO/AipsIO.h>
-#include <aips/IO/AipsIOCarray.h>
+#include <casa/IO/AipsIO.h>
+#include <casa/IO/AipsIOCarray.h>
 
 //# Includes for general IO.
-#include <aips/IO/ByteSinkSource.h>
+#include <casa/IO/ByteSinkSource.h>
 
 //# Includes for underlying IO classes.
-#include <aips/IO/CanonicalIO.h>
-#include <aips/IO/RawIO.h>
-#include <aips/IO/RegularFileIO.h>
-#include <aips/IO/FilebufIO.h>
-#include <aips/IO/FiledesIO.h>
-#include <aips/IO/MemoryIO.h>
+#include <casa/IO/CanonicalIO.h>
+#include <casa/IO/RawIO.h>
+#include <casa/IO/RegularFileIO.h>
+#include <casa/IO/FilebufIO.h>
+#include <casa/IO/FiledesIO.h>
+#include <casa/IO/MemoryIO.h>
 
 
 // <module>

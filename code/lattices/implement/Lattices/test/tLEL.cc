@@ -26,27 +26,27 @@
 //# $Id$
 
 
-#include <trial/Lattices/LatticeExpr.h>
-#include <trial/Lattices/LELAttribute.h>
-#include <trial/Lattices/LELArray.h>
-#include <trial/Lattices/LELScalar.h>
-#include <trial/Lattices/LELBinary.h>
-#include <trial/Lattices/LELConvert.h>
-#include <trial/Lattices/LELFunction.h>
-#include <trial/Lattices/LELLattice.h>
-#include <trial/Lattices/LELUnary.h>
-#include <trial/Lattices/LELLattCoord.h>
-#include <aips/Lattices/ArrayLattice.h>
-#include <aips/Arrays/Slicer.h>
-#include <aips/Arrays/Vector.h>
-#include <aips/Arrays/ArrayLogical.h>
-#include <aips/Arrays/ArrayMath.h>
-#include <aips/Exceptions/Error.h>
-#include <aips/Inputs/Input.h>
-#include <aips/Arrays/IPosition.h>
-#include <aips/BasicSL/Constants.h>
-#include <aips/BasicSL/Complex.h>
-#include <aips/iostream.h>
+#include <lattices/Lattices/LatticeExpr.h>
+#include <lattices/Lattices/LELAttribute.h>
+#include <lattices/Lattices/LELArray.h>
+#include <lattices/Lattices/LELScalar.h>
+#include <lattices/Lattices/LELBinary.h>
+#include <lattices/Lattices/LELConvert.h>
+#include <lattices/Lattices/LELFunction.h>
+#include <lattices/Lattices/LELLattice.h>
+#include <lattices/Lattices/LELUnary.h>
+#include <lattices/Lattices/LELLattCoord.h>
+#include <lattices/Lattices/ArrayLattice.h>
+#include <casa/Arrays/Slicer.h>
+#include <casa/Arrays/Vector.h>
+#include <casa/Arrays/ArrayLogical.h>
+#include <casa/Arrays/ArrayMath.h>
+#include <casa/Exceptions/Error.h>
+#include <casa/Inputs/Input.h>
+#include <casa/Arrays/IPosition.h>
+#include <casa/BasicSL/Constants.h>
+#include <casa/BasicSL/Complex.h>
+#include <casa/iostream.h>
 
 
 Bool checkAttribute (const LELAttribute& attr,

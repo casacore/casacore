@@ -26,18 +26,18 @@
 //# $Id$
 
 
-#include <aips/aips.h>
-#include <aips/Arrays/Vector.h>
-#include <aips/Exceptions/Error.h>
-#include <aips/Measures/MDirection.h>
-#include <aips/Measures/MFrequency.h>
-#include <aips/Quanta/Quantum.h>
-#include <aips/BasicSL/String.h>
-#include <trial/ComponentModels/Flux.h>
-#include <trial/ComponentModels/PointShape.h>
-#include <trial/ComponentModels/SkyComponent.h>
-#include <trial/ComponentModels/SpectralIndex.h>
-#include <aips/iostream.h>
+#include <casa/aips.h>
+#include <casa/Arrays/Vector.h>
+#include <casa/Exceptions/Error.h>
+#include <measures/Measures/MDirection.h>
+#include <measures/Measures/MFrequency.h>
+#include <casa/Quanta/Quantum.h>
+#include <casa/BasicSL/String.h>
+#include <components/ComponentModels/Flux.h>
+#include <components/ComponentModels/PointShape.h>
+#include <components/ComponentModels/SkyComponent.h>
+#include <components/ComponentModels/SpectralIndex.h>
+#include <casa/iostream.h>
 
 void printComponent(const SkyCompBase & comp);
 

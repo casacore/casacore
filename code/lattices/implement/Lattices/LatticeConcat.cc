@@ -26,18 +26,18 @@
 //# $Id$
 
 
-#include <trial/Lattices/LatticeConcat.h>
+#include <lattices/Lattices/LatticeConcat.h>
 
-#include <trial/Lattices/LCBox.h>
-#include <trial/Lattices/SubLattice.h>
-#include <aips/Lattices/LatticeIterator.h>
-#include <aips/Lattices/LatticeStepper.h>
-#include <aips/Lattices/TiledShape.h>
-#include <aips/Arrays/IPosition.h>
-#include <aips/Arrays/Slicer.h>
-#include <aips/BasicMath/Math.h>
-#include <aips/Exceptions/Error.h>
-#include <aips/Utilities/Assert.h>
+#include <lattices/Lattices/LCBox.h>
+#include <lattices/Lattices/SubLattice.h>
+#include <lattices/Lattices/LatticeIterator.h>
+#include <lattices/Lattices/LatticeStepper.h>
+#include <lattices/Lattices/TiledShape.h>
+#include <casa/Arrays/IPosition.h>
+#include <casa/Arrays/Slicer.h>
+#include <casa/BasicMath/Math.h>
+#include <casa/Exceptions/Error.h>
+#include <casa/Utilities/Assert.h>
 
 
 template<class T>

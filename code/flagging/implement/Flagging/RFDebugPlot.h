@@ -27,7 +27,7 @@
 #if !defined(AIPS_RFDEBUGPLOT_H)
 #define AIPS_RFDEBUGPLOT_H
     
-#include <trial/Flagging/RFCommon.h>
+#include <flagging/Flagging/RFCommon.h>
     
 class PGPlotter;
 class PGPlotterInterface;

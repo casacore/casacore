@@ -30,9 +30,9 @@
 
 
 //# Includes
-#include <aips/aips.h>
-#include <aips/BasicSL/Complex.h>
-#include <aips/Quanta/Quantum.h>
+#include <casa/aips.h>
+#include <casa/BasicSL/Complex.h>
+#include <casa/Quanta/Quantum.h>
 
 //# Forward Declarations
 template <class T> class Array;

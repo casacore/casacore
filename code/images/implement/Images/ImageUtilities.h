@@ -29,11 +29,11 @@
 #define AIPS_IMAGEUTILITIES_H
 
 
-#include <aips/aips.h>
-#include <trial/ComponentModels/ComponentType.h>
-#include <trial/Images/ImageFit1D.h>
-#include <aips/Measures/Stokes.h>
-#include <aips/Utilities/PtrHolder.h>
+#include <casa/aips.h>
+#include <components/ComponentModels/ComponentType.h>
+#include <images/Images/ImageFit1D.h>
+#include <measures/Measures/Stokes.h>
+#include <casa/Utilities/PtrHolder.h>
 
 template <class T> class ImageInterface;
 template <class T> class Vector;

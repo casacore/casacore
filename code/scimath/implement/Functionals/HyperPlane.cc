@@ -26,7 +26,7 @@
 //# $Id$
 
 //# Includes
-#include <aips/Functionals/HyperPlane.h>
+#include <scimath/Functionals/HyperPlane.h>
 
 //# Constructors
 

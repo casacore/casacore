@@ -25,14 +25,14 @@
 //#
 //# $Id$
 
-#include <aips/Tables/TableExprData.h>
-#include <aips/Tables/ExprNode.h>
-#include <aips/Tables/RecordExpr.h>
-#include <aips/Containers/Record.h>
-#include <aips/Arrays/Vector.h>
-#include <aips/Utilities/Assert.h>
-#include <aips/Exceptions/Error.h>
-#include <aips/iostream.h>
+#include <tables/Tables/TableExprData.h>
+#include <tables/Tables/ExprNode.h>
+#include <tables/Tables/RecordExpr.h>
+#include <casa/Containers/Record.h>
+#include <casa/Arrays/Vector.h>
+#include <casa/Utilities/Assert.h>
+#include <casa/Exceptions/Error.h>
+#include <casa/iostream.h>
 
 // <summary>
 // Test program for class TableExprData.

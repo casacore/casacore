@@ -31,16 +31,16 @@
 #define AIPS_RECORDDESCREP_H
 
 //# Includes
-#include <aips/aips.h>
-#include <aips/Utilities/DataType.h>
-#include <aips/Containers/Block.h>
-#include <aips/Containers/SimOrdMap.h>
-#include <aips/Arrays/IPosition.h>
+#include <casa/aips.h>
+#include <casa/Utilities/DataType.h>
+#include <casa/Containers/Block.h>
+#include <casa/Containers/SimOrdMap.h>
+#include <casa/Arrays/IPosition.h>
 
 //# Forward Declarations
 class RecordDesc;
 class AipsIO;
-#include <aips/iosfwd.h>
+#include <casa/iosfwd.h>
 
 
 // <summary>

@@ -30,10 +30,10 @@
 #define AIPS_COMPILEDFUNCTION_H
 
 //# Includes
-#include <aips/aips.h>
-#include <trial/Functionals/CompiledParam.h>
-#include <aips/BasicSL/Complex.h>
-#include <aips/BasicMath/Math.h>
+#include <casa/aips.h>
+#include <scimath/Functionals/CompiledParam.h>
+#include <casa/BasicSL/Complex.h>
+#include <casa/BasicMath/Math.h>
 
 //# Forward declarations
 

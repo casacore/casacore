@@ -27,10 +27,10 @@
 //#
 
  
-#include <trial/Coordinates/Coordinate.h>
-#include <aips/Exceptions/Error.h>
+#include <coordinates/Coordinates/Coordinate.h>
+#include <casa/Exceptions/Error.h>
 
-#include <aips/iostream.h>
+#include <casa/iostream.h>
 
 
 

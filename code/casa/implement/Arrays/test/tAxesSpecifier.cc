@@ -26,10 +26,10 @@
 //#
 //# $Id$
 
-#include <trial/Arrays/AxesSpecifier.h>
-#include <aips/Arrays/Slicer.h>
-#include <aips/Utilities/Assert.h>
-#include <aips/iostream.h>
+#include <casa/Arrays/AxesSpecifier.h>
+#include <casa/Arrays/Slicer.h>
+#include <casa/Utilities/Assert.h>
+#include <casa/iostream.h>
 
 
 void doIt()

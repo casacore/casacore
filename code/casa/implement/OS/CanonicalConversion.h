@@ -29,8 +29,8 @@
 #define AIPS_CANONICALCONVERSION_H
 
 //# Includes
-#include <aips/aipsxtype.h>
-#include <aips/OS/Conversion.h>
+#include <casa/aipsxtype.h>
+#include <casa/OS/Conversion.h>
 
 
 // Define the canonical sizes of the built-in data types.

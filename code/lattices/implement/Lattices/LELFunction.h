@@ -30,10 +30,10 @@
 
 
 //# Includes
-#include <trial/Lattices/LELInterface.h>
-#include <trial/Lattices/LatticeExprNode.h>
-#include <trial/Lattices/LELFunctionEnums.h>
-#include <aips/Containers/Block.h>
+#include <lattices/Lattices/LELInterface.h>
+#include <lattices/Lattices/LatticeExprNode.h>
+#include <lattices/Lattices/LELFunctionEnums.h>
+#include <casa/Containers/Block.h>
 
 //# Forward Declarations
 

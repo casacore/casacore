@@ -29,14 +29,14 @@
 #define AIPS_MOMENTCALCULATOR_H
 
 //# Includes
-#include <aips/aips.h>
-#include <trial/Coordinates/CoordinateSystem.h>
-#include <trial/Coordinates/SpectralCoordinate.h>
-#include <trial/Lattices/LineCollapser.h>
-#include <aips/Functionals/Gaussian1D.h>
-#include <aips/Mathematics/NumericTraits.h>
-#include <trial/System/PGPlotter.h>
-#include <trial/Images/SubImage.h>
+#include <casa/aips.h>
+#include <coordinates/Coordinates/CoordinateSystem.h>
+#include <coordinates/Coordinates/SpectralCoordinate.h>
+#include <lattices/Lattices/LineCollapser.h>
+#include <scimath/Functionals/Gaussian1D.h>
+#include <scimath/Mathematics/NumericTraits.h>
+#include <casa/System/PGPlotter.h>
+#include <images/Images/SubImage.h>
 
 //# Forward Declarations
 template <class T> class Vector;

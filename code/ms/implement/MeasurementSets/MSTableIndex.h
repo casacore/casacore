@@ -29,12 +29,12 @@
 #if !defined(AIPS_MSTABLEINDEX_H)
 #define AIPS_MSTABLEINDEX_H
 
-#include <aips/Arrays/Vector.h>
-#include <aips/Containers/Block.h>
-#include <aips/Containers/RecordField.h>
-#include <aips/Tables/Table.h>
-#include <aips/Tables/ScalarColumn.h>
-#include <aips/Tables/ColumnsIndex.h>
+#include <casa/Arrays/Vector.h>
+#include <casa/Containers/Block.h>
+#include <casa/Containers/RecordField.h>
+#include <tables/Tables/Table.h>
+#include <tables/Tables/ScalarColumn.h>
+#include <tables/Tables/ColumnsIndex.h>
 
 //# Forward declarations
 class Record;

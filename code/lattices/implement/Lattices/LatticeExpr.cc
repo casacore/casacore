@@ -25,14 +25,14 @@
 //#
 //# $Id$
 
-#include <trial/Lattices/LatticeExpr.h>
-#include <trial/Lattices/LELArray.h>
-#include <aips/Lattices/LatticeIterator.h>
-#include <aips/Arrays/Array.h>
-#include <aips/Arrays/Slicer.h>
-#include <aips/Arrays/ArrayMath.h>
-#include <aips/Utilities/Assert.h>
-#include <aips/Exceptions/Error.h> 
+#include <lattices/Lattices/LatticeExpr.h>
+#include <lattices/Lattices/LELArray.h>
+#include <lattices/Lattices/LatticeIterator.h>
+#include <casa/Arrays/Array.h>
+#include <casa/Arrays/Slicer.h>
+#include <casa/Arrays/ArrayMath.h>
+#include <casa/Utilities/Assert.h>
+#include <casa/Exceptions/Error.h> 
 
 
 template <class T>

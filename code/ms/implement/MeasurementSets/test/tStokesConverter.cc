@@ -26,11 +26,11 @@
 //#
 //# $Id$
 
-#include <aips/Arrays/ArrayLogical.h>
-#include <aips/Arrays/ArrayIO.h>
-#include <aips/Exceptions/Error.h>
-#include <trial/MeasurementSets/StokesConverter.h>
-#include <aips/iostream.h>
+#include <casa/Arrays/ArrayLogical.h>
+#include <casa/Arrays/ArrayIO.h>
+#include <casa/Exceptions/Error.h>
+#include <ms/MeasurementSets/StokesConverter.h>
+#include <casa/iostream.h>
 
 int main() 
 {

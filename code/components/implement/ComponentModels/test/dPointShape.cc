@@ -25,19 +25,19 @@
 //#
 //# $Id$
 
-#include <aips/aips.h>
-#include <trial/ComponentModels/Flux.h>
-#include <trial/ComponentModels/PointShape.h>
-#include <trial/ComponentModels/SkyComponent.h>
-#include <trial/ComponentModels/ConstantSpectrum.h>
-#include <trial/ComponentModels/ComponentType.h>
-#include <trial/ComponentModels/ComponentShape.h>
-#include <aips/Exceptions/Error.h>
-#include <aips/Measures/MDirection.h>
-#include <aips/Quanta/Quantum.h>
-#include <aips/Quanta/MVAngle.h>
-#include <aips/BasicSL/String.h>
-#include <aips/iostream.h>
+#include <casa/aips.h>
+#include <components/ComponentModels/Flux.h>
+#include <components/ComponentModels/PointShape.h>
+#include <components/ComponentModels/SkyComponent.h>
+#include <components/ComponentModels/ConstantSpectrum.h>
+#include <components/ComponentModels/ComponentType.h>
+#include <components/ComponentModels/ComponentShape.h>
+#include <casa/Exceptions/Error.h>
+#include <measures/Measures/MDirection.h>
+#include <casa/Quanta/Quantum.h>
+#include <casa/Quanta/MVAngle.h>
+#include <casa/BasicSL/String.h>
+#include <casa/iostream.h>
 
 void printShape(const ComponentShape& theShape) {
   cout << "This is a " << ComponentType::name(theShape.type())

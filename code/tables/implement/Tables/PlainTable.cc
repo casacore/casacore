@@ -25,22 +25,22 @@
 //#
 //# $Id$
 
-#include <aips/aips.h>
-#include <aips/Tables/PlainTable.h>
-#include <aips/Tables/SetupNewTab.h>
-#include <aips/Tables/Table.h>
-#include <aips/Tables/TableAttr.h>
-#include <aips/Tables/TableDesc.h>
-#include <aips/Tables/TableLockData.h>
-#include <aips/Tables/ColumnSet.h>
-#include <aips/Tables/PlainColumn.h>
-#include <aips/Tables/TableError.h>
-#include <aips/Containers/Block.h>
-#include <aips/Containers/Record.h>
-#include <aips/BasicSL/String.h>
-#include <aips/OS/HostInfo.h>
-#include <aips/OS/File.h>
-#include <aips/System/AipsrcValue.h>
+#include <casa/aips.h>
+#include <tables/Tables/PlainTable.h>
+#include <tables/Tables/SetupNewTab.h>
+#include <tables/Tables/Table.h>
+#include <tables/Tables/TableAttr.h>
+#include <tables/Tables/TableDesc.h>
+#include <tables/Tables/TableLockData.h>
+#include <tables/Tables/ColumnSet.h>
+#include <tables/Tables/PlainColumn.h>
+#include <tables/Tables/TableError.h>
+#include <casa/Containers/Block.h>
+#include <casa/Containers/Record.h>
+#include <casa/BasicSL/String.h>
+#include <casa/OS/HostInfo.h>
+#include <casa/OS/File.h>
+#include <casa/System/AipsrcValue.h>
 
 
 //# Initialize the static TableCache object.

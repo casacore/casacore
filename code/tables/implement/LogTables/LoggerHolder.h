@@ -30,9 +30,9 @@
 #define AIPS_LOGGERHOLDER_H
 
 //# Includes
-#include <aips/Logging/LogIO.h>
-#include <aips/Containers/Block.h>
-#include <aips/Utilities/CountedPtr.h>
+#include <casa/Logging/LogIO.h>
+#include <casa/Containers/Block.h>
+#include <casa/Utilities/CountedPtr.h>
 
 //# Forward Declarations
 class LoggerHolderRep;

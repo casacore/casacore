@@ -25,7 +25,7 @@
 //#
 //# $Id$
 
-#include <aips/Containers/Map.h>
+#include <casa/Containers/Map.h>
 
 void throw_mapiter_init_error(){
   throw(AipsError("Map Initialization Error"));

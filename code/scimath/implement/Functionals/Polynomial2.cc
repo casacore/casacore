@@ -26,7 +26,7 @@
 //# $Id$
 
 //# Includes
-#include <aips/Functionals/Polynomial.h>
+#include <scimath/Functionals/Polynomial.h>
 
 //# Constructors
 

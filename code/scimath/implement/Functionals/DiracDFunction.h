@@ -29,9 +29,9 @@
 #define AIPS_DIRACDFUNCTION_H
 
 //# Includes
-#include <aips/aips.h>
-#include <trial/Functionals/DiracDParam.h>
-#include <aips/Functionals/Function.h>
+#include <casa/aips.h>
+#include <scimath/Functionals/DiracDParam.h>
+#include <scimath/Functionals/Function.h>
 
 //# Forward declarations
 

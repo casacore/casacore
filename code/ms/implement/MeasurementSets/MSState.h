@@ -29,9 +29,9 @@
 #if !defined(AIPS_MSSTATE_H)
 #define AIPS_MSSTATE_H
 
-#include <aips/aips.h>
-#include <aips/MeasurementSets/MSTable.h>
-#include <aips/MeasurementSets/MSStateEnums.h>
+#include <casa/aips.h>
+#include <ms/MeasurementSets/MSTable.h>
+#include <ms/MeasurementSets/MSStateEnums.h>
 
 // <summary> 
 // A Table intended to hold a MeasurementSet STATE table.

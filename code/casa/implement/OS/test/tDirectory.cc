@@ -26,17 +26,17 @@
 //# $Id$
 
 
-#include <aips/OS/Directory.h>
-#include <aips/OS/RegularFile.h>
-#include <aips/OS/SymLink.h>
-#include <aips/BasicSL/String.h>
-#include <aips/Utilities/Regex.h>
-#include <aips/Utilities/Assert.h>
-#include <aips/Utilities/GenSort.h>
-#include <aips/Exceptions.h>
-#include <aips/Arrays/Vector.h>
-#include <aips/Utilities/GenSort.h>
-#include <aips/iostream.h>
+#include <casa/OS/Directory.h>
+#include <casa/OS/RegularFile.h>
+#include <casa/OS/SymLink.h>
+#include <casa/BasicSL/String.h>
+#include <casa/Utilities/Regex.h>
+#include <casa/Utilities/Assert.h>
+#include <casa/Utilities/GenSort.h>
+#include <casa/Exceptions.h>
+#include <casa/Arrays/Vector.h>
+#include <casa/Utilities/GenSort.h>
+#include <casa/iostream.h>
 
 
 // <summary>

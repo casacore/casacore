@@ -25,11 +25,11 @@
 //#
 //# $Id$
 
-#include <trial/Lattices/LCMask.h>
-#include <aips/Lattices/TempLattice.h>
-#include <aips/Tables/TableRecord.h>
-#include <aips/Arrays/Vector.h>
-#include <aips/Exceptions/Error.h>
+#include <lattices/Lattices/LCMask.h>
+#include <lattices/Lattices/TempLattice.h>
+#include <tables/Tables/TableRecord.h>
+#include <casa/Arrays/Vector.h>
+#include <casa/Exceptions/Error.h>
 
 
 LCMask::LCMask()

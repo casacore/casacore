@@ -25,10 +25,10 @@
 //#
 //# $Id$
 
-#include <trial/MeasurementSets/MSDopplerIndex.h>
+#include <ms/MeasurementSets/MSDopplerIndex.h>
 
-#include <aips/Arrays/ArrayUtil.h>
-#include <aips/MeasurementSets/MSDoppler.h>
+#include <casa/Arrays/ArrayUtil.h>
+#include <ms/MeasurementSets/MSDoppler.h>
 
 MSDopplerIndex::MSDopplerIndex() 
     : MSTableIndex()

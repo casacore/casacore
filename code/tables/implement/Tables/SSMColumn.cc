@@ -25,18 +25,18 @@
 //#
 //# $Id$
 
-#include <aips/Tables/SSMColumn.h>
-#include <aips/Tables/SSMBase.h>
-#include <aips/Tables/SSMStringHandler.h>
-#include <aips/Tables/RefRows.h>
-#include <aips/Arrays/Array.h>
-#include <aips/Arrays/Vector.h>
-#include <aips/Utilities/ValType.h>
-#include <aips/Utilities/Assert.h>
-#include <aips/Utilities/Copy.h>
-#include <aips/BasicMath/Math.h>
-#include <aips/OS/CanonicalConversion.h>
-#include <aips/OS/LECanonicalConversion.h>
+#include <tables/Tables/SSMColumn.h>
+#include <tables/Tables/SSMBase.h>
+#include <tables/Tables/SSMStringHandler.h>
+#include <tables/Tables/RefRows.h>
+#include <casa/Arrays/Array.h>
+#include <casa/Arrays/Vector.h>
+#include <casa/Utilities/ValType.h>
+#include <casa/Utilities/Assert.h>
+#include <casa/Utilities/Copy.h>
+#include <casa/BasicMath/Math.h>
+#include <casa/OS/CanonicalConversion.h>
+#include <casa/OS/LECanonicalConversion.h>
 
 
 SSMColumn::SSMColumn (SSMBase* aParent, int aDataType, uInt aColNr)

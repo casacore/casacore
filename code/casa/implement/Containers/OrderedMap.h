@@ -28,14 +28,14 @@
 #if !defined(AIPS_ORDEREDMAP_H)
 #define AIPS_ORDEREDMAP_H
 
-#include <aips/aips.h>
-#include <aips/Exceptions/Error.h>
-#include <aips/Containers/Block.h>
-#include <aips/BasicSL/String.h>
-#include <aips/Containers/Map.h>
-#include <aips/Containers/OrderedPair.h>
-#include <aips/Utilities/Register.h>
-#include <aips/Utilities/Notice.h>
+#include <casa/aips.h>
+#include <casa/Exceptions/Error.h>
+#include <casa/Containers/Block.h>
+#include <casa/BasicSL/String.h>
+#include <casa/Containers/Map.h>
+#include <casa/Containers/OrderedPair.h>
+#include <casa/Utilities/Register.h>
+#include <casa/Utilities/Notice.h>
 
 
 template<class t, class v> class OrderedMap;

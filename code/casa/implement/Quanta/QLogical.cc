@@ -26,11 +26,11 @@
 //# $Id$
 
 //# Includes
-#include <aips/Quanta/QLogical.h>
-#include <aips/BasicMath/Math.h>
-#include <aips/BasicSL/Complex.h>
-#include <aips/Arrays/ArrayLogical.h>
-#include <aips/Exceptions/Error.h>
+#include <casa/Quanta/QLogical.h>
+#include <casa/BasicMath/Math.h>
+#include <casa/BasicSL/Complex.h>
+#include <casa/Arrays/ArrayLogical.h>
+#include <casa/Exceptions/Error.h>
 
 template <class Qtype>
 Bool operator==(const Quantum<Qtype> &left, const Quantum<Qtype> &other) {

@@ -29,9 +29,9 @@
 #if !defined(AIPS_FUNCTIONMARSHALLABLE_H)
 #define AIPS_FUNCTIONMARSHALLABLE_H
 
-#include <aips/Functionals/Function.h>
-#include <trial/Functionals/FunctionFactoryErrors.h>
-#include <trial/Functionals/SerialHelper.h>
+#include <scimath/Functionals/Function.h>
+#include <scimath/Functionals/FunctionFactoryErrors.h>
+#include <scimath/Functionals/SerialHelper.h>
 
 // <summary>
 //

@@ -26,15 +26,15 @@
 //# $Id$
 
 //# Includes
-#include <aips/Exceptions.h>
-#include <aips/Measures/MCEarthMagnetic.h>
-#include <aips/Measures/EarthField.h>
-#include <aips/BasicSL/Constants.h>
-#include <aips/Utilities/Assert.h>
-#include <aips/Arrays/Vector.h>
-#include <aips/Arrays/ArrayMath.h>
-#include <aips/Measures/MCFrame.h>
-#include <aips/Quanta/MVPosition.h>
+#include <casa/Exceptions.h>
+#include <measures/Measures/MCEarthMagnetic.h>
+#include <measures/Measures/EarthField.h>
+#include <casa/BasicSL/Constants.h>
+#include <casa/Utilities/Assert.h>
+#include <casa/Arrays/Vector.h>
+#include <casa/Arrays/ArrayMath.h>
+#include <measures/Measures/MCFrame.h>
+#include <casa/Quanta/MVPosition.h>
 
 //# Statics
 Bool MCEarthMagnetic::stateMade_p = False;

@@ -26,15 +26,15 @@
 //# $Id$
 
 //# Includes
-#include <aips/Tables/TSMCoordColumn.h>
-#include <aips/Tables/TiledStMan.h>
-#include <aips/Tables/TSMCube.h>
-#include <aips/Tables/DataManError.h>
-#include <aips/Containers/Record.h>
-#include <aips/Containers/RecordField.h>
-#include <aips/Arrays/IPosition.h>
-#include <aips/Arrays/Array.h>
-#include <aips/BasicSL/String.h>
+#include <tables/Tables/TSMCoordColumn.h>
+#include <tables/Tables/TiledStMan.h>
+#include <tables/Tables/TSMCube.h>
+#include <tables/Tables/DataManError.h>
+#include <casa/Containers/Record.h>
+#include <casa/Containers/RecordField.h>
+#include <casa/Arrays/IPosition.h>
+#include <casa/Arrays/Array.h>
+#include <casa/BasicSL/String.h>
 
 
 TSMCoordColumn::TSMCoordColumn (const TSMColumn& column, uInt axisNr)

@@ -26,31 +26,31 @@
 //#
 //# $Id$
 
-#include <aips/aips.h>
+#include <casa/aips.h>
 
-#include <aips/Arrays/Matrix.h>
-#include <aips/Arrays/MatrixMath.h>
-#include <aips/Arrays/ArrayMath.h>
-#include <aips/Arrays/Cube.h>
-#include <aips/BasicMath/Math.h>
-#include <aips/BasicSL/Complex.h>
-#include <aips/BasicSL/Constants.h>
-#include <aips/Utilities/Assert.h>
+#include <casa/Arrays/Matrix.h>
+#include <casa/Arrays/MatrixMath.h>
+#include <casa/Arrays/ArrayMath.h>
+#include <casa/Arrays/Cube.h>
+#include <casa/BasicMath/Math.h>
+#include <casa/BasicSL/Complex.h>
+#include <casa/BasicSL/Constants.h>
+#include <casa/Utilities/Assert.h>
 
-#include <aips/MeasurementSets/MSColumns.h>
+#include <ms/MeasurementSets/MSColumns.h>
 
-#include <trial/MSVis/VisSet.h>
-#include <trial/MSVis/VisBuffer.h>
-#include <trial/MSVis/VisSetUtil.h>
+#include <msvis/MSVis/VisSet.h>
+#include <msvis/MSVis/VisBuffer.h>
+#include <msvis/MSVis/VisSetUtil.h>
 
-#include <aips/Quanta/UnitMap.h>
-#include <aips/Quanta/UnitVal.h>
-#include <aips/Measures/Stokes.h>
-#include <aips/Quanta/MVAngle.h>
+#include <casa/Quanta/UnitMap.h>
+#include <casa/Quanta/UnitVal.h>
+#include <measures/Measures/Stokes.h>
+#include <casa/Quanta/MVAngle.h>
 
-#include <aips/Logging/LogIO.h>
+#include <casa/Logging/LogIO.h>
 
-#include <aips/iostream.h>
+#include <casa/iostream.h>
 
 // <summary> 
 // </summary>

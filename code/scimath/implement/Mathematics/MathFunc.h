@@ -32,12 +32,12 @@
 //# of specific single dependent variable functions.
 
 
-#include <aips/aips.h>
-#include <aips/BasicMath/Math.h>
-#include <aips/BasicSL/Constants.h>
-#include <aips/Exceptions/Error.h>
-#include <aips/Arrays/Vector.h>
-#include <aips/BasicSL/String.h>
+#include <casa/aips.h>
+#include <casa/BasicMath/Math.h>
+#include <casa/BasicSL/Constants.h>
+#include <casa/Exceptions/Error.h>
+#include <casa/Arrays/Vector.h>
+#include <casa/BasicSL/String.h>
 
 // <summary>
 // Error class for <linkto class=MathFunc>MathFunc</linkto> class

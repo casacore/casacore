@@ -25,9 +25,9 @@
 //#
 //# $Id$
 
-#include <aips/BasicSL/Constants.h>
-#include <aips/Exceptions/Error.h>
-#include <trial/Mathematics/MathFunc.h>
+#include <casa/BasicSL/Constants.h>
+#include <casa/Exceptions/Error.h>
+#include <scimath/Mathematics/MathFunc.h>
 
 //
 // This file implements an abstract base class of MathFunc objects

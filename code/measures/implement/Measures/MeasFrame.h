@@ -29,9 +29,9 @@
 #define AIPS_MEASFRAME_H
 
 //# Includes
-#include <aips/aips.h>
-#include <aips/Arrays/Vector.h>
-#include <aips/Measures/Measure.h>
+#include <casa/aips.h>
+#include <casa/Arrays/Vector.h>
+#include <measures/Measures/Measure.h>
 
 //# Forward Declarations
 class MVEpoch;
@@ -42,7 +42,7 @@ class MeasComet;
 class FrameRep;
 template <class T> class Vector;
 template <class Qtype> class Quantum;
-#include <aips/iosfwd.h>
+#include <casa/iosfwd.h>
 
 // <summary> Container for Measure frame </summary>
 

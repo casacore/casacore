@@ -29,7 +29,7 @@
 #if !defined(AIPS_MSFIELDENUMS_H)
 #define AIPS_MSFIELDENUMS_H
 
-#include <aips/aips.h>
+#include <casa/aips.h>
 
 // <use visibility=export>
 

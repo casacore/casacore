@@ -30,12 +30,12 @@
 #define AIPS_COMPONENTLIST_H
 
 
-#include <aips/aips.h>
-#include <trial/ComponentModels/SkyComponent.h>
-#include <aips/Measures/MDirection.h>
-#include <aips/Measures/MFrequency.h>
-#include <aips/Containers/Block.h>
-#include <aips/Tables/Table.h>
+#include <casa/aips.h>
+#include <components/ComponentModels/SkyComponent.h>
+#include <measures/Measures/MDirection.h>
+#include <measures/Measures/MFrequency.h>
+#include <casa/Containers/Block.h>
+#include <tables/Tables/Table.h>
 
 class String;
 class Path;

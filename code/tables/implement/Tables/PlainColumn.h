@@ -30,10 +30,10 @@
 
 
 //# Includes
-#include <aips/aips.h>
-#include <aips/Tables/BaseColumn.h>
-#include <aips/Tables/ColumnSet.h>
-#include <aips/Tables/TableRecord.h>
+#include <casa/aips.h>
+#include <tables/Tables/BaseColumn.h>
+#include <tables/Tables/ColumnSet.h>
+#include <tables/Tables/TableRecord.h>
 
 //# Forward Declarations
 class TableAttr;

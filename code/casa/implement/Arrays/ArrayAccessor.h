@@ -30,8 +30,8 @@
 #define AIPS_ARRAYACCESSOR_H
 
 //# Includes
-#include <aips/aips.h>
-#include <aips/Arrays/Array.h>
+#include <casa/aips.h>
+#include <casa/Arrays/Array.h>
 
 //# Forward Declarations
 template <class T> class ArrayBaseAccessor;

@@ -25,19 +25,19 @@
 //#
 //# $Id$
 
-#include <trial/Lattices/LELFunction.h>
-#include <trial/Lattices/LELFunctionEnums.h>
-#include <trial/Lattices/LELArray.h>
-#include <trial/Lattices/LELScalar.h>
-#include <trial/Lattices/LatticeFractile.h>
-#include <trial/Lattices/LatticeExpr.h>
-#include <trial/Lattices/MaskedLatticeIterator.h>
-#include <aips/Lattices/LatticeIterator.h>
-#include <aips/Arrays/Slicer.h>
-#include <aips/Arrays/Vector.h>
-#include <aips/Arrays/ArrayMath.h>
-#include <aips/BasicMath/Math.h>
-#include <aips/Exceptions/Error.h> 
+#include <lattices/Lattices/LELFunction.h>
+#include <lattices/Lattices/LELFunctionEnums.h>
+#include <lattices/Lattices/LELArray.h>
+#include <lattices/Lattices/LELScalar.h>
+#include <lattices/Lattices/LatticeFractile.h>
+#include <lattices/Lattices/LatticeExpr.h>
+#include <lattices/Lattices/MaskedLatticeIterator.h>
+#include <lattices/Lattices/LatticeIterator.h>
+#include <casa/Arrays/Slicer.h>
+#include <casa/Arrays/Vector.h>
+#include <casa/Arrays/ArrayMath.h>
+#include <casa/BasicMath/Math.h>
+#include <casa/Exceptions/Error.h> 
 
 
 

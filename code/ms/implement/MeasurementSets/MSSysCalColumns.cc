@@ -25,11 +25,11 @@
 //#
 //# $Id$
 
-#include <aips/MeasurementSets/MSSysCalColumns.h>
-#include <aips/MeasurementSets/MSSysCal.h>
-#include <aips/Tables/ColDescSet.h>
-#include <aips/Tables/TableDesc.h>
-#include <aips/BasicSL/String.h>
+#include <ms/MeasurementSets/MSSysCalColumns.h>
+#include <ms/MeasurementSets/MSSysCal.h>
+#include <tables/Tables/ColDescSet.h>
+#include <tables/Tables/TableDesc.h>
+#include <casa/BasicSL/String.h>
 
 ROMSSysCalColumns::ROMSSysCalColumns(const MSSysCal& msSysCal):
   isNull_p(True),

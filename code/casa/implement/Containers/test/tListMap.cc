@@ -27,11 +27,11 @@
 
 //# Includes
 
-#include <aips/Containers/ListMap.h>
-#include <aips/BasicSL/String.h>
-#include <aips/Containers/OrdPairIO.h>
-#include <aips/Containers/MapIO.h>
-#include <aips/iostream.h>
+#include <casa/Containers/ListMap.h>
+#include <casa/BasicSL/String.h>
+#include <casa/Containers/OrdPairIO.h>
+#include <casa/Containers/MapIO.h>
+#include <casa/iostream.h>
 
 //template<class key,class value> void print(const ListMap<key,value> &);
 

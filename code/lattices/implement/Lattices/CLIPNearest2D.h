@@ -30,8 +30,8 @@
 
 
 //# Includes
-#include <trial/Lattices/CLInterpolator2D.h>
-#include <trial/Arrays/AxesMapping.h>
+#include <lattices/Lattices/CLInterpolator2D.h>
+#include <casa/Arrays/AxesMapping.h>
 
 //# Forward Declarations
 template<class T> class Lattice;

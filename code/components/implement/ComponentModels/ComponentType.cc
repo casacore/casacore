@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#include <trial/ComponentModels/ComponentType.h>
-#include <aips/BasicSL/String.h>
+#include <components/ComponentModels/ComponentType.h>
+#include <casa/BasicSL/String.h>
 
 String ComponentType::name(ComponentType::Shape shapeEnum) {
   switch (shapeEnum) {

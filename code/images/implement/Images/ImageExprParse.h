@@ -30,11 +30,11 @@
 
 
 //# Includes
-#include <trial/Lattices/LatticeExpr.h>
-#include <aips/BasicSL/Complex.h>
-#include <aips/BasicSL/String.h>
-#include <aips/Utilities/DataType.h>
-#include <aips/vector.h>
+#include <lattices/Lattices/LatticeExpr.h>
+#include <casa/BasicSL/Complex.h>
+#include <casa/BasicSL/String.h>
+#include <casa/Utilities/DataType.h>
+#include <casa/vector.h>
 
 //# Forward Declarations
 template<class T> class Block;

@@ -25,20 +25,20 @@
 //#
 //# $Id$
 
-#include <aips/MeasurementSets/MSAntennaColumns.h>
-#include <aips/MeasurementSets/MSAntenna.h>
-#include <aips/Tables/ColDescSet.h>
-#include <aips/Tables/TableDesc.h>
-#include <aips/Tables/TableRecord.h>
+#include <ms/MeasurementSets/MSAntennaColumns.h>
+#include <ms/MeasurementSets/MSAntenna.h>
+#include <tables/Tables/ColDescSet.h>
+#include <tables/Tables/TableDesc.h>
+#include <tables/Tables/TableRecord.h>
 
-#include <aips/Arrays/Vector.h>
-#include <aips/Arrays/ArrayLogical.h>
-#include <aips/Exceptions/Error.h>
-#include <aips/Measures/MPosition.h>
-#include <aips/Quanta/MVPosition.h>
-#include <aips/Quanta/Quantum.h>
-#include <aips/Quanta/UnitVal.h>
-#include <aips/Utilities/Assert.h>
+#include <casa/Arrays/Vector.h>
+#include <casa/Arrays/ArrayLogical.h>
+#include <casa/Exceptions/Error.h>
+#include <measures/Measures/MPosition.h>
+#include <casa/Quanta/MVPosition.h>
+#include <casa/Quanta/Quantum.h>
+#include <casa/Quanta/UnitVal.h>
+#include <casa/Utilities/Assert.h>
 
 ROMSAntennaColumns::ROMSAntennaColumns(const MSAntenna& msAntenna):
   dishDiameter_p(msAntenna, MSAntenna::

@@ -26,17 +26,17 @@
 //# $Id$
 
 //# Includes
-#include <aips/Utilities/Template.h>
+#include <casa/Utilities/Template.h>
 
-#include <aips/ostream.h>
-#include <aips/fstream.h>
-#include <aips/typeinfo.h>
-#include <aips/stdlib.h>
-#include <aips/sstream.h>
+#include <casa/ostream.h>
+#include <casa/fstream.h>
+#include <casa/typeinfo.h>
+#include <casa/stdlib.h>
+#include <casa/sstream.h>
 
-#include <aips/Arrays/Vector.h>
-#include <aips/Utilities/Regex.h>
-#include <aips/Utilities/Sort.h>
+#include <casa/Arrays/Vector.h>
+#include <casa/Utilities/Regex.h>
+#include <casa/Utilities/Sort.h>
 
 //# Static constants
 // Patterns to analyse an input line

@@ -30,10 +30,10 @@
 #define AIPS_COMBIPARAM_H
 
 //# Includes
-#include <aips/aips.h>
-#include <aips/Functionals/Function.h>
-#include <aips/Containers/Block.h>
-#include <aips/Utilities/Assert.h>
+#include <casa/aips.h>
+#include <scimath/Functionals/Function.h>
+#include <casa/Containers/Block.h>
+#include <casa/Utilities/Assert.h>
 
 //# Forward declarations
 

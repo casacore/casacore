@@ -31,9 +31,9 @@
 # include <stdlib.h>
 # include <unistd.h>
 # include <fcntl.h>
-#include <aips/aips.h>
+#include <casa/aips.h>
 
-#include <aips/FITS/FITSError.h>
+#include <fits/FITS/FITSError.h>
 
 //<category lib=aips module=FITS sect="Blocked I/O">   
 //<summary> fixed-length blocked sequentual I/O base class </summary>

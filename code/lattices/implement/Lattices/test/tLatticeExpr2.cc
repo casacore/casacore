@@ -25,23 +25,23 @@
 //#
 //# $Id$
 
-#include <trial/Lattices/LatticeExpr.h>
-#include <aips/Lattices/PagedArray.h>
-#include <trial/Lattices/SubLattice.h>
-#include <aips/Lattices/LatticeIterator.h>
-#include <aips/Lattices/TiledShape.h>
-#include <trial/Lattices/LCPagedMask.h>
-#include <aips/Tables/Table.h>
-#include <aips/Tables/TableDesc.h>
-#include <aips/Tables/SetupNewTab.h>
-#include <aips/Arrays/Array.h>
-#include <aips/Arrays/ArrayMath.h>
-#include <aips/Arrays/ArrayLogical.h>
-#include <aips/Arrays/IPosition.h>
-#include <aips/Inputs/Input.h>
-#include <aips/OS/Timer.h>
-#include <aips/Exceptions/Error.h>
-#include <aips/iostream.h>
+#include <lattices/Lattices/LatticeExpr.h>
+#include <lattices/Lattices/PagedArray.h>
+#include <lattices/Lattices/SubLattice.h>
+#include <lattices/Lattices/LatticeIterator.h>
+#include <lattices/Lattices/TiledShape.h>
+#include <lattices/Lattices/LCPagedMask.h>
+#include <tables/Tables/Table.h>
+#include <tables/Tables/TableDesc.h>
+#include <tables/Tables/SetupNewTab.h>
+#include <casa/Arrays/Array.h>
+#include <casa/Arrays/ArrayMath.h>
+#include <casa/Arrays/ArrayLogical.h>
+#include <casa/Arrays/IPosition.h>
+#include <casa/Inputs/Input.h>
+#include <casa/OS/Timer.h>
+#include <casa/Exceptions/Error.h>
+#include <casa/iostream.h>
 
 
 main(int argc, char *argv[])

@@ -26,9 +26,9 @@
 //# $Id$
 
 //# Includes
-#include <aips/Mathematics/AutoDiffMath.h>
-#include <aips/Arrays/ArrayMath.h>
-#include <aips/BasicSL/Constants.h>
+#include <scimath/Mathematics/AutoDiffMath.h>
+#include <casa/Arrays/ArrayMath.h>
+#include <casa/BasicSL/Constants.h>
 
 // Unary arithmetic operators.
 template<class T> AutoDiff<T> operator+(const AutoDiff<T> &other) { 

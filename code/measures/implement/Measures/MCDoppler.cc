@@ -26,7 +26,7 @@
 //# $Id$
 
 //# Includes
-#include <aips/Measures/MCDoppler.h>
+#include <measures/Measures/MCDoppler.h>
 
 //# Statics
 Bool MCDoppler::stateMade_p = False;

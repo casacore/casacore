@@ -27,9 +27,9 @@
 
 
 //# Includes
-#include <aips/BasicSL/Complex.h>
-#include <aips/BasicMath/Math.h>
-#include <aips/BasicSL/Constants.h>
+#include <casa/BasicSL/Complex.h>
+#include <casa/BasicMath/Math.h>
+#include <casa/BasicSL/Constants.h>
 
 // Math functions
 /// Should be in stl

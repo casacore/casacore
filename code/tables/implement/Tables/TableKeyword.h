@@ -29,9 +29,9 @@
 #define AIPS_TABLEKEYWORD_H
 
 //# Includes
-#include <aips/aips.h>
-#include <aips/Tables/TableAttr.h>
-#include <aips/BasicSL/String.h>
+#include <casa/aips.h>
+#include <tables/Tables/TableAttr.h>
+#include <casa/BasicSL/String.h>
 
 //# Forward Declarations
 class Table;

@@ -30,9 +30,9 @@
 
 
 //# Includes
-#include <aips/aips.h>
-#include <aips/Tables/TableColumn.h>
-#include <aips/Tables/ColumnCache.h>
+#include <casa/aips.h>
+#include <tables/Tables/TableColumn.h>
+#include <tables/Tables/ColumnCache.h>
 
 //# Forward Declarations
 class BaseColumn;

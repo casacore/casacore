@@ -25,12 +25,12 @@
 //#
 //# $Id$
 
-#include <trial/Lattices/LELUnary.h>
-#include <trial/Lattices/LELArray.h>
-#include <aips/Arrays/Slicer.h>
-#include <aips/Arrays/Array.h>
-#include <aips/Arrays/ArrayLogical.h>
-#include <aips/Exceptions/Error.h> 
+#include <lattices/Lattices/LELUnary.h>
+#include <lattices/Lattices/LELArray.h>
+#include <casa/Arrays/Slicer.h>
+#include <casa/Arrays/Array.h>
+#include <casa/Arrays/ArrayLogical.h>
+#include <casa/Exceptions/Error.h> 
 
 
 LELUnaryBool::LELUnaryBool(const LELUnaryEnums::Operation op,

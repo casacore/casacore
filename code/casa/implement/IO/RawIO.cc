@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#include <aips/IO/RawIO.h>
-#include <aips/IO/ByteIO.h>
+#include <casa/IO/RawIO.h>
+#include <casa/IO/ByteIO.h>
 
 RawIO::RawIO (ByteIO* byteIO, Bool takeOver)
 : TypeIO (byteIO, takeOver)

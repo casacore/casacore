@@ -26,14 +26,14 @@
 //# $Id$
 
 
-#include <trial/Images/WCConcatenation.h>
-#include <trial/Images/WCBox.h>
-#include <trial/Images/ImageRegion.h>
-#include <trial/Lattices/LCConcatenation.h>
-#include <aips/Tables/TableRecord.h>
-#include <aips/Utilities/GenSort.h>
-#include <aips/Utilities/Assert.h>
-#include <aips/Exceptions/Error.h>
+#include <images/Images/WCConcatenation.h>
+#include <images/Images/WCBox.h>
+#include <images/Images/ImageRegion.h>
+#include <lattices/Lattices/LCConcatenation.h>
+#include <tables/Tables/TableRecord.h>
+#include <casa/Utilities/GenSort.h>
+#include <casa/Utilities/Assert.h>
+#include <casa/Exceptions/Error.h>
 
 
 WCConcatenation::WCConcatenation (const PtrBlock<const ImageRegion*>& regions,

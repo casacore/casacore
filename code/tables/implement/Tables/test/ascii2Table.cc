@@ -27,15 +27,15 @@
 
 //# Includes
 
-#include <aips/Tables/ReadAsciiTable.h>
-#include <aips/Tables/Table.h>
-#include <aips/Tables/TableDesc.h>
-#include <aips/Tables/TableColumn.h>
-#include <aips/Tables/TableRecord.h>
-#include <aips/Arrays/Vector.h>
-#include <aips/Arrays/ArrayMath.h>
-#include <aips/Exceptions/Error.h>
-#include <aips/iostream.h>
+#include <tables/Tables/ReadAsciiTable.h>
+#include <tables/Tables/Table.h>
+#include <tables/Tables/TableDesc.h>
+#include <tables/Tables/TableColumn.h>
+#include <tables/Tables/TableRecord.h>
+#include <casa/Arrays/Vector.h>
+#include <casa/Arrays/ArrayMath.h>
+#include <casa/Exceptions/Error.h>
+#include <casa/iostream.h>
 
 // <summary>
 // program to load an ASCII file into a table

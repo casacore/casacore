@@ -25,12 +25,12 @@
 //#
 //# $Id$
 
-#include <aips/Tables/RefRows.h>
-#include <aips/Arrays/ArrayMath.h>
-#include <aips/Arrays/ArrayIO.h>
-#include <aips/OS/Timer.h>
-#include <aips/Utilities/Assert.h>
-#include <aips/iostream.h>
+#include <tables/Tables/RefRows.h>
+#include <casa/Arrays/ArrayMath.h>
+#include <casa/Arrays/ArrayIO.h>
+#include <casa/OS/Timer.h>
+#include <casa/Utilities/Assert.h>
+#include <casa/iostream.h>
 
 // <summary>
 // Test program for class RefRows.

@@ -26,9 +26,9 @@
 //#
 //# $Id$
 
-#include <aips/System/Choice.h>
-#include <aips/Arrays/Vector.h>
-#include <aips/Utilities/Assert.h>
+#include <casa/System/Choice.h>
+#include <casa/Arrays/Vector.h>
+#include <casa/Utilities/Assert.h>
 #include <iostream>
 
 int main()

@@ -30,24 +30,24 @@
 #define AIPS_FUNCTIONALS_H
 
 //# Base classes
-#include <aips/BasicMath/Functional.h>
-#include <aips/Functionals/FunctionTraits.h>
-#include <aips/Functionals/FunctionParam.h>
-#include <aips/Functionals/Function.h>
-#include <aips/Functionals/Function1D.h>
+#include <casa/BasicMath/Functional.h>
+#include <scimath/Functionals/FunctionTraits.h>
+#include <scimath/Functionals/FunctionParam.h>
+#include <scimath/Functionals/Function.h>
+#include <scimath/Functionals/Function1D.h>
 
 //# Combination methods
-#include <aips/Functionals/FunctionWrapper.h>
-#include <aips/Functionals/CombiFunction.h>
-#include <aips/Functionals/CompoundFunction.h>
+#include <scimath/Functionals/FunctionWrapper.h>
+#include <scimath/Functionals/CombiFunction.h>
+#include <scimath/Functionals/CompoundFunction.h>
 
 /// remainder will be removed
-#include <aips/Functionals/SampledFunctional.h>
+#include <scimath/Functionals/SampledFunctional.h>
 
 //# 1-D Functions
-#include <aips/Functionals/Interpolate1D.h>
-#include <aips/Functionals/ArraySampledFunctional.h>
-#include <aips/Functionals/ScalarSampledFunctional.h>
+#include <scimath/Functionals/Interpolate1D.h>
+#include <scimath/Functionals/ArraySampledFunctional.h>
+#include <scimath/Functionals/ScalarSampledFunctional.h>
 
 // <module>
 //

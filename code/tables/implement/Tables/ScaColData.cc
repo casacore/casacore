@@ -25,17 +25,17 @@
 //#
 //# $Id$
 
-#include <aips/Tables/ScaColData.h>
-#include <aips/Tables/ScaColDesc.h>
-#include <aips/Tables/ColumnSet.h>
-#include <aips/Tables/ColumnDesc.h>
-#include <aips/Tables/RefRows.h>
-#include <aips/Arrays/Vector.h>
-#include <aips/Tables/DataManager.h>
-#include <aips/Utilities/ValType.h>
-#include <aips/Tables/TableError.h>
-#include <aips/Utilities/Sort.h>
-#include <aips/IO/AipsIO.h>
+#include <tables/Tables/ScaColData.h>
+#include <tables/Tables/ScaColDesc.h>
+#include <tables/Tables/ColumnSet.h>
+#include <tables/Tables/ColumnDesc.h>
+#include <tables/Tables/RefRows.h>
+#include <casa/Arrays/Vector.h>
+#include <tables/Tables/DataManager.h>
+#include <casa/Utilities/ValType.h>
+#include <tables/Tables/TableError.h>
+#include <casa/Utilities/Sort.h>
+#include <casa/IO/AipsIO.h>
 
 
 

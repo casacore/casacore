@@ -25,20 +25,20 @@
 //#
 //# $Id$
 
-#include <aips/Tables/StManAipsIO.h>
-#include <aips/Tables/StArrAipsIO.h>
-#include <aips/Tables/StIndArrAIO.h>
-#include <aips/Tables/StArrayFile.h>
-#include <aips/Tables/RefRows.h>
-#include <aips/Arrays/Vector.h>
-#include <aips/BasicSL/Complex.h>
-#include <aips/BasicMath/Math.h>
-#include <aips/BasicSL/String.h>
-#include <aips/Utilities/Copy.h>
-#include <aips/Utilities/DataType.h>
-#include <aips/IO/AipsIO.h>
-#include <aips/OS/DOos.h>
-#include <aips/Tables/DataManError.h>
+#include <tables/Tables/StManAipsIO.h>
+#include <tables/Tables/StArrAipsIO.h>
+#include <tables/Tables/StIndArrAIO.h>
+#include <tables/Tables/StArrayFile.h>
+#include <tables/Tables/RefRows.h>
+#include <casa/Arrays/Vector.h>
+#include <casa/BasicSL/Complex.h>
+#include <casa/BasicMath/Math.h>
+#include <casa/BasicSL/String.h>
+#include <casa/Utilities/Copy.h>
+#include <casa/Utilities/DataType.h>
+#include <casa/IO/AipsIO.h>
+#include <casa/OS/DOos.h>
+#include <tables/Tables/DataManError.h>
 
 
 #define EXTBLSZ 32

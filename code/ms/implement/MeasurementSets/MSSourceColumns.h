@@ -28,20 +28,20 @@
 #if !defined(AIPS_MSSOURCECOLUMNS_H)
 #define AIPS_MSSOURCECOLUMNS_H
 
-#include <aips/aips.h>
-#include <aips/Measures/MDirection.h>
-#include <aips/Measures/MEpoch.h>
-#include <aips/Measures/MFrequency.h>
-#include <aips/Measures/MPosition.h>
-#include <aips/Measures/MRadialVelocity.h>
-#include <aips/TableMeasures/ArrayMeasColumn.h>
-#include <aips/TableMeasures/ArrayQuantColumn.h>
-#include <aips/TableMeasures/ScalarMeasColumn.h>
-#include <aips/TableMeasures/ScalarQuantColumn.h>
-#include <aips/Tables/ArrayColumn.h>
-#include <aips/Tables/ScalarColumn.h>
-#include <aips/Tables/TableRecord.h>
-#include <aips/BasicSL/String.h>
+#include <casa/aips.h>
+#include <measures/Measures/MDirection.h>
+#include <measures/Measures/MEpoch.h>
+#include <measures/Measures/MFrequency.h>
+#include <measures/Measures/MPosition.h>
+#include <measures/Measures/MRadialVelocity.h>
+#include <measures/TableMeasures/ArrayMeasColumn.h>
+#include <measures/TableMeasures/ArrayQuantColumn.h>
+#include <measures/TableMeasures/ScalarMeasColumn.h>
+#include <measures/TableMeasures/ScalarQuantColumn.h>
+#include <tables/Tables/ArrayColumn.h>
+#include <tables/Tables/ScalarColumn.h>
+#include <tables/Tables/TableRecord.h>
+#include <casa/BasicSL/String.h>
 
 class MSSource;
 

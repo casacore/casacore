@@ -30,11 +30,11 @@
 
 
 //# Includes
-#include <aips/aips.h>
-#include <aips/Tables/BaseColumn.h>
-#include <aips/Tables/BaseTable.h>
-#include <aips/BasicSL/String.h>
-#include <aips/Arrays/IPosition.h>
+#include <casa/aips.h>
+#include <tables/Tables/BaseColumn.h>
+#include <tables/Tables/BaseTable.h>
+#include <casa/BasicSL/String.h>
+#include <casa/Arrays/IPosition.h>
 
 //# Forward Declarations
 class Table;

@@ -30,8 +30,8 @@
 #define AIPS_AUTODIFFX_H
 
 //# Includes
-#include <aips/aips.h>
-#include <aips/Mathematics/AutoDiff.h>
+#include <casa/aips.h>
+#include <scimath/Mathematics/AutoDiff.h>
 
 //# Forward declarations
 template <class T> class Vector;

@@ -30,15 +30,15 @@
 
 
 //# Includes
-#include <aips/aips.h>
-#include <aips/Arrays/Vector.h>
-#include <aips/Quanta/Unit.h>
-#include <aips/Quanta/Quantum.h>
-#include <aips/Quanta/MeasValue.h>
+#include <casa/aips.h>
+#include <casa/Arrays/Vector.h>
+#include <casa/Quanta/Unit.h>
+#include <casa/Quanta/Quantum.h>
+#include <casa/Quanta/MeasValue.h>
 
 //# Forward Declarations
 class RotMatrix;
-#include <aips/iosfwd.h>
+#include <casa/iosfwd.h>
 
 //# Constants (SUN compiler does not accept non-simple default arguments)
 

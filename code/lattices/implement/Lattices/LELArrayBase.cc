@@ -26,7 +26,7 @@
 //# $Id$
 
 
-#include <trial/Lattices/LELArrayBase.h>
+#include <lattices/Lattices/LELArrayBase.h>
 
 
 LELArrayBase::LELArrayBase (const LELArrayBase& other)

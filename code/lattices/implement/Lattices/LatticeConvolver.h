@@ -30,10 +30,10 @@
 #define AIPS_LATTICECONVOLVER_H
 
 //# Includes
-#include <aips/aips.h>
-#include <aips/Mathematics/NumericTraits.h>
-#include <aips/Lattices/TempLattice.h>
-#include <aips/Arrays/IPosition.h>
+#include <casa/aips.h>
+#include <scimath/Mathematics/NumericTraits.h>
+#include <lattices/Lattices/TempLattice.h>
+#include <casa/Arrays/IPosition.h>
 
 //# Forward Declarations
 //template <class T> class LatticeConvolver;

@@ -26,29 +26,29 @@
 //# $Id$
 
 
-#include <trial/Images/ImageFFT.h>
+#include <images/Images/ImageFFT.h>
 
 
-#include <aips/Arrays/Matrix.h>
-#include <aips/Arrays/Vector.h>
-#include <aips/Exceptions/Error.h>
-#include <aips/Logging/LogIO.h>
-#include <aips/Quanta/Unit.h>
-#include <aips/Utilities/Assert.h>
-#include <aips/iostream.h>
-#include <trial/Coordinates/CoordinateSystem.h>
-#include <trial/Coordinates/DirectionCoordinate.h>
-#include <trial/Coordinates/LinearCoordinate.h>
-#include <trial/Coordinates/SpectralCoordinate.h>
-#include <trial/Coordinates/CoordinateUtil.h>
-#include <trial/Lattices/LCBox.h>
-#include <trial/Lattices/LatticeFFT.h>
-#include <trial/Lattices/LatticeExpr.h>
-#include <trial/Lattices/SubLattice.h>
-#include <aips/Lattices/LatticeStepper.h>
-#include <trial/Lattices/MaskedLatticeIterator.h>
-#include <trial/Images/ImageInterface.h>
-#include <trial/Images/TempImage.h>
+#include <casa/Arrays/Matrix.h>
+#include <casa/Arrays/Vector.h>
+#include <casa/Exceptions/Error.h>
+#include <casa/Logging/LogIO.h>
+#include <casa/Quanta/Unit.h>
+#include <casa/Utilities/Assert.h>
+#include <casa/iostream.h>
+#include <coordinates/Coordinates/CoordinateSystem.h>
+#include <coordinates/Coordinates/DirectionCoordinate.h>
+#include <coordinates/Coordinates/LinearCoordinate.h>
+#include <coordinates/Coordinates/SpectralCoordinate.h>
+#include <coordinates/Coordinates/CoordinateUtil.h>
+#include <lattices/Lattices/LCBox.h>
+#include <lattices/Lattices/LatticeFFT.h>
+#include <lattices/Lattices/LatticeExpr.h>
+#include <lattices/Lattices/SubLattice.h>
+#include <lattices/Lattices/LatticeStepper.h>
+#include <lattices/Lattices/MaskedLatticeIterator.h>
+#include <images/Images/ImageInterface.h>
+#include <images/Images/TempImage.h>
 
 
 

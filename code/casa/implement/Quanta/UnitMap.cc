@@ -27,10 +27,10 @@
 
 //# Includes
 
-#include <aips/Quanta/UnitMap.h>
-#include <aips/Utilities/MUString.h>
-#include <aips/Utilities/Regex.h>
-#include <aips/iostream.h>
+#include <casa/Quanta/UnitMap.h>
+#include <casa/Utilities/MUString.h>
+#include <casa/Utilities/Regex.h>
+#include <casa/iostream.h>
 
 void UnitMap::initUM() {
   static Bool needInit = True;

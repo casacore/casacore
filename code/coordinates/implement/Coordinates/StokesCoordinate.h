@@ -29,11 +29,11 @@
 #if !defined(AIPS_STOKES_COORDINATE_H)
 #define AIPS_STOKES_COORDINATE_H
 
-#include <aips/aips.h>
-#include <trial/Coordinates/Coordinate.h>
-#include <aips/Measures/Stokes.h>
-#include <aips/Containers/Block.h>
-#include <aips/Arrays/Vector.h>
+#include <casa/aips.h>
+#include <coordinates/Coordinates/Coordinate.h>
+#include <measures/Measures/Stokes.h>
+#include <casa/Containers/Block.h>
+#include <casa/Arrays/Vector.h>
 
 
 // <summary>

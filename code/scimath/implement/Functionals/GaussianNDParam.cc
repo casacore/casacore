@@ -25,14 +25,14 @@
 //#
 //# $Id$
 
-#include <aips/Functionals/GaussianNDParam.h>
-#include <aips/Arrays/ArrayMath.h>
-#include <aips/Mathematics/MatrixMathLA.h>
-#include <aips/Arrays/ArrayLogical.h>
-#include <aips/Exceptions/Error.h>
-#include <aips/BasicMath/Math.h>
-#include <aips/BasicSL/Constants.h>
-#include <aips/Utilities/Assert.h>
+#include <scimath/Functionals/GaussianNDParam.h>
+#include <casa/Arrays/ArrayMath.h>
+#include <scimath/Mathematics/MatrixMathLA.h>
+#include <casa/Arrays/ArrayLogical.h>
+#include <casa/Exceptions/Error.h>
+#include <casa/BasicMath/Math.h>
+#include <casa/BasicSL/Constants.h>
+#include <casa/Utilities/Assert.h>
 
 template<class T> 
 GaussianNDParam<T>::GaussianNDParam() : 

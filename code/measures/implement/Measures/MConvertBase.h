@@ -30,14 +30,14 @@
 #define AIPS_MCONVERTBASE_H
 
 //# Includes
-#include <aips/aips.h>
+#include <casa/aips.h>
 
 //# Forward Declarations
 class Unit;
 class MeasValue;
 class Measure;
 class MRBase;
-#include <aips/iosfwd.h>
+#include <casa/iosfwd.h>
 
 //# Typedefs
 

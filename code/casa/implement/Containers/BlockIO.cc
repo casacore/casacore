@@ -25,10 +25,10 @@
 //#
 //# $Id$
 
-#include <aips/Containers/Block.h>
-#include <aips/Containers/BlockIO.h>
-#include <aips/IO/AipsIOCarray.h>
-#include <aips/iostream.h>
+#include <casa/Containers/Block.h>
+#include <casa/Containers/BlockIO.h>
+#include <casa/IO/AipsIOCarray.h>
+#include <casa/iostream.h>
 
 template<class T> void putBlock (AipsIO& ios, const Block<T>& blk, Int nr)
 {

@@ -26,15 +26,15 @@
 //# $Id$
 
 //# Includes
-#include <aips/Tables/ForwardColRow.h>
-#include <aips/Tables/Table.h>
-#include <aips/Tables/SetupNewTab.h>
-#include <aips/Tables/TableColumn.h>
-#include <aips/Tables/BaseColumn.h>
-#include <aips/Tables/ColumnDesc.h>
-#include <aips/Tables/DataManError.h>
-#include <aips/Tables/TableRecord.h>
-#include <aips/Containers/Record.h>
+#include <tables/Tables/ForwardColRow.h>
+#include <tables/Tables/Table.h>
+#include <tables/Tables/SetupNewTab.h>
+#include <tables/Tables/TableColumn.h>
+#include <tables/Tables/BaseColumn.h>
+#include <tables/Tables/ColumnDesc.h>
+#include <tables/Tables/DataManError.h>
+#include <tables/Tables/TableRecord.h>
+#include <casa/Containers/Record.h>
 
 
 ForwardColumnIndexedRowEngine::ForwardColumnIndexedRowEngine

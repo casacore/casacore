@@ -26,28 +26,28 @@
 //# $Id$
 
 //# Includes
-#include <trial/MeasurementSets/SDFITSHandler.h>
+#include <ms/MeasurementSets/SDFITSHandler.h>
 
-#include <aips/MeasurementSets/MeasurementSet.h>
-#include <aips/Arrays/ArrayLogical.h>
-#include <aips/Arrays/Vector.h>
-#include <aips/Utilities/Regex.h>
-#include <aips/Utilities/Assert.h>
-#include <aips/Exceptions/Error.h>
-#include <aips/BasicSL/String.h>
-#include <aips/Tables/Table.h>
-#include <aips/Tables/TableRecord.h>
-#include <aips/Tables/TableDesc.h>
-#include <aips/Tables/SetupNewTab.h>
-#include <aips/Tables/StandardStMan.h>
-#include <aips/Tables/ScaColDesc.h>
-#include <aips/Tables/ArrColDesc.h>
-#include <aips/Tables/StandardStMan.h>
-#include <aips/Containers/Record.h>
-#include <trial/FITS/CopyRecord.h>
-#include <aips/Logging/LogIO.h>
-#include <aips/TableMeasures/TableMeasDesc.h>
-#include <aips/TableMeasures/TableQuantumDesc.h>
+#include <ms/MeasurementSets/MeasurementSet.h>
+#include <casa/Arrays/ArrayLogical.h>
+#include <casa/Arrays/Vector.h>
+#include <casa/Utilities/Regex.h>
+#include <casa/Utilities/Assert.h>
+#include <casa/Exceptions/Error.h>
+#include <casa/BasicSL/String.h>
+#include <tables/Tables/Table.h>
+#include <tables/Tables/TableRecord.h>
+#include <tables/Tables/TableDesc.h>
+#include <tables/Tables/SetupNewTab.h>
+#include <tables/Tables/StandardStMan.h>
+#include <tables/Tables/ScaColDesc.h>
+#include <tables/Tables/ArrColDesc.h>
+#include <tables/Tables/StandardStMan.h>
+#include <casa/Containers/Record.h>
+#include <fits/FITS/CopyRecord.h>
+#include <casa/Logging/LogIO.h>
+#include <measures/TableMeasures/TableMeasDesc.h>
+#include <measures/TableMeasures/TableQuantumDesc.h>
 
 SDFITSHandler::SDFITSHandler() 
     : tab_p(0), copier_p(0)

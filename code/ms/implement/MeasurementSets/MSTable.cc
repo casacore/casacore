@@ -25,9 +25,9 @@
 //#
 //# $Id$
 
-#include <aips/MeasurementSets/MSTable.h>
-#include <aips/MeasurementSets/MSTableImpl.h>
-#include <aips/Tables/TableRecord.h>
+#include <ms/MeasurementSets/MSTable.h>
+#include <ms/MeasurementSets/MSTableImpl.h>
+#include <tables/Tables/TableRecord.h>
 
 //# These statics cannot be compiled with egcs 1.0.3a.
 #if !defined(__GNUG__) || (defined(__GNUG__) && (__GNUG__ == 2) && (__GNUC_MINOR__ >= 91)) || defined(AIPS_GCC3)

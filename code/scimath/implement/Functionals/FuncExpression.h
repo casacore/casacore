@@ -30,13 +30,13 @@
 #define AIPS_FUNCEXPRESSION_H
 
 //# Includes
-#include <aips/aips.h>
-#include <aips/BasicSL/String.h>
-#include <trial/Functionals/FuncExprData.h>
-#include <aips/vector.h>
+#include <casa/aips.h>
+#include <casa/BasicSL/String.h>
+#include <scimath/Functionals/FuncExprData.h>
+#include <casa/vector.h>
 
 //# Forward Declarations
-#include <aips/iosfwd.h>
+#include <casa/iosfwd.h>
 class MUString;
 template <class T> class Vector;
 

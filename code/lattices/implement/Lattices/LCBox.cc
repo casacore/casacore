@@ -25,14 +25,14 @@
 //#
 //# $Id$
 
-#include <trial/Lattices/LCBox.h>
-#include <aips/BasicMath/Math.h>
-#include <aips/Arrays/ArrayMath.h>
-#include <aips/Tables/TableRecord.h>
-#include <aips/Utilities/Assert.h>
-#include <aips/Exceptions/Error.h>
-#include <aips/iostream.h>
-#include <aips/sstream.h>
+#include <lattices/Lattices/LCBox.h>
+#include <casa/BasicMath/Math.h>
+#include <casa/Arrays/ArrayMath.h>
+#include <tables/Tables/TableRecord.h>
+#include <casa/Utilities/Assert.h>
+#include <casa/Exceptions/Error.h>
+#include <casa/iostream.h>
+#include <casa/sstream.h>
 
 LCBox::LCBox()
 {}

@@ -25,24 +25,24 @@
 //#
 //# $Id$
 
-#include <aips/aips.h>
-#include <aips/Arrays/Array.h>
-#include <aips/Containers/Record.h>
-#include <aips/Inputs/Input.h>
-#include <aips/BasicMath/Math.h>
-#include <aips/OS/Path.h>
-#include <aips/System/Aipsrc.h>
-#include <aips/BasicSL/String.h>
-#include <aips/Utilities/DataType.h>
-#include <aips/Exceptions/Error.h>
-#include <aips/Logging/LogIO.h>
+#include <casa/aips.h>
+#include <casa/Arrays/Array.h>
+#include <casa/Containers/Record.h>
+#include <casa/Inputs/Input.h>
+#include <casa/BasicMath/Math.h>
+#include <casa/OS/Path.h>
+#include <casa/System/Aipsrc.h>
+#include <casa/BasicSL/String.h>
+#include <casa/Utilities/DataType.h>
+#include <casa/Exceptions/Error.h>
+#include <casa/Logging/LogIO.h>
 
-#include <trial/Images/MIRIADImage.h>
-#include <trial/Images/ImageInterface.h>
-#include <trial/Images/ImageFITSConverter.h>
-#include <trial/Coordinates/CoordinateSystem.h>
+#include <images/Images/MIRIADImage.h>
+#include <images/Images/ImageInterface.h>
+#include <images/Images/ImageFITSConverter.h>
+#include <coordinates/Coordinates/CoordinateSystem.h>
 
-#include <aips/iostream.h>
+#include <casa/iostream.h>
 
 Bool allNear (const Array<Float>& data, const Array<Bool>& dataMask,
               const Array<Float>& mir, const Array<Bool>& mirMask, Float tol=1.0e-5);

@@ -30,9 +30,9 @@
 #define AIPS_SIMBUTTERWORTHBANDPASS_H
 
 //# Includes
-#include <aips/aips.h>
-#include <aips/Containers/Block.h>
-#include <aips/Functionals/Function1D.h>
+#include <casa/aips.h>
+#include <casa/Containers/Block.h>
+#include <scimath/Functionals/Function1D.h>
 
 //# Forward Declarations
 template<class T> class Vector;

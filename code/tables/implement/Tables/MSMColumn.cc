@@ -25,15 +25,15 @@
 //#
 //# $Id$
 
-#include <aips/Tables/MSMColumn.h>
-#include <aips/Tables/RefRows.h>
-#include <aips/Arrays/Vector.h>
-#include <aips/BasicSL/Complex.h>
-#include <aips/BasicMath/Math.h>
-#include <aips/BasicSL/String.h>
-#include <aips/Utilities/Copy.h>
-#include <aips/Utilities/DataType.h>
-#include <aips/Tables/DataManError.h>
+#include <tables/Tables/MSMColumn.h>
+#include <tables/Tables/RefRows.h>
+#include <casa/Arrays/Vector.h>
+#include <casa/BasicSL/Complex.h>
+#include <casa/BasicMath/Math.h>
+#include <casa/BasicSL/String.h>
+#include <casa/Utilities/Copy.h>
+#include <casa/Utilities/DataType.h>
+#include <tables/Tables/DataManError.h>
 
 
 #define EXTBLSZ 32

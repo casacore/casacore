@@ -28,13 +28,13 @@
 #if !defined(AIPS_TYPEIO_H)
 #define AIPS_TYPEIO_H
 
-#include <aips/aips.h>
-#include <aips/IO/ByteIO.h>
-#include <aips/Utilities/CountedPtr.h>
+#include <casa/aips.h>
+#include <casa/IO/ByteIO.h>
+#include <casa/Utilities/CountedPtr.h>
 //# The following should be a forward declaration. But our Complex & DComplex
 //# classes are a typedef hence this does not work. Replace the following with
 //# forward declarations when Complex and DComplex are no longer typedefs.
-#include <aips/BasicSL/Complex.h>
+#include <casa/BasicSL/Complex.h>
 
 class String;
 

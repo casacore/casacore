@@ -26,10 +26,10 @@
 //# $Id$
 
 //# Includes
-#include <aips/Tables/DataManAccessor.h>
-#include <aips/Tables/Table.h>
-#include <aips/Tables/DataManError.h>
-#include <aips/BasicSL/String.h>
+#include <tables/Tables/DataManAccessor.h>
+#include <tables/Tables/Table.h>
+#include <tables/Tables/DataManError.h>
+#include <casa/BasicSL/String.h>
 
 
 DataManager* RODataManAccessor::findDataManager (const Table& table,

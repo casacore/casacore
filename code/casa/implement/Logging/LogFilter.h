@@ -30,7 +30,7 @@
 #define AIPS_LOGFILTER_H
 
 //# Includes
-#include <aips/Logging/LogFilterInterface.h>
+#include <casa/Logging/LogFilterInterface.h>
 
 
 // <summary>

@@ -29,7 +29,7 @@
 #define AIPS_EXCEPTIONS_H
 
 
-#include <aips/Exceptions/Error.h>
+#include <casa/Exceptions/Error.h>
 
 // <module>
 //
@@ -58,7 +58,7 @@
 // <em>This example shows how a more specific exception can be caught as
 // a more general exception:</em>
 // <srcblock>
-//     #include <aips/Exceptions.h>
+//     #include <casa/Exceptions.h>
 // #include <iostream>
 //     main() {
 //         try {

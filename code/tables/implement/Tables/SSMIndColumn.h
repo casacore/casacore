@@ -30,10 +30,10 @@
 
 
 //# Includes
-#include <aips/aips.h>
-#include <aips/Tables/SSMColumn.h>
-#include <aips/Tables/StIndArray.h>
-#include <aips/Arrays/IPosition.h>
+#include <casa/aips.h>
+#include <tables/Tables/SSMColumn.h>
+#include <tables/Tables/StIndArray.h>
+#include <casa/Arrays/IPosition.h>
 
 //# Forward Declarations
 class StManArrayFile;

@@ -26,11 +26,11 @@
 //# $Id$
 
 //# Includes
-#include <aips/Utilities/Sort.h>
-#include <aips/Arrays/Vector.h>
-#include <aips/OS/Timer.h>
-#include <aips/sstream.h>
-#include <aips/stdlib.h>
+#include <casa/Utilities/Sort.h>
+#include <casa/Arrays/Vector.h>
+#include <casa/OS/Timer.h>
+#include <casa/sstream.h>
+#include <casa/stdlib.h>
 
 //# Forward Declarations
 Bool sortarr (Int*, uInt nr, int);

@@ -29,11 +29,11 @@
 #if !defined(AIPS_GAUSSIANSHAPE_H)
 #define AIPS_GAUSSIANSHAPE_H
 
-#include <aips/aips.h>
-#include <aips/Functionals/Gaussian2D.h>
-#include <aips/BasicSL/Complex.h>
-#include <trial/ComponentModels/ComponentType.h>
-#include <trial/ComponentModels/TwoSidedShape.h>
+#include <casa/aips.h>
+#include <scimath/Functionals/Gaussian2D.h>
+#include <casa/BasicSL/Complex.h>
+#include <components/ComponentModels/ComponentType.h>
+#include <components/ComponentModels/TwoSidedShape.h>
 
 class MDirection;
 class MVAngle;

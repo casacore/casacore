@@ -26,10 +26,10 @@
 //# $Id$
 
 //# Includes
-#include <aips/Mathematics/AutoDiff.h>
-#include <aips/Arrays/Vector.h>
-#include <aips/Arrays/ArrayMath.h>
-#include <aips/BasicMath/Math.h>
+#include <scimath/Mathematics/AutoDiff.h>
+#include <casa/Arrays/Vector.h>
+#include <casa/Arrays/ArrayMath.h>
+#include <casa/BasicMath/Math.h>
 
 //# Statics
 template <class T>

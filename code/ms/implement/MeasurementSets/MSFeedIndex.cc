@@ -25,18 +25,18 @@
 //#
 //# $Id$
 
-#include <trial/MeasurementSets/MSFeedIndex.h>
+#include <ms/MeasurementSets/MSFeedIndex.h>
 
-#include <aips/Arrays/ArrayUtil.h>
-#include <aips/Arrays/MaskedArray.h>
-#include <aips/Arrays/ArrayMath.h>
-#include <aips/Arrays/ArrayLogical.h>
-#include <aips/Arrays/Slicer.h>
-#include <aips/MeasurementSets/MSFeed.h>
-#include <aips/Tables/TableError.h>
-#include <aips/Quanta/MVAngle.h>
-#include <aips/Quanta/QLogical.h>
-#include <aips/BasicMath/Math.h>
+#include <casa/Arrays/ArrayUtil.h>
+#include <casa/Arrays/MaskedArray.h>
+#include <casa/Arrays/ArrayMath.h>
+#include <casa/Arrays/ArrayLogical.h>
+#include <casa/Arrays/Slicer.h>
+#include <ms/MeasurementSets/MSFeed.h>
+#include <tables/Tables/TableError.h>
+#include <casa/Quanta/MVAngle.h>
+#include <casa/Quanta/QLogical.h>
+#include <casa/BasicMath/Math.h>
 
 MSFeedIndex::MSFeedIndex() 
     : MSTableIndex(), msFeedCols_p(0)

@@ -25,18 +25,18 @@
 //#
 //# $Id$
 
-#include <aips/Containers/Record.h>
-#include <aips/Tables/ExprNode.h>
-#include <aips/Tables/RecordExpr.h>
-#include <aips/Arrays/Matrix.h>
-#include <aips/Arrays/Vector.h>
-#include <aips/Arrays/ArrayMath.h>
-#include <aips/Arrays/ArrayLogical.h>
-#include <aips/Arrays/ArrayIO.h>
-#include <aips/Arrays/ArrayUtil.h>
-#include <aips/BasicSL/Constants.h>
-#include <aips/Utilities/Assert.h>
-#include <aips/iostream.h>
+#include <casa/Containers/Record.h>
+#include <tables/Tables/ExprNode.h>
+#include <tables/Tables/RecordExpr.h>
+#include <casa/Arrays/Matrix.h>
+#include <casa/Arrays/Vector.h>
+#include <casa/Arrays/ArrayMath.h>
+#include <casa/Arrays/ArrayLogical.h>
+#include <casa/Arrays/ArrayIO.h>
+#include <casa/Arrays/ArrayUtil.h>
+#include <casa/BasicSL/Constants.h>
+#include <casa/Utilities/Assert.h>
+#include <casa/iostream.h>
 
 // <summary>
 // Test program for class TableExprNode.

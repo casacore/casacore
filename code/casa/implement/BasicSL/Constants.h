@@ -43,7 +43,7 @@
 #   define LN_MAXFLOAT (M_LN2 * FMAXEXP)
 #   define LN_MINFLOAT (M_LN2 * (FMINEXP -1))
 #endif
-#include <aips/aips.h>
+#include <casa/aips.h>
 
 // <summary>Mathematical and numerical constants.</summary>
 
@@ -184,7 +184,7 @@
 // Implementation-defined limits usually defined in <src><limits.h></src>,
 // <src><float.h></src>, and <src><values.h></src> as preprocessor
 // defines. They are 
-// Inclusion of <src><aips/BasicSL/Constants.h</src> is
+// Inclusion of <src><casa/BasicSL/Constants.h</src> is
 // sufficient to ensure that they are defined for any particular
 // implementation, and the correct functioning of the <src>tConstants</src>
 // test program guarantees this.

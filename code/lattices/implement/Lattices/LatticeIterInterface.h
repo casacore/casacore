@@ -30,9 +30,9 @@
 
 
 //# Includes
-#include <aips/aips.h>
-#include <aips/Arrays/IPosition.h>
-#include <aips/Arrays/Array.h>
+#include <casa/aips.h>
+#include <casa/Arrays/IPosition.h>
+#include <casa/Arrays/Array.h>
 
 //# Forward Declarations
 class LatticeNavigator;

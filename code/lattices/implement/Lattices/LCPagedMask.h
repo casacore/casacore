@@ -30,8 +30,8 @@
 
 
 //# Includes
-#include <trial/Lattices/LCBox.h>
-#include <aips/Lattices/PagedArray.h>
+#include <lattices/Lattices/LCBox.h>
+#include <lattices/Lattices/PagedArray.h>
 
 
 // <summary>

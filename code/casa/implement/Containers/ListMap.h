@@ -28,10 +28,10 @@
 #if !defined(AIPS_LISTMAP_H_)
 #define AIPS_LISTMAP_H_
 
-#include <aips/aips.h>
-#include <aips/Containers/Map.h>
-#include <aips/Containers/OrderedPair.h>
-#include <aips/Containers/List.h>
+#include <casa/aips.h>
+#include <casa/Containers/Map.h>
+#include <casa/Containers/OrderedPair.h>
+#include <casa/Containers/List.h>
 
 
 template<class key, class value> class ListMap;

@@ -28,9 +28,9 @@
 #if !defined(AIPS_MSPROCESSORCOLUMNS_H)
 #define AIPS_MSPROCESSORCOLUMNS_H
 
-#include <aips/aips.h>
-#include <aips/MeasurementSets/MSProcessor.h>
-#include <aips/Tables/ScalarColumn.h>
+#include <casa/aips.h>
+#include <ms/MeasurementSets/MSProcessor.h>
+#include <tables/Tables/ScalarColumn.h>
 
 class MSProcessor;
 

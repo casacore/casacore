@@ -26,16 +26,16 @@
 //# $Id$
 
 //# Includes
-#include <aips/TableMeasures/TableQuantumDesc.h>
-#include <aips/Tables/TableDesc.h>
-#include <aips/Tables/Table.h>
-#include <aips/Tables/TableColumn.h>
-#include <aips/Tables/ColumnDesc.h>
-#include <aips/Tables/TableColumn.h>
-#include <aips/Tables/TableRecord.h>
-#include <aips/Quanta/Unit.h>
-#include <aips/Utilities/DataType.h>
-#include <aips/Exceptions.h>
+#include <measures/TableMeasures/TableQuantumDesc.h>
+#include <tables/Tables/TableDesc.h>
+#include <tables/Tables/Table.h>
+#include <tables/Tables/TableColumn.h>
+#include <tables/Tables/ColumnDesc.h>
+#include <tables/Tables/TableColumn.h>
+#include <tables/Tables/TableRecord.h>
+#include <casa/Quanta/Unit.h>
+#include <casa/Utilities/DataType.h>
+#include <casa/Exceptions.h>
 
 
 TableQuantumDesc::TableQuantumDesc (const TableDesc& td, const String& column)

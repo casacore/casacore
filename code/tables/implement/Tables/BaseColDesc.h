@@ -30,10 +30,10 @@
 
 
 //# Includes
-#include <aips/aips.h>
-#include <aips/Utilities/DataType.h>
-#include <aips/Arrays/IPosition.h>
-#include <aips/BasicSL/String.h>
+#include <casa/aips.h>
+#include <casa/Utilities/DataType.h>
+#include <casa/Arrays/IPosition.h>
+#include <casa/BasicSL/String.h>
 
 //# Forward Declarations
 class AipsIO;
@@ -46,7 +46,7 @@ class RefTable;
 class RefColumn;
 class TableDesc;
 class ColumnSet;
-#include <aips/iosfwd.h>
+#include <casa/iosfwd.h>
 
 
 // <summary>

@@ -30,8 +30,8 @@
 
 
 //# Includes
-#include <aips/aips.h>
-#include <aips/Tables/TableColumn.h>
+#include <casa/aips.h>
+#include <tables/Tables/TableColumn.h>
 
 //# Forward Declarations
 class RefRows;

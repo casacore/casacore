@@ -25,22 +25,22 @@
 //#
 //# $Id$
 
-#include <trial/ComponentModels/SpectralIndex.h>
-#include <aips/Arrays/Vector.h>
-#include <aips/Containers/RecordInterface.h>
-#include <aips/Exceptions/Error.h>
-#include <aips/Arrays/IPosition.h>
-#include <aips/Logging/LogIO.h>
-#include <aips/Logging/LogOrigin.h>
-#include <aips/BasicMath/Math.h>
-#include <aips/Measures/MFrequency.h>
-#include <aips/Measures/MCFrequency.h>
-#include <aips/Measures/MeasConvert.h>
-#include <aips/Quanta/MVFrequency.h>
-#include <aips/Quanta/Quantum.h>
-#include <aips/Utilities/Assert.h>
-#include <aips/Utilities/DataType.h>
-#include <aips/BasicSL/String.h>
+#include <components/ComponentModels/SpectralIndex.h>
+#include <casa/Arrays/Vector.h>
+#include <casa/Containers/RecordInterface.h>
+#include <casa/Exceptions/Error.h>
+#include <casa/Arrays/IPosition.h>
+#include <casa/Logging/LogIO.h>
+#include <casa/Logging/LogOrigin.h>
+#include <casa/BasicMath/Math.h>
+#include <measures/Measures/MFrequency.h>
+#include <measures/Measures/MCFrequency.h>
+#include <measures/Measures/MeasConvert.h>
+#include <casa/Quanta/MVFrequency.h>
+#include <casa/Quanta/Quantum.h>
+#include <casa/Utilities/Assert.h>
+#include <casa/Utilities/DataType.h>
+#include <casa/BasicSL/String.h>
 
 SpectralIndex::SpectralIndex()
   :SpectralModel(),

@@ -29,9 +29,9 @@
 #define AIPS_ODDPOLYNOMIALPARAM_H
 
 //# Includes
-#include <aips/aips.h>
-#include <aips/Functionals/Function1D.h>
-#include <aips/Utilities/Assert.h>
+#include <casa/aips.h>
+#include <scimath/Functionals/Function1D.h>
+#include <casa/Utilities/Assert.h>
 
 //# Forward declarations
 template<class T> class Vector;

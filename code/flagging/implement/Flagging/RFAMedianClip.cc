@@ -25,9 +25,9 @@
 //#
 //# $Id$
 
-#include <aips/stdio.h>
-#include <trial/Flagging/RFAMedianClip.h>
-#include <aips/Arrays/ArrayMath.h>
+#include <casa/stdio.h>
+#include <flagging/Flagging/RFAMedianClip.h>
+#include <casa/Arrays/ArrayMath.h>
     
 // -----------------------------------------------------------------------
 // RFATimeMedian

@@ -25,13 +25,13 @@
 //#
 //# $Id$
 
-#include <aips/MeasurementSets/MSSourceColumns.h>
-#include <aips/MeasurementSets/MSSource.h>
-#include <aips/Tables/TableDesc.h>
-#include <aips/Tables/ColDescSet.h>
-#include <aips/Measures/MPosition.h>
-#include <aips/Measures/MFrequency.h>
-#include <aips/Measures/MRadialVelocity.h>
+#include <ms/MeasurementSets/MSSourceColumns.h>
+#include <ms/MeasurementSets/MSSource.h>
+#include <tables/Tables/TableDesc.h>
+#include <tables/Tables/ColDescSet.h>
+#include <measures/Measures/MPosition.h>
+#include <measures/Measures/MFrequency.h>
+#include <measures/Measures/MRadialVelocity.h>
 
 ROMSSourceColumns::ROMSSourceColumns(const MSSource& msSource):
   isNull_p(True),

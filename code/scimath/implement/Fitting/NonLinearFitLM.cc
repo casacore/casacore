@@ -27,10 +27,10 @@
 
 //# Includes
 
-#include <trial/Fitting/NonLinearFitLM.h>
-#include <aips/Arrays/ArrayMath.h>
-#include <aips/Exceptions/Error.h>
-#include <aips/Functionals/Function.h>
+#include <scimath/Fitting/NonLinearFitLM.h>
+#include <casa/Arrays/ArrayMath.h>
+#include <casa/Exceptions/Error.h>
+#include <scimath/Functionals/Function.h>
 
 template<class T>
 NonLinearFitLM<T>::NonLinearFitLM(Bool svd) :

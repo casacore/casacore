@@ -25,29 +25,29 @@
 //#
 //# $Id$
 
-#include <aips/aips.h>
-#include <trial/ComponentModels/ComponentType.h>
-#include <trial/ComponentModels/DiskShape.h>
-#include <trial/ComponentModels/TwoSidedShape.h>
-#include <aips/Arrays/Vector.h>
-#include <aips/Containers/Record.h>
-#include <aips/Containers/RecordFieldId.h>
-#include <aips/Exceptions/Error.h>
-#include <aips/BasicSL/Complex.h>
-#include <aips/BasicSL/Constants.h>
-#include <aips/BasicMath/Math.h>
-#include <aips/Measures/MDirection.h>
-#include <aips/Measures/MeasureHolder.h>
-#include <aips/Quanta/Euler.h>
-#include <aips/Quanta/MVAngle.h>
-#include <aips/Quanta/MVDirection.h>
-#include <aips/Quanta/Quantum.h>
-#include <aips/Quanta/Quantum.h>
-#include <aips/Quanta/QuantumHolder.h>
-#include <aips/Quanta/RotMatrix.h>
-#include <aips/Utilities/Assert.h>
-#include <aips/BasicSL/String.h>
-#include <aips/iostream.h>
+#include <casa/aips.h>
+#include <components/ComponentModels/ComponentType.h>
+#include <components/ComponentModels/DiskShape.h>
+#include <components/ComponentModels/TwoSidedShape.h>
+#include <casa/Arrays/Vector.h>
+#include <casa/Containers/Record.h>
+#include <casa/Containers/RecordFieldId.h>
+#include <casa/Exceptions/Error.h>
+#include <casa/BasicSL/Complex.h>
+#include <casa/BasicSL/Constants.h>
+#include <casa/BasicMath/Math.h>
+#include <measures/Measures/MDirection.h>
+#include <measures/Measures/MeasureHolder.h>
+#include <casa/Quanta/Euler.h>
+#include <casa/Quanta/MVAngle.h>
+#include <casa/Quanta/MVDirection.h>
+#include <casa/Quanta/Quantum.h>
+#include <casa/Quanta/Quantum.h>
+#include <casa/Quanta/QuantumHolder.h>
+#include <casa/Quanta/RotMatrix.h>
+#include <casa/Utilities/Assert.h>
+#include <casa/BasicSL/String.h>
+#include <casa/iostream.h>
 
 int main() {
   try {

@@ -26,9 +26,9 @@
 //#
 //# $Id$
 
-#include <trial/Arrays/AxesSpecifier.h>
-#include <aips/Utilities/Assert.h>
-#include <aips/Exceptions/Error.h>
+#include <casa/Arrays/AxesSpecifier.h>
+#include <casa/Utilities/Assert.h>
+#include <casa/Exceptions/Error.h>
 
 
 AxesSpecifier::AxesSpecifier()

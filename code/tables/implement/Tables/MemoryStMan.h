@@ -30,8 +30,8 @@
 
 
 //# Includes
-#include <aips/aips.h>
-#include <aips/Tables/MSMBase.h>
+#include <casa/aips.h>
+#include <tables/Tables/MSMBase.h>
 
 
 // <summary>

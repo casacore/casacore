@@ -30,15 +30,15 @@
 
 
 //# Includes
-#include <aips/aips.h>
-#include <trial/Images/RegionHandler.h>
-#include <trial/Images/MaskSpecifier.h>
-#include <trial/Images/ImageInfo.h>
-#include <trial/Lattices/MaskedLattice.h>
-#include <trial/Coordinates/CoordinateSystem.h>
-#include <trial/LogTables/LoggerHolder.h>
-#include <aips/Tables/TableRecord.h>
-#include <aips/Quanta/Unit.h>
+#include <casa/aips.h>
+#include <images/Images/RegionHandler.h>
+#include <images/Images/MaskSpecifier.h>
+#include <images/Images/ImageInfo.h>
+#include <lattices/Lattices/MaskedLattice.h>
+#include <coordinates/Coordinates/CoordinateSystem.h>
+#include <tables/LogTables/LoggerHolder.h>
+#include <tables/Tables/TableRecord.h>
+#include <casa/Quanta/Unit.h>
 
 //# Forward Declarations
 template <class T> class LatticeIterInterface;

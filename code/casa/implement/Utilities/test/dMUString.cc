@@ -26,13 +26,13 @@
 //# $Id$
 
 //# Includes
-#include <aips/aips.h>
-#include <aips/Exceptions/Error.h>
-#include <aips/Quanta/Quantum.h>
-#include <aips/Quanta/MVAngle.h>
-#include <aips/Utilities/Regex.h>
-#include <aips/iostream.h>
-#include <aips/sstream.h>
+#include <casa/aips.h>
+#include <casa/Exceptions/Error.h>
+#include <casa/Quanta/Quantum.h>
+#include <casa/Quanta/MVAngle.h>
+#include <casa/Utilities/Regex.h>
+#include <casa/iostream.h>
+#include <casa/sstream.h>
 
 int main()
 {

@@ -29,14 +29,14 @@
 #define AIPS_LATTICECLEANPROGRESS_H
  
 //# Includes
-#include <aips/aips.h>
-#include <aips/Quanta/Quantum.h>
-#include <aips/Lattices/Lattice.h>
-#include <aips/Lattices/TempLattice.h>
-#include <aips/Arrays/IPosition.h>
-#include <aips/Containers/Block.h>
-#include <aips/Arrays/Vector.h>
-#include <aips/Arrays/Matrix.h>
+#include <casa/aips.h>
+#include <casa/Quanta/Quantum.h>
+#include <lattices/Lattices/Lattice.h>
+#include <lattices/Lattices/TempLattice.h>
+#include <casa/Arrays/IPosition.h>
+#include <casa/Containers/Block.h>
+#include <casa/Arrays/Vector.h>
+#include <casa/Arrays/Matrix.h>
 
 //# Forward Declarations
 template <class T> class Vector;

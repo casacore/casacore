@@ -26,8 +26,8 @@
 //# $Id$
 
 //# Includes
-#include <trial/Functionals/CompiledParam.h>
-#include <trial/Functionals/FuncExpression.h>
+#include <scimath/Functionals/CompiledParam.h>
+#include <scimath/Functionals/FuncExpression.h>
 
 template <class T>
 CompiledParam<T>::CompiledParam() : 

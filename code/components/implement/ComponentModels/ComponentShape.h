@@ -28,12 +28,12 @@
 #if !defined(AIPS_COMPONENTSHAPE_H)
 #define AIPS_COMPONENTSHAPE_H
 
-#include <aips/aips.h>
-#include <aips/BasicSL/Complexfwd.h>
-#include <aips/Measures/MDirection.h>
-#include <aips/Quanta/Quantum.h>
-#include <aips/Utilities/RecordTransformable.h>
-#include <trial/ComponentModels/ComponentType.h>
+#include <casa/aips.h>
+#include <casa/BasicSL/Complexfwd.h>
+#include <measures/Measures/MDirection.h>
+#include <casa/Quanta/Quantum.h>
+#include <casa/Utilities/RecordTransformable.h>
+#include <components/ComponentModels/ComponentType.h>
 
 class DirectionCoordinate;
 class MVAngle;

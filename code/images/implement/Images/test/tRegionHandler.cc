@@ -25,23 +25,23 @@
 //#
 //# $Id$
 
-#include <trial/Images/RegionHandlerMemory.h>
-#include <trial/Images/RegionHandlerTable.h>
+#include <images/Images/RegionHandlerMemory.h>
+#include <images/Images/RegionHandlerTable.h>
 
-#include <aips/Arrays/Vector.h>
-#include <aips/Arrays/IPosition.h>
-#include <aips/Lattices/PagedArray.h>
-#include <trial/Lattices/LCSlicer.h>
-#include <trial/Lattices/LCPagedMask.h>
-#include <trial/Images/ImageRegion.h>
-#include <aips/Tables/TableDesc.h>
-#include <aips/Tables/SetupNewTab.h>
-#include <aips/Tables/Table.h>
-#include <aips/OS/File.h>
-#include <aips/BasicSL/String.h>
-#include <aips/Utilities/Assert.h>
-#include <aips/Exceptions/Error.h>
-#include <aips/iostream.h>
+#include <casa/Arrays/Vector.h>
+#include <casa/Arrays/IPosition.h>
+#include <lattices/Lattices/PagedArray.h>
+#include <lattices/Lattices/LCSlicer.h>
+#include <lattices/Lattices/LCPagedMask.h>
+#include <images/Images/ImageRegion.h>
+#include <tables/Tables/TableDesc.h>
+#include <tables/Tables/SetupNewTab.h>
+#include <tables/Tables/Table.h>
+#include <casa/OS/File.h>
+#include <casa/BasicSL/String.h>
+#include <casa/Utilities/Assert.h>
+#include <casa/Exceptions/Error.h>
+#include <casa/iostream.h>
 
 
 Table theTable;

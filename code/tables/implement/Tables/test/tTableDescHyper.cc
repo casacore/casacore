@@ -25,15 +25,15 @@
 //#
 //# $Id$
 
-#include <aips/Tables/TableDesc.h>
-#include <aips/Tables/ScaColDesc.h>
-#include <aips/Tables/ArrColDesc.h>
-#include <aips/Arrays/Vector.h>
-#include <aips/Arrays/ArrayUtil.h>
-#include <aips/Arrays/ArrayIO.h>
-#include <aips/BasicSL/String.h>
-#include <aips/Exceptions/Error.h>
-#include <aips/iostream.h>
+#include <tables/Tables/TableDesc.h>
+#include <tables/Tables/ScaColDesc.h>
+#include <tables/Tables/ArrColDesc.h>
+#include <casa/Arrays/Vector.h>
+#include <casa/Arrays/ArrayUtil.h>
+#include <casa/Arrays/ArrayIO.h>
+#include <casa/BasicSL/String.h>
+#include <casa/Exceptions/Error.h>
+#include <casa/iostream.h>
 
 // <summary> Test program for hypercolumns in TableDesc </summary>
 

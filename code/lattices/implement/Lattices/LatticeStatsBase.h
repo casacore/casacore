@@ -28,8 +28,8 @@
 #if !defined(AIPS_LATTICESTATSBASE_H)
 #define AIPS_LATTICESTATSBASE_H
 
-#include <aips/aips.h>
-#include <aips/Arrays/Vector.h>
+#include <casa/aips.h>
+#include <casa/Arrays/Vector.h>
 class IPosition;
 class Regex;
 

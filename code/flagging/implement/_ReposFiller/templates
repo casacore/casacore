@@ -1,25 +1,25 @@
-1000 aips/Containers/Block.h aips/Utilities/Copy.cc 
-     = trial/Flagging/RedFlagger.h 
-     = trial/Flagging/RFASelector.h 
+1000 casa/Containers/Block.h casa/Utilities/Copy.cc 
+     = flagging/Flagging/RedFlagger.h 
+     = flagging/Flagging/RFASelector.h 
      template class Block<RFABase *> 
      template class Block<RFASelector::ClipInfo> 
-1000 aips/Utilities/Copy.cc 
-     = trial/Flagging/RFASpectralRej.h 
+1000 casa/Utilities/Copy.cc 
+     = flagging/Flagging/RFASpectralRej.h 
      template void objcopy(RFASpectralRej::Segment *, RFASpectralRej::Segment const *, uInt) 
-1010 aips/Utilities/Copy.cc 
-     = trial/Flagging/RedFlagger.h 
-     = trial/Flagging/RFASelector.h 
+1010 casa/Utilities/Copy.cc 
+     = flagging/Flagging/RedFlagger.h 
+     = flagging/Flagging/RFASelector.h 
      template void objset(RFABase **, RFABase *, uInt) 
      template void objcopy(RFABase **, RFABase * const *, uInt) 
      template void objmove(RFABase **, RFABase * const *, uInt) 
      template void objset(RFASelector::ClipInfo *, RFASelector::ClipInfo, uInt) 
      template void objcopy(RFASelector::ClipInfo *, RFASelector::ClipInfo const *, uInt) 
      template void objmove(RFASelector::ClipInfo *, RFASelector::ClipInfo const *, uInt) 
-1000 trial/Flagging/RFCubeLattice.cc 
-     = trial/Flagging/RFChunkStats.h 
+1000 flagging/Flagging/RFCubeLattice.cc 
+     = flagging/Flagging/RFChunkStats.h 
      template class RFCubeLattice<Float> 
      template class RFCubeLatticeIterator<Float> 
-1010 trial/Flagging/RFCubeLattice.cc 
-     = trial/Flagging/RFChunkStats.h 
+1010 flagging/Flagging/RFCubeLattice.cc 
+     = flagging/Flagging/RFChunkStats.h 
      template class RFCubeLattice<uInt> 
      template class RFCubeLatticeIterator<uInt> 

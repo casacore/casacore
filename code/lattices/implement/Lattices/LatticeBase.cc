@@ -26,9 +26,9 @@
 //# $Id$
 
 
-#include <aips/Lattices/LatticeBase.h>
-#include <aips/BasicMath/Math.h>
-#include <aips/Exceptions/Error.h>
+#include <lattices/Lattices/LatticeBase.h>
+#include <casa/BasicMath/Math.h>
+#include <casa/Exceptions/Error.h>
 
 
 LatticeBase::~LatticeBase()

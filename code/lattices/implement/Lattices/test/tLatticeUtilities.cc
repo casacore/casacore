@@ -25,26 +25,26 @@
 //#
 //# $Id$
 
-#include <aips/aips.h>
-#include <aips/Exceptions/Error.h>
-#include <aips/Arrays/IPosition.h>
-#include <aips/Arrays/ArrayLogical.h>
-#include <aips/Arrays/ArrayMath.h>
-#include <aips/Arrays/Slicer.h>
-#include <aips/BasicMath/Math.h>
-#include <aips/Logging/LogIO.h>
-#include <aips/Logging/LogOrigin.h>
-#include <aips/Utilities/Assert.h>
-#include <aips/Lattices/TempLattice.h>
-#include <aips/Lattices/LatticeStepper.h>
-#include <aips/Lattices/LatticeIterator.h>
-#include <trial/Lattices/LatticeUtilities.h>
-#include <trial/Lattices/SubLattice.h>
-#include <trial/Lattices/LatticeExprNode.h>
-#include <trial/Lattices/LatticeExpr.h>
-#include <aips/Lattices/ArrayLattice.h>
+#include <casa/aips.h>
+#include <casa/Exceptions/Error.h>
+#include <casa/Arrays/IPosition.h>
+#include <casa/Arrays/ArrayLogical.h>
+#include <casa/Arrays/ArrayMath.h>
+#include <casa/Arrays/Slicer.h>
+#include <casa/BasicMath/Math.h>
+#include <casa/Logging/LogIO.h>
+#include <casa/Logging/LogOrigin.h>
+#include <casa/Utilities/Assert.h>
+#include <lattices/Lattices/TempLattice.h>
+#include <lattices/Lattices/LatticeStepper.h>
+#include <lattices/Lattices/LatticeIterator.h>
+#include <lattices/Lattices/LatticeUtilities.h>
+#include <lattices/Lattices/SubLattice.h>
+#include <lattices/Lattices/LatticeExprNode.h>
+#include <lattices/Lattices/LatticeExpr.h>
+#include <lattices/Lattices/ArrayLattice.h>
 
-#include <aips/iostream.h>
+#include <casa/iostream.h>
 
 void doMinMax();
 void doCollapse();

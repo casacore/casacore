@@ -29,7 +29,7 @@
 
 //#! Includes go here
 
-#include <aips/Arrays/Vector.h>
+#include <casa/Arrays/Vector.h>
 
 //# Forward Declarations
 

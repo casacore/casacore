@@ -30,10 +30,10 @@
 #define AIPS_SORT_H
 
 //# Includes
-#include <aips/aips.h>
-#include <aips/Utilities/ValType.h>
-#include <aips/Containers/Block.h>
-#include <aips/Utilities/Compare.h>
+#include <casa/aips.h>
+#include <casa/Utilities/ValType.h>
+#include <casa/Containers/Block.h>
+#include <casa/Utilities/Compare.h>
 
 //# Forward Declarations
 class AipsIO;

@@ -28,8 +28,8 @@
 #if !defined(AIPS_SAMPLEDFUNCTIONAL_H)
 #define AIPS_SAMPLEDFUNCTIONAL_H
 
-#include <aips/aips.h>
-#include <aips/BasicMath/Functional.h>
+#include <casa/aips.h>
+#include <casa/BasicMath/Functional.h>
 
 // <summary> A base class for indexing into arbitrary data types </summary>
 

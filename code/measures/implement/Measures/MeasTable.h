@@ -30,12 +30,12 @@
 #define AIPS_MEASTABLE_H
 
 //# Includes
-#include <aips/aips.h>
-#include <aips/Measures/MeasData.h>
-#include <aips/Measures/MPosition.h>
-#include <aips/Measures/MDirection.h>
-#include <aips/Measures/MFrequency.h>
-#include <aips/Functionals/Polynomial.h>
+#include <casa/aips.h>
+#include <measures/Measures/MeasData.h>
+#include <measures/Measures/MPosition.h>
+#include <measures/Measures/MDirection.h>
+#include <measures/Measures/MFrequency.h>
+#include <scimath/Functionals/Polynomial.h>
 
 //# Forward Declarations
 class RotMatrix;

@@ -29,13 +29,13 @@
 #if !defined(TRIAL_MSDERIVEDVALUES_H)
 #define TRIAL_MSDERIVEDVALUES_H
 
-#include <aips/aips.h>
-#include <aips/Arrays/Vector.h>
-#include <aips/Measures.h>
-#include <aips/Measures/MCDirection.h>
-#include <aips/Measures/MCEpoch.h>
-#include <aips/Measures/MCRadialVelocity.h>
-#include <aips/Measures/MPosition.h>
+#include <casa/aips.h>
+#include <casa/Arrays/Vector.h>
+#include <measures/Measures.h>
+#include <measures/Measures/MCDirection.h>
+#include <measures/Measures/MCEpoch.h>
+#include <measures/Measures/MCRadialVelocity.h>
+#include <measures/Measures/MPosition.h>
 
 //# Forward Declarations
 class ROMSAntennaColumns;

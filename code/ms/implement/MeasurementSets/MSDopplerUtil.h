@@ -28,8 +28,8 @@
 #if !defined(TRIAL_MSDOPPLERUTIL_H)
 #define TRIAL_MSDOPPLERUTIL_H
 
-#include <aips/aips.h>
-#include <aips/MeasurementSets/MeasurementSet.h>
+#include <casa/aips.h>
+#include <ms/MeasurementSets/MeasurementSet.h>
 
 // <summary>
 // A utility class for MS Doppler tracking information

@@ -26,17 +26,17 @@
 //# $Id$
 
 //# Includes
-#include <aips/Measures/MeasMath.h>
-#include <aips/Exceptions/Error.h>
-#include <aips/Measures/MeasData.h>
-#include <aips/Measures/MeasTable.h>
-#include <aips/Measures/SolarPos.h>
-#include <aips/Measures/Aberration.h>
-#include <aips/Measures/Precession.h>
-#include <aips/Measures/Nutation.h>
-#include <aips/Measures/MCFrame.h>
-#include <aips/Measures/MRBase.h>
-#include <aips/BasicMath/Math.h>
+#include <measures/Measures/MeasMath.h>
+#include <casa/Exceptions/Error.h>
+#include <measures/Measures/MeasData.h>
+#include <measures/Measures/MeasTable.h>
+#include <measures/Measures/SolarPos.h>
+#include <measures/Measures/Aberration.h>
+#include <measures/Measures/Precession.h>
+#include <measures/Measures/Nutation.h>
+#include <measures/Measures/MCFrame.h>
+#include <measures/Measures/MRBase.h>
+#include <casa/BasicMath/Math.h>
 
 //# Constructors
 MeasMath::MeasMath() :

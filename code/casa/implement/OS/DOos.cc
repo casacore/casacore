@@ -28,16 +28,16 @@
 
 
 //# Includes
-#include <aips/OS/DOos.h>
-#include <aips/OS/Path.h>
-#include <aips/OS/File.h>
-#include <aips/OS/RegularFile.h>
-#include <aips/OS/Directory.h>
-#include <aips/OS/DirectoryIterator.h>
-#include <aips/OS/SymLink.h>
-#include <aips/IO/LockFile.h>
-#include <aips/BasicSL/String.h>
-#include <aips/Exceptions/Error.h>
+#include <casa/OS/DOos.h>
+#include <casa/OS/Path.h>
+#include <casa/OS/File.h>
+#include <casa/OS/RegularFile.h>
+#include <casa/OS/Directory.h>
+#include <casa/OS/DirectoryIterator.h>
+#include <casa/OS/SymLink.h>
+#include <casa/IO/LockFile.h>
+#include <casa/BasicSL/String.h>
+#include <casa/Exceptions/Error.h>
 
 
 Vector<Bool> DOos::isValidPathName (const Vector<String>& pathName)

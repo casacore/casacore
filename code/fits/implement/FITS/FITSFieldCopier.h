@@ -29,12 +29,12 @@
 #if !defined(AIPS_FITS_FIELD_COPIER_H)
 #define AIPS_FITS_FIELD_COPIER_H
 
-#include <aips/aips.h>
-#include <aips/FITS/hdu.h>
-#include <aips/Containers/RecordField.h>
-#include <aips/Arrays/Array.h>
-#include <aips/BasicSL/String.h>
-#include <trial/FITS/FITSKeywordUtil.h>
+#include <casa/aips.h>
+#include <fits/FITS/hdu.h>
+#include <casa/Containers/RecordField.h>
+#include <casa/Arrays/Array.h>
+#include <casa/BasicSL/String.h>
+#include <fits/FITS/FITSKeywordUtil.h>
 
 // <summary>
 // Virtual base class for copying RORecordFields to FitsFields

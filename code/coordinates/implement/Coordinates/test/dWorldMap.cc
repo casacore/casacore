@@ -25,12 +25,12 @@
 //#
 //# $Id$
 
-#include <aips/aips.h>
-#include <aips/Arrays.h>
-#include <aips/BasicSL/String.h>
-#include <aips/Exceptions/Error.h>
-#include <trial/Coordinates.h>
-#include <aips/iostream.h>
+#include <casa/aips.h>
+#include <casa/Arrays.h>
+#include <casa/BasicSL/String.h>
+#include <casa/Exceptions/Error.h>
+#include <coordinates/Coordinates.h>
+#include <casa/iostream.h>
 
 void list (Bool ok, Bool ok2, Vector<Int>& wmap, Vector<Int>& wtranspose,
            Vector<Int>& pmap, Vector<Int>& ptranspose,

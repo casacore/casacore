@@ -26,10 +26,10 @@
 //#
 //# $Id$
 
-#include <trial/FITS/FITSTimedTable.h>
-#include <aips/Arrays/ArrayMath.h>
-#include <aips/Exceptions/Error.h>
-#include <aips/Utilities/Assert.h>
+#include <fits/FITS/FITSTimedTable.h>
+#include <casa/Arrays/ArrayMath.h>
+#include <casa/Exceptions/Error.h>
+#include <casa/Utilities/Assert.h>
 
 FITSTimedTable::FITSTimedTable()
     : atStart_p(True), hasChanged_p(False), changePending_p(False), 

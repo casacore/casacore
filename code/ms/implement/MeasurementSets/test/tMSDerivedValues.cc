@@ -25,12 +25,12 @@
 //#
 //# $Id$
 
-#include <trial/MeasurementSets/MSDerivedValues.h>
-#include <aips/iostream.h>
-#include <aips/iomanip.h>
-#include <aips/Exceptions/Error.h>
-#include <aips/Quanta/MVAngle.h>
-#include <aips/Quanta/MVTime.h>
+#include <ms/MeasurementSets/MSDerivedValues.h>
+#include <casa/iostream.h>
+#include <casa/iomanip.h>
+#include <casa/Exceptions/Error.h>
+#include <casa/Quanta/MVAngle.h>
+#include <casa/Quanta/MVTime.h>
 
 int main(int argc, char **argv)
 {

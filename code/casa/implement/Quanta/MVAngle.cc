@@ -26,14 +26,14 @@
 //# $Id$
 
 //# Includes
-#include <aips/Quanta/MVAngle.h>
-#include <aips/sstream.h>
-#include <aips/iomanip.h>
-#include <aips/BasicMath/Math.h>
-#include <aips/BasicSL/Constants.h>
-#include <aips/Quanta/QMath.h>
-#include <aips/Utilities/MUString.h>
-#include <aips/System/AppInfo.h>
+#include <casa/Quanta/MVAngle.h>
+#include <casa/sstream.h>
+#include <casa/iomanip.h>
+#include <casa/BasicMath/Math.h>
+#include <casa/BasicSL/Constants.h>
+#include <casa/Quanta/QMath.h>
+#include <casa/Utilities/MUString.h>
+#include <casa/System/AppInfo.h>
 
 // MVAngle class
 //# Static members

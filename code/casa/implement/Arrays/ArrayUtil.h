@@ -30,9 +30,9 @@
 
 
 //# Includes
-#include <aips/aips.h>
-#include <aips/Arrays/Vector.h>
-#include <aips/BasicSL/String.h>
+#include <casa/aips.h>
+#include <casa/Arrays/Vector.h>
+#include <casa/BasicSL/String.h>
 
 //# Forward Declarations
 class Regex;

@@ -30,10 +30,10 @@
 
 
 //# Includes
-#include <aips/aips.h>
-#include <aips/Tables/MSMColumn.h>
-#include <aips/Tables/MSMBase.h>
-#include <aips/Arrays/IPosition.h>
+#include <casa/aips.h>
+#include <tables/Tables/MSMColumn.h>
+#include <tables/Tables/MSMBase.h>
+#include <casa/Arrays/IPosition.h>
 
 
 // <summary>

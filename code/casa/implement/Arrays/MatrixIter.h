@@ -29,9 +29,9 @@
 #define AIPS_MATRIXITER_H
 
 
-#include <aips/aips.h>
-#include <aips/Arrays/ArrayIter.h>
-#include <aips/Arrays/Matrix.h>
+#include <casa/aips.h>
+#include <casa/Arrays/ArrayIter.h>
+#include <casa/Arrays/Matrix.h>
 
 // 
 // <summary> Iterate a Matrix cursor through another Array. </summary>

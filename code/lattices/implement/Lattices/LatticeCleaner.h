@@ -30,12 +30,12 @@
 #define AIPS_LATTICECLEANER_H
 
 //# Includes
-#include <aips/aips.h>
-#include <aips/Quanta/Quantum.h>
-#include <aips/Lattices/TempLattice.h>
-#include <aips/Arrays/IPosition.h>
-#include <aips/Arrays/Vector.h>
-#include <aips/Containers/Block.h>
+#include <casa/aips.h>
+#include <casa/Quanta/Quantum.h>
+#include <lattices/Lattices/TempLattice.h>
+#include <casa/Arrays/IPosition.h>
+#include <casa/Arrays/Vector.h>
+#include <casa/Containers/Block.h>
 
 //# Forward Declarations
 class LatticeCleanProgress;

@@ -25,12 +25,12 @@
 //#
 //# $Id$
 
-#include <trial/Lattices/CurvedLattice2D.h>
-#include <trial/Lattices/SubLattice.h>
-#include <aips/Arrays/Array.h>
-#include <aips/Arrays/Slicer.h>
-#include <aips/Utilities/Assert.h>
-#include <aips/Exceptions/Error.h> 
+#include <lattices/Lattices/CurvedLattice2D.h>
+#include <lattices/Lattices/SubLattice.h>
+#include <casa/Arrays/Array.h>
+#include <casa/Arrays/Slicer.h>
+#include <casa/Utilities/Assert.h>
+#include <casa/Exceptions/Error.h> 
 
 
 template<class T>

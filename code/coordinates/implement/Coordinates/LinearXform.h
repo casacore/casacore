@@ -29,7 +29,7 @@
 #if !defined(AIPS_LINEAR_XFORM_H)
 #define AIPS_LINEAR_XFORM_H
 
-#include <aips/aips.h>
+#include <casa/aips.h>
 #include <wcslib/lin.h>
 
 

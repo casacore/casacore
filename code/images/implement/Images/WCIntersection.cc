@@ -26,10 +26,10 @@
 //# $Id$
 
 
-#include <trial/Images/WCIntersection.h>
-#include <trial/Images/ImageRegion.h>
-#include <trial/Lattices/LCIntersection.h>
-#include <aips/Tables/TableRecord.h>
+#include <images/Images/WCIntersection.h>
+#include <images/Images/ImageRegion.h>
+#include <lattices/Lattices/LCIntersection.h>
+#include <tables/Tables/TableRecord.h>
 
 
 WCIntersection::WCIntersection (const ImageRegion& region1,

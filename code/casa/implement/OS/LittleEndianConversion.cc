@@ -26,7 +26,7 @@
 //# $Id$
 
 
-#include <aips/OS/LittleEndianConversion.h>
+#include <casa/OS/LittleEndianConversion.h>
 #include <assert.h>
 
 

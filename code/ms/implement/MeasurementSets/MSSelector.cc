@@ -26,32 +26,32 @@
 //#
 //# $Id$
 
-#include <trial/MeasurementSets/MSSelector.h>
+#include <ms/MeasurementSets/MSSelector.h>
 
-#include <aips/Arrays/ArrayMath.h>
-#include <aips/Arrays/ArrayLogical.h>
-#include <aips/Arrays/ArrayUtil.h>
-#include <aips/Arrays/MaskArrMath.h>
-#include <aips/Arrays/Cube.h>
-#include <aips/Arrays/Slice.h>
-#include <aips/Containers/Record.h>
-#include <aips/Logging/LogIO.h>
-#include <aips/BasicSL/Constants.h>
-#include <aips/MeasurementSets/MSColumns.h>
-#include <aips/Tables/ExprNode.h>
-#include <aips/Tables/ExprNodeSet.h>
-#include <aips/Tables/ArrColDesc.h>
-#include <aips/Tables/RefRows.h>
-#include <aips/Tables/ScaColDesc.h>
-#include <aips/Tables/TableDesc.h>
-#include <aips/Tables/TableIter.h>
-#include <aips/Tables/TableRecord.h>
-#include <aips/Tables/TableParse.h>
-#include <aips/Utilities/GenSort.h>
-#include <trial/MeasurementSets/MSIter.h>
-#include <trial/MeasurementSets/MSRange.h>
-#include <trial/MeasurementSets/MSSelUtil.h>
-#include <aips/iostream.h>
+#include <casa/Arrays/ArrayMath.h>
+#include <casa/Arrays/ArrayLogical.h>
+#include <casa/Arrays/ArrayUtil.h>
+#include <casa/Arrays/MaskArrMath.h>
+#include <casa/Arrays/Cube.h>
+#include <casa/Arrays/Slice.h>
+#include <casa/Containers/Record.h>
+#include <casa/Logging/LogIO.h>
+#include <casa/BasicSL/Constants.h>
+#include <ms/MeasurementSets/MSColumns.h>
+#include <tables/Tables/ExprNode.h>
+#include <tables/Tables/ExprNodeSet.h>
+#include <tables/Tables/ArrColDesc.h>
+#include <tables/Tables/RefRows.h>
+#include <tables/Tables/ScaColDesc.h>
+#include <tables/Tables/TableDesc.h>
+#include <tables/Tables/TableIter.h>
+#include <tables/Tables/TableRecord.h>
+#include <tables/Tables/TableParse.h>
+#include <casa/Utilities/GenSort.h>
+#include <ms/MeasurementSets/MSIter.h>
+#include <ms/MeasurementSets/MSRange.h>
+#include <ms/MeasurementSets/MSSelUtil.h>
+#include <casa/iostream.h>
 
 
 MSSelector::MSSelector():msIter_p(0),initSel_p(False),dataDescId_p(0),

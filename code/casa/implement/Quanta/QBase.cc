@@ -26,8 +26,8 @@
 //# $Id$
 
 //# Includes
-#include <aips/Exceptions/Error.h>
-#include <aips/Quanta/QBase.h>
+#include <casa/Exceptions/Error.h>
+#include <casa/Quanta/QBase.h>
 
 QBase::QBase() 
 : qUnit() {}

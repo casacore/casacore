@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#include <aips/MeasurementSets/MSHistoryColumns.h>
-#include <aips/MeasurementSets/MSHistory.h>
+#include <ms/MeasurementSets/MSHistoryColumns.h>
+#include <ms/MeasurementSets/MSHistory.h>
 
 ROMSHistoryColumns::ROMSHistoryColumns(const MSHistory& msHistory):
   application_p(msHistory, MSHistory::

@@ -29,8 +29,8 @@
 #if !defined(AIPS_GLISHSERIALHELPER_H)
 #define AIPS_GLISHSERIALHELPER_H
 
-#include <trial/Functionals/FunctionFactoryErrors.h>
-#include <aips/Containers/Record.h>
+#include <scimath/Functionals/FunctionFactoryErrors.h>
+#include <casa/Containers/Record.h>
 template<class T> class Array;
 
 template <class V>

@@ -26,11 +26,11 @@
 //#
 //# $Id$
 
-#include <trial/MeasurementSets/MSSelUtil.h>
-#include <aips/Arrays/ArrayMath.h>
-#include <aips/Arrays/Vector.h>
-#include <aips/Exceptions/Error.h>
-#include <aips/Utilities/Assert.h>
+#include <ms/MeasurementSets/MSSelUtil.h>
+#include <casa/Arrays/ArrayMath.h>
+#include <casa/Arrays/Vector.h>
+#include <casa/Exceptions/Error.h>
+#include <casa/Utilities/Assert.h>
 
 // reorder from 3d to 4d (adding ifr axis)
 template <class T>

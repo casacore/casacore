@@ -29,8 +29,8 @@
 #if !defined(AIPS_SPECIFICFUNCTIONFACTORY_H)
 #define AIPS_SPECIFICFUNCTIONFACTORY_H
 
-#include <aips/Functionals/Function.h>
-#include <trial/Functionals/AbstractFunctionFactory.h>
+#include <scimath/Functionals/Function.h>
+#include <scimath/Functionals/AbstractFunctionFactory.h>
 
 //# Forward Declarations
 class Record;

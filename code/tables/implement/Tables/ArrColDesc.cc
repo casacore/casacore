@@ -25,14 +25,14 @@
 //#
 //# $Id$
 
-#include <aips/Tables/ArrColDesc.h>
-#include <aips/Tables/ArrColData.h>
-#include <aips/Arrays/IPosition.h>
-#include <aips/Arrays/Array.h>
-#include <aips/Utilities/ValTypeId.h>
-#include <aips/Tables/TableError.h>
-#include <aips/IO/AipsIO.h>
-#include <aips/iostream.h>
+#include <tables/Tables/ArrColDesc.h>
+#include <tables/Tables/ArrColData.h>
+#include <casa/Arrays/IPosition.h>
+#include <casa/Arrays/Array.h>
+#include <casa/Utilities/ValTypeId.h>
+#include <tables/Tables/TableError.h>
+#include <casa/IO/AipsIO.h>
+#include <casa/iostream.h>
 
 
 template<class T>

@@ -25,9 +25,9 @@
 //#
 //# $Id$
 
-#include <aips/BasicSL/String.h>
-#include <aips/Utilities/Regex.h>
-#include <aips/iostream.h>
+#include <casa/BasicSL/String.h>
+#include <casa/Utilities/Regex.h>
+#include <casa/iostream.h>
 
 int main () {
     const Int ntests = 29;

@@ -28,8 +28,8 @@
 #if !defined(AIPS_ENVIRONMENTVARIABLES_H)
 #define AIPS_ENVIRONMENTVARIABLES_H
 
-#include <aips/aips.h>
-#include <aips/BasicSL/String.h>
+#include <casa/aips.h>
+#include <casa/BasicSL/String.h>
 
 // <summary>
 // This class allows for getting enviroment variables

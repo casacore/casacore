@@ -30,26 +30,26 @@
 
 
 //# Includes
-#include <aips/aips.h>
-#include <aips/Arrays/Array.h>
-#include <aips/Containers/Block.h>
-#include <aips/Arrays/Vector.h>
-#include <trial/Lattices/LatticeStatsBase.h>
-#include <trial/Lattices/TiledCollapser.h>
-#include <trial/Lattices/TiledCollapser.h>
-#include <trial/Lattices/LatticeExprNode.h>
-#include <aips/Mathematics/NumericTraits.h>
-#include <trial/System/PGPlotter.h>
-#include <aips/Utilities/DataType.h>
-#include <aips/BasicSL/String.h>
-#include <aips/Logging/LogIO.h>
+#include <casa/aips.h>
+#include <casa/Arrays/Array.h>
+#include <casa/Containers/Block.h>
+#include <casa/Arrays/Vector.h>
+#include <lattices/Lattices/LatticeStatsBase.h>
+#include <lattices/Lattices/TiledCollapser.h>
+#include <lattices/Lattices/TiledCollapser.h>
+#include <lattices/Lattices/LatticeExprNode.h>
+#include <scimath/Mathematics/NumericTraits.h>
+#include <casa/System/PGPlotter.h>
+#include <casa/Utilities/DataType.h>
+#include <casa/BasicSL/String.h>
+#include <casa/Logging/LogIO.h>
 
 
 //# Forward Declarations
 template <class T> class MaskedLattice;
 template <class T> class TempLattice;
 class IPosition;
-#include <aips/iosstrfwd.h>
+#include <casa/iosstrfwd.h>
 
 
 // <summary>

@@ -25,7 +25,7 @@
 //#
 //# $Id$
 
-#include <aips/Functionals/ArraySampledFunctional.h>
+#include <scimath/Functionals/ArraySampledFunctional.h>
 
 template<class T> ArraySampledFunctional<T>::
 ArraySampledFunctional()

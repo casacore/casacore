@@ -27,13 +27,13 @@
 #ifndef AIPS_RF_FLAGCUBE_H
 #define AIPS_RF_FLAGCUBE_H
     
-#include <trial/Flagging/RedFlagger.h>
-#include <trial/Flagging/RFCubeLattice.h>
-#include <trial/Flagging/RFChunkStats.h>
-#include <aips/Arrays/ArrayLogical.h>
-#include <aips/Arrays/LogiMatrix.h>
-#include <aips/Arrays/LogiVector.h>
-#include <aips/Logging/LogIO.h>
+#include <flagging/Flagging/RedFlagger.h>
+#include <flagging/Flagging/RFCubeLattice.h>
+#include <flagging/Flagging/RFChunkStats.h>
+#include <casa/Arrays/ArrayLogical.h>
+#include <casa/Arrays/LogiMatrix.h>
+#include <casa/Arrays/LogiVector.h>
+#include <casa/Logging/LogIO.h>
 
 typedef RFCubeLatticeIterator<RFlagWord> FlagCubeIterator;
 

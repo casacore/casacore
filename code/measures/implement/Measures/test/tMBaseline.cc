@@ -26,21 +26,21 @@
 //# $Id$
 
 //# Includes
-#include <aips/aips.h>
-#include <aips/Exceptions/Error.h>
-#include <aips/Measures.h>
-#include <aips/Quanta/RotMatrix.h>
-#include <aips/Quanta/Euler.h>
-#include <aips/Measures/Aberration.h>
-#include <aips/Measures/MEpoch.h>
-#include <aips/Measures/MDirection.h>
-#include <aips/Measures/MPosition.h>
-#include <aips/Measures/MCBaseline.h>
-#include <aips/Measures/MBaseline.h>
-#include <aips/Measures/MCFrame.h>
-#include <aips/Arrays/ArrayMath.h>
-#include <aips/Arrays/ArrayLogical.h>
-#include <aips/iostream.h>
+#include <casa/aips.h>
+#include <casa/Exceptions/Error.h>
+#include <measures/Measures.h>
+#include <casa/Quanta/RotMatrix.h>
+#include <casa/Quanta/Euler.h>
+#include <measures/Measures/Aberration.h>
+#include <measures/Measures/MEpoch.h>
+#include <measures/Measures/MDirection.h>
+#include <measures/Measures/MPosition.h>
+#include <measures/Measures/MCBaseline.h>
+#include <measures/Measures/MBaseline.h>
+#include <measures/Measures/MCFrame.h>
+#include <casa/Arrays/ArrayMath.h>
+#include <casa/Arrays/ArrayLogical.h>
+#include <casa/iostream.h>
 
 int main()
 {

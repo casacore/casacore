@@ -30,13 +30,13 @@
 
 
 //# Includes
-#include <aips/aips.h>
-#include <aips/Arrays/Matrix.h>
-#include <aips/Arrays/Vector.h>
+#include <casa/aips.h>
+#include <casa/Arrays/Matrix.h>
+#include <casa/Arrays/Vector.h>
 
 //# Forward Declarations
 class Euler;
-#include <aips/iosfwd.h>
+#include <casa/iosfwd.h>
 
 //# Constants (SUN compiler does not accept non-simple default arguments)
 

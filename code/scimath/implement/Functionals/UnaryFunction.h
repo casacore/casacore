@@ -29,9 +29,9 @@
 #define AIPS_UNARYFUNCTION_H
 
 //# Includes
-#include <aips/aips.h>
-#include <trial/Functionals/UnaryParam.h>
-#include <aips/Functionals/Function.h>
+#include <casa/aips.h>
+#include <scimath/Functionals/UnaryParam.h>
+#include <scimath/Functionals/Function.h>
 
 //# Forward declarations
 

@@ -25,9 +25,9 @@
 //#
 //# $Id$
 
-#include <trial/Lattices/LCLELMask.h>
-#include <aips/Tables/TableRecord.h>
-#include <aips/Exceptions/Error.h>
+#include <lattices/Lattices/LCLELMask.h>
+#include <tables/Tables/TableRecord.h>
+#include <casa/Exceptions/Error.h>
 
 
 LCLELMask::LCLELMask()

@@ -27,11 +27,11 @@
 
 //# Includes
 
-#include <aips/MeasurementSets/MSColumns.h>
-#include <aips/MeasurementSets/MeasurementSet.h>
-#include <aips/Exceptions/Error.h>
-#include <aips/Tables.h>
-#include <aips/iostream.h>
+#include <ms/MeasurementSets/MSColumns.h>
+#include <ms/MeasurementSets/MeasurementSet.h>
+#include <casa/Exceptions/Error.h>
+#include <tables/Tables.h>
+#include <casa/iostream.h>
 
 int main() {
   try {

@@ -30,13 +30,13 @@
 #define AIPS_GENERICL2FIT_H
 
 //# Includes
-#include <aips/aips.h>
-#include <aips/Arrays/Matrix.h>
-#include <aips/Arrays/Vector.h>
-#include <aips/Containers/Block.h>
-#include <aips/Fitting/LSQaips.h>
-#include <aips/Functionals/FunctionTraits.h>
-#include <aips/Mathematics/AutoDiff.h>
+#include <casa/aips.h>
+#include <casa/Arrays/Matrix.h>
+#include <casa/Arrays/Vector.h>
+#include <casa/Containers/Block.h>
+#include <scimath/Fitting/LSQaips.h>
+#include <scimath/Functionals/FunctionTraits.h>
+#include <scimath/Mathematics/AutoDiff.h>
 
 //# Forward declarations
 template <class T> class Array;

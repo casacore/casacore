@@ -26,7 +26,7 @@
 //# $Id$
 
 //# Includes
-#include <aips/Fitting/LSQFit.h>
+#include <scimath/Fitting/LSQFit.h>
 #include <algorithm>
 
 //# Static values

@@ -1,13 +1,13 @@
-#include <aips/aips.h>
-#include <aips/Exceptions/Error.h>
-#include <aips/BasicSL/String.h>
-#include <aips/iostream.h>
+#include <casa/aips.h>
+#include <casa/Exceptions/Error.h>
+#include <casa/BasicSL/String.h>
+#include <casa/iostream.h>
 
-#include <trial/MeasurementSets/MSConcat.h>
-#include <aips/MeasurementSets/MeasurementSet.h>
-#include <trial/MeasurementSets/MSFitsInput.h>
-#include <aips/Tables/Table.h>
-#include <aips/Inputs.h>
+#include <ms/MeasurementSets/MSConcat.h>
+#include <ms/MeasurementSets/MeasurementSet.h>
+#include <ms/MeasurementSets/MSFitsInput.h>
+#include <tables/Tables/Table.h>
+#include <casa/Inputs.h>
 
 int main(int argc, char** argv) {
   try {

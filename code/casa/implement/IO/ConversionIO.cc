@@ -26,9 +26,9 @@
 //# $Id$
 
 //# Includes
-#include <aips/IO/ConversionIO.h>
-#include <aips/OS/DataConversion.h>
-#include <aips/IO/ByteIO.h>
+#include <casa/IO/ConversionIO.h>
+#include <casa/OS/DataConversion.h>
+#include <casa/IO/ByteIO.h>
 
 
 ConversionIO::ConversionIO (DataConversion* dataConversion,

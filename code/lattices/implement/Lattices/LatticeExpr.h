@@ -30,10 +30,10 @@
 
 
 //# Includes
-#include <trial/Lattices/MaskedLattice.h>
-#include <trial/Lattices/LatticeExprNode.h>
-#include <trial/Lattices/LatticeRegion.h>
-#include <aips/Arrays/Slicer.h>
+#include <lattices/Lattices/MaskedLattice.h>
+#include <lattices/Lattices/LatticeExprNode.h>
+#include <lattices/Lattices/LatticeRegion.h>
+#include <casa/Arrays/Slicer.h>
 
 //# Forward Declarations
 template <class T> class Array;

@@ -26,10 +26,10 @@
 //#
 //# $Id$
 
-#include <aips/OS/HostInfo.h>
-#include <aips/BasicSL/String.h>
-#include <aips/Utilities/Assert.h>
-#include <aips/iostream.h>
+#include <casa/OS/HostInfo.h>
+#include <casa/BasicSL/String.h>
+#include <casa/Utilities/Assert.h>
+#include <casa/iostream.h>
 
 // For sleep()
 #include <unistd.h>

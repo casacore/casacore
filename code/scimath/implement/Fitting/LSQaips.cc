@@ -26,9 +26,9 @@
 //# $Id$
 
 //# Includes
-#include <aips/Fitting/LSQaips.h>
-#include <aips/Arrays/Array.h>
-#include <aips/Arrays/IPosition.h>
+#include <scimath/Fitting/LSQaips.h>
+#include <casa/Arrays/Array.h>
+#include <casa/Arrays/IPosition.h>
 
 //# Constructors
 

@@ -27,9 +27,9 @@
 
 
 //# Includes
-#include <aips/IO/BucketCache.h>
-#include <aips/Exceptions/Error.h>
-#include <aips/iostream.h>
+#include <casa/IO/BucketCache.h>
+#include <casa/Exceptions/Error.h>
+#include <casa/iostream.h>
 
 
 BucketCache::BucketCache (BucketFile* file, Int64 startOffset,

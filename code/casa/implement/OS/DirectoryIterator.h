@@ -29,10 +29,10 @@
 #define AIPS_DIRECTORYITERATOR_H
 
 //# Includes
-#include <aips/aips.h>
-#include <aips/OS/File.h>
-#include <aips/OS/Directory.h>
-#include <aips/Utilities/Regex.h>
+#include <casa/aips.h>
+#include <casa/OS/File.h>
+#include <casa/OS/Directory.h>
+#include <casa/Utilities/Regex.h>
 
 #include <dirent.h>                          // needed for DIR
 

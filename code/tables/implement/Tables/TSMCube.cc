@@ -27,22 +27,22 @@
 
 
 //# Includes
-#include <aips/aips.h>
-#include <aips/Tables/TSMCube.h>
-#include <aips/Tables/TiledStMan.h>
-#include <aips/Tables/TSMFile.h>
-#include <aips/Tables/TSMColumn.h>
-#include <aips/Tables/DataManError.h>
-#include <aips/Arrays/ArrayUtil.h>
-#include <aips/Containers/Record.h>
-#include <aips/Containers/RecordField.h>
-#include <aips/Containers/Block.h>
-#include <aips/BasicMath/Math.h>
-#include <aips/IO/BucketCache.h>
-#include <aips/IO/AipsIO.h>
-#include <aips/OS/Conversion.h>
-#include <aips/string.h>                           // for memcpy
-#include <aips/iostream.h>
+#include <casa/aips.h>
+#include <tables/Tables/TSMCube.h>
+#include <tables/Tables/TiledStMan.h>
+#include <tables/Tables/TSMFile.h>
+#include <tables/Tables/TSMColumn.h>
+#include <tables/Tables/DataManError.h>
+#include <casa/Arrays/ArrayUtil.h>
+#include <casa/Containers/Record.h>
+#include <casa/Containers/RecordField.h>
+#include <casa/Containers/Block.h>
+#include <casa/BasicMath/Math.h>
+#include <casa/IO/BucketCache.h>
+#include <casa/IO/AipsIO.h>
+#include <casa/OS/Conversion.h>
+#include <casa/string.h>                           // for memcpy
+#include <casa/iostream.h>
 
 
 // Find out if local size is a multiple of 4, so we can move as integers.

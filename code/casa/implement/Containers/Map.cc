@@ -25,7 +25,7 @@
 //#
 //# $Id$
 
-#include <aips/Containers/Map.h>
+#include <casa/Containers/Map.h>
 
 
 //# template<class key, class value> value &Map<key,value>::operator()(const key &ky) {

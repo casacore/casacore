@@ -29,8 +29,8 @@
 #define AIPS_LCREGIONFIXED_H
 
 //# Includes
-#include <trial/Lattices/LCRegionSingle.h>
-#include <aips/Lattices/ArrayLattice.h>
+#include <lattices/Lattices/LCRegionSingle.h>
+#include <lattices/Lattices/ArrayLattice.h>
 
 
 // <summary>

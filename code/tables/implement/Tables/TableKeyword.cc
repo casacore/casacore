@@ -27,12 +27,12 @@
 
 
 //# Includes
-#include <aips/Tables/TableKeyword.h>
-#include <aips/Tables/Table.h>
-#include <aips/Tables/TableAttr.h>
-#include <aips/Tables/TableDesc.h>
-#include <aips/Tables/TableError.h>
-#include <aips/OS/Path.h>
+#include <tables/Tables/TableKeyword.h>
+#include <tables/Tables/Table.h>
+#include <tables/Tables/TableAttr.h>
+#include <tables/Tables/TableDesc.h>
+#include <tables/Tables/TableError.h>
+#include <casa/OS/Path.h>
 
 TableKeyword::TableKeyword (const String& tableDescName)
 : table_p         (new Table),

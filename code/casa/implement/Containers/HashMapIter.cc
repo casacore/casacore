@@ -24,7 +24,7 @@
 //#                        Charlottesville, VA 22903-2475 USA
 //#
 //# $Id$
-#include <trial/Containers/HashMapIter.h>
+#include <casa/Containers/HashMapIter.h>
 
 template<class key, class val> void ConstHashMapIter<key,val>::toStart() {
     if (!isValid())

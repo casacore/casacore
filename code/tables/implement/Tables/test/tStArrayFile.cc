@@ -25,14 +25,14 @@
 //#
 //# $Id$
 
-#include <aips/Tables/StArrayFile.h>
-#include <aips/IO/AipsIO.h>
-#include <aips/Arrays/IPosition.h>
-#include <aips/BasicSL/Complex.h>
-#include <aips/Exceptions/Error.h>
-#include <aips/iostream.h>
-#include <aips/sstream.h>
-#include <aips/stdio.h>                           // for sprintf
+#include <tables/Tables/StArrayFile.h>
+#include <casa/IO/AipsIO.h>
+#include <casa/Arrays/IPosition.h>
+#include <casa/BasicSL/Complex.h>
+#include <casa/Exceptions/Error.h>
+#include <casa/iostream.h>
+#include <casa/sstream.h>
+#include <casa/stdio.h>                           // for sprintf
 
 // <summary> Test program for the StManArrayFile class </summary>
 

@@ -30,7 +30,7 @@
 
 
 //# Includes
-#include <aips/Tables/Table.h>
+#include <tables/Tables/Table.h>
 
 
 // <summary>

@@ -26,13 +26,13 @@
 //# $Id$
 
 
-#include <aips/Tables/ExprNodeRecord.h>
-#include <aips/Tables/TableExprData.h>
-#include <aips/Containers/RecordInterface.h>
-#include <aips/Containers/RecordDesc.h>
-#include <aips/Arrays/Array.h>
-#include <aips/Arrays/ArrayMath.h>
-#include <aips/Exceptions/Error.h>
+#include <tables/Tables/ExprNodeRecord.h>
+#include <tables/Tables/TableExprData.h>
+#include <casa/Containers/RecordInterface.h>
+#include <casa/Containers/RecordDesc.h>
+#include <casa/Arrays/Array.h>
+#include <casa/Arrays/ArrayMath.h>
+#include <casa/Exceptions/Error.h>
 
 
 TableExprNodeRecordField::TableExprNodeRecordField

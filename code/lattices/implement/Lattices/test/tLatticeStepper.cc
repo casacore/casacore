@@ -25,14 +25,14 @@
 //#
 //# $Id$
 
-#include <aips/aips.h>
-#include <aips/Lattices/LatticeStepper.h>
-#include <aips/Exceptions/Error.h>
-#include <aips/Logging/LogIO.h>
-#include <aips/Logging/LogOrigin.h>
-#include <aips/Utilities/Assert.h>
-#include <aips/BasicSL/String.h>
-#include <aips/iostream.h>
+#include <casa/aips.h>
+#include <lattices/Lattices/LatticeStepper.h>
+#include <casa/Exceptions/Error.h>
+#include <casa/Logging/LogIO.h>
+#include <casa/Logging/LogOrigin.h>
+#include <casa/Utilities/Assert.h>
+#include <casa/BasicSL/String.h>
+#include <casa/iostream.h>
 
 int main()
 {

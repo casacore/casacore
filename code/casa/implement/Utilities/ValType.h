@@ -30,13 +30,13 @@
 
 
 //# Includes
-#include <aips/Utilities/DataType.h>
-#include <aips/BasicSL/String.h>
-#include <aips/BasicSL/Complex.h>
-#include <aips/Utilities/Compare.h>
-#include <aips/OS/Conversion.h>
-#include <aips/IO/AipsIO.h>
-#include <aips/iosfwd.h>
+#include <casa/Utilities/DataType.h>
+#include <casa/BasicSL/String.h>
+#include <casa/BasicSL/Complex.h>
+#include <casa/Utilities/Compare.h>
+#include <casa/OS/Conversion.h>
+#include <casa/IO/AipsIO.h>
+#include <casa/iosfwd.h>
 
 //# Forward Declarations
 class TableRecord;

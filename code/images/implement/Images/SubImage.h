@@ -30,8 +30,8 @@
 
 
 //# Includes
-#include <trial/Images/ImageInterface.h>
-#include <trial/Arrays/AxesSpecifier.h>
+#include <images/Images/ImageInterface.h>
+#include <casa/Arrays/AxesSpecifier.h>
 
 //# Forward Declarations
 class IPosition;

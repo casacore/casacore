@@ -25,17 +25,17 @@
 //#
 //# $Id$
 
-#include <trial/Images/TempImage.h>
-#include <trial/Images/RegionHandlerMemory.h>
-#include <trial/Images/ImageRegion.h>
-#include <aips/Lattices/TempLattice.h>
-#include <trial/Lattices/LatticeRegion.h>
-#include <aips/Arrays/Array.h>
-#include <aips/Arrays/IPosition.h>
-#include <aips/Arrays/Slicer.h>
-#include <aips/BasicSL/String.h>
-#include <aips/Utilities/Assert.h>
-#include <aips/Exceptions/Error.h>
+#include <images/Images/TempImage.h>
+#include <images/Images/RegionHandlerMemory.h>
+#include <images/Images/ImageRegion.h>
+#include <lattices/Lattices/TempLattice.h>
+#include <lattices/Lattices/LatticeRegion.h>
+#include <casa/Arrays/Array.h>
+#include <casa/Arrays/IPosition.h>
+#include <casa/Arrays/Slicer.h>
+#include <casa/BasicSL/String.h>
+#include <casa/Utilities/Assert.h>
+#include <casa/Exceptions/Error.h>
 
 
 template <class T>

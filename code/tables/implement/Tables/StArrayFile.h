@@ -29,11 +29,11 @@
 #define AIPS_STARRAYFILE_H
 
 //# Includes
-#include <aips/aips.h>
-#include <aips/IO/LargeRegularFileIO.h>
-#include <aips/IO/TypeIO.h>
-#include <aips/BasicSL/String.h>
-#include <aips/BasicSL/Complex.h>
+#include <casa/aips.h>
+#include <casa/IO/LargeRegularFileIO.h>
+#include <casa/IO/TypeIO.h>
+#include <casa/BasicSL/String.h>
+#include <casa/BasicSL/Complex.h>
 
 //# Forward Declarations
 class IPosition;

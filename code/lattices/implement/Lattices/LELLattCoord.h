@@ -30,8 +30,8 @@
 
 
 //# Includes
-#include <aips/Lattices/LELLattCoordBase.h>
-#include <aips/BasicSL/String.h>
+#include <lattices/Lattices/LELLattCoordBase.h>
+#include <casa/BasicSL/String.h>
 
 //# Forward Declarations
 class LatticeExprNode;

@@ -27,10 +27,10 @@
 
 //# Includes
 
-#include <aips/Utilities/PtrHolder.h>
-#include <aips/Exceptions/Error.h>
-#include <aips/Utilities/Assert.h>
-#include <aips/iostream.h>
+#include <casa/Utilities/PtrHolder.h>
+#include <casa/Exceptions/Error.h>
+#include <casa/Utilities/Assert.h>
+#include <casa/iostream.h>
 
 // This program should not have any memory leaks.
 

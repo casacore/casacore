@@ -27,11 +27,11 @@
 
 //# Includes
 
-#include <aips/aips.h>
-#include <aips/Measures/Stokes.h>
-#include <aips/BasicSL/String.h>
-#include <aips/Exceptions/Error.h>
-#include <aips/iostream.h>
+#include <casa/aips.h>
+#include <measures/Measures/Stokes.h>
+#include <casa/BasicSL/String.h>
+#include <casa/Exceptions/Error.h>
+#include <casa/iostream.h>
 
 int main() 
 {

@@ -29,8 +29,8 @@
 //# and template instantiators normally do not like them in the same .cc file
 //# with templated functions.
 
-#include <aips/Utilities/Fallible.h>
-#include <aips/Exceptions/Error.h>
+#include <casa/Utilities/Fallible.h>
+#include <casa/Exceptions/Error.h>
 
 void AccessInvalidFallibleObject()
 {

@@ -30,8 +30,8 @@
 
 
 //# Includes
-#include <aips/aips.h>
-#include <aips/Tables/SSMColumn.h>
+#include <casa/aips.h>
+#include <tables/Tables/SSMColumn.h>
 
 //# Forward declarations
 

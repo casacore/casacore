@@ -29,11 +29,11 @@
 #define TRIAL_PROFILEFIT1D_H
 
 //# Includes
-#include <aips/aips.h>
-#include <aips/Arrays/Vector.h>
+#include <casa/aips.h>
+#include <casa/Arrays/Vector.h>
 //
-#include <trial/SpectralComponents/SpectralList.h>
-#include <trial/SpectralComponents/SpectralFit.h>
+#include <components/SpectralComponents/SpectralList.h>
+#include <components/SpectralComponents/SpectralFit.h>
 class SpectralElement;
 
 // <summary>

@@ -27,7 +27,7 @@
 
 
 //# Includes
-#include <aips/Tables/ExternalLockSync.h>
+#include <tables/Tables/ExternalLockSync.h>
 
 
 ExternalLockSync::ExternalLockSync (const TableLock& lockOptions)

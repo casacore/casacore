@@ -25,13 +25,13 @@
 //#
 //# $Id$
 
-#include <aips/aips.h>
-#include <aips/Tables/Table.h>
-#include <aips/Tables/TableColumn.h>
-#include <aips/Tables/TableVector.h>
-#include <aips/Tables/TVecScaCol.h>
-#include <aips/Tables/TVecTemp.h>
-#include <aips/Tables/TableError.h>
+#include <casa/aips.h>
+#include <tables/Tables/Table.h>
+#include <tables/Tables/TableColumn.h>
+#include <tables/Tables/TableVector.h>
+#include <tables/Tables/TVecScaCol.h>
+#include <tables/Tables/TVecTemp.h>
+#include <tables/Tables/TableError.h>
 
 //# Construct an empty table vector.
 template<class T>

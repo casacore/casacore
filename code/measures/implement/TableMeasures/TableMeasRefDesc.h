@@ -29,9 +29,9 @@
 #define AIPS_TABLEMEASREFDESC_H
 
 //# Includes
-#include <aips/TableMeasures/TableMeasOffsetDesc.h>
-#include <aips/Quanta/Unit.h>
-#include <aips/BasicSL/String.h>
+#include <measures/TableMeasures/TableMeasOffsetDesc.h>
+#include <casa/Quanta/Unit.h>
+#include <casa/BasicSL/String.h>
 
 //# Forward Declarations
 class TableMeasDescBase;

@@ -29,12 +29,12 @@
 #if !defined(AIPS_COORDINATE_SYSTEM_H)
 #define AIPS_COORDINATE_SYSTEM_H
 
-#include <aips/aips.h>
-#include <trial/Coordinates/Coordinate.h>
-#include <trial/Coordinates/ObsInfo.h>
+#include <casa/aips.h>
+#include <coordinates/Coordinates/Coordinate.h>
+#include <coordinates/Coordinates/ObsInfo.h>
 
-#include <aips/Containers/Block.h>
-#include <aips/Measures/MDoppler.h>
+#include <casa/Containers/Block.h>
+#include <measures/Measures/MDoppler.h>
 
 template<class T> class Matrix;
 class DirectionCoordinate;

@@ -29,8 +29,8 @@
 #define AIPS_FUNCTIONWRAPPER_H
 
 //# Includes
-#include <aips/aips.h>
-#include <aips/Functionals/WrapperParam.h>
+#include <casa/aips.h>
+#include <scimath/Functionals/WrapperParam.h>
 
 //# Forward declarations
 template <class T> class Vector;

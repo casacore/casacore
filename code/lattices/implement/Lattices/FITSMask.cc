@@ -26,16 +26,16 @@
 //# $Id$
 
 
-#include <trial/Lattices/FITSMask.h>
+#include <lattices/Lattices/FITSMask.h>
 
-#include <aips/Arrays/Array.h>
-#include <aips/Arrays/ArrayMath.h>
-#include <aips/Arrays/IPosition.h>
-#include <aips/BasicMath/Math.h>
-#include <trial/Tables/TiledFileAccess.h>
-#include <aips/Utilities/Assert.h>
-#include <aips/Utilities/DataType.h>
-#include <aips/Exceptions/Error.h>
+#include <casa/Arrays/Array.h>
+#include <casa/Arrays/ArrayMath.h>
+#include <casa/Arrays/IPosition.h>
+#include <casa/BasicMath/Math.h>
+#include <tables/Tables/TiledFileAccess.h>
+#include <casa/Utilities/Assert.h>
+#include <casa/Utilities/DataType.h>
+#include <casa/Exceptions/Error.h>
 
 
 

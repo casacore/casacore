@@ -25,7 +25,7 @@
 //#
 //# $Id$
 
-#include <aips/Logging/LogFilter.h>
+#include <casa/Logging/LogFilter.h>
 
 
 LogFilter::LogFilter (LogMessage::Priority lowest)

@@ -25,21 +25,21 @@
 //#
 //# $Id$
 
-#include <trial/Images/ImageRegion.h>
-#include <trial/Images/WCRegion.h>
-#include <trial/Images/WCUnion.h>
-#include <trial/Images/WCIntersection.h>
-#include <trial/Images/WCDifference.h>
-#include <trial/Images/WCComplement.h>
-#include <trial/Lattices/LCRegion.h>
-#include <trial/Lattices/LCSlicer.h>
-#include <trial/Lattices/RegionType.h>
-#include <trial/Coordinates/CoordinateSystem.h>
-#include <aips/Tables/TableRecord.h>
-#include <aips/Arrays/Vector.h>
-#include <aips/BasicSL/String.h>
-#include <aips/Utilities/Assert.h>
-#include <aips/Exceptions/Error.h>
+#include <images/Images/ImageRegion.h>
+#include <images/Images/WCRegion.h>
+#include <images/Images/WCUnion.h>
+#include <images/Images/WCIntersection.h>
+#include <images/Images/WCDifference.h>
+#include <images/Images/WCComplement.h>
+#include <lattices/Lattices/LCRegion.h>
+#include <lattices/Lattices/LCSlicer.h>
+#include <lattices/Lattices/RegionType.h>
+#include <coordinates/Coordinates/CoordinateSystem.h>
+#include <tables/Tables/TableRecord.h>
+#include <casa/Arrays/Vector.h>
+#include <casa/BasicSL/String.h>
+#include <casa/Utilities/Assert.h>
+#include <casa/Exceptions/Error.h>
 
 ImageRegion::ImageRegion()
 : LattRegionHolder (uInt(0)),

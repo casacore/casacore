@@ -29,7 +29,7 @@
 #if !defined(AIPS_MSFREQOFFSETENUMS_H)
 #define AIPS_MSFREQOFFSETENUMS_H
 
-#include <aips/aips.h>
+#include <casa/aips.h>
 
 // <use visibility=export>
 

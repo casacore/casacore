@@ -27,17 +27,17 @@
 #if !defined(AIPS_REDFLAGGER_H)
 #define AIPS_REDFLAGGER_H
 
-#include <trial/Flagging/RFChunkStats.h>
-#include <trial/System/PGPlotter.h>
-#include <aips/Arrays/Vector.h>
-#include <aips/Containers/Record.h>
-#include <aips/MeasurementSets/MeasurementSet.h>
-#include <aips/Logging/LogIO.h>
+#include <flagging/Flagging/RFChunkStats.h>
+#include <casa/System/PGPlotter.h>
+#include <casa/Arrays/Vector.h>
+#include <casa/Containers/Record.h>
+#include <ms/MeasurementSets/MeasurementSet.h>
+#include <casa/Logging/LogIO.h>
 
-#include <aips/Quanta/Quantum.h>
-#include <aips/Measures/MDirection.h>
-#include <aips/Measures/MPosition.h>
-#include <aips/Measures/MRadialVelocity.h>
+#include <casa/Quanta/Quantum.h>
+#include <measures/Measures/MDirection.h>
+#include <measures/Measures/MPosition.h>
+#include <measures/Measures/MRadialVelocity.h>
 
 class VisSet;
 class RFABase;

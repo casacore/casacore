@@ -28,12 +28,12 @@
 #if !defined(AIPS_SIMORDMAPIO_H)
 #define AIPS_SIMORDMAPIO_H
 
-#include <aips/aips.h>
-#include <aips/Containers/SimOrdMap.h>
+#include <casa/aips.h>
+#include <casa/Containers/SimOrdMap.h>
 
 // Class declarations.
 class AipsIO;
-#include <aips/iosfwd.h>
+#include <casa/iosfwd.h>
 
 // <summary> Global IO functions </summary>
 // <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="" demos="">

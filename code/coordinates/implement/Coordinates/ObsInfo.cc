@@ -26,16 +26,16 @@
 //#
 //# $Id$
 
-#include <trial/Coordinates/ObsInfo.h>
-#include <aips/Measures/MeasureHolder.h>
-#include <aips/Quanta/MVAngle.h>
-#include <aips/Quanta/MVTime.h>
-#include <aips/Quanta/MVDirection.h>
-#include <aips/Containers/Record.h>
-#include <trial/FITS/FITSDateUtil.h>
-#include <aips/BasicSL/Constants.h>
+#include <coordinates/Coordinates/ObsInfo.h>
+#include <measures/Measures/MeasureHolder.h>
+#include <casa/Quanta/MVAngle.h>
+#include <casa/Quanta/MVTime.h>
+#include <casa/Quanta/MVDirection.h>
+#include <casa/Containers/Record.h>
+#include <fits/FITS/FITSDateUtil.h>
+#include <casa/BasicSL/Constants.h>
 
-#include <aips/iostream.h>
+#include <casa/iostream.h>
 
 String ObsInfo::defaultTelescope()
 {

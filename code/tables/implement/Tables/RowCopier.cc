@@ -25,15 +25,15 @@
 //#
 //# $Id$
 
-#include <aips/Tables/RowCopier.h>
-#include <aips/Tables/TableColumn.h>
-#include <aips/Tables/TableDesc.h>
-#include <aips/Tables/TableError.h>
-#include <aips/Tables/Table.h>
+#include <tables/Tables/RowCopier.h>
+#include <tables/Tables/TableColumn.h>
+#include <tables/Tables/TableDesc.h>
+#include <tables/Tables/TableError.h>
+#include <tables/Tables/Table.h>
 
-#include <aips/Arrays/IPosition.h>
-#include <aips/BasicSL/String.h>
-#include <aips/Arrays/Vector.h>
+#include <casa/Arrays/IPosition.h>
+#include <casa/BasicSL/String.h>
+#include <casa/Arrays/Vector.h>
 
 
 // this class is used internally by RowCopier and is what really does the work.

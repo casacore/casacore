@@ -26,12 +26,12 @@
 //# $Id$
 
 
-#include <trial/Lattices/LELRegion.h>
-#include <trial/Lattices/LattRegionHolder.h>
-#include <trial/Lattices/LELArray.h>
-#include <trial/Lattices/LELScalar.h>
-#include <aips/Utilities/Assert.h>
-#include <aips/Exceptions/Error.h>
+#include <lattices/Lattices/LELRegion.h>
+#include <lattices/Lattices/LattRegionHolder.h>
+#include <lattices/Lattices/LELArray.h>
+#include <lattices/Lattices/LELScalar.h>
+#include <casa/Utilities/Assert.h>
+#include <casa/Exceptions/Error.h>
 
 
 LELRegion::LELRegion (const LattRegionHolder& region)

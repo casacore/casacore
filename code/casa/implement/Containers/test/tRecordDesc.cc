@@ -25,11 +25,11 @@
 //#
 //# $Id$
 
-#include <aips/Containers/RecordDesc.h>
-#include <aips/IO/AipsIO.h>
-#include <aips/Utilities/Assert.h>
+#include <casa/Containers/RecordDesc.h>
+#include <casa/IO/AipsIO.h>
+#include <casa/Utilities/Assert.h>
 
-#include <aips/iostream.h>
+#include <casa/iostream.h>
 
 void doIt (Bool doExcp);
 

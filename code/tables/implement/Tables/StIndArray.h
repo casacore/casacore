@@ -29,10 +29,10 @@
 #define AIPS_STINDARRAY_H
 
 //# Includes
-#include <aips/aips.h>
-#include <aips/Tables/StArrayFile.h>
-#include <aips/Arrays/IPosition.h>
-#include <aips/BasicSL/Complex.h>
+#include <casa/aips.h>
+#include <tables/Tables/StArrayFile.h>
+#include <casa/Arrays/IPosition.h>
+#include <casa/BasicSL/Complex.h>
 
 //# Forward Declarations
 class Slicer;

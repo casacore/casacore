@@ -27,22 +27,22 @@
 
 //# Includes
 
-#include <aips/MeasurementSets/MeasurementSet.h>
+#include <ms/MeasurementSets/MeasurementSet.h>
 
-#include <aips/Arrays/Vector.h>
-#include <aips/Arrays/Matrix.h>
-#include <aips/Arrays/ArrayUtil.h>
-#include <aips/Exceptions/Error.h>
-#include <aips/Tables.h>
-#include <aips/Tables/RowCopier.h>
-#include <aips/BasicSL/String.h>
-#include <aips/Utilities/Fallible.h>
-#include <aips/Measures/MDirection.h>
-#include <aips/Measures/MEpoch.h>
-#include <aips/Measures/MPosition.h>
-#include <aips/Measures/MFrequency.h>
+#include <casa/Arrays/Vector.h>
+#include <casa/Arrays/Matrix.h>
+#include <casa/Arrays/ArrayUtil.h>
+#include <casa/Exceptions/Error.h>
+#include <tables/Tables.h>
+#include <tables/Tables/RowCopier.h>
+#include <casa/BasicSL/String.h>
+#include <casa/Utilities/Fallible.h>
+#include <measures/Measures/MDirection.h>
+#include <measures/Measures/MEpoch.h>
+#include <measures/Measures/MPosition.h>
+#include <measures/Measures/MFrequency.h>
 
-#include <aips/iostream.h>
+#include <casa/iostream.h>
 
 
 // test functions, all return the number of errors unless otherwise stated

@@ -29,8 +29,8 @@
 #if !defined(AIPS_NEWFILE_H)
 #define AIPS_NEWFILE_H
 
-#include <aips/aips.h>
-#include <aips/BasicSL/String.h>
+#include <casa/aips.h>
+#include <casa/BasicSL/String.h>
 
 // <summary>
 // Do checks for a new (non-existent) file.

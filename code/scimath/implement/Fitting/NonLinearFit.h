@@ -29,8 +29,8 @@
 #define AIPS_NONLINEARFIT_H
 
 //# Includes
-#include <aips/aips.h>
-#include <trial/Fitting/GenericL2Fit.h>
+#include <casa/aips.h>
+#include <scimath/Fitting/GenericL2Fit.h>
 
 //# Forward declarations
 

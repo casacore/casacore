@@ -26,10 +26,10 @@
 //#
 //# $Id$
 
-#include <trial/System/PGPlotter.h>
-#include <aips/Exceptions/Error.h>
-#include <aips/Arrays/Vector.h>
-#include <aips/Containers/Record.h>
+#include <casa/System/PGPlotter.h>
+#include <casa/Exceptions/Error.h>
+#include <casa/Arrays/Vector.h>
+#include <casa/Containers/Record.h>
 
 //# Default is no create function, thus use createLocal.
 PGPlotter::CreateFunction* PGPlotter::creator_p = 0;

@@ -25,15 +25,15 @@
 //#
 //# $Id$
 
-#include <aips/Tables/StArrAipsIO.h>
-#include <aips/Utilities/DataType.h>
-#include <aips/IO/AipsIO.h>
-#include <aips/Arrays/Array.h>
-#include <aips/Arrays/Slicer.h>
-#include <aips/BasicSL/Complex.h>
-#include <aips/BasicSL/String.h>
-#include <aips/Utilities/Copy.h>
-#include <aips/Tables/DataManError.h>
+#include <tables/Tables/StArrAipsIO.h>
+#include <casa/Utilities/DataType.h>
+#include <casa/IO/AipsIO.h>
+#include <casa/Arrays/Array.h>
+#include <casa/Arrays/Slicer.h>
+#include <casa/BasicSL/Complex.h>
+#include <casa/BasicSL/String.h>
+#include <casa/Utilities/Copy.h>
+#include <tables/Tables/DataManError.h>
 
 
 StManColumnArrayAipsIO::StManColumnArrayAipsIO (StManAipsIO* smptr,

@@ -25,20 +25,20 @@
 //#
 //# $Id$
 //#
-#include <aips/Quanta/MVTime.h>
-#include <aips/Containers/RecordFieldId.h>
-#include <aips/Measures/Stokes.h>
-#include <aips/MeasurementSets/MSColumns.h>
-#include <aips/MeasurementSets/MeasurementSet.h>
-#include <trial/MeasurementSets/MSLister.h>
-#include <trial/MeasurementSets/MSSummary.h>
-#include <trial/MeasurementSets/MSRange.h>
-#include <aips/Arrays/ArrayLogical.h>
-#include <aips/Arrays/ArrayMath.h>
-#include <aips/Arrays/MaskedArray.h>
-#include <aips/Arrays/MaskArrMath.h>
-#include <aips/iomanip.h>
-#include <aips/iostream.h>
+#include <casa/Quanta/MVTime.h>
+#include <casa/Containers/RecordFieldId.h>
+#include <measures/Measures/Stokes.h>
+#include <ms/MeasurementSets/MSColumns.h>
+#include <ms/MeasurementSets/MeasurementSet.h>
+#include <ms/MeasurementSets/MSLister.h>
+#include <ms/MeasurementSets/MSSummary.h>
+#include <ms/MeasurementSets/MSRange.h>
+#include <casa/Arrays/ArrayLogical.h>
+#include <casa/Arrays/ArrayMath.h>
+#include <casa/Arrays/MaskedArray.h>
+#include <casa/Arrays/MaskArrMath.h>
+#include <casa/iomanip.h>
+#include <casa/iostream.h>
 
 
 //

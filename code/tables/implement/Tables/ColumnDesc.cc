@@ -25,21 +25,21 @@
 //#
 //# $Id$
 
-#include <aips/Tables/ColumnDesc.h>
-#include <aips/Tables/ScaColDesc.h>
-#include <aips/Tables/ScaRecordColDesc.h>
-#include <aips/Tables/ArrColDesc.h>
-#include <aips/Tables/SubTabDesc.h>
-#include <aips/Tables/TableRecord.h>
-#include <aips/Tables/TableAttr.h>
-#include <aips/Containers/RecordDesc.h>
-#include <aips/BasicSL/Complex.h>
-#include <aips/Utilities/DataType.h>
-#include <aips/IO/AipsIO.h>
-#include <aips/Tables/TableError.h>
-#include <aips/Tables/TableRecord.h>
-#include <aips/Utilities/Assert.h>
-#include <aips/iostream.h>
+#include <tables/Tables/ColumnDesc.h>
+#include <tables/Tables/ScaColDesc.h>
+#include <tables/Tables/ScaRecordColDesc.h>
+#include <tables/Tables/ArrColDesc.h>
+#include <tables/Tables/SubTabDesc.h>
+#include <tables/Tables/TableRecord.h>
+#include <tables/Tables/TableAttr.h>
+#include <casa/Containers/RecordDesc.h>
+#include <casa/BasicSL/Complex.h>
+#include <casa/Utilities/DataType.h>
+#include <casa/IO/AipsIO.h>
+#include <tables/Tables/TableError.h>
+#include <tables/Tables/TableRecord.h>
+#include <casa/Utilities/Assert.h>
+#include <casa/iostream.h>
 
 
 ColumnDesc::ColumnDesc (const BaseColumnDesc& cold)

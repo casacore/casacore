@@ -31,9 +31,9 @@
 #define AIPS_RECORDREP_H
 
 //# Includes
-#include <aips/aips.h>
-#include <aips/Containers/RecordDesc.h>
-#include <aips/Containers/RecordInterface.h>
+#include <casa/aips.h>
+#include <casa/Containers/RecordDesc.h>
+#include <casa/Containers/RecordInterface.h>
 
 //# Forward Declarations
 class AipsIO;

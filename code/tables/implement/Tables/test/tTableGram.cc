@@ -25,15 +25,15 @@
 //#
 //# $Id$
 
-#include <aips/Tables/TableParse.h>
-#include <aips/Tables/Table.h>
-#include <aips/Tables/TableDesc.h>
-#include <aips/Tables/TableColumn.h>
-#include <aips/Arrays/Matrix.h>
-#include <aips/Arrays/Vector.h>
-#include <aips/BasicSL/Complex.h>
-#include <aips/Exceptions/Error.h>
-#include <aips/iostream.h>
+#include <tables/Tables/TableParse.h>
+#include <tables/Tables/Table.h>
+#include <tables/Tables/TableDesc.h>
+#include <tables/Tables/TableColumn.h>
+#include <casa/Arrays/Matrix.h>
+#include <casa/Arrays/Vector.h>
+#include <casa/BasicSL/Complex.h>
+#include <casa/Exceptions/Error.h>
+#include <casa/iostream.h>
 
 // <summary>
 // Test program for table commands from user interface

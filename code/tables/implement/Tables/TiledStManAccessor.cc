@@ -26,12 +26,12 @@
 //# $Id$
 
 //# Includes
-#include <aips/Tables/TiledStManAccessor.h>
-#include <aips/Tables/TiledStMan.h>
-#include <aips/Tables/TSMCube.h>
-#include <aips/Tables/Table.h>
-#include <aips/Tables/DataManError.h>
-#include <aips/BasicSL/String.h>
+#include <tables/Tables/TiledStManAccessor.h>
+#include <tables/Tables/TiledStMan.h>
+#include <tables/Tables/TSMCube.h>
+#include <tables/Tables/Table.h>
+#include <tables/Tables/DataManError.h>
+#include <casa/BasicSL/String.h>
 
 
 ROTiledStManAccessor::ROTiledStManAccessor (const Table& table,

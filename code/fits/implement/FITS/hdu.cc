@@ -28,9 +28,9 @@
 //# Partial implementation of little endian code by Kris Huber
 //# (kris@helios.ece.usu.edu)
 
-# include <aips/FITS/fits.h>
-# include <aips/FITS/hdu.h>
-# include <aips/FITS/fitsio.h>
+# include <fits/FITS/fits.h>
+# include <fits/FITS/hdu.h>
+# include <fits/FITS/fitsio.h>
 # include <string.h>
 
 //============================================================================

@@ -26,9 +26,9 @@
 //# $Id$
 
 
-#include <aips/OS/CanonicalConversion.h>
+#include <casa/OS/CanonicalConversion.h>
 #include <assert.h>
-#include <aips/iostream.h>
+#include <casa/iostream.h>
 
 
 unsigned int CanonicalConversion::toLocalChar (void* to, const void* from,

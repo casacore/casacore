@@ -25,17 +25,17 @@
 //#
 //# $Id$
 
-#include <trial/Flagging/RFASpectralRej.h> 
-#include <aips/Functionals/Polynomial.h>
-#include <trial/MSVis/VisibilityIterator.h>
-#include <trial/MSVis/VisBuffer.h>
-#include <aips/Arrays/ArrayMath.h>
-#include <aips/Arrays/ArrayLogical.h>
-#include <aips/Arrays/Slice.h>
-#include <trial/System/PGPlotterInterface.h>
+#include <flagging/Flagging/RFASpectralRej.h> 
+#include <scimath/Functionals/Polynomial.h>
+#include <msvis/MSVis/VisibilityIterator.h>
+#include <msvis/MSVis/VisBuffer.h>
+#include <casa/Arrays/ArrayMath.h>
+#include <casa/Arrays/ArrayLogical.h>
+#include <casa/Arrays/Slice.h>
+#include <casa/System/PGPlotterInterface.h>
     
-#include <aips/stdio.h>
-#include <aips/stdlib.h>
+#include <casa/stdio.h>
+#include <casa/stdlib.h>
     
 void RFASpectralRej::addSegment ( Int spwid,Double fq0,Double fq1,Int ch0,Int ch1 )
 {

@@ -25,19 +25,19 @@
 //#
 //# $Id$
 
-#include <aips/aips.h>
-#include <aips/System/Aipsrc.h>
-#include <aips/Exceptions/Error.h>
-#include <aips/FITS/FITS.h>
-#include <aips/Inputs/Input.h>
-#include <aips/OS/File.h>
-#include <aips/OS/Path.h>
+#include <casa/aips.h>
+#include <casa/System/Aipsrc.h>
+#include <casa/Exceptions/Error.h>
+#include <fits/FITS/FITS.h>
+#include <casa/Inputs/Input.h>
+#include <casa/OS/File.h>
+#include <casa/OS/Path.h>
 
-#include <trial/Images/PagedImage.h>
-#include <trial/Images/ImageFITSConverter.h>
-#include <aips/System/AppInfo.h>
+#include <images/Images/PagedImage.h>
+#include <images/Images/ImageFITSConverter.h>
+#include <casa/System/AppInfo.h>
 
-#include <aips/iostream.h>
+#include <casa/iostream.h>
 
 int main(int argc, char **argv)
 {

@@ -26,7 +26,7 @@
 //# $Id$
 
 
-#include <trial/Lattices/LCRegionFixed.h>
+#include <lattices/Lattices/LCRegionFixed.h>
 
 
 LCRegionFixed::LCRegionFixed()

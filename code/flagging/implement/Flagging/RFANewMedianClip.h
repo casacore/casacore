@@ -27,13 +27,13 @@
 #if !defined(AIPS_RFA_NEWMEDIANCLIP_H)
 #define AIPS_RFA_NEWMEDIANCLIP_H
 
-#include <trial/Flagging/RFAFlagCubeBase.h> 
-#include <trial/Flagging/RFDataMapper.h> 
-#include <trial/Flagging/RFFlagCube.h> 
-#include <trial/Flagging/RFRowClipper.h> 
-#include <trial/Flagging/RFDebugPlot.h> 
-#include <trial/System/PGPlotter.h>
-#include <trial/Mathematics/MedianSlider.h> 
+#include <flagging/Flagging/RFAFlagCubeBase.h> 
+#include <flagging/Flagging/RFDataMapper.h> 
+#include <flagging/Flagging/RFFlagCube.h> 
+#include <flagging/Flagging/RFRowClipper.h> 
+#include <flagging/Flagging/RFDebugPlot.h> 
+#include <casa/System/PGPlotter.h>
+#include <scimath/Mathematics/MedianSlider.h> 
 
 // <summary>
 // RFANewMedianClip: RedFlagger Agent for clipping relative to median over time

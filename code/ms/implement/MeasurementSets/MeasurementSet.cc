@@ -25,29 +25,29 @@
 //#
 //# $Id$
 
-#include <aips/MeasurementSets/MeasurementSet.h>
+#include <ms/MeasurementSets/MeasurementSet.h>
 
-#include <aips/Arrays/Vector.h>
-#include <aips/Arrays/ArrayMath.h>
-#include <aips/Exceptions/Error.h>
-#include <aips/Measures/MDirection.h>
-#include <aips/Measures/MEpoch.h>
-#include <aips/Measures/MPosition.h>
-#include <aips/Measures/MFrequency.h>
-#include <aips/Tables/TableInfo.h>
-#include <aips/Tables/ArrayColumn.h>
-#include <aips/Tables/SetupNewTab.h>
-#include <aips/Tables/TableDesc.h>
-#include <aips/Tables/ColDescSet.h>
-#include <aips/Tables/TableRecord.h>
-#include <aips/Tables/ScaColDesc.h>
-#include <aips/Tables/ArrColDesc.h>
-#include <aips/Tables/StManAipsIO.h>
-#include <aips/Tables/ForwardCol.h>
-#include <aips/Tables/IncrementalStMan.h>
-#include <aips/Tables/StandardStMan.h>
-#include <aips/BasicSL/String.h>
-#include <aips/iostream.h>
+#include <casa/Arrays/Vector.h>
+#include <casa/Arrays/ArrayMath.h>
+#include <casa/Exceptions/Error.h>
+#include <measures/Measures/MDirection.h>
+#include <measures/Measures/MEpoch.h>
+#include <measures/Measures/MPosition.h>
+#include <measures/Measures/MFrequency.h>
+#include <tables/Tables/TableInfo.h>
+#include <tables/Tables/ArrayColumn.h>
+#include <tables/Tables/SetupNewTab.h>
+#include <tables/Tables/TableDesc.h>
+#include <tables/Tables/ColDescSet.h>
+#include <tables/Tables/TableRecord.h>
+#include <tables/Tables/ScaColDesc.h>
+#include <tables/Tables/ArrColDesc.h>
+#include <tables/Tables/StManAipsIO.h>
+#include <tables/Tables/ForwardCol.h>
+#include <tables/Tables/IncrementalStMan.h>
+#include <tables/Tables/StandardStMan.h>
+#include <casa/BasicSL/String.h>
+#include <casa/iostream.h>
 
 MeasurementSet::MeasurementSet():hasBeenDestroyed_p(True) { }
 

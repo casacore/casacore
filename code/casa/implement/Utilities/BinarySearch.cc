@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#include <aips/Utilities/BinarySearch.h>
-#include <aips/Exceptions/Error.h>
+#include <casa/Utilities/BinarySearch.h>
+#include <casa/Exceptions/Error.h>
 
 //#!!!!! If you change either of the following, make sure you change the other
 //#!!!!! similarly.

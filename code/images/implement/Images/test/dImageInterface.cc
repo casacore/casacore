@@ -25,15 +25,15 @@
 //#
 //# $Id$
 
-#include <trial/Images/PagedImage.h>
-#include <trial/Images/ImageInterface.h>
-#include <aips/Lattices/LatticeIterator.h>
-#include <aips/Arrays/IPosition.h>
-#include <aips/Arrays/Vector.h>
-#include <aips/Arrays/ArrayMath.h>
-#include <trial/Coordinates/CoordinateUtil.h>
-#include <aips/BasicSL/Constants.h>
-#include <aips/iostream.h>
+#include <images/Images/PagedImage.h>
+#include <images/Images/ImageInterface.h>
+#include <lattices/Lattices/LatticeIterator.h>
+#include <casa/Arrays/IPosition.h>
+#include <casa/Arrays/Vector.h>
+#include <casa/Arrays/ArrayMath.h>
+#include <coordinates/Coordinates/CoordinateUtil.h>
+#include <casa/BasicSL/Constants.h>
+#include <casa/iostream.h>
 
 Float sumPixels(const ImageInterface<Float>& image){
   uInt rowLength = image.shape()(0);

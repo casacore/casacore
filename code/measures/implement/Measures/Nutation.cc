@@ -26,13 +26,13 @@
 //# $Id$
 
 //# Includes
-#include <aips/Measures/Nutation.h>
-#include <aips/BasicSL/Constants.h>
-#include <aips/Arrays/Vector.h>
-#include <aips/Arrays/ArrayMath.h>
-#include <aips/Measures/MeasTable.h>
-#include <aips/Measures/MeasIERS.h>
-#include <aips/System/AipsrcValue.h>
+#include <measures/Measures/Nutation.h>
+#include <casa/BasicSL/Constants.h>
+#include <casa/Arrays/Vector.h>
+#include <casa/Arrays/ArrayMath.h>
+#include <measures/Measures/MeasTable.h>
+#include <measures/Measures/MeasIERS.h>
+#include <casa/System/AipsrcValue.h>
 
 //# Constants
 const Double Nutation::INTV = 0.04;

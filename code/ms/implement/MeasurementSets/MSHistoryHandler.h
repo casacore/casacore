@@ -29,8 +29,8 @@
 #if !defined(TRIAL_MSHISTORYHANDLER_H)
 #define TRIAL_MSHISTORYHANDLER_H
 
-#include <aips/MeasurementSets/MeasurementSet.h>
-#include <aips/MeasurementSets/MSHistory.h>
+#include <ms/MeasurementSets/MeasurementSet.h>
+#include <ms/MeasurementSets/MSHistory.h>
 
 
 class MSHistoryColumns;

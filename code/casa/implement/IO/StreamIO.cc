@@ -25,11 +25,11 @@
 //#
 //# $Id$
 
-#include <trial/IO/StreamIO.h>
-#include <aips/BasicSL/String.h>
-#include <aips/Utilities/Regex.h>
-#include <aips/Utilities/Copy.h>
-#include <aips/Exceptions/Error.h>
+#include <casa/IO/StreamIO.h>
+#include <casa/BasicSL/String.h>
+#include <casa/Utilities/Regex.h>
+#include <casa/Utilities/Copy.h>
+#include <casa/Exceptions/Error.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>            // Definition of sockaddr_in
 #include <sys/socket.h>           // Definition of sockaddr & socket function

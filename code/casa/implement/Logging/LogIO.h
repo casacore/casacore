@@ -30,15 +30,15 @@
 #define AIPS_LOGIO_H
 
 //# Includes
-#include <aips/aips.h>
-#include <aips/Logging/LogMessage.h>
-#include <aips/Logging/LogSink.h>
-#include <aips/BasicSL/Complex.h>
+#include <casa/aips.h>
+#include <casa/Logging/LogMessage.h>
+#include <casa/Logging/LogSink.h>
+#include <casa/BasicSL/Complex.h>
 
 //# Forward Declarations
 class LogSink;
 class LogOrigin;
-#include <aips/iosstrfwd.h>
+#include <casa/iosstrfwd.h>
 
 // <summary>
 // ostream-like interface to creating log messages.

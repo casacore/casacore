@@ -27,11 +27,11 @@
 
 //# Includes
 
-#include <aips/Arrays/Slicer.h>
-#include <aips/Arrays/Slice.h>
-#include <aips/Arrays/IPosition.h>
-#include <aips/Arrays/ArrayError.h>
-#include <aips/iostream.h>
+#include <casa/Arrays/Slicer.h>
+#include <casa/Arrays/Slice.h>
+#include <casa/Arrays/IPosition.h>
+#include <casa/Arrays/ArrayError.h>
+#include <casa/iostream.h>
 
 // <summary> Test the Slicer class </summary>
 

@@ -25,12 +25,12 @@
 //#
 //# $Id$
 
-#include <trial/Lattices/LCPagedMask.h>
-#include <aips/Tables/TableRecord.h>
-#include <aips/Tables/TableAttr.h>
-#include <aips/Arrays/Vector.h>
-#include <aips/OS/Path.h>
-#include <aips/Exceptions/Error.h>
+#include <lattices/Lattices/LCPagedMask.h>
+#include <tables/Tables/TableRecord.h>
+#include <tables/Tables/TableAttr.h>
+#include <casa/Arrays/Vector.h>
+#include <casa/OS/Path.h>
+#include <casa/Exceptions/Error.h>
 
 
 LCPagedMask::LCPagedMask()

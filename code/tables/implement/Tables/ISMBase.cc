@@ -26,25 +26,25 @@
 //# $Id$
 
 
-#include <aips/Tables/ISMBase.h>
-#include <aips/Tables/ISMBucket.h>
-#include <aips/Tables/ISMColumn.h>
-#include <aips/Tables/ISMIndColumn.h>
-#include <aips/Tables/ISMIndex.h>
-#include <aips/Tables/StArrayFile.h>
-#include <aips/Tables/Table.h>
-#include <aips/Containers/Record.h>
-#include <aips/Utilities/ValType.h>
-#include <aips/Utilities/Assert.h>
-#include <aips/IO/BucketCache.h>
-#include <aips/IO/BucketFile.h>
-#include <aips/IO/AipsIO.h>
-#include <aips/IO/CanonicalIO.h>
-#include <aips/IO/LECanonicalIO.h>
-#include <aips/IO/FiledesIO.h>
-#include <aips/OS/DOos.h>
-#include <aips/Tables/DataManError.h>
-#include <aips/ostream.h>
+#include <tables/Tables/ISMBase.h>
+#include <tables/Tables/ISMBucket.h>
+#include <tables/Tables/ISMColumn.h>
+#include <tables/Tables/ISMIndColumn.h>
+#include <tables/Tables/ISMIndex.h>
+#include <tables/Tables/StArrayFile.h>
+#include <tables/Tables/Table.h>
+#include <casa/Containers/Record.h>
+#include <casa/Utilities/ValType.h>
+#include <casa/Utilities/Assert.h>
+#include <casa/IO/BucketCache.h>
+#include <casa/IO/BucketFile.h>
+#include <casa/IO/AipsIO.h>
+#include <casa/IO/CanonicalIO.h>
+#include <casa/IO/LECanonicalIO.h>
+#include <casa/IO/FiledesIO.h>
+#include <casa/OS/DOos.h>
+#include <tables/Tables/DataManError.h>
+#include <casa/ostream.h>
 
 
 ISMBase::ISMBase (uInt bucketSize, Bool checkBucketSize, uInt cacheSize)

@@ -29,12 +29,12 @@
 #define AIPS_PAGEDARRAY_H
 
 //# Includes
-#include <aips/Lattices/Lattice.h>
-#include <aips/Lattices/TiledShape.h>
-#include <aips/Tables/ArrayColumn.h>
-#include <aips/Tables/Table.h>
-#include <aips/Tables/TiledStManAccessor.h>
-#include <aips/BasicSL/String.h>
+#include <lattices/Lattices/Lattice.h>
+#include <lattices/Lattices/TiledShape.h>
+#include <tables/Tables/ArrayColumn.h>
+#include <tables/Tables/Table.h>
+#include <tables/Tables/TiledStManAccessor.h>
+#include <casa/BasicSL/String.h>
 
 
 // <summary>

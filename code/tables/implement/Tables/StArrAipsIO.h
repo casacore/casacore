@@ -29,9 +29,9 @@
 #define AIPS_STARRAIPSIO_H
 
 //# Includes
-#include <aips/aips.h>
-#include <aips/Tables/StManAipsIO.h>
-#include <aips/Arrays/IPosition.h>
+#include <casa/aips.h>
+#include <tables/Tables/StManAipsIO.h>
+#include <casa/Arrays/IPosition.h>
 
 //# Forward Declarations
 class AipsIO;

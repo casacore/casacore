@@ -30,11 +30,11 @@
 #define AIPS_MSFIELDINDEX_H
 
 //# includes
-#include <aips/aips.h>
-#include <aips/MeasurementSets/MSField.h>
-#include <aips/MeasurementSets/MSFieldColumns.h>
-#include <aips/Arrays/Vector.h>
-#include <aips/BasicSL/String.h>
+#include <casa/aips.h>
+#include <ms/MeasurementSets/MSField.h>
+#include <ms/MeasurementSets/MSFieldColumns.h>
+#include <casa/Arrays/Vector.h>
+#include <casa/BasicSL/String.h>
 
 //# forward declarations
 

@@ -25,16 +25,16 @@
 //#
 //# $Id$
 
-#include <aips/Arrays/Vector.h>
-#include <aips/LogTables/TableLogSink.h>
-#include <aips/Tables/TableDesc.h>
-#include <aips/Tables/TableRecord.h>
-#include <aips/Tables/SetupNewTab.h>
-#include <aips/Tables/StandardStMan.h>
-#include <aips/Tables/StManAipsIO.h>
-#include <aips/Tables/ScaColDesc.h>
-#include <aips/Exceptions/Error.h>
-#include <aips/Utilities/Assert.h>
+#include <casa/Arrays/Vector.h>
+#include <tables/LogTables/TableLogSink.h>
+#include <tables/Tables/TableDesc.h>
+#include <tables/Tables/TableRecord.h>
+#include <tables/Tables/SetupNewTab.h>
+#include <tables/Tables/StandardStMan.h>
+#include <tables/Tables/StManAipsIO.h>
+#include <tables/Tables/ScaColDesc.h>
+#include <casa/Exceptions/Error.h>
+#include <casa/Utilities/Assert.h>
 
 
 String TableLogSink::localId( ) {

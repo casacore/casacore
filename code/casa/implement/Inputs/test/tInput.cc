@@ -25,14 +25,14 @@
 //#
 //# $Id$
 
-#include <aips/aips.h>
-#include <aips/Inputs/Input.h>
-#include <aips/Containers/Block.h>
-#include <aips/Arrays/IPosition.h>
-#include <aips/Arrays/Array.h>
-#include <aips/Arrays/ArrayLogical.h>
-#include <aips/Utilities/Assert.h>
-#include <aips/iostream.h>
+#include <casa/aips.h>
+#include <casa/Inputs/Input.h>
+#include <casa/Containers/Block.h>
+#include <casa/Arrays/IPosition.h>
+#include <casa/Arrays/Array.h>
+#include <casa/Arrays/ArrayLogical.h>
+#include <casa/Utilities/Assert.h>
+#include <casa/iostream.h>
 
 int main(int argc, char *argv[])
 {

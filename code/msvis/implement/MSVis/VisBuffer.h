@@ -28,16 +28,16 @@
 #if !defined(TRIAL_VISBUFFER_H)
 #define TRIAL_VISBUFFER_H
 
-#include <aips/aips.h>
-#include <aips/Arrays/Cube.h>
-#include <aips/Arrays/Vector.h>
-#include <aips/Arrays/Matrix.h>
-#include <aips/BasicSL/Complex.h>
-#include <aips/Measures/MDirection.h>
-#include <aips/Measures/MEpoch.h>
-#include <trial/MSVis/StokesVector.h>
-#include <trial/MSVis/VisibilityIterator.h>
-#include <trial/MSVis/MSCalEnums.h>
+#include <casa/aips.h>
+#include <casa/Arrays/Cube.h>
+#include <casa/Arrays/Vector.h>
+#include <casa/Arrays/Matrix.h>
+#include <casa/BasicSL/Complex.h>
+#include <measures/Measures/MDirection.h>
+#include <measures/Measures/MEpoch.h>
+#include <msvis/MSVis/StokesVector.h>
+#include <msvis/MSVis/VisibilityIterator.h>
+#include <msvis/MSVis/MSCalEnums.h>
 
 //#forward
 

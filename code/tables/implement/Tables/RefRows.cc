@@ -26,10 +26,10 @@
 //# $Id$
 
 
-#include <aips/Tables/RefRows.h>
-#include <aips/Arrays/ArrayLogical.h>
-#include <aips/Utilities/Assert.h>
-#include <aips/Exceptions/Error.h>
+#include <tables/Tables/RefRows.h>
+#include <casa/Arrays/ArrayLogical.h>
+#include <casa/Utilities/Assert.h>
+#include <casa/Exceptions/Error.h>
 
 
 RefRows::RefRows (const Vector<uInt>& rowNumbers, Bool isSliced,

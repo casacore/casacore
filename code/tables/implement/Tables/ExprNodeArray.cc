@@ -25,15 +25,15 @@
 //#
 //# $Id$
 
-#include <aips/Tables/ExprNode.h>
-#include <aips/Tables/ExprNodeArray.h>
-#include <aips/Tables/ExprNodeSet.h>
-#include <aips/Tables/TableError.h>
-#include <aips/Arrays/ArrayMath.h>
-#include <aips/Arrays/ArrayLogical.h>
-#include <aips/Arrays/Slicer.h>
-#include <aips/Utilities/Assert.h>
-#include <aips/Exceptions/Error.h>
+#include <tables/Tables/ExprNode.h>
+#include <tables/Tables/ExprNodeArray.h>
+#include <tables/Tables/ExprNodeSet.h>
+#include <tables/Tables/TableError.h>
+#include <casa/Arrays/ArrayMath.h>
+#include <casa/Arrays/ArrayLogical.h>
+#include <casa/Arrays/Slicer.h>
+#include <casa/Utilities/Assert.h>
+#include <casa/Exceptions/Error.h>
 
 
 TableExprNodeArray::TableExprNodeArray (NodeDataType dtype, OperType otype)

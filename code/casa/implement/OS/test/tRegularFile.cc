@@ -26,12 +26,12 @@
 //# $Id$
 
 
-#include <aips/OS/RegularFile.h>
-#include <aips/OS/File.h>
-#include <aips/BasicSL/String.h>
-#include <aips/Utilities/Assert.h>
-#include <aips/Exceptions.h>
-#include <aips/iostream.h>
+#include <casa/OS/RegularFile.h>
+#include <casa/OS/File.h>
+#include <casa/BasicSL/String.h>
+#include <casa/Utilities/Assert.h>
+#include <casa/Exceptions.h>
+#include <casa/iostream.h>
 
 
 // <summary>

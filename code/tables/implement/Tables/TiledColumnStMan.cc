@@ -25,20 +25,20 @@
 //#
 //# $Id$
 
-#include <aips/Tables/TiledColumnStMan.h>
-#include <aips/Tables/TSMColumn.h>
-#include <aips/Tables/TSMCube.h>
-#include <aips/Tables/TSMFile.h>
-#include <aips/Tables/Table.h>
-#include <aips/Tables/TableDesc.h>
-#include <aips/Tables/ColumnDesc.h>
-#include <aips/Arrays/Vector.h>
-#include <aips/Arrays/IPosition.h>
-#include <aips/Utilities/DataType.h>
-#include <aips/BasicSL/String.h>
-#include <aips/Utilities/BinarySearch.h>
-#include <aips/IO/AipsIO.h>
-#include <aips/Tables/DataManError.h>
+#include <tables/Tables/TiledColumnStMan.h>
+#include <tables/Tables/TSMColumn.h>
+#include <tables/Tables/TSMCube.h>
+#include <tables/Tables/TSMFile.h>
+#include <tables/Tables/Table.h>
+#include <tables/Tables/TableDesc.h>
+#include <tables/Tables/ColumnDesc.h>
+#include <casa/Arrays/Vector.h>
+#include <casa/Arrays/IPosition.h>
+#include <casa/Utilities/DataType.h>
+#include <casa/BasicSL/String.h>
+#include <casa/Utilities/BinarySearch.h>
+#include <casa/IO/AipsIO.h>
+#include <tables/Tables/DataManError.h>
 
 
 //# Allocate an empty record to avoid reconstructing it over and over

@@ -29,9 +29,9 @@
 #define AIPS_SINCFUNCTION_H
 
 //# Includes
-#include <aips/aips.h>
-#include <aips/Functionals/SincParam.h>
-#include <aips/Functionals/Function.h>
+#include <casa/aips.h>
+#include <scimath/Functionals/SincParam.h>
+#include <scimath/Functionals/Function.h>
 
 //# Forward declarations
 

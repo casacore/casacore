@@ -29,8 +29,8 @@
 #define AIPS_TSMCOORDCOLUMN_H
 
 //# Includes
-#include <aips/aips.h>
-#include <aips/Tables/TSMColumn.h>
+#include <casa/aips.h>
+#include <tables/Tables/TSMColumn.h>
 
 //# Forward declarations
 

@@ -25,21 +25,21 @@
 //#
 //# $Id$
 
-#include <aips/aips.h>
-#include <aips/IO/CanonicalIO.h>
-#include <aips/IO/LECanonicalIO.h>
-#include <aips/IO/RawIO.h>
-#include <aips/IO/ConversionIO.h>
-#include <aips/OS/CanonicalDataConversion.h>
-#include <aips/OS/LECanonicalDataConversion.h>
-#include <aips/OS/IBMDataConversion.h>
-#include <aips/OS/VAXDataConversion.h>
-#include <aips/OS/RawDataConversion.h>
-#include <aips/IO/RegularFileIO.h>
-#include <aips/OS/RegularFile.h>
-#include <aips/OS/Path.h>
-#include <aips/Utilities/Assert.h>
-#include <aips/iostream.h>
+#include <casa/aips.h>
+#include <casa/IO/CanonicalIO.h>
+#include <casa/IO/LECanonicalIO.h>
+#include <casa/IO/RawIO.h>
+#include <casa/IO/ConversionIO.h>
+#include <casa/OS/CanonicalDataConversion.h>
+#include <casa/OS/LECanonicalDataConversion.h>
+#include <casa/OS/IBMDataConversion.h>
+#include <casa/OS/VAXDataConversion.h>
+#include <casa/OS/RawDataConversion.h>
+#include <casa/IO/RegularFileIO.h>
+#include <casa/OS/RegularFile.h>
+#include <casa/OS/Path.h>
+#include <casa/Utilities/Assert.h>
+#include <casa/iostream.h>
 
 
 void doIt (TypeIO* io)

@@ -28,8 +28,8 @@
 #if !defined(AIPS_QUEUE_H)
 #define AIPS_QUEUE_H
 
-#include <aips/aips.h>
-#include <aips/Containers/Block.h>
+#include <casa/aips.h>
+#include <casa/Containers/Block.h>
 
 // 
 

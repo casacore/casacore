@@ -30,8 +30,8 @@
 
 
 //# Includes
-#include <aips/aips.h>
-#include <trial/Lattices/LatticeProgress.h>
+#include <casa/aips.h>
+#include <lattices/Lattices/LatticeProgress.h>
 class ProgressMeter;
 
 

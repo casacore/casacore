@@ -25,9 +25,9 @@
 //#
 //# $Id$
 
-#include <aips/Functionals/FunctionOrder.h>
-#include <aips/Containers/Record.h>
-#include <aips/iostream.h>
+#include <scimath/Functionals/FunctionOrder.h>
+#include <casa/Containers/Record.h>
+#include <casa/iostream.h>
 
 template<class T>
 FunctionOrder<T>::FunctionOrder()

@@ -29,9 +29,9 @@
 #define AIPS_ARRAY_LOGICAL_H
 
 //# Includes
-#include <aips/aips.h>
-#include <aips/Arrays/Array.h>
-#include <aips/Arrays/LogiArray.h>
+#include <casa/aips.h>
+#include <casa/Arrays/Array.h>
+#include <casa/Arrays/LogiArray.h>
 
 //# Forward Declarations
 template <class T> class Vector;

@@ -25,24 +25,24 @@
 //#
 //# $Id$
 
-#include <aips/aips.h>
+#include <casa/aips.h>
 
-#include <aips/Lattices/ArrayLattice.h> 
-#include <aips/Lattices/LatticeIterator.h> 
-#include <aips/Lattices/LatticeStepper.h> 
+#include <lattices/Lattices/ArrayLattice.h> 
+#include <lattices/Lattices/LatticeIterator.h> 
+#include <lattices/Lattices/LatticeStepper.h> 
 
-#include <aips/Arrays/ArrayIO.h>
-#include <aips/Arrays/ArrayMath.h>
-#include <aips/Arrays/ArrayLogical.h>
-#include <aips/Arrays/Matrix.h>
-#include <aips/Arrays/Slicer.h>
-#include <aips/Functionals/Polynomial.h>
-#include <aips/BasicMath/Math.h>
-#include <aips/Utilities/COWPtr.h>
-#include <aips/Utilities/Assert.h>
-#include <aips/Exceptions/Error.h>
+#include <casa/Arrays/ArrayIO.h>
+#include <casa/Arrays/ArrayMath.h>
+#include <casa/Arrays/ArrayLogical.h>
+#include <casa/Arrays/Matrix.h>
+#include <casa/Arrays/Slicer.h>
+#include <scimath/Functionals/Polynomial.h>
+#include <casa/BasicMath/Math.h>
+#include <casa/Utilities/COWPtr.h>
+#include <casa/Utilities/Assert.h>
+#include <casa/Exceptions/Error.h>
 
-#include <aips/iostream.h>
+#include <casa/iostream.h>
 
 Int const_arg_func(const Int &val)
 {

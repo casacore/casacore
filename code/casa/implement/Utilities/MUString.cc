@@ -26,11 +26,11 @@
 //# $Id$
 
 //# Includes
-#include <aips/Utilities/MUString.h>
-#include <aips/sstream.h>
-#include <aips/iostream.h>
-#include <aips/Arrays/Vector.h>
-#include <aips/Utilities/Regex.h>
+#include <casa/Utilities/MUString.h>
+#include <casa/sstream.h>
+#include <casa/iostream.h>
+#include <casa/Arrays/Vector.h>
+#include <casa/Utilities/Regex.h>
 
 // Constructors
 MUString::MUString() :

@@ -29,15 +29,15 @@
 #define AIPS_INCRSTMANACCESSOR_H
 
 //# Includes
-#include <aips/aips.h>
-#include <aips/Tables/DataManAccessor.h>
+#include <casa/aips.h>
+#include <tables/Tables/DataManAccessor.h>
 
 //# Forward Declarations
 class ISMBase;
 class DataManager;
 class Table;
 class String;
-#include <aips/iosfwd.h>
+#include <casa/iosfwd.h>
 
 // <summary>
 // Give access to some IncrementalStMan functions

@@ -29,13 +29,13 @@
 #define AIPS_COLDESCSET_H
 
 //# Includes
-#include <aips/aips.h>
-#include <aips/Tables/ColumnDesc.h>
-#include <aips/Containers/SimOrdMap.h>
-#include <aips/BasicSL/String.h>
+#include <casa/aips.h>
+#include <tables/Tables/ColumnDesc.h>
+#include <casa/Containers/SimOrdMap.h>
+#include <casa/BasicSL/String.h>
 
 //# Forward Declarations
-#include <aips/iosfwd.h>
+#include <casa/iosfwd.h>
 
 // <summary>
 // Set of table column descriptions

@@ -26,9 +26,9 @@
 //#
 //# $Id$
 
-#include <aips/OS/HostInfo.h>
-#include <aips/BasicSL/String.h>
-#include <aips/Utilities/Assert.h>
+#include <casa/OS/HostInfo.h>
+#include <casa/BasicSL/String.h>
+#include <casa/Utilities/Assert.h>
 
 #include <unistd.h>
 #include <sys/utsname.h>
@@ -166,22 +166,22 @@ int HostInfo::swapFree( )				\
 
 #define HOSTINFO_DO_IMPLEMENT
 #if defined(AIPS_LINUX)
-#include <aips/OS/HostInfoLinux.h>
+#include <casa/OS/HostInfoLinux.h>
 HOSTINFO_IMPLEMENT_MEMBERS
 #elif defined(AIPS_SOLARIS)
-#include <aips/OS/HostInfoSolaris.h>
+#include <casa/OS/HostInfoSolaris.h>
 HOSTINFO_IMPLEMENT_MEMBERS
 #elif defined(AIPS_IRIX)
-#include <aips/OS/HostInfoIrix.h>
+#include <casa/OS/HostInfoIrix.h>
 HOSTINFO_IMPLEMENT_MEMBERS
 #elif defined(AIPS_OSF)
-#include <aips/OS/HostInfoOsf1.h>
+#include <casa/OS/HostInfoOsf1.h>
 HOSTINFO_IMPLEMENT_MEMBERS
 #elif defined(AIPS_HPUX)
-#include <aips/OS/HostInfoHpux.h>
+#include <casa/OS/HostInfoHpux.h>
 HOSTINFO_IMPLEMENT_MEMBERS
 #elif defined(__APPLE__)
-#include <aips/OS/HostInfoDarwin.h>
+#include <casa/OS/HostInfoDarwin.h>
 HOSTINFO_IMPLEMENT_MEMBERS
 #else
 Int HostInfo::numCPUs( ) { return 0; }

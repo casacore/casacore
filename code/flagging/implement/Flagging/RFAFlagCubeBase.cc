@@ -24,9 +24,9 @@
 //#                        Charlottesville, VA 22903-2475 USA
 //#
 //# $Id$
-#include <trial/Flagging/RFAFlagCubeBase.h>
-#include <aips/iostream.h>
-#include <aips/stdio.h>
+#include <flagging/Flagging/RFAFlagCubeBase.h>
+#include <casa/iostream.h>
+#include <casa/stdio.h>
    
 uInt RFABase::indexing_base = 0;
  

@@ -26,20 +26,20 @@
 //# $Id$
 
 //# Includes
-#include <aips/Inputs/Input.h>
-#include <aips/Containers/Block.h>
-#include <trial/Coordinates/CoordinateSystem.h>
-#include <trial/Coordinates/CoordinateUtil.h>
-#include <trial/Images/TempImage.h>
-#include <trial/Images/SubImage.h>
-#include <trial/Images/PagedImage.h>
-#include <trial/Images/RebinImage.h>
-#include <trial/Images/ImageRegion.h>
-#include <aips/Lattices/TiledShape.h>
-#include <trial/Lattices/LatticeUtilities.h>
-#include <aips/Logging/LogIO.h>
-#include <aips/Utilities/Assert.h>
-#include <aips/iostream.h>
+#include <casa/Inputs/Input.h>
+#include <casa/Containers/Block.h>
+#include <coordinates/Coordinates/CoordinateSystem.h>
+#include <coordinates/Coordinates/CoordinateUtil.h>
+#include <images/Images/TempImage.h>
+#include <images/Images/SubImage.h>
+#include <images/Images/PagedImage.h>
+#include <images/Images/RebinImage.h>
+#include <images/Images/ImageRegion.h>
+#include <lattices/Lattices/TiledShape.h>
+#include <lattices/Lattices/LatticeUtilities.h>
+#include <casa/Logging/LogIO.h>
+#include <casa/Utilities/Assert.h>
+#include <casa/iostream.h>
 
 
 

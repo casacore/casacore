@@ -26,13 +26,13 @@
 //# $Id$
 
 //# Includes
-#include <aips/Quanta/Quantum.h>
-#include <aips/Arrays/Vector.h>
-#include <aips/BasicMath/Math.h>
-#include <aips/BasicSL/Constants.h>
-#include <aips/Utilities/Assert.h>
-#include <aips/Measures/MCPosition.h>
-#include <aips/Measures/MeasTable.h>
+#include <casa/Quanta/Quantum.h>
+#include <casa/Arrays/Vector.h>
+#include <casa/BasicMath/Math.h>
+#include <casa/BasicSL/Constants.h>
+#include <casa/Utilities/Assert.h>
+#include <measures/Measures/MCPosition.h>
+#include <measures/Measures/MeasTable.h>
 
 //# Statics
 Bool MCPosition::stateMade_p = False;

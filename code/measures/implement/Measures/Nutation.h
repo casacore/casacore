@@ -30,9 +30,9 @@
 #define AIPS_NUTATION_H
 
 //# Includes
-#include <aips/aips.h>
-#include <aips/Quanta/Quantum.h>
-#include <aips/Quanta/Euler.h>
+#include <casa/aips.h>
+#include <casa/Quanta/Quantum.h>
+#include <casa/Quanta/Euler.h>
 
 //# Forward Declarations
 
@@ -110,7 +110,7 @@
 //
 // <example>
 //  <srcblock>
-// #include <aips/Measures.h>
+// #include <measures/Measures.h>
 //	MVDirection pos(Quantity(10,"degree"),Quantity(-10.5,"degree"));
 //						// direction RA=10; DEC=-10.5
 //	Nutation mine(Nutation::IAU1980);	// define nutation type

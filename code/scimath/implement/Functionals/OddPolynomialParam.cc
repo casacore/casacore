@@ -26,8 +26,8 @@
 //# $Id$
 
 //# Includes
-#include <trial/Functionals/OddPolynomialParam.h>
-#include <aips/Arrays/Vector.h>
+#include <scimath/Functionals/OddPolynomialParam.h>
+#include <casa/Arrays/Vector.h>
 
 template<class T>
 OddPolynomialParam<T>::OddPolynomialParam() :

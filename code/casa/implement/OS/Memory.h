@@ -30,7 +30,7 @@
 #define AIPS_MEMORY_H
 
 //# The following is used to get size_t.
-#include <aips/stdlib.h>
+#include <casa/stdlib.h>
 
 // <summary>Memory related information and utilities.</summary>
 

@@ -29,8 +29,8 @@
 #if !defined(AIPS_SDWEATHERHANDLER_H)
 #define AIPS_SDWEATHERHANDLER_H
 
-#include <aips/aips.h>
-#include <aips/Containers/RecordField.h>
+#include <casa/aips.h>
+#include <casa/Containers/RecordField.h>
 
 //# Forward Declarations
 class MeasurementSet;

@@ -25,7 +25,7 @@
 //#
 //# $Id$
 
-#include <aips/Utilities/Compare.h>
+#include <casa/Utilities/Compare.h>
 
 template<class T>
 int ObjCompare<T>::compare (const void* obj1, const void* obj2)

@@ -28,7 +28,7 @@
 #if !defined(AIPS_SEQUENCE_H)
 #define AIPS_SEQUENCE_H
 
-#include <aips/aips.h>
+#include <casa/aips.h>
 
 // <summary> virtual templated base class for sequences </summary>
 // <use visibility=export>

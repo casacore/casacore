@@ -28,8 +28,8 @@
 #if !defined(AIPS_DLISTIO_H_)
 #define AIPS_DLISTIO_H_
 
-#include <aips/aips.h>
-#include <aips/Containers/Dlist.h>
+#include <casa/aips.h>
+#include <casa/Containers/Dlist.h>
 
 class AipsIO;
 

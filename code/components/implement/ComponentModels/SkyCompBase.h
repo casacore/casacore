@@ -29,10 +29,10 @@
 #if !defined(AIPS_SKYCOMPBASE_H)
 #define AIPS_SKYCOMPBASE_H
 
-#include <aips/aips.h>
-#include <trial/ComponentModels/ComponentType.h>
-#include <aips/Utilities/RecordTransformable.h>
-#include <aips/BasicSL/Complexfwd.h>
+#include <casa/aips.h>
+#include <components/ComponentModels/ComponentType.h>
+#include <casa/Utilities/RecordTransformable.h>
+#include <casa/BasicSL/Complexfwd.h>
 
 class MFrequency;
 class MVFrequency;

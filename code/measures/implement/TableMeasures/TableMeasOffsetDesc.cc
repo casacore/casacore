@@ -27,12 +27,12 @@
 
 
 //# Includes
-#include <aips/TableMeasures/TableMeasOffsetDesc.h>
-#include <aips/TableMeasures/TableMeasDescBase.h>
-#include <aips/TableMeasures/TableMeasDesc.h>
-#include <aips/Tables/Table.h>
-#include <aips/Tables/TableRecord.h>
-#include <aips/Exceptions.h>
+#include <measures/TableMeasures/TableMeasOffsetDesc.h>
+#include <measures/TableMeasures/TableMeasDescBase.h>
+#include <measures/TableMeasures/TableMeasDesc.h>
+#include <tables/Tables/Table.h>
+#include <tables/Tables/TableRecord.h>
+#include <casa/Exceptions.h>
 
 
 TableMeasOffsetDesc::TableMeasOffsetDesc (const TableMeasDescBase& column,

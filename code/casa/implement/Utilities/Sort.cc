@@ -25,16 +25,16 @@
 //#
 //# $Id$
 
-#include <aips/Utilities/Sort.h>
-#include <aips/Utilities/GenSort.h>
-#include <aips/Utilities/ValType.h>
-#include <aips/Utilities/Copy.h>
-#include <aips/BasicSL/String.h>
-#include <aips/Utilities/SortError.h>
-#include <aips/Arrays/Vector.h>
-#include <aips/Arrays/ArrayMath.h>
+#include <casa/Utilities/Sort.h>
+#include <casa/Utilities/GenSort.h>
+#include <casa/Utilities/ValType.h>
+#include <casa/Utilities/Copy.h>
+#include <casa/BasicSL/String.h>
+#include <casa/Utilities/SortError.h>
+#include <casa/Arrays/Vector.h>
+#include <casa/Arrays/ArrayMath.h>
 
-#include <aips/stdlib.h>                 // for rand
+#include <casa/stdlib.h>                 // for rand
 
 
 

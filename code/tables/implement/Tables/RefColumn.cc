@@ -25,11 +25,11 @@
 //#
 //# $Id$
 
-#include <aips/Arrays/Vector.h>
-#include <aips/Tables/RefColumn.h>
-#include <aips/Tables/RefTable.h>
-#include <aips/Tables/RefRows.h>
-#include <aips/Arrays/IPosition.h>
+#include <casa/Arrays/Vector.h>
+#include <tables/Tables/RefColumn.h>
+#include <tables/Tables/RefTable.h>
+#include <tables/Tables/RefRows.h>
+#include <casa/Arrays/IPosition.h>
 
 
 RefColumn::RefColumn (const BaseColumnDesc* bcdp,

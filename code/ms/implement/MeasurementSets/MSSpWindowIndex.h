@@ -30,12 +30,12 @@
 #define AIPS_MSSPWINDOWINDEX_H
 
 //# includes
-#include <aips/aips.h>
-#include <aips/Measures/MFrequency.h>
-#include <aips/MeasurementSets/MSSpectralWindow.h>
-#include <aips/MeasurementSets/MSSpWindowColumns.h>
-#include <aips/Arrays/Vector.h>
-#include <aips/BasicSL/String.h>
+#include <casa/aips.h>
+#include <measures/Measures/MFrequency.h>
+#include <ms/MeasurementSets/MSSpectralWindow.h>
+#include <ms/MeasurementSets/MSSpWindowColumns.h>
+#include <casa/Arrays/Vector.h>
+#include <casa/BasicSL/String.h>
 
 //# forward declarations
 

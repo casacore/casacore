@@ -25,32 +25,32 @@
 //#
 //# $Id$
 
-#include <aips/aips.h>
-#include <trial/ComponentModels/ComponentType.h>
-#include <trial/ComponentModels/Flux.h>
-#include <trial/ComponentModels/PointShape.h>
-#include <trial/Coordinates/CoordinateUtil.h>
+#include <casa/aips.h>
+#include <components/ComponentModels/ComponentType.h>
+#include <components/ComponentModels/Flux.h>
+#include <components/ComponentModels/PointShape.h>
+#include <coordinates/Coordinates/CoordinateUtil.h>
 #include <trial/Images/PagedImage.h>
-#include <aips/Arrays/Array.h>
-#include <aips/Arrays/ArrayLogical.h>
-#include <aips/Arrays/ArrayMath.h>
-#include <aips/Arrays/Vector.h>
+#include <casa/Arrays/Array.h>
+#include <casa/Arrays/ArrayLogical.h>
+#include <casa/Arrays/ArrayMath.h>
+#include <casa/Arrays/Vector.h>
 #include <aips/Glish/GlishArray.h>
 #include <aips/Glish/GlishValue.h>
 #include <aips/Glish/GlishRecord.h>
-#include <aips/Exceptions/Error.h>
-#include <aips/Arrays/IPosition.h>
-#include <aips/BasicSL/Constants.h>
-#include <aips/Measures/MCDirection.h>
-#include <aips/Measures/MDirection.h>
-#include <aips/Quanta/MVAngle.h>
-#include <aips/Quanta/MVDirection.h>
-#include <aips/Measures/MeasConvert.h>
-#include <aips/Quanta/Quantum.h>
-#include <aips/Tables/Table.h>
-#include <aips/Utilities/Assert.h>
-#include <aips/BasicSL/String.h>
-#include <aips/iostream.h>
+#include <casa/Exceptions/Error.h>
+#include <casa/Arrays/IPosition.h>
+#include <casa/BasicSL/Constants.h>
+#include <measures/Measures/MCDirection.h>
+#include <measures/Measures/MDirection.h>
+#include <casa/Quanta/MVAngle.h>
+#include <casa/Quanta/MVDirection.h>
+#include <measures/Measures/MeasConvert.h>
+#include <casa/Quanta/Quantum.h>
+#include <tables/Tables/Table.h>
+#include <casa/Utilities/Assert.h>
+#include <casa/BasicSL/String.h>
+#include <casa/iostream.h>
 
 int main() {
   try {

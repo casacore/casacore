@@ -30,10 +30,10 @@
 
 
 //# Includes
-#include <trial/Images/ImageInterface.h>
-#include <trial/Lattices/LatticeExpr.h>
-#include <aips/Containers/Record.h>
-#include <aips/Quanta/Unit.h>
+#include <images/Images/ImageInterface.h>
+#include <lattices/Lattices/LatticeExpr.h>
+#include <casa/Containers/Record.h>
+#include <casa/Quanta/Unit.h>
 
 //# Forward Declarations
 class IPosition;

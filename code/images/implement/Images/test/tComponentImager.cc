@@ -25,39 +25,39 @@
 //#
 //# $Id$
 
-#include <aips/aips.h>
-#include <trial/Images/ComponentImager.h>
-#include <trial/ComponentModels/ComponentList.h>
-#include <trial/ComponentModels/ComponentType.h>
-#include <trial/ComponentModels/ConstantSpectrum.h>
-#include <trial/ComponentModels/Flux.h>
-#include <trial/ComponentModels/PointShape.h>
-#include <trial/ComponentModels/SkyComponent.h>
-#include <trial/ComponentModels/SpectralIndex.h>
-#include <trial/Coordinates/CoordinateSystem.h>
-#include <trial/Coordinates/CoordinateUtil.h>
-#include <trial/Coordinates/DirectionCoordinate.h>
-#include <trial/Coordinates/SpectralCoordinate.h>
-#include <trial/Images/PagedImage.h>
-//#include <aips/Lattices/TiledShape.h>
-#include <aips/Arrays/Array.h>
-#include <aips/Arrays/ArrayLogical.h>
-#include <aips/Arrays/Vector.h>
-#include <aips/Exceptions/Error.h>
-#include <aips/Arrays/IPosition.h>
-#include <aips/BasicSL/Constants.h>
-#include <aips/BasicMath/Math.h>
-#include <aips/Measures/MDirection.h>
-#include <aips/Measures/MFrequency.h>
-#include <aips/OS/File.h>
-#include <aips/Quanta/Quantum.h>
-#include <aips/Quanta/Unit.h>
-#include <aips/Tables/Table.h>
-#include <aips/Utilities/Assert.h>
-#include <aips/BasicSL/String.h>
-#include <aips/iostream.h>
-// #include <aips/BasicSL/Complex.h>
-// #include <aips/BasicMath/Math.h>
+#include <casa/aips.h>
+#include <images/Images/ComponentImager.h>
+#include <components/ComponentModels/ComponentList.h>
+#include <components/ComponentModels/ComponentType.h>
+#include <components/ComponentModels/ConstantSpectrum.h>
+#include <components/ComponentModels/Flux.h>
+#include <components/ComponentModels/PointShape.h>
+#include <components/ComponentModels/SkyComponent.h>
+#include <components/ComponentModels/SpectralIndex.h>
+#include <coordinates/Coordinates/CoordinateSystem.h>
+#include <coordinates/Coordinates/CoordinateUtil.h>
+#include <coordinates/Coordinates/DirectionCoordinate.h>
+#include <coordinates/Coordinates/SpectralCoordinate.h>
+#include <images/Images/PagedImage.h>
+//#include <lattices/Lattices/TiledShape.h>
+#include <casa/Arrays/Array.h>
+#include <casa/Arrays/ArrayLogical.h>
+#include <casa/Arrays/Vector.h>
+#include <casa/Exceptions/Error.h>
+#include <casa/Arrays/IPosition.h>
+#include <casa/BasicSL/Constants.h>
+#include <casa/BasicMath/Math.h>
+#include <measures/Measures/MDirection.h>
+#include <measures/Measures/MFrequency.h>
+#include <casa/OS/File.h>
+#include <casa/Quanta/Quantum.h>
+#include <casa/Quanta/Unit.h>
+#include <tables/Tables/Table.h>
+#include <casa/Utilities/Assert.h>
+#include <casa/BasicSL/String.h>
+#include <casa/iostream.h>
+// #include <casa/BasicSL/Complex.h>
+// #include <casa/BasicMath/Math.h>
 
 int main() {
   try {

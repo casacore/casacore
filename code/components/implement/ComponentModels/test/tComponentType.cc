@@ -25,14 +25,14 @@
 //#
 //# $Id$
 
-#include <aips/aips.h>
-#include <aips/Exceptions/Error.h>
-#include <aips/Utilities/Assert.h>
-#include <trial/ComponentModels/ComponentType.h>
-#include <trial/ComponentModels/SkyCompRep.h>
-#include <trial/ComponentModels/ComponentShape.h>
-#include <trial/ComponentModels/SpectralModel.h>
-#include <aips/iostream.h>
+#include <casa/aips.h>
+#include <casa/Exceptions/Error.h>
+#include <casa/Utilities/Assert.h>
+#include <components/ComponentModels/ComponentType.h>
+#include <components/ComponentModels/SkyCompRep.h>
+#include <components/ComponentModels/ComponentShape.h>
+#include <components/ComponentModels/SpectralModel.h>
+#include <casa/iostream.h>
 
 int main() {
   try {

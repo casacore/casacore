@@ -29,7 +29,7 @@
 #define AIPS_SCALARQUANTCOLUMN_H
 
 //# Includes
-#include <aips/Quanta/Quantum.h>
+#include <casa/Quanta/Quantum.h>
 
 //# Forward Declarations
 class Table;

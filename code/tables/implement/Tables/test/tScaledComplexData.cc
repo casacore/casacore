@@ -25,26 +25,26 @@
 //#
 //# $Id$
 
-#include <aips/Tables/TableDesc.h>
-#include <aips/Tables/SetupNewTab.h>
-#include <aips/Tables/Table.h>
-#include <aips/Tables/ScaColDesc.h>
-#include <aips/Tables/ArrColDesc.h>
-#include <trial/Tables/ScaledComplexData.h>
-#include <aips/Tables/ArrayColumn.h>
-#include <aips/Tables/ScalarColumn.h>
-#include <aips/BasicSL/Complex.h>
-#include <aips/Arrays/Cube.h>
-#include <aips/Arrays/Matrix.h>
-#include <aips/Arrays/IPosition.h>
-#include <aips/Arrays/ArrayMath.h>
-#include <aips/Arrays/ArrayLogical.h>
-#include <aips/Arrays/Slicer.h>
-#include <aips/Arrays/Slice.h>
-#include <aips/Arrays/ArrayIO.h>
-#include <aips/Tables/TableError.h>
-#include <aips/Utilities/Assert.h>
-#include <aips/iostream.h>
+#include <tables/Tables/TableDesc.h>
+#include <tables/Tables/SetupNewTab.h>
+#include <tables/Tables/Table.h>
+#include <tables/Tables/ScaColDesc.h>
+#include <tables/Tables/ArrColDesc.h>
+#include <tables/Tables/ScaledComplexData.h>
+#include <tables/Tables/ArrayColumn.h>
+#include <tables/Tables/ScalarColumn.h>
+#include <casa/BasicSL/Complex.h>
+#include <casa/Arrays/Cube.h>
+#include <casa/Arrays/Matrix.h>
+#include <casa/Arrays/IPosition.h>
+#include <casa/Arrays/ArrayMath.h>
+#include <casa/Arrays/ArrayLogical.h>
+#include <casa/Arrays/Slicer.h>
+#include <casa/Arrays/Slice.h>
+#include <casa/Arrays/ArrayIO.h>
+#include <tables/Tables/TableError.h>
+#include <casa/Utilities/Assert.h>
+#include <casa/iostream.h>
 
 // <summary> Test program for class ScaledComplexData </summary>
 

@@ -25,12 +25,12 @@
 //#
 //# $Id$
 
-#include <aips/Functionals/GaussianND.h>
-#include <aips/Arrays/ArrayMath.h>
-#include <aips/Arrays/MatrixMath.h>
-#include <aips/Arrays/ArrayLogical.h>
-#include <aips/Exceptions/Error.h>
-#include <aips/BasicMath/Math.h>
+#include <scimath/Functionals/GaussianND.h>
+#include <casa/Arrays/ArrayMath.h>
+#include <casa/Arrays/MatrixMath.h>
+#include <casa/Arrays/ArrayLogical.h>
+#include <casa/Exceptions/Error.h>
+#include <casa/BasicMath/Math.h>
 
 template<class T> 
 T GaussianND<T>::eval(typename Function<T>::FunctionArg x) const {

@@ -25,52 +25,52 @@
 //#
 //# $Id$
 
-#include <aips/OS/Timer.h>
+#include <casa/OS/Timer.h>
 
-#include <trial/Images/ImagePolarimetry.h>
+#include <images/Images/ImagePolarimetry.h>
 
-#include <aips/Arrays/Array.h>
-#include <aips/Arrays/ArrayMath.h>
-#include <aips/Arrays/Vector.h>
-#include <aips/Arrays/Matrix.h>
-#include <aips/Arrays/MaskedArray.h>
-#include <aips/Arrays/MaskArrMath.h>
-#include <trial/Coordinates/CoordinateSystem.h>
-#include <trial/Coordinates/StokesCoordinate.h>
-#include <trial/Coordinates/LinearCoordinate.h>
-#include <aips/Exceptions/Error.h>
-#include <aips/Functionals/Polynomial.h>
-#include <trial/Images/ImageInterface.h>
-#include <trial/Images/SubImage.h>
-#include <trial/Images/ImageExpr.h>
-#include <trial/Images/ImageFFT.h>
-#include <trial/Images/ImageRegion.h>
-#include <trial/Images/ImageSummary.h>
-#include <trial/Images/TempImage.h>
-#include <aips/Lattices/Lattice.h>
-#include <trial/Lattices/LCSlicer.h>
-#include <trial/Lattices/LatticeExprNode.h>
-#include <trial/Lattices/LatticeExpr.h>
-#include <aips/Lattices/TiledLineStepper.h>
-#include <aips/Lattices/LatticeStepper.h>
-#include <aips/Lattices/LatticeIterator.h>
-#include <trial/Lattices/MaskedLatticeIterator.h>
-#include <trial/Lattices/LatticeStatistics.h>
-#include <trial/Lattices/LCPagedMask.h>
-#include <aips/Logging/LogIO.h>
-#include <aips/Logging/LogOrigin.h>
-#include <aips/BasicMath/Math.h>
-#include <aips/BasicSL/Constants.h>
-#include <aips/Mathematics/NumericTraits.h>
-#include <trial/System/PGPlotter.h>
-#include <aips/System/ProgressMeter.h>
-#include <aips/Quanta/QC.h>
-#include <aips/Quanta/MVAngle.h>
-#include <aips/Utilities/GenSort.h>
-#include <aips/Utilities/Assert.h>
-#include <aips/BasicSL/String.h>
+#include <casa/Arrays/Array.h>
+#include <casa/Arrays/ArrayMath.h>
+#include <casa/Arrays/Vector.h>
+#include <casa/Arrays/Matrix.h>
+#include <casa/Arrays/MaskedArray.h>
+#include <casa/Arrays/MaskArrMath.h>
+#include <coordinates/Coordinates/CoordinateSystem.h>
+#include <coordinates/Coordinates/StokesCoordinate.h>
+#include <coordinates/Coordinates/LinearCoordinate.h>
+#include <casa/Exceptions/Error.h>
+#include <scimath/Functionals/Polynomial.h>
+#include <images/Images/ImageInterface.h>
+#include <images/Images/SubImage.h>
+#include <images/Images/ImageExpr.h>
+#include <images/Images/ImageFFT.h>
+#include <images/Images/ImageRegion.h>
+#include <images/Images/ImageSummary.h>
+#include <images/Images/TempImage.h>
+#include <lattices/Lattices/Lattice.h>
+#include <lattices/Lattices/LCSlicer.h>
+#include <lattices/Lattices/LatticeExprNode.h>
+#include <lattices/Lattices/LatticeExpr.h>
+#include <lattices/Lattices/TiledLineStepper.h>
+#include <lattices/Lattices/LatticeStepper.h>
+#include <lattices/Lattices/LatticeIterator.h>
+#include <lattices/Lattices/MaskedLatticeIterator.h>
+#include <lattices/Lattices/LatticeStatistics.h>
+#include <lattices/Lattices/LCPagedMask.h>
+#include <casa/Logging/LogIO.h>
+#include <casa/Logging/LogOrigin.h>
+#include <casa/BasicMath/Math.h>
+#include <casa/BasicSL/Constants.h>
+#include <scimath/Mathematics/NumericTraits.h>
+#include <casa/System/PGPlotter.h>
+#include <casa/System/ProgressMeter.h>
+#include <casa/Quanta/QC.h>
+#include <casa/Quanta/MVAngle.h>
+#include <casa/Utilities/GenSort.h>
+#include <casa/Utilities/Assert.h>
+#include <casa/BasicSL/String.h>
 
-#include <aips/sstream.h>
+#include <casa/sstream.h>
 
 // Public functions
 

@@ -26,11 +26,11 @@
 //# $Id$
 
 
-#include <trial/Lattices/LCDifference.h>
-#include <aips/Arrays/ArrayLogical.h>
-#include <aips/Tables/TableRecord.h>
-#include <aips/Utilities/Assert.h>
-#include <aips/Exceptions/Error.h>
+#include <lattices/Lattices/LCDifference.h>
+#include <casa/Arrays/ArrayLogical.h>
+#include <tables/Tables/TableRecord.h>
+#include <casa/Utilities/Assert.h>
+#include <casa/Exceptions/Error.h>
 
 
 LCDifference::LCDifference()

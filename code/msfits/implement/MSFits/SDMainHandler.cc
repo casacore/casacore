@@ -26,19 +26,19 @@
 //# $Id$
 
 //# Includes
-#include <trial/MeasurementSets/SDMainHandler.h>
+#include <ms/MeasurementSets/SDMainHandler.h>
 
-#include <aips/MeasurementSets/MeasurementSet.h>
-#include <aips/MeasurementSets/MSMainColumns.h>
-#include <aips/Arrays/Vector.h>
-#include <aips/Arrays/Matrix.h>
-#include <aips/Utilities/Assert.h>
-#include <aips/Exceptions/Error.h>
-#include <aips/BasicSL/String.h>
-#include <aips/Tables/TableDesc.h>
-#include <aips/Measures/MEpoch.h>
-#include <aips/Quanta/MVTime.h>
-#include <aips/Containers/Record.h>
+#include <ms/MeasurementSets/MeasurementSet.h>
+#include <ms/MeasurementSets/MSMainColumns.h>
+#include <casa/Arrays/Vector.h>
+#include <casa/Arrays/Matrix.h>
+#include <casa/Utilities/Assert.h>
+#include <casa/Exceptions/Error.h>
+#include <casa/BasicSL/String.h>
+#include <tables/Tables/TableDesc.h>
+#include <measures/Measures/MEpoch.h>
+#include <casa/Quanta/MVTime.h>
+#include <casa/Containers/Record.h>
 
 SDMainHandler::SDMainHandler() 
     : ms_p(0), msCols_p(0),

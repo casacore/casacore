@@ -32,17 +32,17 @@
 #endif
 
 #include <unistd.h>
-#include <aips/aips.h>
-#include <aips/Utilities/Assert.h>
-#include <aips/FITS/FITS.h>
-#include <aips/Arrays/Array.h>
-#include <aips/Arrays/Vector.h>
-#include <aips/Arrays/Matrix.h>
-#include <aips/Arrays/IPosition.h>
-#include <aips/Arrays/ArrayMath.h>
-#include <aips/Arrays/ArrayLogical.h>
-#include <aips/Containers/OrderedMap.h>
-#include <aips/iostream.h>
+#include <casa/aips.h>
+#include <casa/Utilities/Assert.h>
+#include <fits/FITS/FITS.h>
+#include <casa/Arrays/Array.h>
+#include <casa/Arrays/Vector.h>
+#include <casa/Arrays/Matrix.h>
+#include <casa/Arrays/IPosition.h>
+#include <casa/Arrays/ArrayMath.h>
+#include <casa/Arrays/ArrayLogical.h>
+#include <casa/Containers/OrderedMap.h>
+#include <casa/iostream.h>
 
 int main()
 {

@@ -26,7 +26,7 @@
 //# $Id$
 
 //# Includes
-#include <trial/Functionals/SPolynomial.h>
+#include <scimath/Functionals/SPolynomial.h>
 
 //# Constructors
 

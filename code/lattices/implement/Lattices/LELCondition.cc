@@ -26,12 +26,12 @@
 //# $Id$
 
 
-#include <trial/Lattices/LELCondition.h>
-#include <trial/Lattices/LELArray.h>
-#include <trial/Lattices/LELScalar.h>
-#include <aips/Arrays/Slicer.h>
-#include <aips/Arrays/Array.h>
-#include <aips/Exceptions/Error.h>
+#include <lattices/Lattices/LELCondition.h>
+#include <lattices/Lattices/LELArray.h>
+#include <lattices/Lattices/LELScalar.h>
+#include <casa/Arrays/Slicer.h>
+#include <casa/Arrays/Array.h>
+#include <casa/Exceptions/Error.h>
 
 
 template <class T>

@@ -30,10 +30,10 @@
 
 
 //# Includes
-#include <aips/aips.h>
-#include <aips/Tables/StManAipsIO.h>
-#include <aips/Arrays/IPosition.h>
-#include <aips/IO/ByteIO.h>
+#include <casa/aips.h>
+#include <tables/Tables/StManAipsIO.h>
+#include <casa/Arrays/IPosition.h>
+#include <casa/IO/ByteIO.h>
 
 //# Forward Declarations
 class AipsIO;

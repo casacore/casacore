@@ -30,12 +30,12 @@
 #define AIPS_MSOBSERVATIONINDEX_H
 
 //# includes
-#include <aips/aips.h>
-#include <aips/MeasurementSets/MSObservation.h>
-#include <aips/MeasurementSets/MSObsColumns.h>
-#include <aips/Arrays/Vector.h>
-#include <aips/Arrays/Matrix.h>
-#include <aips/BasicSL/String.h>
+#include <casa/aips.h>
+#include <ms/MeasurementSets/MSObservation.h>
+#include <ms/MeasurementSets/MSObsColumns.h>
+#include <casa/Arrays/Vector.h>
+#include <casa/Arrays/Matrix.h>
+#include <casa/BasicSL/String.h>
 
 //# forward declarations
 

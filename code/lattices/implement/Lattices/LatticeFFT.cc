@@ -27,22 +27,22 @@
 //#
 //# $Id$
 
-#include <trial/Lattices/LatticeFFT.h>
-#include <aips/Arrays/ArrayLogical.h>
-#include <aips/Arrays/Matrix.h>
-#include <aips/Arrays/Vector.h>
-#include <aips/Exceptions/Error.h>
-#include <aips/Arrays/IPosition.h>
-#include <aips/Mathematics/FFTServer.h>
-#include <aips/Utilities/Assert.h>
-#include <aips/Lattices/Lattice.h>
-#include <aips/Lattices/LatticeIterator.h>
-#include <trial/Lattices/LatticeExpr.h>
-#include <aips/Lattices/LatticeStepper.h>
-#include <aips/Lattices/TempLattice.h>
-#include <aips/Lattices/TiledLineStepper.h>
-#include <aips/System/AppInfo.h>
-#include <aips/iostream.h>
+#include <lattices/Lattices/LatticeFFT.h>
+#include <casa/Arrays/ArrayLogical.h>
+#include <casa/Arrays/Matrix.h>
+#include <casa/Arrays/Vector.h>
+#include <casa/Exceptions/Error.h>
+#include <casa/Arrays/IPosition.h>
+#include <scimath/Mathematics/FFTServer.h>
+#include <casa/Utilities/Assert.h>
+#include <lattices/Lattices/Lattice.h>
+#include <lattices/Lattices/LatticeIterator.h>
+#include <lattices/Lattices/LatticeExpr.h>
+#include <lattices/Lattices/LatticeStepper.h>
+#include <lattices/Lattices/TempLattice.h>
+#include <lattices/Lattices/TiledLineStepper.h>
+#include <casa/System/AppInfo.h>
+#include <casa/iostream.h>
 
 void LatticeFFT::cfft2d(Lattice<Complex>& cLattice, const Bool toFrequency) {
   const uInt ndim = cLattice.ndim();

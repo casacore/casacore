@@ -29,9 +29,9 @@
 #define AIPS_LARGEREGULARFILEIO_H
 
 //# Includes
-#include <aips/aips.h>
-#include <aips/IO/LargeFilebufIO.h>
-#include <aips/OS/RegularFile.h>
+#include <casa/aips.h>
+#include <casa/IO/LargeFilebufIO.h>
+#include <casa/OS/RegularFile.h>
 
 
 // <summary> 

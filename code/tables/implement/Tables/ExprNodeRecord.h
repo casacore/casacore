@@ -29,10 +29,10 @@
 #define AIPS_EXPRNODERECORD_H
 
 //# Includes
-#include <aips/Tables/ExprNodeRep.h>
-#include <aips/Tables/ExprNodeArray.h>
-#include <aips/Containers/Block.h>
-#include <aips/Utilities/DataType.h>
+#include <tables/Tables/ExprNodeRep.h>
+#include <tables/Tables/ExprNodeArray.h>
+#include <casa/Containers/Block.h>
+#include <casa/Utilities/DataType.h>
 
 //# Forward Declarations
 class RecordDesc;

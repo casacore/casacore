@@ -29,11 +29,11 @@
 #define AIPS_TABLEROW_H
 
 //# Includes
-#include <aips/aips.h>
-#include <aips/Tables/Table.h>
-#include <aips/Tables/TableRecord.h>
-#include <aips/Containers/Block.h>
-#include <aips/BasicSL/String.h>
+#include <casa/aips.h>
+#include <tables/Tables/Table.h>
+#include <tables/Tables/TableRecord.h>
+#include <casa/Containers/Block.h>
+#include <casa/BasicSL/String.h>
 
 //# Forward Declarations
 class ROTableColumn;

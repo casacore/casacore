@@ -29,15 +29,15 @@
 #define AIPS_COORDINATES_H
 
 //# Module includes
-#include <trial/Coordinates/Coordinate.h>
-#include <trial/Coordinates/CoordinateSystem.h>
-#include <trial/Coordinates/DirectionCoordinate.h>
-#include <trial/Coordinates/LinearCoordinate.h>
-#include <trial/Coordinates/LinearXform.h>
-#include <trial/Coordinates/Projection.h>
-#include <trial/Coordinates/SpectralCoordinate.h>
-#include <trial/Coordinates/StokesCoordinate.h>
-#include <trial/Coordinates/CoordinateUtil.h>
+#include <coordinates/Coordinates/Coordinate.h>
+#include <coordinates/Coordinates/CoordinateSystem.h>
+#include <coordinates/Coordinates/DirectionCoordinate.h>
+#include <coordinates/Coordinates/LinearCoordinate.h>
+#include <coordinates/Coordinates/LinearXform.h>
+#include <coordinates/Coordinates/Projection.h>
+#include <coordinates/Coordinates/SpectralCoordinate.h>
+#include <coordinates/Coordinates/StokesCoordinate.h>
+#include <coordinates/Coordinates/CoordinateUtil.h>
 
 // <module>
 //

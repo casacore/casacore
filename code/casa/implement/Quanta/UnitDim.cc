@@ -27,8 +27,8 @@
 
 //# Includes
 
-#include <aips/BasicSL/String.h>
-#include <aips/Quanta/UnitDim.h>
+#include <casa/BasicSL/String.h>
+#include <casa/Quanta/UnitDim.h>
 
 void UnitDim::init() {
     for (Int i=0; i<UNITDIM_DLNUMBER; i++) {

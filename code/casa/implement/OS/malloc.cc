@@ -42,7 +42,7 @@
          Check before installing!
 */
 
-#include <aips/OS/malloc.h>
+#include <casa/OS/malloc.h>
 
 /* 
   Emulation of sbrk for WIN32

@@ -26,10 +26,10 @@
 //# $Id$
 
 
-#include <trial/Images/WCDifference.h>
-#include <trial/Images/ImageRegion.h>
-#include <trial/Lattices/LCDifference.h>
-#include <aips/Tables/TableRecord.h>
+#include <images/Images/WCDifference.h>
+#include <images/Images/ImageRegion.h>
+#include <lattices/Lattices/LCDifference.h>
+#include <tables/Tables/TableRecord.h>
 
 
 WCDifference::WCDifference (const ImageRegion& region1,

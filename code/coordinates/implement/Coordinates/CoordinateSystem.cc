@@ -26,39 +26,39 @@
 //#
 //# $Id$
 
-#include <trial/Coordinates/CoordinateSystem.h>
+#include <coordinates/Coordinates/CoordinateSystem.h>
 
-#include <trial/Coordinates/Coordinate.h>
-#include <trial/Coordinates/LinearCoordinate.h>
-#include <trial/Coordinates/DirectionCoordinate.h>
-#include <trial/Coordinates/SpectralCoordinate.h>
-#include <trial/Coordinates/TabularCoordinate.h>
-#include <trial/Coordinates/StokesCoordinate.h>
+#include <coordinates/Coordinates/Coordinate.h>
+#include <coordinates/Coordinates/LinearCoordinate.h>
+#include <coordinates/Coordinates/DirectionCoordinate.h>
+#include <coordinates/Coordinates/SpectralCoordinate.h>
+#include <coordinates/Coordinates/TabularCoordinate.h>
+#include <coordinates/Coordinates/StokesCoordinate.h>
 
-#include <aips/Arrays/Vector.h>
-#include <aips/Arrays/Matrix.h>
-#include <aips/Arrays/ArrayMath.h>
-#include <aips/Arrays/ArrayLogical.h>
-#include <aips/Arrays/IPosition.h>
-#include <aips/Containers/Record.h>
-#include <aips/Containers/Block.h>
-#include <aips/Logging/LogIO.h>
-#include <aips/BasicMath/Math.h>
-#include <aips/BasicSL/Constants.h>
-#include <aips/Measures/MDoppler.h>
-#include <aips/Measures/MEpoch.h>
-#include <aips/Utilities/Assert.h>
-#include <aips/Quanta/MVTime.h>
-#include <aips/Quanta/MVDirection.h>
-#include <aips/Quanta/Quantum.h>
-#include <aips/Quanta/Unit.h>
-#include <aips/Quanta/UnitMap.h>
-#include <aips/Utilities/Regex.h>
-#include <aips/BasicSL/String.h>
+#include <casa/Arrays/Vector.h>
+#include <casa/Arrays/Matrix.h>
+#include <casa/Arrays/ArrayMath.h>
+#include <casa/Arrays/ArrayLogical.h>
+#include <casa/Arrays/IPosition.h>
+#include <casa/Containers/Record.h>
+#include <casa/Containers/Block.h>
+#include <casa/Logging/LogIO.h>
+#include <casa/BasicMath/Math.h>
+#include <casa/BasicSL/Constants.h>
+#include <measures/Measures/MDoppler.h>
+#include <measures/Measures/MEpoch.h>
+#include <casa/Utilities/Assert.h>
+#include <casa/Quanta/MVTime.h>
+#include <casa/Quanta/MVDirection.h>
+#include <casa/Quanta/Quantum.h>
+#include <casa/Quanta/Unit.h>
+#include <casa/Quanta/UnitMap.h>
+#include <casa/Utilities/Regex.h>
+#include <casa/BasicSL/String.h>
 
-#include <aips/sstream.h>
-#include <aips/iomanip.h>
-#include <aips/iostream.h>
+#include <casa/sstream.h>
+#include <casa/iomanip.h>
+#include <casa/iostream.h>
 
 
 CoordinateSystem::CoordinateSystem()

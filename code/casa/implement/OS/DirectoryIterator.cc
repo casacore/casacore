@@ -26,12 +26,12 @@
 //# $Id$
 
 
-#include <aips/OS/DirectoryIterator.h>
-#include <aips/OS/Path.h>
-#include <aips/Exceptions/Error.h>
+#include <casa/OS/DirectoryIterator.h>
+#include <casa/OS/Path.h>
+#include <casa/Exceptions/Error.h>
 
 #include <errno.h>                // needed for errno
-#include <aips/string.h>               // needed for strerror
+#include <casa/string.h>               // needed for strerror
 
 
 DirectoryIterator::DirectoryIterator()

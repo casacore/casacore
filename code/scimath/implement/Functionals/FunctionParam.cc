@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#include <aips/Functionals/FunctionParam.h>
-#include <aips/iostream.h>
+#include <scimath/Functionals/FunctionParam.h>
+#include <casa/iostream.h>
 
 template<class T>
 FunctionParam<T>::FunctionParam()

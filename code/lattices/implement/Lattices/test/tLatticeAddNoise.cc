@@ -25,19 +25,19 @@
 //#
 //# $Id$
 
-#include <trial/Lattices/LatticeAddNoise.h>
-#include <aips/Lattices/ArrayLattice.h>
-#include <aips/Lattices/LatticeIterator.h>
-#include <aips/Lattices/LatticeStepper.h>
-#include <aips/Logging/LogIO.h>
-#include <aips/BasicMath/Math.h>
-#include <aips/Arrays/Vector.h>
-#include <aips/Arrays/ArrayMath.h>
-#include <aips/Arrays/ArrayLogical.h>
-#include <aips/Arrays/IPosition.h>
-#include <aips/Utilities/Assert.h>
-#include <aips/Exceptions/Error.h>
-#include <aips/iostream.h>
+#include <lattices/Lattices/LatticeAddNoise.h>
+#include <lattices/Lattices/ArrayLattice.h>
+#include <lattices/Lattices/LatticeIterator.h>
+#include <lattices/Lattices/LatticeStepper.h>
+#include <casa/Logging/LogIO.h>
+#include <casa/BasicMath/Math.h>
+#include <casa/Arrays/Vector.h>
+#include <casa/Arrays/ArrayMath.h>
+#include <casa/Arrays/ArrayLogical.h>
+#include <casa/Arrays/IPosition.h>
+#include <casa/Utilities/Assert.h>
+#include <casa/Exceptions/Error.h>
+#include <casa/iostream.h>
 
 void test0 ();
 void test0Complex ();

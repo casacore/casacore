@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#include <aips/Containers/Stack.h>
-#include <aips/Containers/StackError.h>
+#include <casa/Containers/Stack.h>
+#include <casa/Containers/StackError.h>
 
 // Throw an error indicating operation error occured on an empty
 // stack. This function must be out-of-line because of the dependence

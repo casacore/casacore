@@ -29,8 +29,8 @@
 #define AIPS_ARRAYQUANTCOLUMN_H
 
 //# Includes
-#include <aips/Arrays/Vector.h>
-#include <aips/Quanta/Quantum.h>
+#include <casa/Arrays/Vector.h>
+#include <casa/Quanta/Quantum.h>
 
 //# Forward Declarations
 class Table;

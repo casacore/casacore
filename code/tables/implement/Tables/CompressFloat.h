@@ -29,9 +29,9 @@
 #define AIPS_COMPRESSFLOAT_H
 
 //# Includes
-#include <aips/Tables/BaseMappedArrayEngine.h>
-#include <aips/Tables/ScalarColumn.h>
-#include <aips/Arrays/Array.h>
+#include <tables/Tables/BaseMappedArrayEngine.h>
+#include <tables/Tables/ScalarColumn.h>
+#include <casa/Arrays/Array.h>
 
 
 // <summary>

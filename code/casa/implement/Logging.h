@@ -28,12 +28,12 @@
 #if !defined (AIPS_LOGGING_H)
 #define AIPS_LOGGING_H
 
-#include <aips/Logging/LogMessage.h>
-#include <aips/Logging/LogOrigin.h>
-#include <aips/Logging/LogSink.h>
-#include <aips/Logging/LogFilter.h>
+#include <casa/Logging/LogMessage.h>
+#include <casa/Logging/LogOrigin.h>
+#include <casa/Logging/LogSink.h>
+#include <casa/Logging/LogFilter.h>
 //#include <aips/LogTables/TableLogSink.h>
-#include <aips/Logging/LogIO.h>
+#include <casa/Logging/LogIO.h>
 
 // <module> 
 //
@@ -114,7 +114,7 @@
 // Schematically, application programmers would use the logging system as
 // follows:
 // <srcBlock>
-// #include <aips/Logging.h>
+// #include <casa/Logging.h>
 // ...
 // void MyClass:myFunction(LogIO &os)
 // {

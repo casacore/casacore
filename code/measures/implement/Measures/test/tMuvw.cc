@@ -26,24 +26,24 @@
 //# $Id$
 
 //# Includes
-#include <aips/aips.h>
-#include <aips/Exceptions/Error.h>
-#include <aips/Measures.h>
-#include <aips/Measures/Aberration.h>
-#include <aips/Quanta/RotMatrix.h>
-#include <aips/Quanta/Euler.h>
-#include <aips/Measures/MEpoch.h>
-#include <aips/Measures/MDirection.h>
-#include <aips/Quanta/MVDirection.h>
-#include <aips/Quanta/MVBaseline.h>
-#include <aips/Measures/MPosition.h>
-#include <aips/Measures/MCuvw.h>
-#include <aips/Measures/Muvw.h>
-#include <aips/Quanta/MVuvw.h>
-#include <aips/Measures/MCFrame.h>
-#include <aips/Arrays/ArrayMath.h>
-#include <aips/Arrays/ArrayLogical.h>
-#include <aips/iostream.h>
+#include <casa/aips.h>
+#include <casa/Exceptions/Error.h>
+#include <measures/Measures.h>
+#include <measures/Measures/Aberration.h>
+#include <casa/Quanta/RotMatrix.h>
+#include <casa/Quanta/Euler.h>
+#include <measures/Measures/MEpoch.h>
+#include <measures/Measures/MDirection.h>
+#include <casa/Quanta/MVDirection.h>
+#include <casa/Quanta/MVBaseline.h>
+#include <measures/Measures/MPosition.h>
+#include <measures/Measures/MCuvw.h>
+#include <measures/Measures/Muvw.h>
+#include <casa/Quanta/MVuvw.h>
+#include <measures/Measures/MCFrame.h>
+#include <casa/Arrays/ArrayMath.h>
+#include <casa/Arrays/ArrayLogical.h>
+#include <casa/iostream.h>
 
 int main()
 {

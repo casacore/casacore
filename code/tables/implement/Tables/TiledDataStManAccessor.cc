@@ -26,11 +26,11 @@
 //# $Id$
 
 //# Includes
-#include <aips/Tables/TiledDataStManAccessor.h>
-#include <aips/Tables/TiledDataStMan.h>
-#include <aips/Tables/Table.h>
-#include <aips/Tables/DataManError.h>
-#include <aips/BasicSL/String.h>
+#include <tables/Tables/TiledDataStManAccessor.h>
+#include <tables/Tables/TiledDataStMan.h>
+#include <tables/Tables/Table.h>
+#include <tables/Tables/DataManError.h>
+#include <casa/BasicSL/String.h>
 
 
 

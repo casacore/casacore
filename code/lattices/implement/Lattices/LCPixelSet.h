@@ -29,8 +29,8 @@
 #define AIPS_LCPIXELSET_H
 
 //# Includes
-#include <trial/Lattices/LCBox.h>
-#include <aips/Arrays/Slicer.h>
+#include <lattices/Lattices/LCBox.h>
+#include <casa/Arrays/Slicer.h>
 
 
 // <summary>

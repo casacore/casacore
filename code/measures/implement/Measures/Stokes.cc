@@ -25,9 +25,9 @@
 //#
 //# $Id$
 
-#include <aips/aips.h>
-#include <aips/Measures/Stokes.h>
-#include <aips/BasicSL/String.h>
+#include <casa/aips.h>
+#include <measures/Measures/Stokes.h>
+#include <casa/BasicSL/String.h>
 
 Stokes::StokesTypes Stokes::type(Int stokesNumber) 
 {

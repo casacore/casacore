@@ -26,7 +26,7 @@
 //# $Id$
 
 
-#include <aips/Tables/StandardStMan.h>
+#include <tables/Tables/StandardStMan.h>
 
 
 StandardStMan::StandardStMan (Int bucketSize,

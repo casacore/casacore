@@ -31,8 +31,8 @@
 #define _STRUCT_MALLINFO
 #endif
 
-#include <aips/OS/Memory.h>
-#include <aips/OS/malloc.h>
+#include <casa/OS/Memory.h>
+#include <casa/OS/malloc.h>
 
 #if defined(AIPS_NO_LEA_MALLOC)
 #if defined(AIPS_DARWIN)

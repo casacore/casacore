@@ -27,8 +27,8 @@
 
 //# Includes
 
-#include <aips/Quanta/UnitName.h>
-#include <aips/iomanip.h>
+#include <casa/Quanta/UnitName.h>
+#include <casa/iomanip.h>
 
 UnitName::UnitName() :
     basicKind(),

@@ -1,5 +1,5 @@
-#include <trial/Mathematics/MedianSlider.h>
-#include <aips/Exceptions/Error.h>
+#include <scimath/Mathematics/MedianSlider.h>
+#include <casa/Exceptions/Error.h>
 #include <stdlib.h>    
     
 MedianSlider::MedianSlider () 

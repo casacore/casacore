@@ -26,16 +26,16 @@
 //# $Id$
 
 
-#include <trial/Lattices/LELSpectralIndex.h>
-#include <trial/Lattices/LELLattCoord.h>
-#include <trial/Lattices/LatticeExprNode.h>
-#include <trial/Lattices/LELArray.h>
-#include <trial/Lattices/LELScalar.h>
-#include <aips/Arrays/Vector.h>
-#include <aips/Arrays/ArrayMath.h>
-#include <aips/Arrays/Slicer.h>
-#include <aips/Utilities/Assert.h>
-#include <aips/Exceptions/Error.h>
+#include <lattices/Lattices/LELSpectralIndex.h>
+#include <lattices/Lattices/LELLattCoord.h>
+#include <lattices/Lattices/LatticeExprNode.h>
+#include <lattices/Lattices/LELArray.h>
+#include <lattices/Lattices/LELScalar.h>
+#include <casa/Arrays/Vector.h>
+#include <casa/Arrays/ArrayMath.h>
+#include <casa/Arrays/Slicer.h>
+#include <casa/Utilities/Assert.h>
+#include <casa/Exceptions/Error.h>
 
 
 template <class T>

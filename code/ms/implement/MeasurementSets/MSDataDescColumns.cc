@@ -25,11 +25,11 @@
 //#
 //# $Id$
 
-#include <aips/MeasurementSets/MSDataDescColumns.h>
-#include <aips/MeasurementSets/MSDataDescription.h>
-#include <aips/Exceptions/Error.h>
-#include <aips/Tables/ColDescSet.h>
-#include <aips/Tables/TableDesc.h>
+#include <ms/MeasurementSets/MSDataDescColumns.h>
+#include <ms/MeasurementSets/MSDataDescription.h>
+#include <casa/Exceptions/Error.h>
+#include <tables/Tables/ColDescSet.h>
+#include <tables/Tables/TableDesc.h>
 
 ROMSDataDescColumns::ROMSDataDescColumns()
   :flagRow_p(),

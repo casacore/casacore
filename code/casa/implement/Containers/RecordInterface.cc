@@ -27,13 +27,13 @@
 //# $Id$
 
 
-#include <aips/Containers/RecordInterface.h>
-#include <aips/Containers/RecordDesc.h>
-#include <aips/Arrays/Array.h>
-#include <aips/Arrays/IPosition.h>
-#include <aips/Utilities/Register.h>
-#include <aips/Exceptions/Error.h>
-#include <aips/Utilities/Assert.h>
+#include <casa/Containers/RecordInterface.h>
+#include <casa/Containers/RecordDesc.h>
+#include <casa/Arrays/Array.h>
+#include <casa/Arrays/IPosition.h>
+#include <casa/Utilities/Register.h>
+#include <casa/Exceptions/Error.h>
+#include <casa/Utilities/Assert.h>
 
 
 RecordInterface::RecordInterface ()

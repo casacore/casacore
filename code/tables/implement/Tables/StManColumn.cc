@@ -27,15 +27,15 @@
 
 
 //# Includes
-#include <aips/Tables/StManColumn.h>
-#include <aips/Tables/RefRows.h>
-#include <aips/Arrays/IPosition.h>
-#include <aips/Arrays/Vector.h>
-#include <aips/Arrays/ArrayIter.h>
-#include <aips/Arrays/Slicer.h>
-#include <aips/Utilities/DataType.h>
-#include <aips/Utilities/Assert.h>
-#include <aips/Tables/DataManError.h>
+#include <tables/Tables/StManColumn.h>
+#include <tables/Tables/RefRows.h>
+#include <casa/Arrays/IPosition.h>
+#include <casa/Arrays/Vector.h>
+#include <casa/Arrays/ArrayIter.h>
+#include <casa/Arrays/Slicer.h>
+#include <casa/Utilities/DataType.h>
+#include <casa/Utilities/Assert.h>
+#include <tables/Tables/DataManError.h>
 
 
 StManColumn::StManColumn (int dataType)

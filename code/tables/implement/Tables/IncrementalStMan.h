@@ -29,8 +29,8 @@
 #define AIPS_INCREMENTALSTMAN_H
 
 //# Includes
-#include <aips/aips.h>
-#include <aips/Tables/ISMBase.h>
+#include <casa/aips.h>
+#include <tables/Tables/ISMBase.h>
 
 
 // <summary>

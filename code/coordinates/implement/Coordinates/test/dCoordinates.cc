@@ -25,20 +25,20 @@
 //#
 //# $Id$
 
-#include <trial/Coordinates/DirectionCoordinate.h>
-#include <trial/Coordinates/Projection.h>
-#include <trial/Coordinates/StokesCoordinate.h>
-#include <trial/Coordinates/SpectralCoordinate.h>
-#include <trial/Coordinates/CoordinateSystem.h>
+#include <coordinates/Coordinates/DirectionCoordinate.h>
+#include <coordinates/Coordinates/Projection.h>
+#include <coordinates/Coordinates/StokesCoordinate.h>
+#include <coordinates/Coordinates/SpectralCoordinate.h>
+#include <coordinates/Coordinates/CoordinateSystem.h>
 
-#include <aips/Arrays/Matrix.h>
-#include <aips/Arrays/ArrayIO.h>
-#include <aips/BasicSL/Constants.h>
-#include <aips/Tables/TableRecord.h>
-#include <aips/Exceptions/Error.h>
+#include <casa/Arrays/Matrix.h>
+#include <casa/Arrays/ArrayIO.h>
+#include <casa/BasicSL/Constants.h>
+#include <tables/Tables/TableRecord.h>
+#include <casa/Exceptions/Error.h>
 
 
-#include <aips/iostream.h>
+#include <casa/iostream.h>
 
 //# Enumerated lines are in the Coordinates.h module header. If you
 //# change them, change Coordinates.h to match.

@@ -30,9 +30,9 @@
 #define AIPS_COPYRECORD_H
 
 
-#include <aips/aips.h>
-#include <aips/Containers/Block.h>
-#include <aips/Containers/RecordField.h>
+#include <casa/aips.h>
+#include <casa/Containers/Block.h>
+#include <casa/Containers/RecordField.h>
 
 //# Forward Declarations
 

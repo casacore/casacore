@@ -27,7 +27,7 @@
 
 
 //# Includes
-#include <aips/Tables/ColumnCache.h>
+#include <tables/Tables/ColumnCache.h>
 
 
 ColumnCache::ColumnCache()

@@ -25,9 +25,9 @@
 //#
 //# $Id$
 
-#include <aips/Tables/BaseColumn.h>
-#include <aips/Arrays/IPosition.h>
-#include <aips/Tables/TableError.h>
+#include <tables/Tables/BaseColumn.h>
+#include <casa/Arrays/IPosition.h>
+#include <tables/Tables/TableError.h>
 
 BaseColumn::BaseColumn (const BaseColumnDesc* cdp)
 : colDescPtr_p(cdp),

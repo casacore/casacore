@@ -29,9 +29,9 @@
 #if !defined(AIPS_MSOBSERVATION_H)
 #define AIPS_MSOBSERVATION_H
 
-#include <aips/aips.h>
-#include <aips/MeasurementSets/MSTable.h>
-#include <aips/MeasurementSets/MSObsEnums.h>
+#include <casa/aips.h>
+#include <ms/MeasurementSets/MSTable.h>
+#include <ms/MeasurementSets/MSObsEnums.h>
 
 // <summary> 
 // A Table intended to hold a MeasurementSet OBSERVATION table.

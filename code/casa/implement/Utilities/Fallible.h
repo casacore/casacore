@@ -28,7 +28,7 @@
 #if !defined(AIPS_FALLIBLE_H)
 #define AIPS_FALLIBLE_H
 
-#include <aips/aips.h>
+#include <casa/aips.h>
 
 //# The following function is to be found in Fallible2.cc not Fallible.cc
 //# because it's a non-templated function and template instantiators normally

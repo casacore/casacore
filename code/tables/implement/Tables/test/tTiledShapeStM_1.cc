@@ -25,21 +25,21 @@
 //#
 //# $Id$
 
-#include <aips/Tables/TableDesc.h>
-#include <aips/Tables/SetupNewTab.h>
-#include <aips/Tables/Table.h>
-#include <aips/Tables/ArrColDesc.h>
-#include <aips/Tables/ArrayColumn.h>
-#include <aips/Tables/TiledShapeStMan.h>
-#include <aips/Arrays/ArrayMath.h>
-#include <aips/Arrays/ArrayLogical.h>
-#include <aips/Arrays/ArrayUtil.h>
-#include <aips/Arrays/Slicer.h>
-#include <aips/OS/CanonicalConversion.h>
-#include <aips/OS/LECanonicalConversion.h>
-#include <aips/OS/Timer.h>
-#include <aips/Exceptions/Error.h>
-#include <aips/iostream.h>
+#include <tables/Tables/TableDesc.h>
+#include <tables/Tables/SetupNewTab.h>
+#include <tables/Tables/Table.h>
+#include <tables/Tables/ArrColDesc.h>
+#include <tables/Tables/ArrayColumn.h>
+#include <tables/Tables/TiledShapeStMan.h>
+#include <casa/Arrays/ArrayMath.h>
+#include <casa/Arrays/ArrayLogical.h>
+#include <casa/Arrays/ArrayUtil.h>
+#include <casa/Arrays/Slicer.h>
+#include <casa/OS/CanonicalConversion.h>
+#include <casa/OS/LECanonicalConversion.h>
+#include <casa/OS/Timer.h>
+#include <casa/Exceptions/Error.h>
+#include <casa/iostream.h>
 
 // <summary>
 // Test program for performance of the TiledShapeStMan class.

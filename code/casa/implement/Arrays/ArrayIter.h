@@ -28,9 +28,9 @@
 #if !defined (AIPS_ARRAYITER_H)
 #define AIPS_ARRAYITER_H
 
-#include <aips/aips.h>
-#include <aips/Arrays/ArrayPosIter.h>
-#include <aips/Arrays/Array.h>
+#include <casa/aips.h>
+#include <casa/Arrays/ArrayPosIter.h>
+#include <casa/Arrays/Array.h>
 
 
 // 

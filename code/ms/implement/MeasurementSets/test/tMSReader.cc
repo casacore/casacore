@@ -27,12 +27,12 @@
 
 //# Includes
 
-#include <aips/Exceptions/Error.h>
-#include <aips/MeasurementSets/MeasurementSet.h>
-#include <trial/MeasurementSets/MSReader.h>
+#include <casa/Exceptions/Error.h>
+#include <ms/MeasurementSets/MeasurementSet.h>
+#include <ms/MeasurementSets/MSReader.h>
 #include <trial/SDIterators/SDRecord.h>
-#include <aips/iostream.h>
-#include <aips/OS/Timer.h>
+#include <casa/iostream.h>
+#include <casa/OS/Timer.h>
 
 int main(int argc, char **argv) 
 {

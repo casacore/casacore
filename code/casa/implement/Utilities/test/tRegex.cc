@@ -27,12 +27,12 @@
 
 //# Includes
 
-#include <aips/Utilities/Regex.h>
-#include <aips/BasicSL/String.h>
-#include <aips/Arrays/Vector.h>
-#include <aips/Arrays/ArrayIO.h>
-#include <aips/Exceptions/Error.h>
-#include <aips/iostream.h>
+#include <casa/Utilities/Regex.h>
+#include <casa/BasicSL/String.h>
+#include <casa/Arrays/Vector.h>
+#include <casa/Arrays/ArrayIO.h>
+#include <casa/Exceptions/Error.h>
+#include <casa/iostream.h>
 
 //# Forward Declarations
 

@@ -28,10 +28,10 @@
 #if !defined(AIPS_LATTICE_FIT_H)
 #define AIPS_LATTICE_FIT_H
 
-#include <aips/aips.h>
-#include <aips/Lattices/Lattice.h>
-#include <trial/Lattices/MaskedLattice.h>
-#include <trial/Fitting/LinearFit.h>
+#include <casa/aips.h>
+#include <lattices/Lattices/Lattice.h>
+#include <lattices/Lattices/MaskedLattice.h>
+#include <scimath/Fitting/LinearFit.h>
 
 
 // <summary> 

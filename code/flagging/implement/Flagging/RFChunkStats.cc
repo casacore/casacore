@@ -24,15 +24,15 @@
 //#                        Charlottesville, VA 22903-2475 USA
 //#
 //# $Id$
-#include <aips/Arrays/ArrayMath.h>
-#include <aips/Exceptions/Error.h>
-#include <trial/Flagging/RFChunkStats.h>
-#include <trial/Flagging/RedFlagger.h>
-#include <trial/MSVis/VisibilityIterator.h>
-#include <trial/MSVis/VisBuffer.h>
+#include <casa/Arrays/ArrayMath.h>
+#include <casa/Exceptions/Error.h>
+#include <flagging/Flagging/RFChunkStats.h>
+#include <flagging/Flagging/RedFlagger.h>
+#include <msvis/MSVis/VisibilityIterator.h>
+#include <msvis/MSVis/VisBuffer.h>
 #include <stdio.h>
-#include <aips/sstream.h>
-#include <trial/System/PGPlotter.h>
+#include <casa/sstream.h>
+#include <casa/System/PGPlotter.h>
     
 // when no plotter is specified for screen/report,
 // use a null (unattached plotter)

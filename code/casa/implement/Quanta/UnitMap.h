@@ -30,13 +30,13 @@
 
 
 //# Includes
-#include <aips/aips.h>
-#include <aips/BasicSL/Constants.h>
-#include <aips/stdmap.h>
-#include <aips/BasicSL/String.h>
-#include <aips/Quanta/UnitDim.h>
-#include <aips/Quanta/UnitVal.h>
-#include <aips/Quanta/UnitName.h>
+#include <casa/aips.h>
+#include <casa/BasicSL/Constants.h>
+#include <casa/stdmap.h>
+#include <casa/BasicSL/String.h>
+#include <casa/Quanta/UnitDim.h>
+#include <casa/Quanta/UnitVal.h>
+#include <casa/Quanta/UnitName.h>
 
 //# Forward Declarations
 

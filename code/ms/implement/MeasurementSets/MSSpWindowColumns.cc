@@ -25,20 +25,20 @@
 //#
 //# $Id$
 
-#include <aips/MeasurementSets/MSSpWindowColumns.h>
-#include <aips/Arrays/ArrayLogical.h>
-#include <aips/Arrays/IPosition.h>
-#include <aips/Arrays/Vector.h>
-#include <aips/Exceptions/Error.h>
-#include <aips/BasicMath/Math.h>
-#include <aips/MeasurementSets/MSSpectralWindow.h>
-#include <aips/Measures/MeasRef.h>
-#include <aips/Quanta/MVFrequency.h>
-#include <aips/Quanta/Quantum.h>
-#include <aips/Quanta/UnitVal.h>
-#include <aips/Tables/ColDescSet.h>
-#include <aips/Tables/TableDesc.h>
-#include <aips/Utilities/Assert.h>
+#include <ms/MeasurementSets/MSSpWindowColumns.h>
+#include <casa/Arrays/ArrayLogical.h>
+#include <casa/Arrays/IPosition.h>
+#include <casa/Arrays/Vector.h>
+#include <casa/Exceptions/Error.h>
+#include <casa/BasicMath/Math.h>
+#include <ms/MeasurementSets/MSSpectralWindow.h>
+#include <measures/Measures/MeasRef.h>
+#include <casa/Quanta/MVFrequency.h>
+#include <casa/Quanta/Quantum.h>
+#include <casa/Quanta/UnitVal.h>
+#include <tables/Tables/ColDescSet.h>
+#include <tables/Tables/TableDesc.h>
+#include <casa/Utilities/Assert.h>
 
 ROMSSpWindowColumns::
 ROMSSpWindowColumns(const MSSpectralWindow& msSpWindow):

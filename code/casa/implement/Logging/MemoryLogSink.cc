@@ -25,10 +25,10 @@
 //#
 //# $Id$
 
-#include <aips/Logging/MemoryLogSink.h>
-#include <aips/Logging/LogFilter.h>
-#include <aips/Exceptions/Error.h>
-#include <aips/Utilities/Assert.h>
+#include <casa/Logging/MemoryLogSink.h>
+#include <casa/Logging/LogFilter.h>
+#include <casa/Exceptions/Error.h>
+#include <casa/Utilities/Assert.h>
 
 String MemoryLogSink::localId( ) {
     return String("MemoryLogSink");

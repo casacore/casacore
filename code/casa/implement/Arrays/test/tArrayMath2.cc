@@ -26,14 +26,14 @@
 //# $Id$
 
 //# Includes
-#include <aips/Arrays/Array.h>
-#include <aips/Arrays/Vector.h>
-#include <aips/Arrays/ArrayMath.h>
-#include <aips/Arrays/ArrayLogical.h>
-#include <aips/Arrays/ArrayIO.h>
-#include <aips/Utilities/Assert.h>
-#include <aips/OS/Timer.h>
-#include <aips/iostream.h>
+#include <casa/Arrays/Array.h>
+#include <casa/Arrays/Vector.h>
+#include <casa/Arrays/ArrayMath.h>
+#include <casa/Arrays/ArrayLogical.h>
+#include <casa/Arrays/ArrayIO.h>
+#include <casa/Utilities/Assert.h>
+#include <casa/OS/Timer.h>
+#include <casa/iostream.h>
 
 
 typedef Array<Double> PartFunc (const Array<Double>&, const IPosition& axes);

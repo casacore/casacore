@@ -29,7 +29,7 @@
 #define AIPS_WCREGION_H
 
 //# Includes
-#include <aips/Containers/Record.h>
+#include <casa/Containers/Record.h>
 
 //# Forward Declarations
 class LCRegion;

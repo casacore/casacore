@@ -28,9 +28,9 @@
 #if !defined(AIPS_AIPSRC_H)
 #define AIPS_AIPSRC_H
 
-#include <aips/aips.h>
-#include <aips/BasicSL/String.h>
-#include <aips/Containers/Block.h>
+#include <casa/aips.h>
+#include <casa/BasicSL/String.h>
+#include <casa/Containers/Block.h>
 
 
 //# Forward declarations

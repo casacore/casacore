@@ -28,8 +28,8 @@
 #if !defined(AIPS_MSDATADESCCOLUMNS_H)
 #define AIPS_MSDATADESCCOLUMNS_H
 
-#include <aips/aips.h>
-#include <aips/Tables/ScalarColumn.h>
+#include <casa/aips.h>
+#include <tables/Tables/ScalarColumn.h>
 
 class MSDataDescription;
 // <summary>

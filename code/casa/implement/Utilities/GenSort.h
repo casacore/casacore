@@ -28,8 +28,8 @@
 #if !defined (AIPS_GENSORT_H)
 #define AIPS_GENSORT_H
 
-#include <aips/aips.h>
-#include <aips/Utilities/Sort.h>
+#include <casa/aips.h>
+#include <casa/Utilities/Sort.h>
 
 //# Forward declarations.
 template<class T> class Array;

@@ -26,15 +26,15 @@
 //# $Id: 
 //----------------------------------------------------------------------------
 
-#include <trial/MeasurementSets/MSFitsIDI.h>
-#include <trial/MeasurementSets/FitsIDItoMS.h>
-#include <aips/FITS/fits.h>
-#include <aips/FITS/fitsio.h>
-#include <aips/Utilities/Regex.h>
-#include <aips/Logging/LogIO.h>
-#include <aips/OS/File.h>
-#include <aips/OS/Directory.h>
-#include <trial/IO/TapeIO.h>
+#include <ms/MeasurementSets/MSFitsIDI.h>
+#include <ms/MeasurementSets/FitsIDItoMS.h>
+#include <fits/FITS/fits.h>
+#include <fits/FITS/fitsio.h>
+#include <casa/Utilities/Regex.h>
+#include <casa/Logging/LogIO.h>
+#include <casa/OS/File.h>
+#include <casa/OS/Directory.h>
+#include <casa/IO/TapeIO.h>
 
 //----------------------------------------------------------------------------
 

@@ -26,10 +26,10 @@
 //# $Id: 
 //----------------------------------------------------------------------------
 
-#include <trial/MeasurementSets/MSDopplerUtil.h>
-#include <aips/MeasurementSets/MSColumns.h>
-#include <trial/MeasurementSets/MSSourceIndex.h>
-#include <aips/Exceptions/Error.h>
+#include <ms/MeasurementSets/MSDopplerUtil.h>
+#include <ms/MeasurementSets/MSColumns.h>
+#include <ms/MeasurementSets/MSSourceIndex.h>
+#include <casa/Exceptions/Error.h>
 
 //----------------------------------------------------------------------------
 

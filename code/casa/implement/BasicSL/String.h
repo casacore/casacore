@@ -29,7 +29,7 @@
 #define AIPS_STRING_H
 
 //# Includes
-#include <aips/aips.h>
+#include <casa/aips.h>
 
 //# Includes
 #include <string>
@@ -39,8 +39,8 @@ using std::string;
 //# Forward Declarations
 class String;
 class RegexBase;
-#include <aips/iosstrfwd.h>
-#include <aips/sstream.h>
+#include <casa/iosstrfwd.h>
+#include <casa/sstream.h>
 
 // <summary> SubString help class to be used in at, before, ... </summary>
 // <synopsis>

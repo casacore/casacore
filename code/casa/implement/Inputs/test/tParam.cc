@@ -25,12 +25,12 @@
 //#
 //# $Id$
 
-#include <aips/aips.h>
-#include <aips/Inputs/Param.h>
-#include <aips/Containers/Block.h>
-#include <aips/BasicSL/String.h>
-#include <aips/Utilities/Assert.h>
-#include <aips/iostream.h>
+#include <casa/aips.h>
+#include <casa/Inputs/Param.h>
+#include <casa/Containers/Block.h>
+#include <casa/BasicSL/String.h>
+#include <casa/Utilities/Assert.h>
+#include <casa/iostream.h>
 
 main()
 {

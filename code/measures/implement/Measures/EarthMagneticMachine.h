@@ -29,12 +29,12 @@
 #define AIPS_EARTHMAGNETICMACHINE_H
 
 //# Includes
-#include <aips/aips.h>
-#include <aips/Measures.h>
-#include <aips/Measures/MCDirection.h>
-#include <aips/Quanta/MVPosition.h>
-#include <aips/Measures/EarthField.h>
-#include <aips/Quanta/MVEarthMagnetic.h>
+#include <casa/aips.h>
+#include <measures/Measures.h>
+#include <measures/Measures/MCDirection.h>
+#include <casa/Quanta/MVPosition.h>
+#include <measures/Measures/EarthField.h>
+#include <casa/Quanta/MVEarthMagnetic.h>
 
 //# Forward Declarations
 class MeasFrame;

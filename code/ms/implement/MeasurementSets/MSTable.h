@@ -29,13 +29,13 @@
 #if !defined(AIPS_MSTABLE_H)
 #define AIPS_MSTABLE_H
 
-#include <aips/aips.h>
-#include <aips/Utilities/DataType.h>
-#include <aips/Tables/Table.h>
-#include <aips/Containers/SimOrdMap.h>
-#include <aips/Utilities/CountedPtr.h>
-#include <aips/BasicSL/String.h>
-#include <aips/Tables/ColumnDesc.h>
+#include <casa/aips.h>
+#include <casa/Utilities/DataType.h>
+#include <tables/Tables/Table.h>
+#include <casa/Containers/SimOrdMap.h>
+#include <casa/Utilities/CountedPtr.h>
+#include <casa/BasicSL/String.h>
+#include <tables/Tables/ColumnDesc.h>
 
 //# Forward Declarations, more could be if they weren't part of the
 //# static classes 

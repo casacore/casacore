@@ -30,8 +30,8 @@
 
 
 //# Includes
-#include <aips/aips.h>
-#include <aips/Utilities/CountedPtr.h>
+#include <casa/aips.h>
+#include <casa/Utilities/CountedPtr.h>
 
 //# Forward Declarations
 class LELLattCoordBase;

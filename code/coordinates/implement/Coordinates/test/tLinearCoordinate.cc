@@ -27,17 +27,17 @@
 //#
 
  
-#include <aips/Arrays/Vector.h>
-#include <aips/Arrays/Matrix.h>
-#include <aips/Arrays/ArrayLogical.h>
-#include <aips/Arrays/ArrayMath.h>
-#include <aips/BasicMath/Math.h>
-#include <aips/Quanta/Quantum.h>
-#include <trial/Coordinates/LinearCoordinate.h>
-#include <aips/Exceptions/Error.h>
-#include <aips/Tables/TableRecord.h>
+#include <casa/Arrays/Vector.h>
+#include <casa/Arrays/Matrix.h>
+#include <casa/Arrays/ArrayLogical.h>
+#include <casa/Arrays/ArrayMath.h>
+#include <casa/BasicMath/Math.h>
+#include <casa/Quanta/Quantum.h>
+#include <coordinates/Coordinates/LinearCoordinate.h>
+#include <casa/Exceptions/Error.h>
+#include <tables/Tables/TableRecord.h>
 
-#include <aips/iostream.h>
+#include <casa/iostream.h>
 
 LinearCoordinate makeCoordinate(Vector<String>& names,
                                 Vector<String>& units,

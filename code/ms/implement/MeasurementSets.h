@@ -28,8 +28,8 @@
 #if !defined (AIPS_MEASUREMENTSETS_H)
 #define AIPS_MEASUREMENTSETS_H
 
-#include <aips/MeasurementSets/MeasurementSet.h>
-#include <aips/MeasurementSets/MSColumns.h>
+#include <ms/MeasurementSets/MeasurementSet.h>
+#include <ms/MeasurementSets/MSColumns.h>
 
 // <module>
 //

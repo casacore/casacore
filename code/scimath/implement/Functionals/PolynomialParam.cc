@@ -26,8 +26,8 @@
 //# $Id$
 
 //# Includes
-#include <aips/Functionals/PolynomialParam.h>
-#include <aips/Arrays/Vector.h>
+#include <scimath/Functionals/PolynomialParam.h>
+#include <casa/Arrays/Vector.h>
 
 template<class T>
 PolynomialParam<T>::PolynomialParam() :

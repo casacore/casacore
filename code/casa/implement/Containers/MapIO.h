@@ -28,7 +28,7 @@
 #if !defined(AIPS_MAPIO_H_)
 #define AIPS_MAPIO_H_
 
-#include <aips/Containers/Map.h>
+#include <casa/Containers/Map.h>
 
 class AipsIO;
 

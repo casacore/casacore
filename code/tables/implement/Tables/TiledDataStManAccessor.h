@@ -29,8 +29,8 @@
 #define AIPS_TILEDDATASTMANACCESSOR_H
 
 //# Includes
-#include <aips/aips.h>
-#include <aips/Tables/TiledStManAccessor.h>
+#include <casa/aips.h>
+#include <tables/Tables/TiledStManAccessor.h>
 
 //# Forward Declarations
 class TiledDataStMan;

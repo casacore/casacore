@@ -26,15 +26,15 @@
 //# $Id$
 
 //# Includes
-#include <aips/Measures/ParAngleMachine.h>
-#include <aips/Measures/MeasFrame.h>
-#include <aips/Measures/MeasConvert.h>
-#include <aips/Measures/MeasTable.h>
-#include <aips/Measures/MeasRef.h>
-#include <aips/Exceptions/Error.h>
-#include <aips/BasicSL/Constants.h>
-#include <aips/BasicMath/Math.h>
-#include <aips/Quanta/Unit.h>
+#include <measures/Measures/ParAngleMachine.h>
+#include <measures/Measures/MeasFrame.h>
+#include <measures/Measures/MeasConvert.h>
+#include <measures/Measures/MeasTable.h>
+#include <measures/Measures/MeasRef.h>
+#include <casa/Exceptions/Error.h>
+#include <casa/BasicSL/Constants.h>
+#include <casa/BasicMath/Math.h>
+#include <casa/Quanta/Unit.h>
 
 //# Constructors
 ParAngleMachine::ParAngleMachine() :

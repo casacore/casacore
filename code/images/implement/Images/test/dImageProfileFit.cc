@@ -25,20 +25,20 @@
 //#
 //# $Id: 
 //
-#include <trial/Images/ImageProfileFit.h>
+#include <images/Images/ImageProfileFit.h>
 
-#include <aips/aips.h>
-#include <aips/Exceptions/Error.h>
-#include <aips/Inputs/Input.h>
-#include <aips/Logging.h>
-#include <aips/System/Aipsrc.h>
-#include <aips/Tables/Table.h>
-#include <aips/BasicSL/String.h>
-#include <aips/Containers/Record.h>
+#include <casa/aips.h>
+#include <casa/Exceptions/Error.h>
+#include <casa/Inputs/Input.h>
+#include <casa/Logging.h>
+#include <casa/System/Aipsrc.h>
+#include <tables/Tables/Table.h>
+#include <casa/BasicSL/String.h>
+#include <casa/Containers/Record.h>
 
 
-#include <trial/Images/PagedImage.h>
-#include <aips/iostream.h>
+#include <images/Images/PagedImage.h>
+#include <casa/iostream.h>
 
 
 

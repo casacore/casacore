@@ -34,8 +34,8 @@
 // instead.
 
 // Make sure any special macros are set
-#include <aips/aips.h>
-#include <aips/iosfwd.h>
+#include <casa/aips.h>
+#include <casa/iosfwd.h>
 
 using std::istringstream;
 using std::ostringstream;

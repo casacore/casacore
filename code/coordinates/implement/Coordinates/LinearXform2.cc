@@ -26,13 +26,13 @@
 //#
 //# $Id$
 
-#include <trial/Coordinates/LinearXform.h>
-#include <aips/Arrays/Vector.h>
-#include <aips/Arrays/ArrayLogical.h>
-#include <aips/Arrays/Matrix.h>
-#include <aips/Mathematics/MatrixMathLA.h>
-#include <aips/Exceptions/Error.h>
-#include <aips/BasicSL/String.h>
+#include <coordinates/Coordinates/LinearXform.h>
+#include <casa/Arrays/Vector.h>
+#include <casa/Arrays/ArrayLogical.h>
+#include <casa/Arrays/Matrix.h>
+#include <scimath/Mathematics/MatrixMathLA.h>
+#include <casa/Exceptions/Error.h>
+#include <casa/BasicSL/String.h>
 
 LinearXform LinearXform::fourierInvert (const Vector<Bool>& axes, 
                                         const Vector<Double>& crpix, 

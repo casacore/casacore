@@ -26,24 +26,24 @@
 //# $Id$
 
 
-#include <trial/Lattices/SubLattice.h>
-#include <aips/Lattices/LatticeStepper.h>
-#include <trial/Lattices/LineCollapser.h>
-#include <trial/Lattices/TiledCollapser.h>
-#include <trial/Lattices/LatticeProgress.h>
-#include <aips/Lattices/TiledLineStepper.h>
-#include <aips/Lattices/TileStepper.h>
-#include <trial/Lattices/LatticeApply.h>
-#include <aips/Lattices/LatticeIterator.h>
-#include <trial/Lattices/LatticeRegion.h>
-#include <aips/Arrays/Slicer.h>
-#include <aips/Arrays/IPosition.h>
-#include <aips/Arrays/ArrayPosIter.h>
-#include <aips/Arrays/Vector.h>
-#include <aips/BasicMath/Math.h>
-#include <aips/Utilities/Assert.h>
-#include <aips/Exceptions/Error.h>
-#include <aips/iostream.h>
+#include <lattices/Lattices/SubLattice.h>
+#include <lattices/Lattices/LatticeStepper.h>
+#include <lattices/Lattices/LineCollapser.h>
+#include <lattices/Lattices/TiledCollapser.h>
+#include <lattices/Lattices/LatticeProgress.h>
+#include <lattices/Lattices/TiledLineStepper.h>
+#include <lattices/Lattices/TileStepper.h>
+#include <lattices/Lattices/LatticeApply.h>
+#include <lattices/Lattices/LatticeIterator.h>
+#include <lattices/Lattices/LatticeRegion.h>
+#include <casa/Arrays/Slicer.h>
+#include <casa/Arrays/IPosition.h>
+#include <casa/Arrays/ArrayPosIter.h>
+#include <casa/Arrays/Vector.h>
+#include <casa/BasicMath/Math.h>
+#include <casa/Utilities/Assert.h>
+#include <casa/Exceptions/Error.h>
+#include <casa/iostream.h>
 
 
 template <class T, class U>

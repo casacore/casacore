@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#include <trial/Lattices/LELAttribute.h>
-#include <aips/Utilities/Assert.h>
+#include <lattices/Lattices/LELAttribute.h>
+#include <casa/Utilities/Assert.h>
 
 void doIt()
 {

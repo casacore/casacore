@@ -26,8 +26,8 @@
 //# $Id$
 
 
-#include <aips/OS/VAXDataConversion.h>
-#include <aips/OS/VAXConversion.h>
+#include <casa/OS/VAXDataConversion.h>
+#include <casa/OS/VAXConversion.h>
 
 
 VAXDataConversion::~VAXDataConversion()

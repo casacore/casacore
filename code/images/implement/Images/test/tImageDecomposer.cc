@@ -25,22 +25,22 @@
 //#
 //# $Id$
 
-#include <aips/iostream.h>
-#include <aips/stdlib.h>
-#include <aips/math.h>
-#include <aips/aips.h>
+#include <casa/iostream.h>
+#include <casa/stdlib.h>
+#include <casa/math.h>
+#include <casa/aips.h>
 
-#include <trial/Images/ImageInterface.h>
+#include <images/Images/ImageInterface.h>
 
-#include <aips/Lattices/TiledShape.h>
-#include <trial/Images/TempImage.h>
-#include <trial/Coordinates/LinearCoordinate.h>
-#include <trial/Coordinates/CoordinateSystem.h>
-#include <trial/Coordinates/CoordinateUtil.h>
-#include <aips/Functionals/Gaussian2D.h> 
-#include <trial/Functionals/Gaussian3D.h>
-#include <trial/Images/ImageDecomposer.h>
-#include <aips/OS/Timer.h>
+#include <lattices/Lattices/TiledShape.h>
+#include <images/Images/TempImage.h>
+#include <coordinates/Coordinates/LinearCoordinate.h>
+#include <coordinates/Coordinates/CoordinateSystem.h>
+#include <coordinates/Coordinates/CoordinateUtil.h>
+#include <scimath/Functionals/Gaussian2D.h> 
+#include <scimath/Functionals/Gaussian3D.h>
+#include <images/Images/ImageDecomposer.h>
+#include <casa/OS/Timer.h>
 
 typedef Double imagetype;
 

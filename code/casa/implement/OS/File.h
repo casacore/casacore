@@ -29,9 +29,9 @@
 #define AIPS_FILE_H
 
 //# Includes
-#include <aips/aips.h>
-#include <aips/OS/Path.h>
-#include <aips/BasicSL/String.h>
+#include <casa/aips.h>
+#include <casa/OS/Path.h>
+#include <casa/BasicSL/String.h>
 
 
 // <summary> 

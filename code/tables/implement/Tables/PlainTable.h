@@ -30,12 +30,12 @@
 
 
 //# Includes
-#include <aips/aips.h>
-#include <aips/Tables/BaseTable.h>
-#include <aips/Tables/TableCache.h>
-#include <aips/Tables/TableRecord.h>
-#include <aips/Tables/TableSyncData.h>
-#include <aips/IO/AipsIO.h>
+#include <casa/aips.h>
+#include <tables/Tables/BaseTable.h>
+#include <tables/Tables/TableCache.h>
+#include <tables/Tables/TableRecord.h>
+#include <tables/Tables/TableSyncData.h>
+#include <casa/IO/AipsIO.h>
 
 //# Forward Declarations
 class SetupNewTable;

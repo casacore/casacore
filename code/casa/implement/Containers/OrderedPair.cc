@@ -25,7 +25,7 @@
 //#
 //# $Id$
 
-#include <aips/Containers/OrderedPair.h>
+#include <casa/Containers/OrderedPair.h>
 
 template<class K, class V> 
 OrderedPair<K,V>::OrderedPair()

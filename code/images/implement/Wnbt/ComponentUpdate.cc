@@ -27,15 +27,15 @@
 
 //# Includes
 
-#include <trial/Wnbt/ComponentUpdate.h>
-#include <aips/Exceptions/Error.h>
-#include <aips/Arrays/Array.h>
-#include <aips/Arrays/Vector.h>
-#include <aips/Arrays/Matrix.h>
-#include <aips/Arrays/VectorIter.h>
-#include <aips/Arrays/IPosition.h>
-#include <aips/BasicSL/Complex.h>
-#include <aips/Utilities/Assert.h>
+#include <images/Wnbt/ComponentUpdate.h>
+#include <casa/Exceptions/Error.h>
+#include <casa/Arrays/Array.h>
+#include <casa/Arrays/Vector.h>
+#include <casa/Arrays/Matrix.h>
+#include <casa/Arrays/VectorIter.h>
+#include <casa/Arrays/IPosition.h>
+#include <casa/BasicSL/Complex.h>
+#include <casa/Utilities/Assert.h>
 
 // Statics
 const Int ComponentUpdate::N_unknown[N_Solve] = {

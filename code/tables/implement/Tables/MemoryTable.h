@@ -30,10 +30,10 @@
 
 
 //# Includes
-#include <aips/aips.h>
-#include <aips/Tables/BaseTable.h>
-#include <aips/BasicSL/String.h>
-#include <aips/Arrays/Vector.h>
+#include <casa/aips.h>
+#include <tables/Tables/BaseTable.h>
+#include <casa/BasicSL/String.h>
+#include <casa/Arrays/Vector.h>
 
 //# Forward Declarations
 class SetupNewTable;

@@ -30,12 +30,12 @@
 #define AIPS_MRBASE_H
 
 //# Includes
-#include <aips/aips.h>
-#include <aips/Measures/MeasFrame.h>
+#include <casa/aips.h>
+#include <measures/Measures/MeasFrame.h>
 
 //# Forward Declarations
 class String;
-#include <aips/iosfwd.h>
+#include <casa/iosfwd.h>
 
 // <summary> Base for Reference frame for physical measures </summary>
 

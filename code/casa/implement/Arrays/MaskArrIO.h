@@ -28,10 +28,10 @@
 #if !defined (AIPS_MASKEDARRAY_IO_H)
 #define AIPS_MASKEDARRAY_IO_H
 
-#include <aips/aips.h>
+#include <casa/aips.h>
 
 //# Forward declarations
-#include <aips/iosfwd.h>
+#include <casa/iosfwd.h>
 template<class T> class MaskedArray;
 template<class T> class MaskedArray;
 

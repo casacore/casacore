@@ -26,26 +26,26 @@
 //# $Id$
 
 
-#include <aips/Lattices/PagedArray.h>
-#include <aips/Lattices/PagedArrIter.h>
-#include <aips/Lattices/LatticeNavigator.h>
-#include <aips/Lattices/TiledShape.h>
-#include <aips/Arrays/Array.h>
-#include <aips/Arrays/ArrayLogical.h>
-#include <aips/Arrays/ArrayUtil.h>
-#include <aips/Exceptions/Error.h>
-#include <aips/Arrays/Slicer.h>
-#include <aips/Arrays/IPosition.h>
-#include <aips/OS/File.h>
-#include <aips/OS/Path.h>
-#include <aips/Tables/SetupNewTab.h>
-#include <aips/Tables/TiledCellStMan.h>
-#include <aips/Tables/TableDesc.h>
-#include <aips/Tables/ColumnDesc.h>
-#include <aips/Tables/ArrColDesc.h>
-#include <aips/Tables/TableInfo.h>
-#include <aips/Utilities/Assert.h>
-#include <aips/iostream.h>
+#include <lattices/Lattices/PagedArray.h>
+#include <lattices/Lattices/PagedArrIter.h>
+#include <lattices/Lattices/LatticeNavigator.h>
+#include <lattices/Lattices/TiledShape.h>
+#include <casa/Arrays/Array.h>
+#include <casa/Arrays/ArrayLogical.h>
+#include <casa/Arrays/ArrayUtil.h>
+#include <casa/Exceptions/Error.h>
+#include <casa/Arrays/Slicer.h>
+#include <casa/Arrays/IPosition.h>
+#include <casa/OS/File.h>
+#include <casa/OS/Path.h>
+#include <tables/Tables/SetupNewTab.h>
+#include <tables/Tables/TiledCellStMan.h>
+#include <tables/Tables/TableDesc.h>
+#include <tables/Tables/ColumnDesc.h>
+#include <tables/Tables/ArrColDesc.h>
+#include <tables/Tables/TableInfo.h>
+#include <casa/Utilities/Assert.h>
+#include <casa/iostream.h>
 
 
 template<class T>

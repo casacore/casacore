@@ -25,18 +25,18 @@
 //#
 //# $Id$
 
-#include <trial/Functionals/SPolynomial.h>
+#include <scimath/Functionals/SPolynomial.h>
 
-#include <aips/Mathematics/AutoDiff.h>
-#include <aips/Mathematics/AutoDiffA.h>
-#include <aips/Mathematics/AutoDiffIO.h>
-#include <aips/Mathematics/AutoDiffMath.h>
-#include <aips/Arrays/Vector.h>
-#include <aips/Arrays/ArrayLogical.h>
-#include <aips/Arrays/ArrayMath.h>
-#include <aips/Utilities/Assert.h>
+#include <scimath/Mathematics/AutoDiff.h>
+#include <scimath/Mathematics/AutoDiffA.h>
+#include <scimath/Mathematics/AutoDiffIO.h>
+#include <scimath/Mathematics/AutoDiffMath.h>
+#include <casa/Arrays/Vector.h>
+#include <casa/Arrays/ArrayLogical.h>
+#include <casa/Arrays/ArrayMath.h>
+#include <casa/Utilities/Assert.h>
 
-#include <aips/iostream.h>
+#include <casa/iostream.h>
 
 int main() {
 

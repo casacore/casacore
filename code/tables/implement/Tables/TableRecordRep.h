@@ -30,8 +30,8 @@
 #if !defined(AIPS_TABLERECORDREP_H)
 #define AIPS_TABLERECORDREP_H
 
-#include <aips/aips.h>
-#include <aips/Containers/RecordRep.h>
+#include <casa/aips.h>
+#include <casa/Containers/RecordRep.h>
 
 //# Forward Declarations
 class TableRecord;

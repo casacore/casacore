@@ -25,12 +25,12 @@
 //#
 //# $Id$
 
-#include <aips/Tables/ExprLogicNodeArray.h>
-#include <aips/Tables/TableError.h>
-#include <aips/Arrays/Array.h>
-#include <aips/Arrays/ArrayLogical.h>
-#include <aips/Quanta/MVTime.h>
-#include <aips/Utilities/Regex.h>
+#include <tables/Tables/ExprLogicNodeArray.h>
+#include <tables/Tables/TableError.h>
+#include <casa/Arrays/Array.h>
+#include <casa/Arrays/ArrayLogical.h>
+#include <casa/Quanta/MVTime.h>
+#include <casa/Utilities/Regex.h>
 
 
 

@@ -30,9 +30,9 @@
 
 
 //# Includes
-#include <trial/Lattices/LELInterface.h>
-#include <trial/Lattices/LELScalar.h>
-#include <trial/Lattices/LELUnaryEnums.h>
+#include <lattices/Lattices/LELInterface.h>
+#include <lattices/Lattices/LELScalar.h>
+#include <lattices/Lattices/LELUnaryEnums.h>
 
 //# Forward Declarations
 

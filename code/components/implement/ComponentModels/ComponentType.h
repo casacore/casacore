@@ -29,7 +29,7 @@
 #if !defined(AIPS_COMPONENTTYPE_H)
 #define AIPS_COMPONENTTYPE_H
 
-#include <aips/aips.h>
+#include <casa/aips.h>
 class String;
 class SkyCompRep;
 class ComponentShape;

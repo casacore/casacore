@@ -35,29 +35,29 @@
 #define AIPS_ARRAY_INDEX_CHECK
 #endif
 
-#include <aips/iostream.h>
+#include <casa/iostream.h>
 
-#include <aips/aips.h>
-#include <aips/Utilities/Assert.h>
-#include <aips/BasicSL/Complex.h>
-#include <aips/BasicMath/Math.h>
-#include <aips/BasicSL/String.h>
+#include <casa/aips.h>
+#include <casa/Utilities/Assert.h>
+#include <casa/BasicSL/Complex.h>
+#include <casa/BasicMath/Math.h>
+#include <casa/BasicSL/String.h>
 
-#include <aips/Arrays/IPosition.h>
-#include <aips/Arrays/Array.h>
-#include <aips/Arrays/ArrayError.h>
-#include <aips/Arrays/ArrayIO.h>
-#include <aips/Arrays/ArrayLogical.h>
-#include <aips/Arrays/ArrayMath.h>
-#include <aips/Arrays/Vector.h>
-#include <aips/Arrays/Matrix.h>
-#include <aips/Arrays/Cube.h>
-#include <aips/Arrays/LogiVector.h>
+#include <casa/Arrays/IPosition.h>
+#include <casa/Arrays/Array.h>
+#include <casa/Arrays/ArrayError.h>
+#include <casa/Arrays/ArrayIO.h>
+#include <casa/Arrays/ArrayLogical.h>
+#include <casa/Arrays/ArrayMath.h>
+#include <casa/Arrays/Vector.h>
+#include <casa/Arrays/Matrix.h>
+#include <casa/Arrays/Cube.h>
+#include <casa/Arrays/LogiVector.h>
 
-#include <aips/Arrays/MaskedArray.h>
-#include <aips/Arrays/MaskArrIO.h>
-#include <aips/Arrays/MaskArrLogi.h>
-#include <aips/Arrays/MaskArrMath.h>
+#include <casa/Arrays/MaskedArray.h>
+#include <casa/Arrays/MaskArrIO.h>
+#include <casa/Arrays/MaskArrLogi.h>
+#include <casa/Arrays/MaskArrMath.h>
 
 
 main()

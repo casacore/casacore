@@ -1,13 +1,13 @@
-#include <aips/aips.h>
-#include <aips/Exceptions/Error.h>
-#include <aips/Utilities/Assert.h>
-#include <aips/Arrays/ArrayMath.h>
-#include <aips/OS/Timer.h>
-#include <aips/BasicSL/Constants.h>
+#include <casa/aips.h>
+#include <casa/Exceptions/Error.h>
+#include <casa/Utilities/Assert.h>
+#include <casa/Arrays/ArrayMath.h>
+#include <casa/OS/Timer.h>
+#include <casa/BasicSL/Constants.h>
 
-#include <trial/Mathematics/VanVleck.h>
+#include <scimath/Mathematics/VanVleck.h>
 
-#include <aips/iostream.h>
+#include <casa/iostream.h>
 
 Matrix<Double> qfn(Int nlevels, Double thresh, Double dcoff)
 {

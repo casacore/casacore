@@ -26,7 +26,7 @@
 //#
 //# $Id$
 
-#include <aips/Utilities/COWPtr.h>
+#include <casa/Utilities/COWPtr.h>
 
 template <class T> COWPtr<T>::COWPtr(T *obj, Bool deleteIt, Bool readOnly)
 : obj_p(obj, deleteIt), const_p(readOnly)

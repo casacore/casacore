@@ -27,9 +27,9 @@
 //# $Id$
 
 //# Includes
-#include <trial/Functionals/FuncExprData.h>
-#include <aips/iostream.h>
-#include <aips/iomanip.h>
+#include <scimath/Functionals/FuncExprData.h>
+#include <casa/iostream.h>
+#include <casa/iomanip.h>
 
 //# Constructors
 FuncExprData::FuncExprData() :

@@ -29,10 +29,10 @@
 #define AIPS_LATTICEITERATOR_H
 
 //# Includes
-#include <aips/aips.h>
-#include <aips/Lattices/Lattice.h>
-#include <aips/Lattices/LatticeIterInterface.h>
-#include <aips/Utilities/CountedPtr.h>
+#include <casa/aips.h>
+#include <lattices/Lattices/Lattice.h>
+#include <lattices/Lattices/LatticeIterInterface.h>
+#include <casa/Utilities/CountedPtr.h>
 
 //# Forward Declarations
 class IPosition;

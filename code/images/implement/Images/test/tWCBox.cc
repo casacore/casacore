@@ -25,20 +25,20 @@
 //#
 //# $Id$
 
-#include <aips/aips.h>
-#include <aips/Arrays.h>
-#include <aips/Measures.h>
-#include <trial/Coordinates.h>
-#include <aips/Exceptions/Error.h>
-#include <trial/Images/WCBox.h>
-#include <trial/Lattices/LCRegion.h>
-#include <trial/Lattices/LCBox.h>
-#include <trial/Lattices/RegionType.h>
-#include <aips/Tables/TableRecord.h>
-#include <aips/BasicSL/String.h>
-#include <aips/Utilities/Assert.h>
+#include <casa/aips.h>
+#include <casa/Arrays.h>
+#include <measures/Measures.h>
+#include <coordinates/Coordinates.h>
+#include <casa/Exceptions/Error.h>
+#include <images/Images/WCBox.h>
+#include <lattices/Lattices/LCRegion.h>
+#include <lattices/Lattices/LCBox.h>
+#include <lattices/Lattices/RegionType.h>
+#include <tables/Tables/TableRecord.h>
+#include <casa/BasicSL/String.h>
+#include <casa/Utilities/Assert.h>
 
-#include <aips/iostream.h>
+#include <casa/iostream.h>
 
 void setValues (IPosition& blcI,
                 IPosition& trcI,

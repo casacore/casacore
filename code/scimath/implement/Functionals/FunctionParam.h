@@ -29,11 +29,11 @@
 #define AIPS_FUNCTIONPARAM_H
 
 //# Include files
-#include <aips/aips.h>
-#include <aips/Arrays/Vector.h>
+#include <casa/aips.h>
+#include <casa/Arrays/Vector.h>
 
 //# Forward declarations
-#include <aips/iosfwd.h>
+#include <casa/iosfwd.h>
 
 // <summary>Container of function parameters with masking flags
 // </summary>

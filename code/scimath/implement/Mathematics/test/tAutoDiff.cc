@@ -26,18 +26,18 @@
 //# $Id$
 
 //# Includes
-#include <aips/Mathematics/AutoDiff.h>
-#include <aips/Mathematics/AutoDiffMath.h>
-#include <aips/Mathematics/AutoDiffIO.h>
+#include <scimath/Mathematics/AutoDiff.h>
+#include <scimath/Mathematics/AutoDiffMath.h>
+#include <scimath/Mathematics/AutoDiffIO.h>
 
-#include <aips/Arrays/ArrayLogical.h>
-#include <aips/Arrays/ArrayMath.h>
-#include <aips/Arrays/Vector.h>
-#include <aips/Exceptions/Error.h>
-#include <aips/Arrays/IPosition.h>
-#include <aips/BasicMath/Math.h>
+#include <casa/Arrays/ArrayLogical.h>
+#include <casa/Arrays/ArrayMath.h>
+#include <casa/Arrays/Vector.h>
+#include <casa/Exceptions/Error.h>
+#include <casa/Arrays/IPosition.h>
+#include <casa/BasicMath/Math.h>
 
-#include <aips/iostream.h>
+#include <casa/iostream.h>
 
 // Made some minor changes, so we don't compare floating point values directly, i.e. use ==
 // but rather use nearAbs, as the floating point between chips won't necessarily give the

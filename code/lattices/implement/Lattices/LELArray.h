@@ -30,7 +30,7 @@
 
 
 //# Includes
-#include <trial/Lattices/LELArrayBase.h>
+#include <lattices/Lattices/LELArrayBase.h>
 
 
 // <summary>

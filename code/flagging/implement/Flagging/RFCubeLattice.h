@@ -27,9 +27,9 @@
 #ifndef AIPS_RF_CUBELATTICE_H
 #define AIPS_RF_CUBELATTICE_H
     
-#include <aips/Arrays/Matrix.h> 
-#include <aips/Lattices/TempLattice.h> 
-#include <aips/Lattices/LatticeIterator.h> 
+#include <casa/Arrays/Matrix.h> 
+#include <lattices/Lattices/TempLattice.h> 
+#include <lattices/Lattices/LatticeIterator.h> 
 
 // <summary>
 // RFCubeLatticeIterator: iterator over a cubic lattice

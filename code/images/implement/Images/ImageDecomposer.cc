@@ -25,22 +25,22 @@
 //#
 //# $Id$
 
-#include <trial/Images/ImageDecomposer.h>
+#include <images/Images/ImageDecomposer.h>
 
-#include <aips/Arrays/Slicer.h>
-#include <aips/Arrays/Cube.h>
-#include <aips/Lattices/TiledShape.h>
-#include <trial/Fitting/FitGaussian.h>
-#include <trial/Coordinates/CoordinateSystem.h>
-#include <trial/Lattices/LatticeRegion.h>
-#include <trial/Lattices/LCMask.h>
-#include <trial/Lattices/LatticeExpr.h>
-#include <trial/Lattices/LatticeExprNode.h>
-#include <aips/Lattices/LatticeIterator.h>
-#include <aips/BasicMath/Math.h>
-#include <aips/Utilities/Assert.h>
-#include <trial/Images/TempImage.h>
-#include <trial/Images/SubImage.h>
+#include <casa/Arrays/Slicer.h>
+#include <casa/Arrays/Cube.h>
+#include <lattices/Lattices/TiledShape.h>
+#include <scimath/Fitting/FitGaussian.h>
+#include <coordinates/Coordinates/CoordinateSystem.h>
+#include <lattices/Lattices/LatticeRegion.h>
+#include <lattices/Lattices/LCMask.h>
+#include <lattices/Lattices/LatticeExpr.h>
+#include <lattices/Lattices/LatticeExprNode.h>
+#include <lattices/Lattices/LatticeIterator.h>
+#include <casa/BasicMath/Math.h>
+#include <casa/Utilities/Assert.h>
+#include <images/Images/TempImage.h>
+#include <images/Images/SubImage.h>
 
 
 // Constructors, Destructor, Operators

@@ -28,10 +28,10 @@
 #define AIPS_SSMINDEX_H
 
 //# Includes
-#include <aips/aips.h>
-#include <aips/Containers/Block.h>
-#include <aips/Containers/SimOrdMap.h>
-#include <aips/Arrays/Vector.h>
+#include <casa/aips.h>
+#include <casa/Containers/Block.h>
+#include <casa/Containers/SimOrdMap.h>
+#include <casa/Arrays/Vector.h>
 
 //# Forward Declarations
 class SSMBase;

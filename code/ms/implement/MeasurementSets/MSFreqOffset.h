@@ -29,9 +29,9 @@
 #if !defined(AIPS_MSFREQOFFSET_H)
 #define AIPS_MSFREQOFFSET_H
 
-#include <aips/aips.h>
-#include <aips/MeasurementSets/MSTable.h>
-#include <aips/MeasurementSets/MSFreqOffEnums.h>
+#include <casa/aips.h>
+#include <ms/MeasurementSets/MSTable.h>
+#include <ms/MeasurementSets/MSFreqOffEnums.h>
 
 // <summary> 
 // A Table intended to hold a MeasurementSet FREQ_OFFSET table.

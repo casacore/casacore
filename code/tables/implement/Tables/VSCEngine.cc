@@ -26,8 +26,8 @@
 //# $Id$
 
 //# Includes
-#include <aips/Tables/VSCEngine.h>
-#include <aips/Tables/DataManError.h>
+#include <tables/Tables/VSCEngine.h>
+#include <tables/Tables/DataManError.h>
 
 
 template<class T>

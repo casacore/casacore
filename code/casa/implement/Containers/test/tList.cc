@@ -27,9 +27,9 @@
 
 //# Includes
 
-#include <aips/Containers/List.h>
-#include <aips/Containers/ListIO.h>
-#include <aips/iostream.h>
+#include <casa/Containers/List.h>
+#include <casa/Containers/ListIO.h>
+#include <casa/iostream.h>
 
 static void show(const ConstListIter<int> &);
 static void dump(const ConstListIter<int> *);

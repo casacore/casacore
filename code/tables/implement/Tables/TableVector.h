@@ -29,8 +29,8 @@
 #define AIPS_TABLEVECTOR_H
 
 //# Includes
-#include <aips/aips.h>
-#include <aips/Tables/TVec.h>
+#include <casa/aips.h>
+#include <tables/Tables/TVec.h>
 
 //# Forward Declarations
 class Table;

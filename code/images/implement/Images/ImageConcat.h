@@ -30,12 +30,12 @@
 
 
 //# Includes
-#include <aips/aips.h>
-#include <aips/Arrays/Vector.h>
-#include <aips/Containers/Block.h>
-#include <aips/Lattices/Lattice.h>
-#include <trial/Lattices/LatticeConcat.h>
-#include <trial/Images/ImageInterface.h>
+#include <casa/aips.h>
+#include <casa/Arrays/Vector.h>
+#include <casa/Containers/Block.h>
+#include <lattices/Lattices/Lattice.h>
+#include <lattices/Lattices/LatticeConcat.h>
+#include <images/Images/ImageInterface.h>
 
 //# Forward Declarations
 class CoordinateSystem;

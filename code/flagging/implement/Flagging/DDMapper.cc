@@ -24,10 +24,10 @@
 //#                        Charlottesville, VA 22903-2475 USA
 //#
 //# $Id$
-#include <aips/Exceptions/Error.h>
-#include <trial/Flagging/DDMapper.h>
-#include <trial/Flagging/RFChunkStats.h>
-#include <aips/Utilities/Regex.h>
+#include <casa/Exceptions/Error.h>
+#include <flagging/Flagging/DDMapper.h>
+#include <flagging/Flagging/RFChunkStats.h>
+#include <casa/Utilities/Regex.h>
 
 DDFunc::DDFunc( FuncSignature fsig,const String &corrstr )
   : DDMapper(),icorr(-1),func(fsig)

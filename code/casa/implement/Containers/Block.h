@@ -28,14 +28,14 @@
 #if !defined (AIPS_BLOCK_H)
 #define AIPS_BLOCK_H
 
-#include <aips/aips.h>
-#include <aips/Utilities/Copy.h>
-#include <aips/Containers/BlockIO.h>
+#include <casa/aips.h>
+#include <casa/Utilities/Copy.h>
+#include <casa/Containers/BlockIO.h>
 
 
 //# For index checking
 #if defined(AIPS_ARRAY_INDEX_CHECK)
-#include <aips/Exceptions/Error.h>
+#include <casa/Exceptions/Error.h>
 #endif
 
 // <summary>

@@ -25,13 +25,13 @@
 //#
 //# $Id$
 
-#include <trial/Lattices/SubLattice.h>
-#include <aips/Lattices/LatticeIterInterface.h>
-#include <trial/Lattices/LatticeExpr.h>
-#include <trial/Lattices/LCRegion.h>
-#include <aips/Arrays/IPosition.h>
-#include <aips/Utilities/Assert.h>
-#include <aips/Exceptions/Error.h>
+#include <lattices/Lattices/SubLattice.h>
+#include <lattices/Lattices/LatticeIterInterface.h>
+#include <lattices/Lattices/LatticeExpr.h>
+#include <lattices/Lattices/LCRegion.h>
+#include <casa/Arrays/IPosition.h>
+#include <casa/Utilities/Assert.h>
+#include <casa/Exceptions/Error.h>
 
 
 template<class T>

@@ -26,14 +26,14 @@
 //# $Id$
 
 
-#include <trial/Images/RegionHandler.h>
-#include <trial/Images/ImageRegion.h>
-#include <aips/Lattices/LatticeBase.h>
-#include <aips/Lattices/TiledShape.h>
-#include <aips/Arrays/Vector.h>
-#include <aips/BasicSL/String.h>
-#include <aips/Exceptions/Error.h>
-#include <aips/sstream.h>
+#include <images/Images/RegionHandler.h>
+#include <images/Images/ImageRegion.h>
+#include <lattices/Lattices/LatticeBase.h>
+#include <lattices/Lattices/TiledShape.h>
+#include <casa/Arrays/Vector.h>
+#include <casa/BasicSL/String.h>
+#include <casa/Exceptions/Error.h>
+#include <casa/sstream.h>
 
 
 RegionHandler::~RegionHandler()

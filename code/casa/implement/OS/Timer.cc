@@ -32,10 +32,10 @@
 //  Real time:
 //    what you get from a stop watch timer.
 
-#include <aips/OS/Timer.h>
-#include <aips/BasicSL/String.h>
-#include <aips/iostream.h>
-#include <aips/iomanip.h>
+#include <casa/OS/Timer.h>
+#include <casa/BasicSL/String.h>
+#include <casa/iostream.h>
+#include <casa/iomanip.h>
 
 void Timer::mark()
 {

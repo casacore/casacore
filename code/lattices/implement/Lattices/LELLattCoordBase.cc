@@ -26,7 +26,7 @@
 //# $Id$
 
 
-#include <aips/Lattices/LELLattCoordBase.h>
+#include <lattices/Lattices/LELLattCoordBase.h>
 
 
 LELLattCoordBase::~LELLattCoordBase()

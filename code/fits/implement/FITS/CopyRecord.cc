@@ -25,14 +25,14 @@
 //#
 //# $Id$
 
-#include <trial/FITS/CopyRecord.h>
-#include <aips/Arrays/Vector.h>
-#include <aips/Containers/Block.h>
-#include <aips/Containers/RecordInterface.h>
-#include <aips/Containers/RecordDesc.h>
-#include <aips/Tables.h>
-#include <aips/Utilities/Assert.h>
-#include <aips/BasicSL/String.h>
+#include <fits/FITS/CopyRecord.h>
+#include <casa/Arrays/Vector.h>
+#include <casa/Containers/Block.h>
+#include <casa/Containers/RecordInterface.h>
+#include <casa/Containers/RecordDesc.h>
+#include <tables/Tables.h>
+#include <casa/Utilities/Assert.h>
+#include <casa/BasicSL/String.h>
 
 CopyRecordToTable::CopyRecordToTable(Table &outputTable,
                                      const RecordInterface &inputBuffer,

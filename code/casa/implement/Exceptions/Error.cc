@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#include <aips/Exceptions/Error.h>
-#include <aips/iostream.h>
+#include <casa/Exceptions/Error.h>
+#include <casa/iostream.h>
 
 
 template<class t>

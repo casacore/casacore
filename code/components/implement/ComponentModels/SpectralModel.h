@@ -28,12 +28,12 @@
 #if !defined(AIPS_SPECTRALMODEL_H)
 #define AIPS_SPECTRALMODEL_H
 
-#include <aips/aips.h>
-#include <trial/ComponentModels/ComponentType.h>
-#include <aips/Utilities/RecordTransformable.h>
-#include <aips/Measures/MFrequency.h>
-#include <aips/Quanta/Unit.h>
-#include <aips/Quanta/Quantum.h>
+#include <casa/aips.h>
+#include <components/ComponentModels/ComponentType.h>
+#include <casa/Utilities/RecordTransformable.h>
+#include <measures/Measures/MFrequency.h>
+#include <casa/Quanta/Unit.h>
+#include <casa/Quanta/Quantum.h>
 
 class RecordInterface;
 class String;

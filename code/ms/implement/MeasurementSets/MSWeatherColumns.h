@@ -28,11 +28,11 @@
 #if !defined(AIPS_MSWEATHERCOLUMNS_H)
 #define AIPS_MSWEATHERCOLUMNS_H
 
-#include <aips/aips.h>
-#include <aips/Measures/MEpoch.h>
-#include <aips/TableMeasures/ScalarMeasColumn.h>
-#include <aips/TableMeasures/ScalarQuantColumn.h>
-#include <aips/Tables/ScalarColumn.h>
+#include <casa/aips.h>
+#include <measures/Measures/MEpoch.h>
+#include <measures/TableMeasures/ScalarMeasColumn.h>
+#include <measures/TableMeasures/ScalarQuantColumn.h>
+#include <tables/Tables/ScalarColumn.h>
 
 class MSWeather;
 

@@ -25,41 +25,41 @@
 //#
 //# $Id$
 
-#include <aips/MeasurementSets/MSTableImpl.h>
-#include <aips/BasicSL/String.h>
-#include <aips/Tables/SetupNewTab.h>
-#include <aips/Tables/TableDesc.h>
-#include <aips/Tables/ColDescSet.h>
-#include <aips/Tables/TableRecord.h>
-#include <aips/Tables/ScaColDesc.h>
-#include <aips/Tables/ScaRecordColDesc.h>
-#include <aips/Tables/ArrColDesc.h>
-#include <aips/Tables/StManAipsIO.h>
-#include <aips/Tables/ForwardCol.h>
-#include <aips/Tables/CompressFloat.h>
-#include <aips/Tables/CompressComplex.h>
-#include <aips/Arrays/ArrayLogical.h>
-#include <aips/Arrays/Vector.h>
-#include <aips/Containers/SimOrdMap.h>
-#include <aips/Utilities/Assert.h>
-#include <aips/Exceptions/Error.h>
-#include <aips/MeasurementSets/MeasurementSet.h>
+#include <ms/MeasurementSets/MSTableImpl.h>
+#include <casa/BasicSL/String.h>
+#include <tables/Tables/SetupNewTab.h>
+#include <tables/Tables/TableDesc.h>
+#include <tables/Tables/ColDescSet.h>
+#include <tables/Tables/TableRecord.h>
+#include <tables/Tables/ScaColDesc.h>
+#include <tables/Tables/ScaRecordColDesc.h>
+#include <tables/Tables/ArrColDesc.h>
+#include <tables/Tables/StManAipsIO.h>
+#include <tables/Tables/ForwardCol.h>
+#include <tables/Tables/CompressFloat.h>
+#include <tables/Tables/CompressComplex.h>
+#include <casa/Arrays/ArrayLogical.h>
+#include <casa/Arrays/Vector.h>
+#include <casa/Containers/SimOrdMap.h>
+#include <casa/Utilities/Assert.h>
+#include <casa/Exceptions/Error.h>
+#include <ms/MeasurementSets/MeasurementSet.h>
 
-#include <aips/TableMeasures/TableMeasRefDesc.h>
-#include <aips/TableMeasures/TableMeasValueDesc.h>
-#include <aips/TableMeasures/TableMeasDesc.h>
-#include <aips/TableMeasures/TableQuantumDesc.h>
-#include <aips/Measures/MDirection.h>
-#include <aips/Measures/MDoppler.h>
-#include <aips/Measures/MEpoch.h>
-#include <aips/Measures/MFrequency.h>
-#include <aips/Measures/MPosition.h>
-#include <aips/Measures/MRadialVelocity.h>
-#include <aips/Measures/MBaseline.h>
-#include <aips/Measures/Muvw.h>
-#include <aips/Measures/MEarthMagnetic.h>
+#include <measures/TableMeasures/TableMeasRefDesc.h>
+#include <measures/TableMeasures/TableMeasValueDesc.h>
+#include <measures/TableMeasures/TableMeasDesc.h>
+#include <measures/TableMeasures/TableQuantumDesc.h>
+#include <measures/Measures/MDirection.h>
+#include <measures/Measures/MDoppler.h>
+#include <measures/Measures/MEpoch.h>
+#include <measures/Measures/MFrequency.h>
+#include <measures/Measures/MPosition.h>
+#include <measures/Measures/MRadialVelocity.h>
+#include <measures/Measures/MBaseline.h>
+#include <measures/Measures/Muvw.h>
+#include <measures/Measures/MEarthMagnetic.h>
 
-#include <aips/iostream.h>
+#include <casa/iostream.h>
 
 void MSTableImpl::addMeasColumn(TableDesc& td, const String& column, 
 				const String& measure, const String& refCol) {

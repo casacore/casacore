@@ -26,9 +26,9 @@
 //# $Id$
 
 
-#include <aips/IO/MemoryIO.h>
-#include <aips/Utilities/Assert.h>
-#include <aips/Exceptions/Error.h>
+#include <casa/IO/MemoryIO.h>
+#include <casa/Utilities/Assert.h>
+#include <casa/Exceptions/Error.h>
 
 
 MemoryIO::MemoryIO (uInt64 initialSize, uInt64 expandSize)

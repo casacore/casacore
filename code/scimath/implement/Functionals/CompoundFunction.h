@@ -30,11 +30,11 @@
 #define AIPS_COMPOUNDFUNCTION_H
 
 //# Includes
-#include <aips/aips.h>
-#include <aips/Functionals/CompoundParam.h>
-#include <aips/Functionals/Function.h>
-#include <aips/Mathematics/AutoDiff.h>
-#include <aips/Mathematics/AutoDiffMath.h>
+#include <casa/aips.h>
+#include <scimath/Functionals/CompoundParam.h>
+#include <scimath/Functionals/Function.h>
+#include <scimath/Mathematics/AutoDiff.h>
+#include <scimath/Mathematics/AutoDiffMath.h>
 
 //# Forward declarations
 

@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#include <aips/IO/AipsIOCarray.h>
-#include <aips/Exceptions/Error.h>
+#include <casa/IO/AipsIOCarray.h>
+#include <casa/Exceptions/Error.h>
 
 // Put a C-array of n elements.
 template<class T>

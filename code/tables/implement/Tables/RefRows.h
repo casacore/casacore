@@ -29,7 +29,7 @@
 #define AIPS_REFROWS_H
 
 //# Includes
-#include <aips/Arrays/Vector.h>
+#include <casa/Arrays/Vector.h>
 
 //# Forward Declarations
 class Slicer;

@@ -27,10 +27,10 @@
 
 //# Includes
 
-#include <aips/System/AipsrcValue.h>
-#include <aips/Utilities/Regex.h>
-#include <aips/Utilities/Assert.h>
-#include <aips/sstream.h>
+#include <casa/System/AipsrcValue.h>
+#include <casa/Utilities/Regex.h>
+#include <casa/Utilities/Assert.h>
+#include <casa/sstream.h>
 
 //# Data
 AipsrcValue<Bool> AipsrcValue<Bool>::myp_p;

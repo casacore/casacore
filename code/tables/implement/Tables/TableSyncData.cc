@@ -27,7 +27,7 @@
 
 
 //# Includes
-#include <aips/Tables/TableSyncData.h>
+#include <tables/Tables/TableSyncData.h>
 
 
 TableSyncData::TableSyncData()

@@ -27,9 +27,9 @@
 
 //# Includes
 
-#include <aips/Exceptions/Error.h>
-#include <aips/Quanta/Unit.h>
-#include <aips/Utilities/Regex.h>
+#include <casa/Exceptions/Error.h>
+#include <casa/Quanta/Unit.h>
+#include <casa/Utilities/Regex.h>
 
 Unit::Unit() 
 : uName(), uVal() {}

@@ -26,20 +26,20 @@
 //# $Id$
 
 
-#include <aips/aips.h>
-#include <aips/Exceptions/Error.h>
-#include <aips/BasicSL/Complex.h>
-#include <aips/Arrays/Array.h>
-#include <aips/Arrays/Vector.h>
-#include <aips/Arrays/Matrix.h>
-#include <aips/Arrays/Cube.h>
-#include <aips/Arrays/ArrayMath.h>
-#include <aips/Quanta/Quantum.h>
-#include <aips/Quanta/QMath.h>
-#include <aips/Quanta/QLogical.h>
-#include <aips/Quanta/QC.h>
-#include <aips/Quanta/UnitMap.h>
-#include <aips/iostream.h>
+#include <casa/aips.h>
+#include <casa/Exceptions/Error.h>
+#include <casa/BasicSL/Complex.h>
+#include <casa/Arrays/Array.h>
+#include <casa/Arrays/Vector.h>
+#include <casa/Arrays/Matrix.h>
+#include <casa/Arrays/Cube.h>
+#include <casa/Arrays/ArrayMath.h>
+#include <casa/Quanta/Quantum.h>
+#include <casa/Quanta/QMath.h>
+#include <casa/Quanta/QLogical.h>
+#include <casa/Quanta/QC.h>
+#include <casa/Quanta/UnitMap.h>
+#include <casa/iostream.h>
 
 int main ()
 {

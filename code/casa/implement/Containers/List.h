@@ -30,11 +30,11 @@
 
 
 //# Includes
-#include <aips/Utilities/Register.h>
-#include <aips/Utilities/Notice.h>
-#include <aips/Containers/Link.h>
-#include <aips/Utilities/Assert.h>
-#include <aips/Containers/IterError.h>
+#include <casa/Utilities/Register.h>
+#include <casa/Utilities/Notice.h>
+#include <casa/Containers/Link.h>
+#include <casa/Utilities/Assert.h>
+#include <casa/Containers/IterError.h>
 
 
 // The function which throws an exception for advancing the internal
@@ -145,8 +145,8 @@ private:
 // <a name=simple_example>
 // <example>
 //     <srcblock>
-// #include <aips/Containers/List.h>
-// #include <aips/Containers/ListIO.h>
+// #include <casa/Containers/List.h>
+// #include <casa/Containers/ListIO.h>
 // 
 // main() {
 //                                              // List, conceptual
@@ -538,8 +538,8 @@ protected:
 // <a name=complete_example>
 // <example>
 // <srcblock>
-// #include <aips/Containers/List.h>
-// #include <aips/Containers/ListIO.h>
+// #include <casa/Containers/List.h>
+// #include <casa/Containers/ListIO.h>
 //
 // main() {
 //                                             // The conceptual cursors are:

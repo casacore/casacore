@@ -26,8 +26,8 @@
 //# $Id$
 //----------------------------------------------------------------------------
 
-#include <trial/ComponentModels/FluxStandard.h>
-#include <aips/BasicMath/Math.h>
+#include <components/ComponentModels/FluxStandard.h>
+#include <casa/BasicMath/Math.h>
 
 //----------------------------------------------------------------------------
 

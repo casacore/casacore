@@ -29,13 +29,13 @@
 #if !defined(AIPS_RIGIDVECTOR_H)
 #define AIPS_RIGIDVECTOR_H
   
-#include <aips/aips.h>
-#include <aips/Arrays/Vector.h>
-#include <aips/BasicSL/Complex.h>
+#include <casa/aips.h>
+#include <casa/Arrays/Vector.h>
+#include <casa/BasicSL/Complex.h>
 // #include <aips/Tables/RetypedArrayEngine.h>
 // #include <aips/Tables/RetypedArraySetGet.h>
 // #include <aips/Tables/DataManError.h>
-#include <aips/iosfwd.h>
+#include <casa/iosfwd.h>
 
 //# forward
 template <class T, Int n> class SquareMatrix;

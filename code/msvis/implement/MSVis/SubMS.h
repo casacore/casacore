@@ -26,9 +26,9 @@
 //#
 //#
 //# $Id$
-#include <aips/MeasurementSets/MeasurementSet.h>
-#include <aips/aips.h>
-#include <aips/Arrays/Vector.h>
+#include <ms/MeasurementSets/MeasurementSet.h>
+#include <casa/aips.h>
+#include <casa/Arrays/Vector.h>
 
 
 #if !defined(TRIAL_SUBMS_H)

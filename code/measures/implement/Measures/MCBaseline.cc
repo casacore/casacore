@@ -26,13 +26,13 @@
 //# $Id$
 
 //# Includes
-#include <aips/Exceptions.h>
-#include <aips/Measures/MCBaseline.h>
-#include <aips/BasicSL/Constants.h>
-#include <aips/Utilities/Assert.h>
-#include <aips/Arrays/Vector.h>
-#include <aips/Arrays/ArrayMath.h>
-#include <aips/Measures/MCFrame.h>
+#include <casa/Exceptions.h>
+#include <measures/Measures/MCBaseline.h>
+#include <casa/BasicSL/Constants.h>
+#include <casa/Utilities/Assert.h>
+#include <casa/Arrays/Vector.h>
+#include <casa/Arrays/ArrayMath.h>
+#include <measures/Measures/MCFrame.h>
 
 //# Statics
 Bool MCBaseline::stateMade_p = False;

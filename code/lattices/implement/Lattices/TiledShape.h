@@ -29,7 +29,7 @@
 #define AIPS_TILEDSHAPE_H
 
 //# Includes
-#include <aips/Arrays/IPosition.h>
+#include <casa/Arrays/IPosition.h>
 
 //# Forward Declarations
 template<class T> class Vector;

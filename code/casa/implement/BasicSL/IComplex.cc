@@ -26,8 +26,8 @@
 //# $Id$
 
 //# Includes
-#include <aips/BasicSL/IComplex.h>
-#include <aips/iostream.h>
+#include <casa/BasicSL/IComplex.h>
+#include <casa/iostream.h>
 
 ostream& operator<< (ostream& os, const IComplex& val)
 {

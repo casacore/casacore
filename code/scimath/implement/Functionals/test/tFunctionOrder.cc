@@ -25,13 +25,13 @@
 //#
 //# $Id$
 
-#include <aips/Functionals/FunctionOrder.h>
+#include <scimath/Functionals/FunctionOrder.h>
 
-#include <aips/BasicSL/String.h>
-#include <aips/Containers/Record.h>
-#include <aips/Utilities/Assert.h>
+#include <casa/BasicSL/String.h>
+#include <casa/Containers/Record.h>
+#include <casa/Utilities/Assert.h>
 
-#include <aips/iostream.h>
+#include <casa/iostream.h>
 
 int main() {
   cout << "---------------- test FunctionOrder ---------------" << endl;

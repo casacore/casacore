@@ -26,27 +26,27 @@
 //#
 //# $Id$
 
-#include <trial/Coordinates/Coordinate.h>
+#include <coordinates/Coordinates/Coordinate.h>
 
-#include <aips/Arrays/Matrix.h>
-#include <aips/Arrays/Vector.h>
-#include <aips/Arrays/ArrayMath.h>
-#include <aips/Arrays/ArrayLogical.h>
-#include <aips/Arrays/ArrayAccessor.h>
-#include <trial/Coordinates/Projection.h>
-#include <aips/Exceptions/Error.h>
-#include <aips/Logging/LogIO.h>
-#include <aips/BasicMath/Math.h>
-#include <aips/Measures/MDirection.h>
-#include <aips/Quanta/Unit.h>
-#include <aips/Utilities/Assert.h>
-#include <aips/Utilities/Regex.h>
+#include <casa/Arrays/Matrix.h>
+#include <casa/Arrays/Vector.h>
+#include <casa/Arrays/ArrayMath.h>
+#include <casa/Arrays/ArrayLogical.h>
+#include <casa/Arrays/ArrayAccessor.h>
+#include <coordinates/Coordinates/Projection.h>
+#include <casa/Exceptions/Error.h>
+#include <casa/Logging/LogIO.h>
+#include <casa/BasicMath/Math.h>
+#include <measures/Measures/MDirection.h>
+#include <casa/Quanta/Unit.h>
+#include <casa/Utilities/Assert.h>
+#include <casa/Utilities/Regex.h>
 
-#include <aips/OS/Timer.h>
+#include <casa/OS/Timer.h>
 
 
-#include <aips/iomanip.h>  
-#include <aips/sstream.h>
+#include <casa/iomanip.h>  
+#include <casa/sstream.h>
 
 
 Coordinate::Coordinate()

@@ -29,7 +29,7 @@
 #define AIPS_IBMCONVERSION_H
 
 //# Includes
-#include <aips/OS/CanonicalConversion.h>
+#include <casa/OS/CanonicalConversion.h>
 
 
 // Define the IBM sizes of the built-in data types.

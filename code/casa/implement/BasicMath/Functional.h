@@ -29,7 +29,7 @@
 #define AIPS_FUNCTIONAL_H
 
 //# Includes
-#include <aips/aips.h>
+#include <casa/aips.h>
 
 //# Forward declaration
 template<class T> class Lattice;

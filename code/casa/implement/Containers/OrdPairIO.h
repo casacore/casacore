@@ -28,8 +28,8 @@
 #if !defined(AIPS_ORDPAIRIO_H_)
 #define AIPS_ORDPAIRIO_H_
 
-#include <aips/Containers/OrderedPair.h>
-#include <aips/iosfwd.h>
+#include <casa/Containers/OrderedPair.h>
+#include <casa/iosfwd.h>
 
 class AipsIO;
 

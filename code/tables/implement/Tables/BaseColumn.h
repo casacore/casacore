@@ -30,10 +30,10 @@
 
 
 //# Includes
-#include <aips/aips.h>
-#include <aips/Tables/ColumnDesc.h>
-#include <aips/Utilities/Compare.h>
-#include <aips/BasicSL/Complex.h>
+#include <casa/aips.h>
+#include <tables/Tables/ColumnDesc.h>
+#include <casa/Utilities/Compare.h>
+#include <casa/BasicSL/Complex.h>
 
 //# Forward Declarations
 class BaseColumnDesc;

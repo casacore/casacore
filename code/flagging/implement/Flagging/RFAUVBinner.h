@@ -27,13 +27,13 @@
 #if !defined(AIPS_RFA_UVBINNER_H)
 #define AIPS_RFA_UVBINNER_H
 
-#include <trial/Flagging/RFAFlagCubeBase.h> 
-#include <trial/Flagging/RFDataMapper.h> 
-#include <trial/Flagging/RFFlagCube.h> 
-#include <trial/Flagging/RFRowClipper.h> 
-#include <trial/Flagging/RFDebugPlot.h> 
-#include <trial/Mathematics/RigidVector.h>
-#include <trial/System/PGPlotter.h>
+#include <flagging/Flagging/RFAFlagCubeBase.h> 
+#include <flagging/Flagging/RFDataMapper.h> 
+#include <flagging/Flagging/RFFlagCube.h> 
+#include <flagging/Flagging/RFRowClipper.h> 
+#include <flagging/Flagging/RFDebugPlot.h> 
+#include <scimath/Mathematics/RigidVector.h>
+#include <casa/System/PGPlotter.h>
     
 // <summary>
 // RFAUVBinner: flagging via UV binning

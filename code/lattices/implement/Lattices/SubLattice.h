@@ -31,11 +31,11 @@
 
 
 //# Includes
-#include <aips/aips.h>
-#include <trial/Lattices/MaskedLattice.h>
-#include <trial/Lattices/LatticeRegion.h>
-#include <trial/Arrays/AxesSpecifier.h>
-#include <trial/Arrays/AxesMapping.h>
+#include <casa/aips.h>
+#include <lattices/Lattices/MaskedLattice.h>
+#include <lattices/Lattices/LatticeRegion.h>
+#include <casa/Arrays/AxesSpecifier.h>
+#include <casa/Arrays/AxesMapping.h>
 
 //# Forward Declarations
 

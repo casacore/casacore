@@ -26,11 +26,11 @@
 //# $Id$
 
 
-#include <aips/Lattices/TiledShape.h>
-#include <aips/Arrays/Vector.h>
-#include <aips/Containers/Block.h>
-#include <aips/BasicMath/Math.h>
-#include <aips/Exceptions/Error.h>
+#include <lattices/Lattices/TiledShape.h>
+#include <casa/Arrays/Vector.h>
+#include <casa/Containers/Block.h>
+#include <casa/BasicMath/Math.h>
+#include <casa/Exceptions/Error.h>
 
 
 TiledShape::TiledShape()

@@ -29,14 +29,14 @@
 #define AIPS_TEMPLATE_H
 
 //# Includes
-#include <aips/aips.h>
-#include <aips/Containers/Block.h>
-#include <aips/BasicSL/String.h>
+#include <casa/aips.h>
+#include <casa/Containers/Block.h>
+#include <casa/BasicSL/String.h>
 
 //# Forward declarations
 class Regex;
 template <class T> class Vector;
-#include <aips/iosfwd.h>
+#include <casa/iosfwd.h>
 
 // <summary>
 // Canonicalise, format and other actions on aips++ template definitions

@@ -25,11 +25,11 @@
 //#
 //# $Id$
 
-#include <aips/IO/BucketFile.h>
-#include <aips/Exceptions/Error.h>
-#include <aips/Utilities/Assert.h>
-#include <aips/OS/RegularFile.h>
-#include <aips/iostream.h>
+#include <casa/IO/BucketFile.h>
+#include <casa/Exceptions/Error.h>
+#include <casa/Utilities/Assert.h>
+#include <casa/OS/RegularFile.h>
+#include <casa/iostream.h>
 
 // <summary>
 // Test program for the BucketFile class

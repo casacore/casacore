@@ -30,10 +30,10 @@
 
 
 //# Includes
-#include <trial/Lattices/MaskedLattice.h>
-#include <trial/Lattices/PixelCurve1D.h>
-#include <trial/Lattices/CLInterpolator2D.h>
-#include <trial/Arrays/AxesMapping.h>
+#include <lattices/Lattices/MaskedLattice.h>
+#include <lattices/Lattices/PixelCurve1D.h>
+#include <lattices/Lattices/CLInterpolator2D.h>
+#include <casa/Arrays/AxesMapping.h>
 
 //# Forward Declarations
 

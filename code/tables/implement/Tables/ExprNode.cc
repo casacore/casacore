@@ -25,26 +25,26 @@
 //#
 //# $Id$
 
-#include <aips/Tables/ExprNode.h>
-#include <aips/Tables/ExprNodeSet.h>
-#include <aips/Tables/ExprDerNode.h>
-#include <aips/Tables/ExprMathNode.h>
-#include <aips/Tables/ExprLogicNode.h>
-#include <aips/Tables/ExprFuncNode.h>
-#include <aips/Tables/ExprDerNodeArray.h>
-#include <aips/Tables/ExprMathNodeArray.h>
-#include <aips/Tables/ExprLogicNodeArray.h>
-#include <aips/Tables/ExprFuncNodeArray.h>
-#include <aips/Tables/ExprRange.h>
-#include <aips/Tables/Table.h>
-#include <aips/Tables/TableColumn.h>
-#include <aips/Tables/TableDesc.h>
-#include <aips/Tables/TableRecord.h>
-#include <aips/Tables/ColumnDesc.h>
-#include <aips/Tables/TableError.h>
-#include <aips/Containers/Block.h>
-#include <aips/Utilities/DataType.h>
-#include <aips/Tables/ExprNodeArray.h>
+#include <tables/Tables/ExprNode.h>
+#include <tables/Tables/ExprNodeSet.h>
+#include <tables/Tables/ExprDerNode.h>
+#include <tables/Tables/ExprMathNode.h>
+#include <tables/Tables/ExprLogicNode.h>
+#include <tables/Tables/ExprFuncNode.h>
+#include <tables/Tables/ExprDerNodeArray.h>
+#include <tables/Tables/ExprMathNodeArray.h>
+#include <tables/Tables/ExprLogicNodeArray.h>
+#include <tables/Tables/ExprFuncNodeArray.h>
+#include <tables/Tables/ExprRange.h>
+#include <tables/Tables/Table.h>
+#include <tables/Tables/TableColumn.h>
+#include <tables/Tables/TableDesc.h>
+#include <tables/Tables/TableRecord.h>
+#include <tables/Tables/ColumnDesc.h>
+#include <tables/Tables/TableError.h>
+#include <casa/Containers/Block.h>
+#include <casa/Utilities/DataType.h>
+#include <tables/Tables/ExprNodeArray.h>
 
 TableExprNode::TableExprNode() : node_p(0)
 {}

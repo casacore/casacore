@@ -26,11 +26,11 @@
 //# $Id$
 
 //# Includes
-#include <aips/Tables/TSMColumn.h>
-#include <aips/Tables/TSMDataColumn.h>
-#include <aips/Tables/TSMCoordColumn.h>
-#include <aips/Tables/TSMIdColumn.h>
-#include <aips/Utilities/ValType.h>
+#include <tables/Tables/TSMColumn.h>
+#include <tables/Tables/TSMDataColumn.h>
+#include <tables/Tables/TSMCoordColumn.h>
+#include <tables/Tables/TSMIdColumn.h>
+#include <casa/Utilities/ValType.h>
 
 
 

@@ -25,32 +25,32 @@
 //#
 //# $Id$
 //
-#include <aips/aips.h>
-#include <aips/Arrays/Vector.h>
-#include <aips/Arrays/ArrayMath.h>
-#include <aips/Arrays/ArrayIO.h>
-#include <aips/Arrays/IPosition.h>
-#include <trial/Coordinates.h>
-#include <trial/Coordinates/CoordinateUtil.h>
-#include <trial/Images/ImageInterface.h>
-#include <trial/Images/ImageInfo.h>
-#include <aips/Logging/LogIO.h>
-#include <aips/BasicSL/Constants.h>
-#include <aips/Quanta/Unit.h>
-#include <aips/Measures/MDirection.h>
-#include <aips/Measures/MFrequency.h>
-#include <aips/Measures/MDoppler.h>
-#include <aips/Measures/MEpoch.h>
-#include <aips/Quanta/MVAngle.h>
-#include <aips/Quanta/MVTime.h>
-#include <aips/Quanta/Quantum.h>
-#include <aips/Measures/Stokes.h>
-#include <aips/Utilities/ValType.h>
+#include <casa/aips.h>
+#include <casa/Arrays/Vector.h>
+#include <casa/Arrays/ArrayMath.h>
+#include <casa/Arrays/ArrayIO.h>
+#include <casa/Arrays/IPosition.h>
+#include <coordinates/Coordinates.h>
+#include <coordinates/Coordinates/CoordinateUtil.h>
+#include <images/Images/ImageInterface.h>
+#include <images/Images/ImageInfo.h>
+#include <casa/Logging/LogIO.h>
+#include <casa/BasicSL/Constants.h>
+#include <casa/Quanta/Unit.h>
+#include <measures/Measures/MDirection.h>
+#include <measures/Measures/MFrequency.h>
+#include <measures/Measures/MDoppler.h>
+#include <measures/Measures/MEpoch.h>
+#include <casa/Quanta/MVAngle.h>
+#include <casa/Quanta/MVTime.h>
+#include <casa/Quanta/Quantum.h>
+#include <measures/Measures/Stokes.h>
+#include <casa/Utilities/ValType.h>
 
-#include <aips/iomanip.h>
-#include <aips/iostream.h>
+#include <casa/iomanip.h>
+#include <casa/iostream.h>
 
-#include <trial/Images/ImageSummary.h>
+#include <images/Images/ImageSummary.h>
 
 template <class T>
 ImageSummary<T>::ImageSummary (const ImageInterface<T>& image)

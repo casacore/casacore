@@ -29,9 +29,9 @@
 #if !defined(AIPS_SDSPWINDOWHANDLER_H)
 #define AIPS_SDSPWINDOWHANDLER_H
 
-#include <aips/Arrays/Vector.h>
-#include <aips/Containers/RecordField.h>
-#include <aips/Tables/TableColumn.h>
+#include <casa/Arrays/Vector.h>
+#include <casa/Containers/RecordField.h>
+#include <tables/Tables/TableColumn.h>
 
 //# Forward Declarations
 class ColumnsIndex;

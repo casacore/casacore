@@ -29,8 +29,8 @@
 #define AIPS_RETYPEDARRAYENGINE_H
 
 //# Includes
-#include <aips/Tables/BaseMappedArrayEngine.h>
-#include <aips/Tables/TableRecord.h>
+#include <tables/Tables/BaseMappedArrayEngine.h>
+#include <tables/Tables/TableRecord.h>
 
 //# Forward Declarations
 

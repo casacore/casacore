@@ -27,7 +27,7 @@
 
 
 //# Includes
-#include <trial/Lattices/LatticeProgress.h>
+#include <lattices/Lattices/LatticeProgress.h>
 
 
 LatticeProgress::~LatticeProgress()

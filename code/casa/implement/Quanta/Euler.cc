@@ -26,12 +26,12 @@
 //# $Id$
 
 //# Includes
-#include <aips/Utilities/Assert.h>
-#include <aips/Quanta/Euler.h>
-#include <aips/BasicMath/Math.h>
-#include <aips/Arrays/ArrayMath.h>
-#include <aips/Quanta/UnitVal.h>
-#include <aips/Quanta/QMath.h>
+#include <casa/Utilities/Assert.h>
+#include <casa/Quanta/Euler.h>
+#include <casa/BasicMath/Math.h>
+#include <casa/Arrays/ArrayMath.h>
+#include <casa/Quanta/UnitVal.h>
+#include <casa/Quanta/QMath.h>
 
 // Euler class
 

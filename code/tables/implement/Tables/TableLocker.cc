@@ -26,8 +26,8 @@
 //# $Id$
 
 
-#include <aips/Tables/TableLocker.h>
-#include <aips/Tables/TableError.h>
+#include <tables/Tables/TableLocker.h>
+#include <tables/Tables/TableError.h>
 
 
 TableLocker::TableLocker (Table& table,

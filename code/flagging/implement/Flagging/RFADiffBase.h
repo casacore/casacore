@@ -27,14 +27,14 @@
 #if !defined(AIPS_RFA_DIFFBASE_H)
 #define AIPS_RFA_DIFFBASE_H
 
-#include <aips/Arrays/LogiVector.h>
-#include <aips/Containers/RecordInterface.h>
-#include <trial/Flagging/RFAFlagCubeBase.h> 
-#include <trial/Flagging/RFDataMapper.h> 
-#include <trial/Flagging/RFCubeLattice.h>
-#include <trial/Flagging/RFRowClipper.h>
-#include <trial/Flagging/RFDebugPlot.h>
-#include <trial/Mathematics/MedianSlider.h> 
+#include <casa/Arrays/LogiVector.h>
+#include <casa/Containers/RecordInterface.h>
+#include <flagging/Flagging/RFAFlagCubeBase.h> 
+#include <flagging/Flagging/RFDataMapper.h> 
+#include <flagging/Flagging/RFCubeLattice.h>
+#include <flagging/Flagging/RFRowClipper.h>
+#include <flagging/Flagging/RFDebugPlot.h>
+#include <scimath/Mathematics/MedianSlider.h> 
 
 
 // min number of deviations for which average is considered valid

@@ -29,8 +29,8 @@
 #define AIPS_TABLEMEASCOLUMN_H
 
 //# Includes
-#include <aips/Tables/TableColumn.h>
-#include <aips/Utilities/CountedPtr.h>
+#include <tables/Tables/TableColumn.h>
+#include <casa/Utilities/CountedPtr.h>
 
 //# Forward Declarations
 class String;

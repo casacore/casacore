@@ -25,11 +25,11 @@
 //#
 //# $Id$
 
-#include <aips/Arrays/ArrayMath.h>
-#include <aips/Arrays/ArrayError.h>
-#include <aips/Arrays/Matrix.h>
-#include <aips/BasicMath/Math.h>
-#include <aips/iostream.h>
+#include <casa/Arrays/ArrayMath.h>
+#include <casa/Arrays/ArrayError.h>
+#include <casa/Arrays/Matrix.h>
+#include <casa/BasicMath/Math.h>
+#include <casa/iostream.h>
 
 static Bool ArrayMinMaxPrinted = False;
 

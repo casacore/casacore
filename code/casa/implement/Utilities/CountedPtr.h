@@ -28,7 +28,7 @@
 #if !defined(AIPS_COUNTEDPTR_H)
 #define AIPS_COUNTEDPTR_H
 
-#include <aips/aips.h>
+#include <casa/aips.h>
 
 //# Forward Declarations 
 template<class t> class SimpleCountedPtr;

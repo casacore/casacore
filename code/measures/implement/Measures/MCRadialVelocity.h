@@ -30,12 +30,12 @@
 #define AIPS_MCRADIALVELOCITY_H
 
 //# Includes
-#include <aips/aips.h>
-#include <aips/Measures/MeasBase.h>
-#include <aips/Measures/MeasRef.h>
-#include <aips/Measures/MCBase.h>
-#include <aips/Measures/MConvertBase.h>
-#include <aips/Measures/MRadialVelocity.h>
+#include <casa/aips.h>
+#include <measures/Measures/MeasBase.h>
+#include <measures/Measures/MeasRef.h>
+#include <measures/Measures/MCBase.h>
+#include <measures/Measures/MConvertBase.h>
+#include <measures/Measures/MRadialVelocity.h>
 
 //# Forward Declarations
 class MCRadialVelocity;
@@ -70,9 +70,9 @@ class String;
 // <example>
 // Get the Doppler shift for an oberved HI RadialVelocity of 100 km/s
 // <srcblock>
-//	#include <aips/Measures.h>
-//	#include <aips/Measures/MRadialVelocity.h>
-//	#include <aips/Measures/MDoppler.h>
+//	#include <measures/Measures.h>
+//	#include <measures/Measures/MRadialVelocity.h>
+//	#include <measures/Measures/MDoppler.h>
 //	cout << "Redshift for 100 km/s: " <<
 //		MDoppler::Convert( MRadialVelocity( Quantity(100., "km/s"),
 //				      MRadialVelocity::TOPO).toDoppler(QC::HI),

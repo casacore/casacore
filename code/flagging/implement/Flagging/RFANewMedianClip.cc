@@ -25,12 +25,12 @@
 //#
 //# $Id$
 
-#include <trial/Flagging/RFANewMedianClip.h>
-#include <aips/Arrays/ArrayMath.h>
-#include <trial/MSVis/VisBuffer.h>
-#include <trial/System/PGPlotterInterface.h>
+#include <flagging/Flagging/RFANewMedianClip.h>
+#include <casa/Arrays/ArrayMath.h>
+#include <msvis/MSVis/VisBuffer.h>
+#include <casa/System/PGPlotterInterface.h>
 
-#include <aips/stdio.h>    
+#include <casa/stdio.h>    
 // -----------------------------------------------------------------------
 // RFANewMedianClip
 // Accumulator class for computing the median per channels over time.

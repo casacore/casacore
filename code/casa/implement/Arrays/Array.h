@@ -30,14 +30,14 @@
 
 
 //# Includes
-#include <aips/aips.h>
-#include <aips/Containers/Block.h>
-#include <aips/Utilities/CountedPtr.h>
-#include <aips/Arrays/ArrayIO.h>
-#include <aips/Arrays/LogiArray.h>
-#include <aips/Arrays/MaskLogiArrFwd.h>
-#include <aips/Arrays/IPosition.h>
-#include <aips/ostream.h>
+#include <casa/aips.h>
+#include <casa/Containers/Block.h>
+#include <casa/Utilities/CountedPtr.h>
+#include <casa/Arrays/ArrayIO.h>
+#include <casa/Arrays/LogiArray.h>
+#include <casa/Arrays/MaskLogiArrFwd.h>
+#include <casa/Arrays/IPosition.h>
+#include <casa/ostream.h>
 
 //# Forward Declarations
 class AipsIO;
@@ -50,7 +50,7 @@ template<class Domain, class Range> class Functional;
 #if defined(WHATEVER_VECTOR_FORWARD_DEC)
 WHATEVER_VECTOR_FORWARD_DEC;
 #else
-#include <aips/vector.h>
+#include <casa/vector.h>
 #endif
 
 

@@ -25,22 +25,22 @@
 //#
 //# $Id$
 
-#include <aips/Tables/ColumnsIndexArray.h>
-#include <aips/Tables/TableDesc.h>
-#include <aips/Tables/SetupNewTab.h>
-#include <aips/Tables/Table.h>
-#include <aips/Tables/ArrColDesc.h>
-#include <aips/Tables/ArrayColumn.h>
-#include <aips/Arrays/Array.h>
-#include <aips/Arrays/ArrayMath.h>
-#include <aips/Arrays/ArrayIO.h>
-#include <aips/Containers/Record.h>
-#include <aips/Containers/RecordField.h>
-#include <aips/OS/Timer.cc>
-#include <aips/Utilities/Assert.h>
-#include <aips/Exceptions/Error.h>
-#include <aips/iostream.h>
-#include <aips/stdio.h>
+#include <tables/Tables/ColumnsIndexArray.h>
+#include <tables/Tables/TableDesc.h>
+#include <tables/Tables/SetupNewTab.h>
+#include <tables/Tables/Table.h>
+#include <tables/Tables/ArrColDesc.h>
+#include <tables/Tables/ArrayColumn.h>
+#include <casa/Arrays/Array.h>
+#include <casa/Arrays/ArrayMath.h>
+#include <casa/Arrays/ArrayIO.h>
+#include <casa/Containers/Record.h>
+#include <casa/Containers/RecordField.h>
+#include <casa/OS/Timer.cc>
+#include <casa/Utilities/Assert.h>
+#include <casa/Exceptions/Error.h>
+#include <casa/iostream.h>
+#include <casa/stdio.h>
 
 
 // <summary>

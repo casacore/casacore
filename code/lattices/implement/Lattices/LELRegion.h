@@ -30,8 +30,8 @@
 
 
 //# Includes
-#include <trial/Lattices/LELInterface.h>
-#include <trial/Lattices/LatticeRegion.h>
+#include <lattices/Lattices/LELInterface.h>
+#include <lattices/Lattices/LatticeRegion.h>
 
 //# Forward Declarations
 class LattRegionHolder;

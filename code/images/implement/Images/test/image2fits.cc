@@ -29,25 +29,25 @@
 //#
 //-----------------------------------------------------------------------------
 
-#include <aips/aips.h>
-#include <aips/System/Aipsrc.h>
+#include <casa/aips.h>
+#include <casa/System/Aipsrc.h>
 
-#include <trial/Images/PagedImage.h>
-#include <trial/Images/ImageFITSConverter.h>
-#include <trial/Images/RegionHandler.h>
+#include <images/Images/PagedImage.h>
+#include <images/Images/ImageFITSConverter.h>
+#include <images/Images/RegionHandler.h>
 
-#include <aips/Arrays/Array.h>
-#include <aips/Containers/MapIO.h>
-#include <aips/Containers/OrderedMap.h>
-#include <aips/Exceptions/Error.h>
-#include <aips/FITS/FITS.h>
-#include <aips/Inputs/Input.h>
-#include <aips/Arrays/IPosition.h>
-#include <aips/BasicSL/Constants.h>
-#include <aips/OS/File.h>
-#include <aips/OS/Path.h>
+#include <casa/Arrays/Array.h>
+#include <casa/Containers/MapIO.h>
+#include <casa/Containers/OrderedMap.h>
+#include <casa/Exceptions/Error.h>
+#include <fits/FITS/FITS.h>
+#include <casa/Inputs/Input.h>
+#include <casa/Arrays/IPosition.h>
+#include <casa/BasicSL/Constants.h>
+#include <casa/OS/File.h>
+#include <casa/OS/Path.h>
 
-#include <aips/iostream.h>
+#include <casa/iostream.h>
 
 
 int main(int argc, char *argv[])

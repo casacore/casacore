@@ -32,14 +32,14 @@
 #endif
 
 #include <assert.h>
-#include <aips/iostream.h>
-#include <aips/sstream.h>
-#include <aips/Arrays/IPosition.h>
-#include <aips/IO/AipsIO.h>
-#include <aips/Arrays/Vector.h>
-#include <aips/BasicSL/String.h>
-#include <aips/Utilities/Assert.h>
-#include <aips/Exceptions/Error.h>
+#include <casa/iostream.h>
+#include <casa/sstream.h>
+#include <casa/Arrays/IPosition.h>
+#include <casa/IO/AipsIO.h>
+#include <casa/Arrays/Vector.h>
+#include <casa/BasicSL/String.h>
+#include <casa/Utilities/Assert.h>
+#include <casa/Exceptions/Error.h>
 
 int main()
 {

@@ -30,8 +30,8 @@
 #define AIPS_LOGSINKINTERFACE_H
 
 //# Includes
-#include <aips/aips.h>
-#include <aips/Logging/LogFilterInterface.h>
+#include <casa/aips.h>
+#include <casa/Logging/LogFilterInterface.h>
 
 
 // <summary>

@@ -29,18 +29,18 @@
 #define DIAGNOSTICS
 #endif
 
-#include <aips/Functionals/Chebyshev.h>
-#include <aips/Functionals/Polynomial.h>
-#include <aips/Containers/Record.h>
-#include <aips/Arrays/Vector.h>
-#include <aips/Arrays/ArrayMath.h>
-#include <aips/BasicMath/Math.h>
-#include <aips/Mathematics/AutoDiffA.h>
-#include <aips/Mathematics/AutoDiffMath.h>
-#include <aips/Mathematics/AutoDiffIO.h>
-#include <aips/Utilities/Assert.h>
-#include <aips/Exceptions.h>
-#include <aips/iostream.h>
+#include <scimath/Functionals/Chebyshev.h>
+#include <scimath/Functionals/Polynomial.h>
+#include <casa/Containers/Record.h>
+#include <casa/Arrays/Vector.h>
+#include <casa/Arrays/ArrayMath.h>
+#include <casa/BasicMath/Math.h>
+#include <scimath/Mathematics/AutoDiffA.h>
+#include <scimath/Mathematics/AutoDiffMath.h>
+#include <scimath/Mathematics/AutoDiffIO.h>
+#include <casa/Utilities/Assert.h>
+#include <casa/Exceptions.h>
+#include <casa/iostream.h>
 
 int main() {
     Chebyshev<Double> cheb;

@@ -29,9 +29,9 @@
 #define AIPS_SUBTABLEATTR_H
 
 //# Includes
-#include <aips/aips.h>
-#include <aips/BasicSL/String.h>
-#include <aips/Tables/TableLock.h>
+#include <casa/aips.h>
+#include <casa/BasicSL/String.h>
+#include <tables/Tables/TableLock.h>
 
 //# Forward Declarations
 class Table;

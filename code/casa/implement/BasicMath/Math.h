@@ -28,10 +28,10 @@
 #if !defined (AIPS_MATH_H)
 #define AIPS_MATH_H
 
-#include <aips/aips.h>
+#include <casa/aips.h>
 //# The following is to get abs(int)
-#include <aips/math.h>
-#include <aips/stdlib.h>
+#include <casa/math.h>
+#include <casa/stdlib.h>
 
 // the following is needed to get the finite function
 #if defined (AIPS_SOLARIS) || defined(AIPS_IRIX)

@@ -25,20 +25,20 @@
 //#
 //# $Id$
 
-#include <aips/Tables/StArrayFile.h>
-#include <aips/OS/RegularFile.h>
-#include <aips/IO/CanonicalIO.h>
-#include <aips/IO/LECanonicalIO.h>
-#include <aips/OS/CanonicalConversion.h>
-#include <aips/OS/LECanonicalConversion.h>
-#include <aips/Arrays/IPosition.h>
-#include <aips/Containers/Block.h>
-#include <aips/BasicSL/Complex.h>
-#include <aips/BasicSL/String.h>
-#include <aips/Utilities/ValType.h>
-#include <aips/OS/Path.h>
-#include <aips/Tables/DataManError.h>
-#include <aips/Utilities/Assert.h>
+#include <tables/Tables/StArrayFile.h>
+#include <casa/OS/RegularFile.h>
+#include <casa/IO/CanonicalIO.h>
+#include <casa/IO/LECanonicalIO.h>
+#include <casa/OS/CanonicalConversion.h>
+#include <casa/OS/LECanonicalConversion.h>
+#include <casa/Arrays/IPosition.h>
+#include <casa/Containers/Block.h>
+#include <casa/BasicSL/Complex.h>
+#include <casa/BasicSL/String.h>
+#include <casa/Utilities/ValType.h>
+#include <casa/OS/Path.h>
+#include <tables/Tables/DataManError.h>
+#include <casa/Utilities/Assert.h>
 
 
 StManArrayFile::StManArrayFile (const String& fname, ByteIO::OpenOption fop,

@@ -25,23 +25,23 @@
 //#
 //# $Id$
 
-#include <trial/Images/WCPolygon.h>
+#include <images/Images/WCPolygon.h>
 
-#include <aips/Arrays/ArrayLogical.h>
-#include <trial/Coordinates/CoordinateSystem.h>
-#include <trial/Coordinates/DirectionCoordinate.h>
-#include <trial/Coordinates/SpectralCoordinate.h>
-#include <aips/Exceptions/Error.h>
-#include <aips/Arrays/IPosition.h>
-#include <trial/Lattices/LCPolygon.h>
-#include <aips/BasicMath/Math.h>
-#include <aips/Quanta/Unit.h>
-#include <aips/Quanta/Quantum.h>
-#include <aips/Quanta/QuantumHolder.h>
-#include <aips/Quanta/QLogical.h>
-#include <aips/Tables/TableRecord.h>
-#include <aips/Utilities/Assert.h>
-#include <aips/BasicSL/String.h>
+#include <casa/Arrays/ArrayLogical.h>
+#include <coordinates/Coordinates/CoordinateSystem.h>
+#include <coordinates/Coordinates/DirectionCoordinate.h>
+#include <coordinates/Coordinates/SpectralCoordinate.h>
+#include <casa/Exceptions/Error.h>
+#include <casa/Arrays/IPosition.h>
+#include <lattices/Lattices/LCPolygon.h>
+#include <casa/BasicMath/Math.h>
+#include <casa/Quanta/Unit.h>
+#include <casa/Quanta/Quantum.h>
+#include <casa/Quanta/QuantumHolder.h>
+#include <casa/Quanta/QLogical.h>
+#include <tables/Tables/TableRecord.h>
+#include <casa/Utilities/Assert.h>
+#include <casa/BasicSL/String.h>
 
 
 WCPolygon::WCPolygon()

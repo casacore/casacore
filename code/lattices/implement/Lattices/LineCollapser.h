@@ -30,8 +30,8 @@
  
 
 //# Includes
-#include <aips/aips.h>
-#include <aips/Mathematics/NumericTraits.h>
+#include <casa/aips.h>
+#include <scimath/Mathematics/NumericTraits.h>
 
 //# Forward Declarations
 template <class T> class Vector;

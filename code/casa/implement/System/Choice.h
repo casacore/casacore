@@ -31,7 +31,7 @@
 
 
 //# Includes
-#include <aips/BasicSL/String.h>
+#include <casa/BasicSL/String.h>
 #include <iostream>
 
 //# Forward Declarations

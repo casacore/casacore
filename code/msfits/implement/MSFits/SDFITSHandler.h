@@ -29,10 +29,10 @@
 #if !defined(AIPS_SDFITSHANDLER_H)
 #define AIPS_SDFITSHANDLER_H
 
-#include <aips/aips.h>
-#include <aips/Measures/MEpoch.h>
-#include <aips/TableMeasures/ScalarQuantColumn.h>
-#include <aips/TableMeasures/ScalarMeasColumn.h>
+#include <casa/aips.h>
+#include <measures/Measures/MEpoch.h>
+#include <measures/TableMeasures/ScalarQuantColumn.h>
+#include <measures/TableMeasures/ScalarMeasColumn.h>
 
 //# Forward Declarations
 class CopyRecordToTable;

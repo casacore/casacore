@@ -1,15 +1,15 @@
-1000 aips/Arrays/Array.cc 
-     = trial/MeasurementSets/MSSelection.h 
+1000 casa/Arrays/Array.cc 
+     = ms/MeasurementSets/MSSelection.h 
      template class Array<MSSelection> 
-1000 aips/Arrays/MaskedArray.cc 
-     = trial/MeasurementSets/MSSelection.h 
+1000 casa/Arrays/MaskedArray.cc 
+     = ms/MeasurementSets/MSSelection.h 
      template class MaskedArray<MSSelection> 
-1000 aips/Arrays/Vector.cc 
-     = trial/MeasurementSets/MSSelection.h 
+1000 casa/Arrays/Vector.cc 
+     = ms/MeasurementSets/MSSelection.h 
      template class Vector<MSSelection> 
-1000 aips/Containers/Block.h aips/MeasurementSets/MeasurementSet.h 
+1000 casa/Containers/Block.h ms/MeasurementSets/MeasurementSet.h 
      template class Block<MeasurementSet> 
-1000 aips/MeasurementSets/MSTable.cc aips/MeasurementSets/MeasurementSet.h 
+1000 ms/MeasurementSets/MSTable.cc ms/MeasurementSets/MeasurementSet.h 
      template class MSTable<MSAntennaEnums::PredefinedColumns, MSAntennaEnums::PredefinedKeywords> 
      template class MSTable<MSDataDescriptionEnums::PredefinedColumns, MSDataDescriptionEnums::PredefinedKeywords> 
      template class MSTable<MSDopplerEnums::PredefinedColumns, MSDopplerEnums::PredefinedKeywords> 
@@ -28,25 +28,25 @@
      template class MSTable<MSStateEnums::PredefinedColumns, MSStateEnums::PredefinedKeywords> 
      template class MSTable<MSSysCalEnums::PredefinedColumns, MSSysCalEnums::PredefinedKeywords> 
      template class MSTable<MSWeatherEnums::PredefinedColumns, MSWeatherEnums::PredefinedKeywords> 
-1000 aips/Utilities/Copy.cc 
-     = trial/MeasurementSets/MSSelection.h 
+1000 casa/Utilities/Copy.cc 
+     = ms/MeasurementSets/MSSelection.h 
      template void objset(MSSelection *, MSSelection, uInt) 
      template void objset(MSSelection *, MSSelection, uInt, uInt) 
      template void objcopy(MSSelection *, MSSelection const *, uInt) 
      template void objcopy(MSSelection *, MSSelection const *, uInt, uInt, uInt) 
      template void objmove(MSSelection *, MSSelection const *, uInt) 
-1010 aips/Utilities/Copy.cc 
-     = trial/MeasurementSets/MSTableIndex.h 
+1010 casa/Utilities/Copy.cc 
+     = ms/MeasurementSets/MSTableIndex.h 
      template void objcopy(MSTableIndex **, MSTableIndex * const *, uInt) 
      template void objcopy(MSTableIndex *, MSTableIndex const *, uInt) 
      template void objset(MSTableIndex **, MSTableIndex *, uInt) 
-1020 aips/Utilities/Copy.cc aips/MeasurementSets/MeasurementSet.h 
+1020 casa/Utilities/Copy.cc ms/MeasurementSets/MeasurementSet.h 
      template void objcopy(MeasurementSet *, MeasurementSet const *, uInt) 
      template void objmove(MeasurementSet *, MeasurementSet const *, uInt) 
      template void objset(MeasurementSet *, MeasurementSet, uInt) 
-1000 aips/Utilities/CountedPtr.cc 
-     = trial/MeasurementSets/MSSelection.h 
-     = aips/Containers/Block.h 
+1000 casa/Utilities/CountedPtr.cc 
+     = ms/MeasurementSets/MSSelection.h 
+     = casa/Containers/Block.h 
      template class CountedPtr<Block<MSSelection> > 
      template class CountedConstPtr<Block<MSSelection> > 
      template class SimpleCountedPtr<Block<MSSelection> > 

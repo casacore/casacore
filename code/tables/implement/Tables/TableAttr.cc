@@ -27,8 +27,8 @@
 
 
 //# Includes
-#include <aips/Tables/TableAttr.h>
-#include <aips/Tables/Table.h>
+#include <tables/Tables/TableAttr.h>
+#include <tables/Tables/Table.h>
 
 
 TableAttr::TableAttr()

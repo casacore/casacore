@@ -30,10 +30,10 @@
 #define TRIAL_FLUX_STANDARD_H
 
 // include directives
-#include <aips/aips.h>
-#include <aips/BasicSL/String.h>
-#include <aips/Measures/MFrequency.h>
-#include <trial/ComponentModels/Flux.h>
+#include <casa/aips.h>
+#include <casa/BasicSL/String.h>
+#include <measures/Measures/MFrequency.h>
+#include <components/ComponentModels/Flux.h>
 
 // <summary> 
 // FluxStandard: Compute flux densities for standard reference sources

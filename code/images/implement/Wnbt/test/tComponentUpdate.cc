@@ -25,19 +25,19 @@
 //#
 //# $Id$
 
-#include <trial/Wnbt/ComponentUpdate.h>
-#include <aips/Utilities/Assert.h>
-#include <aips/BasicSL/Complex.h>
-#include <aips/Arrays/Array.h>
-#include <aips/Arrays/Vector.h>
-#include <aips/Arrays/Matrix.h>
-#include <aips/Arrays/VectorIter.h>
-#include <aips/Arrays/IPosition.h>
-#include <trial/ComponentModels/ComponentList.h>
-#include <trial/ComponentModels/ComponentType.h>
-#include <trial/ComponentModels/SkyComponent.h>
+#include <images/Wnbt/ComponentUpdate.h>
+#include <casa/Utilities/Assert.h>
+#include <casa/BasicSL/Complex.h>
+#include <casa/Arrays/Array.h>
+#include <casa/Arrays/Vector.h>
+#include <casa/Arrays/Matrix.h>
+#include <casa/Arrays/VectorIter.h>
+#include <casa/Arrays/IPosition.h>
+#include <components/ComponentModels/ComponentList.h>
+#include <components/ComponentModels/ComponentType.h>
+#include <components/ComponentModels/SkyComponent.h>
 
-#include <aips/iostream.h>
+#include <casa/iostream.h>
 
 int main() {
   cout << "Test ComponentUpdate" << endl;

@@ -29,11 +29,11 @@
 #if !defined(AIPS_MULTI_FITS_TABLE_H)
 #define AIPS_MULTI_FITS_TABLE_H
 
-#include <aips/aips.h>
-#include <trial/FITS/FITSTable.h>
-#include <aips/OS/Time.h>
-#include <aips/BasicSL/String.h>
-#include <aips/Arrays/Vector.h>
+#include <casa/aips.h>
+#include <fits/FITS/FITSTable.h>
+#include <casa/OS/Time.h>
+#include <casa/BasicSL/String.h>
+#include <casa/Arrays/Vector.h>
 
 // <summary>
 //  View multiple FITS files as a single table

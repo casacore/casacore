@@ -26,27 +26,27 @@
 //# $Id$
 
 
-#include <aips/aips.h>
-#include <aips/Arrays/Array.h>
-#include <aips/Arrays/ArrayLogical.h>
-#include <aips/Arrays/ArrayMath.h>
-#include <aips/Exceptions/Error.h>
-#include <aips/IO/FileLocker.h>
-#include <aips/Arrays/Slicer.h>
-#include <aips/Arrays/IPosition.h>
-#include <aips/BasicMath/Math.h>
-#include <aips/Utilities/Assert.h>
+#include <casa/aips.h>
+#include <casa/Arrays/Array.h>
+#include <casa/Arrays/ArrayLogical.h>
+#include <casa/Arrays/ArrayMath.h>
+#include <casa/Exceptions/Error.h>
+#include <casa/IO/FileLocker.h>
+#include <casa/Arrays/Slicer.h>
+#include <casa/Arrays/IPosition.h>
+#include <casa/BasicMath/Math.h>
+#include <casa/Utilities/Assert.h>
 
-#include <trial/Coordinates/CoordinateUtil.h>
-#include <trial/Images/ImageConcat.h>
-#include <trial/Images/PagedImage.h>
-#include <trial/Images/SubImage.h>
-#include <trial/Images/ImageInterface.h>
-#include <trial/Images/ImageRegion.h>
-#include <trial/Lattices/LCPagedMask.h>
-#include <aips/Lattices/ArrayLattice.h>
-#include <trial/Lattices/SubLattice.h>
-#include <aips/iostream.h>
+#include <coordinates/Coordinates/CoordinateUtil.h>
+#include <images/Images/ImageConcat.h>
+#include <images/Images/PagedImage.h>
+#include <images/Images/SubImage.h>
+#include <images/Images/ImageInterface.h>
+#include <images/Images/ImageRegion.h>
+#include <lattices/Lattices/LCPagedMask.h>
+#include <lattices/Lattices/ArrayLattice.h>
+#include <lattices/Lattices/SubLattice.h>
+#include <casa/iostream.h>
 
 
 

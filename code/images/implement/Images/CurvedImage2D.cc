@@ -25,16 +25,16 @@
 //#
 //# $Id$
 
-#include <trial/Images/CurvedImage2D.h>
-#include <trial/Lattices/CurvedLattice2D.h>
-#include <trial/Lattices/LatticeRegion.h>
-#include <trial/Coordinates/CoordinateUtil.h>
-#include <trial/Coordinates/CoordinateSystem.h>
-#include <trial/Coordinates/LinearCoordinate.h>
-#include <aips/Arrays/IPosition.h>
-#include <aips/Arrays/Vector.h>
-#include <aips/Utilities/Assert.h>
-#include <aips/Exceptions/Error.h>
+#include <images/Images/CurvedImage2D.h>
+#include <lattices/Lattices/CurvedLattice2D.h>
+#include <lattices/Lattices/LatticeRegion.h>
+#include <coordinates/Coordinates/CoordinateUtil.h>
+#include <coordinates/Coordinates/CoordinateSystem.h>
+#include <coordinates/Coordinates/LinearCoordinate.h>
+#include <casa/Arrays/IPosition.h>
+#include <casa/Arrays/Vector.h>
+#include <casa/Utilities/Assert.h>
+#include <casa/Exceptions/Error.h>
 
 
 template<class T>

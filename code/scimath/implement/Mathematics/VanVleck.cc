@@ -27,12 +27,12 @@
 
 //# Includes
 
-#include <trial/Mathematics/VanVleck.h>
+#include <scimath/Mathematics/VanVleck.h>
 
-#include <aips/Functionals/ScalarSampledFunctional.h>
-#include <aips/BasicMath/Math.h>
-#include <aips/Arrays/ArrayMath.h>
-#include <aips/iostream.h>
+#include <scimath/Functionals/ScalarSampledFunctional.h>
+#include <casa/BasicMath/Math.h>
+#include <casa/Arrays/ArrayMath.h>
+#include <casa/iostream.h>
 
 
 // initial values for the static data members

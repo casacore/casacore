@@ -28,10 +28,10 @@
 #if !defined(AIPS_BASESINKSOURCE_H)
 #define AIPS_BASESINKSOURCE_H
 
-#include <aips/aips.h>
-#include <aips/IO/TypeIO.h>
-#include <aips/IO/ByteIO.h>
-#include <aips/Utilities/CountedPtr.h>
+#include <casa/aips.h>
+#include <casa/IO/TypeIO.h>
+#include <casa/IO/ByteIO.h>
+#include <casa/Utilities/CountedPtr.h>
 
 // <summary>Shared base class for ByteSink and ByteSource.</summary>
 

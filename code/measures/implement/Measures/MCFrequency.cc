@@ -26,13 +26,13 @@
 //# $Id$
 
 //# Includes
-#include <aips/BasicSL/Constants.h>
-#include <aips/Measures/MCFrequency.h>
-#include <aips/Measures/MCFrame.h>
-#include <aips/Quanta/MVPosition.h>
-#include <aips/Quanta/MVDirection.h>
-#include <aips/Measures/Aberration.h>
-#include <aips/Measures/MeasTable.h>
+#include <casa/BasicSL/Constants.h>
+#include <measures/Measures/MCFrequency.h>
+#include <measures/Measures/MCFrame.h>
+#include <casa/Quanta/MVPosition.h>
+#include <casa/Quanta/MVDirection.h>
+#include <measures/Measures/Aberration.h>
+#include <measures/Measures/MeasTable.h>
 
 //# Statics
 Bool MCFrequency::stateMade_p = False;

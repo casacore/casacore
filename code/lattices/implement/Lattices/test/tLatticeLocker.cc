@@ -25,12 +25,12 @@
 //#
 //# $Id$
 
-#include <aips/Lattices/PagedArray.h>
-#include <trial/Lattices/LatticeLocker.h>
-#include <aips/Arrays/Array.h>
-#include <aips/Tables/Table.h>
-#include <aips/Exceptions/Error.h>
-#include <aips/iostream.h>
+#include <lattices/Lattices/PagedArray.h>
+#include <lattices/Lattices/LatticeLocker.h>
+#include <casa/Arrays/Array.h>
+#include <tables/Tables/Table.h>
+#include <casa/Exceptions/Error.h>
+#include <casa/iostream.h>
 
 
 // This program tests concurrent access to lattices.

@@ -25,14 +25,14 @@
 //#
 //# $Id$
 
-#include <aips/Containers/RecordRep.h>
-#include <aips/Containers/Record.h>
-#include <aips/Arrays/Array.h>
-#include <aips/Arrays/ArrayError.h>
-#include <aips/Arrays/IPosition.h>
-#include <aips/IO/AipsIO.h>
-#include <aips/Utilities/Assert.h>
-#include <aips/Exceptions/Error.h>
+#include <casa/Containers/RecordRep.h>
+#include <casa/Containers/Record.h>
+#include <casa/Arrays/Array.h>
+#include <casa/Arrays/ArrayError.h>
+#include <casa/Arrays/IPosition.h>
+#include <casa/IO/AipsIO.h>
+#include <casa/Utilities/Assert.h>
+#include <casa/Exceptions/Error.h>
 
 // Tweaked for SUN NTV compiler.  Added the const_cast<void*> to give a hint to the Solaris compiler.
 

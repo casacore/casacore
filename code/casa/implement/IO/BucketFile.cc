@@ -27,16 +27,16 @@
 
 
 //# Includes
-#include <aips/IO/LargeIOFuncDef.h>
-#include <aips/IO/BucketFile.h>
-#include <aips/OS/Path.h>
-#include <aips/OS/DOos.h>
-#include <aips/Exceptions/Error.h>
+#include <casa/IO/LargeIOFuncDef.h>
+#include <casa/IO/BucketFile.h>
+#include <casa/OS/Path.h>
+#include <casa/OS/DOos.h>
+#include <casa/Exceptions/Error.h>
 #include <sys/types.h>
 #include <unistd.h>
 #include <fcntl.h>
 #include <errno.h>                // needed for errno
-#include <aips/string.h>          // needed for strerror
+#include <casa/string.h>          // needed for strerror
 
 #if defined(AIPS_DARWIN)
 #define trace3OPEN open

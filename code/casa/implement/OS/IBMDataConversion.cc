@@ -26,8 +26,8 @@
 //# $Id$
 
 
-#include <aips/OS/IBMDataConversion.h>
-#include <aips/OS/IBMConversion.h>
+#include <casa/OS/IBMDataConversion.h>
+#include <casa/OS/IBMConversion.h>
 
 
 IBMDataConversion::~IBMDataConversion()

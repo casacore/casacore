@@ -25,18 +25,18 @@
 //#
 //# $Id$
 
-#include <trial/Lattices/LatticeAddNoise.h>
+#include <lattices/Lattices/LatticeAddNoise.h>
 
-#include <aips/Arrays/Array.h>
-#include <aips/Exceptions/Error.h>
-#include <aips/Lattices/LatticeIterator.h>
-#include <trial/Lattices/SubLattice.h>
-#include <trial/Lattices/LatticeExpr.h>
-#include <trial/Lattices/LatticeExprNode.h>
-#include <aips/Logging/LogIO.h>
-#include <aips/BasicSL/Complex.h> 
-#include <aips/BasicMath/Random.h> 
-#include <aips/BasicSL/String.h>
+#include <casa/Arrays/Array.h>
+#include <casa/Exceptions/Error.h>
+#include <lattices/Lattices/LatticeIterator.h>
+#include <lattices/Lattices/SubLattice.h>
+#include <lattices/Lattices/LatticeExpr.h>
+#include <lattices/Lattices/LatticeExprNode.h>
+#include <casa/Logging/LogIO.h>
+#include <casa/BasicSL/Complex.h> 
+#include <casa/BasicMath/Random.h> 
+#include <casa/BasicSL/String.h>
 
 
 LatticeAddNoise::LatticeAddNoise()

@@ -29,10 +29,10 @@
 #define AIPS_TSMCOLUMN_H
 
 //# Includes
-#include <aips/aips.h>
-#include <aips/Tables/StManColumn.h>
-#include <aips/Arrays/IPosition.h>
-#include <aips/BasicSL/String.h>
+#include <casa/aips.h>
+#include <tables/Tables/StManColumn.h>
+#include <casa/Arrays/IPosition.h>
+#include <casa/BasicSL/String.h>
 
 //# Forward Declarations
 class TiledStMan;

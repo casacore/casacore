@@ -26,15 +26,15 @@
 //# $Id$
 
 //# Includes
-#include <aips/iostream.h>
-#include <aips/iomanip.h>
-#include <aips/Exceptions/Error.h>
-#include <aips/Quanta/Unit.h>
-#include <aips/Utilities/Assert.h>
-#include <aips/Utilities/Register.h>
-#include <aips/Quanta/MVEpoch.h>
-#include <aips/Quanta/UnitVal.h>
-#include <aips/BasicMath/Math.h>
+#include <casa/iostream.h>
+#include <casa/iomanip.h>
+#include <casa/Exceptions/Error.h>
+#include <casa/Quanta/Unit.h>
+#include <casa/Utilities/Assert.h>
+#include <casa/Utilities/Register.h>
+#include <casa/Quanta/MVEpoch.h>
+#include <casa/Quanta/UnitVal.h>
+#include <casa/BasicMath/Math.h>
 
 //# Constants
 const Double MVEpoch::secInDay(3600*24);

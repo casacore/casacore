@@ -28,7 +28,7 @@
 #if !defined(AIPS_VALTYPEID_H)
 #define AIPS_VALTYPEID_H
 
-#include <aips/Utilities/ValType.h>
+#include <casa/Utilities/ValType.h>
 
 // <summary>
 // The id-string of a value type

@@ -30,16 +30,16 @@
 
 
 //# Includes
-#include <aips/aips.h>
-#include <aips/Tables/ColDescSet.h>
-#include <aips/IO/AipsIO.h>
+#include <casa/aips.h>
+#include <tables/Tables/ColDescSet.h>
+#include <casa/IO/AipsIO.h>
 
 //# Forward Declarations
 class TableRecord;
 class TableAttr;
 class TabPath;
 template<class T> class Vector;
-#include <aips/iosfwd.h>
+#include <casa/iosfwd.h>
 
 // <summary>
 // Define the structure of an AIPS++ table

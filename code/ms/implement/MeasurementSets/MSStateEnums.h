@@ -29,7 +29,7 @@
 #if !defined(AIPS_MSSTATEENUMS_H)
 #define AIPS_MSSTATEENUMS_H
 
-#include <aips/aips.h>
+#include <casa/aips.h>
 
 // <use visibility=export>
 

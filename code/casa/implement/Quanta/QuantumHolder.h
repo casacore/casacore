@@ -29,12 +29,12 @@
 #define AIPS_QUANTUMHOLDER_H
 
 //# Includes
-#include <aips/aips.h>
-#include <aips/Utilities/PtrHolder.h>
-#include <aips/Utilities/RecordTransformable.h>
+#include <casa/aips.h>
+#include <casa/Utilities/PtrHolder.h>
+#include <casa/Utilities/RecordTransformable.h>
 
 //# Forward Declarations
-#include <aips/BasicSL/Complexfwd.h>
+#include <casa/BasicSL/Complexfwd.h>
 class QBase;
 class String;
 class RecordInterface;

@@ -25,14 +25,14 @@
 //#
 //# $Id$
 
-#include <aips/Lattices/ArrayLattice.h>
+#include <lattices/Lattices/ArrayLattice.h>
 //#include <aips/Lattices/ArrLatticeIter.h>
-#include <aips/Lattices/LatticeIterInterface.h>
-#include <aips/Lattices/LatticeNavigator.h>
-#include <aips/Exceptions/Error.h>
-#include <aips/Arrays/IPosition.h>
-#include <aips/Arrays/Slicer.h>
-#include <aips/Utilities/Assert.h>
+#include <lattices/Lattices/LatticeIterInterface.h>
+#include <lattices/Lattices/LatticeNavigator.h>
+#include <casa/Exceptions/Error.h>
+#include <casa/Arrays/IPosition.h>
+#include <casa/Arrays/Slicer.h>
+#include <casa/Utilities/Assert.h>
 
 template<class T>
 ArrayLattice<T>::ArrayLattice()

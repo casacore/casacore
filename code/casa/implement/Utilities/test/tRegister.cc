@@ -25,9 +25,9 @@
 //#
 //# $Id$
 
-#include <aips/Utilities/Register.h>
-#include <aips/Utilities/test/tRegister.h>
-#include <aips/iostream.h>
+#include <casa/Utilities/Register.h>
+#include <casa/Utilities/test/tRegister.h>
+#include <casa/iostream.h>
 
 main() {
   

@@ -30,12 +30,12 @@
 
 
 //# Includes
-#include <aips/aips.h>
-#include <aips/Tables/ColumnCache.h>
-#include <aips/BasicSL/String.h>
-#include <aips/BasicSL/Complex.h>
-#include <aips/Containers/SimOrdMap.h>
-#include <aips/IO/ByteIO.h>
+#include <casa/aips.h>
+#include <tables/Tables/ColumnCache.h>
+#include <casa/BasicSL/String.h>
+#include <casa/BasicSL/Complex.h>
+#include <casa/Containers/SimOrdMap.h>
+#include <casa/IO/ByteIO.h>
 
 //# Forward Declarations
 class DataManager;

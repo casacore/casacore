@@ -28,7 +28,7 @@
 #if !defined(AIPS_REGISTER_H)
 #define AIPS_REGISTER_H
 
-#include <aips/Utilities/RegSequence.h>
+#include <casa/Utilities/RegSequence.h>
 
 // <summary> 
 //    Primitive Run Time Type Information (<em>RTTI</em>)
@@ -67,7 +67,7 @@
 //    To be useful, however, this mechanism must be used as part of the
 //    implementation of a <em>virtual</em> member function. For example:
 //    <srcblock>
-//    #include <aips/Utilities/Register.h>
+//    #include <casa/Utilities/Register.h>
 // #include <iostream>
 //    
 //    class foo { public: virtual uInt type() { return Register(this);}};

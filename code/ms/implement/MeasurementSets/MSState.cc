@@ -25,18 +25,18 @@
 //#
 //# $Id$
 
-#include <aips/MeasurementSets/MSState.h>
+#include <ms/MeasurementSets/MSState.h>
 
-#include <aips/BasicSL/String.h>
-#include <aips/Tables/SetupNewTab.h>
-#include <aips/Tables/TableDesc.h>
-#include <aips/Tables/ColDescSet.h>
-#include <aips/Tables/ScaColDesc.h>
-#include <aips/Tables/ArrColDesc.h>
-#include <aips/Tables/StManAipsIO.h>
-#include <aips/Tables/ForwardCol.h>
-#include <aips/Arrays/Vector.h>
-#include <aips/Exceptions/Error.h>
+#include <casa/BasicSL/String.h>
+#include <tables/Tables/SetupNewTab.h>
+#include <tables/Tables/TableDesc.h>
+#include <tables/Tables/ColDescSet.h>
+#include <tables/Tables/ScaColDesc.h>
+#include <tables/Tables/ArrColDesc.h>
+#include <tables/Tables/StManAipsIO.h>
+#include <tables/Tables/ForwardCol.h>
+#include <casa/Arrays/Vector.h>
+#include <casa/Exceptions/Error.h>
 
 MSState::MSState():hasBeenDestroyed_p(True) { }
 

@@ -29,8 +29,8 @@
 #if !defined(AIPS_GAUSSIAN2DPARAM_H)
 #define AIPS_GAUSSIAN2DPARAM_H
 
-#include <aips/aips.h>
-#include <aips/Functionals/Function.h>
+#include <casa/aips.h>
+#include <scimath/Functionals/Function.h>
 
 //# Forward declarations
 template<class T> class Vector;

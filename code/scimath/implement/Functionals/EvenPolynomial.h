@@ -29,11 +29,11 @@
 #define AIPS_EVENPOLYNOMIAL_H
 
 //# Includes
-#include <aips/aips.h>
-#include <trial/Functionals/EvenPolynomialParam.h>
-#include <aips/Functionals/Function1D.h>
-#include <aips/Mathematics/AutoDiff.h>
-#include <aips/Mathematics/AutoDiffMath.h>
+#include <casa/aips.h>
+#include <scimath/Functionals/EvenPolynomialParam.h>
+#include <scimath/Functionals/Function1D.h>
+#include <scimath/Mathematics/AutoDiff.h>
+#include <scimath/Mathematics/AutoDiffMath.h>
 
 //# Forward declarations
 

@@ -31,9 +31,9 @@
 
 template<class Type> class Vector;
 
-#include <aips/aips.h>
-#include <aips/Functionals/Function.h>
-#include <aips/Mathematics/AutoDiff.h>
+#include <casa/aips.h>
+#include <scimath/Functionals/Function.h>
+#include <scimath/Mathematics/AutoDiff.h>
 
 // <summary> Parameter handling for 3 dimensional Gaussian class
 // </summary>

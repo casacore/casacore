@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#include <aips/Tables/TableLock.h>
-#include <aips/Utilities/Assert.h>
+#include <tables/Tables/TableLock.h>
+#include <casa/Utilities/Assert.h>
 
 // <summary>
 // Test program for the TableLock class.

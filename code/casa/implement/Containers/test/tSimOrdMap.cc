@@ -27,11 +27,11 @@
 
 //# Includes
 
-#include <aips/Containers/SimOrdMap.h>
-#include <aips/Containers/SimOrdMapIO.h>
-#include <aips/IO/AipsIO.h>
-#include <aips/Utilities/Assert.h>
-#include <aips/iostream.h>
+#include <casa/Containers/SimOrdMap.h>
+#include <casa/Containers/SimOrdMapIO.h>
+#include <casa/IO/AipsIO.h>
+#include <casa/Utilities/Assert.h>
+#include <casa/iostream.h>
 
 //# Forward Declarations
 

@@ -30,7 +30,7 @@
 
 
 //# Includes
-#include <aips/Lattices/Lattice.h>
+#include <lattices/Lattices/Lattice.h>
 
 //# Forward Declarations
 class LatticeRegion;

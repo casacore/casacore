@@ -27,7 +27,7 @@
 
 
 //# Includes
-#include <trial/Images/MaskSpecifier.h>
+#include <images/Images/MaskSpecifier.h>
 
 
 //# All functions are inlined.

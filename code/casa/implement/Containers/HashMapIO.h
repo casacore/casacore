@@ -29,7 +29,7 @@
 #define AIPS_HASHMAPIO_H_
 
 
-#include <trial/Containers/HashMapIter.h>
+#include <casa/Containers/HashMapIter.h>
 
 
 // <summary>

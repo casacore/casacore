@@ -26,24 +26,24 @@
 //# $Id$
 //
 
-#include <trial/Lattices/LattStatsSpecialize.h>
-#include <trial/Lattices/LatticeStatsBase.h>
+#include <lattices/Lattices/LattStatsSpecialize.h>
+#include <lattices/Lattices/LatticeStatsBase.h>
 
-#include <aips/Arrays/IPosition.h>
-#include <aips/Arrays/Vector.h>
-#include <aips/Arrays/Array.h>
-#include <aips/Arrays/ArrayMath.h>
-#include <aips/Exceptions/Error.h>
-#include <aips/Lattices/Lattice.h>
-#include <aips/Lattices/LatticeIterator.h>
-#include <trial/Lattices/LatticeExprNode.h>
-#include <trial/Lattices/LatticeExpr.h>
-#include <trial/Lattices/MaskedLattice.h>
-#include <aips/BasicSL/Complex.h>
-#include <aips/BasicMath/Math.h>
-#include <aips/BasicSL/String.h>
+#include <casa/Arrays/IPosition.h>
+#include <casa/Arrays/Vector.h>
+#include <casa/Arrays/Array.h>
+#include <casa/Arrays/ArrayMath.h>
+#include <casa/Exceptions/Error.h>
+#include <lattices/Lattices/Lattice.h>
+#include <lattices/Lattices/LatticeIterator.h>
+#include <lattices/Lattices/LatticeExprNode.h>
+#include <lattices/Lattices/LatticeExpr.h>
+#include <lattices/Lattices/MaskedLattice.h>
+#include <casa/BasicSL/Complex.h>
+#include <casa/BasicMath/Math.h>
+#include <casa/BasicSL/String.h>
 
-#include <aips/OS/Timer.h>
+#include <casa/OS/Timer.h>
 
 
 

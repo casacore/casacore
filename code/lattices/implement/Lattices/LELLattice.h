@@ -30,7 +30,7 @@
 
 
 //# Includes
-#include <trial/Lattices/LELInterface.h>
+#include <lattices/Lattices/LELInterface.h>
 
 //# Forward Declarations
 template <class T> class Lattice;

@@ -25,13 +25,13 @@
 //#
 //# $Id$
 
-#include <trial/Images/RebinImage.h>
-#include <trial/Lattices/RebinLattice.h>
-#include <trial/Lattices/LatticeRegion.h>
-#include <trial/Coordinates/CoordinateUtil.h>
-#include <aips/Arrays/Vector.h>
-#include <aips/Utilities/Assert.h>
-#include <aips/Exceptions/Error.h>
+#include <images/Images/RebinImage.h>
+#include <lattices/Lattices/RebinLattice.h>
+#include <lattices/Lattices/LatticeRegion.h>
+#include <coordinates/Coordinates/CoordinateUtil.h>
+#include <casa/Arrays/Vector.h>
+#include <casa/Utilities/Assert.h>
+#include <casa/Exceptions/Error.h>
 
 template<class T>
 RebinImage<T>::RebinImage ()

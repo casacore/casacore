@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#include <aips/MeasurementSets/MSFreqOffColumns.h>
-#include <aips/MeasurementSets/MSFreqOffset.h>
+#include <ms/MeasurementSets/MSFreqOffColumns.h>
+#include <ms/MeasurementSets/MSFreqOffset.h>
 
 ROMSFreqOffsetColumns::
 ROMSFreqOffsetColumns(const MSFreqOffset& msFreqOffset):

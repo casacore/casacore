@@ -26,10 +26,10 @@
 //# $Id$
 
 //# Includes
-#include <aips/Exceptions/Error.h>
-#include <aips/BasicSL/String.h>
-#include <aips/Measures/MRBase.h>
-#include <aips/iostream.h>
+#include <casa/Exceptions/Error.h>
+#include <casa/BasicSL/String.h>
+#include <measures/Measures/MRBase.h>
+#include <casa/iostream.h>
 
 
 //# Constructors

@@ -25,12 +25,12 @@
 //#
 //# $Id$
 
-#include <aips/Utilities/DataType.h>
-#include <aips/BasicSL/String.h>
-#include <aips/Utilities/Assert.h>
-#include <aips/Quanta/Quantum.h>
-#include <aips/sstream.h>
-#include <aips/iostream.h>
+#include <casa/Utilities/DataType.h>
+#include <casa/BasicSL/String.h>
+#include <casa/Utilities/Assert.h>
+#include <casa/Quanta/Quantum.h>
+#include <casa/sstream.h>
+#include <casa/iostream.h>
 
 void simpleTests()
 {

@@ -27,12 +27,12 @@
 
 
 //# Includes
-#include <aips/TableMeasures/TableMeasColumn.h>
-#include <aips/TableMeasures/TableMeasDescBase.h>
-#include <aips/Tables/Table.h>
-#include <aips/Tables/TableRecord.h>
-#include <aips/Tables/TableError.h>
-#include <aips/BasicSL/String.h>
+#include <measures/TableMeasures/TableMeasColumn.h>
+#include <measures/TableMeasures/TableMeasDescBase.h>
+#include <tables/Tables/Table.h>
+#include <tables/Tables/TableRecord.h>
+#include <tables/Tables/TableError.h>
+#include <casa/BasicSL/String.h>
 
 
 ROTableMeasColumn::ROTableMeasColumn()

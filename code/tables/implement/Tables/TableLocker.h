@@ -30,8 +30,8 @@
 
 
 //# Includes
-#include <aips/Tables/Table.h>
-#include <aips/Tables/TableLock.h>
+#include <tables/Tables/Table.h>
+#include <tables/Tables/TableLock.h>
 
 
 // <summary>

@@ -25,38 +25,38 @@
 //#
 //# $Id$
 
-#include <trial/Lattices/LatticeHistograms.h>
-#include <trial/Lattices/LatticeHistSpecialize.h>
-#include <trial/Lattices/LatticeHistProgress.h>
-#include <trial/Lattices/LattStatsSpecialize.h>
+#include <lattices/Lattices/LatticeHistograms.h>
+#include <lattices/Lattices/LatticeHistSpecialize.h>
+#include <lattices/Lattices/LatticeHistProgress.h>
+#include <lattices/Lattices/LattStatsSpecialize.h>
 
-#include <aips/aips.h>
-#include <aips/Arrays/Array.h>
-#include <aips/Arrays/ArrayMath.h>
-#include <aips/Arrays/ArrayLogical.h>
-#include <aips/Arrays/VectorIter.h>
-#include <trial/Lattices/MaskedLattice.h>
-#include <trial/Lattices/LatticeApply.h>
-#include <aips/Lattices/LatticeIterator.h>
-#include <aips/Lattices/LatticeStepper.h>
-#include <trial/Lattices/LatticeRegion.h>
-#include <aips/Lattices/TempLattice.h>
-#include <trial/Lattices/SubLattice.h>
-#include <trial/Lattices/LatticeStatsBase.h>
-#include <aips/Logging/LogIO.h>
-#include <aips/BasicMath/Math.h>
-#include <aips/Quanta/QMath.h>
-#include <aips/Tables/Table.h>
-#include <aips/System/AppInfo.h>
-#include <trial/System/PGPlotter.h>
-#include <aips/Utilities/Assert.h>
-#include <aips/Utilities/DataType.h>
-#include <aips/Utilities/ValType.h>
-#include <aips/BasicSL/String.h>
+#include <casa/aips.h>
+#include <casa/Arrays/Array.h>
+#include <casa/Arrays/ArrayMath.h>
+#include <casa/Arrays/ArrayLogical.h>
+#include <casa/Arrays/VectorIter.h>
+#include <lattices/Lattices/MaskedLattice.h>
+#include <lattices/Lattices/LatticeApply.h>
+#include <lattices/Lattices/LatticeIterator.h>
+#include <lattices/Lattices/LatticeStepper.h>
+#include <lattices/Lattices/LatticeRegion.h>
+#include <lattices/Lattices/TempLattice.h>
+#include <lattices/Lattices/SubLattice.h>
+#include <lattices/Lattices/LatticeStatsBase.h>
+#include <casa/Logging/LogIO.h>
+#include <casa/BasicMath/Math.h>
+#include <casa/Quanta/QMath.h>
+#include <tables/Tables/Table.h>
+#include <casa/System/AppInfo.h>
+#include <casa/System/PGPlotter.h>
+#include <casa/Utilities/Assert.h>
+#include <casa/Utilities/DataType.h>
+#include <casa/Utilities/ValType.h>
+#include <casa/BasicSL/String.h>
 
-#include <aips/iomanip.h>
-#include <aips/stdlib.h>
-#include <aips/sstream.h>
+#include <casa/iomanip.h>
+#include <casa/stdlib.h>
+#include <casa/sstream.h>
 
 
 

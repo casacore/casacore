@@ -26,14 +26,14 @@
 //# $Id$
 
 
-#include <trial/Lattices/LCPolygon.h>
-#include <aips/Arrays/Matrix.h>
-#include <aips/Arrays/ArrayMath.h>
-#include <aips/BasicMath/Math.h>
-#include <aips/Tables/TableRecord.h>
-#include <aips/Utilities/GenSort.h>
-#include <aips/Utilities/Assert.h>
-#include <aips/Exceptions/Error.h>
+#include <lattices/Lattices/LCPolygon.h>
+#include <casa/Arrays/Matrix.h>
+#include <casa/Arrays/ArrayMath.h>
+#include <casa/BasicMath/Math.h>
+#include <tables/Tables/TableRecord.h>
+#include <casa/Utilities/GenSort.h>
+#include <casa/Utilities/Assert.h>
+#include <casa/Exceptions/Error.h>
 
 LCPolygon::LCPolygon()
 {}

@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#include <aips/MeasurementSets/MSObsColumns.h>
-#include <aips/MeasurementSets/MSObservation.h>
+#include <ms/MeasurementSets/MSObsColumns.h>
+#include <ms/MeasurementSets/MSObservation.h>
 
 ROMSObservationColumns::
 ROMSObservationColumns(const MSObservation& msObservation):

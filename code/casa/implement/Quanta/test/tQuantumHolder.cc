@@ -27,15 +27,15 @@
 
 //# Includes
 
-#include <aips/aips.h>
-#include <aips/Exceptions.h>
-#include <aips/Arrays/Vector.h>
-#include <aips/BasicSL/Complex.h>
-#include <aips/Quanta/Quantum.h>
-#include <aips/Quanta/QLogical.h>
-#include <aips/Quanta/QuantumHolder.h>
-#include <aips/Containers/Record.h>
-#include <aips/iostream.h>
+#include <casa/aips.h>
+#include <casa/Exceptions.h>
+#include <casa/Arrays/Vector.h>
+#include <casa/BasicSL/Complex.h>
+#include <casa/Quanta/Quantum.h>
+#include <casa/Quanta/QLogical.h>
+#include <casa/Quanta/QuantumHolder.h>
+#include <casa/Containers/Record.h>
+#include <casa/iostream.h>
 
 int main() {
   try {

@@ -25,23 +25,23 @@
 //#
 //# $Id$
 
-#include <aips/aips.h>
-#include <trial/ComponentModels/Flux.h>
-#include <trial/ComponentModels/GaussianShape.h>
-#include <trial/ComponentModels/DiskShape.h>
-#include <trial/ComponentModels/SkyComponent.h>
-#include <trial/ComponentModels/ConstantSpectrum.h>
-#include <trial/ComponentModels/ComponentType.h>
-#include <trial/ComponentModels/TwoSidedShape.h>
-#include <aips/Exceptions/Error.h>
-#include <aips/Measures/MDirection.h>
-#include <aips/Measures/MEpoch.h>
-#include <aips/Measures/MeasFrame.h>
-#include <aips/Quanta/Quantum.h>
-#include <aips/Quanta/MVAngle.h>
-#include <aips/Quanta/MVTime.h>
-#include <aips/BasicSL/String.h>
-#include <aips/iostream.h>
+#include <casa/aips.h>
+#include <components/ComponentModels/Flux.h>
+#include <components/ComponentModels/GaussianShape.h>
+#include <components/ComponentModels/DiskShape.h>
+#include <components/ComponentModels/SkyComponent.h>
+#include <components/ComponentModels/ConstantSpectrum.h>
+#include <components/ComponentModels/ComponentType.h>
+#include <components/ComponentModels/TwoSidedShape.h>
+#include <casa/Exceptions/Error.h>
+#include <measures/Measures/MDirection.h>
+#include <measures/Measures/MEpoch.h>
+#include <measures/Measures/MeasFrame.h>
+#include <casa/Quanta/Quantum.h>
+#include <casa/Quanta/MVAngle.h>
+#include <casa/Quanta/MVTime.h>
+#include <casa/BasicSL/String.h>
+#include <casa/iostream.h>
 
 void printShape(const TwoSidedShape& theShape) {
   cout << "This is a " << ComponentType::name(theShape.type())

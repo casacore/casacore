@@ -29,10 +29,10 @@
 #define AIPS_EXPRNODEARRAY_H
 
 //# Includes
-#include <aips/Tables/ExprNodeRep.h>
-#include <aips/Tables/Table.h>
-#include <aips/Tables/ArrayColumn.h>
-#include <aips/Arrays/Slicer.h>
+#include <tables/Tables/ExprNodeRep.h>
+#include <tables/Tables/Table.h>
+#include <tables/Tables/ArrayColumn.h>
+#include <casa/Arrays/Slicer.h>
 
 //# Forward Declarations
 class TableExprNodeSet;

@@ -29,8 +29,8 @@
 #define AIPS_TABLEQUANTUMDESC_H
 
 //# Includes
-#include <aips/Arrays/Vector.h>
-#include <aips/BasicSL/String.h>
+#include <casa/Arrays/Vector.h>
+#include <casa/BasicSL/String.h>
 
 //# Forward Declarations
 class TableDesc;

@@ -26,7 +26,7 @@
 //# $Id$
 
 //# Includes
-#include <aips/Functionals/Chebyshev.h>
+#include <scimath/Functionals/Chebyshev.h>
 
 //# Constructors
 

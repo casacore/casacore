@@ -29,9 +29,9 @@
 #define AIPS_OBJECTPOOL_H
 
 //# Includes
-#include <aips/aips.h>
-#include <aips/Containers/PoolStack.h>
-#include <aips/Containers/SimOrdMap.h>
+#include <casa/aips.h>
+#include <casa/Containers/PoolStack.h>
+#include <casa/Containers/SimOrdMap.h>
 
 //# Forward declarations
 

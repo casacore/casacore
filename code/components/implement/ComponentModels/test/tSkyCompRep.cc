@@ -25,34 +25,34 @@
 //#
 //# $Id$
 
-#include <aips/aips.h>
-#include <aips/Arrays/Matrix.h>
-#include <aips/Arrays/Vector.h>
-#include <aips/Arrays/ArrayLogical.h>
-#include <aips/Exceptions/Error.h>
-#include <aips/BasicSL/Constants.h>
-#include <aips/BasicMath/Math.h>
-#include <aips/Measures/MDirection.h>
-#include <aips/Measures/MFrequency.h>
-#include <aips/Quanta/MVDirection.h>
-#include <aips/Quanta/Quantum.h>
-#include <aips/Measures/Stokes.h>
-#include <aips/Utilities/Assert.h>
-#include <aips/BasicSL/String.h>
-#include <aips/BasicSL/String.h>
-#include <trial/ComponentModels/ComponentShape.h>
-#include <trial/ComponentModels/ConstantSpectrum.h>
-#include <trial/ComponentModels/Flux.h>
-#include <trial/ComponentModels/GaussianShape.h>
-#include <trial/ComponentModels/PointShape.h>
-#include <trial/ComponentModels/SkyCompRep.h>
-#include <trial/ComponentModels/SpectralIndex.h>
-#include <trial/ComponentModels/SpectralModel.h>
-#include <trial/Coordinates/CoordinateSystem.h>
-#include <trial/Coordinates/DirectionCoordinate.h>
-#include <trial/Coordinates/SpectralCoordinate.h>
+#include <casa/aips.h>
+#include <casa/Arrays/Matrix.h>
+#include <casa/Arrays/Vector.h>
+#include <casa/Arrays/ArrayLogical.h>
+#include <casa/Exceptions/Error.h>
+#include <casa/BasicSL/Constants.h>
+#include <casa/BasicMath/Math.h>
+#include <measures/Measures/MDirection.h>
+#include <measures/Measures/MFrequency.h>
+#include <casa/Quanta/MVDirection.h>
+#include <casa/Quanta/Quantum.h>
+#include <measures/Measures/Stokes.h>
+#include <casa/Utilities/Assert.h>
+#include <casa/BasicSL/String.h>
+#include <casa/BasicSL/String.h>
+#include <components/ComponentModels/ComponentShape.h>
+#include <components/ComponentModels/ConstantSpectrum.h>
+#include <components/ComponentModels/Flux.h>
+#include <components/ComponentModels/GaussianShape.h>
+#include <components/ComponentModels/PointShape.h>
+#include <components/ComponentModels/SkyCompRep.h>
+#include <components/ComponentModels/SpectralIndex.h>
+#include <components/ComponentModels/SpectralModel.h>
+#include <coordinates/Coordinates/CoordinateSystem.h>
+#include <coordinates/Coordinates/DirectionCoordinate.h>
+#include <coordinates/Coordinates/SpectralCoordinate.h>
 
-#include <aips/iostream.h>
+#include <casa/iostream.h>
 
 Bool pixelReflection (const SkyCompRep& sky, const CoordinateSystem& cSys,
                       const Vector<Quantum<Double> >& beam, const Unit& unit,

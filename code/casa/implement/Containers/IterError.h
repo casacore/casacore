@@ -29,8 +29,8 @@
 #define AIPS_ITERERROR_H
 
 //# Includes
-#include <aips/aips.h>
-#include <aips/Exceptions/Error.h>
+#include <casa/aips.h>
+#include <casa/Exceptions/Error.h>
 
 // <summary>Iteration error class </summary>
 // <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="" demos="">

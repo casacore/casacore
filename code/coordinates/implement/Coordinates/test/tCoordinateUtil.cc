@@ -26,14 +26,14 @@
 //#
 //# $Id$
 
-#include <aips/Arrays/ArrayLogical.h> 
-#include <trial/Coordinates.h>
-#include <trial/Coordinates/CoordinateUtil.h>
-#include <aips/BasicSL/Constants.h>
-#include <aips/Utilities/Assert.h>
-#include <aips/Exceptions/Error.h>
+#include <casa/Arrays/ArrayLogical.h> 
+#include <coordinates/Coordinates.h>
+#include <coordinates/Coordinates/CoordinateUtil.h>
+#include <casa/BasicSL/Constants.h>
+#include <casa/Utilities/Assert.h>
+#include <casa/Exceptions/Error.h>
 
-#include <aips/iostream.h>
+#include <casa/iostream.h>
 
 void test0();
 void test1();

@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#include <aips/Utilities/Copy.h>
-#include <aips/Exceptions/Error.h>
+#include <casa/Utilities/Copy.h>
+#include <casa/Exceptions/Error.h>
 
 //#  Note of Ger van Diepen on 7-Nov-1997:
 //# For one reason or another the compiler did not compile

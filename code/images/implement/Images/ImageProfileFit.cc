@@ -25,39 +25,39 @@
 //#
 //#   $Id$
 
-#include <trial/Images/ImageProfileFit.h>
+#include <images/Images/ImageProfileFit.h>
 
-#include <aips/Arrays/IPosition.h>
-#include <aips/Arrays/Vector.h>
-#include <aips/Arrays/ArrayMath.h>
-#include <aips/Containers/Record.h>
-#include <trial/Coordinates/CoordinateSystem.h>
-#include <trial/Coordinates/SpectralCoordinate.h>
-#include <trial/Coordinates/CoordinateUtil.h>
-#include <aips/Exceptions/Error.h>
-#include <trial/Images/ImageInterface.h>
-#include <trial/Images/ImageRegion.h>
-#include <trial/Images/SubImage.h>
-#include <aips/Lattices/TiledLineStepper.h>
-#include <trial/Lattices/MaskedLatticeIterator.h>
-#include <trial/Lattices/LCRegion.h>
-#include <trial/Lattices/MaskedLattice.h>
-#include <trial/Lattices/LatticeUtilities.h>
-#include <aips/Logging/LogIO.h>
-#include <aips/BasicSL/Constants.h>
-#include <aips/BasicMath/Math.h>
-#include <aips/System/ProgressMeter.h>
-#include <aips/Quanta/Quantum.h>
-#include <aips/Utilities/Assert.h>
-#include <trial/SpectralComponents/SpectralFit.h>
-#include <trial/SpectralComponents/SpectralEstimate.h>
-#include <trial/SpectralComponents/SpectralElement.h>
-#include <trial/SpectralComponents/SpectralList.h>
+#include <casa/Arrays/IPosition.h>
+#include <casa/Arrays/Vector.h>
+#include <casa/Arrays/ArrayMath.h>
+#include <casa/Containers/Record.h>
+#include <coordinates/Coordinates/CoordinateSystem.h>
+#include <coordinates/Coordinates/SpectralCoordinate.h>
+#include <coordinates/Coordinates/CoordinateUtil.h>
+#include <casa/Exceptions/Error.h>
+#include <images/Images/ImageInterface.h>
+#include <images/Images/ImageRegion.h>
+#include <images/Images/SubImage.h>
+#include <lattices/Lattices/TiledLineStepper.h>
+#include <lattices/Lattices/MaskedLatticeIterator.h>
+#include <lattices/Lattices/LCRegion.h>
+#include <lattices/Lattices/MaskedLattice.h>
+#include <lattices/Lattices/LatticeUtilities.h>
+#include <casa/Logging/LogIO.h>
+#include <casa/BasicSL/Constants.h>
+#include <casa/BasicMath/Math.h>
+#include <casa/System/ProgressMeter.h>
+#include <casa/Quanta/Quantum.h>
+#include <casa/Utilities/Assert.h>
+#include <components/SpectralComponents/SpectralFit.h>
+#include <components/SpectralComponents/SpectralEstimate.h>
+#include <components/SpectralComponents/SpectralElement.h>
+#include <components/SpectralComponents/SpectralList.h>
 
-//#include <aips/OS/Timer.h>
+//#include <casa/OS/Timer.h>
 
 
-#include <aips/ostream.h>
+#include <casa/ostream.h>
 
 
 ImageProfileFit::ImageProfileFit()

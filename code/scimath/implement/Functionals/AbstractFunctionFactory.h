@@ -29,8 +29,8 @@
 #if !defined(AIPS_FUNCTIONFACTORY_H)
 #define AIPS_FUNCTIONFACTORY_H
 
-#include <aips/Functionals/Function.h>
-#include <trial/Functionals/FunctionFactoryErrors.h>
+#include <scimath/Functionals/Function.h>
+#include <scimath/Functionals/FunctionFactoryErrors.h>
 
 //# Forward Declarations
 class Record;

@@ -25,20 +25,20 @@
 //#
 //# $Id$
 
-#include <aips/aips.h>
+#include <casa/aips.h>
 // #include <trial/MeasurementSets/MSMainBuffer.h>
-// #include <aips/MeasurementSets/MeasurementSet.h>
-// #include <aips/Arrays/ArrayLogical.h>
-// #include <aips/Arrays/Vector.h>
-// #include <aips/Arrays/Cube.h>
-// #include <aips/Arrays/Matrix.h>
-// #include <aips/Exceptions/Error.h>
-// #include <aips/BasicSL/Constants.h>
-// #include <aips/BasicMath/Math.h>
+// #include <ms/MeasurementSets/MeasurementSet.h>
+// #include <casa/Arrays/ArrayLogical.h>
+// #include <casa/Arrays/Vector.h>
+// #include <casa/Arrays/Cube.h>
+// #include <casa/Arrays/Matrix.h>
+// #include <casa/Exceptions/Error.h>
+// #include <casa/BasicSL/Constants.h>
+// #include <casa/BasicMath/Math.h>
 // #include <aips/Exceptions/Excp.h>
-// #include <aips/Tables/Table.h>
-// #include <aips/Utilities/Assert.h>
-// #include <aips/BasicSL/String.h>
+// #include <tables/Tables/Table.h>
+// #include <casa/Utilities/Assert.h>
+// #include <casa/BasicSL/String.h>
 // #include <iostream.h>
 
 int main() {

@@ -29,9 +29,9 @@
 #define AIPS_DVIRTCOLENG_H
 
 //# Includes
-#include <aips/Tables/VirtColEng.h>
-#include <aips/Tables/VirtScaCol.h>
-#include <aips/Tables/VirtArrCol.h>
+#include <tables/Tables/VirtColEng.h>
+#include <tables/Tables/VirtScaCol.h>
+#include <tables/Tables/VirtArrCol.h>
 
 //# Forward Declarations
 class DummyVirtualEngine;

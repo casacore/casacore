@@ -26,12 +26,12 @@
 //# $Id$
 
 //# Includes
-#include <aips/Mathematics/AutoDiff.h>
-#include <aips/Mathematics/AutoDiffA.h>
-#include <aips/Mathematics/AutoDiffMath.h>
-#include <aips/Mathematics/AutoDiffIO.h>
+#include <scimath/Mathematics/AutoDiff.h>
+#include <scimath/Mathematics/AutoDiffA.h>
+#include <scimath/Mathematics/AutoDiffMath.h>
+#include <scimath/Mathematics/AutoDiffIO.h>
 
-#include <aips/iostream.h>
+#include <casa/iostream.h>
 
 // Define a simple function a^3*b^3*x
 

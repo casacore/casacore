@@ -26,14 +26,14 @@
 //# $Id$
 
 //# Includes
-#include <aips/aips.h>
-#include <aips/Arrays/ArrayAccessor.h>
-#include <aips/Arrays/Cube.h>
-#include <aips/Arrays/ArrayMath.h>
-#include <aips/Arrays/Slice.h>
-#include <aips/Exceptions/Error.h>
-#include <aips/OS/Timer.h>
-#include <aips/iostream.h>
+#include <casa/aips.h>
+#include <casa/Arrays/ArrayAccessor.h>
+#include <casa/Arrays/Cube.h>
+#include <casa/Arrays/ArrayMath.h>
+#include <casa/Arrays/Slice.h>
+#include <casa/Exceptions/Error.h>
+#include <casa/OS/Timer.h>
+#include <casa/iostream.h>
 
 
 int main() {

@@ -25,9 +25,9 @@
 //#
 //# $Id$
 
-#include <trial/Utilities/CompositeNumber.h>
-#include <aips/Utilities/GenSort.h>
-#include <aips/BasicMath/Math.h>
+#include <casa/Utilities/CompositeNumber.h>
+#include <casa/Utilities/GenSort.h>
+#include <casa/BasicMath/Math.h>
 
 CompositeNumber::CompositeNumber(const uInt maxval) {
 

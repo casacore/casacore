@@ -25,12 +25,12 @@
 //#
 //# $Id$
 
-#include <aips/Tables/ColDescSet.h>
-#include <aips/Tables/TableDesc.h>
-#include <aips/Tables/DataManager.h>
-#include <aips/Containers/SimOrdMapIO.h>
-#include <aips/Tables/TableError.h>
-#include <aips/iostream.h>
+#include <tables/Tables/ColDescSet.h>
+#include <tables/Tables/TableDesc.h>
+#include <tables/Tables/DataManager.h>
+#include <casa/Containers/SimOrdMapIO.h>
+#include <tables/Tables/TableError.h>
+#include <casa/iostream.h>
 
 
 //# Initialize the static variable for the DataManager registration.

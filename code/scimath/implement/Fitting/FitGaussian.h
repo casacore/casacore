@@ -28,9 +28,9 @@
 #ifndef AIPS_FITGAUSSIAN_H
 #define AIPS_FITGAUSSIAN_H
 
-#include <aips/aips.h>
-#include <aips/Arrays/Matrix.h>
-#include <aips/Logging/LogIO.h>
+#include <casa/aips.h>
+#include <casa/Arrays/Matrix.h>
+#include <casa/Logging/LogIO.h>
 
 // <summary>Multidimensional fitter class for Gaussians.</summary>
 

@@ -26,13 +26,13 @@
 //# $Id$
 
 
-#include <trial/Lattices/MaskedLattice.h>
-#include <trial/Lattices/LatticeRegion.h>
-#include <trial/Lattices/LCBox.h>
-#include <aips/Arrays/Array.h>
-#include <aips/Arrays/Slicer.h>
-#include <aips/Utilities/COWPtr.h>
-#include <aips/Exceptions/Error.h>
+#include <lattices/Lattices/MaskedLattice.h>
+#include <lattices/Lattices/LatticeRegion.h>
+#include <lattices/Lattices/LCBox.h>
+#include <casa/Arrays/Array.h>
+#include <casa/Arrays/Slicer.h>
+#include <casa/Utilities/COWPtr.h>
+#include <casa/Exceptions/Error.h>
 
 
 template <class T>

@@ -25,19 +25,19 @@
 //#
 //# $Id$
 
-#include <aips/Tables/TiledShapeStMan.h>
-#include <aips/Tables/TSMColumn.h>
-#include <aips/Tables/TSMCube.h>
-#include <aips/Tables/TableDesc.h>
-#include <aips/Tables/ColumnDesc.h>
-#include <aips/Arrays/Vector.h>
-#include <aips/Arrays/IPosition.h>
-#include <aips/BasicSL/String.h>
-#include <aips/Utilities/BinarySearch.h>
-#include <aips/Utilities/Assert.h>
-#include <aips/Containers/BlockIO.h>
-#include <aips/IO/AipsIO.h>
-#include <aips/Tables/DataManError.h>
+#include <tables/Tables/TiledShapeStMan.h>
+#include <tables/Tables/TSMColumn.h>
+#include <tables/Tables/TSMCube.h>
+#include <tables/Tables/TableDesc.h>
+#include <tables/Tables/ColumnDesc.h>
+#include <casa/Arrays/Vector.h>
+#include <casa/Arrays/IPosition.h>
+#include <casa/BasicSL/String.h>
+#include <casa/Utilities/BinarySearch.h>
+#include <casa/Utilities/Assert.h>
+#include <casa/Containers/BlockIO.h>
+#include <casa/IO/AipsIO.h>
+#include <tables/Tables/DataManError.h>
 
 
 

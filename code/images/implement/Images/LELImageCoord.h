@@ -29,12 +29,12 @@
 #define AIPS_LELIMAGECOORD_H
 
 //# Includes
-#include <trial/Lattices/LELLattCoord.h>
-#include <trial/Coordinates/CoordinateSystem.h>
-#include <trial/Images/ImageInfo.h>
-#include <aips/Tables/TableRecord.h>
-#include <aips/Quanta/Unit.h>
-#include <aips/Utilities/CountedPtr.h>
+#include <lattices/Lattices/LELLattCoord.h>
+#include <coordinates/Coordinates/CoordinateSystem.h>
+#include <images/Images/ImageInfo.h>
+#include <tables/Tables/TableRecord.h>
+#include <casa/Quanta/Unit.h>
+#include <casa/Utilities/CountedPtr.h>
 
 //# Forward Declarations
 class LatticeExprNode;

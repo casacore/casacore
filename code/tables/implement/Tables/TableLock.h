@@ -30,8 +30,8 @@
 
 
 //# Includes
-#include <aips/aips.h>
-#include <aips/IO/LockFile.h>
+#include <casa/aips.h>
+#include <casa/IO/LockFile.h>
 
 
 // <summary> 

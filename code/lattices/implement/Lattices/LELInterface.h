@@ -30,12 +30,12 @@
 
 
 //# Includes
-#include <aips/aips.h>
-#include <trial/Lattices/LELAttribute.h>
-#include <aips/Arrays/IPosition.h>
-#include <aips/Utilities/CountedPtr.h>
-#include <aips/Utilities/DataType.h>
-#include <aips/IO/FileLocker.h>
+#include <casa/aips.h>
+#include <lattices/Lattices/LELAttribute.h>
+#include <casa/Arrays/IPosition.h>
+#include <casa/Utilities/CountedPtr.h>
+#include <casa/Utilities/DataType.h>
+#include <casa/IO/FileLocker.h>
 
 //# Forward Declarations
 template <class T> class LELScalar;

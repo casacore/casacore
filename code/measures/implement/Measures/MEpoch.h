@@ -30,10 +30,10 @@
 #define AIPS_MEPOCH_H
 
 //# Includes
-#include <aips/aips.h>
-#include <aips/Measures/MeasBase.h>
-#include <aips/Measures/MeasRef.h>
-#include <aips/Quanta/MVEpoch.h>
+#include <casa/aips.h>
+#include <measures/Measures/MeasBase.h>
+#include <measures/Measures/MeasRef.h>
+#include <casa/Quanta/MVEpoch.h>
 
 //# Forward Declarations
 class MEpoch;
@@ -70,8 +70,8 @@ template <class M> class ROScalarMeasColumn;
 // <example>
 // Convert (with all steps explicit) a UTC to an IAT time.
 // <srcblock>
-//	#include <aips/Measures.h>
-//	#include <aips/Measures/MEpoch.h>
+//	#include <measures/Measures.h>
+//	#include <measures/Measures/MEpoch.h>
 //	cout << "TAI for UTC = MJD(50237.29): " <<
 //		MEpoch::Convert(MEpoch(MVEpoch(Quantity(50237.29, "d")),
 //			               MEpoch::Ref(MEpoch::UTC)),

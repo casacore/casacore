@@ -26,10 +26,10 @@
 //# $Id$
 
 //# Includes
-#include <aips/Exceptions/Error.h>
-#include <aips/Utilities/Assert.h>
-#include <aips/Utilities/Register.h>
-#include <aips/Measures/MEpoch.h>
+#include <casa/Exceptions/Error.h>
+#include <casa/Utilities/Assert.h>
+#include <casa/Utilities/Register.h>
+#include <measures/Measures/MEpoch.h>
 
 //# Constructors
 MEpoch::MEpoch() : 

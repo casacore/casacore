@@ -29,12 +29,12 @@
 #define AIPS_READASCIITABLE_H
 
 //# Includes
-#include <aips/aips.h>
-#include <aips/BasicSL/String.h>
-#include <aips/Arrays/IPosition.h>
+#include <casa/aips.h>
+#include <casa/BasicSL/String.h>
+#include <casa/Arrays/IPosition.h>
 
 // # Forward Declarations
-#include <aips/iosfwd.h>
+#include <casa/iosfwd.h>
 class Regex;
 class IPosition;
 class LogIO;

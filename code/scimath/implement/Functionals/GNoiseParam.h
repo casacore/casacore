@@ -29,9 +29,9 @@
 #define AIPS_GNOISEPARAM_H
 
 //# Includes
-#include <aips/aips.h>
-#include <aips/Functionals/Function.h>
-#include <aips/BasicMath/Random.h>
+#include <casa/aips.h>
+#include <scimath/Functionals/Function.h>
+#include <casa/BasicMath/Random.h>
 
 //# Forward declarations
 

@@ -26,9 +26,9 @@
 //#
 //# $Id$
 
-#include <trial/Mathematics/NNGridder.h>
-#include <aips/BasicSL/Constants.h>
-#include <aips/Arrays/ArrayMath.h>
+#include <scimath/Mathematics/NNGridder.h>
+#include <casa/BasicSL/Constants.h>
+#include <casa/Arrays/ArrayMath.h>
 
 // Constructor
 template <class Domain, class Range>

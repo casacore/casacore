@@ -27,11 +27,11 @@
 
 //# Includes
 
-#include <aips/Mathematics/MatrixMathLA.h>
-#include <aips/Arrays/ArrayMath.h>
-#include <aips/Arrays/ArrayLogical.h>
-#include <aips/Utilities/Assert.h>
-#include <aips/iostream.h>
+#include <scimath/Mathematics/MatrixMathLA.h>
+#include <casa/Arrays/ArrayMath.h>
+#include <casa/Arrays/ArrayLogical.h>
+#include <casa/Utilities/Assert.h>
+#include <casa/iostream.h>
 
 int main()
 {

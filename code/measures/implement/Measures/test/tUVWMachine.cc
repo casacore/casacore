@@ -26,15 +26,15 @@
 //# $Id$
 
 //# Includes
-#include <aips/aips.h>
-#include <aips/Exceptions/Error.h>
-#include <aips/Measures/UVWMachine.h>
-#include <aips/Arrays/Vector.h>
-#include <aips/Measures/MPosition.h>
-#include <aips/Measures/MEpoch.h>
-#include <aips/Quanta/RotMatrix.h>
-#include <aips/BasicMath/Math.h>
-#include <aips/iostream.h>
+#include <casa/aips.h>
+#include <casa/Exceptions/Error.h>
+#include <measures/Measures/UVWMachine.h>
+#include <casa/Arrays/Vector.h>
+#include <measures/Measures/MPosition.h>
+#include <measures/Measures/MEpoch.h>
+#include <casa/Quanta/RotMatrix.h>
+#include <casa/BasicMath/Math.h>
+#include <casa/iostream.h>
 
 int main() {
   try {

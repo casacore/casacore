@@ -25,18 +25,18 @@
 //#
 //# $Id$
 
-#include <aips/Tables/TableDesc.h>
-#include <aips/Tables/ScaColDesc.h>
-#include <aips/Tables/Table.h>
-#include <aips/Tables/SetupNewTab.h>
-#include <aips/Tables/TableIter.h>
-#include <aips/Tables/ScalarColumn.h>
-#include <aips/Containers/Block.h>
-#include <aips/Arrays/Vector.h>
-#include <aips/Arrays/ArrayLogical.h>
+#include <tables/Tables/TableDesc.h>
+#include <tables/Tables/ScaColDesc.h>
+#include <tables/Tables/Table.h>
+#include <tables/Tables/SetupNewTab.h>
+#include <tables/Tables/TableIter.h>
+#include <tables/Tables/ScalarColumn.h>
+#include <casa/Containers/Block.h>
+#include <casa/Arrays/Vector.h>
+#include <casa/Arrays/ArrayLogical.h>
 
-#include <aips/iostream.h>
-#include <aips/sstream.h>
+#include <casa/iostream.h>
+#include <casa/sstream.h>
 
 
 // <summary> Test program for table iterators </summary>

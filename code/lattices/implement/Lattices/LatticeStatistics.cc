@@ -25,43 +25,43 @@
 //#
 //# $Id$
 
-#include <trial/Lattices/LatticeStatistics.h>
-#include <trial/Lattices/LattStatsSpecialize.h>
-#include <trial/Lattices/LattStatsProgress.h>
+#include <lattices/Lattices/LatticeStatistics.h>
+#include <lattices/Lattices/LattStatsSpecialize.h>
+#include <lattices/Lattices/LattStatsProgress.h>
 
-#include <aips/Arrays/ArrayLogical.h>
-#include <aips/Arrays/ArrayMath.h>
-#include <aips/Arrays/VectorIter.h>
-#include <aips/Arrays/Matrix.h>
-#include <aips/Arrays/Slice.h>
-#include <aips/Exceptions/Error.h>
-#include <aips/Logging/LogIO.h>
-#include <trial/Lattices/MaskedLattice.h>
-#include <aips/Lattices/ArrayLattice.h>
-#include <aips/Lattices/LatticeIterator.h>
-#include <aips/Lattices/LatticeStepper.h>
-#include <trial/Lattices/LatticeApply.h>
-#include <trial/Lattices/SubLattice.h>
-#include <aips/Lattices/TempLattice.h>
-#include <trial/Lattices/LatticeExpr.h>
-#include <trial/Lattices/LatticeExprNode.h>
-#include <aips/BasicMath/Math.h>
-#include <aips/BasicMath/ConvertScalar.h>
-#include <aips/Quanta/QMath.h>
-#include <aips/System/AppInfo.h>
-#include <aips/Utilities/Assert.h>
-#include <aips/Utilities/DataType.h>
-#include <aips/Utilities/GenSort.h>
-#include <aips/Utilities/LinearSearch.h>
-#include <aips/BasicSL/String.h>
-#include <aips/Utilities/ValType.h>
+#include <casa/Arrays/ArrayLogical.h>
+#include <casa/Arrays/ArrayMath.h>
+#include <casa/Arrays/VectorIter.h>
+#include <casa/Arrays/Matrix.h>
+#include <casa/Arrays/Slice.h>
+#include <casa/Exceptions/Error.h>
+#include <casa/Logging/LogIO.h>
+#include <lattices/Lattices/MaskedLattice.h>
+#include <lattices/Lattices/ArrayLattice.h>
+#include <lattices/Lattices/LatticeIterator.h>
+#include <lattices/Lattices/LatticeStepper.h>
+#include <lattices/Lattices/LatticeApply.h>
+#include <lattices/Lattices/SubLattice.h>
+#include <lattices/Lattices/TempLattice.h>
+#include <lattices/Lattices/LatticeExpr.h>
+#include <lattices/Lattices/LatticeExprNode.h>
+#include <casa/BasicMath/Math.h>
+#include <casa/BasicMath/ConvertScalar.h>
+#include <casa/Quanta/QMath.h>
+#include <casa/System/AppInfo.h>
+#include <casa/Utilities/Assert.h>
+#include <casa/Utilities/DataType.h>
+#include <casa/Utilities/GenSort.h>
+#include <casa/Utilities/LinearSearch.h>
+#include <casa/BasicSL/String.h>
+#include <casa/Utilities/ValType.h>
 
-#include <aips/iostream.h>
-#include <aips/iomanip.h>
-#include <aips/stdlib.h>
-#include <aips/sstream.h>
+#include <casa/iostream.h>
+#include <casa/iomanip.h>
+#include <casa/stdlib.h>
+#include <casa/sstream.h>
 
-#include <aips/OS/Timer.h>
+#include <casa/OS/Timer.h>
 
 
 

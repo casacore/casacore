@@ -26,15 +26,15 @@
 //# $Id$
 
 
-#include <trial/Tables/TiledFileAccess.h>
-#include <trial/Tables/TiledFileHelper.h>
-#include <aips/Tables/TableError.h>
-#include <aips/Containers/Record.h>
-#include <aips/Arrays/Slicer.h>
-#include <aips/BasicMath/Math.h>
-#include <aips/Utilities/ValType.h>
-#include <aips/Utilities/Assert.h>
-#include <aips/OS/HostInfo.h>
+#include <tables/Tables/TiledFileAccess.h>
+#include <tables/Tables/TiledFileHelper.h>
+#include <tables/Tables/TableError.h>
+#include <casa/Containers/Record.h>
+#include <casa/Arrays/Slicer.h>
+#include <casa/BasicMath/Math.h>
+#include <casa/Utilities/ValType.h>
+#include <casa/Utilities/Assert.h>
+#include <casa/OS/HostInfo.h>
 
 
 TiledFileAccess::TiledFileAccess (const String& fileName,

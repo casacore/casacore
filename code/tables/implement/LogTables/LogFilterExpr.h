@@ -30,7 +30,7 @@
 
 
 //# Includes
-#include <aips/Tables/TableExprData.h>
+#include <tables/Tables/TableExprData.h>
 
 //# Forward Declarations
 class TableExprNode;

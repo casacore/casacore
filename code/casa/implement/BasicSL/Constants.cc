@@ -25,7 +25,7 @@
 //#
 //# $Id$
 
-#include <aips/BasicSL/Constants.h>
+#include <casa/BasicSL/Constants.h>
 
 // Been changed for SUN CC port
 

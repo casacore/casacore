@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#include <aips/Containers/Dlink.h>
-#include <aips/iostream.h>
+#include <casa/Containers/Dlink.h>
+#include <casa/iostream.h>
 
 int Dlink_deprecated_flag = 0;
 

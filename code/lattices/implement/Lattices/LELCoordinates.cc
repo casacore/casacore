@@ -26,10 +26,10 @@
 //# $Id$
 
 
-#include <aips/Lattices/LELCoordinates.h>
-#include <aips/Lattices/LELLattCoordBase.h>
-#include <aips/Utilities/Assert.h>
-#include <aips/Exceptions/Error.h>
+#include <lattices/Lattices/LELCoordinates.h>
+#include <lattices/Lattices/LELLattCoordBase.h>
+#include <casa/Utilities/Assert.h>
+#include <casa/Exceptions/Error.h>
 
 
 // Default constructor

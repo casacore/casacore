@@ -30,63 +30,63 @@
 
 //# Includes
 //#   table description
-#include <aips/Tables/TableDesc.h>
-#include <aips/Tables/ColumnDesc.h>
-#include <aips/Tables/ScaColDesc.h>
-#include <aips/Tables/ArrColDesc.h>
-#include <aips/Tables/ScaRecordColDesc.h>
+#include <tables/Tables/TableDesc.h>
+#include <tables/Tables/ColumnDesc.h>
+#include <tables/Tables/ScaColDesc.h>
+#include <tables/Tables/ArrColDesc.h>
+#include <tables/Tables/ScaRecordColDesc.h>
 
 //#   storage managers
-#include <aips/Tables/StManAipsIO.h>
-#include <aips/Tables/StandardStMan.h>
-#include <aips/Tables/StandardStManAccessor.h>
-#include <aips/Tables/IncrementalStMan.h>
-#include <aips/Tables/IncrStManAccessor.h>
-#include <aips/Tables/TiledDataStMan.h>
-#include <aips/Tables/TiledDataStManAccessor.h>
-#include <aips/Tables/TiledCellStMan.h>
-#include <aips/Tables/TiledColumnStMan.h>
-#include <aips/Tables/TiledShapeStMan.h>
-#include <aips/Tables/MemoryStMan.h>
+#include <tables/Tables/StManAipsIO.h>
+#include <tables/Tables/StandardStMan.h>
+#include <tables/Tables/StandardStManAccessor.h>
+#include <tables/Tables/IncrementalStMan.h>
+#include <tables/Tables/IncrStManAccessor.h>
+#include <tables/Tables/TiledDataStMan.h>
+#include <tables/Tables/TiledDataStManAccessor.h>
+#include <tables/Tables/TiledCellStMan.h>
+#include <tables/Tables/TiledColumnStMan.h>
+#include <tables/Tables/TiledShapeStMan.h>
+#include <tables/Tables/MemoryStMan.h>
 
 //#   virtual column engines
-#include <aips/Tables/RetypedArrayEngine.h>
-#include <aips/Tables/RetypedArraySetGet.h>
-#include <aips/Tables/ScaledArrayEngine.h>
-#include <aips/Tables/ForwardCol.h>
-#include <aips/Tables/ForwardColRow.h>
-#include <aips/Tables/CompressComplex.h>
-#include <aips/Tables/CompressFloat.h>
+#include <tables/Tables/RetypedArrayEngine.h>
+#include <tables/Tables/RetypedArraySetGet.h>
+#include <tables/Tables/ScaledArrayEngine.h>
+#include <tables/Tables/ForwardCol.h>
+#include <tables/Tables/ForwardColRow.h>
+#include <tables/Tables/CompressComplex.h>
+#include <tables/Tables/CompressFloat.h>
 
 //#   table access
-#include <aips/Tables/Table.h>
-#include <aips/Tables/TableLock.h>
-#include <aips/Tables/SetupNewTab.h>
-#include <aips/Tables/ScalarColumn.h>
-#include <aips/Tables/ArrayColumn.h>
-#include <aips/Tables/TableRow.h>
-#include <aips/Tables/TableCopy.h>
-#include <aips/Arrays/Array.h>
-#include <aips/Arrays/Slicer.h>
-#include <aips/Arrays/Slice.h>
+#include <tables/Tables/Table.h>
+#include <tables/Tables/TableLock.h>
+#include <tables/Tables/SetupNewTab.h>
+#include <tables/Tables/ScalarColumn.h>
+#include <tables/Tables/ArrayColumn.h>
+#include <tables/Tables/TableRow.h>
+#include <tables/Tables/TableCopy.h>
+#include <casa/Arrays/Array.h>
+#include <casa/Arrays/Slicer.h>
+#include <casa/Arrays/Slice.h>
 
 //#   keywords
-#include <aips/Tables/TableRecord.h>
-#include <aips/Containers/RecordField.h>
+#include <tables/Tables/TableRecord.h>
+#include <casa/Containers/RecordField.h>
 
 //#   table lookup
-#include <aips/Tables/ColumnsIndex.h>
-#include <aips/Tables/ColumnsIndexArray.h>
+#include <tables/Tables/ColumnsIndex.h>
+#include <tables/Tables/ColumnsIndexArray.h>
 
 //#   table expressions (for selection of rows)
-#include <aips/Tables/ExprNode.h>
-#include <aips/Tables/ExprNodeSet.h>
-#include <aips/Tables/TableParse.h>
+#include <tables/Tables/ExprNode.h>
+#include <tables/Tables/ExprNodeSet.h>
+#include <tables/Tables/TableParse.h>
 
 //#   table vectors
-#include <aips/Tables/TableVector.h>
-#include <aips/Tables/TabVecMath.h>
-#include <aips/Tables/TabVecLogic.h>
+#include <tables/Tables/TableVector.h>
+#include <tables/Tables/TabVecMath.h>
+#include <tables/Tables/TabVecLogic.h>
 
 
 // <module>
@@ -298,12 +298,12 @@
 // <p>
 // A typical program could look like:
 // <srcblock>
-// #include <aips/Tables/Table.h>
-// #include <aips/Tables/ScalarColumn.h>
-// #include <aips/Tables/ArrayColumn.h>
-// #include <aips/Arrays/Vector.h>
-// #include <aips/Arrays/Slicer.h>
-// #include <aips/Arrays/ArrayMath.h>
+// #include <tables/Tables/Table.h>
+// #include <tables/Tables/ScalarColumn.h>
+// #include <tables/Tables/ArrayColumn.h>
+// #include <casa/Arrays/Vector.h>
+// #include <casa/Arrays/Slicer.h>
+// #include <casa/Arrays/ArrayMath.h>
 // #include <iostream>
 // 
 // main()
@@ -371,14 +371,14 @@
 // in that section. Other sections discuss the access to the table.
 //
 // <srcblock>
-// #include <aips/Tables/TableDesc.h>
-// #include <aips/Tables/SetupNewTab.h>
-// #include <aips/Tables/Table.h>
-// #include <aips/Tables/ScaColDesc.h>
-// #include <aips/Tables/ScaRecordColDesc.h>
-// #include <aips/Tables/ArrColDesc.h>
-// #include <aips/Tables/StandardStMan.h>
-// #include <aips/Tables/IncrementalStMan.h>
+// #include <tables/Tables/TableDesc.h>
+// #include <tables/Tables/SetupNewTab.h>
+// #include <tables/Tables/Table.h>
+// #include <tables/Tables/ScaColDesc.h>
+// #include <tables/Tables/ScaRecordColDesc.h>
+// #include <tables/Tables/ArrColDesc.h>
+// #include <tables/Tables/StandardStMan.h>
+// #include <tables/Tables/IncrementalStMan.h>
 // 
 // main()
 // {
@@ -461,16 +461,16 @@
 //
 // A typical program could look like:
 // <srcblock>
-// #include <aips/Tables/TableDesc.h>
-// #include <aips/Tables/SetupNewTab.h>
-// #include <aips/Tables/Table.h>
-// #include <aips/Tables/ScaColDesc.h>
-// #include <aips/Tables/ArrColDesc.h>
-// #include <aips/Tables/ScalarColumn.h>
-// #include <aips/Tables/ArrayColumn.h>
-// #include <aips/Arrays/Vector.h>
-// #include <aips/Arrays/Slicer.h>
-// #include <aips/Arrays/ArrayMath.h>
+// #include <tables/Tables/TableDesc.h>
+// #include <tables/Tables/SetupNewTab.h>
+// #include <tables/Tables/Table.h>
+// #include <tables/Tables/ScaColDesc.h>
+// #include <tables/Tables/ArrColDesc.h>
+// #include <tables/Tables/ScalarColumn.h>
+// #include <tables/Tables/ArrayColumn.h>
+// #include <casa/Arrays/Vector.h>
+// #include <casa/Arrays/Slicer.h>
+// #include <casa/Arrays/ArrayMath.h>
 // #include <iostream>
 // 
 // main()
@@ -667,7 +667,7 @@
 // otherwise an exception is thrown.
 // In the following example we select all rows with RA>10:
 // <srcblock>
-//    #include <aips/Tables/ExprNode.h>
+//    #include <tables/Tables/ExprNode.h>
 //    Table table ("Table.name");
 //    Table result = table (table.col("RA") > 10);
 // </srcblock>
@@ -898,13 +898,13 @@
 // mentioned classes.
 //
 // <srcblock>
-// #include <aips/Tables/TableDesc.h>
-// #include <aips/Tables/ScaColDesc.h>
-// #include <aips/Tables/ArrColDesc.h>
+// #include <tables/Tables/TableDesc.h>
+// #include <tables/Tables/ScaColDesc.h>
+// #include <tables/Tables/ArrColDesc.h>
 // #include <aips/Tables/ScaRecordTabDesc.h>
-// #include <aips/Tables/TableRecord.h>
-// #include <aips/Arrays/IPosition.h>
-// #include <aips/Arrays/Vector.h>
+// #include <tables/Tables/TableRecord.h>
+// #include <casa/Arrays/IPosition.h>
+// #include <casa/Arrays/Vector.h>
 //
 // main()
 // {

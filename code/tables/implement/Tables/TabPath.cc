@@ -26,8 +26,8 @@
 //# $Id$
 
 //# Includes
-#include <aips/Tables/TabPath.h>
-#include <aips/Exceptions/Error.h>
+#include <tables/Tables/TabPath.h>
+#include <casa/Exceptions/Error.h>
 #include <unistd.h>                    // for system call access
 
 //# This is the implementation of the class TabPath.

@@ -29,13 +29,13 @@
 #define AIPS_TABLEPARSE_H
 
 //# Includes
-#include <aips/aips.h>
-#include <aips/Tables/Table.h>
-#include <aips/BasicSL/String.h>
-#include <aips/Utilities/Sort.h>
-#include <aips/Containers/List.h>
-#include <aips/Containers/Block.h>
-#include <aips/Tables/ExprNode.h>
+#include <casa/aips.h>
+#include <tables/Tables/Table.h>
+#include <casa/BasicSL/String.h>
+#include <casa/Utilities/Sort.h>
+#include <casa/Containers/List.h>
+#include <casa/Containers/Block.h>
+#include <tables/Tables/ExprNode.h>
 
 //# Forward Declarations
 class TableExprNodeSet;

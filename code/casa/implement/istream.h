@@ -33,10 +33,10 @@
 // them (e.g. <cstring>)
 
 // Make sure any special macros are set
-#include <aips/aips.h>
+#include <casa/aips.h>
 // gcc has no <istream> yet. Change later
 #if defined(__GNUG__)
-#include <aips/iostream.h>
+#include <casa/iostream.h>
 #else
 #include <istream>
 

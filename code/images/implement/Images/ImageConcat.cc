@@ -26,31 +26,31 @@
 //# $Id$
 
 
-#include <trial/Images/ImageConcat.h>
+#include <images/Images/ImageConcat.h>
 
-#include <aips/OS/Timer.h>
+#include <casa/OS/Timer.h>
 
-#include <aips/Arrays/ArrayLogical.h>
-#include <aips/Arrays/ArrayMath.h>
-#include <aips/Arrays/ArrayUtil.h>
-#include <aips/Containers/Block.h>
-#include <aips/Containers/Record.h>
-#include <aips/Exceptions/Error.h>
-#include <aips/Arrays/IPosition.h>
-#include <aips/Logging/LogIO.h>
-#include <aips/Utilities/Assert.h>
-#include <aips/iostream.h>
+#include <casa/Arrays/ArrayLogical.h>
+#include <casa/Arrays/ArrayMath.h>
+#include <casa/Arrays/ArrayUtil.h>
+#include <casa/Containers/Block.h>
+#include <casa/Containers/Record.h>
+#include <casa/Exceptions/Error.h>
+#include <casa/Arrays/IPosition.h>
+#include <casa/Logging/LogIO.h>
+#include <casa/Utilities/Assert.h>
+#include <casa/iostream.h>
 
-#include <trial/Coordinates/CoordinateSystem.h>
-#include <trial/Coordinates/TabularCoordinate.h>
-#include <trial/Coordinates/StokesCoordinate.h>
-#include <trial/Images/ImageSummary.h>
-#include <trial/Images/ImageInterface.h>
-#include <trial/Images/ImageInfo.h>
-#include <trial/Images/LELImageCoord.h>
-#include <trial/Lattices/LatticeConcat.h>
-#include <trial/Lattices/MaskedLattice.h>
-#include <aips/Lattices/LELCoordinates.h>
+#include <coordinates/Coordinates/CoordinateSystem.h>
+#include <coordinates/Coordinates/TabularCoordinate.h>
+#include <coordinates/Coordinates/StokesCoordinate.h>
+#include <images/Images/ImageSummary.h>
+#include <images/Images/ImageInterface.h>
+#include <images/Images/ImageInfo.h>
+#include <images/Images/LELImageCoord.h>
+#include <lattices/Lattices/LatticeConcat.h>
+#include <lattices/Lattices/MaskedLattice.h>
+#include <lattices/Lattices/LELCoordinates.h>
 
 
 template<class T>

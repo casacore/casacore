@@ -27,13 +27,13 @@
 
 //# Includes
 
-#include <aips/Exceptions/Error.h>
-#include <aips/BasicMath/Math.h>
-#include <aips/Quanta/UnitVal.h>
-#include <aips/Quanta/UnitName.h>
-#include <aips/Utilities/MUString.h>
-#include <aips/Quanta/UnitMap.h>
-#include <aips/Utilities/Regex.h>
+#include <casa/Exceptions/Error.h>
+#include <casa/BasicMath/Math.h>
+#include <casa/Quanta/UnitVal.h>
+#include <casa/Quanta/UnitName.h>
+#include <casa/Utilities/MUString.h>
+#include <casa/Quanta/UnitMap.h>
+#include <casa/Utilities/Regex.h>
 
 int UnitVal_static_initializer::initialized = 0;
 

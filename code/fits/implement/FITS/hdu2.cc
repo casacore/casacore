@@ -25,13 +25,13 @@
 //#
 //# $Id$
 
-# include <aips/FITS/fits.h>
-# include <aips/FITS/hdu.h>
-# include <aips/FITS/fitsio.h>
-# include <aips/string.h>
-# include <aips/stdio.h>
+# include <fits/FITS/fits.h>
+# include <fits/FITS/hdu.h>
+# include <fits/FITS/fitsio.h>
+# include <casa/string.h>
+# include <casa/stdio.h>
 # include <assert.h>
-# include <aips/sstream.h>
+# include <casa/sstream.h>
 
 //== FitsBit specializations ==================================================
 FitsField<FitsBit>::FitsField(int n) : FitsBase(FITS::BIT,n), field(0) { }

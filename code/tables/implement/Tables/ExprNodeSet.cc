@@ -25,18 +25,18 @@
 //#
 //# $Id$
 
-#include <aips/Tables/ExprNodeSet.h>
-#include <aips/Tables/ExprNode.h>
-#include <aips/Tables/ExprDerNode.h>
-#include <aips/Tables/ExprDerNodeArray.h>
-#include <aips/Tables/TableError.h>
-#include <aips/Arrays/Vector.h>
-#include <aips/Arrays/ArrayIO.h>
-#include <aips/Arrays/IPosition.h>
-#include <aips/Arrays/Slicer.h>
-#include <aips/BasicMath/Math.h>
-#include <aips/Utilities/GenSort.h>
-#include <aips/Utilities/Assert.h>
+#include <tables/Tables/ExprNodeSet.h>
+#include <tables/Tables/ExprNode.h>
+#include <tables/Tables/ExprDerNode.h>
+#include <tables/Tables/ExprDerNodeArray.h>
+#include <tables/Tables/TableError.h>
+#include <casa/Arrays/Vector.h>
+#include <casa/Arrays/ArrayIO.h>
+#include <casa/Arrays/IPosition.h>
+#include <casa/Arrays/Slicer.h>
+#include <casa/BasicMath/Math.h>
+#include <casa/Utilities/GenSort.h>
+#include <casa/Utilities/Assert.h>
 
 
 TableExprNodeSetElem::TableExprNodeSetElem (const TableExprNode& value)

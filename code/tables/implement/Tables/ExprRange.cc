@@ -25,11 +25,11 @@
 //#
 //# $Id$
 
-#include <aips/Tables/ExprRange.h>
-#include <aips/Tables/TableColumn.h>
-#include <aips/Arrays/Slice.h>
-#include <aips/BasicMath/Math.h>
-#include <aips/Exceptions/Error.h>
+#include <tables/Tables/ExprRange.h>
+#include <tables/Tables/TableColumn.h>
+#include <casa/Arrays/Slice.h>
+#include <casa/BasicMath/Math.h>
+#include <casa/Exceptions/Error.h>
 
 TableExprRange::TableExprRange()
 : tabColPtr_p(0)

@@ -26,8 +26,8 @@
 //# $Id$
 
 //# Includes
-#include <aips/Measures/MConvertBase.h>
-#include <aips/iostream.h>
+#include <measures/Measures/MConvertBase.h>
+#include <casa/iostream.h>
 
 //# Constructors
 

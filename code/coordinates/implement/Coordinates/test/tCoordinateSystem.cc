@@ -27,28 +27,28 @@
 //#
 
  
-#include <aips/Arrays/Vector.h>
-#include <aips/Arrays/Matrix.h>
-#include <aips/Arrays/ArrayLogical.h>
-#include <aips/Arrays/ArrayMath.h>
-#include <aips/Arrays/IPosition.h>
-#include <aips/Containers/Record.h>
-#include <aips/Logging/LogIO.h>
-#include <aips/Logging/LogOrigin.h>
-#include <aips/BasicMath/Math.h>
-#include <aips/Measures/MDirection.h>
-#include <aips/Measures/MDoppler.h>
-#include <aips/Quanta/Unit.h>
-#include <trial/Coordinates/CoordinateSystem.h>
-#include <trial/Coordinates/DirectionCoordinate.h>
-#include <trial/Coordinates/SpectralCoordinate.h>
-#include <trial/Coordinates/LinearCoordinate.h>
-#include <trial/Coordinates/StokesCoordinate.h>
-#include <trial/Coordinates/TabularCoordinate.h>
-#include <trial/Coordinates/CoordinateUtil.h>
-#include <aips/Exceptions/Error.h>
+#include <casa/Arrays/Vector.h>
+#include <casa/Arrays/Matrix.h>
+#include <casa/Arrays/ArrayLogical.h>
+#include <casa/Arrays/ArrayMath.h>
+#include <casa/Arrays/IPosition.h>
+#include <casa/Containers/Record.h>
+#include <casa/Logging/LogIO.h>
+#include <casa/Logging/LogOrigin.h>
+#include <casa/BasicMath/Math.h>
+#include <measures/Measures/MDirection.h>
+#include <measures/Measures/MDoppler.h>
+#include <casa/Quanta/Unit.h>
+#include <coordinates/Coordinates/CoordinateSystem.h>
+#include <coordinates/Coordinates/DirectionCoordinate.h>
+#include <coordinates/Coordinates/SpectralCoordinate.h>
+#include <coordinates/Coordinates/LinearCoordinate.h>
+#include <coordinates/Coordinates/StokesCoordinate.h>
+#include <coordinates/Coordinates/TabularCoordinate.h>
+#include <coordinates/Coordinates/CoordinateUtil.h>
+#include <casa/Exceptions/Error.h>
 
-#include <aips/iostream.h>
+#include <casa/iostream.h>
 
 DirectionCoordinate makeDirectionCoordinate(Bool unitsAreDegrees=True,
                                             MDirection::Types type=MDirection::J2000);

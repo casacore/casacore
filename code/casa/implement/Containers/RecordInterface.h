@@ -32,12 +32,12 @@
 
 
 //# Includes
-#include <aips/aips.h>
-#include <aips/BasicSL/String.h>
-#include <aips/Utilities/Notice.h>
-#include <aips/Utilities/DataType.h>
-#include <aips/Containers/RecordFieldId.h>
-#include <aips/Arrays/Array.h>
+#include <casa/aips.h>
+#include <casa/BasicSL/String.h>
+#include <casa/Utilities/Notice.h>
+#include <casa/Utilities/DataType.h>
+#include <casa/Containers/RecordFieldId.h>
+#include <casa/Arrays/Array.h>
 
 //# Forward Declarations
 class RecordDesc;

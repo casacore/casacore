@@ -29,8 +29,8 @@
 #define AIPS_LCSLICER_H
 
 //# Includes
-#include <trial/Lattices/RegionType.h>
-#include <aips/Arrays/Vector.h>
+#include <lattices/Lattices/RegionType.h>
+#include <casa/Arrays/Vector.h>
 
 //# Forward Declarations
 class IPosition;

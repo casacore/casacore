@@ -30,7 +30,7 @@
 
 //# Includes
 #include <assert.h>
-#include <aips/OS/LittleEndianConversion.h>
+#include <casa/OS/LittleEndianConversion.h>
 
 
 // Define the canonical sizes of the built-in data types.

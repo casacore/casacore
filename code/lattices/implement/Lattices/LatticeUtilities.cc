@@ -24,26 +24,26 @@
 //#
 //# $Id$
 
-#include <trial/Lattices/LatticeUtilities.h>
+#include <lattices/Lattices/LatticeUtilities.h>
 
-#include <aips/aips.h>
-#include <aips/Arrays/Array.h>
-#include <aips/Arrays/Slicer.h>
-#include <aips/Arrays/ArrayMath.h>
-#include <aips/Arrays/IPosition.h>
-#include <aips/Lattices/Lattice.h>
-#include <trial/Lattices/ExtendLattice.h>
-#include <trial/Lattices/SubLattice.h>
-#include <trial/Lattices/MaskedLatticeIterator.h>
-#include <aips/Lattices/LatticeStepper.h>
-#include <trial/Lattices/MaskedLattice.h>
-#include <trial/Lattices/LatticeStatistics.h>
-#include <aips/Lattices/TempLattice.h>
-#include <aips/Logging/LogIO.h>
-#include <aips/BasicMath/Math.h>
-#include <aips/Exceptions/Error.h>
-#include <aips/Utilities/Assert.h>
-#include <aips/iostream.h>
+#include <casa/aips.h>
+#include <casa/Arrays/Array.h>
+#include <casa/Arrays/Slicer.h>
+#include <casa/Arrays/ArrayMath.h>
+#include <casa/Arrays/IPosition.h>
+#include <lattices/Lattices/Lattice.h>
+#include <lattices/Lattices/ExtendLattice.h>
+#include <lattices/Lattices/SubLattice.h>
+#include <lattices/Lattices/MaskedLatticeIterator.h>
+#include <lattices/Lattices/LatticeStepper.h>
+#include <lattices/Lattices/MaskedLattice.h>
+#include <lattices/Lattices/LatticeStatistics.h>
+#include <lattices/Lattices/TempLattice.h>
+#include <casa/Logging/LogIO.h>
+#include <casa/BasicMath/Math.h>
+#include <casa/Exceptions/Error.h>
+#include <casa/Utilities/Assert.h>
+#include <casa/iostream.h>
 
 
 template <class T> 

@@ -29,10 +29,10 @@
 #if !defined(AIPS_TABULAR_COORDINATE_H)
 #define AIPS_TABULAR_COORDINATE_H
 
-#include <aips/aips.h>
-#include <aips/Arrays/ArrayMath.h>
-#include <aips/Arrays/Vector.h>
-#include <trial/Coordinates/Coordinate.h>
+#include <casa/aips.h>
+#include <casa/Arrays/ArrayMath.h>
+#include <casa/Arrays/Vector.h>
+#include <coordinates/Coordinates/Coordinate.h>
 
 template<class Domain, class Range> class Interpolate1D;
 template<class T> class Quantum;

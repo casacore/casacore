@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#include <aips/Containers/SimOrdMap.h>
-#include <aips/Exceptions/Error.h>
+#include <casa/Containers/SimOrdMap.h>
+#include <casa/Exceptions/Error.h>
 
 template<class K, class V>
 SimpleOrderedMap<K,V>::SimpleOrderedMap (const V& dflt, uInt incr)

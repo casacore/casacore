@@ -30,7 +30,7 @@
 #define AIPS_LOGFILTERTAQL_H
 
 //# Includes
-#include <aips/Logging/LogFilterInterface.h>
+#include <casa/Logging/LogFilterInterface.h>
 
 //# Forward Declarations
 class LogFilterExpr;

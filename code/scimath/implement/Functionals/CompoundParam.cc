@@ -26,7 +26,7 @@
 //# $Id$
 
 //# Includes
-#include <aips/Functionals/CompoundParam.h>
+#include <scimath/Functionals/CompoundParam.h>
 
 template <class T>
 CompoundParam<T>::CompoundParam() : 

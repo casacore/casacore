@@ -29,8 +29,8 @@
 #define AIPS_MEMORYIO_H
 
 //# Includes
-#include <aips/aips.h>
-#include <aips/IO/ByteIO.h>
+#include <casa/aips.h>
+#include <casa/IO/ByteIO.h>
 
 // <summary>Class for IO to a memory buffer.</summary>
 

@@ -26,19 +26,19 @@
 //# $Id$
 //#--------------------------------------------------------------------------
 
-#include<aips/aips.h>
-#include <trial/Images/PagedImage.h>
+#include<casa/aips.h>
+#include <images/Images/PagedImage.h>
 ///#include <trial/ImgCrdSys/ImageCoordinate.h>
 
-#include <aips/Arrays/Vector.h>
-#include <aips/Arrays/Cube.h>
-#include <aips/Exceptions/Error.h>
-#include <aips/Arrays/IPosition.h>
-#include <aips/Tables.h>
-#include <aips/BasicSL/String.h>
+#include <casa/Arrays/Vector.h>
+#include <casa/Arrays/Cube.h>
+#include <casa/Exceptions/Error.h>
+#include <casa/Arrays/IPosition.h>
+#include <tables/Tables.h>
+#include <casa/BasicSL/String.h>
 
-#include <aips/stdlib.h>
-#include <aips/iostream.h>
+#include <casa/stdlib.h>
+#include <casa/iostream.h>
 
 main()
 {

@@ -25,7 +25,7 @@
 //#
 //# $Id$
 
-#include<aips/Arrays/VectorIter.h>
+#include<casa/Arrays/VectorIter.h>
 
 template<class T> VectorIterator<T>::VectorIterator(Array<T> &a)
 : ArrayIterator<T>(a, 1)

@@ -31,8 +31,8 @@
 
 //# Includes
 
-#include <aips/aips.h>
-#include <aips/iosfwd.h>
+#include <casa/aips.h>
+#include <casa/iosfwd.h>
 
 // <summary>
 // Integer complex numbers.

@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#include <trial/OS/ModcompDataConversion.h>
-#include <trial/OS/ModcompConversion.h>
+#include <casa/OS/ModcompDataConversion.h>
+#include <casa/OS/ModcompConversion.h>
 
 ModcompDataConversion::~ModcompDataConversion(){
 }

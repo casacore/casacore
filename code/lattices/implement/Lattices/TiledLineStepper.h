@@ -29,10 +29,10 @@
 #define AIPS_TILEDLINESTEPPER_H
 
 //# Includes
-#include <aips/aips.h>
-#include <aips/Lattices/LatticeNavigator.h>
-#include <aips/Lattices/LatticeIndexer.h>
-#include <aips/Arrays/IPosition.h>
+#include <casa/aips.h>
+#include <lattices/Lattices/LatticeNavigator.h>
+#include <lattices/Lattices/LatticeIndexer.h>
+#include <casa/Arrays/IPosition.h>
 
 
 // <summary>

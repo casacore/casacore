@@ -26,11 +26,11 @@
 //# $Id$
 
 //# Includes
-#include <aips/Mathematics/AutoDiffIO.h>
-#include <aips/Mathematics/AutoDiff.h>
-#include <aips/Arrays/Vector.h>
-#include <aips/Arrays/ArrayIO.h>
-#include <aips/iostream.h>
+#include <scimath/Mathematics/AutoDiffIO.h>
+#include <scimath/Mathematics/AutoDiff.h>
+#include <casa/Arrays/Vector.h>
+#include <casa/Arrays/ArrayIO.h>
+#include <casa/iostream.h>
 
 template<class T>
 ostream &operator<<(ostream &os, const AutoDiff<T> &ad) {

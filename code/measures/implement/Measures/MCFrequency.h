@@ -30,12 +30,12 @@
 #define AIPS_MCFREQUENCY_H
 
 //# Includes
-#include <aips/aips.h>
-#include <aips/Measures/MeasBase.h>
-#include <aips/Measures/MeasRef.h>
-#include <aips/Measures/MCBase.h>
-#include <aips/Measures/MConvertBase.h>
-#include <aips/Measures/MFrequency.h>
+#include <casa/aips.h>
+#include <measures/Measures/MeasBase.h>
+#include <measures/Measures/MeasRef.h>
+#include <measures/Measures/MCBase.h>
+#include <measures/Measures/MConvertBase.h>
+#include <measures/Measures/MFrequency.h>
 
 //# Forward Declarations
 class MCFrequency;
@@ -71,9 +71,9 @@ class String;
 // <example>
 // Get the Doppler shift for an oberved HI frequency of 1380 MHz
 // <srcblock>
-//	#include <aips/Measures.h>
-//	#include <aips/Measures/MDoppler.h>
-//	#include <aips/Measures/MFrequency.h>
+//	#include <measures/Measures.h>
+//	#include <measures/Measures/MDoppler.h>
+//	#include <measures/Measures/MFrequency.h>
 //	cout << "Redshift for 1380 MHz: " <<
 //		MDoppler::Convert( MFrequency( Quantity(1380., "MHz"),
 //					       MFrequency::TOPO).toDoppler(QC::HI),

@@ -28,17 +28,17 @@
 #if !defined(TRIAL_MSFITSINPUT_H)
 #define TRIAL_MSFITSINPUT_H
 
-#include <aips/aips.h>
-#include <aips/Arrays/Matrix.h>
-#include <aips/Arrays/Vector.h>
-#include <aips/Containers/Block.h>
-#include <aips/FITS/fits.h>
-#include <aips/FITS/hdu.h>
-#include <aips/Logging/LogIO.h>
-#include <aips/MeasurementSets/MeasurementSet.h>
-#include <aips/Measures/MFrequency.h>
-#include <aips/BasicSL/String.h>
-#include <trial/MeasurementSets/MSTileLayout.h>
+#include <casa/aips.h>
+#include <casa/Arrays/Matrix.h>
+#include <casa/Arrays/Vector.h>
+#include <casa/Containers/Block.h>
+#include <fits/FITS/fits.h>
+#include <fits/FITS/hdu.h>
+#include <casa/Logging/LogIO.h>
+#include <ms/MeasurementSets/MeasurementSet.h>
+#include <measures/Measures/MFrequency.h>
+#include <casa/BasicSL/String.h>
+#include <ms/MeasurementSets/MSTileLayout.h>
 
 class FitsInput;
 class BinaryTable;

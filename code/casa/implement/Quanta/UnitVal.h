@@ -30,14 +30,14 @@
 
 
 //# Includes
-#include <aips/aips.h>
-#include <aips/Quanta/UnitDim.h>
+#include <casa/aips.h>
+#include <casa/Quanta/UnitDim.h>
 
 //# Forward Declarations
 class String;
 class MUString;
 class UnitMap;
-#include <aips/iosfwd.h>
+#include <casa/iosfwd.h>
 
 // 
 // <summary>

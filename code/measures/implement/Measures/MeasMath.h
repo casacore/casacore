@@ -30,12 +30,12 @@
 #define AIPS_MEASMATH_H
 
 //# Includes
-#include <aips/aips.h>
-#include <aips/Quanta/Euler.h>
-#include <aips/Quanta/RotMatrix.h>
-#include <aips/Quanta/MVPosition.h>
-#include <aips/Quanta/MVDirection.h>
-#include <aips/Measures/MeasFrame.h>
+#include <casa/aips.h>
+#include <casa/Quanta/Euler.h>
+#include <casa/Quanta/RotMatrix.h>
+#include <casa/Quanta/MVPosition.h>
+#include <casa/Quanta/MVDirection.h>
+#include <measures/Measures/MeasFrame.h>
 
 //# Forward Declarations
 class Measure;

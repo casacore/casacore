@@ -26,20 +26,20 @@
 //#
 //# $Id$
 
-#include <trial/Images/ImageInfo.h>
-#include <aips/Exceptions/Error.h>
-#include <aips/Quanta/Quantum.h>
-#include <aips/Quanta/QuantumHolder.h>
-#include <aips/Arrays/Vector.h>
-#include <aips/BasicMath/Math.h>
-#include <aips/Containers/Record.h>
-#include <aips/BasicSL/String.h>
-#include <aips/Utilities/Regex.h>
-#include <trial/LogTables/LoggerHolder.h>
-#include <aips/sstream.h>
+#include <images/Images/ImageInfo.h>
+#include <casa/Exceptions/Error.h>
+#include <casa/Quanta/Quantum.h>
+#include <casa/Quanta/QuantumHolder.h>
+#include <casa/Arrays/Vector.h>
+#include <casa/BasicMath/Math.h>
+#include <casa/Containers/Record.h>
+#include <casa/BasicSL/String.h>
+#include <casa/Utilities/Regex.h>
+#include <tables/LogTables/LoggerHolder.h>
+#include <casa/sstream.h>
 
 
-#include <aips/iostream.h>
+#include <casa/iostream.h>
 
 
 ImageInfo::ImageInfo()

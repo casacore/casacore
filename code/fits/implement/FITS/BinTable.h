@@ -31,11 +31,11 @@
 
 //# Includes
 
-#include <aips/aips.h>
-#include <aips/FITS/hdu.h>
-#include <aips/Tables/Table.h>
-#include <aips/Tables/TableRecord.h>
-#include <aips/Containers/SimOrdMap.h>
+#include <casa/aips.h>
+#include <fits/FITS/hdu.h>
+#include <tables/Tables/Table.h>
+#include <tables/Tables/TableRecord.h>
+#include <casa/Containers/SimOrdMap.h>
 
 // <summary> 
 // BinaryTable is used to translate a FITS binary table to an aips++ Table.

@@ -27,26 +27,26 @@
 //#
 
  
-#include <aips/Arrays/Vector.h>
-#include <aips/Arrays/Matrix.h>
-#include <aips/Arrays/ArrayLogical.h>
-#include <aips/Arrays/ArrayMath.h>
-#include <aips/BasicMath/Math.h>
-#include <aips/BasicSL/Constants.h>
-#include <aips/Measures/MDirection.h>
-#include <aips/OS/Timer.h>
-#include <aips/Quanta/Quantum.h>
-#include <aips/Quanta/MVDirection.h>
-#include <trial/Coordinates/DirectionCoordinate.h>
-#include <trial/Coordinates/Projection.h>
-#include <aips/Exceptions/Error.h>
-#include <aips/Tables/TableRecord.h>
+#include <casa/Arrays/Vector.h>
+#include <casa/Arrays/Matrix.h>
+#include <casa/Arrays/ArrayLogical.h>
+#include <casa/Arrays/ArrayMath.h>
+#include <casa/BasicMath/Math.h>
+#include <casa/BasicSL/Constants.h>
+#include <measures/Measures/MDirection.h>
+#include <casa/OS/Timer.h>
+#include <casa/Quanta/Quantum.h>
+#include <casa/Quanta/MVDirection.h>
+#include <coordinates/Coordinates/DirectionCoordinate.h>
+#include <coordinates/Coordinates/Projection.h>
+#include <casa/Exceptions/Error.h>
+#include <tables/Tables/TableRecord.h>
 
 
-#include <trial/Coordinates/CoordinateSystem.h>
-#include <aips/Logging/LogIO.h>
+#include <coordinates/Coordinates/CoordinateSystem.h>
+#include <casa/Logging/LogIO.h>
 
-#include <aips/iostream.h>
+#include <casa/iostream.h>
 
 DirectionCoordinate makeCoordinate(MDirection::Types type,
                                    Projection& proj,

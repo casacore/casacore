@@ -29,11 +29,11 @@
 #if !defined(AIPS_SKYCOMPONENT_H)
 #define AIPS_SKYCOMPONENT_H
 
-#include <aips/aips.h>
-#include <aips/Utilities/CountedPtr.h>
-#include <trial/ComponentModels/ComponentType.h>
-#include <trial/ComponentModels/SkyCompBase.h>
-#include <aips/Measures/Stokes.h>
+#include <casa/aips.h>
+#include <casa/Utilities/CountedPtr.h>
+#include <components/ComponentModels/ComponentType.h>
+#include <components/ComponentModels/SkyCompBase.h>
+#include <measures/Measures/Stokes.h>
 
 class ComponentShape;
 class CoordinateSystem;

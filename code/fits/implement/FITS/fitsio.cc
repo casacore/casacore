@@ -25,12 +25,12 @@
 //#
 //# $Id$
 
-# include <aips/FITS/hdu.h>
-# include <aips/FITS/fitsio.h>
-# include <aips/BasicSL/String.h>
-# include <aips/Containers/Block.h>
-# include <aips/string.h>
-# include <aips/sstream.h>
+# include <fits/FITS/hdu.h>
+# include <fits/FITS/fitsio.h>
+# include <casa/BasicSL/String.h>
+# include <casa/Containers/Block.h>
+# include <casa/string.h>
+# include <casa/sstream.h>
 
 FitsIO::~FitsIO() {
 }

@@ -29,8 +29,8 @@
 #define AIPS_TABLECACHE_H
 
 //# Includes
-#include <aips/aips.h>
-#include <aips/Containers/SimOrdMap.h>
+#include <casa/aips.h>
+#include <casa/Containers/SimOrdMap.h>
 
 //# Forward Declarations
 class PlainTable;

@@ -25,9 +25,9 @@
 //#
 //# $Id$
 
-#include <trial/Mathematics/DFTServer.h>
-#include <aips/Arrays/Matrix.h>
-#include <aips/iostream.h>
+#include <scimath/Mathematics/DFTServer.h>
+#include <casa/Arrays/Matrix.h>
+#include <casa/iostream.h>
 
 
 template<class T> 

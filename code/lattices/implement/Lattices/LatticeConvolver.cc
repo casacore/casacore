@@ -25,17 +25,17 @@
 //#
 //# $Id$
 
-#include <trial/Lattices/LatticeConvolver.h>
-#include <trial/Lattices/LatticeFFT.h>
-#include <aips/Lattices/LatticeIterator.h>
-#include <aips/Lattices/LatticeStepper.h>
-#include <trial/Lattices/SubLattice.h>
-#include <aips/Lattices/TileStepper.h>
-#include <aips/Arrays/ArrayMath.h>
-#include <aips/Arrays/Slicer.h>
-#include <aips/Utilities/Assert.h>
-#include <aips/OS/HostInfo.h>
-#include <aips/iostream.h>
+#include <lattices/Lattices/LatticeConvolver.h>
+#include <lattices/Lattices/LatticeFFT.h>
+#include <lattices/Lattices/LatticeIterator.h>
+#include <lattices/Lattices/LatticeStepper.h>
+#include <lattices/Lattices/SubLattice.h>
+#include <lattices/Lattices/TileStepper.h>
+#include <casa/Arrays/ArrayMath.h>
+#include <casa/Arrays/Slicer.h>
+#include <casa/Utilities/Assert.h>
+#include <casa/OS/HostInfo.h>
+#include <casa/iostream.h>
 
 const Int maxLatSize = HostInfo::memoryTotal()/1024/8;
 

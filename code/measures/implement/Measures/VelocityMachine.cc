@@ -26,12 +26,12 @@
 //# $Id$
 
 //# Includes
-#include <aips/Measures/VelocityMachine.h>
-#include <aips/BasicMath/Math.h>
-#include <aips/Arrays/Vector.h>
-#include <aips/Quanta/UnitVal.h>
-#include <aips/Measures/MeasFrame.h>
-#include <aips/Measures/MeasConvert.h>
+#include <measures/Measures/VelocityMachine.h>
+#include <casa/BasicMath/Math.h>
+#include <casa/Arrays/Vector.h>
+#include <casa/Quanta/UnitVal.h>
+#include <measures/Measures/MeasFrame.h>
+#include <measures/Measures/MeasConvert.h>
 
 //# Constructors
 

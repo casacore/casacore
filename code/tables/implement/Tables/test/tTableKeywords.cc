@@ -26,12 +26,12 @@
 //# $Id$
 
 //# Includes
-#include <aips/aips.h>
-#include <aips/Tables.h>
-#include <aips/Tables/TableRecord.h>
-#include <aips/Utilities/Assert.h>
-#include <aips/OS/Directory.h>
-#include <aips/iostream.h>
+#include <casa/aips.h>
+#include <tables/Tables.h>
+#include <tables/Tables/TableRecord.h>
+#include <casa/Utilities/Assert.h>
+#include <casa/OS/Directory.h>
+#include <casa/iostream.h>
 #include <unistd.h>
 
 

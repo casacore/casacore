@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#include <aips/Tables/MemoryStMan.h>
-#include <aips/BasicSL/String.h>
+#include <tables/Tables/MemoryStMan.h>
+#include <casa/BasicSL/String.h>
 
 
 MemoryStMan::MemoryStMan()

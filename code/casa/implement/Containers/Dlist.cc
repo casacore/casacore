@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#include <aips/Containers/Dlist.h>
-#include <aips/iostream.h>
+#include <casa/Containers/Dlist.h>
+#include <casa/iostream.h>
 
 extern int Dlist_deprecated_flag;
 

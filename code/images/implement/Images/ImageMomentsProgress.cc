@@ -27,9 +27,9 @@
 //
 
 
-#include <trial/Images/ImageMomentsProgress.h>
-#include <aips/BasicMath/Math.h>
-#include <aips/BasicSL/String.h>
+#include <images/Images/ImageMomentsProgress.h>
+#include <casa/BasicMath/Math.h>
+#include <casa/BasicSL/String.h>
 
 
 ImageMomentsProgress::~ImageMomentsProgress()

@@ -29,15 +29,15 @@
 #if !defined(AIPS_IMAGE_INFO_H)
 #define AIPS_IMAGE_INFO_H
 
-#include <aips/aips.h>
-#include <aips/Utilities/RecordTransformable.h>
+#include <casa/aips.h>
+#include <casa/Utilities/RecordTransformable.h>
 
-#include <aips/Arrays/Vector.h>
-#include <aips/Quanta/Quantum.h>
-#include <aips/BasicSL/String.h>
+#include <casa/Arrays/Vector.h>
+#include <casa/Quanta/Quantum.h>
+#include <casa/BasicSL/String.h>
 
 //# Forward declarations
-#include <aips/iosfwd.h>
+#include <casa/iosfwd.h>
 class LoggerHolder;
 
 // <summary>

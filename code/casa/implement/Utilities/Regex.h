@@ -29,11 +29,11 @@
 #define AIPS_REGEX_H
 
 //# Includes
-#include <aips/aips.h>
-#include <aips/BasicSL/RegexBase.h>
+#include <casa/aips.h>
+#include <casa/BasicSL/RegexBase.h>
 
 //# Forward declarations.
-#include <aips/iosfwd.h>
+#include <casa/iosfwd.h>
 
 struct re_pattern_buffer;
 struct re_registers;

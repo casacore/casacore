@@ -26,14 +26,14 @@
 //# $Id$
 
 //# Includes
-#include <aips/Quanta/MVRadialVelocity.h>
-#include <aips/Arrays/Vector.h>
-#include <aips/Exceptions/Error.h>
-#include <aips/BasicMath/Math.h>
-#include <aips/Quanta/MVFrequency.h>
-#include <aips/Quanta/Quantum.h>
-#include <aips/Utilities/Assert.h>
-#include <aips/Utilities/Register.h>
+#include <casa/Quanta/MVRadialVelocity.h>
+#include <casa/Arrays/Vector.h>
+#include <casa/Exceptions/Error.h>
+#include <casa/BasicMath/Math.h>
+#include <casa/Quanta/MVFrequency.h>
+#include <casa/Quanta/Quantum.h>
+#include <casa/Utilities/Assert.h>
+#include <casa/Utilities/Register.h>
 
 // MVRadialVelocity class
 

@@ -25,15 +25,15 @@
 //#
 //# $Id$
 
-#include <aips/Arrays/MaskArrMath.h>
-#include <aips/BasicMath/Math.h>
-#include <aips/Arrays/MaskedArray.h>
-#include <aips/Arrays/Array.h>
-#include <aips/Arrays/ArrayError.h>
-#include <aips/Arrays/ArrayLogical.h>
-#include <aips/Arrays/ArrayIter.h>
-#include <aips/Arrays/VectorIter.h>
-#include <aips/Utilities/GenSort.h>
+#include <casa/Arrays/MaskArrMath.h>
+#include <casa/BasicMath/Math.h>
+#include <casa/Arrays/MaskedArray.h>
+#include <casa/Arrays/Array.h>
+#include <casa/Arrays/ArrayError.h>
+#include <casa/Arrays/ArrayLogical.h>
+#include <casa/Arrays/ArrayIter.h>
+#include <casa/Arrays/VectorIter.h>
+#include <casa/Utilities/GenSort.h>
 
 // Some test programs seem to want this. It doesn't seem to make
 // any sense!

@@ -29,11 +29,11 @@
 #define AIPS_TABLEMEASDESCBASE_H
 
 //# Includes
-#include <aips/TableMeasures/TableMeasValueDesc.h>
-#include <aips/TableMeasures/TableMeasRefDesc.h>
-#include <aips/TableMeasures/TableMeasType.h>
-#include <aips/Quanta/Unit.h>
-#include <aips/Arrays/Vector.h>
+#include <measures/TableMeasures/TableMeasValueDesc.h>
+#include <measures/TableMeasures/TableMeasRefDesc.h>
+#include <measures/TableMeasures/TableMeasType.h>
+#include <casa/Quanta/Unit.h>
+#include <casa/Arrays/Vector.h>
 
 //# Forward Declarations
 class String;

@@ -25,18 +25,18 @@
 //#
 //# $Id$
 
-#include <aips/aips.h>
-#include <aips/Arrays/ArrayLogical.h>
-#include <aips/Arrays/Vector.h>
-#include <aips/Exceptions/Error.h>
-#include <aips/Arrays/IPosition.h>
-#include <aips/BasicSL/Complex.h>
-#include <aips/BasicMath/Math.h>
-#include <aips/Utilities/Assert.h>
-#include <trial/Lattices/LatticeFFT.h>
-#include <aips/Lattices/LatticeIterator.h>
-#include <aips/Lattices/PagedArray.h>
-#include <aips/iostream.h>
+#include <casa/aips.h>
+#include <casa/Arrays/ArrayLogical.h>
+#include <casa/Arrays/Vector.h>
+#include <casa/Exceptions/Error.h>
+#include <casa/Arrays/IPosition.h>
+#include <casa/BasicSL/Complex.h>
+#include <casa/BasicMath/Math.h>
+#include <casa/Utilities/Assert.h>
+#include <lattices/Lattices/LatticeFFT.h>
+#include <lattices/Lattices/LatticeIterator.h>
+#include <lattices/Lattices/PagedArray.h>
+#include <casa/iostream.h>
 
 int main() {
   try {

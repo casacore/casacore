@@ -28,11 +28,11 @@
 #if !defined(AIPS_FITS2_H)
 #define AIPS_FITS2_H
 
-#include <aips/aips.h>
+#include <casa/aips.h>
 // Would like to forward declare
-#include <aips/Arrays/Vector.h>
-#include <aips/Containers/Map.h>
-#include <aips/FITS/hdu.h>
+#include <casa/Arrays/Vector.h>
+#include <casa/Containers/Map.h>
+#include <fits/FITS/hdu.h>
 
 class String;        // Forward declaration
 

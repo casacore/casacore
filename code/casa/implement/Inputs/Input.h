@@ -29,9 +29,9 @@
 #define AIPS_INPUT_H
 
 
-#include <aips/aips.h>
-#include <aips/Inputs/Param.h>
-#include <aips/Containers/List.h>
+#include <casa/aips.h>
+#include <casa/Inputs/Param.h>
+#include <casa/Containers/List.h>
 
 template<class T> class Vector;
 
@@ -144,7 +144,7 @@ template<class T> class Vector;
 //
 // <example>
 // <srcblock>
-// #include <aips/Inputs/Input.h>
+// #include <casa/Inputs/Input.h>
 // main(Int argc, char *argv[]) 
 // {
 //  // instantiate an Input.  The integer argument of 1 to the ctor builds 

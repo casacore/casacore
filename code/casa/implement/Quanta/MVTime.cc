@@ -26,17 +26,17 @@
 //# $Id$
 
 //# Includes
-#include <aips/Quanta/MVTime.h>
-#include <aips/Quanta/MVAngle.h>
-#include <aips/Quanta/MVEpoch.h>
-#include <aips/Utilities/MUString.h>
-#include <aips/sstream.h>
-#include <aips/iomanip.h>
-#include <aips/OS/Time.h>
-#include <aips/BasicMath/Math.h>
-#include <aips/BasicSL/Constants.h>
-#include <aips/BasicSL/String.h>
-#include <aips/Utilities/Assert.h>
+#include <casa/Quanta/MVTime.h>
+#include <casa/Quanta/MVAngle.h>
+#include <casa/Quanta/MVEpoch.h>
+#include <casa/Utilities/MUString.h>
+#include <casa/sstream.h>
+#include <casa/iomanip.h>
+#include <casa/OS/Time.h>
+#include <casa/BasicMath/Math.h>
+#include <casa/BasicSL/Constants.h>
+#include <casa/BasicSL/String.h>
+#include <casa/Utilities/Assert.h>
 
 // MVTime class
 //# Static members

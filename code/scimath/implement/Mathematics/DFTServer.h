@@ -29,15 +29,15 @@
 #define AIPS_DFTSERVER_H
 
 
-#include <aips/aips.h>
-#include <aips/BasicMath/Math.h>
-#include <aips/Exceptions/Error.h>
-#include <aips/Arrays/Array.h>
-#include <aips/Arrays/ArrayMath.h>
-#include <aips/Arrays/ArrayIter.h> 
-#include <aips/Arrays/ArrayIO.h> 
-#include <aips/BasicSL/Constants.h> 
-#include <aips/math.h> 
+#include <casa/aips.h>
+#include <casa/BasicMath/Math.h>
+#include <casa/Exceptions/Error.h>
+#include <casa/Arrays/Array.h>
+#include <casa/Arrays/ArrayMath.h>
+#include <casa/Arrays/ArrayIter.h> 
+#include <casa/Arrays/ArrayIO.h> 
+#include <casa/BasicSL/Constants.h> 
+#include <casa/math.h> 
 
 template<class T> class Matrix;
 

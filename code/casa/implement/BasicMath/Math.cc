@@ -25,9 +25,9 @@
 //#
 //# $Id$
 
-#include <aips/BasicMath/Math.h>
-#include <aips/BasicSL/Constants.h>
-#include <aips/Utilities/Assert.h>
+#include <casa/BasicMath/Math.h>
+#include <casa/BasicSL/Constants.h>
+#include <casa/Utilities/Assert.h>
 
 // Changes for SUN CC port - abs changed to fabs for double and float args.
 

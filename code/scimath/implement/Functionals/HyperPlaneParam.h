@@ -30,8 +30,8 @@
 #define AIPS_HYPERPLANEPARAM_H
 
 
-#include <aips/aips.h>
-#include <aips/Functionals/Function.h>
+#include <casa/aips.h>
+#include <scimath/Functionals/Function.h>
 
 // <summary> Parameter handling for a hyper plane function.
 // </summary>

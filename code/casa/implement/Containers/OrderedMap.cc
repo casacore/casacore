@@ -25,7 +25,7 @@
 //#
 //# $Id$
 
-#include <aips/Containers/OrderedMap.h>
+#include <casa/Containers/OrderedMap.h>
 
 //rtti_imp_mbrf_a2(OrderedMap);
 

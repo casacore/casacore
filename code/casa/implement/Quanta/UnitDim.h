@@ -30,13 +30,13 @@
 
 
 //# Includes
-#include <aips/aips.h>
+#include <casa/aips.h>
 
 //# Forward Declarations
 class String;
 class UnitVal;
 class UnitMap;
-#include <aips/iosfwd.h>
+#include <casa/iosfwd.h>
 
 // 
 // <summary>

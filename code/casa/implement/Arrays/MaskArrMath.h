@@ -29,13 +29,13 @@
 #define AIPS_MASKARRMATH_H
 
 
-#include <aips/aips.h>
-#include <aips/BasicMath/Math.h>
-#include <aips/Arrays/Array.h>
-#include <aips/Arrays/MaskedArray.h>
-#include <aips/Arrays/IPosition.h>
+#include <casa/aips.h>
+#include <casa/BasicMath/Math.h>
+#include <casa/Arrays/Array.h>
+#include <casa/Arrays/MaskedArray.h>
+#include <casa/Arrays/IPosition.h>
 //# Needed to get the proper Complex typedef's
-#include <aips/BasicSL/Complex.h>
+#include <casa/BasicSL/Complex.h>
 
 
 // <summary> Mathematical operations for MaskedArrays (and with Arrays) </summary>

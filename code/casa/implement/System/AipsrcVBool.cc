@@ -27,11 +27,11 @@
 
 //# Includes
 
-#include <aips/System/AipsrcVector.h>
-#include <aips/Utilities/Assert.h>
-#include <aips/Utilities/Regex.h>
-#include <aips/Arrays/Vector.h>
-#include <aips/sstream.h>
+#include <casa/System/AipsrcVector.h>
+#include <casa/Utilities/Assert.h>
+#include <casa/Utilities/Regex.h>
+#include <casa/Arrays/Vector.h>
+#include <casa/sstream.h>
 
 //# Data
 AipsrcVector<Bool> AipsrcVector<Bool>::myp_p;

@@ -29,15 +29,15 @@
 #define AIPS_PARAM_H
 
 
-#include <aips/aips.h>
-#include <aips/Containers/Block.h>
-#include <aips/BasicSL/String.h>
-#include <aips/IO/AipsIO.h>
-#include <aips/stdlib.h>
-#include <aips/string.h>             // need things like strlen() and such
+#include <casa/aips.h>
+#include <casa/Containers/Block.h>
+#include <casa/BasicSL/String.h>
+#include <casa/IO/AipsIO.h>
+#include <casa/stdlib.h>
+#include <casa/string.h>             // need things like strlen() and such
 
 //# Forward declarations
-#include <aips/iosfwd.h>
+#include <casa/iosfwd.h>
 
 // <summary> 
 // A simple keyword/value pair with internal help Strings.

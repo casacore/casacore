@@ -25,13 +25,13 @@
 //#
 //# $Id$
 
-#include <aips/IO/FileLocker.h>
-#include <aips/BasicSL/String.h>
-#include <aips/iostream.h>
+#include <casa/IO/FileLocker.h>
+#include <casa/BasicSL/String.h>
+#include <casa/iostream.h>
 #include <unistd.h>
 #include <fcntl.h>
 #include <errno.h>
-#include <aips/string.h>
+#include <casa/string.h>
 
 FileLocker::FileLocker()
 : itsFD          (-1),

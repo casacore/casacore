@@ -27,26 +27,26 @@
 
 
 //# Includes
-#include <aips/Tables/DataManager.h>
-#include <aips/Tables/StManAipsIO.h>
-#include <aips/Tables/StandardStMan.h>
-#include <aips/Tables/IncrementalStMan.h>
-#include <aips/Tables/TiledDataStMan.h>
-#include <aips/Tables/TiledCellStMan.h>
-#include <aips/Tables/TiledColumnStMan.h>
-#include <aips/Tables/TiledShapeStMan.h>
-#include <aips/Tables/MemoryStMan.h>
-#include <aips/Tables/CompressFloat.h>
-#include <aips/Tables/CompressComplex.h>
-#include <aips/Tables/ForwardCol.h>
-#include <aips/Tables/SetupNewTab.h>
-#include <aips/Tables/Table.h>
-#include <aips/Tables/PlainTable.h>
-#include <aips/Arrays/IPosition.h>
-#include <aips/Containers/Record.h>
-#include <aips/BasicSL/String.h>
-#include <aips/Tables/DataManError.h>
-#include <aips/stdio.h>                     // for sprintf
+#include <tables/Tables/DataManager.h>
+#include <tables/Tables/StManAipsIO.h>
+#include <tables/Tables/StandardStMan.h>
+#include <tables/Tables/IncrementalStMan.h>
+#include <tables/Tables/TiledDataStMan.h>
+#include <tables/Tables/TiledCellStMan.h>
+#include <tables/Tables/TiledColumnStMan.h>
+#include <tables/Tables/TiledShapeStMan.h>
+#include <tables/Tables/MemoryStMan.h>
+#include <tables/Tables/CompressFloat.h>
+#include <tables/Tables/CompressComplex.h>
+#include <tables/Tables/ForwardCol.h>
+#include <tables/Tables/SetupNewTab.h>
+#include <tables/Tables/Table.h>
+#include <tables/Tables/PlainTable.h>
+#include <casa/Arrays/IPosition.h>
+#include <casa/Containers/Record.h>
+#include <casa/BasicSL/String.h>
+#include <tables/Tables/DataManError.h>
+#include <casa/stdio.h>                     // for sprintf
 
 
 DataManager::DataManager()

@@ -26,45 +26,45 @@
 //#
 //# $Id$
 
-#include <aips/version.h>
+#include <casa/version.h>
 
-#include <trial/Images/ImageFITSConverter.h>
-#include <trial/Images/PagedImage.h>
-#include <trial/Images/ImageInfo.h>
-#include <trial/Lattices/MaskedLatticeIterator.h>
-#include <aips/Lattices/LatticeStepper.h>
-#include <aips/FITS/fitsio.h>
-#include <aips/FITS/hdu.h>
-#include <trial/FITS/FITSDateUtil.h>
-#include <trial/FITS/FITSKeywordUtil.h>
-#include <trial/FITS/FITSHistoryUtil.h>
-#include <trial/Coordinates/LinearCoordinate.h>
-#include <trial/Coordinates/StokesCoordinate.h>
-#include <trial/Coordinates/CoordinateSystem.h>
-#include <trial/Coordinates/CoordinateUtil.h>
-#include <trial/Coordinates/ObsInfo.h>
+#include <images/Images/ImageFITSConverter.h>
+#include <images/Images/PagedImage.h>
+#include <images/Images/ImageInfo.h>
+#include <lattices/Lattices/MaskedLatticeIterator.h>
+#include <lattices/Lattices/LatticeStepper.h>
+#include <fits/FITS/fitsio.h>
+#include <fits/FITS/hdu.h>
+#include <fits/FITS/FITSDateUtil.h>
+#include <fits/FITS/FITSKeywordUtil.h>
+#include <fits/FITS/FITSHistoryUtil.h>
+#include <coordinates/Coordinates/LinearCoordinate.h>
+#include <coordinates/Coordinates/StokesCoordinate.h>
+#include <coordinates/Coordinates/CoordinateSystem.h>
+#include <coordinates/Coordinates/CoordinateUtil.h>
+#include <coordinates/Coordinates/ObsInfo.h>
 
-#include <aips/Arrays/Vector.h>
-#include <aips/Arrays/Matrix.h>
-#include <aips/Quanta/UnitMap.h>
-#include <aips/Arrays/IPosition.h>
-#include <aips/BasicMath/Math.h>
-#include <aips/Arrays/ArrayMath.h>
-#include <aips/Containers/Record.h>
+#include <casa/Arrays/Vector.h>
+#include <casa/Arrays/Matrix.h>
+#include <casa/Quanta/UnitMap.h>
+#include <casa/Arrays/IPosition.h>
+#include <casa/BasicMath/Math.h>
+#include <casa/Arrays/ArrayMath.h>
+#include <casa/Containers/Record.h>
 
-#include <aips/Quanta/MVTime.h>
+#include <casa/Quanta/MVTime.h>
 
-#include <aips/OS/File.h>
-#include <aips/OS/RegularFile.h>
-#include <aips/OS/SymLink.h>
-#include <aips/OS/Directory.h>
+#include <casa/OS/File.h>
+#include <casa/OS/RegularFile.h>
+#include <casa/OS/SymLink.h>
+#include <casa/OS/Directory.h>
 
-#include <aips/Utilities/Assert.h>
-#include <aips/Logging/LogIO.h>
-#include <aips/System/ProgressMeter.h>
+#include <casa/Utilities/Assert.h>
+#include <casa/Logging/LogIO.h>
+#include <casa/System/ProgressMeter.h>
 
-#include <aips/sstream.h>
-#include <aips/iomanip.h>
+#include <casa/sstream.h>
+#include <casa/iomanip.h>
 
 
 Bool ImageFITSConverter::FITSToImage(ImageInterface<Float> *&newImage,

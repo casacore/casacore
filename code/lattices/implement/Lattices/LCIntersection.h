@@ -29,7 +29,7 @@
 #define AIPS_LCINTERSECTION_H
 
 //# Includes
-#include <trial/Lattices/LCRegionMulti.h>
+#include <lattices/Lattices/LCRegionMulti.h>
 
 
 // <summary>

@@ -26,10 +26,10 @@
 //#
 //# $Id$
 
-#include <aips/System/ProgressMeter.h>
-#include <aips/BasicSL/String.h>
-#include <aips/Containers/Block.h>
-#include <aips/iostream.h>
+#include <casa/System/ProgressMeter.h>
+#include <casa/BasicSL/String.h>
+#include <casa/Containers/Block.h>
+#include <casa/iostream.h>
 
 // First implement a simple stderr based progress meter that just prints out
 // 0%....10....20....30....40....50....60....70....80....90....100%

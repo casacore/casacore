@@ -26,18 +26,18 @@
 //# $Id$
 
 
-#include <aips/Lattices/ArrayLattice.h>
-#include <aips/Lattices/TempLattice.h>
-#include <aips/Lattices/LatticeIterator.h>
-#include <trial/Lattices/LatticeFractile.h>
-#include <trial/Lattices/LatticeExpr.h>
-#include <aips/Arrays/Vector.h>
-#include <aips/Arrays/ArrayMath.h>
-#include <aips/Arrays/ArrayIO.h>
-#include <aips/Inputs/Input.h>
-#include <aips/OS/Timer.cc>
-#include <aips/Exceptions/Error.h>
-#include <aips/iostream.h>
+#include <lattices/Lattices/ArrayLattice.h>
+#include <lattices/Lattices/TempLattice.h>
+#include <lattices/Lattices/LatticeIterator.h>
+#include <lattices/Lattices/LatticeFractile.h>
+#include <lattices/Lattices/LatticeExpr.h>
+#include <casa/Arrays/Vector.h>
+#include <casa/Arrays/ArrayMath.h>
+#include <casa/Arrays/ArrayIO.h>
+#include <casa/Inputs/Input.h>
+#include <casa/OS/Timer.cc>
+#include <casa/Exceptions/Error.h>
+#include <casa/iostream.h>
 
 
 int main (int argc, char *argv[])

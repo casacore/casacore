@@ -26,10 +26,10 @@
 //# $Id$
 
 
-#include <trial/Images/WCComplement.h>
-#include <trial/Images/ImageRegion.h>
-#include <trial/Lattices/LCComplement.h>
-#include <aips/Tables/TableRecord.h>
+#include <images/Images/WCComplement.h>
+#include <images/Images/ImageRegion.h>
+#include <lattices/Lattices/LCComplement.h>
+#include <tables/Tables/TableRecord.h>
 
 
 WCComplement::WCComplement (const ImageRegion& region)

@@ -28,8 +28,8 @@
 #if !defined(AIPS_SCSL_H)
 #define AIPS_SCSL_H
 
-#include <aips/aips.h>
-#include <aips/BasicSL/Complex.h>
+#include <casa/aips.h>
+#include <casa/BasicSL/Complex.h>
 
 
 // <summary>C++ Interface to the Sgi/Cray Scientific Library (SCSL)</summary>

@@ -28,13 +28,13 @@
 #if !defined(AIPS_BLOCKIO_H)
 #define AIPS_BLOCKIO_H
 
-#include <aips/aips.h>
+#include <casa/aips.h>
 
 //# Forward declarations.
 template<class T> class Block;
 class AipsIO;
 
-#include <aips/iosfwd.h>
+#include <casa/iosfwd.h>
 
 // <summary>IO functions for Block</summary>
 // <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="" demos="">

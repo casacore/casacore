@@ -25,11 +25,11 @@
 //#
 //# $Id$
 
-#include <aips/MeasurementSets/MSProcessorColumns.h>
-#include <aips/MeasurementSets/MSProcessor.h>
-#include <aips/Tables/TableDesc.h>
-#include <aips/Tables/ColDescSet.h>
-#include <aips/BasicSL/String.h>
+#include <ms/MeasurementSets/MSProcessorColumns.h>
+#include <ms/MeasurementSets/MSProcessor.h>
+#include <tables/Tables/TableDesc.h>
+#include <tables/Tables/ColDescSet.h>
+#include <casa/BasicSL/String.h>
 
 ROMSProcessorColumns::
 ROMSProcessorColumns(const MSProcessor& msProcessor):

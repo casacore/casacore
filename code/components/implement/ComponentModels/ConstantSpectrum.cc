@@ -25,13 +25,13 @@
 //#
 //# $Id$
 
-#include <trial/ComponentModels/ConstantSpectrum.h>
-#include <aips/Arrays/Vector.h>
-#include <aips/Exceptions/Error.h>
-#include <aips/Containers/RecordInterface.h>
-#include <aips/Quanta/Quantum.h>
-#include <aips/Utilities/Assert.h>
-#include <aips/BasicSL/String.h>
+#include <components/ComponentModels/ConstantSpectrum.h>
+#include <casa/Arrays/Vector.h>
+#include <casa/Exceptions/Error.h>
+#include <casa/Containers/RecordInterface.h>
+#include <casa/Quanta/Quantum.h>
+#include <casa/Utilities/Assert.h>
+#include <casa/BasicSL/String.h>
 
 ConstantSpectrum::ConstantSpectrum()
   :SpectralModel()

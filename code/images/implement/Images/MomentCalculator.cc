@@ -25,22 +25,22 @@
 //#
 //# $Id$
 //
-#include <trial/Images/MomentCalculator.h>
+#include <images/Images/MomentCalculator.h>
 
-#include <aips/aips.h>
-#include <aips/Arrays/Vector.h>
-#include <aips/Arrays/ArrayMath.h>
-#include <trial/Coordinates/CoordinateSystem.h>
-#include <trial/Coordinates/SpectralCoordinate.h>
-#include <trial/Fitting/NonLinearFitLM.h>
-#include <aips/Functionals/Polynomial.h>
-#include <aips/Functionals/CompoundFunction.h>
-#include <trial/Images/ImageMoments.h>
-#include <trial/Lattices/LatticeStatsBase.h>
-#include <aips/BasicMath/Math.h>
-#include <aips/Logging/LogIO.h> 
-#include <aips/Utilities/Assert.h>
-#include <aips/Exceptions/Error.h>
+#include <casa/aips.h>
+#include <casa/Arrays/Vector.h>
+#include <casa/Arrays/ArrayMath.h>
+#include <coordinates/Coordinates/CoordinateSystem.h>
+#include <coordinates/Coordinates/SpectralCoordinate.h>
+#include <scimath/Fitting/NonLinearFitLM.h>
+#include <scimath/Functionals/Polynomial.h>
+#include <scimath/Functionals/CompoundFunction.h>
+#include <images/Images/ImageMoments.h>
+#include <lattices/Lattices/LatticeStatsBase.h>
+#include <casa/BasicMath/Math.h>
+#include <casa/Logging/LogIO.h> 
+#include <casa/Utilities/Assert.h>
+#include <casa/Exceptions/Error.h>
 
 
 

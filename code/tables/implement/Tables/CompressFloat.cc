@@ -26,17 +26,17 @@
 //# $Id$
 
 //# Includes
-#include <aips/Tables/CompressFloat.h>
-#include <aips/Tables/Table.h>
-#include <aips/Tables/ArrayColumn.h>
-#include <aips/Tables/ColumnDesc.h>
-#include <aips/Tables/TableRecord.h>
-#include <aips/Tables/DataManError.h>
-#include <aips/Arrays/ArrayIter.h>
-#include <aips/Arrays/Slicer.h>
-#include <aips/Containers/Record.h>
-#include <aips/BasicMath/Math.h>
-#include <aips/BasicSL/String.h>
+#include <tables/Tables/CompressFloat.h>
+#include <tables/Tables/Table.h>
+#include <tables/Tables/ArrayColumn.h>
+#include <tables/Tables/ColumnDesc.h>
+#include <tables/Tables/TableRecord.h>
+#include <tables/Tables/DataManError.h>
+#include <casa/Arrays/ArrayIter.h>
+#include <casa/Arrays/Slicer.h>
+#include <casa/Containers/Record.h>
+#include <casa/BasicMath/Math.h>
+#include <casa/BasicSL/String.h>
 
 
 CompressFloat::CompressFloat (const String& sourceColumnName,

@@ -31,11 +31,11 @@
 #define AIPS_RECORD_H
 
 //# Includes
-#include <aips/aips.h>
-#include <aips/Containers/RecordInterface.h>
-#include <aips/Containers/RecordRep.h>
-#include <aips/Containers/RecordDesc.h>
-#include <aips/Utilities/COWPtr.h>
+#include <casa/aips.h>
+#include <casa/Containers/RecordInterface.h>
+#include <casa/Containers/RecordRep.h>
+#include <casa/Containers/RecordDesc.h>
+#include <casa/Utilities/COWPtr.h>
 
 //# Forward Declarations
 template<class T> class Array;

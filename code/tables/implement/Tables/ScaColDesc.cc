@@ -25,12 +25,12 @@
 //#
 //# $Id$
 
-#include <aips/Tables/ScaColDesc.h>
-#include <aips/Tables/ScaColData.h>
-#include <aips/Utilities/ValTypeId.h>
-#include <aips/Tables/TableError.h>
-#include <aips/IO/AipsIO.h>
-#include <aips/iostream.h>
+#include <tables/Tables/ScaColDesc.h>
+#include <tables/Tables/ScaColData.h>
+#include <casa/Utilities/ValTypeId.h>
+#include <tables/Tables/TableError.h>
+#include <casa/IO/AipsIO.h>
+#include <casa/iostream.h>
 
 
 template<class T>

@@ -26,33 +26,33 @@
 //#
 //# $Id$
 
-#include <trial/MeasurementSets/MSFlagger.h>
+#include <ms/MeasurementSets/MSFlagger.h>
 
-#include <aips/Arrays/ArrayMath.h>
-#include <aips/Arrays/ArrayLogical.h>
-#include <aips/Arrays/ArrayUtil.h>
-#include <aips/Arrays/Matrix.h>
-#include <aips/Arrays/Cube.h>
-#include <aips/Containers/Record.h>
-#include <aips/Exceptions/Error.h>
-#include <aips/Arrays/Slice.h>
-#include <aips/Arrays/Slicer.h>
-#include <aips/Logging/LogIO.h>
-#include <aips/Tables/ArrayColumn.h>
-#include <aips/Tables/ArrColDesc.h>
-#include <aips/Tables/ScalarColumn.h>
-#include <aips/Tables/ScaColDesc.h>
-#include <aips/Tables/TableDesc.h>
-#include <aips/Tables/TableIter.h>
-#include <aips/Tables/TableRecord.h>
-#include <aips/Tables/TiledDataStMan.h>
-#include <aips/Tables/TiledDataStManAccessor.h>
-#include <aips/Tables/TiledColumnStMan.h>
-#include <aips/Utilities/Assert.h>
-#include <aips/Utilities/GenSort.h>
-#include <trial/MeasurementSets/MSSelector.h>
-#include <trial/MeasurementSets/MSSelUtil.h>
-#include <aips/iostream.h>
+#include <casa/Arrays/ArrayMath.h>
+#include <casa/Arrays/ArrayLogical.h>
+#include <casa/Arrays/ArrayUtil.h>
+#include <casa/Arrays/Matrix.h>
+#include <casa/Arrays/Cube.h>
+#include <casa/Containers/Record.h>
+#include <casa/Exceptions/Error.h>
+#include <casa/Arrays/Slice.h>
+#include <casa/Arrays/Slicer.h>
+#include <casa/Logging/LogIO.h>
+#include <tables/Tables/ArrayColumn.h>
+#include <tables/Tables/ArrColDesc.h>
+#include <tables/Tables/ScalarColumn.h>
+#include <tables/Tables/ScaColDesc.h>
+#include <tables/Tables/TableDesc.h>
+#include <tables/Tables/TableIter.h>
+#include <tables/Tables/TableRecord.h>
+#include <tables/Tables/TiledDataStMan.h>
+#include <tables/Tables/TiledDataStManAccessor.h>
+#include <tables/Tables/TiledColumnStMan.h>
+#include <casa/Utilities/Assert.h>
+#include <casa/Utilities/GenSort.h>
+#include <ms/MeasurementSets/MSSelector.h>
+#include <ms/MeasurementSets/MSSelUtil.h>
+#include <casa/iostream.h>
 
 
 MSFlagger::MSFlagger():msSel_p(0)

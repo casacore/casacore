@@ -26,20 +26,20 @@
 //# $Id$
 
 
-#include <aips/aips.h>
-#include <aips/Arrays/Array.h>
-#include <aips/Arrays/ArrayLogical.h>
-#include <aips/Arrays/ArrayMath.h>
-#include <aips/Exceptions/Error.h>
-#include <aips/IO/FileLocker.h>
-#include <aips/Arrays/IPosition.h>
-#include <aips/BasicMath/Math.h>
-#include <aips/Utilities/Assert.h>
-#include <aips/Lattices/ArrayLattice.h>
-#include <trial/Lattices/LCBox.h>
-#include <trial/Lattices/LatticeConcat.h>
-#include <trial/Lattices/SubLattice.h>
-#include <aips/iostream.h>
+#include <casa/aips.h>
+#include <casa/Arrays/Array.h>
+#include <casa/Arrays/ArrayLogical.h>
+#include <casa/Arrays/ArrayMath.h>
+#include <casa/Exceptions/Error.h>
+#include <casa/IO/FileLocker.h>
+#include <casa/Arrays/IPosition.h>
+#include <casa/BasicMath/Math.h>
+#include <casa/Utilities/Assert.h>
+#include <lattices/Lattices/ArrayLattice.h>
+#include <lattices/Lattices/LCBox.h>
+#include <lattices/Lattices/LatticeConcat.h>
+#include <lattices/Lattices/SubLattice.h>
+#include <casa/iostream.h>
 
 
 void check (uInt axis, MaskedLattice<Float>& ml,

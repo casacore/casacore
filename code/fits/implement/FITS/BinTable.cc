@@ -26,27 +26,27 @@
 //# $Id$
 
 //# Includes
-#include <trial/FITS/BinTable.h>
-#include <aips/FITS/fits.h>
-#include <aips/Tables/Table.h>
-#include <aips/Tables/SetupNewTab.h>
-#include <aips/Tables/IncrementalStMan.h>
-#include <aips/Tables/MemoryStMan.h>
-#include <aips/Tables/TableDesc.h>
-#include <aips/Tables/ArrColDesc.h>
-#include <aips/Tables/ScaColDesc.h>
-#include <aips/Tables/TableRecord.h>
-#include <aips/Tables/TableColumn.h>
-#include <aips/Tables/ArrayColumn.h>
-#include <aips/Tables/ScalarColumn.h>
-#include <aips/Tables/ColumnDesc.h>
-#include <aips/Tables/RowCopier.h>
-#include <aips/Arrays/Vector.h>
-#include <aips/Arrays/ArrayMath.h>
-#include <aips/Utilities/Assert.h>
-#include <aips/Utilities/Regex.h>
-#include <aips/sstream.h>
-#include <aips/stdio.h>
+#include <fits/FITS/BinTable.h>
+#include <fits/FITS/fits.h>
+#include <tables/Tables/Table.h>
+#include <tables/Tables/SetupNewTab.h>
+#include <tables/Tables/IncrementalStMan.h>
+#include <tables/Tables/MemoryStMan.h>
+#include <tables/Tables/TableDesc.h>
+#include <tables/Tables/ArrColDesc.h>
+#include <tables/Tables/ScaColDesc.h>
+#include <tables/Tables/TableRecord.h>
+#include <tables/Tables/TableColumn.h>
+#include <tables/Tables/ArrayColumn.h>
+#include <tables/Tables/ScalarColumn.h>
+#include <tables/Tables/ColumnDesc.h>
+#include <tables/Tables/RowCopier.h>
+#include <casa/Arrays/Vector.h>
+#include <casa/Arrays/ArrayMath.h>
+#include <casa/Utilities/Assert.h>
+#include <casa/Utilities/Regex.h>
+#include <casa/sstream.h>
+#include <casa/stdio.h>
 
 Bool isSDFitsColumn(FITS::ReservedName name) {
     if (name == FITS::AUTHOR || name == FITS::CDELT || name == FITS::CROTA ||

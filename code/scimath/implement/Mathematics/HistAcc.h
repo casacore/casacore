@@ -29,14 +29,14 @@
 #if !defined(AIPS_HISTACC_H)
 #define AIPS_HISTACC_H
 
-#include <aips/aips.h>
-#include <aips/Utilities/Fallible.h>
-#include <trial/Mathematics/StatAcc.h>
-#include <aips/Containers/Block.h>
+#include <casa/aips.h>
+#include <casa/Utilities/Fallible.h>
+#include <scimath/Mathematics/StatAcc.h>
+#include <casa/Containers/Block.h>
 
 // forward declarations:
 template <class T> class Array;
-#include <aips/iosfwd.h>
+#include <casa/iosfwd.h>
 class String;
 
 // <reviewed reviewer="" date="" tests="tHistAcc" demos="">

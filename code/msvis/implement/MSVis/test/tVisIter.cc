@@ -25,14 +25,14 @@
 //#
 //# $Id$
 
-#include <aips/aips.h>
-#include <aips/Exceptions/Error.h>
-#include <aips/iostream.h>
-#include <trial/MSVis/VisSet.h>
-#include <trial/MSVis/VisBuffer.h>
-#include <trial/MSVis/VisibilityIterator.h>
-#include <aips/OS/Timer.h>
-#include <aips/iomanip.h>
+#include <casa/aips.h>
+#include <casa/Exceptions/Error.h>
+#include <casa/iostream.h>
+#include <msvis/MSVis/VisSet.h>
+#include <msvis/MSVis/VisBuffer.h>
+#include <msvis/MSVis/VisibilityIterator.h>
+#include <casa/OS/Timer.h>
+#include <casa/iomanip.h>
 using namespace std;
 
 int main(int argc, char **argv) {

@@ -30,7 +30,7 @@
 #define AIPS_MCBASE_H
 
 //# Includes
-#include <aips/aips.h>
+#include <casa/aips.h>
 
 //# Forward Declarations
 class MeasValue;
@@ -71,8 +71,8 @@ class String;
 // <example>
 // Convert (with all steps explicit) a UTC to an IAT time.
 // <srcblock>
-//      #include <aips/Measures.h>
-//      #include <aips/Measures/MCEpoch.h>
+//      #include <measures/Measures.h>
+//      #include <measures/Measures/MCEpoch.h>
 //	cout << "TAI for UTC = MJD(50237.29): " <<
 //		MEpoch::Convert(MEpoch(MVEpoch(Quantity(50237.29, "d")),
 //			               MEpoch::Ref(MEpoch::UTC)),

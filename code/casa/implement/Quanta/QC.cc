@@ -26,8 +26,8 @@
 //# $Id$
 
 //# Includes
-#include <aips/Quanta/QC.h>
-#include <aips/Quanta/UnitMap.h>
+#include <casa/Quanta/QC.h>
+#include <casa/Quanta/UnitMap.h>
 
 Quantum<Double> QC::c(C::c,"m/s");
 Quantum<Double> QC::G(6.67259e-11,"N.m2/kg2");

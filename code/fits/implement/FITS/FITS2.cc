@@ -25,14 +25,14 @@
 //#
 //# $Id$
 
-#include <aips/FITS/FITS2.h>
-#include <aips/FITS/fits.h>
-#include <aips/FITS/fitsio.h>
-#include <aips/Arrays/ArrayMath.h>
-#include <aips/FITS/hdu.h>
-#include <aips/BasicSL/String.h>
-#include <aips/Utilities/Regex.h>
-#include <aips/Arrays/IPosition.h>
+#include <fits/FITS/FITS2.h>
+#include <fits/FITS/fits.h>
+#include <fits/FITS/fitsio.h>
+#include <casa/Arrays/ArrayMath.h>
+#include <fits/FITS/hdu.h>
+#include <casa/BasicSL/String.h>
+#include <casa/Utilities/Regex.h>
+#include <casa/Arrays/IPosition.h>
 
 template<class StorageType>
 void ReadFITSin(PrimaryArray<StorageType> &fitsdata,

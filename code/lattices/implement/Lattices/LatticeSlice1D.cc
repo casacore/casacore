@@ -26,17 +26,17 @@
 //# $Id$
 
 
-#include <trial/Lattices/LatticeSlice1D.h>
+#include <lattices/Lattices/LatticeSlice1D.h>
 
-#include <aips/Arrays/Array.h>
-#include <aips/Arrays/Matrix.h>
-#include <aips/Arrays/Vector.h>
-#include <trial/Lattices/MaskedLattice.h>
-#include <trial/Lattices/PixelCurve1D.h>
-#include <aips/BasicMath/Math.h>
-#include <trial/Mathematics/Interpolate2D.h>
-#include <aips/Utilities/Assert.h>
-#include <aips/Exceptions/Error.h>
+#include <casa/Arrays/Array.h>
+#include <casa/Arrays/Matrix.h>
+#include <casa/Arrays/Vector.h>
+#include <lattices/Lattices/MaskedLattice.h>
+#include <lattices/Lattices/PixelCurve1D.h>
+#include <casa/BasicMath/Math.h>
+#include <scimath/Mathematics/Interpolate2D.h>
+#include <casa/Utilities/Assert.h>
+#include <casa/Exceptions/Error.h>
 
 
 template <class T>

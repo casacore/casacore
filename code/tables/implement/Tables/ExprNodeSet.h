@@ -29,9 +29,9 @@
 #define AIPS_EXPRNODESET_H
 
 //# Includes
-#include <aips/Tables/ExprNodeRep.h>
-#include <aips/Tables/ExprNodeArray.h>
-#include <aips/Containers/Block.h>
+#include <tables/Tables/ExprNodeRep.h>
+#include <tables/Tables/ExprNodeArray.h>
+#include <casa/Containers/Block.h>
 
 //# Forward Declarations
 class TableExprNode;

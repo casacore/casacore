@@ -31,9 +31,9 @@
 
 
 //# Includes
-#include <aips/aips.h>
-#include <aips/Arrays/IPosition.h>
-#include <trial/Arrays/AxesMapping.h>
+#include <casa/aips.h>
+#include <casa/Arrays/IPosition.h>
+#include <casa/Arrays/AxesMapping.h>
 
 //# Forward Declarations
 

@@ -30,8 +30,8 @@
 #define AIPS_NONLINEARFITLM_H
 
 //# Includes
-#include <aips/aips.h>
-#include <trial/Fitting/NonLinearFit.h>
+#include <casa/aips.h>
+#include <scimath/Fitting/NonLinearFit.h>
 
 //# Forward declarations
 

@@ -25,37 +25,37 @@
 //#
 //# $Id$
 
-#include <trial/Images/FITSImage.h>
+#include <images/Images/FITSImage.h>
 
-#include <aips/FITS/fitsio.h>
-#include <aips/FITS/hdu.h>
-#include <trial/FITS/FITSKeywordUtil.h>
-#include <trial/Images/ImageInfo.h>
-#include <trial/Images/ImageFITSConverter.h>
-#include <trial/Images/MaskSpecifier.h>
-#include <trial/Images/ImageUtilities.h>
-#include <aips/Lattices/TiledShape.h>
-#include <aips/Lattices/TempLattice.h>
-#include <trial/Lattices/FITSMask.h>
-#include <trial/Tables/TiledFileAccess.h>
-#include <trial/Coordinates/CoordinateSystem.h>
-#include <trial/Coordinates/CoordinateUtil.h>
-#include <aips/Arrays/Array.h>
-#include <aips/Arrays/IPosition.h>
-#include <aips/Arrays/Slicer.h>
-#include <aips/Arrays/ArrayMath.h>
-#include <aips/Containers/Record.h>
-#include <trial/LogTables/LoggerHolder.h>
-#include <aips/Logging/LogIO.h>
-#include <aips/BasicMath/Math.h>
-#include <aips/OS/File.h>
-#include <aips/Quanta/Unit.h>
-#include <aips/Utilities/CountedPtr.h>
-#include <aips/Utilities/ValType.h>
-#include <aips/BasicSL/String.h>
-#include <aips/Exceptions/Error.h>
+#include <fits/FITS/fitsio.h>
+#include <fits/FITS/hdu.h>
+#include <fits/FITS/FITSKeywordUtil.h>
+#include <images/Images/ImageInfo.h>
+#include <images/Images/ImageFITSConverter.h>
+#include <images/Images/MaskSpecifier.h>
+#include <images/Images/ImageUtilities.h>
+#include <lattices/Lattices/TiledShape.h>
+#include <lattices/Lattices/TempLattice.h>
+#include <lattices/Lattices/FITSMask.h>
+#include <tables/Tables/TiledFileAccess.h>
+#include <coordinates/Coordinates/CoordinateSystem.h>
+#include <coordinates/Coordinates/CoordinateUtil.h>
+#include <casa/Arrays/Array.h>
+#include <casa/Arrays/IPosition.h>
+#include <casa/Arrays/Slicer.h>
+#include <casa/Arrays/ArrayMath.h>
+#include <casa/Containers/Record.h>
+#include <tables/LogTables/LoggerHolder.h>
+#include <casa/Logging/LogIO.h>
+#include <casa/BasicMath/Math.h>
+#include <casa/OS/File.h>
+#include <casa/Quanta/Unit.h>
+#include <casa/Utilities/CountedPtr.h>
+#include <casa/Utilities/ValType.h>
+#include <casa/BasicSL/String.h>
+#include <casa/Exceptions/Error.h>
 
-#include <aips/iostream.h>
+#include <casa/iostream.h>
 
 
 

@@ -29,13 +29,13 @@
 #define AIPS_EXPRNODE_H
 
 //# Includes
-#include <aips/aips.h>
-#include <aips/Tables/ExprNodeRep.h>
-#include <aips/Tables/ExprRange.h>
-#include <aips/Utilities/DataType.h>
-#include <aips/BasicSL/Complex.h>
-#include <aips/Tables/ExprFuncNode.h>
-#include <aips/Utilities/Regex.h>
+#include <casa/aips.h>
+#include <tables/Tables/ExprNodeRep.h>
+#include <tables/Tables/ExprRange.h>
+#include <casa/Utilities/DataType.h>
+#include <casa/BasicSL/Complex.h>
+#include <tables/Tables/ExprFuncNode.h>
+#include <casa/Utilities/Regex.h>
 
 //# Forward Declarations
 class BaseTable;

@@ -25,13 +25,13 @@
 //#
 //# $Id$
 
-#include <aips/Tables/MSMIndColumn.h>
-#include <aips/Arrays/Array.h>
-#include <aips/Arrays/Slicer.h>
-#include <aips/BasicSL/Complex.h>
-#include <aips/BasicSL/String.h>
-#include <aips/Utilities/DataType.h>
-#include <aips/Tables/DataManError.h>
+#include <tables/Tables/MSMIndColumn.h>
+#include <casa/Arrays/Array.h>
+#include <casa/Arrays/Slicer.h>
+#include <casa/BasicSL/Complex.h>
+#include <casa/BasicSL/String.h>
+#include <casa/Utilities/DataType.h>
+#include <tables/Tables/DataManError.h>
 
 
 //# Define a macro which gets the pointer for the given row

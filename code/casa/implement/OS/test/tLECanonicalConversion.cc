@@ -26,10 +26,10 @@
 //# $Id$
 
 
-#include <aips/OS/LECanonicalConversion.h>
-#include <aips/BasicMath/Math.h>
-#include <aips/iostream.h>
-#include <aips/iomanip.h>
+#include <casa/OS/LECanonicalConversion.h>
+#include <casa/BasicMath/Math.h>
+#include <casa/iostream.h>
+#include <casa/iomanip.h>
 
 
 // Check if all conversion definitions are set correctly.

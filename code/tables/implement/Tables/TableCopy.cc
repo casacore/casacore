@@ -27,16 +27,16 @@
 
 
 //# Includes
-#include <aips/Tables/TableCopy.h>
-#include <aips/Tables/SetupNewTab.h>
-#include <aips/Tables/TableRow.h>
-#include <aips/Tables/TableDesc.h>
-#include <aips/Tables/TableColumn.h>
-#include <aips/Tables/TableError.h>
-#include <aips/Containers/Record.h>
-#include <aips/Arrays/Vector.h>
-#include <aips/OS/Path.h>
-#include <aips/BasicSL/String.h>
+#include <tables/Tables/TableCopy.h>
+#include <tables/Tables/SetupNewTab.h>
+#include <tables/Tables/TableRow.h>
+#include <tables/Tables/TableDesc.h>
+#include <tables/Tables/TableColumn.h>
+#include <tables/Tables/TableError.h>
+#include <casa/Containers/Record.h>
+#include <casa/Arrays/Vector.h>
+#include <casa/OS/Path.h>
+#include <casa/BasicSL/String.h>
 
 
 Table TableCopy::makeEmptyTable (const String& newName,

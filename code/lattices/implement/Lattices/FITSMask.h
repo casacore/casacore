@@ -30,8 +30,8 @@
 #define AIPS_FITSMASK_H
 
 //# Includes
-#include <aips/Arrays/Array.h>
-#include <aips/Lattices/Lattice.h>
+#include <casa/Arrays/Array.h>
+#include <lattices/Lattices/Lattice.h>
 
 //# Forward Declarations
 class TiledFileAccess;

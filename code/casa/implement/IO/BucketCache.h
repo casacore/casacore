@@ -29,13 +29,13 @@
 #define AIPS_BUCKETCACHE_H
 
 //# Includes
-#include <aips/aips.h>
-#include <aips/IO/BucketFile.h>
-#include <aips/Containers/Block.h>
-#include <aips/OS/CanonicalConversion.h>
+#include <casa/aips.h>
+#include <casa/IO/BucketFile.h>
+#include <casa/Containers/Block.h>
+#include <casa/OS/CanonicalConversion.h>
 
 //# Forward clarations
-#include <aips/iosfwd.h>
+#include <casa/iosfwd.h>
 
 
 // <summary>

@@ -30,9 +30,9 @@
 
 
 //# Includes
-#include <aips/Arrays/Array.h>
-#include <aips/Arrays/Slicer.h>
-#include <trial/Lattices/MaskedLattice.h>
+#include <casa/Arrays/Array.h>
+#include <casa/Arrays/Slicer.h>
+#include <lattices/Lattices/MaskedLattice.h>
 
 //# Forward Declarations
 

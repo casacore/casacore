@@ -25,24 +25,24 @@
 //#
 //# $Id$
 
-#include <trial/MeasurementSets/MSIter.h>
-#include <aips/Arrays/ArrayMath.h>
-#include <aips/Arrays/ArrayLogical.h>
-#include <aips/Arrays/Slice.h>
-#include <aips/Exceptions/Error.h>
-#include <aips/Tables/TableIter.h>
-#include <aips/Utilities/Assert.h>
-#include <aips/Utilities/GenSort.h>
-#include <aips/Arrays/Slicer.h>
-#include <aips/MeasurementSets/MSColumns.h>
-#include <aips/Measures.h>
-#include <aips/Measures/MeasTable.h>
-#include <aips/Measures/MPosition.h>
-#include <aips/Measures/MEpoch.h>
-#include <aips/Measures/Stokes.h>
-#include <aips/Tables/TableRecord.h>
-#include <aips/Logging/LogIO.h>
-#include <aips/iostream.h>
+#include <ms/MeasurementSets/MSIter.h>
+#include <casa/Arrays/ArrayMath.h>
+#include <casa/Arrays/ArrayLogical.h>
+#include <casa/Arrays/Slice.h>
+#include <casa/Exceptions/Error.h>
+#include <tables/Tables/TableIter.h>
+#include <casa/Utilities/Assert.h>
+#include <casa/Utilities/GenSort.h>
+#include <casa/Arrays/Slicer.h>
+#include <ms/MeasurementSets/MSColumns.h>
+#include <measures/Measures.h>
+#include <measures/Measures/MeasTable.h>
+#include <measures/Measures/MPosition.h>
+#include <measures/Measures/MEpoch.h>
+#include <measures/Measures/Stokes.h>
+#include <tables/Tables/TableRecord.h>
+#include <casa/Logging/LogIO.h>
+#include <casa/iostream.h>
 
 Double MSInterval::interval_p;
 Double MSInterval::offset_p;

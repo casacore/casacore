@@ -26,14 +26,14 @@
 //# $Id$
 
 //# Includes
-#include <aips/aips.h>
-#include <aips/Exceptions/Error.h>
-#include <aips/Fitting/LSQFit.h>
-#include <aips/BasicSL/Constants.h>
-#include <aips/BasicSL/Complex.h>
-#include <aips/OS/Timer.h>
-#include <aips/BasicMath/Random.h>
-#include <aips/iostream.h>
+#include <casa/aips.h>
+#include <casa/Exceptions/Error.h>
+#include <scimath/Fitting/LSQFit.h>
+#include <casa/BasicSL/Constants.h>
+#include <casa/BasicSL/Complex.h>
+#include <casa/OS/Timer.h>
+#include <casa/BasicMath/Random.h>
+#include <casa/iostream.h>
 
 Double Y(const Double x, const Double y=3e-15) {
   return (abs(x) < y) ? 0 : x;

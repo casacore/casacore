@@ -27,15 +27,15 @@
 
 
 
-#include <aips/aips.h>
-#include <aips/Arrays.h>
-#include <trial/Coordinates.h>
-#include <aips/Exceptions/Error.h>
-#include <aips/Logging/LogIO.h>
-#include <aips/BasicSL/String.h>
+#include <casa/aips.h>
+#include <casa/Arrays.h>
+#include <coordinates/Coordinates.h>
+#include <casa/Exceptions/Error.h>
+#include <casa/Logging/LogIO.h>
+#include <casa/BasicSL/String.h>
 
-#include <aips/iostream.h>
-#include <aips/iomanip.h>
+#include <casa/iostream.h>
+#include <casa/iomanip.h>
 
 
 

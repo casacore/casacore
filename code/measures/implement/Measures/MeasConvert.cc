@@ -26,10 +26,10 @@
 //# $Id$
 
 //# Includes
-#include <aips/Exceptions/Error.h>
-#include <aips/Measures/MeasBase.h>
-#include <aips/Measures/MeasConvert.h>
-#include <aips/Measures/MeasFrame.h>
+#include <casa/Exceptions/Error.h>
+#include <measures/Measures/MeasBase.h>
+#include <measures/Measures/MeasConvert.h>
+#include <measures/Measures/MeasFrame.h>
 
 //# Constructors
 template<class M>

@@ -25,14 +25,14 @@
 //#
 //# $Id$
 
-#include <aips/BasicSL/Complex.h>
-#include <aips/Arrays/Vector.h>
-#include <aips/Arrays/Matrix.h>
-#include <aips/Arrays/MatrixMath.h>
-#include <aips/Arrays/ArrayLogical.h>
-#include <aips/Arrays/ArrayMath.h>
-#include <aips/Arrays/ArrayError.h>
-#include <aips/iostream.h>
+#include <casa/BasicSL/Complex.h>
+#include <casa/Arrays/Vector.h>
+#include <casa/Arrays/Matrix.h>
+#include <casa/Arrays/MatrixMath.h>
+#include <casa/Arrays/ArrayLogical.h>
+#include <casa/Arrays/ArrayMath.h>
+#include <casa/Arrays/ArrayError.h>
+#include <casa/iostream.h>
 
 Matrix<Double> Rot3D(Int axis, Double angle) 
 {

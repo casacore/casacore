@@ -27,8 +27,8 @@
 
 //# Includes
 
-#include <aips/Containers/Dlink.h>
-#include <aips/iostream.h>
+#include <casa/Containers/Dlink.h>
+#include <casa/iostream.h>
 
 main() {
   Dlink<int> *hed = new Dlink<int>(23);

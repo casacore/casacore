@@ -25,9 +25,9 @@
 //#
 //# $Id$
 
-#include <trial/Functionals/DiracDFunction.h>
-#include <aips/BasicSL/Constants.h>
-#include <aips/BasicMath/Math.h>
+#include <scimath/Functionals/DiracDFunction.h>
+#include <casa/BasicSL/Constants.h>
+#include <casa/BasicMath/Math.h>
 
 //# Constructors
 

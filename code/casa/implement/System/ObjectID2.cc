@@ -26,9 +26,9 @@
 //# $Id$
 
 
-#include <aips/System/ObjectID.h>
-#include <aips/Containers/Block.h>
-#include <aips/stdio.h>                  // needed for sprintf
+#include <casa/System/ObjectID.h>
+#include <casa/Containers/Block.h>
+#include <casa/stdio.h>                  // needed for sprintf
 
 
 uInt hashFunc(const ObjectID &key)

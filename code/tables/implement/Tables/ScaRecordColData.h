@@ -30,8 +30,8 @@
 
 
 //# Includes
-#include <aips/aips.h>
-#include <aips/Tables/PlainColumn.h>
+#include <casa/aips.h>
+#include <tables/Tables/PlainColumn.h>
 
 //# Forward Declarations
 class ColumnSet;

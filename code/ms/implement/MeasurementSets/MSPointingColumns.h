@@ -28,14 +28,14 @@
 #if !defined(AIPS_MSPOINTINGCOLUMNS_H)
 #define AIPS_MSPOINTINGCOLUMNS_H
 
-#include <aips/aips.h>
-#include <aips/Measures/MDirection.h>
-#include <aips/Measures/MEpoch.h>
-#include <aips/TableMeasures/ArrayMeasColumn.h>
-#include <aips/TableMeasures/ScalarMeasColumn.h>
-#include <aips/TableMeasures/ScalarQuantColumn.h>
-#include <aips/Tables/ArrayColumn.h>
-#include <aips/Tables/ScalarColumn.h>
+#include <casa/aips.h>
+#include <measures/Measures/MDirection.h>
+#include <measures/Measures/MEpoch.h>
+#include <measures/TableMeasures/ArrayMeasColumn.h>
+#include <measures/TableMeasures/ScalarMeasColumn.h>
+#include <measures/TableMeasures/ScalarQuantColumn.h>
+#include <tables/Tables/ArrayColumn.h>
+#include <tables/Tables/ScalarColumn.h>
 
 class MSPointing;
 

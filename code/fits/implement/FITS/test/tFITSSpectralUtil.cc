@@ -26,15 +26,15 @@
 //# $Id$
 
 //# Includes
-#include <trial/FITS/FITSSpectralUtil.h>
+#include <fits/FITS/FITSSpectralUtil.h>
 
-#include <aips/Arrays/Vector.h>
-#include <aips/Containers/Record.h>
-#include <aips/Exceptions/Error.h>
-#include <trial/FITS/FITSKeywordUtil.h>
-#include <aips/Logging.h>
-#include <aips/BasicMath/Math.h>
-#include <aips/Utilities/Assert.h>
+#include <casa/Arrays/Vector.h>
+#include <casa/Containers/Record.h>
+#include <casa/Exceptions/Error.h>
+#include <fits/FITS/FITSKeywordUtil.h>
+#include <casa/Logging.h>
+#include <casa/BasicMath/Math.h>
+#include <casa/Utilities/Assert.h>
 
 #include <iostream.h>
 

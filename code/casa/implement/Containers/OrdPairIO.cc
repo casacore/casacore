@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#include <aips/Containers/OrdPairIO.h>
-#include <aips/iostream.h>
+#include <casa/Containers/OrdPairIO.h>
+#include <casa/iostream.h>
 
 template<class key, class value> AipsIO& operator<< (AipsIO& ios, const OrderedPair<key,value>& op) {
     ios << op.x() << op.y();

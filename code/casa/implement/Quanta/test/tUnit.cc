@@ -26,13 +26,13 @@
 //# $Id$
 
 //# Includes
-#include <aips/aips.h>
-#include <aips/Exceptions/Error.h>
-#include <aips/Quanta/Unit.h>
-#include <aips/Quanta/UnitMap.h>
-#include <aips/Quanta/UnitVal.h>
-#include <aips/Quanta/UnitName.h>
-#include <aips/iostream.h>
+#include <casa/aips.h>
+#include <casa/Exceptions/Error.h>
+#include <casa/Quanta/Unit.h>
+#include <casa/Quanta/UnitMap.h>
+#include <casa/Quanta/UnitVal.h>
+#include <casa/Quanta/UnitName.h>
+#include <casa/iostream.h>
 
 int main () {
     try {

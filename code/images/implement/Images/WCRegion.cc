@@ -26,18 +26,18 @@
 //# $Id$
 
 
-#include <trial/Images/WCRegion.h>
-#include <trial/Lattices/RegionType.h>
-#include <trial/Lattices/LCExtension.h>
-#include <trial/Lattices/LCBox.h>
-#include <trial/Coordinates/CoordinateSystem.h>
-#include <trial/Coordinates/Coordinate.h>
-#include <trial/Coordinates/DirectionCoordinate.h>
-#include <trial/Coordinates/SpectralCoordinate.h>
-#include <aips/Tables/TableRecord.h>
-#include <aips/Utilities/GenSort.h>
-#include <aips/Utilities/Assert.h>
-#include <aips/Exceptions/Error.h>
+#include <images/Images/WCRegion.h>
+#include <lattices/Lattices/RegionType.h>
+#include <lattices/Lattices/LCExtension.h>
+#include <lattices/Lattices/LCBox.h>
+#include <coordinates/Coordinates/CoordinateSystem.h>
+#include <coordinates/Coordinates/Coordinate.h>
+#include <coordinates/Coordinates/DirectionCoordinate.h>
+#include <coordinates/Coordinates/SpectralCoordinate.h>
+#include <tables/Tables/TableRecord.h>
+#include <casa/Utilities/GenSort.h>
+#include <casa/Utilities/Assert.h>
+#include <casa/Exceptions/Error.h>
 
 
 WCRegion::WCRegion()

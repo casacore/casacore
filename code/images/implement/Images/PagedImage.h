@@ -30,14 +30,14 @@
 
 
 //# Includes
-#include <trial/Images/ImageInterface.h>
-#include <aips/Lattices/PagedArray.h>
-#include <aips/Tables/Table.h>
-#include <aips/Utilities/DataType.h>
-#include <aips/Tables/TableRecord.h>
+#include <images/Images/ImageInterface.h>
+#include <lattices/Lattices/PagedArray.h>
+#include <tables/Tables/Table.h>
+#include <casa/Utilities/DataType.h>
+#include <tables/Tables/TableRecord.h>
 
 //# Forward Declarations
-#include <aips/iosfwd.h>
+#include <casa/iosfwd.h>
 
 // <summary>
 // Read, store, and manipulate astronomical images.

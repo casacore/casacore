@@ -26,7 +26,7 @@
 //# $Id$
 
 //# Includes
-#include <aips/Functionals/SincParam.h>
+#include <scimath/Functionals/SincParam.h>
 
 template<class T>
 SincParam<T>::SincParam() :

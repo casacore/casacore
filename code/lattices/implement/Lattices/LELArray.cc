@@ -26,7 +26,7 @@
 //# $Id$
 
 
-#include <trial/Lattices/LELArray.h>
+#include <lattices/Lattices/LELArray.h>
 
 
 template <class T>

@@ -25,13 +25,13 @@
 //#
 //# $Id$
 
-#include <trial/Functionals/Gaussian3DParam.h>
-#include <aips/Arrays/ArrayMath.h>
-#include <aips/Arrays/Vector.h>
-#include <aips/Exceptions/Error.h>
-#include <aips/BasicSL/Constants.h>
-#include <aips/BasicMath/Math.h>
-#include <aips/Functionals/Function.h>
+#include <scimath/Functionals/Gaussian3DParam.h>
+#include <casa/Arrays/ArrayMath.h>
+#include <casa/Arrays/Vector.h>
+#include <casa/Exceptions/Error.h>
+#include <casa/BasicSL/Constants.h>
+#include <casa/BasicMath/Math.h>
+#include <scimath/Functionals/Function.h>
 
 template<class Type> 
 Gaussian3DParam<Type>::Gaussian3DParam() 

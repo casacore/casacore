@@ -29,8 +29,8 @@
 #define AIPS_TABLEMEASOFFSETDESC_H
 
 //# Includes
-#include <aips/BasicSL/String.h>
-#include <aips/Measures/MeasureHolder.h>
+#include <casa/BasicSL/String.h>
+#include <measures/Measures/MeasureHolder.h>
 
 //# Forward Declarations
 class TableMeasDescBase;

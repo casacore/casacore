@@ -28,8 +28,8 @@
 #if !defined (AIPS_ASSERT_H)
 #define AIPS_ASSERT_H
 
-#include <aips/aips.h>
-#include <aips/Exceptions/Error.h>
+#include <casa/aips.h>
+#include <casa/Exceptions/Error.h>
 
 
 // <summary>Utility class for Assert macros.</summary>

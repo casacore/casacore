@@ -30,13 +30,13 @@
 #define TRIAL_SPECTRALELEMENT_H
 
 //# Includes
-#include <aips/aips.h>
-#include <aips/Arrays/Vector.h>
-#include <aips/Utilities/RecordTransformable.h>
+#include <casa/aips.h>
+#include <casa/Arrays/Vector.h>
+#include <casa/Utilities/RecordTransformable.h>
 
 //# Forward Declarations
 class String;
-#include <aips/iosfwd.h>
+#include <casa/iosfwd.h>
 
 // <summary>
 // Describes (a set of related) spectral lines

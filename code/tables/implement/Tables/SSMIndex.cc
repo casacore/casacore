@@ -24,16 +24,16 @@
 //#                        Charlottesville, VA 22903-2475 USA
 //# $Id$   
 
-#include <aips/Tables/SSMIndex.h>
-#include <aips/Tables/SSMBase.h>
-#include <aips/Tables/Table.h>
-#include <aips/Containers/SimOrdMapIO.h>
-#include <aips/IO/AipsIO.h>
-#include <aips/Utilities/BinarySearch.h>
-#include <aips/BasicMath/Math.h>
-#include <aips/Utilities/Assert.h>
-#include <aips/Tables/TableError.h>
-#include <aips/iostream.h>
+#include <tables/Tables/SSMIndex.h>
+#include <tables/Tables/SSMBase.h>
+#include <tables/Tables/Table.h>
+#include <casa/Containers/SimOrdMapIO.h>
+#include <casa/IO/AipsIO.h>
+#include <casa/Utilities/BinarySearch.h>
+#include <casa/BasicMath/Math.h>
+#include <casa/Utilities/Assert.h>
+#include <tables/Tables/TableError.h>
+#include <casa/iostream.h>
 
 
 SSMIndex::SSMIndex (SSMBase* aSSMPtr, uInt rowsPerBucket) 

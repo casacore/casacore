@@ -26,9 +26,9 @@
 //# $Id$
 
 
-#include <aips/Tables/TableLockData.h>
-#include <aips/Tables/TableError.h>
-#include <aips/Logging/LogIO.h>
+#include <tables/Tables/TableLockData.h>
+#include <tables/Tables/TableError.h>
+#include <casa/Logging/LogIO.h>
 #include <unistd.h>
 
 

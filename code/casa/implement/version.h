@@ -30,10 +30,10 @@
 #define AIPS_VERSION_H
 
 //# Includes
-#include <aips/aips.h>
+#include <casa/aips.h>
 
 //# Forward declarations
-#include <aips/iosfwd.h>
+#include <casa/iosfwd.h>
 
 // <summary>
 // Version information for AIPS++

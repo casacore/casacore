@@ -29,10 +29,10 @@
 #define AIPS_MASKEDARRAY_LOGICAL_H
 
 
-#include <aips/aips.h>
-#include <aips/Arrays/Array.h>
-#include <aips/Arrays/MaskedArray.h>
-#include <aips/Arrays/MaskLogiArr.h>
+#include <casa/aips.h>
+#include <casa/Arrays/Array.h>
+#include <casa/Arrays/MaskedArray.h>
+#include <casa/Arrays/MaskLogiArr.h>
 
 // <summary>
 //    Logical operations for MaskedArrays, and between MaskedArrays and Arrays.

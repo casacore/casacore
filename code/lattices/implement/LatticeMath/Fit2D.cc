@@ -25,27 +25,27 @@
 //#
 //#   $Id$
 
-#include <trial/LatticeMath/Fit2D.h>
+#include <lattices/LatticeMath/Fit2D.h>
 
-#include <aips/Arrays/Array.h>
-#include <aips/Arrays/Vector.h>
-#include <aips/Arrays/Matrix.h>
-#include <aips/Arrays/ArrayMath.h>
-#include <aips/Arrays/MaskedArray.h>
-#include <aips/Arrays/MaskArrMath.h>
-#include <aips/Exceptions/Error.h>
-#include <aips/Functionals/Gaussian2D.h>
-#include <aips/Lattices/Lattice.h>
-#include <trial/Lattices/MaskedLattice.h>
-#include <aips/Logging/LogIO.h>
-#include <aips/BasicMath/Math.h>
-#include <aips/Quanta/MVAngle.h>
-#include <aips/Mathematics/AutoDiff.h>
-#include <aips/Mathematics/AutoDiffIO.h>
-#include <aips/Utilities/Assert.h>
+#include <casa/Arrays/Array.h>
+#include <casa/Arrays/Vector.h>
+#include <casa/Arrays/Matrix.h>
+#include <casa/Arrays/ArrayMath.h>
+#include <casa/Arrays/MaskedArray.h>
+#include <casa/Arrays/MaskArrMath.h>
+#include <casa/Exceptions/Error.h>
+#include <scimath/Functionals/Gaussian2D.h>
+#include <lattices/Lattices/Lattice.h>
+#include <lattices/Lattices/MaskedLattice.h>
+#include <casa/Logging/LogIO.h>
+#include <casa/BasicMath/Math.h>
+#include <casa/Quanta/MVAngle.h>
+#include <scimath/Mathematics/AutoDiff.h>
+#include <scimath/Mathematics/AutoDiffIO.h>
+#include <casa/Utilities/Assert.h>
 
-#include <aips/iostream.h>
-#include <aips/sstream.h>
+#include <casa/iostream.h>
+#include <casa/sstream.h>
 
 
 Fit2D::Fit2D(LogIO& logger)

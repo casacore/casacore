@@ -26,9 +26,9 @@
 //#
 //# $Id$
 
-#include <trial/Coordinates/Projection.h>
-#include <aips/BasicMath/Math.h>
-#include <aips/Exceptions/Error.h>
+#include <coordinates/Coordinates/Projection.h>
+#include <casa/BasicMath/Math.h>
+#include <casa/Exceptions/Error.h>
 
 Projection::Projection(Projection::Type which) 
 : which_p(which), parameters_p(0)

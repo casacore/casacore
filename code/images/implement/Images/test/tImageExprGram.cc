@@ -25,27 +25,27 @@
 //#
 //# $Id$
 
-#include <trial/Images/ImageExprParse.h>
-#include <trial/Images/ImageExpr.h>
-#include <trial/Images/ImageRegion.h>
-#include <aips/Lattices/PagedArray.h>
-#include <aips/Lattices/ArrayLattice.h>
-#include <trial/Lattices/LCBox.h>
-#include <trial/Lattices/LCPixelSet.h>
-#include <aips/Tables/Table.h>
-#include <aips/Arrays/Array.h>
-#include <aips/Arrays/Matrix.h>
-#include <aips/Arrays/ArrayMath.h>
-#include <aips/Arrays/ArrayLogical.h>
-#include <aips/Arrays/IPosition.h>
-#include <aips/Containers/Block.h>
-#include <aips/Containers/Record.h>
-#include <aips/BasicSL/Constants.h>
-#include <aips/BasicMath/Math.h>
-#include <aips/Logging/LogIO.h>
-#include <aips/Inputs/Input.h>
-#include <aips/Exceptions/Error.h>
-#include <aips/iostream.h>
+#include <images/Images/ImageExprParse.h>
+#include <images/Images/ImageExpr.h>
+#include <images/Images/ImageRegion.h>
+#include <lattices/Lattices/PagedArray.h>
+#include <lattices/Lattices/ArrayLattice.h>
+#include <lattices/Lattices/LCBox.h>
+#include <lattices/Lattices/LCPixelSet.h>
+#include <tables/Tables/Table.h>
+#include <casa/Arrays/Array.h>
+#include <casa/Arrays/Matrix.h>
+#include <casa/Arrays/ArrayMath.h>
+#include <casa/Arrays/ArrayLogical.h>
+#include <casa/Arrays/IPosition.h>
+#include <casa/Containers/Block.h>
+#include <casa/Containers/Record.h>
+#include <casa/BasicSL/Constants.h>
+#include <casa/BasicMath/Math.h>
+#include <casa/Logging/LogIO.h>
+#include <casa/Inputs/Input.h>
+#include <casa/Exceptions/Error.h>
+#include <casa/iostream.h>
 
 
 //# This function simulates the same function in DOImage2.cc.

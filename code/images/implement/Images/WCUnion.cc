@@ -26,10 +26,10 @@
 //# $Id$
 
 
-#include <trial/Images/WCUnion.h>
-#include <trial/Images/ImageRegion.h>
-#include <trial/Lattices/LCUnion.h>
-#include <aips/Tables/TableRecord.h>
+#include <images/Images/WCUnion.h>
+#include <images/Images/ImageRegion.h>
+#include <lattices/Lattices/LCUnion.h>
+#include <tables/Tables/TableRecord.h>
 
 
 WCUnion::WCUnion (const ImageRegion& region1,

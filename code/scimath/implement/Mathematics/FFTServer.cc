@@ -25,15 +25,15 @@
 //#
 //# $Id$
 
-#include <aips/Mathematics/FFTServer.h>
-#include <aips/Arrays/Array.h>
-#include <aips/Arrays/ArrayLogical.h>
-#include <aips/Arrays/VectorIter.h>
-#include <aips/Arrays/Matrix.h>
-#include <aips/BasicMath/Math.h>
-#include <aips/Mathematics/NumericTraits.h>
-#include <aips/Mathematics/FFTPack.h>
-#include <aips/Utilities/Assert.h>
+#include <scimath/Mathematics/FFTServer.h>
+#include <casa/Arrays/Array.h>
+#include <casa/Arrays/ArrayLogical.h>
+#include <casa/Arrays/VectorIter.h>
+#include <casa/Arrays/Matrix.h>
+#include <casa/BasicMath/Math.h>
+#include <scimath/Mathematics/NumericTraits.h>
+#include <scimath/Mathematics/FFTPack.h>
+#include <casa/Utilities/Assert.h>
 
 
 template<class T, class S> Int FFTServer<T,S>::

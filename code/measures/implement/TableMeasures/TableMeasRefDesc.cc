@@ -27,12 +27,12 @@
 
 
 //# Includes
-#include <aips/TableMeasures/TableMeasRefDesc.h>
-#include <aips/TableMeasures/TableMeasDescBase.h>
-#include <aips/Tables/Table.h>
-#include <aips/Tables/TableDesc.h>
-#include <aips/Tables/TableRecord.h>
-#include <aips/Exceptions/Error.h>
+#include <measures/TableMeasures/TableMeasRefDesc.h>
+#include <measures/TableMeasures/TableMeasDescBase.h>
+#include <tables/Tables/Table.h>
+#include <tables/Tables/TableDesc.h>
+#include <tables/Tables/TableRecord.h>
+#include <casa/Exceptions/Error.h>
 
 
 TableMeasRefDesc::TableMeasRefDesc (uInt referenceCode)

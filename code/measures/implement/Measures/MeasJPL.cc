@@ -26,16 +26,16 @@
 //# $Id$
 
 //# Includes
-#include <aips/BasicMath/Math.h>
-#include <aips/Exceptions/Error.h>
-#include <aips/Measures/MeasJPL.h>
-#include <aips/Quanta/Quantum.h>
-#include <aips/Quanta/MVEpoch.h>
-#include <aips/Measures/MeasIERS.h>
-#include <aips/OS/Time.h>
-#include <aips/Logging/LogIO.h>
-#include <aips/System/Aipsrc.h>
-#include <aips/Tables/TableDesc.h>
+#include <casa/BasicMath/Math.h>
+#include <casa/Exceptions/Error.h>
+#include <measures/Measures/MeasJPL.h>
+#include <casa/Quanta/Quantum.h>
+#include <casa/Quanta/MVEpoch.h>
+#include <measures/Measures/MeasIERS.h>
+#include <casa/OS/Time.h>
+#include <casa/Logging/LogIO.h>
+#include <casa/System/Aipsrc.h>
+#include <tables/Tables/TableDesc.h>
 
 //# Constants
 

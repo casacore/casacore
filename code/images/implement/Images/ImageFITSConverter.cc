@@ -26,35 +26,35 @@
 //#
 //# $Id$
 
-#include <trial/Coordinates/LinearCoordinate.h>
-#include <trial/Coordinates/CoordinateUtil.h>
-#include <trial/Images/ImageFITSConverter.h>
-#include <trial/Images/PagedImage.h>
-#include <trial/Images/TempImage.h>
-#include <trial/Images/RegionHandler.h>
-#include <trial/Images/ImageRegion.h>
-#include <trial/Images/ImageInfo.h>
-#include <aips/Lattices/LatticeIterator.h>
-#include <aips/Lattices/LatticeStepper.h>
-#include <aips/Lattices/TempLattice.h>
-#include <trial/Lattices/LCPagedMask.h>
-#include <trial/Lattices/LCMask.h>
-#include <trial/Lattices/LCRegionSingle.h>
-#include <aips/FITS/fitsio.h>
-#include <aips/FITS/hdu.h>
-#include <trial/FITS/FITSKeywordUtil.h>
+#include <coordinates/Coordinates/LinearCoordinate.h>
+#include <coordinates/Coordinates/CoordinateUtil.h>
+#include <images/Images/ImageFITSConverter.h>
+#include <images/Images/PagedImage.h>
+#include <images/Images/TempImage.h>
+#include <images/Images/RegionHandler.h>
+#include <images/Images/ImageRegion.h>
+#include <images/Images/ImageInfo.h>
+#include <lattices/Lattices/LatticeIterator.h>
+#include <lattices/Lattices/LatticeStepper.h>
+#include <lattices/Lattices/TempLattice.h>
+#include <lattices/Lattices/LCPagedMask.h>
+#include <lattices/Lattices/LCMask.h>
+#include <lattices/Lattices/LCRegionSingle.h>
+#include <fits/FITS/fitsio.h>
+#include <fits/FITS/hdu.h>
+#include <fits/FITS/FITSKeywordUtil.h>
 
-#include <aips/Quanta/UnitMap.h>
-#include <aips/Arrays/Matrix.h>
-#include <aips/Arrays/Vector.h>
-#include <aips/Arrays/IPosition.h>
-#include <aips/BasicMath/Math.h>
-#include <aips/Exceptions/Error.h>
-#include <aips/Logging/LogIO.h>
-#include <aips/Containers/Record.h>
-#include <aips/System/ProgressMeter.h>
+#include <casa/Quanta/UnitMap.h>
+#include <casa/Arrays/Matrix.h>
+#include <casa/Arrays/Vector.h>
+#include <casa/Arrays/IPosition.h>
+#include <casa/BasicMath/Math.h>
+#include <casa/Exceptions/Error.h>
+#include <casa/Logging/LogIO.h>
+#include <casa/Containers/Record.h>
+#include <casa/System/ProgressMeter.h>
 
-#include <aips/sstream.h>
+#include <casa/sstream.h>
 
 // At least the Coordinate and header related things could be factored out
 // into template independent code.

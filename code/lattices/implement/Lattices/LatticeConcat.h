@@ -30,8 +30,8 @@
 
 
 //# Includes
-#include <trial/Lattices/MaskedLattice.h>
-#include <aips/Containers/Block.h>
+#include <lattices/Lattices/MaskedLattice.h>
+#include <casa/Containers/Block.h>
 
 //# Forward Declarations
 class IPosition;

@@ -32,10 +32,10 @@
 //# the table vectors. Furthermore vector functions like norm are defined.
 
 //# Includes
-#include <aips/aips.h>
-#include <aips/BasicMath/Math.h>
-#include <aips/Tables/TableVector.h>
-#include <aips/Tables/TVecMath.h>
+#include <casa/aips.h>
+#include <casa/BasicMath/Math.h>
+#include <tables/Tables/TableVector.h>
+#include <tables/Tables/TVecMath.h>
 
 
 // <summary>

@@ -30,10 +30,10 @@
 
 
 //# Includes
-#include <aips/aips.h>
-#include <trial/Lattices/LatticeHistograms.h>
-#include <aips/Logging/LogIO.h>
-#include <aips/BasicSL/String.h>
+#include <casa/aips.h>
+#include <lattices/Lattices/LatticeHistograms.h>
+#include <casa/Logging/LogIO.h>
+#include <casa/BasicSL/String.h>
 
 
 //# Forward Declarations

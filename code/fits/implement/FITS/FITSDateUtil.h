@@ -30,8 +30,8 @@
 #if !defined(AIPS_FITS_DATE_UTIL_H)
 #define AIPS_FITS_DATE_UTIL_H
 
-#include <aips/aips.h>
-#include <aips/Measures/MEpoch.h>
+#include <casa/aips.h>
+#include <measures/Measures/MEpoch.h>
 
 class String;
 class MVTime;

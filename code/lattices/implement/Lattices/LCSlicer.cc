@@ -25,15 +25,15 @@
 //#
 //# $Id$
 
-#include <trial/Lattices/LCSlicer.h>
-#include <aips/Arrays/Slicer.h>
-#include <aips/Arrays/IPosition.h>
-#include <aips/Tables/TableRecord.h>
-#include <aips/Arrays/Vector.h>
-#include <aips/BasicMath/Math.h>
-#include <aips/Exceptions/Error.h>
-#include <aips/iostream.h>
-#include <aips/sstream.h>
+#include <lattices/Lattices/LCSlicer.h>
+#include <casa/Arrays/Slicer.h>
+#include <casa/Arrays/IPosition.h>
+#include <tables/Tables/TableRecord.h>
+#include <casa/Arrays/Vector.h>
+#include <casa/BasicMath/Math.h>
+#include <casa/Exceptions/Error.h>
+#include <casa/iostream.h>
+#include <casa/sstream.h>
 
 
 LCSlicer::LCSlicer()

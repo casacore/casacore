@@ -25,27 +25,27 @@
 //#
 //# $Id$
 
-#include <aips/TableMeasures/TableQuantumDesc.h>
-#include <aips/TableMeasures/ScalarQuantColumn.h>
-#include <aips/TableMeasures/ArrayQuantColumn.h>
-#include <aips/Quanta/Quantum.h>
-#include <aips/Quanta/Unit.h>
-#include <aips/Measures/MEpoch.h>
-#include <aips/BasicSL/Complex.h>
-#include <aips/Tables/ArrColDesc.h>
-#include <aips/Tables/ScaColDesc.h>
-#include <aips/Tables/SetupNewTab.h>
-#include <aips/Tables/Table.h>
-#include <aips/Tables/ArrayColumn.h>
-#include <aips/Tables/ScalarColumn.h>
-#include <aips/Tables/TableDesc.h>
-#include <aips/Arrays/Array.h>
-#include <aips/Arrays/Vector.h>
-#include <aips/Arrays/ArrayUtil.h>
-#include <aips/OS/Timer.h>
-#include <aips/Utilities/Assert.h>
-#include <aips/Exceptions/Error.h>
-#include <aips/iostream.h>
+#include <measures/TableMeasures/TableQuantumDesc.h>
+#include <measures/TableMeasures/ScalarQuantColumn.h>
+#include <measures/TableMeasures/ArrayQuantColumn.h>
+#include <casa/Quanta/Quantum.h>
+#include <casa/Quanta/Unit.h>
+#include <measures/Measures/MEpoch.h>
+#include <casa/BasicSL/Complex.h>
+#include <tables/Tables/ArrColDesc.h>
+#include <tables/Tables/ScaColDesc.h>
+#include <tables/Tables/SetupNewTab.h>
+#include <tables/Tables/Table.h>
+#include <tables/Tables/ArrayColumn.h>
+#include <tables/Tables/ScalarColumn.h>
+#include <tables/Tables/TableDesc.h>
+#include <casa/Arrays/Array.h>
+#include <casa/Arrays/Vector.h>
+#include <casa/Arrays/ArrayUtil.h>
+#include <casa/OS/Timer.h>
+#include <casa/Utilities/Assert.h>
+#include <casa/Exceptions/Error.h>
+#include <casa/iostream.h>
 
 
 int main (int argc, char* argv[])

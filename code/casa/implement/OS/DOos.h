@@ -31,8 +31,8 @@
 
 
 //# Includes
-#include <aips/aips.h>
-#include <aips/Arrays/Vector.h>
+#include <casa/aips.h>
+#include <casa/Arrays/Vector.h>
 
 //# Forward Declarations
 class String;

@@ -27,11 +27,11 @@
 //# $Id$
 
 
-#include <trial/Mathematics/StatAcc.h>
-#include <aips/Arrays.h>
-#include <aips/Exceptions/Error.h>
-#include <aips/iostream.h>
-#include <aips/iomanip.h>
+#include <scimath/Mathematics/StatAcc.h>
+#include <casa/Arrays.h>
+#include <casa/Exceptions/Error.h>
+#include <casa/iostream.h>
+#include <casa/iomanip.h>
 
 // Constructors:
 

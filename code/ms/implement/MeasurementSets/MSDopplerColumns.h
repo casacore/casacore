@@ -28,11 +28,11 @@
 #if !defined(AIPS_MSDOPPLERCOLUMNS_H)
 #define AIPS_MSDOPPLERCOLUMNS_H
 
-#include <aips/aips.h>
-#include <aips/Measures/MDoppler.h>
-#include <aips/Tables/ScalarColumn.h>
-#include <aips/TableMeasures/ScalarMeasColumn.h>
-#include <aips/TableMeasures/ScalarQuantColumn.h>
+#include <casa/aips.h>
+#include <measures/Measures/MDoppler.h>
+#include <tables/Tables/ScalarColumn.h>
+#include <measures/TableMeasures/ScalarMeasColumn.h>
+#include <measures/TableMeasures/ScalarQuantColumn.h>
 
 class MSDoppler;
 

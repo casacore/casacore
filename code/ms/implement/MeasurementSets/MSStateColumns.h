@@ -28,10 +28,10 @@
 #if !defined(AIPS_MSSTATECOLUMNS_H)
 #define AIPS_MSSTATECOLUMNS_H
 
-#include <aips/aips.h>
-#include <aips/Tables/ScalarColumn.h>
-#include <aips/TableMeasures/ScalarQuantColumn.h>
-#include <aips/BasicSL/String.h>
+#include <casa/aips.h>
+#include <tables/Tables/ScalarColumn.h>
+#include <measures/TableMeasures/ScalarQuantColumn.h>
+#include <casa/BasicSL/String.h>
 
 class MSState;
 

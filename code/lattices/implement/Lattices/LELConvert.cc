@@ -26,13 +26,13 @@
 //# $Id$
 
 
-#include <trial/Lattices/LELConvert.h>
-#include <trial/Lattices/LELArray.h>
-#include <trial/Lattices/LELScalar.h>
-#include <aips/Arrays/Slicer.h>
-#include <aips/Arrays/Array.h>
-#include <aips/Arrays/ArrayMath.h>
-#include <aips/BasicMath/ConvertScalar.h>
+#include <lattices/Lattices/LELConvert.h>
+#include <lattices/Lattices/LELArray.h>
+#include <lattices/Lattices/LELScalar.h>
+#include <casa/Arrays/Slicer.h>
+#include <casa/Arrays/Array.h>
+#include <casa/Arrays/ArrayMath.h>
+#include <casa/BasicMath/ConvertScalar.h>
 
 
 template <class T, class F>

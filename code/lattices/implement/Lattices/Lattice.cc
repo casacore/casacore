@@ -25,18 +25,18 @@
 //#
 //# $Id$
 
-#include <aips/Lattices/Lattice.h>
-#include <aips/Lattices/LatticeIterator.h>
-#include <aips/Lattices/LatticeStepper.h>
-#include <aips/Arrays/Array.h>
-#include <aips/Arrays/IPosition.h>
-#include <aips/Arrays/Slicer.h>
-#include <aips/Arrays/ArrayMath.h>
-#include <aips/Exceptions/Error.h>
-#include <aips/BasicMath/Functional.h>
-#include <aips/BasicMath/Math.h>
-#include <aips/Utilities/COWPtr.h>
-#include <aips/Utilities/Assert.h>
+#include <lattices/Lattices/Lattice.h>
+#include <lattices/Lattices/LatticeIterator.h>
+#include <lattices/Lattices/LatticeStepper.h>
+#include <casa/Arrays/Array.h>
+#include <casa/Arrays/IPosition.h>
+#include <casa/Arrays/Slicer.h>
+#include <casa/Arrays/ArrayMath.h>
+#include <casa/Exceptions/Error.h>
+#include <casa/BasicMath/Functional.h>
+#include <casa/BasicMath/Math.h>
+#include <casa/Utilities/COWPtr.h>
+#include <casa/Utilities/Assert.h>
 
 
 // destructor

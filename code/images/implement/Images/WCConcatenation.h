@@ -29,8 +29,8 @@
 #define AIPS_WCCONCATENATION_H
 
 //# Includes
-#include <trial/Images/WCCompound.h>
-#include <trial/Images/WCBox.h>
+#include <images/Images/WCCompound.h>
+#include <images/Images/WCBox.h>
 
 
 // <summary>

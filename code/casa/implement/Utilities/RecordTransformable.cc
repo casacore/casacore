@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#include <aips/Utilities/RecordTransformable.h>
-#include <aips/BasicSL/String.h>
+#include <casa/Utilities/RecordTransformable.h>
+#include <casa/BasicSL/String.h>
 
 RecordTransformable::~RecordTransformable() {
   // Nothing

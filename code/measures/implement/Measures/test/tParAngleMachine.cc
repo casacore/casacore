@@ -26,23 +26,23 @@
 //# $Id$
 
 //# Includes
-#include <aips/aips.h>
-#include <aips/Measures/ParAngleMachine.h>
-#include <aips/Exceptions/Error.h>
-#include <aips/Measures.h>
-#include <aips/Measures/MeasConvert.h>
-#include <aips/Measures/MeasFrame.h>
-#include <aips/Measures/MeasRef.h>
-#include <aips/Measures/MeasTable.h>
-#include <aips/Measures/MDirection.h>
-#include <aips/Measures/MPosition.h>
-#include <aips/Measures/MEpoch.h>
-#include <aips/Quanta/Quantum.h>
-#include <aips/Quanta/MVEpoch.h>
-#include <aips/Arrays/Vector.h>
-#include <aips/OS/Timer.h>
-#include <aips/iostream.h>
-#include <aips/iomanip.h>
+#include <casa/aips.h>
+#include <measures/Measures/ParAngleMachine.h>
+#include <casa/Exceptions/Error.h>
+#include <measures/Measures.h>
+#include <measures/Measures/MeasConvert.h>
+#include <measures/Measures/MeasFrame.h>
+#include <measures/Measures/MeasRef.h>
+#include <measures/Measures/MeasTable.h>
+#include <measures/Measures/MDirection.h>
+#include <measures/Measures/MPosition.h>
+#include <measures/Measures/MEpoch.h>
+#include <casa/Quanta/Quantum.h>
+#include <casa/Quanta/MVEpoch.h>
+#include <casa/Arrays/Vector.h>
+#include <casa/OS/Timer.h>
+#include <casa/iostream.h>
+#include <casa/iomanip.h>
 
 int main() {
 

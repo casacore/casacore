@@ -25,7 +25,7 @@
 //#
 //# $Id$
 
-#include<aips/Arrays/MatrixIter.h>
+#include<casa/Arrays/MatrixIter.h>
 
 template<class T> MatrixIterator<T>::MatrixIterator(Array<T> &a)
 : ArrayIterator<T>(a, 2)

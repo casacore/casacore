@@ -24,17 +24,17 @@
 //#                        Charlottesville, VA 22903-2475 USA
 //#
 //# $Id$
-#include <trial/Flagging/RFFlagCube.h>
-#include <trial/Flagging/RFChunkStats.h>
-#include <trial/Flagging/RFRowClipper.h>
-#include <aips/Arrays/LogiVector.h>
-#include <aips/Arrays/ArrayMath.h>
-#include <aips/Arrays/MaskArrMath.h>
-#include <aips/Arrays/ArrayLogical.h>
-#include <aips/Arrays/Slice.h>
-#include <trial/System/PGPlotterInterface.h>
-#include <trial/Mathematics/MedianSlider.h>
-#include <aips/stdio.h>
+#include <flagging/Flagging/RFFlagCube.h>
+#include <flagging/Flagging/RFChunkStats.h>
+#include <flagging/Flagging/RFRowClipper.h>
+#include <casa/Arrays/LogiVector.h>
+#include <casa/Arrays/ArrayMath.h>
+#include <casa/Arrays/MaskArrMath.h>
+#include <casa/Arrays/ArrayLogical.h>
+#include <casa/Arrays/Slice.h>
+#include <casa/System/PGPlotterInterface.h>
+#include <scimath/Mathematics/MedianSlider.h>
+#include <casa/stdio.h>
     
 RFRowClipper::RFRowClipper( RFChunkStats &ch,RFFlagCube &fl,Float clip,uInt hw,uInt maxp ) :
   chunk(ch),flag(fl),clip_level(clip),halfwin(hw),maxpass(maxp),

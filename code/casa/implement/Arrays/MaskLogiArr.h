@@ -33,10 +33,10 @@
 #endif
 
 
-#include <aips/aips.h>
-#include <aips/Arrays/MaskLogiArrFwd.h>
-#include <aips/Arrays/LogiArray.h>
-#include <aips/Arrays/MaskedArray.h>
+#include <casa/aips.h>
+#include <casa/Arrays/MaskLogiArrFwd.h>
+#include <casa/Arrays/LogiArray.h>
+#include <casa/Arrays/MaskedArray.h>
 
 
 // <summary>

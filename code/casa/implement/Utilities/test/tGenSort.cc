@@ -27,13 +27,13 @@
 
 //# Includes
 
-#include <aips/Utilities/GenSort.h>
-#include <aips/Arrays/Vector.h>
-#include <aips/Arrays/ArrayMath.h>
-#include <aips/sstream.h>
-#include <aips/OS/Timer.h>
-#include <aips/stdlib.h>
-#include <aips/iomanip.h>
+#include <casa/Utilities/GenSort.h>
+#include <casa/Arrays/Vector.h>
+#include <casa/Arrays/ArrayMath.h>
+#include <casa/sstream.h>
+#include <casa/OS/Timer.h>
+#include <casa/stdlib.h>
+#include <casa/iomanip.h>
 
 void sortall (Int*, uInt, int, Sort::Order, Bool);
 

@@ -26,22 +26,22 @@
 //# $Id: 
 
 
-#include <trial/Images/FITSImage.h>
+#include <images/Images/FITSImage.h>
 
-#include <aips/Arrays/IPosition.h>
-#include <trial/Coordinates/CoordinateSystem.h>
-#include <aips/Containers/Record.h>
-#include <aips/Exceptions/Error.h>
-#include <aips/FITS/fitsio.h>
-#include <aips/FITS/hdu.h>
-#include <trial/FITS/FITSKeywordUtil.h>
-#include <trial/Images/ImageInfo.h>
-#include <trial/Images/ImageFITSConverter.h>
-#include <aips/Logging/LogIO.h>
-#include <aips/BasicMath/Math.h>
-#include <aips/Quanta/Unit.h>
-#include <aips/Utilities/DataType.h>
-#include <aips/BasicSL/String.h>
+#include <casa/Arrays/IPosition.h>
+#include <coordinates/Coordinates/CoordinateSystem.h>
+#include <casa/Containers/Record.h>
+#include <casa/Exceptions/Error.h>
+#include <fits/FITS/fitsio.h>
+#include <fits/FITS/hdu.h>
+#include <fits/FITS/FITSKeywordUtil.h>
+#include <images/Images/ImageInfo.h>
+#include <images/Images/ImageFITSConverter.h>
+#include <casa/Logging/LogIO.h>
+#include <casa/BasicMath/Math.h>
+#include <casa/Quanta/Unit.h>
+#include <casa/Utilities/DataType.h>
+#include <casa/BasicSL/String.h>
 
 
 template <typename T>

@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#include <aips/Containers/List.h>
-#include <aips/Containers/IterError.h>
+#include <casa/Containers/List.h>
+#include <casa/Containers/IterError.h>
 
 void throw_list_end_error(){
   throw(IterBoundaryError("List operation performed with cursor past the "

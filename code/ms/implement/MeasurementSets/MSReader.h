@@ -29,25 +29,25 @@
 #if !defined(AIPS_MSREADER_H)
 #define AIPS_MSREADER_H
 
-#include <aips/aips.h>
-#include <aips/Arrays/Vector.h>
-#include <aips/Containers/Block.h>
-#include <aips/Containers/Record.h>
-#include <aips/Containers/SimOrdMap.h>
-#include <aips/MeasurementSets/MeasurementSet.h>
-#include <aips/MeasurementSets/MSColumns.h>
-#include <trial/MeasurementSets/MSDopplerIndex.h>
-#include <trial/MeasurementSets/MSFeedIndex.h>
-#include <trial/MeasurementSets/MSFreqOffIndex.h>
-#include <trial/MeasurementSets/MSPointingIndex.h>
-#include <trial/MeasurementSets/MSSourceIndex.h>
-#include <trial/MeasurementSets/MSSysCalIndex.h>
-#include <trial/MeasurementSets/MSTableIndex.h>
-#include <trial/MeasurementSets/MSWeatherIndex.h>
-#include <trial/MeasurementSets/MSValidIds.h>
-#include <aips/Tables/TableRow.h>
-#include <aips/Quanta/Unit.h>
-#include <aips/BasicSL/String.h>
+#include <casa/aips.h>
+#include <casa/Arrays/Vector.h>
+#include <casa/Containers/Block.h>
+#include <casa/Containers/Record.h>
+#include <casa/Containers/SimOrdMap.h>
+#include <ms/MeasurementSets/MeasurementSet.h>
+#include <ms/MeasurementSets/MSColumns.h>
+#include <ms/MeasurementSets/MSDopplerIndex.h>
+#include <ms/MeasurementSets/MSFeedIndex.h>
+#include <ms/MeasurementSets/MSFreqOffIndex.h>
+#include <ms/MeasurementSets/MSPointingIndex.h>
+#include <ms/MeasurementSets/MSSourceIndex.h>
+#include <ms/MeasurementSets/MSSysCalIndex.h>
+#include <ms/MeasurementSets/MSTableIndex.h>
+#include <ms/MeasurementSets/MSWeatherIndex.h>
+#include <ms/MeasurementSets/MSValidIds.h>
+#include <tables/Tables/TableRow.h>
+#include <casa/Quanta/Unit.h>
+#include <casa/BasicSL/String.h>
 
 // <summary>
 // Read from an MS, coordinating all of the subtables in the process

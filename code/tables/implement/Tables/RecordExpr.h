@@ -29,9 +29,9 @@
 #define AIPS_RECORDEXPR_H
 
 //# Includes
-#include <aips/Tables/ExprNode.h>
-#include <aips/Containers/RecordInterface.h>
-#include <aips/Containers/RecordDesc.h>
+#include <tables/Tables/ExprNode.h>
+#include <casa/Containers/RecordInterface.h>
+#include <casa/Containers/RecordDesc.h>
 
 
 

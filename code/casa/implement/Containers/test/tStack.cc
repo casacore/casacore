@@ -27,9 +27,9 @@
 
 //# Includes
 
-#include <aips/Containers/Stack.h>
-#include <aips/Containers/StackError.h>
-#include <aips/iostream.h>
+#include <casa/Containers/Stack.h>
+#include <casa/Containers/StackError.h>
+#include <casa/iostream.h>
 
 main() {
 

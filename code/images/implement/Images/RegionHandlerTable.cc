@@ -25,14 +25,14 @@
 //#
 //# $Id$
 
-#include <trial/Images/RegionHandlerTable.h>
-#include <trial/Images/ImageRegion.h>
-#include <trial/Lattices/LCPagedMask.h>
-#include <aips/Tables/Table.h>
-#include <aips/Tables/TableRecord.h>
-#include <aips/Arrays/Vector.h>
-#include <aips/BasicSL/String.h>
-#include <aips/Exceptions/Error.h>
+#include <images/Images/RegionHandlerTable.h>
+#include <images/Images/ImageRegion.h>
+#include <lattices/Lattices/LCPagedMask.h>
+#include <tables/Tables/Table.h>
+#include <tables/Tables/TableRecord.h>
+#include <casa/Arrays/Vector.h>
+#include <casa/BasicSL/String.h>
+#include <casa/Exceptions/Error.h>
 
 
 RegionHandlerTable::RegionHandlerTable (GetCallback* callback,

@@ -29,10 +29,10 @@
 #define AIPS_VANVLECK_H
 
 //#! Includes go here
-#include <aips/aips.h>
-#include <aips/Arrays/Matrix.h>
-#include <aips/Functionals/Interpolate1D.h>
-#include <aips/BasicSL/Constants.h>
+#include <casa/aips.h>
+#include <casa/Arrays/Matrix.h>
+#include <scimath/Functionals/Interpolate1D.h>
+#include <casa/BasicSL/Constants.h>
 
 
 //# Forward Declarations

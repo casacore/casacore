@@ -27,9 +27,9 @@
 
 //# Includes
 
-#include <aips/FITS/FITSError.h>
+#include <fits/FITS/FITSError.h>
 
-#include <aips/Logging/LogIO.h>
+#include <casa/Logging/LogIO.h>
 
 void FITSError::defaultHandler(const char *errMessage, 
 				      ErrorLevel severity)

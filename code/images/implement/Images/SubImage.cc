@@ -25,17 +25,17 @@
 //#
 //# $Id$
 
-#include <trial/Images/SubImage.h>
-#include <trial/Coordinates/CoordinateUtil.h>
-#include <trial/Lattices/LattRegionHolder.h>
-#include <trial/Lattices/SubLattice.h>
-#include <trial/Lattices/LatticeRegion.h>
-#include <aips/Arrays/IPosition.h>
-#include <aips/Arrays/Vector.h>
-#include <aips/Utilities/Assert.h>
-#include <aips/Exceptions/Error.h>
+#include <images/Images/SubImage.h>
+#include <coordinates/Coordinates/CoordinateUtil.h>
+#include <lattices/Lattices/LattRegionHolder.h>
+#include <lattices/Lattices/SubLattice.h>
+#include <lattices/Lattices/LatticeRegion.h>
+#include <casa/Arrays/IPosition.h>
+#include <casa/Arrays/Vector.h>
+#include <casa/Utilities/Assert.h>
+#include <casa/Exceptions/Error.h>
 
-#include <aips/Arrays.h>
+#include <casa/Arrays.h>
 
 
 template<class T>

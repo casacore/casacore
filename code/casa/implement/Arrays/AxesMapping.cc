@@ -27,10 +27,10 @@
 //# $Id$
 
 
-#include <trial/Arrays/AxesMapping.h>
-#include <aips/Arrays/Slicer.h>
-#include <aips/Utilities/Assert.h>
-#include <aips/Exceptions/Error.h>
+#include <casa/Arrays/AxesMapping.h>
+#include <casa/Arrays/Slicer.h>
+#include <casa/Utilities/Assert.h>
+#include <casa/Exceptions/Error.h>
 
 
 AxesMapping::AxesMapping()

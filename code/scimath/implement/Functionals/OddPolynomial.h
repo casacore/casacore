@@ -29,11 +29,11 @@
 #define AIPS_ODDPOLYNOMIAL_H
 
 //# Includes
-#include <aips/aips.h>
-#include <trial/Functionals/OddPolynomialParam.h>
-#include <aips/Functionals/Function1D.h>
-#include <aips/Mathematics/AutoDiff.h>
-#include <aips/Mathematics/AutoDiffMath.h>
+#include <casa/aips.h>
+#include <scimath/Functionals/OddPolynomialParam.h>
+#include <scimath/Functionals/Function1D.h>
+#include <scimath/Mathematics/AutoDiff.h>
+#include <scimath/Mathematics/AutoDiffMath.h>
 
 //# Forward declarations
 

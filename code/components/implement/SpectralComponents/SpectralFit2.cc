@@ -26,14 +26,14 @@
 //# $Id$
 
 //# Includes
-#include <trial/SpectralComponents/SpectralFit.h>
-#include <aips/Arrays/Vector.h>
-#include <aips/Functionals/CompoundFunction.h>
-#include <aips/Functionals/CompoundParam.h>
-#include <aips/Functionals/Gaussian1D.h>
-#include <aips/Functionals/Polynomial.h>
-#include <trial/Fitting/NonLinearFitLM.h>
-#include <trial/SpectralComponents/SpectralElement.h>
+#include <components/SpectralComponents/SpectralFit.h>
+#include <casa/Arrays/Vector.h>
+#include <scimath/Functionals/CompoundFunction.h>
+#include <scimath/Functionals/CompoundParam.h>
+#include <scimath/Functionals/Gaussian1D.h>
+#include <scimath/Functionals/Polynomial.h>
+#include <scimath/Fitting/NonLinearFitLM.h>
+#include <components/SpectralComponents/SpectralElement.h>
 
 //# Templated member functions
 

@@ -25,38 +25,38 @@
 //#
 //# $Id$
 
-#include <trial/Coordinates/CoordinateUtil.h>
-#include <trial/Coordinates/CoordinateSystem.h>
-#include <trial/Coordinates/DirectionCoordinate.h>
-#include <trial/Coordinates/LinearCoordinate.h>
-#include <trial/Coordinates/Projection.h>
-#include <trial/Coordinates/SpectralCoordinate.h>
-#include <trial/Coordinates/StokesCoordinate.h>
-#include <aips/Arrays/ArrayLogical.h>
-#include <aips/Arrays/Matrix.h>
-#include <aips/Arrays/Vector.h>
-#include <aips/Exceptions/Error.h>
-#include <aips/BasicMath/Math.h>
-#include <aips/Measures/MDirection.h>
-#include <aips/Measures/MDoppler.h>
-#include <aips/Measures/MFrequency.h>
-#include <aips/Measures/MEpoch.h>
-#include <aips/Measures/MPosition.h>
-#include <aips/Measures/MeasTable.h>
-#include <aips/Measures/MeasConvert.h>
-#include <aips/Quanta/MVEpoch.h>
-#include <aips/Quanta/MVDirection.h>
-#include <aips/Quanta/MVPosition.h>
-#include <aips/Logging/LogIO.h>
-#include <aips/OS/Time.h>
-#include <aips/Quanta/QC.h>
-#include <aips/Quanta/MVTime.h>
-#include <aips/Quanta/MVEpoch.h>
-#include <aips/Utilities/Assert.h>
-#include <aips/Utilities/GenSort.h>
-#include <aips/BasicSL/String.h>
+#include <coordinates/Coordinates/CoordinateUtil.h>
+#include <coordinates/Coordinates/CoordinateSystem.h>
+#include <coordinates/Coordinates/DirectionCoordinate.h>
+#include <coordinates/Coordinates/LinearCoordinate.h>
+#include <coordinates/Coordinates/Projection.h>
+#include <coordinates/Coordinates/SpectralCoordinate.h>
+#include <coordinates/Coordinates/StokesCoordinate.h>
+#include <casa/Arrays/ArrayLogical.h>
+#include <casa/Arrays/Matrix.h>
+#include <casa/Arrays/Vector.h>
+#include <casa/Exceptions/Error.h>
+#include <casa/BasicMath/Math.h>
+#include <measures/Measures/MDirection.h>
+#include <measures/Measures/MDoppler.h>
+#include <measures/Measures/MFrequency.h>
+#include <measures/Measures/MEpoch.h>
+#include <measures/Measures/MPosition.h>
+#include <measures/Measures/MeasTable.h>
+#include <measures/Measures/MeasConvert.h>
+#include <casa/Quanta/MVEpoch.h>
+#include <casa/Quanta/MVDirection.h>
+#include <casa/Quanta/MVPosition.h>
+#include <casa/Logging/LogIO.h>
+#include <casa/OS/Time.h>
+#include <casa/Quanta/QC.h>
+#include <casa/Quanta/MVTime.h>
+#include <casa/Quanta/MVEpoch.h>
+#include <casa/Utilities/Assert.h>
+#include <casa/Utilities/GenSort.h>
+#include <casa/BasicSL/String.h>
 
-#include <aips/sstream.h>
+#include <casa/sstream.h>
 
 
 void CoordinateUtil::addDirAxes(CoordinateSystem & coords){

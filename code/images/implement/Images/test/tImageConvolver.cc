@@ -25,20 +25,20 @@
 //#
 //# $Id$
 //
-#include <trial/Images/ImageConvolver.h>
+#include <images/Images/ImageConvolver.h>
 
-#include <aips/aips.h>
-#include <aips/Arrays/Vector.h>
-#include <aips/Exceptions/Error.h>
-#include <aips/Inputs/Input.h>
-#include <aips/Logging.h>
-#include <aips/Tables/Table.h>
-#include <aips/System/Aipsrc.h>
-#include <aips/BasicSL/String.h>
+#include <casa/aips.h>
+#include <casa/Arrays/Vector.h>
+#include <casa/Exceptions/Error.h>
+#include <casa/Inputs/Input.h>
+#include <casa/Logging.h>
+#include <tables/Tables/Table.h>
+#include <casa/System/Aipsrc.h>
+#include <casa/BasicSL/String.h>
 
 
-#include <trial/Images/PagedImage.h>
-#include <aips/iostream.h>
+#include <images/Images/PagedImage.h>
+#include <casa/iostream.h>
 
 
 int main (int argc, char **argv)

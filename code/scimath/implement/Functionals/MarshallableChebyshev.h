@@ -29,9 +29,9 @@
 #if !defined(AIPS_MARSHALLABLECHEBESHEV_H)
 #define AIPS_MARSHALLABLECHEBESHEV_H
 
-#include <aips/aips.h>
-#include <aips/Functionals/Chebyshev.h>
-#include <trial/Functionals/FunctionMarshallable.h>
+#include <casa/aips.h>
+#include <scimath/Functionals/Chebyshev.h>
+#include <scimath/Functionals/FunctionMarshallable.h>
 
 //# Forward Declarations
 

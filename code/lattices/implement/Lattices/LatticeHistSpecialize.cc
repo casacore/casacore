@@ -26,20 +26,20 @@
 //# $Id$
 //
 
-#include <trial/Lattices/LatticeHistSpecialize.h>
-#include <trial/Lattices/LatticeStatsBase.h>
-#include <trial/Lattices/LattStatsSpecialize.h>
+#include <lattices/Lattices/LatticeHistSpecialize.h>
+#include <lattices/Lattices/LatticeStatsBase.h>
+#include <lattices/Lattices/LattStatsSpecialize.h>
 
-#include <aips/Arrays/ArrayMath.h>
-#include <aips/Logging/LogIO.h>
-#include <aips/Functionals/Gaussian1D.h>
-#include <aips/BasicSL/Complex.h>
-#include <aips/BasicSL/Constants.h>
-#include <aips/BasicMath/Math.h>
-#include <trial/Lattices/LatticeStatsBase.h>
+#include <casa/Arrays/ArrayMath.h>
+#include <casa/Logging/LogIO.h>
+#include <scimath/Functionals/Gaussian1D.h>
+#include <casa/BasicSL/Complex.h>
+#include <casa/BasicSL/Constants.h>
+#include <casa/BasicMath/Math.h>
+#include <lattices/Lattices/LatticeStatsBase.h>
 
-#include <aips/System/ProgressMeter.h>
-#include <trial/System/PGPlotter.h>
+#include <casa/System/ProgressMeter.h>
+#include <casa/System/PGPlotter.h>
 
 
 uInt LatticeHistSpecialize::bin(Float datum, Float dmin, Float width, uInt nBins)

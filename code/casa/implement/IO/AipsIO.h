@@ -30,11 +30,11 @@
 
 
 //# Includes
-#include <aips/aips.h>
-#include <aips/Containers/Block.h>
-#include <aips/BasicSL/String.h>
-#include <aips/BasicSL/Complex.h>
-#include <aips/IO/ByteIO.h>
+#include <casa/aips.h>
+#include <casa/Containers/Block.h>
+#include <casa/BasicSL/String.h>
+#include <casa/BasicSL/Complex.h>
+#include <casa/IO/ByteIO.h>
 
 //# Forward Declarations
 class TypeIO;

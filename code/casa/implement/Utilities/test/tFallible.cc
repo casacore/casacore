@@ -29,10 +29,10 @@
 #define AIPS_DEBUG
 #endif
 
-#include <aips/Utilities/Fallible.h>
-#include <aips/Exceptions/Error.h>
-#include <aips/Utilities/Assert.h>
-#include <aips/iostream.h>
+#include <casa/Utilities/Fallible.h>
+#include <casa/Exceptions/Error.h>
+#include <casa/Utilities/Assert.h>
+#include <casa/iostream.h>
 
 void Foo(Int x)
 {

@@ -28,9 +28,9 @@
 #if !defined(AIPS_GAUSSIANND_H)
 #define AIPS_GAUSSIANND_H
 
-#include <aips/aips.h>
-#include <aips/Functionals/GaussianNDParam.h>
-#include <aips/Functionals/Function.h>
+#include <casa/aips.h>
+#include <scimath/Functionals/GaussianNDParam.h>
+#include <scimath/Functionals/Function.h>
 
 //# Forward declarations
 

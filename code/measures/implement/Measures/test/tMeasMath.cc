@@ -26,22 +26,22 @@
 //# $Id$
 
 //# Includes
-#include <aips/aips.h>
-#include <aips/Exceptions/Error.h>
-#include <aips/Arrays/Vector.h>
-#include <aips/Arrays/ArrayMath.h>
-#include <aips/Measures.h>
-#include <aips/Quanta/MVDirection.h>
-#include <aips/Quanta/MVPosition.h>
-#include <aips/Quanta/RotMatrix.h>
-#include <aips/Quanta/Euler.h>
-#include <aips/Measures/MeasTable.h>
-#include <aips/Measures/Precession.h>
-#include <aips/Measures/Nutation.h>
-#include <aips/Measures/Aberration.h>
-#include <aips/Measures/SolarPos.h>
-#include <aips/Quanta/MVEpoch.h>
-#include <aips/iostream.h>
+#include <casa/aips.h>
+#include <casa/Exceptions/Error.h>
+#include <casa/Arrays/Vector.h>
+#include <casa/Arrays/ArrayMath.h>
+#include <measures/Measures.h>
+#include <casa/Quanta/MVDirection.h>
+#include <casa/Quanta/MVPosition.h>
+#include <casa/Quanta/RotMatrix.h>
+#include <casa/Quanta/Euler.h>
+#include <measures/Measures/MeasTable.h>
+#include <measures/Measures/Precession.h>
+#include <measures/Measures/Nutation.h>
+#include <measures/Measures/Aberration.h>
+#include <measures/Measures/SolarPos.h>
+#include <casa/Quanta/MVEpoch.h>
+#include <casa/iostream.h>
 
 int main()
 {

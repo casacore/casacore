@@ -25,10 +25,10 @@
 //#
 //# $Id$
 
-#include <aips/aips.h>
-#include <aips/Tables/TVec.h>
-#include <aips/Tables/TVecTemp.h>
-#include <aips/Tables/TableError.h>
+#include <casa/aips.h>
+#include <tables/Tables/TVec.h>
+#include <tables/Tables/TVecTemp.h>
+#include <tables/Tables/TableError.h>
 
 
 //# Construct

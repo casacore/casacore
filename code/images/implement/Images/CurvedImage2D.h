@@ -30,7 +30,7 @@
 
 
 //# Includes
-#include <trial/Images/ImageInterface.h>
+#include <images/Images/ImageInterface.h>
 
 //# Forward Declarations
 template <class T> class CurvedLattice2D;

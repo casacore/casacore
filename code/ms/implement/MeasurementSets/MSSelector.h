@@ -29,14 +29,14 @@
 #if !defined(TRIAL_MSSELECTOR_H)
 #define TRIAL_MSSELECTOR_H
 
-#include <aips/aips.h>
-#include <aips/Arrays/Vector.h>
-#include <aips/Arrays/Slice.h>
-#include <aips/Arrays/Slicer.h>
-#include <aips/MeasurementSets/MeasurementSet.h>
-#include <trial/MeasurementSets/StokesConverter.h>
-#include <trial/MeasurementSets/MSDerivedValues.h>
-#include <trial/MeasurementSets/MSSelectionKeywords.h>
+#include <casa/aips.h>
+#include <casa/Arrays/Vector.h>
+#include <casa/Arrays/Slice.h>
+#include <casa/Arrays/Slicer.h>
+#include <ms/MeasurementSets/MeasurementSet.h>
+#include <ms/MeasurementSets/StokesConverter.h>
+#include <ms/MeasurementSets/MSDerivedValues.h>
+#include <ms/MeasurementSets/MSSelectionKeywords.h>
 
 template <class T> class ROArrayColumn;
 template <class T> class ArrayColumn;

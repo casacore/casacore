@@ -29,7 +29,7 @@
 #define AIPS_LSQMATRIX_H
 
 //# Includes
-#include <aips/aips.h>
+#include <casa/aips.h>
 #include <algorithm>
 
 //# Forward Declarations

@@ -28,7 +28,7 @@
 #if !defined(AIPS_NOTICE_H)
 #define AIPS_NOTICE_H
 
-#include <aips/Containers/Link.h>
+#include <casa/Containers/Link.h>
 
 // <summary>abstract base class for notices</summary> 
 // <use visibility=export>

@@ -30,10 +30,10 @@
 
 
 //# Includes
-#include <aips/aips.h>
-#include <aips/Tables/Table.h>
-#include <aips/Containers/SimOrdMap.h>
-#include <aips/BasicSL/String.h>
+#include <casa/aips.h>
+#include <tables/Tables/Table.h>
+#include <casa/Containers/SimOrdMap.h>
+#include <casa/BasicSL/String.h>
 
 //# Forward Declarations
 class TableDesc;

@@ -24,9 +24,9 @@
 //#                        Charlottesville, VA 22903-2475 USA
 //#
 //# $Id$
-#include <trial/Flagging/RFDebugPlot.h>
-#include <trial/System/PGPlotter.h>
-#include <aips/stdio.h>
+#include <flagging/Flagging/RFDebugPlot.h>
+#include <casa/System/PGPlotter.h>
+#include <casa/stdio.h>
         
 RFDebugPlot::RFDebugPlot () :
   enable(False),plotter(NULL),dch(-1),difr(-1),dit(-1)

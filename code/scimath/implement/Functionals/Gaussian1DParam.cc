@@ -26,9 +26,9 @@
 //# $Id$
 
 //# Includes
-#include <aips/Functionals/Gaussian1DParam.h>
-#include <aips/BasicSL/Constants.h>
-#include <aips/BasicMath/Math.h>
+#include <scimath/Functionals/Gaussian1DParam.h>
+#include <casa/BasicSL/Constants.h>
+#include <casa/BasicMath/Math.h>
 
 //# Statics
 ///template<class T>

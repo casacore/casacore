@@ -26,10 +26,10 @@
 //# $Id$
 
 
-#include <trial/Lattices/LCComplement.h>
-#include <aips/Arrays/ArrayLogical.h>
-#include <aips/Tables/TableRecord.h>
-#include <aips/Exceptions/Error.h>
+#include <lattices/Lattices/LCComplement.h>
+#include <casa/Arrays/ArrayLogical.h>
+#include <tables/Tables/TableRecord.h>
+#include <casa/Exceptions/Error.h>
 
 
 LCComplement::LCComplement()

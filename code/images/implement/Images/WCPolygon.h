@@ -30,12 +30,12 @@
 #define AIPS_WCPOLYGON_H
 
 //# Includes
-#include <aips/aips.h>
-#include <trial/Coordinates/CoordinateSystem.h>
-#include <trial/Images/WCRegion.h>
-#include <trial/Lattices/RegionType.h>
-#include <aips/Arrays/Vector.h>
-#include <aips/Quanta/Quantum.h>
+#include <casa/aips.h>
+#include <coordinates/Coordinates/CoordinateSystem.h>
+#include <images/Images/WCRegion.h>
+#include <lattices/Lattices/RegionType.h>
+#include <casa/Arrays/Vector.h>
+#include <casa/Quanta/Quantum.h>
 
 //# Forward Declarations
 class LCRegion;

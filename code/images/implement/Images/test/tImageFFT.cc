@@ -26,23 +26,23 @@
 //# $Id$
 // 
 //
-#include <aips/aips.h>
-#include <aips/Arrays/ArrayLogical.h>
-#include <aips/Arrays/ArrayMath.h>
-#include <aips/Mathematics/FFTServer.h>
-#include <aips/BasicMath/Math.h>
-#include <aips/System/Aipsrc.h>
-#include <aips/Exceptions/Error.h>
-#include <aips/Inputs/Input.h>
-#include <aips/Logging.h>
-#include <aips/BasicSL/String.h>
+#include <casa/aips.h>
+#include <casa/Arrays/ArrayLogical.h>
+#include <casa/Arrays/ArrayMath.h>
+#include <scimath/Mathematics/FFTServer.h>
+#include <casa/BasicMath/Math.h>
+#include <casa/System/Aipsrc.h>
+#include <casa/Exceptions/Error.h>
+#include <casa/Inputs/Input.h>
+#include <casa/Logging.h>
+#include <casa/BasicSL/String.h>
   
-#include <trial/Images/ImageFFT.h>
-#include <trial/Images/ImageRegion.h>
-#include <trial/Images/PagedImage.h>
-#include <trial/Lattices/LCPagedMask.h>
+#include <images/Images/ImageFFT.h>
+#include <images/Images/ImageRegion.h>
+#include <images/Images/PagedImage.h>
+#include <lattices/Lattices/LCPagedMask.h>
 
-#include <aips/iostream.h>
+#include <casa/iostream.h>
 
 void checkNumbers (const ImageInterface<Float>& rIn,
                    const ImageInterface<Float>& rOut,

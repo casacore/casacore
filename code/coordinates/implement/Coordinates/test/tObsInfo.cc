@@ -26,14 +26,14 @@
 //#
 //# $Id$
 
-#include <trial/Coordinates/ObsInfo.h>
+#include <coordinates/Coordinates/ObsInfo.h>
 
-#include <aips/Arrays/ArrayUtil.h>
-#include <aips/Utilities/Assert.h>
-#include <aips/BasicMath/Math.h>
-#include <aips/Containers/Record.h>
+#include <casa/Arrays/ArrayUtil.h>
+#include <casa/Utilities/Assert.h>
+#include <casa/BasicMath/Math.h>
+#include <casa/Containers/Record.h>
 
-#include <aips/sstream.h>
+#include <casa/sstream.h>
 
 
 int main()

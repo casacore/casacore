@@ -25,10 +25,10 @@
 //#
 //# $Id$
 
-#include <aips/Mathematics/Convolver.h>
-#include <aips/Arrays/Vector.h>
-#include <aips/Arrays/ArrayMath.h>
-#include <aips/Arrays/ArrayIter.h>
+#include <scimath/Mathematics/Convolver.h>
+#include <casa/Arrays/Vector.h>
+#include <casa/Arrays/ArrayMath.h>
+#include <casa/Arrays/ArrayIter.h>
 
 template<class FType> Convolver<FType>::
 Convolver(const Array<FType>& psf, Bool cachePsf){

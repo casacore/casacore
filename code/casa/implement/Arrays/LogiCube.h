@@ -29,9 +29,9 @@
 #define AIPS_LOGICUBE_H
 
 
-#include <aips/aips.h>
-#include <aips/Arrays/LogiArray.h>
-#include <aips/Arrays/Cube.h>
+#include <casa/aips.h>
+#include <casa/Arrays/LogiArray.h>
+#include <casa/Arrays/Cube.h>
 
 
 // <summary>

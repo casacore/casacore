@@ -26,8 +26,8 @@
 //# $Id$
 
 
-#include <trial/Lattices/LatticeLocker.h>
-#include <aips/Exceptions/Error.h>
+#include <lattices/Lattices/LatticeLocker.h>
+#include <casa/Exceptions/Error.h>
 
 
 LatticeLocker::LatticeLocker (LatticeBase& lattice,

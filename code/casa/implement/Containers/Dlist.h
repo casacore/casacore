@@ -28,8 +28,8 @@
 #if !defined(AIPS_DLIST_H)
 #define AIPS_DLIST_H
 
-#include <aips/Containers/List.h>
-#include <aips/Containers/Dlink.h>
+#include <casa/Containers/List.h>
+#include <casa/Containers/Dlink.h>
 
 template<class t> class DlistIter;
 

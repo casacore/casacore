@@ -29,11 +29,11 @@
 #define AIPS_LSQAIPS_H
 
 //# Includes
-#include <aips/aips.h>
-#include <aips/Arrays/Array.h>
-#include <aips/Arrays/Vector.h>
-#include <aips/Arrays/VectorSTLIterator.h>
-#include <aips/Fitting/LSQFit.h>
+#include <casa/aips.h>
+#include <casa/Arrays/Array.h>
+#include <casa/Arrays/Vector.h>
+#include <casa/Arrays/VectorSTLIterator.h>
+#include <scimath/Fitting/LSQFit.h>
 
 //# Forward Declarations
 

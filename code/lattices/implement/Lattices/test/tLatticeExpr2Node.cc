@@ -25,19 +25,19 @@
 //#
 //# $Id$
 
-#include <trial/Lattices/LatticeExprNode.h>
-#include <aips/Lattices/ArrayLattice.h>
-#include <trial/Lattices/SubLattice.h>
-#include <trial/Lattices/LELArray.h>
-#include <trial/Lattices/LCBox.h>
-#include <trial/Lattices/LCPixelSet.h>
-#include <aips/Arrays/Slicer.h>
-#include <aips/Arrays/Array.h>
-#include <aips/Arrays/ArrayMath.h>
-#include <aips/Arrays/ArrayLogical.h>
-#include <aips/Arrays/IPosition.h>
-#include <aips/Exceptions/Error.h>
-#include <aips/iostream.h>
+#include <lattices/Lattices/LatticeExprNode.h>
+#include <lattices/Lattices/ArrayLattice.h>
+#include <lattices/Lattices/SubLattice.h>
+#include <lattices/Lattices/LELArray.h>
+#include <lattices/Lattices/LCBox.h>
+#include <lattices/Lattices/LCPixelSet.h>
+#include <casa/Arrays/Slicer.h>
+#include <casa/Arrays/Array.h>
+#include <casa/Arrays/ArrayMath.h>
+#include <casa/Arrays/ArrayLogical.h>
+#include <casa/Arrays/IPosition.h>
+#include <casa/Exceptions/Error.h>
+#include <casa/iostream.h>
 
 
 Bool checkFloat (const LatticeExprNode& expr, 

@@ -26,18 +26,18 @@
 //# $Id$
 
 //# Includes
-#include <aips/Tables/ISMBucket.h>
-#include <aips/Tables/ISMBase.h>
-#include <aips/Tables/ISMColumn.h>
-#include <aips/Containers/Block.h>
-#include <aips/Containers/BlockIO.h>
-#include <aips/Utilities/BinarySearch.h>
-#include <aips/Utilities/ValType.h>
-#include <aips/Utilities/GenSort.h>
-#include <aips/Utilities/Assert.h>
-#include <aips/Arrays/Matrix.h>
-#include <aips/Exceptions/Error.h>
-#include <aips/iostream.h>
+#include <tables/Tables/ISMBucket.h>
+#include <tables/Tables/ISMBase.h>
+#include <tables/Tables/ISMColumn.h>
+#include <casa/Containers/Block.h>
+#include <casa/Containers/BlockIO.h>
+#include <casa/Utilities/BinarySearch.h>
+#include <casa/Utilities/ValType.h>
+#include <casa/Utilities/GenSort.h>
+#include <casa/Utilities/Assert.h>
+#include <casa/Arrays/Matrix.h>
+#include <casa/Exceptions/Error.h>
+#include <casa/iostream.h>
 
 
 ISMBucket::ISMBucket (ISMBase* parent, const char* bucketStorage)

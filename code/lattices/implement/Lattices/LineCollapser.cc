@@ -26,7 +26,7 @@
 //# $Id$
 
 
-#include <trial/Lattices/LineCollapser.h>
+#include <lattices/Lattices/LineCollapser.h>
 
 
 template<class T, class U>

@@ -25,27 +25,27 @@
 //#
 //# $Id$
 
-#include <aips/Tables/TableDesc.h>
-#include <aips/Tables/SetupNewTab.h>
-#include <aips/Tables/Table.h>
-#include <aips/Tables/TableLocker.h>
-#include <aips/Tables/TableRecord.h>
-#include <aips/Tables/ScaColDesc.h>
-#include <aips/Tables/ArrColDesc.h>
-#include <aips/Tables/ScalarColumn.h>
-#include <aips/Tables/ArrayColumn.h>
-#include <aips/Tables/StManAipsIO.h>
-#include <aips/Tables/StandardStMan.h>
-#include <aips/Tables/IncrementalStMan.h>
-#include <aips/Tables/TiledCellStMan.h>
-#include <aips/Tables/TiledShapeStMan.h>
-#include <aips/Arrays/Vector.h>
-#include <aips/Arrays/Matrix.h>
-#include <aips/Arrays/ArrayMath.h>
-#include <aips/Arrays/ArrayUtil.h>
-#include <aips/Utilities/Assert.h>
-#include <aips/Exceptions/Error.h>
-#include <aips/iostream.h>
+#include <tables/Tables/TableDesc.h>
+#include <tables/Tables/SetupNewTab.h>
+#include <tables/Tables/Table.h>
+#include <tables/Tables/TableLocker.h>
+#include <tables/Tables/TableRecord.h>
+#include <tables/Tables/ScaColDesc.h>
+#include <tables/Tables/ArrColDesc.h>
+#include <tables/Tables/ScalarColumn.h>
+#include <tables/Tables/ArrayColumn.h>
+#include <tables/Tables/StManAipsIO.h>
+#include <tables/Tables/StandardStMan.h>
+#include <tables/Tables/IncrementalStMan.h>
+#include <tables/Tables/TiledCellStMan.h>
+#include <tables/Tables/TiledShapeStMan.h>
+#include <casa/Arrays/Vector.h>
+#include <casa/Arrays/Matrix.h>
+#include <casa/Arrays/ArrayMath.h>
+#include <casa/Arrays/ArrayUtil.h>
+#include <casa/Utilities/Assert.h>
+#include <casa/Exceptions/Error.h>
+#include <casa/iostream.h>
 
 // <summary>
 // Test program for the Table classes

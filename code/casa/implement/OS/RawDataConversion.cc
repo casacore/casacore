@@ -26,7 +26,7 @@
 //# $Id$
 
 
-#include <aips/OS/RawDataConversion.h>
+#include <casa/OS/RawDataConversion.h>
 
 
 RawDataConversion::~RawDataConversion()

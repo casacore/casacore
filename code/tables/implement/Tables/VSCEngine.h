@@ -29,8 +29,8 @@
 #define AIPS_VSCENGINE_H
 
 //# Includes
-#include <aips/Tables/VirtColEng.h>
-#include <aips/Tables/VirtScaCol.h>
+#include <tables/Tables/VirtColEng.h>
+#include <tables/Tables/VirtScaCol.h>
 
 
 // <summary>
@@ -96,8 +96,8 @@
 //  #define AIPS_AVSCENGINE_H
 //
 //  //# Includes
-//  #include <aips/Tables/VSCEngine.h>
-//  #include <aips/Tables/ScalarColumn.h>
+//  #include <tables/Tables/VSCEngine.h>
+//  #include <tables/Tables/ScalarColumn.h>
 //
 //  // Define the class A.
 //  class A

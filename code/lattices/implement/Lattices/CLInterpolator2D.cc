@@ -26,7 +26,7 @@
 //# $Id$
 
 
-#include <trial/Lattices/CLInterpolator2D.h>
+#include <lattices/Lattices/CLInterpolator2D.h>
 
 
 template<class T>

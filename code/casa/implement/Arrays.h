@@ -28,35 +28,35 @@
 #if !defined (AIPS_ARRAYS_H)
 #define AIPS_ARRAYS_H
 
-#include <aips/Arrays/IPosition.h>
-#include <aips/Arrays/Slicer.h>
-#include <aips/Arrays/Slice.h>
+#include <casa/Arrays/IPosition.h>
+#include <casa/Arrays/Slicer.h>
+#include <casa/Arrays/Slice.h>
 
-#include <aips/Arrays/Array.h>
-#include <aips/Arrays/Vector.h>
-#include <aips/Arrays/Matrix.h>
-#include <aips/Arrays/Cube.h>
+#include <casa/Arrays/Array.h>
+#include <casa/Arrays/Vector.h>
+#include <casa/Arrays/Matrix.h>
+#include <casa/Arrays/Cube.h>
 
-#include <aips/Arrays/ArrayIter.h>
-#include <aips/Arrays/MatrixIter.h>
-#include <aips/Arrays/VectorIter.h>
+#include <casa/Arrays/ArrayIter.h>
+#include <casa/Arrays/MatrixIter.h>
+#include <casa/Arrays/VectorIter.h>
 
-#include <aips/Arrays/ArrayMath.h>
-#include <aips/Arrays/MatrixMath.h>
-#include <aips/Arrays/ArrayLogical.h>
-#include <aips/Arrays/ArrayIO.h>
-#include <aips/Arrays/ArrayError.h>
+#include <casa/Arrays/ArrayMath.h>
+#include <casa/Arrays/MatrixMath.h>
+#include <casa/Arrays/ArrayLogical.h>
+#include <casa/Arrays/ArrayIO.h>
+#include <casa/Arrays/ArrayError.h>
 
-#include <aips/Arrays/LogiArray.h>
-#include <aips/Arrays/LogiVector.h>
-#include <aips/Arrays/LogiMatrix.h>
-#include <aips/Arrays/LogiCube.h>
+#include <casa/Arrays/LogiArray.h>
+#include <casa/Arrays/LogiVector.h>
+#include <casa/Arrays/LogiMatrix.h>
+#include <casa/Arrays/LogiCube.h>
 
-#include <aips/Arrays/MaskedArray.h>
-#include <aips/Arrays/MaskArrMath.h>
-#include <aips/Arrays/MaskArrLogi.h>
-#include <aips/Arrays/MaskArrIO.h>
-#include <aips/Arrays/MaskLogiArr.h>
+#include <casa/Arrays/MaskedArray.h>
+#include <casa/Arrays/MaskArrMath.h>
+#include <casa/Arrays/MaskArrLogi.h>
+#include <casa/Arrays/MaskArrIO.h>
+#include <casa/Arrays/MaskLogiArr.h>
 
 
 // <module>

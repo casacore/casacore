@@ -26,14 +26,14 @@
 //# $Id$
 
 //# Includes
-#include <trial/SpectralComponents/SpectralElement.h>
+#include <components/SpectralComponents/SpectralElement.h>
 
-#include <aips/Exceptions/Error.h>
-#include <aips/BasicSL/Constants.h>
-#include <aips/Utilities/MUString.h>
-#include <aips/BasicSL/String.h>
+#include <casa/Exceptions/Error.h>
+#include <casa/BasicSL/Constants.h>
+#include <casa/Utilities/MUString.h>
+#include <casa/BasicSL/String.h>
 
-#include <aips/iostream.h>
+#include <casa/iostream.h>
 
 //# Constants
 const Double SpectralElement::SigmaToFWHM = sqrt(8.0*C::ln2);

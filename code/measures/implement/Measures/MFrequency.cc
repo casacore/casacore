@@ -26,12 +26,12 @@
 //# $Id$
 
 //# Includes
-#include <aips/Utilities/Assert.h>
-#include <aips/Measures/MFrequency.h>
-#include <aips/Utilities/Register.h>
-#include <aips/Measures/MDoppler.h>
-#include <aips/Measures/MCDoppler.h>
-#include <aips/Measures/MeasConvert.h>
+#include <casa/Utilities/Assert.h>
+#include <measures/Measures/MFrequency.h>
+#include <casa/Utilities/Register.h>
+#include <measures/Measures/MDoppler.h>
+#include <measures/Measures/MCDoppler.h>
+#include <measures/Measures/MeasConvert.h>
 
 //# Constructors
 MFrequency::MFrequency() :

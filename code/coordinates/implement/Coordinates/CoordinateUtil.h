@@ -30,14 +30,14 @@
 #define AIPS_COORDUTIL_H
 
 
-#include <aips/aips.h>
-#include <aips/Arrays/Vector.h>
-#include <aips/Measures/Stokes.h>
-#include <trial/Coordinates/Coordinate.h>
+#include <casa/aips.h>
+#include <casa/Arrays/Vector.h>
+#include <measures/Measures/Stokes.h>
+#include <coordinates/Coordinates/Coordinate.h>
 //
-#include <aips/Measures/MDirection.h>        // For enums
-#include <aips/Measures/MFrequency.h>
-#include <aips/Measures/MeasConvert.h>
+#include <measures/Measures/MDirection.h>        // For enums
+#include <measures/Measures/MFrequency.h>
+#include <measures/Measures/MeasConvert.h>
 
 class CoordinateSystem;
 class DirectionCoordinate;

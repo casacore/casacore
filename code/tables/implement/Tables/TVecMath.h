@@ -29,7 +29,7 @@
 #define AIPS_TVECMATH_H
 
 //# Includes
-#include <aips/aips.h>
+#include <casa/aips.h>
 
 //# Forward Declarations
 template<class T> class TabVecRep;

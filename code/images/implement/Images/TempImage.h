@@ -30,9 +30,9 @@
 
 
 //# Includes
-#include <trial/Images/ImageInterface.h>
-#include <aips/Lattices/TiledShape.h>
-#include <aips/Lattices/TempLattice.h>
+#include <images/Images/ImageInterface.h>
+#include <lattices/Lattices/TiledShape.h>
+#include <lattices/Lattices/TempLattice.h>
 
 
 // <summary>

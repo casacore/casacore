@@ -30,11 +30,11 @@
 #define AIPS_FITS_TABLE_H
 
 
-#include <aips/aips.h>
-#include <aips/Containers/Record.h>
-#include <aips/Tables/TableRecord.h>
-#include <aips/Containers/Block.h>
-#include <aips/FITS/hdu.h>
+#include <casa/aips.h>
+#include <casa/Containers/Record.h>
+#include <tables/Tables/TableRecord.h>
+#include <casa/Containers/Block.h>
+#include <fits/FITS/hdu.h>
 
 class String;
 class FitsInput;
@@ -42,7 +42,7 @@ class FitsOutput;
 class FITSFieldCopier;
 class TableDesc;
 template<class T> class Vector;
-#include <aips/iosfwd.h>
+#include <casa/iosfwd.h>
 
 // <summary>
 // Simplified interface to FITS tables with AIPS++ Look and Feel.

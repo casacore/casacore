@@ -25,14 +25,14 @@
 //#
 //# $Id$
 
-#include <aips/Arrays/ArrayUtil.h>
-#include <aips/Arrays/ArrayMath.h>
-#include <aips/Arrays/ArrayError.h>
-#include <aips/Arrays/Matrix.h>
-#include <aips/Arrays/Vector.h>
-#include <aips/Utilities/Regex.h>
-#include <aips/OS/Timer.h>
-#include <aips/iostream.h>
+#include <casa/Arrays/ArrayUtil.h>
+#include <casa/Arrays/ArrayMath.h>
+#include <casa/Arrays/ArrayError.h>
+#include <casa/Arrays/Matrix.h>
+#include <casa/Arrays/Vector.h>
+#include <casa/Utilities/Regex.h>
+#include <casa/OS/Timer.h>
+#include <casa/iostream.h>
 
 
 // <summary>

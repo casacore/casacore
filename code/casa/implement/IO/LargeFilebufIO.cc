@@ -25,15 +25,15 @@
 //#
 //# $Id$
 
-#include <aips/aips.h>
-#include <aips/IO/LargeIOFuncDef.h>
-#include <aips/IO/LargeFilebufIO.h>
-#include <aips/Utilities/Assert.h>
-#include <aips/Exceptions/Error.h>
+#include <casa/aips.h>
+#include <casa/IO/LargeIOFuncDef.h>
+#include <casa/IO/LargeFilebufIO.h>
+#include <casa/Utilities/Assert.h>
+#include <casa/Exceptions/Error.h>
 #include <unistd.h>
 #include <fcntl.h>
 #include <errno.h>                     // needed for errno
-#include <aips/string.h>               // needed for strerror
+#include <casa/string.h>               // needed for strerror
 
 
 LargeFilebufIO::LargeFilebufIO()

@@ -29,7 +29,7 @@
 #define AIPS_TAIPSIOCARRAY_H
 
 //# Includes
-#include <aips/IO/AipsIOCarray.h>
+#include <casa/IO/AipsIOCarray.h>
 
 
 // <summary>

@@ -29,10 +29,10 @@
 #if !defined(AIPS_LINEAR_COORDINATE_H)
 #define AIPS_LINEAR_COORDINATE_H
 
-#include <aips/aips.h>
-#include <trial/Coordinates/Coordinate.h>
-#include <trial/Coordinates/LinearXform.h>
-#include <aips/Arrays/Vector.h>
+#include <casa/aips.h>
+#include <coordinates/Coordinates/Coordinate.h>
+#include <coordinates/Coordinates/LinearXform.h>
+#include <casa/Arrays/Vector.h>
 
 template<class T> class Quantum;
 

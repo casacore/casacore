@@ -26,16 +26,16 @@
 //# $Id$
 //#
  
-#include <aips/Arrays/Vector.h>
-#include <aips/Arrays/Matrix.h>
-#include <aips/Arrays/ArrayLogical.h>
-#include <aips/Arrays/ArrayMath.h>
-#include <aips/Mathematics/MatrixMathLA.h>
-#include <aips/BasicMath/Math.h>
-#include <trial/Coordinates/LinearXform.h>
-#include <aips/Exceptions/Error.h>
+#include <casa/Arrays/Vector.h>
+#include <casa/Arrays/Matrix.h>
+#include <casa/Arrays/ArrayLogical.h>
+#include <casa/Arrays/ArrayMath.h>
+#include <scimath/Mathematics/MatrixMathLA.h>
+#include <casa/BasicMath/Math.h>
+#include <coordinates/Coordinates/LinearXform.h>
+#include <casa/Exceptions/Error.h>
 
-#include <aips/iostream.h>
+#include <casa/iostream.h>
 
 
 int main()

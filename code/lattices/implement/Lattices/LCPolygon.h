@@ -29,8 +29,8 @@
 #define AIPS_LCPOLYGON_H
 
 //# Includes
-#include <trial/Lattices/LCRegionFixed.h>
-#include <aips/Arrays/Vector.h>
+#include <lattices/Lattices/LCRegionFixed.h>
+#include <casa/Arrays/Vector.h>
 
 //# Forward Declarations
 template<class T> class Matrix;

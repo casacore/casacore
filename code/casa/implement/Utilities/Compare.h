@@ -29,8 +29,8 @@
 #define AIPS_COMPARE_H
 
 //# Includes
-#include <aips/aips.h>
-#include <aips/Utilities/DataType.h>
+#include <casa/aips.h>
+#include <casa/Utilities/DataType.h>
 
 // <summary> signature of comparison functions </summary>
 // <use visibility=export>

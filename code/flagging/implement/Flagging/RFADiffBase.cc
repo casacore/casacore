@@ -24,16 +24,16 @@
 //#                        Charlottesville, VA 22903-2475 USA
 //#
 //# $Id$
-#include <trial/Flagging/RFADiffBase.h>
-#include <trial/MSVis/VisibilityIterator.h>
-#include <trial/MSVis/VisBuffer.h>
-#include <aips/Arrays/ArrayMath.h>
-#include <aips/Arrays/MaskArrMath.h>
-#include <aips/Arrays/ArrayLogical.h>
-#include <aips/Arrays/Slice.h>
-#include <trial/System/PGPlotterInterface.h>
+#include <flagging/Flagging/RFADiffBase.h>
+#include <msvis/MSVis/VisibilityIterator.h>
+#include <msvis/MSVis/VisBuffer.h>
+#include <casa/Arrays/ArrayMath.h>
+#include <casa/Arrays/MaskArrMath.h>
+#include <casa/Arrays/ArrayLogical.h>
+#include <casa/Arrays/Slice.h>
+#include <casa/System/PGPlotterInterface.h>
 
-#include <aips/stdio.h>
+#include <casa/stdio.h>
 
 Bool RFADiffBase::dummy_Bool;
 

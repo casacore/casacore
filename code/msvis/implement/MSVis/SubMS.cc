@@ -24,44 +24,44 @@
 //#                        Charlottesville, VA 22903-2475 USA
 //#
 //# $Id$
-#include <trial/MSVis/SubMS.h>
-#include <trial/MeasurementSets/MSSelection.h>
-#include <aips/Tables/ExprNode.h>
-#include <aips/Tables/RefRows.h>
-#include <aips/MeasurementSets/MSColumns.h>
-#include <aips/Arrays/Matrix.h>
-#include <aips/Arrays/Cube.h>
-#include <aips/Arrays/ArrayMath.h>
-#include <aips/Arrays/ArrayUtil.h>
-#include <aips/Logging/LogIO.h>
-#include <aips/OS/File.h>
-#include <aips/Containers/Record.h>
-#include <aips/BasicSL/String.h>
-#include <aips/Utilities/Assert.h>
-#include <trial/MSVis/VisSet.h>
-#include <trial/MSVis/VisBuffer.h>
-#include <trial/MSVis/VisibilityIterator.h>
+#include <msvis/MSVis/SubMS.h>
+#include <ms/MeasurementSets/MSSelection.h>
+#include <tables/Tables/ExprNode.h>
+#include <tables/Tables/RefRows.h>
+#include <ms/MeasurementSets/MSColumns.h>
+#include <casa/Arrays/Matrix.h>
+#include <casa/Arrays/Cube.h>
+#include <casa/Arrays/ArrayMath.h>
+#include <casa/Arrays/ArrayUtil.h>
+#include <casa/Logging/LogIO.h>
+#include <casa/OS/File.h>
+#include <casa/Containers/Record.h>
+#include <casa/BasicSL/String.h>
+#include <casa/Utilities/Assert.h>
+#include <msvis/MSVis/VisSet.h>
+#include <msvis/MSVis/VisBuffer.h>
+#include <msvis/MSVis/VisibilityIterator.h>
 
-#include <aips/Tables/IncrementalStMan.h>
-#include <aips/Tables/ScalarColumn.h>
-#include <aips/Tables/ScaColDesc.h>
-#include <aips/Tables/SetupNewTab.h>
-#include <aips/Tables/StandardStMan.h>
-#include <aips/Tables/Table.h>
-#include <aips/Tables/TableDesc.h>
-#include <aips/Tables/TableInfo.h>
-#include <aips/Tables/TableLock.h>
-#include <aips/Tables/TableRecord.h>
-#include <aips/Tables/TableCopy.h>
-#include <aips/Tables/TiledColumnStMan.h>
-#include <aips/Tables/TiledShapeStMan.h>
-#include <aips/Tables/TiledDataStMan.h>
-#include <aips/Tables/TiledStManAccessor.h>
-#include <trial/MeasurementSets/MSTileLayout.h>
+#include <tables/Tables/IncrementalStMan.h>
+#include <tables/Tables/ScalarColumn.h>
+#include <tables/Tables/ScaColDesc.h>
+#include <tables/Tables/SetupNewTab.h>
+#include <tables/Tables/StandardStMan.h>
+#include <tables/Tables/Table.h>
+#include <tables/Tables/TableDesc.h>
+#include <tables/Tables/TableInfo.h>
+#include <tables/Tables/TableLock.h>
+#include <tables/Tables/TableRecord.h>
+#include <tables/Tables/TableCopy.h>
+#include <tables/Tables/TiledColumnStMan.h>
+#include <tables/Tables/TiledShapeStMan.h>
+#include <tables/Tables/TiledDataStMan.h>
+#include <tables/Tables/TiledStManAccessor.h>
+#include <ms/MeasurementSets/MSTileLayout.h>
 
 
 
-#include <aips/sstream.h>
+#include <casa/sstream.h>
 
 
 

@@ -26,31 +26,31 @@
 //# $Id$
 
 
-#include <trial/Lattices/LatticeExprNode.h>
-#include <trial/Lattices/LatticeExpr.h>
-#include <aips/Lattices/Lattice.h>
-#include <trial/Lattices/SubLattice.h>
-#include <trial/Lattices/LELLattice.h>
-#include <trial/Lattices/LELConvert.h>
-#include <trial/Lattices/LELBinary.h>
-#include <trial/Lattices/LELUnary.h>
-#include <trial/Lattices/LELCondition.h>
-#include <trial/Lattices/LELFunction.h>
-#include <trial/Lattices/LELSpectralIndex.h>
-#include <trial/Lattices/LELArray.h>
-#include <trial/Lattices/LELRegion.h>
-#include <trial/Lattices/LCRegion.h>
-#include <trial/Lattices/LCSlicer.h>
-#include <trial/Lattices/LattRegionHolder.h>
-#include <trial/Lattices/LELLattCoord.h>
-#include <aips/Arrays/Slicer.h>
-#include <aips/Arrays/Array.h>
-#include <aips/Containers/Block.h>
-#include <aips/BasicSL/Constants.h>
-#include <aips/Utilities/CountedPtr.h>
-#include <aips/Utilities/Assert.h>
-#include <aips/Exceptions/Error.h> 
-#include <aips/iostream.h>
+#include <lattices/Lattices/LatticeExprNode.h>
+#include <lattices/Lattices/LatticeExpr.h>
+#include <lattices/Lattices/Lattice.h>
+#include <lattices/Lattices/SubLattice.h>
+#include <lattices/Lattices/LELLattice.h>
+#include <lattices/Lattices/LELConvert.h>
+#include <lattices/Lattices/LELBinary.h>
+#include <lattices/Lattices/LELUnary.h>
+#include <lattices/Lattices/LELCondition.h>
+#include <lattices/Lattices/LELFunction.h>
+#include <lattices/Lattices/LELSpectralIndex.h>
+#include <lattices/Lattices/LELArray.h>
+#include <lattices/Lattices/LELRegion.h>
+#include <lattices/Lattices/LCRegion.h>
+#include <lattices/Lattices/LCSlicer.h>
+#include <lattices/Lattices/LattRegionHolder.h>
+#include <lattices/Lattices/LELLattCoord.h>
+#include <casa/Arrays/Slicer.h>
+#include <casa/Arrays/Array.h>
+#include <casa/Containers/Block.h>
+#include <casa/BasicSL/Constants.h>
+#include <casa/Utilities/CountedPtr.h>
+#include <casa/Utilities/Assert.h>
+#include <casa/Exceptions/Error.h> 
+#include <casa/iostream.h>
 
 
 

@@ -25,7 +25,7 @@
 //#
 //# $Id$
 
-#include <aips/Containers/ListMap.h>
+#include <casa/Containers/ListMap.h>
 
 
 template<class key, class value> value *ListMapRep<key,value>::isDefined(const key &kv) {

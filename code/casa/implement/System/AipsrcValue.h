@@ -28,10 +28,10 @@
 #if !defined(AIPS_AIPSRCVALUE_H)
 #define AIPS_AIPSRCVALUE_H
 
-#include <aips/aips.h>
-#include <aips/BasicSL/String.h>
-#include <aips/Containers/Block.h>
-#include <aips/System/Aipsrc.h>
+#include <casa/aips.h>
+#include <casa/BasicSL/String.h>
+#include <casa/Containers/Block.h>
+#include <casa/System/Aipsrc.h>
 
 //# Forward declarations
 class Unit;

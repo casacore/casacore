@@ -25,29 +25,29 @@
 //#
 //# $Id$
 
-#include <trial/Images/PagedImage.h>
-#include <trial/Coordinates/CoordinateSystem.h>
-#include <trial/Coordinates/CoordinateUtil.h>
+#include <images/Images/PagedImage.h>
+#include <coordinates/Coordinates/CoordinateSystem.h>
+#include <coordinates/Coordinates/CoordinateUtil.h>
 
-#include <aips/Arrays/Array.h>
-#include <aips/Arrays/ArrayLogical.h>
-#include <aips/Arrays/Vector.h>
-#include <aips/Exceptions/Error.h>
-#include <aips/Arrays/IPosition.h>
-#include <trial/Lattices/LCSlicer.h>
-#include <trial/Lattices/LCPagedMask.h>
-#include <trial/Lattices/LatticeExpr.h>
-#include <trial/Images/ImageRegion.h>
-#include <trial/Images/RegionHandler.h>
-#include <aips/Tables/TableDesc.h>
-#include <aips/Tables/SetupNewTab.h>
-#include <aips/Tables/Table.h>
-#include <aips/Tables/TableRecord.h>
-#include <aips/OS/File.h>
-#include <aips/Utilities/Assert.h>
-#include <aips/Utilities/DataType.h>
-#include <aips/BasicSL/String.h>
-#include <aips/iostream.h>
+#include <casa/Arrays/Array.h>
+#include <casa/Arrays/ArrayLogical.h>
+#include <casa/Arrays/Vector.h>
+#include <casa/Exceptions/Error.h>
+#include <casa/Arrays/IPosition.h>
+#include <lattices/Lattices/LCSlicer.h>
+#include <lattices/Lattices/LCPagedMask.h>
+#include <lattices/Lattices/LatticeExpr.h>
+#include <images/Images/ImageRegion.h>
+#include <images/Images/RegionHandler.h>
+#include <tables/Tables/TableDesc.h>
+#include <tables/Tables/SetupNewTab.h>
+#include <tables/Tables/Table.h>
+#include <tables/Tables/TableRecord.h>
+#include <casa/OS/File.h>
+#include <casa/Utilities/Assert.h>
+#include <casa/Utilities/DataType.h>
+#include <casa/BasicSL/String.h>
+#include <casa/iostream.h>
 
 
 int main()

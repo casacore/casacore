@@ -25,12 +25,12 @@
 //#
 //# $Id$
 
-#include <aips/Arrays/MatrixMath.h>
-#include <aips/Arrays/Vector.h>
-#include <aips/Arrays/Matrix.h>
-#include <aips/Arrays/ArrayError.h>
-#include <aips/iostream.h>
-#include <aips/math.h>
+#include <casa/Arrays/MatrixMath.h>
+#include <casa/Arrays/Vector.h>
+#include <casa/Arrays/Matrix.h>
+#include <casa/Arrays/ArrayError.h>
+#include <casa/iostream.h>
+#include <casa/math.h>
 
                                       // the vector dot/scalar/inner product
 template<class T> T innerProduct (const Vector<T> &A, const Vector<T> &B) {

@@ -29,12 +29,12 @@
 #define AIPS_FORWARDCOL_H
 
 //# Includes
-#include <aips/Tables/VirtColEng.h>
-#include <aips/Tables/DataManager.h>
-#include <aips/Tables/Table.h>
-#include <aips/Tables/TableColumn.h>
-#include <aips/Containers/Block.h>
-#include <aips/BasicSL/String.h>
+#include <tables/Tables/VirtColEng.h>
+#include <tables/Tables/DataManager.h>
+#include <tables/Tables/Table.h>
+#include <tables/Tables/TableColumn.h>
+#include <casa/Containers/Block.h>
+#include <casa/BasicSL/String.h>
 
 //# Forward Declarations
 class ForwardColumnEngine;

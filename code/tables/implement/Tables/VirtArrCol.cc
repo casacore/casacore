@@ -26,13 +26,13 @@
 //# $Id$
 
 //# Includes
-#include <aips/Tables/VirtArrCol.h>
-#include <aips/Arrays/Array.h>
-#include <aips/Arrays/ArrayIter.h>
-#include <aips/Arrays/IPosition.h>
-#include <aips/Arrays/Slicer.h>
-#include <aips/Tables/DataManError.h>
-#include <aips/Utilities/ValTypeId.h>
+#include <tables/Tables/VirtArrCol.h>
+#include <casa/Arrays/Array.h>
+#include <casa/Arrays/ArrayIter.h>
+#include <casa/Arrays/IPosition.h>
+#include <casa/Arrays/Slicer.h>
+#include <tables/Tables/DataManError.h>
+#include <casa/Utilities/ValTypeId.h>
 
 
 template<class T>

@@ -28,10 +28,10 @@
 #if !defined(AIPS_SLICE_H)
 #define AIPS_SLICE_H
 
-#include <aips/aips.h>
+#include <casa/aips.h>
 
 #if defined(AIPS_DEBUG)
-#include <aips/Utilities/Assert.h>
+#include <casa/Utilities/Assert.h>
 #endif
 
 // <summary> define a (start,length,increment) along an axis </summary>

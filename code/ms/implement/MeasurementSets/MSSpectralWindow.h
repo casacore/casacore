@@ -29,9 +29,9 @@
 #if !defined(AIPS_MSSPECTRALWINDOW_H)
 #define AIPS_MSSPECTRALWINDOW_H
 
-#include <aips/aips.h>
-#include <aips/MeasurementSets/MSTable.h>
-#include <aips/MeasurementSets/MSSpWindowEnums.h>
+#include <casa/aips.h>
+#include <ms/MeasurementSets/MSTable.h>
+#include <ms/MeasurementSets/MSSpWindowEnums.h>
 
 // <summary> 
 // A Table intended to hold a MeasurementSet SPECTRAL_WINDOW table.

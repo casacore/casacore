@@ -26,20 +26,20 @@
 //# $Id$
 
 //# Includes
-#include <trial/MeasurementSets/SDHistoryHandler.h>
+#include <ms/MeasurementSets/SDHistoryHandler.h>
 
-#include <aips/MeasurementSets/MeasurementSet.h>
-#include <aips/MeasurementSets/MSHistoryColumns.h>
-#include <aips/MeasurementSets/MSHistory.h>
-#include <aips/Containers/Record.h>
-#include <aips/Arrays/Vector.h>
-#include <aips/Tables/ArrayColumn.h>
-#include <aips/Utilities/Assert.h>
-#include <aips/Exceptions/Error.h>
-#include <aips/BasicSL/String.h>
-#include <trial/FITS/FITSDateUtil.h>
-#include <aips/Measures/MEpoch.h>
-#include <aips/Quanta/MVTime.h>
+#include <ms/MeasurementSets/MeasurementSet.h>
+#include <ms/MeasurementSets/MSHistoryColumns.h>
+#include <ms/MeasurementSets/MSHistory.h>
+#include <casa/Containers/Record.h>
+#include <casa/Arrays/Vector.h>
+#include <tables/Tables/ArrayColumn.h>
+#include <casa/Utilities/Assert.h>
+#include <casa/Exceptions/Error.h>
+#include <casa/BasicSL/String.h>
+#include <fits/FITS/FITSDateUtil.h>
+#include <measures/Measures/MEpoch.h>
+#include <casa/Quanta/MVTime.h>
 
 SDHistoryHandler::SDHistoryHandler() 
     : msHis_p(0), msHisCols_p(0)

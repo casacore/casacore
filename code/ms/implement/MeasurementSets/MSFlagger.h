@@ -29,8 +29,8 @@
 #if !defined(TRIAL_MSFLAGGER_H)
 #define TRIAL_MSFLAGGER_H
 
-#include <aips/aips.h>
-#include <aips/Containers/Record.h>
+#include <casa/aips.h>
+#include <casa/Containers/Record.h>
 
 template <class T> class Array;
 class MSSelector;

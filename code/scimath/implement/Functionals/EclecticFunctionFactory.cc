@@ -25,9 +25,9 @@
 //#
 //#
 //# $Id$
-#include <trial/Functionals/EclecticFunctionFactory.h>
-#include <aips/Arrays/Array.h>
-#include <aips/Containers/Record.h>
+#include <scimath/Functionals/EclecticFunctionFactory.h>
+#include <casa/Arrays/Array.h>
+#include <casa/Containers/Record.h>
 
 template<class T> 
 EclecticFunctionFactory<T>::EclecticFunctionFactory() :

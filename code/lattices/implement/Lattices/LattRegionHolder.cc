@@ -25,20 +25,20 @@
 //#
 //# $Id$
 
-#include <trial/Lattices/LattRegionHolder.h>
-#include <trial/Lattices/LCRegion.h>
-#include <trial/Lattices/LCSlicer.h>
-#include <trial/Lattices/LCExtension.h>
-#include <trial/Lattices/LCUnion.h>
-#include <trial/Lattices/LCIntersection.h>
-#include <trial/Lattices/LCDifference.h>
-#include <trial/Lattices/LCComplement.h>
-#include <trial/Lattices/RegionType.h>
-#include <aips/Tables/TableRecord.h>
-#include <aips/Arrays/Vector.h>
-#include <aips/BasicSL/String.h>
-#include <aips/Utilities/Assert.h>
-#include <aips/Exceptions/Error.h>
+#include <lattices/Lattices/LattRegionHolder.h>
+#include <lattices/Lattices/LCRegion.h>
+#include <lattices/Lattices/LCSlicer.h>
+#include <lattices/Lattices/LCExtension.h>
+#include <lattices/Lattices/LCUnion.h>
+#include <lattices/Lattices/LCIntersection.h>
+#include <lattices/Lattices/LCDifference.h>
+#include <lattices/Lattices/LCComplement.h>
+#include <lattices/Lattices/RegionType.h>
+#include <tables/Tables/TableRecord.h>
+#include <casa/Arrays/Vector.h>
+#include <casa/BasicSL/String.h>
+#include <casa/Utilities/Assert.h>
+#include <casa/Exceptions/Error.h>
 
 LattRegionHolder::LattRegionHolder (uInt ndim)
 : itsLC     (0),

@@ -30,8 +30,8 @@
 
 
 //# Includes
-#include <aips/Tables/TiledStMan.h>
-#include <aips/Tables/TableDesc.h>
+#include <tables/Tables/TiledStMan.h>
+#include <tables/Tables/TableDesc.h>
 
 
 // <summary>

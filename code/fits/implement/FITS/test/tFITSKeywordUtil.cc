@@ -26,19 +26,19 @@
 //# $Id$
 
 //# Includes
-#include <trial/FITS/FITSKeywordUtil.h>
+#include <fits/FITS/FITSKeywordUtil.h>
 
-#include <aips/Arrays/ArrayMath.h>
-#include <aips/Arrays/Cube.h>
-#include <aips/Arrays/IPosition.h>
-#include <aips/Arrays/Matrix.h>
-#include <aips/Arrays/Vector.h>
-#include <aips/Arrays/ArrayLogical.h>
-#include <aips/Containers/Record.h>
-#include <aips/Exceptions/Error.h>
-#include <aips/FITS/fits.h>
-#include <aips/Utilities/Assert.h>
-#include <aips/Utilities/Regex.h>
+#include <casa/Arrays/ArrayMath.h>
+#include <casa/Arrays/Cube.h>
+#include <casa/Arrays/IPosition.h>
+#include <casa/Arrays/Matrix.h>
+#include <casa/Arrays/Vector.h>
+#include <casa/Arrays/ArrayLogical.h>
+#include <casa/Containers/Record.h>
+#include <casa/Exceptions/Error.h>
+#include <fits/FITS/fits.h>
+#include <casa/Utilities/Assert.h>
+#include <casa/Utilities/Regex.h>
 
 int main()
 {

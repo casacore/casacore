@@ -25,11 +25,11 @@
 //#
 //# $Id$
 
-#include <aips/Arrays/IPosition.h>
-#include <aips/Arrays/Array.h>
-#include <aips/Arrays/ArrayMath.h>
-#include <aips/Utilities/COWPtr.h>
-#include <aips/iostream.h> 
+#include <casa/Arrays/IPosition.h>
+#include <casa/Arrays/Array.h>
+#include <casa/Arrays/ArrayMath.h>
+#include <casa/Utilities/COWPtr.h>
+#include <casa/iostream.h> 
 
 int main()
 {

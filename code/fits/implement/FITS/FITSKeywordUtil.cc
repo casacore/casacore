@@ -26,28 +26,28 @@
 //#
 //# $Id$
 
-#include <trial/FITS/FITSKeywordUtil.h>
+#include <fits/FITS/FITSKeywordUtil.h>
 
-#include <aips/Arrays/Array.h>
-#include <aips/Arrays/ArrayUtil.h>
-#include <aips/Arrays/IPosition.h>
-#include <aips/Arrays/Matrix.h>
-#include <aips/Arrays/Vector.h>
-#include <aips/Containers/RecordInterface.h>
-#include <aips/Containers/SimOrdMap.h>
-#include <aips/FITS/fits.h>
-#include <aips/Logging/LogIO.h>
-#include <aips/Logging/LogOrigin.h>
-#include <aips/BasicMath/Random.h>
-#include <aips/OS/Time.h>
-#include <aips/Utilities/Assert.h>
-#include <aips/Utilities/Regex.h>
-#include <aips/BasicSL/String.h>
+#include <casa/Arrays/Array.h>
+#include <casa/Arrays/ArrayUtil.h>
+#include <casa/Arrays/IPosition.h>
+#include <casa/Arrays/Matrix.h>
+#include <casa/Arrays/Vector.h>
+#include <casa/Containers/RecordInterface.h>
+#include <casa/Containers/SimOrdMap.h>
+#include <fits/FITS/fits.h>
+#include <casa/Logging/LogIO.h>
+#include <casa/Logging/LogOrigin.h>
+#include <casa/BasicMath/Random.h>
+#include <casa/OS/Time.h>
+#include <casa/Utilities/Assert.h>
+#include <casa/Utilities/Regex.h>
+#include <casa/BasicSL/String.h>
 
-#include <aips/sstream.h>
-#include <aips/iomanip.h>
+#include <casa/sstream.h>
+#include <casa/iomanip.h>
 #include <ctype.h>
-#include <aips/stdlib.h>
+#include <casa/stdlib.h>
 
 // Do a reverse lookup since the FITS classes need it.
 static Bool findReservedName(FITS::ReservedName &name, const String &basename)

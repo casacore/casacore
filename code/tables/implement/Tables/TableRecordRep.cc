@@ -25,18 +25,18 @@
 //#
 //# $Id$
 
-#include <aips/Tables/TableRecordRep.h>
-#include <aips/Tables/TableRecord.h>
-#include <aips/Tables/TableKeyword.h>
-#include <aips/Tables/TableAttr.h>
-#include <aips/Tables/Table.h>
-#include <aips/Tables/TableDesc.h>
-#include <aips/Arrays/Array.h>
-#include <aips/Arrays/ArrayError.h>
-#include <aips/Arrays/IPosition.h>
-#include <aips/IO/AipsIO.h>
-#include <aips/Utilities/Assert.h>
-#include <aips/Exceptions/Error.h>
+#include <tables/Tables/TableRecordRep.h>
+#include <tables/Tables/TableRecord.h>
+#include <tables/Tables/TableKeyword.h>
+#include <tables/Tables/TableAttr.h>
+#include <tables/Tables/Table.h>
+#include <tables/Tables/TableDesc.h>
+#include <casa/Arrays/Array.h>
+#include <casa/Arrays/ArrayError.h>
+#include <casa/Arrays/IPosition.h>
+#include <casa/IO/AipsIO.h>
+#include <casa/Utilities/Assert.h>
+#include <casa/Exceptions/Error.h>
 
 
 TableRecordRep::TableRecordRep ()

@@ -26,11 +26,11 @@
 //# $Id$
 
 //# Includes
-#include <aips/Exceptions/Error.h>
-#include <aips/Quanta/QMath.h>
-#include <aips/BasicMath/Math.h>
-#include <aips/Arrays/ArrayMath.h>
-#include <aips/sstream.h>
+#include <casa/Exceptions/Error.h>
+#include <casa/Quanta/QMath.h>
+#include <casa/BasicMath/Math.h>
+#include <casa/Arrays/ArrayMath.h>
+#include <casa/sstream.h>
 
 template <class Qtype>
 Quantum<Qtype> operator+(const Quantum<Qtype> &left,

@@ -26,14 +26,14 @@
 //# $Id$
 
 
-#include <aips/aips.h>
-#include <aips/OS/DataConversion.h>
-#include <aips/OS/CanonicalDataConversion.h>
-#include <aips/OS/LECanonicalDataConversion.h>
-#include <aips/OS/IBMDataConversion.h>
-#include <aips/OS/VAXDataConversion.h>
-#include <aips/OS/RawDataConversion.h>
-#include <aips/iostream.h>
+#include <casa/aips.h>
+#include <casa/OS/DataConversion.h>
+#include <casa/OS/CanonicalDataConversion.h>
+#include <casa/OS/LECanonicalDataConversion.h>
+#include <casa/OS/IBMDataConversion.h>
+#include <casa/OS/VAXDataConversion.h>
+#include <casa/OS/RawDataConversion.h>
+#include <casa/iostream.h>
 
 
 // This program tests the data conversion classes.

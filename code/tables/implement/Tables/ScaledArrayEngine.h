@@ -29,7 +29,7 @@
 #define AIPS_SCALEDARRAYENGINE_H
 
 //# Includes
-#include <aips/Tables/BaseMappedArrayEngine.h>
+#include <tables/Tables/BaseMappedArrayEngine.h>
 
 //# Forward Declarations
 template<class T> class ROScalarColumn;

@@ -26,12 +26,12 @@
 //#
 //# $Id$
 
-#include <aips/Tables/SSMIndStringColumn.h>
-#include <aips/Tables/SSMStringHandler.h>
-#include <aips/Tables/DataManError.h>
-#include <aips/Arrays/Array.h>
-#include <aips/Utilities/ValType.h>
-#include <aips/Utilities/Assert.h>
+#include <tables/Tables/SSMIndStringColumn.h>
+#include <tables/Tables/SSMStringHandler.h>
+#include <tables/Tables/DataManError.h>
+#include <casa/Arrays/Array.h>
+#include <casa/Utilities/ValType.h>
+#include <casa/Utilities/Assert.h>
 
 SSMIndStringColumn::SSMIndStringColumn (SSMBase* aParent, int aDataType, 
 					uInt aColNr): 

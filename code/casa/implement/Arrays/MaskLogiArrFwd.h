@@ -33,8 +33,8 @@
 #endif
 
 
-#include <aips/aips.h>
-#include <aips/Arrays/LogiArrayFwd.h>
+#include <casa/aips.h>
+#include <casa/Arrays/LogiArrayFwd.h>
 
 // <summary>
 //    Forward declarations for MaskedLogicalArrays.

@@ -26,12 +26,12 @@
 //# $Id$
 
 
-#include <aips/OS/Path.h>
-#include <aips/OS/EnvVar.h>
-#include <aips/Arrays/Vector.h>
-#include <aips/Arrays/ArrayUtil.h>
-#include <aips/Utilities/Assert.h>
-#include <aips/Exceptions.h>
+#include <casa/OS/Path.h>
+#include <casa/OS/EnvVar.h>
+#include <casa/Arrays/Vector.h>
+#include <casa/Arrays/ArrayUtil.h>
+#include <casa/Utilities/Assert.h>
+#include <casa/Exceptions.h>
 
 #include <pwd.h>                    // needed for getpwnam
 #include <unistd.h>                 // needed for pathconf

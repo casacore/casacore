@@ -29,11 +29,11 @@
 #define AIPS_FIT2D_H
 
 //# Includes
-#include <aips/aips.h>
-#include <aips/Functionals/CompoundFunction.h>
-#include <aips/BasicSL/Constants.h>
-#include <trial/Fitting/NonLinearFitLM.h>
-#include <aips/Logging/LogIO.h>
+#include <casa/aips.h>
+#include <scimath/Functionals/CompoundFunction.h>
+#include <casa/BasicSL/Constants.h>
+#include <scimath/Fitting/NonLinearFitLM.h>
+#include <casa/Logging/LogIO.h>
 
 template<class T> class Array;
 template<class T> class Matrix;

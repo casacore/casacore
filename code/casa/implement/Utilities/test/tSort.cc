@@ -27,11 +27,11 @@
 
 //# Includes
 
-#include <aips/Utilities/Sort.h>
-#include <aips/Arrays/Vector.h>
-#include <aips/Utilities/Assert.h>
-#include <aips/stdlib.h>
-#include <aips/iostream.h>
+#include <casa/Utilities/Sort.h>
+#include <casa/Arrays/Vector.h>
+#include <casa/Utilities/Assert.h>
+#include <casa/stdlib.h>
+#include <casa/iostream.h>
 
 // This program test the class Sort.
 // It sorts some data in ascending and/or descending order.

@@ -26,9 +26,9 @@
 //#
 //# $Id$
 
-#include <aips/Logging/StreamLogSink.h>
-#include <aips/Logging/LogFilter.h>
-#include <aips/iostream.h>
+#include <casa/Logging/StreamLogSink.h>
+#include <casa/Logging/LogFilter.h>
+#include <casa/iostream.h>
 
 String StreamLogSink::localId( ) {
     return String("StreamLogSink");

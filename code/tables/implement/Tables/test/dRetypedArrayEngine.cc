@@ -27,25 +27,25 @@
 
 
 //# Includes
-#include <aips/Tables/test/dRetypedArrayEngine.h>
-#include <aips/Tables/RetypedArrayEngine.h>
-#include <aips/Tables/TableDesc.h>
-#include <aips/Tables/SetupNewTab.h>
-#include <aips/Tables/Table.h>
-#include <aips/Tables/ArrColDesc.h>
-#include <aips/Tables/ArrayColumn.h>
-#include <aips/Arrays/IPosition.h>
-#include <aips/Arrays/Slicer.h>
-#include <aips/Arrays/Slice.h>
-#include <aips/Arrays/Vector.h>
-#include <aips/Arrays/Matrix.h>
-#include <aips/Arrays/ArrayLogical.h>
-#include <aips/Tables/TableRecord.h>
-#include <aips/Containers/RecordDesc.h>
-#include <aips/Containers/RecordField.h>
-#include <aips/Utilities/Assert.h>
-#include <aips/Tables/DataManError.h>
-#include <aips/iostream.h>
+#include <tables/Tables/test/dRetypedArrayEngine.h>
+#include <tables/Tables/RetypedArrayEngine.h>
+#include <tables/Tables/TableDesc.h>
+#include <tables/Tables/SetupNewTab.h>
+#include <tables/Tables/Table.h>
+#include <tables/Tables/ArrColDesc.h>
+#include <tables/Tables/ArrayColumn.h>
+#include <casa/Arrays/IPosition.h>
+#include <casa/Arrays/Slicer.h>
+#include <casa/Arrays/Slice.h>
+#include <casa/Arrays/Vector.h>
+#include <casa/Arrays/Matrix.h>
+#include <casa/Arrays/ArrayLogical.h>
+#include <tables/Tables/TableRecord.h>
+#include <casa/Containers/RecordDesc.h>
+#include <casa/Containers/RecordField.h>
+#include <casa/Utilities/Assert.h>
+#include <tables/Tables/DataManError.h>
+#include <casa/iostream.h>
 
 
 void* RetypedArrayEx1::newCopyInfo (const TableRecord&, const IPosition&)
@@ -438,23 +438,23 @@ void c()
 // and also takes the dRetypedArrayEngine symbols into account.
 // That is fine when linking dRetypedArrayEngine, but gives undefined
 // linkonce symbols for other test programs which might use Vector<bool> or so.
-#include <aips/Arrays/Array.cc>
-#include <aips/Arrays/ArrayIter.cc>
-#include <aips/Arrays/ArrayLogical.cc>
-#include <aips/Arrays/MaskedArray.cc>
-#include <aips/Arrays/Matrix.cc>
-#include <aips/Arrays/Vector.cc>
-#include <aips/Containers/Block.h>
-#include <aips/Tables/ArrColData.cc>
-#include <aips/Tables/ArrColDesc.cc>
-#include <aips/Tables/ArrayColumn.cc>
-#include <aips/Tables/BaseMappedArrayEngine.cc>
-#include <aips/Tables/RetypedArraySetGet.cc>
-#include <aips/Tables/RetypedArrayEngine.cc>
-#include <aips/Tables/VirtArrCol.cc>
-#include <aips/Utilities/Copy.cc>
-#include <aips/Utilities/CountedPtr.cc>
-#include <aips/Utilities/ValTypeId.h>
+#include <casa/Arrays/Array.cc>
+#include <casa/Arrays/ArrayIter.cc>
+#include <casa/Arrays/ArrayLogical.cc>
+#include <casa/Arrays/MaskedArray.cc>
+#include <casa/Arrays/Matrix.cc>
+#include <casa/Arrays/Vector.cc>
+#include <casa/Containers/Block.h>
+#include <tables/Tables/ArrColData.cc>
+#include <tables/Tables/ArrColDesc.cc>
+#include <tables/Tables/ArrayColumn.cc>
+#include <tables/Tables/BaseMappedArrayEngine.cc>
+#include <tables/Tables/RetypedArraySetGet.cc>
+#include <tables/Tables/RetypedArrayEngine.cc>
+#include <tables/Tables/VirtArrCol.cc>
+#include <casa/Utilities/Copy.cc>
+#include <casa/Utilities/CountedPtr.cc>
+#include <casa/Utilities/ValTypeId.h>
 
 template class ArrayColumnData<RetypedArrayEx1>;
 template class ArrayColumnDesc<RetypedArrayEx1>;

@@ -26,27 +26,27 @@
 //# $Id$
 
 //# Includes
-#include <trial/MeasurementSets/SDSpWinHandler.h>
+#include <ms/MeasurementSets/SDSpWinHandler.h>
 
-#include <aips/Tables/ColumnsIndex.h>
-#include <aips/MeasurementSets/MeasurementSet.h>
-#include <aips/MeasurementSets/MSSpWindowColumns.h>
-#include <aips/MeasurementSets/MSSpectralWindow.h>
-#include <aips/Containers/Record.h>
-#include <aips/Tables/Table.h>
-#include <aips/Arrays/Vector.h>
-#include <aips/Measures/MPosition.h>
-#include <aips/Utilities/Assert.h>
-#include <aips/Exceptions/Error.h>
-#include <aips/BasicSL/String.h>
-#include <aips/Arrays/ArrayMath.h>
-#include <aips/Arrays/Slice.h>
-#include <aips/Tables/TableDesc.h>
-#include <aips/Tables/ScaColDesc.h>
-#include <aips/Tables/SetupNewTab.h>
-#include <aips/Tables/TableLock.h>
-#include <aips/Arrays/ArrayUtil.h>
-#include <aips/Arrays/ArrayLogical.h>
+#include <tables/Tables/ColumnsIndex.h>
+#include <ms/MeasurementSets/MeasurementSet.h>
+#include <ms/MeasurementSets/MSSpWindowColumns.h>
+#include <ms/MeasurementSets/MSSpectralWindow.h>
+#include <casa/Containers/Record.h>
+#include <tables/Tables/Table.h>
+#include <casa/Arrays/Vector.h>
+#include <measures/Measures/MPosition.h>
+#include <casa/Utilities/Assert.h>
+#include <casa/Exceptions/Error.h>
+#include <casa/BasicSL/String.h>
+#include <casa/Arrays/ArrayMath.h>
+#include <casa/Arrays/Slice.h>
+#include <tables/Tables/TableDesc.h>
+#include <tables/Tables/ScaColDesc.h>
+#include <tables/Tables/SetupNewTab.h>
+#include <tables/Tables/TableLock.h>
+#include <casa/Arrays/ArrayUtil.h>
+#include <casa/Arrays/ArrayLogical.h>
 
 SDSpWindowHandler::SDSpWindowHandler()
     : fNCachePtr_p(0), f0CachePtr_p(0), bwCachePtr_p(0), index_p(0), theCache_p(0),

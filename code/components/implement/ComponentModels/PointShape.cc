@@ -25,21 +25,21 @@
 //#
 //# $Id$
 
-#include <trial/ComponentModels/PointShape.h>
-#include <trial/ComponentModels/Flux.h>
-#include <aips/Arrays/Vector.h>
-#include <aips/Containers/RecordFieldId.h>
-#include <aips/Containers/RecordInterface.h>
-#include <aips/Exceptions/Error.h>
-#include <aips/BasicSL/Complex.h>
-#include <aips/BasicMath/Math.h>
-#include <aips/Measures/MCDirection.h>
-#include <aips/Measures/MeasConvert.h>
-#include <aips/Quanta/MVAngle.h>
-#include <aips/Quanta/QMath.h>
-#include <aips/Quanta/Quantum.h>
-#include <aips/Utilities/Assert.h>
-#include <aips/BasicSL/String.h>
+#include <components/ComponentModels/PointShape.h>
+#include <components/ComponentModels/Flux.h>
+#include <casa/Arrays/Vector.h>
+#include <casa/Containers/RecordFieldId.h>
+#include <casa/Containers/RecordInterface.h>
+#include <casa/Exceptions/Error.h>
+#include <casa/BasicSL/Complex.h>
+#include <casa/BasicMath/Math.h>
+#include <measures/Measures/MCDirection.h>
+#include <measures/Measures/MeasConvert.h>
+#include <casa/Quanta/MVAngle.h>
+#include <casa/Quanta/QMath.h>
+#include <casa/Quanta/Quantum.h>
+#include <casa/Utilities/Assert.h>
+#include <casa/BasicSL/String.h>
 
 PointShape::PointShape() 
   :ComponentShape()

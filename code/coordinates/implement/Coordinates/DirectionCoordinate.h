@@ -30,13 +30,13 @@
 #if !defined(AIPS_DIRECTION_COORDINATE_H)
 #define AIPS_DIRECTION_COORDINATE_H
 
-#include <aips/aips.h>
-#include <trial/Coordinates/Coordinate.h>
-#include <trial/Coordinates/Projection.h>
-#include <aips/Arrays/Vector.h>
-#include <aips/Measures/MDirection.h>
-#include <aips/Measures/MeasConvert.h>
-#include <aips/Quanta/RotMatrix.h>
+#include <casa/aips.h>
+#include <coordinates/Coordinates/Coordinate.h>
+#include <coordinates/Coordinates/Projection.h>
+#include <casa/Arrays/Vector.h>
+#include <measures/Measures/MDirection.h>
+#include <measures/Measures/MeasConvert.h>
+#include <casa/Quanta/RotMatrix.h>
 #include <wcslib/wcs.h>
 
 class celprm;

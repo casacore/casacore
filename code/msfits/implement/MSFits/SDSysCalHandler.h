@@ -29,8 +29,8 @@
 #if !defined(AIPS_SDSYSCALHANDLER_H)
 #define AIPS_SDSYSCALHANDLER_H
 
-#include <aips/aips.h>
-#include <aips/Containers/RecordField.h>
+#include <casa/aips.h>
+#include <casa/Containers/RecordField.h>
 
 //# Forward Declarations
 class MeasurementSet;

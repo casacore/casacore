@@ -30,17 +30,17 @@
 
 
 //# Includes
-#include <aips/Tables/test/dVSCEngine.h>
-#include <aips/Tables/test/dVSCEngine.cc>
-#include <aips/Tables/TableDesc.h>
-#include <aips/Tables/SetupNewTab.h>
-#include <aips/Tables/Table.h>
-#include <aips/Tables/ScaColDesc.h>
-#include <aips/Tables/ScalarColumn.h>
-#include <aips/Arrays/IPosition.h>
-#include <aips/Arrays/Vector.h>
-#include <aips/Tables/TableError.h>
-#include <aips/iostream.h>
+#include <tables/Tables/test/dVSCEngine.h>
+#include <tables/Tables/test/dVSCEngine.cc>
+#include <tables/Tables/TableDesc.h>
+#include <tables/Tables/SetupNewTab.h>
+#include <tables/Tables/Table.h>
+#include <tables/Tables/ScaColDesc.h>
+#include <tables/Tables/ScalarColumn.h>
+#include <casa/Arrays/IPosition.h>
+#include <casa/Arrays/Vector.h>
+#include <tables/Tables/TableError.h>
+#include <casa/iostream.h>
 
 
 // <summary> Test program for class VSCEngine </summary>

@@ -29,9 +29,9 @@
 #define AIPS_VECTORITER_H
 
 
-#include <aips/aips.h>
-#include <aips/Arrays/ArrayIter.h>
-#include <aips/Arrays/Vector.h>
+#include <casa/aips.h>
+#include <casa/Arrays/ArrayIter.h>
+#include <casa/Arrays/Vector.h>
 
 // 
 // <summary> Iterate an Vector cursor through another Array. </summary>

@@ -25,14 +25,14 @@
 //#
 //# $Id$
 
-#include <trial/ComponentModels/ComponentType.h>
-#include <trial/ComponentModels/ComponentShape.h>
-#include <trial/ComponentModels/ConstantSpectrum.h>
-#include <trial/ComponentModels/DiskShape.h>
-#include <trial/ComponentModels/GaussianShape.h>
-#include <trial/ComponentModels/PointShape.h>
-#include <trial/ComponentModels/SpectralIndex.h>
-#include <trial/ComponentModels/SpectralModel.h>
+#include <components/ComponentModels/ComponentType.h>
+#include <components/ComponentModels/ComponentShape.h>
+#include <components/ComponentModels/ConstantSpectrum.h>
+#include <components/ComponentModels/DiskShape.h>
+#include <components/ComponentModels/GaussianShape.h>
+#include <components/ComponentModels/PointShape.h>
+#include <components/ComponentModels/SpectralIndex.h>
+#include <components/ComponentModels/SpectralModel.h>
 
 // The functions declared below are contained in a seperate .cc file to prevent
 // all the derived classes from unnecessarily being linked in when they are not

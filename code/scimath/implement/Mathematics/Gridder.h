@@ -29,9 +29,9 @@
 #if !defined(AIPS_GRIDDER_H)
 #define AIPS_GRIDDER_H
 
-#include <aips/Arrays/Array.h>
-#include <aips/Arrays/Vector.h>
-#include <aips/Arrays/Matrix.h>
+#include <casa/Arrays/Array.h>
+#include <casa/Arrays/Vector.h>
+#include <casa/Arrays/Matrix.h>
 
 class IPosition;
 

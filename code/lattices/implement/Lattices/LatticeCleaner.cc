@@ -24,46 +24,46 @@
 //#
 //# $Id$
 
-#include <aips/Arrays/Matrix.h>
-#include <aips/Arrays/ArrayMath.h>
+#include <casa/Arrays/Matrix.h>
+#include <casa/Arrays/ArrayMath.h>
 
-#include <aips/Logging/LogIO.h>
-#include <aips/OS/File.h>
-#include <aips/Containers/Record.h>
+#include <casa/Logging/LogIO.h>
+#include <casa/OS/File.h>
+#include <casa/Containers/Record.h>
 
-#include <trial/Lattices/LatticeCleaner.h>
-#include <trial/Lattices/LatticeCleanProgress.h>
-#include <aips/Lattices/TiledLineStepper.h> 
-#include <aips/Lattices/LatticeStepper.h> 
-#include <aips/Lattices/LatticeNavigator.h> 
-#include <aips/Lattices/LatticeIterator.h>
-#include <aips/Lattices/TempLattice.h>
-#include <trial/Lattices/LatticeFFT.h>
-#include <trial/Lattices/LatticeExpr.h>
-#include <trial/Lattices/SubLattice.h>
-#include <trial/Lattices/LCBox.h>
-#include <aips/Arrays/Slicer.h>
-#include <trial/Lattices/LatticeExpr.h>
-#include <trial/Lattices/LatticeExprNode.h>
+#include <lattices/Lattices/LatticeCleaner.h>
+#include <lattices/Lattices/LatticeCleanProgress.h>
+#include <lattices/Lattices/TiledLineStepper.h> 
+#include <lattices/Lattices/LatticeStepper.h> 
+#include <lattices/Lattices/LatticeNavigator.h> 
+#include <lattices/Lattices/LatticeIterator.h>
+#include <lattices/Lattices/TempLattice.h>
+#include <lattices/Lattices/LatticeFFT.h>
+#include <lattices/Lattices/LatticeExpr.h>
+#include <lattices/Lattices/SubLattice.h>
+#include <lattices/Lattices/LCBox.h>
+#include <casa/Arrays/Slicer.h>
+#include <lattices/Lattices/LatticeExpr.h>
+#include <lattices/Lattices/LatticeExprNode.h>
 
-#include <aips/System/AppInfo.h>
-#include <trial/System/PGPlotter.h>
-#include <aips/Arrays/ArrayError.h>
-#include <aips/Arrays/ArrayIter.h>
-#include <aips/Arrays/VectorIter.h>
+#include <casa/System/AppInfo.h>
+#include <casa/System/PGPlotter.h>
+#include <casa/Arrays/ArrayError.h>
+#include <casa/Arrays/ArrayIter.h>
+#include <casa/Arrays/VectorIter.h>
 
-#include <aips/Utilities/GenSort.h>
-#include <aips/BasicSL/String.h>
-#include <aips/Utilities/Assert.h>
-#include <aips/Utilities/Fallible.h>
+#include <casa/Utilities/GenSort.h>
+#include <casa/BasicSL/String.h>
+#include <casa/Utilities/Assert.h>
+#include <casa/Utilities/Fallible.h>
 
-#include <aips/BasicSL/Constants.h>
+#include <casa/BasicSL/Constants.h>
 
-#include <aips/Logging/LogSink.h>
-#include <aips/Logging/LogMessage.h>
+#include <casa/Logging/LogSink.h>
+#include <casa/Logging/LogMessage.h>
 
-#include <aips/Arrays/ArrayMath.h>
-#include <aips/Arrays/Matrix.h>
+#include <casa/Arrays/ArrayMath.h>
+#include <casa/Arrays/Matrix.h>
 
 
 

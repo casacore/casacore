@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#include <aips/Tables/ExprMathNode.h>
-#include <aips/Quanta/MVTime.h>
+#include <tables/Tables/ExprMathNode.h>
+#include <casa/Quanta/MVTime.h>
 
 
 // Implement the arithmetic operators for each data type.

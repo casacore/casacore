@@ -29,10 +29,10 @@
 #if !defined(AIPS_DISKSHAPE_H)
 #define AIPS_DISKSHAPE_H
 
-#include <aips/aips.h>
-#include <aips/BasicSL/Complex.h>
-#include <trial/ComponentModels/ComponentType.h>
-#include <trial/ComponentModels/TwoSidedShape.h>
+#include <casa/aips.h>
+#include <casa/BasicSL/Complex.h>
+#include <components/ComponentModels/ComponentType.h>
+#include <components/ComponentModels/TwoSidedShape.h>
 
 class MDirection;
 class MVAngle;

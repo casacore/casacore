@@ -29,9 +29,9 @@
 #define AIPS_EXPRLOGICNODEARRAY_H
 
 //# Includes
-#include <aips/aips.h>
-#include <aips/Tables/ExprNodeArray.h>
-#include <aips/Arrays/Array.h>
+#include <casa/aips.h>
+#include <tables/Tables/ExprNodeArray.h>
+#include <casa/Arrays/Array.h>
 
 //# Forward Declarations
 

@@ -25,24 +25,24 @@
 //#
 //# $Id$
 // 
-#include <aips/aips.h>
-#include <aips/Arrays/Array.h>
-#include <aips/Arrays/ArrayMath.h>
-#include <aips/Exceptions/Error.h>
-#include <aips/Inputs/Input.h>
-#include <aips/Logging.h>
-#include <aips/Mathematics/NumericTraits.h>
-#include <aips/BasicSL/String.h>
-#include <aips/Utilities/Regex.h>
-#include <aips/Lattices/ArrayLattice.h>
-#include <trial/Lattices/LatticeStatistics.h>
-#include <trial/Lattices/SubLattice.h>
-#include <trial/Lattices/LatticeStatsBase.h>
-#include <trial/Lattices/LatticeUtilities.h>
-#include <trial/Lattices/LCSlicer.h>
-#include <trial/System/PGPlotter.h>
+#include <casa/aips.h>
+#include <casa/Arrays/Array.h>
+#include <casa/Arrays/ArrayMath.h>
+#include <casa/Exceptions/Error.h>
+#include <casa/Inputs/Input.h>
+#include <casa/Logging.h>
+#include <scimath/Mathematics/NumericTraits.h>
+#include <casa/BasicSL/String.h>
+#include <casa/Utilities/Regex.h>
+#include <lattices/Lattices/ArrayLattice.h>
+#include <lattices/Lattices/LatticeStatistics.h>
+#include <lattices/Lattices/SubLattice.h>
+#include <lattices/Lattices/LatticeStatsBase.h>
+#include <lattices/Lattices/LatticeUtilities.h>
+#include <lattices/Lattices/LCSlicer.h>
+#include <casa/System/PGPlotter.h>
 
-#include <aips/iostream.h>
+#include <casa/iostream.h>
 
 
 void doitFloat(LogIO& os);

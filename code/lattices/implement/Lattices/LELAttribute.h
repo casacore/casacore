@@ -30,8 +30,8 @@
 
 
 //# Includes
-#include <aips/Arrays/IPosition.h>
-#include <aips/Lattices/LELCoordinates.h>
+#include <casa/Arrays/IPosition.h>
+#include <lattices/Lattices/LELCoordinates.h>
 
 
 // <summary>

@@ -25,9 +25,9 @@
 //#
 //# $Id$
 
-#include <aips/Containers/SimOrdMapIO.h>
-#include <aips/IO/AipsIO.h>
-#include <aips/iostream.h>
+#include <casa/Containers/SimOrdMapIO.h>
+#include <casa/IO/AipsIO.h>
+#include <casa/iostream.h>
 
 // Write an OrderedMap into an AipsIO styream.
 template<class K, class V>

@@ -30,13 +30,13 @@
 
 
 //# Includes
-#include <aips/aips.h>
-#include <aips/Tables/StManColumn.h>
-#include <aips/Tables/ISMBase.h>
-#include <aips/Arrays/IPosition.h>
-#include <aips/Containers/Block.h>
-#include <aips/Utilities/Compare.h>
-#include <aips/OS/Conversion.h>
+#include <casa/aips.h>
+#include <tables/Tables/StManColumn.h>
+#include <tables/Tables/ISMBase.h>
+#include <casa/Arrays/IPosition.h>
+#include <casa/Containers/Block.h>
+#include <casa/Utilities/Compare.h>
+#include <casa/OS/Conversion.h>
 
 //# Forward declarations
 class ISMBucket;

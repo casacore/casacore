@@ -25,10 +25,10 @@
 //#
 //# $Id$
 
-#include <aips/OS/Time.h>
-#include <aips/iostream.h>
-#include <aips/stdlib.h>
-#include <aips/math.h>
+#include <casa/OS/Time.h>
+#include <casa/iostream.h>
+#include <casa/stdlib.h>
+#include <casa/math.h>
 
 main() {
 

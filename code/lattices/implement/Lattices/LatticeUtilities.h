@@ -29,7 +29,7 @@
 #define AIPS_LATTICE_UTILITIES_H
 
 
-#include <aips/aips.h>
+#include <casa/aips.h>
 
 template <class T> class Array;
 template <class T> class Lattice;

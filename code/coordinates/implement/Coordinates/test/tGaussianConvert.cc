@@ -26,21 +26,21 @@
 //# $Id$
 //#
  
-#include <aips/Arrays/Vector.h>
-#include <aips/Arrays/Matrix.h>
-#include <aips/Arrays/ArrayLogical.h>
-#include <aips/Arrays/ArrayMath.h>
-#include <aips/BasicMath/Math.h>
-#include <trial/Coordinates/GaussianConvert.h>
-#include <trial/Coordinates/CoordinateUtil.h>
-#include <trial/Coordinates/CoordinateSystem.h>
-#include <aips/Exceptions/Error.h>
-#include <aips/Quanta/Quantum.h>
-#include <aips/Utilities/Assert.h>
+#include <casa/Arrays/Vector.h>
+#include <casa/Arrays/Matrix.h>
+#include <casa/Arrays/ArrayLogical.h>
+#include <casa/Arrays/ArrayMath.h>
+#include <casa/BasicMath/Math.h>
+#include <coordinates/Coordinates/GaussianConvert.h>
+#include <coordinates/Coordinates/CoordinateUtil.h>
+#include <coordinates/Coordinates/CoordinateSystem.h>
+#include <casa/Exceptions/Error.h>
+#include <casa/Quanta/Quantum.h>
+#include <casa/Utilities/Assert.h>
 
 
 
-#include <aips/iostream.h>
+#include <casa/iostream.h>
 
 void doit (Double majorPixels, Double minorPixels, const Quantum<Double>& pa1,
            const CoordinateSystem& cSys,

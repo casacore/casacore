@@ -28,8 +28,8 @@
 #if !defined (AIPS_SORTERROR_H)
 #define AIPS_SORTERROR_H
 
-#include <aips/aips.h>
-#include <aips/Exceptions/Error.h>
+#include <casa/aips.h>
+#include <casa/Exceptions/Error.h>
 
 
 // <summary> Generic Sort exception </summary>

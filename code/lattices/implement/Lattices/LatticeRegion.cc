@@ -27,11 +27,11 @@
 //# $Id$
 
 
-#include <trial/Lattices/LatticeRegion.h>
-#include <trial/Lattices/LCBox.h>
-#include <aips/Arrays/Array.h>
-#include <aips/Utilities/Assert.h>
-#include <aips/Exceptions/Error.h>
+#include <lattices/Lattices/LatticeRegion.h>
+#include <lattices/Lattices/LCBox.h>
+#include <casa/Arrays/Array.h>
+#include <casa/Utilities/Assert.h>
+#include <casa/Exceptions/Error.h>
 
 
 LatticeRegion::LatticeRegion()

@@ -31,7 +31,7 @@
 #define AIPS_LINEAR_SEARCH_H
 
 //# Includes
-#include <aips/aips.h>
+#include <casa/aips.h>
 
 // <summary>
 // Linear search a linear data structure.

@@ -30,12 +30,12 @@
 #define AIPS_MSPOLARZATIONINDEX_H
 
 //# includes
-#include <aips/aips.h>
-#include <aips/MeasurementSets/MSPolarization.h>
-#include <aips/MeasurementSets/MSPolColumns.h>
-#include <aips/Arrays/Vector.h>
-#include <aips/Arrays/Matrix.h>
-#include <aips/BasicSL/String.h>
+#include <casa/aips.h>
+#include <ms/MeasurementSets/MSPolarization.h>
+#include <ms/MeasurementSets/MSPolColumns.h>
+#include <casa/Arrays/Vector.h>
+#include <casa/Arrays/Matrix.h>
+#include <casa/BasicSL/String.h>
 
 //# forward declarations
 

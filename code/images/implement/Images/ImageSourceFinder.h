@@ -31,9 +31,9 @@
 
 
 //# Includes
-#include <aips/aips.h>
-#include <aips/Measures/Stokes.h>      
-#include <trial/ComponentModels/ComponentType.h>      
+#include <casa/aips.h>
+#include <measures/Measures/Stokes.h>      
+#include <components/ComponentModels/ComponentType.h>      
 
 //# Forward Declarations
 template <class T> class ImageInterface;

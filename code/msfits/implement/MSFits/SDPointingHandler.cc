@@ -26,23 +26,23 @@
 //# $Id$
 
 //# Includes
-#include <trial/MeasurementSets/SDPointingHandler.h>
+#include <ms/MeasurementSets/SDPointingHandler.h>
 
-#include <aips/MeasurementSets/MeasurementSet.h>
-#include <aips/MeasurementSets/MSPointingColumns.h>
-#include <aips/MeasurementSets/MSPointing.h>
-#include <aips/Containers/Record.h>
-#include <aips/Arrays/Vector.h>
-#include <aips/Tables/ArrayColumn.h>
-#include <aips/Utilities/Assert.h>
-#include <aips/Exceptions/Error.h>
-#include <aips/BasicSL/String.h>
-#include <aips/Measures/Stokes.h>
-#include <aips/BasicMath/Math.h>
-#include <aips/Measures/MeasRef.h>
-#include <aips/Measures/MeasFrame.h>
-#include <aips/Measures/MeasConvert.h>
-#include <aips/Arrays/ArrayLogical.h>
+#include <ms/MeasurementSets/MeasurementSet.h>
+#include <ms/MeasurementSets/MSPointingColumns.h>
+#include <ms/MeasurementSets/MSPointing.h>
+#include <casa/Containers/Record.h>
+#include <casa/Arrays/Vector.h>
+#include <tables/Tables/ArrayColumn.h>
+#include <casa/Utilities/Assert.h>
+#include <casa/Exceptions/Error.h>
+#include <casa/BasicSL/String.h>
+#include <measures/Measures/Stokes.h>
+#include <casa/BasicMath/Math.h>
+#include <measures/Measures/MeasRef.h>
+#include <measures/Measures/MeasFrame.h>
+#include <measures/Measures/MeasConvert.h>
+#include <casa/Arrays/ArrayLogical.h>
 
 SDPointingHandler::SDPointingHandler() 
     : msPointing_p(0), msPointingCols_p(0), time_p(0.0), antId_p(-1), directionRate_p(2),

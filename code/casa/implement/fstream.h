@@ -33,7 +33,7 @@
 // them (e.g. <cstring>)
 
 // Make sure any special macros are set
-#include <aips/aips.h>
+#include <casa/aips.h>
 #include <fstream>
 
 using std::fstream;

@@ -31,9 +31,9 @@
 
 
 //# Includes
-#include <aips/Lattices/Lattice.h>
-#include <aips/Lattices/TiledShape.h>
-#include <aips/Utilities/CountedPtr.h>
+#include <lattices/Lattices/Lattice.h>
+#include <lattices/Lattices/TiledShape.h>
+#include <casa/Utilities/CountedPtr.h>
 
 //# Forward Declarations
 class Table;

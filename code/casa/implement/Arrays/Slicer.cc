@@ -25,9 +25,9 @@
 //#
 //# $Id$
 
-#include <aips/Arrays/Slicer.h>
-#include <aips/Arrays/Slice.h>
-#include <aips/Arrays/ArrayError.h>
+#include <casa/Arrays/Slicer.h>
+#include <casa/Arrays/Slice.h>
+#include <casa/Arrays/ArrayError.h>
 
 Slicer::Slicer()
 : asEnd_p (endIsLength),

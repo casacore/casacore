@@ -25,14 +25,14 @@
 //#
 //# $Id$
 
-#include <aips/IO/AipsIO.h>
-#include <aips/IO/TypeIO.h>
-#include <aips/IO/CanonicalIO.h>
-#include <aips/IO/ByteIO.h>
-#include <aips/IO/RegularFileIO.h>
-#include <aips/OS/RegularFile.h>
-#include <aips/BasicSL/Complex.h>
-#include <aips/Utilities/Assert.h>
+#include <casa/IO/AipsIO.h>
+#include <casa/IO/TypeIO.h>
+#include <casa/IO/CanonicalIO.h>
+#include <casa/IO/ByteIO.h>
+#include <casa/IO/RegularFileIO.h>
+#include <casa/OS/RegularFile.h>
+#include <casa/BasicSL/Complex.h>
+#include <casa/Utilities/Assert.h>
 
 // This is the implementation of the AipsIO class.
 // Operator << and >> for the built-in data types are inline functions

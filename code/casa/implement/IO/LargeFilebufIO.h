@@ -30,9 +30,9 @@
 
 
 //# Includes
-#include <aips/aips.h>
-#include <aips/IO/ByteIO.h>
-#include <aips/BasicSL/String.h>
+#include <casa/aips.h>
+#include <casa/IO/ByteIO.h>
+#include <casa/BasicSL/String.h>
 
 
 // <summary> Class for buffered IO on a large file.</summary>

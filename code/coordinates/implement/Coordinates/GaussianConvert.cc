@@ -25,16 +25,16 @@
 //# $Id$
 //#
 
-#include <trial/Coordinates/GaussianConvert.h>
+#include <coordinates/Coordinates/GaussianConvert.h>
  
-#include <aips/Arrays/Vector.h>
-#include <trial/Coordinates/CoordinateSystem.h>
-#include <aips/Exceptions/Error.h>
-#include <aips/BasicMath/Math.h>
-#include <aips/BasicSL/Constants.h>
-#include <aips/Utilities/Assert.h>
+#include <casa/Arrays/Vector.h>
+#include <coordinates/Coordinates/CoordinateSystem.h>
+#include <casa/Exceptions/Error.h>
+#include <casa/BasicMath/Math.h>
+#include <casa/BasicSL/Constants.h>
+#include <casa/Utilities/Assert.h>
  
-#include <aips/iostream.h>
+#include <casa/iostream.h>
 
 GaussianConvert::GaussianConvert()
 : itsValid(False)

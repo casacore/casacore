@@ -29,9 +29,9 @@
 #define AIPS_WCCOMPOUND_H
 
 //# Includes
-#include <trial/Images/WCRegion.h>
-#include <aips/Containers/Block.h>
-#include <aips/Arrays/IPosition.h>
+#include <images/Images/WCRegion.h>
+#include <casa/Containers/Block.h>
+#include <casa/Arrays/IPosition.h>
 
 //# Forward Declarations
 class ImageRegion;

@@ -29,7 +29,7 @@
 #define AIPS_WCINTERSECTION_H
 
 //# Includes
-#include <trial/Images/WCCompound.h>
+#include <images/Images/WCCompound.h>
 
 
 // <summary>

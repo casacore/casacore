@@ -29,12 +29,12 @@
 #define AIPS_VELOCITYMACHINE_H
 
 //# Includes
-#include <aips/aips.h>
-#include <aips/Quanta/Unit.h>
-#include <aips/Quanta/Quantum.h>
-#include <aips/Measures/MCFrequency.h>
-#include <aips/Measures/MCDoppler.h>
-#include <aips/Measures/MeasConvert.h>
+#include <casa/aips.h>
+#include <casa/Quanta/Unit.h>
+#include <casa/Quanta/Quantum.h>
+#include <measures/Measures/MCFrequency.h>
+#include <measures/Measures/MCDoppler.h>
+#include <measures/Measures/MeasConvert.h>
 
 //# Forward Declarations
 class MeasFrame;

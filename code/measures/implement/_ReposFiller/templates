@@ -1,81 +1,81 @@
-1000 aips/Arrays/Array.cc 
-     = aips/Measures/MDirection.h 
+1000 casa/Arrays/Array.cc 
+     = measures/Measures/MDirection.h 
      template class Array<MDirection> 
      #ifdef AIPS_SUN_NATIVE 
        template class Array<MDirection>::ConstIteratorSTL 
      #endif 
-1010 aips/Arrays/Array.cc 
-     = aips/Measures/MFrequency.h 
+1010 casa/Arrays/Array.cc 
+     = measures/Measures/MFrequency.h 
      template class Array<MFrequency> 
      #ifdef AIPS_SUN_NATIVE 
        template class Array<MFrequency>::ConstIteratorSTL 
      #endif 
-1020 aips/Arrays/Array.cc 
-     = aips/Measures/MPosition.h 
+1020 casa/Arrays/Array.cc 
+     = measures/Measures/MPosition.h 
      template class Array<MPosition> 
      #ifdef AIPS_SUN_NATIVE 
        template class Array<MPosition>::ConstIteratorSTL 
      #endif 
-1030 aips/Arrays/Array.cc 
-     = aips/Measures/MeasureHolder.h 
+1030 casa/Arrays/Array.cc 
+     = measures/Measures/MeasureHolder.h 
      template class Array<MeasureHolder> 
      #ifdef AIPS_SUN_NATIVE 
        template class Array<MeasureHolder>::ConstIteratorSTL 
      #endif 
-1040 aips/Arrays/Array.cc 
-     = aips/Measures/Stokes.h 
+1040 casa/Arrays/Array.cc 
+     = measures/Measures/Stokes.h 
      template class Array<Stokes::StokesTypes> 
      #ifdef AIPS_SUN_NATIVE 
        template class Array<Stokes::StokesTypes>::ConstIteratorSTL 
      #endif 
-1000 aips/Arrays/ArrayLogical.cc aips/Arrays/Array.h 
-     = aips/Measures/Stokes.h 
+1000 casa/Arrays/ArrayLogical.cc casa/Arrays/Array.h 
+     = measures/Measures/Stokes.h 
      template Bool allEQ(Array<Stokes::StokesTypes> const &, Array<Stokes::StokesTypes> const &) 
      template Bool anyNE(Array<Stokes::StokesTypes> const &, Array<Stokes::StokesTypes> const &) 
-1000 aips/Arrays/MaskedArray.cc 
-     = aips/Measures/MDirection.h 
+1000 casa/Arrays/MaskedArray.cc 
+     = measures/Measures/MDirection.h 
      template class MaskedArray<MDirection> 
-1010 aips/Arrays/MaskedArray.cc 
-     = aips/Measures/MFrequency.h 
+1010 casa/Arrays/MaskedArray.cc 
+     = measures/Measures/MFrequency.h 
      template class MaskedArray<MFrequency> 
-1020 aips/Arrays/MaskedArray.cc 
-     = aips/Measures/MPosition.h 
+1020 casa/Arrays/MaskedArray.cc 
+     = measures/Measures/MPosition.h 
      template class MaskedArray<MPosition> 
-1030 aips/Arrays/MaskedArray.cc 
-     = aips/Measures/MeasureHolder.h 
+1030 casa/Arrays/MaskedArray.cc 
+     = measures/Measures/MeasureHolder.h 
      template class MaskedArray<MeasureHolder> 
-1040 aips/Arrays/MaskedArray.cc 
-     = aips/Measures/Stokes.h 
+1040 casa/Arrays/MaskedArray.cc 
+     = measures/Measures/Stokes.h 
      template class MaskedArray<Stokes::StokesTypes> 
-1000 aips/Arrays/Vector.cc 
-     = aips/Measures/MeasureHolder.h 
+1000 casa/Arrays/Vector.cc 
+     = measures/Measures/MeasureHolder.h 
      template class Vector<MeasureHolder> 
-1010 aips/Arrays/Vector.cc 
-     = aips/Measures/Stokes.h 
+1010 casa/Arrays/Vector.cc 
+     = measures/Measures/Stokes.h 
      template class Vector<Stokes::StokesTypes> 
-1020 aips/Arrays/Vector.cc aips/Measures/MDirection.h 
+1020 casa/Arrays/Vector.cc measures/Measures/MDirection.h 
      template class Vector<MDirection> 
-1030 aips/Arrays/Vector.cc aips/Measures/MFrequency.h 
+1030 casa/Arrays/Vector.cc measures/Measures/MFrequency.h 
      template class Vector<MFrequency> 
-1040 aips/Arrays/Vector.cc aips/Measures/MPosition.h 
+1040 casa/Arrays/Vector.cc measures/Measures/MPosition.h 
      template class Vector<MPosition> 
-1000 aips/Containers/Block.h 
-     = aips/Measures/MeasureHolder.h 
+1000 casa/Containers/Block.h 
+     = measures/Measures/MeasureHolder.h 
      template class Block<MeasureHolder> 
-1010 aips/Containers/Block.h aips/Measures/MDirection.h 
+1010 casa/Containers/Block.h measures/Measures/MDirection.h 
      template class Block<MDirection> 
-1020 aips/Containers/Block.h aips/Measures/MFrequency.h 
+1020 casa/Containers/Block.h measures/Measures/MFrequency.h 
      template class Block<MFrequency> 
-1030 aips/Containers/Block.h aips/Measures/MPosition.h 
+1030 casa/Containers/Block.h measures/Measures/MPosition.h 
      template class Block<MPosition> 
-1000 aips/Measures/MEpoch.h 
-     = aips/Arrays/Array.cc 
-     = aips/Arrays/MaskedArray.cc 
-     = aips/Arrays/Vector.cc 
-     = aips/Containers/Block.h 
-     = aips/Utilities/Copy.cc 
-     = aips/Utilities/CountedPtr.cc 
-     = aips/Utilities/ValTypeId.h 
+1000 measures/Measures/MEpoch.h 
+     = casa/Arrays/Array.cc 
+     = casa/Arrays/MaskedArray.cc 
+     = casa/Arrays/Vector.cc 
+     = casa/Containers/Block.h 
+     = casa/Utilities/Copy.cc 
+     = casa/Utilities/CountedPtr.cc 
+     = casa/Utilities/ValTypeId.h 
      template class CountedPtr<Block<MEpoch> > 
      template class CountedConstPtr<Block<MEpoch> > 
      template class PtrRep<Block<MEpoch> > 
@@ -90,14 +90,14 @@
      template void objset(MEpoch *, MEpoch, uInt) 
      template void objset(MEpoch *, MEpoch, uInt, uInt) 
      template void objmove(MEpoch *, MEpoch const *, uInt) 
-1000 aips/Measures/MRadialVelocity.h 
-     = aips/Arrays/Array.cc 
-     = aips/Arrays/MaskedArray.cc 
-     = aips/Arrays/Vector.cc 
-     = aips/Containers/Block.h 
-     = aips/Utilities/Copy.cc 
-     = aips/Utilities/CountedPtr.cc 
-     = aips/Utilities/ValTypeId.h 
+1000 measures/Measures/MRadialVelocity.h 
+     = casa/Arrays/Array.cc 
+     = casa/Arrays/MaskedArray.cc 
+     = casa/Arrays/Vector.cc 
+     = casa/Containers/Block.h 
+     = casa/Utilities/Copy.cc 
+     = casa/Utilities/CountedPtr.cc 
+     = casa/Utilities/ValTypeId.h 
      template class CountedPtr<Block<MRadialVelocity> > 
      template class CountedConstPtr<Block<MRadialVelocity> > 
      template class PtrRep<Block<MRadialVelocity> > 
@@ -112,86 +112,86 @@
      template void objset(MRadialVelocity *, MRadialVelocity, uInt) 
      template void objset(MRadialVelocity *, MRadialVelocity, uInt, uInt) 
      template void objmove(MRadialVelocity *, MRadialVelocity const *, uInt) 
-1000 aips/Measures/MeasBase.cc aips/Quanta/MVBaseline.h 
-     = aips/Measures/MBaseline.h aips/Measures/MeasRef.h 
+1000 measures/Measures/MeasBase.cc casa/Quanta/MVBaseline.h 
+     = measures/Measures/MBaseline.h measures/Measures/MeasRef.h 
      template class MeasBase<MVBaseline, MeasRef<MBaseline> > 
-1010 aips/Measures/MeasBase.cc aips/Quanta/MVDirection.h 
-     = aips/Measures/MDirection.h aips/Measures/MeasRef.h 
+1010 measures/Measures/MeasBase.cc casa/Quanta/MVDirection.h 
+     = measures/Measures/MDirection.h measures/Measures/MeasRef.h 
      template class MeasBase<MVDirection, MeasRef<MDirection> > 
-1020 aips/Measures/MeasBase.cc aips/Quanta/MVDoppler.h 
-     = aips/Measures/MDoppler.h aips/Measures/MeasRef.h 
+1020 measures/Measures/MeasBase.cc casa/Quanta/MVDoppler.h 
+     = measures/Measures/MDoppler.h measures/Measures/MeasRef.h 
      template class MeasBase<MVDoppler, MeasRef<MDoppler> > 
-1030 aips/Measures/MeasBase.cc aips/Quanta/MVEarthMagnetic.h 
-     = aips/Measures/MEarthMagnetic.h aips/Measures/MeasRef.h 
+1030 measures/Measures/MeasBase.cc casa/Quanta/MVEarthMagnetic.h 
+     = measures/Measures/MEarthMagnetic.h measures/Measures/MeasRef.h 
      template class MeasBase<MVEarthMagnetic, MeasRef<MEarthMagnetic> > 
-1040 aips/Measures/MeasBase.cc aips/Quanta/MVEpoch.h 
-     = aips/Measures/MEpoch.h aips/Measures/MeasRef.h 
+1040 measures/Measures/MeasBase.cc casa/Quanta/MVEpoch.h 
+     = measures/Measures/MEpoch.h measures/Measures/MeasRef.h 
      template class MeasBase<MVEpoch, MeasRef<MEpoch> > 
-1050 aips/Measures/MeasBase.cc aips/Quanta/MVFrequency.h 
-     = aips/Measures/MFrequency.h aips/Measures/MeasRef.h 
+1050 measures/Measures/MeasBase.cc casa/Quanta/MVFrequency.h 
+     = measures/Measures/MFrequency.h measures/Measures/MeasRef.h 
      template class MeasBase<MVFrequency, MeasRef<MFrequency> > 
-1060 aips/Measures/MeasBase.cc aips/Quanta/MVPosition.h 
-     = aips/Measures/MPosition.h aips/Measures/MeasRef.h 
+1060 measures/Measures/MeasBase.cc casa/Quanta/MVPosition.h 
+     = measures/Measures/MPosition.h measures/Measures/MeasRef.h 
      template class MeasBase<MVPosition, MeasRef<MPosition> > 
-1070 aips/Measures/MeasBase.cc aips/Quanta/MVRadialVelocity.h 
-     = aips/Measures/MRadialVelocity.h aips/Measures/MeasRef.h 
+1070 measures/Measures/MeasBase.cc casa/Quanta/MVRadialVelocity.h 
+     = measures/Measures/MRadialVelocity.h measures/Measures/MeasRef.h 
      template class MeasBase<MVRadialVelocity, MeasRef<MRadialVelocity> > 
-1080 aips/Measures/MeasBase.cc aips/Quanta/MVuvw.h 
-     = aips/Measures/Muvw.h aips/Measures/MeasRef.h 
+1080 measures/Measures/MeasBase.cc casa/Quanta/MVuvw.h 
+     = measures/Measures/Muvw.h measures/Measures/MeasRef.h 
      template class MeasBase<MVuvw, MeasRef<Muvw> > 
-1000 aips/Measures/MeasConvert.cc aips/Measures/MBaseline.h 
-     = aips/Quanta/MVBaseline.h aips/Measures/MCBaseline.h 
+1000 measures/Measures/MeasConvert.cc measures/Measures/MBaseline.h 
+     = casa/Quanta/MVBaseline.h measures/Measures/MCBaseline.h 
      template class MeasConvert<MBaseline> 
-1010 aips/Measures/MeasConvert.cc aips/Measures/MDirection.h 
-     = aips/Quanta/MVDirection.h aips/Measures/MCDirection.h 
+1010 measures/Measures/MeasConvert.cc measures/Measures/MDirection.h 
+     = casa/Quanta/MVDirection.h measures/Measures/MCDirection.h 
      template class MeasConvert<MDirection> 
-1020 aips/Measures/MeasConvert.cc aips/Measures/MDoppler.h 
-     = aips/Quanta/MVDoppler.h aips/Measures/MCDoppler.h 
+1020 measures/Measures/MeasConvert.cc measures/Measures/MDoppler.h 
+     = casa/Quanta/MVDoppler.h measures/Measures/MCDoppler.h 
      template class MeasConvert<MDoppler> 
-1030 aips/Measures/MeasConvert.cc aips/Measures/MEarthMagnetic.h 
-     = aips/Quanta/MVEarthMagnetic.h aips/Measures/MCEarthMagnetic.h 
+1030 measures/Measures/MeasConvert.cc measures/Measures/MEarthMagnetic.h 
+     = casa/Quanta/MVEarthMagnetic.h measures/Measures/MCEarthMagnetic.h 
      template class MeasConvert<MEarthMagnetic> 
-1040 aips/Measures/MeasConvert.cc aips/Measures/MEpoch.h 
-     = aips/Quanta/MVEpoch.h aips/Measures/MCEpoch.h 
+1040 measures/Measures/MeasConvert.cc measures/Measures/MEpoch.h 
+     = casa/Quanta/MVEpoch.h measures/Measures/MCEpoch.h 
      template class MeasConvert<MEpoch> 
-1050 aips/Measures/MeasConvert.cc aips/Measures/MFrequency.h 
-     = aips/Quanta/MVFrequency.h aips/Measures/MCFrequency.h 
+1050 measures/Measures/MeasConvert.cc measures/Measures/MFrequency.h 
+     = casa/Quanta/MVFrequency.h measures/Measures/MCFrequency.h 
      template class MeasConvert<MFrequency> 
-1060 aips/Measures/MeasConvert.cc aips/Measures/MPosition.h 
-     = aips/Quanta/MVPosition.h aips/Measures/MCPosition.h 
+1060 measures/Measures/MeasConvert.cc measures/Measures/MPosition.h 
+     = casa/Quanta/MVPosition.h measures/Measures/MCPosition.h 
      template class MeasConvert<MPosition> 
-1070 aips/Measures/MeasConvert.cc aips/Measures/MRadialVelocity.h 
-     = aips/Quanta/MVRadialVelocity.h aips/Measures/MCRadialVelocity.h 
+1070 measures/Measures/MeasConvert.cc measures/Measures/MRadialVelocity.h 
+     = casa/Quanta/MVRadialVelocity.h measures/Measures/MCRadialVelocity.h 
      template class MeasConvert<MRadialVelocity> 
-1080 aips/Measures/MeasConvert.cc aips/Measures/Muvw.h 
-     = aips/Quanta/MVuvw.h aips/Measures/MCuvw.h 
+1080 measures/Measures/MeasConvert.cc measures/Measures/Muvw.h 
+     = casa/Quanta/MVuvw.h measures/Measures/MCuvw.h 
      template class MeasConvert<Muvw> 
-1000 aips/Measures/MeasRef.cc aips/Measures/MBaseline.h 
+1000 measures/Measures/MeasRef.cc measures/Measures/MBaseline.h 
      template class MeasRef<MBaseline> 
-1010 aips/Measures/MeasRef.cc aips/Measures/MDirection.h 
+1010 measures/Measures/MeasRef.cc measures/Measures/MDirection.h 
      template class MeasRef<MDirection> 
-1020 aips/Measures/MeasRef.cc aips/Measures/MDoppler.h 
+1020 measures/Measures/MeasRef.cc measures/Measures/MDoppler.h 
      template class MeasRef<MDoppler> 
-1030 aips/Measures/MeasRef.cc aips/Measures/MEarthMagnetic.h 
+1030 measures/Measures/MeasRef.cc measures/Measures/MEarthMagnetic.h 
      template class MeasRef<MEarthMagnetic> 
-1040 aips/Measures/MeasRef.cc aips/Measures/MEpoch.h 
+1040 measures/Measures/MeasRef.cc measures/Measures/MEpoch.h 
      template class MeasRef<MEpoch> 
-1050 aips/Measures/MeasRef.cc aips/Measures/MFrequency.h 
+1050 measures/Measures/MeasRef.cc measures/Measures/MFrequency.h 
      template class MeasRef<MFrequency> 
-1060 aips/Measures/MeasRef.cc aips/Measures/MPosition.h 
+1060 measures/Measures/MeasRef.cc measures/Measures/MPosition.h 
      template class MeasRef<MPosition> 
-1070 aips/Measures/MeasRef.cc aips/Measures/MRadialVelocity.h 
+1070 measures/Measures/MeasRef.cc measures/Measures/MRadialVelocity.h 
      template class MeasRef<MRadialVelocity> 
-1080 aips/Measures/MeasRef.cc aips/Measures/Muvw.h 
+1080 measures/Measures/MeasRef.cc measures/Measures/Muvw.h 
      template class MeasRef<Muvw> 
-1000 aips/Measures/Muvw.h 
-     = aips/Arrays/Array.cc 
-     = aips/Arrays/MaskedArray.cc 
-     = aips/Arrays/Vector.cc 
-     = aips/Containers/Block.h 
-     = aips/Utilities/Copy.cc 
-     = aips/Utilities/CountedPtr.cc 
-     = aips/Utilities/ValTypeId.h 
+1000 measures/Measures/Muvw.h 
+     = casa/Arrays/Array.cc 
+     = casa/Arrays/MaskedArray.cc 
+     = casa/Arrays/Vector.cc 
+     = casa/Containers/Block.h 
+     = casa/Utilities/Copy.cc 
+     = casa/Utilities/CountedPtr.cc 
+     = casa/Utilities/ValTypeId.h 
      template class CountedPtr<Block<Muvw> > 
      template class CountedConstPtr<Block<Muvw> > 
      template class PtrRep<Block<Muvw> > 
@@ -206,13 +206,13 @@
      template void objset(Muvw *, Muvw, uInt) 
      template void objset(Muvw *, Muvw, uInt, uInt) 
      template void objmove(Muvw *, Muvw const *, uInt) 
-1000 aips/TableMeasures/ArrayMeasColumn.cc 
-     = aips/Measures/MDirection.h 
-     = aips/Measures/MEpoch.h 
-     = aips/Measures/MFrequency.h 
-     = aips/Measures/MPosition.h 
-     = aips/Measures/Muvw.h 
-     = aips/Measures/MRadialVelocity.h 
+1000 measures/TableMeasures/ArrayMeasColumn.cc 
+     = measures/Measures/MDirection.h 
+     = measures/Measures/MEpoch.h 
+     = measures/Measures/MFrequency.h 
+     = measures/Measures/MPosition.h 
+     = measures/Measures/Muvw.h 
+     = measures/Measures/MRadialVelocity.h 
      template class ROArrayMeasColumn<MDirection> 
      template class ArrayMeasColumn<MDirection> 
      template class ROArrayMeasColumn<MEpoch> 
@@ -225,19 +225,19 @@
      template class ArrayMeasColumn<Muvw> 
      template class ROArrayMeasColumn<MRadialVelocity> 
      template class ArrayMeasColumn<MRadialVelocity> 
-1000 aips/TableMeasures/ArrayQuantColumn.cc 
+1000 measures/TableMeasures/ArrayQuantColumn.cc 
      template class ROArrayQuantColumn<Double> 
      template class ArrayQuantColumn<Double> 
      template class ROArrayQuantColumn<Float> 
      template class ArrayQuantColumn<Float> 
-1000 aips/TableMeasures/ScalarMeasColumn.cc 
-     = aips/Measures/MDirection.h 
-     = aips/Measures/MDoppler.h 
-     = aips/Measures/MEpoch.h 
-     = aips/Measures/MFrequency.h 
-     = aips/Measures/MPosition.h 
-     = aips/Measures/MRadialVelocity.h 
-     = aips/Measures/Muvw.h 
+1000 measures/TableMeasures/ScalarMeasColumn.cc 
+     = measures/Measures/MDirection.h 
+     = measures/Measures/MDoppler.h 
+     = measures/Measures/MEpoch.h 
+     = measures/Measures/MFrequency.h 
+     = measures/Measures/MPosition.h 
+     = measures/Measures/MRadialVelocity.h 
+     = measures/Measures/Muvw.h 
      template class ROScalarMeasColumn<MDirection> 
      template class ScalarMeasColumn<MDirection> 
      template class ROScalarMeasColumn<MDoppler> 
@@ -252,21 +252,21 @@
      template class ScalarMeasColumn<MRadialVelocity> 
      template class ROScalarMeasColumn<Muvw> 
      template class ScalarMeasColumn<Muvw> 
-1000 aips/TableMeasures/ScalarQuantColumn.cc 
+1000 measures/TableMeasures/ScalarQuantColumn.cc 
      template class ROScalarQuantColumn<Double> 
      template class ROScalarQuantColumn<Float> 
      template class ScalarQuantColumn<Double> 
      template class ScalarQuantColumn<Float> 
-1000 aips/TableMeasures/TableMeasDesc.cc 
-     = aips/Measures/MBaseline.h 
-     = aips/Measures/MDirection.h 
-     = aips/Measures/MDoppler.h 
-     = aips/Measures/MEarthMagnetic.h 
-     = aips/Measures/MEpoch.h 
-     = aips/Measures/MFrequency.h 
-     = aips/Measures/MPosition.h 
-     = aips/Measures/MRadialVelocity.h 
-     = aips/Measures/Muvw.h 
+1000 measures/TableMeasures/TableMeasDesc.cc 
+     = measures/Measures/MBaseline.h 
+     = measures/Measures/MDirection.h 
+     = measures/Measures/MDoppler.h 
+     = measures/Measures/MEarthMagnetic.h 
+     = measures/Measures/MEpoch.h 
+     = measures/Measures/MFrequency.h 
+     = measures/Measures/MPosition.h 
+     = measures/Measures/MRadialVelocity.h 
+     = measures/Measures/Muvw.h 
      template class TableMeasDesc<MBaseline> 
      template class TableMeasDesc<MDirection> 
      template class TableMeasDesc<MDoppler> 
@@ -276,81 +276,81 @@
      template class TableMeasDesc<MPosition> 
      template class TableMeasDesc<MRadialVelocity> 
      template class TableMeasDesc<Muvw> 
-1000 aips/Utilities/Copy.cc 
-     = aips/Measures/MDirection.h 
+1000 casa/Utilities/Copy.cc 
+     = measures/Measures/MDirection.h 
      template void objcopy(MDirection *, MDirection const *, uInt) 
      template void objcopy(MDirection *, MDirection const *, uInt, uInt, uInt) 
      template void objset(MDirection *, MDirection, uInt) 
      template void objset(MDirection *, MDirection, uInt, uInt) 
      template void objmove(MDirection *, MDirection const *, uInt) 
-1010 aips/Utilities/Copy.cc 
-     = aips/Measures/MFrequency.h 
+1010 casa/Utilities/Copy.cc 
+     = measures/Measures/MFrequency.h 
      template void objcopy(MFrequency *, MFrequency const *, uInt) 
      template void objcopy(MFrequency *, MFrequency const *, uInt, uInt, uInt) 
      template void objset(MFrequency *, MFrequency, uInt) 
      template void objset(MFrequency *, MFrequency, uInt, uInt) 
      template void objmove(MFrequency *, MFrequency const *, uInt) 
-1020 aips/Utilities/Copy.cc 
-     = aips/Measures/MFrequency.h 
+1020 casa/Utilities/Copy.cc 
+     = measures/Measures/MFrequency.h 
      template void objcopy(MFrequency::Types *, MFrequency::Types const *, uInt) 
-1030 aips/Utilities/Copy.cc 
-     = aips/Measures/MPosition.h 
+1030 casa/Utilities/Copy.cc 
+     = measures/Measures/MPosition.h 
      template void objcopy(MPosition *, MPosition const *, uInt) 
      template void objcopy(MPosition *, MPosition const *, uInt, uInt, uInt) 
      template void objset(MPosition *, MPosition, uInt) 
      template void objset(MPosition *, MPosition, uInt, uInt) 
      template void objmove(MPosition *, MPosition const *, uInt) 
-1040 aips/Utilities/Copy.cc 
-     = aips/Measures/MeasureHolder.h 
+1040 casa/Utilities/Copy.cc 
+     = measures/Measures/MeasureHolder.h 
      template void objcopy(MeasureHolder *, MeasureHolder const *, uInt) 
      template void objcopy(MeasureHolder *, MeasureHolder const *, uInt, uInt, uInt) 
      template void objmove(MeasureHolder *, MeasureHolder const *, uInt) 
      template void objset(MeasureHolder *, MeasureHolder, uInt) 
      template void objset(MeasureHolder *, MeasureHolder, uInt, uInt) 
-1050 aips/Utilities/Copy.cc 
-     = aips/Measures/Stokes.h 
+1050 casa/Utilities/Copy.cc 
+     = measures/Measures/Stokes.h 
      template void objcopy(Stokes::StokesTypes *, Stokes::StokesTypes const *, uInt) 
      template void objcopy(Stokes::StokesTypes *, Stokes::StokesTypes const *, uInt, uInt, uInt) 
      template void objset(Stokes::StokesTypes *, Stokes::StokesTypes, uInt) 
      template void objset(Stokes::StokesTypes *, Stokes::StokesTypes, uInt, uInt) 
-1000 aips/Utilities/CountedPtr.cc 
-     = aips/Containers/Block.h 
-     = aips/Measures/MeasureHolder.h 
+1000 casa/Utilities/CountedPtr.cc 
+     = casa/Containers/Block.h 
+     = measures/Measures/MeasureHolder.h 
      template class CountedConstPtr<Block<MeasureHolder> > 
      template class CountedPtr<Block<MeasureHolder> > 
      template class PtrRep<Block<MeasureHolder> > 
      template class SimpleCountedConstPtr<Block<MeasureHolder> > 
      template class SimpleCountedPtr<Block<MeasureHolder> > 
-1010 aips/Utilities/CountedPtr.cc 
-     = aips/Containers/Block.h 
-     = aips/Measures/Stokes.h 
+1010 casa/Utilities/CountedPtr.cc 
+     = casa/Containers/Block.h 
+     = measures/Measures/Stokes.h 
      template class CountedPtr<Block<Stokes::StokesTypes> > 
      template class CountedConstPtr<Block<Stokes::StokesTypes> > 
      template class SimpleCountedPtr<Block<Stokes::StokesTypes> > 
      template class SimpleCountedConstPtr<Block<Stokes::StokesTypes> > 
      template class PtrRep<Block<Stokes::StokesTypes> > 
-1020 aips/Utilities/CountedPtr.cc aips/Containers/Block.h 
-     = aips/Measures/MDirection.h 
+1020 casa/Utilities/CountedPtr.cc casa/Containers/Block.h 
+     = measures/Measures/MDirection.h 
      template class CountedConstPtr<Block<MDirection> > 
      template class CountedPtr<Block<MDirection> > 
      template class PtrRep<Block<MDirection> > 
      template class SimpleCountedConstPtr<Block<MDirection> > 
      template class SimpleCountedPtr<Block<MDirection> > 
-1030 aips/Utilities/CountedPtr.cc aips/Containers/Block.h 
-     = aips/Measures/MFrequency.h 
+1030 casa/Utilities/CountedPtr.cc casa/Containers/Block.h 
+     = measures/Measures/MFrequency.h 
      template class CountedConstPtr<Block<MFrequency> > 
      template class CountedPtr<Block<MFrequency> > 
      template class PtrRep<Block<MFrequency> > 
      template class SimpleCountedConstPtr<Block<MFrequency> > 
      template class SimpleCountedPtr<Block<MFrequency> > 
-1040 aips/Utilities/CountedPtr.cc aips/Containers/Block.h 
-     = aips/Measures/MPosition.h 
+1040 casa/Utilities/CountedPtr.cc casa/Containers/Block.h 
+     = measures/Measures/MPosition.h 
      template class CountedConstPtr<Block<MPosition> > 
      template class CountedPtr<Block<MPosition> > 
      template class PtrRep<Block<MPosition> > 
      template class SimpleCountedConstPtr<Block<MPosition> > 
      template class SimpleCountedPtr<Block<MPosition> > 
-1050 aips/Utilities/CountedPtr.cc aips/TableMeasures/TableMeasDescBase.h 
+1050 casa/Utilities/CountedPtr.cc measures/TableMeasures/TableMeasDescBase.h 
      template class CountedPtr<TableMeasDescBase> 
      template class CountedConstPtr<TableMeasDescBase> 
      template class PtrRep<TableMeasDescBase> 
@@ -359,26 +359,26 @@
      # This seems to be the only way at present to find out if we are using egcs.
      # This test might break eventually.
      # This comment is needed to get the #endif in the .cc file!
-1000 aips/Utilities/PtrHolder.cc 
-     = aips/Measures/Measure.h 
+1000 casa/Utilities/PtrHolder.cc 
+     = measures/Measures/Measure.h 
      template class PtrHolder<Measure> 
-1000 aips/Utilities/Register.cc aips/Measures/MBaseline.h 
+1000 casa/Utilities/Register.cc measures/Measures/MBaseline.h 
      template uInt Register(MBaseline const *) 
-1010 aips/Utilities/Register.cc aips/Measures/MDirection.h 
+1010 casa/Utilities/Register.cc measures/Measures/MDirection.h 
      template uInt Register(MDirection const *) 
-1020 aips/Utilities/Register.cc aips/Measures/MDoppler.h 
+1020 casa/Utilities/Register.cc measures/Measures/MDoppler.h 
      template uInt Register(MDoppler const *) 
-1030 aips/Utilities/Register.cc aips/Measures/MEarthMagnetic.h 
+1030 casa/Utilities/Register.cc measures/Measures/MEarthMagnetic.h 
      template uInt Register(MEarthMagnetic const *) 
-1040 aips/Utilities/Register.cc aips/Measures/MEpoch.h 
+1040 casa/Utilities/Register.cc measures/Measures/MEpoch.h 
      template uInt Register(MEpoch const *) 
-1050 aips/Utilities/Register.cc aips/Measures/MFrequency.h 
+1050 casa/Utilities/Register.cc measures/Measures/MFrequency.h 
      template uInt Register(MFrequency const *) 
-1060 aips/Utilities/Register.cc aips/Measures/MPosition.h 
+1060 casa/Utilities/Register.cc measures/Measures/MPosition.h 
      template uInt Register(MPosition const *) 
-1070 aips/Utilities/Register.cc aips/Measures/MRadialVelocity.h 
+1070 casa/Utilities/Register.cc measures/Measures/MRadialVelocity.h 
      template uInt Register(MRadialVelocity const *) 
-1080 aips/Utilities/Register.cc aips/Measures/Muvw.h 
-     = aips/Quanta/MVuvw.h 
+1080 casa/Utilities/Register.cc measures/Measures/Muvw.h 
+     = casa/Quanta/MVuvw.h 
      template uInt Register(Muvw const *) 
      template uInt Register(MVuvw const *) 

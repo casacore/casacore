@@ -29,8 +29,8 @@
 #define AIPS_PAGEDARRITER_H
 
 //# Includes
-#include <aips/Lattices/LatticeIterInterface.h>
-#include <aips/Lattices/PagedArray.h>
+#include <lattices/Lattices/LatticeIterInterface.h>
+#include <lattices/Lattices/PagedArray.h>
 
 
 // <summary>

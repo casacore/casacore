@@ -30,7 +30,7 @@
 #define AIPS_MEASURE_H
 
 //# Includes
-#include <aips/aips.h>
+#include <casa/aips.h>
 
 //# Forward Declarations
 class String;
@@ -39,7 +39,7 @@ class MeasValue;
 class MRBase;
 template <class T> class Quantum;
 template <class T> class Vector;
-#include <aips/iosfwd.h>
+#include <casa/iosfwd.h>
 
 // <summary>
 // Physical quantities within reference frame
@@ -176,7 +176,7 @@ template <class T> class Vector;
 //
 // <example>
 // <srcblock>
-// #include <aips/Measures.h>
+// #include <measures/Measures.h>
 // #include <aips/Measure/MEpoch.h>
 // // Example is only to show what can be done, not the easiest way
 // // Set up a simple reference (no offset or secondary Measures). It

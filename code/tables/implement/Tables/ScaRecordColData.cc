@@ -25,20 +25,20 @@
 //#
 //# $Id$
 
-#include <aips/Tables/ScaRecordColData.h>
-#include <aips/Tables/ScaRecordColDesc.h>
-#include <aips/Tables/ColumnSet.h>
-#include <aips/Tables/ColumnDesc.h>
-#include <aips/Tables/RefRows.h>
-#include <aips/Tables/Table.h>
-#include <aips/Tables/TableRecord.h>
-#include <aips/Tables/TableAttr.h>
-#include <aips/Arrays/Vector.h>
-#include <aips/Tables/DataManager.h>
-#include <aips/Tables/TableError.h>
-#include <aips/IO/AipsIO.h>
-#include <aips/IO/MemoryIO.h>
-#include <aips/Utilities/Assert.h>
+#include <tables/Tables/ScaRecordColData.h>
+#include <tables/Tables/ScaRecordColDesc.h>
+#include <tables/Tables/ColumnSet.h>
+#include <tables/Tables/ColumnDesc.h>
+#include <tables/Tables/RefRows.h>
+#include <tables/Tables/Table.h>
+#include <tables/Tables/TableRecord.h>
+#include <tables/Tables/TableAttr.h>
+#include <casa/Arrays/Vector.h>
+#include <tables/Tables/DataManager.h>
+#include <tables/Tables/TableError.h>
+#include <casa/IO/AipsIO.h>
+#include <casa/IO/MemoryIO.h>
+#include <casa/Utilities/Assert.h>
 
 
 ScalarRecordColumnData::ScalarRecordColumnData

@@ -30,11 +30,11 @@
 
 
 //# Includes
-#include <aips/aips.h>
-#include <aips/Tables/BaseColDesc.h>
-#include <aips/Containers/SimOrdMap.h>
-#include <aips/BasicSL/String.h>
-#include <aips/Arrays/IPosition.h>
+#include <casa/aips.h>
+#include <tables/Tables/BaseColDesc.h>
+#include <casa/Containers/SimOrdMap.h>
+#include <casa/BasicSL/String.h>
+#include <casa/Arrays/IPosition.h>
 
 //# Forward Declarations
 class PlainColumn;
@@ -42,7 +42,7 @@ class RefColumn;
 class TableRecord;
 class TableAttr;
 class AipsIO;
-#include <aips/iosfwd.h>
+#include <casa/iosfwd.h>
 
 
 // <summary>

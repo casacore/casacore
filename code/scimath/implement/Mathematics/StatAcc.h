@@ -29,14 +29,14 @@
 #if !defined(AIPS_STATACC_H)
 #define AIPS_STATACC_H
 
-#include <aips/aips.h>
-#include <aips/BasicMath/Math.h>
-#include <aips/Utilities/Fallible.h>
+#include <casa/aips.h>
+#include <casa/BasicMath/Math.h>
+#include <casa/Utilities/Fallible.h>
 
 // forward declarations:
 template <class T> class Array;
 template <class T> class Block;
-#include <aips/iosfwd.h>
+#include <casa/iosfwd.h>
 class String;
 
 // <reviewed reviewer="" date="" tests="tStatAcc" demos="">

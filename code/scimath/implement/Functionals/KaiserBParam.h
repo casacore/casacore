@@ -29,8 +29,8 @@
 #define AIPS_KAISERBPARAM_H
 
 //# Includes
-#include <aips/aips.h>
-#include <aips/Functionals/Function.h>
+#include <casa/aips.h>
+#include <scimath/Functionals/Function.h>
 
 //# Forward declarations
 

@@ -30,12 +30,12 @@
 #define AIPS_FUNCEXPRDATA_H
 
 //# Includes
-#include <aips/aips.h>
-#include <aips/BasicSL/String.h>
-#include <aips/stdmap.h>
+#include <casa/aips.h>
+#include <casa/BasicSL/String.h>
+#include <casa/stdmap.h>
 
 //# Forward Declarations
-#include <aips/iosfwd.h>
+#include <casa/iosfwd.h>
 
 // <summary> Data and enumerations for functional expressions
 // </summary>

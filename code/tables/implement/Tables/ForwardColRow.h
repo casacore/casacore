@@ -29,8 +29,8 @@
 #define AIPS_FORWARDCOLROW_H
 
 //# Includes
-#include <aips/Tables/ForwardCol.h>
-#include <aips/Tables/ScalarColumn.h>
+#include <tables/Tables/ForwardCol.h>
+#include <tables/Tables/ScalarColumn.h>
 
 //# Forward Declarations
 class ForwardColumnIndexedRowEngine;

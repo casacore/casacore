@@ -29,11 +29,11 @@
 #if !defined(TRIAL_VISSETUTIL_H)
 #define TRIAL_VISSETUTIL_H
 
-#include <aips/aips.h>
-#include <aips/BasicSL/Complex.h>
-#include <aips/Quanta/Quantum.h>
-#include <aips/MeasurementSets/MeasurementSet.h>
-#include <trial/MSVis/VisSet.h>
+#include <casa/aips.h>
+#include <casa/BasicSL/Complex.h>
+#include <casa/Quanta/Quantum.h>
+#include <ms/MeasurementSets/MeasurementSet.h>
+#include <msvis/MSVis/VisSet.h>
 
 // <summary> 
 // Utilities for operating on VisSets.

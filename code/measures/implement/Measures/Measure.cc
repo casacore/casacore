@@ -26,9 +26,9 @@
 //# $Id$
 
 //# Includes
-#include <aips/Measures/Measure.h>
-#include <aips/Utilities/MUString.h>
-#include <aips/iostream.h>
+#include <measures/Measures/Measure.h>
+#include <casa/Utilities/MUString.h>
+#include <casa/iostream.h>
 
 //# Constants
 

@@ -26,8 +26,8 @@
 //# $Id$
 
 
-#include <aips/aips.h>
-#include <aips/OS/Conversion.h>
+#include <casa/aips.h>
+#include <casa/OS/Conversion.h>
 
 
 unsigned int Conversion::boolToBit (void* to, const void* from,

@@ -29,20 +29,20 @@
 #define AIPS_EXPRNODEREP_H
 
 //# Includes
-#include <aips/aips.h>
-#include <aips/Tables/TableExprId.h>
-#include <aips/Tables/ExprRange.h>
-#include <aips/BasicSL/Complex.h>
-#include <aips/Quanta/MVTime.h>
-#include <aips/Utilities/DataType.h>
-#include <aips/Utilities/Regex.h>
+#include <casa/aips.h>
+#include <tables/Tables/TableExprId.h>
+#include <tables/Tables/ExprRange.h>
+#include <casa/BasicSL/Complex.h>
+#include <casa/Quanta/MVTime.h>
+#include <casa/Utilities/DataType.h>
+#include <casa/Utilities/Regex.h>
 
 //# Forward Declarations
 class TableExprNode;
 class BaseTable;
 class TableExprNodeColumn;
 template<class T> class Block;
-#include <aips/iosfwd.h>
+#include <casa/iosfwd.h>
 
 
 // <summary>

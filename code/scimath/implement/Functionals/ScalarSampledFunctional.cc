@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#include <aips/Functionals/ScalarSampledFunctional.h>
-#include <aips/Containers/Block.h>
+#include <scimath/Functionals/ScalarSampledFunctional.h>
+#include <casa/Containers/Block.h>
 
 template<class T> ScalarSampledFunctional<T>::
 ScalarSampledFunctional(){

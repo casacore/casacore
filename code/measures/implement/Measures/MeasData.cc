@@ -26,11 +26,11 @@
 //# $Id$
 
 //# Includes
-#include <aips/Quanta/RotMatrix.h>
-#include <aips/BasicSL/Constants.h>
-#include <aips/Measures/MeasData.h>
-#include <aips/Utilities/Assert.h>
-#include <aips/Exceptions/Error.h>
+#include <casa/Quanta/RotMatrix.h>
+#include <casa/BasicSL/Constants.h>
+#include <measures/Measures/MeasData.h>
+#include <casa/Utilities/Assert.h>
+#include <casa/Exceptions/Error.h>
 
 //# Constants
 const Double MeasData::MJD2000 =   51544.5;

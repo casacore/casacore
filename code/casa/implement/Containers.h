@@ -28,29 +28,29 @@
 #if !defined (AIPS_CONTAINERS_H)
 #define AIPS_CONTAINERS_H
 
-#include <aips/Containers/Block.h>
-#include <aips/Containers/Link.h>
-#include <aips/Containers/List.h>
-#include <aips/Containers/ListMap.h>
-#include <aips/Containers/Map.h>
-#include <aips/Containers/OrderedPair.h>
-#include <aips/Containers/Record.h>
-#include <aips/Containers/RecordField.h>
-#include <aips/Containers/SimOrdMap.h>
-#include <aips/Containers/OrderedMap.h>
-#include <aips/Containers/Queue.h>
-#include <aips/Containers/Stack.h>
+#include <casa/Containers/Block.h>
+#include <casa/Containers/Link.h>
+#include <casa/Containers/List.h>
+#include <casa/Containers/ListMap.h>
+#include <casa/Containers/Map.h>
+#include <casa/Containers/OrderedPair.h>
+#include <casa/Containers/Record.h>
+#include <casa/Containers/RecordField.h>
+#include <casa/Containers/SimOrdMap.h>
+#include <casa/Containers/OrderedMap.h>
+#include <casa/Containers/Queue.h>
+#include <casa/Containers/Stack.h>
 
-#include <aips/Containers/BlockIO.h>
-#include <aips/Containers/ListIO.h>
-#include <aips/Containers/ListMapIO.h>
-#include <aips/Containers/OrdPairIO.h>
-#include <aips/Containers/OrdMapIO.h>
-#include <aips/Containers/SimOrdMapIO.h>
-#include <aips/Containers/MapIO.h>
+#include <casa/Containers/BlockIO.h>
+#include <casa/Containers/ListIO.h>
+#include <casa/Containers/ListMapIO.h>
+#include <casa/Containers/OrdPairIO.h>
+#include <casa/Containers/OrdMapIO.h>
+#include <casa/Containers/SimOrdMapIO.h>
+#include <casa/Containers/MapIO.h>
 
-#include <aips/Containers/StackError.h>
-#include <aips/Containers/IterError.h>
+#include <casa/Containers/StackError.h>
+#include <casa/Containers/IterError.h>
 
 // <module>
 //

@@ -26,8 +26,8 @@
 //# $Id$
 
 
-#include <aips/OS/IBMConversion.h>
-#include <aips/Exceptions/Error.h>
+#include <casa/OS/IBMConversion.h>
+#include <casa/Exceptions/Error.h>
 #include <assert.h>
 
 

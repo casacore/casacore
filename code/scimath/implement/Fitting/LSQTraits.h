@@ -28,7 +28,7 @@
 #define AIPS_LSQTRAITS_H
 
 //# Includes
-#include <aips/aips.h>
+#include <casa/aips.h>
 #include <complex>
 
 //# Forward Declarations

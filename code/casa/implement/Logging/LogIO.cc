@@ -26,12 +26,12 @@
 //#
 //# $Id$
 
-#include <aips/Logging/LogIO.h>
-#include <aips/Logging/LogSink.h>
+#include <casa/Logging/LogIO.h>
+#include <casa/Logging/LogSink.h>
 
-#include <aips/Utilities/Assert.h>
+#include <casa/Utilities/Assert.h>
 
-#include <aips/sstream.h>
+#include <casa/sstream.h>
 
 LogIO::LogIO()
     : sink_p(), text_p(0)

@@ -29,9 +29,9 @@
 #define AIPS_LSQFIT_H
 
 //# Includes
-#include <aips/aips.h>
-#include <aips/Fitting/LSQMatrix.h>
-#include <aips/Fitting/LSQTraits.h>
+#include <casa/aips.h>
+#include <scimath/Fitting/LSQMatrix.h>
+#include <scimath/Fitting/LSQTraits.h>
 #include <complex>
 
 //# Forward Declarations
@@ -161,8 +161,8 @@
 // for a 3 unknown solution, and solve (note that the degenerate will be
 // set to 0. The last one will use SVD and one condition equation.r 
 // <srcblock>
-//   #include <aips/aips.h>
-//   #include <aips/Fitting/LSQ.h>
+//   #include <casa/aips.h>
+//   #include <scimath/Fitting/LSQ.h>
 //   #include <iostream>
 //   
 //   int main() {

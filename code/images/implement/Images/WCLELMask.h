@@ -30,11 +30,11 @@
 #define AIPS_WCLELMASK_H
 
 //# Includes
-#include <trial/Images/WCRegion.h>
-#include <trial/Lattices/RegionType.h>
-#include <trial/Coordinates/CoordinateSystem.h>
-#include <aips/Arrays/Vector.h>
-#include <aips/Quanta/Quantum.h>
+#include <images/Images/WCRegion.h>
+#include <lattices/Lattices/RegionType.h>
+#include <coordinates/Coordinates/CoordinateSystem.h>
+#include <casa/Arrays/Vector.h>
+#include <casa/Quanta/Quantum.h>
 
 //# Forward Declarations
 class LCRegion;

@@ -25,37 +25,37 @@
 //#
 //# $Id$
 //#
-#include <aips/aips.h>
-#include <aips/Arrays.h>
-#include <aips/Arrays/ArrayMath.h>
-#include <aips/Arrays/ArrayLogical.h>
-#include <aips/BasicSL/Constants.h>
-#include <aips/Arrays/IPosition.h>
-#include <aips/Arrays/IPosition.h>
-#include <aips/Containers/Record.h>
-#include <aips/Logging/LogIO.h>
-#include <aips/Quanta/Unit.h>
-#include <aips/Measures/MDirection.h>
-#include <aips/Quanta.h>
-#include <aips/Quanta/MVAngle.h>
-#include <aips/Quanta/MVTime.h>
-#include <aips/Measures/Stokes.h>
-#include <aips/Tables/TableRecord.h>
-#include <aips/Tables/RefRows.h>
-#include <aips/Utilities/GenSort.h>
-#include <trial/Coordinates.h>
-#include <aips/Tables/Table.h>
-#include <aips/Tables/TableIter.h>
-#include <aips/Tables/TableVector.h>
-#include <aips/MeasurementSets.h>
-#include <aips/MeasurementSets/MeasurementSet.h>
-#include <aips/MeasurementSets/MSColumns.h>
-#include <trial/MeasurementSets/MSSummary.h>
-#include <trial/MeasurementSets/MSRange.h>
-#include <trial/MeasurementSets/MSSelector.h>
+#include <casa/aips.h>
+#include <casa/Arrays.h>
+#include <casa/Arrays/ArrayMath.h>
+#include <casa/Arrays/ArrayLogical.h>
+#include <casa/BasicSL/Constants.h>
+#include <casa/Arrays/IPosition.h>
+#include <casa/Arrays/IPosition.h>
+#include <casa/Containers/Record.h>
+#include <casa/Logging/LogIO.h>
+#include <casa/Quanta/Unit.h>
+#include <measures/Measures/MDirection.h>
+#include <casa/Quanta.h>
+#include <casa/Quanta/MVAngle.h>
+#include <casa/Quanta/MVTime.h>
+#include <measures/Measures/Stokes.h>
+#include <tables/Tables/TableRecord.h>
+#include <tables/Tables/RefRows.h>
+#include <casa/Utilities/GenSort.h>
+#include <coordinates/Coordinates.h>
+#include <tables/Tables/Table.h>
+#include <tables/Tables/TableIter.h>
+#include <tables/Tables/TableVector.h>
+#include <ms/MeasurementSets.h>
+#include <ms/MeasurementSets/MeasurementSet.h>
+#include <ms/MeasurementSets/MSColumns.h>
+#include <ms/MeasurementSets/MSSummary.h>
+#include <ms/MeasurementSets/MSRange.h>
+#include <ms/MeasurementSets/MSSelector.h>
 
-#include <aips/iomanip.h>
-#include <aips/iostream.h>
+#include <casa/iomanip.h>
+#include <casa/iostream.h>
 
 
 //

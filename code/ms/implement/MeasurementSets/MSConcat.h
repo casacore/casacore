@@ -29,10 +29,10 @@
 #if !defined(AIPS_MSCONCAT_H)
 #define AIPS_MSCONCAT_H
 
-#include <aips/aips.h>
-#include <aips/MeasurementSets/MSColumns.h>
-#include <aips/MeasurementSets/MeasurementSet.h>
-#include <aips/Arrays/IPosition.h>
+#include <casa/aips.h>
+#include <ms/MeasurementSets/MSColumns.h>
+#include <ms/MeasurementSets/MeasurementSet.h>
+#include <casa/Arrays/IPosition.h>
 
 class TableDesc;
 class ROMSMainColumns;

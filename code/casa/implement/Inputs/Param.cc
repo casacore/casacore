@@ -29,9 +29,9 @@
 //          users typically do not use this class, it is merely
 //          a helper class for Input.
 
-#include <aips/Inputs/Param.h>
-#include <aips/Utilities/Regex.h>
-#include <aips/iostream.h>
+#include <casa/Inputs/Param.h>
+#include <casa/Utilities/Regex.h>
+#include <casa/iostream.h>
 
 
 Param::Param()			// default constructor; doesn't do anything

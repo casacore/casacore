@@ -29,10 +29,10 @@
 #if !defined(AIPS_SQUAREMATRIX_H)
 #define AIPS_SQUAREMATRIX_H
 
-#include <aips/aips.h>
-#include <aips/BasicSL/Complex.h>
-#include <aips/Arrays/Matrix.h>
-#include <aips/iosfwd.h>
+#include <casa/aips.h>
+#include <casa/BasicSL/Complex.h>
+#include <casa/Arrays/Matrix.h>
+#include <casa/iosfwd.h>
 
 //# forward declarations
 template <class T, Int n> class RigidVector;

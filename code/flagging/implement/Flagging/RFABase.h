@@ -27,12 +27,12 @@
 #if !defined(AIPS_RFA_BASE_H)
 #define AIPS_RFA_BASE_H
 
-#include <aips/Arrays/Cube.h> 
-#include <aips/Lattices/TempLattice.h> 
-#include <aips/Lattices/LatticeIterator.h> 
-#include <trial/Flagging/RFChunkStats.h>
-#include <aips/Logging/LogIO.h>
-#include <aips/Containers/Record.h>
+#include <casa/Arrays/Cube.h> 
+#include <lattices/Lattices/TempLattice.h> 
+#include <lattices/Lattices/LatticeIterator.h> 
+#include <flagging/Flagging/RFChunkStats.h>
+#include <casa/Logging/LogIO.h>
+#include <casa/Containers/Record.h>
 
 // <summary>
 // Abstract RedFlagger Agent base class

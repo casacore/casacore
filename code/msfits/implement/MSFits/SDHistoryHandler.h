@@ -29,7 +29,7 @@
 #if !defined(AIPS_SDHISTORYHANDLER_H)
 #define AIPS_SDHISTORYHANDLER_H
 
-#include <aips/Containers/RecordField.h>
+#include <casa/Containers/RecordField.h>
 
 //# Forward Declarations
 class MeasurementSet;

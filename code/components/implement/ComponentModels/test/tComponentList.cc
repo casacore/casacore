@@ -25,32 +25,32 @@
 //#
 //# $Id$
 
-#include <aips/aips.h>
-#include <trial/ComponentModels/ComponentList.h>
-#include <trial/ComponentModels/ComponentType.h>
-#include <trial/ComponentModels/SkyComponent.h>
-#include <trial/ComponentModels/ComponentShape.h>
-#include <trial/ComponentModels/SpectralModel.h>
-#include <trial/ComponentModels/Flux.h>
-// #include <trial/Coordinates/CoordinateUtil.h>
-// #include <trial/Coordinates/CoordinateSystem.h>
-// #include <trial/Coordinates/DirectionCoordinate.h>
+#include <casa/aips.h>
+#include <components/ComponentModels/ComponentList.h>
+#include <components/ComponentModels/ComponentType.h>
+#include <components/ComponentModels/SkyComponent.h>
+#include <components/ComponentModels/ComponentShape.h>
+#include <components/ComponentModels/SpectralModel.h>
+#include <components/ComponentModels/Flux.h>
+// #include <coordinates/Coordinates/CoordinateUtil.h>
+// #include <coordinates/Coordinates/CoordinateSystem.h>
+// #include <coordinates/Coordinates/DirectionCoordinate.h>
 // #include <trial/Images/PagedImage.h>
-#include <aips/Arrays/Vector.h>
-#include <aips/Arrays/Array.h>
-#include <aips/Arrays/ArrayLogical.h>
-#include <aips/Exceptions/Error.h>
-// #include <aips/Arrays/IPosition.h>
-#include <aips/BasicMath/Math.h>
-#include <aips/BasicSL/Constants.h>
-#include <aips/Quanta/Quantum.h>
-#include <aips/Measures/MDirection.h>
-#include <aips/Measures/MFrequency.h>
-#include <aips/Quanta/MVAngle.h>
-#include <aips/OS/Path.h>
-#include <aips/Utilities/Assert.h>
-#include <aips/BasicSL/String.h>
-#include <aips/iostream.h>
+#include <casa/Arrays/Vector.h>
+#include <casa/Arrays/Array.h>
+#include <casa/Arrays/ArrayLogical.h>
+#include <casa/Exceptions/Error.h>
+// #include <casa/Arrays/IPosition.h>
+#include <casa/BasicMath/Math.h>
+#include <casa/BasicSL/Constants.h>
+#include <casa/Quanta/Quantum.h>
+#include <measures/Measures/MDirection.h>
+#include <measures/Measures/MFrequency.h>
+#include <casa/Quanta/MVAngle.h>
+#include <casa/OS/Path.h>
+#include <casa/Utilities/Assert.h>
+#include <casa/BasicSL/String.h>
+#include <casa/iostream.h>
 
 int main() {
   try {

@@ -29,7 +29,7 @@
 #define AIPS_CONVERSION_H
 
 //# Includes
-#include <aips/string.h>                       // needed for memcpy
+#include <casa/string.h>                       // needed for memcpy
 
 
 // <summary>

@@ -26,9 +26,9 @@
 //# $Id$
 
 
-#include <aips/OS/LECanonicalConversion.h>
+#include <casa/OS/LECanonicalConversion.h>
 #include <assert.h>
-#include <aips/iostream.h>
+#include <casa/iostream.h>
 
 
 unsigned int LECanonicalConversion::toLocalChar (void* to, const void* from,

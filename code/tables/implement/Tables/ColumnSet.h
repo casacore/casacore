@@ -30,11 +30,11 @@
 
 
 //# Includes
-#include <aips/aips.h>
-#include <aips/Tables/TableLockData.h>
-#include <aips/Tables/BaseTable.h>
-#include <aips/Containers/SimOrdMap.h>
-#include <aips/BasicSL/String.h>
+#include <casa/aips.h>
+#include <tables/Tables/TableLockData.h>
+#include <tables/Tables/BaseTable.h>
+#include <casa/Containers/SimOrdMap.h>
+#include <casa/BasicSL/String.h>
 
 //# Forward Declarations
 class SetupNewTable;

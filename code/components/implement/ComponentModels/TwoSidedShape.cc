@@ -25,23 +25,23 @@
 //#
 //# $Id$
 
-#include <trial/ComponentModels/TwoSidedShape.h>
-#include <aips/Arrays/Vector.h>
-#include <aips/Arrays/ArrayLogical.h>
-#include <aips/Containers/Record.h>
-#include <aips/Containers/RecordFieldId.h>
-#include <aips/Containers/RecordInterface.h>
-#include <trial/Coordinates/DirectionCoordinate.h>
-#include <aips/Exceptions/Error.h>
-#include <aips/Logging/LogIO.h>
-#include <aips/Logging/LogOrigin.h>
-#include <aips/BasicSL/Constants.h>
-#include <aips/BasicMath/Math.h>
-#include <aips/Quanta/Quantum.h>
-#include <aips/Quanta/QuantumHolder.h>
-#include <aips/Quanta/MVAngle.h>
-#include <aips/Utilities/Assert.h>
-#include <aips/BasicSL/String.h>
+#include <components/ComponentModels/TwoSidedShape.h>
+#include <casa/Arrays/Vector.h>
+#include <casa/Arrays/ArrayLogical.h>
+#include <casa/Containers/Record.h>
+#include <casa/Containers/RecordFieldId.h>
+#include <casa/Containers/RecordInterface.h>
+#include <coordinates/Coordinates/DirectionCoordinate.h>
+#include <casa/Exceptions/Error.h>
+#include <casa/Logging/LogIO.h>
+#include <casa/Logging/LogOrigin.h>
+#include <casa/BasicSL/Constants.h>
+#include <casa/BasicMath/Math.h>
+#include <casa/Quanta/Quantum.h>
+#include <casa/Quanta/QuantumHolder.h>
+#include <casa/Quanta/MVAngle.h>
+#include <casa/Utilities/Assert.h>
+#include <casa/BasicSL/String.h>
 
 TwoSidedShape::~TwoSidedShape() {
   DebugAssert(ok(), AipsError);

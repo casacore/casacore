@@ -32,13 +32,13 @@
 
 
 //# Includes
-#include <aips/Containers/RecordDescRep.h>
-#include <aips/Containers/RecordInterface.h>
-#include <aips/Utilities/COWPtr.h>
+#include <casa/Containers/RecordDescRep.h>
+#include <casa/Containers/RecordInterface.h>
+#include <casa/Utilities/COWPtr.h>
 
 //# Forward Declarations
 class AipsIO;
-#include <aips/iosfwd.h>
+#include <casa/iosfwd.h>
 
 
 // <summary>

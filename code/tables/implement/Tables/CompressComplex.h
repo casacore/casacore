@@ -29,10 +29,10 @@
 #define AIPS_COMPRESSCOMPLEX_H
 
 //# Includes
-#include <aips/Tables/BaseMappedArrayEngine.h>
-#include <aips/Tables/ScalarColumn.h>
-#include <aips/Arrays/Array.h>
-#include <aips/BasicSL/Complex.h>
+#include <tables/Tables/BaseMappedArrayEngine.h>
+#include <tables/Tables/ScalarColumn.h>
+#include <casa/Arrays/Array.h>
+#include <casa/BasicSL/Complex.h>
 
 
 // <summary>

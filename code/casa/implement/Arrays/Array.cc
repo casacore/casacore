@@ -25,14 +25,14 @@
 //#
 //# $Id$
 
-#include <aips/Arrays/MaskedArray.h>
-#include <aips/Arrays/Array.h>
-#include <aips/Arrays/Slicer.h>
-#include <aips/Arrays/ArrayPosIter.h>
-#include <aips/Arrays/ArrayError.h>
-#include <aips/Utilities/Assert.h>
-#include <aips/BasicMath/Functional.h>
-#include <aips/Utilities/Copy.h>
+#include <casa/Arrays/MaskedArray.h>
+#include <casa/Arrays/Array.h>
+#include <casa/Arrays/Slicer.h>
+#include <casa/Arrays/ArrayPosIter.h>
+#include <casa/Arrays/ArrayError.h>
+#include <casa/Utilities/Assert.h>
+#include <casa/BasicMath/Functional.h>
+#include <casa/Utilities/Copy.h>
 
 
 template<class T> Array<T>::Array()

@@ -62,7 +62,7 @@
 #if !defined(AIPS_COMPONENTIMAGER_H)
 #define AIPS_COMPONENTIMAGER_H
 
-#include <aips/aips.h>
+#include <casa/aips.h>
 
 template <class T> class ImageInterface;
 class ComponentList;

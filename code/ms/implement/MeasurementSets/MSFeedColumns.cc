@@ -25,11 +25,11 @@
 //#
 //# $Id$
 
-#include <aips/MeasurementSets/MSFeedColumns.h>
-#include <aips/MeasurementSets/MSFeed.h>
-#include <aips/Tables/TableDesc.h>
-#include <aips/Tables/TableRecord.h>
-#include <aips/Tables/ColDescSet.h>
+#include <ms/MeasurementSets/MSFeedColumns.h>
+#include <ms/MeasurementSets/MSFeed.h>
+#include <tables/Tables/TableDesc.h>
+#include <tables/Tables/TableRecord.h>
+#include <tables/Tables/ColDescSet.h>
 
 ROMSFeedColumns::ROMSFeedColumns(const MSFeed& msFeed):
   antennaId_p(msFeed, MSFeed::columnName(MSFeed::ANTENNA_ID)),

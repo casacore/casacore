@@ -29,13 +29,13 @@
 //# to and from Array<Int>, i.e. if you don't want IPosition's to depend
 //# on arrays.
 
-#include <aips/Arrays/IPosition.h>
-#include <aips/Arrays/Vector.h>
-#include <aips/IO/AipsIO.h>
-#include <aips/Logging/LogIO.h>
-#include <aips/Utilities/Copy.h>
-#include <aips/Utilities/Assert.h>
-#include <aips/Exceptions/Error.h>
+#include <casa/Arrays/IPosition.h>
+#include <casa/Arrays/Vector.h>
+#include <casa/IO/AipsIO.h>
+#include <casa/Logging/LogIO.h>
+#include <casa/Utilities/Copy.h>
+#include <casa/Utilities/Assert.h>
+#include <casa/Exceptions/Error.h>
 
 
 IPosition::IPosition (const Array<Int> &other)

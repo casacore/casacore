@@ -29,7 +29,7 @@
 #if !defined(TRIAL_MSSELECTIONKEYWORDS_H)
 #define TRIAL_MSSELECTIONKEYWORDS_H
 
-#include <aips/aips.h>
+#include <casa/aips.h>
 
 template <class K, class V> class SimpleOrderedMap;
 template <class T> class Block;

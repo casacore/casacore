@@ -27,8 +27,8 @@
 //# $Id$
 
 
-#include <aips/Containers/RecordField.h>
-#include <aips/Utilities/Assert.h>
+#include <casa/Containers/RecordField.h>
+#include <casa/Utilities/Assert.h>
 
 template<class T>
 RecordFieldPtr<T>::RecordFieldPtr()

@@ -25,31 +25,31 @@
 //#
 //# $Id$
 
-#include <aips/Tables/ReadAsciiTable.h>
-#include <aips/Tables/TableDesc.h>
-#include <aips/Tables/ScaColDesc.h>
-#include <aips/Tables/ArrColDesc.h>
-#include <aips/Tables/Table.h>
-#include <aips/Tables/TableRecord.h>
-#include <aips/Tables/TableColumn.h>
-#include <aips/Tables/ArrayColumn.h>
-#include <aips/Tables/SetupNewTab.h>
-#include <aips/Arrays/Vector.h>
-#include <aips/Arrays/ArrayUtil.h>
-#include <aips/Containers/Block.h>
-#include <aips/OS/Path.h>
-#include <aips/BasicSL/String.h>
-#include <aips/Utilities/Regex.h>
-#include <aips/Exceptions/Error.h>
+#include <tables/Tables/ReadAsciiTable.h>
+#include <tables/Tables/TableDesc.h>
+#include <tables/Tables/ScaColDesc.h>
+#include <tables/Tables/ArrColDesc.h>
+#include <tables/Tables/Table.h>
+#include <tables/Tables/TableRecord.h>
+#include <tables/Tables/TableColumn.h>
+#include <tables/Tables/ArrayColumn.h>
+#include <tables/Tables/SetupNewTab.h>
+#include <casa/Arrays/Vector.h>
+#include <casa/Arrays/ArrayUtil.h>
+#include <casa/Containers/Block.h>
+#include <casa/OS/Path.h>
+#include <casa/BasicSL/String.h>
+#include <casa/Utilities/Regex.h>
+#include <casa/Exceptions/Error.h>
 
-#include <aips/Logging/LogIO.h>
-#include <aips/Logging/LogOrigin.h>
+#include <casa/Logging/LogIO.h>
+#include <casa/Logging/LogOrigin.h>
 
-#include <aips/stdio.h>
-#include <aips/string.h>
-#include <aips/iostream.h>
-#include <aips/fstream.h>             // needed for file IO
-#include <aips/sstream.h>           // needed for internal IO
+#include <casa/stdio.h>
+#include <casa/string.h>
+#include <casa/iostream.h>
+#include <casa/fstream.h>             // needed for file IO
+#include <casa/sstream.h>           // needed for internal IO
 
 
 const Int lineSize = 32768;

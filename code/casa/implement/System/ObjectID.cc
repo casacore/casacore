@@ -25,13 +25,13 @@
 //#
 //# $Id$
 
-#include <aips/System/ObjectID.h>
-#include <aips/OS/HostInfo.h>
-#include <aips/Utilities/Regex.h>
-#include <aips/Utilities/Assert.h>
+#include <casa/System/ObjectID.h>
+#include <casa/OS/HostInfo.h>
+#include <casa/Utilities/Regex.h>
+#include <casa/Utilities/Assert.h>
 
-#include <aips/sstream.h>
-#include <aips/iostream.h>
+#include <casa/sstream.h>
+#include <casa/iostream.h>
 
 
 ObjectID::ObjectID(Bool makeNull)

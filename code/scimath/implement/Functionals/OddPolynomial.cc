@@ -26,7 +26,7 @@
 //# $Id$
 
 //# Includes
-#include <trial/Functionals/OddPolynomial.h>
+#include <scimath/Functionals/OddPolynomial.h>
 
 //# Constructors
 

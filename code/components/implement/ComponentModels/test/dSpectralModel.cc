@@ -26,22 +26,22 @@
 //# $Id$
 
 
-#include <aips/aips.h>
-#include <trial/ComponentModels/ComponentType.h>
-#include <trial/ComponentModels/SpectralIndex.h>
-#include <trial/ComponentModels/SpectralModel.h>
-#include <aips/Arrays/Vector.h>
-#include <aips/Exceptions/Error.h>
-#include <aips/Measures/MDirection.h>
-#include <aips/Measures/MEpoch.h>
-#include <aips/Measures/MeasFrame.h>
-#include <aips/Quanta/MVAngle.h>
-#include <aips/Quanta/MVFrequency.h>
-#include <aips/Quanta/MVTime.h>
-#include <aips/Quanta/Quantum.h>
-#include <aips/Utilities/Assert.h>
-#include <aips/iostream.h>
-#include <aips/iomanip.h>
+#include <casa/aips.h>
+#include <components/ComponentModels/ComponentType.h>
+#include <components/ComponentModels/SpectralIndex.h>
+#include <components/ComponentModels/SpectralModel.h>
+#include <casa/Arrays/Vector.h>
+#include <casa/Exceptions/Error.h>
+#include <measures/Measures/MDirection.h>
+#include <measures/Measures/MEpoch.h>
+#include <measures/Measures/MeasFrame.h>
+#include <casa/Quanta/MVAngle.h>
+#include <casa/Quanta/MVFrequency.h>
+#include <casa/Quanta/MVTime.h>
+#include <casa/Quanta/Quantum.h>
+#include <casa/Utilities/Assert.h>
+#include <casa/iostream.h>
+#include <casa/iomanip.h>
 
 void plotSpectrum(const SpectralModel& modelSpectrum) {
   cout << "This is a "

@@ -26,16 +26,16 @@
 //# $Id$
 
 //# Includes
-#include <aips/Exceptions/Error.h>
-#include <aips/Utilities/Register.h>
-#include <aips/Quanta/Quantum.h>
-#include <aips/Measures/MEpoch.h>
-#include <aips/Measures/MPosition.h>
-#include <aips/Measures/MDirection.h>
-#include <aips/Measures/MRadialVelocity.h>
-#include <aips/Measures/MeasFrame.h>
-#include <aips/Measures/MeasComet.h>
-#include <aips/iostream.h>
+#include <casa/Exceptions/Error.h>
+#include <casa/Utilities/Register.h>
+#include <casa/Quanta/Quantum.h>
+#include <measures/Measures/MEpoch.h>
+#include <measures/Measures/MPosition.h>
+#include <measures/Measures/MDirection.h>
+#include <measures/Measures/MRadialVelocity.h>
+#include <measures/Measures/MeasFrame.h>
+#include <measures/Measures/MeasComet.h>
+#include <casa/iostream.h>
 
 // Representation class
 class FrameRep {

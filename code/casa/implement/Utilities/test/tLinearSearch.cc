@@ -33,12 +33,12 @@
 #define AIPS_ARRAY_INDEX_CHECK
 #endif
 
-#include <aips/Utilities/LinearSearch.h>
-#include <aips/Arrays/IPosition.h>
-#include <aips/Utilities/Assert.h>
-#include <aips/Exceptions/Error.h>
+#include <casa/Utilities/LinearSearch.h>
+#include <casa/Arrays/IPosition.h>
+#include <casa/Utilities/Assert.h>
+#include <casa/Exceptions/Error.h>
 
-#include <aips/iostream.h>
+#include <casa/iostream.h>
 
 int main()
 {

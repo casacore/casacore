@@ -33,8 +33,8 @@
 
 
 //# Includes
-#include <aips/aips.h>
-#include <aips/iostream.h>
+#include <casa/aips.h>
+#include <casa/iostream.h>
 
 // <summary>
 // Example class for test of CountedPtr class

@@ -1,13 +1,13 @@
-#include <trial/Functionals/Gaussian3D.h>
-#include <aips/Arrays/ArrayLogical.h>
-#include <aips/Mathematics/AutoDiffA.h>
-#include <aips/Mathematics/AutoDiff.h>
-#include <aips/Mathematics/AutoDiffIO.h>
-#include <aips/Exceptions.h>
+#include <scimath/Functionals/Gaussian3D.h>
+#include <casa/Arrays/ArrayLogical.h>
+#include <scimath/Mathematics/AutoDiffA.h>
+#include <scimath/Mathematics/AutoDiff.h>
+#include <scimath/Mathematics/AutoDiffIO.h>
+#include <casa/Exceptions.h>
 
-#include <aips/aips.h>
-#include <aips/iostream.h>
-#include <aips/stdlib.h>
+#include <casa/aips.h>
+#include <casa/iostream.h>
+#include <casa/stdlib.h>
 
 
 int main(int argc, char** argv)

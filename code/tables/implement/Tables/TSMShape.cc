@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#include <aips/Tables/TSMShape.h>
-#include <aips/Arrays/ArrayError.h>
+#include <tables/Tables/TSMShape.h>
+#include <casa/Arrays/ArrayError.h>
 
 
 TSMShape::TSMShape()

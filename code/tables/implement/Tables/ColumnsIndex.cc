@@ -26,17 +26,17 @@
 //# $Id$
 
 //# Includes
-#include <aips/Tables/ColumnsIndex.h>
-#include <aips/Tables/TableDesc.h>
-#include <aips/Tables/TableLocker.h>
-#include <aips/Tables/ColumnDesc.h>
-#include <aips/Tables/ScalarColumn.h>
-#include <aips/Arrays/ArrayMath.h>
-#include <aips/Containers/RecordField.h>
-#include <aips/Utilities/Sort.h>
-#include <aips/Utilities/Copy.h>
-#include <aips/Utilities/Assert.h>
-#include <aips/Tables/TableError.h>
+#include <tables/Tables/ColumnsIndex.h>
+#include <tables/Tables/TableDesc.h>
+#include <tables/Tables/TableLocker.h>
+#include <tables/Tables/ColumnDesc.h>
+#include <tables/Tables/ScalarColumn.h>
+#include <casa/Arrays/ArrayMath.h>
+#include <casa/Containers/RecordField.h>
+#include <casa/Utilities/Sort.h>
+#include <casa/Utilities/Copy.h>
+#include <casa/Utilities/Assert.h>
+#include <tables/Tables/TableError.h>
 
 
 ColumnsIndex::ColumnsIndex (const Table& table, const String& columnName,

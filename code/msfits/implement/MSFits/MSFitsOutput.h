@@ -29,7 +29,7 @@
 #define TRIAL_MSFITSOUTPUT_H
 
 //# Includes
-#include <aips/aips.h>
+#include <casa/aips.h>
 
 //# Forward Declarations
 class String;

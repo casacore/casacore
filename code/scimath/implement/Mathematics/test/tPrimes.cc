@@ -27,9 +27,9 @@
 
 //# Includes
 
-#include <aips/Mathematics/Primes.h>
-#include <aips/Utilities/Assert.h>
-#include <aips/iostream.h>
+#include <scimath/Mathematics/Primes.h>
+#include <casa/Utilities/Assert.h>
+#include <casa/iostream.h>
 
 // Test the non-cache functions.
 

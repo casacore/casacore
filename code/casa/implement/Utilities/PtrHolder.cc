@@ -26,7 +26,7 @@
 //# $Id$
 //#
 
-#include <aips/Utilities/PtrHolder.h>
+#include <casa/Utilities/PtrHolder.h>
 
 template<class T> PtrHolder<T>::PtrHolder()
 : ptr_p     (0),

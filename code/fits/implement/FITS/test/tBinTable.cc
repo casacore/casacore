@@ -27,14 +27,14 @@
 
 //# Includes
 
-#include <trial/FITS/BinTable.h>
-#include <aips/FITS/fitsio.h>
-#include <aips/Inputs/Input.h>
-#include <aips/Exceptions/Error.h>
-#include <aips/OS/File.h>
+#include <fits/FITS/BinTable.h>
+#include <fits/FITS/fitsio.h>
+#include <casa/Inputs/Input.h>
+#include <casa/Exceptions/Error.h>
+#include <casa/OS/File.h>
 
-#include <aips/iostream.h>
-#include <aips/stdio.h>
+#include <casa/iostream.h>
+#include <casa/stdio.h>
 
 main(int argc, char **argv)
 {

@@ -30,8 +30,8 @@
 
 
 //# Includes
-#include <aips/aips.h>
-#include <aips/Quanta/Unit.h>
+#include <casa/aips.h>
+#include <casa/Quanta/Unit.h>
 
 //# Forward Declarations
 

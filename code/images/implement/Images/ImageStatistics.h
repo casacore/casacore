@@ -30,17 +30,17 @@
 
 
 //# Includes
-#include <aips/aips.h>
-#include <aips/BasicSL/String.h>
-#include <aips/Utilities/DataType.h>
-#include <aips/Logging/LogIO.h>
-#include <trial/Lattices/LatticeStatistics.h>
-#include <aips/Mathematics/NumericTraits.h>
+#include <casa/aips.h>
+#include <casa/BasicSL/String.h>
+#include <casa/Utilities/DataType.h>
+#include <casa/Logging/LogIO.h>
+#include <lattices/Lattices/LatticeStatistics.h>
+#include <scimath/Mathematics/NumericTraits.h>
 
 //# Forward Declarations
 template <class T> class ImageInterface;
 class IPosition;
-#include <aips/iosstrfwd.h>
+#include <casa/iosstrfwd.h>
 
 // <summary>
 // Displays various statistics from an image.

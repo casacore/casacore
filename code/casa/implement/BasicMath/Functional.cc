@@ -27,7 +27,7 @@
 //# $Id$
 
 //# Includes
-#include <aips/BasicMath/Functional.h>
+#include <casa/BasicMath/Functional.h>
 
 //# Constructors
 template<class Domain,class Range>

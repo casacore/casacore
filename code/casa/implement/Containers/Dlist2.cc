@@ -25,7 +25,7 @@
 //#
 //# $Id$
 
-#include <aips/Containers/Dlist.h>
+#include <casa/Containers/Dlist.h>
 
 int Dlist_deprecated_flag = 0;
 int ConstDlistIter_deprecated_flag = 0;

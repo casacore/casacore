@@ -26,14 +26,14 @@
 //# $Id$
 
 //# Includes
-#include <aips/Tables/TSMIdColumn.h>
-#include <aips/Tables/TiledStMan.h>
-#include <aips/Tables/TSMCube.h>
-#include <aips/Tables/DataManError.h>
-#include <aips/Containers/Record.h>
-#include <aips/Arrays/IPosition.h>
-#include <aips/Arrays/Vector.h>
-#include <aips/BasicSL/String.h>
+#include <tables/Tables/TSMIdColumn.h>
+#include <tables/Tables/TiledStMan.h>
+#include <tables/Tables/TSMCube.h>
+#include <tables/Tables/DataManError.h>
+#include <casa/Containers/Record.h>
+#include <casa/Arrays/IPosition.h>
+#include <casa/Arrays/Vector.h>
+#include <casa/BasicSL/String.h>
 
 
 TSMIdColumn::TSMIdColumn (const TSMColumn& column)

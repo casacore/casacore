@@ -29,10 +29,10 @@
 #if !defined(AIPS_ARRAYSAMPLEDFUNCTIONAL_H)
 #define AIPS_ARRAYSAMPLEDFUNCTIONAL_H
 
-#include <aips/aips.h>
-#include <aips/Functionals/SampledFunctional.h>
-#include <aips/Arrays/Array.h>
-#include <aips/Arrays/IPosition.h>
+#include <casa/aips.h>
+#include <scimath/Functionals/SampledFunctional.h>
+#include <casa/Arrays/Array.h>
+#include <casa/Arrays/IPosition.h>
 
 // <summary> Index into an array using the longest axis </summary>
 

@@ -39,7 +39,7 @@
 // them (e.g. <cstring>)
 
 // Make sure any special macros are set
-#include <aips/aips.h>
+#include <casa/aips.h>
 
 #if defined(AIPS_SGI) || defined(AIPS_SUN_NATIVE) 
 # include <math.h>

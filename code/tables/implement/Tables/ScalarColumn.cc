@@ -25,15 +25,15 @@
 //#
 //# $Id$
 
-#include <aips/Tables/ScalarColumn.h>
-#include <aips/Tables/Table.h>
-#include <aips/Tables/BaseColumn.h>
-#include <aips/Tables/RefRows.h>
-#include <aips/Arrays/Vector.h>
-#include <aips/Arrays/Slicer.h>
-#include <aips/Utilities/ValTypeId.h>
-#include <aips/BasicSL/String.h>
-#include <aips/Tables/TableError.h>
+#include <tables/Tables/ScalarColumn.h>
+#include <tables/Tables/Table.h>
+#include <tables/Tables/BaseColumn.h>
+#include <tables/Tables/RefRows.h>
+#include <casa/Arrays/Vector.h>
+#include <casa/Arrays/Slicer.h>
+#include <casa/Utilities/ValTypeId.h>
+#include <casa/BasicSL/String.h>
+#include <tables/Tables/TableError.h>
 
 
 template<class T>

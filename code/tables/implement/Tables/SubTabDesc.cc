@@ -25,13 +25,13 @@
 //#
 //# $Id$
 
-#include <aips/Tables/SubTabDesc.h>
-#include <aips/Tables/TableDesc.h>
-#include <aips/Tables/TableAttr.h>
-#include <aips/Utilities/DataType.h>
-#include <aips/Tables/TableError.h>
-#include <aips/IO/AipsIO.h>
-#include <aips/iostream.h>
+#include <tables/Tables/SubTabDesc.h>
+#include <tables/Tables/TableDesc.h>
+#include <tables/Tables/TableAttr.h>
+#include <casa/Utilities/DataType.h>
+#include <tables/Tables/TableError.h>
+#include <casa/IO/AipsIO.h>
+#include <casa/iostream.h>
 
 SubTableDesc::SubTableDesc (const String& name, const String& comment,
 			    const String& descname, int opt)

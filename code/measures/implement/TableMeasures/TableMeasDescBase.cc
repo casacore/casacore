@@ -26,20 +26,20 @@
 //# $Id$
 
 //# Includes
-#include <aips/TableMeasures/TableMeasDescBase.h>
-#include <aips/TableMeasures/TableQuantumDesc.h>
-#include <aips/Tables/Table.h>
-#include <aips/Tables/TableColumn.h>
-#include <aips/Tables/TableDesc.h>
-#include <aips/Tables/ColumnDesc.h>
-#include <aips/Tables/TableRecord.h>
-#include <aips/Measures/Measure.h>
-#include <aips/Measures/MeasureHolder.h>
-#include <aips/Quanta/Quantum.h>
-#include <aips/Quanta/Unit.h>
-#include <aips/Arrays/Vector.h>
-#include <aips/BasicSL/String.h>
-#include <aips/Exceptions/Error.h>
+#include <measures/TableMeasures/TableMeasDescBase.h>
+#include <measures/TableMeasures/TableQuantumDesc.h>
+#include <tables/Tables/Table.h>
+#include <tables/Tables/TableColumn.h>
+#include <tables/Tables/TableDesc.h>
+#include <tables/Tables/ColumnDesc.h>
+#include <tables/Tables/TableRecord.h>
+#include <measures/Measures/Measure.h>
+#include <measures/Measures/MeasureHolder.h>
+#include <casa/Quanta/Quantum.h>
+#include <casa/Quanta/Unit.h>
+#include <casa/Arrays/Vector.h>
+#include <casa/BasicSL/String.h>
+#include <casa/Exceptions/Error.h>
 
 
 TableMeasDescBase::TableMeasDescBase()

@@ -26,12 +26,12 @@
 //# $Id$
 
 //# Includes
-#include <aips/aips.h>
-#include <aips/Exceptions/Error.h>
-#include <aips/Measures.h>
-#include <aips/Measures/MEpoch.h>
-#include <aips/Measures/MDirection.h>
-#include <aips/iostream.h>
+#include <casa/aips.h>
+#include <casa/Exceptions/Error.h>
+#include <measures/Measures.h>
+#include <measures/Measures/MEpoch.h>
+#include <measures/Measures/MDirection.h>
+#include <casa/iostream.h>
 
 int main()
 {

@@ -26,18 +26,18 @@
 //# $Id$
 
 //# Includes
-#include <aips/Tables/TSMDataColumn.h>
-#include <aips/Tables/TiledStMan.h>
-#include <aips/Tables/TSMCube.h>
-#include <aips/Tables/RefRows.h>
-#include <aips/Tables/DataManError.h>
-#include <aips/Arrays/IPosition.h>
-#include <aips/Arrays/Slicer.h>
-#include <aips/Arrays/Vector.h>
-#include <aips/Utilities/ValType.h>
-#include <aips/BasicSL/String.h>
-#include <aips/string.h>
-#include <aips/iostream.h>
+#include <tables/Tables/TSMDataColumn.h>
+#include <tables/Tables/TiledStMan.h>
+#include <tables/Tables/TSMCube.h>
+#include <tables/Tables/RefRows.h>
+#include <tables/Tables/DataManError.h>
+#include <casa/Arrays/IPosition.h>
+#include <casa/Arrays/Slicer.h>
+#include <casa/Arrays/Vector.h>
+#include <casa/Utilities/ValType.h>
+#include <casa/BasicSL/String.h>
+#include <casa/string.h>
+#include <casa/iostream.h>
 
 TSMDataColumn::TSMDataColumn (const TSMColumn& column)
 : TSMColumn (column)

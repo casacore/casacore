@@ -25,16 +25,16 @@
 //#
 //# $Id$
 
-#include <aips/Functionals/FunctionWrapper.h>
-#include <aips/Arrays/ArrayLogical.h>
-#include <aips/Arrays/ArrayIO.h>
-#include <aips/Arrays/Matrix.h>
-#include <aips/Arrays/ArrayMath.h>
-#include <aips/Functionals/CombiFunction.h>
-#include <aips/BasicMath/Math.h>
-#include <aips/Utilities/Assert.h>
+#include <scimath/Functionals/FunctionWrapper.h>
+#include <casa/Arrays/ArrayLogical.h>
+#include <casa/Arrays/ArrayIO.h>
+#include <casa/Arrays/Matrix.h>
+#include <casa/Arrays/ArrayMath.h>
+#include <scimath/Functionals/CombiFunction.h>
+#include <casa/BasicMath/Math.h>
+#include <casa/Utilities/Assert.h>
 
-#include <aips/iostream.h>
+#include <casa/iostream.h>
 
 // Some C++ functions
 static Double func0(const Vector<Double> &) {return 1;};            // 1

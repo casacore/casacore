@@ -25,13 +25,13 @@
 //#
 //#   $Id$
 
-#include <trial/SpectralComponents/ProfileFit1D.h>
+#include <components/SpectralComponents/ProfileFit1D.h>
 
-#include <aips/Arrays/ArrayLogical.h>
-#include <aips/Exceptions/Error.h>
-#include <trial/SpectralComponents/SpectralEstimate.h>
-#include <trial/SpectralComponents/SpectralElement.h>
-#include <aips/Utilities/Assert.h>
+#include <casa/Arrays/ArrayLogical.h>
+#include <casa/Exceptions/Error.h>
+#include <components/SpectralComponents/SpectralEstimate.h>
+#include <components/SpectralComponents/SpectralElement.h>
+#include <casa/Utilities/Assert.h>
 
 
 template <class T> 

@@ -25,14 +25,14 @@
 //#
 //# $Id$
 
-#include <trial/Images/ExtendImage.h>
-#include <trial/Lattices/ExtendLattice.h>
-#include <trial/Lattices/LatticeRegion.h>
-#include <trial/Coordinates/CoordinateUtil.h>
-#include <aips/Arrays/IPosition.h>
-#include <aips/Arrays/Vector.h>
-#include <aips/Utilities/Assert.h>
-#include <aips/Exceptions/Error.h>
+#include <images/Images/ExtendImage.h>
+#include <lattices/Lattices/ExtendLattice.h>
+#include <lattices/Lattices/LatticeRegion.h>
+#include <coordinates/Coordinates/CoordinateUtil.h>
+#include <casa/Arrays/IPosition.h>
+#include <casa/Arrays/Vector.h>
+#include <casa/Utilities/Assert.h>
+#include <casa/Exceptions/Error.h>
 
 
 template<class T>

@@ -25,9 +25,9 @@
 //#
 //# $Id$
 
-#include <aips/Containers/Queue.h>
-#include <aips/Utilities/Copy.h>
-#include <aips/Exceptions/Error.h>
+#include <casa/Containers/Queue.h>
+#include <casa/Utilities/Copy.h>
+#include <casa/Exceptions/Error.h>
 
 template<class T> Queue<T>::Queue() : first_p(0), next_p(0), data_p(1)
 {

@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#include <aips/Utilities/DynBuffer.h>
-#include <aips/Exceptions/Error.h>
+#include <casa/Utilities/DynBuffer.h>
+#include <casa/Exceptions/Error.h>
 
 // This is the implementation of the DynBuffer class.
 

@@ -26,26 +26,26 @@
 //# $Id$
 
 //# Includes
-#include <trial/MeasurementSets/SDAntennaHandler.h>
+#include <ms/MeasurementSets/SDAntennaHandler.h>
 
-#include <aips/Tables/ColumnsIndex.h>
-#include <aips/MeasurementSets/MeasurementSet.h>
-#include <aips/MeasurementSets/MSAntennaColumns.h>
-#include <aips/MeasurementSets/MSAntenna.h>
-#include <aips/Containers/Record.h>
-#include <aips/Arrays/Vector.h>
-#include <aips/Quanta/Quantum.h>
-#include <aips/BasicSL/Constants.h>
-#include <aips/Arrays/ArrayLogical.h>
-#include <aips/Tables/ScalarColumn.h>
-#include <aips/Tables/ArrayColumn.h>
-#include <aips/TableMeasures/ScalarMeasColumn.h>
-#include <aips/Utilities/Assert.h>
-#include <aips/Exceptions/Error.h>
-#include <aips/Measures/MeasConvert.h>
-#include <aips/Measures/MeasTable.h>
-#include <aips/Tables/TableDesc.h>
-#include <aips/Arrays/ArrayUtil.h>
+#include <tables/Tables/ColumnsIndex.h>
+#include <ms/MeasurementSets/MeasurementSet.h>
+#include <ms/MeasurementSets/MSAntennaColumns.h>
+#include <ms/MeasurementSets/MSAntenna.h>
+#include <casa/Containers/Record.h>
+#include <casa/Arrays/Vector.h>
+#include <casa/Quanta/Quantum.h>
+#include <casa/BasicSL/Constants.h>
+#include <casa/Arrays/ArrayLogical.h>
+#include <tables/Tables/ScalarColumn.h>
+#include <tables/Tables/ArrayColumn.h>
+#include <measures/TableMeasures/ScalarMeasColumn.h>
+#include <casa/Utilities/Assert.h>
+#include <casa/Exceptions/Error.h>
+#include <measures/Measures/MeasConvert.h>
+#include <measures/Measures/MeasTable.h>
+#include <tables/Tables/TableDesc.h>
+#include <casa/Arrays/ArrayUtil.h>
 
 SDAntennaHandler::SDAntennaHandler() 
     : index_p(0), msAnt_p(0), msAntCols_p(0), rownr_p(-1),

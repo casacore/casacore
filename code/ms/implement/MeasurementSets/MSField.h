@@ -29,9 +29,9 @@
 #if !defined(AIPS_MSFIELD_H)
 #define AIPS_MSFIELD_H
 
-#include <aips/aips.h>
-#include <aips/MeasurementSets/MSTable.h>
-#include <aips/MeasurementSets/MSFieldEnums.h>
+#include <casa/aips.h>
+#include <ms/MeasurementSets/MSTable.h>
+#include <ms/MeasurementSets/MSFieldEnums.h>
 
 // <summary> 
 // A Table intended to hold a MeasurementSet FIELD table.

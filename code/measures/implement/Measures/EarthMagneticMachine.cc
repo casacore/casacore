@@ -26,13 +26,13 @@
 //# $Id$
 
 //# Includes
-#include <aips/Measures/EarthMagneticMachine.h>
-#include <aips/Exceptions/Error.h>
-#include <aips/BasicMath/Math.h>
-#include <aips/Measures/MCPosition.h>
-#include <aips/Measures/MCEpoch.h>
-#include <aips/Measures/MCFrame.h>
-#include <aips/Measures/MeasConvert.h>
+#include <measures/Measures/EarthMagneticMachine.h>
+#include <casa/Exceptions/Error.h>
+#include <casa/BasicMath/Math.h>
+#include <measures/Measures/MCPosition.h>
+#include <measures/Measures/MCEpoch.h>
+#include <measures/Measures/MCFrame.h>
+#include <measures/Measures/MeasConvert.h>
 
 //# Constructors
 EarthMagneticMachine::EarthMagneticMachine() :

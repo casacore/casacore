@@ -29,7 +29,7 @@
 #if !defined(AIPS_FUNCTIONFACTORYERRORS_H)
 #define AIPS_FUNCTIONFACTORYERRORS_H
 
-#include <aips/Exceptions/Error.h>
+#include <casa/Exceptions/Error.h>
 
 class FunctionFactoryError : public AipsError {
 public:

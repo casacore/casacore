@@ -29,7 +29,7 @@
 #if !defined(AIPS_RECORDTRANSFORMABLE_H)
 #define AIPS_RECORDTRANSFORMABLE_H
 
-#include <aips/aips.h>
+#include <casa/aips.h>
 
 class String;
 class RecordInterface;

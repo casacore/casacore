@@ -30,14 +30,14 @@
 
 
 //# Includes
-#include <trial/Lattices/LELInterface.h>
-#include <trial/Lattices/LELAttribute.h>
-#include <trial/Lattices/LELBinaryEnums.h>
-#include <trial/Lattices/LELUnaryEnums.h>
-#include <trial/Lattices/LELFunctionEnums.h>
-#include <aips/Arrays/IPosition.h>
-#include <aips/Utilities/CountedPtr.h>
-#include <aips/Utilities/DataType.h>
+#include <lattices/Lattices/LELInterface.h>
+#include <lattices/Lattices/LELAttribute.h>
+#include <lattices/Lattices/LELBinaryEnums.h>
+#include <lattices/Lattices/LELUnaryEnums.h>
+#include <lattices/Lattices/LELFunctionEnums.h>
+#include <casa/Arrays/IPosition.h>
+#include <casa/Utilities/CountedPtr.h>
+#include <casa/Utilities/DataType.h>
 
 //# Forward Declarations
 template <class T> class LatticeExpr;

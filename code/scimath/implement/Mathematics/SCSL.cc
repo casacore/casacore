@@ -25,11 +25,11 @@
 //#
 //# $Id$
 
-#include <trial/Mathematics/SCSL.h>
-#include <aips/BasicSL/Complex.h>
-#include <aips/Mathematics.h>
-#include <aips/Utilities/Assert.h>
-#include <aips/Exceptions/Error.h>
+#include <scimath/Mathematics/SCSL.h>
+#include <casa/BasicSL/Complex.h>
+#include <scimath/Mathematics.h>
+#include <casa/Utilities/Assert.h>
+#include <casa/Exceptions/Error.h>
 #if ! defined(HAVE_SCSL)
 #define PN(a)
 #else

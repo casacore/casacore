@@ -25,13 +25,13 @@
 //#
 //# $Id$
 
-#include <trial/Lattices/LCPolygon.h>
-#include <aips/Tables/TableRecord.h>
-#include <aips/Arrays/Vector.h>
-#include <aips/Arrays/ArrayIO.h>
-#include <aips/Arrays/ArrayLogical.h>
-#include <aips/Utilities/Assert.h>
-#include <aips/iostream.h>
+#include <lattices/Lattices/LCPolygon.h>
+#include <tables/Tables/TableRecord.h>
+#include <casa/Arrays/Vector.h>
+#include <casa/Arrays/ArrayIO.h>
+#include <casa/Arrays/ArrayLogical.h>
+#include <casa/Utilities/Assert.h>
+#include <casa/iostream.h>
 
 
 void doIt (const IPosition& latticeShape,

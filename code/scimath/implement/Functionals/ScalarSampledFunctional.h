@@ -29,9 +29,9 @@
 #if !defined(AIPS_SCALARSAMPLEDFUNCTIONAL_H)
 #define AIPS_SCALARSAMPLEDFUNCTIONAL_H
 
-#include <aips/aips.h>
-#include <aips/Functionals/SampledFunctional.h>
-#include <aips/Arrays/Vector.h>
+#include <casa/aips.h>
+#include <scimath/Functionals/SampledFunctional.h>
+#include <casa/Arrays/Vector.h>
 
 template<class T> class Block;
 

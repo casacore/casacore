@@ -26,21 +26,21 @@
 //# $Id$
 
 //# Includes
-#include <aips/Exceptions/Error.h>
-#include <aips/BasicMath/Math.h>
-#include <aips/BasicSL/Constants.h>
-#include <aips/Quanta/MVAngle.h>
-#include <aips/Measures/MEpoch.h>
-#include <aips/Measures/MCEpoch.h>
-#include <aips/Measures/MPosition.h>
-#include <aips/Measures/MCPosition.h>
-#include <aips/Measures/MDirection.h>
-#include <aips/Measures/MCDirection.h>
-#include <aips/Measures/MRadialVelocity.h>
-#include <aips/Measures/MCRadialVelocity.h>
-#include <aips/Measures/MCFrame.h>
-#include <aips/Measures/MeasConvert.h>
-#include <aips/Measures/MeasComet.h>
+#include <casa/Exceptions/Error.h>
+#include <casa/BasicMath/Math.h>
+#include <casa/BasicSL/Constants.h>
+#include <casa/Quanta/MVAngle.h>
+#include <measures/Measures/MEpoch.h>
+#include <measures/Measures/MCEpoch.h>
+#include <measures/Measures/MPosition.h>
+#include <measures/Measures/MCPosition.h>
+#include <measures/Measures/MDirection.h>
+#include <measures/Measures/MCDirection.h>
+#include <measures/Measures/MRadialVelocity.h>
+#include <measures/Measures/MCRadialVelocity.h>
+#include <measures/Measures/MCFrame.h>
+#include <measures/Measures/MeasConvert.h>
+#include <measures/Measures/MeasComet.h>
 
 // MCFrame class
  

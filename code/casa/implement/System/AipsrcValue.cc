@@ -27,10 +27,10 @@
 
 //# Includes
 
-#include <aips/System/AipsrcValue.h>
-#include <aips/Utilities/Assert.h>
-#include <aips/Quanta/Quantum.h>
-#include <aips/sstream.h>
+#include <casa/System/AipsrcValue.h>
+#include <casa/Utilities/Assert.h>
+#include <casa/Quanta/Quantum.h>
+#include <casa/sstream.h>
 
 //# Data
 template <class T>

@@ -30,11 +30,11 @@
 #define AIPS_MBASELINE_H
 
 //# Includes
-#include <aips/aips.h>
-#include <aips/Measures/MeasBase.h>
-#include <aips/Measures/MDirection.h>
-#include <aips/Measures/MeasRef.h>
-#include <aips/Quanta/MVBaseline.h>
+#include <casa/aips.h>
+#include <measures/Measures/MeasBase.h>
+#include <measures/Measures/MDirection.h>
+#include <measures/Measures/MeasRef.h>
+#include <casa/Quanta/MVBaseline.h>
 
 //# Forward Declarations
 class MBaseline;

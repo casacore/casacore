@@ -26,14 +26,14 @@
 //# $Id$
 
 //# Includes
-#include <aips/Functionals/ChebyshevParam.h>
-#include <aips/Arrays/Vector.h>
-#include <aips/Arrays/ArrayUtil.h>
-#include <aips/Arrays/Matrix.h>
-#include <aips/Exceptions/Error.h>
-#include <aips/Utilities/Assert.h>
-#include <aips/Containers/RecordInterface.h>
-#include <aips/Utilities/MUString.h>
+#include <scimath/Functionals/ChebyshevParam.h>
+#include <casa/Arrays/Vector.h>
+#include <casa/Arrays/ArrayUtil.h>
+#include <casa/Arrays/Matrix.h>
+#include <casa/Exceptions/Error.h>
+#include <casa/Utilities/Assert.h>
+#include <casa/Containers/RecordInterface.h>
+#include <casa/Utilities/MUString.h>
 
 //# Constructors
 template <class T>

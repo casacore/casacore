@@ -30,12 +30,12 @@
 
 
 //# Includes
-#include <aips/aips.h>
-#include <trial/Lattices/TiledCollapser.h>
-#include <trial/Lattices/LatticeStatistics.h>
-#include <trial/Lattices/LatticeProgress.h>
-#include <aips/Logging/LogIO.h>
-#include <aips/Mathematics/NumericTraits.h>
+#include <casa/aips.h>
+#include <lattices/Lattices/TiledCollapser.h>
+#include <lattices/Lattices/LatticeStatistics.h>
+#include <lattices/Lattices/LatticeProgress.h>
+#include <casa/Logging/LogIO.h>
+#include <scimath/Mathematics/NumericTraits.h>
 
 //# Forward Declarations
 template <class T> class MaskedLattice;
@@ -43,7 +43,7 @@ template <class T> class TempLattice;
 template <class T> class Vector;
 class IPosition;
 class PGPlotter;
-#include <aips/iosfwd.h>
+#include <casa/iosfwd.h>
 
 // <summary>
 // Displays histograms of regions from a lattice.

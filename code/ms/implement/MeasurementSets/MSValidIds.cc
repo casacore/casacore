@@ -27,13 +27,13 @@
 
 //# Includes
 
-#include <trial/MeasurementSets/MSValidIds.h>
+#include <ms/MeasurementSets/MSValidIds.h>
 
-#include <aips/Exceptions/Error.h>
-#include <aips/MeasurementSets/MSColumns.h>
-#include <aips/Tables/TableRecord.h>
-#include <aips/Utilities/Assert.h>
-#include <aips/BasicSL/String.h>
+#include <casa/Exceptions/Error.h>
+#include <ms/MeasurementSets/MSColumns.h>
+#include <tables/Tables/TableRecord.h>
+#include <casa/Utilities/Assert.h>
+#include <casa/BasicSL/String.h>
 
 MSValidIds::MSValidIds()
     : romsCols_p(0), hasDoppler_p(False), hasSource_p(False)

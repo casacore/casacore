@@ -27,10 +27,10 @@
 //# $Id$
 
 
-#include <trial/LogTables/LoggerHolder.h>
-#include <aips/Logging/MemoryLogSink.h>
-#include <aips/LogTables/TableLogSink.h>
-#include <aips/Logging/LogFilter.h>
+#include <tables/LogTables/LoggerHolder.h>
+#include <casa/Logging/MemoryLogSink.h>
+#include <tables/LogTables/TableLogSink.h>
+#include <casa/Logging/LogFilter.h>
 
 
 LoggerHolder::LoggerHolder (Bool nullSink)

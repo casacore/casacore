@@ -28,16 +28,16 @@
 #define AIPS_PARANGLEMACHINE_H
 
 //# Includes
-#include <aips/aips.h>
-#include <aips/Measures.h>
-#include <aips/Measures/MCDirection.h>
-#include <aips/Measures/MDirection.h>
-#include <aips/Measures/MCEpoch.h>
-#include <aips/Measures/MEpoch.h>
-#include <aips/Quanta/Quantum.h>
-#include <aips/Quanta/MVDirection.h>
-#include <aips/Quanta/MVEpoch.h>
-#include <aips/Arrays/Vector.h>
+#include <casa/aips.h>
+#include <measures/Measures.h>
+#include <measures/Measures/MCDirection.h>
+#include <measures/Measures/MDirection.h>
+#include <measures/Measures/MCEpoch.h>
+#include <measures/Measures/MEpoch.h>
+#include <casa/Quanta/Quantum.h>
+#include <casa/Quanta/MVDirection.h>
+#include <casa/Quanta/MVEpoch.h>
+#include <casa/Arrays/Vector.h>
 
 //# Forward Declarations
 class MeasFrame;

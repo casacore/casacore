@@ -25,13 +25,13 @@
 //#
 //# $Id$
 
-#include <aips/Tables/TableRecord.h>
-#include <aips/Tables/TableKeyword.h>
-#include <aips/Tables/Table.h>
-#include <aips/IO/AipsIO.h>
-#include <aips/Arrays/IPosition.h>
-#include <aips/Exceptions/Error.h>
-#include <aips/Utilities/Assert.h>
+#include <tables/Tables/TableRecord.h>
+#include <tables/Tables/TableKeyword.h>
+#include <tables/Tables/Table.h>
+#include <casa/IO/AipsIO.h>
+#include <casa/Arrays/IPosition.h>
+#include <casa/Exceptions/Error.h>
+#include <casa/Utilities/Assert.h>
 
 
 TableRecord::TableRecord()

@@ -31,9 +31,9 @@
 
 
 //# Includes
-#include <aips/aips.h>
-#include <aips/Arrays/Vector.h>
-#include <aips/BasicMath/Random.h>
+#include <casa/aips.h>
+#include <casa/Arrays/Vector.h>
+#include <casa/BasicMath/Random.h>
 
 
 //# Forward Declarations

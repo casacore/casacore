@@ -30,8 +30,8 @@
 
 
 //# Includes
-#include <aips/aips.h>
-#include <aips/Measures/MeasureHolder.h>
+#include <casa/aips.h>
+#include <measures/Measures/MeasureHolder.h>
 
 //# Forward Declarations
 class String;

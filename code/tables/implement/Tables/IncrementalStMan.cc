@@ -26,7 +26,7 @@
 //# $Id$
 
 
-#include <aips/Tables/IncrementalStMan.h>
+#include <tables/Tables/IncrementalStMan.h>
 
 
 IncrementalStMan::IncrementalStMan (uInt bucketSize, Bool checkBucketSize,

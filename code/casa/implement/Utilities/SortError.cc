@@ -25,7 +25,7 @@
 //#
 //# $Id$
 
-#include <aips/Utilities/SortError.h>
+#include <casa/Utilities/SortError.h>
 
 // Implementation of Sort error classes.
 

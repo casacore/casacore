@@ -25,12 +25,12 @@
 //#
 //# $Id$
 
-#include <aips/Tables/BaseTabIter.h>
-#include <aips/Tables/TableIter.h>
-#include <aips/Tables/RefTable.h>
-#include <aips/Tables/TableColumn.h>
-#include <aips/Utilities/Sort.h>
-#include <aips/Tables/TableError.h>
+#include <tables/Tables/BaseTabIter.h>
+#include <tables/Tables/TableIter.h>
+#include <tables/Tables/RefTable.h>
+#include <tables/Tables/TableColumn.h>
+#include <casa/Utilities/Sort.h>
+#include <tables/Tables/TableError.h>
 
 // BaseTableIterator is the base class for the table iterators.
 // It is a letter class of the envelope TableIterator.

@@ -30,8 +30,8 @@
 
 
 //# Includes
-#include <aips/aips.h>
-#include <aips/Arrays/Vector.h>
+#include <casa/aips.h>
+#include <casa/Arrays/Vector.h>
 
 
 //# Forward Declarations
@@ -40,7 +40,7 @@ class IPosition;
 class Interpolate2D;
 class PixelCurve1D;
 
-#include <aips/iosstrfwd.h>
+#include <casa/iosstrfwd.h>
 
 // <summary>
 // Extract a 1-D slice from a Lattice

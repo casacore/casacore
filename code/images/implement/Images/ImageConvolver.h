@@ -30,9 +30,9 @@
 
 
 //# Includes
-#include <aips/aips.h>
-#include <aips/Logging/LogIO.h>
-#include <aips/Arrays/Array.h>
+#include <casa/aips.h>
+#include <casa/Logging/LogIO.h>
+#include <casa/Arrays/Array.h>
 
 //# Forward Declarations
 template <class T> class ImageInterface;

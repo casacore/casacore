@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#include <aips/Arrays/ArrayUtil.h>
-#include <aips/Utilities/Regex.h>
+#include <casa/Arrays/ArrayUtil.h>
+#include <casa/Utilities/Regex.h>
 
 
 Vector<String> stringToVector (const String& string, char delim)

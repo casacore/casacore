@@ -28,9 +28,9 @@
 #if !defined(AIPS_IMAGETWOPTCORR_H)
 #define AIPS_IMAGETWOPTCORR_H
 
-#include <aips/aips.h>
-#include <trial/Images/ImageInterface.h>
-#include <trial/Lattices/LatticeTwoPtCorr.h>
+#include <casa/aips.h>
+#include <images/Images/ImageInterface.h>
+#include <lattices/Lattices/LatticeTwoPtCorr.h>
 
 class IPosition;
 

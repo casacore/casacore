@@ -25,13 +25,13 @@
 //#
 //# $Id$
 
-#include <aips/Lattices/TiledLineStepper.h>
-#include <aips/Tables/TiledStManAccessor.h>
-#include <aips/BasicMath/Math.h>
-#include <aips/Utilities/Assert.h>
-#include <aips/Exceptions/Error.h>
-#include <aips/iostream.h>
-#include <aips/sstream.h>
+#include <lattices/Lattices/TiledLineStepper.h>
+#include <tables/Tables/TiledStManAccessor.h>
+#include <casa/BasicMath/Math.h>
+#include <casa/Utilities/Assert.h>
+#include <casa/Exceptions/Error.h>
+#include <casa/iostream.h>
+#include <casa/sstream.h>
 
 
 TiledLineStepper::TiledLineStepper (const IPosition& latticeShape, 

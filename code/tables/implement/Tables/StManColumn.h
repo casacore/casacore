@@ -30,8 +30,8 @@
 
 
 //# Includes
-#include <aips/aips.h>
-#include <aips/Tables/DataManager.h>
+#include <casa/aips.h>
+#include <tables/Tables/DataManager.h>
 
 //# Forward Declarations
 template<class T> class Vector;

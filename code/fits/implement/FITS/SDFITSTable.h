@@ -30,9 +30,9 @@
 #define AIPS_SDFITSTABLE_H
 
 
-#include <aips/aips.h>
-#include <trial/FITS/FITSTable.h>
-#include <aips/Containers/Block.h>
+#include <casa/aips.h>
+#include <fits/FITS/FITSTable.h>
+#include <casa/Containers/Block.h>
 
 // <summary>
 // SDFITSTable is a FITSTable which follows the Single Dish FITS Convention.

@@ -29,9 +29,9 @@
 #define AIPS_FFTSERVER_H
 
 //# Includes
-#include <aips/aips.h>
-#include <aips/Arrays/IPosition.h>
-#include <aips/Containers/Block.h>
+#include <casa/aips.h>
+#include <casa/Arrays/IPosition.h>
+#include <casa/Containers/Block.h>
 
 //# Forward Declarations
 template <class T> class Array;

@@ -25,14 +25,14 @@
 //#
 //# $Id$
 
-#include <aips/Lattices/TempLattice.h>
-#include <aips/Lattices/PagedArray.h>
-#include <aips/Lattices/ArrayLattice.h>
-#include <aips/Tables/Table.h>
-#include <aips/Tables/SetupNewTab.h>
-#include <aips/Tables/TableDesc.h>
-#include <aips/Arrays/IPosition.h>
-#include <aips/System/AppInfo.h>
+#include <lattices/Lattices/TempLattice.h>
+#include <lattices/Lattices/PagedArray.h>
+#include <lattices/Lattices/ArrayLattice.h>
+#include <tables/Tables/Table.h>
+#include <tables/Tables/SetupNewTab.h>
+#include <tables/Tables/TableDesc.h>
+#include <casa/Arrays/IPosition.h>
+#include <casa/System/AppInfo.h>
 
 
 template<class T>

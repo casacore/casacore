@@ -25,22 +25,22 @@
 //#
 //# $Id$
 
-#include <trial/LatticeMath/LatticeFit.h>
+#include <lattices/LatticeMath/LatticeFit.h>
 
-#include <aips/Functionals/Function.h>
-#include <aips/Lattices/Lattice.h>
-#include <trial/Lattices/MaskedLattice.h>
-#include <trial/Lattices/MaskedLatticeIterator.h>
-#include <aips/Lattices/LatticeStepper.h>
-#include <aips/Lattices/TiledLineStepper.h>
-#include <aips/Arrays/IPosition.h>
-#include <aips/Arrays/Vector.h>
-#include <aips/Arrays/Matrix.h>
-#include <aips/Arrays/ArrayMath.h>
-#include <aips/Exceptions/Error.h>
-#include <aips/Logging/LogIO.h>
-#include <aips/Logging/LogOrigin.h>
-#include <aips/System/ProgressMeter.h>
+#include <scimath/Functionals/Function.h>
+#include <lattices/Lattices/Lattice.h>
+#include <lattices/Lattices/MaskedLattice.h>
+#include <lattices/Lattices/MaskedLatticeIterator.h>
+#include <lattices/Lattices/LatticeStepper.h>
+#include <lattices/Lattices/TiledLineStepper.h>
+#include <casa/Arrays/IPosition.h>
+#include <casa/Arrays/Vector.h>
+#include <casa/Arrays/Matrix.h>
+#include <casa/Arrays/ArrayMath.h>
+#include <casa/Exceptions/Error.h>
+#include <casa/Logging/LogIO.h>
+#include <casa/Logging/LogOrigin.h>
+#include <casa/System/ProgressMeter.h>
 
 
 uInt LatticeFit::fitProfiles (Lattice<Float> &outImage,

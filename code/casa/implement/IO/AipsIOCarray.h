@@ -29,7 +29,7 @@
 #define AIPS_AIPSIOCARRAY_H
 
 //# Includes
-#include <aips/IO/AipsIO.h>
+#include <casa/IO/AipsIO.h>
 
 
 // <summary> 

@@ -24,17 +24,17 @@
 //#                        Charlottesville, VA 22903-2475 USA
 //#
 //# $Id$
-#include <aips/Exceptions/Error.h>
-#include <aips/Arrays/ArrayMath.h>
-#include <aips/Arrays/ArrayLogical.h>
-#include <aips/Arrays/MaskedArray.h>
-#include <aips/Arrays/MaskArrMath.h>
-#include <aips/Quanta/Quantum.h>
-#include <aips/Quanta/MVTime.h>
-#include <trial/MSVis/VisibilityIterator.h>
-#include <trial/MSVis/VisBuffer.h>
-#include <trial/Flagging/RFASelector.h>
-#include <aips/stdio.h>
+#include <casa/Exceptions/Error.h>
+#include <casa/Arrays/ArrayMath.h>
+#include <casa/Arrays/ArrayLogical.h>
+#include <casa/Arrays/MaskedArray.h>
+#include <casa/Arrays/MaskArrMath.h>
+#include <casa/Quanta/Quantum.h>
+#include <casa/Quanta/MVTime.h>
+#include <msvis/MSVis/VisibilityIterator.h>
+#include <msvis/MSVis/VisBuffer.h>
+#include <flagging/Flagging/RFASelector.h>
+#include <casa/stdio.h>
 
 // -----------------------------------------------------------------------
 // reformRange

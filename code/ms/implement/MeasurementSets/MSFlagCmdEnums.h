@@ -29,7 +29,7 @@
 #if !defined(AIPS_MSFLAGCMDENUMS_H)
 #define AIPS_MSFLAGCMDENUMS_H
 
-#include <aips/aips.h>
+#include <casa/aips.h>
 
 // <use visibility=export>
 

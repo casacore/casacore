@@ -25,16 +25,16 @@
 //#
 //# $Id$
 
-#include <aips/Lattices/PagedArrIter.h>
-#include <aips/Lattices/LatticeStepper.h>
-#include <aips/Arrays/Vector.h>
-#include <aips/Arrays/Matrix.h>
-#include <aips/Arrays/Cube.h>
-#include <aips/Arrays/IPosition.h>
-#include <aips/Utilities/DefaultValue.h>
-#include <aips/BasicSL/String.h>
-#include <aips/Utilities/Assert.h>
-#include <aips/Exceptions/Error.h>
+#include <lattices/Lattices/PagedArrIter.h>
+#include <lattices/Lattices/LatticeStepper.h>
+#include <casa/Arrays/Vector.h>
+#include <casa/Arrays/Matrix.h>
+#include <casa/Arrays/Cube.h>
+#include <casa/Arrays/IPosition.h>
+#include <casa/Utilities/DefaultValue.h>
+#include <casa/BasicSL/String.h>
+#include <casa/Utilities/Assert.h>
+#include <casa/Exceptions/Error.h>
 
 
 template<class T>

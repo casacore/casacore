@@ -30,14 +30,14 @@
 
 
 //# Includes
-#include <trial/Images/ImageInterface.h>
-#include <trial/Images/MaskSpecifier.h>
-#include <trial/Tables/TiledFileAccess.h>
-#include <aips/Lattices/TiledShape.h>
-#include <aips/Containers/Record.h>
-// #include <aips/FITS/fits.h>
-#include <aips/BasicSL/String.h>
-#include <aips/Utilities/DataType.h>
+#include <images/Images/ImageInterface.h>
+#include <images/Images/MaskSpecifier.h>
+#include <tables/Tables/TiledFileAccess.h>
+#include <lattices/Lattices/TiledShape.h>
+#include <casa/Containers/Record.h>
+// #include <fits/FITS/fits.h>
+#include <casa/BasicSL/String.h>
+#include <casa/Utilities/DataType.h>
 
 
 //# Forward Declarations

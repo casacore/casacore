@@ -30,9 +30,9 @@
 
 
 //# Includes
-#include <trial/Images/RegionHandler.h>
-#include <aips/BasicSL/String.h>
-#include <aips/Containers/SimOrdMap.h>
+#include <images/Images/RegionHandler.h>
+#include <casa/BasicSL/String.h>
+#include <casa/Containers/SimOrdMap.h>
 
 // <summary>
 // Class for keeping regions in memory.

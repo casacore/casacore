@@ -30,13 +30,13 @@
 
 
 //# Includes
-#include <aips/aips.h>
-#include <aips/Quanta/QMath.h>
-#include <aips/Quanta/Quantum.h>
-#include <aips/Measures/MDoppler.h>
-#include <trial/System/PGPlotter.h>
-#include <aips/Logging/LogIO.h>
-#include <aips/Arrays/Vector.h>
+#include <casa/aips.h>
+#include <casa/Quanta/QMath.h>
+#include <casa/Quanta/Quantum.h>
+#include <measures/Measures/MDoppler.h>
+#include <casa/System/PGPlotter.h>
+#include <casa/Logging/LogIO.h>
+#include <casa/Arrays/Vector.h>
 
 //# Forward Declarations
 template <class T> class Matrix;
@@ -50,7 +50,7 @@ class CoordinateSystem;
 class IPosition;
 class String;
 class Unit;
-#include <aips/iosfwd.h>
+#include <casa/iosfwd.h>
 
 // <summary>
 // This class generates moments from an image.

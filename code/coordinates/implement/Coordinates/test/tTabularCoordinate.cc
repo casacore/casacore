@@ -27,18 +27,18 @@
 //#
 
  
-#include <aips/Arrays/Vector.h>
-#include <aips/Arrays/Matrix.h>
-#include <aips/Arrays/ArrayLogical.h>
-#include <aips/Arrays/ArrayMath.h>
-#include <aips/BasicMath/Math.h>
-#include <trial/Coordinates/TabularCoordinate.h>
-#include <aips/Exceptions/Error.h>
-#include <aips/Tables/TableRecord.h>
-#include <aips/Utilities/Assert.h>
-#include <aips/Quanta/Quantum.h>
+#include <casa/Arrays/Vector.h>
+#include <casa/Arrays/Matrix.h>
+#include <casa/Arrays/ArrayLogical.h>
+#include <casa/Arrays/ArrayMath.h>
+#include <casa/BasicMath/Math.h>
+#include <coordinates/Coordinates/TabularCoordinate.h>
+#include <casa/Exceptions/Error.h>
+#include <tables/Tables/TableRecord.h>
+#include <casa/Utilities/Assert.h>
+#include <casa/Quanta/Quantum.h>
 
-#include <aips/iostream.h>
+#include <casa/iostream.h>
 
 TabularCoordinate makeLinearCoordinate(String& axisName,
                                        String& axisUnit,

@@ -25,20 +25,20 @@
 //# $Id$
 
 //# Includes
-#include <aips/TableMeasures/ScalarMeasColumn.h>
-#include <aips/TableMeasures/TableMeasDescBase.h>
-#include <aips/TableMeasures/TableMeasOffsetDesc.h>
-#include <aips/TableMeasures/TableMeasRefDesc.h>
-#include <aips/Measures/MeasConvert.h>
-#include <aips/Quanta/MeasValue.h>
-#include <aips/Tables/ArrayColumn.h>
-#include <aips/Tables/ColumnDesc.h>
-#include <aips/Tables/ScalarColumn.h>
-#include <aips/Tables/Table.h>
-#include <aips/Tables/TableDesc.h>
-#include <aips/Tables/TableError.h>
-#include <aips/Utilities/Assert.h>
-#include <aips/BasicSL/String.h>
+#include <measures/TableMeasures/ScalarMeasColumn.h>
+#include <measures/TableMeasures/TableMeasDescBase.h>
+#include <measures/TableMeasures/TableMeasOffsetDesc.h>
+#include <measures/TableMeasures/TableMeasRefDesc.h>
+#include <measures/Measures/MeasConvert.h>
+#include <casa/Quanta/MeasValue.h>
+#include <tables/Tables/ArrayColumn.h>
+#include <tables/Tables/ColumnDesc.h>
+#include <tables/Tables/ScalarColumn.h>
+#include <tables/Tables/Table.h>
+#include <tables/Tables/TableDesc.h>
+#include <tables/Tables/TableError.h>
+#include <casa/Utilities/Assert.h>
+#include <casa/BasicSL/String.h>
 
 template<class M>
 ROScalarMeasColumn<M>::ROScalarMeasColumn()

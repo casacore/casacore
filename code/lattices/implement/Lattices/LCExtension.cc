@@ -26,12 +26,12 @@
 //# $Id$
 
 
-#include <trial/Lattices/LCExtension.h>
-#include <trial/Lattices/LCBox.h>
-#include <aips/Arrays/Vector.h>
-#include <aips/Tables/TableRecord.h>
-#include <aips/Utilities/GenSort.h>
-#include <aips/Exceptions/Error.h>
+#include <lattices/Lattices/LCExtension.h>
+#include <lattices/Lattices/LCBox.h>
+#include <casa/Arrays/Vector.h>
+#include <tables/Tables/TableRecord.h>
+#include <casa/Utilities/GenSort.h>
+#include <casa/Exceptions/Error.h>
 
 
 LCExtension::LCExtension()

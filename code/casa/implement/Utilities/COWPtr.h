@@ -29,8 +29,8 @@
 #if !defined(AIPS_COWPTR_H)
 #define AIPS_COWPTR_H
 
-#include <aips/aips.h>
-#include <aips/Utilities/CountedPtr.h>
+#include <casa/aips.h>
+#include <casa/Utilities/CountedPtr.h>
 
 // <summary>
 // Copy-On-Write-Pointer class - allows control of copy based on constness.
@@ -147,7 +147,7 @@
 // The caller of the function will get their piece of a const array without
 // making a copy until the last possible moment (maybe never.)
 // <srcblock>
-// #include <aips/Utilities/COWPtr.h>
+// #include <casa/Utilities/COWPtr.h>
 // main(){
 //   // create a null filled COWPtr
 //   COWPtr<Array<Float> > COW;

@@ -25,30 +25,30 @@
 //#
 //# $Id$
 
-#include <aips/Tables/Table.h>
-#include <aips/Tables/SetupNewTab.h>
-#include <aips/Tables/PlainTable.h>
-#include <aips/Tables/MemoryTable.h>
-#include <aips/Tables/RefTable.h>
-#include <aips/Tables/NullTable.h>
-#include <aips/Tables/TableCopy.h>
-#include <aips/Tables/ExprDerNode.h>
-#include <aips/Tables/TableDesc.h>
-#include <aips/Tables/TableLock.h>
-#include <aips/Tables/TableError.h>
-#include <aips/Tables/StManColumn.h>
-#include <aips/Tables/ExprNode.h>
-#include <aips/Arrays/Vector.h>
-#include <aips/Arrays/ArrayMath.h>
-#include <aips/Arrays/ArrayIO.h>
-#include <aips/Arrays/Slice.h>
-#include <aips/Containers/Block.h>
-#include <aips/Containers/Record.h>
-#include <aips/IO/AipsIO.h>
-#include <aips/OS/File.h>
-#include <aips/OS/Directory.h>
-#include <aips/OS/DirectoryIterator.h>
-#include <aips/iostream.h>
+#include <tables/Tables/Table.h>
+#include <tables/Tables/SetupNewTab.h>
+#include <tables/Tables/PlainTable.h>
+#include <tables/Tables/MemoryTable.h>
+#include <tables/Tables/RefTable.h>
+#include <tables/Tables/NullTable.h>
+#include <tables/Tables/TableCopy.h>
+#include <tables/Tables/ExprDerNode.h>
+#include <tables/Tables/TableDesc.h>
+#include <tables/Tables/TableLock.h>
+#include <tables/Tables/TableError.h>
+#include <tables/Tables/StManColumn.h>
+#include <tables/Tables/ExprNode.h>
+#include <casa/Arrays/Vector.h>
+#include <casa/Arrays/ArrayMath.h>
+#include <casa/Arrays/ArrayIO.h>
+#include <casa/Arrays/Slice.h>
+#include <casa/Containers/Block.h>
+#include <casa/Containers/Record.h>
+#include <casa/IO/AipsIO.h>
+#include <casa/OS/File.h>
+#include <casa/OS/Directory.h>
+#include <casa/OS/DirectoryIterator.h>
+#include <casa/iostream.h>
 
 
 Table::ScratchCallback* Table::scratchCallback_p = 0;

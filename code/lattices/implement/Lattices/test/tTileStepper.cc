@@ -25,10 +25,10 @@
 //#
 //# $Id$
 
-#include <aips/Lattices/TileStepper.h>
-#include <aips/Inputs/Input.h>
-#include <aips/Utilities/Assert.h>
-#include <aips/iostream.h>
+#include <lattices/Lattices/TileStepper.h>
+#include <casa/Inputs/Input.h>
+#include <casa/Utilities/Assert.h>
+#include <casa/iostream.h>
 
 
 main (int argc, char *argv[])

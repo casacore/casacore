@@ -25,10 +25,10 @@
 //#
 //# $Id$
 
-#include <trial/MeasurementSets/MSSysCalIndex.h>
+#include <ms/MeasurementSets/MSSysCalIndex.h>
 
-#include <aips/Arrays/ArrayUtil.h>
-#include <aips/MeasurementSets/MSSysCal.h>
+#include <casa/Arrays/ArrayUtil.h>
+#include <ms/MeasurementSets/MSSysCal.h>
 
 MSSysCalIndex::MSSysCalIndex() 
     : MSTableIndex()

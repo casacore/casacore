@@ -49,7 +49,7 @@
 //
 // <group name="OrderedMap IO">
 
-#include <aips/Containers/MapIO.h>
-#include <aips/Containers/OrderedMap.h>
+#include <casa/Containers/MapIO.h>
+#include <casa/Containers/OrderedMap.h>
 
 #endif

@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#include <aips/Tables/TableCache.h>
-#include <aips/OS/Path.h>
+#include <tables/Tables/TableCache.h>
+#include <casa/OS/Path.h>
 
 
 TableCache::TableCache()

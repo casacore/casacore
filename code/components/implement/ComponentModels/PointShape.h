@@ -29,10 +29,10 @@
 #if !defined(AIPS_POINTSHAPE_H)
 #define AIPS_POINTSHAPE_H
 
-#include <aips/aips.h>
-#include <trial/ComponentModels/ComponentShape.h>
-#include <trial/ComponentModels/ComponentType.h>
-#include <aips/BasicSL/Complex.h>
+#include <casa/aips.h>
+#include <components/ComponentModels/ComponentShape.h>
+#include <components/ComponentModels/ComponentType.h>
+#include <casa/BasicSL/Complex.h>
 
 class MVAngle;
 class MDirection;

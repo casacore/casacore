@@ -29,15 +29,15 @@
 #if !defined(AIPS_FFTPACK_H)
 #define AIPS_FFTPACK_H
 
-#include <aips/aips.h>
+#include <casa/aips.h>
   //
   // The SGI compiler with -LANG:std has some trouble including both Complexfwd.h
   // and Complex.h so we bypass the problem by include Complex.h only.
   //
 #if defined(AIPS_USE_NEW_SGI)
-#include <aips/BasicSL/Complex.h>
+#include <casa/BasicSL/Complex.h>
 #else
-#include <aips/BasicSL/Complexfwd.h>
+#include <casa/BasicSL/Complexfwd.h>
 #endif
 
 // <summary>C++ interface to the Fortran FFTPACK library</summary>

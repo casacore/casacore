@@ -26,20 +26,20 @@
 //# $Id$
 
 //# Includes
-#include <aips/aips.h>
-#include <aips/iomanip.h>
-#include <aips/Arrays/Vector.h>
-#include <aips/Arrays/ArrayIO.h>
-#include <aips/Measures.h>
-#include <aips/Measures/MeasJPL.h>
-#include <aips/Quanta/MVEpoch.h>
-#include <aips/Quanta/MVDirection.h>
-#include <aips/Measures/MeasIERS.h>
-#include <aips/Measures/MeasTable.h>
-#include <aips/Measures/MDirection.h>
-#include <aips/Measures/MCFrame.h>
-#include <aips/Measures/MEpoch.h>
-#include <aips/iostream.h>
+#include <casa/aips.h>
+#include <casa/iomanip.h>
+#include <casa/Arrays/Vector.h>
+#include <casa/Arrays/ArrayIO.h>
+#include <measures/Measures.h>
+#include <measures/Measures/MeasJPL.h>
+#include <casa/Quanta/MVEpoch.h>
+#include <casa/Quanta/MVDirection.h>
+#include <measures/Measures/MeasIERS.h>
+#include <measures/Measures/MeasTable.h>
+#include <measures/Measures/MDirection.h>
+#include <measures/Measures/MCFrame.h>
+#include <measures/Measures/MEpoch.h>
+#include <casa/iostream.h>
 
 int main()
 {

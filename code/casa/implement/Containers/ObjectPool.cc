@@ -26,7 +26,7 @@
 //# $Id$
 
 //# Includes
-#include <aips/Containers/ObjectPool.h>
+#include <casa/Containers/ObjectPool.h>
 
 //# Constructors
 template <class T, class Key>

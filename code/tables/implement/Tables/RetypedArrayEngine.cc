@@ -26,18 +26,18 @@
 //# $Id$
 
 //# Includes
-#include <aips/Tables/RetypedArrayEngine.h>
-#include <aips/Tables/Table.h>
-#include <aips/Tables/ArrayColumn.h>
-#include <aips/Tables/ColumnDesc.h>
-#include <aips/Tables/DataManError.h>
-#include <aips/Arrays/Vector.h>
-#include <aips/Arrays/Array.h>
-#include <aips/Arrays/ArrayIter.h>
-#include <aips/Containers/Record.h>
-#include <aips/BasicSL/String.h>
-#include <aips/Utilities/ValTypeId.h>
-#include <aips/Utilities/Copy.h>
+#include <tables/Tables/RetypedArrayEngine.h>
+#include <tables/Tables/Table.h>
+#include <tables/Tables/ArrayColumn.h>
+#include <tables/Tables/ColumnDesc.h>
+#include <tables/Tables/DataManError.h>
+#include <casa/Arrays/Vector.h>
+#include <casa/Arrays/Array.h>
+#include <casa/Arrays/ArrayIter.h>
+#include <casa/Containers/Record.h>
+#include <casa/BasicSL/String.h>
+#include <casa/Utilities/ValTypeId.h>
+#include <casa/Utilities/Copy.h>
 
 
 template<class S, class T>

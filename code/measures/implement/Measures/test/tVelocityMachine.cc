@@ -26,18 +26,18 @@
 //# $Id$
 
 //# Includes
-#include <aips/aips.h>
-#include <aips/Exceptions/Error.h>
-#include <aips/Measures.h>
-#include <aips/Measures/VelocityMachine.h>
-#include <aips/Quanta/MVTime.h>
-#include <aips/Measures/MDirection.h>
-#include <aips/Measures/MPosition.h>
-#include <aips/Measures/MEpoch.h>
-#include <aips/Measures/MFrequency.h>
-#include <aips/Measures/MDoppler.h>
-#include <aips/Arrays/Vector.h>
-#include <aips/iostream.h>
+#include <casa/aips.h>
+#include <casa/Exceptions/Error.h>
+#include <measures/Measures.h>
+#include <measures/Measures/VelocityMachine.h>
+#include <casa/Quanta/MVTime.h>
+#include <measures/Measures/MDirection.h>
+#include <measures/Measures/MPosition.h>
+#include <measures/Measures/MEpoch.h>
+#include <measures/Measures/MFrequency.h>
+#include <measures/Measures/MDoppler.h>
+#include <casa/Arrays/Vector.h>
+#include <casa/iostream.h>
 
 int main() {
 

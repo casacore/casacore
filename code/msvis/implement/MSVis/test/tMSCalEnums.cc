@@ -26,12 +26,12 @@
 //# $Id$
 
 
-#include <aips/aips.h>
-#include <aips/iostream.h>
-#include <aips/Containers/Block.h>
-#include <aips/Arrays/Vector.h>
-#include <aips/Utilities/Assert.h>
-#include <trial/MSVis/MSCalEnums.h>
+#include <casa/aips.h>
+#include <casa/iostream.h>
+#include <casa/Containers/Block.h>
+#include <casa/Arrays/Vector.h>
+#include <casa/Utilities/Assert.h>
+#include <msvis/MSVis/MSCalEnums.h>
 
 // <summary>
 // Test program for class MSCalEnums.

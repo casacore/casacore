@@ -31,7 +31,7 @@
 #define AIPS_BINARY_SEARCH_H
 
 //# Includes
-#include <aips/aips.h>
+#include <casa/aips.h>
 
 // <summary>
 // Binary search a sorted, linear, data structure.

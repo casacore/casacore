@@ -29,8 +29,8 @@
 #define AIPS_TSMFILE_H
 
 //# Includes
-#include <aips/aips.h>
-#include <aips/IO/BucketFile.h>
+#include <casa/aips.h>
+#include <casa/IO/BucketFile.h>
 
 //# Forward Declarations
 class TiledStMan;

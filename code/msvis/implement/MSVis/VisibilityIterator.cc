@@ -25,20 +25,20 @@
 //#
 //# $Id$
 
-#include <trial/MSVis/VisibilityIterator.h>
-#include <trial/MSVis/VisBuffer.h>
-#include <trial/Mathematics/InterpolateArray1D.h>
-#include <aips/Arrays/ArrayLogical.h>
-#include <aips/Arrays/ArrayMath.h>
-#include <aips/Arrays/MaskedArray.h>
-#include <aips/Exceptions/Error.h>
-#include <aips/Utilities/Assert.h>
-#include <aips/Utilities/Sort.h>
-#include <aips/MeasurementSets/MSColumns.h>
-#include <aips/Quanta/MVTime.h>
-#include <aips/Tables/TableDesc.h>
-#include <aips/Tables/ColDescSet.h>
-#include <aips/Tables/TableRecord.h>
+#include <msvis/MSVis/VisibilityIterator.h>
+#include <msvis/MSVis/VisBuffer.h>
+#include <scimath/Mathematics/InterpolateArray1D.h>
+#include <casa/Arrays/ArrayLogical.h>
+#include <casa/Arrays/ArrayMath.h>
+#include <casa/Arrays/MaskedArray.h>
+#include <casa/Exceptions/Error.h>
+#include <casa/Utilities/Assert.h>
+#include <casa/Utilities/Sort.h>
+#include <ms/MeasurementSets/MSColumns.h>
+#include <casa/Quanta/MVTime.h>
+#include <tables/Tables/TableDesc.h>
+#include <tables/Tables/ColDescSet.h>
+#include <tables/Tables/TableRecord.h>
 
 ROVisibilityIterator::ROVisibilityIterator() {}
 

@@ -25,14 +25,14 @@
 //#
 //# $Id$
 
-#include <trial/Mathematics/InterpolateArray1D.h>
-#include <aips/Arrays/Vector.h>
-#include <aips/Exceptions/Error.h>
-#include <aips/Arrays/IPosition.h>
-#include <aips/BasicMath/Math.h>
-#include <aips/Utilities/Assert.h>
-#include <aips/Utilities/BinarySearch.h>
-#include <aips/Utilities/GenSort.h>
+#include <scimath/Mathematics/InterpolateArray1D.h>
+#include <casa/Arrays/Vector.h>
+#include <casa/Exceptions/Error.h>
+#include <casa/Arrays/IPosition.h>
+#include <casa/BasicMath/Math.h>
+#include <casa/Utilities/Assert.h>
+#include <casa/Utilities/BinarySearch.h>
+#include <casa/Utilities/GenSort.h>
 
 template <class Domain, class Range>
 void InterpolateArray1D<Domain,Range>::interpolate(Array<Range>& yout, 

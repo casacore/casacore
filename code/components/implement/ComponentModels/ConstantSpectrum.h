@@ -28,9 +28,9 @@
 #if !defined(AIPS_CONSTANTSPECTRUM_H)
 #define AIPS_CONSTANTSPECTRUM_H
 
-#include <aips/aips.h>
-#include <trial/ComponentModels/ComponentType.h>
-#include <trial/ComponentModels/SpectralModel.h>
+#include <casa/aips.h>
+#include <components/ComponentModels/ComponentType.h>
+#include <components/ComponentModels/SpectralModel.h>
 
 class MFrequency;
 class RecordInterface;

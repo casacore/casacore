@@ -24,14 +24,14 @@
 //#                        Charlottesville, VA 22903-2475 USA
 //#
 //# $Id$
-#include <trial/Flagging/RFDataMapper.h> 
-#include <aips/Arrays/Slice.h>
-#include <aips/Exceptions/Error.h>
-#include <aips/BasicMath/Math.h>
-#include <aips/BasicSL/Constants.h>
-#include <trial/MSVis/VisBuffer.h>
-#include <trial/MSVis/VisibilityIterator.h>
-#include <aips/Measures/MDirection.h>
+#include <flagging/Flagging/RFDataMapper.h> 
+#include <casa/Arrays/Slice.h>
+#include <casa/Exceptions/Error.h>
+#include <casa/BasicMath/Math.h>
+#include <casa/BasicSL/Constants.h>
+#include <msvis/MSVis/VisBuffer.h>
+#include <msvis/MSVis/VisibilityIterator.h>
+#include <measures/Measures/MDirection.h>
 
 // Define functions for mapping a VisBuffer to obsevred, model and corrected
 // visibility cubes

@@ -30,10 +30,10 @@
 #define AIPS_COMBIFUNCTION_H
 
 //# Includes
-#include <aips/aips.h>
-#include <aips/Functionals/CombiParam.h>
-#include <aips/Mathematics/AutoDiff.h>
-#include <aips/Mathematics/AutoDiffMath.h>
+#include <casa/aips.h>
+#include <scimath/Functionals/CombiParam.h>
+#include <scimath/Mathematics/AutoDiff.h>
+#include <scimath/Mathematics/AutoDiffMath.h>
 
 //# Forward declarations
 

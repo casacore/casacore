@@ -25,12 +25,12 @@
 //#
 //# $Id$
 
-#include <aips/Tables/NullTable.h>
-#include <aips/Tables/Table.h>
-#include <aips/Tables/TableDesc.h>
-#include <aips/Tables/TableError.h>
-#include <aips/Containers/Record.h>
-#include <aips/Arrays/Vector.h>
+#include <tables/Tables/NullTable.h>
+#include <tables/Tables/Table.h>
+#include <tables/Tables/TableDesc.h>
+#include <tables/Tables/TableError.h>
+#include <casa/Containers/Record.h>
+#include <casa/Arrays/Vector.h>
 
 
 NullTable::NullTable()

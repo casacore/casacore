@@ -26,10 +26,10 @@
 //# $Id$
 
 //# Includes
-#include <aips/Quanta/QLogical.h>
-#include <aips/BasicMath/Math.h>
-#include <aips/Arrays/ArrayLogical.h>
-#include <aips/Exceptions/Error.h>
+#include <casa/Quanta/QLogical.h>
+#include <casa/BasicMath/Math.h>
+#include <casa/Arrays/ArrayLogical.h>
+#include <casa/Exceptions/Error.h>
 
 Bool QMakeBool(Int val) {
     return ((val));

@@ -25,15 +25,15 @@
 //#
 //# $Id$
 
-#include <trial/IO/TapeIO.h>
-#include <aips/OS/Path.h>
-#include <aips/BasicSL/String.h>
-#include <aips/Utilities/Assert.h>
-#include <aips/Exceptions/Error.h>
+#include <casa/IO/TapeIO.h>
+#include <casa/OS/Path.h>
+#include <casa/BasicSL/String.h>
+#include <casa/Utilities/Assert.h>
+#include <casa/Exceptions/Error.h>
 #include <unistd.h>               // needed for ::close
 #include <fcntl.h>                // needed for ::open
 #include <errno.h>                // needed for errno
-#include <aips/string.h>          // needed for strerror
+#include <casa/string.h>          // needed for strerror
 #include <sys/mtio.h>             // needed for ioctl
 #if defined(AIPS_SOLARIS) || defined(AIPS_DARWIN)
 #include <sys/ioctl.h>            // needed for ioctl

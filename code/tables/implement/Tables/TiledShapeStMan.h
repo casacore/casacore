@@ -30,10 +30,10 @@
 
 
 //# Includes
-#include <aips/aips.h>
-#include <aips/Tables/TiledStMan.h>
-#include <aips/Containers/Block.h>
-#include <aips/BasicSL/String.h>
+#include <casa/aips.h>
+#include <tables/Tables/TiledStMan.h>
+#include <casa/Containers/Block.h>
+#include <casa/BasicSL/String.h>
 
 //# Forward Declarations
 

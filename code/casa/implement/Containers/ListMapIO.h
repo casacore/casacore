@@ -49,7 +49,7 @@
 //
 // <group name="ListMap IO">
 
-#include <aips/Containers/ListMap.h>
-#include <aips/Containers/MapIO.h>
+#include <casa/Containers/ListMap.h>
+#include <casa/Containers/MapIO.h>
 
 #endif

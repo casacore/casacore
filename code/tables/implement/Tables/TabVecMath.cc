@@ -25,6 +25,6 @@
 //#
 //# $Id$
 
-#include <aips/Tables/TabVecMath.h>
+#include <tables/Tables/TabVecMath.h>
 
 //# All functions are inlined, so there is no actual code.

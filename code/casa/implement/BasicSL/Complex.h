@@ -31,9 +31,9 @@
 
 
 //# Includes
-#include <aips/aips.h>
-#include <aips/BasicSL/Complexfwd.h>
-#include <aips/complex.h>
+#include <casa/aips.h>
+#include <casa/BasicSL/Complexfwd.h>
+#include <casa/complex.h>
 
 // <summary>
 // Single and double precision complex numbers

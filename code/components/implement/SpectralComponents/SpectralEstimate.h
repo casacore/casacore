@@ -30,9 +30,9 @@
 #define TRIAL_SPECTRALESTIMATE_H
 
 //# Includes
-#include <aips/aips.h>
-#include <trial/SpectralComponents/SpectralElement.h>
-#include <trial/SpectralComponents/SpectralList.h>
+#include <casa/aips.h>
+#include <components/SpectralComponents/SpectralElement.h>
+#include <components/SpectralComponents/SpectralList.h>
 
 //# Forward Declarations
 template <class T> class Vector;

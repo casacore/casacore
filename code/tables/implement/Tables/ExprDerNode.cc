@@ -25,19 +25,19 @@
 //#
 //# $Id$
 
-#include <aips/Tables/ExprDerNode.h>
-#include <aips/Tables/Table.h>
-#include <aips/Tables/ScalarColumn.h>
-#include <aips/Tables/ColumnDesc.h>
-#include <aips/Tables/TableError.h>
-#include <aips/Arrays/Vector.h>
-#include <aips/Arrays/ArrayLogical.h>
-#include <aips/Utilities/DataType.h>
-#include <aips/BasicMath/Math.h>
-#include <aips/Quanta/MVTime.h>
-#include <aips/OS/Time.h>
-#include <aips/Utilities/Assert.h>
-#include <aips/Exceptions/Error.h>
+#include <tables/Tables/ExprDerNode.h>
+#include <tables/Tables/Table.h>
+#include <tables/Tables/ScalarColumn.h>
+#include <tables/Tables/ColumnDesc.h>
+#include <tables/Tables/TableError.h>
+#include <casa/Arrays/Vector.h>
+#include <casa/Arrays/ArrayLogical.h>
+#include <casa/Utilities/DataType.h>
+#include <casa/BasicMath/Math.h>
+#include <casa/Quanta/MVTime.h>
+#include <casa/OS/Time.h>
+#include <casa/Utilities/Assert.h>
+#include <casa/Exceptions/Error.h>
 
 
 

@@ -29,9 +29,9 @@
 #define AIPS_ARRCOLDATA_H
 
 //# Includes
-#include <aips/aips.h>
-#include <aips/Tables/PlainColumn.h>
-#include <aips/Arrays/IPosition.h>
+#include <casa/aips.h>
+#include <tables/Tables/PlainColumn.h>
+#include <casa/Arrays/IPosition.h>
 
 //# Forward Declarations
 class ColumnSet;

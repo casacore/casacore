@@ -26,28 +26,28 @@
 //# $Id$
 //
 
-#include <trial/Images/ImageUtilities.h>
+#include <images/Images/ImageUtilities.h>
 
-#include <aips/Arrays/MaskedArray.h>
-#include <trial/Coordinates/CoordinateSystem.h>
-#include <trial/Coordinates/LinearCoordinate.h>
-#include <trial/Coordinates/SpectralCoordinate.h>
-#include <trial/Coordinates/TabularCoordinate.h>
-#include <aips/Exceptions/Error.h>
-#include <trial/Images/ImageInfo.h>
-#include <trial/Images/ImageInterface.h>
-#include <trial/Images/TempImage.h>
-#include <trial/Images/RebinImage.h>
-#include <trial/Images/ImageFit1D.h>
-#include <aips/Lattices/TiledShape.h>
-#include <aips/Lattices/TempLattice.h>
-#include <aips/Lattices/TiledLineStepper.h>
-#include <trial/Lattices/MaskedLatticeIterator.h>
-#include <trial/SpectralComponents/SpectralElement.h>
-#include <aips/System/ProgressMeter.h>
-#include <aips/Logging/LogIO.h>
-#include <aips/Quanta/Unit.h>
-#include <aips/Utilities/Assert.h>
+#include <casa/Arrays/MaskedArray.h>
+#include <coordinates/Coordinates/CoordinateSystem.h>
+#include <coordinates/Coordinates/LinearCoordinate.h>
+#include <coordinates/Coordinates/SpectralCoordinate.h>
+#include <coordinates/Coordinates/TabularCoordinate.h>
+#include <casa/Exceptions/Error.h>
+#include <images/Images/ImageInfo.h>
+#include <images/Images/ImageInterface.h>
+#include <images/Images/TempImage.h>
+#include <images/Images/RebinImage.h>
+#include <images/Images/ImageFit1D.h>
+#include <lattices/Lattices/TiledShape.h>
+#include <lattices/Lattices/TempLattice.h>
+#include <lattices/Lattices/TiledLineStepper.h>
+#include <lattices/Lattices/MaskedLatticeIterator.h>
+#include <components/SpectralComponents/SpectralElement.h>
+#include <casa/System/ProgressMeter.h>
+#include <casa/Logging/LogIO.h>
+#include <casa/Quanta/Unit.h>
+#include <casa/Utilities/Assert.h>
 
 
 template <typename T, typename U> 

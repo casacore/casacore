@@ -29,7 +29,7 @@
 #if !defined(AIPS_MSDOPPLERENUMS_H)
 #define AIPS_MSDOPPLERENUMS_H
 
-#include <aips/aips.h>
+#include <casa/aips.h>
 
 // <use visibility=export>
 

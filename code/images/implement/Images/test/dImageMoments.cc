@@ -160,26 +160,26 @@
 //            The default is to not save the smoothed image.
 //
 //
-#include <aips/aips.h>
-#include <aips/System/Aipsrc.h>
-#include <aips/Arrays/Vector.h>
-#include <aips/Exceptions/Error.h>
-#include <aips/Inputs/Input.h>
-#include <aips/Logging.h>
-#include <aips/Utilities/DataType.h>
-#include <aips/BasicSL/String.h>
-#include <aips/Utilities/Regex.h>
+#include <casa/aips.h>
+#include <casa/System/Aipsrc.h>
+#include <casa/Arrays/Vector.h>
+#include <casa/Exceptions/Error.h>
+#include <casa/Inputs/Input.h>
+#include <casa/Logging.h>
+#include <casa/Utilities/DataType.h>
+#include <casa/BasicSL/String.h>
+#include <casa/Utilities/Regex.h>
 
-#include <trial/Images/ImageMoments.h>
-#include <trial/Images/PagedImage.h>
-#include <trial/Images/SubImage.h>
-#include <trial/Images/ImageRegion.h>
-#include <trial/System/PGPlotter.h>
-#include <trial/Lattices/LCSlicer.h>
-#include <trial/Lattices/LCBox.h>
-#include <trial/Mathematics/VectorKernel.h>
+#include <images/Images/ImageMoments.h>
+#include <images/Images/PagedImage.h>
+#include <images/Images/SubImage.h>
+#include <images/Images/ImageRegion.h>
+#include <casa/System/PGPlotter.h>
+#include <lattices/Lattices/LCSlicer.h>
+#include <lattices/Lattices/LCBox.h>
+#include <scimath/Mathematics/VectorKernel.h>
 
-#include <aips/iostream.h>
+#include <casa/iostream.h>
 
 enum defaults {IN, MOMENTS, AXIS, REGION, METHOD, SMOOTH, RANGE, SNR, OUT, SMOUT, 
                PLOTTING, NDEFAULTS};

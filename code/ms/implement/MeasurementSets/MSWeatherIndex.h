@@ -29,9 +29,9 @@
 #if !defined(AIPS_MSWEATHERINDEX_H)
 #define AIPS_MSWEATHERINDEX_H
 
-#include <trial/MeasurementSets/MSTableIndex.h>
+#include <ms/MeasurementSets/MSTableIndex.h>
 
-#include <aips/Containers/RecordField.h>
+#include <casa/Containers/RecordField.h>
 
 //# forward declarations
 class MSWeather;

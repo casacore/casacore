@@ -28,8 +28,8 @@
 #if !defined(AIPS_IMAGEFFT_H)
 #define AIPS_IMAGEFFT_H
 
-#include <aips/aips.h>
-#include <trial/Images/ImageInterface.h>
+#include <casa/aips.h>
+#include <images/Images/ImageInterface.h>
 
 class CoordinateSystem;
 class IPosition;

@@ -25,11 +25,11 @@
 //#
 //# $Id$
 
-#include <trial/Fitting/FitGaussian.h>
-#include <aips/Functionals/Gaussian1D.h>
-#include <aips/Functionals/Gaussian2D.h>
-#include <trial/Functionals/Gaussian3D.h>
-#include <aips/iostream.h>
+#include <scimath/Fitting/FitGaussian.h>
+#include <scimath/Functionals/Gaussian1D.h>
+#include <scimath/Functionals/Gaussian2D.h>
+#include <scimath/Functionals/Gaussian3D.h>
+#include <casa/iostream.h>
 
 void printfparameters(Function<Double> &f);
 void printparameters(Matrix<Double> &m);

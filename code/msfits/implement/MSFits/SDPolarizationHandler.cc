@@ -26,22 +26,22 @@
 //# $Id$
 
 //# Includes
-#include <trial/MeasurementSets/SDPolarizationHandler.h>
+#include <ms/MeasurementSets/SDPolarizationHandler.h>
 
-#include <aips/Tables/ColumnsIndex.h>
-#include <aips/MeasurementSets/MeasurementSet.h>
-#include <aips/MeasurementSets/MSPolColumns.h>
-#include <aips/MeasurementSets/MSPolarization.h>
-#include <aips/Containers/Record.h>
-#include <aips/Arrays/Vector.h>
-#include <aips/Tables/ArrayColumn.h>
-#include <aips/Utilities/Assert.h>
-#include <aips/Exceptions/Error.h>
-#include <aips/BasicSL/String.h>
-#include <aips/Arrays/Matrix.h>
-#include <aips/Measures/Stokes.h>
-#include <aips/Containers/SimOrdMap.h>
-#include <aips/Arrays/ArrayLogical.h>
+#include <tables/Tables/ColumnsIndex.h>
+#include <ms/MeasurementSets/MeasurementSet.h>
+#include <ms/MeasurementSets/MSPolColumns.h>
+#include <ms/MeasurementSets/MSPolarization.h>
+#include <casa/Containers/Record.h>
+#include <casa/Arrays/Vector.h>
+#include <tables/Tables/ArrayColumn.h>
+#include <casa/Utilities/Assert.h>
+#include <casa/Exceptions/Error.h>
+#include <casa/BasicSL/String.h>
+#include <casa/Arrays/Matrix.h>
+#include <measures/Measures/Stokes.h>
+#include <casa/Containers/SimOrdMap.h>
+#include <casa/Arrays/ArrayLogical.h>
 
 SDPolarizationHandler::SDPolarizationHandler() 
     : index_p(0), msPol_p(0), msPolCols_p(0), rownr_p(-1)

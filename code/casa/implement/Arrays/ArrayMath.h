@@ -28,11 +28,11 @@
 #if !defined(AIPS_ARRAYMATH_H)
 #define AIPS_ARRAYMATH_H
 
-#include <aips/aips.h>
-#include <aips/BasicMath/Math.h>
-#include <aips/Arrays/Array.h>
+#include <casa/aips.h>
+#include <casa/BasicMath/Math.h>
+#include <casa/Arrays/Array.h>
 //# Needed to get the proper Complex typedef's
-#include <aips/BasicSL/Complex.h>
+#include <casa/BasicSL/Complex.h>
 
 template<class T> class Matrix;
 

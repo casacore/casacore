@@ -30,10 +30,10 @@
 
 
 //# Includes
-#include <aips/Tables/Table.h>
-#include <aips/Arrays/Vector.h>
-#include <aips/Containers/Block.h>
-#include <aips/Containers/Record.h>
+#include <tables/Tables/Table.h>
+#include <casa/Arrays/Vector.h>
+#include <casa/Containers/Block.h>
+#include <casa/Containers/Record.h>
 
 //# Forward Declarations
 class String;

@@ -26,14 +26,14 @@
 //# $Id$
 
 //# Includes
-#include <aips/BasicSL/Constants.h>
-#include <aips/Measures/MCRadialVelocity.h>
-#include <aips/Measures/MCFrame.h>
-#include <aips/Quanta/MVPosition.h>
-#include <aips/Quanta/MVDirection.h>
-#include <aips/Measures/Aberration.h>
-#include <aips/Measures/MeasTable.h>
-#include <aips/Measures/MDoppler.h>
+#include <casa/BasicSL/Constants.h>
+#include <measures/Measures/MCRadialVelocity.h>
+#include <measures/Measures/MCFrame.h>
+#include <casa/Quanta/MVPosition.h>
+#include <casa/Quanta/MVDirection.h>
+#include <measures/Measures/Aberration.h>
+#include <measures/Measures/MeasTable.h>
+#include <measures/Measures/MDoppler.h>
 
 //# Statics
 Bool MCRadialVelocity::stateMade_p = False;

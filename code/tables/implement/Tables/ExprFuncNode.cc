@@ -25,19 +25,19 @@
 //#
 //# $Id$
 
-#include <aips/Tables/ExprFuncNode.h>
-#include <aips/Tables/TableError.h>
-#include <aips/Tables/ExprNode.h>
-#include <aips/Tables/ExprNodeSet.h>
-#include <aips/Tables/ExprDerNode.h>
-#include <aips/Arrays/Vector.h>
-#include <aips/Arrays/ArrayMath.h>
-#include <aips/Arrays/ArrayLogical.h>
-#include <aips/Quanta/MVTime.h>
-#include <aips/OS/Time.h>
-#include <aips/BasicSL/Constants.h>
-#include <aips/BasicMath/Math.h>
-#include <aips/Utilities/Assert.h>
+#include <tables/Tables/ExprFuncNode.h>
+#include <tables/Tables/TableError.h>
+#include <tables/Tables/ExprNode.h>
+#include <tables/Tables/ExprNodeSet.h>
+#include <tables/Tables/ExprDerNode.h>
+#include <casa/Arrays/Vector.h>
+#include <casa/Arrays/ArrayMath.h>
+#include <casa/Arrays/ArrayLogical.h>
+#include <casa/Quanta/MVTime.h>
+#include <casa/OS/Time.h>
+#include <casa/BasicSL/Constants.h>
+#include <casa/BasicMath/Math.h>
+#include <casa/Utilities/Assert.h>
 
 
 TableExprFuncNode::TableExprFuncNode (FunctionType ftype, NodeDataType dtype,

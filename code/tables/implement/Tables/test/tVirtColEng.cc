@@ -37,23 +37,23 @@
 
 
 //# Includes
-#include <aips/Tables/test/dVirtColEng.h>
-#include <aips/Tables/test/dVirtColEng.cc>
-#include <aips/Tables/TableDesc.h>
-#include <aips/Tables/SetupNewTab.h>
-#include <aips/Tables/Table.h>
-#include <aips/Tables/ScaColDesc.h>
-#include <aips/Tables/ArrColDesc.h>
-#include <aips/Tables/ScalarColumn.h>
-#include <aips/Tables/ArrayColumn.h>
-#include <aips/Arrays/Cube.h>
-#include <aips/Arrays/Vector.h>
-#include <aips/Arrays/IPosition.h>
-#include <aips/Arrays/ArrayMath.h>
-#include <aips/Arrays/ArrayLogical.h>
-#include <aips/Arrays/Slicer.h>
-#include <aips/Arrays/Slice.h>
-#include <aips/iostream.h>
+#include <tables/Tables/test/dVirtColEng.h>
+#include <tables/Tables/test/dVirtColEng.cc>
+#include <tables/Tables/TableDesc.h>
+#include <tables/Tables/SetupNewTab.h>
+#include <tables/Tables/Table.h>
+#include <tables/Tables/ScaColDesc.h>
+#include <tables/Tables/ArrColDesc.h>
+#include <tables/Tables/ScalarColumn.h>
+#include <tables/Tables/ArrayColumn.h>
+#include <casa/Arrays/Cube.h>
+#include <casa/Arrays/Vector.h>
+#include <casa/Arrays/IPosition.h>
+#include <casa/Arrays/ArrayMath.h>
+#include <casa/Arrays/ArrayLogical.h>
+#include <casa/Arrays/Slicer.h>
+#include <casa/Arrays/Slice.h>
+#include <casa/iostream.h>
 
 // <summary> Test program for virtual column engine </summary>
 

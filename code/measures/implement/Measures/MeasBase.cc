@@ -26,10 +26,10 @@
 //# $Id$
 
 //# Includes
-#include <aips/Exceptions/Error.h>
-#include <aips/Utilities/Assert.h>
-#include <aips/BasicSL/Constants.h>
-#include <aips/Measures/MeasBase.h>
+#include <casa/Exceptions/Error.h>
+#include <casa/Utilities/Assert.h>
+#include <casa/BasicSL/Constants.h>
+#include <measures/Measures/MeasBase.h>
 
 //# Constructors
 template <class Mv, class Mr>

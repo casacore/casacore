@@ -31,8 +31,8 @@
 
 
 //# Includes
-#include <aips/aips.h>
-#include <aips/Arrays/IPosition.h>
+#include <casa/aips.h>
+#include <casa/Arrays/IPosition.h>
 
 //# Forward Declarations
 class Slicer;

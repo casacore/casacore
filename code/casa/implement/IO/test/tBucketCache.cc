@@ -25,11 +25,11 @@
 //#
 //# $Id$
 
-#include <aips/IO/BucketCache.h>
-#include <aips/IO/BucketFile.h>
-#include <aips/Exceptions/Error.h>
-#include <aips/OS/Timer.h>
-#include <aips/iostream.h>
+#include <casa/IO/BucketCache.h>
+#include <casa/IO/BucketFile.h>
+#include <casa/Exceptions/Error.h>
+#include <casa/OS/Timer.h>
+#include <casa/iostream.h>
 
 // <summary>
 // Test program for the BucketCache class

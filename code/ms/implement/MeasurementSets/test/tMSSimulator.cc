@@ -25,18 +25,18 @@
 //#
 //# $Id$
 
-#include <trial/MeasurementSets/MSSimulator.h>
-#include <aips/MeasurementSets/MeasurementSet.h>
-#include <aips/Tables.h>
-#include <aips/Exceptions/Error.h>
-#include <aips/iostream.h>
-#include <aips/fstream.h>
-#include <aips/Arrays/Vector.h>
-#include <aips/Arrays/Matrix.h>
-#include <aips/Measures/MPosition.h>
-#include <aips/Quanta/MVPosition.h>
-#include <aips/Measures/MDirection.h>
-#include <aips/BasicSL/Constants.h>
+#include <ms/MeasurementSets/MSSimulator.h>
+#include <ms/MeasurementSets/MeasurementSet.h>
+#include <tables/Tables.h>
+#include <casa/Exceptions/Error.h>
+#include <casa/iostream.h>
+#include <casa/fstream.h>
+#include <casa/Arrays/Vector.h>
+#include <casa/Arrays/Matrix.h>
+#include <measures/Measures/MPosition.h>
+#include <casa/Quanta/MVPosition.h>
+#include <measures/Measures/MDirection.h>
+#include <casa/BasicSL/Constants.h>
 
 int main()
 {

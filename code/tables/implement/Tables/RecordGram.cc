@@ -33,17 +33,17 @@
 // in the AIPS++ command language.
 
 
-#include <aips/Tables/ExprNode.h>
-#include <aips/Tables/ExprNodeSet.h>
-#include <aips/Tables/RecordGram.h>
-#include <aips/Tables/RecordExpr.h>
-#include <aips/Tables/TableParse.h>       // routines used by bison actions
-#include <aips/Tables/TableError.h>
-#include <aips/Tables/TableError.h>
+#include <tables/Tables/ExprNode.h>
+#include <tables/Tables/ExprNodeSet.h>
+#include <tables/Tables/RecordGram.h>
+#include <tables/Tables/RecordExpr.h>
+#include <tables/Tables/TableParse.h>       // routines used by bison actions
+#include <tables/Tables/TableError.h>
+#include <tables/Tables/TableError.h>
 
 //# stdlib.h is needed for bison 1.28 and needs to be included here
 //# (before the flex/bison files).
-#include <aips/stdlib.h>
+#include <casa/stdlib.h>
 #include <RecordGram.ycc>                  // flex output
 #include <RecordGram.lcc>                  // bison output
 

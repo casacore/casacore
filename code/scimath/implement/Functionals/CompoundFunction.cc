@@ -26,7 +26,7 @@
 //# $Id$
 
 //# Includes
-#include <aips/Functionals/CompoundFunction.h>
+#include <scimath/Functionals/CompoundFunction.h>
 
 //# Constructors
 

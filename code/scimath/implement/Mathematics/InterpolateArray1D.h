@@ -29,7 +29,7 @@
 #define AIPS_INTERPOLATEARRAY1D_H
 
 
-#include <aips/aips.h>
+#include <casa/aips.h>
 
 template <class T> class PtrBlock;
 template <class T> class Block;

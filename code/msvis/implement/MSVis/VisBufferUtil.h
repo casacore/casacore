@@ -29,8 +29,8 @@
 #if !defined(AIPS_VISBUFFERUTIL_H)
 #define AIPS_VISBUFFERUTIL_H
 
-#include <aips/aips.h>
-#include <trial/MSVis/VisBuffer.h>
+#include <casa/aips.h>
+#include <msvis/MSVis/VisBuffer.h>
 
 // <summary> 
 // </summary>

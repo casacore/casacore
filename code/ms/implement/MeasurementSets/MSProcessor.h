@@ -29,9 +29,9 @@
 #if !defined(AIPS_MSPROCESSOR_H)
 #define AIPS_MSPROCESSOR_H
 
-#include <aips/aips.h>
-#include <aips/MeasurementSets/MSTable.h>
-#include <aips/MeasurementSets/MSProcessorEnums.h>
+#include <casa/aips.h>
+#include <ms/MeasurementSets/MSTable.h>
+#include <ms/MeasurementSets/MSProcessorEnums.h>
 
 // <summary> 
 // A Table intended to hold a MeasurementSet PROCESSOR table.

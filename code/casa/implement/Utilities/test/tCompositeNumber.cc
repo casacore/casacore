@@ -25,9 +25,9 @@
 //#
 //# $Id$
 
-#include <aips/iostream.h>
-#include <aips/aips.h>
-#include <trial/Utilities/CompositeNumber.h>
+#include <casa/iostream.h>
+#include <casa/aips.h>
+#include <casa/Utilities/CompositeNumber.h>
 
 
 int main()

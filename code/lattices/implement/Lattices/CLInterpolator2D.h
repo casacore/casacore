@@ -30,7 +30,7 @@
 
 
 //# Includes
-#include <trial/Arrays/AxesMapping.h>
+#include <casa/Arrays/AxesMapping.h>
 
 //# Forward Declarations
 template<class T> class MaskedLattice;

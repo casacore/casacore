@@ -26,9 +26,9 @@
 //#
 //# $Id$
 
-#include <aips/iostream.h>
-#include <aips/OS/Memory.h>
-#include <aips/Utilities/Assert.h>
+#include <casa/iostream.h>
+#include <casa/OS/Memory.h>
+#include <casa/Utilities/Assert.h>
 
 int main()
 {

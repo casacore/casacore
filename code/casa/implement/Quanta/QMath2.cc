@@ -26,10 +26,10 @@
 //# $Id$
 
 //# Includes
-#include <aips/Exceptions/Error.h>
-#include <aips/Quanta/QMath.h>
-#include <aips/BasicMath/Math.h>
-#include <aips/Arrays/ArrayMath.h>
+#include <casa/Exceptions/Error.h>
+#include <casa/Quanta/QMath.h>
+#include <casa/BasicMath/Math.h>
+#include <casa/Arrays/ArrayMath.h>
 
 Int ceil(const Int &val) {
     return (val);

@@ -26,11 +26,11 @@
 //#
 //# $Id$
 
-#include <trial/LogTables/LoggerHolder.h>
-#include <aips/Tables/Table.h>
-#include <aips/Exceptions/Error.h>
-#include <aips/Utilities/Assert.h>
-#include <aips/iostream.h>
+#include <tables/LogTables/LoggerHolder.h>
+#include <tables/Tables/Table.h>
+#include <casa/Exceptions/Error.h>
+#include <casa/Utilities/Assert.h>
+#include <casa/iostream.h>
 
 void doIt (Bool tempClose)
 {

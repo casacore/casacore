@@ -25,19 +25,19 @@
 //#
 //# $Id$
 
-#include <aips/aips.h>
+#include <casa/aips.h>
 
-#include <aips/Lattices/LatticeIterator.h>
-#include <aips/Lattices/LatticeNavigator.h>
-#include <aips/Lattices/LatticeStepper.h>
-#include <aips/Lattices/TileStepper.h>
-#include <aips/Arrays/Array.h>
-#include <aips/Arrays/Vector.h>
-#include <aips/Arrays/Matrix.h>
-#include <aips/Arrays/Cube.h>
-#include <aips/Arrays/IPosition.h>
-#include <aips/Utilities/Assert.h> 
-#include <aips/Exceptions/Error.h>
+#include <lattices/Lattices/LatticeIterator.h>
+#include <lattices/Lattices/LatticeNavigator.h>
+#include <lattices/Lattices/LatticeStepper.h>
+#include <lattices/Lattices/TileStepper.h>
+#include <casa/Arrays/Array.h>
+#include <casa/Arrays/Vector.h>
+#include <casa/Arrays/Matrix.h>
+#include <casa/Arrays/Cube.h>
+#include <casa/Arrays/IPosition.h>
+#include <casa/Utilities/Assert.h> 
+#include <casa/Exceptions/Error.h>
 
 
 template <class T>

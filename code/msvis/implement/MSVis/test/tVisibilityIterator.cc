@@ -25,16 +25,16 @@
 //#
 //# $Id$
 
-#include <trial/MSVis/VisibilityIterator.h>
-#include <aips/Tables.h>
-#include <aips/Exceptions/Error.h>
-#include <aips/iostream.h>
-#include <aips/iomanip.h>
-#include <aips/Arrays/Vector.h>
-#include <aips/Arrays/Matrix.h>
-#include <aips/BasicSL/Constants.h>
+#include <msvis/MSVis/VisibilityIterator.h>
+#include <tables/Tables.h>
+#include <casa/Exceptions/Error.h>
+#include <casa/iostream.h>
+#include <casa/iomanip.h>
+#include <casa/Arrays/Vector.h>
+#include <casa/Arrays/Matrix.h>
+#include <casa/BasicSL/Constants.h>
 
-#include <aips/Tables/ForwardCol.h>
+#include <tables/Tables/ForwardCol.h>
 
 Int main(int argc, char **argv)
 {

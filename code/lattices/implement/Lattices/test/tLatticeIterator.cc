@@ -25,24 +25,24 @@
 //#
 //# $Id$
 
-#include <aips/aips.h>
-#include <aips/Lattices/PagedArray.h>
-#include <aips/Lattices/ArrayLattice.h>
-#include <aips/Lattices/LatticeStepper.h>
-#include <aips/Lattices/TiledLineStepper.h>
-#include <aips/Lattices/LatticeIterator.h>
-#include <aips/Arrays/Array.h>
-#include <aips/Arrays/Vector.h>
-#include <aips/Arrays/Matrix.h>
-#include <aips/Arrays/Cube.h>
-#include <aips/Arrays/ArrayMath.h>
-#include <aips/Arrays/ArrayLogical.h>
-#include <aips/Exceptions/Error.h>
-#include <aips/Arrays/IPosition.h>
-#include <aips/OS/Timer.h>
-#include <aips/Utilities/Assert.h>
-#include <aips/Inputs/Input.h>
-#include <aips/iostream.h>
+#include <casa/aips.h>
+#include <lattices/Lattices/PagedArray.h>
+#include <lattices/Lattices/ArrayLattice.h>
+#include <lattices/Lattices/LatticeStepper.h>
+#include <lattices/Lattices/TiledLineStepper.h>
+#include <lattices/Lattices/LatticeIterator.h>
+#include <casa/Arrays/Array.h>
+#include <casa/Arrays/Vector.h>
+#include <casa/Arrays/Matrix.h>
+#include <casa/Arrays/Cube.h>
+#include <casa/Arrays/ArrayMath.h>
+#include <casa/Arrays/ArrayLogical.h>
+#include <casa/Exceptions/Error.h>
+#include <casa/Arrays/IPosition.h>
+#include <casa/OS/Timer.h>
+#include <casa/Utilities/Assert.h>
+#include <casa/Inputs/Input.h>
+#include <casa/iostream.h>
 
 
 void testVectorROIter (const Lattice<Int>& lattice, Bool useRef)

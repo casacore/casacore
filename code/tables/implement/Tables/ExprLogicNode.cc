@@ -25,11 +25,11 @@
 //#
 //# $Id$
 
-#include <aips/Tables/ExprLogicNode.h>
-#include <aips/Tables/ExprDerNode.h>
-#include <aips/Tables/TableColumn.h>
-#include <aips/Tables/ColumnDesc.h>
-#include <aips/Quanta/MVTime.h>
+#include <tables/Tables/ExprLogicNode.h>
+#include <tables/Tables/ExprDerNode.h>
+#include <tables/Tables/TableColumn.h>
+#include <tables/Tables/ColumnDesc.h>
+#include <casa/Quanta/MVTime.h>
 #include <float.h>                     // for DBL_MAX
 #include <limits.h>                     // for DBL_MAX
 

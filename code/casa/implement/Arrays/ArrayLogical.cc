@@ -25,11 +25,11 @@
 //#
 //# $Id$
 
-#include <aips/Arrays/ArrayLogical.h>
-#include <aips/Arrays/ArrayMath.h>
-#include <aips/Arrays/ArrayError.h>
+#include <casa/Arrays/ArrayLogical.h>
+#include <casa/Arrays/ArrayMath.h>
+#include <casa/Arrays/ArrayError.h>
 //# For scalar near() functions.
-#include <aips/BasicMath/Math.h>
+#include <casa/BasicMath/Math.h>
 
 template<class T>
 Bool allEQ (const Array<T> &l, const Array<T> &r)

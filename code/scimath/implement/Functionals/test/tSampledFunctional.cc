@@ -25,15 +25,15 @@
 //#
 //# $Id$
 
-#include <aips/aips.h>
-#include <aips/Functionals/ScalarSampledFunctional.h>
-#include <aips/Arrays/Vector.h>
-#include <aips/Arrays/ArrayMath.h>
-#include <aips/Functionals/ArraySampledFunctional.h>
-#include <aips/Arrays/Array.h>
-#include <aips/Arrays/IPosition.h>
-#include <aips/Arrays/Matrix.h>
-#include <aips/iostream.h>
+#include <casa/aips.h>
+#include <scimath/Functionals/ScalarSampledFunctional.h>
+#include <casa/Arrays/Vector.h>
+#include <casa/Arrays/ArrayMath.h>
+#include <scimath/Functionals/ArraySampledFunctional.h>
+#include <casa/Arrays/Array.h>
+#include <casa/Arrays/IPosition.h>
+#include <casa/Arrays/Matrix.h>
+#include <casa/iostream.h>
 
 int main() {
   Bool anyFailures = False;

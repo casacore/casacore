@@ -25,22 +25,22 @@
 //#
 //# $Id$
 
-#include <trial/Lattices/LCRegion.h>
-#include <trial/Lattices/RegionType.h>
-#include <trial/Lattices/LCBox.h>
-#include <trial/Lattices/LCEllipsoid.h>
-#include <trial/Lattices/LCPolygon.h>
-#include <trial/Lattices/LCPixelSet.h>
-#include <trial/Lattices/LCPagedMask.h>
-#include <trial/Lattices/LCIntersection.h>
-#include <trial/Lattices/LCUnion.h>
-#include <trial/Lattices/LCConcatenation.h>
-#include <trial/Lattices/LCComplement.h>
-#include <trial/Lattices/LCDifference.h>
-#include <trial/Lattices/LCExtension.h>
-#include <trial/Lattices/LCStretch.h>
-#include <aips/Tables/TableRecord.h>
-#include <aips/Exceptions/Error.h>
+#include <lattices/Lattices/LCRegion.h>
+#include <lattices/Lattices/RegionType.h>
+#include <lattices/Lattices/LCBox.h>
+#include <lattices/Lattices/LCEllipsoid.h>
+#include <lattices/Lattices/LCPolygon.h>
+#include <lattices/Lattices/LCPixelSet.h>
+#include <lattices/Lattices/LCPagedMask.h>
+#include <lattices/Lattices/LCIntersection.h>
+#include <lattices/Lattices/LCUnion.h>
+#include <lattices/Lattices/LCConcatenation.h>
+#include <lattices/Lattices/LCComplement.h>
+#include <lattices/Lattices/LCDifference.h>
+#include <lattices/Lattices/LCExtension.h>
+#include <lattices/Lattices/LCStretch.h>
+#include <tables/Tables/TableRecord.h>
+#include <casa/Exceptions/Error.h>
 
 
 LCRegion* LCRegion::fromRecord (const TableRecord& rec,

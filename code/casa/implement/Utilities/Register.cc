@@ -25,7 +25,7 @@
 //#
 //# $Id$
 
-#include <aips/Utilities/Register.h>
+#include <casa/Utilities/Register.h>
 
 template<class t> uInt Register(const t *) {
   static uInt type = 0;

@@ -25,7 +25,7 @@
 //#
 //# $Id$
 
-#include <trial/ComponentModels/SkyCompBase.h>
+#include <components/ComponentModels/SkyCompBase.h>
 
 SkyCompBase::~SkyCompBase() {
 }

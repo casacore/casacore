@@ -30,13 +30,13 @@
 
 
 //# Includes
-#include <aips/aips.h>
-#include <aips/Tables/TSMColumn.h>
-#include <aips/Tables/TSMCube.h>
-#include <aips/BasicSL/Complex.h>
-#include <aips/Arrays/IPosition.h>
-#include <aips/BasicSL/String.h>
-#include <aips/OS/Conversion.h>
+#include <casa/aips.h>
+#include <tables/Tables/TSMColumn.h>
+#include <tables/Tables/TSMCube.h>
+#include <casa/BasicSL/Complex.h>
+#include <casa/Arrays/IPosition.h>
+#include <casa/BasicSL/String.h>
+#include <casa/OS/Conversion.h>
 
 //# Forward Declarations
 class Slicer;

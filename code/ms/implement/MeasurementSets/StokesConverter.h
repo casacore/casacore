@@ -29,11 +29,11 @@
 #if !defined(TRIAL_STOKESCONVERTER_H)
 #define TRIAL_STOKESCONVERTER_H
 
-#include <aips/aips.h>
-#include <aips/Arrays/Vector.h>
-#include <aips/Arrays/Matrix.h>
-#include <aips/BasicSL/Complex.h>
-#include <aips/Measures/Stokes.h>
+#include <casa/aips.h>
+#include <casa/Arrays/Vector.h>
+#include <casa/Arrays/Matrix.h>
+#include <casa/BasicSL/Complex.h>
+#include <measures/Measures/Stokes.h>
 
 // <summary>
 // StokesConverter converts any set of polarizations into any other one

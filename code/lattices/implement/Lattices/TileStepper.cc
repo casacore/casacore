@@ -25,11 +25,11 @@
 //#
 //# $Id$
 
-#include <aips/Lattices/TileStepper.h>
-#include <aips/Utilities/Assert.h>
-#include <aips/Exceptions/Error.h>
-#include <aips/iostream.h>
-#include <aips/sstream.h>
+#include <lattices/Lattices/TileStepper.h>
+#include <casa/Utilities/Assert.h>
+#include <casa/Exceptions/Error.h>
+#include <casa/iostream.h>
+#include <casa/sstream.h>
 
 
 TileStepper::TileStepper(const IPosition& latticeShape, 

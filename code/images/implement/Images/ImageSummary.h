@@ -31,13 +31,13 @@
 
 
 //# Includes
-#include <aips/aips.h>
-#include <aips/Measures/MFrequency.h>
-#include <aips/Measures/MDirection.h>
-#include <aips/Measures/MDoppler.h>
-#include <trial/Coordinates/CoordinateSystem.h>
-#include <trial/Coordinates/ObsInfo.h>
-#include <trial/Images/ImageInfo.h>
+#include <casa/aips.h>
+#include <measures/Measures/MFrequency.h>
+#include <measures/Measures/MDirection.h>
+#include <measures/Measures/MDoppler.h>
+#include <coordinates/Coordinates/CoordinateSystem.h>
+#include <coordinates/Coordinates/ObsInfo.h>
+#include <images/Images/ImageInfo.h>
 
 //# Forward Declarations
 template <class T> class ImageInterface;

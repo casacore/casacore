@@ -29,7 +29,7 @@
 #if !defined(AIPS_MSSYSCALENUMS_H)
 #define AIPS_MSSYSCALENUMS_H
 
-#include <aips/aips.h>
+#include <casa/aips.h>
 
 // <use visibility=export>
 

@@ -26,14 +26,14 @@
 //#
 //# $Id$
 
-#include <aips/aips.h>
+#include <casa/aips.h>
 
-#include <aips/Utilities/Assert.h>
+#include <casa/Utilities/Assert.h>
 
-#include <trial/MSVis/VisBufferUtil.h>
-#include <trial/MSVis/StokesVector.h>
+#include <msvis/MSVis/VisBufferUtil.h>
+#include <msvis/MSVis/StokesVector.h>
 
-#include <aips/iostream.h>
+#include <casa/iostream.h>
 
 // <summary> 
 // </summary>

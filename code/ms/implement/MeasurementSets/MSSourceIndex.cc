@@ -25,14 +25,14 @@
 //#
 //# $Id$
 
-#include <trial/MeasurementSets/MSSourceIndex.h>
+#include <ms/MeasurementSets/MSSourceIndex.h>
 
-#include <aips/Arrays/MaskedArray.h>
-#include <aips/Arrays/ArrayMath.h>
-#include <aips/Arrays/ArrayLogical.h>
-#include <aips/Arrays/ArrayUtil.h>
-#include <aips/MeasurementSets/MSSource.h>
-#include <aips/Tables/TableError.h>
+#include <casa/Arrays/MaskedArray.h>
+#include <casa/Arrays/ArrayMath.h>
+#include <casa/Arrays/ArrayLogical.h>
+#include <casa/Arrays/ArrayUtil.h>
+#include <ms/MeasurementSets/MSSource.h>
+#include <tables/Tables/TableError.h>
 
 MSSourceIndex::MSSourceIndex() 
   : MSTableIndex(), msSourceCols_p(0)

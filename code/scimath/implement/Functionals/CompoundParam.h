@@ -29,9 +29,9 @@
 #if !defined(AIPS_COMPOUNDPARAM_H)
 #define AIPS_COMPOUNDPARAM_H
 
-#include <aips/aips.h>
-#include <aips/Functionals/Function.h>
-#include <aips/Containers/Block.h>
+#include <casa/aips.h>
+#include <scimath/Functionals/Function.h>
+#include <casa/Containers/Block.h>
 
 // <summary> Parameters for sum of parameterized Functions
 // </summary>

@@ -26,21 +26,21 @@
 //#
 //# $Id$
 
-#include <trial/FITS/FITSHistoryUtil.h>
+#include <fits/FITS/FITSHistoryUtil.h>
 
-#include <aips/Arrays/Vector.h>
-#include <aips/Arrays/ArrayUtil.h>
-#include <aips/FITS/fits.h>
-#include <trial/FITS/FITSDateUtil.h>
-#include <trial/LogTables/LoggerHolder.h>
-#include <aips/Logging/LogIO.h>
-#include <aips/Logging/LogOrigin.h>
-#include <aips/Logging/LogSink.h>
-#include <aips/Measures/MEpoch.h>
-#include <aips/Quanta/MVTime.h>
-#include <aips/Utilities/Assert.h>
-#include <aips/Utilities/Regex.h>
-#include <aips/BasicSL/String.h>
+#include <casa/Arrays/Vector.h>
+#include <casa/Arrays/ArrayUtil.h>
+#include <fits/FITS/fits.h>
+#include <fits/FITS/FITSDateUtil.h>
+#include <tables/LogTables/LoggerHolder.h>
+#include <casa/Logging/LogIO.h>
+#include <casa/Logging/LogOrigin.h>
+#include <casa/Logging/LogSink.h>
+#include <measures/Measures/MEpoch.h>
+#include <casa/Quanta/MVTime.h>
+#include <casa/Utilities/Assert.h>
+#include <casa/Utilities/Regex.h>
+#include <casa/BasicSL/String.h>
 
 uInt FITSHistoryUtil::getHistoryGroup(Vector<String> &strings, 
 				      String &groupType,

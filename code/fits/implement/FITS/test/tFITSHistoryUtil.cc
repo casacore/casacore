@@ -26,14 +26,14 @@
 //# $Id$
 
 //# Includes
-#include <trial/FITS/FITSHistoryUtil.h>
+#include <fits/FITS/FITSHistoryUtil.h>
 
-#include <aips/Arrays/Vector.h>
-#include <aips/Exceptions/Error.h>
-#include <aips/FITS/fits.h>
-#include <aips/Logging.h>
-#include <trial/LogTables/LoggerHolder.h>
-#include <aips/Utilities/Assert.h>
+#include <casa/Arrays/Vector.h>
+#include <casa/Exceptions/Error.h>
+#include <fits/FITS/fits.h>
+#include <casa/Logging.h>
+#include <tables/LogTables/LoggerHolder.h>
+#include <casa/Utilities/Assert.h>
 
 int main()
 {

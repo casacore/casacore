@@ -30,8 +30,8 @@
 
 
 //# Includes
-#include <aips/Lattices/LatticeBase.h>
-#include <aips/Arrays/Slicer.h>
+#include <lattices/Lattices/LatticeBase.h>
+#include <casa/Arrays/Slicer.h>
 
 //# Forward Declarations
 class IPosition;

@@ -25,7 +25,7 @@
 //#
 //# $Id$
 
-#include <aips/Utilities/RegSequence.h>
+#include <casa/Utilities/RegSequence.h>
 
 uInt RegSequence::num = 0;
 

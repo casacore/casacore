@@ -26,7 +26,7 @@
 //# $Id$
 
 //# Includes
-#include <aips/Fitting/LSQMatrix.h>
+#include <scimath/Fitting/LSQMatrix.h>
 
 //# Constructors
 LSQMatrix::LSQMatrix() 

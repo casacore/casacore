@@ -30,14 +30,14 @@
 #define AIPS_MEASREF_H
 
 //# Includes
-#include <aips/aips.h>
-#include <aips/Measures/MRBase.h>
-#include <aips/Measures/MeasFrame.h>
+#include <casa/aips.h>
+#include <measures/Measures/MRBase.h>
+#include <measures/Measures/MeasFrame.h>
 
 //# Forward Declarations
 class String;
 template <class Ms> class MeasRef;
-#include <aips/iosfwd.h>
+#include <casa/iosfwd.h>
 
 // <summary> Reference frame for physical measures </summary>
 

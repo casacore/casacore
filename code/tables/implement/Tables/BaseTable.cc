@@ -25,30 +25,30 @@
 //#
 //# $Id$
 
-#include <aips/aips.h>
-#include <aips/Tables/BaseTable.h>
-#include <aips/Tables/Table.h>
-#include <aips/Tables/PlainTable.h>
-#include <aips/Tables/RefTable.h>
-#include <aips/Tables/TableCopy.h>
-#include <aips/Tables/TableDesc.h>
-#include <aips/Tables/BaseColumn.h>
-#include <aips/Tables/ExprNode.h>
-#include <aips/Tables/BaseTabIter.h>
-#include <aips/Tables/DataManager.h>
-#include <aips/Tables/TableError.h>
-#include <aips/Arrays/Vector.h>
-#include <aips/Arrays/ArrayMath.h>
-#include <aips/Containers/Block.h>
-#include <aips/Containers/Record.h>
-#include <aips/Utilities/Sort.h>
-#include <aips/BasicSL/String.h>
-#include <aips/Utilities/GenSort.h>
-#include <aips/IO/AipsIO.h>
-#include <aips/OS/File.h>
-#include <aips/OS/RegularFile.h>
-#include <aips/OS/Directory.h>
-#include <aips/Utilities/Assert.h>
+#include <casa/aips.h>
+#include <tables/Tables/BaseTable.h>
+#include <tables/Tables/Table.h>
+#include <tables/Tables/PlainTable.h>
+#include <tables/Tables/RefTable.h>
+#include <tables/Tables/TableCopy.h>
+#include <tables/Tables/TableDesc.h>
+#include <tables/Tables/BaseColumn.h>
+#include <tables/Tables/ExprNode.h>
+#include <tables/Tables/BaseTabIter.h>
+#include <tables/Tables/DataManager.h>
+#include <tables/Tables/TableError.h>
+#include <casa/Arrays/Vector.h>
+#include <casa/Arrays/ArrayMath.h>
+#include <casa/Containers/Block.h>
+#include <casa/Containers/Record.h>
+#include <casa/Utilities/Sort.h>
+#include <casa/BasicSL/String.h>
+#include <casa/Utilities/GenSort.h>
+#include <casa/IO/AipsIO.h>
+#include <casa/OS/File.h>
+#include <casa/OS/RegularFile.h>
+#include <casa/OS/Directory.h>
+#include <casa/Utilities/Assert.h>
 
 
 // The constructor of the derived class should call unmarkForDelete

@@ -26,8 +26,8 @@
 //# $Id$
 
 
-#include <aips/OS/LECanonicalDataConversion.h>
-#include <aips/OS/LECanonicalConversion.h>
+#include <casa/OS/LECanonicalDataConversion.h>
+#include <casa/OS/LECanonicalConversion.h>
 
 
 LECanonicalDataConversion::~LECanonicalDataConversion()

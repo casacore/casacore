@@ -25,10 +25,10 @@
 //#
 //# $Id$
 
-#include <trial/MeasurementSets/MSPointingIndex.h>
+#include <ms/MeasurementSets/MSPointingIndex.h>
 
-#include <aips/Arrays/ArrayUtil.h>
-#include <aips/MeasurementSets/MSPointing.h>
+#include <casa/Arrays/ArrayUtil.h>
+#include <ms/MeasurementSets/MSPointing.h>
 
 MSPointingIndex::MSPointingIndex() 
     : MSTableIndex()

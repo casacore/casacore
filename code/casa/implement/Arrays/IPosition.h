@@ -29,14 +29,14 @@
 #define AIPS_IPOSITION_H
 
 //# Includes
-#include <aips/aips.h>
+#include <casa/aips.h>
 
 //# Forward Declarations
 class AipsIO;
 class LogIO;
 template<class T> class Array;
 template<class T> class Vector;
-#include <aips/iosfwd.h>
+#include <casa/iosfwd.h>
 
 
 // <summary> A Vector of integers, for indexing into Array<T> objects. </summary>

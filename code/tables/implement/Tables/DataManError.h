@@ -29,8 +29,8 @@
 #define AIPS_DATAMANERROR_H
 
 //# Includes
-#include <aips/aips.h>
-#include <aips/Exceptions/Error.h>
+#include <casa/aips.h>
+#include <casa/Exceptions/Error.h>
 
 //# This header file defines the error classes used in the
 //# data manager classes.

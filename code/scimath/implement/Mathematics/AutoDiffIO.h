@@ -30,11 +30,11 @@
 
 
 //# Includes
-#include <aips/aips.h>
+#include <casa/aips.h>
 
 //# Forward declarations
 template <class T> class AutoDiff;
-#include <aips/iosfwd.h>
+#include <casa/iosfwd.h>
 
 // <summary>
 // Implements all IO operators and functions for AutoDiff.

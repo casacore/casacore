@@ -26,10 +26,10 @@
 //#
 //# $Id$
 
-#include <aips/aips.h>
-#include <aips/version.h>
-#include <aips/Utilities/Assert.h>
-#include <aips/iostream.h>
+#include <casa/aips.h>
+#include <casa/version.h>
+#include <casa/Utilities/Assert.h>
+#include <casa/iostream.h>
 
 int main()
 {

@@ -30,11 +30,11 @@
 
 //# Includes
 
-#include <aips/aips.h>
-#include <aips/Fitting/FitLSQ.h>
-#include <aips/Containers/Block.h>
-#include <trial/ComponentModels/ComponentList.h>
-#include <aips/BasicSL/Complexfwd.h>
+#include <casa/aips.h>
+#include <scimath/Fitting/FitLSQ.h>
+#include <casa/Containers/Block.h>
+#include <components/ComponentModels/ComponentList.h>
+#include <casa/BasicSL/Complexfwd.h>
 
 //# Forward declarations
 template <class T> class Array;

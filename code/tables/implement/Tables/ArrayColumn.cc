@@ -25,16 +25,16 @@
 //#
 //# $Id$
 
-#include <aips/Tables/ArrayColumn.h>
-#include <aips/Tables/Table.h>
-#include <aips/Tables/RefRows.h>
-#include <aips/Arrays/Array.h>
-#include <aips/Arrays/ArrayIter.h>
-#include <aips/Arrays/IPosition.h>
-#include <aips/Arrays/Slicer.h>
-#include <aips/BasicSL/String.h>
-#include <aips/Utilities/ValTypeId.h>
-#include <aips/Tables/TableError.h>
+#include <tables/Tables/ArrayColumn.h>
+#include <tables/Tables/Table.h>
+#include <tables/Tables/RefRows.h>
+#include <casa/Arrays/Array.h>
+#include <casa/Arrays/ArrayIter.h>
+#include <casa/Arrays/IPosition.h>
+#include <casa/Arrays/Slicer.h>
+#include <casa/BasicSL/String.h>
+#include <casa/Utilities/ValTypeId.h>
+#include <tables/Tables/TableError.h>
 
 
 template<class T>

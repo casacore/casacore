@@ -26,8 +26,8 @@
 //# $Id$
 
 //# Includes
-#include <trial/SpectralComponents/SpectralFit.h>
-#include <trial/SpectralComponents/SpectralElement.h>
+#include <components/SpectralComponents/SpectralFit.h>
+#include <components/SpectralComponents/SpectralElement.h>
 
 //# Constructors
 SpectralFit::SpectralFit() :

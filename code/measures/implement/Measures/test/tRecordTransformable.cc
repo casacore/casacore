@@ -25,15 +25,15 @@
 //#
 //# $Id$
 
-#include <aips/Utilities/RecordTransformable.h>
-#include <aips/Measures/MeasureHolder.h>
-#include <aips/Containers/Record.h>
-#include <aips/Containers/RecordInterface.h>
-#include <aips/Exceptions/Error.h>
-#include <aips/Measures/MDirection.h>
-#include <aips/Utilities/Assert.h>
-#include <aips/BasicSL/String.h>
-#include <aips/iostream.h>
+#include <casa/Utilities/RecordTransformable.h>
+#include <measures/Measures/MeasureHolder.h>
+#include <casa/Containers/Record.h>
+#include <casa/Containers/RecordInterface.h>
+#include <casa/Exceptions/Error.h>
+#include <measures/Measures/MDirection.h>
+#include <casa/Utilities/Assert.h>
+#include <casa/BasicSL/String.h>
+#include <casa/iostream.h>
 
 
 int main() {

@@ -25,13 +25,13 @@
 //#
 //# $Id$
 
-#include <aips/Arrays/Matrix.h>
-#include <aips/Arrays/Vector.h>
-#include <aips/Arrays/Slice.h>
-#include <aips/Arrays/MaskedArray.h>
-#include <aips/Arrays/ArrayError.h>
-#include <aips/Utilities/Assert.h>
-#include <aips/iostream.h>
+#include <casa/Arrays/Matrix.h>
+#include <casa/Arrays/Vector.h>
+#include <casa/Arrays/Slice.h>
+#include <casa/Arrays/MaskedArray.h>
+#include <casa/Arrays/ArrayError.h>
+#include <casa/Utilities/Assert.h>
+#include <casa/iostream.h>
 
 
 template<class T> Matrix<T>::Matrix()

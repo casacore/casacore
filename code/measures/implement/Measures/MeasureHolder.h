@@ -29,10 +29,10 @@
 #define AIPS_MEASUREHOLDER_H
 
 //# Includes
-#include <aips/aips.h>
-#include <aips/Utilities/PtrHolder.h>
-#include <aips/Utilities/RecordTransformable.h>
-#include <aips/Containers/Block.h>
+#include <casa/aips.h>
+#include <casa/Utilities/PtrHolder.h>
+#include <casa/Utilities/RecordTransformable.h>
+#include <casa/Containers/Block.h>
 
 //# Forward Declarations
 class Measure;

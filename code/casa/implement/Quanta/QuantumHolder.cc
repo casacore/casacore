@@ -26,16 +26,16 @@
 //# $Id$
 
 //# Includes
-#include <aips/Quanta/QuantumHolder.h>
-#include <aips/Exceptions.h>
-#include <aips/Quanta/UnitVal.h>
-#include <aips/Quanta/Quantum.h>
-#include <aips/Containers/RecordInterface.h>
-#include <aips/Containers/RecordFieldId.h>
-#include <aips/Containers/Record.h>
-#include <aips/BasicSL/String.h>
-#include <aips/BasicSL/Complex.h>
-#include <aips/Arrays/Vector.h>
+#include <casa/Quanta/QuantumHolder.h>
+#include <casa/Exceptions.h>
+#include <casa/Quanta/UnitVal.h>
+#include <casa/Quanta/Quantum.h>
+#include <casa/Containers/RecordInterface.h>
+#include <casa/Containers/RecordFieldId.h>
+#include <casa/Containers/Record.h>
+#include <casa/BasicSL/String.h>
+#include <casa/BasicSL/Complex.h>
+#include <casa/Arrays/Vector.h>
 
 //# Constructors
 QuantumHolder::QuantumHolder() 

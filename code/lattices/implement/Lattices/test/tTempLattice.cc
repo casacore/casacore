@@ -26,16 +26,16 @@
 //# $Id$
 
 
-#include <aips/Lattices/TempLattice.h>
-#include <aips/Lattices/LatticeIterator.h>
-#include <aips/Arrays/Array.h>
-#include <aips/Arrays/ArrayMath.h>
-#include <aips/Arrays/ArrayLogical.h>
-#include <aips/Arrays/IPosition.h>
-#include <aips/Utilities/COWPtr.h>
-#include <aips/Utilities/Assert.h>
-#include <aips/Exceptions/Error.h>
-#include <aips/iostream.h>
+#include <lattices/Lattices/TempLattice.h>
+#include <lattices/Lattices/LatticeIterator.h>
+#include <casa/Arrays/Array.h>
+#include <casa/Arrays/ArrayMath.h>
+#include <casa/Arrays/ArrayLogical.h>
+#include <casa/Arrays/IPosition.h>
+#include <casa/Utilities/COWPtr.h>
+#include <casa/Utilities/Assert.h>
+#include <casa/Exceptions/Error.h>
+#include <casa/iostream.h>
 
 
 void doIt (TempLattice<Int>& scratch)

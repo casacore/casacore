@@ -27,10 +27,10 @@
 
 
 //# Includes
-#include <aips/Tables/TableInfo.h>
-#include <aips/BasicSL/String.h>
-#include <aips/Exceptions/Error.h>
-#include <aips/iostream.h>
+#include <tables/Tables/TableInfo.h>
+#include <casa/BasicSL/String.h>
+#include <casa/Exceptions/Error.h>
+#include <casa/iostream.h>
 
 
 // <summary>

@@ -28,9 +28,9 @@
 # if !defined(AIPS_FITS_IO_H)
 # define AIPS_FITS_IO_H
 
-# include <aips/FITS/fits.h>
-# include <aips/FITS/blockio.h>
-# include <aips/FITS/hdu.h>
+# include <fits/FITS/fits.h>
+# include <fits/FITS/blockio.h>
+# include <fits/FITS/hdu.h>
 
 //<category lib=aips module=FITS sect="FITS I/O">   
 //<summary> sequential FITS I/O </summary>

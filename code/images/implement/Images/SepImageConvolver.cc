@@ -26,33 +26,33 @@
 //# $Id$
 //   
 
-#include <trial/Images/SepImageConvolver.h>
+#include <images/Images/SepImageConvolver.h>
 
-#include <aips/aips.h>
+#include <casa/aips.h>
 
-#include <aips/Arrays/Vector.h>
-#include <aips/Arrays/ArrayMath.h>
-#include <aips/Containers/Block.h>
-#include <aips/Exceptions/Error.h>
-#include <aips/Logging/LogIO.h>
-#include <aips/Mathematics/Convolver.h>
-#include <aips/Quanta/UnitMap.h>
-#include <aips/Quanta/Quantum.h>
-#include <aips/BasicSL/String.h>
+#include <casa/Arrays/Vector.h>
+#include <casa/Arrays/ArrayMath.h>
+#include <casa/Containers/Block.h>
+#include <casa/Exceptions/Error.h>
+#include <casa/Logging/LogIO.h>
+#include <scimath/Mathematics/Convolver.h>
+#include <casa/Quanta/UnitMap.h>
+#include <casa/Quanta/Quantum.h>
+#include <casa/BasicSL/String.h>
 
-#include <trial/Coordinates/CoordinateSystem.h>
-#include <trial/Images/PagedImage.h>
-#include <trial/Images/ImageRegion.h>
-#include <trial/Images/SubImage.h>
-#include <trial/Images/TempImage.h>
-#include <aips/Lattices/LatticeIterator.h>
-#include <trial/Lattices/LatticeUtilities.h>
-#include <aips/Lattices/TiledLineStepper.h>
-#include <trial/Mathematics/VectorKernel.h>
-#include <aips/System/ProgressMeter.h>
+#include <coordinates/Coordinates/CoordinateSystem.h>
+#include <images/Images/PagedImage.h>
+#include <images/Images/ImageRegion.h>
+#include <images/Images/SubImage.h>
+#include <images/Images/TempImage.h>
+#include <lattices/Lattices/LatticeIterator.h>
+#include <lattices/Lattices/LatticeUtilities.h>
+#include <lattices/Lattices/TiledLineStepper.h>
+#include <scimath/Mathematics/VectorKernel.h>
+#include <casa/System/ProgressMeter.h>
 
-#include <aips/sstream.h>
-#include <aips/iomanip.h>
+#include <casa/sstream.h>
+#include <casa/iomanip.h>
 
 
 template <class T> 

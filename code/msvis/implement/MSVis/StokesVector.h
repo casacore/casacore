@@ -29,18 +29,18 @@
 #if !defined(AIPS_STOKESVECTOR_H)
 #define AIPS_STOKESVECTOR_H
 
-#include <aips/aips.h>
-#include <aips/IO/AipsIO.h>
-//#include <aips/Tables/TableRecord.h>
-#include <aips/BasicSL/Complex.h>
-#include <aips/Arrays/Vector.h>
-#include <aips/Arrays/Matrix.h>
-#include <aips/Arrays/MatrixMath.h>
-#include <trial/Mathematics/RigidVector.h>
-#include <trial/Mathematics/SquareMatrix.h>
-#include <aips/Arrays/IPosition.h>
-#include <aips/BasicMath/Math.h>
-#include <aips/iostream.h>
+#include <casa/aips.h>
+#include <casa/IO/AipsIO.h>
+//#include <tables/Tables/TableRecord.h>
+#include <casa/BasicSL/Complex.h>
+#include <casa/Arrays/Vector.h>
+#include <casa/Arrays/Matrix.h>
+#include <casa/Arrays/MatrixMath.h>
+#include <scimath/Mathematics/RigidVector.h>
+#include <scimath/Mathematics/SquareMatrix.h>
+#include <casa/Arrays/IPosition.h>
+#include <casa/BasicMath/Math.h>
+#include <casa/iostream.h>
 
 //# Forward Declarations
 class StokesVector;

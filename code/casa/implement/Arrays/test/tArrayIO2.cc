@@ -27,11 +27,11 @@
 
 //# Includes
 
-#include <aips/Arrays/ArrayIO.h>
-#include <aips/Arrays/Vector.h>
-#include <aips/Arrays/Matrix.h>
-#include <aips/Exceptions/Error.h>
-#include <aips/iostream.h>
+#include <casa/Arrays/ArrayIO.h>
+#include <casa/Arrays/Vector.h>
+#include <casa/Arrays/Matrix.h>
+#include <casa/Exceptions/Error.h>
+#include <casa/iostream.h>
 
 
 // This test program tests the ArrayIO2 functions.

@@ -25,11 +25,11 @@
 //#
 //# $Id$
 
-#include <aips/Tables/TableIter.h>
-#include <aips/Tables/BaseTabIter.h>
-#include <aips/Containers/Block.h>
-#include <aips/BasicSL/String.h>
-#include <aips/Tables/TableError.h>
+#include <tables/Tables/TableIter.h>
+#include <tables/Tables/BaseTabIter.h>
+#include <casa/Containers/Block.h>
+#include <casa/BasicSL/String.h>
+#include <tables/Tables/TableError.h>
 
 
 TableIterator::TableIterator()

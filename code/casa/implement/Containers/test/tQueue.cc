@@ -29,9 +29,9 @@
 #define AIPS_DEBUG
 #endif
 
-#include <aips/Containers/Queue.h>
-#include <aips/Utilities/Assert.h>
-#include <aips/iostream.h>
+#include <casa/Containers/Queue.h>
+#include <casa/Utilities/Assert.h>
+#include <casa/iostream.h>
 
 int main()
 {

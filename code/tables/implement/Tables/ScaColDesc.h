@@ -30,9 +30,9 @@
 
 
 //# Includes
-#include <aips/aips.h>
-#include <aips/Tables/BaseColDesc.h>
-#include <aips/Containers/SimOrdMap.h>
+#include <casa/aips.h>
+#include <tables/Tables/BaseColDesc.h>
+#include <casa/Containers/SimOrdMap.h>
 
 //# Forward Declarations
 class PlainColumn;

@@ -25,16 +25,16 @@
 //#
 //# $Id$
 
-#include <trial/Images/PagedImage.h>
-#include <trial/Images/ImageExprParse.h>
-#include <trial/Coordinates/CoordinateUtil.h>
-#include <aips/Arrays/Array.h>
-#include <aips/Arrays/ArrayLogical.h>
-#include <aips/Arrays/ArrayMath.h>
-#include <aips/Arrays/IPosition.h>
-#include <aips/Inputs/Input.h>
-#include <aips/Exceptions/Error.h>
-#include <aips/iostream.h>
+#include <images/Images/PagedImage.h>
+#include <images/Images/ImageExprParse.h>
+#include <coordinates/Coordinates/CoordinateUtil.h>
+#include <casa/Arrays/Array.h>
+#include <casa/Arrays/ArrayLogical.h>
+#include <casa/Arrays/ArrayMath.h>
+#include <casa/Arrays/IPosition.h>
+#include <casa/Inputs/Input.h>
+#include <casa/Exceptions/Error.h>
+#include <casa/iostream.h>
 
 
 int main (int argc, char *argv[])

@@ -25,11 +25,11 @@
 //#
 //# $Id$
 
-#include <aips/Arrays/MaskArrMath.h>
-#include <aips/Arrays/ArrayError.h>
-//#include <aips/Arrays/VectorIter.h>
-//#include <aips/Arrays/Matrix.h>
-//#include <aips/BasicMath/Math.h>
+#include <casa/Arrays/MaskArrMath.h>
+#include <casa/Arrays/ArrayError.h>
+//#include <casa/Arrays/VectorIter.h>
+//#include <casa/Arrays/Matrix.h>
+//#include <casa/BasicMath/Math.h>
 
 MaskedArray<Complex> operator * (const MaskedArray<Complex> &left, 
 					 const Float &right) 

@@ -25,14 +25,14 @@
 //#
 //# $Id$
 
-#include <trial/Lattices/LCBox.h>
-#include <trial/Lattices/LCEllipsoid.h>
-#include <aips/Tables/TableRecord.h>
-#include <aips/Arrays/Vector.h>
-#include <aips/Arrays/ArrayIO.h>
-#include <aips/Arrays/ArrayLogical.h>
-#include <aips/Utilities/Assert.h>
-#include <aips/iostream.h>
+#include <lattices/Lattices/LCBox.h>
+#include <lattices/Lattices/LCEllipsoid.h>
+#include <tables/Tables/TableRecord.h>
+#include <casa/Arrays/Vector.h>
+#include <casa/Arrays/ArrayIO.h>
+#include <casa/Arrays/ArrayLogical.h>
+#include <casa/Utilities/Assert.h>
+#include <casa/iostream.h>
 
 
 void doIt (const IPosition& latticeShape,

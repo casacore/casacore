@@ -26,20 +26,20 @@
 //#
 //# $Id$
 
-#include <aips/System/AppInfo.h>
+#include <casa/System/AppInfo.h>
 
-#include <aips/Arrays/Vector.h>
-#include <aips/Arrays/MaskedArray.h>
-#include <aips/System/Aipsrc.h>
-#include <aips/System/AipsrcVector.h>
-#include <aips/Utilities/Assert.h>
-#include <aips/OS/Time.h>
-#include <aips/OS/Memory.h>
-#include <aips/Quanta/Unit.h>
-#include <aips/Arrays/Vector.h>
-#include <aips/OS/Directory.h>
-#include <aips/Logging/LogIO.h>
-#include <aips/iostream.h>
+#include <casa/Arrays/Vector.h>
+#include <casa/Arrays/MaskedArray.h>
+#include <casa/System/Aipsrc.h>
+#include <casa/System/AipsrcVector.h>
+#include <casa/Utilities/Assert.h>
+#include <casa/OS/Time.h>
+#include <casa/OS/Memory.h>
+#include <casa/Quanta/Unit.h>
+#include <casa/Arrays/Vector.h>
+#include <casa/OS/Directory.h>
+#include <casa/Logging/LogIO.h>
+#include <casa/iostream.h>
 
 Bool AppInfo::need_init_p = True;
 uInt AppInfo::memory_r = 0;

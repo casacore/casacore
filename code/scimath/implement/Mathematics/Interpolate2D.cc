@@ -25,13 +25,13 @@
 //#
 //# $Id$
  
-#include <trial/Mathematics/Interpolate2D.h>
+#include <scimath/Mathematics/Interpolate2D.h>
 
-#include <aips/Arrays/Matrix.h>
-#include <aips/Arrays/Vector.h>
-#include <aips/Exceptions/Error.h>
-#include <aips/Utilities/Assert.h>
-#include <aips/BasicSL/String.h>
+#include <casa/Arrays/Matrix.h>
+#include <casa/Arrays/Vector.h>
+#include <casa/Exceptions/Error.h>
+#include <casa/Utilities/Assert.h>
+#include <casa/BasicSL/String.h>
 
 Interpolate2D::Interpolate2D(Interpolate2D::Method method) {
 

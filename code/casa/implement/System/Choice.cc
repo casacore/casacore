@@ -26,8 +26,8 @@
 //#
 //# $Id$
 
-#include <aips/System/Choice.h>
-#include <aips/Arrays/Vector.h>
+#include <casa/System/Choice.h>
+#include <casa/Arrays/Vector.h>
 #include <iostream>
 
 //# Default is no choice function, thus return first choice.

@@ -25,15 +25,15 @@
 //#
 //# $Id$
 
-#include <aips/aips.h>
-#include <aips/Exceptions/Error.h>
-#include <aips/MeasurementSets/MSDataDescColumns.h>
-#include <aips/MeasurementSets/MSDataDescription.h>
-#include <aips/Tables/SetupNewTab.h>
-#include <aips/Tables/TableDesc.h>
-#include <aips/Utilities/Assert.h>
-#include <aips/BasicSL/String.h>
-#include <aips/iostream.h>
+#include <casa/aips.h>
+#include <casa/Exceptions/Error.h>
+#include <ms/MeasurementSets/MSDataDescColumns.h>
+#include <ms/MeasurementSets/MSDataDescription.h>
+#include <tables/Tables/SetupNewTab.h>
+#include <tables/Tables/TableDesc.h>
+#include <casa/Utilities/Assert.h>
+#include <casa/BasicSL/String.h>
+#include <casa/iostream.h>
 
 void putData(MSDataDescColumns& cols) {
   // test the spectralWindowId functions.

@@ -26,12 +26,12 @@
 //# $Id$
 
 
-#include <aips/OS/Path.h>
-#include <aips/OS/EnvVar.h>
-#include <aips/BasicSL/String.h>
-#include <aips/Utilities/Assert.h>
-#include <aips/Exceptions.h>
-#include <aips/iostream.h>
+#include <casa/OS/Path.h>
+#include <casa/OS/EnvVar.h>
+#include <casa/BasicSL/String.h>
+#include <casa/Utilities/Assert.h>
+#include <casa/Exceptions.h>
+#include <casa/iostream.h>
 #include <unistd.h>
 
 

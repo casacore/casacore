@@ -28,8 +28,8 @@
 #if !defined(AIPS_STACK_H)
 #define AIPS_STACK_H
 
-#include <aips/aips.h>
-#include <aips/Containers/Link.h>
+#include <casa/aips.h>
+#include <casa/Containers/Link.h>
 
 extern void throw_empty_Stack_error(const char *msg = 0);
 

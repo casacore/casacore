@@ -26,14 +26,14 @@
 //# $Id$
 
 //# Includes
-#include <trial/SpectralComponents/SpectralList.h>
+#include <components/SpectralComponents/SpectralList.h>
 
-#include <aips/Exceptions/Error.h>
-#include <aips/Containers/RecordInterface.h>
-#include <aips/Containers/Record.h>
-#include <trial/SpectralComponents/SpectralElement.h>
+#include <casa/Exceptions/Error.h>
+#include <casa/Containers/RecordInterface.h>
+#include <casa/Containers/Record.h>
+#include <components/SpectralComponents/SpectralElement.h>
 
-#include <aips/iostream.h>
+#include <casa/iostream.h>
 
 //# Constructors
 SpectralList::SpectralList() :

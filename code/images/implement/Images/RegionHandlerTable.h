@@ -30,7 +30,7 @@
 
 
 //# Includes
-#include <trial/Images/RegionHandler.h>
+#include <images/Images/RegionHandler.h>
 
 //# Forward declarations
 class Table;

@@ -29,11 +29,11 @@
 #define AIPS_EXPRDERNODE_H
 
 //# Includes
-#include <aips/aips.h>
-#include <aips/Tables/ExprNodeRep.h>
-#include <aips/Arrays/Vector.h>
-#include <aips/BasicMath/Random.h>
-#include <aips/Utilities/Regex.h>
+#include <casa/aips.h>
+#include <tables/Tables/ExprNodeRep.h>
+#include <casa/Arrays/Vector.h>
+#include <casa/BasicMath/Random.h>
+#include <casa/Utilities/Regex.h>
 
 //# Forward Declarations
 class ROTableColumn;

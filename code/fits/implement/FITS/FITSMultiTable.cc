@@ -26,24 +26,24 @@
 //#
 //# $Id$
 
-#include <aips/iostream.h>
+#include <casa/iostream.h>
 
-#include <trial/FITS/FITSMultiTable.h>
+#include <fits/FITS/FITSMultiTable.h>
 
-#include <aips/Exceptions/Error.h>
-#include <aips/Utilities/Assert.h>
+#include <casa/Exceptions/Error.h>
+#include <casa/Utilities/Assert.h>
 
-#include <aips/BasicMath/Math.h>
-#include <aips/OS/Path.h>
-#include <aips/OS/File.h>
-#include <aips/OS/Directory.h>
-#include <aips/OS/DirectoryIterator.h>
-#include <aips/OS/Timer.h>
-#include <aips/Arrays/Slice.h>
-#include <aips/Utilities/GenSort.h>
+#include <casa/BasicMath/Math.h>
+#include <casa/OS/Path.h>
+#include <casa/OS/File.h>
+#include <casa/OS/Directory.h>
+#include <casa/OS/DirectoryIterator.h>
+#include <casa/OS/Timer.h>
+#include <casa/Arrays/Slice.h>
+#include <casa/Utilities/GenSort.h>
 
 // Used for debug print statements
-// #include <aips/Arrays/ArrayIO.h
+// #include <casa/Arrays/ArrayIO.h
 
 FITSMultiTable::FITSMultiTable(const Vector<String> &fileNames,
 			       FITSTabular* (*tabMaker)(const String&))

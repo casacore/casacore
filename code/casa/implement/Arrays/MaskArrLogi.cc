@@ -25,9 +25,9 @@
 //#
 //# $Id$
 
-#include <aips/Arrays/MaskArrLogi.h>
-#include <aips/Arrays/ArrayError.h>
-#include <aips/Arrays/ArrayLogical.h>
+#include <casa/Arrays/MaskArrLogi.h>
+#include <casa/Arrays/ArrayError.h>
+#include <casa/Arrays/ArrayLogical.h>
 
 #define MARRLOGI_B_ALLFUNC_MA(ALLFUNC,OP,STRALLFUNC) \
 template<class T> \

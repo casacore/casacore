@@ -29,17 +29,17 @@
 #if !defined(AIPS_SPECTRAL_COORDINATE_H)
 #define AIPS_SPECTRAL_COORDINATE_H
 
-#include <aips/aips.h>
-#include <aips/Arrays/Vector.h>
-#include <trial/Coordinates/Coordinate.h>
-#include <trial/Coordinates/ObsInfo.h>
-#include <trial/Coordinates/TabularCoordinate.h>
-#include <aips/Measures/MFrequency.h>
-#include <aips/Measures/MDoppler.h>
-#include <aips/Measures/MDirection.h>
-#include <aips/Measures/MPosition.h>
-#include <aips/Measures/MEpoch.h>
-#include <aips/Quanta/Quantum.h>
+#include <casa/aips.h>
+#include <casa/Arrays/Vector.h>
+#include <coordinates/Coordinates/Coordinate.h>
+#include <coordinates/Coordinates/ObsInfo.h>
+#include <coordinates/Coordinates/TabularCoordinate.h>
+#include <measures/Measures/MFrequency.h>
+#include <measures/Measures/MDoppler.h>
+#include <measures/Measures/MDirection.h>
+#include <measures/Measures/MPosition.h>
+#include <measures/Measures/MEpoch.h>
+#include <casa/Quanta/Quantum.h>
 
 class LogIO;
 class MVFrequency;

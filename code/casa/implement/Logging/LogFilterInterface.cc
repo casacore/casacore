@@ -25,7 +25,7 @@
 //#
 //# $I$
 
-#include <aips/Logging/LogFilterInterface.h>
+#include <casa/Logging/LogFilterInterface.h>
 
 
 LogFilterInterface::~LogFilterInterface()

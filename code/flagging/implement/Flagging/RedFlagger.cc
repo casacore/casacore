@@ -24,48 +24,48 @@
 //#                        Charlottesville, VA 22903-2475 USA
 //#
 //# $Id$
-#include <aips/Arrays/Vector.h>
-#include <aips/Arrays/ArrayMath.h>
-#include <aips/Arrays/ArrayLogical.h>
-#include <aips/MeasurementSets/MSColumns.h>
-#include <aips/MeasurementSets/MSSpWindowColumns.h>
-#include <aips/BasicSL/Complex.h>
-#include <aips/Measures/Stokes.h>
-#include <aips/Utilities/Regex.h>
-#include <aips/System/AppInfo.h>
-#include <trial/Flagging/RedFlagger.h>
-#include <trial/Flagging/RFAMedianClip.h>
-#include <trial/Flagging/RFASpectralRej.h>
-#include <trial/Flagging/RFASelector.h>
-#include <trial/Flagging/RFAUVBinner.h>
-#include <trial/MSVis/VisibilityIterator.h>
-#include <trial/MSVis/VisBuffer.h>
-#include <trial/System/PGPlotter.h>
-#include <aips/System/ProgressMeter.h>
-#include <aips/stdio.h>
-#include <aips/math.h>
+#include <casa/Arrays/Vector.h>
+#include <casa/Arrays/ArrayMath.h>
+#include <casa/Arrays/ArrayLogical.h>
+#include <ms/MeasurementSets/MSColumns.h>
+#include <ms/MeasurementSets/MSSpWindowColumns.h>
+#include <casa/BasicSL/Complex.h>
+#include <measures/Measures/Stokes.h>
+#include <casa/Utilities/Regex.h>
+#include <casa/System/AppInfo.h>
+#include <flagging/Flagging/RedFlagger.h>
+#include <flagging/Flagging/RFAMedianClip.h>
+#include <flagging/Flagging/RFASpectralRej.h>
+#include <flagging/Flagging/RFASelector.h>
+#include <flagging/Flagging/RFAUVBinner.h>
+#include <msvis/MSVis/VisibilityIterator.h>
+#include <msvis/MSVis/VisBuffer.h>
+#include <casa/System/PGPlotter.h>
+#include <casa/System/ProgressMeter.h>
+#include <casa/stdio.h>
+#include <casa/math.h>
 #include <stdarg.h>
 
-#include <aips/Tables/TableParse.h>
-#include <aips/Tables/TableRecord.h>
-#include <aips/Tables/TableDesc.h>
-#include <aips/Tables/TableLock.h>
-#include <aips/Tables/ExprNode.h>
-#include <trial/MSVis/VisSet.h>
-#include <trial/MSVis/VisSetUtil.h>
+#include <tables/Tables/TableParse.h>
+#include <tables/Tables/TableRecord.h>
+#include <tables/Tables/TableDesc.h>
+#include <tables/Tables/TableLock.h>
+#include <tables/Tables/ExprNode.h>
+#include <msvis/MSVis/VisSet.h>
+#include <msvis/MSVis/VisSetUtil.h>
 
-#include <aips/Measures/Stokes.h>
-#include <aips/Quanta/UnitMap.h>
-#include <aips/Quanta/UnitVal.h>
-#include <aips/Quanta/MVAngle.h>
-#include <aips/Measures/MDirection.h>
-#include <aips/Measures/MPosition.h>
-#include <aips/Quanta/MVEpoch.h>
-#include <aips/Measures/MEpoch.h>
-#include <aips/Measures/MeasTable.h>
+#include <measures/Measures/Stokes.h>
+#include <casa/Quanta/UnitMap.h>
+#include <casa/Quanta/UnitVal.h>
+#include <casa/Quanta/MVAngle.h>
+#include <measures/Measures/MDirection.h>
+#include <measures/Measures/MPosition.h>
+#include <casa/Quanta/MVEpoch.h>
+#include <measures/Measures/MEpoch.h>
+#include <measures/Measures/MeasTable.h>
 
 
-#include <trial/Flagging/RFANewMedianClip.h>
+#include <flagging/Flagging/RFANewMedianClip.h>
 
  LogIO RedFlagger::os( LogOrigin("RedFlagger") );
  static char str[256];

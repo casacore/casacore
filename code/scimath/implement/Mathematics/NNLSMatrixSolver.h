@@ -29,8 +29,8 @@
 #define AIPS_NNLSMATRIXSOLVER_H
 
 
-#include <aips/aips.h>
-#include <trial/Mathematics/MatrixSolver.h>
+#include <casa/aips.h>
+#include <scimath/Mathematics/MatrixSolver.h>
 
 //<summary>
 // NNLSMatrixSolver.h: the base class for NNLS solvers of linear equations AX=B

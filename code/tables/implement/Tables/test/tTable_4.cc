@@ -25,28 +25,28 @@
 //#
 //# $Id$
 
-#include <aips/Tables/TableDesc.h>
-#include <aips/Tables/SetupNewTab.h>
-#include <aips/Tables/Table.h>
-#include <aips/Tables/ScaColDesc.h>
-#include <aips/Tables/ArrColDesc.h>
-#include <aips/Tables/ScalarColumn.h>
-#include <aips/Tables/ArrayColumn.h>
-#include <aips/Tables/StManAipsIO.h>
-#include <aips/Tables/IncrementalStMan.h>
-#include <aips/Tables/StandardStMan.h>
-#include <aips/Tables/TiledShapeStMan.h>
-#include <aips/Tables/TiledColumnStMan.h>
-#include <aips/Arrays/Vector.h>
-#include <aips/Arrays/ArrayMath.h>
-#include <aips/Arrays/ArrayLogical.h>
-#include <aips/Arrays/ArrayUtil.h>
-#include <aips/Arrays/ArrayIO.h>
-#include <aips/Containers/Record.h>
-#include <aips/Utilities/Regex.h>
-#include <aips/Utilities/Assert.h>
-#include <aips/Exceptions/Error.h>
-#include <aips/iostream.h>
+#include <tables/Tables/TableDesc.h>
+#include <tables/Tables/SetupNewTab.h>
+#include <tables/Tables/Table.h>
+#include <tables/Tables/ScaColDesc.h>
+#include <tables/Tables/ArrColDesc.h>
+#include <tables/Tables/ScalarColumn.h>
+#include <tables/Tables/ArrayColumn.h>
+#include <tables/Tables/StManAipsIO.h>
+#include <tables/Tables/IncrementalStMan.h>
+#include <tables/Tables/StandardStMan.h>
+#include <tables/Tables/TiledShapeStMan.h>
+#include <tables/Tables/TiledColumnStMan.h>
+#include <casa/Arrays/Vector.h>
+#include <casa/Arrays/ArrayMath.h>
+#include <casa/Arrays/ArrayLogical.h>
+#include <casa/Arrays/ArrayUtil.h>
+#include <casa/Arrays/ArrayIO.h>
+#include <casa/Containers/Record.h>
+#include <casa/Utilities/Regex.h>
+#include <casa/Utilities/Assert.h>
+#include <casa/Exceptions/Error.h>
+#include <casa/iostream.h>
 
 // <summary>
 // Interactive test program for adding/removing columns.

@@ -25,7 +25,7 @@
 //#
 //# $Id$
 
-#include <aips/Utilities/Sequence.h>
+#include <casa/Utilities/Sequence.h>
 
 /*
    // Inlined this in Sequence.h so this is now

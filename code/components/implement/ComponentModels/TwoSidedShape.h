@@ -29,12 +29,12 @@
 #if !defined(AIPS_TWOSIDEDSHAPE_H)
 #define AIPS_TWOSIDEDSHAPE_H
 
-#include <aips/aips.h>
-#include <trial/ComponentModels/ComponentShape.h>
-#include <trial/ComponentModels/ComponentType.h>
-#include <aips/BasicSL/Complex.h>
-#include <aips/Quanta/Unit.h>
-#include <aips/Quanta/Quantum.h>
+#include <casa/aips.h>
+#include <components/ComponentModels/ComponentShape.h>
+#include <components/ComponentModels/ComponentType.h>
+#include <casa/BasicSL/Complex.h>
+#include <casa/Quanta/Unit.h>
+#include <casa/Quanta/Quantum.h>
 
 class DirectionCoordinate;
 class MDirection;

@@ -25,25 +25,25 @@
 //#
 //# $Id$
 //   
-#include <trial/Images/ImageConvolver.h>
+#include <images/Images/ImageConvolver.h>
 //
-#include <aips/aips.h>
-#include <trial/Coordinates/CoordinateUtil.h>
-#include <aips/Exceptions/Error.h>
-#include <aips/Logging/LogIO.h>
-#include <aips/BasicMath/Math.h>
-#include <aips/BasicSL/String.h>
-#include <trial/Images/PagedImage.h>
-#include <trial/Images/TempImage.h>
-#include <trial/Images/RegionHandler.h>
-#include <trial/Images/ImageRegion.h>
-#include <trial/Images/ImageUtilities.h>
-#include <aips/Lattices/ArrayLattice.h>
-#include <trial/Lattices/LatticeConvolver.h>
-#include <trial/Lattices/LatticeUtilities.h>
-#include <trial/Lattices/LatticeExpr.h>
-#include <trial/Lattices/LatticeExprNode.h>
-#include <aips/iostream.h>
+#include <casa/aips.h>
+#include <coordinates/Coordinates/CoordinateUtil.h>
+#include <casa/Exceptions/Error.h>
+#include <casa/Logging/LogIO.h>
+#include <casa/BasicMath/Math.h>
+#include <casa/BasicSL/String.h>
+#include <images/Images/PagedImage.h>
+#include <images/Images/TempImage.h>
+#include <images/Images/RegionHandler.h>
+#include <images/Images/ImageRegion.h>
+#include <images/Images/ImageUtilities.h>
+#include <lattices/Lattices/ArrayLattice.h>
+#include <lattices/Lattices/LatticeConvolver.h>
+#include <lattices/Lattices/LatticeUtilities.h>
+#include <lattices/Lattices/LatticeExpr.h>
+#include <lattices/Lattices/LatticeExprNode.h>
+#include <casa/iostream.h>
 
 
 template <class T> 

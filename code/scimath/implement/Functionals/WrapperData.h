@@ -29,8 +29,8 @@
 #define AIPS_WRAPPERDATA_H
 
 //# Includes
-#include <aips/aips.h>
-#include <aips/Functionals/WrapperBase.h>
+#include <casa/aips.h>
+#include <scimath/Functionals/WrapperBase.h>
 
 //# Forward declarations
 

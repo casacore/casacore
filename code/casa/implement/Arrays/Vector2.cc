@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#include <aips/Arrays/Vector.h>
-#include <aips/vector.h>
+#include <casa/Arrays/Vector.h>
+#include <casa/vector.h>
 
 template<class T>
 template<class U>

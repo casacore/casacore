@@ -29,12 +29,12 @@
 #define AIPS_MODULE_MEASURES_H
 
 //# Includes
-#include <aips/Quanta.h>
-#include <aips/Measures/Measure.h>
-#include <aips/Measures/MeasBase.h>
-#include <aips/Quanta/MeasValue.h>
-#include <aips/Measures/MeasRef.h>
-#include <aips/Measures/MeasConvert.h>
+#include <casa/Quanta.h>
+#include <measures/Measures/Measure.h>
+#include <measures/Measures/MeasBase.h>
+#include <casa/Quanta/MeasValue.h>
+#include <measures/Measures/MeasRef.h>
+#include <measures/Measures/MeasConvert.h>
 
 // <module>
 // 
@@ -62,14 +62,14 @@
 // (see <linkto class="Measure">Measure.h</linkto>).
 //
 // <h3> Includes</h3>
-// Including the <src>aips/Measures.h</src> will take care of all
+// Including the <src>measures/Measures.h</src> will take care of all
 // includes necessary for the handling of Units and Quantities, and the
 // general Measure interface. For the use of individual Measures, the
 // appropiate include files should be added. E.g. to be able to handle
 // Directions, the following includes could be given:
 // <srcblock>
-//	#include <aips/Measures.h>
-//	#include <aips/Measures/MDirection.h>
+//	#include <measures/Measures.h>
+//	#include <measures/Measures/MDirection.h>
 // </srcblock>
 // An inclusion of the appropiate measure file, will also take care of the
 // connected measure value (in this case <src>MVDirection</src>). However,

@@ -29,8 +29,8 @@
 #define AIPS_GAUSSIAN1DPARAM_H
 
 //# Includes
-#include <aips/aips.h>
-#include <aips/Functionals/Function1D.h>
+#include <casa/aips.h>
+#include <scimath/Functionals/Function1D.h>
 
 //# Forward declarations
 

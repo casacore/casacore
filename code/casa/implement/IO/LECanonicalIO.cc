@@ -25,9 +25,9 @@
 //#
 //# $Id$
 
-#include <aips/IO/LECanonicalIO.h>
-#include <aips/OS/LECanonicalConversion.h>
-#include <aips/IO/ByteIO.h>
+#include <casa/IO/LECanonicalIO.h>
+#include <casa/OS/LECanonicalConversion.h>
+#include <casa/IO/ByteIO.h>
 
 LECanonicalIO::LECanonicalIO (ByteIO* byteIO, uInt bufferLength, Bool takeOver)
 : TypeIO          (byteIO, takeOver), 

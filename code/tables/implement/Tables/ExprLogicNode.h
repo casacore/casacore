@@ -29,8 +29,8 @@
 #define AIPS_EXPRLOGICNODE_H
 
 //# Includes
-#include <aips/aips.h>
-#include <aips/Tables/ExprNodeRep.h>
+#include <casa/aips.h>
+#include <tables/Tables/ExprNodeRep.h>
 
 
 //# This file defines classes derived from TableExprNode representing

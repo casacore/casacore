@@ -30,8 +30,8 @@
 
 
 //# Includes
-#include <trial/Lattices/LELFunction.h>
-#include <aips/Containers/Block.h>
+#include <lattices/Lattices/LELFunction.h>
+#include <casa/Containers/Block.h>
 
 //# Forward Declarations
 

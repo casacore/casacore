@@ -25,13 +25,13 @@
 //#
 //# $Id$
 
-#include <aips/Utilities/GenSort.h>
-#include <aips/Arrays/Array.h>
-#include <aips/Arrays/Vector.h>
-#include <aips/Arrays/ArrayMath.h>
-#include <aips/Arrays/Slice.h>
-#include <aips/Containers/Block.h>
-#include <aips/Exceptions/Error.h>
+#include <casa/Utilities/GenSort.h>
+#include <casa/Arrays/Array.h>
+#include <casa/Arrays/Vector.h>
+#include <casa/Arrays/ArrayMath.h>
+#include <casa/Arrays/Slice.h>
+#include <casa/Containers/Block.h>
+#include <casa/Exceptions/Error.h>
 
 // Do a quicksort in ascending order.
 // All speedups are from Sedgewick; Algorithms in C.

@@ -25,12 +25,12 @@
 //#
 //# $Id$
 
-#include <trial/OS/ModcompConversion.h>
-#include <aips/Exceptions/Error.h>
-#include <aips/BasicMath/Math.h>
-#include <aips/Utilities/Assert.h>
-#include <aips/iostream.h>
-#include <aips/iomanip.h>
+#include <casa/OS/ModcompConversion.h>
+#include <casa/Exceptions/Error.h>
+#include <casa/BasicMath/Math.h>
+#include <casa/Utilities/Assert.h>
+#include <casa/iostream.h>
+#include <casa/iomanip.h>
 
 // This program tests the Modcomp conversion functions.
 

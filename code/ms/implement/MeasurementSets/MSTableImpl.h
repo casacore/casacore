@@ -30,14 +30,14 @@
 #define AIPS_MSTABLEIMPL_H
 
 //# Includes
-#include <aips/aips.h>
-#include <aips/Utilities/DataType.h>
-#include <aips/Tables/Table.h>
-#include <aips/Containers/SimOrdMap.h>
-#include <aips/BasicSL/String.h>
-#include <aips/Tables/TableDesc.h>
-#include <aips/Utilities/Fallible.h>
-#include <aips/Arrays/Vector.h>
+#include <casa/aips.h>
+#include <casa/Utilities/DataType.h>
+#include <tables/Tables/Table.h>
+#include <casa/Containers/SimOrdMap.h>
+#include <casa/BasicSL/String.h>
+#include <tables/Tables/TableDesc.h>
+#include <casa/Utilities/Fallible.h>
+#include <casa/Arrays/Vector.h>
 
 //# Forward declarations
 class SetupNewTable;

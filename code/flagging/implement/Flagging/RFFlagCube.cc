@@ -24,18 +24,18 @@
 //#                        Charlottesville, VA 22903-2475 USA
 //#
 //# $Id$
-#include <trial/Flagging/RFFlagCube.h>
-#include <aips/Exceptions/Error.h>
-#include <trial/MSVis/VisBuffer.h>
-#include <aips/Arrays/ArrayLogical.h>
-#include <aips/Arrays/ArrayMath.h>
-#include <aips/Arrays/LogiVector.h>
-#include <aips/Utilities/Regex.h>
-#include <aips/OS/Time.h>
-#include <aips/Quanta/MVTime.h>
+#include <flagging/Flagging/RFFlagCube.h>
+#include <casa/Exceptions/Error.h>
+#include <msvis/MSVis/VisBuffer.h>
+#include <casa/Arrays/ArrayLogical.h>
+#include <casa/Arrays/ArrayMath.h>
+#include <casa/Arrays/LogiVector.h>
+#include <casa/Utilities/Regex.h>
+#include <casa/OS/Time.h>
+#include <casa/Quanta/MVTime.h>
 #include <stdio.h>
 
-#include <trial/System/PGPlotterInterface.h>
+#include <casa/System/PGPlotterInterface.h>
         
 RFCubeLattice<RFlagWord> RFFlagCube::flag; // global flag lattice
 FlagMatrix RFFlagCube::flagrow;   

@@ -25,7 +25,7 @@
 //#
 //# $Id$
 
-#include <aips/Tables/DataManError.h>
+#include <tables/Tables/DataManError.h>
 
 // Implementation of DataManager error classes.
 

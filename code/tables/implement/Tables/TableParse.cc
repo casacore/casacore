@@ -25,35 +25,35 @@
 //#
 //# $Id$
 
-#include <aips/Tables/TableParse.h>
-#include <aips/Tables/TableGram.h>
-#include <aips/Tables/ExprNode.h>
-#include <aips/Tables/ExprDerNode.h>
-#include <aips/Tables/ExprDerNodeArray.h>
-#include <aips/Tables/ExprNodeSet.h>
-#include <aips/Tables/ExprRange.h>
-#include <aips/Tables/TableColumn.h>
-#include <aips/Tables/ScalarColumn.h>
-#include <aips/Tables/ArrayColumn.h>
-#include <aips/Tables/TableRow.h>
-#include <aips/Tables/TableRecord.h>
-#include <aips/Tables/TableDesc.h>
-#include <aips/Tables/ColumnDesc.h>
-#include <aips/Tables/TableError.h>
-#include <aips/Utilities/MUString.h>
-#include <aips/Quanta/MVTime.h>
-#include <aips/Quanta/MVAngle.h>
-#include <aips/Arrays/Vector.h>
-#include <aips/Arrays/ArrayMath.h>
-#include <aips/Arrays/ArrayUtil.h>
-#include <aips/Arrays/ArrayIO.h>
-#include <aips/Utilities/Sort.h>
-#include <aips/Utilities/GenSort.h>
-#include <aips/Utilities/LinearSearch.h>
-#include <aips/Utilities/Assert.h>
-#include <aips/IO/AipsIO.h>
-#include <aips/OS/Timer.h>
-#include <aips/ostream.h>
+#include <tables/Tables/TableParse.h>
+#include <tables/Tables/TableGram.h>
+#include <tables/Tables/ExprNode.h>
+#include <tables/Tables/ExprDerNode.h>
+#include <tables/Tables/ExprDerNodeArray.h>
+#include <tables/Tables/ExprNodeSet.h>
+#include <tables/Tables/ExprRange.h>
+#include <tables/Tables/TableColumn.h>
+#include <tables/Tables/ScalarColumn.h>
+#include <tables/Tables/ArrayColumn.h>
+#include <tables/Tables/TableRow.h>
+#include <tables/Tables/TableRecord.h>
+#include <tables/Tables/TableDesc.h>
+#include <tables/Tables/ColumnDesc.h>
+#include <tables/Tables/TableError.h>
+#include <casa/Utilities/MUString.h>
+#include <casa/Quanta/MVTime.h>
+#include <casa/Quanta/MVAngle.h>
+#include <casa/Arrays/Vector.h>
+#include <casa/Arrays/ArrayMath.h>
+#include <casa/Arrays/ArrayUtil.h>
+#include <casa/Arrays/ArrayIO.h>
+#include <casa/Utilities/Sort.h>
+#include <casa/Utilities/GenSort.h>
+#include <casa/Utilities/LinearSearch.h>
+#include <casa/Utilities/Assert.h>
+#include <casa/IO/AipsIO.h>
+#include <casa/OS/Timer.h>
+#include <casa/ostream.h>
 
 
 static const PtrBlock<const Table*>* theTempTables;

@@ -25,10 +25,10 @@
 //#
 //# $Id$
 
-#include <trial/MeasurementSets/MSTileLayout.h>
-#include <aips/Arrays/IPosition.h>
-#include <aips/BasicMath/Math.h>
-#include <aips/BasicSL/String.h>
+#include <ms/MeasurementSets/MSTileLayout.h>
+#include <casa/Arrays/IPosition.h>
+#include <casa/BasicMath/Math.h>
+#include <casa/BasicSL/String.h>
 
 IPosition MSTileLayout::tileShape(const IPosition& dataShape,
 				  Int observationType, Int nIfr, Int nInt)

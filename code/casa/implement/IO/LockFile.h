@@ -30,11 +30,11 @@
 
 
 //# Includes
-#include <aips/aips.h>
-#include <aips/IO/FileLocker.h>
-#include <aips/OS/Time.h>
-#include <aips/Containers/Block.h>
-#include <aips/BasicSL/String.h>
+#include <casa/aips.h>
+#include <casa/IO/FileLocker.h>
+#include <casa/OS/Time.h>
+#include <casa/Containers/Block.h>
+#include <casa/BasicSL/String.h>
 #include <sys/types.h>
 
 //# Forward declarations

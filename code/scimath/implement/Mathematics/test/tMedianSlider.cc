@@ -26,10 +26,10 @@
 
 //#! Includes
 
-#include <aips/BasicMath/Math.h>
-#include <aips/Arrays/Vector.h>
-#include <aips/iostream.h>
-#include <trial/Mathematics/MedianSlider.h>
+#include <casa/BasicMath/Math.h>
+#include <casa/Arrays/Vector.h>
+#include <casa/iostream.h>
+#include <scimath/Mathematics/MedianSlider.h>
 
 int main(){
   MedianSlider me;

@@ -25,19 +25,19 @@
 //#
 //# $Id$
 
-#include <aips/Tables/RefTable.h>
-#include <aips/Tables/RefColumn.h>
-#include <aips/Tables/Table.h>
-#include <aips/Tables/TableDesc.h>
-#include <aips/Tables/TableLock.h>
-#include <aips/Containers/SimOrdMapIO.h>
-#include <aips/Containers/Record.h>
-#include <aips/Arrays/Slice.h>
-#include <aips/Utilities/Copy.h>
-#include <aips/OS/Path.h>
-#include <aips/BasicMath/Math.h>
-#include <aips/Tables/TableError.h>
-#include <aips/Utilities/Assert.h>
+#include <tables/Tables/RefTable.h>
+#include <tables/Tables/RefColumn.h>
+#include <tables/Tables/Table.h>
+#include <tables/Tables/TableDesc.h>
+#include <tables/Tables/TableLock.h>
+#include <casa/Containers/SimOrdMapIO.h>
+#include <casa/Containers/Record.h>
+#include <casa/Arrays/Slice.h>
+#include <casa/Utilities/Copy.h>
+#include <casa/OS/Path.h>
+#include <casa/BasicMath/Math.h>
+#include <tables/Tables/TableError.h>
+#include <casa/Utilities/Assert.h>
 
 
 RefTable::RefTable (AipsIO& ios, const String& name, uInt nrrow, int opt,

@@ -29,10 +29,10 @@
 #define AIPS_GAUSSIANNDPARAM_H
 
 //# Includes
-#include <aips/aips.h>
-#include <aips/Functionals/Function.h>
-#include <aips/Arrays/Vector.h>
-#include <aips/Arrays/Matrix.h>
+#include <casa/aips.h>
+#include <scimath/Functionals/Function.h>
+#include <casa/Arrays/Vector.h>
+#include <casa/Arrays/Matrix.h>
 
 // <summary> A Multi-dimensional Gaussian parameter handling. </summary>
 

@@ -29,9 +29,9 @@
 #if !defined(AIPS_MSPOINTING_H)
 #define AIPS_MSPOINTING_H
 
-#include <aips/aips.h>
-#include <aips/MeasurementSets/MSTable.h>
-#include <aips/MeasurementSets/MSPointingEnums.h>
+#include <casa/aips.h>
+#include <ms/MeasurementSets/MSTable.h>
+#include <ms/MeasurementSets/MSPointingEnums.h>
 
 // <summary> 
 // A Table intended to hold a MeasurementSet POINTING table.

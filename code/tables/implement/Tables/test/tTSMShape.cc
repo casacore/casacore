@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#include <aips/Tables/TSMShape.h>
-#include <aips/iostream.h>
+#include <tables/Tables/TSMShape.h>
+#include <casa/iostream.h>
 
 // <summary>
 // Test program for class tTSMShape.

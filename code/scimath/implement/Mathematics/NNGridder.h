@@ -29,7 +29,7 @@
 #if !defined(AIPS_NNGRIDDER_H)
 #define AIPS_NNGRIDDER_H
 
-#include <trial/Mathematics/Gridder.h>
+#include <scimath/Mathematics/Gridder.h>
 
 // <summary>
 // A non-negative gridding class

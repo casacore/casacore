@@ -26,20 +26,20 @@
 //# $Id$
 
 
-#include <trial/Images/ImageTwoPtCorr.h>
+#include <images/Images/ImageTwoPtCorr.h>
 
-#include <aips/Exceptions/Error.h>
-#include <aips/Logging/LogIO.h>
-#include <aips/Utilities/Assert.h>
-#include <trial/Coordinates/CoordinateSystem.h>
-#include <trial/Coordinates/CoordinateUtil.h>
-#include <trial/Coordinates/DirectionCoordinate.h>
-#include <trial/Coordinates/LinearCoordinate.h>
-#include <trial/Images/ImageInterface.h>
-#include <trial/Images/ImageInfo.h>
-#include <trial/Lattices/LatticeTwoPtCorr.h>
+#include <casa/Exceptions/Error.h>
+#include <casa/Logging/LogIO.h>
+#include <casa/Utilities/Assert.h>
+#include <coordinates/Coordinates/CoordinateSystem.h>
+#include <coordinates/Coordinates/CoordinateUtil.h>
+#include <coordinates/Coordinates/DirectionCoordinate.h>
+#include <coordinates/Coordinates/LinearCoordinate.h>
+#include <images/Images/ImageInterface.h>
+#include <images/Images/ImageInfo.h>
+#include <lattices/Lattices/LatticeTwoPtCorr.h>
 
-#include <aips/iostream.h>
+#include <casa/iostream.h>
 
 template <class T> 
 ImageTwoPtCorr<T>::ImageTwoPtCorr()

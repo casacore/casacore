@@ -29,8 +29,8 @@
 #if !defined(AIPS_SDOBSERVATIONHANDLER_H)
 #define AIPS_SDOBSERVATIONHANDLER_H
 
-#include <aips/Containers/RecordField.h>
-#include <aips/Tables/ScalarColumn.h>
+#include <casa/Containers/RecordField.h>
+#include <tables/Tables/ScalarColumn.h>
 
 //# Forward Declarations
 class ColumnsIndex;

@@ -29,8 +29,8 @@
 #define AIPS_EXPRFUNCNODEARRAY_H
 
 //# Includes
-#include <aips/Tables/ExprNodeArray.h>
-#include <aips/Tables/ExprFuncNode.h>
+#include <tables/Tables/ExprNodeArray.h>
+#include <tables/Tables/ExprFuncNode.h>
 
 //# Forward Declarations
 

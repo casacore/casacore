@@ -27,13 +27,13 @@
 
 //# Includes
 
-#include <aips/BasicSL/Complex.h>
-#include <aips/BasicSL/IComplex.h>
+#include <casa/BasicSL/Complex.h>
+#include <casa/BasicSL/IComplex.h>
 
 #include <assert.h>
-#include <aips/stdio.h>
-#include <aips/iostream.h>
-#include <aips/fstream.h>
+#include <casa/stdio.h>
+#include <casa/iostream.h>
+#include <casa/fstream.h>
 #include <unistd.h>
 
 int main() {

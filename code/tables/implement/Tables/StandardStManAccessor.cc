@@ -26,12 +26,12 @@
 //# $Id$
 
 //# Includes
-#include <aips/Tables/StandardStManAccessor.h>
-#include <aips/Tables/SSMBase.h>
-#include <aips/Tables/Table.h>
-#include <aips/Tables/DataManError.h>
-#include <aips/BasicSL/String.h>
-#include <aips/Utilities/Assert.h>
+#include <tables/Tables/StandardStManAccessor.h>
+#include <tables/Tables/SSMBase.h>
+#include <tables/Tables/Table.h>
+#include <tables/Tables/DataManError.h>
+#include <casa/BasicSL/String.h>
+#include <casa/Utilities/Assert.h>
 
 ROStandardStManAccessor::ROStandardStManAccessor (const Table& aTable,
 					    const String& aDataManagerName)

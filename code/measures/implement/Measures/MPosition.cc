@@ -26,12 +26,12 @@
 //# $Id$
 
 //# Includes
-#include <aips/Exceptions.h>
-#include <aips/Arrays/Vector.h>
-#include <aips/BasicMath/Math.h>
-#include <aips/Utilities/Register.h>
-#include <aips/Measures/MPosition.h>
-#include <aips/Utilities/Assert.h>
+#include <casa/Exceptions.h>
+#include <casa/Arrays/Vector.h>
+#include <casa/BasicMath/Math.h>
+#include <casa/Utilities/Register.h>
+#include <measures/Measures/MPosition.h>
+#include <casa/Utilities/Assert.h>
 
 //# Constructors
 MPosition::MPosition() :

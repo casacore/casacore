@@ -25,9 +25,9 @@
 //#
 //# $Id$
 
-# include <aips/sstream.h>
-# include <aips/FITS/blockio.h>
-# include <aips/string.h>
+# include <casa/sstream.h>
+# include <fits/FITS/blockio.h>
+# include <casa/string.h>
 #include <unistd.h>
 
 void BlockIO::errmsg(IOErrs e, char *s) { 

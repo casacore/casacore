@@ -31,28 +31,28 @@
 #include <wcslib/prj.h>
 #include <wcslib/cylfix.h>
 
-#include <trial/Coordinates/DirectionCoordinate.h>
-#include <trial/Coordinates/LinearCoordinate.h>
-#include <trial/Coordinates/Coordinate.h>
-#include <aips/Arrays/ArrayMath.h>
-#include <aips/Arrays/Matrix.h>
-#include <aips/Arrays/ArrayAccessor.h>
-#include <aips/Containers/Record.h>
-#include <aips/Logging/LogIO.h>
-#include <aips/Logging/LogOrigin.h>
-#include <aips/BasicSL/Constants.h>
-#include <aips/Measures/MeasConvert.h>
-#include <aips/Quanta/MVAngle.h>
-#include <aips/Quanta/Quantum.h>
-#include <aips/Quanta/Unit.h>
-#include <aips/Quanta/RotMatrix.h>
-#include <aips/Quanta/Euler.h>
-#include <aips/Utilities/Assert.h>
-#include <aips/Utilities/LinearSearch.h>
-#include <aips/BasicSL/String.h>
+#include <coordinates/Coordinates/DirectionCoordinate.h>
+#include <coordinates/Coordinates/LinearCoordinate.h>
+#include <coordinates/Coordinates/Coordinate.h>
+#include <casa/Arrays/ArrayMath.h>
+#include <casa/Arrays/Matrix.h>
+#include <casa/Arrays/ArrayAccessor.h>
+#include <casa/Containers/Record.h>
+#include <casa/Logging/LogIO.h>
+#include <casa/Logging/LogOrigin.h>
+#include <casa/BasicSL/Constants.h>
+#include <measures/Measures/MeasConvert.h>
+#include <casa/Quanta/MVAngle.h>
+#include <casa/Quanta/Quantum.h>
+#include <casa/Quanta/Unit.h>
+#include <casa/Quanta/RotMatrix.h>
+#include <casa/Quanta/Euler.h>
+#include <casa/Utilities/Assert.h>
+#include <casa/Utilities/LinearSearch.h>
+#include <casa/BasicSL/String.h>
 
-#include <aips/iomanip.h>  
-#include <aips/sstream.h>
+#include <casa/iomanip.h>  
+#include <casa/sstream.h>
 
 
 DirectionCoordinate::DirectionCoordinate()

@@ -27,12 +27,12 @@
 //# $Id$
 
 
-#include <trial/Mathematics/HistAcc.h>
-#include <aips/BasicMath/Math.h>
-#include <aips/Arrays.h>
-// #include <aips/Exceptions/Error.h>
-#include <aips/iostream.h>
-#include <aips/iomanip.h>
+#include <scimath/Mathematics/HistAcc.h>
+#include <casa/BasicMath/Math.h>
+#include <casa/Arrays.h>
+// #include <casa/Exceptions/Error.h>
+#include <casa/iostream.h>
+#include <casa/iomanip.h>
 
 // Constructor: Fully automatic bin definition
 

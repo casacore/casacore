@@ -30,10 +30,10 @@
 #define AIPS_MEMORYLOGSINK_H
 
 //# Includes
-#include <aips/aips.h>
-#include <aips/Logging/LogSinkInterface.h>
-#include <aips/Containers/Block.h>
-#include <aips/BasicSL/String.h>
+#include <casa/aips.h>
+#include <casa/Logging/LogSinkInterface.h>
+#include <casa/Containers/Block.h>
+#include <casa/BasicSL/String.h>
 
 //# Forward Declarations
 

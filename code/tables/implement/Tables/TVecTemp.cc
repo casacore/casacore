@@ -25,11 +25,11 @@
 //#
 //# $Id$
 
-#include <aips/aips.h>
-#include <aips/Tables/TVecTemp.h>
-#include <aips/Arrays/IPosition.h>
-#include <aips/Arrays/Vector.h>
-#include <aips/Tables/TableError.h>
+#include <casa/aips.h>
+#include <tables/Tables/TVecTemp.h>
+#include <casa/Arrays/IPosition.h>
+#include <casa/Arrays/Vector.h>
+#include <tables/Tables/TableError.h>
 
 //# Construct from a vector.
 template<class T>

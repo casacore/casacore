@@ -30,8 +30,8 @@
 #define AIPS_APPINFO_H
 
 //# Includes
-#include <aips/aips.h>
-#include <aips/System/AipsrcValue.h>
+#include <casa/aips.h>
+#include <casa/System/AipsrcValue.h>
 
 //# Forward declarations
 class String;

@@ -30,9 +30,9 @@
 
 
 //# Includes
-#include <aips/aips.h>
-#include <aips/BasicSL/String.h>
-#include <aips/Quanta/UnitVal.h>
+#include <casa/aips.h>
+#include <casa/BasicSL/String.h>
+#include <casa/Quanta/UnitVal.h>
 
 //# Forward Declarations
 
@@ -157,7 +157,7 @@
 //
 // <example>
 // <srcblock>
-// #include <aips/Quanta.h>
+// #include <casa/Quanta.h>
 // // check if a string is a valid unit
 // if ( !UnitVal::check("Km") ) { cout << "Invalid unit string " << "Km" << endl;
 // // define some units

@@ -25,18 +25,18 @@
 //#
 //# $Id$
 
-#include <aips/MeasurementSets/MSMainColumns.h>
-#include <aips/MeasurementSets/MeasurementSet.h>
-#include <aips/Tables/ColDescSet.h>
-#include <aips/Tables/TableDesc.h>
-#include <aips/Tables/TableRecord.h>
-#include <aips/BasicSL/String.h>
-#include <aips/Arrays/Vector.h>
-#include <aips/Arrays/IPosition.h>
-#include <aips/Utilities/Assert.h>
-#include <aips/Utilities/DataType.h>
-#include <aips/Containers/RecordFieldId.h>
-#include <aips/Exceptions/Error.h>
+#include <ms/MeasurementSets/MSMainColumns.h>
+#include <ms/MeasurementSets/MeasurementSet.h>
+#include <tables/Tables/ColDescSet.h>
+#include <tables/Tables/TableDesc.h>
+#include <tables/Tables/TableRecord.h>
+#include <casa/BasicSL/String.h>
+#include <casa/Arrays/Vector.h>
+#include <casa/Arrays/IPosition.h>
+#include <casa/Utilities/Assert.h>
+#include <casa/Utilities/DataType.h>
+#include <casa/Containers/RecordFieldId.h>
+#include <casa/Exceptions/Error.h>
 
 ROMSMainColumns::ROMSMainColumns(const MeasurementSet& ms):
   antenna1_p(ms, MS::columnName(MS::ANTENNA1)),

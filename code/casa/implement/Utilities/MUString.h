@@ -30,12 +30,12 @@
 
 
 //# Includes
-#include <aips/aips.h>
-#include <aips/BasicSL/String.h>
-#include <aips/Containers/Block.h>
+#include <casa/aips.h>
+#include <casa/BasicSL/String.h>
+#include <casa/Containers/Block.h>
 
 //# Forward Declarations
-#include <aips/iosfwd.h>
+#include <casa/iosfwd.h>
 class Regex;
 template <class T> class Vector; 
 

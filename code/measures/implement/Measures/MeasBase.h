@@ -30,9 +30,9 @@
 #define AIPS_MEASBASE_H
 
 //# Includes
-#include <aips/aips.h>
-#include <aips/Measures/Measure.h>
-#include <aips/Quanta/Quantum.h>
+#include <casa/aips.h>
+#include <measures/Measures/Measure.h>
+#include <casa/Quanta/Quantum.h>
 
 //# Forward Declarations
 template <class T> class Vector;

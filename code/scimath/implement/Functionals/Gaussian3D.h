@@ -30,11 +30,11 @@
 
 template<class T> class Vector;
 
-#include <aips/aips.h>
-#include <trial/Functionals/Gaussian3DParam.h>
-#include <aips/Functionals/Function.h>
-#include <aips/Mathematics/AutoDiff.h>
-#include <aips/Mathematics/AutoDiffMath.h>
+#include <casa/aips.h>
+#include <scimath/Functionals/Gaussian3DParam.h>
+#include <scimath/Functionals/Function.h>
+#include <scimath/Mathematics/AutoDiff.h>
+#include <scimath/Mathematics/AutoDiffMath.h>
 
 // <summary> A three dimensional Gaussian class.</summary>
 

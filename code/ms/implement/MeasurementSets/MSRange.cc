@@ -26,26 +26,26 @@
 //#
 //# $Id$
 
-#include <trial/MeasurementSets/MSRange.h>
-#include <trial/MeasurementSets/MSSelector.h>
+#include <ms/MeasurementSets/MSRange.h>
+#include <ms/MeasurementSets/MSSelector.h>
 
-#include <aips/Containers/Record.h>
-#include <aips/Arrays/ArrayLogical.h>
-#include <aips/Arrays/ArrayMath.h>
-#include <aips/Arrays/MaskArrMath.h>
-#include <aips/Arrays/Matrix.h>
-#include <aips/Arrays/Slice.h>
-#include <aips/Exceptions/Error.h>
-#include <aips/Arrays/Slicer.h>
-#include <aips/Logging/LogIO.h>
-#include <aips/MeasurementSets/MSColumns.h>
-#include <aips/Measures/Stokes.h>
-#include <aips/Measures/MDirection.h>
-#include <aips/Tables/RefRows.h>
-#include <aips/Tables/TableRecord.h>
-#include <aips/Utilities/GenSort.h>
-#include <aips/Utilities/Assert.h>
-#include <aips/iostream.h>
+#include <casa/Containers/Record.h>
+#include <casa/Arrays/ArrayLogical.h>
+#include <casa/Arrays/ArrayMath.h>
+#include <casa/Arrays/MaskArrMath.h>
+#include <casa/Arrays/Matrix.h>
+#include <casa/Arrays/Slice.h>
+#include <casa/Exceptions/Error.h>
+#include <casa/Arrays/Slicer.h>
+#include <casa/Logging/LogIO.h>
+#include <ms/MeasurementSets/MSColumns.h>
+#include <measures/Measures/Stokes.h>
+#include <measures/Measures/MDirection.h>
+#include <tables/Tables/RefRows.h>
+#include <tables/Tables/TableRecord.h>
+#include <casa/Utilities/GenSort.h>
+#include <casa/Utilities/Assert.h>
+#include <casa/iostream.h>
 
 
 MSRange::MSRange():blockSize_p(10),ddId_p(0),constantShape_p(False),sel_p(0)

@@ -28,8 +28,8 @@
 #if !defined(AIPS_DLINK_H_)
 #define AIPS_DLINK_H_
 
-#include <aips/aips.h>
-#include <aips/Containers/Link.h>
+#include <casa/aips.h>
+#include <casa/Containers/Link.h>
 
 // <summary><b>Deprecated</b> use <linkto class=Link>Link</linkto> instead</summary>
 // <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="" demos="">

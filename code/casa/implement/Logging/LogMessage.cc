@@ -25,10 +25,10 @@
 //#
 //# $Id$
 
-#include <aips/Logging/LogMessage.h>
-#include <aips/Utilities/Assert.h>
+#include <casa/Logging/LogMessage.h>
+#include <casa/Utilities/Assert.h>
 
-#include <aips/sstream.h>
+#include <casa/sstream.h>
 
 LogMessage::LogMessage(Priority prio)
   : priority_p(prio)

@@ -28,15 +28,15 @@
 #if !defined (AIPS_TABLEMEASURES_H)
 #define AIPS_TABLEMEASURES_H
 
-#include <aips/TableMeasures/ArrayMeasColumn.h>
-#include <aips/TableMeasures/ArrayQuantColumn.h>
-#include <aips/TableMeasures/ScalarMeasColumn.h>
-#include <aips/TableMeasures/ScalarQuantColumn.h>
-#include <aips/TableMeasures/TableMeasDesc.h>
-#include <aips/TableMeasures/TableMeasOffsetDesc.h>
-#include <aips/TableMeasures/TableMeasRefDesc.h>
-#include <aips/TableMeasures/TableMeasValueDesc.h>
-#include <aips/TableMeasures/TableQuantumDesc.h>
+#include <measures/TableMeasures/ArrayMeasColumn.h>
+#include <measures/TableMeasures/ArrayQuantColumn.h>
+#include <measures/TableMeasures/ScalarMeasColumn.h>
+#include <measures/TableMeasures/ScalarQuantColumn.h>
+#include <measures/TableMeasures/TableMeasDesc.h>
+#include <measures/TableMeasures/TableMeasOffsetDesc.h>
+#include <measures/TableMeasures/TableMeasRefDesc.h>
+#include <measures/TableMeasures/TableMeasValueDesc.h>
+#include <measures/TableMeasures/TableQuantumDesc.h>
 
 // <module> 
 

@@ -27,15 +27,15 @@
 #if !defined(AIPS_RFA_SPECTRALREJ_H)
 #define AIPS_RFA_SPECTRALREJ_H
 
-#include <trial/Flagging/RFAFlagCubeBase.h> 
-#include <trial/Flagging/RFDataMapper.h> 
-#include <trial/Flagging/RFFlagCube.h> 
-#include <trial/Flagging/RFRowClipper.h> 
-#include <trial/Flagging/RFDebugPlot.h> 
-#include <aips/Functionals/Polynomial.h>
-#include <trial/Fitting/LinearFit.h>
-#include <aips/Containers/Queue.h>
-#include <aips/Arrays/LogiVector.h>
+#include <flagging/Flagging/RFAFlagCubeBase.h> 
+#include <flagging/Flagging/RFDataMapper.h> 
+#include <flagging/Flagging/RFFlagCube.h> 
+#include <flagging/Flagging/RFRowClipper.h> 
+#include <flagging/Flagging/RFDebugPlot.h> 
+#include <scimath/Functionals/Polynomial.h>
+#include <scimath/Fitting/LinearFit.h>
+#include <casa/Containers/Queue.h>
+#include <casa/Arrays/LogiVector.h>
     
 // <summary>
 // RFASpectralRej: Spectral rejection agent

@@ -31,8 +31,8 @@
 
 
 //# Includes
-#include <aips/Lattices/Lattice.h>
-#include <aips/Arrays/Slicer.h>
+#include <lattices/Lattices/Lattice.h>
+#include <casa/Arrays/Slicer.h>
 
 //# Forward Declarations
 class LCRegion;

@@ -27,11 +27,11 @@
 
 //# Includes
 
-#include <trial/FITS/SDFITSTable.h>
-#include <aips/FITS/fits.h>
-#include <aips/Arrays/Vector.h>
-#include <aips/Arrays/Slice.h>
-#include <aips/Utilities/Assert.h>
+#include <fits/FITS/SDFITSTable.h>
+#include <fits/FITS/fits.h>
+#include <casa/Arrays/Vector.h>
+#include <casa/Arrays/Slice.h>
+#include <casa/Utilities/Assert.h>
 
 Block<String> SDFITSTable::kwNames;
 

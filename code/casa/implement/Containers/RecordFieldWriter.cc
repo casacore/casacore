@@ -26,9 +26,9 @@
 //#
 //# $Id$
 
-#include <trial/Containers/RecordFieldWriter.h>
-#include <aips/Utilities/Copy.h>
-#include <aips/Utilities/Assert.h>
+#include <casa/Containers/RecordFieldWriter.h>
+#include <casa/Utilities/Copy.h>
+#include <casa/Utilities/Assert.h>
 
 template<class outType, class inType>
 RecordFieldCopier<outType,inType>::RecordFieldCopier(RecordInterface &outRecord, 

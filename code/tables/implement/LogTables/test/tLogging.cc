@@ -26,24 +26,24 @@
 //# $Id$
 
 
-#include <aips/Logging/LogFilter.h>
-#include <aips/LogTables/LogFilterTaql.h>
-#include <aips/Logging/LogMessage.h>
-#include <aips/Logging/LogOrigin.h>
-#include <aips/Logging/LogSink.h>
-#include <aips/Logging/NullLogSink.h>
-#include <aips/Logging/MemoryLogSink.h>
-#include <aips/Logging/StreamLogSink.h>
-#include <aips/LogTables/TableLogSink.h>
-#include <aips/Logging/LogIO.h>
+#include <casa/Logging/LogFilter.h>
+#include <tables/LogTables/LogFilterTaql.h>
+#include <casa/Logging/LogMessage.h>
+#include <casa/Logging/LogOrigin.h>
+#include <casa/Logging/LogSink.h>
+#include <casa/Logging/NullLogSink.h>
+#include <casa/Logging/MemoryLogSink.h>
+#include <casa/Logging/StreamLogSink.h>
+#include <tables/LogTables/TableLogSink.h>
+#include <casa/Logging/LogIO.h>
 
-#include <aips/Tables.h>
-#include <aips/Exceptions/Error.h>
-#include <aips/OS/Directory.h>
-#include <aips/Utilities/Assert.h>
+#include <tables/Tables.h>
+#include <casa/Exceptions/Error.h>
+#include <casa/OS/Directory.h>
+#include <casa/Utilities/Assert.h>
 
-#include <aips/sstream.h>
-#include <aips/iostream.h>
+#include <casa/sstream.h>
+#include <casa/iostream.h>
 
 void testLogFilter()
 {

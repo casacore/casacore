@@ -30,9 +30,9 @@
 #define AIPS_PRECESSION_H
 
 //# Includes
-#include <aips/aips.h>
-#include <aips/Quanta/Euler.h>
-#include <aips/Functionals/Polynomial.h>
+#include <casa/aips.h>
+#include <casa/Quanta/Euler.h>
+#include <scimath/Functionals/Polynomial.h>
 
 //# Forward Declarations
 
@@ -103,7 +103,7 @@
 //
 // <example>
 //  <srcblock>
-// #include <aips/Measures.h>
+// #include <measures/Measures.h>
 //	MVDirection pos(Quantity(10,"degree"),Quantity(-10.5,"degree"));
 //						// direction RA=10; DEC=-10.5
 //	Precession mine(Precession::IAU1976);	// define precession type

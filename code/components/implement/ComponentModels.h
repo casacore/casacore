@@ -28,25 +28,25 @@
 #if !defined (TRIAL_COMPONENTMODELS_H)
 #define TRIAL_COMPONENTMODELS_H
 
-#include <trial/ComponentModels/ComponentType.h>
+#include <components/ComponentModels/ComponentType.h>
 
-#include <trial/ComponentModels/Flux.h>
+#include <components/ComponentModels/Flux.h>
 
-#include <trial/ComponentModels/ComponentShape.h>
-#include <trial/ComponentModels/TwoSidedShape.h>
-#include <trial/ComponentModels/PointShape.h>
-#include <trial/ComponentModels/GaussianShape.h>
-#include <trial/ComponentModels/DiskShape.h>
+#include <components/ComponentModels/ComponentShape.h>
+#include <components/ComponentModels/TwoSidedShape.h>
+#include <components/ComponentModels/PointShape.h>
+#include <components/ComponentModels/GaussianShape.h>
+#include <components/ComponentModels/DiskShape.h>
 
-#include <trial/ComponentModels/SpectralModel.h>
-#include <trial/ComponentModels/ConstantSpectrum.h>
-#include <trial/ComponentModels/SpectralIndex.h>
+#include <components/ComponentModels/SpectralModel.h>
+#include <components/ComponentModels/ConstantSpectrum.h>
+#include <components/ComponentModels/SpectralIndex.h>
 
-#include <trial/ComponentModels/SkyCompBase.h>
-#include <trial/ComponentModels/SkyCompRep.h>
-#include <trial/ComponentModels/SkyComponent.h>
+#include <components/ComponentModels/SkyCompBase.h>
+#include <components/ComponentModels/SkyCompRep.h>
+#include <components/ComponentModels/SkyComponent.h>
 
-#include <trial/ComponentModels/ComponentList.h>
+#include <components/ComponentModels/ComponentList.h>
 #include <trial/ComponentModels/DOcomponentlist.h>
 
 // <module>

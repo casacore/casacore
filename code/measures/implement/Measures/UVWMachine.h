@@ -28,11 +28,11 @@
 #define AIPS_UVWMACHINE_H
 
 //# Includes
-#include <aips/aips.h>
-#include <aips/Measures.h>
-#include <aips/Measures/MCDirection.h>
-#include <aips/Quanta/MVPosition.h>
-#include <aips/Quanta/RotMatrix.h>
+#include <casa/aips.h>
+#include <measures/Measures.h>
+#include <measures/Measures/MCDirection.h>
+#include <casa/Quanta/MVPosition.h>
+#include <casa/Quanta/RotMatrix.h>
 
 //# Forward Declarations
 class MeasFrame;

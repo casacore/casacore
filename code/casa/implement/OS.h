@@ -29,23 +29,23 @@
 #define AIPS_OS_H
 
 //# Includes
-#include <aips/OS/EnvVar.h>
-#include <aips/OS/Path.h>
-#include <aips/OS/RegularFile.h>
-#include <aips/OS/SymLink.h>
-#include <aips/OS/Directory.h>
-#include <aips/OS/DirectoryIterator.h>
+#include <casa/OS/EnvVar.h>
+#include <casa/OS/Path.h>
+#include <casa/OS/RegularFile.h>
+#include <casa/OS/SymLink.h>
+#include <casa/OS/Directory.h>
+#include <casa/OS/DirectoryIterator.h>
 
-#include <aips/OS/SysEvent.h>
-#include <aips/OS/Time.h>
-#include <aips/OS/Timer.h>
+#include <casa/OS/SysEvent.h>
+#include <casa/OS/Time.h>
+#include <casa/OS/Timer.h>
 
-#include <aips/OS/Conversion.h>
-#include <aips/OS/CanonicalConversion.h>
-#include <aips/OS/DataConversion.h>
-#include <aips/OS/CanonicalDataConversion.h>
+#include <casa/OS/Conversion.h>
+#include <casa/OS/CanonicalConversion.h>
+#include <casa/OS/DataConversion.h>
+#include <casa/OS/CanonicalDataConversion.h>
 
-#include <aips/OS/Memory.h>
+#include <casa/OS/Memory.h>
 
 
 // <module>

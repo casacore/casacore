@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#include <aips/MeasurementSets/MSDopplerColumns.h>
-#include <aips/MeasurementSets/MSDoppler.h>
+#include <ms/MeasurementSets/MSDopplerColumns.h>
+#include <ms/MeasurementSets/MSDoppler.h>
 
 ROMSDopplerColumns::ROMSDopplerColumns(const MSDoppler& msDoppler):
   isNull_p(True),

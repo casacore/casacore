@@ -29,11 +29,11 @@
 #if !defined(AIPS_CHEBESHEV_H)
 #define AIPS_CHEBESHEV_H
 
-#include <aips/aips.h>
-#include <aips/Functionals/ChebyshevParam.h>
-#include <aips/Functionals/Function1D.h>
-#include <aips/Mathematics/AutoDiff.h>
-#include <aips/Mathematics/AutoDiffMath.h>
+#include <casa/aips.h>
+#include <scimath/Functionals/ChebyshevParam.h>
+#include <scimath/Functionals/Function1D.h>
+#include <scimath/Mathematics/AutoDiff.h>
+#include <scimath/Mathematics/AutoDiffMath.h>
 
 //# Forward Declarations
 

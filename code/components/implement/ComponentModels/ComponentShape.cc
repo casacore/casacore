@@ -25,27 +25,27 @@
 //#
 //# $Id$
 
-#include <trial/ComponentModels/ComponentShape.h>
-#include <aips/Arrays/ArrayLogical.h>
-#include <aips/Arrays/Matrix.h>
-#include <aips/Arrays/Vector.h>
-#include <aips/Arrays/IPosition.h>
-#include <aips/Containers/Record.h>
-#include <aips/Containers/RecordFieldId.h>
-#include <aips/Containers/RecordInterface.h>
-#include <trial/Coordinates/DirectionCoordinate.h>
-#include <aips/Exceptions/Error.h>
-#include <aips/Logging/LogIO.h>
-#include <aips/BasicSL/Complex.h>
-#include <aips/Measures/MeasureHolder.h>
-#include <aips/Measures/MeasFrame.h>
-#include <aips/Measures/MeasRef.h>
-#include <aips/Quanta/Quantum.h>
-#include <aips/Quanta/UnitVal.h>
-#include <aips/Utilities/Assert.h>
-#include <aips/Utilities/DataType.h>
-#include <aips/BasicSL/String.h>
-#include <aips/Quanta/QuantumHolder.h>
+#include <components/ComponentModels/ComponentShape.h>
+#include <casa/Arrays/ArrayLogical.h>
+#include <casa/Arrays/Matrix.h>
+#include <casa/Arrays/Vector.h>
+#include <casa/Arrays/IPosition.h>
+#include <casa/Containers/Record.h>
+#include <casa/Containers/RecordFieldId.h>
+#include <casa/Containers/RecordInterface.h>
+#include <coordinates/Coordinates/DirectionCoordinate.h>
+#include <casa/Exceptions/Error.h>
+#include <casa/Logging/LogIO.h>
+#include <casa/BasicSL/Complex.h>
+#include <measures/Measures/MeasureHolder.h>
+#include <measures/Measures/MeasFrame.h>
+#include <measures/Measures/MeasRef.h>
+#include <casa/Quanta/Quantum.h>
+#include <casa/Quanta/UnitVal.h>
+#include <casa/Utilities/Assert.h>
+#include <casa/Utilities/DataType.h>
+#include <casa/BasicSL/String.h>
+#include <casa/Quanta/QuantumHolder.h>
 
 ComponentShape::ComponentShape() 
   :itsDir(),

@@ -30,10 +30,10 @@
 
 
 //# Includes
-#include <aips/BasicSL/String.h>
-#include <aips/Arrays/IPosition.h>
-#include <aips/BasicSL/Complex.h>
-#include <aips/Tables/RetypedArraySetGet.h>
+#include <casa/BasicSL/String.h>
+#include <casa/Arrays/IPosition.h>
+#include <casa/BasicSL/Complex.h>
+#include <tables/Tables/RetypedArraySetGet.h>
 
 //# Forward Declarations
 class TableRecord;

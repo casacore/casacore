@@ -26,7 +26,7 @@
 //# $Id$
 
 //# Includes
-#include <aips/Functionals/WrapperParam.h>
+#include <scimath/Functionals/WrapperParam.h>
 
 //# Constructors
 template<class T>

@@ -25,10 +25,10 @@
 //#
 //# $Id$
 
-#include <aips/Tables/SSMDirColumn.h>
-#include <aips/Tables/SSMStringHandler.h>
-#include <aips/Arrays/Array.h>
-#include <aips/Utilities/ValType.h>
+#include <tables/Tables/SSMDirColumn.h>
+#include <tables/Tables/SSMStringHandler.h>
+#include <casa/Arrays/Array.h>
+#include <casa/Utilities/ValType.h>
 
 SSMDirColumn::SSMDirColumn (SSMBase* aParent, int aDataType, uInt aColNr)
 : SSMColumn   (aParent,aDataType,aColNr)

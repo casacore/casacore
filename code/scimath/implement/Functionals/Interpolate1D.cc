@@ -25,14 +25,14 @@
 //#
 //# $Id$
 
-#include <aips/Functionals/Interpolate1D.h>
-#include <aips/Functionals/SampledFunctional.h>
-#include <aips/Exceptions/Error.h>
-#include <aips/Utilities/BinarySearch.h>
-#include <aips/Utilities/GenSort.h>
-#include <aips/Arrays/Vector.h>
-#include <aips/Arrays/ArrayMath.h>
-#include <aips/BasicMath/Math.h>
+#include <scimath/Functionals/Interpolate1D.h>
+#include <scimath/Functionals/SampledFunctional.h>
+#include <casa/Exceptions/Error.h>
+#include <casa/Utilities/BinarySearch.h>
+#include <casa/Utilities/GenSort.h>
+#include <casa/Arrays/Vector.h>
+#include <casa/Arrays/ArrayMath.h>
+#include <casa/BasicMath/Math.h>
 
 template <class Domain, class Range> Interpolate1D<Domain, Range>::
 Interpolate1D() {

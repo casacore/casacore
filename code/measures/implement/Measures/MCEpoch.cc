@@ -26,12 +26,12 @@
 //# $Id$
 
 //# Includes
-#include <aips/BasicSL/Constants.h>
-#include <aips/Measures/MCEpoch.h>
-#include <aips/Measures/MCFrame.h>
-#include <aips/Measures/MeasFrame.h>
-#include <aips/Measures/Nutation.h>
-#include <aips/Measures/MeasTable.h>
+#include <casa/BasicSL/Constants.h>
+#include <measures/Measures/MCEpoch.h>
+#include <measures/Measures/MCFrame.h>
+#include <measures/Measures/MeasFrame.h>
+#include <measures/Measures/Nutation.h>
+#include <measures/Measures/MeasTable.h>
 
 //# Statics
 Bool MCEpoch::stateMade_p = False;

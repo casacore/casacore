@@ -29,8 +29,8 @@
 #define AIPS_LCSTRETCH_H
 
 //# Includes
-#include <trial/Lattices/LCRegionMulti.h>
-#include <trial/Lattices/LCBox.h>
+#include <lattices/Lattices/LCRegionMulti.h>
+#include <lattices/Lattices/LCBox.h>
 
 
 // <summary>

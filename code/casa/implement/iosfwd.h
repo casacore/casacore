@@ -34,7 +34,7 @@
 // instead.
 
 // Make sure any special macros are set
-#include <aips/aips.h>
+#include <casa/aips.h>
 #include <iosfwd>
 
 using std::ios;

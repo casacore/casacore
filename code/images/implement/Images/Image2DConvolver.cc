@@ -25,34 +25,34 @@
 //#
 //# $Id$
 //   
-#include <trial/Images/Image2DConvolver.h>
+#include <images/Images/Image2DConvolver.h>
 //
-#include <aips/aips.h>
-#include <aips/Arrays/IPosition.h>
-#include <aips/Arrays/Array.h>
-#include <aips/Arrays/ArrayMath.h>
-#include <aips/Arrays/Vector.h>
-#include <aips/Arrays/Matrix.h>
-#include <aips/Exceptions/Error.h>
-#include <trial/ComponentModels/GaussianShape.h>
-#include <trial/Coordinates/CoordinateUtil.h>
-#include <trial/Coordinates/CoordinateSystem.h>
-#include <trial/Coordinates/DirectionCoordinate.h>
-#include <trial/LatticeMath/Fit2D.h>
-#include <aips/Functionals/Gaussian2D.h>
-#include <trial/Images/ImageConvolver.h>
-#include <trial/Images/PagedImage.h>
-#include <trial/Images/TempImage.h>
-#include <trial/Images/ImageInterface.h>
-#include <trial/Images/ImageInfo.h>
-#include <trial/Images/ImageUtilities.h>
-#include <aips/Logging/LogIO.h>
-#include <aips/Mathematics/Convolver.h>
-#include <aips/Quanta/Quantum.h>
-#include <aips/Quanta/MVAngle.h>
-#include <aips/Quanta/Unit.h>
-#include <aips/BasicSL/String.h>
-#include <aips/iostream.h>
+#include <casa/aips.h>
+#include <casa/Arrays/IPosition.h>
+#include <casa/Arrays/Array.h>
+#include <casa/Arrays/ArrayMath.h>
+#include <casa/Arrays/Vector.h>
+#include <casa/Arrays/Matrix.h>
+#include <casa/Exceptions/Error.h>
+#include <components/ComponentModels/GaussianShape.h>
+#include <coordinates/Coordinates/CoordinateUtil.h>
+#include <coordinates/Coordinates/CoordinateSystem.h>
+#include <coordinates/Coordinates/DirectionCoordinate.h>
+#include <lattices/LatticeMath/Fit2D.h>
+#include <scimath/Functionals/Gaussian2D.h>
+#include <images/Images/ImageConvolver.h>
+#include <images/Images/PagedImage.h>
+#include <images/Images/TempImage.h>
+#include <images/Images/ImageInterface.h>
+#include <images/Images/ImageInfo.h>
+#include <images/Images/ImageUtilities.h>
+#include <casa/Logging/LogIO.h>
+#include <scimath/Mathematics/Convolver.h>
+#include <casa/Quanta/Quantum.h>
+#include <casa/Quanta/MVAngle.h>
+#include <casa/Quanta/Unit.h>
+#include <casa/BasicSL/String.h>
+#include <casa/iostream.h>
 
 template <class T> 
 Image2DConvolver<T>::Image2DConvolver ()

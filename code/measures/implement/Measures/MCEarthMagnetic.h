@@ -30,13 +30,13 @@
 #define AIPS_MCEARTHMAGNETIC_H
 
 //# Includes
-#include <aips/aips.h>
-#include <aips/Measures/MEarthMagnetic.h>
-#include <aips/Measures/MeasBase.h>
-#include <aips/Measures/MeasRef.h>
-#include <aips/Measures/MCBase.h>
-#include <aips/Measures/MConvertBase.h>
-#include <aips/Measures/MeasMath.h>
+#include <casa/aips.h>
+#include <measures/Measures/MEarthMagnetic.h>
+#include <measures/Measures/MeasBase.h>
+#include <measures/Measures/MeasRef.h>
+#include <measures/Measures/MCBase.h>
+#include <measures/Measures/MConvertBase.h>
+#include <measures/Measures/MeasMath.h>
 
 //# Forward Declarations
 class MCEarthMagnetic;

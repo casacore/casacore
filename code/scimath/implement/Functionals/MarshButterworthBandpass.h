@@ -29,9 +29,9 @@
 #if !defined(AIPS_MARSHBUTTERBANDPASS_H)
 #define AIPS_MARSHBUTTERBANDPASS_H
 
-#include <aips/aips.h>
-#include <aips/Functionals/SimButterworthBandpass.h>
-#include <trial/Functionals/FunctionMarshallable.h>
+#include <casa/aips.h>
+#include <scimath/Functionals/SimButterworthBandpass.h>
+#include <scimath/Functionals/FunctionMarshallable.h>
 
 //# Forward Declarations
 

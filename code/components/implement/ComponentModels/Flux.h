@@ -29,13 +29,13 @@
 #if !defined(AIPS_FLUX_H)
 #define AIPS_FLUX_H
 
-#include <aips/aips.h>
-#include <aips/Arrays/Vector.h>
-#include <aips/Mathematics/NumericTraits.h>
-#include <aips/Measures/Stokes.h>
-#include <aips/Quanta/Unit.h>
-#include <aips/Utilities/CountedPtr.h>
-#include <trial/ComponentModels/ComponentType.h>
+#include <casa/aips.h>
+#include <casa/Arrays/Vector.h>
+#include <scimath/Mathematics/NumericTraits.h>
+#include <measures/Measures/Stokes.h>
+#include <casa/Quanta/Unit.h>
+#include <casa/Utilities/CountedPtr.h>
+#include <components/ComponentModels/ComponentType.h>
 
 class RecordInterface;
 template <class Qtype> class Quantum;

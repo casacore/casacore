@@ -29,7 +29,7 @@
 #define AIPS_BYTEIO_H
 
 //# Includes
-#include <aips/aips.h>
+#include <casa/aips.h>
 
 
 // <summary>Abstract base class for IO on a byte stream.</summary>

@@ -1,68 +1,68 @@
-1000 aips/Arrays/Array.cc 
-     = aips/Tables/TableRecord.h 
+1000 casa/Arrays/Array.cc 
+     = tables/Tables/TableRecord.h 
      template class Array<TableRecord> 
      #ifdef AIPS_SUN_NATIVE 
        template class Array<TableRecord>::ConstIteratorSTL 
      #endif 
-1000 aips/Arrays/MaskedArray.cc 
-     = aips/Tables/TableRecord.h 
+1000 casa/Arrays/MaskedArray.cc 
+     = tables/Tables/TableRecord.h 
      template class MaskedArray<TableRecord> 
-1000 aips/Arrays/Vector.cc 
-     = aips/Tables/TableRecord.h 
+1000 casa/Arrays/Vector.cc 
+     = tables/Tables/TableRecord.h 
      template class Vector<TableRecord> 
-1000 aips/Containers/Block.h 
-     = aips/Tables/TableRecord.h 
+1000 casa/Containers/Block.h 
+     = tables/Tables/TableRecord.h 
      template class Block<TableRecord> 
-1010 aips/Containers/Block.h aips/Tables/BaseColumn.h 
+1010 casa/Containers/Block.h tables/Tables/BaseColumn.h 
      template <> class BaseColumn 
      template class PtrBlock<BaseColumn *> 
-1020 aips/Containers/Block.h aips/Tables/ExprNode.h 
-     = aips/Tables/ExprRange.h 
+1020 casa/Containers/Block.h tables/Tables/ExprNode.h 
+     = tables/Tables/ExprRange.h 
      template <> class TableExprNodeRep 
      template class Block<TableExprNode> 
      template class Block<TableExprRange> 
      template class PtrBlock<TableExprNodeRep *> 
-1030 aips/Containers/Block.h aips/Tables/TableParse.h 
+1030 casa/Containers/Block.h tables/Tables/TableParse.h 
      template <> class TableParseSelect 
      template <> class TableParseSort 
      template <> class TableExprNodeSetElem 
      template class PtrBlock<TableParseSelect *> 
      template class PtrBlock<TableParseSort *> 
      template class PtrBlock<TableExprNodeSetElem *> 
-1000 aips/Containers/Link.cc aips/Tables/TableParse.h 
+1000 casa/Containers/Link.cc tables/Tables/TableParse.h 
      template class Link<TableParse> 
-1000 aips/Containers/List.cc aips/Tables/TableParse.h 
+1000 casa/Containers/List.cc tables/Tables/TableParse.h 
      template class ConstListIter<TableParse> 
-1010 aips/Containers/List.cc aips/Tables/TableParse.h 
+1010 casa/Containers/List.cc tables/Tables/TableParse.h 
      template class List<TableParse> 
-1020 aips/Containers/List.cc aips/Tables/TableParse.h 
+1020 casa/Containers/List.cc tables/Tables/TableParse.h 
      template class ListIter<TableParse> 
-1030 aips/Containers/List.cc aips/Tables/TableParse.h 
+1030 casa/Containers/List.cc tables/Tables/TableParse.h 
      template class ListNotice<TableParse> 
-1000 aips/Containers/OrderedPair.cc aips/BasicSL/String.h 
-     = aips/Tables/ColumnDesc.h 
+1000 casa/Containers/OrderedPair.cc casa/BasicSL/String.h 
+     = tables/Tables/ColumnDesc.h 
      template class OrderedPair<String, ColumnDesc> 
-1010 aips/Containers/OrderedPair.cc aips/BasicSL/String.h 
-     = aips/Tables/RefColumn.h 
+1010 casa/Containers/OrderedPair.cc casa/BasicSL/String.h 
+     = tables/Tables/RefColumn.h 
      template class OrderedPair<String, RefColumn *> 
-1020 aips/Containers/OrderedPair.cc aips/Tables/BaseColDesc.h 
+1020 casa/Containers/OrderedPair.cc tables/Tables/BaseColDesc.h 
      template class OrderedPair<String, BaseColumnDesc *(*)(String const &)> 
-1030 aips/Containers/OrderedPair.cc aips/Tables/DataManager.h 
+1030 casa/Containers/OrderedPair.cc tables/Tables/DataManager.h 
      template class OrderedPair<String, DataManager *(*)(String const &, Record const &)> 
-1000 aips/Containers/RecordField.cc aips/Tables/TableRecord.h 
+1000 casa/Containers/RecordField.cc tables/Tables/TableRecord.h 
      template class RORecordFieldPtr<TableRecord> 
      template class RecordFieldPtr<TableRecord> 
-1000 aips/Containers/SimOrdMap.cc aips/BasicSL/String.h 
-     = aips/Tables/BaseColDesc.h 
-     = aips/Tables/ColumnDesc.h 
-     = aips/Tables/DataManager.h 
-     = aips/Tables/RefColumn.h 
+1000 casa/Containers/SimOrdMap.cc casa/BasicSL/String.h 
+     = tables/Tables/BaseColDesc.h 
+     = tables/Tables/ColumnDesc.h 
+     = tables/Tables/DataManager.h 
+     = tables/Tables/RefColumn.h 
      template class SimpleOrderedMap<String, BaseColumnDesc *(*)(String const &)> 
      template class SimpleOrderedMap<String, ColumnDesc> 
      template class SimpleOrderedMap<String, DataManager *(*)(String const &, Record const &)> 
      template class SimpleOrderedMap<String, RefColumn *> 
-1000 aips/Tables/ArrColData.cc aips/BasicSL/Complex.h 
-     = aips/BasicSL/String.h 
+1000 tables/Tables/ArrColData.cc casa/BasicSL/Complex.h 
+     = casa/BasicSL/String.h 
      template class ArrayColumnData<Bool> 
      template class ArrayColumnData<Char> 
      template class ArrayColumnData<uChar> 
@@ -75,8 +75,8 @@
      template class ArrayColumnData<Complex> 
      template class ArrayColumnData<DComplex> 
      template class ArrayColumnData<String> 
-1000 aips/Tables/ArrColDesc.cc aips/BasicSL/Complex.h 
-     = aips/BasicSL/String.h 
+1000 tables/Tables/ArrColDesc.cc casa/BasicSL/Complex.h 
+     = casa/BasicSL/String.h 
      template class ArrayColumnDesc<Bool> 
      template class ArrayColumnDesc<Char> 
      template class ArrayColumnDesc<uChar> 
@@ -89,8 +89,8 @@
      template class ArrayColumnDesc<Complex> 
      template class ArrayColumnDesc<DComplex> 
      template class ArrayColumnDesc<String> 
-1000 aips/Tables/ArrayColumn.cc aips/BasicSL/Complex.h 
-     = aips/BasicSL/String.h 
+1000 tables/Tables/ArrayColumn.cc casa/BasicSL/Complex.h 
+     = casa/BasicSL/String.h 
      template class ArrayColumn<Bool> 
      template class ArrayColumn<uChar> 
      template class ArrayColumn<Short> 
@@ -113,12 +113,12 @@
      template class ROArrayColumn<Complex> 
      template class ROArrayColumn<DComplex> 
      template class ROArrayColumn<String> 
-1000 aips/Tables/BaseMappedArrayEngine.cc 
-     = aips/BasicSL/Complex.h 
+1000 tables/Tables/BaseMappedArrayEngine.cc 
+     = casa/BasicSL/Complex.h 
      template class BaseMappedArrayEngine<Complex, Int> 
      template class BaseMappedArrayEngine<Float, Short> 
-1000 aips/Tables/ScaColData.cc aips/BasicSL/Complex.h 
-     = aips/BasicSL/String.h 
+1000 tables/Tables/ScaColData.cc casa/BasicSL/Complex.h 
+     = casa/BasicSL/String.h 
      template class ScalarColumnData<Bool> 
      template class ScalarColumnData<Char> 
      template class ScalarColumnData<uChar> 
@@ -131,8 +131,8 @@
      template class ScalarColumnData<Complex> 
      template class ScalarColumnData<DComplex> 
      template class ScalarColumnData<String> 
-1000 aips/Tables/ScaColDesc.cc aips/BasicSL/Complex.h 
-     = aips/BasicSL/String.h 
+1000 tables/Tables/ScaColDesc.cc casa/BasicSL/Complex.h 
+     = casa/BasicSL/String.h 
      template class ScalarColumnDesc<Bool> 
      template class ScalarColumnDesc<Char> 
      template class ScalarColumnDesc<uChar> 
@@ -145,8 +145,8 @@
      template class ScalarColumnDesc<Complex> 
      template class ScalarColumnDesc<DComplex> 
      template class ScalarColumnDesc<String> 
-1000 aips/Tables/ScalarColumn.cc aips/BasicSL/Complex.h 
-     = aips/BasicSL/String.h aips/Tables/TableRecord.h 
+1000 tables/Tables/ScalarColumn.cc casa/BasicSL/Complex.h 
+     = casa/BasicSL/String.h tables/Tables/TableRecord.h 
      template class ROScalarColumn<Bool> 
      template class ROScalarColumn<uChar> 
      template class ROScalarColumn<Short> 
@@ -171,91 +171,91 @@
      template class ScalarColumn<DComplex> 
      template class ScalarColumn<String> 
      template class ScalarColumn<TableRecord> 
-1000 aips/Tables/TVec.cc 
+1000 tables/Tables/TVec.cc 
      template class TabVecRep<Double> 
-1010 aips/Tables/TVec.cc 
+1010 tables/Tables/TVec.cc 
      template class TabVecRep<Int> 
-1000 aips/Tables/TVecMath.cc aips/Tables/TVec.h 
+1000 tables/Tables/TVecMath.cc tables/Tables/TVec.h 
      template void tabVecRepminmax(Int &, Int &, TabVecRep<Int> const &) 
-1000 aips/Tables/TVecScaCol.cc 
+1000 tables/Tables/TVecScaCol.cc 
      template class TabVecScaCol<Double> 
-1010 aips/Tables/TVecScaCol.cc 
+1010 tables/Tables/TVecScaCol.cc 
      template class TabVecScaCol<Int> 
-1000 aips/Tables/TVecTemp.cc 
+1000 tables/Tables/TVecTemp.cc 
      template class TabVecTemp<Double> 
-1010 aips/Tables/TVecTemp.cc 
+1010 tables/Tables/TVecTemp.cc 
      template class TabVecTemp<Int> 
-1000 aips/Tables/TabVecMath.cc aips/Tables/TableVector.h 
+1000 tables/Tables/TabVecMath.cc tables/Tables/TableVector.h 
      template Int max(ROTableVector<Int> const &) 
-1000 aips/Tables/TableVector.cc 
+1000 tables/Tables/TableVector.cc 
      template class ROTableVector<Int> 
-1010 aips/Tables/TableVector.cc 
+1010 tables/Tables/TableVector.cc 
      template class TableVector<Double> 
      template class ROTableVector<Double> 
-1020 aips/Tables/TableVector.cc 
+1020 tables/Tables/TableVector.cc 
      template class TableVector<Int> 
-1000 aips/Tables/VirtArrCol.cc 
-     = aips/BasicSL/Complex.h 
+1000 tables/Tables/VirtArrCol.cc 
+     = casa/BasicSL/Complex.h 
      template class VirtualArrayColumn<Float> 
      template class VirtualArrayColumn<Complex> 
-1000 aips/Tables/VirtScaCol.cc 
+1000 tables/Tables/VirtScaCol.cc 
      template class VirtualScalarColumn<Float> 
-1000 aips/Utilities/BinarySearch.cc aips/Tables/ScalarColumn.h 
+1000 casa/Utilities/BinarySearch.cc tables/Tables/ScalarColumn.h 
      template Int binarySearch(Bool &, ROScalarColumn<Double> const &, Double const &, uInt, Int) 
-1010 aips/Utilities/BinarySearch.cc aips/Tables/ScalarColumn.h 
+1010 casa/Utilities/BinarySearch.cc tables/Tables/ScalarColumn.h 
      template Int binarySearch(Bool &, ROScalarColumn<Int> const &, Int const &, uInt, Int) 
-1000 aips/Utilities/COWPtr.cc aips/Tables/TableRecordRep.h 
+1000 casa/Utilities/COWPtr.cc tables/Tables/TableRecordRep.h 
      template class COWPtr<TableRecordRep> 
-1000 aips/Utilities/Copy.cc 
-     = aips/Tables/ExprNode.h 
+1000 casa/Utilities/Copy.cc 
+     = tables/Tables/ExprNode.h 
      template void objcopy(TableExprNode *, TableExprNode const *, uInt) 
      template void objmove(TableExprNode *, TableExprNode const *, uInt) 
      template void objset(TableExprNode *, TableExprNode, uInt) 
-1010 aips/Utilities/Copy.cc 
-     = aips/Tables/ExprRange.h 
+1010 casa/Utilities/Copy.cc 
+     = tables/Tables/ExprRange.h 
      template void objcopy(TableExprRange *, TableExprRange const *, uInt) 
      template void objmove(TableExprRange *, TableExprRange const *, uInt) 
      template void objset(TableExprRange *, TableExprRange, uInt) 
-1020 aips/Utilities/Copy.cc 
-     = aips/Tables/TableRecord.h 
+1020 casa/Utilities/Copy.cc 
+     = tables/Tables/TableRecord.h 
      template void objcopy(TableRecord *, TableRecord const *, uInt) 
      template void objcopy(TableRecord *, TableRecord const *, uInt, uInt, uInt) 
      template void objmove(TableRecord *, TableRecord const *, uInt) 
      template void objset(TableRecord *, TableRecord, uInt) 
      template void objset(TableRecord *, TableRecord, uInt, uInt) 
-1030 aips/Utilities/Copy.cc 
-     = aips/Tables/TableRow.h 
+1030 casa/Utilities/Copy.cc 
+     = tables/Tables/TableRow.h 
      template void objcopy(ROTableRow **, ROTableRow * const *, uInt) 
      template void objcopy(ROTableRow *, ROTableRow const *, uInt) 
-1000 aips/Utilities/CountedPtr.cc 
-     = aips/Containers/Block.h 
-     = aips/Tables/TableRecord.h 
+1000 casa/Utilities/CountedPtr.cc 
+     = casa/Containers/Block.h 
+     = tables/Tables/TableRecord.h 
      template class CountedConstPtr<Block<TableRecord> > 
      template class CountedPtr<Block<TableRecord> > 
      template class PtrRep<Block<TableRecord> > 
      template class SimpleCountedConstPtr<Block<TableRecord> > 
      template class SimpleCountedPtr<Block<TableRecord> > 
-1010 aips/Utilities/CountedPtr.cc 
-     = trial/Tables/TiledFileAccess.h 
+1010 casa/Utilities/CountedPtr.cc 
+     = tables/Tables/TiledFileAccess.h 
      template class CountedConstPtr<TiledFileAccess> 
      template class CountedPtr<TiledFileAccess> 
      template class PtrRep<TiledFileAccess> 
      template class SimpleCountedConstPtr<TiledFileAccess> 
      template class SimpleCountedPtr<TiledFileAccess> 
-1020 aips/Utilities/CountedPtr.cc aips/Tables/TableDesc.h 
+1020 casa/Utilities/CountedPtr.cc tables/Tables/TableDesc.h 
      template class PtrRep<TableDesc> 
      template class SimpleCountedConstPtr<TableDesc> 
-1030 aips/Utilities/CountedPtr.cc aips/Tables/TableRecordRep.h 
+1030 casa/Utilities/CountedPtr.cc tables/Tables/TableRecordRep.h 
      template class CountedConstPtr<TableRecordRep> 
      template class CountedPtr<TableRecordRep> 
      template class PtrRep<TableRecordRep> 
      template class SimpleCountedConstPtr<TableRecordRep> 
      template class SimpleCountedPtr<TableRecordRep> 
-1000 aips/Utilities/Register.cc aips/Containers/List.h 
-     = aips/Tables/TableParse.h 
+1000 casa/Utilities/Register.cc casa/Containers/List.h 
+     = tables/Tables/TableParse.h 
      template uInt Register(ListNotice<TableParse> const *) 
-1000 trial/LogTables/LoggerHolder.h aips/Containers/Block.h 
-     = aips/Utilities/CountedPtr.cc aips/Utilities/Copy.cc 
+1000 tables/LogTables/LoggerHolder.h casa/Containers/Block.h 
+     = casa/Utilities/CountedPtr.cc casa/Utilities/Copy.cc 
      template class PtrRep<LoggerHolderRep> 
      template class CountedPtr<LoggerHolderRep> 
      template class CountedConstPtr<LoggerHolderRep> 

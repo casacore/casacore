@@ -25,26 +25,26 @@
 //#
 //# $Id$
 
-#include <trial/Images/ImageExprParse.h>
-#include <trial/Images/ImageExprGram.h>
-#include <trial/Images/PagedImage.h>
-#include <trial/Images/FITSImage.h>
-#include <trial/Images/MIRIADImage.h>
-#include <trial/Images/ImageUtilities.h>
-#include <trial/Images/ImageRegion.h>
-#include <trial/Images/RegionHandlerTable.h>
-#include <trial/Lattices/LatticeExprNode.h>
-#include <aips/Lattices/PagedArray.h>
-#include <aips/Lattices/ArrayLattice.h>
-#include <aips/Tables/Table.h>
-#include <aips/Tables/TableDesc.h>
-#include <aips/Tables/ColumnDesc.h>
-#include <aips/Arrays/Vector.h>
-#include <aips/Arrays/Slice.h>
-#include <aips/Arrays/ArrayUtil.h>
-#include <aips/BasicSL/Constants.h>
-#include <aips/Utilities/Assert.h>
-#include <aips/Exceptions/Error.h>
+#include <images/Images/ImageExprParse.h>
+#include <images/Images/ImageExprGram.h>
+#include <images/Images/PagedImage.h>
+#include <images/Images/FITSImage.h>
+#include <images/Images/MIRIADImage.h>
+#include <images/Images/ImageUtilities.h>
+#include <images/Images/ImageRegion.h>
+#include <images/Images/RegionHandlerTable.h>
+#include <lattices/Lattices/LatticeExprNode.h>
+#include <lattices/Lattices/PagedArray.h>
+#include <lattices/Lattices/ArrayLattice.h>
+#include <tables/Tables/Table.h>
+#include <tables/Tables/TableDesc.h>
+#include <tables/Tables/ColumnDesc.h>
+#include <casa/Arrays/Vector.h>
+#include <casa/Arrays/Slice.h>
+#include <casa/Arrays/ArrayUtil.h>
+#include <casa/BasicSL/Constants.h>
+#include <casa/Utilities/Assert.h>
+#include <casa/Exceptions/Error.h>
 
 
 //# Define pointer blocks holding temporary lattices and regions.

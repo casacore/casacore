@@ -26,13 +26,13 @@
 //# $Id$
  
 
-#include <aips/Tables/SSMStringHandler.h>
-#include <aips/Tables/SSMBase.h>
-#include <aips/Arrays/Vector.h>
-#include <aips/OS/CanonicalConversion.h>
-#include <aips/Utilities/Assert.h>
-#include <aips/Utilities/ValType.h>
-#include <aips/Exceptions/Error.h>
+#include <tables/Tables/SSMStringHandler.h>
+#include <tables/Tables/SSMBase.h>
+#include <casa/Arrays/Vector.h>
+#include <casa/OS/CanonicalConversion.h>
+#include <casa/Utilities/Assert.h>
+#include <casa/Utilities/ValType.h>
+#include <casa/Exceptions/Error.h>
 
 SSMStringHandler::SSMStringHandler (SSMBase* aBase):
   itsSSMPtr          (aBase),

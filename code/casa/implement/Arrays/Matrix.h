@@ -30,7 +30,7 @@
 
 
 //# Includes
-#include <aips/Arrays/Array.h>
+#include <casa/Arrays/Array.h>
 
 //# Forward Declarations
 template<class T> class Vector;

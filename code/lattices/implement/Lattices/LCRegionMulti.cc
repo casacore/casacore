@@ -26,11 +26,11 @@
 //# $Id$
 
 
-#include <trial/Lattices/LCRegionMulti.h>
-#include <trial/Lattices/LCBox.h>
-#include <aips/Tables/TableRecord.h>
-#include <aips/Utilities/Assert.h>
-#include <aips/Exceptions/Error.h>
+#include <lattices/Lattices/LCRegionMulti.h>
+#include <lattices/Lattices/LCBox.h>
+#include <tables/Tables/TableRecord.h>
+#include <casa/Utilities/Assert.h>
+#include <casa/Exceptions/Error.h>
 
 
 LCRegionMulti::LCRegionMulti()

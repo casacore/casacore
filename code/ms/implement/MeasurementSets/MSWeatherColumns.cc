@@ -25,11 +25,11 @@
 //#
 //# $Id$
 
-#include <aips/MeasurementSets/MSWeatherColumns.h>
-#include <aips/MeasurementSets/MSWeather.h>
-#include <aips/Tables/ColDescSet.h>
-#include <aips/Tables/TableDesc.h>
-#include <aips/BasicSL/String.h>
+#include <ms/MeasurementSets/MSWeatherColumns.h>
+#include <ms/MeasurementSets/MSWeather.h>
+#include <tables/Tables/ColDescSet.h>
+#include <tables/Tables/TableDesc.h>
+#include <casa/BasicSL/String.h>
 
 ROMSWeatherColumns::ROMSWeatherColumns(const MSWeather& msWeather):
   isNull_p(True),

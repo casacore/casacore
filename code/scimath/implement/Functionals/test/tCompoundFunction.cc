@@ -26,19 +26,19 @@
 //# $Id$
 
 
-#include <aips/Functionals/CompoundFunction.h>
+#include <scimath/Functionals/CompoundFunction.h>
 
-#include <aips/Functionals/Polynomial.h>
-#include <aips/Functionals/Gaussian1D.h>
+#include <scimath/Functionals/Polynomial.h>
+#include <scimath/Functionals/Gaussian1D.h>
 
-#include <aips/BasicMath/Math.h>
-#include <aips/BasicSL/Constants.h>
-#include <aips/Arrays/Vector.h>
-#include <aips/Arrays/ArrayLogical.h>
-#include <aips/Arrays/ArrayMath.h>
-#include <aips/Utilities/Assert.h>
+#include <casa/BasicMath/Math.h>
+#include <casa/BasicSL/Constants.h>
+#include <casa/Arrays/Vector.h>
+#include <casa/Arrays/ArrayLogical.h>
+#include <casa/Arrays/ArrayMath.h>
+#include <casa/Utilities/Assert.h>
 
-#include <aips/iostream.h>
+#include <casa/iostream.h>
 
 int main() {
 

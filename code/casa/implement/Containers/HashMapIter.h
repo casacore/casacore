@@ -28,7 +28,7 @@
 #define AIPS_HASHMAPITER_H_
 
 
-#include <trial/Containers/HashMap.h>
+#include <casa/Containers/HashMap.h>
 
 // <summary>
 //     Step through a const HashMap
@@ -46,8 +46,8 @@
 // <example>
 //    <srcblock>
 //    #include <aips/Containers/HashMap.h>
-//    #include <aips/BasicSL/String.h>
-//    #include <aips/iostream.h>
+//    #include <casa/BasicSL/String.h>
+//    #include <casa/iostream.h>
 //   
 //    main() {
 //      HashMap<String,Int> hash;
@@ -223,7 +223,7 @@ protected:
 // <example>
 //    <srcblock>
 //    #include <aips/Containers/HashMap.h>
-//    #include <aips/BasicSL/String.h>
+//    #include <casa/BasicSL/String.h>
 // #include <iostream>
 //   
 //    main() {

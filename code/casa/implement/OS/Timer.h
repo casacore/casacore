@@ -29,11 +29,11 @@
 #define AIPS_TIMER_H
 
 
-#include <aips/aips.h>
+#include <casa/aips.h>
 #include <sys/types.h>
 
 //# Forward declarations
-#include <aips/iosfwd.h>
+#include <casa/iosfwd.h>
 
 #if defined(DOS) || defined(MSDOS)
 #include <sys/timeb.h>

@@ -29,8 +29,8 @@
 #if !defined(AIPS_LINEARFITSVD_H)
 #define AIPS_LINEARFITSVD_H
 
-#include <aips/aips.h>
-#include <trial/Fitting/LinearFit.h>
+#include <casa/aips.h>
+#include <scimath/Fitting/LinearFit.h>
 
 // <summary> 
 // Linear least-squares fit using Singular Value Decomposition method. 

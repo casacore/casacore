@@ -26,28 +26,28 @@
 //# $Id$
 
 //# Includes
-#include <aips/Inputs/Input.h>
-#include <aips/Arrays/ArrayMath.h>
-#include <aips/Arrays/ArrayLogical.h>
-#include <aips/Arrays/Cube.h>
-#include <aips/Arrays/Matrix.h>
-#include <aips/Containers/Block.h>
-#include <trial/Coordinates/CoordinateSystem.h>
-#include <trial/Coordinates/CoordinateUtil.h>
-#include <trial/Coordinates/DirectionCoordinate.h>
-#include <trial/Images/TempImage.h>
-#include <trial/Images/SubImage.h>
-#include <trial/Images/PagedImage.h>
-#include <trial/Images/ImageRegrid.h>
-#include <trial/Images/ImageRegion.h>
-#include <trial/Lattices/MaskedLattice.h> 
-#include <trial/Lattices/LCPagedMask.h> 
-#include <aips/Lattices/TempLattice.h>
-#include <aips/Lattices/TiledShape.h>
-#include <trial/Mathematics/Interpolate2D.h>
-#include <aips/Logging/LogIO.h>
-#include <aips/Utilities/Assert.h>
-#include <aips/iostream.h>
+#include <casa/Inputs/Input.h>
+#include <casa/Arrays/ArrayMath.h>
+#include <casa/Arrays/ArrayLogical.h>
+#include <casa/Arrays/Cube.h>
+#include <casa/Arrays/Matrix.h>
+#include <casa/Containers/Block.h>
+#include <coordinates/Coordinates/CoordinateSystem.h>
+#include <coordinates/Coordinates/CoordinateUtil.h>
+#include <coordinates/Coordinates/DirectionCoordinate.h>
+#include <images/Images/TempImage.h>
+#include <images/Images/SubImage.h>
+#include <images/Images/PagedImage.h>
+#include <images/Images/ImageRegrid.h>
+#include <images/Images/ImageRegion.h>
+#include <lattices/Lattices/MaskedLattice.h> 
+#include <lattices/Lattices/LCPagedMask.h> 
+#include <lattices/Lattices/TempLattice.h>
+#include <lattices/Lattices/TiledShape.h>
+#include <scimath/Mathematics/Interpolate2D.h>
+#include <casa/Logging/LogIO.h>
+#include <casa/Utilities/Assert.h>
+#include <casa/iostream.h>
 
 
 

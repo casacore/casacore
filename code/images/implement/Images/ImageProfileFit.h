@@ -29,16 +29,16 @@
 #define AIPS_IMAGEPROFILEFIT_H
 
 //# Includes
-#include <aips/aips.h>
-#include <aips/Arrays/Vector.h>
-#include <trial/Coordinates/CoordinateSystem.h>
-#include <aips/Quanta/Quantum.h>
-#include <aips/Quanta/Unit.h>
-#include <aips/Measures/MDoppler.h>
+#include <casa/aips.h>
+#include <casa/Arrays/Vector.h>
+#include <coordinates/Coordinates/CoordinateSystem.h>
+#include <casa/Quanta/Quantum.h>
+#include <casa/Quanta/Unit.h>
+#include <measures/Measures/MDoppler.h>
 //
-#include <trial/SpectralComponents/SpectralElement.h>
-#include <trial/SpectralComponents/SpectralFit.h>
-#include <aips/Utilities/PtrHolder.h>
+#include <components/SpectralComponents/SpectralElement.h>
+#include <components/SpectralComponents/SpectralFit.h>
+#include <casa/Utilities/PtrHolder.h>
 
 
 // Forward declarations

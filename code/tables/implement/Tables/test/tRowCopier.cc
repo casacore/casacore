@@ -25,16 +25,16 @@
 //#
 //# $Id$
 
-#include <aips/Tables/RowCopier.h>
-#include <aips/Tables.h>
-#include <aips/Tables/TabVecLogic.h>
+#include <tables/Tables/RowCopier.h>
+#include <tables/Tables.h>
+#include <tables/Tables/TabVecLogic.h>
 
-#include <aips/Arrays/ArrayMath.h>
-#include <aips/Arrays/ArrayLogical.h>
+#include <casa/Arrays/ArrayMath.h>
+#include <casa/Arrays/ArrayLogical.h>
 
-#include <aips/Tables/TableError.h>
-#include <aips/iostream.h>
-#include <aips/stdio.h>
+#include <tables/Tables/TableError.h>
+#include <casa/iostream.h>
+#include <casa/stdio.h>
 
 int main()
 {

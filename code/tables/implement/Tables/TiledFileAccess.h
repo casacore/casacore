@@ -30,8 +30,8 @@
 
 
 //# Includes
-#include <aips/Tables/TSMCube.h>
-#include <aips/Utilities/DataType.h>
+#include <tables/Tables/TSMCube.h>
+#include <casa/Utilities/DataType.h>
 
 //# Forward Declarations
 class TiledFileHelper;

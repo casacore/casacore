@@ -25,17 +25,17 @@
 //#
 //# $Id$
 
-#include <trial/MeasurementSets/MSReader.h>
+#include <ms/MeasurementSets/MSReader.h>
 
-#include <aips/Arrays/ArrayLogical.h>
-#include <aips/Arrays/ArrayMath.h>
-#include <aips/Exceptions/Error.h>
-#include <aips/Logging/LogIO.h>
-#include <aips/Measures/MEpoch.h>
-#include <aips/Quanta/Quantum.h>
-#include <aips/Tables/TableDesc.h>
-#include <aips/Tables/TableRecord.h>
-#include <aips/Utilities/Assert.h>
+#include <casa/Arrays/ArrayLogical.h>
+#include <casa/Arrays/ArrayMath.h>
+#include <casa/Exceptions/Error.h>
+#include <casa/Logging/LogIO.h>
+#include <measures/Measures/MEpoch.h>
+#include <casa/Quanta/Quantum.h>
+#include <tables/Tables/TableDesc.h>
+#include <tables/Tables/TableRecord.h>
+#include <casa/Utilities/Assert.h>
 
 MSReader::MSReader(const MeasurementSet &ms)
     : itsMS(ms), itsMSCols(ms), itsSecUnit("s"), itsIds(ms), itsTabId(-1),

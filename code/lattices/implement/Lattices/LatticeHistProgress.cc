@@ -26,11 +26,11 @@
 //# $Id$
 //
 
-#include <trial/Lattices/LatticeHistProgress.h>
+#include <lattices/Lattices/LatticeHistProgress.h>
 
-#include <aips/BasicMath/Math.h>
-#include <aips/System/ProgressMeter.h>
-#include <aips/BasicSL/String.h>
+#include <casa/BasicMath/Math.h>
+#include <casa/System/ProgressMeter.h>
+#include <casa/BasicSL/String.h>
 
 
 

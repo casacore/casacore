@@ -29,8 +29,8 @@
 #define AIPS_LITTLEENDIANCONVERSION_H
 
 //# Includes
-#include <aips/aipsxtype.h>
-#include <aips/OS/CanonicalConversion.h>
+#include <casa/aipsxtype.h>
+#include <casa/OS/CanonicalConversion.h>
 
 
 // <summary>

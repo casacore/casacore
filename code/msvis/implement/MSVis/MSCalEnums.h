@@ -29,12 +29,12 @@
 #if !defined(TRIAL_MSCALENUMS_H)
 #define TRIAL_MSCALENUMS_H
 
-#include <aips/aips.h>
-#include <aips/Containers/SimOrdMap.h>
-#include <aips/Containers/Block.h>
-#include <aips/Arrays/Vector.h>
-#include <aips/BasicSL/String.h>
-#include <aips/Utilities/DataType.h>
+#include <casa/aips.h>
+#include <casa/Containers/SimOrdMap.h>
+#include <casa/Containers/Block.h>
+#include <casa/Arrays/Vector.h>
+#include <casa/BasicSL/String.h>
+#include <casa/Utilities/DataType.h>
 
 // <summary> 
 // MSCalEnums: Field name dictionary for MeasurementSet and calibration tables

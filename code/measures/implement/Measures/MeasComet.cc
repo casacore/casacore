@@ -27,16 +27,16 @@
 //# $Id$
 
 //# Includes
-#include <aips/Measures/MeasComet.h>
-#include <aips/Measures/MeasIERS.h>
-#include <aips/Arrays/Vector.h>
-#include <aips/Quanta/MVRadialVelocity.h>
-#include <aips/Quanta/MVDirection.h>
-#include <aips/Logging/LogIO.h>
-#include <aips/System/Aipsrc.h>
-#include <aips/BasicMath/Math.h>
-#include <aips/Tables/TableRecord.h>
-#include <aips/System/Aipsrc.h>
+#include <measures/Measures/MeasComet.h>
+#include <measures/Measures/MeasIERS.h>
+#include <casa/Arrays/Vector.h>
+#include <casa/Quanta/MVRadialVelocity.h>
+#include <casa/Quanta/MVDirection.h>
+#include <casa/Logging/LogIO.h>
+#include <casa/System/Aipsrc.h>
+#include <casa/BasicMath/Math.h>
+#include <tables/Tables/TableRecord.h>
+#include <casa/System/Aipsrc.h>
 
 //# Constructors
 MeasComet::MeasComet() :

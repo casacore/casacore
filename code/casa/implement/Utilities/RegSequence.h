@@ -28,7 +28,7 @@
 #if !defined(AIPS_REGSEQUENCE_H)
 #define AIPS_REGSEQUENCE_H
 
-#include <aips/Utilities/Sequence.h>
+#include <casa/Utilities/Sequence.h>
 
 // <summary> Sequence for the Register() template functions </summary>
 // <use visibility=export>

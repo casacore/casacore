@@ -24,18 +24,18 @@
 //#                        Charlottesville, VA 22903-2475 USA
 //#
 //# $Id$
-#include <trial/Flagging/RFAUVBinner.h> 
-#include <aips/BasicMath/Math.h>
-#include <aips/BasicSL/Constants.h>
-#include <aips/Arrays/ArrayMath.h>
-#include <aips/Arrays/MaskArrMath.h>
-#include <aips/Arrays/ArrayLogical.h>
-#include <aips/Arrays/Slice.h>
-#include <trial/MSVis/VisBuffer.h>
-#include <trial/System/PGPlotterInterface.h>
+#include <flagging/Flagging/RFAUVBinner.h> 
+#include <casa/BasicMath/Math.h>
+#include <casa/BasicSL/Constants.h>
+#include <casa/Arrays/ArrayMath.h>
+#include <casa/Arrays/MaskArrMath.h>
+#include <casa/Arrays/ArrayLogical.h>
+#include <casa/Arrays/Slice.h>
+#include <msvis/MSVis/VisBuffer.h>
+#include <casa/System/PGPlotterInterface.h>
     
-#include <aips/stdio.h>
-#include <aips/stdlib.h>
+#include <casa/stdio.h>
+#include <casa/stdlib.h>
     
 RFAUVBinner::RFAUVBinner  ( RFChunkStats &ch,const RecordInterface &parm ) : 
     RFAFlagCubeBase(ch,parm),

@@ -30,12 +30,12 @@
 
 
 //# Includes
-#include <aips/aips.h>
-#include <aips/Quanta/QBase.h>
+#include <casa/aips.h>
+#include <casa/Quanta/QBase.h>
 
 //# Forward Declarations
 template <class T> class Quantum;
-#include <aips/iosstrfwd.h>
+#include <casa/iosstrfwd.h>
 
 //# Typedefs
 typedef Quantum<Double> Quantity;
@@ -228,7 +228,7 @@ typedef Quantum<Double> Quantity;
 // output the wavelength and frequency of this photon (see the
 // <linkto class=QC">QC</linkto> class for quantity constants):
 // <srcblock>
-//	#include <aips/Quanta.h>
+//	#include <casa/Quanta.h>
 //	Double myval;			// keV photon energy
 //	Quantity quant(myval,"keV");	// make quantity
 //	cout << "A photon with energy " << quant << endl

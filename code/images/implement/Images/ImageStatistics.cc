@@ -25,31 +25,31 @@
 //#
 //# $Id$
 
-#include <trial/Images/ImageStatistics.h>
+#include <images/Images/ImageStatistics.h>
 
-#include <aips/Arrays/Matrix.h>
-#include <trial/Coordinates/CoordinateSystem.h>
-#include <trial/Coordinates/DirectionCoordinate.h>
-#include <trial/Coordinates/CoordinateUtil.h>  
-#include <aips/Exceptions/Error.h>
-#include <aips/Logging/LogIO.h>
-#include <trial/Images/ImageUtilities.h>
-#include <trial/Images/ImageInterface.h>
-#include <trial/Images/ImageExprParse.h>
-#include <aips/Lattices/TempLattice.h>
-#include <trial/Lattices/LatticeStatistics.h>
-#include <trial/Lattices/LattStatsSpecialize.h>
-#include <aips/BasicMath/Math.h>
-#include <aips/Utilities/Assert.h>
-#include <aips/Utilities/LinearSearch.h>
-#include <aips/BasicSL/String.h>
-#include <aips/Utilities/DataType.h>
+#include <casa/Arrays/Matrix.h>
+#include <coordinates/Coordinates/CoordinateSystem.h>
+#include <coordinates/Coordinates/DirectionCoordinate.h>
+#include <coordinates/Coordinates/CoordinateUtil.h>  
+#include <casa/Exceptions/Error.h>
+#include <casa/Logging/LogIO.h>
+#include <images/Images/ImageUtilities.h>
+#include <images/Images/ImageInterface.h>
+#include <images/Images/ImageExprParse.h>
+#include <lattices/Lattices/TempLattice.h>
+#include <lattices/Lattices/LatticeStatistics.h>
+#include <lattices/Lattices/LattStatsSpecialize.h>
+#include <casa/BasicMath/Math.h>
+#include <casa/Utilities/Assert.h>
+#include <casa/Utilities/LinearSearch.h>
+#include <casa/BasicSL/String.h>
+#include <casa/Utilities/DataType.h>
 
 
-#include <aips/iostream.h>
-#include <aips/iomanip.h>
-#include <aips/stdlib.h>
-#include <aips/sstream.h>
+#include <casa/iostream.h>
+#include <casa/iomanip.h>
+#include <casa/stdlib.h>
+#include <casa/sstream.h>
 
 
 // Public functions

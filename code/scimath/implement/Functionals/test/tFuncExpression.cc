@@ -26,15 +26,15 @@
 //# $Id$
 
 //# Includes
-#include <trial/Functionals/FuncExpression.h>
-#include <trial/Functionals/FuncExprData.h>
-#include <trial/Functionals/CompiledFunction.h>
-#include <aips/Exceptions/Error.h>
-#include <aips/Mathematics/AutoDiff.h>
-#include <aips/Mathematics/AutoDiffIO.h>
-#include <aips/BasicSL/String.h>
+#include <scimath/Functionals/FuncExpression.h>
+#include <scimath/Functionals/FuncExprData.h>
+#include <scimath/Functionals/CompiledFunction.h>
+#include <casa/Exceptions/Error.h>
+#include <scimath/Mathematics/AutoDiff.h>
+#include <scimath/Mathematics/AutoDiffIO.h>
+#include <casa/BasicSL/String.h>
 
-#include <aips/iostream.h>
+#include <casa/iostream.h>
 
 int main() {
 

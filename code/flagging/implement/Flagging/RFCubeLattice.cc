@@ -24,8 +24,8 @@
 //#                        Charlottesville, VA 22903-2475 USA
 //#
 //# $Id$
-#include <aips/Lattices/LatticeStepper.h>
-#include <trial/Flagging/RFCubeLattice.h>
+#include <lattices/Lattices/LatticeStepper.h>
+#include <flagging/Flagging/RFCubeLattice.h>
 
 template<class T> RFCubeLatticeIterator<T>::RFCubeLatticeIterator ()
 {

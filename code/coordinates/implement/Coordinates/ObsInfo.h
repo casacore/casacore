@@ -29,15 +29,15 @@
 #if !defined(AIPS_OBSINFO_H)
 #define AIPS_OBSINFO_H
 
-#include <aips/aips.h>
-#include <aips/Utilities/RecordTransformable.h>
+#include <casa/aips.h>
+#include <casa/Utilities/RecordTransformable.h>
 
-#include <aips/BasicSL/String.h>
-#include <aips/Measures/MEpoch.h>
-#include <aips/Quanta/MVDirection.h>
+#include <casa/BasicSL/String.h>
+#include <measures/Measures/MEpoch.h>
+#include <casa/Quanta/MVDirection.h>
 
 //# Forward declarations
-#include <aips/iosfwd.h>
+#include <casa/iosfwd.h>
 
 // <summary>
 // Store miscellaneous information related to an observation.

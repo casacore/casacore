@@ -29,7 +29,7 @@
 #if !defined(AIPS_DEFAULTVALUE_H)
 #define AIPS_DEFAULTVALUE_H
 
-#include <aips/aips.h>
+#include <casa/aips.h>
 
 // <summary>
 // A templated function which sets a variable to a default value.

@@ -29,9 +29,9 @@
 #define AIPS_GAUSSIANCONVERT_H
 
 //# Includes
-#include <aips/aips.h>
-#include <aips/Arrays/Vector.h>
-#include <trial/Coordinates/CoordinateSystem.h>
+#include <casa/aips.h>
+#include <casa/Arrays/Vector.h>
+#include <coordinates/Coordinates/CoordinateSystem.h>
 
 template<class T> class Quantum;
 

@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#include <aips/Tables/VirtColEng.h>
-#include <aips/Tables/DataManError.h>
+#include <tables/Tables/VirtColEng.h>
+#include <tables/Tables/DataManError.h>
 
 
 VirtualColumnEngine::~VirtualColumnEngine()

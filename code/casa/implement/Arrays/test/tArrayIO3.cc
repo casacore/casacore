@@ -26,15 +26,15 @@
 //# $Id$
 
 //# Includes
-#include <aips/Exceptions/Error.h>
-#include <aips/Arrays/ArrayIO.h>
-#include <aips/Arrays/Array.h>
-#include <aips/Arrays/Vector.h>
-#include <aips/Arrays/Matrix.h>
-#include <aips/Arrays/Cube.h>
-#include <aips/BasicSL/String.h>
-#include <aips/Quanta/Quantum.h>
-#include <aips/sstream.h>
+#include <casa/Exceptions/Error.h>
+#include <casa/Arrays/ArrayIO.h>
+#include <casa/Arrays/Array.h>
+#include <casa/Arrays/Vector.h>
+#include <casa/Arrays/Matrix.h>
+#include <casa/Arrays/Cube.h>
+#include <casa/BasicSL/String.h>
+#include <casa/Quanta/Quantum.h>
+#include <casa/sstream.h>
 
 
 // This test program tests the ArrayIO istream extract functions.

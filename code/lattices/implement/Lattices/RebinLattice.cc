@@ -25,16 +25,16 @@
 //#
 //# $Id$
 
-#include <trial/Lattices/RebinLattice.h>
+#include <lattices/Lattices/RebinLattice.h>
 
-#include <aips/Arrays/ArrayMath.h>
-#include <aips/Lattices/ArrayLattice.h>
-#include <aips/Lattices/LatticeStepper.h>
-#include <aips/Lattices/LatticeIterator.h>
-#include <aips/Logging/LogIO.h>
-#include <aips/BasicMath/Math.h>
-#include <aips/Utilities/Assert.h>
-#include <aips/Exceptions/Error.h> 
+#include <casa/Arrays/ArrayMath.h>
+#include <lattices/Lattices/ArrayLattice.h>
+#include <lattices/Lattices/LatticeStepper.h>
+#include <lattices/Lattices/LatticeIterator.h>
+#include <casa/Logging/LogIO.h>
+#include <casa/BasicMath/Math.h>
+#include <casa/Utilities/Assert.h>
+#include <casa/Exceptions/Error.h> 
 
 
 template<class T>

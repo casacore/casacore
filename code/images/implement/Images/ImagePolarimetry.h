@@ -30,13 +30,13 @@
 
 
 //# Includes
-#include <aips/aips.h>
-#include <aips/Arrays/Vector.h>
-#include <aips/Containers/Block.h> 
-#include <aips/Measures/Stokes.h>
-#include <aips/BasicSL/Complex.h>
-#include <trial/Images/ImageInterface.h>
-#include <trial/Fitting/LinearFitSVD.h>
+#include <casa/aips.h>
+#include <casa/Arrays/Vector.h>
+#include <casa/Containers/Block.h> 
+#include <measures/Measures/Stokes.h>
+#include <casa/BasicSL/Complex.h>
+#include <images/Images/ImageInterface.h>
+#include <scimath/Fitting/LinearFitSVD.h>
 
 
 //# Forward Declarations

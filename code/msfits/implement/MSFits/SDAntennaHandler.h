@@ -29,10 +29,10 @@
 #if !defined(AIPS_SDANTENNAHANDLER_H)
 #define AIPS_SDANTENNAHANDLER_H
 
-#include <aips/Containers/RecordField.h>
-#include <aips/BasicSL/String.h>
-#include <aips/Measures/MPosition.h>
-#include <aips/Arrays/Array.h>
+#include <casa/Containers/RecordField.h>
+#include <casa/BasicSL/String.h>
+#include <measures/Measures/MPosition.h>
+#include <casa/Arrays/Array.h>
 
 //# Forward Declarations
 class ColumnsIndex;

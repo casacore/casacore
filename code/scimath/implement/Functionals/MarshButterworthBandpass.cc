@@ -26,8 +26,8 @@
 //#! ========================================================================
 //# $Id$
 
-#include <trial/Functionals/MarshButterworthBandpass.h>
-#include <aips/Arrays/Array.h>
+#include <scimath/Functionals/MarshButterworthBandpass.h>
+#include <casa/Arrays/Array.h>
 
 template<class T> 
 const String MarshButterworthBandpass<T>::FUNCTYPE("butterworthbp");

@@ -25,13 +25,13 @@
 //#
 //# $Id$
 
-#include <aips/BasicMath/Random.h>
-#include <aips/BasicSL/Constants.h>
-#include <aips/Exceptions/Error.h>
-#include <aips/Utilities/Assert.h>
-#include <aips/BasicSL/String.h>
-#include <aips/Utilities/PtrHolder.h>
-#include <aips/Arrays/Vector.h>
+#include <casa/BasicMath/Random.h>
+#include <casa/BasicSL/Constants.h>
+#include <casa/Exceptions/Error.h>
+#include <casa/Utilities/Assert.h>
+#include <casa/BasicSL/String.h>
+#include <casa/Utilities/PtrHolder.h>
+#include <casa/Arrays/Vector.h>
 
 RNG::~RNG() {
 }

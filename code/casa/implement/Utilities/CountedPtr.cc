@@ -25,7 +25,7 @@
 //#
 //# $Id$
 
-#include <aips/Utilities/CountedPtr.h>
+#include <casa/Utilities/CountedPtr.h>
 
 
 template<class t> 

@@ -27,14 +27,14 @@
 
 //# Includes
 
-# include <aips/FITS/fits.h>
-# include <aips/FITS/fitsio.h>
-# include <aips/FITS/hdu.h>
+# include <fits/FITS/fits.h>
+# include <fits/FITS/fitsio.h>
+# include <fits/FITS/hdu.h>
 
-# include <aips/BasicSL/String.h>
+# include <casa/BasicSL/String.h>
 
-# include <aips/iostream.h>
-# include <aips/stdlib.h>
+# include <casa/iostream.h>
+# include <casa/stdlib.h>
 
 // Display basic info and the keyword list
 void show(HeaderDataUnit *h) {

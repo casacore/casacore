@@ -30,10 +30,10 @@
 
 
 
-#include <aips/Utilities/CountedPtr.h>
-#include <aips/BasicSL/String.h>
-#include <aips/Utilities/Regex.h>
-#include <aips/Utilities/Register.h>
+#include <casa/Utilities/CountedPtr.h>
+#include <casa/BasicSL/String.h>
+#include <casa/Utilities/Regex.h>
+#include <casa/Utilities/Register.h>
 #include <sys/types.h>
 #include <sys/time.h>
 

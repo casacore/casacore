@@ -25,14 +25,14 @@
 //#
 //# $Id$
 
-#include <aips/Containers/RecordDescRep.h>
-#include <aips/Containers/RecordDesc.h>
-#include <aips/IO/AipsIO.h>
-#include <aips/Exceptions/Error.h>
-#include <aips/Utilities/Assert.h>
+#include <casa/Containers/RecordDescRep.h>
+#include <casa/Containers/RecordDesc.h>
+#include <casa/IO/AipsIO.h>
+#include <casa/Exceptions/Error.h>
+#include <casa/Utilities/Assert.h>
 
-#include <aips/stdio.h>
-#include <aips/iostream.h>
+#include <casa/stdio.h>
+#include <casa/iostream.h>
 
 RecordDescRep::RecordDescRep()
 : n_p(0),

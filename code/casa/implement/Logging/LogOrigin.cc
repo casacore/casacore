@@ -25,9 +25,9 @@
 //#
 //# $Id$
 
-#include <aips/Logging/LogOrigin.h>
+#include <casa/Logging/LogOrigin.h>
 
-#include <aips/sstream.h>
+#include <casa/sstream.h>
 
 LogOrigin::LogOrigin()
   : function_p(""), class_p(""), id_p(True), line_p(0), file_p("")

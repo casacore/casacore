@@ -27,8 +27,8 @@
 
 //# Includes
 
-#include <aips/Utilities/DynBuffer.h>
-#include <aips/iostream.h>
+#include <casa/Utilities/DynBuffer.h>
+#include <casa/iostream.h>
 
 // This program tests the DynBuffer class.
 // It allocates buffers, stores data in it and reads it back.

@@ -25,21 +25,21 @@
 //#
 //# $Id$
 
-#include <trial/FITS/FITSTable.h>
-#include <trial/FITS/FITSFieldCopier.h>
-#include <aips/Containers/RecordField.h>
-#include <aips/BasicSL/String.h>
-#include <aips/Utilities/Assert.h>
-#include <aips/FITS/fits.h>
-#include <aips/FITS/fitsio.h>
-#include <aips/FITS/hdu.h>
-#include <aips/OS/Path.h>
+#include <fits/FITS/FITSTable.h>
+#include <fits/FITS/FITSFieldCopier.h>
+#include <casa/Containers/RecordField.h>
+#include <casa/BasicSL/String.h>
+#include <casa/Utilities/Assert.h>
+#include <fits/FITS/fits.h>
+#include <fits/FITS/fitsio.h>
+#include <fits/FITS/hdu.h>
+#include <casa/OS/Path.h>
 
-#include <aips/Arrays/Array.h>
+#include <casa/Arrays/Array.h>
 
-#include <aips/sstream.h>
+#include <casa/sstream.h>
 
-#include <aips/stdio.h>
+#include <casa/stdio.h>
 
 uInt sizeofStringField(const RecordDesc &description, const Record &sizes,
 		       uInt whichField)

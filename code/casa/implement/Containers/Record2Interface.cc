@@ -27,12 +27,12 @@
 //# $Id$
 
 
-#include <aips/Containers/RecordInterface.h>
-#include <aips/Containers/RecordDesc.h>
-#include <aips/Arrays/Array.h>
-#include <aips/Arrays/ArrayMath.h>
-#include <aips/Arrays/IPosition.h>
-#include <aips/Exceptions/Error.h>
+#include <casa/Containers/RecordInterface.h>
+#include <casa/Containers/RecordDesc.h>
+#include <casa/Arrays/Array.h>
+#include <casa/Arrays/ArrayMath.h>
+#include <casa/Arrays/IPosition.h>
+#include <casa/Exceptions/Error.h>
 
 
 Array<Bool> RecordInterface::toArrayBool (const RecordFieldId& id) const

@@ -1,23 +1,23 @@
 //                              FitGaussian.cc
 
-#include <trial/Fitting/FitGaussian.h>
+#include <scimath/Fitting/FitGaussian.h>
 
-#include <trial/Fitting/NonLinearFitLM.h>
-#include <aips/Mathematics/AutoDiffIO.h>
-#include <aips/Functionals/CompoundFunction.h>
-#include <aips/Functionals/Gaussian1D.h>
-#include <aips/Functionals/Gaussian2D.h>
-#include <trial/Functionals/Gaussian3D.h>
-#include <aips/BasicSL/Constants.h>
-#include <aips/BasicMath/Math.h>
-#include <aips/BasicMath/Random.h>
-#include <aips/OS/Time.h>
-#include <aips/OS/Timer.h>
-#include <aips/Arrays/Vector.h>
-#include <aips/Arrays/Matrix.h>
+#include <scimath/Fitting/NonLinearFitLM.h>
+#include <scimath/Mathematics/AutoDiffIO.h>
+#include <scimath/Functionals/CompoundFunction.h>
+#include <scimath/Functionals/Gaussian1D.h>
+#include <scimath/Functionals/Gaussian2D.h>
+#include <scimath/Functionals/Gaussian3D.h>
+#include <casa/BasicSL/Constants.h>
+#include <casa/BasicMath/Math.h>
+#include <casa/BasicMath/Random.h>
+#include <casa/OS/Time.h>
+#include <casa/OS/Timer.h>
+#include <casa/Arrays/Vector.h>
+#include <casa/Arrays/Matrix.h>
 
-#include <aips/Exceptions/Error.h>
-#include <aips/iostream.h>
+#include <casa/Exceptions/Error.h>
+#include <casa/iostream.h>
 
 
 // The parameter chisqcriteria has been replaced with maximumRMS, which is

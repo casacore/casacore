@@ -28,11 +28,11 @@
 #if !defined(AIPS_DATATYPE_H)
 #define AIPS_DATATYPE_H
 
-#include <aips/aips.h>
-#include <aips/BasicSL/Complex.h>
-#include <aips/BasicSL/String.h>
+#include <casa/aips.h>
+#include <casa/BasicSL/Complex.h>
+#include <casa/BasicSL/String.h>
 
-#include <aips/iosfwd.h>
+#include <casa/iosfwd.h>
 class Table;
 template<class T> class Array;
 template<class T> class Quantum;

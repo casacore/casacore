@@ -26,27 +26,27 @@
 //#
 //# $Id$
 
-#include <aips/aips.h>
-#include<trial/Images/ImageFit1D.h>
+#include <casa/aips.h>
+#include<images/Images/ImageFit1D.h>
 
-#include<aips/Arrays/Vector.h>
-#include<aips/Arrays/ArrayMath.h>
-#include<aips/Arrays/ArrayLogical.h>
-#include<aips/Arrays/IPosition.h>
-#include<aips/Lattices/TiledShape.h>
-#include<aips/Lattices/ArrayLattice.h>
-#include<trial/Lattices/LatticeUtilities.h>
-#include<trial/Lattices/LCSlicer.h>
-#include<trial/Coordinates/CoordinateSystem.h>
-#include<trial/Coordinates/SpectralCoordinate.h>
-#include<trial/SpectralComponents/SpectralList.h>
-#include<trial/SpectralComponents/SpectralElement.h>
-#include<trial/Images/TempImage.h>
-#include<trial/Images/ImageInterface.h>
-#include<trial/Images/ImageRegion.h>
-#include<aips/Utilities/Assert.h>
+#include<casa/Arrays/Vector.h>
+#include<casa/Arrays/ArrayMath.h>
+#include<casa/Arrays/ArrayLogical.h>
+#include<casa/Arrays/IPosition.h>
+#include<lattices/Lattices/TiledShape.h>
+#include<lattices/Lattices/ArrayLattice.h>
+#include<lattices/Lattices/LatticeUtilities.h>
+#include<lattices/Lattices/LCSlicer.h>
+#include<coordinates/Coordinates/CoordinateSystem.h>
+#include<coordinates/Coordinates/SpectralCoordinate.h>
+#include<components/SpectralComponents/SpectralList.h>
+#include<components/SpectralComponents/SpectralElement.h>
+#include<images/Images/TempImage.h>
+#include<images/Images/ImageInterface.h>
+#include<images/Images/ImageRegion.h>
+#include<casa/Utilities/Assert.h>
 
-#include <aips/iostream.h>
+#include <casa/iostream.h>
 
 
 void testSpectral(uInt what, Bool doVector);

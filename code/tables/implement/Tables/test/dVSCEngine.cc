@@ -35,9 +35,9 @@ int main()
 
 //# Includes
 #include "dVSCEngine.h"
-#include <aips/Tables/Table.h>
-#include <aips/Tables/TableRecord.h>
-#include <aips/Exceptions/Error.h>
+#include <tables/Tables/Table.h>
+#include <tables/Tables/TableRecord.h>
+#include <casa/Exceptions/Error.h>
 
 
 VSCExampleVSCEngine::VSCExampleVSCEngine()
@@ -128,18 +128,18 @@ void VSCExampleVSCEngine::registerClass()
 // and also takes the dRetypedArrayEngine symbols into account.
 // That is fine when linking dRetypedArrayEngine, but gives undefined
 // linkonce symbols for other test programs which might use Vector<bool> or so.
-#include <aips/Arrays/Array.cc>
-#include <aips/Arrays/MaskedArray.cc>
-#include <aips/Arrays/Vector.cc>
-#include <aips/Containers/Block.h>
-#include <aips/Tables/ScaColData.cc>
-#include <aips/Tables/ScaColDesc.cc>
-#include <aips/Tables/ScalarColumn.cc>
-#include <aips/Tables/VirtScaCol.cc>
-#include <aips/Utilities/Compare.cc>
-#include <aips/Utilities/Copy.cc>
-#include <aips/Utilities/CountedPtr.cc>
-#include <aips/Utilities/ValTypeId.h>
+#include <casa/Arrays/Array.cc>
+#include <casa/Arrays/MaskedArray.cc>
+#include <casa/Arrays/Vector.cc>
+#include <casa/Containers/Block.h>
+#include <tables/Tables/ScaColData.cc>
+#include <tables/Tables/ScaColDesc.cc>
+#include <tables/Tables/ScalarColumn.cc>
+#include <tables/Tables/VirtScaCol.cc>
+#include <casa/Utilities/Compare.cc>
+#include <casa/Utilities/Copy.cc>
+#include <casa/Utilities/CountedPtr.cc>
+#include <casa/Utilities/ValTypeId.h>
 
 template class Array<VSCExample>;
 template class MaskedArray<VSCExample>;

@@ -28,15 +28,15 @@
 #if !defined(TRIAL_MSITER_H)
 #define TRIAL_MSITER_H
 
-#include <aips/aips.h>
-#include <aips/Arrays/Matrix.h>
-#include <aips/MeasurementSets/MeasurementSet.h>
-#include <aips/Measures/MFrequency.h>
-#include <aips/Measures/MDirection.h>
-#include <aips/Measures/MPosition.h>
-#include <aips/Tables/ScalarColumn.h>
-#include <aips/BasicSL/String.h>
-#include <trial/Mathematics/SquareMatrix.h>
+#include <casa/aips.h>
+#include <casa/Arrays/Matrix.h>
+#include <ms/MeasurementSets/MeasurementSet.h>
+#include <measures/Measures/MFrequency.h>
+#include <measures/Measures/MDirection.h>
+#include <measures/Measures/MPosition.h>
+#include <tables/Tables/ScalarColumn.h>
+#include <casa/BasicSL/String.h>
+#include <scimath/Mathematics/SquareMatrix.h>
 
 //# forward decl
 class ROMSColumns;

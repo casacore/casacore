@@ -29,9 +29,9 @@
 #define AIPS_LCBOX_H
 
 //# Includes
-#include <trial/Lattices/LCRegionFixed.h>
-#include <aips/Arrays/Slicer.h>
-#include <aips/Arrays/Vector.h>
+#include <lattices/Lattices/LCRegionFixed.h>
+#include <casa/Arrays/Slicer.h>
+#include <casa/Arrays/Vector.h>
 
 
 // <summary>

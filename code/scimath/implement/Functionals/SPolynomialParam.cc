@@ -26,8 +26,8 @@
 //# $Id$
 
 //# Includes
-#include <trial/Functionals/SPolynomialParam.h>
-#include <aips/Arrays/Vector.h>
+#include <scimath/Functionals/SPolynomialParam.h>
+#include <casa/Arrays/Vector.h>
 
 template<class T>
 SPolynomialParam<T>::SPolynomialParam() :

@@ -26,12 +26,12 @@
 //# $Id$
 
 //# Includes
-#include <aips/Tables/ISMIndex.h>
-#include <aips/Containers/BlockIO.h>
-#include <aips/Utilities/BinarySearch.h>
-#include <aips/IO/AipsIO.h>
-#include <aips/Utilities/Assert.h>
-#include <aips/Exceptions/Error.h>
+#include <tables/Tables/ISMIndex.h>
+#include <casa/Containers/BlockIO.h>
+#include <casa/Utilities/BinarySearch.h>
+#include <casa/IO/AipsIO.h>
+#include <casa/Utilities/Assert.h>
+#include <casa/Exceptions/Error.h>
 
 
 ISMIndex::ISMIndex (ISMBase* parent)

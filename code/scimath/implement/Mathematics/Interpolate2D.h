@@ -29,7 +29,7 @@
 #define AIPS_INTERPOLATE2D_H
 
 //# Includes
-#include <aips/aips.h>
+#include <casa/aips.h>
 
 //# Forward declarations
 template <typename T> class Vector;

@@ -29,13 +29,13 @@
 #define AIPS_BITVECTOR_H
 
 //# Includes
-#include <aips/aips.h>
-#include <aips/Containers/Block.h>
-#include <aips/Utilities/Assert.h>
+#include <casa/aips.h>
+#include <casa/Containers/Block.h>
+#include <casa/Utilities/Assert.h>
 
 //# Forward Declarations
 class BitVectorHelper;
-#include <aips/iosfwd.h>
+#include <casa/iosfwd.h>
 
 // The size of a unsigned Integer ( assumes 8-bit char )
 const uInt WORDSIZE = sizeof(uInt)*8;

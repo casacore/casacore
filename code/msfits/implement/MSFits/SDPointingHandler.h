@@ -29,9 +29,9 @@
 #if !defined(AIPS_SDPOINTINGHANDLER_H)
 #define AIPS_SDPOINTINGHANDLER_H
 
-#include <aips/Containers/RecordField.h>
-#include <aips/Measures/MDirection.h>
-#include <aips/Arrays/Matrix.h>
+#include <casa/Containers/RecordField.h>
+#include <measures/Measures/MDirection.h>
+#include <casa/Arrays/Matrix.h>
 
 //# Forward Declarations
 class MeasurementSet;

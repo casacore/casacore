@@ -29,9 +29,9 @@
 #if !defined(AIPS_MSDOPPLER_H)
 #define AIPS_MSDOPPLER_H
 
-#include <aips/aips.h>
-#include <aips/MeasurementSets/MSTable.h>
-#include <aips/MeasurementSets/MSDopplerEnums.h>
+#include <casa/aips.h>
+#include <ms/MeasurementSets/MSTable.h>
+#include <ms/MeasurementSets/MSDopplerEnums.h>
 
 // <summary> 
 // A Table intended to hold a MeasurementSet DOPPLER table.

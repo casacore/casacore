@@ -27,11 +27,11 @@
 #if !defined(AIPS_RFCOMMON_H)
 #define AIPS_RFCOMMON_H
     
-#include <aips/Arrays/Vector.h>
-#include <aips/Arrays/Matrix.h>
-#include <aips/Containers/RecordInterface.h>
-#include <aips/Containers/RecordInterface.h>
-#include <aips/Logging/LogIO.h>
+#include <casa/Arrays/Vector.h>
+#include <casa/Arrays/Matrix.h>
+#include <casa/Containers/RecordInterface.h>
+#include <casa/Containers/RecordInterface.h>
+#include <casa/Logging/LogIO.h>
 
  // RFAs use bitwise flags
 typedef uInt RFlagWord;

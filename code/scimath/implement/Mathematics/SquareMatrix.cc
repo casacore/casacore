@@ -26,10 +26,10 @@
 //# $Id$
 
 //# Includes
-#include <trial/Mathematics/SquareMatrix.h>
-#include <aips/Mathematics/MatrixMathLA.h>
-#include <aips/Exceptions/Error.h>
-#include <aips/iostream.h>
+#include <scimath/Mathematics/SquareMatrix.h>
+#include <scimath/Mathematics/MatrixMathLA.h>
+#include <casa/Exceptions/Error.h>
+#include <casa/iostream.h>
 
 inline Float real(Float r) { return r;}
 inline Float conj(Float r) { return r;}

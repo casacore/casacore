@@ -29,12 +29,12 @@
 #if !defined(TRIAL_MSFITSIDI_H)
 #define TRIAL_MSFITSIDI_H
 
-#include <aips/aips.h>
-#include <aips/FITS/fits.h>
-#include <aips/BasicSL/String.h>
-#include <aips/MeasurementSets/MeasurementSet.h>
-#include <aips/OS/Path.h>
-#include <aips/Arrays/Vector.h>
+#include <casa/aips.h>
+#include <fits/FITS/fits.h>
+#include <casa/BasicSL/String.h>
+#include <ms/MeasurementSets/MeasurementSet.h>
+#include <casa/OS/Path.h>
+#include <casa/Arrays/Vector.h>
 
 // <summary> 
 // MSFitsIDI: Convert FITS-IDI data to MS format

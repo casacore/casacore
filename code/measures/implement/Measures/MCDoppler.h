@@ -30,12 +30,12 @@
 #define AIPS_MCDOPPLER_H
 
 //# Includes
-#include <aips/aips.h>
-#include <aips/Measures/MeasBase.h>
-#include <aips/Measures/MeasRef.h>
-#include <aips/Measures/MCBase.h>
-#include <aips/Measures/MConvertBase.h>
-#include <aips/Measures/MDoppler.h>
+#include <casa/aips.h>
+#include <measures/Measures/MeasBase.h>
+#include <measures/Measures/MeasRef.h>
+#include <measures/Measures/MCBase.h>
+#include <measures/Measures/MConvertBase.h>
+#include <measures/Measures/MDoppler.h>
 
 //# Forward Declarations
 class MCDoppler;
@@ -67,8 +67,8 @@ class String;
 // <example>
 // Conversion of a radio Doppler to an optical
 // <srcblock>
-//	#include <aips/Measures.h>
-//	#include <aips/Measures/MDoppler.h>
+//	#include <measures/Measures.h>
+//	#include <measures/Measures/MDoppler.h>
 //	MDoppler radio(0.01);		// A radio Doppler value
 //	cout << "Doppler radio = " << radio << "; optical = " <<
 //		MDoppler::Convert(radio, MDoppler::OPTICAL)() << // Convert 

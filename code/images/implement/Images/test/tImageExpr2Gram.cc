@@ -25,24 +25,24 @@
 //#
 //# $Id$
 
-#include <trial/Images/PagedImage.h>
-#include <trial/Images/ImageExprParse.h>
-#include <trial/Images/ImageRegion.h>
-#include <trial/Images/WCBox.h>
-#include <trial/Coordinates/CoordinateUtil.h>
-#include <trial/Lattices/LCBox.h>
-#include <trial/Lattices/LCPagedMask.h>
-#include <trial/Lattices/LELArray.h>
-#include <aips/Arrays/Array.h>
-#include <aips/Arrays/Matrix.h>
-#include <aips/Arrays/ArrayLogical.h>
-#include <aips/Arrays/ArrayMath.h>
-#include <aips/Arrays/IPosition.h>
-#include <aips/Containers/Block.h>
-#include <aips/BasicSL/Constants.h>
-#include <aips/Inputs/Input.h>
-#include <aips/Exceptions/Error.h>
-#include <aips/iostream.h>
+#include <images/Images/PagedImage.h>
+#include <images/Images/ImageExprParse.h>
+#include <images/Images/ImageRegion.h>
+#include <images/Images/WCBox.h>
+#include <coordinates/Coordinates/CoordinateUtil.h>
+#include <lattices/Lattices/LCBox.h>
+#include <lattices/Lattices/LCPagedMask.h>
+#include <lattices/Lattices/LELArray.h>
+#include <casa/Arrays/Array.h>
+#include <casa/Arrays/Matrix.h>
+#include <casa/Arrays/ArrayLogical.h>
+#include <casa/Arrays/ArrayMath.h>
+#include <casa/Arrays/IPosition.h>
+#include <casa/Containers/Block.h>
+#include <casa/BasicSL/Constants.h>
+#include <casa/Inputs/Input.h>
+#include <casa/Exceptions/Error.h>
+#include <casa/iostream.h>
 
 
 main (int argc, char *argv[])

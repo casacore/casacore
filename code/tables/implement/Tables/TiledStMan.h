@@ -30,11 +30,11 @@
 
 
 //# Includes
-#include <aips/aips.h>
-#include <aips/Tables/DataManager.h>
-#include <aips/Containers/Block.h>
-#include <aips/Arrays/IPosition.h>
-#include <aips/BasicSL/String.h>
+#include <casa/aips.h>
+#include <tables/Tables/DataManager.h>
+#include <casa/Containers/Block.h>
+#include <casa/Arrays/IPosition.h>
+#include <casa/BasicSL/String.h>
 
 //# Forward Declarations
 class TSMColumn;

@@ -25,78 +25,78 @@
 //#
 //# $Id$
 
-#include <trial/MeasurementSets/FitsIDItoMS.h> //
-#include <aips/Arrays/ArrayIO.h> //
-#include <aips/Arrays/ArrayLogical.h>
-#include <aips/Arrays/ArrayMath.h>
-#include <aips/Arrays/ArrayUtil.h>
-#include <aips/Arrays/Cube.h>
-#include <aips/Arrays/IPosition.h> //
-#include <aips/Arrays/Matrix.h> //
-#include <aips/Arrays/MatrixMath.h>
-#include <aips/Arrays/Vector.h>
-#include <aips/Arrays/Slice.h> 
-#include <aips/Containers/Record.h>
-#include <aips/Exceptions/Error.h>
-#include <aips/FITS/fits.h> //
-#include <aips/FITS/fitsio.h>
-#include <aips/Logging/LogOrigin.h>
-#include <aips/BasicSL/Constants.h>
-#include <aips/BasicMath/Math.h>
-#include <aips/MeasurementSets/MeasurementSet.h> //
-#include <aips/MeasurementSets/MSAntennaColumns.h>
-#include <aips/MeasurementSets/MSColumns.h>
-#include <aips/MeasurementSets/MSDataDescColumns.h>
-#include <aips/MeasurementSets/MSFeedColumns.h>
-#include <aips/MeasurementSets/MSFieldColumns.h>
-#include <aips/MeasurementSets/MSHistoryColumns.h>
-#include <aips/MeasurementSets/MSObsColumns.h>
-#include <aips/MeasurementSets/MSPolColumns.h>
-#include <aips/MeasurementSets/MSSpWindowColumns.h>
+#include <ms/MeasurementSets/FitsIDItoMS.h> //
+#include <casa/Arrays/ArrayIO.h> //
+#include <casa/Arrays/ArrayLogical.h>
+#include <casa/Arrays/ArrayMath.h>
+#include <casa/Arrays/ArrayUtil.h>
+#include <casa/Arrays/Cube.h>
+#include <casa/Arrays/IPosition.h> //
+#include <casa/Arrays/Matrix.h> //
+#include <casa/Arrays/MatrixMath.h>
+#include <casa/Arrays/Vector.h>
+#include <casa/Arrays/Slice.h> 
+#include <casa/Containers/Record.h>
+#include <casa/Exceptions/Error.h>
+#include <fits/FITS/fits.h> //
+#include <fits/FITS/fitsio.h>
+#include <casa/Logging/LogOrigin.h>
+#include <casa/BasicSL/Constants.h>
+#include <casa/BasicMath/Math.h>
+#include <ms/MeasurementSets/MeasurementSet.h> //
+#include <ms/MeasurementSets/MSAntennaColumns.h>
+#include <ms/MeasurementSets/MSColumns.h>
+#include <ms/MeasurementSets/MSDataDescColumns.h>
+#include <ms/MeasurementSets/MSFeedColumns.h>
+#include <ms/MeasurementSets/MSFieldColumns.h>
+#include <ms/MeasurementSets/MSHistoryColumns.h>
+#include <ms/MeasurementSets/MSObsColumns.h>
+#include <ms/MeasurementSets/MSPolColumns.h>
+#include <ms/MeasurementSets/MSSpWindowColumns.h>
 
-#include <aips/Measures/MDirection.h>
-#include <aips/Measures/MDoppler.h>
-#include <aips/Measures/MEpoch.h>
-#include <aips/Measures/MPosition.h>
-#include <aips/Measures/MeasData.h>
-#include <aips/Measures/Stokes.h>
-#include <aips/Measures/MeasTable.h>
+#include <measures/Measures/MDirection.h>
+#include <measures/Measures/MDoppler.h>
+#include <measures/Measures/MEpoch.h>
+#include <measures/Measures/MPosition.h>
+#include <measures/Measures/MeasData.h>
+#include <measures/Measures/Stokes.h>
+#include <measures/Measures/MeasTable.h>
 
-#include <aips/Tables/Table.h> 
-#include <aips/Tables/SetupNewTab.h>
-#include <aips/Tables/ArrColDesc.h> //     
-#include <aips/Tables/ScaColDesc.h> //
+#include <tables/Tables/Table.h> 
+#include <tables/Tables/SetupNewTab.h>
+#include <tables/Tables/ArrColDesc.h> //     
+#include <tables/Tables/ScaColDesc.h> //
 
-#include <aips/Tables/TableRecord.h>
-#include <aips/Tables/ArrayColumn.h>           
-#include <aips/Tables/ScalarColumn.h>
-#include <aips/Tables/ColumnDesc.h> //
-#include <aips/Tables/StManAipsIO.h> //
-#include <aips/Tables/StandardStMan.h>
-#include <aips/Tables/IncrementalStMan.h>
-#include <aips/Tables/TiledShapeStMan.h>
-#include <aips/Tables/RowCopier.h> //
-#include <aips/Tables/TiledColumnStMan.h>
+#include <tables/Tables/TableRecord.h>
+#include <tables/Tables/ArrayColumn.h>           
+#include <tables/Tables/ScalarColumn.h>
+#include <tables/Tables/ColumnDesc.h> //
+#include <tables/Tables/StManAipsIO.h> //
+#include <tables/Tables/StandardStMan.h>
+#include <tables/Tables/IncrementalStMan.h>
+#include <tables/Tables/TiledShapeStMan.h>
+#include <tables/Tables/RowCopier.h> //
+#include <tables/Tables/TiledColumnStMan.h>
 
-#include <aips/Tables/TableDesc.h>
-#include <aips/Tables/TableInfo.h>
-#include <aips/Tables/TableLock.h>
+#include <tables/Tables/TableDesc.h>
+#include <tables/Tables/TableInfo.h>
+#include <tables/Tables/TableLock.h>
 
-#include <aips/Utilities/Assert.h> //
-#include <aips/Utilities/Regex.h>
-#include <aips/Utilities/GenSort.h>
-#include <aips/Utilities/Fallible.h>
-#include <trial/FITS/FITSKeywordUtil.h>
-#include <trial/FITS/FITSSpectralUtil.h>
-#include <trial/FITS/FITSDateUtil.h>
-#include <trial/FITS/BinTable.h>
-#include <aips/LogTables/NewFile.h>
-#include <aips/System/ProgressMeter.h>
-#include <aips/sstream.h>
-#include <aips/stdio.h>
+#include <casa/Utilities/Assert.h> //
+#include <casa/Utilities/Regex.h>
+#include <casa/Utilities/GenSort.h>
+#include <casa/Utilities/Fallible.h>
+#include <fits/FITS/FITSKeywordUtil.h>
+#include <fits/FITS/FITSSpectralUtil.h>
+#include <fits/FITS/FITSDateUtil.h>
+#include <fits/FITS/BinTable.h>
+#include <tables/LogTables/NewFile.h>
+#include <casa/System/ProgressMeter.h>
+#include <casa/sstream.h>
+#include <casa/stdio.h>
 
-#include <aips/OS/File.h>
-#include <aips/Quanta/MVTime.h>
+#include <casa/OS/File.h>
+#include <casa/Quanta/MVTime.h>
 
 //local debug switch 
 int mydebug = 0;

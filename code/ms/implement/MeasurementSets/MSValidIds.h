@@ -29,8 +29,8 @@
 #if !defined(AIPS_MSVALIDIDS_H)
 #define AIPS_MSVALIDIDS_H
 
-#include <aips/aips.h>
-#include <aips/MeasurementSets/MeasurementSet.h>
+#include <casa/aips.h>
+#include <ms/MeasurementSets/MeasurementSet.h>
 
 //# Forward declarations
 class ROMSColumns;

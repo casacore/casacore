@@ -25,15 +25,15 @@
 //#
 //# $Id$
 
-#include <trial/Images/WCLELMask.h>
-#include <trial/Images/ImageExprParse.h>
-#include <trial/Images/ImageExpr.h>
-#include <trial/Lattices/LCLELMask.h>
-#include <trial/Lattices/LatticeExpr.h>
-#include <aips/Lattices/LELLattCoordBase.h>
-#include <aips/Tables/TableRecord.h>
-#include <aips/Utilities/Assert.h>
-#include <aips/Exceptions/Error.h>
+#include <images/Images/WCLELMask.h>
+#include <images/Images/ImageExprParse.h>
+#include <images/Images/ImageExpr.h>
+#include <lattices/Lattices/LCLELMask.h>
+#include <lattices/Lattices/LatticeExpr.h>
+#include <lattices/Lattices/LELLattCoordBase.h>
+#include <tables/Tables/TableRecord.h>
+#include <casa/Utilities/Assert.h>
+#include <casa/Exceptions/Error.h>
 
 
 WCLELMask::WCLELMask()

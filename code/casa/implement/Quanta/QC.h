@@ -30,10 +30,10 @@
 
 
 //# Includes
-#include <aips/aips.h>
-#include <aips/BasicSL/Constants.h>
-#include <aips/Quanta/Quantum.h>
-#include <aips/Quanta/UnitMap.h>
+#include <casa/aips.h>
+#include <casa/BasicSL/Constants.h>
+#include <casa/Quanta/Quantum.h>
+#include <casa/Quanta/UnitMap.h>
 
 //# Forward Declarations
 
@@ -65,7 +65,7 @@
 // <example>
 // To obtain the velocity of light in pc/a, use:
 // <srcblock>
-// #include <aips/Quanta.h>
+// #include <casa/Quanta.h>
 // Double vel_pcpy = (C::c).convert("pc/a").getValue();
 // </srcblock>
 // </example>

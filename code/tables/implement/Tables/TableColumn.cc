@@ -25,10 +25,10 @@
 //#
 //# $Id$
 
-#include <aips/Tables/TableColumn.h>
-#include <aips/Tables/Table.h>
-#include <aips/Tables/TableError.h>
-#include <aips/Arrays/Array.h>
+#include <tables/Tables/TableColumn.h>
+#include <tables/Tables/Table.h>
+#include <tables/Tables/TableError.h>
+#include <casa/Arrays/Array.h>
 
 
 ROTableColumn::ROTableColumn ()

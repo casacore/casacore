@@ -25,22 +25,22 @@
 //#
 //# $Id$
 
-#include <aips/aips.h>
-#include <aips/Arrays/Vector.h>
-#include <aips/Arrays/Array.h>
-#include <aips/Arrays/ArrayLogical.h>
-#include <aips/Exceptions/Error.h>
-#include <aips/Arrays/IPosition.h>
-//#include <aips/Arrays/Slicer.h>
-#include <aips/Mathematics/NumericTraits.h>
-#include <aips/BasicMath/Math.h>
-#include <aips/Utilities/Assert.h>
-#include <aips/Lattices/ArrayLattice.h>
-#include <trial/Lattices/LatticeConvolver.h>
-#include <aips/Lattices/LatticeIterator.h>
-#include <aips/Lattices/TempLattice.h>
-#include <aips/Lattices/PagedArray.h>
-#include <aips/iostream.h>
+#include <casa/aips.h>
+#include <casa/Arrays/Vector.h>
+#include <casa/Arrays/Array.h>
+#include <casa/Arrays/ArrayLogical.h>
+#include <casa/Exceptions/Error.h>
+#include <casa/Arrays/IPosition.h>
+//#include <casa/Arrays/Slicer.h>
+#include <scimath/Mathematics/NumericTraits.h>
+#include <casa/BasicMath/Math.h>
+#include <casa/Utilities/Assert.h>
+#include <lattices/Lattices/ArrayLattice.h>
+#include <lattices/Lattices/LatticeConvolver.h>
+#include <lattices/Lattices/LatticeIterator.h>
+#include <lattices/Lattices/TempLattice.h>
+#include <lattices/Lattices/PagedArray.h>
+#include <casa/iostream.h>
 
 void print(const Lattice<Float> & psf, const Lattice<Float> & model,
 	   const Lattice<Float> & result) {

@@ -27,10 +27,10 @@
 #if !defined(AIPS_DDMAPPER_H)
 #define AIPS_DDMAPPER_H
 
-#include <aips/Arrays/Vector.h> 
-#include <aips/Arrays/Cube.h> 
-#include <aips/Exceptions/Error.h>
-#include <aips/Measures/Stokes.h> 
+#include <casa/Arrays/Vector.h> 
+#include <casa/Arrays/Cube.h> 
+#include <casa/Exceptions/Error.h>
+#include <measures/Measures/Stokes.h> 
     
 // <summary>
 // Abstract Derived Data Mapper class

@@ -30,10 +30,10 @@
 #define AIPS_MDOPPLER_H
 
 //# Includes
-#include <aips/aips.h>
-#include <aips/Measures/MeasBase.h>
-#include <aips/Measures/MeasRef.h>
-#include <aips/Quanta/MVDoppler.h>
+#include <casa/aips.h>
+#include <measures/Measures/MeasBase.h>
+#include <measures/Measures/MeasRef.h>
+#include <casa/Quanta/MVDoppler.h>
 
 //# Forward Declarations
 class MDoppler;

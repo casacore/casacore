@@ -25,18 +25,18 @@
 //#
 //# $Id$
 
-#include <trial/Lattices/LatticeExpr.h>
-#include <aips/Lattices/ArrayLattice.h>
-#include <aips/Arrays/Slicer.h>
-#include <aips/Arrays/Array.h>
-#include <aips/Arrays/ArrayLogical.h>
-#include <aips/Arrays/IPosition.h>
-#include <aips/BasicSL/Constants.h>
-#include <aips/Inputs/Input.h>
-#include <aips/Exceptions/Error.h>
-#include <aips/Utilities/COWPtr.h>
+#include <lattices/Lattices/LatticeExpr.h>
+#include <lattices/Lattices/ArrayLattice.h>
+#include <casa/Arrays/Slicer.h>
+#include <casa/Arrays/Array.h>
+#include <casa/Arrays/ArrayLogical.h>
+#include <casa/Arrays/IPosition.h>
+#include <casa/BasicSL/Constants.h>
+#include <casa/Inputs/Input.h>
+#include <casa/Exceptions/Error.h>
+#include <casa/Utilities/COWPtr.h>
 
-#include <aips/iostream.h>
+#include <casa/iostream.h>
 
 
 Bool checkFloat(Lattice<Float>& expr, 

@@ -25,13 +25,13 @@
 //#
 //# $Id$
 
-#include <aips/LogTables/LogFilterExpr.h>
-#include <aips/Logging/LogMessage.h>
-#include <aips/Tables/ExprNode.h>
-#include <aips/Tables/RecordGram.h>
-#include <aips/Containers/Record.h>
-#include <aips/Containers/Block.h>
-#include <aips/Exceptions/Error.h>
+#include <tables/LogTables/LogFilterExpr.h>
+#include <casa/Logging/LogMessage.h>
+#include <tables/Tables/ExprNode.h>
+#include <tables/Tables/RecordGram.h>
+#include <casa/Containers/Record.h>
+#include <casa/Containers/Block.h>
+#include <casa/Exceptions/Error.h>
 
 
 LogFilterExpr::LogFilterExpr (const String& expr)

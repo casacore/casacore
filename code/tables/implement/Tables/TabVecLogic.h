@@ -29,9 +29,9 @@
 #define AIPS_TABVECLOGIC_H
 
 //# Includes
-#include <aips/aips.h>
-#include <aips/Tables/TableVector.h>
-#include <aips/Tables/TVecLogic.h>
+#include <casa/aips.h>
+#include <tables/Tables/TableVector.h>
+#include <tables/Tables/TVecLogic.h>
 
 
 // <summary>

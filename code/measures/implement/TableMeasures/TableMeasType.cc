@@ -26,10 +26,10 @@
 //# $Id$
 
 //# Includes
-#include <aips/TableMeasures/TableMeasType.h>
-#include <aips/Measures/Measure.h>
-#include <aips/Containers/RecordInterface.h>
-#include <aips/Exceptions/Error.h>
+#include <measures/TableMeasures/TableMeasType.h>
+#include <measures/Measures/Measure.h>
+#include <casa/Containers/RecordInterface.h>
+#include <casa/Exceptions/Error.h>
 
 
 TableMeasType::TableMeasType()

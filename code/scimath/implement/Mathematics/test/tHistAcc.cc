@@ -25,12 +25,12 @@
 //#
 //# $Id$
 
-#include <aips/iostream.h>
-#include <aips/Arrays.h>
-#include <aips/BasicMath/Random.h>
-#include <trial/Mathematics/StatAcc.h>
-#include <trial/Mathematics/HistAcc.h>
-#include <aips/Exceptions/Error.h>
+#include <casa/iostream.h>
+#include <casa/Arrays.h>
+#include <casa/BasicMath/Random.h>
+#include <scimath/Mathematics/StatAcc.h>
+#include <scimath/Mathematics/HistAcc.h>
+#include <casa/Exceptions/Error.h>
 
 main()
 {

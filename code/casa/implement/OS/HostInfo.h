@@ -29,7 +29,7 @@
 #if !defined(AIPS_HOSTINFO_H)
 #define AIPS_HOSTINFO_H
 
-#include <aips/aips.h>
+#include <casa/aips.h>
 
 class String;
 class HostMachineInfo;

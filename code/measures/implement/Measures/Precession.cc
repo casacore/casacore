@@ -26,10 +26,10 @@
 //# $Id$
 
 //# Includes
-#include <aips/Measures/MeasTable.h>
-#include <aips/Measures/Precession.h>
-#include <aips/BasicMath/Math.h>
-#include <aips/System/AipsrcValue.h>
+#include <measures/Measures/MeasTable.h>
+#include <measures/Measures/Precession.h>
+#include <casa/BasicMath/Math.h>
+#include <casa/System/AipsrcValue.h>
 
 //# Constants
 const Double Precession::INTV = 0.1;

@@ -25,30 +25,30 @@
 //#
 //# $Id$
 
-#include <trial/Lattices/LatticeApply.h>
-#include <trial/Lattices/LineCollapser.h>
-#include <trial/Lattices/TiledCollapser.h>
-#include <aips/Lattices/PagedArray.h>
-#include <trial/Lattices/SubLattice.h>
-#include <aips/Lattices/LatticeIterator.h>
-#include <aips/Lattices/LatticeStepper.h>
-#include <trial/Lattices/LatticeProgress.h>
-#include <trial/Lattices/LatticeRegion.h>
-#include <aips/System/ProgressMeter.h>
-#include <aips/Arrays/IPosition.h>
-#include <aips/Arrays/Array.h>
-#include <aips/Arrays/Vector.h>
-#include <aips/Arrays/Matrix.h>
-#include <aips/Arrays/ArrayMath.h>
-#include <aips/Tables/Table.h>
-#include <aips/Tables/SetupNewTab.h>
-#include <aips/Tables/TableDesc.h>
-#include <aips/Inputs/Input.h>
-#include <aips/OS/Timer.h>
-#include <aips/BasicSL/String.h>
-#include <aips/Utilities/Assert.h>
-#include <aips/Exceptions/Error.h>
-#include <aips/iostream.h>
+#include <lattices/Lattices/LatticeApply.h>
+#include <lattices/Lattices/LineCollapser.h>
+#include <lattices/Lattices/TiledCollapser.h>
+#include <lattices/Lattices/PagedArray.h>
+#include <lattices/Lattices/SubLattice.h>
+#include <lattices/Lattices/LatticeIterator.h>
+#include <lattices/Lattices/LatticeStepper.h>
+#include <lattices/Lattices/LatticeProgress.h>
+#include <lattices/Lattices/LatticeRegion.h>
+#include <casa/System/ProgressMeter.h>
+#include <casa/Arrays/IPosition.h>
+#include <casa/Arrays/Array.h>
+#include <casa/Arrays/Vector.h>
+#include <casa/Arrays/Matrix.h>
+#include <casa/Arrays/ArrayMath.h>
+#include <tables/Tables/Table.h>
+#include <tables/Tables/SetupNewTab.h>
+#include <tables/Tables/TableDesc.h>
+#include <casa/Inputs/Input.h>
+#include <casa/OS/Timer.h>
+#include <casa/BasicSL/String.h>
+#include <casa/Utilities/Assert.h>
+#include <casa/Exceptions/Error.h>
+#include <casa/iostream.h>
 
 
 class MyLineCollapser : public LineCollapser<Int>

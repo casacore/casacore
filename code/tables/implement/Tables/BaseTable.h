@@ -30,12 +30,12 @@
 
 
 //# Includes
-#include <aips/aips.h>
-#include <aips/Tables/TableInfo.h>
-#include <aips/Tables/TableDesc.h>
-#include <aips/Utilities/Compare.h>
-#include <aips/BasicSL/String.h>
-#include <aips/IO/FileLocker.h>
+#include <casa/aips.h>
+#include <tables/Tables/TableInfo.h>
+#include <tables/Tables/TableDesc.h>
+#include <casa/Utilities/Compare.h>
+#include <casa/BasicSL/String.h>
+#include <casa/IO/FileLocker.h>
 
 //# Forward Declarations
 class RefTable;

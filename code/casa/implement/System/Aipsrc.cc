@@ -27,20 +27,20 @@
 
 //# Includes
 
-#include <aips/System/Aipsrc.h>
-#include <aips/Exceptions.h>
-#include <aips/OS/EnvVar.h>
-#include <aips/OS/RegularFile.h>
-#include <aips/OS/Time.h>
-#include <aips/Arrays/Vector.h>
-#include <aips/Utilities/Assert.h>
-#include <aips/BasicSL/String.h>
-#include <aips/Utilities/Regex.h>
-#include <aips/Utilities/MUString.h>
-#include <aips/Quanta/MVTime.h>
-#include <aips/iostream.h>
-#include <aips/fstream.h>
-#include <aips/sstream.h>
+#include <casa/System/Aipsrc.h>
+#include <casa/Exceptions.h>
+#include <casa/OS/EnvVar.h>
+#include <casa/OS/RegularFile.h>
+#include <casa/OS/Time.h>
+#include <casa/Arrays/Vector.h>
+#include <casa/Utilities/Assert.h>
+#include <casa/BasicSL/String.h>
+#include <casa/Utilities/Regex.h>
+#include <casa/Utilities/MUString.h>
+#include <casa/Quanta/MVTime.h>
+#include <casa/iostream.h>
+#include <casa/fstream.h>
+#include <casa/sstream.h>
 
 // This is the function that does most of the work. It is pretty slow for
 // large maps, but no real problem.

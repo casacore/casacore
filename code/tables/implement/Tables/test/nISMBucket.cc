@@ -25,12 +25,12 @@
 //#
 //# $Id$
 
-#include <aips/Containers/Block.h>
-#include <aips/Utilities/GenSort.h>
-#include <aips/Arrays/Vector.h>
-#include <aips/iostream.h>
-#include <aips/sstream.h>
-#include <aips/iostream.h>
+#include <casa/Containers/Block.h>
+#include <casa/Utilities/GenSort.h>
+#include <casa/Arrays/Vector.h>
+#include <casa/iostream.h>
+#include <casa/sstream.h>
+#include <casa/iostream.h>
 
 // <summary>
 // Simulation program for bucket behaviour of IncrementalStman.

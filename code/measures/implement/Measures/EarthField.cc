@@ -26,13 +26,13 @@
 //# $Id$
 
 //# Includes
-#include <aips/Measures/EarthField.h>
-#include <aips/Measures/MeasTable.h>
-#include <aips/Quanta/MVPosition.h>
-#include <aips/Arrays/Vector.h>
-#include <aips/BasicSL/Constants.h>
-#include <aips/BasicMath/Math.h>
-#include <aips/System/AipsrcValue.h>
+#include <measures/Measures/EarthField.h>
+#include <measures/Measures/MeasTable.h>
+#include <casa/Quanta/MVPosition.h>
+#include <casa/Arrays/Vector.h>
+#include <casa/BasicSL/Constants.h>
+#include <casa/BasicMath/Math.h>
+#include <casa/System/AipsrcValue.h>
 
 //# Constants
 const Double EarthField::INTV = 50000;

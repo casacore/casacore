@@ -29,16 +29,16 @@
 #define AIPS_FUNCTIONORDER_H
 
 //# Include files
-#include <aips/aips.h>
-#include <aips/Arrays/Vector.h>
-#include <aips/Containers/Block.h>
-#include <aips/Utilities/RecordTransformable.h>
-#include <aips/Functionals/Function.h>
-#include <aips/BasicSL/String.h>
+#include <casa/aips.h>
+#include <casa/Arrays/Vector.h>
+#include <casa/Containers/Block.h>
+#include <casa/Utilities/RecordTransformable.h>
+#include <scimath/Functionals/Function.h>
+#include <casa/BasicSL/String.h>
 
 //# Forward declarations
 class RecordInterface;
-#include <aips/iosfwd.h>
+#include <casa/iosfwd.h>
 
 // <summary> Container of function description details
 // </summary>

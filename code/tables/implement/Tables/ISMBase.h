@@ -30,9 +30,9 @@
 
 
 //# Includes
-#include <aips/aips.h>
-#include <aips/Tables/DataManager.h>
-#include <aips/Containers/Block.h>
+#include <casa/aips.h>
+#include <tables/Tables/DataManager.h>
+#include <casa/Containers/Block.h>
 
 //# Forward declarations
 class BucketCache;
@@ -41,7 +41,7 @@ class ISMBucket;
 class ISMIndex;
 class ISMColumn;
 class StManArrayFile;
-#include <aips/iosfwd.h>
+#include <casa/iosfwd.h>
 
 // <summary>
 // Base class of the Incremental Storage Manager

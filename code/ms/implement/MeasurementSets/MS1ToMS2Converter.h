@@ -29,9 +29,9 @@
 #define AIPS_MS1TOMS2CONVERTER_H
 
 //# Includes
-#include <aips/aips.h>
-#include <aips/Tables/Table.h>
-#include <aips/Logging/LogIO.h>
+#include <casa/aips.h>
+#include <tables/Tables/Table.h>
+#include <casa/Logging/LogIO.h>
 
 //# Forward declarations
 class String;

@@ -28,13 +28,13 @@
 #if !defined(AIPS_CONVERSIONIO_H)
 #define AIPS_CONVERSIONIO_H
 
-#include <aips/aips.h>
-#include <aips/IO/TypeIO.h>
-#include <aips/Utilities/CountedPtr.h>
+#include <casa/aips.h>
+#include <casa/IO/TypeIO.h>
+#include <casa/Utilities/CountedPtr.h>
 //# The following should be a declaration. But our Complex & DComplex classes
 //# are a typedef hence this does not work. Replace the following with
 //# forward declarations when Complex and DComplex are no longer typedefs.
-#include <aips/BasicSL/Complex.h>
+#include <casa/BasicSL/Complex.h>
 
 class DataConversion;
 class ByteIO;

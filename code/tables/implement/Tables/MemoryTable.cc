@@ -26,16 +26,16 @@
 //# $Id$
 
 
-#include <aips/Tables/MemoryTable.h>
-#include <aips/Tables/SetupNewTab.h>
-#include <aips/Tables/TableLockData.h>
-#include <aips/Tables/ColumnSet.h>
-#include <aips/Tables/PlainColumn.h>
-#include <aips/Tables/MemoryStMan.h>
-#include <aips/Tables/TableError.h>
-#include <aips/Containers/Record.h>
-#include <aips/BasicSL/String.h>
-#include <aips/OS/HostInfo.h>
+#include <tables/Tables/MemoryTable.h>
+#include <tables/Tables/SetupNewTab.h>
+#include <tables/Tables/TableLockData.h>
+#include <tables/Tables/ColumnSet.h>
+#include <tables/Tables/PlainColumn.h>
+#include <tables/Tables/MemoryStMan.h>
+#include <tables/Tables/TableError.h>
+#include <casa/Containers/Record.h>
+#include <casa/BasicSL/String.h>
+#include <casa/OS/HostInfo.h>
 
 
 MemoryTable::MemoryTable (SetupNewTable& newtab, uInt nrrow, Bool initialize)

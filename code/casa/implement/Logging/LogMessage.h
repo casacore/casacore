@@ -29,11 +29,11 @@
 #if !defined(AIPS_LOG_MESSAGE_H)
 #define AIPS_LOG_MESSAGE_H
 
-#include <aips/aips.h>
-#include <aips/Logging/LogOrigin.h>
-#include <aips/OS/Time.h>
+#include <casa/aips.h>
+#include <casa/Logging/LogOrigin.h>
+#include <casa/OS/Time.h>
 
-#include <aips/iosfwd.h>
+#include <casa/iosfwd.h>
 
 // <summary>
 // Informational log messages with with time, priority, and origin.

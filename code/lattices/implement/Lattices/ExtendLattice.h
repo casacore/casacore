@@ -31,9 +31,9 @@
 
 
 //# Includes
-#include <aips/aips.h>
-#include <trial/Lattices/MaskedLattice.h>
-#include <trial/Arrays/ExtendSpecifier.h>
+#include <casa/aips.h>
+#include <lattices/Lattices/MaskedLattice.h>
+#include <casa/Arrays/ExtendSpecifier.h>
 
 //# Forward Declarations
 

@@ -28,8 +28,8 @@
 #if !defined (AIPS_INPUTS_H)
 #define AIPS_INPUTS_H
 
-#include <aips/Inputs/Input.h>
-#include <aips/Inputs/Param.h>
+#include <casa/Inputs/Input.h>
+#include <casa/Inputs/Param.h>
 
 // <module> 
 //
@@ -142,7 +142,7 @@
 //
 // <example>
 // <srcblock>
-// 01 #include <aips/Inputs/Input.h>      // need this if you want it to work
+// 01 #include <casa/Inputs/Input.h>      // need this if you want it to work
 // 02 #include <aips/Plot.h>
 // 03 main(int argc, char *argv[])
 // 04 {

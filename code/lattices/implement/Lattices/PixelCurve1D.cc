@@ -26,11 +26,11 @@
 //# $Id$
 
 
-#include <trial/Lattices/PixelCurve1D.h>
-#include <aips/Functionals/Polynomial.h>
-#include <aips/Arrays/ArrayMath.h>
-#include <aips/Utilities/Assert.h>
-#include <aips/Exceptions/Error.h>
+#include <lattices/Lattices/PixelCurve1D.h>
+#include <scimath/Functionals/Polynomial.h>
+#include <casa/Arrays/ArrayMath.h>
+#include <casa/Utilities/Assert.h>
+#include <casa/Exceptions/Error.h>
 
 
 PixelCurve1D::PixelCurve1D (double x1, double y1, double x2, double y2,

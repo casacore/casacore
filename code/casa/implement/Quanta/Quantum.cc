@@ -26,23 +26,23 @@
 //# $Id$
 
 //# Includes
-#include <aips/BasicSL/Complex.h>
-#include <aips/BasicSL/Constants.h>
-#include <aips/Arrays/IPosition.h>
-#include <aips/Arrays/Array.h>
-#include <aips/Arrays/ArrayMath.h>
-#include <aips/Arrays/ArrayLogical.h>
-#include <aips/Arrays/Vector.h>
-#include <aips/Arrays/Matrix.h>
-#include <aips/Arrays/Cube.h>
-#include <aips/Exceptions/Error.h>
-#include <aips/Quanta/Quantum.h>
-#include <aips/Utilities/MUString.h>
-#include <aips/Quanta/MVAngle.h>
-#include <aips/Quanta/MVTime.h>
-#include <aips/Utilities/Register.h>
-#include <aips/Utilities/Regex.h>
-#include <aips/sstream.h>
+#include <casa/BasicSL/Complex.h>
+#include <casa/BasicSL/Constants.h>
+#include <casa/Arrays/IPosition.h>
+#include <casa/Arrays/Array.h>
+#include <casa/Arrays/ArrayMath.h>
+#include <casa/Arrays/ArrayLogical.h>
+#include <casa/Arrays/Vector.h>
+#include <casa/Arrays/Matrix.h>
+#include <casa/Arrays/Cube.h>
+#include <casa/Exceptions/Error.h>
+#include <casa/Quanta/Quantum.h>
+#include <casa/Utilities/MUString.h>
+#include <casa/Quanta/MVAngle.h>
+#include <casa/Quanta/MVTime.h>
+#include <casa/Utilities/Register.h>
+#include <casa/Utilities/Regex.h>
+#include <casa/sstream.h>
 
 template <class Qtype>
 Quantum<Qtype>::Quantum() :

@@ -29,26 +29,26 @@
 #if !defined(AIPS_NEWMEASUREMENTSET_H)
 #define AIPS_NEWMEASUREMENTSET_H
 
-#include <aips/aips.h>
-#include <aips/MeasurementSets/MSTable.h>
-#include <aips/MeasurementSets/MSMainEnums.h>
-#include <aips/MeasurementSets/MSAntenna.h>
-#include <aips/MeasurementSets/MSDataDescription.h>
-#include <aips/MeasurementSets/MSDoppler.h>
-#include <aips/MeasurementSets/MSFeed.h>
-#include <aips/MeasurementSets/MSField.h>
-#include <aips/MeasurementSets/MSFlagCmd.h>
-#include <aips/MeasurementSets/MSFreqOffset.h>
-#include <aips/MeasurementSets/MSHistory.h>
-#include <aips/MeasurementSets/MSObservation.h>
-#include <aips/MeasurementSets/MSPointing.h>
-#include <aips/MeasurementSets/MSPolarization.h>
-#include <aips/MeasurementSets/MSProcessor.h>
-#include <aips/MeasurementSets/MSSource.h>
-#include <aips/MeasurementSets/MSSpectralWindow.h>
-#include <aips/MeasurementSets/MSState.h>
-#include <aips/MeasurementSets/MSSysCal.h>
-#include <aips/MeasurementSets/MSWeather.h>
+#include <casa/aips.h>
+#include <ms/MeasurementSets/MSTable.h>
+#include <ms/MeasurementSets/MSMainEnums.h>
+#include <ms/MeasurementSets/MSAntenna.h>
+#include <ms/MeasurementSets/MSDataDescription.h>
+#include <ms/MeasurementSets/MSDoppler.h>
+#include <ms/MeasurementSets/MSFeed.h>
+#include <ms/MeasurementSets/MSField.h>
+#include <ms/MeasurementSets/MSFlagCmd.h>
+#include <ms/MeasurementSets/MSFreqOffset.h>
+#include <ms/MeasurementSets/MSHistory.h>
+#include <ms/MeasurementSets/MSObservation.h>
+#include <ms/MeasurementSets/MSPointing.h>
+#include <ms/MeasurementSets/MSPolarization.h>
+#include <ms/MeasurementSets/MSProcessor.h>
+#include <ms/MeasurementSets/MSSource.h>
+#include <ms/MeasurementSets/MSSpectralWindow.h>
+#include <ms/MeasurementSets/MSState.h>
+#include <ms/MeasurementSets/MSSysCal.h>
+#include <ms/MeasurementSets/MSWeather.h>
  
 //# Forward Declarations, more could be if they weren't part of the
 //# static classes 

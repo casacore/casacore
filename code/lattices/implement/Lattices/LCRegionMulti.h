@@ -29,9 +29,9 @@
 #define AIPS_LCREGIONMULTI_H
 
 //# Includes
-#include <trial/Lattices/LCRegion.h>
-#include <aips/Arrays/IPosition.h>
-#include <aips/Containers/Block.h>
+#include <lattices/Lattices/LCRegion.h>
+#include <casa/Arrays/IPosition.h>
+#include <casa/Containers/Block.h>
 
 
 // <summary>

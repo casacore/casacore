@@ -29,7 +29,7 @@
 #define AIPS_LCREGIONSINGLE_H
 
 //# Includes
-#include <trial/Lattices/LCRegion.h>
+#include <lattices/Lattices/LCRegion.h>
 
 
 // <summary>

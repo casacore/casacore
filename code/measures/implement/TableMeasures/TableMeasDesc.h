@@ -30,7 +30,7 @@
 
 
 //# Includes
-#include <aips/TableMeasures/TableMeasDescBase.h>
+#include <measures/TableMeasures/TableMeasDescBase.h>
 
 //# Forward Declarations
 class String;

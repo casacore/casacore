@@ -29,9 +29,9 @@
 #if !defined(AIPS_MSSYSCAL_H)
 #define AIPS_MSSYSCAL_H
 
-#include <aips/aips.h>
-#include <aips/MeasurementSets/MSTable.h>
-#include <aips/MeasurementSets/MSSysCalEnums.h>
+#include <casa/aips.h>
+#include <ms/MeasurementSets/MSTable.h>
+#include <ms/MeasurementSets/MSSysCalEnums.h>
 
 // <summary> 
 // A Table intended to hold a MeasurementSet SYSCAL table.

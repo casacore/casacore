@@ -27,14 +27,14 @@
 //# $Id$
 
 
-#include <trial/MeasurementSets/StokesConverter.h>
-#include <trial/Mathematics/SquareMatrix.h>
-#include <aips/Arrays/ArrayMath.h>
-#include <aips/Arrays/MatrixMath.h>
-#include <aips/Arrays/Slice.h>
-#include <aips/Exceptions/Error.h>
-#include <aips/BasicMath/Math.h>
-#include <aips/Utilities/Assert.h>
+#include <ms/MeasurementSets/StokesConverter.h>
+#include <scimath/Mathematics/SquareMatrix.h>
+#include <casa/Arrays/ArrayMath.h>
+#include <casa/Arrays/MatrixMath.h>
+#include <casa/Arrays/Slice.h>
+#include <casa/Exceptions/Error.h>
+#include <casa/BasicMath/Math.h>
+#include <casa/Utilities/Assert.h>
 
 // make a portable float to float sqrt for use in Array<Float>::apply
 extern "C" {

@@ -25,13 +25,13 @@
 //#
 //# $Id$
 
-#include <trial/MeasurementSets/MSDerivedValues.h>
-#include <aips/Arrays/ArrayMath.h>
-#include <aips/MeasurementSets/MSColumns.h>
-#include <aips/Logging/LogMessage.h>
-#include <aips/Logging/LogSink.h>
-#include <aips/Utilities/Assert.h>
-#include <aips/Exceptions/Error.h>
+#include <ms/MeasurementSets/MSDerivedValues.h>
+#include <casa/Arrays/ArrayMath.h>
+#include <ms/MeasurementSets/MSColumns.h>
+#include <casa/Logging/LogMessage.h>
+#include <casa/Logging/LogSink.h>
+#include <casa/Utilities/Assert.h>
+#include <casa/Exceptions/Error.h>
 
 MSDerivedValues::MSDerivedValues() 
 {

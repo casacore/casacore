@@ -25,16 +25,16 @@
 //#
 //# $Id$
 
-#include <trial/Lattices/LatticeFractile.h>
-#include <trial/Lattices/MaskedLattice.h>
-#include <trial/Lattices/MaskedLatticeIterator.h>
-#include <aips/Arrays/Vector.h>
-#include <aips/Arrays/ArrayMath.h>
-#include <aips/Containers/Block.h>
-#include <aips/Utilities/GenSort.h>
-#include <aips/Utilities/COWPtr.h>
-#include <aips/Utilities/Assert.h>
-#include <aips/Exceptions/Error.h>
+#include <lattices/Lattices/LatticeFractile.h>
+#include <lattices/Lattices/MaskedLattice.h>
+#include <lattices/Lattices/MaskedLatticeIterator.h>
+#include <casa/Arrays/Vector.h>
+#include <casa/Arrays/ArrayMath.h>
+#include <casa/Containers/Block.h>
+#include <casa/Utilities/GenSort.h>
+#include <casa/Utilities/COWPtr.h>
+#include <casa/Utilities/Assert.h>
+#include <casa/Exceptions/Error.h>
 
 
 template <class T>

@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#include <aips/Containers/Stack.h>
-#include <aips/Containers/StackError.h>
+#include <casa/Containers/Stack.h>
+#include <casa/Containers/StackError.h>
 
 
 template<class elem> Stack<elem>::~Stack() {

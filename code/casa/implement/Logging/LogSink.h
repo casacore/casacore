@@ -29,12 +29,12 @@
 #if !defined(AIPS_LOGSINK_H)
 #define AIPS_LOGSINK_H
 
-#include <aips/aips.h>
-#include <aips/Logging/LogSinkInterface.h>
+#include <casa/aips.h>
+#include <casa/Logging/LogSinkInterface.h>
 
-#include <aips/Utilities/CountedPtr.h>
-#include <aips/Utilities/PtrHolder.h>
-#include <aips/iosfwd.h>
+#include <casa/Utilities/CountedPtr.h>
+#include <casa/Utilities/PtrHolder.h>
+#include <casa/iosfwd.h>
 
 // <summary>
 // Distribute LogMessages to their destination(s)

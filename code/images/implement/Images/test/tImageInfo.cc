@@ -26,16 +26,16 @@
 //#
 //# $Id$
 
-#include <trial/Images/ImageInfo.h>
+#include <images/Images/ImageInfo.h>
 
-#include <aips/Utilities/Assert.h>
-#include <aips/Exceptions/Error.h>
-#include <aips/BasicMath/Math.h>
-#include <aips/Containers/Record.h>
-#include <aips/Quanta/Quantum.h>
-#include <aips/Quanta/QLogical.h>
-#include <aips/Arrays/Vector.h>
-#include <aips/iostream.h>
+#include <casa/Utilities/Assert.h>
+#include <casa/Exceptions/Error.h>
+#include <casa/BasicMath/Math.h>
+#include <casa/Containers/Record.h>
+#include <casa/Quanta/Quantum.h>
+#include <casa/Quanta/QLogical.h>
+#include <casa/Arrays/Vector.h>
+#include <casa/iostream.h>
 
 
 void equalBeams(const Vector<Quantum<Double> >& b1, const Vector<Quantum<Double> >& b2)

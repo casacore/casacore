@@ -26,11 +26,11 @@
 //# $Id$
 
 //# Includes
-#include <aips/Tables/IncrStManAccessor.h>
-#include <aips/Tables/ISMBase.h>
-#include <aips/Tables/Table.h>
-#include <aips/Tables/DataManError.h>
-#include <aips/BasicSL/String.h>
+#include <tables/Tables/IncrStManAccessor.h>
+#include <tables/Tables/ISMBase.h>
+#include <tables/Tables/Table.h>
+#include <tables/Tables/DataManError.h>
+#include <casa/BasicSL/String.h>
 
 
 ROIncrementalStManAccessor::ROIncrementalStManAccessor (const Table& table,

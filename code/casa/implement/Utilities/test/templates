@@ -1,50 +1,50 @@
-1000 aips/Arrays/Array.cc aips/Utilities/Regex.h 
-     = aips/Arrays/ArrayIO.cc 
-     = aips/Arrays/MaskedArray.cc 
-     = aips/Arrays/Vector.cc 
+1000 casa/Arrays/Array.cc casa/Utilities/Regex.h 
+     = casa/Arrays/ArrayIO.cc 
+     = casa/Arrays/MaskedArray.cc 
+     = casa/Arrays/Vector.cc 
      template class Array<Regex> 
      template class MaskedArray<Regex> 
      template class Vector<Regex> 
      template ostream & operator<<(ostream &, Array<Regex> const &) 
-1000 aips/Utilities/BinarySearch.cc aips/Arrays/IPosition.h 
+1000 casa/Utilities/BinarySearch.cc casa/Arrays/IPosition.h 
      template Int binarySearch(Bool &, IPosition const &, Int const &, uInt, Int) 
      template Int binarySearchBrackets(Bool &, Int * const &, Int const &, uInt, Int) 
-1000 aips/Utilities/Copy.cc aips/Containers/Block.h 
-     = aips/Utilities/Regex.h 
+1000 casa/Utilities/Copy.cc casa/Containers/Block.h 
+     = casa/Utilities/Regex.h 
      template class Block<Regex> 
      template void objcopy(Regex *, Regex const *, uInt, uInt, uInt) 
      template void objmove(Regex *, Regex const *, uInt) 
      template void objset(Regex *, Regex, uInt, uInt) 
      template void objcopy(Regex *, Regex const *, uInt) 
      template void objset(Regex *, Regex, uInt) 
-1010 aips/Utilities/Copy.cc aips/Containers/Block.h 
+1010 casa/Utilities/Copy.cc casa/Containers/Block.h 
      template void objcopy(Block<Int> *, Block<Int> const *, uInt, uInt, uInt) 
      template void objmove(Block<Int> *, Block<Int> const *, uInt, uInt, uInt) 
      template void objset(Block<Int> *, Block<Int>, uInt, uInt) 
      template void objmove(Int *, Int const *, uInt, uInt, uInt) 
-1000 aips/Utilities/CountedPtr.cc aips/Containers/Block.h 
-     = aips/Utilities/Regex.h 
+1000 casa/Utilities/CountedPtr.cc casa/Containers/Block.h 
+     = casa/Utilities/Regex.h 
      template class CountedConstPtr<Block<Regex> > 
      template class CountedPtr<Block<Regex> > 
      template class PtrRep<Block<Regex> > 
      template class SimpleCountedConstPtr<Block<Regex> > 
      template class SimpleCountedPtr<Block<Regex> > 
-1010 aips/Utilities/CountedPtr.cc aips/Utilities/test/tCountedPtr.h 
+1010 casa/Utilities/CountedPtr.cc casa/Utilities/test/tCountedPtr.h 
      template class CountedConstPtr<myobj> 
      template class CountedPtr<myobj> 
      template class PtrRep<myobj> 
      template class SimpleCountedConstPtr<myobj> 
      template class SimpleCountedPtr<myobj> 
-1000 aips/Utilities/GenSort.cc 
+1000 casa/Utilities/GenSort.cc 
      template uInt genSort(Int *, uInt, Sort::Order, Int) 
      template uInt genSort(Vector<uInt> &, Int const *, uInt, Sort::Order, Int) 
-1000 aips/Utilities/LinearSearch.cc aips/Arrays/IPosition.h 
+1000 casa/Utilities/LinearSearch.cc casa/Arrays/IPosition.h 
      template Int linearSearch(Bool &, IPosition const &, Int const &, uInt, uInt) 
      template Int linearSearch1(IPosition const &, Int const &, uInt) 
      template Int linearSearchBrackets(Bool &, Int * const &, Int const &, uInt, uInt) 
-1000 aips/Utilities/PtrHolder.cc 
+1000 casa/Utilities/PtrHolder.cc 
      template class PtrHolder<Int> 
-1000 aips/Utilities/Register.cc tRegister.h 
+1000 casa/Utilities/Register.cc tRegister.h 
      template uInt Register(bar2foo const *) 
      template uInt Register(foo2bar2 const *) 
      template uInt Register(bar const *) 

@@ -25,25 +25,25 @@
 //#
 //# $Id$
 
-#include <trial/Lattices/LatticeTwoPtCorr.h>
+#include <lattices/Lattices/LatticeTwoPtCorr.h>
 
-#include <aips/Arrays/Array.h>
-#include <aips/Arrays/ArrayAccessor.h>
-#include <aips/Arrays/Matrix.h>
-#include <aips/Arrays/ArrayMath.h>
-#include <aips/Arrays/IPosition.h>
-#include <aips/Exceptions/Error.h>
-#include <aips/Lattices/LatticeIterator.h>
-#include <aips/Lattices/LatticeStepper.h>
-#include <aips/Logging/LogIO.h>
-#include <aips/Logging/LogOrigin.h>
-#include <trial/Lattices/MaskedLatticeIterator.h>
-#include <aips/Utilities/Assert.h>
-#include <aips/BasicSL/String.h>
+#include <casa/Arrays/Array.h>
+#include <casa/Arrays/ArrayAccessor.h>
+#include <casa/Arrays/Matrix.h>
+#include <casa/Arrays/ArrayMath.h>
+#include <casa/Arrays/IPosition.h>
+#include <casa/Exceptions/Error.h>
+#include <lattices/Lattices/LatticeIterator.h>
+#include <lattices/Lattices/LatticeStepper.h>
+#include <casa/Logging/LogIO.h>
+#include <casa/Logging/LogOrigin.h>
+#include <lattices/Lattices/MaskedLatticeIterator.h>
+#include <casa/Utilities/Assert.h>
+#include <casa/BasicSL/String.h>
 
 /*
-#include <aips/Arrays/ArrayIO.h>
-#include <aips/iostream.h>
+#include <casa/Arrays/ArrayIO.h>
+#include <casa/iostream.h>
 */
 
 template <class T>

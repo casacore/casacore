@@ -46,7 +46,7 @@
 */
 
 #if defined(AIPS_LINUX)
-/* IS linux. Include malloc.h so we only have to include aips/OS/malloc.h 
+/* IS linux. Include malloc.h so we only have to include casa/OS/malloc.h 
    without an ifdef on OS.
 */
 #include <malloc.h>
@@ -309,7 +309,7 @@
 extern "C" {
 #endif
 
-#include <aips/stdio.h>    /* needed for malloc_stats */
+#include <casa/stdio.h>    /* needed for malloc_stats */
 
 
 /*

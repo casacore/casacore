@@ -29,9 +29,9 @@
 #define AIPS_LOGIARRAY_H
 
 
-#include <aips/aips.h>
-#include <aips/Arrays/LogiArrayFwd.h>
-#include <aips/Arrays/Array.h>
+#include <casa/aips.h>
+#include <casa/Arrays/LogiArrayFwd.h>
+#include <casa/Arrays/Array.h>
 
 
 // <summary>

@@ -27,11 +27,11 @@
 
 //# Includes
 
-#include <aips/IO/test/tAipsIOCarray.h>
-#include <aips/IO/AipsIOCarray.h>
-#include <aips/BasicSL/Complex.h>
-#include <aips/Exceptions/Error.h>
-#include <aips/iostream.h>
+#include <casa/IO/test/tAipsIOCarray.h>
+#include <casa/IO/AipsIOCarray.h>
+#include <casa/BasicSL/Complex.h>
+#include <casa/Exceptions/Error.h>
+#include <casa/iostream.h>
 
 
 // This test program tests the AipsIOCarray functions.

@@ -25,16 +25,16 @@
 //#
 //# $Id$
 
-#include <trial/Lattices/LatticeStatsBase.h>
+#include <lattices/Lattices/LatticeStatsBase.h>
 
-#include <aips/Arrays/Vector.h>
-#include <aips/Arrays/ArrayUtil.h>
-#include <aips/Arrays/IPosition.h>
-#include <aips/BasicMath/Math.h>
-#include <aips/BasicSL/String.h>
-#include <aips/Utilities/Regex.h>
+#include <casa/Arrays/Vector.h>
+#include <casa/Arrays/ArrayUtil.h>
+#include <casa/Arrays/IPosition.h>
+#include <casa/BasicMath/Math.h>
+#include <casa/BasicSL/String.h>
+#include <casa/Utilities/Regex.h>
 
-#include <aips/iostream.h>
+#include <casa/iostream.h>
 
 
 Vector<Int> LatticeStatsBase::toStatisticTypes (const String& statsU, 

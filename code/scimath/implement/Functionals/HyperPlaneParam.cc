@@ -26,7 +26,7 @@
 //# $Id$
 
 //# Includes
-#include <aips/Functionals/HyperPlaneParam.h>
+#include <scimath/Functionals/HyperPlaneParam.h>
 
 template<class T>
 HyperPlaneParam<T>::HyperPlaneParam(uInt m) :

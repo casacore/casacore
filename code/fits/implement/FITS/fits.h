@@ -30,11 +30,11 @@
 
 # include <stdlib.h>
 # include <ctype.h>
-# include <aips/aips.h>
-# include <aips/iostream.h>
-# include <aips/BasicSL/Complex.h>
-# include <aips/BasicSL/IComplex.h>
-# include <aips/FITS/FITSError.h>
+# include <casa/aips.h>
+# include <casa/iostream.h>
+# include <casa/BasicSL/Complex.h>
+# include <casa/BasicSL/IComplex.h>
+# include <fits/FITS/FITSError.h>
 
 //# All FITS code seems to assume longs are 4 bytes. To take care of machines 
 //# for which this isn't true use FitsLong instead of Long in the FITS code

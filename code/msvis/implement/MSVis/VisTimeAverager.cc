@@ -26,8 +26,8 @@
 //# $Id$
 //----------------------------------------------------------------------------
 
-#include <trial/MSVis/VisTimeAverager.h>
-#include <aips/Exceptions/Error.h>
+#include <msvis/MSVis/VisTimeAverager.h>
+#include <casa/Exceptions/Error.h>
 
 //----------------------------------------------------------------------------
 

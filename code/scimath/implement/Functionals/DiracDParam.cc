@@ -26,7 +26,7 @@
 //# $Id$
 
 //# Includes
-#include <trial/Functionals/DiracDParam.h>
+#include <scimath/Functionals/DiracDParam.h>
 
 template<class T>
 DiracDParam<T>::DiracDParam() :

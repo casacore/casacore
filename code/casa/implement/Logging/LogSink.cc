@@ -26,18 +26,18 @@
 //#
 //# $Id$
 
-#include <aips/Logging/LogSink.h>
-#include <aips/Logging/LogMessage.h>
-#include <aips/Logging/LogFilter.h>
+#include <casa/Logging/LogSink.h>
+#include <casa/Logging/LogMessage.h>
+#include <casa/Logging/LogFilter.h>
 
-#include <aips/Logging/NullLogSink.h>
-#include <aips/Logging/MemoryLogSink.h>
-#include <aips/Logging/StreamLogSink.h>
+#include <casa/Logging/NullLogSink.h>
+#include <casa/Logging/MemoryLogSink.h>
+#include <casa/Logging/StreamLogSink.h>
 
-#include <aips/Utilities/PtrHolder.h>
-#include <aips/Utilities/Assert.h>
+#include <casa/Utilities/PtrHolder.h>
+#include <casa/Utilities/Assert.h>
 
-#include <aips/iostream.h>
+#include <casa/iostream.h>
 
 
 CountedPtr<LogSinkInterface> *LogSink::global_sink_p = 0;

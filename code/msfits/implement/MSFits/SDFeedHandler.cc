@@ -26,25 +26,25 @@
 //# $Id$
 
 //# Includes
-#include <trial/MeasurementSets/SDFeedHandler.h>
+#include <ms/MeasurementSets/SDFeedHandler.h>
 
-#include <aips/Tables/ColumnsIndex.h>
-#include <aips/MeasurementSets/MeasurementSet.h>
-#include <aips/MeasurementSets/MSFeedColumns.h>
-#include <aips/MeasurementSets/MSFeed.h>
-#include <aips/Containers/Record.h>
-#include <aips/Arrays/Vector.h>
-#include <aips/Tables/ArrayColumn.h>
-#include <aips/Utilities/Assert.h>
-#include <aips/Exceptions/Error.h>
-#include <aips/BasicSL/String.h>
-#include <aips/Arrays/Matrix.h>
-#include <aips/Measures/Stokes.h>
-#include <aips/Containers/SimOrdMap.h>
-#include <aips/Arrays/ArrayLogical.h>
-#include <aips/Tables/TableDesc.h>
+#include <tables/Tables/ColumnsIndex.h>
+#include <ms/MeasurementSets/MeasurementSet.h>
+#include <ms/MeasurementSets/MSFeedColumns.h>
+#include <ms/MeasurementSets/MSFeed.h>
+#include <casa/Containers/Record.h>
+#include <casa/Arrays/Vector.h>
+#include <tables/Tables/ArrayColumn.h>
+#include <casa/Utilities/Assert.h>
+#include <casa/Exceptions/Error.h>
+#include <casa/BasicSL/String.h>
+#include <casa/Arrays/Matrix.h>
+#include <measures/Measures/Stokes.h>
+#include <casa/Containers/SimOrdMap.h>
+#include <casa/Arrays/ArrayLogical.h>
+#include <tables/Tables/TableDesc.h>
 
-#include <aips/sstream.h>
+#include <casa/sstream.h>
 
 SDFeedHandler::SDFeedHandler() 
     : index_p(0), msFeed_p(0), msFeedCols_p(0), feedId_p(-1), nextFeedId_p(0), nrecpt_p(0)

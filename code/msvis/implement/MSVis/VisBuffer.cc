@@ -25,15 +25,15 @@
 //#
 //# $Id$
 
-#include <trial/MSVis/VisibilityIterator.h>
-#include <trial/MSVis/VisBuffer.h>
-#include <aips/Arrays/ArrayMath.h>
-#include <aips/Arrays/ArrayLogical.h>
-#include <aips/Arrays/MaskedArray.h>
-#include <aips/Arrays/MaskArrMath.h>
-#include <aips/Arrays/ArrayUtil.h>
-#include <aips/Utilities/Assert.h>
-#include <aips/Utilities/GenSort.h>
+#include <msvis/MSVis/VisibilityIterator.h>
+#include <msvis/MSVis/VisBuffer.h>
+#include <casa/Arrays/ArrayMath.h>
+#include <casa/Arrays/ArrayLogical.h>
+#include <casa/Arrays/MaskedArray.h>
+#include <casa/Arrays/MaskArrMath.h>
+#include <casa/Arrays/ArrayUtil.h>
+#include <casa/Utilities/Assert.h>
+#include <casa/Utilities/GenSort.h>
 
 VisBuffer::VisBuffer():visIter_p(static_cast<ROVisibilityIterator*>(0)),
 twoWayConnection_p(False),This(this),nChannel_p(0),nRow_p(0)

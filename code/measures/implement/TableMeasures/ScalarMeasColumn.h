@@ -29,8 +29,8 @@
 #define AIPS_SCALARMEASCOLUMN_H
 
 //# Includes
-#include <aips/TableMeasures/TableMeasColumn.h>
-#include <aips/Measures/MeasRef.h>
+#include <measures/TableMeasures/TableMeasColumn.h>
+#include <measures/Measures/MeasRef.h>
 
 //# Forward Declarations
 template <class T> class ROArrayColumn;

@@ -26,11 +26,11 @@
 //# $Id$
 
 //# Includes
-#include <aips/Functionals/SimButterworthBandpass.h>
-#include <aips/Arrays/Vector.h>
-#include <aips/Exceptions/Error.h>
-#include <aips/Utilities/Assert.h>
-#include <aips/Containers/RecordInterface.h>
+#include <scimath/Functionals/SimButterworthBandpass.h>
+#include <casa/Arrays/Vector.h>
+#include <casa/Exceptions/Error.h>
+#include <casa/Utilities/Assert.h>
+#include <casa/Containers/RecordInterface.h>
 
 //# Constructors
 template <class T>

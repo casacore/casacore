@@ -28,7 +28,7 @@
 #if !defined(AIPS_MODCOMPDATACONVERSION_H)
 #define AIPS_MODCOMPDATACONVERSION_H
 
-#include <aips/OS/DataConversion.h>
+#include <casa/OS/DataConversion.h>
 
 // <summary>A DataConversion class to convert between Modcomp format.</summary>
 

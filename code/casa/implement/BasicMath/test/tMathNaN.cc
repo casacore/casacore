@@ -25,17 +25,17 @@
 //#
 //# $Id$
 
-#include <aips/aips.h>
-#include <aips/Exceptions/Error.h>
-#include <aips/BasicMath/Math.h>
-#include <aips/Arrays/Vector.h>
-#include <aips/Inputs/Input.h>
-#include <aips/OS/Timer.h> 
+#include <casa/aips.h>
+#include <casa/Exceptions/Error.h>
+#include <casa/BasicMath/Math.h>
+#include <casa/Arrays/Vector.h>
+#include <casa/Inputs/Input.h>
+#include <casa/OS/Timer.h> 
 #if defined(AIPS_SOLARIS) || defined(AIPS_IRIX)
 #include <ieeefp.h>
 #endif
-#include <aips/iostream.h>
-#include <aips/iomanip.h>
+#include <casa/iostream.h>
+#include <casa/iomanip.h>
 
 
 #define	isnanfmacro(x)	(((*(Int *)&(x) & 0x7f800000) == 0x7f800000) && \

@@ -26,21 +26,21 @@
 //# $Id$
 
 //# Includes
-#include <aips/Arrays/ArrayIO.h>
-#include <aips/Arrays/Array.h>
-#include <aips/Arrays/ArrayError.h>
-#include <aips/Arrays/Matrix.h>
-#include <aips/Arrays/Vector.h>
-#include <aips/Arrays/ArrayPosIter.h>
-#include <aips/IO/AipsIO.h>
-#include <aips/IO/AipsIOCarray.h>
-#include <aips/BasicSL/String.h>
-#include <aips/Utilities/Regex.h>
-#include <aips/Logging/LogIO.h>
-#include <aips/Utilities/Register.h>
-#include <aips/iostream.h>
-#include <aips/fstream.h>
-#include <aips/sstream.h>           // needed for internal IO
+#include <casa/Arrays/ArrayIO.h>
+#include <casa/Arrays/Array.h>
+#include <casa/Arrays/ArrayError.h>
+#include <casa/Arrays/Matrix.h>
+#include <casa/Arrays/Vector.h>
+#include <casa/Arrays/ArrayPosIter.h>
+#include <casa/IO/AipsIO.h>
+#include <casa/IO/AipsIOCarray.h>
+#include <casa/BasicSL/String.h>
+#include <casa/Utilities/Regex.h>
+#include <casa/Logging/LogIO.h>
+#include <casa/Utilities/Register.h>
+#include <casa/iostream.h>
+#include <casa/fstream.h>
+#include <casa/sstream.h>           // needed for internal IO
 
 template<class T>
 ostream &operator<<(ostream &s, const Array<T> &a)

@@ -27,13 +27,13 @@
 
 //# Includes
 
-#include <aips/BasicSL/String.h>
-#include <aips/Utilities/Regex.h>
+#include <casa/BasicSL/String.h>
+#include <casa/Utilities/Regex.h>
 #include <assert.h>
 // Next one for atoi and atof
-#include <aips/stdlib.h>
-#include <aips/iostream.h>
-#include <aips/sstream.h>
+#include <casa/stdlib.h>
+#include <casa/iostream.h>
+#include <casa/sstream.h>
 
 // Generally used variables
 String X = "Hello";

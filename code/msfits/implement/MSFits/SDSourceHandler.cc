@@ -26,18 +26,18 @@
 //# $Id$
 
 //# Includes
-#include <trial/MeasurementSets/SDSourceHandler.h>
+#include <ms/MeasurementSets/SDSourceHandler.h>
 
-#include <aips/Tables/ColumnsIndex.h>
-#include <aips/MeasurementSets/MeasurementSet.h>
-#include <aips/MeasurementSets/MSSourceColumns.h>
-#include <aips/MeasurementSets/MSSource.h>
-#include <aips/Containers/Record.h>
-#include <aips/Arrays/Vector.h>
-#include <aips/Utilities/Assert.h>
-#include <aips/Exceptions/Error.h>
-#include <aips/Tables/TableDesc.h>
-#include <aips/Arrays/ArrayLogical.h>
+#include <tables/Tables/ColumnsIndex.h>
+#include <ms/MeasurementSets/MeasurementSet.h>
+#include <ms/MeasurementSets/MSSourceColumns.h>
+#include <ms/MeasurementSets/MSSource.h>
+#include <casa/Containers/Record.h>
+#include <casa/Arrays/Vector.h>
+#include <casa/Utilities/Assert.h>
+#include <casa/Exceptions/Error.h>
+#include <tables/Tables/TableDesc.h>
+#include <casa/Arrays/ArrayLogical.h>
 
 SDSourceHandler::SDSourceHandler() 
     : index_p(0), msSource_p(0), msSourceCols_p(0), sourceId_p(-1),

@@ -26,9 +26,9 @@
 //# $Id$
 
 //# Include files
-#include <aips/Measures/SofaTest.h>
-#include <aips/BasicMath/Math.h>
-#include <aips/iostream.h>
+#include <measures/Measures/SofaTest.h>
+#include <casa/BasicMath/Math.h>
+#include <casa/iostream.h>
 #include <limits.h>
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 

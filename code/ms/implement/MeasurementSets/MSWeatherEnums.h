@@ -29,7 +29,7 @@
 #if !defined(AIPS_MSWEATHERENUMS_H)
 #define AIPS_MSWEATHERENUMS_H
 
-#include <aips/aips.h>
+#include <casa/aips.h>
 
 // <use visibility=export>
 

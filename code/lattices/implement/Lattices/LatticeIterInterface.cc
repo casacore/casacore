@@ -25,15 +25,15 @@
 //#
 //# $Id$
 
-#include <aips/Lattices/LatticeIterInterface.h>
-#include <aips/Lattices/Lattice.h>
-#include <aips/Lattices/LatticeNavigator.h>
-#include <aips/Arrays/Vector.h>
-#include <aips/Arrays/Matrix.h>
-#include <aips/Arrays/Cube.h>
-#include <aips/Utilities/DefaultValue.h>
-#include <aips/Utilities/Assert.h>
-#include <aips/Exceptions/Error.h>
+#include <lattices/Lattices/LatticeIterInterface.h>
+#include <lattices/Lattices/Lattice.h>
+#include <lattices/Lattices/LatticeNavigator.h>
+#include <casa/Arrays/Vector.h>
+#include <casa/Arrays/Matrix.h>
+#include <casa/Arrays/Cube.h>
+#include <casa/Utilities/DefaultValue.h>
+#include <casa/Utilities/Assert.h>
+#include <casa/Exceptions/Error.h>
 
 
 template <class T>

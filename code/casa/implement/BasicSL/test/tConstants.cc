@@ -27,8 +27,8 @@
 
 //# Includes
 
-#include <aips/iostream.h>
-#include <aips/BasicSL/Constants.h>
+#include <casa/iostream.h>
+#include <casa/BasicSL/Constants.h>
 
 main()
 {

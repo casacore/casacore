@@ -30,9 +30,9 @@
 #define AIPS_IMAGEMOMENTSPROGRESS_H
 
 
-#include <aips/aips.h>
-#include <trial/Lattices/LatticeProgress.h>
-#include <aips/System/ProgressMeter.h>
+#include <casa/aips.h>
+#include <lattices/Lattices/LatticeProgress.h>
+#include <casa/System/ProgressMeter.h>
 
 // <summary> Provides a progress meter for the ImageMoments class </summary>
 // <use visibility=export>

@@ -26,8 +26,8 @@
 //#! ========================================================================
 //# $Id$
 
-#include <trial/Functionals/MarshallableChebyshev.h>
-#include <aips/Arrays/Array.h>
+#include <scimath/Functionals/MarshallableChebyshev.h>
+#include <casa/Arrays/Array.h>
 
 template<class T> 
 const String MarshallableChebyshev<T>::modenames[] = 

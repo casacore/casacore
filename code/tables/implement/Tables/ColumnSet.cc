@@ -25,18 +25,18 @@
 //#
 //# $Id$
 
-#include <aips/Tables/ColumnSet.h>
-#include <aips/Tables/SetupNewTab.h>
-#include <aips/Tables/PlainColumn.h>
-#include <aips/Tables/TableAttr.h>
-#include <aips/Tables/TableDesc.h>
-#include <aips/Tables/ColumnDesc.h>
-#include <aips/Tables/DataManager.h>
-#include <aips/Tables/TableError.h>
-#include <aips/Arrays/Vector.h>
-#include <aips/Containers/Record.h>
-#include <aips/IO/MemoryIO.h>
-#include <aips/Utilities/Assert.h>
+#include <tables/Tables/ColumnSet.h>
+#include <tables/Tables/SetupNewTab.h>
+#include <tables/Tables/PlainColumn.h>
+#include <tables/Tables/TableAttr.h>
+#include <tables/Tables/TableDesc.h>
+#include <tables/Tables/ColumnDesc.h>
+#include <tables/Tables/DataManager.h>
+#include <tables/Tables/TableError.h>
+#include <casa/Arrays/Vector.h>
+#include <casa/Containers/Record.h>
+#include <casa/IO/MemoryIO.h>
+#include <casa/Utilities/Assert.h>
 
 #define BLOCKDATAMANVAL(I) ((DataManager*)(blockDataMan_p[I]))
 #define COLMAPVAL(I)       ((PlainColumn*)(colMap_p.getVal(I)))

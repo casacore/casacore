@@ -26,8 +26,8 @@
 //# $Id$
 
 
-#include <aips/Tables/TableLock.h>
-#include <aips/Tables/TableError.h>
+#include <tables/Tables/TableLock.h>
+#include <tables/Tables/TableError.h>
 
 
 TableLock::TableLock (LockOption option)

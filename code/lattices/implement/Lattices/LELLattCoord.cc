@@ -26,13 +26,13 @@
 //# $Id$
 
 
-#include <trial/Lattices/LELLattCoord.h>
-#include <trial/Lattices/LattRegionHolder.h>
-#include <trial/Lattices/LatticeRegion.h>
-#include <trial/Lattices/LatticeExpr.h>
-#include <trial/Lattices/SubLattice.h>
-#include <trial/Lattices/RebinLattice.h>
-#include <aips/Exceptions/Error.h>
+#include <lattices/Lattices/LELLattCoord.h>
+#include <lattices/Lattices/LattRegionHolder.h>
+#include <lattices/Lattices/LatticeRegion.h>
+#include <lattices/Lattices/LatticeExpr.h>
+#include <lattices/Lattices/SubLattice.h>
+#include <lattices/Lattices/RebinLattice.h>
+#include <casa/Exceptions/Error.h>
 
 
 LELLattCoord::LELLattCoord()

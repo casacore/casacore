@@ -26,11 +26,11 @@
 //# $Id$
 
 //# Includes
-#include <aips/aips.h>
-#include <aips/Containers/PoolStack.h>
-#include <aips/Exceptions/Error.h>
-#include <aips/Arrays/Vector.h>
-#include <aips/iostream.h>
+#include <casa/aips.h>
+#include <casa/Containers/PoolStack.h>
+#include <casa/Exceptions/Error.h>
+#include <casa/Arrays/Vector.h>
+#include <casa/iostream.h>
 
 
 int main() {

@@ -25,7 +25,7 @@
 //#
 //# $Id$
 
-#include <aips/Tables/TableError.h>
+#include <tables/Tables/TableError.h>
 
 TableError::TableError (Category c)
 : AipsError("Table error",c)

@@ -27,11 +27,11 @@
 //# $Id$
 
 //# Includes
-#include <trial/Fitting/GenericL2Fit.h>
-#include <aips/Arrays/ArrayMath.h>
-#include <aips/Arrays/VectorSTLIterator.h>
-#include <aips/Functionals/Function.h>
-#include <aips/Functionals/HyperPlane.h>
+#include <scimath/Fitting/GenericL2Fit.h>
+#include <casa/Arrays/ArrayMath.h>
+#include <casa/Arrays/VectorSTLIterator.h>
+#include <scimath/Functionals/Function.h>
+#include <scimath/Functionals/HyperPlane.h>
 
 //# Constants
 // Default svd collinearity

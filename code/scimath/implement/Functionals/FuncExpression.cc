@@ -27,13 +27,13 @@
 //# $Id$
 
 //# Includes
-#include <trial/Functionals/FuncExpression.h>
-#include <aips/Exceptions/Error.h>
-#include <aips/Utilities/MUString.h>
-#include <aips/Utilities/Regex.h>
-#include <aips/BasicSL/String.h>
-#include <aips/BasicSL/Constants.h>
-#include <aips/BasicMath/Math.h>
+#include <scimath/Functionals/FuncExpression.h>
+#include <casa/Exceptions/Error.h>
+#include <casa/Utilities/MUString.h>
+#include <casa/Utilities/Regex.h>
+#include <casa/BasicSL/String.h>
+#include <casa/BasicSL/Constants.h>
+#include <casa/BasicMath/Math.h>
 
 //# Constructors
 FuncExpression::FuncExpression() :

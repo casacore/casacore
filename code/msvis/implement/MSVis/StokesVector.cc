@@ -26,11 +26,11 @@
 //# $Id$
 
 //# Includes
-#include <trial/MSVis/StokesVector.h>
-// #include <aips/Tables/RetypedArrayEngine.h>
-// #include <aips/Tables/RetypedArraySetGet.h>
-// #include <aips/Tables/DataManError.h>
-#include <aips/Exceptions/Error.h>
+#include <msvis/MSVis/StokesVector.h>
+// #include <tables/Tables/RetypedArrayEngine.h>
+// #include <tables/Tables/RetypedArraySetGet.h>
+// #include <tables/Tables/DataManError.h>
+#include <casa/Exceptions/Error.h>
 
 
 // The following sqrt functions are required for Image to

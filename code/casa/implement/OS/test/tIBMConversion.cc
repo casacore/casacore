@@ -26,9 +26,9 @@
 //# $Id$
 
 
-#include <aips/OS/IBMConversion.h>
-#include <aips/BasicMath/Math.h>
-#include <aips/iostream.h>
+#include <casa/OS/IBMConversion.h>
+#include <casa/BasicMath/Math.h>
+#include <casa/iostream.h>
 
 
 void showFloat (float f)

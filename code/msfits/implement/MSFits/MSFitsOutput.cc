@@ -25,41 +25,41 @@
 //#
 //# $Id$
 
-#include <trial/MeasurementSets/MSFitsOutput.h>
-#include <aips/MeasurementSets/MeasurementSet.h>
-#include <aips/MeasurementSets/MSColumns.h>
-#include <aips/Tables.h>
-#include <aips/Exceptions/Error.h>
-#include <aips/Containers/Block.h>
-#include <aips/Containers/Record.h>
-#include <aips/Containers/RecordDesc.h>
-#include <aips/Containers/RecordField.h>
-#include <aips/FITS/fitsio.h>
-#include <trial/FITS/FITSTable.h>
-#include <trial/FITS/FITSDateUtil.h>
-#include <aips/Arrays/Matrix.h>
-#include <aips/Arrays/ArrayMath.h>
-#include <aips/Arrays/MatrixMath.h>
-#include <aips/Arrays/ArrayLogical.h>
-#include <aips/Utilities/GenSort.h>
-#include <aips/BasicSL/Constants.h>
-#include <aips/Quanta/MVAngle.h>
-#include <aips/Quanta/Euler.h>
-#include <aips/Measures/Stokes.h>
-#include <aips/Measures/MeasTable.h>
-#include <aips/Measures/MDirection.h>
-#include <aips/Measures/MeasConvert.h>
-#include <aips/Tables/ExprNode.h>
-#include <aips/Tables/TableIter.h>
-#include <aips/TableMeasures/ScalarMeasColumn.h>
-#include <aips/System/ProgressMeter.h>
-#include <aips/LogTables/NewFile.h>
+#include <ms/MeasurementSets/MSFitsOutput.h>
+#include <ms/MeasurementSets/MeasurementSet.h>
+#include <ms/MeasurementSets/MSColumns.h>
+#include <tables/Tables.h>
+#include <casa/Exceptions/Error.h>
+#include <casa/Containers/Block.h>
+#include <casa/Containers/Record.h>
+#include <casa/Containers/RecordDesc.h>
+#include <casa/Containers/RecordField.h>
+#include <fits/FITS/fitsio.h>
+#include <fits/FITS/FITSTable.h>
+#include <fits/FITS/FITSDateUtil.h>
+#include <casa/Arrays/Matrix.h>
+#include <casa/Arrays/ArrayMath.h>
+#include <casa/Arrays/MatrixMath.h>
+#include <casa/Arrays/ArrayLogical.h>
+#include <casa/Utilities/GenSort.h>
+#include <casa/BasicSL/Constants.h>
+#include <casa/Quanta/MVAngle.h>
+#include <casa/Quanta/Euler.h>
+#include <measures/Measures/Stokes.h>
+#include <measures/Measures/MeasTable.h>
+#include <measures/Measures/MDirection.h>
+#include <measures/Measures/MeasConvert.h>
+#include <tables/Tables/ExprNode.h>
+#include <tables/Tables/TableIter.h>
+#include <measures/TableMeasures/ScalarMeasColumn.h>
+#include <casa/System/ProgressMeter.h>
+#include <tables/LogTables/NewFile.h>
 
-#include <aips/stdlib.h> // for atoi()
-#include <aips/sstream.h>
-#include <aips/iomanip.h>
+#include <casa/stdlib.h> // for atoi()
+#include <casa/sstream.h>
+#include <casa/iomanip.h>
 
-#include <aips/Logging/LogIO.h>
+#include <casa/Logging/LogIO.h>
 
 
 

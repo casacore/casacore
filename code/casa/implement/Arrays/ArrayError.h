@@ -29,9 +29,9 @@
 #define AIPS_ARRAYERROR_H
 
 //# Includes
-#include <aips/aips.h>
-#include <aips/Exceptions/Error.h>
-#include <aips/Arrays/IPosition.h>
+#include <casa/aips.h>
+#include <casa/Exceptions/Error.h>
+#include <casa/Arrays/IPosition.h>
 
 
 // <summary> The base class for all Array exception classes. </summary>

@@ -29,11 +29,11 @@
 
 
 /* Get the interface, including the syntax bits.  */
-#include <aips/Utilities/cregex.h>
-#include <aips/string.h>
-#include <aips/stdlib.h>
+#include <casa/Utilities/cregex.h>
+#include <casa/string.h>
+#include <casa/stdlib.h>
 /* We write fatal error messages on standard error.  */
-#include <aips/stdio.h>
+#include <casa/stdio.h>
 /* isalpha(3) etc. are used for the character classes.  */
 /* The CB_CTYPE_MACROS causes incompatible ctype definitions on */
 /* HPUX 10.2 systems, so we undefine it  AxC 23-1-2003 */

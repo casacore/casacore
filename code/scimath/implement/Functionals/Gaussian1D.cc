@@ -26,8 +26,8 @@
 //# $Id$
 
 //# Includes
-#include <aips/Functionals/Gaussian1D.h>
-#include <aips/BasicMath/Math.h>
+#include <scimath/Functionals/Gaussian1D.h>
+#include <casa/BasicMath/Math.h>
 
 //# Constructors
 

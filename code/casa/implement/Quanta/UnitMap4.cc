@@ -27,7 +27,7 @@
 
 //# Includes
 
-#include <aips/Quanta/UnitMap.h>
+#include <casa/Quanta/UnitMap.h>
 
 //# constants
 

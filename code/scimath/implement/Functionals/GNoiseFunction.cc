@@ -25,9 +25,9 @@
 //#
 //# $Id$
 
-#include <trial/Functionals/GNoiseFunction.h>
-#include <aips/BasicSL/Constants.h>
-#include <aips/BasicMath/Math.h>
+#include <scimath/Functionals/GNoiseFunction.h>
+#include <casa/BasicSL/Constants.h>
+#include <casa/BasicMath/Math.h>
 
 //# Constructors
 

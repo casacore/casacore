@@ -25,18 +25,18 @@
 //#
 //# $Id$
 
-#include <aips/Tables/ReadAsciiTable.h>
-#include <aips/Tables/TableDesc.h>
-#include <aips/Tables/Table.h>
-#include <aips/Tables/ScalarColumn.h>
-#include <aips/Tables/ArrayColumn.h>
-#include <aips/Tables/TableRecord.h>
-#include <aips/Arrays/Array.h>
-#include <aips/Arrays/ArrayIO.h>
-#include <aips/Utilities/Assert.h>
-#include <aips/Exceptions/Error.h>
-#include <aips/iostream.h>
-#include <aips/fstream.h>
+#include <tables/Tables/ReadAsciiTable.h>
+#include <tables/Tables/TableDesc.h>
+#include <tables/Tables/Table.h>
+#include <tables/Tables/ScalarColumn.h>
+#include <tables/Tables/ArrayColumn.h>
+#include <tables/Tables/TableRecord.h>
+#include <casa/Arrays/Array.h>
+#include <casa/Arrays/ArrayIO.h>
+#include <casa/Utilities/Assert.h>
+#include <casa/Exceptions/Error.h>
+#include <casa/iostream.h>
+#include <casa/fstream.h>
 
 // <summary> Test program for the ReadAsciiTable functions </summary>
 

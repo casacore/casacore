@@ -26,18 +26,18 @@
 //# $Id$
 
 
-#include <aips/OS/Path.h>
-#include <aips/OS/File.h>
-#include <aips/OS/SymLink.h>
-#include <aips/Utilities/Assert.h>
-#include <aips/Exceptions.h>
+#include <casa/OS/Path.h>
+#include <casa/OS/File.h>
+#include <casa/OS/SymLink.h>
+#include <casa/Utilities/Assert.h>
+#include <casa/Exceptions.h>
 
 #include <unistd.h>                 // needed for access, etc.
 #include <sys/stat.h>               // needed for lstat or lstat64
 #include <utime.h>                  // needed for utimbuf
 #include <errno.h>                  // needed for errno
-#include <aips/string.h>                 // needed for strerror
-#include <aips/stdio.h>                  // needed for sprintf
+#include <casa/string.h>                 // needed for strerror
+#include <casa/stdio.h>                  // needed for sprintf
 #include <time.h>                   // needed for asctime/localtime on linux
 
 

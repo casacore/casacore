@@ -30,7 +30,7 @@
 #define AIPS_ROWCOPIER_H
 
 //# Includes
-#include <aips/aips.h>
+#include <casa/aips.h>
 
 //# Forward Declarations
 class Table;

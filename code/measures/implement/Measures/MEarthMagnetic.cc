@@ -26,18 +26,18 @@
 //# $Id$
 
 //# Includes
-#include <aips/Measures/MEarthMagnetic.h>
-#include <aips/Exceptions.h>
-#include <aips/Utilities/Assert.h>
-#include <aips/Arrays/Vector.h>
-#include <aips/BasicMath/Math.h>
-#include <aips/Utilities/Register.h>
-#include <aips/BasicSL/Constants.h>
-#include <aips/Quanta/RotMatrix.h>
-#include <aips/Quanta/Euler.h>
-#include <aips/Quanta/MVPosition.h>
-#include <aips/Quanta/MVDirection.h>
-#include <aips/Quanta/QMath.h>
+#include <measures/Measures/MEarthMagnetic.h>
+#include <casa/Exceptions.h>
+#include <casa/Utilities/Assert.h>
+#include <casa/Arrays/Vector.h>
+#include <casa/BasicMath/Math.h>
+#include <casa/Utilities/Register.h>
+#include <casa/BasicSL/Constants.h>
+#include <casa/Quanta/RotMatrix.h>
+#include <casa/Quanta/Euler.h>
+#include <casa/Quanta/MVPosition.h>
+#include <casa/Quanta/MVDirection.h>
+#include <casa/Quanta/QMath.h>
 
 //# Constructors
 MEarthMagnetic::MEarthMagnetic() :

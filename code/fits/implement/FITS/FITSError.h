@@ -30,7 +30,7 @@
 #define AIPS_FITSERROR_H
 
 //#! Includes go here
-#include <aips/aips.h>
+#include <casa/aips.h>
 
 // <summary>
 // default FITS error handling function, typdef, and enumeration

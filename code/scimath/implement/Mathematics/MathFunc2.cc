@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#include <aips/BasicSL/Constants.h>
-#include <trial/Mathematics/MathFunc.h>
+#include <casa/BasicSL/Constants.h>
+#include <scimath/Mathematics/MathFunc.h>
 
 //
 // Define static members of MathFunc<T> for g++

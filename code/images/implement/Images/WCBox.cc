@@ -25,29 +25,29 @@
 //#
 //# $Id$
 
-#include <trial/Images/WCBox.h>
+#include <images/Images/WCBox.h>
 
-#include <aips/Arrays/ArrayLogical.h>
-#include <trial/Coordinates/CoordinateSystem.h>
-#include <trial/Coordinates/DirectionCoordinate.h>
-#include <trial/Coordinates/SpectralCoordinate.h>
-#include <aips/Exceptions/Error.h>
-#include <aips/Arrays/IPosition.h>
-#include <aips/Arrays/Slicer.h>
-#include <trial/Lattices/LCBox.h>
-#include <trial/Lattices/LCRegion.h>
-#include <aips/BasicMath/Math.h>
-#include <aips/Quanta/Unit.h>
-#include <aips/Quanta/Quantum.h>
-#include <aips/Quanta/QuantumHolder.h>
-#include <aips/Quanta/QLogical.h>
-#include <aips/Tables/TableRecord.h>
-#include <aips/Utilities/Assert.h>
-#include <aips/Utilities/LinearSearch.h>
-#include <aips/BasicSL/String.h>
+#include <casa/Arrays/ArrayLogical.h>
+#include <coordinates/Coordinates/CoordinateSystem.h>
+#include <coordinates/Coordinates/DirectionCoordinate.h>
+#include <coordinates/Coordinates/SpectralCoordinate.h>
+#include <casa/Exceptions/Error.h>
+#include <casa/Arrays/IPosition.h>
+#include <casa/Arrays/Slicer.h>
+#include <lattices/Lattices/LCBox.h>
+#include <lattices/Lattices/LCRegion.h>
+#include <casa/BasicMath/Math.h>
+#include <casa/Quanta/Unit.h>
+#include <casa/Quanta/Quantum.h>
+#include <casa/Quanta/QuantumHolder.h>
+#include <casa/Quanta/QLogical.h>
+#include <tables/Tables/TableRecord.h>
+#include <casa/Utilities/Assert.h>
+#include <casa/Utilities/LinearSearch.h>
+#include <casa/BasicSL/String.h>
 
-#include <aips/iostream.h>
-#include <aips/sstream.h>
+#include <casa/iostream.h>
+#include <casa/sstream.h>
 
 WCBox::WCBox()
 //

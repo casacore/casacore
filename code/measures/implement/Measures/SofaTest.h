@@ -29,8 +29,8 @@
 #define AIPS_SOFATEST_H
 
 //# Include files
-#include <aips/aips.h>
-#include <aips/iosfwd.h>
+#include <casa/aips.h>
+#include <casa/iosfwd.h>
 
 // <summary>  Wrapping of IAU SOFA Fortran routines and test class</summary>
 // <use visibility=export>

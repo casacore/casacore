@@ -25,7 +25,7 @@
 //#
 //# $Id$
 
-#include <aips/Utilities/Notice.h>
+#include <casa/Utilities/Notice.h>
 
 Notice::~Notice()
 {

@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#include <aips/Arrays/ArrayPosIter.h>
-#include <aips/Arrays/ArrayError.h>
+#include <casa/Arrays/ArrayPosIter.h>
+#include <casa/Arrays/ArrayError.h>
 
 ArrayPositionIterator::ArrayPositionIterator(const IPosition &shape, 
 					     const IPosition &origin,

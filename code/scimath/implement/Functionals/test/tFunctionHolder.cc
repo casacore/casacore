@@ -25,23 +25,23 @@
 //#
 //# $Id$
 
-#include <trial/Functionals/FunctionHolder.h>
+#include <scimath/Functionals/FunctionHolder.h>
 
-#include <aips/Mathematics/AutoDiff.h>
-#include <aips/Mathematics/AutoDiffA.h>
-#include <aips/Mathematics/AutoDiffIO.h>
-#include <aips/Mathematics/AutoDiffMath.h>
-#include <aips/BasicMath/Math.h>
-#include <trial/Functionals/UnaryFunction.h>
-#include <trial/Functionals/DiracDFunction.h>
-#include <trial/Functionals/GNoiseFunction.h>
-#include <trial/Functionals/KaiserBFunction.h>
-#include <aips/Functionals/SincFunction.h>
-#include <trial/Functionals/FunctionHolder.h>
-#include <aips/Functionals/Gaussian1D.h>
-#include <aips/Utilities/Assert.h>
+#include <scimath/Mathematics/AutoDiff.h>
+#include <scimath/Mathematics/AutoDiffA.h>
+#include <scimath/Mathematics/AutoDiffIO.h>
+#include <scimath/Mathematics/AutoDiffMath.h>
+#include <casa/BasicMath/Math.h>
+#include <scimath/Functionals/UnaryFunction.h>
+#include <scimath/Functionals/DiracDFunction.h>
+#include <scimath/Functionals/GNoiseFunction.h>
+#include <scimath/Functionals/KaiserBFunction.h>
+#include <scimath/Functionals/SincFunction.h>
+#include <scimath/Functionals/FunctionHolder.h>
+#include <scimath/Functionals/Gaussian1D.h>
+#include <casa/Utilities/Assert.h>
 
-#include <aips/iostream.h>
+#include <casa/iostream.h>
 
 // Make near zero zero
 Double Y(const Double in) {

@@ -26,13 +26,13 @@
 //# $Id$
 
 //# Includes
-#include <trial/Functionals/CompiledFunction.h>
-#include <trial/Functionals/FuncExpression.h>
-#include <aips/Functionals/FunctionTraits.h>
-#include <aips/BasicSL/Constants.h>
-#include <aips/Mathematics/NumericTraits.h>
-#include <aips/BasicSL/String.h>
-#include <aips/vector.h>
+#include <scimath/Functionals/CompiledFunction.h>
+#include <scimath/Functionals/FuncExpression.h>
+#include <scimath/Functionals/FunctionTraits.h>
+#include <casa/BasicSL/Constants.h>
+#include <scimath/Mathematics/NumericTraits.h>
+#include <casa/BasicSL/String.h>
+#include <casa/vector.h>
 
 //# Constructors
 

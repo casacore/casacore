@@ -27,10 +27,10 @@
 #if !defined(AIPS_RF_ROWCLIPPER_H)
 #define AIPS_RF_ROWCLIPPER_H
 
-#include <trial/Flagging/RFCommon.h>
-#include <trial/Flagging/RFDebugPlot.h>
-#include <aips/Arrays/Vector.h>
-#include <aips/Arrays/Matrix.h>
+#include <flagging/Flagging/RFCommon.h>
+#include <flagging/Flagging/RFDebugPlot.h>
+#include <casa/Arrays/Vector.h>
+#include <casa/Arrays/Matrix.h>
     
 class RFFlagCube;
 class RFChunkStats;

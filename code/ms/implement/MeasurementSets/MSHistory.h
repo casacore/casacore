@@ -29,9 +29,9 @@
 #if !defined(AIPS_MSHISTORY_H)
 #define AIPS_MSHISTORY_H
 
-#include <aips/aips.h>
-#include <aips/MeasurementSets/MSTable.h>
-#include <aips/MeasurementSets/MSHistoryEnums.h>
+#include <casa/aips.h>
+#include <ms/MeasurementSets/MSTable.h>
+#include <ms/MeasurementSets/MSHistoryEnums.h>
 
 // <summary> 
 // A Table intended to hold a MeasurementSet OBSERVATIONLOG table.

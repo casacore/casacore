@@ -26,22 +26,22 @@
 //# $Id$
 
 //# Includes
-#include <trial/MeasurementSets/SDObservationHandler.h>
+#include <ms/MeasurementSets/SDObservationHandler.h>
 
-#include <aips/Tables/ColumnsIndex.h>
-#include <aips/MeasurementSets/MeasurementSet.h>
-#include <aips/MeasurementSets/MSObsColumns.h>
-#include <aips/MeasurementSets/MSObservation.h>
-#include <aips/Containers/Record.h>
-#include <aips/Arrays/Vector.h>
-#include <aips/Arrays/ArrayLogical.h>
-#include <aips/Tables/ArrayColumn.h>
-#include <aips/Utilities/Assert.h>
-#include <aips/Exceptions/Error.h>
-#include <aips/BasicSL/String.h>
-#include <aips/Tables/ScaColDesc.h>
-#include <aips/Tables/TableDesc.h>
-#include <aips/BasicMath/Math.h>
+#include <tables/Tables/ColumnsIndex.h>
+#include <ms/MeasurementSets/MeasurementSet.h>
+#include <ms/MeasurementSets/MSObsColumns.h>
+#include <ms/MeasurementSets/MSObservation.h>
+#include <casa/Containers/Record.h>
+#include <casa/Arrays/Vector.h>
+#include <casa/Arrays/ArrayLogical.h>
+#include <tables/Tables/ArrayColumn.h>
+#include <casa/Utilities/Assert.h>
+#include <casa/Exceptions/Error.h>
+#include <casa/BasicSL/String.h>
+#include <tables/Tables/ScaColDesc.h>
+#include <tables/Tables/TableDesc.h>
+#include <casa/BasicMath/Math.h>
 
 SDObservationHandler::SDObservationHandler() 
     : index_p(0), msObs_p(0), msObsCols_p(0), rownr_p(-1)

@@ -27,14 +27,14 @@
 //# $Id$
 
 
-#include <aips/Tables/RecordExpr.h>
-#include <aips/Tables/ExprNodeRecord.h>
-#include <aips/Tables/ExprDerNode.h>
-#include <aips/Tables/ExprNodeArray.h>
-#include <aips/Arrays/Vector.h>
-#include <aips/Arrays/ArrayUtil.h>
-#include <aips/Containers/Block.h>
-#include <aips/Exceptions/Error.h>
+#include <tables/Tables/RecordExpr.h>
+#include <tables/Tables/ExprNodeRecord.h>
+#include <tables/Tables/ExprDerNode.h>
+#include <tables/Tables/ExprNodeArray.h>
+#include <casa/Arrays/Vector.h>
+#include <casa/Arrays/ArrayUtil.h>
+#include <casa/Containers/Block.h>
+#include <casa/Exceptions/Error.h>
 
 
 TableExprNode makeRecordExpr (const RecordDesc& desc,

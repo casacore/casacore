@@ -27,21 +27,21 @@
 
 //# Includes
 
-#include <aips/iostream.h>
+#include <casa/iostream.h>
 
-#include <aips/aips.h>
-#include <aips/Arrays/Array.h>
-#include <aips/Arrays/ArrayMath.h>
-#include <aips/Arrays/ArrayLogical.h>
-#include <aips/Arrays/Vector.h>
-#include <aips/Arrays/Matrix.h>
-#include <aips/Arrays/Cube.h>
-#include <aips/Arrays/ArrayPosIter.h>
-#include <aips/Arrays/ArrayIter.h>
-#include <aips/Arrays/MatrixIter.h>
-#include <aips/Arrays/VectorIter.h>
-#include <aips/Utilities/Assert.h>
-#include <aips/Exceptions/Error.h>
+#include <casa/aips.h>
+#include <casa/Arrays/Array.h>
+#include <casa/Arrays/ArrayMath.h>
+#include <casa/Arrays/ArrayLogical.h>
+#include <casa/Arrays/Vector.h>
+#include <casa/Arrays/Matrix.h>
+#include <casa/Arrays/Cube.h>
+#include <casa/Arrays/ArrayPosIter.h>
+#include <casa/Arrays/ArrayIter.h>
+#include <casa/Arrays/MatrixIter.h>
+#include <casa/Arrays/VectorIter.h>
+#include <casa/Utilities/Assert.h>
+#include <casa/Exceptions/Error.h>
 
 // Test iterating through a subset of a 5D array.
 void checkIter (const Array<Int>& array, const IPosition& blc,

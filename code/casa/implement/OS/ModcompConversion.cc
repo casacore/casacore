@@ -25,9 +25,9 @@
 //#
 //# $Id$
 
-#include <trial/OS/ModcompConversion.h>
-#include <aips/Utilities/Assert.h>
-#include <aips/Exceptions/Error.h>
+#include <casa/OS/ModcompConversion.h>
+#include <casa/Utilities/Assert.h>
+#include <casa/Exceptions/Error.h>
 
 
 unsigned int ModcompConversion::toLocal (Int64* to, const void* from,

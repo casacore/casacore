@@ -26,17 +26,17 @@
 //#
 //# $Id$
 
-#include <aips/Exceptions/Error.h>
-#include <aips/Arrays/Vector.h>
-#include <aips/Utilities/Assert.h>
-#include <aips/System/AppInfo.h>
-#include <aips/Utilities/Assert.h>
-#include <aips/Arrays/ArrayIO.cc>
-#include <aips/BasicSL/String.h>
-#include <aips/System/AipsrcVector.h>
-#include <aips/Utilities/Regex.h>
+#include <casa/Exceptions/Error.h>
+#include <casa/Arrays/Vector.h>
+#include <casa/Utilities/Assert.h>
+#include <casa/System/AppInfo.h>
+#include <casa/Utilities/Assert.h>
+#include <casa/Arrays/ArrayIO.cc>
+#include <casa/BasicSL/String.h>
+#include <casa/System/AipsrcVector.h>
+#include <casa/Utilities/Regex.h>
 
-#include <aips/OS/Memory.h>
+#include <casa/OS/Memory.h>
 
 int main()
 {

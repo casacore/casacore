@@ -25,9 +25,9 @@
 //#
 //# $Id$
 
-#include <trial/Fitting/NonLinearFit.h>
-#include <aips/Mathematics/AutoDiffIO.h>
-#include <aips/Functionals/Function.h>
+#include <scimath/Fitting/NonLinearFit.h>
+#include <scimath/Mathematics/AutoDiffIO.h>
+#include <scimath/Functionals/Function.h>
 
 //# Constants
 // Default convergence criterium

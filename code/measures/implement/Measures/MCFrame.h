@@ -29,10 +29,10 @@
 #define AIPS_MCFRAME_H
 
 //# Includes
-#include <aips/aips.h>
-#include <aips/Arrays/Vector.h>
-#include <aips/Measures/Measure.h>
-#include <aips/Measures/MeasFrame.h>
+#include <casa/aips.h>
+#include <casa/Arrays/Vector.h>
+#include <measures/Measures/Measure.h>
+#include <measures/Measures/MeasFrame.h>
 
 //# Forward Declarations
 class MVDirection;

@@ -26,7 +26,7 @@
 //# $Id$
 
 //# Includes
-#include <aips/Functionals/Sinusoid1DParam.h>
+#include <scimath/Functionals/Sinusoid1DParam.h>
 
 template<class T>
 Sinusoid1DParam<T>::Sinusoid1DParam() :

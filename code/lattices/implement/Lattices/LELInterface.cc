@@ -25,11 +25,11 @@
 //#
 //# $Id$
 
-#include <trial/Lattices/LELInterface.h>
-#include <trial/Lattices/LELUnary.h>
-#include <trial/Lattices/LELArray.h>
-#include <aips/Arrays/Slicer.h>
-#include <aips/Exceptions/Error.h>
+#include <lattices/Lattices/LELInterface.h>
+#include <lattices/Lattices/LELUnary.h>
+#include <lattices/Lattices/LELArray.h>
+#include <casa/Arrays/Slicer.h>
+#include <casa/Exceptions/Error.h>
 
 
 template<class T>

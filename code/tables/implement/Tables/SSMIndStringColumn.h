@@ -30,8 +30,8 @@
 
 
 //# Includes
-#include <aips/aips.h>
-#include <aips/Tables/SSMDirColumn.h>
+#include <casa/aips.h>
+#include <tables/Tables/SSMDirColumn.h>
 
 //# Forward declarations
 

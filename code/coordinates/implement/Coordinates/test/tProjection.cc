@@ -26,12 +26,12 @@
 //#
 //# $Id$
  
-#include <aips/Arrays/Vector.h>
-#include <aips/Arrays/ArrayLogical.h>
-#include <trial/Coordinates/Projection.h>
-#include <aips/Exceptions/Error.h>
+#include <casa/Arrays/Vector.h>
+#include <casa/Arrays/ArrayLogical.h>
+#include <coordinates/Coordinates/Projection.h>
+#include <casa/Exceptions/Error.h>
 
-#include <aips/iostream.h>
+#include <casa/iostream.h>
 
 void testSin();
 

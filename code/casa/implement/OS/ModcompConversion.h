@@ -28,9 +28,9 @@
 #if !defined(AIPS_MODCOMPCONVERSION_H)
 #define AIPS_MODCOMPCONVERSION_H
 
-#include <aips/aips.h>
-#include <aips/Utilities/Assert.h>
-#include <aips/OS/CanonicalConversion.h>
+#include <casa/aips.h>
+#include <casa/Utilities/Assert.h>
+#include <casa/OS/CanonicalConversion.h>
 
 // Define the canonical sizes of the built-in data types.
 // These are the same for all machine architectures.

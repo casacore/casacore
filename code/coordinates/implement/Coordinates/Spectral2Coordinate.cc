@@ -26,23 +26,23 @@
 //#
 //# $Id$
 
-#include <trial/Coordinates/SpectralCoordinate.h>
+#include <coordinates/Coordinates/SpectralCoordinate.h>
 
-#include <aips/Arrays/ArrayMath.h>
-#include <aips/Arrays/ArrayAccessor.h>
-#include <aips/Arrays/Vector.h>
-#include <aips/Arrays/Matrix.h>
-#include <trial/Coordinates/CoordinateUtil.h>
-#include <aips/Logging/LogIO.h>
-#include <aips/BasicMath/Math.h>
-#include <aips/Measures/VelocityMachine.h>
-#include <aips/Measures/MeasConvert.h>
-#include <aips/Measures/MFrequency.h>
-#include <aips/Measures/MDoppler.h>
-#include <aips/Quanta/MVFrequency.h>
-#include <aips/Quanta/Quantum.h>
-#include <aips/Quanta/Unit.h>
-#include <aips/BasicSL/String.h>
+#include <casa/Arrays/ArrayMath.h>
+#include <casa/Arrays/ArrayAccessor.h>
+#include <casa/Arrays/Vector.h>
+#include <casa/Arrays/Matrix.h>
+#include <coordinates/Coordinates/CoordinateUtil.h>
+#include <casa/Logging/LogIO.h>
+#include <casa/BasicMath/Math.h>
+#include <measures/Measures/VelocityMachine.h>
+#include <measures/Measures/MeasConvert.h>
+#include <measures/Measures/MFrequency.h>
+#include <measures/Measures/MDoppler.h>
+#include <casa/Quanta/MVFrequency.h>
+#include <casa/Quanta/Quantum.h>
+#include <casa/Quanta/Unit.h>
+#include <casa/BasicSL/String.h>
 
 
 

@@ -29,8 +29,8 @@
 #define AIPS_DATACONVERSION_H
 
 //# Includes
-#include <aips/aips.h>
-#include <aips/OS/Conversion.h>
+#include <casa/aips.h>
+#include <casa/OS/Conversion.h>
 
 // <summary>
 // Abstract base class with functions to convert any format

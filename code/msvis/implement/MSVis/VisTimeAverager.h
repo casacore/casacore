@@ -28,8 +28,8 @@
 #if !defined(TRIAL_VISTIMEAVERAGER_H)
 #define TRIAL_VISTIMEAVERAGER_H
 
-#include <aips/aips.h>
-#include <trial/MSVis/VisBuffer.h>
+#include <casa/aips.h>
+#include <msvis/MSVis/VisBuffer.h>
 
 // <summary>
 // A class to average VisBuffers in time

@@ -30,14 +30,14 @@
 
 
 //# Includes
-#include <aips/aips.h>
-#include <aips/Tables/DataManager.h>
-#include <aips/Tables/StManColumn.h>
-#include <aips/Containers/Block.h>
-#include <aips/BasicSL/Complex.h>
-#include <aips/Arrays/IPosition.h>
-#include <aips/BasicSL/String.h>
-#include <aips/IO/ByteIO.h>
+#include <casa/aips.h>
+#include <tables/Tables/DataManager.h>
+#include <tables/Tables/StManColumn.h>
+#include <casa/Containers/Block.h>
+#include <casa/BasicSL/Complex.h>
+#include <casa/Arrays/IPosition.h>
+#include <casa/BasicSL/String.h>
+#include <casa/IO/ByteIO.h>
 
 //# Forward clarations
 class AipsIO;

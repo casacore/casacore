@@ -25,12 +25,12 @@
 //#
 //# $Id$
 
-#include <aips/aips.h>
-#include <aips/Lattices/LatticeIndexer.h>
-#include <aips/Exceptions/Error.h>
-#include <aips/Utilities/Assert.h>
-#include <aips/Arrays/IPosition.h>
-#include <aips/iostream.h>
+#include <casa/aips.h>
+#include <lattices/Lattices/LatticeIndexer.h>
+#include <casa/Exceptions/Error.h>
+#include <casa/Utilities/Assert.h>
+#include <casa/Arrays/IPosition.h>
+#include <casa/iostream.h>
 
 int main ()
 {

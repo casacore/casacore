@@ -25,9 +25,9 @@
 //#
 //# $Id$
 
-#include <aips/Containers/RecordDesc.h>
-#include <aips/iostream.h>
-#include <aips/IO/AipsIO.h>
+#include <casa/Containers/RecordDesc.h>
+#include <casa/iostream.h>
+#include <casa/IO/AipsIO.h>
 
 
 ostream& RecordDesc::put (ostream &os) const

@@ -28,9 +28,9 @@
 #if !defined(AIPS_ARRAYPOSITER_H)
 #define AIPS_ARRAYPOSITER_H
 
-#include <aips/aips.h>
+#include <casa/aips.h>
 //# Change the following to a forward declare?
-#include <aips/Arrays/IPosition.h>
+#include <casa/Arrays/IPosition.h>
 
 // 
 // <summary> Iterate an IPosition through the shape of an Array </summary>

@@ -30,7 +30,7 @@
 
 
 //# Includes
-#include <aips/aips.h>
+#include <casa/aips.h>
 
 
 // <summary>Ordered pair class</summary>

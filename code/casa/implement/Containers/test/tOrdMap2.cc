@@ -27,9 +27,9 @@
 
 //# Includes
 
-#include <aips/Containers/Map.h>
-#include <aips/Containers/OrdMapIO.h>
-#include <aips/iostream.h>
+#include <casa/Containers/Map.h>
+#include <casa/Containers/OrdMapIO.h>
+#include <casa/iostream.h>
 
 // This test program creates an OrderedMap, which is written to
 // disk and read back. It outputs to stdout. A script executing

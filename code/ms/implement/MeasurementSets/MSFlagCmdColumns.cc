@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#include <aips/MeasurementSets/MSFlagCmdColumns.h>
-#include <aips/MeasurementSets/MSFlagCmd.h>
+#include <ms/MeasurementSets/MSFlagCmdColumns.h>
+#include <ms/MeasurementSets/MSFlagCmd.h>
 
 ROMSFlagCmdColumns::ROMSFlagCmdColumns(const MSFlagCmd& msFlagCmd):
   applied_p(msFlagCmd, MSFlagCmd::columnName(MSFlagCmd::APPLIED)),

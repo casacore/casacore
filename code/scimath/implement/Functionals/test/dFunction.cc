@@ -27,17 +27,17 @@
 //
 
 //# Includes
-#include <aips/aips.h>
-#include <aips/Mathematics/AutoDiff.h>
-#include <aips/Mathematics/AutoDiffMath.h>
-#include <aips/Mathematics/AutoDiffIO.h>
+#include <casa/aips.h>
+#include <scimath/Mathematics/AutoDiff.h>
+#include <scimath/Mathematics/AutoDiffMath.h>
+#include <scimath/Mathematics/AutoDiffIO.h>
 
-#include <aips/Arrays/Vector.h>
-#include <aips/Functionals/Gaussian1D.h>
-#include <aips/Inputs/Input.h>
-#include <aips/BasicMath/Math.h>
-#include <aips/OS/Timer.h>
-#include <aips/iostream.h>
+#include <casa/Arrays/Vector.h>
+#include <scimath/Functionals/Gaussian1D.h>
+#include <casa/Inputs/Input.h>
+#include <casa/BasicMath/Math.h>
+#include <casa/OS/Timer.h>
+#include <casa/iostream.h>
 
 // 3 flavours of calculating a Gaussian
 // The inputs are the parameters and the x value

@@ -32,16 +32,16 @@
 // This is a preliminary version; eventually it has to be incorporated
 // in the AIPS++ command language.
 
-#include <trial/Lattices/LatticeExprNode.h>
-#include <aips/Arrays/Slice.h>
-#include <aips/Containers/Block.h>
-#include <trial/Images/ImageExprGram.h>
-#include <trial/Images/ImageExprParse.h>    // routines used by bison actions
-#include <aips/Exceptions/Error.h>
+#include <lattices/Lattices/LatticeExprNode.h>
+#include <casa/Arrays/Slice.h>
+#include <casa/Containers/Block.h>
+#include <images/Images/ImageExprGram.h>
+#include <images/Images/ImageExprParse.h>    // routines used by bison actions
+#include <casa/Exceptions/Error.h>
 
 //# stdlib.h is needed for bison 1.28 and needs to be included here
 //# (before the flex/bison files).
-#include <aips/stdlib.h>
+#include <casa/stdlib.h>
 #include <ImageExprGram.ycc>                  // flex output
 #include <ImageExprGram.lcc>                  // bison output
 

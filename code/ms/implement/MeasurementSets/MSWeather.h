@@ -29,9 +29,9 @@
 #if !defined(AIPS_MSWEATHER_H)
 #define AIPS_MSWEATHER_H
 
-#include <aips/aips.h>
-#include <aips/MeasurementSets/MSTable.h>
-#include <aips/MeasurementSets/MSWeatherEnums.h>
+#include <casa/aips.h>
+#include <ms/MeasurementSets/MSTable.h>
+#include <ms/MeasurementSets/MSWeatherEnums.h>
 
 // <summary> 
 // A Table intended to hold a MeasurementSet WEATHER table.

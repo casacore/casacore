@@ -25,11 +25,11 @@
 //#
 //# $Id$
 
-#include <trial/Images/PagedImage.h>
-#include <aips/Tables/TableDesc.h>
-#include <aips/Tables/Table.h>
-#include <aips/Tables/ColumnDesc.h>
-#include <aips/Exceptions/Error.h>
+#include <images/Images/PagedImage.h>
+#include <tables/Tables/TableDesc.h>
+#include <tables/Tables/Table.h>
+#include <tables/Tables/ColumnDesc.h>
+#include <casa/Exceptions/Error.h>
 
 DataType imagePixelType(const String &fileName)
 {

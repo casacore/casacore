@@ -29,10 +29,10 @@
 #define AIPS_FUNCTIONTRAITS_H
 
 //# Includes
-#include <aips/aips.h>
-#include <aips/Mathematics/AutoDiff.h>
-#include <aips/Mathematics/AutoDiffA.h>
-#include <aips/Mathematics/AutoDiffX.h>
+#include <casa/aips.h>
+#include <scimath/Mathematics/AutoDiff.h>
+#include <scimath/Mathematics/AutoDiffA.h>
+#include <scimath/Mathematics/AutoDiffX.h>
 
 //
 // <summary> Function data types for parameters and arguments

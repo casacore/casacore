@@ -28,15 +28,15 @@
 #if !defined(AIPS_MSSPWINDOWCOLUMNS_H)
 #define AIPS_MSSPWINDOWCOLUMNS_H
 
-#include <aips/aips.h>
-#include <aips/Measures/MFrequency.h>
-#include <aips/Tables/ScalarColumn.h>
-#include <aips/Tables/ArrayColumn.h>
-#include <aips/TableMeasures/ScalarMeasColumn.h>
-#include <aips/TableMeasures/ScalarQuantColumn.h>
-#include <aips/TableMeasures/ArrayMeasColumn.h>
-#include <aips/TableMeasures/ArrayQuantColumn.h>
-#include <aips/BasicSL/String.h>
+#include <casa/aips.h>
+#include <measures/Measures/MFrequency.h>
+#include <tables/Tables/ScalarColumn.h>
+#include <tables/Tables/ArrayColumn.h>
+#include <measures/TableMeasures/ScalarMeasColumn.h>
+#include <measures/TableMeasures/ScalarQuantColumn.h>
+#include <measures/TableMeasures/ArrayMeasColumn.h>
+#include <measures/TableMeasures/ArrayQuantColumn.h>
+#include <casa/BasicSL/String.h>
 
 class MSSpectralWindow;
 

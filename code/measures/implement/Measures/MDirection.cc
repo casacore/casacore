@@ -26,11 +26,11 @@
 //# $Id$
 
 //# Includes
-#include <aips/Exceptions.h>
-#include <aips/Utilities/Assert.h>
-#include <aips/Arrays/Vector.h>
-#include <aips/Utilities/Register.h>
-#include <aips/Measures/MDirection.h>
+#include <casa/Exceptions.h>
+#include <casa/Utilities/Assert.h>
+#include <casa/Arrays/Vector.h>
+#include <casa/Utilities/Register.h>
+#include <measures/Measures/MDirection.h>
 
 //# Constructors
 MDirection::MDirection() :

@@ -29,9 +29,9 @@
 #define AIPS_COPY_H
 
 //# Includes
-#include <aips/aips.h>
-#include <aips/BasicSL/Complex.h>
-#include <aips/string.h>           // for memmove, etc.
+#include <casa/aips.h>
+#include <casa/BasicSL/Complex.h>
+#include <casa/string.h>           // for memmove, etc.
 
 
 // <summary>

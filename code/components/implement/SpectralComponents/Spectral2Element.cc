@@ -26,15 +26,15 @@
 //# $Id$
 
 //# Includes
-#include <trial/SpectralComponents/SpectralElement.h>
+#include <components/SpectralComponents/SpectralElement.h>
 
-#include <aips/Arrays/ArrayMath.h>
-#include <aips/Containers/RecordInterface.h>
-#include <aips/Containers/RecordFieldId.h>
-#include <aips/Containers/Record.h>
-#include <aips/BasicSL/Constants.h>
-#include <aips/BasicSL/String.h>
-#include <aips/Utilities/DataType.h>
+#include <casa/Arrays/ArrayMath.h>
+#include <casa/Containers/RecordInterface.h>
+#include <casa/Containers/RecordFieldId.h>
+#include <casa/Containers/Record.h>
+#include <casa/BasicSL/Constants.h>
+#include <casa/BasicSL/String.h>
+#include <casa/Utilities/DataType.h>
 
 //# Member functions 
 Bool SpectralElement::toRecord(String &error, RecordInterface &out) const {

@@ -26,17 +26,17 @@
 //# $Id$
 
 //# Includes
-#include <trial/MeasurementSets/SDDataDescHandler.h>
+#include <ms/MeasurementSets/SDDataDescHandler.h>
 
-#include <aips/Tables/ColumnsIndex.h>
-#include <aips/MeasurementSets/MeasurementSet.h>
-#include <aips/MeasurementSets/MSDataDescColumns.h>
-#include <aips/MeasurementSets/MSDataDescription.h>
-#include <aips/Containers/Record.h>
-#include <aips/Arrays/Vector.h>
-#include <aips/Utilities/Assert.h>
-#include <aips/Exceptions/Error.h>
-#include <aips/BasicSL/String.h>
+#include <tables/Tables/ColumnsIndex.h>
+#include <ms/MeasurementSets/MeasurementSet.h>
+#include <ms/MeasurementSets/MSDataDescColumns.h>
+#include <ms/MeasurementSets/MSDataDescription.h>
+#include <casa/Containers/Record.h>
+#include <casa/Arrays/Vector.h>
+#include <casa/Utilities/Assert.h>
+#include <casa/Exceptions/Error.h>
+#include <casa/BasicSL/String.h>
 
 SDDataDescHandler::SDDataDescHandler() 
     : index_p(0), msDataDesc_p(0), msDataDescCols_p(0), rownr_p(-1)

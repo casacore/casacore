@@ -28,11 +28,11 @@
 //# Partial implementation of little endian code by Kris Huber
 //# (kris@helios.ece.usu.edu)
 
-# include <aips/FITS/fits.h>
+# include <fits/FITS/fits.h>
 # include <string.h>
 # include <stdlib.h>
-# include <aips/sstream.h>
-# include <aips/BasicSL/Constants.h>
+# include <casa/sstream.h>
+# include <casa/BasicSL/Constants.h>
 
 
 # include <stdio.h>

@@ -29,8 +29,8 @@
 #if !defined(AIPS_SDMAINHANDLER_H)
 #define AIPS_SDMAINHANDLER_H
 
-#include <aips/aips.h>
-#include <aips/Utilities/DataType.h>
+#include <casa/aips.h>
+#include <casa/Utilities/DataType.h>
 
 //# Forward Declarations
 class MeasurementSet;

@@ -25,10 +25,10 @@
 //#
 //# $Id$
 
-#include <trial/MeasurementSets/MSWeatherIndex.h>
+#include <ms/MeasurementSets/MSWeatherIndex.h>
 
-#include <aips/Arrays/ArrayUtil.h>
-#include <aips/MeasurementSets/MSWeather.h>
+#include <casa/Arrays/ArrayUtil.h>
+#include <ms/MeasurementSets/MSWeather.h>
 
 MSWeatherIndex::MSWeatherIndex() 
     : MSTableIndex()

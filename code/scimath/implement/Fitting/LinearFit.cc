@@ -27,10 +27,10 @@
 //# $Id$
 
 //# Includes
-#include <trial/Fitting/LinearFit.h>
-#include <aips/Arrays/ArrayMath.h>
-#include <aips/Mathematics/AutoDiffIO.h>
-#include <aips/Functionals/Function.h>
+#include <scimath/Fitting/LinearFit.h>
+#include <casa/Arrays/ArrayMath.h>
+#include <scimath/Mathematics/AutoDiffIO.h>
+#include <scimath/Functionals/Function.h>
 
 //# Constants
 

@@ -25,20 +25,20 @@
 //#
 //# $Id$
 
-#include <aips/Tables/ExprNodeRep.h>
-#include <aips/Tables/ExprNode.h>
-#include <aips/Tables/ExprDerNode.h>
-#include <aips/Tables/ExprDerNodeArray.h>
-#include <aips/Tables/ExprRange.h>
-#include <aips/Tables/Table.h>
-#include <aips/Tables/TableDesc.h>
-#include <aips/Tables/TableRecord.h>
-#include <aips/Tables/ColumnDesc.h>
-#include <aips/Tables/TableError.h>
-#include <aips/Containers/Block.h>
-#include <aips/Arrays/Array.h>
-#include <aips/Arrays/ArrayLogical.h>
-#include <aips/iostream.h>
+#include <tables/Tables/ExprNodeRep.h>
+#include <tables/Tables/ExprNode.h>
+#include <tables/Tables/ExprDerNode.h>
+#include <tables/Tables/ExprDerNodeArray.h>
+#include <tables/Tables/ExprRange.h>
+#include <tables/Tables/Table.h>
+#include <tables/Tables/TableDesc.h>
+#include <tables/Tables/TableRecord.h>
+#include <tables/Tables/ColumnDesc.h>
+#include <tables/Tables/TableError.h>
+#include <casa/Containers/Block.h>
+#include <casa/Arrays/Array.h>
+#include <casa/Arrays/ArrayLogical.h>
+#include <casa/iostream.h>
 
 
 

@@ -27,8 +27,8 @@
 #if !defined(AIPS_RFA_MEDIANCLIP_H)
 #define AIPS_RFA_MEDIANCLIP_H
 
-#include <trial/Flagging/RFADiffBase.h> 
-#include <trial/Mathematics/MedianSlider.h> 
+#include <flagging/Flagging/RFADiffBase.h> 
+#include <scimath/Mathematics/MedianSlider.h> 
 
 // <summary>
 // RFATimeMedian: RedFlagger Agent for clipping relative to median over time

@@ -25,11 +25,11 @@
 //#
 //# $Id$
 
-#include <aips/Tables/ExprDerNodeArray.h>
-#include <aips/Tables/TableError.h>
-#include <aips/Arrays/Array.h>
-#include <aips/Arrays/ArrayMath.h>
-#include <aips/Quanta/MVTime.h>
+#include <tables/Tables/ExprDerNodeArray.h>
+#include <tables/Tables/TableError.h>
+#include <casa/Arrays/Array.h>
+#include <casa/Arrays/ArrayMath.h>
+#include <casa/Quanta/MVTime.h>
 
 
 TableExprNodeArrayConstBool::TableExprNodeArrayConstBool

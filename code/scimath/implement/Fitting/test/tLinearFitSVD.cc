@@ -25,21 +25,21 @@
 //#
 //# $Id$
 
-#include <trial/Fitting/LinearFitSVD.h>
-#include <aips/Arrays/ArrayIO.h>
-#include <aips/Arrays/ArrayLogical.h>
-#include <aips/Arrays/ArrayMath.h>
-#include <aips/Arrays/Matrix.h>
-#include <aips/Functionals/CombiFunction.h>
-#include <aips/Functionals/FunctionWrapper.h>
-#include <aips/Functionals/HyperPlane.h>
-#include <aips/Functionals/Polynomial.h>
-#include <aips/BasicSL/Complex.h>
-#include <aips/Mathematics/Primes.h>
-#include <aips/BasicMath/Random.h>
-#include <aips/Utilities/Assert.h>
+#include <scimath/Fitting/LinearFitSVD.h>
+#include <casa/Arrays/ArrayIO.h>
+#include <casa/Arrays/ArrayLogical.h>
+#include <casa/Arrays/ArrayMath.h>
+#include <casa/Arrays/Matrix.h>
+#include <scimath/Functionals/CombiFunction.h>
+#include <scimath/Functionals/FunctionWrapper.h>
+#include <scimath/Functionals/HyperPlane.h>
+#include <scimath/Functionals/Polynomial.h>
+#include <casa/BasicSL/Complex.h>
+#include <scimath/Mathematics/Primes.h>
+#include <casa/BasicMath/Random.h>
+#include <casa/Utilities/Assert.h>
 
-#include <aips/iostream.h>
+#include <casa/iostream.h>
 
 // Some C++ functions
 // To use them in Fitting, have to have parameters and also AutoDiff

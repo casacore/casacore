@@ -25,9 +25,9 @@
 //#
 //# $Id$
 
-#include <aips/Mathematics/MatrixMathLA.h>
-#include <aips/Arrays/ArrayError.h>
-#include <aips/Utilities/Assert.h>
+#include <scimath/Mathematics/MatrixMathLA.h>
+#include <casa/Arrays/ArrayError.h>
+#include <casa/Utilities/Assert.h>
 
 template<class T> 
 Matrix<T> invert(const Matrix<T> &in){

@@ -29,12 +29,12 @@
 #define AIPS_FUNCTIONHOLDER_H
 
 //# Includes
-#include <aips/aips.h>
-#include <aips/Utilities/PtrHolder.h>
-#include <aips/Utilities/RecordTransformable.h>
-#include <aips/Functionals/Function.h>
-#include <aips/Arrays/Vector.h>
-#include <aips/BasicSL/String.h>
+#include <casa/aips.h>
+#include <casa/Utilities/PtrHolder.h>
+#include <casa/Utilities/RecordTransformable.h>
+#include <scimath/Functionals/Function.h>
+#include <casa/Arrays/Vector.h>
+#include <casa/BasicSL/String.h>
 
 //# Forward Declarations
 

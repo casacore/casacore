@@ -25,14 +25,14 @@
 //#
 //# $Id$
 
-#include <aips/aips.h>
-#include <aips/Arrays/IPosition.h>
-#include <aips/Arrays/Array.h>
-#include <aips/Arrays/ArrayMath.h>
-#include <aips/Arrays/Vector.h>
-#include <aips/Containers/Block.h>
-#include <aips/BasicMath/Math.h>
-#include <aips/BasicSL/Complex.h>
+#include <casa/aips.h>
+#include <casa/Arrays/IPosition.h>
+#include <casa/Arrays/Array.h>
+#include <casa/Arrays/ArrayMath.h>
+#include <casa/Arrays/Vector.h>
+#include <casa/Containers/Block.h>
+#include <casa/BasicMath/Math.h>
+#include <casa/BasicSL/Complex.h>
 #include <aips/Tables/TableDesc.h>
 #include <aips/Tables/SetupNewTab.h>
 #include <aips/Tables/Table.h>
@@ -40,10 +40,10 @@
 #include <aips/Tables/ScalarColumn.h>
 #include <aips/Tables/ArrColDesc.h>
 #include <aips/Tables/ArrayColumn.h>
-#include <aips/Functionals/Interpolate1D.h>
-#include <aips/Functionals/ScalarSampledFunctional.h>
-#include <aips/Functionals/ArraySampledFunctional.h>
-#include <aips/iostream.h>
+#include <scimath/Functionals/Interpolate1D.h>
+#include <scimath/Functionals/ScalarSampledFunctional.h>
+#include <scimath/Functionals/ArraySampledFunctional.h>
+#include <casa/iostream.h>
 
 
 // Main program to test the Interpolate1D class

@@ -27,11 +27,11 @@
 
 
 //# Includes
-#include <aips/Tables/TableInfo.h>
-#include <aips/BasicSL/String.h>
-#include <aips/OS/File.h>
-#include <aips/iostream.h>
-#include <aips/fstream.h>
+#include <tables/Tables/TableInfo.h>
+#include <casa/BasicSL/String.h>
+#include <casa/OS/File.h>
+#include <casa/iostream.h>
+#include <casa/fstream.h>
 
 
 TableInfo::TableInfo()

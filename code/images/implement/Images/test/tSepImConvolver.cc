@@ -25,24 +25,24 @@
 //#
 //# $Id$
 //
-#include <trial/Images/SepImageConvolver.h>
+#include <images/Images/SepImageConvolver.h>
 
-#include <aips/aips.h>
-#include <aips/Functionals/Gaussian1D.h>
-#include <aips/Arrays/Vector.h>
-#include <aips/Arrays/ArrayMath.h>
-#include <aips/Exceptions/Error.h>
-#include <aips/Inputs/Input.h>
-#include <aips/Logging.h>
-#include <aips/BasicSL/Constants.h>
-#include <trial/Mathematics/VectorKernel.h>
-#include <aips/Tables/Table.h>
-#include <aips/System/Aipsrc.h>
-#include <aips/BasicSL/String.h>
+#include <casa/aips.h>
+#include <scimath/Functionals/Gaussian1D.h>
+#include <casa/Arrays/Vector.h>
+#include <casa/Arrays/ArrayMath.h>
+#include <casa/Exceptions/Error.h>
+#include <casa/Inputs/Input.h>
+#include <casa/Logging.h>
+#include <casa/BasicSL/Constants.h>
+#include <scimath/Mathematics/VectorKernel.h>
+#include <tables/Tables/Table.h>
+#include <casa/System/Aipsrc.h>
+#include <casa/BasicSL/String.h>
 
 
-#include <trial/Images/PagedImage.h>
-#include <aips/iostream.h>
+#include <images/Images/PagedImage.h>
+#include <casa/iostream.h>
 
 
 

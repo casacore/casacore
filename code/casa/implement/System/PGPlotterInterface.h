@@ -29,7 +29,7 @@
 #if !defined(AIPS_PGPLOTTER_INTERFACE_H)
 #define AIPS_PGPLOTTER_INTERFACE_H
 
-#include <aips/aips.h>
+#include <casa/aips.h>
 
 class Record;
 class String;

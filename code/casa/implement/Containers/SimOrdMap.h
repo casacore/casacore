@@ -28,10 +28,10 @@
 #if !defined(AIPS_SIMORDMAP_H)
 #define AIPS_SIMORDMAP_H
 
-#include <aips/aips.h>
-#include <aips/Containers/OrderedPair.h>
-#include <aips/Containers/Block.h>
-#include <aips/BasicSL/String.h>
+#include <casa/aips.h>
+#include <casa/Containers/OrderedPair.h>
+#include <casa/Containers/Block.h>
+#include <casa/BasicSL/String.h>
 
 //# Define a macro to cast kvblk[i] to OrderedPair<K,V>*.
 //# This is needed because the compiler outlines the inline functions pair.

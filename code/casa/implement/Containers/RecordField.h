@@ -31,9 +31,9 @@
 #define AIPS_RECORD_FIELD_H
 
 //# Includes
-#include <aips/aips.h>
-#include <aips/Containers/Record.h>
-#include <aips/Utilities/Notice.h>
+#include <casa/aips.h>
+#include <casa/Containers/Record.h>
+#include <casa/Utilities/Notice.h>
 
 //# Forward Declarations
 class TableRecord;

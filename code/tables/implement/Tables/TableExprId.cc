@@ -27,6 +27,6 @@
 //# $Id$
 
 
-#include <aips/Tables/TableExprId.h>
+#include <tables/Tables/TableExprId.h>
 
 //# Everything is inlined

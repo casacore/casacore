@@ -29,8 +29,8 @@
 #if !defined(AIPS_PROJECTION_H)
 #define AIPS_PROJECTION_H
 
-#include <aips/aips.h>
-#include <aips/Arrays/Vector.h>
+#include <casa/aips.h>
+#include <casa/Arrays/Vector.h>
 
 class DirectionCoordinate;
 

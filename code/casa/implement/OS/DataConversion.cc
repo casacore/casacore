@@ -26,7 +26,7 @@
 //# $Id$
 
 
-#include <aips/OS/DataConversion.h>
+#include <casa/OS/DataConversion.h>
 
 
 DataConversion::~DataConversion()

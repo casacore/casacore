@@ -25,30 +25,30 @@
 //#
 //# $Id$
 
-#include <aips/Tables/SSMBase.h>
-#include <aips/Tables/SSMColumn.h>
-#include <aips/Tables/SSMDirColumn.h>
-#include <aips/Tables/SSMIndColumn.h>
-#include <aips/Tables/SSMIndStringColumn.h>
-#include <aips/Tables/SSMIndex.h>
-#include <aips/Tables/SSMStringHandler.h>
-#include <aips/Tables/StArrayFile.h>
-#include <aips/Tables/Table.h>
-#include <aips/Containers/Record.h>
-#include <aips/Utilities/ValType.h>
-#include <aips/Utilities/Assert.h>
-#include <aips/IO/BucketCache.h>
-#include <aips/IO/BucketFile.h>
-#include <aips/IO/AipsIO.h>
-#include <aips/IO/MemoryIO.h>
-#include <aips/IO/CanonicalIO.h>
-#include <aips/IO/LECanonicalIO.h>
-#include <aips/IO/FilebufIO.h>
-#include <aips/OS/CanonicalConversion.h>
-#include <aips/OS/DOos.h>
-#include <aips/BasicMath/Math.h>
-#include <aips/Tables/DataManError.h>
-#include <aips/iostream.h>
+#include <tables/Tables/SSMBase.h>
+#include <tables/Tables/SSMColumn.h>
+#include <tables/Tables/SSMDirColumn.h>
+#include <tables/Tables/SSMIndColumn.h>
+#include <tables/Tables/SSMIndStringColumn.h>
+#include <tables/Tables/SSMIndex.h>
+#include <tables/Tables/SSMStringHandler.h>
+#include <tables/Tables/StArrayFile.h>
+#include <tables/Tables/Table.h>
+#include <casa/Containers/Record.h>
+#include <casa/Utilities/ValType.h>
+#include <casa/Utilities/Assert.h>
+#include <casa/IO/BucketCache.h>
+#include <casa/IO/BucketFile.h>
+#include <casa/IO/AipsIO.h>
+#include <casa/IO/MemoryIO.h>
+#include <casa/IO/CanonicalIO.h>
+#include <casa/IO/LECanonicalIO.h>
+#include <casa/IO/FilebufIO.h>
+#include <casa/OS/CanonicalConversion.h>
+#include <casa/OS/DOos.h>
+#include <casa/BasicMath/Math.h>
+#include <tables/Tables/DataManError.h>
+#include <casa/iostream.h>
 
 
 SSMBase::SSMBase (Int aBucketSize, uInt aCacheSize)

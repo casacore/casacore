@@ -29,7 +29,7 @@
 #if !defined(AIPS_MSMAINENUMS_H)
 #define AIPS_MSMAINENUMS_H
 
-#include <aips/aips.h>
+#include <casa/aips.h>
 
 // <use visibility=export>
 

@@ -26,12 +26,12 @@
 //# $Id$
 
 //# Includes
-#include <aips/TableMeasures/TableMeasDesc.h>
-#include <aips/Measures/MeasRef.h>
-#include <aips/Quanta/Unit.h>
-#include <aips/Tables/TableDesc.h>
-#include <aips/Arrays/Vector.h>
-#include <aips/Exceptions/Error.h>
+#include <measures/TableMeasures/TableMeasDesc.h>
+#include <measures/Measures/MeasRef.h>
+#include <casa/Quanta/Unit.h>
+#include <tables/Tables/TableDesc.h>
+#include <casa/Arrays/Vector.h>
+#include <casa/Exceptions/Error.h>
 
 
 template<class M>

@@ -26,13 +26,13 @@
 //# $Id$
 
 //# Includes
-#include <aips/TableMeasures/TableMeasValueDesc.h>
-#include <aips/Tables/Table.h>
-#include <aips/Tables/TableDesc.h>
-#include <aips/Tables/TableColumn.h>
-#include <aips/Tables/ColumnDesc.h>
-#include <aips/Tables/TableRecord.h>
-#include <aips/Exceptions/Error.h>
+#include <measures/TableMeasures/TableMeasValueDesc.h>
+#include <tables/Tables/Table.h>
+#include <tables/Tables/TableDesc.h>
+#include <tables/Tables/TableColumn.h>
+#include <tables/Tables/ColumnDesc.h>
+#include <tables/Tables/TableRecord.h>
+#include <casa/Exceptions/Error.h>
 
 
 TableMeasValueDesc::TableMeasValueDesc()

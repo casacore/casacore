@@ -29,11 +29,11 @@
 #define AIPS_GAUSSIAN2D_H
 
 //# Includes
-#include <aips/aips.h>
-#include <aips/Functionals/Gaussian2DParam.h>
-#include <aips/Functionals/Function.h>
-#include <aips/Mathematics/AutoDiff.h>
-#include <aips/Mathematics/AutoDiffMath.h>
+#include <casa/aips.h>
+#include <scimath/Functionals/Gaussian2DParam.h>
+#include <scimath/Functionals/Function.h>
+#include <scimath/Mathematics/AutoDiff.h>
+#include <scimath/Mathematics/AutoDiffMath.h>
 
 //# Forward declarations
 template<class T> class Vector;

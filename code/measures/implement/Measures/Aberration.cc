@@ -26,11 +26,11 @@
 //# $Id$
 
 //# Includes
-#include <aips/Measures/Aberration.h>
-#include <aips/BasicSL/Constants.h>
-#include <aips/Arrays/ArrayMath.h>
-#include <aips/Measures/MeasTable.h>
-#include <aips/System/AipsrcValue.h>
+#include <measures/Measures/Aberration.h>
+#include <casa/BasicSL/Constants.h>
+#include <casa/Arrays/ArrayMath.h>
+#include <measures/Measures/MeasTable.h>
+#include <casa/System/AipsrcValue.h>
 
 //# Constants
 const Double Aberration::INTV = 0.04;

@@ -31,8 +31,8 @@
 #define AIPS_TABLEEXPRDATA_H
 
 //# Includes
-#include <aips/aips.h>
-#include <aips/Utilities/DataType.h>
+#include <casa/aips.h>
+#include <casa/Utilities/DataType.h>
 
 //# Forward Declarations
 class String;

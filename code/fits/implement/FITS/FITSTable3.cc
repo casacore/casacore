@@ -25,24 +25,24 @@
 //#
 //# $Id$
 
-#include <trial/FITS/FITSTable.h>
-#include <trial/FITS/FITSFieldCopier.h>
-#include <aips/Containers/RecordField.h>
-#include <aips/BasicSL/String.h>
-#include <aips/Utilities/Assert.h>
-#include <aips/FITS/fits.h>
-#include <aips/FITS/fitsio.h>
-#include <aips/FITS/hdu.h>
-#include <trial/FITS/FITSKeywordUtil.h>
-#include <aips/OS/Path.h>
+#include <fits/FITS/FITSTable.h>
+#include <fits/FITS/FITSFieldCopier.h>
+#include <casa/Containers/RecordField.h>
+#include <casa/BasicSL/String.h>
+#include <casa/Utilities/Assert.h>
+#include <fits/FITS/fits.h>
+#include <fits/FITS/fitsio.h>
+#include <fits/FITS/hdu.h>
+#include <fits/FITS/FITSKeywordUtil.h>
+#include <casa/OS/Path.h>
 
-#include <aips/Logging/LogIO.h>
-#include <aips/Arrays/Array.h>
+#include <casa/Logging/LogIO.h>
+#include <casa/Arrays/Array.h>
 
-#include <aips/version.h>
+#include <casa/version.h>
 
-#include <aips/sstream.h>
-#include <aips/iomanip.h>
+#include <casa/sstream.h>
+#include <casa/iomanip.h>
 
 
 FITSGroupWriter::FITSGroupWriter(const String &fileName,

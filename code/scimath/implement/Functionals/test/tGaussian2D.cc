@@ -26,21 +26,21 @@
 //# $Id$
 
 //# Includes
-#include <aips/Functionals/Gaussian2D.h>
+#include <scimath/Functionals/Gaussian2D.h>
 
-#include <aips/Mathematics/AutoDiff.h>
-#include <aips/Mathematics/AutoDiffA.h>
-#include <aips/Mathematics/AutoDiffIO.h>
-#include <aips/Mathematics/AutoDiffMath.h>
-#include <aips/BasicSL/Constants.h>
-#include <aips/BasicMath/Math.h>
-#include <aips/Arrays/Vector.h>
-#include <aips/Arrays/Array.h>
-#include <aips/Arrays/ArrayLogical.h>
-#include <aips/Arrays/ArrayMath.h>
-#include <aips/Exceptions.h>
+#include <scimath/Mathematics/AutoDiff.h>
+#include <scimath/Mathematics/AutoDiffA.h>
+#include <scimath/Mathematics/AutoDiffIO.h>
+#include <scimath/Mathematics/AutoDiffMath.h>
+#include <casa/BasicSL/Constants.h>
+#include <casa/BasicMath/Math.h>
+#include <casa/Arrays/Vector.h>
+#include <casa/Arrays/Array.h>
+#include <casa/Arrays/ArrayLogical.h>
+#include <casa/Arrays/ArrayMath.h>
+#include <casa/Exceptions.h>
 
-#include <aips/iostream.h>
+#include <casa/iostream.h>
 
 int main() {
   try {

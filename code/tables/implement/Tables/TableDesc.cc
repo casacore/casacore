@@ -25,15 +25,15 @@
 //#
 //# $Id$
 
-#include <aips/Tables/TableDesc.h>
-#include <aips/Tables/TabPath.h>
-#include <aips/Tables/TableRecord.h>
-#include <aips/Tables/TableAttr.h>
-#include <aips/Tables/TableError.h>
-#include <aips/Arrays/Vector.h>
-#include <aips/Arrays/Slice.h>
-#include <aips/OS/File.h>
-#include <aips/iostream.h>
+#include <tables/Tables/TableDesc.h>
+#include <tables/Tables/TabPath.h>
+#include <tables/Tables/TableRecord.h>
+#include <tables/Tables/TableAttr.h>
+#include <tables/Tables/TableError.h>
+#include <casa/Arrays/Vector.h>
+#include <casa/Arrays/Slice.h>
+#include <casa/OS/File.h>
+#include <casa/iostream.h>
 
 //# This is the implementation of the class TableDesc.
 //#

@@ -25,7 +25,7 @@
 //#
 //# $Id$
 
-#include <aips/Containers/StackError.h>
+#include <casa/Containers/StackError.h>
 
 
 // The normal constructor when throwing the exception.

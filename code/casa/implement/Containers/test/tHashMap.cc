@@ -25,11 +25,11 @@
 //#
 //# $Id$
 
-#include <trial/Containers/HashMapIter.h>
-#include <aips/BasicSL/String.h>
-#include <aips/fstream.h>
-#include <aips/iostream.h>
-#include <aips/stdlib.h>
+#include <casa/Containers/HashMapIter.h>
+#include <casa/BasicSL/String.h>
+#include <casa/fstream.h>
+#include <casa/iostream.h>
+#include <casa/stdlib.h>
 
 #define DIAGNOSTICS 1
 #define OUTPUT 1

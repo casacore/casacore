@@ -25,10 +25,10 @@
 //#
 //# $Id$
 
-#include <trial/MeasurementSets/MSFreqOffIndex.h>
+#include <ms/MeasurementSets/MSFreqOffIndex.h>
 
-#include <aips/Arrays/ArrayUtil.h>
-#include <aips/MeasurementSets/MSFreqOffset.h>
+#include <casa/Arrays/ArrayUtil.h>
+#include <ms/MeasurementSets/MSFreqOffset.h>
 
 MSFreqOffIndex::MSFreqOffIndex() 
     : MSTableIndex()

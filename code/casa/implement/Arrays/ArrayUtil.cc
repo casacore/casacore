@@ -25,9 +25,9 @@
 //#
 //# $Id$
 
-#include <aips/Arrays/ArrayUtil.h>
-#include <aips/Arrays/ArrayError.h>
-#include <aips/Utilities/Copy.h>
+#include <casa/Arrays/ArrayUtil.h>
+#include <casa/Arrays/ArrayError.h>
+#include <casa/Utilities/Copy.h>
 
 
 template<class T>

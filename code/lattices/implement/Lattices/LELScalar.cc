@@ -26,8 +26,8 @@
 //# $Id$
 
 
-#include <trial/Lattices/LELScalar.h>
-#include <aips/Utilities/ValType.h>
+#include <lattices/Lattices/LELScalar.h>
+#include <casa/Utilities/ValType.h>
 
 
 template <class T>

@@ -29,7 +29,7 @@
 #if !defined(AIPS_CONVOLVEGRIDDER_H)
 #define AIPS_CONVOLVEGRIDDER_H
 
-#include <trial/Mathematics/Gridder.h>
+#include <scimath/Mathematics/Gridder.h>
 
 // <summary>
 // Does convolutional gridding

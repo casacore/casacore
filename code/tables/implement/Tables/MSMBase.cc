@@ -25,11 +25,11 @@
 //#
 //# $Id$
 
-#include <aips/Tables/MSMBase.h>
-#include <aips/Tables/MSMColumn.h>
-#include <aips/Tables/MSMDirColumn.h>
-#include <aips/Tables/MSMIndColumn.h>
-#include <aips/Tables/DataManError.h>
+#include <tables/Tables/MSMBase.h>
+#include <tables/Tables/MSMColumn.h>
+#include <tables/Tables/MSMDirColumn.h>
+#include <tables/Tables/MSMIndColumn.h>
+#include <tables/Tables/DataManError.h>
 
 
 MSMBase::MSMBase()

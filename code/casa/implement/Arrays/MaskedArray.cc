@@ -25,11 +25,11 @@
 //#
 //# $Id$
 
-#include <aips/Arrays/Array.h>
-#include <aips/Arrays/MaskedArray.h>
-#include <aips/Arrays/ArrayError.h>
-#include <aips/Arrays/ArrayLogical.h>
-#include <aips/Utilities/Assert.h>
+#include <casa/Arrays/Array.h>
+#include <casa/Arrays/MaskedArray.h>
+#include <casa/Arrays/ArrayError.h>
+#include <casa/Arrays/ArrayLogical.h>
+#include <casa/Utilities/Assert.h>
 
 template<class T> 
 MaskedArray<T>::MaskedArray ()

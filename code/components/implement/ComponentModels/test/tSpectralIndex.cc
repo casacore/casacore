@@ -25,22 +25,22 @@
 //#
 //# $Id$
 
-#include <aips/aips.h>
-#include <trial/ComponentModels/ComponentType.h>
-#include <trial/ComponentModels/SpectralIndex.h>
-#include <aips/Arrays/Vector.h>
-#include <aips/Containers/Record.h>
-#include <aips/Containers/RecordFieldId.h>
-#include <aips/Exceptions/Error.h>
-#include <aips/BasicMath/Math.h>
-#include <aips/Measures/MFrequency.h>
-#include <aips/Measures/MeasureHolder.h>
-#include <aips/Measures/MeasRef.h>
-#include <aips/Quanta/MVFrequency.h>
-#include <aips/Quanta/Quantum.h>
-#include <aips/Utilities/Assert.h>
-#include <aips/BasicSL/String.h>
-#include <aips/iostream.h>
+#include <casa/aips.h>
+#include <components/ComponentModels/ComponentType.h>
+#include <components/ComponentModels/SpectralIndex.h>
+#include <casa/Arrays/Vector.h>
+#include <casa/Containers/Record.h>
+#include <casa/Containers/RecordFieldId.h>
+#include <casa/Exceptions/Error.h>
+#include <casa/BasicMath/Math.h>
+#include <measures/Measures/MFrequency.h>
+#include <measures/Measures/MeasureHolder.h>
+#include <measures/Measures/MeasRef.h>
+#include <casa/Quanta/MVFrequency.h>
+#include <casa/Quanta/Quantum.h>
+#include <casa/Utilities/Assert.h>
+#include <casa/BasicSL/String.h>
+#include <casa/iostream.h>
 
 int main() {
   try {

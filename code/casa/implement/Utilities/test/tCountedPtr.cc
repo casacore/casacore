@@ -27,9 +27,9 @@
 
 //# Includes
 
-#include <aips/Utilities/test/tCountedPtr.h>
-#include <aips/Utilities/CountedPtr.h>
-#include <aips/iostream.h>
+#include <casa/Utilities/test/tCountedPtr.h>
+#include <casa/Utilities/CountedPtr.h>
+#include <casa/iostream.h>
 
 // class myobj is defined in tCountedPtr.h
 

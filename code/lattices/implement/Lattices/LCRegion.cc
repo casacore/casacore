@@ -25,13 +25,13 @@
 //#
 //# $Id$
 
-#include <trial/Lattices/LCRegion.h>
-#include <trial/Lattices/RegionType.h>
-#include <aips/Arrays/Vector.h>
-#include <aips/Arrays/ArrayLogical.h>
-#include <aips/Tables/TableRecord.h>
-#include <aips/Utilities/Assert.h>
-#include <aips/Exceptions/Error.h>
+#include <lattices/Lattices/LCRegion.h>
+#include <lattices/Lattices/RegionType.h>
+#include <casa/Arrays/Vector.h>
+#include <casa/Arrays/ArrayLogical.h>
+#include <tables/Tables/TableRecord.h>
+#include <casa/Utilities/Assert.h>
+#include <casa/Exceptions/Error.h>
 
 
 LCRegion::LCRegion()

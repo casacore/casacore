@@ -29,7 +29,7 @@
 #if !defined(AIPS_SDSOURCEHANDLER_H)
 #define AIPS_SDSOURCEHANDLER_H
 
-#include <aips/Containers/RecordField.h>
+#include <casa/Containers/RecordField.h>
 
 //# Forward Declarations
 class ColumnsIndex;

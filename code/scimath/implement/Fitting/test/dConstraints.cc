@@ -25,26 +25,26 @@
 //#
 //# $Id$
 
-#include <trial/Fitting/NonLinearFitLM.h>
-#include <aips/Arrays/ArrayIO.h>
-#include <aips/Arrays/ArrayLogical.h>
-#include <aips/Arrays/ArrayMath.h>
-#include <aips/Arrays/Matrix.h>
-#include <aips/Arrays/Vector.h>
-#include <aips/Exceptions/Error.h>
-#include <trial/Functionals/CompiledFunction.h>
-#include <aips/Functionals/CompoundFunction.h>
-#include <aips/Functionals/Function.h>
-#include <aips/Functionals/Gaussian1D.h>
-#include <aips/Functionals/HyperPlane.h>
-#include <aips/Functionals/Polynomial.h>
-#include <aips/Mathematics/AutoDiff.h>
-#include <aips/Mathematics/AutoDiffIO.h>
-#include <aips/BasicMath/Math.h>
-#include <aips/BasicMath/Random.h>
-#include <aips/OS/Timer.h>
-#include <aips/Utilities/Assert.h>
-#include <aips/iostream.h>
+#include <scimath/Fitting/NonLinearFitLM.h>
+#include <casa/Arrays/ArrayIO.h>
+#include <casa/Arrays/ArrayLogical.h>
+#include <casa/Arrays/ArrayMath.h>
+#include <casa/Arrays/Matrix.h>
+#include <casa/Arrays/Vector.h>
+#include <casa/Exceptions/Error.h>
+#include <scimath/Functionals/CompiledFunction.h>
+#include <scimath/Functionals/CompoundFunction.h>
+#include <scimath/Functionals/Function.h>
+#include <scimath/Functionals/Gaussian1D.h>
+#include <scimath/Functionals/HyperPlane.h>
+#include <scimath/Functionals/Polynomial.h>
+#include <scimath/Mathematics/AutoDiff.h>
+#include <scimath/Mathematics/AutoDiffIO.h>
+#include <casa/BasicMath/Math.h>
+#include <casa/BasicMath/Random.h>
+#include <casa/OS/Timer.h>
+#include <casa/Utilities/Assert.h>
+#include <casa/iostream.h>
 
 int main (Int argc, Char** argv) {
 

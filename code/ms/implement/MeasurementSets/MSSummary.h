@@ -28,9 +28,9 @@
 #if !defined(TRIAL_MSSUMMARY_H)
 #define TRIAL_MSSUMMARY_H
 
-#include <aips/aips.h>
-#include <aips/BasicSL/String.h>
-#include <aips/MeasurementSets/MSColumns.h>
+#include <casa/aips.h>
+#include <casa/BasicSL/String.h>
+#include <ms/MeasurementSets/MSColumns.h>
 class MeasurementSet;
 class LogIO;
 

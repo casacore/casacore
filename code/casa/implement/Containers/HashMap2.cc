@@ -24,9 +24,9 @@
 //#                        Charlottesville, VA 22903-2475 USA
 //#
 //# $Id$
-#include <trial/Containers/HashMap.h>
-#include <aips/BasicSL/String.h>
-#include <aips/Exceptions/Error.h>
+#include <casa/Containers/HashMap.h>
+#include <casa/BasicSL/String.h>
+#include <casa/Exceptions/Error.h>
 
 
 uInt hashFunc(const String &s) {

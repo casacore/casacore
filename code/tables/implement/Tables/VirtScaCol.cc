@@ -26,9 +26,9 @@
 //# $Id$
 
 //# Includes
-#include <aips/Tables/VirtScaCol.h>
-#include <aips/Arrays/Vector.h>
-#include <aips/Utilities/ValTypeId.h>
+#include <tables/Tables/VirtScaCol.h>
+#include <casa/Arrays/Vector.h>
+#include <casa/Utilities/ValTypeId.h>
 
 
 template<class T>

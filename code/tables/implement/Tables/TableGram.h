@@ -29,7 +29,7 @@
 #define AIPS_TABLEGRAM_H
 
 //# Includes
-#include <aips/BasicSL/String.h>
+#include <casa/BasicSL/String.h>
 
 //# Forward Declarations
 

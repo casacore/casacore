@@ -26,17 +26,17 @@
 //# $Id$
 
 //# Includes
-#include <aips/TableMeasures/ArrayQuantColumn.h>
-#include <aips/TableMeasures/TableQuantumDesc.h>
-#include <aips/Quanta/Quantum.h>
-#include <aips/Quanta/Unit.h>
-#include <aips/Tables/ArrayColumn.h>
-#include <aips/Tables/ScalarColumn.h>
-#include <aips/Tables/Table.h>
-#include <aips/Tables/TableDesc.h>
-#include <aips/Tables/ColumnDesc.h>
-#include <aips/Tables/TableError.h>
-#include <aips/BasicSL/String.h>
+#include <measures/TableMeasures/ArrayQuantColumn.h>
+#include <measures/TableMeasures/TableQuantumDesc.h>
+#include <casa/Quanta/Quantum.h>
+#include <casa/Quanta/Unit.h>
+#include <tables/Tables/ArrayColumn.h>
+#include <tables/Tables/ScalarColumn.h>
+#include <tables/Tables/Table.h>
+#include <tables/Tables/TableDesc.h>
+#include <tables/Tables/ColumnDesc.h>
+#include <tables/Tables/TableError.h>
+#include <casa/BasicSL/String.h>
 
 
 template<class T>

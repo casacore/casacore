@@ -25,21 +25,21 @@
 //#
 //# $Id$
 
-#include <trial/Lattices/CurvedLattice2D.h>
-#include <trial/Lattices/CLIPNearest2D.h>
-#include <trial/Lattices/PixelCurve1D.h>
-#include <trial/Lattices/SubLattice.h>
-#include <aips/Lattices/ArrayLattice.h>
-#include <aips/Lattices/PagedArray.h>
-#include <aips/Lattices/LatticeIterator.h>
-#include <aips/Arrays/ArrayMath.h>
-#include <aips/Arrays/ArrayLogical.h>
-#include <aips/Arrays/IPosition.h>
-#include <aips/Inputs/Input.h>
-#include <aips/OS/Timer.h>
-#include <aips/Utilities/Assert.h>
-#include <aips/Exceptions/Error.h>
-#include <aips/iostream.h>
+#include <lattices/Lattices/CurvedLattice2D.h>
+#include <lattices/Lattices/CLIPNearest2D.h>
+#include <lattices/Lattices/PixelCurve1D.h>
+#include <lattices/Lattices/SubLattice.h>
+#include <lattices/Lattices/ArrayLattice.h>
+#include <lattices/Lattices/PagedArray.h>
+#include <lattices/Lattices/LatticeIterator.h>
+#include <casa/Arrays/ArrayMath.h>
+#include <casa/Arrays/ArrayLogical.h>
+#include <casa/Arrays/IPosition.h>
+#include <casa/Inputs/Input.h>
+#include <casa/OS/Timer.h>
+#include <casa/Utilities/Assert.h>
+#include <casa/Exceptions/Error.h>
+#include <casa/iostream.h>
 
 
 void doIt (MaskedLattice<Int>& lat, uInt axis1, uInt axis2, uInt curveAxis)

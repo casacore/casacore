@@ -26,28 +26,28 @@
 //#
 //# $Id$
 
-#include <trial/Coordinates/SpectralCoordinate.h>
+#include <coordinates/Coordinates/SpectralCoordinate.h>
 //
-#include <aips/Arrays/Vector.h>
-#include <aips/Arrays/Matrix.h>
-#include <aips/Arrays/ArrayMath.h>
-#include <aips/Arrays/ArrayUtil.h>
-#include <aips/Utilities/Assert.h>
-#include <aips/Containers/Record.h>
-#include <aips/Functionals/ScalarSampledFunctional.h>
-#include <aips/BasicMath/Math.h>
-#include <aips/Measures/MFrequency.h>
-#include <aips/Measures/MeasureHolder.h>
-#include <aips/Measures/VelocityMachine.h>
-#include <aips/Quanta/Quantum.h>
-#include <aips/Containers/RecordInterface.h>
-#include <aips/Logging/LogIO.h>
-#include <aips/Logging/LogOrigin.h>
-#include <trial/FITS/FITSKeywordUtil.h>
-#include <trial/FITS/FITSSpectralUtil.h>
+#include <casa/Arrays/Vector.h>
+#include <casa/Arrays/Matrix.h>
+#include <casa/Arrays/ArrayMath.h>
+#include <casa/Arrays/ArrayUtil.h>
+#include <casa/Utilities/Assert.h>
+#include <casa/Containers/Record.h>
+#include <scimath/Functionals/ScalarSampledFunctional.h>
+#include <casa/BasicMath/Math.h>
+#include <measures/Measures/MFrequency.h>
+#include <measures/Measures/MeasureHolder.h>
+#include <measures/Measures/VelocityMachine.h>
+#include <casa/Quanta/Quantum.h>
+#include <casa/Containers/RecordInterface.h>
+#include <casa/Logging/LogIO.h>
+#include <casa/Logging/LogOrigin.h>
+#include <fits/FITS/FITSKeywordUtil.h>
+#include <fits/FITS/FITSSpectralUtil.h>
 
-#include <aips/sstream.h>
-#include <aips/iostream.h>
+#include <casa/sstream.h>
+#include <casa/iostream.h>
 
 
 SpectralCoordinate::SpectralCoordinate()

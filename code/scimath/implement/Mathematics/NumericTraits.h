@@ -29,8 +29,8 @@
 #define AIPS_NUMERICTRAITS_H
 
 //# Include files
-#include <aips/aips.h>
-#include <aips/BasicSL/Complex.h>
+#include <casa/aips.h>
+#include <casa/BasicSL/Complex.h>
 
 //
 // <summary> Relationships between numeric data types </summary>

@@ -25,9 +25,9 @@
 //#
 //# $Id$
 
-#include <aips/Functionals/GaussianND.h>
-#include <aips/Arrays/Vector.h>
-#include <aips/iostream.h>
+#include <scimath/Functionals/GaussianND.h>
+#include <casa/Arrays/Vector.h>
+#include <casa/iostream.h>
 
 int main(){
   cout << "The example from the Header File" << endl;

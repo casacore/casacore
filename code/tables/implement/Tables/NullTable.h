@@ -30,8 +30,8 @@
 
 
 //# Includes
-#include <aips/aips.h>
-#include <aips/Tables/BaseTable.h>
+#include <casa/aips.h>
+#include <tables/Tables/BaseTable.h>
 
 
 // <summary>

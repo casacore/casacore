@@ -27,12 +27,12 @@
 #if !defined(AIPS_FITTING_H)
 #define AIPS_FITTING_H
 
-#include <aips/aips.h>
-#include <aips/Fitting/FitLSQ.h>
-#include <trial/Fitting/LinearFit.h>
-#include <trial/Fitting/LinearFitSVD.h>
-#include <trial/Fitting/NonLinearFit.h>
-#include <trial/Fitting/NonLinearFitLM.h>
+#include <casa/aips.h>
+#include <scimath/Fitting/FitLSQ.h>
+#include <scimath/Fitting/LinearFit.h>
+#include <scimath/Fitting/LinearFitSVD.h>
+#include <scimath/Fitting/NonLinearFit.h>
+#include <scimath/Fitting/NonLinearFitLM.h>
 
 // <module>
 //

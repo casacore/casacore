@@ -30,11 +30,11 @@
 
 
 //# Includes
-#include <aips/aips.h>
-#include <aips/Arrays/IPosition.h>
-#include <aips/Utilities/CountedPtr.h>
-#include <aips/Arrays/LogiArrayFwd.h>
-#include <aips/Arrays/MaskLogiArrFwd.h>
+#include <casa/aips.h>
+#include <casa/Arrays/IPosition.h>
+#include <casa/Utilities/CountedPtr.h>
+#include <casa/Arrays/LogiArrayFwd.h>
+#include <casa/Arrays/MaskLogiArrFwd.h>
 
 //# Forward declarations
 //# <note role=warning>

@@ -30,13 +30,13 @@
 #define TRIAL_IMAGEFIT1D_H
 
 //# Includes
-#include <aips/aips.h>
-#include <aips/Arrays/Vector.h>
-#include <aips/Measures/MDirection.h>
-#include <aips/Measures/MFrequency.h>
-#include <aips/Measures/MDoppler.h>
-#include <trial/Coordinates/CoordinateSystem.h>
-#include <trial/SpectralComponents/ProfileFit1D.h>
+#include <casa/aips.h>
+#include <casa/Arrays/Vector.h>
+#include <measures/Measures/MDirection.h>
+#include <measures/Measures/MFrequency.h>
+#include <measures/Measures/MDoppler.h>
+#include <coordinates/Coordinates/CoordinateSystem.h>
+#include <components/SpectralComponents/ProfileFit1D.h>
 
 class SpectralElement;
 class SpectralList;

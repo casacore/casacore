@@ -26,11 +26,11 @@
 # if !defined(AIPS_RF_DATAMAPPER_H)
 #define AIPS_RF_DATAMAPPER_H
 
-#include <trial/Flagging/RFChunkStats.h> 
-#include <trial/Flagging/DDMapper.h> 
-#include <aips/Arrays/Cube.h>
-#include <trial/Mathematics/RigidVector.h>
-#include <aips/Containers/Block.h>
+#include <flagging/Flagging/RFChunkStats.h> 
+#include <flagging/Flagging/DDMapper.h> 
+#include <casa/Arrays/Cube.h>
+#include <scimath/Mathematics/RigidVector.h>
+#include <casa/Containers/Block.h>
 
 class RFDataMapper;
 class VisBuffer;

@@ -30,9 +30,9 @@
 
 
 //# Includes
-#include <aips/aips.h>
-#include <aips/Tables/BaseColumn.h>
-#include <aips/Tables/ColumnCache.h>
+#include <casa/aips.h>
+#include <tables/Tables/BaseColumn.h>
+#include <tables/Tables/ColumnCache.h>
 
 //# Forward Declarations
 class RefTable;

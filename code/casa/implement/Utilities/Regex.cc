@@ -27,12 +27,12 @@
 
 // Regex class implementation
 
-#include <aips/Utilities/cregex.h>
+#include <casa/Utilities/cregex.h>
 
-#include <aips/Utilities/Regex.h>
-#include <aips/BasicSL/String.h>
-#include <aips/stdexcept.h>
-#include <aips/iostream.h>
+#include <casa/Utilities/Regex.h>
+#include <casa/BasicSL/String.h>
+#include <casa/stdexcept.h>
+#include <casa/iostream.h>
 
 Regex::Regex() {
   create("",0,0,0);

@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#include <aips/Mathematics/NumericTraits.h>
-#include <aips/BasicSL/Constants.h>
+#include <scimath/Mathematics/NumericTraits.h>
+#include <casa/BasicSL/Constants.h>
 
 const Double & NumericTraits<Float>::epsilon = C::flt_epsilon;
 const Double & NumericTraits<Double>::epsilon = C::dbl_epsilon;

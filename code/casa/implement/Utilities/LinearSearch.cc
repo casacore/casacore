@@ -28,7 +28,7 @@
 
 
 //# Includes
-#include <aips/Utilities/LinearSearch.h>
+#include <casa/Utilities/LinearSearch.h>
 
 
 template<class Container, class ElType>

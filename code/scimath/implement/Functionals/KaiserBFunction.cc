@@ -25,9 +25,9 @@
 //#
 //# $Id$
 
-#include <trial/Functionals/KaiserBFunction.h>
-#include <aips/BasicSL/Constants.h>
-#include <aips/BasicMath/Math.h>
+#include <scimath/Functionals/KaiserBFunction.h>
+#include <casa/BasicSL/Constants.h>
+#include <casa/BasicMath/Math.h>
 
 //# Constructors
 

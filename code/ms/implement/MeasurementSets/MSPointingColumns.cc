@@ -25,13 +25,13 @@
 //#
 //# $Id$
 
-#include <aips/MeasurementSets/MSPointingColumns.h>
-#include <aips/MeasurementSets/MSFieldColumns.h>
-#include <aips/MeasurementSets/MSPointing.h>
-#include <aips/Tables/ColDescSet.h>
-#include <aips/Tables/TableDesc.h>
-#include <aips/Tables/TableRecord.h>
-#include <aips/BasicSL/String.h>
+#include <ms/MeasurementSets/MSPointingColumns.h>
+#include <ms/MeasurementSets/MSFieldColumns.h>
+#include <ms/MeasurementSets/MSPointing.h>
+#include <tables/Tables/ColDescSet.h>
+#include <tables/Tables/TableDesc.h>
+#include <tables/Tables/TableRecord.h>
+#include <casa/BasicSL/String.h>
 
 ROMSPointingColumns::
 ROMSPointingColumns(const MSPointing& msPointing):

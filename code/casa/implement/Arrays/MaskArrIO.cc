@@ -25,12 +25,12 @@
 //#
 //# $Id$
 
-#include <aips/iostream.h>
+#include <casa/iostream.h>
 
-#include <aips/aips.h>
-#include <aips/Arrays/MaskArrIO.h>
-#include <aips/Arrays/MaskedArray.h>
-#include <aips/Arrays/ArrayIO.h>
+#include <casa/aips.h>
+#include <casa/Arrays/MaskArrIO.h>
+#include <casa/Arrays/MaskedArray.h>
+#include <casa/Arrays/ArrayIO.h>
 
 template<class T>
 ostream & operator<< (ostream &s, const MaskedArray<T> &a)

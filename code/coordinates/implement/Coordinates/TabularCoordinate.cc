@@ -26,24 +26,24 @@
 //#
 //# $Id$
 
-#include <trial/Coordinates/TabularCoordinate.h>
+#include <coordinates/Coordinates/TabularCoordinate.h>
 
-#include <aips/Arrays/Vector.h>
-#include <aips/Arrays/Matrix.h>
-#include <aips/Arrays/ArrayMath.h>
-#include <aips/Arrays/MatrixMath.h>
-#include <trial/Coordinates/LinearCoordinate.h>
-#include <aips/Utilities/Assert.h>
-#include <aips/Utilities/LinearSearch.h>
-#include <aips/Functionals/Interpolate1D.h>
-#include <aips/Functionals/ScalarSampledFunctional.h>
-#include <aips/Containers/Record.h>
-#include <aips/Logging/LogIO.h>
-#include <aips/Logging/LogOrigin.h>
-#include <aips/BasicMath/Math.h>
-#include <aips/Quanta/Quantum.h>
+#include <casa/Arrays/Vector.h>
+#include <casa/Arrays/Matrix.h>
+#include <casa/Arrays/ArrayMath.h>
+#include <casa/Arrays/MatrixMath.h>
+#include <coordinates/Coordinates/LinearCoordinate.h>
+#include <casa/Utilities/Assert.h>
+#include <casa/Utilities/LinearSearch.h>
+#include <scimath/Functionals/Interpolate1D.h>
+#include <scimath/Functionals/ScalarSampledFunctional.h>
+#include <casa/Containers/Record.h>
+#include <casa/Logging/LogIO.h>
+#include <casa/Logging/LogOrigin.h>
+#include <casa/BasicMath/Math.h>
+#include <casa/Quanta/Quantum.h>
 
-#include <aips/sstream.h>
+#include <casa/sstream.h>
 
 
 TabularCoordinate::TabularCoordinate()

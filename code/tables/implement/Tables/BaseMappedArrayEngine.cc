@@ -26,13 +26,13 @@
 //# $Id$
 
 //# Includes
-#include <aips/Tables/BaseMappedArrayEngine.h>
-#include <aips/Tables/Table.h>
-#include <aips/Tables/ArrayColumn.h>
-#include <aips/Tables/ColumnDesc.h>
-#include <aips/Tables/DataManError.h>
-#include <aips/Tables/TableRecord.h>
-#include <aips/BasicSL/String.h>
+#include <tables/Tables/BaseMappedArrayEngine.h>
+#include <tables/Tables/Table.h>
+#include <tables/Tables/ArrayColumn.h>
+#include <tables/Tables/ColumnDesc.h>
+#include <tables/Tables/DataManError.h>
+#include <tables/Tables/TableRecord.h>
+#include <casa/BasicSL/String.h>
 
 
 template<class SourceType, class TargetType>

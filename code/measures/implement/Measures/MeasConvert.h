@@ -30,12 +30,12 @@
 #define AIPS_MEASCONVERT_H
 
 //# Includes
-#include <aips/aips.h>
-#include <aips/Containers/Block.h>
-#include <aips/Measures/MConvertBase.h>
-#include <aips/Quanta/Quantum.h>
-#include <aips/Measures/Measure.h>
-/// #include <aips/Measures/MeasRef.h>
+#include <casa/aips.h>
+#include <casa/Containers/Block.h>
+#include <measures/Measures/MConvertBase.h>
+#include <casa/Quanta/Quantum.h>
+#include <measures/Measures/Measure.h>
+/// #include <measures/Measures/MeasRef.h>
 
 //# Forward Declarations
 class MCBase;

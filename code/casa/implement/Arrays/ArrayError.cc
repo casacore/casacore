@@ -27,7 +27,7 @@
 
 // .SUMMARY General, Indexing, and Conformace errors thrown by Array classes.
 
-#include <aips/Arrays/ArrayError.h>
+#include <casa/Arrays/ArrayError.h>
 
 
 ArrayError::ArrayError(Category c) : AipsError("ArrayError",c) {}

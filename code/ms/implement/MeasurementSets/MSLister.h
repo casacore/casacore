@@ -29,12 +29,12 @@
 #define TRIAL_MSLISTER_H
 
 
-#include <aips/aips.h>
-#include <aips/Logging/LogIO.h>
-#include <aips/BasicSL/String.h>
-#include <aips/Arrays/Vector.h>
-#include <aips/Containers/Record.h>
-#include <trial/MeasurementSets/MSSelector.h>
+#include <casa/aips.h>
+#include <casa/Logging/LogIO.h>
+#include <casa/BasicSL/String.h>
+#include <casa/Arrays/Vector.h>
+#include <casa/Containers/Record.h>
+#include <ms/MeasurementSets/MSSelector.h>
 class MeasurementSet;
 
 // <summary> List visibility records from a Measurement Set </summary>

@@ -25,19 +25,19 @@
 //#
 //# $Id$
 //
-#include <aips/aips.h>
-#include <aips/System/Aipsrc.h>
-#include <aips/Exceptions/Error.h>
-#include <aips/Inputs/Input.h>
-#include <aips/Logging.h>
-#include <aips/Utilities/DataType.h>
-#include <aips/BasicSL/String.h>
-#include <trial/Images/ImageUtilities.h>
-#include <trial/Images/ImageSummary.h>
-#include <trial/Images/PagedImage.h>
-#include <trial/Images/FITSImage.h>
-#include <trial/Images/MIRIADImage.h>
-#include <aips/Measures/MDoppler.h>
+#include <casa/aips.h>
+#include <casa/System/Aipsrc.h>
+#include <casa/Exceptions/Error.h>
+#include <casa/Inputs/Input.h>
+#include <casa/Logging.h>
+#include <casa/Utilities/DataType.h>
+#include <casa/BasicSL/String.h>
+#include <images/Images/ImageUtilities.h>
+#include <images/Images/ImageSummary.h>
+#include <images/Images/PagedImage.h>
+#include <images/Images/FITSImage.h>
+#include <images/Images/MIRIADImage.h>
+#include <measures/Measures/MDoppler.h>
 
 
 int main (int argc, char **argv)

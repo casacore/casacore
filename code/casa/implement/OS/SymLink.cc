@@ -26,14 +26,14 @@
 //# $Id$
 
 
-#include <aips/OS/SymLink.h>
-#include <aips/OS/RegularFile.h>
-#include <aips/Exceptions.h>
+#include <casa/OS/SymLink.h>
+#include <casa/OS/RegularFile.h>
+#include <casa/Exceptions.h>
 
 #include <unistd.h>               // needed for unlink
 #include <errno.h>                // needed for errno
-#include <aips/string.h>               // needed for strerror
-#include <aips/stdlib.h>               // needed for system
+#include <casa/string.h>               // needed for strerror
+#include <casa/stdlib.h>               // needed for system
 
 SymLink::SymLink()
 : File()

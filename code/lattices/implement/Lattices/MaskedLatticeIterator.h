@@ -29,10 +29,10 @@
 #define AIPS_MASKEDLATTICEITERATOR_H
 
 //# Includes
-#include <aips/aips.h>
-#include <trial/Lattices/MaskedLattice.h>
-#include <aips/Lattices/LatticeIterator.h>
-#include <aips/Utilities/CountedPtr.h>
+#include <casa/aips.h>
+#include <lattices/Lattices/MaskedLattice.h>
+#include <lattices/Lattices/LatticeIterator.h>
+#include <casa/Utilities/CountedPtr.h>
 
 
 // <summary>

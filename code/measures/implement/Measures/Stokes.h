@@ -28,9 +28,9 @@
 #if !defined(AIPS_STOKES_H)
 #define AIPS_STOKES_H
 
-#include <aips/aips.h>
-#include <aips/BasicSL/String.h>
-#include <aips/Utilities/Fallible.h>
+#include <casa/aips.h>
+#include <casa/BasicSL/String.h>
+#include <casa/Utilities/Fallible.h>
 
 
 // <summary>

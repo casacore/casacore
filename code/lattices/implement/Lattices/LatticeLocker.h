@@ -30,8 +30,8 @@
 
 
 //# Includes
-#include <aips/Lattices/LatticeBase.h>
-#include <aips/Tables/TableLock.h>
+#include <lattices/Lattices/LatticeBase.h>
+#include <tables/Tables/TableLock.h>
 
 
 // <summary>

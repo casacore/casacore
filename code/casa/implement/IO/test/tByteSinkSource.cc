@@ -25,14 +25,14 @@
 //#
 //# $Id$
 
-#include <aips/aips.h>
-#include <aips/iostream.h>
-#include <aips/IO/ByteSinkSource.h>
-#include <aips/IO/CanonicalIO.h>
-#include <aips/IO/RegularFileIO.h>
-#include <aips/OS/RegularFile.h>
-#include <aips/OS/Path.h>
-#include <aips/Exceptions.h>
+#include <casa/aips.h>
+#include <casa/iostream.h>
+#include <casa/IO/ByteSinkSource.h>
+#include <casa/IO/CanonicalIO.h>
+#include <casa/IO/RegularFileIO.h>
+#include <casa/OS/RegularFile.h>
+#include <casa/OS/Path.h>
+#include <casa/Exceptions.h>
 
 const Int nrOfTests = 1;
 

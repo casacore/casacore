@@ -25,17 +25,17 @@
 //#
 //# $Id$
 
-#include <aips/iostream.h>
+#include <casa/iostream.h>
 
-#include <aips/Arrays/ArrayMath.h>
-#include <aips/Arrays/ArrayUtil.h>
-#include <aips/Arrays/Array.h>
-#include <aips/Arrays/ArrayIter.h>
-#include <aips/Arrays/VectorIter.h>
-#include <aips/Arrays/ArrayError.h>
-#include <aips/BasicMath/Math.h>
-#include <aips/BasicMath/ConvertScalar.h>
-#include <aips/Utilities/GenSort.h>
+#include <casa/Arrays/ArrayMath.h>
+#include <casa/Arrays/ArrayUtil.h>
+#include <casa/Arrays/Array.h>
+#include <casa/Arrays/ArrayIter.h>
+#include <casa/Arrays/VectorIter.h>
+#include <casa/Arrays/ArrayError.h>
+#include <casa/BasicMath/Math.h>
+#include <casa/BasicMath/ConvertScalar.h>
+#include <casa/Utilities/GenSort.h>
 
 // <thrown>
 //   <item> ArrayError

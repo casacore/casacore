@@ -27,18 +27,18 @@
 
 //# Includes
 
-#include <trial/MeasurementSets/MSTableIndex.h>
+#include <ms/MeasurementSets/MSTableIndex.h>
 
-#include <aips/Containers/Record.h>
-#include <aips/Containers/RecordDesc.h>
-#include <aips/Arrays/ArrayMath.h>
-#include <aips/Arrays/Slice.h>
-#include <aips/Exceptions/Error.h>
-#include <aips/Tables/ColumnsIndex.h>
-#include <aips/Tables/TableDesc.h>
-#include <aips/Utilities/Assert.h>
-#include <aips/BasicSL/String.h>
-#include <aips/BasicMath/Math.h>
+#include <casa/Containers/Record.h>
+#include <casa/Containers/RecordDesc.h>
+#include <casa/Arrays/ArrayMath.h>
+#include <casa/Arrays/Slice.h>
+#include <casa/Exceptions/Error.h>
+#include <tables/Tables/ColumnsIndex.h>
+#include <tables/Tables/TableDesc.h>
+#include <casa/Utilities/Assert.h>
+#include <casa/BasicSL/String.h>
+#include <casa/BasicMath/Math.h>
 
 MSTableIndex::MSTableIndex()
     : timeVals_p(0), intervalVals_p(0), key_p(0), time_p(0.0), interval_p(0.0),

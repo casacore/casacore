@@ -25,20 +25,20 @@
 //#
 //# $Id$
 
-#include <trial/Lattices/LatticeTwoPtCorr.h>
-#include <aips/Lattices/ArrayLattice.h>
-#include <aips/Lattices/LatticeIterator.h>
-#include <aips/Lattices/LatticeStepper.h>
-#include <aips/Lattices/TempLattice.h>
-#include <trial/Lattices/SubLattice.h>
-#include <aips/BasicMath/Math.h>
-#include <aips/Logging/LogIO.h>
-#include <aips/Arrays/Vector.h>
-#include <aips/Arrays/ArrayMath.h>
-#include <aips/Arrays/IPosition.h>
-#include <aips/Utilities/Assert.h>
-#include <aips/Exceptions/Error.h>
-#include <aips/iostream.h>
+#include <lattices/Lattices/LatticeTwoPtCorr.h>
+#include <lattices/Lattices/ArrayLattice.h>
+#include <lattices/Lattices/LatticeIterator.h>
+#include <lattices/Lattices/LatticeStepper.h>
+#include <lattices/Lattices/TempLattice.h>
+#include <lattices/Lattices/SubLattice.h>
+#include <casa/BasicMath/Math.h>
+#include <casa/Logging/LogIO.h>
+#include <casa/Arrays/Vector.h>
+#include <casa/Arrays/ArrayMath.h>
+#include <casa/Arrays/IPosition.h>
+#include <casa/Utilities/Assert.h>
+#include <casa/Exceptions/Error.h>
+#include <casa/iostream.h>
 
 
 main ()

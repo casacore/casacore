@@ -26,9 +26,9 @@
 //#
 //# $Id$
 
-#include <aips/Logging/LogSinkInterface.h>
-#include <aips/Logging/LogFilter.h>
-#include <aips/Exceptions/Error.h>
+#include <casa/Logging/LogSinkInterface.h>
+#include <casa/Logging/LogFilter.h>
+#include <casa/Exceptions/Error.h>
 
 String LogSinkInterface::localId( )
 {

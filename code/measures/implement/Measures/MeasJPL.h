@@ -29,12 +29,12 @@
 #define AIPS_MEASJPL_H
 
 //# Includes
-#include <aips/aips.h>
-#include <aips/Tables/Table.h>
-#include <aips/Tables/TableRow.h>
-#include <aips/Tables/TableRecord.h>
-#include <aips/Tables/ArrayColumn.h>
-#include <aips/Containers/RecordField.h>
+#include <casa/aips.h>
+#include <tables/Tables/Table.h>
+#include <tables/Tables/TableRow.h>
+#include <tables/Tables/TableRecord.h>
+#include <tables/Tables/ArrayColumn.h>
+#include <casa/Containers/RecordField.h>
 
 //# Forward Declarations
 class String;
@@ -89,10 +89,10 @@ class MVEpoch;
 //
 // <example>
 // <srcblock>
-//	#include <aips/aips.h>
-//	#include <aips/Quanta/MVEpoch.h>
-//     	#include <aips/Measures/MeasJPL.h>
-//	#include <aips/Arrays/Vector.h>
+//	#include <casa/aips.h>
+//	#include <casa/Quanta/MVEpoch.h>
+//     	#include <measures/Measures/MeasJPL.h>
+//	#include <casa/Arrays/Vector.h>
 //    	const MVEpoch dat = 51116; // a date (1998/10/30) in TDB
 //	Vector<Double> val(6), valE(6);		// results
 //	// Get position and velocity of Venus (barycentric)

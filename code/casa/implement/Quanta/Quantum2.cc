@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#include <aips/Quanta/Quantum.h>
-#include <aips/iostream.h>
+#include <casa/Quanta/Quantum.h>
+#include <casa/iostream.h>
 
 istream &operator>> (istream &is, Quantity &ku) {
   String str;

@@ -25,9 +25,9 @@
 //#
 //# $Id$
  
-#include <trial/Mathematics/Interpolate2D.h>
-#include <aips/Arrays/Matrix.h>
-#include <aips/Arrays/Vector.h>
+#include <scimath/Mathematics/Interpolate2D.h>
+#include <casa/Arrays/Matrix.h>
+#include <casa/Arrays/Vector.h>
 
 template <typename T>
 Bool Interpolate2D::interpNearest(T &result, 

@@ -26,19 +26,19 @@
 //# $Id$
 
 
-#include <aips/IO/LockFile.h>
-#include <aips/IO/FiledesIO.h>
-#include <aips/IO/MemoryIO.h>
-#include <aips/IO/CanonicalIO.h>
-#include <aips/OS/RegularFile.h>
-#include <aips/OS/Path.h>
-#include <aips/OS/CanonicalConversion.h>
-#include <aips/Utilities/Assert.h>
-#include <aips/Exceptions/Error.h>
+#include <casa/IO/LockFile.h>
+#include <casa/IO/FiledesIO.h>
+#include <casa/IO/MemoryIO.h>
+#include <casa/IO/CanonicalIO.h>
+#include <casa/OS/RegularFile.h>
+#include <casa/OS/Path.h>
+#include <casa/OS/CanonicalConversion.h>
+#include <casa/Utilities/Assert.h>
+#include <casa/Exceptions/Error.h>
 #include <unistd.h>
 #include <fcntl.h>
-#include <aips/iostream.h>
-#include <aips/sstream.h>
+#include <casa/iostream.h>
+#include <casa/sstream.h>
 
 // PABLO_IO is used to profile the IO performance of the AIPS++ (in
 // particular to help us locate bottlenecks associated with parallel

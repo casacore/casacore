@@ -29,7 +29,7 @@
 #define AIPS_EXPRFUNCNODE_H
 
 //# Includes
-#include <aips/Tables/ExprNodeRep.h>
+#include <tables/Tables/ExprNodeRep.h>
 
 //# Forward Declarations
 class TableExprNodeSet;

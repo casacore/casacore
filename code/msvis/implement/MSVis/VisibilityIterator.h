@@ -28,24 +28,24 @@
 #if !defined(TRIAL_VISIBILITYITERATOR_H)
 #define TRIAL_VISIBILITYITERATOR_H
 
-#include <aips/aips.h>
-#include <aips/Arrays/Matrix.h>
-#include <aips/Arrays/Cube.h>
-#include <aips/Arrays/Slicer.h>
-#include <aips/Containers/Stack.h>
-#include <aips/MeasurementSets/MeasurementSet.h>
-#include <aips/Measures/Stokes.h>
-#include <aips/Measures/MeasConvert.h>
-#include <aips/Quanta/MVDoppler.h>
-#include <aips/Measures/MCDoppler.h>
-#include <aips/Measures/MDoppler.h>
-#include <aips/Tables/ArrayColumn.h>
-#include <aips/Tables/ScalarColumn.h>
-#include <aips/BasicSL/String.h>
+#include <casa/aips.h>
+#include <casa/Arrays/Matrix.h>
+#include <casa/Arrays/Cube.h>
+#include <casa/Arrays/Slicer.h>
+#include <casa/Containers/Stack.h>
+#include <ms/MeasurementSets/MeasurementSet.h>
+#include <measures/Measures/Stokes.h>
+#include <measures/Measures/MeasConvert.h>
+#include <casa/Quanta/MVDoppler.h>
+#include <measures/Measures/MCDoppler.h>
+#include <measures/Measures/MDoppler.h>
+#include <tables/Tables/ArrayColumn.h>
+#include <tables/Tables/ScalarColumn.h>
+#include <casa/BasicSL/String.h>
 
-#include <trial/MeasurementSets/MSDerivedValues.h>
-#include <trial/MSVis/StokesVector.h>
-#include <trial/MeasurementSets/MSIter.h>
+#include <ms/MeasurementSets/MSDerivedValues.h>
+#include <msvis/MSVis/StokesVector.h>
+#include <ms/MeasurementSets/MSIter.h>
 
 //# forward decl
 class VisBuffer;

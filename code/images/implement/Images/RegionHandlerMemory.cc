@@ -25,11 +25,11 @@
 //#
 //# $Id$
 
-#include <trial/Images/RegionHandlerMemory.h>
-#include <trial/Images/ImageRegion.h>
-#include <trial/Lattices/LCMask.h>
-#include <aips/Arrays/Vector.h>
-#include <aips/Exceptions/Error.h>
+#include <images/Images/RegionHandlerMemory.h>
+#include <images/Images/ImageRegion.h>
+#include <lattices/Lattices/LCMask.h>
+#include <casa/Arrays/Vector.h>
+#include <casa/Exceptions/Error.h>
 
 
 RegionHandlerMemory::RegionHandlerMemory()

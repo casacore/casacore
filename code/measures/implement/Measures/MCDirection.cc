@@ -26,17 +26,17 @@
 //# $Id$
 
 //# Includes
-#include <aips/Exceptions.h>
-#include <aips/BasicSL/Constants.h>
-#include <aips/Utilities/Assert.h>
-#include <aips/Arrays/Vector.h>
-#include <aips/Arrays/ArrayMath.h>
-#include <aips/Measures/MCDirection.h>
-#include <aips/Measures/MCFrame.h>
-#include <aips/Measures/MeasFrame.h>
-#include <aips/Quanta/MVPosition.h>
-#include <aips/Measures/Nutation.h>
-#include <aips/Measures/MeasTable.h>
+#include <casa/Exceptions.h>
+#include <casa/BasicSL/Constants.h>
+#include <casa/Utilities/Assert.h>
+#include <casa/Arrays/Vector.h>
+#include <casa/Arrays/ArrayMath.h>
+#include <measures/Measures/MCDirection.h>
+#include <measures/Measures/MCFrame.h>
+#include <measures/Measures/MeasFrame.h>
+#include <casa/Quanta/MVPosition.h>
+#include <measures/Measures/Nutation.h>
+#include <measures/Measures/MeasTable.h>
 
 //# Statics
 Bool MCDirection::stateMade_p = False;

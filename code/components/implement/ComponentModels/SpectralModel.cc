@@ -25,21 +25,21 @@
 //#
 //# $Id$
 
-#include <trial/ComponentModels/SpectralModel.h>
-#include <aips/Containers/Record.h>
-#include <aips/Containers/RecordFieldId.h>
-#include <aips/Containers/RecordInterface.h>
-#include <aips/Exceptions/Error.h>
-#include <aips/Arrays/IPosition.h>
-#include <aips/Measures/MeasureHolder.h>
-#include <aips/Quanta/QuantumHolder.h>
-#include <aips/Quanta/Quantum.h>
-#include <aips/Utilities/Assert.h>
-#include <aips/Utilities/DataType.h>
-#include <aips/BasicSL/String.h>
-#include <aips/Logging/LogIO.h>
-#include <aips/Logging/LogOrigin.h>
-#include <aips/iostream.h>
+#include <components/ComponentModels/SpectralModel.h>
+#include <casa/Containers/Record.h>
+#include <casa/Containers/RecordFieldId.h>
+#include <casa/Containers/RecordInterface.h>
+#include <casa/Exceptions/Error.h>
+#include <casa/Arrays/IPosition.h>
+#include <measures/Measures/MeasureHolder.h>
+#include <casa/Quanta/QuantumHolder.h>
+#include <casa/Quanta/Quantum.h>
+#include <casa/Utilities/Assert.h>
+#include <casa/Utilities/DataType.h>
+#include <casa/BasicSL/String.h>
+#include <casa/Logging/LogIO.h>
+#include <casa/Logging/LogOrigin.h>
+#include <casa/iostream.h>
 
 SpectralModel::SpectralModel()
   :itsRefFreq(Quantum<Double>(1, "GHz"), MFrequency::DEFAULT),

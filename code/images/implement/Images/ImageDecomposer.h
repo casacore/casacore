@@ -28,16 +28,16 @@
 #if !defined(TRIAL_IMAGEDECOMPOSER_H)
 #define TRIAL_IMAGEDECOMPOSER_H
 
-#include <aips/iostream.h>
-#include <aips/math.h>
-#include <aips/aips.h>
-#include <aips/Arrays/Vector.h>
-#include <aips/Arrays/Matrix.h>
-#include <aips/Containers/Block.h>
-#include <aips/Functionals/Function1D.h>
-#include <aips/Lattices/TempLattice.h>
-#include <trial/Lattices/SubLattice.h>
-#include <trial/Images/ImageInterface.h>
+#include <casa/iostream.h>
+#include <casa/math.h>
+#include <casa/aips.h>
+#include <casa/Arrays/Vector.h>
+#include <casa/Arrays/Matrix.h>
+#include <casa/Containers/Block.h>
+#include <scimath/Functionals/Function1D.h>
+#include <lattices/Lattices/TempLattice.h>
+#include <lattices/Lattices/SubLattice.h>
+#include <images/Images/ImageInterface.h>
 
 
 // <summary>

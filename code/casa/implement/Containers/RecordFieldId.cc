@@ -27,6 +27,6 @@
 //# $Id$
 
 
-#include <aips/Containers/RecordFieldId.h>
+#include <casa/Containers/RecordFieldId.h>
 
 //# Everything is inlined

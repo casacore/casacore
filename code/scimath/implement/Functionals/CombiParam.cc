@@ -26,7 +26,7 @@
 //# $Id$
 
 //# Includes
-#include <aips/Functionals/CombiParam.h>
+#include <scimath/Functionals/CombiParam.h>
 
 template <class T>
 CombiParam<T>::CombiParam() : 

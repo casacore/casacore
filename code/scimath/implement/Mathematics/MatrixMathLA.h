@@ -29,10 +29,10 @@
 #define AIPS_MATRIXMATHLA_H
 
 
-#include <aips/aips.h>
-#include <aips/Arrays/Vector.h>
-#include <aips/Arrays/Matrix.h>
-#include <aips/BasicSL/Complex.h>
+#include <casa/aips.h>
+#include <casa/Arrays/Vector.h>
+#include <casa/Arrays/Matrix.h>
+#include <casa/BasicSL/Complex.h>
 
 
 //<summary>

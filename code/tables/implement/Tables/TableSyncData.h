@@ -29,10 +29,10 @@
 #define AIPS_TABLESYNCDATA_H
 
 //# Includes
-#include <aips/aips.h>
-#include <aips/Containers/Block.h>
-#include <aips/IO/MemoryIO.h>
-#include <aips/IO/AipsIO.h>
+#include <casa/aips.h>
+#include <casa/Containers/Block.h>
+#include <casa/IO/MemoryIO.h>
+#include <casa/IO/AipsIO.h>
 
 
 // <summary> 

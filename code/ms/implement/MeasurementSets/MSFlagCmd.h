@@ -29,9 +29,9 @@
 #if !defined(AIPS_MSFLAGCMD_H)
 #define AIPS_MSFLAGCMD_H
 
-#include <aips/aips.h>
-#include <aips/MeasurementSets/MSTable.h>
-#include <aips/MeasurementSets/MSFlagCmdEnums.h>
+#include <casa/aips.h>
+#include <ms/MeasurementSets/MSTable.h>
+#include <ms/MeasurementSets/MSFlagCmdEnums.h>
 
 // <summary> 
 // A Table intended to hold a MeasurementSet FLAG_CMD table.

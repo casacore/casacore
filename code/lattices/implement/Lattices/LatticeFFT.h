@@ -29,8 +29,8 @@
 #if !defined(AIPS_LATTICEFFT_H)
 #define AIPS_LATTICEFFT_H
 
-#include <aips/aips.h>
-#include <aips/BasicSL/Complex.h>
+#include <casa/aips.h>
+#include <casa/BasicSL/Complex.h>
 
 template <class T> class Vector;
 template <class T> class Lattice;

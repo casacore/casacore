@@ -29,10 +29,10 @@
 #define AIPS_TSMIDCOLUMN_H
 
 //# Includes
-#include <aips/aips.h>
-#include <aips/Tables/TSMColumn.h>
-#include <aips/Arrays/IPosition.h>
-#include <aips/BasicSL/String.h>
+#include <casa/aips.h>
+#include <tables/Tables/TSMColumn.h>
+#include <casa/Arrays/IPosition.h>
+#include <casa/BasicSL/String.h>
 
 //# Forward Declarations
 

@@ -29,9 +29,9 @@
 #define AIPS_TABLEITER_H
 
 //# Includes
-#include <aips/aips.h>
-#include <aips/Tables/Table.h>
-#include <aips/Utilities/Compare.h>
+#include <casa/aips.h>
+#include <tables/Tables/Table.h>
+#include <casa/Utilities/Compare.h>
 
 //# Forward Declarations
 class BaseTableIterator;

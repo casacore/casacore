@@ -29,7 +29,7 @@
 #define AIPS_LOGIARRAYFWD_H
 
 
-#include <aips/aips.h>
+#include <casa/aips.h>
 
 // <summary>
 //    Forward declarations for LogicalArrays.

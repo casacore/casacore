@@ -25,34 +25,34 @@
 //#
 //# $Id$
 
-#include <trial/Lattices/LatticeExpr.h>
-#include <trial/Lattices/LELAttribute.h>
-#include <trial/Lattices/LELBinary.h>
-#include <trial/Lattices/LELConvert.h>
-#include <trial/Lattices/LELFunction.h>
-#include <trial/Lattices/LELLattice.h>
-#include <trial/Lattices/LELUnary.h>
-#include <trial/Lattices/LELArray.h>
-#include <trial/Lattices/RebinLattice.h>
-#include <aips/Lattices/ArrayLattice.h>
-#include <trial/Lattices/SubLattice.h>
-#include <trial/Lattices/LCPixelSet.h>
-#include <trial/Lattices/LCBox.h>
-#include <aips/Arrays/Slicer.h>
+#include <lattices/Lattices/LatticeExpr.h>
+#include <lattices/Lattices/LELAttribute.h>
+#include <lattices/Lattices/LELBinary.h>
+#include <lattices/Lattices/LELConvert.h>
+#include <lattices/Lattices/LELFunction.h>
+#include <lattices/Lattices/LELLattice.h>
+#include <lattices/Lattices/LELUnary.h>
+#include <lattices/Lattices/LELArray.h>
+#include <lattices/Lattices/RebinLattice.h>
+#include <lattices/Lattices/ArrayLattice.h>
+#include <lattices/Lattices/SubLattice.h>
+#include <lattices/Lattices/LCPixelSet.h>
+#include <lattices/Lattices/LCBox.h>
+#include <casa/Arrays/Slicer.h>
 
-#include <aips/Arrays/Array.h>
-#include <aips/Arrays/Matrix.h>
-#include <aips/Arrays/ArrayLogical.h>
-#include <aips/Arrays/ArrayMath.h>
-#include <aips/Arrays/ArrayIO.h>
-#include <aips/Exceptions/Error.h>
-#include <aips/Inputs/Input.h>
-#include <aips/Arrays/IPosition.h>
-#include <aips/BasicSL/Constants.h>
-#include <aips/BasicSL/Complex.h>
-#include <aips/Utilities/DataType.h>
+#include <casa/Arrays/Array.h>
+#include <casa/Arrays/Matrix.h>
+#include <casa/Arrays/ArrayLogical.h>
+#include <casa/Arrays/ArrayMath.h>
+#include <casa/Arrays/ArrayIO.h>
+#include <casa/Exceptions/Error.h>
+#include <casa/Inputs/Input.h>
+#include <casa/Arrays/IPosition.h>
+#include <casa/BasicSL/Constants.h>
+#include <casa/BasicSL/Complex.h>
+#include <casa/Utilities/DataType.h>
 
-#include <aips/iostream.h>
+#include <casa/iostream.h>
 
 Bool checkInfo (const LatticeExprNode& expr,
 		const IPosition& shape,

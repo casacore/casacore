@@ -26,8 +26,8 @@
 //#
 //# $Id$
 
-#include <trial/Containers/RecordFieldWriter.h>
-#include <aips/Utilities/Assert.h>
+#include <casa/Containers/RecordFieldWriter.h>
+#include <casa/Utilities/Assert.h>
 
 RecordFieldWriter::~RecordFieldWriter()
 {

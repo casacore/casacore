@@ -26,13 +26,13 @@
 //# $Id$
 
 //# Includes
-#include <aips/Measures/MBaseline.h>
-#include <aips/Measures/MDirection.h>
-#include <aips/Exceptions.h>
-#include <aips/Arrays/Vector.h>
-#include <aips/BasicMath/Math.h>
-#include <aips/Utilities/Register.h>
-#include <aips/Utilities/Assert.h>
+#include <measures/Measures/MBaseline.h>
+#include <measures/Measures/MDirection.h>
+#include <casa/Exceptions.h>
+#include <casa/Arrays/Vector.h>
+#include <casa/BasicMath/Math.h>
+#include <casa/Utilities/Register.h>
+#include <casa/Utilities/Assert.h>
 
 //# Constructors
 MBaseline::MBaseline() :

@@ -26,18 +26,18 @@
 //# $Id$
 
 
-#include <trial/Images/LELImageCoord.h>
-#include <trial/Images/ImageExpr.h>
-#include <trial/Images/SubImage.h>
-#include <trial/Images/ExtendImage.h>
-#include <trial/Images/RebinImage.h>
-#include <trial/Lattices/LattRegionHolder.h>
-#include <trial/Lattices/LatticeRegion.h>
-#include <trial/Lattices/LatticeExpr.h>
-#include <trial/Coordinates/SpectralCoordinate.h>
-#include <trial/Coordinates/CoordinateUtil.h>
-#include <aips/Utilities/Assert.h>
-#include <aips/Exceptions/Error.h>
+#include <images/Images/LELImageCoord.h>
+#include <images/Images/ImageExpr.h>
+#include <images/Images/SubImage.h>
+#include <images/Images/ExtendImage.h>
+#include <images/Images/RebinImage.h>
+#include <lattices/Lattices/LattRegionHolder.h>
+#include <lattices/Lattices/LatticeRegion.h>
+#include <lattices/Lattices/LatticeExpr.h>
+#include <coordinates/Coordinates/SpectralCoordinate.h>
+#include <coordinates/Coordinates/CoordinateUtil.h>
+#include <casa/Utilities/Assert.h>
+#include <casa/Exceptions/Error.h>
 
 
 LELImageCoord::LELImageCoord()

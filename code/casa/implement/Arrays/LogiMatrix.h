@@ -28,9 +28,9 @@
 #if !defined (AIPS_LOGIMATRIX_H)
 #define AIPS_LOGIMATRIX_H
 
-#include <aips/aips.h>
-#include <aips/Arrays/LogiArray.h>
-#include <aips/Arrays/Matrix.h>
+#include <casa/aips.h>
+#include <casa/Arrays/LogiArray.h>
+#include <casa/Arrays/Matrix.h>
 
 
 // <summary>

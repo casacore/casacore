@@ -25,9 +25,9 @@
 //#
 //# $Id$
 
-#include <aips/Arrays/Array.h>
-#include <aips/Arrays/IPosition.h>
-#include <aips/Arrays/ArrayError.h>
+#include <casa/Arrays/Array.h>
+#include <casa/Arrays/IPosition.h>
+#include <casa/Arrays/ArrayError.h>
 
 // This probably isn't of interest to normal users. It returns the "volume" of
 // an array (i.e. "nelements").

@@ -28,9 +28,9 @@
 #if !defined(AIPS_BYTESINKSOURCE_H)
 #define AIPS_BYTESINKSOURCE_H
 
-#include <aips/aips.h>
-#include <aips/IO/ByteSink.h>
-#include <aips/IO/ByteSource.h>
+#include <casa/aips.h>
+#include <casa/IO/ByteSink.h>
+#include <casa/IO/ByteSource.h>
 
 class TypeIO;
 

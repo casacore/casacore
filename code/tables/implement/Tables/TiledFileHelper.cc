@@ -26,11 +26,11 @@
 //# $Id$
 
 
-#include <trial/Tables/TiledFileHelper.h>
-#include <aips/Tables/TSMFile.h>
-#include <aips/Tables/ArrColDesc.h>
-#include <aips/Tables/TableError.h>
-#include <aips/Arrays/Vector.h>
+#include <tables/Tables/TiledFileHelper.h>
+#include <tables/Tables/TSMFile.h>
+#include <tables/Tables/ArrColDesc.h>
+#include <tables/Tables/TableError.h>
+#include <casa/Arrays/Vector.h>
 
 
 TiledFileHelper::TiledFileHelper (const String& fileName,

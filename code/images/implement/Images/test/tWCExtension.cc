@@ -25,16 +25,16 @@
 //#
 //# $Id$
 
-#include <trial/Images/WCExtension.h>
-#include <trial/Images/WCBox.h>
-#include <trial/Images/ImageRegion.h>
-#include <trial/Lattices/LCRegion.h>
-#include <trial/Coordinates/CoordinateUtil.h>
-#include <aips/Arrays/Vector.h>
-#include <aips/Arrays/IPosition.h>
-#include <aips/Utilities/Assert.h>
-#include <aips/Exceptions/Error.h>
-#include <aips/iostream.h>
+#include <images/Images/WCExtension.h>
+#include <images/Images/WCBox.h>
+#include <images/Images/ImageRegion.h>
+#include <lattices/Lattices/LCRegion.h>
+#include <coordinates/Coordinates/CoordinateUtil.h>
+#include <casa/Arrays/Vector.h>
+#include <casa/Arrays/IPosition.h>
+#include <casa/Utilities/Assert.h>
+#include <casa/Exceptions/Error.h>
+#include <casa/iostream.h>
 
 
 void doIt()

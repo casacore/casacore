@@ -25,17 +25,17 @@
 //#
 //# $Id$
 
-#include<trial/LatticeMath/LatticeFit.h>
+#include<lattices/LatticeMath/LatticeFit.h>
 
-#include<aips/Arrays.h>
-#include<trial/Fitting/LinearFitSVD.h>
-#include <aips/Functionals/Polynomial.h>
-#include<aips/Lattices/ArrayLattice.h>
-#include<trial/Lattices/SubLattice.h>
-#include<trial/Lattices/MaskedLattice.h>
-#include<aips/Utilities/Assert.h>
+#include<casa/Arrays.h>
+#include<scimath/Fitting/LinearFitSVD.h>
+#include <scimath/Functionals/Polynomial.h>
+#include<lattices/Lattices/ArrayLattice.h>
+#include<lattices/Lattices/SubLattice.h>
+#include<lattices/Lattices/MaskedLattice.h>
+#include<casa/Utilities/Assert.h>
 
-#include <aips/iostream.h>
+#include <casa/iostream.h>
 
 int main() {
 

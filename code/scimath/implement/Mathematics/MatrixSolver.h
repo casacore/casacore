@@ -29,14 +29,14 @@
 #define AIPS_MATRIXSOLVER_H
 
 
-#include <aips/aips.h>
-#include <aips/Arrays/Array.h>
-#include <aips/Arrays/ArrayMath.h>
-#include <aips/Arrays/Matrix.h>
-#include <aips/Arrays/Vector.h>
+#include <casa/aips.h>
+#include <casa/Arrays/Array.h>
+#include <casa/Arrays/ArrayMath.h>
+#include <casa/Arrays/Matrix.h>
+#include <casa/Arrays/Vector.h>
 
-#include <aips/Logging/LogSink.h>
-#include <aips/Logging/LogMessage.h>
+#include <casa/Logging/LogSink.h>
+#include <casa/Logging/LogMessage.h>
 
 typedef Float FType;  // floating type (Float, Double)
 

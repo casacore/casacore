@@ -29,9 +29,9 @@
 #if !defined(AIPS_MSDATADESCRIPTION_H)
 #define AIPS_MSDATADESCRIPTION_H
 
-#include <aips/aips.h>
-#include <aips/MeasurementSets/MSTable.h>
-#include <aips/MeasurementSets/MSDataDescEnums.h>
+#include <casa/aips.h>
+#include <ms/MeasurementSets/MSTable.h>
+#include <ms/MeasurementSets/MSDataDescEnums.h>
 
 // <summary> 
 // A Table intended to hold a MeasurementSet DATADESCRIPTION table.

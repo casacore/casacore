@@ -25,6 +25,6 @@
 //#
 //# $Id$
 
-#include <aips/Tables/TabVecLogic.h>
+#include <tables/Tables/TabVecLogic.h>
 
 //# All functions are inlined, so there is no actual code.

@@ -32,10 +32,10 @@
 #define AIPS_ARRAY_INDEX_CHECK
 #endif
 
-#include <aips/aips.h>
-#include <aips/Containers/Block.h>
-#include <aips/Exceptions/Error.h>
-#include <aips/iostream.h>
+#include <casa/aips.h>
+#include <casa/Containers/Block.h>
+#include <casa/Exceptions/Error.h>
+#include <casa/iostream.h>
 
 // Test the Block class
 #include <assert.h>

@@ -26,7 +26,7 @@
 //# $Id$
 
 
-#include <aips/OS/VAXConversion.h>
+#include <casa/OS/VAXConversion.h>
 #include <assert.h>
 
 

@@ -30,11 +30,11 @@
 #define AIPS_MSDATADESCINDEX_H
 
 //# includes
-#include <aips/aips.h>
-#include <aips/MeasurementSets/MSDataDescription.h>
-#include <aips/MeasurementSets/MSDataDescColumns.h>
-#include <aips/Arrays/Vector.h>
-#include <aips/BasicSL/String.h>
+#include <casa/aips.h>
+#include <ms/MeasurementSets/MSDataDescription.h>
+#include <ms/MeasurementSets/MSDataDescColumns.h>
+#include <casa/Arrays/Vector.h>
+#include <casa/BasicSL/String.h>
 
 //# forward declarations
 

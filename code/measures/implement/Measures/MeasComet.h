@@ -30,13 +30,13 @@
 #define AIPS_MEASCOMET_H
 
 //# Includes
-#include <aips/aips.h>
-#include <aips/Tables/Table.h>
-#include <aips/Tables/TableRow.h>
-#include <aips/Containers/RecordField.h>
-#include <aips/BasicSL/String.h>
-#include <aips/Quanta/MVPosition.h>
-#include <aips/Measures/MDirection.h>
+#include <casa/aips.h>
+#include <tables/Tables/Table.h>
+#include <tables/Tables/TableRow.h>
+#include <casa/Containers/RecordField.h>
+#include <casa/BasicSL/String.h>
+#include <casa/Quanta/MVPosition.h>
+#include <measures/Measures/MDirection.h>
 
 //# Forward Declarations
 class MVRadialVelocity;

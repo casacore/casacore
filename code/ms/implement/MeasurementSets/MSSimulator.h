@@ -30,14 +30,14 @@
 
 
 //# Includes
-#include <aips/BasicSL/String.h>
-#include <aips/Arrays/Vector.h>
-#include <aips/Arrays/Matrix.h>
-#include <aips/Arrays/Cube.h>
-#include <aips/BasicSL/Complex.h>
-#include <aips/Quanta/Quantum.h>
-#include <aips/Measures/MPosition.h>
-#include <aips/Measures/MEpoch.h>
+#include <casa/BasicSL/String.h>
+#include <casa/Arrays/Vector.h>
+#include <casa/Arrays/Matrix.h>
+#include <casa/Arrays/Cube.h>
+#include <casa/BasicSL/Complex.h>
+#include <casa/Quanta/Quantum.h>
+#include <measures/Measures/MPosition.h>
+#include <measures/Measures/MEpoch.h>
 //# Forward Declarations
 class MeasurementSet;
 class MDirection;

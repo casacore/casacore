@@ -28,7 +28,7 @@
 #if !defined(TRIAL_MSTILELAYOUT_H)
 #define TRIAL_MSTILELAYOUT_H
 
-#include <aips/aips.h>
+#include <casa/aips.h>
 
 //# forward decl
 class IPosition;

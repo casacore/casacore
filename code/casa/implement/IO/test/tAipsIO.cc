@@ -27,13 +27,13 @@
 
 //# Includes
 
-#include <aips/IO/AipsIO.h>
-#include <aips/IO/MemoryIO.h>
-#include <aips/IO/RawIO.h>
-#include <aips/BasicSL/Complex.h>
-#include <aips/BasicSL/String.h>
-#include <aips/Exceptions/Error.h>
-#include <aips/iostream.h>
+#include <casa/IO/AipsIO.h>
+#include <casa/IO/MemoryIO.h>
+#include <casa/IO/RawIO.h>
+#include <casa/BasicSL/Complex.h>
+#include <casa/BasicSL/String.h>
+#include <casa/Exceptions/Error.h>
+#include <casa/iostream.h>
 
 
 // This test program tests the AipsIO class.

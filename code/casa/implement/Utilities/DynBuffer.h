@@ -29,8 +29,8 @@
 #define AIPS_DYNBUFFER_H
 
 //# Includes
-#include <aips/aips.h>
-#include <aips/Containers/Block.h>
+#include <casa/aips.h>
+#include <casa/Containers/Block.h>
 
 
 // <summary>

@@ -25,21 +25,21 @@
 //#
 //# $Id$
 
-#include <trial/ComponentModels/SkyComponent.h>
-#include <trial/ComponentModels/ComponentShape.h>
-#include <trial/ComponentModels/Flux.h>
-#include <trial/ComponentModels/SkyCompRep.h>
-#include <trial/ComponentModels/SpectralModel.h>
-#include <aips/Arrays/Vector.h>
-#include <aips/Containers/RecordInterface.h>
-#include <aips/Exceptions/Error.h>
-#include <aips/Logging/LogIO.h>
-#include <aips/Logging/LogOrigin.h>
-#include <aips/Measures/MDirection.h>
-#include <aips/Measures/MFrequency.h>
-#include <aips/Quanta/MVAngle.h>
-#include <aips/Utilities/Assert.h>
-#include <aips/BasicSL/String.h>
+#include <components/ComponentModels/SkyComponent.h>
+#include <components/ComponentModels/ComponentShape.h>
+#include <components/ComponentModels/Flux.h>
+#include <components/ComponentModels/SkyCompRep.h>
+#include <components/ComponentModels/SpectralModel.h>
+#include <casa/Arrays/Vector.h>
+#include <casa/Containers/RecordInterface.h>
+#include <casa/Exceptions/Error.h>
+#include <casa/Logging/LogIO.h>
+#include <casa/Logging/LogOrigin.h>
+#include <measures/Measures/MDirection.h>
+#include <measures/Measures/MFrequency.h>
+#include <casa/Quanta/MVAngle.h>
+#include <casa/Utilities/Assert.h>
+#include <casa/BasicSL/String.h>
 
 SkyComponent::SkyComponent()
   :itsCompPtr(new SkyCompRep) 

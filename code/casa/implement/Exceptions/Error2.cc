@@ -25,9 +25,9 @@
 //#
 //# $Id$
 
-#include <aips/Exceptions/Error.h>
-#include <aips/stdlib.h>
-#include <aips/iostream.h>
+#include <casa/Exceptions/Error.h>
+#include <casa/stdlib.h>
+#include <casa/iostream.h>
 
 
 AipsError::AipsError(const Char *str,Category c)

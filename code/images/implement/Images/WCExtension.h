@@ -29,8 +29,8 @@
 #define AIPS_WCEXTENSION_H
 
 //# Includes
-#include <trial/Images/WCCompound.h>
-#include <aips/Arrays/IPosition.h>
+#include <images/Images/WCCompound.h>
+#include <casa/Arrays/IPosition.h>
 
 //# Forward declarations
 class WCBox;

@@ -25,11 +25,11 @@
 //#
 //# $Id$
 
-#include <aips/Tables/ScaRecordColDesc.h>
-#include <aips/Tables/ScaRecordColData.h>
-#include <aips/Utilities/ValTypeId.h>
-#include <aips/IO/AipsIO.h>
-#include <aips/iostream.h>
+#include <tables/Tables/ScaRecordColDesc.h>
+#include <tables/Tables/ScaRecordColData.h>
+#include <casa/Utilities/ValTypeId.h>
+#include <casa/IO/AipsIO.h>
+#include <casa/iostream.h>
 
 
 ScalarRecordColumnDesc::ScalarRecordColumnDesc (const String& name)

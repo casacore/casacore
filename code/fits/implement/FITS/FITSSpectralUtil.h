@@ -30,9 +30,9 @@
 #if !defined(AIPS_FITS_SPECTRAL_UTIL_H)
 #define AIPS_FITS_SPECTRAL_UTIL_H
 
-#include <aips/aips.h>
-#include <aips/Measures/MDoppler.h>
-#include <aips/Measures/MFrequency.h>
+#include <casa/aips.h>
+#include <measures/Measures/MDoppler.h>
+#include <measures/Measures/MFrequency.h>
 
 class RecordInterface;
 class String;

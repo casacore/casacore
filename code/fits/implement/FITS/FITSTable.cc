@@ -25,29 +25,29 @@
 //#
 //# $Id$
 
-#include <trial/FITS/FITSTable.h>
+#include <fits/FITS/FITSTable.h>
 
-#include <aips/Arrays/ArrayMath.h>
-#include <aips/Arrays/Vector.h>
-#include <aips/Containers/RecordField.h>
-#include <aips/BasicSL/String.h>
-#include <aips/Utilities/Assert.h>
-#include <aips/Utilities/Regex.h>
-#include <aips/FITS/fits.h>
-#include <aips/FITS/fitsio.h>
-#include <aips/FITS/hdu.h>
-#include <aips/OS/Path.h>
+#include <casa/Arrays/ArrayMath.h>
+#include <casa/Arrays/Vector.h>
+#include <casa/Containers/RecordField.h>
+#include <casa/BasicSL/String.h>
+#include <casa/Utilities/Assert.h>
+#include <casa/Utilities/Regex.h>
+#include <fits/FITS/fits.h>
+#include <fits/FITS/fitsio.h>
+#include <fits/FITS/hdu.h>
+#include <casa/OS/Path.h>
 
-#include <aips/Tables/TableDesc.h>
-#include <aips/Tables/ScaColDesc.h>
-#include <aips/Tables/ArrColDesc.h>
+#include <tables/Tables/TableDesc.h>
+#include <tables/Tables/ScaColDesc.h>
+#include <tables/Tables/ArrColDesc.h>
 
-#include <aips/Utilities/ValType.h>
+#include <casa/Utilities/ValType.h>
 
-#include <aips/Arrays/Array.h>
+#include <casa/Arrays/Array.h>
 
-#include <aips/stdlib.h>
-#include <aips/sstream.h>
+#include <casa/stdlib.h>
+#include <casa/sstream.h>
 
 // Just returns the scalar type.
 static DataType fitsDataType(FITS::ValueType fitsType)

@@ -30,11 +30,11 @@
 #define AIPS_MUVW_H
 
 //# Includes
-#include <aips/aips.h>
-#include <aips/Measures/MeasBase.h>
-#include <aips/Measures/MDirection.h>
-#include <aips/Measures/MeasRef.h>
-#include <aips/Quanta/MVuvw.h>
+#include <casa/aips.h>
+#include <measures/Measures/MeasBase.h>
+#include <measures/Measures/MDirection.h>
+#include <measures/Measures/MeasRef.h>
+#include <casa/Quanta/MVuvw.h>
 
 //# Forward Declarations
 class Muvw;

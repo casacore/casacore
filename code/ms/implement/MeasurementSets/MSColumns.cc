@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#include <aips/MeasurementSets/MSColumns.h>
-#include <aips/MeasurementSets/MeasurementSet.h>
+#include <ms/MeasurementSets/MSColumns.h>
+#include <ms/MeasurementSets/MeasurementSet.h>
 
 ROMSColumns::ROMSColumns(const MeasurementSet& ms):
   ROMSMainColumns(ms),

@@ -26,14 +26,14 @@
 //# $Id$
 
 //# Includes
-#include <aips/Utilities/Assert.h>
-#include <aips/BasicSL/Constants.h>
-#include <aips/Quanta/QMath.h>
-#include <aips/Measures/MRadialVelocity.h>
-#include <aips/Utilities/Register.h>
-#include <aips/Measures/MDoppler.h>
-#include <aips/Measures/MCDoppler.h>
-#include <aips/Measures/MeasConvert.h>
+#include <casa/Utilities/Assert.h>
+#include <casa/BasicSL/Constants.h>
+#include <casa/Quanta/QMath.h>
+#include <measures/Measures/MRadialVelocity.h>
+#include <casa/Utilities/Register.h>
+#include <measures/Measures/MDoppler.h>
+#include <measures/Measures/MCDoppler.h>
+#include <measures/Measures/MeasConvert.h>
 
 //# Constructors
 MRadialVelocity::MRadialVelocity() :

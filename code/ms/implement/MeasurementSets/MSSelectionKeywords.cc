@@ -25,9 +25,9 @@
 //#
 //#
 //# $Id$
-#include <trial/MeasurementSets/MSSelectionKeywords.h>
-#include <aips/Containers/SimOrdMap.h>
-#include <aips/BasicSL/String.h>
+#include <ms/MeasurementSets/MSSelectionKeywords.h>
+#include <casa/Containers/SimOrdMap.h>
+#include <casa/BasicSL/String.h>
 
 MSSelectionKeywords::Field MSSelectionKeywords::field(const String& itemName)
 {

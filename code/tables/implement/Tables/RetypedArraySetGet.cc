@@ -26,9 +26,9 @@
 //# $Id$
 
 //# Includes
-#include <aips/Tables/RetypedArraySetGet.h>
-#include <aips/Arrays/Array.h>
-#include <aips/Utilities/Copy.h>
+#include <tables/Tables/RetypedArraySetGet.h>
+#include <casa/Arrays/Array.h>
+#include <casa/Utilities/Copy.h>
 
 
 // Copy the entire target array to the source array.

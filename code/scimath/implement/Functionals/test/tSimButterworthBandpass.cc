@@ -30,13 +30,13 @@
 #define DIAGNOSTICS
 #endif
 
-#include <aips/Functionals/SimButterworthBandpass.h>
-#include <aips/Arrays/Vector.h>
-#include <aips/Arrays/ArrayMath.h>
-#include <aips/Utilities/Assert.h>
-#include <aips/iostream.h>
-#include <aips/BasicSL/Constants.h>
-#include <aips/Containers/Record.h>
+#include <scimath/Functionals/SimButterworthBandpass.h>
+#include <casa/Arrays/Vector.h>
+#include <casa/Arrays/ArrayMath.h>
+#include <casa/Utilities/Assert.h>
+#include <casa/iostream.h>
+#include <casa/BasicSL/Constants.h>
+#include <casa/Containers/Record.h>
 
 int main() {
     SimButterworthBandpass<Double> butt(1.0,1.0,-1.0,1.0,0.0,1.0);

@@ -30,13 +30,13 @@
 
 
 //# Includes
-#include <aips/aips.h>
-#include <aips/Arrays/Vector.h>
-#include <aips/Quanta/Quantum.h>
-#include <aips/Quanta/MeasValue.h>
+#include <casa/aips.h>
+#include <casa/Arrays/Vector.h>
+#include <casa/Quanta/Quantum.h>
+#include <casa/Quanta/MeasValue.h>
 
 //# Forward Declarations
-#include <aips/iosfwd.h>
+#include <casa/iosfwd.h>
 template <class T> class Vector;
 template <class T> class Quantum;
 

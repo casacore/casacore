@@ -26,8 +26,8 @@
 //# $Id$
 
 
-#include <aips/OS/CanonicalDataConversion.h>
-#include <aips/OS/CanonicalConversion.h>
+#include <casa/OS/CanonicalDataConversion.h>
+#include <casa/OS/CanonicalConversion.h>
 
 
 CanonicalDataConversion::~CanonicalDataConversion()

@@ -26,19 +26,19 @@
 //#
 //# $Id$
 
-#include <trial/Coordinates/LinearCoordinate.h>
+#include <coordinates/Coordinates/LinearCoordinate.h>
 
-#include <aips/Exceptions/Error.h>
-#include <aips/Utilities/Assert.h>
-#include <aips/Utilities/LinearSearch.h>
-#include <aips/Utilities/Regex.h>
-#include <aips/Arrays/Matrix.h>
-#include <aips/Arrays/ArrayMath.h>
-#include <aips/Containers/Record.h>
-#include <aips/BasicMath/Math.h>
-#include <aips/Quanta/Quantum.h>
+#include <casa/Exceptions/Error.h>
+#include <casa/Utilities/Assert.h>
+#include <casa/Utilities/LinearSearch.h>
+#include <casa/Utilities/Regex.h>
+#include <casa/Arrays/Matrix.h>
+#include <casa/Arrays/ArrayMath.h>
+#include <casa/Containers/Record.h>
+#include <casa/BasicMath/Math.h>
+#include <casa/Quanta/Quantum.h>
 
-#include <aips/sstream.h>
+#include <casa/sstream.h>
 
 LinearCoordinate::LinearCoordinate(uInt naxis)
 : Coordinate(),

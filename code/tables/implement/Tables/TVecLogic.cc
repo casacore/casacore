@@ -25,9 +25,9 @@
 //#
 //# $Id$
 
-#include <aips/Tables/TVecLogic.h>
-#include <aips/Tables/TVec.h>
-#include <aips/Tables/TableError.h>
+#include <tables/Tables/TVecLogic.h>
+#include <tables/Tables/TVec.h>
+#include <tables/Tables/TableError.h>
 
 #define TVECLOGICOPER(NAME,OP) \
 template<class T> \

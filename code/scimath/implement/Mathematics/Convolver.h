@@ -29,12 +29,12 @@
 #if !defined(AIPS_CONVOLVER_H)
 #define AIPS_CONVOLVER_H
 
-#include <aips/aips.h>
-#include <aips/Arrays/Array.h>
-#include <aips/BasicSL/Complex.h>
-#include <aips/Mathematics/FFTServer.h>
-#include <aips/Arrays/IPosition.h>
-#include <aips/Mathematics/NumericTraits.h>
+#include <casa/aips.h>
+#include <casa/Arrays/Array.h>
+#include <casa/BasicSL/Complex.h>
+#include <scimath/Mathematics/FFTServer.h>
+#include <casa/Arrays/IPosition.h>
+#include <scimath/Mathematics/NumericTraits.h>
 
 // Forward Declarations
 template <class FType> class Convolver;

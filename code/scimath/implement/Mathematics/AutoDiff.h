@@ -30,9 +30,9 @@
 #define AIPS_AUTODIFF_H
 
 //# Includes
-#include <aips/aips.h>
-#include <aips/Mathematics/AutoDiffRep.h>
-#include <aips/Containers/ObjectPool.h>
+#include <casa/aips.h>
+#include <scimath/Mathematics/AutoDiffRep.h>
+#include <casa/Containers/ObjectPool.h>
 
 //# Forward declarations
 template <class T> class Vector;

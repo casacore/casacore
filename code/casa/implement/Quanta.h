@@ -29,13 +29,13 @@
 #define AIPS_MODULE_QUANTA_H
 
 //# Includes
-#include <aips/Quanta/Unit.h>
+#include <casa/Quanta/Unit.h>
 //# Next one at this place
-#include <aips/Quanta/QC.h>
-#include <aips/Quanta/UnitMap.h>
-#include <aips/Quanta/Quantum.h>
-#include <aips/Quanta/QMath.h>
-#include <aips/Quanta/QLogical.h>
+#include <casa/Quanta/QC.h>
+#include <casa/Quanta/UnitMap.h>
+#include <casa/Quanta/Quantum.h>
+#include <casa/Quanta/QMath.h>
+#include <casa/Quanta/QLogical.h>
 
 // <module>
 // 
@@ -73,7 +73,7 @@
 // <a href="#MeasValue">MeasValue</a> section.
 //
 // <h3> Includes</h3>
-// Including the <src>aips/Quanta.h</src> will take care of all
+// Including the <src>casa/Quanta.h</src> will take care of all
 // includes necessary for the handling of pure Units and Quantities.
 //
 //  <a name="Unit"><h3> Physical units </h3></a>

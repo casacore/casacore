@@ -26,17 +26,17 @@
 //# $Id$
 
 //# Includes
-#include <aips/aips.h>
-#include <aips/Tables/TableRow.h>
-#include <aips/Tables/TableRecord.h>
-#include <aips/Tables/TableDesc.h>
-#include <aips/Tables/ColumnDesc.h>
-#include <aips/Tables/TableColumn.h>
-#include <aips/Tables/ScalarColumn.h>
-#include <aips/Tables/ArrayColumn.h>
-#include <aips/Containers/RecordField.h>
-#include <aips/Arrays/Vector.h>
-#include <aips/Tables/TableError.h>
+#include <casa/aips.h>
+#include <tables/Tables/TableRow.h>
+#include <tables/Tables/TableRecord.h>
+#include <tables/Tables/TableDesc.h>
+#include <tables/Tables/ColumnDesc.h>
+#include <tables/Tables/TableColumn.h>
+#include <tables/Tables/ScalarColumn.h>
+#include <tables/Tables/ArrayColumn.h>
+#include <casa/Containers/RecordField.h>
+#include <casa/Arrays/Vector.h>
+#include <tables/Tables/TableError.h>
 
 
 ROTableRow::ROTableRow()

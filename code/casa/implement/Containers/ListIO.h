@@ -28,7 +28,7 @@
 #if !defined(AIPS_LISTIO_H_)
 #define AIPS_LISTIO_H_
 
-#include <aips/Containers/List.h>
+#include <casa/Containers/List.h>
 
 
 // <summary>

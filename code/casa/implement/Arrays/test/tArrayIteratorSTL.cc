@@ -25,10 +25,10 @@
 //#
 //# $Id$
 
-#include <aips/Arrays/Array.h>
-#include <aips/Arrays/ArrayMath.h>
-#include <aips/OS/Timer.h>
-#include <aips/iostream.h>
+#include <casa/Arrays/Array.h>
+#include <casa/Arrays/ArrayMath.h>
+#include <casa/OS/Timer.h>
+#include <casa/iostream.h>
 
 
 void testSub (Array<Int>& arr1, const IPosition& blc,

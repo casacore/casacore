@@ -26,11 +26,11 @@
 //#
 //# $Id$
 
-#include <trial/Arrays/ExtendSpecifier.h>
-#include <aips/Arrays/Slicer.h>
-#include <aips/Containers/Block.h>
-#include <aips/Utilities/Assert.h>
-#include <aips/Exceptions/Error.h>
+#include <casa/Arrays/ExtendSpecifier.h>
+#include <casa/Arrays/Slicer.h>
+#include <casa/Containers/Block.h>
+#include <casa/Utilities/Assert.h>
+#include <casa/Exceptions/Error.h>
 
 
 ExtendSpecifier::ExtendSpecifier()

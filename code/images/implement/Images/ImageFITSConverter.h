@@ -30,7 +30,7 @@
 #if !defined(AIPS_IMAGE_FITS_CONVERTER_H)
 #define AIPS_IMAGE_FITS_CONVERTER_H
 
-#include <aips/aips.h>
+#include <casa/aips.h>
 
 template<class T> class PagedImage;
 template<class T> class ImageInterface;

@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#include <aips/Containers/List.h>
-#include <aips/Containers/IterError.h>
+#include <casa/Containers/List.h>
+#include <casa/Containers/IterError.h>
 
 template<class t> uInt ListNotice<t>::type() const  {
   return Register(this);

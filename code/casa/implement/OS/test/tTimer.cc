@@ -27,9 +27,9 @@
 
 //# Includes
 
-#include <aips/OS/Timer.h>
-#include <aips/BasicSL/String.h>
-#include <aips/iostream.h>
+#include <casa/OS/Timer.h>
+#include <casa/BasicSL/String.h>
+#include <casa/iostream.h>
 
 int main(void)
 {

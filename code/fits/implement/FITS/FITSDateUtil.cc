@@ -26,19 +26,19 @@
 //#
 //# $Id$
 
-#include <trial/FITS/FITSDateUtil.h>
+#include <fits/FITS/FITSDateUtil.h>
 
-#include <aips/Logging/LogIO.h>
-#include <aips/Logging/LogOrigin.h>
-#include <aips/OS/Time.h>
-#include <aips/Quanta/MVTime.h>
-#include <aips/Utilities/Assert.h>
-#include <aips/BasicSL/String.h>
+#include <casa/Logging/LogIO.h>
+#include <casa/Logging/LogOrigin.h>
+#include <casa/OS/Time.h>
+#include <casa/Quanta/MVTime.h>
+#include <casa/Utilities/Assert.h>
+#include <casa/BasicSL/String.h>
 
-#include <aips/sstream.h>
-#include <aips/iomanip.h>
+#include <casa/sstream.h>
+#include <casa/iomanip.h>
 #include <ctype.h>
-#include <aips/stdlib.h>
+#include <casa/stdlib.h>
 
 
 void FITSDateUtil::toFITS(String &date, String &timesys, const MVTime &time,

@@ -31,12 +31,12 @@
 
 
 //# Includes
-#include <aips/aips.h>
+#include <casa/aips.h>
 
 //# Forward Declarations
 template <class Qtype> class Quantum;
 template <class T> class Vector;
-#include <aips/iosfwd.h>
+#include <casa/iosfwd.h>
 
 // <summary>
 // Base class for values in a Measure

@@ -25,10 +25,10 @@
 //#
 //# $Id$
 
-#include <aips/IO/ByteSink.h>
-#include <aips/IO/TypeIO.h>
-#include <aips/BasicSL/String.h>
-#include <aips/Exceptions/Error.h>
+#include <casa/IO/ByteSink.h>
+#include <casa/IO/TypeIO.h>
+#include <casa/BasicSL/String.h>
+#include <casa/Exceptions/Error.h>
 
 ByteSink::ByteSink()
 {}

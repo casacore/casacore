@@ -26,10 +26,10 @@
 //# $Id$
 
 //# Includes
-#include <aips/Utilities/Assert.h>
-#include <aips/BasicMath/Math.h>
-#include <aips/Quanta/RotMatrix.h>
-#include <aips/Quanta/Euler.h>
+#include <casa/Utilities/Assert.h>
+#include <casa/BasicMath/Math.h>
+#include <casa/Quanta/RotMatrix.h>
+#include <casa/Quanta/Euler.h>
 
 // RotMatrix class
 
