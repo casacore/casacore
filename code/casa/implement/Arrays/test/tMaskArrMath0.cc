@@ -1,5 +1,5 @@
 //# tMaskArrMath0.cc: Test program for MaskedArrays mathematical operations.
-//# Copyright (C) 1993,1994,1995,1996
+//# Copyright (C) 1993,1994,1995,1996,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -69,16 +69,16 @@ main()
             Vector<Int> f(10), g(10), h(10);
             Vector<Bool> b(10);
 
-            indgen (f.ac());
+            indgen (f);
             cout << endl << "f=indgen(f) = " << endl;
-            cout << f.ac() << endl;
+            cout << f << endl;
 
 
             {
 
-                b = (f.ac()<3);
+                b = (f<3);
                 cout << endl << "b=(f<3) = " << endl;
-                cout << b.ac() << endl;
+                cout << b << endl;
 
                 MaskedArray<Int> m(h,b);
 
@@ -92,24 +92,24 @@ main()
             {
 
                 cout << endl << "((f>3) && (f<7)) = " << endl;
-                cout << ((f.ac()>3) && (f.ac()<7)) << endl;
+                cout << ((f>3) && (f<7)) << endl;
 
              //#MaskedArray<Int> m( h( ((f>3) && (f<7)) ) );
 
                 h = 0;
              //#indgen (m);
-                indgen ( h( ((f.ac()>3) && (f.ac()<7)) ), 10 );
+                indgen ( h( ((f>3) && (f<7)) ), 10 );
              //#cout << endl << "h=0; indgen( m( h(f<3) ), 10 ); h= " << endl;
                 cout << endl << "h=0; indgen( h( ((f>3) && (f<7)) ), 10 ); h= " << endl;
-                cout << h.ac() << endl;
+                cout << h << endl;
 
             }
 
             {
 
-                b = (f.ac()>2);
+                b = (f>2);
                 cout << endl << "b=(f>2) = " << endl;
-                cout << b.ac() << endl;
+                cout << b << endl;
 
                 MaskedArray<Int> m(h,b);
 
@@ -122,9 +122,9 @@ main()
 
             {
 
-                b = (f.ac()>2);
+                b = (f>2);
                 cout << endl << "b=(f>2) = " << endl;
-                cout << b.ac() << endl;
+                cout << b << endl;
 
                 h = 1;
                 h(b) += 5;
@@ -135,14 +135,14 @@ main()
 
             {
 
-                b = (f.ac()>2);
+                b = (f>2);
                 cout << endl << "b=(f>2) = " << endl;
-                cout << b.ac() << endl;
+                cout << b << endl;
 
                 MaskedArray<Int> m(h,b);
 
                 h = -1;
-                m += f.ac();
+                m += f;
                 cout << endl << "h=-1; m(h,b) += f; h= " << endl;
                 cout << h << endl;
 
@@ -150,12 +150,12 @@ main()
 
             {
 
-                b = (f.ac()>2);
+                b = (f>2);
                 cout << endl << "b=(f>2) = " << endl;
-                cout << b.ac() << endl;
+                cout << b << endl;
 
                 h = -1;
-                h(b) += f.ac();
+                h(b) += f;
                 cout << endl << "h=-1; h(b) += f; h= " << endl;
                 cout << h << endl;
 
@@ -163,17 +163,17 @@ main()
 
             {
 
-                b = (f.ac()>4);
+                b = (f>4);
                 cout << endl << "b=(f>4) = " << endl;
-                cout << b.ac() << endl;
+                cout << b << endl;
 
                 MaskedArray<Int> m(f,b);
 
-                indgen (h.ac());
+                indgen (h);
                 cout << endl << "h=indgen(h) = " << endl;
                 cout << h << endl;
 
-                h.ac() += m;
+                h += m;
                 cout << endl << "h += m(f,b); h= " << endl;
                 cout << h << endl;
 
@@ -181,14 +181,14 @@ main()
 
             {
 
-                b = (f.ac()>3);
+                b = (f>3);
                 cout << endl << "b=(f>3) = " << endl;
-                cout << b.ac() << endl;
+                cout << b << endl;
 
                 Vector<Bool> c(10);
-                c = (f.ac()<8);
+                c = (f<8);
                 cout << endl << "c=(f<8) = " << endl;
-                cout << c.ac() << endl;
+                cout << c << endl;
 
                 MaskedArray<Int> m(h,b), n(f,c);
 
@@ -201,14 +201,14 @@ main()
 
             {
 
-                b = (f.ac()>3);
+                b = (f>3);
                 cout << endl << "b=(f>3) = " << endl;
-                cout << b.ac() << endl;
+                cout << b << endl;
 
                 Vector<Bool> c(10);
-                c = (f.ac()<8);
+                c = (f<8);
                 cout << endl << "c=(f<8) = " << endl;
-                cout << c.ac() << endl;
+                cout << c << endl;
 
                 MaskedArray<Int> n(f,c);
 

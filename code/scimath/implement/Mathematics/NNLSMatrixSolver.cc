@@ -1,5 +1,5 @@
 //# NNLSMatrixSolver.cc: concrete class for NNLS solvers of AX=B
-//# Copyright (C) 1994,1995
+//# Copyright (C) 1994,1995,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //# 
 //# This library is free software; you can redistribute it and/or modify it
@@ -83,7 +83,7 @@ Bool NNLSMatrixSolver::solve() // Solve AX=B for X
   nnls(a_data,&ndata,&ndata,&nflux,b_data,x_data,&rnorm,w,zz,index,&itmax,
        &mode);
 
-  RVector=BVector.ac()-product(AMatrix,XVector).ac();	// Update residual vector
+  RVector=BVector-product(AMatrix,XVector);	// Update residual vector
   if (mode==2) {
     ostrstream o;o<<"dimensions set up incorrectly";
     message.priority(LogMessage::SEVERE);

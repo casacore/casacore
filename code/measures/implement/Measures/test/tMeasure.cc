@@ -226,7 +226,7 @@ main()
 	Vector<Double> vlsr1900(lsr1900.getValue().getValue());
 	if (nearAbs(vlsr1900(0), 0.0)) vlsr1900(0) = 0;
 	cout << "LSR (B1900): " << 
-	    vlsr1900.ac() << endl;
+	    vlsr1900 << endl;
 	cout << "LSR (B1950): " << 
 	    MDirection::Convert(lsr1900, MDirection::B1950)()
 		.getValue() << endl;
@@ -432,7 +432,7 @@ main()
 	};
 	cout << "Converted B1950 galactic pole " << gpole << endl << 
 	  " to " << galref << endl <<
-	  " as " << veqgal.ac() << endl;
+	  " as " << veqgal << endl;
 	cout << "Converted B1950 galactic pole " << eqpole << endl << 
 	    " to " << eqref << endl <<
 		" as " << galeq().getAngle("deg") << endl;
@@ -596,13 +596,13 @@ main()
 	  MDirection mb0(mvd0, rin);
 	  MDirection::Convert forw(rin, rout);
 	  MDirection::Convert backw(rout, rin);
-	  if (!allNearAbs(mb0.getValue().getValue().ac() -
-			  backw(forw(mb0)).getValue().getValue().ac(), 
-			  tvec.ac(), tp)) {
+	  if (!allNearAbs(mb0.getValue().getValue() -
+			  backw(forw(mb0)).getValue().getValue(), 
+			  tvec, tp)) {
 	    cout << MDirection::showType(i) << " to " <<
 	      MDirection::showType(j) << ": " <<
-	      mb0.getValue().getValue().ac() -
-	      backw(forw(mb0)).getValue().getValue().ac() << endl;
+	      mb0.getValue().getValue() -
+	      backw(forw(mb0)).getValue().getValue() << endl;
 	    isok = False;
 	  };
 	};
@@ -631,13 +631,13 @@ main()
 	  MPosition mb0(mvd0, rin);
 	  MPosition::Convert forw(rin, rout);
 	  MPosition::Convert backw(rout, rin);
-	  if (!allNearAbs(mb0.getValue().getValue().ac() -
-			  backw(forw(mb0)).getValue().getValue().ac(), 
-			  tvec.ac(), tp)) {
+	  if (!allNearAbs(mb0.getValue().getValue() -
+			  backw(forw(mb0)).getValue().getValue(), 
+			  tvec, tp)) {
 	    cout << MPosition::showType(i) << " to " <<
 	      MPosition::showType(j) << ": " <<
-	      mb0.getValue().getValue().ac() -
-	      backw(forw(mb0)).getValue().getValue().ac() << endl;
+	      mb0.getValue().getValue() -
+	      backw(forw(mb0)).getValue().getValue() << endl;
 	    isok = False;
 	  };
 	};

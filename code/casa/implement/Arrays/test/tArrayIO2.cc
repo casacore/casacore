@@ -65,9 +65,9 @@ void doBin (Bool)
     for (uInt i=0; i<1000; i++) {
 	ip(i) = i*2;
     }
-    write_array (ip.ac(), "tArrayIO2_tmp.data");
+    write_array (ip, "tArrayIO2_tmp.data");
     Vector<Int> ipi(1000);
-    read_array (ipi.ac(), "tArrayIO2_tmp.data");
+    read_array (ipi, "tArrayIO2_tmp.data");
     for (Int i=0; i<1000; i++) {
 	if (ipi(i) != i*2) {
 	    cout << "Get error in ip[" << i << "]" << endl;
@@ -80,7 +80,7 @@ void doMat()
 {
     Matrix<Int> mat;
     readAsciiMatrix (mat, "tArrayIO2.in_mat");
-    cout << mat.ac();
+    cout << mat;
     cout << endl;
     writeAsciiMatrix (mat, "tArrayIO2_tmp.mat");
 }
@@ -89,7 +89,7 @@ void doVec()
 {
     Vector<double> vec;
     readAsciiVector (vec, "tArrayIO2.in_vec");
-    cout << vec.ac();
+    cout << vec;
     cout << endl;
     writeAsciiVector (vec, "tArrayIO2_tmp.vec");
 }

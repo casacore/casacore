@@ -229,8 +229,8 @@ void list (Bool ok, Vector<Int>& map,
    } else {
       cout << "Success returned" << endl;
     }
-   cout << "cSys1.worldAxisNames = " << cSys1.worldAxisNames().ac() << endl;
-   cout << "cSys2.worldAxisNames = " << cSys2.worldAxisNames().ac() << endl;
-   cout << "map = " << map.ac() << endl;
-   cout << "transpose = " << transpose.ac() << endl << endl;
+   cout << "cSys1.worldAxisNames = " << cSys1.worldAxisNames() << endl;
+   cout << "cSys2.worldAxisNames = " << cSys2.worldAxisNames() << endl;
+   cout << "map = " << map << endl;
+   cout << "transpose = " << transpose << endl << endl;
 }

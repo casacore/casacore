@@ -212,7 +212,7 @@ void Sort::addKey (const void* dat, ObjCompareFunc* cmp, uInt inc, int ord)
 uInt Sort::unique (Vector<uInt>& uniqueVector, uInt nrrec) const
 {
     Vector<uInt> indexVector(nrrec);
-    indgen (indexVector.ac());
+    indgen (indexVector);
     return unique (uniqueVector, indexVector);
 }
 
@@ -256,7 +256,7 @@ uInt Sort::sort (Vector<uInt>& indexVector, uInt nrrec, int opt) const
 	}
     }
     indexVector.resize (nrrec);
-    indgen (indexVector.ac());
+    indgen (indexVector);
     // Pass the sort function a C-array of indices, because indexing
     // in there is (much) faster than in a vector.
     Bool del;

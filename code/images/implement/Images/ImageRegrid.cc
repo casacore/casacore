@@ -334,13 +334,13 @@ ImageRegrid<T>::fitIntoStokesImage(ImageInterface<T>& imageData) {
        cout << "tblc = " << tblc << endl;
        cout << "ttrc = " << ttrc << endl;
        cout << "tshape = " << tshape << endl;
-       cout << "max(_dblc.asVector().arrayCast()) = " << (max(_dblc.asVector().arrayCast())) << endl;
-       cout << "min((_dshape -1 - _ttrc).asVector().arrayCast()) = " <<
-       (min((_dshape -1 - _ttrc).asVector().arrayCast())) << endl;
+       cout << "max(_dblc.asVector()) = " << (max(_dblc.asVector())) << endl;
+       cout << "min((_dshape -1 - _ttrc).asVector()) = " <<
+       (min((_dshape -1 - _ttrc).asVector())) << endl;
   */
 
-    if (min(_dblc.asVector().arrayCast()) >= 0 
-	&& max((_tshape -1 - _dtrc).asVector().arrayCast()) >= 0) {
+    if (min(_dblc.asVector()) >= 0 
+	&& max((_tshape -1 - _dtrc).asVector()) >= 0) {
       // data is a simple subregion of template: just padd
       out_p->set(0.0);
       LCBox box(dblc,dtrc,templateShape);
@@ -348,16 +348,16 @@ ImageRegrid<T>::fitIntoStokesImage(ImageInterface<T>& imageData) {
       LatticeExpr<T> expr =  (LatticeExprNode)  imageData;
       sub.copyData(expr);
       return out_p;
-    } else if (max(_dblc.asVector().arrayCast()) < 0 
-	       && min((_dshape -1 - _ttrc).asVector().arrayCast()) >= 0) {
+    } else if (max(_dblc.asVector()) < 0 
+	       && min((_dshape -1 - _ttrc).asVector()) >= 0) {
       // data is a simple super-region of template: just subsection data image
       LCBox box(tblc,ttrc,imageData.shape());
       SubLattice<T> sub( imageData, box, False );
       LatticeExpr<T> expr = (LatticeExprNode) sub;
       out_p->copyData(expr);
       return out_p;
-    } else if (max( (_dblc - (_tshape-1)).asVector().arrayCast()) > 0 
-	       || min(_dtrc.asVector().arrayCast()) < 0) {
+    } else if (max( (_dblc - (_tshape-1)).asVector()) > 0 
+	       || min(_dtrc.asVector()) < 0) {
       // no overlap in images! return zero image
       out_p->set(0.0);
       return out_p;

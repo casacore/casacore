@@ -1,5 +1,5 @@
 //# tMEarthMagnetic.cc: This program test Measure functions
-//# Copyright (C) 1998
+//# Copyright (C) 1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -51,75 +51,75 @@ Int main() {
 	cout << "Date:      " << dat.string(MVTime::YMD +
 					    MVTime::NO_TIME, 6) <<
 	  endl;
-	cout << "Position:  " << obs.getValue().get().ac() << endl;
+	cout << "Position:  " << obs.getValue().get() << endl;
 	cout << "           " << obs.getAngle("deg") << endl;
 
 	cout << "----- IGRF coefficients" << endl;
 	cout << "Field      " <<
-	  MeasTable::IGRF(dat.day()).ac() << endl;
+	  MeasTable::IGRF(dat.day()) << endl;
 	cout << "             " <<
 	  MeasTable::IGRF(dat.day()).nelements() << endl;
 
 	EarthField ef(EarthField::STANDARD, dat.day());
-	cout << "Result:    " << ef(obs.getValue()).ac() << endl;
+	cout << "Result:    " << ef(obs.getValue()) << endl;
 	cout << "Derivatives: " << endl;
 	for (Int i0=0; i0<3; i0++) {
-	  cout << "     " << ef.derivative(obs.getValue())[i0].ac() << endl;
+	  cout << "     " << ef.derivative(obs.getValue())[i0] << endl;
 	};
 
 	cout << "--------- From derivatives ----------" << endl;
 	cout << "+10km X:   " <<
-	  ef((obs.getValue()+MVPosition(10000,0,0))).ac() << endl;
+	  ef((obs.getValue()+MVPosition(10000,0,0))) << endl;
 	cout << "-10km X:   " <<
-	  ef((obs.getValue()+MVPosition(-10000,0,0))).ac() << endl;
+	  ef((obs.getValue()+MVPosition(-10000,0,0))) << endl;
 	cout << "+10km Y:   " <<
-	  ef((obs.getValue()+MVPosition(0,10000,0))).ac() << endl;
+	  ef((obs.getValue()+MVPosition(0,10000,0))) << endl;
 	cout << "-10km Y:   " <<
-	  ef((obs.getValue()+MVPosition(0,-10000,0))).ac() << endl;
+	  ef((obs.getValue()+MVPosition(0,-10000,0))) << endl;
 	cout << "+10km Z:   " <<
-	  ef((obs.getValue()+MVPosition(0,0,10000))).ac() << endl;
+	  ef((obs.getValue()+MVPosition(0,0,10000))) << endl;
 	cout << "-10km Z:   " <<
-	  ef((obs.getValue()+MVPosition(0,0,-10000))).ac() << endl;
+	  ef((obs.getValue()+MVPosition(0,0,-10000))) << endl;
 
 	cout << "--------- From scratch ----------" << endl;
 	ef.init(EarthField::STANDARD, dat.day());
 	cout << "+10km X:   " <<
-	  ef((obs.getValue()+MVPosition(10000,0,0))).ac() << endl;
+	  ef((obs.getValue()+MVPosition(10000,0,0))) << endl;
 	ef.init(EarthField::STANDARD, dat.day());
 	cout << "-10km X:   " <<
-	  ef((obs.getValue()+MVPosition(-10000,0,0))).ac() << endl;
+	  ef((obs.getValue()+MVPosition(-10000,0,0))) << endl;
 	ef.init(EarthField::STANDARD, dat.day());
 	cout << "+10km Y:   " <<
-	  ef((obs.getValue()+MVPosition(0,10000,0))).ac() << endl;
+	  ef((obs.getValue()+MVPosition(0,10000,0))) << endl;
 	ef.init(EarthField::STANDARD, dat.day());
 	cout << "-10km Y:   " <<
-	  ef((obs.getValue()+MVPosition(0,-10000,0))).ac() << endl;
+	  ef((obs.getValue()+MVPosition(0,-10000,0))) << endl;
 	ef.init(EarthField::STANDARD, dat.day());
 	cout << "+10km Z:   " <<
-	  ef((obs.getValue()+MVPosition(0,0,10000))).ac() << endl;
+	  ef((obs.getValue()+MVPosition(0,0,10000))) << endl;
 	ef.init(EarthField::STANDARD, dat.day());
 	cout << "-10km Z:   " <<
-	  ef((obs.getValue()+MVPosition(0,0,-10000))).ac() << endl;
+	  ef((obs.getValue()+MVPosition(0,0,-10000))) << endl;
 
 	cout << "--------- From refresh ----------" << endl;
 	ef.refresh();
 	cout << "+10km X:   " <<
-	  ef((obs.getValue()+MVPosition(10000,0,0))).ac() << endl;
+	  ef((obs.getValue()+MVPosition(10000,0,0))) << endl;
 	ef.refresh();
 	cout << "-10km X:   " <<
-	  ef((obs.getValue()+MVPosition(-10000,0,0))).ac() << endl;
+	  ef((obs.getValue()+MVPosition(-10000,0,0))) << endl;
 	ef.refresh();
 	cout << "+10km Y:   " <<
-	  ef((obs.getValue()+MVPosition(0,10000,0))).ac() << endl;
+	  ef((obs.getValue()+MVPosition(0,10000,0))) << endl;
 	ef.refresh();
 	cout << "-10km Y:   " <<
-	  ef((obs.getValue()+MVPosition(0,-10000,0))).ac() << endl;
+	  ef((obs.getValue()+MVPosition(0,-10000,0))) << endl;
 	ef.refresh();
 	cout << "+10km Z:   " <<
-	  ef((obs.getValue()+MVPosition(0,0,10000))).ac() << endl;
+	  ef((obs.getValue()+MVPosition(0,0,10000))) << endl;
 	ef.refresh();
 	cout << "-10km Z:   " <<
-	  ef((obs.getValue()+MVPosition(0,0,-10000))).ac() << endl;
+	  ef((obs.getValue()+MVPosition(0,0,-10000))) << endl;
 
 	cout << "------------------------------------------" << endl;
 

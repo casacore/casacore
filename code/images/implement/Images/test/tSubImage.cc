@@ -52,8 +52,8 @@ void testVectorROIter (const Lattice<Float>& sublat,
     step2.subSection (slicer.start(), slicer.end(), slicer.stride());
     RO_LatticeIterator<Float>  iter2(lattice, step2);
     for (iter.reset(); !iter.atEnd(); iter++, iter2++){
-        AlwaysAssert(allEQ(iter.vectorCursor().ac(),
-			   iter2.vectorCursor().ac()), AipsError);
+        AlwaysAssert(allEQ(iter.vectorCursor(),
+			   iter2.vectorCursor()), AipsError);
     }
     nstep = iter.nsteps();
     AlwaysAssert(nstep == latticeShape.product()/latticeShape(0), AipsError);

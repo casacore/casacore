@@ -1,5 +1,5 @@
 //# tRegex.cc: Test program for the Regex class
-//# Copyright (C) 1993,1994,1995,1996
+//# Copyright (C) 1993,1994,1995,1996,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -109,10 +109,10 @@ void a() {
     Vector<Int> veci(10);
     for (Int i=0; i<10; i++)
 	veci(i) = i;
-    cout << vec.ac() << endl;
-    cout << veci.ac() << endl;
+    cout << vec << endl;
+    cout << veci << endl;
     AipsIO ios("tRegex_tmp.data", ByteIO::New);
-    ios << exp << exp5 << vec.ac() << veci.ac();
+    ios << exp << exp5 << vec << veci;
 
     exp5 = exp2;
     cout << exp5.match("abcdbcdcdd",10) << endl;
@@ -133,9 +133,9 @@ void b() {
     cout << exp5.regexp() << "   " << exp2.regexp() << endl;
     Vector<Regex> vec;
     Vector<Int> veci;
-    ios >> vec.ac() >> veci.ac();
-    cout << vec.ac() << endl;
-    cout << veci.ac() << endl;
+    ios >> vec >> veci;
+    cout << vec << endl;
+    cout << veci << endl;
 
     cout << exp5.match("abcdbcdcdd",10) << endl;
     cout << String("abcdbcdcdd").matches(exp5) << " ";

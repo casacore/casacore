@@ -151,12 +151,12 @@ Bool testConcatenateArray (Bool doExcp)
     Matrix<Int> matrix3 (4u,4u);
     Vector<Int> vector1 (4);
     Vector<Int> vector2 (6);
-    indgen (matrix1.ac());
-    indgen (matrix2.ac(), Int(matrix1.nelements()));
-    indgen (matrix3.ac());
-    indgen (vector1.ac());
-    indgen (vector2.ac(), Int(vector1.nelements()));
-    Matrix<Int> matrixConc = concatenateArray (matrix1.ac(), matrix2.ac());
+    indgen (matrix1);
+    indgen (matrix2, Int(matrix1.nelements()));
+    indgen (matrix3);
+    indgen (vector1);
+    indgen (vector2, Int(vector1.nelements()));
+    Matrix<Int> matrixConc = concatenateArray (matrix1, matrix2);
     if (matrixConc.shape() != IPosition(2,3,9)) {
 	cout << "Error in shape of concatenated matrices" << endl;
 	ok = False;
@@ -172,7 +172,7 @@ Bool testConcatenateArray (Bool doExcp)
 	}
     }
 
-    Vector<Int> vectorConc = concatenateArray (vector1.ac(), vector2.ac());
+    Vector<Int> vectorConc = concatenateArray (vector1, vector2);
     if (vectorConc.shape() != IPosition(1,10)) {
 	cout << "Error in shape of concatenated vectors" << endl;
 	ok = False;
@@ -187,11 +187,11 @@ Bool testConcatenateArray (Bool doExcp)
     
     if (doExcp) {
 	try {
-	    concatenateArray (matrix1.ac(), matrix2.ac());
+	    concatenateArray (matrix1, matrix2);
 	} catch (ArrayConformanceError x) {
 	} end_try;
 	try {
-	    concatenateArray (matrix1.ac(), vector1.ac());
+	    concatenateArray (matrix1, vector1);
 	} catch (ArrayConformanceError x) {
 	} end_try;
     }

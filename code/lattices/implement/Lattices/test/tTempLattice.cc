@@ -1,5 +1,5 @@
 //# tTempLattice.cc
-//# Copyright (C) 1996,1997,1998
+//# Copyright (C) 1996,1997,1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -59,7 +59,7 @@ void doIt (TempLattice<Int>& scratch)
     scratch.reopen();
     AlwaysAssert(ptrM->shape().isEqual(shape), AipsError);
     Array<Int> expectedResult(shape);
-    indgen(expectedResult.ac());
+    indgen(expectedResult);
     AlwaysAssert(allEQ(*ptrM, expectedResult), AipsError);
     ptrM.rwRef() = 0;
     AlwaysAssert(allEQ(*ptrM, 0), AipsError);

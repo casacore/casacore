@@ -108,7 +108,7 @@ void doiter1() {
 	Vector<Int> vec;
 	col1.getColumn (vec);
 	cout << t.nrow() << " ";
-	if (!allEQ(vec.ac(), nr)) {
+	if (!allEQ(vec, nr)) {
 	    cout << "error in iter. " << nr << " " << vec(0)
 		 << " " << vec(vec.nelements()-1) << " " << vec.nelements() << endl;
 	}
@@ -125,7 +125,7 @@ void doiter1() {
 	Vector<Int> vec;
 	col1.getColumn (vec);
 	cout << t.nrow() << " ";
-	if (!allEQ(vec.ac(), nr)) {
+	if (!allEQ(vec, nr)) {
 	    cout << "error in iter. " << nr << " " << vec(0)
 		 << " " << vec(vec.nelements()-1) << " " << vec.nelements() << endl;
 	}
@@ -153,7 +153,7 @@ void doiter2() {
 	col1.getColumn (vec1);
 	Vector<double> vec2;
 	col2.getColumn (vec2);
-	if (!(allEQ(vec1.ac(), vec1(0))  &&  allEQ(vec2.ac(), vec2(0)))) {
+	if (!(allEQ(vec1, vec1(0))  &&  allEQ(vec2, vec2(0)))) {
 	    cout << "error in iter. " << nr << " " << vec1(0) << " "
 		 << vec1(vec1.nelements()-1) << " " << vec2(0) << " "
 		 << vec2(vec2.nelements()-1) << endl;

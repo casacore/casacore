@@ -1,5 +1,5 @@
 //# tLCSlicer.cc: Test program the LCSlicer class
-//# Copyright (C) 1997,1998
+//# Copyright (C) 1997,1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -152,7 +152,7 @@ void doIt()
 	AlwaysAssertExit (! sl1.isUnspecified());
 	AlwaysAssertExit (sl1.ndim() == 3);
 	Slicer sl (sl1.toSlicer (IPosition(3,10,11,12), IPosition(3,40,50,60)));
-	cout << sl1.blc().ac() << sl1.trc().ac() << sl1.inc().ac() << endl;
+	cout << sl1.blc() << sl1.trc() << sl1.inc() << endl;
 	cout << sl.start() << sl.end() << sl.stride() << endl;
     }
     {

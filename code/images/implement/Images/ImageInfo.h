@@ -74,7 +74,7 @@ class ostream;
 //    ii.setRestoringBeam(Quantity(30,"arcsec"), Quantity(10,"arcsec"),
 //                        Quantity(-18,"deg"));
 //    ...
-//    cout << "The restoring beam is : " << oi.restoringBeam().ac() << endl;
+//    cout << "The restoring beam is : " << oi.restoringBeam() << endl;
 // </srcblock>
 // </example>
 //

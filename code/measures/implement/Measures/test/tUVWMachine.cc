@@ -1,5 +1,5 @@
 //# tUVWMachine.cc: This program test the UVWMachine class
-//# Copyright (C) 1998
+//# Copyright (C) 1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -275,7 +275,7 @@ Int main() {
     Vector<MVPosition> vmv(1);
     cout << "Input uvw:            " << uvw << endl;
     vdd(0) = uvw.getValue();
-    cout << "Phase correction:     " << ump.getPhase(vdd).ac() << endl;
+    cout << "Phase correction:     " << ump.getPhase(vdd) << endl;
     cout << "Corrected UVW:        " << MVPosition(vdd(0)) << endl;
     vdd(0) = uvw.getValue();
     umcp.convertUVW(vdd);
@@ -286,7 +286,7 @@ Int main() {
     cout << "Corrected UVW:        " << MVPosition(vddo(0)) << endl;
 
     vmv(0) = uvw;
-    cout << "Phase correction:     " << ump.getPhase(vmv).ac() << endl;
+    cout << "Phase correction:     " << ump.getPhase(vmv) << endl;
     cout << "Corrected UVW:        " << vmv(0) << endl;
     vmv(0) = uvw;
     umas.convertUVW(vmv);

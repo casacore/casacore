@@ -1,5 +1,5 @@
 //# tLCExtension.cc: Test program for LCExtension class
-//# Copyright (C) 1998
+//# Copyright (C) 1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -60,8 +60,8 @@ void doIt (const LCRegion& region,
 	cout << prism.hasMask() << ' ' << endl;
 	cout << prism.boundingBox().start() << prism.boundingBox().end()
 	     << prism.boundingBox().length() << prism.latticeShape() << endl;
-	cout << prism.extendAxes() << prism.extendBox().blc().ac()
-	     << prism.extendBox().trc().ac() << endl;
+	cout << prism.extendAxes() << prism.extendBox().blc()
+	     << prism.extendBox().trc() << endl;
       {
 	// Test cloning.
 	LCRegion* prismcop = prism.cloneRegion();

@@ -1,5 +1,5 @@
 //# tDirectory.cc: Test program for class Directory
-//# Copyright (C) 1996,1997
+//# Copyright (C) 1996,1997,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //# 
 //# This library is free software; you can redistribute it and/or modify it
@@ -67,14 +67,14 @@ void doIt (Bool doExcp)
     {
         // Directory::find
         Vector<String> found = tmp.find (Regex::fromString("test1"));
-	genSort (found.ac());
-	cout << found.ac() << endl;
+	genSort (found);
+	cout << found << endl;
         Vector<String> found1 = tmp.find (Regex("test[12]"), True);
-	genSort (found1.ac());
-	cout << found1.ac() << endl;
+	genSort (found1);
+	cout << found1 << endl;
         Vector<String> found2 = tmp.find (Regex(".*"), True);
-	genSort (found2.ac());
-	cout << found2.ac() << endl;
+	genSort (found2);
+	cout << found2 << endl;
     }
 
     AlwaysAssertExit (! tmp.isEmpty());

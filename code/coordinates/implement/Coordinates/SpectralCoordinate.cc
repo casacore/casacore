@@ -65,7 +65,7 @@ SpectralCoordinate::SpectralCoordinate(
       type_p(type), restfreq_p(restFrequency)
 {
     Vector<Double> channels(freqs.nelements());
-    indgen(channels.ac());
+    indgen(channels);
     worker_p = TabularCoordinate(channels, freqs, "Hz", "Frequency");
 }
 

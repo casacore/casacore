@@ -1,5 +1,5 @@
 //# tAipsrcValue.cc: This program tests the Aipsrc value interface
-//# Copyright (C) 1996,1997,1998
+//# Copyright (C) 1996,1997,1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -59,7 +59,7 @@ int main(){
   cout << aipsrcKeyword2 << " (B): " << bVal << endl;
 
   AipsrcVector<Double>::find(vVal, aipsrcKeyword1);
-  cout << aipsrcKeyword1 << " (V): " << vVal.ac() << endl;
+  cout << aipsrcKeyword1 << " (V): " << vVal << endl;
 
   AipsrcValue<Double>::find(aVal, aipsrcKeyword1, "m/s", "km/s");
   cout << aipsrcKeyword1 << " (Q): " << aVal << endl;

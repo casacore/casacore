@@ -130,12 +130,12 @@ Bool ImageInterface<T>::setCoordinateInfo(const CoordinateSystem &coords)
 	logSink() << LogIO::DEBUGGING << 
 	    "Changing coordinate system:\n" <<
 	    "        ndim = " << shape().nelements() << endl <<
-	    "        axes = " << coords_p.worldAxisNames().ac() << endl <<
-	    "     ref val = " << coords_p.referenceValue().ac() << endl <<
-	    "     ref pix = " << coords_p.referencePixel().ac() << endl <<
-	    "       delta = " << coords_p.increment().ac() << " units = " <<
-	    coords_p.worldAxisUnits().ac() << endl <<
-	    "linear xfrom = " << coords_p.linearTransform().ac() << 
+	    "        axes = " << coords_p.worldAxisNames() << endl <<
+	    "     ref val = " << coords_p.referenceValue() << endl <<
+	    "     ref pix = " << coords_p.referencePixel() << endl <<
+	    "       delta = " << coords_p.increment() << " units = " <<
+	    coords_p.worldAxisUnits() << endl <<
+	    "linear xfrom = " << coords_p.linearTransform() << 
 	    LogIO::POST;
     } else {
 	// !ok

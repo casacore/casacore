@@ -1,5 +1,5 @@
 //# tGenSort.cc: This program tests the global templated sort routines
-//# Copyright (C) 1993,1994,1995,1996,1997
+//# Copyright (C) 1993,1994,1995,1996,1997,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -116,7 +116,7 @@ void sortall (Int* arr, uInt nr, int type, Sort::Order ord, Bool showFlag)
 {
     Vector<uInt> inx;
     Vector<uInt> index(nr);
-    indgen (index.ac());              // fill with 0,1,2,...
+    indgen (index);              // fill with 0,1,2,...
 
     // Do an indirect sort.
     Timer tim1;

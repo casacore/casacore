@@ -335,7 +335,7 @@ void TSMCube::extendCoordinates (const Record& coordValues,
             if (vectorLength > 0) {
                 Vector<Bool> vector(vectorLength);
                 vector = False;
-                Array<Bool> newArray (concatenateArray (array, vector.ac()));
+                Array<Bool> newArray (concatenateArray (array, vector));
                 array.reference (newArray);
             }
             if (start(0) < Int(length)) {
@@ -354,7 +354,7 @@ void TSMCube::extendCoordinates (const Record& coordValues,
             if (vectorLength > 0) {
                 Vector<Int> vector(vectorLength);
                 vector = 0;
-                Array<Int> newArray (concatenateArray (array, vector.ac()));
+                Array<Int> newArray (concatenateArray (array, vector));
                 array.reference (newArray);
             }
             if (start(0) < Int(length)) {
@@ -373,7 +373,7 @@ void TSMCube::extendCoordinates (const Record& coordValues,
             if (vectorLength > 0) {
                 Vector<uInt> vector(vectorLength);
                 vector = 0;
-                Array<uInt> newArray (concatenateArray (array, vector.ac()));
+                Array<uInt> newArray (concatenateArray (array, vector));
                 array.reference (newArray);
             }
             if (start(0) < Int(length)) {
@@ -392,7 +392,7 @@ void TSMCube::extendCoordinates (const Record& coordValues,
             if (vectorLength > 0) {
                 Vector<float> vector(vectorLength);
                 vector = 0;
-                Array<float> newArray (concatenateArray (array, vector.ac()));
+                Array<float> newArray (concatenateArray (array, vector));
                 array.reference (newArray);
             }
             if (start(0) < Int(length)) {
@@ -411,7 +411,7 @@ void TSMCube::extendCoordinates (const Record& coordValues,
             if (vectorLength > 0) {
                 Vector<double> vector(vectorLength);
                 vector = 0;
-                Array<double> newArray (concatenateArray (array, vector.ac()));
+                Array<double> newArray (concatenateArray (array, vector));
                 array.reference (newArray);
             }
             if (start(0) < Int(length)) {
@@ -430,7 +430,7 @@ void TSMCube::extendCoordinates (const Record& coordValues,
             if (vectorLength > 0) {
                 Vector<Complex> vector(vectorLength);
                 vector = Complex(0);
-                Array<Complex> newArray (concatenateArray (array, vector.ac()));
+                Array<Complex> newArray (concatenateArray (array, vector));
                 array.reference (newArray);
             }
             if (start(0) < Int(length)) {
@@ -449,7 +449,7 @@ void TSMCube::extendCoordinates (const Record& coordValues,
             if (vectorLength > 0) {
                 Vector<DComplex> vector(vectorLength);
                 vector = DComplex(0);
-                Array<DComplex> newArray (concatenateArray (array, vector.ac()));
+                Array<DComplex> newArray (concatenateArray (array, vector));
                 array.reference (newArray);
             }
             if (start(0) < Int(length)) {
@@ -468,7 +468,7 @@ void TSMCube::extendCoordinates (const Record& coordValues,
             if (vectorLength > 0) {
                 Vector<String> vector(vectorLength);
                 vector = "";
-                Array<String> newArray (concatenateArray (array, vector.ac()));
+                Array<String> newArray (concatenateArray (array, vector));
                 array.reference (newArray);
             }
             if (start(0) < Int(length)) {

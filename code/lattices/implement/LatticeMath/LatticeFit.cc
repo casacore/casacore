@@ -101,7 +101,7 @@ uInt baselineFit(Lattice<Float> &outImage,
     RO_LatticeIterator<Float> inIter(inImage, cursorShape);
 
     Vector<Float> xall(inShape(whichAxis));
-    indgen(xall.ac());
+    indgen(xall);
     Vector<Float> solution(xall.nelements());
     Vector<Float> yall(xall.nelements());
 
@@ -118,7 +118,7 @@ uInt baselineFit(Lattice<Float> &outImage,
 	    solution(ii) = (*fitter.fittedFunction())(xall(ii));
 	}
 	if (returnResiduals) {
-	    outIter.woVectorCursor() = (yall.ac() - solution.ac());
+	    outIter.woVectorCursor() = (yall - solution);
 	} else {
 	    outIter.woVectorCursor() = solution;
 	}

@@ -244,8 +244,8 @@ circularConv(Array<FType>& result,
 	     const Array<FType>& model){
   // Check the dimensions of the model are compatible with the current psf
   IPosition imageSize = extractShape(thePsfSize, model.shape());
-  if (max(imageSize.asVector().arrayCast(), 
-	  thePsfSize.asVector().arrayCast()) 
+  if (max(imageSize.asVector(), 
+	  thePsfSize.asVector()) 
       != theFFTSize){
     resizeXfr(model.shape(), False, False);
   }

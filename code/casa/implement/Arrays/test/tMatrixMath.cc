@@ -1,5 +1,5 @@
 //# tMatrixMath.cc: Test functiosn in MatrixMath.h
-//# Copyright (C) 1995,1996
+//# Copyright (C) 1995,1996,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -44,23 +44,23 @@ int main()
     outd(0,0) = 0; outd(0,1) = 7; outd(0,2) = 14;
     outd(1,0) = 5; outd(1,1) = 8; outd(1,2) = -14;
     outd(2,0) = 5; outd(2,1) = -13; outd(2,2) = 14;
-    outd.ac() /= 70.0;
+    outd /= 70.0;
 
-    AlwaysAssertExit(allNearAbs(invert(ind).ac(), outd.ac(), 0.00001));
+    AlwaysAssertExit(allNearAbs(invert(ind), outd, 0.00001));
 
     // Now test the other types - Float/Complex/DComplex
 
     Matrix<Float> inf(3,3), outf(3,3);
-    convertArray(inf.ac(), ind.ac()); convertArray(outf.ac(), outd.ac());
-    AlwaysAssertExit(allNearAbs(invert(inf).ac(), outf.ac(), 0.00001));
+    convertArray(inf, ind); convertArray(outf, outd);
+    AlwaysAssertExit(allNearAbs(invert(inf), outf, 0.00001));
 
     Matrix<Complex> inc(3,3), outc(3,3);
-    convertArray(inc.ac(), ind.ac()); convertArray(outc.ac(), outd.ac());
-    AlwaysAssertExit(allNearAbs(invert(inc).ac(), outc.ac(), 0.00001));
+    convertArray(inc, ind); convertArray(outc, outd);
+    AlwaysAssertExit(allNearAbs(invert(inc), outc, 0.00001));
 
     Matrix<DComplex> indc(3,3), outdc(3,3);
-    convertArray(indc.ac(), ind.ac()); convertArray(outdc.ac(), outd.ac());
-    AlwaysAssertExit(allNearAbs(invert(indc).ac(), outdc.ac(), 0.00001));
+    convertArray(indc, ind); convertArray(outdc, outd);
+    AlwaysAssertExit(allNearAbs(invert(indc), outdc, 0.00001));
 
     cout << "OK" << endl;
     return 0;

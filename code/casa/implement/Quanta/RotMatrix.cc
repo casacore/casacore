@@ -150,7 +150,7 @@ void RotMatrix::set(const Vector<Double> &in0, const Vector<Double> &in1,
 }
 
 ostream &operator<< (ostream &os, const RotMatrix &rot) {
-  os << rot.get().ac();
+  os << rot.get();
   return os;
 }
 

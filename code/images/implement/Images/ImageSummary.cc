@@ -149,7 +149,7 @@ Vector<Double> ImageSummary<T>::referencePixels () const
 // Get reference pixels for the pixel axes
 //
 {
-   return cSys_p.referencePixel().ac()+Vector<Double>(cSys_p.nPixelAxes(),1.0).ac();
+   return cSys_p.referencePixel()+Vector<Double>(cSys_p.nPixelAxes(),1.0);
 }
 
 

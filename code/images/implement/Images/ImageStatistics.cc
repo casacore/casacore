@@ -274,7 +274,7 @@ Bool ImageStatistics<T>::setAxes (const Vector<Int>& axes)
 // image
 
    if (saveAxes.nelements() != cursorAxes_p.nelements() ||
-       !allEQ(saveAxes.ac(), cursorAxes_p.ac())) needStorageImage_p = True;
+       !allEQ(saveAxes, cursorAxes_p)) needStorageImage_p = True;
 
 
 // Set the display axes vector.  We also do this in ::generateStorageImage
@@ -343,7 +343,7 @@ Bool ImageStatistics<T>::setInExCludeRange(const Vector<T>& include,
         (saveNoExclude!=noExclude_p) ||
         (saveFixedMinMax != fixedMinMax_p) ||
         (saveRange.nelements() != range_p.nelements()) ||
-        (!allEQ(saveRange.ac(), range_p.ac())) ) {
+        (!allEQ(saveRange, range_p)) ) {
       needStorageImage_p = True;    
    }
    return True;

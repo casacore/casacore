@@ -1,5 +1,5 @@
 //# tMBaseline.cc: This program tests MBaseline class
-//# Copyright (C) 1998
+//# Copyright (C) 1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -76,8 +76,8 @@ main()
 	  " as " << bconv() << endl;
 
 	MBaseline::Convert bconvb(mbref1, mbref0);
-	if (allNearAbs(mb0.getValue().getValue().ac(),
-		       bconvb(bconv()).getValue().getValue().ac(),
+	if (allNearAbs(mb0.getValue().getValue(),
+		       bconvb(bconv()).getValue().getValue(),
 		       1e-8)) {
 	  cout << "Back      " << bconv() << " : ok" << endl;
 	} else {
@@ -98,13 +98,13 @@ main()
 	    MBaseline mb0(mvb0, rin);
 	    MBaseline::Convert forw(rin, rout);
 	    MBaseline::Convert backw(rout, rin);
-	    if (!allNearAbs(mb0.getValue().getValue().ac() -
-			 backw(forw(mb0)).getValue().getValue().ac(), 
-			 tvec.ac(), 1e-7)) {
+	    if (!allNearAbs(mb0.getValue().getValue() -
+			 backw(forw(mb0)).getValue().getValue(), 
+			 tvec, 1e-7)) {
 	      cout << MBaseline::showType(i) << " to " <<
 		MBaseline::showType(j) << ": " <<
-		mb0.getValue().getValue().ac() -
-		backw(forw(mb0)).getValue().getValue().ac() << endl;
+		mb0.getValue().getValue() -
+		backw(forw(mb0)).getValue().getValue() << endl;
 	      isok = False;
 	    };
 	  };
@@ -125,11 +125,11 @@ main()
 	  Vector<Quantum<Double> > vq(3);
 	  vq = Quantity(23, "m");
 	  x.putValue(vq);
-	  cout << "putValue:       " << vq.ac() << ", " << x << endl;
+	  cout << "putValue:       " << vq << ", " << x << endl;
 	  cout << "BaselineAngle:  " << x.BaselineAngle(mvb0) << endl;
 	  cout << "BaselineAngle:  " << x.BaselineAngle(mvb0, "deg") << endl;
-	  cout << "get:            " << x.get().ac() << endl;
-	  cout << "getRecordValue: " << x.getRecordValue().ac() << endl;
+	  cout << "get:            " << x.get() << endl;
+	  cout << "getRecordValue: " << x.getRecordValue() << endl;
 	  cout << "separation:     " << x.separation(mvb0) << endl;
 	  cout << "separation:     " << x.separation(mvb0, "deg") << endl;
 	  cout << "crossProduct:   " << x.crossProduct(mvb0) << endl;
@@ -137,13 +137,13 @@ main()
 	  cout << "getAngle:       " << x.getAngle("deg") << endl;
 	  cout << "getlength:      " << x.getLength("cm") << endl;
 	  cout << "radius:         " << x.radius() << endl;
-	  cout << "getXRecordValue:" << x.getXRecordValue().ac() << endl;
+	  cout << "getXRecordValue:" << x.getXRecordValue() << endl;
 	  Vector<Double> x1(3);
 	  x1(0) = 30;
 	  x1(1) = 40;
 	  x1(2) = 0;
 	  x.putVector(x1);
-	  cout << "putVector:      " << x1.ac() << ", " << x << endl;
+	  cout << "putVector:      " << x1 << ", " << x << endl;
 	  MVBaseline x2(vq);
 	  cout << "VQ constructor: " << x2 << endl;
 	  cout << "Pos constructor:" << MVBaseline(x, x2) << endl;
@@ -166,7 +166,7 @@ main()
 	  cout << "operator*       " << x*x2 << endl;
 	  cout << "operator*:      " << x1*x << endl;
 	  cout << "clone:          " << *(x.clone()) << endl;
-	  cout << "getVector:      " << x.getVector().ac() << endl;
+	  cout << "getVector:      " << x.getVector() << endl;
 	  cout << "near:           " << x.near(x2) << endl;
 	  cout << "near:           " << x.near(x2, Quantity(1, "deg")) << endl;
 	  cout << "nearAbs:        " << x.nearAbs(x2) << endl;

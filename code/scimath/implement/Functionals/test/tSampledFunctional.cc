@@ -1,5 +1,5 @@
 //# tSampledFunctional.cc:
-//# Copyright (C) 1996
+//# Copyright (C) 1996,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -39,7 +39,7 @@ int main() {
   {
     Bool Failed = False;
     uInt i;
-    Vector<Float> v(10); indgen(v.ac());
+    Vector<Float> v(10); indgen(v);
     ScalarSampledFunctional<Float> fv(v);
     for (i = 0; i < fv.nelements(); i++)
       if (!near(fv(i), Float(i)))
@@ -120,7 +120,7 @@ int main() {
 	Failed = True;
       if (!near(m(1,2), Double(6*i+5)))
 	Failed = True;
-      //      cout << "     f(" << i << ") = " << m.ac() << endl;;
+      //      cout << "     f(" << i << ") = " << m << endl;;
     }
     ArraySampledFunctional<Array<Double> > f1(f);
     a(IPosition(4,0,0,0,0)) = 100.0;

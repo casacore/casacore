@@ -1,5 +1,5 @@
 //# tTable_2.cc: Test program for reading back old tables
-//# Copyright (C) 1995,1996,1998
+//# Copyright (C) 1995,1996,1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -103,7 +103,7 @@ void doIt (const String& tableName)
     Slicer nslice (tmp, tmp, tmp, Slicer::endIsLength);
     Slicer nslice2(Slice(0,1), Slice(0,1,2), Slice(0,2,2),
 		   Slicer::endIsLength);
-    indgen (arrf.ac());
+    indgen (arrf);
     for (i=0; i<10; i++) {
 	cout << "get scalar row " << i << endl;
 	ab2.get (i, abval);
@@ -121,27 +121,27 @@ void doIt (const String& tableName)
 		 << ", " << agval << endl;
 	}
 	arr1.get (i, arrval);
-	if (!allEQ (arrval.ac(), arrf.ac())) {
+	if (!allEQ (arrval, arrf)) {
 	    cout << "error in arr1 in row " << i << endl;
 	}
 	arr2.get (i, arrval);
-	if (!allEQ (arrval.ac(), arrf.ac())) {
+	if (!allEQ (arrval, arrf)) {
 	    cout << "error in arr2 in row " << i << endl;
 	}
 	cout << "get array row " << i << endl;
 	arr3.get (i, arrval);
-	if (!allEQ (arrval.ac(), arrf.ac())) {
+	if (!allEQ (arrval, arrf)) {
 	    cout << "error in arr3 in row " << i << endl;
 	}
 	arr2.getSlice (i, nslice, arrval);
-	if (!allEQ (arrval.ac(), arrf.ac())) {
+	if (!allEQ (arrval, arrf)) {
 	    cout << "error in arr2 (entire slice) in row " << i << endl;
 	}
 	arr2.getSlice (i, nslice2, arrvalslice);
-	if (!allEQ (arrval.ac(), arrf.ac())) {
+	if (!allEQ (arrval, arrf)) {
 	    cout << "error in arr2 (partial slice) in row " << i << endl;
 	}
-	arrf.ac() += (float)(arrf.nelements());
+	arrf += (float)(arrf.nelements());
     }
     Vector<Int> abvec = ab2.getColumn();
     cout << tab.nrow() << " " << abvec.nelements() << endl;
@@ -186,7 +186,7 @@ void doIt (const String& tableName)
 	cout << "sortab does not contain 10 rows" << endl;
     }
     ROScalarColumn<float> sorae(sortab, "ae");
-    cout << sorae.getColumn().ac() << endl;
+    cout << sorae.getColumn() << endl;
     cout << "#columns in sortab: " << sortab.tableDesc().ncolumn() << endl;
 
     Table sortab2 = sortab.sort ("ad");
@@ -194,7 +194,7 @@ void doIt (const String& tableName)
 	cout << "sortab2 does not contain 10 rows" << endl;
     }
     ROScalarColumn<uInt> sorad(sortab2, "ad");
-    cout << sorad.getColumn().ac() << endl;
+    cout << sorad.getColumn() << endl;
     cout << "#columns in sortab2: " << sortab2.tableDesc().ncolumn() << endl;
 
     // Get a subset of the table via row numbers.
@@ -208,7 +208,7 @@ void doIt (const String& tableName)
 	cout << "seltab1 does not contain 4 rows" << endl;
     }
     ROScalarColumn<Int> sel1ab(seltab1, "ab");
-    cout << sel1ab.getColumn().ac() << endl;
+    cout << sel1ab.getColumn() << endl;
     cout << "#columns in seltab1: " << seltab1.tableDesc().ncolumn() << endl;
 
     // Project the table.
@@ -221,7 +221,7 @@ void doIt (const String& tableName)
 	cout << "seltab2 does not contain 4 rows" << endl;
     }
     ROScalarColumn<Int> sel2ab(seltab2, "ab");
-    cout << sel2ab.getColumn().ac() << endl;
+    cout << sel2ab.getColumn() << endl;
     cout << "#columns in seltab2: " << seltab2.tableDesc().ncolumn() << endl;
 
     // Get a subset via a mask.
@@ -233,16 +233,16 @@ void doIt (const String& tableName)
 	cout << "seltab3 does not contain 2 rows" << endl;
     }
     ROScalarColumn<Int> sel3ab(seltab3, "ab");
-    cout << sel3ab.getColumn().ac() << endl;
+    cout << sel3ab.getColumn() << endl;
     cout << "#columns in seltab3: " << seltab3.tableDesc().ncolumn() << endl;
-    cout << seltab3.tableDesc().columnNames().ac() << endl;
+    cout << seltab3.tableDesc().columnNames() << endl;
 
     Table xortab = sortab ^ seltab1;
     if (xortab.nrow() != 6) {
 	cout << "xortab does not contain 6 rows" << endl;
     }
     ROScalarColumn<Int> xorab(xortab, "ab");
-    cout << xorab.getColumn().ac() << endl;
+    cout << xorab.getColumn() << endl;
     cout << "#columns in xortab: " << xortab.tableDesc().ncolumn() << endl;
 
     Table or1tab = xortab | seltab3;
@@ -250,7 +250,7 @@ void doIt (const String& tableName)
 	cout << "or1tab does not contain 8 rows" << endl;
     }
     ROScalarColumn<Int> or1ab(or1tab, "ab");
-    cout << or1ab.getColumn().ac() << endl;
+    cout << or1ab.getColumn() << endl;
     cout << "#columns in or1tab: " << or1tab.tableDesc().ncolumn() << endl;
 
     Table or2tab = seltab3 | xortab;
@@ -258,7 +258,7 @@ void doIt (const String& tableName)
 	cout << "or2tab does not contain 8 rows" << endl;
     }
     ROScalarColumn<Int> or2ab(or2tab, "ab");
-    cout << or2ab.getColumn().ac() << endl;
+    cout << or2ab.getColumn() << endl;
     cout << "#columns in or2tab: " << or2tab.tableDesc().ncolumn() << endl;
 
     Table exprtab = sortab(sortab.col("ab") >= 5);
@@ -266,7 +266,7 @@ void doIt (const String& tableName)
 	cout << "exprtab does not contain 5 rows" << endl;
     }
     ROScalarColumn<Int> exprab(exprtab, "ab");
-    cout << exprab.getColumn().ac() << endl;
+    cout << exprab.getColumn() << endl;
 
     Table expr2tab = tab(tab.col("af") == "V3"  ||
 			      tab.col("ab") >= 5  &&  tab.col("ab") < 8);
@@ -274,5 +274,5 @@ void doIt (const String& tableName)
 	cout << "expr2tab does not contain 4 rows" << endl;
     }
     ROScalarColumn<Int> expr2ab(expr2tab, "ab");
-    cout << expr2ab.getColumn().ac() << endl;
+    cout << expr2ab.getColumn() << endl;
 }

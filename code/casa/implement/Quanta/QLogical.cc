@@ -37,7 +37,7 @@ Bool operator==(const Quantum<Qtype> &left, const Quantum<Qtype> &other) {
     if (left.getFullUnit().getValue() == other.getFullUnit().getValue() ){
 	Qtype tmp;
 	tmp = other.get(left.getFullUnit()).getValue();
-	return QMakeBool(at_cc(left.getValue()) == at_cc(tmp));
+	return QMakeBool((left.getValue()) == (tmp));
     }
     return False;
 }

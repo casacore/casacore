@@ -1,5 +1,5 @@
 //# tLCPolygon.cc: Test program for LCPolygon class
-//# Copyright (C) 1998
+//# Copyright (C) 1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -42,7 +42,7 @@ void doIt (const IPosition& latticeShape,
     cout << polygon.hasMask() << ' ' << polygon.maskArray() << endl;
     cout << polygon.boundingBox().start() << polygon.boundingBox().end()
 	 << polygon.boundingBox().length() << polygon.latticeShape() << endl;
-    cout << polygon.x().ac() << polygon.y().ac() << endl;
+    cout << polygon.x() << polygon.y() << endl;
 }
 
 

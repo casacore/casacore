@@ -276,10 +276,10 @@ void b()
 	cout << "get row " << i << endl;
 	colD.get (i, valD);
 	colA.get (i, valA);
-	if (! allEQ (valD.ac(), resD.ac())) {
+	if (! allEQ (valD, resD)) {
 	    cout << "Error in Data in row " << i << endl;
 	}
-	if (! allEQ (valA.ac(), resA.ac())) {
+	if (! allEQ (valA, resA)) {
 	    cout << "Error in colA in row " << i << endl;
 	}
     }
@@ -349,10 +349,10 @@ void c()
 	}
 	colD.get (i, valD);
 	colA.get (i, valA);
-	if (! allEQ (valD.ac(), resD.ac())) {
+	if (! allEQ (valD, resD)) {
 	    cout << "Error in Data in row " << i << endl;
 	}
-	if (! allEQ (valA.ac(), resA.ac())) {
+	if (! allEQ (valA, resA)) {
 	    cout << "Error in Stokes in row " << i << endl;
 	}
     }
@@ -411,10 +411,10 @@ void c()
 	}
 	colD.get (i, valD);
 	colA.get (i, valA);
-	if (! allEQ (valD.ac(), resD.ac())) {
+	if (! allEQ (valD, resD)) {
 	    cout << "Error in Data in row " << i << endl;
 	}
-	if (! allEQ (valA.ac(), resA.ac())) {
+	if (! allEQ (valA, resA)) {
 	    cout << "Error in Stokes in row " << i << endl;
 	}
     }

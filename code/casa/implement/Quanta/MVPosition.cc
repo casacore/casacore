@@ -159,8 +159,8 @@ MVPosition::MVPosition(const Vector<Double> &other) :
     } else if (i == 3) {
       xyz = other;
     } else {
-      Vector<Double> tsin = (sin(other.ac()));
-      Vector<Double> tcos = (cos(other.ac()));
+      Vector<Double> tsin = (sin(other));
+      Vector<Double> tcos = (cos(other));
       xyz = Double(0.0);
       if (i > 1) {
 	xyz(0) = tcos(0) * tcos(1);
@@ -188,7 +188,7 @@ MVPosition::~MVPosition() {}
 //# Operators
 Bool MVPosition::
 operator==(const MVPosition &other) const {
-  return (allEQ(xyz.ac(), other.xyz.ac()));
+  return (allEQ(xyz, other.xyz));
 }
 
 Bool MVPosition::
@@ -198,7 +198,7 @@ operator!=(const MVPosition &other) const {
 
 Bool MVPosition::
 near(const MVPosition &other, Double tol) const {
-  return (allNear(xyz.ac(), other.xyz.ac(), tol));
+  return (allNear(xyz, other.xyz, tol));
 }
 
 Bool MVPosition::
@@ -208,7 +208,7 @@ near(const MVPosition &other, Quantity tol) const {
 
 Bool MVPosition::
 nearAbs(const MVPosition &other, Double tol) const {
-  return (allNearAbs(xyz.ac(), other.xyz.ac(), tol));
+  return (allNearAbs(xyz, other.xyz, tol));
 }
 
 Double MVPosition::
@@ -232,12 +232,12 @@ const Double &MVPosition::operator()(uInt which) const {
 
 MVPosition MVPosition::operator-() const {
   MVPosition tmp; tmp = *this;
-  tmp.xyz.ac() = -xyz.ac();
+  tmp.xyz = -xyz;
   return tmp;
 }
 
 MVPosition &MVPosition::operator+=(const MVPosition &right) {
-  xyz.ac() += right.xyz.ac();
+  xyz += right.xyz;
   return *this;
 }
 
@@ -248,7 +248,7 @@ MVPosition MVPosition::operator+(const MVPosition &right) const {
 }
 
 MVPosition &MVPosition::operator-=(const MVPosition &right) {
-  xyz.ac() -= right.xyz.ac();
+  xyz -= right.xyz;
   return *this;
 }
 
@@ -294,15 +294,15 @@ void MVPosition::adjust() {}
 void MVPosition::adjust(Double &res) {
   res = sqrt(operator*(*this));
   if (res != 0.0 && res != 1.0) {
-    xyz.ac() /= res;
+    xyz /= res;
   };
 }
 
 void MVPosition::readjust(Double res) {
   if (res == 0.0) {
-    xyz.ac() *= 1e-6;
+    xyz *= 1e-6;
   } else {
-    xyz.ac() *= res;
+    xyz *= res;
   };
 }
 
@@ -394,7 +394,7 @@ MVPosition MVPosition::crossProduct(const MVPosition &other) const {
 }
 
 void MVPosition::print(ostream &os) const {
-  os << getValue().ac();
+  os << getValue();
 }
 
 MeasValue *MVPosition::clone() const {

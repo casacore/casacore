@@ -1,5 +1,5 @@
 //# tMaskArrMath2.cc: Test program for MaskedArrays mathematical operations.
-//# Copyright (C) 1993,1994,1995,1996,1997
+//# Copyright (C) 1993,1994,1995,1996,1997,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -69,16 +69,16 @@ main()
             Vector<Double> df(10), dg(10), dh(10);
             Vector<Bool> b(10);
 
-            indgen (df.ac());
+            indgen (df);
             cout << endl << "df=indgen(df) = " << endl;
-            cout << df.ac() << endl;
+            cout << df << endl;
 
-            indgen (dg.ac(), 2.0);
+            indgen (dg, 2.0);
             cout << endl << "dg=indgen(dg) = " << endl;
-            cout << dg.ac() << endl;
+            cout << dg << endl;
 
             Vector<Double> dk(10);
-            indgen (dk.ac());
+            indgen (dk);
             dk (0) = 0.0;
             dk (1) = 1.0;
             dk (2) = 5.0;
@@ -89,7 +89,7 @@ main()
             dk (7) = 7.0;
             dk (8) = 4.0;
             dk (9) = 3.0;
-            cout << endl << "dk=" << endl << dk.ac() << endl;
+            cout << endl << "dk=" << endl << dk << endl;
 
             {
                 cout << endl
@@ -97,7 +97,7 @@ main()
                      << endl;
 
                 cout << " min (dk ((dk > 2.5) && (dk < 7.5)))= "
-                     <<   min (dk ((dk.ac() > 2.5) && (dk.ac() < 7.5)))
+                     <<   min (dk ((dk > 2.5) && (dk < 7.5)))
                      << endl;
             }
 
@@ -107,7 +107,7 @@ main()
                      << endl;
 
                 cout << " max (dk ((dk > 2.5) && (dk < 7.5)))= "
-                     <<   max (dk ((dk.ac() > 2.5) && (dk.ac() < 7.5)))
+                     <<   max (dk ((dk > 2.5) && (dk < 7.5)))
                      << endl;
             }
 
@@ -125,7 +125,7 @@ main()
                 IPosition maxPos (1);
 
                 minMax (minVal, maxVal, minPos, maxPos,
-                        dk((dk.ac() > 2.5) && (dk.ac() < 7.5)));
+                        dk((dk > 2.5) && (dk < 7.5)));
 
                 cout << "minMax (minVal, maxVal, minPos, maxPos,"
                      << endl
@@ -149,7 +149,7 @@ main()
                 Double maxVal;
 
                 minMax (minVal, maxVal,
-                        dk((dk.ac() > 2.5) && (dk.ac() < 7.5)));
+                        dk((dk > 2.5) && (dk < 7.5)));
 
                 cout << "minMax (minVal, maxVal,"
                      << endl
@@ -168,13 +168,13 @@ main()
                      << endl;
 
                 dh = 2.0;
-                min (dh((dk.ac() > 2.5) && (dk.ac() < 7.5)), dk.ac(), df.ac());
+                min (dh((dk > 2.5) && (dk < 7.5)), dk, df);
 
                 cout << endl << "dh=2.0; "
                      << endl
                      << "min (dh((dk > 2.5) && (dk < 7.5)), dk, df);"
                      << endl;
-                cout << dh.ac() << endl;
+                cout << dh << endl;
 
             }
 
@@ -186,13 +186,13 @@ main()
                      << endl;
 
                 dh = 2.0;
-                max (dh((dk.ac() > 2.5) && (dk.ac() < 7.5)), dk.ac(), df.ac());
+                max (dh((dk > 2.5) && (dk < 7.5)), dk, df);
 
                 cout << endl << "dh=2.0; "
                      << endl
                      << "max (dh((dk > 2.5) && (dk < 7.5)), dk, df);"
                      << endl;
-                cout << dh.ac() << endl;
+                cout << dh << endl;
 
             }
 
@@ -202,13 +202,13 @@ main()
                      << endl;
 
                 dh = 2.0;
-                dh = min (dk((dk.ac() > 2.5) && (dk.ac() < 7.5)), df.ac());
+                dh = min (dk((dk > 2.5) && (dk < 7.5)), df);
 
                 cout << endl << "dh=2.0; "
                      << endl
                      << "dh = min (dk((dk > 2.5) && (dk < 7.5)), df);"
                      << endl;
-                cout << dh.ac() << endl;
+                cout << dh << endl;
 
             }
 
@@ -218,13 +218,13 @@ main()
                      << endl;
 
                 dh = 2.0;
-                dh = max (dk((dk.ac() > 2.5) && (dk.ac() < 7.5)), df.ac());
+                dh = max (dk((dk > 2.5) && (dk < 7.5)), df);
 
                 cout << endl << "dh=2.0; "
                      << endl
                      << "dh = max (dk((dk > 2.5) && (dk < 7.5)), df);"
                      << endl;
-                cout << dh.ac() << endl;
+                cout << dh << endl;
 
             }
 
@@ -234,13 +234,13 @@ main()
                      << endl;
 
                 dh = 2.0;
-                dh = min (dk((dk.ac() > 2.5) && (dk.ac() < 7.5)), df.ac());
+                dh = min (dk((dk > 2.5) && (dk < 7.5)), df);
 
                 cout << endl << "dh=2.0; "
                      << endl
                      << "dh = min (dk((dk > 2.5) && (dk < 7.5)), df);"
                      << endl;
-                cout << dh.ac() << endl;
+                cout << dh << endl;
 
             }
 
@@ -250,13 +250,13 @@ main()
                      << endl;
 
                 dh = 2.0;
-                dh = max (df.ac(), dk((dk.ac() > 2.5) && (dk.ac() < 7.5)));
+                dh = max (df, dk((dk > 2.5) && (dk < 7.5)));
 
                 cout << endl << "dh=2.0; "
                      << endl
                      << "dh = max (df, dk((dk > 2.5) && (dk < 7.5)));"
                      << endl;
-                cout << dh.ac() << endl;
+                cout << dh << endl;
 
             }
 
@@ -266,8 +266,8 @@ main()
                      << endl;
 
                 dh = 2.0;
-                dh = min (dk((dk.ac() > 2.5) && (dk.ac() < 7.5)),
-                          df((df.ac() > 2.5) && (df.ac() < 7.5)));
+                dh = min (dk((dk > 2.5) && (dk < 7.5)),
+                          df((df > 2.5) && (df < 7.5)));
 
                 cout << endl << "dh=2.0; "
                      << endl
@@ -275,7 +275,7 @@ main()
                      << endl
                      << "          df((df > 2.5) && (df < 7.5)));"
                      << endl;
-                cout << dh.ac() << endl;
+                cout << dh << endl;
 
             }
 
@@ -285,8 +285,8 @@ main()
                      << endl;
 
                 dh = 2.0;
-                dh = max (dk((dk.ac() > 2.5) && (dk.ac() < 7.5)),
-                          df((df.ac() > 2.5) && (df.ac() < 7.5)));
+                dh = max (dk((dk > 2.5) && (dk < 7.5)),
+                          df((df > 2.5) && (df < 7.5)));
 
                 cout << endl << "dh=2.0; "
                      << endl
@@ -294,7 +294,7 @@ main()
                      << endl
                      << "          df((df > 2.5) && (df < 7.5)));"
                      << endl;
-                cout << dh.ac() << endl;
+                cout << dh << endl;
 
             }
 
@@ -304,13 +304,13 @@ main()
                      << endl;
 
                 dh = 2.0;
-                dh = min (dk((dk.ac() > 2.5) && (dk.ac() < 7.5)), 5.0);
+                dh = min (dk((dk > 2.5) && (dk < 7.5)), 5.0);
 
                 cout << endl << "dh=2.0; "
                      << endl
                      << "dh = min (dk((dk > 2.5) && (dk < 7.5)), 5.0);"
                      << endl;
-                cout << dh.ac() << endl;
+                cout << dh << endl;
 
             }
 
@@ -320,13 +320,13 @@ main()
                      << endl;
 
                 dh = 2.0;
-                dh = max (dk((dk.ac() > 2.5) && (dk.ac() < 7.5)), 5.0);
+                dh = max (dk((dk > 2.5) && (dk < 7.5)), 5.0);
 
                 cout << endl << "dh=2.0; "
                      << endl
                      << "dh = max (dk((dk > 2.5) && (dk < 7.5)), 5.0);"
                      << endl;
-                cout << dh.ac() << endl;
+                cout << dh << endl;
 
             }
 
@@ -336,13 +336,13 @@ main()
                      << endl;
 
                 dh = 2.0;
-                dh = min (5.0, dk((dk.ac() > 2.5) && (dk.ac() < 7.5)));
+                dh = min (5.0, dk((dk > 2.5) && (dk < 7.5)));
 
                 cout << endl << "dh=2.0; "
                      << endl
                      << "dh = min (5.0, dk((dk > 2.5) && (dk < 7.5)));"
                      << endl;
-                cout << dh.ac() << endl;
+                cout << dh << endl;
 
             }
 
@@ -352,13 +352,13 @@ main()
                      << endl;
 
                 dh = 2.0;
-                dh = max (5.0, dk((dk.ac() > 2.5) && (dk.ac() < 7.5)));
+                dh = max (5.0, dk((dk > 2.5) && (dk < 7.5)));
 
                 cout << endl << "dh=2.0; "
                      << endl
                      << "dh = max (5.0, dk((dk > 2.5) && (dk < 7.5)));"
                      << endl;
-                cout << dh.ac() << endl;
+                cout << dh << endl;
 
             }
 

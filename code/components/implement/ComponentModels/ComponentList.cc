@@ -134,7 +134,7 @@ Flux<Double> ComponentList::sample(const MDirection & sampleDir,
     compFlux = component(i).sample(sampleDir, pixelSize, centerFreq);
     compFlux.convertUnit(retUnit);
     compFlux.convertPol(retPol);
-    result.ac() += compFlux.value().ac();
+    result += compFlux.value();
   }
   return Flux<Double>(result, retPol);
 }
@@ -180,10 +180,10 @@ void ComponentList::remove(const uInt & index) {
 }
 
 void ComponentList::remove(const Vector<Int> & indices) {
-  AlwaysAssert(allGE(indices.ac(), 0), AipsError);
+  AlwaysAssert(allGE(indices, 0), AipsError);
   uInt c = indices.nelements();
   Vector<uInt> uIndices(c);
-  convertArray(uIndices.ac(), indices.ac());
+  convertArray(uIndices, indices);
   GenSort<uInt>::sort(uIndices);
   while (c != 0) {
     c--;

@@ -91,7 +91,7 @@ LatticeCache<T>::LatticeCache(Lattice<T> &image,
   AlwaysAssert(iTileShape.product(), AipsError);
 
   tileShape=iTileShape;
-  tileShapeVec=tileShape.asVector().ac();
+  tileShapeVec=tileShape.asVector();
   tileOverlap=iTileOverlap;
   uInt i;
   for (i=0;i<tileShapeVec.nelements();i++) {
@@ -197,8 +197,8 @@ void LatticeCache<T>::showCacheStatistics(ostream &os) {
   os<<"   Lattice shape   "<<image_p->shape()<<endl;
   os<<"   Cache size      "<<cacheSize<<endl;
   os<<"   Tile shape      "<<tileShape<<endl;
-  os<<"   Tile overlap    "<<tileOverlap.ac()<<endl;
-  os<<"   Tile offset     "<<tileOffsetVec.ac()<<endl;
+  os<<"   Tile overlap    "<<tileOverlap<<endl;
+  os<<"   Tile offset     "<<tileOffsetVec<<endl;
   os<<"   Number of tiles "<<numberTiles<<endl;
   os<<"   Accesses        "<<cacheAccesses<<endl;
   os<<"   Hits            "<<cacheHits<<endl;
@@ -272,7 +272,7 @@ void LatticeCache<T>::readTile(Int tile, Bool readonly) {
   for (uInt i=0;i<imageShapeVec.nelements();i++) {
     endLocVec(i)=min(endLocVec(i), imageShapeVec(i));
   }
-  IPosition actualShape=IPosition(endLocVec.ac())-tileLocs[tile];
+  IPosition actualShape=IPosition(endLocVec)-tileLocs[tile];
   if(additive&&!readonly) {
     tileContents[tile].resize(actualShape);
     tileContents[tile]=0.0;

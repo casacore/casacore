@@ -120,7 +120,7 @@ FluxRep(const Quantum<Vector<T> >& flux)
 {
   const Vector<T>& fluxVal(flux.getValue());
   DebugAssert(fluxVal.nelements() == 4, AipsError);
-  convertArray(itsVal.ac(), fluxVal.ac());
+  convertArray(itsVal, fluxVal);
   DebugAssert(ok(), AipsError);
 }
 
@@ -455,31 +455,31 @@ fromRecord(String& errorMessage, const RecordInterface& record) {
 	const Quantum<Vector<Double> > qVal = qh.asQuantumVectorDouble();
 	setUnit(qVal.getFullUnit());
 	Vector<NumericTraits<T>::ConjugateType> val(4);
-	convertArray(val.ac(), qVal.getValue().ac());
+	convertArray(val, qVal.getValue());
 	setValue(val);
       } else if (qh.isQuantumVectorDComplex()) {
 	const Quantum<Vector<DComplex> >& qVal = qh.asQuantumVectorDComplex();
 	setUnit(qVal.getFullUnit());
 	Vector<NumericTraits<T>::ConjugateType> val(4);
-	convertArray(val.ac(), qVal.getValue().ac());
+	convertArray(val, qVal.getValue());
 	setValue(val);
       } else if (qh.isQuantumVectorComplex()) {
 	const Quantum<Vector<Complex> >& qVal = qh.asQuantumVectorComplex();
 	setUnit(qVal.getFullUnit());
 	Vector<NumericTraits<T>::ConjugateType> val(4);
-	convertArray(val.ac(), qVal.getValue().ac());
+	convertArray(val, qVal.getValue());
 	setValue(val);
       } else if (qh.isQuantumVectorFloat()) {
 	const Quantum<Vector<Float> >& qVal = qh.asQuantumVectorFloat();
 	setUnit(qVal.getFullUnit());
 	Vector<NumericTraits<T>::ConjugateType> val(4);
-	convertArray(val.ac(), qVal.getValue().ac());
+	convertArray(val, qVal.getValue());
 	setValue(val);
       } else if (qh.isQuantumVectorInt()) {
 	const Quantum<Vector<Int> >& qVal = qh.asQuantumVectorInt();
 	setUnit(qVal.getFullUnit());
 	Vector<NumericTraits<T>::ConjugateType> val(4);
-	convertArray(val.ac(), qVal.getValue().ac());
+	convertArray(val, qVal.getValue());
 	setValue(val);
       } else {
 	errorMessage += "value field must be a real or complex vector\n";

@@ -68,11 +68,11 @@ int main() {
       expectedFlux = 0.0; expectedFlux(0) = 1.0;
       const MVAngle tol = Quantity(1E-3, "mas");
       defPoint.sample(sampledFlux, defDirJ2000, tol);
-      AlwaysAssert(allNear(sampledFlux.ac(), expectedFlux.ac(),C::dbl_epsilon),
+      AlwaysAssert(allNear(sampledFlux, expectedFlux,C::dbl_epsilon),
  		   AipsError);
       defPoint.sample(sampledFlux, defDirB1950, tol);
       expectedFlux = 0.0;
-      AlwaysAssert(allNear(sampledFlux.ac(), expectedFlux.ac(),C::dbl_epsilon),
+      AlwaysAssert(allNear(sampledFlux, expectedFlux,C::dbl_epsilon),
  		   AipsError);
       cout << "Passed the default Point component test" << endl;
     }
@@ -108,7 +108,7 @@ int main() {
       B1934.flux() = flux1934;
       Vector<Double> setFlux(4); flux1934.value(setFlux);
       Vector<Double> curFlux(4); B1934.flux().value(curFlux);
-      AlwaysAssert(allNear(curFlux.ac(), setFlux.ac(), C::dbl_epsilon), 
+      AlwaysAssert(allNear(curFlux, setFlux, C::dbl_epsilon), 
  		   AipsError);
 
       // Set and verify the direction of the point component. It is internally

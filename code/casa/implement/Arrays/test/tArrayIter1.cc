@@ -1,5 +1,5 @@
 //# tArrayIter1.cc: This program test the Array-based iterators
-//# Copyright (C) 1993,1994,1995,1996,1998
+//# Copyright (C) 1993,1994,1995,1996,1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -61,7 +61,7 @@ main()
     count = 0;
     while (!ai.pastEnd()) {
 	AlwaysAssertExit(allEQ (ai.array(), count));
-	AlwaysAssertExit(allEQ (ai.matrix().arrayCast(), count));
+	AlwaysAssertExit(allEQ (ai.matrix(), count));
 	count++;
 	ai.next();
     }
@@ -72,7 +72,7 @@ main()
     count = 0;
     while (!roai.pastEnd()) {
 	AlwaysAssertExit(allEQ (roai.array(), count));
-	AlwaysAssertExit(allEQ (roai.matrix().arrayCast(), count));
+	AlwaysAssertExit(allEQ (roai.matrix(), count));
 	count++;
 	roai.next();
     }
@@ -91,7 +91,7 @@ main()
     count = 0;
     while (!ai.pastEnd()) {
 	for (i=0; i<3; i++) {
-	    AlwaysAssertExit(allEQ (ai.matrix().column(i).arrayCast(), count));
+	    AlwaysAssertExit(allEQ (ai.matrix().column(i), count));
 	    count++;
 	}
 	ai.next();

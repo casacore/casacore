@@ -1,5 +1,5 @@
 //# tEarthMagneticMachine.cc: This program tests the EarthMagneticMachine class
-//# Copyright (C) 1998
+//# Copyright (C) 1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -51,12 +51,12 @@ Int main() {
     cout << "Date:      " << dat.string(MVTime::YMD +
 					MVTime::NO_TIME, 6) <<
       endl;
-    cout << "Position:  " << obs.getValue().get().ac() << endl;
+    cout << "Position:  " << obs.getValue().get() << endl;
     cout << "           " << obs.getAngle("deg") << endl;
     cout << "           " << obs.getValue().getLength("km") << endl;
     
     EarthField ef(EarthField::STANDARD, dat.day());
-    cout << "Result:    " << ef(obs.getValue()).ac() << endl;
+    cout << "Result:    " << ef(obs.getValue()) << endl;
     
     cout << "----------- H=0 -- El=90 ------" << endl;
     {

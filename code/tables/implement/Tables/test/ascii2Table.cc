@@ -101,12 +101,12 @@ void calc(Table& tab, const String& name)
     for (uInt i=0; i<nrrow; i++) {
 	tabcol.getScalar (i, vec(i));
     }
-    double vmean = mean (vec.ac());
-    double vmin  = min (vec.ac());
-    double vmax  = max (vec.ac());
-    double vadev = avdev (vec.ac(), vmean);
-    double vsdev = stddev (vec.ac(), vmean);
-    double vmed  = median (vec.ac(), False);
+    double vmean = mean (vec);
+    double vmin  = min (vec);
+    double vmax  = max (vec);
+    double vadev = avdev (vec, vmean);
+    double vsdev = stddev (vec, vmean);
+    double vmed  = median (vec, False);
     cout << "Min    " << name << ":  " << vmin << endl;
     cout << "Max    " << name << ":  " << vmax << endl;
     cout << "Mean   " << name << ":  " << vmean << endl;

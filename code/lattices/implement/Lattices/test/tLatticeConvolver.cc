@@ -584,7 +584,7 @@ int main() {
 // 	psf2D.putAt(0.1f, centre);
 // 	Array<Float> psfArray;
 // 	psf2D.getSlice(psfArray, IPosition(2,0), psf2D.shape());
-// 	cout << "psf = " << psfArray.ac() << endl;
+// 	cout << "psf = " << psfArray << endl;
 
 // 	TempLattice<Float> model(IPosition(2,7,6));
 // 	model.set(0.0);
@@ -592,7 +592,7 @@ int main() {
 // 	model.putAt(5.0, model.shape()-1);
 // 	Array<Float> modelArray;
 // 	model.getSlice(modelArray, IPosition(2,0), model.shape());
-// 	cout << "model = " << modelArray.ac() << endl;
+// 	cout << "model = " << modelArray << endl;
 
 // 	const IPosition imageShape = model.shape();
 // 	LatticeConvolver<Float> c(psf2D, imageShape);
@@ -602,7 +602,7 @@ int main() {
 
 // 	Array<Float> resultArray;
 // 	result.getSlice(resultArray, IPosition(2,0), result.shape());
-// 	cout << "result = " << resultArray.ac() << endl;
+// 	cout << "result = " << resultArray << endl;
 //       }
       }
   } catch (AipsError x) {

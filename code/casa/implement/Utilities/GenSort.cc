@@ -1,5 +1,5 @@
 //# GenSort.cc: General sort functions
-//# Copyright (C) 1993,1994,1995,1996,1997,1998
+//# Copyright (C) 1993,1994,1995,1996,1997,1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -442,7 +442,7 @@ uInt GenSortIndirect<T>::sort (Vector<uInt>& indexVector, const T* data,
 {
     // Fill the index vector with the indices.
     indexVector.resize (nr);
-    indgen (indexVector.ac());
+    indgen (indexVector);
     // Pass the sort function a C-array of indices, because indexing
     // in there is (much) faster than in a vector.
     Bool del;

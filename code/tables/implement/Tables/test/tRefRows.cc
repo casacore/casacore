@@ -1,5 +1,5 @@
 //# tRefRows.cc: This program tests class RefRows
-//# Copyright (C) 1998
+//# Copyright (C) 1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -107,16 +107,16 @@ void doIt()
     }
     {
 	Vector<uInt> rows(18);
-	indgen (rows.ac(), uInt(1));
+	indgen (rows, uInt(1));
 	rows(17) = 0;
 	RefRows ref(rows);
 	AlwaysAssertExit (ref.nrows() == 18);
 	AlwaysAssertExit (!ref.isSliced());
-	cout << ref.convert(vec).ac() << endl;
+	cout << ref.convert(vec) << endl;
     }
     {
 	Vector<uInt> rows(18);
-	indgen (rows.ac(), uInt(1));
+	indgen (rows, uInt(1));
 	rows(17) = 0;
 	RefRows ref(rows, False, True);
 	AlwaysAssertExit (ref.nrows() == 18);
@@ -127,7 +127,7 @@ void doIt()
 		 << ' ' << iter1.sliceIncr() << endl;
 	    iter1++;
 	}
-	cout << ref.convert(vec).ac() << endl;;
+	cout << ref.convert(vec) << endl;;
     }
 }
 

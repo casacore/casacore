@@ -341,7 +341,7 @@ Bool CoordinateUtil::removeAxes(CoordinateSystem& cSys,
       GenSort<uInt>::sort(remove, Sort::Ascending, Sort::NoDuplicates);
    } else {
       for (i=0,j=0; i<cSys.nWorldAxes(); i++) {
-         if (!anyEQ(worldAxes.ac(), i)) remove(j++) = i;
+         if (!anyEQ(worldAxes, i)) remove(j++) = i;
       }
       remove.resize(j,True);
    }

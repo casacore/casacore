@@ -1,5 +1,5 @@
 //# tMaskArrLogi.cc: Test program for MaskedArray logical operations
-//# Copyright (C) 1993,1994,1995,1996
+//# Copyright (C) 1993,1994,1995,1996,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -68,7 +68,7 @@ main()
         Vector<Int> u(10), v(10), w(10), x(10), y(10), z(10);
         LogicalArray b(IPosition(1,10));
 
-        indgen (u.ac(), -2);
+        indgen (u, -2);
         u(0) = 8;
         u(1) = 9;
         cout << endl << "u= " << endl
@@ -86,15 +86,15 @@ main()
         cout << endl << "x= " << endl
              << x << endl;
 
-        indgen (y.ac());
+        indgen (y);
         cout << endl << "y= " << endl
-             << y.ac() << endl;
+             << y << endl;
 
         z=5;
         cout << endl << "z= " << endl
              << z << endl;
 
-        b = ((y.ac() > 3) && (y.ac() < 8));
+        b = ((y > 3) && (y < 8));
         cout << endl << "b= " << endl
              << b << endl;
 
@@ -104,7 +104,7 @@ main()
 
             Vector<Int> a(x.copy());
             MaskedArray<Int> ma (a, b);
-            MaskedArray<Int> mma (ma, y.ac()>5);
+            MaskedArray<Int> mma (ma, y>5);
 
             mma = 75;
             cout << "mma = 75;" << endl
@@ -118,7 +118,7 @@ main()
             Vector<Int> a(x.copy());
             MaskedArray<Int> ma (a, b);
 
-            ma (y.ac()>5) = 75;
+            ma (y>5) = 75;
             cout << "ma (y>5) = 75;" << endl
                  << a << endl;
         }
@@ -128,7 +128,7 @@ main()
                  << endl;
 
             cout << "(y(b) <= z).getArray()" << endl
-                 << (y(b) <= z.ac()).getArray() << endl;
+                 << (y(b) <= z).getArray() << endl;
         }
 
         {
@@ -136,7 +136,7 @@ main()
                  << endl;
 
             cout << "(y <= z(b)).getArray()" << endl
-                 << (y.ac() <= z(b)).getArray() << endl;
+                 << (y <= z(b)).getArray() << endl;
         }
 
         {
@@ -145,7 +145,7 @@ main()
                  << endl;
 
             cout << "(y(b) <= z(y>4)).getArray()" << endl
-                 << (y(b) <= z(y.ac()>4)).getArray() << endl;
+                 << (y(b) <= z(y>4)).getArray() << endl;
         }
 
         {
@@ -243,25 +243,25 @@ main()
                  << endl;
 
             Vector<Int> a_log (10);
-            indgen (a_log.ac());
+            indgen (a_log);
 
-            LogicalVector b_log ((a_log.ac() > 1) && (a_log.ac() < 6));
+            LogicalVector b_log ((a_log > 1) && (a_log < 6));
 
             cout << endl << "a_log= " << endl
                  << a_log << endl;
             cout << "b_log= " << endl
-                 << b_log.ac() << endl;
+                 << b_log << endl;
 
-            MaskedLogicalArray mla_log ((a_log.ac() >= 3), b_log);
+            MaskedLogicalArray mla_log ((a_log >= 3), b_log);
             cout << "mla_log= " << endl
                  << mla_log << endl;
 
             cout << endl << "! mla_log = " << endl;
             cout <<          ! mla_log << endl;
             cout << "(a_log < 3)(b_log) = " << endl;
-            cout <<  (a_log.ac() < 3)(b_log) << endl;
+            cout <<  (a_log < 3)(b_log) << endl;
             cout << "allEQ (!mla_log, (a_log < 3)(b_log)) = "
-                 << allEQ (!mla_log, (a_log.ac() < 3)(b_log)) << endl;
+                 << allEQ (!mla_log, (a_log < 3)(b_log)) << endl;
 
         }
 
@@ -270,9 +270,9 @@ main()
                  << endl;
 
             cout << "allLE (y(b), z)= "
-                 << allLE (y(b), z.ac()) << endl;
+                 << allLE (y(b), z) << endl;
             cout << "allLE (y(b), w)= "
-                 << allLE (y(b), w.ac()) << endl;
+                 << allLE (y(b), w) << endl;
         }
 
         {
@@ -280,9 +280,9 @@ main()
                  << endl;
 
             cout << "allGT (z, y(b))= "
-                 << allGT (z.ac(), y(b)) << endl;
+                 << allGT (z, y(b)) << endl;
             cout << "allGT (w, y(b))= "
-                 << allGT (w.ac(), y(b)) << endl;
+                 << allGT (w, y(b)) << endl;
         }
 
         {
@@ -290,9 +290,9 @@ main()
                  << endl;
 
             cout << "allLT (u(u<9), y(y<7))= "
-                 << allLT (u(u.ac()<9), y(y.ac()<7)) << endl;
+                 << allLT (u(u<9), y(y<7)) << endl;
             cout << "allLT (u(u<8), y(y<7))= "
-                 << allLT (u(u.ac()<8), y(y.ac()<7)) << endl;
+                 << allLT (u(u<8), y(y<7)) << endl;
         }
 
         {
@@ -300,9 +300,9 @@ main()
                  << endl;
 
             cout << "anyLE (y(b), z)= "
-                 << anyLE (y(b), z.ac()) << endl;
+                 << anyLE (y(b), z) << endl;
             cout << "anyLE (y(b), v)= "
-                 << anyLE (y(b), v.ac()) << endl;
+                 << anyLE (y(b), v) << endl;
         }
 
         {
@@ -310,9 +310,9 @@ main()
                  << endl;
 
             cout << "anyGT (z, y(b))= "
-                 << anyGT (z.ac(), y(b)) << endl;
+                 << anyGT (z, y(b)) << endl;
             cout << "anyGT (v, y(b))= "
-                 << anyGT (v.ac(), y(b)) << endl;
+                 << anyGT (v, y(b)) << endl;
         }
 
         {
@@ -320,9 +320,9 @@ main()
                  << endl;
 
             cout << "anyLT (u(u<9), y(y<7))= "
-                 << anyLT (u(u.ac()<9), y(y.ac()<7)) << endl;
+                 << anyLT (u(u<9), y(y<7)) << endl;
             cout << "anyLT (u(u>8), y(y<7))= "
-                 << anyLT (u(u.ac()>8), y(y.ac()<7)) << endl;
+                 << anyLT (u(u>8), y(y<7)) << endl;
         }
 
         {
@@ -330,9 +330,9 @@ main()
                  << endl;
 
             cout << "anyAND (b(y>5), y>4)= "
-                 << anyAND (b(y.ac()>5), y.ac()>4) << endl;
+                 << anyAND (b(y>5), y>4) << endl;
             cout << "anyAND (b(y==4), y>4)= "
-                 << anyAND (b(y.ac()==4), y.ac()>4) << endl;
+                 << anyAND (b(y==4), y>4) << endl;
         }
 
         {
@@ -340,9 +340,9 @@ main()
                  << endl;
 
             cout << "anyAND (y>4, b(y>5))= "
-                 << anyAND (y.ac()>4, b(y.ac()>5)) << endl;
+                 << anyAND (y>4, b(y>5)) << endl;
             cout << "anyAND (y>4, b(y==4))= "
-                 << anyAND (y.ac()>4, b(y.ac()==4)) << endl;
+                 << anyAND (y>4, b(y==4)) << endl;
         }
 
         {
@@ -350,9 +350,9 @@ main()
                  << endl;
 
             cout << "anyAND (b(y>4), b(y>5))= "
-                 << anyAND (b(y.ac()>4), b(y.ac()>5)) << endl;
+                 << anyAND (b(y>4), b(y>5)) << endl;
             cout << "anyAND (b(y<3), b(y<=3))= "
-                 << anyAND (b(y.ac()<3), b(y.ac()<=3)) << endl;
+                 << anyAND (b(y<3), b(y<=3)) << endl;
         }
 
         {
@@ -360,9 +360,9 @@ main()
                  << endl;
 
             cout << "anyOR (b(y>5), y>4)= "
-                 << anyOR (b(y.ac()>5), y.ac()>4) << endl;
+                 << anyOR (b(y>5), y>4) << endl;
             cout << "anyOR (b(y==3), y>4)= "
-                 << anyOR (b(y.ac()==3), y.ac()>4) << endl;
+                 << anyOR (b(y==3), y>4) << endl;
         }
 
         {
@@ -370,9 +370,9 @@ main()
                  << endl;
 
             cout << "anyOR (y>4, b(y>5))= "
-                 << anyOR (y.ac()>4, b(y.ac()>5)) << endl;
+                 << anyOR (y>4, b(y>5)) << endl;
             cout << "anyOR (y>4, b(y==3))= "
-                 << anyOR (y.ac()>4, b(y.ac()==3)) << endl;
+                 << anyOR (y>4, b(y==3)) << endl;
         }
 
         {
@@ -380,9 +380,9 @@ main()
                  << endl;
 
             cout << "anyOR (b(y>4), b(y>5))= "
-                 << anyOR (b(y.ac()>4), b(y.ac()>5)) << endl;
+                 << anyOR (b(y>4), b(y>5)) << endl;
             cout << "anyOR (b(y<3), b(y<=3))= "
-                 << anyOR (b(y.ac()<3), b(y.ac()<=3)) << endl;
+                 << anyOR (b(y<3), b(y<=3)) << endl;
         }
 
         {
@@ -390,9 +390,9 @@ main()
                  << endl;
 
             cout << "allLT (y(y>5), 7)= "
-                 << allLT (y(y.ac()>5), 7) << endl;
+                 << allLT (y(y>5), 7) << endl;
             cout << "allLT (y(y>5), 11)= "
-                 << allLT (y(y.ac()>5), 11) << endl;
+                 << allLT (y(y>5), 11) << endl;
         }
 
         {
@@ -400,9 +400,9 @@ main()
                  << endl;
 
             cout << "allGE (7, y(y>5))= "
-                 << allGE (7, y(y.ac()>5)) << endl;
+                 << allGE (7, y(y>5)) << endl;
             cout << "allGE (11, y(y>5))= "
-                 << allGE (11, y(y.ac()>5)) << endl;
+                 << allGE (11, y(y>5)) << endl;
         }
 
         {
@@ -410,9 +410,9 @@ main()
                  << endl;
 
             cout << "anyLT (y(y>5), 7)= "
-                 << anyLT (y(y.ac()>5), 7) << endl;
+                 << anyLT (y(y>5), 7) << endl;
             cout << "anyLT (y(y>5), 5)= "
-                 << anyLT (y(y.ac()>5), 5) << endl;
+                 << anyLT (y(y>5), 5) << endl;
         }
 
         {
@@ -420,9 +420,9 @@ main()
                  << endl;
 
             cout << "anyGE (7, y(y>5))= "
-                 << anyGE (7, y(y.ac()>5)) << endl;
+                 << anyGE (7, y(y>5)) << endl;
             cout << "anyGE (5, y(y>5))= "
-                 << anyGE (5, y(y.ac()>5)) << endl;
+                 << anyGE (5, y(y>5)) << endl;
         }
 
         {
@@ -430,7 +430,7 @@ main()
                  << endl;
 
             cout << "allAND (b(y>5), True)= "
-                 << allAND (b(y.ac()>5), True) << endl;
+                 << allAND (b(y>5), True) << endl;
             cout << "allAND (b(b), True)= "
                  << allAND (b(b), True) << endl;
             cout << "allAND (b(b), False)= "
@@ -442,7 +442,7 @@ main()
                  << endl;
 
             cout << "allAND (True, b(y>5))= "
-                 << allAND (True, b(y.ac()>5)) << endl;
+                 << allAND (True, b(y>5)) << endl;
             cout << "allAND (True, b(b))= "
                  << allAND (True, b(b)) << endl;
             cout << "allAND (False, b(b))= "
@@ -454,11 +454,11 @@ main()
                  << endl;
 
             cout << "allOR (b(y>5), False)= "
-                 << allOR (b(y.ac()>5), False) << endl;
+                 << allOR (b(y>5), False) << endl;
             cout << "allOR (b(b), False)= "
                  << allOR (b(b), False) << endl;
             cout << "allOR (b(y>5), True)= "
-                 << allOR (b(y.ac()>5), True) << endl;
+                 << allOR (b(y>5), True) << endl;
         }
 
         {
@@ -466,11 +466,11 @@ main()
                  << endl;
 
             cout << "allOR (False, b(y>5))= "
-                 << allOR (False, b(y.ac()>5)) << endl;
+                 << allOR (False, b(y>5)) << endl;
             cout << "allOR (False, b(b))= "
                  << allOR (False, b(b)) << endl;
             cout << "allOR (True, b(y>5))= "
-                 << allOR (True, b(y.ac()>5)) << endl;
+                 << allOR (True, b(y>5)) << endl;
         }
 
         {
@@ -478,11 +478,11 @@ main()
                  << endl;
 
             cout << "anyAND (b(y>5), True)= "
-                 << anyAND (b(y.ac()>5), True) << endl;
+                 << anyAND (b(y>5), True) << endl;
             cout << "anyAND (b(y<3), True)= "
-                 << anyAND (b(y.ac()<3), True) << endl;
+                 << anyAND (b(y<3), True) << endl;
             cout << "anyAND (b(y>5), False)= "
-                 << anyAND (b(y.ac()>5), False) << endl;
+                 << anyAND (b(y>5), False) << endl;
         }
 
         {
@@ -490,11 +490,11 @@ main()
                  << endl;
 
             cout << "anyAND (True, b(y>5))= "
-                 << anyAND (True, b(y.ac()>5)) << endl;
+                 << anyAND (True, b(y>5)) << endl;
             cout << "anyAND (True, b(y<3))= "
-                 << anyAND (True, b(y.ac()<3)) << endl;
+                 << anyAND (True, b(y<3)) << endl;
             cout << "anyAND (False, b(y>5))= "
-                 << anyAND (False, b(y.ac()>5)) << endl;
+                 << anyAND (False, b(y>5)) << endl;
         }
 
         {
@@ -502,11 +502,11 @@ main()
                  << endl;
 
             cout << "anyOR (b(y>5), False)= "
-                 << anyOR (b(y.ac()>5), False) << endl;
+                 << anyOR (b(y>5), False) << endl;
             cout << "anyOR (b(y<3), False)= "
-                 << anyOR (b(y.ac()<3), False) << endl;
+                 << anyOR (b(y<3), False) << endl;
             cout << "anyOR (b(y<3), True)= "
-                 << anyOR (b(y.ac()<3), True) << endl;
+                 << anyOR (b(y<3), True) << endl;
         }
 
         {
@@ -514,11 +514,11 @@ main()
                  << endl;
 
             cout << "anyOR (False, b(y>5))= "
-                 << anyOR (False, b(y.ac()>5)) << endl;
+                 << anyOR (False, b(y>5)) << endl;
             cout << "anyOR (False, b(y<3))= "
-                 << anyOR (False, b(y.ac()<3)) << endl;
+                 << anyOR (False, b(y<3)) << endl;
             cout << "anyOR (True, b(y<3))= "
-                 << anyOR (True, b(y.ac()<3)) << endl;
+                 << anyOR (True, b(y<3)) << endl;
         }
 
     } catch (AipsError x) {

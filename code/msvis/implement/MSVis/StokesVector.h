@@ -206,7 +206,7 @@ public:
 }
   // Write out a CStokesVector using the Vector output method.
   friend ostream& operator<<(ostream& os, const CStokesVector& v) {
-    os << v.vector().arrayCast();
+    os << v.vector();
     return os;
   }
 };
@@ -303,7 +303,7 @@ public:
   }
   // Write out a StokesVector using the Vector output method.
   friend ostream& operator<<(ostream& os, const StokesVector& v) {
-    os << v.vector().arrayCast();
+    os << v.vector();
     return os;
   }
 

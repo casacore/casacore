@@ -1,5 +1,5 @@
 //# tScaledArrayEngine.cc: Test program for class ScaledArrayEngine
-//# Copyright (C) 1994,1995,1996
+//# Copyright (C) 1994,1995,1996,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -117,9 +117,9 @@ void a() {
 	scale3.put (i, 1 + i%3);
 	source1.put (i, arrd);
 	source2.put (i, arrf);
-	source3.put (i, arrd.ac() + (double)4);
-	arrd.ac() += (double)(6*arrd.nelements());
-	arrf.ac() += (float)(6*arrd.nelements());
+	source3.put (i, arrd + (double)4);
+	arrd += (double)(6*arrd.nelements());
+	arrf += (float)(6*arrd.nelements());
     }
 
     //# Do an erronous thing.
@@ -172,42 +172,42 @@ void b()
     for (i=0; i<10; i++) {
 	cout << "get row " << i << endl;
 	source1.get (i, arrvald);
-	if (!allEQ (arrvald.ac(), arrd1.ac())) {
+	if (!allEQ (arrvald, arrd1)) {
 	    cout << "error in source1 in row " << i << endl;
 	}
 	target1.get (i, arrvali);
-	if (!allEQ (arrvali.ac(), arri1.ac())) {
+	if (!allEQ (arrvali, arri1)) {
 	    cout << "error in target1 in row " << i << endl;
 	}
 	source2.get (i, arrvalf);
-	if (!allEQ (arrvalf.ac(), arrf2.ac())) {
+	if (!allEQ (arrvalf, arrf2)) {
 	    cout << "error in source2 in row " << i << endl;
 	}
 	target2.get (i, arrvalc);
-	if (!allEQ (arrvalc.ac(), arrc2.ac())) {
+	if (!allEQ (arrvalc, arrc2)) {
 	    cout << "error in target2 in row " << i << endl;
 	}
 	source3.get (i, arrvald);
-	if (!allEQ (arrvald.ac(), arrd3.ac())) {
+	if (!allEQ (arrvald, arrd3)) {
 	    cout << "error in source3 in row " << i << endl;
 	}
 	target3.get (i, arrvali);
-	if (!allEQ (arrvali.ac(), arri3.ac()/(Int)(1+i%3))) {
+	if (!allEQ (arrvali, arri3/(Int)(1+i%3))) {
 	    cout << "error in target3 in row " << i << endl;
 	}
 	source1.getSlice (i, nslice, arrvald);
-	if (!allEQ (arrvald.ac(), arrd1.ac())) {
+	if (!allEQ (arrvald, arrd1)) {
 	    cout << "error in source1 (entire slice) in row " << i << endl;
 	}
 	source1.getSlice (i, nslice2, arrvalslice);
-	if (!allEQ (arrvald.ac(), arrd1.ac())) {
+	if (!allEQ (arrvald, arrd1)) {
 	    cout << "error in source1 (partial slice) in row " << i << endl;
 	}
-	arrd1.ac() += (double)(6*arrd1.nelements());
-	arrf2.ac() += (float)(6*arrf2.nelements());
-	arrd3.ac() += (double)(6*arrd3.nelements());
-	arri1.ac() += (Int)(3*arri1.nelements());
-	arrc2.ac() += (uChar)(arrc2.nelements());
-	arri3.ac() += (Int)(6*arri3.nelements());
+	arrd1 += (double)(6*arrd1.nelements());
+	arrf2 += (float)(6*arrf2.nelements());
+	arrd3 += (double)(6*arrd3.nelements());
+	arri1 += (Int)(3*arri1.nelements());
+	arrc2 += (uChar)(arrc2.nelements());
+	arri3 += (Int)(6*arri3.nelements());
     }
 }

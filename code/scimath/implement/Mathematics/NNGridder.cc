@@ -1,5 +1,5 @@
 //# NNGridder.cc: Nearest Neighbour Gridder
-//# Copyright (C) 1996,1997
+//# Copyright (C) 1996,1997,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -49,7 +49,7 @@ Bool NNGridder<Domain, Range>::grid(Array<Range> &gridded,
 				    const Range& value)
 {
   loc=location(loc, position);
-  loc.ac()-=offsetVec.ac();
+  loc-=offsetVec;
   if(onGrid(loc)) {
     gridded(loc)+=value;
     return True;
@@ -66,7 +66,7 @@ Bool NNGridder<Domain, Range>::degrid(const Array<Range>& gridded,
 				      Range& value)
 {
   loc=location(loc, position);
-  loc.ac()-=offsetVec.ac();
+  loc-=offsetVec;
   if(onGrid(loc)) {
     value=gridded(loc);
     return True;

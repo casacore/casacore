@@ -268,7 +268,7 @@ Bool MomentCalcBase<T>::drawSpectrum (const Vector<T>& x,
    Float yMinF, yMaxF;
    if (!fixedYLimits) {
       if (mask.nelements() == 0) {
-         minMax (yMin, yMax, y.ac());
+         minMax (yMin, yMax, y);
       } else {
          uInt minPos, maxPos;       
          if(!stats(yMin, yMax, minPos, maxPos, yMean, y, mask)) return False;
@@ -484,7 +484,7 @@ Bool MomentCalcBase<T>::fitGaussian (uInt& nFailed,
 
 // Return values of fit
    
-//   cout << "SOlution = " << solution.ac() << LogIO::POST;
+//   cout << "SOlution = " << solution << LogIO::POST;
 
    peak  = solution(0);
    pos   = solution(1);
@@ -1764,7 +1764,7 @@ void MomentClip<T>::multiProcess(Vector<T>& moments,
    T dMedian = 0.0;
    if (doMedianI_p) {
       selectedData_p.resize(nPts,True);
-      dMedian = median(selectedData_p.ac());
+      dMedian = median(selectedData_p);
    }
        
  
@@ -2131,7 +2131,7 @@ void MomentWindow<T>::multiProcess(Vector<T>& moments,
    T dMedian = 0.0;
    if (doMedianI_p) {
       selectedData_p.resize(nPts,True);
-      dMedian = median(selectedData_p.ac());
+      dMedian = median(selectedData_p);
    }
        
 // Fill all moments array
@@ -2789,7 +2789,7 @@ void MomentFit<T>::multiProcess(Vector<T>& moments,
    T dMedian = 0.0;
    if (doMedianI_p) {
       gData.resize(nPts, True);
-      dMedian = median(gData.ac());
+      dMedian = median(gData);
    }
    T vMedian = 0.0;
        

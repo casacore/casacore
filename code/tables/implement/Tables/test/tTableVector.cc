@@ -115,7 +115,7 @@ void dovec (Int nr) {
     tim.show ("Initializing TableVector");
 
     tim.mark();
-    TableVector<Int> tvec2 = tvec.ac() + 1;
+    TableVector<Int> tvec2 = tvec + 1;
     tim.show ("Adding constant to TVec ");
     cout << "<<<" << endl;
     cout << tvec2.nelements() << " elements" << endl;
@@ -128,12 +128,12 @@ void dovec (Int nr) {
     }
 
     tim.mark();
-    TableVector<Int> tvec3 = tvec.ac() + tvec2.ac();
+    TableVector<Int> tvec3 = tvec + tvec2;
     cout << ">>>" << endl;
     tim.show ("Adding TVec to TVec     ");
     tim.mark();
-    tvec3 = tvec3.ac() + tvec2.ac();
-    tvec3 += tvec.ac();
+    tvec3 = tvec3 + tvec2;
+    tvec3 += tvec;
     tim.show ("Adding TVec+TVec+TVec   ");
     cout << "<<<" << endl;
     for (i=0; i<nr; i++) {
@@ -150,7 +150,7 @@ void dovec (Int nr) {
     cout << tvec4(1) << " (must be 99999)" << endl;
 
     tim.mark();
-    tvec3 = tvec3.ac() + tvec4.ac();
+    tvec3 = tvec3 + tvec4;
     cout << ">>>" << endl;
     tim.show ("Adding ColVec to TVec   ");
     cout << "<<<" << endl;
@@ -161,10 +161,10 @@ void dovec (Int nr) {
     }
 
     tim.mark();
-    tvec4 = tvec.ac() + tvec4.ac();
+    tvec4 = tvec + tvec4;
     cout << ">>>" << endl;
     tim.show ("Adding TVec to ColVec   ");
-    tvec4 = tvec4.ac() + tvec2.ac();
+    tvec4 = tvec4 + tvec2;
     Vector<Int> vec2;
     ROScalarColumn<Int> col1 (tab, "col1");
     tim.mark();
@@ -220,7 +220,7 @@ void dovec (Int nr) {
 	    cout << "assign to tvec affected vec3 " << i << endl;
 	}
     }
-    vec3.ac() += 1;
+    vec3 += 1;
     for (i=0; i<nr; i++) {
 	if (tvec(i) != 2*i) {
 	    cout << "assign to vec3 affected tvec " << i << endl;

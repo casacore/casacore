@@ -197,9 +197,9 @@ public:
 // Vector<Complex> output(17);
 // input = 0.0f;
 // input(16) = 1.0f;
-// cout << "Input:" << input.ac() << endl;
-// server.fft(output.ac(), input.ac());
-// cout << "Output:" << output.ac() << endl;
+// cout << "Input:" << input << endl;
+// server.fft(output, input);
+// cout << "Output:" << output << endl;
 // </srcblock>
 // </example>
 //

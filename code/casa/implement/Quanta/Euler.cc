@@ -38,7 +38,7 @@
 //# Constructors
 Euler::Euler() : euler(3), axes(3) {
     euler = Double(0.0);
-    indgen(axes.ac(),1,1);
+    indgen(axes,1,1);
 }
 
 Euler::Euler(const Euler &other) : 
@@ -60,7 +60,7 @@ euler(3), axes(3){
     euler(0) = in0;
     euler(1) = in1;
     euler(2) = in2;
-    indgen(axes.ac(),1,1);
+    indgen(axes,1,1);
 }
 
 
@@ -81,7 +81,7 @@ euler(3), axes(3) {
     euler(0) = Euler::makeRad(in0);
     euler(1) = 0;
     euler(2) = 0;
-    indgen(axes.ac(),1,1);
+    indgen(axes,1,1);
 }
 
 Euler::Euler(const Quantity &in0, const Quantity &in1) :
@@ -89,7 +89,7 @@ euler(3), axes(3) {
     euler(0) = Euler::makeRad(in0);
     euler(1) = Euler::makeRad(in1);
     euler(2) = 0;
-    indgen(axes.ac(),1,1);
+    indgen(axes,1,1);
 }
 
 Euler::Euler(const Quantity &in0, const Quantity &in1, const Quantity &in2) :
@@ -97,7 +97,7 @@ euler(3), axes(3) {
     euler(0) = Euler::makeRad(in0);
     euler(1) = Euler::makeRad(in1);
     euler(2) = Euler::makeRad(in2);
-    indgen(axes.ac(),1,1);
+    indgen(axes,1,1);
 }
 
 Euler::Euler(const Quantity &in0, uInt ax0) :
@@ -143,7 +143,7 @@ euler(3), axes(3) {
     for (i=j; i<3; i++) {
 	euler(i) = 0;
     }
-    indgen(axes.ac(),1,1);
+    indgen(axes,1,1);
 }
 
 Euler::Euler(const Quantum<Vector<Double> > &in, const Vector<uInt> &ax) :
@@ -178,7 +178,7 @@ Euler &Euler::operator+=(const Euler &right) {
     DebugAssert( axes(0) == right.axes(0) &&
 		 axes(1) == right.axes(1) &&
 		 axes(2) == right.axes(2), AipsError);
-    euler.ac() += right.euler.ac();
+    euler += right.euler;
     return *this;
 }
 
@@ -192,7 +192,7 @@ Euler &Euler::operator-=(const Euler &right) {
     DebugAssert( axes(0) == right.axes(0) &&
 		 axes(1) == right.axes(1) &&
 		 axes(2) == right.axes(2), AipsError);
-    euler.ac() -= right.euler.ac();
+    euler -= right.euler;
     return *this;
 }
 
@@ -251,6 +251,6 @@ Int Euler::get(uInt which) const{
 }
 
 ostream &operator<<(ostream &os, const Euler &eul) {
-    os << eul.euler.ac();
+    os << eul.euler;
     return os;
 }

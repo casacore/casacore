@@ -103,7 +103,7 @@ template <class T> class Vector;
 //        << endl;
 //   Vector<Double> parms(modelSpectrum.nParameters());
 //   modelSpectrum.parameters(parms);
-//   cout << "The parameters are: " << parms.ac() << endl;
+//   cout << "The parameters are: " << parms << endl;
 //   const MVFrequency step(Quantity(100.0, "MHz"));
 //   MVFrequency sampleFreq = modelSpectrum.refFrequency().getValue();
 //   Flux<Double> modelFlux;

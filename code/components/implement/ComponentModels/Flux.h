@@ -128,7 +128,7 @@ template <class Qtype> class Quantum;
 // flux.convertUnit("WU");
 // cout << "The I flux (in WU is)" << flux.value(0) << endl;
 // flux.convertPol(ComponentType::LINEAR);
-// cout << "The XX,XY,YX,YY flux (in WU is)" << flux.value().ac() << endl;
+// cout << "The XX,XY,YX,YY flux (in WU is)" << flux.value() << endl;
 // </srcblock>
 // </example>
 //
@@ -390,7 +390,7 @@ private:
 //   for (uInt i = 0; i < list.nelements(); i++) {
 //     list.component(i).flux().convertPol(ComponentType::STOKES);
 //     list.component(i).flux().convertUnit("Jy");
-//     sum.ac() += list.component(i).flux().value().ac()
+//     sum += list.component(i).flux().value()
 //   }
 //   return Flux<Double>(value, ComponentType::STOKES);
 // }

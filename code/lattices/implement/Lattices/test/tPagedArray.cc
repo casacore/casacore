@@ -58,7 +58,7 @@ int main() {
 			    IPosition(2,1,2)));
       pa.putSlice(arr1, IPosition(2,0), IPosition(2,1,2));
       Vector<Float> vec(10);
-      indgen(vec.ac());
+      indgen(vec);
       pa.putSlice(vec(IPosition(1,0), IPosition(1,9), IPosition(1,2)), 
 		  IPosition(2,1,1), IPosition(2,2,1));
     }
@@ -100,7 +100,7 @@ int main() {
 		       IPosition(3,1), True);
       AlwaysAssert(ptrM->shape().isEqual(IPosition(2,9)), AipsError);
       Array<Int> expectedResult(IPosition(2,9));
-      indgen(expectedResult.ac());
+      indgen(expectedResult);
       AlwaysAssert(allEQ(*ptrM, expectedResult), AipsError);
       ptrM.rwRef() = 0;
       AlwaysAssert(allEQ(*ptrM, 0), AipsError);

@@ -337,8 +337,8 @@ try {
          os << histo.errorMessage() << LogIO::POST;
          exit(1);
       }
-//      cout << "values=" << values.ac() << endl;
-//      cout << "counts=" << counts.ac() << endl;
+//      cout << "values=" << values << endl;
+//      cout << "counts=" << counts << endl;
  
       os << LogIO::NORMAL << "Recovering individual histogram arrays" << LogIO::POST;
       Vector<Float> valuesV, countsV;
@@ -348,8 +348,8 @@ try {
          exit(1);
       }
 
-//      cout << "values=" << valuesV.ac() << endl;
-//      cout << "counts=" << countsV.ac() << endl;
+//      cout << "values=" << valuesV << endl;
+//      cout << "counts=" << countsV << endl;
 
 
 // Test copy constructor

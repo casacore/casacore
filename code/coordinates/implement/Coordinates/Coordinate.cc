@@ -271,7 +271,7 @@ Bool Coordinate::setWorldAxisUnits(const Vector<String> &units,
     } else {
 	// If the units are unchanged just return True.
 	Vector<String> old = worldAxisUnits();
-	if (allEQ(old.ac(), units.ac())) {
+	if (allEQ(old, units)) {
 	    return True;
 	}
     }
@@ -283,9 +283,9 @@ Bool Coordinate::setWorldAxisUnits(const Vector<String> &units,
 	Vector<Double> factor;
 	ok = find_scale_factor(error, factor, units, worldAxisUnits());
 	if (ok) {
-	    ok = setIncrement(increment().ac() * factor.ac());
+	    ok = setIncrement(increment() * factor);
 	    if (ok) {
-		ok = setReferenceValue(referenceValue().ac() * factor.ac());
+		ok = setReferenceValue(referenceValue() * factor);
 	    }
 	} else {
 	    set_error(error);

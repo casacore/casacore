@@ -85,7 +85,7 @@ MVBaseline::MVBaseline(const Vector<Quantity> &other) :
 
 MVBaseline::MVBaseline(const MVPosition &pos, const MVPosition &base) :
   MVPosition(pos) {
-    xyz.ac() -= base.getValue().ac();
+    xyz -= base.getValue();
 }
 
 MVBaseline::MVBaseline(const MVPosition &other) :
@@ -97,7 +97,7 @@ MVBaseline::~MVBaseline() {}
 //# Operators
 Bool MVBaseline::
 operator==(const MVBaseline &other) const {
-  return (allEQ(xyz.ac(), other.xyz.ac()));
+  return (allEQ(xyz, other.xyz));
 }
 
 Bool MVBaseline::
@@ -107,7 +107,7 @@ operator!=(const MVBaseline &other) const {
 
 Bool MVBaseline::
 near(const MVBaseline &other, Double tol) const {
-  return (allNear(xyz.ac(), other.xyz.ac(), tol));
+  return (allNear(xyz, other.xyz, tol));
 }
 
 Bool MVBaseline::
@@ -117,7 +117,7 @@ near(const MVBaseline &other, Quantity tol) const {
 
 Bool MVBaseline::
 nearAbs(const MVBaseline &other, Double tol) const {
-  return (allNearAbs(xyz.ac(), other.xyz.ac(), tol));
+  return (allNearAbs(xyz, other.xyz, tol));
 }
 
 Double MVBaseline::
@@ -131,12 +131,12 @@ operator*(const MVBaseline &other) const {
 
 MVBaseline MVBaseline::operator-() const {
   MVBaseline tmp; tmp = *this;
-  tmp.xyz.ac() = -xyz.ac();
+  tmp.xyz = -xyz;
   return tmp;
 }
 
 MVBaseline &MVBaseline::operator+=(const MVBaseline &right) {
-  xyz.ac() += right.xyz.ac();
+  xyz += right.xyz;
   return *this;
 }
 
@@ -147,7 +147,7 @@ MVBaseline MVBaseline::operator+(const MVBaseline &right) const {
 }
 
 MVBaseline &MVBaseline::operator-=(const MVBaseline &right) {
-  xyz.ac() -= right.xyz.ac();
+  xyz -= right.xyz;
   return *this;
 }
 
@@ -174,15 +174,15 @@ void MVBaseline::adjust() {}
 void MVBaseline::adjust(Double &res) {
   res = sqrt(operator*(*this));
   if (res != 0.0 && res != 1.0) {
-    xyz.ac() /= res;
+    xyz /= res;
   };
 }
 
 void MVBaseline::readjust(Double res) {
   if (res == 0.0) {
-    xyz.ac() *= 1e-12;
+    xyz *= 1e-12;
   } else {
-    xyz.ac() *= res;
+    xyz *= res;
   };
 }
 
@@ -274,7 +274,7 @@ MVBaseline MVBaseline::crossProduct(const MVBaseline &other) const {
 }
 
 void MVBaseline::print(ostream &os) const {
-  os << getValue().ac();
+  os << getValue();
 }
 
 MeasValue *MVBaseline::clone() const {

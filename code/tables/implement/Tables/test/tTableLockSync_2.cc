@@ -180,9 +180,9 @@ void b (const TableLock& lockMode, uInt wait, uInt nrrow, Bool show)
 	seq.put (rownr, seqnr);
 	col1.put (rownr, val);
 	col2.put (rownr, val+1);
-	indgen (freqValues.ac(), float(val+2));
-	indgen (polValues.ac(), float(val+3));
-	indgen (dataValues.ac(), float(val+4));
+	indgen (freqValues, float(val+2));
+	indgen (polValues, float(val+3));
+	indgen (dataValues, float(val+4));
 	data.put (rownr, dataValues);
 	freq.put (rownr, freqValues);
 	pol.put (rownr, polValues);

@@ -203,26 +203,26 @@ void doit (TabularCoordinate& lc,
    }
 //
    Vector<String> names(1); names(0) = axisName;
-   if (!allEQ(names.ac(), lc.worldAxisNames().ac())) {
+   if (!allEQ(names, lc.worldAxisNames())) {
       throw(AipsError("Failed world axis name recovery test"));
    }
    names(0) = "Horsies";
    if (!lc.setWorldAxisNames(names)) {
       throw(AipsError(String("Failed to set world axis name because") + lc.errorMessage()));
    }
-   if (!allEQ(names.ac(), lc.worldAxisNames().ac())) {
+   if (!allEQ(names, lc.worldAxisNames())) {
       throw(AipsError("Failed axis name set/recovery test"));
    }
 //
    Vector<String> units(1); units(0) = axisUnit;     
-   if (!allEQ(units.ac(), lc.worldAxisUnits().ac())) {
+   if (!allEQ(units, lc.worldAxisUnits())) {
       throw(AipsError("Failed world axis units recovery test"));
    }
    units(0) = "m";
    if (!lc.setWorldAxisUnits(units)) {
       throw(AipsError(String("Failed to set world axis units because ") + lc.errorMessage()));
    }
-   if (!allEQ(units.ac(), lc.worldAxisUnits().ac())) {
+   if (!allEQ(units, lc.worldAxisUnits())) {
       throw(AipsError("Failed world axis units set/recovery test"));
    }
 //
@@ -285,19 +285,19 @@ void doitLinear (const Double refVal,
    Vector<Double> cdelt(1); cdelt(0) = incr;
    Matrix<Double> xform(1,1); xform(0,0) = linTrans;
 //
-   if (!allEQ(crval.ac(), lc.referenceValue().ac())) {
+   if (!allEQ(crval, lc.referenceValue())) {
       throw(AipsError("Failed reference value recovery test"));
    }
 //
-   if (!allEQ(cdelt.ac(), lc.increment().ac())) {
+   if (!allEQ(cdelt, lc.increment())) {
       throw(AipsError("Failed increment recovery test"));
    }
 //
-   if (!allEQ(crpix.ac(), lc.referencePixel().ac())) {
+   if (!allEQ(crpix, lc.referencePixel())) {
       throw(AipsError("Failed reference pixel recovery test"));
    }
 //
-   if (!allEQ(xform.ac(), lc.linearTransform().ac())) {
+   if (!allEQ(xform, lc.linearTransform())) {
       throw(AipsError("Failed Tabular transform recovery test"));
    }
 //
@@ -305,7 +305,7 @@ void doitLinear (const Double refVal,
    if (!lc.setReferenceValue(crval)) {
       throw(AipsError(String("Failed to set reference value because") + lc.errorMessage()));
    }
-   if (!allEQ(crval.ac(), lc.referenceValue().ac())) {
+   if (!allEQ(crval, lc.referenceValue())) {
       throw(AipsError("Failed reference value set/recovery test"));
    }
 //
@@ -313,7 +313,7 @@ void doitLinear (const Double refVal,
    if (!lc.setIncrement(cdelt)) {
       throw(AipsError(String("Failed to set increment because") + lc.errorMessage()));
    }
-   if (!allEQ(cdelt.ac(), lc.increment().ac())) {
+   if (!allEQ(cdelt, lc.increment())) {
       throw(AipsError("Failed increment set/recovery test"));
    }
 //
@@ -321,7 +321,7 @@ void doitLinear (const Double refVal,
    if (!lc.setReferencePixel(crpix)) {
       throw(AipsError(String("Failed to set reference pixel because") + lc.errorMessage()));
    }
-   if (!allEQ(crpix.ac(), lc.referencePixel().ac())) {
+   if (!allEQ(crpix, lc.referencePixel())) {
       throw(AipsError("Failed reference pixel set/recovery test"));
   }
 //       
@@ -329,7 +329,7 @@ void doitLinear (const Double refVal,
    if (!lc.setLinearTransform(xform)) {
       throw(AipsError(String("Failed to set linear transform because") + lc.errorMessage()));
    }
-   if (!allEQ(xform.ac(), lc.linearTransform().ac())) {
+   if (!allEQ(xform, lc.linearTransform())) {
       throw(AipsError("Failed linear transform set/recovery test"));
    }
 //
@@ -345,7 +345,7 @@ void doitLinear (const Double refVal,
 //
    world2(0) = (pixel(0) - crpix(0)) * xform(0,0) * cdelt(0) + crval(0);
 //
-   if (!allNear(world2.ac(), world.ac(), 1e-6)) {
+   if (!allNear(world2, world, 1e-6)) {
          throw(AipsError("toWorld conversion gave wrong answer"));
    }
 //
@@ -353,7 +353,7 @@ void doitLinear (const Double refVal,
    if (!lc.toPixel(pixel2, world)) {
       throw(AipsError(String("toPixel conversion failed because ") + lc.errorMessage()));
    }
-   if (!allNear(pixel2.ac(), pixel.ac(), 1e-6)) {
+   if (!allNear(pixel2, pixel, 1e-6)) {
          throw(AipsError("Coordinate conversion reflection failed"));
    }
 }
@@ -367,11 +367,11 @@ void doitNonLinear (const Vector<Double>& pixelValues,
    Vector<Double> cdelt(1);
    Matrix<Double> xform(1,1);
 //
-   if (!allEQ(crval.ac(), lc.referenceValue().ac())) {
+   if (!allEQ(crval, lc.referenceValue())) {
       throw(AipsError("Failed reference value recovery test"));
    }
 //
-   if (!allEQ(crpix.ac(), lc.referencePixel().ac())) {
+   if (!allEQ(crpix, lc.referencePixel())) {
       throw(AipsError("Failed reference pixel recovery test"));
    }
 //
@@ -379,7 +379,7 @@ void doitNonLinear (const Vector<Double>& pixelValues,
    if (!lc.setReferenceValue(crval)) {
       throw(AipsError(String("Failed to set reference value because") + lc.errorMessage()));
    }
-   if (!allEQ(crval.ac(), lc.referenceValue().ac())) {
+   if (!allEQ(crval, lc.referenceValue())) {
       throw(AipsError("Failed reference value set/recovery test"));
    }
 //
@@ -387,7 +387,7 @@ void doitNonLinear (const Vector<Double>& pixelValues,
    if (!lc.setIncrement(cdelt)) {
       throw(AipsError(String("Failed to set increment because") + lc.errorMessage()));
    }
-   if (!allEQ(cdelt.ac(), lc.increment().ac())) {
+   if (!allEQ(cdelt, lc.increment())) {
       throw(AipsError("Failed increment set/recovery test"));
    }
 //
@@ -395,7 +395,7 @@ void doitNonLinear (const Vector<Double>& pixelValues,
    if (!lc.setReferencePixel(crpix)) {
       throw(AipsError(String("Failed to set reference pixel because") + lc.errorMessage()));
    }
-   if (!allEQ(crpix.ac(), lc.referencePixel().ac())) {
+   if (!allEQ(crpix, lc.referencePixel())) {
       throw(AipsError("Failed reference pixel set/recovery test"));
    }
 //       
@@ -403,7 +403,7 @@ void doitNonLinear (const Vector<Double>& pixelValues,
    if (!lc.setLinearTransform(xform)) {
       throw(AipsError(String("Failed to set Tabular transform because") + lc.errorMessage()));
    }
-   if (!allEQ(xform.ac(), lc.linearTransform().ac())) {
+   if (!allEQ(xform, lc.linearTransform())) {
       throw(AipsError("Failed Tabular transform set/recovery test"));
    }
 //
@@ -417,7 +417,7 @@ void doitNonLinear (const Vector<Double>& pixelValues,
    if (!lc.toPixel(pixel2, world)) {
       throw(AipsError(String("toPixel conversion failed because ") + lc.errorMessage()));
    }
-   if (!allNear(pixel2.ac(), pixel.ac(), 1e-6)) {
+   if (!allNear(pixel2, pixel, 1e-6)) {
       throw(AipsError("Coordinate conversion reflection failed"));
    }
 }

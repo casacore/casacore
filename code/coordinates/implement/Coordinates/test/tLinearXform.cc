@@ -116,33 +116,33 @@ int main()
             throw(AipsError("Failed worldAxes test"));
          }
 //
-         if (!allEQ(crpix.ac(), lxf.crpix().ac())) {
+         if (!allEQ(crpix, lxf.crpix())) {
             throw(AipsError("Failed crpix recovery test"));
          }
 //
-         if (!allEQ(cdelt.ac(), lxf.cdelt().ac())) {
+         if (!allEQ(cdelt, lxf.cdelt())) {
             throw(AipsError("Failed cdelt recovery test"));
          }
 //
-         if (!allEQ(px.ac(), lxf.pc().ac())) {
+         if (!allEQ(px, lxf.pc())) {
             throw(AipsError("Failed pc recovery test"));
          }
 //       
-         crpix = crpix.ac() * 2.0;
+         crpix = crpix * 2.0;
          lxf.crpix(crpix);
-         if (!allEQ(crpix.ac(), lxf.crpix().ac())) {
+         if (!allEQ(crpix, lxf.crpix())) {
             throw(AipsError("Failed crpix set/recovery test"));
          }
 //
-         cdelt = cdelt.ac() * 2.0;
+         cdelt = cdelt * 2.0;
          lxf.cdelt(cdelt);
-         if (!allEQ(cdelt.ac(), lxf.cdelt().ac())) {
+         if (!allEQ(cdelt, lxf.cdelt())) {
             throw(AipsError("Failed cdelt set/recovery test"));
          }
 //
          px.diagonal() = 2.0;
          lxf.pc(px);   
-         if (!allEQ(px.ac(), lxf.pc().ac())) {
+         if (!allEQ(px, lxf.pc())) {
             throw(AipsError("Failed pc set/recovery test"));
          }
 //   
@@ -200,7 +200,7 @@ int main()
          }
          Vector<Double> world2;
          ok = lxf.reverse(world2, pixel, error);
-         if (!allNear(world.ac(), world2.ac(), 1e-6)) {
+         if (!allNear(world, world2, 1e-6)) {
             throw(AipsError("Conversion reflection failed"));
          }
       }

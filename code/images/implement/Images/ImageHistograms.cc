@@ -271,7 +271,7 @@ Bool ImageHistograms<T>::setAxes (const Vector<Int>& axes)
 // Signal that we have changed the axes and need new accumulation images
    
    if (saveAxes.nelements() != cursorAxes_p.nelements() ||
-       !allEQ(saveAxes.ac(), cursorAxes_p.ac())) needStorageImage_p = True;
+       !allEQ(saveAxes, cursorAxes_p)) needStorageImage_p = True;
 
    return True;
 }
@@ -339,7 +339,7 @@ Bool ImageHistograms<T>::setIncludeRange(const Vector<T>& include)
 // Signal that we need new accumulation images
 
    if (saveRange.nelements() != range_p.nelements() ||
-       !allEQ(saveRange.ac(), range_p.ac())) needStorageImage_p = True;
+       !allEQ(saveRange, range_p)) needStorageImage_p = True;
 
    return True;
 }

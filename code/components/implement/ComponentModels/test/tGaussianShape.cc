@@ -83,19 +83,19 @@ int main() {
       Vector<Double> actualSample(4);
       expectedSample = 0.0; expectedSample(0) = peak*0.5;
       defGaussian.sample(actualSample, sampleDir, pixelSize);
-      AlwaysAssert(allNear(actualSample.ac(), expectedSample.ac(), 1E-10),
+      AlwaysAssert(allNear(actualSample, expectedSample, 1E-10),
 		   AipsError);
       sampleDirVal *= rotDec;
       sampleDir.set(sampleDirVal);
       defGaussian.sample(actualSample, sampleDir, pixelSize);
       expectedSample(0) = peak;
-      AlwaysAssert(allNear(actualSample.ac(), expectedSample.ac(), 1E-10),
+      AlwaysAssert(allNear(actualSample, expectedSample, 1E-10),
 		   AipsError);
       sampleDirVal *= rotDec;
       sampleDir.set(sampleDirVal);
       expectedSample(0) = peak*0.5;
       defGaussian.sample(actualSample, sampleDir, pixelSize);
-      AlwaysAssert(allNear(actualSample.ac(), expectedSample.ac(), 1E-10),
+      AlwaysAssert(allNear(actualSample, expectedSample, 1E-10),
 		   AipsError);
       cout << "Passed the default Gaussian component test" << endl;
     }
@@ -162,7 +162,7 @@ int main() {
   			    initialAxialRatio, initialPA);
       Vector<Double> componentFluxVal;
       B1934.flux().value(componentFluxVal);
-      AlwaysAssert(allNear(initialVal.ac(), componentFluxVal.ac(),
+      AlwaysAssert(allNear(initialVal, componentFluxVal,
 			   C::dbl_epsilon), AipsError);
 
       // Set and verify  the flux of the Gaussian component.
@@ -595,26 +595,26 @@ int main() {
       Double freq = C::c;
       Vector<Double> realVis;
       comp.visibility(uvw, freq).value(realVis);
-      AlwaysAssert(allNear(realVis.ac(), flux.ac(), C::dbl_epsilon),AipsError);
+      AlwaysAssert(allNear(realVis, flux, C::dbl_epsilon),AipsError);
       Vector<DComplex> vis = comp.visibility(uvw, freq).value();
       Vector<DComplex> expectedVis(4);
       for (uInt s = 0; s < 4; s++) {
  	expectedVis(s).re = flux(s);
  	expectedVis(s).im = 0.0;
       }
-      AlwaysAssert(allNear(vis.ac(), expectedVis.ac(), C::dbl_epsilon),
+      AlwaysAssert(allNear(vis, expectedVis, C::dbl_epsilon),
   		   AipsError);
       uvw(0) = (4.0*C::ln2/C::pi)/((1.0/60.0) * C::pi/180.0)/2.0;
       comp.visibility(uvw, freq).value(realVis);
-      AlwaysAssert(allNear(realVis.ac(), flux.ac()/2.0, 2*C::dbl_epsilon),
+      AlwaysAssert(allNear(realVis, flux/2.0, 2*C::dbl_epsilon),
  		   AipsError);
       uvw(1) = uvw(0); uvw(0) = 0.0;
       comp.visibility(uvw, freq).value(realVis);
-      AlwaysAssert(allNear(realVis.ac(), flux.ac()/2.0, 2*C::dbl_epsilon),
+      AlwaysAssert(allNear(realVis, flux/2.0, 2*C::dbl_epsilon),
  		   AipsError);
       uvw(2) = uvw(1); uvw(1) = 0.0;
       comp.visibility(uvw, freq).value(realVis);
-      AlwaysAssert(allNear(realVis.ac(), flux.ac(), C::dbl_epsilon),
+      AlwaysAssert(allNear(realVis, flux, C::dbl_epsilon),
  		   AipsError);
       const MVAngle compMajorAxis(Quantity(1, "'" ));
       const MVAngle compMinorAxis(Quantity(30, "''" ));
@@ -622,24 +622,24 @@ int main() {
       comp.setWidth(compMajorAxis, compMinorAxis, compPA);
       uvw(1) = uvw(2); uvw(2) = 0.0;
       comp.visibility(uvw, freq).value(realVis);
-      AlwaysAssert(allNear(realVis.ac(), flux.ac()/2.0, 2*C::dbl_epsilon),
+      AlwaysAssert(allNear(realVis, flux/2.0, 2*C::dbl_epsilon),
  		   AipsError);
       uvw(0) = uvw(1)*2; uvw(1) = 0.0;
       comp.visibility(uvw, freq).value(realVis);
-      AlwaysAssert(allNear(realVis.ac(), flux.ac()/2.0, 2*C::dbl_epsilon),
+      AlwaysAssert(allNear(realVis, flux/2.0, 2*C::dbl_epsilon),
  		   AipsError);
       compPA = Quantity(30, "deg");
       comp.setWidth(compMajorAxis, compMinorAxis, compPA);
       uvw(1)  = .5 * uvw(0);
       uvw(0)  *= C::sqrt3/2.0;
       comp.visibility(uvw, freq).value(realVis);
-      AlwaysAssert(allNear(realVis.ac(), flux.ac()/2.0, 2*C::dbl_epsilon),
+      AlwaysAssert(allNear(realVis, flux/2.0, 2*C::dbl_epsilon),
  		   AipsError);
       freq *= 2.0;
       uvw(0) /= -2.0;
       uvw(1) /= -2.0;
       comp.visibility(uvw, freq).value(realVis);
-      AlwaysAssert(allNear(realVis.ac(), flux.ac()/2.0, 2*C::dbl_epsilon),
+      AlwaysAssert(allNear(realVis, flux/2.0, 2*C::dbl_epsilon),
  		   AipsError);
       cout << "Passed the Fourier transform test" << endl;
     }

@@ -158,7 +158,7 @@ class String;
 //   worldAxes(0) = 0; worldAxes(1) = cSys.nWorldAxes()-1;
 //   Vector<Double> worldRep;
 //   Bool ok = CoordinateUtil::removeAxes(cSys, worldRep, worldAxes, True);
-//   cout << "For world axes used " << worldRep.ac() << " for replacement" << endl;
+//   cout << "For world axes used " << worldRep << " for replacement" << endl;
 // </srcblock>
 // </example>
 //

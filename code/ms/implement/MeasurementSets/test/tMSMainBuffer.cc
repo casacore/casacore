@@ -66,12 +66,12 @@ int main() {
 	AlwaysAssert(mainBuffer.antenna1(i) == Int(i+1), AipsError);
 	expectedResult(i) = Int(i+1);
       }
-      AlwaysAssert(allEQ(mainBuffer.antenna1().ac(), expectedResult.ac()), 
+      AlwaysAssert(allEQ(mainBuffer.antenna1(), expectedResult), 
 		   AipsError);
-      expectedResult.ac() += 2;
+      expectedResult += 2;
       Vector<Int> test(mainBuffer.antenna1());
       test = expectedResult;
-      AlwaysAssert(allEQ(mainBuffer.antenna1().ac(), expectedResult.ac()), 
+      AlwaysAssert(allEQ(mainBuffer.antenna1(), expectedResult), 
 		   AipsError);
     }
     { // test the complex data access functions

@@ -261,7 +261,7 @@ void d()
         AlwaysAssertExit (ToBool (Int(colInx3.getRowNumber(found)) == i
 				  && found));
         *auint = 1+2*(i/3);
-	cout << colInx4.getRowNumbers().ac() << endl;
+	cout << colInx4.getRowNumbers() << endl;
 	*auint += 1;
 	AlwaysAssertExit (colInx4.getRowNumbers().nelements() == 0);
     }
@@ -272,9 +272,9 @@ void d()
     for (i=0; i<(nrrow+2)/3; i++) {
         *auint1 = 1+2*i;
 	*abool1 = True;
-	cout << colInx5.getRowNumbers().ac() << ' ';
+	cout << colInx5.getRowNumbers() << ' ';
 	*abool1 = False;
-	cout << colInx5.getRowNumbers().ac() << endl;
+	cout << colInx5.getRowNumbers() << endl;
     }
     // Now test a range of multiple columns.
     RecordFieldPtr<Bool> abool1l (colInx5.accessLowerKey(), "abool");
@@ -285,20 +285,20 @@ void d()
     *abool1u = True;
     *auint1l = 3;
     *auint1u = 10;
-    cout << colInx5.getRowNumbers (True, True).ac() << ' ';
-    cout << colInx5.getRowNumbers (False, False).ac() << endl;
+    cout << colInx5.getRowNumbers (True, True) << ' ';
+    cout << colInx5.getRowNumbers (False, False) << endl;
     *auint1l = 0;
     *auint1u = 10;
-    cout << colInx5.getRowNumbers (True, True).ac() << ' ';
-    cout << colInx5.getRowNumbers (False, False).ac() << endl;
+    cout << colInx5.getRowNumbers (True, True) << ' ';
+    cout << colInx5.getRowNumbers (False, False) << endl;
     *auint1l = 2;
     *auint1u = 6;
-    cout << colInx5.getRowNumbers (True, True).ac() << ' ';
-    cout << colInx5.getRowNumbers (False, False).ac() << endl;
+    cout << colInx5.getRowNumbers (True, True) << ' ';
+    cout << colInx5.getRowNumbers (False, False) << endl;
     *abool1l = False;
     *abool1u = False;
-    cout << colInx5.getRowNumbers (True, True).ac() << ' ';
-    cout << colInx5.getRowNumbers (False, False).ac() << endl;
+    cout << colInx5.getRowNumbers (True, True) << ' ';
+    cout << colInx5.getRowNumbers (False, False) << endl;
 
     // Now test extending the table.
     // The index should be updated automatically, so create that first.

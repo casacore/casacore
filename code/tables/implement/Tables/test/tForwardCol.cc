@@ -120,7 +120,7 @@ void a (const TableDesc& td)
     Cube<float> arrf(IPosition(3,2,3,4));
     uInt i;
     char str[8];
-    indgen (arrf.ac());
+    indgen (arrf);
     for (i=0; i<10; i++) {
 	ab1.put (i, i);
 	ac.put (i, i+1);
@@ -131,7 +131,7 @@ void a (const TableDesc& td)
 	arr1.put(i,arrf);
 	arr2.put(i,arrf);
 	arr3.put(i,arrf);
-	arrf.ac() += (float)(arrf.nelements());
+	arrf += (float)(arrf.nelements());
     }
     ag1.putColumn (ad);
 
@@ -220,7 +220,7 @@ void check(const String& tableName, Int abOffset, Int acOffset)
     Slicer nslice (tmp, tmp, tmp,  Slicer::endIsLength);
     Slicer nslice2(Slice(0,1), Slice(0,1,2), Slice(0,2,2),
 		   Slicer::endIsLength);
-    indgen (arrf.ac());
+    indgen (arrf);
     for (i=0; i<10; i++) {
 	cout << "get scalar row " << i << endl;
 	ab2.get (i, abval);
@@ -239,27 +239,27 @@ void check(const String& tableName, Int abOffset, Int acOffset)
 		 << ", " << agval << endl;
 	}
 	arr1.get (i, arrval);
-	if (!allEQ (arrval.ac(), arrf.ac())) {
+	if (!allEQ (arrval, arrf)) {
 	    cout << "error in arr1 in row " << i << endl;
 	}
 	arr2.get (i, arrval);
-	if (!allEQ (arrval.ac(), arrf.ac())) {
+	if (!allEQ (arrval, arrf)) {
 	    cout << "error in arr2 in row " << i << endl;
 	}
 	cout << "get array row " << i << endl;
 	arr3.get (i, arrval);
-	if (!allEQ (arrval.ac(), arrf.ac())) {
+	if (!allEQ (arrval, arrf)) {
 	    cout << "error in arr3 in row " << i << endl;
 	}
 	arr2.getSlice (i, nslice, arrval);
-	if (!allEQ (arrval.ac(), arrf.ac())) {
+	if (!allEQ (arrval, arrf)) {
 	    cout << "error in arr2 (entire slice) in row " << i << endl;
 	}
 	arr2.getSlice (i, nslice2, arrvalslice);
-	if (!allEQ (arrval.ac(), arrf.ac())) {
+	if (!allEQ (arrval, arrf)) {
 	    cout << "error in arr2 (partial slice) in row " << i << endl;
 	}
-	arrf.ac() += (float)(arrf.nelements());
+	arrf += (float)(arrf.nelements());
     }
     Vector<Int> abvec = ab2.getColumn();
     cout << tab.nrow() << " " << abvec.nelements() << endl;

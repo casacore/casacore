@@ -1,5 +1,5 @@
 //# SkyCompBase.h: Base class for model components of the sky brightness
-//# Copyright (C) 1996,1997,1998
+//# Copyright (C) 1996,1997,1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -127,7 +127,7 @@ template <class T> class ImageInterface;
 // <srcblock>
 // void printComponent(const SkyCompBase & comp) {
 //  cout << "This component has a flux of " 
-//       << comp.flux().value().ac() 
+//       << comp.flux().value() 
 //       << " " << comp.flux().unit().getName() << endl;
 //  cout << "and a " << ComponentType::name(comp.flux().pol()) 
 //       << " polarisation" << endl;

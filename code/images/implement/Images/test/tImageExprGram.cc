@@ -192,7 +192,7 @@ main (int argc, char *argv[])
     Double result = 1.0;
     if (! allEQ (aArr, result)) {
 	cout << "Result should be " << result << endl;
-	cout << "Result is " << aArr.ac() << endl;
+	cout << "Result is " << aArr << endl;
 	foundError = True;
     }
   }
@@ -205,7 +205,7 @@ main (int argc, char *argv[])
     Double result = bVal;
     if (! allEQ (aArr, result)) {
 	cout << "Result should be " << result  << endl;
-	cout << "Result is " << aArr.ac() << endl;
+	cout << "Result is " << aArr << endl;
 	foundError = True;
     }
   }
@@ -218,7 +218,7 @@ main (int argc, char *argv[])
     Double result = sin(cVal);
     if (! allEQ (aArr, sin(cVal))) {
 	cout << "Result should be " << result << endl;
-	cout << "Result is " << aArr.ac() << endl;
+	cout << "Result is " << aArr << endl;
 	foundError = True;
     }
   }
@@ -232,7 +232,7 @@ main (int argc, char *argv[])
     Double result = cVal+2;
     if (! allEQ (aArr, result)) {
 	cout << "Result should be " << result << endl;
-	cout << "Result is " << aArr.ac() << endl;
+	cout << "Result is " << aArr << endl;
 	foundError = True;
     }
   }
@@ -256,7 +256,7 @@ main (int argc, char *argv[])
     Double result = bVal + cVal + dVal;
     if (! allEQ (aArr, result)) {
 	cout << "Result should be " << result << endl;
-	cout << "Result is " << aArr.ac() << endl;
+	cout << "Result is " << aArr << endl;
 	foundError = True;
     }
   }
@@ -278,7 +278,7 @@ main (int argc, char *argv[])
     Double result = 1;
     if (! allEQ (aArr, result)) {
 	cout << "Result should be " << result << endl;
-	cout << "Result is " << aArr.ac() << endl;
+	cout << "Result is " << aArr << endl;
 	foundError = True;
     }
   }
@@ -309,7 +309,7 @@ main (int argc, char *argv[])
     Double result = 2 - (shape(0)-1);
     if (! allEQ (aArr, result)) {
 	cout << "Result should be " << result << endl;
-	cout << "Result is " << aArr.ac() << endl;
+	cout << "Result is " << aArr << endl;
 	foundError = True;
     }
   }
@@ -325,7 +325,7 @@ main (int argc, char *argv[])
 	            10/min(cVal,dVal)*-eVal*log(bVal) - C::pi;
     if (! allNear (aArr, result, 1.0e-10)) {
 	cout << "Result should be " << result << endl;
-	cout << "Result is " << aArr.ac() << endl;
+	cout << "Result is " << aArr << endl;
 	foundError = True;
     }
   }
@@ -339,7 +339,7 @@ main (int argc, char *argv[])
     Double result = (bVal + cVal - dVal / 2*-bVal) + C::pi;
     if (! allEQ (aArr, result)) {
 	cout << "Result should be " << result << endl;
-	cout << "Result is " << aArr.ac() << endl;
+	cout << "Result is " << aArr << endl;
 	foundError = True;
     }
   }
@@ -353,7 +353,7 @@ main (int argc, char *argv[])
     Double result = pow(cVal,dVal);
     if (! allEQ (aArr, result)) {
 	cout << "Result should be " << result << endl;
-	cout << "Result is " << aArr.ac() << endl;
+	cout << "Result is " << aArr << endl;
 	foundError = True;
     }
   }
@@ -367,7 +367,7 @@ main (int argc, char *argv[])
     Double result = fmod(cVal*2,dVal);
     if (! allEQ (aArr, result)) {
 	cout << "Result should be " << result << endl;
-	cout << "Result is " << aArr.ac() << endl;
+	cout << "Result is " << aArr << endl;
 	foundError = True;
     }
   }
@@ -381,7 +381,7 @@ main (int argc, char *argv[])
     Double result = pow(cVal,2.3);
     if (! allEQ (aArr, result)) {
 	cout << "Result should be " << result << endl;
-	cout << "Result is " << aArr.ac() << endl;
+	cout << "Result is " << aArr << endl;
 	foundError = True;
     }
   }
@@ -395,7 +395,7 @@ main (int argc, char *argv[])
     Double result = cos(bVal);
     if (! allEQ (aArr, result)) {
 	cout << "Result should be " << result << endl;
-	cout << "Result is " << aArr.ac() << endl;
+	cout << "Result is " << aArr << endl;
 	foundError = True;
     }
   }
@@ -409,7 +409,7 @@ main (int argc, char *argv[])
     Double result = cos(sin(bVal));
     if (! allEQ (aArr, result)) {
 	cout << "Result should be " << result << endl;
-	cout << "Result is " << aArr.ac() << endl;
+	cout << "Result is " << aArr << endl;
 	foundError = True;
     }
   }
@@ -423,7 +423,7 @@ main (int argc, char *argv[])
     Double result = shape.product();
     if (! allEQ (aArr, result)) {
 	cout << "Result should be " << result << endl;
-	cout << "Result is " << aArr.ac() << endl;
+	cout << "Result is " << aArr << endl;
 	foundError = True;
     }
   }
@@ -437,7 +437,7 @@ main (int argc, char *argv[])
     Bool result = ToBool(True||False);
     if (! allEQ (aBoolArr, result)) {
 	cout << "Result should be " << result << endl;
-	cout << "Result is " << aBoolArr.ac() << endl;
+	cout << "Result is " << aBoolArr << endl;
 	foundError = True;
     }
   }
@@ -451,7 +451,7 @@ main (int argc, char *argv[])
     Bool result = ToBool(!bBoolVal);
     if (! allEQ (aBoolArr, result)) {
 	cout << "Result should be " << result << endl;
-	cout << "Result is " << aBoolArr.ac() << endl;
+	cout << "Result is " << aBoolArr << endl;
 	foundError = True;
     }
   }
@@ -466,7 +466,7 @@ main (int argc, char *argv[])
     Double result = eVal+cVal+(cVal+dVal);
     if (! allEQ (aArr, result)) {
 	cout << "Result should be " << result << endl;
-	cout << "Result is " << aArr.ac() << endl;
+	cout << "Result is " << aArr << endl;
 	foundError = True;
     }
   }
@@ -481,7 +481,7 @@ main (int argc, char *argv[])
     Double result = (bBoolVal  ?  aArr.nelements()*eVal : 0);
     if (! allEQ (aArr, result)) {
 	cout << "Result should be " << result << endl;
-	cout << "Result is " << aArr.ac() << endl;
+	cout << "Result is " << aArr << endl;
 	foundError = True;
     }
   }
@@ -497,7 +497,7 @@ main (int argc, char *argv[])
     result = (bBoolVal  ?  0 : aArr.nelements()*(eVal+result));
     if (! allNear (aArr, result, 1e-10)) {
 	cout << "Result should be " << result << endl;
-	cout << "Result is " << aArr.ac() << endl;
+	cout << "Result is " << aArr << endl;
 	foundError = True;
     }
   }
@@ -515,7 +515,7 @@ main (int argc, char *argv[])
     Double result = 5;
     if (! allEQ (aArr, result)) {
 	cout << "Result should be " << result << endl;
-	cout << "Result is " << aArr.ac() << endl;
+	cout << "Result is " << aArr << endl;
 	foundError = True;
     }
   }

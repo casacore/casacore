@@ -68,13 +68,13 @@ int main()
 	cout << "Error: " << radec.errorMessage() << endl;        // 15
 	exit(1);                                                 // 16
     }                                                             // 17
-    cout << world.ac() << " <--- " << pixel.ac() << endl;           // 18
+    cout << world << " <--- " << pixel << endl;           // 18
     ok = radec.toPixel(pixel, world);                             // 19
     if (!ok) {
 	cout << "Error: " << radec.errorMessage() << endl;
 	exit(1);
     }
-    cout << world.ac() << " ---> " << pixel.ac() << endl;
+    cout << world << " ---> " << pixel << endl;
 
     // StokesCoordinate
     Vector<Int> iquv(4);                                         // 20
@@ -113,14 +113,14 @@ int main()
 	cout << "Error: " << spectral.errorMessage() << endl;
 	exit(1);
     }
-    cout << world.ac() << " <--- " << pixel.ac() << endl;
+    cout << world << " <--- " << pixel << endl;
 
     ok = spectral.toPixel(pixel, world);
     if (!ok) {
 	cout << "Error: " << spectral.errorMessage() << endl;
 	exit(1);
     }
-    cout << world.ac() << " ---> " << pixel.ac() << endl;
+    cout << world << " ---> " << pixel << endl;
 
     // CoordinateSystem
     CoordinateSystem coordsys;
@@ -136,14 +136,14 @@ int main()
 	cout << "Error: " << coordsys.errorMessage() << endl;
 	exit(1);
     }
-    cout << world.ac() << " <--- " << pixel.ac() << endl;
+    cout << world << " <--- " << pixel << endl;
 
     ok = coordsys.toPixel(pixel, world);
     if (!ok) {
 	cout << "Error: " << coordsys.errorMessage() << endl;
 	exit(1);
     }
-    cout << world.ac() << " ---> " << pixel.ac() << endl;
+    cout << world << " ---> " << pixel << endl;
 
     // CoordinateSystem::transpose
     Vector<Int> tran(4);
@@ -156,14 +156,14 @@ int main()
 	cout << "Error: " << coordsys.errorMessage() << endl;
 	exit(1);
     }
-    cout << world.ac() << " <--- " << pixel.ac() << endl;
+    cout << world << " <--- " << pixel << endl;
 
     ok = coordsys.toPixel(pixel, world);
     if (!ok) {
 	cout << "Error: " << coordsys.errorMessage() << endl;
 	exit(1);
     }
-    cout << world.ac() << " ---> " << pixel.ac() << endl;
+    cout << world << " ---> " << pixel << endl;
 
     // CoordinateSystem::remove*Axis
     ok = coordsys.removePixelAxis(0, 138.0);
@@ -177,14 +177,14 @@ int main()
 	cout << "Error: " << coordsys.errorMessage() << endl;
 	exit(1);
     }
-    cout << world.ac() << " <--- " << pixel.ac() << endl;
+    cout << world << " <--- " << pixel << endl;
 
     ok = coordsys.toPixel(pixel, world);
     if (!ok) {
 	cout << "Error: " << coordsys.errorMessage() << endl;
 	exit(1);
     }
-    cout << world.ac() << " ---> " << pixel.ac() << endl;
+    cout << world << " ---> " << pixel << endl;
 
     TableRecord rec;
     ok = coordsys.save(rec, "CS");

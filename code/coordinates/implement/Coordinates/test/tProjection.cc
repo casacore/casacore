@@ -53,7 +53,7 @@ int main()
          if (proj.type() != type) {
            throw(AipsError("Type recovery inconsistent"));
          }
-         if (!allEQ(proj.parameters().ac(),pars.ac())) {
+         if (!allEQ(proj.parameters(),pars)) {
            throw(AipsError("Parameters recovery inconsistent"));
          }
          if (proj.name() != Projection::name(type)) {
@@ -84,7 +84,7 @@ int main()
          proj2 = proj;
 //
          if (proj2.name() != proj.name() ||
-             !allEQ(proj2.parameters().ac(),proj.parameters().ac()) ||
+             !allEQ(proj2.parameters(),proj.parameters()) ||
              proj2.type() != proj.type() ||
              !proj2.near(proj, 1e-6)) {
            throw(AipsError("Assignment fails"));
@@ -101,7 +101,7 @@ int main()
          Projection proj(Projection::SIN, pars);
          Projection proj2(proj);
          if (proj2.name() != proj.name() ||
-             !allEQ(proj2.parameters().ac(),proj.parameters().ac()) ||
+             !allEQ(proj2.parameters(),proj.parameters()) ||
              proj2.type() != proj2.type() ||
              !proj2.near(proj, 1e-6)) {
            throw(AipsError("Copy constructor fails"));

@@ -54,10 +54,10 @@ void testVectorROIter (const Lattice<Int>& lattice)
     LatticeStepper step(latticeShape, cursorShape);
     RO_LatticeIterator<Int>  iter(lattice, step);
     Vector<Int> expectedResult(latticeShape(0));
-    indgen(expectedResult.ac());
-    AlwaysAssert(allEQ(expectedResult.ac(), iter.vectorCursor().ac()) 
+    indgen(expectedResult);
+    AlwaysAssert(allEQ(expectedResult, iter.vectorCursor()) 
 		 == True, AipsError);
-    AlwaysAssert(allEQ(expectedResult.ac(), iter.cursor().nonDegenerate()) 
+    AlwaysAssert(allEQ(expectedResult, iter.cursor().nonDegenerate()) 
 		 == True, AipsError);
     try {
         Matrix<Int> temp(iter.matrixCursor());
@@ -81,9 +81,9 @@ void testVectorROIter (const Lattice<Int>& lattice)
     AlwaysAssert(cursorShape == iter.cursorShape().nonDegenerate(), AipsError);
     Timer clock;
     for (iter.reset(); !iter.atEnd(); iter++){
-        AlwaysAssert(allEQ(expectedResult.ac(), iter.vectorCursor().ac())
+        AlwaysAssert(allEQ(expectedResult, iter.vectorCursor())
                      == True, AipsError);
-        expectedResult.ac() += cursorShape.product();
+        expectedResult += cursorShape.product();
     }
     nstep = iter.nsteps();
     AlwaysAssert(nstep == latticeShape.product()/latticeShape(0),
@@ -92,12 +92,12 @@ void testVectorROIter (const Lattice<Int>& lattice)
     AlwaysAssert(iter.endPosition() == expectedPos, AipsError);
     expectedPos(0) = 0;
     AlwaysAssert(iter.position() == expectedPos, AipsError);
-    expectedResult.ac() -= cursorShape.product();
+    expectedResult -= cursorShape.product();
     Int ns=0;
     for (; !iter.atStart(); iter--){
-	AlwaysAssert(allEQ(expectedResult.ac(), iter.cursor().nonDegenerate())
+	AlwaysAssert(allEQ(expectedResult, iter.cursor().nonDegenerate())
 		     == True, AipsError);
-	expectedResult.ac() -= cursorShape.product();
+	expectedResult -= cursorShape.product();
 	ns++;
     }
     clock.show();
@@ -118,10 +118,10 @@ void testMatrixROIter (const Lattice<Int>& lattice)
     const IPosition cursorShape(2, latticeShape(0), latticeShape(1));
     RO_LatticeIterator<Int>  iter(lattice, cursorShape);
     Matrix<Int> expectedResult(latticeShape(0), latticeShape(1));
-    indgen(expectedResult.ac());
-    AlwaysAssert(allEQ(expectedResult.ac(), iter.matrixCursor().ac())
+    indgen(expectedResult);
+    AlwaysAssert(allEQ(expectedResult, iter.matrixCursor())
 		 == True, AipsError);
-    AlwaysAssert(allEQ(expectedResult.ac(), iter.cursor().nonDegenerate())
+    AlwaysAssert(allEQ(expectedResult, iter.cursor().nonDegenerate())
 		 == True, AipsError);
     try {
         Vector<Int> temp(iter.vectorCursor());
@@ -143,9 +143,9 @@ void testMatrixROIter (const Lattice<Int>& lattice)
     } end_try;
     Timer clock;
     for (iter.reset(); !iter.atEnd(); iter++){
-        AlwaysAssert(allEQ(expectedResult.ac(), iter.matrixCursor().ac()) 
+        AlwaysAssert(allEQ(expectedResult, iter.matrixCursor()) 
                      == True, AipsError);
-        expectedResult.ac() += cursorShape.product();
+        expectedResult += cursorShape.product();
     }
     nstep = iter.nsteps();
     AlwaysAssert(nstep == latticeShape(2)*latticeShape(3),
@@ -155,11 +155,11 @@ void testMatrixROIter (const Lattice<Int>& lattice)
     expectedPos(0) = 0;
     expectedPos(1) = 0;
     AlwaysAssert(iter.position() == expectedPos, AipsError);
-    expectedResult.ac() -= cursorShape.product();
+    expectedResult -= cursorShape.product();
     for (; !iter.atStart(); --iter){
-        AlwaysAssert(allEQ(expectedResult.ac(), iter.cursor().nonDegenerate())
+        AlwaysAssert(allEQ(expectedResult, iter.cursor().nonDegenerate())
                      == True, AipsError);
-        expectedResult.ac() -= cursorShape.product();
+        expectedResult -= cursorShape.product();
     }
     clock.show();
     nstep = iter.nsteps();
@@ -183,10 +183,10 @@ void testCubeROIter (const Lattice<Int>& lattice)
     RO_LatticeIterator<Int>  iter(lattice, step);
     Cube<Int> expectedResult(latticeShape(0), latticeShape(1),
 			     latticeShape(2));
-    indgen(expectedResult.ac());
-    AlwaysAssert(allEQ(expectedResult.ac(), iter.cubeCursor().ac()) == True,
+    indgen(expectedResult);
+    AlwaysAssert(allEQ(expectedResult, iter.cubeCursor()) == True,
 		 AipsError);
-    AlwaysAssert(allEQ(expectedResult.ac(), iter.cursor().nonDegenerate()) 
+    AlwaysAssert(allEQ(expectedResult, iter.cursor().nonDegenerate()) 
 		 == True, AipsError);
     try {
         Vector<Int> temp(iter.vectorCursor());
@@ -208,9 +208,9 @@ void testCubeROIter (const Lattice<Int>& lattice)
     } end_try;
     Timer clock;
     for (iter.reset(); !iter.atEnd(); iter++){
-        AlwaysAssert(allEQ(expectedResult.ac(), iter.cubeCursor().ac())
+        AlwaysAssert(allEQ(expectedResult, iter.cubeCursor())
                      == True, AipsError);
-        expectedResult.ac() += cursorShape.product();
+        expectedResult += cursorShape.product();
     }
     nstep = iter.nsteps();
     AlwaysAssert(nstep == latticeShape(3), AipsError);
@@ -220,11 +220,11 @@ void testCubeROIter (const Lattice<Int>& lattice)
     expectedPos(1) = 0;
     expectedPos(2) = 0;
     AlwaysAssert(iter.position() == expectedPos, AipsError);
-    expectedResult.ac() -= cursorShape.product();
+    expectedResult -= cursorShape.product();
     for (; !iter.atStart(); iter--){
-        AlwaysAssert(allEQ(expectedResult.ac(), iter.cursor().nonDegenerate())
+        AlwaysAssert(allEQ(expectedResult, iter.cursor().nonDegenerate())
                      == True, AipsError);
-        expectedResult.ac() -= cursorShape.product();
+        expectedResult -= cursorShape.product();
     }
     clock.show();
     nstep = iter.nsteps();
@@ -276,9 +276,9 @@ void testArrayROIter (const Lattice<Int>& lattice)
     } end_try;
     Timer clock;
     for (iter.reset(); !iter.atEnd(); ++iter){
-        AlwaysAssert(allEQ(expectedResult.ac(), iter.cursor()) == True, 
+        AlwaysAssert(allEQ(expectedResult, iter.cursor()) == True, 
                      AipsError);
-        expectedResult.ac() += cursorShape.product();
+        expectedResult += cursorShape.product();
     }
     nstep = iter.nsteps();
     AlwaysAssert(nstep == 1, AipsError);
@@ -286,11 +286,11 @@ void testArrayROIter (const Lattice<Int>& lattice)
     AlwaysAssert(iter.endPosition() == expectedPos, AipsError);
     expectedPos = 0;
     AlwaysAssert(iter.position() == expectedPos, AipsError);
-    expectedResult.ac() -= cursorShape.product();
+    expectedResult -= cursorShape.product();
     for (; !iter.atStart(); --iter){
-        AlwaysAssert(allEQ(expectedResult.ac(), iter.cursor()) == True,
+        AlwaysAssert(allEQ(expectedResult, iter.cursor()) == True,
                      AipsError);
-        expectedResult.ac() -= cursorShape.product();
+        expectedResult -= cursorShape.product();
     }
     clock.show();
     nstep = iter.nsteps();
@@ -311,7 +311,7 @@ void test8ElemROIter (const Lattice<Int>& lattice)
     RO_LatticeIterator<Int>  iter(lattice, step);
     Array<Int> expectedResult(cursorShape);
     indgen(expectedResult);
-    AlwaysAssert(allEQ(expectedResult, iter.vectorCursor().ac()) == True,
+    AlwaysAssert(allEQ(expectedResult, iter.vectorCursor()) == True,
 		 AipsError);
     AlwaysAssert(allEQ(expectedResult, iter.cursor().nonDegenerate())
 		 == True, AipsError);
@@ -335,7 +335,7 @@ void test8ElemROIter (const Lattice<Int>& lattice)
     } end_try;
     Timer clock;
     for (iter.reset(); !iter.atEnd(); ++iter){
-        AlwaysAssert(allEQ(expectedResult, iter.vectorCursor().ac()) == True,
+        AlwaysAssert(allEQ(expectedResult, iter.vectorCursor()) == True,
                      AipsError);
         expectedResult += cursorShape.product();
     }
@@ -397,21 +397,21 @@ void testTiledLineROIter (const Lattice<Int>& lattice)
     TiledLineStepper step(latticeShape, cursorShape, 0);
     RO_LatticeIterator<Int>  iter(lattice, step);
     Vector<Int> expectedResult(latticeShape(0));
-    indgen(expectedResult.ac());
-    AlwaysAssert(allEQ(expectedResult.ac(), iter.vectorCursor().ac()) == True,
+    indgen(expectedResult);
+    AlwaysAssert(allEQ(expectedResult, iter.vectorCursor()) == True,
 		 AipsError);
     Timer clock;
     for (iter.reset(); !iter.atEnd(); ++iter){
-        AlwaysAssert(allEQ(expectedResult.ac(), iter.vectorCursor().ac())
+        AlwaysAssert(allEQ(expectedResult, iter.vectorCursor())
 		     == True, AipsError);
-        expectedResult.ac() += latticeShape(0);
+        expectedResult += latticeShape(0);
     }
     nstep = iter.nsteps();
     AlwaysAssert(nstep == latticeShape.product()/latticeShape(0),
 		 AipsError);
     for (; !iter.atStart(); --iter){
-        expectedResult.ac() -= latticeShape(0);
-        AlwaysAssert(allEQ(expectedResult.ac(), iter.vectorCursor().ac())
+        expectedResult -= latticeShape(0);
+        AlwaysAssert(allEQ(expectedResult, iter.vectorCursor())
 		     == True, AipsError);
     }
     clock.show();
@@ -429,42 +429,42 @@ void testCopyAssignROIter (const Lattice<Int>& lattice)
 				 LatticeStepper(latticeShape, cursorShape));
     iter++;
     Vector<Int> expectedResult(latticeShape(0));
-    indgen(expectedResult.ac());
-    expectedResult.ac() += cursorShape.product();
-    AlwaysAssert(allEQ(expectedResult.ac(), iter.vectorCursor().ac())
+    indgen(expectedResult);
+    expectedResult += cursorShape.product();
+    AlwaysAssert(allEQ(expectedResult, iter.vectorCursor())
 		 == True, AipsError);
     
     RO_LatticeIterator<Int> iterCopy(iter.copy());
     Vector<Int> expectedCopy(expectedResult.copy());
-    AlwaysAssert(allEQ(expectedCopy.ac(), iterCopy.vectorCursor().ac())
+    AlwaysAssert(allEQ(expectedCopy, iterCopy.vectorCursor())
 		 == True, AipsError);
     iter++;
-    expectedResult.ac() += cursorShape.product();
-    AlwaysAssert(allEQ(expectedResult.ac(), iter.vectorCursor().ac())
+    expectedResult += cursorShape.product();
+    AlwaysAssert(allEQ(expectedResult, iter.vectorCursor())
 		 == True, AipsError);
-    AlwaysAssert(allEQ(expectedCopy.ac(), iterCopy.vectorCursor().ac()) 
+    AlwaysAssert(allEQ(expectedCopy, iterCopy.vectorCursor()) 
 		 == True, AipsError);
     iterCopy--;
-    expectedCopy.ac() -= cursorShape.product();
-    AlwaysAssert(allEQ(expectedResult.ac(), iter.vectorCursor().ac())
+    expectedCopy -= cursorShape.product();
+    AlwaysAssert(allEQ(expectedResult, iter.vectorCursor())
 		 == True, AipsError);
-    AlwaysAssert(allEQ(expectedCopy.ac(), iterCopy.vectorCursor().ac()) 
+    AlwaysAssert(allEQ(expectedCopy, iterCopy.vectorCursor()) 
 		 == True, AipsError);
-    AlwaysAssert(allEQ(iter.vectorCursor().ac(),iterCopy.vectorCursor().ac())
+    AlwaysAssert(allEQ(iter.vectorCursor(),iterCopy.vectorCursor())
 		 == False, AipsError);
     iterCopy = iter.copy();
     expectedCopy = expectedResult;
-    AlwaysAssert(allEQ(iter.vectorCursor().ac(),iterCopy.vectorCursor().ac())
+    AlwaysAssert(allEQ(iter.vectorCursor(),iterCopy.vectorCursor())
 		 == True, AipsError);
-    AlwaysAssert(allEQ(expectedResult.ac(), iter.vectorCursor().ac())
+    AlwaysAssert(allEQ(expectedResult, iter.vectorCursor())
 		 == True, AipsError);
     iterCopy++;
-    expectedCopy.ac() += cursorShape.product();
-    AlwaysAssert(allEQ(expectedResult.ac(), iter.vectorCursor().ac())
+    expectedCopy += cursorShape.product();
+    AlwaysAssert(allEQ(expectedResult, iter.vectorCursor())
 		 == True, AipsError);
-    AlwaysAssert(allEQ(expectedCopy.ac(), iterCopy.vectorCursor().ac()) 
+    AlwaysAssert(allEQ(expectedCopy, iterCopy.vectorCursor()) 
 		 == True, AipsError);
-    AlwaysAssert(allEQ(iter.vectorCursor().ac(),iterCopy.vectorCursor().ac())
+    AlwaysAssert(allEQ(iter.vectorCursor(),iterCopy.vectorCursor())
 		 == False, AipsError);
 }
 
@@ -477,41 +477,41 @@ void testNonCongruentROIter (const Lattice<Int>& lattice)
     RO_LatticeIterator<Int>  iter(lattice, step);
     Matrix<Int> expectedResult(cursorShape);
     Vector<Int> oneRow(cursorShape(0));
-    indgen(oneRow.ac());
+    indgen(oneRow);
     uInt i;
     for (i = 0; i < uInt(cursorShape(1)); i++) {
         expectedResult.column(i) = oneRow;
-        oneRow.ac() += latticeShape(0);
+        oneRow += latticeShape(0);
     }
-    AlwaysAssert(allEQ(expectedResult.ac(), iter.cursor().nonDegenerate()),
+    AlwaysAssert(allEQ(expectedResult, iter.cursor().nonDegenerate()),
 		 AipsError);
     iter++;
-    indgen(oneRow.ac(), cursorShape(0));
+    indgen(oneRow, cursorShape(0));
     for (i = 0; i < uInt(cursorShape(1)); i++) {
         oneRow(7) = 0;
         oneRow(8) = 0;
         expectedResult.column(i) = oneRow;
-        oneRow.ac() += latticeShape(0);
+        oneRow += latticeShape(0);
     }
-    AlwaysAssert(allEQ(expectedResult.ac(), iter.cursor().nonDegenerate()),
+    AlwaysAssert(allEQ(expectedResult, iter.cursor().nonDegenerate()),
 		 AipsError);
     iter++;
     expectedResult = 0;
-    indgen(oneRow.ac(), cursorShape(0)*latticeShape(0));
+    indgen(oneRow, cursorShape(0)*latticeShape(0));
     for (i = 0; i < 3; i++) {
         expectedResult.column(i) = oneRow;
-        oneRow.ac() += latticeShape(0);
+        oneRow += latticeShape(0);
     }
-    AlwaysAssert(allEQ(expectedResult.ac(), iter.cursor().nonDegenerate()),
+    AlwaysAssert(allEQ(expectedResult, iter.cursor().nonDegenerate()),
 		 AipsError);
     iter++;
     expectedResult = 0;
-    indgen(oneRow.ac(), cursorShape(0)*(latticeShape(0)+1));
+    indgen(oneRow, cursorShape(0)*(latticeShape(0)+1));
     for (i = 0; i < 3; i++) {
         oneRow(7) = 0;
         oneRow(8) = 0;
         expectedResult.column(i) = oneRow;
-        oneRow.ac() += latticeShape(0);
+        oneRow += latticeShape(0);
     }
     cursorShape = 5;
     step.setCursorShape(cursorShape);
@@ -522,57 +522,57 @@ void testNonCongruentROIter (const Lattice<Int>& lattice)
     oneRow.resize(5);
     Matrix<Int> expectedResult1(5,5);
     expectedResult1 = 0;
-    indgen(oneRow.ac(), 3, 2);
+    indgen(oneRow, 3, 2);
     for (i = 0; i < 5; i++) {
         expectedResult1.column(i) = oneRow;
-        oneRow.ac() += 32;
+        oneRow += 32;
     }
-    AlwaysAssert(allEQ(expectedResult1.ac(),
+    AlwaysAssert(allEQ(expectedResult1,
 		       subIter.cursor().nonDegenerate()), AipsError);
     subIter++;
     Matrix<Int> expectedResult2(5,5);
     expectedResult2 = 0;
-    indgen(oneRow.ac(), 13, 2);
+    indgen(oneRow, 13, 2);
     for (i = 0; i < 5; i++) {
         oneRow(2) = 0;
         oneRow(3) = 0;
         oneRow(4) = 0;
         expectedResult2.column(i) = oneRow;
-        oneRow.ac() += 32;
+        oneRow += 32;
     }
-    AlwaysAssert(allEQ(expectedResult2.ac(),
+    AlwaysAssert(allEQ(expectedResult2,
 		       subIter.cursor().nonDegenerate()), AipsError);
     subIter++;
     Matrix<Int> expectedResult3(5,5);
     expectedResult3 = 0;
-    indgen(oneRow.ac(), 163, 2);
+    indgen(oneRow, 163, 2);
     for (i = 0; i < 1; i++) {
         expectedResult3.column(i) = oneRow;
-        oneRow.ac() += 32;
+        oneRow += 32;
     }
-    AlwaysAssert(allEQ(expectedResult3.ac(),
+    AlwaysAssert(allEQ(expectedResult3,
 		       subIter.cursor().nonDegenerate()), AipsError);
     subIter++;
     Matrix<Int> expectedResult4(5,5);
     expectedResult4 = 0;
-    indgen(oneRow.ac(), 173, 2);
+    indgen(oneRow, 173, 2);
     for (i = 0; i < 1; i++) {
 	oneRow(2) = 0;
 	oneRow(3) = 0;
 	oneRow(4) = 0;
 	expectedResult4.column(i) = oneRow;
-	oneRow.ac() += 32;
+	oneRow += 32;
     }
-    AlwaysAssert(allEQ(expectedResult4.ac(),
+    AlwaysAssert(allEQ(expectedResult4,
 		       subIter.cursor().nonDegenerate()), AipsError);
     subIter--;
-    AlwaysAssert(allEQ(expectedResult3.ac(),
+    AlwaysAssert(allEQ(expectedResult3,
 		       subIter.cursor().nonDegenerate()), AipsError);
     subIter--;
-    AlwaysAssert(allEQ(expectedResult2.ac(),
+    AlwaysAssert(allEQ(expectedResult2,
 		       subIter.cursor().nonDegenerate()), AipsError);
     subIter--;
-    AlwaysAssert(allEQ(expectedResult1.ac(),
+    AlwaysAssert(allEQ(expectedResult1,
 		       subIter.cursor().nonDegenerate()), AipsError);
 }
 
@@ -585,10 +585,10 @@ void testVectorRWIter (Lattice<Int>& lattice)
     LatticeStepper step(latticeShape, cursorShape);
     LatticeIterator<Int>  iter(lattice, step);
     Vector<Int> expectedResult(latticeShape(0));
-    indgen(expectedResult.ac());
-    AlwaysAssert(allEQ(expectedResult.ac(),iter.vectorCursor().ac())
+    indgen(expectedResult);
+    AlwaysAssert(allEQ(expectedResult,iter.vectorCursor())
 		 == True, AipsError);
-    AlwaysAssert(allEQ(expectedResult.ac(), iter.cursor().nonDegenerate()) 
+    AlwaysAssert(allEQ(expectedResult, iter.cursor().nonDegenerate()) 
 		 == True, AipsError);
     try {
         Matrix<Int> temp(iter.matrixCursor());
@@ -614,10 +614,10 @@ void testVectorRWIter (Lattice<Int>& lattice)
 		 AipsError);
     Timer clock;
     for (iter.reset(); !iter.atEnd(); iter++){
-        AlwaysAssert(allEQ(expectedResult.ac(), iter.vectorCursor().ac())
+        AlwaysAssert(allEQ(expectedResult, iter.vectorCursor())
                      == True, AipsError);
         iter.rwVectorCursor()(0) -= expectedResult(0);
-        expectedResult.ac() += cursorShape.product();
+        expectedResult += cursorShape.product();
     }
     nstep = iter.nsteps();
     AlwaysAssert(nstep == latticeShape.product()/latticeShape(0),
@@ -626,13 +626,13 @@ void testVectorRWIter (Lattice<Int>& lattice)
     AlwaysAssert(iter.endPosition() == expectedPos, AipsError);
     expectedPos(0) = 0;
     AlwaysAssert(iter.position() == expectedPos, AipsError);
-    expectedResult.ac() -= cursorShape.product();
+    expectedResult -= cursorShape.product();
     expectedResult(0) = 0;
     for (; !iter.atStart(); iter--){
-        AlwaysAssert(allEQ(expectedResult.ac(), iter.cursor().nonDegenerate()) 
+        AlwaysAssert(allEQ(expectedResult, iter.cursor().nonDegenerate()) 
                      == True, AipsError);
         iter.woCursor() = 1;
-        expectedResult.ac() -= cursorShape.product();
+        expectedResult -= cursorShape.product();
         expectedResult(0) = 0;
     }
     clock.show();
@@ -654,9 +654,9 @@ void testMatrixRWIter (Lattice<Int>& lattice)
     LatticeIterator<Int>  iter(lattice, cursorShape);
     Matrix<Int> expectedResult(latticeShape(0), latticeShape(1));
     expectedResult = 1;
-    AlwaysAssert(allEQ(expectedResult.ac(), iter.matrixCursor().ac()) 
+    AlwaysAssert(allEQ(expectedResult, iter.matrixCursor()) 
 		 == True, AipsError);
-    AlwaysAssert(allEQ(expectedResult.ac(), iter.cursor().nonDegenerate()) 
+    AlwaysAssert(allEQ(expectedResult, iter.cursor().nonDegenerate()) 
 		 == True, AipsError);
     try {
         Vector<Int> temp(iter.vectorCursor());
@@ -678,7 +678,7 @@ void testMatrixRWIter (Lattice<Int>& lattice)
     } end_try;
     Timer clock;
     for (iter.reset(); !iter.atEnd(); iter++){
-        AlwaysAssert(allEQ(expectedResult.ac(), iter.matrixCursor().ac()) 
+        AlwaysAssert(allEQ(expectedResult, iter.matrixCursor()) 
                      == True, AipsError);
         iter.rwMatrixCursor()(0,0) = 2;
     }
@@ -692,7 +692,7 @@ void testMatrixRWIter (Lattice<Int>& lattice)
     AlwaysAssert(iter.position() == expectedPos, AipsError);
     expectedResult(0,0) = 2;
     for (; !iter.atStart(); --iter){
-        AlwaysAssert(allEQ(expectedResult.ac(), iter.cursor().nonDegenerate()) 
+        AlwaysAssert(allEQ(expectedResult, iter.cursor().nonDegenerate()) 
                      == True, AipsError);
         iter.woCursor() = 3;
     }
@@ -718,10 +718,10 @@ void testCubeRWIter (Lattice<Int>& lattice)
     LatticeIterator<Int>  iter(lattice, step);
     Cube<Int> expectedResult(latticeShape(0), latticeShape(1),
 			     latticeShape(2));
-    expectedResult.ac() = 3;
-    AlwaysAssert(allEQ(expectedResult.ac(), iter.cubeCursor().ac())
+    expectedResult = 3;
+    AlwaysAssert(allEQ(expectedResult, iter.cubeCursor())
 		 == True, AipsError);
-    AlwaysAssert(allEQ(expectedResult.ac(), iter.cursor().nonDegenerate()) 
+    AlwaysAssert(allEQ(expectedResult, iter.cursor().nonDegenerate()) 
 		 == True, AipsError);
     try {
         Vector<Int> temp(iter.vectorCursor());
@@ -743,7 +743,7 @@ void testCubeRWIter (Lattice<Int>& lattice)
     } end_try;
     Timer clock;
     for (iter.reset(); !iter.atEnd(); iter++){
-        AlwaysAssert(allEQ(expectedResult.ac(), iter.cubeCursor().ac())
+        AlwaysAssert(allEQ(expectedResult, iter.cubeCursor())
                      == True, AipsError);
         iter.rwCubeCursor()(0,0,0) = 4;
     }
@@ -757,7 +757,7 @@ void testCubeRWIter (Lattice<Int>& lattice)
     AlwaysAssert(iter.position() == expectedPos, AipsError);
     expectedResult(0,0,0) = 4;
     for (; !iter.atStart(); iter--){
-        AlwaysAssert(allEQ(expectedResult.ac(), iter.cursor().nonDegenerate())
+        AlwaysAssert(allEQ(expectedResult, iter.cursor().nonDegenerate())
                      == True, AipsError);
         iter.woCursor() = 5;
     }
@@ -811,7 +811,7 @@ void testArrayRWIter (Lattice<Int>& lattice)
     } end_try;
     Timer clock;
     for (iter.reset(); !iter.atEnd(); ++iter){
-        AlwaysAssert(allEQ(expectedResult.ac(), iter.cursor()) == True,
+        AlwaysAssert(allEQ(expectedResult, iter.cursor()) == True,
                      AipsError);
         iter.rwCursor()(IPosition(4,0)) = 6;
     }
@@ -823,7 +823,7 @@ void testArrayRWIter (Lattice<Int>& lattice)
     AlwaysAssert(iter.position() == expectedPos, AipsError);
     expectedResult(IPosition(4,0)) = 6;
     for (; !iter.atStart(); --iter){
-        AlwaysAssert(allEQ(expectedResult.ac(), iter.cursor()) == True,
+        AlwaysAssert(allEQ(expectedResult, iter.cursor()) == True,
                      AipsError);
         iter.woCursor() = 7;
     }
@@ -846,46 +846,46 @@ void testCopyAssignRWIter (Lattice<Int>& lattice)
     iter++;
     Vector<Int> expectedResult(latticeShape(0));
     expectedResult = 7;
-    AlwaysAssert(allEQ(expectedResult.ac(),iter.vectorCursor().ac()) == True,
+    AlwaysAssert(allEQ(expectedResult,iter.vectorCursor()) == True,
 		 AipsError);
     
     LatticeIterator<Int> iterCopy(iter.copy());
-    AlwaysAssert(allEQ(expectedResult.ac(), iterCopy.vectorCursor().ac()) 
+    AlwaysAssert(allEQ(expectedResult, iterCopy.vectorCursor()) 
 		 == True, AipsError);
     iter++;
     iter.woCursor() = 2;
-    expectedResult.ac() = 2;
-    AlwaysAssert(allEQ(expectedResult.ac(), iter.vectorCursor().ac()) 
+    expectedResult = 2;
+    AlwaysAssert(allEQ(expectedResult, iter.vectorCursor()) 
 		 == True, AipsError);
-    expectedResult.ac() = 7;
-    AlwaysAssert(allEQ(expectedResult.ac(), iterCopy.vectorCursor().ac()) 
+    expectedResult = 7;
+    AlwaysAssert(allEQ(expectedResult, iterCopy.vectorCursor()) 
 		 == True, AipsError);
     iterCopy--;
     iterCopy.woCursor() = 0;
-    expectedResult.ac() = 2;
-    AlwaysAssert(allEQ(expectedResult.ac(), iter.vectorCursor().ac()) 
+    expectedResult = 2;
+    AlwaysAssert(allEQ(expectedResult, iter.vectorCursor()) 
 		 == True, AipsError);
-    expectedResult.ac() = 0;
-    AlwaysAssert(allEQ(expectedResult.ac(), iterCopy.vectorCursor().ac()) 
+    expectedResult = 0;
+    AlwaysAssert(allEQ(expectedResult, iterCopy.vectorCursor()) 
 		 == True, AipsError);
     
     iterCopy = iter.copy();
-    AlwaysAssert(allEQ(iter.vectorCursor().ac(),
-		       iterCopy.vectorCursor().ac()) == True, AipsError);
-    expectedResult.ac() = 2;
-    AlwaysAssert(allEQ(expectedResult.ac(), iter.vectorCursor().ac()) 
+    AlwaysAssert(allEQ(iter.vectorCursor(),
+		       iterCopy.vectorCursor()) == True, AipsError);
+    expectedResult = 2;
+    AlwaysAssert(allEQ(expectedResult, iter.vectorCursor()) 
 		 == True, AipsError);
     iter++;
-    expectedResult.ac() = 7;
-    AlwaysAssert(allEQ(expectedResult.ac(), iter.vectorCursor().ac()) 
+    expectedResult = 7;
+    AlwaysAssert(allEQ(expectedResult, iter.vectorCursor()) 
 		 == True, AipsError);
-    expectedResult.ac() = 2;
-    AlwaysAssert(allEQ(expectedResult.ac(), iterCopy.vectorCursor().ac()) 
+    expectedResult = 2;
+    AlwaysAssert(allEQ(expectedResult, iterCopy.vectorCursor()) 
 		 == True, AipsError);
     --iterCopy;
     iterCopy--;
-    expectedResult.ac() = 0;
-    AlwaysAssert(allEQ(expectedResult.ac(), iterCopy.vectorCursor().ac()) 
+    expectedResult = 0;
+    AlwaysAssert(allEQ(expectedResult, iterCopy.vectorCursor()) 
 		 == True, AipsError);
 }
 
@@ -906,75 +906,75 @@ void testNonCongruentRWIter (Lattice<Int>& lattice)
     LatticeIterator<Int> iter(lattice, step);
     Matrix<Int> expectedResult1(cursorShape);
     Vector<Int> oneRow(cursorShape(0));
-    indgen(oneRow.ac());
+    indgen(oneRow);
     uInt i;
     for (i = 0; i < uInt(cursorShape(1)); i++) {
         expectedResult1.column(i) = oneRow;
-        oneRow.ac() += latticeShape(0);
+        oneRow += latticeShape(0);
     }
-    AlwaysAssert(allEQ(expectedResult1.ac(), iter.cursor().nonDegenerate()),
+    AlwaysAssert(allEQ(expectedResult1, iter.cursor().nonDegenerate()),
 		 AipsError);
     iter.woCursor() = (-1 * iter.cursor() - 1);
     iter++;
     Matrix<Int> expectedResult2(cursorShape);
-    indgen(oneRow.ac(), cursorShape(0));
+    indgen(oneRow, cursorShape(0));
     for (i = 0; i < uInt(cursorShape(1)); i++) {
         oneRow(7) = 0;
         oneRow(8) = 0;
         expectedResult2.column(i) = oneRow;
-        oneRow.ac() += latticeShape(0);
+        oneRow += latticeShape(0);
     }
-    AlwaysAssert(allEQ(expectedResult2.ac(), iter.cursor().nonDegenerate()),
+    AlwaysAssert(allEQ(expectedResult2, iter.cursor().nonDegenerate()),
 		 AipsError);
     iter.woCursor() = (-1 * iter.cursor() - 1);
     iter++;
     Matrix<Int> expectedResult3(cursorShape);
     expectedResult3 = 0;
-    indgen(oneRow.ac(), cursorShape(0)*latticeShape(0));
+    indgen(oneRow, cursorShape(0)*latticeShape(0));
     for (i = 0; i < 3; i++) {
         expectedResult3.column(i) = oneRow;
-        oneRow.ac() += latticeShape(0);
+        oneRow += latticeShape(0);
     }
-    AlwaysAssert(allEQ(expectedResult3.ac(), iter.cursor().nonDegenerate()),
+    AlwaysAssert(allEQ(expectedResult3, iter.cursor().nonDegenerate()),
 		 AipsError);
     iter.woCursor() = (-1 * iter.cursor() - 1);
     iter++;
     Matrix<Int> expectedResult4(cursorShape);
     expectedResult4 = 0;
-    indgen(oneRow.ac(), cursorShape(0)*(latticeShape(0)+1));
+    indgen(oneRow, cursorShape(0)*(latticeShape(0)+1));
     for (i = 0; i < 3; i++) {
         oneRow(7) = 0;
         oneRow(8) = 0;
         expectedResult4.column(i) = oneRow;
-        oneRow.ac() += latticeShape(0);
+        oneRow += latticeShape(0);
     }
-    AlwaysAssert(allEQ(expectedResult4.ac(), iter.cursor().nonDegenerate()),
+    AlwaysAssert(allEQ(expectedResult4, iter.cursor().nonDegenerate()),
 		 AipsError);
     iter.woCursor() = (-1 * iter.cursor() - 1);
     iter--;
     iter++;
-    iter.rwMatrixCursor().ac() += expectedResult4.ac();
+    iter.rwMatrixCursor() += expectedResult4;
     {
         Array<Int> m(iter.rwMatrixCursor()(IPosition(2,0),IPosition(2,6,2)));
         m += 1;
         AlwaysAssert(allEQ(iter.cursor(), 0), AipsError);
     }
     iter--;
-    iter.rwMatrixCursor().ac() += expectedResult3.ac();
+    iter.rwMatrixCursor() += expectedResult3;
     {
         Array<Int> m(iter.rwMatrixCursor()(IPosition(2,0),IPosition(2,8,2)));
         m += 1;
         AlwaysAssert(allEQ(iter.cursor(), 0), AipsError);
     }
     iter--;
-    iter.rwMatrixCursor().ac() += expectedResult2.ac();
+    iter.rwMatrixCursor() += expectedResult2;
     {
         Array<Int> m(iter.rwMatrixCursor()(IPosition(2,0),IPosition(2,6,8)));
         m += 1;
         AlwaysAssert(allEQ(iter.cursor(), 0), AipsError);
     }
     iter--;
-    iter.rwMatrixCursor().ac() += expectedResult1.ac();
+    iter.rwMatrixCursor() += expectedResult1;
     iter.rwCursor() += 1;
     AlwaysAssert(allEQ(iter.cursor(), 0), AipsError);
     {
@@ -994,51 +994,51 @@ void testNonCongruentRWIter (Lattice<Int>& lattice)
     oneRow.resize(5);
     Matrix<Int> expectedResulta(5,5);
     expectedResulta = 0;
-    indgen(oneRow.ac(), 3, 2);
+    indgen(oneRow, 3, 2);
     for (i = 0; i < 5; i++) {
         expectedResulta.column(i) = oneRow;
-        oneRow.ac() += 32;
+        oneRow += 32;
     }
-    AlwaysAssert(allEQ(expectedResulta.ac(),
+    AlwaysAssert(allEQ(expectedResulta,
 		       subIter.cursor().nonDegenerate()), AipsError);
     subIter.woCursor() = (-1 * subIter.cursor() - 1);
     subIter++;
     Matrix<Int> expectedResultb(5,5);
     expectedResultb = 0;
-    indgen(oneRow.ac(), 13, 2);
+    indgen(oneRow, 13, 2);
     for (i = 0; i < 5; i++) {
         oneRow(2) = 0;
         oneRow(3) = 0;
         oneRow(4) = 0;
         expectedResultb.column(i) = oneRow;
-        oneRow.ac() += 32;
+        oneRow += 32;
     }
-    AlwaysAssert(allEQ(expectedResultb.ac(), 
+    AlwaysAssert(allEQ(expectedResultb, 
 		       subIter.cursor().nonDegenerate()), AipsError);
     subIter.woCursor() = (-1 * subIter.cursor() - 1);
     subIter++;
     Matrix<Int> expectedResultc(5,5);
     expectedResultc = 0;
-    indgen(oneRow.ac(), 163, 2);
+    indgen(oneRow, 163, 2);
     for (i = 0; i < 1; i++) {
         expectedResultc.column(i) = oneRow;
-        oneRow.ac() += 32;
+        oneRow += 32;
     }
-    AlwaysAssert(allEQ(expectedResultc.ac(),
+    AlwaysAssert(allEQ(expectedResultc,
 		       subIter.cursor().nonDegenerate()), AipsError);
     subIter.woCursor() = (-1 * subIter.cursor() - 1);
     subIter++;
     Matrix<Int> expectedResultd(5,5);
     expectedResultd = 0;
-    indgen(oneRow.ac(), 173, 2);
+    indgen(oneRow, 173, 2);
     for (i = 0; i < 1; i++) {
         oneRow(2) = 0;
         oneRow(3) = 0;
         oneRow(4) = 0;
         expectedResultd.column(i) = oneRow;
-        oneRow.ac() += 32;
+        oneRow += 32;
     }
-    AlwaysAssert(allEQ(expectedResultd.ac(),
+    AlwaysAssert(allEQ(expectedResultd,
 		       subIter.cursor().nonDegenerate()), AipsError);
     subIter.woCursor() = (-1 * subIter.cursor() - 1);
     subIter--;

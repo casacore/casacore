@@ -91,7 +91,7 @@ template<class Range> class SampledFunctional;
 // interpolating on the supplied (x,y) vectors.
 // <srcblock>
 //  Vector<Float> x(4); indgen(x); 
-//  Vector<Double> y(4); indgen(y); y.ac() = y.ac()*y.ac()*y.ac();
+//  Vector<Double> y(4); indgen(y); y = y*y*y;
 //  ScalarSampledFunctional<Float> fx(x)
 //  ScalarSampledFunctional<Double> fy(y);
 //  Interpolate1D<Float, Double> gain(fx, fy);

@@ -1,5 +1,5 @@
 //# tMeasMath.cc: This program test MeasMath functions
-//# Copyright (C) 1995,1996,1997,1998
+//# Copyright (C) 1995,1996,1997,1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -86,7 +86,7 @@ main()
 	dc3 = MVDirection(0.1,0.2);
 	cout << "MVDirection(.1,.2):  " << dc3 << endl;
 	cout << "Last 2 *:            " << dc2*dc3 << endl;
-	cout << "Re-angle:            " << dc3.get().ac() << endl;
+	cout << "Re-angle:            " << dc3.get() << endl;
 	cout << "10 deg, 20 deg:      " << MVDirection(Quantity(10.,"deg"),
 					     Quantity(20.,"deg")) << endl;
 	cout << "Re-angle:            " << dc3.getAngle("deg") << endl;
@@ -169,7 +169,7 @@ main()
 	Quantity pqdc3(1,"m");
 	MVPosition ppdc3(pqdc3,0.1,0.2);
 	cout << "Last * DC(0.1,0.2):   " << pdc2*ppdc3 << endl;
-	cout << "Re-angle:             " << pdc3.get().ac() << endl;
+	cout << "Re-angle:             " << pdc3.get() << endl;
 	cout << "6 mm, 10 deg, 20 deg: " << MVPosition(Quantity(6.,"mm"),
 						      Quantity(10.,"deg"),
 						      Quantity(20.,"deg")) 

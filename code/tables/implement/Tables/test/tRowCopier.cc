@@ -1,5 +1,5 @@
 //# tRowCopier.cc : tests the RowCopier class
-//# Copyright (C) 1995,1996
+//# Copyright (C) 1995,1996,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -68,7 +68,7 @@ int main() {
 	ic2.put(i, i*10);
         fc.put(i,  Float(i)/10.);
 	dc.put(i,  Double(i*i));
-	indgen(vtmp.ac(), i*10, 10);
+	indgen(vtmp, i*10, 10);
 	ac.put(i, vtmp);
     }
 
@@ -113,28 +113,28 @@ int main() {
 	}
 	// and compare each Scalar column as a TableVector
 	TableVector<Int> ic1main(maintab, "ICol1"), ic1copy(exacttab, "ICol1");
-        if (anyNE(ic1main.ac(), ic1copy.ac())) {
+        if (anyNE(ic1main, ic1copy)) {
 	    cout << "An exact copy was not made of ICol1"
 		<< endl;
 	    cout << "tRowCopier fails!" << endl;
 	    exit(1);
 	}
 	TableVector<Int> ic2main(maintab, "ICol2"), ic2copy(exacttab, "ICol2");
-        if (anyNE(ic2main.ac(), ic2copy.ac())) {
+        if (anyNE(ic2main, ic2copy)) {
 	    cout << "An exact copy was not made of ICol2"
 		<< endl;
 	    cout << "tRowCopier fails!" << endl;
 	    exit(1);
 	}
 	TableVector<Float> fcmain(maintab, "FCol"), fccopy(exacttab, "FCol");
-        if (anyNE(fcmain.ac(), fccopy.ac())) {
+        if (anyNE(fcmain, fccopy)) {
 	    cout << "An exact copy was not made of FCol"
 		<< endl;
 	    cout << "tRowCopier fails!" << endl;
 	    exit(1);
 	}
 	TableVector<Double> dcmain(maintab, "DCol"), dccopy(exacttab, "DCol");
-        if (anyNE(dcmain.ac(), dccopy.ac())) {
+        if (anyNE(dcmain, dccopy)) {
 	    cout << "An exact copy was not made of DCol"
 		<< endl;
 	    cout << "tRowCopier fails!" << endl;
@@ -172,7 +172,7 @@ int main() {
 	// ICol1 and IACol are exact copies
 	TableVector<Int> ic1main(maintab, "ICol1");
 	TableVector<Int> ic1part(partialtab, "ICol1");
-	if (anyNE(ic1main.ac(), ic1part.ac())) {
+	if (anyNE(ic1main, ic1part)) {
 	    cout << "ICol1 copy differs!" << endl;
 	    cout << "tRowCopier fails!" << endl;
 	    exit(1);
@@ -197,7 +197,7 @@ int main() {
 	// first, verify that any of ICol1 and ICol3 are not already equal
 	TableVector<Int> ic1main(maintab, "ICol1");
 	TableVector<Int> ic3part(partialtab, "ICol3");
-	if (anyEQ(ic1main.ac(), ic3part.ac())) {
+	if (anyEQ(ic1main, ic3part)) {
 	    cout << "Hmm, ICol1 and ICol3 are already equal in some values!" 
 		<< endl;
 	    cout << "That should not happen yet" << endl;
@@ -223,7 +223,7 @@ int main() {
 	}
 	// now they should be equal
 	
-	if (anyNE(ic1main.ac(), ic3part.ac())) {
+	if (anyNE(ic1main, ic3part)) {
 	    cout << "ICol1 and ICol3 are not exact copies!" << endl;
 	    cout << "tRowCopier fails!" << endl;
 	    exit(1);

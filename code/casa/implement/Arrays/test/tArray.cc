@@ -110,7 +110,7 @@ void oldArrayTest()
         AlwaysAssertExit(allEQ (a1, -1));
 	{
 	    Vector<Float> vi(10);
-	    indgen(vi.ac());
+	    indgen(vi);
 	    Polynomial<Float> pi(2);
 	    pi.setCoefficient(2, 1.0f);
 	    vi.apply(pi);
@@ -181,10 +181,10 @@ void oldArrayTest()
 	AlwaysAssertExit(zz.nelements() == 0);
 	Vector<Int> zzz(x(Slice(0,5,2)));
 	zzz.unique();
-	AlwaysAssertExit(zzz.nrefs() == 1 && allEQ(zzz.ac(), 11) &&
+	AlwaysAssertExit(zzz.nrefs() == 1 && allEQ(zzz, 11) &&
 			 zzz.nelements() == 5);
 	Vector<Int> y1(5, 4);
-	AlwaysAssertExit (allEQ(y1.ac(), 4));
+	AlwaysAssertExit (allEQ(y1, 4));
 
 	Vector<String> vs(5);
 	vs(0) = "Every";vs(1) = "Good";vs(2) = "Boy";vs(3) = "Deserves";
@@ -201,13 +201,13 @@ void oldArrayTest()
 	Vector<Int> yyy(10);
 	yyy = -13;
 	zzz = yyy;
-	AlwaysAssertExit(allEQ(zzz.ac(), yyy.ac()) &&
-			 allEQ (zzz.ac(), -13));
+	AlwaysAssertExit(allEQ(zzz, yyy) &&
+			 allEQ (zzz, -13));
 	Block<Int> blk;
 	zzz.toBlock(blk);
 	Vector<Int>  aaa(blk);
-	AlwaysAssertExit(allEQ (aaa.ac(), zzz.ac()) && 
-			 allEQ (aaa.ac(), -13));
+	AlwaysAssertExit(allEQ (aaa, zzz) && 
+			 allEQ (aaa, -13));
 	cout << "OK\n";
     }
 
@@ -217,33 +217,33 @@ void oldArrayTest()
 	for (Int i = 0; i < 5; i++)
 	    x(i) = double(i+1)/10.0;
 	
-	y = floor(x.ac());
+	y = floor(x);
 	for (Int i = 0; i < 5; i++)
 	    AlwaysAssertExit(y(i) == 0.0);
 	
-	z = pow(x.ac(),1.0);
-	AlwaysAssertExit(allNear (z.ac(), x.ac(), 1.0e-10));
-	z = pow(x.ac(),2.0);
-	AlwaysAssertExit(allNear (z.ac(), x.ac()*x.ac(), 1.0e-10));
-	z = pow(x.ac(),y.ac());
+	z = pow(x,1.0);
+	AlwaysAssertExit(allNear (z, x, 1.0e-10));
+	z = pow(x,2.0);
+	AlwaysAssertExit(allNear (z, x*x, 1.0e-10));
+	z = pow(x,y);
 	for (Int i = 0; i < 5; i++)
 	    AlwaysAssertExit(z(i) == 1.0);
 	
-	AlwaysAssertExit(min(z.ac()) == 1.0 && max(z.ac()) == 1.0);
+	AlwaysAssertExit(min(z) == 1.0 && max(z) == 1.0);
 	z(4) = -1.0; z(3) = 22.0;
-	AlwaysAssertExit(min(z.ac()) == -1.0 && max(z.ac()) 
+	AlwaysAssertExit(min(z) == -1.0 && max(z) 
 			 == 22.0);
 
 	Vector<Int> vi1(5);
-	indgen(vi1.ac());
+	indgen(vi1);
 	Vector<Int> vi2(5), vi3;
 	vi2 = 0;
 	vi2(3) = -3;
-	vi3 = min(vi1.ac(), vi2.ac());
+	vi3 = min(vi1, vi2);
 	AlwaysAssertExit(vi3(0) == 0 && vi3(1) == 0 && vi3(2) == 0 && vi3(3) == -3 &&
 		vi3(4) == 0);
 	vi2(3) = 9;
-	vi3 = max(-vi1.ac(), vi2.ac());
+	vi3 = max(-vi1, vi2);
 	AlwaysAssertExit(vi3(0) == 0 && vi3(1) == 0 && vi3(2) == 0 && vi3(3) == 9 &&
 		vi3(4) == 0);
 
@@ -269,23 +269,23 @@ void oldArrayTest()
             IPosition minPos(2),maxPos(2);
 
 
-            minMax (min, max, minPos, maxPos, a.ac());
+            minMax (min, max, minPos, maxPos, a);
 
             AlwaysAssertExit(minPos == IPosition(2, 8, 0));
             AlwaysAssertExit(maxPos == IPosition(2, 3, 1));
             AlwaysAssertExit(min == a(minPos));
             AlwaysAssertExit(max == a(maxPos));
 
-            minMax(min, max,a.ac());
+            minMax(min, max,a);
             AlwaysAssertExit(min == a(minPos));
             AlwaysAssertExit(max == a(maxPos));
 
-            minMax(min, max, a.ac());
+            minMax(min, max, a);
             AlwaysAssertExit(min == a(minPos));
             AlwaysAssertExit(max == a(maxPos));
 
 
-            minMax (min, max, minPos, maxPos, a.ac(), mask);
+            minMax (min, max, minPos, maxPos, a, mask);
 
             AlwaysAssertExit(minPos == IPosition(2, 1, 2));
             AlwaysAssertExit(maxPos == IPosition(2, 5, 1));
@@ -304,58 +304,58 @@ void oldArrayTest()
 	x = 1; y = 2;
 
 	// Not all, but a lot
-        AlwaysAssertExit(allEQ (x.ac(), 1) && allEQ (y.ac(), 2) &&
-		 allLE (x.ac(), y.ac()) &&  allGE(y.ac(), x.ac()) &&
-		 allNE(x.ac(), 2) && allNE (x.ac(), y.ac()) && allEQ (x.ac(),
-		 x.ac()) && allLT (x.ac(), y.ac()) && allGT (y.ac(), x.ac()) );
+        AlwaysAssertExit(allEQ (x, 1) && allEQ (y, 2) &&
+		 allLE (x, y) &&  allGE(y, x) &&
+		 allNE(x, 2) && allNE (x, y) && allEQ (x,
+		 x) && allLT (x, y) && allGT (y, x) );
 
-	x.ac() += 1;
-	AlwaysAssertExit(allEQ (x.ac(), y.ac()));
-	x.ac() += y.ac();
-	AlwaysAssertExit(allEQ (x.ac(), 2*y.ac()));
-	x = -1 * x.ac();
-	AlwaysAssertExit(allEQ (x.ac(), -4));
-	indgen(x.ac()); indgen(y.ac(),1);
-	AlwaysAssertExit(allEQ (x.ac() - y.ac(), -1));
+	x += 1;
+	AlwaysAssertExit(allEQ (x, y));
+	x += y;
+	AlwaysAssertExit(allEQ (x, 2*y));
+	x = -1 * x;
+	AlwaysAssertExit(allEQ (x, -4));
+	indgen(x); indgen(y,1);
+	AlwaysAssertExit(allEQ (x - y, -1));
 	for (Int i = 0; i < 5; i++)
 	    AlwaysAssertExit(x(i) == i);
 
-	AlwaysAssertExit(sum(x.ac()) == 10);
-	AlwaysAssertExit(product(y.ac()) == 120);
-	AlwaysAssertExit(mean(y.ac()) == median(y.ac()) && mean(y.ac()) == 3);
+	AlwaysAssertExit(sum(x) == 10);
+	AlwaysAssertExit(product(y) == 120);
+	AlwaysAssertExit(mean(y) == median(y) && mean(y) == 3);
 
-        AlwaysAssertExit(anyLE(x.ac(), y.ac()) && anyLE(x.ac(), y.ac()-1) &&
-			 !anyLE(x.ac(), y.ac()-2));
-        AlwaysAssertExit(anyLT(x.ac(), y.ac()) && !anyLT(x.ac(), y.ac()-1) &&
-			 !anyLT (x.ac(), y.ac()-2));
-        AlwaysAssertExit(!anyGE(x.ac(), y.ac()) && anyGE (x.ac(), y.ac()-1) &&
-			 anyGE (x.ac(), y.ac()-2));
-        AlwaysAssertExit(!anyGT(x.ac(), y.ac()) && !anyGT (x.ac(), y.ac()-1) &&
-			 anyGT (x.ac(), y.ac()-2));
-        AlwaysAssertExit(!anyEQ(x.ac(), y.ac()) && anyEQ(x.ac(), y.ac()-1) &&
-			 !anyEQ(x.ac(), y.ac()-2));
-        AlwaysAssertExit(anyNE(x.ac(), y.ac()) && !anyNE (x.ac(), y.ac()-1) &&
-			 anyNE(x.ac(), y.ac()-2));
+        AlwaysAssertExit(anyLE(x, y) && anyLE(x, y-1) &&
+			 !anyLE(x, y-2));
+        AlwaysAssertExit(anyLT(x, y) && !anyLT(x, y-1) &&
+			 !anyLT (x, y-2));
+        AlwaysAssertExit(!anyGE(x, y) && anyGE (x, y-1) &&
+			 anyGE (x, y-2));
+        AlwaysAssertExit(!anyGT(x, y) && !anyGT (x, y-1) &&
+			 anyGT (x, y-2));
+        AlwaysAssertExit(!anyEQ(x, y) && anyEQ(x, y-1) &&
+			 !anyEQ(x, y-2));
+        AlwaysAssertExit(anyNE(x, y) && !anyNE (x, y-1) &&
+			 anyNE(x, y-2));
 
-        AlwaysAssertExit(anyLE(x.ac(),1) && anyLE(x.ac(),0)&& !anyLE(x.ac(),-1));
-        AlwaysAssertExit(anyLT(x.ac(),1) && !anyLT(x.ac(),0)&&!anyLT(x.ac(),-1));
-        AlwaysAssertExit(anyGE(x.ac(),3)&&anyGE(x.ac(),4) && !anyGE(x.ac(), 5));
-        AlwaysAssertExit(anyGT(x.ac(),3) && !anyGT(x.ac(),4)&&!anyGT(x.ac(), 5));
-        AlwaysAssertExit(anyEQ(x.ac(),3) && anyEQ(x.ac(),4) && !anyEQ(x.ac(),5));
-        AlwaysAssertExit(anyNE(x.ac(),3) && anyNE(x.ac(),4) && anyNE(x.ac(), 5));
+        AlwaysAssertExit(anyLE(x,1) && anyLE(x,0)&& !anyLE(x,-1));
+        AlwaysAssertExit(anyLT(x,1) && !anyLT(x,0)&&!anyLT(x,-1));
+        AlwaysAssertExit(anyGE(x,3)&&anyGE(x,4) && !anyGE(x, 5));
+        AlwaysAssertExit(anyGT(x,3) && !anyGT(x,4)&&!anyGT(x, 5));
+        AlwaysAssertExit(anyEQ(x,3) && anyEQ(x,4) && !anyEQ(x,5));
+        AlwaysAssertExit(anyNE(x,3) && anyNE(x,4) && anyNE(x, 5));
 
-        AlwaysAssertExit(anyLE(3,x.ac()) && anyLE(4,x.ac()) && !anyLE(5,x.ac()));
-        AlwaysAssertExit(anyLT(3,x.ac()) && !anyLT(4,x.ac()) &&!anyLT(5,x.ac()));
-        AlwaysAssertExit(!anyGE(-1,x.ac()) && anyGE(0,x.ac()) &&anyGE(1,x.ac()));
-        AlwaysAssertExit(!anyGT(-1,x.ac()) && !anyGT(0,x.ac())&&anyGT(1,x.ac()));
-        AlwaysAssertExit(!anyEQ(-1,x.ac())&& anyEQ(0,x.ac()) && anyEQ(1,x.ac()));
-        AlwaysAssertExit(anyNE(-1,x.ac()) && anyNE(0,x.ac()) &&anyNE (1,x.ac()));
+        AlwaysAssertExit(anyLE(3,x) && anyLE(4,x) && !anyLE(5,x));
+        AlwaysAssertExit(anyLT(3,x) && !anyLT(4,x) &&!anyLT(5,x));
+        AlwaysAssertExit(!anyGE(-1,x) && anyGE(0,x) &&anyGE(1,x));
+        AlwaysAssertExit(!anyGT(-1,x) && !anyGT(0,x)&&anyGT(1,x));
+        AlwaysAssertExit(!anyEQ(-1,x)&& anyEQ(0,x) && anyEQ(1,x));
+        AlwaysAssertExit(anyNE(-1,x) && anyNE(0,x) &&anyNE (1,x));
 
 	Vector<Double> vd(5);
-	indgen(vd.ac(),1.0);
-	AlwaysAssertExit(fabs(variance(vd.ac()) - 2.5) < 0.0001);
-	AlwaysAssertExit(fabs(stddev(vd.ac()) - sqrt(2.5)) < 0.0001);
-	AlwaysAssertExit(fabs(avdev(vd.ac()) - 1.2) < 0.0001);
+	indgen(vd,1.0);
+	AlwaysAssertExit(fabs(variance(vd) - 2.5) < 0.0001);
+	AlwaysAssertExit(fabs(stddev(vd) - sqrt(2.5)) < 0.0001);
+	AlwaysAssertExit(fabs(avdev(vd) - 1.2) < 0.0001);
         {
             Vector<Complex> vc(2);
             Vector<Float> vr;
@@ -375,8 +375,8 @@ void oldArrayTest()
 	{
 	    Vector<Int> vf(3);
 	    vf = -3;
-	    AlwaysAssertExit(allEQ (square(vf.ac()), 9));
-	    AlwaysAssertExit(allEQ (cube(vf.ac()), -27));
+	    AlwaysAssertExit(allEQ (square(vf), 9));
+	    AlwaysAssertExit(allEQ (cube(vf), -27));
 	}
 
 	{
@@ -384,34 +384,34 @@ void oldArrayTest()
 	    x1 = 10000;
 	    x2(0) = 10001; x2(1) = 10002;
 	    // Array,Array
-	    AlwaysAssertExit(allNear(x1.ac(), x2.ac(), 2.01e-4));
-	    AlwaysAssertExit(!allNear(x1.ac(), x2.ac(), 1.01e-4));
-	    AlwaysAssertExit(anyNear(x1.ac(), x2.ac(), 1.01e-4));
-	    AlwaysAssertExit(!anyNear(x1.ac(), x2.ac(), 0.99e-4));
-	    AlwaysAssertExit(allNearAbs(x1.ac(), x2.ac(), 2.01));
-	    AlwaysAssertExit(!allNearAbs(x1.ac(), x2.ac(), 1.01));
-	    AlwaysAssertExit(anyNearAbs(x1.ac(), x2.ac(), 1.01));
-	    AlwaysAssertExit(!anyNearAbs(x1.ac(), x2.ac(), 0.99));
+	    AlwaysAssertExit(allNear(x1, x2, 2.01e-4));
+	    AlwaysAssertExit(!allNear(x1, x2, 1.01e-4));
+	    AlwaysAssertExit(anyNear(x1, x2, 1.01e-4));
+	    AlwaysAssertExit(!anyNear(x1, x2, 0.99e-4));
+	    AlwaysAssertExit(allNearAbs(x1, x2, 2.01));
+	    AlwaysAssertExit(!allNearAbs(x1, x2, 1.01));
+	    AlwaysAssertExit(anyNearAbs(x1, x2, 1.01));
+	    AlwaysAssertExit(!anyNearAbs(x1, x2, 0.99));
 
 	    // Constant,Array
-	    AlwaysAssertExit(allNear(10000.0f, x2.ac(), 2.01e-4));
-	    AlwaysAssertExit(!allNear(10000.0f, x2.ac(), 1.01e-4));
-	    AlwaysAssertExit(anyNear(10000.0f, x2.ac(), 1.01e-4));
-	    AlwaysAssertExit(!anyNear(10000.0f, x2.ac(), 0.99e-4));
-	    AlwaysAssertExit(allNearAbs(10000.0f, x2.ac(), 2.01));
-	    AlwaysAssertExit(!allNearAbs(10000.0f, x2.ac(), 1.01));
-	    AlwaysAssertExit(anyNearAbs(10000.0f, x2.ac(), 1.01));
-	    AlwaysAssertExit(!anyNearAbs(10000.0f, x2.ac(), 0.99));
+	    AlwaysAssertExit(allNear(10000.0f, x2, 2.01e-4));
+	    AlwaysAssertExit(!allNear(10000.0f, x2, 1.01e-4));
+	    AlwaysAssertExit(anyNear(10000.0f, x2, 1.01e-4));
+	    AlwaysAssertExit(!anyNear(10000.0f, x2, 0.99e-4));
+	    AlwaysAssertExit(allNearAbs(10000.0f, x2, 2.01));
+	    AlwaysAssertExit(!allNearAbs(10000.0f, x2, 1.01));
+	    AlwaysAssertExit(anyNearAbs(10000.0f, x2, 1.01));
+	    AlwaysAssertExit(!anyNearAbs(10000.0f, x2, 0.99));
 
 	    // Array,Constant
-	    AlwaysAssertExit(allNear(x1.ac(), 10002.0f, 2.01e-4));
-	    AlwaysAssertExit(!allNear(x1.ac(), 10002.0f, 1.01e-4));
-	    AlwaysAssertExit(!anyNear(x1.ac(), 10002.0f, 1.01e-4));
-	    AlwaysAssertExit(!anyNear(x1.ac(), 10002.0f, 0.99e-4));
-	    AlwaysAssertExit(allNearAbs(x1.ac(), 10002.0f, 2.01));
-	    AlwaysAssertExit(!allNearAbs(x1.ac(), 10002.0f, 1.01));
-	    AlwaysAssertExit(anyNearAbs(x1.ac(), 10001.0f, 1.01));
-	    AlwaysAssertExit(!anyNearAbs(x1.ac(), 10002.0f, 0.99));
+	    AlwaysAssertExit(allNear(x1, 10002.0f, 2.01e-4));
+	    AlwaysAssertExit(!allNear(x1, 10002.0f, 1.01e-4));
+	    AlwaysAssertExit(!anyNear(x1, 10002.0f, 1.01e-4));
+	    AlwaysAssertExit(!anyNear(x1, 10002.0f, 0.99e-4));
+	    AlwaysAssertExit(allNearAbs(x1, 10002.0f, 2.01));
+	    AlwaysAssertExit(!allNearAbs(x1, 10002.0f, 1.01));
+	    AlwaysAssertExit(anyNearAbs(x1, 10001.0f, 1.01));
+	    AlwaysAssertExit(!anyNearAbs(x1, 10002.0f, 0.99));
 	}
 
 	cout << "OK\n";
@@ -422,19 +422,19 @@ void oldArrayTest()
 	Matrix<Int> a(5u,5u), b;
 	a = 3;
 	AlwaysAssertExit(a.nrow() == a.ncolumn() && a.nrow() == 5);
-	AlwaysAssertExit(allEQ(a.ac(), 3));
-	AlwaysAssertExit(allLE (a.ac(), 3)); 
-	AlwaysAssertExit(allEQ (a.ac(), a.ac())); 
-	AlwaysAssertExit(allNE (a.ac(), 1));
-	b = 2*a.ac();
+	AlwaysAssertExit(allEQ(a, 3));
+	AlwaysAssertExit(allLE (a, 3)); 
+	AlwaysAssertExit(allEQ (a, a)); 
+	AlwaysAssertExit(allNE (a, 1));
+	b = 2*a;
 	Matrix<Int> c =  a(Slice(2,1),Slice(3,1));
-	AlwaysAssertExit(allEQ (b.ac(), 6));
+	AlwaysAssertExit(allEQ (b, 6));
 	a.row(3) = 6;
-	AlwaysAssertExit(allEQ (a.row(3).ac(), 6));
+	AlwaysAssertExit(allEQ (a.row(3), 6));
 	a.column(3) = 1;
-	AlwaysAssertExit(allEQ (a.column(3).ac(), 1));
+	AlwaysAssertExit(allEQ (a.column(3), 1));
 	a.diagonal(-1) = 7;
-	AlwaysAssertExit(allEQ (a.diagonal(-1).ac(), 7));
+	AlwaysAssertExit(allEQ (a.diagonal(-1), 7));
 	
 	IPosition l(1);
 	l(0) = a.nelements();
@@ -443,11 +443,11 @@ void oldArrayTest()
 	    for (Int j = 0; j < 5; j++)
 		AlwaysAssertExit(a(i,j) == d(i + j*5));
 	Matrix<Int> y1(5u,6u, 4u);
-	AlwaysAssertExit (allEQ(y1.ac(), 4));
+	AlwaysAssertExit (allEQ(y1, 4));
 	
 	
 	Vector<Int> v(10);
-	indgen(v.ac());
+	indgen(v);
 	Matrix<Int> vm(v);
 	AlwaysAssertExit(vm.ndim() == 2 && vm.nelements() == v.nelements());
 	for (Int i = 0; i < Int(v.nelements()); i++)
@@ -466,7 +466,7 @@ void oldArrayTest()
 		    AlwaysAssertExit(c(i,j,k) == 3);
 	
 	for (Int k=0; k <= 2; k++)
-	    AlwaysAssertExit(allEQ (c.xyPlane(k).ac(), 3));
+	    AlwaysAssertExit(allEQ (c.xyPlane(k), 3));
 	
 	// Check copy ctor
 	Cube<Int> c2(c);
@@ -476,13 +476,13 @@ void oldArrayTest()
 	// Check assignment
 	Cube<Int> c3;
 	c3 = c;
-	AlwaysAssertExit(allEQ (c3.ac(), c.ac()));
+	AlwaysAssertExit(allEQ (c3, c));
 	Cube<Int> y1(5,6,7, 4);
-	AlwaysAssertExit (allEQ(y1.ac(), 4));
+	AlwaysAssertExit (allEQ(y1, 4));
 	
 	// slice
-	AlwaysAssertExit(allEQ (c3 (Slice(0,2), Slice(1,2), 1).ac(),
-                       c (Slice(0,2), Slice(1,2), 1).ac()));
+	AlwaysAssertExit(allEQ (c3 (Slice(0,2), Slice(1,2), 1),
+                       c (Slice(0,2), Slice(1,2), 1)));
 	Cube<Int> c4(c3(Slice(0,2),Slice(1,2),1));
 	IPosition c4shape(c4.Array<Int>::shape());
 	AlwaysAssertExit(c4.nelements() == 4 && c4shape(2) == 1);
@@ -492,9 +492,9 @@ void oldArrayTest()
 	trc(0) = 2; trc(1) = 2; trc(2) = 1;
 // Why can't we just write   c(blc,trc) = 11; ?
 	c.Array<Int>::operator()(blc,trc) = 11;
-	AlwaysAssertExit(allEQ (c.xyPlane(1).ac(), 11));
-	AlwaysAssertExit(allEQ (c.xyPlane(0).ac(), 3));
-	AlwaysAssertExit(allEQ (c.xyPlane(2).ac(), 3));
+	AlwaysAssertExit(allEQ (c.xyPlane(1), 11));
+	AlwaysAssertExit(allEQ (c.xyPlane(0), 3));
+	AlwaysAssertExit(allEQ (c.xyPlane(2), 3));
 	
 	
 	cout << "OK\n";
@@ -510,7 +510,7 @@ void oldArrayTest()
 	AlwaysAssertExit(deleteIt == False);
 	for (uInt i = 0; i < m.nelements(); i++)
 	    storage[i] = +1;
-	AlwaysAssertExit(allEQ (m.ac(), 1));
+	AlwaysAssertExit(allEQ (m, 1));
 	m.putStorage(storage, deleteIt);
 	storage = m(Slice(0,2,3), Slice(2,2,4)).getStorage(deleteIt);
 	AlwaysAssertExit(deleteIt == True);
@@ -666,7 +666,7 @@ main()
 	{
 	  // Test the copying Vector::resize functions
 	  Vector<Int> vi(10);
-	  indgen(vi.ac());
+	  indgen(vi);
 	  vi.resize(20, True);
 	  AlwaysAssertExit(vi(0) == 0 && vi(9) == 9);
 	  vi.resize(IPosition(1,5), True);
@@ -681,7 +681,7 @@ main()
 	  mi.reference(ai);
 	  AlwaysAssertExit(mi.shape() == IPosition(2,10,1));
 	  ai = 11;
-	  AlwaysAssertExit(allEQ(mi.ac(), 11));
+	  AlwaysAssertExit(allEQ(mi, 11));
 	}
 
     } catch (AipsError x) {

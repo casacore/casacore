@@ -1,5 +1,5 @@
 //# RefRows.cc: Class holding the row numbers in a RefTable
-//# Copyright (C) 1998
+//# Copyright (C) 1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -142,7 +142,7 @@ Bool RefRows::operator== (const RefRows& other) const
 {
     return ToBool(itsSliced == other.itsSliced
               &&  itsRows.nelements() == other.itsRows.nelements()
-              &&  allEQ (itsRows.ac(), other.itsRows.ac()));
+              &&  allEQ (itsRows, other.itsRows));
 }
 
 uInt RefRows::fillNrows() const

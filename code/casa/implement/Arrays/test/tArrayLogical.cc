@@ -1,5 +1,5 @@
 //# tArrayLogical.cc: Test program for Array logical operators
-//# Copyright (C) 1993,1994,1995,1996
+//# Copyright (C) 1993,1994,1995,1996,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -64,102 +64,102 @@ main()
             Vector<Int> x(5), y(5);
             LogicalVector b(5), c(5);
             x=1;
-            indgen (y.ac());
+            indgen (y);
 
             cout << endl << "x= " << endl;
             cout << x << endl;
             cout << endl << "y= " << endl;
             cout << y << endl;
 
-            b = (x.ac() <= y.ac());
+            b = (x <= y);
             cout << endl << "b= (x <= y) = " << endl;
-            cout << b.ac() << endl;
+            cout << b << endl;
 
-            b = (x.ac() < y.ac());
+            b = (x < y);
             cout << endl << "b= (x < y) = " << endl;
-            cout << b.ac() << endl;
+            cout << b << endl;
 
-            b = (x.ac() >= y.ac());
+            b = (x >= y);
             cout << endl << "b= (x >= y) = " << endl;
-            cout << b.ac() << endl;
+            cout << b << endl;
 
-            b = (x.ac() > y.ac());
+            b = (x > y);
             cout << endl << "b= (x > y) = " << endl;
-            cout << b.ac() << endl;
+            cout << b << endl;
 
-            b = (x.ac() == y.ac());
+            b = (x == y);
             cout << endl << "b= (x == y) = " << endl;
-            cout << b.ac() << endl;
+            cout << b << endl;
 
-            b = (x.ac() != y.ac());
+            b = (x != y);
             cout << endl << "b= (x != y) = " << endl;
-            cout << b.ac() << endl;
+            cout << b << endl;
 
             b = ((const Array<Int> &)y <= 1);
             cout << endl << "b= (y <= 1) = " << endl;
-            cout << b.ac() << endl;
+            cout << b << endl;
 
             b = ((const Array<Int> &)y < 1);
             cout << endl << "b= (y < 1) = " << endl;
-            cout << b.ac() << endl;
+            cout << b << endl;
 
             b = ((const Array<Int> &)y >= 1);
             cout << endl << "b= (y >= 1) = " << endl;
-            cout << b.ac() << endl;
+            cout << b << endl;
 
             b = ((const Array<Int> &)y > 1);
             cout << endl << "b= (y > 1) = " << endl;
-            cout << b.ac() << endl;
+            cout << b << endl;
 
             b = ((const Array<Int> &)y == 1);
             cout << endl << "b= (y == 1) = " << endl;
-            cout << b.ac() << endl;
+            cout << b << endl;
 
             b = ((const Array<Int> &)y != 1);
             cout << endl << "b= (y != 1) = " << endl;
-            cout << b.ac() << endl;
+            cout << b << endl;
 
             b = (1 <= (const Array<Int> &)y);
             cout << endl << "b= (1 <= y) = " << endl;
-            cout << b.ac() << endl;
+            cout << b << endl;
 
             b = (1 < (const Array<Int> &)y);
             cout << endl << "b= (1 < y) = " << endl;
-            cout << b.ac() << endl;
+            cout << b << endl;
 
             b = (1 >= (const Array<Int> &)y);
             cout << endl << "b= (1 >= y) = " << endl;
-            cout << b.ac() << endl;
+            cout << b << endl;
 
             b = (1 > (const Array<Int> &)y);
             cout << endl << "b= (1 > y) = " << endl;
-            cout << b.ac() << endl;
+            cout << b << endl;
 
             b = (1 == (const Array<Int> &)y);
             cout << endl << "b= (1 == y) = " << endl;
-            cout << b.ac() << endl;
+            cout << b << endl;
 
             b = (1 != (const Array<Int> &)y);
             cout << endl << "b= (1 != y) = " << endl;
-            cout << b.ac() << endl;
+            cout << b << endl;
 
             b = ! ((const Array<Int> &)y >= 3);
             c =   ((const Array<Int> &)y <  3);
             cout << endl << "b= ! (y >= 3) = " << endl;
-            cout << b.ac() << endl;
+            cout << b << endl;
             cout << "c=   (y <  3) = " << endl;
-            cout << c.ac() << endl;
-            cout << "allEQ (b, c) = " << allEQ (b.ac(), c.ac()) << endl;
+            cout << c << endl;
+            cout << "allEQ (b, c) = " << allEQ (b, c) << endl;
 
 
             Vector<Double> x1(2), x2(2);
             x1 = 10000; x2(0) = 10001; x2(1) = 10002;
-            cout << endl << " near(x1, x2, 0.99e-4) " << near(x1.ac(), x2.ac(), 0.99e-4);
-            cout << endl << " near(x1, x2, 1.01e-4) " << near(x1.ac(), x2.ac(), 1.01e-4);
-            cout << endl << " near(x1, x2, 2.01e-4) " << near(x1.ac(), x2.ac(), 2.01e-4);
-            cout << endl << " nearAbs(x1, x2, 0.99) " << nearAbs(x1.ac(), x2.ac(), 0.99);
-            cout << endl << " nearAbs(x1, x2, 1.01) " << nearAbs(x1.ac(), x2.ac(), 1.01);
-            cout << endl << " nearAbs(x1, x2, 2.01) " << nearAbs(x1.ac(), x2.ac(), 2.01);
+            cout << endl << " near(x1, x2, 0.99e-4) " << near(x1, x2, 0.99e-4);
+            cout << endl << " near(x1, x2, 1.01e-4) " << near(x1, x2, 1.01e-4);
+            cout << endl << " near(x1, x2, 2.01e-4) " << near(x1, x2, 2.01e-4);
+            cout << endl << " nearAbs(x1, x2, 0.99) " << nearAbs(x1, x2, 0.99);
+            cout << endl << " nearAbs(x1, x2, 1.01) " << nearAbs(x1, x2, 1.01);
+            cout << endl << " nearAbs(x1, x2, 2.01) " << nearAbs(x1, x2, 2.01);
 
             cout << endl << "OK" << endl;
         }

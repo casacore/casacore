@@ -1,5 +1,5 @@
 //# BaseTable.cc: Abstract base class for tables
-//# Copyright (C) 1994,1995,1996,1997,1998
+//# Copyright (C) 1994,1995,1996,1997,1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -405,7 +405,7 @@ void BaseTable::removeRow (const Vector<uInt>& rownrs)
     //# that the deletion of a row does not affect later rows.
     Vector<uInt> rownrsCopy;
     rownrsCopy = rownrs;
-    genSort (rownrsCopy.arrayCast());
+    genSort (rownrsCopy);
     for (Int i=rownrsCopy.nelements()-1; i>=0; i--) {
 	removeRow (rownrsCopy(i));
     }
@@ -431,7 +431,7 @@ void BaseTable::renameColumn (const String&, const String&)
 Vector<uInt> BaseTable::rowNumbers() const
 {
     Vector<uInt> vec(nrow());
-    indgen (vec.arrayCast(), (uInt)0);                  // store 0,1,... in it
+    indgen (vec, (uInt)0);                  // store 0,1,... in it
     return vec;
 }
 

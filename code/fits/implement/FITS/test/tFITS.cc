@@ -1,5 +1,5 @@
 //# tFITS.cc: This program tests the simple FITS wrappers
-//# Copyright (C) 1993,1994,1995
+//# Copyright (C) 1993,1994,1995,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -87,13 +87,13 @@ main()
 	return 1;
     }
     // Could fail just for roundoff reasons, but likely ok
-    AlwaysAssertExit(allEQ(m.ac(),m2.ac()));
+    AlwaysAssertExit(allEQ(m,m2));
 
     AlwaysAssertExit(unitout == unitin);
-    AlwaysAssertExit(allEQ(namesout.ac() , namesin.ac()));
-    AlwaysAssertExit(allEQ(refout.ac() , refin.ac()));
-    AlwaysAssertExit(allEQ(locout.ac() , locin.ac()));
-    AlwaysAssertExit(allEQ(deltaout.ac() , deltain.ac()));
+    AlwaysAssertExit(allEQ(namesout , namesin));
+    AlwaysAssertExit(allEQ(refout , refin));
+    AlwaysAssertExit(allEQ(locout , locin));
+    AlwaysAssertExit(allEQ(deltaout , deltain));
     AlwaysAssertExit(mapin("HELLO") == 1.0);
     AlwaysAssertExit(mapin("WORLD") == 2.0);
     AlwaysAssertExit(objectout == objectin);

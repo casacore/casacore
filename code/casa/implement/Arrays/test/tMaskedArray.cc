@@ -1,5 +1,5 @@
 //# tMaskedArray.cc: Test program for MaskedArrays
-//# Copyright (C) 1993,1994,1995,1996,1998
+//# Copyright (C) 1993,1994,1995,1996,1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -84,9 +84,9 @@ main()
             indgen (y);
 
             cout << endl << "x= " << endl;
-            cout << x.ac() << endl;
+            cout << x << endl;
             cout << endl << "y= " << endl;
-            cout << y.ac() << endl;
+            cout << y << endl;
 
             b = (x <= y);
             cout << endl << "b= (x <= y) = " << endl;
@@ -128,12 +128,12 @@ main()
                      <<  ycc(ycc<18) << endl;
 
                 cout << "(yc(yc<18))(yc>3)=\n"
-                     <<  (yc(yc.ac()<18))(yc>3) << endl;
+                     <<  (yc(yc<18))(yc>3) << endl;
 
-                         (yc(yc.ac()<18))(yc>3) = 8;
+                         (yc(yc<18))(yc>3) = 8;
 
                 cout << "(yc(yc<18))(yc>3) = 8; yc=\n"
-                     <<  yc.ac() << endl;
+                     <<  yc << endl;
             }
 
             {
@@ -143,12 +143,12 @@ main()
                 cout << "\n";
 
                 cout << "yc((yc<18)(yc>3))=\n"
-                     <<  yc((yc.ac()<18)(yc>3)) << endl;
+                     <<  yc((yc<18)(yc>3)) << endl;
 
-                         yc((yc.ac()<18)(yc>3)) = 8;
+                         yc((yc<18)(yc>3)) = 8;
 
                 cout << "yc((yc<18)(yc>3)) = 8; yc=\n"
-                     << yc.ac() << endl;
+                     << yc << endl;
             }
 
             {
@@ -158,22 +158,22 @@ main()
                 cout << "\n";
 
                 cout << "(yc(yc>7)) ((yc<18)(yc>3))=\n"
-                     <<  (yc(yc>7)) ((yc.ac()<18)(yc>3)) << endl;
+                     <<  (yc(yc>7)) ((yc<18)(yc>3)) << endl;
 
-                         (yc(yc>7)) ((yc.ac()<18)(yc>3)) = 8;
+                         (yc(yc>7)) ((yc<18)(yc>3)) = 8;
 
                 cout << "(yc(yc>7)) ((yc<18)(yc>3)) = 8; yc=\n"
-                     << yc.ac() << endl;
+                     << yc << endl;
             }
 
             {
                 Array<Int> yc (IPosition(1,24));
                 indgen (yc);
                 const         Array<Int> ycc  (yc);
-                const MaskedArray<Int> ycc1 (yc, yc.ac()<18);
-                      MaskedArray<Int> ycc2 (yc, yc.ac()<18);
-                const   MaskedArray<Int> ycc3 (yc, yc.ac()<18);
-                        MaskedArray<Int> ycc4 (yc, yc.ac()<18);
+                const MaskedArray<Int> ycc1 (yc, yc<18);
+                      MaskedArray<Int> ycc2 (yc, yc<18);
+                const   MaskedArray<Int> ycc3 (yc, yc<18);
+                        MaskedArray<Int> ycc4 (yc, yc<18);
 
                 cout << "\n";
 
@@ -201,63 +201,63 @@ main()
 
 // Vector
             Vector<Int> w(5);
-            indgen (w.ac(), 6);
+            indgen (w, 6);
 
             cout << endl << "w= " << endl;
             cout << w << endl;
 
-            w = z(w.ac()<z);
+            w = z(w<z);
             cout << endl << "w= z(w<z) = " << endl;
             cout << w << endl;
 
             {
                 Vector<Int> yc (24);
-                indgen (yc.ac());
+                indgen (yc);
 
                 const Vector<Int> ycc (yc);
 
                 cout << "\n";
 
                 cout << "ycc(ycc<18)=\n"
-                     <<  ycc(ycc.ac()<18) << endl;
+                     <<  ycc(ycc<18) << endl;
 
                 cout << "(yc(yc<18))(yc>3)=\n"
-                     <<  (yc(yc.ac()<18))(yc.ac()>3) << endl;
+                     <<  (yc(yc<18))(yc>3) << endl;
 
-                         (yc(yc.ac()<18))(yc.ac()>3) = 8;
+                         (yc(yc<18))(yc>3) = 8;
 
                 cout << "(yc(yc<18))(yc>3) = 8; yc=\n"
-                     <<  yc.ac() << endl;
+                     <<  yc << endl;
             }
 
             {
                 Vector<Int> yc (24);
-                indgen (yc.ac());
+                indgen (yc);
 
                 cout << "\n";
 
                 cout << "yc((yc<18)(yc>3))=\n"
-                     <<  yc((yc.ac()<18)(yc.ac()>3)) << endl;
+                     <<  yc((yc<18)(yc>3)) << endl;
 
-                         yc((yc.ac()<18)(yc.ac()>3)) = 8;
+                         yc((yc<18)(yc>3)) = 8;
 
                 cout << "yc((yc<18)(yc>3)) = 8; yc=\n"
-                     << yc.ac() << endl;
+                     << yc << endl;
             }
 
             {
                 Vector<Int> yc (24);
-                indgen (yc.ac());
+                indgen (yc);
 
                 cout << "\n";
 
                 cout << "(yc(yc>7)) ((yc<18)(yc>3))=\n"
-                     <<  (yc(yc.ac()>7)) ((yc.ac()<18)(yc.ac()>3)) << endl;
+                     <<  (yc(yc>7)) ((yc<18)(yc>3)) << endl;
 
-                         (yc(yc.ac()>7)) ((yc.ac()<18)(yc.ac()>3)) = 8;
+                         (yc(yc>7)) ((yc<18)(yc>3)) = 8;
 
                 cout << "(yc(yc>7)) ((yc<18)(yc>3)) = 8; yc=\n"
-                     << yc.ac() << endl;
+                     << yc << endl;
             }
 
 // End Vector
@@ -266,69 +266,69 @@ main()
             Matrix<Int> v8(5u,3u);
             Matrix<Int> v(5u,3u);
             v8 = 8;
-            indgen (v.ac());
+            indgen (v);
 
             cout << endl << "v8= " << endl;
-            cout << v8.ac() << endl;
+            cout << v8 << endl;
 
             cout << endl << "v= " << endl;
-            cout << v.ac() << endl;
+            cout << v << endl;
 
-            v = v8(v.ac()<v8.ac());
+            v = v8(v<v8);
             cout << endl << "v= v8(v<v8) = " << endl;
-            cout << v.ac() << endl;
+            cout << v << endl;
 
-            v(v.ac()<9) = 9;
+            v(v<9) = 9;
             cout << endl << "v(v<9)= 9 = " << endl;
-            cout << v.ac() << endl;
+            cout << v << endl;
 
             {
                 Matrix<Int> yc (4u,6u);
-                indgen (yc.ac());
+                indgen (yc);
                 const Matrix<Int> ycc (yc);
 
                 cout << "\n";
 
                 cout << "ycc(ycc<18)=\n"
-                     <<  ycc(ycc.ac()<18) << endl;
+                     <<  ycc(ycc<18) << endl;
 
                 cout << "(yc(yc<18))(yc>3)=\n"
-                     <<  (yc(yc.ac()<18))(yc.ac()>3) << endl;
+                     <<  (yc(yc<18))(yc>3) << endl;
 
-                         (yc(yc.ac()<18))(yc.ac()>3) = 8;
+                         (yc(yc<18))(yc>3) = 8;
 
                 cout << "(yc(yc<18))(yc>3) = 8; yc=\n"
-                     <<  yc.ac() << endl;
+                     <<  yc << endl;
             }
 
             {
                 Matrix<Int> yc (4u,6u);
-                indgen (yc.ac());
+                indgen (yc);
 
                 cout << "\n";
 
                 cout << "yc((yc<18)(yc>3))=\n"
-                     <<  yc((yc.ac()<18)(yc.ac()>3)) << endl;
+                     <<  yc((yc<18)(yc>3)) << endl;
 
-                         yc((yc.ac()<18)(yc.ac()>3)) = 8;
+                         yc((yc<18)(yc>3)) = 8;
 
                 cout << "yc((yc<18)(yc>3)) = 8; yc=\n"
-                     << yc.ac() << endl;
+                     << yc << endl;
             }
 
             {
                 Matrix<Int> yc (4u,6u);
-                indgen (yc.ac());
+                indgen (yc);
 
                 cout << "\n";
 
                 cout << "(yc(yc>7)) ((yc<18)(yc>3))=\n"
-                     <<  (yc(yc.ac()>7)) ((yc.ac()<18)(yc.ac()>3)) << endl;
+                     <<  (yc(yc>7)) ((yc<18)(yc>3)) << endl;
 
-                         (yc(yc.ac()>7)) ((yc.ac()<18)(yc.ac()>3)) = 8;
+                         (yc(yc>7)) ((yc<18)(yc>3)) = 8;
 
                 cout << "(yc(yc>7)) ((yc<18)(yc>3)) = 8; yc=\n"
-                     << yc.ac() << endl;
+                     << yc << endl;
             }
 
 // End Matrix
@@ -337,70 +337,70 @@ main()
             Cube<Int> u15(5,3,2);
             Cube<Int> u(5,3,2);
             u15 = 15;
-            indgen (u.ac());
+            indgen (u);
 
             cout << endl << "u15= " << endl;
-            cout << u15.ac() << endl;
+            cout << u15 << endl;
 
             cout << endl << "u= " << endl;
-            cout << u.ac() << endl;
+            cout << u << endl;
 
-            u = u15(u.ac()<u15.ac());
+            u = u15(u<u15);
             cout << endl << "u= u15(u<u15) = " << endl;
-            cout << u.ac() << endl;
+            cout << u << endl;
 
-            u(u.ac()<16) = 16;
+            u(u<16) = 16;
             cout << endl << "u(u<16)= 16 = " << endl;
-            cout << u.ac() << endl;
+            cout << u << endl;
 
             {
                 Cube<Int> yc (4,3,2);
-                indgen (yc.ac());
+                indgen (yc);
 
                 const Cube<Int> ycc (yc);
 
                 cout << "\n";
 
                 cout << "ycc(ycc<18)=\n"
-                     <<  ycc(ycc.ac()<18) << endl;
+                     <<  ycc(ycc<18) << endl;
 
                 cout << "(yc(yc<18))(yc>3)=\n"
-                     <<  (yc(yc.ac()<18))(yc.ac()>3) << endl;
+                     <<  (yc(yc<18))(yc>3) << endl;
 
-                         (yc(yc.ac()<18))(yc.ac()>3) = 8;
+                         (yc(yc<18))(yc>3) = 8;
 
                 cout << "(yc(yc<18))(yc>3) = 8; yc=\n"
-                     <<  yc.ac() << endl;
+                     <<  yc << endl;
             }
 
             {
                 Cube<Int> yc (4,3,2);
-                indgen (yc.ac());
+                indgen (yc);
 
                 cout << "\n";
 
                 cout << "yc((yc<18)(yc>3))=\n"
-                     <<  yc((yc.ac()<18)(yc.ac()>3)) << endl;
+                     <<  yc((yc<18)(yc>3)) << endl;
 
-                         yc((yc.ac()<18)(yc.ac()>3)) = 8;
+                         yc((yc<18)(yc>3)) = 8;
 
                 cout << "yc((yc<18)(yc>3)) = 8; yc=\n"
-                     << yc.ac() << endl;
+                     << yc << endl;
             }
 
             {
                 Cube<Int> yc (4,3,2);
-                indgen (yc.ac());
+                indgen (yc);
 
                 cout << "\n";
 
                 cout << "(yc(yc>7)) ((yc<18)(yc>3))=\n"
-                     <<  (yc(yc.ac()>7)) ((yc.ac()<18)(yc.ac()>3)) << endl;
+                     <<  (yc(yc>7)) ((yc<18)(yc>3)) << endl;
 
-                         (yc(yc.ac()>7)) ((yc.ac()<18)(yc.ac()>3)) = 8;
+                         (yc(yc>7)) ((yc<18)(yc>3)) = 8;
 
                 cout << "(yc(yc>7)) ((yc<18)(yc>3)) = 8; yc=\n"
-                     << yc.ac() << endl;
+                     << yc << endl;
             }
 
 // End Cube
@@ -409,10 +409,10 @@ main()
             {
 
             Cube<Int> cu (5, 3, 2);
-            indgen (cu.ac());
+            indgen (cu);
 
             LogicalCube lcu (5, 3, 2);
-	    lcu = (cu.ac() > 10) && (cu.ac() <= 20);
+	    lcu = (cu > 10) && (cu <= 20);
 
             MaskedArray<Int> mcu (cu, lcu);
 
@@ -438,7 +438,7 @@ main()
                 cout << "\n";
 
        cout << "Matrix<Int> mat (mcu.getCompressedArray (IPosition (2,5,2)))=\n"
-                     <<  mat.ac()
+                     <<  mat
                      << endl;
             }
 
@@ -450,10 +450,10 @@ main()
                 cout << "\n";
 
                 cout << "mcu.getCompressedArray (mat).  mat=\n"
-                     <<  mat.ac()
+                     <<  mat
                      << endl;
 
-                mcu.setCompressedArray (-mat.ac());
+                mcu.setCompressedArray (-mat);
 
                 cout << "mcu.setCompressedArray (-mat).  mcu=\n"
                      <<  mcu
@@ -467,10 +467,10 @@ main()
 // Readonly
             {
             Cube<Int> cu (5u, 3u, 2u);
-            indgen (cu.ac());
+            indgen (cu);
 
             LogicalCube lcu (5u, 3u, 2u);
-	    lcu = (cu.ac() > 10) && (cu.ac() <= 20);
+	    lcu = (cu > 10) && (cu <= 20);
 
             {
             MaskedArray<Int> mcu (cu, lcu);

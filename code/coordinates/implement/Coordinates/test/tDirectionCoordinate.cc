@@ -231,7 +231,7 @@ void doit (DirectionCoordinate& lc,
       throw(AipsError("Failed nWorldAxes test"));
    }
 //
-   if (!allEQ(axisNames.ac(), lc.worldAxisNames().ac())) {
+   if (!allEQ(axisNames, lc.worldAxisNames())) {
       throw(AipsError("Failed world axis name recovery test"));
    }
    Vector<String> names(axisNames.copy());
@@ -239,19 +239,19 @@ void doit (DirectionCoordinate& lc,
    if (!lc.setWorldAxisNames(names)) {
       throw(AipsError(String("Failed to set world axis name because") + lc.errorMessage()));
    }
-   if (!allEQ(names.ac(), lc.worldAxisNames().ac())) {
+   if (!allEQ(names, lc.worldAxisNames())) {
       throw(AipsError("Failed axis name set/recovery test"));
    }
 //
    Vector<String> units(2); units(0) = axisUnit; units(1) = axisUnit;
-   if (!allEQ(units.ac(), lc.worldAxisUnits().ac())) {
+   if (!allEQ(units, lc.worldAxisUnits())) {
       throw(AipsError("Failed world axis units recovery test"));
    }
    units(0) = "deg";
    if (!lc.setWorldAxisUnits(units)) {
       throw(AipsError(String("Failed to set world axis units because ") + lc.errorMessage()));
    }
-   if (!allEQ(units.ac(), lc.worldAxisUnits().ac())) {
+   if (!allEQ(units, lc.worldAxisUnits())) {
       throw(AipsError("Failed world axis units set/recovery test"));
    }
 //
@@ -285,19 +285,19 @@ void doit2 (DirectionCoordinate& lc,
             Matrix<Double>& xform)
 {
 //
-   if (!allEQ(crval.ac(), lc.referenceValue().ac())) {
+   if (!allEQ(crval, lc.referenceValue())) {
       throw(AipsError("Failed reference value recovery test"));
    }
 //
-   if (!allEQ(cdelt.ac(), lc.increment().ac())) {
+   if (!allEQ(cdelt, lc.increment())) {
       throw(AipsError("Failed increment recovery test"));
    }
 //
-   if (!allEQ(crpix.ac(), lc.referencePixel().ac())) {
+   if (!allEQ(crpix, lc.referencePixel())) {
       throw(AipsError("Failed reference pixel recovery test"));
    }
 //
-   if (!allEQ(xform.ac(), lc.linearTransform().ac())) {
+   if (!allEQ(xform, lc.linearTransform())) {
       throw(AipsError("Failed Direction transform recovery test"));
    }
 //
@@ -305,7 +305,7 @@ void doit2 (DirectionCoordinate& lc,
    if (!lc.setReferenceValue(crval)) {
       throw(AipsError(String("Failed to set reference value because") + lc.errorMessage()));
    }
-   if (!allEQ(crval.ac(), lc.referenceValue().ac())) {
+   if (!allEQ(crval, lc.referenceValue())) {
       throw(AipsError("Failed reference value set/recovery test"));
    }
 //
@@ -313,7 +313,7 @@ void doit2 (DirectionCoordinate& lc,
    if (!lc.setIncrement(cdelt)) {
       throw(AipsError(String("Failed to set increment because") + lc.errorMessage()));
    }
-   if (!allEQ(cdelt.ac(), lc.increment().ac())) {
+   if (!allEQ(cdelt, lc.increment())) {
       throw(AipsError("Failed increment set/recovery test"));
    }
 //
@@ -321,7 +321,7 @@ void doit2 (DirectionCoordinate& lc,
    if (!lc.setReferencePixel(crpix)) {
       throw(AipsError(String("Failed to set reference pixel because") + lc.errorMessage()));
    }
-   if (!allEQ(crpix.ac(), lc.referencePixel().ac())) {
+   if (!allEQ(crpix, lc.referencePixel())) {
       throw(AipsError("Failed reference pixel set/recovery test"));
   }
 //       
@@ -329,7 +329,7 @@ void doit2 (DirectionCoordinate& lc,
    if (!lc.setLinearTransform(xform)) {
       throw(AipsError(String("Failed to set linear transform because") + lc.errorMessage()));
    }
-   if (!allEQ(xform.ac(), lc.linearTransform().ac())) {
+   if (!allEQ(xform, lc.linearTransform())) {
       throw(AipsError("Failed linear transform set/recovery test"));
    }
 }
@@ -350,7 +350,7 @@ void doit3 (DirectionCoordinate& lc)
    if (!lc.toPixel(pixel2, world)) {
       throw(AipsError(String("toPixel conversion failed because ") + lc.errorMessage()));
    }
-   if (!allNear(pixel2.ac(), pixel.ac(), 1e-6)) {
+   if (!allNear(pixel2, pixel, 1e-6)) {
          throw(AipsError("Coordinate conversion reflection 1 failed"));
    }
 //
@@ -358,7 +358,7 @@ void doit3 (DirectionCoordinate& lc)
    if (!lc.toWorld(dir, pixel)) {
       throw(AipsError(String("toWorld conversion failed because ") + lc.errorMessage()));
    }
-   if (!allNear(dir.getAngle().getValue().ac(), world.ac(), 1e-6)) {
+   if (!allNear(dir.getAngle().getValue(), world, 1e-6)) {
          throw(AipsError("Coordinate conversion reflection 2 failed"));
    }
 //
@@ -509,10 +509,10 @@ void doit4 (DirectionCoordinate& dC)
       throw(AipsError(String("Failed pixel->world conversion failed because ")
                   + dC.errorMessage()));
    }
-   if (!allNear(pixelOut.ac(), dC.referencePixel().ac(), 1e-8)) {
+   if (!allNear(pixelOut, dC.referencePixel(), 1e-8)) {
       throw(AipsError(String("Failed pixel->world consistency test")));
    }
-   if (!allNear(worldOut.ac(), dC.referenceValue().ac(), 1e-8)) {
+   if (!allNear(worldOut, dC.referenceValue(), 1e-8)) {
       throw(AipsError(String("Failed pixel->world consistency test")));
    }
 //
@@ -525,10 +525,10 @@ void doit4 (DirectionCoordinate& dC)
       throw(AipsError(String("Failed world->pixel conversion failed because ")
                   + dC.errorMessage()));
    }
-   if (!allNear(pixelOut.ac(), dC.referencePixel().ac(), 1e-8)) {
+   if (!allNear(pixelOut, dC.referencePixel(), 1e-8)) {
       throw(AipsError(String("Failed world->pixel consistency test")));
    }
-   if (!allNear(worldOut.ac(), dC.referenceValue().ac(), 1e-8)) {
+   if (!allNear(worldOut, dC.referenceValue(), 1e-8)) {
       throw(AipsError(String("Failed world->pixel consistency test")));
    }
 //
@@ -544,10 +544,10 @@ void doit4 (DirectionCoordinate& dC)
       throw(AipsError(String("Conversion failed because ")
                   + dC.errorMessage()));
    }
-   if (!allNear(pixelOut.ac(), dC.referencePixel().ac(), 1e-8)) {
+   if (!allNear(pixelOut, dC.referencePixel(), 1e-8)) {
       throw(AipsError(String("Failed world->pixel consistency test")));
    }
-   if (!allNear(worldOut.ac(), dC.referenceValue().ac(), 1e-8)) {
+   if (!allNear(worldOut, dC.referenceValue(), 1e-8)) {
       throw(AipsError(String("Failed world->pixel consistency test")));
    }
 //
@@ -563,10 +563,10 @@ void doit4 (DirectionCoordinate& dC)
       throw(AipsError(String("Conversion failed because ")
                   + dC.errorMessage()));
    }
-   if (!allNear(pixelOut.ac(), dC.referencePixel().ac(), 1e-8)) {
+   if (!allNear(pixelOut, dC.referencePixel(), 1e-8)) {
       throw(AipsError(String("Failed world->pixel consistency test")));
    }
-   if (!allNear(worldOut.ac(), dC.referenceValue().ac(), 1e-8)) {
+   if (!allNear(worldOut, dC.referenceValue(), 1e-8)) {
       throw(AipsError(String("Failed world->pixel consistency test")));
    }
 //

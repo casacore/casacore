@@ -50,12 +50,12 @@ try {
       Vector<Int> pixelAxes, worldAxes;
       Int coordinate;
       CoordinateUtil::findDirectionAxes(pixelAxes, worldAxes, coordinate, cSys);
-      cout << "Pixel axes= " << pixelAxes.ac() << endl;
-      cout << "World axes= " << worldAxes.ac() << endl;
+      cout << "Pixel axes= " << pixelAxes << endl;
+      cout << "World axes= " << worldAxes << endl;
       cout << "Coordinate = " << coordinate << endl;
       Vector<Int> pixelAxes2 = 
         CoordinateUtil::findDirectionAxes(cSys);
-      cout << "Pixel axes2 = " << pixelAxes2.ac() << endl << endl;
+      cout << "Pixel axes2 = " << pixelAxes2 << endl << endl;
    }
    {
       CoordinateSystem cSys = CoordinateUtil::defaultCoords2D();
@@ -64,12 +64,12 @@ try {
       Vector<Int> pixelAxes, worldAxes;
       Int coordinate;
       CoordinateUtil::findDirectionAxes(pixelAxes, worldAxes, coordinate, cSys);
-      cout << "Pixel axes= " << pixelAxes.ac() << endl;
-      cout << "World axes= " << worldAxes.ac() << endl;
+      cout << "Pixel axes= " << pixelAxes << endl;
+      cout << "World axes= " << worldAxes << endl;
       cout << "Coordinate = " << coordinate << endl;
       Vector<Int> pixelAxes2 = 
         CoordinateUtil::findDirectionAxes(cSys);
-      cout << "Pixel axes2 = " << pixelAxes2.ac() << endl << endl;
+      cout << "Pixel axes2 = " << pixelAxes2 << endl << endl;
    }
    {
       CoordinateSystem cSys = CoordinateUtil::defaultCoords2D();
@@ -78,12 +78,12 @@ try {
       Vector<Int> pixelAxes, worldAxes;
       Int coordinate;
       CoordinateUtil::findDirectionAxes(pixelAxes, worldAxes, coordinate, cSys);
-      cout << "Pixel axes= " << pixelAxes.ac() << endl;
-      cout << "World axes= " << worldAxes.ac() << endl;
+      cout << "Pixel axes= " << pixelAxes << endl;
+      cout << "World axes= " << worldAxes << endl;
       cout << "Coordinate = " << coordinate << endl;
       Vector<Int> pixelAxes2 = 
         CoordinateUtil::findDirectionAxes(cSys);
-      cout << "Pixel axes2 = " << pixelAxes2.ac() << endl << endl;
+      cout << "Pixel axes2 = " << pixelAxes2 << endl << endl;
    }
    {
       CoordinateSystem cSys = CoordinateUtil::defaultCoords2D();
@@ -94,12 +94,12 @@ try {
       Vector<Int> pixelAxes, worldAxes;
       Int coordinate;
       CoordinateUtil::findDirectionAxes(pixelAxes, worldAxes, coordinate, cSys);
-      cout << "Pixel axes= " << pixelAxes.ac() << endl;
-      cout << "World axes= " << worldAxes.ac() << endl;
+      cout << "Pixel axes= " << pixelAxes << endl;
+      cout << "World axes= " << worldAxes << endl;
       cout << "Coordinate = " << coordinate << endl;
       Vector<Int> pixelAxes2 = 
         CoordinateUtil::findDirectionAxes(cSys);
-      cout << "Pixel axes2 = " << pixelAxes2.ac() << endl << endl;
+      cout << "Pixel axes2 = " << pixelAxes2 << endl << endl;
    }
    {
       CoordinateSystem cSys = CoordinateUtil::defaultCoords2D();
@@ -110,12 +110,12 @@ try {
       Vector<Int> pixelAxes, worldAxes;
       Int coordinate;
       CoordinateUtil::findDirectionAxes(pixelAxes, worldAxes, coordinate, cSys);
-      cout << "Pixel axes= " << pixelAxes.ac() << endl;
-      cout << "World axes= " << worldAxes.ac() << endl;
+      cout << "Pixel axes= " << pixelAxes << endl;
+      cout << "World axes= " << worldAxes << endl;
       cout << "Coordinate = " << coordinate << endl;
       Vector<Int> pixelAxes2 = 
         CoordinateUtil::findDirectionAxes(cSys);
-      cout << "Pixel axes2 = " << pixelAxes2.ac() << endl << endl;
+      cout << "Pixel axes2 = " << pixelAxes2 << endl << endl;
    }
 // 
 // SpectralCoordinate
@@ -275,7 +275,7 @@ try {
 //
       if (coordinate!=0 || nPixelAxes!=n || nWorldAxes!=n ||
           cSys.type(coordinate)!=Coordinate::LINEAR ||
-          !::allNear(refPix.ac(), Double(0.0), Double(1.0e-6))) {
+          !::allNear(refPix, Double(0.0), Double(1.0e-6))) {
          throw(AipsError("addLinearAxes failed"));
       }
    }   
@@ -297,7 +297,7 @@ try {
 //
       if (coordinate!=0 || nPixelAxes!=n || nWorldAxes!=n ||
           cSys.type(coordinate)!=Coordinate::LINEAR ||
-          !::allNear(refPix.ac(), Double(50.0), Double(1e-6))) {
+          !::allNear(refPix, Double(50.0), Double(1e-6))) {
          throw(AipsError("addLinearAxes failed"));
       }
    }   

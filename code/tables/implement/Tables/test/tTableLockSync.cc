@@ -1,5 +1,5 @@
 //# tTableLockSync.cc: Interactive test program for concurrent access to tables
-//# Copyright (C) 1997,1998
+//# Copyright (C) 1997,1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -145,9 +145,9 @@ void b()
 		    }
 		    col1.put (rownr, val);
 		    col2.put (rownr, val+1);
-		    indgen (freqValues.ac(), float(val+2));
-		    indgen (polValues.ac(), float(val+3));
-		    indgen (dataValues.ac(), float(val+4));
+		    indgen (freqValues, float(val+2));
+		    indgen (polValues, float(val+3));
+		    indgen (dataValues, float(val+4));
 		    data.put (rownr, dataValues);
 		    freq.put (rownr, freqValues);
 		    pol.put (rownr, polValues);

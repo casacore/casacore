@@ -96,8 +96,8 @@ void writeFixed()
 
     Vector<float> freqValues(25);
     Vector<float> polValues(16);
-    indgen (freqValues.ac(), float(200));
-    indgen (polValues.ac(), float(300));
+    indgen (freqValues, float(200));
+    indgen (polValues, float(300));
     ArrayColumn<float> freq (table, "Freq");
     ArrayColumn<float> pol (table, "Pol");
     ArrayColumn<float> data (table, "Data");
@@ -105,38 +105,38 @@ void writeFixed()
     Matrix<float> array(IPosition(2,16,25));
     Matrix<float> result(IPosition(2,16,25));
     uInt i;
-    indgen (array.ac());
+    indgen (array);
     for (i=0; i<101; i++) {
 	table.addRow();
 	data.put (i, array);
-	weight.put (i, array.ac()+float(100));
+	weight.put (i, array+float(100));
 	freq.put (i, freqValues);
 	pol.put (i, polValues);
-	array.ac() += float(200);
-	freqValues.ac() += float(200);
-	polValues.ac() += float(200);
+	array += float(200);
+	freqValues += float(200);
+	polValues += float(200);
     }
-    indgen (array.ac());
-    indgen (freqValues.ac(), float(200));
-    indgen (polValues.ac(), float(300));
+    indgen (array);
+    indgen (freqValues, float(200));
+    indgen (polValues, float(300));
     for (i=0; i<table.nrow(); i++) {
 	data.get (i, result);
-	if (! allEQ (array.ac(), result.ac())) {
+	if (! allEQ (array, result)) {
 	    cout << "mismatch in data row " << i << endl;
 	}
 	weight.get (i, result);
-	if (! allEQ (array.ac() + float(100), result.ac())) {
+	if (! allEQ (array + float(100), result)) {
 	    cout << "mismatch in weight row " << i << endl;
 	}
-	if (! allEQ (freq(i), freqValues.ac())) {
+	if (! allEQ (freq(i), freqValues)) {
 	    cout << "mismatch in freq row " << i << endl;
 	}
-	if (! allEQ (pol(i), polValues.ac())) {
+	if (! allEQ (pol(i), polValues)) {
 	    cout << "mismatch in pol row " << i << endl;
 	}
-	array.ac() += float(200);
-	freqValues.ac() += float(200);
-	polValues.ac() += float(200);
+	array += float(200);
+	freqValues += float(200);
+	polValues += float(200);
     }
 }
 
@@ -149,30 +149,30 @@ void readTable()
     ROArrayColumn<float> weight (table, "Weight");
     Vector<float> freqValues(25);
     Vector<float> polValues(16);
-    indgen (freqValues.ac(), float(200));
-    indgen (polValues.ac(), float(300));
+    indgen (freqValues, float(200));
+    indgen (polValues, float(300));
     Matrix<float> array(IPosition(2,16,25));
     Matrix<float> result(IPosition(2,16,25));
     uInt i;
-    indgen (array.ac());
+    indgen (array);
     for (i=0; i<table.nrow(); i++) {
 	data.get (i, result);
-	if (! allEQ (array.ac(), result.ac())) {
+	if (! allEQ (array, result)) {
 	    cout << "mismatch in data row " << i << endl;
 	}
 	weight.get (i, result);
-	if (! allEQ (array.ac() + float(100), result.ac())) {
+	if (! allEQ (array + float(100), result)) {
 	    cout << "mismatch in weight row " << i << endl;
 	}
-	if (! allEQ (freq(i), freqValues.ac())) {
+	if (! allEQ (freq(i), freqValues)) {
 	    cout << "mismatch in freq row " << i << endl;
 	}
-	if (! allEQ (pol(i), polValues.ac())) {
+	if (! allEQ (pol(i), polValues)) {
 	    cout << "mismatch in pol row " << i << endl;
 	}
-	array.ac() += float(200);
-	freqValues.ac() += float(200);
-	polValues.ac() += float(200);
+	array += float(200);
+	freqValues += float(200);
+	polValues += float(200);
     }
 }
 
@@ -198,8 +198,8 @@ void writeVar()
 
     Vector<float> freqValues(25);
     Vector<float> polValues(16);
-    indgen (freqValues.ac(), float(200));
-    indgen (polValues.ac(), float(300));
+    indgen (freqValues, float(200));
+    indgen (polValues, float(300));
     ArrayColumn<float> freq (table, "Freq");
     ArrayColumn<float> pol (table, "Pol");
     ArrayColumn<float> data (table, "Data");
@@ -207,7 +207,7 @@ void writeVar()
     Matrix<float> array(IPosition(2,16,25));
     Matrix<float> result(IPosition(2,16,25));
     uInt i;
-    indgen (array.ac());
+    indgen (array);
     for (i=0; i<5; i++) {
 	table.addRow();
 	cout << " pol.isDefined=" << pol.isDefined(i) << endl;
@@ -220,12 +220,12 @@ void writeVar()
 	cout << pol.shape(i) << freq.shape(i) << data.shape(i)
 	     << weight.shape(i) << endl;
 	data.put (i, array);
-	weight.put (i, array.ac()+float(100));
+	weight.put (i, array+float(100));
 	freq.put (i, freqValues);
 	pol.put (i, polValues);
-	array.ac() += float(200);
-	freqValues.ac() += float(200);
-	polValues.ac() += float(200);
+	array += float(200);
+	freqValues += float(200);
+	polValues += float(200);
     }
 }
 
@@ -252,8 +252,8 @@ void writeFixVar()
 
     Vector<float> freqValues(25);
     Vector<float> polValues(16);
-    indgen (freqValues.ac(), float(200));
-    indgen (polValues.ac(), float(300));
+    indgen (freqValues, float(200));
+    indgen (polValues, float(300));
     ArrayColumn<float> freq (table, "Freq");
     ArrayColumn<float> pol (table, "Pol");
     ArrayColumn<float> data (table, "Data");
@@ -261,7 +261,7 @@ void writeFixVar()
     Matrix<float> array(IPosition(2,16,25));
     Matrix<float> result(IPosition(2,16,25));
     uInt i;
-    indgen (array.ac());
+    indgen (array);
     for (i=0; i<5; i++) {
 	table.addRow();
 	cout << " pol.isDefined=" << pol.isDefined(i) << endl;
@@ -274,11 +274,11 @@ void writeFixVar()
 	cout << pol.shape(i) << freq.shape(i) << data.shape(i)
 	     << weight.shape(i) << endl;
 	data.put (i, array);
-	weight.put (i, array.ac()+float(100));
+	weight.put (i, array+float(100));
 	freq.put (i, freqValues);
 	pol.put (i, polValues);
-	array.ac() += float(200);
-	freqValues.ac() += float(200);
-	polValues.ac() += float(200);
+	array += float(200);
+	freqValues += float(200);
+	polValues += float(200);
     }
 }

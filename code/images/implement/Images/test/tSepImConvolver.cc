@@ -186,8 +186,8 @@ try {
       sic.setKernel(0, type, fwhm, peak);
       Vector<Float> kernel = sic.getKernel(uInt(0));
       if (show) {
-         cout << "Kernel = " << kernel.ac() << endl;
-         cout << "Sum of kernel = " << sum(kernel.ac()) << endl;
+         cout << "Kernel = " << kernel << endl;
+         cout << "Sum of kernel = " << sum(kernel) << endl;
       }
    }
 }

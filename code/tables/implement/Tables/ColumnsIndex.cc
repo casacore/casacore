@@ -433,7 +433,7 @@ void ColumnsIndex::readData()
   if (!itsNoSort) {
     sort.sort (itsDataIndex, itsNrrow);
   } else {
-    indgen (itsDataIndex.ac());
+    indgen (itsDataIndex);
   }
   // Determine all unique keys (itsUniqueIndex will contain the index of
   // each first unique entry in itsDataIndex).

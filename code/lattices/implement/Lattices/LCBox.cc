@@ -1,5 +1,5 @@
 //# LCBox.cc: Class to define a rectangular box of interest
-//# Copyright (C) 1997,1998
+//# Copyright (C) 1997,1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -196,8 +196,8 @@ TableRecord LCBox::toRecord (const String&) const
     defineRecordFields (rec, className());
     // Write 1-relative.
     rec.define ("oneRel", True);
-    rec.define ("blc", itsBlc.ac() + Float(1));
-    rec.define ("trc", itsTrc.ac() + Float(1));
+    rec.define ("blc", itsBlc + Float(1));
+    rec.define ("trc", itsTrc + Float(1));
     rec.define ("shape", latticeShape().asVector());
     return rec;
 }

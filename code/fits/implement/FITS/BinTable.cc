@@ -591,12 +591,12 @@ void BinaryTable::fillRow()
 		//			Scale as appropriate
 		if (tscal(j) != 1) {
 		    Vector<Double> dvec(nelem[j]);
-		    convertArray(dvec.ac(), vec.ac());
-		    dvec.ac() *= tscal(j); 
-		    dvec.ac() += tzero(j);
-		    convertArray(vec.ac(), dvec.ac());
+		    convertArray(dvec, vec);
+		    dvec *= tscal(j); 
+		    dvec += tzero(j);
+		    convertArray(vec, dvec);
 		} else if (tzero(j) != 0) {
-		    vec.ac() += (Float )tzero(j);
+		    vec += (Float )tzero(j);
 		}
 		if (nelem[j] > 1) {
 		    ArrayColumn<Float> arrcol(tabcol);
@@ -616,10 +616,10 @@ void BinaryTable::fillRow()
 		}
 		//			Scale as appropriate
 		if (tscal(j) != 1) {
-		    vec.ac() *= tscal(j); 
-		    vec.ac() += tzero(j);
+		    vec *= tscal(j); 
+		    vec += tzero(j);
 		} else if (tzero(j) != 0) {
-		    vec.ac() += (Double )tzero(j);
+		    vec += (Double )tzero(j);
 		}
 		if (nelem[j] > 1) {
 		    ArrayColumn<Double> arrcol(tabcol);
@@ -639,10 +639,10 @@ void BinaryTable::fillRow()
 		}
 		//			Scale as appropriate
 		if (tscal(j) != 1) {
-		    vec.ac() *= Complex(tscal(j),0); 
-		    vec.ac() += Complex(tzero(j),0);
+		    vec *= Complex(tscal(j),0); 
+		    vec += Complex(tzero(j),0);
 		} else if (tzero(j) != 0) {
-		    vec.ac() += Complex(tzero(j),0);
+		    vec += Complex(tzero(j),0);
 		}
 		if (nelem[j] > 1) {
 		    ArrayColumn<Complex> arrcol(tabcol);
@@ -662,10 +662,10 @@ void BinaryTable::fillRow()
 		}
 		//			Scale as appropriate
 		if (tscal(j) != 1) {
-		    vec.ac() *= DComplex(tscal(j),0) ; 
-		    vec.ac() += DComplex(tzero(j),0);
+		    vec *= DComplex(tscal(j),0) ; 
+		    vec += DComplex(tzero(j),0);
 		} else if (tzero(j) != 0) {
-		    vec.ac() += DComplex(tzero(j));
+		    vec += DComplex(tzero(j));
 		}
 		if (nelem[j] > 1) {
 		    ArrayColumn<DComplex> arrcol(tabcol);
@@ -685,10 +685,10 @@ void BinaryTable::fillRow()
 		}
 		//			Scale as appropriate
 		if (tscal(j) != 1) {
-		    vec.ac() *= DComplex(tscal(j),0); 
-		    vec.ac() += DComplex(tzero(j),0);
+		    vec *= DComplex(tscal(j),0); 
+		    vec += DComplex(tzero(j),0);
 		} else if (tzero(j) != 0) {
-		    vec.ac() += DComplex(tzero(j));
+		    vec += DComplex(tzero(j));
 		}
 		if (nelem[j] > 1) {
 		    ArrayColumn<DComplex> arrcol(tabcol);
@@ -798,12 +798,12 @@ void BinaryTable::fillRow()
 			// scale as appropriate
 			if (tscal(j) != 1) {
 			    Vector<Double> dvec(thisva.num());
-			    convertArray(dvec.ac(), vec.ac());
-			    dvec.ac() *= tscal(j);
-			    dvec.ac() += tzero(j);
-			    convertArray(vec.ac(), dvec.ac());
+			    convertArray(dvec, vec);
+			    dvec *= tscal(j);
+			    dvec += tzero(j);
+			    convertArray(vec, dvec);
 			} else if (tzero(j) != 0) {
-			    vec.ac() += (Float )tzero(j);
+			    vec += (Float )tzero(j);
 			}
 			ArrayColumn<Float> arrcol(tabcol);
 			arrcol.put(0,vec);
@@ -820,10 +820,10 @@ void BinaryTable::fillRow()
 			}
 			// scale as appropriate
 			if (tscal(j) != 1) {
-			    vec.ac() *= tscal(j);
-			    vec.ac() += tzero(j);
+			    vec *= tscal(j);
+			    vec += tzero(j);
 			} else if (tzero(j) != 0) {
-			    vec.ac() += (Double )tzero(j);
+			    vec += (Double )tzero(j);
 			}
 			ArrayColumn<Double> arrcol(tabcol);
 			arrcol.put(0,vec);
@@ -840,10 +840,10 @@ void BinaryTable::fillRow()
 			}
 			// scale as appropriate
 			if (tscal(j) != 1) {
-			    vec.ac() *= Complex(tscal(j),0);
-			    vec.ac() += Complex(tzero(j),0);
+			    vec *= Complex(tscal(j),0);
+			    vec += Complex(tzero(j),0);
 			} else if (tzero(j) != 0) {
-			    vec.ac() += Complex(tzero(j),0);
+			    vec += Complex(tzero(j),0);
 			}
 			ArrayColumn<Complex> arrcol(tabcol);
 			arrcol.put(0,vec);
@@ -860,10 +860,10 @@ void BinaryTable::fillRow()
 			}
 			// scale as appropriate
 			if (tscal(j) != 1) {
-			    vec.ac() *= DComplex(tscal(j),0);
-			    vec.ac() += DComplex(tzero(j),0);
+			    vec *= DComplex(tscal(j),0);
+			    vec += DComplex(tzero(j),0);
 			} else if (tzero(j) != 0) {
-			    vec.ac() += DComplex(tzero(j),0);
+			    vec += DComplex(tzero(j),0);
 			}
 			ArrayColumn<DComplex> arrcol(tabcol);
 			arrcol.put(0,vec);

@@ -113,7 +113,7 @@ MVDirection::~MVDirection() {}
 
 //# Operators
 MVDirection &MVDirection::operator+=(const MVDirection &right) {
-  xyz.ac() += right.xyz.ac();
+  xyz += right.xyz;
   adjust();
   return *this;
 }
@@ -125,7 +125,7 @@ MVDirection MVDirection::operator+(const MVDirection &right) const{
 }
 
 MVDirection &MVDirection::operator-=(const MVDirection &right) {
-  xyz.ac() -= right.xyz.ac();
+  xyz -= right.xyz;
   adjust();
   return *this;
 }
@@ -153,7 +153,7 @@ void MVDirection::adjust() {
   if (length == 0) {
     xyz(2) = 1.0;
   } else if (length != 1.0) {
-    xyz.ac() /= length;
+    xyz /= length;
   }
 }
 
@@ -162,7 +162,7 @@ void MVDirection::adjust(Double &res) {
   if (res == 0) {
     xyz(2) = 1.0;
   } else if (res != 1.0) {
-    xyz.ac() /= res;
+    xyz /= res;
   }
 }
 

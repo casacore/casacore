@@ -102,7 +102,7 @@ Bool MatrixSolver::solve() {return False;}
 const Vector<FType> & MatrixSolver::getResidual() {
 
   // Calculate residual vector
-  RVector=BVector.ac()-product(AMatrix, XVector).ac();
+  RVector=BVector-product(AMatrix, XVector);
 
   // Calculate norm of RVector
   RNorm = norm(RVector);

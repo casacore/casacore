@@ -315,7 +315,7 @@ int main()
           }  
        }
 //
-       data.ac()*Float(20.0);
+       data*Float(20.0);
        pIm.doPutSlice(data, IPosition(2,0,0), IPosition(2,1,1));
        for (Int i=0; i<shape2(0); i++) {
           for (Int j=0; j<shape2(1); j++) {
@@ -367,13 +367,13 @@ int main()
        lat.set(Float(10.0));
        pIm += lat;
        Array<Float> data2(data.copy());
-       data2.ac() += Float(10.0);
+       data2 += Float(10.0);
 //
        Slicer slice(IPosition(2,0,0), shape2, IPosition(2,1,1));
        Array<Float> data3;
        pIm.doGetSlice(data3, slice);
 //
-       AlwaysAssert(allNear(data3.ac(), data2.ac(), 1e-6), AipsError);
+       AlwaysAssert(allNear(data3, data2, 1e-6), AipsError);
    }
 //
 // apply functions
@@ -385,31 +385,31 @@ int main()
        CoordinateSystem cSys2 = CoordinateUtil::defaultCoords2D();
        PagedImage<Float> pIm(tiledShape2, cSys2, table);
        pIm.set(3.0);
-       AlwaysAssert(allEQ(pIm.get().ac(), Float(3.0)), AipsError);
+       AlwaysAssert(allEQ(pIm.get(), Float(3.0)), AipsError);
 //
 // 2 * x * x
 //
        pIm.apply(&func);
-       AlwaysAssert(allNear(pIm.get().ac(), Float(18.0), Double(1e-6)), AipsError);
+       AlwaysAssert(allNear(pIm.get(), Float(18.0), Double(1e-6)), AipsError);
 //
 // 3 * x (const arg)
 //
        pIm.set(3.0);
-       AlwaysAssert(allEQ(pIm.get().ac(), Float(3.0)), AipsError);
+       AlwaysAssert(allEQ(pIm.get(), Float(3.0)), AipsError);
        pIm.apply(&const_arg_func);
-       AlwaysAssert(allNear(pIm.get().ac(), Float(9.0), Double(1e-6)), AipsError);
+       AlwaysAssert(allNear(pIm.get(), Float(9.0), Double(1e-6)), AipsError);
 //
 // Polynomial 1 + 2x + 3x**2
 //
        pIm.set(3.0);
-       AlwaysAssert(allEQ(pIm.get().ac(), Float(3.0)), AipsError);
+       AlwaysAssert(allEQ(pIm.get(), Float(3.0)), AipsError);
 //
        Polynomial<Float> poly(3);
        poly.setCoefficient(1, 1.0);
        poly.setCoefficient(2, 2.0);
        poly.setCoefficient(3, 3.0);
        pIm.apply(poly);
-       AlwaysAssert(allNear(pIm.get().ac(), poly(3.0), Double(1e-6)), AipsError);
+       AlwaysAssert(allNear(pIm.get(), poly(3.0), Double(1e-6)), AipsError);
    }
 //
 // test table function.  I don't really know what else to do with it.
@@ -440,7 +440,7 @@ int main()
 //
        LatticeIterator<Float> it(pIm);
        while (!it.atEnd()) {
-          AlwaysAssert(allEQ(it.cursor().ac(), Float(1.0)), AipsError);
+          AlwaysAssert(allEQ(it.cursor(), Float(1.0)), AipsError);
           it++;
        }
    }

@@ -1,5 +1,5 @@
 //# tMaskArrIO.cc: Test program for MaskedArray IO
-//# Copyright (C) 1994,1995,1996,1998
+//# Copyright (C) 1994,1995,1996,1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -60,10 +60,10 @@ int main ()
             Vector<Int> a(10);
             cout << endl;
             for (Int orig0=0; orig0 < 5; orig0++) {
-                indgen (a.ac(), orig0);
+                indgen (a, orig0);
                 cout << "a(a<7)= "
                      << endl
-                     << a(a.ac()<7);
+                     << a(a<7);
                 cout << endl;
             }
             cout << endl;
@@ -74,10 +74,10 @@ int main ()
             Matrix<Int> a(10u,3u);
             cout << endl;
             for (Int orig0=0; orig0 < 5; orig0++) {
-                indgen (a.ac(), orig0);
+                indgen (a, orig0);
                 cout << "a(a<7)= "
                      << endl
-                     << a(a.ac()<7);
+                     << a(a<7);
                 cout << endl;
             }
             cout << endl;
@@ -88,10 +88,10 @@ int main ()
             Cube<Int> a(10,3,4);
             cout << endl;
             for (Int orig0=0; orig0 < 5; orig0++) {
-                indgen (a.ac(), orig0);
+                indgen (a, orig0);
                 cout << "a(a<7)= "
                      << endl
-                     << a(a.ac()<7);
+                     << a(a<7);
                 cout << endl;
             }
             cout << endl;

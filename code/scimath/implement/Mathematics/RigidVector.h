@@ -134,7 +134,7 @@ template <class T, Int n> class RigidVector {
     }
     // Write out a RigidVector using the Vector output method.
     friend ostream& operator<<(ostream& os, const RigidVector<T,n>& v) {
-	os << v.vector().arrayCast();
+	os << v.vector();
 	return os;
     }
     // Special matrix multiply of Complex matrix * Float vector.

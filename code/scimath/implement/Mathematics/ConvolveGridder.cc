@@ -1,5 +1,5 @@
 //# ConvolveGridder.cc: Convolutional Gridder
-//# Copyright (C) 1996,1997
+//# Copyright (C) 1996,1997,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -302,7 +302,7 @@ Bool ConvolveGridder<Domain, Range>::grid(Array<Range> &gridded,
 				    const Range& value)
 {
   loc=location(loc,p);
-  loc.ac()-=offsetVec.ac();
+  loc-=offsetVec;
   if(onGrid(loc,supportVec)) {
     Bool del;
     posVec=position(posVec, p);

@@ -64,9 +64,9 @@ int main() {
 		  Float(j*k)*((Array<Float>&)x)*((Array<Float>&)x);
 	    }
 	}
-	ArrayLattice<Float> inLattice(cube.ac());
+	ArrayLattice<Float> inLattice(cube);
 	Cube<Float> outCube(nx,ny,nz);
-	ArrayLattice<Float> outLattice(outCube.ac());
+	ArrayLattice<Float> outLattice(outCube);
 	baselineFit(outLattice, fittedParameters, fitter, inLattice, 0, mask, 
 		    True);
 	AlwaysAssertExit(allNearAbs((Array<Float>&)outCube, 0.0f, 7.e-3));
@@ -92,9 +92,9 @@ int main() {
 		  Float(i*k)*((Array<Float>&)x)*((Array<Float>&)x);
 	    }
 	}
-	ArrayLattice<Float> inLattice(cube.ac());
+	ArrayLattice<Float> inLattice(cube);
 	Cube<Float> outCube(nx,ny,nz);
-	ArrayLattice<Float> outLattice(outCube.ac());
+	ArrayLattice<Float> outLattice(outCube);
 	baselineFit(outLattice, fittedParameters, fitter, inLattice, 1, mask, 
 		    True);
 	AlwaysAssertExit(allNearAbs((Array<Float>&)outCube, 0.0f, 3.e-2));
@@ -118,9 +118,9 @@ int main() {
 	       }
 	     }
 	}
-	ArrayLattice<Float> inLattice(cube.ac());
+	ArrayLattice<Float> inLattice(cube);
 	Cube<Float> outCube(nx,ny,nz);
-	ArrayLattice<Float> outLattice(outCube.ac());
+	ArrayLattice<Float> outLattice(outCube);
 	baselineFit(outLattice, fittedParameters, fitter, inLattice, 2, mask, 
 		    True);
 	AlwaysAssertExit(allNearAbs((Array<Float>&)outCube, 0.0f, 2.0e-2));

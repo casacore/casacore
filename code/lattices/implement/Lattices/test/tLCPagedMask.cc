@@ -1,5 +1,5 @@
 //# tLCPagedMask.cc:  mechanical test of the LCPagedMask class
-//# Copyright (C) 1998
+//# Copyright (C) 1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -49,7 +49,7 @@ void testVectorROIter (const Lattice<Bool>& lattice, Bool firstValue,
     RO_LatticeIterator<Bool>  iter(lattice, step);
     Bool value = firstValue;
     for (iter.reset(); !iter.atEnd(); iter++){
-        AlwaysAssert(allEQ(iter.vectorCursor().ac(), value), AipsError);
+        AlwaysAssert(allEQ(iter.vectorCursor(), value), AipsError);
 	if (alternates) {
 	    value = ToBool(!value);
 	}
@@ -84,7 +84,7 @@ main ()
       arr(IPosition(2,0,0)) = False;
       LCPagedMask mask(latticeShape, "tLCPagedMask_tmp.data");
       mask.put (arr);
-      cout << mask.hasMask() << mask.maskArray().ac() << endl;
+      cout << mask.hasMask() << mask.maskArray() << endl;
     }
     {
       IPosition latticeShape(4, 16, 12, 4, 32);

@@ -151,8 +151,8 @@ int main(int argc, char **argv)
    }
 
 //
-//cout << "pixels=" << pixels.ac() << endl;
-//cout << "sigma=" << sigma.ac() << endl;
+//cout << "pixels=" << pixels << endl;
+//cout << "sigma=" << sigma << endl;
 //cout << "norm=" << norm << endl;
 //cout << endl << endl;
 
@@ -175,8 +175,8 @@ int main(int argc, char **argv)
 // interface uses axial ratio)
 //
    parameters(4) = parameters(4)*parameters(3);  
-   cout << "      mask   = " << iMask.ac() << endl;
-   cout << "True values  = " << parameters.ac() << endl;
+   cout << "      mask   = " << iMask << endl;
+   cout << "True values  = " << parameters << endl;
 
 //
 // Set starting guess
@@ -185,7 +185,7 @@ int main(int argc, char **argv)
    for (uInt i=0; i<parameters.nelements(); i++) {
       startParameters(i) = parameters(i) * 0.9;
    }
-   cout << "Start values = " << startParameters.ac() << endl;
+   cout << "Start values = " << startParameters << endl;
 //
 // Make fitter and set state
 //
@@ -201,28 +201,28 @@ int main(int argc, char **argv)
 
    Fit2D::ErrorTypes status = fitter.fit(pixels, pixelMask, sigma, norm);
    if (status==Fit2D::OK) {
-      cout << "Solution     = " << fitter.availableSolution().ac() << endl;
+      cout << "Solution     = " << fitter.availableSolution() << endl;
       Vector<Double> cv = fitter.covariance().diagonal();
-      cout << "Covariance     = " << cv.ac() << endl;
-//      cout << "SNR        = " << fitter.availableSolution().ac() / 
-//                             sqrt(cv.ac()).ac() << endl;
+      cout << "Covariance     = " << cv << endl;
+//      cout << "SNR        = " << fitter.availableSolution() / 
+//                             sqrt(cv) << endl;
       cout << "Chi squared = " << fitter.chiSquared() << endl << endl;
       cout << "Number of iterations = " << fitter.numberIterations() << endl;
       cout << "Number of points     = " << fitter.numberPoints() << endl;
 //
 //   when i return errors, make a test to 3sigma or summfink
-//      if (!allNear(fitter.availableSolution().ac(), parameters.ac(), 1e-6)) {
+//      if (!allNear(fitter.availableSolution(), parameters, 1e-6)) {
 //         throw (AipsError("Solution not accurate to 1e-6"));
 //      }
 //
       cout << "Number of models = " << fitter.nModels() << endl;
       for (uInt i=0; i<fitter.nModels(); i++) {
         cout << "Model " << i << " of type " << Fit2D::type(fitter.type(i)) <<
-                " has solution "  << fitter.availableSolution(i).ac() << endl;
+                " has solution "  << fitter.availableSolution(i) << endl;
       }
 //
       fitter.residual(resid, pixels);
-      cout << "Residual min and max = " << min(resid.ac()) << " " << max(resid.ac()) << endl;
+      cout << "Residual min and max = " << min(resid) << " " << max(resid) << endl;
    } else {
      logger << fitter.errorMessage() << endl;
    }
@@ -232,7 +232,7 @@ int main(int argc, char **argv)
       cout << endl << endl << "Test copy constructor" << endl;
       Fit2D fitter2(fitter);
       Fit2D::ErrorTypes status = fitter2.fit(pixels, pixelMask, sigma, norm);      
-      if (!allEQ(fitter.availableSolution().ac(),fitter2.availableSolution().ac()) ||
+      if (!allEQ(fitter.availableSolution(),fitter2.availableSolution()) ||
          fitter.numberIterations() != fitter2.numberIterations() ||
          fitter.chiSquared() != fitter2.chiSquared() ||
          fitter.numberPoints() != fitter2.numberPoints()) {
@@ -249,7 +249,7 @@ int main(int argc, char **argv)
       Fit2D fitter2(logger);
       fitter2 = fitter;
       Fit2D::ErrorTypes status = fitter2.fit(pixels, pixelMask, sigma, norm);
-      if (!allEQ(fitter.availableSolution().ac(),fitter2.availableSolution().ac()) ||
+      if (!allEQ(fitter.availableSolution(),fitter2.availableSolution()) ||
          fitter.numberIterations() != fitter2.numberIterations() ||
          fitter.chiSquared() != fitter2.chiSquared() ||
          fitter.numberPoints() != fitter2.numberPoints()) {

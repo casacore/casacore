@@ -1402,7 +1402,7 @@ ImageInterface<T>* ImageMoments<T>::smoothImage (String& smoothName)
 
 // Check axes
 
-   Int axMax = max(smoothAxes_p.ac()) + 1;
+   Int axMax = max(smoothAxes_p) + 1;
    if (axMax > Int(pInImage_p->ndim())) {
       error_p = "You have specified an illegal smoothing axis";
       return 0;
@@ -1554,7 +1554,7 @@ Bool ImageMoments<T>::whatIsTheNoise (T& sigma,
    ImageUtilities::stretchMinMax(xMinF, xMaxF);
 
    IPosition yMinPos(1), yMaxPos(1);
-   minMax (yMin, yMax, yMinPos, yMaxPos, counts.ac());
+   minMax (yMin, yMax, yMinPos, yMaxPos, counts);
    Float yMinF = 0.0;
    Float yMaxF = convertT(yMax);
    yMaxF += yMaxF/20;
@@ -1696,7 +1696,7 @@ Bool ImageMoments<T>::whatIsTheNoise (T& sigma,
       } catch (AipsError x) {
         fail = True;
       } end_try;
-//      os_p << LogIO::NORMAL << "Solution=" << solution.ac() << LogIO::POST;
+//      os_p << LogIO::NORMAL << "Solution=" << solution << LogIO::POST;
 
 
 // Return values of fit 

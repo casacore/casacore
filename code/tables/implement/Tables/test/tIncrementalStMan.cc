@@ -89,7 +89,7 @@ main (int argc, char** argv) {
 
 void init (Cube<float>& arrf, Vector<DComplex>& arrdc, Cube<Bool>& arrb)
 {
-    indgen (arrf.ac());
+    indgen (arrf);
     arrdc(0) = DComplex(1.2, 3.4);
     arrdc(1) = DComplex(-2.3, 5.6);
     IPosition shape(arrb.shape());
@@ -183,12 +183,12 @@ void a (uInt bucketSize, uInt mode)
 		arr7.put (i, arrb);
 	    }
 	}
-	arrf.ac() += (float)(arrf.nelements());
-	arrdc.ac() += DComplex(2, 3);
+	arrf += (float)(arrf.nelements());
+	arrdc += DComplex(2, 3);
     }
     if (mode == 2) {
 	Vector<float> vecae = ae.getColumn();
-	vecae.ac() -= float(1);
+	vecae -= float(1);
 	ae.putColumn (vecae);
     }
     String str("abc");
@@ -212,7 +212,7 @@ void a (uInt bucketSize, uInt mode)
 	    arr3.put (i, arrf);
 	    arr3.put (i+10, arrf);
 	}
-	arrf.ac() += (float)(arrf.nelements()); 
+	arrf += (float)(arrf.nelements()); 
     }
 
     for (i=0; i<19; i++) {
@@ -224,7 +224,7 @@ void a (uInt bucketSize, uInt mode)
 	cout << vecae(i) << ", ";
     }
     cout << endl;
-    vecae.ac() += float(1);
+    vecae += float(1);
     ae.putColumn (vecae);
     for (i=0; i<19; i++) {
 	cout << af(i) << ", ";
@@ -330,26 +330,26 @@ void b (const Vector<Bool>& removedRows)
 	    if (Int(af(rownr).length()) != afvalues[i])
 		cout << i << "," << rownr << " af-mismatch: "
 		    << af(rownr) << endl;
-	    if (!allEQ (arr1(rownr), arrf.ac() + 24*arr1Start[i]))
+	    if (!allEQ (arr1(rownr), arrf + 24*arr1Start[i]))
 		cout << i << "," << rownr << " arr1-mismatch: "
 		    << arr1(rownr) << endl;
-	    if (!allEQ (arr2(rownr), arrf.ac() + 24*arr2Start[i]))
+	    if (!allEQ (arr2(rownr), arrf + 24*arr2Start[i]))
 		cout << i << "," << rownr << " arr2-mismatch: "
 		    << arr2(rownr) << endl;
-	    if (!allEQ(arr3(rownr), arrf.ac() + 24*arr3Start[i]))
+	    if (!allEQ(arr3(rownr), arrf + 24*arr3Start[i]))
 		cout << i << "," << rownr << " arr3-mismatch: "
 		    << arr3(rownr) << endl;
 	    uInt j = min(9U,i);
-	    if (!allEQ(arr5(rownr), arrdc.ac() + DComplex(2*j, 3*j)))
+	    if (!allEQ(arr5(rownr), arrdc + DComplex(2*j, 3*j)))
 		cout << i << "," << rownr << " arr5-mismatch: "
 		    << arr5(rownr) << endl;
-	    if (!allEQ(arr6(rownr), arrb.ac()))
+	    if (!allEQ(arr6(rownr), arrb))
 		cout << i << "," << rownr << " arr6-mismatch: "
 		    << arr6(rownr) << endl;
 	    if (i == 19) {
 		arrb(0,0,0) = True;
 	    }
-	    if (!allEQ(arr7(rownr), arrb.ac()))
+	    if (!allEQ(arr7(rownr), arrb))
 		cout << i << "," << rownr << " arr7-mismatch: "
 		    << arr7(rownr) << endl;
 	    rownr++;
@@ -371,8 +371,8 @@ void b (const Vector<Bool>& removedRows)
 				      IPosition(3,1,bshape(1),bshape(2))),
 			       result);
 	    }
-	    if (!allEQ(arrb1.ac(), arrb.ac()))
-		cout << i << " arr6-slice-mismatch: " << arrb1.ac() << ", ";
+	    if (!allEQ(arrb1, arrb))
+		cout << i << " arr6-slice-mismatch: " << arrb1 << ", ";
 	    arrb1.set (True);
 	}
 	for (i=0; i<19; i++) {
@@ -386,8 +386,8 @@ void b (const Vector<Bool>& removedRows)
 				     IPosition(3,1,bshape(1),bshape(2))),
 			       result);
 	    }
-	    if (!allEQ(arrb1.ac(), arrb.ac()))
-		cout << i << " arr7-slice-mismatch: " << arrb1.ac() << ", ";
+	    if (!allEQ(arrb1, arrb))
+		cout << i << " arr7-slice-mismatch: " << arrb1 << ", ";
 	    arrb1.set (True);
 	}
     }
@@ -483,7 +483,7 @@ void f()
     ArrayColumn<Bool> arr7(rwtab, "arr7");
     Vector<Bool> vecb(10);
     Vector<float> vecf(10);
-    indgen (vecf.ac());
+    indgen (vecf);
     //# Try to change some arrays (which cannot be done).
     try {
 	arr1.put (0, vecf);
@@ -504,8 +504,8 @@ void f()
     Array<float> arrrow12 = arr2(12);
     arr2.put (0, vecf);
     arr2.put (12, vecf);
-    AlwaysAssertExit (allEQ (arr2(0), vecf.ac()));
-    AlwaysAssertExit (allEQ (arr2(12), vecf.ac()));
+    AlwaysAssertExit (allEQ (arr2(0), vecf));
+    AlwaysAssertExit (allEQ (arr2(12), vecf));
     arr2.put (0, arrrow0);
     arr2.put (12, arrrow12);
     b (removedRows);

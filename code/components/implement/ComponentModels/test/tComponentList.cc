@@ -330,11 +330,11 @@ int main() {
       // function uses the non-const version which checks the RO flag. So I
       // recommend if opening a Model file readonly to always use
       // const ComponentList model(...)
-      AlwaysAssert(allNear(RW_Model.component(1).flux().value().ac(), 
-			   newFlux.value().ac(), C::dbl_epsilon),
+      AlwaysAssert(allNear(RW_Model.component(1).flux().value(), 
+			   newFlux.value(), C::dbl_epsilon),
  		   AipsError);
-      AlwaysAssert(!allNear(model.component(1).flux().value().ac(), 
-			    newFlux.value().ac(), C::dbl_epsilon),
+      AlwaysAssert(!allNear(model.component(1).flux().value(), 
+			    newFlux.value(), C::dbl_epsilon),
  		   AipsError);
       RW_Model.remove(0);
       AlwaysAssert(model.nelements() == 6, AipsError);
@@ -364,24 +364,24 @@ int main() {
       AlwaysAssert(modified.component(2).shape() == ComponentType::GAUSSIAN,
    		   AipsError);
       Flux<Double> expectedFlux(1.0);
-      AlwaysAssert(!allNear(original.component(0).flux().value().ac(),
-			    expectedFlux.value().ac(), C::dbl_epsilon), 
+      AlwaysAssert(!allNear(original.component(0).flux().value(),
+			    expectedFlux.value(), C::dbl_epsilon), 
 		   AipsError);
-      AlwaysAssert(!allNear(original.component(1).flux().value().ac(),
-			    expectedFlux.value().ac(), C::dbl_epsilon),
+      AlwaysAssert(!allNear(original.component(1).flux().value(),
+			    expectedFlux.value(), C::dbl_epsilon),
 		   AipsError);
-      AlwaysAssert(allNear(modified.component(0).flux().value().ac(),
-			   expectedFlux.value().ac(), C::dbl_epsilon),
+      AlwaysAssert(allNear(modified.component(0).flux().value(),
+			   expectedFlux.value(), C::dbl_epsilon),
 		   AipsError);
       ComponentList newList(modified);
       newList.remove(0);
       expectedFlux.setValue(2.0);
       newList.component(0).flux() = expectedFlux;
-      AlwaysAssert(!allNear(modified.component(0).flux().value().ac(), 
-			    expectedFlux.value().ac(), C::dbl_epsilon),
+      AlwaysAssert(!allNear(modified.component(0).flux().value(), 
+			    expectedFlux.value(), C::dbl_epsilon),
 		   AipsError);
-      AlwaysAssert(allNear(modified.component(1).flux().value().ac(),
-			   expectedFlux.value().ac(), C::dbl_epsilon),
+      AlwaysAssert(allNear(modified.component(1).flux().value(),
+			   expectedFlux.value(), C::dbl_epsilon),
 		   AipsError);
       newList = original;
       AlwaysAssert(newList.nelements() == 6, AipsError);
@@ -389,11 +389,11 @@ int main() {
       AlwaysAssert(original.nelements() == 6, AipsError);
       AlwaysAssert(newList.nelements() == 5, AipsError);
       newList.component(0).flux() = expectedFlux;
-      AlwaysAssert(!allNear(original.component(0).flux().value().ac(),
-			    expectedFlux.value().ac(), C::dbl_epsilon),
+      AlwaysAssert(!allNear(original.component(0).flux().value(),
+			    expectedFlux.value(), C::dbl_epsilon),
 		   AipsError);
-      AlwaysAssert(allNear(original.component(1).flux().value().ac(),
-			   expectedFlux.value().ac(), C::dbl_epsilon),
+      AlwaysAssert(allNear(original.component(1).flux().value(),
+			   expectedFlux.value(), C::dbl_epsilon),
 		   AipsError);
       cout << "Passed the copy and assignment tests" << endl;
       original.rename("junk.model", Table::Scratch);

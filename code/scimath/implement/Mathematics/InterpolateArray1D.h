@@ -1,5 +1,5 @@
 //# Interpolate1DArray.h: Interpolation in last dimension of an Array
-//# Copyright (C) 1997
+//# Copyright (C) 1997,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -88,7 +88,7 @@ template <class T> class Array;
 // produce (xout,yout) pairs.
 // <srcblock>
 //  Vector<Float> xin(4); indgen(xin); 
-//  Vector<Double> yin(4); indgen(yin); yin.ac() = yin.ac()*yin.ac()*yin.ac();
+//  Vector<Double> yin(4); indgen(yin); yin = yin*yin*yin;
 //  Vector<Float> xout(20); 
 //  for (Int i=0; i<20; i++) xout(i) = 1 + i*0.1;
 //  Vector<Double> yout;

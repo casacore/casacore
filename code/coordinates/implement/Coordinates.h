@@ -179,7 +179,7 @@
 //	cout << "Error: " << radec.errorMessage() << endl;          // 15
 //	return 1;                                                   // 16
 //    }                                                             // 17
-//    cout << world.ac() << " <--- " << pixel.ac() << endl;         // 18
+//    cout << world << " <--- " << pixel << endl;         // 18
 // </srcblock>
 // There is an overloaded "toWorld" function that produces an MDirection
 // in case you want to, e.g., find out what the position in B1950 coordinates

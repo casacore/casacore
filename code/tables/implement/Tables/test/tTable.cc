@@ -125,21 +125,21 @@ void a (Bool doExcp)
     ArrayColumn<float> arr3(tab,"arr3");
     Cube<float> arrf(IPosition(3,2,3,4));
     char str[8];
-    indgen (arrf.ac());
+    indgen (arrf);
     for (i=0; i<10; i++) {
 	ab1.put (i, i);
 	ad.put (i, i+2);
 	arr1.put(i,arrf);
 	arr2.put(i,arrf);
 	arr3.put(i,arrf);
-	arrf.ac() += (float)(arrf.nelements());
+	arrf += (float)(arrf.nelements());
     }
     ag1.putColumn (ad);
     Int abval;
     uInt adval;
     DComplex agval;
     Cube<float> arrval(IPosition(3,2,3,4));
-    arrf.ac() -= (float)(arrf.nelements()*tab.nrow());
+    arrf -= (float)(arrf.nelements()*tab.nrow());
     for (i=0; i<10; i++) {
 	ab2.get (i, abval);
 	ad.get (i, adval);
@@ -149,18 +149,18 @@ void a (Bool doExcp)
 		 << ", " << adval << ", " << agval << endl;
 	}
 	arr1.get (i, arrval);
-	if (!allEQ (arrval.ac(), arrf.ac())) {
+	if (!allEQ (arrval, arrf)) {
 	    cout << "error in arr1 in row " << i << endl;
 	}
 	arr2.get (i, arrval);
-	if (!allEQ (arrval.ac(), arrf.ac())) {
+	if (!allEQ (arrval, arrf)) {
 	    cout << "error in arr2 in row " << i << endl;
 	}
 	arr3.get (i, arrval);
-	if (!allEQ (arrval.ac(), arrf.ac())) {
+	if (!allEQ (arrval, arrf)) {
 	    cout << "error in arr3 in row " << i << endl;
 	}
-	arrf.ac() += (float)(arrf.nelements());
+	arrf += (float)(arrf.nelements());
     }
 
     // Add a column.
@@ -283,7 +283,7 @@ void b (Bool doExcp)
     Slicer nslice (tmp, tmp, tmp,  Slicer::endIsLength);
     Slicer nslice2(Slice(0,1), Slice(0,1,2), Slice(0,2,2),
 		   Slicer::endIsLength);
-    indgen (arrf.ac());
+    indgen (arrf);
     for (i=0; i<10; i++) {
 	cout << "get scalar row " << i << endl;
 	ab2.get (i, abval);
@@ -302,27 +302,27 @@ void b (Bool doExcp)
 		 << ", " << agval << endl;
 	}
 	arr1.get (i, arrval);
-	if (!allEQ (arrval.ac(), arrf.ac())) {
+	if (!allEQ (arrval, arrf)) {
 	    cout << "error in arr1 in row " << i << endl;
 	}
 	arr2.get (i, arrval);
-	if (!allEQ (arrval.ac(), arrf.ac())) {
+	if (!allEQ (arrval, arrf)) {
 	    cout << "error in arr2 in row " << i << endl;
 	}
 	cout << "get array row " << i << endl;
 	arr3.get (i, arrval);
-	if (!allEQ (arrval.ac(), arrf.ac())) {
+	if (!allEQ (arrval, arrf)) {
 	    cout << "error in arr3 in row " << i << endl;
 	}
 	arr2.getSlice (i, nslice, arrval);
-	if (!allEQ (arrval.ac(), arrf.ac())) {
+	if (!allEQ (arrval, arrf)) {
 	    cout << "error in arr2 (entire slice) in row " << i << endl;
 	}
 	arr2.getSlice (i, nslice2, arrvalslice);
-	if (!allEQ (arrval.ac(), arrf.ac())) {
+	if (!allEQ (arrval, arrf)) {
 	    cout << "error in arr2 (partial slice) in row " << i << endl;
 	}
-	arrf.ac() += (float)(arrf.nelements());
+	arrf += (float)(arrf.nelements());
     }
     Vector<Int> abvec = ab2.getColumn();
     cout << tab.nrow() << " " << abvec.nelements() << endl;
@@ -368,7 +368,7 @@ void b (Bool doExcp)
 	cout << "sortab does not contain 10 rows" << endl;
     }
     ROScalarColumn<float> sorae(sortab, "ae");
-    cout << sorae.getColumn().ac() << endl;
+    cout << sorae.getColumn() << endl;
     cout << "#columns in sortab: " << sortab.tableDesc().ncolumn() << endl;
 
     Table sortab2 = sortab.sort ("ad");
@@ -376,7 +376,7 @@ void b (Bool doExcp)
 	cout << "sortab2 does not contain 10 rows" << endl;
     }
     ROScalarColumn<uInt> sorad(sortab2, "ad");
-    cout << sorad.getColumn().ac() << endl;
+    cout << sorad.getColumn() << endl;
     cout << "#columns in sortab2: " << sortab2.tableDesc().ncolumn() << endl;
     cout << "sortab2 type = " << sortab2.tableInfo().type() << endl;
     cout << "sortab2 subtype = " << sortab2.tableInfo().subType() << endl;
@@ -428,7 +428,7 @@ void b (Bool doExcp)
 	cout << "seltab1 does not contain 4 rows" << endl;
     }
     ROScalarColumn<Int> sel1ab(seltab1, "ab");
-    cout << sel1ab.getColumn().ac() << endl;
+    cout << sel1ab.getColumn() << endl;
     cout << "#columns in seltab1: " << seltab1.tableDesc().ncolumn() << endl;
 
     // Project the table.
@@ -441,7 +441,7 @@ void b (Bool doExcp)
 	cout << "seltab2 does not contain 4 rows" << endl;
     }
     ROScalarColumn<Int> sel2ab(seltab2, "ab");
-    cout << sel2ab.getColumn().ac() << endl;
+    cout << sel2ab.getColumn() << endl;
     cout << "#columns in seltab2: " << seltab2.tableDesc().ncolumn() << endl;
 
     // Get a subset via a mask.
@@ -453,7 +453,7 @@ void b (Bool doExcp)
 	cout << "seltab3 does not contain 2 rows" << endl;
     }
     ROScalarColumn<Int> sel3ab(seltab3, "ab");
-    cout << sel3ab.getColumn().ac() << endl;
+    cout << sel3ab.getColumn() << endl;
     cout << "#columns in seltab3: " << seltab3.tableDesc().ncolumn() << endl;
     seltab3.tableDesc().show();
 
@@ -462,7 +462,7 @@ void b (Bool doExcp)
 	cout << "xortab does not contain 6 rows" << endl;
     }
     ROScalarColumn<Int> xorab(xortab, "ab");
-    cout << xorab.getColumn().ac() << endl;
+    cout << xorab.getColumn() << endl;
     cout << "#columns in xortab: " << xortab.tableDesc().ncolumn() << endl;
 
     Table or1tab = xortab | seltab3;
@@ -470,7 +470,7 @@ void b (Bool doExcp)
 	cout << "or1tab does not contain 8 rows" << endl;
     }
     ROScalarColumn<Int> or1ab(or1tab, "ab");
-    cout << or1ab.getColumn().ac() << endl;
+    cout << or1ab.getColumn() << endl;
     cout << "#columns in or1tab: " << or1tab.tableDesc().ncolumn() << endl;
 
     Table or2tab = seltab3 | xortab;
@@ -478,7 +478,7 @@ void b (Bool doExcp)
 	cout << "or2tab does not contain 8 rows" << endl;
     }
     ROScalarColumn<Int> or2ab(or2tab, "ab");
-    cout << or2ab.getColumn().ac() << endl;
+    cout << or2ab.getColumn() << endl;
     cout << "#columns in or2tab: " << or2tab.tableDesc().ncolumn() << endl;
 
     Table exprtab = sortab(sortab.col("ab") >= 5);
@@ -486,7 +486,7 @@ void b (Bool doExcp)
 	cout << "exprtab does not contain 5 rows" << endl;
     }
     ROScalarColumn<Int> exprab(exprtab, "ab");
-    cout << exprab.getColumn().ac() << endl;
+    cout << exprab.getColumn() << endl;
 
     Table expr2tab = tab(tab.col("af") == "V3"  ||
 			      tab.col("ab") >= 5  &&  tab.col("ab") < 8);
@@ -494,7 +494,7 @@ void b (Bool doExcp)
 	cout << "expr2tab does not contain 4 rows" << endl;
     }
     ROScalarColumn<Int> expr2ab(expr2tab, "ab");
-    cout << expr2ab.getColumn().ac() << endl;
+    cout << expr2ab.getColumn() << endl;
 }
 
 //# Test deletion of rows, array of Strings, and some more.
@@ -572,7 +572,7 @@ void c (Bool doExcp)
 					   "1,2,34,5,6,7,8,9,0,101"));
     uInt i;
     char str[8];
-    indgen (arrf.ac());
+    indgen (arrf);
     for (i=0; i<10; i++) {
 	tab.addRow();
 	ab1.put (i, i);
@@ -584,10 +584,10 @@ void c (Bool doExcp)
 	arr1.put(i,arrf);
 	arr2.put(i,arrf);
 	arr3.put(i,vecstr(Slice(i*2,2)));
-	arrf.ac() += (float)(arrf.nelements());
+	arrf += (float)(arrf.nelements());
     }
     ag1.putColumn (ad);
-    arrf.ac() -= (float)(arrf.nelements()*tab.nrow());
+    arrf -= (float)(arrf.nelements()*tab.nrow());
 
     //# Select some rows from the table.
     Table expr2tab = tab(tab.col("af") == "V3"  ||
@@ -596,7 +596,7 @@ void c (Bool doExcp)
 	cout << "expr2tab does not contain 4 rows" << endl;
     }
     ROScalarColumn<Int> expr2ab(expr2tab, "ab");
-    cout << expr2ab.getColumn().ac() << endl;
+    cout << expr2ab.getColumn() << endl;
 
     //# Remove 2 rows from the selected rows.
     expr2tab.removeRow (1);
@@ -604,14 +604,14 @@ void c (Bool doExcp)
     if (expr2tab.nrow() != 2) {
 	cout << "expr2tab does not contain 2 rows" << endl;
     }
-    cout << expr2ab.getColumn().ac() << endl;
+    cout << expr2ab.getColumn() << endl;
     
     //# Remove those rows.
     tab.removeRow (expr2tab.rowNumbers());
     if (tab.nrow() != 8) {
 	cout << "tab does not contain 8 rows" << endl;
     }
-    cout << ab2.getColumn().ac() << endl;
+    cout << ab2.getColumn() << endl;
     tab.removeRow (7);
     if (tab.nrow() != 7) {
 	cout << "tab does not contain 7 rows" << endl;
@@ -623,7 +623,7 @@ void c (Bool doExcp)
 	    cout << x.getMesg() << endl;
 	} end_try;
     }
-    cout << ab2.getColumn().ac() << endl;
+    cout << ab2.getColumn() << endl;
 
     //# Check if the values are still okay.
     Int abval;
@@ -639,28 +639,28 @@ void c (Bool doExcp)
 		 << ", " << adval << ", " << agval << endl;
 	}
 	arr1.get (i, arrval);
-	if (!allEQ (arrval.ac(), arrf.ac() + float(arrf.nelements()*abval))) {
+	if (!allEQ (arrval, arrf + float(arrf.nelements()*abval))) {
 	    cout << "after remove error in arr1 in row " << i << endl;
 	}
 	arr2.get (i, arrval);
-	if (!allEQ (arrval.ac(), arrf.ac() + float(arrf.nelements()*abval))) {
+	if (!allEQ (arrval, arrf + float(arrf.nelements()*abval))) {
 	    cout << "after remove error in arr2 in row " << i << endl;
 	}
-	if (!allEQ (arr3(i), vecstr(Slice(2*abval,2)).ac())) {
+	if (!allEQ (arr3(i), vecstr(Slice(2*abval,2)))) {
 	    cout << "after remove error in arr3 in row " << i << endl;
 	}
 	cout << arr3(i) << endl;
     }
     Matrix<String> matstr;
     arr3.getColumn (matstr);
-    cout << matstr.ac() << endl;
+    cout << matstr << endl;
 }
 
 
 void d()
 {
     Vector<Complex> arrf2(100);
-    indgen (arrf2.ac());
+    indgen (arrf2);
     {
 	// Build the table description.
 	TableDesc td("", "1", TableDesc::Scratch);
@@ -690,8 +690,8 @@ void d()
 	Vector<Complex> arrf(IPosition(1,3));
 	Matrix<Int>     arri(IPosition(2,2,2));
 	Vector<String>  arrs (stringToVector ("aa,bbb"));
-	indgen (arrf.ac());
-	indgen (arri.ac());
+	indgen (arrf);
+	indgen (arri);
 	for (i=0; i<10000; i++) {
 	    tab.addRow();
 	    ab.put (i, i);
@@ -699,8 +699,8 @@ void d()
 	    arr1.put(i,arrs);
 	    arr2.put(i,arrf);
 	    arr3.put(i,arri);
-	    arrf.ac() += (Complex)(arrf.nelements());
-	    arri.ac() += (Int)(arri.nelements());
+	    arrf += (Complex)(arrf.nelements());
+	    arri += (Int)(arri.nelements());
 	}
 	ag1.putColumn (ad);
     }
@@ -718,8 +718,8 @@ void d()
 	Vector<Complex> arrf(IPosition(1,3));
 	Matrix<Int>     arri(IPosition(2,2,2));
 	Vector<String>  arrs (stringToVector ("aa,bbb"));
-	indgen (arrf.ac());
-	indgen (arri.ac());
+	indgen (arrf);
+	indgen (arri);
 	uInt i;
 	for (i=0; i<10; i++) {
 	    ab.get (i, abval);
@@ -729,17 +729,17 @@ void d()
 		cout << "error in row " << i << ": " << abval
 		    << ", " << adval << ", " << agval << endl;
 	    }
-	    if (!allEQ (arr1(i), arrs.ac())) {
+	    if (!allEQ (arr1(i), arrs)) {
 		cout << "error in arr1 in row " << i << endl;
 	    }
-	    if (!allEQ (arr2(i), arrf.ac())) {
+	    if (!allEQ (arr2(i), arrf)) {
 		cout << "error in arr2 in row " << i << endl;
 	    }
-	    if (!allEQ (arr3(i), arri.ac())) {
+	    if (!allEQ (arr3(i), arri)) {
 		cout << "error in arr3 in row " << i << endl;
 	    }
-	    arrf.ac() += (Complex)(arrf.nelements());
-	    arri.ac() += (Int)(arri.nelements());
+	    arrf += (Complex)(arrf.nelements());
+	    arri += (Int)(arri.nelements());
 	}
 
 	// Open the same table read/write.
@@ -752,11 +752,11 @@ void d()
 	ArrayColumn<Complex> rwarr2(rwtab,"arr2");
 	rwab.put (0,1);
 	rwarr2.put (0,arrf);
-	if (!allEQ( arr2(0), arrf.ac())) {
+	if (!allEQ( arr2(0), arrf)) {
 	    cout << "first error in arr2" << endl;
 	}
 	rwarr2.put (0,arrf2);
-	if (!allEQ( arr2(0), arrf2.ac())) {
+	if (!allEQ( arr2(0), arrf2)) {
 	    cout << "second error in arr2" << endl;
 	}
     }
@@ -774,8 +774,8 @@ void d()
 	Vector<Complex> arrf(IPosition(1,3));
 	Matrix<Int>     arri(IPosition(2,2,2));
 	Vector<String>  arrs (stringToVector ("aa,bbb"));
-	indgen (arrf.ac());
-	indgen (arri.ac());
+	indgen (arrf);
+	indgen (arri);
 	uInt i;
 	uInt nrow = tab.nrow();
 	for (i=0; i<nrow; i++) {
@@ -789,21 +789,21 @@ void d()
 		cout << "error in row " << i << ": " << abval
 		    << ", " << adval << ", " << agval << endl;
 	    }
-	    if (!allEQ (arr1(i), arrs.ac())) {
+	    if (!allEQ (arr1(i), arrs)) {
 		cout << "error in arr1 in row " << i << endl;
 	    }
 	    if (i > 0) {
-		if (!allEQ (arr2(i), arrf.ac())) {
+		if (!allEQ (arr2(i), arrf)) {
 		    cout << "error in arr2 in row " << i << endl;
 		}
 	    }
-	    if (!allEQ (arr3(i), arri.ac())) {
+	    if (!allEQ (arr3(i), arri)) {
 		cout << "error in arr3 in row " << i << endl;
 	    }
-	    arrf.ac() += (Complex)(arrf.nelements());
-	    arri.ac() += (Int)(arri.nelements());
+	    arrf += (Complex)(arrf.nelements());
+	    arri += (Int)(arri.nelements());
 	}
-	if (!allEQ( arr2(0), arrf2.ac())) {
+	if (!allEQ( arr2(0), arrf2)) {
 	    cout << "error in rereading arr2" << endl;
 	}
     }

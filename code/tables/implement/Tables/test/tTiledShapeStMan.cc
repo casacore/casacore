@@ -1,5 +1,5 @@
 //# tTiledShapeStMan.cc: Test program for the TiledShapeStMan classes
-//# Copyright (C) 1998
+//# Copyright (C) 1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -78,8 +78,8 @@ void writeFixed()
 
     Vector<float> freqValues(25);
     Vector<float> polValues(16);
-    indgen (freqValues.ac(), float(200));
-    indgen (polValues.ac(), float(300));
+    indgen (freqValues, float(200));
+    indgen (polValues, float(300));
     float timeValue;
     timeValue = 34;
     ArrayColumn<float> freq (table, "Freq");
@@ -90,40 +90,40 @@ void writeFixed()
     Matrix<float> array(IPosition(2,16,25));
     Matrix<float> result(IPosition(2,16,25));
     uInt i;
-    indgen (array.ac());
+    indgen (array);
     for (i=0; i<101; i++) {
 	table.addRow();
 	data.put (i, array);
-	weight.put (i, array.ac()+float(100));
+	weight.put (i, array+float(100));
 	time.put (i, timeValue);
-	array.ac() += float(200);
+	array += float(200);
 	timeValue += 5;
     }
     freq.put (0, freqValues);
     pol.put (0, polValues);
-    indgen (array.ac());
-    indgen (freqValues.ac(), float(200));
-    indgen (polValues.ac(), float(300));
+    indgen (array);
+    indgen (freqValues, float(200));
+    indgen (polValues, float(300));
     timeValue = 34;
     for (i=0; i<table.nrow(); i++) {
 	data.get (i, result);
-	if (! allEQ (array.ac(), result.ac())) {
+	if (! allEQ (array, result)) {
 	    cout << "mismatch in data row " << i << endl;
 	}
 	weight.get (i, result);
-	if (! allEQ (array.ac() + float(100), result.ac())) {
+	if (! allEQ (array + float(100), result)) {
 	    cout << "mismatch in weight row " << i << endl;
 	}
-	if (! allEQ (freq(i), freqValues.ac())) {
+	if (! allEQ (freq(i), freqValues)) {
 	    cout << "mismatch in freq row " << i << endl;
 	}
-	if (! allEQ (pol(i), polValues.ac())) {
+	if (! allEQ (pol(i), polValues)) {
 	    cout << "mismatch in pol row " << i << endl;
 	}
 	if (time(i) != timeValue) {
 	    cout << "mismatch in time row " << i << endl;
 	}
-	array.ac() += float(200);
+	array += float(200);
 	timeValue += 5;
     }
 }
@@ -143,28 +143,28 @@ void readTable (const IPosition& dwShape)
 	Array<float> result(dwShape);
 	data.get (i, result);
 	Array<float> array(result.shape());
-	indgen (array.ac(), i*float(200));
+	indgen (array, i*float(200));
 	Vector<float> freqValues (result.shape()(1));
 	Vector<float> polValues (result.shape()(0));
-	indgen (freqValues.ac(), float(200));
-	indgen (polValues.ac(), float(300));
-	if (! allEQ (array.ac(), result.ac())) {
+	indgen (freqValues, float(200));
+	indgen (polValues, float(300));
+	if (! allEQ (array, result)) {
 	    cout << "mismatch in data row " << i << endl;
 	}
 	weight.get (i, result);
-	if (! allEQ (array.ac() + float(100), result.ac())) {
+	if (! allEQ (array + float(100), result)) {
 	    cout << "mismatch in weight row " << i << endl;
 	}
-	if (! allEQ (freq(i), freqValues.ac())) {
+	if (! allEQ (freq(i), freqValues)) {
 	    cout << "mismatch in freq row " << i << endl;
 	}
-	if (! allEQ (pol(i), polValues.ac())) {
+	if (! allEQ (pol(i), polValues)) {
 	    cout << "mismatch in pol row " << i << endl;
 	}
 	if (time(i) != timeValue) {
 	    cout << "mismatch in time row " << i << endl;
 	}
-	array.ac() += float(200);
+	array += float(200);
 	timeValue += 5;
     }
 }
@@ -192,8 +192,8 @@ void writeVar()
 
     Vector<float> freqValues(25);
     Vector<float> polValues(16);
-    indgen (freqValues.ac(), float(200));
-    indgen (polValues.ac(), float(300));
+    indgen (freqValues, float(200));
+    indgen (polValues, float(300));
     float timeValue;
     timeValue = 34;
     ArrayColumn<float> freq (table, "Freq");
@@ -203,7 +203,7 @@ void writeVar()
     ScalarColumn<float> time (table, "Time");
     Matrix<float> array(IPosition(2,16,25));
     uInt i;
-    indgen (array.ac());
+    indgen (array);
     for (i=0; i<5; i++) {
 	table.addRow();
 	cout << " pol.isDefined=" << pol.isDefined(i) << endl;
@@ -216,11 +216,11 @@ void writeVar()
 	cout << pol.shape(i) << freq.shape(i) << data.shape(i)
 	     << weight.shape(i) << endl;
 	data.put (i, array);
-	weight.put (i, array.ac()+float(100));
+	weight.put (i, array+float(100));
 	freq.put (i, freqValues);
 	pol.put (i, polValues);
 	time.put (i, timeValue);
-	array.ac() += float(200);
+	array += float(200);
 	timeValue += 5;
     }
 }
@@ -249,8 +249,8 @@ void writeFixVar()
 
     Vector<float> freqValues(25);
     Vector<float> polValues(16);
-    indgen (freqValues.ac(), float(200));
-    indgen (polValues.ac(), float(300));
+    indgen (freqValues, float(200));
+    indgen (polValues, float(300));
     float timeValue;
     timeValue = 34;
     ArrayColumn<float> freq (table, "Freq");
@@ -260,7 +260,7 @@ void writeFixVar()
     ScalarColumn<float> time (table, "Time");
     Matrix<float> array(IPosition(2,16,25));
     uInt i;
-    indgen (array.ac());
+    indgen (array);
     for (i=0; i<5; i++) {
 	table.addRow();
 	cout << " pol.isDefined=" << pol.isDefined(i) << endl;
@@ -273,11 +273,11 @@ void writeFixVar()
 	cout << pol.shape(i) << freq.shape(i) << data.shape(i)
 	     << weight.shape(i) << endl;
 	data.put (i, array);
-	weight.put (i, array.ac()+float(100));
+	weight.put (i, array+float(100));
 	freq.put (i, freqValues);
 	pol.put (i, polValues);
 	time.put (i, timeValue);
-	array.ac() += float(200);
+	array += float(200);
 	timeValue += 5;
     }
 }
@@ -304,7 +304,7 @@ void writeVarShaped()
     Table table(newtab);
 
     Vector<float> polValues(16);
-    indgen (polValues.ac(), float(300));
+    indgen (polValues, float(300));
     float timeValue;
     timeValue = 34;
     ArrayColumn<float> freq (table, "Freq");
@@ -326,11 +326,11 @@ void writeVarShaped()
 	cout << pol.shape(i) << freq.shape(i) << data.shape(i)
 	     << weight.shape(i) << endl;
 	Matrix<float> array(IPosition(2,16,n2));
-	indgen (array.ac(), i*float(200));
+	indgen (array, i*float(200));
 	Vector<float> freqValues(n2);
-	indgen (freqValues.ac(), float(200));
+	indgen (freqValues, float(200));
 	data.put (i, array);
-	weight.put (i, array.ac()+float(100));
+	weight.put (i, array+float(100));
 	freq.put (i, freqValues);
 	pol.put (i, polValues);
 	time.put (i, timeValue);

@@ -1,5 +1,5 @@
 //# tTiledColumnStMan.cc: Test program for the TiledColumnStMan classes
-//# Copyright (C) 1994,1995,1996
+//# Copyright (C) 1994,1995,1996,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -95,8 +95,8 @@ void writeFixed()
 
     Vector<float> freqValues(20);
     Vector<float> polValues(16);
-    indgen (freqValues.ac(), float(200));
-    indgen (polValues.ac(), float(300));
+    indgen (freqValues, float(200));
+    indgen (polValues, float(300));
     float timeValue;
     timeValue = 34;
     ArrayColumn<float> freq (table, "Freq");
@@ -107,38 +107,38 @@ void writeFixed()
     Matrix<float> array(IPosition(2,16,20));
     Matrix<float> result(IPosition(2,16,20));
     uInt i;
-    indgen (array.ac());
+    indgen (array);
     for (i=0; i<51; i++) {
 	table.addRow();
 	data.put (i, array);
-	weight.put (i, array.ac()+float(100));
+	weight.put (i, array+float(100));
 	time.put (i, timeValue);
-	array.ac() += float(200);
+	array += float(200);
 	timeValue += 5;
     }
     freq.put (0, freqValues);
     pol.put (0, polValues);
     timeValue = 34;
-    indgen (array.ac());
+    indgen (array);
     for (i=0; i<table.nrow(); i++) {
 	data.get (i, result);
-	if (! allEQ (array.ac(), result.ac())) {
+	if (! allEQ (array, result)) {
 	    cout << "mismatch in data row " << i << endl;
 	}
 	weight.get (i, result);
-	if (! allEQ (array.ac() + float(100), result.ac())) {
+	if (! allEQ (array + float(100), result)) {
 	    cout << "mismatch in weight row " << i << endl;
 	}
-	if (! allEQ (freq(i), freqValues.ac())) {
+	if (! allEQ (freq(i), freqValues)) {
 	    cout << "mismatch in freq row " << i << endl;
 	}
-	if (! allEQ (pol(i), polValues.ac())) {
+	if (! allEQ (pol(i), polValues)) {
 	    cout << "mismatch in pol row " << i << endl;
 	}
 	if (time(i) != timeValue) {
 	    cout << "mismatch in time row " << i << endl;
 	}
-	array.ac() += float(200);
+	array += float(200);
 	timeValue += 5;
     }
     ROTiledStManAccessor accessor (table, "TSMExample");
@@ -156,33 +156,33 @@ void readTable()
     ROScalarColumn<float> time (table, "Time");
     Vector<float> freqValues(20);
     Vector<float> polValues(16);
-    indgen (freqValues.ac(), float(200));
-    indgen (polValues.ac(), float(300));
+    indgen (freqValues, float(200));
+    indgen (polValues, float(300));
     float timeValue;
     timeValue = 34;
     Matrix<float> array(IPosition(2,16,20));
     Matrix<float> result(IPosition(2,16,20));
     uInt i;
-    indgen (array.ac());
+    indgen (array);
     for (i=0; i<table.nrow(); i++) {
 	data.get (i, result);
-	if (! allEQ (array.ac(), result.ac())) {
+	if (! allEQ (array, result)) {
 	    cout << "mismatch in data row " << i << endl;
 	}
 	weight.get (i, result);
-	if (! allEQ (array.ac() + float(100), result.ac())) {
+	if (! allEQ (array + float(100), result)) {
 	    cout << "mismatch in weight row " << i << endl;
 	}
-	if (! allEQ (freq(i), freqValues.ac())) {
+	if (! allEQ (freq(i), freqValues)) {
 	    cout << "mismatch in freq row " << i << endl;
 	}
-	if (! allEQ (pol(i), polValues.ac())) {
+	if (! allEQ (pol(i), polValues)) {
 	    cout << "mismatch in pol row " << i << endl;
 	}
 	if (time(i) != timeValue) {
 	    cout << "mismatch in time row " << i << endl;
 	}
-	array.ac() += float(200);
+	array += float(200);
 	timeValue += 5;
     }
     accessor.showCacheStatistics (cout);
@@ -197,14 +197,14 @@ void readTable()
 	if (result.shape() != IPosition (3,16,20,51)) {
 	    cout << "shape of getColumn result is incorrect" << endl;
 	}else{
-	    indgen (array.ac());
+	    indgen (array);
 	    uInt i=0;
 	    ArrayIterator<float> iter (result, 2);
 	    while (! iter.pastEnd()) {
-		if (! allEQ (iter.array(), array.ac())) {
+		if (! allEQ (iter.array(), array)) {
 		    cout << "mismatch in getColumn data row " << i << endl;
 		}
-		array.ac() += float(200);
+		array += float(200);
 		i++;
 		iter.next();
 	    }
@@ -225,11 +225,11 @@ void readTable()
 	for (j=0; j<20; j++) {
 	    for (i=0; i<16; i++) {
 		data.getColumn (Slicer (IPosition(2,i,j)), result);
-		if (! allEQ (result, array.ac())) {
+		if (! allEQ (result, array)) {
 		    cout << "mismatch in getColumnSlice " << i << "," << j
 			 << endl;
 		}
-		array.ac() += float(1);
+		array += float(1);
 	    }
 	}
 	accessor.showCacheStatistics (cout);
@@ -254,13 +254,13 @@ void readTable()
 					IPosition(2,2,2),
 					IPosition(2,16/2,20/2)),
 				result);
-		if (! allEQ (result, array.ac())) {
+		if (! allEQ (result, array)) {
 		    cout << "mismatch in getColumnSlice " << i << "," << j
 			 << endl;
 		}
-		array.ac() += float(1);
+		array += float(1);
 	    }
-	    array.ac() += float(8);
+	    array += float(8);
 	}
 	accessor.showCacheStatistics (cout);
 	accessor.clearCaches();
@@ -284,13 +284,13 @@ void readTable()
 				   Slicer (IPosition(2,i*2,j*4),
 					   IPosition(2,2,4)),
 				   result);
-		    if (! allEQ (result, array.ac())) {
+		    if (! allEQ (result, array)) {
 			cout << "mismatch in getSlice " << i << "," << j
 			     << "," << k << endl;
 		    }
-		    array.ac() += float(2);
+		    array += float(2);
 		}
-		array.ac() += float((4-1) * 16);
+		array += float((4-1) * 16);
 	    }
 	}
 	accessor.showCacheStatistics (cout);
@@ -316,13 +316,13 @@ void readTable()
 					   IPosition(2,8,5),
 					   IPosition(2,16/8,20/5)),
 				   result);
-		    if (! allEQ (result, array.ac())) {
+		    if (! allEQ (result, array)) {
 			cout << "mismatch in strided getSlice " << i << ","
 			     << j << "," << k << endl;
 		    }
-		    array.ac() += float(1);
+		    array += float(1);
 		}
-		array.ac() += float(16 - 16/8);
+		array += float(16 - 16/8);
 	    }
 	}
 	accessor.showCacheStatistics (cout);

@@ -428,16 +428,16 @@ void doit (CoordinateSystem& cSys, uInt nCoords, const Vector<Int>& types,
          refValues3(j) = refValues(worldAxes(j));
          inc3(j) = inc(worldAxes(j));
       }
-      if (!allEQ(worldAxisNames2.ac(), worldAxisNames3.ac())) {
+      if (!allEQ(worldAxisNames2, worldAxisNames3)) {
          throw(AipsError("Failed world axis name recovery test"));
       }
-      if (!allEQ(worldAxisUnits2.ac(), worldAxisUnits3.ac())) {
+      if (!allEQ(worldAxisUnits2, worldAxisUnits3)) {
          throw(AipsError("Failed world axis unit recovery test"));
       }
-      if (!allNear(refValues2.ac(), refValues3.ac(), 1e-6)) {
+      if (!allNear(refValues2, refValues3, 1e-6)) {
          throw(AipsError("Failed reference pixel recovery test"));
       }
-      if (!allNear(inc2.ac(), inc3.ac(), 1e-6)) {
+      if (!allNear(inc2, inc3, 1e-6)) {
          throw(AipsError("Failed increment recovery test"));
       }
    }
@@ -446,7 +446,7 @@ void doit (CoordinateSystem& cSys, uInt nCoords, const Vector<Int>& types,
    if (!cSys.setWorldAxisNames(worldAxisNames)) {
       throw(AipsError(String("Failed to set world axis name because") + cSys.errorMessage()));
    }
-   if (!allEQ(worldAxisNames.ac(), cSys.worldAxisNames().ac())) {
+   if (!allEQ(worldAxisNames, cSys.worldAxisNames())) {
       throw(AipsError("Failed axis name set/recovery test"));
    }
 //
@@ -455,7 +455,7 @@ void doit (CoordinateSystem& cSys, uInt nCoords, const Vector<Int>& types,
       throw(AipsError(String("Failed to set reference value because") 
             + cSys.errorMessage()));
    }
-   if (!allNear(refValues.ac(), cSys.referenceValue().ac(), 1e-6)) {
+   if (!allNear(refValues, cSys.referenceValue(), 1e-6)) {
       throw(AipsError("Failed reference value set/recovery test"));
    }
 //
@@ -464,7 +464,7 @@ void doit (CoordinateSystem& cSys, uInt nCoords, const Vector<Int>& types,
       throw(AipsError(String("Failed to set increment because") 
             + cSys.errorMessage()));
    }
-   if (!allNear(inc.ac(), cSys.increment().ac(), 1e-6)) {
+   if (!allNear(inc, cSys.increment(), 1e-6)) {
       throw(AipsError("Failed increment set/recovery test"));
    }
  //
@@ -476,7 +476,7 @@ void doit (CoordinateSystem& cSys, uInt nCoords, const Vector<Int>& types,
       throw(AipsError(String("Failed to set axis units because") 
             + cSys.errorMessage()));
    }
-   if (!allEQ(worldAxisUnits.ac(), cSys.worldAxisUnits().ac())) {
+   if (!allEQ(worldAxisUnits, cSys.worldAxisUnits())) {
       throw(AipsError("Failed axis units set/recovery test"));
    }
 //
@@ -491,7 +491,7 @@ void doit (CoordinateSystem& cSys, uInt nCoords, const Vector<Int>& types,
       for (uInt j=0; j<pixelAxes.nelements(); j++) {
          refPixels3(j) = refPixels(pixelAxes(j));
       }
-      if (!allNear(refPixels2.ac(), refPixels3.ac(), 1e-6)) {
+      if (!allNear(refPixels2, refPixels3, 1e-6)) {
          throw(AipsError("Failed reference pixel recovery test"));
       }
    }
@@ -500,7 +500,7 @@ void doit (CoordinateSystem& cSys, uInt nCoords, const Vector<Int>& types,
       throw(AipsError(String("Failed to set reference pixel because") 
             + cSys.errorMessage()));
    }
-   if (!allNear(refPixels.ac(), cSys.referencePixel().ac(), 1e-6)) {
+   if (!allNear(refPixels, cSys.referencePixel(), 1e-6)) {
       throw(AipsError("Failed reference pixel set/recovery test"));
    }
 //
@@ -531,7 +531,7 @@ void doit (CoordinateSystem& cSys, uInt nCoords, const Vector<Int>& types,
       throw(AipsError(String("Failed to set linear transform because") 
             + cSys.errorMessage()));
    }
-   if (!allNear(xform.ac(), cSys.linearTransform().ac(), 1e-6)) {
+   if (!allNear(xform, cSys.linearTransform(), 1e-6)) {
       throw(AipsError("Failed linear transform set/recovery test"));
    }
 //
@@ -561,9 +561,9 @@ void doit (CoordinateSystem& cSys, uInt nCoords, const Vector<Int>& types,
       for (uInt j=0; j<rec.nfields(); j++) {
         cout << "field " << rec.name(j) << " is of type " << rec.type(j) << endl;
       }
-      cout << "crval=" << rec.asArrayDouble("crval").ac() << endl;
-      cout << "crpix=" << rec.asArrayDouble("crpix").ac() << endl;
-      cout << "cdelt=" << rec.asArrayDouble("cdelt").ac() << endl;      
+      cout << "crval=" << rec.asArrayDouble("crval") << endl;
+      cout << "crpix=" << rec.asArrayDouble("crpix") << endl;
+      cout << "cdelt=" << rec.asArrayDouble("cdelt") << endl;      
 */
 //
       CoordinateSystem cSys3;
@@ -685,9 +685,9 @@ void doit (CoordinateSystem& cSys, uInt nCoords, const Vector<Int>& types,
       Vector<Double> pixel, pixel2;
       cSys.toPixel(pixel, cSys.referenceValue());
       cSys2.toPixel(pixel2, cSys2.referenceValue());
-      pixel.ac() -= 10.0;
+      pixel -= 10.0;
 //
-      if (!allNear(pixel.ac(), pixel2.ac(), 1e-6)) {
+      if (!allNear(pixel, pixel2, 1e-6)) {
          throw(AipsError("Failed originShift test"));
       }   
    }
@@ -704,7 +704,7 @@ void doit2 (CoordinateSystem& cSys)
       throw(AipsError(String("toWorld conversion failed because ")
              + cSys.errorMessage()));
    }
-   if (!allNear(world.ac(), cSys.referenceValue().ac(), 1e-6)) {
+   if (!allNear(world, cSys.referenceValue(), 1e-6)) {
          throw(AipsError("Coordinate conversion gave wrong results"));
    }
 
@@ -712,7 +712,7 @@ void doit2 (CoordinateSystem& cSys)
       throw(AipsError(String("toPixel conversion failed because ")
              + cSys.errorMessage()));
    }
-   if (!allNear(pixel.ac(), cSys.referencePixel().ac(), 1e-6)) {
+   if (!allNear(pixel, cSys.referencePixel(), 1e-6)) {
          throw(AipsError("Coordinate conversion gave wrong results"));
    }
 //
@@ -726,7 +726,7 @@ void doit2 (CoordinateSystem& cSys)
       throw(AipsError(String("toPixel conversion failed because ")
              + cSys.errorMessage()));
    }
-   if (!allNear(pixel2.ac(), pixel.ac(), 1e-6)) {
+   if (!allNear(pixel2, pixel, 1e-6)) {
       throw(AipsError("Coordinate reflection gave wrong results"));
    }
 //
@@ -742,7 +742,7 @@ void doit2 (CoordinateSystem& cSys)
       throw(AipsError(String("toWorld conversion failed because ")
                      + cSys.errorMessage()));
    }
-   if (!allNear(world.ac(), world2.ac(), 1e-6)) {
+   if (!allNear(world, world2, 1e-6)) {
       throw(AipsError("toWorld consistency test failed"));
    }
 //
@@ -820,8 +820,8 @@ void doit3 (CoordinateSystem& cSys)
       newPixelAxes(1) = pixelAxes(0);
 //
       cSys.transpose(newWorldOrder, newPixelOrder);
-      if (!allEQ(newWorldAxes.ac(), cSys.worldAxes(iDC).ac()) ||
-          !allEQ(newPixelAxes.ac(), cSys.pixelAxes(iDC).ac())) {
+      if (!allEQ(newWorldAxes, cSys.worldAxes(iDC)) ||
+          !allEQ(newPixelAxes, cSys.pixelAxes(iDC))) {
          throw(AipsError("Failed transposition test"));
       }
    }
@@ -844,8 +844,8 @@ void doit3 (CoordinateSystem& cSys)
          wMap(i) = i; 
          wTranspose(i) = i; 
       }
-      if (!allEQ(wMap.ac(), worldAxisMap.ac()) ||
-          !allEQ(wTranspose.ac(), worldAxisTranspose.ac())) {
+      if (!allEQ(wMap, worldAxisMap) ||
+          !allEQ(wTranspose, worldAxisTranspose)) {
          throw(AipsError("Failed worldMap test 1"));
       }
 //
@@ -874,8 +874,8 @@ void doit3 (CoordinateSystem& cSys)
       newTranspose(worldAxes(0)) = newWorldOrder(worldAxes(0));
       newTranspose(worldAxes(1)) = newWorldOrder(worldAxes(1));
 //
-      if (!allEQ(newMap.ac(), worldAxisMap.ac()) ||
-          !allEQ(newTranspose.ac(), worldAxisTranspose.ac())) {
+      if (!allEQ(newMap, worldAxisMap) ||
+          !allEQ(newTranspose, worldAxisTranspose)) {
          throw(AipsError("Failed worldMap test 2"));
       }
    }
@@ -894,8 +894,8 @@ void doit4()
    DirectionCoordinate dC = makeDirectionCoordinate();    // 2 & 3
    cSys.addCoordinate(dC);
 //
-//   cout << "Reference pixel = " << cSys.referencePixel().ac() << endl;
-//   cout << "Reference value = " << cSys.referenceValue().ac() << endl;
+//   cout << "Reference pixel = " << cSys.referencePixel() << endl;
+//   cout << "Reference value = " << cSys.referenceValue() << endl;
 //
    Vector<Double> pixelIn(cSys.nPixelAxes());
    Vector<Double> worldIn(cSys.nWorldAxes());
@@ -942,10 +942,10 @@ void doit4()
       throw(AipsError(String("toMix conversion failed because ")
             + cSys.errorMessage()));
    }
-   if (!allNear(worldOut.ac(), worldOut2.ac(), 1e-6)) {
+   if (!allNear(worldOut, worldOut2, 1e-6)) {
       throw(AipsError("toWorld/toMix consistency test failed"));
    }
-   if (!allNear(pixelOut.ac(), pixelIn.ac(), 1e-6)) {
+   if (!allNear(pixelOut, pixelIn, 1e-6)) {
       throw(AipsError("toWorld/toMix consistency test failed"));
    }
 //
@@ -965,10 +965,10 @@ void doit4()
       throw(AipsError(String("toMix conversion failed because ")
             + cSys.errorMessage()));
    }
-   if (!allNear(pixelOut.ac(), pixelOut2.ac(), 1e-6)) {
+   if (!allNear(pixelOut, pixelOut2, 1e-6)) {
       throw(AipsError("toPixel/toMix consistency test failed"));
    }
-   if (!allNear(worldOut.ac(), worldIn.ac(), 1e-6)) {
+   if (!allNear(worldOut, worldIn, 1e-6)) {
       throw(AipsError("toPixel/toMix consistency test failed"));
    }
 //
@@ -993,10 +993,10 @@ void doit4()
             + cSys.errorMessage()));
    }
 //
-   if (!allNear(worldOut.ac(), cSys.referenceValue().ac(), 1e-8)) {
+   if (!allNear(worldOut, cSys.referenceValue(), 1e-8)) {
       throw(AipsError("toMix consistency test 1 failed"));
    }
-   if (!allNear(pixelOut.ac(), cSys.referencePixel().ac(), 1e-8)) {
+   if (!allNear(pixelOut, cSys.referencePixel(), 1e-8)) {
       throw(AipsError("toMix consistency test 1 failed"));
    }
 //
@@ -1019,10 +1019,10 @@ void doit4()
       throw(AipsError(String("toMix conversion failed because ")
             + cSys.errorMessage()));
    }
-   if (!allNear(worldOut.ac(), cSys.referenceValue().ac(), 1e-8)) {
+   if (!allNear(worldOut, cSys.referenceValue(), 1e-8)) {
       throw(AipsError("toMix consistency test 2 failed"));
    }
-   if (!allNear(pixelOut.ac(), cSys.referencePixel().ac(), 1e-8)) {
+   if (!allNear(pixelOut, cSys.referencePixel(), 1e-8)) {
       throw(AipsError("toMix consistency test 2 failed"));
    }
 //
@@ -1111,10 +1111,10 @@ void doit4()
       throw(AipsError(String("toMix conversion failed because ")
             + cSys.errorMessage()));
    }
-   if (!allNear(worldOut.ac(), cSys.referenceValue().ac(), 1e-8)) {
+   if (!allNear(worldOut, cSys.referenceValue(), 1e-8)) {
       throw(AipsError("toMix consistency test 2 failed"));
    }
-   if (!allNear(pixelOut.ac(), cSys.referencePixel().ac(), 1e-8)) {
+   if (!allNear(pixelOut, cSys.referencePixel(), 1e-8)) {
       throw(AipsError("toMix consistency test 2 failed"));
    }
 //
@@ -1142,10 +1142,10 @@ void doit4()
       throw(AipsError(String("toMix conversion failed because ")
             + cSys.errorMessage()));
    }
-   if (!allNear(worldOut.ac(), cSys.referenceValue().ac(), 1e-8)) {
+   if (!allNear(worldOut, cSys.referenceValue(), 1e-8)) {
       throw(AipsError("toMix consistency test 2 failed"));
    }
-   if (!allNear(pixelOut.ac(), cSys.referencePixel().ac(), 1e-8)) {
+   if (!allNear(pixelOut, cSys.referencePixel(), 1e-8)) {
       throw(AipsError("toMix consistency test 2 failed"));
    }
 }
@@ -1180,7 +1180,7 @@ void doit5()
          throw(AipsError(String("toMix conversion failed because ")
                + cSys.errorMessage()));
       }
-      if (!allNear(worldOut.ac(), cSys.referenceValue().ac(), 1e-8)) {
+      if (!allNear(worldOut, cSys.referenceValue(), 1e-8)) {
          throw(AipsError(String("Failed removal test 1a")));
       }
       if (pixelOut.nelements()!=0) {
@@ -1255,7 +1255,7 @@ void doit5()
          throw(AipsError(String("toMix conversion failed because ")
                + cSys.errorMessage()));
       }
-      if (!allNear(worldOut.ac(), cSys.referenceValue().ac(), 1e-8)) {
+      if (!allNear(worldOut, cSys.referenceValue(), 1e-8)) {
          throw(AipsError(String("Failed removal test 3a")));
       }
       if (pixelOut.nelements()!=0) {
@@ -1297,7 +1297,7 @@ void doit5()
          throw(AipsError(String("toMix conversion failed because ")
                + cSys.errorMessage()));
       }
-      if (!allNear(worldOut.ac(), cSys.referenceValue().ac(), 1e-8)) {
+      if (!allNear(worldOut, cSys.referenceValue(), 1e-8)) {
          throw(AipsError(String("Failed removal test 4a")));
       }
       if (pixelOut.nelements()!=1) {
@@ -1342,7 +1342,7 @@ void doit5()
          throw(AipsError(String("toMix conversion failed because ")
                + cSys.errorMessage()));
       }
-      if (!allNear(worldOut.ac(), cSys.referenceValue().ac(), 1e-8)) {
+      if (!allNear(worldOut, cSys.referenceValue(), 1e-8)) {
          throw(AipsError(String("Failed removal test 5a")));
       }
       if (pixelOut.nelements()!=1) {
@@ -1388,7 +1388,7 @@ void doit5()
          throw(AipsError(String("toMix conversion failed because ")
                + cSys.errorMessage()));
       }
-      if (!allNear(worldOut.ac(), cSys.referenceValue().ac(), 1e-8)) {
+      if (!allNear(worldOut, cSys.referenceValue(), 1e-8)) {
          throw(AipsError(String("Failed removal test 6a")));
       }
       if (pixelOut.nelements()!=1) {
@@ -1433,7 +1433,7 @@ void doit5()
          throw(AipsError(String("toMix conversion failed because ")
                + cSys.errorMessage()));
       }
-      if (!allNear(worldOut.ac(), cSys.referenceValue().ac(), 1e-8)) {
+      if (!allNear(worldOut, cSys.referenceValue(), 1e-8)) {
          throw(AipsError(String("Failed removal test 7a")));
       }
       if (pixelOut.nelements()!=1) {

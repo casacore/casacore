@@ -1,5 +1,5 @@
 //# tConvolver.cc:  this tests the Convolver class
-//# Copyright (C) 1996,1997,1998
+//# Copyright (C) 1996,1997,1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -57,7 +57,7 @@ int main() {
     expectedResult(IPosition(1,1)) = 1.0;
     expectedResult(IPosition(1,2)) = 0.1;
     expectedResult(IPosition(1,3)) = 1.2;
-    if (!allNearAbs(expectedResult, result.arrayCast(), 1.E-10))
+    if (!allNearAbs(expectedResult, result, 1.E-10))
       failed = True;
 
     if (failed) 
@@ -79,7 +79,7 @@ int main() {
       expectedResult(IPosition(1,1)) = 1.0;
       expectedResult(IPosition(1,4)) = 0.1;
       expectedResult(IPosition(1,5)) = 1.2;
-      if (!allNearAbs(expectedResult, result.arrayCast(), 1.E-10)){
+      if (!allNearAbs(expectedResult, result, 1.E-10)){
 	failed = True;
 	cout << "Failed";
       }
@@ -118,7 +118,7 @@ int main() {
     expectedResult(4,5) = 1.0;
     expectedResult(2,5) = 0.3;
     expectedResult(1,0) = 1.5;
-    if (!allNearAbs(expectedResult.arrayCast(), result.arrayCast(), 1.E-5)){
+    if (!allNearAbs(expectedResult, result, 1.E-5)){
       failed = True;
       cout << "Failed";
     }
@@ -168,7 +168,7 @@ int main() {
       expectedBigResult(1) = 1.0;
       expectedBigResult(7) = 1.0;
       expectedBigResult(8) = 2.0; 
-      if (!allNearAbs(expectedBigResult.arrayCast(), bigResult.arrayCast(), 1.E-10)){
+      if (!allNearAbs(expectedBigResult, bigResult, 1.E-10)){
 	failed = True;
 	cout << "Failed";
       }
@@ -251,7 +251,7 @@ int main() {
     expectedResult(1,2,2) = 1.1;
     expectedResult(0,3,2) = 1.1;
     expectedResult(1,3,2) = 1.1;
-    if (!allNearAbs(expectedResult.arrayCast(), result.arrayCast(), 1.E-5)){
+    if (!allNearAbs(expectedResult, result, 1.E-5)){
       failed = True;
       cout << "Failed";
     }

@@ -102,7 +102,7 @@ class MVEpoch;
 //	} else if (!MeasJPL::get(valE, MeasJPL::DE200, MeasJPL::VENUS, dat)) {
 //		cout << "Some error getting Earth position" << endl;
 //	} else {
-//		cout << "Venus (geocentric): " << (val-valE).ac() << endl;
+//		cout << "Venus (geocentric): " << (val-valE) << endl;
 //	};
 // </srcblock>
 // </example>

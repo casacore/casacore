@@ -128,9 +128,9 @@ void showHyper (const TableDesc& td, const String& name)
     Vector<String> dataNames;
     uInt ndim = td.hypercolumnDesc (name, dataNames, coordNames, idNames);
     cout << name << ": ndim=" << ndim << endl;
-    cout << "  Data=" << dataNames.ac();
-    cout << "Coord=" << coordNames.ac();
-    cout << "Id=" << idNames.ac() << endl;
+    cout << "  Data=" << dataNames;
+    cout << "Coord=" << coordNames;
+    cout << "Id=" << idNames << endl;
 }
 
 void b()
@@ -142,7 +142,7 @@ void b()
 	 << td.isHypercolumn ("TSMExample3")
 	 << td.isHypercolumn ("TSMExample4")
 	 << td.isHypercolumn ("TSMExampleb") << endl;
-    cout << td.hypercolumnNames().ac() << endl;
+    cout << td.hypercolumnNames() << endl;
     showHyper (td, "TSMExample1");
     showHyper (td, "TSMExample2");
     showHyper (td, "TSMExample3");

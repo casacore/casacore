@@ -464,16 +464,16 @@ void SkyCompRep::project(ImageInterface<Float>&) const {
 // 	for (uInt p = 0; p < nStokes; p++) {
 // 	  switch (stokes(p)) {
 // 	  case Stokes::I:
-// 	    elementIter.rwCursor()(blc[p], trc[p]).ac() += Float(pixelVal(0));
+// 	    elementIter.rwCursor()(blc[p], trc[p]) += Float(pixelVal(0));
 // 	    break;
 // 	  case Stokes::Q:
-// 	    elementIter.rwCursor()(blc[p], trc[p]).ac() += Float(pixelVal(1));
+// 	    elementIter.rwCursor()(blc[p], trc[p]) += Float(pixelVal(1));
 // 	    break;
 // 	  case Stokes::U:
-// 	    elementIter.rwCursor()(blc[p], trc[p]).ac() += Float(pixelVal(2));
+// 	    elementIter.rwCursor()(blc[p], trc[p]) += Float(pixelVal(2));
 // 	    break;
 // 	  case Stokes::V:
-// 	    elementIter.rwCursor()(blc[p], trc[p]).ac() += Float(pixelVal(3));
+// 	    elementIter.rwCursor()(blc[p], trc[p]) += Float(pixelVal(3));
 // 	    break;
 // 	  }
 // 	}

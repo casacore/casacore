@@ -1,5 +1,5 @@
 //# LCEllipsoid.cc: Define an N-dimensional ellipsoidal region of interest
-//# Copyright (C) 1997,1998
+//# Copyright (C) 1997,1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -182,7 +182,7 @@ TableRecord LCEllipsoid::toRecord (const String&) const
     defineRecordFields (rec, className());
     // Write 1-relative.
     rec.define ("oneRel", True);
-    rec.define ("center", itsCenter.ac() + Float(1));
+    rec.define ("center", itsCenter + Float(1));
     rec.define ("radii", itsRadii);
     rec.define ("shape", latticeShape().asVector());
     return rec;
@@ -224,7 +224,7 @@ Slicer LCEllipsoid::makeBox (const Vector<Float>& center,
     for (uInt i=0; i<nrdim; i++) {
 	if (center(i) > latticeShape(i)-1  ||  center(i) < 0) {
 	    ostrstream cstr, lstr;
-	    cstr << center.ac();
+	    cstr << center;
 	    lstr << latticeShape;
 	    throw (AipsError ("LCEllipsoid::LCEllipsoid - "
 			      "invalid center " + String(cstr) +
@@ -240,7 +240,7 @@ Slicer LCEllipsoid::makeBox (const Vector<Float>& center,
 	}
 	if (blc(i) > trc(i)) {
 	    ostrstream rstr;
-	    rstr << radii.ac();
+	    rstr << radii;
 	    throw (AipsError ("LCEllipsoid::LCEllipsoid - "
 			      "ellipsoid is empty (radii " + String(rstr) +
 			      " too small)"));

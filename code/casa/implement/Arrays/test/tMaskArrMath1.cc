@@ -1,5 +1,5 @@
 //# tMaskArrMath1.cc: Test program for MaskedArrays mathematical operations.
-//# Copyright (C) 1993,1994,1995,1996
+//# Copyright (C) 1993,1994,1995,1996,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -69,26 +69,26 @@ main()
             Vector<Double> df(10), dg(10), dh(10);
             Vector<Bool> b(10);
 
-            indgen (df.ac());
+            indgen (df);
             cout << endl << "df=indgen(df) = " << endl;
-            cout << df.ac() << endl;
+            cout << df << endl;
 
-            indgen (dg.ac(), 2.0);
+            indgen (dg, 2.0);
             cout << endl << "dg=indgen(dg) = " << endl;
-            cout << dg.ac() << endl;
+            cout << dg << endl;
 
             {
                 cout << endl
                      << "Test cos (MaskedArray<Double>)"
                      << endl;
                 dh = 2.0;
-                dh = cos (df ((df.ac() > 2.5) && (df.ac() < 6.5)));
+                dh = cos (df ((df > 2.5) && (df < 6.5)));
                 cout << endl << "dh=2.0; "
                      << endl
                      << "dh = cos (df ((df > 2.5) && (df < 6.5)));"
                      << endl;
-                cout << dh.ac() << endl;
-                cout << endl << "df= " << endl << df.ac() << endl;
+                cout << dh << endl;
+                cout << endl << "df= " << endl << df << endl;
             }
 
             {
@@ -96,12 +96,12 @@ main()
                      << "Test atan2 (MaskedArray<Double>, Array<Double>)"
                      << endl;
                 dh = 2.0;
-                dh = atan2 (df ((df.ac() > 2.5) && (df.ac() < 6.5)), dg.ac());
+                dh = atan2 (df ((df > 2.5) && (df < 6.5)), dg);
                 cout << endl << "dh=2.0; "
                      << endl
                      << " dh = atan2 (df ((df > 2.5) && (df < 6.5)), dg);"
                      << endl;
-                cout << dh.ac() << endl;
+                cout << dh << endl;
             }
 
             {
@@ -109,12 +109,12 @@ main()
                      << "Test atan2 (Array<Double>, MaskedArray<Double>)"
                      << endl;
                 dh = 2.0;
-                dh = atan2 (dg.ac(), df ((df.ac() > 2.5) && (df.ac() < 6.5)));
+                dh = atan2 (dg, df ((df > 2.5) && (df < 6.5)));
                 cout << endl << "dh=2.0; "
                      << endl
                      << " dh = atan2 (dg, df ((df > 2.5) && (df < 6.5)));"
                      << endl;
-                cout << dh.ac() << endl;
+                cout << dh << endl;
             }
 
             {
@@ -122,15 +122,15 @@ main()
                      << "Test atan2 (MaskedArray<Double>, MaskedArray<Double>)"
                      << endl;
                 dh = 2.0;
-                dh = atan2 (dg ((df.ac() > 3.5) && (df.ac() < 7.5)),
-                            df ((df.ac() > 2.5) && (df.ac() < 6.5)));
+                dh = atan2 (dg ((df > 3.5) && (df < 7.5)),
+                            df ((df > 2.5) && (df < 6.5)));
                 cout << endl << "dh=2.0; "
                      << endl
                      << " dh = atan2 (dg ((df > 3.5) && (df < 7.5)),"
                      << endl
                      << "             df ((df > 2.5) && (df < 6.5)));"
                      << endl;
-                cout << dh.ac() << endl;
+                cout << dh << endl;
             }
 
             {
@@ -138,12 +138,12 @@ main()
                      << "Test atan2 (MaskedArray<Double>, Double)"
                      << endl;
                 dh = 2.0;
-                dh = atan2 (df ((df.ac() > 2.5) && (df.ac() < 6.5)), 2.0);
+                dh = atan2 (df ((df > 2.5) && (df < 6.5)), 2.0);
                 cout << endl << "dh=2.0; "
                      << endl
                      << " dh = atan2 (df ((df > 2.5) && (df < 6.5)), 2.0);"
                      << endl;
-                cout << dh.ac() << endl;
+                cout << dh << endl;
             }
 
             {
@@ -151,12 +151,12 @@ main()
                      << "Test atan2 (Double, MaskedArray<Double>)"
                      << endl;
                 dh = 2.0;
-                dh = atan2 (2.0, df ((df.ac() > 2.5) && (df.ac() < 6.5)));
+                dh = atan2 (2.0, df ((df > 2.5) && (df < 6.5)));
                 cout << endl << "dh=2.0; "
                      << endl
                      << " dh = atan2 (2.0, df ((df > 2.5) && (df < 6.5)));"
                      << endl;
-                cout << dh.ac() << endl;
+                cout << dh << endl;
             }
 
             {
@@ -164,12 +164,12 @@ main()
                      << "Test pow (MaskedArray<Double>, Array<Double>)"
                      << endl;
                 dh = 2.0;
-                dh = pow (df ((df.ac() > 2.5) && (df.ac() < 6.5)), dg.ac());
+                dh = pow (df ((df > 2.5) && (df < 6.5)), dg);
                 cout << endl << "dh=2.0; "
                      << endl
                      << " dh = pow (df ((df > 2.5) && (df < 6.5)), dg);"
                      << endl;
-                cout << dh.ac() << endl;
+                cout << dh << endl;
             }
 
             {
@@ -177,12 +177,12 @@ main()
                      << "Test pow (Array<Double>, MaskedArray<Double>)"
                      << endl;
                 dh = 2.0;
-                dh = pow (dg.ac(), df ((df.ac() > 2.5) && (df.ac() < 6.5)));
+                dh = pow (dg, df ((df > 2.5) && (df < 6.5)));
                 cout << endl << "dh=2.0; "
                      << endl
                      << " dh = pow (dg, df ((df > 2.5) && (df < 6.5)));"
                      << endl;
-                cout << dh.ac() << endl;
+                cout << dh << endl;
             }
 
             {
@@ -190,15 +190,15 @@ main()
                      << "Test pow (MaskedArray<Double>, MaskedArray<Double>)"
                      << endl;
                 dh = 2.0;
-                dh = pow (dg ((df.ac() > 3.5) && (df.ac() < 7.5)),
-                            df ((df.ac() > 2.5) && (df.ac() < 6.5)));
+                dh = pow (dg ((df > 3.5) && (df < 7.5)),
+                            df ((df > 2.5) && (df < 6.5)));
                 cout << endl << "dh=2.0; "
                      << endl
                      << " dh = pow (dg ((df > 3.5) && (df < 7.5)),"
                      << endl
                      << "             df ((df > 2.5) && (df < 6.5)));"
                      << endl;
-                cout << dh.ac() << endl;
+                cout << dh << endl;
             }
 
             {
@@ -206,12 +206,12 @@ main()
                      << "Test pow (MaskedArray<Double>, Double)"
                      << endl;
                 dh = 2.0;
-                dh = pow (df ((df.ac() > 2.5) && (df.ac() < 6.5)), 2.0);
+                dh = pow (df ((df > 2.5) && (df < 6.5)), 2.0);
                 cout << endl << "dh=2.0; "
                      << endl
                      << " dh = pow (df ((df > 2.5) && (df < 6.5)), 2.0);"
                      << endl;
-                cout << dh.ac() << endl;
+                cout << dh << endl;
             }
 
             {
@@ -219,7 +219,7 @@ main()
                      << "Test sum (MaskedArray<Double>)"
                      << endl;
                 Double result (-1.0);
-                result = sum (df ((df.ac() > 2.5) && (df.ac() < 6.5)));
+                result = sum (df ((df > 2.5) && (df < 6.5)));
                 cout << endl
                      << " result = sum (df ((df > 2.5) && (df < 6.5)));"
                      << endl;
@@ -231,7 +231,7 @@ main()
                      << "Test sumsquares (MaskedArray<Double>)"
                      << endl;
                 Double result (-1.0);
-                result = sumsquares (df ((df.ac() > 2.5) && (df.ac() < 6.5)));
+                result = sumsquares (df ((df > 2.5) && (df < 6.5)));
                 cout << endl
                      << " result = sumsquares (df ((df > 2.5) && (df < 6.5)));"
                      << endl;
@@ -243,7 +243,7 @@ main()
                      << "Test product (MaskedArray<Double>)"
                      << endl;
                 Double result (-1.0);
-                result = product (df ((df.ac() > 2.5) && (df.ac() < 6.5)));
+                result = product (df ((df > 2.5) && (df < 6.5)));
                 cout << endl
                      << " result = product (df ((df > 2.5) && (df < 6.5)));"
                      << endl;
@@ -255,7 +255,7 @@ main()
                      << "Test mean (MaskedArray<Double>)"
                      << endl;
                 Double result (-1.0);
-                result = mean (df ((df.ac() > 2.5) && (df.ac() < 6.5)));
+                result = mean (df ((df > 2.5) && (df < 6.5)));
                 cout << endl
                      << " result = mean (df ((df > 2.5) && (df < 6.5)));"
                      << endl;
@@ -267,7 +267,7 @@ main()
                      << "Test variance (MaskedArray<Double>)"
                      << endl;
                 Double result (-1.0);
-                result = variance (df ((df.ac() > 2.5) && (df.ac() < 6.5)));
+                result = variance (df ((df > 2.5) && (df < 6.5)));
                 cout << endl
                      << " result = variance (df ((df > 2.5) && (df < 6.5)));"
                      << endl;
@@ -279,7 +279,7 @@ main()
                      << "Test stddev (MaskedArray<Double>)"
                      << endl;
                 Double result (-1.0);
-                result = stddev (df ((df.ac() > 2.5) && (df.ac() < 6.5)));
+                result = stddev (df ((df > 2.5) && (df < 6.5)));
                 cout << endl
                      << " result = stddev (df ((df > 2.5) && (df < 6.5)));"
                      << endl;
@@ -291,7 +291,7 @@ main()
                      << "Test avdev (MaskedArray<Double>)"
                      << endl;
                 Double result (-1.0);
-                result = avdev (df ((df.ac() > 2.5) && (df.ac() < 6.5)));
+                result = avdev (df ((df > 2.5) && (df < 6.5)));
                 cout << endl
                      << " result = avdev (df ((df > 2.5) && (df < 6.5)));"
                      << endl;
@@ -303,7 +303,7 @@ main()
                      << "Test even median (MaskedArray<Double>, True)"
                      << endl;
                 Double result (-1.0);
-                result = median (df ((df.ac() > 2.5) && (df.ac() < 6.5)), True);
+                result = median (df ((df > 2.5) && (df < 6.5)), True);
                 cout << endl
                      << " result = median (df ((df > 2.5) && (df < 6.5)), True);"
                      << endl;
@@ -321,15 +321,15 @@ main()
                 dfunsort (9) = dfunsort (5);
                 dfunsort (5) = tmp;
                 Double result (-1.0);
-                result = median (dfunsort ((dfunsort.ac() > 2.5) &&
-                                           (dfunsort.ac() < 6.5)));
+                result = median (dfunsort ((dfunsort > 2.5) &&
+                                           (dfunsort < 6.5)));
                 cout << endl
                      << " result = median (dfunsort ((dfunsort > 2.5) &&"
                      << endl
                      << "                            (dfunsort < 6.5)));"
                      << endl;
                 cout << result << endl;
-                cout << "dfunsort= " << endl << dfunsort.ac() << endl;
+                cout << "dfunsort= " << endl << dfunsort << endl;
             }
 
             {
@@ -337,7 +337,7 @@ main()
                      << "Test odd median (MaskedArray<Double>, True)"
                      << endl;
                 Double result (-1.0);
-                result = median (df ((df.ac() > 2.5) && (df.ac() < 7.5)), True);
+                result = median (df ((df > 2.5) && (df < 7.5)), True);
                 cout << endl
                      << " result = median (df ((df > 2.5) && (df < 7.5)), True);"
                      << endl;
@@ -355,15 +355,15 @@ main()
                 dfunsort (9) = dfunsort (5);
                 dfunsort (5) = tmp;
                 Double result (-1.0);
-                result = median (dfunsort ((dfunsort.ac() > 2.5) &&
-                                           (dfunsort.ac() < 7.5)));
+                result = median (dfunsort ((dfunsort > 2.5) &&
+                                           (dfunsort < 7.5)));
                 cout << endl
                      << " result = median (dfunsort ((dfunsort > 2.5) &&"
                      << endl
                      << "                            (dfunsort < 7.5)));"
                      << endl;
                 cout << result << endl;
-                cout << "dfunsort= " << endl << dfunsort.ac() << endl;
+                cout << "dfunsort= " << endl << dfunsort << endl;
             }
 
             {
@@ -371,13 +371,13 @@ main()
                      << "Test square (MaskedArray<Double>)"
                      << endl;
                 dh = 2.0;
-                dh = square (df ((df.ac() > 2.5) && (df.ac() < 6.5)));
+                dh = square (df ((df > 2.5) && (df < 6.5)));
                 cout << endl << "dh=2.0; "
                      << endl
                      << "dh = square (df ((df > 2.5) && (df < 6.5)));"
                      << endl;
-                cout << dh.ac() << endl;
-                cout << endl << "df= " << endl << df.ac() << endl;
+                cout << dh << endl;
+                cout << endl << "df= " << endl << df << endl;
             }
 
             {
@@ -385,13 +385,13 @@ main()
                      << "Test cube (MaskedArray<Double>)"
                      << endl;
                 dh = 2.0;
-                dh = cube (df ((df.ac() > 2.5) && (df.ac() < 6.5)));
+                dh = cube (df ((df > 2.5) && (df < 6.5)));
                 cout << endl << "dh=2.0; "
                      << endl
                      << "dh = cube (df ((df > 2.5) && (df < 6.5)));"
                      << endl;
-                cout << dh.ac() << endl;
-                cout << endl << "df= " << endl << df.ac() << endl;
+                cout << dh << endl;
+                cout << endl << "df= " << endl << df << endl;
             }
 
             }

@@ -1,5 +1,5 @@
 //# tArrayIO3.cc: This program tests the ArrayIO istream extract  functions
-//# Copyright (C) 1993,1994,1995,1996,1997
+//# Copyright (C) 1993,1994,1995,1996,1997,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -61,12 +61,12 @@ main (int argc)
 	cout << a << endl;
 	cout << "Input Matrix [1 2 3 4 5 6] " << endl;
 	cout << "--------------------------------------" << endl;
-	cin >> at_c(m);
-	cout << at_cc(m) << endl;
+	cin >> (m);
+	cout << (m) << endl;
 	cout << "Input Matrix {[2 3]}[1 2 3 4 5 6] " << endl;
 	cout << "--------------------------------------" << endl;
-	cin >> at_c(m);
-	cout << at_cc(m) << endl;
+	cin >> (m);
+	cout << (m) << endl;
 	cout << "Input Vector [1s 5.4Jy 92pc/a ] " << endl;
 	cout << "--------------------------------------" << endl;
 	cin >> q;

@@ -1,5 +1,5 @@
 //# tMeasJPL.cc: This program test JPL DE functions
-//# Copyright (C) 1997,1998
+//# Copyright (C) 1997,1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -53,72 +53,72 @@ main() {
     cout << "DE200: " << dat << endl;
     cout << "---------------------------" << endl;
     cout << "Mercury0:   " <<
-      MeasTable::Planetary(MeasTable::MERCURY, dat.get()).ac() << endl;
+      MeasTable::Planetary(MeasTable::MERCURY, dat.get()) << endl;
     MeasJPL::get(val, MeasJPL::DE200, MeasJPL::MERCURY, dat);
-    cout << "Mercury:    " << val.ac() << endl;
+    cout << "Mercury:    " << val << endl;
     MeasJPL::get(val, MeasJPL::DE200, MeasJPL::VENUS, dat);
-    cout << "Venus:      " << val.ac() << endl;
+    cout << "Venus:      " << val << endl;
     for (uInt i=0; i<3; i++) mvd1(i) = val(i); mvd1.adjust();
     cout << "Venus:      " << mvd1 << endl;
     MeasJPL::get(val, MeasJPL::DE200, MeasJPL::EARTH, dat);
-    cout << "Earth:      " << val.ac() << endl;
+    cout << "Earth:      " << val << endl;
     MeasJPL::get(val, MeasJPL::DE200, MeasJPL::MARS, dat);
-    cout << "Mars:       " << val.ac() << endl;
+    cout << "Mars:       " << val << endl;
     MeasJPL::get(val, MeasJPL::DE200, MeasJPL::JUPITER, dat);
-    cout << "Jupiter:    " << val.ac() << endl;
+    cout << "Jupiter:    " << val << endl;
     MeasJPL::get(val, MeasJPL::DE200, MeasJPL::SATURN, dat);
-    cout << "Saturn:     " << val.ac() << endl;
+    cout << "Saturn:     " << val << endl;
     MeasJPL::get(val, MeasJPL::DE200, MeasJPL::URANUS, dat);
-    cout << "Uranus:     " << val.ac() << endl;
+    cout << "Uranus:     " << val << endl;
     MeasJPL::get(val, MeasJPL::DE200, MeasJPL::NEPTUNE, dat);
-    cout << "Neptune:    " << val.ac() << endl;
+    cout << "Neptune:    " << val << endl;
     MeasJPL::get(val, MeasJPL::DE200, MeasJPL::PLUTO, dat);
-    cout << "Pluto:      " << val.ac() << endl;
+    cout << "Pluto:      " << val << endl;
     MeasJPL::get(val, MeasJPL::DE200, MeasJPL::MOON, dat);
-    cout << "Moon:       " << val.ac() << endl;
+    cout << "Moon:       " << val << endl;
     MeasJPL::get(val, MeasJPL::DE200, MeasJPL::SUN, dat);
-    cout << "SUN:        " << val.ac() << endl;
+    cout << "SUN:        " << val << endl;
     MeasJPL::get(val, MeasJPL::DE200, MeasJPL::BARYSOLAR, dat);
-    cout << "Barycentre: " << val.ac() << endl;
+    cout << "Barycentre: " << val << endl;
     MeasJPL::get(val, MeasJPL::DE200, MeasJPL::BARYEARTH, dat);
-    cout << "Earth/Moon: " << val.ac() << endl;
+    cout << "Earth/Moon: " << val << endl;
     MeasJPL::get(val, MeasJPL::DE200, MeasJPL::NUTATION, dat);
-    cout << "Nutation:   " << val.ac() << endl;
+    cout << "Nutation:   " << val << endl;
     MeasJPL::get(val, MeasJPL::DE200, MeasJPL::LIBRATION, dat);
-    cout << "Libration:  " << val.ac() << endl;
+    cout << "Libration:  " << val << endl;
 
     cout << "DE405: " << dat << endl;
     cout << "---------------------------" << endl;
     MeasJPL::get(val, MeasJPL::DE405, MeasJPL::MERCURY, dat);
-    cout << "Mercury:    " << val.ac() << endl;
+    cout << "Mercury:    " << val << endl;
     MeasJPL::get(val, MeasJPL::DE405, MeasJPL::VENUS, dat);
-    cout << "Venus:      " << val.ac() << endl;
+    cout << "Venus:      " << val << endl;
     MeasJPL::get(val, MeasJPL::DE405, MeasJPL::EARTH, dat);
-    cout << "Earth:      " << val.ac() << endl;
+    cout << "Earth:      " << val << endl;
     MeasJPL::get(val, MeasJPL::DE405, MeasJPL::MARS, dat);
-    cout << "Mars:       " << val.ac() << endl;
+    cout << "Mars:       " << val << endl;
     MeasJPL::get(val, MeasJPL::DE405, MeasJPL::JUPITER, dat);
-    cout << "Jupiter:    " << val.ac() << endl;
+    cout << "Jupiter:    " << val << endl;
     MeasJPL::get(val, MeasJPL::DE405, MeasJPL::SATURN, dat);
-    cout << "Saturn:     " << val.ac() << endl;
+    cout << "Saturn:     " << val << endl;
     MeasJPL::get(val, MeasJPL::DE405, MeasJPL::URANUS, dat);
-    cout << "Uranus:     " << val.ac() << endl;
+    cout << "Uranus:     " << val << endl;
     MeasJPL::get(val, MeasJPL::DE405, MeasJPL::NEPTUNE, dat);
-    cout << "Neptune:    " << val.ac() << endl;
+    cout << "Neptune:    " << val << endl;
     MeasJPL::get(val, MeasJPL::DE405, MeasJPL::PLUTO, dat);
-    cout << "Pluto:      " << val.ac() << endl;
+    cout << "Pluto:      " << val << endl;
     MeasJPL::get(val, MeasJPL::DE405, MeasJPL::MOON, dat);
-    cout << "Moon:       " << val.ac() << endl;
+    cout << "Moon:       " << val << endl;
     MeasJPL::get(val, MeasJPL::DE405, MeasJPL::SUN, dat);
-    cout << "SUN:        " << val.ac() << endl;
+    cout << "SUN:        " << val << endl;
     MeasJPL::get(val, MeasJPL::DE405, MeasJPL::BARYSOLAR, dat);
-    cout << "Barycentre: " << val.ac() << endl;
+    cout << "Barycentre: " << val << endl;
     MeasJPL::get(val, MeasJPL::DE405, MeasJPL::BARYEARTH, dat);
-    cout << "Earth/Moon: " << val.ac() << endl;
+    cout << "Earth/Moon: " << val << endl;
     MeasJPL::get(val, MeasJPL::DE405, MeasJPL::NUTATION, dat);
-    cout << "Nutation:   " << val.ac() << endl;
+    cout << "Nutation:   " << val << endl;
     MeasJPL::get(val, MeasJPL::DE405, MeasJPL::LIBRATION, dat);
-    cout << "Libration:  " << val.ac() << endl;
+    cout << "Libration:  " << val << endl;
 
   } catch (AipsError x) {
     cout << x.getMesg() << endl;

@@ -165,7 +165,7 @@ MVEarthMagnetic::~MVEarthMagnetic() {}
 //# Operators
 Bool MVEarthMagnetic::
 operator==(const MVEarthMagnetic &other) const {
-  return (allEQ(xyz.ac(), other.xyz.ac()));
+  return (allEQ(xyz, other.xyz));
 }
 
 Bool MVEarthMagnetic::
@@ -175,7 +175,7 @@ operator!=(const MVEarthMagnetic &other) const {
 
 Bool MVEarthMagnetic::
 near(const MVEarthMagnetic &other, Double tol) const {
-  return (allNear(xyz.ac(), other.xyz.ac(), tol));
+  return (allNear(xyz, other.xyz, tol));
 }
 
 Bool MVEarthMagnetic::
@@ -185,7 +185,7 @@ near(const MVEarthMagnetic &other, Quantity tol) const {
 
 Bool MVEarthMagnetic::
 nearAbs(const MVEarthMagnetic &other, Double tol) const {
-  return (allNearAbs(xyz.ac(), other.xyz.ac(), tol));
+  return (allNearAbs(xyz, other.xyz, tol));
 }
 
 Double MVEarthMagnetic::
@@ -199,12 +199,12 @@ operator*(const MVEarthMagnetic &other) const {
 
 MVEarthMagnetic MVEarthMagnetic::operator-() const {
   MVEarthMagnetic tmp; tmp = *this;
-  tmp.xyz.ac() = -xyz.ac();
+  tmp.xyz = -xyz;
   return tmp;
 }
 
 MVEarthMagnetic &MVEarthMagnetic::operator+=(const MVEarthMagnetic &right) {
-  xyz.ac() += right.xyz.ac();
+  xyz += right.xyz;
   return *this;
 }
 
@@ -215,7 +215,7 @@ MVEarthMagnetic MVEarthMagnetic::operator+(const MVEarthMagnetic &right) const {
 }
 
 MVEarthMagnetic &MVEarthMagnetic::operator-=(const MVEarthMagnetic &right) {
-  xyz.ac() -= right.xyz.ac();
+  xyz -= right.xyz;
   return *this;
 }
 
@@ -242,15 +242,15 @@ void MVEarthMagnetic::adjust() {}
 void MVEarthMagnetic::adjust(Double &res) {
   res = sqrt(operator*(*this));
   if (res != 0.0 && res != 1.0) {
-    xyz.ac() /= res;
+    xyz /= res;
   };
 }
 
 void MVEarthMagnetic::readjust(Double res) {
   if (res == 0.0) {
-    xyz.ac() *= 1e-6;
+    xyz *= 1e-6;
   } else {
-    xyz.ac() *= res;
+    xyz *= res;
   };
 }
 
@@ -342,7 +342,7 @@ MVEarthMagnetic MVEarthMagnetic::crossProduct(const MVEarthMagnetic &other) cons
 }
 
 void MVEarthMagnetic::print(ostream &os) const {
-  os << getValue().ac();
+  os << getValue();
 }
 
 MeasValue *MVEarthMagnetic::clone() const {

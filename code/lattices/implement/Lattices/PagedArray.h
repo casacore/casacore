@@ -246,8 +246,8 @@ class ostream;
 // Gaussian1D<Float> g(1.0f, 16.0f, 10.0f);
 // // Create a vector to cache a sampled version of this profile.
 // Vector<Float> profile(shape(3));
-// indgen(profile.ac());
-// profile.ac().apply(g);
+// indgen(profile);
+// profile.apply(g);
 // // Now put this profile into every spectral channel in the paged array. This
 // // is best done using an iterator.
 // LatticeIterator<Float> iter(diskArray, 

@@ -1,5 +1,5 @@
 //# tMaskArrExcp.cc: Test program for MaskedArray Exceptions
-//# Copyright (C) 1994,1995,1996
+//# Copyright (C) 1994,1995,1996,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -481,7 +481,7 @@ int main ()
             try {
 
             cout << "\nTest conformance, ::operator+= (MaskedArray, Array)";
-            ba(b) += a.ac();
+            ba(b) += a;
             cout << "\nFAILED" << endl;
 
             } catch (ArrayConformanceError e) {
@@ -509,7 +509,7 @@ int main ()
 
             cout << "\nTest readonly, ::operator+= (MaskedArray, Array)";
             MaskedArray<Int> bab (ba,b,True);
-            bab += a.ac();
+            bab += a;
             cout << "\nFAILED" << endl;
 
             } catch (ArrayError e) {
@@ -538,7 +538,7 @@ int main ()
             try {
 
             cout << "\nTest conformance, ::operator+= (Array, MaskedArray)";
-            a.ac() += mbab;
+            a += mbab;
             cout << "\nFAILED" << endl;
 
             } catch (ArrayConformanceError e) {
@@ -629,7 +629,7 @@ int main ()
             try {
 
             cout << "\nTest conformance, ::operator+ (MaskedArray, Array)";
-            c.ac() = mbab + a.ac();
+            c = mbab + a;
             cout << "\nFAILED" << endl;
 
             } catch (ArrayConformanceError e) {
@@ -660,7 +660,7 @@ int main ()
             try {
 
             cout << "\nTest conformance, ::operator+ (Array, MaskedArray)";
-            c = a.ac() + mbab;
+            c = a + mbab;
             cout << "\nFAILED" << endl;
 
             } catch (ArrayConformanceError e) {
@@ -726,7 +726,7 @@ int main ()
             try {
 
             cout << "\nTest conformance, ::pow (MaskedArray, Array)";
-            c = pow (mbab, a.ac());
+            c = pow (mbab, a);
             cout << "\nFAILED" << endl;
 
             } catch (ArrayConformanceError e) {
@@ -757,7 +757,7 @@ int main ()
             try {
 
             cout << "\nTest conformance, ::pow (Array, MaskedArray)";
-            c = pow (a.ac(), mbab);
+            c = pow (a, mbab);
             cout << "\nFAILED" << endl;
 
             } catch (ArrayConformanceError e) {
@@ -823,7 +823,7 @@ int main ()
             try {
 
             cout << "\nTest conformance, ::atan2 (MaskedArray, Array)";
-            c = atan2 (mbab, a.ac());
+            c = atan2 (mbab, a);
             cout << "\nFAILED" << endl;
 
             } catch (ArrayConformanceError e) {
@@ -854,7 +854,7 @@ int main ()
             try {
 
             cout << "\nTest conformance, ::atan2 (Array, MaskedArray)";
-            c = atan2 (a.ac(), mbab);
+            c = atan2 (a, mbab);
             cout << "\nFAILED" << endl;
 
             } catch (ArrayConformanceError e) {
@@ -908,7 +908,7 @@ int main ()
         {
             Vector<Int> a(10);
             LogicalArray b(IPosition(1,10));
-            indgen (a.ac());
+            indgen (a);
             b = False;
 
             MaskedArray<Int> ma (a,b);
@@ -942,7 +942,7 @@ int main ()
             Vector<Int> ba(11);
             LogicalArray b(IPosition(1,11));
             Int result (0);
-            indgen (ba.ac());
+            indgen (ba);
             b = False;
 
             MaskedArray<Int> mbab (ba,b);
@@ -982,7 +982,7 @@ int main ()
 
             cout << "\nTest conformance,"
                  << " ::min (MaskedArray, Array)";
-            c = min (mbab, a.ac());
+            c = min (mbab, a);
             cout << "\nFAILED" << endl;
 
             } catch (ArrayConformanceError e) {
@@ -1013,7 +1013,7 @@ int main ()
             try {
 
             cout << "\nTest conformance, ::min (Array, MaskedArray)";
-            c = min (a.ac(), mbab);
+            c = min (a, mbab);
             cout << "\nFAILED" << endl;
 
             } catch (ArrayConformanceError e) {
@@ -1078,7 +1078,7 @@ int main ()
 
             cout << "\nTest conformance, ::min (Array, Array,"
                  << " MaskedArray)";
-            min (a.ac(), ba.ac(), c.ac());
+            min (a, ba, c);
             cout << "\nFAILED" << endl;
 
             } catch (ArrayConformanceError e) {
@@ -1108,7 +1108,7 @@ int main ()
 
             cout << "\nTest conformance, ::min (Array, Array,"
                  << " MaskedArray)";
-            min (ba.ac(), a.ac(), c.ac());
+            min (ba, a, c);
             cout << "\nFAILED" << endl;
 
             } catch (ArrayConformanceError e) {
@@ -1128,7 +1128,7 @@ int main ()
             Vector<Int> a(10);
             LogicalArray b(IPosition(1,10));
             Int result (0);
-            indgen (a.ac());
+            indgen (a);
             b = False;
 
             MaskedArray<Int> ma (a,b);
@@ -1158,7 +1158,7 @@ int main ()
             Vector<Int> a(10);
             LogicalArray b(IPosition(1,10));
             Int result (0);
-            indgen (a.ac());
+            indgen (a);
             b = False;
 
             MaskedArray<Int> ma (a,b);
@@ -1188,7 +1188,7 @@ int main ()
             Vector<Int> a(10);
             LogicalArray b(IPosition(1,10));
             Int result (0);
-            indgen (a.ac());
+            indgen (a);
             b = False;
 
             MaskedArray<Int> ma (a,b);
@@ -1218,7 +1218,7 @@ int main ()
             Vector<Int> a(10);
             LogicalArray b(IPosition(1,10));
             Int result (0);
-            indgen (a.ac());
+            indgen (a);
             b = False;
 
             MaskedArray<Int> ma (a,b);
@@ -1249,7 +1249,7 @@ int main ()
             LogicalArray b(IPosition(1,10));
             Int mean (0);
             Int result (0);
-            indgen (a.ac());
+            indgen (a);
             b = False;
             b(IPosition(1,0)) = True;
 
@@ -1281,7 +1281,7 @@ int main ()
             LogicalArray b(IPosition(1,10));
             Int mean (0);
             Int result (0);
-            indgen (a.ac());
+            indgen (a);
             b = False;
 
             MaskedArray<Int> ma (a,b);
@@ -1311,7 +1311,7 @@ int main ()
             Vector<Int> a(10);
             LogicalArray b(IPosition(1,10));
             Int result (0);
-            indgen (a.ac());
+            indgen (a);
             b = False;
 
             MaskedArray<Int> ma (a,b);
@@ -1367,7 +1367,7 @@ int main ()
             try {
 
             cout << "\nTest conformance, ::allLE (MaskedArray, Array)";
-            result = allLE (mbab, a.ac());
+            result = allLE (mbab, a);
             cout << "\nFAILED" << endl;
 
             } catch (ArrayConformanceError e) {
@@ -1398,7 +1398,7 @@ int main ()
 
             cout << "\nTest insufficient elements,"
                     " ::allLE (MaskedArray, Array)";
-            result = allLE (mbab, a.ac());
+            result = allLE (mbab, a);
             cout << "\nFAILED" << endl;
 
             } catch (ArrayError e) {
@@ -1428,7 +1428,7 @@ int main ()
             try {
 
             cout << "\nTest conformance, ::allLE (Array, MaskedArray)";
-            result = allLE (a.ac(), mbab);
+            result = allLE (a, mbab);
             cout << "\nFAILED" << endl;
 
             } catch (ArrayConformanceError e) {
@@ -1459,7 +1459,7 @@ int main ()
 
             cout << "\nTest insuficient elements,"
                     " ::allLE (Array, MaskedArray)";
-            result = allLE (a.ac(), mbab);
+            result = allLE (a, mbab);
             cout << "\nFAILED" << endl;
 
             } catch (ArrayError e) {
@@ -1938,7 +1938,7 @@ int main ()
             try {
 
             cout << "\nTest conformance, ::operator<= (MaskedArray, Array)";
-            cb = (mbab <= a.ac());
+            cb = (mbab <= a);
             cout << "\nFAILED" << endl;
 
             } catch (ArrayConformanceError e) {
@@ -1969,7 +1969,7 @@ int main ()
             try {
 
             cout << "\nTest conformance, ::operator<= (Array, MaskedArray)";
-            cb = (a.ac() <= mbab);
+            cb = (a <= mbab);
             cout << "\nFAILED" << endl;
 
             } catch (ArrayConformanceError e) {
@@ -2025,7 +2025,7 @@ int main ()
             LogicalArray c(IPosition(1,10));
             LogicalArray b(IPosition(1,10));
             Bool result;
-            indgen (a.ac());
+            indgen (a);
             c = (a<5);
             b = False;
 
@@ -2056,7 +2056,7 @@ int main ()
             LogicalArray c(IPosition(1,10));
             LogicalArray b(IPosition(1,10));
             Bool result;
-            indgen (a.ac());
+            indgen (a);
             c = (a<5);
             b = False;
 
@@ -2087,7 +2087,7 @@ int main ()
             LogicalArray c(IPosition(1,10));
             LogicalArray b(IPosition(1,10));
             Bool result;
-            indgen (a.ac());
+            indgen (a);
             c = (a<5);
             b = False;
 
@@ -2118,7 +2118,7 @@ int main ()
             LogicalArray c(IPosition(1,10));
             LogicalArray b(IPosition(1,10));
             Bool result;
-            indgen (a.ac());
+            indgen (a);
             c = (a<5);
             b = False;
 
@@ -2211,7 +2211,7 @@ int main ()
             LogicalArray c(IPosition(1,10));
             LogicalArray b(IPosition(1,10));
             Bool result;
-            indgen (a.ac());
+            indgen (a);
             c = (a<5);
             b = False;
 
@@ -2242,7 +2242,7 @@ int main ()
             LogicalArray c(IPosition(1,10));
             LogicalArray b(IPosition(1,10));
             Bool result;
-            indgen (a.ac());
+            indgen (a);
             c = (a<5);
             b = False;
 
@@ -2273,7 +2273,7 @@ int main ()
             LogicalArray c(IPosition(1,10));
             LogicalArray b(IPosition(1,10));
             Bool result;
-            indgen (a.ac());
+            indgen (a);
             c = (a<5);
             b = False;
 
@@ -2304,7 +2304,7 @@ int main ()
             LogicalArray c(IPosition(1,10));
             LogicalArray b(IPosition(1,10));
             Bool result;
-            indgen (a.ac());
+            indgen (a);
             c = (a<5);
             b = False;
 

@@ -1,5 +1,5 @@
 //# Directory.cc: Class to define a Directory
-//# Copyright (C) 1996,1997
+//# Copyright (C) 1996,1997,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //# 
 //# This library is free software; you can redistribute it and/or modify it
@@ -341,7 +341,7 @@ Vector<String> Directory::find (const Regex& regexp, Bool followSymLinks,
 	     Directory subdir = file;
  	     Vector<String> subentries = subdir.find (regexp);
 	     String basename = iter.name() + "/";
-	     subentries = basename + subentries.ac();
+	     subentries = basename + subentries;
 	     uInt oldsize = myentries.nelements();
 	     myentries.resize (oldsize + subentries.nelements(), True);
 	     myentries(Slice(oldsize, subentries.nelements())) = subentries;

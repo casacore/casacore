@@ -92,7 +92,7 @@ class Unit;
 //   Float sumPix = 0;
 //   RO_LatticeIterator<Float> iter(image, rowShape);
 //   while(!iter.atEnd()){
-//     sumPix += sum(iter.vectorCursor().ac());
+//     sumPix += sum(iter.vectorCursor());
 //     iter++;
 //   }
 //   return sumPix;

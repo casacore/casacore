@@ -1,5 +1,5 @@
 //# tTableRow.cc: Test program for class (RO)TableRow
-//# Copyright (C) 1996,1997,1998
+//# Copyright (C) 1996,1997,1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -85,7 +85,7 @@ void a (Bool)
     Cube<float> arrf(IPosition(3,2,3,4));
     Vector<String> arrs(stringToVector ("a,bc,def,ghij,klmno,qprstu,vxxyzab,"
 					"cdefghij,klmnopqrs,tuvwxyzabc"));
-    indgen (arrf.ac());
+    indgen (arrf);
     TableRow row (tab, stringToVector("ab,ad,ag,arr1,arr2,rec"));
     AlwaysAssertExit (row.rowNumber() == -1);
     TableRecord rec (row.record().description(), RecordInterface::Variable);
@@ -111,7 +111,7 @@ void a (Bool)
 	if (i%2 == 0) {
 	    arr3.put (i, arrf);
 	}
-	arrf.ac() += (float)(arrf.nelements());
+	arrf += (float)(arrf.nelements());
     }
     // Test if the record has an extra field.
     rec.define ("extraField", Int(1));
@@ -132,7 +132,7 @@ void a (Bool)
     Cube<float> arrval(IPosition(3,2,3,4));
     Cube<float> arr3val;
     Array<String> arrstr;
-    arrf.ac() -= (float)(arrf.nelements()*tab.nrow());
+    arrf -= (float)(arrf.nelements()*tab.nrow());
     for (i=0; i<10; i++) {
 	colab.get (i, abval);
 	colad.get (i, adval);
@@ -153,25 +153,25 @@ void a (Bool)
 	    }
 	}
 	colarr1.get (i, arrval);
-	if (!allEQ (arrval.ac(), arrf.ac())) {
+	if (!allEQ (arrval, arrf)) {
 	    cout << "error in arr1 in row " << i << endl;
 	}
 	colarr2.get (i, arrstr, True);
 	AlwaysAssertExit (arrstr.ndim() == 1);
 	AlwaysAssertExit (arrstr.shape()(0) == i);
-	if (!allEQ (arrstr, arrs(Slice(0,i)).ac())) {
+	if (!allEQ (arrstr, arrs(Slice(0,i)))) {
 	    cout << "error in arr2 in row " << i << endl;
 	}
 	if (i%2 == 0) {
 	    colarr3.get (i, arr3val, True);
 	    AlwaysAssertExit (arr3val.ndim() == 3);
-	    if (!allEQ (arr3val.ac(), arrf.ac())) {
+	    if (!allEQ (arr3val, arrf)) {
 		cout << "error in arr3 in row " << i << endl;
 	    }
 	}else{
 	    AlwaysAssertExit (! colarr3.isDefined (i));
 	}
-	arrf.ac() += (float)(arrf.nelements());
+	arrf += (float)(arrf.nelements());
     }
 
     TableRow rowa;
@@ -215,7 +215,7 @@ void b (Bool doExcp)
     Cube<float> arrf(IPosition(3,2,3,4));
     Vector<String> arrs(stringToVector ("a,bc,def,ghij,klmno,qprstu,vxxyzab,"
 					"cdefghij,klmnopqrs,tuvwxyzabc"));
-    indgen (arrf.ac());
+    indgen (arrf);
     Int i;
     for (i=0; i<10; i++) {
 	cout << "get scalar row " << i << endl;
@@ -226,14 +226,14 @@ void b (Bool doExcp)
 	    cout << "error in row " << i << ": " << *ab
 		 << ", " << *ad << ", " << *ag << endl;
 	}
-	if (!allEQ (*arr1, arrf.ac())) {
+	if (!allEQ (*arr1, arrf)) {
 	    cout << "error in arr1 in row " << i << endl;
 	}
-	if (!allEQ (*arr2, arrs(Slice(0,i)).ac())) {
+	if (!allEQ (*arr2, arrs(Slice(0,i)))) {
 	    cout << "error in arr2 in row " << i << endl;
 	}
 	if (i%2 == 0) {
-	    if (!allEQ (*arr3, arrf.ac())) {
+	    if (!allEQ (*arr3, arrf)) {
 		cout << "error in arr3 in row " << i << endl;
 	    }
 	}else{
@@ -241,7 +241,7 @@ void b (Bool doExcp)
 		cout << "error in arr3 in row " << i << endl;
 	    }
 	}		
-	arrf.ac() += (float)(arrf.nelements());
+	arrf += (float)(arrf.nelements());
     }
 
     // This get operation should not do anything.
@@ -280,7 +280,7 @@ void c (Int nrow)
     Table tab(newtab, nrow);
 
     Cube<float> arrf(IPosition(3,2,3,4));
-    indgen (arrf.ac());
+    indgen (arrf);
     cout << ">>>" << endl;
     Timer timer;
     TableRow row (tab);

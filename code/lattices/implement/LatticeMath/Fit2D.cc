@@ -876,9 +876,9 @@ Bool Fit2D::normalizeData (Matrix<Double>& pos, Vector<Double>& values,
          pos(k,1) = locY(k);
       }
    }
-//   cout << "Data = " << values.ac() << endl;
-//   cout << "weights = " << weights.ac() << endl;
-//   cout << "Pos = " << pos.ac() << endl;
+//   cout << "Data = " << values << endl;
+//   cout << "weights = " << weights << endl;
+//   cout << "Pos = " << pos << endl;
 //   if (itsIsNormalized) {
 //      cout << "normVal = " << itsNormVal << endl;
 //      cout << "normPos = " << itsNormPos << endl;
@@ -935,11 +935,11 @@ Fit2D::ErrorTypes Fit2D::fit(const Vector<Double>& values,
 //
 {
 /*
-cout << "npoints=" << values.ac() << endl;
+cout << "npoints=" << values << endl;
 cout << "norm=" << itsIsNormalized << endl;
-cout << "pars=" <<  getParams(0).ac() << endl;
-cout << "values=" << values.ac() << endl;
-cout << "weights=" << weights.ac() << endl;
+cout << "pars=" <<  getParams(0) << endl;
+cout << "values=" << values << endl;
+cout << "weights=" << weights << endl;
 */
 
 // Set maximum number of iterations to 1000

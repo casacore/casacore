@@ -1,5 +1,5 @@
 //# LatticeStepper.h:  provides 'natural' traversal, by cursor shape
-//# Copyright (C) 1994,1995,1996,1997,1998
+//# Copyright (C) 1994,1995,1996,1997,1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -225,7 +225,7 @@
 //     channel++;
 //   } // for iterator
 //   cout << "Average spectrum is: " 
-//        << spectrum.ac() / cursorShape.product() << endl;
+//        << spectrum / cursorShape.product() << endl;
 // }
 // </srcblock>
 // </example>

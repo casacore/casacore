@@ -1,5 +1,5 @@
 //# tMEarthMagnetic.cc: This program test Measure functions
-//# Copyright (C) 1995,1996,1997,1998
+//# Copyright (C) 1995,1996,1997,1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -61,11 +61,11 @@ Int main() {
 	cout << "Date:      " << dat.string(MVTime::YMD +
 					    MVTime::NO_TIME, 6) <<
 	  endl;
-	cout << "Position:  " << obs.getValue().get().ac() << endl;
+	cout << "Position:  " << obs.getValue().get() << endl;
 	cout << "           " << obs.getAngle("deg") << endl;
 
 	EarthField ef(EarthField::STANDARD, dat.day());
-	cout << "Result:    " << ef(obs.getValue()).ac() << endl;
+	cout << "Result:    " << ef(obs.getValue()) << endl;
 
 	cout << "------------------------------------------" << endl;
 	MEarthMagnetic::Convert cv(MEarthMagnetic::Ref(MEarthMagnetic::ITRF,
@@ -130,13 +130,13 @@ Int main() {
 	    MEarthMagnetic mb0(res, rin);
 	    MEarthMagnetic::Convert forw(rin, rout);
 	    MEarthMagnetic::Convert backw(rout, rin);
-	    if (!allNearAbs(mb0.getValue().getValue().ac() -
-			    backw(forw(mb0)).getValue().getValue().ac(), 
-			    tvec.ac(), 1.5e-3)) {
+	    if (!allNearAbs(mb0.getValue().getValue() -
+			    backw(forw(mb0)).getValue().getValue(), 
+			    tvec, 1.5e-3)) {
 	      cout << MEarthMagnetic::showType(i) << " to " <<
 		MEarthMagnetic::showType(j) << ": " <<
-		mb0.getValue().getValue().ac() -
-		backw(forw(mb0)).getValue().getValue().ac() << endl;
+		mb0.getValue().getValue() -
+		backw(forw(mb0)).getValue().getValue() << endl;
 	      isok = False;
 	    };
 	  };
@@ -158,11 +158,11 @@ Int main() {
 	  Vector<Quantum<Double> > vq(3);
 	  vq = Quantity(23, "G");
 	  x.putValue(vq);
-	  cout << "putValue:       " << vq.ac() << ", " << x << endl;
+	  cout << "putValue:       " << vq << ", " << x << endl;
 	  cout << "earthMagneticAngle:  " << x.earthMagneticAngle(mvb0) << endl;
 	  cout << "earthMagneticAngle:  " << x.earthMagneticAngle(mvb0, "deg") << endl;
-	  cout << "get:            " << x.get().ac() << endl;
-	  cout << "getRecordValue: " << x.getRecordValue().ac() << endl;
+	  cout << "get:            " << x.get() << endl;
+	  cout << "getRecordValue: " << x.getRecordValue() << endl;
 	  cout << "separation:     " << x.separation(mvb0) << endl;
 	  cout << "separation:     " << x.separation(mvb0, "deg") << endl;
 	  cout << "crossProduct:   " << x.crossProduct(mvb0) << endl;
@@ -175,7 +175,7 @@ Int main() {
 	  x1(1) = 40;
 	  x1(2) = 0;
 	  x.putVector(x1);
-	  cout << "putVector:      " << x1.ac() << ", " << x << endl;
+	  cout << "putVector:      " << x1 << ", " << x << endl;
 	  MVEarthMagnetic x2(vq);
 	  cout << "VQ constructor: " << x2 << endl;
 	  cout << "Q constructor:  " << MVEarthMagnetic(Quantity(50, "G")) << endl;
@@ -199,7 +199,7 @@ Int main() {
 	  MeasValue *y = x.clone();
 	  cout << "clone:          " << *y << endl;
 	  delete y;
-	  cout << "getVector:      " << x.getVector().ac() << endl;
+	  cout << "getVector:      " << x.getVector() << endl;
 	  cout << "near:           " << x.near(x2) << endl;
 	  cout << "near:           " << x.near(x2, Quantity(1, "deg")) << endl;
 	  cout << "nearAbs:        " << x.nearAbs(x2) << endl;

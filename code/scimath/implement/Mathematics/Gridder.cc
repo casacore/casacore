@@ -61,7 +61,7 @@ Gridder<Domain, Range>::Gridder(const IPosition& ishape,
 
   // Time-savers
   locVec.resize(ndim);
-  shapeVec=shape.asVector().ac();
+  shapeVec=shape.asVector();
   zeroShapeVec.resize(ndim);
   zeroShapeVec=0;
 
@@ -138,7 +138,7 @@ void Gridder<Domain, Range>::setOffset(const Vector<Int>& off)
 template <class Domain, class Range>
 void Gridder<Domain, Range>::setOffset(const IPosition& off)
 {
-  offsetVec=off.asVector().ac();
+  offsetVec=off.asVector();
 }
 
 // Return correction factor. This is the value that

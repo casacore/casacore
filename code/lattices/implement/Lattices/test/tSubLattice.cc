@@ -1,5 +1,5 @@
 //# tSubLattice.cc: Test program for class SubLattice
-//# Copyright (C) 1998
+//# Copyright (C) 1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -51,8 +51,8 @@ void testVectorROIter (const Lattice<Int>& sublat,
     step2.subSection (slicer.start(), slicer.end(), slicer.stride());
     RO_LatticeIterator<Int>  iter2(lattice, step2);
     for (iter.reset(); !iter.atEnd(); iter++, iter2++){
-        AlwaysAssert(allEQ(iter.vectorCursor().ac(),
-			   iter2.vectorCursor().ac()), AipsError);
+        AlwaysAssert(allEQ(iter.vectorCursor(),
+			   iter2.vectorCursor()), AipsError);
     }
     nstep = iter.nsteps();
     AlwaysAssert(nstep == latticeShape.product()/latticeShape(0),

@@ -100,7 +100,7 @@ int main() {
     AlwaysAssert(siModel.nParameters() == 4, AipsError);
     Vector<Double> parms(4);
     siModel.parameters(parms);
-    AlwaysAssert(allNear(parms.ac(), newIndices.ac(), C::dbl_epsilon),
+    AlwaysAssert(allNear(parms, newIndices, C::dbl_epsilon),
 		 AipsError);
 
     MFrequency newFreq = siModel.refFrequency();
@@ -123,7 +123,7 @@ int main() {
  		 AipsError);
     AlwaysAssert(nearAbs(zeroModel.index(Stokes::V), 0.0, C::dbl_min),
  		 AipsError);
-    AlwaysAssert(allNearAbs(zeroModel.indices().ac(), 0.0, C::dbl_min),
+    AlwaysAssert(allNearAbs(zeroModel.indices(), 0.0, C::dbl_min),
 		 AipsError);
     AlwaysAssert(zeroModel.refFrequency().getValue() ==
 		 MVFrequency(Quantity(5, "GHz")), AipsError);
@@ -132,7 +132,7 @@ int main() {
     
     SpectralIndex otherModel; otherModel = siModel;
     otherModel.setRefFrequency(newFreq);
-    parms.ac() += 1.0;
+    parms += 1.0;
     otherModel.setParameters(parms);
     AlwaysAssert(otherModel.isIonly() == False, AipsError);
     AlwaysAssert(near(otherModel.index(Stokes::I), 2.0, C::dbl_epsilon),

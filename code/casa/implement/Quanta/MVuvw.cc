@@ -107,7 +107,7 @@ MVuvw::~MVuvw() {}
 //# Operators
 Bool MVuvw::
 operator==(const MVuvw &other) const {
-  return (allEQ(xyz.ac(), other.xyz.ac()));
+  return (allEQ(xyz, other.xyz));
 }
 
 Bool MVuvw::
@@ -117,7 +117,7 @@ operator!=(const MVuvw &other) const {
 
 Bool MVuvw::
 near(const MVuvw &other, Double tol) const {
-  return (allNear(xyz.ac(), other.xyz.ac(), tol));
+  return (allNear(xyz, other.xyz, tol));
 }
 
 Bool MVuvw::
@@ -127,7 +127,7 @@ near(const MVuvw &other, Quantity tol) const {
 
 Bool MVuvw::
 nearAbs(const MVuvw &other, Double tol) const {
-  return (allNearAbs(xyz.ac(), other.xyz.ac(), tol));
+  return (allNearAbs(xyz, other.xyz, tol));
 }
 
 Double MVuvw::
@@ -141,12 +141,12 @@ operator*(const MVuvw &other) const {
 
 MVuvw MVuvw::operator-() const {
   MVuvw tmp; tmp = *this;
-  tmp.xyz.ac() = -xyz.ac();
+  tmp.xyz = -xyz;
   return tmp;
 }
 
 MVuvw &MVuvw::operator+=(const MVuvw &right) {
-  xyz.ac() += right.xyz.ac();
+  xyz += right.xyz;
   return *this;
 }
 
@@ -157,7 +157,7 @@ MVuvw MVuvw::operator+(const MVuvw &right) const {
 }
 
 MVuvw &MVuvw::operator-=(const MVuvw &right) {
-  xyz.ac() -= right.xyz.ac();
+  xyz -= right.xyz;
   return *this;
 }
 
@@ -184,15 +184,15 @@ void MVuvw::adjust() {}
 void MVuvw::adjust(Double &res) {
   res = sqrt(operator*(*this));
   if (res != 0.0 && res != 1.0) {
-    xyz.ac() /= res;
+    xyz /= res;
   };
 }
 
 void MVuvw::readjust(Double res) {
   if (res == 0.0) {
-    xyz.ac() *= 1e-12;
+    xyz *= 1e-12;
   } else {
-    xyz.ac() *= res;
+    xyz *= res;
   };
 }
 
@@ -284,7 +284,7 @@ MVuvw MVuvw::crossProduct(const MVuvw &other) const {
 }
 
 void MVuvw::print(ostream &os) const {
-  os << getValue().ac();
+  os << getValue();
 }
 
 MeasValue *MVuvw::clone() const {

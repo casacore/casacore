@@ -1,5 +1,5 @@
 //# tForwardColRow.cc: Test program for class ForwardColumn
-//# Copyright (C) 1995,1996,1997,1998
+//# Copyright (C) 1995,1996,1997,1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -119,7 +119,7 @@ void a (const TableDesc& td)
     Cube<float> arrf(IPosition(3,2,3,4));
     uInt i;
     char str[8];
-    indgen (arrf.ac());
+    indgen (arrf);
     for (i=0; i<10; i++) {
 	ab1.put (i, i);
 	ac.put (i, i+1);
@@ -130,7 +130,7 @@ void a (const TableDesc& td)
 	arr1.put(i,arrf);
 	arr2.put(i,arrf);
 	arr3.put(i,arrf);
-	arrf.ac() += (float)(arrf.nelements());
+	arrf += (float)(arrf.nelements());
     }
     ag1.putColumn (ad);
 
@@ -216,7 +216,7 @@ void check(const String& tableName, Int abOffset, Int acOffset)
     Slicer nslice2(Slice(0,1), Slice(0,1,2), Slice(0,2,2),
 		   Slicer::endIsLength);
     for (j=0; j<ntimes; j++) {
-	indgen (arrf.ac());
+	indgen (arrf);
 	uInt vali = 0;
 	for (i=j*10; i<(j+1)*10; i++) {
 	    cout << "get scalar row " << i;
@@ -246,26 +246,26 @@ void check(const String& tableName, Int abOffset, Int acOffset)
 		 << arr2.ndim(i) << "," << arr3.ndim(i);
 	    cout << endl;
 	    arr1.get (i, arrval);
-	    if (!allEQ (arrval.ac(), arrf.ac())) {
+	    if (!allEQ (arrval, arrf)) {
 		cout << "error in arr1 in row " << i << endl;
 	    }
 	    arr2.get (i, arrval);
-	    if (!allEQ (arrval.ac(), arrf.ac())) {
+	    if (!allEQ (arrval, arrf)) {
 		cout << "error in arr2 in row " << i << endl;
 	    }
 	    arr3.get (i, arrval);
-	    if (!allEQ (arrval.ac(), arrf.ac())) {
+	    if (!allEQ (arrval, arrf)) {
 		cout << "error in arr3 in row " << i << endl;
 	    }
 	    arr2.getSlice (i, nslice, arrval);
-	    if (!allEQ (arrval.ac(), arrf.ac())) {
+	    if (!allEQ (arrval, arrf)) {
 		cout << "error in arr2 (entire slice) in row " << i << endl;
 	    }
 	    arr2.getSlice (i, nslice2, arrvalslice);
-	    if (!allEQ (arrval.ac(), arrf.ac())) {
+	    if (!allEQ (arrval, arrf)) {
 		cout << "error in arr2 (partial slice) in row " << i << endl;
 	    }
-	    arrf.ac() += (float)(arrf.nelements());
+	    arrf += (float)(arrf.nelements());
 	    vali++;
 	}
     }

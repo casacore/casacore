@@ -1,5 +1,5 @@
 //# tRecord.cc: Test the Record class
-//# Copyright (C) 1995,1996,1997,1998
+//# Copyright (C) 1995,1996,1997,1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -102,11 +102,11 @@ void doDefineAssign (const Record& inrecord)
     RecordFieldPtr<Array<String> > rfstr3 (record, "TpArrayString3");
     Vector<String> vec;
     record.get (record.fieldNumber ("TpArrayString2"), vec);
-    AlwaysAssertExit (allEQ (vec.ac(),
-			     stringToVector ("abcd,ghi,jklmn").ac()));
+    AlwaysAssertExit (allEQ (vec,
+			     stringToVector ("abcd,ghi,jklmn")));
     record.get (record.fieldNumber ("TpArrayString3"), vec);
-    AlwaysAssertExit (allEQ (vec.ac(),
-			     stringToVector ("abc,dghij,klmn").ac()));
+    AlwaysAssertExit (allEQ (vec,
+			     stringToVector ("abc,dghij,klmn")));
     try {
 	*rfstr2 = stringToVector ("abc");
     } catch (AipsError x) {
@@ -118,11 +118,11 @@ void doDefineAssign (const Record& inrecord)
 	cout << x.getMesg() << endl;           // incorrect shape
     } end_try;
     record.get (record.fieldNumber ("TpArrayString2"), vec);
-    AlwaysAssertExit (allEQ (vec.ac(),
-			     stringToVector ("abcd,ghi,jklmn").ac()));
+    AlwaysAssertExit (allEQ (vec,
+			     stringToVector ("abcd,ghi,jklmn")));
     record.get (record.fieldNumber ("TpArrayString3"), vec);
-    AlwaysAssertExit (allEQ (vec.ac(),
-			     stringToVector ("abc,dghij,klmn").ac()));
+    AlwaysAssertExit (allEQ (vec,
+			     stringToVector ("abc,dghij,klmn")));
 
     try {
 	*rfstr2 = stringToVector ("abc");
@@ -135,11 +135,11 @@ void doDefineAssign (const Record& inrecord)
 	cout << x.getMesg() << endl;           // incorrect shape
     } end_try;
     record.get (record.fieldNumber ("TpArrayString2"), vec);
-    AlwaysAssertExit (allEQ (vec.ac(),
-			     stringToVector ("abcd,ghi,jklmn").ac()));
+    AlwaysAssertExit (allEQ (vec,
+			     stringToVector ("abcd,ghi,jklmn")));
     record.get (record.fieldNumber ("TpArrayString3"), vec);
-    AlwaysAssertExit (allEQ (vec.ac(),
-			     stringToVector ("abc,dghij,klmn").ac()));
+    AlwaysAssertExit (allEQ (vec,
+			     stringToVector ("abc,dghij,klmn")));
 
     try {
 	rfstr2.define (stringToVector ("abc"));
@@ -148,32 +148,32 @@ void doDefineAssign (const Record& inrecord)
     } end_try;
     rfstr3.define (stringToVector ("a"));
     record.get (record.fieldNumber ("TpArrayString2"), vec);
-    AlwaysAssertExit (allEQ (vec.ac(),
-			     stringToVector ("abcd,ghi,jklmn").ac()));
+    AlwaysAssertExit (allEQ (vec,
+			     stringToVector ("abcd,ghi,jklmn")));
     vec.resize (1);
     record.get (record.fieldNumber ("TpArrayString3"), vec);
-    AlwaysAssertExit (allEQ (vec.ac(),
-			     stringToVector ("a").ac()));
+    AlwaysAssertExit (allEQ (vec,
+			     stringToVector ("a")));
 				 
     *rfstr2 = stringToVector ("a,b,c");
     *rfstr3 = stringToVector ("d");
     record.get (record.fieldNumber ("TpArrayString3"), vec);
-    AlwaysAssertExit (allEQ (vec.ac(),
-			     stringToVector ("d").ac()));
+    AlwaysAssertExit (allEQ (vec,
+			     stringToVector ("d")));
     vec.resize (3);
     record.get (record.fieldNumber ("TpArrayString2"), vec);
-    AlwaysAssertExit (allEQ (vec.ac(),
-			     stringToVector ("a,b,c").ac()));
+    AlwaysAssertExit (allEQ (vec,
+			     stringToVector ("a,b,c")));
 
     rfstr2.define (stringToVector ("g,h,i"));
     record.define (record.fieldNumber ("TpArrayString3"),
 		   stringToVector ("j,k,l"));
     record.get (record.fieldNumber ("TpArrayString2"), vec);
-    AlwaysAssertExit (allEQ (vec.ac(),
-			     stringToVector ("g,h,i").ac()));
+    AlwaysAssertExit (allEQ (vec,
+			     stringToVector ("g,h,i")));
     record.get (record.fieldNumber ("TpArrayString3"), vec);
-    AlwaysAssertExit (allEQ (vec.ac(),
-			     stringToVector ("j,k,l").ac()));
+    AlwaysAssertExit (allEQ (vec,
+			     stringToVector ("j,k,l")));
 }
 
 void doSubRecord (Bool doExcp, const RecordDesc& desc)
@@ -777,7 +777,7 @@ void check (const Record& record, Int intValue, uInt nrField)
     AlwaysAssertExit(allEQ(*arraycomplexField, *complexField));
     AlwaysAssertExit(allEQ(*arraydcomplexField, *dcomplexField));
     AlwaysAssertExit(allEQ(*arraystringField,
-			   stringToVector("Hello,Goodbye").ac()));
+			   stringToVector("Hello,Goodbye")));
 
     // Sub(-sub)-record fields
     RORecordFieldPtr<Record> recordField(record, "SubRecord");

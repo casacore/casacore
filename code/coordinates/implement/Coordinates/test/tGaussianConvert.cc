@@ -64,7 +64,7 @@ int main()
       units(0) = "arcsec";
       units(1) = "arcsec";
       cSys.setWorldAxisUnits(units, False);
-//      cout << "units = " << cSys.worldAxisUnits().ac() << endl;
+//      cout << "units = " << cSys.worldAxisUnits() << endl;
 //
 // Axis conversions
 //
@@ -73,7 +73,7 @@ int main()
          deltas(0) = -1.0;
          deltas(1) = 1.0;
          cSys.setIncrement(deltas);
-//      cout << "inc = " << cSys.increment().ac() << endl;
+//      cout << "inc = " << cSys.increment() << endl;
 //
          Double majorPixels = 10.0;
          Double minorPixels = 5.0;
@@ -87,7 +87,7 @@ int main()
          deltas(0) = 1.0;
          deltas(1) = 1.0;
          cSys.setIncrement(deltas);
-//      cout << "inc = " << cSys.increment().ac() << endl;
+//      cout << "inc = " << cSys.increment() << endl;
 //
          Double majorPixels = 10.0;
          Double minorPixels = 5.0;
@@ -100,7 +100,7 @@ int main()
          deltas(0) = -1.0;
          deltas(1) = 2.0;
          cSys.setIncrement(deltas);
-//      cout << "inc = " << cSys.increment().ac() << endl;
+//      cout << "inc = " << cSys.increment() << endl;
 //
          Double majorPixels = 10.0;
          Double minorPixels = 10.0;
@@ -113,7 +113,7 @@ int main()
          deltas(0) = -1.0;
          deltas(1) = 2.0;
          cSys.setIncrement(deltas);
-//      cout << "inc = " << cSys.increment().ac() << endl;
+//      cout << "inc = " << cSys.increment() << endl;
 //
          Double majorPixels = 10.0;
          Double minorPixels = 5.0;
@@ -196,14 +196,14 @@ void doit2 (Vector<Double>& pixel, const CoordinateSystem& cSys,
 //
    Vector<Double> pixel2;
    AlwaysAssert(gc.toPixel(pixel2, world), AipsError);
-   AlwaysAssert(allNear(pixel2.ac(),pixel.ac(),1e-6), AipsError);
+   AlwaysAssert(allNear(pixel2,pixel,1e-6), AipsError);
 //
 // Change units and see what happens
 //
    world(0).convert(Unit("arcsec"));
    world(1).convert(Unit("arcmin"));
    AlwaysAssert(gc.toPixel(pixel2, world), AipsError);
-   AlwaysAssert(allNear(pixel2.ac(),pixel.ac(),1e-6), AipsError);
+   AlwaysAssert(allNear(pixel2,pixel,1e-6), AipsError);
 }
 
 void doit3()

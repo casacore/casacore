@@ -112,7 +112,7 @@ void a() {
     for (i=0; i<10; i++) {
 	doub1.put (i, i*2);
 	doub2.put (i,arrd);
-	arrd.ac() += (double)(3*arrd.nelements());
+	arrd += (double)(3*arrd.nelements());
     }
 }
 
@@ -152,23 +152,23 @@ void b()
 	    cout << "error in row " << i << ": " << ival << " " << dval << endl;
 	}
 	data2.get (i, arrvali);
-	if (!allEQ (arrvali.ac(), arri.ac())) {
+	if (!allEQ (arrvali, arri)) {
 	    cout << "error in DATA2 in row " << i << endl;
 	}
 	doub2.get (i, arrval);
-	if (!allEQ (arrval.ac(), arrd.ac())) {
+	if (!allEQ (arrval, arrd)) {
 	    cout << "error in DOUB2 in row " << i << endl;
 	}
 	doub2.getSlice (i, nslice, arrval);
-	if (!allEQ (arrval.ac(), arrd.ac())) {
+	if (!allEQ (arrval, arrd)) {
 	    cout << "error in DOUB2 (entire slice) in row " << i << endl;
 	}
 	doub2.getSlice (i, nslice2, arrvalslice);
-	if (!allEQ (arrval.ac(), arrd.ac())) {
+	if (!allEQ (arrval, arrd)) {
 	    cout << "error in DOUB2 (partial slice) in row " << i << endl;
 	}
-	arrd.ac() += (double)(3*arrd.nelements());
-	arri.ac() += (Int)(arrd.nelements());
+	arrd += (double)(3*arrd.nelements());
+	arri += (Int)(arrd.nelements());
     }
     Vector<double> vec = doub1.getColumn();
     cout << tab.nrow() << " " << vec.nelements() << endl;

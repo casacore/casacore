@@ -1,5 +1,5 @@
 //# tLCRegion.cc: Test program for derived LCRegion classes.
-//# Copyright (C) 1997,1998
+//# Copyright (C) 1997,1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -43,7 +43,7 @@ void doIt (const IPosition& latticeShape,
     cout << cir.hasMask() << ' ' << cir.maskArray() << endl;
     cout << cir.boundingBox().start() << cir.boundingBox().end()
 	 << cir.boundingBox().length() << cir.latticeShape() << endl;
-    cout << cir.center().ac() << cir.radii().ac() << endl;
+    cout << cir.center() << cir.radii() << endl;
 }
 
 void doIt (const IPosition& latticeShape,
@@ -62,7 +62,7 @@ void doIt (const IPosition& latticeShape,
     cout << cir.hasMask() << ' ' << cir.maskArray() << endl;
     cout << cir.boundingBox().start() << cir.boundingBox().end()
 	 << cir.boundingBox().length() << cir.latticeShape() << endl;
-    cout << cir.center().ac() << cir.radii().ac() << endl;
+    cout << cir.center() << cir.radii() << endl;
     {
 	// Test cloning.
 	LCRegionFixed* boxcop = (LCRegionFixed*)(box.cloneRegion());
@@ -90,10 +90,10 @@ void doIt (const IPosition& latticeShape,
 	AlwaysAssertExit (cir.boundingBox().length() ==
 			  circop->boundingBox().length());
 	AlwaysAssertExit (cir.comment() == circop->comment());
-	AlwaysAssertExit (allEQ (cir.center().ac(),
-				 ((LCEllipsoid*)circop)->center().ac()));
-	AlwaysAssertExit (allEQ (cir.radii().ac(),
-				 ((LCEllipsoid*)circop)->radii().ac()));
+	AlwaysAssertExit (allEQ (cir.center(),
+				 ((LCEllipsoid*)circop)->center()));
+	AlwaysAssertExit (allEQ (cir.radii(),
+				 ((LCEllipsoid*)circop)->radii()));
 	delete circop;
     }
     {
@@ -125,10 +125,10 @@ void doIt (const IPosition& latticeShape,
 	AlwaysAssertExit (cir.boundingBox().length() ==
 			  circop->boundingBox().length());
 	AlwaysAssertExit (cir.comment() == circop->comment());
-	AlwaysAssertExit (allEQ (cir.center().ac(),
-				 ((LCEllipsoid*)circop)->center().ac()));
-	AlwaysAssertExit (allEQ (cir.radii().ac(),
-				 ((LCEllipsoid*)circop)->radii().ac()));
+	AlwaysAssertExit (allEQ (cir.center(),
+				 ((LCEllipsoid*)circop)->center()));
+	AlwaysAssertExit (allEQ (cir.radii(),
+				 ((LCEllipsoid*)circop)->radii()));
 	delete circop;
     }
     {

@@ -1,5 +1,5 @@
 //# tVelocityMachine.cc: This program tests the VelocityMachine class
-//# Copyright (C) 1998
+//# Copyright (C) 1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -54,10 +54,10 @@ Int main() {
     cout << "Date:      " << dat.string(MVTime::YMD +
 					MVTime::NO_TIME, 6) <<
       endl;
-    cout << "Position:  " << obs.getValue().get().ac() << endl;
+    cout << "Position:  " << obs.getValue().get() << endl;
     cout << "           " << obs.getAngle("deg") << endl;
     cout << "           " << obs.getValue().getLength("km") << endl;
-    cout << "Direction: " << dir.getValue().get().ac() << endl;
+    cout << "Direction: " << dir.getValue().get() << endl;
     cout << "           " << dir.getAngle("deg") << endl;
     
     
@@ -86,7 +86,7 @@ Int main() {
     fx(0) = 0;
     fx(1) = 0.005;
     fx(2) = 0.010;
-    cout << "Frequency list:    " << fx.ac() << endl;
+    cout << "Frequency list:    " << fx << endl;
     cout << "List to RADIO:     " << vm.makeVelocity(fx) << endl;
     Vector<Double> vbck(vm.makeVelocity(fx).getValue());
     cout << "Back:              " << vm.makeFrequency(vbck) << endl;

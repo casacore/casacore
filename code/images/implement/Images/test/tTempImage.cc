@@ -56,7 +56,7 @@ void doIt (TempImage<Int>& scratch)
     scratch.getSlice(ptrM, IPosition(3,0), shape, IPosition(3,1), False);
     AlwaysAssert(ptrM->shape().isEqual(shape), AipsError);
     Array<Int> expectedResult(shape);
-    indgen(expectedResult.ac());
+    indgen(expectedResult);
     AlwaysAssert(allEQ(*ptrM, expectedResult), AipsError);
     ptrM.rwRef() = 0;
     AlwaysAssert(allEQ(*ptrM, 0), AipsError);

@@ -484,8 +484,8 @@ void setValues (IPosition& blcI,
    }
 /*
    cout << "shape = "<< shape << endl;
-   cout << "pBlc = " << pBlc.ac() << endl;
-   cout << "pTrc = " << pTrc.ac() << endl;
+   cout << "pBlc = " << pBlc << endl;
+   cout << "pTrc = " << pTrc << endl;
 */
 
 // The order of the world values reflects
@@ -526,8 +526,8 @@ void list (const RecordInterface& record)
 
    Vector<Int> axes = Vector<Int>(record.asArrayInt ("pixelAxes"));
    Vector<Int> absRel = Vector<Int>(record.asArrayInt("absrel"));
-   cout << "axes=" << axes.ac() << endl;
-   cout << "absRel=" << absRel.ac() << endl;
+   cout << "axes=" << axes << endl;
+   cout << "absRel=" << absRel << endl;
 }
  
  

@@ -169,31 +169,31 @@ void doit (StokesCoordinate& lc,
    }
 //
    Vector<String> axisNames(1); axisNames(0) = "Stokes";
-   if (!allEQ(axisNames.ac(), lc.worldAxisNames().ac())) {
+   if (!allEQ(axisNames, lc.worldAxisNames())) {
       throw(AipsError("Failed world axis name recovery test"));
    }
    axisNames(0) = "Horsies";
    if (!lc.setWorldAxisNames(axisNames)) {
       throw(AipsError(String("Failed to set world axis name because") + lc.errorMessage()));
    }
-   if (!allEQ(axisNames.ac(), lc.worldAxisNames().ac())) {
+   if (!allEQ(axisNames, lc.worldAxisNames())) {
       throw(AipsError("Failed axis name set/recovery test"));
    }
 //
 // There is no unit we can set
 //
    Vector<String> axisUnits(1); axisUnits(0) = "";
-   if (!allEQ(axisUnits.ac(), lc.worldAxisUnits().ac())) {
+   if (!allEQ(axisUnits, lc.worldAxisUnits())) {
       throw(AipsError("Failed world axis units recovery test"));
    }
    if (!lc.setWorldAxisUnits(axisUnits)) {
       throw(AipsError(String("Failed to set world axis units because ") + lc.errorMessage()));
    }
-   if (!allEQ(axisUnits.ac(), lc.worldAxisUnits().ac())) {
+   if (!allEQ(axisUnits, lc.worldAxisUnits())) {
       throw(AipsError("Failed world axis units set/recovery test"));
    }
 //
-   if (!allEQ(whichStokes.ac(), lc.stokes().ac())) {
+   if (!allEQ(whichStokes, lc.stokes())) {
       throw(AipsError("Failed Stokes recovery test"));
    }
 //
@@ -224,22 +224,22 @@ void doit2 (StokesCoordinate& lc,
             const Vector<Int>& whichStokes)
 {
    Vector<Double> crval(1); crval(0) = Double(whichStokes(0));
-   if (!allEQ(crval.ac(), lc.referenceValue().ac())) {
+   if (!allEQ(crval, lc.referenceValue())) {
       throw(AipsError("Failed reference value recovery test"));
    }
 //
    Vector<Double> cdelt(1); cdelt(0) = 1.0;
-   if (!allEQ(cdelt.ac(), lc.increment().ac())) {
+   if (!allEQ(cdelt, lc.increment())) {
       throw(AipsError("Failed increment recovery test"));
    }
 //
    Vector<Double> crpix(1); crpix(0) = 0.0;
-   if (!allEQ(crpix.ac(), lc.referencePixel().ac())) {
+   if (!allEQ(crpix, lc.referencePixel())) {
       throw(AipsError("Failed reference pixel recovery test"));
    }
 //
    Matrix<Double> xform(1,1); xform(0,0) = 1.0;
-   if (!allEQ(xform.ac(), lc.linearTransform().ac())) {
+   if (!allEQ(xform, lc.linearTransform())) {
       throw(AipsError("Failed Stokes transform recovery test"));
    }
 //
@@ -247,7 +247,7 @@ void doit2 (StokesCoordinate& lc,
    if (!lc.setReferenceValue(crval)) {
       throw(AipsError(String("Failed to set reference value because") + lc.errorMessage()));
    }
-   if (!allEQ(crval.ac(), lc.referenceValue().ac())) {
+   if (!allEQ(crval, lc.referenceValue())) {
       throw(AipsError("Failed reference value set/recovery test"));
    }
 //
@@ -255,7 +255,7 @@ void doit2 (StokesCoordinate& lc,
    if (!lc.setIncrement(cdelt)) {
       throw(AipsError(String("Failed to set increment because") + lc.errorMessage()));
    }
-   if (!allEQ(cdelt.ac(), lc.increment().ac())) {
+   if (!allEQ(cdelt, lc.increment())) {
       throw(AipsError("Failed increment set/recovery test"));
    }
 //
@@ -263,7 +263,7 @@ void doit2 (StokesCoordinate& lc,
    if (!lc.setReferencePixel(crpix)) {
       throw(AipsError(String("Failed to set reference pixel because") + lc.errorMessage()));
    }
-   if (!allEQ(crpix.ac(), lc.referencePixel().ac())) {
+   if (!allEQ(crpix, lc.referencePixel())) {
       throw(AipsError("Failed reference pixel set/recovery test"));
   }
 //       
@@ -271,7 +271,7 @@ void doit2 (StokesCoordinate& lc,
    if (!lc.setLinearTransform(xform)) {
       throw(AipsError(String("Failed to set linear transform because") + lc.errorMessage()));
    }
-   if (!allEQ(xform.ac(), lc.linearTransform().ac())) {
+   if (!allEQ(xform, lc.linearTransform())) {
       throw(AipsError("Failed linear transform set/recovery test"));
    }
 }
@@ -294,7 +294,7 @@ void doit3 (StokesCoordinate& lc,
    if (!lc.toPixel(pixel2, world)) {
       throw(AipsError(String("toPixel conversion failed because ") + lc.errorMessage()));
    }
-   if (!allNear(pixel2.ac(), pixel.ac(), 1e-6)) {
+   if (!allNear(pixel2, pixel, 1e-6)) {
          throw(AipsError("Coordinate conversion reflection 1 failed"));
    }
 //

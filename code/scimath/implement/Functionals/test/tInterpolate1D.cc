@@ -1,5 +1,5 @@
 //# tInterpolate1D.cc: This program tests the Interpolate1D class
-//# Copyright (C) 1996,1997,1998
+//# Copyright (C) 1996,1997,1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -55,8 +55,8 @@ int main()
   // interpolation
   {
     Bool failed = False;
-    Vector<Float> x(5); indgen(x.arrayCast()); 
-    Vector<Float> y(5); indgen(y.arrayCast()); 
+    Vector<Float> x(5); indgen(x); 
+    Vector<Float> y(5); indgen(y); 
     ScalarSampledFunctional<Float> fx(x), fy(y);
     Interpolate1D<Float,Float> value(fx, fy);
     Float xs;
@@ -69,8 +69,8 @@ int main()
     // Check the assignment operator and copy constructor use copy symantics
     Interpolate1D<Float,Float> v1(value), v2;
     v2 = v1;
-    Vector<Float> y1(5); indgen(y1.ac(), 1.0f);
-    Vector<Float> y2(5); indgen(y2.ac(), 2.0f);
+    Vector<Float> y1(5); indgen(y1, 1.0f);
+    Vector<Float> y2(5); indgen(y2, 2.0f);
     ScalarSampledFunctional<Float> fy1(y1), fy2(y2);
     v1.setData(fx, fy1);
     v2.setData(fx, fy2);
@@ -98,9 +98,9 @@ int main()
   // interpolation
   {
     Bool failed = False;
-    Vector<Int> x(5); indgen(x.arrayCast());
-    Vector<Double> y(5); indgen(y.arrayCast());
-    y = y.ac()*y.ac()*y.ac();
+    Vector<Int> x(5); indgen(x);
+    Vector<Double> y(5); indgen(y);
+    y = y*y*y;
     ScalarSampledFunctional<Int> fx(x);
     ScalarSampledFunctional<Double> fy(y);
     Interpolate1D<Int, Double> value(fx, fy);
@@ -139,10 +139,10 @@ int main()
   // neighbour interpolation
   {
     Bool failed = False;
-    Vector<Double> x(5); indgen(x.arrayCast()); 
-    Vector<DComplex> y(5); indgen(y.arrayCast()); 
+    Vector<Double> x(5); indgen(x); 
+    Vector<DComplex> y(5); indgen(y); 
     const DComplex j(0.,1.);  
-    y = y.ac()+j*y.ac()*y.ac();
+    y = y+j*y*y;
     Block<Double> bx; x.toBlock(bx);
     Block<DComplex> by; y.toBlock(by);
     ScalarSampledFunctional<Double> fx(bx);
@@ -176,7 +176,7 @@ int main()
   // interpolation
   {
     Bool failed = False;
-    Vector<Float> x(5); indgen(x.arrayCast()); 
+    Vector<Float> x(5); indgen(x); 
     IPosition shape(3, 3, 5, 1);
     Array<Float>  y(shape); 
     IPosition xshape(3, 1, 5, 1);
@@ -248,7 +248,7 @@ int main()
     cout << "Skipped ";
 #else
     Bool failed = False;
-    Vector<Float> x(5); indgen(x.arrayCast()); 
+    Vector<Float> x(5); indgen(x); 
     IPosition shape(2, 2, 5);
     Array<DComplex>  y(shape); 
     IPosition xshape(2, 1, 5);

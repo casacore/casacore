@@ -162,8 +162,8 @@ TableRecord LCPolygon::toRecord (const String&) const
     defineRecordFields (rec, className());
     // Write 1-relative.
     rec.define ("oneRel", True);
-    rec.define ("x", itsX.ac() + Float(1));
-    rec.define ("y", itsY.ac() + Float(1));
+    rec.define ("x", itsX + Float(1));
+    rec.define ("y", itsY + Float(1));
     rec.define ("shape", latticeShape().asVector());
     return rec;
 }

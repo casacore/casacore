@@ -1,5 +1,5 @@
 //# dImageInterface.cc:  Illustrates the use of the ImageInterface base class
-//# Copyright (C) 1996,1998
+//# Copyright (C) 1996,1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -41,7 +41,7 @@ Float sumPixels(const ImageInterface<Float>& image){
   Float sumPix = 0;
   RO_LatticeIterator<Float> iter(image, rowShape);
   while(!iter.atEnd()){
-    sumPix += sum(iter.vectorCursor().ac());
+    sumPix += sum(iter.vectorCursor());
     iter++;
   }
   return sumPix;

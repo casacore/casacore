@@ -1,5 +1,5 @@
 //# tTableDesc.cc: Test program for the TableDesc class
-//# Copyright (C) 1994,1995,1996,1997,1998
+//# Copyright (C) 1994,1995,1996,1997,1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -206,7 +206,7 @@ void a (Bool doExcp)
 // Do some tests of the options for the constructor.
 void b (Bool doExcp) {
     TableDesc td("tTableDesc_tmp", TableDesc::Update);
-    cout << td.columnNames().ac() << endl;
+    cout << td.columnNames() << endl;
     cout << (td.columnDesc("ab") == td.columnDesc("ac"));
     cout << (td.columnDesc("ad") == td.columnDesc("ae"));
     cout << (td.columnDesc("ab") == td.columnDesc("Arr1"));

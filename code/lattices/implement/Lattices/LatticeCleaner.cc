@@ -606,7 +606,7 @@ void LatticeCleaner<T>::makeScale(Lattice<T>& scale, const Float& scaleSize)
 	}
       }
     }
-    iscale.ac()/=volume;
+    iscale/=volume;
   }
   scale.putSlice(iscale, IPosition(scale.ndim(),0), IPosition(scale.ndim(),1));
 }

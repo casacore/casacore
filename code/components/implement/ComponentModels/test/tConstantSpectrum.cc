@@ -1,5 +1,5 @@
 //# tSpectralModel.cc:  tests the SpectralModel class
-//# Copyright (C) 1998
+//# Copyright (C) 1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -96,7 +96,7 @@ void plotSpectrum(const Flux<Double> & refFlux,
        << endl;
   Vector<Double> parms(modelSpectrum.nParameters());
   modelSpectrum.parameters(parms);
-  cout << "The parameters are: " << parms.ac() << endl;
+  cout << "The parameters are: " << parms << endl;
   const MVFrequency step(Quantity(100.0, "MHz"));
   MVFrequency sampleFreq = modelSpectrum.refFrequency().getValue();
   Flux<Double> modelFlux;

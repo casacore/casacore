@@ -1,5 +1,5 @@
 //# Matrix2Math.cc: The AIPS++ linear algebra functions (non-templated)
-//# Copyright (C) 1993,1994,1995,1996
+//# Copyright (C) 1993,1994,1995,1996,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -57,7 +57,7 @@ Matrix<Float> Rot3D(Int axis, Float angle)
   Matrix<Double> tmp = Rot3D(axis, Double(angle));
 
   Matrix<Float> retval(tmp.shape());
-  convertArray(retval.arrayCast(), tmp.arrayCast());
+  convertArray(retval, tmp);
 
   return retval;
 }
@@ -153,7 +153,7 @@ Int normI (const Matrix<Int> &A)
     uInt M = A.nrow();
     for (uInt I = 0; I < M; I++)
       {
-	hold = sum(abs(A.row(I).arrayCast()));
+	hold = sum(abs(A.row(I)));
 	output = (output >= hold) ? output : hold;
       }
   }
@@ -169,7 +169,7 @@ Float normI (const Matrix<Float> &A)
     uInt M = A.nrow();
     for (uInt I = 0; I < M; I++)
       {
-	hold = sum(abs(A.row(I).arrayCast()));
+	hold = sum(abs(A.row(I)));
 	output = (output >= hold) ? output : hold;
       }
   }
@@ -185,7 +185,7 @@ Double normI (const Matrix<Double> &A)
     uInt M = A.nrow();
     for (uInt I = 0; I < M; I++)
       {
-	hold = sum(abs(A.row(I).arrayCast()));
+	hold = sum(abs(A.row(I)));
 	output = (output >= hold) ? output : hold;
       }
   }
@@ -233,7 +233,7 @@ Int norm1 (const Matrix<Int> &A)
     uInt N = A.ncolumn();
     for (uInt I = 0; I < N; I++)
       {
-	hold = sum(abs(A.column(I).arrayCast()));
+	hold = sum(abs(A.column(I)));
 	output = (output >= hold) ? output : hold;
       }
   }
@@ -249,7 +249,7 @@ Float norm1 (const Matrix<Float> &A)
     uInt N = A.ncolumn();
     for (uInt I = 0; I < N; I++)
       {
-	hold = sum(abs(A.column(I).arrayCast()));
+	hold = sum(abs(A.column(I)));
 	output = (output >= hold) ? output : hold;
       }
   }
@@ -265,7 +265,7 @@ Double norm1 (const Matrix<Double> &A)
     uInt N = A.ncolumn();
     for (uInt I = 0; I < N; I++)
       {
-	hold = sum(abs(A.column(I).arrayCast()));
+	hold = sum(abs(A.column(I)));
 	output = (output >= hold) ? output : hold;
       }
   }

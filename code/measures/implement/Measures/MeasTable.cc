@@ -957,7 +957,7 @@ const Vector<Double> &MeasTable::IGRF(Double tm) {
     dIGRF = accd(indx);
   };
   if (abs(tm-timeIGRF) > 5) {
-    resIGRF = coefIGRF.ac() + dIGRF.ac() * (5*(tm-time0IGRF)/dtimeIGRF);
+    resIGRF = coefIGRF + dIGRF * (5*(tm-time0IGRF)/dtimeIGRF);
     timeIGRF = tm;
   };
   return resIGRF;

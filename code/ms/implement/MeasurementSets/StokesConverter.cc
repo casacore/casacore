@@ -1,5 +1,5 @@
 //# StokesConverter.cc: convert polarizations from one frame to another
-//# Copyright (C) 1997
+//# Copyright (C) 1997,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -301,11 +301,11 @@ void StokesConverter::convert(Array<Complex>& out, const Array<Complex>& in)
 	    tmp=iquv.row(j);
 	    tmp*=conj(tmp);
 	    if (j==1) outf=real(tmp);
-	    else outf.ac()+=real(tmp);
+	    else outf+=real(tmp);
 	  }
 	  outf.apply(floatsqrt);
 	  if (pol==Stokes::PFtotal) {
-	    outf.ac()/=amplitude(iquv.row(0).ac());
+	    outf/=amplitude(iquv.row(0));
 	  }
 	  for (uInt k=0; k<outf.nelements(); k++) outMat(i,k)=outf(k);
 	}
@@ -319,11 +319,11 @@ void StokesConverter::convert(Array<Complex>& out, const Array<Complex>& in)
 	    tmp=iquv.row(j);
 	    tmp*=conj(tmp);
 	    if (j==1) outf=real(tmp);
-	    else outf.ac()+=real(tmp);
+	    else outf+=real(tmp);
 	  }
 	  outf.apply(floatsqrt);
 	  if (pol==Stokes::PFlinear) {
-	    outf.ac()/=amplitude(iquv.row(0).ac());
+	    outf/=amplitude(iquv.row(0));
 	  }
 	  for (uInt k=0; k<outf.nelements(); k++) outMat(i,k)=outf(k);
 	}
@@ -333,8 +333,8 @@ void StokesConverter::convert(Array<Complex>& out, const Array<Complex>& in)
 	  // note: angle is not well defined for complex quantities
 	  // only makes sense if Q and U phase differs by 0 or 180 degrees.
 	  Vector<Float> outf=atan2(real(iquv.row(2)),real(iquv.row(1)));
-	  outf.ac()/=2.0f;
-      	  // convertArray(outMat.row(i).ac(),outf.ac());
+	  outf/=2.0f;
+      	  // convertArray(outMat.row(i),outf);
 	  // convertArray is broken 1997/10/09, spell it out
 	  for (uInt k=0; k<outf.nelements(); k++) outMat(i,k)=outf(k);
 	}

@@ -383,7 +383,7 @@ Bool CoordinateSystem::worldMap(Vector<Int>& worldAxisMap,
 // If all the world axes for this coordinate have been removed,
 // we do not attempt to match with anything.
 
-      if (!allEQ(other.worldAxes(coord2).ac(), -1)) {
+      if (!allEQ(other.worldAxes(coord2), -1)) {
 
       
 // Try and find this coordinate type in "*this". If there
@@ -1058,8 +1058,8 @@ Bool CoordinateSystem::toMix(Vector<Double>& worldOut,
 /*
       Vector<Double> w = *(world_tmps_p[i]);
       Vector<Double> p = *(pixel_tmps_p[i]);
-      cout << "worldIn, pixelIn = " << w.ac() << p.ac() << endl;
-      cout << "worldAxes2, pixelAxes2" << worldAxes2.ac() << pixelAxes2.ac() << endl;
+      cout << "worldIn, pixelIn = " << w << p << endl;
+      cout << "worldAxes2, pixelAxes2" << worldAxes2 << pixelAxes2 << endl;
 */
 
       if (!coordinates_p[i]->toMix(*(worldOut_tmps_p[i]), *(pixelOut_tmps_p[i]),
@@ -1387,7 +1387,7 @@ Bool CoordinateSystem::near(const Coordinate* pOther,
          set_error(String(oss));
          return False;
       }
-      if (!allEQ(pixelAxes(i).ac(), cSys->pixelAxes(i).ac())) {
+      if (!allEQ(pixelAxes(i), cSys->pixelAxes(i))) {
          oss << "The pixel axes differ for coordinate number " << i << ends;
          set_error(String(oss));
          return False;
@@ -1401,7 +1401,7 @@ Bool CoordinateSystem::near(const Coordinate* pOther,
          set_error(String(oss));
          return False;
       }
-      if (!allEQ(worldAxes(i).ac(), cSys->worldAxes(i).ac())) {
+      if (!allEQ(worldAxes(i), cSys->worldAxes(i))) {
          oss << "The world axes differ for coordinate number " << i << ends;
          set_error(String(oss));
          return False;
@@ -1854,10 +1854,10 @@ Bool CoordinateSystem::toFITSHeader(RecordInterface &header,
     Vector<Double> crval = coordsys.referenceValue();
 
     // crpix
-    Vector<Double> crpix = coordsys.referencePixel().ac() + offset;
+    Vector<Double> crpix = coordsys.referencePixel() + offset;
     
     // cdelt
-    Vector<Double> cdelt = coordsys.increment().ac();
+    Vector<Double> cdelt = coordsys.increment();
 
     // projp
     Vector<Double> projp;
@@ -2119,7 +2119,7 @@ Bool CoordinateSystem::fromFITSHeader(CoordinateSystem &coordsys,
     try {
 	header.get(sprefix + "rval", crval);
 	header.get(sprefix + "rpix", crpix);
-	crpix.ac() -= offset;
+	crpix -= offset;
 	header.get(sprefix + "delt", cdelt);
 	header.get(sprefix + "type", ctype);
 

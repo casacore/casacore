@@ -1,5 +1,5 @@
 //# tTiledDataStMan.cc: Test program for the TiledDataStMan class
-//# Copyright (C) 1994,1995,1996
+//# Copyright (C) 1994,1995,1996,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -70,7 +70,7 @@ main()
 
 void init (Matrix<float>& array, Matrix<Bool>& arrayb, Matrix<Complex>& arrayc)
 {
-    indgen (array.ac());
+    indgen (array);
     uInt i=0;
     for (uInt k=0; k<20; k++) {
 	for (uInt j=0; j<12; j++) {
@@ -130,10 +130,10 @@ void a()
     Vector<float> baselineValues(30);
     Vector<float> freqValues(20);
     Vector<float> polValues(12);
-    indgen (timeValues.ac());
-    indgen (baselineValues.ac(), float(100));
-    indgen (freqValues.ac(), float(200));
-    indgen (polValues.ac(), float(300));
+    indgen (timeValues);
+    indgen (baselineValues, float(100));
+    indgen (freqValues, float(200));
+    indgen (polValues, float(300));
     values.define ("Time", timeValues);
     values.define ("Baseline", baselineValues);
     values.define ("Freq", freqValues);
@@ -163,32 +163,32 @@ void a()
 
     for (i=0; i<30*42; i++) {
 	data.put (i, array);
-	weight.put (i, array.ac()+float(100));
+	weight.put (i, array+float(100));
 	flag.put (i, arrayb);
 	odata.put (i, arrayc);
-	array.ac() += float(200);
-	arrayc.ac() += Complex(200, 300);
+	array += float(200);
+	arrayc += Complex(200, 300);
     }
     init (array, arrayb, arrayc);
     for (i=0; i<table.nrow(); i++) {
 	data.get (i, result);
-	if (! allEQ (array.ac(), result.ac())) {
+	if (! allEQ (array, result)) {
 	    cout << "mismatch in data row " << i << endl;
 	}
 	weight.get (i, result);
-	if (! allEQ (array.ac() + float(100), result.ac())) {
+	if (! allEQ (array + float(100), result)) {
 	    cout << "mismatch in weight row " << i << endl;
 	}
 	flag.get (i, resultb);
-	if (! allEQ (arrayb.ac(), resultb.ac())) {
+	if (! allEQ (arrayb, resultb)) {
 	    cout << "mismatch in flag row " << i << endl;
 	}
 	odata.get (i, resultc);
-	if (! allEQ (arrayc.ac(), resultc.ac())) {
+	if (! allEQ (arrayc, resultc)) {
 	    cout << "mismatch in odata row " << i << endl;
 	}
-	array.ac() += float(200);
-	arrayc.ac() += Complex(200, 300);
+	array += float(200);
+	arrayc += Complex(200, 300);
     }
 
     // Add columns and a data manager.
@@ -242,36 +242,36 @@ void b()
     float fvalue;
     String svalue;
     init (array, arrayb, arrayc);
-    indgen (timeValues.ac());
-    indgen (baselineValues.ac(), float(100));
-    indgen (freqValues.ac(), float(200));
-    indgen (polValues.ac(), float(300));
+    indgen (timeValues);
+    indgen (baselineValues, float(100));
+    indgen (freqValues, float(200));
+    indgen (polValues, float(300));
     uInt i,j,i0,i1;
     i = 0;
     for (i0=0; i0<42; i0++) {
 	for (i1=0; i1<30; i1++) {
 	    data.get (i, result);
-	    if (! allEQ (array.ac(), result.ac())) {
+	    if (! allEQ (array, result)) {
 		cout << "mismatch in data row " << i << endl;
 	    }
 	    weight.get (i, result);
-	    if (! allEQ (array.ac() + float(100), result.ac())) {
+	    if (! allEQ (array + float(100), result)) {
 		cout << "mismatch in weight row " << i << endl;
 	    }
 	    odata.get (i, resultc);
-	    if (! allEQ (arrayc.ac(), resultc.ac())) {
+	    if (! allEQ (arrayc, resultc)) {
 		cout << "mismatch in odata row " << i << endl;
 	    }
 	    flag.get (i, resultb);
-	    if (! allEQ (arrayb.ac(), resultb.ac())) {
+	    if (! allEQ (arrayb, resultb)) {
 		cout << "mismatch in flag row " << i << endl;
 	    }
 	    pol.get (i, polResult);
-	    if (! allEQ (polValues.ac(), polResult.ac())) {
+	    if (! allEQ (polValues, polResult)) {
 		cout << "mismatch in pol row " << i << endl;
 	    }
 	    freq.get (i, freqResult);
-	    if (! allEQ (freqValues.ac(), freqResult.ac())) {
+	    if (! allEQ (freqValues, freqResult)) {
 		cout << "mismatch in freq row " << i << endl;
 	    }
 	    baseline.get (i, fvalue);
@@ -291,18 +291,18 @@ void b()
 	    }
 	    for (j=0; j<20; j++) {
 		data.getSlice (i, Slicer(Slice(0,12),Slice(j,1)), polArray);
-		if (! allEQ (polArray, array(Slice(0,12), Slice(j,1)).ac())) {
+		if (! allEQ (polArray, array(Slice(0,12), Slice(j,1)))) {
 		    cout << "mismatch in pol-slice " << j << " row "<<i<<endl;
 		}
 	    }
 	    for (j=0; j<12; j++) {
 		data.getSlice (i, Slicer(Slice(j,1),Slice(0,20)), freqArray);
-		if (! allEQ (freqArray, array(Slice(j,1), Slice(0,20)).ac())) {
+		if (! allEQ (freqArray, array(Slice(j,1), Slice(0,20)))) {
 		    cout << "mismatch in freq-slice " << j << " row "<<i<<endl;
 		}
 	    }
-	    array.ac() += float(200);
-	    arrayc.ac() += Complex(200, 300);
+	    array += float(200);
+	    arrayc += Complex(200, 300);
 	    i++;
 	}
     }

@@ -1,5 +1,5 @@
 //# tVisibilityIterator.cc: Tests the Synthesis MeasurementSet Iterator
-//# Copyright (C) 1995
+//# Copyright (C) 1995,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -91,7 +91,7 @@ Int main(int argc, char **argv)
 	  <<", vis="<<syniter.visibility()
 	      <<", sigma="<<syniter.sigma()
 	       <<", flag="<<syniter.flag()
-		      <<", feed_pa="<<syniter.feed_pa().ac()<<endl;
+		      <<", feed_pa="<<syniter.feed_pa()<<endl;
 
     cout << " Reading through visibility data till end of file "<< endl;
     CStokesVector sum;
@@ -158,7 +158,7 @@ Int main(int argc, char **argv)
     cout << " Polarization frame "<< syniter.polFrame()<<endl;
     cout << " Circular="<< ROVisibilityIterator::Circular<<
 	", Linear="<< ROVisibilityIterator::Linear<<endl;
-    cout << " CJones(antenna==0)="<< syniter.CJones(0).matrix().ac()<<endl;
+    cout << " CJones(antenna==0)="<< syniter.CJones(0).matrix()<<endl;
 
     // try assigment
     VisibilityIterator myiter;

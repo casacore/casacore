@@ -1,5 +1,5 @@
 //# tQuantum.cc: test program for Quantum and QC class
-//# Copyright (C) 1994,1995,1996,1998
+//# Copyright (C) 1994,1995,1996,1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -86,7 +86,7 @@ try {
     cout << "Manipulate quantities:" << endl << endl;
     UnitMap::clearCache();
     
-    cout << "QVQ         = Vector(A,D,DEG)        = " << QVQ.ac() << endl;
+    cout << "QVQ         = Vector(A,D,DEG)        = " << QVQ << endl;
 
     cout << "A           = Quantity(5,\"m\")      = " << A << endl;
     cout << "B           = Quantity(2.,\"yd\")    = " << B << endl;
@@ -95,14 +95,14 @@ try {
     cout << "DEG         = Quantity(5,\"deg\")    = " << DEG << endl;
     cout << "CQ          = Complex(7,\"ml\")      = " << CQ << endl;
     cout << "VQ          = Vector((3,4),\"uA\")   = " << VQ << endl;
-    cout << "V2          = Vector(2,2)            = " << V2.ac() << endl;
-    cout << "V1          = Vector(3)              = " << V1.ac() << endl;
+    cout << "V2          = Vector(2,2)            = " << V2 << endl;
+    cout << "V1          = Vector(3)              = " << V1 << endl;
     Quantity *E=new Quantity(10,"L");
     cout << "*E          = new Quantity(10,\"L\") = "<< *E << endl;
     delete E;
 
-    cout << "-QVQ        = " << -QVQ.ac() << endl;
-    cout << "A*QVQ       = " << A*QVQ.ac() << endl;
+    cout << "-QVQ        = " << -QVQ << endl;
+    cout << "A*QVQ       = " << A*QVQ << endl;
     cout << "A*B         = " << A*B << endl;
     cout << "-B          = " << -B << endl;
     cout << "2.*B        = " << 2.*B << endl;

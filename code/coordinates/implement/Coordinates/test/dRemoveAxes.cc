@@ -134,7 +134,7 @@ try {
      worldReplacement(0) = (-1 - refPix(list(0)))*incr(list(0)) + refVal(list(0));
      worldReplacement(1) = (10 - refPix(list(1)))*incr(list(1)) + refVal(list(1));
 
-     cout << "specified world replacement values = " << worldReplacement.ac() << endl;
+     cout << "specified world replacement values = " << worldReplacement << endl;
      
      if (CoordinateUtil::removeAxes(cSys, worldReplacement,
                                     list, remove)) {
@@ -178,8 +178,8 @@ void listIt (const CoordinateSystem& cSys,
 {
     cout << "nWorldAxes = " << cSys.nWorldAxes() << endl;
     cout << "nPixelAxes = " << cSys.nPixelAxes() << endl;
-    cout << "world axis names = " << cSys.worldAxisNames().ac() << endl;
-    cout << "reference pixels = " << cSys.referencePixel().ac() << endl;
-    cout << "replacement world values = " << worldReplacement.ac() << endl;
+    cout << "world axis names = " << cSys.worldAxisNames() << endl;
+    cout << "reference pixels = " << cSys.referencePixel() << endl;
+    cout << "replacement world values = " << worldReplacement << endl;
 }
 

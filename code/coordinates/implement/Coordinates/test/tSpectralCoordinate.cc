@@ -134,27 +134,27 @@ int main()
             throw(AipsError("Failed nWorldAxes test"));
          }
 //
-         if (!allEQ(names.ac(), lc.worldAxisNames().ac())) {
+         if (!allEQ(names, lc.worldAxisNames())) {
             throw(AipsError("Failed world axis name recovery test"));
          }
 //
-         if (!allEQ(crval.ac(), lc.referenceValue().ac())) {
+         if (!allEQ(crval, lc.referenceValue())) {
             throw(AipsError("Failed reference value recovery test"));
          }
 //
-         if (!allEQ(cdelt.ac(), lc.increment().ac())) {
+         if (!allEQ(cdelt, lc.increment())) {
             throw(AipsError("Failed increment recovery test"));
          }
 //
-         if (!allEQ(crpix.ac(), lc.referencePixel().ac())) {
+         if (!allEQ(crpix, lc.referencePixel())) {
             throw(AipsError("Failed reference pixel recovery test"));
          }
 //
-         if (!allEQ(units.ac(), lc.worldAxisUnits().ac())) {
+         if (!allEQ(units, lc.worldAxisUnits())) {
             throw(AipsError("Failed world axis units recovery test"));
          }
 //       
-         if (!allEQ(xform.ac(), lc.linearTransform().ac())) {
+         if (!allEQ(xform, lc.linearTransform())) {
             throw(AipsError("Failed linear transform recovery test"));
          }
 //
@@ -170,7 +170,7 @@ int main()
          if (!lc.setWorldAxisNames(names)) {
             throw(AipsError(String("Failed to set world axis name because") + lc.errorMessage()));
          }
-         if (!allEQ(names.ac(), lc.worldAxisNames().ac())) {
+         if (!allEQ(names, lc.worldAxisNames())) {
             throw(AipsError("Failed axis name set/recovery test"));
          }
 //
@@ -178,7 +178,7 @@ int main()
          if (!lc.setReferenceValue(crval)) {
             throw(AipsError(String("Failed to set reference value because") + lc.errorMessage()));
          }
-         if (!allEQ(crval.ac(), lc.referenceValue().ac())) {
+         if (!allEQ(crval, lc.referenceValue())) {
             throw(AipsError("Failed reference value set/recovery test"));
          }
 //
@@ -186,7 +186,7 @@ int main()
          if (!lc.setIncrement(cdelt)) {
             throw(AipsError(String("Failed to set increment because") + lc.errorMessage()));
          }
-         if (!allEQ(cdelt.ac(), lc.increment().ac())) {
+         if (!allEQ(cdelt, lc.increment())) {
             throw(AipsError("Failed increment set/recovery test"));
          }
 //
@@ -194,7 +194,7 @@ int main()
          if (!lc.setReferencePixel(crpix)) {
             throw(AipsError(String("Failed to set reference pixel because") + lc.errorMessage()));
          }
-         if (!allEQ(crpix.ac(), lc.referencePixel().ac())) {
+         if (!allEQ(crpix, lc.referencePixel())) {
             throw(AipsError("Failed reference pixel set/recovery test"));
          }
 //
@@ -202,7 +202,7 @@ int main()
          if (!lc.setWorldAxisUnits(units)) {
             throw(AipsError(String("Failed to set world axis units because ") + lc.errorMessage()));
          }
-         if (!allEQ(units.ac(), lc.worldAxisUnits().ac())) {
+         if (!allEQ(units, lc.worldAxisUnits())) {
             throw(AipsError("Failed world axis units set/recovery test"));
          }
 //       
@@ -210,7 +210,7 @@ int main()
          if (!lc.setLinearTransform(xform)) {
             throw(AipsError(String("Failed to set linear transform because") + lc.errorMessage()));
          }
-         if (!allEQ(xform.ac(), lc.linearTransform().ac())) {
+         if (!allEQ(xform, lc.linearTransform())) {
             throw(AipsError("Failed linear transform set/recovery test"));
          }
 //
@@ -265,12 +265,12 @@ int main()
                makeNonLinearCoordinate(MFrequency::TOPO, freqs, restFreq);
             Vector<Double> pixelValues = lc2.pixelValues();
             Vector<Double> worldValues = lc2.worldValues();
-            if (!allNear(worldValues.ac(), freqs.ac(), 1e-6)) {
+            if (!allNear(worldValues, freqs, 1e-6)) {
                throw(AipsError("Failed non-linear worldValues function test"));
             }
             Vector<Double> pixels2(freqs.nelements());
             for (uInt i=0; i<pixels2.nelements(); i++) pixels2(i) = Double(i);
-            if (!allNear(pixelValues.ac(), pixels2.ac(), 1e-6)) {
+            if (!allNear(pixelValues, pixels2, 1e-6)) {
                throw(AipsError("Failed non-linear pixelValues function test"));
             }
          }
@@ -291,7 +291,7 @@ int main()
          if (!lc.toPixel(pixel2, world)) {
             throw(AipsError(String("toPixel conversion failed because ") + lc.errorMessage()));
          }
-         if (!allNear(pixel2.ac(), pixel.ac(), 1e-6)) {
+         if (!allNear(pixel2, pixel, 1e-6)) {
                throw(AipsError("Coordinate conversion reflection failed"));
          }
       }
@@ -309,7 +309,7 @@ int main()
          if (!lc.toPixel(pixel2, world)) {
             throw(AipsError(String("toPixel conversion failed because ") + lc.errorMessage()));
          }
-         if (!allNear(pixel2.ac(), pixel.ac(), 1e-6)) {
+         if (!allNear(pixel2, pixel, 1e-6)) {
                throw(AipsError("Coordinate conversion reflection failed"));
          }
       }

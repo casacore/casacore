@@ -415,7 +415,7 @@ SquareMatrix<T,n>& SquareMatrix<T,n>::inverse(SquareMatrix<T,n>& result) const {
 	  Matrix<T> mat=invert(matrix());
 	  if (mat.nelements()==0) {
 	    cerr<< "invert of singular matrix attempted:"<< 
-	      matrix().arrayCast()
+	      matrix()
 		<< endl;
 	    result=T(1);
 	  }

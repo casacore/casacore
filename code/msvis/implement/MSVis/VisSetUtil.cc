@@ -1,5 +1,5 @@
 //# VisSetUtil.cc: VisSet Utilities
-//# Copyright (C) 1996,1997,1998
+//# Copyright (C) 1996,1997,1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -350,7 +350,7 @@ void VisSetUtil::UVRange(VisSet &vs, const Double& uvmin, const Double& uvmax,
 	  }
 	}
       }
-      sumwt+=sum(vb.imagingWeight().ac());
+      sumwt+=sum(vb.imagingWeight());
       vi.setImagingWeight(vb.imagingWeight());
     }
   }
