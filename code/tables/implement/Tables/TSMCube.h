@@ -140,6 +140,7 @@ public:
     // Empty the cache.
     // It will flush the cache as needed and remove all buckets from it
     // resulting in a possibly large drop in memory used.
+    // It'll also clear the <src>userSetCache_p</src> flag.
     void emptyCache();
 
     // Show the cache statistics.
@@ -160,13 +161,6 @@ public:
 
     // Get the lenghth of a tile in local format.
     uInt localTileLength() const;
-
-    // Try to size the cache that it can hold the tiles holding the
-    // amount of pixels defined by start,end,stride.
-    // When forceSmaller is True, the cache will be made smaller
-    // when less space is needed.
-    Bool sizeCache (const IPosition& start, const IPosition& end,
-		    const IPosition& stride, Bool forceSmaller = False);
 
     // Set the hypercube shape.
     // This is only possible when the shape was not defined yet.
@@ -236,7 +230,7 @@ public:
 		       const IPosition& windowStart,
 		       const IPosition& windowLength,
 		       const IPosition& axisPath,
-		       Bool forceSmaller);
+		       Bool forceSmaller, Bool userSet);
 
     // Resize the cache object.
     // When forceSmaller is False, the cache will only be resized
@@ -244,12 +238,17 @@ public:
     // When the given size exceeds the maximum size with more
     // than 10%, the maximum size will be used.
     // The cacheSize has to be given in buckets.
-    void setCacheSize (uInt cacheSize, Bool forceSmaller);
+    // <br>The flag <src>userSet</src> inidicates if the cache size is set by
+    // the user (by an Accessor object) or automatically (by TSMDataColumn).
+    void setCacheSize (uInt cacheSize, Bool forceSmaller, Bool userSet);
 
     // Validate the cache size (in buckets).
     // This means it will return the given cache size if smaller
     // than the maximum cache size. Otherwise the maximum is returned.
     uInt validateCacheSize (uInt cacheSize) const;
+
+    // Determine if the user set the cache size (using setCacheSize).
+    Bool userSetCache() const;
 
 private:
     // Forbid copy constructor.
@@ -339,6 +338,8 @@ private:
     uInt            localTileLength_p;
     // The bucket cache.
     BucketCache*    cache_p;
+    // Did the user set the cache size?
+    Bool            userSetCache_p;
 };
 
 
@@ -374,6 +375,11 @@ inline Record& TSMCube::rwValueRecord()
 {
     return values_p;
 }
+inline Bool TSMCube::userSetCache() const
+{
+    return userSetCache_p;
+}
+
 
 
 
