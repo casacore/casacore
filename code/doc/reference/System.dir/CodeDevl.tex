@@ -1596,6 +1596,61 @@ Original: 1994/02/10 by Mark Calabretta, ATNF
 % ----------------------------------------------------------------------------
  
 \newpage
+\section{\exe{duplicates}}
+\label{duplicates}
+\index{duplicates@\exe{duplicates}}
+\index{template files!duplicate template instantiations|see{\exe{duplicates}}}
+ 
+Look for duplicate entries in \aipspp\ ``templates'' instantiation files
+ 
+\subsection*{Synopsis}
+ 
+\begin{synopsis}
+   \code{\exe{duplicates} [templates file list]}
+\end{synopsis}
+ 
+\subsection*{Description}
+ 
+\exe{duplicates} is a \code{C++} executable program which looks for duplicate 
+entries in \aipspp\ \code{templates} files. This is useful for finding redundant
+templates entries, and for moving duplicate entries into a common 
+\code{templates} file.
+ 
+If no list of files is provided, the list used is the combination of:
+\begin{enumerate}
+	\item A file named \code{templates} in the current working directory
+              if any; and
+	\item All files named \code{templates} under the
+	     \code{\$AIPSCODE}
+\end{enumerate}
+
+ 
+\subsection*{Options}
+ 
+None.
+ 
+\subsection*{Examples}
+ 
+\begin{verbatim}
+duplicates
+duplicates templates /aips++/code/aips/implement/_ReposFiller/templates
+\end{verbatim}
+
+The first line finds all duplicates in \code{./templates} and all templates 
+files checked into the system. The second example finds duplicates only in
+the listed files.
+ 
+\subsection*{See also}
+ 
+\aipspp\ do-it-yourself template instantiation (\exeref{mkinst}).\\
+ 
+\subsection*{Author}
+ 
+Original: 1997/06/09 by Brian Glendenning, NRAO
+
+% ----------------------------------------------------------------------------
+ 
+\newpage
 \section{\exe{ldmap}}
 \label{ldmap}
 \index{ldmap@\exe{ldmap}}
