@@ -34,8 +34,8 @@ typedef Quantum<Double> gpp_mfrequency_bug1;
 #include <aips/Measures/MFrequency.h>
 #include <aips/RTTI/Register.h>
 #include <aips/Measures/MDoppler.h>
-#ifdef __GNUG__
 #include <aips/Measures/MeasConvert.h>
+#ifdef __GNUG__
 typedef MeasConvert<MDoppler,MVDoppler,MCDoppler> gpp_mradvel_bug2;
 #endif
 
