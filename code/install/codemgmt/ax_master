@@ -6293,3 +6293,4 @@
 17 326 src rm nrao/apps/e2echromepipe/libaips_mysockd.a
 17 326 src rm nrao/apps/e2echromepipe/mysockd
 17 326 src rm nrao/apps/e2echromepipe/e2eforms.pl
+17 326 src rm nrao/apps/e2echromepipe/mysockd.cc
