@@ -125,6 +125,7 @@ if (! -e $ldir/${tp}_MV.spat || ! -e $ldir/${tp}.todo) then
 [/]tmplinst[/]
 [/]glish[/]
 EOF
+   if (-e $tmp.tmp) rm -f $tmp.tmp
 endif
 if (-z $ldir/${tp}_MV.spat) then
    echo "No file name change patterns created in ${tp}_MV.spat"
@@ -134,12 +135,22 @@ endif
 
 if (! -e $ldir/${tp}_MV.sed) then
    set x = ""
-   touch $ldir/${tp}_MV.sed
-   foreach i (`cat $ldir/${tp}_MV.spat`)
-      set x = (`echo $i | sed -f $ldir/${tp}.cfnm`)
-      echo "s#$i#$x#g" >> $ldir/${tp}_MV.sed
+   set y = ""
+   set a = ""
+   set b = ""
+   if (-e $tmp.tmp) rm -f $tmp.tmp
+   touch $tmp.tmp
+   foreach i (`cat $ldir/${tp}.sel`)
+      set x = (`echo $i | sed -e 's#[.]/##g'`)
+      set a = (`echo $x | sed -e 's#/implement##g'`)
+      set y = (`echo $x | sed -f $ldir/${tp}.cfnm`)
+      set b = (`echo $y | sed -e 's#/implement##g'`)
+      echo "s#$x#$y#g" >>  $tmp.tmp
+      echo "s#$a#$b#g" >>  $tmp.tmp
    end
-   unset x
+   cat $tmp.tmp | sort | uniq >! $ldir/${tp}_MV.sed
+   unset x y a b
+   if (-e $tmp.tmp) rm -f $tmp.tmp
 endif
 
 if (! -e $ldir/${tp}.todo) then
