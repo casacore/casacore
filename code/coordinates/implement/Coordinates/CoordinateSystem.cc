@@ -1859,19 +1859,17 @@ Bool CoordinateSystem::toFITSHeader(RecordInterface &header,
     }
 
     Vector<String> cctype(2);
-    if (skyCoord>=0) {
-       if (writeWCS) {
-          if (latAxis>=0) {
-             const DirectionCoordinate &dc = coordsys.directionCoordinate(skyCoord);
-             cctype = DirectionCoordinate::make_FITS_ctype (dc.directionType(),
-                                                            dc.projection(),
-                                                            crval(latAxis), True);
-          } else {
-             os << LogIO::SEVERE 
-                << "Cannot handle conversion to WCS for DirectionCoordinate with  lat axis removed"
-                << LogIO::POST;
-             return False;
-          }
+    if (skyCoord>=0 && !writeWCS) {
+       if (latAxis>=0) {
+          const DirectionCoordinate &dc = coordsys.directionCoordinate(skyCoord);
+          cctype = make_Direction_FITS_ctype (dc.projection(), 
+                                              DirectionCoordinate::axisNames(dc.directionType(), True),
+                                              crval(latAxis), True);
+       } else {
+          os << LogIO::SEVERE 
+             << "Cannot handle conversion to WCS for DirectionCoordinate with  lat axis removed"
+             << LogIO::POST;
+          return False;
        }
     }
 
@@ -2510,37 +2508,38 @@ Bool CoordinateSystem::fromFITSHeader(CoordinateSystem &coordsys,
     // Now we need to work out the transpose order
     Vector<Int> order(n);
     Int nspecial = 0;
-    if (longAxis >= 0) {nspecial++;}
-    if (latAxis >= 0) {nspecial++;}
-    if (stokesAxis >= 0) {nspecial++;}
-    if (specAxis >= 0) {nspecial++;}
+    if (longAxis >= 0) nspecial++;
+    if (latAxis >= 0) nspecial++;
+    if (stokesAxis >= 0) nspecial++;
+    if (specAxis >= 0) nspecial++;
+
     Int linused = 0;
     for (i=0; i<n; i++) {
 	if (i == longAxis) {
-	    order(i) = 0; // long is always first if it exist
+           order(i) = 0; // long is always first if it exist
 	} else if (i == latAxis) {
-	    order(i) = 1; // lat is always second if it exists
-	} else if (i == stokesAxis) {
-	    if (longAxis >= 0) { // stokes is axis 0 if no dir, otherwise 2
-		order(i) = 2;
-	    } else {
-		order(i) = 0;
-	    }
+	   order(i) = 1; // lat is always second if it exists
+        } else if (i == stokesAxis) {
+           if (longAxis >= 0) { // stokes is axis 0 if no dir, otherwise 2
+              order(i) = 2;
+           } else {
+              order(i) = 0;
+           }
 	} else if (i == specAxis) {
-	    if (longAxis >= 0 && stokesAxis >= 0) {
-		order(i) = 3; // stokes and dir
-	    } else if (longAxis >= 0) {
-		order(i) = 2; // dir only
-	    } else if (stokesAxis >= 0) {
-		order(i) = 0; // neither stokes or dir
-	    }
+           if (longAxis >= 0 && stokesAxis >= 0) {
+              order(i) = 3; // stokes and dir
+           } else if (longAxis >= 0) {
+              order(i) = 2; // dir only
+           } else if (stokesAxis >= 0) {
+              order(i) = 0; // neither stokes or dir
+           }
 	} else {
-	    order(i) = nspecial + linused;
-	    linused++;
+           order(i) = nspecial + linused;
+           linused++;
 	}
     }
+//
     coordsys.transpose(order, order);
-
     ObsInfo oi;
     String error;
     Bool ok = oi.fromFITS(error, header);
