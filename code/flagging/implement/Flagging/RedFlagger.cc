@@ -1061,8 +1061,10 @@ void RedFlagger::run ( const RecordInterface &agents,const RecordInterface &opt,
       plotSummaryReport(pgp_report,chunk,opt);
       plotAgentReports(pgp_report);
     } else {
-      printSummaryReport(chunk,opt);
-      printAgentReports();
+      if( isFieldSet(opt,RF_TRIAL) ) {
+	printSummaryReport(chunk,opt);
+	printAgentReports();
+      }
     }
 // now, do a single flag-transfer pass to transfer flags into MS
     if( !isFieldSet(opt,RF_TRIAL) && anyNE(active_init,False) )
@@ -1085,14 +1087,14 @@ void RedFlagger::run ( const RecordInterface &agents,const RecordInterface &opt,
           acc[i]->endFlag();
 
       {
-      os << "Writing the following to MS HISTORY Table:" << LogIO::POST;
-      logSink_p.clearLocally();
-      LogIO oss(LogOrigin("autoflag", "run()"), logSink_p);
-      os=oss;
-      this->summary(agents, opt, ind_base);
-      printSummaryReport(chunk,opt);
-      printAgentReports();
-      this->writeHistory(os, False);
+	os << "Writing the following to MS HISTORY Table:" << LogIO::POST;
+	logSink_p.clearLocally();
+	LogIO oss(LogOrigin("autoflag", "run()"), logSink_p);
+	os=oss;
+	this->summary(agents, opt, ind_base);
+	printSummaryReport(chunk,opt);
+	printAgentReports();
+	this->writeHistory(os, False);
       }
     }
 // call endChunk on all agents
