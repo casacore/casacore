@@ -447,7 +447,7 @@ finding the mean of the image).
 \medskip\noindent An image can have zero (all pixels are good) or more masks.  One mask
 can be designated as the default mask.  By default it will be applied to
 the image (from Glish, designation of the default mask is handled by the
-\htmlref{maskhandler}{images:image.maskhandler} function
+\htmlref{maskhandler}{images:image.maskhandler.function} function
 of the \htmlref{Image}{images:image} tool).
 
 \medskip\noindent When using LEL, the basic behaviour is that the default mask is used. 
@@ -908,27 +908,26 @@ other from C++.   It depends upon your needs which one
 you access.  Most high level users of AIPS++ will access
 LEL only via the Glish interface.
 
-\begin{itemize}
-\item
+\subsection {Glish Interface}
 
 The LEL interface in Glish is provided by the
 \htmlref{Image}{images:image} tool (loaded with the script
-\texttt{image.g}) \htmlref{imagecalc}{images:image.constructor.imagecalc} and
-\htmlref{expr}{images:image.constructor.expr} constructors, and through
-the \htmlref{calc}{images:image.function.calc} tool function. 
-These constrcutors and functions can be used
-to compose and/or execute a LEL expression.
+\texttt{image.g}) \htmlref{imagecalc}{images:image.imagecalc.constructor} 
+constructor, and through
+the \htmlref{calc}{images:image.calc.function} tool function. 
+These can be used to compose and/or execute a LEL expression.
 
-\medskip\noindent The \texttt{imagecalc} constructor will evaluate the expression and store
-the result and mask in an image with the given name.
+\subsubsection {Simple String Expressions}
 
-\medskip\noindent The \texttt{expr} constructor will only form the expression.  It never
-writes the result out, so it is effectively a read-only image. 
-Otherwise it behaves like a normal image.  It is evaluated when actions
-(like \htmlref{statistics}{images:image.statistics}) are done on it. 
+\medskip\noindent The \texttt{imagecalc} constructor evaluates the
+expression and stores the result and mask in an output image.  If you
+specify the output image name, it is written to a disk file of that
+name.  If you don't give it, the output image is never written out; it
+is evaluated every time an action (like
+\htmlref{statistics}{images:image.statistics}) is requested. 
 
 \begin{verbatim}
-  im := imagecalc(outfile='outimage',expr='inimage1+inimage2');
+  im := imagecalc(outfile='outimage', pixels='inimage1+inimage2');
   im.statistics();
 \end{verbatim}
 
@@ -938,7 +937,7 @@ statistics on that new image.
 
 \medskip\noindent Writing it as
 \begin{verbatim}
-    im := imagecalc(expr='inimage1+inimage2');
+    im := imagecalc(pixels='inimage1+inimage2');
     im.statistics();
 \end{verbatim}
 would do the same with the exception of creating the output image.
@@ -952,18 +951,32 @@ expression and each time it is used the expression is evaluated.
 \end{verbatim}
 would replace the pixels by the square of their value.
 
-\medskip\noindent Images created/opened in glish can be used with their glish name
-in a LEL expression. Similarly a region created in glish with the
-regionmanager can be used with its glish name.
 
-\medskip\noindent It is also possible to embed other glish variables and expressions in
+\medskip Sometimes you need to double quote the file names in your expression.
+For example, if the images reside in a different directory as in
+this example.
+
+\begin{verbatim}
+  im := imagecalc ('"dir1/im1" + "/nfs/data/im2"');
+\end{verbatim}
+
+\subsubsection {Symbol (or tool) substitution}
+
+\medskip\noindent Images created/opened in Glish can be used with their Glish name
+in a LEL expression. Similarly a region created in Glish with the
+Regionmanager can be used with its Glish name.
+
+\medskip\noindent It is also possible to embed other Glish variables and expressions in
 a LEL command using the syntax \texttt{\$variable} and
 \texttt{\$(expression)}. A variable can be a standard numeric scalar.
 An expression has to result in a numeric scalar.
+
+\medskip
 E.g. one can make a Glish function like
+
 \begin{verbatim}
-    img := image('inimage');
-    return expr('min($img[$someregion], $clipvalue)');
+    img1 := image('"/data/inimage'");
+    img2 := imagecalc(pixels='min($img[$someregion], $clipvalue)');
 \end{verbatim}
 to return a transient image formed by a region in an image clipped at the
 given clipvalue.
@@ -983,21 +996,23 @@ be deleted at the end of the function (with {\tt symbol\_delete}).  The
 name can be made unique by using the function name as a suffix. 
 
 \medskip\noindent In Glish applying a region to an image can also be done using the
-\htmlref{subim}{images:image.subimage} function of an Image tool.
+\htmlref{subim}{images:image.subimage.function} function of an Image tool.
 It forms an image from the given region in the input image.
 This new image can be used in a LEL expression.
 E.g.
 \begin{verbatim}
   img := image('inimage');
-  subimg := img.subimage(outfile='outimage', region=someregion);
-  return expr('min($subimg, $clipvalue)');
+  subimg := img.subimage(region=someregion);             # Virtual Image tool (a reference)
+  img2 := imagecalc(pixels='min($subimg, $clipvalue)');  
 \end{verbatim}
-has the same result as the earlier example. The only difference is that \texttt{subimage}
-creates another image on disk, which may or may not be desirable.
+has the same result as the earlier example.  Both {\bf subimg} and {\bf im2}
+are virtual images (not written to disk). 
 
-\item
-  The C++ interface consists of 2 parts.
-  \begin{enumerate}
+
+\subsection {C++ interface}
+This consists of 2 parts.  
+
+\begin{enumerate}
   \item
     The function \texttt{command} in
     \htmladdnormallink{Images/ImageExprParse.h}
@@ -1044,7 +1059,6 @@ creates another image on disk, which may or may not be desirable.
 
   \end{enumerate}
 
-\end{itemize}
 
 \section{\label{LEL:EXAMPLES}{Examples}}
 The following examples show some LEL expressions (equally valid 
@@ -1098,7 +1112,7 @@ duw01> glish -l image.g
 - mask[3,4] := F
 - im1.putregion(mask=mask);          # put new mask back
 - global reg:=drm.box([1,1],[4,4]);  # a box region
-- im2 := imagecalc(expr='$im1[$reg]')     # read-only image applying region
+- im2 := imagecalc(pixels='$im1[$reg]')     # read-only image applying region
 - local pixels2, mask2
 - im2.getregion(pixels2, mask2);     # get the pixels and mask
 - print pixels2
