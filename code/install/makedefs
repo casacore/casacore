@@ -1190,3 +1190,12 @@ help ::
 	-@ echo "  show_vars: print variables specified by VARS."
 	-@ echo "       help: print this."
 	-@ echo "   versions: print version of installed utilities."
+
+megalink:
+	cd $(AIPSARCH)/bin;          \
+	if [ -f megaserver ]; then   \
+	    rm -f measures quanta image ms misc imager calibrater componentlist deconvolver; \
+	    for i in measures quanta image ms misc imager calibrater componentlist deconvolver; do \
+	        ln -s megaserver $$i; \
+	    done;                    \
+	fi
