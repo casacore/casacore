@@ -37,3 +37,15 @@ The "Mode" facility was added to the Function class to facilitate the
 passing of non-Parameter-type state between Glish and a specific Function
 on the C++ side.  Thus, FunctionHolder has been updated to use the "Mode"
 facility to pass this special state.
+
+change id: 0138
+ author:   Raymond Plante
+ date:     2003/03/26
+ avers:    1.8
+ area:     Tool
+ package:  trial
+ module:   functionals
+ type:     Code
+ category: Change
+ summary:  added support for Chebyshev function
+The functionals tool now supports the Chebyshev function.
