@@ -60,6 +60,7 @@ void b (const Vector<Bool>& removedRows);
 void c();
 void d();
 void e (uInt nrrow);
+void f();
 
 main (int argc, char** argv) {
     uInt nr = 1000;
@@ -76,6 +77,8 @@ main (int argc, char** argv) {
 	e (10);
 	a (0, 2);
 	e (20);
+	a (nr, 0);
+	f();
     } catch (AipsError x) {
 	cout << "Caught an exception: " << x.getMesg() << endl;
 	return 1;
@@ -468,5 +471,42 @@ void e (uInt nrrow)
     for (i=0; i<nrrow; i++) {
 	removedRows(i) = False;
     }
+    b (removedRows);
+}
+
+void f()
+{
+    // Open the table as read/write for that purpose.
+    Table rwtab ("tIncrementalStMan_tmp.data", Table::Update);
+    ArrayColumn<float> arr1(rwtab,"arr1");
+    ArrayColumn<float> arr2(rwtab,"arr2");
+    ArrayColumn<Bool> arr7(rwtab, "arr7");
+    Vector<Bool> vecb(10);
+    Vector<float> vecf(10);
+    indgen (vecf.ac());
+    //# Try to change some arrays (which cannot be done).
+    try {
+	arr1.put (0, vecf);
+    } catch (AipsError x) {
+	cout << x.getMesg() << endl;         // shape cannot change
+    } end_try;
+    try {
+	arr7.put (0, vecb);
+    } catch (AipsError x) {
+	cout << x.getMesg() << endl;         // shape cannot change
+    } end_try;
+    Vector<Bool> removedRows(20);
+    removedRows.set (False);
+    b (removedRows);
+    //# Change an array which can be changed.
+    //# Check value, change it back and check all values.
+    Array<float> arrrow0  = arr2(0);
+    Array<float> arrrow12 = arr2(12);
+    arr2.put (0, vecf);
+    arr2.put (12, vecf);
+    AlwaysAssertExit (allEQ (arr2(0), vecf.ac()));
+    AlwaysAssertExit (allEQ (arr2(12), vecf.ac()));
+    arr2.put (0, arrrow0);
+    arr2.put (12, arrrow12);
     b (removedRows);
 }

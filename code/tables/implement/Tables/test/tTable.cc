@@ -172,11 +172,17 @@ void a (Bool doExcp)
 	sprintf (str, "V%i", i);
 	af.put (i, str);
     }
+    Vector<float> vec2;
     if (doExcp) {
 	try {
 	    af.put (0, "12345678901");
 	} catch (AipsError x) {
 	    cout << x.getMesg() << endl;         // value too long
+	} end_try;
+	try {
+	    arr1.put (0, vec2);
+	} catch (AipsError x) {
+	    cout << x.getMesg() << endl;         // shape cannot change
 	} end_try;
     }
 }
@@ -596,6 +602,8 @@ void c (Bool doExcp)
 
 void d()
 {
+    Vector<Complex> arrf2(100);
+    indgen (arrf2.ac());
     {
 	// Build the table description.
 	TableDesc td("", "1", TableDesc::Scratch);
@@ -658,8 +666,7 @@ void d()
 	indgen (arrf.ac());
 	indgen (arri.ac());
 	uInt i;
-	uInt nrow = tab.nrow();
-	for (i=0; i<nrow; i++) {
+	for (i=0; i<10; i++) {
 	    ab.get (i, abval);
 	    ad.get (i, adval);
 	    ag.get (i, agval);
@@ -690,6 +697,61 @@ void d()
 	ArrayColumn<Complex> rwarr2(rwtab,"arr2");
 	rwab.put (0,1);
 	rwarr2.put (0,arrf);
+	if (!allEQ( arr2(0), arrf.ac())) {
+	    cout << "first error in arr2" << endl;
+	}
+	rwarr2.put (0,arrf2);
+	if (!allEQ( arr2(0), arrf2.ac())) {
+	    cout << "second error in arr2" << endl;
+	}
+    }
+    {
+	Table tab ("tTable_tmp.data3");
+	ROScalarColumn<Int>     ab(tab,"ab");
+	ROScalarColumn<uInt>    ad(tab,"ad");
+	ROScalarColumn<Complex> ag(tab,"ag");
+	ROArrayColumn<String>  arr1(tab,"arr1");
+	ROArrayColumn<Complex> arr2(tab,"arr2");
+	ROArrayColumn<Int>     arr3(tab,"arr3");
+	Int abval;
+	uInt adval;
+	Complex agval;
+	Vector<Complex> arrf(IPosition(1,3));
+	Matrix<Int>     arri(IPosition(2,2,2));
+	Vector<String>  arrs (stringToVector ("aa,bbb"));
+	char str[8];
+	indgen (arrf.ac());
+	indgen (arri.ac());
+	uInt i;
+	uInt nrow = tab.nrow();
+	for (i=0; i<nrow; i++) {
+	    ab.get (i, abval);
+	    if (i == 0) {
+		abval--;
+	    }
+	    ad.get (i, adval);
+	    ag.get (i, agval);
+	    if (abval != i  ||  adval != i+2  ||  agval != Complex(i+2)) {
+		cout << "error in row " << i << ": " << abval
+		    << ", " << adval << ", " << agval << endl;
+	    }
+	    if (!allEQ (arr1(i), arrs.ac())) {
+		cout << "error in arr1 in row " << i << endl;
+	    }
+	    if (i > 0) {
+		if (!allEQ (arr2(i), arrf.ac())) {
+		    cout << "error in arr2 in row " << i << endl;
+		}
+	    }
+	    if (!allEQ (arr3(i), arri.ac())) {
+		cout << "error in arr3 in row " << i << endl;
+	    }
+	    arrf.ac() += (Complex)(arrf.nelements());
+	    arri.ac() += (Int)(arri.nelements());
+	}
+	if (!allEQ( arr2(0), arrf2.ac())) {
+	    cout << "error in rereading arr2" << endl;
+	}
     }
 }
 
