@@ -2197,3 +2197,4 @@
 09 107 sys rm libexec/aips++path.g
 09 114 src rm trial/implement/Lattices/test.g
 09 115 src mv trial/implement/MeasurementEquations/MSIter.h trial/implement/MeasurementSet/MSIter.h
+09 115 src mv trial/implement/MeasurementEquations/MSDerivedValues.h trial/implement/MeasurementSet/MSDerivedValues.h
