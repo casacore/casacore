@@ -35,12 +35,14 @@
 #include <aips/Containers/Block.h>
 #include <trial/Coordinates/CoordinateSystem.h>
 #include <trial/Coordinates/DirectionCoordinate.h>
+#include <trial/Coordinates/SpectralCoordinate.h>
+#include <trial/Coordinates/ObsInfo.h>
 #include <trial/Images/TempImage.h>
 #include <trial/Images/SubImage.h>
-#include <aips/Lattices/ArrayLattice.h> 
+#include <aips/Lattices/ArrayLattice.h>
 #include <trial/Lattices/MaskedLattice.h> 
-#include <aips/Lattices/LatticeStepper.h> 
-#include <aips/Lattices/LatticeNavigator.h> 
+#include <aips/Lattices/LatticeStepper.h>
+#include <aips/Lattices/LatticeNavigator.h>
 #include <aips/Lattices/LatticeIterator.h>
 #include <trial/Lattices/LCSlicer.h>
 #include <aips/Lattices/TempLattice.h>
@@ -49,21 +51,31 @@
 #include <trial/Lattices/SubLattice.h>
 #include <trial/Mathematics/InterpolateArray1D.h>
 #include <trial/Mathematics/Interpolate2D.h>
+#include <aips/Measures/MDirection.h>
+#include <aips/Measures/MEpoch.h>
+#include <aips/Measures/MFrequency.h>
+#include <aips/Measures/MPosition.h>
+#include <aips/Measures/MeasTable.h>
+#include <aips/Measures/MCDirection.h>
+#include <aips/Measures/MeasConvert.h>
 #include <aips/Logging/LogIO.h>
+#include <aips/Quanta/MVEpoch.h>
+#include <aips/Quanta/MVPosition.h>
 #include <aips/Utilities/Assert.h>
 
 #include <strstream.h>
 
 
-
 template<class T>
 ImageRegrid<T>::ImageRegrid()
-: itsShowLevel(0)
+: itsShowLevel(0),
+  itsDisableConversions(False)
 {;}
 
 template<class T>
 ImageRegrid<T>::ImageRegrid(const ImageRegrid& other)  
-: itsShowLevel(other.itsShowLevel)
+: itsShowLevel(other.itsShowLevel),
+  itsDisableConversions(other.itsDisableConversions)
 {;}
 
 
@@ -76,6 +88,7 @@ ImageRegrid<T>& ImageRegrid<T>::operator=(const ImageRegrid& other)
 {
   if (this != &other) {
     itsShowLevel = other.itsShowLevel;
+    itsDisableConversions = other.itsDisableConversions;
   }
   return *this;
 }
@@ -191,6 +204,9 @@ void ImageRegrid<T>::regrid(ImageInterface<T>& outImage,
 
             outShape2(outCoordPixelAxes(0)) = outShape(outCoordPixelAxes(0));
             outShape2(outCoordPixelAxes(1)) = outShape(outCoordPixelAxes(1));
+            if (outShape2(outCoordPixelAxes(0))==1 && outShape2(outCoordPixelAxes(1))==1) {
+               os << "You cannot regrid the DirectionCoordinate as its plane is of shape [1,1]" << LogIO::EXCEPTION;
+            }
 
 // Set input and output images for this pass. The new  input must be the last 
 // output image.  We end up with at least one temporary image. Could
@@ -206,13 +222,12 @@ void ImageRegrid<T>::regrid(ImageInterface<T>& outImage,
 // Attach mask if out is masked.  Don't init mask because it will be overwritten
 
             TiledShape tmp(outShape2);
-            outPtr = new TempImage<T>(tmp, outCoords);
+            outPtr = new TempImage<T>(tmp, outCoords, 0);
             if (outIsMasked) {
                TempLattice<Bool> mask(tmp);
                TempImage<T>* tmpPtr = dynamic_cast<TempImage<T>*>(outPtr);
                tmpPtr->attachMask(mask);
             }
-
 // Get DirectionCoordinates for input and output
 
             Vector<String> units(2);
@@ -226,9 +241,24 @@ void ImageRegrid<T>::regrid(ImageInterface<T>& outImage,
                os << "Failed to set output DirectionCoordinate units to degrees" << LogIO::EXCEPTION;
             }
 
+// Possibly make Direction reference conversion machine
+   
+            MDirection::Convert machine;
+            Bool madeIt = False;
+            if (!itsDisableConversions) {
+               madeIt = makeDirectionMachine(os, machine, inDir, outDir, 
+                                             inCoords.obsInfo(),
+                                             outCoords.obsInfo());
+            }
+
 // Regrid 
+
+            if (itsShowLevel>0) {
+               cerr << "usemachine=" << madeIt << endl;
+            }
             regrid2D (*outPtr, *inPtr, inDir, outDir, inCoordPixelAxes,
-                      outCoordPixelAxes, pixelAxisMap2, method);
+                      outCoordPixelAxes, pixelAxisMap2, method,
+                      machine, madeIt);
 
 // Note that we have done two pixel axes in this pass
 
@@ -260,7 +290,7 @@ void ImageRegrid<T>::regrid(ImageInterface<T>& outImage,
 // Attach mask if out is masked.  
 
             TiledShape tmp(outShape2);
-            outPtr = new TempImage<T>(tmp, outCoords);
+            outPtr = new TempImage<T>(tmp, outCoords, 0);
             if (outIsMasked) {
                TempLattice<Bool> mask(tmp);
                mask.set(True);
@@ -282,10 +312,26 @@ void ImageRegrid<T>::regrid(ImageInterface<T>& outImage,
             const Coordinate& inCoord = inCoords.coordinate(inCoordinate);
             const Coordinate& outCoord = outCoords.coordinate(outCoordinate);
 
+// Possibly make Frequency reference conversion machine
+
+            Bool madeIt = False;
+            MFrequency::Convert machine;
+            if (!itsDisableConversions && type==Coordinate::SPECTRAL) {
+               madeIt = makeFrequencyMachine(os, machine, 
+                                             inCoordinate, outCoordinate,
+                                             inCoords, outCoords,
+                                             inCoords.obsInfo(),
+                                             outCoords.obsInfo());
+            }
+
 // Regrid 
+
+            if (itsShowLevel>0) {
+               cerr << "usemachine=" << madeIt << endl;
+            }
             regrid1D (*outPtr, *inPtr, inCoord, outCoord, inCoordPixelAxes,
                       outCoordPixelAxes, inAxisInCoordinate, outAxisInCoordinate,
-                      pixelAxisMap2, method);
+                      pixelAxisMap2, method, machine, madeIt);
 
 // Note that we have done two pixel axes in this pass
 
@@ -439,17 +485,20 @@ Bool ImageRegrid<T>::insert (ImageInterface<T>& outImage,
 }
 
 
-
 template<class T>
 void ImageRegrid<T>::regrid2D (MaskedLattice<T>& outLattice,
                                const MaskedLattice<T>& inLattice,
-                               const Coordinate& inCoord,
-                               const Coordinate& outCoord,
+                               const DirectionCoordinate& inCoord,
+                               const DirectionCoordinate& outCoord,
                                const Vector<Int> inCoordPixelAxes,
                                const Vector<Int> outCoordPixelAxes,
                                const Vector<Int> pixelAxisMap,
-                               Interpolate2D<T>::Method method)
+                               Interpolate2D<T>::Method method,
+                               MDirection::Convert& machine,
+                               Bool useMachine)
 //
+// If something other than DirectionCoordinate ever needs to use 2D 
+// I will need to generalize this slightly. 
 // Any output mask is overwritten
 //
 {
@@ -546,7 +595,7 @@ void ImageRegrid<T>::regrid2D (MaskedLattice<T>& outLattice,
 
 // outPos is the location of the blc of the lattice iterator cursor
 
-      if (itsShowLevel>0) {
+      if (itsShowLevel>1) {
          cerr << "Output lattice iterator position = " <<  outPos << endl;
          cerr << endl << endl;
          cerr << "Output lattice iterator position = " <<  outPos << endl;
@@ -563,7 +612,8 @@ void ImageRegrid<T>::regrid2D (MaskedLattice<T>& outLattice,
       minInY =  100000000;
       maxInX = -100000000;
       maxInY = -100000000;
-      Bool allFailed = True;
+      Bool allFailed = True, ok1, ok2;
+      MDirection inMD, outMD;
       for (Int j=0; j<cursorShape(1); j++) {
          for (Int i=0; i<cursorShape(0); i++) {
             outPixel(0) = i + outPos(0);
@@ -572,31 +622,37 @@ void ImageRegrid<T>::regrid2D (MaskedLattice<T>& outLattice,
 // Do coordinate conversions. out pixel to world to in pixel
 // for the axes of interest
 
-            if (!outCoord.toWorld(world, outPixel)) {
+            if (useMachine) {
+              ok1 = outCoord.toWorld(outMD, outPixel);            
+              if (ok1) {
+                 inMD = machine(outMD);
+                 ok2 = inCoord.toPixel(inPixel, inMD);
+              } 
+            } else {
+               ok1 = outCoord.toWorld(world, outPixel);
+               if (ok1) ok2 = inCoord.toPixel(inPixel, world);
+            }
+            if (!ok1 || !ok2) {
                failed(i,j) = True;
             } else {
-               if (!inCoord.toPixel(inPixel, world)) {
-                  failed(i,j) = True;
-               } else {
 //
 // Find pixel to left and below point of interest in input grid for
 // pixel axes of interest
 
-                  inBlc2D(i,j,0) = static_cast<Int>(floor(inPixel(0))) + xOff;
-                  inBlc2D(i,j,1) = static_cast<Int>(floor(inPixel(1))) + yOff;
-                  minInX = min(minInX,inBlc2D(i,j,0)); 
-                  minInY = min(minInY,inBlc2D(i,j,1)); 
-                  maxInX = max(maxInX,inBlc2D(i,j,0)); 
-                  maxInY = max(maxInY,inBlc2D(i,j,1)); 
-                  allFailed = False;
+               inBlc2D(i,j,0) = static_cast<Int>(floor(inPixel(0))) + xOff;
+               inBlc2D(i,j,1) = static_cast<Int>(floor(inPixel(1))) + yOff;
+               minInX = min(minInX,inBlc2D(i,j,0)); 
+               minInY = min(minInY,inBlc2D(i,j,1)); 
+               maxInX = max(maxInX,inBlc2D(i,j,0)); 
+               maxInY = max(maxInY,inBlc2D(i,j,1)); 
+               allFailed = False;
 
 // This gives the 2D input pixel coordinate to find the interpolated
 // result at
 
-                  in2DPos(i,j,0) = inPixel(0) - inBlc2D(i,j,0);
-                  in2DPos(i,j,1) = inPixel(1) - inBlc2D(i,j,1);
-                  failed(i,j) = False;
-               }
+               in2DPos(i,j,0) = inPixel(0) - inBlc2D(i,j,0);
+               in2DPos(i,j,1) = inPixel(1) - inBlc2D(i,j,1);
+               failed(i,j) = False;
             }
          }
       }
@@ -705,7 +761,7 @@ void ImageRegrid<T>::regrid2D (MaskedLattice<T>& outLattice,
                      inBlc(inPixelAxis1) = inBlc2D(i,j,1) - inChunkBlc(inPixelAxis1);
                      inTrc(inPixelAxis0) = inBlc(inPixelAxis0) + widthm1;
                      inTrc(inPixelAxis1) = inBlc(inPixelAxis1) + widthm1;
-                     if (itsShowLevel>1) cerr << "inBlc, inTrc = " << inBlc << inTrc << endl;
+//                     if (itsShowLevel>1) cerr << "inBlc, inTrc = " << inBlc << inTrc << endl;
 
 // See if the input grid is contained within the input image
 // We only have to worry about the regridding axes.
@@ -746,21 +802,21 @@ void ImageRegrid<T>::regrid2D (MaskedLattice<T>& outLattice,
                            in2DPos2(1) = in2DPos(i,j,1);
 //
                            if (itsShowLevel>1) {
-                              cerr << "Interpolate array of shape " << 
-                                    inDataSub.shape() << " at " << in2DPos2 << endl;
+//                              cerr << "Interpolate array of shape " << 
+//                                    inDataSub.shape() << " at " << in2DPos2 << endl;
                            }
 //
                            if(interp.interp(result, in2DPos2, inDataSub)) {
                               if (itsShowLevel>1) {
-                                 cerr << "result = " << result << endl;
-                                 cerr << "OK   - Putting " << result << " to cursor at" << outPos2 << endl;
+//                                 cerr << "result = " << result << endl;
+//                                 cerr << "OK   - Putting " << result << " to cursor at" << outPos2 << endl;
                               }
                               outCursorIter.rwMatrixCursor()(i,j) = result;
                               if (outIsMasked) {
                                  outMaskCursorIterPtr->rwMatrixCursor()(i,j) = True; 
                               }
                            } else {
-                              if (itsShowLevel>1) cerr << "Fail - Putting zero to cursor at " << outPos2 << endl; 
+//                              if (itsShowLevel>1) cerr << "Fail - Putting zero to cursor at " << outPos2 << endl; 
                               outCursorIter.rwMatrixCursor()(i,j) = 0.0;
                               if (outIsMasked) {
                                  outMaskCursorIterPtr->rwMatrixCursor()(i,j) = False; 
@@ -794,7 +850,10 @@ void ImageRegrid<T>::regrid1D (MaskedLattice<T>& outLattice,
                                Int inAxisInCoordinate,
                                Int outAxisInCoordinate,
                                const Vector<Int> pixelAxisMap,
-                               Interpolate2D<T>::Method method)
+                               Interpolate2D<T>::Method method,
+                               MFrequency::Convert& machine,
+                               Bool useMachine)
+
 //
 // Any output mask is overwritten
 //
@@ -814,53 +873,64 @@ void ImageRegrid<T>::regrid1D (MaskedLattice<T>& outLattice,
    const Int inPixelAxis = inCoordPixelAxes(inAxisInCoordinate);
    const Int outPixelAxis = outCoordPixelAxes(outAxisInCoordinate);
 
+// If we are going to Stoke up the MFrequency machine it means
+// we have a SpectralCoordinate, do cast to it
+  
+   const SpectralCoordinate& inSpecCoord = dynamic_cast<const SpectralCoordinate&>(inCoord);
+   const SpectralCoordinate& outSpecCoord = dynamic_cast<const SpectralCoordinate&>(outCoord);
+
 // Precompute vector of output coordinates to interpolate data at
   
    Vector<Double> world, inPixel;
    Vector<Double> outPixel = outCoord.referencePixel().copy();
+   Double outPixel2, inPixel2;
 //
    const uInt nLine = outShape(outPixelAxis);
    Vector<Bool> failed(nLine);
    Block<Float> outX(nLine);
    Bool allFailed = True;
    Bool allGood = True;
+   Bool ok1, ok2;
+   MFrequency inMF, outMF;
+//
    for (uInt i=0; i<nLine; i++) {
 
 // Fill Coordinate pixel locations
 
-      outPixel(outAxisInCoordinate) = i;
       if (itsShowLevel>1) {
          cerr.setf(ios::scientific, ios::floatfield);
          cerr.precision(12);
          cerr << "pixel out, world out, pixel in  = " << outPixel;
       }
 //
-      if (!outCoord.toWorld(world, outPixel)) {
-
-// Mask output / set to zero
-
+      if (useMachine) {
+         outPixel2 = i;
+         ok1 = outSpecCoord.toWorld(outMF, outPixel2);
+         if (ok1) {
+            inMF = machine(outMF);
+            ok2 = inSpecCoord.toPixel(inPixel2, inMF);
+         } 
+      } else {
+         outPixel(outAxisInCoordinate) = i;
+         ok1 = outCoord.toWorld(world, outPixel);
+         if (ok1) ok2 = inCoord.toPixel(inPixel, world);
+         inPixel2 = inPixel(inAxisInCoordinate);
+      }
+      if (!ok1 || !ok2) {
          failed(i) = True;
          allGood = False;
       } else {
-         if (!inCoord.toPixel(inPixel, world)) {
-     
-// Mask output / set to zero
-
-            failed(i) = True;
-            allGood = False;
-         } else {
-            if (itsShowLevel>1) {
-               cerr.setf(ios::scientific, ios::floatfield);
-               cerr.precision(12);
-               cerr << ", " << world << " " << inPixel << endl;
-            }
+         if (itsShowLevel>1) {
+            cerr.setf(ios::scientific, ios::floatfield);
+            cerr.precision(12);
+            cerr << ", " << world << " " << inPixel << endl;
+         }
 
 // This one ok
 
-            outX[i] = inPixel(inAxisInCoordinate);
-            failed(i) = False;
-            allFailed = False;
-         }
+         outX[i] = inPixel2;
+         failed(i) = False;
+         allFailed = False;
       }
    }
 //
@@ -890,7 +960,7 @@ void ImageRegrid<T>::regrid1D (MaskedLattice<T>& outLattice,
 // Generate vector of input X values for interpolator
 
    const uInt nIn = inShape(inPixelAxis);
-   Block<T> inX(nIn);
+   Block<Float> inX(nIn);
    if (itsShowLevel) cerr << "inX = ";
    for (uInt i=0; i<nIn; i++) {
       inX[i] = Float(i);
@@ -925,10 +995,19 @@ void ImageRegrid<T>::regrid1D (MaskedLattice<T>& outLattice,
    InterpolateArray1D<Float,Float>::InterpolationMethod method1D;
    if (method==Interpolate2D<T>::NEAREST) {
       method1D = InterpolateArray1D<Float,Float>::nearestNeighbour;
-   } else if (method==Interpolate2D<Float>::LINEAR) {
+      if (itsShowLevel>0) {
+         cerr << "Method = nearest" << endl;
+      }
+   } else if (method==Interpolate2D<T>::LINEAR) {
       method1D = InterpolateArray1D<Float,Float>::linear;
-   } else if (method==Interpolate2D<Float>::CUBIC) {
+      if (itsShowLevel>0) {
+         cerr << "Method = linear" << endl;
+      }
+   } else if (method==Interpolate2D<T>::CUBIC) {
       method1D = InterpolateArray1D<Float,Float>::spline;
+      if (itsShowLevel>0) {
+         cerr << "Method = cubic spline" << endl;
+      }
    }
 
 // Iterate through output image
@@ -937,7 +1016,7 @@ void ImageRegrid<T>::regrid1D (MaskedLattice<T>& outLattice,
    Vector<Bool> dummyMask(nLine);
    for (outIter.reset(); !outIter.atEnd(); outIter++) {
       const IPosition& outPos = outIter.position();
-      if (itsShowLevel>0) {
+      if (itsShowLevel>1) {
          cerr << endl;
          cerr << "Output lattice iterator position = " <<  outPos << endl;
          cerr << "Output lattice iterator cursor shape = " <<  outIter.cursorShape()<< endl;
@@ -961,13 +1040,16 @@ void ImageRegrid<T>::regrid1D (MaskedLattice<T>& outLattice,
          if (allGood) {
             const Vector<Bool>& inMask = 
                (inLattice.getMaskSlice(inPos, inSubShape, True));
+            if (itsShowLevel>1) {
+               cerr << "inMask=" << inMask << endl;
+            }
             if (outIsMasked) {
-               InterpolateArray1D<T,T>::interpolate(outIter.rwVectorCursor(),
+               InterpolateArray1D<Float,T>::interpolate(outIter.rwVectorCursor(),
                                                     outMaskIterPtr->rwVectorCursor(),
                                                     outX, inX, inY, 
                                                     inMask, method1D, goodIsTrue);
             } else {
-               InterpolateArray1D<T,T>::interpolate(outIter.rwVectorCursor(),
+               InterpolateArray1D<Float,T>::interpolate(outIter.rwVectorCursor(),
                                                     dummyMask,
                                                     outX, inX, inY, 
                                                     inMask, method1D, goodIsTrue);
@@ -975,13 +1057,16 @@ void ImageRegrid<T>::regrid1D (MaskedLattice<T>& outLattice,
          } else {
             const Vector<Bool>& inMask = 
                (failed && inLattice.getMaskSlice(inPos, inSubShape, True));
+            if (itsShowLevel>1) {
+               cerr << "inMask=" << inMask << endl;
+            }
             if (outIsMasked) {
-               InterpolateArray1D<T,T>::interpolate(outIter.rwVectorCursor(),
+               InterpolateArray1D<Float,T>::interpolate(outIter.rwVectorCursor(),
                                                     outMaskIterPtr->rwVectorCursor(),
                                                     outX, inX, inY, 
                                                     inMask, method1D, goodIsTrue);
             } else {
-               InterpolateArray1D<T,T>::interpolate(outIter.rwVectorCursor(),
+               InterpolateArray1D<Float,T>::interpolate(outIter.rwVectorCursor(),
                                                     dummyMask,
                                                     outX, inX, inY, 
                                                     inMask, method1D, goodIsTrue);
@@ -989,19 +1074,25 @@ void ImageRegrid<T>::regrid1D (MaskedLattice<T>& outLattice,
          }
       } else {
          if (allGood) {
-            InterpolateArray1D<T,T>::interpolate(outIter.rwVectorCursor(),
+            if (itsShowLevel>1) {
+               cerr << "inMask all T" << endl;
+            }
+            InterpolateArray1D<Float,T>::interpolate(outIter.rwVectorCursor(),
                                                  outX, inX, inY, 
                                                  method1D);
             if (outIsMasked) outMaskIterPtr->rwVectorCursor().set(True);
          } else {
             const Vector<Bool>& inMask = failed;
+            if (itsShowLevel>1) {
+               cerr << "inMask=" << inMask << endl;
+            }
             if (outIsMasked) {
-               InterpolateArray1D<T,T>::interpolate(outIter.rwVectorCursor(),
+               InterpolateArray1D<Float,T>::interpolate(outIter.rwVectorCursor(),
                                                     outMaskIterPtr->rwVectorCursor(),
                                                     outX, inX, inY, 
                                                     inMask, method1D, goodIsTrue);
             } else {
-               InterpolateArray1D<T,T>::interpolate(outIter.rwVectorCursor(),
+               InterpolateArray1D<Float,T>::interpolate(outIter.rwVectorCursor(),
                                                     dummyMask,
                                                     outX, inX, inY, 
                                                     inMask, method1D, goodIsTrue);
@@ -1011,7 +1102,7 @@ void ImageRegrid<T>::regrid1D (MaskedLattice<T>& outLattice,
 //
       if (itsShowLevel>1) {
          cerr << "outY = " << outIter.rwVectorCursor() << endl;
-         cerr << "outMask = " << outMaskIterPtr->rwVectorCursor() << endl;
+         if (outIsMasked) cerr << "outMask = " << outMaskIterPtr->rwVectorCursor() << endl;
       }
 //
       if (outIsMasked) (*outMaskIterPtr)++;
@@ -1211,8 +1302,8 @@ void ImageRegrid<T>::copyDataAndMask(MaskedLattice<T>& out,
 // Create an iterator for the output to setup the cache.
 // It is not used, because using putSlice directly is faster and as easy.
 
-   LatticeIterator<Float> dummyIter(out);
-   RO_LatticeIterator<Float> iter(in, stepper);
+   LatticeIterator<T> dummyIter(out);
+   RO_LatticeIterator<T> iter(in, stepper);
    for (iter.reset(); !iter.atEnd(); iter++) {
       out.putSlice (iter.cursor(), iter.position());
       outMask.putSlice(in.getMaskSlice(iter.position(),
@@ -1235,3 +1326,343 @@ Bool ImageRegrid<T>::anyBadPixels(uInt width, const Matrix<Bool>& mask)
    }
    return False;
 }
+
+
+template<class T>
+Bool ImageRegrid<T>::makeDirectionMachine(LogIO& os, MDirection::Convert& machine,
+                                          const DirectionCoordinate& dirCoordTo,
+                                          const DirectionCoordinate& dirCoordFrom,
+                                          const ObsInfo& obsTo,
+                                          const ObsInfo& obsFrom) const
+//
+// We need MDirection type, position on earth and epoch.  But 
+// maybe not all of them...
+//
+{
+   const MDirection::Types& typeFrom = dirCoordFrom.directionType();
+   const MDirection::Types& typeTo = dirCoordTo.directionType();
+   Bool typesEqual = (typeTo==typeFrom);
+//
+   MEpoch epochFrom = obsFrom.obsDate();
+   MEpoch epochTo = obsTo.obsDate();
+   Double t1 = epochFrom.getValue().get();
+   Double t2 = epochTo.getValue().get();
+   Bool epochEqual = near(t1,t2);
+//
+   String telFrom = obsFrom.telescope();
+   String telTo = obsTo.telescope();
+   Bool posEqual = (telFrom==telTo);
+
+// Everything is the same for input and output so we don't 
+// need a machine to convert anything
+
+   if (typesEqual && epochEqual && posEqual) return False;
+//
+   if (itsShowLevel>0) {
+      cerr << "Make DirectionConvert machine" << endl;
+   }
+
+// Start with simplest machine, just MDirection::Types.  If it does 
+// the conversion, that's all we need.  If not, we need more.
+
+   MDirection::Ref refFrom(typeFrom);
+   MDirection::Ref refTo(typeTo);
+   machine = MDirection::Convert(refFrom, refTo);
+//
+   MDirection fromMD;
+   dirCoordFrom.toWorld(fromMD, dirCoordFrom.referencePixel());
+   Bool ok = True;
+   try {
+      MDirection toMD = machine(fromMD);
+   } catch (AipsError x) {
+      ok = False;
+   }
+   if (ok) {
+      if (itsShowLevel>0) {
+         cerr << "It appears I don't need observatory and epoch" << endl;
+      }
+      if (typeFrom==typeTo) {
+         if (itsShowLevel>0) {
+            cerr << "Direction Types are the same so I don't need a machine" << endl;
+         }
+         return False;
+      } else {          
+         if (itsShowLevel>0) {
+            cerr << "Direction Types are different so I need a machine" << endl;
+         }
+         return True;
+      }
+   } else {
+      if (itsShowLevel>0) {
+         cerr << "It appears I do need either/both observatory and epoch" << endl;
+      }
+    }
+
+// The conversion failed, so we need either or both of epoch 
+// and position in the machine.  
+
+   Double t = epochFrom.getValue().get();
+   if (near(t,0.0)) {
+      os << "In setting up the DirectionCoordinate conversion machinery" << endl;
+      os << "The output image has no valid epoch" << LogIO::EXCEPTION;
+   }
+   t = epochTo.getValue().get();
+   if (near(t,0.0)) {
+      os << "In setting up the DirectionCoordinate conversion machinery" << endl;
+      os << "The input image has no valid epoch" << LogIO::EXCEPTION;
+   }
+
+// Now add the epoch to the machine and see if that works
+
+   {
+      MeasFrame frameFrom;
+      MeasFrame frameTo;
+//
+      frameFrom.set(epochFrom);
+      frameTo.set(epochTo);
+      MDirection::Ref refFrom(typeFrom, frameFrom);
+      MDirection::Ref refTo(typeTo, frameTo);
+      machine = MDirection::Convert(refFrom, refTo);
+//
+      ok = True;
+      try {
+         MDirection toMD = machine(fromMD);
+      } catch (AipsError x) {
+         ok = False;
+      }
+      if (ok) {
+         if (itsShowLevel>0) {
+            cerr << "Needed epoch as well only" << endl;
+         }
+         return True;
+      }
+   }
+
+// Now add the position to the machine and see if that works
+
+   if (telFrom==String("UNKNOWN")) {
+      os << "In setting up the DirectionCoordinate conversion machinery" << endl;
+      os << "The output image has no valid observatory name - cannot divine its position" << LogIO::EXCEPTION;
+   }
+   if (telTo==String("UNKNOWN")) {
+      os << "In setting up the DirectionCoordinate conversion machinery" << endl;
+      os << "The input image has no valid observatory name - cannot divine its position" << LogIO::EXCEPTION;
+   }
+//
+   MPosition posFrom, posTo;
+   Bool found = MeasTable::Observatory(posFrom, telFrom);
+   if (!found) {
+      os << "In setting up the DirectionCoordinate conversion machinery" << endl;
+      os << "Cannot lookup the observatory name " << telFrom << " in the AIPS++" << endl;
+      os << "data base.  Please request that it be added" << LogIO::EXCEPTION;
+   }
+   found = MeasTable::Observatory(posTo, telTo);
+   if (!found) {
+      os << "In setting up the DirectionCoordinate conversion machinery" << endl;
+      os << "Cannot lookup the observatory name " << telTo << " in the AIPS++" << endl;
+      os << "data base.  Please request that it be added" << LogIO::EXCEPTION;
+   }
+//
+   {
+      MeasFrame frameFrom;
+      MeasFrame frameTo;
+//
+      frameFrom.set(posFrom);
+      frameTo.set(posTo);
+      MDirection::Ref refFrom(typeFrom, frameFrom);
+      MDirection::Ref refTo(typeTo, frameTo);
+      machine = MDirection::Convert(refFrom, refTo);
+//
+      ok = True;
+      try {
+         MDirection toMD = machine(fromMD);
+      } catch (AipsError x) {
+         ok = False;
+      }
+      if (ok) {
+         if (itsShowLevel>0) {
+            cerr << "Needed position as well only" << endl;
+         }
+         return True;
+      }
+   }
+
+// Well looks like we need both
+
+   {
+      MeasFrame frameFrom(posFrom, epochFrom);
+      MeasFrame frameTo(posTo, epochTo);
+//
+      MDirection::Ref refFrom(typeFrom, frameFrom);
+      MDirection::Ref refTo(typeTo, frameTo);
+//
+      machine = MDirection::Convert(refFrom, refTo);
+      ok = True;
+      try {
+         MDirection toMD = machine(fromMD);
+      } catch (AipsError x) {
+         ok = False;
+      }
+      if (ok) {
+         if (itsShowLevel>0) {
+            cerr << "Needed both position and epoch" << endl;
+         }
+      } else {
+         os << "Unable to convert between the inputand output  " <<
+               "DirectionCoordinates - this is surprising !" << LogIO::EXCEPTION;
+      }
+   }
+//
+   return True;
+}
+ 
+
+
+template<class T>
+Bool ImageRegrid<T>::makeFrequencyMachine(LogIO& os, MFrequency::Convert& machine,
+                                          Int coordinateTo, Int coordinateFrom,
+                                          const CoordinateSystem& coordsTo,
+                                          const CoordinateSystem& coordsFrom,
+                                          const ObsInfo& obsTo,
+                                          const ObsInfo& obsFrom) const
+//
+// We need MDirection type, position on earth and epoch.  But 
+// maybe not all of them...
+//
+{
+   const SpectralCoordinate& specCoordTo = coordsTo.spectralCoordinate(coordinateTo);
+   const SpectralCoordinate& specCoordFrom = coordsFrom.spectralCoordinate(coordinateFrom);
+//
+   if (itsShowLevel>0) {
+      cerr << "Make FrequencyConvert machine" << endl;
+   }
+
+// We need to have a DirectionCoordinate without which we can't make any
+// conversions
+
+   Int afterCoord = -1;
+   Int coordinateDirTo = coordsTo.findCoordinate(Coordinate::DIRECTION, afterCoord);
+   if (coordinateDirTo==-1) {
+      os << "In setting up the SpectralCoordinate conversion machinery" << endl;
+      os << "No DirectionCoordinate was found in the input CoordinateSystem" << LogIO::EXCEPTION;
+   }
+   afterCoord = -1;
+   Int coordinateDirFrom = coordsFrom.findCoordinate(Coordinate::DIRECTION, afterCoord);
+   if (coordinateDirFrom==-1) {
+      os << "In setting up the SpectralCoordinate conversion machinery" << endl;
+      os << "No DirectionCoordinate was found in the output CoordinateSystem" << LogIO::EXCEPTION;
+   }
+//
+   const DirectionCoordinate& dirCoordTo = coordsTo.directionCoordinate(coordinateDirTo);
+   const DirectionCoordinate& dirCoordFrom = coordsFrom.directionCoordinate(coordinateDirFrom);
+   Bool dirCoordEqual = dirCoordTo.near(&dirCoordFrom);
+
+// See if we need machine
+
+   const MFrequency::Types typeTo = specCoordTo.frequencySystem();
+   const MFrequency::Types typeFrom = specCoordFrom.frequencySystem();
+   Bool typesEqual = (typeTo==typeFrom);
+//
+   MEpoch epochFrom = obsFrom.obsDate();
+   MEpoch epochTo = obsTo.obsDate();
+   Double t1 = epochFrom.getValue().get();
+   Double t2 = epochTo.getValue().get();
+   Bool epochEqual = near(t1,t2);
+//
+   String telFrom = obsFrom.telescope();
+   String telTo = obsTo.telescope();
+   Bool posEqual = (telFrom==telTo);
+
+// Bug out if everything is the same
+
+   if (dirCoordEqual && typesEqual && epochEqual && posEqual) return False;
+
+// Create frames
+
+   MeasFrame frameFrom;
+   MeasFrame frameTo;
+
+// Add Direction
+
+   MDirection MDFrom, MDTo;
+   if (!dirCoordFrom.toWorld(MDFrom, dirCoordFrom.referencePixel())) {
+      os << "DirectionCoordinate coordinate conversion failed because " +
+            dirCoordFrom.errorMessage() << LogIO::EXCEPTION;
+   }
+   if (!dirCoordFrom.toWorld(MDFrom, dirCoordFrom.referencePixel())) {
+      os << "DirectionCoordinate coordinate conversion failed because " +
+            dirCoordTo.errorMessage() << LogIO::EXCEPTION;
+   }
+   frameFrom.set(MDFrom);
+   frameTo.set(MDTo);
+
+// Add Epoch   
+
+   Double t = epochFrom.getValue().get();
+   if (near(t,0.0)) {
+      os << "In setting up the SpectralCoordinate conversion machinery" << endl;
+      os << "The output image has no valid epoch" << LogIO::EXCEPTION;
+   }
+   t = epochTo.getValue().get();
+   if (near(t,0.0)) {
+      os << "In setting up the SpectralCoordinate conversion machinery" << endl;
+      os << "The input image has no valid epoch" << LogIO::EXCEPTION;
+   }
+   frameFrom.set(epochFrom);
+   frameTo.set(epochTo);
+
+// Add the position 
+
+   if (telFrom==String("UNKNOWN")) {
+      os << "In setting up the DirectionCoordinate conversion machinery" << endl;
+      os << "The output image has no valid observatory name - cannot divine its position" << LogIO::EXCEPTION;
+   }
+   if (telTo==String("UNKNOWN")) {
+      os << "In setting up the DirectionCoordinate conversion machinery" << endl;
+      os << "The input image has no valid observatory name - cannot divine its position" << LogIO::EXCEPTION;
+   }
+//
+   MPosition posFrom, posTo;
+   Bool found = MeasTable::Observatory(posFrom, telFrom);
+   if (!found) {
+      os << "In setting up the DirectionCoordinate conversion machinery" << endl;
+      os << "Cannot lookup the observatory name " << telFrom << " in the AIPS++" << endl;
+      os << "data base.  Please request that it be added" << LogIO::EXCEPTION;
+   }
+   found = MeasTable::Observatory(posTo, telTo);
+   if (!found) {
+      os << "In setting up the DirectionCoordinate conversion machinery" << endl;
+      os << "Cannot lookup the observatory name " << telTo << " in the AIPS++" << endl;
+      os << "data base.  Please request that it be added" << LogIO::EXCEPTION;
+   }
+   frameFrom.set(posFrom);
+   frameTo.set(posTo);
+
+// Make the machine
+
+   MFrequency::Ref refFrom(typeFrom, frameFrom);
+   MFrequency::Ref refTo(typeTo, frameTo);
+   machine = MFrequency::Convert(refFrom, refTo);
+
+// Test conversion
+
+   Bool ok = True;
+   MFrequency MFTo, MFFrom;
+   if (!specCoordFrom.toWorld(MFFrom, specCoordFrom.referencePixel()(0))) {
+      os << "SpectralCoordinate coordinate conversion failed because " +
+            specCoordFrom.errorMessage() << LogIO::EXCEPTION;
+   }
+   try {
+      MFTo = machine(MFFrom);
+   } catch (AipsError x) {
+      ok = False;
+   }
+   if (!ok) {
+      os << "Unable to convert between the input and output SpectralCoordinates" << endl;
+      os << "SpectralCoordinates - this probably means one is in the REST frame" << endl;
+      os << "which requires the radial velocity (not implemented yet)" << LogIO::EXCEPTION;
+   }
+//
+   return True;
+}
+ 
