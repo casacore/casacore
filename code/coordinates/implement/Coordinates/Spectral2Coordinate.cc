@@ -39,11 +39,11 @@ Bool SpectralCoordinate::toWorld(MFrequency& world,
 				 Double pixel) const
 {
     static MVFrequency world_tmp;
-    Bool ok = toWorld(world_tmp, pixel);
-    if (ok) {
+    if (toWorld(world_tmp, pixel)) {
        world.set(world_tmp, MFrequency::Ref(type_p));
+       return True;
     }
-    return ok;
+    return False;
 }
 
 Bool SpectralCoordinate::toWorld(MVFrequency& world, 
@@ -52,14 +52,13 @@ Bool SpectralCoordinate::toWorld(MVFrequency& world,
     static Double world_tmp;
     static Quantum<Double> q_tmp;
 //
-    Bool ok = toWorld(world_tmp, pixel);
-    if (ok) {
-       const Unit& units = Unit(worldAxisUnits()(0));
+    if (toWorld(world_tmp, pixel)) {
        q_tmp.setValue(world_tmp);
-       q_tmp.setUnit(units);
+       q_tmp.setUnit(Unit(worldAxisUnits()(0)));
        world = MVFrequency(q_tmp);
+       return True;
     }
-    return ok;
+    return False;
 }
 
 Bool SpectralCoordinate::toPixel(Double& pixel,
@@ -72,8 +71,7 @@ Bool SpectralCoordinate::toPixel(Double& pixel,
                                  const MVFrequency& world) const
 {
    static Double world_tmp;
-   const Unit& units = Unit(worldAxisUnits()(0));
-   world_tmp = world.get(units).getValue();
+   world_tmp = world.get(Unit(worldAxisUnits()(0))).getValue();
    return toPixel(pixel, world_tmp);
 }
  
@@ -92,11 +90,9 @@ Bool SpectralCoordinate::pixelToVelocity (Vector<Double>& velocity, const Vector
    makeVelocityMachine(velUnit, velType);
 //
    static Double world;
-   static Quantum<Double> velQ;
    for (uInt i=0; i<pixel.nelements(); i++) {
       if (!toWorld(world, pixel(i))) return False;
-      velQ = pVelocityMachine_p->makeVelocity(world);
-      velocity(i) = velQ.getValue();
+      velocity(i) = pVelocityMachine_p->makeVelocity(world).getValue();
    }
    return True;
 }
@@ -120,8 +116,7 @@ Bool SpectralCoordinate::frequencyToVelocity (Vector<Double>& velocity, const Ve
 //
    static Quantum<Double> velQ;
    for (uInt i=0; i<frequency.nelements(); i++) {
-      velQ = pVelocityMachine_p->makeVelocity(frequency(i));
-      velocity(i) = velQ.getValue();
+      velocity(i) = pVelocityMachine_p->makeVelocity(frequency(i)).getValue();
    }
    return True;
 }
@@ -155,4 +150,3 @@ void SpectralCoordinate::makeVelocityMachine (const String& velUnit, MDoppler::T
       pVelocityMachine_p->set(MDoppler::Ref(velType));
    }
 }
-
