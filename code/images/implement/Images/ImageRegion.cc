@@ -74,11 +74,33 @@ ImageRegion& ImageRegion::operator= (const ImageRegion& other)
     return *this;
 }
 
+Bool ImageRegion::operator== (const ImageRegion& other) const
+{
+   if ( isWCRegion()  && !other.isWCRegion()) return False;
+   if (!isWCRegion()  &&  other.isWCRegion()) return False;
+
+   Bool match;
+   if (isWCRegion()) {
+      match = (*itsWC == other.asWCRegion());
+   } else {
+      match = (*itsLC == other.asLCRegion());
+   }
+
+   return match;
+}
+
+Bool ImageRegion::operator!= (const ImageRegion& other) const
+{
+   if (ImageRegion::operator==(other)) return False;
+   return True;
+}
+
 const LCRegion& ImageRegion::asLCRegion() const
 {
     AlwaysAssert (! isWCRegion(), AipsError);
     return *itsLC;
 }
+
 const WCRegion& ImageRegion::asWCRegion() const
 {
     AlwaysAssert (isWCRegion(), AipsError);
