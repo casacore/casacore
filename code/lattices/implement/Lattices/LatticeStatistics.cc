@@ -2921,7 +2921,7 @@ void StatsTiledCollapser<T>::initAccumulator (uInt n1, uInt n3)
 {
    pSum_p = new Block<typename NumericTraits<T>::PrecisionType>(n1*n3);
    pSumSq_p = new Block<typename NumericTraits<T>::PrecisionType>(n1*n3);
-   pNPts_p = new Block<T>(n1*n3);
+   pNPts_p = new Block<typename NumericTraits<T>::PrecisionType>(n1*n3);
    pMin_p = new Block<T>(n1*n3);
    pMax_p = new Block<T>(n1*n3);
    pInitMinMax_p = new Block<Bool>(n1*n3);
@@ -2956,7 +2956,7 @@ void StatsTiledCollapser<T>::process (uInt index1,
    uInt index = index1 + index3*n1_p;
    typename NumericTraits<T>::PrecisionType& sum = (*pSum_p)[index];
    typename NumericTraits<T>::PrecisionType& sumSq = (*pSumSq_p)[index];
-   T& nPts = (*pNPts_p)[index];
+   typename NumericTraits<T>::PrecisionType& nPts = (*pNPts_p)[index];
    T& dataMin = (*pMin_p)[index];
    T& dataMax = (*pMax_p)[index];
    Bool& minMaxInit = (*pInitMinMax_p)[index];
@@ -3113,27 +3113,25 @@ void StatsTiledCollapser<T>::endAccumulator(Array<T>& result,
 //
     const typename NumericTraits<T>::PrecisionType* sumPtr = pSum_p->storage();
     const typename NumericTraits<T>::PrecisionType* sumSqPtr = pSumSq_p->storage();
-    const T* nPtsPtr = pNPts_p->storage();
+    const typename NumericTraits<T>::PrecisionType* nPtsPtr = pNPts_p->storage();
     const T* minPtr = pMin_p->storage();
     const T* maxPtr = pMax_p->storage();
 //
-    uInt i,j,k;
+    uInt i,j;
     T* resptr_root = resptr;
-    k = 0;
     for (i=0; i<n3_p; i++) {
        resptr = resptr_root + (Int(LatticeStatsBase::NPTS) * n1_p);
-       for (j=0; j<n1_p; j++,k++) {   
-          objcopy (resptr, nPtsPtr, n1_p); 
-//          *resptr++ = T(*nPtsPtr++);
+       for (j=0; j<n1_p; j++) {   
+          convertScalar (*resptr++, *nPtsPtr++);
        }
 //
        resptr = resptr_root + (Int(LatticeStatsBase::SUM) * n1_p);
-       for (j=0; j<n1_p; j++,k++) {   
+       for (j=0; j<n1_p; j++) {   
           convertScalar (*resptr++, *sumPtr++);
        }
 //
        resptr = resptr_root + (Int(LatticeStatsBase::SUMSQ) * n1_p);
-       for (j=0; j<n1_p; j++,k++) {   
+       for (j=0; j<n1_p; j++) {   
           convertScalar (*resptr++, *sumSqPtr++);
        }
 //
