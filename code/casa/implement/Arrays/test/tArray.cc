@@ -1,5 +1,5 @@
 //# tArray.cc: Test program for the Array class
-//# Copyright (C) 1993,1994,1995,1996,1997,1998,1999,2000
+//# Copyright (C) 1993,1994,1995,1996,1997,1998,1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -418,6 +418,47 @@ void oldArrayTest()
 	cout << "OK\n";
     }
  
+    {
+        cout << "Testing median and fractile..........";
+	Vector<Float> x1(5), x2(10), x3(100), x4(101), x5(101);
+	indgen(x1);
+	indgen(x2);
+	indgen(x3);
+	indgen(x4);
+	indgen(x5);
+	AlwaysAssertExit (median(x1) == 2.);
+	AlwaysAssertExit (median(x1, True) == 2.);
+	AlwaysAssertExit (median(x1, True, False, False) == 2.);
+	AlwaysAssertExit (median(x2) == 4.5);
+	AlwaysAssertExit (median(x2, True) == 4.5);
+	AlwaysAssertExit (median(x2, True, False, False) == 4.);
+	AlwaysAssertExit (median(x3) == 49.5);
+	AlwaysAssertExit (median(x3, True) == 49.5);
+	AlwaysAssertExit (medianInPlace(x3) == 49.5);
+	AlwaysAssertExit (median(x3, True, False, True) == 49.);
+	AlwaysAssertExit (median(x4) == 50.);
+	AlwaysAssertExit (median(x4, True) == 50.);
+	AlwaysAssertExit (median(x4, True, False, False) == 50.);
+	// Make sure x4 is not sorted itself.
+	AlwaysAssertExit (allEQ (x4, x5));
+
+	AlwaysAssertExit (fractile(x1, 0.0) == 0.);
+	AlwaysAssertExit (fractile(x1, 0.25) == 1.);
+	AlwaysAssertExit (fractile(x1, 0.5) == 2.);
+	AlwaysAssertExit (fractile(x1, 0.75) == 3.);
+	AlwaysAssertExit (fractile(x1, 1.0) == 4.);
+	AlwaysAssertExit (fractile(x1, 0.75, True) == 3.);
+	AlwaysAssertExit (fractile(x2, 0.5) == 4.);
+	AlwaysAssertExit (fractile(x3, 0.5, False, True) == 49.);
+	AlwaysAssertExit (fractile(x4, 0.0) == 0.);
+	AlwaysAssertExit (fractile(x4, 0.5) == 50.);
+	AlwaysAssertExit (fractile(x4, 0.05) == 5.);
+	AlwaysAssertExit (fractile(x4, 0.95) == 95.);
+	// Make sure x4 is not sorted itself.
+	AlwaysAssertExit (allEQ (x4, x5));
+	cout << "OK\n";
+    }
+
     {
 	cout << "Simple matrix tests..................";
 	Matrix<Int> a(5u,5u), b;
