@@ -1,5 +1,5 @@
 //# LogOrigin.h: The source code location of the originator of a LogMessageLogOrig
-//# Copyright (C) 1996,1999,2000
+//# Copyright (C) 1996,1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -33,11 +33,7 @@
 #include <aips/Utilities/String.h>
 #include <aips/Tasking/ObjectID.h>
 
-#if defined(AIPS_STDLIB)
-#include <iosfwd>
-#else
-class ostream;
-#endif
+#include <aips/aipsiosfwd.h>
 class SourceLocation;
 
 // <summary> 

@@ -1,5 +1,5 @@
 //# StreamLogSink.cc: Send log messages to an ostream.
-//# Copyright (C) 1996
+//# Copyright (C) 1996,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -27,7 +27,7 @@
 //# $Id$
 
 #include <aips/Logging/StreamLogSink.h>
-#include <iostream.h>
+#include <aips/iostream.h>
 
 StreamLogSink::StreamLogSink(ostream *theStream) : stream_p(theStream)
 {

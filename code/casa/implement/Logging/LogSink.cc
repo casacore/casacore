@@ -35,7 +35,7 @@
 #include <aips/Utilities/PtrHolder.h>
 #include <aips/Utilities/Assert.h>
 
-#include <iostream.h>
+#include <aips/iostream.h>
 
 CountedPtr<LogSinkInterface> 
   LogSink::global_sink_p(new StreamLogSink(LogMessage::NORMAL, &cerr));
