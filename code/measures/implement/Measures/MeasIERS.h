@@ -179,7 +179,6 @@ public:
   // <thrown>
   //  <li> AipsError if missing VS_ keywords, or type is not IERS
   // </thrown>
-  // <group>
   static Bool getTable(Table &table, TableRecord &kws, ROTableRow &row,
 		       RORecordFieldPtr<Double> rfp[],
 		       String &vs, Double &dt,
