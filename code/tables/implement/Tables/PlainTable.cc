@@ -411,6 +411,7 @@ void PlainTable::addColumn (const ColumnDesc& columnDesc)
     }
     Table tab(this, False);
     colSetPtr_p->addColumn (columnDesc, tab);
+    tableChanged_p = True;
 }
 void PlainTable::addColumn (const ColumnDesc& columnDesc,
 			    const String& dataManager, Bool byName)
@@ -420,6 +421,7 @@ void PlainTable::addColumn (const ColumnDesc& columnDesc,
     }
     Table tab(this, False);
     colSetPtr_p->addColumn (columnDesc, dataManager, byName, tab);
+    tableChanged_p = True;
 }
 void PlainTable::addColumn (const ColumnDesc& columnDesc,
 			    const DataManager& dataManager)
@@ -429,6 +431,7 @@ void PlainTable::addColumn (const ColumnDesc& columnDesc,
     }
     Table tab(this, False);
     colSetPtr_p->addColumn (columnDesc, dataManager, tab);
+    tableChanged_p = True;
 }
 void PlainTable::addColumn (const TableDesc& tableDesc,
 			    const DataManager& dataManager)
@@ -438,6 +441,7 @@ void PlainTable::addColumn (const TableDesc& tableDesc,
     }
     Table tab(this, False);
     colSetPtr_p->addColumn (tableDesc, dataManager, tab);
+    tableChanged_p = True;
 }
 
 void PlainTable::removeColumn (const String&)
