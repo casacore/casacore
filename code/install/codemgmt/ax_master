@@ -3,7 +3,7 @@
 # ax_master: Delete or rename AIPS++ sources
 #-----------------------------------------------------------------------------
 #
-#   Copyright (C) 1992-1998,Wednes1998,1999,2000
+#   Copyright (C) 1992-1998,Wednes1998,1999,2000,2001
 #   Associated Universities, Inc. Washington DC, USA.
 #
 #   This program is free software; you can redistribute it and/or modify
@@ -5370,3 +5370,4 @@
 15 101 src mv nrao/apps/gbtobsparser/symtab.h nrao/apps/gbtobsparser/GBTObsSymtab.h
 15 101 src mv nrao/apps/gbtobsparser/parse.y nrao/apps/gbtobsparser/GBTObsParse.y
 15 101 src mv nrao/apps/gbtobsparser/scan.l nrao/apps/gbtobsparser/GBTObsParse.l
+15 121 src rm trial/apps/ms1toms2
