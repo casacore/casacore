@@ -1,6 +1,6 @@
 /*
     RecordGram.y: Parser for table commands
-    Copyright (C) 2000-2002
+    Copyright (C) 2000-2002,2003
     Associated Universities, Inc. Washington DC, USA.
 
     This library is free software; you can redistribute it and/or modify it
@@ -66,12 +66,14 @@ TableExprNodeSet* settp;
 %type <node> inxexpr
 %type <node> simexpr
 %type <node> set
+%type <node> singlerange
 %type <settp> subscripts
 %type <settp> elemlist
 %type <settp> elems
 %type <elem> elem
 %type <elem> subsrange
 %type <elem> colonrange
+%type <elem> range
 
 
 %left OR
@@ -143,6 +145,11 @@ relexpr:   arithexpr
 	       delete $3;
 	   }
          | arithexpr IN arithexpr {
+               $$ = new TableExprNode ($1->in (*$3));
+               delete $1;
+               delete $3;
+           }
+         | arithexpr IN singlerange {
                $$ = new TableExprNode ($1->in (*$3));
                delete $1;
                delete $3;
@@ -257,7 +264,18 @@ elem:      orexpr {
                $$ = new TableExprNodeSetElem(*$1);
 	       delete $1;
 	   }
-         | colonrange {
+         | range {
+               $$ = $1;
+           }
+
+singlerange: range {
+	       TableExprNodeSet set;
+	       set.add (*$1);
+	       delete $1;
+               $$ = new TableExprNode (set.setOrArray());
+           }
+
+range:     colonrange {
                $$ = $1;
            }
          | LT arithexpr COMMA arithexpr GT {
