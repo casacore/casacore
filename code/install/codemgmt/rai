@@ -47,7 +47,7 @@
 #    1) Where the remote account name differs from the local account name an
 #       environment variable may be used to translate between them:
 #
-#          ARSH="ssh aips2.nrao.edu -l <remotename>"
+#          ARSH="ssh -C aips2.nrao.edu -l <remotename>"
 #
 #       The .rhosts file for the <remotename> account on aips2.nrao.edu should
 #       have an entry of the form
@@ -130,12 +130,12 @@
   done
 
 # Transmit files to the master host.
-  ARSH=${ARSH-"ssh aips2.nrao.edu"}
+  ARSH=${ARSH-"ssh -C aips2.nrao.edu"}
 
   if [ "$FILES" != "" ]
   then
-     COMMAND="cd $PGMRDIR && gzip -d | tar pvxf - > /dev/null"
-     tar cf - $FILES | gzip -q |
+     COMMAND="cd $PGMRDIR && tar pvxf - > /dev/null"
+     tar cf - $FILES |
      $ARSH /aips++/weekly/.rshexec sh -c \'\""$COMMAND"\"\'
   fi
 

@@ -116,7 +116,7 @@
   done
 
 # Find out which of these are files and which are directories.
-  ARSH=${ARSH-"ssh aips2.nrao.edu"}
+  ARSH=${ARSH-"ssh -C aips2.nrao.edu"}
   COMMAND="cd $MSTRDIR && ls -d $TARGLIST 2>/dev/null"
   TARGLIST=`$ARSH -n /aips++/weekly/.rshexec sh -c \'\""$COMMAND"\"\'`
 
@@ -139,9 +139,9 @@
 # Fetch the files.
   if [ "$FILES" != "" ]
   then
-     COMMAND="cd $MSTRDIR && tar cf - $FILES | gzip -q"
+     COMMAND="cd $MSTRDIR && tar cf - $FILES"
      $ARSH /aips++/weekly/.rshexec sh -c \'\""$COMMAND"\"\' |
-     gzip -d | tar pvxf - > /dev/null
+     tar pvxf - > /dev/null
   fi
 
 # Process each file and directory.
