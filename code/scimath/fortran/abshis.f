@@ -2,7 +2,7 @@
 *     ABSHIS: calculate an histogram of absolute values.
 *-----------------------------------------------------------------------
 *
-*     Copyright (C) 1997
+*     Copyright (C) 1997,2000
 *     Associated Universities, Inc. Washington DC, USA.
 *
 *     This library is free software; you can redistribute it and/or
@@ -165,12 +165,12 @@
 *
       I = ARR(1,1)
       V = ARR(1,2)
-      MINVAL = ABS(I + ABS(V))
+      MINVAL = MAX(ABS(I+V), ABS(I-V))
       MAXVAL = MINVAL
       DO 10 N = 2, NPIX
          I = ARR(N,1)
          V = ARR(N,2)
-         SAMPLE = ABS(I + ABS(V))
+         SAMPLE = MAX(ABS(I+V), ABS(I-V))
          MAXVAL = MAX(MAXVAL, SAMPLE)
          MINVAL = MIN(MINVAL, SAMPLE)
  10   CONTINUE
@@ -182,7 +182,7 @@
          DO 20 N = 1, NPIX
             I = ARR(N,1)
             V = ARR(N,2)
-            SAMPLE = ABS(I + ABS(V))
+            SAMPLE = MAX(ABS(I+V), ABS(I-V))
             BIN = INT((SAMPLE-MINVAL)*SCALE)
             IF (BIN.EQ.NBINS) THEN
                HIST(NBINS-1) = HIST(NBINS-1) + 1

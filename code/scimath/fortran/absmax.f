@@ -2,7 +2,7 @@
 *     ABSMAX: find the element with the largest absolute value
 *-----------------------------------------------------------------------
 *
-*     Copyright (C) 1997
+*     Copyright (C) 1997,2000
 *     Associated Universities, Inc. Washington DC, USA.
 *
 *     This library is free software; you can redistribute it and/or
@@ -148,12 +148,12 @@
       V = ARR(2,1)
       MAXELEM(1) = I
       MAXELEM(2) = V
-      MAXVAL = ABS(I + ABS(V))
+      MAXVAL = MAX(ABS(I+V), ABS(I-V))
       MAXPOS = 1
       DO 10 N = 2, NPIX
          I = ARR(1,N)
          V = ARR(2,N)
-         SAMPLE = ABS(I + ABS(V))
+         SAMPLE = MAX(ABS(I+V), ABS(I-V))
          IF (SAMPLE.GT.MAXVAL) THEN
             MAXVAL = SAMPLE
             MAXELEM(1) = I

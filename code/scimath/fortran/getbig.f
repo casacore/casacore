@@ -2,7 +2,7 @@
 *     GETBIG: find the pixels with the biggest absolute value
 *-----------------------------------------------------------------------
 *
-*     Copyright (C) 1997
+*     Copyright (C) 1997,2000
 *     Associated Universities, Inc. Washington DC, USA.
 *
 *     This library is free software; you can redistribute it and/or
@@ -161,7 +161,7 @@
          DO 20, IY = 0, NY-1
             I = ARR(IX, IY, 1)
             V = ARR(IX, IY, 2)
-            IF (ABS(I + ABS(V)).GE.FLUXLIM) THEN
+            IF ( (MAX(ABS(I+V), ABS(I-V))) .GE.FLUXLIM) THEN
                NPIX = NPIX + 1
                IF (NPIX.LE.MAXPIX) THEN
                   PIXVAL(1, NPIX) = I
