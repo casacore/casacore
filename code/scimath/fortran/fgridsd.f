@@ -1,5 +1,5 @@
 *=======================================================================
-*     Copyright (C) 1999
+*     Copyright (C) 1999,2001
 *     Associated Universities, Inc. Washington DC, USA.
 *
 *     This library is free software; you can redistribute it and/or
@@ -49,7 +49,7 @@ C
 
       complex nvalue
 
-      double precision convFunc(*)
+      real convFunc(*)
       real norm
       real wt, wtx, wty
 
@@ -128,7 +128,7 @@ C
 
       complex nvalue
 
-      double precision convFunc(*)
+      real convFunc(*)
       real norm
 
       logical ogridsd
