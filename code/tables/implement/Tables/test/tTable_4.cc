@@ -221,7 +221,8 @@ void doTable (Bool ask, const TableDesc& td)
     try {
       if (ask) {
 	cout << "0=end 1=reopen 2=addcols 3=removecols 4=addrow 5=show "
-	        "6=copy, 7=check, 8=refcol: ";
+	     << endl
+	     << "6=recreate, 7=check, 8=refcol, 9=deepcopy: ";
       }
       cin >> op;
       if (op == 1) {
@@ -243,20 +244,18 @@ void doTable (Bool ask, const TableDesc& td)
 	tab.addRow();
 	putData (tab, tab.tableDesc(), n, 1);
 	cout << " Added and initialized 1 row" << endl;
-      } else if (op == 5  ||  op == 8) {
-	Table reftab(tab);
-	if (op == 8) {
-	  String str;
-	  if (ask) {
-	    cout << "Column names: ";
-	  }
-	  cin >> str;
-	  Block<String> cols;
-	  stringToVector(str).toBlock (cols);
-	  reftab = tab.project (cols);
+      } else if (op == 8) {
+	String str;
+	if (ask) {
+	  cout << "Column names: ";
 	}
-	reftab.actualTableDesc().show (cout);
-	Record rec = reftab.dataManagerInfo();
+	cin >> str;
+	Block<String> cols;
+	stringToVector(str).toBlock (cols);
+	tab = tab.project (cols);
+      } else if (op == 5) {
+	tab.actualTableDesc().show (cout);
+	Record rec = tab.dataManagerInfo();
 	cout << "Data Managers:" << endl;
 	for (uInt i=0; i<rec.nfields(); i++) {
 	  const Record& subrec = rec.subRecord(i);
@@ -268,16 +267,27 @@ void doTable (Bool ask, const TableDesc& td)
 	}
 	cout << "Table has " << tab.nrow() << " rows" << endl << endl;
       } else if (op == 6) {
-	SetupNewTable newtab("tTable_4_tmp.datn", tab.tableDesc(), Table::New);
+	SetupNewTable newtab("tTable_4_tmp.datn", tab.actualTableDesc(),
+			     Table::New);
 	newtab.bindCreate (tab.dataManagerInfo());
 	Table ntab (newtab);
-	tab = Table();
+	// Make sure current table is closed.
+	tab = Table();       
 	ntab.rename ("tTable_4_tmp.data", Table::New);
-	tab = ntab;
+	ntab = Table();
+	tab = Table("tTable_4_tmp.data");
 	cout << " Recreated table" << endl;
       } else if (op == 7) {
 	checkData (tab, tab.tableDesc(), 0, tab.nrow());
 	cout << " Checked all data" << endl;
+      } else if (op == 9) {
+	tab.deepCopy ("tTable_4_tmp.datn", Table::New, True);
+	tab = Table("tTable_4_tmp.datn");
+	tab.rename ("tTable_4_tmp.data", Table::New);
+	// The next 2 statements are needed to ensure that all objects
+	// used in Table know about the new file name.
+	tab = Table();
+	tab = Table("tTable_4_tmp.data");
       } else {
 	break;
       }
