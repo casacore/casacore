@@ -1034,12 +1034,13 @@
 #    Delete incremental updates which are more than 30 days old
 #    with only one link.
      find . -name tmp -prune -o -name "master-$NEWMAJOR.???.tar.gz" \
-        ! -name master-$NEWMAJOR.000.tar.gz -mtime +30 -links 1 \
-        -exec rm -f {} \;
+        ! -name master-$NEWMAJOR.000.tar.gz \
+        -mtime +30 -links 1 -exec rm -f {} \;
 
-#    Delete previous cumulative updates with only one link.
+#    Delete cumulative updates which are more than 7 days old
+#    with only one link.
      find . -name tmp -prune -o -name "master-$NEWMAJOR.???.ALL.tar.gz" \
-        -links 1 -exec rm -f {} \;
+        -mtime +7 -links 1 -exec rm -f {} \;
   else
 #    Delete the previous cumulative latchkey update only.
      SAVE=`sed -n '1s/\.00 .*//p' $MSTRTMPD/FTPVERSN`
