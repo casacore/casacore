@@ -45,7 +45,7 @@
 // </reviewed>
 
 // <prerequisite>
-//   <li> <a href="aips/Measures/Stokes.html"> Stokes </a>
+//   <li> <a href="../aips/Measures/Stokes.html"> Stokes </a>
 // </prerequisite>
 //
 // <etymology>
