@@ -3866,3 +3866,4 @@
 14 065 src mv trial/implement/Display/X11PCDLPopMatrix.h trialdisplay/implement/Display/X11PCDLPopMatrix.h
 14 065 src mv trial/implement/Display/X11PCDLPushMatrix.h trialdisplay/implement/Display/X11PCDLPushMatrix.h
 14 065 src mv trial/implement/Display/X11PCDLSetClearColor.h trialdisplay/implement/Display/X11PCDLSetClearColor.h
+14 065 src mv trial/implement/Display/X11PCDLSetClipWin.h trialdisplay/implement/Display/X11PCDLSetClipWin.h
