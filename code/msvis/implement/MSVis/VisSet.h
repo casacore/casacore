@@ -133,7 +133,7 @@ public:
   VisSet& operator=(const VisSet& other);
 
   // Initializes scratch columns
-  void initCalSet(Int val=0);
+  void initCalSet(Int calSet=0);
 
   // Flushes the data to disk
   void flush();
