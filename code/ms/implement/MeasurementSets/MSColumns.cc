@@ -83,13 +83,25 @@ void NewMSColumns::setEpochRef(MEpoch::Types ref)
   // Adjust the relevant columns in the main table
   NewMSMainColumns::setEpochRef(ref);
   // Now the same for the subtables.
+  //  feed().setEpochRef(ref);
+  field().setEpochRef(ref);
+//   flagCmd().setEpochRef(ref);
+//   history().setEpochRef(ref);
+//   observation().setEpochRef(ref);
+  pointing().setEpochRef(ref);
+//   source().setEpochRef(ref);
+//   if (!sysCal_p.isNull()) {
+//     syscal().setEpochRef(ref);
+//   }
+//   if (!weather_p.isNull()) {
+//     weather().setEpochRef(ref);
+//   }
+
   const String timsys(MEpoch::showType(ref));
   const String k1("MEASINFO");
   const String k2("Type");
   const String fld("refer");
   feed_p.time().rwKeywordSet().rwSubRecord(k1).rwSubRecord(k2).
-    define(fld,timsys);
-  field_p.time().rwKeywordSet().rwSubRecord(k1).rwSubRecord(k2).
     define(fld,timsys);
   flagCmd_p.time().rwKeywordSet().rwSubRecord(k1).rwSubRecord(k2).
     define(fld,timsys);
@@ -102,10 +114,6 @@ void NewMSColumns::setEpochRef(MEpoch::Types ref)
   observation_p.timeRange().rwKeywordSet().rwSubRecord(k1).rwSubRecord(k2).
     define(fld,timsys);
   observation_p.releaseDate().rwKeywordSet().rwSubRecord(k1).rwSubRecord(k2).
-    define(fld,timsys);
-  pointing_p.time().rwKeywordSet().rwSubRecord(k1).rwSubRecord(k2).
-    define(fld,timsys);
-  pointing_p.timeOrigin().rwKeywordSet().rwSubRecord(k1).rwSubRecord(k2).
     define(fld,timsys);
   source_p.time().rwKeywordSet().rwSubRecord(k1).rwSubRecord(k2).
     define(fld,timsys);
@@ -121,24 +129,10 @@ void NewMSColumns::setEpochRef(MEpoch::Types ref)
 
 void NewMSColumns::setDirectionRef(MDirection::Types ref)
 {
-  field_p.delayDir().rwKeywordSet().rwSubRecord("MEASINFO").
-    rwSubRecord("Type").define("refer",MDirection::showType(ref));
-  field_p.phaseDir().rwKeywordSet().rwSubRecord("MEASINFO").
-    rwSubRecord("Type").define("refer",MDirection::showType(ref));
-  field_p.referenceDir().rwKeywordSet().rwSubRecord("MEASINFO").
-    rwSubRecord("Type").define("refer",MDirection::showType(ref));
-  pointing_p.direction().rwKeywordSet().rwSubRecord("MEASINFO").
-    rwSubRecord("Type").define("refer",MDirection::showType(ref));
-  pointing_p.target().rwKeywordSet().rwSubRecord("MEASINFO").
-    rwSubRecord("Type").define("refer",MDirection::showType(ref));
-  if (!pointing_p.pointingOffset().isNull()) {
-    pointing_p.pointingOffset().rwKeywordSet().rwSubRecord("MEASINFO").
-      rwSubRecord("Type").define("refer",MDirection::showType(ref));
-  }
-  if (!pointing_p.sourceOffset().isNull()) {
-    pointing_p.sourceOffset().rwKeywordSet().rwSubRecord("MEASINFO").
-      rwSubRecord("Type").define("refer",MDirection::showType(ref));
-  }
+  field().setDirectionRef(ref);
+  pointing().setDirectionRef(ref);
+//   source().setDirectionRef(ref);
+
   source_p.direction().rwKeywordSet().rwSubRecord("MEASINFO").
     rwSubRecord("Type").define("refer",MDirection::showType(ref));
 }
