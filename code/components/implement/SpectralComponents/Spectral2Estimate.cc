@@ -293,3 +293,13 @@ template SpectralElement SpectralEstimate::convertElement<Float>(Vector<Float> c
 template void SpectralEstimate::findga<Float>(Vector<Float> const &); 
 template uInt SpectralEstimate::window<Float>(Vector<Float> const &);
 template void SpectralEstimate::findc2<Float>(Vector<Float> const &); 
+
+// Double
+
+template SpectralList const & SpectralEstimate::estimate<Double>(Vector<Double> const &, Vector<Double> *);
+template SpectralList const & SpectralEstimate::estimate<Double>(Vector<Double> const &, Vector<Double> const &);
+template SpectralElement SpectralEstimate::convertElement<Double>(Vector<Double> const &,
+                                                                 SpectralElement const &) const;
+template void SpectralEstimate::findga<Double>(Vector<Double> const &);
+template uInt SpectralEstimate::window<Double>(Vector<Double> const &);
+template void SpectralEstimate::findc2<Double>(Vector<Double> const &);
