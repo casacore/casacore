@@ -1676,7 +1676,7 @@ void ImageRegrid<T>::regrid2DMatrix(Lattice<T>& outCursor,
       Int di = 0;;;
       Bool *leMask = 0;;;
       if (inIsMasked) {
-	*inMask = &((*inMaskChunk2DPtr)(0,0));;;
+	inMask = &((*inMaskChunk2DPtr)(0,0));;;
 	dj = &((*inMaskChunk2DPtr)(0,1)) - inMask;;;
 	di = &((*inMaskChunk2DPtr)(1,0)) - inMask;;;
       };
