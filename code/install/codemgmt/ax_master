@@ -4767,3 +4767,4 @@
 14 316 src rm trial/apps/dishplot/dish_standard.gp
 14 316 sys rm libexec/dish_standard.gp
 14 316 src rm trial/apps/dish/dish.g
+14 316 sys rm libexec/dish.g
