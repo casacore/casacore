@@ -1,4 +1,4 @@
-//# MSStateEnums.h: Defs for the NewMS STATE table
+//# MSStateEnums.h: Defs for the MS STATE table
 //# Copyright (C) 1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#

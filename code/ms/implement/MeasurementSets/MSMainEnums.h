@@ -174,7 +174,7 @@ public:
     //
     // Complex visibility matrix. The UNITS are unspecified to allow
     // for the calibrated data to show up as a DATA column as well but in
-    // a calibrated NewMS.<BR>
+    // a calibrated MS.<BR>
     // Complex(Nc, Nf)
     DATA,
     //
@@ -259,7 +259,7 @@ public:
     FLAG_CMD,
     // History information subtable.
     HISTORY,
-    // NewMS Version number. <BR>
+    // MS Version number. <BR>
     // Float.
     MS_VERSION,
     // Observation subtable. Project, observer, schedule.
@@ -277,7 +277,7 @@ public:
     // Not a keyword, but an enum specifying the number of required keywords
     // The last required keyword should be set to this enum
     NUMBER_REQUIRED_KEYWORDS=STATE,
-    // Calibration tables associated with this NewMS. <BR>
+    // Calibration tables associated with this MS. <BR>
     // Table(NUM_CAL_TABLES)
     CAL_TABLES,
     // Doppler tracking information subtable.

@@ -200,7 +200,7 @@ public:
     // check that the keyword set is valid 
     static Bool validate(const TableRecord& tabKeySet);
  
-    // validate self (make sure that this NewMS is valid)
+    // validate self (make sure that this MS is valid)
     Bool validate() const { return validate(this->tableDesc());}
  
     // return the required table description

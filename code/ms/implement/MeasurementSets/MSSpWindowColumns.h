@@ -41,7 +41,7 @@
 class MSSpectralWindow;
 
 // <summary>
-// A class to provide easy read-only access to NewMSASpectralWindow columns
+// A class to provide easy read-only access to MSASpectralWindow columns
 // </summary>
 
 // <use visibility=export>

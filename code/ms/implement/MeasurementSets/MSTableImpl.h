@@ -1,4 +1,4 @@
-//# MSTableImpl.h: Helper class to implement common functions for NewMS Tables
+//# MSTableImpl.h: Helper class to implement common functions for MS Tables
 //# Copyright (C) 1996,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#

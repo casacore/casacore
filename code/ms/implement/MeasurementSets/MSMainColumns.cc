@@ -39,27 +39,27 @@
 #include <aips/Exceptions/Error.h>
 
 ROMSMainColumns::ROMSMainColumns(const MeasurementSet& ms):
-  antenna1_p(ms, NewMS::columnName(NewMS::ANTENNA1)),
-  antenna2_p(ms, NewMS::columnName(NewMS::ANTENNA2)),
-  arrayId_p(ms, NewMS::columnName(NewMS::ARRAY_ID)),
-  dataDescId_p(ms, NewMS::columnName(NewMS::DATA_DESC_ID)),
-  exposure_p(ms, NewMS::columnName(NewMS::EXPOSURE)),
-  feed1_p(ms, NewMS::columnName(NewMS::FEED1)),
-  feed2_p(ms, NewMS::columnName(NewMS::FEED2)),
-  fieldId_p(ms, NewMS::columnName(NewMS::FIELD_ID)),
-  flag_p(ms, NewMS::columnName(NewMS::FLAG)),
-  flagCategory_p(ms, NewMS::columnName(NewMS::FLAG_CATEGORY)),
-  flagRow_p(ms, NewMS::columnName(NewMS::FLAG_ROW)),
-  interval_p(ms, NewMS::columnName(NewMS::INTERVAL)),
-  observationId_p(ms, NewMS::columnName(NewMS::OBSERVATION_ID)),
-  processorId_p(ms, NewMS::columnName(NewMS::PROCESSOR_ID)),
-  scanNumber_p(ms, NewMS::columnName(NewMS::SCAN_NUMBER)),
-  sigma_p(ms, NewMS::columnName(NewMS::SIGMA)),
-  stateId_p(ms, NewMS::columnName(NewMS::STATE_ID)),
-  time_p(ms, NewMS::columnName(NewMS::TIME)),
-  timeCentroid_p(ms, NewMS::columnName(NewMS::TIME_CENTROID)),
-  uvw_p(ms, NewMS::columnName(NewMS::UVW)),
-  weight_p(ms, NewMS::columnName(NewMS::WEIGHT)),
+  antenna1_p(ms, MS::columnName(MS::ANTENNA1)),
+  antenna2_p(ms, MS::columnName(MS::ANTENNA2)),
+  arrayId_p(ms, MS::columnName(MS::ARRAY_ID)),
+  dataDescId_p(ms, MS::columnName(MS::DATA_DESC_ID)),
+  exposure_p(ms, MS::columnName(MS::EXPOSURE)),
+  feed1_p(ms, MS::columnName(MS::FEED1)),
+  feed2_p(ms, MS::columnName(MS::FEED2)),
+  fieldId_p(ms, MS::columnName(MS::FIELD_ID)),
+  flag_p(ms, MS::columnName(MS::FLAG)),
+  flagCategory_p(ms, MS::columnName(MS::FLAG_CATEGORY)),
+  flagRow_p(ms, MS::columnName(MS::FLAG_ROW)),
+  interval_p(ms, MS::columnName(MS::INTERVAL)),
+  observationId_p(ms, MS::columnName(MS::OBSERVATION_ID)),
+  processorId_p(ms, MS::columnName(MS::PROCESSOR_ID)),
+  scanNumber_p(ms, MS::columnName(MS::SCAN_NUMBER)),
+  sigma_p(ms, MS::columnName(MS::SIGMA)),
+  stateId_p(ms, MS::columnName(MS::STATE_ID)),
+  time_p(ms, MS::columnName(MS::TIME)),
+  timeCentroid_p(ms, MS::columnName(MS::TIME_CENTROID)),
+  uvw_p(ms, MS::columnName(MS::UVW)),
+  weight_p(ms, MS::columnName(MS::WEIGHT)),
   antenna3_p(),
   baselineRef_p(),
   data_p(),
@@ -77,15 +77,15 @@ ROMSMainColumns::ROMSMainColumns(const MeasurementSet& ms):
   correctedData_p(),
   imagingWeight_p(),
   modelData_p(),
-  timeMeas_p(ms, NewMS::columnName(NewMS::TIME)),
-  timeCentroidMeas_p(ms, NewMS::columnName(NewMS::TIME_CENTROID)),
-  uvwMeas_p(ms, NewMS::columnName(NewMS::UVW)),
+  timeMeas_p(ms, MS::columnName(MS::TIME)),
+  timeCentroidMeas_p(ms, MS::columnName(MS::TIME_CENTROID)),
+  uvwMeas_p(ms, MS::columnName(MS::UVW)),
   uvw2Meas_p(),
-  exposureQuant_p(ms, NewMS::columnName(NewMS::EXPOSURE)),
-  intervalQuant_p(ms, NewMS::columnName(NewMS::INTERVAL)),
-  timeQuant_p(ms, NewMS::columnName(NewMS::TIME)),
-  timeCentroidQuant_p(ms, NewMS::columnName(NewMS::TIME_CENTROID)),
-  uvwQuant_p(ms, NewMS::columnName(NewMS::UVW)),
+  exposureQuant_p(ms, MS::columnName(MS::EXPOSURE)),
+  intervalQuant_p(ms, MS::columnName(MS::INTERVAL)),
+  timeQuant_p(ms, MS::columnName(MS::TIME)),
+  timeCentroidQuant_p(ms, MS::columnName(MS::TIME_CENTROID)),
+  uvwQuant_p(ms, MS::columnName(MS::UVW)),
   timeExtraPrecQuant_p(),
   uvw2Quant_p()
 {
@@ -160,112 +160,112 @@ ROMSMainColumns::ROMSMainColumns():
 
 void ROMSMainColumns::attach(const MeasurementSet& ms)
 {
-  antenna1_p.attach(ms, NewMS::columnName(NewMS::ANTENNA1));
-  antenna2_p.attach(ms, NewMS::columnName(NewMS::ANTENNA2));
-  arrayId_p.attach(ms, NewMS::columnName(NewMS::ARRAY_ID));
-  dataDescId_p.attach(ms, NewMS::columnName(NewMS::DATA_DESC_ID));
-  exposure_p.attach(ms, NewMS::columnName(NewMS::EXPOSURE));
-  feed1_p.attach(ms, NewMS::columnName(NewMS::FEED1));
-  feed2_p.attach(ms, NewMS::columnName(NewMS::FEED2));
-  fieldId_p.attach(ms, NewMS::columnName(NewMS::FIELD_ID));
-  flag_p.attach(ms, NewMS::columnName(NewMS::FLAG));
-  flagCategory_p.attach(ms, NewMS::columnName(NewMS::FLAG_CATEGORY));
-  flagRow_p.attach(ms, NewMS::columnName(NewMS::FLAG_ROW));
-  interval_p.attach(ms, NewMS::columnName(NewMS::INTERVAL));
-  observationId_p.attach(ms, NewMS::columnName(NewMS::OBSERVATION_ID));
-  processorId_p.attach(ms, NewMS::columnName(NewMS::PROCESSOR_ID));
-  scanNumber_p.attach(ms, NewMS::columnName(NewMS::SCAN_NUMBER));
-  sigma_p.attach(ms, NewMS::columnName(NewMS::SIGMA));
-  stateId_p.attach(ms, NewMS::columnName(NewMS::STATE_ID));
-  time_p.attach(ms, NewMS::columnName(NewMS::TIME));
-  timeCentroid_p.attach(ms, NewMS::columnName(NewMS::TIME_CENTROID));
-  uvw_p.attach(ms, NewMS::columnName(NewMS::UVW));
-  weight_p.attach(ms, NewMS::columnName(NewMS::WEIGHT));
+  antenna1_p.attach(ms, MS::columnName(MS::ANTENNA1));
+  antenna2_p.attach(ms, MS::columnName(MS::ANTENNA2));
+  arrayId_p.attach(ms, MS::columnName(MS::ARRAY_ID));
+  dataDescId_p.attach(ms, MS::columnName(MS::DATA_DESC_ID));
+  exposure_p.attach(ms, MS::columnName(MS::EXPOSURE));
+  feed1_p.attach(ms, MS::columnName(MS::FEED1));
+  feed2_p.attach(ms, MS::columnName(MS::FEED2));
+  fieldId_p.attach(ms, MS::columnName(MS::FIELD_ID));
+  flag_p.attach(ms, MS::columnName(MS::FLAG));
+  flagCategory_p.attach(ms, MS::columnName(MS::FLAG_CATEGORY));
+  flagRow_p.attach(ms, MS::columnName(MS::FLAG_ROW));
+  interval_p.attach(ms, MS::columnName(MS::INTERVAL));
+  observationId_p.attach(ms, MS::columnName(MS::OBSERVATION_ID));
+  processorId_p.attach(ms, MS::columnName(MS::PROCESSOR_ID));
+  scanNumber_p.attach(ms, MS::columnName(MS::SCAN_NUMBER));
+  sigma_p.attach(ms, MS::columnName(MS::SIGMA));
+  stateId_p.attach(ms, MS::columnName(MS::STATE_ID));
+  time_p.attach(ms, MS::columnName(MS::TIME));
+  timeCentroid_p.attach(ms, MS::columnName(MS::TIME_CENTROID));
+  uvw_p.attach(ms, MS::columnName(MS::UVW));
+  weight_p.attach(ms, MS::columnName(MS::WEIGHT));
   attachOptionalCols(ms);
 }
 
 void ROMSMainColumns::attachOptionalCols(const MeasurementSet& ms)
 {
   const ColumnDescSet& cds=ms.tableDesc().columnDescSet();
-  if (cds.isDefined(NewMS::columnName(NewMS::ANTENNA3))) {
-    antenna3_p.attach(ms,NewMS::columnName(NewMS::ANTENNA3));
+  if (cds.isDefined(MS::columnName(MS::ANTENNA3))) {
+    antenna3_p.attach(ms,MS::columnName(MS::ANTENNA3));
   }
-  if (cds.isDefined(NewMS::columnName(NewMS::BASELINE_REF))) {
-    baselineRef_p.attach(ms,NewMS::columnName(NewMS::BASELINE_REF));
+  if (cds.isDefined(MS::columnName(MS::BASELINE_REF))) {
+    baselineRef_p.attach(ms,MS::columnName(MS::BASELINE_REF));
   }
-  if (cds.isDefined(NewMS::columnName(NewMS::DATA))) {
-    data_p.attach(ms,NewMS::columnName(NewMS::DATA));
+  if (cds.isDefined(MS::columnName(MS::DATA))) {
+    data_p.attach(ms,MS::columnName(MS::DATA));
   }
-  if (cds.isDefined(NewMS::columnName(NewMS::FEED3))) {
-    feed3_p.attach(ms,NewMS::columnName(NewMS::FEED3));
+  if (cds.isDefined(MS::columnName(MS::FEED3))) {
+    feed3_p.attach(ms,MS::columnName(MS::FEED3));
   }
-  if (cds.isDefined(NewMS::columnName(NewMS::FLOAT_DATA))) {
-    floatData_p.attach(ms,NewMS::columnName(NewMS::FLOAT_DATA));
+  if (cds.isDefined(MS::columnName(MS::FLOAT_DATA))) {
+    floatData_p.attach(ms,MS::columnName(MS::FLOAT_DATA));
   }
-  if (cds.isDefined(NewMS::columnName(NewMS::LAG_DATA))) {
-    lagData_p.attach(ms,NewMS::columnName(NewMS::LAG_DATA));
+  if (cds.isDefined(MS::columnName(MS::LAG_DATA))) {
+    lagData_p.attach(ms,MS::columnName(MS::LAG_DATA));
   }
-  if (cds.isDefined(NewMS::columnName(NewMS::PHASE_ID))) {
-    phaseId_p.attach(ms,NewMS::columnName(NewMS::PHASE_ID));
+  if (cds.isDefined(MS::columnName(MS::PHASE_ID))) {
+    phaseId_p.attach(ms,MS::columnName(MS::PHASE_ID));
   }
-  if (cds.isDefined(NewMS::columnName(NewMS::PULSAR_BIN))) {
-    pulsarBin_p.attach(ms,NewMS::columnName(NewMS::PULSAR_BIN));
+  if (cds.isDefined(MS::columnName(MS::PULSAR_BIN))) {
+    pulsarBin_p.attach(ms,MS::columnName(MS::PULSAR_BIN));
   }
-  if (cds.isDefined(NewMS::columnName(NewMS::PULSAR_GATE_ID))) {
-    pulsarGateId_p.attach(ms,NewMS::columnName(NewMS::PULSAR_GATE_ID));
+  if (cds.isDefined(MS::columnName(MS::PULSAR_GATE_ID))) {
+    pulsarGateId_p.attach(ms,MS::columnName(MS::PULSAR_GATE_ID));
   }
-  if (cds.isDefined(NewMS::columnName(NewMS::SIGMA_SPECTRUM))) {
-    sigmaSpectrum_p.attach(ms,NewMS::columnName(NewMS::SIGMA_SPECTRUM));
+  if (cds.isDefined(MS::columnName(MS::SIGMA_SPECTRUM))) {
+    sigmaSpectrum_p.attach(ms,MS::columnName(MS::SIGMA_SPECTRUM));
   }
-  if (cds.isDefined(NewMS::columnName(NewMS::TIME_EXTRA_PREC))) {
-    timeExtraPrec_p.attach(ms,NewMS::columnName(NewMS::TIME_EXTRA_PREC));
-    timeExtraPrecQuant_p.attach(ms,NewMS::columnName(NewMS::TIME_EXTRA_PREC));
+  if (cds.isDefined(MS::columnName(MS::TIME_EXTRA_PREC))) {
+    timeExtraPrec_p.attach(ms,MS::columnName(MS::TIME_EXTRA_PREC));
+    timeExtraPrecQuant_p.attach(ms,MS::columnName(MS::TIME_EXTRA_PREC));
   }
-  if (cds.isDefined(NewMS::columnName(NewMS::UVW2))) {
-    uvw2_p.attach(ms,NewMS::columnName(NewMS::UVW2));
-    uvw2Meas_p.attach(ms,NewMS::columnName(NewMS::UVW2));
-    uvw2Quant_p.attach(ms,NewMS::columnName(NewMS::UVW2));
+  if (cds.isDefined(MS::columnName(MS::UVW2))) {
+    uvw2_p.attach(ms,MS::columnName(MS::UVW2));
+    uvw2Meas_p.attach(ms,MS::columnName(MS::UVW2));
+    uvw2Quant_p.attach(ms,MS::columnName(MS::UVW2));
   }
-  if (cds.isDefined(NewMS::columnName(NewMS::VIDEO_POINT))) {
-    videoPoint_p.attach(ms,NewMS::columnName(NewMS::VIDEO_POINT));
+  if (cds.isDefined(MS::columnName(MS::VIDEO_POINT))) {
+    videoPoint_p.attach(ms,MS::columnName(MS::VIDEO_POINT));
   }
-  if (cds.isDefined(NewMS::columnName(NewMS::WEIGHT_SPECTRUM))) {
-    weightSpectrum_p.attach(ms,NewMS::columnName(NewMS::WEIGHT_SPECTRUM));
+  if (cds.isDefined(MS::columnName(MS::WEIGHT_SPECTRUM))) {
+    weightSpectrum_p.attach(ms,MS::columnName(MS::WEIGHT_SPECTRUM));
   }
-  if (cds.isDefined(NewMS::columnName(NewMS::CORRECTED_DATA))) {
-    correctedData_p.attach(ms,NewMS::columnName(NewMS::CORRECTED_DATA));
+  if (cds.isDefined(MS::columnName(MS::CORRECTED_DATA))) {
+    correctedData_p.attach(ms,MS::columnName(MS::CORRECTED_DATA));
   }
-  if (cds.isDefined(NewMS::columnName(NewMS::IMAGING_WEIGHT))) {
-    imagingWeight_p.attach(ms,NewMS::columnName(NewMS::IMAGING_WEIGHT));
+  if (cds.isDefined(MS::columnName(MS::IMAGING_WEIGHT))) {
+    imagingWeight_p.attach(ms,MS::columnName(MS::IMAGING_WEIGHT));
   }
-  if (cds.isDefined(NewMS::columnName(NewMS::MODEL_DATA))) {
-    modelData_p.attach(ms,NewMS::columnName(NewMS::MODEL_DATA));
+  if (cds.isDefined(MS::columnName(MS::MODEL_DATA))) {
+    modelData_p.attach(ms,MS::columnName(MS::MODEL_DATA));
   }
 }
 
 MSMainColumns::MSMainColumns(MeasurementSet& ms):
   ROMSMainColumns(ms),
-  antenna1_p(ms, NewMS::columnName(NewMS::ANTENNA1)),
-  antenna2_p(ms, NewMS::columnName(NewMS::ANTENNA2)),
-  arrayId_p(ms, NewMS::columnName(NewMS::ARRAY_ID)),
-  dataDescId_p(ms, NewMS::columnName(NewMS::DATA_DESC_ID)),
-  exposure_p(ms, NewMS::columnName(NewMS::EXPOSURE)),
-  feed1_p(ms, NewMS::columnName(NewMS::FEED1)),
-  feed2_p(ms, NewMS::columnName(NewMS::FEED2)),
-  fieldId_p(ms, NewMS::columnName(NewMS::FIELD_ID)),
-  flag_p(ms, NewMS::columnName(NewMS::FLAG)),
-  flagCategory_p(ms, NewMS::columnName(NewMS::FLAG_CATEGORY)),
-  flagRow_p(ms, NewMS::columnName(NewMS::FLAG_ROW)),
-  interval_p(ms, NewMS::columnName(NewMS::INTERVAL)),
-  observationId_p(ms, NewMS::columnName(NewMS::OBSERVATION_ID)),
-  processorId_p(ms, NewMS::columnName(NewMS::PROCESSOR_ID)),
-  scanNumber_p(ms, NewMS::columnName(NewMS::SCAN_NUMBER)),
-  sigma_p(ms, NewMS::columnName(NewMS::SIGMA)),
-  stateId_p(ms, NewMS::columnName(NewMS::STATE_ID)),
-  time_p(ms, NewMS::columnName(NewMS::TIME)),
-  timeCentroid_p(ms, NewMS::columnName(NewMS::TIME_CENTROID)),
-  uvw_p(ms, NewMS::columnName(NewMS::UVW)),
-  weight_p(ms, NewMS::columnName(NewMS::WEIGHT)),
+  antenna1_p(ms, MS::columnName(MS::ANTENNA1)),
+  antenna2_p(ms, MS::columnName(MS::ANTENNA2)),
+  arrayId_p(ms, MS::columnName(MS::ARRAY_ID)),
+  dataDescId_p(ms, MS::columnName(MS::DATA_DESC_ID)),
+  exposure_p(ms, MS::columnName(MS::EXPOSURE)),
+  feed1_p(ms, MS::columnName(MS::FEED1)),
+  feed2_p(ms, MS::columnName(MS::FEED2)),
+  fieldId_p(ms, MS::columnName(MS::FIELD_ID)),
+  flag_p(ms, MS::columnName(MS::FLAG)),
+  flagCategory_p(ms, MS::columnName(MS::FLAG_CATEGORY)),
+  flagRow_p(ms, MS::columnName(MS::FLAG_ROW)),
+  interval_p(ms, MS::columnName(MS::INTERVAL)),
+  observationId_p(ms, MS::columnName(MS::OBSERVATION_ID)),
+  processorId_p(ms, MS::columnName(MS::PROCESSOR_ID)),
+  scanNumber_p(ms, MS::columnName(MS::SCAN_NUMBER)),
+  sigma_p(ms, MS::columnName(MS::SIGMA)),
+  stateId_p(ms, MS::columnName(MS::STATE_ID)),
+  time_p(ms, MS::columnName(MS::TIME)),
+  timeCentroid_p(ms, MS::columnName(MS::TIME_CENTROID)),
+  uvw_p(ms, MS::columnName(MS::UVW)),
+  weight_p(ms, MS::columnName(MS::WEIGHT)),
   antenna3_p(),
   baselineRef_p(),
   data_p(),
@@ -283,15 +283,15 @@ MSMainColumns::MSMainColumns(MeasurementSet& ms):
   correctedData_p(),
   imagingWeight_p(),
   modelData_p(),
-  timeMeas_p(ms, NewMS::columnName(NewMS::TIME)),
-  timeCentroidMeas_p(ms, NewMS::columnName(NewMS::TIME_CENTROID)),
-  uvwMeas_p(ms, NewMS::columnName(NewMS::UVW)),
+  timeMeas_p(ms, MS::columnName(MS::TIME)),
+  timeCentroidMeas_p(ms, MS::columnName(MS::TIME_CENTROID)),
+  uvwMeas_p(ms, MS::columnName(MS::UVW)),
   uvw2Meas_p(),
-  exposureQuant_p(ms, NewMS::columnName(NewMS::EXPOSURE)),
-  intervalQuant_p(ms, NewMS::columnName(NewMS::INTERVAL)),
-  timeQuant_p(ms, NewMS::columnName(NewMS::TIME)),
-  timeCentroidQuant_p(ms, NewMS::columnName(NewMS::TIME_CENTROID)),
-  uvwQuant_p(ms, NewMS::columnName(NewMS::UVW)),
+  exposureQuant_p(ms, MS::columnName(MS::EXPOSURE)),
+  intervalQuant_p(ms, MS::columnName(MS::INTERVAL)),
+  timeQuant_p(ms, MS::columnName(MS::TIME)),
+  timeCentroidQuant_p(ms, MS::columnName(MS::TIME_CENTROID)),
+  uvwQuant_p(ms, MS::columnName(MS::UVW)),
   timeExtraPrecQuant_p(),
   uvw2Quant_p()
 {
@@ -379,86 +379,86 @@ MSMainColumns::MSMainColumns():
 void MSMainColumns::attach(MeasurementSet& ms)
 {
   ROMSMainColumns::attach(ms);
-  antenna1_p.attach(ms, NewMS::columnName(NewMS::ANTENNA1));
-  antenna2_p.attach(ms, NewMS::columnName(NewMS::ANTENNA2));
-  arrayId_p.attach(ms, NewMS::columnName(NewMS::ARRAY_ID));
-  dataDescId_p.attach(ms, NewMS::columnName(NewMS::DATA_DESC_ID));
-  exposure_p.attach(ms, NewMS::columnName(NewMS::EXPOSURE));
-  feed1_p.attach(ms, NewMS::columnName(NewMS::FEED1));
-  feed2_p.attach(ms, NewMS::columnName(NewMS::FEED2));
-  fieldId_p.attach(ms, NewMS::columnName(NewMS::FIELD_ID));
-  flag_p.attach(ms, NewMS::columnName(NewMS::FLAG));
-  flagCategory_p.attach(ms, NewMS::columnName(NewMS::FLAG_CATEGORY));
-  flagRow_p.attach(ms, NewMS::columnName(NewMS::FLAG_ROW));
-  interval_p.attach(ms, NewMS::columnName(NewMS::INTERVAL));
-  observationId_p.attach(ms, NewMS::columnName(NewMS::OBSERVATION_ID));
-  processorId_p.attach(ms, NewMS::columnName(NewMS::PROCESSOR_ID));
-  scanNumber_p.attach(ms, NewMS::columnName(NewMS::SCAN_NUMBER));
-  sigma_p.attach(ms, NewMS::columnName(NewMS::SIGMA));
-  stateId_p.attach(ms, NewMS::columnName(NewMS::STATE_ID));
-  time_p.attach(ms, NewMS::columnName(NewMS::TIME));
-  timeCentroid_p.attach(ms, NewMS::columnName(NewMS::TIME_CENTROID));
-  uvw_p.attach(ms, NewMS::columnName(NewMS::UVW));
-  weight_p.attach(ms, NewMS::columnName(NewMS::WEIGHT));
+  antenna1_p.attach(ms, MS::columnName(MS::ANTENNA1));
+  antenna2_p.attach(ms, MS::columnName(MS::ANTENNA2));
+  arrayId_p.attach(ms, MS::columnName(MS::ARRAY_ID));
+  dataDescId_p.attach(ms, MS::columnName(MS::DATA_DESC_ID));
+  exposure_p.attach(ms, MS::columnName(MS::EXPOSURE));
+  feed1_p.attach(ms, MS::columnName(MS::FEED1));
+  feed2_p.attach(ms, MS::columnName(MS::FEED2));
+  fieldId_p.attach(ms, MS::columnName(MS::FIELD_ID));
+  flag_p.attach(ms, MS::columnName(MS::FLAG));
+  flagCategory_p.attach(ms, MS::columnName(MS::FLAG_CATEGORY));
+  flagRow_p.attach(ms, MS::columnName(MS::FLAG_ROW));
+  interval_p.attach(ms, MS::columnName(MS::INTERVAL));
+  observationId_p.attach(ms, MS::columnName(MS::OBSERVATION_ID));
+  processorId_p.attach(ms, MS::columnName(MS::PROCESSOR_ID));
+  scanNumber_p.attach(ms, MS::columnName(MS::SCAN_NUMBER));
+  sigma_p.attach(ms, MS::columnName(MS::SIGMA));
+  stateId_p.attach(ms, MS::columnName(MS::STATE_ID));
+  time_p.attach(ms, MS::columnName(MS::TIME));
+  timeCentroid_p.attach(ms, MS::columnName(MS::TIME_CENTROID));
+  uvw_p.attach(ms, MS::columnName(MS::UVW));
+  weight_p.attach(ms, MS::columnName(MS::WEIGHT));
   attachOptionalCols(ms);
 }
 
 void MSMainColumns::attachOptionalCols(MeasurementSet& ms)
 {
   const ColumnDescSet& cds=ms.tableDesc().columnDescSet();
-  if (cds.isDefined(NewMS::columnName(NewMS::ANTENNA3))) {
-    antenna3_p.attach(ms,NewMS::columnName(NewMS::ANTENNA3));
+  if (cds.isDefined(MS::columnName(MS::ANTENNA3))) {
+    antenna3_p.attach(ms,MS::columnName(MS::ANTENNA3));
   }
-  if (cds.isDefined(NewMS::columnName(NewMS::BASELINE_REF))) {
-    baselineRef_p.attach(ms,NewMS::columnName(NewMS::BASELINE_REF));
+  if (cds.isDefined(MS::columnName(MS::BASELINE_REF))) {
+    baselineRef_p.attach(ms,MS::columnName(MS::BASELINE_REF));
   }
-  if (cds.isDefined(NewMS::columnName(NewMS::DATA))) {
-    data_p.attach(ms,NewMS::columnName(NewMS::DATA));
+  if (cds.isDefined(MS::columnName(MS::DATA))) {
+    data_p.attach(ms,MS::columnName(MS::DATA));
   }
-  if (cds.isDefined(NewMS::columnName(NewMS::FEED3))) {
-    feed3_p.attach(ms,NewMS::columnName(NewMS::FEED3));
+  if (cds.isDefined(MS::columnName(MS::FEED3))) {
+    feed3_p.attach(ms,MS::columnName(MS::FEED3));
   }
-  if (cds.isDefined(NewMS::columnName(NewMS::FLOAT_DATA))) {
-    floatData_p.attach(ms,NewMS::columnName(NewMS::FLOAT_DATA));
+  if (cds.isDefined(MS::columnName(MS::FLOAT_DATA))) {
+    floatData_p.attach(ms,MS::columnName(MS::FLOAT_DATA));
   }
-  if (cds.isDefined(NewMS::columnName(NewMS::LAG_DATA))) {
-    lagData_p.attach(ms,NewMS::columnName(NewMS::LAG_DATA));
+  if (cds.isDefined(MS::columnName(MS::LAG_DATA))) {
+    lagData_p.attach(ms,MS::columnName(MS::LAG_DATA));
   }
-  if (cds.isDefined(NewMS::columnName(NewMS::PHASE_ID))) {
-    phaseId_p.attach(ms,NewMS::columnName(NewMS::PHASE_ID));
+  if (cds.isDefined(MS::columnName(MS::PHASE_ID))) {
+    phaseId_p.attach(ms,MS::columnName(MS::PHASE_ID));
   }
-  if (cds.isDefined(NewMS::columnName(NewMS::PULSAR_BIN))) {
-    pulsarBin_p.attach(ms,NewMS::columnName(NewMS::PULSAR_BIN));
+  if (cds.isDefined(MS::columnName(MS::PULSAR_BIN))) {
+    pulsarBin_p.attach(ms,MS::columnName(MS::PULSAR_BIN));
   }
-  if (cds.isDefined(NewMS::columnName(NewMS::PULSAR_GATE_ID))) {
-    pulsarGateId_p.attach(ms,NewMS::columnName(NewMS::PULSAR_GATE_ID));
+  if (cds.isDefined(MS::columnName(MS::PULSAR_GATE_ID))) {
+    pulsarGateId_p.attach(ms,MS::columnName(MS::PULSAR_GATE_ID));
   }
-  if (cds.isDefined(NewMS::columnName(NewMS::SIGMA_SPECTRUM))) {
-    sigmaSpectrum_p.attach(ms,NewMS::columnName(NewMS::SIGMA_SPECTRUM));
+  if (cds.isDefined(MS::columnName(MS::SIGMA_SPECTRUM))) {
+    sigmaSpectrum_p.attach(ms,MS::columnName(MS::SIGMA_SPECTRUM));
   }
-  if (cds.isDefined(NewMS::columnName(NewMS::TIME_EXTRA_PREC))) {
-    timeExtraPrec_p.attach(ms,NewMS::columnName(NewMS::TIME_EXTRA_PREC));
-    timeExtraPrecQuant_p.attach(ms,NewMS::columnName(NewMS::TIME_EXTRA_PREC));
+  if (cds.isDefined(MS::columnName(MS::TIME_EXTRA_PREC))) {
+    timeExtraPrec_p.attach(ms,MS::columnName(MS::TIME_EXTRA_PREC));
+    timeExtraPrecQuant_p.attach(ms,MS::columnName(MS::TIME_EXTRA_PREC));
   }
-  if (cds.isDefined(NewMS::columnName(NewMS::UVW2))) {
-    uvw2_p.attach(ms,NewMS::columnName(NewMS::UVW2));
-    uvw2Meas_p.attach(ms,NewMS::columnName(NewMS::UVW2));
-    uvw2Quant_p.attach(ms,NewMS::columnName(NewMS::UVW2));
+  if (cds.isDefined(MS::columnName(MS::UVW2))) {
+    uvw2_p.attach(ms,MS::columnName(MS::UVW2));
+    uvw2Meas_p.attach(ms,MS::columnName(MS::UVW2));
+    uvw2Quant_p.attach(ms,MS::columnName(MS::UVW2));
   }
-  if (cds.isDefined(NewMS::columnName(NewMS::VIDEO_POINT))) {
-    videoPoint_p.attach(ms,NewMS::columnName(NewMS::VIDEO_POINT));
+  if (cds.isDefined(MS::columnName(MS::VIDEO_POINT))) {
+    videoPoint_p.attach(ms,MS::columnName(MS::VIDEO_POINT));
   }
-  if (cds.isDefined(NewMS::columnName(NewMS::WEIGHT_SPECTRUM))) {
-    weightSpectrum_p.attach(ms,NewMS::columnName(NewMS::WEIGHT_SPECTRUM));
+  if (cds.isDefined(MS::columnName(MS::WEIGHT_SPECTRUM))) {
+    weightSpectrum_p.attach(ms,MS::columnName(MS::WEIGHT_SPECTRUM));
   }
-  if (cds.isDefined(NewMS::columnName(NewMS::CORRECTED_DATA))) {
-    correctedData_p.attach(ms,NewMS::columnName(NewMS::CORRECTED_DATA));
+  if (cds.isDefined(MS::columnName(MS::CORRECTED_DATA))) {
+    correctedData_p.attach(ms,MS::columnName(MS::CORRECTED_DATA));
   }
-  if (cds.isDefined(NewMS::columnName(NewMS::IMAGING_WEIGHT))) {
-    imagingWeight_p.attach(ms,NewMS::columnName(NewMS::IMAGING_WEIGHT));
+  if (cds.isDefined(MS::columnName(MS::IMAGING_WEIGHT))) {
+    imagingWeight_p.attach(ms,MS::columnName(MS::IMAGING_WEIGHT));
   }
-  if (cds.isDefined(NewMS::columnName(NewMS::MODEL_DATA))) {
-    modelData_p.attach(ms,NewMS::columnName(NewMS::MODEL_DATA));
+  if (cds.isDefined(MS::columnName(MS::MODEL_DATA))) {
+    modelData_p.attach(ms,MS::columnName(MS::MODEL_DATA));
   }
 }
 // Local Variables: 

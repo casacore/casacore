@@ -1,4 +1,4 @@
-//# MSFlagCmdEnums.h: Defs for the NewMS FLAG_CMD table
+//# MSFlagCmdEnums.h: Defs for the MS FLAG_CMD table
 //# Copyright (C) 1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#

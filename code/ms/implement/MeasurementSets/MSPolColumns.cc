@@ -83,7 +83,7 @@ match(const Vector<Stokes::StokesTypes>& polType, Int tryRow) {
   if (tryRow >= 0) {
     const uInt tr = tryRow;
     if (tr >= r) {
-      throw(AipsError("RONewMSPolarszationColumns::match(...) - "
+      throw(AipsError("ROMSPolarszationColumns::match(...) - "
                       "the row you suggest is too big"));
     }
     if (!flagRow()(tr) &&
@@ -155,5 +155,5 @@ attach(MSPolarization& msPolarization)
 		   columnName(MSPolarization::NUM_CORR));
 }
 // Local Variables: 
-// compile-command: "gmake NewMSPolColumns"
+// compile-command: "gmake MSPolColumns"
 // End: 

@@ -158,7 +158,7 @@ void MSTableImpl::addColumnToDesc(TableDesc &td, const String& colName,
 	  // note we use TableRecord iso Record, there is no TpTableRecord
 	    td.addColumn(ScalarRecordColumnDesc(colName,colComment));
 	    break;
-/* these are not needed in the NewMS
+/* these are not needed in the MS
 	case TpChar:
 	    td.addColumn(ScalarColumnDesc<Char>(colName,colComment));
 	    break;

@@ -1,4 +1,4 @@
-//# MSDopplerEnums.h: Defs for the NewMS DOPPLER table
+//# MSDopplerEnums.h: Defs for the MS DOPPLER table
 //# Copyright (C) 1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#

@@ -1,4 +1,4 @@
-//# MSSpectralWindowEnums.h: Definitions for the NewMS SPECTRAL_WINDOW table
+//# MSSpectralWindowEnums.h: Definitions for the MS SPECTRAL_WINDOW table
 //# Copyright (C) 1996,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#

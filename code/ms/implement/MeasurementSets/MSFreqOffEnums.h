@@ -1,4 +1,4 @@
-//# MSFreqOffsetEnums.h: Defs for the NewMS FREQ_OFFSET table
+//# MSFreqOffsetEnums.h: Defs for the MS FREQ_OFFSET table
 //# Copyright (C) 1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#

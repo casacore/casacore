@@ -1,4 +1,4 @@
-//# NewMSmainColumns.h: provides easy access to MeasurementSet main table columns
+//# MSmainColumns.h: provides easy access to MeasurementSet main table columns
 //# Copyright (C) 2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -76,7 +76,7 @@ template <class T> class Vector;
 // <example>
 // <srcblock>
 // // use as follows
-// MeasurementSet ms("myNewMS"); 
+// MeasurementSet ms("myMS"); 
 // ROMSColumns msc(ms);
 // // show data from row 5
 // cout << msc.data()(5);
@@ -90,7 +90,7 @@ template <class T> class Vector;
 // </motivation>
 //
 // <todo asof="1997/02/01">
-//   <li> We might decide to merge all the NewMSColumn classes with the
+//   <li> We might decide to merge all the MSColumn classes with the
 //        corresponding MeasurementSet classes.
 // </todo>
 
@@ -291,7 +291,7 @@ private:
 // <example>
 // <srcblock>
 // // use as follows
-// MeasurementSet ms("myNewMS",Table::Update); 
+// MeasurementSet ms("myMS",Table::Update); 
 // MSColumns msc(ms);
 // // show data from row 5
 // cout << msc.data()(5);

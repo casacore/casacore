@@ -1,4 +1,4 @@
-//# NewMSObsColumns.cc:  provides easy access to MeasurementSet columns
+//# MSObsColumns.cc:  provides easy access to MeasurementSet columns
 //# Copyright (C) 1996,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -192,5 +192,5 @@ void MSObservationColumns::attach(MSObservation& msObservation)
 			  columnName(MSObservation::TIME_RANGE));
 }
 // Local Variables: 
-// compile-command: "gmake NewMSObsColumns"
+// compile-command: "gmake MSObsColumns"
 // End: 

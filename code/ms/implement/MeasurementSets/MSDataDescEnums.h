@@ -1,4 +1,4 @@
-//# MSDataDescEnums.h: Defs for the NewMS DATA_DESCRIPTION table
+//# MSDataDescEnums.h: Defs for the MS DATA_DESCRIPTION table
 //# Copyright (C) 1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#

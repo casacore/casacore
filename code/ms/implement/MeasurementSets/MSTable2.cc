@@ -42,7 +42,7 @@ SimpleOrderedMap<Int, Int> MSTable<ColEnum,KeyEnum>::keyDTypeMap_p(TpOther); \
 SimpleOrderedMap<Int, String> MSTable<ColEnum,KeyEnum>::keyCommentMap_p(""); \
 SimpleCountedConstPtr<TableDesc> MSTable<ColEnum,KeyEnum>::requiredTD_p;
  
-MSTableStatics(NewMS::PredefinedColumns,NewMS::PredefinedKeywords)
+MSTableStatics(MS::PredefinedColumns,MS::PredefinedKeywords)
 MSTableStatics(MSAntenna::PredefinedColumns,MSAntenna::PredefinedKeywords)
 MSTableStatics(MSDataDescription::PredefinedColumns,MSDataDescription::PredefinedKeywords)
 MSTableStatics(MSFeed::PredefinedColumns,MSFeed::PredefinedKeywords)

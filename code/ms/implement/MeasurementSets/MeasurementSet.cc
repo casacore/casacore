@@ -57,8 +57,8 @@ MeasurementSet::MeasurementSet(const String &tableName,
     // verify that the now opened table is valid
     addCat(); 
     if (! validate(this->tableDesc()))
-	throw (AipsError("NewMS(String &, TableOption) - "
-			 "table is not a valid NewMS"));
+	throw (AipsError("MS(String &, TableOption) - "
+			 "table is not a valid MS"));
     initRefs();
 }
 
@@ -89,8 +89,8 @@ MeasurementSet::MeasurementSet(const String &tableName,
     // verify that the now opened table is valid
     addCat(); 
     if (! validate(this->tableDesc()))
-	throw (AipsError("NewMS(String &, lockOptions, TableOption) - "
-			 "table is not a valid NewMS"));
+	throw (AipsError("MS(String &, lockOptions, TableOption) - "
+			 "table is not a valid MS"));
     initRefs();
 }
 
@@ -103,8 +103,8 @@ MeasurementSet::MeasurementSet(const String& tableName, const String &tableDescN
     // verify that the now opened table is valid 
     addCat(); 
     if (! validate(this->tableDesc()))
-	throw (AipsError("NewMS(String &, String &, TableOption) - "
-			 "table is not a valid NewMS"));
+	throw (AipsError("MS(String &, String &, TableOption) - "
+			 "table is not a valid MS"));
     initRefs();
 }
 
@@ -117,8 +117,8 @@ MeasurementSet::MeasurementSet(const String& tableName, const String &tableDescN
     // verify that the now opened table is valid 
     addCat(); 
     if (! validate(this->tableDesc()))
-	throw (AipsError("NewMS(String &, String &, TableOption) - "
-			 "table is not a valid NewMS"));
+	throw (AipsError("MS(String &, String &, TableOption) - "
+			 "table is not a valid MS"));
     initRefs();
 }
 
@@ -131,8 +131,8 @@ MeasurementSet::MeasurementSet(SetupNewTable &newTab, uInt nrrow,
     // verify that the now opened table is valid
     addCat(); 
     if (! validate(this->tableDesc()))
-	throw (AipsError("NewMS(SetupNewTable &, uInt, Bool) - "
-			 "table is not a valid NewMS"));
+	throw (AipsError("MS(SetupNewTable &, uInt, Bool) - "
+			 "table is not a valid MS"));
 }
 
 MeasurementSet::MeasurementSet(SetupNewTable &newTab,
@@ -145,8 +145,8 @@ MeasurementSet::MeasurementSet(SetupNewTable &newTab,
     // verify that the now opened table is valid
     addCat(); 
     if (! validate(this->tableDesc()))
-	throw (AipsError("NewMS(SetupNewTable &, uInt, Bool) - "
-			 "table is not a valid NewMS"));
+	throw (AipsError("MS(SetupNewTable &, uInt, Bool) - "
+			 "table is not a valid MS"));
 }
 
 MeasurementSet::MeasurementSet(const Table &table)
@@ -156,8 +156,8 @@ MeasurementSet::MeasurementSet(const Table &table)
     // verify that the now opened table is valid 
     addCat(); 
     if (! validate(this->tableDesc()))
-	throw (AipsError("NewMS(const Table &) - "
-			 "table is not a valid NewMS"));
+	throw (AipsError("MS(const Table &) - "
+			 "table is not a valid MS"));
     initRefs();
 }
 
@@ -169,20 +169,20 @@ MeasurementSet::MeasurementSet(const MeasurementSet &other)
     if (&other != this) 
         addCat(); 
 	if (! validate(this->tableDesc()))
-	    throw (AipsError("NewMS(const MeasurementSet &) - "
-			     "MeasurementSet is not a valid NewMS"));
+	    throw (AipsError("MS(const MeasurementSet &) - "
+			     "MeasurementSet is not a valid MS"));
     if (!isNull()) initRefs();
 }
 
 MeasurementSet::~MeasurementSet()
 {
-// check to make sure that this NewMS is still valid
+// check to make sure that this MS is still valid
     if (!hasBeenDestroyed_p &&  !validate()) {
 	hasBeenDestroyed_p = True;
 	// the table is otherwise OK, so ensure that it is written if necessary
 	this->flush();
 	// now we can thrown an exception
-	throw (AipsError("~NewMS() - Table written is not a valid NewMS"));
+	throw (AipsError("~MS() - Table written is not a valid MS"));
     }
     // if we get to here, let nature take its course
     // this should not be necessary, but do it for insurance anyway
@@ -504,49 +504,49 @@ void MeasurementSet::createDefaultSubtables(Table::TableOption option)
 {
     SetupNewTable antennaSetup(antennaTableName(),
 			       MSAntenna::requiredTableDesc(),option);
-    rwKeywordSet().defineTable(NewMS::keywordName(NewMS::ANTENNA),
+    rwKeywordSet().defineTable(MS::keywordName(MS::ANTENNA),
 			       Table(antennaSetup));
     SetupNewTable dataDescSetup(dataDescriptionTableName(),
 			       MSDataDescription::requiredTableDesc(),option);
-    rwKeywordSet().defineTable(NewMS::keywordName(NewMS::DATA_DESCRIPTION), 
+    rwKeywordSet().defineTable(MS::keywordName(MS::DATA_DESCRIPTION), 
 			       Table(dataDescSetup));
     SetupNewTable feedSetup(feedTableName(),
 			       MSFeed::requiredTableDesc(),option);
-    rwKeywordSet().defineTable(NewMS::keywordName(NewMS::FEED), Table(feedSetup));
+    rwKeywordSet().defineTable(MS::keywordName(MS::FEED), Table(feedSetup));
     SetupNewTable flagCmdSetup(flagCmdTableName(),
 			       MSFlagCmd::requiredTableDesc(),option);
-    rwKeywordSet().defineTable(NewMS::keywordName(NewMS::FLAG_CMD), 
+    rwKeywordSet().defineTable(MS::keywordName(MS::FLAG_CMD), 
 			       Table(flagCmdSetup));
     SetupNewTable fieldSetup(fieldTableName(),
 			       MSField::requiredTableDesc(),option);
-    rwKeywordSet().defineTable(NewMS::keywordName(NewMS::FIELD), Table(fieldSetup));
+    rwKeywordSet().defineTable(MS::keywordName(MS::FIELD), Table(fieldSetup));
     SetupNewTable historySetup(historyTableName(),
 			       MSHistory::requiredTableDesc(),option);
-    rwKeywordSet().defineTable(NewMS::keywordName(NewMS::HISTORY), 
+    rwKeywordSet().defineTable(MS::keywordName(MS::HISTORY), 
 			       Table(historySetup));
     SetupNewTable observationSetup(observationTableName(),
 			       MSObservation::requiredTableDesc(),option);
-    rwKeywordSet().defineTable(NewMS::keywordName(NewMS::OBSERVATION), 
+    rwKeywordSet().defineTable(MS::keywordName(MS::OBSERVATION), 
 			       Table(observationSetup));
     SetupNewTable pointingSetup(pointingTableName(),
 			       MSPointing::requiredTableDesc(),option);
-    rwKeywordSet().defineTable(NewMS::keywordName(NewMS::POINTING),
+    rwKeywordSet().defineTable(MS::keywordName(MS::POINTING),
 			       Table(pointingSetup));
     SetupNewTable polarizationSetup(polarizationTableName(),
 			       MSPolarization::requiredTableDesc(),option);
-    rwKeywordSet().defineTable(NewMS::keywordName(NewMS::POLARIZATION),
+    rwKeywordSet().defineTable(MS::keywordName(MS::POLARIZATION),
 			       Table(polarizationSetup));
     SetupNewTable processorSetup(processorTableName(),
 			       MSProcessor::requiredTableDesc(),option);
-    rwKeywordSet().defineTable(NewMS::keywordName(NewMS::PROCESSOR),
+    rwKeywordSet().defineTable(MS::keywordName(MS::PROCESSOR),
 			       Table(processorSetup));
     SetupNewTable spectralWindowSetup(spectralWindowTableName(),
 			       MSSpectralWindow::requiredTableDesc(),option);
-    rwKeywordSet().defineTable(NewMS::keywordName(NewMS::SPECTRAL_WINDOW),  
+    rwKeywordSet().defineTable(MS::keywordName(MS::SPECTRAL_WINDOW),  
 			       Table(spectralWindowSetup));
     SetupNewTable stateSetup(stateTableName(),
 			       MSState::requiredTableDesc(),option);
-    rwKeywordSet().defineTable(NewMS::keywordName(NewMS::STATE),  
+    rwKeywordSet().defineTable(MS::keywordName(MS::STATE),  
 			       Table(stateSetup));
     initRefs();
 }
@@ -555,16 +555,16 @@ Bool MeasurementSet::makeComplexData()
 {
   // for now we use an extremely simplistic implementation (should find out
   // storage managers and tiles and keep things the same)
-  if (tableDesc().isColumn(NewMS::columnName(NewMS::DATA))) return False;
-  if (!tableDesc().isColumn(NewMS::columnName(NewMS::FLOAT_DATA))) return False;
+  if (tableDesc().isColumn(MS::columnName(MS::DATA))) return False;
+  if (!tableDesc().isColumn(MS::columnName(MS::FLOAT_DATA))) return False;
 
   // we have FLOAT_DATA but not DATA
   // add DATA
   addColumn(ArrayColumnDesc<Complex>("DATA",2));
   
   // now copy data across from FLOAT_DATA
-  ArrayColumn<Float> floatData(*this,NewMS::columnName(NewMS::FLOAT_DATA));
-  ArrayColumn<Complex> data(*this,NewMS::columnName(NewMS::DATA));
+  ArrayColumn<Float> floatData(*this,MS::columnName(MS::FLOAT_DATA));
+  ArrayColumn<Complex> data(*this,MS::columnName(MS::DATA));
   for (uInt i=0; i<nrow(); i++) {
     Array<Float> floatArr(floatData(i));
     Array<Complex> dataArr(floatArr.shape());

@@ -83,7 +83,7 @@ class MeasurementSet;
 // <example>
 // <srcblock>
 // // use as follows
-// MeasurementSet ms("myNewMS"); 
+// MeasurementSet ms("myMS"); 
 // ROMSColumns msc(ms);
 // // show data from row 5
 // cout << msc.data()(5);
@@ -97,7 +97,7 @@ class MeasurementSet;
 // </motivation>
 //
 // <todo asof="1997/02/01">
-//   <li> We might decide to merge all the NewMSColumn classes with the
+//   <li> We might decide to merge all the MSColumn classes with the
 //        corresponding MeasurementSet classes.
 // </todo>
 
@@ -189,7 +189,7 @@ private:
 // <example>
 // <srcblock>
 // // use as follows
-// MeasurementSet ms("myNewMS",Table::Update); 
+// MeasurementSet ms("myMS",Table::Update); 
 // MSColumns msc(ms);
 // // show data from row 5
 // cout << msc.data()(5);
@@ -272,8 +272,8 @@ public:
   const ROMSWeatherColumns& weather() const {return weather_p;}
   // </group>
 
-  // set the EPOCH reference type in all EPOCH columns in the NewMS. Note that
-  // only a single EPOCH reference is allowed in the NewMS. This 
+  // set the EPOCH reference type in all EPOCH columns in the MS. Note that
+  // only a single EPOCH reference is allowed in the MS. This 
   // <note role=tip>
   // In principle this function can only be used if the table is empty,
   // otherwise already written values may thereafter have an incorrect

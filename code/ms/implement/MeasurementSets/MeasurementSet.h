@@ -65,7 +65,7 @@ class MeasurementSet;
 
 // MeasurementSet is too cumbersome for a number of common uses,
 // so we give a typedef here.
-typedef MeasurementSet NewMS;
+typedef MeasurementSet MS;
 
 // <summary> 
 // A Table intended to hold astronomical data (a set of Measurements).
@@ -121,7 +121,7 @@ typedef MeasurementSet NewMS;
 // as provided here.
 //
 // While the class name, MeasurementSet, is descriptive, it is often
-// too long for many common uses.  The typedef NewMS is provided as
+// too long for many common uses.  The typedef MS is provided as
 // a convenient shorthand for MeasurementSet.  The example below uses this
 // typedef.
 // 
@@ -135,27 +135,27 @@ typedef MeasurementSet NewMS;
 // This example illustrates a simple use of the MeasurementSet class.
 // <srcblock>
 //      // create the table descriptor
-//      TableDesc simpleDesc = NewMS::requiredTableDesc()
+//      TableDesc simpleDesc = MS::requiredTableDesc()
 //      // set up a new table
 //      SetupNewTable newTab("simpleTab", simpleDesc, Table::New);
 //      // create the MeasurementSet
-//      MeasurementSet simpleNewMS(newTab);
+//      MeasurementSet simpleMS(newTab);
 //      // now we need to define all required subtables
 //      // the following call does this for us if we don't need to
 //      // specify details of Storage Managers for columns.
-//      simpleNewMS.createDefaultSubtables(Table::New);
+//      simpleMS.createDefaultSubtables(Table::New);
 //      // fill MeasurementSet via its Table interface
 //      // For example, construct one of the columns
-//      TableColumn feed(simpleNewMS, NewMS::columnName(NewMS::FEED1));
+//      TableColumn feed(simpleMS, MS::columnName(MS::FEED1));
 //      uInt rownr = 0;
 //      // add a row
-//      simpleNewMS.addRow();
+//      simpleMS.addRow();
 //      // set the values in that row, e.g. the feed column
 //      feed.putScalar(rownr,1);
 //      // Access a subtable
-//      ArrayColumn<Double> antpos(simpleNewMS.antenna(),
+//      ArrayColumn<Double> antpos(simpleMS.antenna(),
 //                                 MSAntenna::columnName(MSAntenna::POSITION));
-//      simpleNewMS.antenna().addRow();
+//      simpleMS.antenna().addRow();
 //      Array<Double> position(3); 
 //      position(0)=1.; position(1)=2.; position(2)=3.;
 //      antpos.put(0,position);
@@ -200,13 +200,13 @@ class MeasurementSet : public MSTable<MSMainEnums::PredefinedColumns,
 {
 public:
   // This constructs an empty MeasurementSet, only useful to assign to
-  // (it is not a valid NewMS yet).
+  // (it is not a valid MS yet).
   MeasurementSet ();
 
   // These constructors mirror the Table ones with additional checking
-  // on validity (verifying that the NewMS will have the required columns
+  // on validity (verifying that the MS will have the required columns
   // and keywords)
-  // An exception is thrown if the constructed Table is not a valid NewMS
+  // An exception is thrown if the constructed Table is not a valid MS
   // <thrown>
   //   <li> AipsError
   // </thrown>
@@ -239,13 +239,13 @@ public:
   //  Assignment operator, reference semantics
   MeasurementSet& operator=(const MeasurementSet&);
 
-  // Make a special copy of this NewMS which references all columns from
-  // this NewMS except those mentioned; those are empty and writable.
+  // Make a special copy of this MS which references all columns from
+  // this MS except those mentioned; those are empty and writable.
   // Each forwarded column has the same writable status as the underlying
   // column. The mentioned columns all use the AipsIO storage manager.
   // The main use of this is for the synthesis package where corrected and
-  // model visibilities are stored as new DATA columns in an NewMS which 
-  // references the raw NewMS for the other columns. Except for these special
+  // model visibilities are stored as new DATA columns in an MS which 
+  // references the raw MS for the other columns. Except for these special
   // cases, the use of this function will be rare.
   MeasurementSet referenceCopy(const String& newTableName,
 			       const Block<String>& writableColumns) const;
@@ -274,7 +274,7 @@ public:
   String weatherTableName() const {return tableName()+"/WEATHER";}
   // </group>
     
-  // Access functions for the subtables, using the NewMS-like interface for each
+  // Access functions for the subtables, using the MS-like interface for each
   // <group>
   MSAntenna& antenna() {return antenna_p;}
   MSDataDescription& dataDescription() {return dataDesc_p;}
