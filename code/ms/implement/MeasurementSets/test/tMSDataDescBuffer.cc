@@ -26,17 +26,16 @@
 //# $Id$
 
 #include <aips/aips.h>
+#include <trial/MeasurementSets/MSDataDescBuffer.h>
+#include <aips/Arrays/Vector.h>
 #include <aips/Exceptions/Error.h>
-#include <aips/Exceptions/Excp.h>
+#include <aips/MeasurementSets/NewMSDataDescription.h>
 #include <aips/Utilities/Assert.h>
 #include <aips/Utilities/String.h>
 #include <iostream.h>
 
-#include <trial/MeasurementSets/MSDataDescBuffer.h>
-
-#include <aips/Arrays/Vector.h>
-
 int main() {
+  const String filename = "tMSDataDescBuffer_tmp.table";
   try {
     // Check the default constructor
     MSDataDescBuffer newBuffer;
@@ -48,10 +47,10 @@ int main() {
     AlwaysAssert(newBuffer.ok(), AipsError);
     AlwaysAssert(newBuffer.nrow() == 20, AipsError);
     {
-      MSDataDescBuffer buffer(1);
+      MSDataDescBuffer buffer;
       { // test the addRow & nrow functions.
-  	AlwaysAssert(buffer.nrow() == 1, AipsError);
-  	buffer.addRow(4);
+  	AlwaysAssert(buffer.nrow() == 0, AipsError);
+  	buffer.addRow(5);
   	AlwaysAssert(buffer.nrow() == 5, AipsError);
       }
       { // test the spectralWindowId functions.
@@ -82,6 +81,8 @@ int main() {
 	buffer.spectralWindowId().put(1, 100);
 	buffer.polarizationId().put(1, 101);
 	buffer.flagRow().put(1, True);
+	// Save the buffer to disk
+	buffer.save(filename, True);
       }
     }
     { // check the data has not been lost.
@@ -111,7 +112,17 @@ int main() {
     cout << "FAIL" << endl;
     return 1;
   }
-    cout << "OK" << endl;
+  try {
+    // Check that the Table ended up on disk (after the save function).
+    NewMSDataDescription ms(filename);
+    ms.markForDelete();
+  }
+  catch (AipsError x) {
+    cerr << x.getMesg() << endl;
+    cout << "FAIL" << endl;
+    return 1;
+  }
+  cout << "OK" << endl;
 }
 
 // Local Variables: 
