@@ -184,3 +184,8 @@ void TableMeasDescBase::resetUnits (const Vector<Unit>& units)
     }
   }
 }
+
+Bool TableMeasDescBase::hasMeasures (const ROTableColumn& column)
+{
+  return column.keywordSet().isDefined ("MEASINFO");
+}

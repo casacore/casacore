@@ -39,6 +39,7 @@
 class String;
 class Table;
 class TableDesc;
+class ROTableColumn;
 class Measure;
 template<class T> class Quantum;
 
@@ -183,6 +184,9 @@ public:
   // Reconstructs the object for the given table and column name.
   static TableMeasDescBase* reconstruct (const Table& tab,
 					 const String& columnName);
+
+  // Does this column contain table measures?
+  static Bool hasMeasures (const ROTableColumn& column);
 
 protected:
   // Set the measure and possible units.
