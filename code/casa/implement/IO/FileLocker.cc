@@ -33,7 +33,6 @@
 #include <errno.h>
 #include <aips/string.h>
 
-
 FileLocker::FileLocker()
 : itsFD          (-1),
   itsError       (0),
@@ -60,7 +59,7 @@ FileLocker::~FileLocker()
 Bool FileLocker::acquire (LockType type, uInt nattempts)
 {
     itsError = 0;
-    flock ls;
+    struct flock ls;
     ls.l_whence = SEEK_SET;
     ls.l_start  = itsStart;
     ls.l_len    = itsLength;
@@ -163,7 +162,7 @@ Bool FileLocker::release()
     itsReadLocked  = False;
     itsWriteLocked = False;
     itsError = 0;
-    flock ls;
+    struct flock ls;
     ls.l_type   = F_UNLCK;
     ls.l_whence = SEEK_SET;
     ls.l_start  = itsStart;
@@ -190,7 +189,7 @@ Bool FileLocker::canLock (uInt& pid, LockType type)
 {
     pid = 0;
     itsError = 0;
-    flock ls;
+    struct flock ls;
     if (type == Write) {
 	ls.l_type = F_WRLCK;
     }else{

@@ -28,6 +28,7 @@
 # include <aips/sstream.h>
 # include <aips/FITS/blockio.h>
 # include <aips/string.h>
+#include <unistd.h>
 
 void BlockIO::errmsg(IOErrs e, char *s) { 
     ostringstream msgline;
@@ -92,7 +93,7 @@ BlockIO::~BlockIO() {
 	if (filename != 0 && strlen(filename) > 0) {
 		// force a sync before closing
 		// at this point, we probably don't care about an error in fsync
-		fsync(fd);
+		// fsync(fd);
 		if (close(fd) == -1)
 			errmsg(CLOSEERR,"Error closing file");
 		delete [] filename;

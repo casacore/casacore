@@ -29,8 +29,8 @@
 #define AIPS_MATH_H
 
 #include <aips/aips.h>
-#include <aips/math.h>
 //# The following is to get abs(int)
+#include <aips/math.h>
 #include <aips/stdlib.h>
 
 // <summary>AIPS++ interface to math.h and other scalar math functions</summary>
@@ -252,7 +252,7 @@ inline Bool isNaN (const Float& val)
 }
 inline Bool isNaN(Double val)
 {
-  return (isnan(val));
+  return ( isnan(val) );
 }
 // </group>
 

@@ -30,7 +30,11 @@
 #include <aips/Tables/TableColumn.h>
 #include <aips/Tables/ColumnDesc.h>
 #include <aips/Quanta/MVTime.h>
-#include <values.h>                     // for MAXDOUBLE
+#if defined(AIPS_DARWIN)
+#include <float.h>                     // for DBL_MAX
+#else
+#include <limits.h>                     // for DBL_MAX
+#endif
 
 
 // Implement the comparison operators for each data type.
@@ -352,14 +356,14 @@ void TableExprNodeGEDouble::ranges (Block<TableExprRange>& blrange)
     &&  rnode_p->operType()  == TableExprNodeRep::OtLiteral) {
 	tsncol = lnode_p;
 	st = rnode_p->getDouble (0);
-	end = MAXDOUBLE;
+	end = DBL_MAX;
     }else{
 	if (rnode_p->operType()  == TableExprNodeRep::OtColumn
 	&&  rnode_p->valueType() == TableExprNodeRep::VTScalar
         &&  lnode_p->operType()  == TableExprNodeRep::OtLiteral) {
 	    tsncol = rnode_p;
 	    end = lnode_p->getDouble (0);
-	    st = -MAXDOUBLE;
+	    st = -DBL_MAX;
 	}
     }
     //# Now create a range (if possible).
@@ -381,14 +385,14 @@ void TableExprNodeGTDouble::ranges (Block<TableExprRange>& blrange)
     &&  rnode_p->operType()  == TableExprNodeRep::OtLiteral) {
 	tsncol = lnode_p;
 	st = rnode_p->getDouble (0);
-	end = MAXDOUBLE;
+	end = DBL_MAX;
     }else{
 	if (rnode_p->operType()  == TableExprNodeRep::OtColumn
         &&  lnode_p->valueType() == TableExprNodeRep::VTScalar
         &&  lnode_p->operType()  == TableExprNodeRep::OtLiteral) {
 	    tsncol = rnode_p;
 	    end = lnode_p->getDouble (0);
-	    st = -MAXDOUBLE;
+	    st = -DBL_MAX;
 	}
     }
     //# Now create a range (if possible).

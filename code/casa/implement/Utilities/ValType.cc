@@ -29,7 +29,7 @@
 #include <aips/OS/CanonicalConversion.h>
 #include <aips/OS/LECanonicalConversion.h>
 #include <aips/Mathematics/Constants.h>
-#include <values.h>
+#include <limits.h>
 
 //# This is the implementation of the ValType class.
 //# Most functions are inlined in the header file.

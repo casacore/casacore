@@ -128,5 +128,15 @@
 #define AIPS_64B
 #endif
 
+#if defined(AIPS_DARWIN)
+#undef AIPS_DARWIN
+#if defined(__APPLE_CC__)
+#define AIPS_DARWIN
+//  No need for largefile definition as it is the default under DARWIN
+#define AIPS_NOLARGEFILE
+#endif
+#endif
+
+
 
 #endif

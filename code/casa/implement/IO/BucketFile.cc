@@ -38,6 +38,11 @@
 #include <errno.h>                // needed for errno
 #include <aips/string.h>          // needed for strerror
 
+#if defined(AIPS_DARWIN)
+#define trace3OPEN open
+#define trace2OPEN open
+#define traceLSEEK lseek
+#endif
 
 BucketFile::BucketFile (const String& fileName)
 : name_p       (Path(fileName).expandedName()),

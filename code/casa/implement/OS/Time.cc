@@ -761,7 +761,7 @@ Int Time::timeZoneSeconds () {
   extern time_t altzone;	// Not declared in all <time.h> files.
   return isDST () ? -altzone : -timezone;
 }
-#elif defined(AIPS_OSF)
+#elif defined(AIPS_OSF) || defined(AIPS_DARWIN)
 Int Time::timeZoneSeconds () {
   time_t tim = time (NULL);
   struct tm *tm_info = localtime (&tim);

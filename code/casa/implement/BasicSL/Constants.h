@@ -28,14 +28,17 @@
 #if !defined(AIPS_C_H)
 #define AIPS_C_H
 
-#if defined (sun) && ! defined (AIPS_SOLARIS)
+#if defined (sun) && ! defined (AIPS_SOLARIS) 
 #   include <sys/limits.h>
 #else
 #   include <limits.h>
 #endif
 
 #include <float.h>
+#if !defined(AIPS_DARWIN)
 #include <values.h>
+#endif
+
 #if defined (AIPS_OSF)
 #   define LN_MAXFLOAT (M_LN2 * FMAXEXP)
 #   define LN_MINFLOAT (M_LN2 * (FMINEXP -1))

@@ -48,8 +48,13 @@
 #   define _LARGEFILE64_SOURCE
 #  endif
 # endif
+#if defined(AIPS_DARWIN)
+# define fileLSTAT lstat
+# define fileSTAT  stat
+#else
 # define fileLSTAT lstat64
 # define fileSTAT  stat64
+#endif
 #else
 # define fileLSTAT lstat
 # define fileSTAT  stat

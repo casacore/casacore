@@ -51,6 +51,9 @@
     }
 #  endif
 #  define statfs statvfs
+#elif defined(AIPS_DARWIN)
+#include <sys/param.h>
+#include <sys/mount.h>
 #else
 #  include <sys/vfs.h>
 #  if defined(AIPS_IRIX)

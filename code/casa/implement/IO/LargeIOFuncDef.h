@@ -36,12 +36,12 @@
 // Define _LARGEFILE64_SOURCE for Linux systems.
 
 #if !defined(AIPS_NOLARGEFILE)
-# ifdef AIPS_LINUX
+#if defined(AIPS_LINUX)
 #  if !defined(_LARGEFILE64_SOURCE)
 #   define _LARGEFILE64_SOURCE
 #  endif
 # endif
-# ifdef PABLO_IO
+#if defined(PABLO_IO)
 #  include "IOTrace.h"
 #  define traceFOPEN fopen64
 #  define traceFSEEK fseeko64
@@ -65,7 +65,7 @@
 # endif
 #else
 # define traceFTELL ftell
-# ifdef PABLO_IO
+#if defined(PABLO_IO)
 #  include "IOTrace.h"
 # else
 #  define traceFOPEN fopen
