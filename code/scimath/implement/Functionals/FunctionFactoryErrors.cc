@@ -29,3 +29,7 @@
 
 const String InvalidGlishSerializationError::preamble("Invalid function description in Glish record: ");
 
+FunctionFactoryError::~FunctionFactoryError() throw() { }
+UnrecognizedFunctionError::~UnrecognizedFunctionError( ) throw() { }
+InvalidGlishSerializationError::~InvalidGlishSerializationError() throw() { }
+GlishFieldNotFoundError::~GlishFieldNotFoundError() throw() { }
