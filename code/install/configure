@@ -50,7 +50,7 @@
 #    6:  error installing 'gzip' or 'gmake'
 #    7:  error installing local makefile and resource definitions
 #    8:  unsupported Classic AIPS architecture
-#    9:  binary installation failed (no sky)
+#    9:  binary installation failed (no imager)
 #
 # Original: 1992/04/09 by Mark Calabretta, ATNF
 # $Id$
@@ -1426,7 +1426,7 @@ EOT
 
 # At this point, see if we're doing a binary install.  
   if [ "$SOURCE" = no ] ; then
-     if [ -f $AIPSARCH/bin/sky ] ; then
+     if [ -f $AIPSARCH/bin/imager ] ; then
 	[ "$SHELL" = "" ] && SHELL="unknown" # should never happen...
         echo ""
         echo "It seems that there is a binary installation here for $ARCH"
@@ -1441,7 +1441,7 @@ EOT
      else
         echo ""
 	echo "You requested a binary installation, but some files appear"
-	echo "to be missing ($AIPSARCH/bin/sky for one).  This probably"
+	echo "to be missing ($AIPSARCH/bin/imager for one).  This probably"
 	echo "means something went wrong.  Please investigate."
 	exit 9
      fi
