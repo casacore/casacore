@@ -40,6 +40,8 @@ typedef short Short;
 typedef unsigned short uShort;
 typedef int Int;
 typedef unsigned int uInt;
+typedef long long Int64;
+typedef unsigned long long uInt64;
 typedef long Long;
 typedef unsigned long uLong;
 typedef float Float;
