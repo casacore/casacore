@@ -6226,3 +6226,4 @@
 17 191 src mv ./aips/implement/Functionals/NQPolynomialParam.h ./aips/implement/Functionals/PolynomialParam.h
 17 191 src mv ./aips/implement/Functionals/NQSimButterworthBandpass.cc ./aips/implement/Functionals/SimButterworthBandpass.cc
 17 191 src mv ./aips/implement/Functionals/NQSimButterworthBandpass.h ./aips/implement/Functionals/SimButterworthBandpass.h
+17 191 src mv ./aips/implement/Functionals/NQSinusoid1D.cc ./aips/implement/Functionals/Sinusoid1D.cc
