@@ -30,6 +30,7 @@
 #include <aips/Tables/Table.h>
 #include <aips/Tables/PlainTable.h>
 #include <aips/Tables/RefTable.h>
+#include <aips/Tables/TableCopy.h>
 #include <aips/Tables/TableDesc.h>
 #include <aips/Tables/BaseColumn.h>
 #include <aips/Tables/ExprNode.h>
@@ -353,9 +354,34 @@ void BaseTable::rename (const String& newName, int tableOption)
 void BaseTable::renameSubTables (const String&, const String&)
 {}
 
-void BaseTable::deepCopy (const String& newName, int tableOption) const
+void BaseTable::deepCopy (const String& newName, int tableOption,
+			  Bool valueCopy) const
 {
-    copy (newName, tableOption);
+    if (valueCopy) {
+        trueDeepCopy (newName, tableOption);
+    } else {
+        copy (newName, tableOption);
+    }
+}
+
+void BaseTable::trueDeepCopy (const String& newName, int tableOption) const
+{
+    // Throw exception is new name is same as old one.
+    if (newName == name_p) {
+        throw TableError
+	       ("Table::deepCopy: new name equal to old name " + name_p);
+    }
+    //# Flush the data (cast is necesaary to bypass non-constness).
+    BaseTable* ncThis = const_cast<BaseTable*>(this);
+    ncThis->flush (True);
+    //# Prepare the copy (do some extra checks).
+    prepareCopyRename (newName, tableOption);
+    // Create the new table and copy everything.
+    Table oldtab(ncThis);
+    Table newtab = TableCopy::makeEmptyTable (newName, oldtab, Table::New);
+    TableCopy::copyRows (newtab, oldtab);
+    TableCopy::copyInfo (newtab, oldtab);
+    TableCopy::copySubTables (newtab, oldtab);
 }
 
 void BaseTable::copy (const String& newName, int tableOption) const

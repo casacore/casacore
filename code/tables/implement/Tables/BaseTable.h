@@ -207,7 +207,8 @@ public:
     // </dl>
     // <group>
     void copy (const String& newName, int tableOption) const;
-    virtual void deepCopy (const String& newName, int tableOption) const;
+    virtual void deepCopy (const String& newName, int tableOption,
+			   Bool valueCopy) const;
     // </group>
 
     // Get the table option.
@@ -435,6 +436,9 @@ protected:
     // When the file already exists, check if it is a directory.
     // It returns True when it actually created the directory.
     Bool makeTableDir();
+
+    // Make a true deep copy of the table.
+    void trueDeepCopy (const String& newName, int tableOption) const;
 
     // Prepare for copying or renaming a table.
     // It checks if the target table already exists and removes it
