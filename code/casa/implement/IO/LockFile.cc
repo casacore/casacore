@@ -264,11 +264,11 @@ void LockFile::putInfo (const MemoryIO& info) const
     uInt leng = CanonicalConversion::fromLocal (buffer, infoLeng);
     traceLSEEK (itsLocker.fd(), SIZEREQID, SEEK_SET);
     if (infoLeng > 1024 - leng) {
-	traceWRITE (itsLocker.fd(), buffer, leng);
-	traceWRITE (itsLocker.fd(), info.getBuffer(), infoLeng);
+	traceWRITE (itsLocker.fd(), (Char *)buffer, leng);
+	traceWRITE (itsLocker.fd(), (Char *)info.getBuffer(), infoLeng);
     }else{
 	memcpy (buffer+leng, info.getBuffer(), infoLeng);
-	traceWRITE (itsLocker.fd(), buffer, leng+infoLeng);
+	traceWRITE (itsLocker.fd(), (Char *)buffer, leng+infoLeng);
     }
     fsync (itsLocker.fd());
 }
@@ -344,7 +344,7 @@ void LockFile::putReqId (int fd) const
 						    itsReqId.storage(),
 						    itsReqId.nelements());
 	traceLSEEK (fd, 0, SEEK_SET);
-	traceWRITE (fd, buffer, leng);
+	traceWRITE (fd, (Char *)buffer, leng);
 	fsync (fd);
     }
 }
