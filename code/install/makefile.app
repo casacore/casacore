@@ -281,7 +281,7 @@ $(BINDBGD)/% : $(CODEDIR)/%.cc $(AIPSINST) \
 	-@ $(TIMER)
 	-@ echo "Remaking $@ (dbg) because of $(?F)"
 	 @ cd $(TMPPCKGD) && \
-	   $(C++) $(CPPDBG) -I$(CODEDIR) $(AIPSINCL) $(C++DBG) $(LDDBG) -o $@ $< $(AIPSINST:%=%/*.cc) $(addprefix $(CODEDIR)/,$(AIPSIMPS)) $(DBGLIBS) $(MODULIBS) $(XTRNLIBS) $(firstword $(wildcard $(LIBDBGD)/version.o $(LIBOPTD)/version.o))
+	   $(C++) $(CPPDBG) -I$(CODEDIR) $(AIPSINCL) $(C++DBG) $(LDDBG) -o $@ $< $(AIPSINST:%=%/*.cc) $(addprefix $(CODEDIR)/,$(AIPSIMPS)) $(firstword $(wildcard $(LIBDBGD)/version.o $(LIBOPTD)/version.o)) $(DBGLIBS) $(MODULIBS) $(XTRNLIBS)
 	-@ $(TIMER)
 	-@ $(RM) $(patsubst %.cc,$(TMPPCKGD)/%.o,$(<F) $(AIPSIMPS))
 	-@ chmod 775 $@
@@ -292,7 +292,7 @@ $(BINOPTD)/% : $(CODEDIR)/%.cc $(AIPSINST) \
 	-@ $(TIMER)
 	-@ echo "Remaking $@ (opt) because of $(?F)"
 	 @ cd $(TMPPCKGD) && \
-	   $(C++) $(CPPOPT) -I$(CODEDIR) $(AIPSINCL) $(C++OPT) $(LDOPT) -o $@ $< $(AIPSINST:%=%/*.cc) $(addprefix $(CODEDIR)/,$(AIPSIMPS)) $(OPTLIBS) $(MODULIBS) $(XTRNLIBS) $(firstword $(wildcard $(LIBOPTD)/version.o $(LIBDBGD)/version.o))
+	   $(C++) $(CPPOPT) -I$(CODEDIR) $(AIPSINCL) $(C++OPT) $(LDOPT) -o $@ $< $(AIPSINST:%=%/*.cc) $(addprefix $(CODEDIR)/,$(AIPSIMPS)) $(firstword $(wildcard $(LIBOPTD)/version.o $(LIBDBGD)/version.o)) $(OPTLIBS) $(MODULIBS) $(XTRNLIBS)
 	-@ $(TIMER)
 	-@ $(RM) $(patsubst %.cc,$(TMPPCKGD)/%.o,$(<F) $(AIPSIMPS))
 	-@ chmod 775 $@
