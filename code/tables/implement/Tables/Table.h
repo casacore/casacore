@@ -1,5 +1,5 @@
 //# Table.h: Main interface classes to tables
-//# Copyright (C) 1994,1995,1996,1997
+//# Copyright (C) 1994,1995,1996,1997,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -28,9 +28,6 @@
 #if !defined(AIPS_TABLE_H)
 #define AIPS_TABLE_H
 
-#if defined(_AIX)
-#pragma implementation ("Table.cc")
-#endif 
 
 //# Includes
 #include <aips/aips.h>
@@ -153,6 +150,25 @@ public:
 	// delete table
 	Delete
     };
+
+    // Define the signature of the function being called when the state
+    // of a scratch table changes (i.e. created, closed, renamed,
+    // (un)markForDelete).
+    // <br>- <src>isScratch=True</src> indicates that a scratch table
+    // is created (<src>oldName</src> is empty) or renamed
+    // (<src>oldName</src> is not empty).
+    // <br>- <src>isScratch=False</src> indicates that a scratch table
+    // with name <src>name</src> is not scratch anymore (because it is
+    // closed or because its state is set to non-scratch).
+    typedef void ScratchCallback (const String& name, Bool isScratch,
+				  const String& oldName);
+
+    // Set the pointer to the StateCallback function.
+    // It returns the current value of the pointer.
+    // This function is called when changing the state of a table
+    // (i.e. create, close, rename, (un)markForDelete).
+    static const ScratchCallback* setScratchCallback (const ScratchCallback*);
+
 
     // Create a null Table object (i.e. no table is attached yet).
     // The sole purpose of this constructor is to allow construction
@@ -409,6 +425,7 @@ public:
     // <dt> Table::Scratch
     // <dd> Same as Table::New, but followed by markForDelete().
     // </dl>
+    // The scratchCallback function is called when needed.
     void rename (const String& newName, TableOption);
 
     // Copy the table and all its subtables.
@@ -430,10 +447,12 @@ public:
     // Mark the table for delete.
     // This means that the underlying table gets deleted when it is
     // actually destructed.
+    // The scratchCallback function is called when needed.
     void markForDelete();
 
     // Unmark the table for delete.
     // This means the underlying table does not get deleted when destructed.
+    // The scratchCallback function is called when needed.
     void unmarkForDelete();
 
     // Test if the table is marked for delete.
@@ -675,6 +694,9 @@ protected:
     Bool        isCounted_p;
     //# Counter of last call to hasDataChanged.
     uInt        lastModCounter_p;
+    //# Pointer to the ScratchCallback function.
+    static const ScratchCallback* scratchCallback_p;
+
 
     // Construct a Table object from a BaseTable*.
     // By default the object gets counted.
@@ -683,6 +705,7 @@ protected:
     // Open an existing table.
     void open (const String& name, const String& type, int tableOption,
 	       const TableLock& lockOptions);
+
 
 private:
     // Get the pointer to the underlying BaseTable.
@@ -734,9 +757,9 @@ inline void Table::rename (const String& newName, TableOption option)
 inline void Table::copy (const String& newName, TableOption option) const
     { baseTabPtr_p->copy (newName, option); }
 inline void Table::markForDelete()
-    { baseTabPtr_p->markForDelete(); }
+    { baseTabPtr_p->markForDelete (True, ""); }
 inline void Table::unmarkForDelete()
-    { baseTabPtr_p->unmarkForDelete(); }
+    { baseTabPtr_p->unmarkForDelete(True, ""); }
 inline Bool Table::isMarkedForDelete() const
     { return baseTabPtr_p->isMarkedForDelete(); }
 
