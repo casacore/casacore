@@ -182,6 +182,7 @@ void CompressComplex::create (uInt initialNrrow)
   thisCol.rwKeywordSet().define ("_CompressComplex_OffsetName", offsetName_p);
   thisCol.rwKeywordSet().define ("_CompressComplex_Fixed",      fixed_p);
   thisCol.rwKeywordSet().define ("_CompressComplex_AutoScale",  autoScale_p);
+  thisCol.rwKeywordSet().define ("_CompressComplex_Type", "CompressComplex");
 }
 
 void CompressComplex::prepare()
@@ -325,16 +326,36 @@ void CompressComplex::scaleOnPut (Float scale, Float offset,
       Short s;
       Float tmp = (in[i].real() - offset) / scale;
       if (tmp < 0) {
-	s = short (ceil(tmp - 0.5));
+	float f = ceil(tmp - 0.5);
+	if (f < -32767) {
+	  s = -32767;
+	} else {
+	  s = short(f);
+	}
       } else {
-	s = short (floor(tmp + 0.5));
+	float f = floor(tmp + 0.5);
+	if (f > 32767) {
+	  s = 32767;
+	} else {
+	  s = short(f);
+	}
       }
       Int r = int(s) * 65536;
       tmp = (in[i].imag() - offset) / scale;
       if (tmp < 0) {
-	s = short (ceil(tmp - 0.5));
+	float f = ceil(tmp - 0.5);
+	if (f < -32767) {
+	  s = -32767;
+	} else {
+	  s = short(f);
+	}
       } else {
-	s = short (floor(tmp + 0.5));
+	float f = floor(tmp + 0.5);
+	if (f > 32767) {
+	  s = 32767;
+	} else {
+	  s = short(f);
+	}
       }
       out[i] = r + s;
     }
@@ -546,4 +567,238 @@ void CompressComplex::putColumnSlice (const Slicer& slicer,
       iter.next();
     }
   }
+}
+
+
+
+
+CompressComplexSD::CompressComplexSD (const String& sourceColumnName,
+				      const String& targetColumnName,
+				      Float scale, Float offset)
+: CompressComplex (sourceColumnName, targetColumnName, scale, offset)
+{}
+
+CompressComplexSD::CompressComplexSD (const String& sourceColumnName,
+				      const String& targetColumnName,
+				      const String& scaleColumnName,
+				      const String& offsetColumnName,
+				      Bool autoScale)
+: CompressComplex (sourceColumnName, targetColumnName,
+		   scaleColumnName, offsetColumnName, autoScale)
+{}
+
+CompressComplexSD::CompressComplexSD (const Record& spec)
+: CompressComplex (spec)
+{
+  if (spec.isDefined("SOURCENAME")  &&  spec.isDefined("TARGETNAME")) {
+    setNames (spec.asString("SOURCENAME"), spec.asString("TARGETNAME"));
+    if (spec.isDefined("SCALE")  &&  spec.isDefined("OFFSET")) {
+      spec.get ("SCALE", scale_p);
+      spec.get ("OFFSET", offset_p);
+    } else {
+      spec.get ("SCALENAME", scaleName_p);
+      spec.get ("OFFSETNAME", offsetName_p);
+      fixed_p = False;
+    }
+    if (spec.isDefined("AUTOSCALE")) {
+      spec.get ("AUTOSCALE", autoScale_p);
+    }
+  }
+}
+
+CompressComplexSD::CompressComplexSD (const CompressComplexSD& that)
+: CompressComplex (that)
+{}
+
+CompressComplexSD::~CompressComplexSD()
+{}
+
+//# Clone the engine object.
+DataManager* CompressComplexSD::clone() const
+{
+  return new CompressComplexSD (*this);
+}
+
+//# Return the type name of the engine (i.e. its class name).
+String CompressComplexSD::dataManagerType() const
+{
+  return className();
+}
+//# Return the class name.
+//# Get the data type names using class ValType.
+String CompressComplexSD::className()
+{
+  return "CompressComplexSD";
+}
+
+DataManager* CompressComplexSD::makeObject (const String&, const Record& spec)
+{
+  return new CompressComplexSD(spec);
+}
+void CompressComplexSD::registerClass()
+{
+  DataManager::registerCtor (className(), makeObject);
+}
+
+void CompressComplexSD::create (uInt initialNrrow)
+{
+  CompressComplex::create (initialNrrow);
+  // Set the type.
+  TableColumn thisCol (table(), sourceName());
+  thisCol.rwKeywordSet().define ("_CompressComplex_Type", "CompressComplexSD");
+}
+
+// Find minimum and maximum.
+void CompressComplexSD::findMinMax (Float& minVal, Float& maxVal,
+				    const Array<Complex>& array) const
+{
+  setNaN (minVal);
+  setNaN (maxVal);
+  Bool deleteIt;
+  const Complex* data = array.getStorage (deleteIt);
+  const uInt nr = array.nelements();
+  Bool firstTime = True;
+  for (uInt i=0; i<nr; i++) {
+    if (! isNaN (data[i])) {
+      Float tmp = data[i].real();
+      if (firstTime) {
+	minVal = tmp;
+	maxVal = tmp;
+	firstTime = False;
+      }
+      if (tmp < minVal) {
+	minVal = tmp;
+      } else if (tmp > maxVal) {
+	maxVal = tmp;
+      }
+      tmp = data[i].imag();
+      if (tmp != 0) {
+	if (tmp < minVal) {
+	  minVal = tmp;
+	} else if (tmp > maxVal) {
+	  maxVal = tmp;
+	}
+      }
+    }
+  }
+  array.freeStorage (data, deleteIt);
+}
+
+// Scale/offset an array for get.
+void CompressComplexSD::scaleOnGet (Float scale, Float offset,
+				    Array<Complex>& array,
+				    const Array<Int>& target)
+{
+  Float fullScale = scale/32768;
+  Float imagScale = scale*2;
+  Bool deleteIn, deleteOut;
+  Complex* out = array.getStorage (deleteOut);
+  const Int* in = target.getStorage (deleteIn);
+  const uInt nr = array.nelements();
+  for (uInt i=0; i<nr; i++) {
+    Int inval = in[i];
+    if (inval%2 == 0) {
+      inval >>= 1;
+      out[i] = Complex (inval*fullScale + offset, 0);
+    } else {
+      Int r = inval / 65536;
+      if (r == -32768) {
+	setNaN (out[i]);
+      } else {
+	Int im = inval - r*65536;
+	if (im < -32768) {
+	  r  -= 1;
+	  im += 65536;
+	} else if (im >= 32768) {
+	  r  += 1;
+	  im -= 65536;
+	}
+	im >>= 1;
+	out[i] = Complex (r * scale + offset, im * imagScale + offset);
+      }
+    }
+  }
+  target.freeStorage (in, deleteIn);
+  array.putStorage (out, deleteOut);
+}
+
+// Scale/offset an array for put.
+void CompressComplexSD::scaleOnPut (Float scale, Float offset,
+				    const Array<Complex>& array,
+				    Array<Int>& target)
+{
+  Float fullScale = scale/32768;
+  Float imagScale = scale*2;
+  Bool deleteIn, deleteOut;
+  const Complex* in = array.getStorage (deleteIn);
+  Int* out = target.getStorage (deleteOut);
+  const uInt nr = array.nelements();
+  for (uInt i=0; i<nr; i++) {
+    if (isNaN (in[i])) {
+      out[i] = -32768 * 65536;
+    } else if (in[i].imag() == 0) {
+      // Imaginary part =0, so scale real part with 15 bits extra
+      Int s;
+      Float tmp = (in[i].real() - offset) / fullScale;
+      if (tmp < 0) {
+	float f = ceil(tmp - 0.5);
+	if (f < -32768*32768) {
+	  s = -32768*32768;
+	} else {
+	  s = Int(f);
+	}
+      } else {
+	float f = floor(tmp + 0.5);
+	if (f > 32768*32768-1) {
+	  s = 32768*32768-1;
+	} else {
+	  s = Int(f);
+	}
+      }
+      // Shift 1 bit to left and make last bit 0 indicating that imag==0.
+      out[i] = s<<1;
+    } else {
+      // There is an imaginary part, so scale both parts.
+      Short s;
+      Float tmp = (in[i].real() - offset) / scale;
+      if (tmp < 0) {
+	float f = ceil(tmp - 0.5);
+	if (f < -32767) {
+	  s = -32767;
+	} else {
+	  s = short(f);
+	}
+      } else {
+	float f = floor(tmp + 0.5);
+	if (f > 32767) {
+	  s = 32767;
+	} else {
+	  s = short(f);
+	}
+      }
+      Int r = int(s) * 65536;
+      // Scale imaginary with 1 bit less.
+      tmp = (in[i].imag() - offset) / imagScale;
+      if (tmp < 0) {
+	float f = ceil(tmp - 0.5);
+	if (f < -16384) {
+	  s = -16384;
+	} else {
+	  s = short(f);
+	}
+      } else {
+	float f = floor(tmp + 0.5);
+	if (f > 16383) {
+	  s = 16383;
+	} else {
+	  s = short(f);
+	}
+      }
+      // Shift 1 bit to left; last bit is 1 indicating that imag!=0.
+      s <<= 1;
+      out[i] = r + s + 1;
+    }
+  }
+  array.freeStorage (in, deleteIn);
+  target.putStorage (out, deleteOut);
 }

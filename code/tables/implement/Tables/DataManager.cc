@@ -423,5 +423,6 @@ void DataManager::registerAllCtor ()
     registerCtor ("TiledShapeStMan", TiledShapeStMan::makeObject);
     CompressFloat::registerClass();
     CompressComplex::registerClass();
+    CompressComplexSD::registerClass();
     ForwardColumnEngine::registerClass();
 }

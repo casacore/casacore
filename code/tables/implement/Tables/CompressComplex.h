@@ -187,11 +187,12 @@ public:
   // This will make the engine known to the table system.
   static void registerClass();
 
-private:
-  // Copy constructor is only used by clone().
+protected:
+  // Copy constructor is only used by clone() and derived class.
   // (so it is made private).
   CompressComplex (const CompressComplex&);
 
+private:
   // Assignment is not needed and therefore forbidden
   // (so it is made private and not implemented).
   CompressComplex& operator= (const CompressComplex&);
@@ -199,10 +200,12 @@ private:
   // Clone the engine object.
   virtual DataManager* clone() const;
 
+protected:
   // Initialize the object for a new table.
   // It defines the keywords containing the engine parameters.
   virtual void create (uInt initialNrrow);
 
+private:
   // Preparing consists of setting the writable switch and
   // adding the initial number of rows in case of create.
   // Furthermore it reads the keywords containing the engine parameters.
@@ -255,16 +258,16 @@ private:
   // Scale and/or offset target to array.
   // This is meant when reading an array from the target column.
   // It optimizes for scale=1 and/or offset=0.
-  void scaleOnGet (Float scale, Float offset,
-		   Array<Complex>& array,
-		   const Array<Int>& target);
+  virtual void scaleOnGet (Float scale, Float offset,
+			   Array<Complex>& array,
+			   const Array<Int>& target);
 
   // Scale and/or offset array to target.
   // This is meant when writing an array into the target column.
   // It optimizes for scale=1 and/or offset=0.
-  void scaleOnPut (Float scale, Float offset,
-		   const Array<Complex>& array,
-		   Array<Int>& target);
+  virtual void scaleOnPut (Float scale, Float offset,
+			   const Array<Complex>& array,
+			   Array<Int>& target);
 
   // Scale and/or offset target to array for the entire column.
   // When the scale and offset are fixed, it will do the entire array.
@@ -280,7 +283,7 @@ private:
   void scaleColumnOnPut (const Array<Complex>& array,
 			 Array<Int>& target);
 
-
+protected:
   //# Now define the data members.
   String         scaleName_p;          //# name of scale column
   String         offsetName_p;         //# name of offset column
@@ -303,8 +306,8 @@ private:
   // Find minimum and maximum from the array data.
   // NaN values are ignored. If all values are NaN, minimum and maximum
   // are also set to NaN.
-  void findMinMax (Float& minVal, Float& maxVal,
-		   const Array<Complex>& array) const;
+  virtual void findMinMax (Float& minVal, Float& maxVal,
+			   const Array<Complex>& array) const;
 
   // Make scale and offset from the minimum and maximum of the array data.
   // If minVal is NaN, scale is set to 0.
@@ -333,6 +336,159 @@ public:
   static DataManager* makeObject (const String& dataManagerType,
 				  const Record& spec);
 };
+
+
+
+
+// <synopsis> 
+// CompressComplexSD is similar to CompressComplex, but compresses
+// in a slighty different way optimized for single dish data.
+// Usually the imaginary part of single dish data is 0, so the scaling
+// is optimized for it.
+// <br>If the imaginary part is 0, the real part is scaled with 15 bits
+// extra to get a higher precision. The least significant bit is set to 0
+// indicating the imag==0.
+// <br>If the imaginary part is not 0, the real part is scaled normally.
+// The imaginary part is scaled with 1 bit less. The least significant bit
+// is set to 1 indicating that imag!=0.
+// </synopsis> 
+
+// <motivation>
+// This class is created on top of CompressComplex to cope with SD data
+// in a better way. Using CompressComplex often makes the imag part non-zero
+// if it is scaled as 0.
+// </motivation>
+
+// <example>
+// <srcblock>
+// // Create the table description and 2 columns with indirect arrays in it.
+// // The Int column will be stored, while the double will be
+// // used as virtual.
+// TableDesc tableDesc ("", TableDesc::Scratch);
+// tableDesc.addColumn (ArrayColumnDesc<Int> ("storedArray"));
+// tableDesc.addColumn (ArrayColumnDesc<Complex> ("virtualArray"));
+// tableDesc.addColumn (ScalarColumnDesc<Complex> ("scale"));
+// tableDesc.addColumn (ScalarColumnDesc<Float> ("offset"));
+//
+// // Create a new table using the table description.
+// SetupNewTable newtab (tableDesc, "tab.data", Table::New);
+//
+// // Create the array scaling engine (with auto-scale)
+// // and bind it to the Complex column.
+// CompressComplexSD scalingEngine("virtualArray", "storedArray",
+//                                 "scale", "offset");
+// newtab.bindColumn ("virtualArray", scalingEngine);
+// // Create the table.
+// Table table (newtab);
+//
+// // Store a 3-D array (with dim. 2,3,4) into each row of the column.
+// // The shape of each array in the column is implicitly set by the put
+// // function. This will also set the shape of the underlying Int array.
+// ArrayColumn data (table, "virtualArray");
+// Array<double> someArray(IPosition(4,2,3,4));
+// someArray = 0;
+// for (uInt i=0, i<10; i++) {          // table will have 10 rows
+//     table.addRow();
+//     data.put (i, someArray)
+// }
+// </srcblock>
+// </example>
+
+class CompressComplexSD : public CompressComplex
+{
+public:
+
+  // Construct an engine to scale all arrays in a column with
+  // the given offset and scale factor.
+  // TargetColumnName is the name of the column where the scaled
+  // data will be put and must have data type Int.
+  // The source column using this engine must have data type Complex.
+  CompressComplexSD (const String& sourceColumnName,
+		     const String& targetColumnName,
+		     Float scale,
+		     Float offset = 0);
+
+  // Construct an engine to scale the arrays in a column.
+  // The scale and offset values are taken from a column with
+  // the given names. In that way each array has its own scale factor
+  // and offset value.
+  // An exception is thrown if these columns do not exist.
+  // SourceColumnName is the name of the source column and is used to
+  // check if the engine gets bound to the correct column.
+  // TargetColumnName is the name of the column where the scaled
+  // data will be put and must have data type Int.
+  // The source column using this engine must have data type Complex.
+  CompressComplexSD (const String& sourceColumnName,
+		     const String& targetColumnName,
+		     const String& scaleColumnName,
+		     const String& offsetColumnName,
+		     Bool autoScale = True);
+
+  // Construct from a record specification as created by getmanagerSpec().
+  CompressComplexSD (const Record& spec);
+
+  // Destructor is mandatory.
+  ~CompressComplexSD();
+
+  // Return the type name of the engine (i.e. its class name).
+  virtual String dataManagerType() const;
+
+  // Return the name of the class.
+  // This includes the names of the template arguments.
+  static String className();
+
+  // Register the class name and the static makeObject "constructor".
+  // This will make the engine known to the table system.
+  static void registerClass();
+
+private:
+  // Copy constructor is only used by clone().
+  // (so it is made private).
+  CompressComplexSD (const CompressComplexSD&);
+
+  // Assignment is not needed and therefore forbidden
+  // (so it is made private and not implemented).
+  CompressComplexSD& operator= (const CompressComplexSD&);
+
+  // Clone the engine object.
+  virtual DataManager* clone() const;
+
+  // Initialize the object for a new table.
+  // It defines the keywords containing the engine parameters.
+  virtual void create (uInt initialNrrow);
+
+  // Scale and/or offset target to array.
+  // This is meant when reading an array from the target column.
+  // It optimizes for scale=1 and/or offset=0.
+  virtual void scaleOnGet (Float scale, Float offset,
+			   Array<Complex>& array,
+			   const Array<Int>& target);
+
+  // Scale and/or offset array to target.
+  // This is meant when writing an array into the target column.
+  // It optimizes for scale=1 and/or offset=0.
+  virtual void scaleOnPut (Float scale, Float offset,
+			   const Array<Complex>& array,
+			   Array<Int>& target);
+
+  // Find minimum and maximum from the array data.
+  // NaN values an zero imaginary parts are ignored.
+  // If all values are NaN, minimum and maximum are also set to NaN.
+  virtual void findMinMax (Float& minVal, Float& maxVal,
+			   const Array<Complex>& array) const;
+
+public:
+  // Define the "constructor" to construct this engine when a
+  // table is read back.
+  // This "constructor" has to be registered by the user of the engine.
+  // If the engine is commonly used, its registration can be added
+  // to the registerAllCtor function in DataManager.cc. 
+  // That function gets automatically invoked by the table system.
+  static DataManager* makeObject (const String& dataManagerType,
+				  const Record& spec);
+};
+
+
 
 
 inline Float CompressComplex::getScale (uInt rownr)
