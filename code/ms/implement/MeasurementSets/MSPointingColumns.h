@@ -336,7 +336,21 @@ public:
     return RONewMSPointingColumns::overTheTop();}
   // </group>
   
-  // set the encoder Direction reference 
+  // set the epoch reference type for the TIME & TIME_ORIGIN column. This can
+  // only be done when the table has no rows. Trying to do so at other times
+  // will throw an exception.
+  void setEpochRef(MEpoch::Types ref);
+
+  // set the direction reference type for the DIRECTION, TARGET & and, if
+  // defined, the SOURCE_OFFSET & POINTING_OFFSET columns. This can only be
+  // done when the table has no rows. Trying to do so at other times will throw
+  // an exception. Note the optional ENCODERE column must be done separately as
+  // the MSv2 definition allows this column to have a different frame.
+  void setDirectionRef(MDirection::Types ref);
+
+  // set the irection reference type for the ENCODER column (if it is defined).
+  // This can only be done when the table has no rows. Trying to do so at other
+  // times will throw an exception.
   void setEncoderDirectionRef(MDirection::Types ref);
 
 protected:

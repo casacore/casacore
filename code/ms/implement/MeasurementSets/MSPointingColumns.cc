@@ -262,12 +262,6 @@ NewMSPointingColumns::NewMSPointingColumns(NewMSPointing& msPointing):
 
 NewMSPointingColumns::~NewMSPointingColumns() {}
 
-void NewMSPointingColumns::setEncoderDirectionRef(MDirection::Types ref) 
-{
-  encoder_p.rwKeywordSet().rwSubRecord("MEASINFO").
-    define("Ref", MDirection::showType(ref));
-}
-
 NewMSPointingColumns::NewMSPointingColumns():
   RONewMSPointingColumns(),
   antennaId_p(),
@@ -366,6 +360,28 @@ void NewMSPointingColumns::attachOptionalCols(NewMSPointing& msPointing)
   if (cds.isDefined(overTheTop)) overTheTop_p.attach(msPointing, overTheTop);
 }
 
+void NewMSPointingColumns::setEpochRef(MEpoch::Types ref) {
+  timeMeas_p.setDescRefCode(ref);
+  timeOriginMeas_p.setDescRefCode(ref);
+}
+
+void NewMSPointingColumns::setDirectionRef(MDirection::Types ref) {
+  directionMeas_p.setDescRefCode(ref);
+  targetMeas_p.setDescRefCode(ref);
+  if (!pointingOffsetMeas_p.isNull()) {
+    pointingOffsetMeas_p.setDescRefCode(ref);
+  }
+  if (!sourceOffsetMeas_p.isNull()) {
+    sourceOffsetMeas_p.setDescRefCode(ref);
+  }
+}
+
+void NewMSPointingColumns::setEncoderDirectionRef(MDirection::Types ref) 
+{
+  if (!encoderMeas_p.isNull()) {
+    encoderMeas_p.setDescRefCode(ref);
+  }
+}
 // Local Variables: 
 // compile-command: "gmake NewMSPointingColumns"
 // End: 
