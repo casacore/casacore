@@ -1,0 +1,193 @@
+#!/usr/local/bin/tcsh
+#-----------------------------------------------------------------------------
+# UPmove script
+#-----------------------------------------------------------------------------
+# Copyright (C) 2000
+# Associated Universities, Inc. Washington DC, USA.
+#
+# This program is free software; you can redistribute it and/or modify it
+# under the terms of the GNU General Public License as published by the Free
+# Software Foundation; either version 2 of the License, or (at your option)
+# any later version.
+#
+# This program is distributed in the hope that it will be useful, but WITHOUT
+# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
+# more details.
+#
+# You should have received a copy of the GNU General Public License along
+# with this program; if not, write to the Free Software Foundation, Inc.,
+# 675 Massachusetts Ave, Cambridge, MA 02139, USA.
+#
+# Correspondence concerning AIPS++ should be addressed as follows:
+#        Internet email: aips2-request@nrao.edu.
+#        Postal address: AIPS++ Project Office
+#                        National Radio Astronomy Observatory
+#                        520 Edgemont Road
+#                        Charlottesville, VA 22903-2475 USA
+#
+# $Id$
+#
+set script = "UPmove"
+set usage = 'Usage: UPmove [-c] [-r] [-i] [-t] [-d] [-n] <typ>'
+# UPmove script (must have x allowed)
+# Move specified files, and change references to them in system files.
+# The script uses UPfind and UPchange (see there for details)
+#   -c  will clear all relevant information
+#   -r  only restart the general definitions for given <typ>
+#   -i  will calculate all information, but no execution
+#   -t  will not execute for real, but only for test
+#   -d  will show some debug information
+#   -n  will only generate the specific data, without executing
+# <typ>.done and <typ>.error give lists of files successfully done or not.
+#
+# See UPinfo for details
+#
+#
+# Get general info
+#
+set mvarg = ("$*")
+if (! $?AIPSPATH) then
+   echo "No AIPSPATH environment set, initialize aips++ first"
+   exit 1
+endif
+set x = "`which UPfind`"
+if (-x "$x") then
+   set uppath = $x:h
+else
+   set x = ( $AIPSPATH )
+   set uppath = $x[1]/$x[2]/bin
+endif
+unset x
+if ("$uppath" == ".") then
+    set uppath = `pwd`
+endif
+if (! -r $uppath/UPinfo) then
+   echo "Cannot find the UPinfo source script in $uppath"
+   echo "Check your aips++ installation"
+endif
+source $uppath/UPinfo
+if (! $ok) exit 1
+#
+# Get specific data
+#
+if (! -r $ldir/${tp}.sel) then
+   set larg = (`echo "$mvarg" | sed -e 's#-n##g' -e 's#-d##g' `)
+   $uppath/UPfind -f $larg
+   if (-e $ldir/${tp}.found) then
+      cp $ldir/${tp}.found $ldir/${tp}.sel
+   else
+      echo "No files found in ${tp}.found"
+      exit 1
+   endif
+   unset larg
+endif
+if (-z $ldir/${tp}.sel) then
+   echo "No files specified in ${tp}.sel"
+   if (-e $ldir/${tp}.sel) rm -f $ldir/${tp}.sel
+   exit (1)
+endif
+
+set a = ( `wc $ldir/${tp}.sel` )
+echo $a[1] files in ${tp}.sel
+unset a
+
+if (! -r $ldir/${tp}.cfnm) then
+   touch $ldir/${tp}.cfnm
+   echo "Specify the sed patterns used to change the names of the file "
+   echo 'Example: s#trial/#aips/#'
+   while (1)
+      echo -n 'Change pattern: '
+      set x = "$<"
+      if ("$x" == "") break
+      echo "$x" >> $ldir/${tp}.cfnm
+   end
+   unset x
+endif
+
+if (-z $ldir/${tp}.cfnm) then
+   echo "No change patterns specified in ${tp}.cfnm"
+   if (-e $ldir/${tp}.cfnm) rm -f $ldir/${tp}.cfnm
+   exit (1)
+endif
+
+if ($upinf) exit 0
+#
+# Execute info gathering
+#
+cd $ldir
+if (! -e $ldir/${tp}.up1 || ! -e $ldir/${tp}.todo) then
+   if (-e $ldir/${tp}.up1) rm -f $ldir/${tp}.up1
+   if (-e $ldir/${tp}.todo) rm -f $ldir/${tp}.todo
+   set tmp = $$
+   if (-e $tmp.tmp) rm -f $tmp.tmp
+   touch $tmp.tmp
+   foreach i (`cat $ldir/${tp}.sel`)
+      echo `echo $i | sed -e 's#[.]/##g'` >> $tmp.tmp 
+      echo `echo $i | sed -e 's#[.]/##g' -e 's#/implement##g'` >> $tmp.tmp 
+   end
+   cat $tmp.tmp | sort | uniq >! $ldir/${tp}.up1 
+   unset tmp
+endif
+
+if (-z $ldir/${tp}.up1) then
+   echo "No find patterns specified in ${tp}.up1"
+   if (-e $ldir/${tp}.up1) rm -f $ldir/${tp}.up1
+   exit (1)
+endif
+
+if (! -e $ldir/${tp}.todo) then
+   if (-e $ldir/${tp}.sed) rm -f $ldir/${tp}.sed
+   set larg = (`echo "$mvarg" | sed -e 's#-d##g' -e 's#-n##g' `)
+   $uppath/UPfind $larg
+   unset larg
+   touch $ldir/${tp}.todo
+   if (-e $ldir/${tp}.found) mv -f $ldir/${tp}.found $ldir/${tp}.todo
+endif
+
+if (! -e $ldir/${tp}.sed) then
+   set x = ""
+   touch $ldir/${tp}.sed
+   foreach i (`cat $ldir/${tp}.up1`)
+      set x = (`echo $i | sed -f $ldir/${tp}.cfnm`)
+      echo "s#$i#$x#g" >> $ldir/${tp}.sed
+   end
+   unset x
+endif
+
+if ($upinf) exit 0
+#
+# Execute
+#
+cd $dir/code/
+if ($domv) then
+  set x = (`cat $ldir/${tp}.sel`)
+  foreach i ($x)
+    set j = `echo $i | sed -f $ldir/${tp}.cfnm`
+    if ($upreal) then
+       amv -src $i $j <<EOF
+y
+EOF
+    else
+       echo amv -src $i $j
+    endif
+  end
+  unset x
+endif
+
+cd $ldir
+if ($upreal) then
+   sed -f $ldir/${tp}.sed $ldir/${tp}.todo >! $ldir/${tp}.found
+else
+   cat $ldir/${tp}.todo >! $ldir/${tp}.found
+endif
+
+set larg = (`echo "$mvarg" | sed -e 's#-d##g' `)
+$uppath/UPchange $larg
+unset larg
+
+exit 0
+
+
+
+
