@@ -24,7 +24,9 @@ $DESTDIR = '';         # Put the result in this directory
 # another file directory.
 $NO_SUBDIR = 0;
 
-$DOCSROOT = '../..';
+if(!$DOCSROOT){
+   $DOCSROOT = '../..';
+}
 
 
 $ADDRESS = "<I>Please send questions or comments about this web site to <A HREF=\"mailto:aips2-request\@nrao.edu\">aips2-request\@nrao.edu</A>.<BR>Copyright &#169; 1998 <A HREF=\"http://www.aui.edu\">Associated Universities Inc.</A>,
