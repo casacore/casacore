@@ -1,5 +1,5 @@
 //# TSMCube.h: Tiled hypercube in a table
-//# Copyright (C) 1995,1996,1997,1999,2000,2001
+//# Copyright (C) 1995,1996,1997,1999,2000,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -321,7 +321,7 @@ private:
     // Define the functions doing the actual read and write of the 
     // data in the tile and converting it to/from local format.
     // <group>
-    char* TSMCube::readTile (const char* external);
+    char* readTile (const char* external);
     void writeTile (char* external, const char* local);
     // </group>
 
