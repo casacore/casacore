@@ -57,6 +57,7 @@ PlainTable::PlainTable (SetupNewTable& newtab, uInt nrrow, Bool initialize,
   addToCache_p   (True),
   lockPtr_p      (0)
 {
+  try {
     // Determine and set the endian option.
     setEndian (endianFormat);
     // Set initially to no write in destructor.
@@ -132,6 +133,13 @@ PlainTable::PlainTable (SetupNewTable& newtab, uInt nrrow, Bool initialize,
     noWrite_p = False;
     //# Add it to the table cache.
     tableCache.define (name_p, this);
+  } catch (AipsError) {
+    delete lockPtr_p;
+    lockPtr_p = 0;
+    delete colSetPtr_p;
+    colSetPtr_p = 0;
+    throw;
+  }
 }
 
 
@@ -728,4 +736,3 @@ void PlainTable::setEndian (int endianFormat)
 }
 
 } //# NAMESPACE CASA - END
-
