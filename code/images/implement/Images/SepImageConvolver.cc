@@ -35,6 +35,7 @@
 #include <aips/Exceptions/Error.h>
 #include <aips/Logging/LogIO.h>
 #include <aips/Mathematics/Convolver.h>
+#include <aips/Quanta/UnitMap.h>
 #include <aips/Utilities/String.h>
 
 #include <trial/Coordinates/CoordinateSystem.h>
@@ -127,6 +128,15 @@ template <class T>
 void SepImageConvolver<T>::setKernel(uInt axis, VectorKernel::KernelTypes kernelType,  
                                      const Quantum<Double>& width, Bool peakIsUnity)
 {
+// Catch pixel units
+
+   UnitMap::putUser("pix",UnitVal(1.0), "pixel units");
+   String sunit = width.getFullUnit().getName();
+   if (sunit==String("pix")) {
+      setKernel (axis, kernelType, width.getValue(), peakIsUnity);
+      return;
+   }
+//
    checkAxis(axis);
 //
 // Convert width to pixels
