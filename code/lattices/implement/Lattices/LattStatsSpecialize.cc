@@ -31,6 +31,7 @@
 
 #include <aips/Arrays/IPosition.h>
 #include <aips/Arrays/Vector.h>
+#include <aips/Arrays/Array.h>
 #include <aips/Arrays/ArrayMath.h>
 #include <aips/Exceptions/Error.h>
 #include <aips/Lattices/Lattice.h>
@@ -214,7 +215,6 @@ Complex LattStatsSpecialize::getRms (Complex sumsq, Complex n)
 {
    return Complex(getRms(real(sumsq),real(n)), getRms(imag(sumsq), imag(n)));
 }
- 
 
 Float LattStatsSpecialize::min(Float v1, Float v2)
 {
@@ -236,20 +236,15 @@ Complex LattStatsSpecialize::max(Complex v1, Complex v2)
    return Complex(::max(real(v1),real(v2)),::max(imag(v1),imag(v2)));
 }
 
-void LattStatsSpecialize::putNodeInStorageLattice(Lattice<Float>& lat, 
-                                                  const LatticeExprNode& node, 
-                                                  const IPosition& where)
+Float LattStatsSpecialize::getNodeScalarValue(const LatticeExprNode& node, Float dummy)
 {
-   lat.putAt(node.getFloat(), where);      
+   return node.getFloat();
 }
 
-void LattStatsSpecialize::putNodeInStorageLattice(Lattice<Complex>& lat, 
-                                                  const LatticeExprNode& node, 
-                                                  const IPosition& where)
+Complex LattStatsSpecialize::getNodeScalarValue(const LatticeExprNode& node, Complex dummy)
 {
-   lat.putAt(node.getComplex(), where);      
+   return node.getComplex();
 }
-
 
 
 Float LattStatsSpecialize::usePixelInc (Float dMin, Float dMax, Float datum)

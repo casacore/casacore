@@ -33,6 +33,7 @@
 #include <aips/aips.h>
 #include <aips/Mathematics/Complex.h>
 template <class T> class Vector;
+template <class T> class Array;
 template <class T> class Lattice;
 class LatticeExprNode;
 class String;
@@ -115,12 +116,8 @@ public:
    static Float max(Float v1, Float v2);
    static Complex max(Complex v1, Complex v2);
 //
-   static void putNodeInStorageLattice(Lattice<Float>& lat,
-                                       const LatticeExprNode& node,
-                                       const IPosition& where);
-   static void putNodeInStorageLattice(Lattice<Complex>& lat,
-                                       const LatticeExprNode& node,
-                                       const IPosition& where);
+   static Float getNodeScalarValue(const LatticeExprNode& node, Float);
+   static Complex getNodeScalarValue(const LatticeExprNode& node, Complex);
 //
    static Bool setIncludeExclude (String& errorMessage,
                                   Vector<Float>& range,
