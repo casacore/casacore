@@ -672,6 +672,11 @@ TableExprNode TableParseSelect::makeSubSet() const
 //# Execute the sort.
 Table TableParseSelect::doSort (const Table& table)
 {
+    //# If the table is empty, return it immediately.
+    //# (the code below will fail for empty tables)
+    if (table.nrow() == 0) {
+	return table;
+    }
     uInt i;
     uInt nrkey = sort_p->nelements();
     //# First check if the sort keys are correct.
