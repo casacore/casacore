@@ -357,6 +357,11 @@ template <class T> PagedImage<T>::
       table_p.rwKeywordSet().removeField("coords");
     AlwaysAssert(coords_p.save(table_p.rwKeywordSet(), "coords"),
 		 AipsError);
+
+    // Detach the LogIO from the log table in case the pixel table is going to
+    // be destroyed.
+    LogIO globalOnly;
+    log_p = globalOnly;
   }
 };
 
