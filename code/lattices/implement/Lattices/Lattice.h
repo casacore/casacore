@@ -348,6 +348,20 @@ public:
   virtual void apply (const Functional<T,T>& function);
   // </group>
 
+  // Add, subtract, multiple, or divide by another Lattice.
+  // The other Lattice can be a scalar (e.g. the result of LatticeExpr).
+  // Possible masks are not taken into account.
+  // <group>
+  void operator+= (const Lattice<T>& other)
+  { handleMath (other, 0); }
+  void operator-= (const Lattice<T>& other)
+    { handleMath (other, 1); }
+  void operator*= (const Lattice<T>& other)
+    { handleMath (other, 2); }
+  void operator/= (const Lattice<T>& other)
+    { handleMath (other, 3); }
+  // </group>
+
   // Copy the data from the given lattice to this one.
   // The default implementation uses function <src>copyDataTo</src>.
   virtual void copyData (const Lattice<T>& from);
@@ -386,6 +400,14 @@ protected:
   // Define default constructor to satisfy compiler.
   Lattice() {};
 
+  // Handle the Math operators (+=, -=, *=, /=).
+  // They work similarly to copyData(To).
+  // However, they are not defined for Bool types, thus specialized below.
+  // <group>
+  virtual void handleMath (const Lattice<T>& from, int oper);
+  virtual void handleMathTo (Lattice<T>& to, int oper) const;
+  // </group>
+
   // Copy constructor and assignment can only be used by derived classes.
   // <group>
   Lattice (const Lattice<T>&) {};
@@ -393,6 +415,11 @@ protected:
     { return *this; }
   // </group>
 };
+
+
+template<> inline
+void Lattice<Bool>::handleMathTo (Lattice<Bool>& to, int oper) const
+  { throwBoolMath(); }
 
 
 #endif
