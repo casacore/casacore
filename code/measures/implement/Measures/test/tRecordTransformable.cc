@@ -1,5 +1,5 @@
-//# tRecordTransformable.cc:
-//# Copyright (C) 1998
+//# tRecordTransformable.cc: Test program for class RecordTransformable
+//# Copyright (C) 1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -26,8 +26,8 @@
 //# $Id$
 
 #include <aips/aips.h>
-#include <trial/Measures/MeasureHolder.h>
-#include <trial/Utilities/RecordTransformable.h>
+#include <aips/Measures/MeasureHolder.h>
+#include <aips/Utilities/RecordTransformable.h>
 #include <aips/Containers/Record.h>
 #include <aips/Containers/RecordInterface.h>
 #include <aips/Exceptions/Error.h>
@@ -37,6 +37,7 @@
 #include <aips/Utilities/Assert.h>
 #include <aips/Utilities/String.h>
 #include <iostream.h>
+
 void printAsRecord(const RecordTransformable & myClass);
 
 int main() {
