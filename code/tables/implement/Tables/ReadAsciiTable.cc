@@ -48,6 +48,33 @@
 
 
 
+//# Helper function.
+//# Read a line and ignore lines to be skipped.
+Bool readAsciiTableGetLine (ifstream& file, Int& lineNumber,
+			    char* line, Int lineSize,
+			    Bool testComment, const Regex& commentMarker,
+			    Int firstLine, Int lastLine)
+{
+  Int dummy;
+  while (True) {
+    if (! file.getline (line, lineSize)) {
+      return False;
+    }
+    lineNumber++;
+    if (lineNumber >= firstLine) {
+      if (lastLine <= 0  ||  lineNumber <= lastLine) {
+	if (! testComment) {
+	  return True;
+	}
+	if (commentMarker.find (line, lineSize, dummy) != 0) {
+	  return True;
+	}
+      }
+    }
+  }
+}
+
+
 //# Helper function 
 //# It gets the next value from a line and stores it in result.
 //# It updates at and returns the length of the value retrieved.
@@ -169,7 +196,9 @@ void readAsciiTableHandleKeyset (Int lineSize, char* string1,
 				 const String& fileName,
 				 ifstream& jFile,
 				 Int& lineNumber,
-				 Char separator)
+				 Char separator,
+				 Bool testComment, const Regex& commentMarker,
+				 Int firstLine, Int lastLine)
 {
   Float tempR; Short tempSH; Int tempI; Double tempD;
   Float temp1, temp2, temp3, temp4;
@@ -188,19 +217,20 @@ void readAsciiTableHandleKeyset (Int lineSize, char* string1,
 
 // Read the next line(s)
 
-    if (!jFile.getline(string1, lineSize)) {
+    if (!readAsciiTableGetLine (jFile, lineNumber, string1, lineSize,
+				testComment, commentMarker,
+				firstLine, lastLine)) {
       throw (AipsError ("No .endkeywords line in " + fileName));
     }
-    lineNumber++;
 
 // If we are at END of KEYWORDS read the next line to get NAMES OF COLUMNS
 // or to get next keyword group.
 
     if (strncmp(string1, ".end", 4) == 0) {
-      if (!jFile.getline(string1, lineSize)) {
+      if (!readAsciiTableGetLine (jFile, lineNumber, string1, lineSize,
+				  testComment, commentMarker,
+				  firstLine, lastLine)) {
 	string1[0] = '\0';
-      } else {
-	lineNumber++;
       }
       break;
     }
@@ -474,7 +504,9 @@ void readAsciiTableHandleKeyset (Int lineSize, char* string1,
 
 String doReadAsciiTable (const String& headerfile, const String& filein, 
 			 const String& tableproto, const String& tablename,
-			 Bool autoHeader, Char separator)
+			 Bool autoHeader, Char separator,
+			 Bool testComment, const Regex& commentMarker,
+			 Int firstLine, Int lastLine)
 {
     const Int   lineSize = 32768;
           char  string1[lineSize], string2[lineSize], stringsav[lineSize];
@@ -488,6 +520,12 @@ String doReadAsciiTable (const String& headerfile, const String& filein,
 
 // Determine if header and data are in one file.
     Bool oneFile = (headerfile == filein);
+    Int firstHeaderLine = 1;
+    Int lastHeaderLine = -1;
+    if (oneFile) {
+        firstHeaderLine = firstLine;
+	lastHeaderLine  = lastLine;
+    }
 
 // PART ONE
 // Define the TABLE description, i.e. define its columns.
@@ -504,19 +542,23 @@ String doReadAsciiTable (const String& headerfile, const String& filein,
 
 // Read the first line. It will be KEYWORDS or NAMES OF COLUMNS
 
-    if (!jFile.getline(string1, lineSize)) {
+    Int lineNumber = 0;
+    if (!readAsciiTableGetLine (jFile, lineNumber, string1, lineSize,
+				testComment, commentMarker,
+				firstHeaderLine, lastHeaderLine)) {
 	throw (AipsError ("Cannot read first header line of " + headerfile));
     }
 
 // If the first line shows that we have KEYWORDS read until the
 // end of keywords while assembling the keywords.
 
-    Int lineNumber = 1;
     TableRecord keysets;
     while (strncmp(string1, ".key", 4) == 0) {
         readAsciiTableHandleKeyset (lineSize, string1, first, second,
 				    keysets, logger,
-				    headerfile, jFile, lineNumber, separator);
+				    headerfile, jFile, lineNumber, separator,
+				    testComment, commentMarker,
+				    firstHeaderLine, lastHeaderLine);
     }
 
 // Okay, all keywords have been read.
@@ -529,7 +571,9 @@ String doReadAsciiTable (const String& headerfile, const String& filein,
         if (string1[0] == '\0') {
 	    throw (AipsError("No COLUMN NAMES line in " + headerfile));
 	}
-        if (!jFile.getline(string2, lineSize)) {
+	if (!readAsciiTableGetLine (jFile, lineNumber, string2, lineSize,
+				    testComment, commentMarker,
+				    firstHeaderLine, lastHeaderLine)) {
 	    throw (AipsError("No COLUMN TYPES line in " + headerfile));
 	}
     }
@@ -540,8 +584,11 @@ String doReadAsciiTable (const String& headerfile, const String& filein,
     if (!oneFile) {
         jFile.close();
 	jFile.open(filein, ios::in);
+	lineNumber = 0;
 	if (autoHeader) {
-	    if (!jFile.getline(string1, lineSize)) {
+	    if (!readAsciiTableGetLine (jFile, lineNumber, string1, lineSize,
+					testComment, commentMarker,
+					firstLine, lastLine)) {
 	        string1[0] = '\0';
 	    }
 	}
@@ -652,7 +699,9 @@ String doReadAsciiTable (const String& headerfile, const String& filein,
 
     Bool cont = True;
     if (stringsav[0] == '\0') {
-        cont = jFile.getline(string1, lineSize);
+        cont = readAsciiTableGetLine (jFile, lineNumber, string1, lineSize,
+				      testComment, commentMarker,
+				      firstLine, lastLine);
     } else {
         strcpy (string1, stringsav);
     }
@@ -774,7 +823,9 @@ String doReadAsciiTable (const String& headerfile, const String& filein,
 	    }
 	}
 	rownr++;
-        cont = jFile.getline(string1, lineSize);
+        cont = readAsciiTableGetLine (jFile, lineNumber, string1, lineSize,
+				      testComment, commentMarker,
+				      firstLine, lastLine);
     }
 
     delete [] tabcol;
@@ -783,26 +834,54 @@ String doReadAsciiTable (const String& headerfile, const String& filein,
 }
 
 
-String readAsciiTable (const String& headerfile, const String& filein, 
-		       const String& tableproto, const char* tablename,
-		       Char separator)
+String doReadAsciiTable (const String& headerfile, const String& filein, 
+			 const String& tableproto, const String& tablename,
+			 Bool autoHeader, Char separator,
+			 const String& commentMarkerRegex,
+			 Int firstLine, Int lastLine)
 {
-  return doReadAsciiTable (headerfile, filein, tableproto, String(tablename),
-			   False, separator);
-}
-
-String readAsciiTable (const String& headerfile, const String& filein, 
-		       const String& tableproto, const String& tablename,
-		       Char separator)
-{
-  return doReadAsciiTable (headerfile, filein, tableproto, tablename,
-			   False, separator);
+  if (firstLine < 1) {
+    firstLine = 1;
+  }
+  if (commentMarkerRegex.empty()) {
+    return doReadAsciiTable (headerfile, filein, tableproto, tablename,
+			     autoHeader, separator,
+			     False, Regex(),
+			     firstLine, lastLine);
+  } else {
+    return doReadAsciiTable (headerfile, filein, tableproto, tablename,
+			     autoHeader, separator,
+			     True, Regex(commentMarkerRegex),
+			     firstLine, lastLine);
+  }
 }
 
 String readAsciiTable (const String& filein, const String& tableproto,
 		       const String& tablename, Bool autoHeader,
-		       Char separator)
+		       Char separator, const String& commentMarkerRegex,
+		       Int firstLine, Int lastLine)
 {
   return doReadAsciiTable (filein, filein, tableproto, tablename,
-			   autoHeader, separator);
+			   autoHeader, separator, commentMarkerRegex,
+			   firstLine, lastLine);
+}
+
+String readAsciiTable (const String& headerfile, const String& filein,
+		       const String& tableproto, const String& tablename,
+		       Char separator, const String& commentMarkerRegex,
+		       Int firstLine, Int lastLine)
+{
+  return doReadAsciiTable (headerfile, filein, tableproto, tablename,
+			   False, separator, commentMarkerRegex,
+			   firstLine, lastLine);
+}
+
+String readAsciiTable (const String& headerfile, const String& filein,
+		       const String& tableproto, const char* tablename,
+		       Char separator, const String& commentMarkerRegex,
+		       Int firstLine, Int lastLine)
+{
+  return doReadAsciiTable (headerfile, filein, tableproto, String(tablename),
+			   False, separator, commentMarkerRegex,
+			   firstLine, lastLine);
 }

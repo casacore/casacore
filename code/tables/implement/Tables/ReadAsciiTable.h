@@ -158,9 +158,27 @@
 // be stored in a table description file with the given name.
 // <br>It returns a string containing the format of the columns in
 // the form COL1=R, COL2=D, ...
+//
+// The separator gives the character separating the values. The default
+// is a blank. Note that irrespective of the separator, blanks between
+// values are always ignored. A string value has to be enclosed in
+// double quotes if it has to contain blanks or the separator value.
+//
+// Header and data lines starting with the regular expression given in the
+// commentMarker are ignored. By default no comment marker is present.
+// E.g. "#" ignores all lines starting with the #-sign.
+// " *#" does the same, but the lines to ignore can start with whitespace.
+//
+// The first and last line argument give the 1-relative number of the
+// first and last line to read from the file. firstLine <= 0 is the
+// same as 1. lastLine <= 0 means until end-of-file.
+// Note that lines matching the comment marker are also counted.
 String readAsciiTable (const String& filein, const String& tableDescName,
 		       const String& tableName, Bool autoHeader = False,
-		       Char separator = ' ');
+		       Char separator = ' ',
+		       const String& commentMarkerRegex = "",
+		       Int firstLine = 1, Int lastLine = -1);
+
 
 // This form reads TWO Ascii files. The first file may contain 
 // keywords and their values as well as the two lines described above for
@@ -170,13 +188,32 @@ String readAsciiTable (const String& filein, const String& tableDescName,
 // be stored in a table description file with the given name.
 // <br>It returns a string containing the format of the columns in
 // the form COL1=R, COL2=D, ...
+//
+// The separator gives the character separating the values. The default
+// is a blank. Note that irrespective of the separator, blanks between
+// values are always ignored. A string value has to be enclosed in
+// double quotes if it has to contain blanks or the separator value.
+//
+// Header and data lines starting with the regular expression given in the
+// commentMarker are ignored. By default no comment marker is present.
+// E.g. "#" ignores all lines starting with the #-sign.
+// " *#" does the same, but the lines to ignore can start with whitespace.
+//
+// The first and last line argument give the 1-relative number of the
+// first and last line to read from the data file. firstLine <= 0 is the
+// same as 1. lastLine <= 0 means until end-of-file.
+// Note that lines matching the comment marker are also counted.
 // <group>
 String readAsciiTable (const String& headerFile, const String& dataFile, 
 		       const String& tableDescName, const String& tablename,
-		       Char separator = ' ');
+		       Char separator = ' ',
+		       const String& commentMarkerRegex = "",
+		       Int firstLine = 1, Int lastLine = -1);
 String readAsciiTable (const String& headerFile, const String& dataFile, 
 		       const String& tableDescName, const char* tablename,
-		       Char separator = ' ');
+		       Char separator = ' ',
+		       const String& commentMarkerRegex = "",
+		       Int firstLine = 1, Int lastLine = -1);
 // </group>
 
 // </group>
