@@ -885,32 +885,32 @@ void DirectionCoordinate::toDegrees(Vector<Double> &other) const
 }
 
 
-Bool DirectionCoordinate::near(const Coordinate* pOther, 
+Bool DirectionCoordinate::near(const Coordinate& other, 
                                Double tol) const
 {
    Vector<Int> excludeAxes;
-   return near(pOther, excludeAxes, tol);
+   return near(other, excludeAxes, tol);
 }
 
 
 
-Bool DirectionCoordinate::near(const Coordinate* pOther, 
+Bool DirectionCoordinate::near(const Coordinate& other, 
                                const Vector<Int>& excludeAxes,
                                Double tol) const
 
 {
-   if (this->type() != pOther->type()) {
+   if (this->type() != other.type()) {
       set_error("Comparison is not with another DirectionCoordinate");
       return False;
    }
      
-   DirectionCoordinate* dCoord = (DirectionCoordinate*)pOther;
+   const DirectionCoordinate& dCoord = dynamic_cast<const DirectionCoordinate&>(other);
    
-   if (!projection_p.near(dCoord->projection_p, tol)) {
+   if (!projection_p.near(dCoord.projection_p, tol)) {
       set_error("The DirectionCoordinates have differing projections");
       return False;
    }
-   if (type_p != dCoord->type_p) {
+   if (type_p != dCoord.type_p) {
       set_error("The DirectionCoordinates have differing types");
       return False;
    }
@@ -934,7 +934,7 @@ Bool DirectionCoordinate::near(const Coordinate* pOther,
 
 // Check linear transformation
 
-   if (!linear_p.near(dCoord->linear_p, excludeAxes, tol)) {
+   if (!linear_p.near(dCoord.linear_p, excludeAxes, tol)) {
       set_error("The DirectionCoordinates have differing linear transformation matrices");
       return False;
    }
@@ -943,17 +943,17 @@ Bool DirectionCoordinate::near(const Coordinate* pOther,
 // Check names and units
 
    ostrstream oss;
-   if (names_p.nelements() != dCoord->names_p.nelements()) {
+   if (names_p.nelements() != dCoord.names_p.nelements()) {
       set_error("The DirectionCoordinates have differing numbers of world axis names");
       return False;
    }
-   if (units_p.nelements() != dCoord->units_p.nelements()) {
+   if (units_p.nelements() != dCoord.units_p.nelements()) {
       set_error("The DirectionCoordinates have differing numbers of axis units");
       return False;
    }
    for (uInt i=0; i<names_p.nelements(); i++) {
       if (!exclude(i)) {
-         if (names_p(i) != dCoord->names_p(i)) {
+         if (names_p(i) != dCoord.names_p(i)) {
             oss << "The DirectionCoordinates have differing axis names for axis "
                 << i << ends;
             set_error(String(oss));
@@ -963,7 +963,7 @@ Bool DirectionCoordinate::near(const Coordinate* pOther,
    }
    for (uInt i=0; i<units_p.nelements(); i++) {
       if (!exclude(i)) {
-         if (units_p(i) != dCoord->units_p(i)) {
+         if (units_p(i) != dCoord.units_p(i)) {
             oss << "The DirectionCoordinates have differing axis units for axis "
                 << i << ends;
             set_error(String(oss));
@@ -975,7 +975,7 @@ Bool DirectionCoordinate::near(const Coordinate* pOther,
      
 // WCS structures.  
 
-   if (celprm_p->flag != dCoord->celprm_p->flag) {
+   if (celprm_p->flag != dCoord.celprm_p->flag) {
       set_error("The DirectionCoordinates have differing WCS spherical coordinate structures");
       return False;
    }
@@ -985,11 +985,11 @@ Bool DirectionCoordinate::near(const Coordinate* pOther,
 
    for (uInt i=0; i<2; i++) {
      if (!exclude(i)) {
-        if (!::near(celprm_p->ref[i],dCoord->celprm_p->ref[i],tol)) {
+        if (!::near(celprm_p->ref[i],dCoord.celprm_p->ref[i],tol)) {
            set_error("The DirectionCoordinates have differing WCS spherical coordinate structures");
            return False;
         }
-        if (!::near(celprm_p->ref[i+2],dCoord->celprm_p->ref[i+2],tol)) {
+        if (!::near(celprm_p->ref[i+2],dCoord.celprm_p->ref[i+2],tol)) {
            set_error("The DirectionCoordinates have differing WCS spherical coordinate structures");
            return False;
         }
@@ -1002,18 +1002,18 @@ Bool DirectionCoordinate::near(const Coordinate* pOther,
 // do when
 // 
 
-   if (prjprm_p->r0!=0.0 && dCoord->prjprm_p->r0!=0.0) {
+   if (prjprm_p->r0!=0.0 && dCoord.prjprm_p->r0!=0.0) {
 
 // 0 is the start value, and the WCS routines will change
 // it, so if either value is 0, it's ok
 
-      if (prjprm_p->r0 != dCoord->prjprm_p->r0) {
+      if (prjprm_p->r0 != dCoord.prjprm_p->r0) {
          set_error("The DirectionCoordinates have differing WCS projection parameters");
          return False;
        }
    }
    for (uInt i=0; i<10; i++) {
-      if (!::near(prjprm_p->p[i],dCoord->prjprm_p->p[i],tol)) {
+      if (!::near(prjprm_p->p[i],dCoord.prjprm_p->p[i],tol)) {
          set_error("The DirectionCoordinates have differing WCS projection structures");
          return False;
       }
@@ -1024,13 +1024,13 @@ Bool DirectionCoordinate::near(const Coordinate* pOther,
 // but might as well make sure
 
    if (!exclude(0)) {
-      if (!::near(to_degrees_p[0],dCoord->to_degrees_p[0],tol)) {
+      if (!::near(to_degrees_p[0],dCoord.to_degrees_p[0],tol)) {
          set_error("The DirectionCoordinates have differing unit conversion vectors");
          return False;
       }
    }
    if (!exclude(1)) {
-      if (!::near(to_degrees_p[1],dCoord->to_degrees_p[1],tol)) {
+      if (!::near(to_degrees_p[1],dCoord.to_degrees_p[1],tol)) {
          set_error("The DirectionCoordinates have differing unit conversion vectors");
          return False;
       }
@@ -1039,25 +1039,25 @@ Bool DirectionCoordinate::near(const Coordinate* pOther,
 // These things are needed only for toMix caching speedup
 
    for (uInt i=0; i<2; i++) {
-      if (strcmp(c_ctype_p[i],dCoord->c_ctype_p[i])!=0) {
+      if (strcmp(c_ctype_p[i],dCoord.c_ctype_p[i])!=0) {
          set_error("The DirectionCoordinates have differing FITS ctypes");
          return False;
       }
-      if (!::near(c_crval_p[i],dCoord->c_crval_p[i],tol)) {
+      if (!::near(c_crval_p[i],dCoord.c_crval_p[i],tol)) {
          set_error("The DirectionCoordinates have differing FITS crvals");
          return False;
       }
    }
 // 
 // The flag variable may change with use, so don't test it.
-//   Bool ok = wcs_p->flag==dCoord->wcs_p->flag &&
+//   Bool ok = wcs_p->flag==dCoord.wcs_p->flag &&
 //
-   Bool ok = strcmp(wcs_p->pcode,dCoord->wcs_p->pcode)==0 &&
-        strcmp(wcs_p->lngtyp,dCoord->wcs_p->lngtyp)==0 &&
-        strcmp(wcs_p->lattyp,dCoord->wcs_p->lattyp)==0 &&
-        wcs_p->lng==dCoord->wcs_p->lng &&
-        wcs_p->lat==dCoord->wcs_p->lat &&        
-        wcs_p->cubeface==dCoord->wcs_p->cubeface;
+   Bool ok = strcmp(wcs_p->pcode,dCoord.wcs_p->pcode)==0 &&
+        strcmp(wcs_p->lngtyp,dCoord.wcs_p->lngtyp)==0 &&
+        strcmp(wcs_p->lattyp,dCoord.wcs_p->lattyp)==0 &&
+        wcs_p->lng==dCoord.wcs_p->lng &&
+        wcs_p->lat==dCoord.wcs_p->lat &&        
+        wcs_p->cubeface==dCoord.wcs_p->cubeface;
    if (!ok) {
       set_error("The DirectionCoordinates have differing wcs structures");
       return False;

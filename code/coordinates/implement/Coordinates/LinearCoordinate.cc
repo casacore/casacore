@@ -310,37 +310,37 @@ Bool LinearCoordinate::setReferenceValue(const Vector<Double> &refval)
 }
 
 
-Bool LinearCoordinate::near(const Coordinate* pOther,
+Bool LinearCoordinate::near(const Coordinate& other,
                             Double tol) const
 {
    Vector<Int> excludeAxes;
-   return near(pOther, excludeAxes, tol);
+   return near(other, excludeAxes, tol);
 }
 
 
-Bool LinearCoordinate::near(const Coordinate* pOther,
+Bool LinearCoordinate::near(const Coordinate& other,
                             const Vector<Int>& excludeAxes,
                             Double tol) const
 {
-   if (pOther->type() != this->type()) {
+   if (other.type() != this->type()) {
       set_error("Comparison is not with another LinearCoordinate");
       return False;
    }
 
-   LinearCoordinate* lCoord = (LinearCoordinate*)pOther;
+   const LinearCoordinate& lCoord = dynamic_cast<const LinearCoordinate&>(other);
 
 
 // Check descriptor vector lengths
 
-   if (names_p.nelements() != lCoord->names_p.nelements()) {
+   if (names_p.nelements() != lCoord.names_p.nelements()) {
       set_error("The LinearCoordinates have differing numbers of world axis names");
       return False;
    }
-   if (units_p.nelements() != lCoord->units_p.nelements()) {
+   if (units_p.nelements() != lCoord.units_p.nelements()) {
       set_error("The LinearCoordinates have differing numbers of axis units");
       return False;
    }
-   if (crval_p.nelements() != lCoord->crval_p.nelements()) {
+   if (crval_p.nelements() != lCoord.crval_p.nelements()) {
       set_error("The LinearCoordinates have differing numbers of reference values");
       return False;
    }
@@ -374,7 +374,7 @@ Bool LinearCoordinate::near(const Coordinate* pOther,
 //
          String x1 = names_p(i);
          x1.upcase();
-         String x2 = lCoord->names_p(i);
+         String x2 = lCoord.names_p(i);
          x2.upcase();
          if (x1 != x2) {
             oss << "The LinearCoordinates have differing axis names for axis "
@@ -387,7 +387,7 @@ Bool LinearCoordinate::near(const Coordinate* pOther,
    }
    for (i=0; i<units_p.nelements(); i++) {
       if (!exclude(i)) {
-         if (units_p(i) != lCoord->units_p(i)) {
+         if (units_p(i) != lCoord.units_p(i)) {
             oss << "The LinearCoordinates have differing axis units for axis "
                 << i << ends;
             set_error(String(oss));
@@ -397,7 +397,7 @@ Bool LinearCoordinate::near(const Coordinate* pOther,
    }
    for (i=0; i<crval_p.nelements(); i++) {
       if (!exclude(i)) {
-         if (!::near(crval_p[i],lCoord->crval_p[i],tol)) {
+         if (!::near(crval_p[i],lCoord.crval_p[i],tol)) {
             oss << "The LinearCoordinates have differing reference values for axis "
                 << i << ends;
             set_error(String(oss));
@@ -409,7 +409,7 @@ Bool LinearCoordinate::near(const Coordinate* pOther,
 
 // Check the linear transform
 
-   if (!transform_p.near(lCoord->transform_p,excludeAxes,tol)) {
+   if (!transform_p.near(lCoord.transform_p,excludeAxes,tol)) {
       set_error("The LinearCoordinates have differing linear transformation matrices");
       return False;
    }

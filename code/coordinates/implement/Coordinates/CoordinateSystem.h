@@ -443,8 +443,8 @@ public:
     // pixel axes in the CoordinateSystem.  If the comparison returns
     // False, errorMessage() contains a message about why.
     // <group>
-    virtual Bool near(const Coordinate* pOther, Double tol=1e-6) const;
-    virtual Bool near(const Coordinate* pOther, 
+    virtual Bool near(const Coordinate& other, Double tol=1e-6) const;
+    virtual Bool near(const Coordinate& other, 
                       const Vector<Int>& excludePixelAxes,
                       Double tol=1e-6) const;
     // </group>

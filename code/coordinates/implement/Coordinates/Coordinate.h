@@ -283,9 +283,9 @@ public:
     // Don't compare on specified axes in Coordinate. If the comparison
     // returns False, errorMessage() contains a message.
     // <group>
-    virtual Bool near(const Coordinate* pOther, 
+    virtual Bool near(const Coordinate& other, 
                       Double tol=1.0e-6) const = 0;
-    virtual Bool near(const Coordinate* pOther, 
+    virtual Bool near(const Coordinate& other, 
                       const Vector<Int>& excludeAxes,
                       Double tol=1.0e-6) const = 0;
     // </group>

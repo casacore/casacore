@@ -1331,18 +1331,18 @@ Bool CoordinateSystem::setReferenceValue(const Vector<Double> &refval)
 }
 
 
-Bool CoordinateSystem::near(const Coordinate* pOther, 
+Bool CoordinateSystem::near(const Coordinate& other, 
                             Double tol) const
 //
 // Compare this CoordinateSystem with another. 
 //
 {
    Vector<Int> excludePixelAxes;
-   return near(pOther,excludePixelAxes,tol);
+   return near(other,excludePixelAxes,tol);
 }
 
 
-Bool CoordinateSystem::near(const Coordinate* pOther, 
+Bool CoordinateSystem::near(const Coordinate& other, 
                             const Vector<Int>& excludePixelAxes,
                             Double tol) const
 //
@@ -1358,23 +1358,23 @@ Bool CoordinateSystem::near(const Coordinate* pOther,
 {
 // Basic checks
 
-   if (this->type() != pOther->type()) {
+   if (this->type() != other.type()) {
       set_error("Comparison is not with another CoordinateSystem");
       return False;
    }
 
-   CoordinateSystem* cSys = (CoordinateSystem*)pOther;  
+   const CoordinateSystem& cSys = dynamic_cast<const CoordinateSystem&>(other);
 
-   if (nCoordinates() != cSys->nCoordinates()) {
+   if (nCoordinates() != cSys.nCoordinates()) {
       set_error("The CoordinateSystems have different numbers of coordinates");
       return False;
    }
 
-   if (nPixelAxes() != cSys->nPixelAxes()) {
+   if (nPixelAxes() != cSys.nPixelAxes()) {
       set_error("The CoordinateSystems have different numbers of pixel axes");
       return False;
    }
-   if (nWorldAxes() != cSys->nWorldAxes()) {
+   if (nWorldAxes() != cSys.nWorldAxes()) {
       set_error("The CoordinateSystems have different numbers of world axes");
       return False;
    }
@@ -1390,7 +1390,7 @@ Bool CoordinateSystem::near(const Coordinate* pOther,
 // the coordinate comparison routines, we can save ourselves
 // some time by checking here too
 
-      if (coordinate(i).type() != cSys->coordinate(i).type()) {
+      if (coordinate(i).type() != cSys.coordinate(i).type()) {
          oss << "The coordinate types differ for coordinate number " << i << ends;
          set_error(String(oss));
          return False;
@@ -1401,12 +1401,12 @@ Bool CoordinateSystem::near(const Coordinate* pOther,
 // account the exclusion axes vector; that's only used when we are 
 // actually comparing the axis descriptor values on certain axes
 
-      if (pixelAxes(i).nelements() != cSys->pixelAxes(i).nelements()) {
+      if (pixelAxes(i).nelements() != cSys.pixelAxes(i).nelements()) {
          oss << "The number of pixel axes differs for coordinate number " << i << ends;
          set_error(String(oss));
          return False;
       }
-      if (!allEQ(pixelAxes(i), cSys->pixelAxes(i))) {
+      if (!allEQ(pixelAxes(i), cSys.pixelAxes(i))) {
          oss << "The pixel axes differ for coordinate number " << i << ends;
          set_error(String(oss));
          return False;
@@ -1415,12 +1415,12 @@ Bool CoordinateSystem::near(const Coordinate* pOther,
 // Find which world axes in the CoordinateSystem this
 // coordinate inhabits and compare the vectors
     
-      if (worldAxes(i).nelements() != cSys->worldAxes(i).nelements()) {
+      if (worldAxes(i).nelements() != cSys.worldAxes(i).nelements()) {
          oss << "The number of world axes differs for coordinate number " << i << ends;
          set_error(String(oss));
          return False;
       }
-      if (!allEQ(worldAxes(i), cSys->worldAxes(i))) {
+      if (!allEQ(worldAxes(i), cSys.worldAxes(i))) {
          oss << "The world axes differ for coordinate number " << i << ends;
          set_error(String(oss));
          return False;
@@ -1485,7 +1485,7 @@ Bool CoordinateSystem::near(const Coordinate* pOther,
 // Not removed (can't find it if it's been removed !)
   
                      findWorldAxis(coord1, axisInCoord1, worldAxes(i)(j));
-               cSys->findWorldAxis(coord2, axisInCoord2, worldAxes(i)(j));
+               cSys.findWorldAxis(coord2, axisInCoord2, worldAxes(i)(j));
 
 // This better not happen !  
 
@@ -1511,7 +1511,7 @@ Bool CoordinateSystem::near(const Coordinate* pOther,
 // CoordinateSystems except on the specified axes. Leave it
 // this function to set the error message
 
-         if (!coordinate(i).near(&cSys->coordinate(i),excludeAxes,tol)) {
+         if (!coordinate(i).near(cSys.coordinate(i),excludeAxes,tol)) {
            set_error(coordinate(i).errorMessage());
            return False;
          }
