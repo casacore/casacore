@@ -73,21 +73,22 @@ LatticeStatistics<T>::LatticeStatistics (const MaskedLattice<T>& lattice,
 // Constructor
 //
 : os_p(os),
+  goodParameterStatus_p(True),
+  haveLogger_p(True),
+  fixedMinMax_p(False),
+  doRobust_p(False),
+  doneLEL_p(False),
+  error_p(""),
   pInLattice_p(0), 
   pStoreLattice_p(0),
   doList_p(False),
   noInclude_p(True),
   noExclude_p(True),
-  goodParameterStatus_p(True),
   needStorageLattice_p(True),
   doneSomeGoodPoints_p(False),
   someGoodPointsValue_p(False),
-  haveLogger_p(True),
   showProgress_p(showProgress),
-  fixedMinMax_p(False),
-  forceDisk_p(forceDisk),
-  doRobust_p(False),
-  error_p("")
+  forceDisk_p(forceDisk)
 {
    nxy_p.resize(0);
    statsToPlot_p.resize(0);   
@@ -115,21 +116,22 @@ LatticeStatistics<T>::LatticeStatistics (const MaskedLattice<T>& lattice,
 // 
 // Constructor
 //
-: pInLattice_p(0), 
+: goodParameterStatus_p(True),
+  haveLogger_p(False),
+  fixedMinMax_p(False),
+  doRobust_p(False),
+  doneLEL_p(False),
+  error_p(""),
+  pInLattice_p(0), 
   pStoreLattice_p(0),
   doList_p(False),
   noInclude_p(True),
   noExclude_p(True),
-  goodParameterStatus_p(True),
   needStorageLattice_p(True),
   doneSomeGoodPoints_p(False),
   someGoodPointsValue_p(False),
-  haveLogger_p(False),
   showProgress_p(showProgress),
-  fixedMinMax_p(False),
-  forceDisk_p(forceDisk),
-  doRobust_p(False),
-  error_p("")
+  forceDisk_p(forceDisk)
 {
    nxy_p.resize(0);
    statsToPlot_p.resize(0);
@@ -209,6 +211,7 @@ LatticeStatistics<T> &LatticeStatistics<T>::operator=(const LatticeStatistics<T>
       forceDisk_p = other.forceDisk_p;
       doRobust_p = other.doRobust_p;
       error_p = other.error_p;
+      doneLEL_p = other.doneLEL_p;
    }
    return *this;
 }
@@ -270,13 +273,12 @@ Bool LatticeStatistics<T>::setAxes (const Vector<Int>& axes)
       }
    }
 
-// Signal that we have changed the axes and need a new accumulation
-// lattice
+// Signal that we have changed the axes and need a new storage lattice
 
    if (saveAxes.nelements() != cursorAxes_p.nelements() ||
        !allEQ(saveAxes, cursorAxes_p)) needStorageLattice_p = True;
 
-// Set the display axes vector.  We also do this in ::generateStorageLattice
+// Set the display axes vector.  We also do this in generateStorageLattice
 // but it is possible the user will want to see the display axes
 // via the public function "displayAxes" before any real work is done
 // so poke this in here too.
@@ -333,8 +335,7 @@ Bool LatticeStatistics<T>::setInExCludeRange(const Vector<T>& include,
    if (noInclude_p) fixedMinMax_p = False;
 
 
-// Signal that we have changed the pixel range and need a new accumulation
-// lattice
+// Signal that we have changed the pixel range and need a new storage lattice
    
    if ( (saveNoInclude!=noInclude_p) ||
         (saveNoExclude!=noExclude_p) ||
@@ -475,8 +476,7 @@ Bool LatticeStatistics<T>::setNewLattice(const MaskedLattice<T>& lattice)
 
    blcParent_p = pInLattice_p->region().slicer().start();
 
-// Signal that we have changed the lattice and need a new accumulation
-// lattice
+// Signal that we have changed the lattice and need a new storage  lattice
 
    needStorageLattice_p = True;
    return True;
@@ -611,8 +611,7 @@ Bool LatticeStatistics<T>::display()
 template <class T>
 Bool LatticeStatistics<T>::getMedian(Array<T>& stats, Bool dropDeg)
 // 
-// This function retrieves the MEDIAN statistics from the
-// accumulation lattice
+// This function retrieves the MEDIAN statistics from the storage lattice
 //
 {
 // Check class status
@@ -632,8 +631,7 @@ Bool LatticeStatistics<T>::getMedian(Array<T>& stats, Bool dropDeg)
 template <class T>
 Bool LatticeStatistics<T>::getMedAbsDevMed(Array<T>& stats, Bool dropDeg)
 // 
-// This function retrieves the MEDABSDEVMED statistics from the
-// accumulation lattice
+// This function retrieves the MEDABSDEVMED statistics from the storage lattice
 //
 {
 // Check class status
@@ -653,8 +651,7 @@ Bool LatticeStatistics<T>::getMedAbsDevMed(Array<T>& stats, Bool dropDeg)
 template <class T>
 Bool LatticeStatistics<T>::getQuartile(Array<T>& stats, Bool dropDeg)
 // 
-// This function retrieves the QUARTILE statistics from the
-// accumulation lattice
+// This function retrieves the QUARTILE statistics from the storage lattice
 //
 {
 // Check class status
@@ -671,13 +668,50 @@ Bool LatticeStatistics<T>::getQuartile(Array<T>& stats, Bool dropDeg)
 }
 
 
+template <class T>
+Bool LatticeStatistics<T>::getLELNode (Array<T>& stats, const LatticeExprNode& node, 
+                                       Bool newExpr, Bool dropDeg)
+// 
+// This function retrieves the LEL statistic from the storage lattice
+//
+{
+// Check class status
+ 
+   if (!goodParameterStatus_p) {
+     return False; 
+   }
+
+// This function is currently only useful if there are
+// no display axes
+
+   if (displayAxes_p.nelements() != 0) {
+      error_p = String("getLELNode currently only operates for no display axes");
+      return False;
+   }
+
+// The LEL Statistics is recomputed each time as the node is
+// likely to change.  The statistic is written into the storage
+// lattice so we better make sure we have one first.
+
+   if (needStorageLattice_p) {
+      if (!generateStorageLattice()) return False;
+   }
+
+// Generate statistic
+
+   if (newExpr) generateLEL (node);
+
+// Get it from storage lattice
+
+   return retrieveStorageStatistic(stats, Int(LEL), dropDeg);
+}
+
 
 
 template <class T>
 Bool LatticeStatistics<T>::getNPts(Array<T>& stats, Bool dropDeg)
 // 
-// This function retrieves the NPTS statistics from the
-// accumulation lattice
+// This function retrieves the NPTS statistics from the storage lattice
 //
 {
 // Check class status
@@ -695,8 +729,7 @@ Bool LatticeStatistics<T>::getNPts(Array<T>& stats, Bool dropDeg)
 template <class T>
 Bool LatticeStatistics<T>::getSum(Array<T>& stats, Bool dropDeg)
 // 
-// This function retrieves the SUM statistics from the
-// accumulation lattice
+// This function retrieves the SUM statistics from the storage lattice
 //
 {
 // Check class status
@@ -749,8 +782,8 @@ Bool LatticeStatistics<T>::getStats(Vector<T>& stats,
                                     const IPosition& pos,
                                     const Bool posInLattice)
 // 
-// This function retrieves the statistics from the
-// accumulation lattice at the specified location.  
+// This function retrieves the statistics from the storage
+// lattice at the specified location.  
 //
 // Inputs
 //   posInLattice   If true the location is given as image coordinates
@@ -798,8 +831,7 @@ Bool LatticeStatistics<T>::getStats(Vector<T>& stats,
 template <class T>
 Bool LatticeStatistics<T>::getSumSquared (Array<T>& stats, Bool dropDeg)
 // 
-// This function retrieves the SUMSQ statistics from the
-// accumulation lattice
+// This function retrieves the SUMSQ statistics from the storage lattice
 //
 {
 
@@ -818,8 +850,7 @@ Bool LatticeStatistics<T>::getSumSquared (Array<T>& stats, Bool dropDeg)
 template <class T>
 Bool LatticeStatistics<T>::getMin(Array<T>& stats, Bool dropDeg)
 // 
-// This function retrieves the MIN statistics from the
-// accumulation lattice
+// This function retrieves the MIN statistics from the storage lattice
 //
 {
 // Check class status
@@ -837,8 +868,7 @@ Bool LatticeStatistics<T>::getMin(Array<T>& stats, Bool dropDeg)
 template <class T>
 Bool LatticeStatistics<T>::getMax(Array<T>& stats, Bool dropDeg)
 // 
-// This function retrieves the MAX statistics from the
-// accumulation lattice
+// This function retrieves the MAX statistics from the storage lattice
 //
 {
 // Check class status
@@ -857,8 +887,7 @@ Bool LatticeStatistics<T>::getMax(Array<T>& stats, Bool dropDeg)
 template <class T>
 Bool LatticeStatistics<T>::getMean(Array<T>& stats, Bool dropDeg)
 // 
-// This function calculates the MEAN statistics from the
-// accumulation lattice
+// This function calculates the MEAN statistics from the storage lattice
 //
 {
 
@@ -877,8 +906,7 @@ Bool LatticeStatistics<T>::getMean(Array<T>& stats, Bool dropDeg)
 template <class T>
 Bool LatticeStatistics<T>::getFluxDensity(Array<T>& stats, Bool dropDeg)
 // 
-// This function calculates the Flux density from the
-// accumulation lattice if it can.
+// This function calculates the Flux density from the storage lattice if it can.
 //
 {
 
@@ -897,8 +925,7 @@ Bool LatticeStatistics<T>::getFluxDensity(Array<T>& stats, Bool dropDeg)
 template <class T>
 Bool LatticeStatistics<T>::getSigma(Array<T>& stats, Bool dropDeg)
 // 
-// This function calculates the SIGMA statistics from the
-// accumulation lattice
+// This function calculates the SIGMA statistics from the storage lattice
 //
 {
 
@@ -916,8 +943,7 @@ Bool LatticeStatistics<T>::getSigma(Array<T>& stats, Bool dropDeg)
 template <class T>
 Bool LatticeStatistics<T>::getVariance(Array<T>& stats, Bool dropDeg)
 // 
-// This function calculates the VARIANCE statistics from the
-// accumulation lattice
+// This function calculates the VARIANCE statistics from the storage lattice
 //
 {
 
@@ -936,8 +962,7 @@ Bool LatticeStatistics<T>::getVariance(Array<T>& stats, Bool dropDeg)
 template <class T>
 Bool LatticeStatistics<T>::getRms(Array<T>& stats, Bool dropDeg)
 // 
-// This function calculates the RMS statistics from the
-// accumulation lattice
+// This function calculates the RMS statistics from the storage lattice
 //
 {
  
@@ -1289,7 +1314,7 @@ Bool LatticeStatistics<T>::generateStorageLattice()
 // Do robust statistics separately as required.
 
     generateRobust();
-//
+
     needStorageLattice_p = False;     
     doneSomeGoodPoints_p = False;
 
@@ -1354,6 +1379,70 @@ void LatticeStatistics<T>::generateRobust ()
          pStoreLattice_p->putAt(val, pos3);
       }
    }
+}
+
+
+template <class T>
+void LatticeStatistics<T>::generateLEL (const LatticeExprNode& node)
+{
+   if (!node.isScalar()) {
+      os_p << LogIO::WARN << "LEL statistic must be scalar, no statistic computed" << LogIO::POST;
+      return;
+   }
+   Bool showMsg = displayAxes_p.nelements()==0;
+//
+    LatticeExpr<T> le(node);
+//
+    T dummy = 0;
+    if (showMsg) os_p << "  LEL" << LogIO::POST;
+    T lelValue = LattStatsSpecialize::getNodeScalarValue(node, dummy);
+
+// Whack it in storage lattice somewhere or other
+
+     IPosition pos0 = IPosition(pInLattice_p->ndim(),0);
+     IPosition pos = locInStorageLattice(pos0, LatticeStatsBase::LEL);
+     pStoreLattice_p->putAt(lelValue, pos);
+
+
+/*
+   const uInt nCursorAxes = cursorAxes_p.nelements();
+   const IPosition latticeShape(pInLattice_p->shape());
+   IPosition cursorShape(pInLattice_p->ndim(),1);
+   for (uInt i=0; i<nCursorAxes; i++) {
+      cursorShape(cursorAxes_p(i)) = latticeShape(cursorAxes_p(i));
+   }
+//
+   IPosition axisPath = cursorAxes_p;
+   axisPath.append(displayAxes_p);
+   LatticeStepper stepper(latticeShape, cursorShape, axisPath);
+   for (stepper.reset(); !stepper.atEnd(); stepper++) {
+      IPosition pos = locInStorageLattice(stepper.position(), LatticeStatsBase::LEL);
+//
+      if (True) {
+         Slicer slicer(stepper.position(), stepper.endPosition(), Slicer::endIsLast);
+         SubLattice<T> subLat(*pInLattice_p, slicer);
+         LatticeExpr<T> le(node);
+         SubLattice<T> subLat(le, slicer);
+//
+         T dummy = 0;
+         if (showMsg) os_p << "  LEL" << LogIO::POST;
+         LatticeExprNode node2(subLat);
+         T lelValue = LattStatsSpecialize::getNodeScalarValue(node2, dummy);
+
+// Whack it in storage lattice somewhere or other
+
+         pStoreLattice_p->putAt(lelValue, pos);
+      } else {
+
+// Stick zero in storage lattice (it's not initialized)
+
+         T val = 0;
+         pStoreLattice_p->putAt(val, pos);
+      }
+   }
+*/
+//
+   doneLEL_p = True;
 }
 
    
@@ -1531,6 +1620,7 @@ Bool LatticeStatistics<T>::listStats (Bool hasBeam, const IPosition& dPos,
    if (doRobust_p) os_p.output() << setw(oDWidth) << "Median"; 
    os_p.output() << setw(oDWidth) << "Rms";
    os_p.output() << setw(oDWidth) << "Sigma";
+   if (doneLEL_p) os_p.output() << setw(oDWidth) << "LEL";
    os_p.output() << setw(oDWidth) << "Minimum";
    os_p.output() << setw(oDWidth) << "Maximum" << endl;
 
@@ -1549,10 +1639,11 @@ Bool LatticeStatistics<T>::listStats (Bool hasBeam, const IPosition& dPos,
 
 // I hate ostrstreams.  The bloody things are one shot.
 
-         ostrstream os0, os1, os2, os3, os4, os5, os6, os7, os8;
+         ostrstream os0, os1, os2, os3, os4, os5, os6, os7, os8, os9;
          setStream(os0, oPrec); setStream(os1, oPrec); setStream(os2, oPrec); 
          setStream(os3, oPrec); setStream(os4, oPrec); setStream(os5, oPrec);  
          setStream(os6, oPrec); setStream(os7, oPrec); setStream(os8, oPrec); 
+         setStream(os9, oPrec); 
 //
 
          os0 << stats.column(SUM)(j);
@@ -1563,6 +1654,7 @@ Bool LatticeStatistics<T>::listStats (Bool hasBeam, const IPosition& dPos,
          os4 << stats.column(SIGMA)(j);
          os5 << stats.column(MIN)(j);
          os6 << stats.column(MAX)(j);
+         if (doneLEL_p) os9 << stats.column(LEL)(j);
 //
          os_p.output() << setw(oDWidth)   << String(os0);
          if (hasBeam) os_p.output() << setw(oDWidth)   << String(os1);
@@ -1572,6 +1664,7 @@ Bool LatticeStatistics<T>::listStats (Bool hasBeam, const IPosition& dPos,
          os_p.output() << setw(oDWidth)   << String(os4);
          os_p.output() << setw(oDWidth)   << String(os5);
          os_p.output() << setw(oDWidth)   << String(os6);
+         if (doneLEL_p) os_p.output() << setw(oDWidth)   << String(os9);
       }
       os_p.output() << endl;
    }
@@ -1841,7 +1934,7 @@ Bool LatticeStatistics<T>::plotStats (Bool hasBeam,
    const uInt n = statsToPlot_p.nelements();
    Bool doMean, doSigma, doVar, doRms, doSum, doSumSq;
    Bool doMin, doMax, doNPts, doFlux, doMedian;
-   Bool doMedAbsDevMed, doQuartile;
+   Bool doMedAbsDevMed, doQuartile, doLEL;
    linearSearch(doMean, statsToPlot_p, Int(MEAN), n);
    linearSearch(doMedian, statsToPlot_p, Int(MEDIAN), n);
    linearSearch(doMedAbsDevMed, statsToPlot_p, Int(MEDABSDEVMED), n);
@@ -1855,7 +1948,9 @@ Bool LatticeStatistics<T>::plotStats (Bool hasBeam,
    linearSearch(doMax, statsToPlot_p, Int(MAX), n);
    linearSearch(doNPts, statsToPlot_p, Int(NPTS), n);
    linearSearch(doFlux, statsToPlot_p, Int(FLUX), n);
+   linearSearch(doLEL, statsToPlot_p, Int(LEL), n);
    if (!hasBeam) doFlux = False;
+   if (!doneLEL_p) doLEL = False;
 //
    Bool none;
    Bool first = True;
@@ -2021,6 +2116,17 @@ Bool LatticeStatistics<T>::plotStats (Bool hasBeam,
       }
       nR++;
    }
+   if (doLEL) {
+      minMax(none, yMin, yMax, stats.column(LEL), stats.column(NPTS));
+      if (first) {
+         yRMin = yMin;
+         yRMax = yMax;
+      } else {
+         yRMin = min(yRMin,yMin);
+         yRMax = max(yRMax,yMax);
+      }
+      nR++;
+   }
 
    stretchMinMax(xMin, xMax); 
    if (nL>0) stretchMinMax(yLMin, yLMax);
@@ -2092,6 +2198,10 @@ Bool LatticeStatistics<T>::plotStats (Bool hasBeam,
       }
       if (doQuartile) {
          yRLabel += "Quartile,";
+         nRLabs++;
+      }
+      if (doLEL) {
+         yRLabel += "LEL,";
          nRLabs++;
       }
       yRLabel.del(Int(yRLabel.length()-1),1);
@@ -2254,6 +2364,15 @@ Bool LatticeStatistics<T>::plotStats (Bool hasBeam,
 
          multiPlot(plotter, abc, stats.column(QUARTILE), stats.column(NPTS));
       }
+      if (doLEL) {
+         if (++ls > 5) ls = 1;
+         plotter.sls(ls);
+
+         rCols(++i) = niceColour (initColours);
+         plotter.sci (rCols(i));
+
+         multiPlot(plotter, abc, stats.column(LEL), stats.column(NPTS));
+      }
 
 // Y label
 
@@ -2338,11 +2457,11 @@ Bool LatticeStatistics<T>::retrieveStorageStatistic(Array<T>& slice,
                                                     const Int& ISTAT,
                                                     Bool dropDeg)
 //
-// Retrieve values from accumulation lattice
+// Retrieve values from storage lattice
 //
 // Input
 //   ISTAT        Points at location of desired statistic in 
-//                accumulation lattice (last axis)
+//                storage lattice (last axis)
 // Input/output
 //   slice        The statistics; should be of zero size on input
 //
@@ -2362,7 +2481,6 @@ Bool LatticeStatistics<T>::retrieveStorageStatistic(Array<T>& slice,
    slice.resize(IPosition(0,0));
 
    if (someGoodPoints()) {
-
 
 // Get desired statistic slice. Discard degenerate axes (requires
 // empty array on input)
@@ -2386,7 +2504,7 @@ Bool LatticeStatistics<T>::retrieveStorageStatistic(Vector<T>& slice,
                                                     const IPosition& pos,
                                                     const Bool posInLattice)
 //
-// Retrieve values from accumulation lattice
+// Retrieve values from storage lattice
 //
 // Input
 //   pos          Locations for the display axes in the storage lattice
@@ -2593,6 +2711,9 @@ void LatticeStatistics<T>::summStats ()
    T dMin = stats(pos);
    pos(0) = MAX;
    T dMax = stats(pos);
+//
+   pos(0) = LEL;
+   T lel = stats(pos);   
 
 // Get beam
 
@@ -2613,12 +2734,12 @@ void LatticeStatistics<T>::summStats ()
    }
    setStream(os_p.output(), oPrec);
    ostrstream os00, os0, os1, os2, os3, os4, os5, os6, os7, os8;
-   ostrstream os9, os10;
+   ostrstream os9, os10, os11;
    setStream(os00, oPrec); 
    setStream(os0, oPrec); setStream(os1, oPrec); setStream(os2, oPrec); 
    setStream(os3, oPrec); setStream(os4, oPrec); setStream(os5, oPrec);  
    setStream(os6, oPrec); setStream(os7, oPrec); setStream(os8, oPrec); 
-   setStream(os9, oPrec); setStream(os10, oPrec); 
+   setStream(os9, oPrec); setStream(os10, oPrec), setStream(os11, oPrec);
 //
    os_p << endl << LogIO::POST;
    if (LattStatsSpecialize::hasSomePoints(nPts)) {
@@ -2633,6 +2754,7 @@ void LatticeStatistics<T>::summStats ()
       os8 << median;
       os9 << medAbsDevMed;
       os10 << quartile;
+      os11 << lel;
 //
       os_p << "Number points = ";
       os_p.output() << setw(oWidth) << String(os00) << "       Sum      = ";
@@ -2675,6 +2797,12 @@ void LatticeStatistics<T>::summStats ()
          os_p.output() << setw(oWidth) << String(os9);
          os_p.output()  << "       Quartile = ";
          os_p.output() << setw(oWidth) << String(os10) << endl;
+         os_p.post();
+      }
+//
+      if (doneLEL_p) {
+         os_p << "LEL statistic = ";
+         os_p.output() << setw(oWidth) << String(os11);
          os_p.post();
       }
 //
@@ -2788,7 +2916,7 @@ void StatsTiledCollapser<T>::process (uInt index1,
                                       const IPosition& shape)
 //
 // Process the data in the current chunk.   Everything in this
-// chunk belongs in one output location in the accumulation
+// chunk belongs in one output location in the storage
 // lattices
 //
 {
