@@ -194,6 +194,7 @@ void MCEarthMagnetic::initConvert(uInt which, MConvertBase &mc) {
     break;
     
   case JNAT_APP:
+    measMath.createAberration();
     measMath.createPrecNutat();
     mc.addFrameType(MeasFrame::EPOCH);
     break;
@@ -204,16 +205,19 @@ void MCEarthMagnetic::initConvert(uInt which, MConvertBase &mc) {
     break;
     
   case APP_JNAT:
+    measMath.createAberration();
     measMath.createPrecNutat();
     mc.addFrameType(MeasFrame::EPOCH);
     break;
     
   case B1950_APP:
+    measMath.createAberrationB1950();
     measMath.createPrecNutatB1950();
     mc.addFrameType(MeasFrame::EPOCH);
     break;
     
   case APP_B1950:
+    measMath.createAberrationB1950();
     measMath.createPrecNutatB1950();
     mc.addFrameType(MeasFrame::EPOCH);
     break;
