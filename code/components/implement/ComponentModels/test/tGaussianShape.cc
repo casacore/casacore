@@ -54,6 +54,9 @@
 #include <aips/Tables/Table.h>
 #include <aips/Utilities/String.h>
 #include <aips/Utilities/Assert.h>
+#include <aips/Glish/GlishArray.h>
+#include <aips/Glish/GlishRecord.h>
+#include <aips/Glish/GlishValue.h>
 #include <iostream.h>
 
 int main() {
@@ -222,8 +225,8 @@ int main() {
       AlwaysAssert(near(pa.radian(), compPA.radian(), 1E-10), AipsError);
 
       // Check this is a Gaussian component
-      AlwaysAssert(B1934.shapeType() == ComponentType::GAUSSIAN, AipsError);
-      AlwaysAssert(ComponentType::name(B1934.shapeType()).matches("Gaussian") == 1, 
+      AlwaysAssert(B1934.shape() == ComponentType::GAUSSIAN, AipsError);
+      AlwaysAssert(ComponentType::name(B1934.shape()).matches("Gaussian") == 1, 
  		   AipsError);
 
       // Check the parameters interface
@@ -262,8 +265,224 @@ int main() {
       end_try;
       cout << "Passed the set/get parameters test for Gaussian components"
   	   << endl;
+      String errorMessage("");
+      GlishRecord compRec;
+      AlwaysAssert(B1934.toRecord(errorMessage, compRec) == True, AipsError);
+      AlwaysAssert(errorMessage == "", AipsError);
+      {
+	AlwaysAssert(compRec.exists("flux"), AipsError);
+	AlwaysAssert(compRec.get("flux").type() == GlishValue::RECORD, 
+		     AipsError);
+	GlishRecord fluxRec(compRec.get("flux"));
+	AlwaysAssert(fluxRec.exists("value"), AipsError);
+	AlwaysAssert(fluxRec.get("value").type() == GlishValue::ARRAY, 
+		     AipsError);
+	GlishArray fluxVal(fluxRec.get("value"));
+	AlwaysAssert(fluxVal.elementType() != GlishArray::STRING, AipsError);
+	AlwaysAssert(fluxVal.shape().isEqual(IPosition(1,4)), AipsError);
+	Vector<Double> value(4);
+	fluxVal.get(value);
+	AlwaysAssert(near(value(0), 6.3, C::dbl_epsilon), AipsError);
+	AlwaysAssert(near(value(1), 0.0, C::dbl_epsilon), AipsError);
+	AlwaysAssert(near(value(2), 0.0, C::dbl_epsilon), AipsError);
+	AlwaysAssert(near(value(3), 0.0, C::dbl_epsilon), AipsError);
+	AlwaysAssert(fluxRec.exists("unit"), AipsError);
+	AlwaysAssert(fluxRec.get("unit").type() == GlishValue::ARRAY, 
+		     AipsError);
+	GlishArray fluxUnit(fluxRec.get("unit"));
+	AlwaysAssert(fluxUnit.elementType() == GlishArray::STRING, AipsError);
+	AlwaysAssert(fluxUnit.shape().isEqual(IPosition(1,1)), AipsError);
+	String unit;
+	fluxUnit.get(unit);
+	AlwaysAssert(unit == "Jy", AipsError);
+      }
+      {
+	AlwaysAssert(compRec.exists("direction"), AipsError);
+	AlwaysAssert(compRec.get("direction").type() == GlishValue::RECORD, 
+		     AipsError);
+	GlishRecord dirRec(compRec.get("direction"));
+	AlwaysAssert(dirRec.exists("refer"), AipsError);
+	AlwaysAssert(dirRec.get("refer").type() == GlishValue::ARRAY, 
+		     AipsError);
+	GlishArray referVal(dirRec.get("refer"));
+	AlwaysAssert(referVal.elementType() == GlishArray::STRING, AipsError);
+	AlwaysAssert(referVal.shape().isEqual(IPosition(1,1)), AipsError);
+	String refer;
+	referVal.get(refer);
+	AlwaysAssert(refer == "J2000", AipsError);
+
+	AlwaysAssert(dirRec.exists("type"), AipsError);
+	AlwaysAssert(dirRec.get("type").type() == GlishValue::ARRAY, 
+		     AipsError);
+	GlishArray typeVal(dirRec.get("type"));
+	AlwaysAssert(typeVal.elementType() == GlishArray::STRING, AipsError);
+	AlwaysAssert(typeVal.shape().isEqual(IPosition(1,1)), AipsError);
+	String type;
+	typeVal.get(type);
+	AlwaysAssert(type == "direction", AipsError);
+	
+	AlwaysAssert(dirRec.exists("m0"), AipsError);
+	AlwaysAssert(dirRec.get("m0").type() == GlishValue::RECORD, 
+		     AipsError);
+	{
+	  GlishRecord mRec(dirRec.get("m0"));
+	  AlwaysAssert(mRec.exists("value"), AipsError);
+	  AlwaysAssert(mRec.get("value").type() == GlishValue::ARRAY, 
+		       AipsError);
+	  GlishArray mVal(mRec.get("value"));
+	  AlwaysAssert(mVal.elementType() != GlishArray::STRING, AipsError);
+	  AlwaysAssert(mVal.shape().isEqual(IPosition(1,1)), AipsError);
+	  Double value;
+	  mVal.get(value);
+	  AlwaysAssert(near(value, -65.3439, 1E-6), AipsError);
+	  AlwaysAssert(mRec.exists("unit"), AipsError);
+	  AlwaysAssert(mRec.get("unit").type() == GlishValue::ARRAY, 
+		       AipsError);
+	  GlishArray mUnit(mRec.get("unit"));
+	  AlwaysAssert(mUnit.elementType() == GlishArray::STRING, AipsError);
+	  AlwaysAssert(mUnit.shape().isEqual(IPosition(1,1)), AipsError);
+	  String unit;
+	  mUnit.get(unit);
+	  AlwaysAssert(unit == "deg", AipsError);
+	}
+	AlwaysAssert(dirRec.exists("m1"), AipsError);
+	AlwaysAssert(dirRec.get("m1").type() == GlishValue::RECORD, 
+		     AipsError);
+	{
+	  GlishRecord mRec(dirRec.get("m1"));
+	  AlwaysAssert(mRec.exists("value"), AipsError);
+	  AlwaysAssert(mRec.get("value").type() == GlishValue::ARRAY, 
+		       AipsError);
+	  GlishArray mVal(mRec.get("value"));
+	  AlwaysAssert(mVal.elementType() != GlishArray::STRING, AipsError);
+	  AlwaysAssert(mVal.shape().isEqual(IPosition(1,1)), AipsError);
+	  Double value;
+	  mVal.get(value);
+	  AlwaysAssert(near(value, -63.6864, 1E-6), AipsError);
+	  AlwaysAssert(mRec.exists("unit"), AipsError);
+	  AlwaysAssert(mRec.get("unit").type() == GlishValue::ARRAY, 
+		       AipsError);
+	  GlishArray mUnit(mRec.get("unit"));
+	  AlwaysAssert(mUnit.elementType() == GlishArray::STRING, AipsError);
+	  AlwaysAssert(mUnit.shape().isEqual(IPosition(1,1)), AipsError);
+	  String unit;
+	  mUnit.get(unit);
+	  AlwaysAssert(unit == "deg", AipsError);
+	}
+      }
+      {
+	AlwaysAssert(compRec.exists("shape"), AipsError);
+	AlwaysAssert(compRec.get("shape").type() == GlishValue::RECORD, 
+		     AipsError);
+	GlishRecord shapeRec(compRec.get("shape"));
+	AlwaysAssert(shapeRec.exists("type"), AipsError);
+	AlwaysAssert(shapeRec.get("type").type() == GlishValue::ARRAY, 
+		     AipsError);
+	GlishArray typeVal(shapeRec.get("type"));
+	AlwaysAssert(typeVal.elementType() == GlishArray::STRING, AipsError);
+	AlwaysAssert(typeVal.shape().isEqual(IPosition(1,1)), AipsError);
+	String type;
+	typeVal.get(type);
+	AlwaysAssert(type == "gaussian", AipsError);
+
+	AlwaysAssert(shapeRec.exists("majoraxis"), AipsError);
+	AlwaysAssert(shapeRec.get("majoraxis").type() == GlishValue::RECORD, 
+		     AipsError);
+	{
+	  GlishRecord mRec(shapeRec.get("majoraxis"));
+	  AlwaysAssert(mRec.exists("value"), AipsError);
+	  AlwaysAssert(mRec.get("value").type() == GlishValue::ARRAY, 
+		       AipsError);
+	  GlishArray mVal(mRec.get("value"));
+	  AlwaysAssert(mVal.elementType() != GlishArray::STRING, AipsError);
+	  AlwaysAssert(mVal.shape().isEqual(IPosition(1,1)), AipsError);
+	  Double value;
+	  mVal.get(value);
+	  AlwaysAssert(near(value, 0.0666667, 1E-6), AipsError);
+	  AlwaysAssert(mRec.exists("unit"), AipsError);
+	  AlwaysAssert(mRec.get("unit").type() == GlishValue::ARRAY, 
+		       AipsError);
+	  GlishArray mUnit(mRec.get("unit"));
+	  AlwaysAssert(mUnit.elementType() == GlishArray::STRING, AipsError);
+	  AlwaysAssert(mUnit.shape().isEqual(IPosition(1,1)), AipsError);
+	  String unit;
+	  mUnit.get(unit);
+	  AlwaysAssert(unit == "'", AipsError);
+	}
+	AlwaysAssert(shapeRec.exists("minoraxis"), AipsError);
+	AlwaysAssert(shapeRec.get("minoraxis").type() == GlishValue::RECORD, 
+		     AipsError);
+	{
+	  GlishRecord mRec(shapeRec.get("minoraxis"));
+	  AlwaysAssert(mRec.exists("value"), AipsError);
+	  AlwaysAssert(mRec.get("value").type() == GlishValue::ARRAY, 
+		       AipsError);
+	  GlishArray mVal(mRec.get("value"));
+	  AlwaysAssert(mVal.elementType() != GlishArray::STRING, AipsError);
+	  AlwaysAssert(mVal.shape().isEqual(IPosition(1,1)), AipsError);
+	  Double value;
+	  mVal.get(value);
+	  AlwaysAssert(near(value, 0.0333333, 1E-6), AipsError);
+	  AlwaysAssert(mRec.exists("unit"), AipsError);
+	  AlwaysAssert(mRec.get("unit").type() == GlishValue::ARRAY, 
+		       AipsError);
+	  GlishArray mUnit(mRec.get("unit"));
+	  AlwaysAssert(mUnit.elementType() == GlishArray::STRING, AipsError);
+	  AlwaysAssert(mUnit.shape().isEqual(IPosition(1,1)), AipsError);
+	  String unit;
+	  mUnit.get(unit);
+	  AlwaysAssert(unit == "'", AipsError);
+	}
+	AlwaysAssert(shapeRec.exists("positionangle"), AipsError);
+	AlwaysAssert(shapeRec.get("positionangle").type() ==GlishValue::RECORD,
+		     AipsError);
+ 	{
+ 	  GlishRecord mRec(shapeRec.get("positionangle"));
+	  AlwaysAssert(mRec.exists("value"), AipsError);
+	  AlwaysAssert(mRec.get("value").type() == GlishValue::ARRAY, 
+		       AipsError);
+	  GlishArray mVal(mRec.get("value"));
+	  AlwaysAssert(mVal.elementType() != GlishArray::STRING, AipsError);
+	  AlwaysAssert(mVal.shape().isEqual(IPosition(1,1)), AipsError);
+	  Double value;
+	  mVal.get(value);
+	  AlwaysAssert(near(value, 45.0, C::dbl_epsilon), AipsError);
+	  AlwaysAssert(mRec.exists("unit"), AipsError);
+	  AlwaysAssert(mRec.get("unit").type() == GlishValue::ARRAY, 
+		       AipsError);
+	  GlishArray mUnit(mRec.get("unit"));
+	  AlwaysAssert(mUnit.elementType() == GlishArray::STRING, AipsError);
+	  AlwaysAssert(mUnit.shape().isEqual(IPosition(1,1)), AipsError);
+	  String unit;
+	  mUnit.get(unit);
+	  AlwaysAssert(unit == "deg", AipsError);
+	}
+      }
+      GaussianCompRep newComp;
+      AlwaysAssert(newComp.fromRecord(errorMessage, compRec) == True,
+		   AipsError);
+      AlwaysAssert(errorMessage == "", AipsError);
+      newComp.flux(componentFlux);
+      AlwaysAssert(allNear(flux1934.ac(), componentFlux.getValue("Jy").ac(),
+			   1E-10), AipsError);
+      newComp.direction(coord1934J2000);
+      AlwaysAssert(coord1934J2000.getValue()
+ 		   .near(MDirection::Convert(coord1934B1950,MDirection::J2000)
+ 			 ().getValue()), AipsError);
+      newComp.width(majorAxis, minorAxis, pa);
+      parms.resize(3);
+      newComp.parameters(parms);
+      AlwaysAssert(near(parms(0), Quantity(4, "''").getValue("rad"), 1E-10), 
+		   AipsError);
+      AlwaysAssert(near(parms(1), Quantity(2, "''").getValue("rad"), 1E-10), 
+		   AipsError);
+      AlwaysAssert(near(parms(2), Quantity(45, "deg").getValue("rad"), 1E-10), 
+		   AipsError);
+      cout << "Passed the to/from GlishRecord test for Gaussian components"
+  	   << endl;
+
       const SkyCompRep * compRepPtr = B1934.clone();
-      AlwaysAssert(compRepPtr->shapeType() == ComponentType::GAUSSIAN, AipsError);
+      AlwaysAssert(compRepPtr->shape() == ComponentType::GAUSSIAN, AipsError);
       flux1934 = 0.0;
       Quantum<Vector<Double> > qFlux(flux1934, "Jy");
       compRepPtr->flux(qFlux) ;
@@ -346,6 +565,9 @@ int main() {
 		   AipsError);
       image.table().markForDelete();
       cout << "Passed the projection to an image test" << endl;
+    }
+    {
+      
     }
   }
   catch (AipsError x) {
