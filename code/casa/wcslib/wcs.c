@@ -269,6 +269,8 @@ struct wcsprm *wcs;
                  wcsfree(wcs);
                  return 2;
               }
+            } else {
+              wcs->pv = (struct pvcard *)0;
             }
 
             wcs->npvmax  = NPVMAX;
@@ -291,6 +293,8 @@ struct wcsprm *wcs;
                  wcsfree(wcs);
                  return 2;
               }
+            } else {
+              wcs->ps = (struct pscard *)0;
             }
 
             wcs->npsmax  = NPSMAX;
