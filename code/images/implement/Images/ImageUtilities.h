@@ -1,5 +1,5 @@
 //# ImageUtilities.h: Some utility functions handy for accessing images
-//# Copyright (C) 1996,1997,1999,2000,2001
+//# Copyright (C) 1996,1997,1999,2000,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -131,7 +131,10 @@ public:
 // (the output from SkyComponent::toPixel) and converts them to a 
 // SkyComponent.   The coordinate values are in the 'x' and 'y' frames (
 // It is possible that the x and y axes of the pixel array are
-// lat/long (xIsLong=False)  rather than  long/lat.
+// lat/long (xIsLong=False)  rather than  long/lat.  facToJy gives you
+// a factor to convert the brightness units from whatevers per whatever
+// to Jy per whatever (e.g. mJy/beam to Jy/beam).  It is unity if it
+// can't be done and you get a warning.
 //
 //   pars(0) = FLux     image units
 //   pars(1) = x cen    abs pix
@@ -142,7 +145,7 @@ public:
 //
 //  5 values for ComponentType::Gaussian, CT::Disk.  3 values for CT::Point.
 //
-   static SkyComponent encodeSkyComponent(LogIO& os, Double& fluxRatio,
+   static SkyComponent encodeSkyComponent(LogIO& os, Double& facToJy,
                                           const ImageInfo& ii,
                                           const CoordinateSystem& cSys,
                                           const Unit& brightnessUnit,
@@ -158,7 +161,7 @@ public:
 // 2 pixel axes of the coordinate system our 2D shape is in.
 // If axes are not from the same coordinate type units must be pixels.
 // If doRef is True, then x and y are taken from the reference
-// value rather than the paraneters vector.
+// value rather than the parameters vector.
 //
 // On input, pa is N->E (at ref pix) for celestial planes.
 // Otherwise pa is in pixel coordinate system +x -> +y
