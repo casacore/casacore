@@ -1,4 +1,4 @@
-//# ImagePolarimetry.h: generate Polarimetry from an image
+//# ImagePolarimetry.h: Polarimetric analysis of images
 //# Copyright (C) 1996,1997,1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -31,14 +31,18 @@
 
 //# Includes
 #include <aips/aips.h>
+#include <aips/Containers/Block.h> 
 #include <aips/Measures/Stokes.h>
 #include <aips/Mathematics/Complex.h>
 #include <trial/Images/ImageInterface.h>
+#include <trial/Fitting/LinearFitSVD.h>
+
 
 //# Forward Declarations
 template <class T> class SubImage;
 template <class T> class ImageExpr;
 template <class T> class Quantum;
+template <class T> class LatticeStatistics;
 //
 class CoordinateSystem;
 class IPosition;
@@ -49,6 +53,7 @@ class LogIO;
 
 
 // <summary>
+// Polarimetric analysis of images
 // </summary>
 
 // <use visibility=export>
@@ -57,19 +62,42 @@ class LogIO;
 // </reviewed>
 
 // <prerequisite>
+//   <li> <linkto class=ImageExpr>ImageExpr</linkto>
 //   <li> <linkto class=ImageInterface>ImageInterface</linkto>
 // </prerequisite>
 
 // <etymology>
+//  Polarimetric analysis of Images
 // </etymology>
 
 // <synopsis>
+// This class provides polarimetric image analysis capability.
+// It takes an image with a Stokes axis (some combination
+// of IQUV is needed) as its input.
+//
+// Many functions return ImageExpr objects.  These are
+// read-only images.
+//
+// Sometimes the standard deviation of the noise is needed.
+// This is for debiasing polarized intensity images or working out
+// error images.  By default it is worked out for you with a
+// clipped mean algorithm.  However, you can provide sigma if you
+// know it accurately.   It should be the sigma of the noise in
+// the absence of signal.  You won't measure that very well from
+// Stokes I if it is dynamic range limited.  Better to get it from 
+// V or Q or U.  When this class needs the standard deviation of
+// the noise, it will try and get it from V or Q and U and finally I.
+//
+// However, note that the functions sigmaStokes{I,Q,U,V} DO return the standard
+// deviation of the noise for that specific Stokes type.
+// 
 // </synopsis>
 //
 // <motivation>
+// Basic image analysis capability
 // </motivation>
 
-// <todo asof="1998/11/01">
+// <todo asof="1999/11/01">
 //   <li> 
 // </todo>
 
@@ -78,7 +106,11 @@ class ImagePolarimetry
 {
 public:
 
-// Constructor
+// Stokes types
+   enum StokesTypes {I, Q, U, V}; 
+
+// Constructor.  The input image must have a Stokes
+// axis with some subset of I,Q,U, and V
    ImagePolarimetry (const ImageInterface<Float>& image);
 
 // Copy constructor (reference semantics)
@@ -90,7 +122,8 @@ public:
 // Assignment operator (reference semantics)
    ImagePolarimetry& operator=(const ImagePolarimetry& other);
 
-// Summary
+// Summary.  Just invokes the ImageSummary list function
+// to summarize the header of the construction image
    void summary(LogIO& os) const;
 
 // Get the CoordinateSystem of the construction image
@@ -103,69 +136,212 @@ public:
    Bool isMasked() const {return itsInImagePtr->isMasked();};
 
 // Get the shape of an image for a single Stokes pixel
-// Thus, if the construction shape was [10,10,4,20] where
+// Thus, if the construction image shape was [10,10,4,20] where
 // axis 2 (shape 4) is the Stokes axis, this function
 // would return [10,10,1,20]
-   IPosition stokesShape() const;
+   IPosition singleStokesShape() const;
 
-// Get Stokes I 
+// <group>
+// Get the Stokes I image and the standard deviation of the
+// I image.  This  is worked out by first clipping 
+// outliers from the mean at the specified level.
    ImageExpr<Float> stokesI() const;
+   Float sigmaStokesI (Float clip=10.0);
+// </group>
 
-// Get Stokes Q
+// <group>
+// Get the Stokes Q image and the standard deviation 
+// of the Q image.  This  is worked out by first clipping 
+// outliers from the mean at the specified level.
    ImageExpr<Float> stokesQ() const;
+   Float sigmaStokesQ (Float clip=10.0);
+// </group>
 
-// Get Stokes U 
+// <group>
+// Get the Stokes U image and the standard deviation 
+// of the U image.  This  is worked out by first clipping 
+// outliers from the mean at the specified level.
    ImageExpr<Float> stokesU() const;
+   Float sigmaStokesU (Float clip=10.0);
+// </group>
 
-// Get Stokes V 
+// <group>
+// Get the Stokes V image and the standard deviation 
+// of the V image.  This  is worked out by first clipping 
+// outliers from the mean at the specified level.
    ImageExpr<Float> stokesV() const;
+   Float sigmaStokesV (Float clip=10.0);
+// </group>
 
-// Get Linearly polarized intensity
-   ImageExpr<Float> linPolInt(Bool debias, Float var) const;
+// <group>
+// Get the specified Stokes image and the standard deviation 
+// of the image.  This  is worked out by first clipping 
+// outliers from the mean at the specified level.
+   ImageExpr<Float> stokes(ImagePolarimetry::StokesTypes index) const;
+   Float sigmaStokes (ImagePolarimetry::StokesTypes index, Float clip=10.0);
+// </group>
 
-// Get Total polarized intensity.  
-   ImageExpr<Float> totPolInt(Bool debias, Float var) const;
+// Get the best estimate of the statistical noise. This gives you
+// the standard deviation with outliers from the mean
+// clipped first. The idea is to not be confused by source or dynamic range issues.
+// Generally Stokes V is empty of sources (not always), then Q and U are generally
+// less bright than I.  So this function first tries V, then Q and U 
+// and lastly I to give you its noise estimate
+   Float sigma (Float clip=10.0);
 
-// Get Linearly polarized position angle
-   ImageExpr<Float> linPolPosAng() const;
+// <group>
+// Get the linearly polarized intensity image and its
+// standard deviation.  If wish to debias the image, you
+// can either provide <src>sigma<\src> (the standard 
+// deviation of the termal noise ) or if <src>sigma</src> is non-positive, 
+// it will  be worked out for you with a clipped mean algorithm.
+   ImageExpr<Float> linPolInt(Bool debias, Float clip=10.0, Float sigma=-1.0);
+   Float sigmaLinPolInt (Float clip=10.0, Float sigma=-1.0);
+// </group>
 
-// Get Fractional linear polarization 
-   ImageExpr<Float> fracLinPol(Bool debias, Float var) const;
+// <group>
+// Get the total polarized intensity (from whatever combination
+// of Q, U, and V the construction image has) image and its error 
+// (standard deviation).  If wish to debias the image, you
+// can either provide <src>sigma<\src> (the standard  deviation 
+// of the thermal noise) or if <src>sigma</src> is 
+// non-positive, it will be worked out for you with a 
+// clipped mean algorithm.
+   ImageExpr<Float> totPolInt(Bool debias, Float clip=10.0, Float sigma=-1.0);
+   Float sigmaTotPolInt (Float clip=10.0, Float sigma=-1.0);
+// </group>
 
-// Get Fractional total polarization 
-   ImageExpr<Float> fracTotPol(Bool debias, Float var) const;
+// <group>
+// Get linearly polarized position angle (degrees or radians) image
+// and error (standard deviation).   If you provide 
+// <src>sigma<\src> it is the  standard deviation of 
+// the termal noise.  If <src>sigma</src> is non-positive, it will be 
+// worked out for you with a  clipped mean algorithm.
+   ImageExpr<Float> linPolPosAng(Bool radians) const;
+   ImageExpr<Float> sigmaLinPolPosAng (Bool radians, Float clip=10.0, Float sigma=-1.0);
+// </group>
 
-// Fourier Rotation Measure.  Coordinates, ImageInfo, MiscInfo, Units,
+
+// <group>
+// Get fractional linear polarization image 
+// and error (standard deviation).   If wish to debias the image, you
+// can either provide <src>sigma<\src> (the standard 
+// deviation of the termal noise) or if <src>sigma</src> is non-positive, 
+// it will  be worked out for you with a clipped mean algorithm.
+   ImageExpr<Float> fracLinPol(Bool debias, Float clip=10.0, Float sigma=-1.0);
+   ImageExpr<Float> sigmaFracLinPol (Float clip=10.0, Float sigma=-1.0);
+// </group>
+
+// <group>
+// Get Fractional total polarization and error (standard deviation)
+// <src>var<\src> is the standard deviation  of the thermal noise.
+// If <src>sigma</src> is non-positive, 
+// it will  be worked out for you with a clipped mean algorithm.
+   ImageExpr<Float> fracTotPol(Bool debias, Float clip=10.0, Float sigma=-1.0);
+   ImageExpr<Float> sigmaFracTotPol (Float clip=10.0, Float sigma=-1.0);
+// </group>
+
+// Fourier Rotation Measure.  The output image is the complex polarization
+// (Q + iU) with the spectral axis replaced by a RotationMeasure axis.
+// Coordinates, ImageInfo, MiscInfo, Units,
 // history are updated/copied to the output.  If the output has a mask,
 // and the input is masked, the mask is copied.  If the output
 // has a mask, it should already have been initialized to True
-   void fourierRotationMeasure(ImageInterface<Complex>& lag,
+   void fourierRotationMeasure(ImageInterface<Complex>& pol,
                                Bool zeroZeroLag);
 
+// <group>
+// Traditional rotation measure approach. 
+   void rotationMeasureShape(IPosition& shape, CoordinateSystem& cSys,
+                             uInt& fAxis, uInt& sAxis, 
+                             LogIO& os, Int spectralAxis) const;
+   void rotationMeasure(ImageInterface<Float>& rm,  ImageInterface<Float>& rmErr, Int axis, 
+                        Float sigma, Float rmFg, Float rmMax, Float maxPaErr);
+// </group>
 
 private:
    const ImageInterface<Float>* itsInImagePtr;
-   ImageInterface<Float>* itsIImagePtr;
-   ImageInterface<Float>* itsQImagePtr;
-   ImageInterface<Float>* itsUImagePtr;
-   ImageInterface<Float>* itsVImagePtr;
-// 
+   LinearFitSVD<Float>* itsFitterPtr;
+   Float itsOldClip;
+
+// These blocks are always size 4, with IQUV in slots 0,1,2,3
+// If your image is IV only, they still use slots 0 and 3
+
+   PtrBlock<ImageInterface<Float>* > itsStokesPtr;
+   PtrBlock<LatticeStatistics<Float>* > itsStokesStatsPtr;
+
+// Delete all private pointers
    void cleanup();
+
+// Copy MiscInfo, ImagInfo, History
+   void copyMiscellaneous (ImageInterface<Float>& out) const;
+
+// Copy mask 
+   void ImagePolarimetry::copyMask (ImageInterface<Float>& out,
+                                    const ImageInterface<Float>& in) const;
+
+// Change the Stokes Coordinate for the given float image to be of the specified Stokes type
    void fiddleStokesCoordinate(ImageInterface<Float>& ie, Stokes::StokesTypes type) const;
+
+// Change the Stokes Coordinate for the given complex image to be of the specified Stokes type
    void fiddleStokesCoordinate(ImageInterface<Complex>& ie, Stokes::StokesTypes type) const;
+
+// Change the time coordinate to be rotation measure
    void fiddleTimeCoordinate(ImageInterface<Complex>& ie, const Quantum<Double>& f, Int coord) const;
-//
-   Quantum<Double> findCentralFrequency(const CoordinateSystem& cSys, Int coord, Int shape) const;
+
+// Find the central frequency from the given spectral coordinate
+   Quantum<Double> findCentralFrequency(const Coordinate& coord, Int shape) const;
+
+// Fit the spectrum of position angles to find the rotation measure via Leahy algorithm
+   Bool findRotationMeasure (Float& rmFitted, Float& rmErrFitted,
+                             Float& pa0Fitted, Float& pa0ErrFitted, Float& rChiSqFitted, 
+                             const Vector<uInt>& sortidx, const Vector<Float>& wsq, 
+                             const Vector<Float>& pa, const Array<Float>& paerr, 
+                             Float rmfg, Float rmmax, Float paErrMax);
+
+// Find the Stokes in the construction image and assign pointers
    void findStokes();
-//
-   LatticeExprNode makePolIntNode(LogIO& os, Bool debias, Float var,
-                                  Bool doLin, Bool doCirc) const;
+
+// Find the spectral coordinate. 
+   Int findSpectralCoordinate(const CoordinateSystem& cSys, LogIO& os, Bool fail) const;
+
+// Make a LEN for the give types of polarized intensity
+   LatticeExprNode makePolIntNode(LogIO& os, Bool debias, Float clip, Float sigma,
+                                  Bool doLin, Bool doCirc);
+
+// Make an IE for the specified Stokes
    ImageExpr<Float> makeStokesExpr(ImageInterface<Float>* imPtr,
-                               const String& s, const String& name) const;
+                                   const String& s, const String& name) const;
+
+// Make a SubImage from the construction image for the specified pixel
+// along the specified pixel axis
    ImageInterface<Float>* makeSubImage (IPosition& blc, IPosition& trc,
-                                    Int axis, Int pix) const;
+                                        Int axis, Int pix) const;
+
+// Least squares fit to find RM from position angles
+   Bool rmLsqFit (Vector<Float>& pars, const Vector<Float>& wsq, 
+                  const Vector<Float> pa, const Vector<Float>& paerr) const;
+
+// Fit the spectrum of position angles to find the rotation measure via Leahy algorithm
+// for primary (n>2) points
+   Bool rmPrimaryFit (Float& rmFitted, Float& rmErrFitted,
+                      Float& pa0Fitted, Float& pa0ErrFitted,
+                      Float& rChiSqFitted, const Vector<Float>& wsq, 
+                      const Vector<Float>& pa, const Vector<Float>& paerr, Float rmmax);
+
+// Fit the spectrum of position angles to find the rotation measure via Leahy algorithm
+// for supplementary (n==2) points
+   Bool rmSupplementaryFit (Float& rmFitted, Float& rmErrFitted,
+                            Float& pa0Fitted, Float& pa0ErrFitted,
+                            Float& rChiSqFitted, const Vector<Float>& wsq, 
+                            const Vector<Float>& pa, const Vector<Float>& paerr);
+
+// Return I, Q, U or V for specified integer index (0-3)
+   String stokesName (ImagePolarimetry::StokesTypes index) const;
+
+// Find the standard deviation for the Stokes image specified by the integer index
+   Float sigma (ImagePolarimetry::StokesTypes index, Float clip);
 };
 
 
 #endif
-
