@@ -1,5 +1,5 @@
 //# dLogging.cc: This program demonstrates the logging system.
-//# Copyright (C) 1996,1997
+//# Copyright (C) 1996,1997,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -36,8 +36,8 @@
 #include <aips/Logging.h>
 #include <aips/Arrays.h>
 
-#include <strstream.h>
-#include <iostream.h>
+#include <aips/strstream.h>
+#include <aips/iostream.h>
 
 class DataClass
 {

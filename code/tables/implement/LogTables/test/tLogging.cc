@@ -1,5 +1,5 @@
 //# tLogging.cc: Test the logging classes
-//# Copyright (C) 1996,1997,1998,2000
+//# Copyright (C) 1996,1997,1998,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -40,8 +40,8 @@
 #include <aips/OS/Directory.h>
 #include <aips/Utilities/Assert.h>
 
-#include <strstream.h>
-#include <iostream.h>
+#include <aips/strstream.h>
+#include <aips/iostream.h>
 
 void testLogFilter()
 {
