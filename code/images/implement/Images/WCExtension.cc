@@ -1,5 +1,5 @@
 //# WCExtension.cc: Make the extension of an image region
-//# Copyright (C) 1998,2000
+//# Copyright (C) 1998,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -30,6 +30,7 @@
 #include <trial/Images/WCBox.h>
 #include <trial/Images/ImageRegion.h>
 #include <trial/Lattices/LCExtension.h>
+#include <trial/Lattices/LCStretch.h>
 #include <aips/Tables/TableRecord.h>
 #include <aips/Utilities/GenSort.h>
 #include <aips/Utilities/Assert.h>
@@ -39,30 +40,11 @@
 WCExtension::WCExtension (const ImageRegion& region,
 			  const WCBox& extendBox)
 : WCCompound (region, ImageRegion(extendBox))
-{
-    // Check if the axes do not overlap.
-    // They do not if the dimensionality is the sum of the
-    // other dimensionalities.
-    if (ndim() != region.ndim() + extendBox.ndim()) {
-        throw (AipsError ("WCExtension::WCExtension - "
-			  "one or more axes of the region to be extended "
-			  "are used in the extendBox too"));
-    }
-}
+{}
 
 WCExtension::WCExtension (Bool takeOver, const PtrBlock<const WCRegion*>& regions)
 : WCCompound (takeOver, regions)
-{
-    uInt nd = 0;
-    for (uInt i=0; i<regions.nelements(); i++) {
-        nd += regions[i]->ndim();
-    }
-    if (ndim() != nd) {
-        throw (AipsError ("WCExtension::WCExtension - "
-			  "one or more axes of the region to be extended "
-			  "are used in the extendBox too"));
-    }
-}
+{}
 
 WCExtension::WCExtension (const WCExtension& other)
 : WCCompound (other)
@@ -91,9 +73,37 @@ WCRegion* WCExtension::cloneRegion() const
 
 Bool WCExtension::canExtend() const
 {
-    // It extend itself if the box can do so.
+    // It can extend itself if the box can do so.
     DebugAssert (regions().nelements() == 2, AipsError);
     return regions()[1]->canExtend();
+}
+
+void WCExtension::findAxes (IPosition& extendBoxAxes,
+			    IPosition& stretchBoxAxes,
+			    IPosition& stretchRegionAxes) const
+{
+    const WCRegion& box = *(regions()[1]);
+    uInt nstretch = regions()[0]->ndim() + box.ndim() - ndim();
+    uInt nextend = box.ndim() - nstretch;
+    extendBoxAxes.resize (nextend);
+    stretchBoxAxes.resize (nstretch);
+    stretchRegionAxes.resize (nstretch);
+    const Record& desc = regions()[0]->getAxesDesc();
+    uInt nre = 0;
+    uInt nrs = 0;
+    for (uInt i=0; i<box.ndim(); i++) {
+        Int axis = axisNr (box.getAxisDesc(i), desc);
+	if (axis < 0) {
+	    AlwaysAssert (nre < nextend, AipsError);
+	    extendBoxAxes(nre++) = i;
+	} else {
+	    AlwaysAssert (nrs < nstretch, AipsError);
+	    stretchBoxAxes(nrs) = i;
+	    stretchRegionAxes(nrs++) = axis;
+	}
+    }
+    AlwaysAssert (nre == nextend, AipsError);
+    AlwaysAssert (nrs == nstretch, AipsError);
 }
 
 LCRegion* WCExtension::doToLCRegion (const CoordinateSystem& cSys,
@@ -101,58 +111,108 @@ LCRegion* WCExtension::doToLCRegion (const CoordinateSystem& cSys,
 				     const IPosition& pixelAxesMap,
 				     const IPosition& outOrder) const
 {
-    uInt i;
     // There should be 2 regions. The latter one should be a WCBox.
     DebugAssert (regions().nelements() == 2, AipsError);
     DebugAssert (regions()[1]->type() == WCBox::className(), AipsError);
-    // Split the pixelAxesMap and outOrder into the parts for the
-    // region and the box (which can be more than the box itself
-    // because it might be extended).
     uInt ndout = outOrder.nelements();
     uInt ndreg = regions()[0]->ndim();
     AlwaysAssert (ndreg <= ndout, AipsError);
-    uInt ndbox = ndout - ndreg;
+    // Split the box into the extend and the stretch part.
+    // The IPositions give the axis numbers in the extend box.
+    const WCBox* bptr = dynamic_cast<const WCBox*>(regions()[1]);
+    AlwaysAssert (bptr != 0, AipsError);
+    IPosition extendBoxAxes;
+    IPosition stretchBoxAxes;
+    IPosition stretchRegAxes;
+    findAxes (extendBoxAxes, stretchBoxAxes, stretchRegAxes);
+    WCBox extbox = bptr->splitBox (extendBoxAxes);
+    WCBox strbox = bptr->splitBox (stretchBoxAxes);
+    // Split the pixelAxesMap and outOrder into the parts for the
+    // region, the stretch box and the extend box (which can be more than
+    // the box itself because there can be extra extend axes).
+    uInt ndstr = stretchBoxAxes.nelements();
+    uInt ndext = ndout - ndreg;
+    DebugAssert (ndext >= extendBoxAxes.nelements(), AipsError);
     IPosition regPixMap(ndreg);
     IPosition regOutOrd(ndreg);
-    IPosition boxPixMap(ndbox);
-    IPosition boxOutOrd(ndbox);
-    // In our axesDesc the first axes are used for the region and the
-    // rest for the box.
-    for (i=0; i<ndreg; i++) {
+    IPosition strPixMap(ndstr);
+    IPosition strOutOrd(ndstr);
+    IPosition extPixMap(ndext);
+    IPosition extOutOrd(ndext);
+    // In our axesDesc the first axes are used for the region.
+    for (uInt i=0; i<ndreg; i++) {
         regPixMap(i) = pixelAxesMap(i);
 	regOutOrd(i) = outOrder(i);
     }
-    for (i=0; i<ndbox; i++) {
-        boxPixMap(i) = pixelAxesMap(i+ndreg);
-	boxOutOrd(i) = outOrder(i+ndreg);
+    // The rest of the pixel/outOrder are for the extend box.
+    for (uInt i=0; i<ndext; i++) {
+        extPixMap(i) = pixelAxesMap(i+ndreg);
+	extOutOrd(i) = outOrder(i+ndreg);
     }
-    // Now boxOutOrd gives us the axes over which to extend.
-    IPosition extendAxes (boxOutOrd);
+    // The stretch box uses some axes in the region.
+    for (uInt i=0; i<ndstr; i++) {
+        uInt axis = stretchRegAxes(i);
+	strPixMap(i) = pixelAxesMap(axis);
+	strOutOrd(i) = outOrder(axis);
+    }
+    // Determine the axes to be passed to LCStretch and LCExtension.
+    // Note that outOrd already reorders the axes as needed, so we
+    // need the axes for the LC objects in normal order.
+    IPosition extendAxes (ndext);
+    IPosition stretchAxes (ndstr);
     // The new outOrd objects have to have numbers in the range 0..n,
     // where n is the length.
     // We use the same trick as in WCRegion by sorting them and using
     // the resulting index vector.
     Vector<uInt> reginx(ndreg);
     GenSortIndirect<Int>::sort (reginx, regOutOrd.storage(), ndreg);
-    for (i=0; i<ndreg; i++) {
+    for (uInt i=0; i<ndreg; i++) {
 	regOutOrd(reginx(i)) = i;
     }
-    Vector<uInt> boxinx(ndbox);
-    GenSortIndirect<Int>::sort (boxinx, boxOutOrd.storage(), ndbox);
-    for (i=0; i<ndbox; i++) {
-	boxOutOrd(boxinx(i)) = i;
+    Vector<uInt> extinx(ndext);
+    GenSortIndirect<Int>::sort (extinx, extOutOrd.storage(), ndext);
+    for (uInt i=0; i<ndext; i++) {
+        extendAxes(i) = extOutOrd(extinx(i));
+	extOutOrd(extinx(i)) = i;
+    }
+    Vector<uInt> strinx(ndstr);
+    GenSortIndirect<Int>::sort (strinx, strOutOrd.storage(), ndstr);
+    for (uInt i=0; i<ndstr; i++) {
+        stretchAxes(i) = regOutOrd(stretchRegAxes(i));
+	strOutOrd(strinx(i)) = i;
+    }
+    // The box axes get already reordered by its toLCRegion.
+    // So the stretched axis must be region axis in the new order.
+    GenSortIndirect<Int>::sort (strinx, stretchAxes.storage(), ndstr);
+    for (uInt i=0; i<ndstr; i++) {
+        stretchRegAxes(i) = stretchAxes(strinx(i));
     }
     // Great, we're almost there.
-    // Convert the region and the box and combine them into an LCExtension.
+    // Convert the region and the box and combine them into an
+    // LCStretch and/or LCExtension.
     LCRegion* regptr = regions()[0]->toLCRegionAxes (cSys, shape, regPixMap,
 						     regOutOrd);
-    LCRegion* boxptr = regions()[1]->toLCRegionAxes (cSys, shape, boxPixMap,
-						     boxOutOrd);
-    DebugAssert (boxptr->type() == LCBox::className(), AipsError);
-    LCExtension* extptr = new LCExtension (True, regptr, extendAxes,
-					   *(LCBox*)boxptr);
-    delete boxptr;
-    return extptr;
+    if (ndstr > 0) {
+        LCRegion* boxptr = strbox.toLCRegionAxes (cSys, shape, strPixMap,
+						  strOutOrd);
+	LCBox* dboxptr = dynamic_cast<LCBox*>(boxptr);
+	AlwaysAssert (dboxptr != 0, AipsError);
+	LCStretch* extptr = new LCStretch (True, regptr, stretchRegAxes,
+					   *dboxptr);
+	delete boxptr;
+	regptr = extptr;
+    }
+    if (ndext > 0) {
+        LCRegion* boxptr = extbox.toLCRegionAxes (cSys, shape, extPixMap,
+						  extOutOrd);
+	LCBox* dboxptr = dynamic_cast<LCBox*>(boxptr);
+	AlwaysAssert (dboxptr != 0, AipsError);
+	LCExtension* extptr = new LCExtension (True, regptr, extendAxes,
+					       *dboxptr);
+	delete boxptr;
+	regptr = extptr;
+    }
+    return regptr;
 }
 
 String WCExtension::className()
