@@ -27,6 +27,7 @@
 
 //# Includes
 #include <aips/aips.h>
+#include <aips/Exceptions/Error.h>
 #include <aips/Measures.h>
 #include <aips/Measures/MeasComet.h>
 #include <aips/Arrays/ArrayMath.h>
