@@ -725,8 +725,8 @@ typedef String StrTmp;
 // Global Functions which compare Strings
 //</summary>
 
-// The global function "compare" returns 1 if the arguments are equal,
-// 0 otherwise.
+// The global function "compare" returns 0 if the arguments are equal,
+// <0 is x is less and >0 is x is greater.
 // <group name=compare>
 int compare(const String &x, const String &y);
 int compare(const String &x, const SubString &y);
