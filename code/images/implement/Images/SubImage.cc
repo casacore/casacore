@@ -334,6 +334,9 @@ Bool SubImage<T>::lock (FileLocker::LockType type, uInt nattempts)
 template<class T>
 void SubImage<T>::unlock()
 {
+  // Unlock both the image and the sublattice, so all possible
+  // mask tables are unlocked too.
+  itsImagePtr->unlock();
   itsSubLatPtr->unlock();
 }
 template<class T>
