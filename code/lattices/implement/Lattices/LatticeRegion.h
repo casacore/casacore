@@ -31,10 +31,11 @@
 
 
 //# Includes
-#include <trial/Lattices/LCRegion.h>
+#include <trial/Lattices/Lattice.h>
 #include <aips/Lattices/Slicer.h>
 
 //# Forward Declarations
+class LCRegion;
 
 
 // <summary>
@@ -64,82 +65,83 @@
 // </srcblock>
 // </example>
 
-// <templating arg=T>
-// Any type that can be used by the Tables System can also be used by
-// this class.
-// </templating>
-
 //# <todo asof="yyyy/mm/dd">
 //# </todo>
 
 class LatticeRegion: public Lattice<Bool>
 {
 public:
-  // The default constructor creates a LatticeRegion that is useless for just
-  // about everything, except that it can be assigned to with the assignment
-  // operator.
-  LatticeRegion();
+    // The default constructor creates a LatticeRegion that is useless for just
+    // about everything, except that it can be assigned to with the assignment
+    // operator.
+    LatticeRegion();
 
-  // Create from the given region.
-  // The pointer to the parent can be 0.
-  LatticeRegion (const LCRegion& region, const LatticeRegion* parent = 0);
+    // Create from the given region.
+    // The pointer to the parent can be 0.
+    LatticeRegion (const LCRegion& region, const LatticeRegion* parent = 0);
 
-  // Construct from the given slicer. The lattice shape has to be
-  // the lattice shape of the lattice where the region is taken from.
-  LatticeRegion (const Slicer& slicer, const IPosition& latticeShape);
+    // Create from the given region and take over the pointer.
+    // This means the user should not delete the region object pointed to,
+    // because it will be deleted by the LatticeRegion destructor.
+    // The pointer to the parent is set to 0.
+    LatticeRegion (LCRegion* region);
 
-  // Construct from the given slicer. The pointer to the parent
-  // should not be 0.
-  LatticeRegion (const Slicer& slicer, const LatticeRegion* parent);
+    // Construct from the given slicer. The lattice shape has to be
+    // the lattice shape of the lattice where the region is taken from.
+    LatticeRegion (const Slicer& slicer, const IPosition& latticeShape);
 
-  // Copy constructor (reference semantics).
-  LatticeRegion (const LatticeRegion& other);
-    
-  virtual ~LatticeRegion();
+    // Construct from the given slicer. The pointer to the parent
+    // should not be 0.
+    LatticeRegion (const Slicer& slicer, const LatticeRegion* parent);
 
-  // Assignment (reference semantics).
-  LatticeRegion& operator= (const LatticeRegion& other);
+    // Copy constructor (reference semantics).
+    LatticeRegion (const LatticeRegion& other);
 
-  // Set the region and/or pointer to the parent.
-  void setParent (const LatticeRegion* parent);
+    virtual ~LatticeRegion();
 
-  // Make a copy of the object (reference semantics).
-  virtual Lattice<Bool>* clone() const;
+    // Assignment (reference semantics).
+    LatticeRegion& operator= (const LatticeRegion& other);
 
-  // Is the LatticeRegion writable?
-  virtual Bool isWritable() const;
+    // Set the region and/or pointer to the parent.
+    void setParent (const LatticeRegion* parent);
 
-  // Has the object really a mask?
-  Bool hasMask() const;
+    // Make a copy of the object (reference semantics).
+    virtual Lattice<Bool>* clone() const;
 
-  // Get the LCRegion object describing the region.
-  // Note that it does not contain strides, even if this LatticeRegion
-  // object was constructed from a Slicer with strides. In that case
-  // the region only defines the resulting shape.
-  const LCRegion& region() const;
+    // Is the LatticeRegion writable?
+    virtual Bool isWritable() const;
 
-  // Get the Slicer object describing the region.
-  // Note that it may contain strides.
-  const Slicer& slicer() const;
+    // Has the object really a mask?
+    Bool hasMask() const;
 
-  // Returns the shape of the LatticeRegion including all degenerate axes
-  // (i.e. axes with a length of one).
-  virtual IPosition shape() const;
-  
-  // Returns the number of axes in this LatticeRegion. This includes all
-  // degenerate axes.
-  virtual uInt ndim() const;
-  
-  // Returns the total number of elements in this LatticeRegion.
-  virtual uInt nelements() const;
-  
-  // Check class internals - used for debugging. Should always return True
-  virtual Bool ok() const;
+    // Get the LCRegion object describing the region.
+    // Note that it does not contain strides, even if this LatticeRegion
+    // object was constructed from a Slicer with strides. In that case
+    // the region only defines the resulting shape.
+    const LCRegion& region() const;
 
-  // This function is used by the LatticeIterator class to generate an
-  // iterator of the correct type for this Lattice. Not recommended
-  // for general use. 
-  virtual LatticeIterInterface<Bool>*  makeIter
+    // Get the Slicer object describing the region.
+    // Note that it may contain strides.
+    const Slicer& slicer() const;
+
+    // Returns the shape of the LatticeRegion including all degenerate axes
+    // (i.e. axes with a length of one).
+    virtual IPosition shape() const;
+
+    // Returns the number of axes in this LatticeRegion. This includes all
+    // degenerate axes.
+    virtual uInt ndim() const;
+
+    // Returns the total number of elements in this LatticeRegion.
+    virtual uInt nelements() const;
+
+    // Check class internals - used for debugging. Should always return True
+    virtual Bool ok() const;
+
+    // This function is used by the LatticeIterator class to generate an
+    // iterator of the correct type for this Lattice. Not recommended
+    // for general use. 
+    virtual LatticeIterInterface<Bool>*  makeIter
                            (const LatticeNavigator& navigator) const;
 
     // The following "put" functions are described in detail in class
@@ -176,11 +178,11 @@ protected:
 
 
 private:
-  LCRegion*  itsRegion;
-  Slicer     itsSlicer;
-  const LatticeRegion* itsParent;
-  Bool       itsHasRegionMask;
-  Bool       itsHasParentMask;
+    LCRegion*  itsRegion;
+    Slicer     itsSlicer;
+    const LatticeRegion* itsParent;
+    Bool       itsHasRegionMask;
+    Bool       itsHasParentMask;
 };
 
 
