@@ -742,7 +742,7 @@ FitsOutput *MSFitsOutput::writeMain(Int& refPixelFreq, Double& refFreq,
       Vector<Float> imagcorr(numcorr0); imagcorr.set(0);
       Vector<Float> wgtaver(numcorr0);  wgtaver.set(0);
       Int chancounter=0;
-      for (Int k=chanstart; k<numchan0; k++) {
+      for (Int k=chanstart; k< (nchan*chanstep); k++) {
 	if(chancounter == chanstep){
 	  realcorr.set(0); imagcorr.set(0); wgtaver.set(0);
 	  chancounter=0;
