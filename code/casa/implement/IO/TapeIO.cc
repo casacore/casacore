@@ -116,6 +116,16 @@ Int TapeIO::read(uInt size, void* buf, Bool throwException) {
   if (bytesRead != static_cast<Int>(size) && throwException == True) {
     throw (AipsError ("TapeIO::read - incorrect number of bytes read"));
   }
+#if defined(AIPS_SOLARIS)
+  // I assume a read of zero means we have hit the end of file. Solaris
+  // requires an explicit skip to the next file UNLESS the bsd compatible
+  // devices are used. The bsd compatible devices have a 'b' in the device
+  // name. This test may fail if symlinks to the tape device are used.
+  if (bytesRead == 0 && size != 0 && 
+      !Path(itsDeviceName).baseName().contains('b')) {
+    skip(1);
+  }
+#endif
   return bytesRead;
 }
 
