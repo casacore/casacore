@@ -765,7 +765,9 @@ Bool ImageMoments<T>::createMoments()
    }
    Int worldMomentAxis = pInImage_p->coordinates().pixelAxisToWorldAxis(momentAxis_p);
    String momentAxisUnits = pInImage_p->coordinates().worldAxisUnits()(worldMomentAxis);
-   cout << "momentAxisUnits = " << momentAxisUnits << endl;
+//   cout << "momentAxisUnits = " << momentAxisUnits << endl;
+   os_p << LogIO::NORMAL << endl << "Moment axis type is "
+        << pInImage_p->coordinates().worldAxisNames()(worldMomentAxis) << LogIO::POST;
 
 
 // Check the user's requests are allowed
@@ -890,12 +892,8 @@ Bool ImageMoments<T>::createMoments()
 
    CoordinateSystem outImageCoord = pInImage_p->coordinates();
    outImageCoord.subImage(blc_p.asVector(), IPosition(inDim,1).asVector());
-   Int momentWorldAxis = outImageCoord.pixelAxisToWorldAxis(momentAxis_p);
-   os_p << LogIO::NORMAL << endl << "Moment axis type is "
-        << pInImage_p->coordinates().worldAxisNames()(momentWorldAxis) << LogIO::POST;
-
    outImageCoord.removePixelAxis(momentAxis_p, Double(0.0));
-   outImageCoord.removeWorldAxis(momentWorldAxis, Double(0.0));
+   outImageCoord.removeWorldAxis(worldMomentAxis, Double(0.0));
 
 
 // Create array of pointers for output images 
@@ -906,16 +904,18 @@ Bool ImageMoments<T>::createMoments()
    Bool doMedianI = False;
    Bool doMedianV = False;
    Bool doAbsDev = False;
+   Bool doCoordCalc = False;
    Bool goodUnits;
+   Bool giveMessage = True;
    Unit imageUnits = pInImage_p->units();
-//   imageUnits.setName("Jy/BEAM");
+   
 
 // Loop over desired output moments
 
    for (i=0; i<moments_p.nelements(); i++) {
 
 // Set moment image units and assign pointer to output moments array
-// Value of goodMoments is the same for each output moment image
+// Value of goodUnits is the same for each output moment image
 
       Unit momentUnits;
       goodUnits = selectMoment (doMedianI, doMedianV, doAbsDev, suffix, selMom(i), 
@@ -937,11 +937,63 @@ Bool ImageMoments<T>::createMoments()
 
 // Set output image units if possible
 
-     if (goodUnits) (outPt[i])->setUnits(momentUnits);
+      if (goodUnits) {
+         (outPt[i])->setUnits(momentUnits);
+      } else {
+        if (giveMessage) {
+           os_p << LogIO::NORMAL 
+                << "Could not determine the units of the moment image(s) so the units " << endl;
+           os_p << "will be the same as those of the input image. This may not be very useful." << LogIO::POST;
+           giveMessage = False;
+        }
+      }
+
+
+// Figure out if we need to compute the coordinate of each profile pixel index
+// for each profile.  This is very expensive for non-separable axes.
+
+     if (moments_p(i) == WEIGHTED_MEAN_COORDINATE ||
+         moments_p(i) == WEIGHTED_DISPERSION_COORDINATE) doCoordCalc = True;
    } 
-   if (!goodUnits) {
-      os_p << LogIO::NORMAL << "Could not determine the units of the moment image(s)" << endl;
-      os_p << "so the units will be the same as those of the input image" << LogIO::POST;
+
+
+// Pre compute a vector of coordinates converting profile pixel index to world
+// coordinate if the profile axis is a non-coupled axis (spectral).  For
+// axes like RA and DEC, we have to compute the coordinate for each pixel
+// of each profile
+
+   Vector<Double> sepWorldCoord;
+   if (doCoordCalc) {
+
+// Find the coordinate for the moment axis
+
+     Int coordinate, axisInCoordinate;
+     pInImage_p->coordinates().findPixelAxis(coordinate, axisInCoordinate, 
+                                             momentAxis_p);
+
+// Find out whether this coordinate is separable or not
+
+     Int nPixelAxes = pInImage_p->coordinates().coordinate(coordinate).nPixelAxes();
+     Int nWorldAxes = pInImage_p->coordinates().coordinate(coordinate).nWorldAxes();
+
+//     cout << "nPixelAxes=" << nPixelAxes << endl;
+//     cout << "nWorldAxes=" << nWorldAxes << endl;
+
+// Precompute the profile coordinates if it is separable
+
+     if (nPixelAxes == 1 && nWorldAxes == 1) {
+        pixelIn_p = pInImage_p->coordinates().referencePixel();
+        sepWorldCoord.resize(latticeShape(momentAxis_p));
+
+        for (i=0; i<sepWorldCoord.nelements(); i++) {
+           sepWorldCoord(i) = getMomentCoord (Double(i));
+        }
+     } else {
+        os_p << LogIO::NORMAL 
+             << "You have asked for a coordinate moment from a non-separable " << endl;
+        os_p << "axis.  This means a coordinate must be computed for each pixel " << endl;
+        os_p << "of each profile which will cause performance degradation" << LogIO::POST;        
+     }
    }
             
 // If the user is using the automatic, non-fitting window method, they need
@@ -976,7 +1028,7 @@ Bool ImageMoments<T>::createMoments()
    
    Vector<T> calcMoments(NMOMENTS);   
    calcMoments = 0.0;
-   String momAxisType = pInImage_p->coordinates().worldAxisNames()(momentWorldAxis);
+   String momAxisType = pInImage_p->coordinates().worldAxisNames()(worldMomentAxis);
    
 
 // TESTING KS method
@@ -1007,6 +1059,7 @@ Bool ImageMoments<T>::createMoments()
    os_p << LogIO::NORMAL << "Begin computation of moments" << LogIO::POST;
    while (!imageIterator.atEnd()) {
 
+
 // Set pixel values of all axes (used for coordinate transformation)
 // to be start of cursor array.  The desired value for the moment axis 
 // is set in getMomentCoord. 
@@ -1032,31 +1085,31 @@ Bool ImageMoments<T>::createMoments()
       
 // Smooth and clip
 
-         doMomSm(calcMoments, imageIterator.vectorCursor(),
+         doMomSm(calcMoments, sepWorldCoord, imageIterator.vectorCursor(),
                  smoothSliceRef, doMedianI, doMedianV, doAbsDev,
-                 doPlot, momAxisType, imageIterator.position());
+                 doCoordCalc, doPlot, momAxisType, imageIterator.position());
 
       } else if (windowMethod) {
     
 // Window, with smoothed or unsmoothed data
 
-         doMomWin (calcMoments, imageIterator.vectorCursor(), 
+         doMomWin (calcMoments, sepWorldCoord, imageIterator.vectorCursor(), 
                    smoothSliceRef, doMedianI, doMedianV, doAbsDev, 
-                   doPlot, momAxisType, imageIterator.position(), ks);
+                   doCoordCalc, doPlot, momAxisType, imageIterator.position(), ks);
 
       } else if (fitMethod) {
 
 // Fit   
    
-         doMomFit (calcMoments, imageIterator.vectorCursor(), 
-                   doMedianI, doMedianV, doAbsDev, doPlot, 
-                   momAxisType, imageIterator.position());
+         doMomFit (calcMoments, sepWorldCoord, imageIterator.vectorCursor(), 
+                   doMedianI, doMedianV, doAbsDev, doCoordCalc, 
+                   doPlot, momAxisType, imageIterator.position());
       } else if (clipMethod) {
             
 // no clip or clip
 
-         doMomCl (calcMoments, imageIterator.vectorCursor(), 
-                  doMedianI, doMedianV, doAbsDev);
+         doMomCl (calcMoments, sepWorldCoord, imageIterator.vectorCursor(), 
+                  doMedianI, doMedianV, doAbsDev, doCoordCalc);
       }  else {
          os_p << LogIO::SEVERE << "Internal logic error.  Big trouble." << LogIO::POST;
          return False;
@@ -1428,19 +1481,26 @@ Bool ImageMoments<T>::checkMethod ()
 
 template <class T> 
 void ImageMoments<T>::doMomCl (Vector<T>& calcMoments,
+                               const Vector<Double>& sepWorldCoord, 
                                const Vector<T>& data,
-                               const Bool& doMedianI,
-                               const Bool& doMedianV,
-                               const Bool& doAbsDev)
+                               const Bool doMedianI,
+                               const Bool doMedianV,
+                               const Bool doAbsDev,
+                               const Bool doCoordCalc)
 //
 // Generate clipped moments of this profile
 //
 // Output:
 //   calcMomentsThe many moments
 // Input:
-//   data       The data chunk
-//   doMedian   Don't bother with median unless we really have to
-//   doAbsDev   Don't bother with absolute deviations unless we really have to
+//   sepWorldCoord
+//               If the profile axis is separable, the coordinates for
+//               each pixel are precomputed and in here.  If of zero length,
+//               they weren't precomputed.
+//   data        The profile
+//   doMedian    Don't bother with median unless we really have to
+//   doAbsDev    Don't bother with absolute deviations unless we really have to
+//   doCoordCalc Don't bother computing coordinate transformations if false
 {
    const Bool doInclude = ToBool(!noInclude_p);
    const Bool doExclude = ToBool(!noExclude_p);
@@ -1450,7 +1510,10 @@ void ImageMoments<T>::doMomCl (Vector<T>& calcMoments,
    Int nPts = data.nelements();
    Vector<T> selectedData(nPts);
    Vector<Int> selectedDataIndex(nPts);
-                    
+
+// Were the profile coordinates precomputed ?
+
+   Bool preComp = ToBool(sepWorldCoord.nelements() > 0);
        
 // Compute moments
 
@@ -1462,12 +1525,15 @@ void ImageMoments<T>::doMomCl (Vector<T>& calcMoments,
    Int iMax = -1;
    Double dMin =  1.0e30;
    Double dMax = -1.0e30;
-   Double coord;
-
+   Double coord = 0.0;
    if (doInclude) {
       for (Int i=0,j=0; i<nPts; i++) {
          if (data(i) >= range_p(0) && data(i) <= range_p(1)) {
-            coord = getMomentCoord (Double(i));
+            if (preComp) {
+               coord = sepWorldCoord(i);
+            } else if (doCoordCalc) {
+               coord = getMomentCoord (Double(i));
+            }
             accumSums (s0, s0Sq, s1, s2, iMin, iMax,
                        dMin, dMax, i, data(i), coord);
             selectedData(j) = data(i);
@@ -1479,7 +1545,11 @@ void ImageMoments<T>::doMomCl (Vector<T>& calcMoments,
    } else if (doExclude) {
       for (Int i=0,j=0; i<nPts; i++) {
          if (data(i) <= range_p(0) || data(i) >= range_p(1)) {
-            Double coord = getMomentCoord (Double(i));
+            if (preComp) {
+               coord = sepWorldCoord(i);
+            } else if (doCoordCalc) {
+               coord = getMomentCoord (Double(i));
+            }
             accumSums (s0, s0Sq, s1, s2, iMin, iMax,
                        dMin, dMax, i, data(i), coord);
             selectedData(j) = data(i);
@@ -1490,7 +1560,11 @@ void ImageMoments<T>::doMomCl (Vector<T>& calcMoments,
       nPts = j;
    } else {
       for (Int i=0; i<nPts; i++) {
-         Double coord = getMomentCoord (Double(i));
+         if (preComp) {
+            coord = sepWorldCoord(i);
+         } else if (doCoordCalc) {
+            coord = getMomentCoord (Double(i));
+         }
          accumSums (s0, s0Sq, s1, s2, iMin, iMax,
                     dMin, dMax, i, data(i), coord);
          selectedData(i) = data(i);
@@ -1598,11 +1672,13 @@ void ImageMoments<T>::doMomCl (Vector<T>& calcMoments,
 
 template <class T> 
 void ImageMoments<T>::doMomFit (Vector<T>& calcMoments,
+                                const Vector<Double>& sepWorldCoord, 
                                 const Vector<T>& data,
-                                const Bool& doMedianI,
-                                const Bool& doMedianV,
-                                const Bool& doAbsDev,
-                                const Bool& doPlot,               
+                                const Bool doMedianI,
+                                const Bool doMedianV,
+                                const Bool doAbsDev,
+                                const Bool doCoordCalc,
+                                const Bool doPlot,               
                                 const String& momAxisType,
                                 const IPosition& pos)
 //
@@ -1611,9 +1687,14 @@ void ImageMoments<T>::doMomFit (Vector<T>& calcMoments,
 // Output:
 //   calcMoments The many moments
 // Input:
-//   data        The spectrum
+//   sepWorldCoord
+//               If the profile axis is separable, the coordinates for
+//               each pixel are precomputed and in here.  If of zero length,
+//               they weren't precomputed.
+//   data        The profile
 //   doMedian    Don't bother with median unless we really have to
 //   doAbsDev    Don't bother with absolute deviations unless we really have to
+//   doCoordCalc Don't bother with coordinate transformations unless we really have to
 //   doPlot      Plotting device is active
 //   momAxisType Name of moment axis
 //   pos         Position in image of start of data vector
@@ -1671,6 +1752,11 @@ void ImageMoments<T>::doMomFit (Vector<T>& calcMoments,
 
    Vector<T> medianData(nPts); 
 
+
+// Were the profile coordinates precomputed ?
+
+   Bool preComp = ToBool(sepWorldCoord.nelements() > 0);
+
    
 // Compute moments
    
@@ -1682,10 +1768,14 @@ void ImageMoments<T>::doMomFit (Vector<T>& calcMoments,
    Int iMax = -1;
    Double dMin =  1.0e30;
    Double dMax = -1.0e30;   
-   Double coord;
+   Double coord = 0.0;
  
    for (i=0; i<nPts; i++) {
-      coord = getMomentCoord (Double(i));
+      if (preComp) {
+         coord = sepWorldCoord(i);
+      } else if (doCoordCalc) {
+         coord = getMomentCoord (Double(i));
+      }
       accumSums (s0, s0Sq, s1, s2, iMin, iMax,
                  dMin, dMax, i, gData(i), coord);
       medianData(i) = gData(i);
@@ -1718,12 +1808,14 @@ void ImageMoments<T>::doMomFit (Vector<T>& calcMoments,
 
 template <class T> 
 void ImageMoments<T>::doMomSm (Vector<T>& calcMoments,
+                               const Vector<Double>& sepWorldCoord, 
                                const Vector<T>& data, 
                                const Vector<T>& smoothedData,
-                               const Bool& doMedianI,
-                               const Bool& doMedianV,
-                               const Bool& doAbsDev,
-                               const Bool& doPlot,
+                               const Bool doMedianI,
+                               const Bool doMedianV,
+                               const Bool doAbsDev,
+                               const Bool doCoordCalc,
+                               const Bool doPlot,
                                const String& momAxisType,
                                const IPosition& pos)
 //   
@@ -1733,10 +1825,14 @@ void ImageMoments<T>::doMomSm (Vector<T>& calcMoments,
 // Output:
 //   calcMomentsThe many moments
 // Input:    
+//   sepWorldCoord If the profile axis is separable, the coordinates for
+//                 each pixel are precomputed and in here.  If of zero length,
+//                 they weren't precomputed.
 //   data          The profile
 //   smoothedData  The smoothed profile
 //   doMedian      Don't bother with median unless we really have to
 //   doAbsDev      Don't bother with absolute deviations unless we really have to
+//   doCoordCalc   Don't bother with coordinate transformations unless we really have to
 //   doPlot        Make plots
 //   momAxisType   Name of moment axis
 //   pos           Position in image of start of profile
@@ -1783,6 +1879,10 @@ void ImageMoments<T>::doMomSm (Vector<T>& calcMoments,
    Int nPts = data.nelements();
    Vector<T> selectedData(nPts);
    Vector<Int> selectedDataIndex(nPts);
+
+// Were the profile coordinates precomputed ?
+    
+   Bool preComp = ToBool(sepWorldCoord.nelements() > 0);
  
 
 // Compute moments
@@ -1795,7 +1895,7 @@ void ImageMoments<T>::doMomSm (Vector<T>& calcMoments,
    Int iMax = -1;
    Double dMin =  1.0e30;
    Double dMax = -1.0e30;
-   Double coord;
+   Double coord = 0.0;
    Bool doInclude = ToBool(!noInclude_p);
    Int i,j;
 
@@ -1806,7 +1906,11 @@ void ImageMoments<T>::doMomSm (Vector<T>& calcMoments,
    if (doInclude) {
       for (i=0,j=0; i<nPts; i++) {
          if (smoothedData(i) >= range_p(0) && smoothedData(i) <= range_p(1)) {
-            coord = getMomentCoord (Double(i));
+            if (preComp) {
+               coord = sepWorldCoord(i);
+            } else if (doCoordCalc) {
+               coord = getMomentCoord (Double(i));
+            }
             accumSums (s0, s0Sq, s1, s2, iMin, iMax,
                        dMin, dMax, i, data(i), coord);
             selectedData(j) = data(i);
@@ -1818,7 +1922,11 @@ void ImageMoments<T>::doMomSm (Vector<T>& calcMoments,
    } else {
       for (i=0,j=0; i<nPts; i++) {
          if (smoothedData(i) <= range_p(0) || smoothedData(i) >= range_p(1)) {
-            Double coord = getMomentCoord (Double(i));
+            if (preComp) {
+               coord = sepWorldCoord(i);
+            } else if (doCoordCalc) {
+               coord = getMomentCoord (Double(i));
+            }
             accumSums (s0, s0Sq, s1, s2, iMin, iMax,
                        dMin, dMax, i, data(i), coord);
             selectedData(j) = data(i);
@@ -1881,12 +1989,14 @@ void ImageMoments<T>::doMomSm (Vector<T>& calcMoments,
 
 template <class T> 
 void ImageMoments<T>::doMomWin (Vector<T>& calcMoments,
+                                const Vector<Double>& sepWorldCoord, 
                                 const Vector<T>& data, 
                                 const Vector<T>& smoothedData, 
-                                const Bool& doMedianI,
-                                const Bool& doMedianV,
-                                const Bool& doAbsDev,
-                                const Bool& doPlot,
+                                const Bool doMedianI,
+                                const Bool doMedianV,
+                                const Bool doAbsDev,
+                                const Bool doCoordCalc,
+                                const Bool doPlot,
                                 const String& momAxisType,
                                 const IPosition& pos, 
                                 const Double& ks)
@@ -1896,12 +2006,16 @@ void ImageMoments<T>::doMomWin (Vector<T>& calcMoments,
 // Output:
 //   calcMoments The many moments
 // Input:    
-//   os          Output stream
+//   sepWorldCoord 
+//               If the profile axis is separable, the coordinates for
+//               each pixel are precomputed and in here.  If of zero length,
+//               they weren't precomputed.
 //   data        The spectrum
 //   smoothedData
 //               The smoothed spectrum
 //   doMedian    Don't bother with median unless we really have to
 //   doAbsDev    Don't bother with absolute deviations unless we really have to
+//   doCoordCalc   Don't bother with coordinate transformations unless we really have to
 //   doPlot      Plotting device is active
 //   momAxisType Name of moment axis
 //   pos         Position in image of start of profile
@@ -1980,6 +2094,10 @@ void ImageMoments<T>::doMomWin (Vector<T>& calcMoments,
 
    Vector<T> selectedData(nPts);
 
+// Were the profile coordinates precomputed ?
+    
+   Bool preComp = ToBool(sepWorldCoord.nelements() > 0);
+ 
 
 // Compute moments
 
@@ -1994,10 +2112,14 @@ void ImageMoments<T>::doMomWin (Vector<T>& calcMoments,
    Double coord;
 
    for (Int i=window(0); i<=window(1); i++) {
-      coord = getMomentCoord (Double(i));
+      if (preComp) {
+         coord = sepWorldCoord(i);
+      } else if (doCoordCalc) {
+         coord = getMomentCoord (Double(i));
+      }
       accumSums (s0, s0Sq, s1, s2, iMin, iMax, 
                  dMin, dMax, i, data(i), coord);
-                 selectedData(i-window(0)) = data(i);
+      selectedData(i-window(0)) = data(i);
    }
 
 // Medians
@@ -2448,6 +2570,7 @@ Double ImageMoments<T>::getMomentCoord (const Double& momentPixel)
 // 
 // Input
 //   momentPixel   is the index in the profile extracted from the data 
+//                 so it is relative to the start of the extracted profile
 //
 {
    pixelIn_p(momentAxis_p) = momentPixel + blc_p(momentAxis_p);
@@ -3255,57 +3378,80 @@ Bool ImageMoments<T>::selectMoment (Bool& doMedianI,
 //   suffix       suffix for output file name
 //   Bool         True if could set units for moment image, false otherwise
 {
-   String temp = imageUnits.getName();
-   Bool goodUnits = ToBool(!imageUnits.getName().empty() && !momentUnits.empty());
+   String temp;
+
+   Bool goodUnits = True;
+   Bool goodImageUnits = ToBool(!imageUnits.getName().empty());
+   Bool goodAxisUnits = ToBool(!momentAxisUnits.empty());
 
    if (moments_p(index) == AVERAGE) {
       suffix = "_MAverage";
       selMom = AVERAGE;
+      temp = imageUnits.getName();
+      goodUnits = goodImageUnits;
    } else if (moments_p(index) == INTEGRATED) {
       suffix = "_MIntegrated";
       selMom = INTEGRATED;
       temp = imageUnits.getName() + "." + momentAxisUnits;
+      goodUnits = ToBool(goodImageUnits && goodAxisUnits);
    } else if (moments_p(index) == WEIGHTED_MEAN_COORDINATE) {
       suffix = "_MWeighted_Mean_Coord";
       selMom = WEIGHTED_MEAN_COORDINATE;
       temp = momentAxisUnits;
+      goodUnits = goodAxisUnits;
    } else if (moments_p(index) == WEIGHTED_DISPERSION_COORDINATE) {
       suffix = "_MWeighted_Dispersion_Coord";
       selMom = WEIGHTED_DISPERSION_COORDINATE;
       temp = momentAxisUnits + "." + momentAxisUnits;
+      goodUnits = goodAxisUnits;
    } else if (moments_p(index) == MEDIAN) {
       suffix = "_MMedian";
       selMom = MEDIAN;
       doMedianI = True;
+      temp = imageUnits.getName();
+      goodUnits = goodImageUnits;
    } else if (moments_p(index) == STANDARD_DEVIATION) {
       suffix = "_MStandard_Deviation";
       selMom = STANDARD_DEVIATION;
+      temp = imageUnits.getName();
+      goodUnits = goodImageUnits;
    } else if (moments_p(index) == RMS) {
       suffix = "_MRms";
       selMom = RMS;
+      temp = imageUnits.getName();
+      goodUnits = goodImageUnits;
    } else if (moments_p(index) == ABS_MEAN_DEVIATION) {
       suffix = "_MAbs_Mean_Dev";
       selMom = ABS_MEAN_DEVIATION;
       doAbsDev = True;
+      temp = imageUnits.getName();
+      goodUnits = goodImageUnits;
    } else if (moments_p(index) == MAXIMUM) {
       suffix = "_MMaximum";
       selMom = MAXIMUM;
+      temp = imageUnits.getName();
+      goodUnits = goodImageUnits;
    } else if (moments_p(index) == MAXIMUM_COORDINATE) {
       suffix = "_MMaximum_Coord";
       selMom = MAXIMUM_COORDINATE;
       temp = momentAxisUnits;
+      goodUnits = goodAxisUnits;
    } else if (moments_p(index) == MINIMUM) {
       suffix = "_MMinimum";
       selMom = MINIMUM;
+      temp = imageUnits.getName();
+      goodUnits = goodImageUnits;
    } else if (moments_p(index) == MINIMUM_COORDINATE) {
       suffix = "_MMinimum_Coord";
       selMom = MINIMUM_COORDINATE;
       temp = momentAxisUnits;
+      goodUnits = goodAxisUnits;
    } else if (moments_p(index) == MEDIAN_COORDINATE) {
       suffix = "_MMedian_Coord";
       selMom = MEDIAN_COORDINATE;
       doMedianV = True;
       temp = momentAxisUnits;
+      goodUnits = goodAxisUnits;
    }
    if (goodUnits) momentUnits.setName(temp);
    return goodUnits;
