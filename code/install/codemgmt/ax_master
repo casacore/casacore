@@ -4006,3 +4006,4 @@
 14 065 src mv trial/implement/DisplayEvents/PCRefreshEvent.cc trialdisplay/implement/DisplayEvents/PCRefreshEvent.cc
 14 065 src mv trial/implement/DisplayEvents/PCTool.cc trialdisplay/implement/DisplayEvents/PCTool.cc
 14 065 src mv trial/implement/DisplayEvents/PixelCanvasEvent.cc trialdisplay/implement/DisplayEvents/PixelCanvasEvent.cc
+14 065 src mv trial/implement/DisplayEvents/WCCrosshairTool.cc trialdisplay/implement/DisplayEvents/WCCrosshairTool.cc
