@@ -418,15 +418,15 @@ TableDesc FITSTabular::tableDesc(const FITSTabular &fitstabular)
 	}
 	// add in any units, displayFormats, and nulls, if available
 	if (units.isDefined(desc.name(i))) {
-	    td.rwColumnDesc(desc.name(i)).rwKeywordSet().define("TUNIT",
+	    td.rwColumnDesc(desc.name(i)).rwKeywordSet().define("UNIT",
 								units.asString(desc.name(i)));
 	}
 	if (disps.isDefined(desc.name(i))) {
-	    td.rwColumnDesc(desc.name(i)).rwKeywordSet().define("TDISP",
+	    td.rwColumnDesc(desc.name(i)).rwKeywordSet().define("DISP",
 								disps.asString(desc.name(i)));
 	}
 	if (nulls.isDefined(desc.name(i))) {
-	    td.rwColumnDesc(desc.name(i)).rwKeywordSet().define("TNULL",
+	    td.rwColumnDesc(desc.name(i)).rwKeywordSet().define("NULL",
 								nulls.asInt(desc.name(i)));
 	}
     }
