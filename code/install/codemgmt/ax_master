@@ -3453,3 +3453,5 @@
 13 265 src rm nrao/implement/FITS/OldGBTWeather.h
 13 265 src rm nrao/implement/FITS/OldGBTWeather.cc
 13 270 src rm doc/cookbook/
+13 274 src rm trial/apps/measures/IGRF/table.f0i0
+13 274 src rm trial/apps/measures/IGRF/table.f0i1
