@@ -2551,3 +2551,5 @@
 11 374 src rm trial/implement/Display/WCLogScaleHandler.cc
 11 374 src rm trial/implement/Display/WCNNResampleHandler.h
 11 374 src rm trial/implement/Display/WCNNResampleHandler.cc
+11 374 src rm trial/implement/Display/WCLinearResampleHandler.h
+11 374 src rm trial/implement/Display/WCLinearResampleHandler.cc
