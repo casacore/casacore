@@ -185,7 +185,7 @@ try {
 //
      MLCG generator;
      Double sigma = 0.01 * iVal;
-     Normal noiseGen(0.0, sigma*sigma, &generator);
+     Normal noiseGen(&generator, 0.0, sigma*sigma);
 //
      Array<Float> slice = pIm->get();
      addNoise(slice, noiseGen);
@@ -418,7 +418,7 @@ ImageInterface<Float>* makeQUImage (Double& sigma, Double pa0, Double rm,
    Float maxVal = max(slice);
    MLCG gen;
    sigma = 0.0001 * maxVal;
-   Normal noiseGen(0.0, sigma*sigma, &gen);
+   Normal noiseGen(&gen, 0.0, sigma*sigma);
    addNoise(slice, noiseGen);
    pIm->put(slice);
 //
