@@ -72,20 +72,25 @@ Bool LatticeCleaner<T>::validatePsf(const Lattice<T> & psf)
   Float maxPsf=0;
   itsPositionPeakPsf=IPosition(psf.shape().nelements(), 0);
   findMaxAbsLattice(psf, maxPsf, itsPositionPeakPsf);
-  os << "Peak of PSF " << maxPsf << " at " << itsPositionPeakPsf+1
+  os << "Peak of PSF = " << maxPsf << " at " << itsPositionPeakPsf+1
      << LogIO::POST;
   return True;
 }
   
 
-template<class T> LatticeCleaner<T>::
-LatticeCleaner(const Lattice<T> & psf, const Lattice<T> &dirty):
-  itsChoose(True)
+template<class T> 
+LatticeCleaner<T>::LatticeCleaner(const Lattice<T> & psf,
+				  const Lattice<T> &dirty,
+				  LatticeCleaner::InfoCallback* callback):
+  itsChoose(True), itsCallback(callback)
 {
+  // Use the standard callback if not defined
+  if(!itsCallback) itsCallback=&(LatticeCleaner::standardCallback);
+
   AlwaysAssert(validatePsf(psf), AipsError);
   // Check that everything is the same dimension and that none of the
   // dimensions is zero length.
-  AlwaysAssert(itsPsf->shape().nelements() == dirty.shape().nelements(),
+  AlwaysAssert(psf.shape().nelements() == dirty.shape().nelements(),
 	       AipsError);
   AlwaysAssert(dirty.shape().product() != 0, AipsError);
   // looks OK so make the convolver
@@ -95,20 +100,24 @@ LatticeCleaner(const Lattice<T> & psf, const Lattice<T> &dirty):
   // in all.
   itsMemoryMB=AppInfo::memoryInMB()/32;
 
-  itsPsf   = new TempLattice<T>(psf.shape(), itsMemoryMB);
-  itsPsf->copyData(psf);
   itsDirty = new TempLattice<T>(dirty.shape(), itsMemoryMB);
+  cerr<<"itsDirty = new TempLattice<T>(dirty.shape(), itsMemoryMB);"<<endl;
   itsDirty->copyData(dirty);
+  cerr<<"itsDirty->copyData(dirty);"<<endl;
   itsXfr=new TempLattice<Complex>(psf.shape(), itsMemoryMB);
-  itsXfr->copyData(LatticeExpr<Complex>(*itsPsf, 0.0));
+  cerr<<"itsXfr=new TempLattice<Complex>(psf.shape(), itsMemoryMB);"<<endl;
+  LatticeExpr<Complex> complexPsf(psf, 0.0);
+  cerr<<"LatticeExpr<Complex> complexPsf(psf, 0.0);"<<endl;
+  itsXfr->copyData(complexPsf);
+  cerr<<"itsXfr->copyData(complexPsf);"<<endl;
   LatticeFFT::cfft(*itsXfr);
+  cerr<<"LatticeFFT::cfft(*itsXfr);"<<endl;
 }
 
 template <class T> LatticeCleaner<T>::
 LatticeCleaner(const LatticeCleaner<T> & other):
    itsCleanType(other.itsCleanType),
    itsDirty(other.itsDirty),
-   itsPsf(other.itsPsf),
    itsXfr(other.itsXfr)
 {
 }
@@ -118,7 +127,6 @@ operator=(const LatticeCleaner<T> & other) {
   if (this != &other) {
     itsCleanType = other.itsCleanType;
     itsXfr = other.itsXfr;
-    itsPsf = other.itsPsf;
     itsDirty = other.itsDirty;
   }
   return *this;
@@ -128,7 +136,6 @@ template<class T> LatticeCleaner<T>::
 ~LatticeCleaner()
 {
   destroyScales();
-  if(itsPsf) delete itsPsf;
   if(itsDirty) delete itsDirty;
   if(itsXfr) delete itsXfr;
 }
@@ -152,7 +159,7 @@ template <class T>
 Bool LatticeCleaner<T>::clean(Lattice<T>& model)
 {
 
-  AlwaysAssert(model.shape()==itsPsf->shape(), AipsError);
+  AlwaysAssert(model.shape()==itsDirty->shape(), AipsError);
 
   LogIO os(LogOrigin("LatticeCleaner", "clean()", WHERE));
   
@@ -199,51 +206,47 @@ Bool LatticeCleaner<T>::clean(Lattice<T>& model)
   LCBox centerBox(blcDirty, trcDirty, model.shape());
 
   // Start the iteration
+  Vector<Float> maxima(itsNscales);
+  Block<IPosition> posMaximum(itsNscales);
+  Bool converged=False;
+  Int optimumScale=0;
+  Float strengthOptimum=0.0;
+  IPosition positionOptimum(model.shape().nelements(), 0);
   os << "Starting iteration"<< LogIO::POST;
+
   for (Int iteration=0; iteration < itsNiter; iteration++) {
     // Find the peak
-    Int optimumScale=0;
-    Float strengthOptimum=0.0;
-    IPosition positionOptimum(model.shape().nelements(), 0);
     for (scale=0; scale<nScalesToClean; scale++) {
       // Find absolute maximum for the dirty image
       SubLattice<T> dirtySub(*itsDirtyConvScales[scale], centerBox);
-      IPosition posMax(model.shape().nelements(), 0);
-      Float maxAbs=0;
-      findMaxAbsLattice(dirtySub, maxAbs, posMax);
+      maxima(scale)=0;
+      posMaximum[scale]=IPosition(model.shape().nelements(), 0);
+      findMaxAbsLattice(dirtySub, maxima(scale), posMaximum[scale]);
       // Adjust the amplitude for the beam scaling
-      maxAbs/=maxPsfConvScales(scale);
+      maxima(scale)/=maxPsfConvScales(scale);
       // Remember to adjust the position for the window
-      posMax+=blcDirty;
-      if(nScalesToClean==1) {
-	os << "Maximum abs = " << maxAbs << " at "
-	   << posMax+1 << endl;
-      }
-      else {
-	os << "scale " << scale+1 << " maximum abs = " << maxAbs << " at "
-	   << posMax+1 << endl;
-      }
-      if(abs(maxAbs)>abs(strengthOptimum)) {
+      posMaximum[scale]+=blcDirty;
+      if(abs(maxima(scale))>abs(strengthOptimum)) {
         optimumScale=scale;
-        strengthOptimum=maxAbs;
-	positionOptimum=posMax;
+        strengthOptimum=maxima(scale);
+	positionOptimum=posMaximum[scale];
       }
     }
 
     // Now stop if below threshold
-    if(nScalesToClean==1) {
-      os << "Iteration " << iteration+1 << " most significant residual = "
-	 << strengthOptimum << " Jy"  << LogIO::POST;
-    }
-    else {
-      os << "Iteration " << iteration+1 << " most significant residual = "
-	 << strengthOptimum << " Jy, optimum scale " << optimumScale+1
-	 << LogIO::POST;
-    }
     if(abs(strengthOptimum)<itsThreshold.get("Jy").getValue()) {
       os << "Reached stopping threshold" << LogIO::POST;
-      return True;
+      converged = True;
+      break;
     }
+    // Call back: the return value tells us to stop
+    if(itsCallback) {
+      if(itsCallback(False, iteration, itsNiter, model, maxima,
+		     posMaximum, strengthOptimum,
+		     optimumScale, positionOptimum,
+		     itsDirtyConvScales)) break;
+    }
+      
     // Continuing: subtract the peak that we found from all dirty images
 
     // Define a subregion so that that the peak is centered
@@ -287,8 +290,21 @@ Bool LatticeCleaner<T>::clean(Lattice<T>& model)
   }
   // End of iteration
 
-  os << "Failed to reach stopping threshold" << LogIO::POST;
-  return False;
+  if(itsCallback) {
+    itsCallback(True, iteration, itsNiter, model, maxima, posMaximum,
+		strengthOptimum,
+		optimumScale, positionOptimum,
+		itsDirtyConvScales);
+  }
+
+  if(!converged) {
+    os << "Failed to reach stopping threshold" << LogIO::POST;
+    return False;
+  }
+  else {
+    return True;
+  }
+  return True;
 }
 
 
@@ -367,7 +383,6 @@ Bool LatticeCleaner<T>::setscales(const Vector<Float>& scaleSizes)
   itsDirtyConvScales.resize(itsNscales);
 
   AlwaysAssert(itsDirty, AipsError);
-  AlwaysAssert(itsPsf, AipsError);
 
   TempLattice<Complex> dirtyFT(itsDirty->shape(), itsMemoryMB);
 
@@ -528,3 +543,54 @@ Bool LatticeCleaner<T>::stopnow() {
     return False;
   }
 }
+
+template<class T>
+Bool LatticeCleaner<T>::standardCallback(const Bool lastcall,
+					 const Int iteration,
+					 const Int numberIterations,
+					 const Lattice<Float>& model,
+					 const Vector<Float>& maxima,
+					 const Block<IPosition>& posMaximum,
+					 const Float strengthOptimum,
+					 const Int optimumScale,
+					 const IPosition& positionOptimum,
+					 const Block<TempLattice<Float>* >& residuals)
+{
+  LogIO os(LogOrigin("LatticeCleaner", "standardCallback()", WHERE));
+  // Always output this information
+
+  if(iteration==0) {
+    itsTotalFlux=0.0;
+    itsTotalFluxScale.resize(maxima.nelements());
+    itsTotalFluxScale=0.0;
+  }
+  else {
+    itsTotalFluxScale(optimumScale)+=strengthOptimum;
+    itsTotalFlux+=strengthOptimum;
+  }
+
+  if(maxima.nelements()==1) {
+    os << "Maximum abs = " << maxima(0) << " at "
+       << posMaximum[0]+1 << endl;
+    os << "Iteration " << iteration+1 << " most significant residual = "
+       << strengthOptimum << " Jy, flux = " << itsTotalFlux << endl;
+  }
+  else {
+    for(uInt scale=0;scale<maxima.nelements();scale++) {
+      os << "scale " << scale+1 << " maximum abs = " << maxima(scale) << " at "
+	 << posMaximum[scale]+1 << ", flux = " << itsTotalFluxScale(scale)
+	 << endl;
+    }
+    os << "Iteration " << iteration+1 << " most significant residual = "
+       << strengthOptimum << " Jy, optimum scale " << optimumScale+1
+       << endl;
+  }
+  os << "Total flux = " << itsTotalFlux << " Jy" << LogIO::POST;
+  if(lastcall) {
+    for(uInt scale=0;scale<maxima.nelements();scale++) {
+      os << "Total flux on scale " << scale << " = "
+	 << itsTotalFluxScale(scale) << " Jy" << LogIO::POST;
+    }
+  }
+  return False;
+};
