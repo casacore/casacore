@@ -187,9 +187,9 @@ class Unit {
 // </thrown>
 // <group name="constructor">
     Unit(const String &other);
-    Unit(const char *other);
-    Unit(char other);
-    Unit(const char *other, Int len);
+    Unit(const Char *other);
+    explicit Unit(Char other);
+    Unit(const Char *other, Int len);
 // </group>
 // Destructor
     ~Unit();
