@@ -132,7 +132,7 @@ void SDSourceHandler::fill(const Record &row, Int spectralWindowId)
 	} else {
 	    *codeKey_p = "";
 	}
-	uInt rownr;
+	uInt rownr = 0;
 	Vector<uInt> foundRows = index_p->getRowNumbers();
 	Bool found = False;
 	if (foundRows.nelements() > 0) {
@@ -159,7 +159,7 @@ void SDSourceHandler::fill(const Record &row, Int spectralWindowId)
 			else found = msSourceCols_p->pulsarId()(rownr) == *pulsarIdField_p;
 		    }
 		}
-		whichOne++;
+		if (!found) whichOne++;
 	    }
 	}
 	if (!found) {
@@ -208,18 +208,20 @@ void SDSourceHandler::fill(const Record &row, Int spectralWindowId)
 		msSourceCols_p->properMotion().put(rownr,Vector<Double>(2,0.0));
 	    }
 	    if (pulsarIdField_p.isAttached()) {
-		if (msSourceCols_p->pulsarId().isNull() && *pulsarIdField_p >= 0) {
-		    // add this column
-		    delete msSourceCols_p;
-		    msSourceCols_p = 0;
-		    TableDesc td;
-		    NewMSSource::addColumnToDesc(td, NewMSSource::PULSAR_ID);
-		    msSource_p->addColumn(td[0]);
-		    msSourceCols_p = new NewMSSourceColumns(*msSource_p);
-		    AlwaysAssert(msSourceCols_p, AipsError);
-		    msSourceCols_p->pulsarId().put(rownr, *pulsarIdField_p);
-		} else {
-		    msSourceCols_p->pulsarId().put(rownr, *pulsarIdField_p);
+		if (*pulsarIdField_p >= 0) {
+		    if (msSourceCols_p->pulsarId().isNull()) {
+			// add this column
+			delete msSourceCols_p;
+			msSourceCols_p = 0;
+			TableDesc td;
+			NewMSSource::addColumnToDesc(td, NewMSSource::PULSAR_ID);
+			msSource_p->addColumn(td[0]);
+			msSourceCols_p = new NewMSSourceColumns(*msSource_p);
+			AlwaysAssert(msSourceCols_p, AipsError);
+			msSourceCols_p->pulsarId().put(rownr, *pulsarIdField_p);
+		    } else {
+			msSourceCols_p->pulsarId().put(rownr, *pulsarIdField_p);
+		    }
 		}
 	    }
 	    // transition, rest_frequency, sysvel are inserted outside this loop
@@ -229,7 +231,9 @@ void SDSourceHandler::fill(const Record &row, Int spectralWindowId)
 	    String transition = "";
 	    if (transiti_p.isAttached()) transition = *transiti_p;
 	    if (molecule_p.isAttached()) {
-		if (transition.length() > 0) transition += ", ";
+		// always add the "," delimiter so that the molecule string can be recovered on the end
+		// assumes that the molecule string has no commas in it.
+		transition += ", ";
 		transition += *molecule_p;
 	    }
 	    Double restfreq = 0.0;
