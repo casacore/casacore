@@ -326,7 +326,7 @@ void MFrequency::doConvert(MVFrequency &in,
 	g0 = sqrt(1. - (*solpos * *solpos)/C::c/C::c);
 	g1 = (*solpos * *respos) / C::c;
 	g2 = in.getValue();
-	in = g2 * g0/(1 + g1);
+	in = g2 * g0/(1 - g1);
       }
       break;
 
@@ -339,7 +339,7 @@ void MFrequency::doConvert(MVFrequency &in,
 	g0 = sqrt(1. - (*solpos * *solpos)/C::c/C::c);
 	g1 = (*solpos * *respos) / C::c;
 	g2 = in.getValue();
-	in = g2 * g0/(1 - g1);
+	in = g2 * g0/(1 + g1);
       }
       break;
 
@@ -356,7 +356,7 @@ void MFrequency::doConvert(MVFrequency &in,
 	g0 = sqrt(1. - (*solpos * *solpos));
 	g1 = (*solpos * *respos);
 	g2 = in.getValue();
-	in = g2 * g0/(1 + g1);
+	in = g2 * g0/(1 - g1);
       }	
       break;
 
@@ -379,7 +379,7 @@ void MFrequency::doConvert(MVFrequency &in,
 	g0 = sqrt(1. - (*solpos * *solpos));
 	g1 = (*solpos * *respos);
 	g2 = in.getValue();
-	in = g2 * g0/(1 + g1);
+	in = g2 * g0/(1 - g1);
       }
       break;
 
@@ -396,7 +396,7 @@ void MFrequency::doConvert(MVFrequency &in,
 	g0 = sqrt(1. - (*solpos * *solpos));
 	g1 = (*solpos * *respos);
 	g2 = in.getValue();
-	in = g2 * g0/(1 - g1);
+	in = g2 * g0/(1 + g1);
       }	
       break;
 
@@ -419,7 +419,7 @@ void MFrequency::doConvert(MVFrequency &in,
 	g0 = sqrt(1. - (*solpos * *solpos));
 	g1 = (*solpos * *respos);
 	g2 = in.getValue();
-	in = g2 * g0/(1 - g1);
+	in = g2 * g0/(1 + g1);
       }
       break;
 
@@ -432,7 +432,7 @@ void MFrequency::doConvert(MVFrequency &in,
 	g0 = sqrt(1. - (*solpos * *solpos)/C::c/C::c);
 	g1 = (*solpos * *respos) / C::c;
 	g2 = in.getValue();
-	in = g2 * g0/(1 - g1);
+	in = g2 * g0/(1 + g1);
 	break;
 
       case GALACTO_LSR:
@@ -444,7 +444,7 @@ void MFrequency::doConvert(MVFrequency &in,
 	g0 = sqrt(1. - (*solpos * *solpos)/C::c/C::c);
 	g1 = (*solpos * *respos) / C::c;
 	g2 = in.getValue();
-	in = g2 * g0/(1 + g1);
+	in = g2 * g0/(1 - g1);
 	break;
 
       case LSRK_BARY:
@@ -456,7 +456,7 @@ void MFrequency::doConvert(MVFrequency &in,
 	g0 = sqrt(1. - (*solpos * *solpos)/C::c/C::c);
 	g1 = (*solpos * *respos) / C::c;
 	g2 = in.getValue();
-	in = g2 * g0/(1 + g1);
+	in = g2 * g0/(1 - g1);
 	break;
 
       case BARY_LSRK:
@@ -468,7 +468,7 @@ void MFrequency::doConvert(MVFrequency &in,
 	g0 = sqrt(1. - (*solpos * *solpos)/C::c/C::c);
 	g1 = (*solpos * *respos) / C::c;
 	g2 = in.getValue();
-	in = g2 * g0/(1 - g1);
+	in = g2 * g0/(1 + g1);
 	break;
 
       case REST_LSR:

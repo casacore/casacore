@@ -298,7 +298,7 @@ void MRadialVelocity::doConvert(MVRadialVelocity &in,
 	  getJ2000(*respos);
 	g1 = (*solpos * *respos) / C::c;
 	g2 = in.getValue()/C::c;
-	in = (g2 + g1)/(1 + g2 * g1) * C::c;
+	in = (g2 - g1)/(1 - g2 * g1) * C::c;
       }
       break;
 
@@ -310,7 +310,7 @@ void MRadialVelocity::doConvert(MVRadialVelocity &in,
 	  getJ2000(*respos);
 	g1 = (*solpos * *respos) / C::c;
 	g2 = in.getValue()/C::c;
-	in = (g2 - g1)/(1 - g2 * g1) * C::c;
+	in = (g2 + g1)/(1 + g2 * g1) * C::c;
       }
       break;
 
@@ -326,7 +326,7 @@ void MRadialVelocity::doConvert(MVRadialVelocity &in,
 	  getJ2000(*respos);
 	g1 = *solpos * *respos;
 	g2 = in.getValue()/C::c;
-	in = (g2 + g1)/(1 + g2 * g1) * C::c;
+	in = (g2 - g1)/(1 - g2 * g1) * C::c;
       }	
       break;
 
@@ -348,7 +348,7 @@ void MRadialVelocity::doConvert(MVRadialVelocity &in,
 	  getApp(*respos);
 	g1 = *solpos * *respos;
 	g2 = in.getValue()/C::c;
-	in = (g2 + g1)/(1 + g2 * g1) * C::c;
+	in = (g2 - g1)/(1 - g2 * g1) * C::c;
       }
       break;
 
@@ -364,7 +364,7 @@ void MRadialVelocity::doConvert(MVRadialVelocity &in,
 	  getApp(*respos);
 	g1 = *solpos * *respos;
 	g2 = in.getValue()/C::c;
-	in = (g2 - g1)/(1 - g2 * g1) * C::c;
+	in = (g2 + g1)/(1 + g2 * g1) * C::c;
       }	
       break;
 
@@ -386,7 +386,7 @@ void MRadialVelocity::doConvert(MVRadialVelocity &in,
 	  getApp(*respos);
 	g1 = *solpos * *respos;
 	g2 = in.getValue()/C::c;
-	in = (g2 - g1)/(1 - g2 * g1) * C::c;
+	in = (g2 + g1)/(1 + g2 * g1) * C::c;
       }
       break;
 
@@ -398,7 +398,7 @@ void MRadialVelocity::doConvert(MVRadialVelocity &in,
 	  getJ2000(*respos);
 	g1 = (*solpos * *respos) / C::c;
 	g2 = in.getValue()/C::c;
-	in = (g2 - g1)/(1 - g2 * g1) * C::c;
+	in = (g2 + g1)/(1 + g2 * g1) * C::c;
 	break;
 
       case GALACTO_LSR:
@@ -409,7 +409,7 @@ void MRadialVelocity::doConvert(MVRadialVelocity &in,
 	  getJ2000(*respos);
 	g1 = (*solpos * *respos) / C::c;
 	g2 = in.getValue()/C::c;
-	in = (g2 + g1)/(1 + g2 * g1) * C::c;
+	in = (g2 - g1)/(1 - g2 * g1) * C::c;
 	break;
 
       case LSRK_BARY:
@@ -420,7 +420,7 @@ void MRadialVelocity::doConvert(MVRadialVelocity &in,
 	  getJ2000(*respos);
 	g1 = (*solpos * *respos) / C::c;
 	g2 = in.getValue()/C::c;
-	in = (g2 + g1)/(1 + g2 * g1) * C::c;
+	in = (g2 - g1)/(1 - g2 * g1) * C::c;
 	break;
 
       case BARY_LSRK:
@@ -431,7 +431,7 @@ void MRadialVelocity::doConvert(MVRadialVelocity &in,
 	  getJ2000(*respos);
 	g1 = (*solpos * *respos) / C::c;
 	g2 = in.getValue()/C::c;
-	in = (g2 - g1)/(1 - g2 * g1) * C::c;
+	in = (g2 + g1)/(1 + g2 * g1) * C::c;
 	break;
 
       default:
