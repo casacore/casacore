@@ -228,6 +228,16 @@ public:
     // Assignment (reference semantics).
     Table& operator= (const Table&);
 
+    // Can the table be deleted?
+    // If true, function deleteTable can safely be called.
+    static Bool canDeleteTable (const String& tableName);
+
+    // Delete the table.
+    // An exception is thrown if the table cannot be deleted because
+    // its is not writable or because it is still open in this or
+    // another process.
+    static void deleteTable (const String& tableName);
+
     // Try to reopen the table for read/write access.
     // An exception is thrown if the table is not writable.
     // Nothing is done if the table is already open for read/write.
@@ -326,7 +336,10 @@ public:
     // Test if a table with the given name exists and is writable.
     static Bool isWritable (const String& tableName);
 
-    // Test if this table is opended as writable.
+    // Find the non-writable files in a table.
+    static Vector<String> nonWritableFiles (const String& tableName);
+
+    // Test if this table is opened as writable.
     Bool isWritable() const;
 
     // Test if the given column is writable.
@@ -468,9 +481,9 @@ public:
     // This can be used in selecting rows from a table using
     // <src>operator()</src> described below.
     // <group name=keycol>
-    TableExprNode key (const String& keywordName, Bool isArray=False) const;
-    TableExprNode col (const String& columnName, Bool isArray=False) const;
-    TableExprNode keyCol (const String& name, Bool isArray=False) const;
+    TableExprNode key (const String& keywordName) const;
+    TableExprNode col (const String& columnName) const;
+    TableExprNode keyCol (const String& name) const;
     // </group>
 
     // Create a TableExprNode object for the rownumber function.
@@ -542,7 +555,7 @@ public:
     // Per column a compare function can be provided. By default
     // the standard compare function defined in Compare.h will be used.
     // Default sort order is ascending.
-    // Default sorting algorithm is the heap sort.
+    // Default sorting algorithm is the heapsort.
     // <group>
     // Sort on one column.
     Table sort (const String& columnName,
