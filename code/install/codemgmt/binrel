@@ -361,12 +361,10 @@ sub tar {
 	open(OUT,"> $EXCLUDE_FILE");
 	print OUT join("\n",@$exclude),"\n";
 	close(OUT);
-	if ( $EXCLUDE_FILE ) {
-	    $extra = "--exclude-from $EXCLUDE_FILE";
-	}
+	$extra = "--exclude-from $EXCLUDE_FILE";
     }
 
-    open(TAR,"($TAR cf $TARGET/$NAME/$name.tar $extra $dir > /dev/null) 2>&1 |");
+    open(TAR,"($TAR $extra cf $TARGET/$NAME/$name.tar $dir > /dev/null) 2>&1 |");
     while ( <TAR> ) { print "\t$_"; }
     close(TAR);
 
