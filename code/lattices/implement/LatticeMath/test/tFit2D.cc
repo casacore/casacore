@@ -35,6 +35,8 @@
 #include <aips/Inputs/Input.h>
 #include <aips/Logging.h>
 #include <aips/Mathematics/Math.h>
+#include <aips/Arrays/Vector.h>
+#include <aips/Arrays/Matrix.h>
 #include <aips/Arrays/ArrayMath.h>
 #include <aips/Arrays/ArrayLogical.h>
 #include <aips/Mathematics/Random.h>
@@ -91,6 +93,7 @@ int main(int argc, char **argv)
    IPosition shape(2,nx,ny);
    Array<Float> pixels(shape, Float(0));
    Array<Float> sigma(shape);
+   Matrix<Double> saveEstimate(nModels, 6);
 //
    Double xsep = nx / nModels;
    Double ysep = ny / nModels;
@@ -112,6 +115,7 @@ int main(int argc, char **argv)
    Vector<Double> trueMinor(nModels);
    Vector<Double> truePA(nModels);
 //
+   Vector<Bool> saveMask;
    for (Int i=0; i<nModels; i++) {
 
 // Add model to data array
@@ -127,13 +131,14 @@ int main(int argc, char **argv)
 // Set Parameters mask
 
       Vector<Double> parameters(gauss2d.nparameters());
-      Vector<Bool> parameterMask(parameters.nelements(), True);
-      for (uInt i=0; i<parameters.nelements(); i++) {
-         parameters(i) = gauss2d[i];
-         if (mask[i]==0) {
-            parameterMask(i) = False;
+      Vector<Bool> parameterMask(gauss2d.nparameters(), True);
+      for (uInt j=0; j<parameters.nelements(); j++) {
+         parameters(j) = gauss2d[j];
+         if (mask[j]==0) {
+            parameterMask(j) = False;
          }
       }
+      if(i==0) saveMask = parameterMask;
       parameters(5) = Fit2D::paFromGauss2D(parameters(5));
 
 // convert axial ratio to minor axis (availableParameter
@@ -141,19 +146,17 @@ int main(int argc, char **argv)
 
       parameters(4) = parameters(4)*parameters(3);  
 /*
-      cout << "      mask      = " << parameterMask << endl;
-      cout << "True values     = " << parameters << endl;
       cout << "True pa (+x -> +y) = " << parameters(5) * 180.0 / C::pi << endl;
 */
 
 // Set starting guess
 
       Vector<Double> startParameters(parameters.copy());
-      for (uInt i=0; i<parameters.nelements(); i++) {
-         startParameters(i) = parameters(i) * 0.9;
+      for (uInt j=0; j<parameters.nelements(); j++) {
+         startParameters(j) = parameters(j) * 0.9;
       }
+      saveEstimate.row(i) = startParameters;
 /*
-      cout << "Start values    = " << startParameters << endl;
       cout << "Start pa (+x -> +y) = " << startParameters(5) * 180.0 / C::pi << endl;
 */
 
@@ -195,21 +198,10 @@ int main(int argc, char **argv)
       fitter.setExcludeRange(excludeRange[0], excludeRange[1]);
    }
 
-// Generate estimate
-/*
-   Vector<Double> p = fitter.estimate(Fit2D::GAUSSIAN, pixels);
-   cout << "Estimate values = " << p << endl;
-   cout << "Estimate pa (+x -> +y) = " << p(5) * 180.0 / C::pi << endl;
-*/
-
 // Make fit
 
    Fit2D::ErrorTypes status = fitter.fit(pixels, sigma, norm);
    if (status==Fit2D::OK) {
-      Vector<Double> solution = fitter.availableSolution();
-      Vector<Double> cv = fitter.covariance().diagonal();
-      cout << "Covariance     = " << cv << endl;
-      cout << "SNR        = " << fitter.availableSolution() / sqrt(cv) << endl;
       cout << "Chi squared = " << fitter.chiSquared() << endl << endl;
       cout << "Number of iterations = " << fitter.numberIterations() << endl;
       cout << "Number of points     = " << fitter.numberPoints() << endl;
@@ -222,11 +214,20 @@ int main(int argc, char **argv)
       cout << endl << "Number of models = " << fitter.nModels() << endl;
       for (uInt i=0; i<fitter.nModels(); i++) {
         Vector<Double> xx(5);
-        xx(0) = trueHeight(i); xx(1) = trueX(i); xx(2) = trueY(i); xx(3) = trueMajor(i); xx(4) = truePA(i);
+        xx(0) = trueHeight(i); xx(1) = trueX(i); 
+        xx(2) = trueY(i); xx(3) = trueMajor(i); xx(4) = truePA(i);
 //
+        Vector<Double> solution = fitter.availableSolution(i);
+        Vector<Double> errors = fitter.availableErrors(i);
+
         cout << "Model " << i << " of type " << Fit2D::type(fitter.type(i)) << endl;
+        cout << "   Estimate      = " << saveEstimate.row(i) << endl;
+        cout << "   Mask          = " << saveMask << endl;
         cout << "   Actual values = " << xx << endl;
-        cout << "   Solution      = " << fitter.availableSolution(i) << endl;
+        cout << "   Solution      = " << solution  << endl;
+        cout << "   Errors        = " << errors  << endl;
+        cout << "   SNR           = " << solution / errors << endl;
+
       }
 //
       Array<Float> resid;
