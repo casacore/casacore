@@ -815,15 +815,16 @@ Bool SpectralCoordinate::fromFITS(SpectralCoordinate &out, String &,
 					       oneRelative);
 //
     restFrequency = max(0.0, restFrequency);
-    if (ok && spectralAxis == Int(whichAxis)) {
-	SpectralCoordinate tmp(refFrame, referenceFrequency, deltaFrequency, 
-			       referenceChannel, restFrequency);
-	out = tmp;
-    } else if (ok && spectralAxis != Int(whichAxis)) {
-	logger << LogOrigin("SpectralCoordinate", "fromFITS") << 
-	    LogIO::SEVERE << "Disgreement about where the spectral axis is. " <<
+    if (ok) {
+       if (spectralAxis == Int(whichAxis)) {
+          SpectralCoordinate tmp(refFrame, referenceFrequency, deltaFrequency, 
+                                 referenceChannel, restFrequency);
+          out = tmp;
+       } else {
+          logger << LogIO::SEVERE << "Disgreement about where the spectral axis is. " <<
 	    spectralAxis << " vs. " << whichAxis << LogIO::POST;
-	ok = False;
+          ok = False;
+       }
     }
 //					       
     return ok;
