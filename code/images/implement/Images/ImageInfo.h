@@ -1,5 +1,5 @@
 //# ImageInfo.h: Miscellaneous information related to an image
-//# Copyright (C) 1998,1999,2000
+//# Copyright (C) 1998,1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -128,6 +128,12 @@ public:
     // <group>
     static Vector<Quantum<Double> > defaultRestoringBeam();
     // </group>
+
+    // It might be useful to know what FITS keyword names are used in to/from
+    // FITS so we can remove them so they won't be used more than once. The
+    // names are in lower case.
+    static Vector<String> keywordNamesFITS();
+
 
 private:
     Vector<Quantum<Double> > itsRestoringBeam;
