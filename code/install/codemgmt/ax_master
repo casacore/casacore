@@ -1761,3 +1761,7 @@
 11 085 src rm nrao/apps/otfgridder/templates
 11 085 src rm nrao/apps/otfgridder/makefile
 11 085 sys rm bin/otfgridder
+11 085 src rm nrao/apps/gOTF/gOTF.ad
+11 085 src rm nrao/apps/gOTF/gOTF.cc
+11 085 src rm nrao/apps/gOTF/tgOTF.g
+11 085 src rm nrao/apps/gOTF/makefile
