@@ -1,6 +1,6 @@
 #!/usr/local/bin/perl5
 #
-#   Copyright (C) 1996,1997,1998,1999,2000
+#   Copyright (C) 1996,1997,1998,1999,2000,2001
 #   Associated Universities, Inc. Washington DC, USA.
 #
 #   This program is free software; you can redistribute it and/or modify it
@@ -328,11 +328,12 @@ sub make_tex_file{
          $oiname = $iname;
          $psfile = "../$oiname-Tool.ps.gz";
          if($opt_glish == 1){
+            $oiname =~ s$/$_or_$g;
             print "$pack.$miname.objs.$oiname := [=];\n";
             print "$pack.$miname.objs.$oiname.m := [=];\n";
             $argroot ='';
             $argroot = "$pack.$miname.objs.$oiname.c";
-            $argroot =~ s$/$_or_$g;
+            # $argroot =~ s$/$_or_$g;
             print "$argroot := [=];\n";
             $dum =~ s/[\n\']/ /g;
             $dum =~ s/\\aipspp/AIPS++/g;
@@ -360,11 +361,12 @@ sub make_tex_file{
          $oiname = $iname;
          $psfile = "../$oiname-Tool.ps.gz";
          if($opt_glish == 1){
+            $oiname =~ s$/$_or_$g;
             print "$pack.$miname.objs.$oiname := [=];\n";
             print "$pack.$miname.objs.$oiname.m := [=];\n";
             $argroot ='';
             $argroot = "$pack.$miname.objs.$oiname.c";
-            $argroot =~ s$/$_or_$g;
+            #$argroot =~ s$/$_or_$g;
             print "$argroot := [=];\n";
             $dum =~ s/[\n\']/ /g;
             $dum =~ s/\\aipspp/AIPS++/g;
