@@ -45,3 +45,23 @@ as is. guientry.genericitem now can convert from these records to
 a true itemcontainer so this does not affect toolmanager
 
 Tim
+
+change id: 0039
+ author:   Tim Cornwell
+ date:     2000/08/27
+ avers:    1.4
+ area:     Tool
+ package:  trial
+ module:   recordmanager
+ type:     Code
+ category: New
+ summary:  Recordmanager can save and restore records to a table
+
+recordmanager is a general tool for saving and restoring
+records to and from an AIPS++ table. Attributes and
+comments are saved along with the record.
+
+This is now used for storing inputs. I also plan to offer
+a GUI interface to allow all records to be saved automatically
+
+Tim
