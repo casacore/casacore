@@ -1,5 +1,5 @@
 //# MaskedArray.h: A templated N-D masked array class with zero origin.
-//# Copyright (C) 1993,1994,1995,1996,1997,1999
+//# Copyright (C) 1993,1994,1995,1996,1997,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -29,11 +29,8 @@
 #define AIPS_MASKEDARRAY_H
 
 
-
-
 //# Includes
 #include <aips/aips.h>
-#include <aips/Exceptions/Excp.h>
 #include <aips/Arrays/IPosition.h>
 #include <aips/Utilities/CountedPtr.h>
 #include <aips/Arrays/LogiArrayFwd.h>
@@ -46,7 +43,6 @@
 //#   included instead of LogicalArray.h .
 //# </note>
 template <class T> class Array;
-template <class T> class MaskedArray;
 
 
 // <summary> Class for masking an Array for operations on that Array. </summary>
