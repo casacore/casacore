@@ -17,8 +17,8 @@ variables and expressions in a TaQL command.
 \section{Syntax}
 The TaQL syntax is based on SQL. The full command looks like:
 \begin{verbatim}
-SELECT [column_list] FROM table_list [WHERE expression]
-  [ORDERBY [NODUPLICATES] sort_list] [GIVING table|set]
+SELECT [[DISTINCT] column_list] FROM table_list [WHERE expression]
+  [ORDERBY [DISTINCT] sort_list] [GIVING table|set]
 \end{verbatim}
 The square brackets shown are not part of the syntax, but indicate
 that the clauses enclosed in them are optional. The command is
@@ -32,12 +32,26 @@ The various clauses have the following meaning:
   \item[ column\_list]
        is a comma-separated list of column names which have to be selected
        from the primary table in the table\_list (see below).
-       If no column\_list is given, all columns will be selected.
+       If * or no column\_list is given, all columns will be selected.
        \\In the future it may be possible to use expressions to create
        a new column based on the contents of other columns.
        Note that for subqueries the GIVING clause offers an
        alternative way of specifying the result making it
        possible to use expressions.
+       \\If a column\_list is given and if all columns are scalars, the
+       column\_list can be preceeded by the word DISTINCT.
+       It means that the result is made unique by removing the rows
+       for which all columns in the column\_list have equal values.
+       Instead of DISTINCT the synonym NODUPLICATES or UNIQUE can be used.
+       When finding duplicate values, some temporary sorting is done,
+       but the final order of the resulting table is not changed.
+       \\Note that support of this keyword is mainly done for SQL
+       compliance. The same (and more) can be achieved with the
+       DISTINCT keyword in the \htmlref{ORDERBY}{TAQL:ORDERBY} clause
+       with the difference that ORDERBY DISTINCT will change the order.
+       \\For full SQL compliance it is also possible to give the word
+       ALL which is the opposite of DISTINCT, thus all values are
+       returned. This is the default.
   \item[ \label{TAQL:TABLE_LIST}FROM table\_list ]
        is a comma-separated list and indicates which tables are used in
        the SELECT command. The first table in the list is the primary
@@ -131,7 +145,7 @@ The various clauses have the following meaning:
   select from MS,
    [select from MS where sumsqr(UVW[1:2]) < 625]
     as TIMESEL
-   where TIME in [select TIME from TIMESEL]
+   where TIME in [select distinct TIME from TIMESEL]
     &&  any([ANTENNA1,ANTENNA2] in
              [select from TIMESEL giving
               [iif(UVW[3] < 0, ANTENNA1, ANTENNA2)]])
@@ -165,7 +179,7 @@ The various clauses have the following meaning:
        is selected when the expression is true for the values in that row.
        The syntax of the expression is explained
        \htmlref{below}{TAQL:EXPRESSIONS}.
-  \item[ORDERBY sort\_list]
+  \item[ \label{TAQL:ORDERBY}ORDERBY sort\_list]
        defines the order in which the result of the WHERE clause
        has to be sorted. The sort\_list is a comma separated list of
        expressions.
@@ -180,9 +194,11 @@ The various clauses have the following meaning:
        default order for that particular column
        \\To be compliant with SQL whitespace can be used between the
        words ORDER and BY.
-       \\The word ORDERBY can optionally be followed by NODUPLICATES
+       \\The word ORDERBY can optionally be followed by DISTINCT
        which means that only the first row of multiple rows with
-       equal sort keys is kept in the result.
+       equal sort keys is kept in the result. To be compliant with
+       SQL dialects the word UNIQUE or NODUPLICATES can be used
+       instead of DISTINCT.
        \\An expression can be simply a scalar column or an element from
        an array column. In these cases some optimization is performed
        by reading the entire column directly.
@@ -220,10 +236,13 @@ The various clauses have the following meaning:
        The parts of this element can be any expression resulting in a scalar.
        \\In the main query and in a query in the FROM command the
        GIVING clause can only result in a table.
+       \\To be compliant with SQL dialects, the word SAVETO can be
+       used instead of GIVING. Whitespace can be given between SAVE and TO.
 \end{description}
 Although the clauses column\_list, WHERE, and ORDERBY are optional,
 at least one of them has to be used. Otherwise no operation is
 performed on the primary table (which makes no sense).
+Also the GIVING clause with a value set is seen as an operation.
 
 
 \section{\label{TAQL:EXPRESSIONS}Expressions}
@@ -688,22 +707,22 @@ The name of a column can contain alphanumeric characters and underscores.
 It should start with an alphabetic character or underscore.
 A column name is case-sensitive.
 \\It is possible to use other characters in the name by
-escaping them with a backslash. E.g. \texttt{DATE}\verb+\_+\texttt{OBS}.
+escaping them with a backslash. E.g. \texttt{DATE}\verb+\+\texttt{-OBS}.
 \\In the same way a numeric character can be used as the first
 character of the column name. E.g. \verb+\+\texttt{1stDay}.
 \\
 Because several words are used in the language, they cannot
 be used directly as column names. The reserved words are:
 \begin{verbatim}
-   AND AS ASC DESC FROM GIVING IN
-   NODUPLICATES NOT OR ORDERBY
-   SELECT WHERE
+   ALL AND AS ASC DESC DISTINCT FROM GIVING
+   GROUPBY HAVING IN NODUPLICATES NOT
+   OR ORDERBY SAVETO SELECT UNIQUE WHERE
 \end{verbatim}
 They can, however, be used as a column name by escaping
 them with a backslash. E.g. \verb+\+\texttt{IN}.
 \\Note that in C++ and Glish a backslash itself has to be escaped
 by another backslash. E.g. in Glish:
-\texttt{tab.query('DATE}\verb+\\_+\texttt{OBS$>$10MAR1996')}.
+\texttt{tab.query('DATE}\verb+\\+\texttt{-OBS$>$10MAR1996')}.
 
 When a column contains a record, one has to specify a field in it
 using the dot operator; e.g. \texttt{col.fld} means use field
@@ -1083,14 +1102,19 @@ that indexing arrays should be done with care.
   \item[] \texttt{ SELECT column0,column1 FROM mytable WHERE column1$>$0 }
     \\is a combination of the previous selections.
 
-  \item[] \texttt{ SELECT FROM mytable WHERE column0 IN }
-    \\\texttt{ [SELECT column0 FROM outtable ORDERBY column0 DESC][1:10] }
-    \\selects the 10 highest values of \texttt{column0}
+  \item[] \texttt{ SELECT FROM [SELECT FROM mytable ORDERBY column0 DESC] }
+    \\\texttt{ WHERE rownumber()$<=$10 }
+    \\selects the 10 highest values of \texttt{column0}.
 
   \item[] \texttt{ SELECT FROM mytable ORDERBY column0 DESC GIVING outtable }
     \\\texttt{ SELECT FROM outtable WHERE rownumber()$<=$10 }
     \\is the SQL-like solution for the previous problem.
     It is less elegant, because it requires two steps.
+
+  \item[] \texttt{ SELECT FROM mytable WHERE column0 IN }
+    \\\texttt{ [SELECT column0 FROM mytable ORDERBY column0 DESC][1:10] }
+    \\is similar to above, but can select more values if there happen
+    to be several equal values.
 
   \item[] \texttt{ SELECT FROM some.MS WHERE }
     \\\texttt{ near(TIME/(24*3600),MJD(1999/03/30/17:27:15)) }
@@ -1157,7 +1181,7 @@ that indexing arrays should be done with care.
 
   \item[] \texttt{ select from MS,}
       \\\texttt{[select from MS where sumsqr(UVW[1:2]) < 625] as TIMESEL}
-      \\\texttt{ where TIME in [select TIME from TIMESEL]}
+      \\\texttt{ where TIME in [select distinct TIME from TIMESEL]}
       \\\texttt{   \&\& any([ANTENNA1,ANTENNA2] in [select from TIMESEL giving}
       \\\texttt{                      [iif(UVW[3] < 0, ANTENNA1, ANTENNA2)]])}
       \\finds all antennas which are shadowed at a given time.
@@ -1211,7 +1235,7 @@ and classes form the programmer interface.
   It is possible to embed glish variables and expressions in a TaQL
   command using the syntax \texttt{\$variable} and
   \texttt{\$(expression)}. A variable can be a standard numeric or
-  string scalar or vector. It can also be a table object.
+  string scalar or vector. It can also be a table tool.
   An expression has to result in a numeric or string scalar or vector.
   E.g
   \begin{verbatim}
@@ -1245,7 +1269,14 @@ and classes form the programmer interface.
       symbol_delete ('coldata_in_myfunc');
     }
   \end{verbatim}
-  
+
+  The other function that can be used is \texttt{tablecommand}. The
+  full TaQL command has to be given to that command. The result is
+  a table tool. E.g.
+  \begin{verbatim}
+    t := tablecommand('select from GER.MS where ANTENNA1==1');
+  \end{verbatim}  
+
 \item
   The C++ interface consists of 2 parts.
   \begin{enumerate}
