@@ -534,8 +534,14 @@ void SpectralCoordinate::toFITS(RecordInterface &header, uInt whichAxis,
 	header.setComment("altrpix", "Alternate frequency reference pixel");
 	header.define("velref", Velref);
 	header.setComment("velref", "1 LSR, 2 HEL, 3 OBS, +256 Radio");
+	// the following agree with the current usage in FITSSpectralUtil
+	// which in turn follows from Greisen, Paper III.  On the other
+	// hand, that usage as applied here, to VELREF, is unlikely to
+	// be understood by other FITS readers.  Still, its better than
+	// doing nothing for these rest frames until the convention in
+	// Paper III or its successor is formally adopted.
 	FITSKeywordUtil::addComment(header, 
-          "AIPS++ non-standard usage: 4 LSRK, 5 GEO, 6 REST, 7 GAL");
+          "AIPS++ non-standard usage: 4 LSD, 5 GEO, 6 SOU, 7 GAL");
     }
 
     // OK, put the primary header information back
