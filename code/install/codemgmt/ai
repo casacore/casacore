@@ -3,7 +3,7 @@
 # ai: Check in AIPS++ sources
 #-----------------------------------------------------------------------------
 #
-#   Copyright (C) 1992-1996,1998
+#   Copyright (C) 1992-1996,1998,1999
 #   Associated Universities, Inc. Washington DC, USA.
 #
 #   This program is free software; you can redistribute it and/or modify
@@ -82,6 +82,16 @@
   then
      echo "ai: AIPSPATH is not defined, abort!" 1>&2
      exit 1
+  fi
+
+# Check that if defined, TMP is a writable directory.
+  if [ "$TMP" != "" ]
+  then
+     if [ ! -d "$TMP" -o ! -w "$TMP" ]
+     then
+        echo "ai: TMP is not defined as a writable directory, abort!" 1>&2
+        exit 1
+     fi
   fi
 
   AIPSROOT=`echo $AIPSPATH | awk '{ print $1 }'`
