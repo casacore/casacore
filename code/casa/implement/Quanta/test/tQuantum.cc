@@ -131,6 +131,14 @@ try {
     cout << "sin(DEG)    = " << sin(DEG) << endl;
     cout << "asin()      = " << asin(sin(DEG)) << endl;
     cout << "atan2(1,5)  = " << atan2(Quantity(1),Quantity(5)) << endl;
+    cout << "log()       = " << log(Quantity(2)) << endl;
+    cout << "log10()     = " << log10(Quantity(2)) << endl;
+    cout << "exp()       = " << exp(Quantity(2)) << endl;
+    cout << "sqrt()      = " << sqrt(Quantity(2)) << endl;
+    cout << "sqrt(m2.s4) = " << sqrt(Quantity(2, "m2.s4")) << endl;
+    cout << "sqrt(Jy2)   = " << sqrt(Quantity(2, "Jy2")) << endl;
+    cout << "sqrt(Jy2)^2 = " <<
+      sqrt(Quantity(2, "Jy2")) * sqrt(Quantity(2, "Jy2")) << endl;
     cout << "B==A        = " << (B==A) << endl;
     cout << "VQ==V2      = " << (VQ==V2) << endl;
     cout << "VQ!=V1      = " << (VQ==V1) << endl;
@@ -167,7 +175,8 @@ try {
     cout << endl << "--------------------------" << endl;
     cout << "Check types" << endl << endl;
 
-    cout << "    Are dam's Mpc's? " << Quantity(1,"dam").isConform("Mpc") << endl;
+    cout << "    Are dam's Mpc's? " << Quantity(1,"dam").isConform("Mpc") <<
+      endl;
     cout << "    Are Jy's Watts?  " << Quantity(1,"Jy").isConform("W") << endl;
     
     cout << endl << "--------------------------" << endl;
@@ -181,7 +190,7 @@ try {
     cout << "Mixed Quantity/Quantum<Int>  " << ll5 << endl;
     
 } catch (AipsError x) {
-    cout << x.getMesg() << endl;
+  cout << x.getMesg() << endl;
 } 
     
     cout << endl << "--------------------------" << endl;
@@ -220,6 +229,18 @@ try {
     
     try {
 	l4 = sin(A);
+    } catch (AipsError x) {
+	cout << x.getMesg() << endl;
+    } 
+    
+    try {
+	l4 = log(A);
+    } catch (AipsError x) {
+	cout << x.getMesg() << endl;
+    } 
+    
+    try {
+	l4 = sqrt(A);
     } catch (AipsError x) {
 	cout << x.getMesg() << endl;
     } 

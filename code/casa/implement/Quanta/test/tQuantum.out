@@ -66,6 +66,13 @@ floor(VQ)   = [3, 4] uA
 sin(DEG)    = 0.0871557 
 asin()      = 0.0872665 rad
 atan2(1,5)  = 0.197396 rad
+log()       = 0.693147 
+log10()     = 0.30103 
+exp()       = 7.38906 
+sqrt()      = 1.41421 
+sqrt(m2.s4) = 1.41421 m.s2
+sqrt(Jy2)   = 1.41421e-26 kg.s-2
+sqrt(Jy2)^2 = 2e-52 kg.s-2.kg.s-2
 B==A        = 0
 VQ==V2      = 0
 VQ!=V1      = 0
@@ -106,15 +113,19 @@ Check types
 --------------------------
 List contents of Cache
 
-Cached unit table (21):
+Cached unit table (26):
+     kg.s-2   ()                           1 kg.s-2
+     m.s2     ()                           1 m.s2
      m2       ()                           1 m2
     (m/(yd))-5()                           0.639265234981
     Jy        ()                           1e-26 kg.s-2
+    Jy2       ()                           1e-52 kg2.s-4
     L         ()                           0.001 m3
     Mpc       ()                           3.08567758065e+22 m
     W         ()                           1 m2.kg.s-3
     W.m-2.s   ()                           1 kg.s-2
     dam       ()                           10 m
+    kg.s-2.kg.s-2                                ()                           1 kg2.s-4
     km        ()                           1000 m
     km2       ()                           1000000 m2
     m         ()                           1 m
@@ -124,6 +135,7 @@ Cached unit table (21):
     m.yd      ()                           0.9144 m2
     m/(yd)    ()                           1.09361329834
     m2        ()                           1 m2
+    m2.s4     ()                           1 m2.s4
     rad       ()                           1 rad
     yd        ()                           0.9144 m
     yd.m      ()                           0.9144 m2
@@ -141,5 +153,7 @@ Quantum::operator< unequal units 'km, 'Jy'
 Quantum::pow exponent too large
 Unit::check Illegal unit string 'JY'
 Quantum::sin illegal unit type 'km'
+Quantum::log illegal unit type 'km'
+UnitVal::UnitVal Illegal unit dimensions for root
 
 --------------------------
