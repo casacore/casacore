@@ -5410,3 +5410,4 @@
 15 167 src mv trial/implement/Tables/test/tTable_4.run aips/implement/Tables/test/tTable_4.run
 15 167 src mv trial/implement/Tables/test/tTable_4.out aips/implement/Tables/test/tTable_4.out
 15 168 src mv trial/implement/aipsiosfwd.h aips/implement/aipsiosfwd.h
+15 168 src mv trial/implement/aipsiosstrfwd.h aips/implement/aipsiosstrfwd.h
