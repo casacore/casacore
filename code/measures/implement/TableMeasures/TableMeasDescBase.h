@@ -1,5 +1,5 @@
-//# TableMeasDefBase.h: Definition of a Measure in a Table.
-//# Copyright (C) 1997
+//# TableMeasDescBase.h: Definition of a Measure in a Table.
+//# Copyright (C) 1997,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -43,7 +43,7 @@ class TableDesc;
 
 // <use visibility=export>
 
-// <reviewed reviewer="" date="" tests="tTableMeasure.cc">
+// <reviewed reviewer="" date="" tests="tTableMeasures.cc">
 // </reviewed>
 
 // <prerequisite>
@@ -54,7 +54,7 @@ class TableDesc;
 // </prerequisite>
 
 // <synopsis>
-// Base class for TableMeasDesc.
+// Abstract base class for TableMeasDesc.
 // </synopsis>
 
 // <example>
@@ -66,6 +66,14 @@ class TableDesc;
 // in a Table is somewhat complicated. This class assists in that
 // process.
 // </motivation>
+//
+// <thrown>
+//    <li>AipsError during reconstruction if the column doesn't contain
+//        a MEASINFO record.
+//    <li>AipsError during reconstruction if the column has a MEASINFO
+//        but it Measure type is invalid.
+// </thrown>
+//
 
 //# <todo asof="$DATE:$">
 //# A List of bugs, limitations, extensions or planned refinements.
@@ -95,7 +103,11 @@ public:
     // Assignment operator.
     TableMeasDescBase& operator= (const TableMeasDescBase& that);
     
-    // Reconstructs the object for the given table and column name.
+    // Reconstructs the object for the given table and column name.  This
+    // should be a private member as the user of this member are the
+    // Measure column object constructors, however, the Gnu compiler (2.7.2)
+    // won't parse templated friend definitions, i.e., attempting the
+    // make the ScalarMeasColumn class a friend (ok with egcs though).
     static TableMeasDescBase* reconstruct(const Table& tab, 
     	    	    	    	    	  const String& columnName);
 
@@ -124,11 +136,15 @@ public:
 	return itsRef->offsetColumnName();
     }
     
-    // Returns True is and offset has been definied.
+    // Returns True is and offset has been defined.
     Bool hasOffset() const { return itsRef->hasOffset(); }
     
     // Returns True is the offset is variable.
     Bool isOffsetVariable() const { return itsRef->isOffsetVariable(); }
+    
+    // Returns True is the offset is variable and is stored as in an
+    // ArrayMeasColumn, i.e., offsets are stored per element.
+    Bool isOffsetArray() const { return itsRef->isOffsetArray(); }
     
     // Returns a reference to the offset.
     const Measure& getOffset() const { return itsRef->getOffset(); }

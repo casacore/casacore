@@ -1,5 +1,5 @@
 //# TableMeasValueDesc.h: Definition of a MeasValue in a Table.
-//# Copyright (C) 1997
+//# Copyright (C) 1997,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -53,14 +53,34 @@ class TableRecord;
 // </prerequisite>
 
 // <synopsis>
-// TableMeasValueDesc is used to set up the MeasValue component of the 
-// TableMeasDesc. It is used to associate the measure column name with the
-// TableMeasDesc.  The column must be an array with type double and its
-// descriptor must already exist in the TableDesc.
+// TableMeasValueDesc is a class for setting up the Measure value
+// component of the TableMeasDesc in the TableMeasures system.   Its purpose
+// it to specify the Table column to be used as a Measure column through
+// which Measures are subsequently written to and read from via
+// either an <linkto class="ArrayMeasColumn">ArrayMeasColumn</linkto>
+// or <linkto class="ScalarMeasColumn">ScalarMeasColumn</linkto> object.
+//
+// The column used as the Measure column is always an ArrayColumn<Double>
+// irrespective of whether it is to store scalars or arrays of Measures and
+// irrespective of the type of Measure.
 // </synopsis>
 
 // <example>
-// See class <linkto class="TableMeasDesc">TableMeasDesc</linkto>.
+//<ol>
+// <li>
+// <srcblock>
+//    // Add a column to the table.  This column is to be used to store
+//    // MPositions.  Measure columns are alway ArrayColumn<Double>
+//    ArrayColumnDesc<Double> cdPosCol("MPosColumn", "MPosition column");
+//    td.addColumn(cdPosCol);
+//    ...
+//    // create the TableMeasValueDesc object
+//    TableMeasValueDesc valueDesc(td, "MPosColumn");
+// </srcblock>
+//</ol>
+// For an example of the use of the TableMeasValueDesc class in the context 
+// of a full TableMeasDesc declaration see class 
+// <linkto class="TableMeasDesc">TableMeasDesc</linkto>.
 // </example>
 
 // <motivation>
@@ -68,7 +88,12 @@ class TableRecord;
 // in a Table is somewhat complicated. This class assists in that
 // process.
 // </motivation>
-
+//
+// <thrown>
+//    <li>AipsError if the specified column doesn't exist or it isn't
+// 	an ArrayColumn or its type is not Double.
+// </thrown>
+//
 //# <todo asof="$DATE:$">
 //# A List of bugs, limitations, extensions or planned refinements.
 //# </todo>
@@ -80,7 +105,7 @@ public:
     // Null constructor
     TableMeasValueDesc();
 
-    // Contructor the MeasValue column descriptor for the given column.
+    // Constructor the MeasValue column descriptor for the given column.
     // The column must be an array column of type Double and should already
     // exist in the TableDesc.
     TableMeasValueDesc(const TableDesc&, const String& columnName);

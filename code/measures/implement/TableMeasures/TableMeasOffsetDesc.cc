@@ -1,5 +1,5 @@
 //# TableMeasOffsetDesc.cc: Definition of a offset measure in a Table.
-//# Copyright (C) 1997,1998
+//# Copyright (C) 1997,1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -44,14 +44,17 @@
 #include <trial/TableMeasures/TableMeasDescBase.h>
 #include <trial/TableMeasures/TableMeasDesc.h>
 
-TableMeasOffsetDesc::TableMeasOffsetDesc(const TableMeasDescBase& column)
+TableMeasOffsetDesc::TableMeasOffsetDesc(const TableMeasDescBase& column,
+					 const Bool asArray)
 : itsTMDesc(column.clone()),
-  itsMeasure(0)
+  itsMeasure(0),
+  itsVarPerArr(asArray)
 {}
 
 TableMeasOffsetDesc::TableMeasOffsetDesc(const Measure& measure)
 : itsTMDesc(0),
-  itsMeasure(measure.clone())
+  itsMeasure(measure.clone()),
+  itsVarPerArr(False)
 {}
 
 TableMeasOffsetDesc::TableMeasOffsetDesc(const TableMeasOffsetDesc& that)
@@ -91,6 +94,8 @@ TableMeasOffsetDesc::TableMeasOffsetDesc(const TableRecord& measInfo,
     Int fnr;
     fnr = measInfo.fieldNumber(prefix + "Msr");
     if (fnr >= 0) {
+	// this is a non-variable offset.  The offset is fully defined in the
+	// column keywords.
     	const TableRecord& measRec = measInfo.subRecord(fnr);
 	fnr = measRec.fieldNumber("mRef");
 	uInt measRef = 0;
@@ -152,11 +157,19 @@ TableMeasOffsetDesc::TableMeasOffsetDesc(const TableRecord& measInfo,
     	    	"measure type unknown: " + measRec.fieldNumber("mType")));
     	}
     }
+
+    // offset stored in a a measure column
     fnr = measInfo.fieldNumber(prefix + "Col");
     if (fnr >= 0) {
 	itsTMDesc = TableMeasDescBase::reconstruct(tab, 
 	    	    	    	    	    	   measInfo.asString(fnr));
 	itsVarColName = measInfo.asString(fnr);
+    }
+
+    // offset stored per array element
+    fnr = measInfo.fieldNumber(prefix + "varPerArr");
+    if (fnr >= 0) {
+	itsVarPerArr = measInfo.asBool(fnr);
     }
 }
 
@@ -168,6 +181,7 @@ TableMeasOffsetDesc& TableMeasOffsetDesc::operator=(
 	delete itsMeasure;
 	itsTMDesc  = that.itsTMDesc;
 	itsMeasure = that.itsMeasure;
+	itsVarPerArr = that.itsVarPerArr;
 	if (itsTMDesc != 0) {
 	    itsTMDesc = itsTMDesc->clone();
 	}
@@ -204,6 +218,7 @@ void TableMeasOffsetDesc::write(TableDesc& td, TableRecord& measInfo,
     }
     if (itsTMDesc != 0) {
 	measInfo.define(prefix + "Col", itsTMDesc->columnName());
+	measInfo.define(prefix + "varPerArr", itsVarPerArr);
 	itsTMDesc->write(td);
     }
 }
