@@ -30,9 +30,12 @@
 #include <trial/Images/ImageFITSConverter.h>
 #include <trial/Coordinates/CoordinateSystem.h>
 #include <trial/Coordinates/CoordinateUtil.h>
+#include <trial/Coordinates/SpectralCoordinate.h>
 #include <aips/Lattices/PagedArray.h>
 #include <aips/Arrays/IPosition.h>
 #include <aips/Arrays/ArrayMath.h>
+#include <aips/Arrays/ArrayLogical.h>
+#include <aips/Arrays/MaskedArray.h>
 #include <aips/OS/RegularFile.h>
 #include <aips/OS/Directory.h>
 #include <aips/IO/RegularFileIO.h>
@@ -74,6 +77,8 @@ void doOpens()
 //
   dir.removeRecursive();
 }
+
+
 void doTypes()
 {
    Directory dir("tImageUtilities_tmp");
@@ -225,12 +230,34 @@ void doConversions()
    }
 }
 
-
+void doBin()
+{
+      uInt n = 32;
+      IPosition shape(1,n);
+      SpectralCoordinate cIn, cOut;
+      Array<Float> data(shape);
+      Array<Bool> mask(shape);
+      indgen(data);
+      mask = True;
+      MaskedArray<Float> maIn(data,mask);
+      MaskedArray<Float> maOut;
+      uInt bin = 2;
+      uInt axis = 0;
+      ImageUtilities::bin(maOut, cOut, maIn, cIn, axis, bin);
+      AlwaysAssert(maOut.nelements()==n/bin, AipsError);
+      Array<Float> pOut(maOut.shape());
+      indgen(pOut);
+      pOut *= Float(bin);
+      pOut += Float(0.5);
+      AlwaysAssert(allNear(pOut,maOut.getArray(),1e-6), AipsError);
+      AlwaysAssert(allEQ(maOut.getMask(),True), AipsError);
+}
 
   
 int main()
 {
   try {
+    doBin();
     doTypes();
     doOpens();
 //    doConversions();
