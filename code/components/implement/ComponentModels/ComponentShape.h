@@ -1,4 +1,4 @@
-//# ComponentShape.h:
+//# ComponentShape.h: Base class for component shapes
 //# Copyright (C) 1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -29,14 +29,14 @@
 
 #include <aips/aips.h>
 #include <trial/ComponentModels/ComponentType.h>
-#include <trial/Utilities/RecordTransformable.h>
+#include <aips/Utilities/RecordTransformable.h>
 
 class MDirection;
 class MVAngle;
 class RecordInterface;
 class String;
-template <class T> class Vector;
 template <class T> class Flux;
+template <class T> class Vector;
 
 // <summary>Base class for component shapes</summary>
 
@@ -53,32 +53,33 @@ template <class T> class Flux;
 
 // This abstract base class defines the interface for different classes which
 // specify the shape of a component. The most fundamental derived class is the
-// <linkto class=PointShape>point</linkto> shape class but the 
-// <linkto class=GaussianShape>Gaussian</linkto> shape is also available. These
-// classes model the spatial shape of emission from the sky. Classes derived
+// <linkto class=PointShape>point</linkto> shape class but the <linkto
+// class=GaussianShape>Gaussian</linkto> shape is also available. These classes
+// model the spatial distribution of emission from the sky. Classes derived
 // from the <linkto class=SpectralModel>SpectralModel</linkto> class are used
 // to model the spectral characteristics.
 
 // This class parameterises all possible shapes with two quantities.
 // <dl>
-// <dt> A reference direction. 
+// <dt><em> A reference direction.</em>
 // <dd> This is specified using an <linkto class=MDirection>MDirection</linkto>
-//      and indicates the direction on the sky of some defined reference point
+//      object and indicates the direction on a defined reference point
 //      within the shape. Usually this reference point is the centre of the
 //      shape.
-// <dt> A Vector of parameters.
+// <dt> <em>A Vector of parameters.</em>
 // <dd> This contains other parameters that the are defined differently for
 //      different shapes. The length of the vector may vary for different
 //      parameter shapes. 
 // </dl>
 // 
 
-// The basic operation of classes using this interface is to determine the flux
-// as a function of direction on the sky. Classes derived from this one do not
-// know the Flux (or integrated intensity) of the component they
-// represent. This must be supplied as an argument to the sample function in
-// order to calculate the proportion of the flux that is inclosed within a
-// pixel of specified size centred in a specified direction.
+// The basic operation of classes using this interface is to model the flux as
+// a function of direction on the sky. Classes derived from this one do not
+// know what the Flux of the component is, this must be supplied as an argument
+// to the <src>sample</src> function. These classes will scale the supplied
+// flux in order to calculate the proportion of the flux that is enclosed
+// within a pixel of specified size centred on a specified direction. In
+// general this scaling will be the same for all polarisations.
 
 // The interface also defines functions which calculate the analytic Fourier
 // transform of the component at any specified spatial frequency.
@@ -90,6 +91,9 @@ template <class T> class Flux;
 // class cannot be constructed. However the interface it defines can be used
 // inside a function. This is always recommended as it allows functions which
 // have ComponentShapes as arguments to work for any derived class.
+// <h4>Example 1:</h4>
+// In this example the printShape function prints out the shape of the
+// model it is working with and the reference direction of that model.
 // <srcblock>
 // void printShape(const ComponentShape & theShape) {
 //   cout << "This is a " << ComponentType::name(theShape.type())
@@ -163,7 +167,7 @@ public:
   virtual void parameters(Vector<Double> & compParms) const = 0;
   // </group>
 
-  // This functions convert between a record and a ComponentShape. This way
+  // These functions convert between a record and a ComponentShape. This way
   // derived classes can interpret fields in the record in a class specific
   // way. These functions define how the shape is represented in glish.  They
   // return False if the record is malformed and append an error message to the
@@ -175,17 +179,20 @@ public:
 			RecordInterface & record) const = 0;
   // </group>
 
-  // Return the shape that the supplied record represents. Returns
-  // ComponentType::UNKNOWN_SHAPE if the shape record could not be parsed
-  // correctly (it then appends an appropriate error message to the
-  // errorMessage String).
+  // Return the shape that the supplied record represents. The
+  // shape is determined by parsing a 'type' field in the supplied
+  // record. Returns ComponentType::UNKNOWN_SHAPE if the type field
+  // (which contains a string) could not be translated into a known
+  // shape. It then appends an appropriate error message to the errorMessage
+  // String.
   static ComponentType::Shape getType(String & errorMessage,
 				      const RecordInterface & record);
 
   // Function which checks the internal data of this class for correct
-  // dimensionality and consistent values. Returns True if everything is fine
+  // dimensionality and consistant values. Returns True if everything is fine
   // otherwise returns False.
   virtual Bool ok() const = 0;
+
 protected:
   //# These functions are used by derived classes implementing concrete
   //# versions of the toRecord and fromRecord member functions.
