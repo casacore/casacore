@@ -1,4 +1,4 @@
-//# LatticeParse.cc: Classes to hold results from lattice expression parser
+//# ImageExprParse.cc: Classes to hold results from image expression parser
 //# Copyright (C) 1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -25,8 +25,9 @@
 //#
 //# $Id$
 
-#include <trial/Lattices/LatticeParse.h>
-#include <trial/Lattices/LatticeGram.h>
+#include <trial/Images/ImageExprParse.h>
+#include <trial/Images/ImageExprGram.h>
+#include <trial/Images/PagedImage.h>
 #include <trial/Lattices/LatticeExprNode.h>
 #include <trial/Lattices/PagedArray.h>
 #include <aips/Tables/Table.h>
@@ -38,50 +39,55 @@
 
 
 //# Initialize static members.
-LatticeExprNode LatticeParse::theirNode;
+LatticeExprNode ImageExprParse::theirNode;
 
 
 
-LatticeParse::LatticeParse (Int value)
+ImageExprParse::ImageExprParse (Bool value)
+: itsType (TpBool),
+  itsBval (value)
+{}
+
+ImageExprParse::ImageExprParse (Int value)
 : itsType (TpInt),
   itsIval (value)
 {}
 
-LatticeParse::LatticeParse (Float value)
+ImageExprParse::ImageExprParse (Float value)
 : itsType (TpFloat),
   itsFval (value)
 {}
 
-LatticeParse::LatticeParse (Double value)
+ImageExprParse::ImageExprParse (Double value)
 : itsType (TpDouble),
   itsDval (value)
 {}
 
-LatticeParse::LatticeParse (const Complex& value)
+ImageExprParse::ImageExprParse (const Complex& value)
 : itsType (TpComplex),
   itsCval (value)
 {}
 
-LatticeParse::LatticeParse (const DComplex& value)
+ImageExprParse::ImageExprParse (const DComplex& value)
 : itsType  (TpDComplex),
   itsDCval (value)
 {}
 
-LatticeParse::LatticeParse (const String& value)
+ImageExprParse::ImageExprParse (const String& value)
 : itsType (TpString),
   itsSval (value)
 {}
 
 
-LatticeExprNode LatticeParse::command (const String& str)
+LatticeExprNode ImageExprParse::command (const String& str)
 {
     String message;
     String command = str + '\n';
     Bool error = False;
     try {
 	// Parse and execute the command.
-	if (latticeGramParseCommand(command) != 0) {
-	    throw (AipsError("Parse error in lattice expression " + str));
+	if (imageExprGramParseCommand(command) != 0) {
+	    throw (AipsError("Parse error in image expression " + str));
 	}
     } catch (AipsError x) {
 	message = x.getMesg();
@@ -93,13 +99,13 @@ LatticeExprNode LatticeParse::command (const String& str)
     //# If an exception was thrown; throw it again with the message.
     if (error) {
 	throw (AipsError(message + '\n' + "Scanned so far: " +
-	                 command.before(latticeGramPosition())));
+	                 command.before(imageExprGramPosition())));
     }
     return node;
 }
 
 
-LatticeExprNode LatticeParse::makeFuncNode() const
+LatticeExprNode ImageExprParse::makeFuncNode() const
 {
     AlwaysAssert (itsType == TpString, AipsError);
     if (itsSval == "pi") {
@@ -112,7 +118,7 @@ LatticeExprNode LatticeParse::makeFuncNode() const
     return LatticeExprNode();
 }
 
-LatticeExprNode LatticeParse::makeFuncNode (const LatticeExprNode& arg1) const
+LatticeExprNode ImageExprParse::makeFuncNode (const LatticeExprNode& arg1) const
 {
     AlwaysAssert (itsType == TpString, AipsError);
     if (itsSval == "sin") {
@@ -187,8 +193,8 @@ LatticeExprNode LatticeParse::makeFuncNode (const LatticeExprNode& arg1) const
     return LatticeExprNode();
 }
 
-LatticeExprNode LatticeParse::makeFuncNode (const LatticeExprNode& arg1,
-					    const LatticeExprNode& arg2) const
+LatticeExprNode ImageExprParse::makeFuncNode (const LatticeExprNode& arg1,
+					      const LatticeExprNode& arg2) const
 {
     AlwaysAssert (itsType == TpString, AipsError);
     if (itsSval == "atan2") {
@@ -212,9 +218,11 @@ LatticeExprNode LatticeParse::makeFuncNode (const LatticeExprNode& arg1,
 }
 
 
-LatticeExprNode LatticeParse::makeLiteralNode() const
+LatticeExprNode ImageExprParse::makeLiteralNode() const
 {
     switch (itsType) {
+    case TpBool:
+	return LatticeExprNode (itsBval);
     case TpInt:
 	return LatticeExprNode (itsIval);
     case TpFloat:
@@ -226,47 +234,86 @@ LatticeExprNode LatticeParse::makeLiteralNode() const
     case TpDComplex:
 	return LatticeExprNode (itsDCval);
     default:
-	throw (AipsError ("LatticeParse: unknown data type for literal"));
+	throw (AipsError ("ImageExprParse: unknown data type for literal"));
     }
     return LatticeExprNode();
 }
 
-LatticeExprNode LatticeParse::makeLatticeNode() const
+LatticeExprNode ImageExprParse::makeLatticeNode() const
 {
-    DataType dtype = TpOther;
-    String colName;
-    if (Table::isReadable(itsSval)) {
-	try {
-	    TableDesc desc;
-	    uInt nrow = Table::getLayout (desc, itsSval);
-	    if (nrow != 1) {
-		throw (AipsError ("LatticeParse can only handle Lattices/"
-				  "Images with 1 row"));
-	    }
-	    ColumnDesc cdesc = desc[0];
-	    if (cdesc.isArray()) {
-		dtype = cdesc.dataType();
-		colName = cdesc.name();
-	    }
-	} catch (AipsError x) {
-	    // Nothing
-	} end_try;
+    if (! Table::isReadable(itsSval)) {
+	throw (AipsError ("ImageExprParse: '" + itsSval +
+			  "' is not a table or is not readable"));
     }
     Table table(itsSval);
-    switch (dtype) {
-    case TpBool:
-	return LatticeExprNode (PagedArray<Bool> (table, colName, 0));
-    case TpFloat:
-	return LatticeExprNode (PagedArray<Float> (table, colName, 0));
-    case TpDouble:
-	return LatticeExprNode (PagedArray<Double> (table, colName, 0));
-    case TpComplex:
-	return LatticeExprNode (PagedArray<Complex> (table, colName, 0));
-    case TpDComplex:
-	return LatticeExprNode (PagedArray<DComplex> (table, colName, 0));
-    default:
-	throw (AipsError ("LatticeParse: " + itsSval +
-			  " is an unknown Lattice/Image name"));
+    Bool isImage = True;
+    String type = table.tableInfo().type();
+    if (type == TableInfo::type(TableInfo::PAGEDARRAY)) {
+	isImage = False;
+    } else if (type != TableInfo::type(TableInfo::PAGEDIMAGE)) {
+	throw (AipsError ("ImageExprParse: '" + itsSval +
+			  "' is not a PagedArray or PagedImage"));
+    }
+    if (table.nrow() != 1) {
+	throw (AipsError ("ImageExprParse can only handle Lattices/"
+			  "Images with 1 row"));
+    }
+    DataType dtype = TpOther;
+    String colName;
+    ColumnDesc cdesc = table.tableDesc()[0];
+    if (cdesc.isArray()) {
+	dtype = cdesc.dataType();
+	colName = cdesc.name();
+    }
+    if (isImage) {
+	switch (dtype) {
+///	case TpBool:
+///	    return LatticeExprNode (PagedImage<Bool> (table, 0));
+	case TpFloat:
+	    return LatticeExprNode (PagedImage<Float> (table, 0));
+///	case TpDouble:
+///	    return LatticeExprNode (PagedImage<Double> (table, 0));
+	case TpComplex:
+	    return LatticeExprNode (PagedImage<Complex> (table, 0));
+///	case TpDComplex:
+///	    return LatticeExprNode (PagedImage<DComplex> (table, 0));
+	default:
+	    throw (AipsError ("ImageExprParse: " + itsSval + " is a PagedImage "
+			      "with an unsupported data type"));
+	}
+    } else {
+	switch (dtype) {
+	case TpBool:
+	    return LatticeExprNode (PagedArray<Bool> (table, colName, 0));
+	case TpFloat:
+	    return LatticeExprNode (PagedArray<Float> (table, colName, 0));
+	case TpDouble:
+	    return LatticeExprNode (PagedArray<Double> (table, colName, 0));
+	case TpComplex:
+	    return LatticeExprNode (PagedArray<Complex> (table, colName, 0));
+	case TpDComplex:
+	    return LatticeExprNode (PagedArray<DComplex> (table, colName, 0));
+	default:
+	    throw (AipsError ("ImageExprParse: " + itsSval + " is a PagedArray "
+			      "with an unsupported data type"));
+	}
     }
     return LatticeExprNode();
+}
+
+LatticeExprNode ImageExprParse::makeLitLattNode() const
+{
+    // The following outcommented code makes it possible to specify
+    // a constant without ().
+    // E.g.            image.file * pi
+    // instead of      image.file * pi()
+    // However, itt forbids the use of pi, e, etc. as a lattice name and
+    // may make things unclear. Therefore it is not supported yet.
+///    if (itsSval == "pi") {
+///	return LatticeExprNode (C::pi);
+///    } else if (itsSval == "e") {
+///	return LatticeExprNode (C::e);
+///    }
+    // It is a the name of a constant, so it must be a lattice name.
+    return makeLatticeNode();
 }
