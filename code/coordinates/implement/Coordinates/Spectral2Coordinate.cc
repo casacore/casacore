@@ -278,14 +278,14 @@ Int SpectralCoordinate::makeConversionMachines (MFrequency::Types type,
 
    pConversionMachineTo_p = new MFrequency::Convert();
    Bool ok1 = CoordinateUtil::makeFrequencyMachine (os, *pConversionMachineTo_p,
-                                                    type, conversionType,
+                                                    conversionType, type,
                                                     direction, direction, 
                                                     epoch, epoch,
                                                     position, position);
 //
    pConversionMachineFrom_p = new MFrequency::Convert();
    Bool ok2  = CoordinateUtil::makeFrequencyMachine (os, *pConversionMachineFrom_p,
-                                                     conversionType, type,
+                                                     type, conversionType, 
                                                      direction, direction,
                                                      epoch, epoch,
                                                      position, position);
