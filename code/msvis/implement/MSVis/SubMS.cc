@@ -165,11 +165,7 @@ Bool SubMS::makeSelection(){
 
   // check that sorted table exists (it should), if not, make it now.
   if (!ms_p.keywordSet().isDefined("SORTED_TABLE")) {
-    Block<int> sort(4);
-    sort[0] = MS::FIELD_ID;
-    sort[1] = MS::ARRAY_ID;
-    sort[2] = MS::DATA_DESC_ID;
-    sort[3] = MS::TIME;
+    Block<int> sort(0);
     Matrix<Int> noselection;
     VisSet vs(ms_p,sort,noselection);
   }
@@ -698,11 +694,7 @@ Bool SubMS::writeDiffSpwShape(String& columnName){
 
   Int rowsdone=0;
   Int rowsnow=0;
-  Block<Int> sort(4);
-  sort[0] = MS::FIELD_ID;
-  sort[1] = MS::ARRAY_ID;
-  sort[2] = MS::DATA_DESC_ID;
-  sort[3] = MS::TIME;
+  Block<Int> sort(0);
   Matrix<Int> noselection;
   
   VisSet *vs= new VisSet(mssel_p, sort, noselection);
