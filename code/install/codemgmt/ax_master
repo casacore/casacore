@@ -2629,3 +2629,5 @@
 11 397 src rm trial/scripts/tasks.g
 11 397 src rm trial/scripts/pgdemo.g
 11 397 src rm trial/scripts/tkpgdemo.g
+11 397 sys rm libexec/tkpgdemo.g
+11 397 sys rm libexec/pgdemo.g
