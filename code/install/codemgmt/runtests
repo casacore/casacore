@@ -50,9 +50,9 @@
      cd $AIPSROOT
      gmake -C code TESTOPT=opt NODEP=1 runtests > $BINTESTD/runtests.log 2>&1
  
-#    Check for failures in the aips package only (nobody relies on trial).
+#    Check for failures in the aips and display packages only (nobody relies on trial).
      cd $BINTESTD
-     FAILED=`grep '^aips-.*FAIL (' runtests.report | wc -l`
+     FAILED=`grep '\(\(^aips\)\|\(^display\)\)-.*FAIL (' runtests.report | wc -l`
      FAILED=`echo $FAILED`
      echo ""
      echo "runtests: Version $VERSION finished with $FAILED failures."
@@ -65,6 +65,8 @@
      echo $PATH
      testsum.sh $AIPSARCH aips > $BINTESTD/runtests_aips.summary 2>&1
      testsum.sh $AIPSARCH trial > $BINTESTD/runtests_trial.summary 2>&1
+     testsum.sh $AIPSARCH display > $BINTESTD/runtests_display.summary 2>&1
+     testsum.sh $AIPSARCH trialdisplay > $BINTESTD/runtests_trialdisplay.summary 2>&1
   } > $BINTESTD/runtests.rptNlog
 
   exit 0
