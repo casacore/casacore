@@ -47,11 +47,18 @@ MSTimeParse::MSTimeParse (const MeasurementSet* ms)
     node_p = new TableExprNode();
 }
 
-const TableExprNode *MSTimeParse::selectStartTime(const MEpoch& startTime)
+const TableExprNode *MSTimeParse::selectTime(const MEpoch& time,
+                                             bool daytime)
 {
-    MVTime mvStart(startTime.getValue());
+    return selectTimeRange(time, time);
+}
 
-    TableExprNode condition = (ms()->col(colName) >= mvStart);
+const TableExprNode *MSTimeParse::selectTimeGT(const MEpoch& lowboundTime,
+                                               bool daytime)
+{
+    MVTime mvLow(lowboundTime.getValue());
+
+    TableExprNode condition = (ms()->col(colName) >= mvLow);
 
     if(node_p->isNull())
         *node_p = condition;
@@ -61,11 +68,12 @@ const TableExprNode *MSTimeParse::selectStartTime(const MEpoch& startTime)
     return node_p;
 }
 
-const TableExprNode *MSTimeParse::selectEndTime(const MEpoch& endTime)
+const TableExprNode *MSTimeParse::selectTimeLT(const MEpoch& upboundTime,
+                                               bool daytime)
 {
-    MVTime mvEnd(endTime.getValue());
+    MVTime mvUp(upboundTime.getValue());
  
-    TableExprNode condition = (ms()->col(colName) <= mvEnd);
+    TableExprNode condition = (ms()->col(colName) <= mvUp);
 
     if(node_p->isNull())
         *node_p = condition;
@@ -75,14 +83,15 @@ const TableExprNode *MSTimeParse::selectEndTime(const MEpoch& endTime)
     return node_p;
 }
 
-const TableExprNode *MSTimeParse::selectRange(const MEpoch& startTime,
-                                              const MEpoch& endTime)
+const TableExprNode *MSTimeParse::selectTimeRange(const MEpoch& lowboundTime,
+                                                  const MEpoch& upboundTime,
+                                                  bool daytime)
 {
-    MVTime mvStart(startTime.getValue());
-    MVTime mvEnd(endTime.getValue());
+    MVTime mvLow(lowboundTime.getValue());
+    MVTime mvUp(upboundTime.getValue());
 
-    TableExprNode condition = (ms()->col(colName) >= mvStart) &&
-                              (ms()->col(colName) <= mvEnd);
+    TableExprNode condition = (ms()->col(colName) >= mvLow) &&
+                              (ms()->col(colName) <= mvUp);
 
     if(node_p->isNull())
         *node_p = condition;
@@ -90,6 +99,37 @@ const TableExprNode *MSTimeParse::selectRange(const MEpoch& startTime,
         *node_p = *node_p || condition;
 
     return node_p;
+}
+
+const TableExprNode *MSTimeParse::selectScanIds(const Vector<Int> scanids)
+{
+    TableExprNode condition = TableExprNode();
+
+    if(node_p->isNull())
+        *node_p = condition;
+    else
+        *node_p = *node_p || condition;
+
+    return node_p;
+}
+
+const MEpoch *MSTimeParse::dayTimeConvert(uInt day, uInt hour, uInt minute,
+                                          uInt second, uInt millisec)
+{
+    static const MEpoch *daytime = 0x0;
+
+    if(daytime) delete daytime;
+    return (daytime = new MEpoch());
+}
+
+const MEpoch *MSTimeParse::yearTimeConvert(uInt year, uInt month, uInt day,
+                                           uInt hour, uInt minute,
+                                           uInt second, uInt millisec)
+{
+    static const MEpoch *yeartime = 0x0;
+
+    if(yeartime) delete yeartime;
+    return (yeartime = new MEpoch());
 }
 
 const TableExprNode* MSTimeParse::node()

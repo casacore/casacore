@@ -104,12 +104,10 @@ REGEX     {REGEX1}|{REGEX2}|{REGEX3}
             return OR; }
 "!"       { msTimeGramPosition() += yyleng;
             return NOT; }
-"^"       { msTimeGramPosition() += yyleng;
-            return POWER; }
-"*"       { msTimeGramPosition() += yyleng;
-            return TIMES; }
+"."       { msTimeGramPosition() += yyleng;
+            return DOT; }
 "/"       { msTimeGramPosition() += yyleng;
-            return DIVIDE; }
+            return SLASH; }
 "%"       { msTimeGramPosition() += yyleng;
             return PERCENT; }
 "+"       { msTimeGramPosition() += yyleng;
