@@ -256,8 +256,9 @@ IPosition LatticeStepper::subLatticeShape() const {
 };
 
 void LatticeStepper::setCursorShape(const IPosition & cursorShape) {
-  if (cursorShape.nelements() != theIndexer.ndim()){
-    theCursorShape.resize(cursorShape.nelements());
+  const uInt cursorDim = cursorShape.nelements();
+  if (cursorDim != theIndexer.ndim()){
+    theCursorShape.resize(cursorDim);
     theCursorShape = cursorShape;
     padCursor();
   }
@@ -268,7 +269,10 @@ void LatticeStepper::setCursorShape(const IPosition & cursorShape) {
 
 IPosition LatticeStepper::cursorShape() const {
   DebugAssert(ok() == True, AipsError);
-  return theCursorShape;
+  if (hangOver() && thePolicy == RESIZE)
+    return relativeEndPosition() - relativePosition() + 1;
+  else
+    return theCursorShape;
 };
 
 Bool LatticeStepper::hangOver() const {
