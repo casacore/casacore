@@ -1418,10 +1418,13 @@ Bool ImageMoments<T>::smoothImage (PtrHolder<ImageInterface<T> >& pSmoothedImage
 
 // Do the convolution.  Conserve flux.
 
+   Bool autoScale = True;
+   Bool useImageShapeExactly = False;
    SepImageConvolver<T> sic(*pInImage_p, os_p, True);
    for (uInt i=0; i<smoothAxes_p.nelements(); i++) {
       VectorKernel::KernelTypes type = VectorKernel::KernelTypes(kernelTypes_p(i));
-      sic.setKernel(uInt(smoothAxes_p(i)), type, kernelWidths_p(i), True, 1.0);
+      sic.setKernel(uInt(smoothAxes_p(i)), type, kernelWidths_p(i), 
+                    autoScale, useImageShapeExactly, 1.0);
    }
    sic.convolve(*pSmIm);
    return True;
