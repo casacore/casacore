@@ -47,7 +47,7 @@
 #include <aips/Measures/MDoppler.h>
 #include <aips/Measures/MEarthMagnetic.h>
 #include <aips/Measures/MFrequency.h>
-#include <aips/Measures/MPosition.h>
+#include <aips/Measures/MDirection.h>
 #include <aips/Measures/MRadialVelocity.h>
 #include <aips/Measures/Muvw.h>
 #include <aips/Measures/MeasData.h>
@@ -129,7 +129,7 @@ int main(int argc)
     }
 
     // Need a table to work with.
-    TableDesc td("tTableMeasures_desc", "1", TableDesc::New);
+    TableDesc td("tTableMeasures_tmp", "1", TableDesc::New);
     td.comment() = "A test of TableMeasures class.";
 
     // Each measure column needs at exactly one ArrayColumn<Double> for storing
@@ -138,9 +138,12 @@ int main(int argc)
     // vary per row.  The value column is always an ArrayColumn irrespective
     // of whether Scalar or Array measures are to be stored.
 
-    // A scalar column of MPosition.  Static reference so no addional
+    // A scalar column of MDirection.  Static reference so no addional
     // columns required.
-    ArrayColumnDesc<Double> cdMPos("MPosColumn", "Simple mposition column");
+    ArrayColumnDesc<Double> cdMDir("MDirColumn", "Simple mdirection column",
+				   IPosition(1,2), ColumnDesc::Direct);
+    ArrayColumnDesc<Double> cdMDir2("MDirColumn2", "Simple mdirection column",
+				    IPosition(1,3), ColumnDesc::Direct);
 
     // A scalar MEpoch column with a fixed offset and refernce.  Fixed
     // references and offsets do not need additional columns as they are
@@ -217,7 +220,8 @@ int main(int argc)
     td.addColumn(cdTime);
     td.addColumn(cdTOffset);
     td.addColumn(cdVarOffset);
-    td.addColumn(cdMPos);
+    td.addColumn(cdMDir);
+    td.addColumn(cdMDir2);
     td.addColumn(cdTimeRef);
     td.addColumn(cdTimeRefStr);
     td.addColumn(cdMEVS);
@@ -236,17 +240,24 @@ int main(int argc)
 
     // We have the columns we need but there not yet measure columns.
     {
-      // The following creates an (empty) MPosition column.  The column
-      // used is "MPosColumn".   This is the simplest useful TableMeasDesc
-      // declaration that can be done. Default MPosition::Ref is used
+      // The following creates an (empty) MDirection column.  The column
+      // used is "MDirColumn".   This is the simplest useful TableMeasDesc
+      // declaration that can be done. Default MDirection::Ref is used
       // for the reference.
 
       // The value desc. specifies the column to use for the measures
-      TableMeasValueDesc tmvdMPos(td, "MPosColumn");
+      TableMeasValueDesc tmvdMDir(td, "MDirColumn");
       // the TableMeasDesc gives the column a type
-      TableMeasDesc<MPosition> tmdMPos(tmvdMPos);
+      TableMeasDesc<MDirection> tmdMDir(tmvdMDir);
       // writing create the measure column
-      tmdMPos.write(td);
+      tmdMDir.write(td);
+
+      // The value desc. specifies the column to use for the measures
+      TableMeasValueDesc tmvdMDir2(td, "MDirColumn2");
+      // the TableMeasDesc gives the column a type (write internal values)
+      TableMeasDesc<MDirection> tmdMDir2(tmvdMDir2, True);
+      // writing create the measure column
+      tmdMDir2.write(td);
     }
     {
       MEpoch obsTime(MVEpoch(MVTime(1995, 5, 17, (8+18./60.)/24.)),
@@ -313,8 +324,7 @@ int main(int argc)
       TableMeasOffsetDesc tmODesc(tmMOS);
 
       // Simplest useful TableMeasDesc declaration that can be done.
-      // Default MPosition::Ref will be used for the reference.
-      TableMeasRefDesc tmrd(td, "TimeRefStr",tmODesc);
+      TableMeasRefDesc tmrd(td, "TimeRefStr", tmODesc);
       TableMeasValueDesc tmvdMEpoch2(td, "MEpochVarStr");
       TableMeasDesc<MEpoch> tmdMEpoch2(tmvdMEpoch2, tmrd);
       tmdMEpoch2.write(td);
@@ -513,9 +523,9 @@ int main(int argc)
 
     // Finally create the table
 
-    SetupNewTable newtab("tTableMeasures.tab", td, Table::New);
+    SetupNewTable newtab("tTableMeasures_tmp.tab", td, Table::New);
 
-    // At this point a table called "tTableMeasures.tab" has been created.
+    // At this point a table called "tTableMeasures_tmp.tab" has been created.
     // It contains a number of empty Measure columns.  The remainder of this
     // program tests the usage of Scalar(Array)MeasColumn objects for
     // putting and getting Measures into and out of the table.
@@ -658,7 +668,7 @@ int main(int argc)
     {
       // reopen the table RO and read the measures
       cout << "Reopening the table read-only and reading contents...\n";
-      Table tab("tTableMeasures.tab", Table::Old);
+      Table tab("tTableMeasures_tmp.tab", Table::Old);
       MEpoch::ROScalarColumn timeColRead(tab, "TimeOffset");
       ROScalarColumn<Double> timeColSimple(tab, "TimeOffset");
       MEpoch tm;
@@ -681,40 +691,41 @@ int main(int argc)
     }
 
     {
-      Table tab("tTableMeasures.tab", Table::Update);
-      // A column of MPositions
-      MPosition::ScalarColumn mposCol(tab, "MPosColumn");
-      if (mposCol.measDesc().isRefCodeVariable()) {
+      Table tab("tTableMeasures_tmp.tab", Table::Update);
+      // A column of MDirections
+      MDirection::ScalarColumn mdirCol(tab, "MDirColumn");
+      if (mdirCol.measDesc().isRefCodeVariable()) {
 	cout << "Error: reference is variable!\n";
       }
+      MDirection::ScalarColumn mdirCol2(tab, "MDirColumn2");
 
-      cout << "Filling the MPosition column MPosColumn\n";
-      MPosition mpos;
+      cout << "Filling the MDirection column MDirColumn\n";
+      MDirection mdir;
       for (uInt i=0; i<tabRows; i++) {
-	mpos.set(MVPosition(Quantity(25 + i, "m"),
-			    Quantity(20, "deg"),
-			    Quantity(53, "deg")));
-	cout << "put: " << mpos << endl;
-	mposCol.put(i, mpos);
+	MDirection mdir (Quantity(20, "deg"), Quantity(53, "deg"));
+	cout << "put: " << mdir << endl;
+	mdirCol.put(i, mdir);
+	mdirCol2.put(i, mdir);
       }
     }
 
     {
-      Table tab("tTableMeasures.tab", Table::Update);
-      // A column of MPositions
-      MPosition::ROScalarColumn mposCol(tab, "MPosColumn");
-      if (mposCol.measDesc().isRefCodeVariable()) {
+      Table tab("tTableMeasures_tmp.tab", Table::Update);
+      // A column of MDirections
+      MDirection::ROScalarColumn mdirCol(tab, "MDirColumn");
+      if (mdirCol.measDesc().isRefCodeVariable()) {
 	cout << "Error: reference is variable!\n";
       }
-      MPosition mpos;
-      cout << "Reading from MPosition column MPosColumn\n";
+      MDirection::ROScalarColumn mdirCol2(tab, "MDirColumn2");
+      cout << "Reading from MDirection column MDirColumn\n";
       for (uInt i=0; i<tabRows; i++) {
-	cout << "retrieve: " << mposCol(i) << endl;
+	cout << "retrieve: " << mdirCol(i) << endl;
+	cout << "retrieve: " << mdirCol2(i) << endl;
       }
     }
 
     {
-      Table tab("tTableMeasures.tab", Table::Update);
+      Table tab("tTableMeasures_tmp.tab", Table::Update);
       cout << "Test of column TimeVarOffset...\n";
       cout << "A column of MEpoch where the reference and offset components";
       cout << " are variable.\n";
@@ -803,7 +814,7 @@ int main(int argc)
 
     Vector<MEpoch> ev(10);
     {
-      Table tab("tTableMeasures.tab", Table::Update);
+      Table tab("tTableMeasures_tmp.tab", Table::Update);
       cout << "Creating an MEpoch Array Column\n";
       MEpoch::ArrayColumn tmpArrCol;
 
@@ -864,7 +875,7 @@ int main(int argc)
 
     {
       cout << "Open table again in RO mode to test ROArrayMeasColumn...\n";
-      Table tab("tTableMeasures.tab", Table::Old);
+      Table tab("tTableMeasures_tmp.tab", Table::Old);
       cout << "Creating an MEpoch Array Column\n";
       MEpoch::ROArrayColumn arrayCol(tab, "Time1Arr");	
       Vector<MEpoch> ew;
@@ -883,7 +894,7 @@ int main(int argc)
     {
       // a bunch of extra tests
 
-      Table tab("tTableMeasures.tab", Table::Update);
+      Table tab("tTableMeasures_tmp.tab", Table::Update);
       MEpoch::ArrayColumn arrMeasCol;
       arrMeasCol.attach(tab, "Time2Arr");
 

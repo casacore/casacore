@@ -1,10 +1,10 @@
 Test of TableMeasures classes.
 
-TableDesc tTableMeasures_desc   version 1   (Directory ./)
+TableDesc tTableMeasures_tmp   version 1   (Directory ./)
 ---------
   Comment: A test of TableMeasures class.
   #Keywords = 0
-  #Columns  = 19
+  #Columns  = 20
    Name=Time1   DataType=double
    DataManager=StManAipsIO/StManAipsIO   Default=0
    Comment = An MEpoch column
@@ -23,9 +23,15 @@ TableDesc tTableMeasures_desc   version 1   (Directory ./)
    #keywords=1
 0  MEASINFO : SUBRECORD
 
-   Name=MPosColumn   DataType=double   Nrdim=-1   Shape=[]
+   Name=MDirColumn   DataType=double   Nrdim=1   Shape=[2]
    DataManager=StManAipsIO/StManAipsIO
-   Comment = Simple mposition column
+   Comment = Simple mdirection column
+   #keywords=1
+0  MEASINFO : SUBRECORD
+
+   Name=MDirColumn2   DataType=double   Nrdim=1   Shape=[3]
+   DataManager=StManAipsIO/StManAipsIO
+   Comment = Simple mdirection column
    #keywords=1
 0  MEASINFO : SUBRECORD
 
@@ -152,25 +158,37 @@ TableDesc tTableMeasures_desc   version 1   (Directory ./)
       NumUnits = 1  (uInt)
       unit0 = d  (String)
       Ref = UTC  (String)
-* MPosColumn
+* MDirColumn
     MEASINFO =   (Record)
       Type =   (Record)
-        type = position  (String)
-        refer = ITRF  (String)
-        m2 =   (Record)
-          value = 0  (Double)
-          unit = m  (String)
+        type = direction  (String)
+        refer = J2000  (String)
         m1 =   (Record)
+          value = 1.5708  (Double)
           unit = rad  (String)
-          value = 0  (Double)
         m0 =   (Record)
           unit = rad  (String)
           value = 0  (Double)
-      NumUnits = 3  (uInt)
+      NumUnits = 2  (uInt)
       unit0 = rad  (String)
       unit1 = rad  (String)
-      unit2 = m  (String)
-      Ref = ITRF  (String)
+      Ref = J2000  (String)
+* MDirColumn2
+    MEASINFO =   (Record)
+      Type =   (Record)
+        type = direction  (String)
+        refer = J2000  (String)
+        m1 =   (Record)
+          value = 1.5708  (Double)
+          unit = rad  (String)
+        m0 =   (Record)
+          unit = rad  (String)
+          value = 0  (Double)
+      Internal = 1  (Bool)
+      NumUnits = 2  (uInt)
+      unit0 = rad  (String)
+      unit1 = rad  (String)
+      Ref = J2000  (String)
 * TimeRef
 * TimeRefStr
 * MEpochVarStr
@@ -311,18 +329,25 @@ Invalid Table operation: ROMeasTableColumn object is null
 The following line should be an illegal offset column type exception.
 Invalid Table data type when accessing column in ROScalarColumn ctor for column SpareCol1
 Reopening the table read-only and reading contents...
-Filling the MPosition column MPosColumn
-put: Position: [14.138, 5.14582, 19.9659]
-put: Position: [14.7035, 5.35165, 20.7645]
-put: Position: [15.2691, 5.55749, 21.5632]
-put: Position: [15.8346, 5.76332, 22.3618]
-put: Position: [16.4001, 5.96915, 23.1604]
-Reading from MPosition column MPosColumn
-retrieve: Position: [14.138, 5.14582, 19.9659]
-retrieve: Position: [14.7035, 5.35165, 20.7645]
-retrieve: Position: [15.2691, 5.55749, 21.5632]
-retrieve: Position: [15.8346, 5.76332, 22.3618]
-retrieve: Position: [16.4001, 5.96915, 23.1604]
+itsnvals=3
+Filling the MDirection column MDirColumn
+put: Direction: [0.565521, 0.205833, 0.798636]
+put: Direction: [0.565521, 0.205833, 0.798636]
+put: Direction: [0.565521, 0.205833, 0.798636]
+put: Direction: [0.565521, 0.205833, 0.798636]
+put: Direction: [0.565521, 0.205833, 0.798636]
+itsnvals=3
+Reading from MDirection column MDirColumn
+retrieve: Direction: [0.565521, 0.205833, 0.798636]
+retrieve: Direction: [0.565521, 0.205833, 0.798636]
+retrieve: Direction: [0.565521, 0.205833, 0.798636]
+retrieve: Direction: [0.565521, 0.205833, 0.798636]
+retrieve: Direction: [0.565521, 0.205833, 0.798636]
+retrieve: Direction: [0.565521, 0.205833, 0.798636]
+retrieve: Direction: [0.565521, 0.205833, 0.798636]
+retrieve: Direction: [0.565521, 0.205833, 0.798636]
+retrieve: Direction: [0.565521, 0.205833, 0.798636]
+retrieve: Direction: [0.565521, 0.205833, 0.798636]
 Test of column TimeVarOffset...
 A column of MEpoch where the reference and offset components are variable.
 The following line should report an error in ScalarMeasColumn::put - not allowed to put a measure with a frame in variable column.
