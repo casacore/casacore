@@ -86,6 +86,15 @@ template <class T> class Array;
 //  In this example, the values of the pixels in Lattice f1 are set
 //  to the values resulting from the expression "2*f2 + f2"
 //  I.e. the expression is evaluated for each pixel in the Lattices
+//
+//  Note that :
+//  1) the Lattice::copyData function is expecting a Lattice argument.  
+//  2) LatticeExpr inherits from Lattice and therefore a LatticeExpr
+//     object is a valid argument object type
+//  3) The expression in the copyData call is automatically converted to 
+//     a LatticeExprNode by the constructors and operators in LatticeExprNode
+//  4) The LatticeExprNode object so created is automatically converted
+//     to a LatticeExpr by casting functions in LatticeExprNode.
 // </example>
 //
 // <example>
@@ -107,21 +116,13 @@ template <class T> class Array;
 //  expression are subexpressions involving Float, Double, Complex and Bool
 //  Lattices.
 //
-//  Note that :
-//  1) the Lattice::copyData function is expecting a Lattice argument.  
-//  2) LatticeExpr inherits from Lattice and therefore a LatticeExpr
-//     object is a valid argument object type
-//  3) The expression in the copyData call is automatically converted to 
-//     a LatticeExprNode by the constructors and operators in LatticeExprNode
-//  4) The LatticeExprNode object so created is automatically converted
-//     to a LatticeExpr by casting functions in LatticeExprNode.
 // </example>
 //
 // <motivation>
-//  These classes enable the C++ programmer much simpler handling of mathematical
-//  expressions involving lattices.  In addition, these classes provide
-//  the infrastructure on top of which we can build an image calculator
-//  for Glish users
+//  The Lattice expression classes enable the C++ programmer much simpler 
+//  handling of mathematical expressions involving lattices.  In addition, 
+//  these classes provide the infrastructure on top of which we can build 
+//  an image calculator for Glish users
 // </motivation>
 
 // <todo asof="1997/01/15">
