@@ -230,7 +230,11 @@ public:
 
     // Can the table be deleted?
     // If true, function deleteTable can safely be called.
+    // If not, message contains the reason why (e.g. 'table is not writable').
+    // <group>
     static Bool canDeleteTable (const String& tableName);
+    static Bool canDeleteTable (String& message, const String& tableName);
+    // </group>
 
     // Delete the table.
     // An exception is thrown if the table cannot be deleted because

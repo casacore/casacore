@@ -153,14 +153,22 @@ Table& Table::operator= (const Table& that)
 
 Bool Table::canDeleteTable (const String& tableName)
 {
+    String message;
+    return canDeleteTable (message, tableName);
+}
+Bool Table::canDeleteTable (String& message, const String& tableName)
+{
     if (! isWritable (tableName)) {
+	message = "table is not writable";
 	return False;
     }
     if (isOpened (tableName)) {
+	message = "table is still open in this process";
 	return False;
     }
     Table table(tableName);
     if (table.isMultiUsed()) {
+	message = "table is still open in another process";
 	return False;
     }
     return True;
@@ -169,20 +177,12 @@ Bool Table::canDeleteTable (const String& tableName)
 
 void Table::deleteTable (const String& tableName)
 {
-    if (! isWritable (tableName)) {
-	throw (TableError ("Table " + tableName + " cannot be deleted: "
-			   "it is not writable"));
+    String message;
+    if (! canDeleteTable (message, tableName)) {
+	throw (TableError ("Table " + tableName + " cannot be deleted: " +
+			   message));
     }
-    if (isOpened (tableName)) {
-	throw (TableError ("Table " + tableName + " cannot be deleted: "
-			   "it is still open in this process"));
-    }
-    Table table(tableName);
-    if (table.isMultiUsed()) {
-	throw (TableError ("Table " + tableName + " cannot be deleted: "
-			   "it is still open in another process"));
-    }
-    table.markForDelete();
+    Table table(tableName, Table::Delete);
 }
 
 
