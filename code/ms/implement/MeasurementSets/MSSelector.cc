@@ -56,14 +56,20 @@
 
 
 MSSelector::MSSelector():msIter_p(0),initSel_p(False),dataDescId_p(0),
-lastDataDescId_p(1,-1),
-useSlicer_p(False),haveSlicer_p(False),wantedOne_p(-1),convert_p(False)
+			 lastDataDescId_p(1,-1),useSlicer_p(False),
+			 haveSlicer_p(False),wantedOne_p(-1),convert_p(False),
+			 useIfrDefault_p(True)
 { }
 
 MSSelector::MSSelector(MeasurementSet& ms):ms_p(ms),
-selms_p(ms),savems_p(ms),msIter_p(0),initSel_p(False),dataDescId_p(0),
-lastDataDescId_p(1,-1),
-useSlicer_p(False),haveSlicer_p(False),wantedOne_p(-1),convert_p(False)
+					   selms_p(ms),savems_p(ms),
+					   msIter_p(0),initSel_p(False),
+					   dataDescId_p(0),
+					   lastDataDescId_p(1,-1),
+					   useSlicer_p(False),
+					   haveSlicer_p(False),
+					   wantedOne_p(-1),convert_p(False),
+					   useIfrDefault_p(True)
 { }
 
 MSSelector::MSSelector(const MSSelector& other):msIter_p(0)
@@ -86,6 +92,7 @@ MSSelector& MSSelector::operator=(const MSSelector& other)
   slicer_p=other.slicer_p;
   wantedOne_p=other.wantedOne_p;
   convert_p=other.convert_p;
+  useIfrDefault_p=other.useIfrDefault_p;
   return *this;
 }
 
@@ -108,6 +115,7 @@ void MSSelector::setMS(MeasurementSet& ms)
   haveSlicer_p=False;
   wantedOne_p=-1;
   convert_p=False;
+  useIfrDefault_p=True;
 }
 
 Bool MSSelector::initSelection(const Vector<Int>& dataDescId, Bool reset)
@@ -124,6 +132,7 @@ Bool MSSelector::initSelection(const Vector<Int>& dataDescId, Bool reset)
     haveSlicer_p=False;
     wantedOne_p=-1;
     convert_p=False;
+    useIfrDefault_p=True;
     return True;
   }
 
@@ -426,6 +435,7 @@ Bool MSSelector::select(const GlishRecord& items, Bool oneBased)
 			    .in(ifrNum));
 	  }
 	  ifrSelection_p.reference(ifrNum);
+	  useIfrDefault_p=False;
 	} else {
 	  os<< LogIO::WARN << "Illegal value for item "<<downcase(column)<<
 	    LogIO::POST;
@@ -640,12 +650,12 @@ GlishRecord MSSelector::getData(const Vector<String>& items, Bool ifrAxis,
   Int nIfr = ifrSelection_p.nelements();
   Int nSlot = 0;
   Int nRow = tab.nrow();
-  if (ifrAxis && nIfr==0) {
+  if (ifrAxis && (nIfr==0 || useIfrDefault_p)) {
     // set default
-    //    ifrSelection_p=ifrNumbers(msc.antenna1(),msc.antenna2());
     MSRange msRange(tab);
     GlishArray(msRange.range(MSS::IFR_NUMBER).get(0)).get(ifrSelection_p);
     nIfr = ifrSelection_p.nelements();
+    useIfrDefault_p=True;
   }
 
   Vector<Int> ifrIndex; // the index no into the ifrSelection Vector
