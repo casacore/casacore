@@ -1,5 +1,5 @@
 //# Flux.cc:
-//# Copyright (C) 1998,1999
+//# Copyright (C) 1998,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -954,10 +954,10 @@ circularToLinear(Vector<NumericTraits<T>::ConjugateType>& out,
   out(0) = (rr + rl + lr + ll)/T(2);
   out(1).re = (-rr.im + rl.im - lr.im + ll.im)/T(2);
   out(1).im = ( rr.re - rl.re + lr.re - ll.re)/T(2);
-  out(2).re = (-rr.im - rl.im + lr.im + ll.im)/T(2);
+  out(2).re = ( rr.im + rl.im - lr.im - ll.im)/T(2);
   out(2).im = (-rr.re - rl.re + lr.re + ll.re)/T(2);
   out(3) = (rr - rl - lr + ll)/T(2);
 }
 // Local Variables: 
-// compile-command: "gmake OPTLIB=1 Flux"
+// compile-command: "gmake Flux"
 // End: 
