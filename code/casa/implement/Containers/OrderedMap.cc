@@ -30,13 +30,13 @@
 //rtti_imp_mbrf_a2(OrderedMap);
 
 template<class key, class value>
-OrderedMapRep<key,value>::OrderedMapRep (const value& dflt, uInt incr) :
-                     MapRep<key,value>(dflt),
-	             kvblk(incr),
-	             lastRef(0),
-		     nrtot(incr),
-		     nrused(0),
-		     nrincr(incr)
+OrderedMapRep<key,value>::OrderedMapRep (const value& dflt, uInt incr)
+: MapRep<key,value>(dflt),
+  kvblk  (incr),
+  nrtot  (incr),
+  nrused (0),
+  nrincr (incr),
+  lastRef(0)
 {}
 
 template<class key, class value>
@@ -61,7 +61,7 @@ MapRep<key,value> *OrderedMapRep<key,value>::Clone () const
   }
   ret->nrused  = nrused;
   ret->nrincr  = nrincr;
-  for (Int i = 0; i<nrused; i++) {
+  for (uInt i = 0; i<nrused; i++) {
     ret->kvblk[i] = new OrderedPair<key,value>(kvblk[i]->Key, kvblk[i]->Val);
   }
   return ret;
@@ -80,7 +80,7 @@ void OrderedMapRep<key,value>::clear () {
     OrderedMapNotice<key,value> note(0,OrderedMapNotice<key,value>::CLEAR);
     notify(note);
 
-    for (Int i=0; i<nrused; i++) {
+    for (uInt i=0; i<nrused; i++) {
         delete kvblk[i];
     }
     nrused = 0;
@@ -315,7 +315,6 @@ template<class key, class value>
 void OrderedMapRep<key,value>::remove (const key& k)
 {
     //  Locate the key. Error if the key does not exist.
-    Int  i;
     Bool defined;
     Int inx = findKey (k, defined);
     if (!defined) {
@@ -327,7 +326,7 @@ void OrderedMapRep<key,value>::remove (const key& k)
 	//  Set lastRef to the previous key to keep the next loop valid.
         delete kvblk[inx];
         nrused--;
-        for (i = inx; i<nrused; i++) {
+        for (uInt i = inx; i<nrused; i++) {
             kvblk[i] = kvblk[i+1];
         }
 	lastRef = inx-1;

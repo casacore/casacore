@@ -53,7 +53,7 @@ AipsIO& operator>> (AipsIO& ios, SimpleOrderedMap<K,V>& map)
     V val;
     // Start reading the object.
     // Delete the current keys and values.
-    uInt vers = ios.getstart ("SimpleOrderedMap");
+    ios.getstart ("SimpleOrderedMap");
     map.clear();
     // Now read in the values and store them into the map.
     ios >> map.defaultVal();
@@ -61,7 +61,7 @@ AipsIO& operator>> (AipsIO& ios, SimpleOrderedMap<K,V>& map)
     ios >> nr;
     ios >> ni;
     map.incr(ni);
-    for (Int i=0; i<nr; i++) {
+    for (uInt i=0; i<nr; i++) {
 	ios >> key;
 	ios >> val;
 	map.define(key,val);
