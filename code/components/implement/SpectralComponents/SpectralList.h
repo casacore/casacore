@@ -144,7 +144,11 @@ class SpectralList {
   // Set an element in the list. Return False if more than one place beyond
   // end of list; or if beyond max size.
   Bool set(const SpectralElement &in, const uInt which);
-  // Set a maximum size
+
+  // Clear the list
+  void clear();
+
+  // Set a maximum size of the list
   void set(const uInt nmax);
 
   // Sort the list on the first parameter (i.e. peak value for Gaussian)
