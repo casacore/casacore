@@ -2602,3 +2602,5 @@
 09 518 src rm trial/implement/Measures/MeasuredValue.cc
 09 531 src rm trial/implement/Measures/FieldMachine.h
 09 531 src rm trial/implement/Measures/FieldMachine.cc
+09 531 src rm trial/implement/Measures/test/tFieldMachine.cc
+09 531 src rm trial/implement/Measures/test/tFieldMachine.out
