@@ -4035,3 +4035,4 @@
 14 065 src mv trial/implement/DisplayCanvas/WCDataScaleHandler.h trialdisplay/implement/DisplayCanvas/WCDataScaleHandler.h
 14 065 src mv trial/implement/DisplayCanvas/WCLinearScaleHandler.h trialdisplay/implement/DisplayCanvas/WCLinearScaleHandler.h
 14 065 src mv trial/implement/DisplayCanvas/WCNearestResampleHandler.h trialdisplay/implement/DisplayCanvas/WCNearestResampleHandler.h
+14 065 src mv trial/implement/DisplayCanvas/WCPowerScaleHandler.h trialdisplay/implement/DisplayCanvas/WCPowerScaleHandler.h
