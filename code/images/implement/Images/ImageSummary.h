@@ -99,8 +99,14 @@ public:
 // Constructor
    ImageSummary (const ImageInterface<T>&);
 
+// Copy constructor
+   ImageSummary (const ImageSummary<T> &other);
+
 // Destructor
   ~ImageSummary();
+
+// Assignment operator
+   ImageSummary<T> &operator=(const ImageSummary<T> &other);
 
 // Retrieve number of image dimension
    Int ndim () const;
@@ -152,7 +158,7 @@ public:
 
 
 private:
-   const ImageInterface<T>* pImage;
+   const ImageInterface<T>* pImage_p;
 
 // These are format controllers used by the list() function.
 // I should probably write these as a little format class
@@ -174,27 +180,27 @@ private:
 // List DirectionCoordinate axis descriptors
    void listDirection (LogIO& os, 
                        const DirectionCoordinate& coord,
-                       const uInt& worldAxis, 
                        const Int& axisInCoordinate,
+                       const Int& pixelAxis, 
                        const Bool& nativeFormat) const;
 
 // List SpectralCoordinate axis descriptors
    void listSpectral  (LogIO& os, 
                        const SpectralCoordinate& coord,
-                       const uInt& worldAxis, 
-                       const Int& axisInCoordinate) const;
+                       const Int& axisInCoordinate,
+                       const Int& pixelAxis) const;
 
 // List LinearCoordinate axis descriptors
    void listLinear    (LogIO& os, 
                        const LinearCoordinate& coord,
-                       const uInt& worldAxis, 
-                       const Int& axisInCoordinate) const;
+                       const Int& axisInCoordinate,
+                       const Int& pixelAxis) const;
 
 // List StokesCoordinate axis descriptors
    void listStokes    (LogIO& os, 
                        const StokesCoordinate& coord,
-                       const uInt& worldAxis, 
                        const Int& axisInCoordinate,
+                       const Int& pixelAxis,
                        const Bool& nativeFormat) const;
 
 // Clear formatting flags
