@@ -1,4 +1,4 @@
-//# AutoDiffIO.h: test output for AutoDiff objects
+//# AutoDiffIO.h: Output for AutoDiff objects
 //# Copyright (C) 1995,1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //# 
@@ -40,11 +40,11 @@ template <class T> class AutoDiff;
 // Implements all IO operators and functions for AutoDiff.
 // </summary>
 //
-// <reviewed reviewer="" date="yyyy/mm/dd" tests="" demos="">
+// <reviewed reviewer="" date="yyyy/mm/dd" tests="tAutoDiff" demos="">
 // </reviewed>
 //
 // <prerequisite>
-// <li> AutoDiff
+// <li> <linkto class=AutoDiff>AutoDiff</linkto> class
 // </prerequisite>
 //
 // <etymology>
