@@ -54,7 +54,7 @@ class ostream;
 //
 // <use visibility=export>
 // 
-// <reviewed reviewer="" date="" tests="tPagedArray.cc,tPagedArray1.cc" demos="dPagedArray.cc">
+// <reviewed reviewer="" date="" tests="tPagedArray.cc,tPagedArray1.cc" demos="dPagedArray.cc,dPagedArray1.cc">
 // </reviewed>
 //
 // <prerequisite>
@@ -195,14 +195,16 @@ class ostream;
 // different tile. In order to cache the correct tiles you should tell the
 // storage manager what section of the PagedArray you will be
 // accessing. This is done using the setCacheSizeFromPath member
-// function. 
+// function. Alternatively you can set the size of the cache using the
+// setCacheSize member function. Tiles will then be stored in the cache on a
+// first in first out basis.
 
 // By default there is no limit on how much memory the tile cache can
 // consume. This can be changed using the setMaximumCacheSize member
 // function. The tiled storage manager always tries to cache enough tiles to
 // ensure that each tile is read from disk only once, so setting the maximum
-// cache size will trade off memory usage for disk I/O. This is best
-// illustrated in example XXX below.
+// cache size will trade off memory usage for disk I/O. Seeting the cache
+// size is illustrated in example 5 below.
 
 // The showCacheStatistics member function is provided to allow you to
 // evaluate the performance of the tile cache.
@@ -231,12 +233,12 @@ class ostream;
 //
 // <h4>Example 1:</h4>
 // Create a PagedArray of Floats of shape [512,512,4,32] in a file
-// called "myData.array" and initialise it to zero. This will create a a
-// directory on disk called "myData.array" that that contains files that
+// called "myData_tmp.array" and initialise it to zero. This will create a a
+// directory on disk called "myData_tmp.array" that that contains files that
 // exceed 512*512*4*32*4 (=128MBytes) in size.
 // <srcblock>
 // const IPosition arrayShape(4,512,512,4,32);
-// const String filename("myData.array");
+// const String filename("myData_tmp.array");
 // PagedArray<Float> diskArray(arrayShape, filename);
 // cout << "Created a PagedArray of shape " << diskArray.shape() 
 //   << " (" << diskArray.shape().product()/1024/1024*sizeof(Float) 
@@ -252,7 +254,7 @@ class ostream;
 // Read the PagedArray produced in Example 1 and put a Gaussian profile into
 // each spectral channel.
 // <srcblock>
-// PagedArray<Float> diskArray("myData.array");
+// PagedArray<Float> diskArray("myData_tmp.array");
 // IPosition shape = diskArray.shape();
 // // Construct a Gaussian Profile to be 10 channels wide and centred on
 // // channel 16. Its height is 1.0.
@@ -263,7 +265,8 @@ class ostream;
 // profile.ac().apply(g);
 // // Now put this profile into every spectral channel in the paged array. This
 // // is best done using an iterator.
-// PagedArrIter<Float> iter(diskArray, TiledStepper(shape, diskArray.tileShape(), 3));
+// PagedArrIter<Float> iter(diskArray, 
+//                          TiledStepper(shape, diskArray.tileShape(), 3));
 // for (iter.reset(); !iter.atEnd(); iter++)
 //    iter.vectorCursor() = profile;
 // </srcblock>
@@ -274,7 +277,7 @@ class ostream;
 // into the memory of most computers. So an iterator is used to get suitable
 // sized chunks.
 // <srcblock>
-// Table t("myData.array", Table::Update);
+// Table t("myData_tmp.array", Table::Update);
 // PagedArray<Float> da(t);
 // const IPosition latticeShape = da.shape();
 // const nx = latticeShape(0);
@@ -297,7 +300,7 @@ class ostream;
 // LatticeNavigators. In this example the call to the getSlice function
 // is unnecessary but is done for illustration purposes anyway.
 // <srcblock>
-// SetupNewTable maskSetup("mask.array", TableDesc(), Table::New);
+// SetupNewTable maskSetup("mask_tmp.array", TableDesc(), Table::New);
 // Table maskTable(maskSetup);
 // PagedArray<Bool> maskArray(IPosition(4, 512, 512, 4, 32), maskTable);
 // maskArray.set(False);
@@ -314,7 +317,7 @@ class ostream;
 // illustrate the results when running on an Ultra 1/140 with 64MBytes
 // of memory.
 // <srcblock>
-// PagedArray<Float> pa(IPosition(4,512,512,4,32));
+// PagedArray<Float> pa(IPosition(4,128,128,4,32));
 // const IPosition latticeShape = pa.shape();
 // cout << "The tile shape is:" << pa.tileShape() << endl;
 // // The tile shape is:[32, 16, 4, 16]
@@ -326,7 +329,7 @@ class ostream;
 // IPosition start(4, 0);
 //   
 // // Set the cache size to enough pixels for one tile only. This uses
-// // 128kBytes of cache memory and takes ??? secs
+// // 128kBytes of cache memory and takes 125 secs
 // pa.setCacheSize(pa.tileShape().product()*1);
 // Timer clock;
 // for (start(3) = 0; start(3) < latticeShape(3); start(3)++)
@@ -337,9 +340,9 @@ class ostream;
 // pa.showCacheStatistics(cout);
 // pa.clearCache();
 //   
-// // Set the cache size to enough pixels for one row of tiles (ie. 16)
-// // This uses 2MBytes of cache memory and takes ??? secs
-// pa.setCacheSize(pa.tileShape().product()*16);
+// // Set the cache size to enough pixels for one row of tiles (ie. 4)
+// // This uses 512 kBytes of cache memory and takes 10 secs
+// pa.setCacheSize(pa.tileShape().product()*4);
 // clock.mark();
 // for (start(3) = 0; start(3) < latticeShape(3); start(3)++)
 //   for (start(2) = 0; start(2) < latticeShape(2); start(2)++)
@@ -350,8 +353,8 @@ class ostream;
 // pa.clearCache();
 //   
 // // Set the cache size to enough pixels for one plane of tiles
-// // (ie. 16*32) This uses 64MBytes of cache memory and takes ??? secs
-// pa.setCacheSize(pa.tileShape().product()*16*32);
+// // (ie. 4*8) This uses 4 MBytes of cache memory and takes 2 secs
+// pa.setCacheSize(pa.tileShape().product()*4*8);
 // clock.mark();
 // for (start(3) = 0; start(3) < latticeShape(3); start(3)++)
 //   for (start(2) = 0; start(2) < latticeShape(2); start(2)++)
@@ -564,9 +567,12 @@ public:
   // value of zero means that no maximum is currently defined.
   uInt maximumCacheSize() const;
 
-  // Set the actual cache size for this Array to "fit" the indicated
-  // path. This cache is not shared with PagedArrays in other rows and is
-  // always less than the maximum value. 
+  // Set the actual cache size for this Array to be be big enough for the
+  // indicated number of pixels. This cache is not shared with PagedArrays
+  // in other rows and is always clipped to be less than the maximum value
+  // set using the setMaximumCacheSize member function. The actual number of
+  // pixels cached is rounded down to until it is an integral number of
+  // tiles. Tiles are cached using a first in first out algorithm.
   void setCacheSize(uInt howManyPixels);
 
   // Set the actual cache size for this Array to "fit" the indicated
@@ -624,10 +630,6 @@ private:
   // The default comment for PagedArray Colums
   static String defaultComment();
 
-  //# an "indirect array" in an aips++ Table is the implementation of a
-  //# PagedArray.  "indirect" means that the array is not physically present
-  //# in the table, but is stored separately in a manner decided by the tiled
-  //# cell storage manager.
   Table theTable;
   String theColumnName;
   Int theRowNumber;
