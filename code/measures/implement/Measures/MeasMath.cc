@@ -1,5 +1,5 @@
 //# MeasMath.cc:  Measure conversion aid routines
-//# Copyright (C) 1998,1999,2000
+//# Copyright (C) 1998,1999,2000,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -524,11 +524,11 @@ void MeasMath::applyAZELtoAZELSW(MVPosition &in) {
 }
 
 void MeasMath::applyECLIPtoJ2000(MVPosition &in) {
-  in = RotMatrix(Euler(MeasTable::fundArg(0)(0), 1, 0, 0)) * in;
+  in = RotMatrix(Euler(MeasTable::fundArg(0)(0.0), 1, 0, 0)) * in;
 }
 
 void MeasMath::deapplyECLIPtoJ2000(MVPosition &in) {
-  in *= RotMatrix(Euler(MeasTable::fundArg(0)(0), 1, 0, 0));
+  in *= RotMatrix(Euler(MeasTable::fundArg(0)(0.0), 1, 0, 0));
 }
 
 void MeasMath::applyMECLIPtoJMEAN(MVPosition &in) {
