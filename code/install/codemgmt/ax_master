@@ -2323,3 +2323,4 @@
 09 293 src rm trial/implement/Measures/test/tParseExpr.out
 09 300 src mv trial/implement/Measures/DO_measures.h trial/implement/Measures/DOmeasures.h
 09 300 src mv trial/implement/Measures/DO_measures.cc trial/implement/Measures/DOmeasures.cc
+09 306 src mv trial/implement/Lattices/LatticeParse.h trial/implement/Images/ImageExprParse.h
