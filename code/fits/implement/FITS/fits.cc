@@ -856,7 +856,8 @@ int FITS::get_value_id(const char *s, int l, int &pos) {
 void FITS::get_value(const char *s, int len, FitsValueResult &result) {
 	int i, j;
 	result.type = FITS::NOVALUE;
-	result.l = 0;
+	result.s[0] = 0;
+	result.s[1] = 0;
 	result.begpos = 0;
 	result.endpos = 0;
 	result.isa_point = False;
