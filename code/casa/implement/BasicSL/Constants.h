@@ -273,297 +273,483 @@ struct C {
    //#--------------------------------------------------------------------
    //  Mathematical constants
    //#--------------------------------------------------------------------
-   // <group>
+   //# <group>
 
    // Irrationals:
    // <group>
-   static Double sqrt2;               // sqrt(2)
-   static Double sqrt3;               // sqrt(3)
-   static Double _1_sqrt2;            // 1/sqrt(2)
-   static Double _1_sqrt3;            // 1/sqrt(3)
+   // sqrt(2)
+   static Double sqrt2;
+   // sqrt(3)
+   static Double sqrt3;
+   // 1/sqrt(2)
+   static Double _1_sqrt2;
+   // 1/sqrt(3)
+   static Double _1_sqrt3;
    // </group>
 
    // Pi and functions thereof:
    // <group>
-   static Double pi;                  // pi
-   static Double _2pi;                // 2*pi
-   static Double pi_2;                // pi/2
-   static Double pi_4;                // pi/4
-   static Double _1_pi;               // 1/pi
-   static Double _2_pi;               // 2/pi
-   static Double _1_sqrtpi;           // 1/sqrt(pi)
-   static Double _2_sqrtpi;           // 2/sqrt(pi)
+   // pi
+   static Double pi;
+   // 2*pi
+   static Double _2pi;
+   // pi/2
+   static Double pi_2;
+   // pi/4
+   static Double pi_4;
+   // 1/pi
+   static Double _1_pi;
+   // 2/pi
+   static Double _2_pi;
+   // 1/sqrt(pi)
+   static Double _1_sqrtpi;
+   // 2/sqrt(pi)
+   static Double _2_sqrtpi;
    // </group>
 
    // e and functions thereof:
    // <group>
-   static Double e;                   // e
-   static Double ln2;                 // ln(2)
-   static Double ln10;                // ln(10)
-   static Double log2e;               // log2(e)
-   static Double log10e;              // log10(e)
+   // e
+   static Double e;
+   // ln(2)
+   static Double ln2;  
+   // ln(10)
+   static Double ln10; 
+   // log2(e)
+   static Double log2e; 
+   // log10(e)
+   static Double log10e;
    // </group>
 
    // gamma and functions thereof:
    // <group>
-   static Double gamma;               // gamma
-   static Double lngamma;             // ln(gamma)
-   static Double etogamma;            // e**gamma
+   // gamma
+   static Double gamma;
+   // ln(gamma)
+   static Double lngamma;
+   // e**gamma
+   static Double etogamma;
    // </group>
 
    //#--------------------------------------------------------------------
    //# Mathematical constants
    //#--------------------------------------------------------------------
-   // </group>
+   //# </group>
 
 
    //#--------------------------------------------------------------------
-   //  Physical constants, and quantities
+   //#  Physical constants, and quantities
    //#--------------------------------------------------------------------
-   // <group>
+   //# <group>
 
    // Fundamental physical constants (SI units):
    // <group>
-   static Double c;                   // velocity of light
-   static Double Gravity;             // Gravitational constant
-   static Double Planck;              // Planck's constant
-   static Double GasConst;            // gas constant
-   static Double Avogadro;            // Avogardo's constant
-   static Double qe;                  // electron charge
-   static Double mp;                  // proton mass
-   static Double mp_me;               // proton mass / electron mass
+   // velocity of light
+   static Double c;
+   // Gravitational constant
+   static Double Gravity;
+   // Planck's constant
+   static Double Planck;
+   // gas constant
+   static Double GasConst;
+   // Avogardo's constant
+   static Double Avogadro; 
+   // electron charge
+   static Double qe;
+   // proton mass
+   static Double mp;
+   // proton mass / electron mass
+   static Double mp_me;
    // </group>
 
    // Derived physical constants (SI units):
    // <group>
-   static Double mu0;                 // magnetic permeability of vacuum
-   static Double epsilon0;            // electric permittivity of vacuum
-   static Double Planck_2pi;          // Planck's constant divided by 2*pi
-   static Double u;                   // atomic mass unit
-   static Double Boltzmann;           // Boltzmann's constant
-   static Double Faraday;             // Faraday's constant
-   static Double me;                  // electron mass
-   static Double re;                  // classical electron radius
-   static Double a0;                  // Bohr radius
+   // magnetic permeability of vacuum
+   static Double mu0;
+   // electric permittivity of vacuum
+   static Double epsilon0; 
+   // Planck's constant divided by 2*pi
+   static Double Planck_2pi;
+   // atomic mass unit
+   static Double u;
+   // Boltzmann's constant
+   static Double Boltzmann; 
+   // Faraday's constant
+   static Double Faraday;
+   // electron mass
+   static Double me;
+   // classical electron radius
+   static Double re;
+   // Bohr radius
+   static Double a0;
    // </group>
 
    // Physical quantities (SI units):
-   static Double R0;                  // solar radius
+   // <group>
+   // solar radius
+   static Double R0;
+   // </group>
 
    //#--------------------------------------------------------------------
    //# Physical constants, and quantities
    //#--------------------------------------------------------------------
-   // </group>
+   //# </group>
 
 
 
    //#--------------------------------------------------------------------
-   //  Physical units
+   //#  Physical units
    //#--------------------------------------------------------------------
-   // <group>
+   //# <group>
 
    //#-----------------------------
+   //#  Numerical conversion factors
+   //#-----------------------------
+   //# <group>
+
    //  Numerical conversion factors
-   //#-----------------------------
    // <group>
-
-   static Double yotta;               // e+24 (Y)
-   static Double zetta;               // e+21 (Z)
-   static Double exa;                 // e+18 (E)
-   static Double peta;                // e+15 (P)
-   static Double tera;                // e+12 (T)
-   static Double giga;                // e+09 (G)
-   static Double mega;                // e+06 (M)
-   static Double kilo;                // e+03 (k)
-   static Double hecto;               // e+02 (h)
-   static Double deka;                // e+01 (D)
-   static Double deci;                // e-01 (d)
-   static Double centi;               // e-02 (c)
-   static Double milli;               // e-03 (m)
-   static Double micro;               // e-06 (u)
-   static Double nano;                // e-09 (n)
-   static Double pico;                // e-12 (p)
-   static Double femto;               // e-15 (f)
-   static Double atto;                // e-18 (a)
-   static Double zepto;               // e-21 (z)
-   static Double yocto;               // e-24 (y)
+   // e+24 (Y)
+   static Double yotta;
+   // e+21 (Z)
+   static Double zetta;
+   // e+18 (E)
+   static Double exa;
+   // e+15 (P)
+   static Double peta;
+   // e+12 (T)
+   static Double tera;
+   // e+09 (G)
+   static Double giga;
+   // e+06 (M)
+   static Double mega;
+   // e+03 (k)
+   static Double kilo;
+   // e+02 (h)
+   static Double hecto;
+   // e+01 (D)
+   static Double deka;
+   // e-01 (d)
+   static Double deci;
+   // e-02 (c)
+   static Double centi;
+   // e-03 (m)
+   static Double milli;
+   // e-06 (u)
+   static Double micro;
+   // e-09 (n)
+   static Double nano;
+   // e-12 (p)
+   static Double pico;
+   // e-15 (f)
+   static Double femto;
+   // e-18 (a)
+   static Double atto;
+   // e-21 (z)
+   static Double zepto;
+   // e-24 (y)
+   static Double yocto;
+   // </group>
 
    // Angular measure:
    // <group>
-   static Double radian;              // radian
-   static Double circle;              // circle
-   static Double circuit;             // circuit
-   static Double cycle;               // cycle
-   static Double rev;                 // revolution
-   static Double revolution;          // revolution
-   static Double rotation;            // rotation
-   static Double degree;              // degree
-   static Double arcmin;              // arcminute
-   static Double arcsec;              // arcsecond
-   static Double grad;                // grad
+   // radian
+   static Double radian;
+   // circle
+   static Double circle; 
+   // circuit
+   static Double circuit;
+   // cycle
+   static Double cycle;
+   // revolution
+   static Double rev;
+   // revolution
+   static Double revolution;
+   // rotation
+   static Double rotation;
+   // degree
+   static Double degree;
+   // arcminute
+   static Double arcmin;
+   // arcsecond
+   static Double arcsec;
+   // grad
+   static Double grad;
    // </group>
 
    // Solid angular measure:
    // <group>
-   static Double steradian;           // steradian
-   static Double sphere;              // sphere
-   static Double square_degree;       // square degree
-   static Double square_arcmin;       // square arcminute
-   static Double square_arcsec;       // square arcsecond
+   // steradian
+   static Double steradian;
+   // sphere
+   static Double sphere;
+   // square degree
+   static Double square_degree;
+   // square arcminute
+   static Double square_arcmin;
+   // square arcsecond
+   static Double square_arcsec;
    // </group>
 
    //#-----------------------------
    //# Numerical conversion factors
    //#-----------------------------
-   // </group>
+   //# </group>
 
 
    //#----------------------------
-   //  Physical conversion factors
+   //#  Physical conversion factors
    //#----------------------------
-   // <group>
+   //# <group>
 
    // Time interval [T]:
    // <group>
-   static Double second;              // second
-   static Double minute;              // minute
-   static Double hour;                // hour
-   static Double day;                 // day
-   static Double week;                // week
-   static Double fortnight;           // fortnight
+   // second
+   static Double second;
+   // minute
+   static Double minute;
+   // hour
+   static Double hour;
+   // day
+   static Double day;
+   // week
+   static Double week;
+   // fortnight
+   static Double fortnight;
    // </group>
 
    // Frequency [1/T]:
-   static Double Hertz;               // Hertz
+   // <group>
+   // Hertz
+   static Double Hertz;
+   // </group>
 
    // Length [L]:
    // <group>
-   static Double metre;               // metre
-   static Double meter;               // metre (American spelling)
-   static Double Fermi;               // Fermi
-   static Double Angstrom;            // Angstrom
-   static Double inch;                // inch
-   static Double thou;                // thou (inch/1000)
-   static Double hand;                // hand
-   static Double span;                // span
-   static Double foot;                // foot
-   static Double yard;                // yard
-   static Double fathom;              // fathom
-   static Double rod;                 // rod
-   static Double perch;               // perch
-   static Double rope;                // rope
-   static Double chain;               // chain
-   static Double furlong;             // furlong
-   static Double mile;                // English statute mile
-   static Double nautical_mile;       // nautical mile
-   static Double point;               // point
-   static Double pica;                // pica
-   static Double astronomical_unit;   // astronomical unit
-   static Double light_second;        // light second
-   static Double light_year;          // light year
-   static Double parsec;              // parsec
+   // metre
+   static Double metre;
+   // metre (American spelling)
+   static Double meter;
+   // Fermi
+   static Double Fermi;
+   // Angstrom
+   static Double Angstrom;
+   // inch
+   static Double inch;
+   // thou (inch/1000)
+   static Double thou;
+   // hand
+   static Double hand;
+   // span
+   static Double span; 
+   // foot
+   static Double foot;
+   // yard
+   static Double yard;
+   // fathom
+   static Double fathom;
+   // rod
+   static Double rod;
+   // perch
+   static Double perch;
+   // rope
+   static Double rope; 
+   // chain
+   static Double chain;
+   // furlong
+   static Double furlong;
+   // English statute mile
+   static Double mile;
+   // nautical mile
+   static Double nautical_mile;
+   // point
+   static Double point;
+   // pica
+   static Double pica;
+   // astronomical unit
+   static Double astronomical_unit;
+   // light second
+   static Double light_second;
+   // light year
+   static Double light_year;
+   // parsec
+   static Double parsec;
    // </group>
 
    // Area [L*L]:
    // <group>
-   static Double square_metre;        // square metre
-   static Double square_meter;        // square meter (American spelling)
-   static Double are;                 // are
-   static Double barn;                // barn
-   static Double square_inch;         // square inch
-   static Double square_foot;         // square foot
-   static Double square_yard;         // square yard
-   static Double square_mile;         // square mile
-   static Double square_perch;        // square perch
-   static Double rood;                // rood
-   static Double acre;                // acre
-   static Double square;              // square
+   // square metre
+   static Double square_metre;
+   // square meter (American spelling)
+   static Double square_meter;
+   // are
+   static Double are;
+   // barn
+   static Double barn;
+   // square inch
+   static Double square_inch;
+   // square foot
+   static Double square_foot;
+   // square yard
+   static Double square_yard;
+   // square mile
+   static Double square_mile;
+   // square perch
+   static Double square_perch;
+   // rood
+   static Double rood;
+   // acre 
+   static Double acre;
+   // square
+   static Double square;
    // </group>
 
    // Volume [L*L*L]:
    // <group>
-   static Double cubic_metre;         // cubic metre
-   static Double cubic_meter;         // cubic meter (American spelling)
-   static Double stere;               // stere
-   static Double litre;               // litre
-   static Double liter;               // liter (American spelling)
-   static Double cubic_inch;          // cubic inch
-   static Double cubic_foot;          // cubic foot
-   static Double cubic_yard;          // cubic yard
-   static Double cubic_mile;          // cubic mile
-   static Double gallon;              // (Brit) gallon
-   static Double quart;               // (Brit) quart
-   static Double pint;                // (Brit) pint
-   static Double gill;                // (Brit) gill
-   static Double fluid_ounce;         // (Brit) fluid ounce
-   static Double drachm;              // (Brit) drachm
-   static Double scruple;             // (Brit) scruple
-   static Double minim;               // (Brit) minim
-   static Double USgallon;            // (US liq) gallon
-   static Double USquart;             // (US liq) quart
-   static Double USpint;              // (US liq) pint
-   static Double USgill;              // (US liq) gill
-   static Double USfluid_ounce;       // (US liq) fluid ounce
-   static Double USdram;              // (US liq) dram
-   static Double USminim;             // (US liq) minim
+   // cubic metre
+   static Double cubic_metre;
+   // cubic meter (American spelling)
+   static Double cubic_meter;
+   // stere
+   static Double stere;
+   // litre
+   static Double litre;
+   // liter (American spelling)  
+   static Double liter;
+   // cubic inch
+   static Double cubic_inch;
+   // cubic foot
+   static Double cubic_foot;
+   // cubic yard
+   static Double cubic_yard;
+   // cubic mile
+   static Double cubic_mile;
+   // (Brit) gallon
+   static Double gallon;
+   // (Brit) quart
+   static Double quart;
+   // (Brit) pint
+   static Double pint;
+   // (Brit) gill
+   static Double gill;
+   // (Brit) fluid ounce
+   static Double fluid_ounce; 
+   // (Brit) drachm
+   static Double drachm;
+   // (Brit) scruple
+   static Double scruple;
+   // (Brit) minim
+   static Double minim;
+   // (US liq) gallon
+   static Double USgallon;
+   // (US liq) quart
+   static Double USquart;
+   // (US liq) pint
+   static Double USpint;
+   // (US liq) gill
+   static Double USgill;
+   // (US liq) fluid ounce
+   static Double USfluid_ounce;
+   // (US liq) dram
+   static Double USdram;
+   // (US liq) minim
+   static Double USminim;
    // </group>
 
    // Speed [L/T]:
-   static Double knot;                // nautical miles per hour
+   // nautical miles per hour
+   // <group>
+   static Double knot;
+   // </group>
 
    // Acceleration (speed / time) [L/(T*T)]:
-   static Double g;                   // gravitational acceleration
+   // gravitational acceleration
+   // <group>
+   static Double g;
+   // </group>
 
    // Mass [M]:
    // <group>
-   static Double gram;                // gram
-   static Double tonne;               // metric ton
-   static Double carat;               // metric carat
-   static Double pound;               // pound (avoirdupois)
-   static Double ounce;               // ounce (avoirdupois)
-   static Double stone;               // stone
-   static Double quarter;             // (long) quarter (Brit)
-   static Double hundredweight;       // (long) hundredweight
-   static Double ton;                 // (long) ton
-   static Double cental;              // cental
-   static Double shortquarter;        // short quarter (Brit)
-   static Double shortcwt;            // short hundredweight
-   static Double shortton;            // short ton
+    // gram
+   static Double gram;
+   // metric ton
+   static Double tonne;
+   // metric carat
+   static Double carat;
+   // pound (avoirdupois)
+   static Double pound;
+   // ounce (avoirdupois)
+   static Double ounce;
+   // stone
+   static Double stone;
+   // (long) quarter (Brit)
+   static Double quarter;
+   // (long) hundredweight
+   static Double hundredweight;
+   // (long) ton
+   static Double ton;
+   // cental
+   static Double cental;
+   // short quarter (Brit)
+   static Double shortquarter;
+   // short hundredweight
+   static Double shortcwt;
+   // short ton
+   static Double shortton;
    // </group>
 
    // Force (mass * acceleration) [M*L/(T*T)]:
    // <group>
-   static Double Newton;              // Newton
-   static Double dyne;                // dyne
+   // Newton
+   static Double Newton;
+   // dyne
+   static Double dyne; 
    // </group>
 
    // Pressure (force / area) [M/(L*T*T)]:
    // <group>
-   static Double Pascal;              // Pascal
-   static Double atmosphere;          // atmosphere
-   static Double bar;                 // bar
-   static Double torr;                // torr
-   static Double mmHg;                // mm of Mercury
+   // Pascal
+   static Double Pascal;
+   // atmosphere
+   static Double atmosphere;
+   // bar
+   static Double bar;
+   // torr
+   static Double torr; 
+   // mm of Mercury
+   static Double mmHg;
    // </group>
 
    // Energy (force * length) [M*L*L/(T*T)]:
    // <group>
-   static Double Joule;               // Joule
-   static Double kWh;                 // kiloWatt*hour
-   static Double erg;                 // erg
-   static Double calorie;             // calorie (thermochemical)
-   static Double calorie_IT;          // calorie (International Steam)
-   static Double Btu;                 // British thermal unit
-   static Double eV;                  // electron volt
+   // Joule
+   static Double Joule;
+   // kiloWatt*hour
+   static Double kWh;
+   // erg
+   static Double erg;
+   // calorie (thermochemical)
+   static Double calorie;
+   // calorie (International Steam)
+   static Double calorie_IT;
+   // British thermal unit
+   static Double Btu;
+   // electron volt
+   static Double eV;
    // </group>
 
    // Temperature difference (energy) [M*L*L/(T*T)]:
    // <group>
-   static Double Kelvin;              // Kelvin
-   static Double Celsius;             // Celsius
-   static Double Centigrade;          // Centigrade
-   static Double Fahrenheit;          // Fahrenheit
-   static Double Rankine;             // Rankine
+   // Kelvin
+   static Double Kelvin;
+   // Celsius
+   static Double Celsius;
+   // Centigrade
+   static Double Centigrade;
+   // Fahrenheit
+   static Double Fahrenheit;
+   // Rankine
+   static Double Rankine;
    // </group>
 
    // Temperature at 0 on each temperature scale:
@@ -577,114 +763,153 @@ struct C {
 
    // Power (energy / time) [M*L*L/(T*T*T)]:
    // <group>
-   static Double Watt;                // Watt
-   static Double horsepower;          // horsepower
+   // Watt
+   static Double Watt;
+   // horsepower
+   static Double horsepower;
    // </group>
 
    // Flux density (power / area / frequency) [M/(T*T)]:
    // <group>
-   static Double Jansky;              // Jansky
-   static Double fu;                  // flux units
+   // Jansky
+   static Double Jansky;
+   // flux units
+   static Double fu;
    // </group>
 
    // Electric charge [Q] (Coulomb):
    // <group>
-   static Double Coulomb;             // Coulomb
-   static Double abCoulomb;           // abCoulomb (emu)
-   static Double statCoulomb;         // statCoulomb (esu)
+   // Coulomb
+   static Double Coulomb;
+   // abCoulomb (emu)
+   static Double abCoulomb;
+   // statCoulomb (esu)
+   static Double statCoulomb;
    // </group>
 
    // Electric current (charge / time) [Q/T]:
    // <group>
-   static Double Ampere;              // Ampere
-   static Double abAmpere;            // abAmpere (emu)
-   static Double statAmpere;          // statAmpere (esu)
+   // Ampere
+   static Double Ampere;
+   // abAmpere (emu)
+   static Double abAmpere;
+   // statAmpere (esu)
+   static Double statAmpere;
    // </group>
 
    // Electric field strength (force / charge) [M*L/(T*T*Q)]:
 
    // Electric potential (energy / charge) [M*L*L/(T*T*Q)]:
    // <group>
-   static Double Volt;                // Volt
-   static Double abVolt;              // abVolt (emu)
-   static Double statVolt;            // statVolt (esu)
+   // Volt
+   static Double Volt;
+   // abVolt (emu)
+   static Double abVolt;
+   // statVolt (esu)
+   static Double statVolt;
    // </group>
 
    // Electric resistance (potential / current) [M*L*L/(T*Q*Q)]]:
    // <group>
-   static Double Ohm;                 // Ohm
-   static Double abOhm;               // abOhm (emu)
-   static Double statOhm;             // starOhm (esu)
+   // Ohm
+   static Double Ohm;
+   // abOhm (emu)
+   static Double abOhm;
+   // starOhm (esu)
+   static Double statOhm;
    // </group>
 
    // Electric conductance (current / potential) [T*Q*Q/(M*L*L)]:
    // <group>
-   static Double Siemens;             // Siemens
-   static Double mho;                 // mho
+   // Siemens
+   static Double Siemens; 
+   // mho
+   static Double mho;
    // </group>
 
    // Electric capacitance (charge / potential) [T*T*Q*Q/(M*L*L)]:
    // <group>
-   static Double Farad;               // Farad
-   static Double abFarad;             // abFarad (emu)
-   static Double statFarad;           // statFarad (esu)
+   // Farad
+   static Double Farad;
+   // abFarad (emu)
+   static Double abFarad;
+   // statFarad (esu)
+   static Double statFarad;
    // </group>
 
    // Electric inductance (potential * time / current) [M*L*L/(Q*Q)]:
    // <group>
-   static Double Henry;               // Henry
-   static Double abHenry;             // abHenry (emu)
-   static Double statHenry;           // statHenry (esu)
+   // Henry
+   static Double Henry;
+   // abHenry (emu)
+   static Double abHenry;
+   // statHenry (esu)
+   static Double statHenry;
    // </group>
 
    // Magnetic induction (force / charge / velocity) [M/(T*Q)]:
    // <group>
-   static Double Tesla;               // Tesla
-   static Double Gauss;               // Gauss (emu)
+   // Tesla
+   static Double Tesla;
+   // Gauss (emu)
+   static Double Gauss;
    // </group>
 
    // Magnetic flux (magnetic induction * area) [M*L*L/(T*Q)]:
    // <group>
-   static Double Weber;               // Weber
-   static Double Maxwell;             // Maxwell (emu)
-   static Double line;                // line (emu)
+   // Weber
+   static Double Weber;
+   // Maxwell (emu)
+   static Double Maxwell;
+   // line (emu)
+   static Double line;
    // </group>
 
    // Magnetomotance = magnetomotive force (current) [Q/T]:
    // <group>
-   static Double Ampere_turn;         // Ampere-turn
-   static Double abAmpere_turn;       // abAmpere-turn
-   static Double Gilbert;             // Gilbert (emu)
-   static Double praGilbert;          // praGilbert (emu)
+   // Ampere-turn
+   static Double Ampere_turn;
+   // abAmpere-turn
+   static Double abAmpere_turn;
+   // Gilbert (emu)
+   static Double Gilbert;
+   // praGilbert (emu)
+   static Double praGilbert;
    // </group>
 
    // Magnetic field intensity (current / length) [Q/(T*L)]:
    // <group>
-   static Double Oersted;             // Oersted (emu)
-   static Double praOersted;          // praOersted (emu)
+   // Oersted (emu)
+   static Double Oersted;
+   // praOersted (emu)
+   static Double praOersted;
    // </group>
 
    // Radioactivity (Bequerel):
-   static Double Bequerel;            // Bequerel
+   // Bequerel
+   static Double Bequerel;
 
    // Luminous intensity [Iv]:
-   static Double candela;             // candela
+   // candela
+   static Double candela; 
 
    // Amount of substance [N]:
    // <group>
-   static Double mole;                // mole
-   static Double molecule;            // number of molecules
+   // mole
+   static Double mole;
+   // number of molecules
+   static Double molecule;
    // </group>
 
    //#----------------------------
    //# Physical conversion factors
    //#----------------------------
-   // </group>
+   //# </group>
 
    //#--------------------------------------------------------------------
    //# Physical units
    //#--------------------------------------------------------------------
-   // </group>
+   //# </group>
 
 };
 
