@@ -150,6 +150,10 @@ public:
     // Get the tile shape of the data in the given row.
     const IPosition& tileShape (uInt rownr);
 
+    // Can the tiled storage manager handle changing array shapes?
+    // The default is no (but TiledCellStMan can).
+    virtual Bool canChangeShape() const;
+
     // Set the cache size for accessing the hypercube containing the given row.
     // It uses the given axisPath (i.e. traversal order) to determine
     // the optimum size. A window can be specified to indicate that only

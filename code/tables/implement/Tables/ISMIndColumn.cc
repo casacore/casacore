@@ -181,6 +181,9 @@ uInt ISMIndColumn::ndim (uInt rownr)
 IPosition ISMIndColumn::shape (uInt rownr)
     { return getShape(rownr)->shape(); }
 
+Bool ISMIndColumn::canChangeShape() const
+    { return (shapeIsFixed_p  ?  False : True); }
+
 
 Bool ISMIndColumn::canAccessSlice (Bool& reask) const
 {

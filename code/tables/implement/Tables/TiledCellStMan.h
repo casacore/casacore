@@ -183,6 +183,9 @@ public:
     // Get the type name of the data manager (i.e. TiledCellStMan).
     String dataManagerType() const;
 
+    // This tiled storage manager can handle changing array shapes.
+    Bool canChangeShape() const;
+
     // Make the object from the type name string.
     // This function gets registered in the DataManager "constructor" map.
     static DataManager* makeObject (const String& dataManagerType);

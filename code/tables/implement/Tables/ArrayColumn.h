@@ -1,5 +1,5 @@
 //# ArrayColumn.h: access to an array table column with arbitrary data type
-//# Copyright (C) 1994,1995,1996
+//# Copyright (C) 1994,1995,1996,1997
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -349,6 +349,12 @@ public:
     // <br><src> reference (ArrayColumn<T> (table, columnName)); </src>
     void attach (const Table& table, const String& columnName)
 	{ reference (ArrayColumn<T> (table, columnName)); }
+
+    // Can the shape of an already existing non-FixedShape array be changed?
+    // This depends on the storage manager. Most storage managers
+    // can handle it, but TiledDataStMan and TiledColumnStMan can not.
+    Bool canChangeShape() const
+        { return canChangeShape_p; }
 
     // Set the shape of the array in the given row.
     // Setting the shape is needed if the array is put in slices,

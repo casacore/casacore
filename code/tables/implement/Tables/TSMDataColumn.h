@@ -1,5 +1,5 @@
 //# TSMDataColumn.h: A data column in Tiled Storage Manager
-//# Copyright (C) 1995,1996
+//# Copyright (C) 1995,1996,1997
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -127,6 +127,10 @@ public:
 
     // It can handle access to a slice in column if there is one hypercube.
     Bool canAccessColumnSlice (Bool& reask) const;
+
+    // Changing array shapes for non-FixedShape columns when the
+    // parent tiled storage manager can handle it.
+    Bool canChangeShape() const;
 
     // Set the shape of the data array in the given row.
     // It will check if it matches already defined data and coordinates shapes.

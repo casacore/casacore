@@ -130,6 +130,9 @@ public:
     // Get the shape of the array in the given row.
     virtual IPosition shape (uInt rownr);
 
+    // This storage manager can handle changing array shapes.
+    Bool canChangeShape() const;
+
     // Get an array value in the given row.
     // The buffer pointed to by dataPtr has to have the correct length
     // (which is guaranteed by the ArrayColumn get function).

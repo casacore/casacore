@@ -1,5 +1,5 @@
 //# StIndArrAIO.h: AipsIO storage manager for indirect table arrays
-//# Copyright (C) 1994,1995,1996
+//# Copyright (C) 1994,1995,1996,1997
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -130,6 +130,9 @@ public:
     // An zero-length IPosition is returned if there is no array.
     IPosition shape (uInt rownr);
 
+    // This storage manager can handle changing array shapes
+    // for non-FixedShape columns.
+    Bool canChangeShape() const;
 
     // Get an array value in the given row.
     // The buffer pointed to by dataPtr has to have the correct length

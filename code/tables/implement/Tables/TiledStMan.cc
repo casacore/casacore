@@ -182,6 +182,11 @@ void TiledStMan::reopenRW()
 }
 
 
+Bool TiledStMan::canChangeShape() const
+{
+    return False;
+}
+
 //# Does the storage manager allow to add rows? (yes)
 Bool TiledStMan::canAddRow() const
 {

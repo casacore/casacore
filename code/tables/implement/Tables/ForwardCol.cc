@@ -1,5 +1,5 @@
 //# ForwardCol.cc: Virtual Column Engine forwarding to another column
-//# Copyright (C) 1995,1996
+//# Copyright (C) 1995,1996,1997
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -95,21 +95,6 @@ DataManager* ForwardColumnEngine::clone() const
     return dmPtr;
 }
 
-
-// RefTable_p is only filled in for newly created tables, so in
-// the general case we must ask all columns for sync info.
-// However, it will do to ask the first column, because the underlying
-// tables are often the same.
-// If there are no columns, there is nothing to sync.
-Bool ForwardColumnEngine::needToSync() const
-{
-    return False;
-}
-uInt ForwardColumnEngine::sync (Bool& moreToExpect)
-{
-    moreToExpect = False;
-    return 0;
-}
 
 // Define the RefTable_p if not defined yet.
 void ForwardColumnEngine::setRefTable (const Table& refTable)
@@ -399,6 +384,10 @@ IPosition ForwardColumn::shape(uInt rownr)
 Bool ForwardColumn::isShapeDefined (uInt rownr)
     { return colPtr_p->isDefined (rownr); }
 
+Bool ForwardColumn::canChangeShape() const
+{
+    return colPtr_p->canChangeShape();
+}
 Bool ForwardColumn::canAccessScalarColumn (Bool& reask) const
 {
     return colPtr_p->canAccessScalarColumn (reask);

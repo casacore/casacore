@@ -1,5 +1,5 @@
 //# RefColumn.cc: Abstract base class for a table column
-//# Copyright (C) 1994,1995,1996
+//# Copyright (C) 1994,1995,1996,1997
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -90,9 +90,10 @@ Bool RefColumn::isDefined (uInt rownr) const
 
 
 Bool RefColumn::canAccessSlice (Bool& reask) const
-{
-    return colPtr_p->canAccessSlice (reask);
-}
+    { return colPtr_p->canAccessSlice (reask); }
+
+Bool RefColumn::canChangeShape() const
+    { return colPtr_p->canChangeShape(); }
 
 
 void RefColumn::get (uInt rownr, void* dataPtr) const

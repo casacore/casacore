@@ -1,5 +1,5 @@
 //# DataManager.cc: Storage manager for tables
-//# Copyright (C) 1994,1995,1996
+//# Copyright (C) 1994,1995,1996,1997
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -171,13 +171,6 @@ void DataManager::linkToTable (Table& tab)
 void DataManager::prepare()
 {}
 
-Bool DataManager::needToSync() const
-    { return False; }
-uInt DataManager::sync (Bool& moreToExpect)
-{
-    moreToExpect = False;
-    return 0;
-}
 
 Bool DataManager::canAddRow() const
     { return False; }
@@ -284,6 +277,10 @@ IPosition DataManagerColumn::shape (uInt)
     return IPosition(0);
 }
 
+Bool DataManagerColumn::canChangeShape() const
+{
+    return False;
+}
 
 Bool DataManagerColumn::canAccessScalarColumn (Bool& reask) const
 {

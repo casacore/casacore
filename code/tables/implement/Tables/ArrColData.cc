@@ -161,8 +161,7 @@ void ArrayColumnData<T>::setShape (uInt rownr, const IPosition& shp,
 template<class T>
 Bool ArrayColumnData<T>::canChangeShape() const
 {
-    return False;
-////    return dataColPtr_p->canChangeShape();
+    return dataColPtr_p->canChangeShape();
 }
 
 template<class T>

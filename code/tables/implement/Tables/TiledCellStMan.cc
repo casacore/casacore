@@ -85,6 +85,11 @@ IPosition TiledCellStMan::defaultTileShape() const
     return defaultTileShape_p;
 }
 
+Bool TiledCellStMan::canChangeShape() const
+{
+    return True;
+}
+
 
 void TiledCellStMan::setupCheck (const TableDesc& tableDesc,
 				 const Vector<String>& dataNames) const

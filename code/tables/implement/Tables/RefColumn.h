@@ -1,5 +1,5 @@
 //# RefColumn.h: A column in a reference table
-//# Copyright (C) 1994,1995,1996
+//# Copyright (C) 1994,1995,1996,1997
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -100,83 +100,87 @@ public:
     ~RefColumn();
 
     // Test if the column is writable in the parent table.
-    Bool isWritable() const;
+    virtual Bool isWritable() const;
 
     // Test if the column is stored (otherwise it is virtual).
-    Bool isStored() const;
-
-    // It can handle a cell slice if the underlying column can do it.
-    Bool canAccessSlice (Bool& reask) const;
+    virtual Bool isStored() const;
 
     // Get access to the column keyword set.
     // This is the keyword set in the referenced column.
     // <group>
-    TableRecord& rwKeywordSet();
-    TableRecord& keywordSet();
+    virtual TableRecord& rwKeywordSet();
+    virtual TableRecord& keywordSet();
     // </group>
 
     // Get nr of rows in the column.
-    uInt nrow() const;
+    virtual uInt nrow() const;
+
+    // Test if a value in a particular cell has been defined.
+    virtual Bool isDefined (uInt rownr) const;
+
+    // Set the shape of the array in the given row.
+    virtual void setShape (uInt rownr, const IPosition& shape);
+
+    // Set the shape and tile shape of the array in the given row.
+    virtual void setShape (uInt rownr, const IPosition& shape,
+			   const IPosition& tileShape);
+
+    // Get the global #dimensions of an array (i.e. for all rows).
+    virtual uInt ndimColumn() const;
+
+    // Get the global shape of an array (i.e. for all rows).
+    virtual IPosition shapeColumn() const;
+
+    // Get the #dimensions of an array in a particular cell.
+    virtual uInt ndim (uInt rownr) const;
+
+    // Get the shape of an array in a particular cell.
+    virtual IPosition shape (uInt rownr) const;
+
+    // Ask the data manager if the shape of an existing array can be changed.
+    // Default is no.
+    virtual Bool canChangeShape() const;
+
+    // It can handle a cell slice if the underlying column can do it.
+    virtual Bool canAccessSlice (Bool& reask) const;
 
     // Initialize the rows from startRownr till endRownr (inclusive)
     // with the default value defined in the column description (if defined).
     void initialize (uInt startRownr, uInt endRownr);
 
-    // Set the shape of the array in the given row.
-    void setShape (uInt rownr, const IPosition& shape);
-
-    // Set the shape and tile shape of the array in the given row.
-    void setShape (uInt rownr, const IPosition& shape,
-		   const IPosition& tileShape);
-
-    // Get the global #dimensions of an array (i.e. for all rows).
-    uInt ndimColumn() const;
-
-    // Get the global shape of an array (i.e. for all rows).
-    IPosition shapeColumn() const;
-
-    // Get the #dimensions of an array in a particular cell.
-    uInt ndim (uInt rownr) const;
-
-    // Get the shape of an array in a particular cell.
-    IPosition shape (uInt rownr) const;
-
-    // Test if a value in a particular cell has been defined.
-    Bool isDefined (uInt rownr) const;
-
     // Get the value from a particular cell.
     // This can be a scalar or an array.
-    void get (uInt rownr, void* dataPtr) const;
+    virtual void get (uInt rownr, void* dataPtr) const;
 
     // Get a slice of an N-dimensional array in a particular cell.
-    void getSlice (uInt rownr, const Slicer&, void* dataPtr) const;
+    virtual void getSlice (uInt rownr, const Slicer&, void* dataPtr) const;
 
     // Put the value in a particular cell.
     // This can be a scalar or an array.
-    void put (uInt rownr, const void* dataPtr);
+    virtual void put (uInt rownr, const void* dataPtr);
 
     // Put a slice of an N-dimensional array in a particular cell.
-    void putSlice (uInt rownr, const Slicer&, const void* dataPtr);
+    virtual void putSlice (uInt rownr, const Slicer&, const void* dataPtr);
 
     // Add this column and its data to the Sort object.
     // It may allocate some storage on the heap, which will be saved
     // in the argument dataSave.
     // The function freeSortKey must be called to free this storage.
-    void makeSortKey (Sort&, ObjCompareFunc* cmpFunc,
-		      Int order, const void*& dataSave);
+    virtual void makeSortKey (Sort&, ObjCompareFunc* cmpFunc,
+			      Int order, const void*& dataSave);
 
     // Free storage on the heap allocated by makeSortkey().
     // The pointer will be set to zero.
-    void freeSortKey (const void*& dataSave);
+   virtual  void freeSortKey (const void*& dataSave);
 
     // Allocate value buffers for the table iterator.
     // Also get a comparison functiuon if undefined.
     // The function freeIterBuf must be called to free the buffers.
-    void allocIterBuf (void*& lastVal, void*& curVal,
-		       ObjCompareFunc*& cmpFunc);
+    virtual void allocIterBuf (void*& lastVal, void*& curVal,
+			       ObjCompareFunc*& cmpFunc);
 
     // Free the value buffers allocated by allocIterBuf.
-    void freeIterBuf (void*& lastVal, void*& curVal);
+    virtual void freeIterBuf (void*& lastVal, void*& curVal);
 
 protected:
     RefTable*        refTabPtr_p;

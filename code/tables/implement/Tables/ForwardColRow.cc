@@ -1,5 +1,5 @@
 //# ForwardColRow.cc: Virtual Column Engine forwarding to another row/column
-//# Copyright (C) 1995,1996
+//# Copyright (C) 1995,1996,1997
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -71,17 +71,6 @@ DataManager* ForwardColumnIndexedRowEngine::clone() const
 	throw (AllocError ("ForwardColumnIndexedRowEngine::clone()", 1));
     }
     return dmPtr;
-}
-
-
-Bool ForwardColumnIndexedRowEngine::needToSync() const
-{
-    return False;
-}
-uInt ForwardColumnIndexedRowEngine::sync (Bool& moreToExpect)
-{
-    moreToExpect = False;
-    return 0;
 }
 
 
@@ -191,6 +180,10 @@ IPosition ForwardColumnIndexedRow::shape(uInt rownr)
 Bool ForwardColumnIndexedRow::isShapeDefined (uInt rownr)
     { return colPtr()->isDefined (convertRownr(rownr)); }
 
+Bool ForwardColumnIndexedRow::canChangeShape() const
+{
+    return False;       // put is not supported
+}
 Bool ForwardColumnIndexedRow::canAccessScalarColumn (Bool& reask) const
 {
     reask = False;
