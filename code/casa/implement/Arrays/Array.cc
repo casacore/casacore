@@ -147,6 +147,15 @@ template<class T> Array<T>::~Array()
 }
 
 
+template<class T> void Array<T>::assign (const Array<T>& other)
+{
+    DebugAssert(ok(), ArrayError);
+    if (! shape().isEqual (other.shape())) {
+        resize (other.shape());
+        operator= (other);
+    }
+}
+
 template<class T> void Array<T>::reference(Array<T> &other)
 {
     DebugAssert(ok(), ArrayError);

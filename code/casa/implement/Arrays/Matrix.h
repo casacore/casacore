@@ -1,5 +1,5 @@
 //# Matrix.h: A 2-D Specialization of the Array Class
-//# Copyright (C) 1993,1994,1995,1996,1999,2000,2001
+//# Copyright (C) 1993,1994,1995,1996,1999,2000,2001,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -126,6 +126,10 @@ public:
     // Define a destructor, otherwise the (SUN) compiler makes a static one.
     virtual ~Matrix();
 
+    // Assign the other array (which must be dimension 2) to this matrix.
+    // If the shapes mismatch, this array is resized.
+    virtual void assign (const Array<T>& other);
+
     // Make this matrix a reference to other. Other must be of dimensionality
     // 2 or less.
     virtual void reference(Array<T> &other);
@@ -141,6 +145,8 @@ public:
     // Copy the values from other to this Matrix. If this matrix has zero
     // elements then it will resize to be the same shape as other; otherwise
     // other must conform to this.
+    // Note that the assign function can be used to assign a
+    // non-conforming matrix.
     // <group>
     Matrix<T> &operator=(const Matrix<T> &other);
     virtual Array<T> &operator=(const Array<T> &other);

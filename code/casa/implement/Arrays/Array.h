@@ -215,6 +215,10 @@ public:
     // Frees up storage only if this array was the last reference to it.
     virtual ~Array();
 
+    // Assign the other array to this array.
+    // If the shapes mismatch, this array is resized.
+    virtual void assign (const Array<T>& other);
+
     // Set every element of the array to "value." Also could use the
     // assignment operator which assigns an array from a scalar.
     void set(const T &value);
@@ -251,6 +255,8 @@ public:
     // Array<Double> ad3(shape);
     // ad3 = ad;                     // Error: arrays do not conform
     // </srcblock>
+    // Note that the assign function can be used to assign a
+    // non-conforming array.
     virtual Array<T> &operator=(const Array<T> &other);
 
     // Set every element of this array to "value". In other words, a scalar

@@ -1,5 +1,5 @@
 //# Vector.cc: A 1-D Specialization of the Array Class
-//# Copyright (C) 1993,1994,1995,1996,1997,1998,1999,2000,2001,2002
+//# Copyright (C) 1993,1994,1995,1996,1997,1998,1999,2000,2001,2002,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -172,6 +172,18 @@ template<class T> void Vector<T>::resize(const IPosition &l, Bool copyValues)
     DebugAssert(ok(), ArrayError);
 }
 
+
+// <thrown>
+//    <item> ArrayNDimError
+// </thrown>
+template<class T> void Vector<T>::assign (const Array<T>& other)
+{
+    DebugAssert(ok(), ArrayError);
+    if (other.ndim() != 1)
+	throw(ArrayNDimError(1, other.ndim(), "Vector<T>::assign()"
+			     " - attempt to assign from non-vector"));
+    Array<T>::assign (other);
+}
 
 // <thrown>
 //    <item> ArrayNDimError

@@ -1,5 +1,5 @@
 //# Matrix.cc: A 2-D Specialization of the Array Class
-//# Copyright (C) 1993,1994,1995,1996,1997,1998,1999,2000,2001,2002
+//# Copyright (C) 1993,1994,1995,1996,1997,1998,1999,2000,2001,2002,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -129,6 +129,18 @@ template<class T> void Matrix<T>::resize(uInt nx, uInt ny)
     IPosition l(2);
     l(0) = nx; l(1) = ny;
     Matrix<T>::resize(l);
+}
+
+// <thrown>
+//    <item> ArrayNDimError
+// </thrown>
+template<class T> void Matrix<T>::assign (const Array<T>& other)
+{
+    DebugAssert(ok(), ArrayError);
+    if (other.ndim() != 2)
+	throw(ArrayNDimError(2, other.ndim(), "Matrix<T>::assign()"
+			     " - attempt to assign from non-matrix"));
+    Array<T>::assign (other);
 }
 
 // <thrown>

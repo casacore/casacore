@@ -1,5 +1,5 @@
 //# Vector.h: A 1-D Specialization of the Array Class
-//# Copyright (C) 1993,1994,1995,1996,1998,1999,2000,2001,2002
+//# Copyright (C) 1993,1994,1995,1996,1998,1999,2000,2001,2002,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -140,6 +140,10 @@ public:
     // Define a destructor, otherwise the (SUN) compiler makes a static one.
     virtual ~Vector();
 
+    // Assign the other array (which must be dimension 1) to this vector.
+    // If the shapes mismatch, this array is resized.
+    virtual void assign (const Array<T>& other);
+
     // Create a reference to "other", which must be of dimension one.
     virtual void reference(Array<T> &other);
 
@@ -160,6 +164,8 @@ public:
     // Assign to this Vector. If this Vector is zero-length, then resize
     // to be the same size as other. Otherwise this and other have to be
     // conformant (same size).
+    // <br>Note that the assign function can be used to assign a
+    // non-conforming vector.
     // <group>
     Vector<T> &operator=(const Vector<T> &other);
     // Other must be a 1-dimensional array.
