@@ -145,9 +145,6 @@ public:
 // Exception thrown if lattices are incompatible
    void setLattice (MaskedLattice<T>& lattice);
 
-// Pop the first lattice from the list and add the other to the bottom.
-   void popAndAdd (MaskedLattice<T>& lattice);
-
 // Return the number of lattices set so far
    uInt nlattices() const
      {return lattices_p.nelements();}
