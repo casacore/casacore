@@ -179,12 +179,14 @@ public:
     void resize(uInt newSize, Bool copy=True);
 
     // Index into the IPosition. Indices are zero-based. If the preprocessor
-    // symbol AIPS_ARRAY_INDEX_CHECK is defined, "index" will be
-    // checked to ensure it is not out of bounds. If this check fails, an
+    // symbol AIPS_ARRAY_INDEX_CHECK is defined, operator() will check
+    // "index" to ensure it is not out of bounds. If this check fails, an
     // AipsError will be thrown.
     // <group>
-    Int& operator()(uInt index);
-    Int operator()(uInt index) const;
+    Int& operator[] (uInt index);
+    Int operator[]  (uInt index) const;
+    Int& operator() (uInt index);
+    Int operator()  (uInt index) const;
     // </group>
 
     // Get the storage.
@@ -429,6 +431,16 @@ inline IPosition IPosition::makeAxisPath (uInt nrdim)
 inline uInt IPosition::nelements() const
 {
     return size_p;
+}
+
+inline Int& IPosition::operator[](uInt index)
+{
+    return data_p[index];
+}
+
+inline Int IPosition::operator[](uInt index) const
+{
+    return data_p[index];
 }
 
 inline Int& IPosition::operator()(uInt index)
