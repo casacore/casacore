@@ -46,11 +46,13 @@
 #include <aips/Mathematics/Constants.h>
 #include <aips/Lattices/Slicer.h>
 #include <aips/Tables/TableRecord.h>
+#include <aips/Logging/LogMessage.h>
+#include <aips/Logging/LogSink.h>
+#include <aips/Exceptions/Error.h>
+
 #ifdef __GNUG__
 typedef MeasConvert<MDirection,MVDirection,MCDirection> gpp_visiter_bug1;
 #endif
-#include <aips/Logging/LogMessage.h>
-#include <aips/Logging/LogSink.h>
 
 Double Interval::interval_p;
 Double Interval::offset_p;
