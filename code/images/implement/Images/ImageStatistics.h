@@ -212,7 +212,11 @@ public:
 // all pixels in that range are included or one for which all pixels 
 // in that range are excluded.   One or the other of <src>include</src> 
 // and <src>exclude</src> must therefore be a zero length vector if you 
-// call this function.  A return value of <src>False</src> indicates that 
+// call this function.    If you are setting an <src>include</src>
+// range, then if you set <src>setMinMaxToInclude=True</src>, the
+// minimum and maximum values that this class returns will always be 
+// the minimum and maximum of the <src>include</src> range, respectively.
+// A return value of <src>False</src> indicates that 
 // you have given both an <src>include</src> and an <src>exclude</src> 
 // range.  A vector of length 1 for <src>include</src> and/or <src>exclude</src>
 // means that the range will be set to (say for <src>include</src>)
@@ -221,7 +225,8 @@ public:
 // range were given or that the internal state of the class is bad.   If you don't
 // call this function, the default state of the class  is to include all pixels.
    Bool setInExCludeRange(const Vector<T>& include,
-                          const Vector<T>& exclude);
+                          const Vector<T>& exclude,
+                          Bool setMinMaxToInclude=False);
 
 // This function allows you to control whether the statistics are written to
 // the output stream if you are also making a plot.  A return value of 
@@ -252,13 +257,15 @@ public:
 // indicates an invalid plotting device, or that the internal state of the class is bad.
    Bool display ();
 
+// Return the display axes
+   Vector<Int> displayAxes() const {return displayAxes_p;} 
+
 // These functions retrieve the designated statistics into an array.  The shape of the
 // array is the shape of the display axes (e.g. if the shape of the image is
 // [nx,ny,nz] and you ask for the mean of the y axis the shape of the returned
-// array would be [nx,nz].    You should use the  <src>enum</src> provided by
-// <src>ImageStatsBase</src> to select the argument <src>statToPlot</src>.
-// A returned array of size 0 indicates that there were no good values. A return 
-// value of <src>False</src> indicates that the internal state of the class is bad.
+// array would be [nx,nz].    A returned array of zero shape indicates that there 
+// were no good values. A return  value of <src>False</src> indicates that the 
+// internal state of the class is bad.
 // <group>
    Bool getNPts (Array<T>&);
    Bool getSum (Array<T>&);
@@ -270,6 +277,19 @@ public:
    Bool getRms (Array<T>&);
 // </group>   
 
+// This function gets a vector containing all the statistics
+// for a given location.  If <src>posInImage=True<src> then
+// the location is a location in the input image.  Any
+// positions on the display axes are ignored.  Otherwise, you
+// should just give locations for the display axes only.
+// Use can use the enum in class ImageStatsBase to find out
+// which locations in the vector contain which statistics.
+// A returned vector of zero shape indicates that there 
+// were no good values. A return  value of <src>False</src> indicates that the 
+// internal state of the class is bad.
+   Bool getStats (Vector<T>&,
+                  const IPosition& pos,
+                  const Bool posInImage=False);
 
 // Reset argument error condition.  If you specify invalid arguments to
 // one of the above <src>set</src> functions, an internal flag will be set which will
@@ -297,7 +317,7 @@ private:
    PGPlotter plotter_p;
    Bool doList_p, noInclude_p, noExclude_p, goodParameterStatus_p;
    Bool needStorageImage_p, doneSomeGoodPoints_p, someGoodPointsValue_p;
-   Bool haveLogger_p, showProgress_p;
+   Bool haveLogger_p, showProgress_p, fixedMinMax_p;
    IPosition minPos_p, maxPos_p, blcParent_p;
 
 
@@ -378,7 +398,15 @@ private:
 
 // Retrieve a statistic from the accumulation image and return in an array
    Bool retrieveStorageStatistic
-                          (Array<T>& slice, const Int& ISTAT);
+                          (Array<T>& slice, 
+                           const Int& ISTAT);
+
+// Retrieve a statistic from the accumulation image at the specified
+// location and return in an array
+   Bool retrieveStorageStatistic
+                          (Vector<T>& slice, 
+                           const IPosition& pos,
+                           const Bool posInImage);
 
 // Check/set include and exclude pixel ranges
    Bool setIncludeExclude (Vector<T>& range,
@@ -443,11 +471,14 @@ class ImageStatsTiledCollapser : public TiledCollapser<T>, ImageStatsBase
 
 public:
 // Constructor provides pixel selection range and whether that
-// range is an inclusion or exclusion range.  It also takes
-// the location of the start of the SubImage in the parent image
+// range is an inclusion or exclusion range.  If <src>fixedMinMax=True</src>
+// and an inclusion range is given, the min and max is set to
+// that inclusion range.  It also takes the location of the start 
+// of the SubImage in the parent image
     ImageStatsTiledCollapser(const Vector<T>& pixelRange, 
                              Bool noInclude, 
                              Bool noExclude,
+                             Bool fixedMinMax,
                              const IPosition& blcParent);
 
 // Initialize process, making some checks
@@ -481,7 +512,7 @@ public:
 
 private:
     Vector<T> range_p;
-    Bool noInclude_p, noExclude_p;
+    Bool noInclude_p, noExclude_p, fixedMinMax_p;
     IPosition minPos_p, maxPos_p, blcParent_p;
 
     Block<NumericTraits<T>::PrecisionType>* pSum_p;
@@ -504,12 +535,22 @@ private:
                     Int& minPos,
                     Int& maxPos,
                     Bool& minMaxInit,
+                    Bool fixedMinMax,
                     T datum,
                     uInt& pos)
 {
    nPts++;
    sum += NumericTraits<T>::PrecisionType(datum);
    sumSq += NumericTraits<T>::PrecisionType(datum*datum);
+
+// If fixedMinMax, then the min and max will always
+// be given by the inclusion range the user specified.
+// This will be set outside of here.  We have no
+// more work to do if so.
+
+   if (fixedMinMax) return;
+
+// Set min and max
    
    if (minMaxInit) {
       dataMin = datum;
