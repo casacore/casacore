@@ -1,110 +1,34 @@
+
 \usepackage{longtable}
 \usepackage{array}
-\usepackage{html}
 \pagestyle{plain}
 
 % The following marcos are necessary for the recipe system
 
 % Define a macro for the overall recipe. We'd like the argument
 % to go into a database for searching
-\newenvironment{ahrecipe}[1]{
-   \begin{latexonly}
-   \begin{description}
-   \setlength{\labelwidth}{1.0in} \setlength{\itemindent}{0.0in}
-   \item[Recipe]{\bfseries #1}
-   \end{description}
-   \end{latexonly}
-%
-   \begin{htmlonly}
-   \begin{description}
-   \item[Recipe]{\bfseries #1}
-   \end{description}
-   \end{htmlonly}
-   }{}
+\newenvironment{ahrecipe}[1]{{\Large\begin{flushleft}{\bf Recipe: #1}\end{flushleft}}}
+
+%What are the goals of this recipe?
+\newcommand{\argoals}[1]
+   {{\begin{flushleft}{\Large Goals:} #1\end{flushleft}}}
+
 
 % What AIPS++ facilities does the recipe use?
-\newcommand{\aruses}[1]
-  {
-   \begin{latexonly}
-   \begin{description}
-   \setlength{\labelwidth}{1.0in} \setlength{\itemindent}{0.0in}
-   \item[Uses] #1
-   \end{description}
-   \end{latexonly}
-%
-   \begin{htmlonly}
-   \begin{description}
-   \item[Uses] #1
-   \end{description}
-   \end{htmlonly}
-  }
+\newcommand{\arusing}[1]
+  {{\begin{flushleft}{{\Large Using:} #1}\end{flushleft}}}
 
 % What are the results of the recipe?
 \newcommand{\arresults}[1]
-  {
-   \begin{latexonly}
-   \begin{description}
-   \setlength{\labelwidth}{1.0in} \setlength{\itemindent}{0.0in}
-   \item[Results] #1
-   \end{description}
-   \end{latexonly}
-%
-   \begin{htmlonly}
-   \begin{description}
-   \item[Results] #1
-   \end{description}
-   \end{htmlonly}
-  }
+  {{\begin{flushleft}{{\Large Results:} #1}\end{flushleft}}}
 
-% What are the conditions for use of this recipe?
-\newcommand{\arcondition}[1]
-  {
-   \begin{latexonly}
-   \begin{description}
-   \setlength{\labelwidth}{1.0in} \setlength{\itemindent}{0.0in}
-   \item[Conditions]  #1
-   \end{description}
-   \end{latexonly}
-%
-   \begin{htmlonly}
-   \begin{description}
-   \item[Conditions]  #1
-   \end{description}
-   \end{htmlonly}
-  }
+% What conditions are assumed for use of this recipe?
+\newcommand{\arassume}[1]
+  {{\begin{flushleft}{{\Large Assume:} #1}\end{flushleft}}}
 
-% Concluding remarks?
-\newcommand{\arconclusion}[1]
-  {\begin{latexonly}
-   \begin{description}
-   \setlength{\labelwidth}{1.0in} \setlength{\itemindent}{0.0in}
-   \item[Conclusion] #1
-   \end{description}
-   \end{latexonly}
-%
-   \begin{htmlonly}
-   \begin{description}
-   \item[Conclusion] #1
-   \end{description}
-   \end{htmlonly}
-   }
-
-% Macro for lines of input (first argument) and comments (second
-% argument
-\newcommand{\arline}[2]
-  { \begin{tabular}{>{\ttfamily \bfseries}p{2.5in}}
-    #1
-    \end{tabular}  & \begin{tabular}{>{\normalfont}p{3.2in}}
-                     #2 
-                     \end{tabular}
-   \\
-   \\ }
-
-% Macro for output from a command
-\newcommand{\aroutput}[1]
-  {\\
-   {\raggedright \mdseries #1} & \\ 
-   \\}
+%What kind of script executes this recipe?
+\newcommand{\arscript}[1]
+  {{\begin{flushleft}{{\Large Script:} #1}\end{flushleft}}}
 
 % Macro for the example (consisting of \arlines's and \aroutputs)
 \newenvironment{arexample}
@@ -113,7 +37,28 @@
    \setlength{\LTright}{0pt}
    \setlength{\parindent}{0pt}
    \begin{longtable}[c]{p{2.5in}@{\hspace{0.3in}}p{3.2in}}
-   \hline \textsl{\bfseries Commands and Results} & \textsl{\bfseries Comments}\\
+   \hline \textsl{\bfseries AIPS++/Glish commands and results} & \textsl{\bfseries Purpose and Background}\\
    \\
    }{\end{longtable}}
+
+% Concluding remarks?
+\newcommand{\arconclusion}[1]
+  {{\begin{flushleft}{{\Large Conclusion:} #1}\end{flushleft}}}
+
+% Macro for lines of input (first argument) and comments (second
+% argument
+\newcommand{\arline}[2]
+  { \begin{tabular}{>{\ttfamily}p{2in}}
+    #1
+    \end{tabular}  & \begin{tabular}{>{\normalfont}p{2.5in}}
+                     #2 
+                     \end{tabular}
+   \\
+   \\ }
+
+% Macro for output from a command
+\newcommand{\aroutput}[1]
+  {\\
+   \multicolumn{2}{p{4.5in}}{\emph{#1}} \\ 
+   \\}
 
