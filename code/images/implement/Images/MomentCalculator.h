@@ -532,8 +532,9 @@ protected:
    calcMomentsMask = True;
    calcMoments(IM::AVERAGE) = s0 / nPts;
    calcMoments(IM::INTEGRATED) = s0 * integratedScaleFactor; 
-   if (s0 > 0.0) {
+   if (abs(s0) > 0.0) {
       calcMoments(IM::WEIGHTED_MEAN_COORDINATE) = s1 / s0;
+//
       calcMoments(IM::WEIGHTED_DISPERSION_COORDINATE) = 
         (s2 / s0) - calcMoments(IM::WEIGHTED_MEAN_COORDINATE) *
                     calcMoments(IM::WEIGHTED_MEAN_COORDINATE);
