@@ -65,7 +65,6 @@
 #include <strstream.h>
 
 
-static LogIO os;
 
 
 MSSimulator::MSSimulator() :
@@ -252,6 +251,9 @@ void MSSimulator::initSpWindows(const uInt nSpWindows,
 				const Vector<Quantity>& freqRes,
 				const Vector<String>& stokesString)
 {
+
+  LogIO os(LogOrigin("MSsimulator", "initSpWindows()", WHERE)); 
+
   nSpWindows_p = nSpWindows;
 
   spWindowName_p.resize(nSpWindows_p);
