@@ -106,10 +106,18 @@ public:
   // Null constructor
   TableMeasValueDesc();
 
-  // Constructor the MeasValue column descriptor for the given column.
-  // The column must be an array column of type Double and should already
-  // exist in the TableDesc.
+  // Construct the MeasValue column descriptor for the given column.
+  // The column must be a column of type Double and should exist in
+  // the TableDesc.
   TableMeasValueDesc (const TableDesc&, const String& columnName);
+
+  // Construct the MeasValue column descriptor for the given column.
+  // Checking if the column exists is done in the write function.
+  TableMeasValueDesc (const String& columnName)
+    : itsColumn (columnName) {}
+  TableMeasValueDesc (const Char* columnName)
+    : itsColumn (columnName) {}
+  // </group>
 
   // Copy constructor.
   TableMeasValueDesc (const TableMeasValueDesc& that);
@@ -120,6 +128,7 @@ public:
   TableMeasValueDesc& operator= (const TableMeasValueDesc& that);
 
   // Write the type, unit, and MEASINFO record into the column keywords.
+  // It checks if the column exists in the given table description.
   void write (TableDesc& td, const TableRecord& measInfo);
 
   // Get the name of the underlying column.
