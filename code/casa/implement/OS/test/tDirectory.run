@@ -3,10 +3,10 @@
 # Script to execute the tDirectory program via assay.
 # It defines a few files, etc. to make the program work in any environment.
 # Execution:
-#      tDirectory.exec      execute using assay (normal procedure)
-#      tDirectory.exec 0    only define the subdirectory, etc. (for debugging)
-#      tDirectory.exec 1    execute as such (to test)
-#      tDirectory.exec 1 1  execute without exceptions (to test leakage)
+#      tDirectory.run      execute using assay (normal procedure)
+#      tDirectory.run 0    only define the subdirectory, etc. (for debugging)
+#      tDirectory.run 1    execute as such (to test)
+#      tDirectory.run 1 1  execute without exceptions (to test leakage)
 #=============================================================================
 
 /bin/rm -rf tDirectory_tmp
@@ -37,5 +37,5 @@ then
         tDirectory $2
     fi
 else
-    exec assay tDirectory
+    tDirectory
 fi

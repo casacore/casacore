@@ -3,10 +3,10 @@
 # Script to execute the tRegularFile program via assay.
 # It defines a few files, etc. to make the program work in any environment.
 # Execution:
-#     tRegularFile.exec      execute using assay (normal procedure)
-#     tRegularFile.exec 0    only define the subdirectory, etc. (for debugging)
-#     tRegularFile.exec 1    execute as such (to test)
-#     tRegularFile.exec 1 1  execute without exceptions (to test leakage)
+#     tRegularFile.run      execute using assay (normal procedure)
+#     tRegularFile.run 0    only define the subdirectory, etc. (for debugging)
+#     tRegularFile.run 1    execute as such (to test)
+#     tRegularFile.run 1 1  execute without exceptions (to test leakage)
 #=============================================================================
 
 /bin/rm -rf tRegularFile_tmp
@@ -29,5 +29,5 @@ then
         tRegularFile $2
     fi
 else
-    exec assay tRegularFile
+    tRegularFile
 fi

@@ -3,10 +3,10 @@
 # Script to execute the tPath program via assay.
 # It defines a few environment variables which are used in tPath.
 # Execution:
-#      tPath.exec        execute using assay (normal procedure)
-#      tPath.exec 0      only define the subdirectory, etc. (for debugging)
-#      tPath.exec 1      execute as such (to test)
-#      tPath.exec 1 1    execute without exceptions (to test leakage)
+#      tPath.run        execute using assay (normal procedure)
+#      tPath.run 0      only define the subdirectory, etc. (for debugging)
+#      tPath.run 1      execute as such (to test)
+#      tPath.run 1 1    execute without exceptions (to test leakage)
 #=============================================================================
 
 tPath_Env_Username=`whoami`
@@ -25,5 +25,5 @@ then
         tPath $2
     fi
 else
-    exec assay tPath
+    tPath
 fi
