@@ -1,5 +1,5 @@
 //# AipsrcBool.cc: Specialisation for AipsrcValue<Bool>
-//# Copyright (C) 1995,1996,1997,1998
+//# Copyright (C) 1995,1996,1997,1998,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -34,14 +34,14 @@
 // are supposed to be True (strings starting with one of 'tTyY123456789')
 
 //# Constructor
-AipsrcValue<Bool>::AipsrcValue() :
+template <> AipsrcValue<Bool>::AipsrcValue() :
   tlst(0), ntlst(0) {}
 
 //# Destructor
-AipsrcValue<Bool>::~AipsrcValue() {}
+template <> AipsrcValue<Bool>::~AipsrcValue() {}
 
-Bool AipsrcValue<Bool>::find(Bool &value,
-			     const String &keyword) {
+template <> Bool AipsrcValue<Bool>::find(Bool &value,
+					 const String &keyword) {
   const Regex tTrue("^([tT]|[yY]|[1-9])");
   String res;
   Bool x = Aipsrc::find(res, keyword, 0);
@@ -49,8 +49,8 @@ Bool AipsrcValue<Bool>::find(Bool &value,
   return x;
 }
 
-Bool AipsrcValue<Bool>::find(Bool &value, const String &keyword, 
-			  const Bool &deflt) {
+template <> Bool AipsrcValue<Bool>::find(Bool &value, const String &keyword, 
+					 const Bool &deflt) {
   return (find(value, keyword) ? True : (value = deflt, False));
 }
 
@@ -58,14 +58,14 @@ Bool AipsrcValue<Bool>::find(Bool &value, const String &keyword,
 // The following construction necessary since the gnu compiler does not (yet)
 // support static templated data.
 // egcs 1.1.b requires it to be in front of its use.
-AipsrcValue<Bool> &AipsrcValue<Bool>::init() {
+template <> AipsrcValue<Bool> &AipsrcValue<Bool>::init() {
   static AipsrcValue<Bool> myp;
   return myp;
 }
 
 
-uInt AipsrcValue<Bool>::registerRC(const String &keyword,
-				const Bool &deflt) {
+template <> uInt AipsrcValue<Bool>::registerRC(const String &keyword,
+					       const Bool &deflt) {
   AipsrcValue<Bool> &gcl = init();
   uInt n = Aipsrc::registerRC(keyword, gcl.ntlst);
   gcl.tlst.resize(n);
@@ -73,19 +73,19 @@ uInt AipsrcValue<Bool>::registerRC(const String &keyword,
   return n;
 }
 
-const Bool &AipsrcValue<Bool>::get(uInt keyword) {
+template <> const Bool &AipsrcValue<Bool>::get(uInt keyword) {
   AipsrcValue<Bool> &gcl = init();
   AlwaysAssert(keyword > 0 && keyword <= gcl.tlst.nelements(), AipsError);
   return (gcl.tlst)[keyword-1];
 }
 
-void AipsrcValue<Bool>::set(uInt keyword, const Bool &deflt) {
+template <> void AipsrcValue<Bool>::set(uInt keyword, const Bool &deflt) {
   AipsrcValue<Bool> &gcl = init();
   AlwaysAssert(keyword > 0 && keyword <= gcl.tlst.nelements(), AipsError);
   (gcl.tlst)[keyword-1] = deflt;
 }
 
-void AipsrcValue<Bool>::save(uInt keyword) {
+template <> void AipsrcValue<Bool>::save(uInt keyword) {
   AipsrcValue<Bool> &gcl = init();
   AlwaysAssert(keyword > 0 && keyword <= gcl.tlst.nelements(), AipsError);
   ostrstream oss;

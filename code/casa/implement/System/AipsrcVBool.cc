@@ -1,5 +1,5 @@
 //# AipsrcVBool.cc: Specialisation for AipsrcVector<Bool>
-//# Copyright (C) 1995,1996,1997,1998
+//# Copyright (C) 1995,1996,1997,1998,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -35,14 +35,14 @@
 // are supposed to be True (strings starting with one of 'tTyY123456789')
 
 //# Constructor
-AipsrcVector<Bool>::AipsrcVector() : 
+template <> AipsrcVector<Bool>::AipsrcVector() : 
   tlst(0), ntlst(0) {}
 
 //# Destructor
-AipsrcVector<Bool>::~AipsrcVector() {}
+template <> AipsrcVector<Bool>::~AipsrcVector() {}
 
-Bool AipsrcVector<Bool>::find(Vector<Bool> &value,
-				const String &keyword) {
+template <> Bool AipsrcVector<Bool>::find(Vector<Bool> &value,
+					  const String &keyword) {
   String res;
   Bool x = Aipsrc::find(res, keyword, 0);
   if (x) {
@@ -61,8 +61,9 @@ Bool AipsrcVector<Bool>::find(Vector<Bool> &value,
   return x;
 }
 
-Bool AipsrcVector<Bool>::find(Vector<Bool> &value, const String &keyword, 
-				const Vector<Bool> &deflt) {
+template <> Bool AipsrcVector<Bool>::find(Vector<Bool> &value,
+					  const String &keyword, 
+					  const Vector<Bool> &deflt) {
   return (find(value, keyword) ? True : (value = deflt, False));
 }
 
@@ -70,14 +71,14 @@ Bool AipsrcVector<Bool>::find(Vector<Bool> &value, const String &keyword,
 // The following construction necessary since the gnu compiler does not (yet)
 // support static templated data.
 // egcs 1.1.b requires it to be in front of its use.
-AipsrcVector<Bool> &AipsrcVector<Bool>::init() {
+template <> AipsrcVector<Bool> &AipsrcVector<Bool>::init() {
   static AipsrcVector<Bool> myp;
   return myp;
 }
 
 
-uInt AipsrcVector<Bool>::registerRC(const String &keyword,
-				      const Vector<Bool> &deflt) {
+template <> uInt AipsrcVector<Bool>::registerRC(const String &keyword,
+						const Vector<Bool> &deflt) {
   AipsrcVector<Bool> &gcl = init();
   uInt n = Aipsrc::registerRC(keyword, gcl.ntlst);
   gcl.tlst.resize(n);
@@ -85,20 +86,21 @@ uInt AipsrcVector<Bool>::registerRC(const String &keyword,
   return n;
 }
 
-const Vector<Bool> &AipsrcVector<Bool>::get(uInt keyword) {
+template <> const Vector<Bool> &AipsrcVector<Bool>::get(uInt keyword) {
   AipsrcVector<Bool> &gcl = init();
   AlwaysAssert(keyword > 0 && keyword <= gcl.tlst.nelements(), AipsError);
   return (gcl.tlst)[keyword-1];
 }
 
-void AipsrcVector<Bool>::set(uInt keyword, const Vector<Bool> &deflt) {
+template <> void AipsrcVector<Bool>::set(uInt keyword,
+					 const Vector<Bool> &deflt) {
   AipsrcVector<Bool> &gcl = init();
   AlwaysAssert(keyword > 0 && keyword <= gcl.tlst.nelements(), AipsError);
   (gcl.tlst)[keyword-1].resize(deflt.nelements());
   (gcl.tlst)[keyword-1] = deflt;
 }
 
-void AipsrcVector<Bool>::save(uInt keyword) {
+template <> void AipsrcVector<Bool>::save(uInt keyword) {
   AipsrcVector<Bool> &gcl = init();
   AlwaysAssert(keyword > 0 && keyword <= gcl.tlst.nelements(), AipsError);
   ostrstream oss;

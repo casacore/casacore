@@ -1,5 +1,5 @@
 //# AipsrcVString.cc: Specialisation for AipsrcVector<String>
-//# Copyright (C) 1995,1996,1997,1998
+//# Copyright (C) 1995,1996,1997,1998,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -35,14 +35,14 @@
 // appropiately, and no Units are handled as in the standard Vector case.
 
 //# Constructor
-AipsrcVector<String>::AipsrcVector() : 
+template <> AipsrcVector<String>::AipsrcVector() : 
   tlst(0), ntlst(0) {}
 
 //# Destructor
-AipsrcVector<String>::~AipsrcVector() {}
+template <> AipsrcVector<String>::~AipsrcVector() {}
 
-Bool AipsrcVector<String>::find(Vector<String> &value,
-				const String &keyword) {
+template <> Bool AipsrcVector<String>::find(Vector<String> &value,
+					    const String &keyword) {
   String res;
   Bool x = Aipsrc::find(res, keyword, 0);
   if (x) {
@@ -60,8 +60,9 @@ Bool AipsrcVector<String>::find(Vector<String> &value,
   return x;
 }
 
-Bool AipsrcVector<String>::find(Vector<String> &value, const String &keyword, 
-				const Vector<String> &deflt) {
+template <> Bool AipsrcVector<String>::find(Vector<String> &value,
+					    const String &keyword, 
+					    const Vector<String> &deflt) {
   return (find(value, keyword) ? True : (value = deflt, False));
 }
 
@@ -69,14 +70,14 @@ Bool AipsrcVector<String>::find(Vector<String> &value, const String &keyword,
 // The following construction necessary since the gnu compiler does not (yet)
 // support static templated data.
 // egcs 1.1.b requires it to be in front of its use.
-AipsrcVector<String> &AipsrcVector<String>::init() {
+template <> AipsrcVector<String> &AipsrcVector<String>::init() {
   static AipsrcVector<String> myp;
   return myp;
 }
 
-
-uInt AipsrcVector<String>::registerRC(const String &keyword,
-				      const Vector<String> &deflt) {
+template <> uInt AipsrcVector<String>::registerRC(const String &keyword,
+						  const Vector<String> 
+						  &deflt) {
   AipsrcVector<String> &gcl = init();
   uInt n = Aipsrc::registerRC(keyword, gcl.ntlst);
   gcl.tlst.resize(n);
@@ -84,20 +85,21 @@ uInt AipsrcVector<String>::registerRC(const String &keyword,
   return n;
 }
 
-const Vector<String> &AipsrcVector<String>::get(uInt keyword) {
+template <> const Vector<String> &AipsrcVector<String>::get(uInt keyword) {
   AipsrcVector<String> &gcl = init();
   AlwaysAssert(keyword > 0 && keyword <= gcl.tlst.nelements(), AipsError);
   return (gcl.tlst)[keyword-1];
 }
 
-void AipsrcVector<String>::set(uInt keyword, const Vector<String> &deflt) {
+template <> void AipsrcVector<String>::set(uInt keyword,
+					   const Vector<String> &deflt) {
   AipsrcVector<String> &gcl = init();
   AlwaysAssert(keyword > 0 && keyword <= gcl.tlst.nelements(), AipsError);
   (gcl.tlst)[keyword-1].resize(deflt.nelements());
   (gcl.tlst)[keyword-1] = deflt;
 }
 
-void AipsrcVector<String>::save(uInt keyword) {
+template <> void AipsrcVector<String>::save(uInt keyword) {
   AipsrcVector<String> &gcl = init();
   AlwaysAssert(keyword > 0 && keyword <= gcl.tlst.nelements(), AipsError);
   ostrstream oss;
