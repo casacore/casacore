@@ -478,8 +478,15 @@ Bool ImageFITSConverter::ImageToFITS(String &error,
 //         
 	if (miscname != "end" && miscname != "END") {
           if (header.isDefined(miscname)) {
+// These warnings just cause confusion.  They are usually
+// from the alt* keywords which FITSSpectralUtil writes.
+// They may also have been preserved in miscInfo when an
+// image came from FITS and hence the conflict.
+
+/*
              log << LogIO::WARN << "FITS keyword " << miscname 
                  << " is already defined so dropping it" << LogIO::POST;
+*/
           } else {
 	    DataType misctype = image.miscInfo().dataType(i);
 	    switch(misctype) {
