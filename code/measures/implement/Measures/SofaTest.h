@@ -192,7 +192,7 @@ class SofaTest {
 #if defined(FORTRAN_EXTRA_)
 #define IAUR(x) iau_##x##__
 #else
-#define IAUR(x) iau_##x##_
+#define IAUR(x) iau_##x##__
 #endif
 extern "C" void 
 IAUR(cal2jd)(const Int &iy, const Int &im, const Int &id,
@@ -249,19 +249,31 @@ extern "C" void
 IAUR(num00b)(const Double &epoch1, const Double &epoch2,
 	     Double *rn);
 extern "C" void 
-IAUR(new)(const Double &epoch1, const Double &epoch2,
-	  const Double &ut1, const Double &ut2,
-	  Double *rmct2);
-extern "C" void 
-IAUR(class)(const Double &epoch1, const Double &epoch2,
-	    const Double &ut1, const Double &ut2,
-	    Double *rmct2);
-extern "C" void 
-IAUR(old)(const Double &epoch1, const Double &epoch2,
-	  const Double &ut1, const Double &ut2,
-	  Double *rmct2);
+IAUR(c2t00a)(const Double &tta, const Double &ttb, const Double &uta,
+	     const Double &utb, const Double &xp, const Double &yp,
+	     Double *rc2t);
 extern "C" Double 
-IAUR(drot)(Double *rm1, Double *rm2);
+IAUR(sp00)(const Double &date1, const Double &date2);
+extern "C" void 
+IAUR(pom00)(const Double &xp, const Double &yp, const Double &sp,
+	    Double *rpom);
+extern "C" Double 
+IAUR(gmst00)(const Double &uta, const Double &utb,
+	     const Double &tta, const Double &ttb);
+extern "C" Double 
+IAUR(gmst82)(const Double &dj1, const Double &dj2);
+extern "C" Double 
+IAUR(ee00a)(const Double &date1, const Double &date2);
+extern "C" Double 
+IAUR(eqeq94)(const Double &date1, const Double &date2);
+extern "C" void 
+IAUR(pnm00a)(const Double &date1, const Double &date2, Double *rbpn);
+extern "C" void 
+IAUR(c2teqx)(Double *rbpn, const Double &gst, Double *rpom, Double *rc2t);
+extern "C" void 
+IAUR(rz)(const Double &psi, Double *r);
+extern "C" void 
+IAUR(cr)(Double *r, Double *c);
 
 // </group>
 
