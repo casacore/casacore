@@ -1,0 +1,24 @@
+\documentclass[11pt]{article}
+\usepackage{html, longtable, epsfig}
+%%---------------------------------------------------------------------------
+\newcommand{\aipspp}{\textsf{AIPS++}}
+
+ 
+\begin{document}
+ 
+\title{NOTE 241 -- Report of AIPS++ User Group, 2001}
+  
+ 
+\author{AIPS++ User Group, chair Tom Pauls, NRL}
+ 
+\date{March 6, 2001}
+ 
+\maketitle
+%%---------------------------------------------------------------------------
+%\begin{htmlonly}
+\htmladdnormallink{This note is available only in postscript: notes/241.dir/AUG2001report.ps}{AUG2001report.ps}
+%\end{htmlonly}
+      
+%\input{AUG2001report.ps}
+\end{document}
+
