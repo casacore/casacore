@@ -1143,10 +1143,13 @@ void ImageHistograms<T>::generateStorageImage()
       ImageUtilities::setStorageImageShape(storeImageShape, False, nBins_p,
                                            displayAxes_p, pInImage_p->shape());
 
-// Set tile shape.   The histogram storage image is only ever accessed by
+// Set tile shape.   The histogram storage image is generally accessed by
 // vectors along the first axis.   Therefore set the tile shape to be unity
-// except for the first axis and equal to the length of the first axis
-// (the number of bins) for the first axis 
+// except for the first axis and equal to the length of the first axis   
+// (the number of bins) for the first axis.  It is accessed more globally
+// by the getHistograms function, but since I reckon this will less
+// often be used than just accumulating the histograms, I will
+// leave the tile shape as is.
 
       IPosition tileShape(storeImageShape.nelements(),1);
       tileShape(0) = storeImageShape(0);
