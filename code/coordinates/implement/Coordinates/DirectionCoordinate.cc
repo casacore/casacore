@@ -63,29 +63,11 @@ DirectionCoordinate::DirectionCoordinate()
   canDoToMix_p(True),
   canDoToMixErrorMsg_p("")
 {
-    // Initially we are in radians
-    to_degrees_p[0] = 180.0 / C::pi;
-    to_degrees_p[1] = to_degrees_p[0];
-    to_radians_p[0] = 1.0;
-    to_radians_p[1] = 1.0;
-    units_p = "rad";
-
-    Vector<Double> crval(2), cdelt(2), crpix(2);
-    crval = 0.0;
-    cdelt = 1.0;
-    crpix = 0.0;
     Matrix<Double> xform(2,2); 
     xform = 0.0;
     xform.diagonal() = 1.0;
-
-    toDegrees(crval);
-    toDegrees(cdelt);
-    linear_p = LinearXform(crpix, cdelt, xform);
-    make_celprm_and_prjprm(canDoToMix_p, canDoToMixErrorMsg_p,
-                           celprm_p, prjprm_p, wcs_p, 
-                           c_ctype_p, c_crval_p, projection_p, type_p, 
-                           crval(0), crval(1), 999.0, 999.0);
-
+    makeDirectionCoordinate (0.0, 0.0, 1.0, 1.0,
+                             xform, 0.0, 0.0);
 }
 
 DirectionCoordinate::DirectionCoordinate(MDirection::Types directionType,
@@ -106,29 +88,54 @@ DirectionCoordinate::DirectionCoordinate(MDirection::Types directionType,
   canDoToMix_p(True),
   canDoToMixErrorMsg_p("")
 {
-    // Initially we are in radians
-    to_degrees_p[0] = 180.0 / C::pi;
-    to_degrees_p[1] = to_degrees_p[0];
-    to_radians_p[0] = 1.0;
-    to_radians_p[1] = 1.0; 
-    units_p = "rad";
-
-    Vector<Double> crval(2), cdelt(2), crpix(2);
-    crval(0) = refLong; 
-    crval(1) = refLat;
-    cdelt(0) = incLong; 
-    cdelt(1) = incLat;
-    crpix(0) = refX;    
-    crpix(1) = refY;
-//
-    toDegrees(crval);
-    toDegrees(cdelt);
-    linear_p = LinearXform(crpix, cdelt, xform);
-    make_celprm_and_prjprm(canDoToMix_p, canDoToMixErrorMsg_p, celprm_p, 
-                           prjprm_p, wcs_p, c_ctype_p, c_crval_p, 
-                           projection_p, type_p, crval(0), crval(1),  
-                           999.0, 999.0);
+    makeDirectionCoordinate (refLong, refLat, incLong, incLat,
+                             xform, refX, refY);
 }
+
+
+DirectionCoordinate::DirectionCoordinate(MDirection::Types directionType,
+                                         const Projection &projection,  
+                                         const Quantum<Double>& refLong,
+                                         const Quantum<Double>& refLat,  
+                                         const Quantum<Double>& incLong,
+                                         const Quantum<Double>& incLat,
+                                         const Matrix<Double> &xform,
+                                         Double refX, Double refY)
+: Coordinate(),
+  type_p(directionType), 
+  projection_p(projection),
+  celprm_p(0), 
+  prjprm_p(0), 
+  wcs_p(0), 
+  linear_p(1),
+  names_p(axisNames(directionType).copy()),
+  units_p(2),
+  canDoToMix_p(True),
+  canDoToMixErrorMsg_p("")
+{
+   Unit rad("rad");
+//
+   if (!refLong.isConform(rad)) {
+      throw(AipsError("Specified longitude is not angular"));
+   }
+   if (!refLat.isConform(rad)) {
+      throw(AipsError("Specified latitude is not angular"));
+   }
+   if (!incLong.isConform(rad)) {
+      throw(AipsError("Specified longitude increment is not angular"));
+   }
+   if (!incLat.isConform(rad)) {
+      throw(AipsError("Specified latitude increment is not angular"));
+   }
+//
+   Double lon = refLong.getValue(rad);
+   Double lat = refLat.getValue(rad);
+   Double dlon = incLong.getValue(rad);
+   Double dlat = incLat.getValue(rad);
+//
+   makeDirectionCoordinate (lon, lat, dlon, dlat, xform, refX, refY);
+}
+
 
 DirectionCoordinate::DirectionCoordinate(const DirectionCoordinate &other)
 : Coordinate(other),
@@ -290,7 +297,7 @@ Bool DirectionCoordinate::toPixel(Vector<Double> &pixel,
         world_tmp(0) = d_x; 
         world_tmp(1) = d_y;
 //
-	ok = linear_p.forward(world_tmp, pixel, errorMsg);
+	ok = linear_p.forward(pixel, world_tmp, errorMsg);
 
 // phi and theta may be returned in a different interface somewhen
 
@@ -1480,3 +1487,36 @@ Coordinate* DirectionCoordinate::makeFourierCoordinate (const Vector<Bool>& axes
    return new LinearCoordinate(namesOut, unitsOut, crval, linear2.cdelt(),
                                linear2.pc(), linear2.crpix());
 }
+
+
+
+void DirectionCoordinate::makeDirectionCoordinate(Double refLong, Double refLat,
+                                                  Double incLong, Double incLat,
+                                                  const Matrix<Double> &xform,
+                                                  Double refX, Double refY)
+{
+// Initially we are in radians
+
+    to_degrees_p[0] = 180.0 / C::pi;
+    to_degrees_p[1] = to_degrees_p[0];
+    to_radians_p[0] = 1.0;
+    to_radians_p[1] = 1.0; 
+    units_p = "rad";
+//
+    Vector<Double> crval(2), cdelt(2), crpix(2);
+    crval(0) = refLong; 
+    crval(1) = refLat;
+    cdelt(0) = incLong; 
+    cdelt(1) = incLat;
+    crpix(0) = refX;    
+    crpix(1) = refY;
+//
+    toDegrees(crval);
+    toDegrees(cdelt);
+    linear_p = LinearXform(crpix, cdelt, xform);
+    make_celprm_and_prjprm(canDoToMix_p, canDoToMixErrorMsg_p, celprm_p, 
+                           prjprm_p, wcs_p, c_ctype_p, c_crval_p, 
+                           projection_p, type_p, crval(0), crval(1),  
+                           999.0, 999.0);
+}
+

@@ -32,7 +32,6 @@
 #include <aips/aips.h>
 #include <aips/Utilities/String.h>
 #include <aips/Arrays/Vector.h>
-#include <aips/Measures/MDirection.h>
 
 template<class T> class Matrix;
 template<class T> class Quantum;
@@ -45,15 +44,22 @@ class Projection;
 
 // <use visibility=export>
 
-// <reviewed reviewer="" date="yyyy/mm/dd" tests="" demos="dCoordinates">
+// <reviewed reviewer="Peter Barnes" date="1999/12/24">
 // </reviewed>
 
 // <prerequisite>
-//   <li> Knowledge of astronomical coordinate conversions in general. Probably 
-//        the most single useful document is "Representations of celestial 
-//        coordinates in FITS" Eric W. Greisen and Mark Calabretta. This is the 
-//        "WCS" paper, and is currently in late draft, available via anonymous 
-//        ftp from fits.cv.nrao.edu.
+//   <li> Knowledge of astronomical coordinate conversions in general. Probably the
+//        best documents are the papers by Mark Calabretta and Eric Greisen.
+//        The initial draft from 1996 can be found at
+//        http://www.atnf.csiro.au/~mcalabre.  It is this draft that the
+//        Coordinate classes are based upon.  Since then, this paper has evolved
+//        into three which can be found at the above address, and will be published in the
+//        Astronomy and Astrophysics Supplement Series (probably in 2000).
+//        The design has changed since the initial draft.  When these papers
+//        are finalized, and the IAU has ratified the new standards, WCSLIB
+//        (Mark Calabretta's implementation of these conventions) will be
+//        revised for the new designs.  At that time, the Coordinate classes
+//        may also be revised.
 //   <li> Generic AIPS++ classes; especially those in the 
 //        <linkto module=Arrays>Arrays</linkto> module.
 //   <li> Perhaps some of the information in the
@@ -63,22 +69,22 @@ class Projection;
 // <synopsis>
 // The Coordinate class defines the generic interface whereby a pixel position
 // is converted to a world (sky, frequency, stokes, ...) position and vice
-// versa. The pixel position and worl coordinate value are in general
+// versa. The pixel and world coordinates are in general
 // multi-dimensional values. In general there need not be the same number of
 // pixel and world axes, although this will normally be the case.
 //
-// The fundamental model is that a pixel is first turned into a relative
+// The fundamental model is that a pixel is first converted into a relative
 // physical coordinate by:
 // <ol>
 //    <li> Subtracting a reference pixel value from the pixel location; then
 //    <li> Multiplying this offset by a general transformation matrix (usually
-//         to account for rotation, but any matrix is allowd); then
+//         to account for rotation, but any matrix is allowed); then
 //    <li> Multiplying this product by an increment in physical units.
 // </ol>
 // After this linear stage, the final coordinate value is computed from this
 // relative physical unit and a reference value, and possibly some other 
 // parameters. In the case of a sky position, these latter include at least the
-// projection type. In the case of a purely linar coordinate, the reference value
+// projection type. In the case of a purely linear coordinate, the reference value
 // is merely added to the relative physical coordinate. The interface also
 // allows the axes to be assigned names (reasonable defaults will be selected),
 // and for physical units.
@@ -99,9 +105,15 @@ class Projection;
 // be used polymorphically.
 // </motivation>
 //
+// <thrown>
+//   <li>  AipsError
+//   <li>  AllocError
+// </thrown>
+//
 // <todo asof="1997/1/13">
 //   <li> Perhaps common FITS related interfaces should go in this class.
 // </todo>
+//
 
 class Coordinate
 {
@@ -120,10 +132,10 @@ public:
 	// A one-dimensional Cooordinate system, usually created from a table
         // although it can also be purely linear.
 	TABULAR,
-	// A coordinate system (a collection of coordinates).
+	// A CoordinateSystem (a collection of Coordinates).
 	COORDSYS };
 
-    // This enum is used for formatting world values into strings
+    // This enum is used for formatting world values into Strings
     enum formatType {
        // Default; formatter decides
        DEFAULT,
@@ -131,18 +143,11 @@ public:
        SCIENTIFIC,
        // Fixed floating format (e.g. 12.134)
        FIXED,
-       // DDD:MM:SS.SSS style formatting 
+       // HHH:MM:SS.SSS style formatting 
        TIME };
 
-
-
-    Coordinate();
-
-    // Destructor
+    // Destructor.  Needs to be public so the user can delete Coordinate* objects
     virtual ~Coordinate();
-
-    // Copy constructor (copy semantics)
-    Coordinate(const Coordinate& other);
 
     // List the type of this Coordinate object. Generally you shouldn't have
     // to call this function, it is used mostly in the CoordinateSystem class.
@@ -151,10 +156,10 @@ public:
     virtual String showType() const = 0;
     // </group>
 
-    // How many world/pixel axes are there in this coordinate? While the number
+    // How many world/pixel axes are there in this Coordinate? While the number
     // of world and pixel axes will generally be the same, it is not a 
     // requirement. For example, in CoordinateSystem you could remove a pixel
-    // axis and leave the corresponding world axes. Also, if we ever implement
+    // axis and leave the corresponding world axis. Also, if we ever implement
     // a "SlicedCoordinate" class then there would be more world than pixel
     // coordinates (the pixel coordinate would be a pixel number along the slice,
     // whereas the world axes would continue to be RA/DEC).
@@ -174,27 +179,27 @@ public:
     // </group>
 
     // Mixed pixel/world coordinate conversion.
-    // worldIn and worldAxes are of length nWorldAxes.
-    // pixelIn and pixelAxes are of length nPixelAxes.
-    // worldAxes(i) = True specifies you have given a world
-    // value in worldIn(i) to convert to pixel.
-    // pixelAxes(i)=True specifies you have given a pixel 
-    // value in pixelIn(i) to convert to world.
-    // You cannot specify the same axis via worldAxes
-    // and pixelAxes.
-    // Values in pixelIn are converted to world and
-    // put into worldOut in the appropriate worldAxis
-    // location.  Values in worldIn are copied to
-    // worldOut.   
-    // Values in worldIn are converted to pixel and
-    // put into pixelOut in the appropriate pixelAxis
-    // location.  Values in pixelIn are copied to
-    // pixelOut
-    // worldMin and worldMax specify the range of the world
+    // worldIn and worldAxes are vectors of length <src>nWorldAxes</src>.
+    // <src>pixelIn</src> and <src>pixelAxes</src> are of length <src>nPixelAxes</src>.
+    // <src>worldAxes(i) = True</src> specifies you have given a world
+    // value in <src>worldIn(i)</src> to convert to pixel.
+    // <src>pixelAxes(i)=True</src> specifies you have given a pixel 
+    // value in <src>pixelIn(i)</src> to convert to world.
+    // You cannot specify the same axis via <src>worldAxes</src>
+    // and <src>pixelAxes</src>.
+    // Values in <src>pixelIn</src> are converted to world and
+    // put into <src>worldOut</src> in the appropriate world axis
+    // location.  Values in <src>worldIn</src> are copied to
+    // <src>worldOut</src>.
+    // Values in <src>worldIn</src> are converted to pixel and
+    // put into <src>pixelOut</src> in the appropriate pixel axis
+    // location.  Values in <src>pixelIn</src> are copied to
+    // <src>pixelOut</src>.
+    // <src>worldMin</src> and <src>worldMax</src> specify the range of the world
     // coordinate (in the world axis units of that world axis
-    // in the coordinate system) being solved for in a mixed calculation
+    // in the CoordinateSystem) being solved for in a mixed calculation
     // for each world axis. They are only actually needed for DirectionCoordinates
-    // and for all other coordinates the relevant elements   
+    // and for all other Coordinates the relevant elements   
     // can be undefined.   If you don't know, use -180 to 180
     // degrees for longitude, and -90 to 90 for latitude.
     // Removed axes are handled (for example, a removed pixel
@@ -213,7 +218,7 @@ public:
                        const Vector<Double>& worldMin,
                        const Vector<Double>& worldMax) const;
 
-    // Batch up a lot of transformation. The first (most rapidly varying) axis
+    // Batch up a lot of transformations. The first (most rapidly varying) axis
     // of the matrices contain the coordinates. Return the number of failures.
     // The failures array will be at least as long as the returned number of 
     // failures, and contains the indicies of the failed transformations.
@@ -261,20 +266,12 @@ public:
     virtual Bool setWorldAxisUnits(const Vector<String> &units) = 0;
 
     // Find the Coordinate for when we Fourier Transform ourselves.  This pointer 
-    // must be deleted by the caller. Axes specifies which axes of the coordinate
+    // must be deleted by the caller. Axes specifies which axes of the Coordinate
     // you wish to transform.   Shape specifies the shape of the image
-    // associated with all the axes of the coordinate. Currently the
+    // associated with all the axes of the Coordinate. Currently the
     // output reference pixel is always shape/2.
     virtual Coordinate* makeFourierCoordinate (const Vector<Bool>& axes,
                                                const Vector<Int>& shape) const;
-
-    // Tries to find a canonical unit for input unit (e.g.  GHz -> Hz), and
-    // tells you the output name and unit for the Fourier coordinate 
-    // pairing with the canonical unit
-    void fourierUnits (String& nameOut, String& unitOut, String& unitInCanon,
-                       Coordinate::Type type, Int axis, 
-                       const String& unitIn, 
-                       const String& nameIn) const;
 
     // If the last conversion to world or pixel coordinates resulted in an
     // error, report that error. If the last conversion succeeded, it is
@@ -283,21 +280,21 @@ public:
     const String& errorMessage() const;
 
     // Comparison to fractional tolerance (for floating point values). 
-    // Don't compare on specified axes in coordinate. If the comparison
+    // Don't compare on specified axes in Coordinate. If the comparison
     // returns False, errorMessage() contains a message.
     // <group>
     virtual Bool near(const Coordinate* pOther, 
-                      Double tol) const = 0;
+                      Double tol=1.0e-6) const = 0;
     virtual Bool near(const Coordinate* pOther, 
                       const Vector<Int>& excludeAxes,
-                      Double tol) const = 0;
+                      Double tol=1.0e-6) const = 0;
     // </group>
 
     // Provide a common interface to getting formatted representations of
-    // coordinate values.    Different derived coordinate types are formatted
+    // coordinate values.    Different derived Coordinate types are formatted
     // in different ways.  For example, an RA/DEC  DirectionCoordinate
     // uses an HMS.SS/DMS.SS representation. A Galactic Lat/Long DirectionCoordinate
-    // uses floating format in degrees.  Other derived coordinates are formatted with 
+    // uses floating format in degrees.  Other derived Coordinates are formatted with 
     // scientific format or floating format. The derived class format functions
     // provide this functionality.   
     // 
@@ -307,7 +304,7 @@ public:
     // is taken.
     //
     // A mechanism for specifying the precision number of significant digits after 
-    // decimal point) is provided.  You can specify the precision directly when 
+    // decimal point is provided.  You can specify the precision directly when 
     // calling format if it is unambiguous how the derived Coordinate is 
     // going to be formatted.  For example, a LinearCoordinate is always formatted with 
     // scientific format.  However, if you are using these classes polymorphically, you 
@@ -373,7 +370,13 @@ public:
     virtual Coordinate *clone() const = 0;
 
 protected:
-    // Assignment (copy semantics) is only useful for derived classes
+    // Default constructor. Make an empty coordinate.  Used by derived classes.
+    Coordinate();
+
+    // Copy constructor (copy semantics)
+    Coordinate(const Coordinate& other);
+
+    // Assignment (copy semantics) 
     Coordinate& operator=(const Coordinate& other);
 
     void set_error(const String &errorMsg) const;
@@ -383,14 +386,21 @@ protected:
     Vector<String> make_Direction_FITS_ctype (Bool& isNCP, const Projection& proj,
                                               const Vector<String>& axisNames,
                                               Double refLat, Bool printError) const;
+
+    // Tries to find a canonical unit for input unit (e.g.  GHz -> Hz), and
+    // tells you the output name and unit for the Fourier coordinate 
+    // pairing with the canonical unit
+    void fourierUnits (String& nameOut, String& unitOut, String& unitInCanon,
+                       Coordinate::Type type, Int axis, 
+                       const String& unitIn, 
+                       const String& nameIn) const;
+
 private:
     mutable String error_p;
 
     // Check format type
     void checkFormat(Coordinate::formatType& format,         
                      const Bool absolute) const;
-
-
 
 };
 
@@ -402,5 +412,3 @@ inline const String &Coordinate::errorMessage() const
 }
 
 #endif
-
-

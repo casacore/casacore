@@ -433,7 +433,10 @@ StokesCoordinate *StokesCoordinate::restore(const RecordInterface &container,
     subrec.get("axes", axes);
 
     
-    // ignore units for stokes axes - doesn't seem to ever make sense
+// ignore units for stokes axes as there are none of sense.  The
+// StokesCoordinate is not constructed with units
+// and only accepts blank Strings in setWorldAxisUnits
+//
 //     if (!subrec.isDefined("units")) {
 // 	return 0;
 //     }

@@ -636,41 +636,41 @@ String CoordinateSystem::showType(uInt whichCoordinate) const
     return coordinates_p[whichCoordinate]->showType();
 }
 
-const Coordinate &CoordinateSystem::coordinate(uInt which) const
+const Coordinate& CoordinateSystem::coordinate(uInt which) const
 {
     AlwaysAssert(which < nCoordinates(), AipsError);
     return *(coordinates_p[which]);
 }
 
-const LinearCoordinate &CoordinateSystem::linearCoordinate(uInt which) const
+const LinearCoordinate& CoordinateSystem::linearCoordinate(uInt which) const
 {
     AlwaysAssert(which < nCoordinates() && 
 		 coordinates_p[which]->type() == Coordinate::LINEAR, AipsError);
     return (const LinearCoordinate &)(*(coordinates_p[which]));
 }
 
-const DirectionCoordinate &CoordinateSystem::directionCoordinate(uInt which) const
+const DirectionCoordinate& CoordinateSystem::directionCoordinate(uInt which) const
 {
     AlwaysAssert(which < nCoordinates() && 
 		 coordinates_p[which]->type() == Coordinate::DIRECTION, AipsError);
     return (const DirectionCoordinate &)(*(coordinates_p[which]));
 }
 
-const SpectralCoordinate &CoordinateSystem::spectralCoordinate(uInt which) const
+const SpectralCoordinate& CoordinateSystem::spectralCoordinate(uInt which) const
 {
     AlwaysAssert(which < nCoordinates() && 
 		 coordinates_p[which]->type() == Coordinate::SPECTRAL, AipsError);
     return (const SpectralCoordinate &)(*(coordinates_p[which]));
 }
 
-const StokesCoordinate &CoordinateSystem::stokesCoordinate(uInt which) const
+const StokesCoordinate& CoordinateSystem::stokesCoordinate(uInt which) const
 {
     AlwaysAssert(which < nCoordinates() && 
 		 coordinates_p[which]->type() == Coordinate::STOKES, AipsError);
     return (const StokesCoordinate &)(*(coordinates_p[which]));
 }
 
-const TabularCoordinate &CoordinateSystem::tabularCoordinate(uInt which) const
+const TabularCoordinate& CoordinateSystem::tabularCoordinate(uInt which) const
 {
     AlwaysAssert(which < nCoordinates() && 
 		 coordinates_p[which]->type() == Coordinate::TABULAR, 
@@ -861,33 +861,43 @@ Bool CoordinateSystem::toWorld(Vector<Double> &world,
     const uInt nc = coordinates_p.nelements();
     Bool ok = True;
     for (uInt i=0; i<nc; i++) {
-	// For each coordinate, put the appropriate pixel or
-	// replacement values in the pixel temporary, call the
-	// coordinates own toWorld, and then copy the output values
-	// from the world temporary to the world coordinate
+
+// For each coordinate, put the appropriate pixel or
+// replacement values in the pixel temporary, call the
+// coordinates own toWorld, and then copy the output values
+// from the world temporary to the world coordinate
+
 	const uInt npa = pixel_maps_p[i]->nelements();
 	uInt j;
 	for (j=0; j<npa; j++) {
 	    Int where = pixel_maps_p[i]->operator[](j);
 	    if (where >= 0) {
-		// cerr << "i j where " << i << " " << j << " " << where <<endl;
+
+// cerr << "i j where " << i << " " << j << " " << where <<endl;
+
 		pixel_tmps_p[i]->operator()(j) = pixel(where);
 	    } else {
 		pixel_tmps_p[i]->operator()(j) = 
 		    pixel_replacement_values_p[i]->operator()(j);
 	    }
 	}
-	// cout << "world pixel map: " << *(world_maps_p[i]) << " " <<
-	// *(pixel_maps_p[i]) << endl;
-	// cout << "toWorld # " << i << "pix=" << *pixel_tmps_p[i] << endl;
+
+// cout << "world pixel map: " << *(world_maps_p[i]) << " " <<
+// *(pixel_maps_p[i]) << endl;
+// cout << "toWorld # " << i << "pix=" << *pixel_tmps_p[i] << endl;
+
 	Bool oldok = ok;
 	ok = coordinates_p[i]->toWorld(
 		       *(world_tmps_p[i]), *(pixel_tmps_p[i]));
-	// cout << "toWorld # " << i << "wld=" << *world_tmps_p[i] << endl;
+
+// cout << "toWorld # " << i << "wld=" << *world_tmps_p[i] << endl;
+
 	if (!ok) {
-	    // Transfer the error message. Note that if there is more than
-	    // one error message this transfers the last one. I suppose this
-	    // is as good as any.
+
+// Transfer the error message. Note that if there is more than
+// one error message this transfers the last one. I suppose this
+// is as good as any.
+
 	    set_error(coordinates_p[i]->errorMessage());
 	}
 	ok = ToBool(ok && oldok);
@@ -2082,6 +2092,7 @@ Bool CoordinateSystem::toFITSHeaderGenerateKeywords (LogIO& os,
          os << LogIO::POST;
       }
    }
+   return True;
 }
 
 
@@ -2131,7 +2142,7 @@ Bool CoordinateSystem::fromFITSHeader(CoordinateSystem &coordsys,
 	// PC, CD (PC*CDELT) and/or CROTA is optional. We prefer CD if it is defined.
         // We will use variable "pc" to house the true PC matrix, or the CD matrix
 
-	hasCD = getCDCardsFromHeader(pc, n, header);
+	hasCD = getCDFromHeader(pc, n, header);
 	if (hasCD) {
            if (header.isDefined(sprefix + "delt")) {
               os << LogIO::NORMAL << "Ignoring meaningless " << sprefix << "delt because CD cards present" << LogIO::POST;
@@ -2140,75 +2151,10 @@ Bool CoordinateSystem::fromFITSHeader(CoordinateSystem &coordsys,
            cdelt = 1.0;               // degrees
         } else {
 
-// Get cdelt 
+// Get cdelt  and PC from header
    
            header.get(sprefix + "delt", cdelt);
-//
-           if (header.isDefined("pc")) {
-
-// Unlikely to encounter this, as the current WCS papers
-// use the CD rather than PC matrix. The aips++ user binding
-// (Image tool) does not allow the WCS definition to be written
-// so probably we could remove this
-
-              if (header.isDefined(sprefix + "rota")) {
-   		   os << "Ignoring redundant " << sprefix << "rota in favour of "
-		       "pc matrix." << LogIO::NORMAL << LogIO::POST;
-	      }
-	      header.get("pc", pc);
-              if (pc.ncolumn() != pc.nrow()) {
-                 os << "The PC matrix must be square" << LogIO::EXCEPTION;
-              }
-   	   } else if (header.isDefined(sprefix + "rota")) {
-	       Vector<Double> crota;
-	       header.get(sprefix + "rota", crota);
-	       // Turn crota into PC matrix
-	       pc.resize(crota.nelements(), crota.nelements());
-	       pc = 0.0;
-	       pc.diagonal() = 1.0;
-
-// We can only handle one non-zero angle
-
-	       for (uInt i=0; i<crota.nelements(); i++) {
-   		   if (!::near(crota(i), 0.0)) {
-   		       if (rotationAxis >= 0) {
-			   os << LogIO::SEVERE << "Can only convert one non-zero"
-			       " angle from " << sprefix << 
-			       "rota to pc matrix. Using the first." <<
-			       LogIO::POST;
-		       } else {
-			   rotationAxis = i;
-		       }
-  		   }
-	       }
-   	       if (rotationAxis >= 0 && pc.nrow() > 1) { // can't rotate 1D!
-   		   if (rotationAxis > 0) {
-		       pc(rotationAxis-1,rotationAxis-1) =
-			  pc(rotationAxis,rotationAxis) = 
-			  cos(crota(rotationAxis)*C::pi/180.0);
-		       pc(rotationAxis-1,rotationAxis)=
-			  -sin(crota(rotationAxis)*C::pi/180.0);
-		       pc(rotationAxis,rotationAxis-1)=
-			  sin(crota(rotationAxis)*C::pi/180.0);
-		   } else {
-		       os << LogIO::NORMAL << "Unusual to rotate about first"
-			   " axis." << LogIO::POST;
-		       pc(rotationAxis+1,rotationAxis+1) =
-			  pc(rotationAxis,rotationAxis) = 
-			  cos(crota(rotationAxis)*C::pi/180.0);
-		       // Might be backwards?
-		       pc(rotationAxis+1,rotationAxis)=
-			  -sin(crota(rotationAxis)*C::pi/180.0);
-		       pc(rotationAxis,rotationAxis+1)=
- 			  sin(crota(rotationAxis)*C::pi/180.0);
- 		   }
-	       }
-	   } else {
-   	       // Pure diagonal PC matrix
-	       pc.resize(ctype.nelements(), ctype.nelements());
- 	       pc = 0.0;
-	       pc.diagonal() = 1.0;
-           }
+           getPCFromHeader(os, rotationAxis, pc, n, header, sprefix);
        }  
     } catch (AipsError x) {
 	os << LogIO::WARN << "Error retrieving *rval, *rpix, *delt, *type "
@@ -2246,7 +2192,8 @@ Bool CoordinateSystem::fromFITSHeader(CoordinateSystem &coordsys,
 	return False;
     }
 
-    // OK, find out what standard axes we have.
+// OK, find out what standard axes we have.
+
     Int longAxis=-1, latAxis=-1, stokesAxis=-1, specAxis=-1;
     Int i;
     for (i=0; i<n; i++) {
@@ -2275,7 +2222,8 @@ Bool CoordinateSystem::fromFITSHeader(CoordinateSystem &coordsys,
 	}
     }
 
-    // We must have longitude AND latitude
+// We must have longitude AND latitude
+
     if (longAxis >= 0 && latAxis < 0) {
 	os << LogIO::SEVERE << "We have a longitude axis but no latitude axis!";
 	return False; 
@@ -2285,8 +2233,9 @@ Bool CoordinateSystem::fromFITSHeader(CoordinateSystem &coordsys,
 	return False; 
     }
 
-    // Sanity check that PC is only non-diagonal for the longitude and
-    // latitude axes.
+// Sanity check that PC is only non-diagonal for the longitude and
+// latitude axes.
+
     for (Int j=0; j<n; j++) {
 	for (i=0; i<n; i++) {
 	    if (i == j) {
@@ -2306,24 +2255,31 @@ Bool CoordinateSystem::fromFITSHeader(CoordinateSystem &coordsys,
 	}
     }
 
-    // DIRECTION
+// DIRECTION
+
     if (longAxis >= 0) {
         String proj = ctype(longAxis);
         Bool isGalactic = False;
 	if (proj.contains("GLON")) {
 	    isGalactic = True;
 	}
-	// Get rid of the first 4 characters, e.g., RA--
+
+// Get rid of the first 4 characters, e.g., RA--
+
 	proj.gsub(Regex("^...."), "");  
 	String proj2 = ctype(latAxis);
 	proj2.gsub(Regex("^...."), "");  
-	// Get rid of leading -'s
+
+// Get rid of leading -'s
+
 	proj.gsub(Regex("^-*"), "");
 	proj2.gsub(Regex("^-*"), "");
 	proj.gsub(Regex(" *"), "");    // Get rid of spaces
 	proj2.gsub(Regex(" *"), "");
 	if (proj == "" && proj2 == "") {
-	    // Default to cartesian if no projection is defined.
+
+// Default to cartesian if no projection is defined.
+
 	    proj = Projection::name(Projection::CAR); proj2 = proj;
 	    os << WHERE << LogIO::WARN << 
 	      "No projection has been defined (e.g., SIN), assuming\n"
@@ -2331,19 +2287,22 @@ Bool CoordinateSystem::fromFITSHeader(CoordinateSystem &coordsys,
 	       "the CAR projection." << LogIO::POST;
 	}
 	if (proj != proj2) {
-	    // Maybe instead I should switch to CAR, or use the first?
+
+// Maybe instead I should switch to CAR, or use the first?
+
 	    os << LogIO::SEVERE << "Longitude and latitude axes have different"
 	        " projections (" << proj << "!=" << proj2 << ")" << LogIO::POST;
 	    return False;
 	}
 
-	// OK, let's make our Direction coordinate and add it to the
-	// coordinate system. We'll worry about transposing later. FITS
-	// should always be degrees, but if the units are set we'll honor
-	// them.
+// OK, let's make our Direction coordinate and add it to the
+// coordinate system. We'll worry about transposing later. FITS
+// should always be degrees, but if the units are set we'll honor
+// them.
 
-	// First, work out what the projection actually is.
-	// Special case NCP - now SIN with  parameters
+// First, work out what the projection actually is.
+// Special case NCP - now SIN with  parameters
+
 	Vector<Double> projp;
 	Projection::Type ptype;
 	
@@ -2353,7 +2312,9 @@ Bool CoordinateSystem::fromFITSHeader(CoordinateSystem &coordsys,
 	        LogIO::POST;
 	    ptype = Projection::SIN;
 	    projp.resize(2);
-	    // According to Greisen and Calabretta
+
+// According to Greisen and Calabretta
+
 	    projp(0) = 0.0;
 	    projp(1) = 1.0/tan(crval(latAxis)*C::pi/180.0);
 	} else {
@@ -2367,7 +2328,8 @@ Bool CoordinateSystem::fromFITSHeader(CoordinateSystem &coordsys,
 	    }
 	}
 
-	// OK, now try making the projection
+// OK, now try making the projection
+
 	Projection projn;
 	try {
 	    projn = Projection(ptype, projp);
@@ -2378,7 +2340,8 @@ Bool CoordinateSystem::fromFITSHeader(CoordinateSystem &coordsys,
 	    return False;
 	} end_try;
 
-	// Assume the units are degrees unless we are told otherwise
+// Assume the units are degrees unless we are told otherwise
+
 	Double toRadX = C::pi/180.0;
 	Double toRadY = toRadX;
 	if (cunit.nelements() > 0) {
@@ -2395,7 +2358,8 @@ Bool CoordinateSystem::fromFITSHeader(CoordinateSystem &coordsys,
 	    toRadY = latu.getValue().getFac()/rad.getValue().getFac();
 	}
 	
-	// DEFAULT
+// DEFAULT
+
 	MDirection::Types radecsys = MDirection::J2000;
 	if (isGalactic) {
 	    radecsys = MDirection::GALACTIC;
@@ -2431,14 +2395,15 @@ Bool CoordinateSystem::fromFITSHeader(CoordinateSystem &coordsys,
 	dirpc(0,1) = pc(longAxis, latAxis);
 	dirpc(1,0) = pc(latAxis, longAxis);
 	dirpc(1,1) = pc(latAxis, latAxis);
-	// watch for cdelt=0 - its okay if that axis is degenerate
-	// and (crpix+offset)=1 and rotationAxis < 0 = i.e. the only
-	// pixel on that axis is the reference pixel and there is
-	// no rotation specified - then cdelt=1 on that axis.  If that
-	// isn't done, that coord. can't be constructed because the
-	// PC matrix will be reported as singular since its first 
-	// multiplied by cdelt before its used and in this case, that
-	// doesn't matter since other pixels on that axis are never used.
+
+// watch for cdelt=0 - its okay if that axis is degenerate
+// and (crpix+offset)=1 and rotationAxis < 0 = i.e. the only
+// pixel on that axis is the reference pixel and there is
+// no rotation specified - then cdelt=1 on that axis.  If that
+// isn't done, that coord. can't be constructed because the
+// PC matrix will be reported as singular since its first 
+// multiplied by cdelt before its used and in this case, that
+// doesn't matter since other pixels on that axis are never used.
 
         if (!hasCD) {
           if (::near(cdelt(latAxis), 0.0) && 
@@ -2600,9 +2565,12 @@ Bool CoordinateSystem::fromFITSHeader(CoordinateSystem &coordsys,
 	} end_try;
     }
 
-    // SPECTRAL
+// SPECTRAL
+
     if (specAxis >= 0) {
-	// Will be overwritten or ignored.
+
+// Will be overwritten or ignored.
+
 	SpectralCoordinate tmp;
 	String error;
 	if (SpectralCoordinate::fromFITS(tmp, error, header, specAxis,
@@ -2616,7 +2584,8 @@ Bool CoordinateSystem::fromFITSHeader(CoordinateSystem &coordsys,
 	}
     }
 
-    // Remaining axes are LINEAR
+// Remaining axes are LINEAR
+
     uInt nlin = n;
     if (longAxis >= 0) {nlin--;}
     if (latAxis >= 0) {nlin--;}
@@ -2669,7 +2638,8 @@ Bool CoordinateSystem::fromFITSHeader(CoordinateSystem &coordsys,
     }
 
 
-    // Now we need to work out the transpose order
+// Now we need to work out the transpose order
+
     Vector<Int> order(n);
     Int nspecial = 0;
     if (longAxis >= 0) nspecial++;
@@ -2836,7 +2806,7 @@ Bool CoordinateSystem::checkAxesInThisCoordinate(const Vector<Bool>& axes, uInt 
 }
 
 
-Bool CoordinateSystem::getCDCardsFromHeader(Matrix<Double>& cd, uInt n, const RecordInterface& header) 
+Bool CoordinateSystem::getCDFromHeader(Matrix<Double>& cd, uInt n, const RecordInterface& header) 
 //
 // We have to read the CDj_i cards and ultimately pack them into the 
 // WCS linprm structure in the right order.  
@@ -2890,3 +2860,81 @@ Bool CoordinateSystem::getCDCardsFromHeader(Matrix<Double>& cd, uInt n, const Re
    }
    return True;
 }
+
+
+void CoordinateSystem::getPCFromHeader(LogIO& os, Int& rotationAxis, 
+                                       Matrix<Double>& pc, 
+                                       uInt n, 
+                                       const RecordInterface& header,
+                                       const String& sprefix)
+{
+   if (header.isDefined("pc")) {
+
+// Unlikely to encounter this, as the current WCS papers
+// use the CD rather than PC matrix. The aips++ user binding
+// (Image tool) does not allow the WCS definition to be written
+// so probably we could remove this
+
+      if (header.isDefined(sprefix + "rota")) {
+         os << "Ignoring redundant " << sprefix << "rota in favour of "
+	       "pc matrix." << LogIO::NORMAL << LogIO::POST;
+      }
+      header.get("pc", pc);
+      if (pc.ncolumn() != pc.nrow()) {
+         os << "The PC matrix must be square" << LogIO::EXCEPTION;
+      }
+   } else if (header.isDefined(sprefix + "rota")) {
+      Vector<Double> crota;
+      header.get(sprefix + "rota", crota);
+
+// Turn crota into PC matrix
+
+      pc.resize(crota.nelements(), crota.nelements());
+      pc = 0.0;
+      pc.diagonal() = 1.0;
+
+// We can only handle one non-zero angle
+
+      for (uInt i=0; i<crota.nelements(); i++) {
+         if (!::near(crota(i), 0.0)) {
+            if (rotationAxis >= 0) {
+               os << LogIO::SEVERE << "Can only convert one non-zero"
+                   " angle from " << sprefix << 
+                   "rota to pc matrix. Using the first." << LogIO::POST;
+            } else {
+               rotationAxis = i;
+            }
+         }
+      }
+//
+      if (rotationAxis >= 0 && pc.nrow() > 1) { // can't rotate 1D!
+         if (rotationAxis > 0) {
+            pc(rotationAxis-1,rotationAxis-1) =
+               pc(rotationAxis,rotationAxis) = cos(crota(rotationAxis)*C::pi/180.0);
+            pc(rotationAxis-1,rotationAxis)=
+               -sin(crota(rotationAxis)*C::pi/180.0);
+            pc(rotationAxis,rotationAxis-1)=
+               sin(crota(rotationAxis)*C::pi/180.0);
+         } else {
+            os << LogIO::NORMAL << "Unusual to rotate about first"
+		   " axis." << LogIO::POST;
+            pc(rotationAxis+1,rotationAxis+1) =
+               pc(rotationAxis,rotationAxis) = cos(crota(rotationAxis)*C::pi/180.0);
+
+// Might be backwards?
+
+            pc(rotationAxis+1,rotationAxis)=-sin(crota(rotationAxis)*C::pi/180.0);
+            pc(rotationAxis,rotationAxis+1)= sin(crota(rotationAxis)*C::pi/180.0);
+         }
+      }
+   } else {
+
+// Pure diagonal PC matrix
+
+      pc.resize(n, n);
+      pc = 0.0;
+      pc.diagonal() = 1.0;
+   }
+}
+
+

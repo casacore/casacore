@@ -34,13 +34,16 @@
 #include <trial/Coordinates/LinearXform.h>
 #include <aips/Arrays/Vector.h>
 
+template<class T> class Quantum;
+
+
 // <summary>
 // Interconvert between pixel and a linear world coordinate.
 // </summary>
 
 // <use visibility=export>
 
-// <reviewed reviewer="" date="yyyy/mm/dd" tests="" demos="">
+// <reviewed reviewer="Peter Barnes" date="1999/12/24" tests="tLinearCoordinate"> 
 // </reviewed>
 
 // <prerequisite>
@@ -55,15 +58,14 @@
 // <srcblock>
 // world = (cdelt * PC * (pixel - crpix)) + crval
 // </srcblock>
-// Where PC is an NxN matrix, pixel, crval, crpix and world are length N 
+// Where PC is an NxN matrix; pixel, crval, crpix and world are length N 
 // vectors, and cdelt is an NxN diagonal matrix, represented as a length 
 // N vector.
 //
 // The actual computations are carried out with the WCS library.
 //
-// The LinearCoordinate can contain several axes (similar to the way
-// in which the DirectionCoordinate contains two axes, but they
-// would not be coupled).
+// The LinearCoordinate can contain several uncoupled axes (similar to the way
+// in which the DirectionCoordinate contains two axes).
 // </synopsis>
 //
 // <note role=caution>
@@ -71,33 +73,74 @@
 // </note>
 //
 // <example>
-// See the example in <linkto module=Coordinates>Coordinates.h</linkto>.
+// Let's make a LinearCoordinate with just one axis containing
+// a coordinate describing length.
+// <srcblock>
+//    Vector<Double> crpix(1); crpix = 0.0;
+//    Vector<Double> crval(1); crval = 100.0;
+//    Vector<Double> cdelt(1); cdelt = -10.0;
+//    Matrix<Double> pc(1,1); pc= 0; pc.diagonal() = 1.0;
+//    Vector<String> name(1);  name = "length";
+//    Vector<String> units(1); units = "km";
+//
+//    LinearCoordinate lin(names, units, crval, cdelt, pc, crpix);
+// </srcblock>
+//
+// Now do a coordinate conversion
+//
+// <srcblock>
+//   Vector<Double> world, pixel(1);
+//   pixel = 2.0;
+//   if (!lin.toWorld(world, pixel)) {
+//      cerr << "Error : " << lin.errorMessage() << endl;
+//   } else {
+//      cerr << "pixel, world = " << pixel << world << endl;
+//   }
+// </srcblock>
+// The answer should of course be -20km.
 // </example>
 //
 // <motivation>
-// This class is intended for use for axes which do not have specific coordinate
+// This class is intended for use with axes which do not have specific coordinate
 // types. A "time" axis would be a good example.
 // </motivation>
 //
-// <todo asof="1997/01/14">
+// <thrown>
+//   <li>  AipsError
+// </thrown>
+//
+// <todo asof="2000/01/01">
 //   <li> Allow differing numbers of world and pixel axes. Requires a change in
 //        WCS or use of a different library.
 // </todo>
+//
+
 
 class LinearCoordinate : public Coordinate
 {
 public:
-    // The default constructor make a coordinate for which pixel 
-    // and world coordinate are equal.
-    LinearCoordinate(uInt naxis = 1);
+    // The default constructor makes a LinearCoordinate for which pixel 
+    // and world coordinates are equal.  <src>naxes</src> gives the number
+    // of axes in the Coordinate.
+    LinearCoordinate(uInt naxes = 1);
 
-    // Construct the linear transformation.
+    // Construct the LinearCoordinate
     LinearCoordinate(const Vector<String> &names,
 		     const Vector<String> &units,
 		     const Vector<Double> &refVal,
 		     const Vector<Double> &inc,
-		     const Matrix<Double> &xform,
+		     const Matrix<Double> &pc,
 		     const Vector<Double> &refPix);
+
+    // Construct LinearCoordinate with Quantum-based interface.
+    // The units of the increment (<src>inc</src>) will be converted to
+    // those of the reference value (<src>refVal</src>) which will
+    // then serve as the units of the Coordinate.
+    LinearCoordinate(const Vector<String> &names,
+                     const Vector<Quantum<Double> >& refVal,
+                     const Vector<Quantum<Double> >& inc,
+                     const Matrix<Double> &pc,
+                     const Vector<Double> &refPix);
 
     // Copy constructor (copy semantics).
     LinearCoordinate(const LinearCoordinate &other);
@@ -105,17 +148,17 @@ public:
     // Assignment  (copy semantics).
     LinearCoordinate &operator=(const LinearCoordinate &other);
 
-    // Destructor
+    // Destructor.
     virtual ~LinearCoordinate();
 
     // Returns Coordinate::LINEAR.
     virtual Coordinate::Type type() const;
 
-    //Returns "Linear"
+    // Returns the String "Linear".
     virtual String showType() const;
 
     // Returns the number of pixel/world axes. The number of axes is arbitrary,
-    // however the number or world and pixel axes must at present be the same.
+    // however the number of world and pixel axes must at present be the same.
     // <group>
     virtual uInt nPixelAxes() const;
     virtual uInt nWorldAxes() const;
@@ -132,7 +175,7 @@ public:
 			 const Vector<Double> &world) const;
     // </group>
 
-    // Return the requested attributes
+    // Return the requested attribute
     // <group>
     virtual Vector<String> worldAxisNames() const;
     virtual Vector<Double> referenceValue() const;
@@ -147,14 +190,14 @@ public:
     // <group>
     virtual Bool setWorldAxisNames(const Vector<String> &names);
     virtual Bool setReferencePixel(const Vector<Double> &refPix);
-    virtual Bool setLinearTransform(const Matrix<Double> &xform);
+    virtual Bool setLinearTransform(const Matrix<Double> &pc);
     virtual Bool setIncrement(const Vector<Double> &inc);
     virtual Bool setReferenceValue(const Vector<Double> &refval);
     // </group>
 
-    // Set the world axis units. 
-    // The units must be compatible with
-    // angle. The units are initially "rad" (radians).
+    // Set the world axis units. Adjust the increment and
+    // reference value by the ratio of the old and new units.  
+    // The units must be compatible with the current units.
     virtual Bool setWorldAxisUnits(const Vector<String> &units);
 
     // Comparison function. Any private Double data members are compared    
@@ -171,25 +214,24 @@ public:
     // </group>
 
     // Find the Coordinate for when we Fourier Transform ourselves.  This pointer
-    // must be deleted by the caller. Axes specifies which axes of the coordinate
+    // must be deleted by the caller. Axes specifies which axes of the Coordinate
     // you wish to transform.   Shape specifies the shape of the image
-    // associated with all the axes of the coordinate.   Currently the
+    // associated with all the axes of the Coordinate.   Currently the
     // output reference pixel is always shape/2.
     virtual Coordinate* makeFourierCoordinate (const Vector<Bool>& axes,
                                                const Vector<Int>& shape) const;
 
-    // Save ourself into the supplised record using the supplied field name.
-    // The field must not exist, otherwise <src>False</src> is returned.
-    virtual Bool save(RecordInterface &container,
-		    const String &fieldName) const;
+    // Save the LinearCoordinate into the supplied record using the supplied field name.
+    // The field must not already exist, otherwise <src>False</src> is returned.
+    virtual Bool save(RecordInterface &container, const String &fieldName) const;
 
     // Restore the LinearCoordinate from a record.
     // A null pointer means that the restoration did not succeed - probably 
-    // because fieldName doesn't exist or doesn't contain a coordinate system.
+    // because fieldName doesn't exist or doesn't contain a CoordinateSystem.
     static LinearCoordinate *restore(const RecordInterface &container,
 				   const String &fieldName);
 
-    // Make a copy of ourself using new. The caller is responsible for calling
+    // Make a copy of the LinearCoordinate using new. The caller is responsible for calling
     // delete.
     virtual Coordinate *clone() const;
 

@@ -35,7 +35,6 @@
 #include <aips/Containers/Record.h>
 #include <aips/Functionals/Interpolate1D.h>
 #include <aips/Functionals/ScalarSampledFunctional.h>
-#include <aips/Mathematics/Constants.h>
 #include <aips/Mathematics/Math.h>
 #include <aips/Quanta/Quantum.h>
 #include <aips/Containers/RecordInterface.h>
@@ -43,32 +42,79 @@
 #include <aips/Logging/LogOrigin.h>
 #include <trial/FITS/FITSUtil.h>
 
-SpectralCoordinate::SpectralCoordinate(MFrequency::Types type,
-				       Double f0, Double inc, Double refChan,
-				       Double restFrequency)
- : Coordinate(),
-   type_p(type), restfreq_p(restFrequency),
-   worker_p(f0, inc, refChan, "Hz", "Frequency")
-{
-}
-
-
 SpectralCoordinate::SpectralCoordinate()
- : Coordinate(),
-   type_p(MFrequency::TOPO), restfreq_p(0.0),
-   worker_p(0.0,1.0,0.0,"Hz", "Frequency")
+: Coordinate(),
+  type_p(MFrequency::TOPO), restfreq_p(0.0),
+  worker_p(0.0,1.0,0.0,"Hz", "Frequency")
 {
 }
 
-SpectralCoordinate::SpectralCoordinate(
-		       MFrequency::Types type, const Vector<Double> &freqs,
-		       Double restFrequency)
-    : Coordinate(),
-      type_p(type), restfreq_p(restFrequency)
+SpectralCoordinate::SpectralCoordinate(MFrequency::Types type,
+				       Double f0, Double inc, Double refPix,
+				       Double restFrequency)
+: Coordinate(),
+  type_p(type), restfreq_p(restFrequency),
+  worker_p(f0, inc, refPix, "Hz", "Frequency")
+{
+}
+
+SpectralCoordinate::SpectralCoordinate(MFrequency::Types type, 
+                                       const Quantum<Double>& f0,
+                                       const Quantum<Double>& inc,
+                                       Double refPix, 
+                                       const Quantum<Double>& restFrequency)
+: Coordinate(),
+  type_p(type)
+{
+   Unit hz("Hz");
+   if (!f0.isConform(hz)) {
+      throw(AipsError("Unit of reference frequency is not consistent with Hz"));
+   }
+   if (!inc.isConform(hz)) {
+      throw(AipsError("Unit of frequency increment is not consistent with Hz"));
+   }
+   if (!restFrequency.isConform(hz)) {
+      throw(AipsError("Unit of rest frequency is not consistent with Hz"));
+   }
+//
+   restfreq_p = restFrequency.getValue(hz);
+   worker_p = TabularCoordinate(f0.getValue(hz), inc.getValue(hz),
+                                refPix, "Hz", "Frequency");
+}
+
+
+SpectralCoordinate::SpectralCoordinate(MFrequency::Types type, 
+                                       const Vector<Double> &freqs,
+                                       Double restFrequency)
+: Coordinate(),
+  type_p(type), restfreq_p(restFrequency)
 {
     Vector<Double> channels(freqs.nelements());
     indgen(channels);
     worker_p = TabularCoordinate(channels, freqs, "Hz", "Frequency");
+}
+
+
+SpectralCoordinate::SpectralCoordinate(MFrequency::Types type, 
+                                       const Quantum<Vector<Double> >& freqs,
+                                       const Quantum<Double>& restFrequency)
+: Coordinate(),
+  type_p(type)
+{
+   Unit hz("Hz");
+   if (!freqs.isConform(hz)) {
+      throw(AipsError("Unit of frequencies is not consistent with Hz"));
+   }
+   if (!restFrequency.isConform(hz)) {
+      throw(AipsError("Unit of rest frequency is not consistent with Hz"));
+   }
+//
+   restfreq_p = restFrequency.getValue(hz);
+//
+   Vector<Double> freqs2 = freqs.getValue(hz);
+   Vector<Double> channels(freqs2.nelements());
+   indgen(channels);
+   worker_p = TabularCoordinate(channels, freqs2, "Hz", "Frequency");
 }
 
 

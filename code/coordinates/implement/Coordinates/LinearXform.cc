@@ -130,8 +130,8 @@ uInt LinearXform::nWorldAxes() const
     return linprm_p->naxis;
 }
 
-Bool LinearXform::forward(const Vector<Double> &world, 
-				Vector<Double> &pixel, String &errorMsg) const
+Bool LinearXform::forward(Vector<Double> &pixel, const Vector<Double> &world,
+                          String &errorMsg) const
 {
 
 // Temporaries
@@ -142,8 +142,9 @@ Bool LinearXform::forward(const Vector<Double> &world,
 //
     pixel.resize(naxis);
 
-    // We could optimize this to directly use the storage in world and pixel if
-    // it is contiguous. Optimize if necessary.
+// We could optimize this to directly use the storage in world and pixel if
+// it is contiguous. Optimize if necessary.
+
     uInt i;
     for (i=0; i<naxis; i++) {
         d_world[i] = world(i);
@@ -169,8 +170,9 @@ Bool LinearXform::reverse(Vector<Double> &world,
     AlwaysAssert(naxis <= 10, AipsError);
     world.resize(naxis); 
 
-    // We could optimize this to directly use the storage in world and pixel if
-    // it is contiguous. Optimize if necessary.
+// We could optimize this to directly use the storage in world and pixel if
+// it is contiguous. Optimize if necessary.
+
     uInt i;
     for (i=0; i<naxis; i++) {
 	d_pixel[i] = pixel(i);

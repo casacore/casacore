@@ -39,84 +39,71 @@
 #include <aips/Logging/LogIO.h>
 #include <aips/Logging/LogOrigin.h>
 #include <aips/Mathematics/Math.h>
+#include <aips/Quanta/Quantum.h>
 #include <trial/FITS/FITSUtil.h>
 
 TabularCoordinate::TabularCoordinate()
-  : Coordinate(),
-    crval_p(0), cdelt_p(1), crpix_p(0), matrix_p(1.0), unit_p(""),
-    name_p("Tabular"), channel_corrector_p(0), channel_corrector_rev_p(0)
+: Coordinate(),
+  crval_p(0), cdelt_p(1), crpix_p(0), matrix_p(1.0), unit_p(""),
+  name_p("Tabular"), channel_corrector_p(0), channel_corrector_rev_p(0)
 {
 }
 
 TabularCoordinate::TabularCoordinate(Double refval, Double inc, Double refpix,
 				     const String &unit, const String &axisName)
-  : Coordinate(),
-    crval_p(refval), cdelt_p(inc), crpix_p(refpix), matrix_p(1.0), unit_p(unit),
-    name_p(axisName), channel_corrector_p(0), channel_corrector_rev_p(0)
+: Coordinate(),
+  crval_p(refval), cdelt_p(inc), crpix_p(refpix), matrix_p(1.0), unit_p(unit),
+  name_p(axisName), channel_corrector_p(0), channel_corrector_rev_p(0)
 {
 }
+
+TabularCoordinate::TabularCoordinate(const Quantum<Double>& refval,
+                                     const Quantum<Double>& inc,   
+                                     Double refpix, const String &axisName)
+: Coordinate(),
+  crpix_p(refpix), 
+  matrix_p(1.0), 
+  name_p(axisName), 
+  channel_corrector_p(0), 
+  channel_corrector_rev_p(0)
+{
+// Check and assign
+
+   if (refval.isConform(inc)) {
+      crval_p = refval.getValue();
+      unit_p = refval.getUnit();
+
+// Convert inc to units of reference value
+
+      cdelt_p = inc.getValue(Unit(unit_p));
+    } else {
+       throw (AipsError("Units of reference value and increment inconsistent"));
+    }
+}
+
 
 TabularCoordinate::TabularCoordinate(const Vector<Double> &pixelValues,
 				     const Vector<Double> &worldValues,
 				     const String &unit, const String &axisName)
-    : Coordinate(),
-      crval_p(0.0), cdelt_p(0.0), crpix_p(0.0), matrix_p(0.0), unit_p(unit), 
-      name_p(axisName), channel_corrector_p(0), channel_corrector_rev_p(0)
+: Coordinate(),
+  crval_p(0.0), cdelt_p(0.0), crpix_p(0.0), matrix_p(0.0), unit_p(unit), 
+  name_p(axisName), channel_corrector_p(0), channel_corrector_rev_p(0)
 {
-    const uInt n = pixelValues.nelements();
-
-    if (n <= 1 || n != worldValues.nelements()) {
-	throw(AipsError("TabularCoordinate::TabularCoordinate - illegal table "
-			"(length 0 or 1 or n(pixelvalues) != n(worldvalues)"));
-    }
-    if (pixelValues(n-1) - pixelValues(0) == 0) {
-	throw(AipsError("TabularCoordinate::TabularCoordinate - illegal table "
-			"first and last pixel values are the same"));
-    }
-
-
-    // Work out "global" crval etc.
-    crval_p = worldValues(0);
-    crpix_p = pixelValues(0);
-    cdelt_p = (worldValues(n-1) - worldValues(0)) /
-              (pixelValues(n-1) - pixelValues(0));
-    matrix_p = 1.0;
-
-    if (cdelt_p == 0.0) {
-        throw(AipsError("TabularCoordinate - start and "
-                        "end values in table must differ"));
-    }
-
-    Double signworld = ((worldValues(n-1) - worldValues(0))  > 0 ? 1.0 : -1.0);
-    Double signpixel = ((pixelValues(n-1) - pixelValues(0))  > 0 ? 1.0 : -1.0);
-
-    // Check that the pixel values and values monotonically increase or decrease
-    // and if so, work out the difference between the actual supplied pixel and
-    // the "average" pixel value.
-    Vector<Double> averagePixel(n);
-    for (uInt i=0; i<n; i++) {
-	if (i>1) {
-	    Double diffworld = signworld*(worldValues(i) - worldValues(i-1));
-	    Double diffpixel = signpixel*(pixelValues(i) - pixelValues(i-1));
-	    if (diffworld <= 0 || diffpixel <= 0) {
-		throw(AipsError("TabularCoordinate - pixel and world values "
-				"must increase or decrease monotonically"));
-	    }
-	}
-	averagePixel(i) = (worldValues(i) - crval_p)/cdelt_p + crpix_p;
-    }
-
-    ScalarSampledFunctional<Double> in(pixelValues), avg(averagePixel);
-    channel_corrector_p = 
-	new Interpolate1D<Double,Double>(in, avg, True, True);
-    channel_corrector_rev_p = 
-	new Interpolate1D<Double,Double>(avg, in, True, True);
-    AlwaysAssert(channel_corrector_p != 0 && channel_corrector_rev_p != 0,
-		 AipsError);
-
-    channel_corrector_p->setMethod(Interpolate1D<Double,Double>::linear);
-    channel_corrector_rev_p->setMethod(Interpolate1D<Double,Double>::linear);
+    makeNonLinearTabularCoordinate(pixelValues, worldValues);
 }
+
+TabularCoordinate::TabularCoordinate(const Vector<Double>& pixelValues,
+                                     const Quantum<Vector<Double> >& worldValues,
+                                     const String &axisName)
+: Coordinate(),
+  crval_p(0.0), cdelt_p(0.0), crpix_p(0.0), matrix_p(0.0), 
+  name_p(axisName), channel_corrector_p(0), channel_corrector_rev_p(0)
+{
+   unit_p = worldValues.getUnit();
+   Vector<Double> world = worldValues.getValue();
+   makeNonLinearTabularCoordinate(pixelValues, world);
+}
+
 
 void TabularCoordinate::clear_self()
 {
@@ -632,5 +619,64 @@ Coordinate* TabularCoordinate::makeFourierCoordinate (const Vector<Bool>& axes,
     pc = 0.0; 
     pc.diagonal() = 1.0;
     return new LinearCoordinate(namesOut, unitsOut, crval, cdelt, pc, crpix);
+}
+
+
+void TabularCoordinate::makeNonLinearTabularCoordinate(const Vector<Double> &pixelValues,
+                                                       const Vector<Double> &worldValues)
+{
+    const uInt n = pixelValues.nelements();
+
+    if (n <= 1 || n != worldValues.nelements()) {
+	throw(AipsError("TabularCoordinate::TabularCoordinate - illegal table "
+			"(length 0 or 1 or n(pixelvalues) != n(worldvalues)"));
+    }
+    if (pixelValues(n-1) - pixelValues(0) == 0) {
+	throw(AipsError("TabularCoordinate::TabularCoordinate - illegal table "
+			"first and last pixel values are the same"));
+    }
+
+
+    // Work out "global" crval etc.
+    crval_p = worldValues(0);
+    crpix_p = pixelValues(0);
+    cdelt_p = (worldValues(n-1) - worldValues(0)) /
+              (pixelValues(n-1) - pixelValues(0));
+    matrix_p = 1.0;
+
+    if (cdelt_p == 0.0) {
+        throw(AipsError("TabularCoordinate - start and "
+                        "end values in table must differ"));
+    }
+
+    Double signworld = ((worldValues(n-1) - worldValues(0))  > 0 ? 1.0 : -1.0);
+    Double signpixel = ((pixelValues(n-1) - pixelValues(0))  > 0 ? 1.0 : -1.0);
+
+    // Check that the pixel values and values monotonically increase or decrease
+    // and if so, work out the difference between the actual supplied pixel and
+    // the "average" pixel value.
+    Vector<Double> averagePixel(n);
+    for (uInt i=0; i<n; i++) {
+ 	if (i>1) {
+	    Double diffworld = signworld*(worldValues(i) - worldValues(i-1));
+	    Double diffpixel = signpixel*(pixelValues(i) - pixelValues(i-1));
+	    if (diffworld <= 0 || diffpixel <= 0) {
+		throw(AipsError("TabularCoordinate - pixel and world values "
+				"must increase or decrease monotonically"));
+	    }
+	}
+	averagePixel(i) = (worldValues(i) - crval_p)/cdelt_p + crpix_p;
+    }
+
+    ScalarSampledFunctional<Double> in(pixelValues), avg(averagePixel);
+    channel_corrector_p = 
+	new Interpolate1D<Double,Double>(in, avg, True, True);
+    channel_corrector_rev_p = 
+	new Interpolate1D<Double,Double>(avg, in, True, True);
+    AlwaysAssert(channel_corrector_p != 0 && channel_corrector_rev_p != 0,
+		 AipsError);
+
+    channel_corrector_p->setMethod(Interpolate1D<Double,Double>::linear);
+    channel_corrector_rev_p->setMethod(Interpolate1D<Double,Double>::linear);
 }
 

@@ -34,26 +34,31 @@
 #include <aips/Arrays/Matrix.h>
 #include <aips/Containers/Record.h>
 #include <aips/Mathematics/Math.h>
+#include <aips/Quanta/Quantum.h>
 
 #include <strstream.h>
 
 LinearCoordinate::LinearCoordinate(uInt naxis)
-  : Coordinate(),
-    transform_p(naxis), names_p(naxis), units_p(naxis), crval_p(naxis)
+: Coordinate(),
+  transform_p(naxis), 
+  names_p(naxis), 
+  units_p(naxis), 
+  crval_p(naxis)
 {
-    crval_p.set(0);
+    crval_p.set(0.0);
 }
 
-LinearCoordinate::LinearCoordinate(const Vector<String> &names,
-				   const Vector<String> &units,
-				   const Vector<Double> &refVal,
-				   const Vector<Double> &inc,
-				   const Matrix<Double> &xform,
-				   const Vector<Double> &refPix)
-  : Coordinate(),
-    transform_p(refPix, inc, xform), 
-    names_p(names.nelements()),
-    units_p(names.nelements()), crval_p(names.nelements())
+LinearCoordinate::LinearCoordinate(const Vector<String>& names,
+				   const Vector<String>& units,
+				   const Vector<Double>& refVal,
+				   const Vector<Double>& inc,
+				   const Matrix<Double>& pc,
+				   const Vector<Double>& refPix)
+: Coordinate(),
+  transform_p(refPix, inc, pc), 
+  names_p(names.nelements()),
+  units_p(names.nelements()), 
+  crval_p(names.nelements())
 {
     uInt naxis = names.nelements();
     names_p = names;
@@ -61,12 +66,55 @@ LinearCoordinate::LinearCoordinate(const Vector<String> &names,
     AlwaysAssert(units.nelements() == naxis &&
 		 refVal.nelements() == naxis &&
 		 inc.nelements() == naxis &&
-		 xform.nrow() == naxis &&
-		 xform.ncolumn() == naxis &&
+		 pc.nrow() == naxis &&
+		 pc.ncolumn() == naxis &&
 		 refPix.nelements() == naxis, AipsError);
     for (uInt i=0; i<naxis; i++) {
 	crval_p[i] = refVal(i);
     }
+}
+
+
+LinearCoordinate::LinearCoordinate(const Vector<String>& names,
+                                   const Vector<Quantum<Double> >& refVal,
+                                   const Vector<Quantum<Double> >& inc,   
+                                   const Matrix<Double>& pc,
+                                   const Vector<Double>& refPix)
+: Coordinate(),
+  names_p(names.nelements()),
+  units_p(names.nelements()), 
+  crval_p(names.nelements())
+{
+// Check dimensions
+
+    const uInt n = names.nelements();
+    AlwaysAssert(refVal.nelements() == n &&
+		 inc.nelements() == n &&
+		 pc.nrow() == n &&
+		 pc.ncolumn() == n &&
+		 refPix.nelements() == n, AipsError);
+//
+
+    Vector<Double> cdelt(n);
+//
+    for (uInt i=0; i<n; i++) {
+       if (refVal(i).isConform(inc(i))) {
+
+// Assign 
+
+          names_p(i) = names(i);
+          units_p(i) = refVal(i).getUnit();
+  	  crval_p[i] = refVal(i).getValue();
+
+// Convert inc to units of refVal
+
+          cdelt(i) = inc(i).getValue(Unit(units_p(i)));
+       } else {
+          throw (AipsError("Units of reference value and increment inconsistent"));
+       }
+    }
+//
+    transform_p = LinearXform(refPix, cdelt, pc);
 }
 
 LinearCoordinate::LinearCoordinate(const LinearCoordinate &other)
@@ -141,14 +189,16 @@ Bool LinearCoordinate::toPixel(Vector<Double> &pixel,
 			       const Vector<Double> &world) const
 {
    static String errorMsg;
+   static Vector<Double> offset;
    uInt n = nPixelAxes();             // nWorldAxes == nPixelAxes 
    AlwaysAssert(world.nelements()==n, AipsError);
    if (pixel.nelements()!=n) pixel.resize(n);
 //
+   if (offset.nelements()!=n) offset.resize(n);
    for (uInt i=0; i<n; i++) {
-      pixel(i) = world(i) - crval_p[i];
+      offset(i) = world(i) - crval_p[i];
    }
-   Bool ok = transform_p.forward(pixel, pixel, errorMsg);
+   Bool ok = transform_p.forward(pixel, offset, errorMsg);
    if (!ok) {
       set_error(errorMsg);
    }
@@ -222,14 +272,14 @@ Bool LinearCoordinate::setReferencePixel(const Vector<Double> &refPix)
     return ok;
 }
 
-Bool LinearCoordinate::setLinearTransform(const Matrix<Double> &xform)
+Bool LinearCoordinate::setLinearTransform(const Matrix<Double> &pc)
 {
-    Bool ok = ToBool(xform.nrow() == nWorldAxes() && 
-		     xform.ncolumn() == nWorldAxes() );
+    Bool ok = ToBool(pc.nrow() == nWorldAxes() && 
+		     pc.ncolumn() == nWorldAxes() );
     if (! ok) {
 	set_error("Transform matrix has the wrong size");
     } else {
-	transform_p.pc(xform);
+	transform_p.pc(pc);
     }
 
     return ok;

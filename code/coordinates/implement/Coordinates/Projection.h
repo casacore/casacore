@@ -1,5 +1,5 @@
 //# Projection.h: Geometric parameters needed for a sky projection to a plane
-//# Copyright (C) 1997,1998,1999
+//# Copyright (C) 1997,1998,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -40,16 +40,22 @@ class DirectionCoordinate;
 
 // <use visibility=export>
 
-// <reviewed reviewer="" date="yyyy/mm/dd" tests="" demos="">
+// <reviewed reviewer="Peter Barnes" date="1999/12/24" tests="tProjection">
 // </reviewed>
-
+//
 // <prerequisite>
-//   <li> Knowledge of astronomical projections. The best source for these
-//        purposes is: "Representations of celestial coordinates in FITS" by
-//        Eric W. Greisen and Mark Calabretta. This paper (the "WCS" paper)
-//        is currently (early 1997) 
-//        in a late draft stage, and is available via anonymous ftp or WWW from
-//        fits.cv.nrao.edu.
+//   <li> Knowledge of astronomical coordinate conversions in general. Probably the
+//        best documents are the papers by Mark Calabretta and Eric Greisen.
+//        The initial draft from 1996 can be found at
+//        http://www.atnf.csiro.au/~mcalabre.  It is this draft that the
+//        Coordinate classes are based upon.  Since then, this paper has evolved
+//        into three which can be found at the above address, and will be published in the
+//        Astronomy and Astrophysics Supplement Series (probably in 2000).
+//        The design has changed since the initial draft.  When these papers
+//        are finalized, and the IAU has ratified the new standards, WCSLIB
+//        (Mark Calabretta's implementation of these conventions) will be
+//        revised for the new designs.  At that time, the Coordinate classes
+//        may also be revised.
 // </prerequisite>
 //
 // <synopsis>
@@ -57,20 +63,33 @@ class DirectionCoordinate;
 // <ol>
 //    <li> The type of the projection (e.g. SIN); and
 //    <li> The parameters of the projection, if any. These parameters are described
-//         in the "WCS" paper.
+//         by Calabretta and Greisen (called PROJP) in the 1996 draft. 
+//         In the recent versions, this paper has split into three, and the
+//         projection parameters have been reworked into the PV matrix.
+//         However, these have not yet been implemented in WCSLIB so we
+//         stick with the old ones for now.
 // </ol>
 // </synopsis>
 //
 // <example>
-// See the example in <linkto module=Coordinates>Coordinates.h</linkto>
-// and the test program tProjection.cc
+// <srcblock>
+//    Projection proj(Projection::CAR);
+//    cerr << proj.parameters() << endl;
+// </srcblock>
+// This projection requires no parameters so the printed parameter
+// vector would be of zero length.
 // </example>
 //
-// <todo asof="1997/1/13">
+// <thrown>
+//   <li>  AipsError
+// </thrown>
+//
+// <todo asof="2000/01/01">
 //   <li> Worry about projection parameters which are unit dependent (i.e. 
 //        radians vs. degrees).
 //   <li> LONGPOLE should probably go in here.
 // </todo>
+// 
 
 class Projection
 {
@@ -168,7 +187,7 @@ public:
     // </group>
 
     // Comparison to fractional tolerance. 
-    Bool near(const Projection &other, Double Tol) const;
+    Bool near(const Projection &other, Double tol=1.0e-6) const;
 
 private:
     Projection::Type which_p;

@@ -35,7 +35,6 @@
 #include <trial/Coordinates/Projection.h>
 #include <aips/Exceptions/Error.h>
 #include <aips/Logging/LogIO.h>
-#include <aips/Mathematics/Constants.h>
 #include <aips/Measures/MDirection.h>
 #include <aips/Quanta/Unit.h>
 #include <aips/Utilities/Assert.h>

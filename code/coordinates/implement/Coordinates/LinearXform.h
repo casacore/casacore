@@ -41,7 +41,7 @@ class String;
 
 // <use visibility=local>
 
-// <reviewed reviewer="" date="yyyy/mm/dd" tests="" demos="">
+// <reviewed reviewer="Peter Barnes" date="1999/12/24" tests="tLinearXform">
 // </reviewed>
 
 // <prerequisite>
@@ -55,8 +55,9 @@ class String;
 // <srcblock>
 // world = cdelt * PC * (pixel - crpix)
 // </srcblock>
-// Where PC is an NxN matrix, pixel, crpix and world are length N vectors, and
-// cdelt is an NxN diagonal matrix, represented as a length N vector.
+// Where PC is an NxN matrix; pixel, crpix (reference pixel) and world are 
+// length N vectors; and cdelt (increment) is an NxN diagonal matrix, 
+// represented as a length N vector.
 //
 // Normally this class isn't used directly, rather it is used indirectly through
 // a class like <linkto class=LinearCoordinate>LinearCoordinate</linkto>.
@@ -66,34 +67,62 @@ class String;
 // </synopsis>
 //
 // <example>
-// See the test program tLinearXform.cc
+//   Let's make a LinearXform housing two axes with a unit
+//   diagonal PC matrix and convert from pixel to world
+//
+// <srcblock>
+//    Vector<Double> crpix(2), cdelt(2);
+//    crpix(0) = 10.0; crpix(1) = 20.0; 
+//    cdelt(0) = 1.0; cdelt(1) = -1.0; 
+//    LinearXform lxf(crpix, cdelt);
+//
+//    String errMsg;
+//    Vector<Double> world, pixel(2); 
+//    pixel = 10.0;
+//    Bool ok = lxf.reverse(world, pixel, errMsg);
+//    if (ok) {
+//       cerr << "pixel, world = " << pixel << world << endl;
+//    } else {
+//       cerr << "Error : " << errMsg << endl;
+//    }
+// </srcblock>
+// The answer should be a world vector with values 0 and -10.
 // </example>
 //
 // <motivation>
 // Factor out the common linear part of coordinate transformations.
 // </motivation>
 //
+// <thrown>
+//   <li>  AipsError
+// </thrown>
+//
 // <todo asof="1997/01/13">
 //   <li> Allow different numbers of pixel and world axes.
 // </todo>
+// 
+
 
 class LinearXform
 {
 public:
-    // Construct with "naxis" axes, CRPIX of 0, CDELT of 1, and a 
-    // diagonal PC matrix.
+    // Construct with specified number of axes.  The reference pixel is
+    // assumed to be 0, and the increment is assumed to be unity, and the
+    // PC matrix is assumed to be diagonal.
     LinearXform(uInt naxis=1);
 
-    // Construct the linear transformation from the supplied crpix and cdelt. The
-    // PC matrix is the unit matrix. crpix and cdelt must have the same number
+    // Construct the linear transformation from the supplied reference pixel
+    // and increment. The PC matrix is the unit matrix. 
+    // <src>crpix</src> and <src>cdelt</src> must have the same number
     // of elements.
     LinearXform(const Vector<Double> &crpix, const Vector<Double> &cdelt);
 
-    // Construct a linear transformation, supplying all of crpix, cdelt, and pc.
-    // The vectors must be of the same length "n", and the number of rows and
+    // Construct a linear transformation, supplying all of the reference pixel,
+    // increment and PC matrix.
+    // The vectors must be of the same length ("n") and the number of rows and
     // columns in the matrix must also be n.
     LinearXform(const Vector<Double> &crpix, const Vector<Double> &cdelt,
-                 const Matrix<Double> &pcMatrix);
+                const Matrix<Double> &pc);
 
     // Copy constructor (copy sematics)
     LinearXform(const LinearXform &other);
@@ -104,7 +133,7 @@ public:
     // Destructor
     ~LinearXform();
 
-    // Returns the number or world axes, which for this class is also the
+    // Returns the number of world axes, which for this class is also the
     // number of pixel axes.
     uInt nWorldAxes() const;
 
@@ -113,10 +142,10 @@ public:
     // otherwise False is returned and errorMsg is set.  The output vectors
     // are resized appropriately.
     // <group>
-    Bool forward(const Vector<Double> &world,
-		 Vector<Double> &pixel, String &errorMsg) const;
-    Bool reverse(Vector<Double> &world,
-			 const Vector<Double> &pixel, String &errorMsg) const;
+    Bool forward(Vector<Double> &pixel, const Vector<Double> &world, 
+                 String &errorMsg) const;
+    Bool reverse(Vector<Double> &world, const Vector<Double> &pixel, 
+                 String &errorMsg) const;
     // </group>
 
     // Retrieve the value of crpix, cdelt, and pc.
@@ -136,13 +165,14 @@ public:
     void pc(const Matrix<Double> &newvals);
     // </group>
 
-    // Invert the LinearXform ready for use in a Fourier Transformed Coordinate
+    // Invert the LinearXform ready for use in a Fourier Transformed Coordinate.
     LinearXform fourierInvert (const Vector<Bool>& axes,
                                const Vector<Double>& crpix,
                                const Vector<Double>& scale) const;
 
     // Comparison function. Any private Double data members are compared
-    // with the specified fractional tolerance.  
+    // with the specified fractional tolerance.  You can specify axes to
+    // exclude from the comparison if you wish.
     // <group>
     Bool near(const LinearXform& other,
               Double tol=1e-6) const;

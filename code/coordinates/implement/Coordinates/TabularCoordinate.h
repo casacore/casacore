@@ -33,6 +33,7 @@
 #include <trial/Coordinates/Coordinate.h>
 
 template<class Domain, class Range> class Interpolate1D;
+template<class T> class Quantum;
 class LogIO;
 
 // <summary>
@@ -41,7 +42,7 @@ class LogIO;
 
 // <use visibility=export>
 
-// <reviewed reviewer="" date="yyyy/mm/dd" tests="" demos="">
+// <reviewed reviewer="Peter Barnes" date="1999/12/24" tests="tTabularCoordinate">
 // </reviewed>
 
 // <prerequisite>
@@ -51,9 +52,8 @@ class LogIO;
 // <synopsis>
 // This class is used where the world and pixel values are determined by a
 // lookup table. For fractional pixel values, a linear interpolation is used. 
-// The values returned for e.g., the increment, are based on 
-// the average of the whole table, i.e. the first position in 
-// the table to the last position. At present,
+// The values returned for, e.g., the increment, are based on 
+// the average of the whole table.  At present,
 // the values must either increase or decrease monotonically.
 // </synopsis>
 //
@@ -62,17 +62,52 @@ class LogIO;
 // </note>
 //
 // <example>
-// See tTabularCoordinate.cc
+// Let's make a non-linear TabularCoordinate  and convert a pixel
+// value to world (which will use linear interpolation)
+// <srcblock>
+//    Vector<Double> pixelValues(3); 
+//    Vector<Double> worldValues(3); 
+//    pixelValues(0) = 122.0;
+//    pixelValues(1) = 300.0;
+//    pixelValues(2) = 6524.0;
+//    worldValues(0) = 1.1e6;
+//    worldValues(1) = 2.1e6;
+//    worldValues(2) = 2.2e6;
+//
+//    String unit("km");
+//    String axisName("length");
+//
+//    TabularCoordinate tc(pixelValues, worldValues, unit, axisName);
+//
+//    Double world, pixel;
+//    pixel = 200.12;
+//    if (!tc.toWorld(world, pixel)) {
+//      cerr << "Error : " << tc.errorMessage() << endl;
+//    } else {
+//      cerr << "pixel, world = " << pixel << ", " << world << endl;
+//    }
+// </srcblock>
 // </example>
+//
+// <motivation>
+// This class was motivated by the need for an irregular axis, such as a collection
+// of frequencies.    For example, the SpectralCoordinate class contains a TabularCoordinate.
+// </motivation>
+//
+//
+// <thrown>
+//   <li>  AipsError
+// </thrown>
 //
 // <todo asof="1997/07/12">
 // <li> Allow interpolations other than linear.
 // </todo>
 
+
 class TabularCoordinate : public Coordinate
 {
 public:
-    // Default constructor.  Its is equivalent to 
+    // Default constructor.  It is equivalent to 
     // TabularCoordinate(0,1,0, "", "Tabular");
     TabularCoordinate();
 
@@ -81,6 +116,15 @@ public:
     TabularCoordinate(Double refval, Double inc, Double refpix,
 		      const String &unit, const String &axisName);
 
+    // Create a linear TabularCoordinate with a Quantum-based interface where 
+    // <src>world = refval + inc*(pixel-refpix)</src>.  The units of the 
+    // increment (<src>inc</src>) will be converted to
+    // those of the reference value (<src>refVal</src>) which will
+    // then serve as the units of the Coordinate.
+    TabularCoordinate(const Quantum<Double>& refval, 
+                      const Quantum<Double>& inc, 
+                      Double refpix, const String& axisName);
+
     // Construct a TabularCoordinate with the specified world values. The
     // increments and related functions return the average values
     // calculated from the first and last world values. The number of pixel
@@ -88,13 +132,19 @@ public:
     // 0,1,2,..., but this is not required.
     //
     // A linear interpolation/extrapolation is used for channels which are not
-    // supplied. The refrence channel (pixel) is chosen to be 0.  The
-    // frequencies must increase or decreas monotonically (otherwise the
+    // supplied. The reference channel (pixel) is chosen to be 0.  The
+    // frequencies must increase or decrease monotonically (otherwise the
     // toPixel lookup would not be possible).
     TabularCoordinate(const Vector<Double> &pixelValues,
 		      const Vector<Double> &worldValues,
 		      const String &unit, const String &axisName);
-    
+
+    // Construct a TabularCoordinate with the specified world values
+    // via the Quantum-based interface.  All comments for the
+    // previous constructor apply
+    TabularCoordinate(const Vector<Double>& pixelValues,
+                      const Quantum<Vector<Double> >& worldValues,
+                      const String &axisName);
 
     // Copy constructor (copy semantics).
     TabularCoordinate(const TabularCoordinate &other);
@@ -105,10 +155,10 @@ public:
     // Destructor.
     virtual ~TabularCoordinate();
 
-    // Returns Coordinate::TABULAR
+    // Returns Coordinate::TABULAR.
     virtual Coordinate::Type type() const;
 
-    // Always returns "Tabular"
+    // Always returns the String "Tabular".
     virtual String showType() const;
 
     // Always returns 1.
@@ -130,7 +180,7 @@ public:
     Bool toPixel(Double &pixel, Double world) const;
     // </group>
 
-    // Return the requested attributed.
+    // Return the requested attribute.
     // <group>
     virtual Vector<String> worldAxisNames() const;
     virtual Vector<Double> referencePixel() const;
@@ -140,7 +190,7 @@ public:
     virtual Vector<String> worldAxisUnits() const;
     // </group>
 
-    // Set the value of the requested attributed.  Note that these just
+    // Set the value of the requested attribute.  Note that these just
     // change the internal values, they do not cause any recomputation.
     // <group>
     virtual Bool setWorldAxisNames(const Vector<String> &names);
@@ -150,8 +200,9 @@ public:
     virtual Bool setReferenceValue(const Vector<Double> &refval);
     // </group>
 
-    // Set the axis unit. The unit must be compatible with
-    // frequency.
+    // Set the axis unit. Adjust the increment and
+    // reference value by the ratio of the old and new units.
+    // The unit must be compatible with the current units.
     virtual Bool setWorldAxisUnits(const Vector<String> &units);
 
     // Get the table, i.e. the pixel and world values. The length of these
@@ -174,25 +225,24 @@ public:
     // </group>
 
     // Find the Coordinate for when we Fourier Transform ourselves.  This pointer
-    // must be deleted by the caller. Axes specifies which axes of the coordinate
+    // must be deleted by the caller. Axes specifies which axes of the Coordinate
     // you wish to transform.   Shape specifies the shape of the image
-    // associated with all the axes of the coordinate.   Currently the
+    // associated with all the axes of the Coordinate.   Currently the
     // output reference pixel is always shape/2.
     virtual Coordinate* makeFourierCoordinate (const Vector<Bool>& axes,
                                                const Vector<Int>& shape) const;
 
-    // Save ourself into the supplied record using the supplied field name.
+    // Save the TabularCoordinate into the supplied record using the supplied field name.
     // The field must not exist, otherwise <src>False</src> is returned.
-    virtual Bool save(RecordInterface &container,
-		    const String &fieldName) const;
+    virtual Bool save(RecordInterface &container, const String &fieldName) const;
 
     // Recover the TabularCoordinate from a record.
     // A null pointer means that the restoration did not succeed - probably 
-    // because fieldName doesn't exist or doesn't contain a coordinate system.
+    // because fieldName doesn't exist or doesn't contain a CoordinateSystem.
     static TabularCoordinate *restore(const RecordInterface &container,
 				   const String &fieldName);
 
-    // Make a copy of ourself using new. The caller is responsible for calling
+    // Make a copy of the TabularCoordinate using new. The caller is responsible for calling
     // delete.
     virtual Coordinate *clone() const;
 
@@ -208,10 +258,14 @@ private:
     Interpolate1D<Double,Double> *channel_corrector_rev_p;
     // </group>
 
-    // Comon for assignment operator and destructor
+    // Common for assignment operator and destructor.
     void clear_self();
-    // Common code for copy ctor and assignment operator
+
+    // Common code for copy ctor and assignment operator.
     void copy(const TabularCoordinate &other);
+
+    void makeNonLinearTabularCoordinate(const Vector<Double> &pixelValues,
+                                        const Vector<Double> &worldValues);
 };
 
 
