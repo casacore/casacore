@@ -56,7 +56,7 @@ template <class T> class Vector;
 //   <li> <linkto class=MeasValue>MeasValue</linkto> internal measure values
 //   <li> <linkto class=MeasRef>MeasRef</linkto> class to specify reference
 // 		 frame
-//   <li> <linkto class=MeasConvert>MeasConvert class, doing actual conversions
+//   <li> <linkto class=MeasConvert>MeasConvert</linkto> class, doing actual conversions
 //		of a measure from one reference frame to another
 //   <li> Some classes if you really want to understand details:
 //	<ul>
