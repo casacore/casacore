@@ -2078,3 +2078,4 @@
 08 276 src rm trial/implement/MeasurementComponents/FFTCoh.cc
 08 276 src rm trial/implement/Functionals/Lorentzian1D.cc
 08 276 src rm trial/implement/MeasurementComponents/UniformWTCoh.cc
+08 276 src rm trial/implement/MeasurementComponents/UniformWTCoh.h
