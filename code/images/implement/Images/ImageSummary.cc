@@ -380,7 +380,7 @@ void ImageSummary<T>::list (LogIO& os,
    os << "Image type       : " << imageType() << endl;
 //
    String list = makeMasksString();
-   os << "Image mask       : " << list << endl;
+   os << "Pixel mask(s)    : " << list << endl;
    if (!units().getName().empty()) {
       os << "Image units      : " << this->units().getName() << endl;
    }
