@@ -94,15 +94,26 @@ int main() {
       pc.setRefDirection(MDirection(MVDirection(Quantity(0,"deg"), 
 						Quantity(0, "deg")),
 				    MDirection::AZEL));
+      pc.setRefDirectionError(Quantum<Double>(1.0, "deg"),
+ 			      Quantum<Double>(2.0, "arcsec"));
       shapePtr->setRefDirection(MDirection(MVDirection(Quantity(90,"deg"), 
 						       Quantity(45, "deg")),
 					   MDirection::SUPERGAL));
+      shapePtr->setRefDirectionError(Quantum<Double>(3.0, "rad"),
+ 				     Quantum<Double>(4.0, "arcmin"));
       {
 	AlwaysAssert(pc.refDirection().getRef().getType() == MDirection::AZEL,
 		     AipsError);
 	const Vector<Double> v = pc.refDirection().getValue().get();
 	AlwaysAssert(near(v(0), 0.0), AipsError);
 	AlwaysAssert(near(v(1), 0.0), AipsError);
+	AlwaysAssert(near(pc.refDirectionErrorLat().getValue(), 1.0),
+		     AipsError);
+	AlwaysAssert(near(pc.refDirectionErrorLong().getValue(), 2.0),
+		     AipsError);
+	AlwaysAssert(pc.refDirectionErrorLat().getUnit() == "deg", AipsError);
+	AlwaysAssert(pc.refDirectionErrorLong().getUnit() == "arcsec", 
+		     AipsError);
 	AlwaysAssert(pc.ok(), AipsError);
       }
       {
@@ -111,6 +122,12 @@ int main() {
 	const Vector<Double> v = shapePtr->refDirection().getValue().get();
 	AlwaysAssert(near(v(0), C::pi_2), AipsError);
 	AlwaysAssert(near(v(1), C::pi_4), AipsError);
+	AlwaysAssert(near(shapePtr->refDirectionErrorLat().getValue(), 3.0),
+		     AipsError);
+	AlwaysAssert(near(shapePtr->refDirectionErrorLong().getValue(), 4.0),
+		     AipsError);
+	AlwaysAssert(shapePtr->refDirectionErrorLat().getUnit() == "rad",
+		     AipsError);
 	AlwaysAssert(shapePtr->ok(), AipsError);
 	AlwaysAssert(shapePtr->type() == ComponentType::POINT, AipsError);
       }
@@ -120,6 +137,14 @@ int main() {
 	const Vector<Double> v = otherpc.refDirection().getValue().get();
 	AlwaysAssert(near(v(0), C::pi), AipsError);
 	AlwaysAssert(near(v(1), C::pi_4), AipsError);
+	AlwaysAssert(near(otherpc.refDirectionErrorLat().getValue(), 0.0),
+		     AipsError);
+	AlwaysAssert(near(otherpc.refDirectionErrorLong().getValue(), 0.0),
+		     AipsError);
+	AlwaysAssert(otherpc.refDirectionErrorLat().getUnit() == "rad", 
+		     AipsError);
+	AlwaysAssert(otherpc.refDirectionErrorLong().getUnit() == "rad", 
+		     AipsError);
 	AlwaysAssert(otherpc.ok(), AipsError);
       }
       cout << "Passed the copy semantics test" << endl;
