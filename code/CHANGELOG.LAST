@@ -1,0 +1,28 @@
+
+change id: 0018
+ author:   Tim Cornwell
+ date:     2000/07/11
+ avers:    1.4
+ area:     Tool
+ package:  trial
+ module:   guientry
+ type:     Code
+ category: Change Bugfix
+ summary:  Supported new widgetserver, added measurecodes widget
+
+The default guientry, dge, no longer exists. Instead guientry is served
+by widgetserver, and to make a widget one must do e.g.
+
+	myge := widgetset.guientry()
+	s := mge.string();
+
+I've fixed all the cases where dge was being using.
+
+I've also added measurecodes as a new widget. This allows
+selection of various reference codes for measures
+
+	myge := widgetset.guientry()
+	mc := myge.measurecodes(options='doppler')
+
+Some bugs have also been fixed but since this is very ugly code
+some new bugs may be present!
