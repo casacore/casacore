@@ -32,11 +32,10 @@
 // This ifdef lets us instruments the IO system using PABLO
 // see www-pablo.cs.uiuc.edu for more about pablo.
 //
-// If AIPS_LARGEFILE is defined, it will use the large file functions.
+// If AIPS_NOLARGEFILE is not defined, use the large file functions.
 // Define _LARGEFILE64_SOURCE for Linux systems.
 
-
-#ifdef AIPS_LARGEFILE
+#if !defined(AIPS_NOLARGEFILE)
 # ifdef AIPS_LINUX
 #  if !defined(_LARGEFILE64_SOURCE)
 #   define _LARGEFILE64_SOURCE
