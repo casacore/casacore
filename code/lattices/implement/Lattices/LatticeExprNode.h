@@ -307,6 +307,14 @@ class LatticeExprNode
    friend LatticeExprNode pa (const LatticeExprNode& left,
                               const LatticeExprNode& right);
 
+// Function resembling the ternary <src>?:</src> construct in C++.
+// The argument "condition" has to be a Bool scalar or lattice.
+// If an element in "condition" is True, the corresponding element from
+// "arg1" is taken, otherwise it is taken from "arg2".
+   friend LatticeExprNode iif (const LatticeExprNode& condition,
+			       const LatticeExprNode& arg1,
+			       const LatticeExprNode& arg2);
+
 // Functions to convert to the given data type.  These are mostly 
 // meaningful for down-conversions (e.g. double to float),
 // since up-conversions are automatically done to get matching data types

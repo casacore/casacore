@@ -401,7 +401,8 @@ void LatticeExprNode::replaceScalarExpr()
       pAttr_p = &pExprBool_p->getAttribute();
       break;
    default:
-      throw (AipsError ("LatticeExprNode::replaceScalarExpr - unknown data type"));
+      throw (AipsError ("LatticeExprNode::replaceScalarExpr - "
+			"unknown data type"));
    }
 }
 
@@ -803,7 +804,8 @@ LatticeExprNode arg(const LatticeExprNode& expr)
 #if defined(AIPS_TRACE)
    cout << "LatticeExprNode:: 1d function arg" << endl;
 #endif
-   AlwaysAssert (expr.dataType()==TpComplex || expr.dataType()==TpDComplex, AipsError);
+   AlwaysAssert (expr.dataType()==TpComplex || expr.dataType()==TpDComplex,
+		 AipsError);
    return LatticeExprNode::newNumReal1D (LELFunctionEnums::ARG, expr);
 }
 
@@ -820,7 +822,8 @@ LatticeExprNode imag(const LatticeExprNode& expr)
 #if defined(AIPS_TRACE)
    cout << "LatticeExprNode:: 1d function imag" << endl;
 #endif
-   AlwaysAssert (expr.dataType()==TpComplex || expr.dataType()==TpDComplex, AipsError);
+   AlwaysAssert (expr.dataType()==TpComplex || expr.dataType()==TpDComplex,
+		 AipsError);
    return LatticeExprNode::newNumReal1D (LELFunctionEnums::IMAG, expr);
 }
 
@@ -929,8 +932,7 @@ LatticeExprNode amp (const LatticeExprNode& left,
       leftExpr = pow(left,DComplex(2.0,0.0));
       break;
    default:
-      throw (AipsError
-            ("LatticeExprNode::amp - Unknown data type"));
+      throw (AipsError ("LatticeExprNode::amp - Unknown data type"));
    }
    LatticeExprNode rightExpr;
    switch (right.dataType()) {
@@ -947,8 +949,7 @@ LatticeExprNode amp (const LatticeExprNode& left,
       rightExpr = pow(right,DComplex(2.0,0.0));
       break;
    default:
-      throw (AipsError
-            ("LatticeExprNode::amp - Unknown data type"));
+      throw (AipsError ("LatticeExprNode::amp - Unknown data type"));
    }
 
    return sqrt(leftExpr+rightExpr);
@@ -960,10 +961,10 @@ LatticeExprNode pa (const LatticeExprNode& left,
    cout << "LatticeExprNode:: 2d function pa" << endl;
 #endif
 
-   AlwaysAssert (left.dataType() != TpComplex &&  left.dataType() != TpDComplex 
-		 && left.dataType() != TpBool,  AipsError);
-   AlwaysAssert (right.dataType() != TpComplex &&  right.dataType() != TpDComplex 
-		 && right.dataType() != TpBool,  AipsError);
+   AlwaysAssert (left.dataType()!=TpComplex && left.dataType()!=TpDComplex 
+		 && left.dataType()!=TpBool, AipsError);
+   AlwaysAssert (right.dataType()!=TpComplex && right.dataType()!=TpDComplex 
+		 && right.dataType()!=TpBool, AipsError);
 
    LatticeExprNode expr(atan2(left,right));
 
@@ -975,8 +976,7 @@ LatticeExprNode pa (const LatticeExprNode& left,
       return Double(90.0/C::pi) * expr;
       break;
    default:
-      throw (AipsError
-            ("LatticeExprNode::pa - Unknown data type"));
+      throw (AipsError ("LatticeExprNode::pa - Unknown data type"));
    }
 
    return LatticeExprNode();         // shut compiler up
@@ -1165,6 +1165,42 @@ LatticeExprNode nfalse (const LatticeExprNode& expr)
    return new LELFunctionDouble(LELFunctionEnums::NFALSE, arg);
 }
 
+LatticeExprNode iif (const LatticeExprNode& condition,
+		     const LatticeExprNode& arg1,
+		     const LatticeExprNode& arg2)
+{  
+#if defined(AIPS_TRACE)
+   cout << "LatticeExprNode:: function iif" << endl;
+#endif
+   AlwaysAssert (condition.dataType() == TpBool, AipsError);
+   DataType dtype = LatticeExprNode::resultDataType (arg1.dataType(),
+						     arg2.dataType());
+   Block<LatticeExprNode> arg(3);
+   arg[0] = condition;
+   switch (dtype) {
+   case TpFloat:
+       arg[1] = arg1.makeFloat();
+       arg[2] = arg2.makeFloat();
+       return new LELFunctionND<Float>(LELFunctionEnums::IIF, arg);
+   case TpDouble:
+       arg[1] = arg1.makeDouble();
+       arg[2] = arg2.makeDouble();
+       return new LELFunctionND<Double>(LELFunctionEnums::IIF, arg);
+   case TpComplex:
+       arg[1] = arg1.makeComplex();
+       arg[2] = arg2.makeComplex();
+       return new LELFunctionND<Complex>(LELFunctionEnums::IIF, arg);
+   case TpDComplex:
+       arg[1] = arg1.makeDComplex();
+       arg[2] = arg2.makeDComplex();
+       return new LELFunctionND<DComplex>(LELFunctionEnums::IIF, arg);
+   default:
+      throw (AipsError ("LatticeExprNode::iif - "
+			"2nd and 3rd argument cannot be Bool"));
+   }
+   return LatticeExprNode();
+}
+
 
 
 LatticeExprNode LatticeExprNode::newNumUnary (LELUnaryEnums::Operation oper,
@@ -1184,8 +1220,8 @@ LatticeExprNode LatticeExprNode::newNumUnary (LELUnaryEnums::Operation oper,
    case TpDComplex:
       return new LELUnary<DComplex> (oper, expr.pExprDComplex_p);
    default:
-      throw (AipsError
-            ("LatticeExprNode::newNumUnary - Bool argument used in numerical unary operation"));
+      throw (AipsError ("LatticeExprNode::newNumUnary - "
+			"Bool argument used in numerical unary operation"));
    }
    return LatticeExprNode();
 }
@@ -1209,8 +1245,8 @@ LatticeExprNode LatticeExprNode::newNumFunc1D (LELFunctionEnums::Function func,
    case TpDComplex:
       return new LELFunction1D<DComplex> (func, expr.pExprDComplex_p);
    default:
-      throw (AipsError
-            ("LatticeExprNode::newNumFunc1D - Bool argument used in numerical function"));
+      throw (AipsError ("LatticeExprNode::newNumFunc1D - "
+			"Bool argument used in numerical function"));
    }
    return LatticeExprNode();
 }
@@ -1229,9 +1265,9 @@ LatticeExprNode LatticeExprNode::newRealFunc1D (LELFunctionEnums::Function func,
    case TpDouble:
       return new LELFunctionReal1D<Double> (func, expr.pExprDouble_p);
    default:
-      throw (AipsError
-            ("LatticeExprNode::newRealFunc1D - Bool or complex argument used in real "
-	     "numerical function"));
+      throw (AipsError ("LatticeExprNode::newRealFunc1D - "
+			"Bool or complex argument used in real "
+			"numerical function"));
    }
    return LatticeExprNode();
 }
@@ -1251,8 +1287,8 @@ LatticeExprNode LatticeExprNode::newComplexFunc1D (LELFunctionEnums::Function fu
    case TpDComplex:
       return new LELFunctionDComplex(func, arg);
    default:
-      throw (AipsError
-            ("LatticeExprNode::newComplexFunc1D - only complex arguments allowed"));
+      throw (AipsError ("LatticeExprNode::newComplexFunc1D - "
+			"only complex arguments allowed"));
    }
    return LatticeExprNode();
 }
@@ -1275,8 +1311,8 @@ LatticeExprNode LatticeExprNode::newNumReal1D (LELFunctionEnums::Function func,
    case TpDComplex:
       return new LELFunctionDouble (func, arg);
    default:
-      throw (AipsError
-            ("LatticeExprNode::newNumReal1D - output type must be real and numeric"));
+      throw (AipsError ("LatticeExprNode::newNumReal1D - "
+			"output type must be real and numeric"));
    }
    return LatticeExprNode();
 }
@@ -1313,8 +1349,8 @@ LatticeExprNode LatticeExprNode::newNumFunc2D (LELFunctionEnums::Function func,
       arg[1] = right.makeDComplex();
       return new LELFunctionDComplex (func, arg);
    default:
-      throw (AipsError
-            ("LatticeExprNode::newNumFunc2D - Bool argument used in numerical function"));
+      throw (AipsError ("LatticeExprNode::newNumFunc2D - "
+			"Bool argument used in numerical function"));
    }
    return LatticeExprNode();
 }
@@ -1343,8 +1379,8 @@ LatticeExprNode LatticeExprNode::newNumBinary (LELBinaryEnums::Operation oper,
       return new LELBinary<DComplex> (oper, left.makeDComplex(),
 				      right.makeDComplex());
    default:
-      throw (AipsError
-            ("LatticeExprNode::newNumBinary - Bool argument used in numerical binary operation"));
+      throw (AipsError ("LatticeExprNode::newNumBinary - "
+			"Bool argument used in numerical binary operation"));
    }
    return LatticeExprNode();
 }
@@ -1374,12 +1410,14 @@ LatticeExprNode LatticeExprNode::newBinaryCmp (LELBinaryEnums::Operation oper,
 					 right.makeDComplex());
    case TpBool:
       if (oper != LELBinaryEnums::EQ  &&  oper != LELBinaryEnums::NE) {
-	 throw (AipsError ("LatticeExprNode::newBinaryCmp - Bool data type cannot be used with "
+	 throw (AipsError ("LatticeExprNode::newBinaryCmp - "
+			   "Bool data type cannot be used with "
 			   ">, >=, <, and <= operator"));
       }
       return new LELBinaryBool (oper, left.pExprBool_p, right.pExprBool_p);
    default:
-      throw (AipsError ("LatticeExprNode::newBinaryCmp - invalid data type used in comparison"));
+      throw (AipsError ("LatticeExprNode::newBinaryCmp - "
+			"invalid data type used in comparison"));
    }
    return LatticeExprNode();
 }
@@ -1395,8 +1433,8 @@ DataType LatticeExprNode::resultDataType (DataType left, DataType right)
 	return left;
     }
     if (left == TpBool  ||  right == TpBool) {
-	throw (AipsError
-                     ("LatticeExprNode::resultDataType - Bool and numeric operands cannot mixed"));
+	throw (AipsError ("LatticeExprNode::resultDataType - "
+			  "Bool and numeric operands cannot mixed"));
     }
     if (left == TpDComplex  ||  right == TpDComplex) {
 	return TpDComplex;
@@ -1448,7 +1486,8 @@ CountedPtr<LELInterface<Float> > LatticeExprNode::makeFloat() const
     case TpDouble:
 	return new LELConvert<Float,Double> (pExprDouble_p);
     default:
-	throw (AipsError ("LatticeExprNode::makeFloat - conversion to Float not possible"));
+	throw (AipsError ("LatticeExprNode::makeFloat - "
+			  "conversion to Float not possible"));
     }
     return 0;
 }
@@ -1461,7 +1500,8 @@ CountedPtr<LELInterface<Double> > LatticeExprNode::makeDouble() const
     case TpDouble:
 	return pExprDouble_p;
     default:
-	throw (AipsError ("LatticeExprNode::makeDouble - conversion to Double not possible"));
+	throw (AipsError ("LatticeExprNode::makeDouble - "
+			  "conversion to Double not possible"));
     }
     return 0;
 }
@@ -1478,7 +1518,8 @@ CountedPtr<LELInterface<Complex> > LatticeExprNode::makeComplex() const
     case TpDComplex:
 	return new LELConvert<Complex,DComplex> (pExprDComplex_p);
     default:
-	throw (AipsError ("LatticeExprNode::makeComplex - conversion to Complex not possible"));
+	throw (AipsError ("LatticeExprNode::makeComplex - "
+			  "conversion to Complex not possible"));
     }
     return 0;
 }
@@ -1495,7 +1536,8 @@ CountedPtr<LELInterface<DComplex> > LatticeExprNode::makeDComplex() const
     case TpDComplex:
 	return pExprDComplex_p;
     default:
-	throw (AipsError ("LatticeExprNode::makeDComplex - conversion to DComplex not possible"));
+	throw (AipsError ("LatticeExprNode::makeDComplex - "
+			  "conversion to DComplex not possible"));
     }
     return 0;
 }
