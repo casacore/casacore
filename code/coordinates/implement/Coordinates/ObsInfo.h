@@ -1,5 +1,5 @@
 //# ObsInfo.h: Store miscellaneous information related to an observation
-//# Copyright (C) 1998,2000
+//# Copyright (C) 1998,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -26,14 +26,15 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_OBS_INFO_H)
-#define AIPS_OBS_INFO_H
+#if !defined(AIPS_OBSINFO_H)
+#define AIPS_OBSINFO_H
 
 #include <aips/aips.h>
 #include <aips/Utilities/RecordTransformable.h>
 
 #include <aips/Utilities/String.h>
 #include <aips/Measures/MEpoch.h>
+#include <aips/Quanta/MVDirection.h>
 
 #if defined(AIPS_STDLIB)
 #include <iosfwd>
@@ -62,10 +63,11 @@ class ostream;
 //    <li> Telescope name
 //    <li> Observer name
 //    <li> Observation date
+//    <li> Pointing centre (as distinct from the phase center or tangent point)
 // </ol>
 // This list can easily be extended if necessary.
 //
-// This class has functions to interconvert between a record in a "lossless"
+// This class has functions to interconvert with a record in a "lossless"
 // fashion, and to also interconvert between a record that contains a list of
 // FITS keywords.
 // </synopsis>
@@ -129,8 +131,26 @@ public:
     // The default is the MEpoch default: MJD 0 UTC
     // <group>
     MEpoch obsDate() const;
-    ObsInfo &setObsDate(const MEpoch &obsDate);
+    ObsInfo& setObsDate(const MEpoch &obsDate);
     // </group>
+
+    // What was the pointing centre, as distinct from the phase centre ? 
+    // This value is specified as an MVDirection.
+    // This means it is you, the callers responsibility, to know what its reference
+    // type is in order to turn it into an MDirection.
+    // The default is (0,0) (or [1,0,0]).  After you have called setPointingCenter,
+    // the function isPointingCenterInitial will return False.
+    // <group>
+    MVDirection pointingCenter() const;
+    ObsInfo& setPointingCenter (const MVDirection& direction);
+    // </group>
+    
+    // Because the default pointing center is a valid value (0,0), this
+    // function is available to tell you whether the pointing center has
+    // been set (with setPointingCenter) to some value other than its
+    // initial (return False)
+    Bool isPointingCenterInitial () const {return isPointingCenterInitial_p;};
+
 
     // Functions to interconvert between an ObsInfo and a record. These 
     // functions are inherited from class
@@ -138,14 +158,16 @@ public:
     // fields get added to ObsInfo these functions should be augmented. Missing
     // fields should not generate an error to in fromRecord to allow for 
     // backwards compatibility - null values should be supplied instead.
-    // The field names are "observer", "telescope", and "obsdate".
+    // The field names are "observer", "telescope", "obsdate", and
+    // "pointingcenter"
     // <group>
     virtual Bool toRecord(String & error, RecordInterface & outRecord) const;
     virtual Bool fromRecord(String & error, const RecordInterface & inRecord);
     // </group>
 
     // Functions to interconvert between an ObsInfo and FITS keywords
-    // (converted to a Record).
+    // (converted to a Record).  For the pointing center, the FITS
+    // keywords OBSRA and OBSDEC are used.  
     // <group>
     Bool toFITS(String & error, RecordInterface & outRecord) const;
     Bool fromFITS(String & error, const RecordInterface & inRecord);
@@ -157,6 +179,7 @@ public:
     static String defaultTelescope();
     static String defaultObserver();
     static MEpoch defaultObsDate();
+    static MVDirection defaultPointingCenter();
     // </group>
 
     // It might be useful to know what FITS keyword names are used in to/from
@@ -168,8 +191,12 @@ private:
     String telescope_p;
     String observer_p;
     MEpoch obsdate_p;
+    MVDirection pointingCenter_p;
+    Bool isPointingCenterInitial_p;    // True when ObsInfo contructed. 
+                                       // False after setPointingCenter called
 
-    // Common copy ctor/assignment operator code.
+// Common copy ctor/assignment operator code.
+
     void copy_other(const ObsInfo &other);
 };
 
