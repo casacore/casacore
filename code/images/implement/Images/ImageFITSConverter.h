@@ -105,14 +105,13 @@ class String;
 // FITS files are the fundamental transport format for images in Astronomy.
 // </motivation>
 //
-// <todo asof="1996/11/19">
+// <todo asof="1997/10/20">
 //   <li> It might be useful to have functions that convert between FITS
 //        and general lattices.
 //   <li> Add support for PagedImage<Complex>
-//   <li> At the moment we always write BITPIX=-32 images. Should we offer
-//        support for other types? (We read all types).
 //   <li> Convert multiple images at once?
-//   <li> Allow existing images to be overwritten?
+//   <li> Allow writing FITS files to an image extension in an existing
+//        FITS file.
 // </todo>
 
 class ImageFITSConverter
@@ -140,27 +139,33 @@ public:
 			    const String &fitsName, 
 			    uInt whichHDU = 0,
 			    uInt memoryInMB = 64);
+
     // Convert an AIPS++ image to a FITS file.
     // <ul>
-    //   <li> <src>return</src> True if the conversion succeeds, False otherwise.
+    //   <li> <src>return</src> True if the conversion succeeds, False 
+    //        otherwise.
     //   <li> <src>error</src> will be set if the conversion fails.
     //   <li> <src>image</src> The image to convert.
-    //   <li> <src>fitsName</src> Will not overwrite an existing FITS file.
-    //        Always writes to the primary array, and writes with BITPIX=-32,
-    //        i.e. floating point.
+    //   <li> <src>fitsName</src> If the name is "-" (the minus character), 
+    //        then write to stdout Always writes to the primary array.
     //   <li> <src>memoryInMB</src>. Setting this to zero will result in
     //        row-by-row copying, otherwise it will attempt to with as large
     //        a chunk-size as possible, while fitting in the desired memory.
-    // </ul>
-    //
-    //
-    // BITPIX can presently be set to -32 or 16 only. When BITPIX is 16 it
-    // will write BSCALE and BZERO into the FITS file. If minPix is
-    // greater than maxPix the minimum and maximum pixel values will be
-    // determined from the array, otherwise the supplied values will be
-    // used and pixels outside that range will be truncated to the minimum
-    // and maximum pixel values (note that this truncation does not occur
-    // for BITPIX=-32).
+    //   <li> <src>preferVelocity</src>Write a velocity primary spectral axis
+    //        if possible.
+    //   <li> <src>opticalVelocity</src>If writing a velocity, use the optical
+    //        definition (otherwise use radio).
+    //   <li> <src>BITPIX, minPix, maxPix</src>
+    //        BITPIX can presently be set to -32 or 16 only. When BITPIX is
+    //        16 it will write BSCALE and BZERO into the FITS file. If minPix
+    //        is greater than maxPix the minimum and maximum pixel values
+    //        will be determined from the array, otherwise the supplied
+    //        values will be used and pixels outside that range will be
+    //        truncated to the minimum and maximum pixel values (note that
+    //        this truncation does not occur for BITPIX=-32).
+    //   <li> <src>allowOverwrite</src> If True, allow fitsName to be 
+    //        overwritten if it already exists.
+    //   </ul>
     static Bool ImageToFITS(String &error,
 			    const PagedImage<Float> &image,
 			    const String &fitsName, 
@@ -168,7 +173,8 @@ public:
 			    Bool preferVelocity = True,
 			    Bool opticalVelocity = True,
 			    Int BITPIX=-32,
-			    Float minPix = 1.0, Float maxPix = -1.0);
+			    Float minPix = 1.0, Float maxPix = -1.0,
+			    Bool allowOverwrite=False);
 
     // Helper function - used to calculate a cursor appropriate for the desired
     // memory use. It's not intended that application programmers call this, but

@@ -46,6 +46,8 @@
 #include <aips/Containers/Record.h>
 
 #include <aips/OS/File.h>
+#include <aips/OS/RegularFile.h>
+#include <aips/OS/SymLink.h>
 #include <aips/OS/Directory.h>
 
 #include <aips/Utilities/Assert.h>
@@ -202,32 +204,71 @@ Bool ImageFITSConverter::ImageToFITS(String &error,
 				     uInt memoryInMB,
 				     Bool preferVelocity,
 				     Bool opticalVelocity,
-				     Int BITPIX, Float minPix, Float maxPix)
+				     Int BITPIX, Float minPix, Float maxPix,
+				     Bool allowOverwrite)
 {
     LogIO log(LogOrigin("ImageFITSConverter", "ImageToFITS", WHERE));
     error = "";
 
+    FitsOutput *outfile = 0;
 
-    // Make sure that the fits file does not already exist, and that we
-    // can write to the directory
-    File fitsfile(fitsName);
-    if (fitsfile.exists()) {
-	error = fitsName + " already exists, will not overwrite.";
-	return False;
-    }
-    Directory fitsdir = fitsfile.path().dirName();
-    if (!fitsdir.exists() || !fitsdir.isWritable()) {
-	error = String("Directory ") + fitsdir.path().originalName() + 
-	    " does not exist or is not writable";
-	return False;
-    }
+    if (fitsName == "-") {
+	// Write to stdout
+	outfile = new FitsOutput(cout);
+    } else {
+	// Make sure that the fits file does not already exist, and that we
+	// can write to the directory
+	File fitsfile(fitsName);
+	if (fitsfile.exists()) {
+	    if (allowOverwrite) {
+		String msg;
+		try {
+		    if (fitsfile.isRegular()) {
+			RegularFile rfile(fitsfile);
+			rfile.remove();
+		    } else if (fitsfile.isDirectory()) {
+			Directory dfile(fitsfile);
+			dfile.remove();
+		    } else if (fitsfile.isSymLink()) {
+			SymLink sfile(fitsfile);
+			sfile.remove();
+		    } else {
+			msg = "Cannot remove file - unknown file type";
+		    }
+		} catch (AipsError x) {
+		    msg = x.getMesg();
+		} end_try;
+		if (fitsfile.exists()) {
+		    error = "Could not remove " + fitsName;
+		    if (msg != "") {
+			error += ": (" + msg + ")";
+		    }
+		    return False;
+		}
+	    } else {
+		error = fitsName + " already exists, will not overwrite.";
+		return False;
+	    }
+	}
+	Directory fitsdir = fitsfile.path().dirName();
+	if (!fitsdir.exists() || !fitsdir.isWritable()) {
+	    error = String("Directory ") + fitsdir.path().originalName() + 
+		" does not exist or is not writable";
+	    return False;
+	}
     
-    // OK, it appears to be a writable etc. file, let's try opening it.
-    FitsOutput outfile(fitsfile.path().expandedName(), FITS::Disk);
-    if (outfile.err()) {
+	// OK, it appears to be a writable etc. file, let's try opening it.
+	outfile = new FitsOutput(fitsfile.path().expandedName(), FITS::Disk);
+    }
+
+    if (outfile == 0 || outfile->err()) {
 	error = String("Cannot open file for writing: ") + fitsName;
+	if (outfile != 0) { 
+	    delete outfile;
+	}
 	return False;
     }
+
 
     CoordinateSystem coordsys = image.coordinates();
     if (coordsys.nWorldAxes() != coordsys.nPixelAxes()) {
@@ -511,8 +552,9 @@ Bool ImageFITSConverter::ImageToFITS(String &error,
  		error = "Error creating FITS file from keywords";
  		return False;
  	    }
- 	    if (fits32->write_hdr(outfile)) {
+ 	    if (fits32->write_hdr(*outfile)) {
  		error = "Error writing FITS header";
+		delete outfile;
  		return False;
  	    }
  	} else if (BITPIX == 16) {
@@ -521,7 +563,8 @@ Bool ImageFITSConverter::ImageToFITS(String &error,
  		error = "Error creating FITS file from keywords";
  		return False;
  	    }
- 	    if (fits16->write_hdr(outfile)) {
+ 	    if (fits16->write_hdr(*outfile)) {
+		delete outfile;
  		error = "Error writing FITS header";
  		return False;
  	    }
@@ -545,9 +588,10 @@ Bool ImageFITSConverter::ImageToFITS(String &error,
 	    if (fits32) {
 		fits32->store(ptr, bufferSize);
 		if (!fits32->err()) {
-		    n = fits32->write(outfile);
+		    n = fits32->write(*outfile);
 		    if (n != bufferSize) {
-			error = "Write failed (full disk or tape?";
+			delete outfile;
+			error = "Write failed (full disk or tape?)";
 			return False;
 		    }
 		} else {
@@ -566,8 +610,9 @@ Bool ImageFITSConverter::ImageToFITS(String &error,
 		}
 		fits16->store(buffer16, bufferSize);
 		if (!fits16->err()) {
-		    n = fits16->write(outfile);
+		    n = fits16->write(*outfile);
 		    if (n != bufferSize) {
+			delete outfile;
 			error = "Write failed (full disk or tape?";
 			return False;
 		    }
@@ -581,8 +626,9 @@ Bool ImageFITSConverter::ImageToFITS(String &error,
 	    cursor.freeStorage(ptr, deleteIt);
 	    if ((fits32 && fits32->err()) ||
 		(fits16 && fits16->err()) ||
-		outfile.err()) {
+		outfile->err()) {
 		error = String("Error writing into ") + fitsName;
+		delete outfile;
 		return False;
 	    }
 	    count++;
@@ -598,9 +644,13 @@ Bool ImageFITSConverter::ImageToFITS(String &error,
 	}
     } catch (AipsError x) {
 	error = "Unknown error copying image to FITS file";
+	if (outfile) {
+	    delete outfile;
+	}
 	return False;
     } end_try;
 
+    delete outfile;
     return True;
 }
 
