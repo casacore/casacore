@@ -601,30 +601,35 @@ Bool FITSTable::reopen(const String &fileName)
 	{
 	    BytePrimaryArray pa(*io_p);
 	    primaryKeys_p = FITSTabular::keywordsFromHDU(pa, allKeys_p);
+	    if (pa.nelements()) reopenAtFirstHDU(fileName);
 	}
     break;
     case FITS::SHORT:
 	{
 	    ShortPrimaryArray pa(*io_p);
 	    primaryKeys_p = FITSTabular::keywordsFromHDU(pa, allKeys_p);
+	    if (pa.nelements()) reopenAtFirstHDU(fileName);
 	}
     break;
     case FITS::LONG:
 	{
 	    LongPrimaryArray pa(*io_p);
 	    primaryKeys_p = FITSTabular::keywordsFromHDU(pa, allKeys_p);
+	    if (pa.nelements()) reopenAtFirstHDU(fileName);
 	}
     break;
     case FITS::FLOAT:
 	{
 	    FloatPrimaryArray pa(*io_p);
 	    primaryKeys_p = FITSTabular::keywordsFromHDU(pa, allKeys_p);
+	    if (pa.nelements()) reopenAtFirstHDU(fileName);
 	}
     break;
     case FITS::DOUBLE:
 	{
 	    DoublePrimaryArray pa(*io_p);
 	    primaryKeys_p = FITSTabular::keywordsFromHDU(pa, allKeys_p);
+	    if (pa.nelements()) reopenAtFirstHDU(fileName);
 	}
     break;
     default:
@@ -1898,3 +1903,11 @@ Bool FITSTable::virtualColumns(const Vector<String>& keyNames)
     return result;
 }
 
+void FITSTable::reopenAtFirstHDU(const String &name) {
+    delete io_p;
+    io_p = 0;
+    io_p = new FitsInput(name.chars(), FITS::Disk);
+    AlwaysAssert(io_p, AipsError);
+    // no need to check for err here, presumably
+    io_p->skip_hdu();
+}
