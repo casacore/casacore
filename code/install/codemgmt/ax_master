@@ -2348,3 +2348,7 @@
 11 201 sys rm libexec/JEN_dsn_styles.g
 11 201 sys rm libexec/JEN_dsn_testdata.g
 11 201 sys rm libexec/JEN_dsn_ops.g
+11 201 sys rm libexec/mans.g
+11 201 sys rm libexec/mans_cold.g
+11 201 sys rm libexec/mans_topold.g
+11 201 sys rm libexec/rbtest1.g
