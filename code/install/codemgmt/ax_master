@@ -3788,3 +3788,6 @@
 14 052 src rm trial/implement/Fitting/LSQBasic.h
 14 052 src rm trial/implement/Fitting/LSQBasic.cc
 14 053 src mv npoi/apps/chatoms/chatoms.g npoi/implement/Chatoms/chatoms.g
+14 053 src rm npoi/apps/chatoms/chatoms.cc
+14 053 src rm npoi/apps/chatoms/makefile
+14 053 src rm npoi/apps/chatoms/newms.g
