@@ -680,7 +680,7 @@ void Coordinate::makePixelRelativeMany (Matrix<Double>& value) const
 }
 
 
-void Coordinate::makeWorldAbsRelMany (Matrix<Double>& value, Bool abs) const
+void Coordinate::makeWorldAbsRelMany (Matrix<Double>& value, Bool toAbs) const
 {
     Vector<Double> col(nWorldAxes());
     Vector<Double> lastInCol(nWorldAxes());    
@@ -703,7 +703,7 @@ void Coordinate::makeWorldAbsRelMany (Matrix<Double>& value, Bool abs) const
              *i = lastOutCol[k];
           }
        } else {
-          if (abs) {
+          if (toAbs) {
              makeWorldAbsolute(col);
           } else {
              makeWorldRelative(col);
@@ -712,9 +712,8 @@ void Coordinate::makeWorldAbsRelMany (Matrix<Double>& value, Bool abs) const
           for (i.reset(),k=0; i!=i.end(); ++i,k++) {
              *i = col[k];
           }
+          lastOutCol = col;
        }
-//
-       lastOutCol = col;
     }
 }
 
@@ -752,9 +751,8 @@ void Coordinate::makePixelAbsRelMany (Matrix<Double>& value, Bool abs) const
           for (i.reset(),k=0; i!=i.end(); ++i,k++) {
              *i = col[k];
           }
+          lastOutCol = col;
        }
-//
-       lastOutCol = col;
     }
 }
 
@@ -768,7 +766,7 @@ void Coordinate::makeWorldAbsolute (Vector<Double>& world) const
 }
 
  
-void Coordinate::makeWorldAbsolute (Vector<Double>& world,
+void Coordinate::makeWorldAbsoluteRef (Vector<Double>& world,
                                     const Vector<Double>& refVal) const
 {
    DebugAssert(world.nelements()==nWorldAxes(),AipsError);
