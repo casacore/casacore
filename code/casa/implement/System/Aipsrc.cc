@@ -28,6 +28,7 @@
 //# Includes
 
 #include <aips/Tasking/Aipsrc.h>
+#include <aips/Exceptions.h>
 #include <aips/Utilities/String.h>
 #include <fstream.h>
 #include <strstream.h>
@@ -151,36 +152,62 @@ const Block<uInt> &Aipsrc::fileEnds() {
   return fileEnd;
 }
 
-uInt Aipsrc::parse() {
-  // This parse based on reversed order of $AIPSPATH:$HOME
-  
-  // Make file list
-  String filelist (EnvironmentVariables::value("HOME") + String("/.aipsrc:")) ;
-
-  // Here's where we kludge the the AIPSPATH  since AIPS++ a non standard way
-  // of specifying directory paths
-
-  {
-    String aipsPathRoot = EnvironmentVariables::value("AIPSPATH");
-    Int n = aipsPathRoot.freq(' ') + aipsPathRoot.freq('	') + 1;
+void Aipsrc::fillAips() {
+  if (!filled) {
+    home = EnvironmentVariables::value("HOME");
+    if (home.empty())
+      throw(AipsError(String("The HOME environment variable has not been set") +
+		      "\n\t(see system administrator)"));
+    home += "/aips++";
+    String aipsPath = EnvironmentVariables::value("AIPSPATH");
+    if (aipsPath.empty())
+      throw(AipsError(String("The AIPSPATH environment variable has not been set") +
+		      "\n\t(see system administrator)"));
+    Int n = aipsPath.freq(' ') + aipsPath.freq('	') + 1;
     String *newdir = new String[n];
-    n = split(aipsPathRoot, newdir, n, Regex("[ 	]"));
-    {
-      for (Int i=1; i<n; i++) {
-	newdir[i] = newdir[i-1] + String("/") + newdir[i]; 
-      };
-    }
-    {
-      for (Int i=n-1; i>=0; i--) {
-	if (i == 0) {
-	  filelist += newdir[i] + String("/.aipsrc:");
-	} else { 
-	  filelist += newdir[i] + String("/aipsrc:");
-	};
-      };
-    }
+    n = split(aipsPath, newdir, n, Regex("[ 	]"));
+    root = newdir[0];
+    arch = root + "/" + newdir[1];
+    site = arch + "/" + newdir[2];
+    host = site + "/" + newdir[3];
     delete [] newdir;
-  }
+    filled = True;
+  };
+}
+
+const String &Aipsrc:: aipsRoot() {
+  fillAips();
+  return root;
+}
+
+const String &Aipsrc:: aipsArch() {
+  fillAips();
+  return arch;
+}
+
+const String &Aipsrc:: aipsSite() {
+  fillAips();
+  return site;
+}
+
+const String &Aipsrc:: aipsHost() {
+  fillAips();
+  return host;
+}
+
+const String &Aipsrc:: aipsHome() {
+  fillAips();
+  return home;
+}
+
+uInt Aipsrc::parse() {
+  // This parse based on order HOME, AIPSROOT, AIPSHOST, AIPSSITE, AIPSARCH
+  fillAips();
+  String filelist (EnvironmentVariables::value("HOME") + String("/.aipsrc:"));
+  filelist += (root + String("/.aipsrc:"));
+  filelist += (host + String("/aipsrc:"));
+  filelist += (site + String("/aipsrc:"));
+  filelist += (arch + String("/aipsrc:"));
   return parse(filelist);
 }
 
@@ -328,3 +355,9 @@ Block<String> Aipsrc::keywordValue = Block<String>(0);
 Block<String> Aipsrc::keywordLine = Block<String>(0);
 Block<String> Aipsrc::keywordFile = Block<String>(0);
 Block<uInt> Aipsrc::fileEnd = Block<uInt>(0);
+String Aipsrc::root = String();
+String Aipsrc::arch = String();
+String Aipsrc::site = String();
+String Aipsrc::host = String();
+String Aipsrc::home = String();
+Bool Aipsrc::filled = False;
