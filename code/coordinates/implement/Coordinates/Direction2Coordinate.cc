@@ -53,9 +53,10 @@ Bool DirectionCoordinate::toWorld(MVDirection &world,
 {
     static Vector<Double> world_tmp(2);
     Bool ok = toWorld(world_tmp, pixel);
+//
     if (ok) {
-       world = MVDirection(world_tmp(0)*to_radians_p[0],    // No MVDirection set functions
-                           world_tmp(1)*to_radians_p[1]);
+       world.setAngle(world_tmp(0)*to_radians_p[0],
+                      world_tmp(1)*to_radians_p[1]);
     }
     return ok;
 }
@@ -71,8 +72,12 @@ Bool DirectionCoordinate::toPixel(Vector<Double> &pixel,
                                   const MVDirection &world) const
 {
    static Vector<Double> world_tmp(2);
+
+// Convert to current units
+
    world_tmp(0) = world.getLong() * 180.0 / C::pi / to_degrees_p[0]; 
    world_tmp(1) = world.getLat()  * 180.0 / C::pi / to_degrees_p[1];
+//
    return toPixel(pixel, world_tmp);
 }
 
