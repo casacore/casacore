@@ -26,25 +26,13 @@
 //# $Id$
 
 
-#include <casa/OS/Directory.h>
-#include <casa/OS/DirectoryIterator.h>
-#include <casa/OS/RegularFile.h>
-#include <casa/OS/SymLink.h>
-
-#include <casa/Arrays/Vector.h>
-#include <casa/Arrays/Slice.h>
-#include <casa/Arrays/ArrayMath.h>
-#include <casa/Exceptions/Error.h>
-
-#include <casa/stdexcept.h>
-#include <unistd.h>                 // needed for rmdir, unlink
-#include <sys/stat.h>               // needed for mkdir
-#include <errno.h>                  // needed for errno
-#include <casa/string.h>            // needed for strerror
-
 #if defined(AIPS_SOLARIS) || defined(AIPS_OSF)
 #  if defined(AIPS_OSF)
     extern "C" {                    // missing in system include file
+#  endif
+#  if defined(AIPS_SOLARIS)
+#   undef _FILE_OFFSET_BITS
+#   undef _LARGEFILE_SOURCE
 #  endif
 #  include <sys/statvfs.h>          // needed for statvfs
 #  if defined(AIPS_OSF)
@@ -61,6 +49,22 @@
 #    define f_bavail f_bfree
 #  endif
 #endif
+
+#include <casa/OS/Directory.h>
+#include <casa/OS/DirectoryIterator.h>
+#include <casa/OS/RegularFile.h>
+#include <casa/OS/SymLink.h>
+
+#include <casa/Arrays/Vector.h>
+#include <casa/Arrays/Slice.h>
+#include <casa/Arrays/ArrayMath.h>
+#include <casa/Exceptions/Error.h>
+
+#include <casa/stdexcept.h>
+#include <unistd.h>                 // needed for rmdir, unlink
+#include <sys/stat.h>               // needed for mkdir
+#include <errno.h>                  // needed for errno
+#include <casa/string.h>            // needed for strerror
 
 // Shouldn't be needed, but is needed to get rename under linux. The
 // man page claims it's in unistd.h.
@@ -174,6 +178,7 @@ Double Directory::freeSpace() const
     if (buf.f_frsize > 0) {
 	bsize = buf.f_frsize;
     }
+    cout << buf.f_frsize << ' ' << buf.f_bavail <<  ' ' << buf.f_bsize << ' ' << buf.f_ffree << ' ' << buf.f_blocks << endl;
 #endif
     return bsize * buf.f_bavail;
 }
