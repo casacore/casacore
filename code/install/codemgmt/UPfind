@@ -29,7 +29,7 @@
 # $Id$
 #
 set script = "UPfind"
-set usage = 'Usage: UPfind [-c] [-r] [-g] [-d] [-n] <typ>'
+set usage = 'Usage: UPfind [-c] [-r] [-g] [-f] [-d] [-n] <typ>'
 #
 # UPfind script (must have x allowed)
 # Get all files that have to be updated according to an egrep rule
@@ -37,6 +37,8 @@ set usage = 'Usage: UPfind [-c] [-r] [-g] [-d] [-n] <typ>'
 # The file list will be in <typ>.raw
 # <typ>.found will have the list without user selected
 # removals.
+# If the -f switch is given, the file list will be generated from file
+# patterns.
 #
 # See UPinfo for details
 #
@@ -67,6 +69,7 @@ if (! $ok) exit 1
 # Get specific data
 #
 if (! -r $ldir/${tp}.up1) then
+ if (! $fls) then
    touch $ldir/${tp}.up1
    echo "Specify egrep  expression(s) to find files"
    echo 'Examples: /Measures/((MUString)|(MVAngle)|(MVTime)|(RotM)|Q|(Un))'
@@ -79,6 +82,18 @@ if (! -r $ldir/${tp}.up1) then
 	echo "$x" >> $ldir/${tp}.up1
    end
    unset x
+ else
+   touch $ldir/${tp}.up1
+   echo "Specify file pattern(s) rooted in AIPSROOT/code to find files"
+   echo 'Example: trial/implement/Measures/M*.h'
+   while (1)
+	echo -n "File pattern: "
+	set x = "$<"
+	if ("$x" == "") break
+	echo "$x" >> $ldir/${tp}.up1
+   end
+   unset x
+ endif
 endif
 
 if (! -r $ldir/${tp}.rm) then
@@ -112,15 +127,33 @@ if ($nox) exit 0
 #
 cd $dir/code
 echo "Starting find..."
-if ($gls) then
+if ($fls) then
+  if (-e $ldir/${tp}.raw) rm -f $ldir/${tp}.raw
+  touch $ldir/${tp}.raw
+  set y = (`cat $ldir/${tp}.up1`)
+  set x = (`ls $y`)
+  if ("$x" == "") then
+    echo "No files found using pattern"
+    if (-e $ldir/${tp}.raw) rm -f $ldir/${tp}.raw
+    exit 1
+  endif
+  foreach i ($x)
+    echo "./$i" >> $ldir/${tp}.raw
+  end
+  unset y
+  unset x
+else
+ if ($gls) then
    find . -name '*.g' \
 	-exec egrep -l -f $ldir/${tp}.up1 {} \; \
 	      >! $ldir/${tp}.raw 
-else
+ else
    find . \( \( -name '*.h' -o -name '*.cc' \) -o -name 'templates' \) \
 	-exec egrep -l -f $ldir/${tp}.up1 {} \; \
 	      >! $ldir/${tp}.raw 
+ endif
 endif
+
 cd $ldir
 
 set a = ( `wc $ldir/${tp}.raw` )
