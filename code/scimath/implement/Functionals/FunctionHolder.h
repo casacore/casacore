@@ -34,6 +34,7 @@
 #include <aips/Utilities/RecordTransformable.h>
 #include <aips/Functionals/Function.h>
 #include <aips/Arrays/Vector.h>
+#include <aips/Utilities/String.h>
 
 //# Forward Declarations
 
@@ -106,6 +107,7 @@ template <class T> class FunctionHolder : public RecordTransformable {
     CHEBYSHEV,
     COMBINE,
     COMPOUND,
+    COMPILED,
     N_Types
   };
   //# Structures
@@ -199,6 +201,7 @@ private:
   // <group>
   mutable Types nf_p;
   mutable Int order_p;
+  mutable String text_p;
   // </groups>
   // List of known names
   mutable Vector<String> nam_p;

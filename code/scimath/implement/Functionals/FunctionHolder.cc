@@ -32,7 +32,6 @@
 #include <aips/Containers/RecordFieldId.h>
 #include <aips/Containers/Record.h>
 #include <aips/Arrays/Vector.h>
-#include <aips/Utilities/String.h>
 #include <aips/Functionals/Gaussian1D.h>
 #include <aips/Functionals/Gaussian2D.h>
 #include <trial/Functionals/Gaussian3D.h>
@@ -45,6 +44,7 @@
 #include <aips/Functionals/Chebyshev.h>
 #include <aips/Functionals/CombiFunction.h>
 #include <aips/Functionals/CompoundFunction.h>
+#include <trial/Functionals/CompiledFunction.h>
 #include <aips/Quanta/MUString.h>
 #include <aips/Mathematics/AutoDiff.h>
 #include <aips/Mathematics/AutoDiffMath.h>
@@ -125,29 +125,31 @@ template <class T>
 void FunctionHolder<T>::init() const {
   static FunctionHolder<T>::FuncStat fnc[N_Types] = {
     { String("gaussian1d"), GAUSSIAN1D,
-      False},
-    { String("gaussian2d"), GAUSSIAN2D,
-      False},
-    { String("gaussian3d"), GAUSSIAN3D,
-      False},
-    { String("gaussianNd"), GAUSSIANND,
-      True},
-    { String("hyperplane"), HYPERPLANE,
-      True},
-    { String("polynomial"), POLYNOMIAL,
-      True},
-    { String("evenpolynomial"), EVENPOLYNOMIAL,
-      True},
-    { String("oddpolynomial"), ODDPOLYNOMIAL,
-      True},
-    { String("sinusoid1d"), SINUSOID1D,
-      False},
-    { String("chebyshev"), CHEBYSHEV,
-      True},
-    { String("combine"), COMBINE,
-      False},
-    { String("compound"), COMPOUND,
-      False}
+	False},
+      { String("gaussian2d"), GAUSSIAN2D,
+	  False},
+	{ String("gaussian3d"), GAUSSIAN3D,
+	    False},
+	  { String("gaussianNd"), GAUSSIANND,
+	      True},
+	    { String("hyperplane"), HYPERPLANE,
+		True},
+	      { String("polynomial"), POLYNOMIAL,
+		  True},
+		{ String("evenpolynomial"), EVENPOLYNOMIAL,
+		    True},
+		  { String("oddpolynomial"), ODDPOLYNOMIAL,
+		      True},
+		    { String("sinusoid1d"), SINUSOID1D,
+			False},
+		      { String("chebyshev"), CHEBYSHEV,
+			  True},
+			{ String("combine"), COMBINE,
+			    False},
+			  { String("compound"), COMPOUND,
+			      False},
+			    { String("compiled"), COMPILED,
+				False}
   };
   if (!isFilled) {
     isFilled = True;
@@ -232,6 +234,7 @@ template <class T>
 Bool FunctionHolder<T>::fromString(String &error,
 				   const String &in) {
   order_p = -1;
+  text_p = "";
   Int nf;
   init();
   nf = MUString::minimaxNC(in, nam_p);
@@ -297,6 +300,7 @@ const String &FunctionHolder<T>::ident() const {
 template <class T>
 Bool FunctionHolder<T>::putType(String &error, RecordInterface &out) const {
   order_p = -1;
+  text_p = "";
   if (dynamic_cast<const Gaussian1D<T> *>(hold_p.ptr())) {
     nf_p = GAUSSIAN1D;
   } else if (dynamic_cast<const Gaussian2D<T> *>(hold_p.ptr())) {
@@ -327,12 +331,17 @@ Bool FunctionHolder<T>::putType(String &error, RecordInterface &out) const {
     nf_p = COMBINE;
   } else if (dynamic_cast<const CompoundFunction<T> *>(hold_p.ptr())) {
     nf_p = COMPOUND;
+  } else if (dynamic_cast<const CompiledFunction<T> *>(hold_p.ptr())) {
+    nf_p = COMPILED;
+    text_p = dynamic_cast<const CompiledFunction<T> *>(hold_p.ptr())->
+      getText();
   } else {
     error += String("Unknown functional in FunctionHolder::putType()\n");
     return False;
   };
   out.define(RecordFieldId("type"), nf_p);
   out.define(RecordFieldId("order"), order_p);
+  if (nf_p == COMPILED) out.define(RecordFieldId("progtext"), text_p);
   return True;
 }
 
@@ -341,6 +350,10 @@ template <class U>
 Bool FunctionHolder<T>::getType(String &error, Function<U> *&fn,
 				const RecordInterface &in) {
   in.get(RecordFieldId("order"), order_p);
+  if (in.isDefined(String("progtext")) &&
+      in.type(in.idToNumber(RecordFieldId("progtext"))) == TpString) {
+      in.get(RecordFieldId("progtext"), text_p);
+  };
   Int nf;
   if (in.type(in.idToNumber(RecordFieldId("type"))) == TpString) {
     String tp;
@@ -422,6 +435,15 @@ Bool FunctionHolder<T>::getType(String &error, Function<U> *&fn) {
     
   case COMPOUND:
     fn = (new CompoundFunction<U>);
+    break;
+    
+  case COMPILED:
+    fn = (new CompiledFunction<U>);
+    if (!dynamic_cast<CompiledFunction<U> *>(fn)->setFunction(text_p)) {
+      error += String("Illegal compiled expression:\n") +
+	dynamic_cast<CompiledFunction<U> *>(fn)->errorMessage() + "\n";
+      return False;
+    };
     break;
     
   default:
