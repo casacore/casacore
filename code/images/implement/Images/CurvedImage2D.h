@@ -59,7 +59,7 @@ class PixelCurve1D;
 // with a dimensionality >= 2. The dimensionality of the resulting image
 // is one less.
 // The crosscut is based on a curve defined by a
-// <linkto class=PixelCurve1D?PixelCurve1D</linkto> object. The curve
+// <linkto class=PixelCurve1D>PixelCurve1D</linkto> object. The curve
 // can be any 1-dim function (e.g. straight line, spline)
 // supported by the Functionals module. The curve must be in one of the
 // main planes of the image as defined by the axes arguments in the
