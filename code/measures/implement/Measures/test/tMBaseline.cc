@@ -1,4 +1,4 @@
-//# tBaseline.cc: This program test Baseline and UVW functions
+//# tMBaseline.cc: This program tests MBaseline class
 //# Copyright (C) 1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
