@@ -45,14 +45,24 @@ WCExtension::WCExtension (const ImageRegion& region,
     // other dimensionalities.
     if (ndim() != region.ndim() + extendBox.ndim()) {
         throw (AipsError ("WCExtension::WCExtension - "
-			  "one or more axes of region to be extended "
-			  "is used in the extendBox too"));
+			  "one or more axes of the region to be extended "
+			  "are used in the extendBox too"));
     }
 }
 
 WCExtension::WCExtension (Bool takeOver, const PtrBlock<const WCRegion*>& regions)
 : WCCompound (takeOver, regions)
-{}
+{
+    uInt nd = 0;
+    for (uInt i=0; i<regions.nelements(); i++) {
+        nd += regions[i]->ndim();
+    }
+    if (ndim() != nd) {
+        throw (AipsError ("WCExtension::WCExtension - "
+			  "one or more axes of the region to be extended "
+			  "are used in the extendBox too"));
+    }
+}
 
 WCExtension::WCExtension (const WCExtension& other)
 : WCCompound (other)
@@ -100,6 +110,7 @@ LCRegion* WCExtension::doToLCRegion (const CoordinateSystem& cSys,
     // because it might be extended).
     uInt ndout = outOrder.nelements();
     uInt ndreg = regions()[0]->ndim();
+    AlwaysAssert (ndreg <= ndout, AipsError);
     uInt ndbox = ndout - ndreg;
     IPosition regPixMap(ndreg);
     IPosition regOutOrd(ndreg);
@@ -120,7 +131,7 @@ LCRegion* WCExtension::doToLCRegion (const CoordinateSystem& cSys,
     // The new outOrd objects have to have numbers in the range 0..n,
     // where n is the length.
     // We use the same trick as in WCRegion by sorting them and using
-    // the resuting index vector.
+    // the resulting index vector.
     Vector<uInt> reginx(ndreg);
     GenSortIndirect<Int>::sort (reginx, regOutOrd.storage(), ndreg);
     for (i=0; i<ndreg; i++) {
