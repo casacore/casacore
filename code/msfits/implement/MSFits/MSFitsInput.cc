@@ -729,8 +729,8 @@ void MSFitsInput::fillMSMainTable(Int& nField, Int& nSpW)
       // IFs go to separate rows in the MS
       ms_p.addRow(); 
       row++;
-      for (Int chan=0; chan<nChan; chan++) {
- 	for (Int pol=0; pol<nCorr; pol++) {
+      for (Int pol=0; pol<nCorr; pol++) {
+	for (Int chan=0; chan<nChan; chan++) {
  	  const Float visReal = priGroup_p(count++);
  	  const Float visImag = priGroup_p(count++);
  	  const Float wt = priGroup_p(count++); 
