@@ -1,5 +1,5 @@
 //# VectorKernel.h: generate Vector kernels
-//# Copyright (C) 1996,1997,1998,1999,2000
+//# Copyright (C) 1996,1997,1998,1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -98,11 +98,15 @@ enum KernelTypes {
 
 // Create kernel vector for width in pixels.  For Gaussian, width is FWHM,
 // for Boxcar, width is full width.  For Hanning width is ignored (always 3)
+// If useShape is True, the proided shape is used exactly.  If useShapeExactly is False,
+// the kernel length will be the max of the provided shape and an
+// autoestimate (e.g. from +/- 5sigma limits for a Gaussian).  If it's True,
+// that shape is used exactly.  The output shape is always 3 for Hanning.
 // <group>   
    static Vector<Double> make(KernelTypes kernelType, Double width, 
-                              uInt shape, Bool peakIsUnity=False);
+                              uInt shape, Bool useShapeExactly, Bool peakIsUnity=False);
    static Vector<Float> make(KernelTypes kernelType, Float width, 
-                             uInt shape, Bool peakIsUnity=False);
+                             uInt shape, Bool useShapeExactly, Bool peakIsUnity=False);
 // </group>   
 
 

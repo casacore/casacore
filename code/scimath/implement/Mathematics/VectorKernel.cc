@@ -1,5 +1,5 @@
 //# VectorKernel.cc:  generate moments from an image
-//# Copyright (C) 1995,1996,1997,1998,1999,2000
+//# Copyright (C) 1995,1996,1997,1998,1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -40,7 +40,7 @@
 
 
 Vector<Double> VectorKernel::make(KernelTypes kernelType, Double width, 
-                                  uInt shape, Bool peakIsUnity)
+                                  uInt shape, Bool useShapeExactly, Bool peakIsUnity)
 {
    LogIO os(LogOrigin("VectorKernel", "make(Double)"));
    if (shape <=1) {
@@ -55,9 +55,12 @@ Vector<Double> VectorKernel::make(KernelTypes kernelType, Double width,
 // width is FWHM
 
       const Double sigma = width / sqrt(Double(8.0) * C::ln2);
-      nPixels = (Int(5*sigma + 0.5) + 1) * 2;
-      kernel.resize(min(shape,nPixels));
-      nPixels = kernel.nelements();
+      if (useShapeExactly > 0) {
+         nPixels = shape;
+      } else {
+         nPixels = max(shape, (uInt(5*sigma + 0.5) + 1) * 2);
+      }
+      kernel.resize(nPixels);
 //
       const Double refPix = Double(nPixels)/2;
       Double norm;
@@ -69,34 +72,34 @@ Vector<Double> VectorKernel::make(KernelTypes kernelType, Double width,
       const Gaussian1D<Double> gauss(norm, refPix, Double(width));
       for (uInt j=0; j<nPixels; j++) kernel(j) = gauss(Double(j));
    } else if (kernelType == BOXCAR) {
-      Int intWidth = Int(width+0.5);
-      nPixels = intWidth;  
-      const uInt n = min(shape,nPixels);
-      kernel.resize(n);
+      if (useShapeExactly> 0) {
+         nPixels =  shape;
+      } else {
+         nPixels = max(shape, uInt(width+0.5));
+      }
+      kernel.resize(nPixels);
       Double norm;
       if (peakIsUnity)  {
          norm = 1.0;
       } else {
-         norm = Double(intWidth);
+         norm = Double(nPixels);
       }
 //
-      for (uInt i=0; i<n; i++) {
-         kernel(i) = 1.0 / norm;
-      }
+      for (uInt i=0; i<nPixels; i++) kernel(i) = 1.0 / norm;
    } else if (kernelType == HANNING) {
 
-// shape is at least 2
+// kernel always shape 3
 
-      nPixels = min(uInt(3),shape);
+      nPixels = 3;
       kernel.resize(nPixels);
       if (peakIsUnity)  {
          kernel(0) = 0.5;
          kernel(1) = 1.0;
-         if (nPixels==3) kernel(2) = 0.5;
+         kernel(2) = 0.5;
       } else {
          kernel(0) = 0.25;
          kernel(1) = 0.5;
-         if (nPixels==3) kernel(2) = 0.25;
+         kernel(2) = 0.25;
       }
    }
    return kernel;
@@ -105,9 +108,10 @@ Vector<Double> VectorKernel::make(KernelTypes kernelType, Double width,
 
 
 Vector<Float> VectorKernel::make(KernelTypes kernelType, Float width, 
-                                 uInt shape, Bool peakIsUnity)
+                                 uInt shape, Bool useShapeExactly, Bool peakIsUnity)
 {
-   Vector<Double> tmp = make(kernelType, Double(width), shape, peakIsUnity);
+   Double tw = width;
+   Vector<Double> tmp = make(kernelType, tw, shape, useShapeExactly, peakIsUnity);
    Vector<Float> kernel(tmp.nelements());
    for (uInt i=0; i<tmp.nelements(); i++) kernel(i) = Float(tmp(i));
    return kernel;
