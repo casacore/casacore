@@ -164,17 +164,13 @@ public:
 	// Always posts the message at SEVERE priority. Equivalent to calling 
 	// LogIO::postThenThrow().
 	EXCEPTION, 
-	// If there is a message, post it then change the message priority to
-	// SEVERE.
+	// Change the message priority to SEVERE.
 	SEVERE, 
-	// If there is a message, post it then change the message priority to
-	// WARN.
+	// Change the message priority to WARN.
 	WARN, 
-	// If there is a message, post it then change the message priority to
-	// NORMAL.
+	// Change the message priority to NORMAL.
 	NORMAL, 
-	// If there is a message, post it then change the message priority to
-	// DEBUGGING.
+	// Change the message priority to DEBUGGING.
 	DEBUGGING};
 
     // Attach this LogIO object to the global sink with no origin information.
