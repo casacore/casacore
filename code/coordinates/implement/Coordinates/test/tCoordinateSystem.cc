@@ -1,5 +1,5 @@
 //# tCoordinateSystem.cc: Test program for CoordinateSystem
-//# Copyright (C) 1998,1999,2000,2001,2002,2003
+//# Copyright (C) 1998,1999,2000,2001,2002,2003,2004
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -96,6 +96,7 @@ void doit7 ();
 int main()
 {
    try {
+
       uInt nCoords;
       Vector<Int> types;
       Vector<String> sTypes;
@@ -109,7 +110,6 @@ int main()
       uInt iTC;
       uInt iStC;
       uInt iLC;
-
       {
          CoordinateSystem cSys = makeCoordinateSystem(nCoords, types, sTypes,
                                                       iDC, iSpC, iTC, iStC, iLC,
@@ -264,7 +264,7 @@ int main()
          doit5();
       }
       {
-         doit6();
+//         doit6();
       }
       {
          CoordinateSystem cSys = makeCoordinateSystem(nCoords, types, sTypes,
@@ -612,16 +612,6 @@ void doit (CoordinateSystem& cSys, uInt nCoords, const Vector<Int>& types,
      }
    }
 //
-   {
-     Vector<String> prefUnits = cSys.worldAxisUnits();
-     iC = cSys.findCoordinate(Coordinate::SPECTRAL);
-     Vector<Int> worldAxes = cSys.worldAxes(iC);
-     prefUnits(worldAxes(0)) = "km/s";
-     if (!cSys.setPreferredWorldAxisUnits(prefUnits)) {
-        throw(AipsError(String("Failed to set preferred units because") 
-              + cSys.errorMessage()));
-     }
-   }
 //
 // Now check the pixel axis descriptors
 //
@@ -898,13 +888,13 @@ void doit (CoordinateSystem& cSys, uInt nCoords, const Vector<Int>& types,
 //
   {
       CoordinateSystem cSys2;
-      cSys2.addCoordinate(makeDirectionCoordinate());
+      cSys2.addCoordinate(makeDirectionCoordinate(True, MDirection::J2000));
       cSys2.addCoordinate(makeStokesCoordinate(False));
-      cSys2.replaceCoordinate(makeLinearCoordinate(), 0);
-      if (cSys2.type(0) != Coordinate::LINEAR ||
+      cSys2.replaceCoordinate(makeDirectionCoordinate(True, MDirection::B1950), 0);
+      if (cSys2.type(0) != Coordinate::DIRECTION ||
           cSys2.type(1) != Coordinate::STOKES ||
           cSys2.nCoordinates()!=2) {
-        throw(AipsError("Coordinate replacemenet test failed"));  
+        throw(AipsError("Coordinate replacement test failed"));  
       }
   }   
 //
@@ -2019,8 +2009,8 @@ LinearCoordinate makeLinearCoordinate (uInt nAxes)
    Matrix<Double> xform(nAxes,nAxes);
 //
    for (uInt i=0; i<nAxes; i++) {
-      ostrstream oss;
-      oss << i << ends;
+      ostringstream oss;
+      oss << i;
       names(i) = String("axis") + String(oss);
       crpix(i) = 10.0 * (i + 1);
       cdelt(i) = (i+1);
