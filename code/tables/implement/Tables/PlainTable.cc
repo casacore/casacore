@@ -410,10 +410,16 @@ void PlainTable::resync()
 
 Bool PlainTable::putFile (Bool always)
 {
+#ifdef AIPS_TRACE
+    cout << "PlainTable::putFile on " << tableName() << endl;
+#endif
     AipsIO ios;
     Bool writeTab = always || tableChanged_p;
     Bool written = writeTab;
     if (writeTab) {
+#ifdef AIPS_TRACE
+        cout << "  full PlainTable::putFile" << endl;
+#endif
 	writeStart (ios);
 	ios << "PlainTable";
 	tdescPtr_p->putFile (ios, tableName());         // write description
@@ -426,6 +432,9 @@ Bool PlainTable::putFile (Bool always)
         //# Tell the data managers to write their data only.
         if (colSetPtr_p->putFile (False, ios, tableName(), False)) {
 	    written = True;
+#ifdef AIPS_TRACE
+	    cout << "  data PlainTable::putFile on " << tableName() << endl;
+#endif
 	}
     }
 

@@ -97,12 +97,22 @@ BaseTable::~BaseTable()
 void BaseTable::link()
 {
     nrlink_p++;
-//#    cout << "Link:   " << nrlink_p << " " << this << endl;
+#ifdef AIPS_TRACE
+    cout << "BaseTable::link:   " << nrlink_p << ' ' << name_p
+	 << ' ' << this << endl;
+#endif
 }
 
 void BaseTable::unlink (BaseTable* btp)
 {
-//#    cout << "Unlink: " << btp->nrlink_p << " " << btp << endl;
+#ifdef AIPS_TRACE
+    cout << "BaseTable::unlink: " << btp->nrlink_p << ' ' << btp->name_p
+	 << ' ' << btp;
+    if (btp->nrlink_p == 1) {
+        cout << " gets destructed";
+    }
+    cout << endl;
+#endif
     btp->nrlink_p--;
     if (btp->nrlink_p == 0) {
 	delete btp;
