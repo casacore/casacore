@@ -32,25 +32,31 @@
 #include <casa/iostream.h>
 
 #include <casa/namespace.h>
+
+namespace casa {
+   template <class T> class Matrix;
+   template <class T> class Vector;
+}
+
 void printfparameters(Function<Double> &f);
 void printparameters(Matrix<Double> &m);
-void createdata(Matrix<Double> &pos, Vector<Double> &f, Float range, uInt n,
-                Matrix<Double> &components);
+void createdata(casa::Matrix<casa::Double> &pos, casa::Vector<casa::Double> &f, Float range, uInt n,
+                casa::Matrix<casa::Double> &components);
 Int ipow(Int base, uInt power);
 
 
 int main()
 {
   Bool fail = 0;
-  Matrix<Double> pos;
-  Vector<Double> f;
+  casa::Matrix<casa::Double> pos;
+  casa::Vector<casa::Double> f;
 
-  Matrix<Double> components;
-  Matrix<Double> estimate;
-  Matrix<Double> retryfactors;
-  Matrix<Double> solution;
+  casa::Matrix<casa::Double> components;
+  casa::Matrix<casa::Double> estimate;
+  casa::Matrix<casa::Double> retryfactors;
+  casa::Matrix<casa::Double> solution;
 
-  FitGaussian<Double> fitgauss;
+  FitGaussian<casa::Double> fitgauss;
 
 
  
@@ -231,8 +237,8 @@ int main()
 }
 
 
-void createdata(Matrix<Double> &pos, Vector<Double> &f, Float range, uInt n,
-                Matrix<Double> &components)
+void createdata(casa::Matrix<casa::Double> &pos, casa::Vector<casa::Double> &f, Float range, uInt n,
+                casa::Matrix<casa::Double> &components)
 {
   uInt i = 0;
   uInt dim = components.ncolumn() / 3;
@@ -254,7 +260,7 @@ void createdata(Matrix<Double> &pos, Vector<Double> &f, Float range, uInt n,
     }
 
   //create the data
-  Vector<Double> curpos(dim);
+  casa::Vector<casa::Double> curpos(dim);
   curpos = -range;
   Float inc = 2.0 * range / (n-1);
   while(i < imax)

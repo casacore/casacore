@@ -29,6 +29,7 @@
 #include <casa/aips.h>
 #include <scimath/Fitting/LSQFit.h>
 #include <casa/iostream.h>
+#include <casa/namespace.h>
 
 void showdt(const LSQFit &lsq, Int n) {
   uInt nun, np, ncon, ner, rk, *piv;
@@ -37,35 +38,35 @@ void showdt(const LSQFit &lsq, Int n) {
 	      piv, sEq, sol, prec, nonlin);
   if (norm) {
     for (Int i=0; i<(n*(n+1))/2; i++) {
-      cout << "  Norm" << i << ": " << norm[i];
+      std::cout << "  Norm" << i << ": " << norm[i];
     };
   };
-  cout << endl;
+  std::cout << std::endl;
   if (err) {
     for (Int i1=0; i1<4; i1++) {
-      cout << "  Erra" << i1 << ": " << err[i1];
+      std::cout << "  Erra" << i1 << ": " << err[i1];
     };
   };
-  cout << endl;
+  std::cout << std::endl;
   if (known) {
     for (Int i2=0; i2<n; i2++) {
-      cout << "  Know" << i2 << ": " << known[i2];
+      std::cout << "  Know" << i2 << ": " << known[i2];
     };
   };
-  cout << endl;
+  std::cout << std::endl;
   if (piv) {
     for (Int i3=0; i3<n; i3++) {
-      cout << "  Pivo" << i3 << ": " << piv[i3];
+      std::cout << "  Pivo" << i3 << ": " << piv[i3];
     };
   };
-  cout << endl;
-  cout << "  Rank: " << rk << endl;
-  cout << "---------------------------------------------------" << endl;
+  std::cout << std::endl;
+  std::cout << "  Rank: " << rk << std::endl;
+  std::cout << "---------------------------------------------------" << std::endl;
 }
 
 int main() {
-  cout << "Test LSQ with 1 unknown" << endl;
-  cout << "---------------------------------------------------" << endl;
+  std::cout << "Test LSQ with 1 unknown" << std::endl;
+  std::cout << "---------------------------------------------------" << std::endl;
   LSQFit lsq1(1);
   uInt nr1;
   Double val1[] = {2, 1, 6};
@@ -73,14 +74,14 @@ int main() {
   showdt(lsq1,1);
   lsq1.makeNorm(&val1[0], val1[1], val1[2]);
   showdt(lsq1,1);
-  cout << "Invert = " << lsq1.invert(nr1);
-  cout << ", rank=" << nr1 << endl;
+  std::cout << "Invert = " << lsq1.invert(nr1);
+  std::cout << ", rank=" << nr1 << std::endl;
   showdt(lsq1,1);
   lsq1.solve(sol1);
-  cout << "Sol: " << sol1[0] << ", " << lsq1.getSD() << ", " <<
-    lsq1.getWeightedSD() << endl;
-  cout << "Expected: " << "3, 0, 0" << endl;
-  cout << "---------------------------------------------------" << endl;
+  std::cout << "Sol: " << sol1[0] << ", " << lsq1.getSD() << ", " <<
+    lsq1.getWeightedSD() << std::endl;
+  std::cout << "Expected: " << "3, 0, 0" << std::endl;
+  std::cout << "---------------------------------------------------" << std::endl;
   LSQFit lsq3(1);
   {
     uInt nr1;
@@ -88,17 +89,17 @@ int main() {
     lsq3.makeNorm(&val1[0], val1[1], val1[2]);
     lsq3.makeNorm(&val12[0], val12[1], val12[2]);
     showdt(lsq3,1);
-    cout << "Invert = " << lsq3.invert(nr1);
-    cout << ", rank=" << nr1 << endl;
+    std::cout << "Invert = " << lsq3.invert(nr1);
+    std::cout << ", rank=" << nr1 << std::endl;
     showdt(lsq3,1);
     lsq3.solve(sol1);
-    cout << "Sol: " << sol1[0] << ", " << lsq3.getSD() << ", " <<
-      lsq3.getWeightedSD() << endl;
-    cout << "Expected: " << "3.69, 1.66, 1.66" << endl;
-    cout << "---------------------------------------------------" << endl;
+    std::cout << "Sol: " << sol1[0] << ", " << lsq3.getSD() << ", " <<
+      lsq3.getWeightedSD() << std::endl;
+    std::cout << "Expected: " << "3.69, 1.66, 1.66" << std::endl;
+    std::cout << "---------------------------------------------------" << std::endl;
   }
-  cout << "Test LSQFit with 2 unknowns" << endl;
-  cout << "---------------------------------------------------" << endl;
+  std::cout << "Test LSQFit with 2 unknowns" << std::endl;
+  std::cout << "---------------------------------------------------" << std::endl;
   LSQFit lsq2(2);
   {
     uInt nr1;
@@ -109,20 +110,20 @@ int main() {
     lsq2.makeNorm(&val1[0], val1[2], val1[3]);
     lsq2.makeNorm(&val12[0], val12[2], val12[3]);
     showdt(lsq2,2);
-    cout << "Invert = " << lsq2.invert(nr1);
-    cout << ", rank=" << nr1 << endl;
+    std::cout << "Invert = " << lsq2.invert(nr1);
+    std::cout << ", rank=" << nr1 << std::endl;
     showdt(lsq2,2);
     lsq2.solve(sol1);
-    cout << "Sol: " << sol1[0] << ", " << lsq2.getSD() << ", " <<
-      lsq2.getWeightedSD() << endl;
-    cout << "Sol: " << sol1[1] << ", " << lsq2.getSD() << ", " <<
-      lsq2.getWeightedSD() << endl;
-    cout << "Expected: " << "2, 0, 0" << endl;
-    cout << "Expected: " << "3, 0, 0" << endl;
-    cout << "---------------------------------------------------" << endl;
+    std::cout << "Sol: " << sol1[0] << ", " << lsq2.getSD() << ", " <<
+      lsq2.getWeightedSD() << std::endl;
+    std::cout << "Sol: " << sol1[1] << ", " << lsq2.getSD() << ", " <<
+      lsq2.getWeightedSD() << std::endl;
+    std::cout << "Expected: " << "2, 0, 0" << std::endl;
+    std::cout << "Expected: " << "3, 0, 0" << std::endl;
+    std::cout << "---------------------------------------------------" << std::endl;
   }
-  cout << "Test LSQFit with 6 unknowns" << endl;
-  cout << "---------------------------------------------------" << endl;
+  std::cout << "Test LSQFit with 6 unknowns" << std::endl;
+  std::cout << "---------------------------------------------------" << std::endl;
   LSQFit lsq5(6);
   {
     uInt nr1;
@@ -137,16 +138,16 @@ int main() {
       lsq5.makeNorm(&val1[0], 1.0, val12[j0]);
     };
     /// showdt(lsq5,6);
-    cout << "Invert = " << lsq5.invert(nr1);
-    cout << ", rank=" << nr1 << endl;
+    std::cout << "Invert = " << lsq5.invert(nr1);
+    std::cout << ", rank=" << nr1 << std::endl;
     ///     showdt(lsq5,6);
     lsq5.solve(sol1);
     for (uInt i=0; i<6; i++) { 
-      cout << "Sol" << i << ": " <<
-	sol1[i] << ", " << lsq5.getSD() << ", " << lsq5.getWeightedSD() << endl;
+      std::cout << "Sol" << i << ": " <<
+	sol1[i] << ", " << lsq5.getSD() << ", " << lsq5.getWeightedSD() << std::endl;
     };
-    /// cout << "Expected: " << "2, 0, 0" << endl;
-    cout << "---------------------------------------------------" << endl;
+    /// std::cout << "Expected: " << "2, 0, 0" << std::endl;
+    std::cout << "---------------------------------------------------" << std::endl;
   }
   exit(0);
 }
