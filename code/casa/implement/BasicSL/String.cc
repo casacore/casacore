@@ -326,11 +326,20 @@ Int String::gsub(const Regex &pat, const string &repl) {
   Int rl(repl.length());
   while (length() > si) {
     size_type pos = pat.search(c_str(), length(), pl, si);
-    if (pos == npos || pl <= 0) break;
+    if (pos >= npos-1 || pl <= 0) break;
     else {
       nmatches++;
-      replace(pos, pl, repl);
       si = pos + rl;
+      if (pos == 0 && si == 0) { 	// cpuld be problem with anchor at begin
+	Int pls;
+	size_type ps = pat.search(c_str(), length(), pls, pl); // try for begin
+	if (ps >= npos-1 || pls <= 0) {
+	  replace(pos, pl, repl);	// finish off if no more (anchored) match
+	  break;
+	};
+      };
+      // Continue global substitution
+      replace(pos, pl, repl);
     };
   };
   return nmatches;
