@@ -27,6 +27,7 @@
 
 #include <trial/Lattices/LELInterface.h>
 #include <trial/Lattices/LELUnary.h>
+#include <trial/Lattices/LELArray.h>
 
 
 template<class T>
@@ -37,6 +38,15 @@ template<class T>
 void LELInterface<T>::setAttr (const LELAttribute& attr)
 {
     attr_p = attr;
+}
+
+template<class T>
+void LELInterface<T>::evalRef (LELArrayRef<T>& result,
+			       const Slicer& section) const
+{
+    // For one reason or another gcc requires an explicit cast
+    // for LELInterface<Bool>.
+    eval ((LELArray<T>&)result, section);
 }
 
 template<class T>

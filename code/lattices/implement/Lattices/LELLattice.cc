@@ -97,6 +97,27 @@ void LELLattice<T>::eval(LELArray<T>& result,
 }
 
 template <class T>
+void LELLattice<T>::evalRef(LELArrayRef<T>& result, 
+			    const Slicer& section) const
+{
+#if defined(AIPS_TRACE)
+   cout << "LELLattice::evalRef; pLattice_p.nrefs() "
+	<< pLattice_p.nrefs() << endl;
+#endif
+
+   Array<T> tmp;
+   pLattice_p->getSlice (tmp, section);
+   // Cast to its base class LELArray to use the non-const value function.
+   ((LELArray<T>&)result).value().reference(tmp);
+   if (getAttribute().isMasked()) {
+      Array<Bool> mask = pLattice_p->getMaskSlice (section);
+      result.setMask (mask);
+   } else {
+      result.removeMask();
+   }
+}
+
+template <class T>
 LELScalar<T> LELLattice<T>::getScalar() const
 {
    throw (AipsError ("LELLattice::getScalar - cannot be used"));

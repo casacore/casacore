@@ -504,20 +504,6 @@ Bool LatticeExprNode::replaceScalarExpr()
    return isInvalid_p;
 }
 
-/*
-void LatticeExprNode::eval (Array<Float>& result,
-			    const Slicer& section) const
-{
-   if (isScalar()) {
-      result = pExprFloat_p->getScalar().value();
-   } else {
-      LELArray<Float> temp(result.shape());
-      eval (temp, section);
-      result = temp.value();
-   }
-}
-*/
-
 void LatticeExprNode::doPrepare() const
 {
    if (!donePrepare_p) {

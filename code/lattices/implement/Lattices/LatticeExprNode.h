@@ -408,22 +408,33 @@ public:
    CountedPtr<LELInterface<DComplex> > makeDComplex() const;
 // </group>
 
-// Evaluate the expression
-// <group>
-//   void eval (Array<Float>& result, const Slicer& section) const;
-//   void eval (Array<Double>& result, const Slicer& section) const;
-//   void eval (Array<Complex>& result, const Slicer& section) const;
-//   void eval (Array<DComplex>& result, const Slicer& section) const;
-//   void eval (Array<Bool>& result, const Slicer& section) const;
-// </group>
-
-// Evaluate the expression
+// Evaluate the expression.
+// One can be sure that the result is not a reference to another array.
+// This function should be used by LatticeExpr and other users.
 // <group>
    void eval (LELArray<Float>& result, const Slicer& section) const;
    void eval (LELArray<Double>& result, const Slicer& section) const;
    void eval (LELArray<Complex>& result, const Slicer& section) const;
    void eval (LELArray<DComplex>& result, const Slicer& section) const;
    void eval (LELArray<Bool>& result, const Slicer& section) const;
+// </group>
+
+// Evaluate the expression.
+// The result can be a reference to some internal array (in particular
+// to an array in an ArrayLattice object used as a lattice).
+// This function is meant for internal use by the LEL classes and
+// should not be used externally.
+// <group>
+   void evalRef (LELArrayRef<Float>& result, const Slicer& section) const
+    { pExprFloat_p->evalRef (result, section); }
+   void evalRef (LELArrayRef<Double>& result, const Slicer& section) const
+    { pExprDouble_p->evalRef (result, section); }
+   void evalRef (LELArrayRef<Complex>& result, const Slicer& section) const
+    { pExprComplex_p->evalRef (result, section); }
+   void evalRef (LELArrayRef<DComplex>& result, const Slicer& section) const
+    { pExprDComplex_p->evalRef (result, section); }
+   void evalRef (LELArrayRef<Bool>& result, const Slicer& section) const
+    { pExprBool_p->evalRef (result, section); }
 // </group>
 
 // Evaluate the expression (in case it is a scalar).  The "eval"

@@ -39,6 +39,7 @@
 //# Forward Declarations
 template <class T> class LELScalar;
 template <class T> class LELArray;
+template <class T> class LELArrayRef;
 class Slicer;
 
 
@@ -152,6 +153,8 @@ public:
 // Evaluate the expression and fill the result array
    virtual void eval (LELArray<T>& result,
                       const Slicer& section) const = 0;
+   virtual void evalRef (LELArrayRef<T>& result,
+			 const Slicer& section) const;
 
 // Get the result of a scalar subexpression.
    virtual LELScalar<T> getScalar() const = 0;

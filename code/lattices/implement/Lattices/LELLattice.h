@@ -102,9 +102,11 @@ public:
 // Destructor does nothing
   ~LELLattice();
 
-// Evaluate the expression; this means get the chunk of the lattice
+// Evaluate the expression; this means get the chunk of the lattice.
    virtual void eval(LELArray<T>& result,
                      const Slicer& section) const;
+   virtual void evalRef(LELArrayRef<T>& result,
+			const Slicer& section) const;
 
 // Getting a scalar value is not possible (throws exception).
    virtual LELScalar<T> getScalar() const;
