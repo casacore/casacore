@@ -97,8 +97,8 @@ class UnitDim {
 public:
 //# Enumerations
 // Enumeration of the order and number of the defining SI units.
-// If order or contents changed, chnage also in dimName() and dimFull().
-    enum Dim {Dm=0, Dkg, Ds, DA, DK, Dcd, Dmol, Drad, Dsr, Dnumber};
+// If order or contents changed, change also in dimName() and dimFull().
+    enum Dim {Dm=0, Dkg, Ds, DA, DK, Dcd, Dmol, Drad, Dsr, Dnon, Dnumber};
 // Constants
 // Number of Longs to cater for 9 bytes.
 #define UNITDIM_DLNUMBER 3
