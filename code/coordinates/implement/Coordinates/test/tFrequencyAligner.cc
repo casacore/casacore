@@ -68,14 +68,15 @@ int main()
 
 // Make SC
 
+      MFrequency::Types sysIn(MFrequency::TOPO);
+      MFrequency::Types sysOut(MFrequency::BARY);
+
       SpectralCoordinate lc = 
-         makeLinearCoordinate(MFrequency::TOPO, f0, finc, refchan, restFreq, unit);
+         makeLinearCoordinate(sysIn, f0, finc, refchan, restFreq, unit);
 
 // Make aligner
 
       const uInt nPix = 16;
-      MFrequency::Types freqSystem(MFrequency::BARY);
-//
       Quantum<Double> t(50237.29, Unit(String("d")));  
       MVEpoch t2(t);
       MEpoch refEpoch(t2);
@@ -86,8 +87,8 @@ int main()
       Quantum<Double> lon(0.0,Unit(String("rad")));
       Quantum<Double> lat(-35.0,Unit(String("deg")));
       MDirection dir(lon, lat, MDirection::J2000);
-      FrequencyAligner<Float> va(lc, nPix, refEpoch, dir, pos, freqSystem);
-      FrequencyAligner<Float>::Method method=FrequencyAligner<Float>::LINEAR;
+      FrequencyAligner<Float> fa(lc, nPix, refEpoch, dir, pos, sysOut);
+      InterpolateArray1D<Double,Float>::InterpolationMethod method=InterpolateArray1D<Double,Float>::linear;
       Bool extrapolate=False;
       Bool useCachedX = False;
 
@@ -105,16 +106,30 @@ int main()
          yIn[i] = val;
       }
 
+// CHeck output SC
+
+      {
+         SpectralCoordinate sCNew = fa.alignedSpectralCoordinate();
+         AlwaysAssert(sCNew.frequencySystem()==sysOut,AipsError);
+//
+         MEpoch tEp;
+         MPosition tPos;
+         MDirection tDir;
+         MFrequency::Types tType;
+         sCNew.getReferenceConversion(tType, tEp, tPos, tDir);
+         AlwaysAssert(tType==sysOut,AipsError);
+      }
+
 // Set tolerance so no interpolation
 
       {
-         va.setTolerance (1.0);
+         fa.setTolerance (1.0);
 //
          Quantum<Double> tt(50237.50, Unit(String("d")));  
          MVEpoch t3(tt);
          MEpoch epoch(t3);
          cerr << "No Interpolation" << endl;
-         AlwaysAssert(!va.align (yOut, maskOut, yIn, maskIn, epoch, 
+         AlwaysAssert(!fa.align (yOut, maskOut, yIn, maskIn, epoch, 
                                  useCachedX, method, extrapolate), AipsError);
 /*
          cerr << "   yIn = " << yIn << endl;
@@ -124,7 +139,7 @@ int main()
 
 // Remove tolerance
 
-         va.setTolerance (0.0);
+         fa.setTolerance (0.0);
       }
 
 // Align with new abcissa computed
@@ -134,7 +149,7 @@ int main()
          MVEpoch t3(tt);
          MEpoch epoch(t3);
          cerr << "Interpolation" << endl;
-         AlwaysAssert(va.align (yOut, maskOut, yIn, maskIn, epoch, 
+         AlwaysAssert(fa.align (yOut, maskOut, yIn, maskIn, epoch, 
                                 useCachedX, method, extrapolate),AipsError);
 /*
          cerr << "   yIn = " << yIn << endl;
@@ -145,7 +160,7 @@ int main()
 // Align with new abcissa taken from cached vector
 
          useCachedX = True;
-         AlwaysAssert(va.align (yOut2, maskOut, yIn, maskIn, epoch, 
+         AlwaysAssert(fa.align (yOut2, maskOut, yIn, maskIn, epoch, 
                                 useCachedX, method, extrapolate),AipsError);
          AlwaysAssert (allNear(yOut2, yOut, 1e-6), AipsError);
       }
@@ -154,8 +169,8 @@ int main()
 
       {
          Vector<Double> xRefOut, xOut;
-         va.getReferenceAbcissa (xRefOut);
-         va.getAbcissa (xOut);
+         fa.getReferenceAbcissa (xRefOut);
+         fa.getAbcissa (xOut);
 /*
          cerr << "   xRefOut = " << xRefOut << endl;
          cerr << "   xOut = " << xOut << endl;
@@ -191,7 +206,7 @@ int main()
 //
          uInt axis = 0;
 //
-         Bool ok = va.alignMany (yOutMany, maskOutMany, yInMany, maskInMany, axis, epoch, 
+         Bool ok = fa.alignMany (yOutMany, maskOutMany, yInMany, maskInMany, axis, epoch, 
                                  method, extrapolate);
          ReadOnlyVectorIterator<Float> it(yOutMany,axis);
          Vector<Float> data1;
@@ -210,7 +225,7 @@ int main()
 
 // Copy constructor and test results the same
 
-      FrequencyAligner<Float> va2(va);
+      FrequencyAligner<Float> va2(fa);
       {
          cerr << "Copy Constructor" << endl;
          Quantum<Double> tt(50237.50, Unit(String("d")));  
@@ -218,12 +233,12 @@ int main()
          MEpoch epoch(t3);
          Vector<Float> yOut3;
          useCachedX = True;
-         AlwaysAssert(va.align (yOut3, maskOut, yIn, maskIn, epoch, 
+         AlwaysAssert(fa.align (yOut3, maskOut, yIn, maskIn, epoch, 
                                 useCachedX, method, extrapolate),AipsError); // Use cached
          AlwaysAssert (allNear(yOut3, yOut, 1e-6), AipsError);
 //
          useCachedX = False;
-         AlwaysAssert(va.align (yOut2, maskOut, yIn, maskIn, epoch, 
+         AlwaysAssert(fa.align (yOut2, maskOut, yIn, maskIn, epoch, 
                                 useCachedX, method, extrapolate),AipsError); // Recompute
          AlwaysAssert (allNear(yOut3, yOut, 1e-6), AipsError);
       }
@@ -231,7 +246,7 @@ int main()
 // Assignment and test results the same
 
       FrequencyAligner<Float> va3;
-      va3 = va;
+      va3 = fa;
       {
          cerr << "Assignment operator" << endl;
          Quantum<Double> tt(50237.50, Unit(String("d")));  
@@ -239,12 +254,12 @@ int main()
          MEpoch epoch(t3);
          Vector<Float> yOut3;
          useCachedX = True;
-         AlwaysAssert(va.align (yOut3, maskOut, yIn, maskIn, epoch, 
+         AlwaysAssert(fa.align (yOut3, maskOut, yIn, maskIn, epoch, 
                                 useCachedX, method, extrapolate),AipsError);  // Use cached
          AlwaysAssert (allNear(yOut3, yOut, 1e-6), AipsError);
 //
          useCachedX = False;
-         AlwaysAssert(va.align (yOut2, maskOut, yIn, maskIn, epoch, 
+         AlwaysAssert(fa.align (yOut2, maskOut, yIn, maskIn, epoch, 
                                 useCachedX, method, extrapolate),AipsError); // Recompute
          AlwaysAssert (allNear(yOut3, yOut, 1e-6), AipsError);
       }
