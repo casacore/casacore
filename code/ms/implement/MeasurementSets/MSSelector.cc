@@ -412,30 +412,35 @@ Bool MSSelector::select(const GlishRecord& items, Bool oneBased)
     case MSS::IFR_NUMBER:
       {
 	Vector<Int> ifrNum;
-	if (GlishArray(items.get(i)).get(ifrNum) && ifrNum.nelements()>0) {
-	  // check input values for validity, squeeze out illegal values
-	  Int nAnt=selms_p.antenna().nrow();
-	  if (oneBased) ifrNum-=1001;
-          for (uInt k=0; k<ifrNum.nelements(); k++) {
-            if (ifrNum(k)/1000<0 || ifrNum(k)/1000>= nAnt ||
-                ifrNum(k)%1000<0 || ifrNum(k)%1000>=nAnt) {
-              for (uInt j=k; j<ifrNum.nelements()-1; j++) {
-                ifrNum(j)=ifrNum(j+1);
-              }
-              ifrNum.resize(ifrNum.nelements()-1,True);
-            }
-	  }
-	  if (ifrNum.nelements()==1) {
-	    selms_p=selms_p((selms_p.col(MS::columnName(MS::ANTENNA1))*1000+
-			     selms_p.col(MS::columnName(MS::ANTENNA2))) ==
-			    ifrNum(0));
+	if (GlishArray(items.get(i)).get(ifrNum)) {
+	  if (ifrNum.nelements()>0) {
+	    // check input values for validity, squeeze out illegal values
+	    Int nAnt=selms_p.antenna().nrow();
+	    if (oneBased) ifrNum-=1001;
+	    for (uInt k=0; k<ifrNum.nelements(); k++) {
+	      if (ifrNum(k)/1000<0 || ifrNum(k)/1000>= nAnt ||
+		  ifrNum(k)%1000<0 || ifrNum(k)%1000>=nAnt) {
+		for (uInt j=k; j<ifrNum.nelements()-1; j++) {
+		  ifrNum(j)=ifrNum(j+1);
+		}
+		ifrNum.resize(ifrNum.nelements()-1,True);
+	      }
+	    }
+	    if (ifrNum.nelements()==1) {
+	      selms_p=selms_p((selms_p.col(MS::columnName(MS::ANTENNA1))*1000+
+			       selms_p.col(MS::columnName(MS::ANTENNA2))) ==
+			      ifrNum(0));
+	    } else {
+	      selms_p=selms_p((selms_p.col(MS::columnName(MS::ANTENNA1))*1000+
+			       selms_p.col(MS::columnName(MS::ANTENNA2)))
+			      .in(ifrNum));
+	    }
+	    ifrSelection_p.reference(ifrNum);
+	    useIfrDefault_p=False;
 	  } else {
-	    selms_p=selms_p((selms_p.col(MS::columnName(MS::ANTENNA1))*1000+
-			     selms_p.col(MS::columnName(MS::ANTENNA2)))
-			    .in(ifrNum));
-	  }
-	  ifrSelection_p.reference(ifrNum);
-	  useIfrDefault_p=False;
+	    useIfrDefault_p=True;
+	    ifrSelection_p.resize(0);
+	  } 
 	} else {
 	  os<< LogIO::WARN << "Illegal value for item "<<downcase(column)<<
 	    LogIO::POST;
@@ -578,20 +583,6 @@ static void averageId(Vector<Int>& vec)
   }
 }
 
-static void averageId(Matrix<Int>& id)
-{
-  // "average" a Matrix of integer id's - replace by length 1 vector with
-  // common value if all elements are the same, or -1 otherwise.
-  // Used below to "average" things like antenna id.
-  if (id.nelements()>1) {
-    Matrix<Int> aver(id.nrow(),1); aver.column(0)=id.column(0);
-    for (uInt i=0; i<id.nrow(); i++) {
-      if (!allEQ(id.row(i),aver(i,0))) aver(i,0)=-1;
-    }
-    id.reference(aver);
-  }
-}
-
 static void averageDouble(Vector<Double>& vec) 
 {
   // average a vector of doubles
@@ -602,19 +593,6 @@ static void averageDouble(Vector<Double>& vec)
     aver/=n;
     vec.resize(1);
     vec(0)=aver;
-  }
-}
-
-static void averageDouble(Matrix<Double>& mat) 
-{
-  // average a matrix of doubles in the 2nd dimension
-  Int n=mat.ncolumn();
-  if (n>1) {
-    Matrix<Double> aver(mat.nrow(),1); 
-    aver.column(0)=mat.column(0);
-    for (Int i=1; i<n; i++) aver+=mat.column(i);
-    aver/=Double(n);
-    mat.reference(aver);
   }
 }
 
@@ -659,7 +637,9 @@ GlishRecord MSSelector::getData(const Vector<String>& items, Bool ifrAxis,
   }
 
   Vector<Int> ifrIndex; // the index no into the ifrSelection Vector
-  Vector<Int> slot;     // for each ifr, the row ordered occurrence of it
+  Vector<Double> timeSlot; // the time for each slot
+  Vector<Int> ddSlot;   // the dataDescId for each slot
+  Vector<Int> slot; // the slot for each row
   Bool doIfrAxis = (ifrAxis && nIfr>0);
   if (doIfrAxis) {
     if (ifrAxisGap>=0) {
@@ -680,67 +660,61 @@ GlishRecord MSSelector::getData(const Vector<String>& items, Bool ifrAxis,
       }
       nIfr+=gapCount*ifrAxisGap;
     }
+
     // figure out which rows go with which slot
-    Vector<Int> ifr=msc.antenna1().getColumn();
-    ifr*=1000;
-    ifr+=msc.antenna2().getColumn();
-    nRow=ifr.nelements();
-    ifrIndex.resize(nRow);
-    slot.resize(nRow);
-    Vector<Int> slotNo(nIfr,0);
-    for (Int i=0; i<nRow; i++) {
-      for (Int j=0; j<nIfr; j++) {
-	if (ifr(i)==ifrAxis_p(j)) {
-	  ifrIndex(i)=j;
-	  slot(i)=slotNo(j)++;
-	  break;
+    // Assume MS is in time order
+    Vector<Double> time=msc.time().getColumn();
+    Vector<Int> dd=msc.dataDescId().getColumn();
+    nRow=time.nelements();
+    timeSlot.resize(nRow);
+    ddSlot.resize(nRow);
+    slot.resize(nRow);     // the time/datadescid slot
+    timeSlot(0)=time(0); ddSlot(0)=dd(0); slot(0)=0;
+    for (Int i=1; i<nRow; i++) {
+      if (time(i)!=timeSlot(nSlot)) {
+	nSlot++;
+	timeSlot(nSlot)=time(i); ddSlot(nSlot)=dd(i);
+      } else if (dd(i)!=ddSlot(nSlot)) {
+	// check if we've seen this dd before
+	Int j=nSlot-1;
+	while (j>0 && timeSlot(j)==timeSlot(nSlot) && 
+	       ddSlot(j)!=ddSlot(nSlot)) j--;
+	if (j>0 && timeSlot(j)!=timeSlot(nSlot)) {
+	  nSlot++;
+	  timeSlot(nSlot)=time(i); ddSlot(nSlot)=dd(i);
 	}
       }
+      slot(i)=nSlot;
     }
-    nSlot = max(slotNo);
+    nSlot++;
+    // resize to true size, copying values
+    timeSlot.resize(nSlot,True);
+    ddSlot.resize(nSlot,True);
+
+    Vector<Int> ifr=msc.antenna1().getColumn();
+    Int maxAnt=max(ifr);
+    ifr*=1000;
+    {
+      Vector<Int> ant2=msc.antenna2().getColumn();
+      maxAnt=max(maxAnt,max(ant2));
+      ifr+=ant2;
+    }
+    maxAnt++;
+
+    ifrIndex.resize(nRow);
+    
+    Matrix<Int> ifrSlot(maxAnt,maxAnt,-1);
+    for (Int i=0; i<nIfr; i++) {
+      Int j=ifrAxis_p(i);
+      Int ant1=j/1000,ant2=j%1000;
+      if (j>=0 && ant1<maxAnt && ant2<maxAnt) ifrSlot(ant1,ant2)=i;
+    }
+
+    for (Int i=0; i<nRow; i++) ifrIndex(i)=ifrSlot(ifr(i)/1000,ifr(i)%1000);
+
     rowIndex_p.resize(nIfr,nSlot); rowIndex_p.set(-1);
     for (Int i=0; i<nRow; i++) rowIndex_p(ifrIndex(i),slot(i))=i;
 
-    // align the slots in time
-    // Note that this doesn't cope with all cases, e.g., if the number
-    // of slots is < number of times. Ok if at least one antenna is there
-    // for the whole block
-    Vector<Double> time=msc.time().getColumn();
-    Vector<Int> dd=msc.dataDescId().getColumn();
-    Matrix<Double> times(nIfr,nSlot,0);
-    Matrix<Int> dds(nIfr,nSlot,-1);
-    for (Int k=0; k<nRow; k++) {
-      times(ifrIndex(k),slot(k))=time(k);
-      dds(ifrIndex(k),slot(k))=dd(k);
-    }
-
-    for (Int sl=nSlot-1; sl>=0; sl--) {
-      // find latest time in this slot
-      IPosition minPos(1),maxPos(1);
-      Double minVal,maxVal;
-      minMax(minVal,maxVal,minPos,maxPos,times.column(sl));
-      //      Double ltime=max(times.column(sl));
-      Double ltime=maxVal;
-      Int ddAtMax=dds(maxPos(0),sl);
-      for (Int i=0; i<nIfr; i++) {
-	if (ifrAxis_p(i)>=0) { // ifr exists
-	  if (times(i,sl)==0) { // found a hole
-	    Int sl2=sl;
-	    while (sl2>0 && times(i,sl2)==0) sl2--;
-	    if (sl2>=0 && times(i,sl2)==ltime &&
-		dds(i,sl2)==ddAtMax) {
-	      // move from sl2 to sl to align in time
-	      Int row=rowIndex_p(i,sl2);
-	      rowIndex_p(i,sl)=row;
-	      rowIndex_p(i,sl2)=-1;
-	      slot(row)=sl;
-	      times(i,sl)=ltime;
-	      times(i,sl2)=0;
-	    }
-	  }
-	}
-      }
-    }
   } else {
     rowIndex_p.resize(0,0);
   }
@@ -872,20 +846,11 @@ GlishRecord MSSelector::getData(const Vector<String>& items, Bool ifrAxis,
 	    times(0)=0;
 	    Int nTimes=0;
 	    for (Int k=0; k<nSlot; k++) {
-	      Int i=0;
-	      while (i<nIfr && rowIndex_p(i,k)<0) i++;
-	      if (i<nIfr) {
-		times(0)+=time(rowIndex_p(i,k));
-		nTimes++;
-	      }
+		times(0)+=timeSlot(k);
 	    }
 	    if (nTimes>0) times(0)/=nTimes;
 	  } else {
-	    for (Int k=0; k<nSlot; k++) {
-	      Int i=0;
-	      while (i<nIfr && rowIndex_p(i,k)<0) i++;
-	      if (i<nIfr) times(k)=time(rowIndex_p(i,k));
-	    }
+	    times=timeSlot;
 	  }
 	  for (Int k=0; k<nT; k++) {
 	    if (doUT) {
@@ -926,21 +891,30 @@ GlishRecord MSSelector::getData(const Vector<String>& items, Bool ifrAxis,
       want(Data,fld-MSS::DATA)=True;
       break;
     case MSS::DATA_DESC_ID:
+      if (doIfrAxis) {
+	Vector<Int> id(nSlot); id=ddSlot;
+	if (average) averageId(id);
+	if (oneBased) id+=1;
+	out.add(item,id);
+      } else {
+	Vector<Int> col=msc.dataDescId().getColumn();
+	if (average) averageId(col);
+	if (oneBased) col+=1;
+	out.add(item,col);
+      }
+      break;
     case MSS::FIELD_ID:
     case MSS::SCAN_NUMBER:
       {
-	Vector<Int> col = (fld == MSS::DATA_DESC_ID ? 
-			   msc.dataDescId().getColumn() :
-			   (fld == MSS::FIELD_ID ?
-			    msc.fieldId().getColumn() :
-			    msc.scanNumber().getColumn()));
+	Vector<Int> col = (fld == MSS::FIELD_ID ?
+			   msc.fieldId().getColumn() :
+			   msc.scanNumber().getColumn());
 	if (doIfrAxis) {
-	  Matrix<Int> id(nIfr,nSlot); id.set(-1);
+	  Vector<Int> id(nSlot,-1);
 	  for (Int k=0; k<nSlot; k++) {
-	    for (Int i=0; i<nIfr; i++) {
-	      Int j = rowIndex_p(i,k);
-	      id(i,k)=(j<0 ? -1 : col(j));
-	    }
+	    Int i;
+	    for (i=0; i<nIfr && rowIndex_p(i,k)<0; i++);
+	    if (i<nIfr) id(k)=col(rowIndex_p(i,k));
 	  }
 	  if (average) averageId(id);
 	  if (oneBased) id+=1;
@@ -955,24 +929,23 @@ GlishRecord MSSelector::getData(const Vector<String>& items, Bool ifrAxis,
     case MSS::FEED1:
     case MSS::FEED2:
       {
-	Vector<Int> feed = (fld == MSS::FEED1 ? 
+	Vector<Int> col = (fld == MSS::FEED1 ? 
 			    msc.feed1().getColumn() :
 			    msc.feed2().getColumn());
 	if (doIfrAxis) {
-	  Matrix<Int> id(nIfr,nSlot); id.set(-1);
+	  Vector<Int> id(nSlot,-1);
 	  for (Int k=0; k<nSlot; k++) {
-	    for (Int i=0; i<nIfr; i++) {
-	      Int j=rowIndex_p(i,k);
-	      id(i,k)=(j<0 ? -1 : feed(j));
-	    }
+	    Int i;
+	    for (i=0; i<nIfr && rowIndex_p(i,k)<0; i++);
+	    if (i<nIfr) id(k)=col(rowIndex_p(i,k));
 	  }
 	  if (average) averageId(id);
 	  if (oneBased) id+=1;
 	  out.add(item,id);
 	} else {
-	  if (average) averageId(feed);
-	  if (oneBased) feed+=1;
-	  out.add(item,feed);
+	  if (average) averageId(col);
+	  if (oneBased) col+=1;
+	  out.add(item,col);
 	}
       }
       break;
@@ -1123,15 +1096,12 @@ GlishRecord MSSelector::getData(const Vector<String>& items, Bool ifrAxis,
       break;
     case MSS::TIME:
       {
-	Vector<Double> time=msc.time().getColumn();
 	if (doIfrAxis) {
-	  Matrix<Double> times(nIfr,nSlot);
-	  for (Int k=0; k<nRow; k++) {
-	    times(ifrIndex(k),slot(k))=time(k);
-	  }
+	  Vector<Double> times; times=timeSlot;
 	  if (average) averageDouble(times);
 	  out.add(item,times);
 	} else {
+	  Vector<Double> time=msc.time().getColumn();
 	  if (average) averageDouble(time);
 	  out.add(item,time);
 	}
