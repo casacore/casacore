@@ -127,7 +127,7 @@ public:
   MVPosition(Double in0, Double in1, Double in2);
   // Creates a vector with specified length towards pole
   // <group>
-  MVPosition(Double in0);
+  explicit MVPosition(Double in0);
   MVPosition(const Quantity &l);
   // </group>
   // Creates the position from specified (azimuth,elevation) angles and length
@@ -145,7 +145,7 @@ public:
   // </group>
   // Create from specified length and/or angles and/or position
   // <group>
-  MVPosition(const Vector<Double> &other);
+  explicit MVPosition(const Vector<Double> &other);
   MVPosition(const Vector<Quantity> &other);
   // </group>
   // Copy assignment
