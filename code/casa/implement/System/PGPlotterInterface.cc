@@ -42,3 +42,8 @@ void PGPlotterInterface::message(const String &text)
 	os << text;
     }
 }
+
+Bool PGPlotterInterface::isAttached() const
+{
+    return True;
+}
