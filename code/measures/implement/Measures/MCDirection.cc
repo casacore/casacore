@@ -282,7 +282,7 @@ void MCDirection::doConvert(MVDirection &in,
   Double g1, g2, g3, lengthE, tdbTime;
   // Planetary aberration factor
   Double lengthP = 0;
-  MeasTable::Types planID;
+  MeasTable::Types planID = MeasTable::MERCURY; // to stop warning
   
   MCFrame::make(inref.getFrame());
   MCFrame::make(outref.getFrame());
