@@ -4,7 +4,7 @@
  <date> 2000/11/23 </date>
  <avers> 1.5 </avers>
  <area> Library </area>
- <package> aips </package>
+ <package> casa </package>
  <module> Quanta </module>
  <type> Code </type>
  <category> New </category>
@@ -22,7 +22,7 @@ Added the functions log, log10, root, exp and sqrt for quantities.
  <date> 2000/08/22 </date>
  <avers> 1.4 </avers>
  <area> Tool </area>
- <package> trial </package>
+ <package> casa </package>
  <module> quanta </module>
  <type> Code Documentation </type>
  <category> New Bugfix </category>
@@ -43,7 +43,7 @@ Example:
  <date> 2000/12/14 </date>
  <avers> 1.5 </avers>
  <area> Tool </area>
- <package> trial </package>
+ <package> casa </package>
  <module> quantagui </module>
  <type> Code Documentation </type>
  <category> Change Bugfix </category>
