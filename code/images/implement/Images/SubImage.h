@@ -166,7 +166,7 @@ public:
   
   // This function returns the recommended maximum number of pixels to
   // include in the cursor of an iterator.
-  virtual uInt maxPixels() const;
+  virtual uInt advisedMaxPixels() const;
 
   // Get or put a single element in the lattice.
   // <group>

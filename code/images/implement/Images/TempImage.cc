@@ -202,9 +202,9 @@ void TempImage<T>::apply (const Functional<T,T>& function)
 }
 
 template<class T>
-uInt TempImage<T>::maxPixels() const
+uInt TempImage<T>::advisedMaxPixels() const
 {
-    return mapPtr_p->maxPixels();
+    return mapPtr_p->advisedMaxPixels();
 }
 
 template<class T>

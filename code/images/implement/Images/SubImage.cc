@@ -296,9 +296,9 @@ Bool SubImage<T>::doGetMaskSlice (Array<Bool>& buffer,
 }
 
 template<class T>
-uInt SubImage<T>::maxPixels() const
+uInt SubImage<T>::advisedMaxPixels() const
 {
-  return itsSubLatPtr->maxPixels();
+  return itsSubLatPtr->advisedMaxPixels();
 }
 
 template<class T>

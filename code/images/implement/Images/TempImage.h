@@ -208,7 +208,7 @@ public:
 
     // Returns the maximum recommended number of pixels for a cursor.
     // This is the number of pixels in a tile. 
-    virtual uInt maxPixels() const;
+    virtual uInt advisedMaxPixels() const;
 
     // Check for symmetry in data members.
     virtual Bool ok() const;

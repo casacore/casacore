@@ -662,7 +662,7 @@ PagedImage<T>& PagedImage<T>::operator+= (const Lattice<T>& other)
   logSink() << LogIO::POST;
   logSink() << LogIO::NORMAL;
 /*  
-  IPosition cursorShape(this->niceCursorShape(this->maxPixels() - 1));
+  IPosition cursorShape(this->niceCursorShape(this->advisedMaxPixels() - 1));
   LatticeIterator<T> toiter(*this, cursorShape);
   RO_LatticeIterator<T> otheriter(other, cursorShape);
   for (toiter.reset(), otheriter.reset(); !toiter.atEnd();
@@ -865,9 +865,9 @@ void PagedImage<T>::showCacheStatistics(ostream& os) const
 }
 
 template<class T> 
-uInt PagedImage<T>::maxPixels() const
+uInt PagedImage<T>::advisedMaxPixels() const
 {
-  return map_p.maxPixels();
+  return map_p.advisedMaxPixels();
 }
 
 template<class T> 

@@ -181,13 +181,13 @@ public:
   
   // Reconstruct an image from a pre-existing file.
   // By default the default pixelmask (if available) is used.
-  PagedImage (Table& table, MaskSpecifier = MaskSpecifier(),
-	      uInt rowNumber = 0);
+  explicit PagedImage (Table& table, MaskSpecifier = MaskSpecifier(),
+		       uInt rowNumber = 0);
   
   // Reconstruct an image from a pre-existing file.
   // By default the default pixelmask (if available) is used.
-  PagedImage (const String& filename, MaskSpecifier = MaskSpecifier(),
-	      uInt rowNumber = 0);
+  explicit PagedImage (const String& filename, MaskSpecifier = MaskSpecifier(),
+		       uInt rowNumber = 0);
   
   // Reconstruct an image from a pre-existing file with Locking.
   // By default the default pixelmask (if available) is used.
@@ -386,7 +386,7 @@ public:
 
   // Returns the maximum recommended number of pixels for a cursor. This is
   // the number of pixels in a tile. 
-  virtual uInt maxPixels() const;
+  virtual uInt advisedMaxPixels() const;
 
   // Help the user pick a cursor for most efficient access.
   virtual IPosition doNiceCursorShape (uInt maxPixels) const;
