@@ -52,7 +52,7 @@
 // compares the results with the reference output file.
 
 void makeCube (char** argv);
-void getCube (Bool ask);
+void getCube (Bool trav, Bool ask);
 void traverse (const IPosition& cubeShape, const IPosition& tileShape);
 IPosition getVec (uInt nrdim, const String& prompt);
 
@@ -65,15 +65,16 @@ main (int argc, char** argv)
 	        "arrays in one cell." << endl;
 	cout << "It writes the data, reads the cell back, and iterates "
 	        "along tiles." << endl;
-	cout << "For 3D arrays it also iterates along lines and planes."
+	cout << "For 3D arrays it also iterates along lines and planes"
 	     << endl;
+	cout << "when the 4th argument is given and is not equal 0." << endl;
 	cout << "It shows timing and cache statistics." << endl;
 	cout << "Invoke as tTiledCellStM_1 arrayShape tileShape MaxCacheSize"
 	     << endl;
 	cout << "  Eg. tTiledCellStM_1 256,256,100 20,20,20 0" << endl;
 	cout << "TiledStMan::makeTileShape is used when tileShape is given "
 	        "as 0" << endl;
-	cout << "If a 4th argument is given, the user will be asked for"
+	cout << "If a 5th argument is given, the user will be asked for"
 	     << endl;
 	cout << "slice shapes, axis path, and window start and length "
 	        "until 'end' is given" << endl;
@@ -83,7 +84,7 @@ main (int argc, char** argv)
     }
     try {
 	makeCube(argv);
-        getCube (ToBool(argc > 4));
+        getCube (ToBool(argc>4 && String(argv[4])!="0"), ToBool(argc>5));
     } catch (AipsError x) {
 	cout << "Caught an exception: " << x.getMesg() << endl;
 	return 1;
@@ -128,11 +129,13 @@ void makeCube (char** argv)
 	}
     }
     Vector<double> weight(nrdim);
+    Vector<double> tolerance(nrdim);
     for (i=0; i<nrdim; i++) {
 	weight(i) = i;
+	tolerance(i) = 0.5;
     }
     cout << TiledStMan::makeTileShape (cubeShape) << endl;
-    cout << TiledStMan::makeTileShape (cubeShape, weight) << endl;
+    cout << TiledStMan::makeTileShape (cubeShape, weight, tolerance) << endl;
 	
     // Build the table description.
     TableDesc td ("", "1", TableDesc::Scratch);
@@ -168,7 +171,7 @@ void makeCube (char** argv)
     accessor.showCacheStatistics (cout);
 }
 
-void getCube (Bool ask)
+void getCube (Bool trav, Bool ask)
 {
     IPosition cubeShape;
     IPosition tileShape;
@@ -248,7 +251,7 @@ void getCube (Bool ask)
     }
 
     // Traverse through 3D cubes.
-    if (nrdim == 3) {
+    if (trav  &&  nrdim == 3) {
 	traverse (cubeShape, tileShape);
     }
 
