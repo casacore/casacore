@@ -2778,3 +2778,4 @@
 10 101 src mv trial/apps/numerics/fftserver.help trial/implement/Mathematics/fftserver.help
 10 101 src mv trial/apps/numerics/fftserver.g trial/implement/Mathematics/fftserver.g
 10 101 src mv trial/apps/numerics/polyfitter.g trial/implement/Mathematics/polyfitter.g
+10 101 src mv trial/apps/numerics/polyfitter.help trial/implement/Mathematics/polyfitter.help
