@@ -34,6 +34,7 @@
 #include <aips/Arrays/Array.h>
 #include <aips/Arrays/ArrayMath.h>
 #include <aips/Exceptions/Error.h> 
+#include <aips/Mathematics/NumericTraits.h> 
 
 
 // LELFunction1D
@@ -211,11 +212,21 @@ T LELFunction1D<T>::getScalar() const
       if (pExpr_p->isScalar()) {
          return pExpr_p->getScalar();
       }
-      T sumVal = 0;
+      NumericTraits<T>::PrecisionType sumVal = 0;
       LatticeExpr<T> latExpr(pExpr_p, 0);
       RO_LatticeIterator<T> iter(latExpr, latExpr.niceCursorShape());
+      Bool deleteIt;
+      Int i;
+
+// Do the sum ourselves to avoid round off
+
       while (! iter.atEnd()) {
-	 sumVal += sum(iter.cursor());
+         const T *data = iter.cursor().getStorage(deleteIt);
+         for (i=0;i<iter.cursor().nelements();i++) {
+            sumVal += data[i];
+         }
+         iter.cursor().freeStorage(data, deleteIt);
+
 	 iter++;
       }
       return sumVal / pExpr_p->shape().product();
@@ -225,14 +236,25 @@ T LELFunction1D<T>::getScalar() const
       if (pExpr_p->isScalar()) {
          return pExpr_p->getScalar();
       }
-      T sumVal = 0;
+      NumericTraits<T>::PrecisionType sumVal = 0;
       LatticeExpr<T> latExpr(pExpr_p, 0);
       RO_LatticeIterator<T> iter(latExpr, latExpr.niceCursorShape());
+      Bool deleteIt;
+      Int i;
+
+// Do the sum ourselves to avoid round off
+
       while (! iter.atEnd()) {
-	 sumVal += sum(iter.cursor());
+         const T *data = iter.cursor().getStorage(deleteIt);
+         for (i=0;i<iter.cursor().nelements();i++) {
+            sumVal += data[i];
+         }
+         iter.cursor().freeStorage(data, deleteIt);
+
 	 iter++;
       }
       return sumVal;
+
    }
    default:
       throw(AipsError("LELFunction1D::getScalar - unknown function"));
