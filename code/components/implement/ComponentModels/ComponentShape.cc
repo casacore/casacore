@@ -153,15 +153,6 @@ void ComponentShape::visibility(Vector<DComplex>& scale,
 
 Bool ComponentShape::fromRecord(String& errorMessage,
 				const RecordInterface& record) {
-  //#if defined(AIPS_DEBUG)
-  ComponentType::Shape thisType = getType(errorMessage, record);
-  if ( thisType != type()) {
-    errorMessage += String("The 'type' field, in the shape record,") + 
-      String(" is not the expected value of '") + 
-      ComponentType::name(type()) + String("'\n");
-    return False;
-  }
-  //#endif
   const String dirString("direction");
   if (!record.isDefined(dirString)) {
     // The there is no direction field then the direction is NOT changed!
