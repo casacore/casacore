@@ -41,6 +41,7 @@
 #include <aips/Utilities/Assert.h>
 #include <trial/MeasurementEquations/VisSet.h>
 #include <trial/MeasurementEquations/VisBuffer.h>
+#include <trial/MeasurementEquations/VisibilityIterator.h>
 
 #include <aips/Tables/IncrementalStMan.h>
 #include <aips/Tables/ScalarColumn.h>
@@ -52,6 +53,7 @@
 #include <aips/Tables/TableInfo.h>
 #include <aips/Tables/TableLock.h>
 #include <aips/Tables/TableRecord.h>
+#include <aips/Tables/TableCopy.h>
 #include <aips/Tables/TiledColumnStMan.h>
 #include <aips/Tables/TiledShapeStMan.h>
 #include <aips/Tables/TiledDataStMan.h>
@@ -66,7 +68,7 @@
 
 SubMS::SubMS(String& theMS){
  
-  ms_p=MeasurementSet(theMS);
+  ms_p=MeasurementSet(theMS, Table::Update);
   mssel_p=ms_p;
   doChanAver_p=False;
 }
@@ -81,6 +83,7 @@ SubMS::SubMS(MeasurementSet& ms){
 
 SubMS::~SubMS(){
 
+  msOut_p.flush();
 
 }
 
@@ -119,15 +122,18 @@ Bool SubMS::makeSubMS(String& msname, String& colname){
 
 
   makeSelection();
-  mscIn_p=new ROMSColumns(mssel_p);
+  mscIn_p=new MSColumns(mssel_p);
   msOut_p=setupMS(msname, nchan_p[0], npol_p[0],  
 		  mscIn_p->observation().telescopeName()(0));
   msc_p=new MSColumns(msOut_p);
   // fill or update
   fillDDTables();
   fillFieldTable();
+  copyAntenna();
+  copyFeed();
+  copyObservation();
   fillMainTable(colname);
-
+  
 
 
   return True;
@@ -137,15 +143,8 @@ Bool SubMS::makeSubMS(String& msname, String& colname){
 
 Bool SubMS::makeSelection(){
 
-  MSSelection thisSelection;
-  if(fieldid_p.nelements() > 0)
-    thisSelection.setFieldIds(fieldid_p);
-  if(spw_p.nelements() > 0)
-    thisSelection.setSpwIds(spw_p);
 
-  TableExprNode exprNode=thisSelection.toTableExprNode(ms_p);
 
-  // check that sorted table exists (it should), if not, make it now.
   if (!ms_p.keywordSet().isDefined("SORTED_TABLE")) {
     Block<int> sort(4);
     sort[0] = MS::FIELD_ID;
@@ -156,19 +155,30 @@ Bool SubMS::makeSelection(){
     VisSet vs(ms_p,sort,noselection);
   }
   Table sorted=ms_p.keywordSet().asTable("SORTED_TABLE");
-  {
-  MSPolarization poltable= ms_p.polarization();
-  ROArrayColumn<Int> pols(poltable, 
-			  MSPolarization::columnName(MSPolarization::CORR_TYPE));
 
-  npol_p.resize(spw_p.shape()); //assuming a simple data_desc_id
-  for (uInt k=0; k < npol_p.nelements(); ++k){  
-    npol_p[k]=pols(spw_p[k]).nelements();
-  }
+  MSSelection thisSelection;
+  if(fieldid_p.nelements() > 0)
+    thisSelection.setFieldIds(fieldid_p);
+  if(spw_p.nelements() > 0)
+    thisSelection.setSpwIds(spw_p);
+
+  const TableExprNode exprNode=thisSelection.toTableExprNode(sorted);
+
+  // check that sorted table exists (it should), if not, make it now.
+
+  {
+    MSPolarization poltable= ms_p.polarization();
+    ROArrayColumn<Int> pols(poltable, 
+			    MSPolarization::columnName(MSPolarization::CORR_TYPE));
+    
+    npol_p.resize(spw_p.shape()); //assuming a simple data_desc_id
+    for (uInt k=0; k < npol_p.nelements(); ++k){  
+      npol_p[k]=pols(spw_p[k]).nelements();
+    }
   }
   // Now remake the selected ms
   mssel_p = MeasurementSet(sorted(exprNode));
-
+  
   mssel_p.rename(ms_p.tableName()+"/SELECTED_TABLE", Table::Scratch);
 
 
@@ -179,6 +189,7 @@ Bool SubMS::makeSelection(){
 MeasurementSet& SubMS::setupMS(String MSFileName, Int nchan, Int nCorr, String telescop, Int obsType ){
 
   
+
   // Make the MS table
   TableDesc td = MS::requiredTableDesc();
   
@@ -276,6 +287,7 @@ MeasurementSet& SubMS::setupMS(String MSFileName, Int nchan, Int nCorr, String t
     info.readmeAddLine
       ("This is a measurement set Table holding astronomical observations");
   }
+
 
   return *ms;
 }
@@ -472,13 +484,13 @@ Bool SubMS::fillMainTable(const String& whichCol){
     msc_p->fieldId().putColumn(fieldId);
   }
 
+
   //Deal with data
 
 
   String col=whichCol;
   col.upcase();
   String columnName;
-  ROArrayColumn<Complex> data;
 
 
 
@@ -509,34 +521,37 @@ Bool SubMS::fillMainTable(const String& whichCol){
        << LogIO::POST;
   }
 
-  if(columnName== MS::columnName(MS::DATA))
-    data.reference(mscIn_p->data());
-  else if(columnName == "MODEL_DATA" )
-    data.reference(mscIn_p->modelData());
-  else
-    data.reference(mscIn_p->correctedData());
+
+
 
   if(!doChanAver_p){
- 
+    ROArrayColumn<Complex> data;
+    if(columnName== MS::columnName(MS::DATA))
+      data.reference(mscIn_p->data());
+    else if(columnName == "MODEL_DATA" )
+      data.reference(mscIn_p->modelData());
+    else
+    data.reference(mscIn_p->correctedData());
     msc_p->data().putColumn(data);
     msc_p->flag().putColumn(mscIn_p->flag());
   }
   else{
     Int rowsdone=0;
     Int rowsnow=0;
-    Block<int> sort(4);
+    Block<Int> sort(4);
     sort[0] = MS::FIELD_ID;
     sort[1] = MS::ARRAY_ID;
     sort[2] = MS::DATA_DESC_ID;
     sort[3] = MS::TIME;
     Matrix<Int> noselection;
-    VisSet vs(mssel_p,sort,noselection);
-    ROVisIter& vi=vs.iter();
+    VisSet *vs= new VisSet(mssel_p, sort, noselection);
+    ROVisIter& vi(vs->iter());
     VisBuffer vb(vi);
+
     for (vi.originChunks();vi.moreChunks();vi.nextChunk()) {
       for (vi.origin(); vi.more(); vi++) {
-	RefRows rowstoadd(rowsdone, rowsnow);
 	rowsnow=vb.nRow();
+	RefRows rowstoadd(rowsdone, rowsdone+rowsnow-1);
 	Int spw=vb.spectralWindow();
 	Cube<Complex> vis;
 	if(columnName== MS::columnName(MS::DATA))
@@ -564,9 +579,12 @@ Bool SubMS::fillMainTable(const String& whichCol){
 	      for (Int m=0; m < chanStep_p[spw]; ++m){
 		avervis=avervis+vis.xyPlane(k).column(chanStart_p[spw]+ 
 						      j*chanStep_p[spw]+m);
-		tryFlag= max(tryFlag, inFlag.xyPlane(k).column(chanStart_p[spw]+ 
-						      j*chanStep_p[spw]+m));
-
+		for (Int pol=0; pol < npol_p[spw]; ++pol){
+		  tryFlag[pol]=tryFlag[pol] | 
+		    inFlag.xyPlane(k).column(chanStart_p[spw]+ 
+					     j*chanStep_p[spw]+m)[pol];
+		  
+		}
 
 	      }
 	      averdata.xyPlane(k).column(j)=avervis/chanStep_p[spw];
@@ -590,5 +608,35 @@ Bool SubMS::fillMainTable(const String& whichCol){
 }
 
 
+Bool SubMS::copyAntenna(){
+
+  Table oldAnt(mssel_p.antennaTableName(), Table::Old);
+  Table newAnt(msOut_p.antennaTableName(), Table::New);
+  TableCopy::copyRows(newAnt, oldAnt);
 
 
+  return True;
+
+}
+
+Bool SubMS::copyFeed(){
+
+  Table oldFeed(mssel_p.feedTableName(), Table::Old);
+  Table newFeed(msOut_p.feedTableName(), Table::New);
+  TableCopy::copyRows(newFeed, oldFeed);
+
+
+  return True;
+
+}
+
+Bool SubMS::copyObservation(){
+
+  Table oldObs(mssel_p.observationTableName(), Table::Old);
+  Table newObs(msOut_p.observationTableName(), Table::New);
+  TableCopy::copyRows(newObs, oldObs);
+
+
+  return True;
+
+}
