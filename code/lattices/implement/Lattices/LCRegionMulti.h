@@ -90,7 +90,7 @@ public:
 		   const LCRegion* region9 = 0,
 		   const LCRegion* region10 = 0);
 
-    // Construct from multiple regions given as a Block..
+    // Construct from multiple regions given as a Block.
     // When <src>takeOver</src> is True, the destructor will delete the
     // given regions. Otherwise a copy of the regions is made.
     LCRegionMulti (Bool takeOver, const PtrBlock<const LCRegion*>& regions);
@@ -110,11 +110,6 @@ public:
     virtual Bool hasMask() const;
 
 protected:
-    // Construct from lattice shape and region pointer, which is
-    // taken over.
-    // Primarily meant for LCExtension.
-    LCRegionMulti (const LCRegion* region, const IPosition& latticeShape);
-
     // Store the contributing regions in a record.
     TableRecord makeRecord (const String& tableName) const;
 
@@ -128,7 +123,7 @@ protected:
 			 const Vector<Float>& translateVector,
 			 const IPosition& newLatticeShape) const;
 
-    // Determine if all regions have mask (use by LCIntersection).
+    // Determine if all regions have mask (used by LCIntersection).
     void fillHasMask();
 
     // Find which area of the section and region are needed.
@@ -141,6 +136,11 @@ protected:
     const PtrBlock<const LCRegion*>& regions() const;
     
 protected:
+    // Construct from lattice shape and region pointer, which is
+    // taken over.
+    // Primarily meant for LCExtension.
+    LCRegionMulti (const LCRegion* region, const IPosition& latticeShape);
+
     // Do the actual getting of an array of values.
     virtual Bool doGetSlice (Array<Bool>& buffer, const Slicer& section);
 

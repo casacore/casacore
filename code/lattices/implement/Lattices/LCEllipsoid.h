@@ -116,12 +116,6 @@ public:
     // Make a copy of the derived object.
     virtual LCRegion* cloneRegion() const;
 
-    // Construct another LCBox (for e.g. another lattice) by moving
-    // this one. It recalculates the bounding box.
-    // A positive translation value indicates "to right".
-    virtual LCRegion* doTranslate (const Vector<Float>& translateVector,
-				   const IPosition& newLatticeShape) const;
-
     // Get the center.
     const Vector<Float>& center() const;
 
@@ -140,6 +134,13 @@ public:
     // Convert correct object from a record.
     static LCEllipsoid* fromRecord (const TableRecord&,
 				    const String& tableName);
+
+protected:
+    // Construct another LCBox (for e.g. another lattice) by moving
+    // this one. It recalculates the bounding box.
+    // A positive translation value indicates "to right".
+    virtual LCRegion* doTranslate (const Vector<Float>& translateVector,
+				   const IPosition& newLatticeShape) const;
 
 private:
     // Fill the itsCenter vector from an IPosition.

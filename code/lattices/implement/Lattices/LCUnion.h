@@ -77,6 +77,9 @@ public:
     LCUnion (const LCRegion& region1, const LCRegion& region2);
 
     // Construct from multiple regions.
+    // When <src>takeOver</src> is True, the destructor will delete the
+    // given regions. Otherwise a copy of the regions is made.
+    // <group>
     LCUnion (Bool takeOver, const LCRegion* region1,
 	     const LCRegion* region2 = 0,
 	     const LCRegion* region3 = 0,
@@ -87,11 +90,8 @@ public:
 	     const LCRegion* region8 = 0,
 	     const LCRegion* region9 = 0,
 	     const LCRegion* region10 = 0);
-
-    // Construct from multiple regions given as a Block..
-    // When <src>takeOver</src> is True, the destructor will delete the
-    // given regions. Otherwise a copy of the regions is made.
     LCUnion (Bool takeOver, const PtrBlock<const LCRegion*>& regions);
+    // </group>
 
     // Copy constructor (copy semantics).
     LCUnion (const LCUnion& other);
@@ -107,12 +107,6 @@ public:
     // Make a copy of the derived object.
     virtual LCRegion* cloneRegion() const;
 
-    // Construct another LCRegion (for e.g. another lattice) by moving
-    // this one. It recalculates the bounding box and mask.
-    // A positive translation value indicates "to right".
-    virtual LCRegion* doTranslate (const Vector<Float>& translateVector,
-				   const IPosition& newLatticeShape) const;
-
     // Get the class name (to store in the record).
     static String className();
 
@@ -127,11 +121,17 @@ public:
 				const String& tableName);
 
 protected:
+    // Construct another LCRegion (for e.g. another lattice) by moving
+    // this one. It recalculates the bounding box and mask.
+    // A positive translation value indicates "to right".
+    virtual LCRegion* doTranslate (const Vector<Float>& translateVector,
+				   const IPosition& newLatticeShape) const;
+
     // Do the actual getting of the mask.
     virtual void multiGetSlice (Array<Bool>& buffer, const Slicer& section);
 
 private:
-    // Make the bounding box and determine the offsets..
+    // Make the bounding box and determine the offsets.
     void defineBox();
 };
 

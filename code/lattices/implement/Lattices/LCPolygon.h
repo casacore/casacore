@@ -99,6 +99,7 @@ template<class T> class Matrix;
 //# <li>
 //# </todo>
 
+
 class LCPolygon: public LCRegionFixed
 {
 public:
@@ -129,12 +130,6 @@ public:
     // Make a copy of the derived object.
     virtual LCRegion* cloneRegion() const;
 
-    // Construct another LCPolygon (for e.g. another lattice) by moving
-    // this one. It recalculates the bounding box.
-    // A positive translation value indicates "to right".
-    virtual LCRegion* doTranslate (const Vector<Float>& translateVector,
-				   const IPosition& newLatticeShape) const;
-
     // Get the X-values.
     const Vector<Float>& x() const;
 
@@ -153,6 +148,13 @@ public:
     // Convert correct object from a record.
     static LCPolygon* fromRecord (const TableRecord&,
 				  const String& tablename);
+
+protected:
+    // Construct another LCPolygon (for e.g. another lattice) by moving
+    // this one. It recalculates the bounding box.
+    // A positive translation value indicates "to right".
+    virtual LCRegion* doTranslate (const Vector<Float>& translateVector,
+				   const IPosition& newLatticeShape) const;
 
 private:
     // Make the bounding box.
