@@ -1,5 +1,5 @@
 \documentclass[11pt]{article}
-\usepackage{html, epsf}
+\usepackage{html}
 %\begin{latexonly}
 \setlength{\textheight}{7in}
 \setlength{\textwidth}{8in}
