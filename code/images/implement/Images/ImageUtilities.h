@@ -74,8 +74,25 @@ class Unit;
 // </todo>
  
 
-class ImageUtilities {
+class ImageUtilities
+{
 public:
+// Define the possible image types.
+   enum ImageTypes {
+     // AIPS++
+     AIPSPP,
+     // FITS
+     FITS,
+     // Miriad
+     MIRIAD,
+     // Gipsy
+     GIPSY,
+     // Unknown
+     UNKNOWN
+   };
+
+// Return the type of an image with the given name.
+   static ImageTypes imageType (const String& fileName);
 
 // This function converts pixel coordinates to world coordinates. You
 // specify a vector of pixel coordinates (<src>pixels</src>) for only one 
