@@ -29,7 +29,6 @@
 #include <aips/Arrays/Vector.h>
 #include <aips/Containers/RecordInterface.h>
 #include <aips/Containers/RecordFieldId.h>
-#include <aips/Containers/Record.h>
 #include <aips/Exceptions/Error.h>
 #include <aips/Mathematics/Complex.h>
 #include <aips/Measures/MCDirection.h>
@@ -84,6 +83,7 @@ PointShape & PointShape::operator=(const PointShape & other) {
 }
 
 ComponentType::Shape PointShape::shape() const {
+  DebugAssert(ok(), AipsError);
   return ComponentType::POINT;
 }
 
@@ -130,7 +130,7 @@ Double PointShape::visibility(const Vector<Double> & uvw,
   return 1.0;
 }
 
-Bool PointShape::isSymmetric() {
+Bool PointShape::isSymmetric() const {
   DebugAssert(ok(), AipsError);
   return True;
 }
@@ -160,9 +160,7 @@ Bool PointShape::fromRecord(String & errorMessage,
 Bool PointShape::toRecord(String & errorMessage,
 			  RecordInterface & record) const {
   DebugAssert(ok(), AipsError);
-  Record shapeRecord;
-  shapeRecord.define(RecordFieldId("type"), String("point"));
-  record.defineRecord(RecordFieldId("shape"), shapeRecord);
+  record.define(RecordFieldId("type"), String("point"));
   if (!ComponentShape::addDir(errorMessage, record)) return False;
   return True;
 }
