@@ -1,25 +1,24 @@
-\documentclass[11pt]{article}
-\usepackage{html, epsfig, longtable, aips2help}
-\input{aips2defs.tex}
+%\documentclass[11pt]{article}
+%\usepackage{html, epsfig, longtable, aips2help}
+%\input{aips2defs.tex}
 %%-----------------------------------------------------------------------------
 
-\begin{document}
+%\begin{document}
 
-\title{Development plan for v2.0 (revision)}
+%\title{Development plan for v2.0 (revision)}
 
 
-\author{Joseph McMullin\\
-   NRAO}
+%\author{Joseph McMullin NRAO}
 
-   \date{29 Dec, 2002}
+%   \date{29 Dec, 2002}
 
-   \maketitle
+%   \maketitle
    %%---------------------------------------------------------------------------
    \begin{htmlonly}
    \htmladdnormallink{A postscript version of this note is available (28kB).}{../253.ps.gz}
    \end{htmlonly}
 
-   \tableofcontents
+%   \tableofcontents
 
 \section{Purpose}
 
@@ -154,4 +153,4 @@ WY & Wes Young & NRAO\\
    \htmladdnormallink{Release Summary}{./release.html}
    \end{htmlonly}
 
-\end{document}
+%\end{document}
