@@ -4802,3 +4802,4 @@
 14 316 sys rm libexec/dish_oper.g
 14 316 src rm trial/apps/dish/dish_prman.g
 14 316 sys rm libexec/dish_prman.g
+14 316 src rm trial/apps/dish/dish_ranges.g
