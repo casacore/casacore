@@ -163,25 +163,25 @@ IPosition RO_LatticeIterator<T>::cursorShape() const
 template <class T>
 const Vector<T>& RO_LatticeIterator<T>::vectorCursor() const
 {
-  return itsIterPtr->vectorCursor();
+  return itsIterPtr->vectorCursor (True, False);
 }
 
 template <class T>
 const Matrix<T>& RO_LatticeIterator<T>::matrixCursor() const
 {
-  return itsIterPtr->matrixCursor();
+  return itsIterPtr->matrixCursor (True, False);
 }
 
 template <class T>
 const Cube<T>& RO_LatticeIterator<T>::cubeCursor() const
 {
-  return itsIterPtr->cubeCursor();
+  return itsIterPtr->cubeCursor (True, False);
 }
 
 template <class T>
 const Array<T>& RO_LatticeIterator<T>::cursor() const
 {
-  return itsIterPtr->cursor();
+  return itsIterPtr->cursor (True, False);
 }
 
 static LogIO ROlogErr(LogOrigin("RO_LatticeIterator<T>", "ok()"));
@@ -189,13 +189,13 @@ static LogIO ROlogErr(LogOrigin("RO_LatticeIterator<T>", "ok()"));
 template <class T>
 Bool RO_LatticeIterator<T>::ok() const
 {
-  if (itsIterPtr.null() == True){
+  if (itsIterPtr.null() == True) {
     ROlogErr << LogIO::SEVERE 
 	     << "The pointer the the actual Lattice Iterator is zero!" 
 	     << LogIO::POST;
     return False;
   }
-  if (itsIterPtr->ok() == False){
+  if (itsIterPtr->ok() == False) {
     ROlogErr << LogIO::SEVERE 
 	     << "The actual Lattice Iterator class is inconsistent" 
 	     << LogIO::POST;
@@ -210,13 +210,23 @@ template <class T>
 LatticeIterator<T>::LatticeIterator (Lattice<T>& lattice,
 				     const LatticeNavigator& method)   
 : RO_LatticeIterator<T> (lattice, method)
-{}
+{
+  if (! lattice.isWritable()) {
+    throw (AipsError ("LatticeIterator cannot be constructed; "
+		      "lattice is not writable"));
+  }
+}
 
 template <class T>
 LatticeIterator<T>::LatticeIterator (Lattice<T>& lattice,
 				     const IPosition& cursorShape)   
 : RO_LatticeIterator<T> (lattice, cursorShape)
-{}
+{
+  if (! lattice.isWritable()) {
+    throw (AipsError ("LatticeIterator cannot be constructed; "
+		      "lattice is not writable"));
+  }
+}
 
 template <class T>
 LatticeIterator<T>::LatticeIterator (const LatticeIterator<T>& other)
@@ -244,37 +254,49 @@ LatticeIterator<T> LatticeIterator<T>::copy() const
 }
 
 template <class T>
-Vector<T>& LatticeIterator<T>::vectorCursor()
+Vector<T>& LatticeIterator<T>::rwVectorCursor()
 {
-  return itsIterPtr->vectorCursor();
+  return itsIterPtr->vectorCursor (True, True);
 }
 
 template <class T>
-Matrix<T>& LatticeIterator<T>::matrixCursor()
+Matrix<T>& LatticeIterator<T>::rwMatrixCursor()
 {
-  return itsIterPtr->matrixCursor();
+  return itsIterPtr->matrixCursor (True, True);
 }
 
 template <class T>
-Cube<T>& LatticeIterator<T>::cubeCursor()
+Cube<T>& LatticeIterator<T>::rwCubeCursor()
 {
-  return itsIterPtr->cubeCursor();
+  return itsIterPtr->cubeCursor (True, True);
 }
 
 template <class T>
-Array<T>& LatticeIterator<T>::cursor()
+Array<T>& LatticeIterator<T>::rwCursor()
 {
-  return itsIterPtr->cursor();
+  return itsIterPtr->cursor (True, True);
 }
 
 template <class T>
-void LatticeIterator<T>::writeCursor()
+Vector<T>& LatticeIterator<T>::woVectorCursor()
 {
-  itsIterPtr->writeCursor();
+  return itsIterPtr->vectorCursor (False, True);
 }
 
 template <class T>
-void LatticeIterator<T>::writeArray (const Array<T>& data)
+Matrix<T>& LatticeIterator<T>::woMatrixCursor()
 {
-  itsIterPtr->writeArray (data);
+  return itsIterPtr->matrixCursor (False, True);
+}
+
+template <class T>
+Cube<T>& LatticeIterator<T>::woCubeCursor()
+{
+  return itsIterPtr->cubeCursor (False, True);
+}
+
+template <class T>
+Array<T>& LatticeIterator<T>::woCursor()
+{
+  return itsIterPtr->cursor (False, True);
 }
