@@ -1,0 +1,14 @@
+
+change id: 0103
+ author:   Neil Killeen
+ date:     2001/07/12
+ avers:    1.6
+ area:     Tool
+ package:  trial
+ module:   image
+ type:     Code
+ category: New
+ summary:  Image tool gets new constructor imagefromascii and function toascii
+I have added a new constructor, imagefromascii, which converts
+an ascii file to an aips++ image.  Also function toascii
+to write out an ascii file.
