@@ -487,6 +487,9 @@ public:
     static T setBinWidth (const Vector<T>& clip,
                           uInt nBins);
 
+// Can handle null mask
+   virtual Bool canHandleNullMask() const {return True;};
+
 private:
     ImageStatistics<T>* pStats_p;
     Block<uInt>* pHist_p;
