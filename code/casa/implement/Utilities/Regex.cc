@@ -35,7 +35,8 @@
 #include <aips/iostream.h>
 
 Regex::Regex() {
-  create("",0,0,0); }
+  create("",0,0,0);
+}
 
 void Regex::create(const String& exp, Int fast, Int bufsize, 
 		    const Char* transtable) {
@@ -100,28 +101,46 @@ ostream &operator<<(ostream &ios, const Regex &exp) {
   return ios << *exp.str;
 }
 
-Int Regex::search(const Char *s, Int len, Int &matchlen, Int startpos) const {
-  Int matchpos, pos, range;
-  if (startpos >= 0) {
-    pos = startpos;
-    range = len - startpos;
+String::size_type Regex::find(const Char *s, String::size_type len,
+				Int &matchlen,
+				String::size_type pos) const {
+  Int xpos = pos;
+  if (xpos<0) return String::npos;
+  return search(s, len, matchlen, xpos);
+}
+
+String::size_type Regex::search(const Char *s, String::size_type len,
+                                Int &matchlen,
+                                Int pos) const {
+  Int matchpos, xpos, range;
+  if (pos >= 0) {
+    xpos = pos;
+    range = len - pos;
   } else {
-    pos = len + startpos;
-    range = -pos;
+    xpos = len + pos;
+    range = -xpos;
   };
-  matchpos = a2_re_search_2(buf, 0, 0, (Char*)s, len, pos, range, reg, len);
+  matchpos = a2_re_search_2(buf, 0, 0, (Char*)s, len, xpos, range, reg, len);
   if (matchpos >= 0) matchlen = reg->end[0] - reg->start[0];
-  else matchlen = 0;
+  else {
+    matchlen = 0;
+    return String::npos;
+  };
   return matchpos;
 }
 
-Int Regex::match(const Char *s, Int len, Int p) const {
-  if (p < 0) {
-    p += len;
-    if (p > len) return -1;
-    return a2_re_match_2(buf, 0, 0, (Char*)s, p, 0, reg, p);
-  } else if (p > len) return -1;
-  else return a2_re_match_2(buf, 0, 0, (Char*)s, len, p, reg, len);
+String::size_type Regex::match(const Char *s,
+			       String::size_type len,
+			       String::size_type pos) const {
+  Int res;
+  if (pos < 0) {
+    pos += len;
+    if (pos > len) return String::npos;
+    res = a2_re_match_2(buf, 0, 0, (Char*)s, pos, 0, reg, pos);
+  } else if (pos > len) return String::npos;
+  else res = a2_re_match_2(buf, 0, 0, (Char*)s, len, pos, reg, len);
+  if (res < 0) return String::npos;
+  return static_cast<String::size_type>(res);
 }
 
 Regex::Regex(const String &exp, Bool fast, Int sz,

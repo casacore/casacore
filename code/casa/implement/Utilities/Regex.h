@@ -30,11 +30,11 @@
 
 //# Includes
 #include <aips/aips.h>
+#include <aips/Utilities/RegexBase.h>
 
 //# Forward declarations.
 #include <aips/iosfwd.h>
 
-class  String;
 struct re_pattern_buffer;
 struct re_registers;
 
@@ -170,14 +170,13 @@ struct re_registers;
 // </srcblock>
 // </example>
 
-// <todo asof="2001/01/15">
-//   <li> Derive from RegexBase to allow more different classes
+// <todo asof="2001/07/15">
 //   <li> Let sgi ifdef go
 //   <li> Decide on documentation of GNU stuff (cregex.h, cregex.cc)
 // </todo>
 
 
-class Regex {
+class Regex : public RegexBase {
 public:
     // Default constructor uses a zero-length regular expression.
     // <thrown>
@@ -204,7 +203,7 @@ public:
     // </thrown>
     Regex(const Regex &that);
     
-    ~Regex();
+    virtual ~Regex();
     
     // Assignment (copy semantics).
     // <thrown>
@@ -235,7 +234,7 @@ public:
     
     // Test if the regular expression matches (part of) string <src>s</src>.
     // The return value gives the length of the matching string part,
-    // -1 if there is no match, or -2 in case of an internal error.
+    // or String::npos if there is no match or an error.
     // The string has <src>len</src> characters and the test starts at
     // position <src>pos</src>. The string may contain null characters.
     // Negative p is allowed to match at end.
@@ -245,7 +244,9 @@ public:
     // to test if a string matches a regular expression. 
     // <src>Regex::match</src> is pretty low-level.
     // </note>
-    Int match(const Char *s, Int len, Int p=0) const;
+    virtual String::size_type match(const Char *s,
+				    String::size_type len,
+				    String::size_type pos=0) const;
     
     // Test if the regular expression occurs in string <src>s</src>.
     // The return value gives the position of the first substring
@@ -253,14 +254,21 @@ public:
     // is returned in <src>matchlen</src>.
     // The string has <src>len</src> characters and the test starts at
     // position <src>pos</src>. The string may contain null characters.
-    //
+    // The search will do a reverse search if the pos given is less than 0.
     // <note role=tip>
     // Use the appropriate <linkto class=String>String</linkto> functions
     // to test if a regular expression occurs in a string.
     // <src>Regex::search</src> is pretty low-level.
     // </note>
-    Int search(const Char *s, Int len, Int &matchlen, Int startpos=0) const;
-    
+    // <group>
+    virtual String::size_type search(const Char *s, String::size_type len,
+				     Int &matchlen,
+				     Int pos=0) const;
+    virtual String::size_type find(const Char *s, String::size_type len,
+				   Int &matchlen,
+				   String::size_type pos=0) const;
+    // </group>
+
     // Return some internal <src>cregex</src> info.
     Int match_info(Int& start, Int& length, Int nth = 0) const;
 
