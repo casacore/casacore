@@ -129,6 +129,8 @@ Bool MSSelector::initSelection(const Vector<Int>& dataDescId, Bool reset)
     dataDescId_p.resize(0);
     lastDataDescId_p.resize(0);
     useSlicer_p=False;
+    polSlice_p=Slice();
+    chanSlice_p=Slice();
     haveSlicer_p=False;
     wantedOne_p=-1;
     convert_p=False;
