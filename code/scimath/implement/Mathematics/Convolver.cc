@@ -1,5 +1,5 @@
 //# Convolver.cc:  this defines Convolver a class for doing convolution
-//# Copyright (C) 1996,1997,1999
+//# Copyright (C) 1996,1997,1999,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -29,11 +29,13 @@
 #include <aips/Arrays/Vector.h>
 #include <aips/Arrays/ArrayMath.h>
 #include <aips/Arrays/ArrayIter.h>
+#include <aips/strstream.h>
+
 
 template<class FType> Convolver<FType>::
 Convolver(const Array<FType>& psf, Bool cachePsf){
   if (cachePsf) thePsf = psf;
-  makeXfr(psf, defaultShape(psf), False, False);
+  valid = False;
 }
 
 template<class FType> Convolver<FType>::
@@ -42,7 +44,7 @@ Convolver(const Array<FType>& psf,
 	  Bool fullSize,
 	  Bool cachePsf){
   if (cachePsf) thePsf = psf;
-  makeXfr(psf, imageSize, True, fullSize);
+  valid = False;
 }
 
 template<class FType> Convolver<FType>::
@@ -72,6 +74,14 @@ Convolver<FType>::operator=(const Convolver<FType> & other){
 
 template<class FType> Convolver<FType>::
 ~Convolver(){}
+
+template<class FType>
+void Convolver<FType>::validate() {
+  if(!valid) {
+    valid = True;
+    makeXfr(thePsf, defaultShape(thePsf), False, False);
+  }
+}
 
 template<class FType> IPosition Convolver<FType>::
 defaultShape(const Array<FType>& psf){
@@ -128,6 +138,7 @@ makeXfr(const Array<FType>& psf,
 
 template<class FType> void Convolver<FType>::
 makePsf(Array<FType>& psf){
+  validate();
   if (thePsf.nelements() == 0) {
     Array<FType> paddedPsf(theFFTSize);
     theFFT.fft(paddedPsf, theXfr, True);
@@ -144,6 +155,7 @@ template<class FType> void Convolver<FType>::
 linearConv(Array<FType>& result,
 	   const Array<FType>& model,  
 	   Bool fullSize) {
+  validate();
   // Check the dimensions of the model are compatible with the current psf
   IPosition imageSize = extractShape(thePsfSize, model.shape());
   if (fullSize){
@@ -182,6 +194,7 @@ template<class FType> void Convolver<FType>::
 doConvolution(Array<FType>& result,
 	      const Array<FType>& model,
 	      Bool fullSize) {
+  validate();
   IPosition modelSize = model.shape();
   Array<NumericTraits<FType>::ConjugateType> fftModel;
   if (theFFTSize != modelSize){
@@ -218,7 +231,7 @@ doConvolution(Array<FType>& result,
 template<class FType> void Convolver<FType>::
 setPsf(const Array<FType>& psf, Bool cachePsf){
   if (cachePsf) thePsf = psf;
-  makeXfr(psf, defaultShape(psf), False, False);
+  valid=False;
 }
   
 template<class FType> void Convolver<FType>::
@@ -227,7 +240,7 @@ setPsf(const Array<FType>& psf,
        Bool fullSize,
        Bool cachePsf){
   if (cachePsf) thePsf = psf;
-  makeXfr(psf, imageSize, True, fullSize);
+  valid=False;
 }
 
 template<class FType> void Convolver<FType>::
@@ -243,6 +256,7 @@ template<class FType> void Convolver<FType>::
 circularConv(Array<FType>& result, 
 	     const Array<FType>& model){
   // Check the dimensions of the model are compatible with the current psf
+  validate();
   IPosition imageSize = extractShape(thePsfSize, model.shape());
   if (max(imageSize.asVector(), 
 	  thePsfSize.asVector()) 
@@ -270,6 +284,3 @@ getPsf(Bool cachePsf){
     thePsf.reference(psf);
   return psf;
 }
-// Local Variables: 
-// compile-command: "cd test; gmake OPTLIB=1 inst"
-// End: 
