@@ -223,7 +223,7 @@ private:
     static uInt getMaxPathNameSize ();
     // Define the maximum number of bytes in a filename
     // This definition does not use Posix values.
-    static long getMaxNameSize ();
+    static uInt getMaxNameSize ();
 
 
     // This function is used by expandedName to replace the tilde and to
@@ -236,7 +236,7 @@ private:
 
     // This function is used by expandName and absoluteName. It sets the 
     // integer "count" on the next slash or on the end of a string
-    void getNextName (const String& inString, int& count) const;
+    void getNextName (const String& inString, uInt& count) const;
 };
 
 
