@@ -63,6 +63,14 @@ Int floor(const Int &val) {
     return (val);
 }
 
+Float real(const Float &val) {
+   return val;
+}
+
+Double real(const Double &val) {
+   return val;
+}
+
 Array<Complex> operator *(const Array<Complex> &in, Double f) {
   return in * Complex(f);
 }
