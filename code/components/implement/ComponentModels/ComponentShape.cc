@@ -31,6 +31,7 @@
 #include <aips/Containers/RecordFieldId.h>
 #include <aips/Containers/RecordInterface.h>
 #include <aips/Exceptions/Error.h>
+#include <aips/Lattices/IPosition.h>
 #include <aips/Measures/MDirection.h>
 #include <aips/Utilities/Assert.h>
 #include <aips/Utilities/String.h>
@@ -42,6 +43,29 @@ ComponentShape::~ComponentShape() {
 void ComponentShape::refDirection(MDirection & refDir) const {
   DebugAssert(ok(), AipsError);
   refDir = refDirection();
+}
+
+ComponentType::Shape ComponentShape::getType(String & errorMessage,
+					     const RecordInterface & record) {
+  const String typeString("type");
+  if (!record.isDefined(typeString)) {
+    errorMessage += 
+      String("The 'shape' record does not have a 'type' field.\n");
+    return ComponentType::UNKNOWN_SHAPE;
+  }
+  const RecordFieldId type(typeString);
+  if (record.dataType(type) != TpString) {
+    errorMessage += String("The 'type' field, in the shape record,") + 
+      String(" must be a String\n");
+    return ComponentType::UNKNOWN_SHAPE;
+  }      
+  if (record.shape(type) != IPosition(1,1)) {
+    errorMessage += String("The 'type' field, in the shape record,") + 
+      String(" must have only 1 element\n");
+    return ComponentType::UNKNOWN_SHAPE;
+  }      
+  const String & typeVal = record.asString(type);
+  return ComponentType::shape(typeVal);
 }
 
 Bool ComponentShape::readDir(String & errorMessage,
@@ -80,29 +104,6 @@ Bool ComponentShape::addDir(String & errorMessage,
   }
   record.defineRecord(RecordFieldId("direction"), dirRecord);
   return True;
-}
-
-ComponentType::Shape ComponentShape::getType(String & errorMessage,
-					     const RecordInterface & record) {
-  const String typeString("type");
-  if (!record.isDefined(typeString)) {
-    errorMessage += 
-      String("The 'shape' record does not have a 'type' field.\n");
-    return ComponentType::UNKNOWN_SHAPE;
-  }
-  const RecordFieldId type(typeString);
-  if (record.dataType(type) != TpString) {
-    errorMessage += String("The 'type' field, in the shape record,") + 
-      String(" must be a String\n");
-    return ComponentType::UNKNOWN_SHAPE;
-  }      
-  if (record.shape(type) != IPosition(1,1)) {
-    errorMessage += String("The 'type' field, in the shape record,") + 
-      String(" must have only 1 element\n");
-    return ComponentType::UNKNOWN_SHAPE;
-  }      
-  const String & typeVal = record.asString(type);
-  return ComponentType::shape(typeVal);
 }
 // Local Variables: 
 // compile-command: "gmake OPTLIB=1 ComponentShape"
