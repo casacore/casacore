@@ -1,5 +1,5 @@
 //# <ClassFileName.h>: this defines <ClassName>, which ...
-//# Copyright (C) 1997,1998
+//# Copyright (C) 1997,1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -38,7 +38,8 @@
 #include <strstream.h>
 
 StokesCoordinate::StokesCoordinate(const Vector<Int> &whichStokes)
-    : values_p(whichStokes.nelements()), crval_p(0), crpix_p(0), matrix_p(1),
+    : Coordinate(),
+      values_p(whichStokes.nelements()), crval_p(0), crpix_p(0), matrix_p(1),
       cdelt_p(1), name_p("Stokes"), unit_p("")
 {
     Block<Bool> alreadyUsed(Stokes::NumberOfTypes);
@@ -56,19 +57,21 @@ StokesCoordinate::StokesCoordinate(const Vector<Int> &whichStokes)
 }
 
 StokesCoordinate::StokesCoordinate(const StokesCoordinate &other)
-{
-    values_p = other.values_p;
-    crval_p = other.crval_p;
-    crpix_p = other.crpix_p;
-    matrix_p = other.matrix_p;
-    cdelt_p = other.cdelt_p;
-    name_p = other.name_p;
-    unit_p = other.unit_p;
+: Coordinate(other),
+  values_p(other.values_p),
+  crval_p(other.crval_p),
+  crpix_p(other.crpix_p),
+  matrix_p(other.matrix_p),
+  cdelt_p(other.cdelt_p),
+  name_p(other.name_p),
+  unit_p(other.unit_p)
+{  
 }
 
 StokesCoordinate &StokesCoordinate::operator=(const StokesCoordinate &other)
 {
     if (this != &other) {
+        Coordinate::operator=(other);
 	values_p = other.values_p;
 	crval_p = other.crval_p;
 	crpix_p = other.crpix_p;
@@ -148,8 +151,8 @@ Bool StokesCoordinate::toPixel(Int &pixel, Stokes::StokesTypes stokes) const
 Bool StokesCoordinate::toWorld(Vector<Double> &world, 
 			       const Vector<Double> &pixel) const
 {
-    world.resize(1);
     AlwaysAssert(pixel.nelements()==1, AipsError);
+    if (world.nelements()!=1) world.resize(1);
     Double index = floor((pixel(0) - crpix_p)*cdelt_p*matrix_p + 0.5);
     if (index < 0 || index > values_p.nelements()-1) {
 	ostrstream os;
@@ -164,10 +167,11 @@ Bool StokesCoordinate::toWorld(Vector<Double> &world,
 }
 
 Bool StokesCoordinate::toPixel(Vector<Double> &pixel, 
-		     const Vector<Double> &world) const
+    	                       const Vector<Double> &world) const
 {
-    pixel.resize(1);
     AlwaysAssert(world.nelements()==1, AipsError);
+    if (pixel.nelements()!=1) pixel.resize(1);
+//
     // First find the index;
     Bool found = False;
     uInt index;
