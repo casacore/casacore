@@ -462,15 +462,19 @@ or sorted by means of the column values in each row.
 The name of a column can contain alphanumeric characters and underscores.
 It should start with an alphabetic character or underscore.
 A column name is case sensitive.
-\\It is possible to use special characters in the name by
-escaping them with a backslash. E.g. \texttt{DATE\_OBS}.
+\\It is possible to use other characters in the name by
+escaping them with a backslash. E.g. \texttt{DATE}\verb+\_+\texttt{OBS}.
+\\In the same way a numeric character can be used as the first
+character of the column name. E.g. \verb+\+\texttt{1stDay}.
 \\
 Because several words are used in the language, they cannot directly
 be used as column names. Those reserved words are:
 \\\texttt{ASC DESC FROM GIVING IN ORDERBY SELECT WHERE}.
 They can, however, be used as a column name by escaping
 them with a backslash. E.g. \verb+\+\texttt{IN}.
-
+\\Note that in C++ and Glish a backslash itself has to be escaped
+by another backslash. E.g. in Glish:
+\texttt{tab.query('DATE}\verb+\\_+\texttt{OBS$>$10MAR1996')}.
 
 \label{TAQL:KEYWORDS}
 \subsection{Table Keywords}
