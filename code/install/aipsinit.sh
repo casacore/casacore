@@ -274,16 +274,17 @@
         export MANPATH
      fi
 
+     a_shell=`echo $SHELL | sed 's#.*/##'`
 #    Function which invokes aipsinit with "aips_ext" as a command line argument.
      if [ "${BASH_VERSION-}" != "" ]
      then
         a_temp='aipsinit () { local aips_ext="$*" ; local a_root='$a_root' ; . '$a_root'/aipsinit.sh; }'
         eval $a_temp
-     elif [ "${SHELL##*/}" = "ksh" ]
+     elif [ "$a_shell" = "ksh" ]
      then
         a_temp='aipsinit () { aips_ext="$*" ; a_root='$a_root' ; . '$a_root'/aipsinit.sh; }'
         eval $a_temp
      fi
   fi
 
-  unset a_arch a_host a_new a_och a_old a_root a_site a_temp
+  unset a_arch a_host a_new a_och a_old a_root a_shell a_site a_temp
