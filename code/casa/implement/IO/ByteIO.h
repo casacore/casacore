@@ -96,9 +96,9 @@ public:
 
     // Read <src>size</src> bytes from the byte stream. Returns the number of
     // bytes actually read, or a negative number if an error occured. Will also
-    // throw an Exception (AipsError) if an error occured unless throwException
-    // is set to False.
-    virtual Int read (uInt size, void* buf, throwException=True) = 0;    
+    // throw an Exception (AipsError) if the requested number of bytes could
+    // not be read unless throwException is set to False.
+    virtual Int read (uInt size, void* buf, Bool throwException=True) = 0;    
 
     // Reopen the underlying IO stream for read/write access.
     // Nothing will be done if the stream is writable already.
