@@ -4485,3 +4485,4 @@
 14 296 src mv aips/implement/MeasurementSets/NewMSDoppler.h aips/implement/MeasurementSets/MSDoppler.h
 14 296 src mv aips/implement/MeasurementSets/NewMSDopplerColumns.cc aips/implement/MeasurementSets/MSDopplerColumns.cc
 14 296 src mv aips/implement/MeasurementSets/NewMSDopplerColumns.h aips/implement/MeasurementSets/MSDopplerColumns.h
+14 296 src mv aips/implement/MeasurementSets/NewMSDopplerEnums.h aips/implement/MeasurementSets/MSDopplerEnums.h
