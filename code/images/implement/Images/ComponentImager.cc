@@ -157,10 +157,10 @@ void ComponentImager::project(ImageInterface<Float>& image, const ComponentList&
   Vector<MVDirection> dirVals(nDirs);
   Vector<Bool> coordIsGood(nDirs);
   const uInt naxis = imageShape.nelements();
-  IPosition pixelPosition(naxis);
   Vector<Double> pixelDir(2);
   Vector<Double> worldDir(2);
   uInt d;
+  IPosition pixelPosition(naxis, 0);
 
 // Does the image have a writable mask ?  Output pixel values are
 // only modified if the mask==T  and the coordinate conversions
@@ -172,8 +172,8 @@ void ComponentImager::project(ImageInterface<Float>& image, const ComponentList&
     if (image.pixelMask().isWritable()) {
       doMask = True;
     } else {
-       os << LogIO::WARN 
-	  << "The image is masked, but it cannot be written to" << LogIO::POST;
+      os << LogIO::WARN 
+	 << "The image is masked, but it cannot be written to" << LogIO::POST;
     }
   }
   Lattice<Bool>* pixelMaskPtr = 0;
@@ -184,68 +184,80 @@ void ComponentImager::project(ImageInterface<Float>& image, const ComponentList&
 
 // Iterate through sky plane of cursor and do coordinate conversions
 
-    pixelStepper.subSection(chunkIter.position(), chunkIter.endPosition());
-    for (pixelStepper.reset(), d=0; !pixelStepper.atEnd(); 
-	 pixelStepper++, d++) {
-      pixelPosition = pixelStepper.position();
-      pixelDir(0) = pixelPosition(latAxis);
-      pixelDir(1) = pixelPosition(longAxis);
-      if (!dirCoord.toWorld(worldDir, pixelDir)) {
-
-// These pixels will be masked
-
-	coordIsGood(d) = False;
-      } else {
-	dirVals(d) = MVDirection(worldDir(0), worldDir(1));
-	coordIsGood(d) = True;
+    const IPosition& blc = chunkIter.position();
+    const IPosition& trc = chunkIter.endPosition();
+    d = 0;
+    pixelDir(1) = blc(longAxis);
+    coordIsGood = True;
+    while (pixelDir(1) <= trc(longAxis)) {
+      pixelDir(0) = blc(latAxis);
+      while (pixelDir(0) <= trc(latAxis)) {
+ 	if (dirCoord.toWorld(worldDir, pixelDir)) {
+	  dirVals(d) = MVDirection(worldDir(0), worldDir(1));
+	} else {
+	  // These pixels will be masked
+ 	  coordIsGood(d) = False;
+ 	}
+	d++;
+	pixelDir(0)++;
       }
+      pixelDir(1)++;
     }
 
-// Sample model
+    // Sample model
 
     list.sample(pixelVals, Unit("Jy"), dirVals, dirRef, pixelLatSize, 
-		pixelLongSize, freqValues, freqRef);
+   		pixelLongSize, freqValues, freqRef);
 
-// Modify data by model for this chunk of data
+    // Modify data by model for this chunk of data
 
     Array<Float>& imageChunk = chunkIter.rwCursor();
 
-// Get input mask values if available
+    // Get input mask values if available
 
     if (doMask) {
-       maskPtr = new Array<Bool>(image.getMaskSlice(chunkIter.position(),
-                                 chunkIter.cursorShape(), False));
+      maskPtr = new Array<Bool>
+	(image.getMaskSlice(chunkIter.position(),
+			    chunkIter.cursorShape(), False));
     }
+    
+    d = 0;
+    pixelPosition(longAxis) = 0;
+    coordIsGood = True;
+    while (pixelPosition(longAxis) <= chunkShape(longAxis)) {
+      pixelPosition(latAxis) = 0;
+      while (pixelPosition(latAxis) <= chunkShape(latAxis)) {
+	if (coordIsGood(d)) {
+	  for (uInt f = 0; f < nFreqs; f++) {
+	    if (freqAxis >= 0) pixelPosition(freqAxis) = f;
+	    for (uInt s = 0; s < nStokes; s++) {
+	      if (polAxis >= 0) pixelPosition(polAxis) = s;
 //
-    for (pixelStepper.reset(),d=0; !pixelStepper.atEnd(); pixelStepper++,d++) {
-      pixelPosition = pixelStepper.relativePosition();
-      if (coordIsGood(d)) {
-        for (uInt f = 0; f < nFreqs; f++) {
-          if (freqAxis >= 0) pixelPosition(freqAxis) = f;
-          for (uInt s = 0; s < nStokes; s++) {
-            if (polAxis >= 0) pixelPosition(polAxis) = s;
-//
-            if (doMask) {
-               if ((*maskPtr)(pixelPosition)) {
-                 imageChunk(pixelPosition) += 
-                   static_cast<Float>(pixelVals(s, d, f));
-               }
-            } else {
-              imageChunk(pixelPosition) += 
-		static_cast<Float>(pixelVals(s, d, f));
-            }
-          }
-        }
-      } else {
-        if (doMask) (*maskPtr)(pixelPosition) = False;
+              if (doMask) {
+                if ((*maskPtr)(pixelPosition)) {
+                  imageChunk(pixelPosition) += 
+                    static_cast<Float>(pixelVals(s, d, f));
+                }
+              } else {
+		imageChunk(pixelPosition) += 
+		  static_cast<Float>(pixelVals(s, d, f));
+	      }
+	    }
+	  }
+	} else {
+	  if (doMask) (*maskPtr)(pixelPosition) = False;
+	}
+	d++;
+	pixelPosition(latAxis)++;
       }
+      pixelPosition(longAxis)++;
     }
 
 // Update output mask in approprate fashion
 
     if (doMask) {
-       pixelMaskPtr->putSlice(*maskPtr, chunkIter.position());
-       if (maskPtr!=0) delete maskPtr;
+      pixelMaskPtr->putSlice(*maskPtr, chunkIter.position());
+      if (maskPtr!=0) delete maskPtr;
     }
   }
 }
