@@ -1,5 +1,5 @@
 //# ImageExprParse.h: Classes to hold results from image expression parser
-//# Copyright (C) 1998,1999
+//# Copyright (C) 1998,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -39,6 +39,7 @@
 template<class T> class Block;
 template<class T> class PtrBlock;
 class ImageRegion;
+class Table;
 
 
 // <summary>
@@ -268,6 +269,9 @@ private:
     // is applied to the image.
     LatticeExprNode makeImageNode (const String& name,
 				   const String& mask) const;
+
+    // Callback function for RegionHandlerTable to get the table to be used.
+    static Table& getRegionTable (void*, Bool);
 
     //# A 'global' node object to hold the resulting expression.
     static LatticeExprNode theirNode;
