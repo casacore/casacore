@@ -604,9 +604,9 @@ EOT
 	   fi
 
 	   # ok, the trick here is to figure out destination directory from the
-	   # file name.  Example: "bin-sun4sol_gnu.08.000.tar.gz".  This
+	   # file name.  Example: "bin-sun4sol_egcs.08.000.tar.gz".  This
 	   # sed regexp gets rid of the leading bin- and everything after
-	   # the first dot to get, e.g. "sun4sol_gnu".
+	   # the first dot to get, e.g. "sun4sol_egcs".
 	   NARCH=`echo $FILE | sed -e 's#^bin-\([^\.]*\).*#\1#'`
 	   DIR=$AIPSROOT/$NARCH
 	   if [ -d "$DIR" ]
@@ -689,7 +689,7 @@ EOT
   case `uname -s` in
      SunOS)
         case `uname -r` in
-           5*) ARCH="sun4sol_gnu";;
+           5*) ARCH="sun4sol_egcs";;
 	esac;;
      HP-UX)      ARCH="hpux_gnu";;
      OSF1|ALPHA) ARCH="alpha_gnu";;
@@ -719,7 +719,7 @@ EOT
 	   HP*)     ARCH="hpux_gnu";;
 	   LINUX)   ARCH="linux_egcs";;
 	   SGI)     ARCH="sgi";;
-	   SOL|SUL) ARCH="sun4sol_gnu";;
+	   SOL|SUL) ARCH="sun4sol_egcs";;
 	   *)       ARCH="";;
 	esac
 
@@ -782,8 +782,8 @@ EOT
 		    if ($3 == "hp2")   { narch = "hpux_gnu" }
 		    if ($3 == "linux") { narch = "linux_egcs" }
 		    if ($3 == "sgi")   { narch = "sgi" }
-	            if ($3 == "sol")   { narch = "sun4sol_gnu" }
-	            if ($3 == "sul")   { narch = "sun4sol_gnu" }
+	            if ($3 == "sol")   { narch = "sun4sol_egcs" }
+	            if ($3 == "sul")   { narch = "sun4sol_egcs" }
 		    if (narch == "none") {
 		       printf("Skipping arch %s for %s\n",$3,$2) | "cat 1>&2"
 		    } else {
@@ -883,7 +883,7 @@ EOT
 	      HP*)    ARCH="hpux_gnu";;
 	      LINUX)  ARCH="linux_egcs";;
 	      SGI)    ARCH="sgi";;
-	      S[OU]L) ARCH="sun4sol_gnu";;
+	      S[OU]L) ARCH="sun4sol_egcs";;
 	      *)      ARCH="";;
 	   esac
 	fi
@@ -893,12 +893,11 @@ EOT
         echo "   alpha_gnu     DEC/Alpha OSF/1, GNU C++ compiler (g++)"
         echo "   hpux_gnu      Hewlett-Packard/HP9000 HPUX, GNU C++ compiler"
 	echo "   linux_egcs    Linux/RedHat-5.x, x>0 (Intel only) egcs compiler"
-	echo "   linux_gnu     same as linux_egcs"
+	echo "   linux         same as linux_egcs"
         echo "   sgi           Silicon Graphics IRIX 7.x, SGI C++ compiler"
         echo "   sgi_ntv       same as sgi"
-	# Do we still support the native compiler?
-        echo "   sun4sol_ntv   Sun/Sparc Solaris 2.x, SUN native C++ compiler"
-        echo "   sun4sol_gnu   Sun/Sparc Solaris 2.x, GNU C++ compiler (g++)"
+        echo "   sun4sol_egcs  Sun/Sparc Solaris 2.x, GNU/EGCS C++ compiler (g++)"
+        echo "   sun4sol       same as sun4sol_egcs"
         echo ""
 	if [ "$SOURCE" = yes ] ; then
            echo "Note that CFRONT-based C++ compilers are not supported."
@@ -914,7 +913,7 @@ EOT
         while true
         do
 #          Get this machine's architecture.
-           ARCHS="alpha_gnu hpux_gnu linux_gnu linux_egcs sgi_ntv sgi sun4sol_gnu sun4sol_ntv"
+           ARCHS="alpha_gnu hpux_gnu linux linux_egcs sgi_ntv sgi sun4sol_egcs sun4sol"
            echo ""
            echo "What is $HOST's architecture?"
            printf "($ARCHS) [$ARCH]: "
