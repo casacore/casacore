@@ -559,7 +559,8 @@ Bool StokesCoordinate::toPixel(Double& pixel,  const Double world) const
     }
     if (!found) {
 	ostrstream os;
-	os << "Stokes value " << world << " is not contained in this StokesCoordinate";
+        String t = Stokes::name(toWorld(world));
+	os << "Stokes value " << t << " is not contained in this StokesCoordinate";
 	set_error(os);
 	return False;
     }
