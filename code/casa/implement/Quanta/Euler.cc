@@ -138,9 +138,10 @@ euler(3), axes(3) {
 
 Euler::Euler(const Quantum<Vector<Double> > &in) :
 euler(3), axes(3) {
+    Int i;
     Vector<Double> tmp = Euler::makeRad(in);
     Int j; tmp.shape(j); j=min(j,3);
-    for (Int i=0; i<j; i++) {
+    for (i=0; i<j; i++) {
 	euler(i) = tmp(i);
     }
     for (i=j; i<3; i++) {

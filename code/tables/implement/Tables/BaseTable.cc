@@ -476,12 +476,13 @@ BaseTable* BaseTable::doSort (PtrBlock<BaseColumn*>& sortCol,
 			      const PtrBlock<ObjCompareFunc*>& cmpFunc,
                               const Block<Int>& order, int option)
 {
+    uInt i;
     uInt nrkey = sortCol.nelements();
     //# Create a sort object.
     //# Pass all keys (and their data) to it.
     Sort sortobj;
     PtrBlock<const void*> dataSave(nrkey);          // to remember data blocks
-    for (uInt i=0; i<nrkey; i++) {
+    for (i=0; i<nrkey; i++) {
 	sortCol[i]->makeSortKey (sortobj, cmpFunc[i], order[i], dataSave[i]);
     }
     //# Create a reference table.

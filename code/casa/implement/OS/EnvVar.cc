@@ -1,5 +1,5 @@
 //# EnvVar.cc: Environment variables class
-//# Copyright (C) 1993,1994,1995
+//# Copyright (C) 1993,1994,1995,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //# 
 //# This library is free software; you can redistribute it and/or modify it
@@ -84,7 +84,8 @@ EnvironmentVariables::EnvironmentVariables(const String &name, const String &val
 
 uInt EnvironmentVariables::number() {
 
-  for(uInt i=0; environ[i]!=NULL; i++)
+  uInt i;
+  for(i=0; environ[i]!=NULL; i++)
     ;
   return i;
 }

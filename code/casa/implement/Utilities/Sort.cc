@@ -1,5 +1,5 @@
 //# Sort.cc: Sort on one or more keys, ascending and/or descending
-//# Copyright (C) 1993,1994,1995,1996,1997
+//# Copyright (C) 1993,1994,1995,1996,1997,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -335,8 +335,9 @@ uInt Sort::heapSort (uInt nrrec, uInt* inx) const
 {
     // Use the heapsort algorithm described by Jon Bentley in
     // UNIX Review, August 1992.
+    Int j;
     inx--;
-    for (Int j=nrrec/2; j>=1; j--) {
+    for (j=nrrec/2; j>=1; j--) {
 	siftDown (j, nrrec, inx);
     }
     for (j=nrrec; j>=2; j--) {
@@ -356,7 +357,8 @@ void Sort::siftDown (Int low, Int up, uInt* inx) const
 {
     uInt sav = inx[low];
     Int c;
-    for (Int i=low; (c=2*i)<=up; i=c) {
+    Int i;
+    for (i=low; (c=2*i)<=up; i=c) {
 	if (c < up  &&  compare(inx[c+1], inx[c]) <= 0) {
 	    c++;
 	}

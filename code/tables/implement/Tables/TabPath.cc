@@ -1,5 +1,5 @@
 //# TabPath.cc: Search path for table files
-//# Copyright (C) 1993,1994,1995
+//# Copyright (C) 1993,1994,1995,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -53,8 +53,9 @@ TabPath::~TabPath ()
 
 Bool TabPath::found (const String& name, String& dir) const
 {
+    uInt dirnr;
     Bool sw = False;
-    for (uInt dirnr=0; dirnr<nrDir_p; dirnr++) {
+    for (dirnr=0; dirnr<nrDir_p; dirnr++) {
 	if (access ((tabDir_p[dirnr] + name).chars(), R_OK) == 0) {
 	    sw = True;             // found
 	    break;
