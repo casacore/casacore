@@ -2281,3 +2281,4 @@
 09 199 src mv trial/implement/Lattices/test/tPagedArrIter.cc trial/implement/Lattices/test/tLatticeIterator.cc
 09 199 src mv trial/implement/Lattices/test/tArrayLatticeOld.cc trial/implement/Lattices/test/tArrayLattice.cc
 09 215 top rm code/aips/include
+09 215 top rm code/nrao/apps/sdcalc
