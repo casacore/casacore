@@ -263,6 +263,12 @@ void SkyCompRep::fromRecord(Quantum<Double> & quantity, String & errorMessage,
   }
 }
 
+void SkyCompRep::toRecord(GlishRecord & record, 
+			  const Quantum<Double> & quantity) {
+  record.add("value", quantity.getValue());
+  record.add("unit", quantity.getUnit());
+}
+
 void SkyCompRep::fromRecord(MDirection & direction, String & errorMessage, 
 			    const GlishRecord & record) {
 // MDirection DO_componentlist::
@@ -416,9 +422,43 @@ void SkyCompRep::fromRecord(MDirection & direction, String & errorMessage,
     errorMessage += dirErrors;
 }
 
-void SkyCompRep::fromFlux(Vector<Double> & flux, String & errorMessage,
-			    const GlishRecord & record) {
-  AlwaysAssert(flux.nelements() == 4, AipsError);
+void SkyCompRep::toRecord(GlishRecord & record, 
+			  const MDirection & direction) {
+  record.add("type", "direction");
+  {
+    const String refFrame = MDirection::showType(direction.getRef().getType());
+    record.add("refer", refFrame);
+  }
+  {
+    const Quantum<Vector<Double> > raDec = direction.getAngle("deg");
+    const Vector<Double> raDecValue = raDec.getValue();
+    AlwaysAssert(raDecValue.nelements() == 2, AipsError)
+    const String raDecUnit = raDec.getUnit();
+    GlishRecord m;
+    m.add("value", raDecValue(0));
+    m.add("unit", raDecUnit);
+    record.add("m0", m);
+    m.add("value", raDecValue(1));
+    record.add("m1", m);
+  }
+  {
+    const Vector<Double> dirCosValue = direction.getValue().getValue();
+    AlwaysAssert(dirCosValue.nelements() == 3, AipsError)
+    GlishRecord ev;
+    ev.add("value", dirCosValue(0));
+    ev.add("unit", "");
+    record.add("ev0", ev);
+    ev.add("value", dirCosValue(1));
+    record.add("ev1", ev);
+    ev.add("value", dirCosValue(2));
+    record.add("ev2", ev);
+  }
+}
+
+void SkyCompRep::readFlux(Vector<Double> & flux, String & errorMessage,
+			  const GlishRecord & record) {
+  AlwaysAssert(flux.nelements() == 0 || 
+	       flux.nelements() == 4, AipsError);
   if (!record.exists("flux"))
     errorMessage += "\nThe record does not have a 'flux' field";
   else {
@@ -443,18 +483,26 @@ void SkyCompRep::fromFlux(Vector<Double> & flux, String & errorMessage,
   }
 }
 
-void SkyCompRep::fromParameters(Vector<Double> & parameters, 
+void SkyCompRep::addFlux(GlishRecord & record) const {
+  Vector<Double> compFlux(4);
+  flux(compFlux);
+  record.add("flux", GlishArray(compFlux.ac()));
+}
+
+void SkyCompRep::readParameters(Vector<Double> & parameters, 
 				String & errorMessage,
-				const GlishRecord & record) {
+				const GlishRecord & record) const {
+  AlwaysAssert(parameters.nelements() == 0 || 
+	       parameters.nelements() == nParameters(), AipsError);
   if (!record.exists("parameters"))
     errorMessage += "\nThe record does not have a 'parameters' field";
   else {
     if (record.get("parameters").type() != GlishValue::ARRAY)
       errorMessage += "\nThe 'parameters' field cannot be a record";
     else {
-      const GlishArray parmField = record.get("parm");
+      const GlishArray parmField = record.get("parameters");
       if (parmField.elementType() == GlishArray::STRING)
-	errorMessage += "\nThe 'parmeters' field cannot be a string";
+	errorMessage += "\nThe 'parameters' field cannot be a string";
       else {
 	const IPosition shape = parmField.shape();
 	if (shape.nelements() != 1 || shape.product() != nParameters()) {
@@ -464,7 +512,6 @@ void SkyCompRep::fromParameters(Vector<Double> & parameters,
 	    buffer + String(" elements");
 	}
 	else {
-	  parameters.resize(nParameters());
 	  if (parmField.get(parameters.ac()) == False)
 	    errorMessage += "\nCould not read the 'parameters' field"
 	      " for an unknown reason";
@@ -473,6 +520,13 @@ void SkyCompRep::fromParameters(Vector<Double> & parameters,
     }
   }
 }
+
+void SkyCompRep::addParameters(GlishRecord & record) const {
+  Vector<Double> parms(nParameters());
+  parameters(parms);
+  record.add("parameters", GlishArray(parms.ac()));
+}
+
 // Local Variables: 
 // compile-command: "gmake OPTLIB=1 SkyCompRep"
 // End: 
