@@ -141,7 +141,7 @@ class SpectralFit {
   // </group>
 
   // Get the number of iterations last fit
-  uInt nIterations() { return iter_p; }
+  uInt nIterations() const { return iter_p; }
 
   // Get ChiSq of the last fit
   Double chiSq () const { return chiSq_p; }
