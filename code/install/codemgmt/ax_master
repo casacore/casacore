@@ -2293,3 +2293,15 @@
 09 271 src mv trial/implement/Lattices/PixelCircle.cc trial/implement/Lattices/PixelEllipsoid.cc
 09 271 src mv trial/implement/Lattices/PixelCircle.h trial/implement/Lattices/PixelEllipsoid.h
 09 275 src rm trial/apps/imager
+09 275 src rm trial/implement/distributed/imagemaker.h
+09 275 src rm trial/implement/distributed/imagemaker.cc
+09 275 src rm trial/implement/distributed/imagemakerImpl.h
+09 275 src rm trial/implement/distributed/imagemakerImpl.cc
+09 275 src rm trial/implement/distributed/weighter.h
+09 275 src rm trial/implement/distributed/weighter.cc
+09 275 src rm trial/implement/distributed/weighterImpl.h
+09 275 src rm trial/implement/distributed/weighterImpl.cc
+09 275 src rm trial/implement/distributed/imagesolver.h
+09 275 src rm trial/implement/distributed/imagesolver.cc
+09 275 src rm trial/implement/distributed/imagesolverImpl.h
+09 275 src rm trial/implement/distributed/imagesolverImpl.cc
