@@ -90,7 +90,7 @@ TableMeasOffsetDesc::TableMeasOffsetDesc(const TableRecord& measInfo,
     if (fnr >= 0) {
     	const TableRecord& measRec = measInfo.subRecord(fnr);
 	fnr = measRec.fieldNumber("mRef");
-	uInt measRef;
+	uInt measRef = 0;
 	if (fnr >= 0) {
 	    measRef = measRec.asuInt(fnr);
 	} else {

@@ -76,7 +76,7 @@ TableMeasDescBase* TableMeasDescBase::reconstruct(const Table& tab,
 {
     Int fnr;
     String mtype;
-    TableMeasDescBase* P;
+    TableMeasDescBase* P=0;
     TableRecord measInfo;
     const TableRecord& columnKeyset = tab.tableDesc()[columnName].keywordSet();
     
