@@ -2685,3 +2685,4 @@
 10 019 src mv trial/implement/Measures/MVEarthMagnetic.cc aips/implement/Measures/MVEarthMagnetic.cc
 10 019 src mv trial/implement/Measures/MVEarthMagnetic.h aips/implement/Measures/MVEarthMagnetic.h
 10 019 src mv trial/implement/Measures/EarthField.h aips/implement/Measures/EarthField.h
+10 019 src mv trial/implement/Measures/EarthField.cc aips/implement/Measures/EarthField.cc
