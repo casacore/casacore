@@ -186,7 +186,6 @@ void readAsciiTableHandleKeyset (Int lineSize, char* string1,
 // or to get next keyword group.
 
     if (strncmp(string1, ".end", 4) == 0) {
-      keysets.defineRecord (colName, keyset);
       if (!jFile.getline(string1, lineSize)) {
 	string1[0] = '\0';
       } else {
@@ -402,7 +401,14 @@ void readAsciiTableHandleKeyset (Int lineSize, char* string1,
       }
     }
   }
-  keysets.defineRecord (colName, keyset);
+  if (keysets.isDefined (colName)) {
+    logger << LogIO::WARN
+	   << "Keywordset of column " << colName
+	   << " skipped because defined twice in "
+	   << fileName << LogIO::POST;
+  } else {
+    keysets.defineRecord (colName, keyset);
+  }
 }
 
 
@@ -455,23 +461,40 @@ String doReadAsciiTable (const String& headerfile, const String& filein,
     }
 
 // Okay, all keywords have been read.
-// string1 contains the next line (if any). Save that line if needed.
+// string1 contains the next line (if any).
+// Read the column definition lines from header file (if needed).
 // Determine the types if autoheader is given.
 
-    stringsav[0] = '\0';
-    if (autoHeader) {
-        strcpy (stringsav, string1);
-        getTypesAsciiTable (string1, lineSize, string2, first);
-	strcpy (string1, first);
-    } else {
-
 // Previous line should be NAMES OF COLUMNS; now get TYPE OF COLUMNS line
+    if (!autoHeader) {
         if (string1[0] == '\0') {
 	    throw (AipsError("No COLUMN NAMES line in " + headerfile));
 	}
         if (!jFile.getline(string2, lineSize)) {
 	    throw (AipsError("No COLUMN TYPES line in " + headerfile));
 	}
+    }
+
+// Now open the actual data file (if not the same as header file).
+// Read the first line if auto header.
+
+    if (!oneFile) {
+        jFile.close();
+	jFile.open(filein, ios::in);
+	if (autoHeader) {
+	    if (!jFile.getline(string1, lineSize)) {
+	        string1[0] = '\0';
+	    }
+	}
+    }
+
+    // Process the auto header.
+    // Save string, because it'll be overwritten.
+    stringsav[0] = '\0';
+    if (autoHeader) {
+        strcpy (stringsav, string1);
+        getTypesAsciiTable (string1, lineSize, string2, first);
+	strcpy (string1, first);
     }
 
 // Break up the NAME OF COLUMNS line and the TYPE OF COLUMNS line
@@ -542,19 +565,16 @@ String doReadAsciiTable (const String& headerfile, const String& filein,
         if (colnm.empty()) {
 	    tab.rwKeywordSet() = keysets.subRecord (i);
 	} else {
-	    if (!tab.isColumnWritable (colnm)) {
-	        throw AipsError ("Keywords given for unknown column " + colnm);
+	    if (!tab.tableDesc().isColumn (colnm)) {
+	        logger << LogIO::WARN
+		       << "Keywordset of column " << colnm
+		       << " skipped because column is not defined in "
+		       << headerfile << LogIO::POST;
+	    } else {
+	        TableColumn tabcol (tab, colnm);
+		tabcol.rwKeywordSet() = keysets.subRecord (i);
 	    }
-	    TableColumn tabcol (tab, colnm);
-	    tabcol.rwKeywordSet() = keysets.subRecord (i);
 	}
-    }
-
-// Now open the actual data file (if not the same as header file).
-
-    if (!oneFile) {
-        jFile.close();
-	jFile.open(filein, ios::in);
     }
 
     TableColumn* tabcol = new TableColumn[nrcol];
@@ -589,7 +609,7 @@ String doReadAsciiTable (const String& headerfile, const String& filein,
 	        tab.flush();
 	        throw (AipsError ("Confused about input in " + filein
 				  + "\nLast text seen: " + string1
-				  + "\nThis occured at about row "
+				  + "\nThis occurred at about row "
 				  + String::toString(tab.nrow())
 				  + " (excluding headers). "
 				  + "The rest of the file is ignored."));
