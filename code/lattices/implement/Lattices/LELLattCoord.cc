@@ -1,5 +1,5 @@
 //# LELLattCoord.cc: The base letter class for lattice coordinates
-//# Copyright (C) 1998,1999
+//# Copyright (C) 1998,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -50,7 +50,7 @@ String LELLattCoord::classname() const
     return "LELLattCoord";
 }
 
-Bool LELLattCoord::conform (const LELLattCoord&) const
+Bool LELLattCoord::conform (const LELLattCoordBase&) const
 {
     return True;
 }

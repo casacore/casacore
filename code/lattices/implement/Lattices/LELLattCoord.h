@@ -1,5 +1,5 @@
 //# LELLattCoord.h: The base letter class for lattice coordinates in LEL
-//# Copyright (C) 1998,1999
+//# Copyright (C) 1998,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -30,11 +30,10 @@
 
 
 //# Includes
-#include <aips/aips.h>
+#include <aips/Lattices/LELLattCoordBase.h>
 #include <aips/Utilities/String.h>
 
 //# Forward Declarations
-class LELImageCoord;
 class LatticeExprNode;
 class LattRegionHolder;
 
@@ -77,7 +76,7 @@ class LattRegionHolder;
 // </todo>
 
 
-class LELLattCoord
+class LELLattCoord : public LELLattCoordBase
 {
 public:
     LELLattCoord();
@@ -86,8 +85,7 @@ public:
     // destructor in the derived class.
     virtual ~LELLattCoord();
 
-    // Does the class have true coordinates?
-    // <br>The default implementation returns False.
+    // The class does not have true coordinates.
     virtual Bool hasCoordinates() const;
 
     // Create a SubLattice for an expression node.
@@ -98,12 +96,10 @@ public:
     // The name of the class.
     virtual String classname() const;
 
-    // Check if the coordinates of this and that conform.
-    // <br>The default implementation returns True.
-    virtual Bool conform (const LELLattCoord& other) const;
+    // The coordinates of this and that conform.
+    virtual Bool conform (const LELLattCoordBase& other) const;
 
-    // Check if the coordinates of this and that image conform.
-    // <br>The default implementation returns True.
+    // The coordinates of this and that image conform.
     virtual Bool doConform (const LELImageCoord& other) const;
 };
 
