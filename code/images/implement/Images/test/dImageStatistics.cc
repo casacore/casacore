@@ -106,6 +106,7 @@
   
 #include <trial/Images/ImageStatistics.h>
 #include <trial/Images/PagedImage.h>
+#include <trial/Tasking/PGPlotter.h>
 
 #include <iostream.h>
 
@@ -257,7 +258,8 @@ try {
       }
       if (!stats.setList(doList)) return 1;
       if (validInputs(PLOTTING)) {
-         if (!stats.setPlotting(statisticTypes, device, nxy)) return 1;
+         PGPlotter plotter(device);
+         if (!stats.setPlotting(statisticTypes, plotter, nxy)) return 1;
       }
 
 // Recover things
