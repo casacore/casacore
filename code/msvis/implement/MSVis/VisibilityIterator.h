@@ -1,5 +1,5 @@
 //# VisibilityIterator.h: Step through the MeasurementEquation by visibility
-//# Copyright (C) 1996,1997,1998,1999,2000,2001
+//# Copyright (C) 1996,1997,1998,1999,2000,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -253,6 +253,10 @@ public:
   // Return current SpectralWindow
   Int spectralWindow() const
   { return msIter_p.spectralWindowId(); }
+
+  // Return current Polarization Id
+  Int polarizationId() const
+  { return msIter_p.polarizationId(); }
 
   // Return MJD 
   Vector<Double>& time(Vector<Double>& t) const;
