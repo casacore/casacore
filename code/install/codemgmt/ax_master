@@ -6216,3 +6216,4 @@
 17 191 src mv ./aips/implement/Functionals/NQGaussianNDParam.h ./aips/implement/Functionals/GaussianNDParam.h
 17 191 src mv ./aips/implement/Functionals/NQHyperPlane.cc ./aips/implement/Functionals/HyperPlane.cc
 17 191 src mv ./aips/implement/Functionals/NQHyperPlane.h ./aips/implement/Functionals/HyperPlane.h
+17 191 src mv ./aips/implement/Functionals/NQHyperPlane2.cc ./aips/implement/Functionals/HyperPlane2.cc
