@@ -2374,3 +2374,5 @@
 11 206 sys rm libexec/regionentry.g
 11 206 sys rm libexec/recordentry.g
 11 206 sys rm libexec/untypedentry.g
+11 212 src rm trial/implement/Images/MaskedImage.h
+11 212 src rm trial/implement/Images/MaskedImage.cc
