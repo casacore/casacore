@@ -2699,3 +2699,4 @@
 11 413 src mv trial/implement/Mathematics/componentmodels.help trial/implement/ComponentModels/componentmodels.help
 11 415 src mv trial/implement/MeasurementEquations/simulater.help trial/implement/MeasurementEquations/simulator.help
 11 417 src rm /doc/recipes/recipe2/recipe2.latex
+11 423 src rm doc/user/gettingstarted.dir/F01-loggerwindow.ps
