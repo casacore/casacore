@@ -640,27 +640,29 @@ private:
     // <group>
     void listDirectionSystem(LogIO& os) const; 
     void listFrequencySystem(LogIO& os, MDoppler::Types velocityType) const;
-    void getFieldWidths (LogIO& os, uInt& widthName,
+    void getFieldWidths (LogIO& os, uInt& widthAxis, uInt& widthCoord, uInt& widthName,
                          uInt& widthProj, uInt& widthShape,
                          uInt& widthTile, uInt& widthRefValue,
                          uInt& widthRefPixel, uInt& widthInc,
                          uInt& widthUnits, Int& precRefValSci,
                          Int& precRefValFloat,  Int& precRefValRADEC,
-                         Int& precRefPixFloat, Int& precIncSci,
-                         String& nameName, String& nameProj,
+                         Int& precRefPixFloat, Int& precIncSci, String& nameAxis,
+                         String& nameCoord, String& nameName, String& nameProj,
                          String& nameShape, String& nameTile,
                          String& nameRefValue, String& nameRefPixel,
                          String& nameInc, String& nameUnits,
                          Bool nativeFormat, MDoppler::Types velocityType,
                          const IPosition& latticeShape, const IPosition& tileShape) const;
 
-    void listHeader (LogIO& os, Coordinate* pc, uInt& widthName, uInt& widthProj,
+    void listHeader (LogIO& os, Coordinate* pc, uInt& widthAxis, uInt& widthCoord, 
+                     uInt& widthName, uInt& widthProj,
                      uInt& widthShape, uInt& widthTile, uInt& widthRefValue,
                      uInt& widthRefPixel, uInt& widthInc, uInt& widthUnits,     
                      Bool findWidths, Int axisInCoordinate, Int pixelAxis, Bool nativeFormat,
                      Int precRefValSci, Int precRefValFloat, Int precRefValRADEC, Int precRefPixFloat,
                      Int precIncSci, const IPosition& latticeShape, const IPosition& tileShape) const;
-    void listVelocity (LogIO& os,  Coordinate* pc, uInt& widthName, uInt& widthProj,
+    void listVelocity (LogIO& os,  Coordinate* pc, uInt& widthAxis, uInt& widthCoord, 
+                       uInt& widthName, uInt& widthProj,
                        uInt& widthShape, uInt& widthTile, uInt& widthRefValue,
                        uInt& widthRefPixel, uInt& widthInc,  uInt& widthUnits,
                        const Bool findWidths, const Int axisInCoordinate,

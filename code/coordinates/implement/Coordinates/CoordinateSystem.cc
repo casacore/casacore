@@ -2998,7 +2998,8 @@ void CoordinateSystem::list (LogIO& os,
 
    listFrequencySystem(os, velocityType);
 
-//
+// List telescope, observer, date
+
    os << "Telescope        : " << obsinfo_p.telescope() << endl;
    os << "Observer         : " << obsinfo_p.observer() << endl;
 //
@@ -3018,18 +3019,19 @@ void CoordinateSystem::list (LogIO& os,
                   latticeShape.nelements()>0 &&
                   tileShape.nelements()==latticeShape.nelements();
    uInt widthName, widthProj, widthShape, widthTile, widthRefValue;
-   uInt widthRefPixel, widthInc, widthUnits, totWidth;
+   uInt widthRefPixel, widthInc, widthUnits, totWidth, widthCoord;
+   uInt widthAxis;
 
    String nameName, nameProj, nameShape, nameTile, nameRefValue;
-   String nameRefPixel, nameInc, nameUnits;
+   String nameRefPixel, nameInc, nameUnits, nameCoord, nameAxis;
    
    Int precRefValSci, precRefValFloat, precRefValRADEC;
    Int precRefPixFloat, precIncSci;
-   getFieldWidths (os, widthName, widthProj, widthShape, widthTile,
-                   widthRefValue, widthRefPixel, widthInc,
+   getFieldWidths (os, widthAxis, widthCoord, widthName, widthProj, widthShape, 
+                   widthTile, widthRefValue, widthRefPixel, widthInc,
                    widthUnits, precRefValSci, precRefValFloat, 
                    precRefValRADEC, precRefPixFloat,
-                   precIncSci, nameName, nameProj, nameShape, 
+                   precIncSci, nameAxis, nameCoord, nameName, nameProj, nameShape, 
                    nameTile, nameRefValue, nameRefPixel, nameInc, 
                    nameUnits, nativeFormat, velocityType, latticeShape,
                    tileShape);
@@ -3038,6 +3040,12 @@ void CoordinateSystem::list (LogIO& os,
 
    os.output().fill(' ');
    os.output().setf(ios::left, ios::adjustfield);
+
+   os.output().width(widthAxis);
+   os << nameAxis;
+
+   os.output().width(widthCoord);
+   os << nameCoord;
 
    os.output().width(widthName);
    os << nameName;
@@ -3065,8 +3073,8 @@ void CoordinateSystem::list (LogIO& os,
 
    os << nameUnits << endl;
 
-   totWidth = widthName + widthProj + widthShape + widthTile +
-              widthRefValue + widthRefPixel + widthInc + widthUnits;
+   totWidth = widthAxis + widthCoord + widthName + widthProj + widthShape + 
+              widthTile + widthRefValue + widthRefPixel + widthInc + widthUnits;
    os.output().fill('-');
    os.output().width(totWidth);
    os.output().setf(ios::right, ios::adjustfield);
@@ -3090,7 +3098,7 @@ void CoordinateSystem::list (LogIO& os,
       Coordinate* pc = CoordinateSystem::coordinate(coordinate).clone();
 //      cout << "type = " << pc->type() << endl;
 
-      listHeader(os, pc, widthName, widthProj, widthShape, widthTile, 
+      listHeader(os, pc, widthAxis, widthCoord, widthName, widthProj, widthShape, widthTile, 
                  widthRefValue, widthRefPixel, widthInc, widthUnits,
                  False, axisInCoordinate, pixelAxis, nativeFormat,
                  precRefValSci, precRefValFloat, precRefValRADEC, 
@@ -3101,7 +3109,7 @@ void CoordinateSystem::list (LogIO& os,
 // based, we have to do it like this.  Urk.
 
       if (pc->type() == Coordinate::SPECTRAL) {
-         listVelocity (os, pc, widthName, widthProj, widthShape, widthTile, 
+         listVelocity (os, pc, widthAxis, widthCoord, widthName, widthProj, widthShape, widthTile, 
                  widthRefValue, widthRefPixel, widthInc, widthUnits,
                  False, axisInCoordinate, pixelAxis, velocityType,
                  precRefValSci, precRefValFloat, precRefValRADEC, 
@@ -3133,7 +3141,7 @@ void CoordinateSystem::list (LogIO& os,
 // List it
 
         Coordinate* pc = CoordinateSystem::coordinate(coordinate).clone();
-        listHeader(os, pc, widthName, widthProj, widthShape, 
+        listHeader(os, pc, widthAxis, widthCoord, widthName, widthProj, widthShape, 
                    widthTile, widthRefValue, widthRefPixel, 
                    widthInc, widthUnits, False, axisInCoordinate, 
                    -1, nativeFormat, precRefValSci, precRefValFloat, 
@@ -3149,11 +3157,12 @@ void CoordinateSystem::list (LogIO& os,
    os.post();
 }
 
-void CoordinateSystem::getFieldWidths (LogIO& os, uInt& widthName, uInt& widthProj,  uInt& widthShape,               
-                                       uInt& widthTile, uInt& widthRefValue, uInt& widthRefPixel, 
-                                       uInt& widthInc, uInt& widthUnits,  Int& precRefValSci, 
-                                       Int& precRefValFloat, Int& precRefValRADEC, Int& precRefPixFloat, 
-                                       Int& precIncSci, String& nameName, String& nameProj,
+void CoordinateSystem::getFieldWidths (LogIO& os, uInt& widthAxis, uInt& widthCoord, uInt& widthName, uInt& widthProj,  
+                                       uInt& widthShape, uInt& widthTile, uInt& widthRefValue, 
+                                       uInt& widthRefPixel, uInt& widthInc, uInt& widthUnits,  
+                                       Int& precRefValSci, Int& precRefValFloat, Int& precRefValRADEC, 
+                                       Int& precRefPixFloat, Int& precIncSci, String& nameAxis, 
+                                       String& nameCoord, String& nameName, String& nameProj,
                                        String& nameShape, String& nameTile, String& nameRefValue,
                                        String& nameRefPixel, String& nameInc, String& nameUnits,
                                        Bool nativeFormat, MDoppler::Types velocityType,
@@ -3179,6 +3188,8 @@ void CoordinateSystem::getFieldWidths (LogIO& os, uInt& widthName, uInt& widthPr
 
 // Header names for fields
 
+   nameAxis = "Axis";
+   nameCoord = "Type";
    nameName = "Name";
    nameProj = "Proj";
    nameShape = "Shape";
@@ -3191,7 +3202,7 @@ void CoordinateSystem::getFieldWidths (LogIO& os, uInt& widthName, uInt& widthPr
 // Initialize (logger will never be actually used in this function)
 
    widthName = widthProj = widthShape = widthTile = widthRefValue = 0;
-   widthRefPixel = widthInc = widthUnits = 0;
+   widthRefPixel = widthInc = widthUnits = widthCoord = widthAxis = 0;
 
 // Loop over number of pixel axes
 
@@ -3206,7 +3217,7 @@ void CoordinateSystem::getFieldWidths (LogIO& os, uInt& widthName, uInt& widthPr
 // Update widths of fields
 
       Coordinate* pc = CoordinateSystem::coordinate(coordinate).clone();
-      listHeader (os, pc,  widthName, widthProj, widthShape, widthTile, 
+      listHeader (os, pc,  widthAxis, widthCoord, widthName, widthProj, widthShape, widthTile, 
                   widthRefValue, widthRefPixel, widthInc, widthUnits,
                   True, axisInCoordinate, pixelAxis,
                   nativeFormat, precRefValSci, precRefValFloat,
@@ -3214,19 +3225,22 @@ void CoordinateSystem::getFieldWidths (LogIO& os, uInt& widthName, uInt& widthPr
                   latticeShape, tileShape);
 //
       if (pc->type() == Coordinate::SPECTRAL) {
-         listVelocity (os, pc, widthName, widthProj, widthShape, widthTile, 
-                 widthRefValue, widthRefPixel, widthInc, widthUnits,
-                 True, axisInCoordinate, pixelAxis, velocityType,
-                 precRefValSci, precRefValFloat, precRefValRADEC, 
-                 precRefPixFloat, precIncSci);
+         listVelocity (os, pc, widthAxis, widthCoord, widthName, widthProj, widthShape, 
+                       widthTile, widthRefValue, widthRefPixel, widthInc, widthUnits,
+                       True, axisInCoordinate, pixelAxis, velocityType,
+                       precRefValSci, precRefValFloat, precRefValRADEC, 
+                       precRefPixFloat, precIncSci);
       }
 //
       delete pc;
    }
 
 
-// Compare with header widths
+// Compare with header widths.  We only list the coordinate type
+// if we are not listing the shape 
 
+   widthAxis = max(nameAxis.length(), widthAxis) + 1;
+   widthCoord = max(nameCoord.length(), widthCoord) + 1;
    widthName = max(nameName.length(), widthName) + 1;
    widthProj = max(nameProj.length(), widthProj) + 1;
    if (doShape) {
@@ -3240,13 +3254,13 @@ void CoordinateSystem::getFieldWidths (LogIO& os, uInt& widthName, uInt& widthPr
 }
 
 
-void CoordinateSystem::listHeader (LogIO& os,  Coordinate* pc, uInt& widthName,  uInt& widthProj,
-                                   uInt& widthShape, uInt& widthTile, uInt& widthRefValue, 
-                                   uInt& widthRefPixel, uInt& widthInc,  uInt& widthUnits, 
-                                   Bool findWidths, Int axisInCoordinate,  Int pixelAxis,
-                                   Bool nativeFormat, Int precRefValSci, Int precRefValFloat, 
-                                   Int precRefValRADEC, Int precRefPixFloat, Int precIncSci,
-                                   const IPosition& latticeShape, const IPosition& tileShape) const
+void CoordinateSystem::listHeader (LogIO& os,  Coordinate* pc, uInt& widthAxis, uInt& widthCoord, 
+                                   uInt& widthName,  uInt& widthProj, uInt& widthShape, uInt& widthTile, 
+                                   uInt& widthRefValue,  uInt& widthRefPixel, uInt& widthInc,  
+                                   uInt& widthUnits,  Bool findWidths, Int axisInCoordinate,  
+                                   Int pixelAxis, Bool nativeFormat, Int precRefValSci, 
+                                   Int precRefValFloat, Int precRefValRADEC, Int precRefPixFloat, 
+                                   Int precIncSci, const IPosition& latticeShape, const IPosition& tileShape) const
 //
 // List all the good stuff
 //
@@ -3263,9 +3277,34 @@ void CoordinateSystem::listHeader (LogIO& os,  Coordinate* pc, uInt& widthName, 
 
    if (!findWidths) clearFlags(os);
 
+// Axis number
+
+   ostrstream oss;
+   oss << pixelAxis + 1;
+   String string(oss);
+   if (findWidths) {
+      widthAxis = max(widthAxis, string.length());
+   } else {
+      os.output().setf(ios::left, ios::adjustfield);
+      os.output().width(widthAxis);
+      os << string;
+   }
+
+// Coordinate type
+
+   string = Coordinate::typeToString(pc->type());
+   if (findWidths) {
+      widthCoord = max(widthCoord, string.length());
+   } else {
+      os.output().setf(ios::left, ios::adjustfield);
+      os.output().width(widthCoord);
+      os << string;
+   }
+
+
 // Axis name
 
-   String string = pc->worldAxisNames()(axisInCoordinate);
+   string = pc->worldAxisNames()(axisInCoordinate);
    if (findWidths) {
       widthName = max(widthName, string.length());
    } else {
@@ -3474,7 +3513,8 @@ void CoordinateSystem::listHeader (LogIO& os,  Coordinate* pc, uInt& widthName, 
 }
 
 
-void CoordinateSystem::listVelocity (LogIO& os,  Coordinate* pc, uInt& widthName, uInt& widthProj,
+void CoordinateSystem::listVelocity (LogIO& os,  Coordinate* pc, uInt& widthAxis, 
+                                    uInt& widthCoord, uInt& widthName, uInt& widthProj,
                                     uInt& widthShape, uInt& widthTile, uInt& widthRefValue, 
                                     uInt& widthRefPixel, uInt& widthInc,  uInt& widthUnits, 
                                     const Bool findWidths, const Int axisInCoordinate, 
@@ -3498,9 +3538,29 @@ void CoordinateSystem::listVelocity (LogIO& os,  Coordinate* pc, uInt& widthName
    if (!findWidths) clearFlags(os);
 
 
+// Axis number
+
+   String string;
+   if (!findWidths) {
+      os.output().width(widthAxis);
+      string = " ";
+      os << string;
+   }
+
+
+// Coordinate type
+
+   string = Coordinate::typeToString(pc->type());
+   if (!findWidths) {
+      os.output().width(widthCoord);
+      string = " ";
+      os << string;
+   }
+
+
 // Axis name
 
-   String string("Velocity");
+   string = "Velocity";
    if (findWidths) {
       widthName = max(widthName, string.length());
    } else {
@@ -3512,7 +3572,7 @@ void CoordinateSystem::listVelocity (LogIO& os,  Coordinate* pc, uInt& widthName
 // Projection
 
    if (!findWidths) {
-     os.output().setf(ios::right, ios::adjustfield);
+      os.output().setf(ios::right, ios::adjustfield);
       os.output().width(widthProj);
       string = " ";
       os << string;
@@ -3523,6 +3583,7 @@ void CoordinateSystem::listVelocity (LogIO& os,  Coordinate* pc, uInt& widthName
    if (widthShape>0 && widthTile>0) {
       if (!findWidths) {
          os.output().width(widthShape);
+         string = " ";
          os << string;
       }
 
@@ -3530,6 +3591,7 @@ void CoordinateSystem::listVelocity (LogIO& os,  Coordinate* pc, uInt& widthName
 
       if (!findWidths) {   
          os.output().width(widthTile);
+         string = " ";
          os << string;
       }
    }
@@ -3537,7 +3599,6 @@ void CoordinateSystem::listVelocity (LogIO& os,  Coordinate* pc, uInt& widthName
 
 // Caste the coordinate to a spectral coordinate
 
-//   SpectralCoordinate* sc = (SpectralCoordinate*)pc;
    SpectralCoordinate* sc = dynamic_cast<SpectralCoordinate*>(pc);
 
 // Remember units
