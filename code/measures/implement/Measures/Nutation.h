@@ -175,23 +175,23 @@ class Nutation {
   
   //# Data members
   // Method to be used
-  NutationTypes method;
+  NutationTypes method_p;
   // Check epoch for linear approximation
-  Double checkEpoch;
+  Double checkEpoch_p;
   // Cached calculated angles
-  Double nval[3];
+  Double nval_p[3];
   // Cached derivatives
-  Double dval[3];
+  Double dval_p[3];
   // Cached equation of equinoxes
-  Double eqeq;
+  Double eqeq_p;
   // Cached derivative equation of equinoxes
-  Double deqeq;
+  Double deqeq_p;
   // To be able to use references rather than copies, and also to use these
   // references in simple (up to 4 terms of Nutation results) expressions,
   // results are calculated in circulating buffer
-  Int lres;
+  Int lres_p;
   // Last calculation
-  Euler result[4];
+  Euler result_p[4];
   // Interpolation interval
   static uInt interval_reg;
   // IERS use
