@@ -134,6 +134,7 @@ void ImageLogger::addParent (const ImageLogger* logger)
 void ImageLogger::tempClose (Bool closeParents)
 {
   if (itsTablePtr != 0) {
+    itsSink     = LogSink();
     itsLogger   = LogIO();
     itsTablePtr = 0;
     itsIsClosed = True;
@@ -147,6 +148,7 @@ void ImageLogger::tempClose (Bool closeParents)
 
 void ImageLogger::close()
 {
+  itsSink   = LogSink();
   itsLogger = LogIO();
   itsIsClosed = False;
   itsTablePtr = 0;
