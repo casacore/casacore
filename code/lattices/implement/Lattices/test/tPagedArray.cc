@@ -74,8 +74,8 @@ int main() {
       AlwaysAssert(near(pa.getAt(IPosition(2,1,1)), 0.0f), AipsError);
       AlwaysAssert(near(pa(IPosition(2,2,1)), 10.0f), AipsError);
       AlwaysAssert(near(pa(IPosition(2,3,1)), 2.0f), AipsError);
-      pa(IPosition(2,11)) = 99.0f;
-      pa.putAt(98.0f, IPosition(2,11,10));
+      pa.putAt (99.0, IPosition(2,11));
+      pa.putAt (98.0f, IPosition(2,11,10));
       AlwaysAssert(pa.tableName() == "tPagedArray_tmp.table", AipsError);
       AlwaysAssert(pa.columnName() == PagedArray<Float>::defaultColumn(), 
 		   AipsError);
@@ -112,7 +112,7 @@ int main() {
       scratch.resize(IPosition(3,8));
       AlwaysAssert(scratch.shape().isEqual(IPosition(3,8)), AipsError);
       scratch.set(0);
-      scratch(IPosition(3,7)) = 7;
+      scratch.putAt (7, IPosition(3,7));
       AlwaysAssert(scratch.getAt(IPosition(3,0)) == 0, AipsError);
       AlwaysAssert(scratch.getAt(IPosition(3,7)) == 7, AipsError);
     }
@@ -193,7 +193,7 @@ int main() {
 
       pa3.resize(IPosition(2,8));
       pa3.set(0);
-      pa3(IPosition(2,7)) = 7;
+      pa3.putAt (7, IPosition(2,7));
       AlwaysAssert(pa3.getAt(IPosition(2,7)) == 7, AipsError);
       AlwaysAssert(pa3.getAt(IPosition(2,0)) == 0, AipsError);
       AlwaysAssert(pa3.shape().isEqual(IPosition(2,8)), AipsError);
