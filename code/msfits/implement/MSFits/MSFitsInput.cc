@@ -676,7 +676,7 @@ void MSFitsInput::fillMSMainTable(Int& nField, Int& nSpW)
 	msc.scanNumber().put(row,0);
 	msc.processorId().put(row,-1);
 	msc.observationId().put(row,0);
-	msc.stateId().put(row,0);
+	msc.stateId().put(row,-1);
 	Vector<Float> tmp(nCorr); tmp=1.0;
 	msc.sigma().put(row,tmp);
 	msc.weight().put(row,tmp);
@@ -842,7 +842,7 @@ void MSFitsInput::fillAntennaTable(BinaryTable& bt)
     }
     ant.flagRow().put(row,False);
     ant.mount().put(row,mount);
-    ant.name().put(row,name(i));
+    ant.name().put(row,String::toString(id(i)));
     Vector<Double> offsets(3); offsets=0.; offsets(0)=offset(i);
     ant.offset().put(row,offsets);
     ant.station().put(row,name(i));
