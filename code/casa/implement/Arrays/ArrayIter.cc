@@ -130,8 +130,7 @@ template<class T> void ArrayIterator<T>::apSetPointer(Int stepDim)
 	    dataPtr += offset(stepDim);
 	}
 	ap->begin_p = dataPtr;
-	delete ap->itsEndIter;
-	ap->itsEndIter = 0;
+	ap->setEndIter();
     }
 }
 
