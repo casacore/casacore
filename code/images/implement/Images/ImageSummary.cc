@@ -258,7 +258,7 @@ void ImageSummary<T>::list (LogIO& os,
 
 // List random things
 
-   os << "Image name  : " << this->name() << endl;
+   os << "Image name     : " << this->name() << endl;
    if (this->hasAMask()) {
       os << "Image mask     : Present" << endl;
    } else {
@@ -266,7 +266,6 @@ void ImageSummary<T>::list (LogIO& os,
    }
    if (!this->units().getName().empty()) 
       os << "Image units    : " << this->units().getName() << endl;
-
 
 // Obtain CoordinateSystem
 
