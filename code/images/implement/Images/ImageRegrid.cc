@@ -267,7 +267,7 @@ void ImageRegrid<T>::regridOneCoordinate (LogIO& os, IPosition& outShape2,
 
 // Attach mask if out is masked.  Don't init mask because it will be overwritten
 
-       outPtr = new TempImage<T>(TiledShape(outShape2), outCoords, 0);  // force to disk
+       outPtr = new TempImage<T>(TiledShape(outShape2), outCoords);
        if (outIsMasked) {
           String maskName("mask0");
           TempImage<T>* tmpPtr = dynamic_cast<TempImage<T>*>(outPtr);
@@ -328,7 +328,7 @@ void ImageRegrid<T>::regridOneCoordinate (LogIO& os, IPosition& outShape2,
 
 // Attach mask if out is masked.  
 
-       outPtr = new TempImage<T>(TiledShape(outShape2), outCoords, 0);  // force to disk
+       outPtr = new TempImage<T>(TiledShape(outShape2), outCoords);
        if (outIsMasked) {
           String maskName("mask0");
           TempImage<T>* tmpPtr = dynamic_cast<TempImage<T>*>(outPtr);
@@ -877,13 +877,7 @@ void ImageRegrid<T>::regrid2D (MaskedLattice<T>& outLattice,
 // percent speed up over iterating through pixel by pixel.    We work
 // through in planes holding the DirectionCoordinate
 
-// TEMP FUDGE
-//**
-//         ArrayLattice<T> outCursor(outIter.rwCursor());
-         TempLattice<T> outCursor(TiledShape(outIter.cursor().shape()), 0);
-         outCursor.put(outIter.cursor());
-//**
-//
+         ArrayLattice<T> outCursor(outIter.rwCursor());
          IPosition outCursorIterShape(nDim,1);
          outCursorIterShape(xOutAxis) = outCursorShape(xOutAxis);
          outCursorIterShape(yOutAxis) = outCursorShape(yOutAxis);
@@ -892,15 +886,8 @@ void ImageRegrid<T>::regrid2D (MaskedLattice<T>& outLattice,
          LatticeIterator<Bool>* outMaskCursorIterPtr = 0;
          Lattice<Bool>* outMaskCursorPtr = 0;
          if (outIsMasked) {
-//
-// TEMP FUDGE
-//**
-//          outMaskCursorPtr = new ArrayLattice<Bool>(outMaskIterPtr->rwCursor());
-            outMaskCursorPtr = new TempLattice<Bool>(TiledShape(outMaskIterPtr->cursor().shape()), 0);
-            outMaskCursorPtr->put(outMaskIterPtr->cursor());              
-//**
-//
-            outMaskCursorIterPtr = new LatticeIterator<Bool>(*outMaskCursorPtr, outCursorIterShape);
+           outMaskCursorPtr = new ArrayLattice<Bool>(outMaskIterPtr->rwCursor());
+           outMaskCursorIterPtr = new LatticeIterator<Bool>(*outMaskCursorPtr, outCursorIterShape);
          }
          if (itsShowLevel>0) {
             cerr << "outCursorIterShape = " << outCursorIterShape << endl;
@@ -1017,14 +1004,6 @@ void ImageRegrid<T>::regrid2D (MaskedLattice<T>& outLattice,
             if (inIsMasked) delete inMaskChunk2DPtr;
             sum3 += timer3.all();
          }
-
-// TEMP FUDGE
-//**
-         outIter.rwCursor() = outCursor.get();
-         if (outIsMasked)  {
-            outMaskIterPtr->rwCursor() = outMaskCursorPtr->get();
-         }
-//**
 //
          if (inIsMasked) delete inMaskChunkPtr;
          if (outIsMasked) {
