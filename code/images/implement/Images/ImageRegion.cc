@@ -83,11 +83,12 @@ const WCRegion& ImageRegion::asWCRegion() const
     return *itsWC;
 }
 
-const LCRegion& ImageRegion::toLCRegion (const CoordinateSystem& coord) const
+const LCRegion& ImageRegion::toLCRegion (const CoordinateSystem& cSys,
+                                         const IPosition& shape) const
 {
     if (isWCRegion()) {
         ImageRegion* This = (ImageRegion*)this;
-        This->itsLC = itsWC->toLCRegion (coord);
+        This->itsLC = itsWC->toLCRegion (cSys, shape);
     }
     return *itsLC;
 }
@@ -96,7 +97,7 @@ TableRecord ImageRegion::toRecord (const String& tableName) const
 {
     TableRecord record;
     if (isWCRegion()) {
-        record.defineRecord ("WC", itsWC->toRecord());
+        record.defineRecord ("WC", itsWC->toRecord(tableName));
     } else {
         record.defineRecord ("LC", itsLC->toRecord(tableName));
     }
@@ -108,7 +109,8 @@ ImageRegion ImageRegion::fromRecord (const TableRecord& record,
 {
     ImageRegion* region;
     if (record.isDefined ("WC")) {
-        WCRegion* ptr = WCRegion::fromRecord (record.asRecord("WC"));
+        WCRegion* ptr = WCRegion::fromRecord (record.asRecord("WC"),
+                                              tableName);
 	region = new ImageRegion(*ptr);
 	delete ptr;
     } else {
