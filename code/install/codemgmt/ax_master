@@ -2236,3 +2236,4 @@
 11 167 sys rm libexec/catalog_meta.g
 11 173 src mv doc/user/gettingstarted doc/user/gettingstarted.dir
 11 173 src rm doc/user/gettingstarted.latex
+11 173 src mv doc/user/gettingstarted.dir/gsedition2.latex doc/user/gettingstarted.latex
