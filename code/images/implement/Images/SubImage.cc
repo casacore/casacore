@@ -1,5 +1,5 @@
 //# SubImage.cc: A subset of a Image
-//# Copyright (C) 1998,1999
+//# Copyright (C) 1998,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -173,6 +173,12 @@ Bool SubImage<T>::isMasked() const
 }
 
 template<class T>
+Bool SubImage<T>::isPersistent() const
+{
+  return itsSubLatPtr->isPersistent();
+}
+
+template<class T>
 Bool SubImage<T>::isPaged() const
 {
   return itsSubLatPtr->isPaged();
@@ -232,7 +238,7 @@ Bool SubImage<T>::conform (const Lattice<T>& other) const
 }
 
 template<class T>
-void SubImage<T>::resize(const TiledShape&)
+void SubImage<T>::resize (const TiledShape&)
 {
   throw (AipsError ("SubImage::resize is not possible"));
 }
@@ -250,13 +256,13 @@ Unit SubImage<T>::units() const
 }
 
 template<class T>
-String SubImage<T>::name(const Bool) const
+String SubImage<T>::name (const Bool stripPath) const
 {
-  return itsImagePtr->name();
+  return itsImagePtr->name (stripPath);
 }
   
 template<class T>
-Bool SubImage<T>::setCoordinateInfo(const CoordinateSystem&)
+Bool SubImage<T>::setCoordinateInfo (const CoordinateSystem&)
 {
   return False;
 }
@@ -268,7 +274,7 @@ const RecordInterface& SubImage<T>::miscInfo() const
 }
 
 template<class T>
-Bool SubImage<T>::setMiscInfo(const RecordInterface&)
+Bool SubImage<T>::setMiscInfo (const RecordInterface&)
 {
   return False;
 }
