@@ -407,7 +407,7 @@ int main() {
     // sqrt(x) : derivative = 0.5/sqrt(x)
     y = sqrt(x);
     if (y.value() != Float(sqrt(x.value())) ||
-	!allEQ(y.derivatives(), x.derivatives()*Float(0.5/sqrt(x.value())))) {
+      	!allEQ(y.derivatives(), x.derivatives()*Float(0.5/sqrt(x.value())))) {
       cerr << "sqrt(const AutoDiff<T> &) failed" << endl;
       nerr++;
     };
