@@ -1,6 +1,6 @@
 /*
     cregex.h: Extended regular expression matching and search library
-    Copyright (C) 1993,1994,1995,1997,1999
+    Copyright (C) 1993,1994,1995,1997,1999,2001
     Associated Universities, Inc. Washington DC, USA.
 
     This library is free software; you can redistribute it and/or modify it
@@ -46,7 +46,7 @@ extern "C" {
 
 
 /* Maximum number of duplicates an interval can allow.  */
-#if defined (_AIX)
+#if defined(_AIX) || defined(__sgi)
 #   undef RE_DUP_MAX
 #endif
 #define RE_DUP_MAX  ((1 << 15) - 1) 
