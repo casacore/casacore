@@ -5,7 +5,7 @@
 \newcommand{\aipspp}{{\sc aips{\tt ++}}}
 \newcommand{\sref}[1]{Section \ref{#1}, #1, page \pageref{#1}}
 
-\externallabels{../System}{../../../docs/reference/System/labels.pl}
+\externallabels{../System}{../../../docs/xreference/System/labels.pl}
 %Used for programmer make only
 %\externallabels{http://aips2.nrao.edu/aips++/docs/reference/System}{/aips++/daily/docs/reference/System/labels.pl}
 
@@ -20,7 +20,7 @@ is available.}
 \end{htmlonly}
 \tableofcontents
 
-Copyright \copyright 1996 Associated Universities Inc., Washington, D.C.\\\\
+Copyright copyright 1996,1998 Associated Universities Inc., Washington, D.C.
 
 AIPS++ How To .* for AIPS++ Programmers.\\
 
