@@ -4942,3 +4942,4 @@
 14 354 src rm trial/implement/MeasurementSets/OldMSLister.cc
 14 360 src rm trial/scripts/gaintable.g
 14 360 src rm trial/scripts/sortandselect.g
+14 364 src rm trial/scripts/sortandselect.help
