@@ -210,7 +210,7 @@ main()
 		" as " << tconv6() << endl;
 
     {	
-	MeasFrame b1900(MEpoch(Quantity(MeasData::MJDB1900,"d")));
+	MeasFrame b1900((MEpoch(Quantity(MeasData::MJDB1900,"d"))));
 	MDirection lsr1900(Quantity(270,"deg"),
 			   Quantity(30,"deg"),
 			   MDirection::Ref(MDirection::BMEAN,
