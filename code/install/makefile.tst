@@ -336,7 +336,7 @@ $(BINTESTD)/% : $(CODEDIR)/%.cc $(INSTLIBR:%=$(CODEDIR)/templates) $(AIPSLIBS)
 	@ echo "Remaking $@ ($(TESTOPT)) because of $?"
 	@ $(INSTLIBR:%=$(MAKE) %)
 	@ cd $(TMPPCKGD) && \
-	  $(C++) $(C++OPTS) -I$(CODEDIR) $(AIPSINCL) -o $@ $< $(INSTLIBR) $(AIPSLIBS) $(XTRNLIBS) $(INSTLIBR) $(AIPSVERS)
+	  $(C++) $(C++OPTS) -I$(CODEDIR) $(AIPSINCL) -o $@ $< $(AIPSVERS) $(INSTLIBR) $(AIPSLIBS) $(XTRNLIBS) $(INSTLIBR)
 	@ $(TIMER)
 	@ $(RM) $(TMPPCKGD)/$(<F:cc=o)
 	@ chmod 775 $@
