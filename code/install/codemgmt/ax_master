@@ -2412,3 +2412,4 @@
 09 351 src rm aips/implement/Functionals/BinaryComb.cc
 09 351 src rm aips/implement/Functionals/BinaryOperation.h
 09 351 src rm aips/implement/Functionals/BinaryOperation.cc
+09 351 src rm aips/implement/Functionals/test/tBinaryOperation.cc
