@@ -1024,6 +1024,148 @@ Bool CoordinateSystem::toPixel(Vector<Double> &pixel,
 }
 
 
+
+uInt CoordinateSystem::toWorldMany(Matrix<Double>& world,
+                                   const Matrix<Double>& pixel,
+                                   Vector<Int>& failures) const
+{
+    AlwaysAssert(nPixelAxes()==pixel.nrow(), AipsError);
+    const uInt nTransforms = pixel.ncolumn();
+    world.resize(nWorldAxes(), nTransforms);
+//
+// Matrix indexing::
+//     matrix(nCoords,  nTransforms)   == matrix(nrows, ncolumns)
+//     matrix(i,j); j=0->nTransforms, i=0->nCoordinates;
+//     matrix.column(j) = vector of coordinates for one transformation
+//     matrix.row(i)    = vector of transforms for one coordinate
+//
+// Loop over coordinates
+
+    uInt i, k;
+    Int where;
+    uInt nFail = 0;
+//
+    const uInt nCoords = coordinates_p.nelements();
+    for (k=0; k<nCoords; k++) {
+
+//     Put the appropriate pixel or replacement values in the pixel temporary, call the
+//     coordinates own toWorldMany, and then copy the output values  from the world 
+//     temporary to the world coordinate
+//
+	const uInt nPixelAxes = pixel_maps_p[k]->nelements();
+        Matrix<Double> pixTmp(nPixelAxes,nTransforms);
+//
+	for (i=0; i<nPixelAxes; i++) {
+	    where = pixel_maps_p[k]->operator[](i);
+	    if (where >= 0) {
+                pixTmp.row(i) = pixel.row(where);
+	    } else {
+		pixTmp.row(i) = pixel_replacement_values_p[k]->operator()(i);
+	    }
+	}
+
+// Do conversion using Coordinate specific implementation
+
+	const uInt nWorldAxes = world_maps_p[k]->nelements();
+        Matrix<Double> worldTmp(nWorldAxes,nTransforms);
+	nFail = coordinates_p[k]->toWorldMany(worldTmp, pixTmp, failures);
+
+// We get the last error message from whatever coordinate it is
+
+	if (nFail != 0) {
+	    set_error(coordinates_p[k]->errorMessage());
+	}
+
+// Now copy result from temporary into output world matrix
+
+	for (i=0; i<nWorldAxes; i++) {
+	    where = world_maps_p[k]->operator[](i);
+	    if (where >= 0) {
+		world.row(where) = worldTmp.row(i);
+            }
+	}
+
+// Should really make some attempt to merge the failures vector.
+// Each Coordinate may fail to convert in a different place.
+// The extra effort and time expense is probably not worth it...
+     
+
+    }
+//
+    return nFail;
+}
+
+
+
+
+uInt CoordinateSystem::toPixelMany(Matrix<Double>& pixel,
+                                   const Matrix<Double>& world,
+                                   Vector<Int>& failures) const
+{
+    AlwaysAssert(nWorldAxes()==world.nrow(), AipsError);
+    const uInt nTransforms = world.ncolumn();
+    pixel.resize(nPixelAxes(), nTransforms);
+//
+// Matrix indexing::
+//     matrix(nCoords,  nTransforms)   == matrix(nrows, ncolumns)
+//     matrix(i,j); j=0->nTransforms, i=0->nCoordinates;
+//     matrix.column(j) = vector of coordinates for one transformation
+//     matrix.row(i)    = vector of transforms for one coordinate
+//
+// Loop over coordinates
+
+    uInt i, k;
+    Int where;
+    uInt nFail = 0;
+//
+    const uInt nCoords = coordinates_p.nelements();
+    for (k=0; k<nCoords; k++) {
+	const uInt nWorldAxes = world_maps_p[k]->nelements();
+        Matrix<Double> worldTmp(nWorldAxes,nTransforms);
+//
+	for (i=0; i<nWorldAxes; i++) {
+	    where = world_maps_p[k]->operator[](i);
+	    if (where >= 0) {
+                worldTmp.row(i) = world.row(where);
+	    } else {
+		worldTmp.row(i) = world_replacement_values_p[k]->operator()(i);
+	    }
+	}
+
+// Do conversion using Coordinate specific implementation
+
+	const uInt nPixelAxes = pixel_maps_p[k]->nelements();
+        Matrix<Double> pixTmp(nPixelAxes,nTransforms);
+	nFail = coordinates_p[k]->toPixelMany(pixTmp, worldTmp, failures);
+
+// We get the last error message from whatever coordinate it is
+
+	if (nFail != 0) {
+	    set_error(coordinates_p[k]->errorMessage());
+	}
+
+// Now copy result from temporary into output pixel matrix
+
+	for (i=0; i<nPixelAxes; i++) {
+	    where = pixel_maps_p[k]->operator[](i);
+	    if (where >= 0) {
+		pixel.row(where) = pixTmp.row(i);
+            }
+	}
+
+// Should really make some attempt to merge the failures vector.
+// Each Coordinate may fail to convert in a different place.
+// The extra effort and time expense is probably not worth it...
+     
+
+    }
+//
+    return nFail;
+}
+
+
+
+
 Bool CoordinateSystem::toMix(Vector<Double>& worldOut,
                              Vector<Double>& pixelOut,
                              const Vector<Double>& worldIn,
