@@ -1,4 +1,4 @@
-//# ImageUtilities2.cc:  Helper class for accessing images
+//# ImageUtilities2.cc:  Implement templates functions
 //# Copyright (C) 1996,1997,1998,1999,2000,2001,2002,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -29,7 +29,6 @@
 #include <trial/Images/ImageUtilities.h>
 
 #include <aips/Arrays/MaskedArray.h>
-#include <trial/Coordinates/CoordinateUtil.h>
 #include <trial/Coordinates/CoordinateSystem.h>
 #include <trial/Coordinates/LinearCoordinate.h>
 #include <trial/Coordinates/SpectralCoordinate.h>
@@ -37,15 +36,18 @@
 #include <aips/Exceptions/Error.h>
 #include <trial/Images/ImageInfo.h>
 #include <trial/Images/ImageInterface.h>
+#include <trial/Images/TempImage.h>
+#include <trial/Images/RebinImage.h>
+#include <trial/Images/ImageFit1D.h>
 #include <aips/Lattices/TiledShape.h>
-#include <aips/Lattices/ArrayLattice.h>
 #include <aips/Lattices/TempLattice.h>
-#include <trial/Lattices/SubLattice.h>
-#include <trial/Lattices/RebinLattice.h>
+#include <aips/Lattices/TiledLineStepper.h>
+#include <trial/Lattices/MaskedLatticeIterator.h>
+#include <trial/SpectralComponents/SpectralElement.h>
+#include <trial/Tasking/ProgressMeter.h>
 #include <aips/Logging/LogIO.h>
 #include <aips/Quanta/Unit.h>
 #include <aips/Utilities/Assert.h>
-#include <aips/Utilities/PtrHolder.h>
 
 
 template <typename T, typename U> 
@@ -62,7 +64,7 @@ void ImageUtilities::copyMiscellaneous (ImageInterface<T>& out,
 template <typename T> 
 void ImageUtilities::bin (MaskedArray<T>& out, Coordinate& coordOut,
                           const MaskedArray<T>& in, const Coordinate& coordIn,
-                          uInt axis, uInt bin, Bool onDisk)
+                          uInt axis, uInt bin)
 {
 
 // Check
@@ -84,19 +86,40 @@ void ImageUtilities::bin (MaskedArray<T>& out, Coordinate& coordOut,
    CoordinateSystem cSysIn;
    LinearCoordinate linCoord;
    for (uInt i=0; i<nDim; i++) {
+
       if (i==axis) {
          cSysIn.addCoordinate(coordIn);
       } else {
          cSysIn.addCoordinate(linCoord);
       }
    }
-//
+
+// Make Image
+
+   TiledShape tShapeIn(shapeIn);
+   TempImage<T> im(tShapeIn, cSysIn);
+
+// Set data
+
+   im.put(in.getArray());
+   TempLattice<Bool> pixelMask(shapeIn);
+   pixelMask.put(in.getMask());
+   im.attachMask(pixelMask);
+
+// Create binner
+
    IPosition factors(nDim,1);
    factors(axis) = bin;
-   const CoordinateSystem cSysOut = CoordinateUtil::makeBinnedCoordinateSystem (factors, cSysIn);
+   RebinImage<T> binIm(im, factors);
 
-// Handle coordinate
+// Assign output MA
 
+   MaskedArray<T> tmp(binIm.get(), binIm.getMask());
+   out = tmp;
+
+// Handle coordinate.  
+
+   const CoordinateSystem cSysOut = binIm.coordinates();
    if (type==Coordinate::LINEAR) {
       const LinearCoordinate& cIn = cSysOut.linearCoordinate(axis);
       LinearCoordinate& cOut = dynamic_cast<LinearCoordinate&>(coordOut);
@@ -110,32 +133,153 @@ void ImageUtilities::bin (MaskedArray<T>& out, Coordinate& coordOut,
       TabularCoordinate& cOut = dynamic_cast<TabularCoordinate&>(coordOut);
       cOut = cIn;
    }
+}
+   
 
-// Make MaskedLattice from input. 
 
-   TiledShape tShapeIn(shapeIn);
-   PtrHolder<Lattice<T> > lat;
-   if (onDisk) {
-      Int maxMemInMB = 0;
-      lat.set(new TempLattice<T>(tShapeIn, maxMemInMB), False, False);
-   } else {
-      lat.set(new ArrayLattice<T>(shapeIn), False, False);
+template <typename T> 
+void ImageUtilities::fitProfiles (ImageInterface<T>*& pFit,
+                                  ImageInterface<T>*& pResid,
+                                  const ImageInterface<T>& inImage,
+                                  ImageInterface<T>*& pWeight,
+                                  uInt axis, uInt nGauss, Int poly,
+                                  Bool showProgress)
+{
+
+// Check shapes
+
+   IPosition inShape = inImage.shape();
+   if (pFit) {
+      AlwaysAssert(inShape.isEqual(pFit->shape()), AipsError);
    }
-   Lattice<T>* pLat = lat.ptr();
-   pLat->put(in.getArray());
+   if (pResid) {
+      AlwaysAssert(inShape.isEqual(pResid->shape()), AipsError);
+   }
+   if (pWeight) {   
+      AlwaysAssert(inShape.isEqual(pWeight->shape()), AipsError);
+   }
+
+// Check axis
+
+   const uInt nDim = inImage.ndim();
+   AlwaysAssert(axis<nDim, AipsError);
+
+// Progress Meter
+
+   ProgressMeter* pProgressMeter = 0;
+   if (showProgress) {
+     Double nMin = 0.0;
+     Double nMax = 1.0;
+     for (uInt i=0; i<inShape.nelements(); i++) {
+        if (i!=axis) {
+           nMax *= inShape(i);
+        }
+     }
+     ostringstream oss;
+     oss << "Fit profiles on axis " << axis+1;
+     pProgressMeter = new ProgressMeter(nMin, nMax, String(oss),
+                                        String("Fits"),
+                                        String(""), String(""),
+                                        True, max(1,Int(nMax/20)));
+   }
+
+// Make fitter
+
+   ImageFit1D<T> fitter (inImage, axis);
+
+// Set up iterator
+
+   IPosition inTileShape = inImage.niceCursorShape();
+   TiledLineStepper stepper (inImage.shape(), inTileShape, axis);
+   RO_MaskedLatticeIterator<Float> inIter(inImage, stepper);
+
+// Get hold of masks
+
+   Lattice<Bool>* pFitMask = 0;
+   if (pFit && pFit->hasPixelMask() && pFit->pixelMask().isWritable()) {
+      pFitMask = &(pFit->pixelMask());
+   }
+   Lattice<Bool>* pResidMask = 0;
+   if (pResid && pResid->hasPixelMask() && pResid->pixelMask().isWritable()) {
+      pResidMask = &(pResid->pixelMask());
+   }
 //
-   TempLattice<Bool> mask(shapeIn);
-   mask.put(in.getMask());
+   IPosition sliceShape(nDim,1);
+   sliceShape(axis) = inShape(axis);
+   Array<T> failData(sliceShape);
+   failData = 0.0;
+   Array<Bool> failMask(sliceShape);
+   failMask = False;
+   Array<T> resultData(sliceShape);
+   Array<Bool> resultMask(sliceShape);
+
+// Since we write the fits out to images, fitting in pixel space is fine
+
+   typename ImageFit1D<T>::AbcissaType abcissaType(ImageFit1D<T>::PIXEL);
 //
-   SubLattice<T> subLat(*pLat, False);
-   subLat.setPixelMask(mask,False);
+   SpectralElement polyEl(poly);
+   Bool ok(False);
+   uInt nFail = 0;
+   uInt nConv = 0;
+   uInt nProfiles = 0;
+   for (inIter.reset(); !inIter.atEnd(); inIter++,nProfiles++) {
+      const IPosition& curPos = inIter.position();
+      fitter.clearList();
 
-// Rebin
+// Set data
 
-   RebinLattice<T> binLat(subLat, factors);
+      ok = fitter.setData (curPos, abcissaType, True);
 
-// Assign output MA
+// Make Gaussian estimate (could try to reuse previous fit as estimate)
+// Could use some cutoff criteria
 
-   MaskedArray<T> tmp(binLat.get(), binLat.getMask());
-   out = tmp;
+      if (ok) ok = fitter.setGaussianElements (nGauss);
+
+// Add polynomial 
+
+      if (ok && poly>=0) fitter.addElement (polyEl);
+//
+      if (ok) {
+         try {
+            ok = fitter.fit();                // ok == False means no convergence
+            if (!ok) nConv++;
+         } catch (AipsError x) {
+            ok = False;                       // Some other error
+            nFail++;
+         }
+      }
+
+// Evaluate and fill
+
+      if (ok) {
+         Array<Bool> resultMask = fitter.getTotalMask().reform(sliceShape);
+         if (pFit) {
+            Array<T> resultData = fitter.getFit().reform(sliceShape);
+            pFit->putSlice (resultData, curPos);
+            if (pFitMask) pFitMask->putSlice(resultMask, curPos);
+         }
+         if (pResid) {
+            Array<T> resultData = fitter.getResidual().reform(sliceShape);
+            pResid->putSlice (resultData, curPos);
+            if (pResidMask) pResidMask->putSlice(resultMask, curPos);
+         }
+      } else {
+         if (pFit) {
+            pFit->putSlice (failData, curPos);
+            if (pFitMask) pFitMask->putSlice(failMask, curPos);
+         }
+         if (pResid) {
+            pResid->putSlice (failData, curPos);
+            if (pResidMask) pResidMask->putSlice(failMask, curPos);
+         }
+      }
+//
+      if (showProgress) pProgressMeter->update(Double(nProfiles));
+    }
+    if (pProgressMeter) delete pProgressMeter;
+//
+    cerr << "Number of profiles   = " << nProfiles << endl;
+    cerr << "Number converged     = " << nProfiles - nFail << endl;
+    cerr << "Number not converged = " << nConv << endl;
+    cerr << "Number failed        = " << nFail << endl;
 }

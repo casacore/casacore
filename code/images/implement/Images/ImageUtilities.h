@@ -31,6 +31,7 @@
 
 #include <aips/aips.h>
 #include <trial/ComponentModels/ComponentType.h>
+#include <trial/Images/ImageFit1D.h>
 #include <aips/Measures/Stokes.h>
 #include <aips/Utilities/PtrHolder.h>
 
@@ -134,6 +135,34 @@ public:
                                   Bool spectral, const String& stokes, 
                                   Bool linear, Bool tabular, Bool overwrite);
 
+// Function to bin up one axis of an N-D MaskedArray. The interface
+// is pretty specific to a particular application. It's here because
+// its implemented with ImageRebin.  On input, the output MA *must*
+// have zero shape.   The input and output Coordinates must have the
+// same type and have only one axis (Linear,Spectral & Tabular).
+// The output coordinate is adjusted for the binning.   The binning
+// factor does not have to fit integrally into the shape of the specified
+// axis.
+   template <typename T>
+   static void bin (MaskedArray<T>& out, Coordinate& coordOut,
+                    const MaskedArray<T>& in, const Coordinate& coordIn,
+                    uInt axis, uInt bin);
+
+// Fit all profiles in image.  The output images must be already
+// created; if the pointer is 0, that image won't be filled.
+// The mask from the input image is transferred to the output
+// images.    If the weights image is pointer is non-zero, the
+// values from it will be used to weight the data points in the
+// fit.  You can fit some combination of gaussians and a polynomial
+// (-1 means no polynomial).  Initial estimates are not required.
+   template <typename T>
+   static void fitProfiles (ImageInterface<T>* &pFit,
+                            ImageInterface<T>* &pResid,
+                            const ImageInterface<T>& inImage,
+                            ImageInterface<T>*& pWeight,
+                            uInt axis, uInt nGauss=1, 
+                            Int poly=-1, Bool showProgress=False);
+
 // This function converts pixel coordinates to world coordinates. You
 // specify a vector of pixel coordinates (<src>pixels</src>) for only one 
 // axis, the <src>pixelAxis</src>.    For the other pixel axes in the
@@ -231,20 +260,7 @@ public:
                                    const IPosition& pixelAxes,
                                    Bool doRef=False); 
 
-// Function to bin up one axis of an N-D MaskedArray. The interface
-// is pretty specific to a particular application. It's here because
-// its implemented with ImageRebin.  On input, the output MA *must*
-// have zero shape.   The input and output Coordinates must have the
-// same type and have only one axis (Linear,Spectral & Tabular).
-// The output coordinate is adjusted for the binning.   The binning
-// factor does not have to fit integrally into the shape of the specified
-// axis.  If onDisk is True the temporary Lattice created internally will
-// be disk-based (and aipsrc invoked to find out where to put it)
-// otherwise it will be in core memory.
-   template <typename T>
-   static void bin (MaskedArray<T>& out, Coordinate& coordIn,
-                    const MaskedArray<T>& in, const Coordinate& coordIn,
-                    uInt axis, uInt bin, Bool onDisk=False);
+
 private:
 
 // Convert 2d sky shape (parameters=major axis, minor axis, position angle) 
