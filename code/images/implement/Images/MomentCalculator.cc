@@ -32,10 +32,9 @@
 #include <aips/Arrays/ArrayMath.h>
 #include <trial/Coordinates/CoordinateSystem.h>
 #include <trial/Coordinates/SpectralCoordinate.h>
-#include <trial/Fitting/NonLinearFitLM.h>
-#include <aips/Functionals/Polynomial.h>
-#include <aips/Functionals/SumFunction.h>
-#include <trial/Functionals/FuncWithAutoDerivs.h>
+#include <trial/Fitting/LQNonLinearFitLM.h>
+#include <aips/Functionals/NQPolynomial.h>
+#include <aips/Functionals/NQCompoundFunction.h>
 #include <trial/Images/ImageMoments.h>
 #include <trial/Lattices/LatticeStatsBase.h>
 #include <aips/Mathematics/Math.h>
@@ -431,25 +430,18 @@ Bool MomentCalcBase<T>::fitGaussian (uInt& nFailed,
       
 // Create fitter
 
-   NonLinearFitLM<T> fitter;
+   LQNonLinearFitLM<T> fitter;
 
 // Create and set the functionals
 
-// gcc 2.96 fails to compile the const version???
-//    const Gaussian1D<AutoDiff<T> > gauss; 
-//    const Polynomial<AutoDiff<T> > poly;  
-   Gaussian1D<AutoDiff<T> > gauss; 
-   Polynomial<AutoDiff<T> > poly;  
-   SumFunction<AutoDiff<T>,AutoDiff<T> > func;
+   NQGaussian1D<AutoDiff<T> > gauss; 
+   NQPolynomial<AutoDiff<T> > poly;  
+   NQCompoundFunction<AutoDiff<T> > func;
    func.addFunction(gauss);
    func.addFunction(poly);         
    
-   FuncWithAutoDerivs<T,T> autoFunc(func);
-   fitter.setFunction(autoFunc);
+   fitter.setFunction(func);
    
-//   Gaussian1D<AutoDiff<T> > gauss;
-//   fitter.setFunction(gauss);
-
    
 // Initial guess
 
@@ -459,7 +451,7 @@ Bool MomentCalcBase<T>::fitGaussian (uInt& nFailed,
    v(2) = widthGuess;            // width
    v(3) = levelGuess;            // level
   
-   fitter.setFittedFuncParams(v);
+   fitter.setParameterValues(v);
    
    
 // Set maximum number of iterations to 50.  Default is 10
@@ -1347,7 +1339,7 @@ void MomentCalcBase<T>::showGaussFit(const T peak,
 
 // Setup functional
 
-   const Gaussian1D<T> gauss(peak, pos, width);
+   const NQGaussian1D<T> gauss(peak, pos, width);
                                       
    
 // Allocate arrays

@@ -33,7 +33,7 @@
 #include <trial/Coordinates/CoordinateSystem.h>
 #include <trial/Coordinates/SpectralCoordinate.h>
 #include <trial/Lattices/LineCollapser.h>
-#include <aips/Functionals/Gaussian1D.h>
+#include <aips/Functionals/NQGaussian1D.h>
 #include <aips/Mathematics/NumericTraits.h>
 #include <trial/Tasking/PGPlotter.h>
 #include <trial/Images/SubImage.h>
@@ -1121,7 +1121,7 @@ private:
    LogIO os_p;
    T stdDeviation_p, peakSNR_p;
    Bool doAuto_p, doFit_p;
-   Gaussian1D<T> gauss_p;
+   NQGaussian1D<T> gauss_p;
 
 };
 
