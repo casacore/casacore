@@ -679,7 +679,7 @@ GlishRecord MSSelector::getData(const Vector<String>& items, Bool ifrAxis,
 	Int j=nSlot-1;
 	while (j>0 && timeSlot(j)==timeSlot(nSlot) && 
 	       ddSlot(j)!=ddSlot(nSlot)) j--;
-	if (j>0 && timeSlot(j)!=timeSlot(nSlot)) {
+	if (nSlot==0 || (j>0 && timeSlot(j)!=timeSlot(nSlot))) {
 	  nSlot++;
 	  timeSlot(nSlot)=time(i); ddSlot(nSlot)=dd(i);
 	}
