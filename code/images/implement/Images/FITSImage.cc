@@ -33,6 +33,7 @@
 #include <trial/Images/ImageInfo.h>
 #include <trial/Images/ImageFITSConverter.h>
 #include <trial/Images/MaskSpecifier.h>
+#include <trial/Images/ImageLogger.h>
 #include <aips/Lattices/TiledShape.h>
 #include <aips/Lattices/TempLattice.h>
 #include <trial/Lattices/FITSMask.h>
@@ -359,7 +360,7 @@ void FITSImage::setup()
    Int recno;
    Int recsize;          // Should be 2880 bytes (unless blocking used)
    FITS::ValueType dataType;
-   TableRecord miscInfo;
+   Record miscInfo;
    getImageAttributes(cSys, shape, imageInfo, brightnessUnit, miscInfo, 
                       recsize, recno, dataType, scale_p, offset_p, magic_p,
                       hasBlanks_p, fullName);
@@ -370,12 +371,12 @@ void FITSImage::setup()
    setCoordsMember (cSys);
    setImageInfoMember (imageInfo);
 
-// We need to put the history in some memory based LogSink
-// setLogMember(logSink);
-
 // Set FITSImage data
 
    setUnitMember (brightnessUnit);
+
+// By default, ImageInterface makes a memory-based ImageLogger
+// which is all we need.  We will fill it in later
 
 // I don't understand why I have to subtract one, as the
 // data should begin in the NEXT record. BobG surmises
@@ -433,7 +434,7 @@ void FITSImage::open()
 void FITSImage::getImageAttributes (CoordinateSystem& cSys,
                                     IPosition& shape, ImageInfo& imageInfo,
                                     Unit& brightnessUnit,
-				    TableRecord& miscInfo, 
+				    RecordInterface& miscInfo, 
                                     Int& recordsize, Int& recordnumber, 
                                     FITS::ValueType& dataType, 
                                     Float& scale, Float& offset, Short& magic,
@@ -503,7 +504,7 @@ void FITSImage::getImageAttributes (CoordinateSystem& cSys,
 
 void FITSImage::crackHeaderFloat (CoordinateSystem& cSys,
                                   IPosition& shape, ImageInfo& imageInfo,
-                                  Unit& brightnessUnit, TableRecord& miscInfo,
+                                  Unit& brightnessUnit, RecordInterface& miscInfo,
                                   LogIO& os, FitsInput& infile)
 {
    
@@ -561,32 +562,29 @@ void FITSImage::crackHeaderFloat (CoordinateSystem& cSys,
 
 // MiscInfo is whats left
 
-   miscInfo = header;
+    miscInfo = header;
 
-// Read history so as to make sure we have read all
-// of the pre-data records.  Eventually I may even store it
-// somewhere.
+// Get and store history.
 
     Vector<String> lines;
     String groupType;
     ConstFitsKeywordList kw = fitsImage.kwlist();
     kw.first();
+    LogSink& log = logger().sink();
+    LogOrigin or(String("FITSImage"), String("crackHeaderFloat"));
 //
     uInt n;
     while ((n = FITSHistoryUtil::getHistoryGroup(lines, groupType, kw)) !=  0) {
-/*
-       if (groupType == "LOGTABLE") {
-          FITSHistoryUtil::fromHISTORY(logTable, lines, n, True);
-       } else if (groupType == "") { 
-          FITSHistoryUtil::fromHISTORY(logTable, lines, n, False);
+       for (uInt i=0; i<lines.nelements(); i++) {
+          LogMessage msg(lines(i), or);
+          log.postLocally(msg);
        }
-*/
     }
 }
 
 void FITSImage::crackHeaderShort (CoordinateSystem& cSys,
                                   IPosition& shape, ImageInfo& imageInfo,
-                                  Unit& brightnessUnit, TableRecord& miscInfo,
+                                  Unit& brightnessUnit, RecordInterface& miscInfo,
                                   Float& scale, Float& offset, Short& magic,
                                   Bool& hasBlanks, LogIO& os, FitsInput& infile)
 {
@@ -661,25 +659,22 @@ void FITSImage::crackHeaderShort (CoordinateSystem& cSys,
 
 // MiscInfo is whats left
 
-   miscInfo = header;
+    miscInfo = header;
 
-// Read history so as to make sure we have read all
-// of the pre-data records.  Eventually I may even store it
-// somewhere.
+// Get and store history.
 
     Vector<String> lines;
     String groupType;
     ConstFitsKeywordList kw = fitsImage.kwlist();
     kw.first();
+    LogSink& log = logger().sink();
+    LogOrigin or(String("FITSImage"), String("crackHeaderShort"));
 //
     uInt n;
     while ((n = FITSHistoryUtil::getHistoryGroup(lines, groupType, kw)) !=  0) {
-/*
-       if (groupType == "LOGTABLE") {
-          FITSHistoryUtil::fromHISTORY(logTable, lines, n, True);
-       } else if (groupType == "") { 
-          FITSHistoryUtil::fromHISTORY(logTable, lines, n, False);
+       for (uInt i=0; i<lines.nelements(); i++) {
+          LogMessage msg(lines(i), or);
+          log.postLocally(msg);
        }
-*/
     }
 }
