@@ -43,18 +43,20 @@ MSTimeParse::MSTimeParse ()
 MSTimeParse::MSTimeParse (const MeasurementSet& ms)
 : MSParse(ms, "Time"), colName(MS::columnName(MS::TIME))
 {
-}
-
-TableExprNode& MSTimeParse::node()
-{
-    return node_p;
+    node_p = TableExprNode();
 }
 
 TableExprNode *MSTimeParse::selectStartTime(const MEpoch& startTime)
 {
     MVTime mvStart(startTime.getValue());
 
-    node() = (ms().col(colName) >= mvStart);
+    TableExprNode condition = (ms().col(colName) >= mvStart);
+
+    if(node().isNull())
+        node() = condition;
+    else
+        node() = node() && condition;
+
     return &node();
 }
 
@@ -62,7 +64,13 @@ TableExprNode *MSTimeParse::selectEndTime(const MEpoch& endTime)
 {
     MVTime mvEnd(endTime.getValue());
  
-    node() = (ms().col(colName) <= mvEnd);
+    TableExprNode condition = (ms().col(colName) <= mvEnd);
+
+    if(node().isNull())
+        node() = condition;
+    else
+        node() = node() && condition;
+
     return &node();
 }
 
@@ -72,9 +80,20 @@ TableExprNode *MSTimeParse::selectRange(const MEpoch& startTime,
     MVTime mvStart(startTime.getValue());
     MVTime mvEnd(endTime.getValue());
 
-    node() = (ms().col(colName) >= mvStart) &&
-             (ms().col(colName) <= mvEnd);
+    TableExprNode condition = (ms().col(colName) >= mvStart) &&
+                              (ms().col(colName) <= mvEnd);
+
+    if(node().isNull())
+        node() = condition;
+    else
+        node() = node() && condition;
+
     return &node();
+}
+
+TableExprNode& MSTimeParse::node()
+{
+    return node_p;
 }
 
 } //# NAMESPACE CASA - END

@@ -43,6 +43,7 @@ MSSpwParse::MSSpwParse ()
 MSSpwParse::MSSpwParse (const MeasurementSet& ms)
 : MSParse(ms, "SPW")
 {
+    node_p = TableExprNode();
 }
 
 TableExprNode *MSSpwParse::selectSpwIds(const Vector<Int>& spwIds)
@@ -51,7 +52,14 @@ TableExprNode *MSSpwParse::selectSpwIds(const Vector<Int>& spwIds)
     MSDataDescIndex msDDI(ms().dataDescription());
     String colName = MS::columnName(MS::DATA_DESC_ID);
 
-    node() = (ms().col(colName).in(msDDI.matchSpwId(spwIds)));
+   TableExprNode condition =
+       (ms().col(colName).in(msDDI.matchSpwId(spwIds)));
+
+    if(node().isNull())
+        node() = condition;
+    else
+        node() = node() && condition;
+
     return &node();
 }
 
@@ -69,16 +77,24 @@ TableExprNode *MSSpwParse::selectSpwName(const String& name)
             selectName = True;
     }
 
+    TableExprNode condition;
     if(selectName)
     {
         MSSpWindowIndex msSWI(ms().spectralWindow());
-	node() = 0;
+        condition = 0;
     }
     else
-      node() = 0;
+        condition = 0;
+
+
+    if(node().isNull())
+        node() = condition;
+    else
+        node() = node() && condition;
 
     return &node();
 }
+
 TableExprNode& MSSpwParse::node()
 {
     return node_p;

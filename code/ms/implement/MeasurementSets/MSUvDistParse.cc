@@ -42,11 +42,7 @@ MSUvDistParse::MSUvDistParse ()
 MSUvDistParse::MSUvDistParse (const MeasurementSet& ms)
 : MSParse(ms, "UvDist")
 {
-}
-
-TableExprNode& MSUvDistParse::node()
-{
-    return node_p;
+    node_p = TableExprNode();
 }
 
 TableExprNode *MSUvDistParse::selectUVRange(const Double& startUV,
@@ -61,22 +57,33 @@ TableExprNode *MSUvDistParse::selectUVRange(const Double& startUV,
     Vector<Int> rowsel;
     Int nRowSel = 0;
     for (uInt row=0; row<ms().nrow(); row++) {
-      Int ddid = msMainCol.dataDescId()(row);
-      Int spwid = msDataDescCol.spectralWindowId()(ddid);
-      Double refFreq = msSpwCol.refFrequency()(spwid);
-      Vector<Double> uvw = msMainCol.uvw()(row);
-      Double uvDist = sqrt(uvw(0)*uvw(0) + uvw(1)*uvw(1)) * refFreq / C::c;
-      if ((startUV <= uvDist) && (uvDist <= endUV)) {
-	nRowSel++;
-	rowsel.resize(nRowSel, True);
-	rowsel(nRowSel-1) = row;
-      };
+        Int ddid = msMainCol.dataDescId()(row);
+        Int spwid = msDataDescCol.spectralWindowId()(ddid);
+        Double refFreq = msSpwCol.refFrequency()(spwid);
+        Vector<Double> uvw = msMainCol.uvw()(row);
+        Double uvDist = sqrt(uvw(0)*uvw(0) + uvw(1)*uvw(1)) * refFreq / C::c;
+        if ((startUV <= uvDist) && (uvDist <= endUV)) {
+            nRowSel++;
+            rowsel.resize(nRowSel, True);
+            rowsel(nRowSel-1) = row;
+        };
     };
     if(nRowSel == 0)
-      rowsel.resize(nRowSel, True);
+        rowsel.resize(nRowSel, True);
 
-    node() = TableExprNode((ms().nodeRownr().in(rowsel)));
+    TableExprNode condition = (ms().nodeRownr().in(rowsel));
+
+    if(node().isNull())
+        node() = condition;
+    else
+        node() = node() && condition;
+
     return &node();
+}
+
+TableExprNode& MSUvDistParse::node()
+{
+    return node_p;
 }
 
 } //# NAMESPACE CASA - END

@@ -41,16 +41,19 @@ MSFieldParse::MSFieldParse ()
 //# Constructor with given ms name.
 MSFieldParse::MSFieldParse (const MeasurementSet& ms)
 : MSParse(ms, "Field"), colName(MS::columnName(MS::FIELD_ID))
-{}
-
-TableExprNode& MSFieldParse::node()
 {
-    return node_p;
+    node_p = TableExprNode();
 }
 
 TableExprNode *MSFieldParse::selectFieldIds(const Vector<Int>& fieldIds)
 {
-    node() = TableExprNode((ms().col(colName).in(fieldIds)));
+    TableExprNode condition = (ms().col(colName).in(fieldIds));
+
+    if(node().isNull())
+        node() = condition;
+    else
+        node() = node() && condition;
+
     return &node();
 }
 
@@ -58,8 +61,20 @@ TableExprNode *MSFieldParse::selectFieldNames(const Vector<String>& fieldNames)
 {
     MSFieldIndex msFI(ms().field());
 
-    node() = TableExprNode((ms().col(colName).in(msFI.matchFieldName(fieldNames))));
+    TableExprNode condition =
+        (ms().col(colName).in(msFI.matchFieldName(fieldNames)));
+
+    if(node().isNull())
+        node() = condition;
+    else
+        node() = node() && condition;
+
     return &node();
+}
+
+TableExprNode& MSFieldParse::node()
+{
+    return node_p;
 }
 
 } //# NAMESPACE CASA - END

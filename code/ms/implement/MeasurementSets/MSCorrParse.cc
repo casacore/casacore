@@ -40,7 +40,9 @@ MSCorrParse::MSCorrParse ()
 //# Constructor with given ms name.
 MSCorrParse::MSCorrParse (const MeasurementSet& ms)
 : MSParse(ms, "Corr")
-{}
+{
+    node_p = TableExprNode();
+}
 
 TableExprNode& MSCorrParse::node()
 {

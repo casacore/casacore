@@ -46,12 +46,19 @@ MSAntennaParse::MSAntennaParse (const MeasurementSet& ms)
   colName1(MS::columnName(MS::ANTENNA1)),
   colName2(MS::columnName(MS::ANTENNA2))
 {
+    node_p = TableExprNode();
 }
 
 TableExprNode* MSAntennaParse::selectAntennaIds(const Vector<Int>& antennaIds)
 {
-    node() = ms().col(colName1).in(antennaIds) ||
-             ms().col(colName2).in(antennaIds);
+    TableExprNode condition = ms().col(colName1).in(antennaIds) ||
+                              ms().col(colName2).in(antennaIds);
+
+    if(node().isNull())
+        node() = condition;
+    else
+        node() = node() && condition;
+
     return &node();
 }
 
@@ -59,8 +66,15 @@ TableExprNode* MSAntennaParse::selectAntennaName(const Vector<String>& antennaNa
 {
     MSAntennaIndex msAI(ms().antenna());
 
-    node() = ms().col(colName1).in(msAI.matchAntennaName(antennaNames)) ||
-             ms().col(colName2).in(msAI.matchAntennaName(antennaNames));
+    TableExprNode condition =
+        ms().col(colName1).in(msAI.matchAntennaName(antennaNames)) ||
+        ms().col(colName2).in(msAI.matchAntennaName(antennaNames));
+
+    if(node().isNull())
+        node() = condition;
+    else
+        node() = node() && condition;
+
     return &node();
 }
 
