@@ -71,7 +71,6 @@ const TableExprNode* MSAntennaParse::selectNameOrStation(const String& identifie
   Vector<Int> antennaIdsFromStation ;
   //  Bool searchStation = True;
   TableExprNode condition;
-
   MSAntennaIndex msAI(ms()->antenna());
   antennaIdsFromStation = msAI.matchAntennaStation(identifier);
   //select from stations
