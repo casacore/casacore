@@ -1,5 +1,5 @@
 //# tRecordTransformable.cc: Test program for class RecordTransformable
-//# Copyright (C) 1998,1999,2000,2001
+//# Copyright (C) 1998,1999,2000,2001,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -30,8 +30,8 @@
 #include <aips/Containers/Record.h>
 #include <aips/Containers/RecordInterface.h>
 #include <aips/Exceptions/Error.h>
-#include <aips/Glish/GlishRecord.h>
 #include <aips/Measures/MDirection.h>
+#include <aips/Glish/GlishRecord.h>
 #include <aips/Utilities/Assert.h>
 #include <aips/Utilities/String.h>
 #include <aips/iostream.h>
@@ -72,20 +72,6 @@ int main() {
       MDirection md = m.asMDirection();
       AlwaysAssert(md.getRef().getType() == MDirection::B1950, AipsError);
     }
-    {
-      MeasureHolder m;
-      String errorMessage;
-      GlishRecord gRec;
-      gRec.fromRecord(rec);
-      if (!m.fromGlishRecord(errorMessage, gRec)) {
- 	throw(AipsError
- 	      (String("Cannot update class from a GlishRecord. The reason is:\n"
- 		      + errorMessage)));
-      }
-      AlwaysAssert(m.isMDirection(), AipsError);
-      MDirection md = m.asMDirection();
-      AlwaysAssert(md.getRef().getType() == MDirection::B1950, AipsError);
-    }
   }
   catch (AipsError x) {
     cerr << x.getMesg() << endl;
@@ -98,12 +84,14 @@ int main() {
 
 void printAsRecord(const RecordTransformable & myClass) {
   String errorMessage;
-  GlishRecord rec;
-  if (!myClass.toGlishRecord(errorMessage, rec)) {
+  Record rec;
+  if (!myClass.toRecord(errorMessage, rec)) {
     cout << "Cannot convert class to a Record. The reason is:" << endl; 
     cout << errorMessage << endl;
   } else {
-    cout << rec.format() << endl;
+    GlishRecord gRec;
+    gRec.fromRecord(rec);
+    cout << gRec.format() << endl;
   }
 }
 
