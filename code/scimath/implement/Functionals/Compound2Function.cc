@@ -1,5 +1,5 @@
 //# NQCompound2Function.cc:  Compound of functions AutoDiff specialization
-//# Copyright (C) 2001
+//# Copyright (C) 2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -51,29 +51,36 @@ eval(typename Function<AutoDiff<T> >::FunctionArg x) const {
 
 //# Member functions
 template <class T>
+uInt NQCompoundFunction<AutoDiff<T> >::
+addFunction(const Function<AutoDiff<T> > &newFunction) {
+  uInt nf = NQCompoundParam<AutoDiff<T> >::addFunction(newFunction);
+  toParam_p();
+  return nf;
+}
+
+template <class T>
 void NQCompoundFunction<AutoDiff<T> >::fromParam_p() const {
   if (parset_p) {
     for (uInt i=0; i<nparameters(); ++i) {
       uInt k = functionPtr_p[funpar_p[i]]->nparameters();
       uInt l = (*functionPtr_p[funpar_p[i]])[locpar_p[i]].nDerivatives();
       // Set correct number of derivatives in sub-functions
-      if (nparameters() == param_p[i].nDerivatives()) {
-	if (k != l) {
-	  (*functionPtr_p[funpar_p[i]])[locpar_p[i]] =
-	    AutoDiff<T>(T(0), k);
-	  l = k;
+      if (param_p[i].nDerivatives() == 0) {
+	if (l != 0) {
+	  (*functionPtr_p[funpar_p[i]])[locpar_p[i]] = AutoDiff<T>();
+	  l = 0;
 	};
-      } else if (param_p[i].nDerivatives() == 0 && l != 0) {
-	(*functionPtr_p[funpar_p[i]])[locpar_p[i]] = AutoDiff<T>();
-	l = 0;
+      };
+      if (k != l && l != 0) {
+	(*functionPtr_p[funpar_p[i]])[locpar_p[i]] = AutoDiff<T>(T(0), k);
+	l = k;
       };
       // Set the parameter data
       for (uInt j=0; j<l; ++j) {
 	(*functionPtr_p[funpar_p[i]])[locpar_p[i]].deriv(j) =
 	  param_p[i].deriv(j+paroff_p[funpar_p[i]]);
       };
-      (*functionPtr_p[funpar_p[i]])[locpar_p[i]].value() =
-	param_p[i].value();
+      (*functionPtr_p[funpar_p[i]])[locpar_p[i]].value() = param_p[i].value();
       functionPtr_p[funpar_p[i]]->mask(locpar_p[i]) = param_p.mask(i);
     };
     parset_p = False;
@@ -82,22 +89,32 @@ void NQCompoundFunction<AutoDiff<T> >::fromParam_p() const {
 
 template <class T>
 void NQCompoundFunction<AutoDiff<T> >::toParam_p() {
+  // Total number of sub derivatives
+  uInt tk(0);
   for (uInt i=0; i<nparameters(); ++i) {
     uInt k = functionPtr_p[funpar_p[i]]->nparameters();
     uInt l = (*functionPtr_p[funpar_p[i]])[locpar_p[i]].nDerivatives();
-    // Set correct number of derivatives
-    if (nparameters() ==
-	(*functionPtr_p[funpar_p[i]])[locpar_p[i]].nDerivatives()) {
-      if (k != l) {
-	param_p[i] = AutoDiff<T>(T(0), k);
-	///	(*functionPtr_p[funpar_p[i]])[locpar_p[i]] =
-	l = k;
+    if (l != 0 && k != l) {
+      (*functionPtr_p[funpar_p[i]])[locpar_p[i]] =
+	AutoDiff<T>(T(0), k);
+      l = k;
+    };
+    tk += l;
+  };
+  // Set correct number of derivatives
+  for (uInt i=0; i<nparameters(); ++i) {
+    uInt k = functionPtr_p[funpar_p[i]]->nparameters();
+    uInt l = (*functionPtr_p[funpar_p[i]])[locpar_p[i]].nDerivatives();
+    if (param_p[i].nDerivatives() == 0) {
+      if (tk != 0) {
+	param_p[i] = AutoDiff<T>(param_p[i].value(), nparameters());
       };
-    } else if ((*functionPtr_p[funpar_p[i]])[locpar_p[i]].nDerivatives()
-	       == 0 && l != 0) {
-      param_p[i] = AutoDiff<T>();
-      ///      (*functionPtr_p[funpar_p[i]])[locpar_p[i]] = AutoDiff<T>();
-      l = 0;
+    } else if (nparameters() != param_p[i].nDerivatives()) {
+      param_p[i] = AutoDiff<T>(param_p[i].value(), nparameters());
+    };
+    if (k != l && l != 0) {
+      (*functionPtr_p[funpar_p[i]])[locpar_p[i]] = AutoDiff<T>(T(0), k);
+      l = k;
     };
     // Set the parameter data
     for (uInt j=0; j<l; ++j) {
