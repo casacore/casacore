@@ -1,5 +1,5 @@
 //# MSSelectionKeywords.h: selection keywords for the MS
-//# Copyright (C) 1997,1998,1999,2000
+//# Copyright (C) 1997,1998,1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -98,6 +98,8 @@ public:
     CORRECTED_AMPLITUDE,
     // the range of model vis amplitude
     MODEL_AMPLITUDE,
+    // the amplitude of the ratio corrected data/model data
+    RATIO_AMPLITUDE,
     // the residual vis amplitude (corrected-model)
     RESIDUAL_AMPLITUDE,
     // the observed residual vis amplitude (observed-model)
@@ -114,10 +116,6 @@ public:
     AXIS_INFO,
     // the channel frequencies, a vector for each selected spectral window
     CHAN_FREQ,
-    // the correlator gain (corrected data / model data)
-    CORRELATOR_GAIN,
-    // the observed (raw) correlator gain (observed data / model data)
-    OBS_CORRELATOR_GAIN,
     // the list of polarizations present, this gives the String values
     CORR_NAMES,
     // the list of polarizations present, this gives the Stokes enum values
@@ -128,6 +126,8 @@ public:
     CORRECTED_DATA,
     //the complex model data
     MODEL_DATA,
+    // the ratio corrected data/model data
+    RATIO_DATA,
     // the residual data (corrected - model)
     RESIDUAL_DATA,
     // the observed residual data (observed - model)
@@ -158,6 +158,8 @@ public:
     CORRECTED_IMAGINARY,
     // the (range of the) imaginary part of the model visibilities
     MODEL_IMAGINARY,
+    // the imaginary part of the ratio corrected data/model data
+    RATIO_IMAGINARY,
     // the (range of the) imaginary part of the residual visibilities
     RESIDUAL_IMAGINARY,
     // the (range of the) imaginary part of the observed residual visibilities
@@ -176,6 +178,8 @@ public:
     CORRECTED_PHASE,
     // the (range of the) phase of the model visibilities
     MODEL_PHASE,
+    // the phase of the ratio corrected data/model data
+    RATIO_PHASE,
     // the (range of the) phase of the residual visibilities
     RESIDUAL_PHASE,
     // the (range of the) phase of the observed residual visibilities
@@ -188,6 +192,8 @@ public:
     CORRECTED_REAL,
     // the (range of the) real part of the model visibilities
     MODEL_REAL,
+    // the real part of the ratio corrected data/model data
+    RATIO_REAL,
     // the real part of the residual visibilities (corrected-model)
     RESIDUAL_REAL,
     // the real part of the observed residuals (observed-model)
