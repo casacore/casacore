@@ -1,5 +1,5 @@
 //# LogSinkInterface.cc: Accepts LogMessages and posts them to some destination
-//# Copyright (C) 1996,2000
+//# Copyright (C) 1996,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -27,6 +27,7 @@
 //# $Id$
 
 #include <aips/Logging/LogSinkInterface.h>
+#include <aips/Exceptions/Error.h>
 
 
 LogSinkInterface::LogSinkInterface() : filter_p(LogMessage::NORMAL)
@@ -59,6 +60,37 @@ LogSinkInterface::~LogSinkInterface()
     flush();
 }
 
+uInt LogSinkInterface::nelements() const
+{
+  return 0;
+}
+
+Double LogSinkInterface::getTime (uInt i) const
+{
+  throw AipsError ("LogSinkInterface::getTime - no such message");
+  return 0;
+}
+String LogSinkInterface::getPriority (uInt i) const
+{
+  throw AipsError ("LogSinkInterface::getPriority - no such message");
+  return "";
+}
+String LogSinkInterface::getMessage (uInt i) const
+{
+  throw AipsError ("LogSinkInterface::getMessage - no such message");
+  return "";
+}
+String LogSinkInterface::getLocation (uInt i) const
+{
+  throw AipsError ("LogSinkInterface::getLocation - no such message");
+  return "";
+}
+String LogSinkInterface::getObjectID (uInt i) const
+{
+  throw AipsError ("LogSinkInterface::getObjectID - no such message");
+  return "";
+}
+
 const LogFilter &LogSinkInterface::filter() const
 {
     return filter_p;
@@ -79,3 +111,10 @@ Bool LogSinkInterface::isTableLogSink() const
 {
     return False;
 }
+
+void LogSinkInterface::writeLocally (Double,
+				     const String&,
+				     const String&,
+				     const String&,
+				     const String&)
+{}
