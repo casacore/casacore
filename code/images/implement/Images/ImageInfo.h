@@ -116,6 +116,7 @@ public:
     // fields get added to ImageInfo these functions should be augmented. Missing
     // fields should not generate an error to in fromRecord to allow for 
     // backwards compatibility - null values should be supplied instead.
+    // The record field names are: "restoringbeam".
     // <group>
     virtual Bool toRecord(String & error, RecordInterface & outRecord) const;
     virtual Bool fromRecord(String & error, const RecordInterface & inRecord);
