@@ -26,14 +26,14 @@
 //#
 //# $Id$
 
-#include <coordinates/Coordinates/LinearCoordinate.h>
-#include <coordinates/Coordinates/CoordinateUtil.h>
 #include <images/Images/ImageFITSConverter.h>
 #include <images/Images/PagedImage.h>
 #include <images/Images/TempImage.h>
 #include <images/Images/RegionHandler.h>
 #include <images/Images/ImageRegion.h>
 #include <images/Images/ImageInfo.h>
+#include <coordinates/Coordinates/LinearCoordinate.h>
+#include <coordinates/Coordinates/CoordinateUtil.h>
 #include <lattices/Lattices/LatticeIterator.h>
 #include <lattices/Lattices/LatticeStepper.h>
 #include <lattices/Lattices/TempLattice.h>
