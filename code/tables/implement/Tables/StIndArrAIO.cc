@@ -252,6 +252,7 @@ void StManColumnIndArrayAipsIO::putFile (uInt nrval, AipsIO& ios)
     ios << seqnr_p;
     StManColumnAipsIO::putFile (nrval, ios);
     ios.putend();
+    iosfile_p->flush (False);
 }
 
 void StManColumnIndArrayAipsIO::putData (void* dp, uInt nrval, AipsIO& ios)
