@@ -82,7 +82,7 @@ $HTML_VERSION = "3.2,math";
 
 sub aips2script {
 "<SCRIPT LANGUAGE = \"JavaScript\">\n" .
-#"\n" .
+"\n" .
 "<!--\n" .
 "if (document.images) {                     //if image object is available\n" .
 "img1on = new Image();                       // MouseOver Images\n" .
