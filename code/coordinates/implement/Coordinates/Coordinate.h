@@ -31,14 +31,14 @@
 
 #include <aips/aips.h>
 #include <aips/Utilities/String.h>
-#include <aips/Arrays/Vector.h>
-#include <aips/Arrays/Matrix.h>
-#include <aips/Arrays/ArrayMath.h>
 #include <aips/Exceptions/Error.h>
 #include <aips/Utilities/Assert.h>
 
 
 template<class T> class Quantum;
+template<class T> class Matrix;
+template<class T> class Vector;
+class IPosition;
 class RecordInterface;
 class Projection;
 
