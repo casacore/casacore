@@ -1,5 +1,5 @@
 //# PlainTable.h: Class defining a plain regular table
-//# Copyright (C) 1994,1995,1996,1997
+//# Copyright (C) 1994,1995,1996,1997,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -28,9 +28,6 @@
 #if !defined(AIPS_PLAINTABLE_H)
 #define AIPS_PLAINTABLE_H
 
-#if defined(_AIX)
-#pragma implementation ("PlainTable.cc")
-#endif 
 
 //# Includes
 #include <aips/aips.h>
@@ -127,10 +124,10 @@ public:
 
     // Has this process the read or write lock, thus can the table
     // be read or written safely?
-    virtual Bool hasLock (Bool write) const;
+    virtual Bool hasLock (FileLocker::LockType) const;
 
     // Try to lock the table for read or write access.
-    virtual Bool lock (Bool write, uInt nattempts);
+    virtual Bool lock (FileLocker::LockType, uInt nattempts);
 
     // Unlock the table. This will also synchronize the table data,
     // thus force the data to be written to disk.

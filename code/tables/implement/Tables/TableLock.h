@@ -95,17 +95,6 @@ public:
 	UserLocking
     };
 
-    // Define the possible locking modes (read or write) that can be
-    // used in the <linkto class=TableLocker>TableLocker</linkto>
-    // constructor or in the functions <src>(un)lock</src> in class
-    // <linkto class=Table>Table</linkto>.
-    enum LockMode {
-	// Acquire a read lock.
-	Read,
-	// Acquire a write lock.
-	Write
-    };
-
     // Construct with given option and interval.
     // The default <src>LockOption</src> is <src>AutoLocking</src>.
     // In case of AutloLocking the inspection interval defines how often

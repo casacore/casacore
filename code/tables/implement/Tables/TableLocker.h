@@ -106,7 +106,7 @@ public:
     // is more or less equal to a wait period in seconds.
     // An exception is thrown when the lock cannot be acquired.
     explicit TableLocker (Table& table,
-			  TableLock::LockMode mode = TableLock::Write,
+			  FileLocker::LockType = FileLocker::Write,
 			  uInt nattempts = 0);
 
     // If locked, the destructor releases the lock and flushes the data.
@@ -118,7 +118,7 @@ public:
 
     // Has this process the read or write lock, thus can the table
     // be read or written safely?
-    Bool hasLock (TableLock::LockMode mode = TableLock::Write) const;
+    Bool hasLock (FileLocker::LockType = FileLocker::Write) const;
 
 private:
     // The copy constructor and assignment are not possible.
@@ -138,9 +138,9 @@ private:
 };
 
 
-inline Bool TableLocker::hasLock (TableLock::LockMode mode) const
+inline Bool TableLocker::hasLock (FileLocker::LockType type) const
 {
-    return itsTable.hasLock (mode);
+    return itsTable.hasLock (type);
 }
 
 

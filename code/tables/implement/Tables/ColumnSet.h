@@ -1,5 +1,5 @@
 //# ColumnSet.h: Class to manage a set of table columns
-//# Copyright (C) 1994,1995,1996,1997
+//# Copyright (C) 1994,1995,1996,1997,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -28,9 +28,6 @@
 #if !defined(AIPS_COLUMNSET_H)
 #define AIPS_COLUMNSET_H
 
-#if defined(_AIX)
-#pragma implementation ("ColumnSet.cc")
-#endif 
 
 //# Includes
 #include <aips/aips.h>
@@ -126,7 +123,7 @@ public:
     // If manual or permanent locking is in effect, it checks if the
     // table is properly locked.
     // If autolocking is in effect, it locks the table when needed.
-    void checkLock (Bool write, Bool wait);
+    void checkLock (FileLocker::LockType, Bool wait);
 
     // Inspect the auto lock when the inspection interval has expired and
     // release it when another process needs the lock.
@@ -223,7 +220,7 @@ private:
     // If manual or permanent locking is in effect, it checks if the
     // table is properly locked.
     // If autolocking is in effect, it locks the table when needed.
-    void doLock (Bool write, Bool wait);
+    void doLock (FileLocker::LockType, Bool wait);
 
 
     //# Declare the variables.
@@ -250,10 +247,10 @@ inline void ColumnSet::linkToLockObject (PlainTable* plainTableObject,
     plainTablePtr_p = plainTableObject;
     lockPtr_p = lockObject;
 }
-inline void ColumnSet::checkLock (Bool write, Bool wait)
+inline void ColumnSet::checkLock (FileLocker::LockType type, Bool wait)
 {
-    if (! lockPtr_p->hasLock (write)) {
-	doLock (write, wait);
+    if (! lockPtr_p->hasLock (type)) {
+	doLock (type, wait);
     }
 }
 inline void ColumnSet::autoReleaseLock()

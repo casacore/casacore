@@ -1,5 +1,5 @@
 //# TableLockData.h: Class to hold table lock data
-//# Copyright (C) 1997
+//# Copyright (C) 1997,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -28,9 +28,6 @@
 #if !defined(AIPS_TABLELOCKDATA_H)
 #define AIPS_TABLELOCKDATA_H
 
-#if defined (_AIX)
-#pragma implementation ("TableLockData.cc")
-#endif
 
 //# Includes
 #include <aips/aips.h>
@@ -66,7 +63,7 @@ class TableLockData : public TableLock
 public: 
     // Define the signature of the callback function when a lock is released.
     // The flag <src>always</src> tells if the callback function should
-    // always write its main data (meant when a table gets closed).
+    // always write its main data (meant for case that table gets closed).
     // The callback function has to write the synchronization data
     // (preferably in canonical format) in a MemoryIO object.
     // A pointer to this MemoryIO object has to be returned. A zero pointer
@@ -82,11 +79,11 @@ public:
     // Create the <src>LockFile</src> object and acquire a read or write
     // lock when permanent locking is in effect.
     // It throws an exception when acquiring the lock failed.
-    void makeLock (const String& name, Bool create, Bool write);
+    void makeLock (const String& name, Bool create, FileLocker::LockType);
 
     // Acquire a read or write lock.
     // It throws an exception when acquire failed while it had to wait.
-    Bool acquire (MemoryIO* info, Bool write, uInt nattempts);
+    Bool acquire (MemoryIO* info, FileLocker::LockType, uInt nattempts);
 
     // Release the lock. When always==False, the lock is not released
     // when a permanent lock is used.
@@ -102,7 +99,7 @@ public:
 
     // Has this process the read or write lock, thus can the table
     // be read or written safely?
-    Bool hasLock (Bool write) const;
+    Bool hasLock (FileLocker::LockType) const;
 
     // Is the table in use (i.e. open) in another process?
     Bool isMultiUsed() const;
@@ -125,9 +122,9 @@ private:
 };
 
 
-inline Bool TableLockData::hasLock (Bool write) const
+inline Bool TableLockData::hasLock (FileLocker::LockType type) const
 {
-    return (write  ?  itsWriteLocked : itsReadLocked);
+    return (type == FileLocker::Write  ?  itsWriteLocked : itsReadLocked);
 }
 inline void TableLockData::autoRelease()
 {

@@ -1,5 +1,5 @@
 //# ExternalLockSync.h: Class to hold table lock data
-//# Copyright (C) 1997
+//# Copyright (C) 1997,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -28,9 +28,6 @@
 #if !defined(AIPS_EXTERNALLOCKSYNC_H)
 #define AIPS_EXTERNALLOCKSYNC_H
 
-#if defined (_AIX)
-#pragma implementation ("ExternalLockSync.cc")
-#endif
 
 //# Includes
 #include <aips/aips.h>
@@ -73,7 +70,7 @@ public:
     // Create the <src>LockFile</src> object and acquire a read or write
     // lock when permanent locking is in effect.
     // It throws an exception when acquiring the lock failed.
-    void makeLock (const String& tableName, Bool create, Bool write);
+    void makeLock (const String& tableName, Bool create, FileLocker::LockType);
 
     // Acquire a read or write lock (when needed).
     // Nattempts==0 indicates that it has to wait until the lock is acquired.
@@ -85,7 +82,7 @@ public:
     // <br>When a lock is successfully acquired, the number of rows
     // (see function nrrow() below) is reset as a result of
     // synchronizing the access to the table.
-    Bool acquire (Bool write = True, uInt nattempts = 0);
+    Bool acquire (FileLocker::LockType = FileLocker::Write, uInt nattempts = 0);
 
     // Get the current number of rows in this object.
     uInt nrow() const;
@@ -100,7 +97,7 @@ public:
 
     // Check if the table has a read or write lock, thus if the table can
     // be read or written safely.
-    Bool hasLock (Bool write) const;
+    Bool hasLock (FileLocker::LockType) const;
 
 private:
     // Copy constructor is forbidden.
@@ -123,9 +120,9 @@ private:
 };
 
 
-inline Bool ExternalLockSync::hasLock (Bool write) const
+inline Bool ExternalLockSync::hasLock (FileLocker::LockType type) const
 {
-    return itsLock.hasLock (write);
+    return itsLock.hasLock (type);
 }
 inline void ExternalLockSync::release (uInt nrrow)
 {

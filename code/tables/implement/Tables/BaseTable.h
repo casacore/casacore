@@ -1,5 +1,5 @@
 //# BaseTable.h: Abstract base class for tables
-//# Copyright (C) 1994,1995,1996,1997
+//# Copyright (C) 1994,1995,1996,1997,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -34,6 +34,7 @@
 #include <aips/Tables/TableInfo.h>
 #include <aips/Utilities/Compare.h>
 #include <aips/Utilities/String.h>
+#include <aips/IO/FileLocker.h>
 
 //# Forward Declarations
 class RefTable;
@@ -119,10 +120,10 @@ public:
 
     // Has this process the read or write lock, thus can the table
     // be read or written safely?
-    virtual Bool hasLock (Bool write) const = 0;
+    virtual Bool hasLock (FileLocker::LockType) const = 0;
 
     // Try to lock the table for read or write access.
-    virtual Bool lock (Bool write, uInt nattempts) = 0;
+    virtual Bool lock (FileLocker::LockType, uInt nattempts) = 0;
 
     // Unlock the table. This will also synchronize the table data,
     // thus force the data to be written to disk.
