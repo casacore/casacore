@@ -264,8 +264,8 @@ void Directory::move (const Path& target, Bool overwrite)
 //     return find (Regex (Regex::fromString (fileName)), followSymLinks);
 // }
 
-Vector<String> Directory::find (const Regex& regexp,
-				Bool followSymLinks) const
+Vector<String> Directory::find (const Regex& regexp, Bool followSymLinks,
+                                Bool recursive) const
 {
     DirectoryIterator iter(*this);
     Vector<String> myentries(10);
@@ -286,19 +286,21 @@ Vector<String> Directory::find (const Regex& regexp,
 
     // Now recursively add all the ones we find in subdirectories, prepending
     // the pathname.
-    iter.reset();
-    while (!iter.pastEnd()) {
-        File file = iter.file();
-	if (file.isDirectory (followSymLinks)) {
-	    Directory subdir = file;
-	    Vector<String> subentries = subdir.find (regexp);
-	    String basename = iter.name() + "/";
-	    subentries = basename + subentries.ac();
-	    uInt oldsize = myentries.nelements();
-	    myentries.resize (oldsize + subentries.nelements(), True);
-	    myentries(Slice(oldsize, subentries.nelements())) = subentries;
-	}
-	iter++;
+    if (recursive) {
+       iter.reset();
+       while (!iter.pastEnd()) {
+          File file = iter.file();
+	  if (file.isDirectory (followSymLinks)) {
+	     Directory subdir = file;
+ 	     Vector<String> subentries = subdir.find (regexp);
+	     String basename = iter.name() + "/";
+	     subentries = basename + subentries.ac();
+	     uInt oldsize = myentries.nelements();
+	     myentries.resize (oldsize + subentries.nelements(), True);
+	     myentries(Slice(oldsize, subentries.nelements())) = subentries;
+	  }
+  	  iter++;
+       }
     }
     return myentries;
 }
