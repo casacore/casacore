@@ -57,12 +57,13 @@ main()
     ObjectID null(True);
     AlwaysAssertExit(null.isNull());
 
-    AlwaysAssertExit(ID1.toVector().nelements() == 4 &&
-		     ID1.toVector()(0) == ID1.sequence() &&
-		     ID1.toVector()(1) == ID1.pid() &&
-		     ID1.toVector()(2) == ID1.creationTime() &&
-		     ID1.toVector()(3) == ID1.hostid());
-
+    String copied;
+    ID1.toString(copied);
+    ID1 = ObjectID(True);
+    String error;
+    AlwaysAssertExit(ID1.fromString(error, copied));
+    AlwaysAssertExit(ID1 == ID1copy);
+    ID1.toString(copied);
 
   } catch (AipsError x) {
     cerr << x.getMesg() << endl;
