@@ -72,8 +72,8 @@ void doIt (Bool doExcp)
         Vector<String> list2 = Directory::shellExpand(list, False);
         Vector<String> list3 = Directory::shellExpand(list, True);
 
-        genSort(list2.ac());
-        genSort(list3.ac());
+        genSort(list2);
+        genSort(list3);
 //
         AlwaysAssertExit(list2.nelements()==6);
         {
@@ -113,8 +113,8 @@ void doIt (Bool doExcp)
         list(0) = "tDirectory_tmp/te*";
         list2 = Directory::shellExpand(list, False);
         list3 = Directory::shellExpand(list, True);
-        genSort(list2.ac());
-        genSort(list3.ac());
+        genSort(list2);
+        genSort(list3);
 //
         AlwaysAssertExit(list2.nelements()==5);
         {
@@ -149,8 +149,8 @@ void doIt (Bool doExcp)
         list(0) = "tDirectory_tmp/?ink*";
         list2 = Directory::shellExpand(list, False);
         list3 = Directory::shellExpand(list, True);
-        genSort(list2.ac());
-        genSort(list3.ac());
+        genSort(list2);
+        genSort(list3);
 //
         AlwaysAssertExit(list2.nelements()==1);
         {
