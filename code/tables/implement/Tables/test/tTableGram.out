@@ -404,6 +404,33 @@ select ab from tTableGram_tmp.tab where all(anys(fmod(sums(arr1,1),5)==0,[2:4]))
  3
  5
  8
+select ab from $1;tTableGram_tmp.tab
+    has been executed
+    select of 10 rows
+1 selected columns:  ab
+ 0
+ 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+calc sum([select from tTableGram_tmp.tab giving [ab+1]])
+    has been executed
+[55]
+calc from $1 calc sum([select ab from $1]);tTableGram_tmp.tab
+    has been executed
+[45]
+calc from tTableGram_tmp.tab calc ab
+    has been executed
+[0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+calc from $1 calc ab+1;tTableGram_tmp.tab
+    has been executed
+[1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+
 update tTableGram_tmp.tab set ab=sum(arr1)+ac*2, arr1=arr1+2 where ac>3
     has been executed
     update of 7 rows

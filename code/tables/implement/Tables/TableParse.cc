@@ -27,6 +27,7 @@
 
 #include <tables/Tables/TableParse.h>
 #include <tables/Tables/TableGram.h>
+#include <tables/Tables/TaQLResult.h>
 #include <tables/Tables/ExprNode.h>
 #include <tables/Tables/ExprDerNode.h>
 #include <tables/Tables/ExprDerNodeArray.h>
@@ -81,6 +82,11 @@ TableParse& TableParse::operator= (const TableParse& that)
 	table_p     = that.table_p;
     }
     return *this;
+}
+
+TableParseSelect* TableParseSelect::currentSelect()
+{
+    return blockSelect_p[currentSelect_p-1];
 }
 
 
@@ -155,7 +161,7 @@ PtrBlock<TableParseSelect*> TableParseSelect::blockSelect_p;
 uInt TableParseSelect::currentSelect_p = 0;
 
 
-TableParseSelect::TableParseSelect (Int commandType)
+TableParseSelect::TableParseSelect (CommandType commandType)
 : commandType_p (commandType),
   distinct_p    (False),
   resultSet_p   (0),
@@ -195,7 +201,7 @@ TableParseSelect::~TableParseSelect()
     delete resultSet_p;
 }
 
-void TableParseSelect::newSelect (Int commandType)
+void TableParseSelect::newSelect (CommandType commandType)
 {
     // Create a new one and push it on the "stack".
     uInt n = currentSelect_p;
@@ -717,6 +723,14 @@ TableExprNode TableParseSelect::handleFunc (const String& name,
     //# No functions have to be ignored.
     Vector<Int> ignoreFuncs;
     parseIter_p->toStart();
+    // Use a default table if no one available.
+    // This can only happen in the PCALCCOMM case.
+    if (parseList_p->len() == 0) {
+        if (commandType_p != PCALCCOMM) {
+	    throw TableInvExpr("No table given");
+	}
+        return makeFuncNode (name, arguments, ignoreFuncs, Table());
+    }
     return makeFuncNode (name, arguments, ignoreFuncs,
 			 parseIter_p->getRight().table());
 }
@@ -880,6 +894,12 @@ void TableParseSelect::handleSelect (TableExprNode*& node)
         throw TableInvExpr ("SELECT DISTINCT can only be given with at least "
 			    "one column name");
     }
+}
+
+void TableParseSelect::handleCalcComm (TableExprNode*& node)
+{
+    node_p = node;
+    node   = 0;
 }
 
 Block<String> TableParseSelect::getStoredColumns (const Table& tab) const
@@ -2028,7 +2048,8 @@ void TableParseSelect::execute (Bool setInGiving, String& commandType,
         limit_p = maxRow;
     }
     //# Give an error if no command part has been given.
-    if (mustSelect  &&  commandType_p == 1  &&  node_p == 0  &&  sort_p == 0
+    if (mustSelect  &&  commandType_p == PSELECT
+    &&  node_p == 0  &&  sort_p == 0
     &&  columnNames_p.nelements() == 0  &&  resultSet_p == 0
     &&  limit_p <= 0  &&  offset_p <= 0) {
 	throw (TableError
@@ -2077,16 +2098,16 @@ void TableParseSelect::execute (Bool setInGiving, String& commandType,
         table = doLimOff (table);
     }
     //# Then do the update, delete, insert, or projection and so.
-    if (commandType_p == 2) {
+    if (commandType_p == PUPDATE) {
         doUpdate (table);
 	table.flush();
 	commandType = "update";
-    } else if (commandType_p == 3) {
+    } else if (commandType_p == PINSERT) {
         Table tabNewRows = doInsert (table);
 	table.flush();
 	table = tabNewRows;
 	commandType = "insert";
-    } else if (commandType_p == 4) {
+    } else if (commandType_p == PDELETE) {
         parseIter_p->toStart();
         Table origTab = parseIter_p->getRight().table();
         doDelete (origTab, table);
@@ -2120,49 +2141,50 @@ void TableParseSelect::show (ostream& os) const
 
 
 //# Simplified forms of general tableCommand function.
-Table tableCommand (const String& str)
+TaQLResult tableCommand (const String& str)
 {
     Vector<String> cols;
     return tableCommand (str, cols);
 }
-Table tableCommand (const String& str, const Table& tempTable)
+TaQLResult tableCommand (const String& str, const Table& tempTable)
 {
     PtrBlock<const Table*> tmp(1);
     tmp[0] = &tempTable;
     return tableCommand (str, tmp);
 }
-Table tableCommand (const String& str, const PtrBlock<const Table*>& tempTables)
+TaQLResult tableCommand (const String& str,
+			 const PtrBlock<const Table*>& tempTables)
 {
     Vector<String> cols;
     return tableCommand (str, tempTables, cols);
 }
-Table tableCommand (const String& str, Vector<String>& cols)
+TaQLResult tableCommand (const String& str, Vector<String>& cols)
 {
     PtrBlock<const Table*> tmp;
     return tableCommand (str, tmp, cols);
 }
 
-Table tableCommand (const String& str,
-		    Vector<String>& cols,
-		    String& commandType)
+TaQLResult tableCommand (const String& str,
+			 Vector<String>& cols,
+			 String& commandType)
 {
     PtrBlock<const Table*> tmp;
     return tableCommand (str, tmp, cols, commandType);
 }
 
-Table tableCommand (const String& str,
-		    const PtrBlock<const Table*>& tempTables,
-		    Vector<String>& cols)
+TaQLResult tableCommand (const String& str,
+			 const PtrBlock<const Table*>& tempTables,
+			 Vector<String>& cols)
 {
     String commandType;
     return tableCommand (str, tempTables, cols, commandType);
 }
 
 //# Do the actual parsing of a command and execute it.
-Table tableCommand (const String& str,
-		    const PtrBlock<const Table*>& tempTables,
-		    Vector<String>& cols,
-		    String& commandType)
+TaQLResult tableCommand (const String& str,
+			 const PtrBlock<const Table*>& tempTables,
+			 Vector<String>& cols,
+			 String& commandType)
 {
     commandType = "error";
 #if defined(AIPS_TRACE)
@@ -2192,8 +2214,15 @@ Table tableCommand (const String& str,
 	throw (AipsError(message + '\n' + "Scanned so far: " +
 	                 command.before(tableGramPosition())));
     }
-    //# Execute the command and get the resulting table.
     TableParseSelect* p = TableParseSelect::popSelect();
+    //# If only an expression is given, return it as such.
+    if (p->commandType() == TableParseSelect::PCALCCOMM) {
+        TaQLResult result (*p->getNode());
+	delete p;
+	TableParseSelect::clearSelect();
+	return result;
+    }
+    //# Execute the command and get the resulting table.
 #if defined(AIPS_TRACE)
     p->show (cout);
     timer.mark();

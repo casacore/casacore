@@ -31,11 +31,12 @@
 //# Includes
 #include <casa/aips.h>
 #include <tables/Tables/Table.h>
+#include <tables/Tables/ExprNode.h>
+#include <tables/Tables/TaQLResult.h>
 #include <casa/BasicSL/String.h>
 #include <casa/Utilities/Sort.h>
 #include <casa/Containers/List.h>
 #include <casa/Containers/Block.h>
-#include <tables/Tables/ExprNode.h>
 
 //# Forward Declarations
 class TableExprNodeSet;
@@ -112,23 +113,24 @@ friend AipsIO& operator>> (AipsIO&, TableParse&);
 // Zero or more temporary tables can be used in the command
 // using the $nnn syntax.
 // <group>
-friend Table tableCommand (const String& command);
+friend TaQLResult tableCommand (const String& command);
 
-friend Table tableCommand (const String& command, const Table& tempTable);
-friend Table tableCommand (const String& command,
-			   const PtrBlock<const Table*>& tempTables);
-friend Table tableCommand (const String& command,
-			   Vector<String>& columnNames);
-friend Table tableCommand (const String& command,
-			   Vector<String>& columnNames,
-			   String& commandType);
-friend Table tableCommand (const String& command,
-			   const PtrBlock<const Table*>& tempTables,
-			   Vector<String>& columnNames);
-friend Table tableCommand (const String& command,
-			   const PtrBlock<const Table*>& tempTables,
-			   Vector<String>& columnNames,
-			   String& commandType);
+friend TaQLResult tableCommand (const String& command,
+				const Table& tempTable);
+friend TaQLResult tableCommand (const String& command,
+				const PtrBlock<const Table*>& tempTables);
+friend TaQLResult tableCommand (const String& command,
+				Vector<String>& columnNames);
+friend TaQLResult tableCommand (const String& command,
+				Vector<String>& columnNames,
+				String& commandType);
+friend TaQLResult tableCommand (const String& command,
+				const PtrBlock<const Table*>& tempTables,
+				Vector<String>& columnNames);
+friend TaQLResult tableCommand (const String& command,
+				const PtrBlock<const Table*>& tempTables,
+				Vector<String>& columnNames,
+				String& commandType);
 // </group>
 
 public:
@@ -357,12 +359,27 @@ private:
 class TableParseSelect
 {
 public:
+    enum CommandType {
+        PSELECT,
+	PUPDATE,
+	PINSERT,
+	PDELETE,
+	PCALCCOMM
+    };
 
     // Construct for the given command type.
-    TableParseSelect (Int commandType);
+    TableParseSelect (CommandType);
 
     // Destructor.
     ~TableParseSelect();
+
+    // Return the command type.
+    CommandType commandType() const
+        { return commandType_p; }
+
+    // Return the expression node.
+    const TableExprNode* getNode() const
+        { return node_p; }
 
     // Execute the select command (select/sort/projection/giving).
     // The setInGiving flag tells if a set in the GIVING part is allowed.
@@ -396,6 +413,10 @@ public:
     // Keep the selection expression.
     // It takes over the pointer (and clears the input pointer).
     void handleSelect (TableExprNode*& node);
+
+    // Keep the expression of an calculate command.
+    // It takes over the pointer (and clears the input pointer).
+    void handleCalcComm (TableExprNode*&);
 
     // Keep the update expressions.
     // It takes over the pointer (and clears the input pointer).
@@ -468,7 +489,7 @@ public:
 
     // Create a new TableParseSelect-object for the given command type
     // and put it on the stack (block)
-    static void newSelect (Int commandType);
+    static void newSelect (CommandType);
 
     // Get and remove the last element from the "select stack".
     // Note that this does not delete the object pointed to. It only
@@ -553,8 +574,8 @@ private:
     // (Acts like pointer to top of stack).
     static uInt currentSelect_p;
 
-    //# Command type (1=select, 2=update, 3=insert, 4=delete).
-    Int commandType_p;
+    //# Command type.
+    CommandType commandType_p;
     //# Pointer to a linked list of TableParse objects.
     //# This is needed for the functions above, otherwise they have no
     //# way to communicate.
@@ -643,9 +664,6 @@ inline void TableParseSelect::setDistinctCol()
 
 inline Sort::Order TableParseSelect::getOrder (const TableParseSort& key) const
     { return (key.orderGiven()  ?  key.order() : order_p); }
-
-inline TableParseSelect* TableParseSelect::currentSelect()
-    { return blockSelect_p[currentSelect_p-1]; }
 
 
 

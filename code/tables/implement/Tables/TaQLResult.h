@@ -65,7 +65,7 @@ class TaQLResult
 {
 public:
   // Construct from a Table.
-  TaQLResult (const Table&);
+  TaQLResult (const Table& = Table());
 
   // Construct from a TableExprNode.
   explicit TaQLResult (const TableExprNode&);

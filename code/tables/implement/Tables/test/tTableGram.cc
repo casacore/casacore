@@ -51,36 +51,36 @@ void docomm ();
 
 int main (int argc, char** argv)
 {
-    try {
-	if (argc > 1) {
-	    seltab(argv[1]);
-	}else{
-	    docomm();
-	}
-    } catch (AipsError x) {
-	cout << "\nCaught an exception: " << x.getMesg() << endl;
-        return 1;
-    } 
-    return 0;               // successfully executed
+  try {
+    if (argc > 1) {
+      seltab(argv[1]);
+    }else{
+      docomm();
+    }
+  } catch (AipsError x) {
+    cout << "\nCaught an exception: " << x.getMesg() << endl;
+    return 1;
+  } 
+  return 0;               // successfully executed
 }
 
 
 // Ask and execute command till empty string is given.
 void docomm()
 {
-    char comm[1025];
-    while (True) {
-	cout << "Table command (q=quit): ";
-	cin.getline (comm, 1024);
-	String str(comm);
-	if (str == "q") 
-	    break;
-	try {
-	    seltab (str);
-	} catch (AipsError x) {
-	    cout << x.getMesg() << endl;
-	} 
-    }
+  char comm[1025];
+  while (True) {
+    cout << "Table command (q=quit): ";
+    cin.getline (comm, 1024);
+    String str(comm);
+    if (str == "q") 
+      break;
+    try {
+      seltab (str);
+    } catch (AipsError x) {
+      cout << x.getMesg() << endl;
+    } 
+  }
 }
 
 
@@ -88,80 +88,174 @@ void docomm()
 // First test if they exist and contain scalars or arrays.
 void showtab (const Table& tab, const Vector<String>& colnam)
 {
-    uInt nrcol = 0;
-    PtrBlock<ROTableColumn*> tableColumns(colnam.nelements());
-    uInt i;
-    for (i=0; i<colnam.nelements(); i++) {
-	if (! tab.tableDesc().isColumn (colnam(i))) {
-	    cout << "Column " << colnam(i) << " does not exist" << endl;
-	}else{
-	    tableColumns[nrcol] = new ROTableColumn (tab, colnam(i));
-	    if (! tableColumns[nrcol]->columnDesc().isScalar()
-	    &&  ! tableColumns[nrcol]->columnDesc().isArray()) {
-		cout << "Column " << colnam(i)
-		     << " contains scalars nor arrays"
-		     << endl;
-		delete tableColumns[nrcol];
-	    }else{
-		nrcol++;
-	    }
+  uInt nrcol = 0;
+  PtrBlock<ROTableColumn*> tableColumns(colnam.nelements());
+  uInt i;
+  for (i=0; i<colnam.nelements(); i++) {
+    if (! tab.tableDesc().isColumn (colnam(i))) {
+      cout << "Column " << colnam(i) << " does not exist" << endl;
+    }else{
+      tableColumns[nrcol] = new ROTableColumn (tab, colnam(i));
+      if (! tableColumns[nrcol]->columnDesc().isScalar()
+      &&  ! tableColumns[nrcol]->columnDesc().isArray()) {
+	cout << "Column " << colnam(i)
+	     << " contains scalars nor arrays"
+	     << endl;
+	delete tableColumns[nrcol];
+      }else{
+	nrcol++;
+      }
+    }
+  }
+  if (nrcol == 0) {
+    return;
+  }
+  
+  for (i=0; i<tab.nrow(); i++) {
+    for (uInt j=0; j<nrcol; j++) {
+      if (tableColumns[j]->columnDesc().isArray()) {
+	cout << " " << tableColumns[j]->shape (i);
+      }else{
+	switch (tableColumns[j]->columnDesc().dataType()) {
+	case TpBool:
+	  cout << " " << tableColumns[j]->asBool (i);
+	  break;
+	case TpString:
+	  cout << " " << tableColumns[j]->asString (i);
+	  break;
+	case TpComplex:
+	case TpDComplex:
+	  cout << " " << tableColumns[j]->asDComplex (i);
+	  break;
+	default:
+	  cout << " " << tableColumns[j]->asdouble (i);
 	}
+      }
     }
-    if (nrcol == 0) {
-	return;
-    }
+    cout << endl;
+  }
+  
+  for (i=0; i<nrcol; i++) {
+    delete tableColumns[i];
+  }
+}
 
-    for (i=0; i<tab.nrow(); i++) {
-	for (uInt j=0; j<nrcol; j++) {
-	    if (tableColumns[j]->columnDesc().isArray()) {
-		cout << " " << tableColumns[j]->shape (i);
-	    }else{
-		switch (tableColumns[j]->columnDesc().dataType()) {
-		case TpBool:
-		    cout << " " << tableColumns[j]->asBool (i);
-		    break;
-		case TpString:
-		    cout << " " << tableColumns[j]->asString (i);
-		    break;
-		case TpComplex:
-		case TpDComplex:
-		    cout << " " << tableColumns[j]->asDComplex (i);
-		    break;
-		default:
-		    cout << " " << tableColumns[j]->asdouble (i);
-		}
-	    }
+
+void showExpr(const TableExprNode& expr)
+{
+  if (expr.isScalar()) {
+    switch (expr.getColumnDataType()) {
+    case TpBool:
+      cout << expr.getColumnBool();
+      break;
+    case TpUChar:
+      cout << expr.getColumnuChar();
+      break;
+    case TpShort:
+      cout << expr.getColumnShort();
+      break;
+    case TpUShort:
+      cout << expr.getColumnuShort();
+      break;
+    case TpInt:
+      cout << expr.getColumnInt();
+      break;
+    case TpUInt:
+      cout << expr.getColumnuInt();
+      break;
+    case TpFloat:
+      cout << expr.getColumnFloat();
+      break;
+    case TpDouble:
+      cout << expr.getColumnDouble();
+      break;
+    case TpComplex:
+      cout << expr.getColumnComplex();
+      break;
+    case TpDComplex:
+      cout << expr.getColumnDComplex();
+      break;
+    case TpString:
+      cout << expr.getColumnString();
+      break;
+    default:
+      cout << "Unknown expression scalar type " << expr.getColumnDataType();
+    }
+    cout << endl;
+  } else {
+    for (uInt i=0; i<expr.nrow(); i++) {
+      cout << "  row " << i << ":" << endl;
+      switch (expr.dataType()) {
+      case TpBool:
+	{
+	  Array<Bool> arr;
+	  expr.get (i, arr);
+	  cout << arr;
+	  break;
 	}
-	cout << endl;
+      case TpDouble:
+	{
+	  Array<Double> arr;
+	  expr.get (i, arr);
+	  cout << arr;
+	  break;
+	}
+      case TpDComplex:
+	{
+	  Array<DComplex> arr;
+	  expr.get (i, arr);
+	  cout << arr;
+	  break;
+	}
+      case TpString:
+	{
+	  Array<String> arr;
+	  expr.get (i, arr);
+	  cout << arr;
+	  break;
+	}
+      default:
+	cout << "Unknown expression array type " << expr.dataType();
+      }
     }
-
-    for (i=0; i<nrcol; i++) {
-	delete tableColumns[i];
-    }
+  }
 }
 
 
 // Sort and select data.
 void seltab (const String& str)
 {
-    uInt i;
-    Table tab;
-    Vector<String> vecstr;
-    String cmd;
-    cout << str << endl;
-    // Select rows from the table.
-    tab = tableCommand (str, vecstr, cmd);
-    cout << "    has been executed" << endl;
+  uInt i;
+  Table tab;
+  Vector<String> vecstr;
+  String cmd;
+  cout << str << endl;
+  TaQLResult result;
+  uInt semipos = str.find(';');
+  if (semipos == string::npos) {
+    result = tableCommand (str, vecstr, cmd);
+  } else {
+    String strc(str);
+    Table tab(strc.after(semipos));
+    PtrBlock<const Table*> tabblock(1, &tab);
+    result = tableCommand (strc.before(semipos), tabblock, vecstr, cmd);
+  }
+  cout << "    has been executed" << endl;
+  if (result.isTable()) {
+    tab = result.table();
     cout << "    " << cmd << " of " << tab.nrow() << " rows" << endl;
     // Show the selected column names.
     cout << vecstr.nelements() << " selected columns: ";
     for (i=0; i<vecstr.nelements(); i++) {
-	cout << " " << vecstr(i);
+      cout << " " << vecstr(i);
     }
     cout << endl;
 
     // Show the contents of the columns.
     if (vecstr.nelements() > 0) {
-	showtab (tab, vecstr);
+      showtab (tab, vecstr);
     }
+  } else {
+    showExpr (result.node());
+  }
 }

@@ -48,6 +48,7 @@ PtrBlock<TableParseUpdate*>* updateb;
 %token INSERT
 %token VALUES
 %token DELETE
+%token CALC
 %token FROM
 %token WHERE
 %token ORDERBY
@@ -134,6 +135,7 @@ command:   selcomm
          | updcomm
          | inscomm
          | delcomm
+         | calccomm
          ;
 
 subquery:  LPAREN selcomm RPAREN
@@ -144,7 +146,7 @@ selcomm:   select selrow
          ;
 
 select:    SELECT {
-               TableParseSelect::newSelect(1);
+               TableParseSelect::newSelect(TableParseSelect::PSELECT);
 	   }
          ;
 
@@ -170,7 +172,7 @@ updcomm:   update updrow
          ;
 
 update:    UPDATE {
-               TableParseSelect::newSelect(2);
+               TableParseSelect::newSelect(TableParseSelect::PUPDATE);
            }
          ;
 
@@ -218,7 +220,7 @@ inscomm:   insert insrow
          ;
 
 insert:    INSERT {
-               TableParseSelect::newSelect(3);
+               TableParseSelect::newSelect(TableParseSelect::PINSERT);
            }
          ;
 
@@ -263,8 +265,22 @@ delcomm:   delete selwh order limitoff
          ;
 
 delete:    DELETE {
-               TableParseSelect::newSelect(4);
+               TableParseSelect::newSelect(TableParseSelect::PDELETE);
            }
+         ;
+
+calccomm:  calc calcwh orexpr {
+               TableParseSelect::currentSelect()->handleCalcComm ($3);
+           }
+         ;
+           
+calc:      CALC {
+               TableParseSelect::newSelect(TableParseSelect::PCALCCOMM);
+           }
+         ;
+
+calcwh:              /* no from/calc */
+         | FROM tables CALC
          ;
 
 order:               /* no sort */
@@ -375,7 +391,7 @@ tables:    NAME {                            /* table is shorthand */
 	       TableParseSelect::currentSelect()->addTable ($3, $1->str);
 	       delete $1;
 	       delete $3;
-	   }
+           }
          | tables COMMA NAME {
 	       TableParseSelect::currentSelect()->addTable ($3, $3->str);
 	       delete $3;

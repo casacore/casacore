@@ -107,6 +107,14 @@ tTableGram 'select ab from tTableGram_tmp.tab where sum(ntrues(arr1%5==0,[1])) <
 
 tTableGram 'select ab from tTableGram_tmp.tab where all(anys(fmod(sums(arr1,1),5)==0,[2:4]))'
 
+tTableGram 'select ab from $1;tTableGram_tmp.tab'
+
+tTableGram 'calc sum([select from tTableGram_tmp.tab giving [ab+1]])'
+tTableGram 'calc from $1 calc sum([select ab from $1]);tTableGram_tmp.tab'
+tTableGram 'calc from tTableGram_tmp.tab calc ab'
+tTableGram 'calc from $1 calc ab+1;tTableGram_tmp.tab'
+
+echo ""
 
 tTableGram 'update tTableGram_tmp.tab set ab=sum(arr1)+ac*2, arr1=arr1+2 where ac>3'
 tTableGram 'select ab from tTableGram_tmp.tab'
