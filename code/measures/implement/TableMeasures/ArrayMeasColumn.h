@@ -36,6 +36,9 @@
 #include <aips/Measures/MFrequency.h>
 #include <aips/Measures/MPosition.h>
 #include <aips/Measures/MRadialVelocity.h>
+#include <aips/Measures/MBaseline.h>
+#include <aips/Measures/Muvw.h>
+#include <aips/Measures/MEarthMagnetic.h>
 #include <aips/Tables/ArrayColumn.h>
 
 //# Forward Declarations
@@ -51,6 +54,12 @@ class MDoppler;
 class MVDoppler;
 class MFrequency;
 class MVFrequency;
+class MBaseline;
+class MVBaseline;
+class Muvw;
+class MVuvw;
+class MEarthMagnetic;
+class MVEarthMagnetic;
 class String;
 class Table;
 template <class T> class ArrayColumn;
@@ -178,6 +187,9 @@ typedef ROArrayMeasColumn<MRadialVelocity, MVRadialVelocity>
     ROMRadialVelocityArrCol;
 typedef ROArrayMeasColumn<MDoppler, MVDoppler> ROMDopplerArrCol;
 typedef ROArrayMeasColumn<MFrequency, MVFrequency> ROMFrequecnyCol;
+typedef ROArrayMeasColumn<MBaseline, MVBaseline> ROMBaselineArrCol;
+typedef ROArrayMeasColumn<Muvw, MVuvw> ROMuvwArrCol;
+typedef ROArrayMeasColumn<MEarthMagnetic, MVEarthMagnetic> ROMEarthMagneticArrCol;
 
 
 template<class M, class MV>
@@ -247,5 +259,8 @@ typedef ArrayMeasColumn<MRadialVelocity, MVRadialVelocity>
     MRadialVelocityArrCol;
 typedef ArrayMeasColumn<MDoppler, MVDoppler> MDopplerArrCol;
 typedef ArrayMeasColumn<MFrequency, MVFrequency> MFrequecnyCol;
+typedef ArrayMeasColumn<MBaseline, MVBaseline> MBaselineArrCol;
+typedef ArrayMeasColumn<Muvw, MVuvw> MuvwArrCol;
+typedef ArrayMeasColumn<MEarthMagnetic, MVEarthMagnetic> MEarthMagneticArrCol;
 
 #endif

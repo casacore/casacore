@@ -42,6 +42,9 @@
 #include <aips/Measures/MFrequency.h>
 #include <aips/Measures/MPosition.h>
 #include <aips/Measures/MRadialVelocity.h>
+#include <aips/Measures/MBaseline.h>
+#include <aips/Measures/Muvw.h>
+#include <aips/Measures/MEarthMagnetic.h>
 #include <aips/Tables/ArrayColumn.h>
 #include <aips/Tables/ScalarColumn.h>
 #include <aips/Tables/Table.h>

@@ -1,4 +1,4 @@
-//# Copyright (C) 1997
+//# Copyright (C) 1997,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -35,6 +35,9 @@
 #include <aips/Measures/MRadialVelocity.h>
 #include <aips/Measures/MDoppler.h>
 #include <aips/Measures/MFrequency.h>
+#include <aips/Measures/MBaseline.h>
+#include <aips/Measures/Muvw.h>
+#include <aips/Measures/MEarthMagnetic.h>
 #include <trial/TableMeasures/ScalarMeasColumn.h>
 #include <trial/TableMeasures/TableMeasDesc.h>
 #include <trial/TableMeasures/TableMeasRefDesc.h>

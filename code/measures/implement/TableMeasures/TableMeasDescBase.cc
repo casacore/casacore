@@ -1,5 +1,5 @@
 //# TableMeasDefBase.cc: Definition of a Measure in a Table.
-//# Copyright (C) 1997
+//# Copyright (C) 1997,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -33,6 +33,9 @@
 #include <aips/Measures/MFrequency.h>
 #include <aips/Measures/MPosition.h>
 #include <aips/Measures/MRadialVelocity.h>
+#include <aips/Measures/MBaseline.h>
+#include <aips/Measures/Muvw.h>
+#include <aips/Measures/MEarthMagnetic.h>
 #include <trial/TableMeasures/TableMeasDesc.h>
 #include <trial/TableMeasures/TableMeasDescBase.h>
 #include <trial/TableMeasures/TableMeasRefDesc.h>
@@ -101,6 +104,12 @@ TableMeasDescBase* TableMeasDescBase::reconstruct(const Table& tab,
     	P = new TableMeasDesc<MDoppler>();
     } else if (mtype == "Frequency") {
     	P = new TableMeasDesc<MFrequency>();
+    } else if (mtype == "Baseline") {
+    	P = new TableMeasDesc<MBaseline>();
+    } else if (mtype == "uvw") {
+    	P = new TableMeasDesc<Muvw>();
+    } else if (mtype == "EarthMagnetic") {
+    	P = new TableMeasDesc<MEarthMagnetic>();
     } else {
         throw(AipsError("TableMeasDescBase::reconstruct; unknown Measure type " 
             	    	+ mtype));

@@ -47,6 +47,12 @@ class MDoppler;
 class MVDoppler;
 class MFrequency;
 class MVFrequency;
+class MBaseline;
+class MVBaseline;
+class Muvw;
+class MVuvw;
+class MEarthMagnetic;
+class MVEarthMagnetic;
 class Table;
 class TableMeasRefDesc;
 template <class T> class ScalarColumn;
@@ -220,6 +226,9 @@ typedef ROScalarMeasColumn<MRadialVelocity, MVRadialVelocity>
     ROMRadialVelocityScaCol;
 typedef ROScalarMeasColumn<MDoppler, MVDoppler> ROMDopplerScaCol;
 typedef ROScalarMeasColumn<MFrequency, MVFrequency> ROMFrequencyScaCol;
+typedef ROScalarMeasColumn<MBaseline, MVBaseline> ROMBaselineScaCol;
+typedef ROScalarMeasColumn<Muvw, MVuvw> ROMuvwScaCol;
+typedef ROScalarMeasColumn<MEarthMagnetic, MVEarthMagnetic> ROMEarthMagneticScaCol;
  
 
 template <class M, class MV>
@@ -282,5 +291,8 @@ typedef ScalarMeasColumn<MRadialVelocity, MVRadialVelocity>
     MRadialVelocityScaCol;
 typedef ScalarMeasColumn<MDoppler, MVDoppler> MDopplerScaCol;
 typedef ScalarMeasColumn<MFrequency, MVFrequency> MFrequencyScaCol;
+typedef ScalarMeasColumn<MBaseline, MVBaseline> MBaselineScaCol;
+typedef ScalarMeasColumn<Muvw, MVuvw> MuvwScaCol;
+typedef ScalarMeasColumn<MEarthMagnetic, MVEarthMagnetic> MEarthMagneticScaCol;
 
 #endif

@@ -1,5 +1,5 @@
 //# TableMeasOffsetDesc.cc: Definition of a offset measure in a Table.
-//# Copyright (C) 1997
+//# Copyright (C) 1997,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -34,6 +34,9 @@
 #include <aips/Measures/MFrequency.h>
 #include <aips/Measures/MPosition.h>
 #include <aips/Measures/MRadialVelocity.h>
+#include <aips/Measures/MBaseline.h>
+#include <aips/Measures/Muvw.h>
+#include <aips/Measures/MEarthMagnetic.h>
 #include <aips/Measures/Measure.h>
 #include <aips/Tables/Table.h>
 #include <aips/Tables/TableRecord.h>
@@ -132,6 +135,18 @@ TableMeasOffsetDesc::TableMeasOffsetDesc(const TableRecord& measInfo,
 	    MVRadialVelocity meval;
 	    meval.putVector(measVal);
     	    itsMeasure = new MRadialVelocity(meval, measRef);
+    	} else if (measRec.asString(fnr) == "Baseline") {
+	    MVBaseline meval;
+	    meval.putVector(measVal);
+    	    itsMeasure = new MBaseline(meval, measRef);
+    	} else if (measRec.asString(fnr) == "uvw") {
+	    MVuvw meval;
+	    meval.putVector(measVal);
+    	    itsMeasure = new Muvw(meval, measRef);
+    	} else if (measRec.asString(fnr) == "EarthMagnetic") {
+	    MVEarthMagnetic meval;
+	    meval.putVector(measVal);
+    	    itsMeasure = new MEarthMagnetic(meval, measRef);
     	} else {
     	    throw(AipsError("TableMeasOffsetDesc::TableMeasOffsetDesc() "
     	    	"measure type unknown: " + measRec.fieldNumber("mType")));
