@@ -286,9 +286,8 @@ public:
   
   // Function to return the number of steps (increments or decrements) taken
   // since construction (or since last reset).  This is a running count of
-  // all cursor movement since doing N increments followed by N decrements
-  // does not necessarily put the cursor back at the origin of the Lattice.
-  // Forwarded to the current LatticeNavigator.
+  // all cursor movement, thus doing N increments followed by N decrements
+  // results in 2N steps.
   uInt nsteps() const;
   
   // Function which returns the current position of the beginning of the
