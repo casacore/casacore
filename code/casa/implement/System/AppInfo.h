@@ -26,8 +26,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_APPLICATION_ENVIRONMENT_H)
-#define AIPS_APPLICATION_ENVIRONMENT_H
+#if !defined(AIPS_APPINFO_H)
+#define AIPS_APPINFO_H
 
 //# Includes
 #include <aips/aips.h>
