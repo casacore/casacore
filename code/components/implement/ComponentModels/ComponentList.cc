@@ -327,6 +327,21 @@ void ComponentList::setShape(const Vector<Int> & which,
   DebugAssert(ok(), AipsError);
 }
 
+void ComponentList::setShapeParms(const Vector<Int> & which,
+				  const ComponentShape & newShape) {
+  uInt c;
+  MDirection oldDir;
+  for (uInt i = 0; i < which.nelements(); i++) {
+    AlwaysAssert(which(i) >= 0, AipsError);
+    c = which(i);
+    SkyComponent & comp = component(c);
+    oldDir = comp.shape().refDirection();
+    component(c).setShape(newShape);
+    comp.shape().setRefDirection(oldDir);
+  }
+  DebugAssert(ok(), AipsError);
+}
+
 void ComponentList::setSpectrum(const Vector<Int> & which,
 				const SpectralModel & newSpectrum) {
   uInt c;
