@@ -173,7 +173,11 @@
         echo "The shadow tree (without RCS links) will be constructed"
      fi
      echo "in `pwd`, shadowing $ROOTSTEM."
-     echo "Continue? (y/n) [y]:"
+     if [ "`echo -n X`" = "X" ] ; then
+	echo -n "Continue? (y/n) [y]: "
+     else
+	echo "Continue? (y/n) [y]: \c"
+     fi
      read ANSWER
      affirm -a -s $ANSWER || exit 1
      echo ""
