@@ -1,6 +1,6 @@
 /*
     TableGram.l: Lexical analyzer for table commands
-    Copyright (C) 1994,1995,1996,1997,1998
+    Copyright (C) 1994,1995,1996,1997,1998,2001
     Associated Universities, Inc. Washington DC, USA.
 
     This library is free software; you can redistribute it and/or modify it
@@ -56,6 +56,8 @@ EXP       [DdEe][+-]?{INT}
 FLOAT     {INT}{EXP}|{INT}"."{DIGIT}*({EXP})?|{DIGIT}*"."{INT}({EXP})?
 FLINT     {FLOAT}|{INT}
 COMPLEX   {FLINT}"i"
+TRUE      T
+FALSE     F
 
 MONTH     ("-"{INT}?"-")|("-"?[A-Za-z]+"-"?)
 DATEH     {INT}{MONTH}{INT}
@@ -244,6 +246,20 @@ NAMETAB   ([A-Za-z0-9_./+\-~$]|(\\.))+
             }
             return LITERAL;
 	  }
+{TRUE}    {
+            tableGramPosition() += yyleng;
+            lvalp->val = TableParseVal::makeValue();
+	    lvalp->val->type = 'b';
+	    lvalp->val->dval[0] = 1;
+	    return LITERAL;
+	  }
+{FALSE}   {
+            tableGramPosition() += yyleng;
+            lvalp->val = TableParseVal::makeValue();
+	    lvalp->val->type = 'b';
+	    lvalp->val->dval[0] = 0;
+	    return LITERAL;
+	  }
 {STRING}  {
             tableGramPosition() += yyleng;
             lvalp->val = TableParseVal::makeValue();
@@ -258,7 +274,7 @@ NAMETAB   ([A-Za-z0-9_./+\-~$]|(\\.))+
 	    lvalp->val->str = TableGramtext;
 	    return LITERAL;
 	  }
-{TIME}    {
+<EXPRstate>{TIME} {
             tableGramPosition() += yyleng;
             lvalp->val = TableParseVal::makeValue();
 	    lvalp->val->type = 't';
