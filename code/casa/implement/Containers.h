@@ -1,5 +1,5 @@
 //# <Containers.h>:  a module for non-mathematical containers
-//# Copyright (C) 1995,1999
+//# Copyright (C) 1995,1999,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -29,7 +29,6 @@
 #define AIPS_CONTAINERS_H
 
 #include <aips/Containers/Block.h>
-#include <aips/Containers/ExtendHash.h>
 #include <aips/Containers/Link.h>
 #include <aips/Containers/List.h>
 #include <aips/Containers/ListMap.h>
@@ -49,7 +48,6 @@
 #include <aips/Containers/OrdMapIO.h>
 #include <aips/Containers/SimOrdMapIO.h>
 #include <aips/Containers/MapIO.h>
-#include <aips/Containers/OrdMapRtti.h>
 
 #include <aips/Containers/StackError.h>
 #include <aips/Containers/IterError.h>
