@@ -1,5 +1,5 @@
 //# CoordinateSystem.cc: Interconvert pixel and image coordinates. 
-//# Copyright (C) 1997,1998,1999,2000,2001
+//# Copyright (C) 1997,1998,1999,2000,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -4493,8 +4493,17 @@ void CoordinateSystem::listDirectionSystem(LogIO& os) const
    Int afterCoord = -1;
    Int ic = findCoordinate(Coordinate::DIRECTION, afterCoord);
    if (ic >= 0) {
-      MDirection::Types dirType = directionCoordinate(uInt(ic)).directionType();
-      os << "Direction reference : " << MDirection::showType(dirType) << endl;
+      const DirectionCoordinate& coord = directionCoordinate(uInt(ic));
+      MDirection::Types type = coord.directionType();
+      MDirection::Types conversionType;
+      coord.getReferenceConversion(conversionType);
+//
+      if (type==conversionType) {
+         os << "Direction reference : " << MDirection::showType(type) << endl;
+      } else {
+         os << "Direction reference : " << MDirection::showType(type) << 
+               " (-> " << MDirection::showType(conversionType) << ")" << endl;
+      }
    }
 }
 
@@ -4505,13 +4514,21 @@ void CoordinateSystem::listFrequencySystem(LogIO& os, MDoppler::Types doppler) c
    Int afterCoord = -1;
    Int ic = findCoordinate(Coordinate::SPECTRAL, afterCoord);
    if (ic >= 0) {
-      const SpectralCoordinate& specCoord = spectralCoordinate(uInt(ic));
-      MFrequency::Types freqType = specCoord.frequencySystem();
-//      
-      os << "Spectral  reference : " << MFrequency::showType(freqType) << endl;
+      const SpectralCoordinate& coord = spectralCoordinate(uInt(ic));
+      MFrequency::Types type = coord.frequencySystem();
+      MFrequency::Types conversionType;
+      coord.getReferenceConversion(conversionType);
+//
+      if (type==conversionType) {
+         os << "Spectral  reference : " << MFrequency::showType(type) << endl;
+      } else {
+         os << "Spectral  reference : " << MFrequency::showType(type) << 
+               " (-> " << MFrequency::showType(conversionType) << ")" << endl;
+      }
+//
       os << "Velocity  type      : " << MDoppler::showType(doppler) << endl;
 //
-      String str = specCoord.formatRestFrequencies();
+      String str = coord.formatRestFrequencies();
       if (!str.empty()) os << str << endl;
    }
 }
