@@ -29,6 +29,7 @@
 #include <aips/Exceptions/Excp.h>
 #include <aips/Containers/StackError.h>
 
+
 template<class elem> Stack<elem>::~Stack() {
     if ( topOfStack )
 	delete topOfStack;
