@@ -5863,3 +5863,4 @@
 16 273 src rm trial/apps/dish/dishplot_printing.g
 16 273 src rm trial/apps/dish/dishplot_range_cursor.g
 16 273 src rm trial/apps/dish/dishplot_state.g
+16 273 src rm trial/apps/dish/dishplot_zoom.g
