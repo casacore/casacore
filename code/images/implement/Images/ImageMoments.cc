@@ -852,7 +852,7 @@ Bool ImageMoments<T>::createMoments()
    String smoothName;
    if (doSmooth_p) {
       pSmoothedImage = smoothImage(smoothName);
-      if (pSmoothedImage != 0) {
+      if (pSmoothedImage==0) {
          os_p << LogIO::SEVERE << "Error convolving image" << LogIO::POST;
          return False;
       }
@@ -1666,7 +1666,6 @@ ImageInterface<T>* ImageMoments<T>::smoothImage (String& smoothName)
 // Create SubImage which can handle masks
 
    SubImage<T>* smoothedSubImagePtr = new SubImage<T>(smoothedImage, True);
-
 
 // Smooth in situ.  PSF is separable so convolve by rows for each axis.  
 
