@@ -1,0 +1,14 @@
+
+change id: 0054
+ author:   Wim Brouw
+ date:     2000/11/07
+ avers:    1.5
+ area:     Library
+ package:  aips
+ module:   Measures
+ type:     Code
+ category: Change
+ summary:  Clean baseline/uvw interface
+To aid in calculating the UVW coordinates as they are defined in an aips++ Measurement SEt, the MBaseline and Muvw mtehods (especially the conversion) were cleaned up.
+
+They now correspond with the VLA defined conventions.
