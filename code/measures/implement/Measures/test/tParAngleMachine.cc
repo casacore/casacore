@@ -30,42 +30,153 @@
 #include <trial/Measures/ParAngleMachine.h>
 #include <aips/Exceptions/Error.h>
 #include <aips/Measures.h>
+#include <aips/Measures/MeasConvert.h>
 #include <aips/Measures/MeasFrame.h>
+#include <aips/Measures/MeasRef.h>
 #include <aips/Measures/MeasTable.h>
 #include <aips/Measures/MDirection.h>
 #include <aips/Measures/MPosition.h>
 #include <aips/Measures/MEpoch.h>
+#include <aips/Quanta/Quantum.h>
+#include <aips/Quanta/MVEpoch.h>
 #include <aips/Arrays/Vector.h>
+#include <aips/OS/Timer.h>
 #include <aips/iostream.h>
+#include <aips/iomanip.h>
 
 int main() {
 
   try {
     cout << "Test Parallactic Angle  machine" << endl;
-    cout << "--------------------------------------" << endl;
+    cout << "---------------------------------------------" << endl;
+    Timer tim;
     MPosition obs;
     MeasTable::Observatory(obs, "atca");
     Double dat(52332.2+1./24./15./10.);
-    MeasFrame frame((MEpoch(Quantity(dat, "d"))), obs);
+    Quantity qdat(dat, "d");
+    MVEpoch mvdat(dat);
+    MEpoch  medat(mvdat, MEpoch::UTC);
+    Vector<Double> vddat(5);
+    Vector<MVEpoch> vmvdat(5);
+    Vector<MEpoch> vmedat(5);
+    for (uInt i=0; i<5; ++i) {
+      vddat[i] = dat + i/12./15./10.;
+      vmvdat[i] = MVEpoch(vddat[i]);
+    };
+    for (uInt i=0; i<5; ++i) {
+      vmedat[i] = MEpoch(vmvdat[i], MEpoch::UTC);
+    };
+    Quantum<Vector<Double> > vqdat(vddat, "d"); 
+    MeasFrame frame(medat, obs);
+    MDirection::Ref refj2(MDirection::Ref(MDirection::J2000, frame));
+    MDirection::Ref refaz(MDirection::Ref(MDirection::AZEL, frame));
+    MDirection::Convert j2az(refj2, refaz);
     MDirection dir(Quantity(20, "deg"),
 		   Quantity(-30, "deg"),
-		   MDirection::Ref(MDirection::J2000, frame));
+		   refj2);
+    MDirection pol(Quantity(0, "deg"), Quantity(90, "deg"),
+		   refj2);
     cout << "Position:  " << obs.getValue().get() << endl;
     cout << "           " << obs.getAngle("deg") << endl;
     cout << "           " << obs.getValue().getLength("km") << endl;
     cout << "Direction: " << dir.getValue().get() << endl;
     cout << "           " << dir.getAngle("deg") << endl;
+    cout << "Time:      " << MVEpoch(dat) << endl;
+
+    cout << "--------------- Full conversion to AZEL -----" << endl;
+
+    for (uInt i=0; i<10; i+=2) {
+      frame.set(MEpoch(Quantity(dat + i/24./15./10., "d")));
+      MVDirection mvd(j2az(dir).getValue());
+      if (i>0) cout << ", ";
+      cout << setprecision(4) << 
+	Quantity(mvd.positionAngle(j2az(pol).getValue()), "rad").get("deg");
+    };
+    cout << endl;
+
+    cout << "--------------- Full machine through HADEC --" << endl;
 
     ParAngleMachine pam(dir);
     pam.set(frame);
-    cout << "Time:      " << MVEpoch(dat) << endl;;;
-    cout << "Par angle: " <<
-      pam(MVEpoch(dat)) <<
-      endl;
+    for (uInt i=0; i<10; i+=2) {
+      if (i>0) cout << ", ";
+      cout << setprecision(4) << pam(MVEpoch(dat+i/24./15./10.)).get("deg");
+    };
+    cout << endl;
+
+    cout << "--------------- Quantity --------------------" << endl;
+    for (uInt i=0; i<5; ++i) {
+      if (i>0) cout << ", ";
+      cout << setprecision(4) << pam(Quantity(vddat[i], "d")).get("deg");
+    };
+    cout << endl;
+    cout << "--------------- MVEpoch ---------------------" << endl;
+    for (uInt i=0; i<5; ++i) {
+      if (i>0) cout << ", ";
+      cout << setprecision(4) << pam(vmvdat[i]).get("deg");
+    };
+    cout << endl;
+    cout << "--------------- MEpoch ----------------------" << endl; 
+    for (uInt i=0; i<5; ++i) {
+      if (i>0) cout << ", ";
+      cout << setprecision(4) << pam(vmedat[i]).get("deg"); 
+    };   
+    cout << endl; 
+    cout << "--------------- Double ----------------------" << endl;
+    for (uInt i=0; i<5; ++i) {
+      if (i>0) cout << ", ";
+      cout << setprecision(4) << Quantity(pam(vddat[i]), "rad").get("deg");
+    };
+    cout << endl;
+
+    cout << "--------------- Vector versions -------------" << endl;
+    cout << pam(vqdat).get("deg") << endl;
+    cout << pam(vmvdat).get("deg") << endl;
+    cout << pam(vmedat).get("deg") << endl;
+    cout << Quantum<Vector<Double> >(pam(vddat), "rad").get("deg") << endl;
+
+    cout << "--------------- Timing ----------------------" << endl;
+    cout << ">>>" << endl;
+    const uInt N=1000;
+    tim.mark();
+    for (uInt i=0; i<N; ++i) {
+      frame.set(MEpoch(Quantity(dat + i/24./15./10., "d")));
+      MVDirection mvd(j2az(dir).getValue());
+      Quantity x(Quantity(mvd.positionAngle(j2az(pol).getValue()), "rad").
+		 get("deg"));
+    };
+    cout << "Full AZEL  for N=" << N << ": " << tim.real() << endl;
+
+    tim.mark();
+    for (uInt i=0; i<N; ++i) {
+      Quantity x(pam(MVEpoch(dat+i/24./15./10.)).get("deg"));
+    };
+    cout << "Full HADEC for N=" << N << ": " << tim.real() << endl; 
+
+    cout << "<<<" << endl;
+
+    cout << "---------------------------------------------" << endl;
+
 
   } catch (AipsError x) {
     cout << x.getMesg() << endl;
   } 
+
+  try {
+    MDirection::Ref refj2(MDirection::J2000);
+    MDirection dir(Quantity(20, "deg"),
+                   Quantity(-30, "deg"),
+                   refj2);
+    ParAngleMachine pam(dir);
+    cout << "------------- Expected exception ------------" << endl;
+    Double result = pam(52230.0);
+    cout << result << endl;
+
+  } catch (AipsError x) {
+    cout << x.getMesg() << endl;
+  }
+
+  cout << "---------------------------------------------" << endl;
   
   exit(0);
 }
