@@ -31,8 +31,6 @@
 #include <aips/Arrays/Matrix.h>
 #include <aips/Arrays/Cube.h>
 #include <aips/Lattices/IPosition.h>
-#include <aips/Logging/LogIO.h>
-#include <aips/Logging/LogOrigin.h>
 #include <aips/Utilities/DefaultValue.h>
 #include <aips/Utilities/String.h>
 #include <aips/Utilities/Assert.h>

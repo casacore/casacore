@@ -184,21 +184,19 @@ const Array<T>& RO_LatticeIterator<T>::cursor() const
   return itsIterPtr->cursor (True, False);
 }
 
-static LogIO ROlogErr(LogOrigin("RO_LatticeIterator<T>", "ok()"));
 
 template <class T>
 Bool RO_LatticeIterator<T>::ok() const
 {
+  String message;
   if (itsIterPtr.null() == True) {
-    ROlogErr << LogIO::SEVERE 
-	     << "The pointer the the actual Lattice Iterator is zero!" 
-	     << LogIO::POST;
-    return False;
+    message = "The pointer the the actual Lattice Iterator is zero!" 
+  } else if (itsIterPtr->ok() == False) {
+    message = "The actual Lattice Iterator class is inconsistent" 
   }
-  if (itsIterPtr->ok() == False) {
-    ROlogErr << LogIO::SEVERE 
-	     << "The actual Lattice Iterator class is inconsistent" 
-	     << LogIO::POST;
+  if (! message.empty()) {
+    LogIO ROlogErr(LogOrigin("RO_LatticeIterator<T>", "ok()"));
+    ROlogErr << LogIO::SEVERE << message << LogIO::POST;
     return False;
   }
   return True;

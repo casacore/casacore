@@ -27,8 +27,8 @@
 
 #include <trial/Lattices/TiledLineStepper.h>
 #include <aips/Tables/TiledStManAccessor.h>
-#include <aips/Logging/LogIO.h>
-#include <aips/Logging/LogOrigin.h>
+//#include <aips/Logging/LogIO.h>
+//#include <aips/Logging/LogOrigin.h>
 #include <aips/Utilities/Assert.h>
 #include <aips/Exceptions/Error.h>
 
@@ -437,10 +437,10 @@ LatticeNavigator* TiledLineStepper::clone() const
   return new TiledLineStepper(*this);
 }
 
-static LogIO logErr(LogOrigin("TiledLineStepper", "ok()"));
 
 Bool TiledLineStepper::ok() const
 {
+//   LogIO logErr(LogOrigin("TiledLineStepper", "ok()"));
 //   const uInt latticeDim = itsIndexer.ndim();
 //   // Check the cursor shape is OK
 //   if (itsCursorShape.nelements() != latticeDim) {

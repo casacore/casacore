@@ -27,8 +27,8 @@
 
 #include <trial/Lattices/TileStepper.h>
 #include <aips/Exceptions/Error.h>
-#include <aips/Logging/LogIO.h>
-#include <aips/Logging/LogOrigin.h>
+//#include <aips/Logging/LogIO.h>
+//#include <aips/Logging/LogOrigin.h>
 #include <aips/Utilities/Assert.h>
 
 
@@ -397,10 +397,10 @@ LatticeNavigator* TileStepper::clone() const
   return new TileStepper(*this);
 }
 
-static LogIO logErr(LogOrigin("TileStepper", "ok()"));
 
 Bool TileStepper::ok() const
 {
+//   LogIO logErr(LogOrigin("TileStepper", "ok()"));
 //   const uInt latticeDim = itsTiler.ndim();
 //   // Check the cursor shape is OK
 //   if (itsCursorShape.nelements() != latticeDim) {
