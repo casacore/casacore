@@ -1,5 +1,5 @@
 //# TableQuantumDesc.cc: Definition of a Quantum in a Table.
-//# Copyright (C) 1997,1998
+//# Copyright (C) 1997,1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -105,8 +105,8 @@ TableQuantumDesc* TableQuantumDesc::reconstruct(const TableDesc& td,
 	    refString = columnKeyset.asString(fnr);
     	    P = new TableQuantumDesc(td, columnName, Unit(refString));
 	} else {
-            throw(AipsError("TableQuantum::reconstruct; QuantumUnit field not"
-            	            " found for column " + columnName));
+            throw(AipsError("TableQuantum::reconstruct; Not a Quantum"
+            	            " column: " + columnName));
     	}
     }
 
