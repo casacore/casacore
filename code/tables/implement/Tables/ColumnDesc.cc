@@ -1,5 +1,5 @@
 //# ColumnDesc.cc: Envelope class for description of a table column
-//# Copyright (C) 1994,1995,1996,1997
+//# Copyright (C) 1994,1995,1996,1997,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -27,6 +27,7 @@
 
 #include <aips/Tables/ColumnDesc.h>
 #include <aips/Tables/ScaColDesc.h>
+#include <aips/Tables/ScaRecordColDesc.h>
 #include <aips/Tables/ArrColDesc.h>
 #include <aips/Tables/SubTabDesc.h>
 #include <aips/Tables/TableRecord.h>
@@ -244,6 +245,7 @@ void ColumnDesc::registerColumnDesc()
     ScalarColumnDesc<Complex>  scdcx(registerMap);
     ScalarColumnDesc<DComplex> scddx(registerMap);
     ScalarColumnDesc<String>   scdst(registerMap);
+    ScalarRecordColumnDesc     srcd (registerMap);
 
     ArrayColumnDesc<Bool>     acdb (registerMap);
     ArrayColumnDesc<uChar>    acduc(registerMap);
