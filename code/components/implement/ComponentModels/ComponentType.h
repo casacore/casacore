@@ -66,10 +66,27 @@ public:
     // The number of types in this enumerator
     NUMBER_SHAPES
   };
-  // Convert the Type enumerator to a string
+  // The ways the Flux polarisation can be represented
+  enum Polarisation {
+    // The four Stokes parameters, ie I,Q,U,V 
+    STOKES = 0,
+    // Linear polarisation feeds ie., XX,XY,YX,YY with zero parrallactic angle
+    LINEAR,
+    // Circular polarisation feeds ie., RR, RL, LR, LL
+    CIRCULAR,
+    // An unknown Component
+    UNKNOWN_POLARISATION,
+    // The number of types in this enumerator
+    NUMBER_POLARISATIONS
+  };
+  // Convert the Shape enumerator to a string
   static String name(ComponentType::Shape componentEnum);
-  // Convert a given String to a Type enumerator
-  //  static Type getType(const String & componentName);
-  static ComponentType::Shape shape(const String & componentName);
+  // Convert the Polarisation enumerator to a string
+  static String name(ComponentType::Polarisation fluxEnum);
+  // Convert a given String to a Shape enumerator
+  static ComponentType::Shape shape(const String & shapeName);
+  // Convert a given String to a Polarisation enumerator
+  static ComponentType::Polarisation polarisation(const String & 
+						  polarisationName);
 };
 #endif
