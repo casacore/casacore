@@ -32,10 +32,9 @@
 #include <aips/aips.h>
 #include <trial/Lattices/LatticeConcat.h>
 #include <trial/Images/ImageInterface.h>
-
+#include <aips/Tables/TableRecord.h>
 class Unit;
 class CoordinateSystem;
-class TableRecord;
 
 template <class T> class ImageSummary;
 template <class T> class MaskedLattice;
