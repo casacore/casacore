@@ -28,6 +28,8 @@
 #if !defined(AIPS_GAUSSIAN3D_H)
 #define AIPS_GAUSSIAN3D_H
 
+template<class T> class Vector;
+
 #include <aips/aips.h>
 #include <trial/Functionals/Gaussian3DParam.h>
 #include <aips/Functionals/Function.h>
@@ -171,8 +173,6 @@
 
 
 
-template<class T> class Vector;
-
 template<class T> class Gaussian3D : public Gaussian3DParam<T>
 {
 public:
@@ -185,13 +185,12 @@ public:
 	     const Vector<T>& width, T theta, T phi);
   Gaussian3D(T height, T xCenter, T yCenter, T zCenter,
              T xWidth, T yWidth, T zWidth, T theta, T phi);
-  Gaussian3D(const Gaussian3D &other);
+  Gaussian3D(const Gaussian3D<T> &other);
   virtual ~Gaussian3D();
 
   Gaussian3D<T> &operator=(const Gaussian3D<T> &other);
 
-  T eval(typename Function<T>::FunctionArg x) const;
-  T operator()(const T& x, const T& y, const T& z) const;
+  virtual T eval(typename Function<T>::FunctionArg x) const;
 
   virtual Function<T> *clone() const;
 
@@ -232,10 +231,7 @@ public:
 //
   Gaussian3D_PS<AutoDiff<T> > &operator=(const Gaussian3D_PS<AutoDiff<T> > &other);
 //
-  AutoDiff<T> eval(typename Function<AutoDiff<T> >::FunctionArg x) const;
-  AutoDiff<T> operator()(const AutoDiff<T>& x, 
-                         const AutoDiff<T>& y, 
-                         const AutoDiff<T>& z) const;
+  virtual AutoDiff<T> eval(typename Function<AutoDiff<T> >::FunctionArg x) const;
   virtual Function<AutoDiff<T> > *clone() const;
 private:
   T sq(T v) const;  
