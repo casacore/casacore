@@ -182,11 +182,12 @@ public:
   // It returns 0 if no default mask is used.
   virtual const LatticeRegion* getRegionPtr() const;
 
-  // Set the default mask to the region/mask with the given name.
+  // Set the default mask to the region/mask with the given name
+  // (which has to exist in the "masks" group).
   // If the image table is writable, the setting is persistent by writing
   // the name as a keyword.
   // If the given regionName is the empty string, the default mask is unset.
-  virtual void setDefaultMask (const String& regionName);
+  virtual void setDefaultMask (const String& maskName);
 
   // Get the name of the default mask.
   // An empty string is returned if no default mask.
@@ -274,20 +275,30 @@ public:
   virtual Bool setMiscInfo (const RecordInterface& newInfo);
   // </group>
 
-  // Define a region belonging to the image.
+  // Define a region/mask belonging to the image.
+  // The group type determines if it stored as a region or mask.
   // If overwrite=False, an exception will be thrown if the region
   // already exists.
   virtual void defineRegion (const String& name, const ImageRegion& region,
+			     RegionHandler::GroupType,
 			     Bool overwrite = False);
 
-  // Get a region belonging to the image.
+  // Get a region/mask belonging to the image from the given group
+  // (which can be Any).
+  // <br>Optionally an exception is thrown if the region does not exist.
   // A zero pointer is returned if the region does not exist.
   // The caller has to delete the <src>ImageRegion</src> object created.
-  virtual ImageRegion* getImageRegionPtr (const String& name) const;
+  virtual ImageRegion* getImageRegionPtr
+                            (const String& name,
+			     RegionHandler::GroupType = RegionHandler::Any,
+			     Bool throwIfUnknown = True) const;
 
-  // Remove a region belonging to the image.
-  // No exception is thrown if the region does not exist.
-  virtual void removeRegion (const String& name);
+  // Remove a region/mask belonging to the image from the given group
+  // (which can be Any).
+  // <br>Optionally an exception is thrown if the region does not exist.
+  virtual void removeRegion (const String& name,
+			     RegionHandler::GroupType = RegionHandler::Any,
+			     Bool throwIfUnknown = True);
   
   // This is the implementation of the letter for the envelope Iterator
   // class. <note> Not for public use </note>.
@@ -340,7 +351,7 @@ private:
   void doReopenRW();
   void setTableType();
   void applyDefaultMask();
-  void makeRegion (const String& regionName);
+  void applyMask (const String& maskName);
   void makePagedImage (const TiledShape& mapShape,
 		       const CoordinateSystem& coordinateInfo,
 		       const String& nameOfNewFile,
