@@ -55,6 +55,7 @@ MeasurementSet::MeasurementSet(const String &tableName,
       hasBeenDestroyed_p(False)
 {
     // verify that the now opened table is valid
+    checkVersion();
     addCat(); 
     if (! validate(this->tableDesc()))
 	throw (AipsError("MS(String &, TableOption) - "
@@ -87,6 +88,7 @@ MeasurementSet::MeasurementSet(const String &tableName,
       hasBeenDestroyed_p(False)
 {
     // verify that the now opened table is valid
+    checkVersion();
     addCat(); 
     if (! validate(this->tableDesc()))
 	throw (AipsError("MS(String &, lockOptions, TableOption) - "
@@ -101,6 +103,7 @@ MeasurementSet::MeasurementSet(const String& tableName, const String &tableDescN
       hasBeenDestroyed_p(False)
 {
     // verify that the now opened table is valid 
+    checkVersion();
     addCat(); 
     if (! validate(this->tableDesc()))
 	throw (AipsError("MS(String &, String &, TableOption) - "
@@ -115,6 +118,7 @@ MeasurementSet::MeasurementSet(const String& tableName, const String &tableDescN
       hasBeenDestroyed_p(False)
 {
     // verify that the now opened table is valid 
+    checkVersion();
     addCat(); 
     if (! validate(this->tableDesc()))
 	throw (AipsError("MS(String &, String &, TableOption) - "
@@ -154,6 +158,7 @@ MeasurementSet::MeasurementSet(const Table &table)
       PredefinedKeywords>(table), hasBeenDestroyed_p(False)
 {
     // verify that the now opened table is valid 
+    checkVersion();
     addCat(); 
     if (! validate(this->tableDesc()))
 	throw (AipsError("MS(const Table &) - "
@@ -618,4 +623,20 @@ Bool MeasurementSet::validateMeasureRefs()
   }
   return ok;
 }
+
+void MeasurementSet::checkVersion()
+{
+  // Check that the MS is the latest version (2.0). Throw an
+  // exception and advise the user to use the MS converter if it is not.
+  //
+  if (!keywordSet().isDefined("MS_VERSION") || 
+      (keywordSet().isDefined("MS_VERSION") &&
+       keywordSet().asFloat("MS_VERSION")!=2.0)) {
+    throw(AipsError("These data are not in MSv2 format - use ms1toms2 to convert"));
+  }
+}
+
+
+
+
 
