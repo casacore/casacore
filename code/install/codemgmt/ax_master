@@ -2205,3 +2205,4 @@
 11 151 src mv trial/implement/Utilities/exist_server.g serverexists.g
 11 151 src mv trial/implement/Utilities/exist_server.help serverexists.help
 11 151 src mv serverexists.g trial/implement/Utilities/serverexists.g
+11 151 src mv serverexists.help trial/implement/Utilities/serverexists.help
