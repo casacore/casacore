@@ -1045,7 +1045,7 @@ struct prjprm *prj;
 double *phi, *theta;
 
 {
-   double r;
+   double r, s;
    const double tol = 1.0e-12;
 
    if (prj->flag != PRJSET) {
@@ -1059,10 +1059,15 @@ double *phi, *theta;
       *phi = atan2d(x, -y);
    }
 
-   if (fabs(r-prj->w[0]) < tol) {
-      *theta = -90.0;
+   s = r*prj->w[1];
+   if (fabs(s) > 1.0) {
+      if (fabs(r - prj->w[0]) < tol) {
+         *theta = -90.0;
+      } else {
+         return 2;
+      }
    } else {
-      *theta = 90.0 - 2.0*asind(r*prj->w[1]);
+      *theta = 90.0 - 2.0*asind(s);
    }
 
    return 0;
