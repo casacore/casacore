@@ -279,7 +279,7 @@ endif
 #---------------------------------
 .PRECIOUS : %.dvi
 
-.PHONY : docsys
+.PHONY : docsys resolvedocs
 
 allsys : docsys $(CODESUBS)
 
