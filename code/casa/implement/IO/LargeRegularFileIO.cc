@@ -26,8 +26,8 @@
 //# $Id$
 
 #include <aips/aips.h>
-#include <aips/IO/LargeRegularFileIO.h>
 #include <aips/IO/LargeIOFuncDef.h>
+#include <aips/IO/LargeRegularFileIO.h>
 #include <aips/Utilities/String.h>
 #include <aips/Utilities/Assert.h>
 #include <aips/Exceptions/Error.h>
