@@ -108,3 +108,21 @@ For that reason the function assign has been added to the classes Array, Vector,
 Note that assign should only be used when needed. For example, when assigning an array to a slice of another array, operator= should always be used, because in such a case the shapes should match.
  </description>
 </change>
+
+<change id=163>
+ <author> Ger van Diepen </author>
+ <date> 2004/12/23 </date>
+ <avers> 1.9 </avers>
+ <area> Library </area>
+ <package> casa </package>
+ <module> Arrays </module>
+ <type> Code </type>
+ <category> New </category>
+ <defects>  </defects>
+ <summary>
+aa
+ </summary>
+ <description>
+xx
+ </description>
+</change>
