@@ -156,6 +156,6 @@ template class FunctionParam<Float>;
 #include <aips/Mathematics/AutoDiffMath.h>
 template class FunctionParam<AutoDiff<Double> >;
 template class FunctionParam<AutoDiff<Float> >;
-///#include <aips/Mathematics/AutoDiffA.h>
-///template class FunctionParam<AutoDiffA<Double> >;
-///template class FunctionParam<AutoDiffA<Float> >;
+#include <aips/Mathematics/AutoDiffA.h>
+template class FunctionParam<AutoDiffA<Double> >;
+template class FunctionParam<AutoDiffA<Float> >;
