@@ -1,5 +1,5 @@
 //# ArrayError.cc: Exception classes thrown by Array and related classes/functions
-//# Copyright (C) 1993,1994,1995,1997
+//# Copyright (C) 1993,1994,1995,1997,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //# 
 //# This library is free software; you can redistribute it and/or modify it
@@ -64,7 +64,9 @@ ArrayIndexError::ArrayIndexError(const String &m) : ArrayError(m) {}
 
 ArrayIndexError::ArrayIndexError(const IPosition &in, 
 				 const IPosition &sh, const Char *m)
-: i(in), l(sh), ArrayError(m)
+: ArrayError(m),
+  i(in),
+  l(sh)
 {
     // Nothing
 }
@@ -142,7 +144,9 @@ ArrayNDimError::ArrayNDimError(ExcpError *excp)
 }
 
 ArrayNDimError::ArrayNDimError(Int ndim1, Int ndim2, const Char *m)
-: r1(ndim1), r2(ndim2), ArrayConformanceError(m)
+: ArrayConformanceError(m),
+  r1(ndim1),
+  r2(ndim2)
 {}
 
 ArrayNDimError::~ArrayNDimError() {}
