@@ -407,18 +407,23 @@ void MSFitsInput::getPrimaryGroupAxisInfo()
   for (uInt i = 0; i < numCorr; i++) {
     const Stokes::StokesTypes cType = Stokes::type(corrType_p(i));
     Fallible<Int> receptor = Stokes::receptor1(cType);
+    Bool warn = False;
     if (receptor.isValid()) {
       corrProduct_p(0,i) = receptor;
-    } else {
-      itsLog << "Cannot deduce receptor 1 for correlations of type: " 
-	     << Stokes::name(cType) << LogIO::EXCEPTION;
+    } else if (!warn) {
+      warn = True;
+      itsLog << LogIO::WARN << 
+	"Cannot deduce receptor 1 for correlations of type: " 
+	     << Stokes::name(cType) << LogIO::POST;
     }
     receptor = Stokes::receptor2(cType);
     if (receptor.isValid()) {
       corrProduct_p(1,i) = receptor;
-    } else {
-      itsLog << "Cannot deduce receptor 2 for correlations of type: " 
-	     << Stokes::name(cType) << LogIO::EXCEPTION;
+    } else if (!warn) {
+      warn = True;
+      itsLog << LogIO::WARN << 
+	"Cannot deduce receptor 2 for correlations of type: " 
+	     << Stokes::name(cType) << LogIO::POST;
     }
   }
   // Save the object name, we may need it (for single source fits)
@@ -1236,7 +1241,7 @@ void MSFitsInput::fillFeedTable() {
   // of polarization so the following should work.
   MSPolarizationColumns& msPolC(msc_p->polarization());
   Int numCorr=msPolC.numCorr()(0);
-  Vector<String> rec_type(2); rec_type="";
+  Vector<String> rec_type(2); rec_type="?";
   if (corrType_p(0)>=Stokes::RR && corrType_p(numCorr-1)<=Stokes::LL) {
     rec_type(0)="R"; rec_type(1)="L";
   }
@@ -1251,6 +1256,8 @@ void MSFitsInput::fillFeedTable() {
 
   // fill the feed table
   Int row=-1;
+  // Use TIME_RANGE in OBSERVATION table to set TIME here.
+  const Vector<Double> obsTimes = msc_p->observation().timeRange()(0);
   for (Int ant=0; ant<nAnt_p; ant++) {
     ms_p.feed().addRow(); row++;
     msfc.antennaId().put(row,ant);
@@ -1259,7 +1266,7 @@ void MSFitsInput::fillFeedTable() {
     msfc.interval().put(row,DBL_MAX);
     //    msfc.phasedFeedId().put(row,-1);
     msfc.spectralWindowId().put(row,-1); // all
-    msfc.time().put(row,0.);
+    msfc.time().put(row,obsTimes(0));
     msfc.numReceptors().put(row,2);
     msfc.beamOffset().put(row,offset);
     msfc.polarizationType().put(row,rec_type);
