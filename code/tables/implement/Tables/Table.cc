@@ -274,9 +274,9 @@ uInt Table::getLayout (TableDesc& desc, const String& tableName)
 }
 
 
-inline void Table::deepCopy (const String& newName,
-			     TableOption option,
-			     Bool valueCopy) const
+void Table::deepCopy (const String& newName,
+		      TableOption option,
+		      Bool valueCopy) const
 {
     baseTabPtr_p->deepCopy (newName, Record(), option, valueCopy);
 }
