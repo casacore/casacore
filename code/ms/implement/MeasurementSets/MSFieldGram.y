@@ -66,6 +66,7 @@ using namespace casa;
 %type <node> fieldstatement
 %type <node> fieldexpr
 %type <node> namelist
+%type <node> indexlist
 %type <node> indexrangeexpr
 %type <node> lowindexboundexpr
 %type <node> upindexboundexpr
@@ -91,6 +92,7 @@ fieldstatement: SQUOTE fieldexpr SQUOTE {
 fieldexpr:  namelist
            |CODE {
 		 printf("field or source code\n");}
+           |indexlist
            |indexrangeexpr
            |lowindexboundexpr
            |upindexboundexpr
@@ -103,6 +105,14 @@ namelist : NAME {
 	         printf("For list case, this one match first\n");}
          ;
             
+indexlist: INDEX {
+                   Vector<Int> fieldids(1);
+		   fieldids[0] = $1;
+		   cout << ("field index\n") << fieldids[0] << endl;;
+                   $$ = MSFieldParse().selectFieldIds(fieldids);}
+         | indexlist COMMA INDEX
+         ;
+
 indexrangeexpr : INDEX DASH INDEX {
                    Int len = $<ival>3-$<ival>1+1;
 		   Vector<Int> fieldids(len);
