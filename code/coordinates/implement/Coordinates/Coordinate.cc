@@ -712,9 +712,43 @@ void Coordinate::makePixelRelativeMany (Matrix<Double>& pixel) const
           *i = col[k];
        }
     }
-
 }
 
+
+void Coordinate::makeWorldAbsolute (Vector<Double>& world) const
+{
+   DebugAssert(world.nelements()==nWorldAxes(),AipsError);
+   world += referenceValue();
+}
+
+ 
+void Coordinate::makeWorldAbsolute (Vector<Double>& world,
+                                           const Vector<Double>& refVal) const
+{
+   DebugAssert(world.nelements()==nWorldAxes(),AipsError);
+   DebugAssert(refVal.nelements()==nWorldAxes(),AipsError);
+   world += refVal;
+}
+
+void Coordinate::makeWorldRelative (Vector<Double>& world) const
+{
+   DebugAssert(world.nelements()==nWorldAxes(),AipsError);
+   world -= referenceValue();
+}  
+
+ 
+void Coordinate::makePixelAbsolute (Vector<Double>& pixel) const
+{
+   DebugAssert(pixel.nelements()==nPixelAxes(),AipsError);
+   pixel += referencePixel();
+}
+
+void Coordinate::makePixelRelative (Vector<Double>& pixel) const
+{
+   DebugAssert(pixel.nelements()==nPixelAxes(),AipsError);
+   pixel -= referencePixel();
+}
+ 
 
 
 Bool Coordinate::setWorldMixRanges (Vector<Double>& worldMin,
@@ -935,3 +969,5 @@ Bool Coordinate::doNearPixel (const Coordinate& other,
 //
    return True;
 }
+
+

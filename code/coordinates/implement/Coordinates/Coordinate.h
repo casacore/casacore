@@ -534,44 +534,6 @@ inline const String& Coordinate::errorMessage() const
     return error_p;
 }
 
-
-inline void Coordinate::makeWorldAbsolute (Vector<Double>& world) const
-{ 
-   DebugAssert(world.nelements()==nWorldAxes(),AipsError);
-   world += referenceValue();
-}
-
-
-inline void Coordinate::makeWorldAbsolute (Vector<Double>& world,
-                                           const Vector<Double>& refVal) const
-{ 
-   DebugAssert(world.nelements()==nWorldAxes(),AipsError);
-   DebugAssert(refVal.nelements()==nWorldAxes(),AipsError);
-   world += refVal;
-}
-
-inline void Coordinate::makeWorldRelative (Vector<Double>& world) const
-{
-   DebugAssert(world.nelements()==nWorldAxes(),AipsError);
-   world -= referenceValue();
-}
-
-
-inline void Coordinate::makePixelAbsolute (Vector<Double>& pixel) const
-{ 
-   DebugAssert(pixel.nelements()==nPixelAxes(),AipsError);
-   pixel += referencePixel();
-}
-
-inline void Coordinate::makePixelRelative (Vector<Double>& pixel) const
-{
-   DebugAssert(pixel.nelements()==nPixelAxes(),AipsError);
-   pixel -= referencePixel();
-}   
-
-
-
-
 #endif
 
 
