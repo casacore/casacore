@@ -422,15 +422,37 @@ void PrimaryArray<TYPE>::copy(double *target, int npixels) const
 
     double scale = bscale();
     double zero = bzero();
-    for (int i=0; i<npixels; i++) {
-	target[i] = scale*array[i] + zero;
+    if (!isablank() || FitsFPUtil::isFP((TYPE *)0)) {
+	// No blanks or we are FP
+	for (int i=0; i<npixels; i++) {
+	    target[i] = scale*array[i] + zero;
+	}
+    } else {
+	double nan;
+	TYPE blankval = blank();
+	FitsFPUtil::setNaN(nan);
+	// Blanked integers
+	for (int i=0; i<npixels; i++) {
+	    target[i] = array[i] != blankval ? scale*array[i] + zero : nan;
+	}
     }
 }
 
 template <class TYPE>
 void PrimaryArray<TYPE>::copy(double *target, FITS::FitsArrayOption opt) const {
-	uInt count;
+        uInt count, n;
 	Int offset, i, j, *sub, *C_factor;
+	double fscale = (double)bscale();
+	double fzero = (double)bzero();
+
+	Bool blanked = isablank() && !FitsFPUtil::isFP((TYPE *)0) ? True:False;
+	TYPE blankval;
+	if (blanked) {
+	    blankval == blank();
+	}
+	double nan;
+	FitsFPUtil::setNaN(nan);
+
 	if (opt == FITS::FtoC) {
 	    sub = &factor[dims()];
 	    C_factor = &sub[dims()];
@@ -446,7 +468,7 @@ void PrimaryArray<TYPE>::copy(double *target, FITS::FitsArrayOption opt) const {
 	    for(;;) {
 		for (i = 0, offset = 0; i < dims(); ++i)
 		    offset += sub[i] * C_factor[i];
-		target[offset] = bscale() * array[count++] + bzero();
+		target[offset] = (double)(fscale * array[count++] + fzero);
 		if (count == nelements()) 
 		    break;
 		for (i = 0; i < dims(); ++i) {
@@ -458,8 +480,16 @@ void PrimaryArray<TYPE>::copy(double *target, FITS::FitsArrayOption opt) const {
 		}
 	    }
 	} else {
-	    for (i = 0; i < nelements(); ++i)
-		target[i] = bscale() * array[i] + bzero();
+	    uInt nmax = nelements();
+	    if (!blanked) {
+		for (n = 0; n < nmax; ++n)
+		    target[n] = (double)(fscale * array[n] + fzero);
+	    } else {
+		for (n=0; i<nmax; ++n) {
+		    target[n] = array[n] != blankval ?
+			(double)(fscale * array[n] + fzero) : nan;
+		}
+	    }
 	}
 }
 
@@ -473,8 +503,19 @@ void PrimaryArray<TYPE>::copy(float *target, int npixels) const
 
     float scale = bscale();
     float zero = bzero();
-    for (int i=0; i<npixels; i++) {
-	target[i] = scale*float(array[i]) + zero;
+    if (!isablank() || FitsFPUtil::isFP((TYPE *)0)) {
+	// No blanks or we are FP
+	for (int i=0; i<npixels; i++) {
+	    target[i] = scale*array[i] + zero;
+	}
+    } else {
+	float nan;
+	TYPE blankval = blank();
+	FitsFPUtil::setNaN(nan);
+	// Blanked integers
+	for (int i=0; i<npixels; i++) {
+	    target[i] = array[i] != blankval ? scale*array[i] + zero : nan;
+	}
     }
 }
 
@@ -484,6 +525,15 @@ void PrimaryArray<TYPE>::copy(float *target, FITS::FitsArrayOption opt) const {
 	Int offset, i, j, *sub, *C_factor;
 	float fscale = (float)bscale();
 	float fzero = (float)bzero();
+
+	Bool blanked = isablank() && !FitsFPUtil::isFP((TYPE *)0) ? True:False;
+	TYPE blankval;
+	if (blanked) {
+	    blankval == blank();
+	}
+	float nan;
+	FitsFPUtil::setNaN(nan);
+
 	if (opt == FITS::FtoC) {
 	    sub = &factor[dims()];
 	    C_factor = &sub[dims()];
@@ -511,8 +561,16 @@ void PrimaryArray<TYPE>::copy(float *target, FITS::FitsArrayOption opt) const {
 		}
 	    }
 	} else {
-	    for (n = 0; n < nelements(); ++n)
-		target[n] = (float)(fscale * array[n] + fzero);
+	    uInt nmax = nelements();
+	    if (!blanked) {
+		for (n = 0; n < nmax; ++n)
+		    target[n] = (float)(fscale * array[n] + fzero);
+	    } else {
+		for (n=0; i<nmax; ++n) {
+		    target[n] = array[n] != blankval ?
+			(float)(fscale * array[n] + fzero) : nan;
+		}
+	    }
 	}
 }
 

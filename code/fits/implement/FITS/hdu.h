@@ -386,28 +386,29 @@ class PrimaryArray : public HeaderDataUnit {
 	TYPE & data(int);
 	//</group>
 
-	// The `store()', `move()' and `copy()' functions allow bulk data transfer
-	// between the internal FITS array and an external data storage area.  The
-	// external storage must have already been allocated and it is assumed
-	// that the entire data array is in memory.  `store()' transfers raw data
-	// at `source' into the FITS array; an allowable option is CtoF, which
-	// specifies to convert the array from C-order to Fortran-order.  `move()'
-	// is the opposite of `store()'.  `move()' transfers raw data from the
-	// FITS array to `target'; an allowable option is FtoC, which specifies to
-	// convert the array from Fortran-order to C-order.  `copy()' is similar
-	// to `move()' except that what is copied is physical data and not raw
-	// data; the physical data can be either double or float.
+	// The `store()', `move()' and `copy()' functions allow bulk data
+	// transfer between the internal FITS array and an external data
+	// storage area.  The external storage must have already been allocated
+	// and it is assumed that the entire data array is in memory.
+	// `store()' transfers raw data at `source' into the FITS array; an
+	// allowable option is CtoF, which specifies to convert the array from
+	// C-order to Fortran-order.  `move()' is the opposite of `store()'.
+	// `move()' transfers raw data from the FITS array to `target'; an
+	// allowable option is FtoC, which specifies to convert the array from
+	// Fortran-order to C-order.  `copy()' is similar to `move()' except
+	// that what is copied is physical data and not raw data; the physical
+	// data can be either double or float. copy() also turns blanks into
+        // NaN's.
 	//<group>
 	int store(const TYPE *source, FITS::FitsArrayOption = FITS::NoOpt);
 	void copy(double *target, FITS::FitsArrayOption = FITS::NoOpt) const;
 	void copy(float *target, FITS::FitsArrayOption = FITS::NoOpt) const;
 	void move(TYPE *target, FITS::FitsArrayOption = FITS::NoOpt) const;
-
         //     <group>
         // Use these versions if you are reading/writing "chunk by
         // chunk." No FtoC option is available. You are responsible for
         // ensuring that npixels corresponds to he number actually read or
-        // written.
+        // written. Note that copy() turns blanks into NaN's.
 	int store(const TYPE *source, int npixels);
 	void copy(double *target, int npixels) const;
 	void copy(float *target, int npixels) const;
