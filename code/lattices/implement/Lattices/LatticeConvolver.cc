@@ -54,10 +54,11 @@ LatticeConvolver()
    itsCachedPsf(False)
 {
   itsXfr.set(NumericTraits<T>::ConjugateType(1));
+  doFast_p=False;
 } 
 
 template<class T> LatticeConvolver<T>::
-LatticeConvolver(const Lattice<T> & psf)
+LatticeConvolver(const Lattice<T> & psf, Bool doFast)
   :itsPsfShape(psf.shape()),
    itsModelShape(itsPsfShape),
    itsType(ConvEnums::CIRCULAR),
@@ -66,11 +67,13 @@ LatticeConvolver(const Lattice<T> & psf)
    itsCachedPsf(False)
 {
   DebugAssert(itsPsfShape.product() != 0, AipsError);
+  doFast_p=doFast;
   makeXfr(psf);
 } 
 
 template<class T> LatticeConvolver<T>::
-LatticeConvolver(const Lattice<T> & psf, const IPosition & modelShape) 
+LatticeConvolver(const Lattice<T> & psf, const IPosition & modelShape, 
+		 Bool doFast) 
   :itsPsfShape(psf.shape()),
    itsModelShape(modelShape),
    itsType(ConvEnums::LINEAR),
@@ -84,12 +87,13 @@ LatticeConvolver(const Lattice<T> & psf, const IPosition & modelShape)
   DebugAssert(itsPsfShape.product() != 0, AipsError);
   DebugAssert(itsModelShape.product() != 0, AipsError);
   // looks OK so make the transfer function
+  doFast_p=doFast;
   makeXfr(psf);
 }
 
 template<class T> LatticeConvolver<T>::
 LatticeConvolver(const Lattice<T> & psf, const IPosition & modelShape,
-		 ConvEnums::ConvType type) 
+		 ConvEnums::ConvType type, Bool doFast) 
   :itsPsfShape(psf.shape()),
    itsModelShape(modelShape),
    itsType(type),
@@ -103,6 +107,7 @@ LatticeConvolver(const Lattice<T> & psf, const IPosition & modelShape,
   DebugAssert(itsPsfShape.product() != 0, AipsError);
   DebugAssert(itsModelShape.product() != 0, AipsError);
   // looks OK so make the psf
+  doFast_p=doFast;
   makeXfr(psf);
 }
 
@@ -231,7 +236,10 @@ convolve(Lattice<T> & result, const Lattice<T> & model) const {
       }
     }
     // Do the inverse transform
-    LatticeFFT::crfft(*resultPtr, fftModel,False);
+    // We have done a fft with no shift to the psf and the incoming 
+    // image to be convolved now we fft back and shift for the final
+    // image.
+    LatticeFFT::crfft(*resultPtr, fftModel, True, doFast_p);
     if (doPadding) { // Unpad the result
       unpad(resultSlice, *resultPtr);
     }
@@ -372,11 +380,11 @@ makeXfr(const Lattice<T> & psf) {
     itsXfr = TempLattice<typename NumericTraits<T>::ConjugateType>(XFRShape, 
 								   maxLatSize);
     if (itsFFTShape == itsPsfShape) { // no need to pad the psf
-      LatticeFFT::myrcfft(itsXfr, psf,True);
+      LatticeFFT::rcfft(itsXfr, psf, False); //was true
     } else { // need to pad the psf 
       TempLattice<T> paddedPsf(itsFFTShape, maxLatSize);
       pad(paddedPsf, psf);
-      LatticeFFT::myrcfft(itsXfr, paddedPsf,True);
+      LatticeFFT::rcfft(itsXfr, paddedPsf, False); //was true
     }
   }
   // Only cache the psf if it cannot be reconstructed from the transfer
@@ -398,10 +406,10 @@ makePsf(Lattice<T> & psf) const {
   DebugAssert(itsPsfShape == psf.shape(), AipsError);
   if (itsFFTShape == itsPsfShape) { // If the Transfer function has not been
                                     // padded so no unpadding is necessary 
-    LatticeFFT::crfft(psf, itsXfr);
+    LatticeFFT::crfft(psf, itsXfr, True, doFast_p);
   } else { // need to unpad the transfer function
     TempLattice<T> paddedPsf(itsFFTShape, maxLatSize);
-    LatticeFFT::crfft(paddedPsf, itsXfr);
+    LatticeFFT::crfft(paddedPsf, itsXfr, True);
     unpad(psf, paddedPsf);
   }
 }
@@ -438,6 +446,11 @@ calcFFTShape(const IPosition & psfShape, const IPosition & modelShape,
     }
   }
   return FFTShape;
+}
+
+template<class T> void LatticeConvolver<T>::
+setFastConvolve(){
+  doFast_p=True;
 }
 
 // Local Variables: 
