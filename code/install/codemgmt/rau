@@ -28,7 +28,7 @@
 #                          Charlottesville, VA 22903-2475 USA
 #
 #-----------------------------------------------------------------------------
-# Usage: rau <file or directory> ...
+# Usage: rau [-nag] <file or directory> ...
 #-----------------------------------------------------------------------------
 # rau updates the AIPS++ slave and code areas with the lastest version of a
 # file in $AIPSMSTR.  rau assumes that the user has ssh access to the AIPS++
@@ -40,6 +40,10 @@
 # from the AIPS++ slave area into the code area.
 #
 # Files must be specified as simple filenames without path.
+#
+# -nag forces creation of a new ssh-agent to avoid logging into the aips2mgr
+# account on the master host with keys other than aips2mgr's key. None
+# of the SSH tools seem to allow giving priority to a particular key.
 #
 # Status returns:
 #    0:  initialization succeeded
@@ -99,12 +103,15 @@
 # File permission mask for RCS files.
   umask 002
 
-
+  NEWAGENT=
   TARGLIST=
   for TARGET
   do
 #    Get the basic filename.
      case $TARGET in
+     -nag)
+        NEWAGENT=YES
+        ;;
      */*)
         echo "rau: Pathnames are not allowed!  Ignored $TARGET"
         continue
@@ -118,18 +125,24 @@
   done
 
   STARTED_AGENT=''
-  if [ -z "$SSH_AGENT_PID" ]; then
+  if [ -n "$NEWAGENT" -o -z "$SSH_AUTH_SOCK" ]; then
     eval `ssh-agent -s` > /dev/null
     trap 'ssh-agent -k > /dev/null 2>&1' 0 1 2 3 15
     STARTED_AGENT='YES'
+    ssh-add
+  else
+    SSHID=`cat $HOME/.ssh/identity.pub | sed 's/.* \([^ ][^ ]*\)$/\1/'`
+    if ! ssh-add -l | grep $SSHID > /dev/null 2>&1; then
+        ssh-add
+    fi
   fi
 
   REMOTE_USER="-l aips2mgr"
   REMOTE_CP="aips2mgr@aips2.nrao.edu"
 
 # Find out which of these are files and which are directories.
-  ARSH="ssh -q -C aips2.nrao.edu $REMOTE_USER"
-  ARCP="scp -q -C $REMOTE_CP"
+  ARSH="ssh -i $HOME/.ssh/identity -q -C aips2.nrao.edu $REMOTE_USER"
+  ARCP="scp -i $HOME/.ssh/identity -q -C $REMOTE_CP"
   TARGLIST=`$ARSH RAU LIST $MSTRDIR $TARGLIST`
 
   FILES=
