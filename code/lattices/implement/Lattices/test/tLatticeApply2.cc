@@ -25,30 +25,25 @@
 //#
 //# $Id$
 
-#include <trial/Coordinates/CoordinateUtil.h>
 #include <trial/Lattices/LatticeApply.h>
+
+#include <aips/Lattices/ArrayLattice.h>
+#include <trial/Lattices/MaskedLattice.h>
+#include <trial/Lattices/SubLattice.h>
+#include <aips/Lattices/TiledShape.h>
+//
 #include <trial/Lattices/LineCollapser.h>
 #include <trial/Lattices/TiledCollapser.h>
-#include <aips/Lattices/PagedArray.h>
-#include <trial/Lattices/SubLattice.h>
-#include <trial/Lattices/LCPagedMask.h>
 #include <aips/Lattices/LatticeIterator.h>
 #include <aips/Lattices/LatticeStepper.h>
 #include <trial/Lattices/LatticeProgress.h>
-#include <trial/Lattices/LatticeRegion.h>
-#include <trial/Lattices/MaskedLattice.h>
-#include <trial/Images/PagedImage.h>
-#include <trial/Images/RegionHandler.h>
-#include <trial/Images/ImageRegion.h>
 #include <trial/Tasking/ProgressMeter.h>
+//
 #include <aips/Arrays/IPosition.h>
 #include <aips/Arrays/Array.h>
 #include <aips/Arrays/Vector.h>
 #include <aips/Arrays/Matrix.h>
 #include <aips/Arrays/ArrayMath.h>
-#include <aips/Tables/Table.h>
-#include <aips/Tables/SetupNewTab.h>
-#include <aips/Tables/TableDesc.h>
 #include <aips/Inputs/Input.h>
 #include <aips/OS/Timer.h>
 #include <aips/Utilities/String.h>
@@ -291,14 +286,12 @@ void doIt (int argc, char *argv[])
 
     MyLatticeProgress showProgress;
     {
-        PagedImage<Float> image(TiledShape(latticeShape, tileShape), 
-                                CoordinateUtil::defaultCoords3D(),
-                                "tLatticeApply2_tmp.image");
 //
-// Make mask and make the corner x profiles all False
+// Make a ML with the corner x profiles all False
 //
-	ImageRegion imreg = image.makeMask ("mask0", True, True, True, True);
-	LCRegion& mask = imreg.asMask();
+        ArrayLattice<Float> lat(latticeShape);
+        ArrayLattice<Bool> mask(latticeShape);
+        mask.set(True);
 //
         Array<Bool> slice(IPosition(3,nx,1,1));
         slice = False;
@@ -306,52 +299,50 @@ void doIt (int argc, char *argv[])
         mask.putSlice(slice, IPosition(3,0,0,nz-1));
         mask.putSlice(slice, IPosition(3,0,ny-1,nz-1));
         mask.putSlice(slice, IPosition(3,0,ny-1,0));
+        SubLattice<Float> mLat(lat,True);
+        mLat.setPixelMask(mask,False);
 //
 	Array<Float> arr(IPosition(3,nx,ny,1));
 	indgen(arr);
-	LatticeIterator<Float> iter(image, LatticeStepper(latticeShape,
+	LatticeIterator<Float> iter(mLat, LatticeStepper(latticeShape,
                                     IPosition(3,nx,ny,1)));
 	Timer tim;
 	for (iter.reset(); !iter.atEnd(); iter++, arr += Float(nx*ny)) {
 	    iter.woCursor() = arr;
 	}
 	tim.show("fill       ");
-    }
-    IPosition l2Shape (latticeShape);
-    IPosition t2Shape (tileShape);
-    l2Shape(0) = 1;
-    t2Shape(0) = 1;
-    {
-	PagedImage<Float> lat("tLatticeApply2_tmp.image");
 //
-        PagedImage<Float> latout0(TiledShape(l2Shape, t2Shape), 
-                                  CoordinateUtil::defaultCoords3D(),
-                                "tLatticeApply2_tmp.image2a");
-	latout0.makeMask ("mask0", True, True);
+        IPosition l2Shape (latticeShape);
+        IPosition t2Shape (tileShape);
+        l2Shape(0) = 1;
+        t2Shape(0) = 1;
 //
-        PagedImage<Float> latout1(TiledShape(l2Shape, t2Shape), 
-                                  CoordinateUtil::defaultCoords3D(),
-                                "tLatticeApply2_tmp.image2b");
-	latout1.makeMask ("mask0", True, True);
+        ArrayLattice<Float> lat0(l2Shape);
+        SubLattice<Float> mLatOut0(lat0,True);
+        ArrayLattice<Bool> mask0(l2Shape); mask0.set(True);
+        mLatOut0.setPixelMask(mask0,False); 
+//
+        ArrayLattice<Float> lat1(l2Shape);
+        SubLattice<Float> mLatOut1(lat1,True);
+        ArrayLattice<Bool> mask1(l2Shape); mask0.set(True);
+        mLatOut1.setPixelMask(mask1,False); 
 //
 	PtrBlock<MaskedLattice<Float>*> blat(2);
-	blat[0] = &latout0;
-	blat[1] = &latout1;
+	blat[0] = &mLatOut0;
+	blat[1] = &mLatOut1;
 	MyLineCollapser collapser;
-	Timer tim;
-	LatticeApply<Float>::lineMultiApply (blat, lat, collapser, 0);
+        tim.mark();
+	LatticeApply<Float>::lineMultiApply (blat, mLat, collapser, 0);
 	tim.show("multiline 0");
-    }
-    {
-	PagedImage<Float> lat("tLatticeApply2_tmp.image2b");
+//
 	Float sum = (nx-1)*nx/2;
 	IPosition pos(3,0);
-	Timer tim;
+        tim.mark();
 	for (uInt i=0; i<nz; i++) {
 	    pos(2) = i;
 	    for (uInt j=0; j<ny; j++) {
 		pos(1) = j;
-		Float value = lat.getAt (pos);
+		Float value = mLatOut1.getAt (pos);
 		Float expval = -sum;
 		if ((i==0 || i==nz-1)  &&  (j==0 || j==ny-1)) {
 		    expval = 0;
