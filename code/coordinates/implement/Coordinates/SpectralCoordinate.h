@@ -220,19 +220,46 @@ public:
     Bool pixelToVelocity (Quantum<Double>& velocity, Double pixel, 
                           const String& velUnit=String("km/s"),
                           MDoppler::Types velType=MDoppler::RADIO);
+    Bool pixelToVelocity (Double& velocity, Double pixel, 
+                          const String& velUnit=String("km/s"), 
+                          MDoppler::Types velType=MDoppler::RADIO);
     Bool pixelToVelocity (Vector<Double>& velocity, const Vector<Double>& pixel, 
                           const String& velUnit=String("km/s"), 
                           MDoppler::Types velType=MDoppler::RADIO);
+//
     Bool frequencyToVelocity (Quantum<Double>& velocity, Double frequency, 
-                              const String& velUnit=String("km/s"), 
-                              MDoppler::Types velType=MDoppler::RADIO);
-    Bool frequencyToVelocity (Vector<Double>& velocity, const Vector<Double>& frequency, 
                               const String& velUnit=String("km/s"), 
                               MDoppler::Types velType=MDoppler::RADIO);
     Bool frequencyToVelocity (Quantum<Double>& velocity, const MFrequency& frequency, 
                               const String& velUnit=String("km/s"), 
                               MDoppler::Types velType=MDoppler::RADIO);
     Bool frequencyToVelocity (Quantum<Double>& velocity, const MVFrequency& frequency, 
+                              const String& velUnit=String("km/s"), 
+                              MDoppler::Types velType=MDoppler::RADIO);
+    Bool frequencyToVelocity (Double& velocity, Double frequency, 
+                              const String& velUnit=String("km/s"), 
+                              MDoppler::Types velType=MDoppler::RADIO);
+    Bool frequencyToVelocity (Vector<Double>& velocity, const Vector<Double>& frequency, 
+                              const String& velUnit=String("km/s"), 
+                              MDoppler::Types velType=MDoppler::RADIO);
+    // </group>
+
+    // Functions to convert from velocity.  There is no reference frame
+    // change but you can specify the velocity definition and the output
+    // units of the velocity.   When the input is a frequency stored 
+    // as a Double it must be  in the current units of the SpectralCoordinate.  
+    // <group>  
+    Bool velocityToPixel (Double& pixel, Double velocity, 
+                          const String& velUnit=String("km/s"), 
+                          MDoppler::Types velType=MDoppler::RADIO);
+    Bool velocityToPixel (Vector<Double>& pixel, const Vector<Double>& velocity, 
+                          const String& velUnit=String("km/s"), 
+                          MDoppler::Types velType=MDoppler::RADIO);
+//
+    Bool velocityToFrequency (Double& frequency, Double velocity, 
+                              const String& velUnit=String("km/s"), 
+                              MDoppler::Types velType=MDoppler::RADIO);
+    Bool velocityToFrequency (Vector<Double>& frequency, const Vector<Double>& velocity, 
                               const String& velUnit=String("km/s"), 
                               MDoppler::Types velType=MDoppler::RADIO);
     // </group>

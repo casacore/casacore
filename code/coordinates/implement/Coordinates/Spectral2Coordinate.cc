@@ -83,6 +83,18 @@ Bool SpectralCoordinate::pixelToVelocity (Quantum<Double>& velocity, Double pixe
    return frequencyToVelocity (velocity, world, velUnit, velType);
 }
 
+Bool SpectralCoordinate::pixelToVelocity (Double& velocity, Double pixel, 
+                                          const String& velUnit, MDoppler::Types velType) 
+{
+   makeVelocityMachine(velUnit, velType);
+//
+   static Double world;
+   if (!toWorld(world, pixel)) return False;
+   velocity = pVelocityMachine_p->makeVelocity(world).getValue();
+//
+   return True;
+}
+
 Bool SpectralCoordinate::pixelToVelocity (Vector<Double>& velocity, const Vector<Double>& pixel, 
                                           const String& velUnit, MDoppler::Types velType) 
 {
@@ -108,6 +120,16 @@ Bool SpectralCoordinate::frequencyToVelocity (Quantum<Double>& velocity, Double 
 }
 
 
+Bool SpectralCoordinate::frequencyToVelocity (Double& velocity, Double frequency, 
+                                              const String& velUnit, MDoppler::Types velType)
+{
+   makeVelocityMachine(velUnit, velType);
+//
+   static Quantum<Double> velQ;
+   velocity = pVelocityMachine_p->makeVelocity(frequency).getValue();
+   return True;
+}
+
 Bool SpectralCoordinate::frequencyToVelocity (Vector<Double>& velocity, const Vector<Double>& frequency, 
                                               const String& velUnit, MDoppler::Types velType)
 {
@@ -132,6 +154,52 @@ Bool SpectralCoordinate::frequencyToVelocity (Quantum<Double>& velocity, const M
 {
    makeVelocityMachine(velUnit, velType);
    velocity = pVelocityMachine_p->operator()(frequency);
+   return True;
+}
+
+Bool SpectralCoordinate::velocityToPixel (Double& pixel, Double velocity, 
+                                          const String& velUnit, MDoppler::Types velType) 
+{
+   makeVelocityMachine(velUnit, velType);
+//
+   static Double frequency;
+   if (!velocityToFrequency(frequency, velocity)) return False;
+   return toPixel(pixel, frequency);
+}
+
+Bool SpectralCoordinate::velocityToPixel (Vector<Double>& pixel, const Vector<Double>& velocity, 
+                                          const String& velUnit, MDoppler::Types velType) 
+{
+   pixel.resize(velocity.nelements());
+   makeVelocityMachine(velUnit, velType);
+//
+   static Double frequency, pix;
+   for (uInt i=0; i<velocity.nelements(); i++) {
+      if (!velocityToFrequency(frequency, velocity(i))) return False;
+      if (!toPixel(pix, frequency)) return False;
+      pixel(i) = pix;
+   }
+   return True;
+}
+
+Bool SpectralCoordinate::velocityToFrequency (Double& frequency, Double velocity, 
+                                              const String& velUnit, MDoppler::Types velType)
+{
+   makeVelocityMachine(velUnit, velType);
+//
+   frequency = pVelocityMachine_p->makeFrequency (velocity).getValue();
+   return True;
+}
+
+Bool SpectralCoordinate::velocityToFrequency (Vector<Double>& frequency, const Vector<Double>& velocity, 
+                                              const String& velUnit, MDoppler::Types velType)
+{
+   frequency.resize(velocity.nelements());
+   makeVelocityMachine(velUnit, velType);
+//
+   for (uInt i=0; i<velocity.nelements(); i++) {
+      frequency(i) = pVelocityMachine_p->makeFrequency (velocity(i)).getValue();
+   }
    return True;
 }
 
