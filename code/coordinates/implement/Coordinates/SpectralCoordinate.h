@@ -1,5 +1,5 @@
 //# SpectralCoordinate.h: Interconvert between pixel and frequency.
-//# Copyright (C) 1997,1998,1999,2000,2001,2002
+//# Copyright (C) 1997,1998,1999,2000,2001,2002,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -260,6 +260,34 @@ public:
     Bool toWorld(MVFrequency &world,
 		 Double pixel) const;
     Bool toPixel(Double& pixel, const MVFrequency &world) const;
+    // </group>
+
+    // Batch up a lot of transformations. The first (most rapidly varying) axis
+    // of the matrices contain the coordinates. Return the number of failures.
+    // The failures array will be at least as long as the returned number of
+    // failures, and contains the indicies of the failed transformations.
+    // <src>errorMessage()</src> will be set to the error from the FIRST failure. 
+    // If failures is longer than the return value, the value
+    // in the excess locations is undefined.
+    // <group>
+    virtual uInt toWorldMany(Matrix<Double> &world,
+                              const Matrix<Double> &pixel,
+                              Vector<Int> &failures) const;
+    virtual uInt toPixelMany(Matrix<Double> &pixel,
+                              const Matrix<Double> &world,   
+                              Vector<Int> &failures) const;
+    // </group>
+
+
+    // Make absolute coordinates relative and vice-versa (with
+    // respect to the referencfe value).
+    // Vectors must be length <src>nPixelAxes()</src> or
+    // <src>nWorldAxes()</src> or memory access errors will occur
+    // <group>
+    virtual void makePixelRelative (Vector<Double>& pixel) const {worker_p.makePixelRelative(pixel);};
+    virtual void makePixelAbsolute (Vector<Double>& pixel) const {worker_p.makePixelAbsolute(pixel);};
+    virtual void makeWorldRelative (Vector<Double>& world) const {worker_p.makeWorldRelative(world);};
+    virtual void makeWorldAbsolute (Vector<Double>& world) const {worker_p.makeWorldAbsolute(world);};
     // </group>
 
 
