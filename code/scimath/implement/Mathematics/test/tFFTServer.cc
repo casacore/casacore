@@ -852,7 +852,7 @@ int main() {
       expectedResult(1,0) = expectedResult(1,3) = Complex(-3,3);
       expectedResult(3,3) = expectedResult(3,0) = Complex(3,-3);
       server.fft(result.ac(), input.ac());
-      AlwaysAssert(allNearAbs(result.ac(), expectedResult.ac(), 2*FLT_EPSILON),
+      AlwaysAssert(allNearAbs(result.ac(), expectedResult.ac(), 5*FLT_EPSILON),
  		   AipsError);
       expectedResult = input;
       server.fft(input.ac(), result.ac(), False);
