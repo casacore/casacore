@@ -813,7 +813,7 @@ void ImagePolarimetry::rotationMeasure(ImageInterface<Float>*& rmOutPtr,
                           const_cast<ImageInterface<Float>*>(itsInImagePtr);
    mainImagePtr->setCacheSizeInTiles (nrtiles);
 //
-   plotter.sch (1.0);
+   plotter.sch (2.0);
    String posString;
    Bool ok = False;
    IPosition shp;
@@ -1753,10 +1753,18 @@ Bool ImagePolarimetry::rmPrimaryFit(Float& nTurns, Float& rmFitted, Float& rmErr
      Float minVal, maxVal;
      minMax(minVal, maxVal, plotPA);
 //
+     ostrstream oss;
+     oss << rChiSqFitted << ends;
+//
      plotter.page();
      plotter.swin(wsq(0), wsq(n-1), minVal, maxVal);
      plotter.box("BCNST", 0.0, 0, "BCNST", 0.0, 0);
-     plotter.lab("\\gl\\u2\\d (m\\u2\\d)", "Position Angle (deg)", String("RM fit at ")+posString);
+//
+     plotter.lab("\\gl\\u2\\d (m\\u2\\d)", 
+                 "Position Angle (degrees)", String(""));
+     plotter.mtxt ("T", -1.5, 0.05, 0.0, posString);
+     plotter.mtxt ("T", -2.5, 0.05, 0.0, String(oss));
+//     
      plotter.pt(wsq, plotPA, 17);
      plotter.erry (wsq, plotPAErrY1, plotPAErrY2, 1.0);
      plotter.line(wsq, plotPAFit);
