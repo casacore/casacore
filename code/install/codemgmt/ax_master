@@ -6101,3 +6101,4 @@
 17 151 src rm admin/system/aips2-nfra.list
 17 151 src rm admin/system/aips2-nrao.list
 17 151 src rm admin/system/aips2-parallel.list
+17 151 src rm admin/system/aips2-patches.list
