@@ -847,7 +847,12 @@ Bool MSFitsOutput::writeFQ(FitsOutput *output, const MeasurementSet &ms,
       Vector<Double> freqs = inchanfreq(i);
       (*iffreq)(inx) = freqs(refPixelFreq) - refFreq;
       if (freqs.nelements() > 1) {
-	(*ifwidth)(inx) = abs(freqs(1) - freqs(0));
+	if(doWsrt){
+	  (*ifwidth)(inx) = abs(freqs(1) - freqs(0));
+	}
+	else{
+	  (*ifwidth)(inx) = (freqs(1) - freqs(0));
+	}
       } else {
 	(*ifwidth)(inx) = intotbw(i);
       }
