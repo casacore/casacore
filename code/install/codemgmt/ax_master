@@ -2650,3 +2650,4 @@
 10 010 src mv aips/implement/Measures/Euler.h aips/implement/Quanta/Euler.h
 10 010 src mv aips/implement/Measures/RotMatrix.cc aips/implement/Quanta/RotMatrix.cc
 10 010 src mv aips/implement/Measures/RotMatrix.h aips/implement/Quanta/RotMatrix.h
+10 010 src mv aips/implement/Measures/test/dMUString.cc aips/implement/Quanta/test/dMUString.cc
