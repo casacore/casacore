@@ -1,5 +1,5 @@
 //# tRecord.cc: Test the Record class
-//# Copyright (C) 1995,1996,1997,1998,1999
+//# Copyright (C) 1995,1996,1997,1998,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -44,7 +44,7 @@
 // This will also delete the temporary output file.
 // <p>
 // It can throw several exceptions, which may result in memory leaks.
-// To check if no real memory leaks occur, the program can be run as
+// To check if no real memory leaks occur, the program can be run
 // with an argument (e.g. tRecord 1). In that case no statements
 // resulting in exceptions are executed, so no memory leaks should occur.
 // <p>
@@ -69,7 +69,7 @@ main (int argc)
 }
 
 // This function checks if a field name is correct.
-// A name has be > 0 characters and start with an uppercase.
+// A name has to be > 0 characters and start with an uppercase.
 // The extra argument should not be 10.
 Bool nameCallBack (const String& name, DataType, const void* extraArgument,
 		   String& message)
@@ -174,6 +174,12 @@ void doDefineAssign (const Record& inrecord)
     record.get (record.fieldNumber ("TpArrayString3"), vec);
     AlwaysAssertExit (allEQ (vec,
 			     stringToVector ("j,k,l")));
+
+    try {
+        record.define ("TpBool", Vector<Bool>(2, False));
+    } catch (AipsError x) {
+        cout << x.getMesg() << endl;
+    } end_try;
 }
 
 void doSubRecord (Bool doExcp, const RecordDesc& desc)
@@ -304,10 +310,7 @@ void doIt (Bool doExcp)
 	try {
 	    record.define ("TpShort", (Int)0);
 	} catch (AipsError x) {
-                                                   // invalid type
-	    cout << ">>> Instance-specific assertion error message:" << endl
-		 << x.getMesg() << endl
-		 << "<<<" << endl;
+	    cout << x.getMesg() << endl;           // invalid type
 	} end_try;
 	RecordDesc rd1(rd);
 	rd1.addField ("TpTable", TpTable);
@@ -347,6 +350,23 @@ void doIt (Bool doExcp)
     rd.addField ("TpArrayString3a", TpArrayString);
     record.define ("TpString2", "abc");
     rd.addField ("TpString2a", TpString);
+
+    // Define a scalar using an array.
+    AlwaysAssertExit (record.asInt("TpInt2") == 3);
+    AlwaysAssertExit (record.asuInt("TpUInt2") == 4);
+    AlwaysAssertExit (allEQ (record.asArrayuInt("TpUInt2"), uInt(4)));
+    record.define ("TpInt2", Vector<Int>(1,6));
+    AlwaysAssertExit (record.asInt("TpInt2") == 6);
+    AlwaysAssertExit (allEQ (record.asArrayInt("TpInt2"), 6));
+    record.define ("TpUInt2", uInt(10));
+    AlwaysAssertExit (record.asuInt("TpUInt2") == 10);
+    AlwaysAssertExit (allEQ (record.asArrayuInt("TpUInt2"), uInt(10)));
+    record.define ("TpInt2", 3);
+    record.define ("TpUInt2", Vector<uInt>(1,4));
+    AlwaysAssertExit (record.asInt("TpInt2") == 3);
+    AlwaysAssertExit (allEQ (record.asArrayInt("TpInt2"), 3));
+    AlwaysAssertExit (record.asuInt("TpUInt2") == 4);
+    AlwaysAssertExit (allEQ (record.asArrayuInt("TpUInt2"), uInt(4)));
 
     // Do some erronous defines and assigns.
     if (doExcp) {
@@ -452,7 +472,7 @@ void doIt (Bool doExcp)
     *arraydcomplexField = DComplex(5.0, 1.0);
     *arraystringField = stringToVector ("Hello,Goodbye");
 
-    // Check if asComplex work okay.
+    // Check if asComplex works okay.
     AlwaysAssertExit (record.asComplex ("TpComplex") == Complex(1.0f, 11.0f));
     AlwaysAssertExit (record.asComplex ("TpInt") == Complex(-1234567.0f));
     AlwaysAssertExit (record.asComplex ("TpDComplex") == Complex(5.0f, 1.0f));
@@ -754,6 +774,38 @@ void check (const Record& record, Int intValue, uInt nrField)
     AlwaysAssertExit(cv == Complex(7,8));
     AlwaysAssertExit(dcv == DComplex(9,10));
     AlwaysAssertExit(strv == "abc");
+    AlwaysAssertExit (allEQ (record.asArrayBool(22), bv));
+    AlwaysAssertExit (allEQ (record.asArrayuChar(23), ucv));
+    AlwaysAssertExit (allEQ (record.asArrayShort(24), sv));
+    AlwaysAssertExit (allEQ (record.asArrayInt(25), iv));
+    AlwaysAssertExit (allEQ (record.asArrayuInt(26), uiv));
+    AlwaysAssertExit (allEQ (record.asArrayfloat(27), fv));
+    AlwaysAssertExit (allEQ (record.asArraydouble(28), dv));
+    AlwaysAssertExit (allEQ (record.asArrayComplex(29), cv));
+    AlwaysAssertExit (allEQ (record.asArrayDComplex(30), dcv));
+    AlwaysAssertExit (allEQ (record.asArrayString(33), strv));
+
+    // Scalars as Arrays.
+    RORecordFieldPtr<Array<Bool> >     boolFieldA(record, 0);
+    RORecordFieldPtr<Array<uChar> >    ucharFieldA(record, 1);
+    RORecordFieldPtr<Array<Short> >    shortFieldA(record, 2);
+    RORecordFieldPtr<Array<Int> >      intFieldA(record, 3);
+    RORecordFieldPtr<Array<uInt> >     uintFieldA(record, 4);
+    RORecordFieldPtr<Array<Float> >    floatFieldA(record, 5);
+    RORecordFieldPtr<Array<Double> >   doubleFieldA(record, 6);
+    RORecordFieldPtr<Array<Complex> >  complexFieldA(record, 7);
+    RORecordFieldPtr<Array<DComplex> > dcomplexFieldA(record, 8);
+    RORecordFieldPtr<Array<String> >   stringFieldA(record, 9);
+    AlwaysAssertExit (allEQ (*boolFieldA, Vector<Bool>(1, *boolField)));
+    AlwaysAssertExit (allEQ (*ucharFieldA, Vector<uChar>(1, *ucharField)));
+    AlwaysAssertExit (allEQ (*shortFieldA, Vector<Short>(1, *shortField)));
+    AlwaysAssertExit (allEQ (*intFieldA, Vector<Int>(1, *intField)));
+    AlwaysAssertExit (allEQ (*uintFieldA, Vector<uInt>(1, *uintField)));
+    AlwaysAssertExit (allEQ (*floatFieldA, Vector<Float>(1, *floatField)));
+    AlwaysAssertExit (allEQ (*doubleFieldA, Vector<Double>(1, *doubleField)));
+    AlwaysAssertExit (allEQ (*complexFieldA, Vector<Complex>(1, *complexField)));
+    AlwaysAssertExit (allEQ (*dcomplexFieldA, Vector<DComplex>(1, *dcomplexField)));
+    AlwaysAssertExit (allEQ (*stringFieldA, Vector<String>(1, *stringField)));
 
     // Array fields
     RORecordFieldPtr<Array<Bool> >     arrayboolField(record, 10);
