@@ -44,6 +44,7 @@
 #include <trial/Images/ImageFFT.h>
 #include <trial/Images/ImageRegion.h>
 #include <trial/Images/ImageSummary.h>
+#include <aips/Lattices/Lattice.h>
 #include <trial/Lattices/LCSlicer.h>
 #include <trial/Lattices/LatticeExprNode.h>
 #include <trial/Lattices/LatticeExpr.h>
@@ -51,6 +52,7 @@
 #include <aips/Lattices/LatticeStepper.h>
 #include <aips/Lattices/LatticeIterator.h>
 #include <trial/Lattices/LatticeStatistics.h>
+#include <trial/Lattices/LCPagedMask.h>
 #include <aips/Logging/LogIO.h>
 #include <aips/Logging/LogOrigin.h>
 #include <aips/Mathematics/Math.h>
@@ -561,10 +563,7 @@ void ImagePolarimetry::rotationMeasure(ImageInterface<Float>& rmOut, ImageInterf
 
    copyMask(rmOut, *itsInImagePtr);
    copyMask(rmOutError, *itsInImagePtr);
-// 
-   Bool isMasked = rmOut.isMasked() && rmOut.isMaskWritable();
-   Bool isMaskedErr = rmOutError.isMasked() && rmOutError.isMaskWritable();
-
+ 
 // Make fitter
 
    if (itsFitterPtr==0) {
@@ -583,7 +582,6 @@ void ImagePolarimetry::rotationMeasure(ImageInterface<Float>& rmOut, ImageInterf
       comb.addFunction(poly0);
       comb.addFunction(poly1);
 
-
 // Makes a copy of comb
 
       itsFitterPtr->setFunction(comb);
@@ -601,6 +599,16 @@ void ImagePolarimetry::rotationMeasure(ImageInterface<Float>& rmOut, ImageInterf
    Float rm, rmErr, pa0, pa0Err, rChiSq;
    IPosition where(rmOut.shape().nelements(),0);
    uInt j;
+//
+   Bool isMasked = rmOut.isMasked() && rmOut.hasPixelMask() &&
+                   rmOut.pixelMask().isWritable();
+   Lattice<Bool>* outMaskPtr = 0;
+   if (isMasked) outMaskPtr = &rmOut.pixelMask();
+//
+   Lattice<Bool>* outErrMaskPtr = 0;
+   Bool isMaskedErr = rmOutError.isMasked() && rmOutError.hasPixelMask() &&
+                      rmOutError.pixelMask().isWritable();
+   if (isMaskedErr) outErrMaskPtr = &rmOutError.pixelMask();
 //
    Array<Bool> tmpMask(IPosition(rmOut.ndim(), 1), True);
    Array<Float> tmpValue(IPosition(rmOut.ndim(), 1), 0.0);
@@ -630,11 +638,11 @@ void ImagePolarimetry::rotationMeasure(ImageInterface<Float>& rmOut, ImageInterf
 //
         if (isMasked) {
            tmpMask.set(ok);
-           rmOut.putMaskSlice (tmpMask, where);
+           outMaskPtr->putSlice (tmpMask, where);
         }
         if (isMaskedErr) {
            tmpMask.set(ok);
-           rmOutError.putMaskSlice (tmpMask, where);
+           outErrMaskPtr->putSlice (tmpMask, where);
         }
 
 // If the output value is masked, the value itself is 0
@@ -890,27 +898,34 @@ void ImagePolarimetry::copyMask (ImageInterface<Float>& out,
                                  const ImageInterface<Float>& in) const
 {
    if (in.isMasked()) {
-      if (!out.isMasked() || !out.isMaskWritable()) {
-         LogIO os(LogOrigin("ImagePolariemtry", "copyMask(...)", WHERE));
-         os << LogIO::WARN << "The input image is masked but the output image does "<< endl;
-         os << "not have a writeable mask.  Therefore no mask will be transferred" << LogIO::POST;
+      if (out.isMasked() && out.hasPixelMask()) {
+         if (!out.pixelMask().isWritable()) {
+            LogIO os(LogOrigin("ImagePolarimetry", "copyMask(...)", WHERE));
+            os << LogIO::WARN << "The input image is masked but the output image does "<< endl;
+            os << "not have a writable mask.  Therefore no mask will be transferred" << LogIO::POST;
+            return;
+         }
+      } else {
          return;
       }
+   } else {
+      return;
+   }
    
 // Use the same stepper for input and output.
     
-      IPosition cursorShape = out.niceCursorShape();
-      LatticeStepper stepper (out.shape(), cursorShape, LatticeStepper::RESIZE);
+   IPosition cursorShape = out.niceCursorShape();
+   LatticeStepper stepper (out.shape(), cursorShape, LatticeStepper::RESIZE);
 
 // Create an iterator for the output to setup the cache.
 // It is not used, because using putSlice directly is faster and as easy.
  
-      LatticeIterator<Float> dummyIter(out);
-      RO_LatticeIterator<Float> iter(in, stepper);   
-      for (iter.reset(); !iter.atEnd(); iter++) {
-         out.putMaskSlice(in.getMaskSlice(iter.position(), iter.cursorShape()), 
-                          iter.position());
-      }
+   LatticeIterator<Float> dummyIter(out);
+   RO_LatticeIterator<Float> iter(in, stepper);   
+   Lattice<Bool>& outMask = out.pixelMask();
+   for (iter.reset(); !iter.atEnd(); iter++) {
+      outMask.putSlice(in.getMaskSlice(iter.position(), iter.cursorShape()), 
+                       iter.position());
    }   
 }  
    
