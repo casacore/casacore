@@ -350,6 +350,11 @@ $(BINTESTD)/%.g : $(CODEDIR)/%.g
 $(BINTESTD)/%.gp : $(CODEDIR)/%.gp
 	@ cp $< $@
 
+$(LIBEXECD)/% : $(CODEDIR)/%
+        @ $(RM) $@
+          cp $< $@
+        @ chmod 664 $@
+
 # Programmer-oriented pattern rules.
 ifeq "$(MAKEMODE)" "programmer"
    vpath %.cc $(CODEDIR)
