@@ -35,6 +35,7 @@
 #include <aips/Utilities/String.h>
 
 NewMSMainColumns::NewMSMainColumns(NewMeasurementSet& ms):
+  RONewMSMainColumns(ms),
   antenna1_p(ms, NewMS::columnName(NewMS::ANTENNA1)),
   antenna2_p(ms, NewMS::columnName(NewMS::ANTENNA2)),
   arrayId_p(ms, NewMS::columnName(NewMS::ARRAY_ID)),
@@ -111,6 +112,7 @@ void NewMSMainColumns::setUVWRef(Int ref)
 }
 
 NewMSMainColumns::NewMSMainColumns():
+  RONewMSMainColumns(),
   antenna1_p(),
   antenna2_p(),
   arrayId_p(),
@@ -165,6 +167,7 @@ NewMSMainColumns::NewMSMainColumns():
 
 void NewMSMainColumns::attach(NewMeasurementSet& ms)
 {
+  RONewMSMainColumns::attach(ms);
   antenna1_p.attach(ms, NewMS::columnName(NewMS::ANTENNA1));
   antenna2_p.attach(ms, NewMS::columnName(NewMS::ANTENNA2));
   arrayId_p.attach(ms, NewMS::columnName(NewMS::ARRAY_ID));
