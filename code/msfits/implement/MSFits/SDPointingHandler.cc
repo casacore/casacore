@@ -45,21 +45,21 @@
 #include <aips/Arrays/ArrayLogical.h>
 
 SDPointingHandler::SDPointingHandler() 
-    : msPointing_p(0), msPointingCols_p(0), antId_p(-1), time_p(0.0),
-      minTime_p(0.0), maxTime_p(0.0), directionRate_p(2), name_p(""), rownr_p(-1)
+    : msPointing_p(0), msPointingCols_p(0), time_p(0.0), antId_p(-1), directionRate_p(2),
+      name_p(""), rownr_p(-1)
 {;}
 
 SDPointingHandler::SDPointingHandler(MeasurementSet &ms, Vector<Bool> &handledCols,
 				     const Record &row) 
-    : msPointing_p(0), msPointingCols_p(0), antId_p(-1), time_p(0.0),
-      minTime_p(0.0), maxTime_p(0.0), directionRate_p(2), name_p(""), rownr_p(-1)
+    : msPointing_p(0), msPointingCols_p(0), time_p(0.0), antId_p(-1),directionRate_p(2),
+      name_p(""), rownr_p(-1)
 {
     initAll(ms, handledCols, row);
 }
 
 SDPointingHandler::SDPointingHandler(const SDPointingHandler &other) 
-    : msPointing_p(0), msPointingCols_p(0), antId_p(-1), time_p(0.0),
-      minTime_p(0.0), maxTime_p(0.0), directionRate_p(2), name_p(""), rownr_p(-1)
+    : msPointing_p(0), msPointingCols_p(0), time_p(0.0), antId_p(-1), directionRate_p(2),
+      name_p(""), rownr_p(-1)
 {
     *this = other;
 }
@@ -72,10 +72,8 @@ SDPointingHandler &SDPointingHandler::operator=(const SDPointingHandler &other)
 	AlwaysAssert(msPointing_p, AipsError);
 	msPointingCols_p = new MSPointingColumns(*msPointing_p);
 	AlwaysAssert(msPointingCols_p, AipsError);
-	antId_p = other.antId_p;
 	time_p = other.time_p;
-	minTime_p = other.minTime_p;
-	maxTime_p = other.maxTime_p;
+	antId_p = other.antId_p;
 	direction_p = other.direction_p;
 	directionRate_p = other.directionRate_p;
  	name_p = other.name_p;
@@ -107,23 +105,36 @@ void SDPointingHandler::fill(const Record &, Int antennaId, Double time,
 	newRow = newRow || 
 	    direction.getRef() != direction_p.getRef() ||
 	    direction.getValue() != direction_p.getValue();
-	if (!newRow && timeField_p.isAttached()) {
-	    newRow = *timeField_p == msPointingCols_p->time()(rownr_p);
-	} else {
-	    newRow = newRow || 
-		(time != time_p && (!timeRange(0) < maxTime_p || !near(timeRange(0),maxTime_p)));
-	}
 	if (!newRow && pointingDirRateField_p.isAttached()) {
 	    newRow = !allEQ(*pointingDirRateField_p, directionRate_p);
-	}
-	if (!newRow && intervalField_p.isAttached()) {
-	    newRow = *intervalField_p == msPointingCols_p->interval()(rownr_p);
 	}
 	if (!newRow && nameField_p.isAttached()) {
 	    newRow = *nameField_p == msPointingCols_p->name()(rownr_p);
 	}
 	if (!newRow && trackingField_p.isAttached()) {
 	    newRow = *trackingField_p == msPointingCols_p->tracking()(rownr_p);
+	}
+	Double interval = timeRange(1) - timeRange(0);
+	Double thisTime = time;
+	// or should a former MS time and interval be used here instead
+	if (timeField_p.isAttached()) {
+	    thisTime = *timeField_p;
+	    // MS interval can't exist without MS time
+	    if (intervalField_p.isAttached()) {
+		interval = *intervalField_p;
+	    }
+	}
+	if (!newRow) {
+	    // all of the fields except TIME and INTERVAL match.
+	    // if the time falls within the row interval of the row time
+	    // or the row time falls within the interval of time, then the rows overlap and
+	    // can be reused
+	    Double rowTime = msPointingCols_p->time()(rownr_p);
+	    Double rowInterval = msPointingCols_p->interval()(rownr_p);
+	    Double rid2 = rowInterval/2.0;
+	    Double id2 = interval/2.0;
+	    newRow = !(((time-id2)<(rowTime+rid2)) && 
+		       ((rowTime-rid2)<(time+id2)));
 	}
 	if (newRow) {
 	    // a new row is in order
@@ -136,23 +147,12 @@ void SDPointingHandler::fill(const Record &, Int antennaId, Double time,
 	    }
 	    msPointing_p->addRow();
 	    antId_p = antennaId;
-	    ntimes_p = 1;
-	    time_p = time;
 	    direction_p = direction;
 	    name_p = name;
 	    msPointingCols_p->antennaId().put(rownr_p, antId_p);
-	    if (timeField_p.isAttached()) {
-		msPointingCols_p->time().put(rownr_p, *timeField_p);
-	    } else {
-		msPointingCols_p->time().put(rownr_p, time_p);
-	    }
-	    if (intervalField_p.isAttached()) {
-		msPointingCols_p->interval().put(rownr_p, *intervalField_p);
-	    } else {
-		minTime_p = timeRange(0);
-		maxTime_p = timeRange(1);
-		msPointingCols_p->interval().put(rownr_p, (maxTime_p-minTime_p));
-	    }
+	    msPointingCols_p->time().put(rownr_p, thisTime);
+	    time_p = thisTime;
+	    msPointingCols_p->interval().put(rownr_p, interval);
 	    if (nameField_p.isAttached()) {
 		msPointingCols_p->name().put(rownr_p, *nameField_p);
 	    } else {
@@ -196,19 +196,16 @@ void SDPointingHandler::fill(const Record &, Int antennaId, Double time,
 	    // extraction the direction poly for use by the FIELD table as necessary
 	    directionPoly_p = msPointingCols_p->direction()(rownr_p);
 	} else {
-	    // re-use this row, make sure the range now encompasses this range
-	    // also average times
-	    if (!timeField_p.isAttached()) {
-		time_p = time_p*ntimes_p + time;
-		ntimes_p++;
-		time_p /= ntimes_p;
-		msPointingCols_p->time().put(rownr_p, time_p);
-	    }
-	    if (!intervalField_p.isAttached()) {
-		minTime_p = min(timeRange(0), minTime_p);
-		maxTime_p = max(timeRange(1), maxTime_p);
-		msPointingCols_p->interval().put(rownr_p, (maxTime_p-minTime_p));
-	    }
+	    // re-use this row, make sure that the time range is fully set
+	    // and place the time in the center of it
+	    Double rowTime = msPointingCols_p->time()(rownr_p);
+	    Double rowInterval = msPointingCols_p->interval()(rownr_p);
+	    Double minTime, maxTime;
+	    minTime = min(time-interval/2.0, rowTime-rowInterval/2.0);
+	    maxTime = max(time+interval/2.0, rowTime+rowInterval/2.0);
+	    time_p = (maxTime+minTime)/2.0;
+	    msPointingCols_p->time().put(rownr_p, time_p);
+	    msPointingCols_p->interval().put(rownr_p, (maxTime-minTime));
 	}
     }
 }
@@ -245,8 +242,6 @@ void SDPointingHandler::initAll(MeasurementSet &ms, Vector<Bool> &handledCols,
     AlwaysAssert(msPointingCols_p, AipsError);
 
     antId_p = -1;
-    ntimes_p = 0;
-    time_p = minTime_p = maxTime_p = 0.0;
     direction_p = MDirection();
     name_p = "";
 
