@@ -35,7 +35,7 @@
 #include <aips/Utilities/String.h>
 
 //# Forward Declarations
-
+class Regex;
 
 // <summary>
 // Split a String into its elements.
