@@ -97,7 +97,8 @@ void LatticeFFT::cfft(Lattice<Complex>& cLattice, const Bool toFrequency) {
 }
 
 void LatticeFFT::rcfft(Lattice<Complex>& out, const Lattice<Float>& in, 
-		     const Vector<Bool>& whichAxes, const Bool doShift){
+		       const Vector<Bool>& whichAxes, const Bool doShift,
+		       Bool doFast){
   const uInt ndim = in.ndim();
   DebugAssert(ndim > 0, AipsError);
   DebugAssert(ndim == whichAxes.nelements(), AipsError);
@@ -121,6 +122,8 @@ void LatticeFFT::rcfft(Lattice<Complex>& out, const Lattice<Float>& in,
 //   }
 
   const IPosition tileShape = out.niceCursorShape();
+  TempLattice<Float> inlocal(TiledShape(in.shape(), tileShape));
+  inlocal.put(in.get());
   FFTServer<Float,Complex> ffts;
 
     {
@@ -128,7 +131,7 @@ void LatticeFFT::rcfft(Lattice<Complex>& out, const Lattice<Float>& in,
 	if (whichAxes(dim) == True) {
 	  if (dim == firstAxis) { 
 	    if (inShape(dim) != 1) { // Do real->complex Transforms
-	      RO_LatticeIterator<Float> inIter(in, 
+	      LatticeIterator<Float> inIter(inlocal, 
 					       TiledLineStepper(inShape,
 								tileShape,dim));
 	      LatticeIterator<Complex> outIter(out,
@@ -137,7 +140,15 @@ void LatticeFFT::rcfft(Lattice<Complex>& out, const Lattice<Float>& in,
 	      for (inIter.reset(), outIter.reset();
 		   !inIter.atEnd() && !outIter.atEnd(); inIter++, outIter++) {
 		if (doShift) {
-		  ffts.fft(outIter.woVectorCursor(), inIter.vectorCursor());
+		  // ffts.fft0(outIter.woVectorCursor(), inIter.vectorCursor);
+		  if(doFast){
+		    ffts.flip(inIter.rwVectorCursor(), True, False);
+		    ffts.fft0(outIter.woVectorCursor(), inIter.vectorCursor());
+		  }
+		  else{
+		    ffts.fft(outIter.woVectorCursor(), inIter.vectorCursor());
+		  }
+		    
 		} else {
 		  ffts.fft0(outIter.woVectorCursor(), inIter.vectorCursor());
 		}
@@ -153,7 +164,9 @@ void LatticeFFT::rcfft(Lattice<Complex>& out, const Lattice<Float>& in,
 							     tileShape, dim));
 	      for (iter.reset(); !iter.atEnd(); iter++) {
 		if (doShift) {
-		  ffts.fft(iter.rwVectorCursor(), 1, True);
+		  //		  ffts.fft(iter.rwVectorCursor(), 1, True);
+		  ffts.flip(iter.rwVectorCursor(),True,False);
+		  ffts.fft(iter.rwVectorCursor(),True);
 		} else {
 		  ffts.fft0(iter.rwVectorCursor(), True);
 		}
@@ -212,7 +225,9 @@ void LatticeFFT::myrcfft(Lattice<Complex>& out, const Lattice<Float>& in,
 	      for (inIter.reset(), outIter.reset();
 		   !inIter.atEnd() && !outIter.atEnd(); inIter++, outIter++) {
 		if (doShift) {
-		  ffts.myfft(outIter.woVectorCursor(), inIter.vectorCursor());
+		  //		  ffts.myfft(outIter.woVectorCursor(), inIter.vectorCursor());
+		  ffts.flip((Vector<Float> &)inIter.vectorCursor(),True,False);
+		  ffts.fft0(outIter.woVectorCursor(), inIter.vectorCursor());
 		} else {
 		  ffts.fft0(outIter.woVectorCursor(), inIter.vectorCursor());
 		}
@@ -227,7 +242,9 @@ void LatticeFFT::myrcfft(Lattice<Complex>& out, const Lattice<Float>& in,
 					    TiledLineStepper(outShape, tileShape, dim));
 	      for (iter.reset(); !iter.atEnd(); iter++) {
 		if (doShift) {
-		  ffts.fft(iter.rwVectorCursor(), 1, True);
+		  //		  ffts.fft(iter.rwVectorCursor(), 1, True);
+		  ffts.flip(iter.rwVectorCursor(),True,False);
+		  ffts.fft0(iter.rwVectorCursor(),True);
 		} else {
 		  ffts.fft0(iter.rwVectorCursor(), True);
 		}
@@ -242,9 +259,9 @@ void LatticeFFT::myrcfft(Lattice<Complex>& out, const Lattice<Float>& in,
 //-------------------------------------------------------------------------
 //
 void LatticeFFT::rcfft(Lattice<Complex>& out, const Lattice<Float>& in, 
-		     const Bool doShift){
+		     const Bool doShift, Bool doFast){
   const Vector<Bool> whichAxes(in.ndim(), True);
-  LatticeFFT::rcfft(out, in, whichAxes, doShift);
+  LatticeFFT::rcfft(out, in, whichAxes, doShift, doFast);
 }
 void LatticeFFT::myrcfft(Lattice<Complex>& out, const Lattice<Float>& in, 
 		     const Bool doShift){
@@ -253,7 +270,8 @@ void LatticeFFT::myrcfft(Lattice<Complex>& out, const Lattice<Float>& in,
 }
 
 void LatticeFFT::crfft(Lattice<Float>& out, Lattice<Complex>& in, 
-		       const Vector<Bool>& whichAxes, const Bool doShift){
+		       const Vector<Bool>& whichAxes, const Bool doShift, 
+		       Bool doFast){
   const uInt ndim = in.ndim();
   DebugAssert(ndim > 0, AipsError);
   DebugAssert(ndim == whichAxes.nelements(), AipsError);
@@ -290,7 +308,15 @@ void LatticeFFT::crfft(Lattice<Float>& out, Lattice<Complex>& in,
 							     tileShape, dim));
 	  for (iter.reset(); !iter.atEnd(); iter++) {
 	    if (doShift) {
-	      ffts.fft(iter.rwVectorCursor(), 2, False);
+	      if(doFast){
+		ffts.fft0(iter.rwVectorCursor(), False);
+		ffts.flip(iter.rwVectorCursor(), False, False);
+	      }
+	      else{
+	      //	      ffts.fft(iter.rwVectorCursor(), 2, False);
+	      ffts.fft(iter.rwVectorCursor(),False);
+
+	      }
 	    } else {
 	      ffts.fft0(iter.rwVectorCursor(), False);
 	    }
@@ -310,6 +336,7 @@ void LatticeFFT::crfft(Lattice<Float>& out, Lattice<Complex>& in,
 	      ffts.fft(outIter.woVectorCursor(), inIter.vectorCursor());
 	    } else {
 	      ffts.fft0(outIter.woVectorCursor(), inIter.vectorCursor());
+	      ffts.flip(outIter.rwVectorCursor(), False, False);
 	    }
 	  }
 	} else { // just copy the data truncating the imaginary parts.
@@ -321,16 +348,16 @@ void LatticeFFT::crfft(Lattice<Float>& out, Lattice<Complex>& in,
 }
 
 void LatticeFFT::crfft(Lattice<Float>& out, Lattice<Complex>& in, 
-		       const Bool doShift){
+		       const Bool doShift, Bool doFast){
   const Vector<Bool> whichAxes(in.ndim(), True);
-  LatticeFFT::crfft(out, in, whichAxes, doShift);
+  LatticeFFT::crfft(out, in, whichAxes, doShift, doFast);
 }
 
 void LatticeFFT::crfft(Lattice<Float>& out, const Lattice<Complex>& in,
-		       const Bool doShift){
+		       const Bool doShift, Bool doFast){
  TempLattice<Complex> inCopy(in.shape());
  inCopy.copyData(in);
- LatticeFFT::crfft(out, inCopy, doShift);
+ LatticeFFT::crfft(out, inCopy, doShift, doFast);
 }
 // Local Variables: 
 // compile-command: "gmake OPTLIB=1 LatticeFFT"
