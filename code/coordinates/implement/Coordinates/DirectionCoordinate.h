@@ -329,7 +329,6 @@ private:
     mutable Vector<Double> world_tmp_p;
     mutable Vector<Double> in_tmp_p;
     mutable Vector<Double> out_tmp_p;
-    mutable Quantum<Double> mix_quant_tmp;
     mutable String errorMsg_p;
     mutable int mixpix_p;
     mutable int mixcel_p;
