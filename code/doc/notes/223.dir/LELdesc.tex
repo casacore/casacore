@@ -18,7 +18,7 @@ To summarize, the following functionality is supported:
       and automatic data type promotion.
 \item Support of image \htmlref{masks}{LEL:MASKS}.
 \item \htmlref{Masking}{LEL:CONDITIONS} using boolean expressions.
-\item Propagation of \htmlref{masks}{LEL:PROPMASKS} through an expression.
+\item Handling of \htmlref{masks}{LEL:HANDMASKS} in an expression.
 \item Support of image \htmlref{regions}{LEL:REGIONS}.
 \item Interface from both Glish and C++.
 \end{itemize}
@@ -26,18 +26,22 @@ To summarize, the following functionality is supported:
 The first section explains the syntax.  The last sections show the
 interface to LEL using Glish or C++.  The Glish interface makes it
 possible to embed Glish variables and expressions in a LEL command. 
+At the end some \htmlref{examples}{LEL:EXAMPLES} are given.
 
-\medskip\noindent LEL operates on lattices, which are a generalization of arrays.  As said
+\medskip\noindent LEL operates on lattices, which are a generalization
+of arrays.  As said
 above a particular type of lattice is an image; they will be used most
 often.  Because lattices can be very large, an expression is only
 evaluated when a chunk of its data is requested.  This is similar to
 reading only the requested chunk of data from a disk file. 
 
-\medskip\noindent LEL is quite efficient and can therefore be used well in C++ and glish
+\medskip\noindent LEL is quite efficient and can therefore be used
+well in C++ and glish
 code.  However, it can never be as efficient as carefully constructed
 C++ code. 
 
-\medskip\noindent \htmladdnormallink{Note 216}{../216/216.html} gives a detailed
+\medskip\noindent \htmladdnormallink{Note 216}{../216/216.html} gives
+a detailed
 description how LEL is implemented using various C++ classes.
 
 
@@ -71,9 +75,9 @@ can be a scalar too. If is is a scalar, it will be handled correctly
 by C++ and glish functions using it as the source in, say, an
 assignment to another lattice.
 
-\medskip\noindent LEL fully supports masks. In almost all cases the mask of a
+\medskip\noindent LEL fully supports masks. In most cases the mask of a
 subexpression is formed by and-ing the masks of its operands.
-It is fully explained in a \htmlref{later section}{LEL:PROPMASKS}.
+It is fully explained in a \htmlref{later section}{LEL:HANDMASKS}.
 
 
 \label{LEL:DATATYPES}
@@ -278,6 +282,15 @@ The result of these functions is a scalar.
 
 \subsubsection{Miscellaneous functions}
 \begin{description}
+  \item[ \texttt{anytype VALUE(anytype)}]
+    It returns the argument without its possible mask, thus it removes
+    the mask from the argument.
+    The section about \htmlref{mask handling}{LEL:HANDMASKS}
+    discusses it in more detail.
+  \item[ \texttt{boolean MASK(anytype)}]
+    It returns the mask of the argument.
+    The section about \htmlref{mask handling}{LEL:HANDMASKS}
+    discusses it in more detail.
   \item[ \texttt{anytype REPLACE(anytype, anytype)}]
     The first argument has to be a lattice (expression).
     The optional second argument can be a scalar or a lattice
@@ -308,7 +321,7 @@ The result of these functions is a scalar.
     the result is a lattice.
     \\Note that the mask of the result is formed by combining the
     mask of the arguments in an appropriate way as explained in the
-    section about \htmlref{mask propagation}{LEL:PROPMASKS}.
+    section about \htmlref{mask handling}{LEL:HANDMASKS}.
 \end{description}
 
 \subsubsection{Conversion functions}
@@ -441,17 +454,25 @@ where the condition {\tt [lat1<5]} is true and the resultant expression
 has a mask associated with it.  
 
 
-\subsection{\label{LEL:PROPMASKS}Mask Propagation}
+\subsection{\label{LEL:HANDMASKS}Mask Handling}
 
 As explained in the previous subsections, lattices can have a mask. 
 Examples are a \htmlref{mask}{LEL:MASKS} of good pixels in an image,
 a mask created using a \htmlref{boolean condition}{LEL:CONDITIONS}
 and the operator \texttt{[]},
-or a mask giving a \htmlref{region}{LEL:REGIONS} in its bounding box.
+or a mask defining a \htmlref{region}{LEL:REGIONS} within its bounding
+box.
+\\A pixel is bad when the image has a mask and when the
+mask value for that pixel is False. Functions like
+\texttt{max} ignore the bad pixels.
+\\Note that in a MeasurementSet a False mask value indicates a good
+visibility. Alas this is a historically grown distinction in
+radio-astronomy.
 
-\medskip\noindent Masks are combined and propagated throughout an expression.  E.g.  when
+\medskip\noindent Image masks are combined and propagated throughout an
+expression.  E.g.  when
 two lattices are added, the mask of the result is formed by and-ing the
-masks of the two lattices.   That is, the resultant mask is True when the
+masks of the two lattices.   That is, the resultant mask is True where the
 mask of lattice one is true AND the mask of lattice 2 is True. Otherwise,
 the resultant mask is False.
 
@@ -506,8 +527,36 @@ not used at all.
 The \texttt{iif} function has three operands. Depending on the
 condition, an element from the second or third operand has to be taken.
 The resulting mask is formed by the mask of the condition and-ed
-with the appropriate elements from the masks of the second or third operand.
+with the appropriate elements from the masks of the second or third
+operand.
+
+\item
+The \texttt{value} function returns the value without a mask, thus
+it removes the mask from a value.
+It has the same effect as the \texttt{image:nomask} construction
+discussed \htmlref{above}{LEL:MASKS}. However, the \texttt{value}
+function is more general, because it can also be applied to a
+subexpression.
+
+\item
+The \texttt{mask} function returns the mask of a value.
+The returned value is a boolean lattice and has no mask itself.
+When the value has no mask, it returns a mask consisting of all True values.
+When applied to an image, it returns its default mask.
 \end{itemize}
+
+Consider the following more or less equivalent examples:
+\begin{verbatim}
+   value(image1)[mask(image2)]
+   image1:nomask[mask(image2)]
+   image1:nomask[image2::mask0]
+\end{verbatim}
+The first two use the default mask of \texttt{image2} as the mask for
+\texttt{image1}.
+\\The latter uses \texttt{mask0} of \texttt{image2} as the mask for
+\texttt{image1}. It is equivalent to the first two examples if
+\texttt{mask0} is the default mask of \texttt{image2}.
+
 
 \medskip\noindent It is possible that the entire mask of a subexpression is false.  For example,
 if the mean of such a subexpression is taken, the result is
@@ -600,7 +649,7 @@ usually be an image) in which it is stored.
 \\The region is looked up in the last table used in the expression.
 
 \item \texttt{regionname}
-\\Is equivalent to above. However, there is no syntactical
+\\Is usually equivalent to above. However, there is no syntactical
 difference between the name of a region and a lattice/image.
 Therefore LEL will first try if the name represents a lattice or
 image. If not, the name is supposed to be a region name.
@@ -625,10 +674,13 @@ mask of the result is the and of the region mask and the lattice
 mask.
 
 \medskip\noindent In the second example it is stated explicitly that \texttt{reg1} is a
-region by using the :: syntax.  The region is looked up in \texttt{otherimage}. 
+region by using the :: syntax.  The region is looked up in
+\texttt{otherimage}, because that is the last table used in the
+expression. The result is a lattice with the shape of the bounding box 
+of the region.
 
 \medskip\noindent In the third example the region is looked up in \texttt{myimage.data}.
-Note that the last examples also show that a region can be applied
+Note that the this and the previous example also show that a region can be applied
 to a subexpression.
 
 \medskip\noindent In the fourth example we have been very cunning.  We have taken
@@ -644,8 +696,7 @@ generated and stored (in C++ and Glish).  However, it is also possible
 to form a union, etc.  in LEL itself.  However, that can only be done if
 the regions have the same type (i.e.  both in world or in pixel
 coordinates). 
-
-\medskip\noindent The following operators can be used:
+\\The following operators can be used:
 
 \begin{itemize}
 \item {\tt reg1 || reg2} to form the union.
@@ -666,8 +717,6 @@ the image (subexpression). However, the region can have fewer axes.
 the region is automatically extended to the full image
 by taking the full length of the missing axes.
 \end{itemize}
-
-
 
 
 \section{Some further remarks}
@@ -932,8 +981,11 @@ creates another image on disk, which may or may not be desirable.
 
 \end{itemize}
 
-\section{Examples}
+\section{\label{LEL:EXAMPLES}{Examples}}
 The following examples show some LEL expressions.
+\\Note that LEL is readonly; i.e. it does not change any value in
+the images given. A function in the \texttt{image} client has to
+be used to do something with the result (e.g. storing in another image).
 \begin{description}
   \item[] \texttt{lat1+lat2}
     \\adds 2 lattices
@@ -941,7 +993,8 @@ The following examples show some LEL expressions.
     \\results in a scalar value giving the mean of the image.
     No mask is used for the image, thus all pixels are used.
     The scalar value can be used as a lattice. E.g. it can be used as
-    the source in an assignment to set all elements of another
+    the source in the \texttt{image} function
+    \texttt{replacemaskedpixels} to set all masked-off elements of a
     lattice to the mean.
   \item[] \texttt{complex(lat1,lat2)}
     \\results in a complex lattice formed by \texttt{lat1} as the
@@ -968,35 +1021,44 @@ Here follows a sample Glish session showing some of the LEL
 capabilities and how Glish variables can be used in LEL.
 \begin{verbatim}
 duw01> glish -l image.g
-- a := array(1:50,5,10)            # make some data
-- im1 := arraytoimage('im1', a);   # fill an image with it
+- a := array(1:50,5,10)              # make some data
+- global im1 := arraytoimage('im1', a);   # fill an image with it
 - im1.shape()
 [5 10]
 - local pixels, mask
-- im1.getregion(pixels, mask);     # get pixels and mask
-- mask[1,1] := F                   # set some mask elements to False
-- mask[4,4] := F
-- im1.putregion(mask=mask);        # put new mask back
-- reg:=drm.box([1,1],[4,4]);       # a box region
-- im2 := expr('$im1[$reg]')        # read-only image applying region
+- im1.getregion(pixels, mask);       # get pixels and mask
+- mask[1,1] := F                     # set some mask elements to False
+- mask[3,4] := F
+- im1.putregion(mask=mask);          # put new mask back
+- global reg:=drm.box([1,1],[4,4]);  # a box region
+- im2 := expr('$im1[$reg]')          # read-only image applying region
 - local pixels2, mask2
-- im2.getregion(pixels2, mask2);   # get the pixels and mask
-- pixels2
+- im2.getregion(pixels2, mask2);     # get the pixels and mask
+- print pixels2
 [[1:4,]
     1 6 11 16
     2 7 12 17
     3 8 13 18
     4 9 14 19] 
-- mask2
+- print mask2
 [[1:4,]
     F T T T
     T T T T
-    T T T T
-    T T T F] 
+    T T T F
+    T T T T] 
+- im1.replacemaskedpixels ('mean(im2)'); # replace masked-off values
+- im1.getregion (pixels2, mask2);        # by mean of masked-on in im2
+- print pixels2
+[[1:5,]
+    10.0714283 6  11 16         21 26 31 36 41 46
+    2          7  12 17         22 27 32 37 42 47
+    3          8  13 10.0714283 23 28 33 38 43 48
+    4          9  14 19         24 29 34 39 44 49
+    5          10 15 20         25 30 35 40 45 50]
 \end{verbatim}
 
 \section{Future developments}
-In the near or distant future LEL will be enhanced by adding new
+In the near or more distant future LEL will be enhanced by adding new
 features and by doing optimizations.
 \begin{itemize}
   \item Handle slices like \texttt{image[1:10:2, 5:]}
