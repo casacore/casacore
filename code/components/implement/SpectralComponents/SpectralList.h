@@ -113,10 +113,10 @@ class SpectralList {
   // is for the length of the given <src>prof</src>, assuming x values of
   // 0,1,... if no x given.
   // <group>
-  void evaluate(Vector<Float> &y) const;
-  void evaluate(Vector<Float> &y, const Vector<Float> &x) const;
-  void evaluate(Vector<Double> &y) const;
-  void evaluate(Vector<Double> &y, const Vector<Double> &x) const;
+  template <class MT>
+    void evaluate(Vector<MT> &y) const;
+  template <class MT>
+    void evaluate(Vector<MT> &y, const Vector<MT> &x) const;
    // </group>
 
   // Calculate the residuals at the points x; by subtracting the model from y.
@@ -125,10 +125,10 @@ class SpectralList {
   //  <li> AipsError if y and x have different lengths
   // </thrown>
   // <group>
-  void residual(Vector<Float> &y) const;
-  void residual(Vector<Double> &y) const;
-  void residual(Vector<Float> &y, const Vector<Float> &x) const;
-  void residual(Vector<Double> &y, const Vector<Double> &x) const;
+  template <class MT>
+    void residual(Vector<MT> &y) const;
+  template <class MT>
+    void residual(Vector<MT> &y, const Vector<MT> &x) const;
   // </group>
 
   // Add elements to list (False if list has max length and full)

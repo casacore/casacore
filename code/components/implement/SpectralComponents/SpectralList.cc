@@ -28,7 +28,6 @@
 //# Includes
 #include <trial/Wnbt/SpectralList.h>
 
-#include <aips/Arrays/Vector.h>
 #include <aips/Exceptions/Error.h>
 #include <trial/Wnbt/SpectralElement.h>
 
@@ -87,78 +86,6 @@ SpectralElement &SpectralList::operator[](const uInt n) {
       throw(AipsError("SpectralList: Illegal index for element"));
   };
   return *list_p[n];
-}
-
-void SpectralList::evaluate(Vector<Float> &y) const {
-  for (uInt j=0; j<y.nelements(); j++) {
-    if (list_p.nelements() > 0) y(j) = (*list_p[0])(j);
-    else y(j) = 0;
-  };
-  for (uInt i=1; i<list_p.nelements(); i++) {
-    for (uInt j=0; j<y.nelements(); j++) y(j) += (*list_p[i])(j);
-  };
-}
-
-void SpectralList::evaluate(Vector<Float> &y, const Vector<Float> &x) const {
-  y.resize(x.nelements());
-  for (uInt j=0; j<x.nelements(); j++) {
-    if (list_p.nelements() > 0) y(j) = (*list_p[0])(x(j));
-    else y(j) = 0;
-  };
-  for (uInt i=1; i<list_p.nelements(); i++) {
-    for (uInt j=0; j<x.nelements(); j++) y(j) += (*list_p[i])(x(j));
-  };
-}
-
-void SpectralList::evaluate(Vector<Double> &y) const {
-  for (uInt j=0; j<y.nelements(); j++) {
-    if (list_p.nelements() > 0) y(j) = (*list_p[0])(j);
-    else y(j) = 0;
-  };
-  for (uInt i=1; i<list_p.nelements(); i++) {
-    for (uInt j=0; j<y.nelements(); j++) y(j) += (*list_p[i])(j);
-  };
-}
-
-void SpectralList::evaluate(Vector<Double> &y, const Vector<Double> &x) const {
-  y.resize(x.nelements());
-  for (uInt j=0; j<x.nelements(); j++) {
-    if (list_p.nelements() > 0) y(j) = (*list_p[0])(x(j));
-    else y(j) = 0;
-  };
-  for (uInt i=1; i<list_p.nelements(); i++) {
-    for (uInt j=0; j<x.nelements(); j++) y(j) += (*list_p[i])(x(j));
-  };
-}
-
-void SpectralList::residual(Vector<Float> &y) const {
-  for (uInt i=0; i<list_p.nelements(); i++) {
-    for (uInt j=0; j<y.nelements(); j++) y(j) -= (*list_p[i])(j);
-  };
-}
-
-void SpectralList::residual(Vector<Double> &y) const {
-  for (uInt i=0; i<list_p.nelements(); i++) {
-    for (uInt j=0; j<y.nelements(); j++) y(j) -= (*list_p[i])(j);
-  };
-}
-
-void SpectralList::residual(Vector<Float> &y, const Vector<Float> &x) const {
-  if (x.nelements() != y.nelements()) {
-    throw(AipsError("Unequal lengths in arguments SpectralList::residual"));
-  };
-  for (uInt i=0; i<list_p.nelements(); i++) {
-    for (uInt j=0; j<x.nelements(); j++) y(j) -= (*list_p[i])(x(j));
-  };
-}
-
-void SpectralList::residual(Vector<Double> &y, const Vector<Double> &x) const {
-  if (x.nelements() != y.nelements()) {
-    throw(AipsError("Unequal lengths in arguments SpectralList::residual"));
-  };
-  for (uInt i=0; i<list_p.nelements(); i++) {
-    for (uInt j=0; j<x.nelements(); j++) y(j) -= (*list_p[i])(x(j));
-  };
 }
 
 Bool SpectralList::add(const SpectralElement &in) {
