@@ -125,7 +125,7 @@ public:
     virtual Bool isNull() { return tab_p.isNull();}
 
     // return the subtable being indexed
-    virtual const Table &table() const {return tab_p;}
+    virtual Table &table() {return tab_p;}
 private:
     // the subtable
     Table tab_p;
