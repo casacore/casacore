@@ -31,24 +31,32 @@
 #define AIPS_AIPS_ENV_H
 
 // AIPS++ project compiler
-#if defined(AIPS_GCC295)
-#undef AIPS_GCC295
-#endif
-
 #if defined(AIPS_GCC)
 #undef AIPS_GCC
 #endif
-
-#if (defined(__GNUC__) && __GNU_CC == 2 && __GNUC_MINOR__ == 95)
-#define AIPS_GCC295
+#if defined(__GNUC__)
 #define AIPS_GCC
+#endif
+
+#if defined(AIPS_GCC2)
+#undef AIPS_GCC2
+#endif
+#if (defined(AIPS_GCC) && __GNUC_CC == 2)
+#define AIPS_GCC2
+#endif
+
+#if defined(AIPS_GCC295)
+#undef AIPS_GCC295
+#endif
+#if (defined(AIPS_GCC2) && __GNUC_MINOR__ == 95)
+#define AIPS_GCC295
 #endif
 
 // Coming soon as gnu fixes the bugs
 #if defined(AIPS_GCC3)
 #undef AIPS_GCC3
 #endif
-#if defined(__GNUC__) && __GNUC__ == 3
+#if defined(AIPS_GCC) && __GNUC__ == 3
 #define AIPS_GCC3
 #endif
 
