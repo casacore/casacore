@@ -1,5 +1,5 @@
 //# ImageProfileFit.cc: Class to fit spectra from images
-//# Copyright (C) 1997,1998,1999,2000,2001
+//# Copyright (C) 1997,1998,1999,2000,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -288,13 +288,14 @@ uInt ImageProfileFit::addElements (const RecordInterface& rec)
       itsSpectralFitPtr->addFitElement(seOut);
    }
 //
+   itsSpectralFitter = *itsSpectralFitPtr;
    return itsSpectralFitPtr->list().nelements() - 1;
 }
 
-Bool ImageProfileFit::getElements (RecordInterface& rec, 
-                                   Bool xAbsOut,
-                                   const String& xUnitOut,
-                                   const String& dopplerOut)
+Bool ImageProfileFit::getList (RecordInterface& rec, 
+                               Bool xAbsOut,
+                               const String& xUnitOut,
+                               const String& dopplerOut)
 {
    const SpectralList& list = itsSpectralFitter.list();
    SpectralList list2 = filterList(list);
@@ -379,6 +380,7 @@ void ImageProfileFit::reset ()
    delete itsSpectralFitPtr;
    itsSpectralFitPtr = 0;
    itsSpectralFitPtr = new SpectralFit;
+   itsSpectralFitter = *itsSpectralFitPtr;
    itsFitDone = False;
 }
 
