@@ -1,5 +1,5 @@
 //# MeasData.cc: MeasData provides Measure computing data
-//# Copyright (C) 1995,1996,1997,1998
+//# Copyright (C) 1995,1996,1997,1998,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -27,6 +27,7 @@
 
 //# Includes
 #include <aips/Quanta/RotMatrix.h>
+#include <aips/Mathematics/Constants.h>
 #include <aips/Measures/MeasData.h>
 #include <aips/Utilities/Assert.h>
 #include <aips/Exceptions/Error.h>
@@ -211,4 +212,10 @@ const RotMatrix &MeasData::MToJ2000(uInt which) {
 Double MeasData::SunSemiDiameter() {
     static const Double data = .004652472638;
     return data;
+}
+
+// J2000 obliquity
+Double MeasData::eps0J2000() {
+  static const Double data = 84381.448*C::arcsec;
+  return data;
 }

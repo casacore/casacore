@@ -1,5 +1,5 @@
 //# MeasData.h: MeasData provides Measure computing data
-//# Copyright (C) 1995,1996,1997,1999
+//# Copyright (C) 1995,1996,1997,1999,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -66,7 +66,7 @@ class RotMatrix;
 // 	MeasData::MJDB1850 
 // 	MeasData::TROPCEN 
 // 	MeasData::JDCEN 
-// 	MeasData::SECinDAY 
+// 	MeasData::SECinDAY
 // </srcblock>
 // are obtained by calls to a method.
 // This class contains no constructors or destructors, only static
@@ -134,6 +134,9 @@ public:
 
   // Get the solar semi diameter at 1 AU in rad
   static Double SunSemiDiameter();
+
+  // J2000 obliquity
+  static Double eps0J2000();
   
 private:
   
