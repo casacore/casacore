@@ -1,5 +1,5 @@
 //# MCDirection.h: MDirection conversion routines 
-//# Copyright (C) 1995,1996,1997
+//# Copyright (C) 1995,1996,1997,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -141,6 +141,8 @@ private:
     TECLIP_JTRUE,
     GAL_SUPERGAL,
     SUPERGAL_GAL,
+    ITRF_HADEC,
+    HADEC_ITRF,
     N_Routes,
     // General for Planets
     R_PLANET0,

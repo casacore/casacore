@@ -83,6 +83,7 @@ template <class M, class F, class MC> class MeasConvert;
 //  <li>MDirection::MECLIPTIC -- ecliptic for mean equator of date
 //  <li>MDirection::TECLIPTIC -- ecliptic for true equator of date
 //  <li>MDirection::SUPERGAL -- supergalactic coordinates
+//  <li>MDirection::ITRF -- coordinates wrt ITRF Earth frame
 //  <li>MDirection::MERCURY -- the planet: has no data attached
 //  <li>MDirection::VENUS
 //  <li>MDirection::MARS
@@ -184,6 +185,7 @@ public:
       MECLIPTIC,
       TECLIPTIC,
       SUPERGAL,
+      ITRF,
       N_Types,
       // Planets. First one should be Mercury
       MERCURY = 32,

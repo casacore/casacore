@@ -127,7 +127,8 @@ const String &MDirection::showType(uInt tp) {
 	"ECLIPTIC",
 	"MECLIPTIC",
 	"TECLIPTIC",
-	"SUPERGAL" };
+	"SUPERGAL",
+	"ITRF" };
     static const String pname[MDirection::N_Planets - MDirection::MERCURY] = {
 	"MERCURY",
 	"VENUS",
@@ -150,7 +151,7 @@ const String &MDirection::showType(uInt tp) {
 }
 
 Bool MDirection::getType(MDirection::Types &tp, const String &in) {
-  static const Int N_name = 27;
+  static const Int N_name = 28;
   static const String tname[N_name] = {
     "J2000",
     "JMEAN",
@@ -169,6 +170,7 @@ Bool MDirection::getType(MDirection::Types &tp, const String &in) {
     "MECLIPTIC",
     "TECLIPTIC",
     "SUPERGAL",
+    "ITRF",
     "MERCURY",
     "VENUS",
     "MARS",
@@ -198,6 +200,7 @@ Bool MDirection::getType(MDirection::Types &tp, const String &in) {
     MDirection::MECLIPTIC,
     MDirection::TECLIPTIC,
     MDirection::SUPERGAL,
+    MDirection::ITRF,
     MDirection::MERCURY,
     MDirection::VENUS,
     MDirection::MARS,
