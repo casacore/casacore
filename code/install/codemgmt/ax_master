@@ -2312,3 +2312,4 @@
 09 275 src mv nfra/apps/csm/csm_parmGUI.g nfra/apps/csm/componenteditor.g
 09 285 src rm aips/glish/glish/malloc.h
 09 293 src mv trial/implement/ComponentModels/DO_componentlist.h trial/implement/ComponentModels/DOcomponentlist.h
+09 293 src mv trial/implement/ComponentModels/DO_componentlist.cc trial/implement/ComponentModels/DOcomponentlist.cc
