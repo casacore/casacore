@@ -1,5 +1,5 @@
 //# tImageExprGram.cc: Test program for image expression parser
-//# Copyright (C) 1998
+//# Copyright (C) 1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -28,6 +28,7 @@
 #include <trial/Images/ImageExprParse.h>
 #include <trial/Lattices/PagedArray.h>
 #include <trial/Lattices/ArrayLattice.h>
+#include <aips/Tables/Table.h>
 #include <aips/Arrays/Array.h>
 #include <aips/Arrays/ArrayLogical.h>
 #include <aips/Lattices/IPosition.h>
@@ -40,6 +41,8 @@
 
 main (int argc, char *argv[])
 {
+ Bool foundError = False;
+
  try {
     Input inp(1);
     inp.Version(" ");
@@ -86,8 +89,6 @@ main (int argc, char *argv[])
 
     Array<Double> aArr(a.shape());
     Array<Bool> aBoolArr(aBool.shape());
-
-    Bool foundError = False;
 
   {
     cout << endl;
@@ -321,6 +322,37 @@ main (int argc, char *argv[])
     }
   }
   {
+    cout << "Expr:  a = sum(e[bBool])" << endl;
+
+    LatticeExpr<Double> expr(ImageExprParse::command
+	          ("sum(e[bBool])"));
+    a.copyData(expr);
+    a.getSlice(aArr, IPosition(aArr.ndim(),0), 
+	       aArr.shape(), IPosition(aArr.ndim(),1));
+    Double result = (bBoolVal  ?  aArr.nelements()*eVal : 0);
+    if (! allEQ (aArr, result)) {
+	cout << "Result should be " << result << endl;
+	cout << "Result is " << aArr.ac() << endl;
+	foundError = True;
+    }
+  }
+  {
+    cout << "Expr:  a = sum((e + sum(f[b>0]*c)/d)[!bBool])" << endl;
+
+    LatticeExpr<Double> expr(ImageExprParse::command
+	          ("sum((e + sum(f[b>0]*c)/d)[!bBool])"));
+    a.copyData(expr);
+    a.getSlice(aArr, IPosition(aArr.ndim(),0), 
+	       aArr.shape(), IPosition(aArr.ndim(),1));
+    Double result = (bVal>0  ?  aArr.nelements()*fVal*cVal/dVal : 0);
+    result = (bBoolVal  ?  0 : aArr.nelements()*(eVal+result));
+    if (! allEQ (aArr, result)) {
+	cout << "Result should be " << result << endl;
+	cout << "Result is " << aArr.ac() << endl;
+	foundError = True;
+    }
+  }
+  {
     {
 	PagedArray<Double> ap (a.shape(), "a");
 	ap.copyData (a);
@@ -340,14 +372,26 @@ main (int argc, char *argv[])
   }
 
   cout << endl;
-  if (foundError) {
-     return 1;
-  }
 
  } catch (AipsError x) {
     cerr << "aipserror: error " << x.getMesg() << endl;
-    return 1;
+    foundError = True;
  } end_try;
- 
+
+ // Delete all created tables (if they exist).
+ Table tab; 
+ if (Table::isReadable("a")) tab =  Table ("a", Table::Delete);
+ if (Table::isReadable("b")) tab =  Table ("b", Table::Delete);
+ if (Table::isReadable("c")) tab =  Table ("c", Table::Delete);
+ if (Table::isReadable("d")) tab =  Table ("d", Table::Delete);
+ if (Table::isReadable("e")) tab =  Table ("e", Table::Delete);
+ if (Table::isReadable("f")) tab =  Table ("f", Table::Delete);
+ if (Table::isReadable("g")) tab =  Table ("g", Table::Delete);
+ if (Table::isReadable("h")) tab =  Table ("h", Table::Delete);
+ if (Table::isReadable("bBool")) tab =  Table ("bBool", Table::Delete);
+
+  if (foundError) {
+     return 1;
+  }
  return 0;
 }
