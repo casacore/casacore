@@ -2363,80 +2363,244 @@ certain patterns in the \aipspp\ code (\exeref{UPchange}), or to move code
 files from one directory to another, and update all references to the files
 (\exeref{UPmove}). A list of files to be processed is generated in all cases
 most easily by the \exeref{UPfind} script (possibly with manual editing of
-the list).
+the list). 
 
+\noindent
+In addition some general scripts to aid the system adiministration
+(\exeref{UPlist}, \exeref{UPreident}, \exeref{UPdup},  
+\exeref{UPlock}, \exeref{UPtmpl}, \exeref{UPload}) exist.
+
+\noindent
 Information is exchanged between the different scripts by files. These files
 are created in the current working directory, and all have the same name, but
 different extensions. The name is the code used to bind different calls
 together. To change all files that contain the word {\em cat} into {\em dog},
 the following sequence would do that (strcat being the code name): \\
 Find the list of files containing the word cat:
+
 \begin{verbatim}
-UPfind strcat
+UPfind strcat 
 Getting info...
 Make sure you have a proper mktree built before proceeding...
-Assuming master search tree in /nfs/aips++/weekly/code. ok? (y|n) [n]: y
-Assuming use of rao/rai, rather than ao/ai. ok? (y|n) [y]: 
-Specify egrep  expression(s) to find files
+Specify code tree root to be used [/nfs/aips++/weekly]: 
+Specify egrep expression(s) to find files
 Examples: /Measures/((MUString)|(MVAngle)|(MVTime)|(RotM)|Q|(Un))
       or: [(][^(]*[*] *[)][ \t]*0
 Multi-line expressions will be ORed
-Find expression: [^a-zA-Z_0-9]cat[^a-zA-Z_0-9]   
+Find expression: [^a-zA-Z_0-9]cat[^a-zA-Z_0-9]
 Find expression: 
-Specify egrep pattern for files to be removed from list found.
-Example: [/]glish[/]
+Specify egrep pattern for files to be removed from raw list found.
+Example: [/]aipsview[/]
 tmplinst files will always be removed
 Remove glish files? (y|n) [y]: 
 Remove pattern: 
 Starting find...
-7 files found in strcat.raw
+9 files found in strcat.raw
 Starting selected removal...
-7 files left in strcat.found
+9 files left in strcat.found
 \end{verbatim}
 
+\noindent
+The files selected, and the lines that were used in the selection, can be
+checked by
+
+\begin{verbatim}
+UPlist strcat
+Getting info...
+9 files found in strcat.found
+Starting list...
+47 lines in strcat.list
+\end{verbatim}
+
+\noindent
 The change is then made by:
+
 \begin{verbatim}
 UPchange strcat
 Getting info...
 Specify the sed patterns used to change the contents of the files 
 in the files in the strcat.found list. 
 Example: s#/Measures/MV#/Quanta/MV#g
-         s#/Measures/MeasVal#/Quanta/MeasVal#g
-         s#/Measures/MUString#/Quanta/MUString#g
-         s#/Measures/MVAngle#/Quanta/MVAngle#g
-         s#[.]arrayCast[(][)]##g
          s#[.]ac[(][)]##g
          s#at_cc[(]#(#g
-         s#at_c[(]#(#g
+         s#\([^a-zA-Z_]\)assert\([^a-zA-Z_]\)#\1assure\2#g
 Change pattern: s#\([^a-zA-Z_0-9]\)cat\([^a-zA-Z_0-9]\)#\1dog\2#g
 Change pattern: 
 Specify the message lines for the RCS log
 Example: Moved includes from Quanta to Measures
-Text line: Changed the cat into the dog
+Text line: Changed the cat into the dog   
 Text line: 
-7 files in strcat.found
-7 files will be changed and checked in/out
-./aips/implement/Utilities/test/tString.cc started
+9 files will be changed and checked in/out
+./atnf/apps/atcafiller/DOatcafiller.cc started
 \end{verbatim}
 \ldots
 
+\noindent
 Information exchange files produced at this stage:
+
 \begin{verbatim}
  strcat.def
  strcat.done
  strcat.error
  strcat.found
+ strcat.list
  strcat.raw
  strcat.rcs
- strcat.rm
+ strcat.rmpat
  strcat.sed
- strcat.up1
+ strcat.spat
 \end{verbatim}
 
+\noindent
 The scripts are written assuming tcsh is available at the computer used, and
-at the standard {\em /usr/local/bin/} path. The script may have to be changed
+can be accessed by {\em /usr/bin/env}. The script may have to be changed
 if this is not the case. Also, the \exeref{UPmove} script uses the {\em amv}
-command, only available at the master site, and can only be run from there.
+command, only available at the master site, and can only be run from there.\\
+Note that the example outputs are only indicative, and could be different in
+details. 
+
+% ----------------------------------------------------------------------------
+
+\subsection{\exe{UP*}}
+
+General description of the \exe{UP} scripts.
+
+\subsubsection*{Synopsis}
+
+\begin{synopsis}
+   \code{\exe{UP*} [\exe{-<switches>}] [\exe{-c}] [\exe{-r}] [\exe{-u}]
+	 [\exe{-d}] [\exe{-n}] <type name>}
+\end{synopsis}
+
+\subsubsection*{Description}
+
+\noindent
+Each script has the {\em <type name>} as an argument. This type name is the
+file name (with varying extensions) that binds the different scripts that
+have to cooperate together. If no type name is given, the user is prompted for
+one, or one that has been used already that day will be used. It is advisable
+to always provide a name.\\
+Switches can be given either separately, or bunched together.\\
+The output of the scripts is given in files with the type name as main name.
+
+\noindent
+The type name act as a memory from invocation to invocation. In general once
+information is provided for a specific type, that information will not be
+asked for again (unless one of the clearing switches is present, or the
+communication files are deleted). Most information is script specific, but
+some genarl information is saved in the general definition file \exe{.def}.
+
+\subsubsection*{Options}
+
+\noindent
+All scripts accept the following switches; while all the scripts actually
+changing system information have also a \exe{-t} test switch, which shows
+what would have happened had the script run for real.
+
+\begin{description}
+\item[\code{\exe{-h}}]
+    Give some useage information
+\item[\code{\exe{-c}}]
+    Clear all defining information files for the \exe{<type name>} invocation
+    of the script, and re-ask it.
+\item[\code{\exe{-r}}]
+    Clear and re-ask only the general definitions for \exe{<type name>}
+\item[\code{\exe{-u}}]
+    Clear and re-ask only the specific definitions for \exe{<type name>}
+\item[\code{\exe{-d}}]
+    Debug mode. Some more output could be generated by some scripts. No
+    extensive implementation present.
+\item[\code{\exe{-n}}]
+    Will only generate the information needed to run the script, without
+    executing the real code
+\item[\code{\exe{-t}}]
+    Available for some scripts only. When present will execute (if no
+    \exe{-n} present) the real code, but will not change the system. In
+    general the actual change is shown in a \exe{.diff} file.
+\item[\code{\exe{-Q}}]
+    A switch, mainly for internal use, that indicates that the script will
+    run quiet, and only notify of errors, and asking questions. No
+    informational messages (like examples of input) are given.
+\end{description}
+
+\subsubsection*{Examples}
+
+\noindent
+Help information:
+
+\begin{verbatim}
+UPfind -h 
+Usage:   UPfind [-f] [-g] [-c] [-r] [-u] [-d] [-n] <typ>
+  Get all files that contain data according to an egrep rule.
+  The found files can be used in other UP scripts like UPlist, 
+  UPchange etc. The <typ> is an id acting (by virtue of files) 
+  as a communication between the different UP scripts.
+  All .cc, .h and templates files in the code tree are searched.
+Uses:    <typ>.def, <typ>.spat, <typ>.rmpat
+Creates: <typ>.raw, <typ>.found
+  -g use all .g files rather than the C++ files
+  -f use a file pattern to search files, not their contents
+  -c clear all defining information files for this script
+  -r clear only the general defining information in .def
+  -u clear all but the general defining information in .def
+  -d give some debug information (mostly not implemented)
+  -n run script only to get defining information, without executing
+
+The following UP scripts are available:
+    UPfind    [-f] [-g]      [-c] [-r] [-u] [-d] [-n] <typ>
+    UPlist    [-l]           [-c] [-r] [-u] [-d] [-n] <typ>         
+    UPlock                   [-c] [-r] [-u] [-d] [-n] <typ>
+    UPchange  [-t]           [-c] [-r] [-u] [-d] [-n] <typ>
+    UPmove    [-i] [-t]      [-c] [-r] [-u] [-d] [-n] <typ>
+    UPload                   [-c] [-r] [-u] [-d] [-n] <typ>
+    UPtmpl                   [-c] [-r] [-u] [-d] [-n] <typ>
+    UPdup     [-s]           [-c] [-r] [-u] [-d] [-n] <typ>
+    UPreident [-a] [-t] [-z] [-c] [-r] [-u] [-d] [-n] <typ>
+\end{verbatim}
+
+\noindent
+Providing only the information to run (and clear all information first):
+
+\begin{verbatim}
+UPfind -nc strcat
+Getting info...
+Make sure you have a proper mktree built before proceeding...
+Specify code tree root to be used [/nfs/aips++/weekly]: 
+Specify egrep expression(s) to find files
+Examples: /Measures/((MUString)|(MVAngle)|(MVTime)|(RotM)|Q|(Un))
+      or: [(][^(]*[*] *[)][ \t]*0
+Multi-line expressions will be ORed
+Find expression: [^a-zA-Z_0-9]cat[^a-zA-Z_0-9]
+Find expression: 
+Specify egrep pattern for files to be removed from raw list found.
+Example: [/]aipsview[/]
+tmplinst files will always be removed
+Remove glish files? (y|n) [y]: 
+Remove pattern: 
+\end{verbatim}
+
+\noindent
+Providing only the information to run (and clear general information first,
+and re-use other information):
+
+\begin{verbatim}
+UPfind -n -r strcat
+Getting info...
+Make sure you have a proper mktree built before proceeding...
+Specify code tree root to be used [/nfs/aips++/weekly]: 
+\end{verbatim}
+
+\noindent
+Providing only the information to run (and re-use all information):
+
+\begin{verbatim}
+UPfind -n strcat
+Getting info...
+\end{verbatim}
+
+\subsubsection*{Author}
+
+Original: 2000/09/20 by Wim Brouw, ATNF
 
 % ----------------------------------------------------------------------------
 
@@ -2445,14 +2609,14 @@ command, only available at the master site, and can only be run from there.
 \index{UPfind@\exe{UPfind}}
 \index{source files |see{\exe{UPfind}}}
 
-Find files containing patterns. File list to be used in action \exe{UP}
+Find files in system code tree. File list to be used in action \exe{UP}
 scripts.
 
 \subsubsection*{Synopsis}
 
 \begin{synopsis}
-   \code{\exe{UPfind} [\exe{-c}] [\exe{-r}] [\exe{-g}] [\exe{-f}]
-	 [\exe{-d}] [\exe{-n}] <type name>}
+   \code{\exe{UPfind} [\exe{-g}] [\exe{-f}]
+	 [\exe{-c}] [\exe{-r}] [\exe{-u}] [\exe{-d}] [\exe{-n}] <type>}
 \end{synopsis}
 
 \subsubsection*{Description}
@@ -2461,44 +2625,179 @@ The \exe{UPfind} script finds all files in the \aipspp\ code tree (normally
 in the {\em .\{h,cc\}} files, but see the {\em -g} flag) that contain the
 specified pattern. The files found will be stored in the \code{<type
 name>.raw} file. A filter is applied to leave files to be processed in the
-\code{<type name>.found} file.
+\code{<type>.found} file.
 
+\noindent
 The information supplied in answer to questions asked will be stored as well,
-for the use in subsequent scripts with the same \code{<type name>}.
+for the use in subsequent scripts with the same \code{<type>}.
 
 \subsubsection*{Options}
 
 \begin{description}
-\item[\code{\exe{-h}}]
-    Give some useage information
-\item[\code{\exe{-c}}]
-    Clear all information already given for \exe{<type name>}, and re-ask it.
-\item[\code{\exe{-r}}]
-    Clear and re-ask only the general definitions for \exe{<type name>}
 \item[\code{\exe{-g}}]
     Look for files in \file{.g} rather than \file{.h}, \file{.cc} and
     \file{templates} files.
 \item[\code{\exe{-f}}]
-    Generate the file list from a set of \exe{file} patterns, rather than a set of
-    \exe{egrep} patterns
-\item[\code{\exe{-d}}]
-    Debug mode
-\item[\code{\exe{-n}}]
-    Will only generate the specific data, without executing any code
-\item[\code{<type name>}]
-    An identification name for related \exe{UP} scripts.
+    Generate the file list from a set of \exe{file} patterns, rather than a
+    set of \exe{egrep} patterns. The \exe{file} patterns should be rooted at
+    \exe{AIPSROOT/code}. 
 \end{description}
 
 \subsubsection*{Examples}
 
 \begin{verbatim}
-   UPfind assert
+UPfind -h
+Usage:   UPfind [-f] [-g] [-c] [-r] [-u] [-d] [-n] <typ>
+  Get all files that contain data according to an egrep rule.
+  The found files can be used in other UP scripts like UPlist, 
+  UPchange etc. The <typ> is an id acting (by virtue of files) 
+  as a communication between the different UP scripts.
+  All .cc, .h and templates files in the code tree are searched.
+Uses:    <typ>.def, <typ>.spat, <typ>.rmpat
+Creates: <typ>.raw, <typ>.found
+  -g use all .g files rather than the C++ files
+  -f use a file pattern to search for files, not their contents
 \end{verbatim}
 
-will generate a file list, depending on questions asked (see full example in
-introduction), in \code{assert.found}.
+\noindent
+See the general introduction for an extensive example 
 
-\subsubsection*{See also}
+\subsubsection*{Author}
+
+Original: 2000/09/20 by Wim Brouw, ATNF
+
+% ----------------------------------------------------------------------------
+
+\newpage
+
+\subsection{\exe{UPlist}}
+\label{UPlist}
+\index{UPlist@\exe{UPlist}}
+\index{source files |see{\exe{UPlist}}}
+
+List the content of files found by the \exe{UPfind} command.
+
+\subsubsection*{Synopsis}
+
+\begin{synopsis}
+   \code{\exe{UPlist} [\exe{-l}]
+	 [\exe{-c}] [\exe{-r}] [\exe{-u}] [\exe{-d}] [\exe{-n}] <type>}
+\end{synopsis}
+
+\subsubsection*{Description}
+
+\noindent
+The \exe{UPlist} script lists all the files listed in the \exe{<typ>.found}
+file. Only those lines are listed that contains the selection pattern from
+the UPfind command. The list is given in \exe{<type>.list}. The command can
+be used to check the selection of files before actually changing or moving
+files, but is also valid in its own right.
+
+\subsubsection*{Options}
+
+\begin{description}
+\item[\code{\exe{-l}}]
+    Provide a line number in the file lists as well.
+\end{description}
+
+\subsubsection*{Examples}
+
+\begin{verbatim}
+UPlist -h
+Usage:   UPlist [-l] [-c] [-r] [-u] [-d] [-n] <typ>
+  List all lines that have been found using an egrep rule in
+  <typ>.spat. The files are given in <typ>.found.
+  In general the pattern and files are listed using UPfind.
+Uses:    <typ>.def, <typ>.spat, <typ>.found
+Creates: <typ>.list
+  -l will give the line numbers in the files
+\end{verbatim}
+
+\noindent
+Using the find information from the general introduction, we get:
+
+\begin{verbatim}
+UPlist
+Assuming <typ> as 'strcat'.
+Getting info...
+9 files found in strcat.found
+Starting list...
+47 lines in strcat.list
+
+cat strcat.list
+1000 ## ./atnf/apps/atcafiller/DOatcafiller.cc
+1001 ## ./bima/apps/bimafiller/bimafiller.cc
+1002 ## ./nrao/apps/gbtobsparser/GBTObsSymtab.h
+1003 ## ./aips/implement/Utilities/test/tString.cc
+1004 ## ./aips/implement/Utilities/String.cc
+1005 ## ./trial/implement/MeasurementSets/MSConcat.cc
+1006 ## ./trial/implement/MeasurementSets/MSFitsInput.cc
+1007 ## ./trial/implement/MeasurementSets/FitsIDItoMS.cc
+1008 ## ./trial/apps/aipsview/AvString.cc
+1000 ::   Vector<String> cat(nCat);
+1000 ::   cat(0)="FLAG_CMD";
+1000 ::   cat(1)="ORIGINAL"; 
+1000 ::   cat(2)="USER"; 
+1000 ::   msc_p->flagCategory().rwKeywordSet().define("CATEGORY",cat);
+1001 ::   Vector<String>  cat(nCat);
+\end{verbatim}
+\ldots
+
+\subsubsection*{Author}
+
+Original: 2000/09/20 by Wim Brouw, ATNF
+
+% ----------------------------------------------------------------------------
+
+\newpage
+
+\subsection{\exe{UPlock}}
+\label{UPlock}
+\index{UPlock@\exe{UPlock}}
+\index{source files |see{\exe{UPlock}}}
+
+Check and report if files as listed in the given file list (probably created
+by \code{UPfind}) are locked.
+
+\subsubsection*{Synopsis}
+
+\begin{synopsis}
+   \code{\exe{UPlock} 
+	 [\exe{-c}] [\exe{-r}] [\exe{-u}] [\exe{-d}] [\exe{-n}] <type>}
+\end{synopsis}
+
+\subsubsection*{Description}
+
+\noindent
+The \exe{UPlock} script lists all the files listed in the \exe{<typ>.found}
+file that are locked in the \aipspp\ master tree.
+The command can be used to check the status of files before actually changing
+or moving files, but is also valid in its own right.
+
+\subsubsection*{Options}
+
+\subsubsection*{Examples}
+
+\begin{verbatim}
+UPlock -h
+Usage:   UPlock [-c] [-r] [-u] [-d] [-n] <typ>
+  Test for each locked file if it is in the list of files
+  <typ>.found (as created with UPfind), and output the 
+  result in the file <typ>.locked. Script must run at aoc
+Uses:    <typ>.def, <typ>.found
+Creates: <typ>.locked
+\end{verbatim}
+
+\noindent
+Using the find information from the general introduction, we get:
+
+\begin{verbatim}
+UPlock
+Assuming <typ> as 'strcat'.
+Getting info...
+Locked files can only be found while running at the aoc master site
+\end{verbatim}
+\ldots
 
 \subsubsection*{Author}
 
@@ -2516,6 +2815,54 @@ Original: 2000/09/20 by Wim Brouw, ATNF
 Change source files in \aipspp\ master, using a list of files, probably
 created by \code{UPfind}.
 
+\subsubsection*{Synopsis}
+
+\begin{synopsis}
+   \code{\exe{UPchange} [\exe{-t}]
+	 [\exe{-c}] [\exe{-r}] [\exe{-u}] [\exe{-d}] [\exe{-n}] <type>}
+\end{synopsis}
+
+\subsubsection*{Description}
+
+\noindent
+The \exe{UPchange} script changes all the files given in \exe{<type>.found},
+using the editor pattern provided. Successful changes are recorded in
+\exe{<type>.done}, unsuccesful ones in \exe{<type>.error}. If the \exe{-t}
+test switch is given, no real changes are made, but the differences are
+recorded in \exe{<type>.diff}.
+
+\subsubsection*{Options}
+
+\begin{description}
+\item[\code{\exe{-t}}]
+    Do only a test run. Files are checked out and changed, but rather than
+    checking the changed files in again, the differences created are recorded.
+\end{description}
+
+\subsubsection*{Examples}
+
+\begin{verbatim}
+UPchange -h
+Usage:   UPchange [-t] [-c] [-r] [-u] [-d] [-n] <typ>
+  Update all files given in the <typ>.found list (which is
+  normally created by UPfind). Updating means that files
+  will be checked out, changed and checked in again.
+  <typ>.done and <typ>.error will contain the files successfully
+  done or not.
+Uses:    <typ>.def, <typ>.found, <typ>.sed, <typ>.rcs
+Creates: <typ>.done, <typ>.error, <typ>.diff
+  -t will run a test mode, where files are checked out,
+     changed, but not checked in again. A file <type>.diff will
+     be created showing what would have been changed.
+\end{verbatim}
+
+\noindent
+See the general introduction for an extensive example 
+
+\subsubsection*{Author}
+
+Original: 2000/09/20 by Wim Brouw, ATNF
+
 % ----------------------------------------------------------------------------
 
 \newpage
@@ -2529,29 +2876,241 @@ Move source files in \aipspp\ master, using a list of files, probably
 created by \code{UPfind}. The files will be moved from one path to another,
 updating all files referencing these files as well.
 
+\subsubsection*{Synopsis}
+
+\begin{synopsis}
+   \code{\exe{UPmove} [\exe{-i}] [\exe{-t}]
+	 [\exe{-c}] [\exe{-r}] [\exe{-u}] [\exe{-d}] [\exe{-n}] <type>}
+\end{synopsis}
+
+\subsubsection*{Description}
+
+\noindent
+The \exe{UPmove} moves files in the \aipspp\ code tree from one place (and/or 
+name) to another. At the same time it will change all references to that file
+in the system as well. The output of the script is a list of files that were
+successfully changed in \exe{<type>.done}, and in \exe{<type>.error} for
+unsuccessful ones. If the \exe{-t} test switch is given, the
+\exe{<type>.diff} will give differences that would have been made when the
+file is run for real.\\
+If files are actually moved, the script must be run from the aoc master,
+since \code{amv} is involved (see \exeref{UPload} for an easy way).
+
+\subsubsection*{Options}
+
+\begin{description}
+\item[\code{\exe{-t}}]
+    Do only a test run. Files are checked out and changed, but rather than
+    checking the changed files in again, the differences created are recorded.
+\end{description}
+
+\subsubsection*{Examples}
+
+\begin{verbatim}
+UPmove -h
+Usage:   UPmove [-t] [-c] [-r] [-u] [-d] [-n] <typ>
+  Move files, and change references to them in all aips++
+  code files. The script uses the UPfind and UPchange 
+  scripts (see there for details).
+  <typ>.done and <typ>.error will contain the files successfully
+  done or not.
+Uses:    <typ>.def, <typ>.sel <typ>.cfnm, <typ>.todo
+         <typ>_MVF.found, <typ>_MVF.spat, <typ>_MVF.rmpat
+         <typ>_MV.sed, <typ>_MV.rcs, <typ>_MV.found
+Creates: <typ>.done, <typ>.error, <typ>.diff
+  -t will run a test mode
+\end{verbatim}
+
+\noindent
+The next example is the start of a move of some files. The script is first
+run to get the information (and be able to edit it if necessary).
+
+\begin{verbatim}
+UPmove -nc spec
+Getting info...
+Make sure you have a proper mktree built before proceeding...
+Specify code tree root to be used [/nfs/aips++/weekly]: /nfs/aips++/daily
+Getting info...
+Specify file pattern(s) rooted in AIPSROOT/code to find files
+Example: trial/implement/Measures/M*.h
+File pattern: trial/implement/Wnbt/Spectral*
+File pattern: trial/implement/Wnbt/test/tSpec*
+File pattern: 
+Specify egrep pattern for files to be removed from raw list found.
+Example: [/]aipsview[/]
+tmplinst files will always be removed
+Remove glish files? (y|n) [y]: 
+Remove pattern: 
+Starting find...
+16 files found in spec_MVF.raw
+Starting selected removal...
+16 files left in spec_MVF.found
+16 files in spec.sel to be moved
+Specify the sed patterns used to change the name of the moved files
+Example: s#trial/#aips/#
+Change pattern: s#/Wnbt#/SpectralComponents#
+Change pattern: 
+Getting info...
+Getting info...
+Specify the message lines for the RCS log
+Example: Moved includes from Quanta to Measures
+Text line: Moved the Spectral fitting files from Wnbt to SpectralComponents
+Text line: 
+Starting find...
+16 files found in spec_MV.raw
+Starting selected removal...
+16 files left in spec_MV.found
+Getting info...
+\end{verbatim}
+
+\noindent
+The \exe{UPlist} program can be used to check the files that will be changed
+(note that you can give the base type name, but that manually editing has to
+be done on the \code{spec\_MV.found}):
+
+\begin{verbatim}
+UPlist spec
+Getting info...
+16 files found in spec.found
+Starting list...
+45 lines in spec.list
+\end{verbatim}
+
+\noindent
+We now have a dry run with the \exe{-t} test option:
+
+\begin{verbatim}
+UPmove -t spec
+Getting info...
+Need to move files first to new directory (y|n) [n]? y
+16 files in spec.sel to be moved
+16 files in spec.todo to be changed
+amv -src ./trial/implement/Wnbt/Spectral2Element.cc
+		./trial/implement/SpectralComponents/Spectral2Element.cc
+amv -src ./trial/implement/Wnbt/Spectral2Estimate.cc
+		./trial/implement/SpectralComponents/Spectral2Estimate.cc
+...
+Getting info...
+16 files will be changed and checked in/out
+Note: in test mode -- no actual file check in after change
+./trial/implement/Images/DOimage2.cc started
+/aips++/weekly/master/trial/implement/Images/DOimage2.cc,v  -->  DOimage2.cc
+revision 15.18
+done
+...
+16 files in spec_MV.done
+0 files in spec_MV.error
+\end{verbatim}
+
+Checking everything looks ok. We can now transfer all the files to aoc:
+
+\begin{verbatim}
+UPload spec
+\end{verbatim}
+
+\noindent
+and do the actual move (while logged in to \aipspp\ master):
+
+\begin{verbatim}
+UPmove spec
+Getting info...
+Make sure you have a proper mktree built before proceeding...
+Specify code tree root to be used [/aips++/weekly]: /aips++/daily
+Need to move files first to new directory (y|n) [n]? y
+16 files in spec.sel to be moved
+16 files in spec.todo to be changed
+
+The rename command for ax_master is as follows:
+
+15 304 src mv ./trial/implement/Wnbt/Spectral2Element.cc
+	./trial/implement/SpectralComponents/Spectral2Element.cc
+
+Continue (y/n) [n]:
+ /aips++/weekly/master/install/codemgmt/ax_master,v  --> ax_master 
+revision 15.525 (locked)
+done
+/aips++/weekly/master/install/codemgmt/ax_master,v  <--  ax_master
+new revision: 15.526; previous revision: 15.525
+done
+Renamed master RCS version file
+   from /aips++/weekly/master/./trial/implement/Wnbt/Spectral2Element.cc,v
+     to
+/aips++/weekly/master/./trial/implement/SpectralComponents/Spectral2Element.cc,v
+...
+./trial/implement/SpectralComponents/SpectralList2.cc started
+/aips++/weekly/master/trial/implement/SpectralComponents/SpectralList2.cc,v
+ 	--> SpectralList2.cc
+revision 15.1 (locked)
+done
+/aips++/weekly/master/trial/implement/SpectralComponents/SpectralList2.cc,v
+	 <-- SpectralList2.cc
+new revision: 15.2; previous revision: 15.1
+done
+16 files in spec_MV.done
+0 files in spec_MV.error
+\end{verbatim}
+
+\subsubsection*{Author}
+
+Original: 2000/09/20 by Wim Brouw, ATNF
+
 % ----------------------------------------------------------------------------
 
 \newpage
 
-\subsection{\exe{UPlist}}
-\label{UPlist}
-\index{UPlist@\exe{UPlist}}
-\index{source files |see{\exe{UPlist}}}
+\subsection{\exe{UPload}}
+\label{UPload}
+\index{UPload@\exe{UPload}}
+\index{source files |see{\exe{UPload}}}
 
-List the lines containing the find pattern in the files in the file list
-produced by \code{UPfind}.
+Upload the data for the specified type name to the \aipspp\ master computer.
 
-% ----------------------------------------------------------------------------
+\subsubsection*{Synopsis}
 
-\newpage
+\begin{synopsis}
+   \code{\exe{UPload} 
+	 [\exe{-c}] [\exe{-r}] [\exe{-u}] [\exe{-d}] [\exe{-n}] <type>}
+\end{synopsis}
 
-\subsection{\exe{UPlock}}
-\label{UPlock}
-\index{UPlock@\exe{UPlock}}
-\index{source files |see{\exe{UPlock}}}
+\subsubsection*{Description}
 
-Check and report if files as listed in the given file list (probably created
-by \code{UPfind}) are locked.
+\noindent
+The \exe{UPload} script uploads all relevant information from the given type
+name identifier to the aoc \aipspp\ master (or another machine that can
+access the master tree with \code{amv}).\\
+After transferring the information, login to the master, and run the relevant
+script(s) (like \exe{UPlock}, \exe{UPmove}).
+
+\subsubsection*{Options}
+
+\subsubsection*{Examples}
+
+\begin{verbatim}
+UPload -h
+Usage:   UPload [-c] [-r] [-u] [-d] [-n] <typ>
+  Upload the information specified by <typ> to the aips++ 
+  master site. This enables to run relevant scripts that
+  were tested locally there.
+Uses:    <typ>.*
+Creates: <typ>.scp
+\end{verbatim}
+
+\noindent
+Using the information from the \exe{UPmove} example, we get:
+
+\begin{verbatim}
+UPload spec
+Getting info...
+Remote directory [wbrouw@aips2.nrao.edu:aips++/test/found]: 
+19 files in spec.scp
+Uploading 19 files ....
+spec.cfnm                 |          0 KB |   0.0 kB/s | ETA: 00:00:00 | 100%
+\end{verbatim}
+\ldots
+
+\subsubsection*{Author}
+
+Original: 2000/09/20 by Wim Brouw, ATNF
 
 % ----------------------------------------------------------------------------
 
@@ -2564,6 +3123,188 @@ by \code{UPfind}) are locked.
 
 Get a list of all files in all \exe{tmplinst} directories.
 
+\subsubsection*{Synopsis}
+
+\begin{synopsis}
+   \code{\exe{UPtmpl} 
+	 [\exe{-c}] [\exe{-r}] [\exe{-u}] [\exe{-d}] [\exe{-n}] <type>}
+\end{synopsis}
+
+\subsubsection*{Description}
+
+\noindent
+The \exe{UPtmpl} script lists all the files in all the \code{tmplst}
+directories in the \aipspp\ code tree. The result is available in the
+\exe{<type>.tmpinst} file.
+
+\subsubsection*{Options}
+
+\subsubsection*{Examples}
+
+\begin{verbatim}
+UPtmpl -h
+Usage:   UPtmpl [-c] [-r] [-u] [-d] [-n] <typ>
+  Get all files in all the tmplinst directories.
+  The file list will be in <typ>.tmpinst
+Uses:    <typ>.def
+Creates: <typ>.tmpinst
+\end{verbatim}
+
+\noindent
+A real run gives:
+
+\begin{verbatim}
+UPtmpl xc
+Getting info...
+Make sure you have a proper mktree built before proceeding...
+Specify code tree root to be used [/nfs/aips++/weekly]: 
+Getting templated file list...
+1729 files found in xc.tmpinst
+\end{verbatim}
+
+\subsubsection*{Author}
+
+Original: 2000/09/20 by Wim Brouw, ATNF
+
+% ----------------------------------------------------------------------------
+
+\newpage
+
+\subsection{\exe{UPdup}}
+\label{UPdup}
+\index{UPdup@\exe{UPdup}}
+\index{source files |see{\exe{UPdup}}}
+
+Do a duplicates template test on templates files in the \aipspp\ code tree.
+
+\subsubsection*{Synopsis}
+
+\begin{synopsis}
+   \code{\exe{UPdup} [\exe{-s}]
+	 [\exe{-c}] [\exe{-r}] [\exe{-u}] [\exe{-d}] [\exe{-n}] <type>}
+\end{synopsis}
+
+\subsubsection*{Description}
+
+\noindent
+The \exe{UPdup} script executes the \exe{duplicates} program on templates
+files in the \aipspp\ system. It checks each package against the standard
+\exe{trial} and \exe{aips} packages, creating a list with duplicates in the
+\exe{<type>.dup} file. This output can be used to check if templates can
+e.g. be safely be moved from some local test or application templates file to
+one of the standard \exe{aips} or \exe{trial} packages. An \exe{-s} switch is
+available to run in {\em system} mode, which will only indicate duplicates
+that are a problem as it is. 
+
+\subsubsection*{Options}
+
+\begin{description}
+\item[\code{\exe{-s}}]
+    Execute in {\em system} mode. I.e. only show duplicates that are a
+    problem.
+\end{description}
+
+\subsubsection*{Examples}
+
+\begin{verbatim}
+UPdup -h
+Usage:   UPdup [-s] [-c] [-r] [-u] [-d] [-n] <typ>
+  Determine the template duplicates between the package and
+  application/test programs. The result will be in <typ>.dup.
+Uses:    <typ>.def
+Creates: <typ>.dup
+  -s show only the system template files that can cause
+     problems in the aips++ system
+
+  UPdup -s -u
+  Assuming <typ> as 'xc'.
+  Getting info...
+  Starting package aips...
+  Starting package trial...
+\end{verbatim}
+\ldots
+
+\subsubsection*{Author}
+
+Original: 2000/09/20 by Wim Brouw, ATNF
+
+% ----------------------------------------------------------------------------
+
+\newpage
+
+\subsection{\exe{UPreident}}
+\label{UPreident}
+\index{UPreident@\exe{UPreident}}
+\index{source files |see{\exe{UPreident}}}
+
+Do a reident on templates files in the \aipspp\ code tree.
+
+\subsubsection*{Synopsis}
+
+\begin{synopsis}
+   \code{\exe{UPreident} [\exe{-a}] [\exe{-z}] [\exe{-t}]
+	 [\exe{-c}] [\exe{-r}] [\exe{-u}] [\exe{-d}] [\exe{-n}] <type>}
+\end{synopsis}
+
+\subsubsection*{Description}
+
+\noindent
+The \exe{UPreident} script executes the \exe{reident} program on templates
+files in the \aipspp\ system. By default it runs on the \code{aips} and
+\code{trial} packages. Switches are available to execute it for all packages,
+and also to re-initialize the numbering. A list of succesful and unsuccessful
+files handled will be available in \exe{<type>.done} and \exe{<type>.error}.
+
+\subsubsection*{Options}
+
+\begin{description}
+\item[\code{\exe{-a}}]
+    Execute for all packages, rather than only for the \code{aips} and
+    \code{trial} ones.
+\item[\code{\exe{-z}}]
+    Apply the \code{-z} switch, i.e. renumber all templates
+\item[\code{\exe{-t}}]
+    Do only a test run. Files are checked out and changed, but rather than
+    checking the changed files in again, the differences created are recorded
+    in \exe{<type>.diff}.
+\end{description}
+
+\subsubsection*{Examples}
+
+\begin{verbatim}
+UPreident -h
+Usage:   UPreident [-a] [-t] [-z] [-c] [-r] [-u] [-d] [-n] <typ>
+  Do a reident for all the templates files in the aips
+  and trial packages (unless -a switch).
+  <typ>.done and <typ>.error will give the templates files
+  done and not done.
+Uses:    <typ>.def, <typ>.tsel
+Creates: <typ>.done, <typ>.error, <typ>/log, <typ>.diff
+  -a do all templates files in all packages
+  -z use the -z switch on the reident program to renumber 
+     all the templates files.
+  -t do a dry run, giving the differences in <type>.diff
+
+  UPreident -tu
+  Specify type [xc]: 
+  Getting info...
+  44 templates files found in xc.tsel
+  44 files will be changed and checked in/out
+  Note: in test mode -- no actual file check in after change
+  ./aips/implement/Functionals/test/templates started
+  /aips++/weekly/master/aips/implement/Functionals/test/templates,v  
+		-->  templates
+  revision 15.1
+  done
+  tar: blocksize = 16
+  ./aips/implement/Measures/test/templates started
+\end{verbatim}
+\ldots
+
+\subsubsection*{Author}
+
+Original: 2000/09/20 by Wim Brouw, ATNF
+
 % ----------------------------------------------------------------------------
 
 \newpage
@@ -2574,7 +3315,70 @@ Get a list of all files in all \exe{tmplinst} directories.
 \index{source files |see{\exe{UPsed}}}
 
 Apply a \exe{sed} pattern to a file. This script is used  by the other, main,
-\exe{UP} scripts.
+\exe{UP} scripts. It may be used stand-alone however.
+
+\subsubsection*{Synopsis}
+
+\begin{synopsis}
+   \code{\exe{UPsed} [\exe{-t <log>}]
+	  \exe{sed} \exe{<filename in>} [\exe{<filename out>}]}
+\end{synopsis}
+
+\subsubsection*{Description}
+
+\noindent
+The \exe{UPsed} script applies a number of sed patterns given in the
+\exe{sed} file to an input file, and returns the changed input in the output
+file. The output file may be the same as the input file (if no output file
+given, the output file is assumed to be the same as the input file).\\
+If a \exe{log} file name is given as the first argument (preceded by a
+\exe{-t} switch), the differences between the input and output file are added
+to the \exe{log} file.
+
+\subsubsection*{Options}
+
+\begin{description}
+\item[\code{\exe{-t <log file>}}]
+    Add the differences between input and output file to an existing log file
+\end{description}
+
+\subsubsection*{Examples}
+
+\begin{verbatim}
+UPsed
+Usage: UPsed [-t <log>] <sed> <filename in> [<filename out>]
+\end{verbatim}
+
+\noindent
+Change a cat into a dog:
+
+\begin{verbatim}
+  cat - > ! c.tmp
+  I am a cat today
+  cat - >! c.sed
+  s#cat#dog#
+  UPsed c.sed c.tmp
+  cat c.tmp
+  I am a dog today
+  \end{verbatim}
+
+\begin{verbatim}
+  cat - > ! c.tmp
+  I am a cat today
+  cat - >! c.sed
+  s#cat#dog#
+  touch c.log
+  UPsed -t c.log c.sed c.tmp
+  cat c.log
+  1c1
+  < I am a cat today
+  ---
+  > I am a dog today
+\end{verbatim}
+
+\subsubsection*{Author}
+
+Original: 2000/09/20 by Wim Brouw, ATNF
 
 % ----------------------------------------------------------------------------
 
@@ -2587,3 +3391,35 @@ Apply a \exe{sed} pattern to a file. This script is used  by the other, main,
 
 Obtain general information for the \exe{UP} scripts. This script is a support
 script for the other \exe{UP} scripts.
+
+
+\subsubsection*{Synopsis}
+
+\begin{synopsis}
+   \code{\exe{source UPinfo}}
+\end{synopsis}
+
+\subsubsection*{Description}
+
+\noindent
+The \exe{UPinfo} {\em source} script is a general aid script for the other,
+executable \exe{UP} scripts. It analyses the switches given on the script
+command lines (and translates them into switches), and makes sure that the
+general information necessary to run the other scripts is available.
+
+\subsubsection*{Options}
+
+\subsubsection*{Examples}
+
+\begin{verbatim}
+  UPinfo
+  Usage:source UPinfo
+  source UPinfo
+  script: Undefined variable.
+\end{verbatim}
+
+\subsubsection*{Author}
+
+Original: 2000/09/20 by Wim Brouw, ATNF
+
+% ----------------------------------------------------------------------------
