@@ -30,7 +30,6 @@
 
 #include <trial/Images/ImageFITSConverter.h>
 #include <trial/Images/PagedImage.h>
-#include <trial/Images/ImageStatistics.h>
 #include <trial/Lattices/LatticeIterator.h>
 #include <trial/Lattices/LatticeStepper.h>
 #include <aips/FITS/fitsio.h>
@@ -282,6 +281,7 @@ Bool ImageFITSConverter::ImageToFITS(String &error,
     Double bscale, bzero;
     const Short maxshort = 32767;
     const Short minshort = -32768;
+    Bool hasBlanks = True;
     if (BITPIX == -32) {
         bscale = 1.0;
         bzero = 0.0;
@@ -294,20 +294,52 @@ Bool ImageFITSConverter::ImageToFITS(String &error,
 	    // Find the min and max of the image
 	    LogIO os;
 	    os << LogOrigin("ImageFitsConverter", "ImageToFITS", WHERE);
-	    os << LogIO::NORMAL << "Finding scaling factors for BITPIX=16" <<
+	    os << LogIO::NORMAL << 
+	      "Finding scaling factors for BITPIX=16 and look for blanks" <<
 		LogIO::POST;
-	    ImageStatistics<Float> stats(image, os);
-	    Array<Float> minarr(IPosition(1,1)), maxarr(IPosition(1,1));
-	    if (!stats.getMin(minarr) || !  stats.getMax(maxarr)) {
-		error = "Error determining scaling factors (min/max) for "
-		    "BITPIX=16";
-		return False;
+	    hasBlanks = False;
+
+	    IPosition cursorShape(image.niceCursorShape(image.maxPixels()));
+	    IPosition shape = image.shape();
+	    RO_LatticeIterator<Float> iter(image, 
+		   LatticeStepper(shape, cursorShape, LatticeStepper::RESIZE));
+	    ProgressMeter meter(0.0, 1.0*shape.product(), "Searching pixels", ""
+				"", True, 
+				shape.product()/cursorShape.product()/50);
+	    uInt count = 0;
+	    for (iter.reset(); !iter.atEnd(); iter++) {
+		const Array<Float> &cur = iter.cursor();
+		Bool del;
+		const Float *cptr = cur.getStorage(del);
+		const uInt n = cur.nelements();
+		for (uInt i=0; i<n; i++) {
+		    if (cptr[i] != cptr[i]) {  // For a Nan, x != x
+			hasBlanks = True;
+		    } else {
+			// Not a NaN
+			if (minPix > maxPix) {
+			    // First non-Nan we have run into. Init.
+			    minPix = maxPix = cptr[i];
+			} else {
+			    if (cptr[i] < minPix) minPix = cptr[i];
+			    if (cptr[i] > maxPix) maxPix = cptr[i];
+			}
+		    }
+		}
+		count += n;
+		meter.update(count*1.0);
+		cur.freeStorage(cptr, del);
 	    }
-	    minPix = minarr(IPosition(1,0));	    
-	    maxPix = maxarr(IPosition(1,0));	    
         }
-        bscale = Double(maxPix - minPix)/Double(Int(maxshort) - Int(minshort));
-        bzero  = Double(minPix) + bscale * (-Double(minshort));
+	if (hasBlanks) {
+	    bscale = Double(maxPix - minPix)/Double(Int(maxshort) - 
+						    Int(minshort+1));
+	    bzero  = Double(minPix) + bscale * (-Double(minshort+1));
+	} else {
+	    bscale = Double(maxPix - minPix)/Double(Int(maxshort) - 
+						    Int(minshort));
+	    bzero  = Double(minPix) + bscale * (-Double(minshort));
+	}
     } else {
 	error = 
             "BITPIX must be -32 (floating point) or 16 (short integer)";
@@ -327,6 +359,10 @@ Bool ImageFITSConverter::ImageToFITS(String &error,
     header.define("bscale", bscale);
     header.setComment("bscale", "PHYSICAL = PIXEL*BSCALE + BZERO");
     header.define("bzero", bzero);
+    if (BITPIX > 0 && hasBlanks) {
+	header.define("blank", minshort);
+	header.setComment("blank", "Pixels with this value are blank");
+    }
 
     header.define("COMMENT1", ""); // inserts spaces
 
@@ -599,13 +635,20 @@ Bool ImageFITSConverter::ImageToFITS(String &error,
 		    return False;
 		}
 	    } else if (fits16) {
+		short blankOffset = hasBlanks ? 1 : 0;
 		for (Int i=0; i<bufferSize; i++) {
-		    if (ptr[i] > maxPix) {
-			buffer16[i] = maxshort;
-		    } else if (ptr[i] < minPix) {
+		    if (ptr[i] != ptr[i]) {
+			// NaN
 			buffer16[i] = minshort;
 		    } else {
-			buffer16[i] = Short((ptr[i] - bzero)/bscale);
+			// Not a NaN
+			if (ptr[i] > maxPix) {
+			    buffer16[i] = maxshort;
+			} else if (ptr[i] < minPix) {
+			    buffer16[i] = minshort + blankOffset;
+			} else {
+			    buffer16[i] = Short((ptr[i] - bzero)/bscale);
+			}
 		    }
 		}
 		fits16->store(buffer16, bufferSize);
