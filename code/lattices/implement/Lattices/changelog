@@ -4,7 +4,7 @@
  <date> 2003/12/24 </date>
  <avers> 1.9 </avers>
  <area> Library </area>
- <package> aips </package>
+ <package> lattices </package>
  <module> Lattices </module>
  <type> Code </type>
  <category> New </category>
@@ -30,7 +30,7 @@ Of course, otherlattice can be any lattice type (thus ranging from an ArrayLatti
  <date> 2001/02/14 </date>
  <avers> 1.5 </avers>
  <area> Library </area>
- <package> trial </package>
+ <package> lattices </package>
  <module> Lattices </module>
  <type> Code </type>
  <category> New </category>
@@ -54,7 +54,7 @@ fractilerange (see the description in note 223).
  <date> 2001/05/28 </date>
  <avers> 1.6 </avers>
  <area> Library </area>
- <package> trial </package>
+ <package> lattices </package>
  <module> Lattices </module>
  <type> Code </type>
  <category> New </category>
@@ -79,7 +79,7 @@ LEL has been improved in 2 ways:
  <date> 2003/11/10 </date>
  <avers> 1.9 </avers>
  <area> Library </area>
- <package> trial </package>
+ <package> lattices </package>
  <module> Lattices </module>
  <type> Code </type>
  <category> New </category>
