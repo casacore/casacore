@@ -427,11 +427,9 @@ template<class T> void Array<T>::unique()
     DebugAssert(ok(), ArrayError);
 
     // short circuit when we are unique and flat
-    Bool flat = contiguousStorage();
-    if (flat  &&  nrefs() == 1) {
+    if (contiguousStorage()  &&  nrefs() == 1) {
 	return;
     }
-
     // OK, we know we are going to need to copy.
     Array<T> tmp (copy());
     reference (tmp);
@@ -443,49 +441,104 @@ template<class T> void Array<T>::unique()
 template<class T> Array<T> Array<T>::reform(const IPosition &len) const
 {
     DebugAssert(ok(), ArrayError);
-
-    uInt total = len.product();
-
-    if (total != nelements()) {
+    if (len.product() != nelements()) {
 	throw(ArrayConformanceError("Array<T>::reform() - "
 				    "total elements differ"));
     }
-    for (uInt i = 0; i < ndim(); i++) {
-	if (inc_p(i) != 1) {
-	    throw(ArrayConformanceError("Array<T>::reform() - "
-					"increment not unity"));
-	    break;
+    // When the new shape equals the current one, simply return a copy.
+    if (len.isEqual (length_p)) {
+	return *this;
+    }
+    uInt newNdim = len.nelements();
+    // When the data is contiguous, a reform can simply be done
+    // by making a copy of the array and inserting the new shape.
+    if (contiguousStorage()) {
+	Array<T> tmp(*this);
+	tmp.ndimen_p = newNdim;
+	tmp.length_p.resize (newNdim);
+	tmp.length_p = len;
+	tmp.inc_p.resize (newNdim);
+	tmp.inc_p = 1;
+	tmp.originalLength_p.resize (newNdim);
+	tmp.originalLength_p = tmp.length_p;
+	return tmp;
+    }
+    // A reform of a non-contiguous array has to be done.
+    // This is only possible if axes with length 1 are left out and/or added.
+    Bool valid = True;
+    uInt oldPos=0;
+    uInt newPos=0;
+    Int oldLen = length_p(0);
+    Int newLen = len(0);
+    // Find the axes corresponding to the old shape.
+    // copyAxes(i)<0 indicates that an axis with length 1 has been added.
+    // When a shape array array is exhausted, its length variable is set
+    // to 0. In that way trailing dimensions are handled without problem.
+    IPosition copyAxes(newNdim, -1);
+    while (valid  &&  (oldLen>0  ||  newLen>0)) {
+	if (oldLen == newLen) {
+	    copyAxes(newPos) = oldPos;
+	    oldPos++;
+	    newPos++;
+	} else if (oldLen == 1) {
+	    oldPos++;
+	} else if (newLen == 1) {
+	    newPos++;
+	} else {
+	    // A new axis with length>1 has no corresponding original axis.
+	    valid = False;
+	}
+	oldLen = (oldPos >= length_p.nelements()  ?  0 : length_p(oldPos));
+	newLen = (newPos >= len.nelements()  ?  0 : len(newPos));
+    }
+    if (!valid) {
+	throw(ArrayConformanceError("Array<T>::reform() - "
+				 "data not contiguous nor similarly shaped"));
+    }
+    // Great, the shapes match. Create a copy and adjust the IPositions.
+    // Set inc and originalLength initially to 1 (caters for added axes).
+    Array<T> tmp(*this);
+    tmp.ndimen_p = newNdim;
+    tmp.length_p.resize (newNdim);
+    tmp.length_p = len;
+    tmp.inc_p.resize (newNdim);
+    tmp.inc_p = 1;
+    tmp.originalLength_p.resize (newNdim);
+    tmp.originalLength_p = 1;
+    // When an axis has been removed Inc and originalLength have to be adjusted
+    // by multiplying them with the originalLength of the removed axes.
+    uInt startAxis = 0;
+    for (uInt i=0; i<newNdim; i++) {
+	if (copyAxes(i) >= 0) {
+	    tmp.inc_p(i) = inc_p(copyAxes(i));
+	    tmp.originalLength_p(i) = originalLength_p(copyAxes(i));
+	    for (uInt j=startAxis; j<copyAxes(i); j++) {
+		tmp.inc_p(i) *= originalLength_p(j);
+		tmp.originalLength_p(i) *= originalLength_p(j);
+	    }
+	    startAxis = copyAxes(i) + 1;
 	}
     }
-
-    Array<T> tmp(*this);
-    tmp.ndimen_p = len.nelements();
-    tmp.length_p.resize(tmp.ndim());
-    tmp.length_p = len;
-    tmp.inc_p.resize(tmp.ndim());
-    tmp.inc_p = 1;
-    tmp.originalLength_p.resize (tmp.ndim());
-    tmp.originalLength_p = tmp.length_p; // ok since the lengths are one
     return tmp;
 }
 
-template<class T> const Array<T> Array<T>::
-nonDegenerate(uInt startingAxis) const
+template<class T>
+const Array<T> Array<T>::nonDegenerate (uInt startingAxis) const
 {
-    return ((Array<T>*) this)->nonDegenerate(startingAxis);
+    return ((Array<T>*) this)->nonDegenerate (startingAxis);
 }
 
-template<class T> Array<T> Array<T>::
-nonDegenerate(uInt startingAxis)
+template<class T>
+Array<T> Array<T>::nonDegenerate (uInt startingAxis)
 {
     Array<T> tmp;
     DebugAssert(ok(), ArrayError);
-    tmp.nonDegenerate(*this, startingAxis);
+    tmp.nonDegenerate (*this, startingAxis);
     return tmp;
 }
 
-template<class T> void Array<T>::
-nonDegenerate(Array<T> & other, uInt startingAxis)
+template<class T>
+void Array<T>::nonDegenerate (Array<T> &other, uInt startingAxis)
 {
     AlwaysAssert(startingAxis < other.ndim(), ArrayError);
     IPosition ignoreAxes(startingAxis);
@@ -495,14 +548,14 @@ nonDegenerate(Array<T> & other, uInt startingAxis)
     nonDegenerate (other, ignoreAxes);
 }
 
-template<class T> const Array<T> Array<T>::
-nonDegenerate(const IPosition& ignoreAxes) const
+template<class T>
+const Array<T> Array<T>::nonDegenerate (const IPosition &ignoreAxes) const
 {
-    return ((Array<T>*) this)->nonDegenerate(ignoreAxes);
+    return ((Array<T>*)this)->nonDegenerate(ignoreAxes);
 }
 
-template<class T> Array<T> Array<T>::
-nonDegenerate(const IPosition& ignoreAxes)
+template<class T>
+Array<T> Array<T>::nonDegenerate (const IPosition &ignoreAxes)
 {
     Array<T> tmp;
     DebugAssert(ok(), ArrayError);
@@ -510,8 +563,8 @@ nonDegenerate(const IPosition& ignoreAxes)
     return tmp;
 }
 
-template<class T> void Array<T>::
-nonDegenerate(Array<T> & other, const IPosition& ignoreAxes)
+template<class T>
+void Array<T>::nonDegenerate (Array<T> &other, const IPosition &ignoreAxes)
 {
     DebugAssert(ok(), ArrayError);
     AlwaysAssert(other.ndim() > 0, AipsError);
@@ -520,6 +573,7 @@ nonDegenerate(Array<T> & other, const IPosition& ignoreAxes)
     nels_p  = other.nels_p;
     begin_p = other.begin_p;
     data_p  = other.data_p;
+    contiguous_p = other.contiguous_p;
   
     // To remove degenerate axes use two passes - first find out how many axes
     // have to be kept.
@@ -808,7 +862,7 @@ template<class T> void Array<T>::validateIndex(const IPosition &i) const
 
 template<class T> Bool Array<T>::isStorageContiguous() const
 {
-    const Int nd = ndim();
+    Int nd = ndim();
     if (nd == 0) {
 	return True;
     }
@@ -836,13 +890,16 @@ template<class T> Bool Array<T>::isStorageContiguous() const
     // Here, even though the increment is one, we need to make a copy since
     // all the elements in the sub-region aren't contiguous. Note, though, that
     // the lengths don't need to be identical in the last axis.
+    // Trailing lengths equal to 1 can be skipped.
 
+    while (nd > 1  &&  length_p(nd-1) == 1) {
+	nd--;
+    }
     for (i=0; i < nd - 1; i++) {
 	if (length_p(i) != originalLength_p(i)) {
 	    return False;
 	}
     }
-
     // If we've made it here, we are contiguous!
     return True;
 }
