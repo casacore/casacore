@@ -2124,3 +2124,4 @@
 08 374 src rm install/makefile.boot
 08 374 src rm install/PWD.c
 08 374 sys rm bin/PWD
+08 374 sys rm bindbg/PWD
