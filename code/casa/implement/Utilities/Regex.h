@@ -43,7 +43,7 @@
 #endif
 
 // Forward declarations.
-#if !defined(__KCC)
+#if !defined(AIPS_STDLIB)
 imported class ostream;
 #endif
 class  String;
