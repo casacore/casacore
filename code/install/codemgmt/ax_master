@@ -3874,3 +3874,4 @@
 14 065 src mv trial/implement/Display/X11PixelCanvasApp.h trialdisplay/implement/Display/X11PixelCanvasApp.h
 14 065 src mv trial/implement/Display/X11PixelCanvasColorTable.h trialdisplay/implement/Display/X11PixelCanvasColorTable.h
 14 065 src mv trial/implement/Display/X11ResourceManager.h trialdisplay/implement/Display/X11ResourceManager.h
+14 065 src mv trial/implement/Display/AttBufferTemplates.cc trialdisplay/implement/Display/AttBufferTemplates.cc
