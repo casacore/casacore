@@ -146,7 +146,7 @@ public:
   static Double totalSize (const String& fileName, Bool follow = True);
   // </group>
 
-  // Return the total size on the devics the given directories are on.
+  // Return the total size on the devices the given directories are on.
   // If follow is False, symbolic links are not followed.
   static Vector<Double> freeSpace (const Vector<String>& fileName,
 				   Bool follow = True);
@@ -168,6 +168,13 @@ public:
   // symbolic link is removed.
   static void remove (const Vector<String>& fileName, Bool recursive,
 		      Bool mustExist = True, Bool follow = True);
+
+  // Tell if a table is used or locked by another process.
+  // It returns a vector containing 2 integers.
+  // The first one tells if the table is in use or locked.
+  // See <linkto class=LockFile>LockFile</linkto>::showLock for details.
+  // The second one gives the pid of the process using/locking the table.
+  static Vector<Int> lockInfo (const String& tableName);
 };
 
 

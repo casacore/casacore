@@ -35,6 +35,7 @@
 #include <aips/OS/Directory.h>
 #include <aips/OS/DirectoryIterator.h>
 #include <aips/OS/SymLink.h>
+#include <aips/IO/LockFile.h>
 #include <aips/Utilities/String.h>
 #include <aips/Exceptions/Error.h>
 
@@ -356,4 +357,13 @@ void DOos::remove (const Vector<String>& fileName, Bool recursive,
       }
     }
   }
+}
+
+Vector<Int> DOos::lockInfo (const String& tableName)
+{
+  Vector<Int> result(2);
+  uInt pid;
+  result(0) = LockFile::showLock (pid, tableName + "/table.lock");
+  result(1) = pid;
+  return result;
 }
