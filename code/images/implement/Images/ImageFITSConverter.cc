@@ -151,7 +151,7 @@ void ImageFITSConverterImpl<HDUType>::FITSToImage(PagedImage<Float> *&newImage,
     ignore(8) = "^pc$";
     ignore(9) = "^extend$";
     ignore(10) = "^blocked$";
-    ignore(11) = "^extend$";
+    ignore(11) = "^blank$";
     ignore(12) = "^equinox$";
     ignore(13) = "^epoch$";
     ignore(14) = "^.type";
