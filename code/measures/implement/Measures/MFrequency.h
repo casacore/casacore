@@ -159,8 +159,8 @@ public:
 // an additional row and column should be coded in FromTo, and
 // in showType().</note>
     enum Types {REST,
-		LSRD, 
 		LSRK,
+		LSRD, 
 		BARY,
 		GEO,
 		TOPO,

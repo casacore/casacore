@@ -145,8 +145,8 @@ public:
 // changing the array. Additions should be made before N_types, and
 // an additional row and column should be coded in FromTo, and
 // in showType().</note>
-    enum Types {LSRD,
-		LSRK,
+    enum Types {LSRK,
+		LSRD,
 		BARY,
 		GEO,
 		TOPO,

@@ -105,8 +105,8 @@ MRadialVelocity::Types MRadialVelocity::castType(uInt tp) {
 
 const String &MRadialVelocity::showType(MRadialVelocity::Types tp) {
     static const String tname[MRadialVelocity::N_Types] = {
-	"LSRD",
 	"LSRK",
+	"LSRD",
 	"BARY",
 	"GEO",	    
 	"TOPO",
@@ -123,16 +123,16 @@ const String *const MRadialVelocity::allMyTypes(Int &nall, Int &nextra,
   static const Int N_name  = 6;
   static const Int N_extra = 0;
   static const String tname[N_name] = {
-    "LSRD",
     "LSRK",
+    "LSRD",
     "BARY",
     "GEO",	    
     "TOPO",
     "GALACTO"}; 
 
   static const uInt oname[N_name] = {
-    MRadialVelocity::LSRD,
     MRadialVelocity::LSRK,
+    MRadialVelocity::LSRD,
     MRadialVelocity::BARY,
     MRadialVelocity::GEO,
     MRadialVelocity::TOPO,

@@ -97,8 +97,8 @@ MFrequency::Types MFrequency::castType(uInt tp) {
 const String &MFrequency::showType(MFrequency::Types tp) {
     static const String tname[MFrequency::N_Types] = {
 	"REST",
-	"LSRD",
 	"LSRK",
+	"LSRD",
 	"BARY",
 	"GEO",	    
 	"TOPO",
@@ -116,8 +116,8 @@ const String *const MFrequency::allMyTypes(Int &nall, Int &nextra,
   static const Int N_extra = 0;
   static const String tname[N_name] = {
     "REST",
-    "LSRD",
     "LSRK",
+    "LSRD",
     "BARY",
     "GEO",	    
     "TOPO",
@@ -125,8 +125,8 @@ const String *const MFrequency::allMyTypes(Int &nall, Int &nextra,
   
   static const uInt oname[N_name] = {
     MFrequency::REST,
-    MFrequency::LSRD,
     MFrequency::LSRK,
+    MFrequency::LSRD,
     MFrequency::BARY,
     MFrequency::GEO,
     MFrequency::TOPO,
