@@ -3654,3 +3654,4 @@
 13 377 src rm trial/implement/MeasurementEquations/test/tConvEqnStokes.cc
 13 377 src rm trial/implement/MeasurementEquations/test/tHogbomCleanMasked.cc
 13 377 src rm trial/implement/MeasurementEquations/test/tHogbomCleanModel.cc
+13 377 src rm trial/implement/MeasurementEquations/test/tHogbomCleanStokes.cc
