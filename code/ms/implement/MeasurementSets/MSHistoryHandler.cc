@@ -46,8 +46,7 @@ MSHistoryHandler &MSHistoryHandler::operator=(MSHistoryHandler& other){
   if(this != &other){
     histTable_p=other.histTable_p;
     msHistCol_p=other.msHistCol_p;
-    
-
+    application_p=other.application_p;
   }
 
   return *this;
@@ -63,6 +62,11 @@ void MSHistoryHandler::addMessage(MeasurementSet& ms, String message,
 				  String app,
 				  String cliComm, 
 				  String origin){
+
+  if (message.length() == 0 && cliComm.length() == 0) {
+    // No need to record an entry.
+    return;
+  }
 
   MSHistory histTable=ms.history();
   Int row = histTable.nrow();
@@ -88,6 +92,11 @@ void MSHistoryHandler::addMessage(MeasurementSet& ms, String message,
 void MSHistoryHandler::addMessage(String message, String cliComm, 
 				  String origin){
 
+  if (message.length() == 0 && cliComm.length() == 0) {
+    // No need to record an entry.
+    return;
+  }
+
   Int row = histTable_p.nrow();
   histTable_p.addRow();
   Time date;
@@ -109,9 +118,17 @@ void MSHistoryHandler::addMessage(LogSinkInterface& sink, String cliComm){
 
   Int row = histTable_p.nrow();
   uInt newrows = sink.nelements();
+  if (newrows == 0 && cliComm.length() == 0) {
+    // No need to record an entry
+    return;
+  }
+  if (newrows == 0) { // cliComm.length() > 0
+    String m("");
+    String o("MSHistoryHandler::addMessage()");
+    this->addMessage(m,cliComm,o);
+  }
   histTable_p.addRow(newrows);
   for (uInt k=0; k< newrows; ++k){
-
     
     msHistCol_p->time().put(row, sink.getTime(k));
     msHistCol_p->observationId().put(row, -1);
@@ -140,15 +157,9 @@ void MSHistoryHandler::addMessage(LogIO& os, String cliComm){
 }
 
 void MSHistoryHandler::cliCommand(String& cliComm){
-
-  Int row = histTable_p.nrow();
-  histTable_p.addRow();
-  Vector<String> cliseq(1);
-  cliseq[0]=cliComm;
-  msHistCol_p->cliCommand().put(row, cliseq);  
-  msHistCol_p->application().put(row,application_p);
-  cliseq[0]="";
-  msHistCol_p->appParams().put(row, cliseq);
+  String m("");
+  String o("MSHistoryHandler::cliCommand()");
+  this->addMessage(m,cliComm,o);
 }
 
 void MSHistoryHandler::cliCommand(LogIO& cliComm){
@@ -158,8 +169,11 @@ void MSHistoryHandler::cliCommand(LogIO& cliComm){
 }
 void MSHistoryHandler::cliCommand(LogSinkInterface& sink){
 
- Int row = histTable_p.nrow();
  uInt numCliComm=sink.nelements();
+ if (numCliComm == 0)
+   return;
+ String emptyMessage("");
+ Int row = histTable_p.nrow();
  histTable_p.addRow();
  Vector<String> cliComm(numCliComm);
  for (uInt k=0; k< numCliComm; ++k){
@@ -170,10 +184,12 @@ void MSHistoryHandler::cliCommand(LogSinkInterface& sink){
  msHistCol_p->priority().put(row,sink.getPriority(0));
  msHistCol_p->origin().put(row,sink.getLocation(0));
  msHistCol_p->cliCommand().put(row, cliComm);
+ msHistCol_p->message().put(row,emptyMessage);
  msHistCol_p->application().put(row,application_p);
  Vector<String> dum(1);
  dum[0]="";
  msHistCol_p->appParams().put(row, dum);
+
  sink.clearLocally();
  
 
