@@ -106,7 +106,7 @@ $(SYMDIR) :
 #
 $(INCLINKS) :
 	-@ rm -f $@
-	if [ -d ../$(@F)/implement ] ; then \
+	if [ -d $(@F)/implement ] ; then \
 	   ln -s ../$(@F)/implement $@ ; \
          else \
 	   ln -s ../$(@F)/apps $@ ; \
