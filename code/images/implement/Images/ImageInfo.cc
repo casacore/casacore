@@ -414,10 +414,15 @@ Bool ImageInfo::fromFITS(Vector<String>& error, const RecordInterface& header)
 //
    if (header.isDefined("bmaj") && header.isDefined("bmin") &&
        header.isDefined("bpa")) {
-      Bool ok = header.dataType("bmaj")==TpDouble && header.dataType("bmin")==TpDouble &&
-                header.dataType("bpa")==TpDouble;
-      if (!ok) ok = header.dataType("bmaj")==TpFloat && header.dataType("bmin")==TpFloat &&
-                header.dataType("bpa")==TpFloat;
+//
+      DataType typeMaj = header.dataType("bmaj");
+      DataType typeMin = header.dataType("bmin");
+      DataType typePA = header.dataType("bpa");
+//
+      Bool ok = (typeMaj==TpDouble || typeMaj==TpFloat) &&
+                (typeMin==TpDouble || typeMin==TpFloat) &&
+                (typePA==TpDouble || typePA==TpFloat);
+//
       if (ok) {
          Double bmaj = header.asDouble("bmaj");
          Double bmin = header.asDouble("bmin");
@@ -429,8 +434,7 @@ Bool ImageInfo::fromFITS(Vector<String>& error, const RecordInterface& header)
          bminq.convert(Unit("arcsec"));
          setRestoringBeam(bmajq, bminq, Quantum<Double>(bpa, "deg"));
       } else {
-         error(0) = "BMAJ, BMIN, BPA fields are not of type Double or Float";
-         ok = False;
+         error[0] = "BMAJ, BMIN, BPA fields are not of type Double or Float";
       }
    }
 //
