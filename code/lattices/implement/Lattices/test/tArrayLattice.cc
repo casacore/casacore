@@ -34,11 +34,12 @@
 #include <aips/Arrays/ArrayIO.h>
 #include <aips/Arrays/ArrayLogical.h>
 #include <aips/Arrays/Matrix.h>
-#include <aips/Exceptions/Excp.h>
-#include <aips/Functionals/Polynomial.h>
 #include <aips/Arrays/Slicer.h>
-#include <aips/Utilities/Assert.h>
+#include <aips/Functionals/Polynomial.h>
+#include <aips/Mathematics/Math.h>
 #include <aips/Utilities/COWPtr.h>
+#include <aips/Utilities/Assert.h>
+#include <aips/Exceptions/Error.h>
 
 #include <iostream.h>
 
