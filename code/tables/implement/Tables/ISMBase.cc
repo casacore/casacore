@@ -48,7 +48,6 @@
 
 ISMBase::ISMBase (uInt bucketSize, Bool checkBucketSize, uInt cacheSize)
 : DataManager       (),
-  dataManName_p     ("ISM"),
   version_p         (3),
   iosfile_p         (0),
   uniqnr_p          (0),
