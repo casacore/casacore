@@ -2431,3 +2431,4 @@
 11 242 src rm trial/implement/Widgets/rangeentry.g
 11 244 src rm trial/scripts/aips.g
 11 244 src rm trial/scripts/aips.help
+11 244 sys rm libexec/aips.g
