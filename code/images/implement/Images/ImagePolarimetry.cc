@@ -813,6 +813,7 @@ void ImagePolarimetry::rotationMeasure(ImageInterface<Float>*& rmOutPtr,
                           const_cast<ImageInterface<Float>*>(itsInImagePtr);
    mainImagePtr->setCacheSizeInTiles (nrtiles);
 //
+   plotter.sch (1.0);
    String posString;
    Bool ok = False;
    IPosition shp;
@@ -1639,6 +1640,8 @@ Bool ImagePolarimetry::rmPrimaryFit(Float& nTurns, Float& rmFitted, Float& rmErr
 //
    static Vector<Float> plotPA;
    static Vector<Float> plotPAErr;
+   static Vector<Float> plotPAErrY1;
+   static Vector<Float> plotPAErrY2;
    static Vector<Float> plotPAFit;
 
 // Assign position angle to longest wavelength consistent with
@@ -1673,6 +1676,8 @@ Bool ImagePolarimetry::rmPrimaryFit(Float& nTurns, Float& rmFitted, Float& rmErr
    if (plotter.isAttached()) {
       plotPA.resize(n);
       plotPAErr.resize(n);
+      plotPAErrY1.resize(n);
+      plotPAErrY2.resize(n);
       plotPAFit.resize(n);
    }
 
@@ -1742,6 +1747,8 @@ Bool ImagePolarimetry::rmPrimaryFit(Float& nTurns, Float& rmFitted, Float& rmErr
      plotPA *= Float(180.0) / Float(C::pi);
      plotPAErr *= Float(180.0) / Float(C::pi);
      plotPAFit *= Float(180.0) / Float(C::pi);
+     plotPAErrY1 = plotPA - plotPAErr;
+     plotPAErrY2 = plotPA + plotPAErr;
 //
      Float minVal, maxVal;
      minMax(minVal, maxVal, plotPA);
@@ -1751,7 +1758,9 @@ Bool ImagePolarimetry::rmPrimaryFit(Float& nTurns, Float& rmFitted, Float& rmErr
      plotter.box("BCNST", 0.0, 0, "BCNST", 0.0, 0);
      plotter.lab("\\gl\\u2\\d (m\\u2\\d)", "Position Angle (deg)", String("RM fit at ")+posString);
      plotter.pt(wsq, plotPA, 17);
+     plotter.erry (wsq, plotPAErrY1, plotPAErrY2, 1.0);
      plotter.line(wsq, plotPAFit);
+
    }
 //
    return True;
