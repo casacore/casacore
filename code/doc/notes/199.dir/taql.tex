@@ -442,7 +442,7 @@ These functions can be used on a scalar or an array argument.
 \subsubsection{Regex functions}
 The syntax for forming a regex and pattern are explained in class
 \htmladdnormallink{Regex}{../../aips/implement/Utilities/Regex.html}.
-These functions can only be used on a scalar arguments.
+These functions can only be used on a scalar argument.
 
 \begin{description}
   \item[ \texttt{regex REGEX(string)}]
@@ -499,8 +499,10 @@ case the string is parsed and converted to a date (i.e., in fact the
 function DATETIME is used implicitly).
 
 \subsubsection{Comparison functions}
-Two functions make it possible to compare 2 values within a range.
-They can only be used on scalar arguments.
+Two functions make it possible to compare 2 double or complex
+values within a range.
+They can be used on scalar and array arguments (and a mix of them).
+The tolerance must be a scalar though.
 \begin{description}
   \item[ \texttt{bool NEAR(numeric val1, numeric val2, double tol)}]
     Tests in a relative way if a value is near another. Relative
@@ -522,7 +524,7 @@ They can only be used on scalar arguments.
 \subsubsection{Mathematical functions}
 Several functions can operate on double or complex arguments.
 The data types of such functions is given as 'numeric'.
-They can only be used on scalar arguments.
+They can be used on scalar and array arguments (and a mix of them).
 \begin{description}
   \item[ \texttt{double PI()}] Returns the value of \textbf{pi}.
   \item[ \texttt{double E()}] Returns the value of \textbf{e} (is equal to \texttt{EXP(1)}).
@@ -541,7 +543,8 @@ They can only be used on scalar arguments.
   \item[ \texttt{numeric LOG(numeric)}] Natural logarithm.
   \item[ \texttt{numeric LOG10(numeric)}]
   \item[ \texttt{numeric POW(numeric, numeric)}] The same as operator \verb+^+.
-  \item[ \texttt{numeric SQUARE(numeric)}] The same as \verb+^+2, but much faster.
+  \item[ \texttt{numeric SQUARE(numeric),  numeric SQR(numeric)}]
+       The same as \verb+^+2, but much faster.
   \item[ \texttt{numeric SQRT(numeric)}]
   \item[ \texttt{complex COMPLEX(double, double)}]
   \item[ \texttt{numeric CONJ(numeric)}]
@@ -566,31 +569,37 @@ They can only be used on scalar arguments.
 Note that the trigonometric functions need their arguments in radians.
 
 \subsubsection{Array functions}
-These functions can only be used on arrays.
+These functions are meant for an array.
+However, they can also be used for a scalar.
 \begin{description}
-  \item[ \texttt{bool ANY(boolarray)}] Is any element in array true?
-  \item[ \texttt{bool ALL(boolarray)}] Are all elements in array true?
-  \item[ \texttt{double NTRUE(boolarray)}] Number of true elements in array.
-  \item[ \texttt{double NFALSE(boolarray)}] Number of false elements in array.
-  \item[ \texttt{numeric SUM(numericarray)}] Return sum of all array elements.
-  \item[ \texttt{numeric PRODUCT(numericarray)}] Return product
+  \item[ \texttt{bool ANY(bool)}] Is any element true?
+  \item[ \texttt{bool ALL(bool)}] Are all elements true?
+  \item[ \texttt{double NTRUE(bool)}] Number of true elements.
+  \item[ \texttt{double NFALSE(bool)}] Number of false elements.
+  \item[ \texttt{numeric SUM(numeric)}] Return sum of all elements.
+  \item[ \texttt{numeric SUMSQUARE(numeric), numeric SUMSQR(numeric)}]
+       Return sum of all squared elements.
+  \item[ \texttt{numeric PRODUCT(numeric)}] Return product
     of all array elements.
-  \item[ \texttt{double MIN(doublearray)}] Return minimum
+  \item[ \texttt{double MIN(double)}] Return minimum
     of all array elements.
-  \item[ \texttt{double MAX(doublearray)}] Return maximum
+  \item[ \texttt{double MAX(double)}] Return maximum
     of all array elements.
-  \item[ \texttt{double MEAN(doublearray), double AVG(doublearray)}]
+  \item[ \texttt{double MEAN(double), double AVG(double)}]
     Return mean of all array elements.
-  \item[ \texttt{double VARIANCE(doublearray)}] Return variance
+  \item[ \texttt{double VARIANCE(double)}] Return variance
     (the sum of \texttt{(a(i) - mean(a))**2/(nelements(a) - 1)}.
-  \item[ \texttt{double STDDEV(doublearray)}] Return standard
+  \item[ \texttt{double STDDEV(double)}] Return standard
     deviation (the square root of the variance).
-  \item[ \texttt{double AVDEV(doublearray)}] Return average deviation.
+  \item[ \texttt{double AVDEV(double)}] Return average deviation.
     (the sum of \texttt{abs(a(i) - mean(a))/nelements(a)}.
-  \item[ \texttt{double MEDIAN(doublearray)}] Return median (the
+  \item[ \texttt{double MEDIAN(double)}] Return median (the
     middle element).
     When the array has an even number of elements, the mean of
     the two middle elements is returned.
+  \item[ \texttt{double FRACTILE(double, doublescalar fraction)}]
+       Return the value of the element at the given fraction.
+       Fraction 0.5 is the same as the median.
 \end{description}
 
 \subsubsection{Miscellaneous functions}
@@ -622,6 +631,14 @@ These functions can only be used on arrays.
        time, so the results are different from run to run.
        \\The function can, for instance, be used to select a random
        subset from a table.
+  \item[ \texttt{double IIF(cond,arg1,arg2)}]
+       This is a special funtion which operates like the ternary \texttt{?:}
+       operator in C++. 
+       If all arguments are scalars, the result is a scalar, otherwise
+       an array. In the latter case possible scalar arguments are
+       virtually expanded to arrays.
+       IIF evaluates the condition for each element. If True, it takes
+       the corresponding element of \texttt{arg1}, otherwise of \texttt{arg2}.
 \end{description}
 
 \subsection{\label{TAQL:COLUMNS}Table Columns}
