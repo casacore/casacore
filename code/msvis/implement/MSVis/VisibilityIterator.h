@@ -546,6 +546,9 @@ public:
   // Set/modify the weights
   void setWeight(const Vector<Float>& wt);
 
+  // Set/modify the Sigma
+  void setSigma(const Vector<Float>& sig);
+
   // Set/modify the imaging weights
   void setImagingWeight(const Matrix<Float>& wt);
 
@@ -561,6 +564,7 @@ protected:
   ArrayColumn<Complex> RWcolCorrVis;
   PtrBlock<ArrayColumn<Complex>* > RWcolVisPtr;
   ScalarColumn<Float> RWcolWeight;
+  ArrayColumn<Float> RWcolSigma;
   ArrayColumn<Float> RWcolImagingWeight;
   ArrayColumn<Bool> RWcolFlag;
 
