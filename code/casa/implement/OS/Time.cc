@@ -33,6 +33,10 @@
 #include <sys/time.h>
 #elif defined(AIPS_OSF)
 #include <sys/timers.h>
+#include <time.h>
+#elif defined(AIPS_LINUX)
+#include <time.h>
+#include <sys/timeb.h>
 #else
 #include <sys/timeb.h>
 #endif
@@ -811,4 +815,51 @@ Bool Time::isLeapYear(uInt lyear) {
       return True;
     else
       return False;
+}
+
+// Used internally here to determine if Daylight Savings Time (Summer
+// Time) is currently active.  1 is True, 0 False.
+static Int isDST () {
+  time_t tim = time (NULL);
+  struct tm *tm_info = localtime (&tim);
+  return tm_info->tm_isdst;
+}
+
+// Returns the difference, in seconds, between UTC and local time.
+// Negative values are west of GMT, positive are east.
+#if defined(AIPS_LINUX) || defined(AIPS_SOLARIS) || defined(AIPS_IRIX)
+Int Time::timeZoneSeconds () {
+  extern time_t altzone;	// Not declared in all <time.h> files.
+  return isDST () ? -altzone : -timezone;
+}
+#elif defined(__hpux__) || defined(_AIX)
+Int Time::timeZoneSeconds () {
+  // This will not work unless the DST correction is +1 hour.  (HP/UX
+  // and AIX do not have an altzone variable, at least not that I can
+  // find.)
+  return -timezone + (3600 * isDST ());
+}
+#elif defined(AIPS_OSF)
+Int Time::timeZoneSeconds () {
+  time_t tim = time (NULL);
+  struct tm *tm_info = localtime (&tim);
+  return tm_info->tm_gmtoff;
+}
+#else
+Int Time::timeZoneSeconds () {
+  throw (AipsError ("Current time zone handling not yet supported on this OS."))
+  return 0;
+}
+#endif
+
+Double Time::timeZoneDays () {
+// Same as timeZoneSeconds(), but returns fractional days rather than
+// seconds.
+  return (double)timeZoneSeconds () / 86400.0; // Turn seconds into days.
+}
+
+String Time::timeZoneName () {
+// Returns a string, e.g. "EST" or "MDT", describing the current local
+// time zone.
+  return isDST () ? tzname[1] : tzname[0];
 }

@@ -26,6 +26,8 @@
 
 #include <aips/OS/Time.h>
 #include <iostream.h>
+#include <stdlib.h>
+#include <math.h>
 
 main() {
 
@@ -116,6 +118,7 @@ main() {
   cout<< t9 <<"\n";
   Time currentTime;
   cout << "currentTime: " << currentTime << endl;
+  // Ummm...I thought the moon landing was on July 20th. <grin> --Jeff U.
   Time moonLanding (1969,7,14);
   cout << "moonLanding: " << moonLanding << endl;
   cout << "elapsed time as double: " << (currentTime - moonLanding) << endl;
@@ -123,7 +126,6 @@ main() {
   cout << "current time mjd: " << currentTime.modifiedJulianDay () << endl;
   cout << "moon landing jd:  " << moonLanding.julianDay () << endl;
   cout << "moon landing mjd: " << moonLanding.modifiedJulianDay () << endl;
-  double elapsedTime = currentTime - moonLanding;
   cout << "since moon landing ---------" << endl;
   cout << "age ():  " << currentTime.age () << endl;
   cout << "hours:   " << currentTime.hours () << endl;
@@ -140,5 +142,17 @@ main() {
     moonLanding.age () / (60 * 60 * 24 * 7) << endl;
     cout << "seconds elapsed since start: " << startTime.age () << endl;
   }
+
+  Int seconds = t.timeZoneSeconds ();
+  cout << "time zone: " << abs (seconds) << " seconds ";
+  cout << (seconds < 0 ? "west" : "east");
+  cout << " of UTC" << endl;
+
+  Double days = t.timeZoneDays ();
+  cout << "time zone: " << fabs (days) << " days ";
+  cout << (days < 0 ? "west" : "east");
+  cout << " of UTC" << endl;
+
+  cout << "time zone name: " << t.timeZoneName () << endl;
   cout<<"\n end test\n";
 }

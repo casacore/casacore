@@ -35,6 +35,7 @@
 
 
 #include <aips/aips.h>
+#include <aips/Utilities/String.h>
 #if defined(AIPS_STDLIB)
 #include <iosfwd.h>
 #else
@@ -175,6 +176,16 @@ class Time {
    static Bool isLeapYear ();
 
    static Bool isLeapYear (uInt year);
+
+     // Returns the difference, in seconds, between UTC and local time.
+     // Negative values are west of GMT, positive are east.
+   static Int timeZoneSeconds ();
+     // Same as timeZoneSeconds(), but returns fractional days rather
+     // than seconds.
+   static Double timeZoneDays ();
+     // Returns a string, e.g. "EST" or "MDT", describing the current
+     // local time zone.
+   static String timeZoneName ();
 
  protected:
 
