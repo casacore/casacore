@@ -56,7 +56,12 @@ class String;
 // </prerequisite>
 
 // <synopsis> 
-// Persistent regions are stored as subrecords of the table keyword "regions".
+// Persistent regions are stored as subrecords of the table keywords
+// "regions" and "masks". The user can choose one of both keywords.
+// Keyword "masks" is meant for true image masks, i.e. telling for
+// each pixel if it is good or bad. Keyword "regions" is meant for
+// true regions in an image.
+// <p>
 // This class handles defining, getting and removing such regions.
 // It is used by class <linkto class=PagedImage</linkto>, but it can also
 // be used by other code to handle regions in other tables.
@@ -88,36 +93,58 @@ class RegionHandler
 {
 public: 
 
+  // Define the possible group types (regions or masks).
+    enum GroupType {
+        Regions,
+	Masks,
+	Any      
+    };
+
     // Set the default mask to the mask with the given name.
     // It constructs a ImageRegion object for the new default mask.
     // If the image table is writable, the setting is persistent by writing
     // the name as a keyword.
-    // If the given regionName is the empty string, the default mask is unset.
-    static void setDefaultMask (Table& table, const String& regionName);
+    // If the given maskName is the empty string, the default mask is unset.
+    static void setDefaultMask (Table& table, const String& maskName);
     
     // Get the name of the default mask.
     // An empty string is returned if no default mask.
     static String getDefaultMask (const Table& table);
     
     // Define a region belonging to the image.
+    // The group type determines if it stored as a region or mask.
     // If overwrite=False, an exception will be thrown if the region
-    // already exists.
-    static void defineRegion (Table& table, const String& name,
+    // already exists in the "regions" or "masks" keyword.
+    // Otherwise the region will be removed first.
+    // <br>A False status is returned if the table is not writable
+    static Bool defineRegion (Table& table, const String& name,
 			      const ImageRegion& region,
-			      Bool overwrite = True);
+			      RegionHandler::GroupType,
+			      Bool overwrite = False);
     
     // Get a region belonging to the image.
     // A zero pointer is returned if the region does not exist.
     // The caller has to delete the <src>ImageRegion</src> object created.
-    static ImageRegion* getRegion (const Table& table, const String& name);
+    // <br>No exception is thrown if the region does not exist.
+    static ImageRegion* getRegion (const Table& table, const String& name,
+				   RegionHandler::GroupType = Any,
+				   Bool throwIfUnknown = True);
     
     // Remove a region belonging to the image.
-    // No exception is thrown if the region does not exist.
-    static void removeRegion (Table& table, const String& name);
+    // <br>Optionally an exception is thrown if the region does not exist.
+    // <br>A False status is returned if the table is not writable
+    static Bool removeRegion (Table& table, const String& name,
+			      RegionHandler::GroupType = Any,
+			      Bool throwIfUnknown = True);
 
-    // Create an ImageRegion object for the given region name.
-    static ImageRegion* makeRegion (const Table& table,
-				    const String& regionName);
+    // Find field number of the region group to which a region belongs
+    // (i.e. the field number of the "regions" or "masks" field).
+    // <0 is returned if the region does not exist.
+    // <br>Optionally an exception is thrown if the region does not exist.
+    static Int findRegionGroup (const Table& table, const String& regionName,
+				RegionHandler::GroupType = Any,
+				Bool throwIfUnknown = True);
+    // </group>
 
     // Make a mask for a stored lattice (e.g. a PagedImage).
     // It creates it as a subtable of the lattice with the same tile shape.
