@@ -409,14 +409,16 @@ void ComponentList::createTable(const String & fileName,
     {
       ScalarColumnDesc<String> shapeCol("Shape" ,"Shape of the Component");
       td.addColumn (shapeCol);
-      ArrayColumnDesc<Double> dirValCol("Reference Direction" , 
+      const String dirValColName = "Reference Direction";
+      ArrayColumnDesc<Double> dirValCol(dirValColName, 
 					"Reference direction values");
       td.addColumn(dirValCol);
-      ScalarColumnDesc<Int> dirRefCol("Direction Frame",
+      const String dirRefColName = "Direction Frame";
+      ScalarColumnDesc<Int> dirRefCol(dirRefColName,
 				      "The reference direction frame");
       td.addColumn(dirRefCol);
-      TableMeasRefDesc dirRefTMCol("Direction Frame");
-      TableMeasValueDesc dirValTMCol(td, "Reference Direction");
+      TableMeasRefDesc dirRefTMCol(td, dirRefColName);
+      TableMeasValueDesc dirValTMCol(td, dirValColName);
       TableMeasDesc<MDirection> dirTMCol(dirValTMCol, dirRefTMCol);
       dirTMCol.write(td);
       ArrayColumnDesc<Double> 
@@ -428,15 +430,16 @@ void ComponentList::createTable(const String & fileName,
       ScalarColumnDesc<String> freqShapeCol("Spectrum Shape",
 					    "Shape of the spectrum");
       td.addColumn (freqShapeCol);
-
-      ArrayColumnDesc<Double> freqValCol("Reference Frequency" , 
+      const String freqValColName = "Reference Frequency";
+      ArrayColumnDesc<Double> freqValCol(freqValColName, 
 					 "The reference frequency values");
       td.addColumn(freqValCol);
-      ScalarColumnDesc<Int> freqRefCol("Frequency Frame",
+      const String freqRefColName = "Frequency Frame";
+      ScalarColumnDesc<Int> freqRefCol(freqRefColName,
 				       "The reference frequency frame");
       td.addColumn(freqRefCol);
-      TableMeasRefDesc freqRefTMCol("Frequency Frame");
-      TableMeasValueDesc freqValTMCol(td, "Reference Frequency");
+      TableMeasRefDesc freqRefTMCol(td, freqRefColName);
+      TableMeasValueDesc freqValTMCol(td, freqValColName);
       TableMeasDesc<MFrequency> freqTMCol(freqValTMCol, freqRefTMCol);
       freqTMCol.write(td);
       ArrayColumnDesc<Double> 
