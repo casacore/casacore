@@ -454,9 +454,6 @@ try {
             exit(1);
          }
       }
-      if (validInputs(OUT)) {
-         moment.setOutName(out);
-      }
       if (validInputs(SMOUT)) {
          moment.setSmoothOutName(smOut);
       }
@@ -470,16 +467,22 @@ try {
 
 // Do work
 
-      if (!moment.createMoments()) {
+      PtrBlock<MaskedLattice<Float>* > images;
+      Bool doTemp = False;
+      if (!moment.createMoments(images, doTemp, out)) {
          os << LogIO::SEVERE << moment.errorMessage() << LogIO::POST;
          exit(1);
+      }
+      if (doTemp) {
+         for (uInt i=0; i<images.nelements(); i++) {
+            delete images[i];
+         }
       }
 
 // Test copy constructor// Test assignment operator
 
       os << "Testing copy constructor" << endl;
       ImageMoments<Float> moment2(moment);
-
 
 // Test assignment operator
 
