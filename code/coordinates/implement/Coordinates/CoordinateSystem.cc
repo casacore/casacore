@@ -3265,10 +3265,11 @@ Bool CoordinateSystem::fromFITSHeader(CoordinateSystem &coordsys,
                  break;
               }
 	    default:
+              {
               os << LogIO::SEVERE << "A Stokes coordinate of " << stokes(k) 
-                 << " was detected; this is not valid." << endl;
-              os << "Cannot continue building the StokesCoordinate" << LogIO::POST;
-              return False;
+                 << " was detected; this is not valid. Putting Stokes=Undefined" << endl;
+              stokes(k) = Stokes::Undefined;
+              }
 	    }
 	}
 	try {
