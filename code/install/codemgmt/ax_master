@@ -5426,3 +5426,5 @@
 15 210 src rm nfra/implement/Wsrt/MSIwos.h
 15 210 src rm nfra/implement/Wsrt/MSIwos.cc
 15 210 src rm nfra/implement/Wsrt/MSIwosFile01.h
+15 210 src rm nfra/implement/Wsrt/test/tMSIwos.cc
+15 210 src rm nfra/implement/Wsrt/test/tMSIwos2.cc
