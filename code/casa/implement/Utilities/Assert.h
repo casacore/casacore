@@ -1,5 +1,5 @@
 //# Assert.h: Throw exceptions when Assertions fail.
-//# Copyright (C) 1993,1994,1995,1999,2000
+//# Copyright (C) 1993,1994,1995,1999,2000,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //# 
 //# This library is free software; you can redistribute it and/or modify it
@@ -159,17 +159,18 @@ public:
 
 #if defined(AIPS_DEBUG)
 
-//# The backslashes below have spaces after them to make the egcs compiler happy
-//# (otherwise it thinks they are multiline // comments). If ever uncommented
-//# the spaces should be removed.
-// #define DebugAssert(expr, exception) \ 
+//# The backslashes below have spaces after them to make the egcs
+//  compiler happy # (otherwise it thinks they are multiline //
+//  comments). If ever uncommented # the spaces should be removed.
+
+// #define DebugAssert(expr, exception)  
 //     (assert_<exception > (expr, "Failed Assertion: " #expr))
-// #define Assert(expr) \ 
+// #define Assert(expr)  
 //     (assert_<AbortError> (expr, "Unrecoverable Assertion: " #expr))
 
-// #define DebugAssert(expr, exception) \ 
+// #define DebugAssert(expr, exception) 
 //     (assert_<exception > (expr, "Failed Assertion: " #expr,__FILE__,(Int)__LINE__))
-// #define Assert(expr) \ 
+// #define Assert(expr) 
 //     (assert_<AbortError> (expr, "Unrecoverable Assertion: " #expr,__FILE__,(Int)__LINE__))
 
 #define DebugAssert(expr, exception) \
