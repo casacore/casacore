@@ -970,8 +970,7 @@ void MomentCalcBase<T>::getInterGaussianGuess(T& peakGuess,
 // and fitting window 
 //
 {
-   os << LogIO::NORMAL << "Mark the location of the peak and position" << endl;
-   os << "Press right button to reject spectrum" << LogIO::POST;
+   plotter.message("Mark location of peak & position - click right to reject spectrum");
 
    Vector<Float> minMax(4);
    minMax = plotter.qwin();
@@ -985,14 +984,18 @@ void MomentCalcBase<T>::getInterGaussianGuess(T& peakGuess,
    Bool miss=True;
    while (miss) {
      ImageMoments<T>::readCursor(plotter, x, y, str);
-     miss = ToBool(x<minMax(0) || x>minMax(1) || y<minMax(2) || y>minMax(3));
-     if (miss) os << LogIO::NORMAL << "Cursor off image" << LogIO::POST;
+     str.upcase();
+     if (str == "X") {
+        miss = False;
+     } else {
+        miss = ToBool(x<minMax(0) || x>minMax(1) || y<minMax(2) || y>minMax(3));
+     }
+     if (miss) plotter.message("Cursor off image");
    }
+
    reject = False;
-   str.upcase();
-   
    if (str == "X") {
-     os << LogIO::NORMAL << "Rejecting spectrum" << LogIO::POST;
+     plotter.message("Rejecting spectrum");
      reject = True;
      return;
    }
@@ -1009,17 +1012,20 @@ void MomentCalcBase<T>::getInterGaussianGuess(T& peakGuess,
 // Now FWHM
      
    os << endl;
-   os << LogIO::NORMAL << "Mark the location of the FWHM" << endl;
-   os << "Press right button to reject spectrum" << LogIO::POST;
+   plotter.message("Mark location of the FWHM - click right to reject spectrum");
    miss = True;   
    while (miss) {
      ImageMoments<T>::readCursor(plotter, x, y, str);
-     miss = ToBool(x<minMax(0) || x>minMax(1) || y<minMax(2) || y>minMax(3));
-     if (miss) os << LogIO::NORMAL << "Cursor off image" << LogIO::POST;
+     str.upcase();
+     if (str == "X") {
+        miss = False;
+     } else {
+        miss = ToBool(x<minMax(0) || x>minMax(1) || y<minMax(2) || y>minMax(3));
+     }
+     if (miss) plotter.message("Cursor off image");
    }
-   str.upcase();
    if (str == "X") {
-     os << LogIO::NORMAL << "Rejecting spectrum" << LogIO::POST;
+     plotter.message("Rejecting spectrum");
      reject = True;
    }
    plotter.sci (3);
@@ -1032,23 +1038,25 @@ void MomentCalcBase<T>::getInterGaussianGuess(T& peakGuess,
   
 // Now window
     
-   os << endl;
-   os << LogIO::NORMAL << "Mark the location of the fit window" << endl;
-   os << "Press right button to reject spectrum" << endl;
-   os << "Press middle button to fit the whole spectrum" << LogIO::POST;
+   plotter.message(" ");
+   plotter.message("Mark location of fit window; right to reject spectrum, middle fits whole spectrum");
    miss=True;
    while (miss) {
      ImageMoments<T>::readCursor(plotter, x, y, str);
-     miss = ToBool(x<minMax(0) || x>minMax(1) || y<minMax(2) || y>minMax(3));
-     if (miss) os << LogIO::NORMAL << "Cursor off image" << LogIO::POST;
+     str.upcase();
+     if (str == "X") {
+        miss = False;
+     } else {
+        miss = ToBool(x<minMax(0) || x>minMax(1) || y<minMax(2) || y>minMax(3));
+     }
+     if (miss) plotter.message("Cursor off image");
    }
-   str.upcase();
    if (str == "X") {
-     os << LogIO::NORMAL << "Rejecting spectrum" << LogIO::POST;
+     plotter.message("Rejecting spectrum");
      reject = True;
      return;
    } else if (str == "D") {
-     os << LogIO::NORMAL << "Fit to entire spectrum" << LogIO::POST;
+     plotter.message("Fit to entire spectrum");
      window(0) = 0;
      window(1) = nPts-1;
      return; 
@@ -1062,16 +1070,20 @@ void MomentCalcBase<T>::getInterGaussianGuess(T& peakGuess,
    miss = True;
    while (miss) {
      ImageMoments<T>::readCursor(plotter, x, y, str);
-     miss = ToBool(x<minMax(0) || x>minMax(1) || y<minMax(2) || y>minMax(3));
-     if (miss) os << LogIO::NORMAL << "Cursor off image" << LogIO::POST;
+     str.upcase();
+     if (str == "X") {
+        miss = False;
+     } else {
+        miss = ToBool(x<minMax(0) || x>minMax(1) || y<minMax(2) || y>minMax(3));
+     }
+     if (miss) plotter.message("Cursor off image");
    }
-   str.upcase();   
    if (str == "X") {
-     os << LogIO::NORMAL << "Rejecting spectrum" << LogIO::POST;
+     plotter.message("Rejecting spectrum");
      reject = True;
      return;
    } else if (str == "D") {
-     os << LogIO::NORMAL << "Fit to entire spectrum" << LogIO::POST;
+     plotter.message("Fit to entire spectrum");
      window(0) = 0;
      window(1) = nPts-1;
      return;
@@ -1215,16 +1227,16 @@ Bool MomentCalcBase<T>::getLoc (T& x,
    allSubsequent = False;
                               
    if (str == "X") {
-      os << LogIO::NORMAL << "Rejecting spectrum" << LogIO::POST;
+      plotter.message("Rejecting spectrum");
       ditch = True;
    } else if (str == "D") {
-      os << LogIO::NORMAL << "Redoing window for this spectrum" << LogIO::POST;
+      plotter.message("Redoing window for this spectrum");
       redo = True;
    } else {
       if (xx >= minMax(0) && xx <= minMax(1)) {
          x = xx;
       } else {
-         os << LogIO::NORMAL << "Cursor out of range" << LogIO::POST;
+         plotter.message("Cursor out of range");
          return False;
       }
 
@@ -1235,9 +1247,16 @@ Bool MomentCalcBase<T>::getLoc (T& x,
             os   << "applied to all subsequent spectra. Enter S to define the" << endl;
             os   << "second extremum and indicate it will be used for all " << endl;
             os   << "subsequent spectra" << LogIO::POST;
+
+/*
+            plotter.message("You must define both ends of the range before it can be");
+            plotter.message("applied to all subsequent spectra. Enter S to define the");
+            plotter.message("second extremum and indicate it will be used for all ");
+            plotter.message("subsequent spectra");
+*/
             return False;
          } else {
-            os << LogIO::NORMAL << "All subsequent spectra will use this window" << LogIO::POST;
+            plotter.message("All subsequent spectra will use this window");
             allSubsequent = True;
          }
       }
@@ -2133,8 +2152,8 @@ Vector<T>& MomentWindow<T>::multiProcess(const Vector<T>& profile,
     
 
       if (!doFit_p && !allSubsequent) {
-         os_p << endl;
-         os_p << LogIO::NORMAL << "Mark extremum (left), redo (middle), reject (right), all subsequent (S)" << LogIO::POST;
+         plotter_p.message(" ");
+         plotter_p.message("Mark extremum (left), redo (middle), reject (right), all subsequent (S)");
       }
 
       if (!allSubsequent) {

@@ -1295,6 +1295,7 @@ Bool ImageMoments<T>::getLoc (T& x,
                               LogIO& os)
 //
 // Read the PGPLOT cursor and return its coordinates if not off the plot
+// and any button other than last pushed
 //
 {
 // Fish out window
@@ -1309,11 +1310,12 @@ Bool ImageMoments<T>::getLoc (T& x,
    String str;
 
    readCursor(plotter, xx, yy, str);
-   if (xx >= minMax(0) && xx <= minMax(1) && yy >= minMax(2) && yy <= minMax(3)) {
-         x = xx;
-         y = yy;
+   if (xx >= minMax(0) && xx <= minMax(1) && 
+       yy >= minMax(2) && yy <= minMax(3)) {
+      x = xx;
+      y = yy;
    } else {
-      os << LogIO::NORMAL << "Cursor out of range" << LogIO::POST;
+      plotter.message("Cursor out of range");
       return False;
    }
    return True;
@@ -1851,7 +1853,7 @@ Bool ImageMoments<T>::whatIsTheNoise (Double& sigma,
          Int i1, i2;
          i1 = i2 = 0;
   
-         os_p << LogIO::NORMAL << "Mark the locations for the window" << LogIO::POST;
+         plotter_p.message("Mark the locations for the window");
          while (i1==i2) {
             while (!getLoc(x1, y1, plotter_p, os_p)) {};
             i1 = Int((x1 -dMin)/binWidth - 0.5);
@@ -1864,7 +1866,7 @@ Bool ImageMoments<T>::whatIsTheNoise (Double& sigma,
             drawVertical (x2, yMin, yMax, plotter_p);
 
             if (i1 == i2) {
-               os_p << LogIO::NORMAL << "Degenerate window, try again" << LogIO::POST;
+               plotter_p.message("Degenerate window, try again");
                plotter_p.eras ();
                drawHistogram (dMin, nBins, binWidth, y, plotter_p);
             }
@@ -1952,8 +1954,7 @@ Bool ImageMoments<T>::whatIsTheNoise (Double& sigma,
 // Another go
 
       if (plotter_p.isAttached()) {
-         os_p << LogIO::NORMAL << LogIO::POST << 
-           "Accept (click left), redo (click middle), give up (click right)" << LogIO::POST;
+         plotter_p.message("Accept (click left), redo (click middle), give up (click right)");
 
          Float xx = float(xMin+xMax)/2;
          Float yy = float(yMin+yMax)/2;
@@ -1962,7 +1963,7 @@ Bool ImageMoments<T>::whatIsTheNoise (Double& sigma,
          str.upcase();
  
          if (str == "D") {
-            os_p << LogIO::NORMAL << "Redoing fit" << LogIO::POST;
+            plotter_p.message("Redoing fit");
          } else if (str == "X")
             return False;
          else
