@@ -4931,3 +4931,4 @@
 14 316 sys rm libexec/dish_standard.gp
 14 316 src rm trial/apps/newdishplot/makefile
 14 327 src mv trial/apps/ms2fits/ms2fits.cc trial/apps/ms2fits/ms2archive.cc
+14 327 src mv trial/apps/fits2ms/fits2ms.cc trial/apps/fits2ms/archive2ms.cc
