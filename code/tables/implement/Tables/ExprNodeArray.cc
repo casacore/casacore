@@ -1042,6 +1042,8 @@ void TableExprNodeIndex::fillSlicer (const TableExprId& id)
 // Also reduce the tree if possible by combining constants.
 void TableExprNodeIndex::fillIndex (const TableExprNodeSet& indices)
 {
+    // Check that the set elements have equal data types.
+    indices.checkEqualDataTypes();
     // Check that the set contains discrete values.
     if (! indices.isDiscrete()) {
 	throw (TableInvExpr ("Index values must be discrete (with possible :"));
