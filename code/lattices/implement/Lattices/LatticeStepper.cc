@@ -339,7 +339,7 @@ void LatticeStepper::setCursorShape(const IPosition & cursorShape,
 	}
       }
       if (j == ndimCA) {
-	if (cursorShape(i) == 1) {
+	if (cursorShape(i) != 1) {
 	  throw (AipsError ("LatticeStepper::setCursorShape: "
 			    "a non-cursorAxes axis in the cursorShape"
 			    " should have length 1"));
