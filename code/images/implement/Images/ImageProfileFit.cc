@@ -382,7 +382,6 @@ void ImageProfileFit::reset ()
 }
 
 
-
 Bool ImageProfileFit::estimate (uInt nMax)
 {
    delete itsSpectralFitPtr;
