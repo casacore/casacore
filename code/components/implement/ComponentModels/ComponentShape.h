@@ -32,11 +32,12 @@
 #include <trial/ComponentModels/ComponentType.h>
 #include <aips/Utilities/RecordTransformable.h>
 #include <aips/Measures/MDirection.h>
-#include <aips/Quanta/MVDirection.h>
 
 class MVAngle;
+//class MVDirection;
 class RecordInterface;
 class String;
+//template <class Ms> class MeasRef;
 template <class T> class Flux;
 template <class T> class Vector;
 
@@ -131,16 +132,20 @@ public:
   virtual const MDirection& refDirection() const;
   // </group>
 
-  // Calculate the flux at the specified direction, in a pixel of specified
-  // size, given the total flux of the component. The total flux of the
-  // component must be supplied in the flux variable and the proportion of the
-  // flux in the specified pixel is returned in the same variable.
-  virtual void sample(Flux<Double>& flux, const MDirection& direction,
-		      const MVAngle& pixelSize) const = 0;
+  // Calculate the proportion of the flux that is in a pixel of specified size
+  // centered in the specified direction. The returned value will always be
+  // between zero and one (inclusive).
+  virtual Double sample(const MDirection& direction,
+			const MVAngle& pixelSize) const = 0;
 
-  virtual void multiSample(Vector<Double>& scale, 
- 			   const Vector<MVDirection>& directions, 
- 			   const MVAngle& pixelSize) const = 0;
+  // Calculate the amount of flux that is in the pixels of specified, constant
+  // size centered on the specified directions. The returned values will always
+  // be between zero and one (inclusive). All the supplied directions must have
+  // the same reference frame (that is specified in the refFrame argument).
+  virtual void sample(Vector<Double>& scale, 
+		      const Vector<MDirection::MVType>& directions, 
+		      const MDirection::Ref& refFrame,
+		      const MVAngle& pixelSize) const = 0;
 
   // Return the Fourier transform of the component at the specified point in
   // the spatial frequency domain. The point is specified by a 3-element vector
@@ -231,17 +236,11 @@ protected:
   // The assignment operator uses copy semantics.
   ComponentShape& operator=(const ComponentShape& other);
 
-  const MVDirection& refDirValue() const;
-  const MDirection::Types& refDirFrame() const;
-
 private:
   Bool addDir(String& errorMessage, RecordInterface& record) const;
   Bool readDir(String& errorMessage, const RecordInterface& record);
   
   //# The reference direction of the component
   MDirection itsDir;
-  //# Cached values of the direction reference frame and value.
-  MVDirection itsDirValue;
-  MDirection::Types itsRefFrame;
 };
 #endif
