@@ -351,11 +351,16 @@ public:
 
     // Set the world min and max ranges, for use in toMix, for 
     // a lattice of the given shape (for this coordinate).
-    // The output vectors are resized.
-    //  Returns False if fails with a reason in <src>errorMessage()</src>
+    // The output vectors are resized.  Returns False if fails 
+    // with a reason in <src>errorMessage()</src>.
+    // The <src>setDefaultMixRanges</src> function
+    // just gives you [-90->90], [-180,180] (in appropriate units) 
     virtual Bool setMixRanges (Vector<Double>& worldMin,
                                Vector<Double>& worldMax,
                                const IPosition& shape) const;
+    virtual void setDefaultMixRanges (Vector<Double>& worldMin,
+                                      Vector<Double>& worldMax) const;
+    // </group>
 
     // A convenient way to turn the world vector into an MDirection or MVDirection 
     // for further processing in the Measures system.  

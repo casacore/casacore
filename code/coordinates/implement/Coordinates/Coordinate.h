@@ -235,13 +235,24 @@ public:
 
     // Set the world min and max ranges, for use in toMix, for 
     // a lattice of the given shape for this coordinate. The default
-    // implementation returns [-1e999->1e999] for each axis. The output
+    // implementation returns [-1e99->1e99] for each axis. The output
     // vectors are resized.   Returns False if fails with a reason
     // in <src>errorMessage()</src>.  Of the derived  classes, ony 
     // DirectionCoordinate actually needs this information.
+    // The <src>setDefaultMixRanges</src> function
+    // also gives you [-1e99->1e99]. It is meant to be used
+    // if you don't have a shape, and then for each coordinate
+    // type it gives you a full range.
+    //<group>
+
+    // <group>
     virtual Bool setMixRanges (Vector<Double>& worldMin, 
                                Vector<Double>& worldMax,         
                                const IPosition& shape) const;
+    virtual void setDefaultMixRanges (Vector<Double>& worldMin,
+                                      Vector<Double>& worldMax) const;
+    //</group>
+
 
     // Batch up a lot of transformations. The first (most rapidly varying) axis
     // of the matrices contain the coordinates. Return the number of failures.

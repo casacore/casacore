@@ -701,10 +701,21 @@ Bool Coordinate::setMixRanges (Vector<Double>& worldMin,
       return False;
    }
 //
+   AlwaysAssert(nPixelAxes()==nWorldAxes(), AipsError);
    worldMin.resize(n);
    worldMax.resize(n);
    worldMin = -1.0e99;
    worldMax =  1.0e99;
    return True;
+}
+
+void Coordinate::setDefaultMixRanges (Vector<Double>& worldMin,
+                                      Vector<Double>& worldMax) const
+{
+   const uInt n = nWorldAxes();
+   worldMin.resize(n);
+   worldMax.resize(n);
+   worldMin = -1.0e99;
+   worldMax =  1.0e99;
 }
 

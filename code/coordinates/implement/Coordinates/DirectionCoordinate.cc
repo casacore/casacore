@@ -1713,3 +1713,15 @@ Bool DirectionCoordinate::setMixRanges (Vector<Double>& worldMin,
 //
    return True;
 }
+
+void DirectionCoordinate::setDefaultMixRanges (Vector<Double>& worldMin,
+                                               Vector<Double>& worldMax) const
+{
+   worldMin.resize(2);
+   worldMax.resize(2);
+   worldMin(0) = -180.0/to_degrees_p[0];     //long
+   worldMax(0) =  180.0/to_degrees_p[0];
+   worldMin(1) =  -90.0/to_degrees_p[1];     //lat
+   worldMax(1) =   90.0/to_degrees_p[1];
+}
+

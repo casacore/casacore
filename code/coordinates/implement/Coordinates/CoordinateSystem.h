@@ -430,10 +430,17 @@ public:
     // to suffer from ambiguity from degenerate solutions.  The
     // range is set so that you shouold be able to do a mixed
     // conversion with any world or pixel coordinate contained
-    // within the image.
+    // within the image.  The <src>setDefaultMixRanges</src> function
+    // just gives you [-90->90], [-180,180] for DirectionCoordinates
+    // (in appropriate units) and [-1e99->1e99] for other coordinates 
+    //<group>
     virtual Bool setMixRanges (Vector<Double>& worldMin,
                                Vector<Double>& worldMax,
                                const IPosition& shape) const;
+
+    virtual void setDefaultMixRanges (Vector<Double>& worldMin,
+                                      Vector<Double>& worldMax) const;
+    //</group>
 
     // Make absolute coordinates relative and vice-versa    
     //<group>

@@ -4072,3 +4072,36 @@ Bool CoordinateSystem::setMixRanges (Vector<Double>& worldMin,
    return True;
 }
 
+void CoordinateSystem::setDefaultMixRanges (Vector<Double>& worldMin,
+                                            Vector<Double>& worldMax) const
+{
+   const uInt nWorld = nWorldAxes();
+   worldMin.resize(nWorld);
+   worldMax.resize(nWorld);
+//
+   const uInt nCoord = nCoordinates();
+   for (uInt i=0; i<nCoord; i++) {
+
+// Set shape for this coordinate
+
+      Vector<Int> pA = pixelAxes(i);
+      const Coordinate& coord = coordinate(i);
+
+// Find range for this coordinate
+
+      Vector<Double> wMin, wMax;
+      coord.setDefaultMixRanges (wMin, wMax);
+
+// Copy to output
+
+      Vector<Int> wA = worldAxes(i);
+      for (uInt j=0; j<wA.nelements(); j++) {
+         if (wA(j) != -1) {
+            worldMin(wA(j)) = wMin(j);
+            worldMax(wA(j)) = wMax(j);
+         }
+      }
+   }
+}
+
+
