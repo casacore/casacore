@@ -3989,3 +3989,4 @@
 14 065 src mv trial/implement/DisplayEvents/WCRectTool.h trialdisplay/implement/DisplayEvents/WCRectTool.h
 14 065 src mv trial/implement/DisplayEvents/WCRefreshEH.h trialdisplay/implement/DisplayEvents/WCRefreshEH.h
 14 065 src mv trial/implement/DisplayEvents/WCRefreshEvent.h trialdisplay/implement/DisplayEvents/WCRefreshEvent.h
+14 065 src mv trial/implement/DisplayEvents/WCTool.h trialdisplay/implement/DisplayEvents/WCTool.h
