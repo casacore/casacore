@@ -115,7 +115,7 @@ public:
     LCPolygon& operator= (const LCPolygon& other);
 
     // Make a copy of the derived object.
-    virtual LCRegion* clone() const;
+    virtual LCRegion* cloneRegion() const;
 
     // Construct another LCPolygon (for e.g. another lattice) by moving
     // this one. It recalculates the bounding box.

@@ -68,6 +68,11 @@ LCRegion& LCRegion::operator= (const LCRegion& that)
 LCRegion::~LCRegion()
 {}
 
+Lattice<Bool>* LCRegion::clone() const
+{
+    return cloneRegion();
+}
+
 LCRegion* LCRegion::translate (const IPosition& translateVector,
 		     const IPosition& newLatticeShape) const
 {

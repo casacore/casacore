@@ -88,6 +88,7 @@ LCRegionMulti::LCRegionMulti (const LCRegion* regionPtr,
   itsRegions (1)
 {
     itsRegions[0] = regionPtr;
+    itsHasMask = (regionPtr->hasMask()  ?  0 : -1);
 }
 
 LCRegionMulti::LCRegionMulti (const LCRegionMulti& other)
@@ -97,7 +98,7 @@ LCRegionMulti::LCRegionMulti (const LCRegionMulti& other)
 {
     uInt nr = itsRegions.nelements();
     for (uInt i=0; i<nr; i++) {
-	itsRegions[i] = other.itsRegions[i]->clone();
+	itsRegions[i] = other.itsRegions[i]->cloneRegion();
     }
 }
 
@@ -117,7 +118,7 @@ LCRegionMulti& LCRegionMulti::operator= (const LCRegionMulti& other)
 	itsRegions.resize (other.itsRegions.nelements(), True);
 	uInt nr = itsRegions.nelements();
 	for (uInt i=0; i<nr; i++) {
-	    itsRegions[i] = other.itsRegions[i]->clone();
+	    itsRegions[i] = other.itsRegions[i]->cloneRegion();
 	}
     }
     return *this;
@@ -149,7 +150,7 @@ void LCRegionMulti::init (Bool takeOver)
 			      "all regions must have same lattice shape"));
 	}
         if (!takeOver) {
-	    itsRegions[i] = itsRegions[i]->clone();
+	    itsRegions[i] = itsRegions[i]->cloneRegion();
 	}
     }
 }

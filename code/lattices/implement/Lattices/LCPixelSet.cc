@@ -67,7 +67,7 @@ LCMask& LCMask::operator= (const LCMask& that)
     return *this;
 }
 
-LCRegion* LCMask::clone() const
+LCRegion* LCMask::cloneRegion() const
 {
     return new LCMask(*this);
 }

@@ -64,7 +64,7 @@ LCDifference& LCDifference::operator= (const LCDifference& other)
     return *this;
 }
 
-LCRegion* LCDifference::clone() const
+LCRegion* LCDifference::cloneRegion() const
 {
     return new LCDifference (*this);
 }

@@ -84,7 +84,7 @@ public:
     LCPagedMask& operator= (const LCPagedMask& other);
 
     // Make a copy of the derived object.
-    virtual LCRegion* clone() const;
+    virtual LCRegion* cloneRegion() const;
 
     // Construct another LCPagedMask (for e.g. another lattice) by moving
     // this one. However, the mask values are not copied across.

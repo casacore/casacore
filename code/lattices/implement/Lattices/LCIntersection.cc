@@ -82,7 +82,7 @@ LCIntersection& LCIntersection::operator= (const LCIntersection& other)
     return *this;
 }
 
-LCRegion* LCIntersection::clone() const
+LCRegion* LCIntersection::cloneRegion() const
 {
     return new LCIntersection (*this);
 }

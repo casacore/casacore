@@ -95,7 +95,7 @@ public:
     LCExtension& operator= (const LCExtension& other);
 
     // Make a copy of the derived object.
-    virtual LCRegion* clone() const;
+    virtual LCRegion* cloneRegion() const;
 
     // Get the original region.
     const LCRegion& region() const;

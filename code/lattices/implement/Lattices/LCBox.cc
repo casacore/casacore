@@ -75,7 +75,7 @@ LCBox& LCBox::operator= (const LCBox& that)
     return *this;
 }
 
-LCRegion* LCBox::clone() const
+LCRegion* LCBox::cloneRegion() const
 {
     return new LCBox(*this);
 }

@@ -81,7 +81,7 @@ LCUnion& LCUnion::operator= (const LCUnion& other)
     return *this;
 }
 
-LCRegion* LCUnion::clone() const
+LCRegion* LCUnion::cloneRegion() const
 {
     return new LCUnion (*this);
 }

@@ -43,7 +43,7 @@ LatticeRegion::LatticeRegion()
 
 LatticeRegion::LatticeRegion (const LCRegion& region,
 			      const LatticeRegion* parent)
-: itsRegion (region.clone()),
+: itsRegion (region.cloneRegion()),
   itsSlicer (region.box()),
   itsParent (parent),
   itsHasRegionMask (region.hasMask()),
@@ -86,7 +86,7 @@ LatticeRegion::LatticeRegion (const Slicer& slicer,
 }
   
 LatticeRegion::LatticeRegion (const LatticeRegion& other)
-: itsRegion (other.itsRegion->clone()),
+: itsRegion (other.itsRegion->cloneRegion()),
   itsSlicer (other.itsSlicer),
   itsParent (other.itsParent),
   itsHasRegionMask (other.itsHasRegionMask),
@@ -104,7 +104,7 @@ LatticeRegion& LatticeRegion::operator= (const LatticeRegion& other)
         delete itsRegion;
 	itsRegion = other.itsRegion;
 	if (itsRegion != 0) {
-	    itsRegion = itsRegion->clone();
+	    itsRegion = itsRegion->cloneRegion();
 	}
 	itsSlicer = other.itsSlicer;
 	itsParent = other.itsParent;

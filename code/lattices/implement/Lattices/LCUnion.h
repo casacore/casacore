@@ -102,7 +102,7 @@ public:
     LCUnion& operator= (const LCUnion& other);
 
     // Make a copy of the derived object.
-    virtual LCRegion* clone() const;
+    virtual LCRegion* cloneRegion() const;
 
     // Construct another LCRegion (for e.g. another lattice) by moving
     // this one. It recalculates the bounding box and mask.

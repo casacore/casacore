@@ -71,7 +71,7 @@ LCPolygon& LCPolygon::operator= (const LCPolygon& that)
     return *this;
 }
 
-LCRegion* LCPolygon::clone() const
+LCRegion* LCPolygon::cloneRegion() const
 {
     return new LCPolygon(*this);
 }

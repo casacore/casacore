@@ -79,7 +79,7 @@ public:
     LCMask& operator= (const LCMask& other);
 
     // Make a copy of the derived object.
-    virtual LCRegion* clone() const;
+    virtual LCRegion* cloneRegion() const;
 
     // Construct another LCMask (for e.g. another lattice) by moving
     // this one. It recalculates the bounding mask.

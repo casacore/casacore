@@ -103,7 +103,7 @@ public:
     LCEllipsoid& operator= (const LCEllipsoid& other);
 
     // Make a copy of the derived object.
-    virtual LCRegion* clone() const;
+    virtual LCRegion* cloneRegion() const;
 
     // Construct another LCBox (for e.g. another lattice) by moving
     // this one. It recalculates the bounding box.

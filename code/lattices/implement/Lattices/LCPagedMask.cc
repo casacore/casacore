@@ -80,7 +80,7 @@ LCPagedMask& LCPagedMask::operator= (const LCPagedMask& that)
     return *this;
 }
 
-LCRegion* LCPagedMask::clone() const
+LCRegion* LCPagedMask::cloneRegion() const
 {
     return new LCPagedMask(*this);
 }

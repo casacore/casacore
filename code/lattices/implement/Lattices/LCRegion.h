@@ -93,7 +93,10 @@ public:
     virtual ~LCRegion();
 
     // Make a copy of the derived object.
-    virtual LCRegion* clone() const = 0;
+    // <group>
+    virtual Lattice<Bool>* clone() const;
+    virtual LCRegion* cloneRegion() const = 0;
+    // </group>
 
     // Does the region have a mask?
     virtual Bool hasMask() const = 0;

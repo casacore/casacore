@@ -40,7 +40,7 @@ LCExtension::LCExtension()
 LCExtension::LCExtension (const LCRegion& region,
 			  const IPosition& expandAxes,
 			  const IPosition& latticeShape)
-: LCRegionMulti (region.clone(), latticeShape),
+: LCRegionMulti (region.cloneRegion(), latticeShape),
   itsExpandAxes (expandAxes),
   itsBlc (IPosition(expandAxes.nelements(), 0)),
   itsTrc (IPosition(expandAxes.nelements(), 0))
@@ -60,7 +60,7 @@ LCExtension::LCExtension (const LCRegion& region,
 			  const IPosition& expandBlc,
 			  const IPosition& expandTrc,
 			  const IPosition& latticeShape)
-: LCRegionMulti (region.clone(), latticeShape),
+: LCRegionMulti (region.cloneRegion(), latticeShape),
   itsExpandAxes (expandAxes),
   itsBlc (expandBlc),
   itsTrc (expandTrc)
@@ -95,7 +95,7 @@ LCExtension& LCExtension::operator= (const LCExtension& other)
     return *this;
 }
 
-LCRegion* LCExtension::clone() const
+LCRegion* LCExtension::cloneRegion() const
 {
     return new LCExtension (*this);
 }

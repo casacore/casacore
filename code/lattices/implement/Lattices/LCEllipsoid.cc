@@ -92,7 +92,7 @@ LCEllipsoid& LCEllipsoid::operator= (const LCEllipsoid& that)
     return *this;
 }
 
-LCRegion* LCEllipsoid::clone() const
+LCRegion* LCEllipsoid::cloneRegion() const
 {
     return new LCEllipsoid(*this);
 }

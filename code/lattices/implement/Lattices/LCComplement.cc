@@ -63,7 +63,7 @@ LCComplement& LCComplement::operator= (const LCComplement& other)
     return *this;
 }
 
-LCRegion* LCComplement::clone() const
+LCRegion* LCComplement::cloneRegion() const
 {
     return new LCComplement (*this);
 }
