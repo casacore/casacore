@@ -6041,3 +6041,7 @@
 17 070 src rm aips/implement/Functionals/Gaussian2DParam.h
 17 070 src rm aips/implement/Functionals/Gaussian2DParam.cc
 17 070 src rm trial/implement/Fitting/test/tNonLinearFitLM.cc
+17 070 src rm trial/implement/Fitting/NonLinearFit.cc
+17 070 src rm trial/implement/Fitting/NonLinearFit.h
+17 070 src rm trial/implement/Fitting/NonLinearFitLM.cc
+17 070 src rm trial/implement/Fitting/NonLinearFitLM.h
