@@ -24,7 +24,7 @@
 //#                        Charlottesville, VA 22903-2475 USA
 //#
 //#
-//# $Id: 
+//# $Id$
 //
 #if !defined(AIPS_IMAGEMOMENTSPROGRESS_H)
 #define AIPS_IMAGEMOMENTSPROGRESS_H

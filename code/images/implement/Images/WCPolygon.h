@@ -23,7 +23,8 @@
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
 //#
-//# $Id:
+//# $Id$
+
 
 #if !defined(AIPS_WCPOLYGON_H)
 #define AIPS_WCPOLYGON_H
