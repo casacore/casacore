@@ -1,5 +1,5 @@
 //# tLargeFileIO.cc: Test program for performance of file IO
-//# Copyright (C) 2001,2002
+//# Copyright (C) 2001,2002,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -30,7 +30,7 @@
 #include <aips/Utilities/String.h>
 #include <aips/Exceptions/Error.h>
 #include <aips/iostream.h>
-#include <aips/strstream.h>
+#include <aips/sstream.h>
 #include <unistd.h>
 
 
@@ -39,12 +39,12 @@ int main (int argc, char** argv)
   try {
     int nr = 100;
     if (argc > 1) {
-	istrstream istr(argv[1]);
+	istringstream istr(argv[1]);
 	istr >> nr;
     }
     int leng = 1024;
     if (argc > 2) {
-	istrstream istr(argv[2]);
+	istringstream istr(argv[2]);
 	istr >> leng;
     }
     leng /= sizeof(int);

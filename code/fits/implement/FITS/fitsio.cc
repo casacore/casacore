@@ -1,5 +1,5 @@
 //# fitsio.cc:
-//# Copyright (C) 1993,1994,1995,1996,1997,1999,2000,2001,2002
+//# Copyright (C) 1993,1994,1995,1996,1997,1999,2000,2001,2002,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //# 
 //# This library is free software; you can redistribute it and/or modify it
@@ -30,7 +30,7 @@
 # include <aips/Utilities/String.h>
 # include <aips/Containers/Block.h>
 # include <aips/string.h>
-# include <aips/strstream.h>
+# include <aips/sstream.h>
 
 FitsIO::~FitsIO() {
 }
@@ -77,7 +77,7 @@ void readHeaderRecErrHandler(const char *errMessage, FITSError::ErrorLevel sever
 
 
 void FitsInput::errmsg(FitsErrs e, char *s) {
-    ostrstream msgline;
+    ostringstream msgline;
     msgline << "FitsInput error:  ";
     if (fin.fname() == 0 || *fin.fname() == '\0') 
 	msgline << "File Descriptor " << fin.fdes();
@@ -87,7 +87,7 @@ void FitsInput::errmsg(FitsErrs e, char *s) {
 	    << " logical record " << fin.recno() << " --\n\t" << s << ends;
     err_status = e;
     // all FitsIO messages are SEVERE
-    char * mptr = msgline.str();
+    const char * mptr = msgline.str().data();
     errfn(mptr, FITSError::SEVERE);
     // delete [] mptr;
 }
@@ -141,7 +141,7 @@ BlockInput &FitsInput::make_input(const char *n, const FITS::FitsDevice &d,
 }
 
 void FitsOutput::errmsg(FitsErrs e, char *s) {
-    ostrstream msgline;
+    ostringstream msgline;
     msgline << "FitsOutput error:  ";
     if (fout.fname() == 0 || *fout.fname() == '\0') 
 	msgline << "File Descriptor " << fout.fdes();
@@ -151,7 +151,7 @@ void FitsOutput::errmsg(FitsErrs e, char *s) {
 	    << " logical record " << fout.recno() << " --\n\t" << s << ends;
     err_status = e;
     // all FitsIO messages are SEVERE
-    char * mptr = msgline.str();
+    const char * mptr = msgline.str().data();
     errfn(mptr, FITSError::SEVERE);
     // delete [] mptr;
 }

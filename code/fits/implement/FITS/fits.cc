@@ -1,5 +1,5 @@
 //# fits.cc:
-//# Copyright (C) 1993,1994,1995,1996,1997,1998,1999,2000,2001,2002
+//# Copyright (C) 1993,1994,1995,1996,1997,1998,1999,2000,2001,2002,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //# 
 //# This library is free software; you can redistribute it and/or modify it
@@ -31,7 +31,7 @@
 # include <aips/FITS/fits.h>
 # include <string.h>
 # include <stdlib.h>
-# include <aips/strstream.h>
+# include <aips/sstream.h>
 # include <aips/Mathematics/Constants.h>
 
 
@@ -2278,10 +2278,10 @@ int FitsKeywordList::rules(FitsKeyword &x, FITSErrorHandler errhandler) {
 		    } else {
 			if (x.index() >= 1 && x.index() <= curr()->asInt()) {
 			    if (x.asInt() < 0) {
-				ostrstream msgline;
+				ostringstream msgline;
 				msgline << "Illegal value for keyword NAXIS"
 					<< x.index() << ends;
-				char * mptr = msgline.str();
+				const char * mptr = msgline.str().data();
 				errhandler(mptr, FITSError::SEVERE);
 				// delete [] mptr;
 				return -1;
@@ -2306,10 +2306,10 @@ int FitsKeywordList::rules(FitsKeyword &x, FITSErrorHandler errhandler) {
 		} else {
 		    if (x.index() >= 1 && x.index() <= curr()->asInt()) {
 			if (x.asInt() < 0) {
-			    ostrstream msgline;
+			    ostringstream msgline;
 			    msgline << "Illegal value for keyword TBCOL"
 				    << x.index() << ends;
-			    char * mptr = msgline.str();
+			    const char * mptr = msgline.str().data();
 			    errhandler(mptr, FITSError::SEVERE);
 			    // delete [] mptr;
 			    return -1;
@@ -2410,11 +2410,11 @@ FitsKeywordList &FitsKeyCardTranslator::parse(const char *buff,
 		FITSError::ErrorLevel errlev = FITSError::WARN;
 		if (strcmp(kwlist.curr()->name(),"ERROR") == 0)
 		    errlev = FITSError::SEVERE;
-		ostrstream msgline;
+		ostringstream msgline;
 		msgline << "FITS card " << (count * 36 + cardno) << ": ";
 		msgline.write(&buff[i*80],80);
 		msgline << ends;
-		char * mptr = msgline.str();
+		const char * mptr = msgline.str().data();
 		errhandler(mptr, errlev);
 		// delete [] mptr;
 		for (j = 0; j < kwlist.no_parse_errs(); ++j) {
@@ -2428,12 +2428,12 @@ FitsKeywordList &FitsKeyCardTranslator::parse(const char *buff,
 		    kwlist.del();
 		else {
 		    if (no_errs_ < max_errs) {
-			ostrstream msgline;
+			ostringstream msgline;
 		    	msgline << "FITS card " 
 				<< (count * 36 + cardno) << ": ";
 		    	msgline.write(&buff[i*80],80);
 			msgline << ends;
-			char * mptr = msgline.str();
+			const char * mptr = msgline.str().data();
 			errhandler(mptr, FITSError::WARN);
 			// delete [] mptr;
 		    	errhandler("Invalid card after END keyword.",

@@ -32,29 +32,29 @@
 #include <aips/OS/Timer.h>
 #include <aips/Utilities/String.h>
 #include <aips/iostream.h>
-#include <aips/strstream.h>
+#include <aips/sstream.h>
 
 
 int main (int argc, char** argv)
 {
     int nr = 100;
     if (argc > 1) {
-	istrstream istr(argv[1]);
+	istringstream istr(argv[1]);
 	istr >> nr;
     }
     int leng = 1024;
     if (argc > 2) {
-	istrstream istr(argv[2]);
+	istringstream istr(argv[2]);
 	istr >> leng;
     }
     int size = 0;
     if (argc > 3) {
-	istrstream istr(argv[3]);
+	istringstream istr(argv[3]);
 	istr >> size;
     }
     int seek = 0;
     if (argc > 4) {
-	istrstream istr(argv[4]);
+	istringstream istr(argv[4]);
 	istr >> seek;
     }
     cout << "tFileIO  nrrec=" << nr << " reclength=" << leng

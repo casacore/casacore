@@ -1,5 +1,5 @@
 //# TiledLineStepper.cc: defines TiledLineStepper class
-//# Copyright (C) 1994,1995,1996,1997,1999,2000,2001
+//# Copyright (C) 1994,1995,1996,1997,1999,2000,2001,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -31,7 +31,7 @@
 #include <aips/Utilities/Assert.h>
 #include <aips/Exceptions/Error.h>
 #include <aips/iostream.h>
-#include <aips/strstream.h>
+#include <aips/sstream.h>
 
 
 TiledLineStepper::TiledLineStepper (const IPosition& latticeShape, 
@@ -443,7 +443,7 @@ LatticeNavigator* TiledLineStepper::clone() const
 
 Bool TiledLineStepper::ok() const
 {
-  ostrstream str;
+  ostringstream str;
   str << "TiledLineStepper::ok - ";
   const uInt tilerDim = itsTiler.ndim();
   for (uInt i=0; i < tilerDim; i++) {
@@ -453,7 +453,7 @@ Bool TiledLineStepper::ok() const
       str << "tiler cursor shape " << itsTileShape
 	  << " is too big or small for lattice shape "
 	  << itsTiler.shape();
-      throw AipsError (String(str));
+      throw AipsError (String(str.str()));
       return False;
     }
   }
@@ -462,7 +462,7 @@ Bool TiledLineStepper::ok() const
     str << "tiler cursor position " << itsTilerCursorPos
 	<< " has wrong number of dimensions (ie. not "
 	<< tilerDim << ')' ;
-    throw AipsError (String(str));
+    throw AipsError (String(str.str()));
     return False;
   }
 
@@ -473,7 +473,7 @@ Bool TiledLineStepper::ok() const
 	<< " or end " << itsTilerCursorPos + itsTileShape - 1
 	<< " is entirely outside the lattice shape "
 	<< itsTiler.shape();
-    throw AipsError (String(str));
+    throw AipsError (String(str.str()));
     return False;
   }
 
@@ -483,7 +483,7 @@ Bool TiledLineStepper::ok() const
     str << "cursor shape " << itsCursorShape
 	<< " has wrong number of dimensions (ie. not "
 	<< latticeDim << ')';
-    throw AipsError (String(str));
+    throw AipsError (String(str.str()));
     return False;
   }
   for (uInt i=0; i < latticeDim; i++) {
@@ -494,7 +494,7 @@ Bool TiledLineStepper::ok() const
       str << "cursor shape " << itsCursorShape
 	  << " is too big or small for lattice shape "
 	  << itsIndexer.shape();
-      throw AipsError (String(str));
+      throw AipsError (String(str.str()));
       return False;
     }
   }
@@ -503,7 +503,7 @@ Bool TiledLineStepper::ok() const
     str << "cursor position " << itsIndexerCursorPos
 	<< " has wrong number of dimensions (ie. not "
 	<< latticeDim << ')';
-    throw AipsError (String(str));
+    throw AipsError (String(str.str()));
     return False;
   }
   
@@ -514,7 +514,7 @@ Bool TiledLineStepper::ok() const
 	<< " or end " << itsIndexerCursorPos + itsCursorShape - 1
 	<< " is entirely outside the lattice shape "
 	<< itsIndexer.shape();
-    throw AipsError (String(str));
+    throw AipsError (String(str.str()));
     return False;
   }
 
@@ -523,7 +523,7 @@ Bool TiledLineStepper::ok() const
     str << "axis path " << itsAxisPath
 	<< " has wrong number of dimensions (ie. not "
 	<< latticeDim << ')';
-    throw AipsError (String(str));
+    throw AipsError (String(str.str()));
     return False;
   }
   // each itsAxisPath value must be a lattice axis number, 0..n-1
@@ -532,7 +532,7 @@ Bool TiledLineStepper::ok() const
       str << "axis path " << itsAxisPath
 	  << " has elements bigger than the lattice dim -1 (ie. "
 	  << latticeDim - 1 << ')';
-      throw AipsError (String(str));
+      throw AipsError (String(str.str()));
       return False;
     }
   }
@@ -543,7 +543,7 @@ Bool TiledLineStepper::ok() const
       if (itsAxisPath(k) == itsAxisPath(j)) {
 	str << "axis path " << itsAxisPath
 	    << " does not have unique elements";
-	throw AipsError (String(str));
+	throw AipsError (String(str.str()));
 	return False;
       }
     }
@@ -551,18 +551,18 @@ Bool TiledLineStepper::ok() const
   // Check the LatticeIndexers are OK
   if (itsIndexer.ok() == False) {
     str << "LatticeIndexer thinks things are bad";
-    throw AipsError (String(str));
+    throw AipsError (String(str.str()));
     return False;
   }
   if (itsTiler.ok() == False) {
     str<< "itsTiler thinks things are bad";
-    throw AipsError (String(str));
+    throw AipsError (String(str.str()));
     return False;
   }
   // Check the LatticeIndexer is OK
   if (itsIndexer.ok() == False) {
     str << "itsIndexer thinks things are bad";
-    throw AipsError (String(str));
+    throw AipsError (String(str.str()));
     return False;
   }
   // Otherwise it has passed all the tests

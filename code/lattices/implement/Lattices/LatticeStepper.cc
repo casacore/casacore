@@ -1,5 +1,5 @@
 //# LatticeStepper.cc: defines LatticeStepper class
-//# Copyright (C) 1994,1995,1996,1997,1998,2000,2001
+//# Copyright (C) 1994,1995,1996,1997,1998,2000,2001,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -30,7 +30,7 @@
 #include <aips/Utilities/Assert.h>
 #include <aips/Exceptions/Error.h>
 #include <aips/iostream.h>
-#include <aips/strstream.h>
+#include <aips/sstream.h>
 
 
 LatticeStepper::LatticeStepper (const IPosition& latticeShape,
@@ -466,7 +466,7 @@ uInt LatticeStepper::calcCacheSize (const ROTiledStManAccessor& accessor,
 
 Bool LatticeStepper::ok() const
 {
-  ostrstream str;
+  ostringstream str;
   str << "LatticeStepper::ok - ";
   const uInt latticeDim = itsIndexer.ndim();
   // Check the cursor shape is OK
@@ -474,7 +474,7 @@ Bool LatticeStepper::ok() const
     str << "cursor shape " << itsCursorShape
 	<< " has wrong number of dimensions (ie. not "
 	<< latticeDim << ')';
-    throw AipsError (String(str));
+    throw AipsError (String(str.str()));
     return False;
   }
   for (uInt i=0; i < latticeDim; i++) {
@@ -485,7 +485,7 @@ Bool LatticeStepper::ok() const
       str << "cursor shape " << itsCursorShape
 	  << " is too big or small for full lattice shape "
 	  << itsIndexer.fullShape();
-      throw AipsError (String(str));
+      throw AipsError (String(str.str()));
       return False;
     }
   }
@@ -494,7 +494,7 @@ Bool LatticeStepper::ok() const
     str << "cursor position " << itsCursorPos
 	<< " has wrong number of dimensions (ie. not "
 	<< latticeDim << ')';
-    throw AipsError (String(str));
+    throw AipsError (String(str.str()));
      return False;
   }
   
@@ -505,7 +505,7 @@ Bool LatticeStepper::ok() const
 	<< " or end " << itsCursorPos + itsCursorShape - 1
 	<< " is entirely outside the lattice shape "
 	<< itsIndexer.shape();
-    throw AipsError (String(str));
+    throw AipsError (String(str.str()));
     return False;
   }
 
@@ -514,7 +514,7 @@ Bool LatticeStepper::ok() const
     str << "axis path " << itsAxisPath
 	<< " has wrong number of dimensions (ie. not "
 	<< latticeDim << ')';
-    throw AipsError (String(str));
+    throw AipsError (String(str.str()));
     return False;
   }
   // each itsAxisPath value must be a lattice axis number, 0..n-1
@@ -523,7 +523,7 @@ Bool LatticeStepper::ok() const
       str << "axis path " << itsAxisPath
 	  << " has elements >= the lattice dim "
 	  << latticeDim - 1;
-      throw AipsError (String(str));
+      throw AipsError (String(str.str()));
       return False;
     }
   }
@@ -533,7 +533,7 @@ Bool LatticeStepper::ok() const
       if (itsAxisPath(k) == itsAxisPath(j)) {
 	str << "axis path " << itsAxisPath
 	    << " does not have unique elements";
-	throw AipsError (String(str));
+	throw AipsError (String(str.str()));
 	return False;
       }
     }
@@ -541,14 +541,14 @@ Bool LatticeStepper::ok() const
   // Check the LatticeIndexer is OK
   if (itsIndexer.ok() == False) {
     str << "LatticeIndexer thinks things are bad";
-    throw AipsError (String(str));
+    throw AipsError (String(str.str()));
     return False;
   }
   // Check if itsNiceFit is correct.
   if (itsNiceFit != niceFit()) {
     str << "itsNiceFit " << itsNiceFit
 	<< " is inconsistent with niceFit()";
-    throw AipsError (String(str));
+    throw AipsError (String(str.str()));
     return False;
   }
   // Otherwise it has passed all the tests

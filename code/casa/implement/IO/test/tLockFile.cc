@@ -1,5 +1,5 @@
 //# tLockFile.cc: Program to test classes LockFile and FileLocker
-//# Copyright (C) 1997,1998,1999,2000,2001
+//# Copyright (C) 1997,1998,1999,2000,2001,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -36,7 +36,7 @@
 #include <aips/Utilities/Assert.h>
 #include <aips/Exceptions/Error.h>
 #include <aips/iostream.h>
-#include <aips/strstream.h>
+#include <aips/sstream.h>
 
 
 void doIt (const String& name, double interval)
@@ -203,7 +203,7 @@ main (int argc, char** argv)
 	if (argc > 1) {
 	    double interval = 5;
 	    if (argc > 2) {
-		istrstream istr(argv[2]);
+		istringstream istr(argv[2]);
 		istr >> interval;
 	    }
 	    doIt (argv[1], interval);

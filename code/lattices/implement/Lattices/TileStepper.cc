@@ -1,5 +1,5 @@
 //# TileStepper.cc: defines TileStepper class
-//# Copyright (C) 1997,1999,2000,2001
+//# Copyright (C) 1997,1999,2000,2001,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -29,7 +29,7 @@
 #include <aips/Utilities/Assert.h>
 #include <aips/Exceptions/Error.h>
 #include <aips/iostream.h>
-#include <aips/strstream.h>
+#include <aips/sstream.h>
 
 
 TileStepper::TileStepper(const IPosition& latticeShape, 
@@ -400,7 +400,7 @@ LatticeNavigator* TileStepper::clone() const
 
 Bool TileStepper::ok() const
 {
-  ostrstream str;
+  ostringstream str;
   str << "TileStepper::ok - ";
   const uInt latticeDim = itsTiler.ndim();
   // Check the cursor shape is OK
@@ -408,7 +408,7 @@ Bool TileStepper::ok() const
     str << "cursor shape " << itsTileShape
 	<< " has wrong number of dimensions (ie. not "
 	<< latticeDim << ')';
-    throw AipsError (String(str));
+    throw AipsError (String(str.str()));
     return False;
   }
   for (uInt i=0; i < latticeDim; i++) {
@@ -418,7 +418,7 @@ Bool TileStepper::ok() const
       str << "cursor shape " << itsTileShape
 	  << " is too big or small for lattice shape "
 	  << itsTiler.shape();
-      throw AipsError (String(str));
+      throw AipsError (String(str.str()));
       return False;
     }
   }
@@ -427,7 +427,7 @@ Bool TileStepper::ok() const
     str << "cursor position " << itsTilerCursorPos
 	<< " has wrong number of dimensions (ie. not "
 	<< latticeDim << ')';
-    throw AipsError (String(str));
+    throw AipsError (String(str.str()));
     return False;
   }
 
@@ -438,7 +438,7 @@ Bool TileStepper::ok() const
  	   << " or end " << itsTilerCursorPos + itsTileShape - 1
  	   << " is entirely outside the lattice shape "
  	   << itsTiler.shape();
-    throw AipsError (String(str));
+    throw AipsError (String(str.str()));
     return False;
   }
 
@@ -447,7 +447,7 @@ Bool TileStepper::ok() const
     str << "axis path " << itsAxisPath
 	<< " has wrong number of dimensions (ie. not "
 	<< latticeDim << ')';
-    throw AipsError (String(str));
+    throw AipsError (String(str.str()));
     return False;
   }
   // each itsAxisPath value must be a lattice axis number, 0..n-1
@@ -456,7 +456,7 @@ Bool TileStepper::ok() const
       str << "axis path " << itsAxisPath
 	  << " has elements bigger than the lattice dim -1 (ie. "
 	  << latticeDim - 1 << ')';
-      throw AipsError (String(str));
+      throw AipsError (String(str.str()));
       return False;
     }
   }
@@ -467,7 +467,7 @@ Bool TileStepper::ok() const
       if (itsAxisPath(k) == itsAxisPath(j)) {
 	str << "axis path " << itsAxisPath
 	    << " does not have unique elements";
-	throw AipsError (String(str));
+	throw AipsError (String(str.str()));
  	return False;
       }
     }
@@ -475,7 +475,7 @@ Bool TileStepper::ok() const
   // Check the LatticeIndexer is OK
   if (itsTiler.ok() == False) {
     str << "LatticeIndexer thinks things are bad";
-    throw AipsError (String(str));
+    throw AipsError (String(str.str()));
     return False;
   }
   // Otherwise it has passed all the tests

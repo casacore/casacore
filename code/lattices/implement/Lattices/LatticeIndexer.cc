@@ -1,5 +1,5 @@
 //# LatticeIndexer.cc: A class for stepping through (sub-)Lattices
-//# Copyright (C) 1994,1996,1997,2000,2001
+//# Copyright (C) 1994,1996,1997,2000,2001,2003
 //# Associated Universities, Inc. Washington DC, USA.,1995
 //# 
 //# This program is free software; you can redistribute it and/or modify
@@ -30,7 +30,7 @@
 #include <aips/Exceptions/Error.h>
 #include <aips/Utilities/Assert.h>
 #include <aips/iostream.h>
-#include <aips/strstream.h>
+#include <aips/sstream.h>
 
 
 LatticeIndexer::LatticeIndexer()
@@ -341,25 +341,25 @@ IPosition LatticeIndexer::absolutePosition (const IPosition& position) const
 // return True if every thing is fine otherwise return False
 Bool LatticeIndexer::ok() const
 {
-  ostrstream str;
+  ostringstream str;
   str << "LatticeIndexer::ok - ";
   if (itsNdim == 0) {
     str << "zero dimensions";
-    throw AipsError (String(str));
+    throw AipsError (str.str());
     return False;
   }
   if (itsFullShape.nelements() != itsNdim) {
     str << "lattice has "
 	<< itsFullShape.nelements() << " instead of "
 	<< itsNdim << " dimensions";
-    throw AipsError (String(str));
+    throw AipsError (str.str());
     return False;
   }
   for (uInt i=0; i < itsNdim; i++) {
     if (itsFullShape(i) < 0) {
       str << "lattice shape " << itsFullShape
 	  << " has a negative element";
-      throw AipsError (String(str));
+      throw AipsError (str.str());
       return False;
     }
   }
@@ -367,7 +367,7 @@ Bool LatticeIndexer::ok() const
     str << "increments " << itsAxisInc
 	<< " are the wrong dimension (ie. not " 
 	<< itsNdim << ')';
-      throw AipsError (String(str));
+      throw AipsError (String(str.str()));
     return False;
   }
   for (uInt j=0; j < itsNdim; j++) {
@@ -375,7 +375,7 @@ Bool LatticeIndexer::ok() const
       str << "axis increments " << itsAxisInc
 	  << " are negative OR larger than lattice shape "
 	  << itsFullShape;
-      throw AipsError (String(str));
+      throw AipsError (String(str.str()));
       return False;
     }
   }
@@ -383,7 +383,7 @@ Bool LatticeIndexer::ok() const
     str << "offset " << itsOffset
 	<< " is the wrong dimension (ie. not "
 	<< itsNdim << ')';
-      throw AipsError (String(str));
+      throw AipsError (String(str.str()));
     return False;
   }
   for (uInt k=0; k < itsNdim; k++) {
@@ -391,7 +391,7 @@ Bool LatticeIndexer::ok() const
       str << "offset " << itsOffset
 	  << " is larger than lattice shape "
 	  << itsFullShape << " or negative";
-      throw AipsError (String(str));
+      throw AipsError (String(str.str()));
       return False;
     }
   }
@@ -399,7 +399,7 @@ Bool LatticeIndexer::ok() const
     str << "sub-lattice shape " << itsShape
 	<< " has wrong number of dimensions (ie. not "
 	<< itsNdim << ')';
-      throw AipsError (String(str));
+      throw AipsError (String(str.str()));
     return False;
   }
   for (uInt m=0; m < itsNdim; m++) {
@@ -407,7 +407,7 @@ Bool LatticeIndexer::ok() const
       str << "sub-lattice shape " << itsShape
 	  << " is less than or equal to zero or larger than lattice shape "
 	  << itsFullShape;
-      throw AipsError (String(str));
+      throw AipsError (String(str.str()));
       return False;
     }
   }
