@@ -330,7 +330,7 @@ void doitLinear (const Double refVal,
       throw(AipsError(String("Failed to set linear transform because") + lc.errorMessage()));
    }
    if (!allEQ(xform.ac(), lc.linearTransform().ac())) {
-      throw(AipsError("Failed linear transform set/recovery test");)
+      throw(AipsError("Failed linear transform set/recovery test"));
    }
 //
 // Test conversion
@@ -404,7 +404,7 @@ void doitNonLinear (const Vector<Double>& pixelValues,
       throw(AipsError(String("Failed to set Tabular transform because") + lc.errorMessage()));
    }
    if (!allEQ(xform.ac(), lc.linearTransform().ac())) {
-      throw(AipsError("Failed Tabular transform set/recovery test");)
+      throw(AipsError("Failed Tabular transform set/recovery test"));
    }
 //
 // Test conversion

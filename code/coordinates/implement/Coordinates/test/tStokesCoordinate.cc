@@ -272,7 +272,7 @@ void doit2 (StokesCoordinate& lc,
       throw(AipsError(String("Failed to set linear transform because") + lc.errorMessage()));
    }
    if (!allEQ(xform.ac(), lc.linearTransform().ac())) {
-      throw(AipsError("Failed linear transform set/recovery test");)
+      throw(AipsError("Failed linear transform set/recovery test"));
    }
 }
 
