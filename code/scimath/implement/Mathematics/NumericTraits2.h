@@ -30,7 +30,6 @@
 #define AIPS_NUMERICTRAITS2_H
 
 #include <aips/Mathematics/Complex.h>
-#include <aips/Mathematics/Constants.h>
 
 // <summary> A specialisation for T=Float of the NumericTraits class </summary>
 class NumericTraits<Float> {
