@@ -37,6 +37,7 @@
 #include <aips/Quanta/MVDirection.h>
 #include <aips/Quanta/MVBaseline.h>
 #include <aips/Measures/MPosition.h>
+#include <aips/Measures/MCuvw.h>
 #include <aips/Measures/Muvw.h>
 #include <aips/Quanta/MVuvw.h>
 #include <aips/Measures/MCFrame.h>
@@ -49,6 +50,8 @@ main()
       	cout << "Test measure class Muvw" << endl;
 	cout << "--------------------------------------" << endl;
 
+	cout << endl << "Muvw state transition matrix:\n" << endl;
+	cout << MCuvw::showState() << endl;
 
 	MEpoch tbm(Quantity(50927.92931, "d"));
 	MPosition pos(MVPosition(-4750915.84032, 2792906.17778, 
@@ -120,7 +123,7 @@ main()
 	cout << "All forward/backward conversions: ok" << endl;
 	cout << "--------------------------------------" << endl;
 
-	cout << "Exercise all MVuvw function" << endl;
+	cout << "Exercise all MVuvw functions" << endl;
 	{
 	  MVuvw x(mvb0);
 	  if (x != mvb0) cout << "Copy constructor error" << endl;
