@@ -36,12 +36,14 @@ ImageExprParse* val;
 
 %token <val> NAME           /* name of constant, function, or lattice */
 %token <val> LATNAME        /* lattice name */
+%token <val> TMPREG         /* temporary region name */
 %token <val> LITERAL
 %token LPAREN
 %token RPAREN
 %token LBRACKET
 %token RBRACKET
 %token COMMA
+%token COLON
 %type <node> orexpr
 %type <node> andexpr
 %type <node> relexpr
@@ -199,11 +201,15 @@ simexpr:   LPAREN orexpr RPAREN
 	       delete $7;
 	   }
          | LATNAME {
-	       $$ = new LatticeExprNode ($1->makeLatticeNode());
+	       $$ = new LatticeExprNode ($1->makeLRNode());
 	       delete $1;
 	   }
          | NAME {
-	       $$ = new LatticeExprNode ($1->makeLitLattNode());
+	       $$ = new LatticeExprNode ($1->makeLitLRNode());
+	       delete $1;
+	   }
+         | TMPREG {
+	       $$ = new LatticeExprNode ($1->makeRegionNode());
 	       delete $1;
 	   }
          | LITERAL {
