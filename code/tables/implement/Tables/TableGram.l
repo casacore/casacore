@@ -360,8 +360,8 @@ NAMETAB   ([A-Za-z0-9_./+\-~$]|(\\.))+
 	    return TABNAME;
 	  }
 
- /* A table file name can be given in the FROM or GIVING clause */
-<FROMstate,GIVINGstate>{NAMETAB} {
+ /* A table file name can be given in the UPDATE, FROM or GIVING clause */
+<UPDATEstate,FROMstate,GIVINGstate>{NAMETAB} {
             tableGramPosition() += yyleng;
             lvalp->val = TableParseVal::makeValue();
 	    lvalp->val->type = 's';
