@@ -1188,13 +1188,15 @@ versions :
 	-@ echo ""
 	-  uname -a
 	-@ echo ""
-	-  gzip --version
+	-  $(MAKE) --version | head -1
 	-@ echo ""
-	-  $(FLEX) -V
+	-  gzip --version
 	-@ echo ""
 	-  $(BISON) --version
 	-@ echo ""
-	-  $(MAKE) --version
+	-  $(FLEX) -V
+	-@ echo ""
+	-  $(LATEX2HTML) -v
 
 # Print specified variable definitions.
 show_vars :
