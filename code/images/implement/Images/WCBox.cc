@@ -37,157 +37,120 @@
 #include <trial/Lattices/LCRegion.h>
 #include <aips/Mathematics/Math.h>
 #include <aips/Quanta/Unit.h>
+#include <aips/Quanta/Quantum.h>
+#include <aips/Quanta/QuantumHolder.h>
+#include <aips/Quanta/QLogical.h>
 #include <aips/Tables/TableRecord.h>
 #include <aips/Utilities/Assert.h>
 #include <aips/Utilities/LinearSearch.h>
 #include <aips/Utilities/String.h>
 
-
-// Force the compiler to know about these
-
-typedef Vector<String> gppBug_VectorString;
+#include <iostream.h>
+#include <strstream.h>
 
 
 WCBox::WCBox()
 //
 //Default constructor
 // 
-: itsIsOffset(False),
-  itsNull(True)
-{}
+: itsNull(True)
+{
+   unitInit();
+}
 
-WCBox::WCBox(const Vector<Double>& blcWC,
-             const Vector<Double>& trcWC,
+WCBox::WCBox(const Vector<Quantum<Double> >& blc,
+             const Vector<Quantum<Double> >& trc,
              const CoordinateSystem& cSys,
-             const Bool isOffset)
+             const RegionType::AbsRelType absRel)
 //
-// Constructor from Double vectors.
-// blc and trc are in the order of world
-// axes of CS
+// Constructor from Quantities.  blc and trc are in the 
+// order of the pixel axes of CS.  We will need a vector of absRel
+// for each axis eventually.
 //
-: itsBlcWC(blcWC.copy()),
-  itsTrcWC(trcWC.copy()),
+//
+: itsBlc(blc.copy()),
+  itsTrc(trc.copy()),
   itsCSys(cSys),
-  itsIsOffset(isOffset),
+  itsAbsRel(absRel),
   itsNull(False)
 {
-   AlwaysAssert (itsBlcWC.nelements() <= itsCSys.nWorldAxes(), AipsError);
-   AlwaysAssert (itsTrcWC.nelements() <= itsCSys.nWorldAxes(), AipsError);
    AlwaysAssert (itsCSys.nWorldAxes() > 0, AipsError);
-   AlwaysAssert (itsIsOffset == False, AipsError);
+   AlwaysAssert (itsCSys.nPixelAxes() > 0, AipsError);
+//
+   String msg;
+   if (itsBlc.nelements() > itsCSys.nPixelAxes()) {
+      msg = String("WCBox - you gave more values for the BLC than ") +
+            String("there are axes in the CoordinateSystem");
+      throw (AipsError (msg));
+   }
+   if (itsTrc.nelements() > itsCSys.nPixelAxes()) {
+      msg = String("WCBox - you gave more values for the TRC than ") +
+            String("there are axes in the CoordinateSystem");
+      throw (AipsError (msg));
+   }
+   if (itsAbsRel != RegionType::Abs) {
+      throw (AipsError ("WCBox - cannot handle relative coordinates yet"));
+   }
 
-// Set world axes vectors
+// Check units are consistent with the given CoordinateSystem
 
-   itsBlcWorldAxes.resize(itsBlcWC.nelements());
-   for (uInt i=0; i<itsBlcWC.nelements(); i++) itsBlcWorldAxes(i) = i;
+   unitInit();
+   checkUnits(itsBlcPixelAxes, itsBlc, cSys);
+   checkUnits(itsTrcPixelAxes, itsTrc, cSys);
 
-   itsTrcWorldAxes.resize(itsTrcWC.nelements());
-   for (i=0; i<itsTrcWC.nelements(); i++) itsTrcWorldAxes(i) = i;
 }
 
 
-WCBox::WCBox(const Vector<Float>& blcWC,
-             const Vector<Float>& trcWC,
+WCBox::WCBox(const Vector<Quantum<Double> >& blc,
+             const Vector<Quantum<Double> >& trc,
+             const Vector<uInt>& blcPixelAxes,
+             const Vector<uInt>& trcPixelAxes,
              const CoordinateSystem& cSys,
-             const Bool isOffset)
+             const RegionType::AbsRelType absRel)
 //
-// Constructor from Float vectors
-// blc and trc are in the order of world
-// axes of CS
+// Constructor from Quantities.  blc and trc are in the 
+// order of the pixel axes of CS
 //
-: itsCSys(cSys),
-  itsIsOffset(isOffset),
-  itsNull(False)
-{
-   AlwaysAssert (blcWC.nelements() <= itsCSys.nWorldAxes(), AipsError);
-   AlwaysAssert (trcWC.nelements() <= itsCSys.nWorldAxes(), AipsError);
-   AlwaysAssert (itsCSys.nWorldAxes() > 0, AipsError);
-   AlwaysAssert (itsIsOffset == False, AipsError);
-
-// Copy Float to Double
-
-   itsBlcWC.resize(blcWC.nelements());
-   itsTrcWC.resize(trcWC.nelements());
-   for (uInt i=0; i<itsBlcWC.nelements(); i++) {
-      itsBlcWC(i) = Double(blcWC(i));
-   }
-   for (i=0; i<itsTrcWC.nelements(); i++) {
-      itsTrcWC(i) = Double(trcWC(i));
-   }
-
-// Set world axes vectors
-
-   itsBlcWorldAxes.resize(itsBlcWC.nelements());
-   for (i=0; i<itsBlcWC.nelements(); i++) itsBlcWorldAxes(i) = i;
-
-   itsTrcWorldAxes.resize(itsTrcWC.nelements());
-   for (i=0; i<itsTrcWC.nelements(); i++) itsTrcWorldAxes(i) = i;
-}
-
-
-WCBox::WCBox(const Vector<Double>& blcWC,
-             const Vector<Double>& trcWC,
-             const Vector<uInt> blcWorldAxes,
-             const Vector<uInt> trcWorldAxes,
-             const CoordinateSystem& cSys,
-             const Bool isOffset)
-//
-// Constructor from Double vectors
-// blc and trc are in the order specified
-//
-: itsBlcWC(blcWC.copy()),
-  itsTrcWC(trcWC.copy()),
-  itsBlcWorldAxes(blcWorldAxes.copy()),
-  itsTrcWorldAxes(trcWorldAxes.copy()),
+: itsBlc(blc.copy()),
+  itsTrc(trc.copy()),
+  itsBlcPixelAxes(blcPixelAxes.copy()),
+  itsTrcPixelAxes(trcPixelAxes.copy()),
   itsCSys(cSys),
-  itsIsOffset(isOffset),
+  itsAbsRel(absRel),
   itsNull(False)
 {
-   AlwaysAssert (itsBlcWC.nelements() <= itsCSys.nWorldAxes(), AipsError);
-   AlwaysAssert (itsTrcWC.nelements() <= itsCSys.nWorldAxes(), AipsError);
-   AlwaysAssert (blcWorldAxes.nelements() == itsBlcWC.nelements(), AipsError);
-   AlwaysAssert (trcWorldAxes.nelements() == itsTrcWC.nelements(), AipsError);   
    AlwaysAssert (itsCSys.nWorldAxes() > 0, AipsError);
-   AlwaysAssert (itsIsOffset == False, AipsError);
-}
-
-
-WCBox::WCBox(const Vector<Float>& blcWC,
-             const Vector<Float>& trcWC,
-             const Vector<uInt> blcWorldAxes,
-             const Vector<uInt> trcWorldAxes,
-             const CoordinateSystem& cSys,
-             const Bool isOffset)
+   AlwaysAssert (itsCSys.nPixelAxes() > 0, AipsError);
 //
-// Constructor from Double vectors
-// blc and trc are in the order specified
-//
-: itsBlcWorldAxes(blcWorldAxes.copy()),
-  itsTrcWorldAxes(trcWorldAxes.copy()),
-  itsCSys(cSys),
-  itsIsOffset(isOffset),
-  itsNull(False)
-{
-   AlwaysAssert (blcWC.nelements() <= itsCSys.nWorldAxes(), AipsError);
-   AlwaysAssert (trcWC.nelements() <= itsCSys.nWorldAxes(), AipsError);
-   AlwaysAssert (blcWorldAxes.nelements() == blcWC.nelements(), AipsError);
-   AlwaysAssert (trcWorldAxes.nelements() == trcWC.nelements(), AipsError);   
-   AlwaysAssert (itsCSys.nWorldAxes() > 0, AipsError);
-   AlwaysAssert (itsIsOffset == False, AipsError);
-
-// Copy Float to Double
-
-   itsBlcWC.resize(blcWC.nelements());
-   itsTrcWC.resize(trcWC.nelements());
-   for (uInt i=0; i<itsBlcWC.nelements(); i++) {
-      itsBlcWC(i) = Double(blcWC(i));
+   String msg;
+   if (itsBlc.nelements() > itsCSys.nPixelAxes()) {
+      msg = String("WCBox - you gave more values for the BLC than ") +
+            String("there are axes in the CoordinateSystem");
+      throw (AipsError (msg));
    }
-   for (i=0; i<itsTrcWC.nelements(); i++) {
-      itsTrcWC(i) = Double(trcWC(i));
+   if (itsTrc.nelements() > itsCSys.nPixelAxes()) {
+      msg = String("WCBox - you gave more values for the TRC than ") +
+            String("there are axes in the CoordinateSystem");
+      throw (AipsError (msg));
    }
+   if (itsBlcPixelAxes.nelements() != itsBlc.nelements()) {
+      msg = String("WCBox - you must specify as many BLC values as BLC axes");
+      throw (AipsError (msg));
+   }
+   if (itsTrcPixelAxes.nelements() != itsTrc.nelements()) {
+      msg = String("WCBox - you must specify as many TRC values as TRC axes");
+      throw (AipsError (msg));
+   }
+   if (itsAbsRel != RegionType::Abs) {
+      throw (AipsError ("WCBox - cannot handle relative coordinates yet"));
+   }
+
+// Check units are consistent with the given CoordinateSystem
+
+   unitInit();
+   checkUnits(itsBlcPixelAxes, itsBlc, cSys);
+   checkUnits(itsTrcPixelAxes, itsTrc, cSys);
 }
-
-
 
 
 WCBox::WCBox(const LCRegion& region,
@@ -196,49 +159,64 @@ WCBox::WCBox(const LCRegion& region,
 // Constructor from the bounding box of an LCRegion
 //
 : itsCSys(cSys),
-  itsIsOffset(False),
+  itsAbsRel(RegionType::Abs),
   itsNull(False)
 {
+   AlwaysAssert (itsCSys.nWorldAxes() > 0, AipsError);
+   AlwaysAssert (itsCSys.nPixelAxes() > 0, AipsError);
+   String msg;
+
 // Get bounding box
 
-   Slicer boundingBox = region.box();
+   Slicer boundingBox = region.boundingBox();
    IPosition start = boundingBox.start();
    IPosition end = boundingBox.end();
-   AlwaysAssert (start.nelements() == itsCSys.nPixelAxes(), AipsError);
-   AlwaysAssert (end.nelements() == itsCSys.nPixelAxes(), AipsError);
-   AlwaysAssert (itsCSys.nWorldAxes() > 0, AipsError);
+   if (start.nelements() != itsCSys.nPixelAxes() ||
+       end.nelements() != itsCSys.nPixelAxes()) {
+      msg = String("WCBox - the dimensions of the LCRegion bounding box must ") +
+            String("be the same as the number of pixel axes in the CoordinateSystem");
+      throw (AipsError (msg));
+   }
+   unitInit();
 
 // Create vectors for conversions
 
-   Vector<Double> world(itsCSys.nWorldAxes());
+   Vector<Double> wBlc(itsCSys.nWorldAxes());
+   Vector<Double> wTrc(itsCSys.nWorldAxes());
    Vector<Double> pixel(itsCSys.nPixelAxes());
 
-// Convert blc
+// Convert corners.  The conversion arranges the world values
+// in the order corresponding to the pixel axes.
 
-   for (uInt i=0; i<start.nelements(); i++) pixel(i) = start(i);
-   if (!itsCSys.toWorld(world, pixel)) {
+   uInt i;
+   for (i=0; i<start.nelements(); i++) pixel(i) = start(i);
+   if (!itsCSys.toWorld(wBlc, pixel)) {
       throw (AipsError ("WCBox - Cannot convert blc of LCBox because "+itsCSys.errorMessage()));
    }
-   itsBlcWC = world;
-
-// Convert trc
-
    for (i=0; i<end.nelements(); i++) pixel(i) = end(i);
-   if (!itsCSys.toWorld(world, pixel)) {
+   if (!itsCSys.toWorld(wTrc, pixel)) {
       throw (AipsError ("WCBox - Cannot convert trc of LCBox because "+itsCSys.errorMessage()));
    }
-   itsTrcWC = world;
 
+// Create quanta vectors, and pixel axis vectors
 
-// Set world axes vectors
-
-   itsBlcWorldAxes.resize(itsBlcWC.nelements());
-   for (i=0; i<itsBlcWC.nelements(); i++) itsBlcWorldAxes(i) = i;
-
-   itsTrcWorldAxes.resize(itsTrcWC.nelements());
-   for (i=0; i<itsTrcWC.nelements(); i++) itsTrcWorldAxes(i) = i;
+   itsBlc.resize(wBlc.nelements());
+   itsTrc.resize(wTrc.nelements());
+   itsBlcPixelAxes.resize(itsBlc.nelements());
+   itsTrcPixelAxes.resize(itsTrc.nelements());
+   for (i=0; i<itsCSys.nPixelAxes(); i++) {
+      Int worldAxis = itsCSys.pixelAxisToWorldAxis(i);
+      if (worldAxis != -1) {
+         itsBlc(i) = Quantum<Double>(wBlc(i), itsCSys.worldAxisUnits()(worldAxis));         
+         itsTrc(i) = Quantum<Double>(wTrc(i), itsCSys.worldAxisUnits()(worldAxis));         
+      } else {
+         throw (AipsError ("WCBox - missing world axis in Coordinate System"));
+      }
+//
+      itsBlcPixelAxes(i) = i;
+      itsTrcPixelAxes(i) = i;
+   }
 }
-
 
 
 
@@ -256,12 +234,12 @@ WCBox::WCBox (const WCBox& other)
 // Because the constructor does make a copy of the input vectors
 // this is ok because they can't be changed
 //
-: itsBlcWC(other.itsBlcWC),
-  itsTrcWC(other.itsTrcWC),
-  itsBlcWorldAxes(other.itsBlcWorldAxes),
-  itsTrcWorldAxes(other.itsTrcWorldAxes),
+: itsBlc(other.itsBlc),
+  itsTrc(other.itsTrc),
+  itsBlcPixelAxes(other.itsBlcPixelAxes),
+  itsTrcPixelAxes(other.itsTrcPixelAxes),
   itsCSys(other.itsCSys),            // This one makes a copy
-  itsIsOffset(other.itsIsOffset),
+  itsAbsRel(other.itsAbsRel),
   itsNull(other.itsNull)
 {}
  
@@ -271,17 +249,17 @@ WCBox& WCBox::operator= (const WCBox& other)
 //
 {
    if (this != &other) {
-      itsBlcWC.resize(other.itsBlcWC.nelements());
-      itsTrcWC.resize(other.itsTrcWC.nelements());
-      itsBlcWorldAxes.resize(other.itsBlcWorldAxes.nelements());
-      itsTrcWorldAxes.resize(other.itsTrcWorldAxes.nelements());
-
-      itsBlcWC = other.itsBlcWC;
-      itsTrcWC = other.itsTrcWC;
-      itsBlcWorldAxes = other.itsBlcWorldAxes;
-      itsTrcWorldAxes = other.itsTrcWorldAxes;
+      itsBlc.resize(other.itsBlc.nelements());
+      itsTrc.resize(other.itsTrc.nelements());
+      itsBlcPixelAxes.resize(other.itsBlcPixelAxes.nelements());
+      itsTrcPixelAxes.resize(other.itsTrcPixelAxes.nelements());
+//
+      itsBlc = other.itsBlc;
+      itsTrc = other.itsTrc;
+      itsBlcPixelAxes = other.itsBlcPixelAxes;
+      itsTrcPixelAxes = other.itsTrcPixelAxes;
       itsCSys = other.itsCSys;
-      itsIsOffset = other.itsIsOffset;
+      itsAbsRel = other.itsAbsRel;
       itsNull = other.itsNull;
     }
     return *this;
@@ -299,19 +277,20 @@ Bool WCBox::operator== (const WCRegion& other) const
 
 // Check private data
 
-   if (itsIsOffset != that.itsIsOffset) return False;
+   if (itsAbsRel != that.itsAbsRel) return False;
+
    if (itsNull != that.itsNull) return False;
-   if (itsBlcWC.nelements() != that.itsBlcWC.nelements()) return False;
-   if (itsTrcWC.nelements() != that.itsTrcWC.nelements()) return False;
-   if (itsBlcWorldAxes.nelements() != that.itsBlcWorldAxes.nelements()) return False;
-   if (itsTrcWorldAxes.nelements() != that.itsTrcWorldAxes.nelements()) return False;
-   for (uInt i=0; i<itsBlcWC.nelements(); i++) {
-      if (!near(itsBlcWC(i),that.itsBlcWC(i))) return False;
-      if (!near(itsBlcWorldAxes(i),that.itsBlcWorldAxes(i))) return False;
+   if (itsBlc.nelements() != that.itsBlc.nelements()) return False;
+   if (itsTrc.nelements() != that.itsTrc.nelements()) return False;
+   if (itsBlcPixelAxes.nelements() != that.itsBlcPixelAxes.nelements()) return False;
+   if (itsTrcPixelAxes.nelements() != that.itsTrcPixelAxes.nelements()) return False;
+
+   uInt i;
+   for (i=0; i<itsBlc.nelements(); i++) {
+      if (itsBlc(i) != that.itsBlc(i)) return False;
    }
-   for (i=0; i<itsTrcWC.nelements(); i++) {
-      if (!near(itsTrcWC(i),that.itsTrcWC(i))) return False;
-      if (!near(itsTrcWorldAxes(i),that.itsTrcWorldAxes(i))) return False;
+   for (i=0; i<itsTrc.nelements(); i++) {
+      if (itsTrc(i) != that.itsTrc(i)) return False;
    }
    if (!itsCSys.near(&(that.itsCSys))) return False;
 
@@ -328,29 +307,80 @@ WCRegion* WCBox::cloneRegion() const
 TableRecord WCBox::toRecord(const String&) const
 //
 // Don't bother "itsNull" as if its null, an exception will 
-// be generated anwyay when trying to reconstruct from
+// be generated anyway when trying to reconstruct from
 // the record
 //
 {
-// Convert blc/trcAxes to Int from uInt because Glish
-// can't handle uInt
+// Define pixel units
 
-   Vector<Int> blcAxes(itsBlcWorldAxes.nelements());
-   Vector<Int> trcAxes(itsTrcWorldAxes.nelements());
-   for (uInt i=0; i<blcAxes.nelements(); i++) {
-      blcAxes(i) = Int(itsBlcWorldAxes(i));
-   }
-   for (i=0; i<trcAxes.nelements(); i++) {
-      trcAxes(i) = Int(itsTrcWorldAxes(i));
-   }
+   unitInit();
+
+// Create record
 
    TableRecord rec;
    defineRecordFields(rec, className());
-   rec.define ("blc", itsBlcWC);
-   rec.define ("trc", itsTrcWC);
-   rec.define ("blcAxes", blcAxes);
-   rec.define ("trcAxes", trcAxes);
-   rec.define ("isOffset", itsIsOffset);
+
+// Convert blcPixelAxes and trcPixelAxes Int from uInt because Glish
+// can't handle uInt.  Convert to 1-rel.
+ 
+   Vector<Int> pixelAxes(itsBlcPixelAxes.nelements());
+   uInt i;
+   for (i=0; i<pixelAxes.nelements(); i++) {
+      pixelAxes(i) = Int(itsBlcPixelAxes(i)) + 1;
+   }
+   pixelAxes.resize(itsTrcPixelAxes.nelements());
+   for (i=0; i<pixelAxes.nelements(); i++) {
+      pixelAxes(i) = Int(itsTrcPixelAxes(i)) + 1;
+   }
+   rec.define("trcPixelAxes", pixelAxes); 
+
+// Zero-relative, absolute pixel values are converted to one-relative
+
+   Int nBlc = Int(itsBlc.nelements());
+   Int nTrc = Int(itsTrc.nelements());
+   rec.define("nBlc", nBlc);
+   rec.define("nTrc", nTrc);
+   rec.define("oneRel", True);
+//
+   String error;
+   TableRecord rec2;
+   Quantum<Double> tmpQ;
+   Double tmpD;
+   Int j;
+   for (j=0; j<nBlc; j++) {
+      tmpQ = itsBlc(j);
+      if (tmpQ.getUnit() == "pix") {
+         tmpD = tmpQ.getValue();
+         if (itsAbsRel == RegionType::Abs) tmpD += 1.0;
+         tmpQ.setValue(tmpD);
+      }
+      QuantumHolder h(tmpQ);
+      ostrstream oss;
+      oss << j; 
+      String num(oss);
+      if (!h.toRecord(error, rec2)) {
+         throw (AipsError ("WCBox::toRecord2 - could not save blc because "+error));
+      }
+      rec.defineRecord("blc"+num, rec2);
+   }
+   for (j=0; j<nTrc; j++) {
+      tmpQ = itsTrc(j);
+      if (tmpQ.getUnit() == "pix") {
+         tmpD = tmpQ.getValue();
+         if (itsAbsRel == RegionType::Abs) tmpD += 1.0;
+         tmpQ.setValue(tmpD);
+      }
+      ostrstream oss;
+      oss << j; 
+      String num(oss);
+      QuantumHolder h(tmpQ);
+      if (!h.toRecord(error, rec2)) {
+         throw (AipsError ("WCBox::toRecord2 - could not save trc because "+error));
+      }
+      rec.defineRecord("trc"+num, rec2);
+   }
+//
+   rec.define ("absrel", Int(itsAbsRel));
    if (!itsCSys.save(rec, "coordinates")) {
       throw (AipsError ("WCBox::toRecord - could not save Coordinate System"));
    }
@@ -358,33 +388,99 @@ TableRecord WCBox::toRecord(const String&) const
 }
 
 
+
 WCBox* WCBox::fromRecord (const TableRecord& rec,
                           const String&)
 
 {
+
+// Get coordinate system
+
    CoordinateSystem* pCSys = CoordinateSystem::restore(rec,"coordinates");
+   WCBox* pBox;
 
-// Convert blc/trcAxes to uInt from Int because Glish
-// can't handle uInt.  SInce they started life as uInt,
-// by definition, the conversion is safe
+// Define pixel units
 
-   Vector<Int> blcAxes = Vector<Int>(rec.asArrayInt("blcAxes"));
-   Vector<Int> trcAxes = Vector<Int>(rec.asArrayInt("trcAxes"));
-   Vector<uInt> blcAxes2(blcAxes.nelements());
-   Vector<uInt> trcAxes2(trcAxes.nelements());
-   for (uInt i=0; i<blcAxes.nelements(); i++) {
-      blcAxes2(i) = uInt(blcAxes(i));
+   unitInit();
+
+// Get the values
+
+   Bool oneRel = rec.asBool("oneRel");
+   RegionType::AbsRelType absRel = RegionType::AbsRelType(rec.asInt("absrel"));
+   Int nBlc = rec.asInt("nBlc");
+   Int nTrc = rec.asInt("nTrc");
+   Vector<Quantum<Double> > blc(nBlc);
+   Vector<Quantum<Double> > trc(nTrc);
+   Double tmpD;
+//
+   QuantumHolder h;
+   String error;
+//
+   Int j;
+   for (j=0; j<nBlc; j++) {
+      ostrstream oss; 
+      oss << j; 
+      String num(oss);
+      const RecordInterface& subRecord = rec.asRecord("blc"+num);
+      if (!h.fromRecord(error, subRecord)) {
+         throw (AipsError ("WCBox::fromRecord2 - could not recover blc because "+error));
+      }
+      blc(j) = h.asQuantumDouble();
+
+// Convert from 1-rel to 0-rel for absolute pixel units
+
+      if (oneRel) {
+         if (blc(j).getUnit() == "pix") {
+            tmpD = blc(j).getValue();
+            if (absRel == RegionType::Abs) tmpD -= 1.0;
+            blc(j).setValue(tmpD);
+         }
+      }
    }
-   for (i=0; i<trcAxes.nelements(); i++) {
-      trcAxes2(i) = uInt(trcAxes(i));
+   for (j=0; j<nTrc; j++) {
+      ostrstream oss; 
+      oss << j; 
+      String num(oss);
+      const RecordInterface& subRecord = rec.asRecord("trc"+num);
+      if (!h.fromRecord(error, subRecord)) {
+         throw (AipsError ("WCBox::fromRecord2 - could not recover trc because "+error));
+      }
+      trc(j) = h.asQuantumDouble();
+
+// Convert from 1-rel to 0-rel for absolute pixel units
+
+      if (oneRel) {
+         if (trc(j).getUnit() == "pix") {
+            tmpD = trc(j).getValue();
+            if (absRel == RegionType::Abs) tmpD -= 1.0;
+            trc(j).setValue(tmpD);
+         }
+      }
    }
 
-   return new WCBox(Vector<Double>(rec.asArrayDouble ("blc")),
-                    Vector<Double>(rec.asArrayDouble ("trc")),
-                    blcAxes2, trcAxes2, *pCSys,
-                    rec.asBool("isOffset"));
+
+// Construct WCBox
+
+   if (rec.isDefined("blcPixelAxes") && rec.isDefined("trcPixelAxes")) {
+      uInt i;
+      Vector<Int> pixelAxes = Vector<Int>(rec.asArrayInt ("blcPixelAxes"));
+      Vector<uInt> blcPixelAxes(pixelAxes.nelements());
+      for (i=0; i<blcPixelAxes.nelements(); i++) blcPixelAxes(i) = uInt(pixelAxes(i)) - 1;
+//
+      pixelAxes = Vector<Int>(rec.asArrayInt ("trcPixelAxes"));
+      Vector<uInt> trcPixelAxes(pixelAxes.nelements());
+      for (i=0; i<trcPixelAxes.nelements(); i++) trcPixelAxes(i) = uInt(pixelAxes(i)) - 1;
+//
+      pBox = new WCBox(blc, trc, blcPixelAxes, trcPixelAxes, *pCSys, absRel);
+   } else {
+      pBox = new WCBox(blc, trc, *pCSys, absRel);
+   }
+
+//
    delete pCSys;
+   return pBox;
 }
+
 
 
 LCRegion* WCBox::toLCRegion (const CoordinateSystem& cSys,
@@ -395,6 +491,7 @@ LCRegion* WCBox::toLCRegion (const CoordinateSystem& cSys,
 // as that of the Lattice for which the shape is supplied.
 //
 {
+
 // Make sure that we are not using a null WCBox
 
    if (itsNull) {
@@ -407,6 +504,7 @@ LCRegion* WCBox::toLCRegion (const CoordinateSystem& cSys,
    AlwaysAssert (latticeShape.nelements() == cSys.nPixelAxes(), AipsError);
    AlwaysAssert (cSys.nWorldAxes() > 0, AipsError);
 
+
 // Make a world axis map.  worldAxisMap(i) says where world axis i from the
 // construction CS is in the supplied CS.  worldAxisTranspose(i) is  the
 // location of world axis i  from the supplied CS in the construction CS.   
@@ -418,7 +516,7 @@ LCRegion* WCBox::toLCRegion (const CoordinateSystem& cSys,
    }
 
 
-// Get a copy of the coordinate system so we can mess about with it
+// Get a copy of the given coordinate system so we can mess about with it
 
    CoordinateSystem cSysTmp(cSys);
 
@@ -427,38 +525,53 @@ LCRegion* WCBox::toLCRegion (const CoordinateSystem& cSys,
 // axes of the supplied CoordinateSystem.  
 
    uInt nWorld = cSysTmp.nWorldAxes();
-   Vector<Double> blcWC(cSysTmp.referenceValue().copy());
-   Vector<Double> trcWC(cSysTmp.referenceValue().copy());
+   Vector<Double> blc(cSysTmp.referenceValue().copy());
+   Vector<Double> trc(cSysTmp.referenceValue().copy());
    Vector<String> blcUnits(cSysTmp.worldAxisUnits().copy());
    Vector<String> trcUnits(cSysTmp.worldAxisUnits().copy());
    Vector<String> units(cSysTmp.worldAxisUnits().copy());
-   Int nBlc = itsBlcWorldAxes.nelements();
-   Int nTrc = itsTrcWorldAxes.nelements();
+   Int nBlc = itsBlcPixelAxes.nelements();
+   Int nTrc = itsTrcPixelAxes.nelements();
    Bool found;
-   Int wPt = 0;
-   uInt cWorldAxis;
+   Int pPt = 0;
+   Int cWorldAxis;
  
    for (uInt i=0; i<nWorld; i++) {
-      if (worldAxisTranspose(i) != -1) {
+      cWorldAxis = worldAxisTranspose(i);
+      if (cWorldAxis != -1) {
 
-// This given CS world axis is found in the construction CS. But was
-// the WCBox constructed with a corresponding value for blc & trc ?
+// This given CS world axis is found in the construction CS. Recall
+// worldAxisTranspose(i) is  the location of world axis i  from 
+// the given CS in the construction CS.    Find the construction pixel 
+// axis corresponding to the found world axis
 
-         cWorldAxis = worldAxisTranspose(i);
-         wPt = linearSearch(found, itsBlcWorldAxes, cWorldAxis, nBlc);
-         if (found) {
-            blcWC(i) = itsBlcWC(wPt);
-            blcUnits(i) = itsCSys.worldAxisUnits()(cWorldAxis);
-         }
-         wPt = linearSearch(found, itsTrcWorldAxes, cWorldAxis, nTrc);
-         if (found) {
-            trcWC(i) = itsTrcWC(wPt);
-            trcUnits(i) = itsCSys.worldAxisUnits()(cWorldAxis);
+         if (itsCSys.worldAxisToPixelAxis(cWorldAxis) == -1) {
+
+// The construction CS has no pixel axis corresponding to this
+// world axis, so there is no appropriate construction blc/trc value
+
+         } else {
+
+// Now see if the WCBox was constructed with blc & trc values for
+// this axis (i->cWorldAxis->cPixelAxis).  If so, extract the
+// value and units.  Values with pixel units are ignored for now.
+
+            uInt cPixelAxis = itsCSys.worldAxisToPixelAxis(cWorldAxis);
+            pPt = linearSearch(found, itsBlcPixelAxes, cPixelAxis, nBlc);
+            if (found && itsBlc(pPt).getUnit()!="pix") {
+               blc(i) = itsBlc(pPt).getValue();
+               blcUnits(i) = itsBlc(pPt).getUnit();
+            }
+            pPt = linearSearch(found, itsTrcPixelAxes, cPixelAxis, nTrc);
+            if (found && itsTrc(pPt).getUnit()!="pix") {
+               trc(i) = itsTrc(pPt).getValue();
+               trcUnits(i) = itsTrc(pPt).getUnit();
+            }
          }
       }
    }
-//   cout << "WCBox::toLCRegion - after units = " << units.ac() << endl;
-//   cout << "WCBox::toLCRegion - world = " << blcWC.ac() << ", " << trcWC.ac() << endl;
+//   cout << "WCBox::toLCRegion - world blc, trc = " << blc.ac() << ", " << trc.ac() << endl;
+//   cout << "WCBox::toLCRegion - world units, blc, trc = " << blcUnits.ac() << ", " << trcUnits.ac() << endl;
 
 
 // Convert the world coordinate blc/trc to  absolute  pixels with the 
@@ -467,12 +580,13 @@ LCRegion* WCBox::toLCRegion (const CoordinateSystem& cSys,
 // pixel axes are excluded.
 
    Vector<Double> blcLC, trcLC;
-   if (!setFloatingBox(blcLC, trcLC, blcWC, trcWC, cSysTmp, 
-                       blcUnits, trcUnits, itsIsOffset)) {
+   if (!setFloatingBox(blcLC, trcLC, blc, trc, cSysTmp, 
+                       blcUnits, trcUnits, itsAbsRel)) {
       throw (AipsError
          ("WCBox::toLCRegion - could not convert world coordinates to absolute pixels"));
    }
 
+//   cout << "WCBox::toLCRegion - pixel = " << blcLC.ac() << ", " << trcLC.ac() << endl;
 
 // The returned blcLC and trcLC vectors will be in the order of the pixel axes
 // in the supplied CS.   The toPixel function of CS will have done this for us.
@@ -482,20 +596,66 @@ LCRegion* WCBox::toLCRegion (const CoordinateSystem& cSys,
 
    for (i=0; i<cSysTmp.nPixelAxes(); i++) {
       Int worldAxis = cSysTmp.pixelAxisToWorldAxis(i);
-      if (worldAxisTranspose(worldAxis) == -1) {
+      cWorldAxis = worldAxisTranspose(worldAxis);
+
+      if (worldAxis==-1) {
+
+// This given CS pixel axis does not have a world axis
+
          blcLC(i) = 0.0;
          trcLC(i) = Double(latticeShape(i)-1);
       } else {
+         if (cWorldAxis==-1) {
 
-// We allow the construction blc/trc to have less elements than there
-// are world axes so fill in the defaults here.
+// For this given CS pixel axis, there is no corresponding world axis 
+// found in the construction CS. 
 
-         cWorldAxis = worldAxisTranspose(worldAxis);
-         if (linearSearch(found, itsBlcWorldAxes, cWorldAxis, nBlc) == -1) {
             blcLC(i) = 0.0;
-         }
-         if (linearSearch(found, itsTrcWorldAxes, cWorldAxis, nTrc) == -1) {
-            trcLC(i) = Double(latticeShape(i) - 1);
+            trcLC(i) = Double(latticeShape(i)-1);
+         } else {
+//
+// This given CS axis (i->worldAxis) is found in the construction CS. 
+// We allow the construction blc/trc to have less elements than there
+// are pixel axes in the construction CS.  We fill in the defaults 
+// for the missing ones here.
+
+            if (itsCSys.worldAxisToPixelAxis(cWorldAxis)==-1) {
+
+// The construction CS world axis has no pixel axis.  Therefore there
+// can be no corresponding specified world value at construction
+//
+               blcLC(i) = 0.0;
+               trcLC(i) = Double(latticeShape(i) - 1);
+            } else {
+
+// Finally.  The construction CS world axis has a pixel axis too.
+// Let's see if it's in the construction specified list of pixel axes. 
+// If the axis is found, and if the units are pixels, replace by that value
+
+               uInt cPixelAxis = itsCSys.worldAxisToPixelAxis(cWorldAxis);
+               pPt = linearSearch(found, itsBlcPixelAxes, cPixelAxis, nBlc);
+               if (pPt == -1) {
+                  blcLC(i) = 0.0;
+               } else {
+                  if (itsBlc(pPt).getUnit()=="pix") {
+                     blcLC(i) = itsBlc(pPt).getValue();
+                     convertPixel(blcLC(i), itsAbsRel, 
+                                  cSysTmp.referencePixel()(i),
+                                  latticeShape(i));
+                  }
+               }
+               pPt = linearSearch(found, itsTrcPixelAxes, cPixelAxis, nTrc);
+               if (pPt == -1) {
+                  trcLC(i) = Double(latticeShape(i) - 1);
+               } else {
+                  if (itsTrc(pPt).getUnit()=="pix") {
+                     trcLC(i) = itsTrc(pPt).getValue();
+                     convertPixel(trcLC(i), itsAbsRel, 
+                                  cSysTmp.referencePixel()(i),
+                                  latticeShape(i));
+                  }
+               }
+            }
          }
       }
    }
@@ -523,17 +683,57 @@ String WCBox::type() const
 
 // Private functions
 
+
+void WCBox::checkUnits (Vector<uInt>& pixelAxes, 
+                        const Vector<Quantum<Double> >& values,
+                        const CoordinateSystem& cSys)
+//
+// CHeck the units of the given quanta are consistent
+// with the CoordinateSystem.  The quanta are in the
+// order of the pixel axes.  If on input the pixelAxes vector
+// has length > 0, then it specifies the pixel axis order
+// of the values.
+//
+{
+
+// Fill pixel axes if necessary
+
+   uInt i;
+   if (pixelAxes.nelements()==0) {
+      pixelAxes.resize(values.nelements());
+      for (i=0; i<pixelAxes.nelements(); i++) pixelAxes(i) = i;
+   }
+   Vector<String> units = cSys.worldAxisUnits();
+   Quantum<Double> tmp;
+
+// Check units
+
+   for (i=0; i<values.nelements(); i++) {
+      Int worldAxis = itsCSys.pixelAxisToWorldAxis(pixelAxes(i));
+      if (worldAxis != -1) {
+         tmp = values(i);
+         if (tmp.getUnit() != "pix" && tmp.getFullUnit() != Unit(units(worldAxis))) {
+            throw (AipsError ("WCBox::checkUnits - units of box blc inconsistent with units of Coordinate System"));
+         }
+      } else {
+         throw (AipsError ("WCBox::checkUnits - missing world axis in Coordinate System"));
+      }
+   }
+}
+
+
+
 Bool WCBox::setFloatingBox(Vector<Double>& blcLC,
                            Vector<Double>& trcLC,
-                           const Vector<Double>& blcWC,
-                           const Vector<Double>& trcWC,
+                           const Vector<Double>& blc,
+                           const Vector<Double>& trc,
                            CoordinateSystem& cSys,
                            const Vector<String>& blcUnits,
                            const Vector<String>& trcUnits,
-                           const Bool isOffset) const
+                           const RegionType::AbsRelType absRel) const
 //
 // Convert the world coordinates (absolute or offset)
-// to absolute pixels.  The blcWC and trcWC must be 
+// to absolute pixels.  The blc and trc must be 
 // checked to be consistent with themselves and the 
 // CoordinateSystem before entry.   Note that the output
 // vector is of length nPixelAxes; it reflects removed
@@ -545,21 +745,53 @@ Bool WCBox::setFloatingBox(Vector<Double>& blcLC,
 
 // Convert corners to absolute pixel
 
+
    const uInt nPixelAxes = cSys.nPixelAxes();
    blcLC.resize(nPixelAxes);
    trcLC.resize(nPixelAxes);
 
-   if (isOffset) {
-      return False;
-   } else {
+   if (absRel == RegionType::Abs) {
 
 // Set units and convert
 
       if (!cSys.setWorldAxisUnits(blcUnits, True)) return False;
-      if (!cSys.toPixel(blcLC, blcWC)) return False;
+      if (!cSys.toPixel(blcLC, blc)) return False;
 //
       if (!cSys.setWorldAxisUnits(trcUnits, True)) return False;
-      if (!cSys.toPixel(trcLC, trcWC)) return False;
+      if (!cSys.toPixel(trcLC, trc)) return False;
+   } else {
+      return False;
    }
    return True;
+}
+
+
+void WCBox::unitInit() 
+{
+   static doneUnitInit = False;
+   if (!doneUnitInit) {
+      UnitMap::putUser("pix",UnitVal(1.0), "pixel units");
+      doneUnitInit = True;
+   }
+}
+
+
+void WCBox::convertPixel(Double& pixel,
+                         const RegionType::AbsRelType absRel,
+                         const Double refPix,
+                         const Int shape) const
+{
+
+   if (absRel == RegionType::RelRef) {
+      pixel -= refPix;
+   } else if (absRel == RegionType::RelCen) {
+      Double centre = shape/2;
+      pixel -= centre;
+   } else if (absRel == RegionType::Abs) {
+//
+//   } else if (absRel == RegionType::RelDir) {
+//
+    } else {
+      throw (AipsError ("WCBox::convertPixel - unrecognized relAbs type"));
+   }
 }
