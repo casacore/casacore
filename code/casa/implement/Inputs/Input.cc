@@ -395,11 +395,7 @@ void Input::prompt (Param& x) const
     cout << x.getHelp() << " [" << x.getString() << "]: " 
 	 << x.getKey() << "=";
     cin.getline(input,80);
-#if defined(__GNUC__)
     if (input[0] != 0) {
-#else
-    if (input[0] != NULL) {
-#endif
       String s = input;
       ok = x.put(s);
     } else {
