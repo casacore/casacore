@@ -37,15 +37,17 @@ FunctionParam<T>::FunctionParam()
 template<class T>
 FunctionParam<T>::FunctionParam(const uInt n)
   : npar_p(n),
-    param_p(npar_p, T(0)), mask_p(npar_p, True),
-    maskedPtr_p(0) {}
+    param_p(npar_p), mask_p(npar_p, True),
+    maskedPtr_p(0) {
+  for (uInt i=0; i<npar_p; ++i) param_p[i] = T(0);
+}
 
 template<class T>
 FunctionParam<T>::FunctionParam(const Vector<T> &in)
   : npar_p(in.nelements()),
     param_p(npar_p), mask_p(npar_p, True),
     maskedPtr_p(0) {
-  param_p = in;
+  for (uInt i=0; i<npar_p; ++i) param_p[i] = in[i];
 }
 
 template<class T>
@@ -53,7 +55,7 @@ FunctionParam<T>::FunctionParam(const FunctionParam<T> &other)
   : npar_p(other.param_p.nelements()),
     param_p(npar_p), mask_p(npar_p),
     maskedPtr_p(0) {
-  param_p = other.param_p;
+  for (uInt i=0; i<npar_p; ++i) param_p[i] = other.param_p[i];
   mask_p = other.mask_p;
 }
 
