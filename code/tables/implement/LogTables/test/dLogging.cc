@@ -106,7 +106,7 @@ float sum(const DataClass &object)
 int main()
 {
     LogSink::globalSink().filter(LogMessage::DEBUGGING);           // 1
-    LogSink logger(LogMessage::NORMAL, "dLogging_messages_tmp");   // 2
+    LogSink logger(LogMessage::NORMAL, "dLogging_tmp_messages");   // 2
                                                                    // 3
     IPosition legalShape(1, 10);                                   // 4
     DataClass dc(legalShape, logger);                              // 5

@@ -263,7 +263,7 @@ void testLogOrigin()
     // ~LogOrigin(); - implicit at end of blocks
 }
 
-const char *tableNames[] = { "tLogging_tmp", "tLogging2_tmp", 0};
+const char *tableNames[] = { "tLogging_tmp", "tLogging_tmp2", 0};
 
 void cleanup()
 {
