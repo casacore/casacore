@@ -37,6 +37,21 @@
 //# Forward Declarations
 template<class T> class Vector;
 
+// <summary>
+// Class to ask a user a choice
+// </summary>
+
+// <reviewed reviewer="" date="yyyy/mm/dd" tests="" demos="">
+// </reviewed>
+
+// <prerequisite>
+// </prerequisite>
+
+// <etymology>
+// </etymology>
+
+// <synopsis>
+// </synopsis>
 
 class Choice
 {
