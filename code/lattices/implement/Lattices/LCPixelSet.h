@@ -60,15 +60,14 @@
 // <todo asof="1997/11/11">
 // </todo>
 
-class LCMask: public LCBox
+class LCMask: public LCRegionFixed
 {
 public:
     LCMask();
 
-    // Construct from the Slicer defining the mask.
-    // The slicer may not contain a stride.
-    LCMask (const IPosition& blc, const Array<Bool>& mask,
-	    const IPosition& latticeShape);
+    // Construct from the box defining the position of the mask.
+    // The shape of the region and mask must be the same.
+    LCMask (const Array<Bool>& mask, const LCBox& region);
 
     // Copy constructor (copy semantics).
     LCMask (const LCMask& other);
@@ -84,16 +83,10 @@ public:
     // Make a copy of the derived object.
     virtual LCRegion* cloneRegion() const;
 
-    // Construct another LCMask (for e.g. another lattice) by moving
-    // this one. It recalculates the bounding mask.
-    // A positive translation value indicates "to right".
-    virtual LCRegion* doTranslate (const Vector<Float>& translateVector,
-				   const IPosition& newLatticeShape) const;
-
     // Get the class name (to store in the record).
     static String className();
 
-    // Get the region type.  Returns className()  
+    // Get the region type.  Returns className().
     virtual String type() const;
 
     // Convert the (derived) object to a record.
@@ -103,8 +96,15 @@ public:
     static LCMask* fromRecord (const TableRecord&,
 			       const String& tablename);
 
-    // An LCMask can be written.
-    virtual Bool isWritable() const;
+protected:
+    // Construct another LCMask (for e.g. another lattice) by moving
+    // this one. It recalculates the bounding mask.
+    // A positive translation value indicates "to right".
+    virtual LCRegion* doTranslate (const Vector<Float>& translateVector,
+				   const IPosition& newLatticeShape) const;
+
+private:
+    LCBox itsBox;
 };
 
 
