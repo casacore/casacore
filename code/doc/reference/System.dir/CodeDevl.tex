@@ -1677,7 +1677,8 @@ then checks for duplicates in this file and in
 \aipspp\ do-it-yourself template instantiation (\exeref{mkinst}).\\
 \exeref{reident}, reformat in canonical form the template instantiation file.\\
 \exeref{unused}, check usage of templates in binary executables and object
-modules.
+modules.\\
+\exeref{used}, find any undefined classes and global methods.
 
 \subsection*{Author}
 
@@ -2068,7 +2069,8 @@ templates included are not duplicated (see \exeref{duplicates}).
 \exeref{duplicates}, Checks for duplicate entries in \file{templates} lists
    across the system.\\
 \exeref{unused}, Checks for usage of templates in binary modules (executables
-or object modules).
+or object modules).\\
+\exeref{used}, find any undefined classes and global methods.
 
 \subsection*{Author}
 
@@ -2088,7 +2090,7 @@ modules and/or libraries.
 \subsection*{Synopsis}
 
 \begin{synopsis}
-   \code{\exe{reident} [\exe{-z}|\exe{-nz}|\exe{-a}|\exe{-[0-9]\ldots}]
+   \code{\exe{unused} [\exe{-z}|\exe{-nz}|\exe{-a}|\exe{-[0-9]\ldots}]
         [\exe{-p}|\exe{-r}|\exe{-u} package]\ldots 
 	[-t templates1 [templates2 \ldots]]
 	\exe{-f}|\exe{-b} file1 [file2 \ldots] 
@@ -2217,3 +2219,115 @@ used in the binary). The same output would have been generated with the
 \subsection*{Author}
 
 Original: 1997/07/16 by Wim Brouw, ATNF.
+
+% ----------------------------------------------------------------------------
+
+\newpage
+\section{\exe{used}}
+\label{used}
+\index{used@\exe{used}}
+\index{templates!list!reformat|see{\exe{used}}}
+
+Check for undefined classes and global functions in object libraries and
+object modules.
+
+\subsection*{Synopsis}
+
+\begin{synopsis}
+   \code{\exe{used} [\exe{-ng}] [\exe{-nc}] [\exe{-tc}]
+	[[\exe{-f}|\exe{-b}] file1 [file2 \ldots]] \ldots }
+\end{synopsis}
+
+\subsection*{Description}
+
+\exe{used} reads binary files (either object modules or object
+libraries) specified by the \exe{-b} switch (default) and/or the output of the
+\exe{g++filt} filtered output of the \exe{nm} or \exe{gnm} 
+program of such files if specified by the \exe{-f} switch. I.e. files that
+are to specified following an \exe{-f} switch should have the following
+pre-processing: 
+\begin{verbatim}
+	[g]nm binary.file | g++filt >! file.f
+\end{verbatim}
+(Note that internally \exe{used} uses the \exe{gnm} and \exe{g++filt}
+synonyms. If they are not available on your system, the full path of these
+programs (or for the \exe{nm} program) can be specified in the \code{aipsrc}
+file variables \code{unused.file.nm} and \code{unused.file.gfilt}.)
+
+The first file specified is checked for any undefined global names. These
+undefined names are then checked against any definitions in all files
+given. Finally the resulted list of undefined names is output to stdout.
+The standard checking is for all global names. The \exe{-ng} \exe{-nc} and
+\exe{-tc} switches can be used to limit the output.
+
+\subsection*{Options}
+
+\begin{description}
+\item[\exe{-nc}]
+   Show no classes (i.e. only the global functions)
+\item[\exe{-ng}]
+   Show no global functions (i.e. only classes)
+\item[\exe{tc}]
+   Show for classes only templated classes
+\item[\exe{-b|-f file [file \ldots]}]
+   Specify the binary files (\exe{-b}), also the default, to be checked. The
+   files can be executables, object libraries or object modules (i.e. files
+   that can be handled by some \exe{nm} program). If the \exe{-f} switch is
+   used in stead of the (default) \exe{-b} switch, the binary files are
+   supposed to have been filtered already by an \exe{nm} program and the
+   \exe{g++filt} program.
+\end{description}
+
+\subsection*{Notes}
+
+\begin{itemize}
+\item
+   The output of the program can be used as input of the \exeref{duplicates}
+   program. 
+\end{itemize}
+
+\subsection*{Diagnostics}
+
+Status return values
+\\ \verb+   0+: success
+\\ \verb+   1+: no files found
+
+\subsection*{Examples}
+
+To show the missing templated classes used in the given file:
+
+\begin{verbatim}
+   used -ng -tc  ~/aips++/sun4sol_gnu/libdbg/libaips-Measures-test.a
+
+Using [/u/wbrouw/aips++/sun4sol_gnu/libdbg/libaips-Measures-test.a]
+Checked 7 undefineds against 2 defineds
+# Undefined templated classes
+    1: Array<Bool>
+   18: Array<Quantum<Double> >
+    7: Array<Double>
+   14: Quantum<Vector<Double> >
+   18: Quantum<Double>
+    6: Vector<Double>
+6 undefined objects/global functions shown
+\end{verbatim}
+
+To check if the modules in libtrial.a have still some undefined references:
+
+\begin{verbatim}
+   used /aips++/sun4sol_gnu/lib/{libtrial,libaips}.a
+\end{verbatim}
+
+The counts shown are the number of references to the class or global function
+found.
+
+\subsection*{See also}
+
+\exeref{mkinst}, Generate template instantiation files from a list.\\
+\exeref{unused}, Checks for usage of templates in binary modules (executables
+or object modules).\\
+\exeref{duplicates}, Checks for duplicate entries in \file{templates} lists
+   across the system.
+
+\subsection*{Author}
+
+Original: 1997/09/14 by Wim Brouw, ATNF.
