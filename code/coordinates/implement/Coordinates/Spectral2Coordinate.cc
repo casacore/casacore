@@ -1,5 +1,5 @@
 //# Spectral2Coordinate.cc: this defines Measures related SpectralCoordinate functions
-//# Copyright (C) 1997,1998,1999,2000,2001,2002
+//# Copyright (C) 1997,1998,1999,2000,2001,2002,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -29,7 +29,9 @@
 #include <trial/Coordinates/SpectralCoordinate.h>
 
 #include <aips/Arrays/ArrayMath.h>
+#include <aips/Arrays/ArrayAccessor.h>
 #include <aips/Arrays/Vector.h>
+#include <aips/Arrays/Matrix.h>
 #include <trial/Coordinates/CoordinateUtil.h>
 #include <aips/Logging/LogIO.h>
 #include <aips/Mathematics/Math.h>
@@ -41,6 +43,7 @@
 #include <aips/Quanta/Quantum.h>
 #include <aips/Quanta/Unit.h>
 #include <aips/Utilities/String.h>
+
 
 
 SpectralCoordinate::SpectralCoordinate(MFrequency::Types freqType,
@@ -321,8 +324,20 @@ void SpectralCoordinate::convertTo (Vector<Double>& world) const
 // SC always has world vector of length 1
 
    if (pConversionMachineTo_p) {
-      world(0)  = (*pConversionMachineTo_p)(world(0)).get(unit_p).getValue();
+      world[0]  = (*pConversionMachineTo_p)(world[0]).get(unit_p).getValue();
    }
+}
+
+void SpectralCoordinate::convertToMany (Matrix<Double>& world) const
+{
+   if (!pConversionMachineTo_p) return;
+//
+// Because the SC only has one axis we can take a short cut in the iteration
+//
+    ArrayAccessor<Double, Axis<1> > jWorld(world);
+    for (jWorld.reset(); jWorld!=jWorld.end(); jWorld++) {
+       *jWorld  = (*pConversionMachineTo_p)(*jWorld).get(unit_p).getValue();
+    }
 }
 
 void SpectralCoordinate::convertFrom (Vector<Double>& world) const
@@ -331,7 +346,19 @@ void SpectralCoordinate::convertFrom (Vector<Double>& world) const
 // SC always has world vector of length 1
 
    if (pConversionMachineFrom_p) {
-      world(0) = (*pConversionMachineFrom_p)(world(0)).get(unit_p).getValue();
+      world[0] = (*pConversionMachineFrom_p)(world[0]).get(unit_p).getValue();
    }
 }
 
+
+void SpectralCoordinate::convertFromMany (Matrix<Double>& world) const
+{
+   if (!pConversionMachineFrom_p) return;
+//
+// Because the SC only has one axis we can take a short cut in the iteration
+//
+    ArrayAccessor<Double, Axis<1> > jWorld(world);
+    for (jWorld.reset(); jWorld!=jWorld.end(); jWorld++) {
+       *jWorld  = (*pConversionMachineFrom_p)(*jWorld).get(unit_p).getValue();
+    }
+}

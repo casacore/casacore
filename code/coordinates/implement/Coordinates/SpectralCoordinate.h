@@ -281,7 +281,7 @@ public:
 
 
     // Make absolute coordinates relative and vice-versa (with
-    // respect to the referencfe value).
+    // respect to the reference value).
     // Vectors must be length <src>nPixelAxes()</src> or
     // <src>nWorldAxes()</src> or memory access errors will occur
     // <group>
@@ -599,6 +599,8 @@ private:
 // Convert to and from conversion type
     void convertTo (Vector<Double>& world) const;
     void convertFrom (Vector<Double>& world) const;
+    void convertToMany (Matrix<Double>& world) const;
+    void convertFromMany (Matrix<Double>& world) const;
 };
 
 #endif
