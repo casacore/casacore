@@ -153,7 +153,7 @@ void SepImageConvolver<T>::setKernel(uInt axis, VectorKernel::KernelTypes kernel
             << ") are inconsistent with image axis unit (" 
             << unit.getName() << LogIO::EXCEPTION;
    }
-   Double width2 = width.getValue(unit)/inc;
+   Double width2 = abs(width.getValue(unit)/inc);
    setKernel(axis, kernelType, width2, autoScale, scale);
 }
 
