@@ -290,7 +290,7 @@ Bool MeasJPL::msgDone = False;
 const String MeasJPL::tp[MeasJPL::N_Files] = {"DE200", "DE405"};
 Int MeasJPL::idx[MeasJPL::N_Files][3][13];
 Int MeasJPL::ldat[MeasJPL::N_Files] = {0, 0};
-Vector<Double> MeasJPL::dval[N_Files];
+Vector<Double> MeasJPL::dval[MeasJPL::N_Files];
 ROArrayColumn<Double> MeasJPL::acc[MeasJPL::N_Files];
 Double MeasJPL::chc[18];
 Double MeasJPL::chcv[18];
