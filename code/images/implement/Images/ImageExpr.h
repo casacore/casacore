@@ -172,8 +172,8 @@ public:
   virtual String name(const Bool stripPath=False) const;
   
   // Functions to set or replace the coordinate information.
-  // <src>setCoordinate</src> throws an exception as the ImageExpr 
-  // is not writable.  
+  // Although the ImageExpr is not writable, you can change the
+  // CoordinateSystem (as long as it is consistent with the old one)
   virtual Bool setCoordinateInfo(const CoordinateSystem& coords);
   
   // Function to get a LELCoordinate object containing the coordinates.

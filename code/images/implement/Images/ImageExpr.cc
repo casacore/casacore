@@ -161,10 +161,11 @@ String ImageExpr<T>::name(const Bool) const
 }
 
 template <class T> 
-Bool ImageExpr<T>::setCoordinateInfo(const CoordinateSystem&)
+Bool ImageExpr<T>::setCoordinateInfo(const CoordinateSystem& cSys)
 {
-   throw(AipsError("ImageExpr<T>::setCoordinateInfo - ImageExpr is not writable"));
-   return False;
+// The ImageExpr is read-only, so nothing to make permanent
+
+   return ImageInterface<T>::setCoordinateInfo(cSys);
 }
      
 
