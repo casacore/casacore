@@ -2017,3 +2017,4 @@
 08 200 src rm trial/implement/Functionals/BinaryOperation.h
 08 200 src rm trial/implement/Functionals/BinaryTranEnums.h
 08 200 src rm trial/implement/Functionals/BinaryTranscendental.cc
+08 200 src rm trial/implement/Functionals/BinaryTranscendental.h
