@@ -1,5 +1,5 @@
 //# TableRecord.h: A hierarchical collection of named fields of various types
-//# Copyright (C) 1996,1997,1998,2000,2001
+//# Copyright (C) 1996,1997,1998,2000,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -41,6 +41,7 @@
 template<class T> class Array;
 class IPosition;
 class AipsIO;
+class TableLock;
 
 
 // <summary>
@@ -335,7 +336,10 @@ public:
     // </group>
 
     // Get the table from the given field.
+    // <group>
     Table asTable (const RecordFieldId&) const;
+    Table asTable (const RecordFieldId&, const TableLock& lockOptions) const;
+    // </group>
 
     // Merge a field from another record into this record.
     // The DuplicatesFlag (as described in

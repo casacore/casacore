@@ -1,5 +1,5 @@
 //# TableRecord.cc: A hierarchical collection of named fields of various types
-//# Copyright (C) 1995,1996,1997,1998,1999,2001
+//# Copyright (C) 1995,1996,1997,1998,1999,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -314,6 +314,18 @@ Table TableRecord::asTable (const RecordFieldId& id) const
 {
     Int whichField = idToNumber (id);
     return ((const TableKeyword*)get_pointer (whichField, TpTable))->table();
+}
+
+Table TableRecord::asTable (const RecordFieldId& id,
+			    const TableLock& lockOptions) const
+{
+    Int whichField = idToNumber (id);
+    String name = ((const TableKeyword*)get_pointer (whichField, TpTable))->
+                    table().tableName();
+    // Close the table in the record, otherwise the new lock options
+    // may have no effect.
+    closeTable (id);
+    return Table (name, lockOptions);
 }
 
 void TableRecord::closeTable (const RecordFieldId& id) const
