@@ -1,5 +1,5 @@
 //# fits.cc:
-//# Copyright (C) 1993,1994,1995,1996,1997,1998,1999
+//# Copyright (C) 1993,1994,1995,1996,1997,1998,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //# 
 //# This library is free software; you can redistribute it and/or modify it
@@ -1992,95 +1992,116 @@ ostream & operator << (ostream &o, const FitsKeyword &x) {
 }
 
 FitsKeyword &FitsKeywordList::make(const char *nm,
-	FITS::ValueType ty, const void *val, const char *cm) {
-	FitsKeyword *kw;
-	if (!nm) {
-	    FitsKeyword::err("",ty,val,"User defined name cannot be NULL.");
-	    kw = new FitsKeyword(&FITS::ResWord.err_item(),0,FITS::NOVALUE,0,0,0,0);
-	    FitsKeyword::memchk(kw);
-	    return *kw;
+				   FITS::ValueType ty, const void *val, const char *cm) {
+    FitsKeyword *kw;
+    if (!nm) {
+	return makeErrKeyword("", ty, val, "User defined name cannot be NULL.");
+    }
+    int nmlen = strlen(nm);
+    if (nmlen > 8) {
+	return makeErrKeyword(nm, ty, val, "User defined name cannot be > 8 characters long.");
+    }
+    int cmlen = 0;
+    if (cm)
+	cmlen = strlen(cm);
+    int vallen = 0;
+    if (ty == FITS::STRING) {
+	if (val == 0)
+	    ty = FITS::NOVALUE;
+	else {
+	    vallen = strlen((char *)val);
+	    if (vallen > 68) {
+		return makeErrKeyword(nm, ty, val, "String values cannot be > 68 characters long.");
+	    }
 	}
-	int nmlen = strlen(nm);
-	int cmlen = 0;
-	if (cm)
-	    cmlen = strlen(cm);
-	int vallen = 0;
-	if (ty == FITS::STRING) {
-	    if (val == 0)
-		ty = FITS::NOVALUE;
-	    else
-		vallen = strlen((char *)val);
-	}
-	int valsize = (vallen < 8) ? 8 : vallen;
-	const char *errmsg = 0;
-	const ReservedFitsKeyword *rw = &FITS::ResWord.get(nm,nmlen, False,
-		ty,val,valsize,errmsg);
-	if (errmsg)
-	    FitsKeyword::err(nm,ty,val,errmsg);
-	if (rw->name() == FITS::USER_DEF)
-	    kw = new FitsKeyword(nm,nmlen,ty,val,vallen,cm,cmlen);
-	else
-	    kw = new FitsKeyword(rw,0,ty,val,vallen,cm,cmlen);
-	FitsKeyword::memchk(kw);
-	return *kw;
+    }
+    int valsize = (vallen < 8) ? 8 : vallen;
+    const char *errmsg = 0;
+    const ReservedFitsKeyword *rw = &FITS::ResWord.get(nm,nmlen, False,
+						       ty,val,valsize,errmsg);
+    if (errmsg)
+	FitsKeyword::err(nm,ty,val,errmsg);
+    if (rw->name() == FITS::USER_DEF)
+	kw = new FitsKeyword(nm,nmlen,ty,val,vallen,cm,cmlen);
+    else
+	kw = new FitsKeyword(rw,0,ty,val,vallen,cm,cmlen);
+    FitsKeyword::memchk(kw);
+    return *kw;
 }
 
 FitsKeyword &FitsKeywordList::make(FITS::ReservedName nm,
-	FITS::ValueType ty, const void *val, const char *cm) {
-	FitsKeyword *kw;
-	int cmlen = 0;
-	if (cm)
-	    cmlen = strlen(cm);
-	int vallen = 0;
-	if (ty == FITS::STRING) {
-	    if (val == 0)
-		ty = FITS::NOVALUE;
-	    else
-		vallen = strlen((char *)val);
+				   FITS::ValueType ty, const void *val, const char *cm) {
+    FitsKeyword *kw;
+    int cmlen = 0;
+    if (cm)
+	cmlen = strlen(cm);
+    int vallen = 0;
+    if (ty == FITS::STRING) {
+	if (val == 0)
+	    ty = FITS::NOVALUE;
+	else {
+	    vallen = strlen((char *)val);
+	    if (vallen > 68) {
+		return makeErrKeyword(FITS::ResWord.aname(nm), ty, val, "String values cannot be > 68 characters long.");
+	    }
 	}
-	int valsize = (vallen < 8) ? 8 : vallen;
-	const char *errmsg = 0;
-	const ReservedFitsKeyword *rw = &FITS::ResWord.get(nm,False,
-		ty,val,valsize,errmsg);
-	if (errmsg)
-	    FitsKeyword::err(FITS::ResWord.aname(nm),ty,val,errmsg);
-	if (rw->name() == FITS::USER_DEF) {
-	    FitsKeyword::err(FITS::ResWord.aname(nm),ty,val,
-		"Function cannot be used for user defined keyword.");
-	    kw = new FitsKeyword(&FITS::ResWord.err_item(),0,FITS::NOVALUE,0,0,0,0);
-	} else
-	    kw = new FitsKeyword(rw,0,ty,val,vallen,cm,cmlen);
-	FitsKeyword::memchk(kw);
-	return *kw;
+    }
+    int valsize = (vallen < 8) ? 8 : vallen;
+    const char *errmsg = 0;
+    const ReservedFitsKeyword *rw = &FITS::ResWord.get(nm,False,
+						       ty,val,valsize,errmsg);
+    if (errmsg)
+	FitsKeyword::err(FITS::ResWord.aname(nm),ty,val,errmsg);
+    if (rw->name() == FITS::USER_DEF) {
+	return makeErrKeyword(FITS::ResWord.aname(nm), ty, val,
+			      "Function cannot be used for user defined keyword.");
+    } else {
+	kw = new FitsKeyword(rw,0,ty,val,vallen,cm,cmlen);
+    }
+    FitsKeyword::memchk(kw);
+    return *kw;
 }
 
 FitsKeyword &FitsKeywordList::make(int ind, FITS::ReservedName nm,
-	FITS::ValueType ty, const void *val, const char *cm) {
-	FitsKeyword *kw;
-	int cmlen = 0;
-	if (cm)
-	    cmlen = strlen(cm);
-	int vallen = 0;
-	if (ty == FITS::STRING) {
-	    if (val == 0)
-		ty = FITS::NOVALUE;
-	    else
-		vallen = strlen((char *)val);
+				   FITS::ValueType ty, const void *val, const char *cm) {
+    FitsKeyword *kw;
+    int cmlen = 0;
+    if (cm)
+	cmlen = strlen(cm);
+    int vallen = 0;
+    if (ty == FITS::STRING) {
+	if (val == 0)
+	    ty = FITS::NOVALUE;
+	else {
+	    vallen = strlen((char *)val);
+	    if (vallen > 68) {
+		return makeErrKeyword(FITS::ResWord.aname(nm), ty, val, "String values cannot be > 68 characters long.");
+	    }
 	}
-	int valsize = (vallen < 8) ? 8 : vallen;
-	const char *errmsg = 0;
-	const ReservedFitsKeyword *rw = &FITS::ResWord.get(nm,True,
-		ty,val,valsize,errmsg);
-	if (errmsg)
-	    FitsKeyword::err(FITS::ResWord.aname(nm),ty,val,errmsg);
-	if (rw->name() == FITS::USER_DEF) {
-	    FitsKeyword::err(FITS::ResWord.aname(nm),ty,val,
-		"Function cannot be used for user defined keyword.");
-	    kw = new FitsKeyword(&FITS::ResWord.err_item(),0,FITS::NOVALUE,0,0,0,0);
-	} else
-	    kw = new FitsKeyword(rw,ind,ty,val,vallen,cm,cmlen);
-	FitsKeyword::memchk(kw);
-	return *kw;
+    }
+    int valsize = (vallen < 8) ? 8 : vallen;
+    const char *errmsg = 0;
+    const ReservedFitsKeyword *rw = &FITS::ResWord.get(nm,True,
+						       ty,val,valsize,errmsg);
+    if (errmsg)
+	FitsKeyword::err(FITS::ResWord.aname(nm),ty,val,errmsg);
+    if (rw->name() == FITS::USER_DEF) {
+	return makeErrKeyword(FITS::ResWord.aname(nm), ty, val,
+			      "Function cannot be used for user defined keyword.");
+    } else {
+	kw = new FitsKeyword(rw,ind,ty,val,vallen,cm,cmlen);
+    }
+    FitsKeyword::memchk(kw);
+    return *kw;
+}
+
+FitsKeyword &FitsKeywordList::makeErrKeyword(const char *name, FITS::ValueType type, 
+					     const void *val, const char *errmsg)
+{
+    FitsKeyword::err(name,type,val,errmsg);
+    FitsKeyword *kw = new FitsKeyword(&FITS::ResWord.err_item(),0,FITS::NOVALUE,0,0,0,0);
+    FitsKeyword::memchk(kw);
+    return *kw;
 }
 
 ostream & operator << (ostream &o, FitsKeywordList &w) {
