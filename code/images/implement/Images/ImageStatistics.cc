@@ -561,8 +561,8 @@ Bool ImageStatistics<T>::display()
 // I will have to revisit this.   It will be ugly.
  
       Matrix<T>  matrix(pixelIterator.matrixCursor());   // Reference semantics
-
-      for (uInt i=0; i<n1; i++) {
+      uInt i;
+      for (i=0; i<n1; i++) {
 
 // Ugly.  real(Float) and real(Double) come from QMath.  Otherwise from Math
 // We are also going to assume that the <T> does not include Int, as
@@ -1277,7 +1277,8 @@ Bool ImageStatistics<T>::listStats (const IPosition& dPos,
 
    Int nMax = 0;
    const uInt n1 = stats.shape()(0);
-   for (uInt j=0; j<n1; j++) nMax = max(nMax, Int(real(stats.column(NPTS)(j))+0.1));
+   uInt j;
+   for (j=0; j<n1; j++) nMax = max(nMax, Int(real(stats.column(NPTS)(j))+0.1));
    const Int logNMax = Int(log10(Double(nMax))) + 2;
    const uInt oIWidth = max(5, logNMax);
    const uInt oDWidth = 15;

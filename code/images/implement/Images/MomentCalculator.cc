@@ -2059,7 +2059,7 @@ void MomentWindow<T>::multiProcess(Vector<T>& moments,
    NumericTraits<T>::PrecisionType sumAbsDev = 0.0;
    if (doAbsDev_p) {
       T iMean = s0 / nPts;
-      for (Int i=0; i<nPts; i++) sumAbsDev += abs(selectedData_p(i) - iMean);
+      for (i=0; i<nPts; i++) sumAbsDev += abs(selectedData_p(i) - iMean);
    }
 
 
@@ -2451,7 +2451,8 @@ Bool MomentWindow<T>::getBosmaWindow (Vector<Int>& window,
 // Find mean outside of peak region
 
       NumericTraits<T>::PrecisionType sum = 0;
-      for (Int i=0,j=0; i<nPts; i++) {
+      Int i,j;
+      for (i=0,j=0; i<nPts; i++) {
          if (mask(i) && (i < iMin || i > iMax)) {
             sum += y(i);
             j++;
@@ -2678,8 +2679,9 @@ void MomentFit<T>::multiProcess(Vector<T>& moments,
    Double coord = 0.0;
    T xx;
    Vector<T> gData(nPts);
-   
-   for (Int i=0,j=0; i<nPts; i++) {
+
+   Int i,j;
+   for (i=0,j=0; i<nPts; i++) {
       if (profileInMask(i)) {
          xx = i;
          gData(j) = gauss_p(xx) + gaussPars(3);

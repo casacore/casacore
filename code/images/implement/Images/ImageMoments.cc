@@ -1813,7 +1813,8 @@ Bool ImageMoments<T>::whatIsTheNoise (T& sigma,
       if (first) {
          first = False;
          iMax = yMaxPos(0);
-         for (uInt i=yMaxPos(0); i<nBins; i++) {
+	 uInt i;
+         for (i=yMaxPos(0); i<nBins; i++) {
             if (counts(i) < yMax/4) {
                iMax = i; 
                break;
@@ -1888,8 +1889,8 @@ Bool ImageMoments<T>::whatIsTheNoise (T& sigma,
       const uInt nPts2 = iMax - iMin + 1; 
       Vector<T> xx(nPts2);
       Vector<T> yy(nPts2);
-
-      for (Int i=iMin; i<=iMax; i++) {
+      Int i;
+      for (i=iMin; i<=iMax; i++) {
          xx(i-iMin) = values(i);
          yy(i-iMin) = counts(i)/yMax;
       }
