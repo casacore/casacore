@@ -3,7 +3,7 @@
 # configure: AIPS++ installation script
 #-----------------------------------------------------------------------------
 #
-#   Copyright (C) 1992-1997,1998,1999,2000,2001
+#   Copyright (C) 1992-1997,1998,1999,2000,2001,2004
 #   Associated Universities, Inc. Washington DC, USA.
 #
 #   This program is free software; you can redistribute it and/or modify
@@ -28,7 +28,7 @@
 #                          Charlottesville, VA 22903-2475 USA
 #
 #-----------------------------------------------------------------------------
-# Usage: configure [--source]
+# Usage: configure 
 #-----------------------------------------------------------------------------
 # configure is used as the first step in installing AIPS++, either from
 # scratch, or to add a new architecture.  In the latter case the
@@ -37,8 +37,7 @@
 # This version modified to allow for binary installations.
 #
 # Options:
-#   --source  Do a compile-from-source installation.  The default is to
-#             assume you have also retrieved the binary.tar.gz file(s).
+#   None
 #
 # Status return values correspond to the four phases of the operation
 #    0:  success
@@ -60,12 +59,8 @@
 # Name of the AIPS++ ftp machine.
   MASTERHOST="aips2.nrao.edu"
 
-# Option(s)
-  if [ "$1" = "--source" ] ; then
+# Former Option(s)
      SOURCE="yes"
-  else
-     SOURCE="yes"
-fi
 
 # Editor
   if [ "$VISUAL" != "" ] ; then
@@ -79,9 +74,8 @@ fi
 # Issue instructions.
   echo ""
   echo "The 'configure' script bootstraps the AIPS++ system to a state"
-  echo "where it can be used by end-users.  It will by default perform"
-  echo "a binary installation, but it can also be used to build the"
-  echo "libraries, binaries, and other parts of the system if necessary."
+  echo "where it maybe build the libraries, binaries, and other parts"
+  echo "of the system."
   echo ""
   echo "It may be used to configure AIPS++ from scratch, or to add a"
   echo "new architecture.  In the latter case the installation of the"
@@ -101,7 +95,7 @@ fi
   if [ "$SOURCE" = yes ] ; then
      echo ""
      echo "This is a source build, if you wish a binary installation"
-     echo "you will need to fetch the RPMS from aips2.nrao.edu."
+     echo "you will need to fetch the RPMS from ftp.cv.nrao.edu/aips++."
   fi
 
 # Default file creation mask.
@@ -249,7 +243,7 @@ EOT
 
   if [ "x$GNUMAKE" = "x" ]
   then 
-      $GNUMAKE = gmake
+      GNUMAKE=gmake
   fi
   UTILITIES="gzip $GNUMAKE bison flex perl"
 
@@ -444,109 +438,6 @@ EOT
      echo ""
      echo "All appear to be available."
   fi
-
-
-#-----------------------------------------------------------------------------
-# Extract compressed tar files (if any)
-#-----------------------------------------------------------------------------
-  cd $AIPSCODE
-
-# Get a list of all compressed tar files in this directory.
-# Need to exclude binaries at this point... assume they'll have a "bin-"
-# in the name.
-
-  FILES=`ls *.tar.gz | grep -v bin- 2> /dev/null`
-  if [ "$FILES" != "" ]
-  then
-     echo ""
-     echo ""
-     echo "Extract compressed tar files for AIPS++ source (excluding binaries)"
-     echo "-------------------------------------------------------------------"
-     echo ""
-     echo "The following compressed tar files exist in this directory:"
-     echo "$FILES"
-
-     echo ""
-     echo "The default behaviour in extracting these tar files is to"
-     echo "   1) delete the corresponding subdirectory tree,"
-     echo "   2) extract the distribution, then"
-     echo "   3) delete the tar file."
-     echo "Each of the tar files in this directory will be processed."
-     echo "The alternative is to seek confirmation at every step."
-
-     ASK=true
-     echo ""
-     printf "Do you accept the default behaviour?"
-     yesno y && ASK=""
-
-#    Uncompress and untar each in turn.
-     for FILE in $FILES
-     do
-        if [ "$ASK" != "" ]
-        then
-           echo ""
-           printf "Extract $FILE?"
-           yesno y || continue
-        fi
-
-        DIR=`echo $FILE | sed -e 's#-.*##'`
-        if [ -d "$DIR" ]
-        then
-           if [ "$ASK" != "" ]
-           then
-              echo ""
-              printf "Directory $DIR already exists.  Can I delete it?"
-              yesno y && rm -rf $DIR
-           else
-              rm -rf $DIR
-              echo ""
-              echo "Deleted the $DIR directory."
-           fi
-        fi
-
-        echo ""
-        echo "Extract $FILE..."
-
-        gunzip -c $FILE | tar pmvxf -
-        if [ "$?" = 0 ]
-        then
-           echo ""
-           echo "It appears that $FILE has been successfully extracted."
-
-           if [ "$ASK" != "" ]
-           then
-              printf "Can I delete it?"
-              yesno y && rm -f $FILE
-           else
-              rm -f $FILE
-              echo "Deleted $FILE"
-           fi
-        else
-           echo ""
-           echo "Failed to extract $FILE, I must stop now."
-           exit 3
-        fi
-     done
-
-#    Mark it as done.
-     if [ -f VERSION ]
-     then
-        VERSION=`sed -n 1p VERSION | awk '{ print $1 }'`
-
-        [ -f LOGFILE ] || touch LOGFILE
-        mv -f LOGFILE LOGFILE_
-        echo $VERSION `date -u "+%a 19%y/%m/%d %T"` "GMT  (base)" | \
-           cat - LOGFILE_ > LOGFILE
-
-        chmod 444 VERSION LOGFILE
-        rm -f LOGFILE_
-     fi
-
-  fi
-
-#-----------------------------------------------------------------------------
-# Install any binaries
-#-----------------------------------------------------------------------------
 
 #-----------------------------------------------------------------------------
 # Install the aipsinit scripts and construct the aipshosts database
@@ -1424,7 +1315,7 @@ EOT
   echo "   cd $AIPSCODE"
   echo "   $GNUMAKE -C install allsys"
   echo ""
-  echo "The configure boostrap will be now be built..."
+  echo "Building the boostrap..."
   echo ""
 
 # Begin the installation.
@@ -1440,7 +1331,7 @@ EOT
 
      [ -f LOGFILE ] || touch LOGFILE
      mv -f LOGFILE LOGFILE_
-     echo $VERSION `date -u "+%a 19%y/%m/%d %T"` "GMT  (base)" | \
+     echo $VERSION `date -u "+%a %Y/%m/%d %T"` "GMT  (base)" | \
         cat - LOGFILE_ > LOGFILE
 
      [ -f VERSION ] && mv -f VERSION VERSION_
@@ -1451,10 +1342,10 @@ EOT
   fi
 
   echo ""
-  echo "Installation ended at "`date -u "+%a 19%y/%m/%d %T"`" GMT."
-  echo "You may now build the entire system via:"
+  echo "AIPS++ bootstrap build  ended at "`date -u "+%a %Y/%m/%d %T"`" GMT."
+  echo "You may now build AIPS++ via:"
   echo ""
-  echo "sneeze -l -m cumulative"
+  echo "sneeze -l -m cumulative&"
   echo ""
 
   exit 0
