@@ -1,5 +1,5 @@
 //# tDataType.cc: This program tests the DataType related functions
-//# Copyright (C) 1995,1996,1999,2000
+//# Copyright (C) 1995,1996,1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -29,8 +29,8 @@
 #include <aips/Utilities/String.h>
 #include <aips/Utilities/Assert.h>
 #include <aips/Quanta/Quantum.h>
-#include <strstream.h>
-#include <iostream.h>
+#include <aips/strstream.h>
+#include <aips/iostream.h>
 
 void simpleTests()
 {

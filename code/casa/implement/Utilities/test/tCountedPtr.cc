@@ -1,5 +1,5 @@
 //# tCountedPtr.cc: This program tests the Counted Pointer class
-//# Copyright (C) 1993,1994,1995
+//# Copyright (C) 1993,1994,1995,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -29,7 +29,7 @@
 
 #include <aips/Utilities/test/tCountedPtr.h>
 #include <aips/Utilities/CountedPtr.h>
-#include <iostream.h>
+#include <aips/iostream.h>
 
 // class myobj is defined in tCountedPtr.h
 

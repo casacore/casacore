@@ -29,7 +29,8 @@
 
 #include <aips/Utilities/Sort.h>
 #include <aips/Arrays/Vector.h>
-#include <stdlib.h>
+#include <aips/stdlib.h>
+#include <aips/iostream.h>
 
 // This program test the class Sort.
 // It sorts some data in ascending and/or descending order.

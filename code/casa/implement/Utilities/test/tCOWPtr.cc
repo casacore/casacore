@@ -1,5 +1,5 @@
 //# tCOWPtr.cc: This program tests the Copy-On-Write-Pointer class
-//# Copyright (C) 1995,1996,1997,1999,2000
+//# Copyright (C) 1995,1996,1997,1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -35,7 +35,7 @@
 #include <aips/Arrays/IPosition.h>
 #include <aips/Utilities/Assert.h>
 
-#include <iostream.h>
+#include <aips/iostream.h>
 
 static Bool testFunc(Array<Float> *ptr, const Array<Float> &array, 
 		     Bool deleteIt, Bool constant) 

@@ -1,5 +1,5 @@
 //# tDynBuffer.cc: This program tests the DynBuffer class
-//# Copyright (C) 1993,1994,1995
+//# Copyright (C) 1993,1994,1995,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -27,8 +27,8 @@
 
 //# Includes
 
-#include <iostream.h>
 #include <aips/Utilities/DynBuffer.h>
+#include <aips/iostream.h>
 
 // This program tests the DynBuffer class.
 // It allocates buffers, stores data in it and reads it back.

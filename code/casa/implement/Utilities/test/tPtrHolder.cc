@@ -1,5 +1,5 @@
 //# tPtrHolder.cc: Test the tPtrHolder<T> class.
-//# Copyright (C) 1994,1995,2000
+//# Copyright (C) 1994,1995,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -30,7 +30,7 @@
 #include <aips/Utilities/PtrHolder.h>
 #include <aips/Exceptions/Error.h>
 #include <aips/Utilities/Assert.h>
-#include <iostream.h>
+#include <aips/iostream.h>
 
 // This program should not have any memory leaks.
 

@@ -1,5 +1,5 @@
 //# dCOWPtr.cc:  how to use COWPtr's (copy-on-write pointers)
-//# Copyright (C) 1996,1999
+//# Copyright (C) 1996,1999,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -29,7 +29,7 @@
 #include <aips/Arrays/Array.h>
 #include <aips/Arrays/ArrayMath.h>
 #include <aips/Utilities/COWPtr.h>
-#include <iostream.h> 
+#include <aips/iostream.h> 
 
 int main()
 {

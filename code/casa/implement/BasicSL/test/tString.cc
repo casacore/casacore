@@ -29,11 +29,11 @@
 
 #include <aips/Utilities/String.h>
 #include <aips/Utilities/Regex.h>
-#include <cassert>
+#include <assert.h>
 // Next one for atoi and atof
-#include <cstdlib>
-#include <iostream>
-#include <strstream.h>
+#include <aips/stdlib.h>
+#include <aips/iostream.h>
+#include <aips/strstream.h>
 
 // Generally used variables
 String X = "Hello";

@@ -1,5 +1,5 @@
 //# tGenSort.cc: This program tests the global templated sort routines
-//# Copyright (C) 1993,1994,1995,1996,1997,1999
+//# Copyright (C) 1993,1994,1995,1996,1997,1999,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -30,10 +30,10 @@
 #include <aips/Utilities/GenSort.h>
 #include <aips/Arrays/Vector.h>
 #include <aips/Arrays/ArrayMath.h>
-#include <strstream.h>
+#include <aips/strstream.h>
 #include <aips/OS/Timer.h>
-#include <stdlib.h>
-#include <iomanip.h>
+#include <aips/stdlib.h>
+#include <aips/iomanip.h>
 
 void sortall (Int*, uInt, int, Sort::Order, Bool);
 

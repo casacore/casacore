@@ -1,5 +1,5 @@
 //# tCopy.cc: This program tests the functions in Copy.h
-//# Copyright (C) 1994,1995,1996,1998,1999
+//# Copyright (C) 1994,1995,1996,1998,1999,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -27,11 +27,10 @@
 
 //# Includes
 
-#include <iostream.h>
 
-#include <aips/aips.h>
-#include <aips/Utilities/Assert.h>
 #include <aips/Utilities/Copy.h>
+#include <aips/Utilities/Assert.h>
+#include <aips/iostream.h>
 
 // A random class to copy
 #include <aips/Containers/Block.h>

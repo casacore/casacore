@@ -27,12 +27,12 @@
 
 //# Includes
 
-#include <aips/Utilities/String.h>
 #include <aips/Utilities/Regex.h>
+#include <aips/Utilities/String.h>
 #include <aips/Arrays/Vector.h>
 #include <aips/Arrays/ArrayIO.h>
 #include <aips/Exceptions/Error.h>
-#include <iostream.h>
+#include <aips/iostream.h>
 
 //# Forward Declarations
 

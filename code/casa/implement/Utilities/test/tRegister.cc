@@ -25,9 +25,9 @@
 //#
 //# $Id$
 
-#include <iostream.h>
 #include <aips/Utilities/Register.h>
-#include "tRegister.h"
+#include <aips/Utilities/test/tRegister.h>
+#include <aips/iostream.h>
 
 main() {
   

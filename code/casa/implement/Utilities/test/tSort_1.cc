@@ -29,8 +29,8 @@
 #include <aips/Utilities/Sort.h>
 #include <aips/Arrays/Vector.h>
 #include <aips/OS/Timer.h>
-#include <strstream.h>
-#include <stdlib.h>
+#include <aips/strstream.h>
+#include <aips/stdlib.h>
 
 //# Forward Declarations
 Bool sortarr (Int*, uInt nr, int);
