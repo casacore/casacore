@@ -136,6 +136,11 @@ public:
     void pc(const Matrix<Double> &newvals);
     // </group>
 
+    // Invert the LinearXform ready for use in a Fourier Transformed Coordinate
+    LinearXform fourierInvert (const Vector<Bool>& axes,
+                               const Vector<Double>& crpix,
+                               const Vector<Double>& scale) const;
+
     // Comparison function. Any private Double data members are compared
     // with the specified fractional tolerance.  
     // <group>
@@ -155,6 +160,7 @@ public:
 private:
     // A WCSLIB C-structure.
     linprm* linprm_p;
+    Bool isPCDiagonal_p;
 
 //
     linprm* make_linprm(int naxis) const;

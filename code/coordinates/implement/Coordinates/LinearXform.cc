@@ -29,6 +29,9 @@
 #include <trial/Coordinates/LinearXform.h>
 #include <aips/Arrays/Vector.h>
 #include <aips/Arrays/Matrix.h>
+#include <aips/Arrays/MatrixMath.h>
+#include <aips/Arrays/ArrayMath.h>
+#include <aips/Arrays/ArrayLogical.h>
 #include <aips/Mathematics/Math.h>
 #include <aips/Utilities/Assert.h>
 #include <aips/Utilities/LinearSearch.h>
@@ -37,7 +40,8 @@
 
 
 LinearXform::LinearXform(uInt naxis)
-  : linprm_p(make_linprm(naxis))
+  : linprm_p(make_linprm(naxis)),
+    isPCDiagonal_p(True)
 {
     AlwaysAssert(linprm_p, AipsError);
     Vector<Double> crpix(naxis);
@@ -56,7 +60,8 @@ LinearXform::LinearXform(uInt naxis)
 
 LinearXform::LinearXform(const Vector<Double> &crpix,
                          const Vector<Double> &cdelt)
-  : linprm_p(make_linprm(crpix.nelements()))
+  : linprm_p(make_linprm(crpix.nelements())),
+    isPCDiagonal_p(True)
 {
     AlwaysAssert(linprm_p, AipsError);
     uInt naxis = cdelt.nelements();
@@ -77,10 +82,27 @@ LinearXform::LinearXform(const Vector<Double> &crpix,
     AlwaysAssert(crpix.nelements() == naxis && pc.nrow() == naxis &&
 		 pc.ncolumn() == naxis, AipsError);
     set_linprm(linprm_p, crpix, cdelt, pc);
+//
+    Double zero = 0.0;
+    Double tol = 1e-12;
+
+// See if pc is diagonal.  We do this purely for
+// use in the Fourier inversion stuff.  Urk.
+
+    isPCDiagonal_p = True;
+    for (uInt j=0; j<pc.nrow(); j++) {
+       for (uInt i=0; i<pc.ncolumn(); i++) {
+         if (i!=j && !::near(pc(j,i),zero,tol)) {
+            isPCDiagonal_p = False;
+            break;
+         }
+       }
+    }
 }
 
 LinearXform::LinearXform(const LinearXform &other)
-  : linprm_p(make_linprm(other.linprm_p->naxis))
+  : linprm_p(make_linprm(other.linprm_p->naxis)),
+    isPCDiagonal_p(other.isPCDiagonal_p)
 {
     AlwaysAssert(linprm_p, AipsError);
     set_linprm(linprm_p, other.crpix(), other.cdelt(), other.pc());
@@ -91,6 +113,7 @@ LinearXform &LinearXform::operator=(const LinearXform &other)
     if (this != &other) {
         delete_linprm(linprm_p);
 	linprm_p = make_linprm(other.linprm_p->naxis);
+        isPCDiagonal_p = other.isPCDiagonal_p;
 	AlwaysAssert(linprm_p, AipsError);
 	set_linprm(linprm_p, other.crpix(), other.cdelt(), other.pc());
     }
@@ -360,4 +383,50 @@ void LinearXform::set_linprm(linprm *to, const Vector<double> &crpix,
 	throw(AipsError(errmsg));
     }
 }
+
+
+LinearXform LinearXform::fourierInvert (const Vector<Bool>& axes, 
+                                        const Vector<Double>& crpix, 
+                                        const Vector<Double>& scale) const
+{
+   if (axes.nelements() != nWorldAxes()) {
+      throw (AipsError("axes length is invalid"));
+   }
+   if (crpix.nelements() != nWorldAxes()) {
+      throw (AipsError("crpix length is invalid"));
+   }
+   if (scale.nelements() != nWorldAxes()) {
+      throw (AipsError("scale length is invalid"));
+   }
+//
+   Matrix<Double> pc0;
+   if (isPCDiagonal_p) {
+
+// Short cut which enables us to separate out axes
+
+      pc0 = pc();
+      Vector<Double> d = pc0.diagonal();
+      for (uInt i=0; i<nWorldAxes(); i++) {
+         if (axes(i)) d(i) = 1.0 / d(i);
+      }
+      pc0.diagonal() = d;
+   } else {
+      if (!allEQ(axes, True)) {
+         throw(AipsError("Cannot invert PC matrix when some axes not being transformed"));
+      }
+//
+      pc0 = invert(pc());
+   }
+//
+   Vector<Double> cdelt0 = cdelt();   
+   Vector<Double> crpix0 = LinearXform::crpix();
+   for (uInt i=0; i<nWorldAxes(); i++) {
+      if (axes(i)) {
+         cdelt0(i) = scale(i) / cdelt0(i);
+         crpix0(i) = crpix(i);
+      }
+   }
+   return LinearXform(crpix0, cdelt0, pc0);
+}
+
 
