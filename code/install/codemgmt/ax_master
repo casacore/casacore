@@ -2284,3 +2284,4 @@
 09 215 top rm code/nrao/apps/sdcalc
 09 219 top rm code/nrao/apps/sdplot
 09 232 src rm trial/apps/imager2
+09 234 src rm aips/glish/glish/TkPGPLOT.cc
