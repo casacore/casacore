@@ -59,11 +59,11 @@ try {
 
    if (imageType==TpFloat) {    
       const PagedImage<Float> inImage(in);
-      const ImageSummary<Float> header(inImage);
+      ImageSummary<Float> header(inImage);
       header.list(os);
    } else if (imageType==TpComplex) {    
       const PagedImage<Complex> inImage(in);
-      const ImageSummary<Complex> header(inImage);
+      ImageSummary<Complex> header(inImage);
       header.list(os);
    } else {
       cout << "images of type " << imageType << " not yet supported" << endl;
