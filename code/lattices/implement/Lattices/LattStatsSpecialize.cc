@@ -240,22 +240,22 @@ DComplex LattStatsSpecialize::getRms (DComplex sumsq, DComplex n)
 
 Float LattStatsSpecialize::min(Float v1, Float v2)
 {
-   return min(v1, v2);
+   return std::min(v1, v2);
 }
 
 Complex LattStatsSpecialize::min(Complex v1, Complex v2)
 {
-   return Complex(min(real(v1),real(v2)),min(imag(v1),imag(v2)));
+   return Complex(std::min(real(v1),real(v2)),std::min(imag(v1),imag(v2)));
 }
 
 Float LattStatsSpecialize::max(Float v1, Float v2)
 {
-   return max(v1, v2);
+   return std::max(v1, v2);
 }
 
 Complex LattStatsSpecialize::max(Complex v1, Complex v2)
 {
-   return Complex(max(real(v1),real(v2)),max(imag(v1),imag(v2)));
+   return Complex(std::max(real(v1),real(v2)),std::max(imag(v1),imag(v2)));
 }
 
 Float LattStatsSpecialize::getNodeScalarValue(const LatticeExprNode& node, Float dummy)
