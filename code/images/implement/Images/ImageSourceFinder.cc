@@ -1,5 +1,5 @@
 //# ImageSourceFinder.cc:  find sources
-//# Copyright (C) 1995,1996,1997,1998,1999,2000,2001,2002,2003
+//# Copyright (C) 1995-2003,2004
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -41,7 +41,7 @@
 #include <components/ComponentModels/ComponentShape.h>
 #include <components/ComponentModels/ComponentList.h>
 #include <components/ComponentModels/SkyComponent.h>
-#include <scimath/Fitting/FitLSQ.h>
+#include <scimath/Fitting/LSQaips.h>
 #include <scimath/Fitting/NonLinearFitLM.h>
 #include <lattices/LatticeMath/Fit2D.h>
 #include <scimath/Functionals/Gaussian2D.h>
@@ -244,11 +244,10 @@ ComponentList ImageSourceFinder<T>::findSources (LogIO& os,
 
 // Fitting data
  
-   FitLSQ fit(6);
+   LSQaips fit(6);
    Vector<T> gel(6);
    uInt rank;
    Vector<T> sol(6);
-   T sd, mu;
    
 // Input data arrays
 
@@ -357,7 +356,7 @@ ComponentList ImageSourceFinder<T>::findSources (LogIO& os,
          }
 //
          if (!fit.invert(rank)) continue;        // Cannot solve
-         fit.solve(sol, sd, mu);
+         fit.solve(sol);
    
 // Find max
 
