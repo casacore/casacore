@@ -209,7 +209,7 @@ Bool FuncExpression::compTerm(MUString &prg) {
 	oper = exd.special()["ARG"];
 	if (n >= ndim_p) ndim_p = n+1;
       };
-      oper.narg = n;
+      oper.info = n;
       if (!setOp(oper)) return False;
     } else {
       error_p = String("Unknown function name ") + t;
