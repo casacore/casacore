@@ -118,7 +118,7 @@
 # If there is a .run file then use it.
   if [ -f "$1.run" ]
   then
-     COMMAND="$1.run"
+     COMMAND="sh $1.run"
   else
      if [ -f "RCS/$1.run,v" ]
      then
