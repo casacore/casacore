@@ -1,5 +1,5 @@
 //# MSTable.cc:  the class that hold measurements from telescopes
-//# Copyright (C) 1996,1997,2000,2001
+//# Copyright (C) 1996,1997,2000,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -30,7 +30,7 @@
 #include <aips/Tables/TableRecord.h>
 
 //# These statics cannot be compiled with egcs 1.0.3a.
-#if !defined(__GNUG__) || (defined(__GNUG__) && (__GNUG__ == 2) && (__GNUC_MINOR__ >= 91))
+#if !defined(__GNUG__) || (defined(__GNUG__) && (__GNUG__ == 2) && (__GNUC_MINOR__ >= 91)) || defined(AIPS_GCC3)
 template <class ColEnum, class KeyEnum> 
 SimpleOrderedMap<Int, String> MSTable<ColEnum,KeyEnum>::columnMap_p("");
 template <class ColEnum, class KeyEnum> 
