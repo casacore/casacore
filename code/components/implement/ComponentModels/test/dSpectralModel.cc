@@ -1,5 +1,5 @@
 //# dSpectralModel.cc:
-//# Copyright (C) 1998,1999
+//# Copyright (C) 1998,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -27,36 +27,46 @@
 
 
 #include <aips/aips.h>
+#include <trial/ComponentModels/ComponentType.h>
+#include <trial/ComponentModels/SpectralIndex.h>
+#include <trial/ComponentModels/SpectralModel.h>
 #include <aips/Arrays/Vector.h>
 #include <aips/Exceptions/Error.h>
 #include <aips/Exceptions/Excp.h>
-#include <aips/Measures/MFrequency.h>
+#include <aips/Measures/MDirection.h>
+#include <aips/Measures/MEpoch.h>
+#include <aips/Measures/MeasFrame.h>
+#include <aips/Quanta/MVAngle.h>
 #include <aips/Quanta/MVFrequency.h>
+#include <aips/Quanta/MVTime.h>
 #include <aips/Quanta/Quantum.h>
 #include <aips/Utilities/Assert.h>
-#include <trial/ComponentModels/Flux.h>
-#include <trial/ComponentModels/SpectralIndex.h>
-#include <trial/ComponentModels/SpectralModel.h>
 #include <iostream.h>
+#include <iomanip.h>
 
-void plotSpectrum(const Flux<Double> & refFlux,
-                  const SpectralModel & modelSpectrum) {
-  cout << "This is a " 
+void plotSpectrum(const SpectralModel& modelSpectrum) {
+  cout << "This is a "
        << ComponentType::name(modelSpectrum.type())
-       << " spectrum with a reference frequency of "
-       << modelSpectrum.refFrequency().get("GHz") << endl
-       << modelSpectrum.refFrequency().getRef() 
+       << " spectrum with a reference frequency of: "
+       << setprecision(4) << modelSpectrum.refFrequency().get("GHz") << " ("
+       << modelSpectrum.refFrequency().getRefString() << ")"
        << endl;
-  cout << "Frequency\t Flux\n";
-  const Quantum<Double> step(100.0, "MHz");
-  Quantum<Double> sampleFreq = modelSpectrum.refFrequency().get("GHz");
-  Flux<Double> modelFlux;
+  const MVFrequency step(Quantity(100.0, "MHz"));
+  MVFrequency sampleFreq(Quantity(1, "GHz"));
+  MeasFrame obsFrame;
+  {
+    Quantity obsRa; MVAngle::read(obsRa, "19:39:");
+    Quantity obsDec; MVAngle::read(obsDec, "-63.43.");
+    Quantity obsDay; MVTime::read(obsDay, "1996/11/20/5:20");
+    obsFrame.set(MEpoch(obsDay, MEpoch::UTC),
+		 MDirection(obsRa, obsDec, MDirection::J2000));
+  }
+  MFrequency::Ref obsRef(MFrequency::GEO, obsFrame);
+  cout << "Frequency\t scale\n";
   for (uInt i = 0; i < 11; i++) {
-    modelFlux = refFlux.copy();
-    modelSpectrum.sample(modelFlux, MFrequency(sampleFreq));
-    cout << sampleFreq.get("GHz")
-	 << "\t\t " << modelFlux.value(0).re << " " 
-	 << modelFlux.unit().getName() << endl;
+    cout << setprecision(7) << sampleFreq.get("GHz")
+	 << "\t\t " << modelSpectrum.sample(MFrequency(sampleFreq, obsRef))
+	 << endl;
     sampleFreq += step;
   }
 }
@@ -64,7 +74,7 @@ void plotSpectrum(const Flux<Double> & refFlux,
 int main() {
   try {
     SpectralIndex SImodel(MFrequency(Quantity(1.0, "GHz")), 0.5);
-    plotSpectrum(Flux<Double>(1.0), SImodel);
+    plotSpectrum(SImodel);
   }
   catch (AipsError x) {
     cerr << x.getMesg() << endl;
