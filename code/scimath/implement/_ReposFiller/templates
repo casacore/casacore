@@ -50,23 +50,23 @@
 1090 casa/Arrays/Array.cc casa/Containers/OrderedMap.h 
      = scimath/Mathematics/SquareMatrix.h 
      template class Array<OrderedMap<Double, SquareMatrix<Complex, 2>*>*> 
-1100 casa/Arrays/Array.cc scimath/Mathematics/AutoDiffA.h 
+1100 casa/Arrays/Array.cc casa/Utilities/CountedPtr.h 
+     = scimath/Functionals/Function1D.h 
+     template class Array<CountedPtr<Function1D<Float> > > 
+1110 casa/Arrays/Array.cc casa/Utilities/CountedPtr.h 
+     = scimath/Mathematics/SquareMatrix.h 
+     template class Array<CountedPtr<SquareMatrix<Complex, 4> > > 
+     template class Array<CountedPtr<SquareMatrix<Complex, 2> > > 
+1120 casa/Arrays/Array.cc scimath/Mathematics/AutoDiffA.h 
      template class Array<AutoDiffA<Double> > 
      #ifdef AIPS_SUN_NATIVE 
        template class Array<AutoDiffA<Double> >::ConstIteratorSTL 
      #endif 
-1110 casa/Arrays/Array.cc scimath/Mathematics/AutoDiffA.h 
+1130 casa/Arrays/Array.cc scimath/Mathematics/AutoDiffA.h 
      template class Array<AutoDiffA<Float> > 
      #ifdef AIPS_SUN_NATIVE 
        template class Array<AutoDiffA<Float> >::ConstIteratorSTL 
      #endif 
-1120 casa/Arrays/Array.cc casa/Utilities/CountedPtr.h 
-     = scimath/Functionals/Function1D.h 
-     template class Array<CountedPtr<Function1D<Float> > > 
-1130 casa/Arrays/Array.cc casa/Utilities/CountedPtr.h 
-     = scimath/Mathematics/SquareMatrix.h 
-     template class Array<CountedPtr<SquareMatrix<Complex, 4> > > 
-     template class Array<CountedPtr<SquareMatrix<Complex, 2> > > 
 1140 casa/Arrays/Array.cc scimath/Mathematics/RigidVector.h 
      template class Array<RigidVector<Double, 3> > 
 1150 casa/Arrays/Array.cc scimath/Mathematics/SquareMatrix.h 
@@ -122,27 +122,27 @@
 1070 casa/Arrays/MaskedArray.cc casa/Containers/OrderedMap.h 
      = scimath/Mathematics/SquareMatrix.h 
      template class MaskedArray<OrderedMap<Double, SquareMatrix<Complex, 2>*>*> 
-1080 casa/Arrays/MaskedArray.cc scimath/Mathematics/AutoDiff.h 
-     = casa/BasicSL/Complex.h 
-     template class MaskedArray<AutoDiff<Complex> > 
-1090 casa/Arrays/MaskedArray.cc scimath/Mathematics/AutoDiff.h 
-     = casa/BasicSL/Complex.h 
-     template class MaskedArray<AutoDiff<DComplex> > 
-1100 casa/Arrays/MaskedArray.cc scimath/Mathematics/AutoDiff.h 
-     template class MaskedArray<AutoDiff<Double> > 
-1110 casa/Arrays/MaskedArray.cc scimath/Mathematics/AutoDiff.h 
-     template class MaskedArray<AutoDiff<Float> > 
-1120 casa/Arrays/MaskedArray.cc scimath/Mathematics/AutoDiffA.h 
-     template class MaskedArray<AutoDiffA<Double> > 
-1130 casa/Arrays/MaskedArray.cc scimath/Mathematics/AutoDiffA.h 
-     template class MaskedArray<AutoDiffA<Float> > 
-1140 casa/Arrays/MaskedArray.cc casa/Utilities/CountedPtr.h 
+1080 casa/Arrays/MaskedArray.cc casa/Utilities/CountedPtr.h 
      = scimath/Functionals/Function1D.h 
      template class MaskedArray<CountedPtr<Function1D<Float> > > 
-1150 casa/Arrays/MaskedArray.cc casa/Utilities/CountedPtr.h 
+1090 casa/Arrays/MaskedArray.cc casa/Utilities/CountedPtr.h 
      = scimath/Mathematics/SquareMatrix.h 
      template class MaskedArray<CountedPtr<SquareMatrix<Complex, 4> > > 
      template class MaskedArray<CountedPtr<SquareMatrix<Complex, 2> > > 
+1100 casa/Arrays/MaskedArray.cc scimath/Mathematics/AutoDiff.h 
+     = casa/BasicSL/Complex.h 
+     template class MaskedArray<AutoDiff<Complex> > 
+1110 casa/Arrays/MaskedArray.cc scimath/Mathematics/AutoDiff.h 
+     = casa/BasicSL/Complex.h 
+     template class MaskedArray<AutoDiff<DComplex> > 
+1120 casa/Arrays/MaskedArray.cc scimath/Mathematics/AutoDiff.h 
+     template class MaskedArray<AutoDiff<Double> > 
+1130 casa/Arrays/MaskedArray.cc scimath/Mathematics/AutoDiff.h 
+     template class MaskedArray<AutoDiff<Float> > 
+1140 casa/Arrays/MaskedArray.cc scimath/Mathematics/AutoDiffA.h 
+     template class MaskedArray<AutoDiffA<Double> > 
+1150 casa/Arrays/MaskedArray.cc scimath/Mathematics/AutoDiffA.h 
+     template class MaskedArray<AutoDiffA<Float> > 
 1160 casa/Arrays/MaskedArray.cc scimath/Mathematics/RigidVector.h 
      template class MaskedArray<RigidVector<Double, 3> > 
 1170 casa/Arrays/MaskedArray.cc scimath/Mathematics/SquareMatrix.h 
@@ -401,1256 +401,6 @@
      template class PoolStack<AutoDiffRep<Double>, uInt> 
 1030 casa/Containers/PoolStack.cc scimath/Mathematics/AutoDiffRep.h 
      template class PoolStack<AutoDiffRep<Float>, uInt> 
-1000 scimath/Fitting/LSQFit2.cc 
-     = casa/Arrays/VectorSTLIterator.h 
-     template void LSQFit::makeNorm<Double, VectorSTLIterator<Double> >(VectorSTLIterator<Double> const &, Double const &, Double const &, Bool, Bool) 
-     template void LSQFit::makeNorm<Double, VectorSTLIterator<Double> >(VectorSTLIterator<Double> const &, Double const &, Double const &, LSQFit::Real, Bool, Bool) 
-     template void LSQFit::makeNorm<Double, VectorSTLIterator<Double>, VectorSTLIterator<uInt> >(uInt nIndex, VectorSTLIterator<uInt> const &, VectorSTLIterator<Double> const &, Double const &, Double const &, Bool, Bool) 
-     template void LSQFit::makeNorm<Double, VectorSTLIterator<Double>, VectorSTLIterator<uInt> >(uInt nIndex, VectorSTLIterator<uInt> const &, VectorSTLIterator<Double> const &, Double const &, Double const &, LSQFit::Real, Bool, Bool) 
-     template Bool LSQFit::addConstraint<Double, VectorSTLIterator<Double> >(VectorSTLIterator<Double> const &, Double const &) 
-     template Bool LSQFit::addConstraint<Double, VectorSTLIterator<Double>, VectorSTLIterator<uInt> >(uInt nIndex, VectorSTLIterator<uInt> const &, VectorSTLIterator<Double> const &, Double const &) 
-     template Bool LSQFit::setConstraint<Double, VectorSTLIterator<Double> >(uInt n, VectorSTLIterator<Double> const &, Double const &) 
-     template Bool LSQFit::setConstraint<Double, VectorSTLIterator<Double>, VectorSTLIterator<uInt> >(uInt n, uInt nIndex, VectorSTLIterator<uInt> const &, VectorSTLIterator<Double> const &, Double const &) 
-     template Bool LSQFit::getConstraint<VectorSTLIterator<Double> >(uInt, VectorSTLIterator<Double> &) const 
-     template void LSQFit::solve<VectorSTLIterator<Double> >(VectorSTLIterator<Double> &) 
-     template Bool LSQFit::solveLoop<VectorSTLIterator<Double> >(Double &, uInt &, VectorSTLIterator<Double> &, Bool) 
-     template void LSQFit::copy<VectorSTLIterator<Double> >(Double const *, Double const *, VectorSTLIterator<Double> &, LSQReal) 
-     template void LSQFit::uncopy<VectorSTLIterator<Double> >(Double *, Double const *, VectorSTLIterator<Double> &, LSQReal) 
-     template void LSQFit::copyDiagonal<VectorSTLIterator<Double> >(VectorSTLIterator<Double> &, LSQReal) 
-     template Bool LSQFit::getErrors<VectorSTLIterator<Double> >(VectorSTLIterator<Double> &) 
-#
-1010 scimath/Fitting/LSQFit2.cc 
-     = casa/Arrays/VectorSTLIterator.h 
-     template void LSQFit::makeNorm<Float, VectorSTLIterator<Float> >(VectorSTLIterator<Float> const &, Float const &, Float const &, Bool, Bool) 
-     template void LSQFit::makeNorm<Float, VectorSTLIterator<Float> >(VectorSTLIterator<Float> const &, Float const &, Float const &, LSQFit::Real, Bool, Bool) 
-     template void LSQFit::makeNorm<Float, VectorSTLIterator<Float>, VectorSTLIterator<uInt> >(uInt nIndex, VectorSTLIterator<uInt> const &, VectorSTLIterator<Float> const &, Float const &, Float const &, Bool, Bool) 
-     template void LSQFit::makeNorm<Float, VectorSTLIterator<Float>, VectorSTLIterator<uInt> >(uInt nIndex, VectorSTLIterator<uInt> const &, VectorSTLIterator<Float> const &, Float const &, Float const &, LSQFit::Real, Bool, Bool) 
-     template Bool LSQFit::addConstraint<Float, VectorSTLIterator<Float> >(VectorSTLIterator<Float> const &, Float const &) 
-     template Bool LSQFit::addConstraint<Float, VectorSTLIterator<Float>, VectorSTLIterator<uInt> >(uInt nIndex, VectorSTLIterator<uInt> const &, VectorSTLIterator<Float> const &, Float const &) 
-     template Bool LSQFit::setConstraint<Float, VectorSTLIterator<Float> >(uInt n, VectorSTLIterator<Float> const &, Float const &) 
-     template Bool LSQFit::setConstraint<Float, VectorSTLIterator<Float>, VectorSTLIterator<uInt> >(uInt n, uInt nIndex, VectorSTLIterator<uInt> const &, VectorSTLIterator<Float> const &, Float const &) 
-     template Bool LSQFit::getConstraint<VectorSTLIterator<Float> >(uInt, VectorSTLIterator<Float> &) const 
-     template void LSQFit::solve<VectorSTLIterator<Float> >(VectorSTLIterator<Float> &) 
-     template Bool LSQFit::solveLoop<VectorSTLIterator<Float> >(Double &, uInt &, VectorSTLIterator<Float> &, Bool) 
-     template void LSQFit::copy<VectorSTLIterator<Float> >(Double const *, Double const *, VectorSTLIterator<Float> &, LSQReal) 
-     template void LSQFit::uncopy<VectorSTLIterator<Float> >(Double *, Double const *, VectorSTLIterator<Float> &, LSQReal) 
-     template void LSQFit::copyDiagonal<VectorSTLIterator<Float> >(VectorSTLIterator<Float> &, LSQReal) 
-     template Bool LSQFit::getErrors<VectorSTLIterator<Float> >(VectorSTLIterator<Float> &) 
-#
-1020 scimath/Fitting/LSQFit2.cc 
-     = casa/Arrays/VectorSTLIterator.h 
-     typedef VectorSTLIterator<std::complex<Double> > It1 
-     typedef VectorSTLIterator<uInt> It1Int 
-     template void LSQFit::makeNorm<Double, It1>(It1 const &, Double const &, std::complex<Double> const &, Bool, Bool) 
-     template void LSQFit::makeNorm<Double, It1>(It1 const &, Double const &, std::complex<Double> const &, LSQFit::AsReal, Bool, Bool) 
-     template void LSQFit::makeNorm<Double, It1>(It1 const &, Double const &, std::complex<Double> const &, LSQFit::Complex, Bool, Bool) 
-     template void LSQFit::makeNorm<Double, It1>(It1 const &, Double const &, std::complex<Double> const &, LSQFit::Conjugate, Bool, Bool) 
-     template void LSQFit::makeNorm<Double, It1>(It1 const &, Double const &, std::complex<Double> const &, LSQFit::Separable, Bool, Bool) 
-     template void LSQFit::makeNorm<Double, It1, It1Int>(uInt nIndex, It1Int const &, It1 const &, Double const &, std::complex<Double> const &, Bool, Bool) 
-     template void LSQFit::makeNorm<Double, It1, It1Int>(uInt nIndex, It1Int const &, It1 const &, Double const &, std::complex<Double> const &, LSQFit::AsReal, Bool, Bool) 
-     template void LSQFit::makeNorm<Double, It1, It1Int>(uInt nIndex, It1Int const &, It1 const &, Double const &, std::complex<Double> const &, LSQFit::Complex, Bool, Bool) 
-     template void LSQFit::makeNorm<Double, It1, It1Int>(uInt nIndex, It1Int const &, It1 const &, Double const &, std::complex<Double> const &, LSQFit::Conjugate, Bool, Bool) 
-     template void LSQFit::makeNorm<Double, It1, It1Int>(uInt nIndex, It1Int const &, It1 const &, Double const &, std::complex<Double> const &, LSQFit::Separable, Bool, Bool) 
-     template Bool LSQFit::addConstraint<Double, It1>(It1 const &, std::complex<Double> const &) 
-     template Bool LSQFit::addConstraint<Double, It1, It1Int>(uInt nIndex, It1Int const &, It1 const &, std::complex<Double> const &) 
-     template Bool LSQFit::setConstraint<Double, It1>(uInt n, It1 const &, std::complex<Double> const &) 
-     template Bool LSQFit::setConstraint<Double, It1, It1Int>(uInt n, uInt nIndex, It1Int const &, It1 const &, std::complex<Double> const &) 
-     template Bool LSQFit::getConstraint<It1>(uInt, It1 &) const 
-     template void LSQFit::solve<It1>(It1 &) 
-     template Bool LSQFit::solveLoop<It1>(Double &, uInt &, It1 &, Bool) 
-     template void LSQFit::copy<It1>(Double const *, Double const *, It1 &, LSQComplex) 
-     template void LSQFit::uncopy<It1>(Double *, Double const *, It1 &, LSQComplex) 
-     template void LSQFit::copyDiagonal<It1>(It1 &, LSQComplex) 
-     template Bool LSQFit::getErrors<It1>(It1 &) 
-#
-1030 scimath/Fitting/LSQFit2.cc 
-     = casa/Arrays/VectorSTLIterator.h 
-     typedef VectorSTLIterator<std::complex<Float> > It2 
-     typedef VectorSTLIterator<uInt> It2Int 
-     template void LSQFit::makeNorm<Float, It2>(It2 const &, Float const &, std::complex<Float> const &, Bool, Bool) 
-     template void LSQFit::makeNorm<Float, It2>(It2 const &, Float const &, std::complex<Float> const &, LSQFit::AsReal, Bool, Bool) 
-     template void LSQFit::makeNorm<Float, It2>(It2 const &, Float const &, std::complex<Float> const &, LSQFit::Complex, Bool, Bool) 
-     template void LSQFit::makeNorm<Float, It2>(It2 const &, Float const &, std::complex<Float> const &, LSQFit::Conjugate, Bool, Bool) 
-     template void LSQFit::makeNorm<Float, It2>(It2 const &, Float const &, std::complex<Float> const &, LSQFit::Separable, Bool, Bool) 
-     template void LSQFit::makeNorm<Float, It2, It2Int>(uInt nIndex, It2Int const &, It2 const &, Float const &, std::complex<Float> const &, Bool, Bool) 
-     template void LSQFit::makeNorm<Float, It2, It2Int>(uInt nIndex, It2Int const &, It2 const &, Float const &, std::complex<Float> const &, LSQFit::AsReal, Bool, Bool) 
-     template void LSQFit::makeNorm<Float, It2, It2Int>(uInt nIndex, It2Int const &, It2 const &, Float const &, std::complex<Float> const &, LSQFit::Complex, Bool, Bool) 
-     template void LSQFit::makeNorm<Float, It2, It2Int>(uInt nIndex, It2Int const &, It2 const &, Float const &, std::complex<Float> const &, LSQFit::Conjugate, Bool, Bool) 
-     template void LSQFit::makeNorm<Float, It2, It2Int>(uInt nIndex, It2Int const &, It2 const &, Float const &, std::complex<Float> const &, LSQFit::Separable, Bool, Bool) 
-     template Bool LSQFit::addConstraint<Float, It2>(It2 const &, std::complex<Float> const &) 
-     template Bool LSQFit::addConstraint<Float, It2, It2Int>(uInt nIndex, It2Int const &, It2 const &, std::complex<Float> const &) 
-     template Bool LSQFit::setConstraint<Float, It2>(uInt n, It2 const &, std::complex<Float> const &) 
-     template Bool LSQFit::setConstraint<Float, It2, It2Int>(uInt n, uInt nIndex, It2Int const &, It2 const &, std::complex<Float> const &) 
-     template Bool LSQFit::getConstraint<It2>(uInt, It2 &) const 
-     template void LSQFit::solve<It2>(It2 &) 
-     template Bool LSQFit::solveLoop<It2>(Double &, uInt &, It2 &, Bool) 
-     template void LSQFit::copy<It2>(Double const *, Double const *, It2 &, LSQComplex) 
-     template void LSQFit::uncopy<It2>(Double *, Double const *, It2 &, LSQComplex) 
-     template void LSQFit::copyDiagonal<It2>(It2 &, LSQComplex) 
-     template Bool LSQFit::getErrors<It2>(It2 &) 
-# 
-1040 scimath/Fitting/LSQFit2.cc 
-     = algorithm 
-     template Double *std::swap_ranges<Double *, Double *>(Double *, Double *, Double *) 
-#
-1050 scimath/Fitting/LSQFit2.cc 
-     = complex 
-     typedef std::complex<Double>* It3 
-     typedef uInt* It3Int 
-     template void LSQFit::makeNorm<Double, It3>(It3 const &, Double const &, std::complex<Double> const &, Bool, Bool) 
-     template void LSQFit::makeNorm<Double, It3>(It3 const &, Double const &, std::complex<Double> const &, LSQFit::AsReal, Bool, Bool) 
-     template void LSQFit::makeNorm<Double, It3>(It3 const &, Double const &, std::complex<Double> const &, LSQFit::Complex, Bool, Bool) 
-     template void LSQFit::makeNorm<Double, It3>(It3 const &, Double const &, std::complex<Double> const &, LSQFit::Conjugate, Bool, Bool) 
-     template void LSQFit::makeNorm<Double, It3>(It3 const &, Double const &, std::complex<Double> const &, LSQFit::Separable, Bool, Bool) 
-     template void LSQFit::makeNorm<Double, It3, It3Int>(uInt nIndex, It3Int const &, It3 const &, Double const &, std::complex<Double> const &, Bool, Bool) 
-     template void LSQFit::makeNorm<Double, It3, It3Int>(uInt nIndex, It3Int const &, It3 const &, Double const &, std::complex<Double> const &, LSQFit::AsReal, Bool, Bool) 
-     template void LSQFit::makeNorm<Double, It3, It3Int>(uInt nIndex, It3Int const &, It3 const &, Double const &, std::complex<Double> const &, LSQFit::Complex, Bool, Bool) 
-     template void LSQFit::makeNorm<Double, It3, It3Int>(uInt nIndex, It3Int const &, It3 const &, Double const &, std::complex<Double> const &, LSQFit::Conjugate, Bool, Bool) 
-     template void LSQFit::makeNorm<Double, It3, It3Int>(uInt nIndex, It3Int const &, It3 const &, Double const &, std::complex<Double> const &, LSQFit::Separable, Bool, Bool) 
-     template Bool LSQFit::addConstraint<Double, It3>(It3 const &, std::complex<Double> const &) 
-     template Bool LSQFit::addConstraint<Double, It3, It3Int>(uInt nIndex, It3Int const &, It3 const &, std::complex<Double> const &) 
-     template Bool LSQFit::setConstraint<Double, It3>(uInt n, It3 const &, std::complex<Double> const &) 
-     template Bool LSQFit::setConstraint<Double, It3, It3Int>(uInt n, uInt nIndex, It3Int const &, It3 const &, std::complex<Double> const &) 
-     template Bool LSQFit::getConstraint<Double>(uInt, std::complex<Double> *) const 
-     template void LSQFit::solve<Double>(std::complex<Double> *) 
-     template Bool LSQFit::solveLoop<Double>(Double &, uInt &, std::complex<Double> *, Bool) 
-     template void LSQFit::copy<std::complex<Double> >(Double const *, Double const *, std::complex<Double> *, LSQComplex) 
-     template void LSQFit::uncopy<std::complex<Double> >(Double *, Double const *, std::complex<Double> *, LSQComplex) 
-     template Bool LSQFit::getErrors<Double>(std::complex<Double> *) 
-     template Bool LSQFit::getCovariance<Double>(std::complex<Double> *) 
-#
-1060 scimath/Fitting/LSQFit2.cc 
-     = complex 
-     typedef std::complex<Float>* It4 
-     typedef uInt* It4Int 
-     template void LSQFit::makeNorm<Float, It4>(It4 const &, Float const &, std::complex<Float> const &, Bool, Bool) 
-     template void LSQFit::makeNorm<Float, It4>(It4 const &, Float const &, std::complex<Float> const &, LSQFit::AsReal, Bool, Bool) 
-     template void LSQFit::makeNorm<Float, It4>(It4 const &, Float const &, std::complex<Float> const &, LSQFit::Complex, Bool, Bool) 
-     template void LSQFit::makeNorm<Float, It4>(It4 const &, Float const &, std::complex<Float> const &, LSQFit::Conjugate, Bool, Bool) 
-     template void LSQFit::makeNorm<Float, It4>(It4 const &, Float const &, std::complex<Float> const &, LSQFit::Separable, Bool, Bool) 
-     template void LSQFit::makeNorm<Float, It4, It4Int>(uInt nIndex, It4Int const &, It4 const &, Float const &, std::complex<Float> const &, Bool, Bool) 
-     template void LSQFit::makeNorm<Float, It4, It4Int>(uInt nIndex, It4Int const &, It4 const &, Float const &, std::complex<Float> const &, LSQFit::AsReal, Bool, Bool) 
-     template void LSQFit::makeNorm<Float, It4, It4Int>(uInt nIndex, It4Int const &, It4 const &, Float const &, std::complex<Float> const &, LSQFit::Complex, Bool, Bool) 
-     template void LSQFit::makeNorm<Float, It4, It4Int>(uInt nIndex, It4Int const &, It4 const &, Float const &, std::complex<Float> const &, LSQFit::Conjugate, Bool, Bool) 
-     template void LSQFit::makeNorm<Float, It4, It4Int>(uInt nIndex, It4Int const &, It4 const &, Float const &, std::complex<Float> const &, LSQFit::Separable, Bool, Bool) 
-     template Bool LSQFit::addConstraint<Float, It4>(It4 const &, std::complex<Float> const &) 
-     template Bool LSQFit::addConstraint<Float, It4, It4Int>(uInt nIndex, It4Int const &, It4 const &, std::complex<Float> const &) 
-     template Bool LSQFit::setConstraint<Float, It4>(uInt n, It4 const &, std::complex<Float> const &) 
-     template Bool LSQFit::setConstraint<Float, It4, It4Int>(uInt n, uInt nIndex, It4Int const &, It4 const &, std::complex<Float> const &) 
-     template Bool LSQFit::getConstraint<Float>(uInt, std::complex<Float> *) const 
-     template void LSQFit::solve<Float>(std::complex<Float> *) 
-     template Bool LSQFit::solveLoop<Float>(Double &, uInt &, std::complex<Float> *, Bool) 
-     template void LSQFit::copy<std::complex<Float> >(Double const *, Double const *, std::complex<Float> *, LSQComplex) 
-     template void LSQFit::uncopy<std::complex<Float> >(Double *, Double const *, std::complex<Float> *, LSQComplex) 
-     template Bool LSQFit::getErrors<Float>(std::complex<Float> *) 
-     template Bool LSQFit::getCovariance<Float>(std::complex<Float> *) 
-#
-1070 scimath/Fitting/LSQFit2.cc 
-     typedef Double* It5 
-     typedef uInt* It5Int 
-     template void LSQFit::makeNorm<Double, It5>(It5 const &, Double const &, Double const &, Bool, Bool) 
-     template void LSQFit::makeNorm<Double, It5>(It5 const &, Double const &, Double const &, LSQFit::Real, Bool, Bool) 
-     template void LSQFit::makeNorm<Double, It5, It5Int>(uInt nIndex, It5Int const &, It5 const &, Double const &, Double const &, Bool, Bool) 
-     template void LSQFit::makeNorm<Double, It5, It5Int>(uInt nIndex, It5Int const &, It5 const &, Double const &, Double const &, LSQFit::Real, Bool, Bool) 
-     template Bool LSQFit::addConstraint<Double, It5>(It5 const &, Double const &) 
-     template Bool LSQFit::addConstraint<Double, It5, It5Int>(uInt nIndex, It5Int const &, It5 const &, Double const &) 
-     template Bool LSQFit::setConstraint<Double, It5>(uInt n, It5 const &, Double const &) 
-     template Bool LSQFit::setConstraint<Double, It5, It5Int>(uInt n, uInt nIndex, It5Int const &, It5 const &, Double const &) 
-     template Bool LSQFit::getConstraint<Double>(uInt, Double *) const 
-     template void LSQFit::solve<Double>(Double *) 
-     template Bool LSQFit::solveLoop<Double>(Double &, uInt &, Double *, Bool) 
-     template void LSQFit::copy<Double>(Double const *, Double const *, Double *, LSQReal) 
-     template void LSQFit::uncopy<Double>(Double *, Double const *, Double *, LSQReal) 
-     template Bool LSQFit::getErrors<Double>(Double *) 
-     template Bool LSQFit::getCovariance<Double>(Double *) 
-#
-1080 scimath/Fitting/LSQFit2.cc 
-     typedef Float* It6 
-     typedef uInt* It6Int 
-     template void LSQFit::makeNorm<Float, It6>(It6 const &, Float const &, Float const &, Bool, Bool) 
-     template void LSQFit::makeNorm<Float, It6>(It6 const &, Float const &, Float const &, LSQFit::Real, Bool, Bool) 
-     template void LSQFit::makeNorm<Float, It6, It6Int>(uInt nIndex, It6Int const &, It6 const &, Float const &, Float const &, Bool, Bool) 
-     template void LSQFit::makeNorm<Float, It6, It6Int>(uInt nIndex, It6Int const &, It6 const &, Float const &, Float const &, LSQFit::Real, Bool, Bool) 
-     template Bool LSQFit::addConstraint<Float, It6>(It6 const &, Float const &) 
-     template Bool LSQFit::addConstraint<Float, It6, It6Int>(uInt nIndex, It6Int const &, It6 const &, Float const &) 
-     template Bool LSQFit::setConstraint<Float, It6>(uInt n, It6 const &, Float const &) 
-     template Bool LSQFit::setConstraint<Float, It6, It6Int>(uInt n, uInt nIndex, It6Int const &, It6 const &, Float const &) 
-     template Bool LSQFit::getConstraint<Float>(uInt, Float *) const 
-     template void LSQFit::solve<Float>(Float *) 
-     template Bool LSQFit::solveLoop<Float>(Double &, uInt &, Float *, Bool) 
-     template void LSQFit::copy<Float>(Double const *, Double const *, Float *, LSQReal) 
-     template void LSQFit::uncopy<Float>(Double *, Double const *, Float *, LSQReal) 
-     template Bool LSQFit::getErrors<Float>(Float *) 
-     template Bool LSQFit::getCovariance<Float>(Float *) 
-1000 scimath/Fitting/LSQaips.cc 
-     = casa/Arrays/Array.h 
-     = casa/Arrays/Vector.h 
-     template Bool LSQaips::getCovariance<Double>(Array<Double> &) 
-     template Bool LSQaips::solveLoop<Double>(Double &, uInt &, Vector<Double> &, Bool doSVD) 
-1010 scimath/Fitting/LSQaips.cc 
-     = casa/Arrays/Array.h 
-     = casa/Arrays/Vector.h 
-     template Bool LSQaips::getCovariance<Float>(Array<Float> &) 
-     template Bool LSQaips::solveLoop<Float>(Double &, uInt &, Vector<Float> &, Bool doSVD) 
-1020 scimath/Fitting/LSQaips.cc 
-     = casa/Arrays/Array.h 
-     = casa/Arrays/Vector.h 
-     template Bool LSQaips::getCovariance<std::complex<Double> >(Array<std::complex<Double> > &) 
-     template Bool LSQaips::solveLoop<std::complex<Double> >(Double &, uInt &, Vector<std::complex<Double> > &, Bool doSVD) 
-1030 scimath/Fitting/LSQaips.cc 
-     = casa/Arrays/Array.h 
-     = casa/Arrays/Vector.h 
-     template Bool LSQaips::getCovariance<std::complex<Float> >(Array<std::complex<Float> > &) 
-     template Bool LSQaips::solveLoop<std::complex<Float> >(Double &, uInt &, Vector<std::complex<Float> > &, Bool doSVD) 
-1000 scimath/Functionals/Chebyshev.cc 
-     = casa/BasicSL/Complex.h 
-     template class Chebyshev<DComplex> 
-     template class Chebyshev<Complex> 
-1010 scimath/Functionals/Chebyshev.cc scimath/Mathematics/AutoDiff.h 
-     = casa/BasicSL/Complex.h 
-     = scimath/Mathematics/AutoDiffMath.h 
-     template class Chebyshev<AutoDiff<DComplex> > 
-     template class Chebyshev<AutoDiff<Complex> > 
-1020 scimath/Functionals/Chebyshev.cc scimath/Mathematics/AutoDiff.h 
-     = scimath/Mathematics/AutoDiffMath.h 
-     template class Chebyshev<AutoDiff<Double> > 
-     template class Chebyshev<AutoDiff<Float> > 
-1030 scimath/Functionals/Chebyshev.cc scimath/Mathematics/AutoDiffA.h 
-     = scimath/Mathematics/AutoDiffMath.h 
-     template class Chebyshev<AutoDiffA<Double> > 
-     template class Chebyshev<AutoDiffA<Float> > 
-1040 scimath/Functionals/Chebyshev.cc 
-     template class Chebyshev<Double> 
-     template class Chebyshev<Float> 
-1000 scimath/Functionals/ChebyshevParam.cc 
-     = casa/BasicSL/Complex.h 
-     = scimath/Mathematics/AutoDiff.h 
-     = scimath/Mathematics/AutoDiffMath.h 
-     template class ChebyshevParam<AutoDiff<DComplex> > 
-     template class ChebyshevParam<AutoDiff<Complex> > 
-     template class ChebyshevParamModeImpl<AutoDiff<DComplex> > 
-     template class ChebyshevParamModeImpl<AutoDiff<Complex> > 
-1010 scimath/Functionals/ChebyshevParam.cc 
-     = casa/BasicSL/Complex.h 
-     template class ChebyshevParam<DComplex> 
-     template class ChebyshevParam<Complex> 
-     template class ChebyshevParamModeImpl<DComplex> 
-     template class ChebyshevParamModeImpl<Complex> 
-1020 scimath/Functionals/ChebyshevParam.cc 
-     = scimath/Mathematics/AutoDiff.h 
-     = scimath/Mathematics/AutoDiffMath.h 
-     template class ChebyshevParam<AutoDiff<Double> > 
-     template class ChebyshevParam<AutoDiff<Float> > 
-     template class ChebyshevParamModeImpl<AutoDiff<Double> > 
-     template class ChebyshevParamModeImpl<AutoDiff<Float> > 
-1030 scimath/Functionals/ChebyshevParam.cc 
-     = scimath/Mathematics/AutoDiffA.h 
-     = scimath/Mathematics/AutoDiffMath.h 
-     template class ChebyshevParam<AutoDiffA<Double> > 
-     template class ChebyshevParam<AutoDiffA<Float> > 
-     template class ChebyshevParamModeImpl<AutoDiffA<Double> > 
-     template class ChebyshevParamModeImpl<AutoDiffA<Float> > 
-1040 scimath/Functionals/ChebyshevParam.cc 
-     template class ChebyshevParam<Double> 
-     template class ChebyshevParam<Float> 
-     template class ChebyshevParamModeImpl<Double> 
-     template class ChebyshevParamModeImpl<Float> 
-1000 scimath/Functionals/Combi2Function.cc 
-     = casa/BasicSL/Complex.h 
-     = scimath/Mathematics/AutoDiff.h 
-     = scimath/Mathematics/AutoDiffMath.h 
-     template class CombiFunction<AutoDiff<DComplex> > 
-     template class CombiFunction<AutoDiff<Complex> > 
-1010 scimath/Functionals/Combi2Function.cc 
-     = scimath/Mathematics/AutoDiff.h 
-     = scimath/Mathematics/AutoDiffMath.h 
-     template class CombiFunction<AutoDiff<Double> > 
-     template class CombiFunction<AutoDiff<Float> > 
-1000 scimath/Functionals/CombiFunction.cc 
-     = casa/BasicSL/Complex.h 
-     template class CombiFunction<DComplex> 
-     template class CombiFunction<Complex> 
-1010 scimath/Functionals/CombiFunction.cc 
-     template class CombiFunction<Double> 
-     template class CombiFunction<Float> 
-1000 scimath/Functionals/CombiParam.cc 
-     = casa/BasicSL/Complex.h 
-     = scimath/Mathematics/AutoDiff.h 
-     = scimath/Mathematics/AutoDiffMath.h 
-     template class CombiParam<AutoDiff<DComplex> > 
-     template class CombiParam<AutoDiff<Complex> > 
-1010 scimath/Functionals/CombiParam.cc 
-     = casa/BasicSL/Complex.h 
-     template class CombiParam<DComplex> 
-     template class CombiParam<Complex> 
-1020 scimath/Functionals/CombiParam.cc 
-     = scimath/Mathematics/AutoDiff.h 
-     = scimath/Mathematics/AutoDiffMath.h 
-     template class CombiParam<AutoDiff<Double> > 
-     template class CombiParam<AutoDiff<Float> > 
-1030 scimath/Functionals/CombiParam.cc 
-     template class CombiParam<Double> 
-     template class CombiParam<Float> 
-1000 scimath/Functionals/Compound2Function.cc 
-     = casa/BasicSL/Complex.h 
-     = scimath/Mathematics/AutoDiff.h 
-     = scimath/Mathematics/AutoDiffMath.h 
-     template class CompoundFunction<AutoDiff<DComplex> > 
-     template class CompoundFunction<AutoDiff<Complex> > 
-1010 scimath/Functionals/Compound2Function.cc 
-     = scimath/Mathematics/AutoDiff.h 
-     = scimath/Mathematics/AutoDiffMath.h 
-     template class CompoundFunction<AutoDiff<Double> > 
-     template class CompoundFunction<AutoDiff<Float> > 
-1000 scimath/Functionals/CompoundFunction.cc 
-     = casa/BasicSL/Complex.h 
-     template class CompoundFunction<DComplex> 
-     template class CompoundFunction<Complex> 
-1010 scimath/Functionals/CompoundFunction.cc 
-     template class CompoundFunction<Double> 
-     template class CompoundFunction<Float> 
-1000 scimath/Functionals/CompoundParam.cc 
-     = casa/BasicSL/Complex.h 
-     = scimath/Mathematics/AutoDiff.h 
-     = scimath/Mathematics/AutoDiffMath.h 
-     template class CompoundParam<AutoDiff<DComplex> > 
-     template class CompoundParam<AutoDiff<Complex> > 
-1010 scimath/Functionals/CompoundParam.cc 
-     = casa/BasicSL/Complex.h 
-     template class CompoundParam<DComplex> 
-     template class CompoundParam<Complex> 
-1020 scimath/Functionals/CompoundParam.cc 
-     = scimath/Mathematics/AutoDiff.h 
-     = scimath/Mathematics/AutoDiffMath.h 
-     template class CompoundParam<AutoDiff<Double> > 
-     template class CompoundParam<AutoDiff<Float> > 
-1030 scimath/Functionals/CompoundParam.cc 
-     template class CompoundParam<Double> 
-     template class CompoundParam<Float> 
-1000 scimath/Functionals/Function.cc 
-     = scimath/Mathematics/AutoDiff.h 
-     = casa/BasicSL/Complex.h 
-     template class Function<AutoDiff<Complex> > 
-     template class Function<AutoDiff<DComplex> > 
-1010 scimath/Functionals/Function.cc 
-     = scimath/Mathematics/AutoDiff.h 
-     template class Function<AutoDiff<Double> > 
-     template class Function<AutoDiff<Float> > 
-1020 scimath/Functionals/Function.cc 
-     = scimath/Mathematics/AutoDiffA.h 
-     = casa/BasicSL/Complex.h 
-     template class Function<AutoDiffA<Complex> > 
-     template class Function<AutoDiffA<DComplex> > 
-1030 scimath/Functionals/Function.cc 
-     = scimath/Mathematics/AutoDiffA.h 
-     template class Function<AutoDiffA<Double> > 
-     template class Function<AutoDiffA<Float> > 
-1040 scimath/Functionals/Function.cc casa/Arrays/Array.h 
-     template class Function<Double, Array<Double> > 
-1050 scimath/Functionals/Function.cc casa/BasicSL/Complex.h 
-     template class Function<Complex> 
-     template class Function<DComplex> 
-1060 scimath/Functionals/Function.cc 
-     template class Function<Double, Float> 
-1070 scimath/Functionals/Function.cc 
-     template class Function<Double> 
-     template class Function<Float> 
-1000 scimath/Functionals/Function1D.h 
-     = scimath/Mathematics/AutoDiff.h 
-     = casa/BasicSL/Complex.h 
-     template class Function1D<AutoDiff<Complex> > 
-     template class Function1D<AutoDiff<DComplex> > 
-1010 scimath/Functionals/Function1D.h 
-     = scimath/Mathematics/AutoDiff.h 
-     template class Function1D<AutoDiff<Double> > 
-     template class Function1D<AutoDiff<Float> > 
-1020 scimath/Functionals/Function1D.h 
-     = scimath/Mathematics/AutoDiffA.h 
-     = casa/BasicSL/Complex.h 
-     template class Function1D<AutoDiffA<Complex> > 
-1030 scimath/Functionals/Function1D.h 
-     = scimath/Mathematics/AutoDiffA.h 
-     = casa/BasicSL/Complex.h 
-     template class Function1D<AutoDiffA<DComplex> > 
-1040 scimath/Functionals/Function1D.h 
-     = scimath/Mathematics/AutoDiffA.h 
-     template class Function1D<AutoDiffA<Double> > 
-     template class Function1D<AutoDiffA<Float> > 
-1050 scimath/Functionals/Function1D.h casa/Arrays/Array.h 
-     template class Function1D<Double, Array<Double> > 
-1060 scimath/Functionals/Function1D.h casa/BasicSL/Complex.h 
-     template class Function1D<Complex> 
-     template class Function1D<DComplex> 
-1070 scimath/Functionals/Function1D.h 
-     template class Function1D<Double> 
-     template class Function1D<Float> 
-1000 scimath/Functionals/FunctionParam.cc 
-     = scimath/Mathematics/AutoDiff.h 
-     = scimath/Mathematics/AutoDiffMath.h 
-     = scimath/Mathematics/AutoDiffIO.h 
-     = casa/BasicSL/Complex.h 
-     template class FunctionParam<AutoDiff<Complex> > 
-     template class FunctionParam<AutoDiff<DComplex> > 
-1010 scimath/Functionals/FunctionParam.cc 
-     = scimath/Mathematics/AutoDiff.h 
-     = scimath/Mathematics/AutoDiffMath.h 
-     = scimath/Mathematics/AutoDiffIO.h 
-     template class FunctionParam<AutoDiff<Double> > 
-     template class FunctionParam<AutoDiff<Float> > 
-1020 scimath/Functionals/FunctionParam.cc 
-     = scimath/Mathematics/AutoDiffA.h 
-     = scimath/Mathematics/AutoDiffIO.h 
-     = scimath/Mathematics/AutoDiffMath.h 
-     = casa/BasicSL/Complex.h 
-     template class FunctionParam<AutoDiffA<Complex> > 
-     template class FunctionParam<AutoDiffA<DComplex> > 
-1030 scimath/Functionals/FunctionParam.cc 
-     = scimath/Mathematics/AutoDiffA.h 
-     = scimath/Mathematics/AutoDiffIO.h 
-     = scimath/Mathematics/AutoDiffMath.h 
-     template class FunctionParam<AutoDiffA<Double> > 
-     template class FunctionParam<AutoDiffA<Float> > 
-1040 scimath/Functionals/FunctionParam.cc casa/BasicSL/Complex.h 
-     template class FunctionParam<Complex> 
-     template class FunctionParam<DComplex> 
-1050 scimath/Functionals/FunctionParam.cc 
-     template class FunctionParam<Double> 
-     template class FunctionParam<Float> 
-1000 scimath/Functionals/FunctionWrapper.cc 
-     template class FunctionWrapper<AutoDiff<Double> > 
-     template class FunctionWrapper<AutoDiff<Float> > 
-1010 scimath/Functionals/FunctionWrapper.cc 
-     template class FunctionWrapper<Double> 
-     template class FunctionWrapper<Float> 
-1000 scimath/Functionals/Gaussian1D.cc 
-     = casa/BasicSL/Complex.h 
-     template class Gaussian1D<DComplex> 
-     template class Gaussian1D<Complex> 
-1010 scimath/Functionals/Gaussian1D.cc scimath/Mathematics/AutoDiffA.h 
-     = scimath/Mathematics/AutoDiffMath.h 
-     template class Gaussian1D<AutoDiffA<Double> > 
-     template class Gaussian1D<AutoDiffA<Float> > 
-1020 scimath/Functionals/Gaussian1D.cc 
-     template class Gaussian1D<Double> 
-     template class Gaussian1D<Float> 
-1000 scimath/Functionals/Gaussian1D2.cc scimath/Mathematics/AutoDiff.h 
-     = casa/BasicSL/Complex.h 
-     = scimath/Mathematics/AutoDiffMath.h 
-     template class Gaussian1D<AutoDiff<DComplex> > 
-     template class Gaussian1D<AutoDiff<Complex> > 
-1010 scimath/Functionals/Gaussian1D2.cc scimath/Mathematics/AutoDiff.h 
-     = scimath/Mathematics/AutoDiffMath.h 
-     template class Gaussian1D<AutoDiff<Double> > 
-     template class Gaussian1D<AutoDiff<Float> > 
-1000 scimath/Functionals/Gaussian1DParam.cc 
-     = casa/BasicSL/Complex.h 
-     = scimath/Mathematics/AutoDiff.h 
-     = scimath/Mathematics/AutoDiffMath.h 
-     template class Gaussian1DParam<AutoDiff<DComplex> > 
-     template class Gaussian1DParam<AutoDiff<Complex> > 
-1010 scimath/Functionals/Gaussian1DParam.cc 
-     = casa/BasicSL/Complex.h 
-     template class Gaussian1DParam<DComplex> 
-     template class Gaussian1DParam<Complex> 
-1020 scimath/Functionals/Gaussian1DParam.cc 
-     = scimath/Mathematics/AutoDiff.h 
-     = scimath/Mathematics/AutoDiffMath.h 
-     template class Gaussian1DParam<AutoDiff<Double> > 
-     template class Gaussian1DParam<AutoDiff<Float> > 
-1030 scimath/Functionals/Gaussian1DParam.cc 
-     = scimath/Mathematics/AutoDiffA.h 
-     = scimath/Mathematics/AutoDiffMath.h 
-     template class Gaussian1DParam<AutoDiffA<Double> > 
-     template class Gaussian1DParam<AutoDiffA<Float> > 
-1040 scimath/Functionals/Gaussian1DParam.cc 
-     template class Gaussian1DParam<Double> 
-     template class Gaussian1DParam<Float> 
-1000 scimath/Functionals/Gaussian2D.cc 
-     = casa/BasicSL/Complex.h 
-     template class Gaussian2D<DComplex> 
-     template class Gaussian2D<Complex> 
-1010 scimath/Functionals/Gaussian2D.cc scimath/Mathematics/AutoDiffA.h 
-     = scimath/Mathematics/AutoDiffMath.h 
-     template class Gaussian2D<AutoDiffA<Double> > 
-     template class Gaussian2D<AutoDiffA<Float> > 
-1020 scimath/Functionals/Gaussian2D.cc 
-     template class Gaussian2D<Double> 
-     template class Gaussian2D<Float> 
-1000 scimath/Functionals/Gaussian2D2.cc scimath/Mathematics/AutoDiff.h 
-     = casa/BasicSL/Complex.h 
-     = scimath/Mathematics/AutoDiffMath.h 
-     template class Gaussian2D<AutoDiff<DComplex> > 
-     template class Gaussian2D<AutoDiff<Complex> > 
-1010 scimath/Functionals/Gaussian2D2.cc scimath/Mathematics/AutoDiff.h 
-     = scimath/Mathematics/AutoDiffMath.h 
-     template class Gaussian2D<AutoDiff<Double> > 
-     template class Gaussian2D<AutoDiff<Float> > 
-1000 scimath/Functionals/Gaussian2DParam.cc 
-     = casa/BasicSL/Complex.h 
-     = scimath/Mathematics/AutoDiff.h 
-     = scimath/Mathematics/AutoDiffMath.h 
-     template class Gaussian2DParam<AutoDiff<DComplex> > 
-     template class Gaussian2DParam<AutoDiff<Complex> > 
-1010 scimath/Functionals/Gaussian2DParam.cc 
-     = casa/BasicSL/Complex.h 
-     template class Gaussian2DParam<DComplex> 
-     template class Gaussian2DParam<Complex> 
-1020 scimath/Functionals/Gaussian2DParam.cc 
-     = scimath/Mathematics/AutoDiff.h 
-     = scimath/Mathematics/AutoDiffMath.h 
-     template class Gaussian2DParam<AutoDiff<Double> > 
-     template class Gaussian2DParam<AutoDiff<Float> > 
-1030 scimath/Functionals/Gaussian2DParam.cc 
-     = scimath/Mathematics/AutoDiffA.h 
-     = scimath/Mathematics/AutoDiffMath.h 
-     template class Gaussian2DParam<AutoDiffA<Double> > 
-     template class Gaussian2DParam<AutoDiffA<Float> > 
-1040 scimath/Functionals/Gaussian2DParam.cc 
-     template class Gaussian2DParam<Double> 
-     template class Gaussian2DParam<Float> 
-1000 scimath/Functionals/GaussianND.cc 
-     = casa/BasicSL/Complex.h 
-     = scimath/Mathematics/AutoDiff.h 
-     = scimath/Mathematics/AutoDiffMath.h 
-     template class GaussianND<AutoDiff<DComplex> > 
-     template class GaussianND<AutoDiff<Complex> > 
-1010 scimath/Functionals/GaussianND.cc 
-     = casa/BasicSL/Complex.h 
-     template class GaussianND<DComplex> 
-     template class GaussianND<Complex> 
-1020 scimath/Functionals/GaussianND.cc scimath/Mathematics/AutoDiff.h 
-     = scimath/Mathematics/AutoDiffMath.h 
-     template class GaussianND<AutoDiff<Double> > 
-1030 scimath/Functionals/GaussianND.cc 
-     template class GaussianND<Double> 
-1000 scimath/Functionals/GaussianNDParam.cc 
-     = casa/BasicSL/Complex.h 
-     = scimath/Mathematics/AutoDiff.h 
-     = scimath/Mathematics/AutoDiffMath.h 
-     template class GaussianNDParam<AutoDiff<DComplex> > 
-     template class GaussianNDParam<AutoDiff<Complex> > 
-1010 scimath/Functionals/GaussianNDParam.cc 
-     = casa/BasicSL/Complex.h 
-     template class GaussianNDParam<DComplex> 
-     template class GaussianNDParam<Complex> 
-1020 scimath/Functionals/GaussianNDParam.cc 
-     = scimath/Mathematics/AutoDiff.h 
-     = scimath/Mathematics/AutoDiffMath.h 
-     template class GaussianNDParam<AutoDiff<Double> > 
-1030 scimath/Functionals/GaussianNDParam.cc 
-     template class GaussianNDParam<Double> 
-1000 scimath/Functionals/HyperPlane.cc 
-     = casa/BasicSL/Complex.h 
-     template class HyperPlane<DComplex> 
-     template class HyperPlane<Complex> 
-1010 scimath/Functionals/HyperPlane.cc scimath/Mathematics/AutoDiffA.h 
-     = scimath/Mathematics/AutoDiffMath.h 
-     template class HyperPlane<AutoDiffA<Double> > 
-     template class HyperPlane<AutoDiffA<Float> > 
-1020 scimath/Functionals/HyperPlane.cc 
-     template class HyperPlane<Double> 
-     template class HyperPlane<Float> 
-1000 scimath/Functionals/HyperPlane2.cc 
-     = casa/BasicSL/Complex.h 
-     = scimath/Mathematics/AutoDiff.h 
-     = scimath/Mathematics/AutoDiffMath.h 
-     template class HyperPlane<AutoDiff<DComplex> > 
-     template class HyperPlane<AutoDiff<Complex> > 
-1010 scimath/Functionals/HyperPlane2.cc scimath/Mathematics/AutoDiff.h 
-     = scimath/Mathematics/AutoDiffMath.h 
-     template class HyperPlane<AutoDiff<Double> > 
-     template class HyperPlane<AutoDiff<Float> > 
-1000 scimath/Functionals/HyperPlaneParam.cc 
-     = casa/BasicSL/Complex.h 
-     = scimath/Mathematics/AutoDiff.h 
-     = scimath/Mathematics/AutoDiffMath.h 
-     template class HyperPlaneParam<AutoDiff<DComplex> > 
-     template class HyperPlaneParam<AutoDiff<Complex> > 
-1010 scimath/Functionals/HyperPlaneParam.cc 
-     = casa/BasicSL/Complex.h 
-     template class HyperPlaneParam<DComplex> 
-     template class HyperPlaneParam<Complex> 
-1020 scimath/Functionals/HyperPlaneParam.cc 
-     = scimath/Mathematics/AutoDiff.h 
-     = scimath/Mathematics/AutoDiffMath.h 
-     template class HyperPlaneParam<AutoDiff<Double> > 
-     template class HyperPlaneParam<AutoDiff<Float> > 
-1030 scimath/Functionals/HyperPlaneParam.cc 
-     = scimath/Mathematics/AutoDiffA.h 
-     = scimath/Mathematics/AutoDiffMath.h 
-     template class HyperPlaneParam<AutoDiffA<Double> > 
-     template class HyperPlaneParam<AutoDiffA<Float> > 
-1040 scimath/Functionals/HyperPlaneParam.cc 
-     template class HyperPlaneParam<Double> 
-     template class HyperPlaneParam<Float> 
-1000 scimath/Functionals/Interpolate1D.cc 
-     = scimath/Functionals/Function1D.h 
-     template class Interpolate1D<Double, Float> 
-     template class Function1D<Double, Float> 
-1010 scimath/Functionals/Interpolate1D.cc casa/Arrays/Array.h 
-     template class Interpolate1D<Double, Array<Double> > 
-1020 scimath/Functionals/Interpolate1D.cc 
-     template class Interpolate1D<Double, Double> 
-1000 scimath/Functionals/Polynomial.cc 
-     = casa/BasicSL/Complex.h 
-     template class Polynomial<Complex> 
-     template class Polynomial<DComplex> 
-1010 scimath/Functionals/Polynomial.cc scimath/Mathematics/AutoDiffA.h 
-     = scimath/Mathematics/AutoDiffMath.h 
-     template class Polynomial<AutoDiffA<Double> > 
-     template class Polynomial<AutoDiffA<Float> > 
-1020 scimath/Functionals/Polynomial.cc 
-     template class Polynomial<Double> 
-     template class Polynomial<Float> 
-1000 scimath/Functionals/Polynomial2.cc scimath/Mathematics/AutoDiff.h 
-     = casa/BasicSL/Complex.h 
-     = scimath/Mathematics/AutoDiffMath.h 
-     template class Polynomial<AutoDiff<Complex> > 
-     template class Polynomial<AutoDiff<DComplex> > 
-1010 scimath/Functionals/Polynomial2.cc scimath/Mathematics/AutoDiff.h 
-     = scimath/Mathematics/AutoDiffMath.h 
-     template class Polynomial<AutoDiff<Double> > 
-     template class Polynomial<AutoDiff<Float> > 
-1000 scimath/Functionals/PolynomialParam.cc 
-     = casa/BasicSL/Complex.h 
-     = scimath/Mathematics/AutoDiff.h 
-     = scimath/Mathematics/AutoDiffMath.h 
-     template class PolynomialParam<AutoDiff<Complex> > 
-     template class PolynomialParam<AutoDiff<DComplex> > 
-1010 scimath/Functionals/PolynomialParam.cc 
-     = casa/BasicSL/Complex.h 
-     template class PolynomialParam<Complex> 
-     template class PolynomialParam<DComplex> 
-1020 scimath/Functionals/PolynomialParam.cc 
-     = scimath/Mathematics/AutoDiff.h 
-     = scimath/Mathematics/AutoDiffMath.h 
-     template class PolynomialParam<AutoDiff<Double> > 
-     template class PolynomialParam<AutoDiff<Float> > 
-1030 scimath/Functionals/PolynomialParam.cc 
-     = scimath/Mathematics/AutoDiffA.h 
-     = scimath/Mathematics/AutoDiffMath.h 
-     template class PolynomialParam<AutoDiffA<Double> > 
-     template class PolynomialParam<AutoDiffA<Float> > 
-1040 scimath/Functionals/PolynomialParam.cc 
-     template class PolynomialParam<Double> 
-     template class PolynomialParam<Float> 
-1000 scimath/Functionals/SampledFunctional.h 
-     = casa/Arrays/Array.h 
-     template class SampledFunctional<Array<Double> > 
-1010 scimath/Functionals/SampledFunctional.h 
-     template class SampledFunctional<Double> 
-1020 scimath/Functionals/SampledFunctional.h 
-     template class SampledFunctional<Float> 
-1000 scimath/Functionals/ScalarSampledFunctional.cc 
-     = casa/Arrays/Array.h 
-     template class ScalarSampledFunctional<Array<Double> > 
-1010 scimath/Functionals/ScalarSampledFunctional.cc 
-     template class ScalarSampledFunctional<Double> 
-1020 scimath/Functionals/ScalarSampledFunctional.cc 
-     template class ScalarSampledFunctional<Float> 
-1000 scimath/Functionals/SimButterworthBandpass.cc 
-     = scimath/Mathematics/AutoDiffA.h 
-     = scimath/Mathematics/AutoDiffMath.h 
-     template class SimButterworthBandpass<AutoDiff<Complex> > 
-     template class SimButterworthBandpass<AutoDiff<DComplex> > 
-1010 scimath/Functionals/SimButterworthBandpass.cc 
-     = scimath/Mathematics/AutoDiffA.h 
-     = scimath/Mathematics/AutoDiffMath.h 
-     template class SimButterworthBandpass<AutoDiff<Double> > 
-     template class SimButterworthBandpass<AutoDiff<Float> > 
-1020 scimath/Functionals/SimButterworthBandpass.cc 
-     = scimath/Mathematics/AutoDiffA.h 
-     = scimath/Mathematics/AutoDiffMath.h 
-     template class SimButterworthBandpass<AutoDiffA<Complex> > 
-     template class SimButterworthBandpass<AutoDiffA<DComplex> > 
-1030 scimath/Functionals/SimButterworthBandpass.cc 
-     = scimath/Mathematics/AutoDiffA.h 
-     = scimath/Mathematics/AutoDiffMath.h 
-     template class SimButterworthBandpass<AutoDiffA<Double> > 
-     template class SimButterworthBandpass<AutoDiffA<Float> > 
-1040 scimath/Functionals/SimButterworthBandpass.cc 
-     template class SimButterworthBandpass<Complex> 
-     template class SimButterworthBandpass<DComplex> 
-1050 scimath/Functionals/SimButterworthBandpass.cc 
-     template class SimButterworthBandpass<Double> 
-     template class SimButterworthBandpass<Float> 
-1000 scimath/Functionals/SincFunction.cc 
-     = casa/BasicSL/Complex.h 
-     = scimath/Mathematics/AutoDiff.h 
-     = scimath/Mathematics/AutoDiffMath.h 
-     template class SincFunction<AutoDiff<DComplex> > 
-     template class SincFunction<AutoDiff<Complex> > 
-1010 scimath/Functionals/SincFunction.cc 
-     = casa/BasicSL/Complex.h 
-     template class SincFunction<DComplex> 
-     template class SincFunction<Complex> 
-1020 scimath/Functionals/SincFunction.cc 
-     = scimath/Mathematics/AutoDiff.h 
-     = scimath/Mathematics/AutoDiffMath.h 
-     template class SincFunction<AutoDiff<Double> > 
-     template class SincFunction<AutoDiff<Float> > 
-1030 scimath/Functionals/SincFunction.cc 
-     template class SincFunction<Double> 
-     template class SincFunction<Float> 
-1000 scimath/Functionals/SincParam.cc 
-     = casa/BasicSL/Complex.h 
-     = scimath/Mathematics/AutoDiff.h 
-     = scimath/Mathematics/AutoDiffMath.h 
-     template class SincParam<AutoDiff<DComplex> > 
-     template class SincParam<AutoDiff<Complex> > 
-1010 scimath/Functionals/SincParam.cc 
-     = casa/BasicSL/Complex.h 
-     template class SincParam<DComplex> 
-     template class SincParam<Complex> 
-1020 scimath/Functionals/SincParam.cc 
-     = scimath/Mathematics/AutoDiff.h 
-     = scimath/Mathematics/AutoDiffMath.h 
-     template class SincParam<AutoDiff<Double> > 
-     template class SincParam<AutoDiff<Float> > 
-1030 scimath/Functionals/SincParam.cc 
-     template class SincParam<Double> 
-     template class SincParam<Float> 
-1000 scimath/Functionals/Sinusoid1D.cc 
-     = casa/BasicSL/Complex.h 
-     template class Sinusoid1D<DComplex> 
-     template class Sinusoid1D<Complex> 
-1010 scimath/Functionals/Sinusoid1D.cc scimath/Mathematics/AutoDiffA.h 
-     = scimath/Mathematics/AutoDiffMath.h 
-     template class Sinusoid1D<AutoDiffA<Double> > 
-     template class Sinusoid1D<AutoDiffA<Float> > 
-1020 scimath/Functionals/Sinusoid1D.cc 
-     template class Sinusoid1D<Double> 
-     template class Sinusoid1D<Float> 
-1000 scimath/Functionals/Sinusoid1D2.cc 
-     = casa/BasicSL/Complex.h 
-     = scimath/Mathematics/AutoDiff.h 
-     = scimath/Mathematics/AutoDiffMath.h 
-     template class Sinusoid1D<AutoDiff<DComplex> > 
-     template class Sinusoid1D<AutoDiff<Complex> > 
-1010 scimath/Functionals/Sinusoid1D2.cc scimath/Mathematics/AutoDiff.h 
-     = scimath/Mathematics/AutoDiffMath.h 
-     template class Sinusoid1D<AutoDiff<Double> > 
-     template class Sinusoid1D<AutoDiff<Float> > 
-1000 scimath/Functionals/Sinusoid1DParam.cc 
-     = casa/BasicSL/Complex.h 
-     = scimath/Mathematics/AutoDiff.h 
-     = scimath/Mathematics/AutoDiffMath.h 
-     template class Sinusoid1DParam<AutoDiff<DComplex> > 
-     template class Sinusoid1DParam<AutoDiff<Complex> > 
-1010 scimath/Functionals/Sinusoid1DParam.cc 
-     = casa/BasicSL/Complex.h 
-     template class Sinusoid1DParam<DComplex> 
-     template class Sinusoid1DParam<Complex> 
-1020 scimath/Functionals/Sinusoid1DParam.cc 
-     = scimath/Mathematics/AutoDiff.h 
-     = scimath/Mathematics/AutoDiffMath.h 
-     template class Sinusoid1DParam<AutoDiff<Double> > 
-     template class Sinusoid1DParam<AutoDiff<Float> > 
-1030 scimath/Functionals/Sinusoid1DParam.cc 
-     = scimath/Mathematics/AutoDiffA.h 
-     = scimath/Mathematics/AutoDiffMath.h 
-     template class Sinusoid1DParam<AutoDiffA<Double> > 
-     template class Sinusoid1DParam<AutoDiffA<Float> > 
-1040 scimath/Functionals/Sinusoid1DParam.cc 
-     template class Sinusoid1DParam<Double> 
-     template class Sinusoid1DParam<Float> 
-1000 scimath/Functionals/WrapperBase.h 
-     template class WrapperBase<AutoDiff<Double> > 
-     template class WrapperBase<AutoDiff<Float> > 
-1010 scimath/Functionals/WrapperBase.h 
-     template class WrapperBase<Double> 
-     template class WrapperBase<Float> 
-1000 scimath/Functionals/WrapperData.h 
-     template class WrapperData<AutoDiff<Double>, AutoDiff<Double>, AutoDiff<Double>, True, True> 
-     template class WrapperData<AutoDiff<Double>, AutoDiff<Double>, AutoDiff<Double>, True, False> 
-     template class WrapperData<AutoDiff<Double>, AutoDiff<Double>, AutoDiff<Double>, False, True> 
-     template class WrapperData<AutoDiff<Double>, AutoDiff<Double>, AutoDiff<Double>, False, False> 
-     template class WrapperData<AutoDiff<Double>, AutoDiff<Double>, Vector<AutoDiff<Double> >, True, True> 
-     template class WrapperData<AutoDiff<Double>, AutoDiff<Double>, Vector<AutoDiff<Double> >, False, True> 
-     template class WrapperData<AutoDiff<Double>, Vector<AutoDiff<Double> >, AutoDiff<Double>, True, True> 
-     template class WrapperData<AutoDiff<Double>, Vector<AutoDiff<Double> >, AutoDiff<Double>, True, False> 
-     template class WrapperData<AutoDiff<Double>, Vector<AutoDiff<Double> >, Vector<AutoDiff<Double> >, True, True> 
-     template class WrapperData<AutoDiff<Float>, AutoDiff<Float>, AutoDiff<Float>, True, True> 
-     template class WrapperData<AutoDiff<Float>, AutoDiff<Float>, AutoDiff<Float>, True, False> 
-     template class WrapperData<AutoDiff<Float>, AutoDiff<Float>, AutoDiff<Float>, False, True> 
-     template class WrapperData<AutoDiff<Float>, AutoDiff<Float>, AutoDiff<Float>, False, False> 
-     template class WrapperData<AutoDiff<Float>, AutoDiff<Float>, Vector<AutoDiff<Float> >, True, True> 
-     template class WrapperData<AutoDiff<Float>, AutoDiff<Float>, Vector<AutoDiff<Float> >, False, True> 
-     template class WrapperData<AutoDiff<Float>, Vector<AutoDiff<Float> >, AutoDiff<Float>, True, True> 
-     template class WrapperData<AutoDiff<Float>, Vector<AutoDiff<Float> >, AutoDiff<Float>, True, False> 
-     template class WrapperData<AutoDiff<Float>, Vector<AutoDiff<Float> >, Vector<AutoDiff<Float> >, True, True> 
-1010 scimath/Functionals/WrapperData.h 
-     template class WrapperData<Double, Double, Double, True, True> 
-     template class WrapperData<Double, Double, Double, True, False> 
-     template class WrapperData<Double, Double, Double, False, True> 
-     template class WrapperData<Double, Double, Double, False, False> 
-     template class WrapperData<Double, Double, Vector<Double>, True, True> 
-     template class WrapperData<Double, Double, Vector<Double>, False, True> 
-     template class WrapperData<Double, Vector<Double>, Double, True, True> 
-     template class WrapperData<Double, Vector<Double>, Double, True, False> 
-     template class WrapperData<Double, Vector<Double>, Vector<Double>, True, True> 
-     template class WrapperData<Float, Float, Float, True, True> 
-     template class WrapperData<Float, Float, Float, True, False> 
-     template class WrapperData<Float, Float, Float, False, True> 
-     template class WrapperData<Float, Float, Float, False, False> 
-     template class WrapperData<Float, Float, Vector<Float>, True, True> 
-     template class WrapperData<Float, Float, Vector<Float>, False, True> 
-     template class WrapperData<Float, Vector<Float>, Float, True, True> 
-     template class WrapperData<Float, Vector<Float>, Float, True, False> 
-     template class WrapperData<Float, Vector<Float>, Vector<Float>, True, True> 
-1000 scimath/Functionals/WrapperParam.cc 
-     template class WrapperParam<AutoDiff<Double> > 
-     template class WrapperParam<AutoDiff<Float> > 
-1010 scimath/Functionals/WrapperParam.cc 
-     template class WrapperParam<Double> 
-     template class WrapperParam<Float> 
-1000 scimath/Mathematics/AutoDiff.cc casa/BasicSL/Complex.h 
-     template class AutoDiff<Complex> 
-1010 scimath/Mathematics/AutoDiff.cc casa/BasicSL/Complex.h 
-     template class AutoDiff<DComplex> 
-1020 scimath/Mathematics/AutoDiff.cc 
-     template class AutoDiff<Double> 
-1030 scimath/Mathematics/AutoDiff.cc 
-     template class AutoDiff<Float> 
-1000 scimath/Mathematics/AutoDiffIO.cc scimath/Mathematics/AutoDiff.h 
-     = casa/BasicSL/Complex.h 
-     template ostream & operator<<(ostream &, AutoDiff<Complex> const &) 
-1010 scimath/Mathematics/AutoDiffIO.cc scimath/Mathematics/AutoDiff.h 
-     = casa/BasicSL/Complex.h 
-     template ostream & operator<<(ostream &, AutoDiff<DComplex> const &) 
-1020 scimath/Mathematics/AutoDiffIO.cc scimath/Mathematics/AutoDiff.h 
-     template ostream & operator<<(ostream &, AutoDiff<Double> const &) 
-1030 scimath/Mathematics/AutoDiffIO.cc scimath/Mathematics/AutoDiff.h 
-     template ostream & operator<<(ostream &, AutoDiff<Float> const &) 
-1000 scimath/Mathematics/AutoDiffMath.cc 
-     = casa/BasicSL/Complex.h 
-     = scimath/Mathematics/AutoDiff.h 
-     template AutoDiff<Complex> acos(AutoDiff<Complex> const &) 
-     template AutoDiff<Complex> asin(AutoDiff<Complex> const &) 
-     template AutoDiff<Complex> atan(AutoDiff<Complex> const &) 
-     template AutoDiff<Complex> atan2(AutoDiff<Complex> const &, AutoDiff<Complex> const &) 
-     template AutoDiff<Complex> cos(AutoDiff<Complex> const &) 
-     template AutoDiff<Complex> cosh(AutoDiff<Complex> const &) 
-     template AutoDiff<Complex> exp(AutoDiff<Complex> const &) 
-     template AutoDiff<Complex> log(AutoDiff<Complex> const &) 
-     template AutoDiff<Complex> log10(AutoDiff<Complex> const &) 
-     template AutoDiff<Complex> erf(AutoDiff<Complex> const &) 
-     template AutoDiff<Complex> erfc(AutoDiff<Complex> const &) 
-     template AutoDiff<Complex> pow(AutoDiff<Complex> const &, AutoDiff<Complex> const &) 
-     template AutoDiff<Complex> pow(AutoDiff<Complex> const &, Complex const &) 
-     template AutoDiff<Complex> sin(AutoDiff<Complex> const &) 
-     template AutoDiff<Complex> sinh(AutoDiff<Complex> const &) 
-     template AutoDiff<Complex> sqrt(AutoDiff<Complex> const &) 
-     template AutoDiff<Complex> abs(AutoDiff<Complex> const &) 
-     template AutoDiff<Complex> ceil(AutoDiff<Complex> const &) 
-     template AutoDiff<Complex> floor(AutoDiff<Complex> const &) 
-     template AutoDiff<Complex> fmod(AutoDiff<Complex> const &, Complex const &) 
-     template AutoDiff<Complex> fmod(AutoDiff<Complex> const &, AutoDiff<Complex> const &) 
-     template AutoDiff<Complex> max(AutoDiff<Complex> const &, AutoDiff<Complex> const &) 
-     template AutoDiff<Complex> min(AutoDiff<Complex> const &, AutoDiff<Complex> const &) 
-#     template AutoDiff<Complex> square(AutoDiff<Complex> const &) 
-#     template AutoDiff<Complex> cube(AutoDiff<Complex> const &) 
-#     template AutoDiff<Complex> tan(AutoDiff<Complex> const &) 
-#     template AutoDiff<Complex> tanh(AutoDiff<Complex> const &) 
-1010 scimath/Mathematics/AutoDiffMath.cc 
-     = casa/BasicSL/Complex.h 
-     = scimath/Mathematics/AutoDiff.h 
-     template AutoDiff<Complex> operator+(AutoDiff<Complex> const &) 
-     template AutoDiff<Complex> operator-(AutoDiff<Complex> const &) 
-     template AutoDiff<Complex> operator*(AutoDiff<Complex> const &, AutoDiff<Complex> const &) 
-     template AutoDiff<Complex> operator+(AutoDiff<Complex> const &, AutoDiff<Complex> const &) 
-     template AutoDiff<Complex> operator-(AutoDiff<Complex> const &, AutoDiff<Complex> const &) 
-     template AutoDiff<Complex> operator/(AutoDiff<Complex> const &, AutoDiff<Complex> const &) 
-     template AutoDiff<Complex> operator*(Complex const &, AutoDiff<Complex> const &) 
-     template AutoDiff<Complex> operator+(Complex const &, AutoDiff<Complex> const &) 
-     template AutoDiff<Complex> operator-(Complex const &, AutoDiff<Complex> const &) 
-     template AutoDiff<Complex> operator/(Complex const &, AutoDiff<Complex> const &) 
-     template AutoDiff<Complex> operator*(AutoDiff<Complex> const &, Complex const &) 
-     template AutoDiff<Complex> operator+(AutoDiff<Complex> const &, Complex const &) 
-     template AutoDiff<Complex> operator-(AutoDiff<Complex> const &, Complex const &) 
-     template AutoDiff<Complex> operator/(AutoDiff<Complex> const &, Complex const &) 
-1020 scimath/Mathematics/AutoDiffMath.cc 
-     = casa/BasicSL/Complex.h 
-     = scimath/Mathematics/AutoDiff.h 
-     template AutoDiff<DComplex> acos(AutoDiff<DComplex> const &) 
-     template AutoDiff<DComplex> asin(AutoDiff<DComplex> const &) 
-     template AutoDiff<DComplex> atan(AutoDiff<DComplex> const &) 
-     template AutoDiff<DComplex> atan2(AutoDiff<DComplex> const &, AutoDiff<DComplex> const &) 
-     template AutoDiff<DComplex> cos(AutoDiff<DComplex> const &) 
-     template AutoDiff<DComplex> cosh(AutoDiff<DComplex> const &) 
-     template AutoDiff<DComplex> exp(AutoDiff<DComplex> const &) 
-     template AutoDiff<DComplex> log(AutoDiff<DComplex> const &) 
-     template AutoDiff<DComplex> log10(AutoDiff<DComplex> const &) 
-     template AutoDiff<DComplex> erf(AutoDiff<DComplex> const &) 
-     template AutoDiff<DComplex> erfc(AutoDiff<DComplex> const &) 
-     template AutoDiff<DComplex> pow(AutoDiff<DComplex> const &, AutoDiff<DComplex> const &) 
-     template AutoDiff<DComplex> pow(AutoDiff<DComplex> const &, DComplex const &) 
-     template AutoDiff<DComplex> sin(AutoDiff<DComplex> const &) 
-     template AutoDiff<DComplex> sinh(AutoDiff<DComplex> const &) 
-     template AutoDiff<DComplex> sqrt(AutoDiff<DComplex> const &) 
-     template AutoDiff<DComplex> abs(AutoDiff<DComplex> const &) 
-     template AutoDiff<DComplex> ceil(AutoDiff<DComplex> const &) 
-     template AutoDiff<DComplex> floor(AutoDiff<DComplex> const &) 
-     template AutoDiff<DComplex> fmod(AutoDiff<DComplex> const &, DComplex const &) 
-     template AutoDiff<DComplex> fmod(AutoDiff<DComplex> const &, AutoDiff<DComplex> const &) 
-     template AutoDiff<DComplex> max(AutoDiff<DComplex> const &, AutoDiff<DComplex> const &) 
-     template AutoDiff<DComplex> min(AutoDiff<DComplex> const &, AutoDiff<DComplex> const &) 
-#     template AutoDiff<DComplex> square(AutoDiff<DComplex> const &) 
-#     template AutoDiff<DComplex> cube(AutoDiff<DComplex> const &) 
-#     template AutoDiff<DComplex> tan(AutoDiff<DComplex> const &) 
-#     template AutoDiff<DComplex> tanh(AutoDiff<DComplex> const &) 
-1030 scimath/Mathematics/AutoDiffMath.cc 
-     = casa/BasicSL/Complex.h 
-     = scimath/Mathematics/AutoDiff.h 
-     template AutoDiff<DComplex> operator+(AutoDiff<DComplex> const &) 
-     template AutoDiff<DComplex> operator-(AutoDiff<DComplex> const &) 
-     template AutoDiff<DComplex> operator*(AutoDiff<DComplex> const &, AutoDiff<DComplex> const &) 
-     template AutoDiff<DComplex> operator+(AutoDiff<DComplex> const &, AutoDiff<DComplex> const &) 
-     template AutoDiff<DComplex> operator-(AutoDiff<DComplex> const &, AutoDiff<DComplex> const &) 
-     template AutoDiff<DComplex> operator/(AutoDiff<DComplex> const &, AutoDiff<DComplex> const &) 
-     template AutoDiff<DComplex> operator*(DComplex const &, AutoDiff<DComplex> const &) 
-     template AutoDiff<DComplex> operator+(DComplex const &, AutoDiff<DComplex> const &) 
-     template AutoDiff<DComplex> operator-(DComplex const &, AutoDiff<DComplex> const &) 
-     template AutoDiff<DComplex> operator/(DComplex const &, AutoDiff<DComplex> const &) 
-     template AutoDiff<DComplex> operator*(AutoDiff<DComplex> const &, DComplex const &) 
-     template AutoDiff<DComplex> operator+(AutoDiff<DComplex> const &, DComplex const &) 
-     template AutoDiff<DComplex> operator-(AutoDiff<DComplex> const &, DComplex const &) 
-     template AutoDiff<DComplex> operator/(AutoDiff<DComplex> const &, DComplex const &) 
-1040 scimath/Mathematics/AutoDiffMath.cc 
-     = scimath/Mathematics/AutoDiff.h 
-     template AutoDiff<Double> acos(AutoDiff<Double> const &) 
-     template AutoDiff<Double> asin(AutoDiff<Double> const &) 
-     template AutoDiff<Double> atan(AutoDiff<Double> const &) 
-     template AutoDiff<Double> atan2(AutoDiff<Double> const &, AutoDiff<Double> const &) 
-     template AutoDiff<Double> cos(AutoDiff<Double> const &) 
-     template AutoDiff<Double> cosh(AutoDiff<Double> const &) 
-     template AutoDiff<Double> exp(AutoDiff<Double> const &) 
-     template AutoDiff<Double> log(AutoDiff<Double> const &) 
-     template AutoDiff<Double> log10(AutoDiff<Double> const &) 
-     template AutoDiff<Double> erf(AutoDiff<Double> const &) 
-     template AutoDiff<Double> erfc(AutoDiff<Double> const &) 
-     template AutoDiff<Double> pow(AutoDiff<Double> const &, AutoDiff<Double> const &) 
-     template AutoDiff<Double> pow(AutoDiff<Double> const &, Double const &) 
-     template AutoDiff<Double> square(AutoDiff<Double> const &) 
-     template AutoDiff<Double> cube(AutoDiff<Double> const &) 
-     template AutoDiff<Double> sin(AutoDiff<Double> const &) 
-     template AutoDiff<Double> sinh(AutoDiff<Double> const &) 
-     template AutoDiff<Double> sqrt(AutoDiff<Double> const &) 
-     template AutoDiff<Double> tan(AutoDiff<Double> const &) 
-     template AutoDiff<Double> tanh(AutoDiff<Double> const &) 
-     template AutoDiff<Double> abs(AutoDiff<Double> const &) 
-     template AutoDiff<Double> ceil(AutoDiff<Double> const &) 
-     template AutoDiff<Double> floor(AutoDiff<Double> const &) 
-     template AutoDiff<Double> fmod(AutoDiff<Double> const &, Double const &) 
-     template AutoDiff<Double> fmod(AutoDiff<Double> const &, AutoDiff<Double> const &) 
-     template AutoDiff<Double> max(AutoDiff<Double> const &, AutoDiff<Double> const &) 
-     template AutoDiff<Double> min(AutoDiff<Double> const &, AutoDiff<Double> const &) 
-1050 scimath/Mathematics/AutoDiffMath.cc 
-     = scimath/Mathematics/AutoDiff.h 
-     template AutoDiff<Double> operator+(AutoDiff<Double> const &) 
-     template AutoDiff<Double> operator-(AutoDiff<Double> const &) 
-     template AutoDiff<Double> operator*(AutoDiff<Double> const &, AutoDiff<Double> const &) 
-     template AutoDiff<Double> operator+(AutoDiff<Double> const &, AutoDiff<Double> const &) 
-     template AutoDiff<Double> operator-(AutoDiff<Double> const &, AutoDiff<Double> const &) 
-     template AutoDiff<Double> operator/(AutoDiff<Double> const &, AutoDiff<Double> const &) 
-     template AutoDiff<Double> operator*(Double const &, AutoDiff<Double> const &) 
-     template AutoDiff<Double> operator+(Double const &, AutoDiff<Double> const &) 
-     template AutoDiff<Double> operator-(Double const &, AutoDiff<Double> const &) 
-     template AutoDiff<Double> operator/(Double const &, AutoDiff<Double> const &) 
-     template AutoDiff<Double> operator*(AutoDiff<Double> const &, Double const &) 
-     template AutoDiff<Double> operator+(AutoDiff<Double> const &, Double const &) 
-     template AutoDiff<Double> operator-(AutoDiff<Double> const &, Double const &) 
-     template AutoDiff<Double> operator/(AutoDiff<Double> const &, Double const &) 
-1060 scimath/Mathematics/AutoDiffMath.cc 
-     = scimath/Mathematics/AutoDiff.h 
-     template AutoDiff<Float> acos(AutoDiff<Float> const &) 
-     template AutoDiff<Float> asin(AutoDiff<Float> const &) 
-     template AutoDiff<Float> atan(AutoDiff<Float> const &) 
-     template AutoDiff<Float> atan2(AutoDiff<Float> const &, AutoDiff<Float> const &) 
-     template AutoDiff<Float> cos(AutoDiff<Float> const &) 
-     template AutoDiff<Float> cosh(AutoDiff<Float> const &) 
-     template AutoDiff<Float> exp(AutoDiff<Float> const &) 
-     template AutoDiff<Float> log(AutoDiff<Float> const &) 
-     template AutoDiff<Float> log10(AutoDiff<Float> const &) 
-     template AutoDiff<Float> erf(AutoDiff<Float> const &) 
-     template AutoDiff<Float> erfc(AutoDiff<Float> const &) 
-     template AutoDiff<Float> pow(AutoDiff<Float> const &, AutoDiff<Float> const &) 
-     template AutoDiff<Float> pow(AutoDiff<Float> const &, Float const &) 
-     template AutoDiff<Float> square(AutoDiff<Float> const &) 
-     template AutoDiff<Float> cube(AutoDiff<Float> const &) 
-     template AutoDiff<Float> sin(AutoDiff<Float> const &) 
-     template AutoDiff<Float> sinh(AutoDiff<Float> const &) 
-     template AutoDiff<Float> sqrt(AutoDiff<Float> const &) 
-     template AutoDiff<Float> tan(AutoDiff<Float> const &) 
-     template AutoDiff<Float> tanh(AutoDiff<Float> const &) 
-     template AutoDiff<Float> abs(AutoDiff<Float> const &) 
-     template AutoDiff<Float> ceil(AutoDiff<Float> const &) 
-     template AutoDiff<Float> floor(AutoDiff<Float> const &) 
-     template AutoDiff<Float> fmod(AutoDiff<Float> const &, Float const &) 
-     template AutoDiff<Float> fmod(AutoDiff<Float> const &, AutoDiff<Float> const &) 
-     template AutoDiff<Float> max(AutoDiff<Float> const &, AutoDiff<Float> const &) 
-     template AutoDiff<Float> min(AutoDiff<Float> const &, AutoDiff<Float> const &) 
-1070 scimath/Mathematics/AutoDiffMath.cc 
-     = scimath/Mathematics/AutoDiff.h 
-     template AutoDiff<Float> operator+(AutoDiff<Float> const &) 
-     template AutoDiff<Float> operator-(AutoDiff<Float> const &) 
-     template AutoDiff<Float> operator*(AutoDiff<Float> const &, AutoDiff<Float> const &) 
-     template AutoDiff<Float> operator+(AutoDiff<Float> const &, AutoDiff<Float> const &) 
-     template AutoDiff<Float> operator-(AutoDiff<Float> const &, AutoDiff<Float> const &) 
-     template AutoDiff<Float> operator/(AutoDiff<Float> const &, AutoDiff<Float> const &) 
-     template AutoDiff<Float> operator*(Float const &, AutoDiff<Float> const &) 
-     template AutoDiff<Float> operator+(Float const &, AutoDiff<Float> const &) 
-     template AutoDiff<Float> operator-(Float const &, AutoDiff<Float> const &) 
-     template AutoDiff<Float> operator/(Float const &, AutoDiff<Float> const &) 
-     template AutoDiff<Float> operator*(AutoDiff<Float> const &, Float const &) 
-     template AutoDiff<Float> operator+(AutoDiff<Float> const &, Float const &) 
-     template AutoDiff<Float> operator-(AutoDiff<Float> const &, Float const &) 
-     template AutoDiff<Float> operator/(AutoDiff<Float> const &, Float const &) 
-1080 scimath/Mathematics/AutoDiffMath.cc 
-     = scimath/Mathematics/AutoDiff.h 
-     template Bool near(AutoDiff<Double> const &, AutoDiff<Double> const &, Double const) 
-     template Bool near(AutoDiff<Double> const &, Double const &, Double const) 
-     template Bool near(Double const &, AutoDiff<Double> const &, Double const) 
-     template Bool allnear(AutoDiff<Double> const &, AutoDiff<Double> const &) 
-     template Bool allnear(AutoDiff<Double> const &, Double const &) 
-     template Bool allnear(Double const &, AutoDiff<Double> const &) 
-     template Bool allnear(AutoDiff<Double> const &, AutoDiff<Double> const &, Double const) 
-     template Bool allnear(AutoDiff<Double> const &, Double const &, Double const) 
-     template Bool allnear(Double const &, AutoDiff<Double> const &, Double const) 
-     template Bool nearAbs(AutoDiff<Double> const &, AutoDiff<Double> const &) 
-     template Bool nearAbs(AutoDiff<Double> const &, Double const &) 
-     template Bool nearAbs(Double const &, AutoDiff<Double> const &) 
-     template Bool nearAbs(AutoDiff<Double> const &, AutoDiff<Double> const &, Double const) 
-     template Bool nearAbs(AutoDiff<Double> const &, Double const &, Double const) 
-     template Bool nearAbs(Double const &, AutoDiff<Double> const &, Double const) 
-     template Bool allnearAbs(AutoDiff<Double> const &, AutoDiff<Double> const &) 
-     template Bool allnearAbs(AutoDiff<Double> const &, Double const &) 
-     template Bool allnearAbs(Double const &, AutoDiff<Double> const &) 
-     template Bool allnearAbs(AutoDiff<Double> const &, AutoDiff<Double> const &, Double const) 
-     template Bool allnearAbs(AutoDiff<Double> const &, Double const &, Double const) 
-     template Bool allnearAbs(Double const &, AutoDiff<Double> const &, Double const) 
-1090 scimath/Mathematics/AutoDiffMath.cc 
-     = scimath/Mathematics/AutoDiff.h 
-     template Bool near(AutoDiff<Float> const &, AutoDiff<Float> const &, Double const) 
-     template Bool near(AutoDiff<Float> const &, Float const &, Double const) 
-     template Bool near(Float const &, AutoDiff<Float> const &, Double const) 
-     template Bool allnear(AutoDiff<Float> const &, AutoDiff<Float> const &) 
-     template Bool allnear(AutoDiff<Float> const &, Float const &) 
-     template Bool allnear(Float const &, AutoDiff<Float> const &) 
-     template Bool allnear(AutoDiff<Float> const &, AutoDiff<Float> const &, Double const) 
-     template Bool allnear(AutoDiff<Float> const &, Float const &, Double const) 
-     template Bool allnear(Float const &, AutoDiff<Float> const &, Double const) 
-     template Bool nearAbs(AutoDiff<Float> const &, AutoDiff<Float> const &) 
-     template Bool nearAbs(AutoDiff<Float> const &, Float const &) 
-     template Bool nearAbs(Float const &, AutoDiff<Float> const &) 
-     template Bool nearAbs(AutoDiff<Float> const &, AutoDiff<Float> const &, Double const) 
-     template Bool nearAbs(AutoDiff<Float> const &, Float const &, Double const) 
-     template Bool nearAbs(Float const &, AutoDiff<Float> const &, Double const) 
-     template Bool allnearAbs(AutoDiff<Float> const &, AutoDiff<Float> const &) 
-     template Bool allnearAbs(AutoDiff<Float> const &, Float const &) 
-     template Bool allnearAbs(Float const &, AutoDiff<Float> const &) 
-     template Bool allnearAbs(AutoDiff<Float> const &, AutoDiff<Float> const &, Double const) 
-     template Bool allnearAbs(AutoDiff<Float> const &, Float const &, Double const) 
-     template Bool allnearAbs(Float const &, AutoDiff<Float> const &, Double const) 
-1100 scimath/Mathematics/AutoDiffMath.cc 
-     = scimath/Mathematics/AutoDiff.h 
-     template Bool operator!=(AutoDiff<Double> const &, AutoDiff<Double> const &) 
-     template Bool operator<=(AutoDiff<Double> const &, AutoDiff<Double> const &) 
-     template Bool operator<(AutoDiff<Double> const &, AutoDiff<Double> const &) 
-     template Bool operator==(AutoDiff<Double> const &, AutoDiff<Double> const &) 
-     template Bool operator>(AutoDiff<Double> const &, AutoDiff<Double> const &) 
-     template Bool operator>=(AutoDiff<Double> const &, AutoDiff<Double> const &) 
-     template Bool near(AutoDiff<Double> const &, AutoDiff<Double> const &) 
-     template Bool operator!=(AutoDiff<Double> const &, Double const &) 
-     template Bool operator<=(AutoDiff<Double> const &, Double const &) 
-     template Bool operator<(AutoDiff<Double> const &, Double const &) 
-     template Bool operator==(AutoDiff<Double> const &, Double const &) 
-     template Bool operator>(AutoDiff<Double> const &, Double const &) 
-     template Bool operator>=(AutoDiff<Double> const &, Double const &) 
-     template Bool near(AutoDiff<Double> const &, Double const &) 
-     template Bool operator!=(Double const &, AutoDiff<Double> const &) 
-     template Bool operator<=(Double const &, AutoDiff<Double> const &) 
-     template Bool operator<(Double const &, AutoDiff<Double> const &) 
-     template Bool operator==(Double const &, AutoDiff<Double> const &) 
-     template Bool operator>(Double const &, AutoDiff<Double> const &) 
-     template Bool operator>=(Double const &, AutoDiff<Double> const &) 
-     template Bool near(Double const &, AutoDiff<Double> const &) 
-1110 scimath/Mathematics/AutoDiffMath.cc 
-     = scimath/Mathematics/AutoDiff.h 
-     template Bool operator!=(AutoDiff<Float> const &, AutoDiff<Float> const &) 
-     template Bool operator<=(AutoDiff<Float> const &, AutoDiff<Float> const &) 
-     template Bool operator<(AutoDiff<Float> const &, AutoDiff<Float> const &) 
-     template Bool operator==(AutoDiff<Float> const &, AutoDiff<Float> const &) 
-     template Bool operator>(AutoDiff<Float> const &, AutoDiff<Float> const &) 
-     template Bool operator>=(AutoDiff<Float> const &, AutoDiff<Float> const &) 
-     template Bool near(AutoDiff<Float> const &, AutoDiff<Float> const &) 
-     template Bool operator!=(AutoDiff<Float> const &, Float const &) 
-     template Bool operator<=(AutoDiff<Float> const &, Float const &) 
-     template Bool operator<(AutoDiff<Float> const &, Float const &) 
-     template Bool operator==(AutoDiff<Float> const &, Float const &) 
-     template Bool operator>(AutoDiff<Float> const &, Float const &) 
-     template Bool operator>=(AutoDiff<Float> const &, Float const &) 
-     template Bool near(AutoDiff<Float> const &, Float const &) 
-     template Bool operator!=(Float const &, AutoDiff<Float> const &) 
-     template Bool operator<=(Float const &, AutoDiff<Float> const &) 
-     template Bool operator<(Float const &, AutoDiff<Float> const &) 
-     template Bool operator==(Float const &, AutoDiff<Float> const &) 
-     template Bool operator>(Float const &, AutoDiff<Float> const &) 
-     template Bool operator>=(Float const &, AutoDiff<Float> const &) 
-     template Bool near(Float const &, AutoDiff<Float> const &) 
-1120 scimath/Mathematics/AutoDiffMath.cc casa/BasicSL/Complex.h 
-     = scimath/Mathematics/AutoDiff.h 
-     template Bool operator!=(AutoDiff<Complex> const &, AutoDiff<Complex> const &) 
-     template Bool operator<=(AutoDiff<Complex> const &, AutoDiff<Complex> const &) 
-     template Bool operator<(AutoDiff<Complex> const &, AutoDiff<Complex> const &) 
-     template Bool operator==(AutoDiff<Complex> const &, AutoDiff<Complex> const &) 
-     template Bool operator>(AutoDiff<Complex> const &, AutoDiff<Complex> const &) 
-     template Bool operator>=(AutoDiff<Complex> const &, AutoDiff<Complex> const &) 
-     template Bool near(AutoDiff<Complex> const &, AutoDiff<Complex> const &) 
-     template Bool operator!=(AutoDiff<Complex> const &, Complex const &) 
-     template Bool operator<=(AutoDiff<Complex> const &, Complex const &) 
-     template Bool operator<(AutoDiff<Complex> const &, Complex const &) 
-     template Bool operator==(AutoDiff<Complex> const &, Complex const &) 
-     template Bool operator>(AutoDiff<Complex> const &, Complex const &) 
-     template Bool operator>=(AutoDiff<Complex> const &, Complex const &) 
-     template Bool near(AutoDiff<Complex> const &, Complex const &) 
-     template Bool operator!=(Complex const &, AutoDiff<Complex> const &) 
-     template Bool operator<=(Complex const &, AutoDiff<Complex> const &) 
-     template Bool operator<(Complex const &, AutoDiff<Complex> const &) 
-     template Bool operator==(Complex const &, AutoDiff<Complex> const &) 
-     template Bool operator>(Complex const &, AutoDiff<Complex> const &) 
-     template Bool operator>=(Complex const &, AutoDiff<Complex> const &) 
-     template Bool near(Complex const &, AutoDiff<Complex> const &) 
-1130 scimath/Mathematics/AutoDiffMath.cc casa/BasicSL/Complex.h 
-     = scimath/Mathematics/AutoDiff.h 
-     template Bool operator!=(AutoDiff<DComplex> const &, AutoDiff<DComplex> const &) 
-     template Bool operator<=(AutoDiff<DComplex> const &, AutoDiff<DComplex> const &) 
-     template Bool operator<(AutoDiff<DComplex> const &, AutoDiff<DComplex> const &) 
-     template Bool operator==(AutoDiff<DComplex> const &, AutoDiff<DComplex> const &) 
-     template Bool operator>(AutoDiff<DComplex> const &, AutoDiff<DComplex> const &) 
-     template Bool operator>=(AutoDiff<DComplex> const &, AutoDiff<DComplex> const &) 
-     template Bool near(AutoDiff<DComplex> const &, AutoDiff<DComplex> const &) 
-     template Bool operator!=(AutoDiff<DComplex> const &, DComplex const &) 
-     template Bool operator<=(AutoDiff<DComplex> const &, DComplex const &) 
-     template Bool operator<(AutoDiff<DComplex> const &, DComplex const &) 
-     template Bool operator==(AutoDiff<DComplex> const &, DComplex const &) 
-     template Bool operator>(AutoDiff<DComplex> const &, DComplex const &) 
-     template Bool operator>=(AutoDiff<DComplex> const &, DComplex const &) 
-     template Bool near(AutoDiff<DComplex> const &, DComplex const &) 
-     template Bool operator!=(DComplex const &, AutoDiff<DComplex> const &) 
-     template Bool operator<=(DComplex const &, AutoDiff<DComplex> const &) 
-     template Bool operator<(DComplex const &, AutoDiff<DComplex> const &) 
-     template Bool operator==(DComplex const &, AutoDiff<DComplex> const &) 
-     template Bool operator>(DComplex const &, AutoDiff<DComplex> const &) 
-     template Bool operator>=(DComplex const &, AutoDiff<DComplex> const &) 
-     template Bool near(DComplex const &, AutoDiff<DComplex> const &) 
-1000 scimath/Mathematics/AutoDiffRep.cc 
-     = casa/BasicSL/Complex.h 
-     template class AutoDiffRep<Complex> 
-1010 scimath/Mathematics/AutoDiffRep.cc 
-     = casa/BasicSL/Complex.h 
-     template class AutoDiffRep<DComplex> 
-1020 scimath/Mathematics/AutoDiffRep.cc 
-     template class AutoDiffRep<Double> 
-1030 scimath/Mathematics/AutoDiffRep.cc 
-     template class AutoDiffRep<Float> 
-1000 scimath/Mathematics/Convolver.cc 
-     template class Convolver<Float> 
-1000 scimath/Mathematics/FFTServer.cc casa/BasicSL/Complex.h 
-     template class FFTServer<Float, Complex> 
-1000 scimath/Mathematics/MatrixMathLA.cc casa/Arrays/Matrix.h 
-     = casa/Arrays/Vector.h 
-     template void CholeskyDecomp(Matrix<Double> &, Vector<Double> &) 
-     template void CholeskySolve(Matrix<Double> &, Vector<Double> &, Vector<Double> &, Vector<Double> &) 
-1010 scimath/Mathematics/MatrixMathLA.cc casa/Arrays/Matrix.h 
-     = casa/BasicSL/Complex.h 
-     = scimath/Mathematics/AutoDiff.h 
-     = scimath/Mathematics/AutoDiffMath.h 
-     = casa/Arrays/Vector.h 
-     template void CholeskyDecomp(Matrix<AutoDiff<Complex> > &, Vector<AutoDiff<Complex> > &) 
-     template void CholeskySolve(Matrix<AutoDiff<Complex> > &, Vector<AutoDiff<Complex> > &, Vector<AutoDiff<Complex> > &, Vector<AutoDiff<Complex> > &) 
-1020 scimath/Mathematics/MatrixMathLA.cc casa/Arrays/Matrix.h 
-     = casa/BasicSL/Complex.h 
-     = scimath/Mathematics/AutoDiff.h 
-     = scimath/Mathematics/AutoDiffMath.h 
-     = casa/Arrays/Vector.h 
-     template void CholeskyDecomp(Matrix<AutoDiff<DComplex> > &, Vector<AutoDiff<DComplex> > &) 
-     template void CholeskySolve(Matrix<AutoDiff<DComplex> > &, Vector<AutoDiff<DComplex> > &, Vector<AutoDiff<DComplex> > &, Vector<AutoDiff<DComplex> > &) 
-1030 scimath/Mathematics/MatrixMathLA.cc casa/Arrays/Matrix.h 
-     = casa/BasicSL/Complex.h 
-     = scimath/Mathematics/AutoDiff.h 
-     = scimath/Mathematics/AutoDiffMath.h 
-     = casa/Arrays/Vector.h 
-     template void CholeskyDecomp(Matrix<Complex> &, Vector<Complex> &) 
-     template void CholeskySolve(Matrix<Complex> &, Vector<Complex> &, Vector<Complex> &, Vector<Complex> &) 
-1040 scimath/Mathematics/MatrixMathLA.cc casa/Arrays/Matrix.h 
-     = casa/BasicSL/Complex.h 
-     = scimath/Mathematics/AutoDiff.h 
-     = scimath/Mathematics/AutoDiffMath.h 
-     = casa/Arrays/Vector.h 
-     template void CholeskyDecomp(Matrix<DComplex> &, Vector<DComplex> &) 
-     template void CholeskySolve(Matrix<DComplex> &, Vector<DComplex> &, Vector<DComplex> &, Vector<DComplex> &) 
-1050 scimath/Mathematics/MatrixMathLA.cc casa/Arrays/Matrix.h 
-     = casa/BasicSL/Complex.h 
-     = scimath/Mathematics/AutoDiff.h 
-     = scimath/Mathematics/AutoDiffMath.h 
-     template Matrix<AutoDiff<Complex> > invertSymPosDef(Matrix<AutoDiff<Complex> > const &) 
-     template void invertSymPosDef(Matrix<AutoDiff<Complex> > &, AutoDiff<Complex> &, Matrix<AutoDiff<Complex> > const &) 
-1060 scimath/Mathematics/MatrixMathLA.cc casa/Arrays/Matrix.h 
-     = casa/BasicSL/Complex.h 
-     = scimath/Mathematics/AutoDiff.h 
-     = scimath/Mathematics/AutoDiffMath.h 
-     template Matrix<AutoDiff<DComplex> > invertSymPosDef(Matrix<AutoDiff<DComplex> > const &) 
-     template void invertSymPosDef(Matrix<AutoDiff<DComplex> > &, AutoDiff<DComplex> &, Matrix<AutoDiff<DComplex> > const &) 
-1070 scimath/Mathematics/MatrixMathLA.cc casa/Arrays/Matrix.h 
-     = casa/BasicSL/Complex.h 
-     = scimath/Mathematics/AutoDiff.h 
-     = scimath/Mathematics/AutoDiffMath.h 
-     template Matrix<Complex> invertSymPosDef(Matrix<Complex> const &) 
-     template void invertSymPosDef(Matrix<Complex> &, Complex &, Matrix<Complex> const &) 
-1080 scimath/Mathematics/MatrixMathLA.cc casa/Arrays/Matrix.h 
-     = casa/BasicSL/Complex.h 
-     = scimath/Mathematics/AutoDiff.h 
-     = scimath/Mathematics/AutoDiffMath.h 
-     template Matrix<DComplex> invertSymPosDef(Matrix<DComplex> const &) 
-     template void invertSymPosDef(Matrix<DComplex> &, DComplex &, Matrix<DComplex> const &) 
-1090 scimath/Mathematics/MatrixMathLA.cc casa/Arrays/Matrix.h 
-     = scimath/Mathematics/AutoDiff.h 
-     = scimath/Mathematics/AutoDiffMath.h 
-     = casa/Arrays/Vector.h 
-     template void CholeskyDecomp(Matrix<AutoDiff<Double> > &, Vector<AutoDiff<Double> > &) 
-     template void CholeskySolve(Matrix<AutoDiff<Double> > &, Vector<AutoDiff<Double> > &, Vector<AutoDiff<Double> > &, Vector<AutoDiff<Double> > &) 
-1100 scimath/Mathematics/MatrixMathLA.cc casa/Arrays/Matrix.h 
-     = scimath/Mathematics/AutoDiff.h 
-     = scimath/Mathematics/AutoDiffMath.h 
-     = casa/Arrays/Vector.h 
-     template void CholeskyDecomp(Matrix<AutoDiff<Float> > &, Vector<AutoDiff<Float> > &) 
-     template void CholeskySolve(Matrix<AutoDiff<Float> > &, Vector<AutoDiff<Float> > &, Vector<AutoDiff<Float> > &, Vector<AutoDiff<Float> > &) 
-1110 scimath/Mathematics/MatrixMathLA.cc casa/Arrays/Matrix.h 
-     = scimath/Mathematics/AutoDiff.h 
-     = scimath/Mathematics/AutoDiffMath.h 
-     template Matrix<AutoDiff<Double> > invertSymPosDef(Matrix<AutoDiff<Double> > const &) 
-     template void invertSymPosDef(Matrix<AutoDiff<Double> > &, AutoDiff<Double> &, Matrix<AutoDiff<Double> > const &) 
-1120 scimath/Mathematics/MatrixMathLA.cc casa/Arrays/Matrix.h 
-     = scimath/Mathematics/AutoDiff.h 
-     = scimath/Mathematics/AutoDiffMath.h 
-     template Matrix<AutoDiff<Float> > invertSymPosDef(Matrix<AutoDiff<Float> > const &) 
-     template void invertSymPosDef(Matrix<AutoDiff<Float> > &, AutoDiff<Float> &, Matrix<AutoDiff<Float> > const &) 
-1130 scimath/Mathematics/MatrixMathLA.cc casa/Arrays/Matrix.h 
-     template Matrix<Double> invertSymPosDef(Matrix<Double> const &) 
-     template void invertSymPosDef(Matrix<Double> &, Double &, Matrix<Double> const &) 
-1140 scimath/Mathematics/MatrixMathLA.cc casa/BasicSL/Complex.h 
-     template Matrix<Complex> invert(Matrix<Complex> const &) 
-1150 scimath/Mathematics/MatrixMathLA.cc casa/BasicSL/Complex.h 
-     template void invert(Matrix<Complex> &, Complex &, Matrix<Complex> const &) 
-1160 scimath/Mathematics/MatrixMathLA.cc 
-     template Matrix<Double> invert(Matrix<Double> const &) 
-1170 scimath/Mathematics/MatrixMathLA.cc 
-     template Matrix<Float> invert(Matrix<Float> const &) 
-1180 scimath/Mathematics/MatrixMathLA.cc 
-     template void invert(Matrix<Double> &, Double &, Matrix<Double> const &) 
-1190 scimath/Mathematics/MatrixMathLA.cc 
-     template void invert(Matrix<Float> &, Float &, Matrix<Float> const &) 
 1000 casa/Utilities/Copy.cc 
      = scimath/Mathematics/AutoDiff.h 
      = casa/BasicSL/Complex.h 
@@ -1732,58 +482,19 @@
 1200 casa/Utilities/Copy.cc casa/Arrays/Vector.h 
      = scimath/Mathematics/SquareMatrix.h 
      template void objset(Vector<SquareMatrix<Float, 2> > *, Vector<SquareMatrix<Float, 2> >, uInt, uInt) 
-1210 casa/Utilities/Copy.cc scimath/Mathematics/AutoDiff.h 
-     = casa/BasicSL/Complex.h 
-     template void objcopy(AutoDiff<DComplex> *, AutoDiff<DComplex> const *, uInt) 
-     template void objcopy(AutoDiff<DComplex> *, AutoDiff<DComplex> const *, uInt, uInt, uInt) 
-     template void objset(AutoDiff<DComplex> *, AutoDiff<DComplex>, uInt) 
-     template void objset(AutoDiff<DComplex> *, AutoDiff<DComplex>, uInt, uInt) 
-     template void objmove(AutoDiff<DComplex> *, AutoDiff<DComplex> const *, uInt) 
-1220 casa/Utilities/Copy.cc scimath/Mathematics/AutoDiff.h 
-     template void objcopy(AutoDiff<Double> *, AutoDiff<Double> const *, uInt) 
-     template void objcopy(AutoDiff<Double> *, AutoDiff<Double> const *, uInt, uInt, uInt) 
-     template void objmove(AutoDiff<Double> *, AutoDiff<Double> const *, uInt) 
-     template void objset(AutoDiff<Double> *, AutoDiff<Double>, uInt) 
-     template void objset(AutoDiff<Double> *, AutoDiff<Double>, uInt, uInt) 
-1230 casa/Utilities/Copy.cc scimath/Mathematics/AutoDiff.h 
-     template void objcopy(AutoDiff<Float> *, AutoDiff<Float> const *, uInt) 
-     template void objcopy(AutoDiff<Float> *, AutoDiff<Float> const *, uInt, uInt, uInt) 
-     template void objmove(AutoDiff<Float> *, AutoDiff<Float> const *, uInt) 
-     template void objset(AutoDiff<Float> *, AutoDiff<Float>, uInt) 
-     template void objset(AutoDiff<Float> *, AutoDiff<Float>, uInt, uInt) 
-1240 casa/Utilities/Copy.cc scimath/Mathematics/AutoDiffA.h 
-     template void objcopy(AutoDiffA<Double> *, AutoDiffA<Double> const *, uInt) 
-1250 casa/Utilities/Copy.cc scimath/Mathematics/AutoDiffA.h 
-     template void objcopy(AutoDiffA<Double> *, AutoDiffA<Double> const *, uInt, uInt, uInt) 
-1260 casa/Utilities/Copy.cc scimath/Mathematics/AutoDiffA.h 
-     template void objcopy(AutoDiffA<Float> *, AutoDiffA<Float> const *, uInt) 
-1270 casa/Utilities/Copy.cc scimath/Mathematics/AutoDiffA.h 
-     template void objcopy(AutoDiffA<Float> *, AutoDiffA<Float> const *, uInt, uInt, uInt) 
-1280 casa/Utilities/Copy.cc scimath/Mathematics/AutoDiffA.h 
-     template void objmove(AutoDiffA<Double> *, AutoDiffA<Double> const *, uInt) 
-1290 casa/Utilities/Copy.cc scimath/Mathematics/AutoDiffA.h 
-     template void objmove(AutoDiffA<Float> *, AutoDiffA<Float> const *, uInt) 
-1300 casa/Utilities/Copy.cc scimath/Mathematics/AutoDiffA.h 
-     template void objset(AutoDiffA<Double> *, AutoDiffA<Double>, uInt) 
-1310 casa/Utilities/Copy.cc scimath/Mathematics/AutoDiffA.h 
-     template void objset(AutoDiffA<Double> *, AutoDiffA<Double>, uInt, uInt) 
-1320 casa/Utilities/Copy.cc scimath/Mathematics/AutoDiffA.h 
-     template void objset(AutoDiffA<Float> *, AutoDiffA<Float>, uInt) 
-1330 casa/Utilities/Copy.cc scimath/Mathematics/AutoDiffA.h 
-     template void objset(AutoDiffA<Float> *, AutoDiffA<Float>, uInt, uInt) 
-1340 casa/Utilities/Copy.cc casa/Utilities/CountedPtr.h 
+1210 casa/Utilities/Copy.cc casa/Utilities/CountedPtr.h 
      = casa/Containers/OrderedMap.h scimath/Mathematics/SquareMatrix.h 
      template void objcopy(OrderedMap<Double, SquareMatrix<Complex, 2>*> **, OrderedMap<Double, SquareMatrix<Complex, 2>*> * const *, uInt, uInt, uInt) 
      template void objcopy(OrderedMap<Double, SquareMatrix<Complex, 2>*> **, OrderedMap<Double, SquareMatrix<Complex, 2>*> * const *, uInt) 
      template void objset(OrderedMap<Double, SquareMatrix<Complex, 2>*> **, OrderedMap<Double, SquareMatrix<Complex, 2>*> *, uInt) 
      template void objset(OrderedMap<Double, SquareMatrix<Complex, 2>*> **, OrderedMap<Double, SquareMatrix<Complex, 2>*> *, uInt, uInt) 
-1350 casa/Utilities/Copy.cc casa/Utilities/CountedPtr.h 
+1220 casa/Utilities/Copy.cc casa/Utilities/CountedPtr.h 
      = scimath/Functionals/Function1D.h 
      template void objcopy(CountedPtr<Function1D<Float> > *, CountedPtr<Function1D<Float> > const *, uInt, uInt, uInt) 
      template void objcopy(CountedPtr<Function1D<Float> > *, CountedPtr<Function1D<Float> > const *, uInt) 
      template void objset(CountedPtr<Function1D<Float> > *, CountedPtr<Function1D<Float> >, uInt) 
      template void objset(CountedPtr<Function1D<Float> > *, CountedPtr<Function1D<Float> >, uInt, uInt) 
-1360 casa/Utilities/Copy.cc casa/Utilities/CountedPtr.h 
+1230 casa/Utilities/Copy.cc casa/Utilities/CountedPtr.h 
      = scimath/Mathematics/SquareMatrix.h 
      template void objcopy(CountedPtr<SquareMatrix<Complex, 4> >*, CountedPtr<SquareMatrix<Complex, 4> > const *, uInt, uInt, uInt) 
      template void objcopy(CountedPtr<SquareMatrix<Complex, 4> >*, CountedPtr<SquareMatrix<Complex, 4> > const *, uInt) 
@@ -1793,6 +504,45 @@
      template void objcopy(CountedPtr<SquareMatrix<Complex, 2> >*, CountedPtr<SquareMatrix<Complex, 2> > const *, uInt) 
      template void objset(CountedPtr<SquareMatrix<Complex, 2> >*, CountedPtr<SquareMatrix<Complex, 2> >, uInt) 
      template void objset(CountedPtr<SquareMatrix<Complex, 2> >*, CountedPtr<SquareMatrix<Complex, 2> >, uInt, uInt) 
+1240 casa/Utilities/Copy.cc scimath/Mathematics/AutoDiff.h 
+     = casa/BasicSL/Complex.h 
+     template void objcopy(AutoDiff<DComplex> *, AutoDiff<DComplex> const *, uInt) 
+     template void objcopy(AutoDiff<DComplex> *, AutoDiff<DComplex> const *, uInt, uInt, uInt) 
+     template void objset(AutoDiff<DComplex> *, AutoDiff<DComplex>, uInt) 
+     template void objset(AutoDiff<DComplex> *, AutoDiff<DComplex>, uInt, uInt) 
+     template void objmove(AutoDiff<DComplex> *, AutoDiff<DComplex> const *, uInt) 
+1250 casa/Utilities/Copy.cc scimath/Mathematics/AutoDiff.h 
+     template void objcopy(AutoDiff<Double> *, AutoDiff<Double> const *, uInt) 
+     template void objcopy(AutoDiff<Double> *, AutoDiff<Double> const *, uInt, uInt, uInt) 
+     template void objmove(AutoDiff<Double> *, AutoDiff<Double> const *, uInt) 
+     template void objset(AutoDiff<Double> *, AutoDiff<Double>, uInt) 
+     template void objset(AutoDiff<Double> *, AutoDiff<Double>, uInt, uInt) 
+1260 casa/Utilities/Copy.cc scimath/Mathematics/AutoDiff.h 
+     template void objcopy(AutoDiff<Float> *, AutoDiff<Float> const *, uInt) 
+     template void objcopy(AutoDiff<Float> *, AutoDiff<Float> const *, uInt, uInt, uInt) 
+     template void objmove(AutoDiff<Float> *, AutoDiff<Float> const *, uInt) 
+     template void objset(AutoDiff<Float> *, AutoDiff<Float>, uInt) 
+     template void objset(AutoDiff<Float> *, AutoDiff<Float>, uInt, uInt) 
+1270 casa/Utilities/Copy.cc scimath/Mathematics/AutoDiffA.h 
+     template void objcopy(AutoDiffA<Double> *, AutoDiffA<Double> const *, uInt) 
+1280 casa/Utilities/Copy.cc scimath/Mathematics/AutoDiffA.h 
+     template void objcopy(AutoDiffA<Double> *, AutoDiffA<Double> const *, uInt, uInt, uInt) 
+1290 casa/Utilities/Copy.cc scimath/Mathematics/AutoDiffA.h 
+     template void objcopy(AutoDiffA<Float> *, AutoDiffA<Float> const *, uInt) 
+1300 casa/Utilities/Copy.cc scimath/Mathematics/AutoDiffA.h 
+     template void objcopy(AutoDiffA<Float> *, AutoDiffA<Float> const *, uInt, uInt, uInt) 
+1310 casa/Utilities/Copy.cc scimath/Mathematics/AutoDiffA.h 
+     template void objmove(AutoDiffA<Double> *, AutoDiffA<Double> const *, uInt) 
+1320 casa/Utilities/Copy.cc scimath/Mathematics/AutoDiffA.h 
+     template void objmove(AutoDiffA<Float> *, AutoDiffA<Float> const *, uInt) 
+1330 casa/Utilities/Copy.cc scimath/Mathematics/AutoDiffA.h 
+     template void objset(AutoDiffA<Double> *, AutoDiffA<Double>, uInt) 
+1340 casa/Utilities/Copy.cc scimath/Mathematics/AutoDiffA.h 
+     template void objset(AutoDiffA<Double> *, AutoDiffA<Double>, uInt, uInt) 
+1350 casa/Utilities/Copy.cc scimath/Mathematics/AutoDiffA.h 
+     template void objset(AutoDiffA<Float> *, AutoDiffA<Float>, uInt) 
+1360 casa/Utilities/Copy.cc scimath/Mathematics/AutoDiffA.h 
+     template void objset(AutoDiffA<Float> *, AutoDiffA<Float>, uInt, uInt) 
 1370 casa/Utilities/Copy.cc scimath/Mathematics/RigidVector.h 
      template void objcopy(RigidVector<Double, 3> *, RigidVector<Double, 3> const *, uInt) 
 1380 casa/Utilities/Copy.cc scimath/Mathematics/RigidVector.h 
@@ -2051,15 +801,15 @@
      template class vector<AutoDiff<DComplex> > 
      AIPS_VECTOR_AUX_TEMPLATES(AutoDiff<DComplex>) 
 1020 casa/vector.h 
+     = scimath/Functionals/FuncExprData.h 
+     template class vector<FuncExprData::ExprOperator> 
+     AIPS_VECTOR_AUX_TEMPLATES(FuncExprData::ExprOperator) 
+1030 casa/vector.h 
      = scimath/Mathematics/AutoDiff.h 
      = scimath/Mathematics/AutoDiffMath.h 
      = scimath/Mathematics/AutoDiffIO.h 
      template class vector<AutoDiff<Double> > 
      AIPS_VECTOR_AUX_TEMPLATES(AutoDiff<Double>) 
-1030 casa/vector.h 
-     = scimath/Functionals/FuncExprData.h 
-     template class vector<FuncExprData::ExprOperator> 
-     AIPS_VECTOR_AUX_TEMPLATES(FuncExprData::ExprOperator) 
 1000 scimath/Fitting/FitGaussian.cc 
      template class FitGaussian<Float> 
 1000 scimath/Fitting/GenericL2Fit.cc 
@@ -2080,6 +830,207 @@
      template class GenericL2Fit<Double> 
 1040 scimath/Fitting/GenericL2Fit.cc 
      template class GenericL2Fit<Float> 
+1000 scimath/Fitting/LSQFit2.cc 
+     = algorithm 
+     template Double *std::swap_ranges<Double *, Double *>(Double *, Double *, Double *) 
+#
+1010 scimath/Fitting/LSQFit2.cc 
+     = casa/Arrays/VectorSTLIterator.h 
+     template void LSQFit::makeNorm<Double, VectorSTLIterator<Double> >(VectorSTLIterator<Double> const &, Double const &, Double const &, Bool, Bool) 
+     template void LSQFit::makeNorm<Double, VectorSTLIterator<Double> >(VectorSTLIterator<Double> const &, Double const &, Double const &, LSQFit::Real, Bool, Bool) 
+     template void LSQFit::makeNorm<Double, VectorSTLIterator<Double>, VectorSTLIterator<uInt> >(uInt nIndex, VectorSTLIterator<uInt> const &, VectorSTLIterator<Double> const &, Double const &, Double const &, Bool, Bool) 
+     template void LSQFit::makeNorm<Double, VectorSTLIterator<Double>, VectorSTLIterator<uInt> >(uInt nIndex, VectorSTLIterator<uInt> const &, VectorSTLIterator<Double> const &, Double const &, Double const &, LSQFit::Real, Bool, Bool) 
+     template Bool LSQFit::addConstraint<Double, VectorSTLIterator<Double> >(VectorSTLIterator<Double> const &, Double const &) 
+     template Bool LSQFit::addConstraint<Double, VectorSTLIterator<Double>, VectorSTLIterator<uInt> >(uInt nIndex, VectorSTLIterator<uInt> const &, VectorSTLIterator<Double> const &, Double const &) 
+     template Bool LSQFit::setConstraint<Double, VectorSTLIterator<Double> >(uInt n, VectorSTLIterator<Double> const &, Double const &) 
+     template Bool LSQFit::setConstraint<Double, VectorSTLIterator<Double>, VectorSTLIterator<uInt> >(uInt n, uInt nIndex, VectorSTLIterator<uInt> const &, VectorSTLIterator<Double> const &, Double const &) 
+     template Bool LSQFit::getConstraint<VectorSTLIterator<Double> >(uInt, VectorSTLIterator<Double> &) const 
+     template void LSQFit::solve<VectorSTLIterator<Double> >(VectorSTLIterator<Double> &) 
+     template Bool LSQFit::solveLoop<VectorSTLIterator<Double> >(Double &, uInt &, VectorSTLIterator<Double> &, Bool) 
+     template void LSQFit::copy<VectorSTLIterator<Double> >(Double const *, Double const *, VectorSTLIterator<Double> &, LSQReal) 
+     template void LSQFit::uncopy<VectorSTLIterator<Double> >(Double *, Double const *, VectorSTLIterator<Double> &, LSQReal) 
+     template void LSQFit::copyDiagonal<VectorSTLIterator<Double> >(VectorSTLIterator<Double> &, LSQReal) 
+     template Bool LSQFit::getErrors<VectorSTLIterator<Double> >(VectorSTLIterator<Double> &) 
+#
+1020 scimath/Fitting/LSQFit2.cc 
+     = casa/Arrays/VectorSTLIterator.h 
+     template void LSQFit::makeNorm<Float, VectorSTLIterator<Float> >(VectorSTLIterator<Float> const &, Float const &, Float const &, Bool, Bool) 
+     template void LSQFit::makeNorm<Float, VectorSTLIterator<Float> >(VectorSTLIterator<Float> const &, Float const &, Float const &, LSQFit::Real, Bool, Bool) 
+     template void LSQFit::makeNorm<Float, VectorSTLIterator<Float>, VectorSTLIterator<uInt> >(uInt nIndex, VectorSTLIterator<uInt> const &, VectorSTLIterator<Float> const &, Float const &, Float const &, Bool, Bool) 
+     template void LSQFit::makeNorm<Float, VectorSTLIterator<Float>, VectorSTLIterator<uInt> >(uInt nIndex, VectorSTLIterator<uInt> const &, VectorSTLIterator<Float> const &, Float const &, Float const &, LSQFit::Real, Bool, Bool) 
+     template Bool LSQFit::addConstraint<Float, VectorSTLIterator<Float> >(VectorSTLIterator<Float> const &, Float const &) 
+     template Bool LSQFit::addConstraint<Float, VectorSTLIterator<Float>, VectorSTLIterator<uInt> >(uInt nIndex, VectorSTLIterator<uInt> const &, VectorSTLIterator<Float> const &, Float const &) 
+     template Bool LSQFit::setConstraint<Float, VectorSTLIterator<Float> >(uInt n, VectorSTLIterator<Float> const &, Float const &) 
+     template Bool LSQFit::setConstraint<Float, VectorSTLIterator<Float>, VectorSTLIterator<uInt> >(uInt n, uInt nIndex, VectorSTLIterator<uInt> const &, VectorSTLIterator<Float> const &, Float const &) 
+     template Bool LSQFit::getConstraint<VectorSTLIterator<Float> >(uInt, VectorSTLIterator<Float> &) const 
+     template void LSQFit::solve<VectorSTLIterator<Float> >(VectorSTLIterator<Float> &) 
+     template Bool LSQFit::solveLoop<VectorSTLIterator<Float> >(Double &, uInt &, VectorSTLIterator<Float> &, Bool) 
+     template void LSQFit::copy<VectorSTLIterator<Float> >(Double const *, Double const *, VectorSTLIterator<Float> &, LSQReal) 
+     template void LSQFit::uncopy<VectorSTLIterator<Float> >(Double *, Double const *, VectorSTLIterator<Float> &, LSQReal) 
+     template void LSQFit::copyDiagonal<VectorSTLIterator<Float> >(VectorSTLIterator<Float> &, LSQReal) 
+     template Bool LSQFit::getErrors<VectorSTLIterator<Float> >(VectorSTLIterator<Float> &) 
+#
+1030 scimath/Fitting/LSQFit2.cc 
+     = casa/Arrays/VectorSTLIterator.h 
+     typedef VectorSTLIterator<std::complex<Double> > It1 
+     typedef VectorSTLIterator<uInt> It1Int 
+     template void LSQFit::makeNorm<Double, It1>(It1 const &, Double const &, std::complex<Double> const &, Bool, Bool) 
+     template void LSQFit::makeNorm<Double, It1>(It1 const &, Double const &, std::complex<Double> const &, LSQFit::AsReal, Bool, Bool) 
+     template void LSQFit::makeNorm<Double, It1>(It1 const &, Double const &, std::complex<Double> const &, LSQFit::Complex, Bool, Bool) 
+     template void LSQFit::makeNorm<Double, It1>(It1 const &, Double const &, std::complex<Double> const &, LSQFit::Conjugate, Bool, Bool) 
+     template void LSQFit::makeNorm<Double, It1>(It1 const &, Double const &, std::complex<Double> const &, LSQFit::Separable, Bool, Bool) 
+     template void LSQFit::makeNorm<Double, It1, It1Int>(uInt nIndex, It1Int const &, It1 const &, Double const &, std::complex<Double> const &, Bool, Bool) 
+     template void LSQFit::makeNorm<Double, It1, It1Int>(uInt nIndex, It1Int const &, It1 const &, Double const &, std::complex<Double> const &, LSQFit::AsReal, Bool, Bool) 
+     template void LSQFit::makeNorm<Double, It1, It1Int>(uInt nIndex, It1Int const &, It1 const &, Double const &, std::complex<Double> const &, LSQFit::Complex, Bool, Bool) 
+     template void LSQFit::makeNorm<Double, It1, It1Int>(uInt nIndex, It1Int const &, It1 const &, Double const &, std::complex<Double> const &, LSQFit::Conjugate, Bool, Bool) 
+     template void LSQFit::makeNorm<Double, It1, It1Int>(uInt nIndex, It1Int const &, It1 const &, Double const &, std::complex<Double> const &, LSQFit::Separable, Bool, Bool) 
+     template Bool LSQFit::addConstraint<Double, It1>(It1 const &, std::complex<Double> const &) 
+     template Bool LSQFit::addConstraint<Double, It1, It1Int>(uInt nIndex, It1Int const &, It1 const &, std::complex<Double> const &) 
+     template Bool LSQFit::setConstraint<Double, It1>(uInt n, It1 const &, std::complex<Double> const &) 
+     template Bool LSQFit::setConstraint<Double, It1, It1Int>(uInt n, uInt nIndex, It1Int const &, It1 const &, std::complex<Double> const &) 
+     template Bool LSQFit::getConstraint<It1>(uInt, It1 &) const 
+     template void LSQFit::solve<It1>(It1 &) 
+     template Bool LSQFit::solveLoop<It1>(Double &, uInt &, It1 &, Bool) 
+     template void LSQFit::copy<It1>(Double const *, Double const *, It1 &, LSQComplex) 
+     template void LSQFit::uncopy<It1>(Double *, Double const *, It1 &, LSQComplex) 
+     template void LSQFit::copyDiagonal<It1>(It1 &, LSQComplex) 
+     template Bool LSQFit::getErrors<It1>(It1 &) 
+#
+1040 scimath/Fitting/LSQFit2.cc 
+     = casa/Arrays/VectorSTLIterator.h 
+     typedef VectorSTLIterator<std::complex<Float> > It2 
+     typedef VectorSTLIterator<uInt> It2Int 
+     template void LSQFit::makeNorm<Float, It2>(It2 const &, Float const &, std::complex<Float> const &, Bool, Bool) 
+     template void LSQFit::makeNorm<Float, It2>(It2 const &, Float const &, std::complex<Float> const &, LSQFit::AsReal, Bool, Bool) 
+     template void LSQFit::makeNorm<Float, It2>(It2 const &, Float const &, std::complex<Float> const &, LSQFit::Complex, Bool, Bool) 
+     template void LSQFit::makeNorm<Float, It2>(It2 const &, Float const &, std::complex<Float> const &, LSQFit::Conjugate, Bool, Bool) 
+     template void LSQFit::makeNorm<Float, It2>(It2 const &, Float const &, std::complex<Float> const &, LSQFit::Separable, Bool, Bool) 
+     template void LSQFit::makeNorm<Float, It2, It2Int>(uInt nIndex, It2Int const &, It2 const &, Float const &, std::complex<Float> const &, Bool, Bool) 
+     template void LSQFit::makeNorm<Float, It2, It2Int>(uInt nIndex, It2Int const &, It2 const &, Float const &, std::complex<Float> const &, LSQFit::AsReal, Bool, Bool) 
+     template void LSQFit::makeNorm<Float, It2, It2Int>(uInt nIndex, It2Int const &, It2 const &, Float const &, std::complex<Float> const &, LSQFit::Complex, Bool, Bool) 
+     template void LSQFit::makeNorm<Float, It2, It2Int>(uInt nIndex, It2Int const &, It2 const &, Float const &, std::complex<Float> const &, LSQFit::Conjugate, Bool, Bool) 
+     template void LSQFit::makeNorm<Float, It2, It2Int>(uInt nIndex, It2Int const &, It2 const &, Float const &, std::complex<Float> const &, LSQFit::Separable, Bool, Bool) 
+     template Bool LSQFit::addConstraint<Float, It2>(It2 const &, std::complex<Float> const &) 
+     template Bool LSQFit::addConstraint<Float, It2, It2Int>(uInt nIndex, It2Int const &, It2 const &, std::complex<Float> const &) 
+     template Bool LSQFit::setConstraint<Float, It2>(uInt n, It2 const &, std::complex<Float> const &) 
+     template Bool LSQFit::setConstraint<Float, It2, It2Int>(uInt n, uInt nIndex, It2Int const &, It2 const &, std::complex<Float> const &) 
+     template Bool LSQFit::getConstraint<It2>(uInt, It2 &) const 
+     template void LSQFit::solve<It2>(It2 &) 
+     template Bool LSQFit::solveLoop<It2>(Double &, uInt &, It2 &, Bool) 
+     template void LSQFit::copy<It2>(Double const *, Double const *, It2 &, LSQComplex) 
+     template void LSQFit::uncopy<It2>(Double *, Double const *, It2 &, LSQComplex) 
+     template void LSQFit::copyDiagonal<It2>(It2 &, LSQComplex) 
+     template Bool LSQFit::getErrors<It2>(It2 &) 
+# 
+1050 scimath/Fitting/LSQFit2.cc 
+     = complex 
+     typedef std::complex<Double>* It3 
+     typedef uInt* It3Int 
+     template void LSQFit::makeNorm<Double, It3>(It3 const &, Double const &, std::complex<Double> const &, Bool, Bool) 
+     template void LSQFit::makeNorm<Double, It3>(It3 const &, Double const &, std::complex<Double> const &, LSQFit::AsReal, Bool, Bool) 
+     template void LSQFit::makeNorm<Double, It3>(It3 const &, Double const &, std::complex<Double> const &, LSQFit::Complex, Bool, Bool) 
+     template void LSQFit::makeNorm<Double, It3>(It3 const &, Double const &, std::complex<Double> const &, LSQFit::Conjugate, Bool, Bool) 
+     template void LSQFit::makeNorm<Double, It3>(It3 const &, Double const &, std::complex<Double> const &, LSQFit::Separable, Bool, Bool) 
+     template void LSQFit::makeNorm<Double, It3, It3Int>(uInt nIndex, It3Int const &, It3 const &, Double const &, std::complex<Double> const &, Bool, Bool) 
+     template void LSQFit::makeNorm<Double, It3, It3Int>(uInt nIndex, It3Int const &, It3 const &, Double const &, std::complex<Double> const &, LSQFit::AsReal, Bool, Bool) 
+     template void LSQFit::makeNorm<Double, It3, It3Int>(uInt nIndex, It3Int const &, It3 const &, Double const &, std::complex<Double> const &, LSQFit::Complex, Bool, Bool) 
+     template void LSQFit::makeNorm<Double, It3, It3Int>(uInt nIndex, It3Int const &, It3 const &, Double const &, std::complex<Double> const &, LSQFit::Conjugate, Bool, Bool) 
+     template void LSQFit::makeNorm<Double, It3, It3Int>(uInt nIndex, It3Int const &, It3 const &, Double const &, std::complex<Double> const &, LSQFit::Separable, Bool, Bool) 
+     template Bool LSQFit::addConstraint<Double, It3>(It3 const &, std::complex<Double> const &) 
+     template Bool LSQFit::addConstraint<Double, It3, It3Int>(uInt nIndex, It3Int const &, It3 const &, std::complex<Double> const &) 
+     template Bool LSQFit::setConstraint<Double, It3>(uInt n, It3 const &, std::complex<Double> const &) 
+     template Bool LSQFit::setConstraint<Double, It3, It3Int>(uInt n, uInt nIndex, It3Int const &, It3 const &, std::complex<Double> const &) 
+     template Bool LSQFit::getConstraint<Double>(uInt, std::complex<Double> *) const 
+     template void LSQFit::solve<Double>(std::complex<Double> *) 
+     template Bool LSQFit::solveLoop<Double>(Double &, uInt &, std::complex<Double> *, Bool) 
+     template void LSQFit::copy<std::complex<Double> >(Double const *, Double const *, std::complex<Double> *, LSQComplex) 
+     template void LSQFit::uncopy<std::complex<Double> >(Double *, Double const *, std::complex<Double> *, LSQComplex) 
+     template Bool LSQFit::getErrors<Double>(std::complex<Double> *) 
+     template Bool LSQFit::getCovariance<Double>(std::complex<Double> *) 
+#
+1060 scimath/Fitting/LSQFit2.cc 
+     = complex 
+     typedef std::complex<Float>* It4 
+     typedef uInt* It4Int 
+     template void LSQFit::makeNorm<Float, It4>(It4 const &, Float const &, std::complex<Float> const &, Bool, Bool) 
+     template void LSQFit::makeNorm<Float, It4>(It4 const &, Float const &, std::complex<Float> const &, LSQFit::AsReal, Bool, Bool) 
+     template void LSQFit::makeNorm<Float, It4>(It4 const &, Float const &, std::complex<Float> const &, LSQFit::Complex, Bool, Bool) 
+     template void LSQFit::makeNorm<Float, It4>(It4 const &, Float const &, std::complex<Float> const &, LSQFit::Conjugate, Bool, Bool) 
+     template void LSQFit::makeNorm<Float, It4>(It4 const &, Float const &, std::complex<Float> const &, LSQFit::Separable, Bool, Bool) 
+     template void LSQFit::makeNorm<Float, It4, It4Int>(uInt nIndex, It4Int const &, It4 const &, Float const &, std::complex<Float> const &, Bool, Bool) 
+     template void LSQFit::makeNorm<Float, It4, It4Int>(uInt nIndex, It4Int const &, It4 const &, Float const &, std::complex<Float> const &, LSQFit::AsReal, Bool, Bool) 
+     template void LSQFit::makeNorm<Float, It4, It4Int>(uInt nIndex, It4Int const &, It4 const &, Float const &, std::complex<Float> const &, LSQFit::Complex, Bool, Bool) 
+     template void LSQFit::makeNorm<Float, It4, It4Int>(uInt nIndex, It4Int const &, It4 const &, Float const &, std::complex<Float> const &, LSQFit::Conjugate, Bool, Bool) 
+     template void LSQFit::makeNorm<Float, It4, It4Int>(uInt nIndex, It4Int const &, It4 const &, Float const &, std::complex<Float> const &, LSQFit::Separable, Bool, Bool) 
+     template Bool LSQFit::addConstraint<Float, It4>(It4 const &, std::complex<Float> const &) 
+     template Bool LSQFit::addConstraint<Float, It4, It4Int>(uInt nIndex, It4Int const &, It4 const &, std::complex<Float> const &) 
+     template Bool LSQFit::setConstraint<Float, It4>(uInt n, It4 const &, std::complex<Float> const &) 
+     template Bool LSQFit::setConstraint<Float, It4, It4Int>(uInt n, uInt nIndex, It4Int const &, It4 const &, std::complex<Float> const &) 
+     template Bool LSQFit::getConstraint<Float>(uInt, std::complex<Float> *) const 
+     template void LSQFit::solve<Float>(std::complex<Float> *) 
+     template Bool LSQFit::solveLoop<Float>(Double &, uInt &, std::complex<Float> *, Bool) 
+     template void LSQFit::copy<std::complex<Float> >(Double const *, Double const *, std::complex<Float> *, LSQComplex) 
+     template void LSQFit::uncopy<std::complex<Float> >(Double *, Double const *, std::complex<Float> *, LSQComplex) 
+     template Bool LSQFit::getErrors<Float>(std::complex<Float> *) 
+     template Bool LSQFit::getCovariance<Float>(std::complex<Float> *) 
+#
+1070 scimath/Fitting/LSQFit2.cc 
+     typedef Double* It5 
+     typedef uInt* It5Int 
+     template void LSQFit::makeNorm<Double, It5>(It5 const &, Double const &, Double const &, Bool, Bool) 
+     template void LSQFit::makeNorm<Double, It5>(It5 const &, Double const &, Double const &, LSQFit::Real, Bool, Bool) 
+     template void LSQFit::makeNorm<Double, It5, It5Int>(uInt nIndex, It5Int const &, It5 const &, Double const &, Double const &, Bool, Bool) 
+     template void LSQFit::makeNorm<Double, It5, It5Int>(uInt nIndex, It5Int const &, It5 const &, Double const &, Double const &, LSQFit::Real, Bool, Bool) 
+     template Bool LSQFit::addConstraint<Double, It5>(It5 const &, Double const &) 
+     template Bool LSQFit::addConstraint<Double, It5, It5Int>(uInt nIndex, It5Int const &, It5 const &, Double const &) 
+     template Bool LSQFit::setConstraint<Double, It5>(uInt n, It5 const &, Double const &) 
+     template Bool LSQFit::setConstraint<Double, It5, It5Int>(uInt n, uInt nIndex, It5Int const &, It5 const &, Double const &) 
+     template Bool LSQFit::getConstraint<Double>(uInt, Double *) const 
+     template void LSQFit::solve<Double>(Double *) 
+     template Bool LSQFit::solveLoop<Double>(Double &, uInt &, Double *, Bool) 
+     template void LSQFit::copy<Double>(Double const *, Double const *, Double *, LSQReal) 
+     template void LSQFit::uncopy<Double>(Double *, Double const *, Double *, LSQReal) 
+     template Bool LSQFit::getErrors<Double>(Double *) 
+     template Bool LSQFit::getCovariance<Double>(Double *) 
+#
+1080 scimath/Fitting/LSQFit2.cc 
+     typedef Float* It6 
+     typedef uInt* It6Int 
+     template void LSQFit::makeNorm<Float, It6>(It6 const &, Float const &, Float const &, Bool, Bool) 
+     template void LSQFit::makeNorm<Float, It6>(It6 const &, Float const &, Float const &, LSQFit::Real, Bool, Bool) 
+     template void LSQFit::makeNorm<Float, It6, It6Int>(uInt nIndex, It6Int const &, It6 const &, Float const &, Float const &, Bool, Bool) 
+     template void LSQFit::makeNorm<Float, It6, It6Int>(uInt nIndex, It6Int const &, It6 const &, Float const &, Float const &, LSQFit::Real, Bool, Bool) 
+     template Bool LSQFit::addConstraint<Float, It6>(It6 const &, Float const &) 
+     template Bool LSQFit::addConstraint<Float, It6, It6Int>(uInt nIndex, It6Int const &, It6 const &, Float const &) 
+     template Bool LSQFit::setConstraint<Float, It6>(uInt n, It6 const &, Float const &) 
+     template Bool LSQFit::setConstraint<Float, It6, It6Int>(uInt n, uInt nIndex, It6Int const &, It6 const &, Float const &) 
+     template Bool LSQFit::getConstraint<Float>(uInt, Float *) const 
+     template void LSQFit::solve<Float>(Float *) 
+     template Bool LSQFit::solveLoop<Float>(Double &, uInt &, Float *, Bool) 
+     template void LSQFit::copy<Float>(Double const *, Double const *, Float *, LSQReal) 
+     template void LSQFit::uncopy<Float>(Double *, Double const *, Float *, LSQReal) 
+     template Bool LSQFit::getErrors<Float>(Float *) 
+     template Bool LSQFit::getCovariance<Float>(Float *) 
+1000 scimath/Fitting/LSQaips.cc 
+     = casa/Arrays/Array.h 
+     = casa/Arrays/Vector.h 
+     template Bool LSQaips::getCovariance<Double>(Array<Double> &) 
+     template Bool LSQaips::solveLoop<Double>(Double &, uInt &, Vector<Double> &, Bool doSVD) 
+1010 scimath/Fitting/LSQaips.cc 
+     = casa/Arrays/Array.h 
+     = casa/Arrays/Vector.h 
+     template Bool LSQaips::getCovariance<Float>(Array<Float> &) 
+     template Bool LSQaips::solveLoop<Float>(Double &, uInt &, Vector<Float> &, Bool doSVD) 
+1020 scimath/Fitting/LSQaips.cc 
+     = casa/Arrays/Array.h 
+     = casa/Arrays/Vector.h 
+     template Bool LSQaips::getCovariance<std::complex<Double> >(Array<std::complex<Double> > &) 
+     template Bool LSQaips::solveLoop<std::complex<Double> >(Double &, uInt &, Vector<std::complex<Double> > &, Bool doSVD) 
+1030 scimath/Fitting/LSQaips.cc 
+     = casa/Arrays/Array.h 
+     = casa/Arrays/Vector.h 
+     template Bool LSQaips::getCovariance<std::complex<Float> >(Array<std::complex<Float> > &) 
+     template Bool LSQaips::solveLoop<std::complex<Float> >(Double &, uInt &, Vector<std::complex<Float> > &, Bool doSVD) 
 1000 scimath/Fitting/LinearFit.cc 
      = scimath/Mathematics/AutoDiff.h 
      = scimath/Mathematics/AutoDiffA.h 
@@ -2088,9 +1039,11 @@
      template class LinearFit<AutoDiffA<Double> > 
 1010 scimath/Fitting/LinearFit.cc casa/BasicSL/Complex.h 
      template class LinearFit<Complex> 
-1020 scimath/Fitting/LinearFit.cc 
-     template class LinearFit<Double> 
+1020 scimath/Fitting/LinearFit.cc casa/BasicSL/Complex.h 
+     template class LinearFit<DComplex> 
 1030 scimath/Fitting/LinearFit.cc 
+     template class LinearFit<Double> 
+1040 scimath/Fitting/LinearFit.cc 
      template class LinearFit<Float> 
 1000 scimath/Fitting/LinearFitSVD.cc 
      = scimath/Mathematics/AutoDiff.h 
@@ -2100,9 +1053,11 @@
      template class LinearFitSVD<AutoDiffA<Double> > 
 1010 scimath/Fitting/LinearFitSVD.cc casa/BasicSL/Complex.h 
      template class LinearFitSVD<Complex> 
-1020 scimath/Fitting/LinearFitSVD.cc 
-     template class LinearFitSVD<Double> 
+1020 scimath/Fitting/LinearFitSVD.cc casa/BasicSL/Complex.h 
+     template class LinearFitSVD<DComplex> 
 1030 scimath/Fitting/LinearFitSVD.cc 
+     template class LinearFitSVD<Double> 
+1040 scimath/Fitting/LinearFitSVD.cc 
      template class LinearFitSVD<Float> 
 1000 scimath/Fitting/NonLinearFit.cc 
      template class NonLinearFit<Double> 
@@ -2116,6 +1071,95 @@
      template class FunctionFactory<Double> 
 1010 scimath/Functionals/AbstractFunctionFactory.h 
      template class FunctionFactory<Float> 
+1000 scimath/Functionals/Chebyshev.cc 
+     = casa/BasicSL/Complex.h 
+     template class Chebyshev<DComplex> 
+     template class Chebyshev<Complex> 
+1010 scimath/Functionals/Chebyshev.cc scimath/Mathematics/AutoDiff.h 
+     = casa/BasicSL/Complex.h 
+     = scimath/Mathematics/AutoDiffMath.h 
+     template class Chebyshev<AutoDiff<DComplex> > 
+     template class Chebyshev<AutoDiff<Complex> > 
+1020 scimath/Functionals/Chebyshev.cc scimath/Mathematics/AutoDiff.h 
+     = scimath/Mathematics/AutoDiffMath.h 
+     template class Chebyshev<AutoDiff<Double> > 
+     template class Chebyshev<AutoDiff<Float> > 
+1030 scimath/Functionals/Chebyshev.cc scimath/Mathematics/AutoDiffA.h 
+     = scimath/Mathematics/AutoDiffMath.h 
+     template class Chebyshev<AutoDiffA<Double> > 
+     template class Chebyshev<AutoDiffA<Float> > 
+1040 scimath/Functionals/Chebyshev.cc 
+     template class Chebyshev<Double> 
+     template class Chebyshev<Float> 
+1000 scimath/Functionals/ChebyshevParam.cc 
+     = casa/BasicSL/Complex.h 
+     = scimath/Mathematics/AutoDiff.h 
+     = scimath/Mathematics/AutoDiffMath.h 
+     template class ChebyshevParam<AutoDiff<DComplex> > 
+     template class ChebyshevParam<AutoDiff<Complex> > 
+     template class ChebyshevParamModeImpl<AutoDiff<DComplex> > 
+     template class ChebyshevParamModeImpl<AutoDiff<Complex> > 
+1010 scimath/Functionals/ChebyshevParam.cc 
+     = casa/BasicSL/Complex.h 
+     template class ChebyshevParam<DComplex> 
+     template class ChebyshevParam<Complex> 
+     template class ChebyshevParamModeImpl<DComplex> 
+     template class ChebyshevParamModeImpl<Complex> 
+1020 scimath/Functionals/ChebyshevParam.cc 
+     = scimath/Mathematics/AutoDiff.h 
+     = scimath/Mathematics/AutoDiffMath.h 
+     template class ChebyshevParam<AutoDiff<Double> > 
+     template class ChebyshevParam<AutoDiff<Float> > 
+     template class ChebyshevParamModeImpl<AutoDiff<Double> > 
+     template class ChebyshevParamModeImpl<AutoDiff<Float> > 
+1030 scimath/Functionals/ChebyshevParam.cc 
+     = scimath/Mathematics/AutoDiffA.h 
+     = scimath/Mathematics/AutoDiffMath.h 
+     template class ChebyshevParam<AutoDiffA<Double> > 
+     template class ChebyshevParam<AutoDiffA<Float> > 
+     template class ChebyshevParamModeImpl<AutoDiffA<Double> > 
+     template class ChebyshevParamModeImpl<AutoDiffA<Float> > 
+1040 scimath/Functionals/ChebyshevParam.cc 
+     template class ChebyshevParam<Double> 
+     template class ChebyshevParam<Float> 
+     template class ChebyshevParamModeImpl<Double> 
+     template class ChebyshevParamModeImpl<Float> 
+1000 scimath/Functionals/Combi2Function.cc 
+     = casa/BasicSL/Complex.h 
+     = scimath/Mathematics/AutoDiff.h 
+     = scimath/Mathematics/AutoDiffMath.h 
+     template class CombiFunction<AutoDiff<DComplex> > 
+     template class CombiFunction<AutoDiff<Complex> > 
+1010 scimath/Functionals/Combi2Function.cc 
+     = scimath/Mathematics/AutoDiff.h 
+     = scimath/Mathematics/AutoDiffMath.h 
+     template class CombiFunction<AutoDiff<Double> > 
+     template class CombiFunction<AutoDiff<Float> > 
+1000 scimath/Functionals/CombiFunction.cc 
+     = casa/BasicSL/Complex.h 
+     template class CombiFunction<DComplex> 
+     template class CombiFunction<Complex> 
+1010 scimath/Functionals/CombiFunction.cc 
+     template class CombiFunction<Double> 
+     template class CombiFunction<Float> 
+1000 scimath/Functionals/CombiParam.cc 
+     = casa/BasicSL/Complex.h 
+     = scimath/Mathematics/AutoDiff.h 
+     = scimath/Mathematics/AutoDiffMath.h 
+     template class CombiParam<AutoDiff<DComplex> > 
+     template class CombiParam<AutoDiff<Complex> > 
+1010 scimath/Functionals/CombiParam.cc 
+     = casa/BasicSL/Complex.h 
+     template class CombiParam<DComplex> 
+     template class CombiParam<Complex> 
+1020 scimath/Functionals/CombiParam.cc 
+     = scimath/Mathematics/AutoDiff.h 
+     = scimath/Mathematics/AutoDiffMath.h 
+     template class CombiParam<AutoDiff<Double> > 
+     template class CombiParam<AutoDiff<Float> > 
+1030 scimath/Functionals/CombiParam.cc 
+     template class CombiParam<Double> 
+     template class CombiParam<Float> 
 1000 scimath/Functionals/CompiledFunction.cc 
      = casa/BasicSL/Complex.h 
      = scimath/Mathematics/AutoDiff.h 
@@ -2148,6 +1192,42 @@
      template class CompiledParam<AutoDiff<Double> > 
 1030 scimath/Functionals/CompiledParam.cc 
      template class CompiledParam<Double> 
+1000 scimath/Functionals/Compound2Function.cc 
+     = casa/BasicSL/Complex.h 
+     = scimath/Mathematics/AutoDiff.h 
+     = scimath/Mathematics/AutoDiffMath.h 
+     template class CompoundFunction<AutoDiff<DComplex> > 
+     template class CompoundFunction<AutoDiff<Complex> > 
+1010 scimath/Functionals/Compound2Function.cc 
+     = scimath/Mathematics/AutoDiff.h 
+     = scimath/Mathematics/AutoDiffMath.h 
+     template class CompoundFunction<AutoDiff<Double> > 
+     template class CompoundFunction<AutoDiff<Float> > 
+1000 scimath/Functionals/CompoundFunction.cc 
+     = casa/BasicSL/Complex.h 
+     template class CompoundFunction<DComplex> 
+     template class CompoundFunction<Complex> 
+1010 scimath/Functionals/CompoundFunction.cc 
+     template class CompoundFunction<Double> 
+     template class CompoundFunction<Float> 
+1000 scimath/Functionals/CompoundParam.cc 
+     = casa/BasicSL/Complex.h 
+     = scimath/Mathematics/AutoDiff.h 
+     = scimath/Mathematics/AutoDiffMath.h 
+     template class CompoundParam<AutoDiff<DComplex> > 
+     template class CompoundParam<AutoDiff<Complex> > 
+1010 scimath/Functionals/CompoundParam.cc 
+     = casa/BasicSL/Complex.h 
+     template class CompoundParam<DComplex> 
+     template class CompoundParam<Complex> 
+1020 scimath/Functionals/CompoundParam.cc 
+     = scimath/Mathematics/AutoDiff.h 
+     = scimath/Mathematics/AutoDiffMath.h 
+     template class CompoundParam<AutoDiff<Double> > 
+     template class CompoundParam<AutoDiff<Float> > 
+1030 scimath/Functionals/CompoundParam.cc 
+     template class CompoundParam<Double> 
+     template class CompoundParam<Float> 
 1000 scimath/Functionals/DiracDFunction.cc 
      = casa/BasicSL/Complex.h 
      = scimath/Mathematics/AutoDiff.h 
@@ -2220,6 +1300,63 @@
      template class EvenPolynomialParam<AutoDiff<Double> > 
 1030 scimath/Functionals/EvenPolynomialParam.cc 
      template class EvenPolynomialParam<Double> 
+1000 scimath/Functionals/Function.cc 
+     = scimath/Mathematics/AutoDiff.h 
+     = casa/BasicSL/Complex.h 
+     template class Function<AutoDiff<Complex> > 
+     template class Function<AutoDiff<DComplex> > 
+1010 scimath/Functionals/Function.cc 
+     = scimath/Mathematics/AutoDiff.h 
+     template class Function<AutoDiff<Double> > 
+     template class Function<AutoDiff<Float> > 
+1020 scimath/Functionals/Function.cc 
+     = scimath/Mathematics/AutoDiffA.h 
+     = casa/BasicSL/Complex.h 
+     template class Function<AutoDiffA<Complex> > 
+     template class Function<AutoDiffA<DComplex> > 
+1030 scimath/Functionals/Function.cc 
+     = scimath/Mathematics/AutoDiffA.h 
+     template class Function<AutoDiffA<Double> > 
+     template class Function<AutoDiffA<Float> > 
+1040 scimath/Functionals/Function.cc casa/Arrays/Array.h 
+     template class Function<Double, Array<Double> > 
+1050 scimath/Functionals/Function.cc casa/BasicSL/Complex.h 
+     template class Function<Complex> 
+     template class Function<DComplex> 
+1060 scimath/Functionals/Function.cc 
+     template class Function<Double, Float> 
+1070 scimath/Functionals/Function.cc 
+     template class Function<Double> 
+     template class Function<Float> 
+1000 scimath/Functionals/Function1D.h 
+     = scimath/Mathematics/AutoDiff.h 
+     = casa/BasicSL/Complex.h 
+     template class Function1D<AutoDiff<Complex> > 
+     template class Function1D<AutoDiff<DComplex> > 
+1010 scimath/Functionals/Function1D.h 
+     = scimath/Mathematics/AutoDiff.h 
+     template class Function1D<AutoDiff<Double> > 
+     template class Function1D<AutoDiff<Float> > 
+1020 scimath/Functionals/Function1D.h 
+     = scimath/Mathematics/AutoDiffA.h 
+     = casa/BasicSL/Complex.h 
+     template class Function1D<AutoDiffA<Complex> > 
+1030 scimath/Functionals/Function1D.h 
+     = scimath/Mathematics/AutoDiffA.h 
+     = casa/BasicSL/Complex.h 
+     template class Function1D<AutoDiffA<DComplex> > 
+1040 scimath/Functionals/Function1D.h 
+     = scimath/Mathematics/AutoDiffA.h 
+     template class Function1D<AutoDiffA<Double> > 
+     template class Function1D<AutoDiffA<Float> > 
+1050 scimath/Functionals/Function1D.h casa/Arrays/Array.h 
+     template class Function1D<Double, Array<Double> > 
+1060 scimath/Functionals/Function1D.h casa/BasicSL/Complex.h 
+     template class Function1D<Complex> 
+     template class Function1D<DComplex> 
+1070 scimath/Functionals/Function1D.h 
+     template class Function1D<Double> 
+     template class Function1D<Float> 
 1000 scimath/Functionals/FunctionHolder.cc 
      = casa/BasicSL/Complex.h 
      = scimath/Mathematics/AutoDiff.h 
@@ -2261,6 +1398,45 @@
      template Bool FunctionHolder<Double>::getType<Double>(String &, Function<Double> * &, RecordInterface const &) 
 1130 scimath/Functionals/FunctionHolder.cc 
      template class FunctionHolder<Double> 
+1000 scimath/Functionals/FunctionParam.cc 
+     = casa/BasicSL/Complex.h 
+     template class FunctionParam<Complex> 
+     template class FunctionParam<DComplex> 
+1010 scimath/Functionals/FunctionParam.cc 
+     = scimath/Mathematics/AutoDiff.h 
+     = scimath/Mathematics/AutoDiffMath.h 
+     = scimath/Mathematics/AutoDiffIO.h 
+     = casa/BasicSL/Complex.h 
+     template class FunctionParam<AutoDiff<Complex> > 
+     template class FunctionParam<AutoDiff<DComplex> > 
+1020 scimath/Functionals/FunctionParam.cc 
+     = scimath/Mathematics/AutoDiff.h 
+     = scimath/Mathematics/AutoDiffMath.h 
+     = scimath/Mathematics/AutoDiffIO.h 
+     template class FunctionParam<AutoDiff<Double> > 
+     template class FunctionParam<AutoDiff<Float> > 
+1030 scimath/Functionals/FunctionParam.cc 
+     = scimath/Mathematics/AutoDiffA.h 
+     = scimath/Mathematics/AutoDiffIO.h 
+     = scimath/Mathematics/AutoDiffMath.h 
+     = casa/BasicSL/Complex.h 
+     template class FunctionParam<AutoDiffA<Complex> > 
+     template class FunctionParam<AutoDiffA<DComplex> > 
+1040 scimath/Functionals/FunctionParam.cc 
+     = scimath/Mathematics/AutoDiffA.h 
+     = scimath/Mathematics/AutoDiffIO.h 
+     = scimath/Mathematics/AutoDiffMath.h 
+     template class FunctionParam<AutoDiffA<Double> > 
+     template class FunctionParam<AutoDiffA<Float> > 
+1050 scimath/Functionals/FunctionParam.cc 
+     template class FunctionParam<Double> 
+     template class FunctionParam<Float> 
+1000 scimath/Functionals/FunctionWrapper.cc 
+     template class FunctionWrapper<AutoDiff<Double> > 
+     template class FunctionWrapper<AutoDiff<Float> > 
+1010 scimath/Functionals/FunctionWrapper.cc 
+     template class FunctionWrapper<Double> 
+     template class FunctionWrapper<Float> 
 1000 scimath/Functionals/GNoiseFunction.cc 
      = casa/BasicSL/Complex.h 
      = scimath/Mathematics/AutoDiff.h 
@@ -2297,6 +1473,92 @@
 1030 scimath/Functionals/GNoiseParam.cc 
      template class GNoiseParam<Double> 
      template class GNoiseParam<Float> 
+1000 scimath/Functionals/Gaussian1D.cc 
+     = casa/BasicSL/Complex.h 
+     template class Gaussian1D<DComplex> 
+     template class Gaussian1D<Complex> 
+1010 scimath/Functionals/Gaussian1D.cc scimath/Mathematics/AutoDiffA.h 
+     = scimath/Mathematics/AutoDiffMath.h 
+     template class Gaussian1D<AutoDiffA<Double> > 
+     template class Gaussian1D<AutoDiffA<Float> > 
+1020 scimath/Functionals/Gaussian1D.cc 
+     template class Gaussian1D<Double> 
+     template class Gaussian1D<Float> 
+1000 scimath/Functionals/Gaussian1D2.cc scimath/Mathematics/AutoDiff.h 
+     = casa/BasicSL/Complex.h 
+     = scimath/Mathematics/AutoDiffMath.h 
+     template class Gaussian1D<AutoDiff<DComplex> > 
+     template class Gaussian1D<AutoDiff<Complex> > 
+1010 scimath/Functionals/Gaussian1D2.cc scimath/Mathematics/AutoDiff.h 
+     = scimath/Mathematics/AutoDiffMath.h 
+     template class Gaussian1D<AutoDiff<Double> > 
+     template class Gaussian1D<AutoDiff<Float> > 
+1000 scimath/Functionals/Gaussian1DParam.cc 
+     = casa/BasicSL/Complex.h 
+     = scimath/Mathematics/AutoDiff.h 
+     = scimath/Mathematics/AutoDiffMath.h 
+     template class Gaussian1DParam<AutoDiff<DComplex> > 
+     template class Gaussian1DParam<AutoDiff<Complex> > 
+1010 scimath/Functionals/Gaussian1DParam.cc 
+     = casa/BasicSL/Complex.h 
+     template class Gaussian1DParam<DComplex> 
+     template class Gaussian1DParam<Complex> 
+1020 scimath/Functionals/Gaussian1DParam.cc 
+     = scimath/Mathematics/AutoDiff.h 
+     = scimath/Mathematics/AutoDiffMath.h 
+     template class Gaussian1DParam<AutoDiff<Double> > 
+     template class Gaussian1DParam<AutoDiff<Float> > 
+1030 scimath/Functionals/Gaussian1DParam.cc 
+     = scimath/Mathematics/AutoDiffA.h 
+     = scimath/Mathematics/AutoDiffMath.h 
+     template class Gaussian1DParam<AutoDiffA<Double> > 
+     template class Gaussian1DParam<AutoDiffA<Float> > 
+1040 scimath/Functionals/Gaussian1DParam.cc 
+     template class Gaussian1DParam<Double> 
+     template class Gaussian1DParam<Float> 
+1000 scimath/Functionals/Gaussian2D.cc 
+     = casa/BasicSL/Complex.h 
+     template class Gaussian2D<DComplex> 
+     template class Gaussian2D<Complex> 
+1010 scimath/Functionals/Gaussian2D.cc scimath/Mathematics/AutoDiffA.h 
+     = scimath/Mathematics/AutoDiffMath.h 
+     template class Gaussian2D<AutoDiffA<Double> > 
+     template class Gaussian2D<AutoDiffA<Float> > 
+1020 scimath/Functionals/Gaussian2D.cc 
+     template class Gaussian2D<Double> 
+     template class Gaussian2D<Float> 
+1000 scimath/Functionals/Gaussian2D2.cc scimath/Mathematics/AutoDiff.h 
+     = casa/BasicSL/Complex.h 
+     = scimath/Mathematics/AutoDiffMath.h 
+     template class Gaussian2D<AutoDiff<DComplex> > 
+     template class Gaussian2D<AutoDiff<Complex> > 
+1010 scimath/Functionals/Gaussian2D2.cc scimath/Mathematics/AutoDiff.h 
+     = scimath/Mathematics/AutoDiffMath.h 
+     template class Gaussian2D<AutoDiff<Double> > 
+     template class Gaussian2D<AutoDiff<Float> > 
+1000 scimath/Functionals/Gaussian2DParam.cc 
+     = casa/BasicSL/Complex.h 
+     = scimath/Mathematics/AutoDiff.h 
+     = scimath/Mathematics/AutoDiffMath.h 
+     template class Gaussian2DParam<AutoDiff<DComplex> > 
+     template class Gaussian2DParam<AutoDiff<Complex> > 
+1010 scimath/Functionals/Gaussian2DParam.cc 
+     = casa/BasicSL/Complex.h 
+     template class Gaussian2DParam<DComplex> 
+     template class Gaussian2DParam<Complex> 
+1020 scimath/Functionals/Gaussian2DParam.cc 
+     = scimath/Mathematics/AutoDiff.h 
+     = scimath/Mathematics/AutoDiffMath.h 
+     template class Gaussian2DParam<AutoDiff<Double> > 
+     template class Gaussian2DParam<AutoDiff<Float> > 
+1030 scimath/Functionals/Gaussian2DParam.cc 
+     = scimath/Mathematics/AutoDiffA.h 
+     = scimath/Mathematics/AutoDiffMath.h 
+     template class Gaussian2DParam<AutoDiffA<Double> > 
+     template class Gaussian2DParam<AutoDiffA<Float> > 
+1040 scimath/Functionals/Gaussian2DParam.cc 
+     template class Gaussian2DParam<Double> 
+     template class Gaussian2DParam<Float> 
 1000 scimath/Functionals/Gaussian3D.cc 
      = casa/BasicSL/Complex.h 
      template class Gaussian3D<DComplex> 
@@ -2338,6 +1600,90 @@
      template class Gaussian3DParam<Double> 
 1050 scimath/Functionals/Gaussian3DParam.cc 
      template class Gaussian3DParam<Float> 
+1000 scimath/Functionals/GaussianND.cc 
+     = casa/BasicSL/Complex.h 
+     = scimath/Mathematics/AutoDiff.h 
+     = scimath/Mathematics/AutoDiffMath.h 
+     template class GaussianND<AutoDiff<DComplex> > 
+     template class GaussianND<AutoDiff<Complex> > 
+1010 scimath/Functionals/GaussianND.cc 
+     = casa/BasicSL/Complex.h 
+     template class GaussianND<DComplex> 
+     template class GaussianND<Complex> 
+1020 scimath/Functionals/GaussianND.cc scimath/Mathematics/AutoDiff.h 
+     = scimath/Mathematics/AutoDiffMath.h 
+     template class GaussianND<AutoDiff<Double> > 
+1030 scimath/Functionals/GaussianND.cc 
+     template class GaussianND<Double> 
+1000 scimath/Functionals/GaussianNDParam.cc 
+     = casa/BasicSL/Complex.h 
+     = scimath/Mathematics/AutoDiff.h 
+     = scimath/Mathematics/AutoDiffMath.h 
+     template class GaussianNDParam<AutoDiff<DComplex> > 
+     template class GaussianNDParam<AutoDiff<Complex> > 
+1010 scimath/Functionals/GaussianNDParam.cc 
+     = casa/BasicSL/Complex.h 
+     template class GaussianNDParam<DComplex> 
+     template class GaussianNDParam<Complex> 
+1020 scimath/Functionals/GaussianNDParam.cc 
+     = scimath/Mathematics/AutoDiff.h 
+     = scimath/Mathematics/AutoDiffMath.h 
+     template class GaussianNDParam<AutoDiff<Double> > 
+1030 scimath/Functionals/GaussianNDParam.cc 
+     template class GaussianNDParam<Double> 
+1000 scimath/Functionals/HyperPlane.cc 
+     = casa/BasicSL/Complex.h 
+     template class HyperPlane<DComplex> 
+     template class HyperPlane<Complex> 
+1010 scimath/Functionals/HyperPlane.cc scimath/Mathematics/AutoDiffA.h 
+     = scimath/Mathematics/AutoDiffMath.h 
+     template class HyperPlane<AutoDiffA<Double> > 
+     template class HyperPlane<AutoDiffA<Float> > 
+1020 scimath/Functionals/HyperPlane.cc 
+     template class HyperPlane<Double> 
+     template class HyperPlane<Float> 
+1000 scimath/Functionals/HyperPlane2.cc 
+     = casa/BasicSL/Complex.h 
+     = scimath/Mathematics/AutoDiff.h 
+     = scimath/Mathematics/AutoDiffMath.h 
+     template class HyperPlane<AutoDiff<DComplex> > 
+     template class HyperPlane<AutoDiff<Complex> > 
+1010 scimath/Functionals/HyperPlane2.cc scimath/Mathematics/AutoDiff.h 
+     = scimath/Mathematics/AutoDiffMath.h 
+     template class HyperPlane<AutoDiff<Double> > 
+     template class HyperPlane<AutoDiff<Float> > 
+1000 scimath/Functionals/HyperPlaneParam.cc 
+     = casa/BasicSL/Complex.h 
+     = scimath/Mathematics/AutoDiff.h 
+     = scimath/Mathematics/AutoDiffMath.h 
+     template class HyperPlaneParam<AutoDiff<DComplex> > 
+     template class HyperPlaneParam<AutoDiff<Complex> > 
+1010 scimath/Functionals/HyperPlaneParam.cc 
+     = casa/BasicSL/Complex.h 
+     template class HyperPlaneParam<DComplex> 
+     template class HyperPlaneParam<Complex> 
+1020 scimath/Functionals/HyperPlaneParam.cc 
+     = scimath/Mathematics/AutoDiff.h 
+     = scimath/Mathematics/AutoDiffMath.h 
+     template class HyperPlaneParam<AutoDiff<Double> > 
+     template class HyperPlaneParam<AutoDiff<Float> > 
+1030 scimath/Functionals/HyperPlaneParam.cc 
+     = scimath/Mathematics/AutoDiffA.h 
+     = scimath/Mathematics/AutoDiffMath.h 
+     template class HyperPlaneParam<AutoDiffA<Double> > 
+     template class HyperPlaneParam<AutoDiffA<Float> > 
+1040 scimath/Functionals/HyperPlaneParam.cc 
+     template class HyperPlaneParam<Double> 
+     template class HyperPlaneParam<Float> 
+1000 scimath/Functionals/Interpolate1D.cc 
+     = casa/Arrays/Array.h 
+     template class Interpolate1D<Double, Array<Double> > 
+1010 scimath/Functionals/Interpolate1D.cc 
+     = scimath/Functionals/Function1D.h 
+     template class Interpolate1D<Double, Float> 
+     template class Function1D<Double, Float> 
+1020 scimath/Functionals/Interpolate1D.cc 
+     template class Interpolate1D<Double, Double> 
 1000 scimath/Functionals/KaiserBFunction.cc 
      = casa/BasicSL/Complex.h 
      = scimath/Mathematics/AutoDiff.h 
@@ -2414,6 +1760,49 @@
      template class OddPolynomialParam<AutoDiff<Double> > 
 1030 scimath/Functionals/OddPolynomialParam.cc 
      template class OddPolynomialParam<Double> 
+1000 scimath/Functionals/Polynomial.cc 
+     = casa/BasicSL/Complex.h 
+     template class Polynomial<Complex> 
+     template class Polynomial<DComplex> 
+1010 scimath/Functionals/Polynomial.cc scimath/Mathematics/AutoDiffA.h 
+     = scimath/Mathematics/AutoDiffMath.h 
+     template class Polynomial<AutoDiffA<Double> > 
+     template class Polynomial<AutoDiffA<Float> > 
+1020 scimath/Functionals/Polynomial.cc 
+     template class Polynomial<Double> 
+     template class Polynomial<Float> 
+1000 scimath/Functionals/Polynomial2.cc scimath/Mathematics/AutoDiff.h 
+     = casa/BasicSL/Complex.h 
+     = scimath/Mathematics/AutoDiffMath.h 
+     template class Polynomial<AutoDiff<Complex> > 
+     template class Polynomial<AutoDiff<DComplex> > 
+1010 scimath/Functionals/Polynomial2.cc scimath/Mathematics/AutoDiff.h 
+     = scimath/Mathematics/AutoDiffMath.h 
+     template class Polynomial<AutoDiff<Double> > 
+     template class Polynomial<AutoDiff<Float> > 
+1000 scimath/Functionals/PolynomialParam.cc 
+     = casa/BasicSL/Complex.h 
+     = scimath/Mathematics/AutoDiff.h 
+     = scimath/Mathematics/AutoDiffMath.h 
+     template class PolynomialParam<AutoDiff<Complex> > 
+     template class PolynomialParam<AutoDiff<DComplex> > 
+1010 scimath/Functionals/PolynomialParam.cc 
+     = casa/BasicSL/Complex.h 
+     template class PolynomialParam<Complex> 
+     template class PolynomialParam<DComplex> 
+1020 scimath/Functionals/PolynomialParam.cc 
+     = scimath/Mathematics/AutoDiff.h 
+     = scimath/Mathematics/AutoDiffMath.h 
+     template class PolynomialParam<AutoDiff<Double> > 
+     template class PolynomialParam<AutoDiff<Float> > 
+1030 scimath/Functionals/PolynomialParam.cc 
+     = scimath/Mathematics/AutoDiffA.h 
+     = scimath/Mathematics/AutoDiffMath.h 
+     template class PolynomialParam<AutoDiffA<Double> > 
+     template class PolynomialParam<AutoDiffA<Float> > 
+1040 scimath/Functionals/PolynomialParam.cc 
+     template class PolynomialParam<Double> 
+     template class PolynomialParam<Float> 
 1000 scimath/Functionals/SPolynomial.cc 
      = casa/BasicSL/Complex.h 
      template class SPolynomial<Complex> 
@@ -2457,6 +1846,126 @@
 1040 scimath/Functionals/SPolynomialParam.cc 
      template class SPolynomialParam<Double> 
      template class SPolynomialParam<Float> 
+1000 scimath/Functionals/SampledFunctional.h 
+     = casa/Arrays/Array.h 
+     template class SampledFunctional<Array<Double> > 
+1010 scimath/Functionals/SampledFunctional.h 
+     template class SampledFunctional<Double> 
+1020 scimath/Functionals/SampledFunctional.h 
+     template class SampledFunctional<Float> 
+1000 scimath/Functionals/ScalarSampledFunctional.cc 
+     = casa/Arrays/Array.h 
+     template class ScalarSampledFunctional<Array<Double> > 
+1010 scimath/Functionals/ScalarSampledFunctional.cc 
+     template class ScalarSampledFunctional<Double> 
+1020 scimath/Functionals/ScalarSampledFunctional.cc 
+     template class ScalarSampledFunctional<Float> 
+1000 scimath/Functionals/SimButterworthBandpass.cc 
+     = scimath/Mathematics/AutoDiffA.h 
+     = scimath/Mathematics/AutoDiffMath.h 
+     template class SimButterworthBandpass<AutoDiff<Complex> > 
+     template class SimButterworthBandpass<AutoDiff<DComplex> > 
+1010 scimath/Functionals/SimButterworthBandpass.cc 
+     = scimath/Mathematics/AutoDiffA.h 
+     = scimath/Mathematics/AutoDiffMath.h 
+     template class SimButterworthBandpass<AutoDiff<Double> > 
+     template class SimButterworthBandpass<AutoDiff<Float> > 
+1020 scimath/Functionals/SimButterworthBandpass.cc 
+     = scimath/Mathematics/AutoDiffA.h 
+     = scimath/Mathematics/AutoDiffMath.h 
+     template class SimButterworthBandpass<AutoDiffA<Complex> > 
+     template class SimButterworthBandpass<AutoDiffA<DComplex> > 
+1030 scimath/Functionals/SimButterworthBandpass.cc 
+     = scimath/Mathematics/AutoDiffA.h 
+     = scimath/Mathematics/AutoDiffMath.h 
+     template class SimButterworthBandpass<AutoDiffA<Double> > 
+     template class SimButterworthBandpass<AutoDiffA<Float> > 
+1040 scimath/Functionals/SimButterworthBandpass.cc 
+     template class SimButterworthBandpass<Complex> 
+     template class SimButterworthBandpass<DComplex> 
+1050 scimath/Functionals/SimButterworthBandpass.cc 
+     template class SimButterworthBandpass<Double> 
+     template class SimButterworthBandpass<Float> 
+1000 scimath/Functionals/SincFunction.cc 
+     = casa/BasicSL/Complex.h 
+     = scimath/Mathematics/AutoDiff.h 
+     = scimath/Mathematics/AutoDiffMath.h 
+     template class SincFunction<AutoDiff<DComplex> > 
+     template class SincFunction<AutoDiff<Complex> > 
+1010 scimath/Functionals/SincFunction.cc 
+     = casa/BasicSL/Complex.h 
+     template class SincFunction<DComplex> 
+     template class SincFunction<Complex> 
+1020 scimath/Functionals/SincFunction.cc 
+     = scimath/Mathematics/AutoDiff.h 
+     = scimath/Mathematics/AutoDiffMath.h 
+     template class SincFunction<AutoDiff<Double> > 
+     template class SincFunction<AutoDiff<Float> > 
+1030 scimath/Functionals/SincFunction.cc 
+     template class SincFunction<Double> 
+     template class SincFunction<Float> 
+1000 scimath/Functionals/SincParam.cc 
+     = casa/BasicSL/Complex.h 
+     = scimath/Mathematics/AutoDiff.h 
+     = scimath/Mathematics/AutoDiffMath.h 
+     template class SincParam<AutoDiff<DComplex> > 
+     template class SincParam<AutoDiff<Complex> > 
+1010 scimath/Functionals/SincParam.cc 
+     = casa/BasicSL/Complex.h 
+     template class SincParam<DComplex> 
+     template class SincParam<Complex> 
+1020 scimath/Functionals/SincParam.cc 
+     = scimath/Mathematics/AutoDiff.h 
+     = scimath/Mathematics/AutoDiffMath.h 
+     template class SincParam<AutoDiff<Double> > 
+     template class SincParam<AutoDiff<Float> > 
+1030 scimath/Functionals/SincParam.cc 
+     template class SincParam<Double> 
+     template class SincParam<Float> 
+1000 scimath/Functionals/Sinusoid1D.cc 
+     = casa/BasicSL/Complex.h 
+     template class Sinusoid1D<DComplex> 
+     template class Sinusoid1D<Complex> 
+1010 scimath/Functionals/Sinusoid1D.cc scimath/Mathematics/AutoDiffA.h 
+     = scimath/Mathematics/AutoDiffMath.h 
+     template class Sinusoid1D<AutoDiffA<Double> > 
+     template class Sinusoid1D<AutoDiffA<Float> > 
+1020 scimath/Functionals/Sinusoid1D.cc 
+     template class Sinusoid1D<Double> 
+     template class Sinusoid1D<Float> 
+1000 scimath/Functionals/Sinusoid1D2.cc 
+     = casa/BasicSL/Complex.h 
+     = scimath/Mathematics/AutoDiff.h 
+     = scimath/Mathematics/AutoDiffMath.h 
+     template class Sinusoid1D<AutoDiff<DComplex> > 
+     template class Sinusoid1D<AutoDiff<Complex> > 
+1010 scimath/Functionals/Sinusoid1D2.cc scimath/Mathematics/AutoDiff.h 
+     = scimath/Mathematics/AutoDiffMath.h 
+     template class Sinusoid1D<AutoDiff<Double> > 
+     template class Sinusoid1D<AutoDiff<Float> > 
+1000 scimath/Functionals/Sinusoid1DParam.cc 
+     = casa/BasicSL/Complex.h 
+     = scimath/Mathematics/AutoDiff.h 
+     = scimath/Mathematics/AutoDiffMath.h 
+     template class Sinusoid1DParam<AutoDiff<DComplex> > 
+     template class Sinusoid1DParam<AutoDiff<Complex> > 
+1010 scimath/Functionals/Sinusoid1DParam.cc 
+     = casa/BasicSL/Complex.h 
+     template class Sinusoid1DParam<DComplex> 
+     template class Sinusoid1DParam<Complex> 
+1020 scimath/Functionals/Sinusoid1DParam.cc 
+     = scimath/Mathematics/AutoDiff.h 
+     = scimath/Mathematics/AutoDiffMath.h 
+     template class Sinusoid1DParam<AutoDiff<Double> > 
+     template class Sinusoid1DParam<AutoDiff<Float> > 
+1030 scimath/Functionals/Sinusoid1DParam.cc 
+     = scimath/Mathematics/AutoDiffA.h 
+     = scimath/Mathematics/AutoDiffMath.h 
+     template class Sinusoid1DParam<AutoDiffA<Double> > 
+     template class Sinusoid1DParam<AutoDiffA<Float> > 
+1040 scimath/Functionals/Sinusoid1DParam.cc 
+     template class Sinusoid1DParam<Double> 
+     template class Sinusoid1DParam<Float> 
 1000 scimath/Functionals/SpecificFunctionFactory.h 
      = scimath/Functionals/MarshButterworthBandpass.h 
      template class SpecificFunctionFactory<Double, MarshButterworthBandpass<Double> > 
@@ -2505,9 +2014,415 @@
 1030 scimath/Functionals/UnaryParam.cc 
      template class UnaryParam<Double> 
      template class UnaryParam<Float> 
+1000 scimath/Functionals/WrapperBase.h 
+     template class WrapperBase<AutoDiff<Double> > 
+     template class WrapperBase<AutoDiff<Float> > 
+1010 scimath/Functionals/WrapperBase.h 
+     template class WrapperBase<Double> 
+     template class WrapperBase<Float> 
+1000 scimath/Functionals/WrapperData.h 
+     template class WrapperData<AutoDiff<Double>, AutoDiff<Double>, AutoDiff<Double>, True, True> 
+     template class WrapperData<AutoDiff<Double>, AutoDiff<Double>, AutoDiff<Double>, True, False> 
+     template class WrapperData<AutoDiff<Double>, AutoDiff<Double>, AutoDiff<Double>, False, True> 
+     template class WrapperData<AutoDiff<Double>, AutoDiff<Double>, AutoDiff<Double>, False, False> 
+     template class WrapperData<AutoDiff<Double>, AutoDiff<Double>, Vector<AutoDiff<Double> >, True, True> 
+     template class WrapperData<AutoDiff<Double>, AutoDiff<Double>, Vector<AutoDiff<Double> >, False, True> 
+     template class WrapperData<AutoDiff<Double>, Vector<AutoDiff<Double> >, AutoDiff<Double>, True, True> 
+     template class WrapperData<AutoDiff<Double>, Vector<AutoDiff<Double> >, AutoDiff<Double>, True, False> 
+     template class WrapperData<AutoDiff<Double>, Vector<AutoDiff<Double> >, Vector<AutoDiff<Double> >, True, True> 
+     template class WrapperData<AutoDiff<Float>, AutoDiff<Float>, AutoDiff<Float>, True, True> 
+     template class WrapperData<AutoDiff<Float>, AutoDiff<Float>, AutoDiff<Float>, True, False> 
+     template class WrapperData<AutoDiff<Float>, AutoDiff<Float>, AutoDiff<Float>, False, True> 
+     template class WrapperData<AutoDiff<Float>, AutoDiff<Float>, AutoDiff<Float>, False, False> 
+     template class WrapperData<AutoDiff<Float>, AutoDiff<Float>, Vector<AutoDiff<Float> >, True, True> 
+     template class WrapperData<AutoDiff<Float>, AutoDiff<Float>, Vector<AutoDiff<Float> >, False, True> 
+     template class WrapperData<AutoDiff<Float>, Vector<AutoDiff<Float> >, AutoDiff<Float>, True, True> 
+     template class WrapperData<AutoDiff<Float>, Vector<AutoDiff<Float> >, AutoDiff<Float>, True, False> 
+     template class WrapperData<AutoDiff<Float>, Vector<AutoDiff<Float> >, Vector<AutoDiff<Float> >, True, True> 
+1010 scimath/Functionals/WrapperData.h 
+     template class WrapperData<Double, Double, Double, True, True> 
+     template class WrapperData<Double, Double, Double, True, False> 
+     template class WrapperData<Double, Double, Double, False, True> 
+     template class WrapperData<Double, Double, Double, False, False> 
+     template class WrapperData<Double, Double, Vector<Double>, True, True> 
+     template class WrapperData<Double, Double, Vector<Double>, False, True> 
+     template class WrapperData<Double, Vector<Double>, Double, True, True> 
+     template class WrapperData<Double, Vector<Double>, Double, True, False> 
+     template class WrapperData<Double, Vector<Double>, Vector<Double>, True, True> 
+     template class WrapperData<Float, Float, Float, True, True> 
+     template class WrapperData<Float, Float, Float, True, False> 
+     template class WrapperData<Float, Float, Float, False, True> 
+     template class WrapperData<Float, Float, Float, False, False> 
+     template class WrapperData<Float, Float, Vector<Float>, True, True> 
+     template class WrapperData<Float, Float, Vector<Float>, False, True> 
+     template class WrapperData<Float, Vector<Float>, Float, True, True> 
+     template class WrapperData<Float, Vector<Float>, Float, True, False> 
+     template class WrapperData<Float, Vector<Float>, Vector<Float>, True, True> 
+1000 scimath/Functionals/WrapperParam.cc 
+     template class WrapperParam<AutoDiff<Double> > 
+     template class WrapperParam<AutoDiff<Float> > 
+1010 scimath/Functionals/WrapperParam.cc 
+     template class WrapperParam<Double> 
+     template class WrapperParam<Float> 
+1000 scimath/Mathematics/AutoDiff.cc casa/BasicSL/Complex.h 
+     template class AutoDiff<Complex> 
+1010 scimath/Mathematics/AutoDiff.cc casa/BasicSL/Complex.h 
+     template class AutoDiff<DComplex> 
+1020 scimath/Mathematics/AutoDiff.cc 
+     template class AutoDiff<Double> 
+1030 scimath/Mathematics/AutoDiff.cc 
+     template class AutoDiff<Float> 
+1000 scimath/Mathematics/AutoDiffIO.cc scimath/Mathematics/AutoDiff.h 
+     = casa/BasicSL/Complex.h 
+     template ostream & operator<<(ostream &, AutoDiff<Complex> const &) 
+1010 scimath/Mathematics/AutoDiffIO.cc scimath/Mathematics/AutoDiff.h 
+     = casa/BasicSL/Complex.h 
+     template ostream & operator<<(ostream &, AutoDiff<DComplex> const &) 
+1020 scimath/Mathematics/AutoDiffIO.cc scimath/Mathematics/AutoDiff.h 
+     template ostream & operator<<(ostream &, AutoDiff<Double> const &) 
+1030 scimath/Mathematics/AutoDiffIO.cc scimath/Mathematics/AutoDiff.h 
+     template ostream & operator<<(ostream &, AutoDiff<Float> const &) 
+1000 scimath/Mathematics/AutoDiffMath.cc 
+     = casa/BasicSL/Complex.h 
+     = scimath/Mathematics/AutoDiff.h 
+     template AutoDiff<Complex> acos(AutoDiff<Complex> const &) 
+     template AutoDiff<Complex> asin(AutoDiff<Complex> const &) 
+     template AutoDiff<Complex> atan(AutoDiff<Complex> const &) 
+     template AutoDiff<Complex> atan2(AutoDiff<Complex> const &, AutoDiff<Complex> const &) 
+     template AutoDiff<Complex> cos(AutoDiff<Complex> const &) 
+     template AutoDiff<Complex> cosh(AutoDiff<Complex> const &) 
+     template AutoDiff<Complex> exp(AutoDiff<Complex> const &) 
+     template AutoDiff<Complex> log(AutoDiff<Complex> const &) 
+     template AutoDiff<Complex> log10(AutoDiff<Complex> const &) 
+     template AutoDiff<Complex> erf(AutoDiff<Complex> const &) 
+     template AutoDiff<Complex> erfc(AutoDiff<Complex> const &) 
+     template AutoDiff<Complex> pow(AutoDiff<Complex> const &, AutoDiff<Complex> const &) 
+     template AutoDiff<Complex> pow(AutoDiff<Complex> const &, Complex const &) 
+     template AutoDiff<Complex> sin(AutoDiff<Complex> const &) 
+     template AutoDiff<Complex> sinh(AutoDiff<Complex> const &) 
+     template AutoDiff<Complex> sqrt(AutoDiff<Complex> const &) 
+     template AutoDiff<Complex> abs(AutoDiff<Complex> const &) 
+     template AutoDiff<Complex> ceil(AutoDiff<Complex> const &) 
+     template AutoDiff<Complex> floor(AutoDiff<Complex> const &) 
+     template AutoDiff<Complex> fmod(AutoDiff<Complex> const &, Complex const &) 
+     template AutoDiff<Complex> fmod(AutoDiff<Complex> const &, AutoDiff<Complex> const &) 
+     template AutoDiff<Complex> max(AutoDiff<Complex> const &, AutoDiff<Complex> const &) 
+     template AutoDiff<Complex> min(AutoDiff<Complex> const &, AutoDiff<Complex> const &) 
+#     template AutoDiff<Complex> square(AutoDiff<Complex> const &) 
+#     template AutoDiff<Complex> cube(AutoDiff<Complex> const &) 
+#     template AutoDiff<Complex> tan(AutoDiff<Complex> const &) 
+#     template AutoDiff<Complex> tanh(AutoDiff<Complex> const &) 
+1010 scimath/Mathematics/AutoDiffMath.cc 
+     = casa/BasicSL/Complex.h 
+     = scimath/Mathematics/AutoDiff.h 
+     template AutoDiff<Complex> operator+(AutoDiff<Complex> const &) 
+     template AutoDiff<Complex> operator-(AutoDiff<Complex> const &) 
+     template AutoDiff<Complex> operator*(AutoDiff<Complex> const &, AutoDiff<Complex> const &) 
+     template AutoDiff<Complex> operator+(AutoDiff<Complex> const &, AutoDiff<Complex> const &) 
+     template AutoDiff<Complex> operator-(AutoDiff<Complex> const &, AutoDiff<Complex> const &) 
+     template AutoDiff<Complex> operator/(AutoDiff<Complex> const &, AutoDiff<Complex> const &) 
+     template AutoDiff<Complex> operator*(Complex const &, AutoDiff<Complex> const &) 
+     template AutoDiff<Complex> operator+(Complex const &, AutoDiff<Complex> const &) 
+     template AutoDiff<Complex> operator-(Complex const &, AutoDiff<Complex> const &) 
+     template AutoDiff<Complex> operator/(Complex const &, AutoDiff<Complex> const &) 
+     template AutoDiff<Complex> operator*(AutoDiff<Complex> const &, Complex const &) 
+     template AutoDiff<Complex> operator+(AutoDiff<Complex> const &, Complex const &) 
+     template AutoDiff<Complex> operator-(AutoDiff<Complex> const &, Complex const &) 
+     template AutoDiff<Complex> operator/(AutoDiff<Complex> const &, Complex const &) 
+1020 scimath/Mathematics/AutoDiffMath.cc 
+     = casa/BasicSL/Complex.h 
+     = scimath/Mathematics/AutoDiff.h 
+     template AutoDiff<DComplex> acos(AutoDiff<DComplex> const &) 
+     template AutoDiff<DComplex> asin(AutoDiff<DComplex> const &) 
+     template AutoDiff<DComplex> atan(AutoDiff<DComplex> const &) 
+     template AutoDiff<DComplex> atan2(AutoDiff<DComplex> const &, AutoDiff<DComplex> const &) 
+     template AutoDiff<DComplex> cos(AutoDiff<DComplex> const &) 
+     template AutoDiff<DComplex> cosh(AutoDiff<DComplex> const &) 
+     template AutoDiff<DComplex> exp(AutoDiff<DComplex> const &) 
+     template AutoDiff<DComplex> log(AutoDiff<DComplex> const &) 
+     template AutoDiff<DComplex> log10(AutoDiff<DComplex> const &) 
+     template AutoDiff<DComplex> erf(AutoDiff<DComplex> const &) 
+     template AutoDiff<DComplex> erfc(AutoDiff<DComplex> const &) 
+     template AutoDiff<DComplex> pow(AutoDiff<DComplex> const &, AutoDiff<DComplex> const &) 
+     template AutoDiff<DComplex> pow(AutoDiff<DComplex> const &, DComplex const &) 
+     template AutoDiff<DComplex> sin(AutoDiff<DComplex> const &) 
+     template AutoDiff<DComplex> sinh(AutoDiff<DComplex> const &) 
+     template AutoDiff<DComplex> sqrt(AutoDiff<DComplex> const &) 
+     template AutoDiff<DComplex> abs(AutoDiff<DComplex> const &) 
+     template AutoDiff<DComplex> ceil(AutoDiff<DComplex> const &) 
+     template AutoDiff<DComplex> floor(AutoDiff<DComplex> const &) 
+     template AutoDiff<DComplex> fmod(AutoDiff<DComplex> const &, DComplex const &) 
+     template AutoDiff<DComplex> fmod(AutoDiff<DComplex> const &, AutoDiff<DComplex> const &) 
+     template AutoDiff<DComplex> max(AutoDiff<DComplex> const &, AutoDiff<DComplex> const &) 
+     template AutoDiff<DComplex> min(AutoDiff<DComplex> const &, AutoDiff<DComplex> const &) 
+#     template AutoDiff<DComplex> square(AutoDiff<DComplex> const &) 
+#     template AutoDiff<DComplex> cube(AutoDiff<DComplex> const &) 
+#     template AutoDiff<DComplex> tan(AutoDiff<DComplex> const &) 
+#     template AutoDiff<DComplex> tanh(AutoDiff<DComplex> const &) 
+1030 scimath/Mathematics/AutoDiffMath.cc 
+     = casa/BasicSL/Complex.h 
+     = scimath/Mathematics/AutoDiff.h 
+     template AutoDiff<DComplex> operator+(AutoDiff<DComplex> const &) 
+     template AutoDiff<DComplex> operator-(AutoDiff<DComplex> const &) 
+     template AutoDiff<DComplex> operator*(AutoDiff<DComplex> const &, AutoDiff<DComplex> const &) 
+     template AutoDiff<DComplex> operator+(AutoDiff<DComplex> const &, AutoDiff<DComplex> const &) 
+     template AutoDiff<DComplex> operator-(AutoDiff<DComplex> const &, AutoDiff<DComplex> const &) 
+     template AutoDiff<DComplex> operator/(AutoDiff<DComplex> const &, AutoDiff<DComplex> const &) 
+     template AutoDiff<DComplex> operator*(DComplex const &, AutoDiff<DComplex> const &) 
+     template AutoDiff<DComplex> operator+(DComplex const &, AutoDiff<DComplex> const &) 
+     template AutoDiff<DComplex> operator-(DComplex const &, AutoDiff<DComplex> const &) 
+     template AutoDiff<DComplex> operator/(DComplex const &, AutoDiff<DComplex> const &) 
+     template AutoDiff<DComplex> operator*(AutoDiff<DComplex> const &, DComplex const &) 
+     template AutoDiff<DComplex> operator+(AutoDiff<DComplex> const &, DComplex const &) 
+     template AutoDiff<DComplex> operator-(AutoDiff<DComplex> const &, DComplex const &) 
+     template AutoDiff<DComplex> operator/(AutoDiff<DComplex> const &, DComplex const &) 
+1040 scimath/Mathematics/AutoDiffMath.cc 
+     = casa/BasicSL/Complex.h 
+     = scimath/Mathematics/AutoDiff.h 
+     template Bool operator!=(AutoDiff<Complex> const &, AutoDiff<Complex> const &) 
+     template Bool operator<=(AutoDiff<Complex> const &, AutoDiff<Complex> const &) 
+     template Bool operator<(AutoDiff<Complex> const &, AutoDiff<Complex> const &) 
+     template Bool operator==(AutoDiff<Complex> const &, AutoDiff<Complex> const &) 
+     template Bool operator>(AutoDiff<Complex> const &, AutoDiff<Complex> const &) 
+     template Bool operator>=(AutoDiff<Complex> const &, AutoDiff<Complex> const &) 
+     template Bool near(AutoDiff<Complex> const &, AutoDiff<Complex> const &) 
+     template Bool operator!=(AutoDiff<Complex> const &, Complex const &) 
+     template Bool operator<=(AutoDiff<Complex> const &, Complex const &) 
+     template Bool operator<(AutoDiff<Complex> const &, Complex const &) 
+     template Bool operator==(AutoDiff<Complex> const &, Complex const &) 
+     template Bool operator>(AutoDiff<Complex> const &, Complex const &) 
+     template Bool operator>=(AutoDiff<Complex> const &, Complex const &) 
+     template Bool near(AutoDiff<Complex> const &, Complex const &) 
+     template Bool operator!=(Complex const &, AutoDiff<Complex> const &) 
+     template Bool operator<=(Complex const &, AutoDiff<Complex> const &) 
+     template Bool operator<(Complex const &, AutoDiff<Complex> const &) 
+     template Bool operator==(Complex const &, AutoDiff<Complex> const &) 
+     template Bool operator>(Complex const &, AutoDiff<Complex> const &) 
+     template Bool operator>=(Complex const &, AutoDiff<Complex> const &) 
+     template Bool near(Complex const &, AutoDiff<Complex> const &) 
+1050 scimath/Mathematics/AutoDiffMath.cc 
+     = casa/BasicSL/Complex.h 
+     = scimath/Mathematics/AutoDiff.h 
+     template Bool operator!=(AutoDiff<DComplex> const &, AutoDiff<DComplex> const &) 
+     template Bool operator<=(AutoDiff<DComplex> const &, AutoDiff<DComplex> const &) 
+     template Bool operator<(AutoDiff<DComplex> const &, AutoDiff<DComplex> const &) 
+     template Bool operator==(AutoDiff<DComplex> const &, AutoDiff<DComplex> const &) 
+     template Bool operator>(AutoDiff<DComplex> const &, AutoDiff<DComplex> const &) 
+     template Bool operator>=(AutoDiff<DComplex> const &, AutoDiff<DComplex> const &) 
+     template Bool near(AutoDiff<DComplex> const &, AutoDiff<DComplex> const &) 
+     template Bool operator!=(AutoDiff<DComplex> const &, DComplex const &) 
+     template Bool operator<=(AutoDiff<DComplex> const &, DComplex const &) 
+     template Bool operator<(AutoDiff<DComplex> const &, DComplex const &) 
+     template Bool operator==(AutoDiff<DComplex> const &, DComplex const &) 
+     template Bool operator>(AutoDiff<DComplex> const &, DComplex const &) 
+     template Bool operator>=(AutoDiff<DComplex> const &, DComplex const &) 
+     template Bool near(AutoDiff<DComplex> const &, DComplex const &) 
+     template Bool operator!=(DComplex const &, AutoDiff<DComplex> const &) 
+     template Bool operator<=(DComplex const &, AutoDiff<DComplex> const &) 
+     template Bool operator<(DComplex const &, AutoDiff<DComplex> const &) 
+     template Bool operator==(DComplex const &, AutoDiff<DComplex> const &) 
+     template Bool operator>(DComplex const &, AutoDiff<DComplex> const &) 
+     template Bool operator>=(DComplex const &, AutoDiff<DComplex> const &) 
+     template Bool near(DComplex const &, AutoDiff<DComplex> const &) 
+1060 scimath/Mathematics/AutoDiffMath.cc 
+     = scimath/Mathematics/AutoDiff.h 
+     template AutoDiff<Double> acos(AutoDiff<Double> const &) 
+     template AutoDiff<Double> asin(AutoDiff<Double> const &) 
+     template AutoDiff<Double> atan(AutoDiff<Double> const &) 
+     template AutoDiff<Double> atan2(AutoDiff<Double> const &, AutoDiff<Double> const &) 
+     template AutoDiff<Double> cos(AutoDiff<Double> const &) 
+     template AutoDiff<Double> cosh(AutoDiff<Double> const &) 
+     template AutoDiff<Double> exp(AutoDiff<Double> const &) 
+     template AutoDiff<Double> log(AutoDiff<Double> const &) 
+     template AutoDiff<Double> log10(AutoDiff<Double> const &) 
+     template AutoDiff<Double> erf(AutoDiff<Double> const &) 
+     template AutoDiff<Double> erfc(AutoDiff<Double> const &) 
+     template AutoDiff<Double> pow(AutoDiff<Double> const &, AutoDiff<Double> const &) 
+     template AutoDiff<Double> pow(AutoDiff<Double> const &, Double const &) 
+     template AutoDiff<Double> square(AutoDiff<Double> const &) 
+     template AutoDiff<Double> cube(AutoDiff<Double> const &) 
+     template AutoDiff<Double> sin(AutoDiff<Double> const &) 
+     template AutoDiff<Double> sinh(AutoDiff<Double> const &) 
+     template AutoDiff<Double> sqrt(AutoDiff<Double> const &) 
+     template AutoDiff<Double> tan(AutoDiff<Double> const &) 
+     template AutoDiff<Double> tanh(AutoDiff<Double> const &) 
+     template AutoDiff<Double> abs(AutoDiff<Double> const &) 
+     template AutoDiff<Double> ceil(AutoDiff<Double> const &) 
+     template AutoDiff<Double> floor(AutoDiff<Double> const &) 
+     template AutoDiff<Double> fmod(AutoDiff<Double> const &, Double const &) 
+     template AutoDiff<Double> fmod(AutoDiff<Double> const &, AutoDiff<Double> const &) 
+     template AutoDiff<Double> max(AutoDiff<Double> const &, AutoDiff<Double> const &) 
+     template AutoDiff<Double> min(AutoDiff<Double> const &, AutoDiff<Double> const &) 
+1070 scimath/Mathematics/AutoDiffMath.cc 
+     = scimath/Mathematics/AutoDiff.h 
+     template AutoDiff<Double> operator+(AutoDiff<Double> const &) 
+     template AutoDiff<Double> operator-(AutoDiff<Double> const &) 
+     template AutoDiff<Double> operator*(AutoDiff<Double> const &, AutoDiff<Double> const &) 
+     template AutoDiff<Double> operator+(AutoDiff<Double> const &, AutoDiff<Double> const &) 
+     template AutoDiff<Double> operator-(AutoDiff<Double> const &, AutoDiff<Double> const &) 
+     template AutoDiff<Double> operator/(AutoDiff<Double> const &, AutoDiff<Double> const &) 
+     template AutoDiff<Double> operator*(Double const &, AutoDiff<Double> const &) 
+     template AutoDiff<Double> operator+(Double const &, AutoDiff<Double> const &) 
+     template AutoDiff<Double> operator-(Double const &, AutoDiff<Double> const &) 
+     template AutoDiff<Double> operator/(Double const &, AutoDiff<Double> const &) 
+     template AutoDiff<Double> operator*(AutoDiff<Double> const &, Double const &) 
+     template AutoDiff<Double> operator+(AutoDiff<Double> const &, Double const &) 
+     template AutoDiff<Double> operator-(AutoDiff<Double> const &, Double const &) 
+     template AutoDiff<Double> operator/(AutoDiff<Double> const &, Double const &) 
+1080 scimath/Mathematics/AutoDiffMath.cc 
+     = scimath/Mathematics/AutoDiff.h 
+     template AutoDiff<Float> acos(AutoDiff<Float> const &) 
+     template AutoDiff<Float> asin(AutoDiff<Float> const &) 
+     template AutoDiff<Float> atan(AutoDiff<Float> const &) 
+     template AutoDiff<Float> atan2(AutoDiff<Float> const &, AutoDiff<Float> const &) 
+     template AutoDiff<Float> cos(AutoDiff<Float> const &) 
+     template AutoDiff<Float> cosh(AutoDiff<Float> const &) 
+     template AutoDiff<Float> exp(AutoDiff<Float> const &) 
+     template AutoDiff<Float> log(AutoDiff<Float> const &) 
+     template AutoDiff<Float> log10(AutoDiff<Float> const &) 
+     template AutoDiff<Float> erf(AutoDiff<Float> const &) 
+     template AutoDiff<Float> erfc(AutoDiff<Float> const &) 
+     template AutoDiff<Float> pow(AutoDiff<Float> const &, AutoDiff<Float> const &) 
+     template AutoDiff<Float> pow(AutoDiff<Float> const &, Float const &) 
+     template AutoDiff<Float> square(AutoDiff<Float> const &) 
+     template AutoDiff<Float> cube(AutoDiff<Float> const &) 
+     template AutoDiff<Float> sin(AutoDiff<Float> const &) 
+     template AutoDiff<Float> sinh(AutoDiff<Float> const &) 
+     template AutoDiff<Float> sqrt(AutoDiff<Float> const &) 
+     template AutoDiff<Float> tan(AutoDiff<Float> const &) 
+     template AutoDiff<Float> tanh(AutoDiff<Float> const &) 
+     template AutoDiff<Float> abs(AutoDiff<Float> const &) 
+     template AutoDiff<Float> ceil(AutoDiff<Float> const &) 
+     template AutoDiff<Float> floor(AutoDiff<Float> const &) 
+     template AutoDiff<Float> fmod(AutoDiff<Float> const &, Float const &) 
+     template AutoDiff<Float> fmod(AutoDiff<Float> const &, AutoDiff<Float> const &) 
+     template AutoDiff<Float> max(AutoDiff<Float> const &, AutoDiff<Float> const &) 
+     template AutoDiff<Float> min(AutoDiff<Float> const &, AutoDiff<Float> const &) 
+1090 scimath/Mathematics/AutoDiffMath.cc 
+     = scimath/Mathematics/AutoDiff.h 
+     template AutoDiff<Float> operator+(AutoDiff<Float> const &) 
+     template AutoDiff<Float> operator-(AutoDiff<Float> const &) 
+     template AutoDiff<Float> operator*(AutoDiff<Float> const &, AutoDiff<Float> const &) 
+     template AutoDiff<Float> operator+(AutoDiff<Float> const &, AutoDiff<Float> const &) 
+     template AutoDiff<Float> operator-(AutoDiff<Float> const &, AutoDiff<Float> const &) 
+     template AutoDiff<Float> operator/(AutoDiff<Float> const &, AutoDiff<Float> const &) 
+     template AutoDiff<Float> operator*(Float const &, AutoDiff<Float> const &) 
+     template AutoDiff<Float> operator+(Float const &, AutoDiff<Float> const &) 
+     template AutoDiff<Float> operator-(Float const &, AutoDiff<Float> const &) 
+     template AutoDiff<Float> operator/(Float const &, AutoDiff<Float> const &) 
+     template AutoDiff<Float> operator*(AutoDiff<Float> const &, Float const &) 
+     template AutoDiff<Float> operator+(AutoDiff<Float> const &, Float const &) 
+     template AutoDiff<Float> operator-(AutoDiff<Float> const &, Float const &) 
+     template AutoDiff<Float> operator/(AutoDiff<Float> const &, Float const &) 
+1100 scimath/Mathematics/AutoDiffMath.cc 
+     = scimath/Mathematics/AutoDiff.h 
+     template Bool near(AutoDiff<Double> const &, AutoDiff<Double> const &, Double const) 
+     template Bool near(AutoDiff<Double> const &, Double const &, Double const) 
+     template Bool near(Double const &, AutoDiff<Double> const &, Double const) 
+     template Bool allnear(AutoDiff<Double> const &, AutoDiff<Double> const &) 
+     template Bool allnear(AutoDiff<Double> const &, Double const &) 
+     template Bool allnear(Double const &, AutoDiff<Double> const &) 
+     template Bool allnear(AutoDiff<Double> const &, AutoDiff<Double> const &, Double const) 
+     template Bool allnear(AutoDiff<Double> const &, Double const &, Double const) 
+     template Bool allnear(Double const &, AutoDiff<Double> const &, Double const) 
+     template Bool nearAbs(AutoDiff<Double> const &, AutoDiff<Double> const &) 
+     template Bool nearAbs(AutoDiff<Double> const &, Double const &) 
+     template Bool nearAbs(Double const &, AutoDiff<Double> const &) 
+     template Bool nearAbs(AutoDiff<Double> const &, AutoDiff<Double> const &, Double const) 
+     template Bool nearAbs(AutoDiff<Double> const &, Double const &, Double const) 
+     template Bool nearAbs(Double const &, AutoDiff<Double> const &, Double const) 
+     template Bool allnearAbs(AutoDiff<Double> const &, AutoDiff<Double> const &) 
+     template Bool allnearAbs(AutoDiff<Double> const &, Double const &) 
+     template Bool allnearAbs(Double const &, AutoDiff<Double> const &) 
+     template Bool allnearAbs(AutoDiff<Double> const &, AutoDiff<Double> const &, Double const) 
+     template Bool allnearAbs(AutoDiff<Double> const &, Double const &, Double const) 
+     template Bool allnearAbs(Double const &, AutoDiff<Double> const &, Double const) 
+1110 scimath/Mathematics/AutoDiffMath.cc 
+     = scimath/Mathematics/AutoDiff.h 
+     template Bool near(AutoDiff<Float> const &, AutoDiff<Float> const &, Double const) 
+     template Bool near(AutoDiff<Float> const &, Float const &, Double const) 
+     template Bool near(Float const &, AutoDiff<Float> const &, Double const) 
+     template Bool allnear(AutoDiff<Float> const &, AutoDiff<Float> const &) 
+     template Bool allnear(AutoDiff<Float> const &, Float const &) 
+     template Bool allnear(Float const &, AutoDiff<Float> const &) 
+     template Bool allnear(AutoDiff<Float> const &, AutoDiff<Float> const &, Double const) 
+     template Bool allnear(AutoDiff<Float> const &, Float const &, Double const) 
+     template Bool allnear(Float const &, AutoDiff<Float> const &, Double const) 
+     template Bool nearAbs(AutoDiff<Float> const &, AutoDiff<Float> const &) 
+     template Bool nearAbs(AutoDiff<Float> const &, Float const &) 
+     template Bool nearAbs(Float const &, AutoDiff<Float> const &) 
+     template Bool nearAbs(AutoDiff<Float> const &, AutoDiff<Float> const &, Double const) 
+     template Bool nearAbs(AutoDiff<Float> const &, Float const &, Double const) 
+     template Bool nearAbs(Float const &, AutoDiff<Float> const &, Double const) 
+     template Bool allnearAbs(AutoDiff<Float> const &, AutoDiff<Float> const &) 
+     template Bool allnearAbs(AutoDiff<Float> const &, Float const &) 
+     template Bool allnearAbs(Float const &, AutoDiff<Float> const &) 
+     template Bool allnearAbs(AutoDiff<Float> const &, AutoDiff<Float> const &, Double const) 
+     template Bool allnearAbs(AutoDiff<Float> const &, Float const &, Double const) 
+     template Bool allnearAbs(Float const &, AutoDiff<Float> const &, Double const) 
+1120 scimath/Mathematics/AutoDiffMath.cc 
+     = scimath/Mathematics/AutoDiff.h 
+     template Bool operator!=(AutoDiff<Double> const &, AutoDiff<Double> const &) 
+     template Bool operator<=(AutoDiff<Double> const &, AutoDiff<Double> const &) 
+     template Bool operator<(AutoDiff<Double> const &, AutoDiff<Double> const &) 
+     template Bool operator==(AutoDiff<Double> const &, AutoDiff<Double> const &) 
+     template Bool operator>(AutoDiff<Double> const &, AutoDiff<Double> const &) 
+     template Bool operator>=(AutoDiff<Double> const &, AutoDiff<Double> const &) 
+     template Bool near(AutoDiff<Double> const &, AutoDiff<Double> const &) 
+     template Bool operator!=(AutoDiff<Double> const &, Double const &) 
+     template Bool operator<=(AutoDiff<Double> const &, Double const &) 
+     template Bool operator<(AutoDiff<Double> const &, Double const &) 
+     template Bool operator==(AutoDiff<Double> const &, Double const &) 
+     template Bool operator>(AutoDiff<Double> const &, Double const &) 
+     template Bool operator>=(AutoDiff<Double> const &, Double const &) 
+     template Bool near(AutoDiff<Double> const &, Double const &) 
+     template Bool operator!=(Double const &, AutoDiff<Double> const &) 
+     template Bool operator<=(Double const &, AutoDiff<Double> const &) 
+     template Bool operator<(Double const &, AutoDiff<Double> const &) 
+     template Bool operator==(Double const &, AutoDiff<Double> const &) 
+     template Bool operator>(Double const &, AutoDiff<Double> const &) 
+     template Bool operator>=(Double const &, AutoDiff<Double> const &) 
+     template Bool near(Double const &, AutoDiff<Double> const &) 
+1130 scimath/Mathematics/AutoDiffMath.cc 
+     = scimath/Mathematics/AutoDiff.h 
+     template Bool operator!=(AutoDiff<Float> const &, AutoDiff<Float> const &) 
+     template Bool operator<=(AutoDiff<Float> const &, AutoDiff<Float> const &) 
+     template Bool operator<(AutoDiff<Float> const &, AutoDiff<Float> const &) 
+     template Bool operator==(AutoDiff<Float> const &, AutoDiff<Float> const &) 
+     template Bool operator>(AutoDiff<Float> const &, AutoDiff<Float> const &) 
+     template Bool operator>=(AutoDiff<Float> const &, AutoDiff<Float> const &) 
+     template Bool near(AutoDiff<Float> const &, AutoDiff<Float> const &) 
+     template Bool operator!=(AutoDiff<Float> const &, Float const &) 
+     template Bool operator<=(AutoDiff<Float> const &, Float const &) 
+     template Bool operator<(AutoDiff<Float> const &, Float const &) 
+     template Bool operator==(AutoDiff<Float> const &, Float const &) 
+     template Bool operator>(AutoDiff<Float> const &, Float const &) 
+     template Bool operator>=(AutoDiff<Float> const &, Float const &) 
+     template Bool near(AutoDiff<Float> const &, Float const &) 
+     template Bool operator!=(Float const &, AutoDiff<Float> const &) 
+     template Bool operator<=(Float const &, AutoDiff<Float> const &) 
+     template Bool operator<(Float const &, AutoDiff<Float> const &) 
+     template Bool operator==(Float const &, AutoDiff<Float> const &) 
+     template Bool operator>(Float const &, AutoDiff<Float> const &) 
+     template Bool operator>=(Float const &, AutoDiff<Float> const &) 
+     template Bool near(Float const &, AutoDiff<Float> const &) 
+1000 scimath/Mathematics/AutoDiffRep.cc 
+     = casa/BasicSL/Complex.h 
+     template class AutoDiffRep<Complex> 
+1010 scimath/Mathematics/AutoDiffRep.cc 
+     = casa/BasicSL/Complex.h 
+     template class AutoDiffRep<DComplex> 
+1020 scimath/Mathematics/AutoDiffRep.cc 
+     template class AutoDiffRep<Double> 
+1030 scimath/Mathematics/AutoDiffRep.cc 
+     template class AutoDiffRep<Float> 
 1000 scimath/Mathematics/ConvolveGridder.cc 
      = casa/BasicSL/Complex.h 
      template class ConvolveGridder<Double, Complex> 
+1000 scimath/Mathematics/Convolver.cc 
+     template class Convolver<Float> 
+1000 scimath/Mathematics/FFTServer.cc casa/BasicSL/Complex.h 
+     template class FFTServer<Float, Complex> 
 1000 scimath/Mathematics/Gridder.cc casa/BasicSL/Complex.h 
      template class Gridder<Double, Complex> 
 1000 scimath/Mathematics/Interpolate2D2.cc 
@@ -2525,6 +2440,115 @@
      template class InterpolateArray1D<Float, Complex> 
 1010 scimath/Mathematics/InterpolateArray1D.cc 
      template class InterpolateArray1D<Float, Float> 
+1000 scimath/Mathematics/MatrixMathLA.cc 
+     = casa/Arrays/Matrix.h 
+     = casa/Arrays/Vector.h 
+     template void CholeskyDecomp(Matrix<Double> &, Vector<Double> &) 
+     template void CholeskySolve(Matrix<Double> &, Vector<Double> &, Vector<Double> &, Vector<Double> &) 
+1010 scimath/Mathematics/MatrixMathLA.cc 
+     = casa/Arrays/Matrix.h 
+     = casa/BasicSL/Complex.h 
+     = scimath/Mathematics/AutoDiff.h 
+     = scimath/Mathematics/AutoDiffMath.h 
+     = casa/Arrays/Vector.h 
+     template void CholeskyDecomp(Matrix<AutoDiff<Complex> > &, Vector<AutoDiff<Complex> > &) 
+     template void CholeskySolve(Matrix<AutoDiff<Complex> > &, Vector<AutoDiff<Complex> > &, Vector<AutoDiff<Complex> > &, Vector<AutoDiff<Complex> > &) 
+1020 scimath/Mathematics/MatrixMathLA.cc 
+     = casa/Arrays/Matrix.h 
+     = casa/BasicSL/Complex.h 
+     = scimath/Mathematics/AutoDiff.h 
+     = scimath/Mathematics/AutoDiffMath.h 
+     = casa/Arrays/Vector.h 
+     template void CholeskyDecomp(Matrix<AutoDiff<DComplex> > &, Vector<AutoDiff<DComplex> > &) 
+     template void CholeskySolve(Matrix<AutoDiff<DComplex> > &, Vector<AutoDiff<DComplex> > &, Vector<AutoDiff<DComplex> > &, Vector<AutoDiff<DComplex> > &) 
+1030 scimath/Mathematics/MatrixMathLA.cc 
+     = casa/Arrays/Matrix.h 
+     = casa/BasicSL/Complex.h 
+     = scimath/Mathematics/AutoDiff.h 
+     = scimath/Mathematics/AutoDiffMath.h 
+     = casa/Arrays/Vector.h 
+     template void CholeskyDecomp(Matrix<Complex> &, Vector<Complex> &) 
+     template void CholeskySolve(Matrix<Complex> &, Vector<Complex> &, Vector<Complex> &, Vector<Complex> &) 
+1040 scimath/Mathematics/MatrixMathLA.cc 
+     = casa/Arrays/Matrix.h 
+     = casa/BasicSL/Complex.h 
+     = scimath/Mathematics/AutoDiff.h 
+     = scimath/Mathematics/AutoDiffMath.h 
+     = casa/Arrays/Vector.h 
+     template void CholeskyDecomp(Matrix<DComplex> &, Vector<DComplex> &) 
+     template void CholeskySolve(Matrix<DComplex> &, Vector<DComplex> &, Vector<DComplex> &, Vector<DComplex> &) 
+1050 scimath/Mathematics/MatrixMathLA.cc 
+     = casa/Arrays/Matrix.h 
+     = casa/BasicSL/Complex.h 
+     = scimath/Mathematics/AutoDiff.h 
+     = scimath/Mathematics/AutoDiffMath.h 
+     template Matrix<AutoDiff<Complex> > invertSymPosDef(Matrix<AutoDiff<Complex> > const &) 
+     template void invertSymPosDef(Matrix<AutoDiff<Complex> > &, AutoDiff<Complex> &, Matrix<AutoDiff<Complex> > const &) 
+1060 scimath/Mathematics/MatrixMathLA.cc 
+     = casa/Arrays/Matrix.h 
+     = casa/BasicSL/Complex.h 
+     = scimath/Mathematics/AutoDiff.h 
+     = scimath/Mathematics/AutoDiffMath.h 
+     template Matrix<AutoDiff<DComplex> > invertSymPosDef(Matrix<AutoDiff<DComplex> > const &) 
+     template void invertSymPosDef(Matrix<AutoDiff<DComplex> > &, AutoDiff<DComplex> &, Matrix<AutoDiff<DComplex> > const &) 
+1070 scimath/Mathematics/MatrixMathLA.cc 
+     = casa/Arrays/Matrix.h 
+     = casa/BasicSL/Complex.h 
+     = scimath/Mathematics/AutoDiff.h 
+     = scimath/Mathematics/AutoDiffMath.h 
+     template Matrix<Complex> invertSymPosDef(Matrix<Complex> const &) 
+     template void invertSymPosDef(Matrix<Complex> &, Complex &, Matrix<Complex> const &) 
+1080 scimath/Mathematics/MatrixMathLA.cc 
+     = casa/Arrays/Matrix.h 
+     = casa/BasicSL/Complex.h 
+     = scimath/Mathematics/AutoDiff.h 
+     = scimath/Mathematics/AutoDiffMath.h 
+     template Matrix<DComplex> invertSymPosDef(Matrix<DComplex> const &) 
+     template void invertSymPosDef(Matrix<DComplex> &, DComplex &, Matrix<DComplex> const &) 
+1090 scimath/Mathematics/MatrixMathLA.cc 
+     = casa/Arrays/Matrix.h 
+     = scimath/Mathematics/AutoDiff.h 
+     = scimath/Mathematics/AutoDiffMath.h 
+     = casa/Arrays/Vector.h 
+     template void CholeskyDecomp(Matrix<AutoDiff<Double> > &, Vector<AutoDiff<Double> > &) 
+     template void CholeskySolve(Matrix<AutoDiff<Double> > &, Vector<AutoDiff<Double> > &, Vector<AutoDiff<Double> > &, Vector<AutoDiff<Double> > &) 
+1100 scimath/Mathematics/MatrixMathLA.cc 
+     = casa/Arrays/Matrix.h 
+     = scimath/Mathematics/AutoDiff.h 
+     = scimath/Mathematics/AutoDiffMath.h 
+     = casa/Arrays/Vector.h 
+     template void CholeskyDecomp(Matrix<AutoDiff<Float> > &, Vector<AutoDiff<Float> > &) 
+     template void CholeskySolve(Matrix<AutoDiff<Float> > &, Vector<AutoDiff<Float> > &, Vector<AutoDiff<Float> > &, Vector<AutoDiff<Float> > &) 
+1110 scimath/Mathematics/MatrixMathLA.cc 
+     = casa/Arrays/Matrix.h 
+     = scimath/Mathematics/AutoDiff.h 
+     = scimath/Mathematics/AutoDiffMath.h 
+     template Matrix<AutoDiff<Double> > invertSymPosDef(Matrix<AutoDiff<Double> > const &) 
+     template void invertSymPosDef(Matrix<AutoDiff<Double> > &, AutoDiff<Double> &, Matrix<AutoDiff<Double> > const &) 
+1120 scimath/Mathematics/MatrixMathLA.cc 
+     = casa/Arrays/Matrix.h 
+     = scimath/Mathematics/AutoDiff.h 
+     = scimath/Mathematics/AutoDiffMath.h 
+     template Matrix<AutoDiff<Float> > invertSymPosDef(Matrix<AutoDiff<Float> > const &) 
+     template void invertSymPosDef(Matrix<AutoDiff<Float> > &, AutoDiff<Float> &, Matrix<AutoDiff<Float> > const &) 
+1130 scimath/Mathematics/MatrixMathLA.cc 
+     = casa/Arrays/Matrix.h 
+     template Matrix<Double> invertSymPosDef(Matrix<Double> const &) 
+     template void invertSymPosDef(Matrix<Double> &, Double &, Matrix<Double> const &) 
+1140 scimath/Mathematics/MatrixMathLA.cc 
+     = casa/BasicSL/Complex.h 
+     template Matrix<Complex> invert(Matrix<Complex> const &) 
+1150 scimath/Mathematics/MatrixMathLA.cc 
+     = casa/BasicSL/Complex.h 
+     template void invert(Matrix<Complex> &, Complex &, Matrix<Complex> const &) 
+1160 scimath/Mathematics/MatrixMathLA.cc 
+     template Matrix<Double> invert(Matrix<Double> const &) 
+1170 scimath/Mathematics/MatrixMathLA.cc 
+     template Matrix<Float> invert(Matrix<Float> const &) 
+1180 scimath/Mathematics/MatrixMathLA.cc 
+     template void invert(Matrix<Double> &, Double &, Matrix<Double> const &) 
+1190 scimath/Mathematics/MatrixMathLA.cc 
+     template void invert(Matrix<Float> &, Float &, Matrix<Float> const &) 
 1000 scimath/Mathematics/RigidVector.cc casa/BasicSL/Complex.h 
      template class RigidVector<Complex, 2> 
 1010 scimath/Mathematics/RigidVector.cc casa/BasicSL/Complex.h 
@@ -2533,9 +2557,11 @@
      template class RigidVector<Double, 3> 
 1030 scimath/Mathematics/RigidVector.cc 
      template class RigidVector<Float, 4> 
-1000 scimath/Mathematics/SquareMatrix.cc casa/BasicSL/Complex.h 
+1000 scimath/Mathematics/SquareMatrix.cc 
+     = casa/BasicSL/Complex.h 
      template class SquareMatrix<Complex, 2> 
-1010 scimath/Mathematics/SquareMatrix.cc casa/BasicSL/Complex.h 
+1010 scimath/Mathematics/SquareMatrix.cc 
+     = casa/BasicSL/Complex.h 
      template class SquareMatrix<Complex, 4> 
 1020 scimath/Mathematics/SquareMatrix.cc 
      template class SquareMatrix<Float, 2> 
