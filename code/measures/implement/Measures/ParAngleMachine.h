@@ -121,7 +121,11 @@ class ParAngleMachine {
   ~ParAngleMachine();
 
   //# Operators
-  // Return parallactic angles
+  // Return parallactic angles (epoch in days if given as Double)
+  // <thrown>
+  // <li> AipsError if no frame or a frame without an Epoch (for type) or       
+  //    Position.
+  // </thrown>
   // <group>
   Quantum<Vector<Double> >
     operator()(const Quantum<Vector<Double> > &ep) const;
@@ -148,18 +152,22 @@ private:
   // Input direction
   MDirection *indir_p;
   // Conversion engine
-  MDirection::Convert *convdir_p;
+  mutable MDirection::Convert *convdir_p;
   // Measure frame
   MeasFrame *frame_p;
-  // Convert pole
-  MDirection::Convert *convpole_p;
+  // Converted zenith
+  mutable MVDirection zenith_p;
   // Intermediate conversion result
   mutable MVDirection mvdir_p;
 
   //# Constructors
 
   //# Private Member Functions
-  // Get position angle
+  // Get position angle (Epoch is supposed to be in days if Double)
+  // <thrown>
+  // <li> AipsError if no frame or a frame without an Epoch (for type) or
+  // 	Position.
+  // </thrown>
   // <group>
   Double posAngle(const Quantum<Double> &ep) const;
   Vector<Double> posAngle(const Quantum<Vector<Double> > &ep) const;
@@ -168,6 +176,8 @@ private:
   // </group>
   // Initialise machinery
   void init();
+  // Initialise conversion
+  void initConv() const;
   // Planet handling
   void planetinit();
   // Copy data members
