@@ -50,6 +50,10 @@
 \newcommand{\exereff}[2]{\hyperref{\exe{#1}}{\exe{#1} (}{)}{#2}}
 \newcommand{\filreff}[2]{\hyperref{\file{#1}}{\file{#1} (}{)}{#2}}
 
+% \href produces a link to an external URL in the HTML output and prints the
+% URL in the printed output.
+\newcommand{\href}[3]{\latex{\acct{#1}#2#3}\html{\htmladdnormallink{#3}{#1}}}
+
 % \unixexe produces no reference.  It is effectively the same as \exe but
 % should be used for unix commands.
 \newcommand{\unixexe}[1]{\textit{\texttt{#1}}}
@@ -62,7 +66,6 @@
 % Environments
 %-------------
 \newenvironment{synopsis}{\begin{verse}}{\end{verse}}
-\newenvironment{status}{\begin{verse}}{\end{verse}}
 
 \makeindex
 
