@@ -1,5 +1,5 @@
 //# tLatticeApply.cc: Test program for class LatticeApply
-//# Copyright (C) 1997
+//# Copyright (C) 1997,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -28,71 +28,122 @@
 #include <trial/Lattices/LatticeApply.h>
 #include <trial/Lattices/LineCollapser.h>
 #include <trial/Lattices/TiledCollapser.h>
-#include <aips/Exceptions/Error.h>
-#include <aips/Inputs/Input.h>
-#include <aips/Lattices/IPosition.h>
-#include <aips/Arrays/Array.h>
-#include <aips/Arrays/Vector.h>
-#include <aips/Arrays/Matrix.h>
-#include <aips/Arrays/ArrayMath.h>
-#include <aips/OS/Timer.h>
-#include <aips/Tables/Table.h>
-#include <aips/Tables/SetupNewTab.h>
-#include <aips/Tables/TableDesc.h>
-#include <aips/Utilities/String.h>
 #include <trial/Lattices/PagedArray.h>
+#include <trial/Lattices/SubLattice.h>
 #include <trial/Lattices/LatticeIterator.h>
 #include <trial/Lattices/LatticeStepper.h>
 #include <trial/Lattices/LatticeProgress.h>
 #include <trial/Lattices/LatticeRegion.h>
 #include <trial/Tasking/ProgressMeter.h>
+#include <aips/Lattices/IPosition.h>
+#include <aips/Arrays/Array.h>
+#include <aips/Arrays/Vector.h>
+#include <aips/Arrays/Matrix.h>
+#include <aips/Arrays/ArrayMath.h>
+#include <aips/Tables/Table.h>
+#include <aips/Tables/SetupNewTab.h>
+#include <aips/Tables/TableDesc.h>
+#include <aips/Inputs/Input.h>
+#include <aips/OS/Timer.h>
+#include <aips/Utilities/String.h>
+#include <aips/Utilities/Assert.h>
+#include <aips/Exceptions/Error.h>
 #include <iostream.h>
 
 
 class MyLineCollapser : public LineCollapser<Int>
 {
 public:
-    MyLineCollapser() : itsVec(2) {};
+    MyLineCollapser() {};
     virtual void init (uInt nOutPixelsPerCollapse);
-    virtual Int process (const Vector<Int>& vector,
-			 const IPosition& pos);
-    virtual Vector<Int>& multiProcess (const Vector<Int>& vector,
-				       const IPosition& pos);
-private:
-    Vector<Int> itsVec;
+    virtual Bool canHandleNullMask() const;
+    virtual void process (Int& result, Bool& resultMask,
+			  const Vector<Int>& vector,
+			  const Vector<Bool>& arrayMask,
+			  const IPosition& pos);
+    virtual void multiProcess (Vector<Int>& result, Vector<Bool>& resultMask,
+			  const Vector<Int>& vector,
+			  const Vector<Bool>& arrayMask,
+			  const IPosition& pos);
 };
 void MyLineCollapser::init (uInt nOutPixelsPerCollapse)
 {
     AlwaysAssert (nOutPixelsPerCollapse == 1, AipsError);
 }
-Int MyLineCollapser::process (const Vector<Int>& vector, const IPosition&)
+Bool MyLineCollapser::canHandleNullMask() const
 {
-    return sum(vector.ac());
+    return False;
 }
-Vector<Int>& MyLineCollapser::multiProcess (const Vector<Int>& vector,
-					    const IPosition&)
+void MyLineCollapser::process (Int& result, Bool& resultMask,
+			       const Vector<Int>& vector,
+			       const Vector<Bool>& mask,
+			       const IPosition&)
 {
-    itsVec(0) = sum(vector.ac());
-    itsVec(1) = -itsVec(0);
-    return itsVec;
+    DebugAssert (vector.nelements() == mask.nelements(), AipsError);
+    Int sum = 0;
+    Bool fnd = False;
+    uInt n = vector.nelements();
+    for (uInt i=0; i<n; i++) {
+	if (mask(i)) {
+	    fnd = True;
+	    sum += vector(i);
+	}
+    }
+    result = sum;
+    resultMask = fnd;
+}
+void MyLineCollapser::multiProcess (Vector<Int>& result,
+				    Vector<Bool>& resultMask,
+				    const Vector<Int>& vector,
+				    const Vector<Bool>& mask,
+				    const IPosition&)
+{
+    DebugAssert (vector.nelements() == mask.nelements(), AipsError);
+    Int sum = 0;
+    Bool fnd = False;
+    uInt n = vector.nelements();
+    for (uInt i=0; i<n; i++) {
+	if (mask(i)) {
+	    fnd = True;
+	    sum += vector(i);
+	}
+    }
+    result.resize (2);
+    resultMask.resize (2);
+    result(0) = sum;
+    result(1) = -result(0);
+    resultMask(0) = resultMask(1) = fnd;
 }
 
 
 class MyTiledCollapser : public TiledCollapser<Int>
 {
 public:
-    MyTiledCollapser() {};
+    MyTiledCollapser() : itsSum1(0),itsSum2(0),itsNpts(0) {};
+    virtual ~MyTiledCollapser();
     virtual void init (uInt nOutPixelsPerCollapse);
+    virtual Bool canHandleNullMask() const;
     virtual void initAccumulator (uInt n1, uInt n3);
     virtual void process (uInt index1, uInt index3,
-			  const Int* inData, uInt inIncr, uInt nrval);
-    virtual Array<Int> endAccumulator (const IPosition& shape);
+			  const Int* inData, const Bool* inMask,
+			  uInt inIncr, uInt nrval,
+			  const IPosition& pos, const IPosition& shape);
+    virtual void endAccumulator (Array<Int>& result,
+				 Array<Bool>& resultMask,
+				 const IPosition& shape);
 private:
     Matrix<uInt>* itsSum1;
     Block<Int>*   itsSum2;
+    Matrix<uInt>* itsNpts;
     uInt          itsn1;
     uInt          itsn3;
 };
+MyTiledCollapser::~MyTiledCollapser()
+{
+    delete itsSum1;
+    delete itsSum2;
+    delete itsNpts;
+}
 void MyTiledCollapser::init (uInt nOutPixelsPerCollapse)
 {
     AlwaysAssert (nOutPixelsPerCollapse == 2, AipsError);
@@ -101,45 +152,74 @@ void MyTiledCollapser::initAccumulator (uInt n1, uInt n3)
 {
     itsSum1 = new Matrix<uInt> (n1, n3);
     itsSum2 = new Block<Int> (n1*n3);
+    itsNpts = new Matrix<uInt> (n1, n3);
     itsSum1->set (0);
     itsSum2->set (0);
+    itsNpts->set (0);
     itsn1 = n1;
     itsn3 = n3;
 }
+Bool MyTiledCollapser::canHandleNullMask() const
+{
+    return False;
+}
 void MyTiledCollapser::process (uInt index1, uInt index3,
-				const Int* inData,
-				uInt inIncr, uInt nrval)
+				const Int* inData, const Bool* inMask,
+				uInt inIncr, uInt nrval,
+				const IPosition&, const IPosition&)
 {
     uInt& sum1 = (*itsSum1)(index1, index3);
     Int& sum2 = (*itsSum2)[index1 + index3*itsn1];
+    uInt& npts = (*itsNpts)(index1, index3);
     for (uInt i=0; i<nrval; i++) {
-	sum1 += *inData;
-	sum2 -= *inData;
+	if (*inMask) {
+	    sum1 += *inData;
+	    sum2 -= *inData;
+	    npts++;
+	}
+	inMask += inIncr;
 	inData += inIncr;
     }
 }
-Array<Int> MyTiledCollapser::endAccumulator (const IPosition& shape)
+void MyTiledCollapser::endAccumulator (Array<Int>& result,
+				       Array<Bool>& resultMask,
+				       const IPosition& shape)
 {
-    Array<Int> result(shape);
+    result.resize (shape);
+    resultMask.resize (shape);
     Bool deleteRes, deleteSum1;
+    Bool deleteMask, deleteNpts;
     Int* res = result.getStorage (deleteRes);
     Int* resptr = res;
+    Bool* mask = resultMask.getStorage (deleteMask);
+    Bool* maskptr = mask;
     const uInt* sum1 = itsSum1->getStorage (deleteSum1);
     const uInt* sum1ptr = sum1;
     const Int* sum2ptr = itsSum2->storage();
+    const uInt* npts = itsNpts->getStorage (deleteNpts);
+    const uInt* nptsptr = npts;
     for (uInt i=0; i<itsn3; i++) {
+	Bool* maskptr2 = maskptr;
         for (uInt j=0; j<itsn1; j++) {
 	    *resptr++ = Int(*sum1ptr++);
+	    *maskptr++ = ToBool(*nptsptr++ != 0);
 	}
 	objcopy (resptr, sum2ptr, itsn1);
 	resptr += itsn1;
 	sum2ptr += itsn1;
+	objcopy (maskptr, maskptr2, itsn1);
+	maskptr += itsn1;
     }
     itsSum1->freeStorage (sum1, deleteSum1);
+    itsNpts->freeStorage (npts, deleteNpts);
     result.putStorage (res, deleteRes);
+    resultMask.putStorage (mask, deleteMask);
     delete itsSum1;
+    itsSum1 = 0;
     delete itsSum2;
-    return result;
+    itsSum2 = 0;
+    delete itsNpts;
+    itsNpts = 0;
 }
 
 
@@ -232,7 +312,8 @@ void doIt (int argc, char *argv[])
 	PagedArray<Int> latout(TiledShape(l1Shape,t1Shape), paTable);
 	MyLineCollapser collapser;
 	Timer tim;
-	LatticeApply<Int>::lineApply (latout, lat, collapser, 2, &showProgress);
+	LatticeApply<Int>::lineApply (latout, SubLattice<Int>(lat),
+				      collapser, 2, &showProgress);
 	tim.show("line 2     ");
     }
     {
@@ -275,7 +356,8 @@ void doIt (int argc, char *argv[])
 	blat[1] = &latout1;
 	MyLineCollapser collapser;
 	Timer tim;
-	LatticeApply<Int>::lineMultiApply (blat, lat, collapser, 0);
+	LatticeApply<Int>::lineMultiApply (blat, SubLattice<Int>(lat),
+					   collapser, 0);
 	tim.show("multiline 0");
     }
     {
@@ -309,8 +391,8 @@ void doIt (int argc, char *argv[])
 	PagedArray<Int> latout(TiledShape(l2Shape,t2Shape), paTable);
 	MyTiledCollapser collapser;
 	Timer tim;
-	LatticeApply<Int>::tiledApply (latout, lat, collapser,
-				       IPosition(1,0));
+	LatticeApply<Int>::tiledApply (latout, SubLattice<Int>(lat),
+				       collapser, IPosition(1,0));
 	tim.show("tiled 0    ");
     }
     {
@@ -356,8 +438,8 @@ void doIt (int argc, char *argv[])
 	    PagedArray<Int> latout(l2Shape, paTable);
 	    MyTiledCollapser collapser;
 	    Timer tim;
-	    LatticeApply<Int>::tiledApply (latout, lat, collapser,
-					   IPosition(2,0,2));
+	    LatticeApply<Int>::tiledApply (latout, SubLattice<Int>(lat),
+					   collapser, IPosition(2,0,2));
 	    tim.show("tiled 0,2  ");
 	}
 	{
@@ -393,8 +475,8 @@ void doIt (int argc, char *argv[])
 	    PagedArray<Int> latout(l2Shape, paTable);
 	    MyTiledCollapser collapser;
 	    Timer tim;
-	    LatticeApply<Int>::tiledApply (latout, lat, collapser,
-					   IPosition(3,0,1,2));
+	    LatticeApply<Int>::tiledApply (latout, SubLattice<Int>(lat),
+					   collapser, IPosition(3,0,1,2));
 	    tim.show("tiled 0,1,2");
 	}
 	{
@@ -434,7 +516,8 @@ void doIt (int argc, char *argv[])
 	MyLineCollapser collapser;
 	LatticeRegion region (slicer3, lat.shape());
 	Timer tim;
-	LatticeApply<Int>::lineApply (latout, lat, region, collapser, 1);
+	LatticeApply<Int>::lineApply (latout, SubLattice<Int>(lat),
+				      region, collapser, 1);
 	tim.show("lsliced 1  ");
     }
     {
@@ -454,7 +537,8 @@ void doIt (int argc, char *argv[])
 	MyLineCollapser collapser;
 	LatticeRegion region (slicer3, lat.shape());
 	Timer tim;
-	LatticeApply<Int>::lineMultiApply (blat, lat, region, collapser, 1);
+	LatticeApply<Int>::lineMultiApply (blat, SubLattice<Int>(lat),
+					   region, collapser, 1);
 	tim.show("msliced 1  ");
     }
     IPosition l5Shape(5,1);
@@ -471,8 +555,8 @@ void doIt (int argc, char *argv[])
 	MyTiledCollapser collapser;
 	LatticeRegion region (slicer3, lat.shape());
 	Timer tim;
-	LatticeApply<Int>::tiledApply (latout, lat, region, collapser,
-				       IPosition(1,1));
+	LatticeApply<Int>::tiledApply (latout, SubLattice<Int>(lat),
+				       region, collapser, IPosition(1,1));
 	tim.show("tsliced 1  ");
     }
     {
