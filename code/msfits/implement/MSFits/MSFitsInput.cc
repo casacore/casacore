@@ -249,9 +249,12 @@ Bool MSFitsInput::readFitsFile()
     // single source case
     fillFieldTable(nField);
   }
-
-  fillFeedTable();
   fixEpochReferences();
+
+  if (haveAn==False) {
+    os << "Cannot find an AN Table. This is required." << LogIO::EXCEPTION;
+  }
+  fillFeedTable();
 
   os << LogIO::NORMAL << "Flushing MS to disk" << LogIO::POST;
   return True;
@@ -1177,7 +1180,7 @@ void MSFitsInput::fillFeedTable() {
     msfc.antennaId().put(row,ant);
     msfc.beamId().put(row,-1);
     msfc.feedId().put(row,0);
-    msfc.interval().put(row,DBL_MAX);
+    msfc.interval().put(row,0.);
     //    msfc.phasedFeedId().put(row,-1);
     msfc.spectralWindowId().put(row,-1); // all
     msfc.time().put(row,0.);
