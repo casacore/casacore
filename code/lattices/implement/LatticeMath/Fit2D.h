@@ -156,6 +156,15 @@ public:
     static Vector<Bool> convertMask (const String fixedmask,
                                      Fit2D::Types type);
 
+
+    // Set a pixel selection range.  When the fit is done, only
+    // pixels in the specified range are included/excluded.
+    // Only the last call of either of these will be active.
+    //<group>
+    void setIncludeRange (Double minVal, Double maxVal);
+    void setExcludeRange (Double minVal, Double maxVal);
+    //</group>
+
     // Return number of parameters for this type of model
     static uInt nParameters (Fit2D::Types type);
 
@@ -192,15 +201,6 @@ public:
     Fit2D::ErrorTypes residual(Array<Float>& resid,
                                const Lattice<Float>& data);
     //</group>
-
-    // Set a pixel selection range.  When the fit is done, only
-    // pixels in the specified range are included/excluded.
-    // Only the last call of either of these will be active.
-    //<group>
-    void setIncludeRange (Double minVal, Double maxVal);
-    void setExcludeRange (Double minVal, Double maxVal);
-    //</group>
-
     // If function fit failed, you will find a message here
     // saying why it failed
     String errorMessage () const;
@@ -219,6 +219,9 @@ public:
 
     // The chi squared of the fit.  Returns 0 if fit has been done.
     Double chiSquared () const;
+
+    // The covariance matrix of the fit. 
+    Matrix<Double> covariance();
 
     // The number of points used for the last fit
     uInt numberPoints () const;

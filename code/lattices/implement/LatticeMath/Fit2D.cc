@@ -345,6 +345,7 @@ Fit2D::ErrorTypes Fit2D::fit(const Array<Float>& data,
    if (itsIsNormalized) normalizeModels (0);
 //
    return fit(values, pos, weights);
+
 }
 
 
@@ -561,6 +562,16 @@ Double Fit2D::chiSquared () const
 }
 
 
+Matrix<Double> Fit2D::covariance()
+{
+   if (!itsValidSolution) {
+      Matrix<Double> tmp;
+      return tmp;
+   }
+   return itsFitter.compuCovariance();
+}
+
+
 uInt Fit2D::numberPoints () const
 {
    return itsNumberPoints;
@@ -725,10 +736,10 @@ Bool Fit2D::normalizeData (Matrix<Double>& pos, Vector<Double>& values,
 //   cout << "Data = " << values.ac() << endl;
 //   cout << "weights = " << weights.ac() << endl;
 //   cout << "Pos = " << pos.ac() << endl;
-   if (itsIsNormalized) {
+//   if (itsIsNormalized) {
 //      cout << "normVal = " << itsNormVal << endl;
 //      cout << "normPos = " << itsNormPos << endl;
-   }
+//   }
 
    return True;
 }
@@ -780,6 +791,13 @@ Fit2D::ErrorTypes Fit2D::fit(const Vector<Double>& values,
 // Do the actual fit
 //
 {
+/*
+cout << "npoints=" << values.ac() << endl;
+cout << "norm=" << itsIsNormalized << endl;
+cout << "pars=" <<  getParams(0).ac() << endl;
+cout << "values=" << values.ac() << endl;
+cout << "weights=" << weights.ac() << endl;
+*/
 
 // Set maximum number of iterations to 1000
  
