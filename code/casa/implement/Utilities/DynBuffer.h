@@ -28,18 +28,18 @@
 #if !defined(AIPS_DYNBUFFER_H)
 #define AIPS_DYNBUFFER_H
 
-#if defined(_AIX)
-#pragma implementation ("DynBuffer.cc")
-#endif 
-
+//# Includes
 #include <aips/aips.h>
 #include <aips/Containers/Block.h>
 
-//# Forward Declarations 
 
-// <summary> Store data in dynamically allocated buffers </summary>
+// <summary>
+// Store data in dynamically allocated buffers
+// </summary>
+
 // <use visibility=export>
 // <reviewed reviewer="Friso Olnon" date="1995/03/16" tests="tDynBuffer" demos="">
+// </reviewed>
 
 // <synopsis> 
 // DynBuffer allows one to store data in dynamically allocated buffers.
@@ -96,7 +96,7 @@ public:
     // <thrown>
     //    <li> AllocError
     // </thrown>
-    DynBuffer (const uInt nrOfBytes=4096);
+    DynBuffer (uInt nrOfBytes=4096);
 
     // Remove the whole buffer, i.e. the first buffer and all the 
     // buffers appended to it.
@@ -115,7 +115,7 @@ public:
     // <thrown>
     // <li> AllocError
     // </thrown>
-    uInt alloc (const uInt nrOfValues, const uInt valueSize, Char*& ptr);
+    uInt alloc (uInt nrOfValues, uInt valueSize, Char*& ptr);
 
     // Remove buffer <src>nrOfBuffer</src> and the buffers appended to it,
     // and re-initialize the current buffer. By default we keep the first
@@ -125,7 +125,7 @@ public:
     // space taken up by data that you no longer need, and that the
     // first buffer is often big enough to hold further data. So, you
     // only remove the first buffer in special cases.
-    void remove (const uInt nrOfBuffer=1);
+    void remove (uInt nrOfBuffer=1);
 
     // Prepare for data retrieval (set up for looping through the buffers).
     void nextstart ();
@@ -136,29 +136,6 @@ public:
     Bool next (uInt& usedLength, Char*& ptr);
 
 private:
-    // size of 1st buffer and min. bufsize
-    uInt         bufsz;
-    // buffernr for next function
-    Int          nextbuf;
-    // current buffernr
-    Int          curbuf;
-    // nr of buffers allocated
-    Int          nrbuf;
-    // size of Blocks
-    Int          maxnrbuf;
-    // used length per buffer
-    Block<uInt>  uselen;     
-    // total length per buffer
-    Block<uInt>  totlen;      
-    // pointer to buffer
-    PtrBlock<Char*> bufptr;     
-    // used length of current buffer
-    uInt         curuselen;      
-    // total length of current buffer
-    uInt         curtotlen;      
-    // pointer to current buffer
-    Char*        curbufptr;      
-    
     // Get the next buffer for storing <src>nrOfValues</src> values of
     // size <src>valueSize</src> bytes, and return the number of values
     // that can be stored in the free space of that buffer (maybe less
@@ -172,23 +149,49 @@ private:
     // <thrown>
     // <li> AllocError
     // </thrown>
-    uInt newbuf (const uInt nrOfValues, const uInt valueSize);
+    uInt newbuf (uInt nrOfValues, uInt valueSize);
+
+
+    // size of 1st buffer and min. bufsize
+    uInt         bufsz_p;
+    // buffernr for next function
+    Int          nextbuf_p;
+    // current buffernr
+    Int          curbuf_p;
+    // nr of buffers allocated
+    Int          nrbuf_p;
+    // size of Blocks
+    Int          maxnrbuf_p;
+    // used length per buffer
+    Block<uInt>  uselen_p;     
+    // total length per buffer
+    Block<uInt>  totlen_p;      
+    // pointer to buffer
+    PtrBlock<Char*> bufptr_p;     
+    // used length of current buffer
+    uInt         curuselen_p;      
+    // total length of current buffer
+    uInt         curtotlen_p;      
+    // pointer to current buffer
+    Char*        curbufptr_p;      
 };
 
-// Allocate buffer space for the nrOfValues values.
-// Return pointer to the buffer and nr of values that fit in it.
-// Use a more specialized function if not all values fit.
-// In this way the function can be kept small and thus used inline.
-// newbuf will seldom be required, unless large vectors are stored.
-inline uInt DynBuffer::alloc (const uInt nrOfValues, const uInt valueSize, Char*& ptr)
+
+//# Allocate buffer space for the nrOfValues values.
+//# Return pointer to the buffer and nr of values that fit in it.
+//# Use a more specialized function if not all values fit.
+//# In this way the function can be kept small and thus used inline.
+//# newbuf will seldom be required, unless large vectors are stored.
+inline uInt DynBuffer::alloc (uInt nrOfValues, uInt valueSize, Char*& ptr)
 {
     uInt n = nrOfValues;
-    if (n*valueSize > curtotlen-curuselen) {
+    if (n*valueSize > curtotlen_p-curuselen_p) {
 	n = newbuf (nrOfValues, valueSize);
     }
-    ptr = curbufptr + curuselen;
-    curuselen += n*valueSize;
+    ptr = curbufptr_p + curuselen_p;
+    curuselen_p += n*valueSize;
     return n;
 }
+
 
 #endif
