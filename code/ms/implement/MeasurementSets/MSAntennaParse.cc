@@ -27,6 +27,7 @@
 
 #include <ms/MeasurementSets/MSAntennaParse.h>
 #include <ms/MeasurementSets/MSAntennaIndex.h>
+#include <casa/Logging/LogIO.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
@@ -52,15 +53,16 @@ MSAntennaParse::MSAntennaParse (const MeasurementSet* ms)
 
 const TableExprNode* MSAntennaParse::selectAntennaIds(const Vector<Int>& antennaIds)
 {
-    TableExprNode condition = ms()->col(colName1).in(antennaIds) ||
-                              ms()->col(colName2).in(antennaIds);
-
-    if(node_p->isNull())
-        *node_p = condition;
-    else
-        *node_p = *node_p || condition;
-
-    return node();
+  //  LogIO os(LogOrigin("MSSpwParse", "selectAntennaIds()", WHERE));
+  TableExprNode condition = ms()->col(colName1).in(antennaIds) ||
+    ms()->col(colName2).in(antennaIds);
+  
+  if(node_p->isNull())
+    *node_p = condition;
+  else
+    *node_p = *node_p || condition;
+  
+  return node();
 }
 
 const TableExprNode* MSAntennaParse::selectNameOrStation(const String& identifier)
@@ -71,22 +73,49 @@ const TableExprNode* MSAntennaParse::selectNameOrStation(const String& identifie
   TableExprNode condition;
 
   MSAntennaIndex msAI(ms()->antenna());
-
   antennaIdsFromStation = msAI.matchAntennaStation(identifier);
-  cout << "antennaIdsFromStation " << antennaIdsFromStation.nelements() << endl;
-
+  //select from stations
   if(antennaIdsFromStation.nelements() > 0) {
-    cout << "this station exists  " << endl;
     condition = ms()->col(colName1).in(antennaIdsFromStation) ||
       ms()->col(colName2).in(antennaIdsFromStation);
-    cout << " TableExprNode created " << endl;
     //    searchStation = False;
   } else {
-    cout << "this name exists  " << identifier << endl;
+    //select from names
     condition = ms()->col(colName1).in(msAI.matchAntennaName(identifier)) ||
       ms()->col(colName2).in(msAI.matchAntennaName(identifier));
   }
   
+  if(node_p->isNull())
+    *node_p = condition;
+  else {
+    *node_p = *node_p || condition;
+  }
+  
+  return node();
+}
+
+const TableExprNode* MSAntennaParse::selectFromIdsAndCPs(const Int index, const String& cp)
+{
+  LogIO os(LogOrigin("MSSpwParse", "selectFromIdsAndCPs()", WHERE));
+  os << " selectFromIdsAndCPs is not available "  <<LogIO::POST;
+  exit(0);
+  
+  TableExprNode condition;
+  
+  if(node_p->isNull())
+    *node_p = condition;
+  else
+    *node_p = *node_p || condition;
+  
+  return node();
+}
+
+const TableExprNode* MSAntennaParse::selectFromIdsAndCPs(const Int firstIndex, const String& firstcp, const Int secondIndex, const String& secondcp)
+{
+  LogIO os(LogOrigin("MSSpwParse", "selectFromIdsAndCPs()", WHERE));
+  os << " selectFromIdsAndCPs is not available "  <<LogIO::POST;
+  TableExprNode condition;
+ 
   if(node_p->isNull())
     *node_p = condition;
   else
