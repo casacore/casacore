@@ -1,5 +1,5 @@
 //# StArrayFile.cc: Read/write array in external format for a storage manager
-//# Copyright (C) 1994,1995,1996,1997
+//# Copyright (C) 1994,1995,1996,1997,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -114,6 +114,8 @@ Bool StManArrayFile::flush (Bool)
 	iofil_p->write (1, &leng_p);
 	hasPut_p = False;
 	return True;
+	file_p->flush();
+	setpos (leng_p);
     }
     return False;
 }
