@@ -94,6 +94,12 @@ public:
     // Assignment (copy semantics).
     ImageRegion& operator= (const ImageRegion& other);
 
+    // Comparison
+    // <group>
+    Bool operator==(const ImageRegion& other) const;
+    Bool operator!=(const ImageRegion& other) const;
+    // </group>
+
     // Test if the underlying region is a WCRegion.
     Bool isWCRegion() const;
 

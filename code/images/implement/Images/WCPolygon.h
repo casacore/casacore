@@ -216,6 +216,12 @@ public:
    // Assignment (copy semantics) 
    WCPolygon& operator= (const WCPolygon& other);
 
+   // Comparison
+   // <group> 
+   virtual Bool operator==(const WCRegion& other) const;
+   virtual Bool operator!=(const WCRegion& other) const;
+   // </group>
+
    // Clone a WCPolygon object.
    virtual WCPolygon* cloneRegion() const;
 
@@ -229,12 +235,15 @@ public:
    // classes (e.g. LCPagedMask) to put very large objects.
    virtual TableRecord toRecord(const String& tableName) const;
 
-// Convert to a WCPolygon from a record.
+   // Convert to a WCPolygon from a record.
    static WCPolygon* fromRecord (const TableRecord& rec,
                                  const String& tableName);
 
-// Returns "WCPolygon"
+   // Returns "WCPolygon"
    static String className();
+
+   // Return region type.  Returns the class name   
+   virtual String type() const;    
 
 
 private:
