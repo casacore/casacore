@@ -26,6 +26,9 @@ Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 
 //# $Id$
 
+// <summary>Generic gnu macros</summary>
+// <group name=def>
+
 #define g_name2(a,b) gEnErIc2(a,b)
 #define gEnErIc2(a,b) a ## b
 
@@ -53,5 +56,5 @@ typedef int (*GPT)(int,char*);
 
 #define g_callerror(gen,type,a,b) (*g_errorhandler(gen,type))(a,b)
 
-
+// </group>
 #endif /* generic_h */

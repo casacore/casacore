@@ -1,5 +1,5 @@
 //# DefaultValue.h: fill a variable with its default value.
-//# Copyright (C) 1995, 1996
+//# Copyright (C) 1995,1996,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -94,10 +94,14 @@
 //   <li> none
 // </todo>
 
+// <group name=defval>
+
 template <class T> inline void defaultValue(T &theValue)
 {
   theValue = T(0);
 };
+
+// </group>
 
 #endif
 
