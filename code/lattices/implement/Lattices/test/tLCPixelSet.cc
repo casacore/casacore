@@ -40,7 +40,7 @@
 
 
 void testVectorROIter (const Lattice<Bool>& lattice, Bool firstValue,
-		       Bool changes)
+		       Bool alternates)
 {
     Int nstep;
     const IPosition latticeShape(lattice.shape());
@@ -50,13 +50,12 @@ void testVectorROIter (const Lattice<Bool>& lattice, Bool firstValue,
     Bool value = firstValue;
     for (iter.reset(); !iter.atEnd(); iter++){
         AlwaysAssert(allEQ(iter.vectorCursor().ac(), value), AipsError);
-	if (changes) {
+	if (alternates) {
 	    value = ToBool(!value);
 	}
     }
     nstep = iter.nsteps();
-    AlwaysAssert(nstep == latticeShape.product()/latticeShape(0) - 1,
-		 AipsError);
+    AlwaysAssert(nstep == latticeShape.product()/latticeShape(0), AipsError);
     IPosition expectedPos(latticeShape-1);
     AlwaysAssert(iter.endPosition() == expectedPos, AipsError);
     expectedPos(0) = 0;
@@ -84,7 +83,7 @@ main ()
         Array<Bool> arr(latticeShape);
         arr.set(True);
         arr(IPosition(2,0,0)) = False;
-        LCMask mask(IPosition(2,0), arr, latticeShape);
+        LCMask mask(arr, LCBox(IPosition(2,0), latticeShape-1, latticeShape));
         cout << mask.hasMask() << mask.maskArray().ac() << endl;
     }
     {
@@ -92,30 +91,31 @@ main ()
       Array<Bool> arr(latticeShape);
       arr(IPosition(4,0,0,0,0), latticeShape-1, IPosition(4,1,2,1,1)) = True;
       arr(IPosition(4,0,1,0,0), latticeShape-1, IPosition(4,1,2,1,1)) = False;
-      LCMask mask(IPosition(4,0), arr, latticeShape);
-      AlwaysAssertExit (mask.isWritable());
+      LCMask mask(arr, LCBox (IPosition(4,0), latticeShape-1, latticeShape));
+      AlwaysAssertExit (! mask.isWritable());
       AlwaysAssertExit (mask.hasMask());
       AlwaysAssertExit (mask.shape() == latticeShape);
       // Check the mask functions using the iterator.
       testVectorROIter (mask, True, True);
-      testArrayRWIter (mask);
-      testVectorROIter (mask, False, True);
+///      testArrayRWIter (mask);
+///      testVectorROIter (mask, False, True);
       TableRecord rec = mask.toRecord("");
       LCRegion* copmask = LCRegion::fromRecord (rec, "");
-      AlwaysAssertExit (copmask->isWritable());
+      AlwaysAssertExit (! copmask->isWritable());
       AlwaysAssertExit (copmask->hasMask());
       AlwaysAssertExit (copmask->shape() == latticeShape);
-      testVectorROIter (*copmask, False, True);
-      LCRegion* trmask = copmask->translate (IPosition(4,2,0,0,0));
-      AlwaysAssertExit (trmask->isWritable());
-      AlwaysAssertExit (trmask->hasMask());
-      AlwaysAssertExit (trmask->latticeShape() == latticeShape);
-      latticeShape(0) -= 2;
-      AlwaysAssertExit (trmask->shape() == latticeShape);
-      AlwaysAssertExit (trmask->box().start() == IPosition(4,2,0,0,0));
-      testVectorROIter (*trmask, False, True);
+      testVectorROIter (*copmask, True, True);
+///      LCRegion* trmask = copmask->translate (IPosition(4,2,0,0,0));
+///      AlwaysAssertExit (trmask->isWritable());
+///      AlwaysAssertExit (trmask->hasMask());
+///      AlwaysAssertExit (trmask->latticeShape() == latticeShape);
+///      latticeShape(0) -= 2;
+///      AlwaysAssertExit (trmask->shape() == latticeShape);
+///      AlwaysAssertExit (trmask->boundingBox().start()
+///                        == IPosition(4,2,0,0,0));
+///      testVectorROIter (*trmask, False, True);
       delete copmask;
-      delete trmask;
+///      delete trmask;
     }
     {
       const IPosition latticeShape(4, 16, 12, 4, 32);
@@ -133,12 +133,11 @@ main ()
       arr.set(True);
       arr(IPosition(2,0)) = False;
       arr(latticeShape-1) = False;
-      LCMask mask1(IPosition(2,0), arr, latticeShape);
+      LCMask mask1(arr, LCBox(IPosition(2,0), latticeShape-1, latticeShape));
       LCMask mask2(mask1);
       AlwaysAssertExit (mask2 == mask1);
-
       arr(latticeShape-1) = True;
-      LCMask mask3(IPosition(2,0), arr, latticeShape);
+      LCMask mask3(arr, LCBox(IPosition(2,0), latticeShape-1, latticeShape));
       AlwaysAssertExit (mask3 != mask1);
     }
   } catch (AipsError x) {
