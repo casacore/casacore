@@ -40,6 +40,7 @@
 #include <aips/Containers/Block.h>
 #include <aips/Glish/GlishRecord.h>
 #include <aips/Mathematics/Constants.h>
+#include <aips/Mathematics/Math.h>
 #include <aips/Logging/LogIO.h>
 #include <aips/Inputs/Input.h>
 #include <aips/Exceptions/Error.h>

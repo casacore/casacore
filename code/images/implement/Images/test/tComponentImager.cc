@@ -47,6 +47,7 @@
 #include <aips/Exceptions/Excp.h>
 #include <aips/Arrays/IPosition.h>
 #include <aips/Mathematics/Constants.h>
+#include <aips/Mathematics/Math.h>
 #include <aips/Measures/MDirection.h>
 #include <aips/Measures/MFrequency.h>
 #include <aips/OS/File.h>
