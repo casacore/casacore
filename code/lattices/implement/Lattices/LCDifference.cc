@@ -65,16 +65,8 @@ LCDifference& LCDifference::operator= (const LCDifference& other)
 }
 
 Bool LCDifference::operator== (const LCRegion& other) const
-//
-// See if this region is the same as the other region
-//
 { 
-
-// Check below us
-
-   if (!LCRegionMulti::operator==(other)) return False;
-  
-   return True;
+    return LCRegionMulti::operator== (other);
 }
     
 
@@ -120,7 +112,7 @@ LCDifference* LCDifference::fromRecord (const TableRecord& rec,
 void LCDifference::defineBox()
 {
     // The bounding box is the bounding box of the first lattice.
-    setBox (regions()[0]->box());
+    setBoundingBox (regions()[0]->boundingBox());
 }
 
 
@@ -140,10 +132,12 @@ void LCDifference::multiGetSlice (Array<Bool>& buffer,
     IPosition endbuf(nrdim);
     IPosition streg(nrdim);
     IPosition endreg(nrdim);
+    const IPosition& inc = section.stride();
     if (findAreas (stbuf, endbuf, streg, endreg, section, 1)) {
         Array<Bool> tmpbuf;
 	LCRegion* reg = (LCRegion*)(regions()[1]);
-	reg->doGetSlice (tmpbuf, Slicer(streg, endreg, Slicer::endIsLast));
+	reg->doGetSlice (tmpbuf, Slicer(streg, endreg, inc,
+					Slicer::endIsLast));
 	Array<Bool> bufreg = buffer(stbuf,endbuf);
 	DebugAssert (bufreg.shape() == tmpbuf.shape(), AipsError);
 	// Make pixel in buffer False when tmpbuf has a True pixel.

@@ -64,16 +64,8 @@ LCComplement& LCComplement::operator= (const LCComplement& other)
 }
 
 Bool LCComplement::operator== (const LCRegion& other) const
-//
-// See if this region is the same as the other region
-// 
 {
-
-// Check below us
-
-   if (!LCRegionMulti::operator==(other)) return False;
- 
-   return True;
+    return LCRegionMulti::operator== (other);
 }
 
 
@@ -121,7 +113,7 @@ void LCComplement::defineBox()
 {
     const IPosition& shape = latticeShape();
     // The bounding box is the full lattice.
-    setBox (Slicer(IPosition(shape.nelements(),0), shape));
+    setBoundingBox (Slicer(IPosition(shape.nelements(),0), shape));
 }
 
 
@@ -139,10 +131,11 @@ void LCComplement::multiGetSlice (Array<Bool>& buffer,
     IPosition endbuf(nrdim);
     IPosition streg(nrdim);
     IPosition endreg(nrdim);
+    const IPosition& inc = section.stride();
     if (findAreas (stbuf, endbuf, streg, endreg, section, 0)) {
         Array<Bool> tmpbuf;
 	((LCRegion*)(regions()[0]))->doGetSlice
-                       (tmpbuf, Slicer(streg, endreg, Slicer::endIsLast));
+                       (tmpbuf, Slicer(streg, endreg, inc, Slicer::endIsLast));
 	buffer(stbuf,endbuf) = !tmpbuf;
     }
 }
