@@ -125,6 +125,15 @@ Bool ConstantSpectrum::toRecord(String & errorMessage,
   return True;
 }
 
+Bool ConstantSpectrum::convertUnit(String & errorMessage,
+				   const RecordInterface & record) {
+  // Suppress compiler warning about unused variables
+  if (&errorMessage == 0) {}; 
+  if (&record == 0) {};
+  DebugAssert(ok(), AipsError);
+  return True;
+}
+ 
 Bool ConstantSpectrum::ok() const {
   return True;
 }
