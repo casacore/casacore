@@ -6439,3 +6439,4 @@
 18 518 src mv trial/implement/MeasurementComponents/CalIter.h trial/implement/CalTables/CalIter.h
 18 518 src mv trial/implement/MeasurementComponents/CalIter.cc trial/implement/CalTables/CalIter.cc
 18 518 src mv trial/implement/MeasurementComponents/CalIterBase.h trial/implement/CalTables/CalIterBase.h
+18 520 src mv trial/implement/MeasurementComponents/CalTableDesc.h trial/implement/CalTables/CalTableDesc.h
