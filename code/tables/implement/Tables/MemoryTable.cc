@@ -178,7 +178,7 @@ void MemoryTable::rename (const String& newName, int)
 
 int MemoryTable::tableType() const
 {
-  return Table::Plain;
+  return Table::Memory;
 }
 
 TableDesc MemoryTable::actualTableDesc() const
