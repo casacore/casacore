@@ -4733,3 +4733,4 @@
 14 306 src mv trial/apps/newsditerator/newsditeratorDO.h trial/apps/sditerator/sditeratorDO.h
 14 306 src mv trial/apps/newsditerator/newsditeratorDO.cc trial/apps/sditerator/sditeratorDO.cc
 14 306 src mv trial/apps/newsditerator/sditerator2.g trial/apps/sditerator/sditerator.g
+14 306 src mv trial/apps/newsditerator/templates trial/apps/sditerator/templates
