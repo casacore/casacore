@@ -58,9 +58,9 @@ template <class M> class ROScalarMeasColumn;
 // </prerequisite>
 
 // <synopsis>
-// ROArrayMeasColumn and ArrayMeasColumn objects can be used to access 
+// ROArrayMeasColumn and ArrayMeasColumn objects can be used to access
 // array Measure columns in tables.  The ROArrayMeasColumn provides read
-// only access whereas the ArrayMeasColumn object can be used for reading 
+// only access whereas the ArrayMeasColumn object can be used for reading
 // and writing of Measures array columns.
 //
 // Before a column can be accessed it must have previously been defined as
@@ -69,21 +69,11 @@ template <class M> class ROScalarMeasColumn;
 //
 // The (RO)ArrayMeasColumn class is templated on Measure type and MeasValue
 // type but typedefs exist for making declaration less long winded. The
-// following typedefs can be used to assist in creating (RO)ArrayMeasColumn
-// objects:
-// <ul>
-//    <li>ROMEpochArrCol and MEpochArrCol
-//    <li>ROMPositionArrCol and MPositionArrCol
-//    <li>ROMDirectionArrCol and MDirectionArrCol
-//    <li>ROMRadialVelocityArrCol and MRadialVelocityArrCol
-//    <li>ROMDopplerArrCol and MDopplerArrCol
-//    <li>ROMFrequencyArrCol and MFrequencyArrCol
-//    <li>ROMBaselineArrCol and MBaselineArrCol
-//    <li>ROMuvwArrCol and MuvwArrCol
-//    <li>ROMEarthMagneticArrCol and MEarthMagneticArrCol
-// </ul>
- 
-// Constructing array Measure column objects using these typedefs looks like 
+// Measure classes (like MEpoch) have typedefs <src>ROArrayColumn</src>
+// and <src>ArrayColumn</src> to assist in creating (RO)ArrayMeasColumn
+// objects.
+//
+// Constructing array Measure column objects using these typedefs looks like
 // this:
 // <srcblock>
 // MEpochArrCol ec(table, "ColumnName);      // MEpoch array column
@@ -93,12 +83,12 @@ template <class M> class ROScalarMeasColumn;
 // <h3>Reading and writing Measures</h3>
 //
 // The reading and writing of Measures columns is very similar to reading and
-// writing of "ordinary" Table columns. 
+// writing of "ordinary" Table columns.
 // <linkto class="ROArrayMeasColumn#get">get()</linkto>
 // and <linkto class="ROArrayMeasColumn#get">operator()</linkto>
-// exist for reading Measures and the 
+// exist for reading Measures and the
 // <linkto class="ArrayMeasColumn#put">put()</linkto> member for adding
-// Measures to a column.  (put() is obviously not defined for 
+// Measures to a column.  (put() is obviously not defined for
 // ROScalarMeasColumn objects.)  Each of these members accepts a row number
 // as an argument.
 //
@@ -108,14 +98,13 @@ template <class M> class ROScalarMeasColumn;
 // the column's predefined Measure reference.  This is only an issue if the
 // Measure column was defined to have a fixed reference. For such columns
 // the reference component of Measures added to a column is silently
-// ignored, that is, there is no warning nor is there any sort of conversion 
+// ignored, that is, there is no warning nor is there any sort of conversion
 // to the column's reference should the reference of the added Measure be
-// different to the column's reference.   The members 
-// <linkto class="ROArrayMeasColumn#isRefVariable">isRefVariable()</linkto> 
+// different to the column's reference.   The members
+// <linkto class="ROArrayMeasColumn#isRefVariable">isRefVariable()</linkto>
 // and
-// <linkto class="ROArrayMeasColumn#getMeasRef">getMeasRef()</linkto> can be 
+// <linkto class="ROArrayMeasColumn#getMeasRef">getMeasRef()</linkto> can be
 // used to discover a Measure column's Measure reference characteristics.
-//
 // </synopsis>
 
 // <example>
@@ -125,7 +114,7 @@ template <class M> class ROScalarMeasColumn;
 //
 //    // should be null.  Can test this and attach a real MEpoch column
 //    // The column Time1Arr should exist in the table and would have been
-//    // defined by using a TableMeasDesc 
+//    // defined by using a TableMeasDesc
 //    if (arrayCol.isNull()) {
 //	    arrayCol.attach(tab, "Time1Arr");
 //    }
@@ -141,7 +130,7 @@ template <class M> class ROScalarMeasColumn;
 //        last.set(Quantity(13.45 + i, "h"));
 //        ev(i) = last;
 //    }
-//	
+//
 //    // before adding something check the isDefined() member
 //    if (!arrayCol.isDefined(0)) {
 //        cout << "PASS - nothing in the measure array column row yet\n";
@@ -149,7 +138,7 @@ template <class M> class ROScalarMeasColumn;
 //        cout << "FAIL - there shouldn't be a valid value in the row!\n";
 //    }
 //
-//    // add the MEpoch vector to the array Measure column at row 0	
+//    // add the MEpoch vector to the array Measure column at row 0
 //    arrayCol.put(0, ev);
 //
 //    // now read the array from the row.  Could use same object to do this
@@ -162,7 +151,6 @@ template <class M> class ROScalarMeasColumn;
 //    // setting the resise parameter to True automatically set ew to the
 //    // same shape as the array contain in the row
 //    arrayCol.get(0,ew, True);
-
 // </srcblock>
 // </example>
 
@@ -170,15 +158,16 @@ template <class M> class ROScalarMeasColumn;
 // The standard Aips++ Table system does not support array Measure columns.
 // This class overcomes this limitation.
 // </motivation>
-//
+
 // <thrown>
 //    <li>ArrayConformanceError during get() if supplied array is the wrong
 //        shape.
 // </thrown>
-//
+
 //# <todo asof="$DATE:$">
 //# A List of bugs, limitations, extensions or planned refinements.
 //# </todo>
+
 
 template<class M> class ROArrayMeasColumn : public ROTableMeasColumn
 {
@@ -202,37 +191,51 @@ public:
   // Change the reference to another column.
   void reference (const ROArrayMeasColumn<M>& that);
 
-  // Attach a column to the object. 
-  void attach (const Table& tab, const String& columnName); 
- 
+  // Attach a column to the object.
+  void attach (const Table& tab, const String& columnName);
+
   // Get the Measure array in the specified row.  For get() the supplied
   // array's shape should match the shape in the row unless resize is True.
   // <group name=get>
   void get (uInt rownr, Array<M>& meas, Bool resize = False) const;
   Array<M> operator() (uInt rownr) const;
   // </group>
-          
+
+  // Get the Measure array contained in the specified row and convert
+  // it to the reference and offset found in the given measure.
+  Array<M> convert (uInt rownr, const M& meas) const
+    { return convert (rownr, meas.getRef()); }
+
+  // Get the Measure array contained in the specified row and convert
+  // it to the given reference.
+  // <group>
+  Array<M> convert (uInt rownr, const MeasRef<M>& measRef) const;
+  Array<M> convert (uInt rownr, uInt refCode) const;
+  // </group>
+
   // Get the column's reference.
   // <group name=getMeasRef>
   const MeasRef<M>& getMeasRef() const
     { return itsMeasRef; }
   // </group>
-    
+
 protected:
   //# Its measure reference when the MeasRef is constant per row.
   MeasRef<M> itsMeasRef;
-    
+
 private:
   // Assignment makes no sense in a read only class.
   // Declaring this operator private makes it unusable.
-  ROArrayMeasColumn& operator= (const ROArrayMeasColumn<M>& that); 
-    
-  //# Deletes allocated memory etc. Called by ~tor and any member which needs
-  //# to reallocate data.
+  ROArrayMeasColumn& operator= (const ROArrayMeasColumn<M>& that);
+
+  // Deletes allocated memory etc. Called by ~tor and any member which needs
+  // to reallocate data.
   void cleanUp();
 
+  // Get the data and convert using conversion engine.
+  Array<M> doConvert (uInt rownr, typename M::Convert& conv) const;
 
-  //# Column which contains the Measure's actual data
+  //# Column which contains the Measure's actual data.
   ROArrayColumn<Double>* itsDataCol;
   //# Its MeasRef code column when references are variable.
   ROScalarColumn<Int>* itsRefIntCol;
@@ -240,7 +243,7 @@ private:
   //# Its MeasRef column when references are variable and stored as Strings.
   ROScalarColumn<String>* itsRefStrCol;
   ROArrayColumn<String>* itsArrRefStrCol;
-  //# Column containing its variable offsets.  Only applicable if the 
+  //# Column containing its variable offsets.  Only applicable if the
   //# measure references have offsets and they are variable.
   ROScalarMeasColumn<M>* itsOffsetCol;
   ROArrayMeasColumn<M>* itsArrOffsetCol;
@@ -252,7 +255,7 @@ private:
 // </summary>
 
 // <synopsis>
-// See description for 
+// See description for
 // <linkto class="ROArrayMeasColumn">ROArrayMeasColumn</linkto>.
 // </synopsis>
 
@@ -267,7 +270,7 @@ public:
   // if it is null by using the isNull() member.
   ArrayMeasColumn();
 
-  // Create the ROArrayMeasColumn from the table and column Name.
+  // Create the ROArrayMeasColumn from the table and column name.
   ArrayMeasColumn (const Table& tab, const String& columnName);
 
   // Copy constructor (copy semantics).
@@ -278,9 +281,9 @@ public:
   // Change the reference to another column.
   void reference (const ArrayMeasColumn<M>& that);
 
-  // Attach a column to the object. 
-  void attach (const Table& tab, const String& columnName); 
- 
+  // Attach a column to the object.
+  void attach (const Table& tab, const String& columnName);
+
   // Reset the refCode, offset, or units.
   // It overwrites the value used when defining the TableMeasDesc.
   // It is only possible if it was defined as fixed for the entire column.
@@ -292,7 +295,7 @@ public:
 
   // Add a Measure array to the specified row.
   // <group name=put>
-  void put (uInt rownr, const Array<M>&);    
+  void put (uInt rownr, const Array<M>&);
   // </group>
 
 private:
@@ -300,10 +303,10 @@ private:
   // See class <linkto class="ArrayColumn">ArrayColumn</linkto> for an
   // explanation as to why this operation is disallowed.  Use the reference
   // function instead.
-  ArrayMeasColumn& operator= (const ArrayMeasColumn<M>& that); 
-        
-  //# Deletes allocated memory etc. Called by ~tor and any member which needs
-  //# to reallocate data.
+  ArrayMeasColumn& operator= (const ArrayMeasColumn<M>& that);
+
+  // Deletes allocated memory etc. Called by ~tor and any member which needs
+  // to reallocate data.
   void cleanUp();
 
 
@@ -315,7 +318,7 @@ private:
   //# Its MeasRef column when references are variable and stored as Strings.
   ScalarColumn<String>* itsRefStrCol;
   ArrayColumn<String>* itsArrRefStrCol;
-  //# Column containing its variable offsets.  Only applicable if the 
+  //# Column containing its variable offsets.  Only applicable if the
   //# measure references have offsets and they are variable.
   ScalarMeasColumn<M>* itsOffsetCol;
   ArrayMeasColumn<M>* itsArrOffsetCol;
