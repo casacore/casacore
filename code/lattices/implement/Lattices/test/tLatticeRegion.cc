@@ -1,5 +1,5 @@
 //# tLatticeRegion.cc: Test program for LatticeRegion class
-//# Copyright (C) 1998
+//# Copyright (C) 1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -60,29 +60,10 @@ void doIt (const IPosition& latticeShape,
     // Take a slicer of the slicer.
     LatticeRegion reg2a(Slicer(IPosition(ndim,0), reg2.shape()-1,
 			       IPosition(2,1,2), Slicer::endIsLast),
-			&reg2);
+			reg2.shape());
     AlwaysAssertExit (! reg2a.hasMask());
     AlwaysAssertExit (allEQ (reg2a.get(), True));
     cout << "strided slicer: " << reg2a.get() << endl;
-
-    // Take lower-left quarter of circle.
-    LCBox box1 (IPosition(ndim,0), IPosition(ndim,radius), cir.shape());
-    LatticeRegion reg1a (box1, &reg1);
-    AlwaysAssertExit (reg1a.hasMask());
-    cout << "lower-left of circle: " << reg1a.get() << endl;
-
-    // Now take a strided section of the box.
-    LatticeRegion reg1aa (Slicer(IPosition(ndim,0),IPosition(ndim,radius-1),
-				 IPosition(2,2,1), Slicer::endIsLast),
-			  &reg1a);
-    AlwaysAssertExit (reg1aa.hasMask());
-    cout << "strided (2,1) lower-left: " << reg1aa.get() << endl;
-
-    // Take a circle in the first circle.
-    LCEllipsoid cir2 (IPosition(ndim,radius-1), radius-1, cir.shape());
-    LatticeRegion reg1b (cir2, &reg1);
-    AlwaysAssertExit (reg1b.hasMask());
-    cout << "circle of circle: " << reg1b.get() << endl;
 }
 
 
