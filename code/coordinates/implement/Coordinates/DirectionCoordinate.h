@@ -33,8 +33,10 @@
 #include <trial/Coordinates/Coordinate.h>
 #include <trial/Coordinates/LinearXform.h>
 #include <trial/Coordinates/Projection.h>
-#include <aips/Measures/MDirection.h>
 #include <aips/Arrays/Vector.h>
+#include <aips/Measures/MDirection.h>
+#include <aips/Measures/MeasConvert.h>
+#include <aips/Quanta/RotMatrix.h>
 #include <wcslib/wcs.h>
 
 class celprm;
@@ -294,6 +296,22 @@ public:
     virtual uInt nWorldAxes() const;
     // </group>
 
+
+    // Set extra conversion type.  Whenever a conversion from pixel to world is done,
+    // the world value is then further converted to this MDirection::Types value.
+    // For example, your DirectionCoordinate may be defined in J2000.
+    // You can use this to get the world values out in say GALACTIC.
+    // Similarly, whenever you convert from world to pixel, the world
+    // value is assumed to be that appropriate to the conversionDirectionType.
+    // It is first converted to the MDirection::Types with which the
+    // DirectionCoordinate was constructed and from there to pixel.
+    // If you don't call this function, or you set the same type
+    // for which the DirectionCoordinate was constructed, no extra
+    // conversions occur.   Some conversions will fail.  These are the
+    // ones that require extra frame information (epoch, position) such
+    // as to AZEL from J2000 etc.  This will be added later.
+    void setConversionDirectionType (MDirection::Types conversionDirectionType);
+
     // Convert a pixel position to a world position or vice versa. Returns True
     // if the conversion succeeds, otherwise it returns False and method
     // errorMessage returns an error message.   The output 
@@ -304,7 +322,6 @@ public:
     virtual Bool toPixel(Vector<Double> &pixel, 
 			 const Vector<Double> &world) const;
     // </group>
-
 
     // Mixed pixel/world coordinate conversion.
     // <src>worldIn</src> and <src>worldAxes</src> are of length 
@@ -384,15 +401,21 @@ public:
     Bool toPixel(Vector<Double> &pixel, const MVDirection &world) const;
      //</group>
 
-    // Make absolute coordinates relative and vice-versa.
+    // Make absolute coordinates relative and vice-versa.  Note that
+    // these functions are independent of the MDirection::Types 
+    // (set either at construction or by function
+    // <src>setConversionDirectionType</src>).
     //<group>
     virtual void makeWorldRelative (Vector<Double>& world) const;
+    virtual void makeWorldRelative (MDirection& world) const;
     virtual void makeWorldAbsolute (Vector<Double>& world) const;
+    virtual void makeWorldAbsolute (MDirection& world) const;
     //</group>
 
     // Recover the requested attribute.
     // <group>
-    MDirection::Types directionType() const;
+    MDirection::Types directionType() const;    
+    MDirection::Types conversionDirectionType() const;
     Projection projection() const;
     virtual Vector<String> worldAxisNames() const;
     virtual Vector<String> worldAxisUnits() const;
@@ -513,7 +536,7 @@ public:
 
 private:
     // Direction type
-    MDirection::Types type_p;
+    MDirection::Types type_p, conversionType_p;
 
     // Projection parameters
     Projection projection_p;
@@ -531,9 +554,9 @@ private:
     LinearXform linear_p;
 
     // WCS computes in degrees - use this to convert back and forth between
-    // degrees and the currently requested units.
-    Double to_degrees_p[2];
-    Double to_radians_p[2];
+    // current DirectionCoordinate units and degrees or radians
+    Vector<Double> to_degrees_p;
+    Vector<Double> to_radians_p;
 
     // Axis names.
     Vector<String> names_p;
@@ -546,6 +569,15 @@ private:
 
     // toMix ranges
     Vector<Double> worldMin_p, worldMax_p;
+
+    // Rotation matrix used to handle relative coordinates
+    RotMatrix rot_p;
+
+    // Conversion machines.  
+    // "To"   handles type_p -> conversionType_p
+    // "From" handles conversionType_p -> type_p;
+    mutable MDirection::Convert* pConversionMachineTo_p;
+    mutable MDirection::Convert* pConversionMachineFrom_p;
 
     // Some kinds of DirectionCoordinate cannot be used with
     // the toMix function (e.g. one made with MDirection::SUN)
@@ -621,6 +653,17 @@ private:
 
    Double putLongInPiRange (Double lon, const String& unit) const;
 
+   // Set up conversion machine
+   void makeConversionMachines();
+
+   // Convert from type_p -> conversionType_p
+   void convertTo (Vector<Double>& world) const;
+
+   // Convert from conversionType_p -> type_p
+   void convertFrom (Vector<Double>& world) const;
+
+   // Set up the offset coordinate rotation matrix
+   void setRotationMatrix ();
 };
 
 #endif
