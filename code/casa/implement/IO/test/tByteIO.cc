@@ -26,12 +26,13 @@
 //# $Id$
 
 #include <aips/aips.h>
-#include <aips/IO/FilebufIO.h>
+#include <aips/IO/FiledesIO.h>
 #include <aips/IO/RegularFileIO.h>
 #include <aips/IO/MemoryIO.h>
 #include <aips/OS/RegularFile.h>
 #include <aips/Utilities/Assert.h>
 #include <aips/Exceptions/Error.h>
+#include <unistd.h>
 #include <fcntl.h>
 
 
@@ -264,8 +265,9 @@ main()
 	} else {
 	    cout << "readonly" << endl;
 	}
-	FilebufIO file4 (fd, ByteIO::New);
+	FiledesIO file4 (fd);
 	doIt (file4);
+	close (fd);
 
 	int fd1 = open ("tByteIO_tmp.data2", O_RDONLY, 0644);
 	int flags1 = fcntl (fd1, F_GETFL);
@@ -276,8 +278,9 @@ main()
 	} else {
 	    cout << "readonly" << endl;
 	}
-	FilebufIO file5 (fd1);
+	FiledesIO file5 (fd1);
 	checkValues (file5, 100);
+	close (fd1);
 
 	int fd2 = creat ("tByteIO_tmp.data2", 0644);
 	int flags2 = fcntl (fd2, F_GETFL);
@@ -288,7 +291,8 @@ main()
 	} else {
 	    cout << "readonly" << endl;
 	}
-	FilebufIO file6 (fd2);
+	FiledesIO file6 (fd2);
+	close (fd2);
     } catch (AipsError x) {
 	cout << "Caught an exception: " << x.getMesg() << endl;
 	return 1;
