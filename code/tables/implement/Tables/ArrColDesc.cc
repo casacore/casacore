@@ -90,7 +90,11 @@ ArrayColumnDesc<T>::ArrayColumnDesc (const String& name,
 		  valDataTypeId(static_cast<T*>(0)),
 		  opt, shp.nelements(), shp,
 		  False, True, False)
-{}
+{
+    if (nrdim_p == 0) {
+	nrdim_p = -1;
+    }
+}
   
 template<class T>
 ArrayColumnDesc<T>::ArrayColumnDesc (const String& name,
@@ -102,7 +106,11 @@ ArrayColumnDesc<T>::ArrayColumnDesc (const String& name,
 		  valDataTypeId(static_cast<T*>(0)),
 		  opt, shp.nelements(), shp,
 		  False, True, False)
-{}
+{
+    if (nrdim_p == 0) {
+	nrdim_p = -1;
+    }
+}
   
 template<class T>
 ArrayColumnDesc<T>::ArrayColumnDesc (const String& name,
@@ -116,7 +124,11 @@ ArrayColumnDesc<T>::ArrayColumnDesc (const String& name,
 		  valDataTypeId(static_cast<T*>(0)),
 		  opt, shp.nelements(), shp,
 		  False, True, False)
-{}
+{
+    if (nrdim_p == 0) {
+	nrdim_p = -1;
+    }
+}
   
 //# Register the makeDesc function.
 template<class T>
