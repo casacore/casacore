@@ -197,7 +197,9 @@ void ImageFITSConverter::FITSToImage(PagedImage<Float> *&newImage,
 Bool ImageFITSConverter::ImageToFITS(String &error,
 				     const PagedImage<Float> &image,
 				     const String &fitsName, 
-				     uInt memoryInMB)
+				     uInt memoryInMB,
+				     Bool preferVelocity,
+				     Bool opticalVelocity)
 {
     LogIO log(LogOrigin("ImageFITSConverter", "ImageToFITS", WHERE));
     error = "";
@@ -253,7 +255,8 @@ Bool ImageFITSConverter::ImageToFITS(String &error,
     header.define("BUNIT", upcase(image.units().getName()).chars());
     header.setComment("BUNIT", "Brightness (pixel) unit");
 
-    Bool ok = coordsys.toFITSHeader(header, True);
+    Bool ok = coordsys.toFITSHeader(header, True, 'c', False, preferVelocity,
+				    opticalVelocity);
     if (!ok) {
 	log << LogIO::SEVERE << "Could not make a standard FITS header. Setting"
 	    " a simple linear coordinate system." << LogIO::POST;

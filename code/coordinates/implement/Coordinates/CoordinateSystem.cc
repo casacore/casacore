@@ -963,8 +963,12 @@ Coordinate *CoordinateSystem::clone() const
     return new CoordinateSystem(*this);
 }
 
-Bool CoordinateSystem::toFITSHeader(RecordInterface &header, Bool oneRelative,
-				    char prefix, Bool writeWCS) const
+Bool CoordinateSystem::toFITSHeader(RecordInterface &header, 
+				    IPosition &shape,
+				    Bool oneRelative,
+				    char prefix, Bool writeWCS,
+				    Bool preferVelocity, 
+				    Bool opticalVelocity) const
 {
     LogIO os(LogOrigin("CoordinateSystem", "toFITSHeader", WHERE));
 
@@ -979,11 +983,6 @@ Bool CoordinateSystem::toFITSHeader(RecordInterface &header, Bool oneRelative,
 
     const uInt n = nWorldAxes();
 
-    if (nWorldAxes() != nPixelAxes()) {
-	os << LogIO::SEVERE << "nWorldAxes(" << nWorldAxes() <<
-	    ") != nPixelAxes(" << nPixelAxes() << ")";
-	return False; // required for FITS
-    }
 
     String sprefix = prefix;
     if (header.isDefined(sprefix + "rval") ||
@@ -1003,7 +1002,7 @@ Bool CoordinateSystem::toFITSHeader(RecordInterface &header, Bool oneRelative,
 
     // ********** Canonicalize units and find sky axes
     CoordinateSystem coordsys = *this;
-    
+
     // Find the sky coordinate, if any
     Int skyCoord = coordsys.findCoordinate(Coordinate::DIRECTION);
     Int longAxis = -1, latAxis = -1;
@@ -1198,10 +1197,37 @@ Bool CoordinateSystem::toFITSHeader(RecordInterface &header, Bool oneRelative,
 	}
     }
 
-    // Actually write the header
-    if (writeWCS) {
-	header.define("pc", pc);
+    // If there are more world than pixel axes, we will need to add degenerate pixel
+    // axes and modify the shape. 
+    if (nPixelAxes() < n) {
+	IPosition shapetmp = shape; shape.resize(n);
+	Vector<Double> crpixtmp = crpix.copy(); crpix.resize(n);
+	Int count = 0;
+	for (uInt worldAxis=0; worldAxis<n; worldAxis++) {
+	    Int coordinate, axisInCoordinate;
+	    coordsys.findWorldAxis(coordinate, axisInCoordinate, worldAxis);
+	    Int pixelAxis = coordsys.pixelAxes(coordinate)(axisInCoordinate);
+	    if (pixelAxis >= 0) {
+		// We have a pixel axis
+		shape(worldAxis) = shapetmp(count);
+		crpix(worldAxis) = crpixtmp(count);
+		count++;
+	    } else {
+		// No corresponding pixel axis.
+		shape(worldAxis) = 1;
+		crpix(worldAxis) = 1.0;
+	    }
+	}
     }
+
+    // Actually write the header
+    if (writeWCS && coordsys.nPixelAxes() == n) {
+	header.define("pc", pc);
+    } else if (writeWCS) {
+	os << LogIO::SEVERE << "writeWCS && nPixelAxes() != n. Requires development!!!"
+	   << LogIO::POST;
+    }
+
     header.define(sprefix + "type", ctype);
     header.define(sprefix + "rval", crval);
     header.define(sprefix + "delt", cdelt);
@@ -1227,7 +1253,8 @@ Bool CoordinateSystem::toFITSHeader(RecordInterface &header, Bool oneRelative,
 
     if (specAxis > 1) {
 	const SpectralCoordinate &spec = spectralCoordinate(specCoord);
-	spec.toFITS(header, specAxis, os, oneRelative);
+	spec.toFITS(header, specAxis, os, oneRelative, preferVelocity, 
+		    opticalVelocity);
     }
 
     return True;

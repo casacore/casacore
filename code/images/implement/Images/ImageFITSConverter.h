@@ -155,7 +155,9 @@ public:
     static Bool ImageToFITS(String &error,
 			    const PagedImage<Float> &image,
 			    const String &fitsName, 
-			    uInt memoryInMB = 64);
+			    uInt memoryInMB = 64,
+			    Bool preferVelocity = True,
+			    Bool opticalVelocity = True);
 
     // Helper function - used to calculate a cursor appropriate for the desired
     // memory use. It's not intended that application programmers call this, but

@@ -279,8 +279,12 @@ public:
     // write this convention in general.
     //# Much of the work in to/from fits should be moved to the individual
     //# classes.
-    Bool toFITSHeader(RecordInterface &header, Bool oneRelative, 
-		      char prefix = 'c', Bool writeWCS=False) const;
+    Bool toFITSHeader(RecordInterface &header, 
+		      IPosition &shape,
+		      Bool oneRelative, 
+		      char prefix = 'c', Bool writeWCS=False,
+		      Bool preferVelocity=True, 
+		      Bool opticalVelocity=True) const;
 
 
     // Probably even if we return False we should set up the best linear
