@@ -480,6 +480,8 @@ LIBdish        := defeat static defeat defeat defeat defeat
 LIBsimulators  := defeat static defeat defeat defeat defeat
 LIBsynthesis   := defeat static defeat defeat defeat defeat
 LIBtasking     := defeat static defeat defeat defeat defeat
+#                                                          Demo programs
+LIBdemo        := defeat static defeat defeat defeat defeat
 #                                                          Standard
 LIBdisplay    = defeat static defeat defeat defeat defeat
 LIBvlbi       = defeat defeat defeat defeat defeat defeat
@@ -522,6 +524,8 @@ LINKsynthesis   := synthesis calibration msvis ms images components coordinates 
 LINKgraphics    := graphics casa
 LINKtasking     := tasking graphics msvis ms images components coordinates lattices fits measures tables scimath casa
 
+
+LINKdemo := graphics synthesis simulators dish flagging ionosphere calibration msvis ms images components coordinates lattices fits measures tables scimath casa
 
 LINKappsglish := tasking graphics synthesis simulators dish flagging ionosphere calibration msvis ms images components coordinates lattices fits measures tables scimath casa
 
