@@ -461,7 +461,6 @@ int main(int argc)
 	} 
       }
 
-
       // An array MEpoch column desc. with (string) references and offsets
       // per row.
 
@@ -528,6 +527,61 @@ int main(int argc)
     const uInt tabRows = 5;
     {
       Table tab(newtab);
+
+      // Check that columns are measures.
+      AlwaysAssertExit (TableMeasDescBase::hasMeasures
+		                 (ROTableColumn(tab, "MDirColumn")));
+      AlwaysAssertExit (TableMeasDescBase::hasMeasures
+		                 (ROTableColumn(tab, "TimeOffset")));
+      AlwaysAssertExit (TableMeasDescBase::hasMeasures
+		                 (ROTableColumn(tab, "Time1")));
+      AlwaysAssertExit (TableMeasDescBase::hasMeasures
+		                 (ROTableColumn(tab, "TimeVarOffset")));
+      AlwaysAssertExit (! TableMeasDescBase::hasMeasures
+		                 (ROTableColumn(tab, "TimeRef")));
+      AlwaysAssertExit (TableMeasDescBase::hasMeasures
+		                 (ROTableColumn(tab, "MEpochVarStr")));
+      AlwaysAssertExit (! TableMeasDescBase::hasMeasures
+		                 (ROTableColumn(tab, "TimeRefStr")));
+      AlwaysAssertExit (TableMeasDescBase::hasMeasures
+		                 (ROTableColumn(tab, "Time1Arr")));
+      AlwaysAssertExit (! TableMeasDescBase::hasMeasures
+		                 (ROTableColumn(tab, "TimeArrRef")));
+      AlwaysAssertExit (TableMeasDescBase::hasMeasures
+		                 (ROTableColumn(tab, "Time2Arr")));
+      AlwaysAssertExit (TableMeasDescBase::hasMeasures
+		                 (ROTableColumn(tab, "Time2ArrOffset")));
+      AlwaysAssertExit (! TableMeasDescBase::hasMeasures
+		                 (ROTableColumn(tab, "Time2ArrRef")));
+      AlwaysAssertExit (TableMeasDescBase::hasMeasures
+		                 (ROTableColumn(tab, "Time3Arr")));
+      AlwaysAssertExit (! TableMeasDescBase::hasMeasures
+		                 (ROTableColumn(tab, "Time3ArrStrRef")));
+      AlwaysAssertExit (TableMeasDescBase::hasMeasures
+		                 (ROTableColumn(tab, "Time4Arr")));
+      AlwaysAssertExit (! TableMeasDescBase::hasMeasures
+		                 (ROTableColumn(tab, "Time4StrRef")));
+      AlwaysAssertExit (TableMeasDescBase::hasMeasures
+		                 (ROTableColumn(tab, "Time4ScaOffset")));
+      AlwaysAssertExit (TableMeasDescBase::hasMeasures
+		                 (ROTableColumn(tab, "SpareCol1")));
+      AlwaysAssertExit (TableMeasDescBase::hasMeasures
+		                 (ROTableColumn(tab, "SpareArrOffset")));
+
+      AlwaysAssertExit (ROTableMeasColumn(tab, "MDirColumn").isScalar());
+      AlwaysAssertExit (ROTableMeasColumn(tab, "TimeOffset").isScalar());
+      AlwaysAssertExit (ROTableMeasColumn(tab, "Time1").isScalar());
+      AlwaysAssertExit (ROTableMeasColumn(tab, "TimeVarOffset").isScalar());
+      AlwaysAssertExit (ROTableMeasColumn(tab, "MEpochVarStr").isScalar());
+      AlwaysAssertExit (! ROTableMeasColumn(tab, "Time1Arr").isScalar());
+      AlwaysAssertExit (! ROTableMeasColumn(tab, "Time2Arr").isScalar());
+      AlwaysAssertExit (! ROTableMeasColumn(tab, "Time2ArrOffset").isScalar());
+      AlwaysAssertExit (! ROTableMeasColumn(tab, "Time3Arr").isScalar());
+      AlwaysAssertExit (! ROTableMeasColumn(tab, "Time4Arr").isScalar());
+      AlwaysAssertExit (ROTableMeasColumn(tab, "Time4ScaOffset").isScalar());
+      AlwaysAssertExit (! ROTableMeasColumn(tab, "SpareCol1").isScalar());
+      AlwaysAssertExit (! ROTableMeasColumn(tab, "SpareArrOffset").isScalar());
+
       cout << "Create MEpochScaCol from column TimeOffset...\n";
       cout << "A column of MEpochs where the reference and offset are ";
       cout << "non-variable.\n";
