@@ -3787,3 +3787,4 @@
 14 052 src rm trial/implement/Display/X11PCDLRoundedRectangle.h
 14 052 src rm trial/implement/Fitting/LSQBasic.h
 14 052 src rm trial/implement/Fitting/LSQBasic.cc
+14 053 src mv npoi/apps/chatoms/chatoms.g npoi/implement/Chatoms/chatoms.g
