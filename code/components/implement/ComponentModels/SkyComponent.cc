@@ -28,6 +28,7 @@
 #include <trial/ComponentModels/SkyComponent.h>
 #include <trial/ComponentModels/SkyCompRep.h>
 #include <trial/ComponentModels/PointCompRep.h>
+#include <trial/ComponentModels/GaussianCompRep.h>
 #include <trial/Images/ImageInterface.h>
 #include <aips/Arrays/Vector.h>
 #include <aips/Exceptions/Error.h>
