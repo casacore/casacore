@@ -1,5 +1,5 @@
 //# TiledCellStMan.h: Tiled Cell Storage Manager
-//# Copyright (C) 1995,1996,1997
+//# Copyright (C) 1995,1996,1997,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -28,9 +28,6 @@
 #if !defined(AIPS_TILEDCELLSTMAN_H)
 #define AIPS_TILEDCELLSTMAN_H
 
-#if defined(_AIX)
-#pragma implementation ("TiledCellStMan.cc")
-#endif 
 
 //# Includes
 #include <aips/aips.h>
@@ -185,6 +182,11 @@ public:
 
     // This tiled storage manager can handle changing array shapes.
     Bool canChangeShape() const;
+
+    // Set the shape and tile shape of the hypercube.
+    virtual void setShape (uInt rownr, TSMCube* hypercube,
+			   const IPosition& shape,
+			   const IPosition& tileShape);
 
     // Make the object from the type name string.
     // This function gets registered in the DataManager "constructor" map.
