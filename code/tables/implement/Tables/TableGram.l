@@ -39,6 +39,7 @@
 %s EXPRstate
 %s GIVINGstate
 %s FROMstate
+%s REGEXstate
 
 /* The order in the following list is important, since, for example,
    the word "giving" must be recognized as GIVING and not as NAME.
@@ -121,7 +122,14 @@ NAME      \\?[A-Za-z_]([A-Za-z_0-9]|(\\.))*
 NAMEFLD   {NAME}?"."?{NAME}?("::")?{NAME}("."{NAME})*
 TEMPTAB   [$]{INT}
 NAMETAB   ([A-Za-z0-9_./+\-~$]|(\\.))+
-
+REGEX1    m"/"[^/]+"/"
+REGEX2    m%[^%]+%
+REGEX3    m#[^#]+#
+REGEX     {REGEX1}|{REGEX2}|{REGEX3}
+PATT1     p\/[^/]+\/
+PATT2     p%[^%]+%
+PATT3     p#[^#]+#
+PATT      {PATT1}|{PATT2}|{PATT3}
 
 %%
  /* The command to be analyzed is:
@@ -364,6 +372,32 @@ NAMETAB   ([A-Za-z0-9_./+\-~$]|(\\.))+
 	    lvalp->val->type = 't';
 	    lvalp->val->str = TableGramtext;
 	    return LITERAL;
+	  }
+
+ /* regular expression and pattern handling */
+<EXPRstate>"~" {
+            BEGIN(REGEXstate);
+            return EQREGEX;
+          }
+<EXPRstate>"!~" {
+            BEGIN(REGEXstate);
+            return NEREGEX;
+          }
+<REGEXstate>{REGEX} {
+            tableGramPosition() += yyleng;
+            lvalp->val = TableParseVal::makeValue();
+	    lvalp->val->type = 's';
+	    lvalp->val->str = String(TableGramtext+2,yyleng-3);
+            BEGIN(EXPRstate);
+	    return REGEX;
+	  }
+<REGEXstate>{PATT} {
+            tableGramPosition() += yyleng;
+            lvalp->val = TableParseVal::makeValue();
+	    lvalp->val->type = 's';
+	    lvalp->val->str = String(TableGramtext+2,yyleng-3);
+            BEGIN(EXPRstate);
+	    return PATTERN;
 	  }
 
  /* In the FROM clause a shorthand (for a table) can be given.

@@ -64,10 +64,14 @@ PtrBlock<TableParseUpdate*>* updateb;
 %token <val> TABNAME        /* table name */
 %token <val> LITERAL
 %token <val> STRINGLITERAL
+%token <val> REGEX
+%token <val> PATTERN
 %token AS
 %token IN
 %token BETWEEN
 %token LIKE
+%token EQREGEX
+%token NEREGEX
 %token LPAREN
 %token RPAREN
 %token COMMA
@@ -476,14 +480,41 @@ relexpr:   arithexpr
 	       delete $1;
 	       delete $3;
 	   }
+         | arithexpr EQREGEX REGEX {
+	       TableExprNode node (TableParseSelect::currentSelect()->
+				   handleLiteral ($3));
+	       $$ = new TableExprNode (*$1 == regex(node));
+	       delete $1;
+	       delete $3;
+	   }
+         | arithexpr NEREGEX REGEX {
+	       TableExprNode node (TableParseSelect::currentSelect()->
+				   handleLiteral ($3));
+	       $$ = new TableExprNode (*$1 != regex(node));
+	       delete $1;
+	       delete $3;
+	   }
+         | arithexpr EQREGEX PATTERN {
+	       TableExprNode node (TableParseSelect::currentSelect()->
+				   handleLiteral ($3));
+	       $$ = new TableExprNode (*$1 == pattern(node));
+	       delete $1;
+	       delete $3;
+	   }
+         | arithexpr NEREGEX PATTERN {
+	       TableExprNode node (TableParseSelect::currentSelect()->
+				   handleLiteral ($3));
+	       $$ = new TableExprNode (*$1 != pattern(node));
+	       delete $1;
+	       delete $3;
+	   }
          | arithexpr LIKE arithexpr {
 	       $$ = new TableExprNode (*$1 == sqlpattern(*$3));
 	       delete $1;
 	       delete $3;
 	   }
          | arithexpr NOT LIKE arithexpr {
-	       TableExprNode node (*$1 == sqlpattern(*$4));
-	       $$ = new TableExprNode (!node);
+	       $$ = new TableExprNode (*$1 != sqlpattern(*$4));
 	       delete $1;
 	       delete $4;
 	   }
