@@ -42,9 +42,18 @@ Please use weekly until the new stable build has completed.
 aips2mgr
 
 \end{verbatim}
-\item as aips2adm; cd /export/aips++/scripts; sh ./do\_blessing xx.yyy
+\item as aips2adm;
+\begin{verbatim}
+cd /export/aips++/scripts; sh ./do\_blessing xx.yyy
+\end{verbatim}
 This scripts marks xx.yyy as stable; inhales the stable into /aips++/stable; and begins the stable
 build for linux and solaris.  The local sgi stable build is triggered by it's own cron job.
+\item Once the stable build completes, as aips2mgr on tarzan; 
+\begin{verbatim}
+cd; cd scripts; ./updatestables.sh 
+\end{verbatim}
+This will update the stable builds area on /home/tarzan5 making binaries available to users via
+aupdate.
 \item Send an email to aips2-sitemgr
 \begin{verbatim}
 Greetings,
