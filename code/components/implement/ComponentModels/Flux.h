@@ -99,21 +99,43 @@ public:
   FluxRep(NumericTraits<T>::ConjugateType xx,
 	  NumericTraits<T>::ConjugateType xy,
 	  NumericTraits<T>::ConjugateType yx,
-	  NumericTraits<T>::ConjugateType yy, ComponentType::Polarisation pol);
-
+	  NumericTraits<T>::ConjugateType yy, ComponentType::Polarisation pol)
+    :itsFlux(4),
+     itsPol(pol),
+     itsUnit("Jy") 
+    {
+      itsFlux(0) = xx;
+      itsFlux(1) = xy;
+      itsFlux(2) = yx;
+      itsFlux(3) = yy;
+      DebugAssert(ok(), AipsError);
+    };
+  
   // Stokes representation, units are Jy.
   FluxRep(const Vector<T> & flux);
 
   // units are Jy.
   FluxRep(const Vector<NumericTraits<T>::ConjugateType> & flux,
-  		const ComponentType::Polarisation & pol);
+  		const ComponentType::Polarisation & pol)
+    :itsFlux(flux.copy()),
+     itsPol(pol),
+     itsUnit("Jy")
+    {
+      DebugAssert(ok(), AipsError);
+    };
   
   // Stokes representation
   FluxRep(const Quantum<Vector<T> > & flux);
 
   // Fully Specified
   FluxRep(const Quantum<Vector<NumericTraits<T>::ConjugateType> > & flux,
-	  const ComponentType::Polarisation & pol);
+	  const ComponentType::Polarisation & pol)
+    :itsFlux(flux.getValue().copy()),
+     itsPol(pol),
+     itsUnit(flux.getFullUnit())
+    {
+      DebugAssert(ok(), AipsError);
+    };
 
   // The copy constructor uses copy semantics.
   FluxRep(const FluxRep<T> & other);
@@ -147,12 +169,24 @@ public:
   // Stokes representation & current unit
   void value(Vector<T> & value);
   // current unit and pol
-  void value(Vector<NumericTraits<T>::ConjugateType> & value) const;
+  void value(Vector<NumericTraits<T>::ConjugateType> & value) const {
+    DebugAssert(ok(), AipsError);
+    uInt len = value.nelements();
+    DebugAssert (len == 4 || len == 0, AipsError);
+    value = itsFlux;
+  };
   // Stokes pol.
   void value(Quantum<Vector<T> > & value);
   // Don't assume anything
   void value(Quantum<Vector<NumericTraits<T>::ConjugateType> > & value,
-  	    const ComponentType::Polarisation & pol);
+  	    const ComponentType::Polarisation & pol) {
+    uInt len = value.getValue().nelements();
+    DebugAssert(len == 4 || len == 0, AipsError);
+    convertUnit(value.getFullUnit());
+    convertPol(pol);
+    value.setValue(itsFlux);
+    DebugAssert(ok(), AipsError);
+  };
   // </group>
 
   // Set the current flux assuming for the unspecified values ...
@@ -162,13 +196,22 @@ public:
   // a Stokes pol and the current unit
   void setValue(const Vector<T> & value); 
   // the current unit and pol
-  void setValue(const Vector<NumericTraits<T>::ConjugateType> & value);
-  
+  void setValue(const Vector<NumericTraits<T>::ConjugateType> & value) {
+    DebugAssert (value.nelements() == 4, AipsError);
+    itsFlux = value;
+    DebugAssert(ok(), AipsError);
+  };
   // a Stokes pol
   void setValue(const Quantum<Vector<T> > & value);
   // Nothing. Flux is fully specified.
   void setValue(const Quantum<Vector<NumericTraits<T>::ConjugateType> >& value,
- 	       const ComponentType::Polarisation & pol);
+ 	       const ComponentType::Polarisation & pol) {
+    DebugAssert (value.getValue().nelements() == 4, AipsError);
+    itsFlux = value.getValue();
+    itsUnit = value.getFullUnit();
+    itsPol = pol;
+    DebugAssert(ok(), AipsError);
+  };
   // </group>
 
   // Function which checks the internal data of this class for correct
@@ -242,14 +285,21 @@ public:
   // units are Jy.
   Flux(NumericTraits<T>::ConjugateType xx, NumericTraits<T>::ConjugateType xy,
        NumericTraits<T>::ConjugateType yx, NumericTraits<T>::ConjugateType yy, 
-       ComponentType::Polarisation pol);
-
+       ComponentType::Polarisation pol)  
+    :itsFluxPtr(new FluxRep<T>(xx, xy, yx, yy, pol))
+    {
+      DebugAssert(ok(), AipsError);
+    };
   // Stokes representation, units are Jy.
   Flux(const Vector<T> & flux);
 
   // units are Jy.
   Flux(const Vector<NumericTraits<T>::ConjugateType> & flux,
-       const ComponentType::Polarisation & pol);
+       const ComponentType::Polarisation & pol)
+    :itsFluxPtr(new FluxRep<T>(flux, pol))
+    {
+      DebugAssert(ok(), AipsError);
+    };
   
   // Stokes representation
   Flux(const Quantum<Vector<T> > & flux);
@@ -295,12 +345,18 @@ public:
   // Stokes representation & current unit
   void value(Vector<T> & value);
   // current unit and pol
-  void value(Vector<NumericTraits<T>::ConjugateType> & value) const;
+  void value(Vector<NumericTraits<T>::ConjugateType> & value) const {
+    DebugAssert(ok(), AipsError);
+    itsFluxPtr->value(value);
+  };
   // Stokes pol.
   void value(Quantum<Vector<T> > & value);
   // Don't assume anything
   void value(Quantum<Vector<NumericTraits<T>::ConjugateType> > & value,
-	     const ComponentType::Polarisation & pol);
+	     const ComponentType::Polarisation & pol) {
+    DebugAssert(ok(), AipsError);
+    itsFluxPtr->value(value, pol);
+  };
   // </group>
 
   // Set the current flux assuming for the unspecified values ...
@@ -310,55 +366,180 @@ public:
   // a Stokes pol and the current unit
   void setValue(const Vector<T> & value); 
   // the current unit and pol
-  void setValue(const Vector<NumericTraits<T>::ConjugateType> & value);
-  
+  void setValue(const Vector<NumericTraits<T>::ConjugateType> & value) {
+    DebugAssert(ok(), AipsError);
+    itsFluxPtr->setValue(value);
+  };
   // a Stokes pol
   void setValue(const Quantum<Vector<T> > & value);
   // Nothing. Flux is fully specified.
   void setValue(const Quantum<Vector<NumericTraits<T>::ConjugateType> >& value,
-		const ComponentType::Polarisation & pol);
+		const ComponentType::Polarisation & pol) {
+    DebugAssert(ok(), AipsError);
+    itsFluxPtr->setValue(value, pol);
+  };
   // </group>
 
   // Functions for converting a 4 element complex vector between
   // different representations.
   // <group>
   static void stokesToCircular(Vector<NumericTraits<T>::ConjugateType> & out, 
-    			       const Vector<T> & in);
+    			       const Vector<T> & in) {
+    DebugAssert(in.nelements() == 4, AipsError);
+    DebugAssert(out.nelements() == 4, AipsError);
+    const T i = in(0);
+    const T q = in(1);
+    const T u = in(2);
+    const T v = in(3);
+    out(0).re = i + v; out(0).im = T(0);
+    out(1).re = q;     out(1).im = u;
+    out(2).re = q;     out(2).im = -u;
+    out(3).re = i - v; out(3).im = T(0);
+  };
 
   static void stokesToCircular(Vector<NumericTraits<T>::ConjugateType> & out, 
  			       const Vector<NumericTraits<T>::ConjugateType> &
- 			       in);
+ 			       in) {
+    DebugAssert(in.nelements() == 4, AipsError);
+    DebugAssert(out.nelements() == 4, AipsError);
+    const NumericTraits<T>::ConjugateType i = in(0);
+    const NumericTraits<T>::ConjugateType q = in(1);
+    const NumericTraits<T>::ConjugateType & u = in(2);
+    const NumericTraits<T>::ConjugateType ju(-u.im, u.re);
+    const NumericTraits<T>::ConjugateType v = in(3);
+    out(0) = i + v;
+    out(1) = q + ju;
+    out(2) = q - ju;
+    out(3) = i - v;
+  };
 
   static void circularToStokes(Vector<T> & out,
  			       const Vector<NumericTraits<T>::ConjugateType> &
- 			       in);
+ 			       in) {
+    DebugAssert(in.nelements() == 4, AipsError);
+    DebugAssert(out.nelements() == 4, AipsError);
+    const T rr = in(0).re;
+    const NumericTraits<T>::ConjugateType rl = in(1);
+    const NumericTraits<T>::ConjugateType lr = in(2);
+    const T ll = in(3).re;
+    out(0) = (rr + ll)/T(2);
+    out(1) = (rl.re + lr.re)/T(2);
+    out(2) = (rl.im - lr.im)/T(2);
+    out(3) = (rr - ll)/T(2);
+  };
 
   static void circularToStokes(Vector<NumericTraits<T>::ConjugateType> & out,
  			       const Vector<NumericTraits<T>::ConjugateType> &
- 			       in);
+ 			       in) {
+    DebugAssert(in.nelements() == 4, AipsError);
+    DebugAssert(out.nelements() == 4, AipsError);
+    const NumericTraits<T>::ConjugateType rr = in(0);
+    const NumericTraits<T>::ConjugateType rl = in(1);
+    const NumericTraits<T>::ConjugateType lr = in(2);
+    const NumericTraits<T>::ConjugateType ll = in(3);
+    out(0) = (rr + ll)/T(2);
+    out(1) = (rl + lr)/T(2);
+    NumericTraits<T>::ConjugateType & u = out(2);
+    u.re = (rl.im-lr.im)/T(2);
+    u.im = (lr.re-rl.re)/T(2);
+    out(3) = (rr - ll)/T(2);
+  };
 
   static void stokesToLinear(Vector<NumericTraits<T>::ConjugateType> & out, 
-  			     const Vector<T> & in);
+  			     const Vector<T> & in) {
+    DebugAssert(in.nelements() == 4, AipsError);
+    DebugAssert(out.nelements() == 4, AipsError);
+    const T i = in(0);
+    const T q = in(1);
+    const T u = in(2);
+    const T v = in(3);
+    out(0).re = i + q; out(0).im = T(0);
+    out(1).re = u;     out(1).im = v;
+    out(2).re = u;     out(2).im = -v;
+    out(3).re = i - q; out(3).im = T(0);
+  };
 
   static void stokesToLinear(Vector<NumericTraits<T>::ConjugateType> & out, 
   			     const Vector<NumericTraits<T>::ConjugateType> &
- 			     in);
+ 			     in) {
+    DebugAssert(in.nelements() == 4, AipsError);
+    DebugAssert(out.nelements() == 4, AipsError);
+    const NumericTraits<T>::ConjugateType i = in(0);
+    const NumericTraits<T>::ConjugateType q = in(1);
+    const NumericTraits<T>::ConjugateType u = in(2);
+    const NumericTraits<T>::ConjugateType & v = in(3);
+    const NumericTraits<T>::ConjugateType jv(-v.im, v.re);
+    out(0) = i + q;
+    out(1) = u + jv;
+    out(2) = u - jv;
+    out(3) = i - q;
+  };
 
   static void linearToStokes(Vector<T> & out, 
  			     const Vector<NumericTraits<T>::ConjugateType> &
- 			     in);
+ 			     in) {
+    DebugAssert(in.nelements() == 4, AipsError);
+    DebugAssert(out.nelements() == 4, AipsError);
+    const T xx = in(0).re;
+    const NumericTraits<T>::ConjugateType xy = in(1);
+    const NumericTraits<T>::ConjugateType yx = in(2);
+    const T yy = in(3).re;
+    out(0) = (xx + yy)/T(2);
+    out(1) = (xx - yy)/T(2);
+    out(2) = (xy.re + xy.re)/T(2);
+    out(3) = (xy.im - yx.im)/T(2);
+  };
 
   static void linearToStokes(Vector<NumericTraits<T>::ConjugateType> & out, 
  			     const Vector<NumericTraits<T>::ConjugateType> &
- 			     in);
+ 			     in) {
+    DebugAssert(in.nelements() == 4, AipsError);
+    DebugAssert(out.nelements() == 4, AipsError);
+    const NumericTraits<T>::ConjugateType xx = in(0);
+    const NumericTraits<T>::ConjugateType xy = in(1);
+    const NumericTraits<T>::ConjugateType yx = in(2);
+    const NumericTraits<T>::ConjugateType yy = in(3);
+    out(0) = (xx + yy)/T(2);
+    out(1) = (xx - yy)/T(2);
+    out(2) = (xy + yx)/T(2);
+    NumericTraits<T>::ConjugateType & v = out(3);
+    v.re = (-xy.re-yx.im)/T(2);
+    v.im = (yx.re-xy.im)/T(2);
+  };
 
   static void linearToCircular(Vector<NumericTraits<T>::ConjugateType> & out, 
  			       const Vector<NumericTraits<T>::ConjugateType> &
- 			       in);
+ 			       in) {
+    DebugAssert(in.nelements() == 4, AipsError);
+    DebugAssert(out.nelements() == 4, AipsError);
+    const NumericTraits<T>::ConjugateType xx = in(0);
+    const NumericTraits<T>::ConjugateType & xy = in(1);
+    const NumericTraits<T>::ConjugateType jxy(-xy.im, xy.re);
+    const NumericTraits<T>::ConjugateType & yx = in(2);
+    const NumericTraits<T>::ConjugateType jyx(-yx.im, yx.re);
+    const NumericTraits<T>::ConjugateType yy = in(3);
+    out(0) = (xx - jxy + jyx + yy)/T(2);
+    out(1) = (xx + jxy + jyx - yy)/T(2);
+    out(2) = (xx - jxy - jyx - yy)/T(2);
+    out(3) = (xx + jxy - jyx + yy)/T(2);
+  };
 
   static void circularToLinear(Vector<NumericTraits<T>::ConjugateType> & out, 
  			       const Vector<NumericTraits<T>::ConjugateType> &
- 			       in);
+ 			       in) {
+    DebugAssert(in.nelements() == 4, AipsError);
+    DebugAssert(out.nelements() == 4, AipsError);
+    const NumericTraits<T>::ConjugateType rr = in(0);
+    const NumericTraits<T>::ConjugateType rl = in(1);
+    const NumericTraits<T>::ConjugateType lr = in(2);
+    const NumericTraits<T>::ConjugateType ll = in(3);
+    out(0) = (rr + rl + lr + ll)/T(2);
+    out(1).re = (-rr.im + rl.im - lr.im + ll.im)/T(2);
+    out(1).im = ( rr.re - rl.re + lr.re - ll.re)/T(2);
+    out(2).re = (-rr.im - rl.im + lr.im + ll.im)/T(2);
+    out(2).im = (-rr.re - rl.re + lr.re + ll.re)/T(2);
+    out(3) = (rr - rl - lr + ll)/T(2);
+  };
   // </group>
 
   // Function which checks the internal data of this class for correct
