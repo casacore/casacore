@@ -52,14 +52,6 @@
 
 #include <strstream.h>
 
-
-#if defined(__GNUG__)
-// These might not all be necessary
-typedef Vector<Double> gppbug1;
-typedef Vector<String> gppbug2;
-typedef PagedImage<Float> gppbug3;
-#endif
-
 // At least the Coordinate and header related things could be factored out
 // into template independent code.
 template<class HDUType>
