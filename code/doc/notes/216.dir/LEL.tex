@@ -1336,14 +1336,15 @@ released memory.
 \section {Functionality}
 
 In this section we list the full functionality available in the {\tt
-LEL} classes.  The first small table lists the data type codes used. 
+LEL} classes.    
+
+The next small table lists the data type codes used subsequently.
 
 \begin{center}
 \begin{tabular}{|l|l}
 \hline
 Type & Code \\
 \hline
-Int        & 0 \\
 Float      & 1 \\
 Double     & 2 \\
 Complex    & 3 \\
@@ -1353,8 +1354,41 @@ Bool       & 5 \\
 \end{tabular}
 \end{center}
 
+
+First we give a descriptive table of the available classes and the generic input
+Lattice expression types and output types that they handle.
+
+
+\begin{center}
+\begin{tabular}{|l|l|l|l}
+\hline
+ Class  & Description & Type that Operates on & Return Type \\
+\hline
+LELLattice   & Reads Lattice pixels & 1,2,3,4,5 & 1,2,3,4,5 \\
+LELUnary     & Handles numerical unary operators & 1,2,3,4 & 1,2,3,4 \\
+LELUnaryConst & Handles scalar constants & 1,2,3,4,5 & 1,2,3,4,5 \\
+LELUnaryBool  &  Handles logical unary operators & 5 & 5 \\
+LELBinary   &  Handles numerical binary operators & 1,2,3,4 & 1,2,3,4 \\
+LELBinaryCmp  &  Handles relational binary numerical operators & 1,2,3,4 & 5 \\
+LELBinaryBool &  Handles logical binary operators & 5 & 5 \\
+LELFunction1D &  Handles numerical 1-argument functions  & 1,2,3,4 & 1,2,3,4 \\
+LELFunctionReal1D &  Handles real numerical 1-argument functions & 1,2 & 1,2 \\
+LELFunctionFloat  &   Handles numerical N-argument functions returning Float & 1,3 & 1 \\
+LELFunctionDouble &   Handles numerical N-argument functions returning Double & 2,4 & 2 \\
+LELFunctionComplex &   Handles complex numerical N-argument functions & 3 & 3 \\
+LELFunctionDComplex &  Handles double complex numerical N-argument functions & 4 & 4 \\
+LELFunctionBool     &  Handles logical N-argument functions & 5 & 5 \\
+\hline
+\end{tabular}
+\end{center}
+
+Note that some classes are essentially non-templated specializations of
+others.  For example, {\tt LELFunctionReal1D} handles functions that
+couldn't be in {\tt LELFunction1D} because there was no complex version
+of that function (e.g.  {\tt asin}) so templating would fail. 
+
   
-In the usage column of the following table, the examples use
+In the usage column of the last table, the examples use
 the following objects:
 
 \begin{verbatim}
@@ -1372,6 +1406,7 @@ the following objects:
    LatticeExprNode expr; 
 \end{verbatim}
 
+
 \newpage
 \begin{center}
 \begin{tabular}{|l|l|l|l|l|l}
@@ -1379,17 +1414,17 @@ the following objects:
  Class  & Operation  & Input Data Type  & Result dim. & Arguments  & Usage example \\
 \hline
 LELLattice   &       getSlice   &   1,2,3,4,5  &  Array           &   1   &    expr = a \\
-LELUnary     &        -         &   1,2,3,4    &  Scalar,Array    &   1   &   expr = $-a$ \\
-LELUnary     &         +        &   1,2,3,4    &   Scalar,Array   &   1   &   expr = +a (does nothing) \\
-LELUnaryConst &      constant   &   0,1,2,3,4,5&   Scalar         &   1   &   expr = const \\
-LELUnaryBool  &        !        &   5          &   Scalar,Array   &   1   &   expr = !aBool \\
-LELBinary   &          +        &   1,2,3,4    &   Scalar,Array   &   2   &   expr = a+b \\
-             &         -        &   1,2,3,4    &   Scalar,Array   &   2   &   expr = a$-$b \\
+LELUnary     &        -         &   1,2,3,4    &  Scalar,Array    &   1   &   expr = $-a$ \\  
+             &         +        &   1,2,3,4    &   Scalar,Array   &   1   &   expr = +a (does nothing) \\
+LELUnaryConst &      constant   &   1,2,3,4,5  &   Scalar         &   1   &   expr = const \\ 
+LELUnaryBool  &        !        &   5          &   Scalar,Array   &   1   &   expr = !aBool \\ 
+LELBinary   &          +        &   1,2,3,4    &   Scalar,Array   &   2   &   expr = a+b \\   
+             &         -        &   1,2,3,4    &   Scalar,Array   &   2   &   expr = a$-$b \\ 
               &        *        &   1,2,3,4    &   Scalar,Array   &   2   &   expr = a*b \\
                &       /        &   1,2,3,4    &   Scalar,Array   &   2   &   expr = a/b \\
-LELBinaryCmp  &        ==       &   1,2,3,4    &   Scalar,Array   &   2   &   expr = a==b \\
-               &       !=       &   1,2,3,4    &   Scalar,Array   &   2   &   expr = a!=b \\
-                &      $>$        &   1,2,3,4    &   Scalar,Array   &   2   &   expr = a$>$b \\
+LELBinaryCmp  &        ==       &   1,2,3,4    &   Scalar,Array   &   2   &   expr = a==b \\  
+               &       !=       &   1,2,3,4    &   Scalar,Array   &   2   &   expr = a!=b \\  
+                &      $>$        &   1,2,3,4    &   Scalar,Array   &   2   &   expr = a$>$b \\ 
               &        $<$        &   1,2,3,4    &   Scalar,Array   &   2   &   expr = a$<$b \\
                &       $>=$       &   1,2,3,4    &   Scalar,Array   &   2   &   expr = a$>=$b \\
                 &      $>=$       &   1,2,3,4    &   Scalar,Array   &   2   &   expr = a$<=$b \\
@@ -1397,11 +1432,11 @@ LELBinaryBool &        ==       &   5          &   Scalar,Array   &   2   &   ex
                &       !=       &   5          &   Scalar,Array   &   2   &   expr = aBool!=bBool \\
                 &      \&\&     &   5          &   Scalar,Array   &   2   &   expr = Bool\&\&bBool \\
                  &     $||$       &   5          &   Scalar,Array   &   2   &   expr = Bool$||$bBool \\
-LELFunction1D &        sin      &   1,2,3,4    &   Scalar,Array   &   1   &   expr = sin(a) \\
-               &       sinh     &   1,2,3,4    &   Scalar,Array   &   1   &   expr = sinh(a) \\
-                &      cos      &   1,2,3,4    &   Scalar,Array   &   1   &   expr = cos(a) \\
-                 &     cosh     &   1,2,3,4    &   Scalar,Array   &   1   &   expr = cosh(a) \\
-                  &    exp      &   1,2,3,4    &   Scalar,Array   &   1   &   expr = exp(a) \\
+LELFunction1D &        sin      &   1,2,3,4    &   Scalar,Array   &   1   &   expr = sin(a) \\  
+               &       sinh     &   1,2,3,4    &   Scalar,Array   &   1   &   expr = sinh(a) \\ 
+                &      cos      &   1,2,3,4    &   Scalar,Array   &   1   &   expr = cos(a) \\  
+                 &     cosh     &   1,2,3,4    &   Scalar,Array   &   1   &   expr = cosh(a) \\   
+                  &    exp      &   1,2,3,4    &   Scalar,Array   &   1   &   expr = exp(a) \\   
               &        log      &   1,2,3,4    &   Scalar,Array   &   1   &   expr = log(a) \\
                &       log10    &   1,2,3,4    &   Scalar,Array   &   1   &   expr = log10(a) \\
                 &      sqrt     &   1,2,3,4    &   Scalar,Array   &   1   &   expr = sqrt(a) \\
@@ -1427,8 +1462,7 @@ LELFunctionFloat  &    min      &   1          &   Scalar,Array   &   2   &   ex
 \hline
 \end{tabular}
 \end{center}
-
-
+ 
 
 \newpage
 \begin{center}
@@ -1449,14 +1483,18 @@ LELFunctionDouble &    ntrue    &   5          &   Scalar         &   1   &   ex
                   &    nfalse   &   5          &   Scalar         &   1   &   expr = nfalse(aBool) \\
 LELFunctionDouble &    nelements&   Any        &   Scalar         &   1   &   expr = nelements(a) \\
 LELFunctionComplex &   pow      &   3          &   Scalar,Array   &   2   &   expr = pow(aComplex,bComplex) \\
-                   &   conj     &   3,4        &   Scalar,Array   &   1   &   expr = conj(aComplex) \\
+                   &   conj     &   3          &   Scalar,Array   &   1   &   expr = conj(aComplex) \\
 LELFunctionDComplex &   pow     &   4          &   Scalar,Array   &   2   &   expr = pow(aDComplex,bDComplex) \\
-                    &  conj     &   3,4        &   Scalar,Array   &   1   &   expr = conj(aComplex) \\
+                    &  conj     &   4          &   Scalar,Array   &   1   &   expr = conj(aComplex) \\
 LELFunctionBool     &  all      &   5          &   Scalar         &   1   &   expr = all(aBool) \\
                     &  any      &   5          &   Scalar         &   1   &   expr = any(aBool) \\
 LatticeExprNode   &    amp      &   1,2,3,4    &   Scalar,Array   &   2   &   expr = amp(a,b) \\
 \hline
 \end{tabular}
 \end{center}
+
+
+
+
 
 
