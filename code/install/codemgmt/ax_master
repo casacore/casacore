@@ -2528,3 +2528,4 @@
 11 369 src rm trial/apps/aips2help/atomssynthesis.g
 11 369 src rm trial/apps/hds
 11 374 src mv trial/scripts/aips++.g trial/implement/Utilities/aips++.g
+11 374 src mv trial/scripts/aips++init.g trial/implement/Utilities/aips++init.g
