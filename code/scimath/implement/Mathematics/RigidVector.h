@@ -1,5 +1,5 @@
 //# RigidVector.h: Fast Vector classes with fixed (templated) length
-//# Copyright (C) 1996,1999
+//# Copyright (C) 1996,1999,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -35,7 +35,7 @@
 // #include <aips/Tables/RetypedArrayEngine.h>
 // #include <aips/Tables/RetypedArraySetGet.h>
 // #include <aips/Tables/DataManError.h>
-#include <iostream.h>
+#include <aips/iosfwd.h>
 
 //# forward
 template <class T, Int n> class SquareMatrix;
