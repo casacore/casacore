@@ -112,7 +112,9 @@ enum KernelTypes {
 // A new value is added to the output vector (which is resized appropriately) if any of the 
 // substrings "boxcar", "gaussian" or "hanning" (actually "box", "gauss", and "hann"
 // will do) is present.
-   static Vector<Int> toKernelTypes (const String& kernels);
+   static Vector<Int> toKernelTypes (const String& kernels,
+                                     const String& delimiter);
+   static Vector<Int> toKernelTypes (const Vector<String>& kernels);
    static VectorKernel::KernelTypes toKernelType (const String& kernel);
 
 };
