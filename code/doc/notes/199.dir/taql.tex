@@ -9,6 +9,8 @@ TaQL also makes sorting and column selection possible.
 \\
 The first section explain the syntax and show the options.
 The last sections show the interface to TaQL using Glish or C++.
+The Glish interface makes it possible to embed Glish
+variables and expressions in a TaQL command.
 
 \section{Syntax}
 The TaQL syntax is based on SQL. The full command looks like:
@@ -991,6 +993,27 @@ and classes form the programmer interface.
   \\During execution \$1 is replaced by table \texttt{seltab1}.
   \\Note that the \texttt{name} argument
   generates the \texttt{GIVING} part to make the result persistent.
+
+  It is possible to embed glish variables and expressions in a TaQL
+  command using the syntax \texttt{\$variable} and
+  \texttt{\$(expression)}. A variable can be a standard numeric or
+  string scalar or vector. It can also be a table object.
+  An expression has to result in a numeric or string scalar or vector.
+  E.g
+  \begin{verbatim}
+    tab := table('mytable')
+    coldata := tab.getcol ('col');
+    colmean := sum(coldata) / len(coldata);
+    seltab1 := tab.query ('col > $colmean')
+    seltab2 := tab.query ('col > $(sum(coldata)/len(coldata))')
+    seltab3 := tab.query ('col > mean([SELECT col from $tab])')
+  \end{verbatim}
+  These three queries give the same result.
+  \\However, be careful with the first 2 queries. It is possible to
+  lose accuracy when the glish variables are substituted.
+  \\The substitution mechanism is described in more detail in the
+  \texttt{substitute} functions of module \texttt{utility} of the
+  \htmladdnormallink{Reference Manual}{../../html/aips++.html}.
   
 \item
   The C++ interface consists of 2 parts.
