@@ -192,8 +192,9 @@ Double MUString::getDouble() {
   Double res = 0.0; Int p = initLast();
   if (ptr < len) {
     istrstream instr(str.chars() + ptr);
+    streampos tmp(instr.tellg());
     instr >> res;
-    adjustPtr(ptr + instr.tellg());
+    adjustPtr(ptr + (instr.tellg()-tmp));
     if ((ios::failbit & instr.rdstate()) == 0) setLast(p);
     instr.clear(~ios::failbit & instr.rdstate());	// for non-existing
   };
