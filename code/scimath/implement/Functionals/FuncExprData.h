@@ -85,6 +85,9 @@ public:
     NEQ,
     OR,
     AND,
+    CONDEX,
+    CONDEX2,
+    CONDEX3,
     ADD,
     SUB,
     MUL,
@@ -102,6 +105,9 @@ public:
     RBR,
     COMMA,
     FINISH,
+    GOTO,
+    GOTOF,
+    GOTOT,
     SIN,
     COS,
     ATAN,
@@ -144,6 +150,8 @@ public:
     NONE,
     // Save environment while compiling
     SAVENV,
+    // Indicate a GOTO
+    GOTOPC,
     // Final expression codes
     FINAL };
   // Special priority levels
@@ -164,6 +172,8 @@ public:
     uInt nval;
     // Argument count
     uInt argcnt;
+    // Previous saved program counter
+    uInt pcptr;
   };
   // The operator description: code; priority; # of arguments; # of arguments
   // used up (or produced for functions)

@@ -53,6 +53,9 @@ FuncExprData::FuncExprData() :
     {POW, 	"^",		BIN1,	RTLPRI, 	2, 0, 1, 0, NONE},
     {GT, 	">",		BIN1,	32, 		2, 0, 1, 0, NONE},
     {LT, 	"<",		BIN1,	32, 		2, 0, 1, 0, NONE},
+    {CONDEX,	"?",		BIN1,	16,		2, 0, 1, 0, SAVENV},
+    {CONDEX3,	"CONDEX3",	BIN1,	16,		2, 0, 1, 0, NONE},
+    {CONDEX2,	":",		SPEC,	17,		2, 0, 1, 0, FINAL},
     {CONST, 	"CONST",	SPEC,	SPCPRI,		0, 0,-1, 0, NONE},
     {PARAM, 	"PARAM",	SPEC,	SPCPRI,		0, 0,-1, 0, NONE},
     {ARG, 	"ARG",		SPEC,	SPCPRI,		0, 0,-1, 0, NONE},
@@ -64,6 +67,9 @@ FuncExprData::FuncExprData() :
     {RBR, 	"]",		SPEC,	FINPRI,		0, 0, 0, 0, FINAL},
     {COMMA, 	",",		BIN1,	FINPRI,		0, 0, 0, 0, FINAL},
     {FINISH, 	"FINISH",	SPEC,	FINPRI,		0, 0, 0, 0, FINAL},
+    {GOTO, 	"GOTO",		SPEC,	FINPRI,		0, 0, 0, 0, GOTOPC},
+    {GOTOF, 	"GOTOF",	SPEC,	FINPRI,		0, 0, 0, 0, GOTOPC},
+    {GOTOT, 	"GOTOT",	SPEC,	FINPRI,		0, 0, 0, 0, GOTOPC},
     {SIN, 	"sin",		FUNC,	SPCPRI,		1, 1, 1, 0, SAVENV},
     {COS, 	"cos",		FUNC,	SPCPRI,		1, 1, 1, 0, SAVENV},
     {ATAN, 	"atan",		FUNC,	SPCPRI,		1, 2, 1, 0, SAVENV},
@@ -94,7 +100,8 @@ FuncExprData::FuncExprData() :
     // End of list
     {NOP,	"NOP",		SPEC,	FINPRI,		0, 0, 0, 0, NONE}
   };
-  for (uInt i=0; olist[i].code != NOP; ++i) {
+  uInt i = 0;
+  for (i=0; olist[i].code != NOP; ++i) {
     switch (olist[i].category) {
     case UNA2:
       una2_p[olist[i].name] = olist[i];
@@ -117,9 +124,10 @@ FuncExprData::FuncExprData() :
     default:
       break;
     }
-
     allop_p[olist[i].code] = olist[i];
   };
+  spop_p[olist[i].name] = olist[i];
+  allop_p[olist[i].code] = olist[i];
 }
 
 //# Operators
@@ -138,7 +146,8 @@ void FuncExprData::print(ostream &os, const
     pos.category << ":" <<
     setfill('0') << setw(2) << pos.priority << ":" <<
     pos.narg << ":" <<
-    setfill('0') << setw(2) << pos.nresult << ":" << endl;
+    setfill('0') << setw(2) << pos.nresult << ":" <<
+    pos.info << ":" << endl;
 }
 
 //# Global functions

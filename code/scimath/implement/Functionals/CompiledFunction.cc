@@ -61,100 +61,120 @@ T CompiledFunction<T>::eval(typename Function<T>::FunctionArg x) const {
     };
     
     switch (pos->code) {
-    case  FuncExprData::UNAMIN:
+    case FuncExprData::UNAMIN:
       exec_p.back() = -exec_p.back();
     case FuncExprData::UNAPLUS:
       break;
   
-    case  FuncExprData::POW:
+    case FuncExprData::POW:
       exec_p.back() = pow(exec_p.back(), t);
       break;
-    case  FuncExprData::GTE:
+    case FuncExprData::GTE:
       exec_p.back() = exec_p.back() >= t ? T(1) : T(0);
       break;
-    case  FuncExprData::LTE:
+    case FuncExprData::LTE:
       exec_p.back() = exec_p.back() <= t ? T(1) : T(0);
       break;
-    case  FuncExprData::EQ:
+    case FuncExprData::EQ:
       exec_p.back() = exec_p.back() == t ? T(1) : T(0);
       break;
-    case  FuncExprData::NEQ:
+    case FuncExprData::NEQ:
       exec_p.back() = exec_p.back() != t ? T(1) : T(0);
       break;
-    case  FuncExprData::OR:
+    case FuncExprData::OR:
       exec_p.back() = (exec_p.back() != T(0) || t != T(0)) ? T(1) : T(0);
       break;
-    case  FuncExprData::AND:
+    case FuncExprData::AND:
       exec_p.back() = (t*exec_p.back() != T(0)) ? T(1) : T(0);
       break;
-    case  FuncExprData::ADD:
+    case FuncExprData::ADD:
       exec_p.back() += t;
       break;
-    case  FuncExprData::SUB:
+    case FuncExprData::SUB:
       exec_p.back() -= t;
       break;
-    case  FuncExprData::MUL:
+    case FuncExprData::MUL:
       exec_p.back() *= t;
       break;
-    case  FuncExprData::DIV:
+    case FuncExprData::DIV:
       exec_p.back() /= t;
       break;
+    case FuncExprData::CONDEX3:
+      exec_p.back() = t;
+      break;
 
-    case  FuncExprData::CONST:
-      exec_p.push_back(T(*constp));
-      constp++;
+    case FuncExprData::CONST:
+      exec_p.push_back(T(constp[pos->info]));
       break;
     case FuncExprData::PARAM:
-      exec_p.push_back(T(param_p[pos->narg]));
+      exec_p.push_back(T(param_p[pos->info]));
       break;
     case FuncExprData::ARG:
-      exec_p.push_back(T(x[pos->narg]));
+      exec_p.push_back(T(x[pos->info]));
+      break;
+    case FuncExprData::NOP:
+      break;
+    case FuncExprData::GOTO:
+      pos += pos->info -
+	(static_cast<uInt>(pos-functionPtr_p->getCode().begin())+1);
+      break;
+    case FuncExprData::GOTOF:
+      if (exec_p.back() == T(0.0)) {
+	pos += pos->info -
+	  (static_cast<uInt>(pos-functionPtr_p->getCode().begin())+1);
+      };
+      break;
+    case FuncExprData::GOTOT:
+      if (exec_p.back() != T(0.0)) {
+	pos += pos->info -
+	  (static_cast<uInt>(pos-functionPtr_p->getCode().begin())+1);
+      };
       break;
 
-    case  FuncExprData::SIN:
+    case FuncExprData::SIN:
       exec_p.back() = sin(exec_p.back());
       break;
-    case  FuncExprData::COS:
+    case FuncExprData::COS:
       exec_p.back() = cos(exec_p.back());
       break;
-    case  FuncExprData::ATAN:
+    case FuncExprData::ATAN:
       if (pos->state.argcnt == 1) {
 	exec_p.back() = atan(exec_p.back());
 	break;
       };
-    case  FuncExprData::ATAN2:
+    case FuncExprData::ATAN2:
       exec_p.back() = atan2(exec_p.back(), t);
       break;
-    case  FuncExprData::ASIN:
+    case FuncExprData::ASIN:
       exec_p.back() = asin(exec_p.back());
       break;
-    case  FuncExprData::ACOS:
+    case FuncExprData::ACOS:
       exec_p.back() = acos(exec_p.back());
       break;
-    case  FuncExprData::EXP:
+    case FuncExprData::EXP:
       exec_p.back() = exp(exec_p.back());
       break;
-    case  FuncExprData::EXP2:
+    case FuncExprData::EXP2:
       exec_p.back() = exp(exec_p.back()*
 			  static_cast<typename FunctionTraits<T>::BaseType>
 			  (C::ln2));
       break;
-    case  FuncExprData::EXP10:
+    case FuncExprData::EXP10:
       exec_p.back() = exp(exec_p.back()*
 			  static_cast<typename FunctionTraits<T>::BaseType>
 			  (C::ln10));
       break;
-    case  FuncExprData::LOG:
+    case FuncExprData::LOG:
       exec_p.back() = log(exec_p.back());
       break;
-    case  FuncExprData::LOG2:
+    case FuncExprData::LOG2:
       exec_p.back() = log(exec_p.back())/
 	static_cast<typename FunctionTraits<T>::BaseType>(C::ln2);
       break;
-    case  FuncExprData::LOG10:
+    case FuncExprData::LOG10:
       exec_p.back() = log10(exec_p.back());
       break;
-    case  FuncExprData::PI: {
+    case FuncExprData::PI: {
       if (pos->state.argcnt == 0) {
 	exec_p.push_back(T(static_cast<typename FunctionTraits<T>::BaseType>
 			   (C::pi)));
@@ -163,7 +183,7 @@ T CompiledFunction<T>::eval(typename Function<T>::FunctionArg x) const {
 	  (C::pi);
       };
       break; }
-    case  FuncExprData::EE: {
+    case FuncExprData::EE: {
       if (pos->state.argcnt == 0) {
 	exec_p.push_back(T(static_cast<typename FunctionTraits<T>::BaseType>
 			   (C::e)));
@@ -172,37 +192,37 @@ T CompiledFunction<T>::eval(typename Function<T>::FunctionArg x) const {
 	  (C::e);
       };
       break; }
-    case  FuncExprData::ABS:
+    case FuncExprData::ABS:
       exec_p.back() = abs(exec_p.back());
       break;
-      ///   case  FuncExprData::FLOOR:
+      ///   case FuncExprData::FLOOR:
       ///      exec_p.back() = floor(exec_p.back());
       ///      break;
-      ///    case  FuncExprData::CEIL:
+      ///    case FuncExprData::CEIL:
       ///      exec_p.back() = ceil(exec_p.back());
       ///      break;
-      ///    case  FuncExprData::ROUND:
+      ///    case FuncExprData::ROUND:
       ///      exec_p.back() = floor(exec_p.back()+T(0.5));
       ///      break;
-      ///    case  FuncExprData::INT:
+      ///    case FuncExprData::INT:
       ///      if (exec_p.back() < 0) exec_p.back() = floor(exec_p.back());
       ///      else exec_p.back() = ceil(exec_p.back());
       ///      break;
-      ///    case  FuncExprData::FRACT:
+      ///    case FuncExprData::FRACT:
       ///      if (exec_p.back() < 0) exec_p.back() -= ceil(exec_p.back());
       ///      else exec_p.back() -= floor(exec_p.back());
       ///      break;
-    case  FuncExprData::SQRT:
+    case FuncExprData::SQRT:
       exec_p.back() = sqrt(exec_p.back());
       break;
-    case  FuncExprData::REAL:
+    case FuncExprData::REAL:
       break;
-    case  FuncExprData::IMAG:
+    case FuncExprData::IMAG:
       exec_p.back() = T(0);
       break;
-    case  FuncExprData::AMPL:
+    case FuncExprData::AMPL:
       break;
-    case  FuncExprData::PHASE:
+    case FuncExprData::PHASE:
       exec_p.back() = T(0);
       break;
     default:
