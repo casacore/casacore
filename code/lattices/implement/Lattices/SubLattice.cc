@@ -153,7 +153,7 @@ SubLattice<T>& SubLattice<T>::operator= (const SubLattice<T>& other)
     if (itsMaskLatPtr != 0) {
       itsMaskLatPtr = itsMaskLatPtr->cloneML();
       itsLatticePtr = itsMaskLatPtr;
-      itsRegion.setParent (&itsMaskLatPtr->region());
+      itsRegion.setParent (itsMaskLatPtr->getRegionPtr());
     } else if (itsLatticePtr != 0) {
       itsLatticePtr = itsLatticePtr->clone();
     }
@@ -162,11 +162,6 @@ SubLattice<T>& SubLattice<T>::operator= (const SubLattice<T>& other)
   return *this;
 }
 
-template<class T>
-Lattice<T>* SubLattice<T>::clone() const
-{
-  return new SubLattice<T> (*this);
-}
 template<class T>
 MaskedLattice<T>* SubLattice<T>::cloneML() const
 {
@@ -178,7 +173,7 @@ void SubLattice<T>::setPtr (Lattice<T>* latticePtr,
 			    MaskedLattice<T>* maskLatPtr,
 			    Bool writableIfPossible)
 {
-  if (maskLatPtr == 0) {
+  if (maskLatPtr == 0  ||  maskLatPtr->getRegionPtr() == 0) {
     itsLatticePtr = latticePtr;
     itsMaskLatPtr = 0;
   } else {
@@ -200,7 +195,7 @@ void SubLattice<T>::setRegion (const LatticeRegion& region)
   }
   itsRegion = region;
   if (itsMaskLatPtr != 0) {
-    itsRegion.setParent (&itsMaskLatPtr->region());
+    itsRegion.setParent (itsMaskLatPtr->getRegionPtr());
   }
 }
 template<class T>
@@ -229,15 +224,9 @@ Bool SubLattice<T>::isWritable() const
 }
 
 template<class T>
-Bool SubLattice<T>::isMasked() const
+const LatticeRegion* SubLattice<T>::getRegionPtr() const
 {
-  return itsRegion.hasMask();
-}
-
-template<class T>
-const LatticeRegion& SubLattice<T>::region() const
-{
-    return itsRegion;
+    return &itsRegion;
 }
 
 template<class T>
@@ -256,13 +245,6 @@ template<class T>
 uInt SubLattice<T>::nelements() const
 {
   return itsRegion.nelements();
-}
-
-template<class T>
-Bool SubLattice<T>::doGetMaskSlice (Array<Bool>& buffer,
-				    const Slicer& section)
-{
-  return itsRegion.getSlice (buffer, section);
 }
 
 template<class T>

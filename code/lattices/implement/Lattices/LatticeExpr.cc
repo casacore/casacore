@@ -90,16 +90,10 @@ template <class T>
 LatticeExpr<T>::LatticeExpr (const LatticeExpr<T>& other)
 : expr_p (other.expr_p),
   lastChunkPtr_p (0)
-//
-// Copy constructor.  Uses reference semantics
-//
 {}
 
 template <class T>
 LatticeExpr<T>& LatticeExpr<T>::operator=(const LatticeExpr<T>& other)
-//
-// Assignment. Uses reference semantics
-//
 {
    if (this != &other) {
       expr_p = other.expr_p;
@@ -112,19 +106,7 @@ LatticeExpr<T>& LatticeExpr<T>::operator=(const LatticeExpr<T>& other)
 
 
 template <class T>
-Lattice<T>* LatticeExpr<T>::clone() const
-//
-// Return a copy of the LatticeExpr object. Uses
-// reference semantics.
-{
-   return new LatticeExpr (*this);
-}
-
-template <class T>
 MaskedLattice<T>* LatticeExpr<T>::cloneML() const
-//
-// Return a copy of the LatticeExpr object. Uses
-// reference semantics.
 {
    return new LatticeExpr (*this);
 }
@@ -136,16 +118,13 @@ Bool LatticeExpr<T>::isMasked() const
 }
 
 template <class T>
-const LatticeRegion& LatticeExpr<T>::region() const
+const LatticeRegion* LatticeExpr<T>::getRegionPtr() const
 {
-   return region_p;
+   return 0;
 }
 
 template <class T>
 Bool LatticeExpr<T>::isWritable() const
-//
-// A LatticeExpr lattice is not writable
-//
 {
    return False;
 }

@@ -129,10 +129,7 @@ public:
   SubLattice<T>& operator= (const SubLattice<T>& other);
 
   // Make a copy of the object (reference semantics).
-  // <group>
-  virtual Lattice<T>* clone() const;
   virtual MaskedLattice<T>* cloneML() const;
-  // </group>
 
   // Is the SubLattice paged to disk?
   virtual Bool isPaged() const;
@@ -140,13 +137,8 @@ public:
   // Is the SubLattice writable?
   virtual Bool isWritable() const;
 
-  // Is the SubLattice really masked?
-  // False means that it is only a rectangular box and that it is
-  // not needed to look at the mask.
-  virtual Bool isMasked() const;
-
-  // Get the region/mask object describing this sublattice.
-  virtual const LatticeRegion& region() const;
+  // Get a pointer the region/mask object describing this sublattice.
+  virtual const LatticeRegion* getRegionPtr() const;
 
   // Returns the shape of the SubLattice including all degenerate axes
   // (i.e. axes with a length of one).
@@ -177,9 +169,6 @@ public:
   // for general use. 
   virtual LatticeIterInterface<T>*
                       makeIter (const LatticeNavigator& navigator) const;
-
-  // Do the actual get of the mask data.
-  virtual Bool doGetMaskSlice (Array<Bool>& buffer, const Slicer& section);
 
   // Do the actual getting of an array of values.
   virtual Bool doGetSlice (Array<T>& buffer, const Slicer& section);
