@@ -33,6 +33,7 @@
 #include <aips/Arrays/ArrayUtil.h>
 #include <aips/Arrays/Cube.h>
 #include <aips/Arrays/MatrixMath.h>
+#include <aips/Arrays/ArrayMath.h>
 #include <aips/Arrays/Slice.h>
 #include <aips/Containers/Record.h>
 #include <aips/Exceptions/Error.h>
@@ -1573,6 +1574,12 @@ void MSFitsInput::fillFieldTable(BinaryTable& bt, Int nField)
   Table suTab=bt.fullTable();
   ROScalarColumn<Int> id(suTab,"ID. NO.");
   ROScalarColumn<String> name(suTab,"SOURCE");
+  ROScalarColumn<Int> qual(suTab,"QUAL");
+  Bool multiqual=False;
+  Int minqual, maxqual;
+  minMax(minqual, maxqual, qual.getColumn());
+  if(minqual != maxqual)
+    multiqual=True;
   ROScalarColumn<String> code(suTab,"CALCODE");
   // ROScalarColumn<Float> iflux(suTab,"IFLUX"); // etc Q, U, V (Jy)
   ROScalarColumn<Double> ra(suTab,"RAEPO");    //degrees
@@ -1618,7 +1625,12 @@ void MSFitsInput::fillFieldTable(BinaryTable& bt, Int nField)
     }
     msField.sourceId().put(fld,-1); // source table not filled in
     msField.code().put(fld,code(inRow));
-    msField.name().put(fld,name(inRow));
+    String theFldName;
+    if(multiqual)
+      theFldName=name(inRow)+"_"+String::toString(qual(inRow));
+    else
+      theFldName=name(inRow);
+    msField.name().put(fld,theFldName);
     Int numPoly = 0;
     if (!nearAbs(pmra(inRow), 0.0) || !nearAbs(pmdec(inRow), 0.0)) {
       numPoly = 1;
