@@ -1,5 +1,5 @@
 //# TableExprData.h: Abstract base class for data object in a TaQL expression
-//# Copyright (C) 2000
+//# Copyright (C) 2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -32,7 +32,6 @@
 
 //# Includes
 #include <aips/aips.h>
-#include <aips/Mathematics/Complexfwd.h>
 #include <aips/Utilities/DataType.h>
 
 //# Forward Declarations
