@@ -1,0 +1,216 @@
+<html>
+<head>
+
+<SCRIPT LANGUAGE = "JavaScript">
+
+<!--
+if (document.images) {                     //if image object is available
+img1on = new Image();                       // MouseOver Images
+img1on.src = "../../html/navpages/images3/gettingstartednav6on.gif";
+img2on = new Image();
+img2on.src = "../../html/navpages/images3/documentationnav6on.gif";
+img3on = new Image();
+img3on.src = "../../html/navpages/images3/learnmorenav6on.gif";
+img4on = new Image();
+img4on.src = "../../html/navpages/images3/searchnav6on.gif";
+img5on = new Image();
+img5on.src = "../../html/navpages/images3/communicatenav6on.gif";
+img6on = new Image();
+img6on.src = "../../html/navpages/images3/homenav6on.gif";
+timg1on = new Image();                       // MouseOver Images
+timg1on.src = "../../html/navpages/images3/gettingstartednav6on.gif";
+timg2on = new Image();
+timg2on.src = "../../html/navpages/images3/documentationnav6on.gif";
+timg3on = new Image();
+timg3on.src = "../../html/navpages/images3/learnmorenav6on.gif";
+timg4on = new Image();
+timg4on.src = "../../html/navpages/images3/searchnav6on.gif";
+timg5on = new Image();
+timg5on.src = "../../html/navpages/images3/communicatenav6on.gif";
+timg6on = new Image();
+timg6on.src = "../../html/navpages/images3/homenav6on.gif";
+img1off = new Image();                         // MouseOut Images
+img1off.src = "../../html/navpages/images3/gettingstartednav6off.gif";
+img2off = new Image();          
+img2off.src = "../../html/navpages/images3/documentationnav6off.gif";
+img3off = new Image();
+img3off.src = "../../html/navpages/images3/learnmorenav6off.gif";
+img4off = new Image();
+img4off.src = "../../html/navpages/images3/searchnav6off.gif";
+img5off = new Image();
+img5off.src = "../../html/navpages/images3/communicatenav6off.gif";
+img6off = new Image();
+img6off.src = "../../html/navpages/images3/homenav6off.gif";
+timg1off = new Image();                                  // MouseOut Images
+timg1off.src = "../../html/navpages/images3/gettingstartednav6off.gif"; 
+timg2off = new Image();          
+timg2off.src = "../../html/navpages/images3/documentationnav6off.gif";
+timg3off = new Image();
+timg3off.src = "../../html/navpages/images3/learnmorenav6off.gif";
+timg4off = new Image();
+timg4off.src = "../../html/navpages/images3/searchnav6off.gif";
+timg5off = new Image();
+timg5off.src = "../../html/navpages/images3/communicatenav6off.gif";
+timg6off = new Image();
+timg6off.src = "../../html/navpages/images3/homenav6off.gif";
+}
+function imgOn(imgName) {
+        if (document.images) {
+            document[imgName].src = eval(imgName + "on.src");        }}
+function imgOff(imgName) {
+        if (document.images) {
+            document[imgName].src = eval(imgName + "off.src");        }}
+//-->
+
+</SCRIPT>
+
+
+
+
+
+
+
+<title>Installing AIPS++</title>
+</head>
+
+<BODY BGCOLOR="#ffffff" TEXT="#000000">
+<FONT FACE="Arial,Helvetica">
+
+<FONT FACE="Arial,Helvetica">
+<table cellpadding=0 cellspacing=0 border=0>
+<tr><td>
+<A HREF="../../html/navpages/gettingstarted6.html" 
+         onMouseOver="imgOn('timg1')" 
+         onMouseOut="imgOff('timg1')">
+<IMG NAME="timg1" SRC="../../html/navpages/images3/gettingstartednav6off.gif" BORDER=0></A>
+</td><td>
+<A HREF="../../html/navpages/secondpage6.html" 
+         onMouseOver="imgOn('timg2')" 
+         onMouseOut="imgOff('timg2')">
+<IMG NAME="timg2" SRC="../../html/navpages/images3/documentationnav6off.gif" BORDER=0></A>
+</td><td>
+<A HREF="../../html/navpages/learnmore6.html" 
+         onMouseOver="imgOn('timg3')" 
+         onMouseOut="imgOff('timg3')">
+<IMG NAME="timg3" SRC="../../html/navpages/images3/learnmorenav6off.gif" BORDER=0></A>
+</td></tr><tr><td>
+<A HREF="../../html/navpages/search/search.html"         
+          onMouseOver="imgOn('timg4')" 
+          onMouseOut="imgOff('timg4')">
+<IMG NAME="timg4" SRC="../../html/navpages/images3/searchnav6off.gif" BORDER=0></A>
+</td><td>
+<A HREF="../../html/navpages/communicate6.html" 
+          onMouseOver="imgOn('timg5')" 
+          onMouseOut="imgOff('timg5')">
+<IMG NAME="timg5" SRC="../../html/navpages/images3/communicatenav6off.gif" BORDER=0></A>
+</td><td>
+<A HREF="../../html/aips++.html" 
+          onMouseOver="imgOn('timg6')" 
+          onMouseOut="imgOff('timg6')">
+<IMG NAME="timg6" SRC="../../html/navpages/images3/homenav6off.gif" BORDER=0></A>
+
+</td></tr>
+</table>
+<BR>
+
+ 
+<font face=helvetica size="+6" color="cc0000">
+<b>Installing AIPS++</b></font><p>
+
+<BLOCKQUOTE> <B><font color="#ff0000">Warning:</font> 
+At this stage of development ofAIPS++, is 
+available only via anonymous ftp.  This document describes how to 
+install the development system, which allows coding in
+AIPS++. Since the system is currently very volatile, we discourage you
+from trying to use it unless you have a good reason, and have talked
+to Project staff beforehand. We offer no support for use of the
+development system. If coding is not important, then we very strongly
+prefer that you wait to use one of the official beta releases, the
+next of which will be available in September 1998. We do provide
+support for the beta releases, provided that you are a member of our
+beta-tester program. In either event, please first contact the AIPS++
+Project Manager <a href="mailto:tcornwel@aoc.nrao.edu">Tim
+Cornwell</a> before downloading.</B> </BLOCKQUOTE><p>
+
+<table width="650" BGCOLOR="#cc0000">
+<tr><td><font size="0"><br>
+</td></tr>
+</table>
+<font face=helvetica size="4">
+<p>
+
+Installation of the <b>AIPS++</b> development system is quite simple. 
+You download and install a <i><b>bootstrap</b></i> that contains scripts 
+to set up the necessary environment
+and then <i><b>inhale</b></i> the complete system. The <i><b>bootstrap</b></i> 
+phase takes a few minutes, and the <i><b>inhale</b></i> typically takes 
+many hours (it has to ftp a total of about 50 MB, and then build 
+the system).
+
+<p>
+
+In the following, commands to feed to your shell are <em>in this font and 
+also are prefixed by $'s</em>: <p>
+
+<b>1)</b> Go to where you want the <font face=helvetica>AIPS++</font> 
+installation's root area to be located (e.g. /aips++/), type<p>
+
+<dl><dd><em>$ mkdir code ; cd code</em> </dl>
+
+<b>2)</b> FTP to <code><b>aips2.nrao.edu:/pub/RELEASED/latest</b></code> 
+and get the following files<p>
+
+<ul>
+<li>   configure </li>
+<li>   install-09.000.tar.gz </li>
+<li>   VERSION </li>
+
+</ul>
+</p></li>
+
+<b>3)</b> After you receive the files, <p>
+
+<dl><dd><em>$ chmod +x configure</em><p>
+<dd><em>$ ./configure --source</em> <p></dl>
+
+
+Answer the questions <b><i>configure</i></b> gives you.  
+     Edit items like 
+    the <b><i>aipsrc</i></b> and <i><b>makedefs</b></i> files as you see fit. 
+   Remember to put
+   something sensible in the <b><i>printer*</i></b> entries in the 
+<i><b>aipsrc</b> file </i>.</p> 
+
+<b>4)</b> If you're running the <b>sh/ksh/bash</b> shell, type<p>
+
+<dl><dd><em>$ . aipsinit.sh</em></dl><p>
+
+    or, if you're running a <b>csh/tcsh</b> flavored shell, type<p>
+
+  <dl><dd>  <em>$ source aipsinit.csh</em></dl>
+
+You now have the <b><i>bootstrap</i></b> part of the system loaded.<p>
+
+
+<b>5)</b>  You can now get the latest version of the entire system 
+ automatically via a cumulative inhale by typing</p>
+
+    <dl><dd><em>$ inhale -c</em></dl>
+
+<p> The last step takes some time (a few to perhaps 10-15 hours).
+When finished, you should have a working, up-to-date, 
+<font face=helvetica>AIPS++</font>
+installation.<p>
+
+More information on the AIPS++ code management and distribution system
+can be found in the 
+<a href="../../../../docs/reference/System/System.html">
+System Reference manual.</p>
+
+    <hr>
+<!-- Created: Tue Aug 18 09:42:16 MDT 1998 -->
+<!-- hhmts start -->
+Last modified: Tue Aug 18 09:55:47 MDT 1998
+<!-- hhmts end -->
+  </body>
+</html>
