@@ -38,7 +38,7 @@ main() {
   cout<<"day of week "<< t.dayOfWeek()<<"\n";
   cout<<"day of year "<< t.dayOfYear()<<"\n";
   cout<<"Age "<< t.age()<<"\n";
-  cout<<"leap seconds "<< t.leapSeconds() <<"\n";
+  //  cout<<"leap seconds "<< t.leapSeconds() <<"\n";
   cout<< t <<"\n";
   Time t1(t),t2,t3(2440587.0),t4(1970,1,1),t5,t6(2449480.5);
   t2=t1;
