@@ -94,18 +94,26 @@ void LattStatsSpecialize::accumulate (Complex& nPts, DComplex& sum,
 // try to access.
 //
 {
-   const Float& rd = real(datum);
-   const Float& id = imag(datum);
+  ///   const Float& rd = real(datum);
+  ///   const Float& id = imag(datum);
+  const Float rd = real(datum);
+  const Float id = imag(datum);
 //
    if (real(useIt) > 0.5) {
-      nPts.real() += 1;
-      sum.real() += rd;
-      sumSq.real() += rd*rd;
+     nPts += Complex(1.0, 0.0);
+     sum += DComplex(rd, 0.0);
+     sumSq += DComplex(rd*rd, 0.0);
+     ///      nPts.real() += 1;
+     ///      sum.real() += rd;
+     ///      sumSq.real() += rd*rd;
    }
    if (imag(useIt) > 0.5) {
-      nPts.imag() += 1;
-      sum.imag() += id;
-      sumSq.imag() += id*id;
+     nPts += Complex(0.0, 1.0);
+     sum += DComplex(0.0, id);
+     sumSq += DComplex(0.0, id*id);
+     ///      nPts.imag() += 1;
+     ///      sum.imag() += id;
+     ///      sumSq.imag() += id*id;
    }
 
 //
@@ -125,18 +133,22 @@ void LattStatsSpecialize::accumulate (Complex& nPts, DComplex& sum,
    } else {  
       if (real(useIt) > 0.5) {
          if (rd < real(dataMin)) {
-            dataMin.real() = rd;
+	   ///            dataMin.real() = rd;
+	   dataMin = Complex(rd, dataMin.imag());
          }
          if (rd > real(dataMax)) {
-            dataMax.real() = rd;
+	   ///            dataMax.real() = rd;
+	   dataMax = Complex(rd, dataMax.imag());
          }
       }
       if (imag(useIt) > 0.5) {
          if (id < imag(dataMin)) {
-            dataMin.imag() = id;
+	   ///            dataMin.imag() = id;
+	   dataMin = Complex(dataMin.real(), id);
          }
          if (id > imag(dataMax)) {
-            dataMax.imag() = id;
+	   ///            dataMax.imag() = id;
+	   dataMax = Complex(dataMax.real(), id);
          }
       }
    }
@@ -189,8 +201,10 @@ Float LattStatsSpecialize::getRms (Float sumsq, Float n)
 Complex LattStatsSpecialize::getMean (Complex sum, Complex n)
 {
    Complex tmp(0.0,0.0);
-   if (real(n) > 0.5) tmp.real() = real(sum)/real(n);
-   if (imag(n) > 0.5) tmp.imag() = imag(sum)/imag(n);
+   ///   if (real(n) > 0.5) tmp.real() = real(sum)/real(n);
+   ///   if (imag(n) > 0.5) tmp.imag() = imag(sum)/imag(n);
+   if (real(n) > 0.5) tmp = Complex(real(sum)/real(n), tmp.imag());
+   if (imag(n) > 0.5) tmp = Complex(tmp.real(), imag(sum)/imag(n));
    return tmp;
 }
 
@@ -277,8 +291,9 @@ void LattStatsSpecialize::setUseItTrue (Float& useIt)
 
 void LattStatsSpecialize::setUseItTrue (Complex& useIt)
 {
-   useIt.real() = 1.0;
-   useIt.imag() = 1.0;
+  ///   useIt.real() = 1.0;
+  ///   useIt.imag() = 1.0;
+  useIt = Complex(1.0, 1.0);
 }
 
 
@@ -406,8 +421,9 @@ Bool LattStatsSpecialize::setIncludeExclude (String& errorMessage,
 // 
    range.resize(rangeReal.nelements());
    for (uInt i=0; i<range.nelements(); i++) {
-      range(i).real() = rangeReal(i);
-      range(i).imag() = rangeImag(i);
+     ///      range(i).real() = rangeReal(i);
+     ///      range(i).imag() = rangeImag(i);
+     range(i) = Complex(rangeReal(i), rangeImag(i));
    }
 //
    return True;
