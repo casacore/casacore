@@ -30,6 +30,8 @@
 #define TRIAL_IMAGEREGRID_H
 
 #include <aips/aips.h>
+#include <aips/Arrays/Matrix.h>
+#include <aips/Arrays/Cube.h>
 #include <aips/Measures/MDirection.h>
 #include <aips/Measures/MFrequency.h>
 #include <trial/Mathematics/Interpolate2D.h>
@@ -39,8 +41,6 @@ template<class T> class ImageInterface;
 template<class T> class Lattice;
 template<class T> class LatticeIterator;
 template<class T> class Vector;
-template<class T> class Matrix;
-template<class T> class Cube;
 
 class CoordinateSystem;
 class DirectionCoordinate;
@@ -145,6 +145,22 @@ public:
               Bool replicate=False, uInt decimate=0,
               Bool showProgress=False, Bool forceRegrid=False);
 
+// Get and set the 2-D coordinate grid.  After a call to function <src>regrid</src>
+// in which coupled 2D coordinate (presently only DirectionCoordinate) is
+// regridded, this coordinate grid will be available.  It can be reused
+// via the <src>set2DCoordinateGrid</src> function for another like plane
+// (e.g. if you choose to regrid planes of a cube separately).   When you provide
+// the coordinate grid, it will no longer (for that 2D coordinate only) be
+// computed internally, which may save a lot of time.  Ordinarily, if you
+// regridded many planes of a cube in one call to regrid, the coordinate grid
+// is cached for you.   To trigger successive calls to regrid to go back to
+// internal computation, set zero length Cube and Matrix.  <src>gridMask</src>
+// is True for successfull coordinate conversions, and False otherwise.
+// <group>
+  void get2DCoordinateGrid (Cube<Double>& grid, Matrix<Bool>& gridMask) const;
+  void set2DCoordinateGrid (const Cube<Double>& grid, const Matrix<Bool>& gridMask);
+// </group>
+//
   // Inserts inImage into outImage.  The alignment is done by
   // placing the blc of inImage at the specified 
   // absolute pixel of the outImage (outPixelLocation).  If 
@@ -181,7 +197,13 @@ public:
 
   Int itsShowLevel;
   Bool itsDisableConversions;
-  
+//
+  Cube<Double> its2DCoordinateGrid;
+  Matrix<Bool> its2DCoordinateGridMask;
+//
+  Cube<Double> itsUser2DCoordinateGrid;
+  Matrix<Bool> itsUser2DCoordinateGridMask;
+//  
   // Check shape and axes.  Exception if no good.  If pixelAxes
   // of length 0, set to all axes according to shape
   void checkAxes(IPosition& outPixelAxes,
