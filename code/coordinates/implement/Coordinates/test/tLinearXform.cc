@@ -145,6 +145,10 @@ int main()
          if (!allEQ(px.ac(), lxf.pc().ac())) {
             throw(AipsError("Failed pc set/recovery test"));
          }
+//   
+// Nothing I can do with this to test it
+//
+         linprm lp = lxf.linprmWCS();
       }
 
 // Test conversion
@@ -163,6 +167,23 @@ int main()
          Bool ok = lxf.forward(world, pixel, error);
          if (!ok) {
             throw(AipsError(String("Forwards conversion failed because ") +
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                             error));
          }
          for (uInt i=0; i<crpix.nelements(); i++) {
