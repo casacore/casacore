@@ -136,7 +136,8 @@ const String &MDirection::showType(uInt tp) {
 	"NEPTUNE",
 	"PLUTO",
 	"SUN",
-	"MOON" };
+	"MOON",
+	"COMET" };
 
     if ((tp & MDirection::EXTRA) == 0) {
       DebugAssert(tp < MDirection::N_Types, AipsError);
@@ -149,8 +150,8 @@ const String &MDirection::showType(uInt tp) {
 
 const String *const MDirection::allMyTypes(Int &nall, Int &nextra,
 					   const uInt *&typ) {
-  static const Int N_name  = 29;
-  static const Int N_extra = 10;
+  static const Int N_name  = 30;
+  static const Int N_extra = 11;
   static const String tname[N_name] = {
     "J2000",
     "JMEAN",
@@ -180,7 +181,8 @@ const String *const MDirection::allMyTypes(Int &nall, Int &nextra,
     "NEPTUNE",
     "PLUTO",
     "SUN",
-    "MOON" };
+    "MOON",
+    "COMET" };
   
   static const uInt oname[N_name] = {
     MDirection::J2000,
@@ -211,7 +213,8 @@ const String *const MDirection::allMyTypes(Int &nall, Int &nextra,
     MDirection::NEPTUNE,
     MDirection::PLUTO,
     MDirection::SUN,
-    MDirection::MOON };
+    MDirection::MOON,
+    MDirection::COMET };
 
   nall   = N_name;
   nextra = N_extra;

@@ -99,6 +99,8 @@ template <class M> class ROScalarMeasColumn;
 //  <li>MDirection::PLUTO
 //  <li>MDirection::SUN
 //  <li>MDirection::MOON
+//  <li>MDirection::COMET  -- solar system body: no coordinates  attached,
+//			 only table
 
 //  <li>MDirection::DEFAULT = J2000
 // </ul>
@@ -204,6 +206,8 @@ public:
       PLUTO,
       SUN,
       MOON,
+      // Comet or other table-described solar system body
+      COMET,
       N_Planets,
       // All extra bits
       EXTRA = 32,
