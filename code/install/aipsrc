@@ -100,6 +100,9 @@
   sneeze.*.*.logfile:
   sneeze*logmail:		aips2-inhale@nrao.edu
 
+# Preserve documentation when a new base release is installed?
+  sneeze.base.docs.preserve:	true
+
 # Preserve the system when a new base release is installed?
 # sneeze.base.<arch>.preserve:
   sneeze.base.*.preserve:	true
