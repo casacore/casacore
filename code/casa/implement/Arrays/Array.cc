@@ -40,9 +40,9 @@ rtti_imp_mbrf_a1(Array);
 
 
 template<class T> Array<T>::Array()
-: start(1,0), length(1,0), inc(1,1), originalLength(1,0), data(new Block<T>(0))
+: start(0,0), length(0,0), inc(0,1), originalLength(0,0), data(new Block<T>(0))
 {
-    ndimen = 1;
+    ndimen = 0;
     nels = 0;
     begin = data->storage();
     DebugAssert(ok(), ArrayError);
