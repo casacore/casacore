@@ -3766,3 +3766,4 @@
 14 029 src mv aips/implement/OS/test/tDirectoryIterator.exec aips/implement/OS/test/tDirectoryIterator.run
 14 029 src mv aips/implement/OS/test/tPath.exec aips/implement/OS/test/tPath.run
 14 029 src mv aips/implement/OS/test/tFile.exec aips/implement/OS/test/tFile.run
+14 029 src mv aips/implement/OS/test/tRegularFile.exec aips/implement/OS/test/tRegularFile.run
