@@ -5327,3 +5327,4 @@
 15 034 sys rm libexec/ptemplates.g
 15 034 sys rm libexec/pulsar.g
 15 034 sys rm libexec/sp.g
+15 036 src rm nrao/apps/gbtutils/commissioning.g
