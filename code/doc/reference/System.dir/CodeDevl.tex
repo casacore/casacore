@@ -1675,7 +1675,9 @@ then checks for duplicates in this file and in
 \subsection*{See also}
 
 \aipspp\ do-it-yourself template instantiation (\exeref{mkinst}).\\
-\exeref{reident}, reformat in canonical form the template instantiation file.
+\exeref{reident}, reformat in canonical form the template instantiation file.\\
+\exeref{unused}, check usage of templates in binary executables and object
+modules.
 
 \subsection*{Author}
 
@@ -1992,8 +1994,9 @@ be specified as ``\file{-}'' to denote input from \file{stdin}.  Output is
 written to \file{templates} or to \file{stdout} -- if the input came from
 \file{templates} it will be overwritten.
 
-Missing idents, idents specified as less than \code{1000} and the second and
-subsequent occurrence of
+Missing idents (the preferred way of adding template definitions), 
+idents specified as less than \code{1000} (another safe way to add new
+templates) and the second and subsequent occurrence of
 duplicate idents are replaced by a unique value for each \file{.cc} file.  If
 the \exe{-z} option is specified, all idents are replaced with an ascending
 sequence starting at \code{1000} for each \file{.cc} file.
@@ -2063,8 +2066,154 @@ templates included are not duplicated (see \exeref{duplicates}).
 
 \exeref{mkinst}, Generate template instantiation files from a list.\\
 \exeref{duplicates}, Checks for duplicate entries in \file{templates} lists
-   across the system.
+   across the system.\\
+\exeref{unused}, Checks for usage of templates in binary modules (executables
+or object modules).
 
 \subsection*{Author}
 
 Original: 1996/04/16 by Mark Calabretta, ATNF.
+
+% ----------------------------------------------------------------------------
+
+\newpage
+\section{\exe{unused}}
+\label{unused}
+\index{unused@\exe{unused}}
+\index{templates!list!reformat|see{\exe{unused}}}
+
+Check for unused (or used) template object modules in binaries and/or object
+modules and/or libraries.
+
+\subsection*{Synopsis}
+
+\begin{synopsis}
+   \code{\exe{reident} [\exe{-z}|\exe{-nz}|\exe{-a}|\exe{-[0-9]\ldots}]
+        [\exe{-p}|\exe{-r}|\exe{-u} package]\ldots 
+	[-t templates1 [templates2 \ldots]]
+	\exe{-f}|\exe{-b} file1 [file2 \ldots] 
+	[\exe{-i} list1 [list2 \dots]]}
+\end{synopsis}
+
+\subsection*{Description}
+
+\exe{unused} reads binary files (either executables, object modules or object
+libraries) specified by the \exe{-b} switch or the output of the
+\exe{g++filt} filtered output of the \exe{nm} or \exe{gnm} 
+program of such files as specified by the \exe{-f} switch. I.e. files that
+are to specified following an \exe{-f} switch should have the following
+pre-processing: 
+\begin{verbatim}
+	[g]nm binary.file | g++filt >! file.f
+\end{verbatim}
+(Note that internally \exe{unused} uses the \exe{gnm} and \exe{g++filt}
+synonyms. If they are not available on your system, the full path of these
+programs (or for the \exe{nm} program) can be specified in the \code{aipsrc}
+file variables \code{unused.file.nm} and \code{unused.file.gfilt}.)
+
+The other part of the input is a set of templates files. They can be
+specified as individual templates files (following the \exe{-t} switch), or as
+a set of templates files in a package (like \exe{aips}, \exe{trial} or
+\exe{all} to indicate all packages).
+
+The templates in the specified templates files (including those specified
+with the \exe{-i} switch) will be checked against the
+templates defined in the binary files . Depending on the show switches (\exe{-a}, \exe{-z},
+\exe{-nz}, \exe{-number}) the output will contain templates used or unused in
+the specified binary files.
+
+\subsection*{Options}
+
+\begin{description}
+\item[\exe{-z}]
+   Show the unused templates only (this is the default if no show switch is
+   given)
+\item[\exe{-nz}]
+   Show the used templates only (if the output is saved to a file, it can be
+   used in a subsequent run of the \exe{unused} program with the \exe{-i}
+   switch in stead of the original binary files)
+\item[\exe{-a}]
+   Show all the templates used in the binaries (i.e. both the used and unused
+   ones)
+\item[\exe{-number}]
+   Show only the templates that are used in at least the number of binary
+   files specified. I.e. if the switch given is \exe{-2}, and two binary
+   files are given as input, only templates occurring in both of these will
+   be shown. If only one binary file was given nothing will be shown; if
+   three binary files were sepcified all templates used in at least two of
+   them will be shown.
+\item[\exe{-p package}]
+   Use all templates files found in the specified package (the package name
+   may be ``all'')
+\item[\exe{-r package}]
+   Use all templates files in the repository directory of the specified
+   package (or ``all'')
+\item[\exe{-u package}]
+   Use all user templates files in the package (i.e. excluding the ones in
+   the repositories)
+\item[\exe{-t file [file \ldots]}]
+   Use the explicitly specified templates files
+\item[\exe{-i file [file \ldots]}]
+   Use the specified files as a source of templates. The files must be the
+   ouput of an earlier run of the unused program (e.g. with the \exe{-nz}
+   switch).
+\item[\exe{-b|-f file [file \ldots]}]
+   Specify the binary files (\exe{-b}) to be checked. The files can be
+   executables, object libraries or object modules (i.e. files that can be
+   handled by some \exe{nm} program). If the \exe{-f} switch is used in stead
+   of the \exe{-b} switch, the binary files are supposed to have been
+   filtered already by a \exe{nm} program and the \exe{g++filt} program.
+\end{description}
+
+\subsection*{Notes}
+
+\begin{itemize}
+\item
+   The output of the program can be used as input of the \exeref{duplicates}
+   program. 
+\end{itemize}
+
+\subsection*{Diagnostics}
+
+Status return values
+\\ \verb+   0+: success
+\\ \verb+   1+: no files found
+
+\subsection*{Examples}
+
+To show all the templates specified in the \code{Tables/test/templates} file
+that are used in a demonstration program \exe{dM30}:
+
+\begin{verbatim}
+   unused -a ~/aips++/sun4sol_gnu/bindbg/dM30 -b `which dM30`
+
+Using [/aips++/code/aips/implement/Tables/test/templates]
+176 templates in 1 files
+176 templates in 1 files after 0 inclusion files
+Checked against 11259 names in 1 name files
+# Template usage: 
+    0: AiPs_hidden_type_(Array<ExampleDesc> *)
+    0: AiPs_hidden_type_(Array<RetypedArrayEx1> *)
+    0: AiPs_hidden_type_(Array<RetypedArrayEx2> *)
+    0: AiPs_hidden_type_(Array<VSCExample> *)
+.......
+    0: valDataTypeId(RetypedArrayEx2 const *)
+    0: valDataTypeId(VSCExample const *)
+176 templates shown
+\end{verbatim}
+
+In this case all the templates in the templates file have a count zero (none
+used in the binary). The same output would have been generated with the
+(default) \exe{-z} switch, while no templates would have been shown if the
+\exe{-nz} switch had been used.
+
+
+\subsection*{See also}
+
+\exeref{mkinst}, Generate template instantiation files from a list.\\
+\exeref{duplicates}, Checks for duplicate entries in \file{templates} lists
+   across the system.
+
+\subsection*{Author}
+
+Original: 1997/07/16 by Wim Brouw, ATNF.
