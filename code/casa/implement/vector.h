@@ -124,8 +124,6 @@ template void std::fill<T*, T >(T*, T*, const T&);
 #  else
 #   define AIPS_VECTOR_AUX_TEMPLATES(T)
 #  endif
-# else
-#  define AIPS_VECTOR_AUX_TEMPLATES(T)
 # endif
 #else
 # define AIPS_VECTOR_AUX_TEMPLATES(T)
