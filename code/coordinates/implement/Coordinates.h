@@ -42,7 +42,7 @@
 // <module>
 //
 // <summary>
-// Classes to interconvert computation positions (pixel) with physical ones (world)
+// Classes to interconvert pixel and world (physical) coordinates
 // </summary>
 
 // <prerequisite>
