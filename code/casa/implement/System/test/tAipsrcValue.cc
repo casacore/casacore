@@ -1,5 +1,5 @@
 //# tAipsrcValue.cc: This program tests the Aipsrc value interface
-//# Copyright (C) 1996,1997,1998,1999
+//# Copyright (C) 1996,1997,1998,1999,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -33,6 +33,7 @@
 #include <aips/Quanta/Unit.h>
 #include <aips/Quanta/MVTime.h>
 #include <aips/Utilities/Assert.h>
+#include <aips/iostream.h>
 
 int main(){
   String aipsrcKeyword("my.double.test");

@@ -1,5 +1,5 @@
 //# tAipsrc.cc: This program tests the Aipsrc interface
-//# Copyright (C) 1996,1997
+//# Copyright (C) 1996,1997,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -28,6 +28,7 @@
 #include <aips/aips.h>
 #include <aips/Tasking/Aipsrc.h>
 #include <aips/Utilities/Assert.h>
+#include <aips/iostream.h>
 
 int main(){
   String aipsrcKeyword("printer.ps1.paper");
