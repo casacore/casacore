@@ -40,6 +40,7 @@
 #include <trial/Coordinates/LinearCoordinate.h>
 #include <trial/Coordinates/StokesCoordinate.h>
 #include <trial/Coordinates/TabularCoordinate.h>
+#include <trial/Coordinates/CoordinateUtil.h>
 #include <aips/Exceptions/Error.h>
 #include <aips/Tables/TableRecord.h>
 
@@ -546,6 +547,14 @@ void doit (CoordinateSystem& cSys, uInt nCoords, const Vector<Int>& types,
 // because that is not reflected back by the FITS  conversion
 //
    {
+      CoordinateSystem cSys3;
+      TableRecord rec;
+      IPosition shape;
+      if (CoordinateSystem::fromFITSHeader(cSys3, rec, shape, True, 'c')) {
+         throw(AipsError("Unexpectedly did not fail fromFITSHeader (1)"));
+      }
+   }
+   {
       CoordinateSystem cSys2;
       cSys2.addCoordinate(makeDirectionCoordinate(False));
       StokesCoordinate stokesCoord = makeStokesCoordinate(False);
@@ -553,36 +562,125 @@ void doit (CoordinateSystem& cSys, uInt nCoords, const Vector<Int>& types,
       uInt stokesAxis = 2;
       cSys2.addCoordinate(stokesCoord);
       cSys2.addCoordinate(makeSpectralCoordinate());
-//      cSys2.addCoordinate(makeLinearCoordinate(1));
+      cSys2.addCoordinate(makeLinearCoordinate());
 //
       TableRecord rec;
       IPosition shape(cSys2.nPixelAxes(),64);
       shape(stokesAxis) = shapeStokes;
       if (!cSys2.toFITSHeader(rec, shape, True, 'c', False,
                         True, True)) {
-         throw(AipsError(String("Failed to convert to FITS header because") 
-            + cSys2.errorMessage()));
+         throw(AipsError(String("Failed to convert to FITS header (1)")));
       }
 //
-/*
-      for (uInt j=0; j<rec.nfields(); j++) {
-        cout << "field " << rec.name(j) << " is of type " << rec.type(j) << endl;
-      }
-      cout << "crval=" << rec.asArrayDouble("crval") << endl;
-      cout << "crpix=" << rec.asArrayDouble("crpix") << endl;
-      cout << "cdelt=" << rec.asArrayDouble("cdelt") << endl;      
-*/
-//
-      CoordinateSystem cSys3;
+// Assigning cSys3 rather leaving it empty will force testing of 
+// more code in fromFITSHeader
+
+      CoordinateSystem cSys3 = CoordinateUtil::defaultCoords2D();
       if (!CoordinateSystem::fromFITSHeader(cSys3, rec, shape, True, 'c')) {
-         throw(AipsError("Failed to convert from FITS header"));
+         throw(AipsError("Failed to convert from FITS header (1)"));
       }
       if (!cSys2.near(cSys3)) {
-         msg = String("Failed to/fromFITS consistency test because ") +   
+         msg = String("Failed to/fromFITS consistency test (1) because ") +   
                       cSys2.errorMessage();
          throw(AipsError(msg));
       }
    }
+
+// Do lots of Stokes combinations to exercise as much code
+// as possible
+
+   {
+      CoordinateSystem cSys2;
+      Vector<Int> whichStokes(4);
+      whichStokes(0) = Stokes::I;
+      whichStokes(1) = Stokes::Q;
+      whichStokes(2) = Stokes::U;
+      whichStokes(3) = Stokes::V;
+      StokesCoordinate stokesCoord(whichStokes);
+      uInt shapeStokes = stokesCoord.stokes().nelements();
+      uInt stokesAxis = 0;
+      cSys2.addCoordinate(stokesCoord);
+//
+      TableRecord rec;
+      IPosition shape(cSys2.nPixelAxes(),64);
+      shape(stokesAxis) = shapeStokes;
+      if (!cSys2.toFITSHeader(rec, shape, True, 'c', False,
+                        True, True)) {
+         throw(AipsError(String("Failed to convert to FITS header (2)")));
+      }
+//
+      CoordinateSystem cSys3;
+      if (!CoordinateSystem::fromFITSHeader(cSys3, rec, shape, True, 'c')) {
+         throw(AipsError("Failed to convert from FITS header (2)"));
+      }
+      if (!cSys2.near(cSys3)) {
+         msg = String("Failed to/fromFITS consistency test (2) because ") +   
+                      cSys2.errorMessage();
+         throw(AipsError(msg));
+      }
+   }
+   {
+      CoordinateSystem cSys2;
+      Vector<Int> whichStokes(4);
+      whichStokes(0) = Stokes::RR;
+      whichStokes(1) = Stokes::LL;
+      whichStokes(2) = Stokes::RL;
+      whichStokes(3) = Stokes::LR;
+      StokesCoordinate stokesCoord(whichStokes);
+      uInt shapeStokes = stokesCoord.stokes().nelements();
+      uInt stokesAxis = 0;
+      cSys2.addCoordinate(stokesCoord);
+//
+      TableRecord rec;
+      IPosition shape(cSys2.nPixelAxes(),64);
+      shape(stokesAxis) = shapeStokes;
+      if (!cSys2.toFITSHeader(rec, shape, True, 'c', False,
+                        True, True)) {
+         throw(AipsError(String("Failed to convert to FITS header (3)")));
+      }
+//
+      CoordinateSystem cSys3;
+      if (!CoordinateSystem::fromFITSHeader(cSys3, rec, shape, True, 'c')) {
+         throw(AipsError("Failed to convert from FITS header (3)"));
+      }
+      if (!cSys2.near(cSys3)) {
+         msg = String("Failed to/fromFITS consistency test (3) because ") +   
+                      cSys2.errorMessage();
+         throw(AipsError(msg));
+      }
+   }
+   {
+      CoordinateSystem cSys2;
+      Vector<Int> whichStokes(4);
+      whichStokes(0) = Stokes::XX;
+      whichStokes(1) = Stokes::YY;
+      whichStokes(2) = Stokes::XY;
+      whichStokes(3) = Stokes::YX;
+      StokesCoordinate stokesCoord(whichStokes);
+      uInt shapeStokes = stokesCoord.stokes().nelements();
+      uInt stokesAxis = 0;
+      cSys2.addCoordinate(stokesCoord);
+//
+      TableRecord rec;
+      IPosition shape(cSys2.nPixelAxes(),64);
+      shape(stokesAxis) = shapeStokes;
+      if (!cSys2.toFITSHeader(rec, shape, True, 'c', False,
+                        True, True)) {
+         throw(AipsError(String("Failed to convert to FITS header (4)")));
+      }
+//
+      CoordinateSystem cSys3;
+      if (!CoordinateSystem::fromFITSHeader(cSys3, rec, shape, True, 'c')) {
+         throw(AipsError("Failed to convert from FITS header (4)"));
+      }
+      if (!cSys2.near(cSys3)) {
+         msg = String("Failed to/fromFITS consistency test (4) because ") +   
+                      cSys2.errorMessage();
+         throw(AipsError(msg));
+      }
+   }
+
+
 //   
 // Test record saving
 //
