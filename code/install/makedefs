@@ -181,6 +181,13 @@ X11INCD   = $(X11ROOT)/include
 X11LIBD   = $(X11ROOT)/lib
 X11LIB   := -lXt -lXmu -lX11 -lXext
 
+# XPM (X Pixmap) library
+XPMROOT  := /usr/local/X11
+XPMDEFS  :=
+XPMINCD   = $(XPMROOT)/include
+XPMLIBD   = $(XPMROOT)/lib
+XPMLIB   := -lXpm
+
 # LAPACK (FORTRAN Linear Algebra Package).
 LAPACKROOT := /usr/local
 LAPACKDEFS :=
