@@ -1,5 +1,5 @@
 //# MomentCalculator.h: 
-//# Copyright (C) 1997,1999
+//# Copyright (C) 1997,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -30,6 +30,8 @@
 
 //# Includes
 #include <aips/aips.h>
+#include <trial/Coordinates/CoordinateSystem.h>
+#include <trial/Coordinates/SpectralCoordinate.h>
 #include <trial/Lattices/LineCollapser.h>
 #include <aips/Functionals/Gaussian1D.h>
 #include <aips/Mathematics/NumericTraits.h>
@@ -122,6 +124,11 @@ template <class T> class ImageMoments;
 // MomentCalcBase and its derived classes.
 // </motivation>
 //
+// <note role=tip>
+// Note that there are is assignment operator or copy constructor.
+// Do not use the ones the system would generate either.
+// </note role=tip>
+//
 // <todo asof="yyyy/mm/dd">
 //  Derive more classes !
 // </todo>
@@ -137,15 +144,18 @@ public:
 
 protected:
 
-
 // A number of private data members are kept here in the base class
 // as they are common to the derived classes.  Since this class
 // is abstract, they have to be filled by the derived classes.
+
+// CoordinateSystem
+   CoordinateSystem cSys_p;
 
 // This vector is a container for all the possible moments that
 // can be calculated.  They are in the order given by the ImageMoments
 // enum MomentTypes
    Vector<T> calcMoments_p;
+   Vector<Bool> calcMomentsMask_p;
 
 // This vector tells us which elements of the calcMoments_p vector
 // we wish to select
@@ -192,6 +202,13 @@ protected:
 
 // This is the number of Gaussian fits that failed.
    uInt nFailed_p;
+
+// This scale factor is the increment along the moment axis
+// applied so that units for the Integrated moment are like
+// Jy/beam.km/s (or whatever is needed for the moment axis units)
+// For non-linear velocities (e.g. optical) this is approximate
+// only and is computed at the reference pixel
+   Double integratedScaleFactor_p;
 
 // Accumulate statistical sums from a vector
    void accumSums(NumericTraits<T>::PrecisionType& s0,
@@ -246,6 +263,7 @@ protected:
 
 // Check validity of constructor inputs
    void constructorCheck(Vector<T>& calcMoments,
+                         Vector<Bool>& calcMomentsMask,
                          const Vector<Int>& selectMoments,
                          const uInt nLatticeOut) const;
 
@@ -263,21 +281,21 @@ protected:
                       Bool& doMedianV,
                       Bool& doAbsDev) const;
 
-// Return plotting device from ImageMoments object
+// Return reference plotting device from ImageMoments object
    PGPlotter& device(ImageMoments<T>& iMom) const;
 
 // Return automatic/interactive switch from the ImageMoments object
-   Bool& doAuto(ImageMoments<T>& iMom) const;
+   Bool doAuto(const ImageMoments<T>& iMom) const;
 
 // Return the Bool saying whether we need to compute coordinates
 // or not for the requested moments
    void doCoordCalc(Bool& doCoordProfile,
                     Bool& doCoordRandom,
-                    ImageMoments<T>& iMom) const;
+                    const ImageMoments<T>& iMom) const;
 
 // Return the Bool from the ImageMoments object saying whether we 
 // are going to fit Gaussians to the profiles or not.
-   Bool& doFit(ImageMoments<T>& iMom) const;
+   Bool doFit(const ImageMoments<T>& iMom) const;
 
 // Draw a horizontal line across the full x range of the plot
    void drawHorizontal(const T& y,
@@ -335,8 +353,8 @@ protected:
                      const T levelGuess) const;
                         
 // Return the fixed Y-plotting limits switch from the
-// ImageMomemts object
-   Bool& fixedYLimits(ImageMoments<T>& iMom) const;
+// ImageMoments object
+   Bool fixedYLimits(const ImageMoments<T>& iMom) const;
 
 // Automatically fit a Gaussian to a spectrum, including finding the
 // starting guesses.
@@ -430,7 +448,7 @@ protected:
 // 
 // Should really check the result is True, but for speed ...
 //
-   iMom.pInImage_p->coordinates().toWorld(worldOut, pixelIn);
+   cSys_p.toWorld(worldOut, pixelIn);
    return worldOut(iMom.worldMomentAxis_p);
 };
 
@@ -450,7 +468,8 @@ protected:
    Int& momentAxis(ImageMoments<T>& iMom) const;
 
 // Return the name of the moment/profile axis
-   String momentAxisName(ImageMoments<T>& iMom) const;
+   String momentAxisName(const CoordinateSystem&,
+                         const ImageMoments<T>& iMom) const;
 
 // Return the number of moments that the ImageMoments class can calculate
    uInt nMaxMoments() const;
@@ -474,9 +493,11 @@ protected:
 // Fill the ouput moments array
    void setCalcMoments (ImageMoments<T>& iMom,
                         Vector<T>& calcMoments,
+                        Vector<Bool>& calcMomentsMask,
                         Vector<Double>& pixelIn,
                         Vector<Double>& worldOut,
                         Bool doCoord,
+                        Double integratedScaleFactor,
                         T dMedian,
                         T vMedian,
                         Int nPts,
@@ -492,6 +513,8 @@ protected:
 //
 // Fill the moments vector
 //
+// Inputs
+//   integratedScaleFactor  width of a channel in km/s or Hz or whatever
 // Outputs:
 //   calcMoments The moments
 //
@@ -505,9 +528,11 @@ protected:
            
              
 // Normalize and fill moments
-                
+
+   calcMomentsMask = True;
+//
    calcMoments(IM::AVERAGE) = s0 / nPts;
-   calcMoments(IM::INTEGRATED) = s0; 
+   calcMoments(IM::INTEGRATED) = s0 * integratedScaleFactor; 
    calcMoments(IM::WEIGHTED_MEAN_COORDINATE) = s1 / s0;
    calcMoments(IM::WEIGHTED_DISPERSION_COORDINATE) = 
      (s2 / s0) - calcMoments(IM::WEIGHTED_MEAN_COORDINATE) *
@@ -519,6 +544,7 @@ protected:
          sqrt(calcMoments(IM::WEIGHTED_DISPERSION_COORDINATE));
    } else {
       calcMoments(IM::WEIGHTED_DISPERSION_COORDINATE) = 0.0;
+      calcMomentsMask(IM::WEIGHTED_DISPERSION_COORDINATE) = False;
    }
 
 // Standard deviation about mean of I
@@ -527,6 +553,7 @@ protected:
       calcMoments(IM::STANDARD_DEVIATION) = sqrt((s0Sq - s0*s0/nPts)/(nPts-1));
    } else {
       calcMoments(IM::STANDARD_DEVIATION) = 0;
+      calcMomentsMask(IM::STANDARD_DEVIATION) = False;
    }
 
 // Rms of I
@@ -541,23 +568,27 @@ protected:
 
    calcMoments(IM::MAXIMUM) = dMax;
                                       
-// Coordinate of maximum value
+// Coordinate of min/max value
 
-   if (doCoord) calcMoments(IM::MAXIMUM_COORDINATE) =
-         getMomentCoord(iMom, pixelIn, worldOut, Double(iMax));                                     
+   if (doCoord) {
+      calcMoments(IM::MAXIMUM_COORDINATE) =
+           getMomentCoord(iMom, pixelIn, worldOut, Double(iMax));                                     
+      calcMoments(IM::MINIMUM_COORDINATE) =
+           getMomentCoord(iMom, pixelIn, worldOut, Double(iMin));
+   } else {
+      calcMoments(IM::MAXIMUM_COORDINATE) = 0.0;
+      calcMoments(IM::MINIMUM_COORDINATE) = 0.0;
+      calcMomentsMask(IM::MAXIMUM_COORDINATE) = False;
+      calcMomentsMask(IM::MINIMUM_COORDINATE) = False;
+   }
 
 // Minimum value
    calcMoments(IM::MINIMUM) = dMin;
 
-// Coordinate of minimum value
-
-   if (doCoord) calcMoments(IM::MINIMUM_COORDINATE) =
-          getMomentCoord(iMom, pixelIn, worldOut, Double(iMin));
-
 // Medians
 
-     calcMoments(IM::MEDIAN) = dMedian;
-     calcMoments(IM::MEDIAN_COORDINATE) = vMedian;
+   calcMoments(IM::MEDIAN) = dMedian;
+   calcMoments(IM::MEDIAN_COORDINATE) = vMedian;
 };
 
 
@@ -566,6 +597,11 @@ protected:
    void setPosLabel(String& title,
                     const IPosition& pos) const;
 
+// Install CoordinateSystem and SpectralCoordinate
+// in protected data members
+   void setCoordinateSystem (CoordinateSystem& cSys,
+                             const ImageMoments<T>& iMom);
+
 // Set up separable moment axis coordinate vector and
 // conversion vectors if not separable
    void setUpCoords (ImageMoments<T>& iMom,
@@ -573,6 +609,8 @@ protected:
                      Vector<Double>& worldOut,
                      Vector<Double>& sepWorldCoord,
                      LogIO& os,
+                     Double& integratedScaleFactor,
+                     const CoordinateSystem& cSys,
                      Bool doCoordProfile, Bool doCoordRandom) const;
 
 // Plot the Gaussian fit
@@ -682,6 +720,10 @@ protected:
 // </srcBlock>
 // </example>
 //
+// <note role=tip>
+// Note that there are is assignment operator or copy constructor.
+// Do not use the ones the system would generate either.
+// </note role=tip>
 //
 // <todo asof="yyyy/mm/dd">
 // </todo>
@@ -781,7 +823,7 @@ private:
 // 
 //  The constructor takes an ImageMoments object; the one that is constructing
 //  the MomentWindow object of course.   There is much control information embodied  
-//  in the state  of the ImageMomemts object.  This information is extracted by the
+//  in the state  of the ImageMoments object.  This information is extracted by the
 //  MomentCalcBase class and passed on to MomentClip for consumption.
 //
 //  Note that the ancilliary lattice is only accessed if the pointer to it
@@ -823,6 +865,11 @@ private:
 //
 // <motivation>
 // </motivation>
+//
+// <note role=tip>
+// Note that there are is assignment operator or copy constructor.
+// Do not use the ones the system would generate either.
+// </note role=tip>
 //
 // <todo asof="yyyy/mm/dd">
 // </todo>
@@ -1024,6 +1071,11 @@ private:
 // <motivation>
 // </motivation>
 //
+// <note role=tip>
+// Note that there are is assignment operator or copy constructor.
+// Do not use the ones the system would generate either.
+// </note role=tip>
+//
 // <todo asof="yyyy/mm/dd">
 // </todo>
 
@@ -1059,7 +1111,6 @@ public:
                              const IPosition& pos);
 
 private:
-
    ImageMoments<T>& iMom_p;
    LogIO os_p;
    T stdDeviation_p, peakSNR_p;
@@ -1067,7 +1118,5 @@ private:
    Gaussian1D<T> gauss_p;
 
 };
-
-
 
 #endif
