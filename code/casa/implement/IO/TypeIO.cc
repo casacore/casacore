@@ -181,7 +181,9 @@ uInt TypeIO::read (uInt nvalues, String* str) {
       Char* ptr = const_cast<Char *>(str[i].chars()); // get actual string
                                               // pointer -- yack
       n += read (len, ptr);                   // read string
-      if (len != 0) ptr[len] = '\0';
+#ifdef USE_OLD_STRING
+      ptr[len] = '\0';
+#endif
     };
     return n;
 }

@@ -1371,7 +1371,9 @@ uInt ISMColumn::toString (void* out, const void* in, uInt n,
 	str.alloc (strleng);
 	char* var = (char*)(str.chars());
 	memcpy (var, buf + leng, strleng);
+#ifdef USE_OLD_STRING
 	var[strleng] = '\0';
+#endif
 	leng += strleng;
     }
     return leng;

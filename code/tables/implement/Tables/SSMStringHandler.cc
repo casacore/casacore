@@ -1,5 +1,5 @@
 //# SSMStringHandler.cc: Store Strings in the Standard Storage Manager
-//# Copyright (C) 2000
+//# Copyright (C) 2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -388,9 +388,10 @@ void SSMStringHandler::get (String& string, Int bucket, Int offset,
 
   getData(length,data,offset);
 
-  // terminate string
+  // terminate string for old strings
+#ifdef USE_OLD_STRING
   data[length] = '\0';  
-
+#endif
 }
 
 void SSMStringHandler::get (Array<String>& string, Int bucket, Int offset,
