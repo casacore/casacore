@@ -35,6 +35,7 @@ Convolver(const Array<FType>& psf, Bool cachePsf){
   //  if (cachePsf) thePsf = psf;
   thePsf = psf;
   valid = False;
+  doFast_p=False;
 }
 
 template<class FType> Convolver<FType>::
@@ -45,6 +46,7 @@ Convolver(const Array<FType>& psf,
   //  if (cachePsf) thePsf = psf;
   thePsf = psf;
   valid = False;
+  doFast_p=False;
 }
 
 template<class FType> Convolver<FType>::
@@ -54,6 +56,7 @@ Convolver(const Convolver<FType>& other){
   theXfr = other.theXfr;
   thePsf = other.thePsf;
   theFFT = other.theFFT;
+  doFast_p=False;
 }
 
 template<class FType> Convolver<FType> & 
@@ -68,6 +71,7 @@ Convolver<FType>::operator=(const Convolver<FType> & other){
     thePsf.resize(other.thePsf.shape());
     thePsf = other.thePsf;
     theFFT = other.theFFT;
+    doFast_p=False;
   }
   return *this;
 } 
@@ -101,7 +105,9 @@ template<class FType> void Convolver<FType>::
 makeXfr(const Array<FType>& psf, 
 	const IPosition& imageSize,
 	Bool linear, Bool fullSize){
-  const Array<FType> psfND = psf.nonDegenerate();
+
+  const Array<FType> psfND1 = psf.nonDegenerate();
+  Array<FType> psfND= psfND1.copy();
   thePsfSize = psfND.shape();
   IPosition imageNDSize = imageSize.nonDegenerate();
   uInt psfDim = thePsfSize.nelements();
@@ -130,10 +136,24 @@ makeXfr(const Array<FType>& psf,
     paddedPsf = 0.;  
     paddedPsf(blc, trc) = psfND;
     // And do the fft
-    theFFT.fft(theXfr, paddedPsf, False);
+    if(doFast_p){
+      //theFFT.flip(paddedPsf, True, False);
+      theFFT.fft0(theXfr, paddedPsf, False);
+    }
+    else{
+      theFFT.fft(theXfr, paddedPsf, False);
+    }
   }
-  else
-    theFFT.fft(theXfr, psfND);
+  else{
+    if(doFast_p){
+      //theFFT.flip(psfND, True, False);
+      theFFT.fft0(theXfr, psfND);
+    }
+    else{
+      theFFT.fft(theXfr, psfND);
+    }
+
+  }
 }
 
 template<class FType> void Convolver<FType>::
@@ -141,7 +161,14 @@ makePsf(Array<FType>& psf){
   validate();
   if (thePsf.nelements() == 0) {
     Array<FType> paddedPsf(theFFTSize);
-    theFFT.fft(paddedPsf, theXfr, True);
+    //    theFFT.flip(paddedPsf, True, False);
+    if(doFast_p){
+      theFFT.fft0(paddedPsf, theXfr, True);
+      theFFT.flip(paddedPsf, False, False);
+    }
+    else{
+      theFFT.fft(paddedPsf, theXfr, True);
+    }
     IPosition trc, blc;
     blc = (theFFTSize-thePsfSize)/2;
     trc = blc + thePsfSize - 1;
@@ -205,16 +232,36 @@ doConvolution(Array<FType>& result,
     paddedModel = 0.;
     paddedModel(blc, trc) = model;
     // And calculate its transform
-    theFFT.fft(fftModel, paddedModel);
+    //    theFFT.flip(paddedModel, True, False);
+    if(doFast_p){
+      theFFT.fft0(fftModel, paddedModel);
+    }
+    else{
+      theFFT.fft(fftModel, paddedModel);
+    }
   }
-  else
-    theFFT.fft(fftModel, model);
+  else{
+    Array<FType> paddedModel=model;
+    if(doFast_p){
+      //    theFFT.flip(paddedModel, True, False);
+      theFFT.fft0(fftModel, paddedModel);
+    }
+    else{
+      theFFT.fft(fftModel, paddedModel);
+    } 
+  }
   // Multiply by the transfer function
   fftModel *= theXfr;
 
   // Do the inverse transform
   Array<FType> convolvedData(theFFTSize);
-  theFFT.fft(convolvedData, fftModel);
+  if(doFast_p){
+    theFFT.fft0(convolvedData, fftModel);
+    theFFT.flip(convolvedData, False, False);
+  }
+  else{
+    theFFT.fft(convolvedData, fftModel);
+  }
   // Extract the required part of the convolved data
   IPosition trc, blc; 
   if (fullSize) {
@@ -233,6 +280,7 @@ setPsf(const Array<FType>& psf, Bool cachePsf){
   thePsf.resize(psf.shape());
   thePsf = psf;
   valid=False;
+  doFast_p=False;
 }
   
 template<class FType> void Convolver<FType>::
@@ -243,6 +291,7 @@ setPsf(const Array<FType>& psf,
   thePsf.resize(psf.shape());
   thePsf = psf;
   valid=False;
+  doFast_p=False;
 }
 
 template<class FType> void Convolver<FType>::
@@ -286,4 +335,9 @@ getPsf(Bool cachePsf){
   if ((cachePsf == True) && (thePsf.nelements() == 0))
     thePsf.reference(psf);
   return psf;
+}
+template<class FType> void Convolver<FType>::
+setFastConvolve(){
+  doFast_p=True;
+
 }
