@@ -87,7 +87,7 @@ template <class T> class Vector;
 //	to output a frequency, or if an input frequency is given as a
 //	simple double, these units will be implicitly assumed.
 //   <li> Reference for velocity. It should contain at least the reference
-//	code, to specify what type of frequency we are talking about
+//	code, to specify what type of velocity we are talking about
 //	(e.g. MDoppler::OPTICAL, note
 // 	that MDoppler::BETA is the 'true' velocity).
 //	The reference could also contain an offset. In that case all
@@ -209,7 +209,7 @@ public:
   // frame) with explicit velocity reference frame
   // specified.
   VelocityMachine(const MFrequency::Ref &frqref, const Unit &frqun,
-		  const MVFrequency &rest,
+		  const MVFrequency &restFreq,
 		  const MFrequency::Types &freqConvertType,
 		  const MDoppler::Ref &velRef, const Unit &velUnits,
 		  const MeasFrame &frame);
