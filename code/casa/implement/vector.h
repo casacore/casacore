@@ -59,7 +59,10 @@ template \
 void fill<T *, T >(T *, T *, T const &); \
 template \
 T *__uninitialized_fill_n_aux<T *, uInt, T >(T *, uInt, \
-			      T const &, __false_type);
+			      T const &, __false_type); \
+template \
+void vector<T, allocator<T> >:: \
+_M_assign_aux(T const *, T const *, forward_iterator_tag);
 
 #else
 #define AIPS_VECTOR_AUX_TEMPLATES(T)
