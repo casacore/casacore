@@ -260,10 +260,11 @@ private:
    Vector<Float> range_p;
    String device_p; 
    Bool doList_p;
-   Bool goodParameterStatus_p;
-   Bool needStorageImage_p;
    Bool noInclude_p, noExclude_p;
    IPosition cursorShape_p, minPos_p, maxPos_p;
+
+   Bool goodParameterStatus_p;
+   Bool needStorageImage_p;
    Int nVirCursorIter_p;   
 
    ArrayLattice<Double>* pStoreImage_p;
@@ -305,7 +306,7 @@ private:
                            const Matrix<Float>& ord);
 
 // Plot the statistics
-   void plotStats         (const IPosition& dPos,
+   Bool plotStats         (const IPosition& dPos,
                            const Int& n,
                            const Matrix<Float>& ord);
 
