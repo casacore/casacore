@@ -1,5 +1,5 @@
 //# Path.cc: Class to define a pathname
-//# Copyright (C) 1993,1994,1995,1996,1997,1998,1999
+//# Copyright (C) 1993,1994,1995,1996,1997,1998,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //# 
 //# This library is free software; you can redistribute it and/or modify it
@@ -454,29 +454,26 @@ void Path::getNextName (const String& inString, uInt& count) const
 
 String Path::stripDirectory (const String& name, const String& otherName)
 {
-    // First try to remove the full otherName.
     // Add trailing slash if not there.
     String dir (Path(otherName).absoluteName());
     if (dir.lastchar() != '/') {
 	dir += '/';
     }
-    // Remove possible leading ./ from dir and name.
-    String tName(name);
-    while (tName.length() >= 2  &&  tName[0] == '.'  &&  tName[1] == '/') {
-	tName = tName.after(1);
-    }
-    while (dir.length() >= 2  &&  dir[0] == '.'  &&  dir[1] == '/') {
-	dir = dir.after(1);
-    }
     Int leng = dir.length();
     // Convert name to an absolute path name.
-    String aName (Path(tName).absoluteName());
+    String aName (Path(name).absoluteName());
     // If directory is contained in this name, return name without it.
     // Prepend by ././ indicating full name is removed.
     if (leng > 0) {
-	if (aName.length() > uInt(leng)  &&  aName.before(leng) == dir) {
+        Int aleng = aName.length();
+	if (aleng > leng  &&  aName.before(leng) == dir) {
 	    return "././" + aName.from (leng);
-	}else{
+	} else {
+	    // No match; see if name matches start of otherName.
+	    // If so, append /. to remainder of otherName.
+	    if (aleng+1 < leng  &&  dir.before(aleng+1) == aName+'/') {
+	        return dir.from(aleng+1) + '.';
+	    }
 	    // No match; now compare using the directory part only.
 	    dir = Path(dir).dirName() + '/';
 	    while (dir.length() >= 2  &&  dir[0] == '.'  &&  dir[1] == '/') {
@@ -494,9 +491,15 @@ String Path::stripDirectory (const String& name, const String& otherName)
     if (leng == 0) {
 	// Also relative if the parent is this directory and the
 	// subtable is relative.
-	if (tName[0] != '/'  &&  tName[0] != '$'  &&  tName[0] != '~') {
-	    return "./" + tName;
+	if (name[0] != '/'  &&  name[0] != '$'  &&  name[0] != '~') {
+	    return "./" + name;
 	}
+    }
+    // Nothing could be stripped.
+    // Return original name after removing possible leading ./
+    String tName(name);
+    while (tName.length() >= 2  &&  tName[0] == '.'  &&  tName[1] == '/') {
+	tName = tName.after(1);
     }
     return tName;
 }
@@ -521,6 +524,19 @@ String Path::addDirectory (const String& name, const String& otherName)
 	}
 	dir.append (tName);
 	return dir.originalName();
+    } else {
+        // If name ends in /. and if it matches the end of otherName,
+        // we have to return the remainder of otherName.
+        Int leng = tName.length();
+        if (leng >= 3  &&  tName[leng-2] == '/'  &&  tName[leng-1] == '.') {
+	    leng -= 2;
+	    String oName(otherName);
+	    Int oleng = oName.length();
+	    if (oleng >= leng+2
+            &&  '/'+tName.before(leng) == oName.from(oleng-leng-1)) {
+	        return oName.before(oleng-leng-1);
+	    }
+	}
     }
     return tName;
 }
