@@ -1,5 +1,5 @@
 //# ISMColumn.cc: The Column of the Incremental Storage Manager
-//# Copyright (C) 1996,1997,1998,1999,2000
+//# Copyright (C) 1996,1997,1998,1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -875,7 +875,7 @@ void ISMColumn::putValue (uInt rownr, const void* value)
     // Determine if the value is the only one in the interval.
     // When the row to change is the first of the interval, increment
     // the interval start.
-    Bool single = ToBool(stint==endint);
+    Bool single = (stint==endint);
 //#    if (!single  &&  bucketRownr == stint) {
 //#	rowIndex[inx]++;
 //#    }

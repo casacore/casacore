@@ -1,5 +1,5 @@
 //# TSMDataColumn.cc: Tiled Hypercube Storage Manager for data columns
-//# Copyright (C) 1995,1996,1997,1998,1999,2000
+//# Copyright (C) 1995,1996,1997,1998,1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -77,12 +77,12 @@ uInt TSMDataColumn::dataLength (uInt nrPixels) const
 Bool TSMDataColumn::canAccessScalarColumn (Bool& reask) const
 {
     reask = True;
-    return ToBool (stmanPtr_p->nhypercubes() == 1);
+    return (stmanPtr_p->nhypercubes() == 1);
 }
 Bool TSMDataColumn::canAccessArrayColumn (Bool& reask) const
 {
     reask = True;
-    return ToBool (stmanPtr_p->nhypercubes() == 1);
+    return (stmanPtr_p->nhypercubes() == 1);
 }
 Bool TSMDataColumn::canAccessSlice (Bool& reask) const
 {
@@ -92,7 +92,7 @@ Bool TSMDataColumn::canAccessSlice (Bool& reask) const
 Bool TSMDataColumn::canAccessColumnSlice (Bool& reask) const
 {
     reask = True;
-    return ToBool (stmanPtr_p->nhypercubes() == 1);
+    return (stmanPtr_p->nhypercubes() == 1);
 }
 
 
@@ -140,7 +140,7 @@ Bool TSMDataColumn::isShapeDefined (uInt rownr)
 	return True;                             // FixedShape
     }
     TSMCube* hypercube = stmanPtr_p->getHypercube (rownr);
-    return ToBool (hypercube->cubeShape().nelements() != 0);
+    return (hypercube->cubeShape().nelements() != 0);
 }
 
 IPosition TSMDataColumn::shape (uInt rownr)
