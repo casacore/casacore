@@ -45,7 +45,7 @@ class LogIO;
 
 // <use visibility=export>
 
-// <reviewed reviewer="Peter Barnes" date="1999/10/30" tests="tArrayLattice.cc" demos="dLattice.cc">
+// <reviewed reviewer="Bob Garwood" date="2000/01/18" tests="tArrayLattice.cc" demos="dLattice.cc">
 // </reviewed>
 
 // <synopsis>
@@ -68,9 +68,9 @@ class LogIO;
 // in PagedArray.
 // </note>
 //
-// <todo asof="1999/02/04">
-//   <li> Rename cloneBase function to clone and use covariant return type.
-// </todo>
+//# <todo asof="1999/02/04">
+//#   <li>
+//# </todo>
 
 
 class LatticeBase
@@ -81,28 +81,29 @@ public:
   virtual ~LatticeBase();
 
   // Make a copy of the derived object (reference semantics).
-  virtual LatticeBase* cloneBase() const = 0;
+  virtual LatticeBase* clone() const = 0;
 
   // Is the lattice persistent and can it be loaded by other processes as well?
   // That is the case for a PagedArray or PagedImage and for an ImageExpr
   // which does not use transient lattices or regions.
-  // <br>Default implementation returns False.
+  // <br>The default implementation returns False.
   virtual Bool isPersistent() const;
 
   // Is the lattice paged to disk?
-  // <br>Default implementation returns False.
+  // <br>The default implementation returns False.
   virtual Bool isPaged() const;
 
   // Is the lattice writable?
-  // <br>Default implementation returns True.
+  // <br>The default implementation returns True.
   virtual Bool isWritable() const;
 
   // It is strongly recommended to use class
   // <linkto class=LatticeLocker>LatticeLocker</linkto> to
   // handle lattice locking. It also contains a more detailed
   // explanation of the locking process.
-  // <br>By default the function do not do anything at all and return True,
-  // which is suitable for all non-paged lattices.
+  // <br>By default the functions do not do anything at all.
+  // lock() and hasLock return True, which is suitable for all
+  // non-paged lattices.
   // <group>
   virtual Bool lock (FileLocker::LockType, uInt nattempts);
   virtual void unlock();
@@ -121,11 +122,11 @@ public:
   
   // Return the number of axes in this Lattice. This includes all
   // degenerate axes.
-  // Default implementation returns shape().nelements().
+  // <br>The default implementation returns shape().nelements().
   virtual uInt ndim() const;
   
   // Return the total number of elements in this Lattice.
-  // Default implementation returns shape().product().
+  // <br>The default implementation returns shape().product().
   virtual uInt nelements() const;
   
   // Return a value of "True" if this instance of Lattice and 'other' have 
@@ -134,13 +135,13 @@ public:
     { return shape().isEqual (other.shape()); }
 
   // Return the coordinates of the lattice.
-  // The default implementation returns an 'empty' LELLattCoord object.
+  // <br>The default implementation returns an 'empty' LELLattCoord object.
   virtual LELCoordinates lelCoordinates() const;
 
   // This function returns the recommended maximum number of pixels to
-  // include in the cursor of an iterator. The default implementation
-  // returns a number that is a power of two and includes enough pixels to
-  // consume between 4 and 8 MBytes of memory.
+  // include in the cursor of an iterator. The Lattice class has a default
+  // implementation which returns a number that is a power of two and
+  // includes enough pixels to consume between 4 and 8 MBytes of memory.
   virtual uInt advisedMaxPixels() const = 0;
 
   // Returns a recommended cursor shape for iterating through all the pixels
@@ -165,7 +166,7 @@ public:
   virtual Bool ok() const;
 
   // The function (in the derived classes) doing the actual work.
-  // These functions are public, so they can be used internally in the
+  // This function is public, so it can be used internally in the
   // various Lattice classes.
   // <br>The default implementation tries to fit as many axes
   // as possible given <src>maxPixels</src>.
@@ -176,19 +177,19 @@ public:
   virtual uInt maximumCacheSize() const;
 
   // Set the maximum (allowed) cache size as indicated.
-  // Default implementation does nothing.
+  // <br>The default implementation does nothing.
   virtual void setMaximumCacheSize (uInt howManyPixels);
 
-  // Set the actual cache size for this Array to be be big enough for the
+  // Set the actual cache size for this Array to be big enough for the
   // indicated number of tiles. This cache is not shared with PagedArrays
   // in other rows and is always clipped to be less than the maximum value
   // set using the setMaximumCacheSize member function.
-  // tiles. Tiles are cached using a first in first out algorithm.
-  // Default implementation does nothing.
+  // Tiles are cached using a first in first out algorithm.
+  // <br>The default implementation does nothing.
   virtual void setCacheSizeInTiles (uInt howManyTiles);
 
   // Set the cache size as to "fit" the indicated path.
-  // Default implementation does nothing.
+  // <br>The default implementation does nothing.
   virtual void setCacheSizeFromPath (const IPosition& sliceShape,
 				     const IPosition& windowStart,
 				     const IPosition& windowLength,
@@ -196,16 +197,16 @@ public:
 
   // Clears and frees up the caches, but the maximum allowed cache size is
   // unchanged from when setCacheSize was called.
-  // Default implementation does nothing.
+  // <br>The default implementation does nothing.
   virtual void clearCache();
 
   // Report on cache success.
-  // Default implementation does nothing.
+  // <br>The default implementation does nothing.
   virtual void showCacheStatistics (ostream& os) const;
 
 
 protected:
-  // Define default constructor to satisfy compiler.
+  // Define default constructor to be used by derived classes.
   LatticeBase() {};
 
   // Copy constructor and assignment can only be used by derived classes.
