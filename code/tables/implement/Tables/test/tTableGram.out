@@ -1,4 +1,4 @@
-select ab,ac,ad,ae,af,ag from tTableGram_tmp.link/tTable_2.data_v0 sh where ab>2 && (ae<10 || ae>11.0) && ag!= 10 + 1i orderby ac desc,ab giving tTableGram_tmp.data2
+select ab,ac,ad,ae,af,ag from tTableGram_tmp.link/tTable_2.data_v0 sh where all(ab>2) && (ae<10 || ae>11.0) && ag!= 10 + 1i orderby ac desc,ab giving tTableGram_tmp.data2
     has been executed
     5 rows selected
 6 selected columns:  ab ac ad ae af ag
@@ -7,7 +7,7 @@ select ab,ac,ad,ae,af,ag from tTableGram_tmp.link/tTable_2.data_v0 sh where ab>2
  5 6 7 8 V5 (7,0)
  4 5 6 7 V4 (6,0)
  3 4 5 6 V3 (5,0)
-select ab,ac,ad,ae,af,ag from tTableGram_tmp.data2
+select distinct ab,ac,ad,ae,af,ag from tTableGram_tmp.data2
     has been executed
     5 rows selected
 6 selected columns:  ab ac ad ae af ag
@@ -16,7 +16,7 @@ select ab,ac,ad,ae,af,ag from tTableGram_tmp.data2
  5 6 7 8 V5 (7,0)
  4 5 6 7 V4 (6,0)
  3 4 5 6 V3 (5,0)
-select ab,ac,ad,ae,af,ag from tTableGram_tmp.data2 orderby af
+select all ab,ac,ad,ae,af,ag from tTableGram_tmp.data2 orderby af
     has been executed
     5 rows selected
 6 selected columns:  ab ac ad ae af ag
@@ -63,7 +63,7 @@ select ab,ac from tTableGram_tmp.link/tTable_2.data_v0 where arr1[1,1,1]>=10 && 
  2 3
  3 4
  4 5
-select from tTableGram_tmp.link/tTable_2.data_v0 where arr1[1,1,1]>=10 && arr2[1,1,1]<120
+select * from tTableGram_tmp.link/tTable_2.data_v0 where arr1[1,1,1]>=10 && arr2[1,1,1]<120
     has been executed
     4 rows selected
 0 selected columns: 
