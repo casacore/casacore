@@ -121,10 +121,11 @@ int main()
 
 // FITS
 
+    Vector<String> error2;
     Record rec2;
     AlwaysAssertExit(oi.toFITS(error, rec2));
     ObsInfo oi4;
-    AlwaysAssertExit(oi4.fromFITS(error, rec2));
+    AlwaysAssertExit(oi4.fromFITS(error2, rec2));
     AlwaysAssertExit(oi4.telescope() == "telescope2" &&
 		     oi4.observer() == "observer2" &&
 		     near(oi4.obsDate().get("d").getValue(), dateVal) &&
