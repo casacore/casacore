@@ -174,7 +174,7 @@ int BlockIO::close_file( fitsfile *fptr, int *status){
 				cout<< (fptr->Fptr)->filename << endl;
         }
 
-        //fits_clear_Fptr( fptr->Fptr, status);  // clear Fptr address 
+        fits_clear_Fptr( fptr->Fptr, status);  // clear Fptr address 
         free((fptr->Fptr)->headstart);         // free memory for headstart array 
         free((fptr->Fptr)->filename);          // free memory for the filename
         (fptr->Fptr)->filename = 0;
@@ -184,7 +184,6 @@ int BlockIO::close_file( fitsfile *fptr, int *status){
     }else{
         free(fptr);                            // free memory for the FITS file structure 
     }
-
     return(*status);
 }
 //==========================================================================================
