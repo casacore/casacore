@@ -435,7 +435,11 @@ sub make_tex_file{
    
      $hasArgs = 0;
      $dtext = ".*[\s]*.*";
-     while(/\\ahaddarg{($dtext)}\s*{($dtext)}\s*{($dtext)}\s*{($dtext)}/mg){
+
+      # Changed dtext to mtext in the hopes everything will appear in the
+      # synopsis now
+
+     while(/\\ahaddarg{($mtext)}\s*{($mtext)}\s*{($mtext)}\s*{($mtext)}/mg){
        $args .= ($1.", ");
        $hasArgs = 1;
        if($opt_glish == 1 && length $argroot){
