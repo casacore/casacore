@@ -1,5 +1,5 @@
 //# ImageStatistics.h: generate statistics from an image
-//# Copyright (C) 1996,1997,1998,1999
+//# Copyright (C) 1996,1997,1998,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -130,6 +130,9 @@ public:
 // image had an invalid type or that the internal state of the class is bad.
    Bool setNewImage (const ImageInterface<T>& image);
 
+// Format a position in the lattice (zero relative)
+   String formatCoordinate (const IPosition& pos) const;
+
 private:
 
 // Data
@@ -149,6 +152,9 @@ private:
 // List the statistics
    virtual Bool listStats (Bool hasBeam, const IPosition& dPos,
                            const Matrix<T>& ord);
+
+// Summarize the statistics found over the entire lattice
+   virtual void summStats();
 };
 
 
