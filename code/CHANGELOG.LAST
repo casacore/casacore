@@ -10,3 +10,15 @@ change id: 0027
  category: New
  summary:  Added toType() and toFrom() to MeasureHolder
 To be able to create a skeleton default Measure (e.g. for a measurement set column woth a TableMeasure), I added the toType() and fromType() methods to the MeasureHolder record conversions.
+
+change id: 0028
+ author:   Wim Brouw
+ date:     2000/07/27
+ avers:    1.4
+ area:     Library
+ package:  aips
+ module:   Measures
+ type:     Code
+ category: New
+ summary:  Added fromString() to MeasureHolder
+A fromString() method was added to the MeasureHolder class. This makes it, transparently, possible for e.g. glish code to send a string with 'direction' to the Tasking interface, which will be translated into a Parameter<MDirection> (or Parameter<MeasureHolder> with MDirection embedded) with default type and value (i.e a J2000 north pole direction with no offset).
