@@ -67,9 +67,9 @@ fitIt(Vector<typename FunctionTraits<T>::BaseType> &sol,
   // Initialise fitter
   Double mu, me;
   sol.resize(pCount_p);
-  for (uInt i=0; i<pCount_p; ++i) sol[i] = (*ptr_derive_p)[i].value();
-  for (uInt i=0; i<aCount_ai; i++) {
-    sol_p[i] = (ptr_derive_p->parameters().getMaskedParameters()[i]).value();
+  for (uInt i=0, k=0; i<pCount_p; ++i) {
+    sol[i] = (*ptr_derive_p)[i].value();
+    if (ptr_derive_p->mask(i)) sol_p[k++] = sol[i];
   };
   // Build normal equations
   buildMatrix(x, y, sigma, mask);

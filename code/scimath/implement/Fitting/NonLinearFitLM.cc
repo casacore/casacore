@@ -82,15 +82,13 @@ fitIt(Vector<typename FunctionTraits<T>::BaseType> &sol,
   FitLSQ::set(dblpar);
   Double mu, me;
   sol.resize(pCount_p);
-  for (uInt i=0; i<pCount_p; ++i) sol[i] = (*ptr_derive_p)[i].value();
-  for (uInt i=0; i<aCount_ai; i++) {
-    sol_p[i] = (ptr_derive_p->parameters().getMaskedParameters()[i]).value();
+  for (uInt i=0, k=0; i<pCount_p; ++i) {
+    sol[i] = (*ptr_derive_p)[i].value();
+    if (ptr_derive_p->mask(i)) sol_p[k++] = sol[i];
   };
   // And loop
   while (curiter_p > 0 && (fitit_p > 0 || fitit_p < -0.001)) {
-    for (uInt i=0, k=0; i<pCount_p; i++) {
-      if (ptr_derive_p->mask(i)) (*ptr_derive_p)[i].value() = sol_p[k++];
-    };
+    setMaskedParameterValues(sol_p);
     // Build normal equations
     buildMatrix(x, y, sigma, mask);
     // Do an LM loop
@@ -103,9 +101,7 @@ fitIt(Vector<typename FunctionTraits<T>::BaseType> &sol,
   solved_p = True;
   
   // Solve last time
-  for (uInt i=0, k=0; i<pCount_p; i++) {
-    if (ptr_derive_p->mask(i)) (*ptr_derive_p)[i].value() = sol_p[k++];
-  };
+  setMaskedParameterValues(sol_p);
   buildMatrix(x, y, sigma, mask);
   invert(nr_p, True);
   solve(condEq_p, mu, me);

@@ -142,6 +142,20 @@ void LQGenericL2Fit<T>::asSVD(const Bool svd) {
 }
 
 template<class T>
+void LQGenericL2Fit<T>::
+setParameterValues(const Vector<typename FunctionTraits<T>::BaseType> &parms) {
+  for (uInt i=0; i<pCount_p; ++i) (*ptr_derive_p)[i].value() = parms[i];
+}
+
+template<class T>
+void LQGenericL2Fit<T>::setMaskedParameterValues
+(const Vector<typename FunctionTraits<T>::BaseType> &parms) {
+  for (uInt i=0, k=0; i<pCount_p; ++i) {
+    if (ptr_derive_p->mask(i)) (*ptr_derive_p)[i].value() = parms[k++];
+  };
+}
+
+template<class T>
 Vector<typename FunctionTraits<T>::BaseType> LQGenericL2Fit<T>::
 fit(const Vector<typename FunctionTraits<T>::BaseType> &x, 
     const Vector<typename FunctionTraits<T>::BaseType> &y,
