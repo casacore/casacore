@@ -39,7 +39,7 @@
 
 //# Forward declarations
 template <class T> class Array;
-template <class T> class Function;
+template <class T, class U> class Function;
 
 // <summary> Generic base lass for least-squares fit.
 // </summary>
@@ -236,7 +236,8 @@ template<class T> class LQGenericL2Fit : public FitLSQ {
   // so that derivatives with respect to the adjustable parameters
   // can be calculated.  The current values of the "available" parameters
   // of the function are taken as the initial guess for the non-linear fitting.
-  void setFunction(Function<typename FunctionTraits<T>::DiffType> &function);
+  void setFunction(Function<typename FunctionTraits<T>::DiffType,
+		   typename FunctionTraits<T>::DiffType> &function);
 
   // Set the collinearity factor as the square of the sine of the
   // minimum angle allowed between input vectors (default zero for non-SVD,
@@ -255,9 +256,11 @@ template<class T> class LQGenericL2Fit : public FitLSQ {
   // Return a pointer to the function being fitted.  Should
   // never delete this pointer.
   // <group>
-  Function<typename FunctionTraits<T>::DiffType> *fittedFunction() {
+  Function<typename FunctionTraits<T>::DiffType,
+    typename FunctionTraits<T>::DiffType> *fittedFunction() {
     return ptr_derive_p; };
-  const Function<typename FunctionTraits<T>::DiffType>
+  const Function<typename FunctionTraits<T>::DiffType,
+    typename FunctionTraits<T>::DiffType>
     *const fittedFunction() const { return ptr_derive_p; };
   // </group>
   // Return the number of fitted parameters
@@ -400,7 +403,8 @@ template<class T> class LQGenericL2Fit : public FitLSQ {
   // SVD indicator
   Bool svd_p;
   // Function to use in evaluating condition equation
-  Function<typename FunctionTraits<T>::DiffType> *ptr_derive_p;
+  Function<typename FunctionTraits<T>::DiffType,
+    typename FunctionTraits<T>::DiffType> *ptr_derive_p;
   // Number of available parameters
   uInt pCount_p;
   // Number of dimensions of input data
