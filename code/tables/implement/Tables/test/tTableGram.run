@@ -27,6 +27,10 @@ tTableGram 'select ab,ac,af from tTableGram_tmp.tab where lower(af) == regex("v[
 
 tTableGram 'select ab,ac,af from tTableGram_tmp.tab where af == pattern("?{3,5,8}")'
 
+tTableGram 'select ab,ac,af from tTableGram_tmp.tab where af == sqlpattern("_3%")'
+tTableGram 'select ab,ac,af from tTableGram_tmp.tab where af like "_3%"'
+tTableGram 'select ab,ac,af from tTableGram_tmp.tab where af not like "_3%"'
+
 tTableGram 'select ab,ac from tTableGram_tmp.tab where ab%1.5==0'
 
 tTableGram 'select ab,ac from tTableGram_tmp.tab where arr1[1,1,1]>=10 && arr2[1,1,1]<120'
@@ -49,9 +53,13 @@ tTableGram 'select ab,ac from tTableGram_tmp.tab where ab < mean([3:6,ab])'
 
 tTableGram 'select ab,ac from tTableGram_tmp.tab where ab IN (select ac from tTableGram_tmp.tab where ab>4)'
 
+tTableGram 'select ab,ac from tTableGram_tmp.tab where ab BETWEEN 2 AND 4'
+tTableGram 'select ab,ac from tTableGram_tmp.tab where ab NOT BETWEEN 2 AND 4'
+
 tTableGram 'select ab,ac from tTableGram_tmp.tab where ab IN [:=2,4=:<6,7<:]'
 
 tTableGram 'select ab,ac from tTableGram_tmp.tab where ab IN (2,(3))'
+tTableGram 'select ab,ac from tTableGram_tmp.tab where ab NOT IN (2,(3))'
 
 tTableGram 'select ab,ac from tTableGram_tmp.tab where ab IN [select from tTableGram_tmp.tab where ab>4 giving [ac=:=ac+0.5]]'
 
@@ -59,7 +67,7 @@ tTableGram 'select ab,ac from tTableGram_tmp.tab where any(isnan(arr1)) || isnan
 
 tTableGram 'select ab,ac from tTableGram_tmp.tab where ab IN arr1'
 
-tTableGram 'select ab,ac from tTableGram_tmp.tab where any(arr1 > 100  &&  arr1<200)'
+tTableGram 'select ab,ac from tTableGram_tmp.tab where any(arr1-array(100,shape(arr1)) > 0  &&  arr1<200)'
 
 tTableGram 'select ab,ac from tTableGram_tmp.tab where count(shape(arr1))==3 && count(ab)==1 && ndim(ac)==0 && isdefined(arr2)'
 

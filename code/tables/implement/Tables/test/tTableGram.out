@@ -47,6 +47,29 @@ select ab,ac,af from tTableGram_tmp.tab where af == pattern("?{3,5,8}")
  3 4 V3
  5 6 V5
  8 9 V8
+select ab,ac,af from tTableGram_tmp.tab where af == sqlpattern("_3%")
+    has been executed
+    select of 1 rows
+3 selected columns:  ab ac af
+ 3 4 V3
+select ab,ac,af from tTableGram_tmp.tab where af like "_3%"
+    has been executed
+    select of 1 rows
+3 selected columns:  ab ac af
+ 3 4 V3
+select ab,ac,af from tTableGram_tmp.tab where af not like "_3%"
+    has been executed
+    select of 9 rows
+3 selected columns:  ab ac af
+ 0 1 V0
+ 1 2 V1
+ 2 3 V2
+ 4 5 V4
+ 5 6 V5
+ 6 7 V6
+ 7 8 V7
+ 8 9 V8
+ 9 10 V9
 select ab,ac from tTableGram_tmp.tab where ab%1.5==0
     has been executed
     select of 4 rows
@@ -139,6 +162,24 @@ select ab,ac from tTableGram_tmp.tab where ab IN (select ac from tTableGram_tmp.
  7 8
  8 9
  9 10
+select ab,ac from tTableGram_tmp.tab where ab BETWEEN 2 AND 4
+    has been executed
+    select of 3 rows
+2 selected columns:  ab ac
+ 2 3
+ 3 4
+ 4 5
+select ab,ac from tTableGram_tmp.tab where ab NOT BETWEEN 2 AND 4
+    has been executed
+    select of 7 rows
+2 selected columns:  ab ac
+ 0 1
+ 1 2
+ 5 6
+ 6 7
+ 7 8
+ 8 9
+ 9 10
 select ab,ac from tTableGram_tmp.tab where ab IN [:=2,4=:<6,7<:]
     has been executed
     select of 7 rows
@@ -156,6 +197,18 @@ select ab,ac from tTableGram_tmp.tab where ab IN (2,(3))
 2 selected columns:  ab ac
  2 3
  3 4
+select ab,ac from tTableGram_tmp.tab where ab NOT IN (2,(3))
+    has been executed
+    select of 8 rows
+2 selected columns:  ab ac
+ 0 1
+ 1 2
+ 4 5
+ 5 6
+ 6 7
+ 7 8
+ 8 9
+ 9 10
 select ab,ac from tTableGram_tmp.tab where ab IN [select from tTableGram_tmp.tab where ab>4 giving [ac=:=ac+0.5]]
     has been executed
     select of 4 rows
@@ -173,7 +226,7 @@ select ab,ac from tTableGram_tmp.tab where ab IN arr1
     select of 1 rows
 2 selected columns:  ab ac
  0 1
-select ab,ac from tTableGram_tmp.tab where any(arr1 > 100  &&  arr1<200)
+select ab,ac from tTableGram_tmp.tab where any(arr1-array(100,shape(arr1)) > 0  &&  arr1<200)
     has been executed
     select of 5 rows
 2 selected columns:  ab ac
