@@ -65,9 +65,11 @@ int main(int argc, char **argv)
     }
 
     String error;
-    PagedImage<Float>* pOutImage;
-    Bool ok = ImageFITSConverter::FITSToImage(pOutImage, error, outFile, fitsFile, 0,
-                                    AppInfo::memoryInMB(), overwrite, zero);
+    ImageInterface<Float>* pOutImage;
+    Bool ok = ImageFITSConverter::FITSToImage(pOutImage, error, outFile,
+					      fitsFile, 0,
+					      AppInfo::memoryInMB(),
+					      overwrite, zero);
     LogIO os(LogOrigin("fits2image", "main()", WHERE));
     if (!ok) {
         os << LogIO::SEVERE << error << LogIO::EXCEPTION;
