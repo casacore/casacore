@@ -6449,3 +6449,4 @@
 18 522 src mv trial/implement/MeasurementComponents/SolvableMJMRec.h trial/implement/CalTables/SolvableMJMRec.h
 18 522 src mv trial/implement/MeasurementComponents/SolvableVJMRec.h trial/implement/CalTables/SolvableVJMRec.h
 18 522 src mv trial/implement/MeasurementComponents/BJonesMRec.h trial/implement/CalTables/BJonesMRec.h
+18 522 src mv trial/implement/MeasurementComponents/FVisJonesMRec.h trial/implement/CalTables/FVisJonesMRec.h
