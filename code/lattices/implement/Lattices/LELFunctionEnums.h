@@ -179,6 +179,9 @@ public:
 // iif (similar to ?: in C++)
    IIF,
 
+// replace
+   REPLACE,
+
 // dimensionality
    NDIM,
 
