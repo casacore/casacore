@@ -508,12 +508,12 @@ void Input::readArguments (Int ac, char *av[])
   close();             // close creation 
 
   // Show version on screen if -v or --version is given.
-  if (String(av[1]) == "-v"  ||  String(av[1]) == "--version") {
+  if (av[1] && (String(av[1]) == "-v"  ||  String(av[1]) == "--version")) {
     cerr << av[0] << "  version " << version_id << endl;
     exit (1);
   }
   // Show parameters on screen if -h or --help given.
-  if (String(av[1]) == "-h"  ||  String(av[1]) == "--help") {
+  if (av[1] && (String(av[1]) == "-h"  ||  String(av[1]) == "--help")) {
     cerr << av[0] << "  version " << version_id << endl;
     ConstListIter<Param> parlist(parList_p);       
     for (parlist.toStart(); ! parlist.atEnd(); parlist++) {
