@@ -1,5 +1,5 @@
 //# LCSlicer.h: Class to define a rectangular box of interest with strides
-//# Copyright (C) 1998
+//# Copyright (C) 1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -114,6 +114,7 @@ public:
 	      const Vector<Bool>& fractionalInc,
 	      const Vector<Int>& absRelBlc,
 	      const Vector<Int>& absRelTrc);
+    LCSlicer (const Slicer& slicer);
     LCSlicer (const IPosition& blc, const IPosition& trc,
 	      RegionType::AbsRelType = RegionType::Abs);
     LCSlicer (const IPosition& blc, const IPosition& trc,
