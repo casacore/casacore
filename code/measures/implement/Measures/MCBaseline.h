@@ -1,5 +1,5 @@
 //# MCBaseline.h: MBaseline conversion routines 
-//# Copyright (C) 1998,1999
+//# Copyright (C) 1998,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -36,14 +36,10 @@
 #include <aips/Measures/MeasRef.h>
 #include <aips/Measures/MCBase.h>
 #include <aips/Measures/MConvertBase.h>
+#include <aips/Measures/MeasMath.h>
 
 //# Forward Declarations
 class MCBaseline;
-class MVPosition;
-class Nutation;
-class Precession;
-class Euler;
-class RotMatrix;
 class String;
 template <class T> class Vector;
 
@@ -78,8 +74,8 @@ template <class T> class Vector;
 // <motivation>
 // </motivation>
 //
-// <todo asof="1998/04/21">
-//	<li>
+// <todo asof="2000/09/12">
+//	<li> nothing I know
 // </todo>
 
 class MCBaseline : public MCBase { 
@@ -159,11 +155,7 @@ private:
   //# Enumerations
   
   //# Cached Data
-  RotMatrix *ROTMAT1;
-  Euler *EULER1;
-  MVPosition *MVPOS1, *MVPOS2, *MVPOS3;
-  Nutation *NUTATFROM, *NUTATTO;
-  Precession *PRECESFROM, *PRECESTO;
+  MeasMath measMath;
 
   //# State machine data
   // Has state matrix been made
