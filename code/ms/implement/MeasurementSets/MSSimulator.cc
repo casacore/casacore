@@ -1195,8 +1195,7 @@ void MSSimulator::extendMS(MeasurementSet & ms)
 	      nIntFld_p(i)*qIntegrationTime_p.getValue("s")
 	      +qGapTime_p.getValue("s");
 	    // os << pName << LogIO::POST;
-	    delete pName;
-	    if(nAnt_p > 1) row++;
+       	    if(nAnt_p > 1) row++;
 	  }
 	}
       }
