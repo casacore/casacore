@@ -16,9 +16,9 @@ NORMAL: Starting server misc
 NORMAL: Starting server quanta
 in autoflag
 NORMAL: Starting server autoflag
-NORMAL: Server started: /dop07_0/oms/aips++/code/trial/implement/Flagging/test/autoflag (AIPS++ version: 1.6 (build #260))
-NORMAL: Server started: misc (AIPS++ version: 1.6 (build #258))
-NORMAL: Server started: quanta (AIPS++ version: 1.6 (build #258))
+NORMAL: Server started: /dop07_0/oms/aips++/code/trial/implement/Flagging/test/autoflag (AIPS++ version: 1.6 (build #346))
+NORMAL: Server started: misc (AIPS++ version: 1.6 (build #346))
+NORMAL: Server started: quanta (AIPS++ version: 1.6 (build #346))
 NORMAL: attached MS tAutoflag.MS2: 6656 rows, 104 times, 105 IFRs
 <<<
 Added method 1: timemed (TimeMedian)
@@ -26,6 +26,7 @@ Added method 1: timemed (TimeMedian)
     hw          = 10
     rowthr      = 10
     rowhw       = 6
+    norow       = F
     column      = DATA
    *expr        = ABS I
     debug       = F
@@ -35,6 +36,7 @@ Added method 2: freqmed (FreqMedian)
     hw          = 10
     rowthr      = 10
     rowhw       = 6
+    norow       = F
     column      = DATA
    *expr        = ABS I
     debug       = F
@@ -53,6 +55,7 @@ Added method 3: sprej (SpectralRej)
     fignore     = F
 Added method 4: uvbin (UVBinner)
    *thr         = 0.04
+    minpop      = 0
     nbins       = 50
    *plotchan    = 100
     econoplot   = T
@@ -111,12 +114,12 @@ NORMAL: defaultwidgetserver (dws) ready
 NORMAL: TimeMedian: 16057 pixel flags, 1438 row flags
 NORMAL: FreqMedian: 25742 pixel flags, 954 row flags
 NORMAL: SpectralRej: 0 pixel flags, 4790 row flags
-NORMAL: UVBinner: 63591 pixel flags, 0 row flags
+NORMAL: UVBinner: 63722 pixel flags, 0 row flags
 NORMAL: Selector: 53040 pixel flags, 0 row flags
 NORMAL: Selector#2: 46456 pixel flags, 0 row flags
 NORMAL: Flagging complete
 NORMAL: 
 >>>
 NORMAL: Finished flagger::run
-      92.88 real       65.38 user        0.86 system
+      92.63 real       69.11 user        0.85 system
 <<<
