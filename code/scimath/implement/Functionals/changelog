@@ -210,3 +210,38 @@ dfs.butterworth().  This is supported on the C++ side via the
 SimButterworthBandpass class.
  </description>
 </change>
+
+<change id=0163>
+ <author> Wim Brouw </author>
+ <date> 2005/02/02 </date>
+ <avers> 1.9 </avers>
+ <area> Library </area>
+ <package> scimath </package>
+ <module> Functionals </module>
+ <type> Code </type>
+ <category> New </category>
+ <defects>  </defects>
+ <summary>
+Added cross-cloning
+ </summary>
+ <description>
+To ease the use of Functionals in the Fitting module, I have added cloneAD() and cloneNonAD() methods to all Functionals usable for fitting.
+
+If you have e.g. a 
+Gaussian1D<Double> gd1;
+functional with some parameters set, the following can be done:
+
+Gaussian1D<AutoDiff<Double> > *gd1ad = gd1.cloneAD();
+or
+Function<AutoDiff<Double> > *funad = gd1.cloneAD();
+
+In essence the following table holds:
+
+Method		In	Out	In	Out
+clone()		T	T	AD<T>	AD<T>
+cloneAD()	T	AD<T>	AD<T>	AD<T>
+cloneNonAD()	T	T	AD<T>	<T>
+
+See tGauusian1D for an example
+ </description>
+</change>
