@@ -39,14 +39,13 @@ template<class elem> Stack<elem>::Stack(const Stack<elem> &other) : topOfStack(0
     if ( other.topOfStack ) {
 	const Link<elem> *cur = other.topOfStack;
 	Link<elem> *last = topOfStack = new Link<elem>(cur->val());
-	while ( cur = cur->next() )
+	while ( (cur = cur->next()) )
 	    last = new Link<elem>(cur->val(),last);
     }
 }
 
 
 template<class elem> Stack<elem> &Stack<elem>::operator=(const Stack<elem> &other) {
-    Link<elem> *last = 0;
 
     if ( topOfStack ) {
 	delete topOfStack;
@@ -56,7 +55,7 @@ template<class elem> Stack<elem> &Stack<elem>::operator=(const Stack<elem> &othe
     if ( other.topOfStack ) {
 	const Link<elem> *cur = other.topOfStack;
 	Link<elem> *last = topOfStack = new Link<elem>(cur->val());
-	while ( cur = cur->next() )
+	while ( (cur = cur->next()) )
 	    last = new Link<elem>(cur->val(),last);
     }
 

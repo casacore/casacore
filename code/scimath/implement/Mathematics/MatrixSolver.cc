@@ -34,7 +34,7 @@
 
 #include <strstream.h>
 
-MatrixSolver::MatrixSolver():MaxIterations(0), SolTolerance(0.0), solved(False),
+MatrixSolver::MatrixSolver():SolTolerance(0.0), MaxIterations(0), solved(False),
    gain(1.0){}
 
 MatrixSolver::MatrixSolver(const MatrixSolver & other) {    
@@ -52,7 +52,7 @@ MatrixSolver::MatrixSolver(const MatrixSolver & other) {
 
 MatrixSolver::MatrixSolver(const Matrix<FType> & amatrix,
 		     const Vector<FType> & bvector) 
-:  MaxIterations(0), SolTolerance(0.0), solved(False), gain(1.0) {
+:  SolTolerance(0.0), MaxIterations(0), solved(False), gain(1.0) {
     AMatrix.reference((Matrix<FType> &)amatrix);
     BVector.reference((Vector<FType> &)bvector);
     XVector.resize(AMatrix.shape()(1));
