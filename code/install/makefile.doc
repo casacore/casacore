@@ -124,10 +124,10 @@ $(DOCSAREA)/%.ps.gz : $(CODEDIR)/%.latex $(CODEDIR)/%.dir
 	         $(LATEX2HTML) -dir $(basename $(basename $@)) $($*) $(<F) ; \
                  if [ "$(ICONSERVER)" != "" -a \
                       "$(ICONS2LOCAL)" != "" ] ; then \
-                      $(ICONS2LOCAL) $(CODEDIR) $(ICONSERVER) $(basename $@) ; \
+                      $(ICONS2LOCAL) $(CODEDIR) $(ICONSERVER) $(basename $(basename $@)) ; \
                  fi ; \
                  if [ "$($*).s2ps" != "" ] ; then \
-                    mkpsfiles.sh $(AIPSCODE) $($*) | dvips.sh $(DVIPS) $(@F:ps.gz=dvi) > mkdfiles.sh ; \
+                    mkpsfiles.sh $(AIPSCODE) $(basename $(basename $@)) | dvips.sh $(DVIPS) $(@F:ps.gz=dvi) > mkdfiles.sh ; \
                     chmod u+x mkdfiles.sh ; \
                     ./mkdfiles.sh ; \
                     gzip *.ps ; \
