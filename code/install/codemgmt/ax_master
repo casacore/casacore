@@ -6560,3 +6560,4 @@
 18 622 sys rm libexec/displaylistbox.g
 18 743 src mv trial/implement/Logging/LogFilterInterface.h aips/implement/Logging/LogFilterInterface.h
 18 743 src mv trial/implement/Logging/LogFilterInterface.cc aips/implement/Logging/LogFilterInterface.cc
+18 743 src mv trial/implement/Logging/LogFilterTaql.cc aips/implement/Logging/LogFilterTaql.cc
