@@ -38,6 +38,7 @@
 
 //# Forward declarations
 #include <aips/iosfwd.h>
+class LoggerHolder;
 
 // <summary>
 // Miscellaneous information related to an image.
@@ -132,6 +133,12 @@ public:
     ImageInfo& removeRestoringBeam();
 // </group>
 
+// Get the restoring beam from a LoggerHolder (where the history is stored)
+// as AIPS writes the beam in the FITS history rather than the header keywords.  
+// If there is no beam,  False is returned, and the internal state of the object
+// is unchanged.
+   Bool getRestoringBeam (LoggerHolder& logger);
+
 // Set and get the Image Type.  
 // <group>
     ImageInfo::ImageTypes imageType () const;
@@ -167,7 +174,7 @@ public:
 // in the ImageInfo, an attempt to decode it from FITS is made.
 // If any of them fail, False is returned, but it attempts to decode
 // them all.  For those that fail an error message is held in <src>error</src> 
-// in the order restoring beam, image type.
+// in the order restoring beam, and image type.
 // <src>error</src> will be returned of length 0 if the return 
 // value is True, else it will be length 2.
 // <group>
