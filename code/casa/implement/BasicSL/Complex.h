@@ -107,6 +107,12 @@ Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 // <dt>Complex sqrt(Complex& x);</dt>
 // <dd>  returns the square root of x. </dd>
 // 
+// <dt> Complex min(Complex x,Complex y);
+// <dd> Returns the minumum of x,y (using operator<=, i.e. the norm).
+//
+// <dt> Complex max(Complex x,Complex y);
+// <dd> Returns the maximum of x,y (using operator>=, i.e. the norm).
+//
 // <dt>Bool near(Complex val1, Complex val2, Double tol = 1.0e-5);</dt>
 // <dd>  returns whether val1 is relatively near val2 (see Math.h). </dd>
 //
@@ -329,6 +335,16 @@ inline int operator < (const G_COMPLEX(type) x, const type y) {			\
 inline int operator < (const type x, const G_COMPLEX(type) y) {			\
   return x*x < norm(y);								\
 }										\
+inline G_COMPLEX(type) min (const G_COMPLEX(type) x, const G_COMPLEX(type) y)   \
+{										\
+  return x <= y ? x : y;		                                        \
+}										\
+										\
+inline G_COMPLEX(type) max (const G_COMPLEX(type) x, const G_COMPLEX(type) y)   \
+{										\
+  return x >= y ? x : y;		                                        \
+}										\
+										\
 										\
 /*										\
  * NEGATION OPERATORS								\
