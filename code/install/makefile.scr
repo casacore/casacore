@@ -47,7 +47,7 @@ SCRIPTS  := $(filter-out $(EXCLUDE),$(AIPSSRCS))
 
 LIBEXECS := $(filter %.g %.gp, $(SCRIPTS))
 LIBICONS := $(filter %.xbm, $(SCRIPTS))
-BINEXECS := $(filter-out %.g %.gp, $(SCRIPTS))
+BINEXECS := $(filter-out %.g %.gp %.xbm, $(SCRIPTS))
 
 ifdef BINEXECS
    PERL4EXE := $(shell grep -l '^\#!/usr/local/bin/perl4' $(BINEXECS))
