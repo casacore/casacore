@@ -87,7 +87,8 @@ PagedArray<T>::PagedArray (const TiledShape& shape, Table& file)
 : itsTable      (file),
   itsColumnName (defaultColumn()),
   itsRowNumber  (defaultRow()),
-  itsIsClosed   (False)
+  itsIsClosed   (False),
+  itsWritable   (file.isWritable())
 {
   makeArray (shape);
   setTableType();
@@ -229,7 +230,7 @@ const String& PagedArray<T>::tableName() const
 }
 
 template <class T> 
-String PagedArray<T>::name (const Bool stripPath) const 
+String PagedArray<T>::name (Bool stripPath) const 
 {
    Path path(tableName());
    if (!stripPath) {
@@ -385,20 +386,20 @@ Bool PagedArray<T>::ok() const
   if (itsIsClosed) {
     if (itsTable.isNull() == False) {
       LogIO logErr(LogOrigin("PagedArray<T>", "ok()"));
-      logErr << LogIO::SEVERE << "Table associated with closed Paged Array"
+      logErr << LogIO::SEVERE << "Table associated with closed PagedArray"
 	     << LogIO::POST;
       return False;
     }
   } else {
     if (itsTable.isNull() == True) {
       LogIO logErr(LogOrigin("PagedArray<T>", "ok()"));
-      logErr << LogIO::SEVERE << "No Table associated with the Paged Array"
+      logErr << LogIO::SEVERE << "No Table associated with the PagedArray"
 	     << LogIO::POST;
       return False;
     }
     if (itsROArray.isNull() == True) {
       LogIO logErr(LogOrigin("PagedArray<T>", "ok()"));
-      logErr  << LogIO::SEVERE << "No Array associated with the Paged Array"
+      logErr  << LogIO::SEVERE << "No Array associated with the PagedArray"
 	      << LogIO::POST;
       return False;
     }
@@ -425,11 +426,11 @@ LatticeIterInterface<T>* PagedArray<T>::makeIter
   return new PagedArrIter<T>(*this, navigator);
 }
 
-// IT IS IMPOSSIBLE TO CREATE A COLUMN WHICH CONTAINS ARRAYS OF
-// DIFFERENT DIMENSIONALITY
+
 template <class T>
 void PagedArray<T>::makeArray (const TiledShape& shape)
 {
+  doReopen();
   // Make sure the table is writable.
   itsTable.reopenRW();
   itsLog << LogOrigin("PagedArray<T>", 
@@ -487,6 +488,7 @@ void PagedArray<T>::makeArray (const TiledShape& shape)
 template<class T>
 void PagedArray<T>::setTableType()
 {
+  AlwaysAssert (!itsTable.isNull(), AipsError);
   TableInfo& info(itsTable.tableInfo());
   {
     const String reqdType = info.type (TableInfo::PAGEDARRAY);
@@ -521,6 +523,7 @@ String PagedArray<T>::defaultComment()
 template<class T>
 void PagedArray<T>::makeRWArray()
 {
+  doReopen();
   itsTable.reopenRW();
   itsRWArray.attach (itsTable, itsColumnName);
 }
@@ -528,27 +531,34 @@ void PagedArray<T>::makeRWArray()
 template<class T>
 Bool PagedArray<T>::lock (FileLocker::LockType type, uInt nattempts)
 {
+  doReopen();
   return itsTable.lock (type, nattempts);
 }
 template<class T>
 void PagedArray<T>::unlock()
 {
-  itsTable.unlock();
+  if (!itsIsClosed) {
+    itsTable.unlock();
+  }
 }
 template<class T>
 Bool PagedArray<T>::hasLock (FileLocker::LockType type) const
 {
-  return itsTable.hasLock (type);
+  return (itsIsClosed  ?  False : itsTable.hasLock (type));
 }
 template<class T>
 void PagedArray<T>::resync()
 {
-  itsTable.resync();
+  if (!itsIsClosed) {
+    itsTable.resync();
+  }
 }
 template<class T>
 void PagedArray<T>::flush()
 {
-  itsTable.flush();
+  if (!itsIsClosed) {
+    itsTable.flush();
+  }
 }
 template<class T>
 void PagedArray<T>::tempClose()
