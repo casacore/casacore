@@ -1,6 +1,5 @@
 
 BEGIN.  Testing ArrayPositionIterator.  0 dim. ......
-
 0 [ 0 0 ] 
 1 [ 1 0 ] 
 2 [ 2 0 ] 
@@ -26,42 +25,42 @@ BEGIN.  Testing ArrayPositionIterator.  0 dim. ......
 22 [ 2 4 ] 
 23 [ 3 4 ] 
 24 [ 4 4 ] 
-
 END.  Testing ArrayPositionIterator.  0 dim. ......
 
-
 BEGIN.  Testing ArrayPositionIterator.  1 dim. ......
-
 0 [ 0 0 ] 0
 1 [ 0 1 ] 4
 2 [ 0 2 ] 8
 3 [ 0 3 ] 12
 4 [ 0 4 ] 16
-
 END.  Testing ArrayPositionIterator.  1 dim. ......
 
-
 BEGIN.  Testing ArrayIterator.  1 dim. ......
-
+0  0
+1  4
+2  8
+3  12
+4  16
+END.  Testing ArrayIterator.  1 dim. ......
 
 BEGIN.  Testing double ArrayPositionIterator.  1 dim. ......
-
 0 [ 0 0 ] 0.5
 1 [ 0 1 ] 4.5
 2 [ 0 2 ] 8.5
 3 [ 0 3 ] 12.5
 4 [ 0 4 ] 16.5
-
 END.  Testing double ArrayPositionIterator.  1 dim. ......
 
-
 BEGIN.  Testing double ArrayIterator.  1 dim. ......
-
 0  0.5
 1  4.5
 2  8.5
 3  12.5
 4  16.5
-
 END.  Testing double ArrayIterator.  1 dim. ......
 
+BEGIN.  Testing int ArrayIterator.  5 dim. ......
+END.  Testing int ArrayIterator.  5 dim. ......
+
+BEGIN.  Testing int ArrayIterator part.  5 dim. ......
+END.  Testing int ArrayIterator part.  5 dim. ......

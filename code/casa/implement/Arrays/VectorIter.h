@@ -40,17 +40,19 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 // <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="" demos="">
 // </reviewed>
 //
-// VectorIterator steps a Vector (the "cursor") through an array.
+// VectorIterator steps a Vector (the "cursor") through an array for the
+// given axis.
 // The cursor "refers" to storage in the array, so that changing the
-// values in the cursor changes values in the original array. Like with
-// ArrayPositionIterator, the cursor presently only moves through the array from
-// bottom to top in the obvious way; however one may of course iterate
-// through a slice ("array section"). This class is derived from
-// ArrayIterator; basically it only adds the vector() member function which
-// allows you to access the cursor as a Vector.
+// values in the cursor changes values in the original array.
 //
-// <note role=tip> The origin of the cursor, i.e. the subarray that moves through the
-//        larger array, is always zero.
+// This class is derived from ArrayIterator; basically it only adds
+// the vector() member function which allows you to access the cursor
+// as a Vector.
+//
+// <note role=tip>
+// The origin of the cursor, i.e. the subarray that moves through the
+// larger array, is always zero.
+// </note>
 //
 // In this example we sum all the elements of an array; of course we already
 // have the "sum" function in ArrayMath.h that we should use instead.
@@ -68,25 +70,26 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 //     vi.next();
 // }
 // </srcblock>
-// <note role=tip> All ArrayIterator classes should be redone.
-//
+
 template<class T> class VectorIterator : public ArrayIterator<T>
 {
 public:
-    // Iterate by vectors through array "a".
-    VectorIterator(Array<T> &a);
+    // Iterate by vector cursors through array "a".
+    // The vector cursor is taken for the given axis.
+    explicit VectorIterator(Array<T> &a, uInt axis=0);
 
+    // Return a Vector at the current position.
+    Vector<T> &vector() {return *(Vector<T> *)this->ap_p;}
+
+private:
     // Not implemented.
     VectorIterator(const VectorIterator<T> &);
     // Not implemented.
     VectorIterator<T> &operator=(const VectorIterator<T> &);
-
-    // Return a Vector at the current position.
-    Vector<T> &vector() {return *(Vector<T> *)(this->ap);}
 };
 
 // 
-// <summary> Iterate an Vector cursor through another Array. </summary>
+// <summary> Iterate a Vector cursor through another Array. </summary>
 // <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="" demos="">
 // </reviewed>
 //
@@ -100,11 +103,11 @@ template<class T> class ReadOnlyVectorIterator
 {
 public:
     // <group>
-    ReadOnlyVectorIterator(const Array<T> &a) : vi((Array<T> &)a) {}
-    ReadOnlyVectorIterator(const ReadOnlyVectorIterator<T> &);
-    ReadOnlyVectorIterator<T> &operator=(const ReadOnlyVectorIterator<T> &);
+    explicit ReadOnlyVectorIterator(const Array<T> &a, uInt axis=0)
+      : vi(const_cast<Array<T>&>(a)) {}
 
     void next()   {vi.next();}
+    void reset() {vi.origin();}
     void origin() {vi.origin();}
     
     const Array<T> &array() {return vi.array();}
@@ -113,11 +116,15 @@ public:
     Bool atStart() const {return vi.atStart();}
     Bool pastEnd() const {return vi.pastEnd();}
     const IPosition &pos() const {return vi.pos();}
+    IPosition endPos() const {return vi.endPos();}
     uInt ndim() const {return vi.ndim();}
-    uInt dimIter() const {return vi.dimIter();}
-    uInt nSteps() const {return vi.nSteps();}
     // </group>
 private:
+    // Not implemented.
+    ReadOnlyVectorIterator(const ReadOnlyVectorIterator<T> &);
+    // Not implemented.
+    ReadOnlyVectorIterator<T> &operator=(const ReadOnlyVectorIterator<T> &);
+
     VectorIterator<T> vi;
 };
 

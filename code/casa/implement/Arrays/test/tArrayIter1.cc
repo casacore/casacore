@@ -44,6 +44,7 @@
 #include <casa/Exceptions/Error.h>
 
 #include <casa/namespace.h>
+
 // Test iterating through a subset of a 5D array.
 void checkIter (const Array<Int>& array, const IPosition& blc,
 		const IPosition& trc, const IPosition& inc)
@@ -169,7 +170,7 @@ void checkIter (const Array<Int>& array, const IPosition& blc,
   }
 }
 
-main()
+int main()
 {
   try {
 

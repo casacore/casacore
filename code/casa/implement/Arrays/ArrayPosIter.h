@@ -1,5 +1,5 @@
 //# ArrayPosIter.h: Iterate an IPosition through the shape of an Array
-//# Copyright (C) 1993,1994,1995,1998,1999
+//# Copyright (C) 1993,1994,1995,1998,1999,2004
 //# Associated Universities, Inc. Washington DC, USA.
 //# 
 //# This library is free software; you can redistribute it and/or modify it
@@ -64,14 +64,19 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 // }
 // </srcblock>
 //
-// At the moment this only iterates by the simplest "bottom to top" order, and
-// the iteration step always "fills up" its dimensionality. e.g., if we are
-// stepping through a cube by matrices, the matrix completely fills up the
-// plane. These restrictions should be removed eventually.
+// Iteration can be done by any combination of axes, but it can only be
+// done for full axes.
+// <br>The iteration step always "fills up" its dimensionality.
+// E.g., if we are stepping through a cube by matrices, the matrix completely
+// fills up the plane.
+// Class <linkto class=ArrayLattice>ArrayLattice</linkto> in the lattices
+// package can be used to iterate with partial volumes.
 //
-// <note role=tip> All the array iterator classes should probably be reimplemented;
-//        their implementation is a bit ugly.
-// 
+// <note role=tip>
+// All the array iterator classes should probably be reimplemented;
+// their implementation is a bit ugly.
+// </note>
+
 class ArrayPositionIterator
 {
 public:
@@ -79,42 +84,87 @@ public:
     // through. Also define the dimensionality of the step. byDim==0 implies
     // we are stepping by scalars (i.e. every element), byDim==1 implies that
     // we are stepping by vector, ==2 by matrices, and so on.
+    // If uses the first byDim axes as the cursor volume and it steps
+    // through the remaining axes.
     // <group>
     ArrayPositionIterator(const IPosition &shape, const IPosition &origin,
 			  uInt byDim);
     ArrayPositionIterator(const IPosition &shape,
 			  uInt byDim);
     // </group>
+
+    // Step through an array using the given axes.
+    // The axes can be given in two ways:
+    // <ol>
+    // <li>axesAreCursor=True means that the axes form the cursor axes.
+    //     The remaining axes will form the iteration axes.
+    //     This is the default.
+    // <li>axesAreCursor=False means the opposite.
+    //     In this case the iteration axes can be given in any order.
+    // </ol>
+    // E.g. when using iteration axes 2,0 for an array with shape [5,3,7], each
+    // iteration step returns a cursor (containing the data of axis 1).
+    // During the iteration axis 2 will vary most rapidly (as it was
+    // given first).
+    // Iterate over the given axes in the given order.
+    // The cursor axes are the remaining axes.
+    // E.g. for a shape of [3,4,5,6] and iterAxes [3,1], the cursor size
+    // is [3,5] (axes 0 and 2), while the iteration is fastest for axis 3.
+    ArrayPositionIterator(const IPosition &shape,
+			  const IPosition &axes,
+			  Bool axesAreCursor=True);
+
     virtual ~ArrayPositionIterator() {};
+
     // Reset the cursor to the beginning of the volume.
-    virtual void origin();
+    // <group>
+    virtual void reset();
+    void origin()
+      { reset(); }
+    // </group>
+
     // Returns true of the cursor is at the origin.
     Bool atStart() const;
+
     // Returns true if the cursor has moved past the end of its volume.
     Bool pastEnd() const;
+
     // Return the position of the cursor.
     const IPosition &pos() const {return Cursor;}
+
+    // Return the end position of the cursor.
+    IPosition endPos() const;
+
     // Advance the cursor to its next position.
     virtual void next();
+
     // What is the dimensionality of the volume we are iterating through?
     uInt ndim() const;
-    // What is the dimensionality of the "step" the cursor takes, i.e.
-    // 0 for scalars, 1 for vector, ....
-    uInt dimIter() const {return iterationDim;}
-    // How many steps have we taken from the beginning?
-    uInt nSteps() const {return stepsFromBegin;}
+
+    // Return the iteration axes.
+    const IPosition &iterAxes() const {return iterationAxes;}
+
+    // Return the cursor axes.
+    const IPosition &cursorAxes() const {return cursAxes;}
+
 protected:
     // Advance cursor to its next position and tell which dimension stepped.
     uInt nextStep();
+    // What is the dimensionality of the "step" the cursor takes, i.e.
+    // 0 for scalars, 1 for vector, ....
+    uInt dimIter() const {return cursAxes.nelements();}
+
 private:
     // Setup the object for the constructor.
-    void setup();
+    // <group>
+    void setup(uInt byDim);
+    void setup(const IPosition &axes, Bool axesAreCursor);
+    // </group>
 
     //# We should probably have mf's for getting at Start,Shape and End.
     IPosition Start, Shape, End, Cursor;
     Bool atOrBeyondEnd;
-    uInt iterationDim;
-    uInt stepsFromBegin;
+    IPosition cursAxes, iterationAxes;
 };
 
 // Dimensionality of the array we are iterating through.
@@ -126,7 +176,7 @@ inline uInt ArrayPositionIterator::ndim() const
 // We are at the "end" if we cannot advance any more.
 inline Bool ArrayPositionIterator::pastEnd() const
 {
-	return atOrBeyondEnd;
+    return atOrBeyondEnd;
 }
 
 

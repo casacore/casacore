@@ -1,5 +1,5 @@
 //# ArrayPosIter.cc: Iterate an IPosition through the shape of an Array
-//# Copyright (C) 1993,1994,1995,1999
+//# Copyright (C) 1993,1994,1995,1999,2004
 //# Associated Universities, Inc. Washington DC, USA.
 //# 
 //# This library is free software; you can redistribute it and/or modify it
@@ -35,33 +35,61 @@ ArrayPositionIterator::ArrayPositionIterator(const IPosition &shape,
 					     uInt byDim)
 : Start(origin),
   Shape(shape),
-  atOrBeyondEnd(False),
-  iterationDim(byDim),
-  stepsFromBegin(0)
+  atOrBeyondEnd(False)
 {
-    setup();
+    setup(byDim);
 }
 
 ArrayPositionIterator::ArrayPositionIterator(const IPosition &shape, 
 					     uInt byDim)
 : Start(shape.nelements(), 0),
   Shape(shape),
-  atOrBeyondEnd(False),
-  iterationDim(byDim),
-  stepsFromBegin(0)
+  atOrBeyondEnd(False)
 {
-    setup();
+    setup(byDim);
+}
+
+ArrayPositionIterator::ArrayPositionIterator(const IPosition &shape, 
+					     const IPosition &iterAxes,
+					     Bool axesAreCursor)
+: Start(shape.nelements(), 0),
+  Shape(shape),
+  atOrBeyondEnd(False)
+{
+    setup(iterAxes, axesAreCursor);
 }
 
 // <thrown>
 //     <item> ArrayIteratorError
 // </thrown>
-void ArrayPositionIterator::setup()
+void ArrayPositionIterator::setup(uint byDim)
 {
-    if (iterationDim > ndim()) {
+    if (byDim > ndim()) {
 	throw(ArrayIteratorError("ArrayPositionIterator::ArrayPositionIterator"
 	    " - Stepping by dimension > Array dimension"));
     }
+    IPosition cursorAxes(byDim);
+    for (uInt i=0; i<byDim; i++) {
+      cursorAxes(i) = i;
+    }
+    setup (cursorAxes, True);
+}
+
+void ArrayPositionIterator::setup(const IPosition &axes,
+				  Bool axesAreCursor)
+{
+    // Note that IPosition::otherAxes checks if axes are unique.
+    // Get the iteration axes.
+    if (axesAreCursor) {
+        iterationAxes = IPosition::otherAxes (ndim(), axes);
+    } else {
+        iterationAxes = axes;
+    }
+    // Get the cursorAxes.
+    // Do this also if axesAreCursor=True, so we are sure they are
+    // in the correct order.
+    cursAxes = IPosition::otherAxes (ndim(), iterationAxes);
+    // Check shape.
     if (Start.nelements() != Shape.nelements()) {
 	throw(ArrayIteratorError("ArrayPositionIterator::ArrayPositionIterator"
 				 " - ndim of origin and shape differ"));
@@ -75,9 +103,8 @@ void ArrayPositionIterator::setup()
     End = Start + Shape - 1;
 }
 
-void ArrayPositionIterator::origin()
+void ArrayPositionIterator::reset()
 {
-    stepsFromBegin = 0;
     Cursor = Start;
     atOrBeyondEnd = False;
 }
@@ -103,7 +130,7 @@ uInt ArrayPositionIterator::nextStep()
 
     // Short circuit if we are iterating by the same dimensionality
     // as the array.
-    if (iterationDim == ndim()){
+    if (iterationAxes.nelements() == 0){
         atOrBeyondEnd = True;
         Cursor = End;
 	return ndim();
@@ -117,26 +144,32 @@ uInt ArrayPositionIterator::nextStep()
 				     " - Cursor before array start"));
     }
 
-    Cursor(iterationDim)++;
-    
-    // When we reach the end of the current dimensionality, we have to
-    // increment the next higher  one, and it might ripple (e.g. 999+1=1000).
-    // We let the most significan digit keep climbing.
-    uInt iterDim = iterationDim;
-    while (Cursor(iterDim) > End(iterDim)  &&  iterDim < ndim() - 1) {
-	Cursor(iterDim) = Start(iterDim);
-	if (++iterDim > ndim() - 1)
+    // Increment the cursor.
+    Int axis = 0;
+    for (uInt i=0; i<iterationAxes.nelements(); i++) {
+        axis = iterationAxes(i);
+	Cursor(axis)++;
+	if (Cursor(axis) <= End(axis)) {
 	    break;
-	Cursor(iterDim) += 1;
+	}
+	// Exceeded the axis. Reset it if not the last one.
+	if (i < iterationAxes.nelements()-1) {
+	    Cursor(axis) = Start(axis);
+	} else {
+	    atOrBeyondEnd = True;
+	}
     }
-    // We're at the end if the last index has rolled past the end
-    if (Cursor(ndim() - 1) > End(ndim() - 1)) {
-        atOrBeyondEnd = True;
-    } else {
-	stepsFromBegin++;
-    }
-    return iterDim;
+    return axis;
+}
+
+IPosition ArrayPositionIterator::endPos() const
+{
+  IPosition endp = pos();
+  for (uInt i=0; i<cursAxes.nelements(); i++) {
+    uInt axis = cursAxes(i);
+    endp(axis) = Shape(axis)-1;
+  }
+  return endp;
 }
 
 } //# NAMESPACE CASA - END
-

@@ -40,21 +40,20 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 // <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="" demos="">
 // </reviewed>
 //
-// MatrixIterator steps a Vector (the "cursor") through an array.
+// MatrixIterator steps a Matrix (the "cursor") through an array.
 // The cursor "refers" to storage in the array, so that changing the
-// values in the cursor changes values in the original array. Like with
-// ArrayPositionIterator, the cursor presently only moves through the array from
-// bottom to top in the obvious way; however one may of course iterate
-// through a slice ("array section"). This class is derived from
-// ArrayIterator; basically it only adds the vector() member function which
-// allows you to access the cursor as a Vector.
+// values in the cursor changes values in the original array.
 //
-// <note role=tip> The origin of the cursor, i.e. the subarray that moves through the
-//        larger array, is always zero.
+// This class is derived from ArrayIterator; basically it only adds the
+// matrix() member function which allows you to access the cursor as a Matrix.
+//
+// <note role=tip>
+// The origin of the cursor, i.e. the subarray that moves through the
+// larger array, is always zero.
+// </note>
 //
 // In this example we want to make a "moment" map of a cube, i.e. collapse
 // the "Z" axis by averaging it.
-// 
 // <srcblock>
 // Cube<Float> cube;
 // MatrixIterator planeIter(cube);
@@ -66,22 +65,26 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 // }
 // average /= Float(cube.shape()(2));  // divide by the number of planes
 // </srcblock>
-// <note role=tip> All ArrayIterator classes should be redone.
-//
 
 template<class T> class MatrixIterator : public ArrayIterator<T>
 {
 public:
     // Iterate by matrices through array "a".
-    MatrixIterator(Array<T> &a);
+    // The first 2 axes form the cursor axes.
+    explicit MatrixIterator(Array<T> &a);
 
+    // Iterate by matrices through array "a".
+    // The given axes form the cursor axes.
+    MatrixIterator(Array<T> &a, uInt cursorAxis1, uInt cursorAxis2);
+
+    // Return the matrix at the current position.
+    Matrix<T> &matrix() {return *(Matrix<T> *)(this->ap_p);}
+
+private:
     // Not implemented.
     MatrixIterator(const MatrixIterator<T> &);
     // Not implemented.
     MatrixIterator<T> &operator=(const MatrixIterator<T> &);
-
-    // Return the matrix at the current position.
-    Matrix<T> &matrix() {return *(Matrix<T> *)(this->ap);}
 };
 
 // 
@@ -99,11 +102,15 @@ template<class T> class ReadOnlyMatrixIterator
 {
 public:
     // <group>
-    ReadOnlyMatrixIterator(const Array<T> &a) : mi((Array<T> &)a) {}
-    ReadOnlyMatrixIterator(const ReadOnlyMatrixIterator<T> &);
-    ReadOnlyMatrixIterator<T> &operator=(const ReadOnlyMatrixIterator<T> &);
+    ReadOnlyMatrixIterator(const Array<T> &a) :
+      mi(const_cast<Array<T>&>(a)) {}
+
+    ReadOnlyMatrixIterator(const Array<T> &a,
+			   uInt cursorAxis1, uInt cursorAxis2)
+      : mi(const_cast<Array<T>&>(a), cursorAxis1, cursorAxis2) {}
 
     void next()   {mi.next();}
+    void reset() {mi.origin();}
     void origin() {mi.origin();}
     
     const Array<T> &array() {return mi.array();}
@@ -112,11 +119,15 @@ public:
     Bool atStart() const {return mi.atStart();}
     Bool pastEnd() const {return mi.pastEnd();}
     const IPosition &pos() const {return mi.pos();}
+    IPosition endPos() const {return mi.endPos();}
     uInt ndim() const {return mi.ndim();}
-    uInt dimIter() const {return mi.dimIter();}
-    uInt nSteps() const {return mi.nSteps();}
     // </group>
 private:
+    // Not implemented.
+    ReadOnlyMatrixIterator(const ReadOnlyMatrixIterator<T> &);
+    // Not implemented.
+    ReadOnlyMatrixIterator<T> &operator=(const ReadOnlyMatrixIterator<T> &);
+
     MatrixIterator<T> mi;
 };
 

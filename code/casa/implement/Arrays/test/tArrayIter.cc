@@ -42,14 +42,13 @@
 #include <casa/iostream.h>
 
 #include <casa/namespace.h>
-main()
-{
-{   
-    cout << "\nBEGIN.  Testing ArrayPositionIterator.  0 dim. ......\n\n";
 
+int main()
+{
+  {   
+    cout << "\nBEGIN.  Testing ArrayPositionIterator.  0 dim. ......\n";
     IPosition shape(2);
     shape(0) = shape(1) = 5;
-
     ArrayPositionIterator ai (shape, 0);
     IPosition index (2);
     Int iloop;
@@ -58,17 +57,13 @@ main()
         index = ai.pos();
         cout << iloop << " [ " << index (0) << " " << index (1) << " ] \n";
     }
+    cout << "END.  Testing ArrayPositionIterator.  0 dim. ......\n";
+  }
 
-    cout << "\nEND.  Testing ArrayPositionIterator.  0 dim. ......\n\n";
-
-}
-
-{   
-    cout << "\nBEGIN.  Testing ArrayPositionIterator.  1 dim. ......\n\n";
-
+  {   
+    cout << "\nBEGIN.  Testing ArrayPositionIterator.  1 dim. ......\n";
     IPosition shape(2);
     shape(0) = shape(1) = 5;
-
     ArrayPositionIterator ai (shape, 1);
     Array<Int> arr (shape);
 
@@ -81,77 +76,181 @@ main()
         cout << iloop << " [ " << index (0) << " " << index (1) << " ] "
              << arr (index) << "\n";
     }
+    cout << "END.  Testing ArrayPositionIterator.  1 dim. ......\n";
 
-    cout << "\nEND.  Testing ArrayPositionIterator.  1 dim. ......\n\n";
-
-    cout << "\nBEGIN.  Testing ArrayIterator.  1 dim. ......\n\n";
-
-/*=========================================================================
+    cout << "\nBEGIN.  Testing ArrayIterator.  1 dim. ......\n";
     ArrayIterator<Int> arri (arr, 1);
-    IPosition arriindex (1);
-
-    arriindex (0) = 0;
-
+    IPosition arriindex (1, 0);
     for ( iloop = 0; ! arri.pastEnd(); arri.next(), iloop++ ) {
         cout << iloop << "  " << (arri.array ()) (arriindex) << "\n";
     }
+    cout << "END.  Testing ArrayIterator.  1 dim. ......\n";
+  }
 
-    cout << "\nEND.  Testing ArrayIterator.  1 dim. ......\n\n";
-=========================================================================*/
-
-}
-
-/*------------------------------------------------------------------------*/
-
-{   
-    cout << "\nBEGIN.  Testing double ArrayPositionIterator.  1 dim. ......\n\n";
-
+  {   
+    cout << "\nBEGIN.  Testing double ArrayPositionIterator.  1 dim. ......\n";
     IPosition shape(2);
     shape(0) = shape(1) = 5;
-
     ArrayPositionIterator ai (shape, 1);
     Array<double> arr (shape);
 
     IPosition index (2);
     Int iloop;
-
     for ( iloop = 0; ! ai.pastEnd(); ai.next(), iloop++ ) {
         index = ai.pos();
         arr (index) = double (4 * iloop) + 0.5;
         cout << iloop << " [ " << index (0) << " " << index (1) << " ] "
              << arr (index) << "\n";
     }
+    cout << "END.  Testing double ArrayPositionIterator.  1 dim. ......\n";
 
-    cout << "\nEND.  Testing double ArrayPositionIterator.  1 dim. ......\n\n";
-
-    cout << "\nBEGIN.  Testing double ArrayIterator.  1 dim. ......\n\n";
-
+    cout << "\nBEGIN.  Testing double ArrayIterator.  1 dim. ......\n";
     ArrayIterator<double> arri (arr, 1);
-    IPosition arriindex (1);
-
-    arriindex (0) = 0;
-
+    IPosition arriindex (1, 0);
     for ( iloop = 0; ! arri.pastEnd(); arri.next(), iloop++ ) {
         cout << iloop << "  " << (arri.array ()) (arriindex) << "\n";
     }
+    cout << "END.  Testing double ArrayIterator.  1 dim. ......\n";
+  }
 
-    cout << "\nEND.  Testing double ArrayIterator.  1 dim. ......\n\n";
-
-}
-
-{
-    // Test that leading degenerate axes do not go away
-    Array<Int> ai(IPosition(5, 1, 2, 3, 4, 5));
+  {
+    cout << "\nBEGIN.  Testing int ArrayIterator.  5 dim. ......\n";
+    // Test that leading degenerate axes do not go away.
+    // Check if each chunk matches.
+    IPosition shape(5, 2,3,4,5,6);
+    Array<Int> ai(shape);
     indgen(ai);
-    ArrayIterator<Int> iter(ai, 2);
-    AlwaysAssertExit(iter.array().shape() == IPosition(2,1,2));
+    {
+      // Test a regular iterator.
+      ArrayIterator<Int> iter(ai, 2);
+      AlwaysAssertExit(iter.array().shape() == IPosition(2,shape(0),shape(1)));
+      while (!iter.pastEnd()) {
+	Array<Int> tmparr (ai(iter.pos(), iter.endPos()).nonDegenerate());
+	AlwaysAssertExit(iter.array().data() == tmparr.data());
+	AlwaysAssertExit(allEQ (iter.array(), tmparr));
+	iter.next();
+      }
+    }
+    {
+      // Test that a cursor as large as the array works
+      ArrayIterator<Int> aiter(ai, 5);
+      AlwaysAssertExit(allEQ(aiter.array(), ai));
+      aiter.next();
+      AlwaysAssertExit(aiter.pastEnd());
+    }
+    {
+      // Test iterator with arbitrary axes.
+      ReadOnlyArrayIterator<Int> iter(ai, IPosition(3,4,1,3), False);
+      AlwaysAssertExit(iter.array().shape() == IPosition(2,shape(0),shape(2)));
+      while (!iter.pastEnd()) {
+	Array<Int> tmparr (ai(iter.pos(), iter.endPos()).nonDegenerate());
+	AlwaysAssertExit(allEQ (iter.array(), tmparr));
+	iter.next();
+      }
+      iter.reset();
+      // Check if iteration is in correct order.
+      IPosition blc(5,0);
+      IPosition trc(shape-1);
+      for (Int ax3=0; ax3<shape(3); ++ax3) {
+	blc(3) = trc(3) = ax3;
+	for (Int ax1=0; ax1<shape(1); ++ax1) {
+	  blc(1) = trc(1) = ax1;
+	  for (Int ax4=0; ax4<shape(4); ++ax4) {
+	    blc(4) = trc(4) = ax4;
+	    AlwaysAssertExit(!iter.pastEnd());
+	    AlwaysAssertExit(blc==iter.pos()  &&  trc==iter.endPos());
+	    iter.next();
+	  }
+	}
+      }
+      AlwaysAssertExit(iter.pastEnd());
+    }
+    cout << "END.  Testing int ArrayIterator.  5 dim. ......\n";
+  }
+  {
+    cout << "\nBEGIN.  Testing int ArrayIterator part.  5 dim. ......\n";
+    // Test iterator with arbitrary axes on a part of an array.
+    // Test that leading degenerate axes do not go away.
+    // Check if each chunk matches.
+    IPosition shape1(5, 10,20,16,20,15);
+    Array<Int> ai1(shape1);
+    indgen(ai1);
+    // Take a chunk from it.
+    Array<Int> ai(ai1(IPosition(5,1,2,1,4,3), IPosition(5,7,12,13,16,13),
+		      IPosition(5,6,5,4,3,2)));
+    IPosition shape(5, 2,3,4,5,6);
+    AlwaysAssertExit (ai.shape() == shape);
+    {
+      // Test a regular iterator.
+      ArrayIterator<Int> iter(ai, 2);
+      AlwaysAssertExit(iter.array().shape() == IPosition(2,shape(0),shape(1)));
+      while (!iter.pastEnd()) {
+	Array<Int> tmparr (ai(iter.pos(), iter.endPos()).nonDegenerate());
+	AlwaysAssertExit(iter.array().data() == tmparr.data());
+	AlwaysAssertExit(allEQ (iter.array(), tmparr));
+	iter.next();
+      }
+    }
+    {
+      // Test that a cursor as large as the array works
+      ArrayIterator<Int> aiter(ai, 5);
+      AlwaysAssertExit(allEQ(aiter.array(), ai));
+      aiter.next();
+      AlwaysAssertExit(aiter.pastEnd());
+    }
+    {
+      // Test iterator with arbitrary axes.
+      ReadOnlyArrayIterator<Int> iter(ai, IPosition(3,4,1,3), False);
+      AlwaysAssertExit(iter.array().shape() == IPosition(2,shape(0),shape(2)));
+      while (!iter.pastEnd()) {
+	Array<Int> tmparr (ai(iter.pos(), iter.endPos()).nonDegenerate());
+	AlwaysAssertExit(allEQ (iter.array(), tmparr));
+	iter.next();
+      }
+      iter.reset();
+      // Check if iteration is in correct order.
+      IPosition blc(5,0);
+      IPosition trc(shape-1);
+      for (Int ax3=0; ax3<shape(3); ++ax3) {
+	blc(3) = trc(3) = ax3;
+	for (Int ax1=0; ax1<shape(1); ++ax1) {
+	  blc(1) = trc(1) = ax1;
+	  for (Int ax4=0; ax4<shape(4); ++ax4) {
+	    blc(4) = trc(4) = ax4;
+	    AlwaysAssertExit(!iter.pastEnd());
+	    AlwaysAssertExit(blc==iter.pos()  &&  trc==iter.endPos());
+	    iter.next();
+	  }
+	}
+      }
+      AlwaysAssertExit(iter.pastEnd());
+    }
+    {
+      ReadOnlyArrayIterator<Int> iter(ai, IPosition(3,4,1,3));
+      AlwaysAssertExit(iter.array().shape() == IPosition(3,shape(1),shape(3),
+							 shape(4)));
+      while (!iter.pastEnd()) {
+	Array<Int> tmparr (ai(iter.pos(), iter.endPos()).nonDegenerate());
+	AlwaysAssertExit(allEQ (iter.array(), tmparr));
+	iter.next();
+      }
+      iter.reset();
+      // Check if iteration is in correct order.
+      IPosition blc(5,0);
+      IPosition trc(shape-1);
+      for (Int ax2=0; ax2<shape(2); ++ax2) {
+	blc(2) = trc(2) = ax2;
+	for (Int ax0=0; ax0<shape(0); ++ax0) {
+	  blc(0) = trc(0) = ax0;
+	  AlwaysAssertExit(!iter.pastEnd());
+	  AlwaysAssertExit(blc==iter.pos()  &&  trc==iter.endPos());
+	  iter.next();
+	}
+      }
+      AlwaysAssertExit(iter.pastEnd());
+    }
+    cout << "END.  Testing int ArrayIterator part.  5 dim. ......\n";
+  }
 
-    // Test that a cursor as large as the array works
-    ArrayIterator<Int> aiter(ai, 5);
-    AlwaysAssertExit(allEQ(aiter.array(), ai));
-    aiter.next();
-    AlwaysAssertExit(aiter.pastEnd());
-}
-
-    return 0;
+  return 0;
 }

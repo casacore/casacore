@@ -71,34 +71,55 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 template<class T> class ArrayIterator : public ArrayPositionIterator
 {
 public:
-    // Step through array "arr" using a cursor of dimensionality "byDim".
-    ArrayIterator(Array<T> &arr, uInt byDim);
-    // Step through "arr" with a cursor of dimensionality 1.
-    ArrayIterator(Array<T> &arr);
+    // Step through array "arr" over the first byDim axes
+    // (using a cursor of dimensionality "byDim").
+    explicit ArrayIterator(Array<T> &arr, uInt byDim=1);
+
+    // Step through an array using the given axes.
+    // The axes can be given in two ways:
+    // <ol>
+    // <li>axesAreCursor=True means that the axes form the cursor axes.
+    //     The remaining axes will form the iteration axes.
+    //     This is the default.
+    // <li>axesAreCursor=False means the opposite.
+    //     In this case the iteration axes can be given in any order.
+    // </ol>
+    // E.g. when using iteration axes 2,0 for an array with shape [5,3,7], each
+    // iteration step returns a cursor (containing the data of axis 1).
+    // During the iteration axis 2 will vary most rapidly (as it was
+    // given first).
+    ArrayIterator(Array<T> &arr, const IPosition &axes,
+		  Bool axesAreCursor = True);
 
     virtual ~ArrayIterator();
 
     // Move the cursor to the next position.
-    void next();
+    virtual void next();
+
     // Reset the cursor to the beginning.
-    void origin();
+    // <group>
+    virtual void reset();
+    // </group>
 
     // Return the cursor. (Perhaps we should have a fn() that returns a
     // reference to the original array as well?)
-    Array<T> &array() {return *ap;}
+    Array<T> &array() {return *ap_p;}
+
 protected:
     // A pointer to the cursor.
-    Array<T> *ap;
+    Array<T> *ap_p;
+
 private:
     // helper function to centralize construction work
     void init(Array<T> &);
     // helper function to set the pointer to the new data position in ap
     // after a step in the given dimension. -1 resets it to the beginning.
     void apSetPointer(Int stepDim);
-    Array<T> *pOriginalArray;
-    Bool readOnly;
-    IPosition offset;
-    T* dataPtr;
+
+    Array<T> *pOriginalArray_p;
+    Bool readOnly_p;
+    IPosition offset_p;
+    T* dataPtr_p;
 
     //# Presently the following are not defined.
     ArrayIterator(const ArrayIterator<T> &);
@@ -139,31 +160,42 @@ template<class T> class ReadOnlyArrayIterator
 {
 public:
     // Step through array "arr" using a cursor of dimensionality "byDim".
-    ReadOnlyArrayIterator(const Array<T> &arr, uInt byDim=1) 
-	: ai((Array<T> &)arr,byDim) {}
+    explicit ReadOnlyArrayIterator(const Array<T> &arr, uInt byDim=1) 
+	: ai(const_cast<Array<T>&>(arr),byDim) {}
 
-    // Not implemented.
-    ReadOnlyArrayIterator<T> &operator=(const ReadOnlyArrayIterator<T> &);
-    
+    // Step through an array for the given iteration axes.
+  ReadOnlyArrayIterator(const Array<T> &arr, const IPosition &axes,
+			Bool axesAreCursor = True)
+	: ai(const_cast<Array<T>&>(arr),axes,axesAreCursor) {}
+
     // Move the cursor to the next position.
     void next() {ai.next();}
+
     // Reset the cursor to the beginning.
+    // <group>
+    void reset() {ai.origin();}
     void origin() {ai.origin();}
+    // </group>
     
     // Return the cursor. (Perhaps we should have a fn() that returns a
     // reference to the original array as well?)
     const Array<T> &array() {return ai.array();}
 	
-    // The same as the function in ArrayPositionIterator.
+    // The same as the functions in ArrayPositionIterator.
     // <group>
     Bool atStart() const {return ai.atStart();}
     Bool pastEnd() const {return ai.pastEnd();}
     const IPosition &pos() const {return ai.pos();}
+    IPosition endPos() const {return ai.endPos();}
     uInt ndim() const {return ai.ndim();}
-    uInt dimIter() const {return ai.dimIter();}
-    uInt nSteps() const {return ai.nSteps();}
     // </group>
 private:
+    // Not implemented.
+    // <group>
+    ReadOnlyArrayIterator (const ReadOnlyArrayIterator<T> &);
+    ReadOnlyArrayIterator<T> &operator=(const ReadOnlyArrayIterator<T> &);
+    // </group>
+    
     ArrayIterator<T> ai;
 };
 

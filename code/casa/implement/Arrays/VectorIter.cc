@@ -29,14 +29,13 @@
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
-template<class T> VectorIterator<T>::VectorIterator(Array<T> &a)
-: ArrayIterator<T>(a, 1)
+template<class T> VectorIterator<T>::VectorIterator(Array<T> &a, uInt axis)
+  : ArrayIterator<T>(a, IPosition(1,axis), True)
 {
     // We need to ensure that ap points at a vector
-    Vector<T> *vp = new Vector<T>(*this->ap); // reference
-    delete this->ap;
-    this->ap = vp;
+    Vector<T> *vp = new Vector<T>(*this->ap_p); // reference
+    delete this->ap_p;
+    this->ap_p = vp;
 }
 
 } //# NAMESPACE CASA - END
-

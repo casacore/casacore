@@ -33,10 +33,20 @@ template<class T> MatrixIterator<T>::MatrixIterator(Array<T> &a)
 : ArrayIterator<T>(a, 2)
 {
     // We need to ensure that ap points at a Matrix
-    Matrix<T> *mp = new Matrix<T>(*this->ap); // reference
-    delete this->ap;
-    this->ap = mp;
+    Matrix<T> *mp = new Matrix<T>(*this->ap_p); // reference
+    delete this->ap_p;
+    this->ap_p = mp;
+}
+
+template<class T> MatrixIterator<T>::MatrixIterator(Array<T> &a,
+						    uInt cursorAxis1,
+						    uInt cursorAxis2)
+: ArrayIterator<T>(a, IPosition(1,cursorAxis1, cursorAxis2), True)
+{
+    // We need to ensure that ap points at a Matrix
+    Matrix<T> *mp = new Matrix<T>(*this->ap_p); // reference
+    delete this->ap_p;
+    this->ap_p = mp;
 }
 
 } //# NAMESPACE CASA - END
-
