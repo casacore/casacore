@@ -1,8 +1,9 @@
+RecordInterface: fieldNumber exceeds #fields
 Record field  cannot be added: length<1
 Record field aB cannot be added: no uppercase
 Record field A cannot be added: extra==10
 >>> Instance-specific assertion error message:
-(/aips++/code/aips/implement/Containers/RecordRep.cc : 233) Failed AlwaysAssertExit whichField >= 0 && whichField < nused_p && desc_p.type(whichField) == type
+(RecordRep.cc : 233) Failed AlwaysAssertExit whichField >= 0 && whichField < Int(nused_p) && desc_p.type(whichField) == type
 <<<
 RecordRep::createDataField: unknown data type
 Array<T>::validateConformance
@@ -23,7 +24,7 @@ Record cannot be changed (fixed structure)
 (Record.cc : 98) Failed AlwaysAssertExit conform (other)
 <<<
 >>> Instance-specific assertion error message:
-(Record.cc : 261) Failed AlwaysAssertExit this != &other
+(Record.cc : 262) Failed AlwaysAssertExit this != &other
 <<<
 RecordDesc::mergeField - duplicate in other
 Record cannot be changed (fixed structure)
