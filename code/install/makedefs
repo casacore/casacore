@@ -317,17 +317,19 @@ CXXARDBG  = $(ARFLAGS)
 # into an object library in one go in order to limit system resource usage.
 UPDBATCH := 2000
 
-# Linker and link flags used in producing sharable libraries, for example
+# The C++ compiler must be used to produce sharable libraries because
+# it must put in the hooks to ensure that static/global objects are
+# initialized at startup time. $(MKSO) is the binary used to link
+# shared libraries and $(LDOPTS) are the flags needed for a given
+# OS/compiler.
 #
-#        OS               LDSOPTS
-#    -----------     -----------------
-#    SunOS 4.x       -assert pure-text
-#    SunOS 5.x       -dy -G
+# The default values for $(MKSO) and $(LDOPTS) are for GNU/EGCS C++
+# compilers. Sites which use non-GNU/EGCS compilers must override
+# these switches in the local makedefs.
 #
-# Note that in both SunOS 4.x and SunOS 5.x, the "-PIC" option must be
-# included as a compilation option (do not use "-pic").
 LD       := ld
-LDSOPTS  :=
+MKSO	  = $(C++)
+LDSOPTS  := -shared -fPIC
 
 # Suffixes for static and shared libraries.
 SFXSTAT  := a
@@ -732,6 +734,7 @@ export CXXAR    := $(CXXAR)
 export CXXARDBG := $(CXXARDBG)
 export CXXAROPT := $(CXXAROPT)
 export LD       := $(LD)
+export MKSO     := $(MKSO)
 export LDSOPTS  := $(LDSOPTS)
 export SFXSTAT  := $(SFXSTAT)
 export SFXSHAR  := $(SFXSHAR)
