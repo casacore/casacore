@@ -123,6 +123,9 @@ public:
 
     // is this attached to a null table
     virtual Bool isNull() { return tab_p.isNull();}
+
+    // return the subtable being indexed
+    virtual const Table &table() const {return tab_p;}
 private:
     // the subtable
     Table tab_p;
@@ -151,12 +154,14 @@ private:
     // last known sub-table size
     uInt nrows_p;
 
-    Bool hasChanged_p;
+    Bool hasChanged_p, hasZeroIntervals_p;
 
-    ColumnsIndex *index_p;
+    ColumnsIndex *index_p, *zeroIntervalIndex_p;
     Block<RecordFieldPtr<Int> > lowerIndexKeys_p;
     Block<RecordFieldPtr<Int> > upperIndexKeys_p;
+    Block<RecordFieldPtr<Int> > limitedKeys_p;
     RecordFieldPtr<Double> lowerTimeKey_p, upperTimeKey_p;
+    RecordFieldPtr<Double> limitedIntervalKey_p;
     Bool hasTime_p, hasInterval_p;
 
     void clear();
@@ -164,7 +169,7 @@ private:
     Bool keysChanged();
     void getInternals();
 
-    // comparison function
+    // comparison functions
     static Int compare(const Block<void *>& fieldPtrs,
 		       const Block<void *>& dataPtrs,
 		       const Block<Int> &dataTypes,
