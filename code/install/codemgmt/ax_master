@@ -2737,3 +2737,4 @@
 10 061 src mv aips/implement/Measures/MeasValue.h aips/implement/Quanta/MeasValue.h
 10 062 src rm doc/newsletters/aug98/aug98news.dir
 10 066 src mv trial/apps/gmisc/gmisc.g trial/implement/Utilities/gmisc.g
+10 072 src rm trial/apps/gmisc/makefile
