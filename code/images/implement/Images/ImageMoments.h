@@ -40,6 +40,8 @@ template <class T> class Vector;
 template <class T> class MaskedLattice;
 template <class T> class MomentCalcBase;
 template <class T> class SubImage;
+template <class T> class MaskedImage;
+template <class T> class Lattice;
 template <class T> class PagedImage;
 template <class T> class ImageInterface;
 class CoordinateSystem;
@@ -250,7 +252,7 @@ public:
    friend MomentCalcBase<T>;
 
 // Constructor takes an image and a <src>LogIO</src> object for logging purposes.
-   ImageMoments (SubImage<T>& image, LogIO &os);
+   ImageMoments (MaskedImage<T>& image, LogIO &os);
 
 // Copy constructor.  Uses copy semantics.
    ImageMoments(const ImageMoments<T> &other);
@@ -499,7 +501,7 @@ enum KernelTypes {
 
 // Set a new image.  A return value of <src>False</src> indicates the 
 // image had an invalid type (this class only accepts Float or Double images).
-   Bool setNewImage (SubImage<T>& image);
+   Bool setNewImage (MaskedImage<T>& image);
 
 // Helper function to convert a string containing a list of desired methods to
 // the correct <src>Vector<Int></src> required for the <src>setWinFitMethod</src> function.
@@ -521,7 +523,7 @@ enum KernelTypes {
 private:
 
    LogIO& os_p;
-   SubImage<T>* pInImage_p;
+   MaskedImage<T>* pInImage_p;
 
    Int momentAxis_p;
    Int momentAxisDefault_p;
@@ -552,7 +554,7 @@ private:
 
 // Check that the combination of methods that the user has requested is valid
 // List a handy dandy table if not.
-   Bool checkMethod    ();
+   Bool checkMethod();
 
 // Plot a histogram                     
    static void drawHistogram  (const Vector<Float>& values,
@@ -594,11 +596,10 @@ private:
                      const Int moment);
 
 // Smooth an image   
-  Bool smoothImage (String& smoothName,
-                    PagedImage<T>*& pSmoothedImage);
+  MaskedImage<T>* smoothImage (String& smoothName);
 
-// Smooth one row
-  void smoothProfiles (Lattice<T>* pIn,
+// Smooth one row in situ
+  void smoothProfiles (MaskedLattice<T>& in,
                        const Int& row,
                        const Vector<T>& psf);
 
@@ -606,7 +607,7 @@ private:
 // of the entire image above the 25% levels.  If a plotting
 // device is set, the user can interact with this process.
    Bool whatIsTheNoise (Double& noise,
-                        SubImage<T>& image);
+                        MaskedImage<T>& image);
 
 };
 
