@@ -60,7 +60,6 @@ template<class T> class Quantum;
 //
 // <synopsis>
 // This class performs the mapping from pixel to frequency. 
-// An MFrequency may be obtained if you are interested in radial velocities.
 // </synopsis>
 //
 
@@ -230,32 +229,18 @@ public:
     // change but you can specify the velocity definition and the output
     // units of the velocity.   When the input is a frequency stored 
     // as a Double it must be  in the current units of the SpectralCoordinate.  
+    // Use the function <src>updateVelocityMachine</src>
+    // to set the velocity state of the internal conversion machine.
     // <group>  
-    Bool pixelToVelocity (Quantum<Double>& velocity, Double pixel, 
-                          const String& velUnit=String("km/s"),
-                          MDoppler::Types velType=MDoppler::RADIO);
-    Bool pixelToVelocity (Double& velocity, Double pixel, 
-                          const String& velUnit=String("km/s"), 
-                          MDoppler::Types velType=MDoppler::RADIO);
-    Bool pixelToVelocity (Vector<Double>& velocity, const Vector<Double>& pixel, 
-                          const String& velUnit=String("km/s"), 
-                          MDoppler::Types velType=MDoppler::RADIO);
+    Bool pixelToVelocity (Quantum<Double>& velocity, Double pixel);
+    Bool pixelToVelocity (Double& velocity, Double pixel);
+    Bool pixelToVelocity (Vector<Double>& velocity, const Vector<Double>& pixel);
 //
-    Bool frequencyToVelocity (Quantum<Double>& velocity, Double frequency, 
-                              const String& velUnit=String("km/s"), 
-                              MDoppler::Types velType=MDoppler::RADIO);
-    Bool frequencyToVelocity (Quantum<Double>& velocity, const MFrequency& frequency, 
-                              const String& velUnit=String("km/s"), 
-                              MDoppler::Types velType=MDoppler::RADIO);
-    Bool frequencyToVelocity (Quantum<Double>& velocity, const MVFrequency& frequency, 
-                              const String& velUnit=String("km/s"), 
-                              MDoppler::Types velType=MDoppler::RADIO);
-    Bool frequencyToVelocity (Double& velocity, Double frequency, 
-                              const String& velUnit=String("km/s"), 
-                              MDoppler::Types velType=MDoppler::RADIO);
-    Bool frequencyToVelocity (Vector<Double>& velocity, const Vector<Double>& frequency, 
-                              const String& velUnit=String("km/s"), 
-                              MDoppler::Types velType=MDoppler::RADIO);
+    Bool frequencyToVelocity (Quantum<Double>& velocity, Double frequency);
+    Bool frequencyToVelocity (Quantum<Double>& velocity, const MFrequency& frequency);
+    Bool frequencyToVelocity (Quantum<Double>& velocity, const MVFrequency& frequency);
+    Bool frequencyToVelocity (Double& velocity, Double frequency);
+    Bool frequencyToVelocity (Vector<Double>& velocity, const Vector<Double>& frequency);
     // </group>
 
     // Functions to convert from velocity.  There is no reference frame
@@ -263,20 +248,19 @@ public:
     // units of the velocity.   When the input is a frequency stored 
     // as a Double it must be  in the current units of the SpectralCoordinate.  
     // <group>  
-    Bool velocityToPixel (Double& pixel, Double velocity, 
-                          const String& velUnit=String("km/s"), 
-                          MDoppler::Types velType=MDoppler::RADIO);
-    Bool velocityToPixel (Vector<Double>& pixel, const Vector<Double>& velocity, 
-                          const String& velUnit=String("km/s"), 
-                          MDoppler::Types velType=MDoppler::RADIO);
+    Bool velocityToPixel (Double& pixel, Double velocity);
+    Bool velocityToPixel (Vector<Double>& pixel, const Vector<Double>& velocity);
 //
-    Bool velocityToFrequency (Double& frequency, Double velocity, 
-                              const String& velUnit=String("km/s"), 
-                              MDoppler::Types velType=MDoppler::RADIO);
-    Bool velocityToFrequency (Vector<Double>& frequency, const Vector<Double>& velocity, 
-                              const String& velUnit=String("km/s"), 
-                              MDoppler::Types velType=MDoppler::RADIO);
+    Bool velocityToFrequency (Double& frequency, Double velocity);
+    Bool velocityToFrequency (Vector<Double>& frequency, const Vector<Double>& velocity);
     // </group>
+
+    // Update the state of the velocity machine.  These are the
+    // the units/types all velocity conversions will use for velocities
+    // (input or output).  The machine
+    // is initially constructed with km/s and MDoppler::RADIO as its state.
+    void updateVelocityMachine (const String& velUnit,
+                                MDoppler::Types velType);
 
     // Retrieve/set the rest frequency in the current units.
     // <group>
@@ -300,7 +284,6 @@ public:
     virtual Matrix<Double> linearTransform() const;
     virtual Vector<Double> increment() const;
     virtual Vector<Double> referenceValue() const;
-    virtual Vector<String> worldAxisUnits() const;
     // </group>
 
     // Set the value of the requested attribute. Note that these just
@@ -321,28 +304,45 @@ public:
     Vector<Double> worldValues() const;
     // </group>
 
-    // Convert to and from a FITS header record.  When writing the FITS record,
-    // the fields "ctype, crval, crpix", and "cdelt" must already be created. Other header
-    // words are created as needed.  Use <src>oneRelative=True</src> to
-    // convert zero-relative SpectralCoordinate pixel coordinates to 
-    // one-relative FITS coordinates, and vice-versa.  If <src>preferVelocity=False</src>
-    // the prinmary axis type will be Frequency, else velocity.  For a velocity axis,
-    // if <src>opticalVelDef=False</src>, the radio velocity definition will be used,
-    // else optical definition.
-    //<group>
-    void toFITS(RecordInterface &header, uInt whichAxis, 
-		LogIO &logger, Bool oneRelative=True,
-		Bool preferVelocity=True, Bool opticalVelDef=True) const;
-    static Bool fromFITS(SpectralCoordinate &out, String &error,
-			 const RecordInterface &header, 
-			 uInt whichAxis,
-			 LogIO &logger, Bool oneRelative=True);
-    //</group>
-
-    // Set the unit. Adjust the increment and
+    // Set/get the unit. Adjust the increment and
     // reference value by the ratio of the old and new units.
     // The unit must be compatible with  frequency.
+    //<group>
     virtual Bool setWorldAxisUnits(const Vector<String> &units);
+    virtual Vector<String> worldAxisUnits() const;
+    //</group>
+
+    // Set the world min and max ranges, for use in function <src>toMix</src>,
+    // for  a lattice of the given shape (for this coordinate).
+    // The implementation here gives world coordinates dangling 25% off the
+    // edges of the image.       
+    // The output vectors are resized.  Returns False if fails (and
+    // then <src>setDefaultWorldMixRanges</src> generates the ranges)
+    // with a reason in <src>errorMessage()</src>.
+    // The <src>setDefaultWorldMixRanges</src> function
+    // gives you [-1e99->1e99]. 
+    //<group>
+    virtual Bool setWorldMixRanges (const IPosition& shape)
+      {return worker_p.setWorldMixRanges(shape);};
+    virtual void setDefaultWorldMixRanges ()
+      {return worker_p.setDefaultWorldMixRanges();};
+    virtual Vector<Double> worldMixMin () const 
+      {return worker_p.worldMixMin();};
+    virtual Vector<Double> worldMixMax () const 
+      {return worker_p.worldMixMax();};
+    //</group>
+
+    // Set and recover the preferred world axis units.  These can be used to specify
+    // a favoured unit for conversions for example.  The given units must be empty
+    // or dimensionally consistent with the native world axis units, else
+    // False is returned and <src>errorMessage()</src>
+    // has an error message for you.  The preferred units are empty strings
+    // until you explicitly set them.  The only functions in the Coordinates classes
+    // which uses the preferred unit are <src>format, save, and restore</src>.
+    // <group>
+    virtual Bool setPreferredWorldAxisUnits (const Vector<String>& units);
+    virtual Vector<String> preferredWorldAxisUnits() const;
+    // </group>
 
     // Comparison function. Any private Double data members are compared
     // with the specified fractional tolerance.  Don't compare on the specified 
@@ -376,18 +376,6 @@ public:
     MDoppler::Types preferredVelocityType () const {return prefVelType_p;};
     // </group>
 
-    // Set and recover the preferred spectral units.  It can be used to specify
-    // a favoured spectral unit for conversions.  This unit must be empty
-    // or consistent with Hz or km/s, else False is returned an <src>errorMessage()</src>
-    // has an error message for you.  The SpectralCoordinate
-    // is constructed with the preferred units an empty string.
-    // The only functions in this class which uses the preferred typef
-    // are <src>format, save, restore</src>.  
-    // <group>
-    Bool setPreferredSpectralUnit (const String& units);
-    String preferredSpectralUnit () const {return prefSpecUnit_p;};
-    // </group>
-
     // Format a SpectralCoordinate coordinate world value nicely through the
     // common format interface.  See <linkto class=Coordinate>Coordinate</linkto>
     // for basics.
@@ -408,6 +396,25 @@ public:
                           Bool showAsAbsolute=True,
                           Int precision=-1);
 
+
+    // Convert to and from a FITS header record.  When writing the FITS record,
+    // the fields "ctype, crval, crpix", and "cdelt" must already be created. Other header
+    // words are created as needed.  Use <src>oneRelative=True</src> to
+    // convert zero-relative SpectralCoordinate pixel coordinates to 
+    // one-relative FITS coordinates, and vice-versa.  If <src>preferVelocity=False</src>
+    // the prinmary axis type will be Frequency, else velocity.  For a velocity axis,
+    // if <src>opticalVelDef=False</src>, the radio velocity definition will be used,
+    // else optical definition.
+    //<group>
+    void toFITS(RecordInterface &header, uInt whichAxis, 
+		LogIO &logger, Bool oneRelative=True,
+		Bool preferVelocity=True, Bool opticalVelDef=True) const;
+    static Bool fromFITS(SpectralCoordinate &out, String &error,
+			 const RecordInterface &header, 
+			 uInt whichAxis,
+			 LogIO &logger, Bool oneRelative=True);
+    //</group>
+
     // Save the SpectralCoordinate into the supplied record using the supplied field name.
     // The field must not exist, otherwise <src>False</src> is returned.
     virtual Bool save(RecordInterface &container,
@@ -415,28 +422,38 @@ public:
 
     // Recover the SpectralCoordinate from a record.
     // A null pointer means that the restoration did not succeed.
-    static SpectralCoordinate *restore(const RecordInterface &container,
+    static SpectralCoordinate* restore(const RecordInterface &container,
                                        const String &fieldName);
 
     // Make a copy of the SpectralCoordinate using new. The caller is responsible for calling
     // delete.
     virtual Coordinate *clone() const;
+
 private:
     MFrequency::Types type_p;
     Double restfreq_p;
     TabularCoordinate worker_p;
     VelocityMachine* pVelocityMachine_p;
     MDoppler::Types prefVelType_p;         // Preferred velocity type
-    String prefSpecUnit_p;                 // Preferred spectral units
+    String prefUnit_p;                     //                    units
 
-// Make and delete velocity machine
+// Create machine from specifications
+   void makeVelocityMachine (const String& velUnit,                  
+                             MDoppler::Types velType,
+                             const String& freqUnit,
+                             MFrequency::Types freqType,
+                            Double restFreq);
 
-   void makeVelocityMachine (const String& velUnit, MDoppler::Types velType);
+// Deletes and sets pointer to 0
    void deleteVelocityMachine ();
+
+// Resets to RADIO, km/s, and uses private data to set the rest
+   void reinitializeVelocityMachine();
 
 // Format checker
    void checkFormat(Coordinate::formatType& format,
                     const Bool ) const;
+
 
 };
 
