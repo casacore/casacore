@@ -246,7 +246,7 @@ void ROVisibilityIterator::setSelTable()
 
   curNumRow_p=curEndRow_p-curStartRow_p+1;
   Vector<uInt> rows(curNumRow_p);
-  indgen(rows.ac(),uInt(curStartRow_p));
+  indgen(rows,uInt(curStartRow_p));
   selTable_p=msIter_p.table()(rows);
   // virtual call
   this->attachColumns();
@@ -728,9 +728,9 @@ Vector<Float>& ROVisibilityIterator::sigma(Vector<Float>& sig) const
   // Do a rough average of the parallel hand polarizations to get a single 
   // sigma. Should do this properly someday, or return all values
   sig.resize(sigmat.ncolumn());
-  sig.ac()=sigmat.row(0).ac();
-  sig.ac()+=sigmat.row(nPol_p-1).ac();
-  sig.ac()/=2.0f;
+  sig=sigmat.row(0);
+  sig+=sigmat.row(nPol_p-1);
+  sig/=2.0f;
   return sig;
 }
 

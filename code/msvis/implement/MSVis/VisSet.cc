@@ -1,5 +1,5 @@
 //# VisSet.cc: Implementation of VisSet
-//# Copyright (C) 1996,1997,1998
+//# Copyright (C) 1996,1997,1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -80,7 +80,7 @@ VisSet::VisSet(MeasurementSet& ms,const Block<Int>& columns,
 	Matrix<Int> storedSelection;
 	col.keywordSet().get("CHANNEL_SELECTION",storedSelection);
 	if (selection_p.shape()==storedSelection.shape() && 
-	    allEQ(selection_p.ac(),storedSelection.ac())) {
+	    allEQ(selection_p,storedSelection)) {
 	  init=False;
 	} 
       }
