@@ -367,4 +367,4 @@
   a_fds=()
 
 # echo out the version
-  avers -r 
+  tty -s && avers -r 

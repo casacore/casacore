@@ -410,4 +410,4 @@
 # Clean up.
   unset a_arch a_host a_new a_och a_old a_root a_shell a_site a_temp a_arch_t a_root_t a_fds
 # Print out the version
-  avers -r
+  tty -s && avers -r
