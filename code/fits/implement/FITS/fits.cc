@@ -1485,6 +1485,61 @@ int FITS::str2fstr(char *target, const char *source, int len) {
 	return j;
 }
 
+void FITS::parse_vatform(const char *s, FITS::ValueType &valType,
+			 int &maxelem)
+{
+    int ok = 1;
+    if (s && *s != '\0') {
+	// if first character is a digit, must be 0 or 1
+	if (FITS::isa_digit(*s)) {
+	    if (!(*s == '0' || *s == '1')) ok = 0;
+	    s++;
+	}
+	// this char must be a P
+	if (ok && *s != 'P') ok = 0;
+	if (ok) s++;
+	// this char must be a letter
+	if (ok && FITS::isa_letter(*s)) {
+	    switch (*s) {
+	    case 'L': valType = FITS::LOGICAL; break;
+	    case 'X': valType = FITS::BIT; break;
+	    case 'B': valType = FITS::BYTE; break;
+	    case 'I': valType = FITS::SHORT; break;
+	    case 'J': valType = FITS::LONG; break;
+	    case 'A': valType = FITS::CHAR; break;
+	    case 'E': valType = FITS::FLOAT; break;
+	    case 'D': valType = FITS::DOUBLE; break;
+	    case 'C': valType = FITS::COMPLEX; break;
+	    case 'M': valType = FITS::DCOMPLEX; break;
+	    default: valType = FITS::NOVALUE; break;
+	    }
+	    s++;
+	} else {
+	    ok = 0;
+	}
+	// this char must be a '('
+	if (ok && *s == '(') {
+	    s++;
+	    // get all the digits which make up the maxelem
+	    // skip leading zeros
+	    maxelem = -1;
+	    while (FITS::isa_digit(*s) && *s == '0') s++;
+	    if (FITS::isa_digit(*s)) maxelem = FITS::digit2bin(*s++);
+	    while (FITS::isa_digit(*s)) {
+		maxelem = maxelem * 10 + FITS::digit2bin(*s++);
+	    }
+	    // at the end of all the above, must find a ')'
+	    if (*s != ')' || maxelem < 0) ok = 0;
+	} else {
+	    ok = 0;
+	}
+    }
+    if (!ok) {
+	maxelem = -1;
+	valType = FITS::NOVALUE;
+    }
+}
+
 FitsParse::FitsParse(int max) : no_errs_(0) ,max_errs(max) {
 	err_ = new const char * [max_errs];
 	// check for storage allocation errors
