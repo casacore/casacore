@@ -1,5 +1,5 @@
 //# WCExtension.h: Make the extension an image region
-//# Copyright (C) 1998
+//# Copyright (C) 1998,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -30,6 +30,7 @@
 
 //# Includes
 #include <trial/Images/WCCompound.h>
+#include <aips/Arrays/IPosition.h>
 
 //# Forward declarations
 class WCBox;
@@ -52,14 +53,17 @@ class WCBox;
 // The WCExtension class is a specialization of class
 // <linkto class=WCCompound>WCCompound</linkto>.
 // It makes it possible to extend a region along straight lines to
-// other dimensions. E.g. a circle in the RA,DEC plane can be extended to
+// other dimensions. It is also possible to extend existing axes with
+// length 1, i.e. to stretch such axes.
+// E.g. a circle in the RA,DEC plane can be extended to
 // a cylinder in a RA,DEC,FREQ cube. It is possible to extend over
 // more than one dimension. One can also limit the extension range
 // E.g. in the forementioned example the circle can be extended
 // for a given range of frequencies only.
 // <br>The extension axes and ranges have to be given as a
-// <linkto class=WCBox>WCBox</linkto> object. The axes used in the
-// region and in the extension box should be different.
+// <linkto class=WCBox>WCBox</linkto> object. The axes which are part
+// of the box and the region are the axes to be stretched. Box axes
+// which are not part of the region are the extension axes.
 // <p>
 // Note that regions get automatically extended when a region is used
 // for a higher dimensioned image. The extension is done for all
@@ -112,7 +116,7 @@ public:
 				    const String& tableName);
 
 protected:
-    // WCExtension can extend a region if WCBox can do so..
+    // WCExtension can extend a region if WCBox can do so.
     virtual Bool canExtend() const;
 
     // Convert to an LCRegion using the given coordinate system and shape.
@@ -128,6 +132,12 @@ private:
     // When <src>takeOver</src> is True, the destructor will delete the
     // given regions. Otherwise a copy of the regions is made.
     WCExtension (Bool takeOver, const PtrBlock<const WCRegion*>& regions);
+
+    // Find the axes to be extended and stretched.
+    // The extend axes are the axis numbers in the box.
+    // For the stretch axes both box and region axes are returned.
+    void findAxes (IPosition& extendBoxAxes, IPosition& stretchBoxAxes,
+		   IPosition& stretchRegionAxes) const;
 };
 
 
