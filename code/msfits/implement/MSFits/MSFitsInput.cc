@@ -727,7 +727,7 @@ void MSFitsInput::fillMSMainTable(Int& nField, Int& nSpW)
  	  const Float visImag = priGroup_p(count++);
  	  const Float wt = priGroup_p(count++); 
 	  const Int p = corrIndex_p[pol];
- 	  if (wt < 0.0) {
+ 	  if (wt <= 0.0) {
 	    weightSpec(p, chan) = -wt;
 	    flag(p, chan) = True;
 	  } else {
