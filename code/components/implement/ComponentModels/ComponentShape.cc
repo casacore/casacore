@@ -160,20 +160,13 @@ Bool ComponentShape::fromRecord(String& errorMessage,
   }
   const String dirString("direction");
   if (!record.isDefined(dirString)) {
-    errorMessage += "The 'direction' field does not exist\n";
-    return False;
+    // The there is no direction field then the direction is NOT changed!
+    return True;
   }
   const RecordFieldId direction(dirString);
   if (record.dataType(direction) != TpRecord) {
-    if ((record.dataType(direction) == TpString) && 
-	(record.shape(direction) == IPosition(1,1)) &&
-	(record.asString(direction) == String("current"))) {
-      return True;
-    } else {
-      errorMessage += "The 'direction' field must be a record\n";
-      errorMessage += "or the string 'current' (to use the current value)\n";
-      return False;
-    }
+    errorMessage += "The 'direction' field must be a record\n";
+    return False;
   }
   const Record& dirRecord = record.asRecord(direction);
   MeasureHolder mh;
