@@ -497,6 +497,11 @@ int main(int argc)
       // Add the last measure definition.
       // Do that using the Tbale object (to test that part as well).
       // measure reference column and associated offset
+      // the measure offset column for the array measure column
+      TableMeasValueDesc scaOffset(td, "Time4ScaOffset");
+      // The descriptor gives the offset column a type.
+      TableMeasDesc<MEpoch> tmdOffset(scaOffset);
+      TableMeasOffsetDesc tmOsDesc(tmdOffset);
       TableMeasRefDesc tmARef_tmp(td, "Time4StrRef", tmOsDesc);
       TableMeasRefDesc tmARef(td, "Time4StrRef");
       if (!tmARef.isOffsetVariable() && !tmARef.isOffsetArray()) {
