@@ -104,7 +104,7 @@ template<class T> class ReadOnlyVectorIterator
 public:
     // <group>
     explicit ReadOnlyVectorIterator(const Array<T> &a, uInt axis=0)
-      : vi(const_cast<Array<T>&>(a)) {}
+      : vi(const_cast<Array<T>&>(a), axis) {}
 
     void next()   {vi.next();}
     void reset() {vi.origin();}
