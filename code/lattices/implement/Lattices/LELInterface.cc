@@ -1,5 +1,5 @@
 //# LELInterface.cc:  this defines LELInterface.cc
-//# Copyright (C) 1997,1998,1999,2000
+//# Copyright (C) 1997,1998,1999,2000,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -28,6 +28,8 @@
 #include <trial/Lattices/LELInterface.h>
 #include <trial/Lattices/LELUnary.h>
 #include <trial/Lattices/LELArray.h>
+#include <aips/Arrays/Slicer.h>
+#include <aips/Exceptions/Error.h>
 
 
 template<class T>
@@ -47,6 +49,19 @@ void LELInterface<T>::evalRef (LELArrayRef<T>& result,
     // For one reason or another gcc requires an explicit cast
     // for LELInterface<Bool>.
     eval ((LELArray<T>&)result, section);
+}
+
+template<class T>
+LELArray<T> LELInterface<T>::getArray() const
+{
+  const IPosition& shp = shape();
+  if (shp.nelements() == 0) {
+    throw AipsError ("LELInterface::getArray: shape is unknown");
+  }
+  LELArray<T> result(shp);
+  Slicer slc(IPosition(shp.nelements(),0), shp);
+  eval (result, slc);
+  return result;
 }
 
 template<class T>
