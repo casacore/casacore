@@ -28,7 +28,7 @@
 #                          Charlottesville, VA 22903-2475 USA
 #
 #-----------------------------------------------------------------------------
-# Usage: inhale [-c] [-D] [-d] [-l] [-n] [-r #] [-w #]
+# Usage: inhale [-c|-h] [-D] [-d] [-l] [-n] [-r #] [-w #]
 #-----------------------------------------------------------------------------
 # inhale retrieves the latest AIPS++ update from the master ftp directories on
 # aips2.nrao.edu.  It is invoked regularly as a cron job.
@@ -41,6 +41,7 @@
 #          documentation compilation is defeated via the DOCSYS variable in
 #          "makedefs" this option may still be useful in preventing "docsys"
 #          from being recorded in the LOGFILE entry for the rebuild.
+#   -h     Do a hybrid update: (mostly) incremental inhale, cumulative sneeze.
 #   -l     Latchkey mode; fetch latchkey updates (if any) together with any
 #          other updates intended for general distribution.
 #   -n     Don't remake the system (allsys).  The "install" and "docsys"
@@ -153,6 +154,7 @@
 
 # Parse command input.
   MODE=incremental
+  HYBRID=
   DINKUM=
   DOCSYS=docsys
   TARGETS=allsys
@@ -165,6 +167,9 @@
      case $1 in
      -c)
         MODE=cumulative
+        ;;
+     -h)
+        HYBRID=1
         ;;
      -D)
         DINKUM=dinkum
@@ -203,7 +208,7 @@
      *)
         exec 1>&2
         echo ""
-        echo "Usage: inhale [-c] [-d] [-n] [-l] [-r #] [-w #]"
+        echo "Usage: inhale [-c|-h] [-d] [-n] [-l] [-r #] [-w #]"
         exit 1
         ;;
      esac
@@ -869,11 +874,11 @@
 # Now the code areas.
   cd $AIPSCODE
 
-# Clean up the code areas on cumulative updates.
-  if [ "$MODE" = cumulative ]
+# Clean up the code areas on cumulative and hybrid updates.
+  if [ "$MODE" = cumulative -o "$HYBRID" != "" ]
   then
      echo ""
-     echo "inhale: Cumulative update, cleaning up the code areas..."
+     echo "inhale: Cumulative (or hybrid) update, cleaning up the code areas..."
      gmake NODEP=1 cleancode
   fi
 
@@ -954,6 +959,15 @@
 #-----------------------------------------------------------------------------
 # Rebuild all systems
 #-----------------------------------------------------------------------------
+
+# Determine type of sneeze; hybrid inhale requires cumulative sneeze.
+  if [ "$MODE" = cumulative -o "$HYBRID" != "" ]
+  then
+     SNEEZEMODE=cumulative
+  else
+     SNEEZEMODE=incremental
+  fi
+
   cd $AIPSROOT
 
   echo ""
@@ -985,8 +999,8 @@
      fi
 
 #    Determine what command to use for remote sneeze.  Default is rsh.
-     RCMD=rsh
      RCMD=`getrc -i sneeze.$INHOST.rcmd 2> /dev/null`
+     [ "$RCMD" = "" ] && RCMD=rsh
 
      echo ""
      TMP="$INHOST"
@@ -999,7 +1013,7 @@
         EXTLIST="-e $EXTLIST"
         AIPSEXT=`echo $EXTLIST | sed -e 's/:.*//'`
      fi
-     SNEEZE="sneeze $EXTLIST -l -m $MODE $TARGETS"
+     SNEEZE="sneeze $EXTLIST -l -m $SNEEZEMODE $TARGETS"
      $RCMD $INHOST -n $AIPSROOT/.rshexec $AIPSEXT \'$SNEEZE\' &
   done
 
@@ -1016,7 +1030,7 @@
   fi
   echo "inhale: Initiating synchronous rebuild$TMP..."
   (aips_ext=$AIPSEXT . $AIPSROOT/aipsinit.sh ; \
-   sneeze $INEXT -l -m $MODE $TARGETS)
+   sneeze $INEXT -l -m $SNEEZEMODE $TARGETS)
 
 
 #-----------------------------------------------------------------------------
