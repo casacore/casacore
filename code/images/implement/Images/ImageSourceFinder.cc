@@ -226,6 +226,12 @@ ComponentList ImageSourceFinder<T>::findSources (LogIO& os,
       off2 = 0;
    }
 
+   NumericTraits<T>::PrecisionType **mat = 0;
+   mat = new NumericTraits<T>::PrecisionType*[w];
+   for(Int i=0;i<w;i++){
+      mat[i] = new NumericTraits<T>::PrecisionType[w];
+   }
+
 // Results matrix
 
    Matrix<NumericTraits<T>::PrecisionType> rs(nMax, 3);    // flux, x, y
@@ -239,7 +245,6 @@ ComponentList ImageSourceFinder<T>::findSources (LogIO& os,
 
 // Fitting data
  
-   NumericTraits<T>::PrecisionType mat[w][w];
    FitLSQ fit(6);
    Vector<T> gel(6);
    uInt rank;
@@ -453,5 +458,6 @@ ComponentList ImageSourceFinder<T>::findSources (LogIO& os,
       }
    } 
 //
+   delete [] mat;
    return listOut;
 }
