@@ -4311,3 +4311,4 @@
 14 220 src rm trial/data/dishdemo/dishdemo1.fits
 14 220 src rm trial/data/dishdemo/dishdemo2.fits
 14 220 src rm trial/data/dishdemo/dishparkes.fits
+14 220 src rm trial/data/dishdemo/dishspecproc.fits
