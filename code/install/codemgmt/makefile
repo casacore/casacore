@@ -42,10 +42,10 @@ include $(AIPSARCH)/makedefs
 
 # Source lists.
 #--------------
-AISCRIPT := ai ae amv am ao au ax rau
+AISCRIPT := ai ae amv am ao ao.cvs au ax rau
 SUIDWRAP := sau sai
 DISTSCRP := inhale sneeze aupdate
-SCRIPTS  := alog av ih_log_info.pl inhold mktree rai rao runtests squiz testsuite xrcs testsum.sh UPchange UPdup UPfind UPinfo UPlist UPload UPlock UPmove UPreident UPsed UPtmpl
+SCRIPTS  := alog av ih_log_info.pl inhold mktree mktree.cvs rai rao runtests squiz testsuite xrcs testsum.sh UPchange UPdup UPfind UPinfo UPlist UPload UPlock UPmove UPreident UPsed UPtmpl
 
 AIPSEXES := $(basename $(filter-out %_master.c,$(filter %.c,$(AIPSSRCS))))
 PGMREXES := $(basename $(filter-out %_master.c,$(wildcard *.c)))
