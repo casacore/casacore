@@ -125,17 +125,20 @@ ComponentList & ComponentList::operator=(const ComponentList & other){
   return *this;
 }
 
-void ComponentList::sample(Vector<Double> & result, 
-			   const MDirection & sampleDir,
-			   const MVAngle & pixelSize) const {
-  AlwaysAssert(result.nelements() == 4, AipsError);
+Flux<Double> ComponentList::sample(const MDirection & sampleDir,
+				   const MVAngle & pixelSize) const {
   DebugAssert(ok(), AipsError);
-  result = 0.0;
-  Vector<Double> compResult(4);
+  const Unit retUnit("Jy");
+  const ComponentType::Polarisation retPol(ComponentType::STOKES);
+  Vector<DComplex> result(4, Complex(0,0));
+  Flux<Double> compFlux;
   for (uInt i = 0; i < nelements(); i++) {
-    component(i).sample(sampleDir, pixelSize).value(compResult);
-    result.ac() += compResult.ac();
+    compFlux = component(i).sample(sampleDir, pixelSize);
+    compFlux.convertUnit(retUnit);
+    compFlux.convertPol(retPol);
+    result.ac() += compFlux.value();
   }
+  return Flux<Double>(result, retPol);
 }
 
 // void ComponentList::project(ImageInterface<Float> & plane) const {
@@ -393,62 +396,72 @@ Bool ComponentList::ok() const {
 void ComponentList::createTable(const String & fileName,
 				const Table::TableOption option) {
   // Build a default table description
-  TableDesc td("ComponentListDescription", "2", TableDesc::Scratch);  
+  TableDesc td("ComponentListDescription", "3", TableDesc::Scratch);  
   td.comment() = "A description of a component list";
   {
     {
-      ArrayColumnDesc<DComplex> fluxValCol("Flux", "Flux values");
+      const ArrayColumnDesc<DComplex> 
+	fluxValCol("Flux", "Flux values", IPosition(1,4), ColumnDesc::Direct);
       td.addColumn(fluxValCol);
-      ScalarColumnDesc<String> fluxUnitCol("Flux Unit", "Flux units");
+      const ScalarColumnDesc<String>
+	fluxUnitCol("Flux Unit", "Flux units", ColumnDesc::Direct);
       td.addColumn(fluxUnitCol);
-      ScalarColumnDesc<String> fluxPolCol("Flux Polarisation" ,
-					  "Flux polarisation representation");
+      const ScalarColumnDesc<String> 
+	fluxPolCol("Flux Polarisation", "Flux polarisation representation", 
+		   ColumnDesc::Direct);
       td.addColumn(fluxPolCol);
     }
     {
-      ScalarColumnDesc<String> shapeCol("Shape" ,"Shape of the Component");
-      td.addColumn (shapeCol);
+      const ScalarColumnDesc<String> 
+	shapeCol("Shape", "Shape of the Component", ColumnDesc::Direct);
+      td.addColumn(shapeCol);
       const String dirValColName = "Reference Direction";
-      ArrayColumnDesc<Double> dirValCol(dirValColName, 
-					"Reference direction values");
+      const ArrayColumnDesc<Double> 
+	dirValCol(dirValColName, "Reference direction values",
+		  IPosition(1,3), ColumnDesc::Direct);
       td.addColumn(dirValCol);
       const String dirRefColName = "Direction Frame";
-      ScalarColumnDesc<Int> dirRefCol(dirRefColName,
-				      "The reference direction frame");
+      const ScalarColumnDesc<String>
+	dirRefCol(dirRefColName, "The reference direction frame", 
+		  ColumnDesc::Direct);
       td.addColumn(dirRefCol);
-      TableMeasRefDesc dirRefTMCol(td, dirRefColName);
-      TableMeasValueDesc dirValTMCol(td, dirValColName);
+      const TableMeasRefDesc dirRefTMCol(td, dirRefColName);
+      const TableMeasValueDesc dirValTMCol(td, dirValColName);
       TableMeasDesc<MDirection> dirTMCol(dirValTMCol, dirRefTMCol);
       dirTMCol.write(td);
-      ArrayColumnDesc<Double> 
-	shapeParmCol("Shape Parameters", 
+      const ArrayColumnDesc<Double> 
+	shapeParmCol("Shape Parameters",
 		     "Parameters specific to the component shape", 1);
       td.addColumn(shapeParmCol);
     }
     {
-      ScalarColumnDesc<String> freqShapeCol("Spectrum Shape",
-					    "Shape of the spectrum");
+      const ScalarColumnDesc<String>
+	freqShapeCol("Spectrum Shape", "Shape of the spectrum", 
+		     ColumnDesc::Direct);
       td.addColumn (freqShapeCol);
       const String freqValColName = "Reference Frequency";
-      ArrayColumnDesc<Double> freqValCol(freqValColName, 
-					 "The reference frequency values");
+      const ArrayColumnDesc<Double>
+	freqValCol(freqValColName, "The reference frequency values", 
+		     IPosition(1,1), ColumnDesc::Direct);
       td.addColumn(freqValCol);
       const String freqRefColName = "Frequency Frame";
-      ScalarColumnDesc<Int> freqRefCol(freqRefColName,
-				       "The reference frequency frame");
+      const ScalarColumnDesc<String>
+	freqRefCol(freqRefColName, "The reference frequency frame", 
+		   ColumnDesc::Direct);
       td.addColumn(freqRefCol);
-      TableMeasRefDesc freqRefTMCol(td, freqRefColName);
-      TableMeasValueDesc freqValTMCol(td, freqValColName);
+      const TableMeasRefDesc freqRefTMCol(td, freqRefColName);
+      const TableMeasValueDesc freqValTMCol(td, freqValColName);
       TableMeasDesc<MFrequency> freqTMCol(freqValTMCol, freqRefTMCol);
       freqTMCol.write(td);
-      ArrayColumnDesc<Double> 
+      const ArrayColumnDesc<Double> 
 	specParmCol("Spectral Shape Parameters", 
-		     "Parameters specific to the components spectrum", 1);
+		    "Parameters specific to the components spectrum", 1);
       td.addColumn(specParmCol);
     }
     {
-      ScalarColumnDesc<String> labelCol("Label" ,
-					"An arbitrary label for the user");
+      const ScalarColumnDesc<String> 
+	labelCol("Label", "An arbitrary label for the user",
+		 ColumnDesc::Direct);
       td.addColumn (labelCol);
     }
   }
@@ -460,7 +473,6 @@ void ComponentList::writeTable() {
   if (itsTable.isWritable() == False)
     itsTable.reopenRW();
   DebugAssert(itsTable.isWritable(), AipsError);
-  
   {
     const uInt nRows = itsTable.nrow();
     if (nRows < nelements())
