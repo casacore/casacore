@@ -740,7 +740,8 @@ void MSSummary::listHistory (LogIO& os, Bool verbose) const
       os << "History table entries: " << nmessages << endl;
       //os << (msHis.message()).getColumn() << endl;
       for (uInt i=0 ; i < nmessages; i++) {
-      	os << i+1 << ": " << ((msHis.message()).getColumn())(i) << endl;
+      	os << i+1 << ": " << ((msHis.origin()).getColumn())(i)
+           << " " << ((msHis.message()).getColumn())(i) << endl;
       }
       /* The following code is incredibilty CPU and memory intensive!
       #include <casa/Arrays/ArrayIter.h>
