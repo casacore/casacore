@@ -1,0 +1,14 @@
+
+change id: 0141
+ author:   Raymond Plante
+ date:     2003/03/31
+ avers:    1.8
+ area:     Library
+ package:  trial
+ module:   Functionals
+ type:     Code
+ category: Change
+ summary:  add support for Butterworth bandpasses in FunctionHolder
+The FunctionHolder now recognizes Butterworth bandpass functions in the 
+form of SimButterworthBandpass.  This enables support for this function
+in the functionals tool.
