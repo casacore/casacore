@@ -275,14 +275,56 @@ try {
       } end_try;
       if (pLCRegion != 0) delete pLCRegion;
    }
+   cout << endl;
 
+
+// Test constructor with less world values than cSys
+
+   {
+      CoordinateSystem cSys = CoordinateUtil::defaultCoords3D();      
+      setValues (blcI, trcI, shape, wBlc, wTrc, cSys);
+      wBlc.resize(cSys.nWorldAxes()-1,True);
+      wTrc.resize(cSys.nWorldAxes()-2,True);
+      WCBox box2(wBlc, wTrc, cSys);
+
+      cout << "Construction with less than nWorldAxes" << endl;
+      cout << "wBlc,wTrc = " << wBlc.ac() << wTrc.ac() << endl;
+      LCRegion* pLCRegion = box2.toLCRegion(cSys, shape);
+      check(LCBox(blcI,trcI,shape), pLCRegion);
+      if (pLCRegion != 0) delete pLCRegion;
+   }
+   cout << endl;
+
+
+// Test constructor with less world values than cSys
+// and specify axes
+
+   {
+      CoordinateSystem cSys = CoordinateUtil::defaultCoords3D();      
+      setValues (blcI, trcI, shape, wBlc, wTrc, cSys);
+
+      Vector<uInt> blcAxes(1); blcAxes(0) = 1;
+      Vector<uInt> trcAxes(2); trcAxes(0) = 2; trcAxes(1) = 0; 
+      Vector<Double> blc(1); blc(0) = wBlc(1);
+      Vector<Double> trc(2); trc(0) = wTrc(2); trc(1) = wTrc(0);
+
+      WCBox box2(blc, trc, blcAxes, trcAxes, cSys);
+
+      cout << "Construction with specified world axes" << endl;
+      cout << "blcAxes, trcAxes = " << blcAxes.ac() << trcAxes.ac() << endl;
+      cout << "wBlc,wTrc = " << blc.ac() << trc.ac() << endl;
+      LCRegion* pLCRegion = box2.toLCRegion(cSys, shape);
+      check(LCBox(blcI,trcI,shape), pLCRegion);
+      if (pLCRegion != 0) delete pLCRegion;
+   }
    cout << endl;
 
 } catch (AipsError x) {
       cerr << "aipserror: error " << x.getMesg() << endl;
       exit(1);
 }end_try;
- 
+
+  cout << "OK" << endl; 
   exit(0);
  
 }
@@ -304,12 +346,12 @@ Bool check(const LCBox& box,
 
 
 
-   void setValues (IPosition& blcI,
-                   IPosition& trcI,
-                   IPosition& shape,
-                   Vector<Double>& wBlc,
-                   Vector<Double>& wTrc,
-                   const CoordinateSystem& cSys)
+void setValues (IPosition& blcI,
+                IPosition& trcI,
+                IPosition& shape,
+                Vector<Double>& wBlc,
+                Vector<Double>& wTrc,
+                const CoordinateSystem& cSys)
 { 
    uInt nDim = cSys.nPixelAxes();
    shape.resize(nDim);
