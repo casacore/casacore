@@ -41,6 +41,7 @@
 #include <aips/Arrays/ArrayIO.h>
 #include <aips/Lattices/Slicer.h>
 #include <aips/Lattices/Slice.h>
+#include <aips/Utilities/Assert.h>
 #include <aips/Exceptions/Error.h>
 #include <iostream.h>
 #include <strstream.h>
