@@ -1,0 +1,15 @@
+
+change id: 0115
+ author:   Tim Cornwell
+ date:     2002/02/10
+ avers:    1.7
+ area:     Tool
+ package:  trial
+ module:   maker
+ type:     Code Documentation
+ category: New
+ summary:  maker provides make functionality within Glish
+
+maker provides a closure interface to the Glish make_client. It can be used just as make is build a collection of related files. The example in the documentation shows how maker can be used to construct an image from a FITS file by invoking the steps in between. The make rules can be put in a makefile or specified from Glish.
+
+Darrell did the hard part: the make client.
