@@ -81,8 +81,13 @@ BaseTable::~BaseTable()
     //# Delete the table files (if there) if marked for delete.
     if (isMarkedForDelete()) {
 	if (madeDir_p) {
-	    Directory directory(name_p);
-	    directory.removeRecursive();
+	    // The table may be a subtable already deleted when
+	    // the parent was deleted. So test if it still exists.
+	    File file(name_p);
+	    if (file.exists()) {
+		Directory directory(file);
+		directory.removeRecursive();
+	    }
 	    //# Do callback indicating that table has been deleted.
 	    scratchCallback (False, name_p);
 	}
