@@ -214,9 +214,8 @@
       npol_p[k]=pols(polId(spw_p[k])).nelements();
     }
   }
-  // Now remake the selected ms
 
-          cout << "ROWS = " << sorted.nrow() << endl;
+  // Now remake the selected ms
   mssel_p = MeasurementSet(sorted(exprNode));
   mssel_p.rename(ms_p.tableName()+"/SELECTED_TABLE", Table::Scratch);
   if(mssel_p.nrow()==0){
