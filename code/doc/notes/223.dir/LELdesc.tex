@@ -56,7 +56,7 @@ Parentheses can be used to group subexpressions.
 \htmlref{constants}{LEL:CONSTANTS},
 \htmlref{functions}{LEL:FUNCTIONS}, and
 \htmlref{condition masks}{LEL:CONDITIONS}.
-\htmlref{image regions and masks}{LEL:REGIONS}.
+\htmlref{lattice regions and masks}{LEL:REGIONS}.
 E.g.
 \begin{verbatim}
   lat1 + 10
@@ -269,6 +269,10 @@ The result of these functions is a scalar.
     of all elements.
   \item[ \texttt{numeric MAX(numeric)}] Return maximum
     of all elements.
+  \item[ \texttt{real MEDIAN(real)}]
+    Return median of all elements. For smallish lattices
+    (max. 512*512 elements) the median can be found in 1 pass.
+    Other lattices usually require 2 passes.
   \item[ \texttt{numeric MEAN(numeric)}]
     Return mean of all elements.
   \item[ \texttt{numeric VARIANCE(numeric)}]
@@ -587,7 +591,7 @@ undefined scalar results in an undefined scalar.  The following
 functions act as described below on fully masked-off lattices:
 
 \begin{itemize}
-\item MEAN, VARIANCE, STDDEV, AVDEV, MIN, MAX
+\item MEDIAN, MEAN, VARIANCE, STDDEV, AVDEV, MIN, MAX
 \\result in an undefined scalar:
 \item NELEMENTS, NTRUE, NFALSE, SUM
 \\result in a scalar with value 0.
@@ -606,7 +610,7 @@ may have values that are meaningless.
 
 \section{\label{LEL:REGIONS}Regions}
 
-A region-of-interest generally specifies a portion of an image which you
+A region-of-interest generally specifies a portion of a lattice which you
 are interested in for some astronomical purpose (e.g.  what is the flux
 density of this source).  Quite a rich variety of regions are supported
 in AIPS++.  There are simple regions like a box or a polygon, and
