@@ -404,7 +404,6 @@ sub scanFiles {
 		}
 
 		if ( $type eq 'C' ) {
-print $start, $end, $name, "\n";
 		    if ( $old = $$db{"class*$class"} ) {
 			$$db{"class*$class"} = "$old,$start:$end:$module:$name" if $old !~ m/$start:$end:$name/;
 		    } else {
