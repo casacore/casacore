@@ -90,7 +90,7 @@ void StManColumnAipsIO::resize (uInt nr)
 }
 
 
-uInt StManColumnAipsIO::findExt (uInt index) const
+uInt StManColumnAipsIO::findExt (uInt index)
 {
     //# Use a binary search to get the block containing the index.
     Int st = 0;
@@ -114,6 +114,7 @@ uInt StManColumnAipsIO::findExt (uInt index) const
 	throw (indexError<uInt>(index, "StManColumnAipsIO::findExt - "
 				"rownr out of range"));
     }
+    columnCache().set (ncum_p[i-1], ncum_p[i]-1, data_p[i]);
     return i;
 }
 
@@ -215,6 +216,7 @@ void StManColumnAipsIO::remove (uInt index)
     for (uInt i=extnr; i<=nrext_p; i++) {
 	ncum_p[i]--;
     }
+    columnCache().invalidate();
 //#    for (i=1; i<=nrext_p; i++) {
 //#	cout << " " << ncum_p[i] << " ";
 //#    }
@@ -498,6 +500,7 @@ void StManColumnAipsIO::getFile (uInt nrval, AipsIO& ios)
 	}
     }
     ios.getend();
+    columnCache().invalidate();
 }
 
 
