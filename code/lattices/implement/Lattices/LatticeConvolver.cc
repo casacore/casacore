@@ -26,13 +26,14 @@
 
 #include <trial/Lattices/LatticeConvolver.h>
 #include <trial/Lattices/LatticeFFT.h>
-//#include <trial/Lattices/LatticeExpr.h>
 #include <trial/Lattices/LatticeIterator.h>
 #include <trial/Lattices/SubLattice.h>
 #include <trial/Lattices/TileStepper.h>
 #include <aips/Arrays/ArrayMath.h>
 #include <aips/Lattices/Slicer.h>
 #include <aips/Utilities/Assert.h>
+
+const Int maxLatSize = 6;
 
 template<class T> LatticeConvolver<T>::
 LatticeConvolver()
@@ -174,7 +175,7 @@ convolve(Lattice<T> & result, const Lattice<T> & model) const {
   // paddedModel TempLattice so that it is more likely to be memory based.
   IPosition XFRShape(itsFFTShape);
   XFRShape(0) = (XFRShape(0)+2)/2;
-  TempLattice<NumericTraits<T>::ConjugateType> fftModel(XFRShape);
+  TempLattice<NumericTraits<T>::ConjugateType> fftModel(XFRShape, maxLatSize);
   // Copy the model into a larger Lattice that has the appropriate padding.
   // (if necessary)
   Bool doPadding = False;
@@ -182,7 +183,7 @@ convolve(Lattice<T> & result, const Lattice<T> & model) const {
   Lattice<T> * resultPtr = &result;
   if (!(itsFFTShape <= modelShape)) {
     doPadding = True;
-    modelPtr = resultPtr = new TempLattice<T>(itsFFTShape);
+    modelPtr = resultPtr = new TempLattice<T>(itsFFTShape, maxLatSize);
     pad(*resultPtr, model);
   } 
   // Do the forward transform
@@ -231,7 +232,7 @@ resize(const IPosition & modelShape, ConvEnums::ConvType type) {
   // need to know the psf.
   TempLattice<T> psf = itsPsf;
   if (itsCachedPsf == False) { // calculate the psf from the transfer function
-    psf = TempLattice<T>(itsPsfShape);
+    psf = TempLattice<T>(itsPsfShape, maxLatSize);
     makePsf(psf);
   }
   makeXfr(psf);
@@ -301,11 +302,12 @@ makeXfr(const Lattice<T> & psf) {
   { // calculate the transfer function
     IPosition XFRShape = itsFFTShape;
     XFRShape(0) = (XFRShape(0)+2)/2;
-    itsXfr = TempLattice<NumericTraits<T>::ConjugateType>(XFRShape);
+    itsXfr = TempLattice<NumericTraits<T>::ConjugateType>(XFRShape, 
+							  maxLatSize);
     if (itsFFTShape == itsPsfShape) { // no need to pad the psf
       LatticeFFT::rcfft(itsXfr, psf);
     } else { // need to pad the psf 
-      TempLattice<T> paddedPsf(itsFFTShape);
+      TempLattice<T> paddedPsf(itsFFTShape, maxLatSize);
       pad(paddedPsf, psf);
       LatticeFFT::rcfft(itsXfr, paddedPsf);
     }
@@ -330,7 +332,7 @@ makePsf(Lattice<T> & psf) const {
                                     // padded so no unpadding is necessary 
     LatticeFFT::crfft(psf, itsXfr);
   } else { // need to unpad the transfer function
-    TempLattice<T> paddedPsf(itsFFTShape);
+    TempLattice<T> paddedPsf(itsFFTShape, maxLatSize);
     LatticeFFT::crfft(paddedPsf, itsXfr);
     unpad(psf, paddedPsf);
   }
