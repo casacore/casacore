@@ -1,5 +1,5 @@
 //# FITSIDItoMS.h: Convert a FITS-IDI binary table to an AIPS++ Table.
-//# Copyright (C) 1995,1996,2000
+//# Copyright (C) 1995,1996,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -31,20 +31,21 @@
 #include <aips/FITS/fits.h>
 #include <aips/aips.h>
 #include <aips/FITS/hdu.h>
-#include <aips/Tables/Table.h>
-#include <aips/Tables/TableDesc.h>
-#include <aips/Tables/TableRecord.h>
-#include <aips/Tables/TableColumn.h>
-#include <aips/Containers/SimOrdMap.h>
+#include <aips/Tables/Table.h> //
+#include <aips/Tables/TableDesc.h> //
+#include <aips/Tables/TableRecord.h> //
+#include <aips/Tables/TableColumn.h> //
+#include <aips/Containers/SimOrdMap.h> //
 #include <aips/Arrays/Vector.h>
 #include <aips/Arrays/Matrix.h>
 #include <aips/Containers/Block.h>
 #include <aips/Logging/LogIO.h>
 #include <aips/Measures/MFrequency.h>
 #include <aips/MeasurementSets/MeasurementSet.h>
-
+#include <aips/Utilities/String.h> 
 class MSColumns;
 class FitsInput;
+
 
 // <summary> 
 // FITSIDItoMS converts a FITS-IDI binary table to an AIPS++ Table.
@@ -183,9 +184,20 @@ public:
 
     // fill the Feed table with minimal info needed for synthesis processing
     void fillFeedTable();
+ 
+    //fill the Field table
+    //void fillFieldTable(Int nField);
+    void fillFieldTable();
+
+    //fill the Spectral Window table
+    void fillSpectralWindowTable();
 
     // fix up the EPOCH MEASURE_REFERENCE keywords
     void fixEpochReferences();
+  
+    //update the Polarization table
+    void updateTables(const String& tabName);
+ 
     
     //
     // Get an appropriate TableDesc (this is the same TableDesc used
@@ -235,7 +247,8 @@ protected:
     // Set up the MeasurementSet, including StorageManagers and fixed columns.
     // If useTSM is True, the Tiled Storage Manager will be used to store
     // DATA, FLAG and WEIGHT_SPECTRUM
-    void setupMeasurementSet(const String& MSFileName, Bool useTSM=True);
+    void setupMeasurementSet(const String& MSFileName, Bool useTSM=True, 
+       Bool mainTbl=False);
 
     // Fill the main table from the Primary group data
     void fillMSMainTable(const String& MSFileName, Int& nField, Int& nSpW);
@@ -286,6 +299,7 @@ private:
     Vector<String> coordType_p;
     Vector<Double> refVal_p, refPix_p, delta_p; 
     String array_p,object_p,timsys_p;
+    //MSPrimaryGroupHolder priGroup_p;
     Double epoch_p;
     Int nAnt_p;
     Vector<Double> receptorAngle_p;
@@ -293,9 +307,12 @@ private:
     Double restfreq_p;
     LogIO itsLog;
     Int nIF_p;
+    Double startTime_p;
+    Double lastTime_p;
     MeasurementSet ms_p;
     MSColumns* msc_p;
     static Bool firstMain;
+
     //char *theheap_p;
 
     //
