@@ -39,6 +39,7 @@ void doIt()
     map = as.apply (IPosition(3,1,10,1));
     AlwaysAssertExit (map.getToNew() == IPosition(3,0,1,2));
     AlwaysAssertExit (map.getToOld() == IPosition(3,0,1,2));
+    AlwaysAssertExit (!map.isRemoved());
     AlwaysAssertExit (!map.isReordered());
   }
   {
@@ -46,6 +47,7 @@ void doIt()
     map = as.apply (IPosition(3,1,10,1));
     AlwaysAssertExit (map.getToNew() == IPosition(3,0,1,2));
     AlwaysAssertExit (map.getToOld() == IPosition(3,0,1,2));
+    AlwaysAssertExit (!map.isRemoved());
     AlwaysAssertExit (!map.isReordered());
   }
   {
@@ -53,21 +55,24 @@ void doIt()
     map = as.apply (IPosition(3,1,10,1));
     AlwaysAssertExit (map.getToNew() == IPosition(3,-1,0,-1));
     AlwaysAssertExit (map.getToOld() == IPosition(1,1));
-    AlwaysAssertExit (map.isReordered());
+    AlwaysAssertExit (map.isRemoved());
+    AlwaysAssertExit (!map.isReordered());
   }
   {
     AxesSpecifier as(IPosition(1,0));
     map = as.apply (IPosition(3,1,10,1));
     AlwaysAssertExit (map.getToNew() == IPosition(3,0,1,-1));
     AlwaysAssertExit (map.getToOld() == IPosition(2,0,1));
-    AlwaysAssertExit (map.isReordered());
+    AlwaysAssertExit (map.isRemoved());
+    AlwaysAssertExit (!map.isReordered());
   }
   {
     AxesSpecifier as(IPosition(4,1,2,1,2));
     map = as.apply (IPosition(3,1,10,1));
     AlwaysAssertExit (map.getToNew() == IPosition(3,-1,0,1));
     AlwaysAssertExit (map.getToOld() == IPosition(2,1,2));
-    AlwaysAssertExit (map.isReordered());
+    AlwaysAssertExit (map.isRemoved());
+    AlwaysAssertExit (!map.isReordered());
   }
   {
     AxesSpecifier as(IPosition(4,1,0,1,2), IPosition(2,2,0));
@@ -76,6 +81,7 @@ void doIt()
     map = as.apply (IPosition(3,1,10,1));
     AlwaysAssertExit (map.getToNew() == IPosition(3,0,1,2));
     AlwaysAssertExit (map.getToOld() == IPosition(3,0,1,2));
+    AlwaysAssertExit (!map.isRemoved());
     AlwaysAssertExit (!map.isReordered());
   }
   {
@@ -84,6 +90,7 @@ void doIt()
     map = as.apply (IPosition(3,1,10,1));
     AlwaysAssertExit (map.getToNew() == IPosition(3,1,2,0));
     AlwaysAssertExit (map.getToOld() == IPosition(3,2,0,1));
+    AlwaysAssertExit (!map.isRemoved());
     AlwaysAssertExit (map.isReordered());
   }
   {
@@ -92,6 +99,7 @@ void doIt()
     AxesMapping map1(map);
     AlwaysAssertExit (map1.getToNew() == IPosition(3,-1,1,0));
     AlwaysAssertExit (map1.getToOld() == IPosition(2,2,1));
+    AlwaysAssertExit (map1.isRemoved());
     AlwaysAssertExit (map1.isReordered());
     AlwaysAssertExit (map1.shapeToNew(IPosition(3,1,3,4)) == IPosition(2,4,3));
     AlwaysAssertExit (map1.posToNew(IPosition(3,0,3,4)) == IPosition(2,4,3));
