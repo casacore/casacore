@@ -1,5 +1,5 @@
 //# Convolver.cc:  this defines Convolver a class for doing convolution
-//# Copyright (C) 1996
+//# Copyright (C) 1996,1997
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -117,7 +117,7 @@ makeXfr(const Array<FType>& psf,
   // Pad the psf (if necessary) 
   if (theFFTSize != thePsfSize){
     Array<FType> paddedPsf(theFFTSize);
-    IPosition blc = (theFFTSize-thePsfSize)/2;
+    IPosition blc = theFFTSize/2-thePsfSize/2;
     IPosition trc = blc + thePsfSize - 1;
     paddedPsf = 0.;  
     paddedPsf(blc, trc) = psfND;
@@ -132,7 +132,8 @@ template<class FType> void Convolver<FType>::
 makePsf(Array<FType>& psf){
   if (thePsf.nelements() == 0){
     Array<FType> paddedPsf;
-    paddedPsf = theFFT.crnyfft(theXfr);
+    Int oddFFT = theFFTSize(0)-Int(theFFTSize(0)/2)*2;
+    paddedPsf = theFFT.crnyfft(theXfr, -1, oddFFT);
     IPosition trc, blc;
     blc = (theFFTSize-thePsfSize)/2;
     trc = blc + thePsfSize - 1;
@@ -160,10 +161,9 @@ linearConv(Array<FType>& result,
 			   imageSize(i)+2*Int((thePsfSize(i)+3)/4)))
 	doResize=True;
     }
-    if (doResize) 
+    if (doResize)
       resizeXfr(imageSize, True, False);
   }
-  
   // Calculate to output array size
   IPosition resultSize = model.shape();
   if (fullSize)
