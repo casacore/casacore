@@ -2500,3 +2500,4 @@
 11 350 sys rm bin/sdimaging
 11 350 sys rm bin/sky
 11 350 sys rm bin/cal
+11 352 src rm trial/implement/Tasking/manager.g
