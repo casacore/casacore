@@ -272,7 +272,7 @@ private:
    Bool itsValid, itsValidSolution, itsIsNormalized, itsHasSigma;
    Bool itsInclude;
    Vector<Float> itsPixelRange;
-   NQCompoundFunction<AutoDiff<Double> > itsFunction;
+   CompoundFunction<AutoDiff<Double> > itsFunction;
    LQNonLinearFitLM<Double> itsFitter;
    Vector<Double> itsSolution;
    Double itsChiSquared;

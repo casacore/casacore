@@ -144,12 +144,12 @@ public:
   // Generate the precession calculation polynomials for a fixed Epoch T
   // in the result area specified. T is given in Julian centuries since J2000.0.
   static void
-  precessionCoef(Double T, NQPolynomial<Double> result[3]);
+  precessionCoef(Double T, Polynomial<Double> result[3]);
   
   // Generate the precession polynomials for 1950 system for a fixed Epoch T
   // in the area specified. T is given in Tropical centuries since B1850.0
   static void
-  precessionCoef1950(Double T, NQPolynomial<Double> result[3]);
+  precessionCoef1950(Double T, Polynomial<Double> result[3]);
   // </group>
   
   // Nutation related data
@@ -157,8 +157,8 @@ public:
   // Generate the polynomial for the fundamental arguments (eps, l, l',
   // F, D, omega) as a function of Julian centuries
   // <group>
-  static const NQPolynomial<Double> &fundArg(uInt which);
-  static const NQPolynomial<Double> &fundArg1950(uInt which);
+  static const Polynomial<Double> &fundArg(uInt which);
+  static const Polynomial<Double> &fundArg1950(uInt which);
   // </group>
   
   // Generate the which' vector of the nutation series arguments
@@ -234,8 +234,8 @@ public:
   // Julian centuries(J2000), or the comparable ones for the Gubanov expansion
   // (B1950). 
   // <group>
-  static const NQPolynomial<Double> &aberArg(uInt which);
-  static const NQPolynomial<Double> &aber1950Arg(uInt which);
+  static const Polynomial<Double> &aberArg(uInt which);
+  static const Polynomial<Double> &aber1950Arg(uInt which);
   // </group>
   
   // Generate the which' vector of the aberration series arguments
@@ -283,7 +283,7 @@ public:
   // <group>
   // Fundamental arguments for Soma et al. methods
   // <group>
-  static const NQPolynomial<Double> &posArg(uInt which);
+  static const Polynomial<Double> &posArg(uInt which);
   // </group>
   // Generate the which' vector of the position series arguments
   // <group>
@@ -369,10 +369,10 @@ private:
   //# General member functions
 
   // Calculate precessionCoef
-  static void calcPrecesCoef(Double T, NQPolynomial<Double> result[3],
+  static void calcPrecesCoef(Double T, Polynomial<Double> result[3],
 			     const Double coeff[3][6]); 
   // Calculate fundArg
-  static void calcFundArg(Bool &need, NQPolynomial<Double> result[3],
+  static void calcFundArg(Bool &need, Polynomial<Double> result[3],
 			  const Double coeff[6][4]); 
   // Calculate mulArg
   static void calcMulArg(Bool &need, Vector<Char> result[],
@@ -380,7 +380,7 @@ private:
   // Calculate mulSC
   static void calcMulSC(Bool &need, Double &check, Double T,
 			Vector<Double> result[], Int resrow,
-			NQPolynomial<Double> poly[],
+			Polynomial<Double> poly[],
 			const Long coeffTD[][5], Int TDrow,
 			const Short coeffSC[][2]);
 

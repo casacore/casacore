@@ -142,7 +142,7 @@ RFASpectralRej::RFASpectralRej  ( RFChunkStats &ch,const RecordInterface &parm )
     os<<"No spectral region has been specified\n"<<LogIO::EXCEPTION;
     
 // set up fitter
-  NQPolynomial<AutoDiff<Float> > poly(ndeg);
+  Polynomial<AutoDiff<Float> > poly(ndeg);
   fitter.setFunction(poly);
   
 // set up debugging info
@@ -290,7 +290,7 @@ RFA::IterMode RFASpectralRej::iterRow ( uInt irow )
   // produce debugging plot if needed
       if( dbg )
       {
-	NQPolynomial<Float> poly(ndeg);
+	Polynomial<Float> poly(ndeg);
         poly.setCoefficients(c);
         Vector<Float> yfit(np);
         for( uInt i=0; i<y1.nelements(); i++ )

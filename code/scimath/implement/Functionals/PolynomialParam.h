@@ -1,4 +1,4 @@
-//# NQPolynomialParam.h: Parameter handling for one-dimensional polynomials
+//# PolynomialParam.h: Parameter handling for one-dimensional polynomials
 //# Copyright (C) 2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_NQPOLYNOMIALPARAM_H)
-#define AIPS_NQPOLYNOMIALPARAM_H
+#if !defined(AIPS_POLYNOMIALPARAM_H)
+#define AIPS_POLYNOMIALPARAM_H
 
 //# Includes
 #include <aips/aips.h>
@@ -39,13 +39,13 @@ template<class T> class Vector;
 // <summary>  Parameter handling for one-dimensional polynomials
 // </summary>
 
-// <reviewed reviewer="tcornwel" date="1996/02/22" tests="tNQPolynomial"
+// <reviewed reviewer="tcornwel" date="1996/02/22" tests="tPolynomial"
 // demos="">
 // </reviewed>
 
 // <prerequisite>
 //   <li> <linkto class="FunctionParam">FunctionParam</linkto> class
-//   <li> <linkto class=NQFunction1D>NQFunction1D</linkto>
+//   <li> <linkto class=Function1D>Function1D</linkto>
 // </prerequisite>
 
 // <etymology> 
@@ -53,7 +53,7 @@ template<class T> class Vector;
 // </etymology>
 //
 // <synopsis> 
-// A <src>NQPolynomial</src> is described by a set of coefficients;
+// A <src>Polynomial</src> is described by a set of coefficients;
 // its fundamental operation is evaluating itself at some "x".
 // The number of coefficients is the order of the polynomial plus one.
 //
@@ -71,7 +71,7 @@ template<class T> class Vector;
 //
 // <example>
 // <srcblock>
-//  NQPolynomial<Float> pf(3);  // Third order polynomial - coeffs 0 by default
+//  Polynomial<Float> pf(3);  // Third order polynomial - coeffs 0 by default
 //  pf.setCoefficient(1, 1.0);
 //  pf[2] = 2.0;
 //  pf.setCoefficient(3, 3.0);  // 3x^3 + 2x^2 + x
@@ -94,32 +94,32 @@ template<class T> class Vector;
 //   orders will be useful eventually.
 // </todo>
 
-template<class T> class NQPolynomialParam: public NQFunction1D<T> {
+template<class T> class PolynomialParam: public Function1D<T> {
  public:
   //# Constructors
   // Constructs a zero'th order polynomial, with a coeficcient of 0.0.
-  NQPolynomialParam();
+  PolynomialParam();
   
   // Makes a polynomial of the given order, with all coeficcients set to
   // zero. 
-  explicit NQPolynomialParam(uInt order);
+  explicit PolynomialParam(uInt order);
   
   // Make this a copy of other (deep copy).
   // <group>
-  NQPolynomialParam(const NQPolynomialParam<T> &other);
-  NQPolynomialParam<T> &operator=(const NQPolynomialParam<T> &other);
+  PolynomialParam(const PolynomialParam<T> &other);
+  PolynomialParam<T> &operator=(const PolynomialParam<T> &other);
   // </group>
   
   // Destructor
-  ~NQPolynomialParam();
+  ~PolynomialParam();
 
   //# Operators  
   // Comparisons.  
   // Polynomials are equal if they are the same order
   // <group>
-  Bool operator==(const NQPolynomialParam<T> &other) const {
+  Bool operator==(const PolynomialParam<T> &other) const {
     return (param_p == other.param_p); };
-  Bool operator!=(const NQPolynomialParam<T> &other) const {
+  Bool operator!=(const PolynomialParam<T> &other) const {
     return (param_p != other.param_p); };
   // </group>
 

@@ -1,4 +1,4 @@
-//# NQCombiFunction.h: Form a linear combination of Functions
+//# CombiFunction.h: Form a linear combination of Functions
 //# Copyright (C) 2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -26,8 +26,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_NQCOMBIFUNCTION_H)
-#define AIPS_NQCOMBIFUNCTION_H
+#if !defined(AIPS_COMBIFUNCTION_H)
+#define AIPS_COMBIFUNCTION_H
 
 //# Includes
 #include <aips/aips.h>
@@ -43,7 +43,7 @@
 //
 // <use visibility=export>
 //
-// <reviewed reviewer="" date="" tests="tNQCombiFunction" demos="">
+// <reviewed reviewer="" date="" tests="tCombiFunction" demos="">
 // </reviewed>
 //
 // <prerequisite>
@@ -65,7 +65,7 @@
 // Member functions are added with the <src>addFunction()</src> method.
 //
 // <note role=tip>
-// Check <linkto class=NQCompoundFunction>NQCompoundFunction</linkto> class
+// Check <linkto class=CompoundFunction>CompoundFunction</linkto> class
 // for a combination of functions behaving as one object. </note>
 // </synopsis>
 //
@@ -73,15 +73,15 @@
 // In the following example a second order polynomial is built from 3 separate
 // polynomials.
 // <srcblock>
-// NQPolynomial<Double> constant(0); 
-// NQPolynomial<Double> linear(1); 
-// NQPolynomial<Double> square(2);
+// Polynomial<Double> constant(0); 
+// Polynomial<Double> linear(1); 
+// Polynomial<Double> square(2);
 // 
 // constant.setCoefficient(0, 1.0);   // 1
 // linear.setCoefficient(1, 1.0);     // x
 // square[2] = 1.0;     // x^2
 // 
-// NQCombiFunction<Double> combination;
+// CombiFunction<Double> combination;
 // 
 // // form function, e0 + e1*x + e2*x^2
 // combination.addFunction(constant);
@@ -109,21 +109,21 @@
 // <li> Nothing I know of
 // </todo>
 
-template <class T> class NQCombiFunction : public NQCombiParam<T> {
+template <class T> class CombiFunction : public CombiParam<T> {
  public:
   //# Constructors
   // The default constructor -- no functions, no parameters, nothing, the
   // function operator returns a 0.
-  NQCombiFunction() : NQCombiParam<T>() {};
+  CombiFunction() : CombiParam<T>() {};
   // Make this object a (deep) copy of other.
-  NQCombiFunction(const NQCombiFunction<T> &other) :
-    NQCombiParam<T>(other) {};
+  CombiFunction(const CombiFunction<T> &other) :
+    CombiParam<T>(other) {};
   // Make this object a (deep) copy of other.
-  NQCombiFunction<T> &operator=(const NQCombiFunction<T> &other) {
-    NQCombiParam<T>::operator=(other); return *this; };
+  CombiFunction<T> &operator=(const CombiFunction<T> &other) {
+    CombiParam<T>::operator=(other); return *this; };
 
   // Destructor
-  virtual ~NQCombiFunction() {};
+  virtual ~CombiFunction() {};
 
   //# Operators
   // Evaluate the function at <src>x</src>.
@@ -133,38 +133,38 @@ template <class T> class NQCombiFunction : public NQCombiParam<T> {
   // Return a copy of this object from the heap. The caller is responsible for
   // deleting the pointer.
   // <group>
-  virtual Function<T> *clone() const { return new NQCombiFunction<T>(*this); };
+  virtual Function<T> *clone() const { return new CombiFunction<T>(*this); };
   // </group>
 
 };
 
-#define NQCombiFunction_PS NQCombiFunction
+#define CombiFunction_PS CombiFunction
 
-// <summary> Partial specialization of NQCombiFunction for <src>AutoDiff</src>
+// <summary> Partial specialization of CombiFunction for <src>AutoDiff</src>
 // </summary>
 
 // <synopsis>
-// <note role=warning> The name <src>NQCombiFunction_PS</src> is only for cxx2html
-// documentation problems. Use <src>NQCombiFunction</src> in your code.</note>
+// <note role=warning> The name <src>CombiFunction_PS</src> is only for cxx2html
+// documentation problems. Use <src>CombiFunction</src> in your code.</note>
 // </synopsis>
 
-template <class T> class NQCombiFunction_PS<AutoDiff<T> > :
-public NQCombiParam<AutoDiff<T> > {
+template <class T> class CombiFunction_PS<AutoDiff<T> > :
+public CombiParam<AutoDiff<T> > {
  public:
   //# Constructors
   // The default constructor -- no functions, no parameters, nothing, the
   // function operator returns a 0.
-  NQCombiFunction_PS() : NQCombiParam<AutoDiff<T> >() {};
+  CombiFunction_PS() : CombiParam<AutoDiff<T> >() {};
   // Make this object a (deep) copy of other.
-  NQCombiFunction_PS(const NQCombiFunction_PS<AutoDiff<T> > &other) :
-    NQCombiParam<AutoDiff<T> >(other) {};
+  CombiFunction_PS(const CombiFunction_PS<AutoDiff<T> > &other) :
+    CombiParam<AutoDiff<T> >(other) {};
   // Make this object a (deep) copy of other.
-  NQCombiFunction_PS<AutoDiff<T> > &
-    operator=(const NQCombiFunction_PS<AutoDiff<T> > &other) {
-    NQCombiParam<AutoDiff<T> >::operator=(other); return *this; };
+  CombiFunction_PS<AutoDiff<T> > &
+    operator=(const CombiFunction_PS<AutoDiff<T> > &other) {
+    CombiParam<AutoDiff<T> >::operator=(other); return *this; };
 
   // Destructor
-  virtual ~NQCombiFunction_PS() {};
+  virtual ~CombiFunction_PS() {};
 
   //# Operators
   // Evaluate the function and its derivatives at <src>x</src> <em>wrt</em>
@@ -176,11 +176,11 @@ public NQCombiParam<AutoDiff<T> > {
   // deleting the pointer.
   // <group>
   virtual Function<AutoDiff<T> > *clone() const {
-    return new NQCombiFunction_PS<AutoDiff<T> >(*this); };
+    return new CombiFunction_PS<AutoDiff<T> >(*this); };
   // </group>
 
 };
 
-#undef NQCombiFunction_PS
+#undef CombiFunction_PS
 
 #endif

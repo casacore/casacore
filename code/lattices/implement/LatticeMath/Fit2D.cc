@@ -137,7 +137,7 @@ uInt Fit2D::addModel (Fit2D::Types type,
 // 
 // Create functional
 //
-      NQGaussian2D<AutoDiff<Double> > gauss2d;
+      Gaussian2D<AutoDiff<Double> > gauss2d;
       if (parameters.nelements() != gauss2d.nparameters()) {
          itsLogger << "Fit2D - illegal number of parameters in addModel" <<
 	   LogIO::EXCEPTION;
@@ -150,32 +150,32 @@ uInt Fit2D::addModel (Fit2D::Types type,
 //
 // Set parameters.  0 (flux), 1 (x), 2 (y), 3 (FWHM major), 4 (FWHM minor), 
 // 5 (pa - in radians).  Convert p.a. from positive +x -> +y
-// to +y -> -x for NQGaussian2D.  Note that fixing the ratio is not
+// to +y -> -x for Gaussian2D.  Note that fixing the ratio is not
 // the same as fixing the minor axis, which is what the Fit2D interface
 // claims to do.  I don't know how to solve this presently.
 //
-      Int ii = NQGaussian2D<Float>::HEIGHT;
+      Int ii = Gaussian2D<Float>::HEIGHT;
       gauss2d[ii] = AutoDiff<Double>(parameters(0), gauss2d.nparameters(), ii);   // flux
       gauss2d.mask(ii) = parameterMask(0);
 //
-      ii = NQGaussian2D<Float>::XCENTER;
+      ii = Gaussian2D<Float>::XCENTER;
       gauss2d[ii] = AutoDiff<Double>(parameters(1), gauss2d.nparameters(), ii);   // x
       gauss2d.mask(ii) = parameterMask(1);
 //
-      ii = NQGaussian2D<Float>::YCENTER;
+      ii = Gaussian2D<Float>::YCENTER;
       gauss2d[ii] = AutoDiff<Double>(parameters(2), gauss2d.nparameters(), ii);   // y
       gauss2d.mask(ii) = parameterMask(2);
 //
-      ii = NQGaussian2D<Float>::YWIDTH;
+      ii = Gaussian2D<Float>::YWIDTH;
       gauss2d[ii] = AutoDiff<Double>(parameters(3), gauss2d.nparameters(), ii);   // major
       gauss2d.mask(ii) = parameterMask(3);
 //
-      ii = NQGaussian2D<Float>::RATIO;
+      ii = Gaussian2D<Float>::RATIO;
       Double ratio = parameters(4) / parameters(3);
       gauss2d[ii] = AutoDiff<Double>(ratio, gauss2d.nparameters(), ii);           // ratio
       gauss2d.mask(ii) = parameterMask(4);
 //
-      ii = NQGaussian2D<Float>::PANGLE;
+      ii = Gaussian2D<Float>::PANGLE;
       Double pa = paToGauss2D(parameters(5));
       piRange(pa);
       gauss2d[ii] = AutoDiff<Double>(pa, gauss2d.nparameters(), ii);              // p.a.
@@ -535,9 +535,9 @@ Vector<Double> Fit2D::availableSolution (uInt which)  const
 // The solution may have a negative axial ratio
 //
    if (itsTypeList(which)==Fit2D::GAUSSIAN) {
-      Int iY = NQGaussian2D<Float>::YWIDTH;
-      Int iR = NQGaussian2D<Float>::RATIO;
-      Int iPA = NQGaussian2D<Float>::PANGLE;
+      Int iY = Gaussian2D<Float>::YWIDTH;
+      Int iR = Gaussian2D<Float>::RATIO;
+      Int iPA = Gaussian2D<Float>::PANGLE;
 //
       Double other = abs(sol(iY) * sol(iR));
       Double ywidth = abs(sol(iY));
@@ -630,8 +630,8 @@ Vector<Double> Fit2D::availableErrors (uInt which)  const
 //
 //
    if (itsTypeList(which)==Fit2D::GAUSSIAN) {
-      Int iY = NQGaussian2D<Float>::YWIDTH;
-      Int iR = NQGaussian2D<Float>::RATIO;
+      Int iY = Gaussian2D<Float>::YWIDTH;
+      Int iR = Gaussian2D<Float>::RATIO;
 //
       Double other = abs(sol(iY) * sol(iR));
       Double yWidth = abs(sol(iY));
@@ -1170,10 +1170,10 @@ void Fit2D::normalizeSolution()
          itsLogger << "Fit2D - Disk fitting not yet implemented" <<
 	   LogIO::EXCEPTION;
       } else if (type==Fit2D::GAUSSIAN) {
-	sol(NQGaussian2D<AutoDiff<Double> >::HEIGHT) *= itsNormVal;
-	sol(NQGaussian2D<AutoDiff<Double> >::XCENTER) *= itsNormPos;
-	sol(NQGaussian2D<AutoDiff<Double> >::YCENTER) *= itsNormPos;
-	sol(NQGaussian2D<AutoDiff<Double> >::YWIDTH) *= itsNormPos;
+	sol(Gaussian2D<AutoDiff<Double> >::HEIGHT) *= itsNormVal;
+	sol(Gaussian2D<AutoDiff<Double> >::XCENTER) *= itsNormPos;
+	sol(Gaussian2D<AutoDiff<Double> >::YCENTER) *= itsNormPos;
+	sol(Gaussian2D<AutoDiff<Double> >::YWIDTH) *= itsNormPos;
 // 
 // Replace in main solution vector
 //

@@ -1,4 +1,4 @@
-//# tNQGaussian1D: Test the Gaussian1D class
+//# tGaussian1D: Test the Gaussian1D class
 //# Copyright (C) 1995,1996,1997,1999,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -41,12 +41,12 @@
 #include <aips/iostream.h>
 
 int main() {
-  NQGaussian1D<Double> null;
+  Gaussian1D<Double> null;
   AlwaysAssertExit(null.height() == 1.0 && 
 		   null.center() == 0.0 && null.width() == 1.0);
   AlwaysAssertExit(near(null(0.5), 0.5) && near(null(0.0), 1.0));
   
-  //     NQGaussian1D(const T& h, const T& c, const T& w);
+  //     Gaussian1D(const T& h, const T& c, const T& w);
   //     T height() const
   //     void setHeight(const T & height)
   //     T flux() const;
@@ -55,10 +55,10 @@ int main() {
   //     setCenter(const T & center)
   //     T width() const;
   //     void setWidth(const T & width);
-  NQGaussian1D<Double> gauss1(4.0, 6.0, 8.0);
+  Gaussian1D<Double> gauss1(4.0, 6.0, 8.0);
   AlwaysAssertExit(gauss1.height() == 4.0 && gauss1.center() == 6.0 &&
 		   gauss1.width() == 8.0);
-  const NQGaussian1D<Double> &cgauss1 = gauss1;
+  const Gaussian1D<Double> &cgauss1 = gauss1;
   AlwaysAssertExit(cgauss1.height() == 4.0 && cgauss1.center() == 6.0 &&
 		   cgauss1.width() == 8.0);
   gauss1.setHeight(2.0);
@@ -66,11 +66,11 @@ int main() {
   gauss1.setCenter(3.0);
   gauss1.setWidth(4.0);
   gauss1.setFlux(1.0);
-  AlwaysAssertExit(gauss1[NQGaussian1D<Double>::WIDTH] == 4.0 &&
-		   gauss1[NQGaussian1D<Double>::CENTER] == 3.0 &&
-		   near(gauss1[NQGaussian1D<Double>::HEIGHT] , 
+  AlwaysAssertExit(gauss1[Gaussian1D<Double>::WIDTH] == 4.0 &&
+		   gauss1[Gaussian1D<Double>::CENTER] == 3.0 &&
+		   near(gauss1[Gaussian1D<Double>::HEIGHT] , 
 			1.0/4.0/sqrt(C::pi/log(16.0))));
-  gauss1[NQGaussian1D<Double>::HEIGHT] = 2.0;
+  gauss1[Gaussian1D<Double>::HEIGHT] = 2.0;
   // <<
   cout << "Function Parameters: " << gauss1 << endl;
   //     T operator()(const T &x) const;
@@ -83,12 +83,12 @@ int main() {
   AlwaysAssertExit(near(gauss1(xvec(0)), 2.0/2.0/2.0/2.0/2.0));
   
   // Test Auto differentiation - specialized
-  NQGaussian1D<AutoDiff<Double> > gauss5(AutoDiff<Double>(4.0),
+  Gaussian1D<AutoDiff<Double> > gauss5(AutoDiff<Double>(4.0),
 					 AutoDiff<Double>(6.0),
 					 AutoDiff<Double>(8.0));
   AlwaysAssertExit(gauss5.height() == 4.0 && gauss5.center() == 6.0 &&
 		   gauss5.width() == 8.0);
-  const NQGaussian1D<AutoDiff<Double> > &cgauss5 = gauss5;
+  const Gaussian1D<AutoDiff<Double> > &cgauss5 = gauss5;
   AlwaysAssertExit(cgauss5.height() == 4.0 && cgauss5.center() == 6.0 &&
 		   cgauss5.width() == 8.0);
   gauss5.setHeight(AutoDiff<Double>(2.0));
@@ -96,9 +96,9 @@ int main() {
   gauss5.setCenter(AutoDiff<Double>(3.0,3,1));
   gauss5.setWidth(AutoDiff<Double>(4.0,3,2));
   gauss5.setFlux(AutoDiff<Double>(1.0,3,0));
-  AlwaysAssertExit(gauss5[NQGaussian1D<AutoDiff<Double> >::WIDTH] == 4.0 &&
-		   gauss5[NQGaussian1D<AutoDiff<Double> >::CENTER] == 3.0 &&
-		   near(gauss5[NQGaussian1D<AutoDiff<Double> >::HEIGHT] , 
+  AlwaysAssertExit(gauss5[Gaussian1D<AutoDiff<Double> >::WIDTH] == 4.0 &&
+		   gauss5[Gaussian1D<AutoDiff<Double> >::CENTER] == 3.0 &&
+		   near(gauss5[Gaussian1D<AutoDiff<Double> >::HEIGHT] , 
 			1.0/4.0/sqrt(C::pi/log(16.0))));
   gauss5.setHeight(AutoDiff<Double>(2.0,3,0));
   cout << "Specialized(3):  " << gauss5(3.0) << endl;
@@ -106,12 +106,12 @@ int main() {
   AlwaysAssertExit(near(gauss1(3.0), 2.0));
   
   // Test Auto differentiation
-  NQGaussian1D<AutoDiffA<Double> > gauss6(AutoDiffA<Double>(4.0),
+  Gaussian1D<AutoDiffA<Double> > gauss6(AutoDiffA<Double>(4.0),
 					  AutoDiffA<Double>(6.0),
 					  AutoDiffA<Double>(8.0));
   AlwaysAssertExit(gauss6.height() == 4.0 && gauss6.center() == 6.0 &&
 		   gauss6.width() == 8.0);
-  const NQGaussian1D<AutoDiffA<Double> > &cgauss6 = gauss6;
+  const Gaussian1D<AutoDiffA<Double> > &cgauss6 = gauss6;
   AlwaysAssertExit(cgauss6.height() == 4.0 && cgauss6.center() == 6.0 &&
 		   cgauss6.width() == 8.0);
   gauss6.setHeight(AutoDiffA<Double>(2.0));
@@ -119,9 +119,9 @@ int main() {
   gauss6.setCenter(AutoDiffA<Double>(3.0,3,1));
   gauss6.setWidth(AutoDiffA<Double>(4.0,3,2));
   gauss6.setFlux(AutoDiffA<Double>(1.0,3,0));
-  AlwaysAssertExit(gauss6[NQGaussian1D<AutoDiffA<Double> >::WIDTH] == 4.0 &&
-		   gauss6[NQGaussian1D<AutoDiffA<Double> >::CENTER] == 3.0 &&
-		   near(gauss6[NQGaussian1D<AutoDiffA<Double> >::HEIGHT] , 
+  AlwaysAssertExit(gauss6[Gaussian1D<AutoDiffA<Double> >::WIDTH] == 4.0 &&
+		   gauss6[Gaussian1D<AutoDiffA<Double> >::CENTER] == 3.0 &&
+		   near(gauss6[Gaussian1D<AutoDiffA<Double> >::HEIGHT] , 
 			1.0/4.0/sqrt(C::pi/log(16.0))));
   gauss6.setHeight(AutoDiffA<Double>(2.0,3,0));
   cout << "Generic(3):      " << gauss6(AutoDiffA<Double>(3.0)) << endl;
@@ -129,25 +129,25 @@ int main() {
   cout << "Generic(1):      " << gauss6(AutoDiffA<Double>(1.0)) << endl;
   AlwaysAssertExit(near(gauss1(3.0), 2.0));
   
-  //     NQGaussian1D(const NQGaussian1D &other);
-  //     NQGaussian1D<T> &operator=(const NQGaussian1D<T> &other);
+  //     Gaussian1D(const Gaussian1D &other);
+  //     Gaussian1D<T> &operator=(const Gaussian1D<T> &other);
   //   virtual uInt nAvailableParams() const;
   //   virtual void setAvailableParam(uInt which, const Type &value);
   //   virtual Type getAvailableParam(uInt which) const;
   //   virtual void setAvailableParamMask(uInt which, const Bool mask);
   //   virtual Bool getAvailableParamMask(uInt which) const;
-  NQGaussian1D<Double> gauss2(gauss1);
-  NQGaussian1D<Double> gauss3; gauss3 = gauss2;
+  Gaussian1D<Double> gauss2(gauss1);
+  Gaussian1D<Double> gauss3; gauss3 = gauss2;
   AlwaysAssertExit(gauss1.nparameters() == 3);
   Vector<Double> parms = gauss1.parameters().getParameters();
   AlwaysAssertExit(parms(0) == 2.0 && parms(1) == 3.0 && parms(2) == 4.0);
   AlwaysAssertExit(allEQ(parms, gauss2.parameters().getParameters()) &&
 		   allEQ(parms, gauss3.parameters().getParameters()));
-  gauss1.mask(NQGaussian1D<Double>::CENTER) = False;
+  gauss1.mask(Gaussian1D<Double>::CENTER) = False;
   AlwaysAssertExit(gauss1.parameters().nMaskedParameters() == 2);
   Vector<Double> parms2 = gauss1.parameters().getMaskedParameters();
   AlwaysAssertExit(parms2(0) == 2.0 && parms2(1) == 4.0);
-  gauss1.mask(NQGaussian1D<Double>::CENTER) = True;
+  gauss1.mask(Gaussian1D<Double>::CENTER) = True;
   gauss1[0] = 1.0; 
   gauss1[1] = 2.0; 
   gauss1[2] = 3.0;
@@ -164,7 +164,7 @@ int main() {
   AlwaysAssertExit(allEQ(gauss1.parameters().getParameters(), 11.0));
   
   // clone();
-  //     ~NQGaussian1D();
+  //     ~Gaussian1D();
   Function<Double> *gauss4ptr = gauss1.clone();
   AlwaysAssertExit(allEQ(gauss4ptr->parameters().getParameters(), 11.0));
   delete gauss4ptr;

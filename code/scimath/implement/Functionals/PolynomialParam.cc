@@ -1,4 +1,4 @@
-//# NQPolynomialParam.cc: Parameter handling for one-dimensional polynomials
+//# PolynomialParam.cc: Parameter handling for one-dimensional polynomials
 //# Copyright (C) 2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -30,33 +30,33 @@
 #include <aips/Arrays/Vector.h>
 
 template<class T>
-NQPolynomialParam<T>::NQPolynomialParam() :
-  NQFunction1D<T>(1) {}
+PolynomialParam<T>::PolynomialParam() :
+  Function1D<T>(1) {}
 
 template<class T>
-NQPolynomialParam<T>::NQPolynomialParam(uInt order) :
-  NQFunction1D<T>(order+1) {}
+PolynomialParam<T>::PolynomialParam(uInt order) :
+  Function1D<T>(order+1) {}
 
 template<class T>
-NQPolynomialParam<T>::NQPolynomialParam(const NQPolynomialParam<T> &other) :
-  NQFunction1D<T>(other) {}
+PolynomialParam<T>::PolynomialParam(const PolynomialParam<T> &other) :
+  Function1D<T>(other) {}
 
 template<class T>
-NQPolynomialParam<T>::~NQPolynomialParam() {}
+PolynomialParam<T>::~PolynomialParam() {}
 
 template<class T>
-NQPolynomialParam<T> &
-NQPolynomialParam<T>::operator=(const NQPolynomialParam<T> &other) {
-  if (this != &other) NQFunction1D<T>::operator=(other);
+PolynomialParam<T> &
+PolynomialParam<T>::operator=(const PolynomialParam<T> &other) {
+  if (this != &other) Function1D<T>::operator=(other);
   return *this;
 }
 
 template<class T>
-const Vector<T> &NQPolynomialParam<T>::coefficients() const {
+const Vector<T> &PolynomialParam<T>::coefficients() const {
   return param_p.getParameters();
 }
 
 template<class T> 
-void NQPolynomialParam<T>::setCoefficients(const Vector<T> &coefficients) {
+void PolynomialParam<T>::setCoefficients(const Vector<T> &coefficients) {
   param_p.setParameters(coefficients);
 }

@@ -1,4 +1,4 @@
-//# NQGaussianND.cc: GaussianND class
+//# GaussianND.cc: GaussianND class
 //# Copyright (C) 1996,1998,1999,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -33,7 +33,7 @@
 #include <aips/Mathematics/Math.h>
 
 template<class T> 
-T NQGaussianND<T>::eval(typename Function<T>::FunctionArg x) const {
+T GaussianND<T>::eval(typename Function<T>::FunctionArg x) const {
   Vector<T> norm(itsDim);
   for (uInt i=0; i<itsDim; i++) norm[i] = x[i] - param_p[CENTER+i];
 

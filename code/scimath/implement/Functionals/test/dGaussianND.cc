@@ -1,4 +1,4 @@
-//# dNQGaussianND.cc:  demo for the n-dim Gaussian class
+//# dGaussianND.cc:  demo for the n-dim Gaussian class
 //# Copyright (C) 1996,1999,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -35,7 +35,7 @@ int main(){
   Float height = 1;
   Vector<Float> mean(ndim); mean(0) = 0, mean(1) = 1;
   Vector<Float> variance(ndim); variance(0) = .1, variance(1) = 7;
-  NQGaussianND<Float> g(ndim, height, mean, variance); 
+  GaussianND<Float> g(ndim, height, mean, variance); 
   Vector<Float> x(ndim); x = 0;
   cout << "g("<< x <<") = " << g(x) <<endl; // g([0,0])=1*exp(-1/2*1/7);
   x(1)++;

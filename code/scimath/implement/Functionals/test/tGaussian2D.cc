@@ -1,4 +1,4 @@
-//# tNQGaussian2D.cc:  Test the Gaussian2D class
+//# tGaussian2D.cc:  Test the Gaussian2D class
 //# Copyright (C) 1996,1998,1999,2000,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -47,7 +47,7 @@ int main() {
     Bool anyFailures = False;
     /*    {
       Bool failed = False;
-      NQGaussian2D<Float> g;
+      Gaussian2D<Float> g;
       if (g.ndim() != 2) failed = True;
       Vector<Float> z(2);
       z = 0;
@@ -95,7 +95,7 @@ int main() {
     }
     {
       Bool failed = False;
-      NQGaussian2D<Double> g;
+      Gaussian2D<Double> g;
       g.setHeight(2.0);
       if (near(g.height(), 2.0)) cout << "Passed";
       else {
@@ -217,8 +217,8 @@ int main() {
       
       fwhm(0) = 2; fwhm(1) = .5;
       Double pa = C::pi/6,  height = 2;
-      NQGaussian2D<Double> g(height, mean, fwhm, pa), g1;
-      NQGaussian2D<Double> g2(height, mean(0), mean(1), fwhm(0), 
+      Gaussian2D<Double> g(height, mean, fwhm, pa), g1;
+      Gaussian2D<Double> g2(height, mean(0), mean(1), fwhm(0), 
 			      fwhm(1)/fwhm(0), pa);
  
       Double x = mean(0), y = mean(1);
@@ -229,7 +229,7 @@ int main() {
       if (!near(g1(x,y), height/2.0, 1E-6)) failed = True;
       if (!near(g2(x,y), height/2.0, 1E-6)) failed = True;
  
-      NQGaussian2D<Double> g3(g);
+      Gaussian2D<Double> g3(g);
       
       x = mean(0) - cos(pa)*fwhm(1)/2;
       y = mean(1) - sin(pa)*fwhm(1)/2;
@@ -251,7 +251,7 @@ int main() {
       AutoDiff<Double> adfwhm0(fwhm[0],6,3); 
       AutoDiff<Double> adfww(fww,6,4);
       AutoDiff<Double> adpa(pa,6,5);
-      NQGaussian2D<AutoDiff<Double> > g4(adheight,
+      Gaussian2D<AutoDiff<Double> > g4(adheight,
 					 admean0,
 					 admean1,
 					 adfwhm0, 
@@ -268,7 +268,7 @@ int main() {
       AutoDiffA<Double> adafwhm0(fwhm[0],6,3); 
       AutoDiffA<Double> adafww(fww,6,4);
       AutoDiffA<Double> adapa(pa,6,5);
-      NQGaussian2D<AutoDiffA<Double> > g5(adaheight,
+      Gaussian2D<AutoDiffA<Double> > g5(adaheight,
 					  adamean0,
 					  adamean1,
 					  adafwhm0, 

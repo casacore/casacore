@@ -1,4 +1,4 @@
-//# NQGaussianNDParam.cc: Multidimensional Gaussian class parameters
+//# GaussianNDParam.cc: Multidimensional Gaussian class parameters
 //# Copyright (C) 2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -35,7 +35,7 @@
 #include <aips/Utilities/Assert.h>
 
 template<class T> 
-NQGaussianNDParam<T>::NQGaussianNDParam() : 
+GaussianNDParam<T>::GaussianNDParam() : 
   Function<T>(6), itsDim(2),
   itsFlux2Hgt(pow(T(C::_2pi),T(-1))) {
   setFlux(T(1));
@@ -43,7 +43,7 @@ NQGaussianNDParam<T>::NQGaussianNDParam() :
 }
 
 template<class T> 
-NQGaussianNDParam<T>::NQGaussianNDParam(uInt nDim) :
+GaussianNDParam<T>::GaussianNDParam(uInt nDim) :
   Function<T>((nDim+3)*nDim/2+1), itsDim(nDim), 
   itsFlux2Hgt(pow(T(C::_2pi),-T(nDim)/T(2))) { 
   setFlux(T(1));
@@ -51,7 +51,7 @@ NQGaussianNDParam<T>::NQGaussianNDParam(uInt nDim) :
 }
   
 template<class T>
-NQGaussianNDParam<T>::NQGaussianNDParam(uInt nDim, const T &height) :
+GaussianNDParam<T>::GaussianNDParam(uInt nDim, const T &height) :
   Function<T>((nDim+3)*nDim/2+1), itsDim(nDim),
   itsFlux2Hgt(pow(T(C::_2pi),-T(nDim)/T(2))) { 
   param_p[HEIGHT] = height;
@@ -59,13 +59,13 @@ NQGaussianNDParam<T>::NQGaussianNDParam(uInt nDim, const T &height) :
 }
 
 template<class T> 
-NQGaussianNDParam<T>::NQGaussianNDParam(uInt nDim, const T &height,
+GaussianNDParam<T>::GaussianNDParam(uInt nDim, const T &height,
 					const Vector<T> &mean) :
   Function<T>((nDim+3)*nDim/2+1), itsDim(nDim),
   itsFlux2Hgt(pow(T(C::_2pi),-T(nDim)/T(2))) { 
   param_p[HEIGHT] = height;
   if (mean.nelements() != itsDim) {
-    throw(AipsError("NQGaussianNDParam<T>::NQGaussianNDParam(uInt nDim, "
+    throw(AipsError("GaussianNDParam<T>::GaussianNDParam(uInt nDim, "
 		    "T height, "
 		    "Vector<T> mean) - mean must have nDim values."));
   };
@@ -76,25 +76,25 @@ NQGaussianNDParam<T>::NQGaussianNDParam(uInt nDim, const T &height,
 }
 
 template<class T> 
-NQGaussianNDParam<T>::NQGaussianNDParam(uInt nDim, const T &height, 
+GaussianNDParam<T>::GaussianNDParam(uInt nDim, const T &height, 
 					const Vector<T> &mean, 
 					const Vector<T> &variance) :
   Function<T>((nDim+3)*nDim/2+1), itsDim(nDim) {
   param_p[HEIGHT] = height;
   if (mean.nelements() != itsDim) {
-    throw(AipsError("NQGaussianNDParam<T>::NQGaussianNDParam(uInt nDim, "
+    throw(AipsError("GaussianNDParam<T>::GaussianNDParam(uInt nDim, "
 		    "T height, Vector<T> mean, Vector<T> variance)"
 		    " - mean must have nDim values."));
   };  
   if (variance.nelements() != itsDim) {
-    throw(AipsError("NQGaussianNDParam<T>::NQGaussianNDParam(uInt nDim, "
+    throw(AipsError("GaussianNDParam<T>::GaussianNDParam(uInt nDim, "
 		    "T height, Vector<T> mean, Vector<T> variance)"
 		    " - variance must have nDim values."));
   };
   for (uInt i=0; i<nDim; i++) {
     param_p[CENTER+i] = mean[i];
     if (variance[i] <= T(0)) {
-      throw(AipsError("NQGaussianNDParam<T>::NQGaussianNDParam(uInt nDim,"
+      throw(AipsError("GaussianNDParam<T>::GaussianNDParam(uInt nDim,"
 		      " T height, Vector<T> mean, Vector<T> variance) "
 		      " - variance must be positive"));
     };
@@ -107,13 +107,13 @@ NQGaussianNDParam<T>::NQGaussianNDParam(uInt nDim, const T &height,
 }
 
 template<class T> 
-NQGaussianNDParam<T>::NQGaussianNDParam(uInt nDim, const T &height,
+GaussianNDParam<T>::GaussianNDParam(uInt nDim, const T &height,
 					const Vector<T> &mean, 
 					const Matrix<T> &covar) :
   Function<T>((nDim+3)*nDim/2+1), itsDim(nDim) {
   param_p[HEIGHT] = height;
   if (mean.nelements() != itsDim) {
-    throw(AipsError("NQGaussianNDParam<T>::NQGaussianNDParam(uInt nDim, "
+    throw(AipsError("GaussianNDParam<T>::GaussianNDParam(uInt nDim, "
 		    "T height, "
 		    "Vector<T> mean, Matrix<T> covar)"
 		    " - mean must have nDim values."));
@@ -123,16 +123,16 @@ NQGaussianNDParam<T>::NQGaussianNDParam(uInt nDim, const T &height,
 }
 
 template<class T> 
-NQGaussianNDParam<T>::~NQGaussianNDParam() {}
+GaussianNDParam<T>::~GaussianNDParam() {}
 
 template<class T> 
-NQGaussianNDParam<T>::NQGaussianNDParam(const NQGaussianNDParam<T> &other) :
+GaussianNDParam<T>::GaussianNDParam(const GaussianNDParam<T> &other) :
   Function<T>(other),
   itsDim(other.itsDim), itsFlux2Hgt(other.itsFlux2Hgt) {}
 
 template<class T>
-NQGaussianNDParam<T> &NQGaussianNDParam<T>::
-operator=(const NQGaussianNDParam<T> &other) {
+GaussianNDParam<T> &GaussianNDParam<T>::
+operator=(const GaussianNDParam<T> &other) {
   if (this != &other) {
     Function<T>::operator=(other);
     itsDim = other.itsDim;
@@ -142,33 +142,33 @@ operator=(const NQGaussianNDParam<T> &other) {
 }
 
 template<class T> 
-T NQGaussianNDParam<T>::flux() const {
+T GaussianNDParam<T>::flux() const {
   return param_p[HEIGHT] / itsFlux2Hgt;
 }
 
 template<class T> 
-void NQGaussianNDParam<T>::setFlux(const T &flux) {
+void GaussianNDParam<T>::setFlux(const T &flux) {
   param_p[HEIGHT] = flux * itsFlux2Hgt;
 }
 
 template<class T> 
-Vector<T> NQGaussianNDParam<T>::mean() const {
+Vector<T> GaussianNDParam<T>::mean() const {
   Vector<T> m(itsDim);
   for (uInt i=0; i<itsDim; ++i) m[i] = param_p[CENTER+i];
   return m;
 }
 
 template<class T> 
-void NQGaussianNDParam<T>::setMean(const Vector<T> &mean) {
+void GaussianNDParam<T>::setMean(const Vector<T> &mean) {
   if (mean.nelements() != itsDim) {
-    throw(AipsError("NQGaussianNDParam<T>::setMean(const Vector<T> &mean)"
+    throw(AipsError("GaussianNDParam<T>::setMean(const Vector<T> &mean)"
 		    " - mean must have nDim values."));
   };
   for (uInt i=0; i<itsDim; ++i) param_p[CENTER+i] = mean[i];
 }
 
 template<class T> 
-Vector<T> NQGaussianNDParam<T>::variance() const {
+Vector<T> GaussianNDParam<T>::variance() const {
   Vector<T> variance(itsDim);
   Matrix<T> locCovariance(covariance());
   for (uInt i=0; i<itsDim; i++) variance[i] = locCovariance(i, i);
@@ -177,9 +177,9 @@ Vector<T> NQGaussianNDParam<T>::variance() const {
 
 
 template<class T> 
-void NQGaussianNDParam<T>::setVariance(const Vector<T> &variance) {
+void GaussianNDParam<T>::setVariance(const Vector<T> &variance) {
   if (variance.nelements() != itsDim) {
-    throw(AipsError("NQGaussianNDParam<T>::setVariance(const Vector<T> "
+    throw(AipsError("GaussianNDParam<T>::setVariance(const Vector<T> "
 		    "&variance)"
 		    " - variance must have nDim values."));
   };
@@ -194,25 +194,25 @@ void NQGaussianNDParam<T>::setVariance(const Vector<T> &variance) {
 }
 
 template<class T> 
-Matrix<T> NQGaussianNDParam<T>::covariance() const {
+Matrix<T> GaussianNDParam<T>::covariance() const {
   Matrix<T> locCovariance(itsDim, itsDim);
   repack(locCovariance);
   return invertSymPosDef(locCovariance);
 }
 
 template<class T> 
-void NQGaussianNDParam<T>::setCovariance(const Matrix<T> &covar) {
+void GaussianNDParam<T>::setCovariance(const Matrix<T> &covar) {
   Matrix<T> locCovariance(covar.shape());
   locCovariance = covar;
   if (locCovariance.shape() != IPosition(2,itsDim,itsDim)) {
-    throw(AipsError("NQGaussianNDParam<T>::setCovariance("
+    throw(AipsError("GaussianNDParam<T>::setCovariance("
 		    "const Matrix<T> &covar)"
 		    " - covariance must have nDim rows and columns"));
   };
   Vector<T> sigma(itsDim);
   for (uInt i=0; i<itsDim; i++) {
     if (locCovariance(i,i) > T(0)) sigma[i] = sqrt(locCovariance(i,i));
-    else throw(AipsError("NQGaussianNDParam<T>::setCovariance"
+    else throw(AipsError("GaussianNDParam<T>::setCovariance"
 			 "(const Matrix<T> &covar)"
 			 " - variance must be positive"));
   };
@@ -223,14 +223,14 @@ void NQGaussianNDParam<T>::setCovariance(const Matrix<T> &covar) {
 	  locCovariance(j,i) = locCovariance(i,j);
 	} else if (near(locCovariance(i,j), T(0))) {
 	  locCovariance(i,j) = locCovariance(j,i);
-	} else throw(AipsError("NQGaussianNDParam<T>::setCovariance("
+	} else throw(AipsError("GaussianNDParam<T>::setCovariance("
 			       "const Matrix<T> &covar)"
 			       " - covariance Matrix is not symmetric"
 			       " or triangular"));
       };
       // Now check that each covariance is in a possible range. (-1 < rho < 1)
       if (abs(locCovariance(i,j)) > sigma[i]*sigma[j]) {
-	throw(AipsError("NQGaussianNDParam<T>::setCovariance("
+	throw(AipsError("GaussianNDParam<T>::setCovariance("
 			"const Matrix<T> &covar)"
 			" - a covariance entry is too big"));
       };
@@ -245,7 +245,7 @@ void NQGaussianNDParam<T>::setCovariance(const Matrix<T> &covar) {
 }
 
 template<class T> 
-void NQGaussianNDParam<T>::unpack(const Matrix<T> &covar) {
+void GaussianNDParam<T>::unpack(const Matrix<T> &covar) {
    for (uInt row=0, k=0; row<itsDim; ++row) {
      param_p[CENTER+itsDim+row] = covar(row, row);
      for (uInt col=row+1; col<itsDim; ++col) {
@@ -255,7 +255,7 @@ void NQGaussianNDParam<T>::unpack(const Matrix<T> &covar) {
 }
 
 template<class T> 
-void NQGaussianNDParam<T>::repack(Matrix<T> &covar) const {
+void GaussianNDParam<T>::repack(Matrix<T> &covar) const {
   for (uInt row=0, k=0; row<itsDim; ++row) {
     covar(row, row) = param_p[CENTER+itsDim+row];
     for (uInt col=row+1; col<itsDim; ++col) {

@@ -1,4 +1,4 @@
-//# tNQCombiFunction.cc: Test the NQCombiFunction class
+//# tCombiFunction.cc: Test the CombiFunction class
 //# Copyright (C) 2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -46,9 +46,9 @@
 int main() {
   int i;
   // construct a linear combination of functions: a(0)+a(1)*x+a(2)*x^2    
-  NQPolynomial<Double> constant(0); 
-  NQPolynomial<Double> linear(1); 
-  NQPolynomial<Double> square(2);
+  Polynomial<Double> constant(0); 
+  Polynomial<Double> linear(1); 
+  Polynomial<Double> square(2);
   constant[0] = 1.0;   // 1
   linear[1] =  1.0;     // x
   square[2] =  1.0;     // x^2
@@ -56,7 +56,7 @@ int main() {
 
   // The default constructor -- no functions, no parameters, nothing, the
   // function operator returns a 0.  
-  NQCombiFunction<Double> combination;
+  CombiFunction<Double> combination;
 
   // Add a function.  All functions must have the same <src>ndim()</src>
   // as the first one.  Returns the (zero relative) number of the function 
@@ -68,11 +68,11 @@ int main() {
   combination.addFunction(square);
 
   // Make this object a copy of other.
-  //NQCombiFunction(const NQCombiFunction<T, T> &other);
-  NQCombiFunction<Double> comb2(combination);
+  //CombiFunction(const CombiFunction<T, T> &other);
+  CombiFunction<Double> comb2(combination);
   
   // Make this object a copy of other.
-  //NQCombiFunction<T> &operator=(const NQCombiFunction<T> &other);
+  //CombiFunction<T> &operator=(const CombiFunction<T> &other);
   comb2 = combination;
 
   // Return the total number of coefficients.  The number is equal to the

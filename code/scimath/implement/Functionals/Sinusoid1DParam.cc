@@ -1,4 +1,4 @@
-//# NQSinusoid1DParam.cc: Parameter handling for one dimensional NQSinusoid class
+//# Sinusoid1DParam.cc: Parameter handling for one dimensional Sinusoid class
 //# Copyright (C) 2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -29,49 +29,49 @@
 #include <aips/Functionals/Sinusoid1DParam.h>
 
 template<class T>
-NQSinusoid1DParam<T>::NQSinusoid1DParam() :
-  NQFunction1D<T>(3) {
+Sinusoid1DParam<T>::Sinusoid1DParam() :
+  Function1D<T>(3) {
   param_p[AMPLITUDE] = T(1.0);
   param_p[X0] = T(0.0);
   param_p[PERIOD] = T(1.0);
 }
 
 template<class T>
-NQSinusoid1DParam<T>::NQSinusoid1DParam(const T &amplitude) :
-  NQFunction1D<T>(3) {
+Sinusoid1DParam<T>::Sinusoid1DParam(const T &amplitude) :
+  Function1D<T>(3) {
   param_p[AMPLITUDE] = T(amplitude);
   param_p[X0] = T(0.0);
   param_p[PERIOD] = T(1.0);
 }
 
 template<class T>
-NQSinusoid1DParam<T>::NQSinusoid1DParam(const T &amplitude, const T &period) :
-  NQFunction1D<T>(3) {
+Sinusoid1DParam<T>::Sinusoid1DParam(const T &amplitude, const T &period) :
+  Function1D<T>(3) {
   param_p[AMPLITUDE] = T(amplitude);
   param_p[X0] = T(0.0);
   param_p[PERIOD] = T(period);
 }
 
 template<class T>
-NQSinusoid1DParam<T>::NQSinusoid1DParam(const T &amplitude, const T &period,
+Sinusoid1DParam<T>::Sinusoid1DParam(const T &amplitude, const T &period,
 					const T &x0) :
-  NQFunction1D<T>(3) {
+  Function1D<T>(3) {
   param_p[AMPLITUDE] = T(amplitude);
   param_p[X0] = T(x0);
   param_p[PERIOD] = T(period);
 }
 
 template<class T>
-NQSinusoid1DParam<T>::NQSinusoid1DParam(const NQSinusoid1DParam<T> &other) :
-  NQFunction1D<T>(other) {}
+Sinusoid1DParam<T>::Sinusoid1DParam(const Sinusoid1DParam<T> &other) :
+  Function1D<T>(other) {}
 
 template<class T>
-NQSinusoid1DParam<T>::~NQSinusoid1DParam() {}
+Sinusoid1DParam<T>::~Sinusoid1DParam() {}
 
 //# Operators
 template<class T>
-NQSinusoid1DParam<T> &
-NQSinusoid1DParam<T>::operator=(const NQSinusoid1DParam<T> &other) {
-  if (this != &other) NQFunction1D<T>::operator=(other);
+Sinusoid1DParam<T> &
+Sinusoid1DParam<T>::operator=(const Sinusoid1DParam<T> &other) {
+  if (this != &other) Function1D<T>::operator=(other);
   return *this;
 }

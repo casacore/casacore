@@ -1650,7 +1650,7 @@ Bool ImageMoments<T>::whatIsTheNoise (T& sigma,
 // Create fitter
 
       LQNonLinearFitLM<T> fitter;
-      NQGaussian1D<AutoDiff<T> > gauss;
+      Gaussian1D<AutoDiff<T> > gauss;
       fitter.setFunction(gauss);
 
 
@@ -1695,7 +1695,7 @@ Bool ImageMoments<T>::whatIsTheNoise (T& sigma,
             Int nGPts = 100;
             T dx = (values(nBins-1) - values(0))/nGPts;
 
-            NQGaussian1D<T> gauss(solution(0), solution(1), abs(solution(2)));
+            Gaussian1D<T> gauss(solution(0), solution(1), abs(solution(2)));
             Vector<T> xG(nGPts);
             Vector<T> yG(nGPts);
 

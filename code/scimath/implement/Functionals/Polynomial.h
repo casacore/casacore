@@ -1,4 +1,4 @@
-//# NQPolynomial.h: A one dimensional polynomial class
+//# Polynomial.h: A one dimensional polynomial class
 //# Copyright (C) 1994,1995,1996,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_NQPOLYNOMIAL_H)
-#define AIPS_NQPOLYNOMIAL_H
+#if !defined(AIPS_POLYNOMIAL_H)
+#define AIPS_POLYNOMIAL_H
 
 //# Includes
 #include <aips/aips.h>
@@ -40,7 +40,7 @@
 // <summary> A one dimensional polynomial class
 // </summary>
 
-// <reviewed reviewer="tcornwel" date="1996/02/22" tests="tNQPolynomial"
+// <reviewed reviewer="tcornwel" date="1996/02/22" tests="tPolynomial"
 // demos="">
 // </reviewed>
 
@@ -49,7 +49,7 @@
 // </prerequisite>
 //
 // <synopsis> 
-// A NQPolynomial<T> contains a set of coefficients; its fundamental operations
+// A Polynomial<T> contains a set of coefficients; its fundamental operations
 // is evaluating itself at some "x". The number of coefficients is the order
 // of the polynomial plus one, so is the number of available parameters. 
 //
@@ -62,7 +62,7 @@
 //
 // <example>
 // <srcblock>
-//  NQPolynomial<Float> pf(3); // Third order polynomial - coeffs 0 by default
+//  Polynomial<Float> pf(3); // Third order polynomial - coeffs 0 by default
 //  pf.setCoefficient(1, 1.0);
 //  pf[2] = 2.0;
 //  pf.setCoefficient(3, 3.0);  // 3x^3 + 2x^2 + x
@@ -85,75 +85,75 @@
 //   orders will be useful eventually.
 // </todo>
 
-template<class T> class NQPolynomial: public NQPolynomialParam<T> {
+template<class T> class Polynomial: public PolynomialParam<T> {
  public:
   //# Enumerations
   
   //# Constructors
   // Constructs a zero'th order polynomial, with a coeficcient of 0.0.
-  NQPolynomial() : NQPolynomialParam<T>() {};
+  Polynomial() : PolynomialParam<T>() {};
   // Makes a polynomial of the given order, with all coeficcients set to
   // zero. 
-  explicit NQPolynomial(uInt order) : NQPolynomialParam<T>(order) {};
+  explicit Polynomial(uInt order) : PolynomialParam<T>(order) {};
   // Copy constructor/assignment (deep copy)
   // <group>
-  NQPolynomial(const NQPolynomial<T> &other) : NQPolynomialParam<T>(other) {};
-  NQPolynomial<T> &operator=(const NQPolynomial<T> &other) {
-    NQPolynomialParam<T>::operator=(other); return *this; };
+  Polynomial(const Polynomial<T> &other) : PolynomialParam<T>(other) {};
+  Polynomial<T> &operator=(const Polynomial<T> &other) {
+    PolynomialParam<T>::operator=(other); return *this; };
   // </group>
   
   // Destructor
-  virtual ~NQPolynomial() {};
+  virtual ~Polynomial() {};
   
   //# Operators    
   // Evaluate the polynomial at <src>x</src>.
-  virtual T eval(typename NQFunction1D<T>::FunctionArg x) const;
+  virtual T eval(typename Function1D<T>::FunctionArg x) const;
   
   //# Member functions
   // Return the polynomial which is the derivative of this one. <em>e.g.,</em>
   // <src> 2+4x+5x^2 --> 0+4+10x </src>.
-  NQPolynomial<T> derivative() const;
+  Polynomial<T> derivative() const;
   
   // Return a copy of this object from the heap. The caller is responsible for
   // deleting the pointer.
   // <group>
-  virtual Function<T> *clone() const { return new NQPolynomial<T>(*this); };
+  virtual Function<T> *clone() const { return new Polynomial<T>(*this); };
   // </group>
 
 };
 
-#define NQPolynomial_PS NQPolynomial
+#define Polynomial_PS Polynomial
 
-// <summary> Partial specialization of NQPolynomial for <src>AutoDiff</src>
+// <summary> Partial specialization of Polynomial for <src>AutoDiff</src>
 // </summary>
 
 // <synopsis>
-// <note role=warning> The name <src>NQPolynomial_PS</src> is only for cxx2html
-// documentation problems. Use <src>NQPolynomial</src> in your code.</note>
+// <note role=warning> The name <src>Polynomial_PS</src> is only for cxx2html
+// documentation problems. Use <src>Polynomial</src> in your code.</note>
 // </synopsis>
 
-template <class T> class NQPolynomial_PS<AutoDiff<T> > : 
-public NQPolynomialParam<AutoDiff<T> > {
+template <class T> class Polynomial_PS<AutoDiff<T> > : 
+public PolynomialParam<AutoDiff<T> > {
  public:
   //# Constructors
   // Constructs one dimensional Polynomials.
   // <group>
-  NQPolynomial_PS() : NQPolynomialParam<AutoDiff<T> >() {};
-  explicit NQPolynomial_PS(uInt order) :
-    NQPolynomialParam<AutoDiff<T> >(order) {};
+  Polynomial_PS() : PolynomialParam<AutoDiff<T> >() {};
+  explicit Polynomial_PS(uInt order) :
+    PolynomialParam<AutoDiff<T> >(order) {};
   // </group>
 
   // Copy constructor (deep copy)
-  NQPolynomial_PS(const NQPolynomial_PS<AutoDiff<T> > &other) :
-    NQPolynomialParam<AutoDiff<T> >(other) {};
+  Polynomial_PS(const Polynomial_PS<AutoDiff<T> > &other) :
+    PolynomialParam<AutoDiff<T> >(other) {};
 
   // Copy assignment (deep copy)
-  NQPolynomial_PS<AutoDiff<T> > &
-    operator=(const NQPolynomial_PS<AutoDiff<T> > &other) {
-    NQPolynomialParam<AutoDiff<T> >::operator=(other); return *this; };
+  Polynomial_PS<AutoDiff<T> > &
+    operator=(const Polynomial_PS<AutoDiff<T> > &other) {
+    PolynomialParam<AutoDiff<T> >::operator=(other); return *this; };
     
   // Destructor
-  virtual ~NQPolynomial_PS() {};
+  virtual ~Polynomial_PS() {};
 
   //# Operators    
   // Evaluate the polynomial and its derivatives at <src>x</src> <em>wrt</em>
@@ -167,11 +167,11 @@ public NQPolynomialParam<AutoDiff<T> > {
   // for deleting this pointer.
   // <group>
   virtual Function<AutoDiff<T> > *clone() const {
-    return new NQPolynomial<AutoDiff<T> >(*this); };
+    return new Polynomial<AutoDiff<T> >(*this); };
   // </group>
 
 };
 
-#undef NQPolynomial_PS
+#undef Polynomial_PS
 
 #endif

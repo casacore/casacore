@@ -140,14 +140,14 @@
 // FunctionTraits</linkto> for details. 
 // 
 // <note role=tip>
-// A <src>NQFunction1D</src> is provided for 1-dimensional function objects
+// A <src>Function1D</src> is provided for 1-dimensional function objects
 // </note>
 // </dl>
 // 
 //  Actual functional classes:
 // <dl>
 // <dt> e.g. <linkto
-// class=NQGaussian1D><src>NQGaussian1D<T></src></linkto>
+// class=Gaussian1D><src>Gaussian1D<T></src></linkto>
 // <dd> An actual function object will be derived from 
 // <src>Function<T></src>. The minimum functionality of a Function
 // object will be support for the <src>operator()</src> methods (through a
@@ -157,7 +157,7 @@
 // <src>nparameters()</src> and the like.
 //
 // In most cases it is advantageous to have a special parameter handling
-// class (e.g. <src>NQGaussian1DParam</src>), to separate the (template
+// class (e.g. <src>Gaussian1DParam</src>), to separate the (template
 // independent) parameter handling from the possible specialization of
 // the <src>eval()</src> method, and to more easily incorporate
 // special parameter handling (e.g. using <em>flux</em> rather than amplitude
@@ -166,14 +166,14 @@
 // Combinatory Function objects are provided to easily combine and create
 // function objects:
 // <dl> 
-// <dt> <linkto class=NQCompoundFunction>NQCompoundFunction</linkto>
+// <dt> <linkto class=CompoundFunction>CompoundFunction</linkto>
 // <dd> creates
 // a new, compound, function object from one or more other function objects
 // (including compounds...). The new function will have the sum of the 
 // parameters of the input functions as the new parameters (i.e the compound
 // function created from a 1-dimensional Gaussian (with 3 parameters) and a 
 // third-order polynomial (with 4 parameters) will have 7 parameters).
-// <dt> <linkto class=NQCombiFunction>NQCombiFunction</linkto> 
+// <dt> <linkto class=CombiFunction>CombiFunction</linkto> 
 // <dd> creates
 // a (linear) combination of a number of input functions. The number of
 // parameters of the newly created function will be equal to the number of
@@ -181,13 +181,13 @@
 // function created from a 1-dimensional Gaussian (with 3 parameters) and a 
 // third-order polynomial (with 4 parameters) will have 2 parameters). The
 // function will be <src>param0*gauss(x) + param1*poly(x)</src>
-// <dt> <linkto class=NQFunctionWrapper>NQFunctionWrapper</linkto>
+// <dt> <linkto class=FunctionWrapper>FunctionWrapper</linkto>
 // <dd> will take
 // a global function (or by the use of the <em>STL</em> function adapters
 // <src>mem_fun*</src> also member functions) of any dimension, and with
 // any number of parameters. The function is assumed to be called as
 // <src>f(x, p)</src>, and is wrapped like 
-// <src>NQFunctionWrapper(&func, param&, ndim)</src> (see example). 
+// <src>FunctionWrapper(&func, param&, ndim)</src> (see example). 
 //   
 // </dl>
 //
@@ -213,8 +213,8 @@
 //          return (left + right)/2;
 //      }
 // </srcblock>
-// Since NQFunction1D is derived from Functional, the
-// above function will also work with classes derived from NQFunction1D. To
+// Since Function1D is derived from Functional, the
+// above function will also work with classes derived from Function1D. To
 // behave sensibly, the Domain and Range types should be real, <em>i.e.</em>,
 // Float or Double.
 //
@@ -222,7 +222,7 @@
 // <srcblock>2 + 4x<sup>2</sup> + 6x<sup>4</sup></srcblock>
 // at <src>x=5.1</src>:
 // <srcblock>
-//      NQPolynomial<Double> pol(4);
+//      Polynomial<Double> pol(4);
 //	pol[0] = 2; pol[2] = 4; pol[4] = 6;
 //	cout << "Polynomial value at 5.1: " << pol(5.1) << endl;
 // </srcblock>
@@ -236,7 +236,7 @@
 // <srcblock>
 //	Vector<Double> p(2);
 //	p[0] = 2; p[1] = C::pi;
-//	NQFunctionWrapper<Double> f0(myf, p, 2);
+//	FunctionWrapper<Double> f0(myf, p, 2);
 // </srcblock>
 // Make the first parameter 3:
 // <srcblock>

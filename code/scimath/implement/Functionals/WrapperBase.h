@@ -1,4 +1,4 @@
-//# NQWrapperBase.h: Aid in constructing function objects from C++ functions 
+//# WrapperBase.h: Aid in constructing function objects from C++ functions 
 //# Copyright (C) 2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_NQWRAPPERBASE_H)
-#define AIPS_NQWRAPPERBASE_H
+#if !defined(AIPS_WRAPPERBASE_H)
+#define AIPS_WRAPPERBASE_H
 
 //# Includes
 #include <aips/aips.h>
@@ -44,33 +44,33 @@
 // </reviewed>
 //
 // <prerequisite>
-//   <li> <linkto class="NQFunctionWrapper">NQFunctionWrapper</linkto> class
-//   <li> <linkto class="NQWrapperData">NQWrapperData</linkto> class
+//   <li> <linkto class="FunctionWrapper">FunctionWrapper</linkto> class
+//   <li> <linkto class="WrapperData">WrapperData</linkto> class
 // </prerequisite>
 //
 // <synopsis>
 // This base class is provided to enable compile time selection of the
-// appropriate function call through <src>NQWrapperData</src>.
+// appropriate function call through <src>WrapperData</src>.
 // </synopsis>
 //
 // <example>
 // <srcblock>
 // Float func(const Vector<Float>& x) { return x(0)*x(1); }        // x*y
 // // Convert C++ functions to Functionals
-// NQFunctionWrapper<Float> Func(func, 2);
+// FunctionWrapper<Float> Func(func, 2);
 // </srcblock>
 //
 
-template<class T> class NQWrapperBase {
+template<class T> class WrapperBase {
  public:
   //# Constructors
   // Default constructor: zero dimension
-  NQWrapperBase() : ndim_p(0), arg_p(0) {};
+  WrapperBase() : ndim_p(0), arg_p(0) {};
   // Standard constructor
-  explicit NQWrapperBase(const uInt dim) : ndim_p(dim), arg_p(dim) {};
+  explicit WrapperBase(const uInt dim) : ndim_p(dim), arg_p(dim) {};
 
   // Destructor
-  virtual ~NQWrapperBase() {};
+  virtual ~WrapperBase() {};
 
   //# Operators    
   // Evaluate the function at <src>x</src>.
@@ -93,8 +93,8 @@ template<class T> class NQWrapperBase {
  private:
   // Copy constructor and assignment (not implemented)
   // <group>
-  NQWrapperBase(const NQWrapperBase<T> &other);
-  NQWrapperBase<T> &operator=(const NQWrapperBase<T> &other);
+  WrapperBase(const WrapperBase<T> &other);
+  WrapperBase<T> &operator=(const WrapperBase<T> &other);
   // </group>
 
 };

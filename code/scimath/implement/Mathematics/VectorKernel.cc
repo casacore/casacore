@@ -69,7 +69,7 @@ Vector<Double> VectorKernel::make(KernelTypes kernelType, Double width,
       } else {
          norm = 1.0 / (sigma * sqrt(2.0 * C::pi));
       }
-      const NQGaussian1D<Double> gauss(norm, refPix, Double(width));
+      const Gaussian1D<Double> gauss(norm, refPix, Double(width));
       for (uInt j=0; j<nPixels; j++) kernel(j) = gauss(Double(j));
    } else if (kernelType == BOXCAR) {
       if (useShapeExactly> 0) {

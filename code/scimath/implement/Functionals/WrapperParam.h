@@ -1,4 +1,4 @@
-//# NQWrapperParam.h: Parameter handling for wrapped function objects 
+//# WrapperParam.h: Parameter handling for wrapped function objects 
 //# Copyright (C) 2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_NQWRAPPERPARAM_H)
-#define AIPS_NQWRAPPERPARAM_H
+#if !defined(AIPS_WRAPPERPARAM_H)
+#define AIPS_WRAPPERPARAM_H
 
 //# Includes
 #include <aips/aips.h>
@@ -45,19 +45,19 @@
 //
 // <prerequisite>
 //   <li> <linkto class="Function">Function</linkto> class
-//   <li> <linkto class="NQFunctionWrapper">NQFunctionWrapper</linkto>
+//   <li> <linkto class="FunctionWrapper">FunctionWrapper</linkto>
 // </prerequisite>
 //
 // <synopsis>
 // This class is provided to enable easy specialization for the actual
-// <src>NQFunctionWrapper</src> class.
+// <src>FunctionWrapper</src> class.
 // </synopsis>
 
 // <example>
 // <srcblock>
 // Float func(const Vector<Float>& x) {return x(0)*x(1);}        // x*y
 // // Convert C++ functions to Function
-// NQFunctionWrapper<Float> Func(func, 2);
+// FunctionWrapper<Float> Func(func, 2);
 // </srcblock>
 
 // <templating arg=T>
@@ -75,24 +75,24 @@
 // </todo>
 
 
-template <class T> class NQWrapperParam : public Function<T> {
+template <class T> class WrapperParam : public Function<T> {
  public:
   //# Constructors
   // Construct with the given parameters
   // <group>
-  NQWrapperParam();
-  explicit NQWrapperParam(const T &par);
-  explicit NQWrapperParam(const Vector<T> &par);
+  WrapperParam();
+  explicit WrapperParam(const T &par);
+  explicit WrapperParam(const Vector<T> &par);
   // </group>
 
   // Copy constructor (deep copy)
-  NQWrapperParam(const NQWrapperParam<T> &other);
+  WrapperParam(const WrapperParam<T> &other);
 
   // Copy assignment (deep copy)
-  NQWrapperParam<T> &operator=(const NQWrapperParam<T> &other);
+  WrapperParam<T> &operator=(const WrapperParam<T> &other);
 
   // Destructor
-  virtual ~NQWrapperParam();
+  virtual ~WrapperParam();
 
   //# Operators    
 

@@ -1121,7 +1121,7 @@ private:
    LogIO os_p;
    T stdDeviation_p, peakSNR_p;
    Bool doAuto_p, doFit_p;
-   NQGaussian1D<T> gauss_p;
+   Gaussian1D<T> gauss_p;
 
 };
 

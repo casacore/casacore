@@ -226,7 +226,7 @@
 // IPosition shape = diskArray.shape();
 // // Construct a Gaussian Profile to be 10 channels wide and centred on
 // // channel 16. Its height is 1.0.
-// NQGaussian1D<Float> g(1.0f, 16.0f, 10.0f);
+// Gaussian1D<Float> g(1.0f, 16.0f, 10.0f);
 // // Create a vector to cache a sampled version of this profile.
 // Vector<Float> profile(shape(3));
 // indgen(profile);

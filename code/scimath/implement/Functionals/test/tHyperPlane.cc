@@ -1,4 +1,4 @@
-//# tNQHyperPlane.cc: Test the NQHyperPlane class
+//# tHyperPlane.cc: Test the HyperPlane class
 //# Copyright (C) 2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -45,15 +45,15 @@ int main() {
   try {
     // Construct an m dimensional hyper plane which has m+1 coefficients.  By 
     // default, the coefficients are initialized to zero.
-    //NQHyperPlane(uInt m);
-    NQHyperPlane<Double> hyper(3);
+    //HyperPlane(uInt m);
+    HyperPlane<Double> hyper(3);
     
     // Make this object a copy of other.
-    //NQHyperPlane(const NQHyperPlane<Type> &other);
-    NQHyperPlane<Double> comb2(hyper);
+    //HyperPlane(const HyperPlane<Type> &other);
+    HyperPlane<Double> comb2(hyper);
     
     // Make this object a copy of other.
-    //NQHyperPlane<Type> &operator=(const NQHyperPlane<Type> &other);
+    //HyperPlane<Type> &operator=(const HyperPlane<Type> &other);
     comb2 = hyper;
     
     // Return the total number of coefficients, which is the dimension of the
@@ -101,7 +101,7 @@ int main() {
     // test specialized AutoDiff 
     // f(x,y,z) = 10x + 11y + 12*z + 13
     Vector<AutoDiffA<Double> > v6(4);
-    NQHyperPlane<AutoDiff<Double> > s5(3);
+    HyperPlane<AutoDiff<Double> > s5(3);
     for (uInt i=0; i<4; i++) {
       s5[i] = AutoDiff<Double>(i+10,4,i);
       AlwaysAssertExit(s5[i] == Double(i+10));
@@ -114,7 +114,7 @@ int main() {
     cout << "AutoDiff:  " << s5(v) << endl;
     
     // Generic AutoDiff
-    NQHyperPlane<AutoDiffA<Double> > s6(3);
+    HyperPlane<AutoDiffA<Double> > s6(3);
     for (uInt i=0; i<4; i++) {
       s6[i] = AutoDiffA<Double>(i+10,4,i);
       AlwaysAssertExit(s6[i].value() == Double(i+10));

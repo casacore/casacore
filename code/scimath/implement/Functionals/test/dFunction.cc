@@ -153,7 +153,7 @@ int main(int argc, char **argv) {
   cout << "Manual (mv): " << mv(va, par, x);
   cout << " " << va << endl;
 
-  NQGaussian1D<Double> g1d((Double(par(0))),
+  Gaussian1D<Double> g1d((Double(par(0))),
 			   (Double(par(1))),
 			   (Double(par(2))/(1.0/sqrt(log(16.0)))));
 

@@ -1,4 +1,4 @@
-//# NQCompoundFunction.h: Sum of a collection of Functions
+//# CompoundFunction.h: Sum of a collection of Functions
 //# Copyright (C) 2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -26,8 +26,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_NQCOMPOUNDFUNCTION_H)
-#define AIPS_NQCOMPOUNDFUNCTION_H
+#if !defined(AIPS_COMPOUNDFUNCTION_H)
+#define AIPS_COMPOUNDFUNCTION_H
 
 //# Includes
 #include <aips/aips.h>
@@ -44,7 +44,7 @@
 
 // <use visibility=export>
 
-// <reviewed reviewer="tcornwel" date="1996/02/22" tests="tNQCompoundFunction" 
+// <reviewed reviewer="tcornwel" date="1996/02/22" tests="tCompoundFunction" 
 // demos="">
 // </reviewed>
 
@@ -57,20 +57,20 @@
 // a new, single function object. The parameters of the compound object
 // are the union of all the parameters in the input objects.
 //
-// When NQCompoundFunction is evaluated, the result is the sum of 
+// When CompoundFunction is evaluated, the result is the sum of 
 // all the individual function values.
 //
 // Member functions are added with the <src>addFunction()</src> method.
 //
 // In general the interaction with the function parameters should be through
 // the overall function parameters (i.e. through the parameters of the
-// <src>NQCompoundFunction</src>). If for any reason you want to set the
+// <src>CompoundFunction</src>). If for any reason you want to set the
 // parameters of an individual function (see e.g. the example in the
 // <linkto class=Fit2D>Fit2D</a>), call <src>consolidate()</src> before and
 // after the actual setting.
 //
 // <note role=tip>
-// Check <linkto class=NQCompoundFunction>NQCombiFunction</linkto> class
+// Check <linkto class=CompoundFunction>CombiFunction</linkto> class
 // for a simple linear combination of function objects </note>
 // </synopsis>
 //
@@ -78,14 +78,14 @@
 // Suppose for some reason we wanted the sum of <src>x^2</src> plus a gaussian.
 // We could form it as follows:
 // <srcblock>
-//    NQPolynomial<Float> x2(2);
+//    Polynomial<Float> x2(2);
 //    x[2] = 1.0; 					 // x^2
-//    NQGaussian1D<Float> gauss(1.0, 0.0, 1.0);          // e^{-x^2}
-//    NQCompoundParam<Float> sum;                        // sum == 0.0
+//    Gaussian1D<Float> gauss(1.0, 0.0, 1.0);          // e^{-x^2}
+//    CompoundParam<Float> sum;                        // sum == 0.0
 //    sum.addFunction(x2);                               // sum == x^2
 //    sum.addFunction(gauss);                            // sum == x^2+e^{-x^2}
 //    sum(2.0);                                          // == 4 + e^-4
-//    NQCompoundParam[0] = 2.0;                          // sum ==2x^2+e^{-x^2}
+//    CompoundParam[0] = 2.0;                          // sum ==2x^2+e^{-x^2}
 //    sum(2.0);                                          // == 8 + e^-4
 // </srcblock>
 // </example>
@@ -109,24 +109,24 @@
 //   <li> Nothing I know of
 // </todo>
 
-template <class T> class NQCompoundFunction : public NQCompoundParam<T> {
+template <class T> class CompoundFunction : public CompoundParam<T> {
  public:
   //# Constructors
   // The default constructor -- no functions, no parameters, nothing, the
   // function operator returns a 0.
-  NQCompoundFunction() : NQCompoundParam<T>() {};
+  CompoundFunction() : CompoundParam<T>() {};
   // Make this object a (deep) copy of other. If parameters have been set
   // without an intervening calculation, a <src>consolidate()</src> could
   // be necessary on <em>other</em> first.
-  NQCompoundFunction(const NQCompoundFunction<T> &other) :
-    NQCompoundParam<T>(other) {};
+  CompoundFunction(const CompoundFunction<T> &other) :
+    CompoundParam<T>(other) {};
   // Make this object a (deep) copy of other.
-  NQCompoundFunction<T> &operator=(const NQCompoundFunction<T> &other) {
+  CompoundFunction<T> &operator=(const CompoundFunction<T> &other) {
     other.fromParam_p();
-    NQCompoundParam<T>::operator=(other); return *this; };
+    CompoundParam<T>::operator=(other); return *this; };
   
   // Destructor
-  virtual ~NQCompoundFunction() {};
+  virtual ~CompoundFunction() {};
   
   //# Operators
   // Evaluate the function at <src>x</src>.
@@ -137,13 +137,13 @@ template <class T> class NQCompoundFunction : public NQCompoundParam<T> {
   // parameters have been set, and a copy constructor called. This is
   // necessary before and after the setting of <em>local</em> parameters; i.e.
   // the parameters of the individual functions.
-  NQCompoundFunction<T> &consolidate() { fromParam_p();
+  CompoundFunction<T> &consolidate() { fromParam_p();
   toParam_p(); return *this; };
   // Return a copy of this object from the heap. The caller is responsible for
   // deleting the pointer.
   // <group>
   virtual Function<T> *clone() const { fromParam_p();
-    return new NQCompoundFunction<T>(*this); };
+    return new CompoundFunction<T>(*this); };
   // </group>
   
 private:
@@ -154,37 +154,37 @@ private:
   void toParam_p();
 };
 
-#define NQCompoundFunction_PS NQCompoundFunction
+#define CompoundFunction_PS CompoundFunction
 
-// <summary> Partial <src>AutoDiff</src> specialization of NQCompoundFunction
+// <summary> Partial <src>AutoDiff</src> specialization of CompoundFunction
 // </summary>
 
 // <synopsis>
-// <note role=warning> The name <src>NQCompoundFunction_PS</src> is only
+// <note role=warning> The name <src>CompoundFunction_PS</src> is only
 // for cxx2html documentation problems. Use
-// <src>NQCompoundFunction</src> in your code.</note>
+// <src>CompoundFunction</src> in your code.</note>
 // </synopsis>
 
-template <class T> class NQCompoundFunction_PS<AutoDiff<T> > :
-public NQCompoundParam<AutoDiff<T> > {
+template <class T> class CompoundFunction_PS<AutoDiff<T> > :
+public CompoundParam<AutoDiff<T> > {
  public:
   //# Constructors
   // The default constructor -- no functions, no parameters, nothing, the
   // function operator returns a 0.
-  NQCompoundFunction_PS() : NQCompoundParam<AutoDiff<T> >() {};
+  CompoundFunction_PS() : CompoundParam<AutoDiff<T> >() {};
   // Make this object a (deep) copy of other. If parameters have been set
   // without an intervening calculation, a <src>consolidate()</src> could
   // be necessary on <em>other</em> first.
-  NQCompoundFunction_PS(const NQCompoundFunction_PS<AutoDiff<T> > &other) :
-    NQCompoundParam<AutoDiff<T> >(other) {};
+  CompoundFunction_PS(const CompoundFunction_PS<AutoDiff<T> > &other) :
+    CompoundParam<AutoDiff<T> >(other) {};
   // Make this object a (deep) copy of other.
-  NQCompoundFunction_PS<AutoDiff<T> > &
-    operator=(const NQCompoundFunction_PS<AutoDiff<T> > &other) {
+  CompoundFunction_PS<AutoDiff<T> > &
+    operator=(const CompoundFunction_PS<AutoDiff<T> > &other) {
     fromParam_p();
-    NQCompoundParam<AutoDiff<T> >::operator=(other); return *this; };
+    CompoundParam<AutoDiff<T> >::operator=(other); return *this; };
 
   // Destructor
-  virtual ~NQCompoundFunction_PS() {};
+  virtual ~CompoundFunction_PS() {};
 
   //# Operators
   // Evaluate the function and its derivatives at <src>x</src> <em>wrt</em>
@@ -201,13 +201,13 @@ public NQCompoundParam<AutoDiff<T> > {
   // parameters have been set, and a copy constructor called. This is
   // necessary before and after the setting of <em>local</em> parameters; i.e.
   // the parameters of the individual functions.
-  NQCompoundFunction_PS<AutoDiff<T> > &consolidate() { fromParam_p();
+  CompoundFunction_PS<AutoDiff<T> > &consolidate() { fromParam_p();
   toParam_p(); return *this; };
   // Return a copy of this object from the heap. The caller is responsible for
   // deleting the pointer.
   // <group>
   virtual Function<AutoDiff<T> > *clone() const { fromParam_p();
-    return new NQCompoundFunction<AutoDiff<T> >(*this); };
+    return new CompoundFunction<AutoDiff<T> >(*this); };
   // </group>
 
  private:
@@ -219,6 +219,6 @@ public NQCompoundParam<AutoDiff<T> > {
 
 };
 
-#undef NQCompoundFunction_PS
+#undef CompoundFunction_PS
 
 #endif

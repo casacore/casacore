@@ -170,7 +170,7 @@ private:
 // Check epoch
     Double checkEpoch;
 // Polynomial coefficients for zeta,z,theta
-    NQPolynomial<Double> zeta[3];
+    Polynomial<Double> zeta[3];
 // Cached calculated angles
     Double pval[3];
 // Cached derivatives

@@ -1,4 +1,4 @@
-//# tNQPolynomial.cc: Test the one-dimensional polynomial class
+//# tPolynomial.cc: Test the one-dimensional polynomial class
 //# Copyright (C) 1995,1996,1999,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -40,13 +40,13 @@
 
 int main() {
 
-//     NQPolynomial();
-    NQPolynomial<Float> null;
-//     NQPolynomial(uInt order);
+//     Polynomial();
+    Polynomial<Float> null;
+//     Polynomial(uInt order);
 //     void setCoefficient(uInt which, T value);
 //     virtual void setAdjustParameter(uInt which, const T &val);
-    NQPolynomial<Float> linear(1); linear.setCoefficient(1, 1); // x
-    NQPolynomial<Float> square(2); square.setCoefficient(2, 1);   // x^2
+    Polynomial<Float> linear(1); linear.setCoefficient(1, 1); // x
+    Polynomial<Float> square(2); square.setCoefficient(2, 1);   // x^2
 
 //     virtual T operator()(const T &x) const;
     AlwaysAssertExit(linear(3.0) == 3.0f && square(3.0f) == 9.0f);
@@ -75,16 +75,16 @@ int main() {
     AlwaysAssertExit(sqrCoeff1(2) == 1.0f);
 
 
-//     NQPolynomial(const NQPolynomial &other);
-//     NQPolynomial<T> &operator=(const NQPolynomial<T> &other);
-    NQPolynomial<Float> squareCopy1(square);
-    NQPolynomial<Float> squareCopy2; squareCopy2 = square;
+//     Polynomial(const Polynomial &other);
+//     Polynomial<T> &operator=(const Polynomial<T> &other);
+    Polynomial<Float> squareCopy1(square);
+    Polynomial<Float> squareCopy2; squareCopy2 = square;
 
     AlwaysAssertExit(square == squareCopy1 && square == squareCopy2);
 
 //     void setCoefficients(const Vector<T> &coefficients);
 //     virtual void setAdjustParameters(const Vector<T> &val);
-    NQPolynomial<Float> tmp1(3), tmp2(3);
+    Polynomial<Float> tmp1(3), tmp2(3);
     Vector<Float> coefficients(4); 
     indgen(coefficients); // x + 2x^2 + 3x^3
 
@@ -95,21 +95,21 @@ int main() {
 		     allEQ(coefficients, tmp1.parameters().getParameters()));
 
 
-//     Bool operator==(const NQPolynomial<T> &other) const;
-//     Bool operator!=(const NQPolynomial<T> &other) const;
+//     Bool operator==(const Polynomial<T> &other) const;
+//     Bool operator!=(const Polynomial<T> &other) const;
     AlwaysAssertExit(null != linear && null != square && square != linear &&
     		     null == null && linear == linear && square == square);
 
-//    NQPolynomial<T> derivative() const;
-    NQPolynomial<Float> der1 = square.derivative();
+//    Polynomial<T> derivative() const;
+    Polynomial<Float> der1 = square.derivative();
     AlwaysAssertExit(der1.order() == 1 && der1.coefficient(0) == 0.0f &&
 		     der1.coefficient(1) == 2.0f);
-    NQPolynomial<Float> der2 = tmp1.derivative();
+    Polynomial<Float> der2 = tmp1.derivative();
     AlwaysAssertExit(der2.order() == 2 && der2.coefficient(0) == 1.0f &&
 		     der2.coefficient(1) == 4.0f && der2.coefficient(2) == 
 		     9.0f);
     //	clone()
-    //     ~NQPolynomial();
+    //     ~Polynomial();
     Function<Float> *tmp3ptr = tmp2.clone();
     AlwaysAssertExit(tmp3ptr->nparameters() == 4 &&
 		     (*tmp3ptr)[0] == 0.0f &&
@@ -119,14 +119,14 @@ int main() {
     delete tmp3ptr;
   
   // Test Auto differentiation // 1 + 2x + 3x^2
-    NQPolynomial<AutoDiffA<Double> > sq2(2);
+    Polynomial<AutoDiffA<Double> > sq2(2);
     sq2[0] = AutoDiffA<Double>(1.0,3,0);
     sq2[1] = AutoDiffA<Double>(2.0,3,1);
     sq2[2] = AutoDiffA<Double>(3.0,3,2);
     cout << "Generic(3):  " << sq2(AutoDiffA<Double>(3.0)) << endl;
   
   // Test manual differentiation // 1 + 2x + 3x^2
-    NQPolynomial<AutoDiff<Double> > sq3(2);
+    Polynomial<AutoDiff<Double> > sq3(2);
     sq3[0] = AutoDiff<Double>(1.0,3,0);
     sq3[1] = AutoDiff<Double>(2.0,3,1);
     sq3[2] = AutoDiff<Double>(3.0,3,2);

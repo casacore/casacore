@@ -1,4 +1,4 @@
-//# NQGaussian2DParam.h: Parameter handling for 2 dimensional Gaussian class
+//# Gaussian2DParam.h: Parameter handling for 2 dimensional Gaussian class
 //# Copyright (C) 2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -26,8 +26,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_NQGAUSSIAN2DPARAM_H)
-#define AIPS_NQGAUSSIAN2DPARAM_H
+#if !defined(AIPS_GAUSSIAN2DPARAM_H)
+#define AIPS_GAUSSIAN2DPARAM_H
 
 #include <aips/aips.h>
 #include <aips/Functionals/Function.h>
@@ -189,7 +189,7 @@ template<class T> class Vector;
 //   <li> Gaussians that know about their DFT's could be required eventually.
 // </todo>
 
-template<class T> class NQGaussian2DParam : public Function<T> {
+template<class T> class Gaussian2DParam : public Function<T> {
  public:
   //# Enumerations
   enum { HEIGHT=0, XCENTER, YCENTER, YWIDTH, RATIO, PANGLE};
@@ -198,22 +198,22 @@ template<class T> class NQGaussian2DParam : public Function<T> {
   // Constructs the two dimensional Gaussians. Defaults:
   // height=1, center=0, width(FWHM)=1, pa=0.
   // <group>
-  NQGaussian2DParam();
-  NQGaussian2DParam(const T &height, const Vector<T> &center, 
+  Gaussian2DParam();
+  Gaussian2DParam(const T &height, const Vector<T> &center, 
 		  const Vector<T> &width, const T &pa);
-  NQGaussian2DParam(const T &height, const T &xCenter, const T &yCenter,
+  Gaussian2DParam(const T &height, const T &xCenter, const T &yCenter,
 		  const T &majorAxis, const T &axialRatio,
 		  const T &pa);
   // </group>
 
   // Copy constructor (deep copy)
-  NQGaussian2DParam(const NQGaussian2DParam<T> &other);
+  Gaussian2DParam(const Gaussian2DParam<T> &other);
 
   // Copy assignment (deep copy)
-  NQGaussian2DParam<T> &operator=(const NQGaussian2DParam<T> &other);
+  Gaussian2DParam<T> &operator=(const Gaussian2DParam<T> &other);
     
   // Destructor
-  virtual ~NQGaussian2DParam();
+  virtual ~Gaussian2DParam();
 
   //# Operators    
  

@@ -1,4 +1,4 @@
-//# NQCompoundParam.cc: Parameters for sum of parameterized  Functions
+//# CompoundParam.cc: Parameters for sum of parameterized  Functions
 //# Copyright (C) 2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -29,13 +29,13 @@
 #include <aips/Functionals/CompoundParam.h>
 
 template <class T>
-NQCompoundParam<T>::NQCompoundParam() : 
+CompoundParam<T>::CompoundParam() : 
   Function<T>(), ndim_p(0),
   functionPtr_p(0),
   paroff_p(0), funpar_p(0), locpar_p(0) {}
 
 template <class T>
-NQCompoundParam<T>::NQCompoundParam(const NQCompoundParam<T> &other) :
+CompoundParam<T>::CompoundParam(const CompoundParam<T> &other) :
   Function<T>(other), ndim_p(other.ndim_p),
   functionPtr_p(other.functionPtr_p.nelements()),
   paroff_p(other.paroff_p.nelements()),
@@ -52,15 +52,15 @@ NQCompoundParam<T>::NQCompoundParam(const NQCompoundParam<T> &other) :
 }
 
 template <class T>
-NQCompoundParam<T>::~NQCompoundParam() {
+CompoundParam<T>::~CompoundParam() {
   for (uInt i=0; i<functionPtr_p.nelements(); i++) {
     delete functionPtr_p[i]; functionPtr_p[i] = 0;
   };
 }
 
 template <class T>
-NQCompoundParam<T>& NQCompoundParam<T>::
-operator=(const NQCompoundParam<T> &other) {
+CompoundParam<T>& CompoundParam<T>::
+operator=(const CompoundParam<T> &other) {
   if (this != &other) {
     Function<T>::operator=(other);
     ndim_p = other.ndim_p;
@@ -87,9 +87,9 @@ operator=(const NQCompoundParam<T> &other) {
 
 // Member functions
 template <class T>
-uInt NQCompoundParam<T>::addFunction(const Function<T> &newFunction) {
+uInt CompoundParam<T>::addFunction(const Function<T> &newFunction) {
   if (functionPtr_p.nelements() != 0 && newFunction.ndim() != ndim_p) {
-    throw(AipsError("NQCompoundParam::addFunction() -- "
+    throw(AipsError("CompoundParam::addFunction() -- "
 		    "Inconsistent function dimension"));
   };
   // Add the function

@@ -1,4 +1,4 @@
-//# NQHyperPlaneParam.h: Parameters For a hyper plane function
+//# HyperPlaneParam.h: Parameters For a hyper plane function
 //# Copyright (C) 2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -26,8 +26,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_NQHYPERPLANEPARAM_H)
-#define AIPS_NQHYPERPLANEPARAM_H
+#if !defined(AIPS_HYPERPLANEPARAM_H)
+#define AIPS_HYPERPLANEPARAM_H
 
 
 #include <aips/aips.h>
@@ -64,7 +64,7 @@
 // <example>
 // // form the hyper plane function of this form: 
 // // 6*x0 + 2*x3 + 5 = 0
-// NQHyperPlaneParam<Double> hyper(4);
+// HyperPlaneParam<Double> hyper(4);
 // hyper.setCoefficient(0,6);   
 // hyper.setCoefficient(3,2);
 // hyper.setCoefficient(4,5);
@@ -89,24 +89,24 @@
 //  <li> Nothing I know of
 // </todo>
 
-template<class T> class NQHyperPlaneParam : public Function<T> {
+template<class T> class HyperPlaneParam : public Function<T> {
  public:
   //# Constructors
   // Construct an m dimensional hyper plane which has m+1 coefficients.  By 
   // default, the coefficients are initialized to zero. The default plane has
   // <src>m=0</src>
   // <group>
-  explicit NQHyperPlaneParam(const uInt m=0);
+  explicit HyperPlaneParam(const uInt m=0);
   // </group>
 
   // Copy constructor (deep copy)
-  NQHyperPlaneParam(const NQHyperPlaneParam &other);
+  HyperPlaneParam(const HyperPlaneParam &other);
 
   // Copy assignment (deep copy)
-  NQHyperPlaneParam<T> &operator=(const NQHyperPlaneParam<T> &other);
+  HyperPlaneParam<T> &operator=(const HyperPlaneParam<T> &other);
 
   // Destructor
-  virtual ~NQHyperPlaneParam();
+  virtual ~HyperPlaneParam();
 
   //# Operators    
     

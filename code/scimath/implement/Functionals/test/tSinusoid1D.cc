@@ -1,4 +1,4 @@
-//# tNQSinusoid1D: Test the NQSinusoid1D class
+//# tSinusoid1D: Test the Sinusoid1D class
 //# Copyright (C) 2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -41,15 +41,15 @@
 #include <aips/iostream.h>
 
 int main() {
-  //     NQSinusoid1D();
-  NQSinusoid1D<Double> null;
+  //     Sinusoid1D();
+  Sinusoid1D<Double> null;
   AlwaysAssertExit(null.amplitude()==1.0 && 
 		   null.period() == 1.0 && null.x0()==0.0);
   // use nearAbs because one value is 0.0, which always
   // causes near() to return False as per the documentation
   AlwaysAssertExit(nearAbs(null(0.25), 0.0) && near(null(0.0), 1.0));
   
-  //     NQSinusoid1D(const T& h, const T& c, const T& w);
+  //     Sinusoid1D(const T& h, const T& c, const T& w);
   //     T amplitude() const
   //     void setAmplitude(const T & amplitude)
   //     T period() const
@@ -57,18 +57,18 @@ int main() {
   //     T x0() const;
   //     void setX0(const T & x0);
   //     virtual Type getAvailableParam(uInt which) const;
-  NQSinusoid1D<Double> s1(4.0, 6.0, 8.0);
+  Sinusoid1D<Double> s1(4.0, 6.0, 8.0);
   AlwaysAssertExit(s1.amplitude()==4.0 && s1.period() == 6.0 &&
 		   s1.x0()==8.0);
-  const NQSinusoid1D<Double> &cs1 = s1;
+  const Sinusoid1D<Double> &cs1 = s1;
   AlwaysAssertExit(cs1.amplitude()==4.0 && cs1.period() == 6.0 &&
 		   cs1.x0()==8.0);
   s1.setAmplitude(2.0);
   s1.setPeriod(3.0);
   s1.setX0(4.0);
-  AlwaysAssertExit(s1[NQSinusoid1D<Double>::X0] == 4.0 &&
-		   s1[NQSinusoid1D<Double>::PERIOD] == 3.0 &&
-		   s1[NQSinusoid1D<Double>::AMPLITUDE] == 2.0);
+  AlwaysAssertExit(s1[Sinusoid1D<Double>::X0] == 4.0 &&
+		   s1[Sinusoid1D<Double>::PERIOD] == 3.0 &&
+		   s1[Sinusoid1D<Double>::AMPLITUDE] == 2.0);
   //     T operator()(const T &x) const;
   AlwaysAssertExit(near(s1(7.0), 2.0));
   Vector<Double> xvec(1);
@@ -78,7 +78,7 @@ int main() {
   AlwaysAssertExit(near(s1(xvec(0)), -2.0/sqrt(2.)));
   
   // test specialized AutoDiff 
-  NQSinusoid1D<AutoDiff<Double> > s5;
+  Sinusoid1D<AutoDiff<Double> > s5;
   s5.setAmplitude(AutoDiff<Double>(2.0, 3, 0));
   s5.setPeriod(AutoDiff<Double>(3.0, 3, 1));
   s5.setX0(AutoDiff<Double>(4.0, 3, 2));
@@ -93,7 +93,7 @@ int main() {
   		   near(y51(2), 2.0/3.0*C::_2pi*sin(y1)));
 
   // Generic AutoDiff
-  NQSinusoid1D<AutoDiffA<Double> > s6;
+  Sinusoid1D<AutoDiffA<Double> > s6;
   s6.setAmplitude(AutoDiffA<Double>(2.0, 3, 0));
   s6.setPeriod(AutoDiffA<Double>(3.0, 3, 1));
   s6.setX0(AutoDiffA<Double>(4.0, 3, 2));
@@ -106,25 +106,25 @@ int main() {
 		   near(y61(1), 2.0/3.0*y1*sin(y1)) &&
 		   near(y61(2), 2.0/3.0*C::_2pi*sin(y1)));
    
-  //   NQSinusoid1D(const NQSinusoid1D &other);
-  //   NQSinusoid1D<T> &operator=(const NQSinusoid1D<T> &other);
+  //   Sinusoid1D(const Sinusoid1D &other);
+  //   Sinusoid1D<T> &operator=(const Sinusoid1D<T> &other);
   //   virtual uInt nAvailableParams() const;
   //   virtual void setAvailableParam(uInt which, const Type &value);
   //   virtual Type getAvailableParam(uInt which) const;
   //   virtual void setAvailableParamMask(uInt which, const Bool mask);
   //   virtual Bool getAvailableParamMask(uInt which) const;
-  NQSinusoid1D<Double> s2(s1);
-  NQSinusoid1D<Double> s3; s3 = s2;
+  Sinusoid1D<Double> s2(s1);
+  Sinusoid1D<Double> s3; s3 = s2;
   AlwaysAssertExit(s1.nparameters() == 3);
   Vector<Double> parms = s1.parameters().getParameters();
   AlwaysAssertExit(parms(0) == 2.0 && parms(1) == 3.0 && parms(2) == 4.0);
   AlwaysAssertExit(allEQ(parms, s2.parameters().getParameters()) &&
   		   allEQ(parms, s3.parameters().getParameters()));
-  s1.mask(NQSinusoid1D<Double>::PERIOD) = False;
+  s1.mask(Sinusoid1D<Double>::PERIOD) = False;
   AlwaysAssertExit(s1.parameters().nMaskedParameters() == 2);
   Vector<Double> parms2 = s1.parameters().getMaskedParameters();
   AlwaysAssertExit(parms2(0) == 2.0 && parms2(1) == 4.0);
-  s1.mask(NQSinusoid1D<Double>::PERIOD) = True;
+  s1.mask(Sinusoid1D<Double>::PERIOD) = True;
   s1[0] = 1.0; 
   s1[1] = 2.0; 
   s1[2] = 3.0; 
@@ -135,7 +135,7 @@ int main() {
   AlwaysAssertExit(allEQ(s1.parameters().getParameters(), 11.0));
   
   // clone()
-  //   ~NQSinusoid1D();
+  //   ~Sinusoid1D();
   Function<Double> *s4ptr = s1.clone();
 
     AlwaysAssertExit(allEQ(s4ptr->parameters().getParameters(), 11.0));

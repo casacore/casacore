@@ -1,4 +1,4 @@
-//# NQSinusoid1D.cc: A one dimensional Sinusoid class
+//# Sinusoid1D.cc: A one dimensional Sinusoid class
 //# Copyright (C) 1997,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -33,7 +33,7 @@
 
 //# Operators
 template<class T> 
-T NQSinusoid1D<T>::eval(typename NQFunction1D<T>::FunctionArg x) const {
+T Sinusoid1D<T>::eval(typename Function1D<T>::FunctionArg x) const {
   return param_p[AMPLITUDE]*
     cos(T(C::_2pi)*(x[0] - param_p[X0])/param_p[PERIOD]);
 }

@@ -112,7 +112,7 @@ void oldArrayTest()
 	{
 	    Vector<Float> vi(10);
 	    indgen(vi);
-	    NQPolynomial<Float> pi(2);
+	    Polynomial<Float> pi(2);
 	    pi.setCoefficient(2, 1.0f);
 	    vi.apply(pi);
 	    for (uInt i=0; i < 10; i++) {

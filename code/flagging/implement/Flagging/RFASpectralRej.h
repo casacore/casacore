@@ -97,7 +97,7 @@ protected:
   
   RFRowClipper rowclipper; // row clipper object
 
-  NQPolynomial<AutoDiff<Float> > poly; // fitted polynomial
+  Polynomial<AutoDiff<Float> > poly; // fitted polynomial
   LQLinearFit<Float> fitter;     // fitter object
   
   RFDebugPlot   debug;

@@ -730,7 +730,7 @@ void ImagePolarimetry::rotationMeasure(ImageInterface<Float>*& rmOutPtr,
 // p = c(0) + c(1)*x where x = lambda**2
 // PA = PA0 + RM*Lambda**2
 
-      NQPolynomial<AutoDiff<Float> > poly1(1);
+      Polynomial<AutoDiff<Float> > poly1(1);
 
 // Makes a copy of poly1
 

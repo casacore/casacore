@@ -1,4 +1,4 @@
-//# tNQGaussianND.cc:  
+//# tGaussianND.cc:  
 //# Copyright (C) 1996,1998,1999,2000,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -39,7 +39,7 @@ int main(){
     Bool anyFailures = False;
     {
       Bool failed = False;
-      NQGaussianND<Float> default2D;
+      GaussianND<Float> default2D;
       Vector<Float> z(2);
       z = 0;
       Float sum = 0; 
@@ -75,8 +75,8 @@ int main(){
     { 
       Bool failed = False;
       Vector<Float> w(1);
-      NQGaussianND<Float> g(1), g2;
-      NQGaussianND<Float> g1(g); 
+      GaussianND<Float> g(1), g2;
+      GaussianND<Float> g1(g); 
       g1.setHeight(2.0f);
       w(0) = 2.0f;
       g1.setVariance(w);
@@ -119,7 +119,7 @@ int main(){
     }
     {
       Bool failed = False;
-      NQGaussianND<Float> gauss3D(3, 2.0);
+      GaussianND<Float> gauss3D(3, 2.0);
       gauss3D.setHeight(1.0);
       if (near(gauss3D.height(), 1.0f)) cout << "Passed";
       else {
@@ -171,7 +171,7 @@ int main(){
       Vector<Double> mean(2);
       mean(0) = .5;
       mean(1) = -1;
-      NQGaussianND<Double> gauss2D(2, 1.0, mean);
+      GaussianND<Double> gauss2D(2, 1.0, mean);
       mean *= 2.;
       gauss2D.setMean(mean);
       if ((allNear(gauss2D.mean(), mean, 1E-7))) cout << "Passed";
@@ -223,7 +223,7 @@ int main(){
       Vector<Double> variance(3);
       variance(0) = 1; variance(1) = .25; variance(2) = 0.75;
       Double height = 2.0;
-      NQGaussianND<Double> gauss3D(3, height, mean, variance);
+      GaussianND<Double> gauss3D(3, height, mean, variance);
 
       variance *= 2.;
       gauss3D.setVariance(variance);
@@ -296,7 +296,7 @@ int main(){
       covariance(2,0) = corr(2,0)*sqrt(variance(2)*variance(0));
       covariance(2,1) = corr(2,1)*sqrt(variance(2)*variance(1));
       Float height = 2.0;
-      NQGaussianND<Float> gauss3D(3, height, mean, covariance);
+      GaussianND<Float> gauss3D(3, height, mean, covariance);
 
       covariance *= Float(2.);
       covariance(0,1) = covariance(1,0);

@@ -1,4 +1,4 @@
-//# NQSinusoid1D2.cc: specialized NQSinusoid1D class for AutoDiff
+//# Sinusoid1D2.cc: specialized Sinusoid1D class for AutoDiff
 //# Copyright (C) 1997,1998,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -34,7 +34,7 @@
 
 //# Operators
 template<class T>
-AutoDiff<T> NQSinusoid1D<AutoDiff<T> >::
+AutoDiff<T> Sinusoid1D<AutoDiff<T> >::
 eval(typename Function<AutoDiff<T> >::FunctionArg x) const {
   AutoDiff<T> tmp;
   if (param_p[AMPLITUDE].nDerivatives() > 0) tmp = param_p[AMPLITUDE];

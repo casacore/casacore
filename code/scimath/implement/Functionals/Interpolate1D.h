@@ -42,7 +42,7 @@ template<class Range> class SampledFunctional;
 
 // <prerequisite>
 //   <li> <linkto class=SampledFunctional>SampledFunctional</linkto> 
-//   <li> <linkto class=NQFunction1D>NQFunction1D</linkto> 
+//   <li> <linkto class=Function1D>Function1D</linkto> 
 // </prerequisite>
 
 // <etymology>
@@ -132,7 +132,7 @@ template<class Range> class SampledFunctional;
 // </todo>
 
 template <class Domain, class Range> class Interpolate1D :
-public NQFunction1D<Domain, Range> {
+public Function1D<Domain, Range> {
 public:
   // The different interpolation methods are enumerated here
   enum Method {
@@ -174,7 +174,7 @@ public:
 
   // Interpolation is done using the () operator (see example above). Actual
   // use is through the virtual <src>eval()</src> function.
-  virtual Range eval(typename NQFunction1D<Domain, Range>::FunctionArg x)
+  virtual Range eval(typename Function1D<Domain, Range>::FunctionArg x)
     const;
 
   // inquire/set the current interpolation method. uInts are used as

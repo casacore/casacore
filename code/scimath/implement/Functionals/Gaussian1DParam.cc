@@ -1,4 +1,4 @@
-//# NQGaussian1DParam.cc: Parameter handling for one-dimensional Gaussian class
+//# Gaussian1DParam.cc: Parameter handling for one-dimensional Gaussian class
 //# Copyright (C) 2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -32,12 +32,12 @@
 
 //# Statics
 ///template<class T>
-///const T NQGaussian1DParam<T>::fwhm2int = T(1.0)/sqrt(log(T(16.0)));
+///const T Gaussian1DParam<T>::fwhm2int = T(1.0)/sqrt(log(T(16.0)));
 
 //# Constructors
 template<class T>
-NQGaussian1DParam<T>::NQGaussian1DParam() :
-  NQFunction1D<T>(3),
+Gaussian1DParam<T>::Gaussian1DParam() :
+  Function1D<T>(3),
   fwhm2int(T(1.0)/sqrt(log(T(16.0)))) {
   param_p[HEIGHT] = T(1.0);
   param_p[CENTER] = T(0.0);
@@ -45,8 +45,8 @@ NQGaussian1DParam<T>::NQGaussian1DParam() :
 }
 
 template<class T>
-NQGaussian1DParam<T>::NQGaussian1DParam(const T &height) :
-  NQFunction1D<T>(3),
+Gaussian1DParam<T>::Gaussian1DParam(const T &height) :
+  Function1D<T>(3),
   fwhm2int(T(1.0)/sqrt(log(T(16.0)))) {
   param_p[HEIGHT] = height;
   param_p[CENTER] = T(0.0);
@@ -54,8 +54,8 @@ NQGaussian1DParam<T>::NQGaussian1DParam(const T &height) :
 }
 
 template<class T>
-NQGaussian1DParam<T>::NQGaussian1DParam(const T &height, const T &center) :
-  NQFunction1D<T>(3),
+Gaussian1DParam<T>::Gaussian1DParam(const T &height, const T &center) :
+  Function1D<T>(3),
   fwhm2int(T(1.0)/sqrt(log(T(16.0)))) {
   param_p[HEIGHT] = height;
   param_p[CENTER] = center;
@@ -63,9 +63,9 @@ NQGaussian1DParam<T>::NQGaussian1DParam(const T &height, const T &center) :
 }
 
 template<class T>
-NQGaussian1DParam<T>::NQGaussian1DParam(const T &height, const T &center,
+Gaussian1DParam<T>::Gaussian1DParam(const T &height, const T &center,
 				    const T &width) :
-  NQFunction1D<T>(3),
+  Function1D<T>(3),
   fwhm2int(T(1.0)/sqrt(log(T(16.0)))) {
   param_p[HEIGHT] = height;
   param_p[CENTER] = center;
@@ -73,31 +73,31 @@ NQGaussian1DParam<T>::NQGaussian1DParam(const T &height, const T &center,
 }
 
 template<class T>
-NQGaussian1DParam<T>::NQGaussian1DParam(const NQGaussian1DParam<T> &other) :
-  NQFunction1D<T>(other),
+Gaussian1DParam<T>::Gaussian1DParam(const Gaussian1DParam<T> &other) :
+  Function1D<T>(other),
   fwhm2int(T(1.0)/sqrt(log(T(16.0)))) {}
 
 template<class T>
-NQGaussian1DParam<T>::~NQGaussian1DParam() {}
+Gaussian1DParam<T>::~Gaussian1DParam() {}
 
 //# Operators
 template<class T>
-NQGaussian1DParam<T> &
-NQGaussian1DParam<T>::operator=(const NQGaussian1DParam<T> &other) {
+Gaussian1DParam<T> &
+Gaussian1DParam<T>::operator=(const Gaussian1DParam<T> &other) {
   if (this != &other) {
     fwhm2int = other.fwhm2int;
-    NQFunction1D<T>::operator=(other);
+    Function1D<T>::operator=(other);
   };
   return *this;
 }
 
 //# Member functions
 template<class T>
-T NQGaussian1DParam<T>::flux() const {
+T Gaussian1DParam<T>::flux() const {
   return param_p[HEIGHT]*abs(param_p[WIDTH])*fwhm2int/T(C::_1_sqrtpi);
 }
 
 template<class T>
-void NQGaussian1DParam<T>::setFlux(const T &flux) {
+void Gaussian1DParam<T>::setFlux(const T &flux) {
   param_p[HEIGHT] = flux*T(C::_1_sqrtpi)/abs(param_p[WIDTH])/fwhm2int;
 }

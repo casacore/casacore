@@ -1,4 +1,4 @@
-//# NQSimButterworthBandpass.h: Declares a Butterworth function
+//# SimButterworthBandpass.h: Declares a Butterworth function
 //# Copyright (C) 2000,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -26,8 +26,8 @@
 //#! ========================================================================
 //# $Id$
 
-#if !defined(AIPS_NQSIMBUTTERWORTHBANDPASS_H)
-#define AIPS_NQSIMBUTTERWORTHBANDPASS_H
+#if !defined(AIPS_SIMBUTTERWORTHBANDPASS_H)
+#define AIPS_SIMBUTTERWORTHBANDPASS_H
 
 //# Includes
 #include <aips/aips.h>
@@ -44,12 +44,12 @@ template<class T> class Vector;
 // <use visibility=export>
 
 // <reviewed reviewer="wbrouw" date="2001/11/14"
-// tests="tNQSimButterworthBandpass" demos="">
+// tests="tSimButterworthBandpass" demos="">
 // </reviewed>
 
 // <prerequisite>
 //   <li> <linkto class="FunctionParam">FunctionParam</linkto> class
-//   <li> <linkto class=NQFunction1D>NQFunction1D</linkto>
+//   <li> <linkto class=Function1D>Function1D</linkto>
 // </prerequisite>
 //
 // <etymology>
@@ -98,7 +98,7 @@ template<class T> class Vector;
 //   // Create a bandpass function centered on x=0.8 and cutoffs at 0 and 2.5.
 //   // The orders of the drop-offs will 4 at the low end and 5 at the high
 //   // end.  The peak will by 1.0 by default.
-//   NQSimButterworthBandpass<Double> butt(4, 5, 0, 2.5, 0.8);
+//   SimButterworthBandpass<Double> butt(4, 5, 0, 2.5, 0.8);
 //   
 //   Double z = butt(1);    // z = 1.0
 //   z = butt(0);           // z = 1/sqrt(2)
@@ -133,7 +133,7 @@ template<class T> class Vector;
 // </todo>
 
 template<class T>
-class NQSimButterworthBandpass : public NQFunction1D<T> {
+class SimButterworthBandpass : public Function1D<T> {
 
 public:
   //# Enumerations
@@ -142,22 +142,22 @@ public:
 
   //# Constructors
   // create a zero-th order (all-pass) Butterworth bandpass function.
-  NQSimButterworthBandpass();
+  SimButterworthBandpass();
   
   // create a Butterworth bandpass function.
-  NQSimButterworthBandpass(const uInt minord, const uInt maxord, 
+  SimButterworthBandpass(const uInt minord, const uInt maxord, 
 			   const T &mincut=T(-1), const T &maxcut=T(1), 
 			   const T &center=T(0), const T &peak=T(1));
   
   // create a copy of another Butterworth bandpass function
-  NQSimButterworthBandpass(const NQSimButterworthBandpass &other);
+  SimButterworthBandpass(const SimButterworthBandpass &other);
   
   // copy(deep) another Butterworth function
-  NQSimButterworthBandpass<T> &
-    operator=(const NQSimButterworthBandpass<T> &other);
+  SimButterworthBandpass<T> &
+    operator=(const SimButterworthBandpass<T> &other);
   
   // Destructor
-  virtual ~NQSimButterworthBandpass();
+  virtual ~SimButterworthBandpass();
 
 
   //# Operators    
@@ -218,7 +218,7 @@ public:
   
   // clone this function
   virtual Function<T> *clone() const {
-    return new NQSimButterworthBandpass<T>(*this); };
+    return new SimButterworthBandpass<T>(*this); };
 
  private:
   //# Data

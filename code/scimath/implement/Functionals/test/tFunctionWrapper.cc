@@ -1,4 +1,4 @@
-//# tNQFunctionWrapper.cc: Test function wrappers
+//# tFunctionWrapper.cc: Test function wrappers
 //# Copyright (C) 2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -50,12 +50,12 @@ int main() {
 //************ test one ****************
   {    
     // Convert C++ functions to Functionals
-    NQFunctionWrapper<Double> Func0(func0,2);
-    NQFunctionWrapper<Double> Func1(func1,2);
-    NQFunctionWrapper<Double> Func2(func2,2);
-    NQFunctionWrapper<Double> Func3(func3,2);
+    FunctionWrapper<Double> Func0(func0,2);
+    FunctionWrapper<Double> Func1(func1,2);
+    FunctionWrapper<Double> Func2(func2,2);
+    FunctionWrapper<Double> Func3(func3,2);
     
-    NQCombiFunction<Double> combination;
+    CombiFunction<Double> combination;
     
     // form linear combination of functions
     // f(x,y) = a0 + a1*x+ a2*sin(y) + a3*x*x

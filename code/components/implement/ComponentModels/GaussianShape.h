@@ -243,8 +243,8 @@ private:
   //# Updates the parameters of the itsFT object
   void updateFT();
   //# A generic Gaussian function
-  NQGaussian2D<Double> itsShape;
+  Gaussian2D<Double> itsShape;
   //# The FT of a Gaussian is also a Gaussian. Its parameters are stored here
-  NQGaussian2D<Double> itsFT;
+  Gaussian2D<Double> itsFT;
 };
 #endif

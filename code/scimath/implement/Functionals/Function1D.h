@@ -1,4 +1,4 @@
-//# NQFunction1D.h: Numerical functional interface class for 1 dimension
+//# Function1D.h: Numerical functional interface class for 1 dimension
 //# Copyright (C) 2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_NQFUNCTION1D_H)
-#define AIPS_NQFUNCTION1D_H
+#if !defined(AIPS_FUNCTION1D_H)
+#define AIPS_FUNCTION1D_H
 
 //# Includes
 #include <aips/aips.h>
@@ -39,7 +39,7 @@
 
 // <use visibility=export>
 
-// <reviewed reviewer="tcornwel" date="1996/02/22" tests="tNQGaussian1D"
+// <reviewed reviewer="tcornwel" date="1996/02/22" tests="tGaussian1D"
 //	 demos="">
 // </reviewed>
 
@@ -48,13 +48,13 @@
 // </prerequisite>
 //
 // <synopsis>
-// A <src>NQFunction1D</src> is used for classes which map a
+// A <src>Function1D</src> is used for classes which map a
 // scalar or n-dimensional Vector of type <src>T</src> into a <src>T</src>.
 // The object also has one parameter which can be masked
 // if necessary, and be used in the <src>Fitting</src> module, and, implicitly,
 // in the <linkto class=AutoDiff>AutoDiff</linkto> differentiation module.
 //
-// The only method implemented in <src>NQFunction1D</src> is the
+// The only method implemented in <src>Function1D</src> is the
 // <src>ndim()</src> method. The rest is inhereted from
 // <linkto class="Function">Function</linkto>.
 // </synopsis>
@@ -70,7 +70,7 @@
 // </templating>
 
 
-template<class T, class U=T> class NQFunction1D : public Function<T,U> {
+template<class T, class U=T> class Function1D : public Function<T,U> {
 
  public:
   //# Typedefs
@@ -79,14 +79,14 @@ template<class T, class U=T> class NQFunction1D : public Function<T,U> {
   //# Constructors
   // Constructors for FunctionParam
   // <group>
-  NQFunction1D() : Function<T,U>() {};
-  explicit NQFunction1D(const uInt n) : Function<T,U>(n) {};
-  explicit NQFunction1D(const Vector<T> &in) : Function<T,U>(in) {};
-  NQFunction1D(const FunctionParam<T> &other) : Function<T,U>(other) {};
+  Function1D() : Function<T,U>() {};
+  explicit Function1D(const uInt n) : Function<T,U>(n) {};
+  explicit Function1D(const Vector<T> &in) : Function<T,U>(in) {};
+  Function1D(const FunctionParam<T> &other) : Function<T,U>(other) {};
   // </group>
 
   // Destructor
-  virtual ~NQFunction1D() {};
+  virtual ~Function1D() {};
   
   // Returns the number of dimensions of function
   virtual uInt ndim() const { return 1; }

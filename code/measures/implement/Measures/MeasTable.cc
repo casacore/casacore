@@ -73,7 +73,7 @@ Vector<Double> MeasTable::resIGRF(0);
 //# Member functions
 void MeasTable::
 precessionCoef(Double T,
-	       NQPolynomial<Double> result[3]) {
+	       Polynomial<Double> result[3]) {
   static const Double PCOEF[3][6] = {
     {+2306.2181,+1.39656,-0.000139,+0.30188,-0.000344,+0.017998},
     {+2004.3109,-0.85330,-0.000217,-0.42665,-0.000217,-0.041833},
@@ -83,7 +83,7 @@ precessionCoef(Double T,
 }
 
 void MeasTable::precessionCoef1950(Double T,
-				   NQPolynomial<Double> result[3]) {
+				   Polynomial<Double> result[3]) {
   static const Double PCOEF[3][6] = {
     {2303.5545,+1.39720,0.000060,+0.30240,-0.000270,+0.017995},
     {2005.1120,-0.85290,-0.00037,-0.42650,-0.000370,-0.041800},
@@ -92,14 +92,14 @@ void MeasTable::precessionCoef1950(Double T,
   calcPrecesCoef(T, result, &PCOEF[0]);
 }
 
-void MeasTable::calcPrecesCoef(Double T, NQPolynomial<Double> result[3],
+void MeasTable::calcPrecesCoef(Double T, Polynomial<Double> result[3],
 			       const Double coef[3][6]) {
   Int i,j,k,l; Int m=1;
   for (i=0; i<3; i++) {
     m = -m;
     l = 0;
     for (j=0; j<3; j++) {
-      NQPolynomial<Double> poly(2-j);
+      Polynomial<Double> poly(2-j);
       for (k=0; k<3-j; k++, l++) {
 	poly.setCoefficient(k,coef[i][l]);
       };
@@ -108,9 +108,9 @@ void MeasTable::calcPrecesCoef(Double T, NQPolynomial<Double> result[3],
   };
 }
 
-const NQPolynomial<Double> &MeasTable::fundArg(uInt which) {
+const Polynomial<Double> &MeasTable::fundArg(uInt which) {
   static Bool needInit = True;
-  static NQPolynomial<Double> polyArray[6];
+  static Polynomial<Double> polyArray[6];
   static const Double FUND[6][4] = {
     {84381.448,   -46.8150,       -0.0059, 0.001813}, 
     {485866.733,  1717915922.633, 31.310,  0.064}, 
@@ -124,9 +124,9 @@ const NQPolynomial<Double> &MeasTable::fundArg(uInt which) {
   return polyArray[which];
 }
 
-const NQPolynomial<Double> &MeasTable::fundArg1950(uInt which) {
+const Polynomial<Double> &MeasTable::fundArg1950(uInt which) {
   static Bool needInit = True;
-  static NQPolynomial<Double> polyArray[6];
+  static Polynomial<Double> polyArray[6];
   static const Double FUND[6][4] = {
     {84428.26,   -46.846,       -0.0059, 0.00181},
     {1065976.59, 1717915856.79, 33.09,   0.0518},
@@ -141,13 +141,13 @@ const NQPolynomial<Double> &MeasTable::fundArg1950(uInt which) {
 }
 
 void MeasTable::calcFundArg(Bool &need, 
-			    NQPolynomial<Double> result[3],
+			    Polynomial<Double> result[3],
 			    const Double coeff[6][4]) {
   if (need) {
     need = False;
     Int i,j;
     for (i=0; i<6; i++) {
-      result[i] = NQPolynomial<Double>(3);
+      result[i] = Polynomial<Double>(3);
       for (j=0; j<4; j++) {
 	result[i].setCoefficient(j, coeff[i][j]*C::arcsec);
       };
@@ -402,7 +402,7 @@ const Vector<Double> &MeasTable::mulSC(uInt which, Double T) {
   static Bool needInit = True;
   static Double checkT = -1e30;
   static Vector<Double> argArray[106];
-  static NQPolynomial<Double> polyArray[30];
+  static Polynomial<Double> polyArray[30];
   static const Long MULTD[15][5] = {
     {0  ,-171996 ,-1742 ,92025 ,89},
     {1  ,2062    ,2     ,-895  ,5},
@@ -559,7 +559,7 @@ const Vector<Double> &MeasTable::mulSC1950(uInt which, Double T) {
   static Bool needInit = True;
   static Double checkT = -1e30;
   static Vector<Double> argArray[69];
-  static NQPolynomial<Double> polyArray[26];
+  static Polynomial<Double> polyArray[26];
   static const Long MULTD[13][5] = {
     {0  ,-172327 ,-1737 ,92100 ,91},
     {1  ,2088    ,2     ,-904  ,4},
@@ -667,7 +667,7 @@ const Vector<Double> &MeasTable::mulSC1950(uInt which, Double T) {
 
 void MeasTable::calcMulSC(Bool &need, Double &check, Double T,
 			  Vector<Double> result[], Int resrow,
-			  NQPolynomial<Double> poly[],
+			  Polynomial<Double> poly[],
 			  const Long coeffTD[][5], Int TDrow,
 			  const Short coeffSC[][2]) {
   if (need) {
@@ -675,7 +675,7 @@ void MeasTable::calcMulSC(Bool &need, Double &check, Double T,
     Int i,j;
     for (i=0; i<TDrow; i++) {
       for (j=0; j<2; j++) {
-	poly[2*i+j] = NQPolynomial<Double>(2);
+	poly[2*i+j] = Polynomial<Double>(2);
 	poly[2*i+j].setCoefficient(0,
 				   coeffTD[i][1+2*j]*C::arcsec*1e-4);
 	poly[2*i+j].setCoefficient(1,
@@ -1021,9 +1021,9 @@ const Vector<Double> &MeasTable::IGRF(Double tm) {
 }
 
 // Aberration function
-const NQPolynomial<Double> &MeasTable::aberArg(uInt which) {
+const Polynomial<Double> &MeasTable::aberArg(uInt which) {
   static Bool needInit = True;
-  static NQPolynomial<Double> polyArray[13];
+  static Polynomial<Double> polyArray[13];
   static const Double ABERFUND[13][2] = {
     {4.4026088,	2608.7903142},
     {3.1761467,	1021.3285546},
@@ -1043,7 +1043,7 @@ const NQPolynomial<Double> &MeasTable::aberArg(uInt which) {
     needInit = False;
     Int i,j;
     for (i=0; i<13; i++) {
-      polyArray[i] = NQPolynomial<Double>(1);
+      polyArray[i] = Polynomial<Double>(1);
       for (j=0; j<2; j++) {
 	polyArray[i].setCoefficient(j,
 				    ABERFUND[i][j]);
@@ -1054,9 +1054,9 @@ const NQPolynomial<Double> &MeasTable::aberArg(uInt which) {
   return polyArray[which];
 }
 
-const NQPolynomial<Double> &MeasTable::aber1950Arg(uInt which) {
+const Polynomial<Double> &MeasTable::aber1950Arg(uInt which) {
   static Bool needInit = True;
-  static NQPolynomial<Double> polyArray[12];
+  static Polynomial<Double> polyArray[12];
   static const Double ABERFUND[12][4] = {
     {1065976.59, 1717915856.79, 33.09,   0.0518},
     {1290513.0,  129596579.1,   -0.54,   -0.0120},
@@ -1075,7 +1075,7 @@ const NQPolynomial<Double> &MeasTable::aber1950Arg(uInt which) {
     needInit = False;
     Int i,j;
     for (i=0; i<12; i++) {
-      polyArray[i] = NQPolynomial<Double>(3);
+      polyArray[i] = Polynomial<Double>(3);
       for (j=0; j<4; j++) {
 	polyArray[i].setCoefficient(j,
 				    ABERFUND[i][j]*C::arcsec);
@@ -1426,7 +1426,7 @@ const Vector<Double> &MeasTable::mulAber(uInt which, Double T) {
   static Bool needInit = True;
   static Double checkT = -1e30;
   static Vector<Double> argArray[80];
-  static NQPolynomial<Double> polyArray[18];
+  static Polynomial<Double> polyArray[18];
   static Double factor = 0;
   static const Long MABERTD[3][18] = {
     { -1719919,	-2,	0,	-25,	0,	0,
@@ -1531,7 +1531,7 @@ const Vector<Double> &MeasTable::mulAber(uInt which, Double T) {
     Int i,j,k;
     for (i=0; i<3; i++) {
       for (j=0; j<6; j++) {
-	polyArray[6*i+j] = NQPolynomial<Double>(2);
+	polyArray[6*i+j] = Polynomial<Double>(2);
 	for (k=0; k<3; k++) {
 	  polyArray[6*i+j].setCoefficient(k,
 					  MABERTD[i][k+3*j]*factor);
@@ -1958,9 +1958,9 @@ const Vector<Double> &MeasTable::velocityLSRGal(uInt which) {
 
 
 // Earth and Sun position
-const NQPolynomial<Double> &MeasTable::posArg(uInt which) { 
+const Polynomial<Double> &MeasTable::posArg(uInt which) { 
   static Bool needInit = True;
-  static NQPolynomial<Double> polyArray[12];
+  static Polynomial<Double> polyArray[12];
   static const Double POSFUND[12][2] = {
     {252.25,	149472.67},			//Q
     {181.9798,	 58517.8157},			//V
@@ -1979,7 +1979,7 @@ const NQPolynomial<Double> &MeasTable::posArg(uInt which) {
     needInit = False;
     Int i,j;
     for (i=0; i<12; i++) {
-      polyArray[i] = NQPolynomial<Double>(1);
+      polyArray[i] = Polynomial<Double>(1);
       for (j=0; j<2; j++) {
 	polyArray[i].setCoefficient(j,
 				    POSFUND[i][j]*C::degree);
@@ -3146,7 +3146,7 @@ Double MeasTable::dTCG(Double tai) {
 
 Double MeasTable::GMST0(Double ut1) {
   static Bool needInit = True;
-  static NQPolynomial<Double> stPoly(3);
+  static Polynomial<Double> stPoly(3);
   if (needInit) {
     needInit = False;
     stPoly.setCoefficient(0, 24110.54841);	
@@ -3159,7 +3159,7 @@ Double MeasTable::GMST0(Double ut1) {
 
 Double MeasTable::GMUT0(Double gmst1) {
   static Bool needInit = True;
-  static NQPolynomial<Double> stPoly(3);
+  static Polynomial<Double> stPoly(3);
   if (needInit) {
     needInit = False;
     stPoly.setCoefficient(0, -0.65830845056254866847);
@@ -3172,7 +3172,7 @@ Double MeasTable::GMUT0(Double gmst1) {
 
 Double MeasTable::UTtoST(Double ut1) {
   static Bool needInit = True;
-  static NQPolynomial<Double> UTSTPoly(2);
+  static Polynomial<Double> UTSTPoly(2);
   if (needInit) {
     needInit = False;
     UTSTPoly.setCoefficient(0, 1.002737909350795);

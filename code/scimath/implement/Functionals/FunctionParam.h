@@ -40,7 +40,7 @@
 //
 // <use visibility=export>
 //
-// <reviewed reviewer="tcornwel" date="1996/02/22" tests="tNQGaussian2D"
+// <reviewed reviewer="tcornwel" date="1996/02/22" tests="tGaussian2D"
 //	 demos="">
 // </reviewed>
 //

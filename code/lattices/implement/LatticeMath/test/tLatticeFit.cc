@@ -42,7 +42,7 @@ int main() {
     Vector<Float> fittedParameters;
 
     // x^2
-    NQPolynomial<AutoDiff<Float> > square(2);
+    Polynomial<AutoDiff<Float> > square(2);
 
     LQLinearFitSVD<Float> fitter;
     fitter.setFunction(square);

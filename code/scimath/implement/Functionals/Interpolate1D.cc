@@ -257,7 +257,7 @@ getY() const {
 };
 
 template <class Domain, class Range> Range Interpolate1D<Domain, Range>::
-eval(typename NQFunction1D<Domain, Range>::FunctionArg x) const {
+eval(typename Function1D<Domain, Range>::FunctionArg x) const {
   Bool found;
   uInt where = binarySearchBrackets(found, xValues, x[0], nElements);  
   Domain x1,x2;

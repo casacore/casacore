@@ -44,9 +44,9 @@ Bool SpectralFit::fit(const Vector<MT> &y,
   LQNonLinearFitLM<MT> fitter;
   iter_p = 0;
   // The functions to fit
-  NQGaussian1D<AutoDiff<MT> > gauss;
-  NQPolynomial<AutoDiff<MT> > poly;
-  NQCompoundFunction<AutoDiff<MT> > func;
+  Gaussian1D<AutoDiff<MT> > gauss;
+  Polynomial<AutoDiff<MT> > poly;
+  CompoundFunction<AutoDiff<MT> > func;
   // Initial guess
   uInt npar(0);
   for (uInt i=0; i<slist_p.nelements(); i++) {
@@ -61,7 +61,7 @@ Bool SpectralFit::fit(const Vector<MT> &y,
       npar += gauss.nparameters();
     } else if (slist_p[i].getType() == SpectralElement::POLYNOMIAL) {
       npar += slist_p[i].getDegree()+1;
-      NQPolynomial<AutoDiff<MT> > poly(slist_p[i].getDegree());
+      Polynomial<AutoDiff<MT> > poly(slist_p[i].getDegree());
       for (uInt j=0; j<poly.nparameters(); ++j) {
 	poly[j] = AutoDiff<MT>(0, poly.nparameters(), j);
 	poly.mask(j) = !slist_p[i].fixed()(j);

@@ -1,4 +1,4 @@
-//# tNQCompoundFunction: Test the NQCompoundFunction class
+//# tCompoundFunction: Test the CompoundFunction class
 //# Copyright (C) 1995,1996,1999,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -42,13 +42,13 @@
 
 int main() {
 
-  //     NQCompoundFunction();
-  NQCompoundFunction<Double> sumfunc;
+  //     CompoundFunction();
+  CompoundFunction<Double> sumfunc;
   AlwaysAssertExit(sumfunc.nparameters() == 0 && sumfunc(-11.0) == 0.0);
 
   //     uInt addFunction(const Function<T> &newFunction);
-  NQPolynomial<Double> poly(2); poly[2] = 1.0; 	     // x^2
-  NQGaussian1D<Double> gauss(1.0, 0.0, sqrt(log(16.0)));   // e^{-x^2}
+  Polynomial<Double> poly(2); poly[2] = 1.0; 	     // x^2
+  Gaussian1D<Double> gauss(1.0, 0.0, sqrt(log(16.0)));   // e^{-x^2}
   sumfunc.addFunction(poly);
   sumfunc.addFunction(gauss);                             // x^2 + e^{-x^2}
 
@@ -60,10 +60,10 @@ int main() {
   //   uInt nparameters()
   AlwaysAssertExit(sumfunc.nparameters() == 6);
   
-  //     NQCompoundFunction(const NQCompoundFunction<T> &other);
-  //     operator=(const NQCompoundFunction<T> &other);
-  NQCompoundFunction<Double> f2(sumfunc);
-  NQCompoundFunction<Double> f3;
+  //     CompoundFunction(const CompoundFunction<T> &other);
+  //     operator=(const CompoundFunction<T> &other);
+  CompoundFunction<Double> f2(sumfunc);
+  CompoundFunction<Double> f3;
   f3 = sumfunc;
 
   //     void setParameter(uInt which, const T &val);
@@ -78,7 +78,7 @@ int main() {
 
   //     const Function<T> *function(uInt which) const
   //     Function<T> *function(uInt which);
-  const NQCompoundFunction<Double> sfref = sumfunc;
+  const CompoundFunction<Double> sfref = sumfunc;
   AlwaysAssertExit( (sumfunc.function(0))(3.0) == 9.0);
   AlwaysAssertExit( near((sfref.function(1))(-1.0), 1.0/C::e ));
   //     T getparameter(uInt which) const;
@@ -94,7 +94,7 @@ int main() {
   AlwaysAssertExit(near(sumfunc(3.0), 3.0*3.0 + 1.0/C::e));
   
   //     virtual Function<T> *cloneFunction() const;
-  //     ~NQCompoundFunction();
+  //     ~CompoundFunction();
   Function<Double> *fptr = sumfunc.clone();
   AlwaysAssertExit(allEQ(sumfunc.parameters().getParameters(), 
 			  fptr->parameters().getParameters()));

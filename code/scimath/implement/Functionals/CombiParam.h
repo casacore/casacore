@@ -1,4 +1,4 @@
-//# NQCombiParam.h: Parameters for a linear combination of Functions
+//# CombiParam.h: Parameters for a linear combination of Functions
 //# Copyright (C) 2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -26,8 +26,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_NQCOMBIPARAM_H)
-#define AIPS_NQCOMBIPARAM_H
+#if !defined(AIPS_COMBIPARAM_H)
+#define AIPS_COMBIPARAM_H
 
 //# Includes
 #include <aips/aips.h>
@@ -43,11 +43,11 @@
 //
 // <use visibility=local>
 //
-// <reviewed reviewer="" date="" tests="tNQCombiFunction" demos="">
+// <reviewed reviewer="" date="" tests="tCombiFunction" demos="">
 // </reviewed>
 //
 // <prerequisite>
-//   <li> <linkto class="NQCombiFunction">NQCombiFunction</linkto> class
+//   <li> <linkto class="CombiFunction">CombiFunction</linkto> class
 // </prerequisite>
 //
 // <synopsis>
@@ -69,15 +69,15 @@
 // In the following example a second order polynomial is built from 3 separate
 // polynomials.
 // <srcblock>
-// NQPolynomial<Double> constant(0); 
-// NQPolynomial<Double> linear(1); 
-// NQPolynomial<Double> square(2);
+// Polynomial<Double> constant(0); 
+// Polynomial<Double> linear(1); 
+// Polynomial<Double> square(2);
 // 
 // constant.setCoefficient(0, 1.0);   // 1
 // linear.setCoefficient(1, 1.0);     // x
 // square[2] = 1.0;     // x^2
 // 
-// NQCombiParam<Double> combination;
+// CombiParam<Double> combination;
 // 
 // // form function, e0 + e1*x + e2*x^2
 // combination.addFunction(constant);
@@ -105,18 +105,18 @@
 // <li> Nothing I know of
 // </todo>
 
-template <class T> class NQCombiParam : public Function<T> {
+template <class T> class CombiParam : public Function<T> {
  public:
   //# Constructors
   // The default constructor -- no functions, no parameters, nothing, the
   // function operator returns a 0.
-  NQCombiParam();
+  CombiParam();
   // Make this object a (deep) copy of other.
-  NQCombiParam(const NQCombiParam<T> &other);
+  CombiParam(const CombiParam<T> &other);
   // Make this object a (deep) copy of other.
-  NQCombiParam<T> &operator=(const NQCombiParam<T> &other);
+  CombiParam<T> &operator=(const CombiParam<T> &other);
   // Destructor
-  virtual ~NQCombiParam();
+  virtual ~CombiParam();
 
   //# Operators
   

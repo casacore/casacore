@@ -1,4 +1,4 @@
-//# NQGaussian1DParam.h:  Parameter handling for one-dimensional Gaussian class
+//# Gaussian1DParam.h:  Parameter handling for one-dimensional Gaussian class
 //# Copyright (C) 2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_NQGAUSSIAN1DPARAM_H)
-#define AIPS_NQGAUSSIAN1DPARAM_H
+#if !defined(AIPS_GAUSSIAN1DPARAM_H)
+#define AIPS_GAUSSIAN1DPARAM_H
 
 //# Includes
 #include <aips/aips.h>
@@ -38,13 +38,13 @@
 
 // <use visibility=local>
 
-// <reviewed reviewer="tcornwel" date="1996/02/22" tests="tNQGaussian1D" 
+// <reviewed reviewer="tcornwel" date="1996/02/22" tests="tGaussian1D" 
 // demos="">
 // </reviewed>
 
 // <prerequisite>
 //   <li> <linkto class="FunctionParam">FunctionParam</linkto> class
-//   <li> <linkto class="NQFunction1D">NQFunction1D</linkto> class
+//   <li> <linkto class="Function1D">Function1D</linkto> class
 // </prerequisite>
 
 // <etymology> 
@@ -122,7 +122,7 @@
 //   <li> Gaussians that know about their DFT's could be required eventually.
 // </todo>
 
-template<class T> class NQGaussian1DParam : public NQFunction1D<T> {
+template<class T> class Gaussian1DParam : public Function1D<T> {
 public:
   //# Enumerations
   enum { HEIGHT=0, CENTER, WIDTH };
@@ -133,20 +133,20 @@ public:
   // <note role=warning> Could not use default arguments
   // that worked both with gcc and IRIX and all templates</note>
   // <group>
-  NQGaussian1DParam();
-  explicit NQGaussian1DParam(const T &height);
-  NQGaussian1DParam(const T &height, const T &center);
-  NQGaussian1DParam(const T &height, const T &center, const T &width);
+  Gaussian1DParam();
+  explicit Gaussian1DParam(const T &height);
+  Gaussian1DParam(const T &height, const T &center);
+  Gaussian1DParam(const T &height, const T &center, const T &width);
   // </group>
 
   // Copy constructor (deep copy)
-  NQGaussian1DParam(const NQGaussian1DParam<T> &other);
+  Gaussian1DParam(const Gaussian1DParam<T> &other);
 
   // Copy assignment (deep copy)
-  NQGaussian1DParam<T> &operator=(const NQGaussian1DParam<T> &other);
+  Gaussian1DParam<T> &operator=(const Gaussian1DParam<T> &other);
     
   // Destructor
-  virtual ~NQGaussian1DParam();
+  virtual ~Gaussian1DParam();
 
   //# Operators    
 

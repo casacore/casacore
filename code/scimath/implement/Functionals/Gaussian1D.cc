@@ -1,4 +1,4 @@
-//# NQGaussian1D.cc: A one-dimensional Gaussian class
+//# Gaussian1D.cc: A one-dimensional Gaussian class
 //# Copyright (C) 1994,1995,1996,1999,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -33,7 +33,7 @@
 
 //# Operators
 template<class T>
-T NQGaussian1D<T>::eval(typename NQFunction1D<T>::FunctionArg x) const {
+T Gaussian1D<T>::eval(typename Function1D<T>::FunctionArg x) const {
   T value = (x[0] - param_p[CENTER])/param_p[WIDTH]/fwhm2int;
   return param_p[HEIGHT] * exp(-(value*value));
 }

@@ -434,9 +434,9 @@ Bool MomentCalcBase<T>::fitGaussian (uInt& nFailed,
 
 // Create and set the functionals
 
-   NQGaussian1D<AutoDiff<T> > gauss; 
-   NQPolynomial<AutoDiff<T> > poly;  
-   NQCompoundFunction<AutoDiff<T> > func;
+   Gaussian1D<AutoDiff<T> > gauss; 
+   Polynomial<AutoDiff<T> > poly;  
+   CompoundFunction<AutoDiff<T> > func;
    func.addFunction(gauss);
    func.addFunction(poly);         
    
@@ -1339,7 +1339,7 @@ void MomentCalcBase<T>::showGaussFit(const T peak,
 
 // Setup functional
 
-   const NQGaussian1D<T> gauss(peak, pos, width);
+   const Gaussian1D<T> gauss(peak, pos, width);
                                       
    
 // Allocate arrays

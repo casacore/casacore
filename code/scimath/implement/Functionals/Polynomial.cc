@@ -1,4 +1,4 @@
-//# NQPolynomial.cc: A one dimensional polynomial class
+//# Polynomial.cc: A one dimensional polynomial class
 //# Copyright (C) 1994,1995,1996,1998,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -32,7 +32,7 @@
 
 //# Operators
 template<class T>
-T NQPolynomial<T>::eval(typename NQFunction1D<T>::FunctionArg x) const {
+T Polynomial<T>::eval(typename Function1D<T>::FunctionArg x) const {
   Int j = nparameters();
   T accum = param_p[--j];
   while (--j >= 0) {
@@ -43,10 +43,10 @@ T NQPolynomial<T>::eval(typename NQFunction1D<T>::FunctionArg x) const {
 }
 
 template<class T>
-NQPolynomial<T> NQPolynomial<T>::derivative() const {
+Polynomial<T> Polynomial<T>::derivative() const {
   Int ord = order() - 1;
-  if (ord < 0) return NQPolynomial<T>(0);
-  NQPolynomial<T> result(ord);
+  if (ord < 0) return Polynomial<T>(0);
+  Polynomial<T> result(ord);
   for (uInt i=1; i <= order(); ++i) result[i-1] = T(i)*(*this)[i];
   return result;
 }

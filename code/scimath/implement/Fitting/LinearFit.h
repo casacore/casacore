@@ -109,7 +109,7 @@
 // The function to be fitted to the data can be given as an instance of the
 // <linkto class="Function">Function</linkto> class.
 // One can also form a sum of functions using the
-// <linkto class="NQCompoundFunction">NQCompoundFunction</linkto>.  
+// <linkto class="CompoundFunction">CompoundFunction</linkto>.  
 //
 // For small datasets the usage of the calls is:
 // <ul>
@@ -180,7 +180,7 @@
 //	sigma = 1.0;
 //	// The fitter
 //  	LQLinearFit<Double> fitter;
-//	NQPolynomial<AutoDiff<Double> > combination(2);
+//	Polynomial<AutoDiff<Double> > combination(2);
 //	// Get the solution
 //	fitter.setFunction(combination);
 //    	Vector<Double> solution = fitter.fit(x, primesTable, sigma);

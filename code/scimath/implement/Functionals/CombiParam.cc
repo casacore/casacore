@@ -1,4 +1,4 @@
-//# NQCombiParam.cc:  Parameters for a linear combination of Functions
+//# CombiParam.cc:  Parameters for a linear combination of Functions
 //# Copyright (C) 2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -29,11 +29,11 @@
 #include <aips/Functionals/CombiParam.h>
 
 template <class T>
-NQCombiParam<T>::NQCombiParam() : 
+CombiParam<T>::CombiParam() : 
   Function<T>(), ndim_p(0), functionPtr_p(0) {}
 
 template <class T>
-NQCombiParam<T>::NQCombiParam(const NQCombiParam<T> &other) :
+CombiParam<T>::CombiParam(const CombiParam<T> &other) :
   Function<T>(other), ndim_p(other.ndim_p),
   functionPtr_p(other.functionPtr_p.nelements()) { 
   for (uInt i=0; i<functionPtr_p.nelements(); ++i) {
@@ -42,14 +42,14 @@ NQCombiParam<T>::NQCombiParam(const NQCombiParam<T> &other) :
 }
 
 template <class T>
-NQCombiParam<T>::~NQCombiParam() {
+CombiParam<T>::~CombiParam() {
   for (uInt i=0; i<functionPtr_p.nelements(); i++) {
     delete functionPtr_p[i]; functionPtr_p[i] = 0;
   };
 }
 
 template <class T>
-NQCombiParam<T>& NQCombiParam<T>::operator=(const NQCombiParam<T> &other) {
+CombiParam<T>& CombiParam<T>::operator=(const CombiParam<T> &other) {
   if (this != &other) {
     Function<T>::operator=(other);
     ndim_p = other.ndim_p;
@@ -65,9 +65,9 @@ NQCombiParam<T>& NQCombiParam<T>::operator=(const NQCombiParam<T> &other) {
 }
 
 template <class T>
-uInt NQCombiParam<T>::addFunction(const Function<T> &newFunction) {
+uInt CombiParam<T>::addFunction(const Function<T> &newFunction) {
   if (functionPtr_p.nelements() != 0 && newFunction.ndim() != ndim_p) {
-    throw(AipsError("NQCombiParam::addFunction() -- "
+    throw(AipsError("CombiParam::addFunction() -- "
 		    "Inconsistent function dimension"));
   };
   // Add the function

@@ -1,4 +1,4 @@
-//# NQWrapperParam.cc: Parameter handling for wrapped function objects 
+//# WrapperParam.cc: Parameter handling for wrapped function objects 
 //# Copyright (C) 2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -30,31 +30,31 @@
 
 //# Constructors
 template<class T>
-NQWrapperParam<T>::NQWrapperParam() :
+WrapperParam<T>::WrapperParam() :
   Function<T>(0) {}
 
 template<class T>
-NQWrapperParam<T>::NQWrapperParam(const T &par) :
+WrapperParam<T>::WrapperParam(const T &par) :
   Function<T>(1) {
   param_p[0] = par;
 }
 
 template<class T>
-NQWrapperParam<T>::NQWrapperParam(const Vector<T> &par) :
+WrapperParam<T>::WrapperParam(const Vector<T> &par) :
   Function<T>(par) {}
 
 
 template<class T>
-NQWrapperParam<T>::NQWrapperParam(const NQWrapperParam<T> &other) :
+WrapperParam<T>::WrapperParam(const WrapperParam<T> &other) :
   Function<T>(other) {}
 
 template<class T>
-NQWrapperParam<T>::~NQWrapperParam() {}
+WrapperParam<T>::~WrapperParam() {}
 
 //# Operators
 template<class T>
-NQWrapperParam<T> &
-NQWrapperParam<T>::operator=(const NQWrapperParam<T> &other) {
+WrapperParam<T> &
+WrapperParam<T>::operator=(const WrapperParam<T> &other) {
   if (this != &other) Function<T>::operator=(other);
   return *this;
 }

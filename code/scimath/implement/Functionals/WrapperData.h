@@ -1,4 +1,4 @@
-//# NQWrapperData.h: Aid in constructing function objects from C++ functions 
+//# WrapperData.h: Aid in constructing function objects from C++ functions 
 //# Copyright (C) 2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_NQWRAPPERDATA_H)
-#define AIPS_NQWRAPPERDATA_H
+#if !defined(AIPS_WRAPPERDATA_H)
+#define AIPS_WRAPPERDATA_H
 
 //# Includes
 #include <aips/aips.h>
@@ -57,19 +57,19 @@
 // <srcblock>
 // Float func(const Vector<Float>& x) {return x(0)*x(1);}        // x*y
 // // Convert C++ functions to Functionals
-// NQFunctionWrapper<Float> Func(func, 2);
+// FunctionWrapper<Float> Func(func, 2);
 // </srcblock>
 //
 
 template <class T, class U, class V, Bool hasX, Bool hasParam>
-class NQWrapperData : public NQWrapperBase<T> {
+class WrapperData : public WrapperBase<T> {
  public:
   //# Constructors
   // Default constructor: to allow arrays of functions
-  NQWrapperData();
+  WrapperData();
 
   // Destructor
-  virtual ~NQWrapperData() {};
+  virtual ~WrapperData() {};
 
   //# Operators    
   // Evaluate the function at <src>x</src>.
@@ -82,26 +82,26 @@ class NQWrapperData : public NQWrapperBase<T> {
  protected:
 };
 
-#define NQWrapperData_TT NQWrapperData
+#define WrapperData_TT WrapperData
 
 // <summary> Specialization for calls with argument and parameter
 // </summary>
 // <synopsis> Note that the actual name of the class is
-// <src>NQWrapperData</src>. The special name is only for the use of 
+// <src>WrapperData</src>. The special name is only for the use of 
 // cxx2html.
 // </synopsis>
 
 template <class T>
-class NQWrapperData_TT<T,T,T,True,True> : public NQWrapperBase<T> {
-  typedef NQWrapperData_TT<T,T,T,True,True> myData;
+class WrapperData_TT<T,T,T,True,True> : public WrapperBase<T> {
+  typedef WrapperData_TT<T,T,T,True,True> myData;
  public:
   //# Constructors
   // Standard constructor
-  explicit NQWrapperData_TT(T(*f)(const T&, const T&), uInt dim=1) :
-    NQWrapperBase<T>(dim), pf_p(f) {};
+  explicit WrapperData_TT(T(*f)(const T&, const T&), uInt dim=1) :
+    WrapperBase<T>(dim), pf_p(f) {};
 
   // Destructor
-  virtual ~NQWrapperData_TT() {};
+  virtual ~WrapperData_TT() {};
 
   //# Operators    
   // Evaluate the function at <src>x</src>.
@@ -124,30 +124,30 @@ class NQWrapperData_TT<T,T,T,True,True> : public NQWrapperBase<T> {
  private:
   // Copy constructor and assignment (not implemented)
   // <group>
-  NQWrapperData_TT(const myData &other);
+  WrapperData_TT(const myData &other);
   myData &operator=(const myData &other);
   // </group>
 
 };
 
-#undef NQWrapperData_TT
+#undef WrapperData_TT
 
-#define NQWrapperData_VT NQWrapperData
+#define WrapperData_VT WrapperData
 
 // <summary> Specialization for calls with argument and parameter
 // </summary>
 // <synopsis> Note that the actual name of the class is
-// <src>NQWrapperData</src>. The special name is only for the use of 
+// <src>WrapperData</src>. The special name is only for the use of 
 // cxx2html.
 // </synopsis>
 
 template <class T>
-class NQWrapperData_VT<T,Vector<T>,T,True,True> : public NQWrapperBase<T> {
-  typedef NQWrapperData_VT<T,Vector<T>,T,True,True> myData;
+class WrapperData_VT<T,Vector<T>,T,True,True> : public WrapperBase<T> {
+  typedef WrapperData_VT<T,Vector<T>,T,True,True> myData;
  public:
-  explicit NQWrapperData_VT(T(*f)(const Vector<T>&, const T&), uInt dim=1) :
-    NQWrapperBase<T>(dim), pf_p(f) {};
-  virtual ~NQWrapperData_VT() {};
+  explicit WrapperData_VT(T(*f)(const Vector<T>&, const T&), uInt dim=1) :
+    WrapperBase<T>(dim), pf_p(f) {};
+  virtual ~WrapperData_VT() {};
   virtual T eval(typename Function<T>::FunctionArg x,
 		 const Vector<T> &par) const {
     if (pf_p) {
@@ -157,28 +157,28 @@ class NQWrapperData_VT<T,Vector<T>,T,True,True> : public NQWrapperBase<T> {
  protected:
   T (*pf_p)(const Vector<T>&, const T&);
  private:
-  NQWrapperData_VT(const myData &other);
+  WrapperData_VT(const myData &other);
   myData &operator=(const myData &other);
 };
 
-#undef NQWrapperData_VT
+#undef WrapperData_VT
 
-#define NQWrapperData_TV NQWrapperData
+#define WrapperData_TV WrapperData
 
 // <summary> Specialization for calls with argument and parameters
 // </summary>
 // <synopsis> Note that the actual name of the class is
-// <src>NQWrapperData</src>. The special name is only for the use of 
+// <src>WrapperData</src>. The special name is only for the use of 
 // cxx2html.
 // </synopsis>
 
 template <class T>
-class NQWrapperData_TV<T,T,Vector<T>,True,True> : public NQWrapperBase<T> {
-  typedef NQWrapperData_TV<T,T,Vector<T>,True,True> myData;
+class WrapperData_TV<T,T,Vector<T>,True,True> : public WrapperBase<T> {
+  typedef WrapperData_TV<T,T,Vector<T>,True,True> myData;
  public:
-  explicit NQWrapperData_TV(T(*f)(const T&, const Vector<T>&), uInt dim=1) :
-    NQWrapperBase<T>(dim), pf_p(f) {};
-  virtual ~NQWrapperData_TV() {};
+  explicit WrapperData_TV(T(*f)(const T&, const Vector<T>&), uInt dim=1) :
+    WrapperBase<T>(dim), pf_p(f) {};
+  virtual ~WrapperData_TV() {};
   virtual T eval(typename Function<T>::FunctionArg x,
 		 const Vector<T> &par) const {
     if (pf_p) {
@@ -189,30 +189,30 @@ class NQWrapperData_TV<T,T,Vector<T>,True,True> : public NQWrapperBase<T> {
  protected:
   T (*pf_p)(const T&, const Vector<T>&);
  private:
-  NQWrapperData_TV(const myData &other);
+  WrapperData_TV(const myData &other);
   myData &operator=(const myData &other);
 };
 
-#undef NQWrapperData_TV
+#undef WrapperData_TV
 
-#define NQWrapperData_VV NQWrapperData
+#define WrapperData_VV WrapperData
 
 // <summary> Specialization for calls with argument and parameters
 // </summary>
 // <synopsis> Note that the actual name of the class is
-// <src>NQWrapperData</src>. The special name is only for the use of 
+// <src>WrapperData</src>. The special name is only for the use of 
 // cxx2html.
 // </synopsis>
 
 template <class T>
-class NQWrapperData_VV<T,Vector<T>,Vector<T>,True,True> :
-public NQWrapperBase<T> {
-  typedef NQWrapperData_VV<T,Vector<T>,Vector<T>,True,True> myData;
+class WrapperData_VV<T,Vector<T>,Vector<T>,True,True> :
+public WrapperBase<T> {
+  typedef WrapperData_VV<T,Vector<T>,Vector<T>,True,True> myData;
  public:
-  explicit NQWrapperData_VV(T(*f)(const Vector<T>&, const Vector<T>&),
+  explicit WrapperData_VV(T(*f)(const Vector<T>&, const Vector<T>&),
 			    uInt dim=1) :
-    NQWrapperBase<T>(dim), pf_p(f) {};
-  virtual ~NQWrapperData_VV() {};
+    WrapperBase<T>(dim), pf_p(f) {};
+  virtual ~WrapperData_VV() {};
   virtual T eval(typename Function<T>::FunctionArg x,
 		 const Vector<T> &par) const {
     if (pf_p) {
@@ -222,28 +222,28 @@ public NQWrapperBase<T> {
  protected:
   T (*pf_p)(const Vector<T>&, const Vector<T>&);
  private:
-  NQWrapperData_VV(const myData &other);
+  WrapperData_VV(const myData &other);
   myData &operator=(const myData &other);
 };
 
-#undef NQWrapperData_VV
+#undef WrapperData_VV
 
-#define NQWrapperData_FT NQWrapperData
+#define WrapperData_FT WrapperData
 
 // <summary> Specialization for calls with no arguments and parameter
 // </summary>
 // <synopsis> Note that the actual name of the class is
-// <src>NQWrapperData</src>. The special name is only for the use of 
+// <src>WrapperData</src>. The special name is only for the use of 
 // cxx2html.
 // </synopsis>
 
 template <class T>
-class NQWrapperData_FT<T,T,T,False,True> : public NQWrapperBase<T> {
-  typedef NQWrapperData_FT<T,T,T,False,True> myData;
+class WrapperData_FT<T,T,T,False,True> : public WrapperBase<T> {
+  typedef WrapperData_FT<T,T,T,False,True> myData;
  public:
-  explicit NQWrapperData_FT(T(*f)(const T&)) :
-    NQWrapperBase<T>(0), pf_p(f) {};
-  virtual ~NQWrapperData_FT() {};
+  explicit WrapperData_FT(T(*f)(const T&)) :
+    WrapperBase<T>(0), pf_p(f) {};
+  virtual ~WrapperData_FT() {};
   virtual T eval(typename Function<T>::FunctionArg x,
 		 const Vector<T> &par) const {
     if (pf_p) return pf_p(par[0]);
@@ -251,28 +251,28 @@ class NQWrapperData_FT<T,T,T,False,True> : public NQWrapperBase<T> {
  protected:
   T (*pf_p)(const T&);
  private:
-  NQWrapperData_FT(const myData &other);
+  WrapperData_FT(const myData &other);
   myData &operator=(const myData &other);
 };
 
-#undef NQWrapperData_FT
+#undef WrapperData_FT
 
-#define NQWrapperData_FV NQWrapperData
+#define WrapperData_FV WrapperData
 
 // <summary> Specialization for calls with no arguments and parameters
 // </summary>
 // <synopsis> Note that the actual name of the class is
-// <src>NQWrapperData</src>. The special name is only for the use of 
+// <src>WrapperData</src>. The special name is only for the use of 
 // cxx2html.
 // </synopsis>
 
 template <class T>
-class NQWrapperData_FV<T,T,Vector<T>,False,True> : public NQWrapperBase<T> {
-  typedef NQWrapperData_FV<T,T,Vector<T>,False,True> myData;
+class WrapperData_FV<T,T,Vector<T>,False,True> : public WrapperBase<T> {
+  typedef WrapperData_FV<T,T,Vector<T>,False,True> myData;
  public:
-  explicit NQWrapperData_FV(T(*f)(const Vector<T>&)) :
-    NQWrapperBase<T>(0), pf_p(f) {};
-  virtual ~NQWrapperData_FV() {};
+  explicit WrapperData_FV(T(*f)(const Vector<T>&)) :
+    WrapperBase<T>(0), pf_p(f) {};
+  virtual ~WrapperData_FV() {};
   virtual T eval(typename Function<T>::FunctionArg x,
 		 const Vector<T> &par) const {
     if (pf_p) return pf_p(par);
@@ -280,28 +280,28 @@ class NQWrapperData_FV<T,T,Vector<T>,False,True> : public NQWrapperBase<T> {
  protected:
   T (*pf_p)(const Vector<T>&);
  private:
-  NQWrapperData_FV(const myData &other);
+  WrapperData_FV(const myData &other);
   myData &operator=(const myData &other);
 };
 
-#undef NQWrapperData_FV
+#undef WrapperData_FV
 
-#define NQWrapperData_TF NQWrapperData
+#define WrapperData_TF WrapperData
 
 // <summary> Specialization for calls with argument and no parameters
 // </summary>
 // <synopsis> Note that the actual name of the class is
-// <src>NQWrapperData</src>. The special name is only for the use of 
+// <src>WrapperData</src>. The special name is only for the use of 
 // cxx2html.
 // </synopsis>
 
 template <class T>
-class NQWrapperData_TF<T,T,T,True,False> : public NQWrapperBase<T> {
-  typedef NQWrapperData_TF<T,T,T,True,False> myData;
+class WrapperData_TF<T,T,T,True,False> : public WrapperBase<T> {
+  typedef WrapperData_TF<T,T,T,True,False> myData;
  public:
-  explicit NQWrapperData_TF(T(*f)(const T&), uInt dim=1) :
-    NQWrapperBase<T>(dim), pf_p(f) {};
-  virtual ~NQWrapperData_TF() {};
+  explicit WrapperData_TF(T(*f)(const T&), uInt dim=1) :
+    WrapperBase<T>(dim), pf_p(f) {};
+  virtual ~WrapperData_TF() {};
   virtual T eval(typename Function<T>::FunctionArg x, 
 		 const Vector<T> &par) const {
     if (pf_p) {
@@ -311,28 +311,28 @@ class NQWrapperData_TF<T,T,T,True,False> : public NQWrapperBase<T> {
  protected:
   T (*pf_p)(const T&);
  private:
-  NQWrapperData_TF(const myData &other);
+  WrapperData_TF(const myData &other);
   myData &operator=(const myData &other);
 };
 
-#undef NQWrapperData_TF
+#undef WrapperData_TF
 
-#define NQWrapperData_VF NQWrapperData
+#define WrapperData_VF WrapperData
 
 // <summary> Specialization for calls with argument and no parameters
 // </summary>
 // <synopsis> Note that the actual name of the class is
-// <src>NQWrapperData</src>. The special name is only for the use of 
+// <src>WrapperData</src>. The special name is only for the use of 
 // cxx2html.
 // </synopsis>
 
 template <class T>
-class NQWrapperData_VF<T,Vector<T>,T,True,False> : public NQWrapperBase<T> {
-  typedef NQWrapperData_VF<T,Vector<T>,T,True,False> myData;
+class WrapperData_VF<T,Vector<T>,T,True,False> : public WrapperBase<T> {
+  typedef WrapperData_VF<T,Vector<T>,T,True,False> myData;
  public:
-  explicit NQWrapperData_VF(T(*f)(const Vector<T>&), uInt dim=1) :
-    NQWrapperBase<T>(dim), pf_p(f) {};
-  virtual ~NQWrapperData_VF() {};
+  explicit WrapperData_VF(T(*f)(const Vector<T>&), uInt dim=1) :
+    WrapperBase<T>(dim), pf_p(f) {};
+  virtual ~WrapperData_VF() {};
   virtual T eval(typename Function<T>::FunctionArg x,
 		 const Vector<T> &par) const {
     if (pf_p) {
@@ -342,28 +342,28 @@ class NQWrapperData_VF<T,Vector<T>,T,True,False> : public NQWrapperBase<T> {
  protected:
   T (*pf_p)(const Vector<T>&);
  private:
-  NQWrapperData_VF(const myData &other);
+  WrapperData_VF(const myData &other);
   myData &operator=(const myData &other);
 };
 
-#undef NQWrapperData_VF
+#undef WrapperData_VF
 
-#define NQWrapperData_FF NQWrapperData
+#define WrapperData_FF WrapperData
 
 // <summary> Specialization for calls with no arguments and no parameters
 // </summary>
 // <synopsis> Note that the actual name of the class is
-// <src>NQWrapperData</src>. The special name is only for the use of 
+// <src>WrapperData</src>. The special name is only for the use of 
 // cxx2html.
 // </synopsis>
 
 template <class T>
-class NQWrapperData_FF<T,T,T,False,False> : public NQWrapperBase<T> {
-  typedef NQWrapperData_FF<T,T,T,True,False> myData;
+class WrapperData_FF<T,T,T,False,False> : public WrapperBase<T> {
+  typedef WrapperData_FF<T,T,T,True,False> myData;
  public:
-  explicit NQWrapperData_FF(T(*f)()) :
-    NQWrapperBase<T>(0), pf_p(f) {};
-  virtual ~NQWrapperData_FF() {};
+  explicit WrapperData_FF(T(*f)()) :
+    WrapperBase<T>(0), pf_p(f) {};
+  virtual ~WrapperData_FF() {};
   virtual T eval(typename Function<T>::FunctionArg x,
 		 const Vector<T> &par) const {
     if (pf_p) return pf_p();
@@ -371,10 +371,10 @@ class NQWrapperData_FF<T,T,T,False,False> : public NQWrapperBase<T> {
  protected:
   T (*pf_p)();
  private:
-  NQWrapperData_FF(const myData &other);
+  WrapperData_FF(const myData &other);
   myData &operator=(const myData &other);
 };
 
-#undef NQWrapperData_FF
+#undef WrapperData_FF
 
 #endif

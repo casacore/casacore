@@ -1,4 +1,4 @@
-//# NQSinusoid1DParam.h: Parameter handling for one dimensional Sinusoid class
+//# Sinusoid1DParam.h: Parameter handling for one dimensional Sinusoid class
 //# Copyright (C) 2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_NQSINUSOID1DPARAM_H)
-#define AIPS_NQSINUSOID1DPARAM_H
+#if !defined(AIPS_SINUSOID1DPARAM_H)
+#define AIPS_SINUSOID1DPARAM_H
 
 //# Includes
 #include <aips/aips.h>
@@ -39,13 +39,13 @@
 
 // <use visibility=local>
 
-// <reviewed reviewer="" date="" tests="tNQSinusoid1D" 
+// <reviewed reviewer="" date="" tests="tSinusoid1D" 
 // demos="">
 // </reviewed>
 
 // <prerequisite>
 //   <li> <linkto class="FunctionParam">FunctionParam</linkto> class
-//   <li> <linkto class="NQFunction1D">NQFunction1D</linkto> class
+//   <li> <linkto class="Function1D">Function1D</linkto> class
 // </prerequisite>
 
 // <etymology> 
@@ -53,7 +53,7 @@
 // </etymology>
 
 // <synopsis> 
-// A <src>NQSinusoid1D</src> is described by an amplitude, a period,
+// A <src>Sinusoid1D</src> is described by an amplitude, a period,
 // and a location of a peak.
 // The parameters (amplitude, period, and x0) may be changed at run time. 
 //
@@ -78,13 +78,13 @@
 // An enumeration for the <src>AMPLITUDE</src>, <src>PERIOD</src> and
 // <src>X0</src> parameter index is provided.
 //
-// This class is in general used implicitly by the <src>NQSinusoid1D</src>
+// This class is in general used implicitly by the <src>Sinusoid1D</src>
 // class only.
 // </synopsis>
 
 // <example>
 // <srcblock>
-//    NQSinusoid1D<Double> sf(5.0, 25.0, 7);
+//    Sinusoid1D<Double> sf(5.0, 25.0, 7);
 //    sf(25);            // = -4.911
 //    sf.setAmplitude(1.0);
 //    sf[Sinusoid1D<Double>::PERIOD] = 2.0;                
@@ -103,7 +103,7 @@
 //    <li> AipsError if incorrect parameter number specified.
 // </thrown>
 
-template<class T> class NQSinusoid1DParam : public NQFunction1D<T> {
+template<class T> class Sinusoid1DParam : public Function1D<T> {
  public:
   //# Enumerations
   // Parameter numbers
@@ -115,20 +115,20 @@ template<class T> class NQSinusoid1DParam : public NQFunction1D<T> {
   // <note role=warning> Could not use default arguments
   // that worked both with gcc and IRIX </note>
   // <group>
-  NQSinusoid1DParam();
-  explicit NQSinusoid1DParam(const T &amplitude);
-  NQSinusoid1DParam(const T &amplitude, const T &period);
-  NQSinusoid1DParam(const T &amplitude, const T &period, const T &x0);
+  Sinusoid1DParam();
+  explicit Sinusoid1DParam(const T &amplitude);
+  Sinusoid1DParam(const T &amplitude, const T &period);
+  Sinusoid1DParam(const T &amplitude, const T &period, const T &x0);
   // </group>
 
   // Copy constructor (deep copy)
-  NQSinusoid1DParam(const NQSinusoid1DParam &other);
+  Sinusoid1DParam(const Sinusoid1DParam &other);
 
   // Copy assignment (deep copy)
-  NQSinusoid1DParam<T> &operator=(const NQSinusoid1DParam<T> &other);
+  Sinusoid1DParam<T> &operator=(const Sinusoid1DParam<T> &other);
     
   // Destructor
-  virtual ~NQSinusoid1DParam();
+  virtual ~Sinusoid1DParam();
 
   //# Operators    
     

@@ -1,4 +1,4 @@
-//# NQCompound2Function.cc:  Compound of functions AutoDiff specialization
+//# Compound2Function.cc:  Compound of functions AutoDiff specialization
 //# Copyright (C) 2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -32,7 +32,7 @@
 
 //# Operators
 template <class T>
-AutoDiff<T> NQCompoundFunction<AutoDiff<T> >::
+AutoDiff<T> CompoundFunction<AutoDiff<T> >::
 eval(typename Function<AutoDiff<T> >::FunctionArg x) const {
   if (parset_p) fromParam_p();
   AutoDiff<T> tmp(T(0), nparameters());
@@ -51,15 +51,15 @@ eval(typename Function<AutoDiff<T> >::FunctionArg x) const {
 
 //# Member functions
 template <class T>
-uInt NQCompoundFunction<AutoDiff<T> >::
+uInt CompoundFunction<AutoDiff<T> >::
 addFunction(const Function<AutoDiff<T> > &newFunction) {
-  uInt nf = NQCompoundParam<AutoDiff<T> >::addFunction(newFunction);
+  uInt nf = CompoundParam<AutoDiff<T> >::addFunction(newFunction);
   toParam_p();
   return nf;
 }
 
 template <class T>
-void NQCompoundFunction<AutoDiff<T> >::fromParam_p() const {
+void CompoundFunction<AutoDiff<T> >::fromParam_p() const {
   if (parset_p) {
     for (uInt i=0; i<nparameters(); ++i) {
       uInt k = functionPtr_p[funpar_p[i]]->nparameters();
@@ -88,7 +88,7 @@ void NQCompoundFunction<AutoDiff<T> >::fromParam_p() const {
 }
 
 template <class T>
-void NQCompoundFunction<AutoDiff<T> >::toParam_p() {
+void CompoundFunction<AutoDiff<T> >::toParam_p() {
   // Total number of sub derivatives
   uInt tk(0);
   for (uInt i=0; i<nparameters(); ++i) {

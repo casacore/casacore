@@ -1,4 +1,4 @@
-//# NQGaussian1D.h: A one-dimensional Gaussian class
+//# Gaussian1D.h: A one-dimensional Gaussian class
 //# Copyright (C) 1995,1996,1997,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_NQGAUSSIAN1D_H)
-#define AIPS_NQGAUSSIAN1D_H
+#if !defined(AIPS_GAUSSIAN1D_H)
+#define AIPS_GAUSSIAN1D_H
 
 //# Includes
 #include <aips/aips.h>
@@ -41,25 +41,25 @@
 
 // <use visibility=export>
 
-// <reviewed reviewer="tcornwel" date="1996/02/22" tests="tNQGaussian1D" 
+// <reviewed reviewer="tcornwel" date="1996/02/22" tests="tGaussian1D" 
 // demos="">
 // </reviewed>
 
 // <prerequisite>
-//   <li> <linkto class="NQGaussian1DParam">NQGaussian1DParam</linkto>
+//   <li> <linkto class="Gaussian1DParam">Gaussian1DParam</linkto>
 //   <li> <linkto class="Function">Function</linkto>
 // </prerequisite>
 
 // <etymology> 
-// A NQGaussian1D functional is designed exclusively for calculating a
+// A Gaussian1D functional is designed exclusively for calculating a
 // Gaussian (or Normal) distribution in one dimension. Other classes exist
 // for calculating these functions in two
-// (<linkto class=NQGaussian2D>NQGaussian2D</linkto>) and N 
-// (<linkto class=NQGaussianND>NQGaussianND</linkto>) dimensions.
+// (<linkto class=Gaussian2D>Gaussian2D</linkto>) and N 
+// (<linkto class=GaussianND>GaussianND</linkto>) dimensions.
 // </etymology>
 
 // <synopsis> 
-// A <src>NQGaussian1D</src> is described by a height, center, and width. Its
+// A <src>Gaussian1D</src> is described by a height, center, and width. Its
 // fundamental operation is evaluating itself at some <src>x</src>.
 // The parameters (height, center and width) may be changed at run time. 
 //
@@ -80,7 +80,7 @@
 // width before setting the flux. </note>
 //
 // The parameter interface (see 
-// <linkto class="NQGaussian1DParam">NQGaussian1DParam</linkto> class), 
+// <linkto class="Gaussian1DParam">Gaussian1DParam</linkto> class), 
 // is used to provide an interface to the
 // <linkto module="Fitting">Fitting</linkto> classes. 
 //
@@ -130,7 +130,7 @@
 //   <li> Gaussians that know about their DFT's could be required eventually.
 // </todo>
 
-template<class T> class NQGaussian1D : public NQGaussian1DParam<T> {
+template<class T> class Gaussian1D : public Gaussian1DParam<T> {
  public:
   //# Enumerations
   
@@ -140,76 +140,76 @@ template<class T> class NQGaussian1D : public NQGaussian1DParam<T> {
   // <note role=warning> Could not use default arguments
   // that worked both with gcc and IRIX </note>
   // <group>
-  NQGaussian1D() : NQGaussian1DParam<T>() {};
-  explicit NQGaussian1D(const T &height) : NQGaussian1DParam<T>(height) {};
-  NQGaussian1D(const T &height, const T &center) :
-    NQGaussian1DParam<T>(height, center) {};
-  NQGaussian1D(const T &height, const T &center, const T &width) :
-    NQGaussian1DParam<T>(height, center, width) {};
+  Gaussian1D() : Gaussian1DParam<T>() {};
+  explicit Gaussian1D(const T &height) : Gaussian1DParam<T>(height) {};
+  Gaussian1D(const T &height, const T &center) :
+    Gaussian1DParam<T>(height, center) {};
+  Gaussian1D(const T &height, const T &center, const T &width) :
+    Gaussian1DParam<T>(height, center, width) {};
   // </group>
 
   // Copy constructor (deep copy)
-  NQGaussian1D(const NQGaussian1D<T> &other) : NQGaussian1DParam<T>(other) {};
+  Gaussian1D(const Gaussian1D<T> &other) : Gaussian1DParam<T>(other) {};
 
   // Copy assignment (deep copy)
-  NQGaussian1D<T> &operator=(const NQGaussian1D<T> &other) {
-    NQGaussian1DParam<T>::operator=(other); return *this; };
+  Gaussian1D<T> &operator=(const Gaussian1D<T> &other) {
+    Gaussian1DParam<T>::operator=(other); return *this; };
     
   // Destructor
-  virtual ~NQGaussian1D() {};
+  virtual ~Gaussian1D() {};
 
   //# Operators    
   // Evaluate the Gaussian at <src>x</src>.
   // <group>
-  virtual T eval(typename NQFunction1D<T>::FunctionArg x) const;
+  virtual T eval(typename Function1D<T>::FunctionArg x) const;
   // </group>
 
   //# Member functions
   // Return a copy of this object from the heap. The caller is responsible 
   // for deleting this pointer.
   // <group>
-  virtual Function<T> *clone() const { return new NQGaussian1D<T>(*this); };
+  virtual Function<T> *clone() const { return new Gaussian1D<T>(*this); };
   // </group>
 
 };
 
-#define NQGaussian1D_PS NQGaussian1D
+#define Gaussian1D_PS Gaussian1D
 
-// <summary> Partial specialization of NQGaussian1D for <src>AutoDiff</src>
+// <summary> Partial specialization of Gaussian1D for <src>AutoDiff</src>
 // </summary>
 
 // <synopsis>
-// <note role=warning> The name <src>NQGaussian1D_PS</src> is only for cxx2html
-// documentation problems. Use <src>NQGaussian1D</src> in your code.</note>
+// <note role=warning> The name <src>Gaussian1D_PS</src> is only for cxx2html
+// documentation problems. Use <src>Gaussian1D</src> in your code.</note>
 // </synopsis>
 
-template <class T> class NQGaussian1D_PS<AutoDiff<T> > : 
-public NQGaussian1DParam<AutoDiff<T> > {
+template <class T> class Gaussian1D_PS<AutoDiff<T> > : 
+public Gaussian1DParam<AutoDiff<T> > {
  public:
   //# Constructors
   // Constructs one dimensional Gaussians.
   // <group>
-  NQGaussian1D_PS() : NQGaussian1DParam<AutoDiff<T> >() {};
-  explicit NQGaussian1D_PS(const AutoDiff<T> &height) :
-    NQGaussian1DParam<AutoDiff<T> >(height) {};
-  NQGaussian1D_PS(const AutoDiff<T> &height, const AutoDiff<T> &center) :
-    NQGaussian1DParam<AutoDiff<T> >(height, center) {};
-  NQGaussian1D_PS(const AutoDiff<T> &height, const AutoDiff<T> &center,
+  Gaussian1D_PS() : Gaussian1DParam<AutoDiff<T> >() {};
+  explicit Gaussian1D_PS(const AutoDiff<T> &height) :
+    Gaussian1DParam<AutoDiff<T> >(height) {};
+  Gaussian1D_PS(const AutoDiff<T> &height, const AutoDiff<T> &center) :
+    Gaussian1DParam<AutoDiff<T> >(height, center) {};
+  Gaussian1D_PS(const AutoDiff<T> &height, const AutoDiff<T> &center,
 		  const AutoDiff<T> &width) :
-    NQGaussian1DParam<AutoDiff<T> >(height, center, width) {};
+    Gaussian1DParam<AutoDiff<T> >(height, center, width) {};
   // </group>
 
   // Copy constructor (deep copy)
-  NQGaussian1D_PS(const NQGaussian1D_PS &other) :
-    NQGaussian1DParam<AutoDiff<T> >(other) {};
+  Gaussian1D_PS(const Gaussian1D_PS &other) :
+    Gaussian1DParam<AutoDiff<T> >(other) {};
 
   // Copy assignment (deep copy)
-  NQGaussian1D_PS<AutoDiff<T> > &
-    operator=(const NQGaussian1D_PS<AutoDiff<T> > &other) {
-    NQGaussian1DParam<AutoDiff<T> >::operator=(other); return *this; };
+  Gaussian1D_PS<AutoDiff<T> > &
+    operator=(const Gaussian1D_PS<AutoDiff<T> > &other) {
+    Gaussian1DParam<AutoDiff<T> >::operator=(other); return *this; };
     
   // Destructor
-  virtual ~NQGaussian1D_PS() {};
+  virtual ~Gaussian1D_PS() {};
 
   //# Operators    
   // Evaluate the Gaussian and its derivatives at <src>x</src>.
@@ -222,11 +222,11 @@ public NQGaussian1DParam<AutoDiff<T> > {
   // for deleting this pointer.
   // <group>
   virtual Function<AutoDiff<T> > *clone() const {
-    return new NQGaussian1D<AutoDiff<T> >(*this); };
+    return new Gaussian1D<AutoDiff<T> >(*this); };
   // </group>
 
 };
 
-#undef NQGaussian1D_PS
+#undef Gaussian1D_PS
 
 #endif

@@ -1,4 +1,4 @@
-//# NQGaussian2D.cc: A two-dimensional Gaussian class
+//# Gaussian2D.cc: A two-dimensional Gaussian class
 //# Copyright (C) 1994,1995,1996,1999,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -33,7 +33,7 @@
 
 //# Operators
 template<class T>
-T NQGaussian2D<T>::eval(typename Function<T>::FunctionArg x) const {
+T Gaussian2D<T>::eval(typename Function<T>::FunctionArg x) const {
   T xnorm = x[0] - param_p[XCENTER];
   T ynorm = x[1] - param_p[YCENTER];
   if (param_p[PANGLE] != thePA) {

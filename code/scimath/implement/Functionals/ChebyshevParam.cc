@@ -1,4 +1,4 @@
-//# NQChebyshevParam.cc  a function class that defines a NQChebyshevParam polynomial
+//# ChebyshevParam.cc  a function class that defines a ChebyshevParam polynomial
 //# Copyright (C) 2000,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -34,42 +34,42 @@
 
 //# Constructors
 template <class T>
-NQChebyshevParam<T>::NQChebyshevParam() :
-  NQFunction1D<T>(1), def_p(T(0)), 
+ChebyshevParam<T>::ChebyshevParam() :
+  Function1D<T>(1), def_p(T(0)), 
   minx_p(T(-1)), maxx_p(T(1)), mode_p(CONSTANT) {} 
 
 template <class T>
-NQChebyshevParam<T>::NQChebyshevParam(const uInt n) :
-  NQFunction1D<T>(n+1), def_p(T(0)), 
+ChebyshevParam<T>::ChebyshevParam(const uInt n) :
+  Function1D<T>(n+1), def_p(T(0)), 
   minx_p(T(-1)), maxx_p(T(1)), mode_p(CONSTANT) {} 
 
 template <class T>
-NQChebyshevParam<T>::NQChebyshevParam(const T &min, const T &max,
+ChebyshevParam<T>::ChebyshevParam(const T &min, const T &max,
 				      const OutOfIntervalMode mode,
 				      const T &defval) :
-  NQFunction1D<T>(1), def_p(defval), mode_p(mode) {
+  Function1D<T>(1), def_p(defval), mode_p(mode) {
   param_p[0] = 1;
   setInterval(min, max);
 }
 
 template <class T>
-NQChebyshevParam<T>::NQChebyshevParam(const Vector<T> &coeffs,
+ChebyshevParam<T>::ChebyshevParam(const Vector<T> &coeffs,
 				      const T &min, const T &max, 
 				      const OutOfIntervalMode mode,
 				      const T &defval) :
-  NQFunction1D<T>(coeffs.nelements()), def_p(defval), mode_p(mode) { 
+  Function1D<T>(coeffs.nelements()), def_p(defval), mode_p(mode) { 
   setInterval(min, max);
   setCoefficients(coeffs);
 }
 
 template <class T>
-NQChebyshevParam<T>::NQChebyshevParam(const NQChebyshevParam &other) :
-  NQFunction1D<T>(other), def_p(other.def_p), 
+ChebyshevParam<T>::ChebyshevParam(const ChebyshevParam &other) :
+  Function1D<T>(other), def_p(other.def_p), 
   minx_p(other.minx_p), maxx_p(other.maxx_p), mode_p(other.mode_p) {} 
 
 template <class T>
-NQChebyshevParam<T> &
-NQChebyshevParam<T>::operator=(const NQChebyshevParam<T> &other) {
+ChebyshevParam<T> &
+ChebyshevParam<T>::operator=(const ChebyshevParam<T> &other) {
   if (this != &other) {
     mode_p = other.mode_p;
     minx_p = other.minx_p;
@@ -80,22 +80,22 @@ NQChebyshevParam<T>::operator=(const NQChebyshevParam<T> &other) {
 }
 
 template <class T>
-NQChebyshevParam<T>::~NQChebyshevParam() {}
+ChebyshevParam<T>::~ChebyshevParam() {}
 
 //# Operators
 
 //# Member functions
 template <class T>
-void NQChebyshevParam<T>::setCoefficients(const Vector<T> &coeffs) {
+void ChebyshevParam<T>::setCoefficients(const Vector<T> &coeffs) {
   if (coeffs.nelements() == 0) {
-    throw AipsError("NQChebyshevParam<T>::setCoeffiecients(): "
+    throw AipsError("ChebyshevParam<T>::setCoeffiecients(): "
 		    "empty Vector passed");
   };
   for (uInt i=0; i<coeffs.nelements(); ++i) setCoefficient(i, coeffs[i]);
 }
 
 template <class T>
-void NQChebyshevParam<T>::setCoefficient(const uInt which,
+void ChebyshevParam<T>::setCoefficient(const uInt which,
 					 const T &value) {
   if (which >= nparameters()) {
     uInt sz = nparameters();
@@ -110,12 +110,12 @@ void NQChebyshevParam<T>::setCoefficient(const uInt which,
 }
 
 template <class T>
-const Vector<T> &NQChebyshevParam<T>::getCoefficients() const {
+const Vector<T> &ChebyshevParam<T>::getCoefficients() const {
   return param_p.getParameters();
 }
 
 template <class T>
-void NQChebyshevParam<T>::derivativeCoeffs(Vector<T> &coeffs,
+void ChebyshevParam<T>::derivativeCoeffs(Vector<T> &coeffs,
 					   const T &xmin, const T &xmax) {
     // first get power series coefficients
     Vector<T> ce(coeffs);
@@ -125,12 +125,12 @@ void NQChebyshevParam<T>::derivativeCoeffs(Vector<T> &coeffs,
     dce.resize(ce.nelements()-1);
     for (uInt i=1; i<ce.nelements(); ++i) dce(i-1) =
 					    T(2*i)*ce(i) / (xmax-xmin);
-    // convert back to NQChebyshevParam
-    powerToNQChebyshev(dce);
+    // convert back to ChebyshevParam
+    powerToChebyshev(dce);
 }
 
 template <class T>
-void NQChebyshevParam<T>::powerToNQChebyshev(Vector<T> &coeffs) {
+void ChebyshevParam<T>::powerToChebyshev(Vector<T> &coeffs) {
   uInt n = coeffs.nelements();
   // Create an inverse transformation matrix
   Matrix<T> poly(n, n, T(0));
@@ -156,7 +156,7 @@ void NQChebyshevParam<T>::powerToNQChebyshev(Vector<T> &coeffs) {
 }
 
 template <class T>
-void NQChebyshevParam<T>::chebyshevToPower(Vector<T> &coeffs) {
+void ChebyshevParam<T>::chebyshevToPower(Vector<T> &coeffs) {
   uInt n = coeffs.nelements();
   // Create a transformation matrix
   Matrix<T> cheb(n, n, T(0));

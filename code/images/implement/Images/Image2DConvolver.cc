@@ -560,7 +560,7 @@ void Image2DConvolver<T>::fillGaussian (T& maxVal, T& volume,
    uInt n2 = pixels.shape()(1);
    AlwaysAssert(n1==n2,AipsError);
    positionAngle += C::pi_2;        // +y -> -x
-   NQGaussian2D<T> g2d(height, xCentre, yCentre, majorAxis,
+   Gaussian2D<T> g2d(height, xCentre, yCentre, majorAxis,
 		       ratio, positionAngle);
    maxVal = -1.0e30;
    volume = 0.0;

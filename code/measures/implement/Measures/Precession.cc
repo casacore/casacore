@@ -144,7 +144,7 @@ void Precession::fillEpoch() {
 	    break;
 	};
     };
-    for (Int i=0; i<3; i++) zeta[i] = NQPolynomial<Double>(3);
+    for (Int i=0; i<3; i++) zeta[i] = Polynomial<Double>(3);
     T = (fixedEpoch - refEpoch)/cent;
     switch (method) {
 	case B1950:

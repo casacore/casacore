@@ -1,4 +1,4 @@
-//# NQGaussianND.h: A multidimensional Gaussian class
+//# GaussianND.h: A multidimensional Gaussian class
 //# Copyright (C) 1995,1996,1998,1999,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_NQGAUSSIANND_H)
-#define AIPS_NQGAUSSIANND_H
+#if !defined(AIPS_GAUSSIANND_H)
+#define AIPS_GAUSSIANND_H
 
 #include <aips/aips.h>
 #include <aips/Functionals/GaussianNDParam.h>
@@ -38,19 +38,19 @@
 
 // <use visibility=export>
 
-// <reviewed reviewer="" date="" tests="tNQGaussianND" demos="dNQGaussianND">
+// <reviewed reviewer="" date="" tests="tGaussianND" demos="dGaussianND">
 // </reviewed>
 
 // <prerequisite>
-//   <li> <linkto class="NQGaussianNDParam">NQGaussianNDParam</linkto>
+//   <li> <linkto class="GaussianNDParam">GaussianNDParam</linkto>
 //   <li> <linkto class="Function">Function</linkto>
 // </prerequisite>
 
 // <synopsis> 
 // A <src>GaussianND</src> is used to calculate Gaussian functions of any
-// dimension. A <linkto class=NQGaussian1D> NQGaussian1D </linkto> class exists
+// dimension. A <linkto class=Gaussian1D> Gaussian1D </linkto> class exists
 // which is more appropriate for one dimensional Gaussian functions, and a
-// <linkto class=NQGaussian2D> NQGaussian2D </linkto> class exists for two
+// <linkto class=Gaussian2D> Gaussian2D </linkto> class exists for two
 // dimensional functions.
 //
 // A statistical description of the multi-dimensional Gaussian is used (see
@@ -136,7 +136,7 @@
 // Float height = 1;
 // Vector<Float> mean(ndim); mean(0) = 0, mean(1) = 1;
 // Vector<Float> variance(ndim); variance(0) = .1, variance(1) = 7;
-// NQGaussianND<Float> g(ndim, height, mean, variance); 
+// GaussianND<Float> g(ndim, height, mean, variance); 
 // Vector<Float> x(ndim); x = 0;
 // cout << "g("<< x <<") = " << g(x) <<endl; // g([0,0])=1*exp(-1/2*1/7);
 // x(1)++;
@@ -173,7 +173,7 @@
 //  <li> Nothing I know off, apart from possible optimization
 // </todo>
 
-template<class T> class NQGaussianND : public NQGaussianNDParam<T> {
+template<class T> class GaussianND : public GaussianNDParam<T> {
   public:
   //# Constructors
   // Makes a Gaussian using the indicated height, mean, variance &
@@ -184,30 +184,30 @@ template<class T> class NQGaussianND : public NQGaussianNDParam<T> {
   // variance defaults to 1.0, 
   // covariance defaults to 0.0, 
   // <group>
-  NQGaussianND() : NQGaussianNDParam<T>() {};
-  explicit NQGaussianND(uInt ndim) :
-    NQGaussianNDParam<T>(ndim) {};
-  NQGaussianND(uInt ndim, const T &height) :
-    NQGaussianNDParam<T>(ndim, height) {};
-  NQGaussianND(uInt ndim, const T &height, const Vector<T> &mean) :
-    NQGaussianNDParam<T>(ndim, height, mean) {};
-  NQGaussianND(uInt ndim, const T &height, const Vector<T> &mean,
+  GaussianND() : GaussianNDParam<T>() {};
+  explicit GaussianND(uInt ndim) :
+    GaussianNDParam<T>(ndim) {};
+  GaussianND(uInt ndim, const T &height) :
+    GaussianNDParam<T>(ndim, height) {};
+  GaussianND(uInt ndim, const T &height, const Vector<T> &mean) :
+    GaussianNDParam<T>(ndim, height, mean) {};
+  GaussianND(uInt ndim, const T &height, const Vector<T> &mean,
 	     const Vector<T> &variance) :
-    NQGaussianNDParam<T>(ndim, height, mean, variance) {};
-  NQGaussianND(uInt ndim, const T &height, const Vector<T> &mean,
+    GaussianNDParam<T>(ndim, height, mean, variance) {};
+  GaussianND(uInt ndim, const T &height, const Vector<T> &mean,
 	     const Matrix<T> &covar) :
-    NQGaussianNDParam<T>(ndim, height, mean, covar) {};
+    GaussianNDParam<T>(ndim, height, mean, covar) {};
   // </group>
 
   // Copy constructor (deep copy)
-  NQGaussianND(const NQGaussianND &other) : NQGaussianNDParam<T>(other) {};
+  GaussianND(const GaussianND &other) : GaussianNDParam<T>(other) {};
 
   // Copy assignment (deep copy)
-  NQGaussianND<T> &operator=(const NQGaussianND<T> &other) {
-    NQGaussianNDParam<T>::operator=(other); return *this; };
+  GaussianND<T> &operator=(const GaussianND<T> &other) {
+    GaussianNDParam<T>::operator=(other); return *this; };
     
   // Destructor
-  virtual ~NQGaussianND() {};
+  virtual ~GaussianND() {};
 
   //# Operators    
   // Evaluate the Gaussian at <src>x</src>.
@@ -218,7 +218,7 @@ template<class T> class NQGaussianND : public NQGaussianNDParam<T> {
   //# Member functions
   // Return a copy of this object from the heap. The caller is responsible for
   // deleting this pointer.
-  virtual Function<T> *clone() const { return new NQGaussianND<T>(*this); };
+  virtual Function<T> *clone() const { return new GaussianND<T>(*this); };
 
 };
 

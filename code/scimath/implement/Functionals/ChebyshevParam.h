@@ -1,4 +1,4 @@
-//# NQChebyshevParam.h: Parameter handling for NQChebyshev polynomial
+//# ChebyshevParam.h: Parameter handling for Chebyshev polynomial
 //# Copyright (C) 2000,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -26,8 +26,8 @@
 //#! ========================================================================
 //# $Id$
 
-#if !defined(AIPS_NQCHEBYSHEVPARAM_H)
-#define AIPS_NQCHEBYSHEVPARAM_H
+#if !defined(AIPS_CHEBYSHEVPARAM_H)
+#define AIPS_CHEBYSHEVPARAM_H
 
 #include <aips/aips.h>
 #include <aips/Functionals/Function1D.h>
@@ -35,32 +35,32 @@
 //# Forward Declarations
 template<class T> class Vector;
 
-// <summary> Parameter handling for NQChebyshev polynomial
+// <summary> Parameter handling for Chebyshev polynomial
 // </summary>
 
 // <use visibility=local>
 
-// <reviewed reviewer="wbrouw" date="2001/11/12" tests="tNQChebyshev" demos="">
+// <reviewed reviewer="wbrouw" date="2001/11/12" tests="tChebyshev" demos="">
 // </reviewed>
 
 // <prerequisite>
 //   <li> <linkto class="FunctionParam">FunctionParam</linkto> class
-//   <li> <linkto class=NQFunction1D>NQFunction1D</linkto>
+//   <li> <linkto class=Function1D>Function1D</linkto>
 // </prerequisite>
 //
 // <etymology>
-// This class is named after NQChebyshev Type I polynomials 
+// This class is named after Chebyshev Type I polynomials 
 // </etymology>
 //
 // <synopsis>
 // This class allows one to form and evaluate a function as a
-// NQChebyshev series, a linear combination of so-called NQChebyshev
+// Chebyshev series, a linear combination of so-called Chebyshev
 // polynomials. 
 // 
-// NQChebyshev polynomials are a special type of ultraspheric polynomials 
+// Chebyshev polynomials are a special type of ultraspheric polynomials 
 // that are useful in such contexts as numerical analysis and circuit
 // design. They form an orthogobnal set.
-// A (type I) NQChebyshev polynomial, T_n, is generated via the
+// A (type I) Chebyshev polynomial, T_n, is generated via the
 // equation:
 // <srcblock>
 // T_n(x) = cos n(arccos x)
@@ -86,38 +86,38 @@ template<class T> class Vector;
 // T_(n+1) = 2xT_(n) - T_(n-1).
 // </srcblock>
 // 
-// A common use of NQChebyshev polynomials is in approximating
+// A common use of Chebyshev polynomials is in approximating
 // functions.  In particular, any function that is approximated by
 // a power series,
 // <srcblock>
 // f(x) ~ SUM P_i x^i,
 // </srcblock>
 // over the interval [-1, 1] can be approximated by a linear
-// combination of NQChebyshev polynomials:
+// combination of Chebyshev polynomials:
 // <srcblock>
 // f(x) ~ SUM C_i T_i(x),
 // </srcblock>
-// where C_i is the set of so-called NQChebyshev coefficients.
+// where C_i is the set of so-called Chebyshev coefficients.
 // 
-// Approximating a function with NQChebyshev polynomials has some
+// Approximating a function with Chebyshev polynomials has some
 // important advantages.  For one, if the function is well approximated
 // by a converging power series, one can obtain an equally accurate
-// estimate using fewer terms of the corresponding NQChebyshev series.
+// estimate using fewer terms of the corresponding Chebyshev series.
 // More important, though, is the property over the interval [-1, 1],
 // each polynomial has a domain of [-1, 1]; thus, the series is nicely
 // bounded.  And because of this bounded property, approximations
-// calculated from a NQChebyshev series are less susceptible to machine
+// calculated from a Chebyshev series are less susceptible to machine
 // rounding errors than the equivalent power series.  
 //
 // With a simple change of variable, it is possible to approximate a
 // continuous function over any restricted interval using a
-// NQChebyshev series.  This documention refers to this interval as the
-// <em>NQChebyshev interval</em> (set with the
+// Chebyshev series.  This documention refers to this interval as the
+// <em>Chebyshev interval</em> (set with the
 // <src>setInterval()</src> function).  The
 // other important input parameters, of course, include the
 // coefficients of the polynomials.  
 //
-// Like all Functions, the NQChebyshev series is evaluated via the 
+// Like all Functions, the Chebyshev series is evaluated via the 
 // operator().  If the input value is within the range set by
 // setInterval(), it is transformed to the range [-1, 1] via,
 // <srcblock>
@@ -125,7 +125,7 @@ template<class T> class Vector;
 // </srcblock>
 // The series is then evaluated with the coefficients set either at
 // construction or via setCoefficients().  The value that is returned
-// when the input value is outside the NQChebyshev interval depends on
+// when the input value is outside the Chebyshev interval depends on
 // the out-of-interval mode (set via setOutOfIntervalMode()).  The
 // default mode is to return a default value which can be set via
 // setDefault().  The supported modes are identified by the
@@ -137,7 +137,7 @@ template<class T> class Vector;
 // 
 // The derivative of a Chebyshev series <em>wrt</em> the argument <src>x</src>,
 // is easily calculated analytically and
-// can be expressed as another NQChebyshev series; this is what the
+// can be expressed as another Chebyshev series; this is what the
 // derivative() function returns.  However, the more general way to
 // obtain derivatives is via the <linkto class="AutoDiff">AutoDiff</linkto> 
 // templated type.  
@@ -145,14 +145,14 @@ template<class T> class Vector;
 // </synopsis>
 //
 // <example>
-// In this example, a 2nd order NQChebyshev polynomial series is
+// In this example, a 2nd order Chebyshev polynomial series is
 // created.
 // <srcblock>
 //   // set coeffs to desired values
 //   Vector<Double> coeffs(3, 1);   
 //
 //   // configure the function   
-//   NQChebyshev<Double> cheb;
+//   Chebyshev<Double> cheb;
 //   cheb.setInterval(-0.8, 7.2);
 //   cheb.setDefault(1.0);
 //   cheb.setCoefficients(coeffs);
@@ -168,7 +168,7 @@ template<class T> class Vector;
 // calculate derivatives.  Here, we replace the Double type with 
 // AutoDiff<Double>.
 // <srcblock>
-//   NQChebyshev<AutoDiff<Double> > cheb;
+//   Chebyshev<AutoDiff<Double> > cheb;
 //   cheb.setDefault(AutoDiff<Double>(1));
 //   cheb.setInterval(AutoDiff<Double>(-0.8), AutoDiff<Double>(7.2));
 //
@@ -207,14 +207,14 @@ template<class T> class Vector;
 //    <li> It would be helpful to be able to convert to and from the 
 //         Polynomial<T> type; this would be supported via a function,
 //         Polynomial<T> polynomial(), and constructor, 
-//         NQChebyshev(Polynomial<T>)
+//         Chebyshev(Polynomial<T>)
 // </todo>
 
 template<class T>
-class  NQChebyshevParam : public NQFunction1D<T> {
+class  ChebyshevParam : public Function1D<T> {
  public: 
   //# Enumerators
-  // modes that identify how this function behaves outside its NQChebyshev
+  // modes that identify how this function behaves outside its Chebyshev
   // interval (see setInterval()).
   enum OutOfIntervalMode {
     // return a constant, default value.  The value returned is 
@@ -225,14 +225,14 @@ class  NQChebyshevParam : public NQFunction1D<T> {
     // evaluate the polynomial based on its coefficients just as it
     // would be inside the interval.  Thus, the function's range is not
     // guaranteed to remain within the characteristic bounds of the
-    // NQChebyshev interval.  
+    // Chebyshev interval.  
     EXTRAPOLATE,
     // evaluate the function as if the range is cyclic, repeating the
     // range values from its canonical domain.  The period of the cycle
     // will be equal to getIntervalMax()-getIntervalMin().  When the 
     // function is evaluated outside this interval, the input value will 
     // shifted an integer number of periods until it falls within the 
-    // NQChebyshev interval; the value returned is the polynomial evaluated 
+    // Chebyshev interval; the value returned is the polynomial evaluated 
     // at the shifted (x-axis) value.  Obviously, this mode is most 
     // expensive computationally when evaluating outside the range.
     CYCLIC,
@@ -242,58 +242,58 @@ class  NQChebyshevParam : public NQFunction1D<T> {
     NOutOfIntervalModes };
 
   //# Constructors
-  // create a zero-th order NQChebyshev polynomial with the first coefficient
+  // create a zero-th order Chebyshev polynomial with the first coefficient
   // equal to zero.  The bounded domain is [T(-1), T(1)].  The 
   // OutOfDomainMode is CONSTANT, and the default value is T(0).
-  NQChebyshevParam();
+  ChebyshevParam();
 
-  // create an n-th order NQChebyshev polynomial with the coefficients
+  // create an n-th order Chebyshev polynomial with the coefficients
   // equal to zero.  The bounded domain is [T(-1), T(1)].  The 
   // OutOfDomainMode is CONSTANT, and the default value is T(0).
-  explicit NQChebyshevParam(const uInt n);
+  explicit ChebyshevParam(const uInt n);
 
-  // create a zero-th order NQChebyshev polynomical with the first coefficient
+  // create a zero-th order Chebyshev polynomical with the first coefficient
   // equal to one.  
-  //   min is the minimum value of its NQChebyshev interval, and 
+  //   min is the minimum value of its Chebyshev interval, and 
   //   max is the maximum value.  
-  //   mode sets the behavior of the function outside the NQChebyshev interval
+  //   mode sets the behavior of the function outside the Chebyshev interval
   //      (see setOutOfIntervalMode() and OutOfIntervalMode enumeration 
   //      definition for details).  
   //   defval is the value returned when the function is evaluated outside
-  //      the NQChebyshev interval and mode=CONSTANT.
-  NQChebyshevParam(const T &min, const T &max,
+  //      the Chebyshev interval and mode=CONSTANT.
+  ChebyshevParam(const T &min, const T &max,
 		   const OutOfIntervalMode mode=CONSTANT,
 		   const T &defval=T(0));
   
-  // create a fully specified NQChebyshev polynomial.  
-  //   coeffs holds the coefficients of the NQChebyshev polynomial (see 
+  // create a fully specified Chebyshev polynomial.  
+  //   coeffs holds the coefficients of the Chebyshev polynomial (see 
   //      setCoefficients() for details).
   //   min is the minimum value of its canonical range, and 
   //   max is the maximum value.  
-  //   mode sets the behavior of the function outside the NQChebyshev interval
+  //   mode sets the behavior of the function outside the Chebyshev interval
   //      (see setOutOfIntervalMode() and OutOfIntervalMode enumeration 
   //      definition for details).  
   //   defval is the value returned when the function is evaluated outside
   //      the canonical range and mode=CONSTANT.
-  NQChebyshevParam(const Vector<T> &coeffs, const T &min, const T &max, 
+  ChebyshevParam(const Vector<T> &coeffs, const T &min, const T &max, 
 		   const OutOfIntervalMode mode=CONSTANT, const T &defval=T(0));
   
-  // create a deep copy of another NQChebyshev polynomial
-  NQChebyshevParam(const  NQChebyshevParam &other);
+  // create a deep copy of another Chebyshev polynomial
+  ChebyshevParam(const  ChebyshevParam &other);
   
-  // make a (deep) copy of another NQChebyshev polynomial
-  NQChebyshevParam<T> &operator=(const NQChebyshevParam<T> &other);
+  // make a (deep) copy of another Chebyshev polynomial
+  ChebyshevParam<T> &operator=(const ChebyshevParam<T> &other);
   
   // Destructor
-  virtual ~NQChebyshevParam();
+  virtual ~ChebyshevParam();
   
-  // set the NQChebyshev coefficients.  
+  // set the Chebyshev coefficients.  
   //   coeffs holds the coefficients in order, beginning with the zero-th 
   //      order term.  The order of the polynomial, then, would be the size 
   //      of the Vector minus one.  
   void setCoefficients(const Vector<T> &coeffs);
 
-  // set a particular NQChebyshev coefficient.
+  // set a particular Chebyshev coefficient.
   //   which is the coefficient order (i.e. 0 refers to the constant offset).
   //   value is the coefficient value.
   // If which is larger than current order of the function, the order will
@@ -320,7 +320,7 @@ class  NQChebyshevParam : public NQFunction1D<T> {
     
   // set the Chebyshev interval for this function.  The function will 
   // be scaled and shifted to such that the central bounded range of the 
-  // NQChebyshev polynomials ([-1, 1] in untransformed space) spans the 
+  // Chebyshev polynomials ([-1, 1] in untransformed space) spans the 
   // given range.  
   //   min is the minimum value for the interval, and 
   //   max is the maximum value.  See setOutOfIntervalMode() for the behavior 
@@ -338,16 +338,16 @@ class  NQChebyshevParam : public NQFunction1D<T> {
   T getIntervalMax() const { return maxx_p; }
 
   // set the behavior of this function when it is evaluated outside its
-  // NQChebyshev interval
+  // Chebyshev interval
   void setOutOfIntervalMode(OutOfIntervalMode mode) { mode_p = mode; }
 
   // return the behavior of this function when it is evaluated outside of 
-  // its NQChebyshev interval.
+  // its Chebyshev interval.
   OutOfIntervalMode getOutOfIntervalMode() const { return mode_p; }
 
   // set the default value of this function.  This value is used when 
-  // the getOutOfIntervalMode() returns NQChebyshev::CONSTANT; it is returned
-  // when the a value outside of the NQChebyshev interval is passed to 
+  // the getOutOfIntervalMode() returns Chebyshev::CONSTANT; it is returned
+  // when the a value outside of the Chebyshev interval is passed to 
   // the () operator.
   void setDefault(const T &val) { def_p = val; }
 
@@ -359,26 +359,26 @@ class  NQChebyshevParam : public NQFunction1D<T> {
   // nCoefficients()-1;
   uInt order() const { return param_p.nelements() - 1; };
 
-  // transform a set of NQChebyshev polynomial coefficients into a set 
+  // transform a set of Chebyshev polynomial coefficients into a set 
   // representing the series' derivative.  coeffs should be assuming
   // an interval of [-1, 1].  xmin and xmax can be provided to transform
   // the series to another interval.
   static void derivativeCoeffs(Vector<T> &coeffs, const T &xmin=T(-1),
 			       const T &xmax=T(1));
   
-  // convert a set of NQChebyshev polynomial coefficients to power series
+  // convert a set of Chebyshev polynomial coefficients to power series
   // coefficients.  The values passed in coeffs are taken to 
   // be chebyshev coefficients; these values will be replaced with the 
   // power series coefficients.  They should be ordered beginning
   // with the zero-th order coefficient.  
   static void chebyshevToPower(Vector<T> &coeffs);
 
-  // convert a set of power series coefficients to NQChebyshev
+  // convert a set of power series coefficients to Chebyshev
   // polynomial coefficients.  The values passed in coeffs are taken to 
   // be power series coefficients; these values will be replaced with the 
-  // NQChebyshev polynomial coefficients.  They should be ordered beginning
+  // Chebyshev polynomial coefficients.  They should be ordered beginning
   // with the zero-th order coefficient.  
-  static void powerToNQChebyshev(Vector<T> &coeffs);
+  static void powerToChebyshev(Vector<T> &coeffs);
 
  protected:
   // Default value if outside interval

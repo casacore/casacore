@@ -72,7 +72,7 @@ int main() {
 
   // Make some fake data sets
   //  20.0 * exp (-((x-25)/4)^2) 
-  NQGaussian1D<Double> gauss1(20, 25.0, 4.0);  
+  Gaussian1D<Double> gauss1(20, 25.0, 4.0);  
   for (uInt j=0; j<n; j++) x(j) = j*0.5;
   for (uInt i=0; i<n; i++) {
     value = gauss1(x(i));
@@ -80,9 +80,9 @@ int main() {
   };  
     
   // Construct a gaussian function for fitting
-  // It has to be a NQGaussian1D instantiated with an AutoDiff. 
+  // It has to be a Gaussian1D instantiated with an AutoDiff. 
 
-  NQGaussian1D<AutoDiff<Double> > gauss;
+  Gaussian1D<AutoDiff<Double> > gauss;
 
   // Must give an initial guess for the set of fitted parameters.
 
@@ -145,9 +145,9 @@ int main() {
   // ***** test oneA: fit 1D gaussian function using non Autodiff param ****** 
     
   // Construct a gaussian function for fitting
-  // It has to be a NQGaussian1D instantiated with an AutoDiff. 
+  // It has to be a Gaussian1D instantiated with an AutoDiff. 
 
-  NQGaussian1D<AutoDiff<Double> > gaussA;
+  Gaussian1D<AutoDiff<Double> > gaussA;
   for (uInt i=0; i<3; i++) gaussA[i] = v[i];
   // Set the function
   fitter.setFunction(gaussA);
@@ -199,13 +199,13 @@ int main() {
   // ***** test oneB: fit 1D gaussian function using compound ****** 
     
   // Construct a gaussian function for fitting
-  // It has to be a NQGaussian1D instantiated with an AutoDiff. 
+  // It has to be a Gaussian1D instantiated with an AutoDiff. 
 
-  NQGaussian1D<AutoDiff<Double> > gaussB0;
+  Gaussian1D<AutoDiff<Double> > gaussB0;
   for (uInt i=0; i<3; i++) {
     gaussB0[i] = AutoDiff<Double>(v[i], gaussB0.nparameters(), i);
   };
-  NQCompoundFunction<AutoDiff<Double> > gaussB;
+  CompoundFunction<AutoDiff<Double> > gaussB;
   gaussB.addFunction(gaussB0);
   // Set the function
   fitter.setFunction(gaussB);
@@ -326,7 +326,7 @@ int main() {
   // f(x,y) = h*exp{-[(x-x0)*cos(theta)+(y-y0)*sin(theta)]^2/Wx^2 
   //                -[-(x-x0)*sin(theta)+(y-y0)*cos(theta)]^2/(Wx*r)^2}
   // with h = 1, x0 = y0 = 0, theta = 1, Wx = 2.0, r = 0.5.
-  NQGaussian2D<Double> gauss2d1;
+  Gaussian2D<Double> gauss2d1;
   gauss2d1.setMajorAxis(2.0);
   gauss2d1.setAxialRatio(0.5);
   gauss2d1.setPA(1);
@@ -343,27 +343,27 @@ int main() {
   };
 
   // construct the function to be fitted
-  NQGaussian2D<AutoDiff<Double> > gauss2d;
+  Gaussian2D<AutoDiff<Double> > gauss2d;
   Vector<AutoDiff<Double> > V2(2);
-  V2(0) = AutoDiff<Double>(0.05,6,NQGaussian2D<AutoDiff<Double> >::XCENTER);
-  V2(1) = AutoDiff<Double>(0.05,6,NQGaussian2D<AutoDiff<Double> >::YCENTER);
+  V2(0) = AutoDiff<Double>(0.05,6,Gaussian2D<AutoDiff<Double> >::XCENTER);
+  V2(1) = AutoDiff<Double>(0.05,6,Gaussian2D<AutoDiff<Double> >::YCENTER);
   gauss2d.setHeight(AutoDiff<Double>
-		    (1.0,6,NQGaussian2D<AutoDiff<Double> >::HEIGHT));
-  gauss2d[NQGaussian2D<AutoDiff<Double> >::YWIDTH] =
-    AutoDiff<Double>(2.0,6,NQGaussian2D<AutoDiff<Double> >::YWIDTH);
-  gauss2d[NQGaussian2D<AutoDiff<Double> >::RATIO] =
-    AutoDiff<Double>(0.5,6,NQGaussian2D<AutoDiff<Double> >::RATIO);
+		    (1.0,6,Gaussian2D<AutoDiff<Double> >::HEIGHT));
+  gauss2d[Gaussian2D<AutoDiff<Double> >::YWIDTH] =
+    AutoDiff<Double>(2.0,6,Gaussian2D<AutoDiff<Double> >::YWIDTH);
+  gauss2d[Gaussian2D<AutoDiff<Double> >::RATIO] =
+    AutoDiff<Double>(0.5,6,Gaussian2D<AutoDiff<Double> >::RATIO);
   gauss2d.setPA(
-    AutoDiff<Double>(0.05,6,NQGaussian2D<AutoDiff<Double> >::PANGLE));
+    AutoDiff<Double>(0.05,6,Gaussian2D<AutoDiff<Double> >::PANGLE));
   gauss2d.setCenter(V2);
 
-  // Note: For circular NQGaussian fitting, the axial ratio should be set to one
+  // Note: For circular Gaussian fitting, the axial ratio should be set to one
   // (default value is one if not set) and the rotation angle should be set
   // to zero (default value is zero if not set), and the two parameters
-  // should be masked nonadjustable.  Noncircular NQGaussian fitting, the
+  // should be masked nonadjustable.  Noncircular Gaussian fitting, the
   // initial guess for the axial ratio cannot be equal to one.  If noncircular
-  // NQGaussian is used to fit precisely circular NQGaussian data.  The rotation 
-  // angle becomes meaningless as the fitted NQGaussian function becomes circular
+  // Gaussian is used to fit precisely circular Gaussian data.  The rotation 
+  // angle becomes meaningless as the fitted Gaussian function becomes circular
   // and the fitting process may fail.
 
   // The current parameter values are used as the initial guess. Save them
@@ -437,8 +437,8 @@ int main() {
   // f(x,y) = h*exp{-[(x-x0)*cos(theta)+(y-y0)*sin(theta)]^2/Wx^2 
   //                -[-(x-x0)*sin(theta)+(y-y0)*cos(theta)]^2/(Wx*r)^2}
   // with h = 1, x0 = y0 = 0, theta = 1, Wx = 2.0, r = 0.5.
-  gauss2d1[NQGaussian2D<Double>::YWIDTH] = 2.0;
-  gauss2d1[NQGaussian2D<Double>::RATIO] = 1.0;
+  gauss2d1[Gaussian2D<Double>::YWIDTH] = 2.0;
+  gauss2d1[Gaussian2D<Double>::RATIO] = 1.0;
   gauss2d1.setPA(0);
 
   // randomly generate data on a 2D plane. data is perturbed with some noise
@@ -450,31 +450,31 @@ int main() {
   };
   
   // construct the function to be fitted
-  NQGaussian2D<AutoDiff<Double> > gauss2d_auto;
+  Gaussian2D<AutoDiff<Double> > gauss2d_auto;
   Vector<AutoDiff<Double> > V(2);
-  V(0) = AutoDiff<Double>(0.05,6,NQGaussian2D<AutoDiff<Double> >::XCENTER);
-  V(1) = AutoDiff<Double>(0.05,6,NQGaussian2D<AutoDiff<Double> >::YCENTER);
+  V(0) = AutoDiff<Double>(0.05,6,Gaussian2D<AutoDiff<Double> >::XCENTER);
+  V(1) = AutoDiff<Double>(0.05,6,Gaussian2D<AutoDiff<Double> >::YCENTER);
   gauss2d_auto.setHeight(AutoDiff<Double>
-			 (1.0,6,NQGaussian2D<AutoDiff<Double> >::HEIGHT));
+			 (1.0,6,Gaussian2D<AutoDiff<Double> >::HEIGHT));
   gauss2d_auto.setCenter(V);
-  gauss2d_auto[NQGaussian2D<AutoDiff<Double> >::YWIDTH] = 
-    AutoDiff<Double>(2.0,6,NQGaussian2D<AutoDiff<Double> >::YWIDTH);
-  gauss2d_auto[NQGaussian2D<AutoDiff<Double> >::RATIO] =
-    AutoDiff<Double>(1.0,6,NQGaussian2D<AutoDiff<Double> >::RATIO);
+  gauss2d_auto[Gaussian2D<AutoDiff<Double> >::YWIDTH] = 
+    AutoDiff<Double>(2.0,6,Gaussian2D<AutoDiff<Double> >::YWIDTH);
+  gauss2d_auto[Gaussian2D<AutoDiff<Double> >::RATIO] =
+    AutoDiff<Double>(1.0,6,Gaussian2D<AutoDiff<Double> >::RATIO);
   gauss2d_auto.setPA(AutoDiff<Double>
-		     (0.05,6,NQGaussian2D<AutoDiff<Double> >::PANGLE));
+		     (0.05,6,Gaussian2D<AutoDiff<Double> >::PANGLE));
   gauss2d_auto.mask(4) = False;
   gauss2d_auto.mask(5) = False;
   
-  NQGaussian2D<AutoDiff<Double> > gauss2d2 = gauss2d_auto;
+  Gaussian2D<AutoDiff<Double> > gauss2d2 = gauss2d_auto;
 
-  // Note: For circular NQGaussian fitting, the axial ratio should be set to one
+  // Note: For circular Gaussian fitting, the axial ratio should be set to one
   // (default value is one if not set) and the rotation angle should be set
   // to zero (default value is zero if not set), and the two parameters
-  // should be masked nonadjustable.  Noncircular NQGaussian fitting, the
+  // should be masked nonadjustable.  Noncircular Gaussian fitting, the
   // initial guess for the axial ratio cannot be equal to one.  If noncircular
-  // NQGaussian is used to fit precisely circular NQGaussian data.  The rotation 
-  // angle becomes meaningless as the fitted NQGaussian function becomes 
+  // Gaussian is used to fit precisely circular Gaussian data.  The rotation 
+  // angle becomes meaningless as the fitted Gaussian function becomes 
   // circular and the fitting process may fail.
 
   LQNonLinearFitLM<Double> afitter;

@@ -1,4 +1,4 @@
-//# NQGaussian2D.h: A two-dimensional Gaussian class
+//# Gaussian2D.h: A two-dimensional Gaussian class
 //# Copyright (C) 1995,1996,1997,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_NQGAUSSIAN2D_H)
-#define AIPS_NQGAUSSIAN2D_H
+#if !defined(AIPS_GAUSSIAN2D_H)
+#define AIPS_GAUSSIAN2D_H
 
 //# Includes
 #include <aips/aips.h>
@@ -42,25 +42,25 @@ template<class T> class Vector;
 
 // <use visibility=export>
 
-// <reviewed reviewer="tcornwel" date="1996/02/22" tests="tNQGaussian2D" 
+// <reviewed reviewer="tcornwel" date="1996/02/22" tests="tGaussian2D" 
 // demos="">
 // </reviewed>
 
 // <prerequisite>
-//   <li> <linkto class="NQGaussian2DParam">NQGaussian2DParam</linkto>
+//   <li> <linkto class="Gaussian2DParam">Gaussian2DParam</linkto>
 //   <li> <linkto class="Function">Function</linkto>
 // </prerequisite>
 
 // <etymology> 
-// A NQGaussian2D functional is designed exclusively for calculating a
+// A Gaussian2D functional is designed exclusively for calculating a
 // Gaussian (or Normal) distribution in two dimensions. Other classes exist
 // for calculating these functions in two
-// (<linkto class=NQGaussian1D>NQGaussian1D</linkto>) and N 
-// (<linkto class=NQGaussianND>NQGaussianND</linkto>) dimensions.
+// (<linkto class=Gaussian1D>Gaussian1D</linkto>) and N 
+// (<linkto class=GaussianND>GaussianND</linkto>) dimensions.
 // </etymology>
 
 // <synopsis> 
-// A <src>NQGaussian2D</src> is described by a height, center, and width,
+// A <src>Gaussian2D</src> is described by a height, center, and width,
 // and position angle. Its fundamental operation is evaluating itself
 // at some <src>(x,y)</src>
 // coordinate. Its parameters (height, center and width, position angle) may
@@ -108,7 +108,7 @@ template<class T> class Vector;
 // width before setting the flux. </note>
 //
 // The parameter interface (see 
-// <linkto class="NQGaussian2DParam">NQGaussian2DParam</linkto> class), 
+// <linkto class="Gaussian2DParam">Gaussian2DParam</linkto> class), 
 // is used to provide an interface to the
 // <linkto module="Fitting">Fitting</linkto> classes. 
 //
@@ -174,7 +174,7 @@ template<class T> class Vector;
 //   <li> Gaussians that know about their DFT's could be required eventually.
 // </todo>
 
-template<class T> class NQGaussian2D : public NQGaussian2DParam<T> {
+template<class T> class Gaussian2D : public Gaussian2DParam<T> {
  public:
   //# Enumerations
   
@@ -185,25 +185,25 @@ template<class T> class NQGaussian2D : public NQGaussian2DParam<T> {
   // <note role=warning> Could not use default arguments
   // that worked both with gcc and IRIX </note>
   // <group>
-  NQGaussian2D() : NQGaussian2DParam<T>() {};
-  NQGaussian2D(const T &height, const Vector<T> &center, 
+  Gaussian2D() : Gaussian2DParam<T>() {};
+  Gaussian2D(const T &height, const Vector<T> &center, 
 	       const Vector<T> &width, const T &pa) :
-    NQGaussian2DParam<T>(height, center, width, pa) {};
-  NQGaussian2D(const T &height, const T &xCenter, const T &yCenter,
+    Gaussian2DParam<T>(height, center, width, pa) {};
+  Gaussian2D(const T &height, const T &xCenter, const T &yCenter,
 	       const T &majorAxis, const T &axialRatio, const T &pa) :
-    NQGaussian2DParam<T>(height, xCenter, yCenter, majorAxis,
+    Gaussian2DParam<T>(height, xCenter, yCenter, majorAxis,
 		       axialRatio, pa) {};
   // </group>
 
   // Copy constructor (deep copy)
-  NQGaussian2D(const NQGaussian2D<T> &other) : NQGaussian2DParam<T>(other) {};
+  Gaussian2D(const Gaussian2D<T> &other) : Gaussian2DParam<T>(other) {};
 
   // Copy assignment (deep copy)
-  NQGaussian2D<T> &operator=(const NQGaussian2D<T> &other) {
-    NQGaussian2DParam<T>::operator=(other); return *this; };
+  Gaussian2D<T> &operator=(const Gaussian2D<T> &other) {
+    Gaussian2DParam<T>::operator=(other); return *this; };
     
   // Destructor
-  virtual ~NQGaussian2D() {};
+  virtual ~Gaussian2D() {};
 
   //# Operators  
   // Evaluate the Gaussian at <src>x</src>.
@@ -215,51 +215,51 @@ template<class T> class NQGaussian2D : public NQGaussian2DParam<T> {
   // Return a copy of this object from the heap. The caller is responsible 
   // for deleting this pointer.
   // <group>
-  virtual Function<T> *clone() const { return new NQGaussian2D<T>(*this); };
+  virtual Function<T> *clone() const { return new Gaussian2D<T>(*this); };
   // </group>
 
 };
 
-#define NQGaussian2D_PS NQGaussian2D
+#define Gaussian2D_PS Gaussian2D
 
-// <summary> Partial specialization of NQGaussian2D for <src>AutoDiff</src>
+// <summary> Partial specialization of Gaussian2D for <src>AutoDiff</src>
 // </summary>
 
 // <synopsis>
-// <note role=warning> The name <src>NQGaussian2D_PS</src> is only for cxx2html
-// documentation problems. Use <src>NQGaussian2D</src> in your code.</note>
+// <note role=warning> The name <src>Gaussian2D_PS</src> is only for cxx2html
+// documentation problems. Use <src>Gaussian2D</src> in your code.</note>
 // </synopsis>
 
-template <class T> class NQGaussian2D_PS<AutoDiff<T> > : 
-public NQGaussian2DParam<AutoDiff<T> > {
+template <class T> class Gaussian2D_PS<AutoDiff<T> > : 
+public Gaussian2DParam<AutoDiff<T> > {
  public:
   //# Constructors
   // Constructs two dimensional Gaussians.
   // <group>
-  NQGaussian2D_PS() : NQGaussian2DParam<AutoDiff<T> >() {};
-  NQGaussian2D_PS(const AutoDiff<T> &height,
+  Gaussian2D_PS() : Gaussian2DParam<AutoDiff<T> >() {};
+  Gaussian2D_PS(const AutoDiff<T> &height,
 		  const Vector<AutoDiff<T> > &center, 
 		  const Vector<AutoDiff<T> > &width,
 		  const AutoDiff<T> &pa) :
-    NQGaussian2DParam<AutoDiff<T> >(height, center, width, pa) {};
-  NQGaussian2D_PS(const AutoDiff<T> &height, const AutoDiff<T> &xCenter,
+    Gaussian2DParam<AutoDiff<T> >(height, center, width, pa) {};
+  Gaussian2D_PS(const AutoDiff<T> &height, const AutoDiff<T> &xCenter,
 		  const AutoDiff<T> &yCenter, const AutoDiff<T> &majorAxis,
 		  const AutoDiff<T> &axialRatio, const AutoDiff<T> &pa) :
-    NQGaussian2DParam<AutoDiff<T> >(height, xCenter, yCenter, majorAxis,
+    Gaussian2DParam<AutoDiff<T> >(height, xCenter, yCenter, majorAxis,
 		       axialRatio, pa) {};
   // </group>
 
   // Copy constructor (deep copy)
-  NQGaussian2D_PS(const NQGaussian2D_PS &other) :
-    NQGaussian2DParam<AutoDiff<T> >(other) {};
+  Gaussian2D_PS(const Gaussian2D_PS &other) :
+    Gaussian2DParam<AutoDiff<T> >(other) {};
 
   // Copy assignment (deep copy)
-  NQGaussian2D_PS<AutoDiff<T> > &
-    operator=(const NQGaussian2D_PS<AutoDiff<T> > &other) {
-    NQGaussian2DParam<AutoDiff<T> >::operator=(other); return *this; };
+  Gaussian2D_PS<AutoDiff<T> > &
+    operator=(const Gaussian2D_PS<AutoDiff<T> > &other) {
+    Gaussian2DParam<AutoDiff<T> >::operator=(other); return *this; };
     
   // Destructor
-  virtual ~NQGaussian2D_PS() {};
+  virtual ~Gaussian2D_PS() {};
 
   //# Operators    
   // Evaluate the Gaussian and its derivatives at <src>x</src>.
@@ -272,11 +272,11 @@ public NQGaussian2DParam<AutoDiff<T> > {
   // for deleting this pointer.
   // <group>
   virtual Function<AutoDiff<T> > *clone() const {
-    return new NQGaussian2D<AutoDiff<T> >(*this); };
+    return new Gaussian2D<AutoDiff<T> >(*this); };
   // </group>
 
 };
 
-#undef NQGaussian2D_PS
+#undef Gaussian2D_PS
 
 #endif

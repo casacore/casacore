@@ -1,4 +1,4 @@
-//# NQSimButterworthBandpass.cc: Defines a Butterworth function
+//# SimButterworthBandpass.cc: Defines a Butterworth function
 //# Copyright (C) 2000,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -33,21 +33,21 @@
 
 //# Constructors
 template <class T>
-NQSimButterworthBandpass<T>::NQSimButterworthBandpass() :
-  NQFunction1D<T>(4), nl_p(0), nh_p(0) {
+SimButterworthBandpass<T>::SimButterworthBandpass() :
+  Function1D<T>(4), nl_p(0), nh_p(0) {
   param_p[MINCUTOFF] = T(-1);
   param_p[MAXCUTOFF] = T(1);
   param_p[PEAK] = T(1);
 }
 
 template <class T>
-NQSimButterworthBandpass<T>::NQSimButterworthBandpass(const uInt minord, 
+SimButterworthBandpass<T>::SimButterworthBandpass(const uInt minord, 
 						      const uInt maxord, 
 						      const T &mincut, 
 						      const T &maxcut, 
 						      const T &center, 
 						      const T &peak) :
-  NQFunction1D<T>(4), nl_p(minord), nh_p(maxord) {
+  Function1D<T>(4), nl_p(minord), nh_p(maxord) {
   param_p[MINCUTOFF] = mincut;
   param_p[MAXCUTOFF] = maxcut;
   param_p[CENTER] = center;
@@ -55,20 +55,20 @@ NQSimButterworthBandpass<T>::NQSimButterworthBandpass(const uInt minord,
 }
 
 template <class T>
-NQSimButterworthBandpass<T>::
-NQSimButterworthBandpass(const NQSimButterworthBandpass<T> &other) : 
-  NQFunction1D<T>(other), nl_p(other.nl_p), nh_p(other.nh_p) {} 
+SimButterworthBandpass<T>::
+SimButterworthBandpass(const SimButterworthBandpass<T> &other) : 
+  Function1D<T>(other), nl_p(other.nl_p), nh_p(other.nh_p) {} 
 
 template <class T>
-NQSimButterworthBandpass<T>::~NQSimButterworthBandpass() {}
+SimButterworthBandpass<T>::~SimButterworthBandpass() {}
 
 //# Operators
 template<class T>
-NQSimButterworthBandpass<T> &
-NQSimButterworthBandpass<T>::
-operator=(const NQSimButterworthBandpass<T> &other) {
+SimButterworthBandpass<T> &
+SimButterworthBandpass<T>::
+operator=(const SimButterworthBandpass<T> &other) {
   if (this != &other) {
-    NQFunction1D<T>::operator=(other);
+    Function1D<T>::operator=(other);
     nl_p = other.nl_p;
     nh_p = other.nh_p;
   };
@@ -76,7 +76,7 @@ operator=(const NQSimButterworthBandpass<T> &other) {
 }
 
 template <class T>
-T NQSimButterworthBandpass<T>::
+T SimButterworthBandpass<T>::
 eval(const typename  FunctionTraits<T>::ArgType *x) const {
   // this does not reflect the true responses of Butterworth filters
   // calculate the low-pass portion

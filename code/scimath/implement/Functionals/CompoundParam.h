@@ -1,4 +1,4 @@
-//# NQCompoundParam.h: Parameters for sum of parameterized Functions
+//# CompoundParam.h: Parameters for sum of parameterized Functions
 //# Copyright (C) 2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -26,8 +26,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_NQCOMPOUNDPARAM_H)
-#define AIPS_NQCOMPOUNDPARAM_H
+#if !defined(AIPS_COMPOUNDPARAM_H)
+#define AIPS_COMPOUNDPARAM_H
 
 #include <aips/aips.h>
 #include <aips/Functionals/Function.h>
@@ -38,7 +38,7 @@
 
 // <use visibility=local>
 
-// <reviewed reviewer="tcornwel" date="1996/02/22" tests="tNQCompoundFunction" 
+// <reviewed reviewer="tcornwel" date="1996/02/22" tests="tCompoundFunction" 
 // demos="">
 // </reviewed>
 //
@@ -51,7 +51,7 @@
 // a new, single function object. The parameters of the compound object
 // are the union of all the parameters in the input objects.
 //
-// When NQCompoundFunction is evaluated, the result is the sum of 
+// When CompoundFunction is evaluated, the result is the sum of 
 // all the individual function values.
 //
 // Note that any Function object (including another Compound object) can be
@@ -62,17 +62,17 @@
 // Suppose for some reason we wanted the sum of <src>x^2</src> plus a gaussian.
 // We could form it as follows:
 // <srcblock>
-//    NQPolynomial<Float> x2(2);
+//    Polynomial<Float> x2(2);
 //    x[2] = 1.0; 					 // x^2
-//    NQGaussian1D<Float> gauss(1.0, 0.0, 1.0);          // e^{-x^2}
-//    NQCompoundParam<Float> sum;                        // sum == 0.0
+//    Gaussian1D<Float> gauss(1.0, 0.0, 1.0);          // e^{-x^2}
+//    CompoundParam<Float> sum;                        // sum == 0.0
 //    sum.addFunction(x2);                               // sum == x^2
 //    sum.addFunction(gauss);                            // sum == x^2+e^{-x^2}
 //    sum(2.0);                                          // == 4 + e^-4
-//    NQCompoundParam[0] = 2.0;                          // sum ==2x^2+e^{-x^2}
+//    CompoundParam[0] = 2.0;                          // sum ==2x^2+e^{-x^2}
 //    sum(2.0);                                          // == 8 + e^-4
 //    // Set the height of the gaussian
-//    sum[parameterOffset[1] + NQGaussian1D<Float>::HEIGHT] = 2.5;
+//    sum[parameterOffset[1] + Gaussian1D<Float>::HEIGHT] = 2.5;
 // </srcblock>
 // </example>
 
@@ -95,19 +95,19 @@
 //   <li> Nothing I know of
 // </todo>
 
-template<class T> class NQCompoundParam : public Function<T> {
+template<class T> class CompoundParam : public Function<T> {
  public:
   //# Constructors
   // The default constructor -- no functions, no parameters, nothing, the
   // function operator returns a 0.
-  NQCompoundParam();
+  CompoundParam();
   // Make this object a (deep) copy of other.
   // <group>
-  NQCompoundParam(const NQCompoundParam<T> &other);
-  NQCompoundParam<T> &operator=(const NQCompoundParam<T> &other);
+  CompoundParam(const CompoundParam<T> &other);
+  CompoundParam<T> &operator=(const CompoundParam<T> &other);
   // </group>
   
-  virtual ~NQCompoundParam();
+  virtual ~CompoundParam();
 
   //# Operators
   

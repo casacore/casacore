@@ -1,4 +1,4 @@
-//# NQHyperPlaneParam.cc: Parameters for a hyperplane function
+//# HyperPlaneParam.cc: Parameters for a hyperplane function
 //# Copyright (C) 2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -29,19 +29,19 @@
 #include <aips/Functionals/HyperPlaneParam.h>
 
 template<class T>
-NQHyperPlaneParam<T>::NQHyperPlaneParam(uInt m) :
+HyperPlaneParam<T>::HyperPlaneParam(uInt m) :
   Function<T>(m+1) {}
 
 template<class T>
-NQHyperPlaneParam<T>::NQHyperPlaneParam(const NQHyperPlaneParam<T> &other) :
+HyperPlaneParam<T>::HyperPlaneParam(const HyperPlaneParam<T> &other) :
   Function<T>(other) {}
 
 template<class T>
-NQHyperPlaneParam<T>::~NQHyperPlaneParam() {}
+HyperPlaneParam<T>::~HyperPlaneParam() {}
 
 template<class T>
-NQHyperPlaneParam<T> &
-NQHyperPlaneParam<T>::operator=(const NQHyperPlaneParam<T> &other) {
+HyperPlaneParam<T> &
+HyperPlaneParam<T>::operator=(const HyperPlaneParam<T> &other) {
   if (this != &other) Function<T>::operator=(other);
   return *this;
 }

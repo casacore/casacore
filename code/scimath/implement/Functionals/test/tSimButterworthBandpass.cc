@@ -1,4 +1,4 @@
-//# tNQSimButterworthBandpass: test the NQSimButterworthBandpass class
+//# tSimButterworthBandpass: test the SimButterworthBandpass class
 //# Copyright (C) 2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -38,7 +38,7 @@
 #include <aips/Mathematics/Constants.h>
 
 int main() {
-    NQSimButterworthBandpass<Double> butt(1.0,1.0,-1.0,1.0,0.0,1.0);
+    SimButterworthBandpass<Double> butt(1.0,1.0,-1.0,1.0,0.0,1.0);
 
     AlwaysAssertExit(butt.getCenter()    ==  0.0 &&
 		     butt.getPeak()      ==  1.0   );

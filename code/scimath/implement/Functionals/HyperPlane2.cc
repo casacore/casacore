@@ -1,4 +1,4 @@
-//# NQHyperPlane2.cc: Defines HyperPlane for specialized AutoDiff version
+//# HyperPlane2.cc: Defines HyperPlane for specialized AutoDiff version
 //# Copyright (C) 2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -32,7 +32,7 @@
 
 //# Operators
 template<class T>
-AutoDiff<T> NQHyperPlane<AutoDiff<T> >::
+AutoDiff<T> HyperPlane<AutoDiff<T> >::
 eval(typename Function<AutoDiff<T> >::FunctionArg x) const {
   AutoDiff<T> tmp;
   for (uInt i=0; i<nparameters(); ++i) {

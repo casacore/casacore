@@ -1,4 +1,4 @@
-//# NQHyperPlane.h: Form a hyper plane function
+//# HyperPlane.h: Form a hyper plane function
 //# Copyright (C) 2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -26,8 +26,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_NQHYPERPLANE_H)
-#define AIPS_NQHYPERPLANE_H
+#if !defined(AIPS_HYPERPLANE_H)
+#define AIPS_HYPERPLANE_H
 
 //# Includes
 #include <aips/aips.h>
@@ -65,7 +65,7 @@
 // <example>
 // // form the hyper plane function of this form: 
 // // 6*x0 + 2*x3 + 5 = 0
-// NQHyperPlane<Double> hyper(4);
+// HyperPlane<Double> hyper(4);
 // hyper.setCoefficient(0,6);   
 // hyper.setCoefficient(3,2);
 // hyper.setCoefficient(4,5);
@@ -91,21 +91,21 @@
 // origin)
 // </todo>
 
-template<class T> class NQHyperPlane : public NQHyperPlaneParam<T> {
+template<class T> class HyperPlane : public HyperPlaneParam<T> {
  public:
   //# Constructors
   // Construct an m-dimensional hyper plane which has m+1 coefficients.  By 
   // default, the coefficients are initialized to zero, and <src>m=0</src>
-  explicit NQHyperPlane(const uInt m=0) : NQHyperPlaneParam<T>(m) {};
+  explicit HyperPlane(const uInt m=0) : HyperPlaneParam<T>(m) {};
   // Copy constructor/assignment (deep copy)
   // <group>
-  NQHyperPlane(const NQHyperPlane<T> &other) : NQHyperPlaneParam<T>(other) {};
-  NQHyperPlane<T> &operator=(const NQHyperPlane<T> &other) {
-    NQHyperPlaneParam<T>::operator=(other); return *this; };
+  HyperPlane(const HyperPlane<T> &other) : HyperPlaneParam<T>(other) {};
+  HyperPlane<T> &operator=(const HyperPlane<T> &other) {
+    HyperPlaneParam<T>::operator=(other); return *this; };
   // </group>
 
   // Destructor
-  virtual ~NQHyperPlane() {};
+  virtual ~HyperPlane() {};
 
   //# Operators    
   // Evaluate the hyper plane function at <src>(x0,x1,...,xm-1)</src>.
@@ -114,40 +114,40 @@ template<class T> class NQHyperPlane : public NQHyperPlaneParam<T> {
   // Return a copy of this object from the heap. The caller is responsible for
   // deleting the pointer.
   // <group>
-  virtual Function<T> *clone() const { return new NQHyperPlane<T>(*this); };
+  virtual Function<T> *clone() const { return new HyperPlane<T>(*this); };
   // </group>
 
 };
 
-#define NQHyperPlane_PS NQHyperPlane
+#define HyperPlane_PS HyperPlane
 
-// <summary> Partial specialization of NQHyperPlane for <src>AutoDiff</src>
+// <summary> Partial specialization of HyperPlane for <src>AutoDiff</src>
 // </summary>
 
 // <synopsis>
-// <note role=warning> The name <src>NQHyperPlane_PS</src> is only for cxx2html
-// documentation problems. Use <src>NQHyperPlane</src> in your code.</note>
+// <note role=warning> The name <src>HyperPlane_PS</src> is only for cxx2html
+// documentation problems. Use <src>HyperPlane</src> in your code.</note>
 // </synopsis>
 
-template <class T> class NQHyperPlane_PS<AutoDiff<T> > : 
-public NQHyperPlaneParam<AutoDiff<T> > {
+template <class T> class HyperPlane_PS<AutoDiff<T> > : 
+public HyperPlaneParam<AutoDiff<T> > {
  public:
   //# Construct
   // Constructors an m-dimensional hyper plane which has m+1 coefficients.  By 
   // default, the coefficients are initialized to zero, and <src>m=0</src>
-  explicit NQHyperPlane_PS(const uInt m=0) :
-    NQHyperPlaneParam<AutoDiff<T> >(m) {};
+  explicit HyperPlane_PS(const uInt m=0) :
+    HyperPlaneParam<AutoDiff<T> >(m) {};
   // Copy constructor/assignment (deep copy)
   // <group>
-  NQHyperPlane_PS(const NQHyperPlane_PS<AutoDiff<T> > &other) :
-    NQHyperPlaneParam<AutoDiff<T> >(other) {};
-  NQHyperPlane_PS<AutoDiff<T> > &
-    operator=(const NQHyperPlane_PS<AutoDiff<T> > &other) {
-    NQHyperPlaneParam<AutoDiff<T> >::operator=(other); return *this; };
+  HyperPlane_PS(const HyperPlane_PS<AutoDiff<T> > &other) :
+    HyperPlaneParam<AutoDiff<T> >(other) {};
+  HyperPlane_PS<AutoDiff<T> > &
+    operator=(const HyperPlane_PS<AutoDiff<T> > &other) {
+    HyperPlaneParam<AutoDiff<T> >::operator=(other); return *this; };
   // </group>
 
   // Destructor
-  virtual ~NQHyperPlane() {};
+  virtual ~HyperPlane() {};
 
   //# Operators    
   // Evaluate the hyper plane function at <src>(x0,x1,...,xm-1)</src>.
@@ -158,11 +158,11 @@ public NQHyperPlaneParam<AutoDiff<T> > {
   // deleting the pointer.
   // <group>
   virtual Function<AutoDiff<T> > *clone() const {
-    return new NQHyperPlane_PS<AutoDiff<T> >(*this); };
+    return new HyperPlane_PS<AutoDiff<T> >(*this); };
   // </group>
 
 };
 
-#undef NQHyperPlane_PS
+#undef HyperPlane_PS
 
 #endif

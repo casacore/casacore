@@ -44,7 +44,7 @@
 #include <aips/Utilities/Assert.h>
 #include <aips/iostream.h>
 
-NQGaussian2D<Double> addModel (Array<Float>& pixels, Double height, Double x, Double y, 
+Gaussian2D<Double> addModel (Array<Float>& pixels, Double height, Double x, Double y, 
                                Double major,  Double minor, Double pa);
 
 void addNoise (Array<Float>& pixels, Array<Float>& sigma, Double noise);
@@ -121,7 +121,7 @@ int main(int argc, char **argv)
 
 // Add model to data array
 
-      NQGaussian2D<Double> gauss2d = addModel(pixels, height, xPos, yPos, major, minor, pa);
+      Gaussian2D<Double> gauss2d = addModel(pixels, height, xPos, yPos, major, minor, pa);
       trueHeight(i) = height;
       trueX(i) = xPos;
       trueY(i) = yPos;
@@ -275,10 +275,10 @@ int main(int argc, char **argv)
  }   
 }
 
-NQGaussian2D<Double> addModel (Array<Float>& pixels, Double height, Double xcen, Double ycen,
+Gaussian2D<Double> addModel (Array<Float>& pixels, Double height, Double xcen, Double ycen,
                                Double major,  Double minor, Double pa)
 {
-   NQGaussian2D<Double> gauss2d;
+   Gaussian2D<Double> gauss2d;
    gauss2d.setHeight(height);
    gauss2d.setMajorAxis(major);
    gauss2d.setMinorAxis(minor);

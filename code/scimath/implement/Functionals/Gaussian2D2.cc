@@ -1,4 +1,4 @@
-//# NQGaussian2D2.cc: Two dimensional Gaussian class specialized for AutoDiff
+//# Gaussian2D2.cc: Two dimensional Gaussian class specialized for AutoDiff
 //# Copyright (C) 2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -33,7 +33,7 @@
 
 //# Operators
 template<class T>
-AutoDiff<T> NQGaussian2D<AutoDiff<T> >::
+AutoDiff<T> Gaussian2D<AutoDiff<T> >::
 eval(typename Function<AutoDiff<T> >::FunctionArg x) const {
   AutoDiff<T> tmp;
   if (param_p[HEIGHT].nDerivatives() > 0) tmp = param_p[HEIGHT];

@@ -1,4 +1,4 @@
-//# NQFunctionWrapper.cc:  Construct function objects from C++ functions 
+//# FunctionWrapper.cc:  Construct function objects from C++ functions 
 //# Copyright (C) 1995,1996,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -33,77 +33,77 @@
 
 //# Constructors
 template <class T>
-NQFunctionWrapper<T>::NQFunctionWrapper() :
-  NQWrapperParam<T>(0),
+FunctionWrapper<T>::FunctionWrapper() :
+  WrapperParam<T>(0),
   doit_p(0) {}
 
 template <class T>
-NQFunctionWrapper<T>::NQFunctionWrapper(T(*f)(const T&), const Bool) : 
-  NQWrapperParam<T>(0),
-  doit_p(new NQWrapperData<T,T,T,False,True>(f)) {}
+FunctionWrapper<T>::FunctionWrapper(T(*f)(const T&), const Bool) : 
+  WrapperParam<T>(0),
+  doit_p(new WrapperData<T,T,T,False,True>(f)) {}
 
 template <class T>
-NQFunctionWrapper<T>::NQFunctionWrapper(T(*f)(const Vector<T>&),
+FunctionWrapper<T>::FunctionWrapper(T(*f)(const Vector<T>&),
 					const Bool isPar) :
-  NQWrapperParam<T>(0),
-  doit_p(new NQWrapperData<T,T,Vector<T>,False,True>(f)) {}
+  WrapperParam<T>(0),
+  doit_p(new WrapperData<T,T,Vector<T>,False,True>(f)) {}
 
 template <class T>
-NQFunctionWrapper<T>::NQFunctionWrapper(T(*f)()) :
-  NQWrapperParam<T>(0),
-  doit_p(new NQWrapperData<T,T,T,False,False>(f)) {}
+FunctionWrapper<T>::FunctionWrapper(T(*f)()) :
+  WrapperParam<T>(0),
+  doit_p(new WrapperData<T,T,T,False,False>(f)) {}
 
 template <class T>
-NQFunctionWrapper<T>::NQFunctionWrapper(T(*f)(const T&)) :
-  NQWrapperParam<T>(0),
-  doit_p(new NQWrapperData<T,T,T,True,False>(f,1)) {}
+FunctionWrapper<T>::FunctionWrapper(T(*f)(const T&)) :
+  WrapperParam<T>(0),
+  doit_p(new WrapperData<T,T,T,True,False>(f,1)) {}
 
 template <class T>
-NQFunctionWrapper<T>::NQFunctionWrapper(T(*f)(const T&, const T&),
+FunctionWrapper<T>::FunctionWrapper(T(*f)(const T&, const T&),
 					const T &par) :
-  NQWrapperParam<T>(1),
-  doit_p(new NQWrapperData<T,T,T,True,True>(f,1)) {
+  WrapperParam<T>(1),
+  doit_p(new WrapperData<T,T,T,True,True>(f,1)) {
   param_p[0] = par;
 }
 
 template <class T>
-NQFunctionWrapper<T>::NQFunctionWrapper(T(*f)(const T&, const Vector<T>&),
+FunctionWrapper<T>::FunctionWrapper(T(*f)(const T&, const Vector<T>&),
 					const Vector<T> &par) :
-  NQWrapperParam<T>(par),
-  doit_p(new NQWrapperData<T,T,Vector<T>,True,True>(f,1)) {};
+  WrapperParam<T>(par),
+  doit_p(new WrapperData<T,T,Vector<T>,True,True>(f,1)) {};
 
 template <class T>
-NQFunctionWrapper<T>::NQFunctionWrapper(T(*f)(const Vector<T>&),
+FunctionWrapper<T>::FunctionWrapper(T(*f)(const Vector<T>&),
 					const Int dim) :
-  NQWrapperParam<T>(0),
-  doit_p(new NQWrapperData<T,Vector<T>,T,True,False>(f,dim)) {};
+  WrapperParam<T>(0),
+  doit_p(new WrapperData<T,Vector<T>,T,True,False>(f,dim)) {};
 
 template <class T>
-NQFunctionWrapper<T>::NQFunctionWrapper(T(*f)(const Vector<T>&, const T&),
+FunctionWrapper<T>::FunctionWrapper(T(*f)(const Vector<T>&, const T&),
 					const T &par, const uInt dim) :
-  NQWrapperParam<T>(1),
-  doit_p(new NQWrapperData<T,Vector<T>,T,True,True>(f,dim)) {
+  WrapperParam<T>(1),
+  doit_p(new WrapperData<T,Vector<T>,T,True,True>(f,dim)) {
   param_p[0] = par;
 };
 
 template <class T>
-NQFunctionWrapper<T>::NQFunctionWrapper(T(*f)(const Vector<T>&,
+FunctionWrapper<T>::FunctionWrapper(T(*f)(const Vector<T>&,
 					      const Vector<T>&),
 					const Vector<T> &par,
 					const uInt dim) :
-  NQWrapperParam<T>(par),
-  doit_p(new NQWrapperData<T,Vector<T>,Vector<T>,True,True>(f,dim)) {};
+  WrapperParam<T>(par),
+  doit_p(new WrapperData<T,Vector<T>,Vector<T>,True,True>(f,dim)) {};
 
 template <class T>
-NQFunctionWrapper<T>::
-NQFunctionWrapper(const NQFunctionWrapper<T> &other) :
-  NQWrapperParam<T>(other), doit_p(other.doit_p) {} /// check if to clone
+FunctionWrapper<T>::
+FunctionWrapper(const FunctionWrapper<T> &other) :
+  WrapperParam<T>(other), doit_p(other.doit_p) {} /// check if to clone
 
 template <class T>
-NQFunctionWrapper<T> &NQFunctionWrapper<T>::
-operator=(const NQFunctionWrapper<T> &other) {
+FunctionWrapper<T> &FunctionWrapper<T>::
+operator=(const FunctionWrapper<T> &other) {
   if (this != &other) {
-    NQWrapperParam<T>::operator=(other);
+    WrapperParam<T>::operator=(other);
     doit_p = other.doit_p; /// check clone
   };
   return *this;
@@ -111,13 +111,13 @@ operator=(const NQFunctionWrapper<T> &other) {
 
 //# Operators    
 template <class T>
-T NQFunctionWrapper<T>::eval(typename Function<T>::FunctionArg x) const {
+T FunctionWrapper<T>::eval(typename Function<T>::FunctionArg x) const {
   if (doit_p) return doit_p->eval(x, param_p.getParameters());
   return T(0);
 }
 
 //# Member functions
 template <class T>
-uInt NQFunctionWrapper<T>::ndim() const {
+uInt FunctionWrapper<T>::ndim() const {
   return (doit_p ? doit_p->ndim() : 0);
 }

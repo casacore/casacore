@@ -408,7 +408,7 @@ int main()
        pIm.set(3.0);
        AlwaysAssert(allEQ(pIm.get(), Float(3.0)), AipsError);
 //
-       NQPolynomial<Float> poly(3);
+       Polynomial<Float> poly(3);
        poly.setCoefficient(1, 1.0);
        poly.setCoefficient(2, 2.0);
        poly.setCoefficient(3, 3.0);

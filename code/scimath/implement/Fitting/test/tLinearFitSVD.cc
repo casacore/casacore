@@ -84,7 +84,7 @@ void checkLQLinearFit(LQLinearFitSVD<Double> &fitter) {
     
     // construct a linear combination of functions: a(0)+a(1)*x+a(2)*x^2    
     
-    NQPolynomial<AutoDiff<Double> > combination(2);
+    Polynomial<AutoDiff<Double> > combination(2);
     combination.setCoefficient(0, 1.0);
     combination.setCoefficient(1, 1.0);
     combination.setCoefficient(2, 1.0);
@@ -137,7 +137,7 @@ void checkLQLinearFit(LQLinearFitSVD<Double> &fitter) {
     //****** Test one A ************
     /*        // Note: first guess equals zero parameters
     LQLinearFitSVD<AutoDiffA<Double> > fitad;
-    NQPolynomial<AutoDiffA<Double> > sqre(2);
+    Polynomial<AutoDiffA<Double> > sqre(2);
 
     // perform least-squares fit
     fitad.setFunction(sqre);
@@ -286,7 +286,7 @@ void checkLQLinearFit(LQLinearFitSVD<Double> &fitter) {
     Int j;
     // Make some fake data sets
     // -1 + 6*x + 10*x^2 + 3*x^3
-    NQPolynomial<Double> poly(3);
+    Polynomial<Double> poly(3);
     poly.setCoefficient(0, -1.0); 
     poly.setCoefficient(1, 6.0);
     poly.setCoefficient(2, 10.0);
@@ -309,7 +309,7 @@ void checkLQLinearFit(LQLinearFitSVD<Double> &fitter) {
 
     // construct a linear combination of functions: 
     // a(0)+a(1)*x+a(2)*x^2+a(3)*x^3
-    NQPolynomial<AutoDiff<Double> > combination(3);
+    Polynomial<AutoDiff<Double> > combination(3);
     for (uInt i=0; i<4; i++) combination[i] = 1.0;
 
     // Hold the coefficient for square fixed
@@ -355,12 +355,12 @@ void checkLQLinearFit(LQLinearFitSVD<Double> &fitter) {
     // f(x,y) = a0 + a1*x+ a2*y + a3*x*x
     {    
       // Convert C++ functions to Functionals
-      NQFunctionWrapper<Double> Func0(func0,2);
-      NQFunctionWrapper<Double> Func1(func1,2);
-      NQFunctionWrapper<Double> Func2(func2,2);
-      NQFunctionWrapper<Double> Func3(func3,2);
+      FunctionWrapper<Double> Func0(func0,2);
+      FunctionWrapper<Double> Func1(func1,2);
+      FunctionWrapper<Double> Func2(func2,2);
+      FunctionWrapper<Double> Func3(func3,2);
       
-      NQCombiFunction<Double> combination;
+      CombiFunction<Double> combination;
       
       // form linear combination of functions
       // f(x,y) = a0 + a1*x+ a2*sin(y) + a3*x*x
@@ -434,7 +434,7 @@ void checkComplexLQLinearFit(LQLinearFitSVD<Complex> &fitter) {
   
   // Make some fake data sets
   // (-1.0,2.0) + (6.0,4.0)*x + (10.0,-1.5)*x^2 + (3.0,2.3)*x^3
-  NQPolynomial<Complex> poly(3);
+  Polynomial<Complex> poly(3);
   poly.setCoefficient(0, Complex(-1.0,2.0)); 
   poly.setCoefficient(1, Complex(6.0,4.0));
   poly.setCoefficient(2, Complex(10.0,-1.5));
@@ -457,7 +457,7 @@ void checkComplexLQLinearFit(LQLinearFitSVD<Complex> &fitter) {
    
   // construct a linear combination of functions: 
   // a(0)+a(1)*x+a(2)*x^2+a(3)*x^3
-  NQPolynomial<AutoDiff<Complex> > combination(3);
+  Polynomial<AutoDiff<Complex> > combination(3);
   combination.setCoefficient(0, AutoDiff<Complex>(1.0,4,0));   // 1
   combination.setCoefficient(1, AutoDiff<Complex>(1.0,4,1));     // x
   combination.setCoefficient(2, AutoDiff<Complex>(1.0,4,2));     // x^2

@@ -132,7 +132,7 @@ try {
       if (axis<=0) {
          for (uInt j=0; j<shape.nelements(); j++) {
             const Double refPix = shape(j)/2;
-            const NQGaussian1D<Double> gauss(norm, refPix, fwhm);
+            const Gaussian1D<Double> gauss(norm, refPix, fwhm);
             Vector<Float> kernel(shape(j));
             for (Int i=0; i<shape(j); i++) kernel(i) = gauss(Double(i));
             sic.setKernel(j, kernel);
@@ -140,7 +140,7 @@ try {
       } else {
          axis--;
          const Double refPix = shape(axis)/2;
-         const NQGaussian1D<Double> gauss(norm, refPix, fwhm);
+         const Gaussian1D<Double> gauss(norm, refPix, fwhm);
          Vector<Float> kernel(shape(axis));
          for (Int i=0; i<shape(axis); i++) kernel(i) = gauss(Double(i));
          sic.setKernel(axis, kernel);

@@ -1,4 +1,4 @@
-//# NQHyperPlane.cc: Defines NQHyperPlane 
+//# HyperPlane.cc: Defines HyperPlane 
 //# Copyright (C) 2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -32,7 +32,7 @@
 
 //# Operators
 template<class T>
-T NQHyperPlane<T>::eval(typename Function<T>::FunctionArg x) const {
+T HyperPlane<T>::eval(typename Function<T>::FunctionArg x) const {
   Int i= nparameters();
   T accum = param_p[--i];  // the last coefficient
   while (--i >= 0) accum += param_p[i]*x[i];

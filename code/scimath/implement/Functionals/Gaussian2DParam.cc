@@ -1,4 +1,4 @@
-//# NQGaussian2DParam.cc: Parameter handling for 2 dimensional Gaussian class
+//# Gaussian2DParam.cc: Parameter handling for 2 dimensional Gaussian class
 //# Copyright (C) 2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -36,11 +36,11 @@
 
 //# Statics
 ///template<class T>
-///const T NQGaussian2DParam<T>::fwhm2int = T(1.0)/sqrt(log(T(16.0)));
+///const T Gaussian2DParam<T>::fwhm2int = T(1.0)/sqrt(log(T(16.0)));
 
 //# Constructors
 template<class T>
-NQGaussian2DParam<T>::NQGaussian2DParam() :
+Gaussian2DParam<T>::Gaussian2DParam() :
   Function<T>(6),
   fwhm2int(T(1.0)/sqrt(log(T(16.0)))),
   thePA(0), theSpa(T(0.0)), theCpa(T(1.0)) {
@@ -54,7 +54,7 @@ NQGaussian2DParam<T>::NQGaussian2DParam() :
 }
 
 template<class T>
-NQGaussian2DParam<T>::NQGaussian2DParam(const T &height, const T &xCenter,
+Gaussian2DParam<T>::Gaussian2DParam(const T &height, const T &xCenter,
 				    const T &yCenter,
 				    const T &majorAxis, const T &axialRatio,
 				    const T &pa) :
@@ -73,7 +73,7 @@ NQGaussian2DParam<T>::NQGaussian2DParam(const T &height, const T &xCenter,
 }
 
 template<class T>
-NQGaussian2DParam<T>::NQGaussian2DParam(const T &height, const Vector<T> &center, 
+Gaussian2DParam<T>::Gaussian2DParam(const T &height, const Vector<T> &center, 
 				    const Vector<T> &width, const T &pa) :
   Function<T>(6),
   fwhm2int(T(1.0)/sqrt(log(T(16.0)))) {
@@ -86,7 +86,7 @@ NQGaussian2DParam<T>::NQGaussian2DParam(const T &height, const Vector<T> &center
 }
 
 template<class T>
-NQGaussian2DParam<T>::NQGaussian2DParam(const NQGaussian2DParam<T> &other) :
+Gaussian2DParam<T>::Gaussian2DParam(const Gaussian2DParam<T> &other) :
   Function<T>(other),
   fwhm2int(T(1.0)/sqrt(log(T(16.0)))) {
   theXwidth = other.theXwidth;
@@ -96,12 +96,12 @@ NQGaussian2DParam<T>::NQGaussian2DParam(const NQGaussian2DParam<T> &other) :
 }
 
 template<class T>
-NQGaussian2DParam<T>::~NQGaussian2DParam() {}
+Gaussian2DParam<T>::~Gaussian2DParam() {}
 
 //# Operators
 template<class T>
-NQGaussian2DParam<T> &
-NQGaussian2DParam<T>::operator=(const NQGaussian2DParam<T> &other) {
+Gaussian2DParam<T> &
+Gaussian2DParam<T>::operator=(const Gaussian2DParam<T> &other) {
   if (this != &other) {
     fwhm2int = other.fwhm2int;
     Function<T>::operator=(other);
@@ -114,21 +114,21 @@ NQGaussian2DParam<T>::operator=(const NQGaussian2DParam<T> &other) {
 
 //# Member functions
 template<class T>
-T NQGaussian2DParam<T>::flux() const {
+T Gaussian2DParam<T>::flux() const {
   theXwidth = param_p[YWIDTH]*param_p[RATIO];
   return param_p[HEIGHT]*abs(param_p[YWIDTH]*theXwidth*
 			     fwhm2int*fwhm2int*T(C::pi));
 }
 
 template<class T>
-void NQGaussian2DParam<T>::setFlux(const T &flux) {
+void Gaussian2DParam<T>::setFlux(const T &flux) {
   theXwidth = param_p[YWIDTH]*param_p[RATIO];
   param_p[HEIGHT] = flux/abs(param_p[YWIDTH]*theXwidth*T(C::pi))/
     fwhm2int/fwhm2int;
 }
 
 template<class T>
-Vector<T> NQGaussian2DParam<T>::center() const {
+Vector<T> Gaussian2DParam<T>::center() const {
   Vector<T> center(2);
   center(0) = param_p[XCENTER];
   center(1) = param_p[YCENTER];
@@ -136,14 +136,14 @@ Vector<T> NQGaussian2DParam<T>::center() const {
 }
 
 template<class T>
-void NQGaussian2DParam<T>::setCenter(const Vector<T> &center) {
+void Gaussian2DParam<T>::setCenter(const Vector<T> &center) {
   DebugAssert(center.nelements() == 2, AipsError);
   param_p[XCENTER] = center(0);
   param_p[YCENTER] = center(1);
 }
 
 template<class T>
-Vector<T> NQGaussian2DParam<T>::width() const {
+Vector<T> Gaussian2DParam<T>::width() const {
   Vector<T> width(2);
   width(0) = majorAxis();
   width(1) = minorAxis();
@@ -151,7 +151,7 @@ Vector<T> NQGaussian2DParam<T>::width() const {
 }
 
 template<class T>
-void NQGaussian2DParam<T>::setWidth(const Vector<T> &width) {
+void Gaussian2DParam<T>::setWidth(const Vector<T> &width) {
   DebugAssert(width.nelements() == 2, AipsError);
   if (abs(width(0)) > minorAxis()) {
     setMajorAxis(width(0));
@@ -163,15 +163,15 @@ void NQGaussian2DParam<T>::setWidth(const Vector<T> &width) {
 }
 
 template<class T>
-T NQGaussian2DParam<T>::majorAxis() const {
+T Gaussian2DParam<T>::majorAxis() const {
   theXwidth = param_p[YWIDTH]*param_p[RATIO];
   return max(abs(param_p[YWIDTH]), abs(theXwidth));
 }
 
 template<class T>
-void NQGaussian2DParam<T>::setMajorAxis(const T &width) {
+void Gaussian2DParam<T>::setMajorAxis(const T &width) {
   if (width <= T(0.0)) {
-    throw(AipsError("NQGaussian2DParam<T>::setMajorAxis(const T &width)"
+    throw(AipsError("Gaussian2DParam<T>::setMajorAxis(const T &width)"
 		    " - width must be positive"));
   };
   // The near function is necessary for Intel processors (and doesn't hurt for
@@ -182,7 +182,7 @@ void NQGaussian2DParam<T>::setMajorAxis(const T &width) {
   // defect AOCso00071
   const T minorWidth = minorAxis();
   if (width < minorWidth && !near(width, minorWidth)) {
-    throw(AipsError("NQGaussian2DParam<T>::setMajorAxis(const T &width)"
+    throw(AipsError("Gaussian2DParam<T>::setMajorAxis(const T &width)"
 		    " - major axis is smaller than minor axis"));
   };
   theXwidth = param_p[YWIDTH]*param_p[RATIO];
@@ -192,20 +192,20 @@ void NQGaussian2DParam<T>::setMajorAxis(const T &width) {
 }
 
 template<class T>
-T NQGaussian2DParam<T>::minorAxis() const {
+T Gaussian2DParam<T>::minorAxis() const {
   theXwidth = param_p[YWIDTH]*param_p[RATIO];
   return min(abs(param_p[YWIDTH]),abs(theXwidth));
 }
 
 template<class T>
-void NQGaussian2DParam<T>::setMinorAxis(const T &width) {
+void Gaussian2DParam<T>::setMinorAxis(const T &width) {
   if (width <= T(0.0)) {
-    throw(AipsError("NQGaussian2DParam<T>::setMinorAxis(const T &width)"
+    throw(AipsError("Gaussian2DParam<T>::setMinorAxis(const T &width)"
 		    " - width must be positive"));
   };
   const T majorWidth = majorAxis();
   if (width > majorWidth && !near(width, majorWidth)) {
-    throw(AipsError("NQGaussian2DParam<T>::setMinorAxis(const T &width)"
+    throw(AipsError("Gaussian2DParam<T>::setMinorAxis(const T &width)"
 		    " - minor axis is greater than major axis"));
   };
   theXwidth = param_p[YWIDTH]*param_p[RATIO];
@@ -215,21 +215,21 @@ void NQGaussian2DParam<T>::setMinorAxis(const T &width) {
 }
 
 template<class T>
-T NQGaussian2DParam<T>::axialRatio() const {
+T Gaussian2DParam<T>::axialRatio() const {
   return minorAxis()/majorAxis();
 }
 
 template<class T>
-void NQGaussian2DParam<T>::setAxialRatio(const T &axialRatio) {
+void Gaussian2DParam<T>::setAxialRatio(const T &axialRatio) {
   if (axialRatio <= T(0.0) || axialRatio > T(1.0)) {
-    throw(AipsError("NQGaussian2DParam<T>::setAxialRatio(const T &axialRatio)"
+    throw(AipsError("Gaussian2DParam<T>::setAxialRatio(const T &axialRatio)"
 		    " - axialRatio must be between (0,1]"));
   };
   setMinorAxis(axialRatio*majorAxis());
 }
 
 template<class T>
-T NQGaussian2DParam<T>::PA() const {
+T Gaussian2DParam<T>::PA() const {
   T pa;
   theXwidth = param_p[YWIDTH]*param_p[RATIO];
   if (abs(param_p[YWIDTH]) >= abs(theXwidth)) pa = fmod(param_p[PANGLE],
@@ -240,9 +240,9 @@ T NQGaussian2DParam<T>::PA() const {
 }
 
 template<class T>
-void NQGaussian2DParam<T>::setPA(const T &pa) {
+void Gaussian2DParam<T>::setPA(const T &pa) {
   if (abs(pa) > T(C::_2pi)) {
-    throw(AipsError("NQGaussian2DParam<T>::setPA(const T &pa)"
+    throw(AipsError("Gaussian2DParam<T>::setPA(const T &pa)"
 		    " - PA must be in radians and between -2pi and 2pi"));
   };
   theXwidth = param_p[YWIDTH]*param_p[RATIO];

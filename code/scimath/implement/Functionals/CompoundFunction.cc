@@ -1,4 +1,4 @@
-//# NQCompoundFunction.cc: Sum of functions to behave as a single function
+//# CompoundFunction.cc: Sum of functions to behave as a single function
 //# Copyright (C) 2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -32,7 +32,7 @@
 
 //# Operators
 template<class T>
-T NQCompoundFunction<T>::eval(typename Function<T>::FunctionArg x) const {
+T CompoundFunction<T>::eval(typename Function<T>::FunctionArg x) const {
   if (parset_p) fromParam_p();
   T tmp(0);
   for (uInt i = 0; i<nFunctions(); ++i) tmp += function(i)(x);
@@ -41,7 +41,7 @@ T NQCompoundFunction<T>::eval(typename Function<T>::FunctionArg x) const {
 
 //# Member functions
 template <class T>
-void NQCompoundFunction<T>::fromParam_p() const {
+void CompoundFunction<T>::fromParam_p() const {
   if (parset_p) {
     parset_p = False;
     for (uInt i=0; i<nparameters(); ++i) {
@@ -52,7 +52,7 @@ void NQCompoundFunction<T>::fromParam_p() const {
 }
 
 template <class T>
-void NQCompoundFunction<T>::toParam_p() {
+void CompoundFunction<T>::toParam_p() {
   for (uInt i=0; i<nparameters(); ++i) {
     param_p[i] = (*functionPtr_p[funpar_p[i]])[locpar_p[i]];
     param_p.mask(i) = functionPtr_p[funpar_p[i]]->mask(locpar_p[i]);

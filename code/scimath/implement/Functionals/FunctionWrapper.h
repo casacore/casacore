@@ -1,4 +1,4 @@
-//# NQFunctionWrapper.h: Construct function objects from C++ functions 
+//# FunctionWrapper.h: Construct function objects from C++ functions 
 //# Copyright (C) 2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_NQFUNCTIONWRAPPER_H)
-#define AIPS_NQFUNCTIONWRAPPER_H
+#if !defined(AIPS_FUNCTIONWRAPPER_H)
+#define AIPS_FUNCTIONWRAPPER_H
 
 //# Includes
 #include <aips/aips.h>
@@ -34,7 +34,7 @@
 
 //# Forward declarations
 template <class T> class Vector;
-template <class T> class NQWrapperBase;
+template <class T> class WrapperBase;
 
 // <summary> Construct nD function objects from C++ functions 
 // </summary>
@@ -74,46 +74,46 @@ template <class T> class NQWrapperBase;
 // <srcblock>
 // Float func(const Vector<Float>& x) {return x(0)*x(1);}        // x*y
 // // Convert C++ functions to Functionals
-// NQFunctionWrapper<Float> Func(func,2);
+// FunctionWrapper<Float> Func(func,2);
 // </srcblock>
 //
 
 template <class T>
-class NQFunctionWrapper : public NQWrapperParam<T> {
+class FunctionWrapper : public WrapperParam<T> {
  public:
   //# Constructors
   // Default constructor, to enable arrays
-  NQFunctionWrapper();
+  FunctionWrapper();
   // A function with no parameters and no arguments.
-  NQFunctionWrapper(T(*f)());
+  FunctionWrapper(T(*f)());
   // A function with parameter and no arguments
   // (Note value of isPar irrelevant)
-  NQFunctionWrapper(T(*f)( const T&), const Bool isPar);
+  FunctionWrapper(T(*f)( const T&), const Bool isPar);
   // A function with parameters and no arguments.
   // (Note value of isPar irrelevant)
-  NQFunctionWrapper(T(*f)(const Vector<T>&), const Bool isPar);
+  FunctionWrapper(T(*f)(const Vector<T>&), const Bool isPar);
   // Construct a  1-dimensional function with no parameters.
-  NQFunctionWrapper(T(*f)(const T&));
+  FunctionWrapper(T(*f)(const T&));
   // Construct a  1-dimensional function with parameter.
-  NQFunctionWrapper(T(*f)(const T&, const T&), const T &par);
+  FunctionWrapper(T(*f)(const T&, const T&), const T &par);
   // Construct a  1-dimensional function with parameters.
-  NQFunctionWrapper(T(*f)(const T&, const Vector<T>&),
+  FunctionWrapper(T(*f)(const T&, const Vector<T>&),
 		    const Vector<T> &par);
   // Construct an n-dimensional  function with no parameters.
-  NQFunctionWrapper(T(*f)(const Vector<T>&), const Int dim=1);
+  FunctionWrapper(T(*f)(const Vector<T>&), const Int dim=1);
   // Construct an n-dimensional  function with parameter.
-  NQFunctionWrapper(T(*f)(const Vector<T>&, const T&),
+  FunctionWrapper(T(*f)(const Vector<T>&, const T&),
 		    const T &par, const uInt dim=1);
   // Construct an n-dimensional  function with parameters.
-  NQFunctionWrapper(T(*f)(const Vector<T>&, const Vector<T>&),
+  FunctionWrapper(T(*f)(const Vector<T>&, const Vector<T>&),
 		    const Vector<T> &par, const uInt dim=1);
   // Copy constructor (deep copy)
-  NQFunctionWrapper(const NQFunctionWrapper<T> &other);
+  FunctionWrapper(const FunctionWrapper<T> &other);
   // Copy assignment (deep copy)
-  NQFunctionWrapper<T> &operator=(const NQFunctionWrapper<T> &other);
+  FunctionWrapper<T> &operator=(const FunctionWrapper<T> &other);
 
   // Destructor
-  virtual ~NQFunctionWrapper() {};
+  virtual ~FunctionWrapper() {};
 
   //# Operators    
   // Evaluate the function at <src>x</src>.
@@ -128,13 +128,13 @@ class NQFunctionWrapper : public NQWrapperParam<T> {
   // for deleting this pointer.
   // <group>
   virtual Function<T> *clone() const {
-    return new NQFunctionWrapper<T>(*this); };
+    return new FunctionWrapper<T>(*this); };
   // </group>
 
  protected:
   //# Data
   // The function aid object
-  NQWrapperBase<T> *doit_p;
+  WrapperBase<T> *doit_p;
 };
 
 #endif

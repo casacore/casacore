@@ -1,4 +1,4 @@
-//# tNQChebyshev: test the NQChebyshev class
+//# tChebyshev: test the Chebyshev class
 //# Copyright (C) 2000,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -41,14 +41,14 @@
 #include <aips/iostream.h>
 
 int main() {
-    NQChebyshev<Double> cheb;
+    Chebyshev<Double> cheb;
 
     Vector<Double> coeffs(4, 0);
     coeffs(3) = 2.0;
     cheb.setCoefficients(coeffs);
 
 #ifdef DIAGNOSTICS
-    cout << "NQChebyshev " << coeffs;
+    cout << "Chebyshev " << coeffs;
 #endif
     cheb.chebyshevToPower(coeffs);
 #ifdef DIAGNOSTICS
@@ -59,7 +59,7 @@ int main() {
 #ifdef DIAGNOSTICS
     cout << "And power series coeffs " << coeffs;
 #endif
-    cheb.powerToNQChebyshev(coeffs);
+    cheb.powerToChebyshev(coeffs);
 #ifdef DIAGNOSTICS
     cout << " maps to chebyshev coeffs: " << coeffs << endl;
     cout << "coeffs: " << coeffs << ", " << cheb << endl;
@@ -73,7 +73,7 @@ int main() {
     coeffs(0) += 1.0;
     cheb.setCoefficients(coeffs);
 #ifdef DIAGNOSTICS
-    cout << "NQChebyshev " << coeffs;
+    cout << "Chebyshev " << coeffs;
 #endif
     cheb.chebyshevToPower(coeffs);
 #ifdef DIAGNOSTICS
@@ -87,9 +87,9 @@ int main() {
     AlwaysAssertExit(xmin == cheb.getIntervalMin());
     AlwaysAssertExit(xmax == cheb.getIntervalMax());
 
-    NQPolynomial<Double> poly(3);
+    Polynomial<Double> poly(3);
     poly.setCoefficients(coeffs);
-    NQChebyshev<Double> chebp = cheb.derivative();
+    Chebyshev<Double> chebp = cheb.derivative();
 
 #ifdef DIAGNOSTICS
     Vector<Double> dce;
@@ -97,7 +97,7 @@ int main() {
     chebp.chebyshevToPower(dce);
     cout << "dcheb: " << dce << endl;
 #endif
-    NQPolynomial<Double> polyp = poly.derivative();
+    Polynomial<Double> polyp = poly.derivative();
     polyp.setCoefficients(polyp.coefficients() * (2/(xmax-xmin)));
 #ifdef DIAGNOSTICS
     cout << "dpoly: " << polyp.coefficients() << endl;
@@ -110,7 +110,7 @@ int main() {
     }
 
     // Test auto differentiation wrt x
-    NQChebyshev<AutoDiffA<Double> > chebad(cheb.nparameters());
+    Chebyshev<AutoDiffA<Double> > chebad(cheb.nparameters());
     chebad.setInterval(cheb.getIntervalMin(), cheb.getIntervalMax());
     ///    for (uInt i=0; i<4; ++i) chebad[i] = AutoDiffA<Double>(cheb[i]);
     for (uInt i=0; i<4; ++i) chebad[i] = cheb[i];
@@ -123,14 +123,14 @@ int main() {
     cheb.setDefault(5);
     AlwaysAssertExit(5 == cheb.getDefault());
     AlwaysAssertExit(cheb(xmin-1) == cheb.getDefault());
-    cheb.setOutOfIntervalMode(NQChebyshev<Double>::EXTRAPOLATE);
+    cheb.setOutOfIntervalMode(Chebyshev<Double>::EXTRAPOLATE);
     AlwaysAssertExit(cheb(xmin-0.2) != cheb.getDefault());
     xp = (2*(xmin-0.2)-xmin-xmax)/(xmax-xmin);
 #ifdef DIAGNOSTICS
     cout << xmin-0.2 << ": cheb-poly=" << cheb(xmin-0.2)-poly(xp) << endl;
 #endif
     AlwaysAssertExit(nearAbs(cheb(xmin-0.2), poly(xp), 1.0e-14));
-    cheb.setOutOfIntervalMode(NQChebyshev<Double>::CYCLIC);
+    cheb.setOutOfIntervalMode(Chebyshev<Double>::CYCLIC);
 #ifdef DIAGNOSTICS
     cout << xmin-1.3 << ": cheb(-1.3)-cheb(2.7)=" 
 	 << cheb(xmin-1.3)-cheb(xmin-1.3+(xmax-xmin)) << endl;
@@ -143,7 +143,7 @@ int main() {
 #endif
     AlwaysAssertExit(nearAbs(cheb(xmax+1.3),
 			     cheb(xmax+1.3-(xmax-xmin)), 1.0e-15));
-    cheb.setOutOfIntervalMode(NQChebyshev<Double>::ZEROTH);
+    cheb.setOutOfIntervalMode(Chebyshev<Double>::ZEROTH);
     cheb.setCoefficient(0, 1);
     AlwaysAssertExit(cheb(xmax+1) == cheb.getCoefficient(0));
 

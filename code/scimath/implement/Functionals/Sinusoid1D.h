@@ -1,4 +1,4 @@
-//# NQSinusoid1D.h: A one dimensional NQSinusoid class
+//# Sinusoid1D.h: A one dimensional Sinusoid class
 //# Copyright (C) 1997,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_NQSINUSOID1D_H)
-#define AIPS_NQSINUSOID1D_H
+#if !defined(AIPS_SINUSOID1D_H)
+#define AIPS_SINUSOID1D_H
 
 //# Includes
 #include <aips/aips.h>
@@ -37,27 +37,27 @@
 
 //# Forward declarations
 
-// <summary> A one dimensional NQSinusoid class.
+// <summary> A one dimensional Sinusoid class.
 // </summary>
 
 // <use visibility=export>
 
-// <reviewed reviewer="" date="" tests="tNQSinusoid1D" 
+// <reviewed reviewer="" date="" tests="tSinusoid1D" 
 // demos="">
 // </reviewed>
 
 // <prerequisite>
-//   <li> <linkto class="NQSinusoid1DParam">NQSinusoid1DParam</linkto>
+//   <li> <linkto class="Sinusoid1DParam">Sinusoid1DParam</linkto>
 //   <li> <linkto class="Function">Function</linkto>
 // </prerequisite>
 
 // <etymology> 
-// A NQSinusoid1D functional is designed for calculating a
-// NQSinusoid in one dimension. 
+// A Sinusoid1D functional is designed for calculating a
+// Sinusoid in one dimension. 
 // </etymology>
 
 // <synopsis> 
-// A <src>NQSinusoid1D</src> is described by an amplitude, a period,
+// A <src>Sinusoid1D</src> is described by an amplitude, a period,
 // and a location of a peak. Its fundamental operation is evaluating itself
 // at some <src>x</src>. The
 // parameters (amplitude, period, and x0) may be changed at run time. 
@@ -65,18 +65,18 @@
 // The functional form is <src> A*cos(2*pi(x-x0)/P) </src>
 //
 // The parameter interface (see 
-// <linkto class="NQSinusoid1DParam">NQSinusoid1DParam</linkto> class), 
+// <linkto class="Sinusoid1DParam">Sinusoid1DParam</linkto> class), 
 // is used to provide an interface to the
 // <linkto module="Fitting"> Fitting </linkto> classes. 
 //
-// There are 3 parameters that are used to describe the NQSinusoid:
+// There are 3 parameters that are used to describe the Sinusoid:
 // <ol>
-// <li> The amplitude of the NQSinusoid. This is the value 
+// <li> The amplitude of the Sinusoid. This is the value 
 //      returned using the <src> amplitude </src> member function.
-// <li> The period of the NQSinusoid in the x direction. This is 
+// <li> The period of the Sinusoid in the x direction. This is 
 //      the value returned using the <src> period </src> member function.
 //	The period is expressed in full cycles.
-// <li> The location of a peak of the NQSinusoid (i.e. where
+// <li> The location of a peak of the Sinusoid (i.e. where
 // <src>x=pi+k.2pi</src>)
 // </ol>
 //
@@ -89,7 +89,7 @@
 
 // <example>
 // <srcblock>
-//    NQSinusoid<Double> sf(5.0, 25.0, 7);
+//    Sinusoid<Double> sf(5.0, 25.0, 7);
 //    sf(25);            // = -4.911
 //    sf.setAmplitude(1.0);
 //    sf[PERIOD] = 2.0;                
@@ -109,90 +109,90 @@
 //    <li> Assertion in debug mode if operator(Vector<>) with empty Vector
 // </thrown>
 
-template<class T> class NQSinusoid1D : public NQSinusoid1DParam<T> {
+template<class T> class Sinusoid1D : public Sinusoid1DParam<T> {
  public:
   //# Enumerations
   
   //# Constructors
-  // Constructs the NQSinusoids, Defaults:
+  // Constructs the Sinusoids, Defaults:
   //  amplitude=1, period==1, x0=0. I.e. a cosinusoid with <src>cos(x)</src>.
   // <note role=warning> Could not use default arguments
   // that worked both with gcc and IRIX </note>
   // <group>
-  NQSinusoid1D() : NQSinusoid1DParam<T>() {};
-  explicit NQSinusoid1D(const T &amplitude) :
-    NQSinusoid1DParam<T>(amplitude) {};
-  NQSinusoid1D(const T &amplitude, const T &period) :
-    NQSinusoid1DParam<T>(amplitude, period) {};
-  NQSinusoid1D(const T &amplitude, const T &period, const T &x0) :
-    NQSinusoid1DParam<T>(amplitude, period, x0) {};
+  Sinusoid1D() : Sinusoid1DParam<T>() {};
+  explicit Sinusoid1D(const T &amplitude) :
+    Sinusoid1DParam<T>(amplitude) {};
+  Sinusoid1D(const T &amplitude, const T &period) :
+    Sinusoid1DParam<T>(amplitude, period) {};
+  Sinusoid1D(const T &amplitude, const T &period, const T &x0) :
+    Sinusoid1DParam<T>(amplitude, period, x0) {};
   // </group>
 
   // Copy constructor (deep copy)
-  NQSinusoid1D(const NQSinusoid1D &other) : NQSinusoid1DParam<T>(other) {};
+  Sinusoid1D(const Sinusoid1D &other) : Sinusoid1DParam<T>(other) {};
 
   // Copy assignment (deep copy)
-  NQSinusoid1D<T> &operator=(const NQSinusoid1D<T> &other) {
-    NQSinusoid1DParam<T>::operator=(other); return *this; };
+  Sinusoid1D<T> &operator=(const Sinusoid1D<T> &other) {
+    Sinusoid1DParam<T>::operator=(other); return *this; };
     
   // Destructor
-  virtual ~NQSinusoid1D() {};
+  virtual ~Sinusoid1D() {};
 
   //# Operators    
-  // Evaluate the NQSinusoid at <src>x</src>.
+  // Evaluate the Sinusoid at <src>x</src>.
   // If a vector is used as the argument only its first element is used.
   // <group>
-  virtual T eval(typename NQFunction1D<T>::FunctionArg x) const;
+  virtual T eval(typename Function1D<T>::FunctionArg x) const;
   // </group>
     
   //# Member functions
   // Return a copy of this object from the heap. The caller is responsible 
   // for deleting this pointer. 
   // <group>
-  virtual Function<T> *clone() const { return new NQSinusoid1D<T>(*this); };
+  virtual Function<T> *clone() const { return new Sinusoid1D<T>(*this); };
   // </group>
 
 };
 
-#define NQSinusoid1D_PS NQSinusoid1D
-// <summary> Partial specialization of NQSinusoid1D for <src>AutoDiff</src>
+#define Sinusoid1D_PS Sinusoid1D
+// <summary> Partial specialization of Sinusoid1D for <src>AutoDiff</src>
 // </summary>
 
 // <synopsis>
-// <note role=warning> The name <src>NQSinusoid1D_PS</src> is only for cxx2html
-// documentation problems. Use <src>NQSinusoid1D</src> in your code.</note>
+// <note role=warning> The name <src>Sinusoid1D_PS</src> is only for cxx2html
+// documentation problems. Use <src>Sinusoid1D</src> in your code.</note>
 // </synopsis>
 
-template <class T> class NQSinusoid1D_PS<AutoDiff<T> > :
-public NQSinusoid1DParam<AutoDiff<T> > {
+template <class T> class Sinusoid1D_PS<AutoDiff<T> > :
+public Sinusoid1DParam<AutoDiff<T> > {
  public:
   //# Constructors
-  // Constructs one dimensional NQSinusoids.
+  // Constructs one dimensional Sinusoids.
   // <group>
-  NQSinusoid1D_PS() : NQSinusoid1DParam<AutoDiff<T> >() {};
-  explicit NQSinusoid1D_PS(const AutoDiff<T> &amplitude) :
-    NQSinusoid1DParam<AutoDiff<T> >(amplitude) {};
-  NQSinusoid1D_PS(const AutoDiff<T> &amplitude, const AutoDiff<T> &period) :
-    NQSinusoid1DParam<AutoDiff<T> >(amplitude, period) {};
-  NQSinusoid1D_PS(const AutoDiff<T> &amplitude, const AutoDiff<T> &period,
+  Sinusoid1D_PS() : Sinusoid1DParam<AutoDiff<T> >() {};
+  explicit Sinusoid1D_PS(const AutoDiff<T> &amplitude) :
+    Sinusoid1DParam<AutoDiff<T> >(amplitude) {};
+  Sinusoid1D_PS(const AutoDiff<T> &amplitude, const AutoDiff<T> &period) :
+    Sinusoid1DParam<AutoDiff<T> >(amplitude, period) {};
+  Sinusoid1D_PS(const AutoDiff<T> &amplitude, const AutoDiff<T> &period,
 		  const AutoDiff<T> &x0) :
-    NQSinusoid1DParam<AutoDiff<T> >(amplitude, period, x0) {};
+    Sinusoid1DParam<AutoDiff<T> >(amplitude, period, x0) {};
   // </group>
 
   // Copy constructor (deep copy)
-  NQSinusoid1D_PS(const NQSinusoid1D_PS &other) :
-    NQSinusoid1DParam<AutoDiff<T> >(other) {};
+  Sinusoid1D_PS(const Sinusoid1D_PS &other) :
+    Sinusoid1DParam<AutoDiff<T> >(other) {};
 
   // Copy assignment (deep copy)
-  NQSinusoid1D_PS<AutoDiff<T> > &
-    operator=(const NQSinusoid1D_PS<AutoDiff<T> > &other) {
-    NQSinusoid1DParam<AutoDiff<T> >::operator=(other); return *this; };
+  Sinusoid1D_PS<AutoDiff<T> > &
+    operator=(const Sinusoid1D_PS<AutoDiff<T> > &other) {
+    Sinusoid1DParam<AutoDiff<T> >::operator=(other); return *this; };
     
   // Destructor
-  virtual ~NQSinusoid1D_PS() {};
+  virtual ~Sinusoid1D_PS() {};
     
   //# Operators    
-  // Evaluate the NQSinusoid at <src>x</src>.
+  // Evaluate the Sinusoid at <src>x</src>.
   // <group>
   virtual AutoDiff<T>
     eval(typename Function<AutoDiff<T> >::FunctionArg x) const;
@@ -203,11 +203,11 @@ public NQSinusoid1DParam<AutoDiff<T> > {
   // for deleting this pointer.
   // <group>
   virtual Function<AutoDiff<T> > *clone() const {
-    return new NQSinusoid1D<AutoDiff<T> >(*this); };
+    return new Sinusoid1D<AutoDiff<T> >(*this); };
   // </group>
 
 };
 
-#undef NQSinusoid1D_PS
+#undef Sinusoid1D_PS
 
 #endif

@@ -69,7 +69,7 @@ class GlishSysEventSource;
 //    Image<Float> myImage("myimage"); // Get the image
 //    uInt nchan = myImage.shape()(2); // 0 relative axis number
 //    // Set up the fitter
-//    NQPolynomial<AutoDiff<Float> > linear(1);    
+//    Polynomial<AutoDiff<Float> > linear(1);    
 //    LQLinearFitSVD<Float> fitter;
 //    fitter.setFunction(linear);
 //    Vector<Float> fittedParameters,

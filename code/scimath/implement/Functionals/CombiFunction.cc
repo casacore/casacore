@@ -1,4 +1,4 @@
-//# NQCombiFunction.cc:  Form a linear combination of Functions
+//# CombiFunction.cc:  Form a linear combination of Functions
 //# Copyright (C) 2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -32,7 +32,7 @@
 
 //# Operators
 template<class T>
-T NQCombiFunction<T>::eval(typename Function<T>::FunctionArg x) const {
+T CombiFunction<T>::eval(typename Function<T>::FunctionArg x) const {
   T tmp(0);
   for (uInt i = 0; i< nFunctions(); ++i) {
     tmp += param_p[i]*(function(i))(x);

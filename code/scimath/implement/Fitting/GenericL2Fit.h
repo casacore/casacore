@@ -118,7 +118,7 @@ template <class T, class U> class Function;
 // The function to be fitted to the data can be given as an instance of the
 // <linkto class="Function">Function</linkto> class.
 // One can also form a sum of functions using the
-// <linkto class="NQCompoundFunction">NQCompoundFunction</linkto>.  
+// <linkto class="CompoundFunction">CompoundFunction</linkto>.  
 //
 // For small datasets the usage of the calls is:
 // <ul>
@@ -198,7 +198,7 @@ template <class T, class U> class Function;
 //	// Try with a function with automatic derivatives (note that default 
 //	// polynomial has zero first guess)
 //  	LQLinearFit<AutoDiffA<Double> > fitad;
-//    	NQPolynomial<AutoDiffA<Double> > sqre(2);
+//    	Polynomial<AutoDiffA<Double> > sqre(2);
 //    	fitad.setFunction(sqre);
 //    	solution = fitad.fit(x, primesTable, sigma);
 // </srcblock>
