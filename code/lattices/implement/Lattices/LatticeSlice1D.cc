@@ -103,6 +103,8 @@ void LatticeSlice1D<T>::getSlice (Vector<T>& data, Vector<Bool>& mask,
                                   const IPosition& coord)
 {
    AlwaysAssert(itsLatticePtr, AipsError);
+   AlwaysAssert(axis0<itsLatticePtr->ndim(), AipsError);
+   AlwaysAssert(axis1<itsLatticePtr->ndim(), AipsError);
 
 // Check PixelCurve is in lattice domain, set blc/trc in plane
 // and set x,y vectors
@@ -191,17 +193,18 @@ void LatticeSlice1D<T>::checkCurve (IPosition& blc, IPosition& trc,
       throw(AipsError("x or y end of curve falls outside of lattice"));
    }
 
+
 // Fill in the blc/trc for the slice
 
    blc.resize(nDim);
    trc.resize(nDim);
-   for (uInt i=0; i<shape.nelements(); i++) {
+   for (uInt i=0; i<nDim; i++) {
       if (i==itsAxis0) {
-         blc(i) = 0;
-         trc(i) = shape(itsAxis0) - 1;
+        blc(i) = 0;
+        trc(i) = shape(itsAxis0) - 1;
       } else if (i==itsAxis1) {
-         blc(i) = 0;
-         trc(i) = shape(itsAxis1) - 1;
+        blc(i) = 0;
+        trc(i) = shape(itsAxis1) - 1;
       } else {
         blc(i) = coord(i);
         trc(i) = coord(i);
