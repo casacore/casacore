@@ -1,5 +1,5 @@
 //# TableRow.cc: Access to a table row
-//# Copyright (C) 1996
+//# Copyright (C) 1996,1997
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -504,7 +504,7 @@ const TableRecord& ROTableRow::get (uInt rownr, Bool alwaysRead) const
 	//# If not, get its default dimensionality.
 	Bool isDefined = True;
 	if (! (*(ROTableColumn*)(itsTabCols[i])).isDefined (rownr)) {
-	    Bool isDefined = False;
+	    isDefined = False;
 	    ndim = (*(ROTableColumn*)(itsTabCols[i])).columnDesc().ndim();
 	    if (ndim < 0) {
 		ndim = 0;
@@ -524,8 +524,8 @@ const TableRecord& ROTableRow::get (uInt rownr, Bool alwaysRead) const
 		       *(*(RecordFieldPtr<Array<Bool> >*) itsFields[i]),
 		       True);
 	    }else{
-		*(*(RecordFieldPtr<Array<Bool> >*)(itsFields[i])) =
-		                         Array<Bool> (IPosition(ndim, 0));
+		(*(RecordFieldPtr<Array<Bool> >*)(itsFields[i])).define (
+		                         Array<Bool> (IPosition(ndim, 0)));
 	    }
 	    break;
 	case TpUChar:
@@ -539,8 +539,8 @@ const TableRecord& ROTableRow::get (uInt rownr, Bool alwaysRead) const
 		       *(*(RecordFieldPtr<Array<uChar> >*) itsFields[i]),
 		       True);
 	    }else{
-		*(*(RecordFieldPtr<Array<uChar> >*)(itsFields[i])) =
-		                         Array<uChar> (IPosition(ndim, 0));
+		(*(RecordFieldPtr<Array<uChar> >*)(itsFields[i])).define (
+		                         Array<uChar> (IPosition(ndim, 0)));
 	    }
 	    break;
 	case TpShort:
@@ -554,8 +554,8 @@ const TableRecord& ROTableRow::get (uInt rownr, Bool alwaysRead) const
 		       *(*(RecordFieldPtr<Array<Short> >*) itsFields[i]),
 		       True);
 	    }else{
-		*(*(RecordFieldPtr<Array<Short> >*)(itsFields[i])) =
-		                         Array<Short> (IPosition(ndim, 0));
+		(*(RecordFieldPtr<Array<Short> >*)(itsFields[i])).define (
+		                         Array<Short> (IPosition(ndim, 0)));
 	    }
 	    break;
 	case TpInt:
@@ -569,8 +569,8 @@ const TableRecord& ROTableRow::get (uInt rownr, Bool alwaysRead) const
 		       *(*(RecordFieldPtr<Array<Int> >*) itsFields[i]),
 		       True);
 	    }else{
-		*(*(RecordFieldPtr<Array<Int> >*)(itsFields[i])) =
-		                         Array<Int> (IPosition(ndim, 0));
+		(*(RecordFieldPtr<Array<Int> >*)(itsFields[i])).define (
+		                         Array<Int> (IPosition(ndim, 0)));
 	    }
 	    break;
 	case TpUInt:
@@ -584,8 +584,8 @@ const TableRecord& ROTableRow::get (uInt rownr, Bool alwaysRead) const
 		       *(*(RecordFieldPtr<Array<uInt> >*) itsFields[i]),
 		       True);
 	    }else{
-		*(*(RecordFieldPtr<Array<uInt> >*)(itsFields[i])) =
-		                         Array<uInt> (IPosition(ndim, 0));
+		(*(RecordFieldPtr<Array<uInt> >*)(itsFields[i])).define (
+		                         Array<uInt> (IPosition(ndim, 0)));
 	    }
 	    break;
 	case TpFloat:
@@ -599,8 +599,8 @@ const TableRecord& ROTableRow::get (uInt rownr, Bool alwaysRead) const
 		       *(*(RecordFieldPtr<Array<float> >*) itsFields[i]),
 		       True);
 	    }else{
-		*(*(RecordFieldPtr<Array<float> >*)(itsFields[i])) =
-		                         Array<float> (IPosition(ndim, 0));
+		(*(RecordFieldPtr<Array<float> >*)(itsFields[i])).define (
+		                         Array<float> (IPosition(ndim, 0)));
 	    }
 	    break;
 	case TpDouble:
@@ -614,8 +614,8 @@ const TableRecord& ROTableRow::get (uInt rownr, Bool alwaysRead) const
 		       *(*(RecordFieldPtr<Array<double> >*) itsFields[i]),
 		       True);
 	    }else{
-		*(*(RecordFieldPtr<Array<double> >*)(itsFields[i])) =
-		                         Array<double> (IPosition(ndim, 0));
+		(*(RecordFieldPtr<Array<double> >*)(itsFields[i])).define (
+		                         Array<double> (IPosition(ndim, 0)));
 	    }
 	    break;
 	case TpComplex:
@@ -629,8 +629,8 @@ const TableRecord& ROTableRow::get (uInt rownr, Bool alwaysRead) const
 		       *(*(RecordFieldPtr<Array<Complex> >*) itsFields[i]),
 		       True);
 	    }else{
-		*(*(RecordFieldPtr<Array<Complex> >*)(itsFields[i])) =
-		                         Array<Complex> (IPosition(ndim, 0));
+		(*(RecordFieldPtr<Array<Complex> >*)(itsFields[i])).define (
+		                         Array<Complex> (IPosition(ndim, 0)));
 	    }
 	    break;
 	case TpDComplex:
@@ -644,8 +644,8 @@ const TableRecord& ROTableRow::get (uInt rownr, Bool alwaysRead) const
 		       *(*(RecordFieldPtr<Array<DComplex> >*) itsFields[i]),
 		       True);
 	    }else{
-		*(*(RecordFieldPtr<Array<DComplex> >*)(itsFields[i])) =
-		                         Array<DComplex> (IPosition(ndim, 0));
+		(*(RecordFieldPtr<Array<DComplex> >*)(itsFields[i])).define (
+		                         Array<DComplex> (IPosition(ndim, 0)));
 	    }
 	    break;
 	case TpString:
@@ -659,8 +659,8 @@ const TableRecord& ROTableRow::get (uInt rownr, Bool alwaysRead) const
 		       *(*(RecordFieldPtr<Array<String> >*) itsFields[i]),
 		       True);
 	    }else{
-		*(*(RecordFieldPtr<Array<String> >*)(itsFields[i])) =
-		                         Array<String> (IPosition(ndim, 0));
+		(*(RecordFieldPtr<Array<String> >*)(itsFields[i])).define (
+		                         Array<String> (IPosition(ndim, 0)));
 	    }
 	    break;
 	}
