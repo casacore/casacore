@@ -186,6 +186,8 @@ public:
     //        this truncation does not occur for BITPIX=-32).
     //   <li> <src>allowOverwrite</src> If True, allow fitsName to be 
     //        overwritten if it already exists.
+    //   <li> <src>degenerateLast</src> If True, axes of length 1 will be written
+    //        last to the header.
     //   </ul>
     static Bool ImageToFITS(String &error,
 			    ImageInterface<Float> &image,
@@ -195,7 +197,8 @@ public:
 			    Bool opticalVelocity = True,
 			    Int BITPIX=-32,
 			    Float minPix = 1.0, Float maxPix = -1.0,
-			    Bool allowOverwrite=False);
+			    Bool allowOverwrite=False,
+                            Bool degenerateLast=False);
 
     // Helper function - used to calculate a cursor appropriate for the desired
     // memory use. It's not intended that application programmers call this, but

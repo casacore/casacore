@@ -213,7 +213,7 @@ Bool ImageFITSConverter::ImageToFITS(String &error,
 				     Bool preferVelocity,
 				     Bool opticalVelocity,
 				     Int BITPIX, Float minPix, Float maxPix,
-				     Bool allowOverwrite)
+				     Bool allowOverwrite, Bool degenerateLast)
 {
     LogIO log(LogOrigin("ImageFITSConverter", "ImageToFITS", WHERE));
     error = "";
@@ -255,12 +255,41 @@ Bool ImageFITSConverter::ImageToFITS(String &error,
 // Get coordinates and test that axis removal has been
 // mercifully absent
 //
-    CoordinateSystem coordsys = image.coordinates();
-    if (coordsys.nWorldAxes() != coordsys.nPixelAxes()) {
+    CoordinateSystem cSys = image.coordinates();
+    if (cSys.nWorldAxes() != cSys.nPixelAxes()) {
 	error = "FITS requires that the number of world and pixel axes be"
 	    " identical.";
 	return False;
     }
+
+//
+// Make degenerate axes last if requested
+//
+   IPosition shape = image.shape();
+   IPosition newShape = shape;
+   const uInt ndim = shape.nelements();
+   if (degenerateLast) {
+      IPosition shape2(ndim);
+      IPosition cursorShape2(ndim);
+      Vector<Int> order(ndim);
+      uInt j = 0;
+      for (uInt i=0; i<ndim; i++) {
+         if (shape(i)>1) {
+            order(j) = i;
+            newShape(j) = shape(i);
+            j++;
+         }
+      }
+      for (uInt i=0; i<ndim; i++) {
+         if (shape(i)==1) {
+            order(j) = i;
+            newShape(j) = shape(i);
+            j++;
+         }
+      }
+//
+      cSys.transpose(order,order);
+   }
 //
 // Make a logger
 //
@@ -302,8 +331,7 @@ Bool ImageFITSConverter::ImageToFITS(String &error,
 //
 // Set up iterator
 //
-	    IPosition cursorShape(image.niceCursorShape());
-	    IPosition shape = image.shape();
+            IPosition cursorShape(image.niceCursorShape());
 	    RO_MaskedLatticeIterator<Float> iter(image, 
 		   LatticeStepper(shape, cursorShape, LatticeStepper::RESIZE));
 	    ProgressMeter meter(0.0, 1.0*shape.product(),
@@ -393,13 +421,10 @@ Bool ImageFITSConverter::ImageToFITS(String &error,
 
     if (applyMask && !hasBlanks) applyMask = False;
 //
-    const IPosition shape = image.shape();
-    const uInt ndim = shape.nelements();
-
     Vector<Int> naxis(ndim);
     uInt i;
     for (i=0; i < ndim; i++) {
-        naxis(i) = shape(i);
+        naxis(i) = newShape(i);
     }
     header.define("naxis", naxis);
     header.define("bscale", bscale);
@@ -424,30 +449,30 @@ Bool ImageFITSConverter::ImageToFITS(String &error,
     header.define("BUNIT", upcase(image.units().getName()).chars());
     header.setComment("BUNIT", "Brightness (pixel) unit");
 //
-    IPosition shapeCopy = shape;
+    IPosition shapeCopy = newShape;
     Record saveHeader(header);
-    Bool ok = coordsys.toFITSHeader(header, shapeCopy, True, 'c', False, 
-				    preferVelocity, opticalVelocity);
+    Bool ok = cSys.toFITSHeader(header, shapeCopy, True, 'c', False, 
+                                preferVelocity, opticalVelocity);
 
     if (!ok) {
 	log << LogIO::SEVERE << "Could not make a standard FITS header. Setting"
 	    " a simple linear coordinate system." << LogIO::POST;
 //
-	uInt n = coordsys.nWorldAxes();
+	uInt n = cSys.nWorldAxes();
 	Matrix<Double> pc(n,n); pc=0.0; pc.diagonal() = 1.0;
-	LinearCoordinate linear(coordsys.worldAxisNames(), 
-				coordsys.worldAxisUnits(),
-				coordsys.referenceValue(),
-				coordsys.increment(),
-				coordsys.linearTransform(),
-				coordsys.referencePixel());
+	LinearCoordinate linear(cSys.worldAxisNames(), 
+				cSys.worldAxisUnits(),
+				cSys.referenceValue(),
+				cSys.increment(),
+				cSys.linearTransform(),
+				cSys.referencePixel());
 	CoordinateSystem linCS;
 	linCS.addCoordinate(linear);
 
 // Recover old header before it got mangled by toFITSHeader
 
 	header = saveHeader;
-	IPosition shapeCopy = shape;
+	IPosition shapeCopy = newShape;
 	Bool ok = linCS.toFITSHeader(header, shapeCopy, True);
 	if (!ok) {
 	    error = "Fallback linear coordinate system fails also.";
@@ -624,7 +649,7 @@ Bool ImageFITSConverter::ImageToFITS(String &error,
 // Finally get around to copying the data
 //
     String report;
-    IPosition cursorShape = copyCursorShape(report,
+    IPosition newCursorShape = copyCursorShape(report,
 					    shape,
 					    sizeof(Float),
 					    sizeof(Float),
@@ -645,17 +670,17 @@ Bool ImageFITSConverter::ImageToFITS(String &error,
     }
 
     try {
-        Int nIter = max(1,image.shape().product()/cursorShape.product());
+        Int nIter = max(1,shape.product()/newCursorShape.product());
         Int iUpdate = max(1,nIter/20);
-	ProgressMeter meter(0.0, 1.0*image.shape().product(),
+	ProgressMeter meter(0.0, 1.0*shape.product(),
 			    "Image to FITS", "Pixels copied", "", 
                             "", True, iUpdate);
 	uInt count = 0;
-	Double curpixels = 1.0*cursorShape.product();
+	Double curpixels = 1.0*newCursorShape.product();
 //
-	LatticeStepper stepper(shape, cursorShape, cursorOrder);
+	LatticeStepper stepper(shape, newCursorShape, cursorOrder);
 	RO_MaskedLatticeIterator<Float> iter(image, stepper);
-	const Int bufferSize = cursorShape.product();
+	const Int bufferSize = newCursorShape.product();
 //
 	PrimaryArray<Float>* fits32 = 0;
 	PrimaryArray<Short>* fits16 = 0;
