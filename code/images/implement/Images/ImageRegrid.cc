@@ -162,7 +162,8 @@ void ImageRegrid<T>::setOutShape (const IPosition& oShape){
 
 template<class T>
 ImageInterface<T>* ImageRegrid<T>::regrid(ImageInterface<T>& imageData,	
-				   Bool stokesImageConventions) {
+				   Bool stokesImageConventions) 
+{
 
   Int directionIndex=templateCoords_p->findCoordinate(Coordinate::DIRECTION);
   AlwaysAssert(directionIndex>=0, AipsError);
@@ -215,6 +216,12 @@ ImageInterface<T>* ImageRegrid<T>::regrid(ImageInterface<T>& imageData,
     */
 
   }
+  
+// Shut compiler up
+
+  ImageInterface<T>* p = 0;
+  return p;
+
 };
 
 
