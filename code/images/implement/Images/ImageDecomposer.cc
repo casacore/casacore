@@ -28,6 +28,7 @@
 #include <trial/Images/ImageDecomposer.h>
 
 #include <aips/Arrays/Slicer.h>
+#include <aips/Arrays/Cube.h>
 #include <aips/Lattices/TiledShape.h>
 #include <trial/Fitting/FitGaussian.h>
 #include <trial/Coordinates/CoordinateSystem.h>
@@ -36,10 +37,14 @@
 #include <trial/Lattices/LatticeExpr.h>
 #include <trial/Lattices/LatticeExprNode.h>
 #include <aips/Lattices/LatticeIterator.h>
+#include <aips/Mathematics/Math.h>
 #include <aips/Utilities/Assert.h>
 #include <trial/Images/TempImage.h>
 #include <trial/Images/SubImage.h>
 
+
+// Constructors, Destructor, Operators
+// -----------------------------------
 
 template <class T>
 ImageDecomposer<T>::ImageDecomposer()
@@ -48,7 +53,17 @@ ImageDecomposer<T>::ImageDecomposer()
    itsShape(0), 
    itsDim(0),
    itsNRegions(0),
-   itsNComponents(0)
+   itsNComponents(0),
+   itsDeblendIt(True),
+   itsThresholdVal(0.1),
+   itsNContour(11),
+   itsMinRange(2),
+   itsNAxis(2),
+   itsFitIt(True),
+   itsMaximumRMS(0.1),
+   itsMaxRetries(-1),
+   itsMaxIter(256),
+   itsConvCriteria(0.001)
 {}
 
 template <class T>
@@ -58,7 +73,17 @@ ImageDecomposer<T>::ImageDecomposer(ImageInterface<T>& image)
    itsShape(itsImagePtr->shape()),
    itsDim(itsShape.nelements()),
    itsNRegions(0),
-   itsNComponents(0)
+   itsNComponents(0),
+   itsDeblendIt(True),
+   itsThresholdVal(0.1),
+   itsNContour(11),
+   itsMinRange(2),
+   itsNAxis(2),
+   itsFitIt(True),
+   itsMaximumRMS(0.1),
+   itsMaxRetries(-1),
+   itsMaxIter(256),
+   itsConvCriteria(0.001)
 {
   itsMapPtr = new TempLattice<Int>(TiledShape(itsShape), 1); 
   if (!itsMapPtr) {
@@ -90,6 +115,8 @@ ImageDecomposer<T>::ImageDecomposer(const ImageDecomposer<T>& other)
   itsNComponents = other.itsNComponents;
   itsList = other.itsList.copy();
 
+  copyOptions(other);  
+
 // Copy values from other.itsMapPtr
 
   itsMapPtr->copyData(*(other.itsMapPtr));
@@ -101,21 +128,21 @@ ImageDecomposer<T> &ImageDecomposer<T>::operator=(const ImageDecomposer<T> &othe
    if (this != &other) {
       delete itsImagePtr;
       delete itsMapPtr;
-//
+
       itsImagePtr = other.itsImagePtr->cloneII();
       itsShape = other.itsShape;
       itsDim = other.itsDim;
       itsNRegions = 0;
       itsNComponents = 0;
-//
+
       itsMapPtr = new TempLattice<Int>(TiledShape(itsShape), 1);  
       itsMapPtr->copyData(*(other.itsMapPtr));
       itsList = other.itsList.copy();
+
+      copyOptions(other);
    }
    return *this;
 }
-
-
 
 template <class T>
 ImageDecomposer<T>::~ImageDecomposer()
@@ -130,6 +157,10 @@ ImageDecomposer<T>::~ImageDecomposer()
   }
 }
 
+// Basic set/get functions
+// -----------------------
+
+
 template <class T>
 void ImageDecomposer<T>::setImage(ImageInterface<T>& image)
 {
@@ -143,6 +174,7 @@ void ImageDecomposer<T>::setImage(ImageInterface<T>& image)
    }
 //
    itsImagePtr = image.cloneII();
+   itsShape.resize(0);               //necessary for dimension change
    itsShape = itsImagePtr->shape();
    itsDim = itsShape.nelements();
    itsNRegions = 0;
@@ -154,6 +186,60 @@ void ImageDecomposer<T>::setImage(ImageInterface<T>& image)
      throw(AipsError("Failed to create internal TempLattice"));
    }
    itsMapPtr->set(0);
+}
+
+
+template <class T>
+void ImageDecomposer<T>::setDeblend(Bool deblendIt=True)
+{
+  itsDeblendIt = deblendIt;
+  return;
+}
+
+template <class T>
+void ImageDecomposer<T>::setDeblendOptions(T thresholdVal=0.1,uInt nContour=11,
+                                           Int minRange=2, Int nAxis=2)
+{
+  itsThresholdVal = thresholdVal;
+  itsNContour = nContour;
+  itsMinRange = minRange;
+  itsNAxis = nAxis;
+  return;
+}
+
+template <class T>
+void ImageDecomposer<T>::setFit(Bool fitIt=True)
+{
+  itsFitIt = fitIt;
+  return;
+}   
+
+template <class T>
+void ImageDecomposer<T>::setFitOptions(T maximumRMS=0.1, Int maxRetries=-1, 
+                                       uInt maxIter=256, T convCriteria=0.0001)
+{
+  itsMaximumRMS = maximumRMS;
+  itsMaxRetries = maxRetries;
+  itsMaxIter = maxIter;
+  itsConvCriteria = convCriteria;
+  return;
+}
+
+
+template <class T>
+void ImageDecomposer<T>::copyOptions(const ImageDecomposer<T> &other)
+{
+  itsDeblendIt = other.itsDeblendIt;
+  itsThresholdVal = other.itsThresholdVal;
+  itsNContour = other.itsNContour;
+  itsMinRange = other.itsMinRange;
+  itsNAxis = other.itsNAxis;
+  itsFitIt = other.itsFitIt;
+  itsMaximumRMS = other.itsMaximumRMS;
+  itsMaxRetries = other.itsMaxRetries;
+  itsMaxIter = other.itsMaxIter;
+  itsConvCriteria = other.itsConvCriteria;
+  return;
 }
 
 
@@ -205,6 +291,86 @@ Int ImageDecomposer<T>::shape(uInt axis) const
 {
   if (itsDim > axis) return itsShape(axis);
   return 1;
+}
+
+//The numRegions and numComponents functions are both getters for their
+//respective variables and flags telling whether the image has been derived
+//and/or decomposed.
+
+template <class T>
+uInt ImageDecomposer<T>::numRegions() const
+{
+  return itsNRegions;
+}
+
+template <class T>
+uInt ImageDecomposer<T>::numComponents() const
+{
+  return itsNComponents;
+}
+
+template <class T>
+Bool ImageDecomposer<T>::isDerived() const
+{
+  return itsNRegions>0;
+}
+
+template <class T>
+Bool ImageDecomposer<T>::isDecomposed() const
+{
+  return itsNComponents>0;
+}
+
+template <class T>
+T ImageDecomposer<T>::getImageVal(Int x, Int y) const
+{
+  return getImageVal(IPosition(2,x,y));
+}
+
+template <class T>
+T ImageDecomposer<T>::getImageVal(Int x, Int y, Int z) const
+{
+  return getImageVal(IPosition(3,x,y,z));
+}
+
+template <class T>
+T ImageDecomposer<T>::getImageVal(IPosition coord) const
+{
+  return itsImagePtr->getAt(coord);
+}
+
+  
+template <class T>
+Int ImageDecomposer<T>::getContourVal(Int x, Int y, const Vector<T>& clevels) const
+{
+  return getContourVal(IPosition(2,x,y), clevels);
+}
+
+template <class T>
+Int ImageDecomposer<T>::getContourVal(Int x, Int y, Int z, 
+                                      const Vector<T>& clevels) const
+{
+  return getContourVal(IPosition(3,x,y,z), clevels); 
+}
+
+template <class T>
+Int ImageDecomposer<T>::getContourVal(IPosition coord, 
+                                      const Vector<T>& clevels) const
+{
+  T val = itsImagePtr->getAt(coord);
+  for (uInt c = 0; c < clevels.nelements(); c++) {
+    if (val < clevels(c)) return c - 1;
+  }
+  return clevels.nelements()-1;
+}
+
+template <class T>
+Int ImageDecomposer<T>::getContourVal(T val, const Vector<T>& clevels) const
+{
+  for (uInt c = 0; c < clevels.nelements(); c++) {
+    if (val < clevels(c)) return c - 1;
+  }
+  return clevels.nelements()-1;
 }
 
 template <class T>
@@ -278,118 +444,58 @@ Vector<T> ImageDecomposer<T>::autoContour(const Function1D<T>& fn,
   return contours;
 }
 
- 
-
 template <class T>
-void ImageDecomposer<T>::zero()
+Matrix<T> ImageDecomposer<T>::componentList() const
 {
-// Set all elements in the itsMapPtr to zero and clear the component list.
+  //IMPR: the pixel->world conversion shouldn't have to be done every time.
 
-  itsMapPtr->set(0);
-  itsNRegions = 0;
-  itsNComponents = 0;
-  itsList.resize();
-  return;
-}
+  Matrix<T> worldList;
+  worldList = itsList;
 
-template <class T>
-void ImageDecomposer<T>::clear()
-{
-  //Clear the component map
-  LatticeIterator<Int> iter(*itsMapPtr);
-  Bool deleteIt;
-  Int* p = 0;
-  for (iter.reset(); !iter.atEnd(); iter++) {
-     Array<Int>& tmp = iter.rwCursor();
-     p = tmp.getStorage(deleteIt);
-     for (uInt i=0; i<tmp.nelements(); i++) if (p[i] != MASKED) p[i] = 0;
-     tmp.putStorage(p, deleteIt);
-  }
-  itsNRegions = 0;
-
-  //Clear the component list
-  itsNComponents = 0;
-  itsList.resize();
-  return;
-}
-
-template <class T>
-T ImageDecomposer<T>::getImageVal(Int x, Int y) const
-{
-  return getImageVal(IPosition(2,x,y));
-}
-
-template <class T>
-T ImageDecomposer<T>::getImageVal(Int x, Int y, Int z) const
-{
-  return getImageVal(IPosition(3,x,y,z));
-}
-
-template <class T>
-T ImageDecomposer<T>::getImageVal(IPosition coord) const
-{
-  return itsImagePtr->getAt(coord);
-}
-  
-template <class T>
-Int ImageDecomposer<T>::getContourVal(Int x, Int y, const Vector<T>& clevels) const
-{
-  return getContourVal(IPosition(2,x,y), clevels);
-}
-
-template <class T>
-Int ImageDecomposer<T>::getContourVal(Int x, Int y, Int z, 
-                                      const Vector<T>& clevels) const
-{
-  return getContourVal(IPosition(3,x,y,z), clevels); 
-}
-
-template <class T>
-Int ImageDecomposer<T>::getContourVal(IPosition coord, 
-                                      const Vector<T>& clevels) const
-{
-  T val = itsImagePtr->getAt(coord);
-  for (uInt c = 0; c < clevels.nelements(); c++) {
-    if (val < clevels(c)) return c - 1;
-  }
-//
-  return clevels.nelements()-1;
-}
-
-
-template <class T>
-void ImageDecomposer<T>::boundRegions(Block<IPosition>& blc,
-                                      Block<IPosition>& trc)
-{
-// Boxes each region in the componentmap:
-// blc is set to the lowest coordinate value in each region; 
-// trc is set to one above the highest coordinate value in each region.
-            
-  DebugAssert(blc.nelements() == itsNRegions, AipsError);
-  DebugAssert(trc.nelements() == itsNRegions, AipsError);
-   
-  for (uInt r=0; r<itsNRegions; r++) {
-    blc[r] = itsShape;
-    trc[r] = IPosition(itsDim,0);
-  }
-//
+  for (uInt g = 0; g < itsNComponents; g++)
   {
-    IPosition pos(itsDim,0); 
-    decrement(pos);
-    Int r;
-    while (increment(pos,shape())) {
-        r = getCell(pos);
-        if (r > 0) {
-          for (uInt i = 0; i < itsDim; i++) {
-            if (blc[r-1](i) > pos(i)) blc[r-1](i) = pos(i);
-            if (trc[r-1](i) <= pos(i)) trc[r-1](i) = pos(i)+1;
-          }
-        }
+    Vector<Double> centercoords(itsDim);  //CoordinateSystem uses Double only
+    Vector<Double> compwidth(itsDim);
+    for (uInt d = 0; d < itsDim; d++)
+    {
+      centercoords(d) = itsList(g,1+d);
     }
+    for (uInt d = 0; d < itsDim; d++)
+    {
+      compwidth(d) = itsList(g,1+itsDim+d);
+    }
+
+    itsImagePtr->coordinates().toWorld(centercoords, centercoords);
+    itsImagePtr->coordinates().toWorld(compwidth, compwidth);
+    itsImagePtr->coordinates().makeWorldRelative(compwidth);
+
+    for (uInt d = 0; d < itsDim; d++)
+    {
+      worldList(g,1+d) = centercoords(d);
+    }
+    for (uInt d = 0; d < itsDim; d++)
+    {
+      if (itsDim == 2 && d == 1) continue; // 2d: axis ratio, not x-width
+      worldList(g,1+itsDim+d) = compwidth(d);
+    }
+
   }
-//
+
+  return worldList;
+}
+
+template <class T>
+void ImageDecomposer<T>::componentMap() const
+{
+  // does nothing yet.
   return;
-}     
+}
+
+
+
+
+// Maxima functions
+// ----------------
 
 template <class T>
 T ImageDecomposer<T>::findAreaGlobalMax(IPosition blc, IPosition trc) const
@@ -670,6 +776,11 @@ Bool ImageDecomposer<T>::isLocalMax(Int x, Int y, Int z, Int naxis) const
   return True;
 }
 
+
+// Estimation Functions
+// --------------------
+
+
 template <class T>
 void ImageDecomposer<T>::estimateComponentWidths(Matrix<T>& width,
                                           const Block<IPosition>& maxvalpos) 
@@ -678,8 +789,11 @@ void ImageDecomposer<T>::estimateComponentWidths(Matrix<T>& width,
 // Finds a rough estimate of the width of each component.  
 // Requires the location of each component.
 
+// This function is now mostly obsolete; its functionality replaced by 
+// calculateMoments() except on non-deblended images.
+
   width.resize(maxvalpos.nelements(), itsDim);
-  Bool dblflag = 0; 
+  Bool dblflag; 
 //
   for (uInt r = 0; r < maxvalpos.nelements(); r++) {
     IPosition lpos(itsDim);
@@ -690,6 +804,7 @@ void ImageDecomposer<T>::estimateComponentWidths(Matrix<T>& width,
     T thrval = maxvalr*0.25;
     T val, prevval;
     for (uInt a = 0; a < itsDim; a++) {
+      dblflag = 0;
       lpos = maxpos;
       val = maxvalr;
       prevval = val;
@@ -706,7 +821,7 @@ void ImageDecomposer<T>::estimateComponentWidths(Matrix<T>& width,
         {width(r,a) = 0; dblflag = 1;}  //can't find left limit; 
                                         //use 2xright limit instead
       }
-//
+
       rpos = maxpos;    
       val = maxvalr;
       prevval = val;
@@ -730,11 +845,349 @@ void ImageDecomposer<T>::estimateComponentWidths(Matrix<T>& width,
 //
       if (width(r,a) <= 0.0) width(r,a) = shape(a);//gaussian bigger than image
       if (!dblflag) width(r,a) /= 2.0;
+      if (isNaN(width(r,a)))
+      {
+        width(r,a) = 1.0;
+        cerr << "WARNING: Nonphysical estimate, setting width to 1.0" << endl;
+      }
+
     }
   }  
 //
   return;
 }
+
+template <class T>
+Array<T> ImageDecomposer<T>::calculateMoments(Int region) const
+{
+  // Calculates the moments of an image region up to second order.  
+
+  // The current implementation is inefficient because it must scan the entire
+  // image for each region.  It would be better to return an array of Arrays,
+  // or a Matrix with the M array collapsed to 1D and the region # along the
+  // other axis.
+
+  IPosition pos(itsDim);
+  IPosition start(itsDim,0);
+  decrement(start);
+  T I;
+
+  if (itsDim == 2)
+  {
+    Matrix<T> M(3,3, 0.0);
+    pos = start;
+    while (increment(pos,shape())) {
+      if (getCell(pos) == region)
+      {
+        I = getImageVal(pos);
+        M(0,0) += I;
+        M(1,0) += pos(0) * I;
+        M(0,1) += pos(1) * I;
+      }
+    }
+
+
+    T xc = M(1,0) / M(0,0);
+    T yc = M(0,1) / M(0,0);
+
+    pos = start;
+    while (increment(pos,shape())) {
+      if (getCell(pos) == region)
+      {
+        I = getImageVal(pos);
+        T xd = pos(0) - xc;
+        T yd = pos(1) - yc;
+        M(1,1) += xd * yd * I;
+        M(2,0) += xd * xd * I;
+        M(0,2) += yd * yd * I;
+      }
+    }
+
+    return M;
+    //Does not calculate higher level components (2,1; 1,2; 2,2)
+  }
+
+  if (itsDim == 3)
+  {
+    Cube<T> M(3,3,3, 0.0);
+
+    pos = start;
+    while (increment(pos,shape())) {
+      if (getCell(pos) == region)
+      {
+        I = getImageVal(pos);
+        M(0,0,0) += I;
+        M(1,0,0) += pos(0) * I;
+        M(0,1,0) += pos(1) * I;
+        M(0,0,1) += pos(2) * I;
+      }
+    }
+
+
+    T xc = M(1,0,0) / M(0,0,0);
+    T yc = M(0,1,0) / M(0,0,0);
+    T zc = M(0,0,1) / M(0,0,0);
+    pos = start;
+    while (increment(pos,shape())) {
+      if (getCell(pos) == region)
+      {
+        I = getImageVal(pos);
+        T xd = pos(0) - xc;
+        T yd = pos(1) - yc;
+        T zd = pos(2) - zc;
+        M(1,1,0) += xd * yd * I;
+        M(1,0,1) += xd * zd * I;
+        M(0,1,1) += yd * zd * I;
+        M(2,0,0) += xd * xd * I;
+        M(0,2,0) += yd * yd * I;
+        M(0,0,2) += zd * zd * I;
+      }
+    }
+
+    return M;
+  }
+
+  return Array<T>();
+}
+
+
+// Region editing functions
+// ------------------------
+
+template <class T>
+void ImageDecomposer<T>::boundRegions(Block<IPosition>& blc,
+                                      Block<IPosition>& trc)
+{
+// Boxes each region in the componentmap:
+// blc is set to the lowest coordinate value in each region; 
+// trc is set to one above the highest coordinate value in each region.
+            
+  DebugAssert(blc.nelements() == itsNRegions, AipsError);
+  DebugAssert(trc.nelements() == itsNRegions, AipsError);
+   
+  for (uInt r=0; r<itsNRegions; r++) {
+    blc[r] = itsShape;
+    trc[r] = IPosition(itsDim,0);
+  }
+
+  {
+    IPosition pos(itsDim,0); 
+    decrement(pos);
+    Int r;
+    while (increment(pos,shape())) {
+        r = getCell(pos);
+        if (r > 0) {
+          for (uInt i = 0; i < itsDim; i++) {
+            if (blc[r-1](i) > pos(i)) blc[r-1](i) = pos(i);
+            if (trc[r-1](i) <= pos(i)) trc[r-1](i) = pos(i)+1;
+          }
+        }
+    }
+  }
+
+  return;
+}     
+
+template <class T>
+void ImageDecomposer<T>::zero()
+{
+// Set all elements in the component map to zero and clear the component list.
+
+  itsMapPtr->set(0);
+  itsNRegions = 0;
+  itsNComponents = 0;
+  itsList.resize();
+  return;
+}
+
+template <class T>
+void ImageDecomposer<T>::clear()
+{
+  //Clear the component map
+  LatticeIterator<Int> iter(*itsMapPtr);
+  Bool deleteIt;
+  Int* p = 0;
+  for (iter.reset(); !iter.atEnd(); iter++) {
+     Array<Int>& tmp = iter.rwCursor();
+     p = tmp.getStorage(deleteIt);
+     for (uInt i=0; i<tmp.nelements(); i++) if (p[i] != MASKED) p[i] = 0;
+     tmp.putStorage(p, deleteIt);
+  }
+  itsNRegions = 0;
+
+  //Clear the component list
+  itsNComponents = 0;
+  itsList.resize();
+  return;
+}
+
+
+template <class T>
+void ImageDecomposer<T>::destroyRegions(const Vector<Bool>& killRegion)
+{
+  //Wipes out any regions whose corresponding values in killRegion are True
+  // by setting all pixel values in the componentmap set to that region to
+  // zero.  Zero-oriented; there is an offset of one between the index in
+  // killRegion and the actual region in the componentmap.
+
+  {
+    IPosition pos(itsDim,0); decrement(pos);
+    while (increment(pos,shape()))
+    {     
+      Int reg = getCell(pos);
+      if (reg > 0 && killRegion(reg-1)) setCell(pos,0);
+    } 
+  }
+
+  renumberRegions();
+  return;
+}
+
+
+template <class T>
+void ImageDecomposer<T>::renumberRegions()
+{
+  //Eliminates redundant regions (components with no representative cells in
+  //the component map) by renumbering higher-numbered regions to fill in
+  //the gaps.  For example..
+  // 011          011
+  // 113  becomes 112
+  // 113          112
+
+  Vector<Bool> regpresent(itsNRegions+1, 0);
+  Vector<Int> renumregs(itsNRegions+1);
+  uInt const ngpar = itsDim * 3;
+
+  //any region that has any pixel members is flagged as 1, others left 0
+
+  {
+    IPosition pos(itsDim,0); decrement(pos);
+    while (increment(pos,shape()))
+    {     
+      Int reg = getCell(pos);
+      if (reg >= 0) regpresent(reg) = 1;
+    } 
+  }
+
+  //determine new # of regions and which regions will be renumbered to what
+  uInt newnr = 0;
+  for (uInt r = 1; r <= itsNRegions; r++)
+    if (regpresent(r)) renumregs(r) = ++newnr;
+
+  if (newnr < itsNRegions)
+  {
+    itsNRegions = newnr;
+
+    //actually renumber the regions in the pmap
+    {
+      IPosition pos(itsDim,0); decrement(pos);
+      while (increment(pos,shape()))
+      {     
+        Int reg = getCell(pos);
+        if (reg >= 0) setCell(pos, renumregs(reg));
+      }
+    }
+  
+    if (isDecomposed())
+    {
+      //eliminate componentlist entries of lost components
+      Matrix<T> oldcomponentlist(itsList);
+
+      itsList.resize(newnr, ngpar);   
+      for (Int c = 0; c < Int(itsNComponents); c++)
+        if (regpresent(c+1) && (c+1 != renumregs(c+1)))
+          for (uInt p = 0; p < 9; p++)
+            itsList(renumregs(c+1)-1,p) = oldcomponentlist(c+1,p);
+
+      itsNComponents = newnr;
+    }
+  }
+
+  return;
+}
+
+template <class T>                                   
+void ImageDecomposer<T>::synthesize(const ImageDecomposer<T>& subdecomposer,
+                                    IPosition blc)
+{
+// Overlays a smaller map onto an empty region of a larger map,
+// and adds submap component list to main component list.
+
+// The user should exercise caution with this function and synthesize submaps
+// only into regions of the main map that are truly empty (0), because the 
+// program does not perform any blending between components.  
+// Otherwise, false detections are likely.
+
+  uInt ngpar = 0;
+  if (itsDim == 2) ngpar = 6; 
+  if (itsDim == 3) ngpar = 9;
+
+// Scan to the edge of the boundary of the host map or the submap, whichever
+// is closer.
+
+  IPosition scanlimit(itsDim);  //submap-indexed
+  for (uInt i=0; i<itsDim; i++)  {
+    if (subdecomposer.shape(i) > shape(i) - blc(i)) {
+      scanlimit(i) = shape(i) - blc(i);
+    } else {
+      scanlimit(i) = subdecomposer.shape(i);  
+    }
+  }
+
+// Write pixels in sub- component map to main component map.
+
+  {
+    IPosition pos(itsDim,0);  //submap-indexed
+    decrement(pos);
+    while (increment(pos,scanlimit)) {     
+        if (subdecomposer.getCell(pos) > 0) {
+          setCell(pos + blc, itsNRegions + subdecomposer.getCell(pos));
+        }
+    }
+  }
+  itsNRegions += subdecomposer.numRegions();
+
+// Add components in subdecomposer to components in main decomposer.
+
+  if (subdecomposer.isDecomposed())  { 
+
+    Matrix<T> oldList;   
+    oldList = itsList;
+    itsList.resize(itsNComponents+subdecomposer.numComponents(),ngpar);
+    for (uInt c = 0; c < itsNComponents; c++) {
+      for (uInt p = 0; p < ngpar; p++) {
+        itsList(c,p) = oldList(c,p);  //copy after resize
+      }
+    }
+
+    for (uInt subc = 0; subc < subdecomposer.numComponents(); subc++) {
+      for (uInt p = 0; p < ngpar; p++) {
+        itsList(itsNComponents+subc,p)=subdecomposer.itsList(subc,p);     
+      }
+      // make adjustments to center values due to offset
+      if (itsDim == 2) {
+        itsList(itsNComponents+subc,1) += blc(0);
+        itsList(itsNComponents+subc,2) += blc(1);
+      } else if (itsDim == 3) {
+        itsList(itsNComponents+subc,1) += blc(0);
+        itsList(itsNComponents+subc,2) += blc(1);
+        itsList(itsNComponents+subc,3) += blc(2);   
+      }
+    }
+    itsNComponents += subdecomposer.numComponents();
+
+  }
+//
+  //renumberRegions();     //this should have no effect unless this function
+                           //was used to overwrite an entire region, which
+                           //should be avoided.
+}
+
+
+
+// Analysis functions
+// ------------------
+
 
 template <class T>
 uInt ImageDecomposer<T>::identifyRegions(T thrval, Int naxis)
@@ -880,144 +1333,8 @@ uInt ImageDecomposer<T>::identifyRegions(T thrval, Int naxis)
 }
 
 template <class T>
-void ImageDecomposer<T>::decomposeImage(T thresholdVal, T maximumRMS)
-{
-
-// Find contiguous regions via thresholding
-
-  uInt nRegions = identifyRegions(thresholdVal);
-  cerr << "Found " << nRegions << " regions" << endl;
-
-// Fit each region.  A further pass is done through each region
-// to ascertain whether there are multiple components to be
-// fit within it.
-
-  fitRegions(maximumRMS);
-}
-
-
-
-template <class T>
-void ImageDecomposer<T>::decomposeImage(T thresholdVal, 
-                                        uInt nContour,
-                                        T maximumRMS,
-                                        Bool varyContours)
-{
-  const Bool showProcess = False;
-
-// Make a local decomposer
-
-  ImageDecomposer<T> thresholdMap(*itsImagePtr);
-
-
-// Generate global contours
-
-  Vector<T> mainContours(nContour);
-  if (!varyContours) {
-     mainContours = autoContour(nContour, thresholdVal);
-     //cerr << "Main contours = " << mainContours << endl;
-     if (showProcess) displayContourMap(mainContours);
-  }
-
-// Find contiguous regions via thresholding
-
-  uInt nRegions = thresholdMap.identifyRegions(thresholdVal);
-  if (showProcess) {
-    cout << "Located " << nRegions << " regions above threshold "
-         << thresholdVal << "." << endl;
-    thresholdMap.display();
-  }
-
-
-// Find a blc and a trc for each region
-
-  Block<IPosition> blc(nRegions);
-  Block<IPosition> trc(nRegions);
-  thresholdMap.boundRegions(blc, trc);
-  if (isDerived()) zero();
-//
-  if (showProcess) {
-    cout << "Bounded " << nRegions <<" regions for decomposition and fitting:" 
-         << endl;
-    for (uInt r = 0; r < nRegions; r++) {
-      cout << r+1 <<": " << blc[r] << trc[r] << endl;;
-    }
-  }
-
-// For each distinct region above the threshold, form a componentmap
-// (subcomponentmap) and perform the fitting.  Regions are treated as
-// independent entities by the fitter - even if one region contains a 
-// very high-sigma component that may extend into another region, this
-// is not taken into account by the other region
-
-  for (uInt r=0; r<nRegions; r++) {
-
-    // Make a decomposer for this region
-
-    Slicer sl(blc[r], trc[r]-blc[r], Slicer::endIsLength);
-    SubImage<T> subIm(*itsImagePtr, sl);
-    ImageDecomposer<T> subpmap(subIm);
-
-    // Flag pixels outside the target region (this makes sure that other
-    // regions that happen to overlap part of the target region's bounding
-    // rectangle are not counted twice, and that only the target region pixels
-    // are used in fitting.)
-    {
-      IPosition pos(subpmap.itsDim,0); decrement(pos);
-      while (increment(pos,subpmap.shape())) {     
-        if (thresholdMap.getCell(blc[r] + pos) != Int(r+1)) {
-          subpmap.setCell(pos, MASKED);
-	}
-      }
-    }
-    
-    Vector<T> subContours(nContour);
-    Vector<T> *contourPtr;
- 
-// Generate contours for this region or use global 
-// ones for entire image
-
-    if (varyContours)  {
-      subContours = subpmap.autoContour(nContour, thresholdVal); 
-      contourPtr = &subContours;
-    } else {
-      contourPtr = &mainContours;
-    }
-//
-    if (showProcess)  {    
-      cout << "-----------------------------------------" << endl;
-      cout << "Subimage " << r << endl;
-      cout << "Contour Map:" << endl;
-      subpmap.displayContourMap(*contourPtr);
-    }
-
-// Deblend components in this region
-
-    subpmap.deblendRegions(*contourPtr);   
-    if (showProcess) {
-      cout << "Component Map:" << endl;
-      subpmap.display();
-    }
-
-// Fit gaussians to region
-
-    subpmap.fitComponents(maximumRMS);  
-    if (showProcess) {
-      cout << "Object " << r+1 << " subcomponents: " << endl;
-      subpmap.printComponents(); 
-      cout << endl;
-    }
-
-// Add this region back into the main component map
-
-    synthesize(subpmap, blc[r]);     
-  }
-//
-  return;
-}
-
-template <class T>
-void ImageDecomposer<T>::deblendRegions(const Vector<T>& contours)
+void ImageDecomposer<T>::deblendRegions(const Vector<T>& contours, 
+                                        Int minRange=1, Int naxis=2)
 {
 
 // Performs the contour decomposition on a blended image to generate a 
@@ -1029,16 +1346,16 @@ void ImageDecomposer<T>::deblendRegions(const Vector<T>& contours)
   Int const blocksize = 3;
   Int ncontours = contours.nelements(); 
 
-// Holds components found in individual contours
-// it is not a contour map, it is a component
-// map thresholded at the current contour value.)
-// This is the 'lower contour'.
+  ImageDecomposer<T> contourMap(*this);//Component map thresholded at current
+                                       //contour level; "lower" contour
+  Block<IPosition> regcenter; //Coordinates of first pixel found in each 
+                              //component (a rough estimate of the center)
+                              //Indexing for this array is offset by one.
+  Vector<Int> originlevel;    //first contour in which region was detected
+                              //Indexing for this array is offset by one.
+                              //If set to -1 the region is defunct.
+  
 
-  ImageDecomposer<T> contourMap(*this);
-
-// Coordinates of the first pixel found in each component (a rough estimate of the center)
-
-  Block<IPosition> regcenter; 
   if (isDerived()) zero();
 
 // Component decomposition:
@@ -1052,32 +1369,27 @@ void ImageDecomposer<T>::deblendRegions(const Vector<T>& contours)
 
   for (Int c = ncontours-1; c >= 0; c--) {
     if (printIntermediates == 2) cout << endl << "CONTOUR " << c << endl;
-//
+
     Int lowreg, highreg;   //number of regions in lower contour, current pmap
     contourMap.clear();    //only necessary if region grows between contours
-//
-    lowreg = contourMap.identifyRegions(contours(c));
+
+    lowreg = contourMap.identifyRegions(contours(c),naxis);
     highreg = itsNRegions;          
-//
+
     if (printIntermediates)  {
       cout << "Now comparing current pmap to contour " << c << '.' << endl;
       display();
       contourMap.display();
     }
 
-// Indicates corresponding object in lower contour
+    Vector<Int> root(highreg+1, 0);      //Indicates corresponding object 
+                                         // in lower contour
+    Vector<Int> nOffspring(lowreg+1, 0); //Total number of different objects
+                                         // above this region
+    Block<Vector<Int>*> offspring(lowreg+1); //Region IDs of objects above 
+                                             // this region
 
-    Vector<Int> root(highreg+1, 0);
-
-// Total number of different objects above this region
-
-    Vector<Int> nOffspring(lowreg+1, 0);
-
-// Region IDs of objects above this region
-
-    Block<Vector<Int>*> offspring(lowreg+1);
-
-// Can't finish allocation until nOffspring is known.
+    // Can't finish allocation until nOffspring is known.
     
 // Scan through current pmap ("higher contour") and find the root of all
 // regions as defined in the lower contour.  Simultaneously mark all
@@ -1098,14 +1410,14 @@ void ImageDecomposer<T>::deblendRegions(const Vector<T>& contours)
     for (Int r = 1; r <= lowreg; r++) {
       offspring[r] = new Vector<Int>(nOffspring(r));
     }
-// 
+
     for (Int lr = 1; lr <= lowreg; lr++) {
       Int f = 0;
       for (Int hr = 1; hr <= highreg; hr++) {
         if (root(hr) == lr) (*offspring[lr])(f++) = hr;
       }
     }
-//
+
     if (printIntermediates == 2) {
       cout << "Contour Level " << c << endl;
       cout << highreg << ' ' << lowreg << endl;
@@ -1113,13 +1425,85 @@ void ImageDecomposer<T>::deblendRegions(const Vector<T>& contours)
       for (Int hr = 1; hr <= highreg; hr++) {
         cout << "root of " << hr << ':' << root(hr) << endl;
       }
-//    
+
       for (Int lr = 1; lr <= lowreg; lr++) {
         for (Int f = 0; f < nOffspring(lr); f++) {
           cout << "offspring of " << lr << ':' << (*offspring[lr])(f) << endl;
         }
       }
     }
+
+
+
+    // If a newly discovered component merges with another too quickly
+    // (within minRange contours) rescind its status and treat it as part
+    // of the other contour.
+    // "f" refers somewhat cryptically to offspring index and "fr" to its
+    // region number in the pmap
+
+    if (minRange > 1) {
+      for (Int lr = 1; lr <= lowreg; lr++) {
+        if (nOffspring(lr) > 1) {
+          for (Int f = 0; f < nOffspring(lr); f++) {
+            Int fr = (*offspring[lr])(f);
+
+            if (originlevel(fr-1) - c < minRange)
+	    {
+              //Find the closest offspring
+              Int mindistsq = 1073741823;  //maximum Int value
+              Int frabs = 0;               //closest region
+              for (Int f2 = 0; f2 < nOffspring(lr); f2++) {
+                if (f2 == f) continue;
+                Int fr2 = (*offspring[lr])(f2);
+                Int distsq = 0;
+                if (originlevel(fr2-1) == -1) continue;
+                for (uInt a = 0; a < itsDim; a++) {
+                  distsq += square(regcenter[fr2-1](a)-regcenter[fr-1](a));
+	        }
+                if (distsq < mindistsq) {
+                  frabs = fr2;
+	          mindistsq = distsq;
+	        }
+	      }
+              if (frabs == 0)
+	      {
+                //No valid closest offspring - find biggest offspring
+                for (Int f2 = 0; f2 < nOffspring(lr); f2++) {
+                  if (f2 == f) continue;
+                  Int fr2 = (*offspring[lr])(f2);
+                  Int maxlevel = 0;
+                  if (originlevel(fr2-1) == -1) continue;
+                  if (originlevel(fr2-1) > maxlevel) {
+                    frabs = fr2;
+                    maxlevel = originlevel(fr2-1);
+		  }
+	        }
+	      }
+              if (frabs == 0)
+	      {
+		//must be the only offspring left!  Don't absorb.
+                break;
+	      }
+             
+
+              if (printIntermediates == 2) {
+                cout << "Absorbing region " << fr << " (origin at "
+                     << originlevel(fr-1) << ") into region " << frabs << endl;
+	      }
+              IPosition pos(itsDim,0); decrement(pos);
+              while (increment(pos,shape())){
+                if (getCell(pos) == fr) setCell(pos,frabs);
+	      }
+	      originlevel(fr-1) = -1;
+	    }
+          }
+        }
+      }
+    }
+
+    // Need to check if this works properly...
+    
+
 
 // The object/region/component labeling is done in three steps to make the 
 // order most closely match the order in which they were found, and the 
@@ -1137,36 +1521,33 @@ void ImageDecomposer<T>::deblendRegions(const Vector<T>& contours)
                                        //preserved while the componentmap is 
                                        //overwritten for comparisons between 
                                        //nearby pixels
-//
+
     for (Int lr = 1; lr <= lowreg; lr++) {
       if (nOffspring(lr) >= 2) {
         IPosition pos(itsDim,0); decrement(pos);
         while (increment(pos,shape())) {
 
-// Renumber pixels that already exist in the pmap
-
+          // Renumber pixels that already exist in the pmap
           if ((contourMap.getCell(pos)==lr)&&(copyMap.getCell(pos))) {  
             for (Int f = 0; f < nOffspring(lr); f++) {
 
-// Translate old pmap id to new pmap id
-
-              if ((*offspring[lr])(f) == copyMap.getCell(pos)) setCell(pos, cgindex+f);
+              // Translate old pmap id to new pmap id
+              if ((*offspring[lr])(f) == copyMap.getCell(pos)) 
+                setCell(pos, cgindex+f);
 	    }
 	  }
 
-// Number new pixels.
+          // Number new pixels.
 
           if ((contourMap.getCell(pos)==lr)&&(!copyMap.getCell(pos))) {
             Int pinh = 0;  //region as defined in pmap pixel is set to
             Int srad = 1;  //search radius
             uInt naxis = 1;
 
-// cout << "Searching for nearest cell to " << pos << endl;
+            // cout << "Searching for nearest cell to " << pos << endl;
 
             while(!pinh && srad < 250) {    //search increasing naxis, srad
-
-// IMPR: an N-dimensional structure would be better here. 
-
+              // IMPR: an N-dimensional structure would be better here. 
 	      Int xi, yi, zi;
 	      Int ximin = (pos(0)-srad < 0)?                   -pos(0) : -srad;
               Int ximax = (pos(0)+srad >= shape(0))? shape(0)-pos(0)-1 :  srad;
@@ -1196,24 +1577,23 @@ void ImageDecomposer<T>::deblendRegions(const Vector<T>& contours)
 		          || ((naxis==2) && (xi && yi && zi))) {
 		        continue;
                       }
-//                            
+                          
                       Int inh = copyMap.getCell(ipos);
                       if (inh<=0) continue;
                       if (!pinh) {
                         pinh = inh;
                         for (Int f = 0; f < nOffspring(lr); f++) {
 
-// Translate old pmap id to new pmap id
+                         // Translate old pmap id to new pmap id
 
                           if ((*offspring[lr])(f) == inh) {
                             setCell(pos, cgindex+f);
 			  }
                                 //reassign pixel to new component
 	      	        }
-                      } else if (pinh!=inh)  {  //equidistant to different objects
-
-// Temporarily flag as nonexistant object
-
+                      } else if (pinh!=inh)  {  
+                        //equidistant to different objects: 
+                        // temporarily flag as nonexistant object
                         setCell(pos, INDETERMINATE);
                       }
                     }
@@ -1250,9 +1630,9 @@ void ImageDecomposer<T>::deblendRegions(const Vector<T>& contours)
 
     for (Int lr = 1; lr <= lowreg; lr++)  { 
       if (nOffspring(lr) == 0) {
+
         IPosition newregioncenter(itsDim,0);
         uInt topcells = 0;
-//
         {
           IPosition pos(itsDim,0); 
           decrement(pos);
@@ -1272,11 +1652,12 @@ void ImageDecomposer<T>::deblendRegions(const Vector<T>& contours)
 
         if ((itsNRegions % blocksize) == 0) {
           regcenter.resize(itsNRegions+blocksize, True);
+          originlevel.resize(itsNRegions+blocksize, True);
 	}
 
-// Add to region center array
-
+        // Add to region center array
         regcenter[itsNRegions] = newregioncenter;
+        originlevel(itsNRegions) = c;
         itsNRegions++;
       }
     }   
@@ -1301,6 +1682,7 @@ void ImageDecomposer<T>::deblendRegions(const Vector<T>& contours)
 	Int mindistsq = 1073741823;  //maximum Int value
         for (uInt s = 0; s < itsNRegions; s++) {
           Int distsq = 0;
+          if (originlevel(s) == -1) continue; //defunct region
           for (uInt a = 0; a < itsDim; a++) {
             distsq += (pos(a) - regcenter[s](a)) * (pos(a) - regcenter[s](a));
 	  }
@@ -1312,43 +1694,184 @@ void ImageDecomposer<T>::deblendRegions(const Vector<T>& contours)
       }   
     }
   }  
+
+  if (minRange > 1) renumberRegions(); 
+
   return;
 }
 
 
 
-//The numRegions and numComponents functions are both getters for their
-//respective variables and flags telling whether the image has been derived
-//and/or decomposed.
-
 template <class T>
-uInt ImageDecomposer<T>::numRegions() const
+void ImageDecomposer<T>::decomposeImage()
 {
-  return itsNRegions;
+  if (!itsDeblendIt)
+  {
+  // Find contiguous regions via thresholding
+
+    uInt nRegions = identifyRegions(itsThresholdVal,itsNAxis);
+    cout << "Found " << nRegions << " regions" << endl;
+
+  // Fit each region.  A further pass is done through each region
+  // to ascertain whether there are multiple components to be
+  // fit within it.
+
+   if (itsFitIt) fitRegions();
+
+  }
+  else
+  {
+    const Bool showProcess = False;
+    Bool varyContours = False; //this is always false now...
+
+  // Make a local decomposer
+
+    ImageDecomposer<T> thresholdMap(*itsImagePtr);
+
+
+  // Generate global contours
+
+    Vector<T> mainContours(itsNContour);
+    if (!varyContours) {
+       mainContours = autoContour(itsNContour, itsThresholdVal);
+       //cerr << "Main contours = " << mainContours << endl;
+       if (showProcess) displayContourMap(mainContours);
+    }
+
+  // Find contiguous regions via thresholding
+
+    uInt nRegions = thresholdMap.identifyRegions(itsThresholdVal, itsNAxis);
+    uInt nBadRegions = 0;
+    if (itsMinRange > 1)
+    {
+      // Eliminate weak regions
+      Vector<T> maxvals;
+      maxvals = thresholdMap.findAllRegionGlobalMax();
+      Vector<Bool> killRegion(nRegions,0);
+      for (uInt r = 0; r < nRegions; r++) {
+        if (thresholdMap.getContourVal(maxvals(r),mainContours)+1 <itsMinRange)
+        {
+          killRegion(r) = 1;
+          nBadRegions++;
+        }
+      }
+      thresholdMap.destroyRegions(killRegion);
+    }
+           
+    nRegions -= nBadRegions;
+    
+    if (showProcess) {
+      cout << "Located " << nRegions << " regions above threshold "
+           << itsThresholdVal << "." << endl;
+      thresholdMap.display();
+    }
+
+
+  // Find a blc and a trc for each region
+
+    Block<IPosition> blc(nRegions);
+    Block<IPosition> trc(nRegions);
+    thresholdMap.boundRegions(blc, trc);
+    if (isDerived()) zero();
+
+    if (showProcess) {
+      cout << "Bounded " << nRegions<<" regions for decomposition and fitting:"
+           << endl;
+      for (uInt r = 0; r < nRegions; r++) {
+        cout << r+1 <<": " << blc[r] << trc[r] << endl;
+      }
+    }
+
+  // For each distinct region above the threshold, form a componentmap
+  // (subcomponentmap) and perform the fitting.  Regions are treated as
+  // independent entities by the fitter - even if one region contains a 
+  // very high-sigma component that may extend into another region, this
+  // is not taken into account by the other region
+
+    for (uInt r=0; r<nRegions; r++) {
+
+      // Make a decomposer for this region
+
+      Slicer sl(blc[r], trc[r]-blc[r], Slicer::endIsLength);
+      SubImage<T> subIm(*itsImagePtr, sl);
+      ImageDecomposer<T> subpmap(subIm);
+      subpmap.copyOptions(*this);
+
+      // Flag pixels outside the target region (this makes sure that other
+      // regions that happen to overlap part of the target region's bounding
+      // rectangle are not counted twice, and that only the target region 
+      // pixels are used in fitting.)
+      {
+        IPosition pos(subpmap.itsDim,0); decrement(pos);
+        while (increment(pos,subpmap.shape())) {     
+          if (thresholdMap.getCell(blc[r] + pos) != Int(r+1)) {
+            subpmap.setCell(pos, MASKED);
+	  }
+        }
+      }
+    
+      Vector<T> subContours(itsNContour);
+      Vector<T> *contourPtr;
+ 
+    // Generate contours for this region or use global 
+    // ones for entire image
+
+      if (varyContours)  {
+        subContours = subpmap.autoContour(itsNContour, itsThresholdVal); 
+        contourPtr = &subContours;
+      } else {
+        contourPtr = &mainContours;
+      }
+
+      if (showProcess)  {    
+        cout << "-----------------------------------------" << endl;
+        cout << "Subimage " << r << endl;
+        cout << "Contour Map:" << endl;
+        subpmap.displayContourMap(*contourPtr);
+      }
+
+  // Deblend components in this region
+
+      subpmap.deblendRegions(*contourPtr, itsMinRange, itsNAxis);   
+      if (showProcess) {
+        cout << "Component Map:" << endl;
+        subpmap.display();
+      }
+
+      if (itsFitIt) {
+        // Fit gaussians to region
+          subpmap.fitComponents();  
+      }
+      else {
+        // Just estimate
+        subpmap.itsNComponents = subpmap.itsNRegions;     
+        subpmap.itsList.resize();
+        subpmap.itsList = subpmap.estimateComponents();
+      }
+
+      if (showProcess) {
+        cout << "Object " << r+1 << " subcomponents: " << endl;
+        subpmap.printComponents(); 
+        cout << endl;
+      }
+
+  // Add this region back into the main component map
+
+      synthesize(subpmap, blc[r]);     
+    }
+  }
+  return;
 }
 
-template <class T>
-uInt ImageDecomposer<T>::numComponents() const
-{
-  return itsNComponents;
-}
+
+
+// Fitting functions
+// -----------------
 
 template <class T>
-Bool ImageDecomposer<T>::isDerived() const
+Matrix<T> ImageDecomposer<T>::fitRegion(Int nregion)
 {
-  return itsNRegions>0;
-}
-
-template <class T>
-Bool ImageDecomposer<T>::isDecomposed() const
-{
-  return itsNComponents>0;
-}
-
-template <class T>
-Matrix<T> ImageDecomposer<T>::fitRegion(Int nregion, T maximumRMS)
-{
-cerr << "Fit Region " << nregion << endl;
+  cout << "Fit Region " << nregion << endl;
 
 // Fits multiple gaussians to a single region.  First performs  a local 
 // maximum scan to estimate the number of components in the region.
@@ -1403,11 +1926,11 @@ cerr << "Fit Region " << nregion << endl;
   findRegionLocalMax(maxval, maxvalpos, nregion, 2);
   estimateComponentWidths(width, maxvalpos);
   nGaussians = maxval.nelements();
-  cerr << "Found " << nGaussians << " components" << endl;
-//
+  cout << "Found " << nGaussians << " components" << endl;
+
   Matrix<T> initestimate(nGaussians, ngpar);
   Matrix<T> solution(nGaussians, ngpar);
-//
+
   if (itsDim == 2) {
     for (uInt r = 0; r < nGaussians; r++) {
       initestimate(r,0) = maxval(r);
@@ -1432,20 +1955,15 @@ cerr << "Fit Region " << nregion << endl;
     }
   }
 
-/*
-cerr << "Data = " << dataValues << endl;
-cerr << "pos = " << positions  << endl;
-*/
-
 // Fit for nGaussians simultaneously
 
-  solution = fitGauss(positions, dataValues, nGaussians, initestimate, maximumRMS);
+  solution = fitGauss(positions, dataValues, initestimate);
   return solution;  
 
 }
 
 template <class T>
-void ImageDecomposer<T>::fitRegions(T maximumRMS)
+void ImageDecomposer<T>::fitRegions()
 {
 // Fits gaussians to an image; multiple gaussians per region in the pmap.
 // The regions are fit sequentially and independently, so this function 
@@ -1458,14 +1976,14 @@ void ImageDecomposer<T>::fitRegions(T maximumRMS)
   if (itsDim == 3) ngpar = 9;
 
   if (itsNRegions == 0)  { //not deblended.
-    itsList = fitRegion(0, maximumRMS);
+    itsList = fitRegion(0);
     return;
   }
 //
   for (uInt r = 1; r <= itsNRegions; r++) {
     Matrix<T> subitsList;
     Matrix<T> olditsList;
-    subitsList = fitRegion(r, maximumRMS);
+    subitsList = fitRegion(r);
     olditsList = itsList;
     itsList.resize(itsNComponents + subitsList.nrow(), ngpar);
 //
@@ -1488,7 +2006,7 @@ void ImageDecomposer<T>::fitRegions(T maximumRMS)
 
 
 template <class T>
-void ImageDecomposer<T>::fitComponents(T maximumRMS)  
+void ImageDecomposer<T>::fitComponents()  
 {
 // Fits gaussians to an image; one gaussian per region in the pmap.
 // This function is intended to be used only by ImageDecomposer on its
@@ -1499,15 +2017,14 @@ void ImageDecomposer<T>::fitComponents(T maximumRMS)
 // If the deblended flag is True, the function will treat each region as
 // an individual component and will fit that many gaussians to the image
 
-  uInt ngaussians; 
-  uInt ngpar = 0;
-  if (itsDim == 2) ngpar = 6; 
-  if (itsDim == 3) ngpar = 9;
+  uInt ngpar = itsDim * 3;
   uInt npoints = 0;
+
   if (!isDerived()) {
     throw(AipsError("Cannot fit until components are deblended"
                     " - use identifyRegions() or deblendRegions()"));
   }
+
 
 // Determine number of data points in all the regions
 // and get data and position vectors
@@ -1519,8 +2036,10 @@ void ImageDecomposer<T>::fitComponents(T maximumRMS)
       if (getCell(pos) > 0) npoints++;
     }
   }
+
   Matrix<T> positions(npoints,itsDim);
   Vector<T> dataValues(npoints);
+
   {
     IPosition pos(itsDim,0); 
     decrement(pos);
@@ -1538,154 +2057,127 @@ void ImageDecomposer<T>::fitComponents(T maximumRMS)
 
 // Estimate the initial parameters.
 
-  Matrix<T> width;
-  Vector<T> maxval;
-  Block<IPosition> maxvalpos;
+  Matrix<T> initestimate(itsNRegions, ngpar);
+  Matrix<T> solution(itsNRegions, ngpar);
 
-  ngaussians = itsNRegions;
-  findAllRegionGlobalMax(maxval, maxvalpos);
-  estimateComponentWidths(width, maxvalpos);
+  initestimate = estimateComponents();
 
-  //for (uInt r = 0; r < ngaussians; r++)
-  //  cout << width.row(r) << endl;
+  solution = fitGauss(positions, dataValues, initestimate);
 
-    //IMPR:
-    //It would also be helpful for the purposes of estimating the rotation
-    //parameters to determine the moments.  Jarvis and Tyson 1981 (AJ) has
-    //2D formulae for how to do this, which could be used to estimate theta
-    //(by collapsing the z axis; i.e. ignoring it in the calculation.) 
-    //I think this could be extended to estimate phi by collapsing the xy axes
-    //onto an axis determined by theta as well.  It may or not be worth it.
-
-
-  Matrix<T> initestimate(ngaussians, ngpar);
-  Matrix<T> solution(ngaussians, ngpar);
-//
-  if (itsDim == 2) {
-    for (uInt r = 0; r < ngaussians; r++) {
-      initestimate(r,0) = maxval[r];
-      initestimate(r,1) = maxvalpos[r](0);
-      initestimate(r,2) = maxvalpos[r](1);
-      initestimate(r,3) = width(r,1);
-      initestimate(r,4) = width(r,0)/width(r,1);
-      initestimate(r,5) = 0.0;
-    }
-  } else if (itsDim == 3) {
-    for (uInt r = 0; r < ngaussians; r++) {
-      initestimate(r,0) = maxval[r];
-      initestimate(r,1) = maxvalpos[r](0);
-      initestimate(r,2) = maxvalpos[r](1); 
-      initestimate(r,3) = maxvalpos[r](2);        
-      initestimate(r,4) = width(r,0); 
-      initestimate(r,5) = width(r,1);
-      initestimate(r,6) = width(r,2);
-      initestimate(r,7) = (0.0);
-      initestimate(r,8) = (0.0);
-    }
-  }
-
-  //cout << "Estimated parameters for component Gaussians:" << endl;
-  //for (uInt r = 0; r < ngaussians; r++)
-  //  cout << 'C' << r << ": " << initestimate.row(r) << endl;
-
-
-  solution = fitGauss(positions, dataValues, ngaussians, initestimate, 
-                      maximumRMS);
-//
-  itsNComponents = ngaussians;     
+  itsNComponents = itsNRegions;     
   itsList.resize(solution.shape());
   itsList = solution;
 
   return;
 }
 
+
+template <class T>
+Matrix<T> ImageDecomposer<T>::estimateComponents()  
+{
+  uInt ngaussians = itsNRegions;
+  uInt ngpar = 0;
+  if (itsDim == 2) ngpar = 6; 
+  if (itsDim == 3) ngpar = 9;
+  if (!isDerived()) {
+    throw(AipsError("Cannot estimate until components are deblended"
+                    " - use identifyRegions() or deblendRegions()"));
+  }
+
+
+  Matrix<T> estimate(ngaussians, ngpar);
+  Matrix<T> width;
+  Vector<T> maxval;
+  Block<IPosition> maxvalpos;
+
+  ngaussians = itsNRegions;
+  findAllRegionGlobalMax(maxval, maxvalpos);
+
+// This is based on the moment analysis methods given in Jarvis & Tyson 1981,
+// though they have been generalized to 3D.  The formula to estimate phi
+// (3D parameter 8) was not derived rigorously and may not be correct, though
+// it works very well overall.
+
+  for (uInt r = 0; r < ngaussians; r++)
+  {
+    if (itsDim == 2) {
+      Matrix<T> M;
+      M = calculateMoments(r+1);
+      estimate(r,0) = maxval[r];
+      estimate(r,1) = M(1,0) / M(0,0);
+      estimate(r,2) = M(0,1) / M(0,0);
+      estimate(r,3) = 2.84 * sqrt(M(0,2)/M(0,0));
+      estimate(r,4) = sqrt(M(2,0)/M(0,2));
+      estimate(r,5) = 0.5 * atan(2 * M(1,1) / (M(2,0) - M(0,2)));
+      if (estimate(r,3) < 1.0) estimate(r,3) = 1.0;
+      if (estimate(r,4)*estimate(r,3) < 1.0) estimate(r,4) = 1.0/estimate(r,3);
+      if (isNaN(estimate(r,4))) estimate(r,4) = 1.0/estimate(r,3);
+      if (isNaN(estimate(r,5))) estimate(r,5) = 0;
+    } else if (itsDim == 3) {
+      Cube<T> M;
+      M = calculateMoments(r+1);
+      estimate(r,0) = maxval[r];
+      estimate(r,1) = M(1,0,0) / M(0,0,0);
+      estimate(r,2) = M(0,1,0) / M(0,0,0); 
+      estimate(r,3) = M(0,0,1) / M(0,0,0);        
+      estimate(r,4) = 2.84 * sqrt(M(2,0,0) / M(0,0,0));  
+      estimate(r,5) = 2.84 * sqrt(M(0,2,0) / M(0,0,0)); 
+      estimate(r,6) = 2.84 * sqrt(M(0,0,2) / M(0,0,0)); 
+      estimate(r,7) = 0.5 * atan(2 * M(1,1,0) / (M(2,0,0) - M(0,2,0)));
+      estimate(r,8) = -0.5 * atan(2 * M(1,0,1) / 
+                      ((M(2,0,0) - M(0,0,2))*cos(estimate(r,7)) + 
+                       (M(0,2,0) - M(0,0,2))*sin(estimate(r,7))));
+      if (estimate(r,4) < 1.0) estimate(r,4) = 1.0;
+      if (estimate(r,5) < 1.0) estimate(r,5) = 1.0;
+      if (estimate(r,6) < 1.0) estimate(r,6) = 1.0;
+      if (isNaN(estimate(r,8))) estimate(r,8) = 0;      
+    }
+  }
+
+  return estimate;
+}
+
+
+
+
+
+
+
 template <class T>
 Matrix<T> ImageDecomposer<T>::fitGauss(const Matrix<T>& positions, 
                                        const Vector<T>& dataValues, 
-                                       uInt ngaussians,
-                                       const Matrix<T>& initestimate,
-                                       T maximumRMS) const
+                                       const Matrix<T>& initestimate) const
 {
 // Fits the specified number of 3D gaussians to the data, and returns 
 // solution in image (world) coordinates.
   
   uInt ngpar = 0;
+  uInt ngaussians = initestimate.nrow();
   if (itsDim == 2) ngpar = 6; 
   if (itsDim == 3) ngpar = 9;
 
-  //IMPR: ngaussians parameter probably redundant - use initestimate.nrows()
-  //IMPR: The success rate of fitting with a given set of initial estimates
-  // is often less than 50%.  Even a large retry matrix will occasionally fail
-  // given a large enough data set.  The retry selection system needs to be 
-  // automated,  preferably using a more sophisticated method than the near-
-  // arbitrary choices for retry values uses here.  Such a change should be
-  // implemented in FitGaussian, not here.
-
-  // In case of circular gaussians, it might also be a good idea to fix
-  // the angle parameters if the result diverges with reasonable chisq.
-
-  Matrix<T> rt(7,ngpar);//matrix used to modify initial estimates on failure
-  rt.column(0) = 1;  
-  if (itsDim == 2) {
-    rt.column(1) = 0;
-    rt.column(2) = 0;
-    rt(0,3) = 1;    rt(0,4) = 0.6;  rt(0,5) = 0;
-    rt(1,3) = 0.5;  rt(1,4) = 1;    rt(1,5) = 0;
-    rt(2,3) = 1;    rt(2,4) = 1;    rt(2,5) = 0.52;
-    rt(3,3) = 1;    rt(3,4) = 1;    rt(3,5) = -0.52;
-    rt(4,3) = 1.5;  rt(4,4) = 1;    rt(4,5) = 0;
-    rt(5,3) = 1;    rt(5,4) = 0.6;  rt(5,5) = 0.52;
-    rt(6,4) = 1;    rt(6,4) = 0.6;  rt(6,5) = -0.52;
-  }
-  if (itsDim == 3) {
-    rt.column(1) = 0;
-    rt.column(2) = 0;
-    rt.column(3) = 0;
-    rt(0,4) = 1;   rt(0,5) = 0.7; rt(0,6) = 0.4; rt(0,7) = 0;   rt(0,8) = 0;
-    rt(1,4) = 0.3; rt(1,5) = 0.3; rt(1,6) = 0.3; rt(1,7) = 0;   rt(1,8) = 0;
-    rt(2,4) = 1;   rt(2,5) = 1;   rt(2,6) = 1;   rt(2,7) = 0.5; rt(2,8) = 0;
-    rt(3,4) = 1;   rt(3,5) = 1;   rt(3,6) = 1;   rt(3,7) = 0;   rt(3,8) = 0.5;
-    rt(4,4) = 1;   rt(4,5) = 1;   rt(4,6) = 1;   rt(4,7) =-0.5; rt(4,8) = 0;
-    rt(5,4) = 1;   rt(5,5) = 1;   rt(5,6) = 1;   rt(5,7) = 0.5; rt(5,8) = 0.5;
-    rt(6,4) = 1;   rt(6,5) = 1;   rt(6,6) = 1;   rt(6,7) =-0.5; rt(6,8) =-0.5;
-  }
-//
-  return fitGauss(positions, dataValues, ngaussians, initestimate, rt, maximumRMS);
-}
-
-
-template <class T>
-Matrix<T> ImageDecomposer<T>::fitGauss(const Matrix<T>& positions, 
-                                       const Vector<T>& dataValues, 
-                                       uInt ngaussians,
-                                       const Matrix<T>& initestimate,
-				       const Matrix<T>& retrymatrix,
-                                       T maximumRMS) const
-                                         
-{
-// Fits the specified number of 3D gaussians to the data, and returns 
-// solution in image (world) coordinates.
-// IMPR: ngaussians parameter probably redundant - use initestimate.nrows()
-  
   Matrix<T> solution;
   T chisquare;
 
 // Might be useful to send to screen in AIPS++
-// cout << "Primary estimation matrix:" << endl;
-// for (uInt r = 0; r < ngaussians; r++)
-//     cout << initestimate.row(r) << endl;
-  
+  //cout << "Primary estimation matrix:" << endl;
+  //for (uInt r = 0; r < ngaussians; r++)
+  //   cout << initestimate.row(r) << endl;
   
   FitGaussian<T> fitter(itsDim,ngaussians);
   fitter.setFirstEstimate(initestimate);
-  fitter.setRetryFactors(retrymatrix);
+  if (itsMaxRetries < 0) {
+    fitter.setMaxRetries(itsDim * ngaussians);
+  }
+  else {
+    fitter.setMaxRetries(itsMaxRetries);
+  }
 
   try{ 
-    solution = fitter.fit(positions, dataValues, maximumRMS);
+    solution = fitter.fit(positions, dataValues, itsMaximumRMS, itsMaxIter,
+                          itsConvCriteria);
   } catch (AipsError fiterr) {
-    string errormsg;
-    errormsg = fiterr.getMesg(); 
-    cout << errormsg << endl;
+    cout << fiterr.getMesg() << endl;
     cout << "Fitting failed." << endl;
     solution = 0;
     chisquare = -1.0;
@@ -1695,14 +2187,17 @@ Matrix<T> ImageDecomposer<T>::fitGauss(const Matrix<T>& positions,
   if (fitter.converged()) {  
     chisquare = fitter.chisquared();
   } else {
-    cout << "Fitting did not converge " << endl;  
-    solution = 0;
+    cout << "Fitting did not converge to a reasonable result - using estimate."
+         << endl;  
+    solution = initestimate;
     chisquare = -1.0;
     return solution;
   }
-//
+
   return solution;
 }
+
+
 
 
 
@@ -1747,9 +2242,13 @@ void ImageDecomposer<T>::display() const
     benchz = z;
     cout << endl;
   }
-  cout << endl;
   return;
 }
+
+
+// Console display functions
+// -------------------------
+
 
 template <class T>
 void ImageDecomposer<T>::displayContourMap(const Vector<T>& clevels) const
@@ -1828,30 +2327,33 @@ void ImageDecomposer<T>::printComponents() const
   //Prints the components as formatted output on screen.
   //IMPR: Probably could be modified as an ostream output function.
 
-  for (uInt g = 0; g < itsList.nrow(); g++)
+  Matrix<T> clist;
+  clist = componentList();
+
+  for (uInt g = 0; g < clist.nrow(); g++)
   {
     cout << g+1 << ": ";
     if (itsList(g,0) == 0) {
        cout << "Failed"; 
     } else { 
-      cout << "Peak: " << itsList(g,0) << "  ";
+      cout << "Peak: " << clist(g,0) << "  ";
 
       if (itsDim == 2) {
-        cout << "Mu: [" << itsList(g,1) 
-             << ", " << itsList(g,2) << "]  ";
-        cout << "Axes: [" << itsList(g,3)
-             << ", " << itsList(g,3) * itsList(g,4) << "]  ";
-        cout << "Rotation: " << itsList(g,5) /*  * 180 / C::pi  */;
+        cout << "Mu: [" << clist(g,1) 
+             << ", " << clist(g,2) << "]  ";
+        cout << "Axes: [" << clist(g,3)
+             << ", " << clist(g,3) * clist(g,4) << "]  ";
+        cout << "Rotation: " << clist(g,5) /*  * 180 / C::pi  */;
       }
       if (itsDim == 3) {
-        cout << "Mu: [" << itsList(g,1) 
-             << ", " << itsList(g,2) 
-             << ", " << itsList(g,3) << "]  ";
-        cout << "Axes: [" << itsList(g,4)
-             << ", " << itsList(g,5) 
-             << ", " << itsList(g,6) << "]  ";
-        cout << "Rotation: [" << itsList(g,7)/*  *180/C::pi */
-             << ", " << itsList(g,8)         /*  *180/C::pi */ << "]";
+        cout << "Mu: [" << clist(g,1) 
+             << ", " << clist(g,2) 
+             << ", " << clist(g,3) << "]  ";
+        cout << "Axes: [" << clist(g,4)
+             << ", " << clist(g,5) 
+             << ", " << clist(g,6) << "]  ";
+        cout << "Rotation: [" << clist(g,7)/*  *180/C::pi */
+             << ", " << clist(g,8)         /*  *180/C::pi */ << "]";
       }
     }
     cout << endl;
@@ -1860,6 +2362,9 @@ void ImageDecomposer<T>::printComponents() const
   return;
 }
 
+
+// Functions associated only with other classes
+// --------------------------------------------
 
 template <class T>
 void ImageDecomposer<T>::correctBlcTrc(IPosition& blc, IPosition& trc) const
@@ -1873,7 +2378,7 @@ void ImageDecomposer<T>::correctBlcTrc(IPosition& blc, IPosition& trc) const
     if (trc(i)<0) trc(i) = 0;     
 //
     if (blc(i)>shape(i)) blc(i) = shape(i);
-    if (blc(i)>trc(0)) {                      // nebk - ERROR should be trc(a) not trc(0) ??
+    if (blc(i)>trc(i)) {     // nebk - ERROR should be trc(a) not trc(0) ??
        t = blc(i); 
        blc(i) = trc(i); 
        trc(i) = t;
@@ -1917,82 +2422,6 @@ inline void ImageDecomposer<T>::decrement(IPosition& pos) const
 }
 
 
-template <class T>                                   
-void ImageDecomposer<T>::synthesize(const ImageDecomposer<T>& subdecomposer,
-                                    IPosition blc)
-{
-// Overlays a smaller map onto an empty region of a larger map,
-// and adds submap component list to main component list.
-
-// The user should exercise caution with this function and synthesize submaps
-// only into regions of the main map that are truly empty (0), because the 
-// program does not perform any blending between components.  
-// Otherwise, false detections are likely.
-
-  uInt ngpar = 0;
-  if (itsDim == 2) ngpar = 6; 
-  if (itsDim == 3) ngpar = 9;
-
-// Scan to the edge of the boundary of the host map or the submap, whichever
-// is closer.
-
-  IPosition scanlimit(itsDim);  //submap-indexed
-  for (uInt i=0; i<itsDim; i++)  {
-    if (subdecomposer.shape(i) > shape(i) - blc(i)) {
-      scanlimit(i) = shape(i) - blc(i);
-    } else {
-      scanlimit(i) = subdecomposer.shape(i);  
-    }
-  }
-
-// Write pixels in sub- component map to main component map.
-
-  {
-    IPosition pos(itsDim,0);  //submap-indexed
-    decrement(pos);
-    while (increment(pos,scanlimit)) {     
-        if (subdecomposer.getCell(pos) > 0) {
-          setCell(pos + blc, itsNRegions + subdecomposer.getCell(pos));
-        }
-    }
-  }
-  itsNRegions += subdecomposer.numRegions();
-
-// Add components in subdecomposer to components in main decomposer.
-
-  if (subdecomposer.isDecomposed())  { 
-
-    Matrix<T> oldList;   
-    oldList = itsList;
-    itsList.resize(itsNComponents+subdecomposer.numComponents(),ngpar);
-    for (uInt c = 0; c < itsNComponents; c++) {
-      for (uInt p = 0; p < ngpar; p++) {
-        itsList(c,p) = oldList(c,p);  //copy after resize
-      }
-    }
-
-    for (uInt subc = 0; subc < subdecomposer.numComponents(); subc++) {
-      for (uInt p = 0; p < ngpar; p++) {
-        itsList(itsNComponents+subc,p)=subdecomposer.itsList(subc,p);     
-      }
-      // make adjustments to center values due to offset
-      if (itsDim == 2) {
-        itsList(itsNComponents+subc,1) += blc(0);
-        itsList(itsNComponents+subc,2) += blc(1);
-      } else if (itsDim == 3) {
-        itsList(itsNComponents+subc,1) += blc(0);
-        itsList(itsNComponents+subc,2) += blc(1);
-        itsList(itsNComponents+subc,3) += blc(2);   
-      }
-    }
-    itsNComponents += subdecomposer.numComponents();
-
-  }
-//
-  //renumberRegions();     //this should have no effect unless this function
-                           //was used to overwrite an entire region, which
-                           //should be avoided.
-}
 
 /*
      RO_LatticeIterator<Int> otherIter(*(other.itsMapPtr));
@@ -2014,12 +2443,4 @@ void ImageDecomposer<T>::synthesize(const ImageDecomposer<T>& subdecomposer,
         thisArray.putStorage(pThis, deleteThis);
      }
 */
-
-
-// currently (6/20) working on changing the TempLattice to a Lattice*
-// making it compatible with both the TempLattice (main pmap) and SubLattice
-// (subpmaps).   It may not work, however.
-
-
-
 

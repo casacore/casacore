@@ -28,7 +28,6 @@
 #if !defined(TRIAL_IMAGEDECOMPOSER_H)
 #define TRIAL_IMAGEDECOMPOSER_H
 
-//#Includes
 #include <aips/iostream.h>
 #include <aips/math.h>
 #include <aips/aips.h>
@@ -90,7 +89,9 @@
 //  TempImage<Double> image;
 //  //(populate the image with data: see dImageDecomposer.cc)
 //  ImageDecomposer<Double> id(image);
-//  id.decomposeImage(0.1, 10, 0.1, 0);
+//  id.setDeblendOptions(0.3, 8);
+//  id.setFitOptions(0.4);
+//  id.decomposeImage();
 //  id.display();
 //  id.printComponents();
 // </srcblock>
@@ -102,11 +103,14 @@
 // <note>
 // </note>
 //
-// <todo asof="2002/06/20">
+// <todo asof="2002/07/23">
 //   <li> Generalize dimensionality 
 //   <li> Use Lattice iterators in place of IPosition loops wherever possible
 //   <li> Speed up fitting by not sending every region pixel to the fitter
 //   <li> Send the completed componentmap to the user as an AIPS++ (Int?) Image
+//   <li> Return a ComponentList instead of a Matrix
+//   <li> Enable custom contouring at user level
+//   <li> Add progress meter
 //   <li> Numerous other improvements to make are documented in the code
 // </todo>
   
@@ -144,37 +148,53 @@ public:
 // This resets internal component map.
    void setImage (ImageInterface<T>& image);
 
-//
-// The simplest method of image decomposition. Initially, the image
-// is decomposed into contiguous regions via a thresholding process.
-// Then for each region, an estimate of the number of components
-// in that region is made (by looking for local maxima) and a simultaneous 
-// fit for that many components is made.
-//
-// The fit will be repeated until it converges to a result with 
-// RMS < maximumRMS, though if it cannot converge within 3 x 2^g iterations
-// it will take the best result available.
-//
-// Does not generate an accurate componentmap. 
-  void decomposeImage(T thresholdval, T chisqcriterion); 
+// Tells the program whether or not to use the contour-based deblender. If not,
+// the program will instead perform a single thresholding followed by a
+// local maximum scan before fitting.
+   void setDeblend(Bool deblendIt=True);
 
-// The more complex method of image decomposition.  Uses successive
-// contouring to assign each pixel to a specific component, then fits
-// Gaussians to the components.  Components located in contiguous blocks are
-// fitted together.  The thresholdVal specifies both the noise cutoff
-// and the threshold at which components are fitted separately.  Each fit
-// will be repeated until it converges to a result with chisquare >
-// chiSqCriterion.  If varyContours=True, each contiguous component
-// block is contoured separately depending on its regional maximum.
-// If varyContours=False, all components are contoured based on the global
-// maximum.
-  void decomposeImage(T thresholdVal, uInt nContour, T maximumRMS, 
-                      Bool varyContours=True);
+// Specifies deblending options:
+// <ul>
+// <li> thresholdVal: noise cutoff level, used to distinguish source pixels
+//      from background pixels.  Also, regions which are not blended above this
+//      value will be fit separately.
+// <li> nContour: number of total contours to use in deblending regions.
+// <li> minRange: the minimum number of contours necessary to distinguish
+//      an object as a separate component.
+// <li> nAxis: paramater used to define whether or not two adjacent blocks
+//      of pixels are contiguous - see identifyRegions for details.
+// </ul>
+// See decomposeImage for more information on the deblending process.
+   void setDeblendOptions(T thresholdVal=0.1, uInt nContour=11, 
+                          Int minRange=2, Int nAxis=2);
 
-//Retrieves the target image's value at the given location.
-// <group>
-  T getImageVal(IPosition coord) const;
-// </group>
+// Tells the program whether or not to perform fitting.  If not, the component
+// list will be dstermined by estimation from the values of the first and 
+// second order moments of each component.
+   void setFit(Bool fitIt=True);
+
+// Specifies fitting options:
+// <ul>
+// <li> maximumRMS: The maximum RMS residual value (after fitting) allowed to
+//      identify a fit as successful.
+// <li> maxRetries: the maximum number of times the fit will be restarted in
+//      order to try to reach a successful result (convergent with 
+//      RMS < maximumRMS).  The default value of -1 tells the program
+//      to calculate a reasonable value automatically based on the complexity
+//      of the image.
+// <li> maxIter: maximum number of iterations to spend on each fit.
+// <li> convCriteria: criterion to establish convergence: see NonLinearFitLM.
+// </ul>
+// Additional information on these parameters can be found in FitGaussian.
+   void setFitOptions(T maximumRMS=0.1, Int maxRetries=-1, uInt maxIter=256,
+                      T convCriteria=0.0001);
+
+
+// The primary method of this class - executes the instructions stated in the
+// options above by deblending and/or fitting to the image to generate
+// the component map and/or component list.
+  void decomposeImage(); 
+
 
 // Returns the number of regions found in the image.  A 'region' as defined
 // in this code is a subset of the image of contiguous pixels whose values
@@ -187,7 +207,28 @@ public:
 // This can only be determined after deblending.
   uInt numComponents() const;
 
-// Command-line text output functions; generally useful only for debugging.
+// Returns the shape of the component map.
+  IPosition shape() const;                
+
+// Returns the length of a specific axis.
+  Int shape(uInt axis) const;            
+
+// Returns True if the image has been thresholded (split up into regions.)
+  Bool isDerived() const;
+
+// Returns True if the image has been decomposed (split up into components.)
+  Bool isDecomposed() const;  
+
+// Returns the component parameters as a Matrix.  (Ideally, this should be
+// a ComponentList.)
+  Matrix<T> componentList() const;
+
+// Currently does nothing; in the future should return the component map
+// in a way that it can be seen by the user in AIPS++, preferably as a
+// colorized image.
+  void componentMap() const; 
+
+// Command-line text output functions.
 // <group>
   void display() const;
   void displayContourMap(const Vector<T>& clevels) const;
@@ -203,18 +244,21 @@ private:
   uInt itsNComponents;           // Number of components that have been fitted
   Matrix<T> itsList;             // The component list (Gaussian parameters for
                                  // each component.)  
+  Bool itsDeblendIt;
+  T itsThresholdVal;
+  uInt itsNContour;              // Decomposition options
+  Int itsMinRange;               // IMPR: maybe use a struct?
+  Int itsNAxis;
+  
+  Bool itsFitIt;
+  T itsMaximumRMS; 
+  Int itsMaxRetries;             // Fitting options
+  uInt itsMaxIter;
+  T itsConvCriteria;
 
-// Returns the shape of the component map.
-  IPosition shape() const;                
 
-// Returns the length of a specific axis.
-  Int shape(uInt axis) const;            
 
-// Returns True if the image has been thresholded (split up into regions.)
-  Bool isDerived() const;
-
-// Returns True if the image has been decomposed (split up into components.)
-  Bool isDecomposed() const;  
+  void copyOptions(const ImageDecomposer<T>& other);
 
 // Makes sure a pair of IPositions is in the correct format for blc/trc, and
 // corrects them if they are not.
@@ -225,12 +269,6 @@ private:
 // <group>
   Bool increment(IPosition& pos, const IPosition& shape) const;
   void decrement(IPosition& pos) const;
-// </group>
-
-//Retrieves the target image's value at the given location.
-// <group>
-  T getImageVal(Int x, Int y) const;
-  T getImageVal(Int x, Int y, Int z) const;
 // </group>
 
 // Returns the component to which the specified cell belongs
@@ -265,6 +303,16 @@ private:
                         Int nContours = 11, T minValue = 0) const;
 
 
+//Eliminates any regions whose corresponding values in killRegion are True
+// by setting all pixel values in the componentmap set to that region to
+// zero.  Zero-oriented; there is an offset of one between the index in
+// killRegion and the actual region in the componentmap.
+  void ImageDecomposer<T>::destroyRegions(const Vector<Bool>& killRegion);
+
+// Eliminates regions with no cells by replacing them with higher-numbered 
+// regions.
+  void renumberRegions();
+
 // Overlays a smaller map onto an empty region of a larger map,
 // and adds submap component list to main component list.
 // The user should exercise caution with this function and synthesize submaps
@@ -272,7 +320,6 @@ private:
 // is assumed between different maps.
   void synthesize(const ImageDecomposer<T>& subdecomposer, IPosition blc);
 
-// 
 // Set all elements in the component map to zero and clear the component list.
   void zero();
 
@@ -342,21 +389,33 @@ private:
 // Finds a rough estimate of the width of each component by scanning to find
 // the full width at quarter maximum.
 // Requires the location of each component.
+// This function is now obsolete and is no longer used.
   void estimateComponentWidths(Matrix<T>& width,
                                const Block<IPosition>& maxvalpos) const;
+
+// Calculates the 0th-2nd order moments of a region.
+  Array<T> calculateMoments(Int region) const;
+
 
 // Performs a single threshold scan on the image.  In other words,
 // identifies all contigous blocks of pixels in the target image above the
 // threshold value thrval, assigning each unique block to an integer,
 // starting at one.  All pixels with target image values below thrval are set
 // to zero.
-  uInt identifyRegions(T thrval, Int naxis = 2);
+  uInt identifyRegions(T thrval, Int naxis=2);
 
 // Performs the contour decomposition on a blended image to generate a 
 // component map that can detect components blended above any threshold(s),
 // by performing threshold scans at each contour level and recognizing
 // as individual any components that are distinct above any such level.
-  void deblendRegions(const Vector<T>& contours);
+  void deblendRegions(const Vector<T>& contours, Int minRange=1, Int naxis=2);
+
+// Retrieves the target image's value at the given location.
+// <group>
+  T getImageVal(IPosition coord) const;
+  T getImageVal(Int x, Int y) const;
+  T getImageVal(Int x, Int y, Int z) const;
+// </group>
 
 // Retrieves the number of the highest contour with a value less then the
 // target image's value at the given location.
@@ -364,18 +423,19 @@ private:
   Int getContourVal(IPosition coord, const Vector<T>& clevels) const;
   Int getContourVal(Int x, Int y, Int z, const Vector<T>& clevels) const;
   Int getContourVal(Int x, Int y, const Vector<T>& clevels) const;
+  Int getContourVal(T val, const Vector<T>& clevels) const;
 // <//group>
 
 // Fits multiple gaussians to a single region.  First performs  a local 
 // maximum scan to estimate the number of components in the region.
-  Matrix<T> fitRegion(Int region, T maximumRMS);
+  Matrix<T> fitRegion(Int region);
 
 // Fits gaussians to an image; multiple gaussians per region in the pmap.
 // The regions are fit sequentially and independently, so this function 
 // can be used on the main image.
 // If the map is not yet thresholded, will fit to the entire image as if it
 // were a single composite object, which will be very slow.
-  void fitRegions(T maximumRMS);
+  void fitRegions();
 
 // Fits gaussians to an image; one gaussian per region in the pmap.
 // This function is intended to be used only by ImageDecomposer on its
@@ -385,22 +445,20 @@ private:
 
 // If the deblended flag is True, the function will treat each region as
 // an individual component and will fit that many gaussians to the image
-  void fitComponents(T maximumRMS);
+  void fitComponents();
 
+// Estimate the component parameters based on the properties of the component
+// map.  Currently this function is still rather primitive and cannot estimate
+// rotation.
+  Matrix<T> estimateComponents();
 
 // Fits the specified number of 3D gaussians to the data, and returns 
 // solution in image (world) coordinates.  Essentially just an interface
 // for FitGaussian.
 // <group>
-  Matrix<T> fitGauss(const Matrix<T>& positions, 
-                     const Vector<T>& dataValues,
-                     uInt ngaussians,
-                     const Matrix<T>& initestimate, T maximumRMS) const;
-  Matrix<T> fitGauss(const Matrix<T>& positions,
-                     const Vector<T>& dataValue, 
-                     uInt ngaussians,
-                     const Matrix<T>& initestimate, 
-                     const Matrix<T>& retrymatrix, T maximumRMS) const;
+  Matrix<T> fitGauss(const Matrix<T>& positions, const Vector<T>& dataValues,
+                     const Matrix<T>& initestimate) const;
+
 // </group>
 
 };
