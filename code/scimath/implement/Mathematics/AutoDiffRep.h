@@ -31,9 +31,9 @@
 
 //# Includes
 #include <aips/aips.h>
+#include <aips/Arrays/Vector.h>
 
 //# Forward declarations
-template <class T> class Vector;
 
 // <summary>
 // Representation of an automatic differential class data
@@ -56,7 +56,7 @@ template <class T> class Vector;
 // <synopsis>
 // Structure (only a class since cxx2html cannot handle struct) representing
 // the data necessary for automatic differentiation. The structure contains a
-// value, and the derivatives of the value with respect to the number
+// value, and the derivatives of the value with respect to the number of 
 // dependend variables.
 //
 // The actual differentiation and access is done through the 
@@ -72,8 +72,8 @@ template <class T> class Vector;
 // (including memory allocation) to speed up processes.
 //
 // <templating arg=T>
-//  <li> any class that has the standard mathematical and comparisons
-//	defined
+//  <li> any class that has the standard mathematical and comparison
+//	operators defined
 // </templating>
 //
 // <todo asof="20001/06/07">
@@ -81,30 +81,28 @@ template <class T> class Vector;
 // </todo>
 
 template <class T> class AutoDiffRep {
-  //# Friends
-
  public:
   //# Constructors
-  // Construct a constant of a value of zero.  Zero derivative.
+  // Construct a constant with a value of zero.  Zero derivatives.
   AutoDiffRep();
 
-  // Construct a constant of a value of v.  Zero derivative.
+  // Construct a constant with a value of v.  Zero derivatives.
   explicit AutoDiffRep(const T &v);
 
-  // Given a function f(x0,x1,...,xi,...,xn) with a value of v.  Construct with
+  // Given a function f(x0,x1,...,xn,...). Construct with
   // a total number of derivatives ndiffs. The nth derivative is one, and all 
-  // others are zero. 
+  // others are zero. The value v is the value of xn.
   AutoDiffRep(const T &v, const uInt ndiffs, const uInt n); 
 
-  // Given a function f(x0,x1,...,xi,...,xn) with a value of v.  Construct with
-  // a total number of derivatives ndiffs. 
+  // Given a function f(x0,x1,...,xn,...). Construct with
+  // a total number of derivatives ndiffs, and a value of xn.
   // All derivatives are zero. 
   AutoDiffRep(const T &v, const uInt ndiffs); 
 
-  // Construct with ndiffs derivatives. All values zero
+  // Construct with ndiffs derivatives. All values and derivatives zero
   AutoDiffRep(const uInt ndiffs); 
 
-  // Construct one from another
+  // Construct one from another (deep copy)
   AutoDiffRep(const AutoDiffRep<T> &other);
 
   // Construct a function f(x0,x1,...,xn) of a value v and a vector of 
@@ -119,7 +117,7 @@ template <class T> class AutoDiffRep {
   // are zero.
   AutoDiffRep<T> &operator=(const T &v);
 
-  // Assign one to another.
+  // Assign one to another (deep copy).
   AutoDiffRep<T> &operator=(const AutoDiffRep<T> &other);
 
   //# Member functions
@@ -137,10 +135,8 @@ template <class T> class AutoDiffRep {
 
   // Returns a specific derivative
   // <group>
-  const T &derivative(uInt which) const {
-    return (grad_p ? grad_p[which] : aZero); };
-  T &derivative(uInt which) {
-    return (grad_p ? grad_p[which] : aZero); };
+  const T &derivative(uInt which) const { return (grad_p[which]); };
+  T &derivative(uInt which) { return (grad_p[which]); };
   // </group>
 
   // Return total number of derivatives
@@ -150,8 +146,6 @@ template <class T> class AutoDiffRep {
   Bool isConstant() const { return nd_p == 0; };
 
   //# Data
-  // A zero value
-  static T aZero;
   // The function value
   T val_p;
   // The number of derivatives
@@ -160,7 +154,7 @@ template <class T> class AutoDiffRep {
   // superfluous copying)
   Bool nocopy_p;
   // The derivatives
-  T *grad_p;
+  Vector<T> grad_p;
 };
 
 #endif
