@@ -613,8 +613,13 @@ void Fit2D::setParams(const Vector<Double>& params, uInt which)
 {
    Vector<AutoDiff<Double> > params2(params.nelements());
    for (uInt i=0; i<params2.nelements(); i++) {
-   }
+     params2[i] =  AutoDiff<Double>(params[i]);
+   };
+   // Make sure the general and sub-function parameters are the same
+   itsFunction.consolidate();;;
    itsFunction.function(which).parameters().setParameters(params2);
+   itsFunction.consolidate();;;
+   ///itsFunction.parameters().setParameters(params2);
 }
 
 
