@@ -1,0 +1,25 @@
+\documentclass[11pt]{article}
+\include{aips2defs}
+\usepackage{html,epsf}
+%%-----------------------------------------------------------------------------
+ 
+\begin{document}
+ 
+\title{NOTE 235 -- Ionospheric Corrections in AIPS++}
+ 
+\author{Oleg Smirnov}
+ 
+\date{20 June 2000}
+ 
+\maketitle
+%%---------------------------------------------------------------------------
+
+\begin{htmlonly}
+\htmladdnormallink{A postscript version of this note is available (100 Kb)}{../235.ps.gz}
+\end{htmlonly}
+ 
+\tableofcontents
+ 
+\input{ionosphere.latex}
+
+\end{document}
