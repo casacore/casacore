@@ -241,7 +241,7 @@ void MemoryIO::setUsed(uInt bytesUsed) {
   if (bytesUsed > itsAlloc) {
     throw(AipsError ("MemoryIO::setUsed - cannot use more than is allocated"));
   }
-  itsUsed = itsAlloc;
+  itsUsed = bytesUsed;
 }
 
 uChar* MemoryIO::setBuffer(uInt length) {
