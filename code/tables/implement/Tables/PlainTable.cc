@@ -39,6 +39,7 @@
 #include <aips/Containers/Record.h>
 #include <aips/Utilities/String.h>
 #include <aips/OS/HostInfo.h>
+#include <aips/OS/File.h>
 #include <aips/Tasking/AipsrcValue.h>
 
 
@@ -68,8 +69,13 @@ PlainTable::PlainTable (SetupNewTable& newtab, uInt nrrow, Bool initialize,
     }
     //# Check if a table with this name is not in the table cache.
     if (tableCache(name_p) != 0) {
-	throw (TableInvOper ("SetupNewTable " + name_p +
+        // OK it's in the cache but is it really there?
+        if(File(name_p).exists()){
+	   throw (TableInvOper ("SetupNewTable " + name_p +
 			     " is already opened (is in the table cache)"));
+        } else {
+	    tableCache.remove (name_p);
+        }
     }
     //# If the table already exists, exit if it is in use.
     if (Table::isReadable (name_p)) {
