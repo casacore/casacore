@@ -11,7 +11,7 @@
 # $Id$
 #-----------------------------------------------------------------------------
 
-  if [ "$AIPSPATH" == "" ]
+  if [ "$AIPSPATH" = "" ]
   then
      echo "UNTESTED: tfits2ms.run (AIPSPATH not defined)"
      exit 3
