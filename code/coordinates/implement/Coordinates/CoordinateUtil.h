@@ -83,9 +83,9 @@ class CoordinateSystem;
 // CoordinateSystem using the above described <src>addXXXAxis</src>
 // functions to add the required number of dimensions to the
 // CoordinateSystem. Only 2, 3 or 4 dimensional coordinate systems can be
-// constructed using these functions. The coordinate sytems always have
-// RA/Dec axes. Three dimensional Systems add a polarization axis with 4
-// polarisations and four-dimensional systems add a spectral axis. An Exception
+// constructed using these functions. The coordinate systems always have
+// RA/Dec axes. Three dimensional Systems add a spectral axis and
+// four-dimensional systems add an IQUV  polarization axis. An exception
 // (AipsError) is thrown if <src>defaultAxes(uInt)</src> is called with a
 // parameter that is not 2, 3, or 4. 
 //
@@ -143,11 +143,10 @@ void addIAxis(CoordinateSystem & coords);
 void addFreqAxis(CoordinateSystem & coords);
 // Return a 2-dimensional coordinate system with RA/DEC axes only. 
 CoordinateSystem defaultCoords2D();
-// Return a 3-dimensional coordinate system with RA/DEC axes and an IQUV
-// polarisation axis. 
+// Return a 3-dimensional coordinate system with RA/DEC axes and a spectral axis.
 CoordinateSystem defaultCoords3D();
 // Return a 4-dimensional coordinate system with RA/DEC axes, an IQUV
-// polarisation axis and a Spectral axis.
+// polarisation axis  and a spectral axis.
 CoordinateSystem defaultCoords4D();
 // Calls one of the above three functions depending of the arguement. An
 // AipsError is thrown if dims is not 2, 3, or 4.
