@@ -21,8 +21,14 @@ int main(int argc, char* argv[]) {
 		   "Int", "1-262144");
     inputs.Create ("check", "False", "Verify if the data read is correct", 
 		   "Bool");
+    inputs.Create ("interactive", "True", "Don't run this test automatically", 
+		   "Bool");
     inputs.ReadArguments (argc, argv);
 
+    if (inputs.GetBool("interactive") == False) {
+      cout << "UNTESTED" << endl;
+      return 3;
+    }
     const Path device(inputs.GetString("device"));
     const uInt recordSize = inputs.GetInt("record");
     uInt totalBytes = inputs.GetInt("bytes");
