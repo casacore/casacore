@@ -219,7 +219,7 @@ typedef ROScalarMeasColumn<MDirection, MVDirection> ROMDirectionScaCol;
 typedef ROScalarMeasColumn<MRadialVelocity, MVRadialVelocity>
     ROMRadialVelocityScaCol;
 typedef ROScalarMeasColumn<MDoppler, MVDoppler> ROMDopplerScaCol;
-typedef ROScalarMeasColumn<MFrequency, MVFrequency> ROMFrequency;
+typedef ROScalarMeasColumn<MFrequency, MVFrequency> ROMFrequencyScaCol;
  
 
 template <class M, class MV>
