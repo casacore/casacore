@@ -255,7 +255,8 @@ public:
     // When <src>PermanentLocking</src> is in effect, nothing will be done.
     void unlock();
 
-    // Determine the number of tables opened with the AutoLock option.
+    // Determine the number of locked tables opened with the AutoLock option
+    // (Locked table means locked for read and/or write).
     static uInt nAutoLocks();
 
     // Unlock locked tables opened with the AutoLock option.
