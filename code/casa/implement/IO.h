@@ -1,5 +1,5 @@
 //# IO.h: Basic classes and global functions for IO and object persistency
-//# Copyright (C) 1995,1996
+//# Copyright (C) 1995,1996,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -39,7 +39,8 @@
 #include <aips/IO/CanonicalIO.h>
 #include <aips/IO/RawIO.h>
 #include <aips/IO/RegularFileIO.h>
-#include <aips/IO/FilebufIOIO.h>
+#include <aips/IO/FilebufIO.h>
+#include <aips/IO/FiledesIO.h>
 #include <aips/IO/MemoryIO.h>
 
 
@@ -91,15 +92,20 @@
 // The where-part is defined by classes derived from
 // <linkto class=ByteIO:description>ByteIO</linkto> as shown
 // in the <a href=IO/IO_2.html>OMT diagram</a>.
-// There are three such classes:
+// There are a few such classes:
 // <ol>
 // <li> <linkto class=RegularFileIO:description>RegularFileIO</linkto> uses a
-//      regular file to hold the data.
-// <li> <linkto class=FilebufIO:description>FilebufIO</linkto> uses a
-//      filebuf object (from the iostream package in the standard
-//      C++ library) to hold the data. This can be used to use
-//      an arbitrary IO stream (e.g. a socket or pipe using a
-//      normal file descriptor).
+//      regular file to hold the data. Internally it uses FilebufIO (see below).
+// <li> <linkto class=FilebufIO:description>FilebufIO</linkto> uses the
+//      <src>stdio</src> system to do IO in a buffered way. It uses
+//      an internal buffer to do physical IO only when needed. See the
+//      description of C-functions like <src>fopen, fread</src> or do
+//      <src>man stdio</src> for more information.
+// <li> <linkto class=FiledesIO:description>FiledesIO</linkto> uses the
+//      UNIX IO-functions like <src>open, read</src> to do IO directly.
+//      It does not use an internal buffer. Instead it always do a
+//      physical IO. It is meant for IO operations where large chunks of
+//      a file are accessed and for IO on sockets, pipes, etc..
 // <li> <linkto class=MemoryIO:description>MemoryIO</linkto> uses a
 //      (possibly expandable) buffer in memory to hold the data.
 // </ol>
