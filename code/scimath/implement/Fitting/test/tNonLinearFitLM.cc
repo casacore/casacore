@@ -41,6 +41,7 @@
 #include <aips/Arrays/ArrayIO.h>
 #include <aips/Utilities/Assert.h>
 #include <aips/OS/Timer.h>
+#include <aips/iostream.h>
 
 extern "C" float dtime(float *p);
 

@@ -42,6 +42,7 @@
 #include <aips/Mathematics/Random.h>
 #include <aips/Mathematics/Constants.h>
 #include <aips/Utilities/Assert.h>
+#include <aips/iostream.h>
 
 NQGaussian2D<Double> addModel (Array<Float>& pixels, Double height, Double x, Double y, 
                                Double major,  Double minor, Double pa);
