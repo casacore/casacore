@@ -75,6 +75,9 @@ Bool isScalar(DataType type)
     return ((type <= TpString) || (type == TpQuantity));
 }
 
+Bool isScalarFun(DataType type){return isScalar(type);}
+
+
 Bool isArray(DataType type)
 {
     return ((type >= TpArrayBool && type <= TpArrayString) ||

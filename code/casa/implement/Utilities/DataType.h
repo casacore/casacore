@@ -228,6 +228,7 @@ DataType asArray(DataType type);
 // <group>
 Bool isScalar(DataType type);
 Bool isArray(DataType type);
+Bool isScalarFun(DataType type); //{return isScalar(type);}
 // </group>
 
 // It is sometimes useful to discover if a DataType represents a real 
