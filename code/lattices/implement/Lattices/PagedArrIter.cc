@@ -360,13 +360,13 @@ setup_tile_cache() {
   else {
     TiledStepper * tilerPtr = theNavPtr->castToTiler();
     if (tilerPtr != 0){
-      IPosition shape = theData.shape();
+      IPosition cursorShape = tilerPtr->cursorShape();
       Int whichLongest = 0;
-      for (uInt i=1; i<shape.nelements(); i++)
-	if (shape(i) > shape(whichLongest))
+      for (uInt i=1; i < cursorShape.nelements(); i++)
+	if (cursorShape(i) > cursorShape(whichLongest))
 	  whichLongest = i;
       axisPath = IPosition(1,whichLongest);
-      theData.setCacheSizeFromPath(tilerPtr->cursorShape(), tilerPtr->blc(), 
+      theData.setCacheSizeFromPath(cursorShape, tilerPtr->blc(), 
 				   tilerPtr->blc() + tilerPtr->tileShape(),
 				   axisPath);
     }
@@ -757,13 +757,13 @@ setup_tile_cache() {
   else {
     TiledStepper * tilerPtr = theNavPtr->castToTiler();
     if (tilerPtr != 0){
-      IPosition shape = theData.shape();
+      IPosition cursorShape = tilerPtr->cursorShape();
       Int whichLongest = 0;
-      for (uInt i=1; i<shape.nelements(); i++)
-	if (shape(i) > shape(whichLongest))
+      for (uInt i=1; i < cursorShape.nelements(); i++)
+	if (cursorShape(i) > cursorShape(whichLongest))
 	  whichLongest = i;
       axisPath = IPosition(1,whichLongest);
-      theData.setCacheSizeFromPath(tilerPtr->cursorShape(), tilerPtr->blc(), 
+      theData.setCacheSizeFromPath(cursorShape, tilerPtr->blc(), 
 				   tilerPtr->blc() + tilerPtr->tileShape(),
 				   axisPath);
     }
