@@ -63,8 +63,7 @@ UASTRING   \'[^\'\n]*\n
 STRING    ({QSTRING}|{ASTRING})+
 USTRING   ({UQSTRING}|{UASTRING})+
 NAME      [A-Za-z_]([A-Za-z_0-9])*
-ESCNAME   \\?[A-Za-z_]([A-Za-z_0-9]|(\\.))*
-NAMELAT   [A-Za-z0-9._\~$]+
+ESCNAME   ([A-Za-z0-9._~$]|(\\.))+
 
 
 %%
@@ -138,11 +137,6 @@ NAMELAT   [A-Za-z0-9._\~$]+
    - Use the backslash escape character. E.g.
        a\/b\/c      results in a/b/c
  */
-{NAMELAT} {
-            imageExprGramPosition() += yyleng;
-            lvalp->val = new ImageExprParse (ImageExprGramtext);
-	    return LATNAME;
-	  }
 {ESCNAME} {
             imageExprGramPosition() += yyleng;
             lvalp->val = new ImageExprParse
