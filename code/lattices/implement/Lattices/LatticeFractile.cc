@@ -1,5 +1,5 @@
 //# LatticeFractile.cc: Static functions to get fractiles
-//# Copyright (C) 1999,2000,2001
+//# Copyright (C) 1999,2000,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -208,7 +208,7 @@ Vector<T> LatticeFractile<T>::unmaskedFractile (const Lattice<T>& lattice,
   // Make the block 1 element larger, because possible roundoff errors
   // could result in a binnr just beyond the end.
   const uInt nbins = 10000;
-  Block<uInt> hist(nbins+1, 0);
+  Block<uInt> hist(nbins+1, 0u);
   T stv, endv, minv, maxv;
   unmaskedHistogram (stv, endv, minv, maxv, hist, lattice);
   // Find the index of the fractile in the lattice.
@@ -328,7 +328,7 @@ Vector<T> LatticeFractile<T>::maskedFractile (const MaskedLattice<T>& lattice,
   // Make the block 1 element larger, because possible roundoff errors
   // could result in a binnr just beyond the end.
   const uInt nbins = 10000;
-  Block<uInt> hist(nbins+1, 0);
+  Block<uInt> hist(nbins+1, 0u);
   T stv, endv, minv, maxv;
   ntodo = maskedHistogram (stv, endv, minv, maxv, hist, lattice);
   if (ntodo == 0) {
@@ -516,7 +516,7 @@ Vector<T> LatticeFractile<T>::unmaskedFractiles (const Lattice<T>& lattice,
   // Make the block 1 element larger, because possible roundoff errors
   // could result in a binnr just beyond the end.
   const uInt nbins = 10000;
-  Block<uInt> hist1(nbins+1, 0);
+  Block<uInt> hist1(nbins+1, 0u);
   T stv1, endv1, minv1, maxv1;
   unmaskedHistogram (stv1, endv1, minv1, maxv1, hist1, lattice);
   // Init variables for both fractiles.
@@ -671,7 +671,7 @@ Vector<T> LatticeFractile<T>::maskedFractiles (const MaskedLattice<T>& lattice,
   // Make the block 1 element larger, because possible roundoff errors
   // could result in a binnr just beyond the end.
   const uInt nbins = 10000;
-  Block<uInt> hist1(nbins+1, 0);
+  Block<uInt> hist1(nbins+1, 0u);
   T stv1, endv1, minv1, maxv1;
   ntodo1 = maskedHistogram (stv1, endv1, minv1, maxv1, hist1, lattice);
   if (ntodo1 == 0) {
