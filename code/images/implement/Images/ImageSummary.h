@@ -36,6 +36,7 @@
 #include <aips/Measures/MDoppler.h>
 #include <trial/Coordinates/CoordinateSystem.h>
 #include <trial/Coordinates/ObsInfo.h>
+#include <trial/Images/ImageInfo.h>
 
 //# Forward Declarations
 template <class T> class ImageInterface;
@@ -89,12 +90,6 @@ class Coordinate;
 // it to you (such as the <src>referenceValues()</src> function, 
 // the information is returned to you in whatever units the coordinates
 // are currently in.  It does not convert it.
-// </note>
-// <note role=caution>
-// Note that if the <src>PagedImage</src> goes out of scope, this
-// class will retrieve rubbish as it just maintains a pointer
-// to the image.
-// </note>
 // </synopsis>
 
 // <example>
@@ -187,6 +182,9 @@ public:
 // Retrieve default mask name.  Empty if none
    String defaultMaskName() const;
 
+// Retrieve restoreing beam.  Will be of length zero if does not exist
+   Vector<Quantum<Double> > restoringBeam() const;
+
 // List all header information.  By default, the reference
 // values and pixel increments are converted to a "nice" unit before 
 // formatting (e.g. RA is  shown as HH:MM:SS.S).  If <src>nativeFormat</src> 
@@ -204,6 +202,7 @@ public:
 private:
    CoordinateSystem cSys_p;
    ObsInfo obsInfo_p;
+   ImageInfo imageInfo_p;
    const ImageInterface<T>* pImage_p;
 
    void getFieldWidths (uInt& widthName, 
