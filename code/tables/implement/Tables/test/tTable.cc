@@ -60,6 +60,14 @@
 // compares the results with the reference output file.
 
 
+// Define the callback for handling (scratch) tables.
+void cbFunc (const String& name, Bool isScratch, const String& oldname)
+{
+    cout << "ScratchCallBack:  name=" << name
+	 << "  isScratch=" << isScratch
+	 << "  oldName=" << oldname << endl;
+}
+
 // First build a description.
 void a (Bool doExcp)
 {
@@ -135,7 +143,7 @@ void a (Bool doExcp)
 	ab2.get (i, abval);
 	ad.get (i, adval);
 	ag.get (i, agval);
-	if (abval != i  ||  adval != i+2  ||  agval != DComplex(i+2)) {
+	if (abval != Int(i)  ||  adval != i+2  ||  agval != DComplex(i+2)) {
 	    cout << "error in row " << i << ": " << abval
 		 << ", " << adval << ", " << agval << endl;
 	}
@@ -284,7 +292,8 @@ void b (Bool doExcp)
 	af.get (i, afval);
 	ag.get (i, agval);
 	sprintf (str, "V%i", i);
-	if (abval != i  ||  acval != i+1  ||  adval != i+2  ||  aeval != i+3
+	if (abval != Int(i)  ||  acval != Int(i+1)
+        ||  adval != i+2  ||  aeval != i+3
 	||  afval != str  ||  agval != DComplex(i+2)) {
 	    cout << "error in row " << i << ": " << abval
 		 << ", " << acval << ", " << adval
@@ -317,7 +326,7 @@ void b (Bool doExcp)
     Vector<Int> abvec = ab2.getColumn();
     cout << tab.nrow() << " " << abvec.nelements() << endl;
     for (i=0; i<10; i++) {
-	if (abvec(i) != i) {
+	if (abvec(i) != Int(i)) {
 	    cout << "error in getColumn " << i << ": " << abvec(i) << endl;
 	}
     }
@@ -497,6 +506,13 @@ void c (Bool doExcp)
     newtab.setShapeColumn("arr3",IPosition(1,2));
     Table tab(newtab);
     tab.rename ("tTable_tmp.data2", Table::New);
+    tab.rename ("tTable_tmp.data2", Table::New);
+    tab.rename ("tTable_tmp.data2", Table::Scratch);
+    tab.rename ("tTable_tmp.data2a", Table::Scratch);
+    tab.rename ("tTable_tmp.data2a", Table::Scratch);
+    tab.rename ("tTable_tmp.data2a", Table::New);
+    tab.rename ("tTable_tmp.data2", Table::Scratch);
+    tab.rename ("tTable_tmp.data2a", Table::New);
     if (doExcp) {
 	try {
 	    // Create a normal file, so rename will fail.
@@ -601,7 +617,7 @@ void c (Bool doExcp)
 	ab2.get (i, abval);
 	ad.get  (i, adval);
 	ag.get  (i, agval);
-	if (adval != abval+2  ||  agval != DComplex(abval+2)) {
+	if (Int(adval) != abval+2  ||  agval != DComplex(abval+2)) {
 	    cout << "after remove error in row " << i << ": " << abval
 		 << ", " << adval << ", " << agval << endl;
 	}
@@ -657,7 +673,6 @@ void d()
 	Vector<Complex> arrf(IPosition(1,3));
 	Matrix<Int>     arri(IPosition(2,2,2));
 	Vector<String>  arrs (stringToVector ("aa,bbb"));
-	char str[8];
 	indgen (arrf.ac());
 	indgen (arri.ac());
 	for (i=0; i<10000; i++) {
@@ -686,7 +701,6 @@ void d()
 	Vector<Complex> arrf(IPosition(1,3));
 	Matrix<Int>     arri(IPosition(2,2,2));
 	Vector<String>  arrs (stringToVector ("aa,bbb"));
-	char str[8];
 	indgen (arrf.ac());
 	indgen (arri.ac());
 	uInt i;
@@ -694,7 +708,7 @@ void d()
 	    ab.get (i, abval);
 	    ad.get (i, adval);
 	    ag.get (i, agval);
-	    if (abval != i  ||  adval != i+2  ||  agval != Complex(i+2)) {
+	    if (abval != Int(i)  ||  adval != i+2  ||  agval != Complex(i+2)) {
 		cout << "error in row " << i << ": " << abval
 		    << ", " << adval << ", " << agval << endl;
 	    }
@@ -743,7 +757,6 @@ void d()
 	Vector<Complex> arrf(IPosition(1,3));
 	Matrix<Int>     arri(IPosition(2,2,2));
 	Vector<String>  arrs (stringToVector ("aa,bbb"));
-	char str[8];
 	indgen (arrf.ac());
 	indgen (arri.ac());
 	uInt i;
@@ -755,7 +768,7 @@ void d()
 	    }
 	    ad.get (i, adval);
 	    ag.get (i, agval);
-	    if (abval != i  ||  adval != i+2  ||  agval != Complex(i+2)) {
+	    if (abval != Int(i)  ||  adval != i+2  ||  agval != Complex(i+2)) {
 		cout << "error in row " << i << ": " << abval
 		    << ", " << adval << ", " << agval << endl;
 	    }
@@ -782,6 +795,7 @@ void d()
 main (int argc)
 {
     try {
+	Table::setScratchCallback (cbFunc);
 	a (ToBool (argc<2));
 	b (ToBool (argc<2));
 	c (ToBool (argc<2));
