@@ -293,6 +293,15 @@ private:
    Vector<T> range_p;
    IPosition blcParent_p;
 
+
+
+
+// Convert a <T> to a <Float> for plotting
+   static Float convertT (const T value) {return Float(real(value));};   
+ 
+// Convert a <Float> (from plotting) to a <T>
+   static T convertF (const Float value) {return T(value);};
+
 // Display histograms as a function of display axis
    Bool displayHistograms ();
 
@@ -334,7 +343,7 @@ private:
                         const T scale) const;
 
 // Make array with Gaussian
-   void makeGauss (Int& nGPts,
+   void makeGauss (uInt& nGPts,
                    T& gMax,
                    Vector<T>& gX,
                    Vector<T>& gY,
