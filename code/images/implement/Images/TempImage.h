@@ -123,16 +123,16 @@ public:
     TempImage<T>& operator= (const TempImage<T>& other);
   
     // Make a copy of the object (reference semantics).
-    // <group>
-    virtual Lattice<T>* clone() const;
     virtual ImageInterface<T>* cloneII() const;
-    // </group>
 
     // Is the TempImage paged to disk?
     virtual Bool isPaged() const;
 
     // Is the TempImage writable?
     virtual Bool isWritable() const;
+
+    // Get the region used (it always returns 0).
+    virtual const LatticeRegion* getRegionPtr() const;
 
     // Close the TempImage temporarily (if it is paged to disk).
     // It'll be reopened automatically when needed or when
