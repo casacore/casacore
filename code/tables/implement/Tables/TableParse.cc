@@ -42,6 +42,7 @@
 #include <aips/Quanta/MVTime.h>
 #include <aips/Quanta/MVAngle.h>
 #include <aips/Arrays/Vector.h>
+#include <aips/Arrays/ArrayUtil.h>
 #include <aips/Arrays/ArrayIO.h>
 #include <aips/Utilities/Sort.h>
 #include <aips/Utilities/Assert.h>
@@ -201,9 +202,10 @@ void TableParseSelect::addTable (const TableParseVal* name,
 	//# The table name is a string.
 	//# When the name contains ::, it is a keyword in a table at an outer
 	//# SELECT statement.
-	String shand, columnName, keyName;
-	if (splitName (shand, columnName, keyName, name->str)) { 
-	    table = tableKey (shand, columnName, keyName);
+	String shand, columnName;
+	Vector<String> fieldNames;
+	if (splitName (shand, columnName, fieldNames, name->str)) { 
+	    table = tableKey (shand, columnName, fieldNames);
 	}else{
 	    table = Table(name->str);
 	}
@@ -214,73 +216,144 @@ void TableParseSelect::addTable (const TableParseVal* name,
 
 Table TableParseSelect::tableKey (const String& shorthand,
 				  const String& columnName,
-				  const String& keyName)
+				  const Vector<String>& fieldNames)
 {
     //# Find the given shorthand on all levels.
     for (Int i=currentSelect_p - 1; i>=0; i--) {
 	Table tab = blockSelect_p[i]->findTable (shorthand);
 	if (! tab.isNull()) {
-	    Table result = findTableKey (tab, columnName, keyName);
+	    Table result = findTableKey (tab, columnName, fieldNames);
 	    if (! result.isNull()) {
 		return result;
 	    }
 	}
     }
-    throw (TableInvExpr ("Keyword " + columnName + "::" + keyName +
+    throw (TableInvExpr ("Keyword " + columnName + "::" + fieldNames(0) +
 			 " not found in tables in outer SELECT's"));
     return Table();
 }
 
 Table TableParseSelect::findTableKey (const Table& table,
 				      const String& columnName,
-				      const String& keyName)
+				      const Vector<String>& fieldNames)
 {
     //# Pick the table or column keyword set.
     if (columnName.empty()  ||  table.tableDesc().isColumn (columnName)) {
-	const TableRecord& keyset = 
-		           columnName.empty()  ?
-		                 table.keywordSet() :
-		                 ROTableColumn (table, columnName).keywordSet();
+	const TableRecord* keyset =  columnName.empty()  ?
+		              &(table.keywordSet()) :
+		              &(ROTableColumn (table, columnName).keywordSet());
+	// All fieldnames, except last one, should be records.
+	uInt last = fieldNames.nelements() - 1;
+	for (uInt i=0; i<last; i++) { 
+	    //# If the keyword does not exist or is not a record, return.
+	    Int fieldnr = keyset->fieldNumber (fieldNames(i));
+	    if (fieldnr < 0  ||  keyset->dataType(fieldnr) != TpRecord) {
+		return Table();
+	    }
+	    keyset = &(keyset->subRecord(fieldnr));
+	}
 	//# If the keyword exists and is a table, take it.
-	Int fieldnr = keyset.fieldNumber (keyName);
-	if (fieldnr >= 0  &&  keyset.dataType(fieldnr) == TpTable) {
-	    return keyset.asTable (fieldnr);
+	Int fieldnr = keyset->fieldNumber (fieldNames(last));
+	if (fieldnr >= 0  &&  keyset->dataType(fieldnr) == TpTable) {
+	    return keyset->asTable (fieldnr);
 	}
     }
     //# Not found.
     return Table();
 }
 
+// This function can split a name.
+// The name can consist of an optional shorthand, a column or keyword name,
+// followed by zero or more subfield names (separated by dots).
+// In the future it should also be possible to have a subfield name
+// followed by a keyword name, etc. to cater for something like:
+//   shorthand::key.subtable::key.subsubtable::key.
+// If that gets possible, TableGram.l should also be changed to accept
+// such a string in the scanner.
+// It is a question whether :: should be part of the scanner or grammar.
+// For columns one can go a bit further by accepting something like:
+//  col.subtable[select expression resulting in scalar]
+// which is something for the far away future.
 Bool TableParseSelect::splitName (String& shorthand, String& columnName,
-				  String& keyName, const String& name) const
+				  Vector<String>& fieldNames,
+				  const String& name) const
 {
     //# Make a copy, because some String functions are non-const.
     //# Usually the name consists of a columnName only, so use that.
-    //# Find the . which is the separator between shorthand and field name.
-    //# Find the :: which indicates a keyword.
+    //# A keyword is given if :: is part of the name.
+    shorthand = "";
     columnName = name;
-    int i = columnName.index('.');
+    String restName;
+    Bool isKey = False;
     int j = columnName.index("::");
-    if (j >= 0  &&  j < i) {
-	throw (TableInvExpr (name + " is invalid name: . not before ::"));
+    Vector<String> fldNam;
+    uInt stfld = 0;
+    if (j >= 0) {
+	// The name represents a keyword name.
+	isKey = True;
+	// There should be something after the ::
+	// which can be multiple names separated by dots.
+	// They represent the keyword name and possible subfields in case
+	// the keyword is a record.
+	restName = columnName.after(j+1);
+	if (restName.empty()) {
+	    throw (TableInvExpr ("No keyword given in name " + name));
+	}
+	fldNam = stringToVector (restName, '.');
+	// Before the :: can be empty, an optional shorthand, and an
+	// optional column name (separated by a dot).
+	// separated by a dot
+	columnName = "";
+	if (j > 0) {
+	    Vector<String> scNames = stringToVector (columnName.before(j), '.');
+	    switch (scNames.nelements()) {
+	    case 2:
+		shorthand = scNames(0);
+		columnName = scNames(1);
+		break;
+	    case 1:
+		columnName = scNames(0);
+		break;
+	    default:
+		throw (TableInvExpr ("Name " + name + " is invalid: "
+				     "More than 2 name parts given before ::"));
+	    }
+	}
+    } else {
+	// The name is a column name optionally preceeded by a shorthand
+	// and optionally followed by subfields in case the column contains
+	// records. The separator is a dot.
+	// A name like a.b is ambiguous because:
+	// - it can be shorthand.column
+	// - it can be column.subfield
+	// If a is a shorthand, that case it taken. Otherwise it's a column.
+	// Users can make it unambiguous by preceeding it with a dot
+	// (.a.b always means column.subfield).
+	fldNam = stringToVector (columnName, '.');
+	if (fldNam.nelements() == 1) {
+	    stfld = 0;                      // one part simply means column
+	} else if (fldNam(0).empty()) {
+	    stfld = 1;                      // .column was used
+	} else {
+	    Table tab = findTable(fldNam(0));
+	    if (! tab.isNull()) {
+		shorthand = fldNam(0);      // a known shorthand is used
+		stfld = 1;
+	    }
+	}
+	columnName = fldNam(stfld++);
+	if (columnName.empty()) {
+	    throw (TableInvExpr ("No column given in name " + name));
+	}
     }
-    if (i > 0) {
-	shorthand = columnName.before(i);
-	j -= i+1;
-	columnName = columnName.after(i);
-    }else{
-	shorthand = "";
+    fieldNames.resize (fldNam.nelements() - stfld);
+    for (uInt i=stfld; i<fldNam.nelements(); i++) {
+	if (fldNam(i).empty()) {
+	    throw (TableInvExpr ("Name " + name + " has empty field names"));
+	}
+	fieldNames(i-stfld) = fldNam(i);
     }
-    if (j < 0) {
-	keyName = "";
-	return False;
-    }
-    keyName = columnName.after(j+1);
-    columnName = columnName.before(j);
-    if (keyName.empty()) {
-	throw (TableInvExpr ("No keyword given in name " + name));
-    }
-    return True;
+    return isKey;
 }
 
 Table TableParseSelect::findTable (const String& shorthand) const
@@ -308,8 +381,9 @@ Table TableParseSelect::findTable (const String& shorthand) const
 TableExprNode TableParseSelect::handleKeyCol (const String& name)
 {
     //# Split the name into shorthand, column and keyword.
-    String shand, columnName, keyName;
-    Bool hasKey = splitName (shand, columnName, keyName, name);
+    String shand, columnName;
+    Vector<String> fieldNames;
+    Bool hasKey = splitName (shand, columnName, fieldNames, name);
     //# Use first table if there is no shorthand given.
     //# Otherwise find the table.
     Table tab = findTable (shand);
@@ -320,15 +394,15 @@ TableExprNode TableParseSelect::handleKeyCol (const String& name)
     }
     //# If :: is not given, we have a column or keyword.
     if (!hasKey) {
-	return tab.keyCol (columnName);
+	return tab.keyCol (columnName, fieldNames);
     }
     //# If no column name, we have a table keyword.
-    //# Otherwise we have a column keyword.
     if (columnName.empty()) {
-	return tab.key (keyName);
+	return tab.key (fieldNames);
     }
+    //# Otherwise we have a column keyword.
     ROTableColumn col (tab, columnName);
-    return TableExprNode::newKeyConst (col.keywordSet(), keyName);
+    return TableExprNode::newKeyConst (col.keywordSet(), fieldNames);
 }
 
 TableExprNode TableParseSelect::handleSlice (const TableExprNode& array,
