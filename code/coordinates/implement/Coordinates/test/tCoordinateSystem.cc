@@ -1240,7 +1240,7 @@ void doit3 (CoordinateSystem& cSys)
       }
    }
 //
-// World map
+// World, pixel map
 //
    {
       CoordinateSystem cSys2;
@@ -1251,6 +1251,7 @@ void doit3 (CoordinateSystem& cSys)
       cSys3.replaceCoordinate(makeDirectionCoordinate(False, MDirection::J2000),1);
 //
       Vector<Int> worldAxisMap, worldAxisTranspose;
+      Vector<Int> pixelAxisMap, pixelAxisTranspose;
       Vector<Bool> refChange;
       if (!cSys2.worldMap(worldAxisMap, worldAxisTranspose, refChange, cSys3)) {
          throw(AipsError("Failed to make world map 1"));
@@ -1267,6 +1268,19 @@ void doit3 (CoordinateSystem& cSys)
       if (refChange(0)!=False || refChange(1)!=True ||
           refChange(2)!=True || refChange(3)!=False) {
          throw(AipsError("Failed worldMap test 1b"));
+      }
+//
+      if (!cSys2.pixelMap(pixelAxisMap, pixelAxisTranspose, cSys3)) {
+         throw(AipsError("Failed to make pixel map 1"));
+      }
+      Vector<Int> pMap(cSys2.nPixelAxes()), pTranspose(cSys2.nPixelAxes());
+      for (uInt i=0; i<cSys2.nPixelAxes(); i++) {
+         pMap(i) = i; 
+         pTranspose(i) = i; 
+      }
+      if (!allEQ(pMap, pixelAxisMap) ||
+          !allEQ(pTranspose, pixelAxisTranspose)) {
+         throw(AipsError("Failed pixelMap test 1a"));
       }
 //
       Vector<Int> newWorldOrder(cSys2.nWorldAxes());
@@ -1287,6 +1301,9 @@ void doit3 (CoordinateSystem& cSys)
       if (!cSys2.worldMap(worldAxisMap, worldAxisTranspose, refChange, cSys3)) {
          throw(AipsError("Failed to make world map 2"));
       }
+      if (!cSys2.pixelMap(pixelAxisMap, pixelAxisTranspose, cSys3)) {
+         throw(AipsError("Failed to make pixel map 2"));
+      }
       Vector<Int> newMap(wMap.copy());
       Vector<Int> newTranspose(worldAxisTranspose.copy());
       newMap(worldAxes(0)) = newWorldOrder(worldAxes(0));
@@ -1302,6 +1319,11 @@ void doit3 (CoordinateSystem& cSys)
           refChange(2)!=True || refChange(3)!=False) {
          throw(AipsError("Failed worldMap test 2b"));
       }
+      if (!allEQ(newMap, pixelAxisMap) ||
+          !allEQ(newTranspose, pixelAxisTranspose)) {
+         throw(AipsError("Failed pixelMap test 2a"));
+      }
+
    }
 }
 
