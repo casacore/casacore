@@ -444,7 +444,7 @@ void Coordinate::set_error(const String &errorMsg) const
 
 
 
-Vector<String> Coordinate::make_Direction_FITS_ctype (const Projection& proj,
+Vector<String> Coordinate::make_Direction_FITS_ctype (Bool& isNCP, const Projection& proj,
                                                       const Vector<String>& axisNames,
                                                       Double refLat, Bool printError) const
 //
@@ -454,9 +454,8 @@ Vector<String> Coordinate::make_Direction_FITS_ctype (const Projection& proj,
     LogIO os(LogOrigin("Coordinate", "make_Direction_FITS_ctype", WHERE));
     Vector<String> ctype(2);
     Vector<Double> projParameters = proj.parameters();
-
 //
-    Bool isNCP = False;
+    isNCP = False;
     for (uInt i=0; i<2; i++) {
        String name = axisNames(i);
        while (name.length() < 4) {
@@ -476,19 +475,21 @@ Vector<String> Coordinate::make_Direction_FITS_ctype (const Projection& proj,
                   // True SIN
                   name = name + "-" + proj.name();
               } else {
-                  // NCP?
-                  // From Greisen and Calabretta
-                  // The potential divide by zero should never occur in
-                  // a real DirectionCoordinate as you better not have observed at
-                  // lat=0 with an EW array
+
+// NCP?  From Greisen and Calabretta
+// The potential divide by zero should never occur in
+// a real DirectionCoordinate as you better not have observed at
+// lat=0 with an EW array
+
                   if (::near(projParameters(0), 0.0) &&
                       ::near(projParameters(1), 1.0/tan(refLat))) {
-                      // Is NCP
                       isNCP = True;
                       name = name + "-NCP";
                   } else {
-                      // Doesn't appear to be NCP
-                      // Only print this once
+
+// Doesn't appear to be NCP
+// Only print this once rather than twice
+
                       if (!isNCP) {
                           os << LogIO::WARN << "SIN projection with non-zero"
                               " projp does not appear to be NCP." << endl <<
@@ -504,6 +505,7 @@ Vector<String> Coordinate::make_Direction_FITS_ctype (const Projection& proj,
              if (i == 0) {
 
 // Only print the message once for long/lat
+
                 if (printError) {
                    os << LogIO::WARN << proj.name()
                       << " is not known to standard FITS (it is known to WCS)."
