@@ -39,27 +39,31 @@
 
 void doIt()
 {
+    // Create a dummy box to make the special units known to UnitMap.
+    WCBox dummy;
     CoordinateSystem cSys (CoordinateUtil::defaultCoords3D());
     {
+      Vector<Int> absRel(2);
+      absRel = RegionType::Abs;
       Vector<Quantum<Double> > blc(2);
       Vector<Quantum<Double> > trc(2);
-      blc(0) = Quantum<Double> (10.0, "deg");
-      blc(1) = Quantum<Double> (1.0, "deg");
-      trc(0) = Quantum<Double> (14.0, "deg");
-      trc(1) = Quantum<Double> (3.0, "deg");
-      WCBox box1(blc, trc, cSys);
+      blc(0) = Quantum<Double> (10.0, "pix");
+      blc(1) = Quantum<Double> (1.0, "pix");
+      trc(0) = Quantum<Double> (14.0, "pix");
+      trc(1) = Quantum<Double> (3.0, "pix");
+      WCBox box1(blc, trc, cSys, absRel);
       {
 	LCRegion* regptr = box1.toLCRegion (cSys, IPosition(3,30,40,50));
 	const Slicer& bbox = regptr->boundingBox();
 	cout << bbox.start() << bbox.end() << endl;
 	delete regptr;
       }
-      Vector<uInt> axes(2);
+      IPosition axes(2);
       axes(0) = 1;
       axes(1) = 0;
-      blc(1) = Quantum<Double> (2.0, "deg");
-      trc(0) = Quantum<Double> (12.0, "deg");
-      WCBox box2(blc, trc, axes, axes, cSys);
+      blc(1) = Quantum<Double> (2.0, "pix");
+      trc(0) = Quantum<Double> (12.0, "pix");
+      WCBox box2(blc, trc, axes, cSys, absRel);
       {
 	LCRegion* regptr = box2.toLCRegion (cSys, IPosition(3,30,40,50));
 	const Slicer& bbox = regptr->boundingBox();
@@ -68,10 +72,10 @@ void doIt()
       }
       axes(0) = 2;
       axes(1) = 0;
-      blc(0) = Quantum<Double> (10.0, "Hz");
-      trc(0) = Quantum<Double> (14.0, "Hz");
+      blc(0) = Quantum<Double> (10.0, "pix");
+      trc(0) = Quantum<Double> (14.0, "pix");
       {
-	WCBox box(blc, trc, axes, axes, cSys);
+	WCBox box(blc, trc, axes, cSys, absRel);
 	LCRegion* regptr = box.toLCRegion (cSys, IPosition(3,30,40,50));
 	const Slicer& bbox = regptr->boundingBox();
 	cout << bbox.start() << bbox.end() << endl;
@@ -87,15 +91,17 @@ void doIt()
       }
     }
     {
+      Vector<Int> absRel(1);
+      absRel = RegionType::Abs;
       Vector<Quantum<Double> > blc(1);
       Vector<Quantum<Double> > trc(1);
-      blc(0) = Quantum<Double> (10.0, "deg");
-      trc(0) = Quantum<Double> (14.0, "deg");
+      blc(0) = Quantum<Double> (10.0, "pix");
+      trc(0) = Quantum<Double> (14.0, "pix");
       {
-	WCBox box1(blc, trc, cSys);
-	Vector<uInt> axes(1);
+	WCBox box1(blc, trc, cSys, absRel);
+	IPosition axes(1);
 	axes(0) = 1;
-	WCBox box2(blc, trc, axes, axes, cSys);
+	WCBox box2(blc, trc, axes, cSys, absRel);
 	ImageRegion ir1(box1);
 	ImageRegion ir2(box2);
 	WCUnion union1 (&ir1, &ir2);
