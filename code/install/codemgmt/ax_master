@@ -1776,3 +1776,4 @@
 11 085 src rm nrao/implement/MeasurementSets/OldMeasurementSet.h
 11 085 src rm nrao/implement/MeasurementSets/OldMeasurementSet.cc
 11 085 src rm nrao/implement/MeasurementSets/test/tOldMeasurementSet.cc
+11 085 src rm nrao/implement/MeasurementSets/test/templates
