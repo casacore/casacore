@@ -4230,3 +4230,5 @@
 14 073 src mv atnf/implement/pks/MBFITS.h atnf/implement/RPFITS.h
 14 074 src rm atnf/implement/F2C
 14 074 src rm atnf/implement/rpfits.cc
+14 074 src rm atnf/implement/rpfits.h
+14 074 src rm atnf/implement/rpfits_common.h
