@@ -30,6 +30,7 @@
 #include <aips/TableMeasures/TableMeasColumn.h>
 #include <aips/TableMeasures/TableMeasDescBase.h>
 #include <aips/Tables/Table.h>
+#include <aips/Tables/TableRecord.h>
 #include <aips/Tables/TableError.h>
 #include <aips/Utilities/String.h>
 
@@ -95,4 +96,18 @@ void ROTableMeasColumn::throwIfNull() const
 Table ROTableMeasColumn::table() const
 {
   return itsTabDataCol.table();
+}
+
+Bool ROTableMeasColumn::isScalar() const
+{
+  if (itsTabDataCol.columnDesc().isScalar()) {
+    return True;
+  }
+  IPosition shape = itsTabDataCol.shapeColumn();
+  if (shape.nelements() == 1) {
+    if (itsNvals == 0  ||  Int(itsNvals) == shape(0)) {
+      return True;
+    }
+  }
+  return False;
 }

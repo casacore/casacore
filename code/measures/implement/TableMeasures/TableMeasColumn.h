@@ -138,6 +138,18 @@ public:
   // Get the Table object this column belongs to.
   Table table() const;
 
+  // Is the column a scalar measures column?
+  // It is if the underlying column is a scalar column or an array
+  // column with a fixed 1-dimensional shape.
+  // <br>Otherwise it is an array measures column.
+  // <note role=caution>
+  // It is not 100% determined if a measure column is an array or a scalar.
+  // If the underlying table column is an array with a variable shape,
+  // this function will see it as an array measure column. However,
+  // it might be accessible as a scalar measure column.
+  // </note>
+  Bool isScalar() const;
+
 protected:
   //# The measure's value is represented by this many data components.
   uInt itsNvals;
