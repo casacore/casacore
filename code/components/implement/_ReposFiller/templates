@@ -70,9 +70,9 @@
      template class SimpleCountedConstPtr<SpectralModel> 
      template class PtrRep<SpectralModel> 
 1000 components/ComponentModels/Flux.cc 
+     = casa/Utilities/CountedPtr.cc 
      template class Flux<Double> 
      template class FluxRep<Double> 
-     = casa/Utilities/CountedPtr.cc 
      template class CountedPtr<FluxRep<Double> > 
      template class PtrRep<FluxRep<Double> > 
      template class SimpleCountedConstPtr<FluxRep<Double> > 
