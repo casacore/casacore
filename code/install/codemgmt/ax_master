@@ -4374,3 +4374,4 @@
 14 258 sys rm libexec/stdtoolcliserver.g
 14 259 src mv atnf/implement/Atoms/servo.h atnf/implement/Atoms/servo.hxx
 14 261 src rm trial/apps/image/templates
+14 265 src rm atnf/apps/pksreader
