@@ -66,7 +66,7 @@ endef
 define CheckDir
    if [ -d "$$2" ] ; then \
       echo "   ...directory exists" ; \
-   else \
+   elif [ "$$2" != "" ] ; then \
       echo "   ...$$1, directory doesn't exist" ; \
    fi ; \
    echo
@@ -90,8 +90,11 @@ endef
 
 # Check for the existence of libraries in the specified directory.
 define CheckLibs
-   cd $$2 ; \
-   if [ "$$?" = 0 ] ; then \
+   if [ "$$2" = / -o ! -d "$$2" ] ; then \
+      LEVEL=$$1 ; \
+      shift ; shift ; \
+      echo "   ...$$LEVEL, no directory specified for $$*" ; \
+   elif cd "$$2" ; then \
       ERROR=0 ; \
       LEVEL=$$1 ; \
       DIR=$$2 ; \
@@ -284,7 +287,7 @@ system :
     endif
 	-@ echo "C++LIB  =$(C++LIB)"
     ifdef DO_TEST
-	-@ set WARNING $(C++LIBD) $(C++LIB) ; $(CheckLibs)
+	-@ set WARNING $(C++LIBD)/ $(C++LIB) ; $(CheckLibs)
     endif
 	-@ echo ""
 	-@ echo "GLISHROOT=$(GLISHROOT)"
@@ -302,7 +305,7 @@ system :
     endif
 	-@ echo "GLISHLIB =$(GLISHLIB)"
     ifdef DO_TEST
-	-@ set WARNING $(GLISHLIBD) $(GLISHLIB) ; $(CheckLibs)
+	-@ set WARNING $(GLISHLIBD)/ $(GLISHLIB) ; $(CheckLibs)
     endif
 	-@ echo ""
 	-@ echo "GLISHLOROOT=$(GLISHLOROOT)"
@@ -320,7 +323,7 @@ system :
     endif
 	-@ echo "GLISHLOLIB =$(GLISHLOLIB)"
     ifdef DO_TEST
-	-@ set WARNING $(GLISHLOLIBD) $(GLISHLOLIB) ; $(CheckLibs)
+	-@ set WARNING $(GLISHLOLIBD)/ $(GLISHLOLIB) ; $(CheckLibs)
     endif
 	-@ echo ""
 	-@ echo "WCSLIBROOT=$(WCSLIBROOT)"
@@ -338,7 +341,7 @@ system :
     endif
 	-@ echo "WCSLIBLIB =$(WCSLIBLIB)"
     ifdef DO_TEST
-	-@ set WARNING $(WCSLIBLIBD) $(WCSLIBLIB) ; $(CheckLibs)
+	-@ set WARNING $(WCSLIBLIBD)/ $(WCSLIBLIB) ; $(CheckLibs)
     endif
 	-@ echo "WCSLIBTRIG=$(WCSLIBTRIG)"
 	-@ echo ""
@@ -357,7 +360,7 @@ system :
     endif
 	-@ echo "PGPLOTLIB =$(PGPLOTLIB)"
     ifdef DO_TEST
-	-@ set WARNING $(PGPLOTLIBD) $(PGPLOTLIB) ; $(CheckLibs)
+	-@ set WARNING $(PGPLOTLIBD)/ $(PGPLOTLIB) ; $(CheckLibs)
     endif
 	-@ echo ""
 	-@ echo "XmPGPLOTROOT=$(XmPGPLOTROOT)"
@@ -375,7 +378,7 @@ system :
     endif
 	-@ echo "XmPGPLOTLIB =$(XmPGPLOTLIB)"
     ifdef DO_TEST
-	-@ set WARNING $(XmPGPLOTLIBD) $(XmPGPLOTLIB) ; $(CheckLibs)
+	-@ set WARNING $(XmPGPLOTLIBD)/ $(XmPGPLOTLIB) ; $(CheckLibs)
     endif
 	-@ echo ""
 	-@ echo "TCLROOT =$(TCLROOT)"
@@ -393,7 +396,7 @@ system :
     endif
 	-@ echo "TCLLIB  =$(TCLLIB)"
     ifdef DO_TEST
-	-@ set WARNING $(TCLLIBD) $(TCLLIB) ; $(CheckLibs)
+	-@ set WARNING $(TCLLIBD)/ $(TCLLIB) ; $(CheckLibs)
     endif
 	-@ echo ""
 	-@ echo "TKROOT  =$(TKROOT)"
@@ -411,7 +414,7 @@ system :
     endif
 	-@ echo "TKLIB   =$(TKLIB)"
     ifdef DO_TEST
-	-@ set WARNING $(TKLIBD) $(TKLIB) ; $(CheckLibs)
+	-@ set WARNING $(TKLIBD)/ $(TKLIB) ; $(CheckLibs)
     endif
 	-@ echo ""
 	-@ echo "MotifROOT=$(MotifROOT)"
@@ -429,7 +432,7 @@ system :
     endif
 	-@ echo "MotifLIB =$(MotifLIB)"
     ifdef DO_TEST
-	-@ set ADVISORY $(MotifLIBD) $(MotifLIB) ; $(CheckLibs)
+	-@ set ADVISORY $(MotifLIBD)/ $(MotifLIB) ; $(CheckLibs)
     endif
 	-@ echo ""
 	-@ echo "X11ROOT =$(X11ROOT)"
@@ -447,7 +450,7 @@ system :
     endif
 	-@ echo "X11LIB  =$(X11LIB)"
     ifdef DO_TEST
-	-@ set WARNING $(X11LIBD) $(X11LIB) ; $(CheckLibs)
+	-@ set WARNING $(X11LIBD)/ $(X11LIB) ; $(CheckLibs)
     endif
 	-@ echo ""
 	-@ echo "XPMROOT =$(XPMROOT)"
@@ -465,7 +468,7 @@ system :
     endif
 	-@ echo "XPMLIB  =$(XPMLIB)"
     ifdef DO_TEST
-	-@ set WARNING $(XPMLIBD) $(XPMLIB) ; $(CheckLibs)
+	-@ set WARNING $(XPMLIBD)/ $(XPMLIB) ; $(CheckLibs)
     endif
 	-@ echo ""
 	-@ echo "DVRROOT =$(DVRROOT)"
@@ -483,7 +486,7 @@ system :
     endif
 	-@ echo "DVRLIB  =$(DVRLIB)"
     ifdef DO_TEST
-	-@ set WARNING $(DVRLIBD) $(DVRLIB) ; $(CheckLibs)
+	-@ set WARNING $(DVRLIBD)/ $(DVRLIB) ; $(CheckLibs)
     endif
 	-@ echo ""
 	-@ echo "LAPACKROOT=$(LAPACKROOT)"
@@ -501,7 +504,7 @@ system :
     endif
 	-@ echo "LAPACKLIB =$(LAPACKLIB)"
     ifdef DO_TEST
-	-@ set WARNING $(LAPACKLIBD) $(LAPACKLIB) ; $(CheckLibs)
+	-@ set WARNING $(LAPACKLIBD)/ $(LAPACKLIB) ; $(CheckLibs)
     endif
 	-@ echo ""
 	-@ echo "F77ROOT =$(F77ROOT)"
@@ -519,7 +522,7 @@ system :
     endif
 	-@ echo "F77LIB  =$(F77LIB)"
     ifdef DO_TEST
-	-@ set WARNING $(F77LIBD) $(F77LIB) ; $(CheckLibs)
+	-@ set WARNING $(F77LIBD)/ $(F77LIB) ; $(CheckLibs)
     endif
 	-@ echo ""
 	-@ echo "ARCHLIBS=$(ARCHLIBS)"
@@ -539,7 +542,7 @@ system :
     endif
 	-@ echo "CFITSIOLIB =$(CFITSIOLIB)"
     ifdef DO_TEST
-	-@ set ADVISORY $(CFITSIOLIBD) $(CFITSIOLIB) ; $(CheckLibs)
+	-@ set ADVISORY $(CFITSIOLIBD)/ $(CFITSIOLIB) ; $(CheckLibs)
     endif
 	-@ echo ""
 	-@ echo "RPFITSROOT=$(RPFITSROOT)"
@@ -557,7 +560,7 @@ system :
     endif
 	-@ echo "RPFITSLIB =$(RPFITSLIB)"
     ifdef DO_TEST
-	-@ set ADVISORY $(RPFITSLIBD) $(RPFITSLIB) ; $(CheckLibs)
+	-@ set ADVISORY $(RPFITSLIBD)/ $(RPFITSLIB) ; $(CheckLibs)
     endif
 	-@ echo ""
 	-@ echo "MIRLIBROOT=$(MIRLIBROOT)"
@@ -575,7 +578,7 @@ system :
     endif
 	-@ echo "MIRLIBLIB =$(MIRLIBLIB)"
     ifdef DO_TEST
-	-@ set ADVISORY $(MIRLIBLIBD) $(MIRLIBLIB) ; $(CheckLibs)
+	-@ set ADVISORY $(MIRLIBLIBD)/ $(MIRLIBLIB) ; $(CheckLibs)
     endif
 	-@ echo ""
 	-@ echo "GSDLIBROOT=$(GSDLIBROOT)"
@@ -593,7 +596,7 @@ system :
     endif
 	-@ echo "GSDLIBLIB =$(GSDLIBLIB)"
     ifdef DO_TEST
-	-@ set ADVISORY $(GSDLIBLIBD) $(GSDLIBLIB) ; $(CheckLibs)
+	-@ set ADVISORY $(GSDLIBLIBD)/ $(GSDLIBLIB) ; $(CheckLibs)
     endif
 	-@ echo ""
 	-@ echo "HDSROOT=$(HDSROOT)"
@@ -611,7 +614,7 @@ system :
     endif
 	-@ echo "HDSLIB =$(HDSLIB)"
     ifdef DO_TEST
-	-@ set ADVISORY $(HDSLIBD) $(HDSLIB) ; $(CheckLibs)
+	-@ set ADVISORY $(HDSLIBD)/ $(HDSLIB) ; $(CheckLibs)
     endif
 	-@ echo ""
 	-@ echo "Package-dependent shared-library link lists."
@@ -922,7 +925,7 @@ system :
 	-@ echo ""
 	-@ echo "TEXBINROOT=$(TEXBINROOT)"
     ifdef DO_TEST
-	-@ set WARNING $(TEX) ; $(CheckDir)
+	-@ set WARNING $(TEXBINROOT) ; $(CheckDir)
     endif
 	-@ echo "TEX     =$(TEX)"
     ifdef DO_TEST
