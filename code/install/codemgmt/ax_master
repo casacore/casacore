@@ -4516,3 +4516,4 @@
 14 296 src mv aips/implement/MeasurementSets/NewMSMainEnums.h aips/implement/MeasurementSets/MSMainEnums.h
 14 296 src mv aips/implement/MeasurementSets/NewMSObsColumns.cc aips/implement/MeasurementSets/MSObsColumns.cc
 14 296 src mv aips/implement/MeasurementSets/NewMSObsColumns.h aips/implement/MeasurementSets/MSObsColumns.h
+14 296 src mv aips/implement/MeasurementSets/NewMSObsEnums.h aips/implement/MeasurementSets/MSObsEnums.h
