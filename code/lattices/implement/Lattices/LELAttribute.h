@@ -32,31 +32,42 @@
 #include <aips/Lattices/IPosition.h>
 
 
-// <summary>
-// </summary>
-
+// <summary> Holds ancilliary information for the LEL letter classes. </summary>
+//
 // <use visibility=local>
-
+//
 // <reviewed reviewer="" date="yyyy/mm/dd" tests="" demos="">
 // </reviewed>
-
+//
 // <prerequisite>
 //   <li> <linkto class="Lattice"> Lattice</linkto>
+//   <li> <linkto class="LatticeExpr"> LatticeExpr</linkto>
+//   <li> <linkto class="LatticeExprNode"> LatticeExprNode</linkto>
+//   <li> <linkto class="LELInterface"> LELInterface</linkto> and
+//        derived classes
 // </prerequisite>
-
+//
 // <etymology>
+// Holds attribute information for the Lattice Expression 
+// Language letter classes.
 // </etymology>
 
 // <synopsis>
+// The Lattice Expression Language letter classes provide
+// expression objects. There is ancilliary information or 
+// attributes associated with these objects such as the
+// shape of the region involved in the expression, or whether
+// the result of evaluating an expression is a scalar or
+// not.  These attributes are stored in the LELAttribute class.
+// 
 // </synopsis> 
-
-// <example>
-// </example>
-
+//
 // <motivation>
+// We needed somewhere to store this things.  There will
+// be more as time goes on.
 // </motivation>
-
-// <todo asof="1996/07/01">
+//
+// <todo asof="1998/01/20">
 // </todo>
 
 
@@ -70,7 +81,7 @@ public:
    LELAttribute(const Bool isScalar,
 		const IPosition& shape);
 
-// Constructor
+// Copy constructor (copy semantics)
    LELAttribute(const LELAttribute& attr);
 
 // Constructor
@@ -84,12 +95,10 @@ public:
    LELAttribute& operator= (const LELAttribute& other);
 
 // Is expression a scalar
-   const Bool isScalar() const
-       { return isScalar_p; }
+   const Bool isScalar() const { return isScalar_p; }
 
 // What is the shape of the expression
-   const IPosition& shape() const
-       { return shape_p; }
+   const IPosition& shape() const { return shape_p; }
 
 private:
    Bool      isScalar_p;
