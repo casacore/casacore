@@ -31,15 +31,13 @@
 
 #include <aips/aips.h>
 #include <aips/Utilities/DataType.h>
-#include <aips/Containers/Record.h>
-#include <aips/Containers/RecordField.h>
 
 //# Forward Declarations
 class MeasurementSet;
 class MSMainColumns;
 class MEpoch;
 class MVTime;
-class TiledDataStManAccessor;
+class Record;
 
 template <class T> class Vector;
 template <class T> class Matrix;
@@ -93,8 +91,7 @@ public:
     SDMainHandler();
 
     // attach this to a MS - mark fields in row as handled
-    SDMainHandler(MeasurementSet &ms, Vector<Bool> &handledCols, const Record &row,
-		  const String &dataHypercubeName);
+    SDMainHandler(MeasurementSet &ms, Vector<Bool> &handledCols, const Record &row);
 
     // copy ctor
     SDMainHandler(const SDMainHandler &other);
@@ -105,8 +102,7 @@ public:
     SDMainHandler &operator=(const SDMainHandler &other);
 
     // attach to a MS, mark fields in row as handled
-    void attach(MeasurementSet &ms, Vector<Bool> &handledCols, const Record &row,
-		const String &dataHypercubeName);
+    void attach(MeasurementSet &ms, Vector<Bool> &handledCols, const Record &row);
 
     // reset internals given indicated row, use the same MS
     void resetRow(const Record &row);
@@ -119,16 +115,11 @@ private:
     MeasurementSet *ms_p;
     MSMainColumns *msCols_p;
 
-    TiledDataStManAccessor *dataAccessor_p;
-
-    Record hyperDef_p;
-    RecordFieldPtr<Int> hyperId_p;
-
     Int scanNumberId_p;
     DataType scanNumberType_p;
 
     // fields from sdfits2ms, independent of MS version number so far
-    Int arrayIdId_p, sigmaId_p, flagRowId_p, intervalId_p, weightId_p, flagId_p, maxDataId_p;
+    Int arrayIdId_p, sigmaId_p, flagRowId_p, intervalId_p, weightId_p, flagId_p;
 
     // cleanup everything
     void clearAll();
@@ -137,8 +128,7 @@ private:
     void clearRow();
 
     // initialize everything
-    void initAll(MeasurementSet &ms, Vector<Bool> &handledCols, const Record &row,
-		 const String &dataHypercubeName);
+    void initAll(MeasurementSet &ms, Vector<Bool> &handledCols, const Record &row);
 
     // intialize the row related stuff
     void initRow(Vector<Bool> &handledCols, const Record &row);

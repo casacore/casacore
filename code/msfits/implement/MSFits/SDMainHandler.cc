@@ -38,27 +38,26 @@
 #include <aips/Tables/TableDesc.h>
 #include <aips/Measures/MEpoch.h>
 #include <aips/Quanta/MVTime.h>
-#include <aips/Tables/TiledDataStManAccessor.h>
+#include <aips/Containers/Record.h>
 
 SDMainHandler::SDMainHandler() 
-    : ms_p(0), msCols_p(0), dataAccessor_p(0),
+    : ms_p(0), msCols_p(0), 
       scanNumberId_p(-1), arrayIdId_p(-1), sigmaId_p(-1), flagRowId_p(-1),
-      intervalId_p(-1), weightId_p(-1), flagId_p(-1), maxDataId_p(-1)
+      intervalId_p(-1), weightId_p(-1), flagId_p(-1)
 {;}
 
-SDMainHandler::SDMainHandler(MeasurementSet &ms, Vector<Bool> &handledCols, const Record &row,
-			     const String &dataHypercubeName)
-    : ms_p(0), msCols_p(0), dataAccessor_p(0),
+SDMainHandler::SDMainHandler(MeasurementSet &ms, Vector<Bool> &handledCols, const Record &row)
+    : ms_p(0), msCols_p(0),
       scanNumberId_p(-1), arrayIdId_p(-1), sigmaId_p(-1), flagRowId_p(-1),
-      intervalId_p(-1), weightId_p(-1), flagId_p(-1), maxDataId_p(-1)
+      intervalId_p(-1), weightId_p(-1), flagId_p(-1)
 {
-    initAll(ms, handledCols, row, dataHypercubeName);
+    initAll(ms, handledCols, row);
 }
 
 SDMainHandler::SDMainHandler(const SDMainHandler &other) 
-    : ms_p(0), msCols_p(0), dataAccessor_p(0),
+    : ms_p(0), msCols_p(0),
       scanNumberId_p(-1), arrayIdId_p(-1), sigmaId_p(-1), flagRowId_p(-1),
-      intervalId_p(-1), weightId_p(-1), flagId_p(-1), maxDataId_p(-1)
+      intervalId_p(-1), weightId_p(-1), flagId_p(-1)
 {
     *this = other;
 }
@@ -71,8 +70,6 @@ SDMainHandler &SDMainHandler::operator=(const SDMainHandler &other)
 	AlwaysAssert(ms_p, AipsError);
 	msCols_p = new MSMainColumns(*ms_p);
 	AlwaysAssert(msCols_p, AipsError);
-	dataAccessor_p = new TiledDataStManAccessor(*(other.dataAccessor_p));
-	AlwaysAssert(dataAccessor_p, AipsError);
 	scanNumberId_p = other.scanNumberId_p;
 	arrayIdId_p = other.arrayIdId_p;
 	sigmaId_p = other.sigmaId_p;
@@ -80,18 +77,14 @@ SDMainHandler &SDMainHandler::operator=(const SDMainHandler &other)
 	intervalId_p = other.intervalId_p;
 	weightId_p = other.weightId_p;
 	flagId_p = other.flagId_p;
-	maxDataId_p = other.maxDataId_p;
-	hyperDef_p = other.hyperDef_p;
-	hyperId_p = other.hyperId_p;
     }
     return *this;
 }
 
-void SDMainHandler::attach(MeasurementSet &ms, Vector<Bool> &handledCols, const Record &row,
-			   const String &dataHypercubeName)
+void SDMainHandler::attach(MeasurementSet &ms, Vector<Bool> &handledCols, const Record &row)
 {
     clearAll();
-    initAll(ms, handledCols, row, dataHypercubeName);
+    initAll(ms, handledCols, row);
 }
 
 void SDMainHandler::resetRow(const Record &row)
@@ -112,23 +105,6 @@ void SDMainHandler::fill(const Record &row, const MEpoch &time, Int antennaId, I
 	ms_p->addRow();
 
 	Int ncorr = floatData.nrow();
-	Int nchan = floatData.ncolumn();
-	// hypercolumn adjustments
-	*hyperId_p = dataDescId;
-	if (dataDescId > maxDataId_p) {
-	    maxDataId_p = dataDescId;
-	    // need a new cube
-	    // first the data
-	    IPosition cubeShape(3,ncorr,nchan,0);
-	    // 32768 is completely arbitrary
-	    Int nrowsPerTile = 32768/(ncorr*nchan);
-	    // ensure that there is at least one row per tile
-	    if (nrowsPerTile <= 0) nrowsPerTile = 1;
-	    IPosition tileShape(3,ncorr,nchan,nrowsPerTile);
-	    dataAccessor_p->addHypercube(cubeShape, tileShape, hyperDef_p);
-	} // an existing cube
-	// extend the cubes as necessary - just by a single row
-	dataAccessor_p->extendHypercube(1, hyperDef_p);
 
 	msCols_p->timeMeas().put(rownr, time);
 	msCols_p->antenna1().put(rownr,antennaId);
@@ -209,11 +185,6 @@ void SDMainHandler::clearAll()
     delete msCols_p;
     msCols_p = 0;
 
-    delete dataAccessor_p;
-    dataAccessor_p = 0;
-
-    maxDataId_p = -1;
-
     clearRow();
 }
 
@@ -223,18 +194,10 @@ void SDMainHandler::clearRow()
 	weightId_p = flagId_p = -1;
 }
 
-void SDMainHandler::initAll(MeasurementSet &ms, Vector<Bool> &handledCols, const Record &row,
-			    const String &dataHypercubeName)
+void SDMainHandler::initAll(MeasurementSet &ms, Vector<Bool> &handledCols, const Record &row)
 {
     ms_p = new MeasurementSet(ms);
     AlwaysAssert(ms_p, AipsError);
-
-    dataAccessor_p = new TiledDataStManAccessor(*ms_p, dataHypercubeName);
-    AlwaysAssert(dataAccessor_p, AipsError);
-
-    hyperDef_p.restructure(RecordDesc());
-    hyperDef_p.define(MS::columnName(MS::DATA_DESC_ID),-1);
-    hyperId_p.attachToRecord(hyperDef_p, MS::columnName(MS::DATA_DESC_ID));
 
     initRow(handledCols, row);
 
