@@ -61,7 +61,7 @@ imported class ostream;
 // </etymology>
 //
 // <synopsis>
-// The <linkto class=MaesFrame>MeasFrame</linkto> class contains the 'when
+// The <linkto class=MeasFrame>MeasFrame</linkto> class contains the 'when
 // and where' of an observed Measure. Calculations to get the appropiate
 // value (e.g. the Earth's longitude) from this frame for conversions are
 // done in this class, together with all the caching of (intermediate) results
