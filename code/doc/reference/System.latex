@@ -51,9 +51,15 @@
 
 \maketitle
 
+\begin{htmlonly}
+\htmladdnormallink
+   {A postscript version of this document is available.}
+   {../System.ps}
+\end{htmlonly}
+
 \newpage
 \vspace*{\fill}
-Copyright \copyright\ 1992-1996 AIPS++ Consortium
+Copyright \copyright\ 1992-1997 AIPS++ Consortium
 
 \aipspp\ System manual.
 
@@ -93,10 +99,9 @@ Charlottesville, Va. 22903-2475 USA.
 
 \label{Top}
 
-
-
-
 % ===========================================================================
+
+\tableofcontents
 
 \include{Overview}
 \include{Installation}
@@ -111,7 +116,6 @@ Charlottesville, Va. 22903-2475 USA.
 \include{SysVerif}
 \include{CentServ}
 
-\tableofcontents
 \printindex
 
 \end{document}
