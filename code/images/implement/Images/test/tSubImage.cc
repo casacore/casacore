@@ -291,7 +291,7 @@ void testAxes()
 }
 
 
-main ()
+int main ()
 {
   try {
     {
@@ -304,7 +304,7 @@ main ()
       Slicer slicer(IPosition(4,4,2,1,3), IPosition(4,14,10,3,23),
 		    IPosition(4,2,3,1,4), Slicer::endIsLast);
       SubImage<Float> subimg (lattice, slicer, True);
-      AlwaysAssertExit (subimg.logSink().localSink().isTableLogSink());
+      AlwaysAssertExit (! subimg.logSink().localSink().isTableLogSink());
       AlwaysAssertExit (subimg.isPaged());
       AlwaysAssertExit (!subimg.isPersistent());
       AlwaysAssertExit (!subimg.isMasked());

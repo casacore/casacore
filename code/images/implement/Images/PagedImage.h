@@ -35,18 +35,8 @@
 #include <aips/Tables/Table.h>
 #include <aips/Utilities/DataType.h>
 #include <aips/Tables/TableRecord.h>
-#include <aips/Logging/LogIO.h>
 
 //# Forward Declarations
-class IPosition;
-class LatticeNavigator;
-class Slicer;
-class LogTable;
-class ImageRegion;
-template <class T> class Array;
-template <class T> class LatticeIterInterface;
-class String;
-class ImageInfo;
 #include <aips/iosfwd.h>
 
 // <summary>
@@ -205,10 +195,6 @@ public:
 
   // Get the image type (returns name of derived class).
   virtual String imageType() const;
-
-  // Add the TableLogSink from other to this one.
-  // This is where the history is kept.
-  virtual void mergeTableLogSink (const LogIO& other);
 
   // A PagedImage is always persistent.
   virtual Bool isPersistent() const;
@@ -393,19 +379,11 @@ public:
   // Close the Image and associated files temporarily.
   // It'll be reopened automatically when needed or when
   // <src>reopen</src> is called explicitly.
-  // <note role=caution>
-  // The log table cannot be reopened automatically, because once created
-  // it is not handled by this class anymore. One has to do an explicit
-  // <src>reopen</src> to make sure the log table is also reopened.
   virtual void tempClose();
 
   // If needed, reopen a temporarily closed Image..
   virtual void reopen();
 
-
-protected:
-  // Let a derived class reopen the log.
-  virtual void doReopenLogSink();
 
 private:
   // Function to return the internal Table object to the RegionHandler.
@@ -437,9 +415,8 @@ private:
   const Table& table() const;
 
 
-          PagedArray<T>  map_p;
-          TableLogSink*  logTablePtr_p;
-          LatticeRegion* regionPtr_p;
+  PagedArray<T>  map_p;
+  LatticeRegion* regionPtr_p;
 };
 
 

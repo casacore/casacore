@@ -40,16 +40,13 @@
 
 #include <aips/Arrays/ArrayMath.h>
 #include <aips/Containers/RecordInterface.h>
-#include <aips/Logging/LogIO.h>
-#include <aips/Logging/TableLogSink.h>
 #include <aips/Utilities/Assert.h>
 #include <aips/strstream.h>
 
 
 template <class T> 
 ImageInterface<T>::ImageInterface()
-: logClosed_p  (False),
-  regHandPtr_p (0)
+: regHandPtr_p (0)
 {
   logSink() << LogOrigin("ImageInterface<T>",
 	    "ImageInterface()",
@@ -60,8 +57,7 @@ ImageInterface<T>::ImageInterface()
 
 template <class T> 
 ImageInterface<T>::ImageInterface (const RegionHandler& regHand)
-: logClosed_p  (False),
-  regHandPtr_p (0)
+: regHandPtr_p (0)
 {
   logSink() << LogOrigin("ImageInterface<T>",
 	    "ImageInterface()",
@@ -76,7 +72,6 @@ ImageInterface<T>::ImageInterface (const ImageInterface& other)
 : MaskedLattice<T> (other),
   coords_p     (other.coords_p),
   log_p        (other.log_p),
-  logClosed_p  (other.logClosed_p),
   imageInfo_p  (other.imageInfo_p),
   regHandPtr_p (0)
 {
@@ -94,7 +89,6 @@ ImageInterface<T>& ImageInterface<T>::operator= (const ImageInterface& other)
     MaskedLattice<T>::operator= (other);
     coords_p    = other.coords_p;
     log_p       = other.log_p;
-    logClosed_p = other.logClosed_p;
     imageInfo_p = other.imageInfo_p;
     delete regHandPtr_p;
     regHandPtr_p = 0;
@@ -309,29 +303,3 @@ Bool ImageInterface<T>::setUnits(const Unit& unit)
    unit_p = unit;
    return True;
 }    
-   
-template<class T>
-void ImageInterface<T>::mergeTableLogSink (const LogIO&)
-{}
-
-
-template<class T>
-void ImageInterface<T>::closeLogSink (Bool temporarily)
-{
-  // Set log object to the global logsink only.
-  log_p = LogIO();
-  logClosed_p = temporarily;
-}
-
-template<class T>
-void ImageInterface<T>::reopenLog()
-{
-  if (logClosed_p) {
-    doReopenLogSink();
-    logClosed_p = False;
-  }
-}
-
-template<class T>
-void ImageInterface<T>::doReopenLogSink()
-{}

@@ -196,7 +196,7 @@ int main ()
       PagedImage<Float> lattice(latticeShape, cSys, "tExtendImage_tmp.pa");
       lattice.put (arr);
       ExtendImage<Float> extimg (lattice, newShape, cSys2);
-      AlwaysAssertExit (extimg.logSink().localSink().isTableLogSink());
+      AlwaysAssertExit (!extimg.logSink().localSink().isTableLogSink());
       AlwaysAssertExit (extimg.isPaged());
       AlwaysAssertExit (!extimg.isPersistent());
       AlwaysAssertExit (!extimg.isMasked());

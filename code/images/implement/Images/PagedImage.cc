@@ -38,7 +38,6 @@
 #include <trial/Lattices/LatticeExpr.h>
 #include <trial/Lattices/LatticeRegion.h>
 #include <aips/Logging/LogIO.h>
-#include <aips/Logging/TableLogSink.h>
 #include <aips/Logging/LogMessage.h>
 
 #include <aips/Arrays/Array.h>
@@ -71,7 +70,6 @@ PagedImage<T>::PagedImage (const TiledShape& shape,
 			   Table& table, uInt rowNumber)
 : ImageInterface<T>(RegionHandlerTable(getTable, this)),
   map_p         (shape, table, "map", rowNumber),
-  logTablePtr_p (0),
   regionPtr_p   (0)
 {
   attach_logtable();
@@ -97,7 +95,6 @@ PagedImage<T>::PagedImage (const TiledShape& shape,
 			   TableLock::LockOption lockMode,
 			   uInt rowNumber)
 : ImageInterface<T>(RegionHandlerTable(getTable, this)),
-  logTablePtr_p (0),
   regionPtr_p   (0)
 {
   makePagedImage (shape, coordinateInfo, filename,
@@ -111,7 +108,6 @@ PagedImage<T>::PagedImage (const TiledShape& shape,
 			   const TableLock& lockOptions,
 			   uInt rowNumber)
 : ImageInterface<T>(RegionHandlerTable(getTable, this)),
-  logTablePtr_p (0),
   regionPtr_p   (0)
 {
   makePagedImage (shape, coordinateInfo, filename, lockOptions, rowNumber);
@@ -151,7 +147,6 @@ PagedImage<T>::PagedImage (const TiledShape& shape,
 			   const String& filename, 
 			   uInt rowNumber)
 : ImageInterface<T>(RegionHandlerTable(getTable, this)),
-  logTablePtr_p (0),
   regionPtr_p   (0)
 {
   logSink() << LogOrigin("PagedImage<T>", 
@@ -177,7 +172,6 @@ template <class T>
 PagedImage<T>::PagedImage (Table& table, MaskSpecifier spec, uInt rowNumber)
 : ImageInterface<T>(RegionHandlerTable(getTable, this)),
   map_p         (table, "map", rowNumber),
-  logTablePtr_p (0),
   regionPtr_p   (0)
 {
   attach_logtable();
@@ -199,7 +193,6 @@ template <class T>
 PagedImage<T>::PagedImage (const String& filename, MaskSpecifier spec,
 			   uInt rowNumber)
 : ImageInterface<T>(RegionHandlerTable(getTable, this)),
-  logTablePtr_p (0),
   regionPtr_p   (0)
 {
   logSink() << LogOrigin("PagedImage<T>", 
@@ -225,7 +218,6 @@ PagedImage<T>::PagedImage (const String& filename,
 			   const TableLock& lockOptions,
 			   MaskSpecifier spec, uInt rowNumber)
 : ImageInterface<T>(RegionHandlerTable(getTable, this)),
-  logTablePtr_p (0),
   regionPtr_p   (0)
 {
   makePagedImage (filename, lockOptions, spec, rowNumber);
@@ -236,7 +228,6 @@ PagedImage<T>::PagedImage (const String& filename,
 			   TableLock::LockOption lockMode,
 			   MaskSpecifier spec, uInt rowNumber)
 : ImageInterface<T>(RegionHandlerTable(getTable, this)),
-  logTablePtr_p (0),
   regionPtr_p   (0)
 {
   makePagedImage (filename, TableLock(lockMode), spec, rowNumber);
@@ -271,7 +262,6 @@ template <class T>
 PagedImage<T>::PagedImage (const PagedImage<T>& other)
 : ImageInterface<T>(other),
   map_p            (other.map_p),
-  logTablePtr_p    (other.logTablePtr_p),
   regionPtr_p      (0)
 {
   if (other.regionPtr_p != 0) {
@@ -282,12 +272,9 @@ PagedImage<T>::PagedImage (const PagedImage<T>& other)
 template <class T> 
 PagedImage<T>::~PagedImage()
 {
-  // Detach the LogIO from the log table in case the pixel table is going to
-  // be destroyed.
-  // Note that this also destructs the LogTableSink object pointed to
-  // by logTablePtr_p, so we do not need to delete that pointer.
+  // Close the logger here in case the image table is going to deleted.
   delete regionPtr_p;
-  closeLogSink (False);
+  logger().close();
 }
 
 template <class T> 
@@ -296,7 +283,6 @@ PagedImage<T>& PagedImage<T>::operator=(const PagedImage<T>& other)
   if (this != &other) {
     ImageInterface<T>::operator= (other);
     map_p = other.map_p;
-    logTablePtr_p = other.logTablePtr_p;
     delete regionPtr_p;
     regionPtr_p = 0;
     if (other.regionPtr_p != 0) {
@@ -639,13 +625,6 @@ PagedImage<T>& PagedImage<T>::operator+= (const Lattice<T>& other)
 }
 
 
-
-template<class T>
-void PagedImage<T>::doReopenLogSink()
-{
-  open_logtable();
-}
-
 template<class T> 
 void PagedImage<T>::attach_logtable()
 {
@@ -658,20 +637,11 @@ void PagedImage<T>::open_logtable()
 {
   // Open logtable as readonly if main table is not writable.
   Table& tab = table();
-  if (tab.isWritable()) {
-    logTablePtr_p = new TableLogSink(LogFilter(), name() + "/logtable", False);
-  } else {
-    logTablePtr_p = new TableLogSink(name() + "/logtable");
-  }
-  LogSinkInterface* interface = logTablePtr_p;
-  AlwaysAssert(logTablePtr_p != 0, AipsError);
+  setLogMember (ImageLogger (name() + "/logtable", tab.isWritable()));
   // Insert the keyword if possible and if it does not exist yet.
   if (tab.isWritable()  &&  ! tab.keywordSet().isDefined ("logtable")) {
-    tab.rwKeywordSet().defineTable("logtable", logTablePtr_p->table());
+    tab.rwKeywordSet().defineTable("logtable", Table(name() + "/logtable"));
   }
-  LogSink tmp;
-  tmp.localSink(interface);
-  setLogMember (tmp);
 }
 
 template<class T> 
@@ -858,9 +828,7 @@ template<class T>
 void PagedImage<T>::unlock()
 {
   map_p.unlock();
-  if (logTablePtr_p != 0) {
-    logTablePtr_p->table().unlock();
-  }
+  logger().unlock();
   if (regionPtr_p != 0) {
     regionPtr_p->unlock();
   }
@@ -875,10 +843,7 @@ template<class T>
 void PagedImage<T>::resync()
 {
   map_p.resync();
-  if (logTablePtr_p != 0
-  &&  !logTablePtr_p->table().hasLock (FileLocker::Read)) {
-    logTablePtr_p->table().resync();
-  }
+  logger().resync();
   if (regionPtr_p != 0
   &&  !regionPtr_p->hasLock (FileLocker::Read)) {
     regionPtr_p->resync();
@@ -889,9 +854,7 @@ template<class T>
 void PagedImage<T>::flush()
 {
   map_p.flush();
-  if (logTablePtr_p != 0) {
-    logTablePtr_p->table().flush();
-  }
+  logger().flush();
   if (regionPtr_p != 0) {
     regionPtr_p->flush();
   }
@@ -901,8 +864,7 @@ template<class T>
 void PagedImage<T>::tempClose()
 {
   map_p.tempClose();
-  closeLogSink (True);
-  logTablePtr_p = 0;
+  logger().tempClose();
   if (regionPtr_p != 0) {
     regionPtr_p->tempClose();
   }
@@ -912,7 +874,6 @@ template<class T>
 void PagedImage<T>::reopen()
 {
   map_p.reopen();
-  reopenLog();
   if (regionPtr_p != 0) {
     regionPtr_p->reopen();
   }
@@ -964,18 +925,6 @@ void PagedImage<T>::restoreImageInfo (const TableRecord& rec)
 	+ error << LogIO::POST;
     } else {
       setImageInfoMember (info);
-    }
-  }
-}
-
-template<class T>
-void PagedImage<T>::mergeTableLogSink (const LogIO& other)
-{
-  if (logSink().localSink().isTableLogSink()) {
-    if (other.localSink().isTableLogSink()) {
-      reopenRW();
-      logSink().localSink().castToTableLogSink().concatenate (
-		      other.localSink().castToTableLogSink());
     }
   }
 }

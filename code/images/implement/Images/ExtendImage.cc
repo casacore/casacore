@@ -56,10 +56,10 @@ ExtendImage<T>::ExtendImage (const ImageInterface<T>& image,
   }
   itsExtLatPtr = new ExtendLattice<T> (image, newShape, newAxes, stretchAxes);
   setCoordsMember (newCsys);
-  setLogMember (image.logSink());
   setImageInfoMember (image.imageInfo());
   setMiscInfoMember (image.miscInfo());
   setUnitMember (image.units());
+  logger().addParent (&(image.logger()));
 }
 
 template<class T>
@@ -247,17 +247,10 @@ void ExtendImage<T>::tempClose()
 {
   itsExtLatPtr->tempClose();
   itsImagePtr->tempClose();
-  closeLogSink (True);
+  logger().tempClose();
 }
 template<class T>
 void ExtendImage<T>::reopen()
 {
   itsImagePtr->reopen();
-  reopenLog();
-}
-
-template<class T>
-void ExtendImage<T>::doReopenLogSink()
-{
-  setLogMember (itsImagePtr->logSink());
 }

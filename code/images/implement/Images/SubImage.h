@@ -231,10 +231,6 @@ public:
   virtual void reopen();
   // </group>
 
-protected:
-  // Let a derived class reopen the log.
-  virtual void doReopenLogSink();
-
 private:
   // Set the coordinates.
   // It removes world axes if the subimage has axes removed.

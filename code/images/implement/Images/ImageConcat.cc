@@ -256,6 +256,9 @@ void ImageConcat<T>::setImage (ImageInterface<T>& image, Bool relax)
 
       setCoordinates();
    }
+
+   // Add its log
+   logger().addParent (&(image.logger()));
 } 
 
 

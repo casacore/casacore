@@ -165,10 +165,10 @@ ImageInterface<T>* SubImage<T>::cloneII() const
 template<class T>
 void SubImage<T>::setMembers (const ImageInterface<T>& image)
 {
-  setLogMember (image.logSink());
   setImageInfoMember (image.imageInfo());
   setMiscInfoMember (image.miscInfo());
   setUnitMember (image.units());
+  logger().addParent (&(image.logger()));
 }
 
 template<class T>
@@ -377,17 +377,10 @@ void SubImage<T>::tempClose()
 {
   itsSubLatPtr->tempClose();
   itsImagePtr->tempClose();
-  closeLogSink (True);
+  logger().tempClose();
 }
 template<class T>
 void SubImage<T>::reopen()
 {
   itsImagePtr->reopen();
-  reopenLog();
-}
-
-template<class T>
-void SubImage<T>::doReopenLogSink()
-{
-  setLogMember (itsImagePtr->logSink());
 }
