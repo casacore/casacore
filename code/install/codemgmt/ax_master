@@ -5537,3 +5537,7 @@
 15 211 sys rm libexec/oldsditerator.g
 15 211 sys rm bin/oldsditerator
 15 211 top rm code/trial/apps/oldsditerator
+15 211 src rm trial/implement/SDIterators/OldSDIterator.h
+15 211 src rm trial/implement/SDIterators/OldSDIterator.cc
+15 211 src rm trial/implement/SDIterators/OldSDRecord.h
+15 211 src rm trial/implement/SDIterators/OldSDRecord.cc
