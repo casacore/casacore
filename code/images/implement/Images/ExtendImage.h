@@ -1,5 +1,5 @@
 //# ExtendImage.h: An extension of an ImageInterface object
-//# Copyright (C) 2001
+//# Copyright (C) 2001,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -160,8 +160,9 @@ public:
   // This function is used by the LatticeIterator class to generate an
   // iterator of the correct type for this Lattice. Not recommended
   // for general use. 
-  virtual LatticeIterInterface<T>*
-                      makeIter (const LatticeNavigator& navigator) const;
+  virtual LatticeIterInterface<T>* makeIter
+                            (const LatticeNavigator& navigator,
+			     Bool useRef) const;
 
   // Get the best cursor shape.
   virtual IPosition doNiceCursorShape (uInt maxPixels) const;

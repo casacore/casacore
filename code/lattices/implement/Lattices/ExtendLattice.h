@@ -1,5 +1,5 @@
 //# ExtendLattice.h: A subset of a Lattice or MaskedLattice
-//# Copyright (C) 2001
+//# Copyright (C) 2001,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -175,12 +175,6 @@ public:
 
   // Check class internals - used for debugging. Should always return True
   virtual Bool ok() const;
-
-  // This function is used by the LatticeIterator class to generate an
-  // iterator of the correct type for this Lattice. Not recommended
-  // for general use. 
-  virtual LatticeIterInterface<T>*
-                      makeIter (const LatticeNavigator& navigator) const;
 
   // Do the actual getting of an array of values.
   virtual Bool doGetSlice (Array<T>& buffer, const Slicer& section);

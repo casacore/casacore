@@ -1,5 +1,5 @@
 //# ExtendImage.cc: An extension of an ImageInterface object
-//# Copyright (C) 2001
+//# Copyright (C) 2001,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -210,9 +210,10 @@ IPosition ExtendImage<T>::doNiceCursorShape (uInt maxPixels) const
 
 template<class T>
 LatticeIterInterface<T>* ExtendImage<T>::makeIter
-                               (const LatticeNavigator& navigator) const
+                               (const LatticeNavigator& navigator,
+				Bool useRef) const
 {
-  return itsExtLatPtr->makeIter (navigator);
+  return itsExtLatPtr->makeIter (navigator, useRef);
 }
 
 template<class T>
