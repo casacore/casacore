@@ -1,5 +1,5 @@
 //# MatrixMath.cc: The AIPS++ linear algebra functions
-//# Copyright (C) 1994,1995,1996
+//# Copyright (C) 1994,1995,1996,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -126,7 +126,7 @@ Matrix<T> product (const Vector<T> &x, const Matrix<T> &yT) {
   if (yT.nrow()!= 1) 
     throw (ArrayError("product - multiplication of" 
                                     " these matrices shapes is undefined"));
-  Matrix<T> A(x.nelements(),1);
+  Matrix<T> A(x.nelements(),1u);
   A.column(0) = x;
 
   return product(A,yT);

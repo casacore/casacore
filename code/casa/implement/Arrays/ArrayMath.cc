@@ -1,5 +1,5 @@
 //# ArrayMath.cc: Arithmetic functions defined on Arrays
-//# Copyright (C) 1993,1994,1995,1996,1997
+//# Copyright (C) 1993,1994,1995,1996,1997,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -1098,7 +1098,7 @@ template<class T> Array<T> fmod(const Array<T> &a, const Array<T> &b)
     return tmp;
 }
 
-template<class T> Array<T> pow(const Array<T> &a, const double &b)
+template<class T> Array<T> pow(const Array<T> &a, const Double &b)
 {
     uInt ntotal = a.nelements();
     Array<T> tmp(a.copy());
@@ -1107,7 +1107,7 @@ template<class T> Array<T> pow(const Array<T> &a, const double &b)
     T *ts = storage;
 
     while (ntotal--) {
-	*ts = pow(*ts,b);
+	*ts = pow(*ts,(Double)b);
 	ts++;
     }
 

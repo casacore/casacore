@@ -1,5 +1,5 @@
 //# ArrayMath.h: ArrayMath: Simple mathematics done on an entire array.
-//# Copyright (C) 1993,1994,1995,1996
+//# Copyright (C) 1993,1994,1995,1996,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //# 
 //# This library is free software; you can redistribute it and/or modify it
@@ -208,7 +208,7 @@ template<class T> Array<T> fabs(const Array<T> &a);
 template<class T> Array<T> abs(const Array<T> &a);
 template<class T> Array<T> floor(const Array<T> &a);
 template<class T> Array<T> fmod(const Array<T> &a, const Array<T> &b);
-template<class T> Array<T> pow(const Array<T> &a, const double &b);
+template<class T> Array<T> pow(const Array<T> &a, const Double &b);
 template<class T> Array<T> tan(const Array<T> &a);
 template<class T> Array<T> tanh(const Array<T> &a);
 // N.B. fabs is deprecated. Use abs.
