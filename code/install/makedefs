@@ -130,7 +130,13 @@ GLISHDEFS :=
 GLISHINCD  = $(GLISHROOT)/include
 GLISHLIBD  = $(AIPSARCH)/lib
 GLISHLIB  := -lglish -ledit -lsos -lnpd
-GLISHLOLIB := -lgtkpgdrv
+
+# Loadable Glish/Tk objects
+GLISHLOROOT  :=
+GLISHLODEFS  :=
+GLISHLOINCD   =
+GLISHLOLIBD   =
+GLISHLOLIB   := -lgtkpgdrv
 
 # WCSLIB (supplied with AIPS++); clear WCSLIBTRIG to ignore wcstrig.c.
 WCSLIBROOT := $(AIPSROOT)/code/aips/wcslib
