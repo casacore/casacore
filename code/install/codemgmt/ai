@@ -336,7 +336,7 @@
 
 #       Update the code directory, read-only.
         [ -f "$CODEDIR/$TARGET" ] && rm -f $CODEDIR/$TARGET
-        (umask 333 ; co -p $RCSDIR/$TARGET,v > $CODEDIR/$TARGET)
+        (co -p $RCSDIR/$TARGET,v > $CODEDIR/$TARGET && chmod a-wx $CODEDIR/$TARGET)
         [ "$?" != 0 ] && exit 4
 
      elif [ -d "$TARGET" ]
