@@ -29,6 +29,7 @@
 #include <aips/IO/LockFile.h>
 #include <aips/IO/MemoryIO.h>
 #include <aips/OS/RegularFile.h>
+#include <aips/IO/RegularFileIO.h>
 #include <aips/OS/Path.h>
 #include <aips/OS/Timer.h>
 #include <aips/Utilities/String.h>
@@ -64,7 +65,7 @@ void doIt (const String& name, double interval)
 	}
 	while (True) {
 	    cout << "1=rlock, 2=wlock, 3=rlockw, 4=wlockw, 5=unlock, "
-		    "6=status, 7=speed, else=end: ";
+		    "6=status, 7=speed, 8=open/close else=end: ";
 	    cin >> op;
 	    if (op == 1  ||  op == 3) {
 		uInt nattempt = 1;
@@ -108,6 +109,8 @@ void doIt (const String& name, double interval)
 		    lockp->acquire (FileLocker::Write, 1);
 		}
 		timer.show ("Acquiring 500 locks:");
+	    } else if (op == 8) {
+	        RegularFileIO tmp(name);
 	    } else {
 		break;
 	    }
