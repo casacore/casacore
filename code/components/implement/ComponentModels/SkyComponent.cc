@@ -46,8 +46,8 @@ SkyComponent::SkyComponent(ComponentType::Type type) {
   switch (type){
   case ComponentType::POINT:
     theCompPtr = new PointCompRep; break;
-//   case GAUSSIAN:
-//     theCompPtr.replace(new GaussianCompRep); break;
+  case ComponentType::GAUSSIAN:
+    theCompPtr = new GaussianCompRep; break;
   };    
   AlwaysAssert(ok(), AipsError);
 };
