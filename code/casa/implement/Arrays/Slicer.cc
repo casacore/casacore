@@ -140,6 +140,17 @@ Slicer& Slicer::operator= (const Slicer& that)
 }
 
 
+Bool Slicer::operator==(const Slicer& that)
+{
+   return this->len_p==that.len_p &&
+          this->start_p.isEqual(that.start_p) &&
+          this->end_p.isEqual(that.end_p) &&
+          this->stride_p.isEqual(that.stride_p) &&
+          this->asEnd_p==that.asEnd_p &&
+   	  this->fixed_p==that.fixed_p;
+}
+
+
 void Slicer::fillEndLen()
 {
     //# First check if all positions have same length.
