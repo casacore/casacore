@@ -49,6 +49,7 @@
  static char str[256];
  uInt debug_ifr=9999,debug_itime=9999;
 
+
 // -----------------------------------------------------------------------
 // Default Constructor
 // -----------------------------------------------------------------------
@@ -56,6 +57,7 @@ RedFlagger::RedFlagger ()
 {
   nant=0;
   setupAgentDefaults();
+  pgprep_nx=pgprep_ny=1;
 }
 
 // -----------------------------------------------------------------------
@@ -67,6 +69,7 @@ RedFlagger::RedFlagger ( const MeasurementSet &mset )
   nant=0;
   setupAgentDefaults();
   attach(mset);
+  pgprep_nx=pgprep_ny=1;
 }
 
 // -----------------------------------------------------------------------
@@ -84,11 +87,13 @@ const RecordInterface & RedFlagger::defaultOptions ()
     rec.define(RF_PLOTDEV,plotscr);
     rec.define(RF_DEVFILE,"flagreport.ps/ps");
     rec.defineRecord(RF_GLOBAL,Record());
+    rec.define(RF_TRIAL,False);
     
     rec.setComment(RF_PLOTSCR,"Format of screen plots: [NX,NY] or False to disable");
     rec.setComment(RF_PLOTDEV,"Format of hardcopy plots: [NX,NY], or False to disable");
     rec.setComment(RF_DEVFILE,"Filename for hardcopy (a PGPlot 'filename/device')");
     rec.setComment(RF_GLOBAL,"Record of global parameters applied to all agents");
+    rec.setComment(RF_TRIAL,"T for trial run (no flags written out)");
   }
   return rec;
 }
@@ -192,6 +197,20 @@ RFABase * RedFlagger::createAgent ( const String &id,RFChunkStats &chunk,const R
     return NULL;
 }
 
+
+// -----------------------------------------------------------------------
+// setReportPanels
+// Calls SUBP on the pgp_report plotter
+// -----------------------------------------------------------------------
+void RedFlagger::setReportPanels ( Int nx,Int ny )
+{
+  if( pgp_report.isAttached() && (pgprep_nx!=nx || pgprep_ny!=ny) )
+  {  
+    fprintf(stderr,"pgp_report.subp(%d,%d)\n",nx,ny);
+    pgp_report.subp(pgprep_nx=nx,pgprep_ny=ny);
+  }
+}
+
 // -----------------------------------------------------------------------
 // RedFlagger::run
 // Performs the actual flagging
@@ -207,8 +226,7 @@ void RedFlagger::run ( const RecordInterface &agents,const RecordInterface &opt,
     debug_level = opt.asInt("debug");
   
 // setup plotting devices
-  PGPlotter pgp_screen,pgp_report;
-  setupPlotters(pgp_screen,pgp_report,opt);
+  setupPlotters(opt);
   
 // create iterator, visbuffer & chunk manager
   Block<Int> sortCol(1);
@@ -277,9 +295,14 @@ void RedFlagger::run ( const RecordInterface &agents,const RecordInterface &opt,
   
 // begin iterating over chunks
   uInt nchunk=0;
+// process just the first chunk because something's screwy  
+//  vi.originChunks(); 
+//  for(uInt dum=0; dum<1; dum++ )
   for( vi.originChunks(); vi.moreChunks(); vi.nextChunk(),nchunk++ ) 
   {
     chunk.newChunk();
+// limit frequency of progmeter updates (duh!)
+    Int pm_update_freq = chunk.num(TIME)/200;
 // How much memory do we have?
     Int availmem = opt.isDefined("maxmem") ? 
         opt.asInt("maxmem") : AppInfo::memoryInMB();
@@ -335,7 +358,7 @@ void RedFlagger::run ( const RecordInterface &agents,const RecordInterface &opt,
     String title(subtitle);
     for( uInt npass=0; anyNE(iter_mode,(Int)RFA::STOP); npass++ ) // repeat passes while someone is active
     {
-      uInt tcount=0;
+      uInt itime=0;
       chunk.newPass(npass);
   // count up who wants a data pass and who wants a dry pass    
       Int ndata = sum(iter_mode==(Int)RFA::DATA);
@@ -352,7 +375,7 @@ void RedFlagger::run ( const RecordInterface &agents,const RecordInterface &opt,
       if( data_pass )
       {
         sprintf(subtitle,"pass %d (data)",npass+1);
-        ProgressMeter progmeter(1,chunk.num(TIME),title+subtitle,"","","");
+        ProgressMeter progmeter(1,chunk.num(TIME),title+subtitle,"","","",True,pm_update_freq);
         // start pass for all active agents
         for( uInt ival = 0; ival<acc.nelements(); ival++ ) 
           if( active(ival) )
@@ -361,9 +384,9 @@ void RedFlagger::run ( const RecordInterface &agents,const RecordInterface &opt,
             else if( iter_mode(ival) == RFA::DRY )
               acc[ival]->startDry();
         // iterate over visbuffers
-        for( vi.origin(); vi.more() && nactive; vi++,tcount++ )
+        for( vi.origin(); vi.more() && nactive; vi++,itime++ )
         {
-          progmeter.update(tcount);
+          progmeter.update(itime+1);
           chunk.newTime();
           // now, call individual VisBuffer iterators
           for( uInt ival = 0; ival<acc.nelements(); ival++ ) 
@@ -372,9 +395,9 @@ void RedFlagger::run ( const RecordInterface &agents,const RecordInterface &opt,
               // call iterTime/iterDry as appropriate
               RFA::IterMode res = RFA::STOP;
               if( iter_mode(ival) == RFA::DATA )
-                res = acc[ival]->iterTime(tcount);
+                res = acc[ival]->iterTime(itime);
               else if( iter_mode(ival) == RFA::DRY ) 
-                res = acc[ival]->iterDry(tcount);
+                res = acc[ival]->iterDry(itime);
               // change requested? Deactivate agent
               if( ! ( res == RFA::CONT || res == iter_mode(ival) ) )
               {
@@ -415,7 +438,7 @@ void RedFlagger::run ( const RecordInterface &agents,const RecordInterface &opt,
       else  // dry pass only
       {
         sprintf(subtitle,"pass %d (dry)",npass+1);
-        ProgressMeter progmeter(1,chunk.num(TIME),title+subtitle,"","","");
+        ProgressMeter progmeter(1,chunk.num(TIME),title+subtitle,"","","",True,pm_update_freq);
         // start pass for all active agents
         for( uInt ival = 0; ival<acc.nelements(); ival++ ) 
           if( iter_mode(ival) == RFA::DRY )
@@ -423,7 +446,7 @@ void RedFlagger::run ( const RecordInterface &agents,const RecordInterface &opt,
 //        uInt ntime = vi.nSubIntervals();
         for( uInt itime=0; itime<ntime && ndry; itime++ )
         {
-          progmeter.update(itime);
+          progmeter.update(itime+1);
           // now, call individual VisBuffer iterators
           for( uInt ival = 0; ival<acc.nelements(); ival++ ) 
             if( iter_mode(ival) == RFA::DRY )
@@ -447,9 +470,9 @@ void RedFlagger::run ( const RecordInterface &agents,const RecordInterface &opt,
       } // end of dry pass
     } // end loop over passes
 // now, do a single flag-transfer pass to transfer flags into MS
-    if( anyNE(active_init,False) )
+    if( !isFieldSet(opt,RF_TRIAL) && anyNE(active_init,False) )
     {
-      ProgressMeter progmeter(1,chunk.num(TIME),title+"storing flags","","","");
+      ProgressMeter progmeter(1,chunk.num(TIME),title+"storing flags","","","",True,pm_update_freq);
       for( uInt i = 0; i<acc.nelements(); i++ ) 
         if( active_init(i) )
           acc[i]->startFlag();
@@ -469,7 +492,19 @@ void RedFlagger::run ( const RecordInterface &agents,const RecordInterface &opt,
 // generate reports
     if( pgp_report.isAttached() )
     {
-      pgp_report.subp(3,3);
+      // select good panel layout
+      uInt nx=3,ny=3;
+      if( RFFlagCube::numInstances() )
+      {
+        uInt npan = RFFlagCube::numStatPlots(chunk);
+        if( npan<=3 )
+          nx=ny=2;
+        else if( npan<=5 )
+          { nx=3; ny=2; }
+        else if( npan<=8 )
+          { nx=3; ny=3; }
+      }
+      setReportPanels(nx,ny);
       plotSummaryReport(pgp_report,chunk);
       plotAgentReports(pgp_report);
     }
@@ -496,13 +531,17 @@ void RedFlagger::run ( const RecordInterface &agents,const RecordInterface &opt,
   acc.resize(0);
       
   os<<"Flagging complete\n"<<LogIO::POST;
+  if( pgp_screen.isAttached() )
+    pgp_screen.detach();
+  if( pgp_report.isAttached() )
+    pgp_report.detach();
 }
 
 // -----------------------------------------------------------------------
 // RedFlagger::setupPlotters
 // Sets up screen and hardcopy plotters according to options
 // -----------------------------------------------------------------------
-void RedFlagger::setupPlotters ( PGPlotter &pgp_screen,PGPlotter &pgp_report,const RecordInterface &opt )
+void RedFlagger::setupPlotters ( const RecordInterface &opt )
 {
   if( fieldType(opt,RF_PLOTSCR,TpBool) && !opt.asBool(RF_PLOTSCR) )
   { 
@@ -551,13 +590,10 @@ void RedFlagger::setupPlotters ( PGPlotter &pgp_screen,PGPlotter &pgp_report,con
       for( uInt c=0; c<nc; c++ )
         pgp_report.scr(c1+c,c*scale,c*scale,c*scale);
       // setup pane layout
+      Vector<Int> subp(2,3);
       if( fieldType(opt,RF_PLOTDEV,TpArrayInt) )
-      {
-        Vector<Int> subp( opt.asArrayInt(RF_PLOTDEV) );
-        pgp_report.subp(subp(0),subp(1)); 
-      }
-      else
-        pgp_report.subp(3,3);
+        subp = opt.asArrayInt(RF_PLOTDEV);
+      setReportPanels(subp(0),subp(1));
     }
   }
 }
