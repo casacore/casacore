@@ -864,6 +864,8 @@
 // <h4>MeasFrame</h4>
 // A MeasFrame is a container with the instance of time
 // (an MEpoch) and/or the position (an MPosition) for a measure reference.
+// (Other Measures, like MDirection and MRadialVelocity are sometimes needed
+// as well).
 // MeasFrames are never actually copied, but only referred to (<em>shallow copy</em>)
 // , so they can be used for all different types
 // of measure reference. They are only necessary, but then essential, if the
@@ -1102,7 +1104,8 @@
 //	base class (derived from Measure) for all real Measures
 //  <li> <linkto class=MeasData>MeasData</linkto>:
 //	all constants, polynomial factors, interface to IERS
-//	database etc. In short it provides all the actual data values necessary
+//	database etc. which are not stored in Tables. (MeasTable looks after 
+//	these). Mn short it provides all the actual data values necessary
 //	for the conversions (and the other help classes)
 //  <li> <linkto class=MeasIERS>MeasIERS</linkto>:
 //	(static) class to converse with the IERS database(s)
