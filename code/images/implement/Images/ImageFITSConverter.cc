@@ -1,5 +1,5 @@
 //# ImageFITSConverter.cc: this defines templated conversion from FITS to an aips++ Float image
-//# Copyright (C) 1996,1997,1998,1999,2000,2001
+//# Copyright (C) 1996,1997,1998,1999,2000,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -83,7 +83,6 @@ void ImageFITSConverterImpl<HDUType>::FITSToImage(ImageInterface<Float>*& pNewIm
 	shape(i) = fitsImage.dim(i);
     }
 
-
 // Get header into a record
 
     Record header;
@@ -101,8 +100,12 @@ void ImageFITSConverterImpl<HDUType>::FITSToImage(ImageInterface<Float>*& pNewIm
 
 // Get Coordinate System
 
-    CoordinateSystem coords = ImageFITSConverter::getCoordinateSystem(header, os, shape);
+    Bool dropStokes = True;
+    Int stokesFITSValue = 1;
+    CoordinateSystem coords = 
+       ImageFITSConverter::getCoordinateSystem(stokesFITSValue, header, os, shape, dropStokes);
     ndim = shape.nelements();
+
 
 // Create image
 
@@ -165,6 +168,15 @@ void ImageFITSConverterImpl<HDUType>::FITSToImage(ImageInterface<Float>*& pNewIm
 // ImageInfo
      
     ImageInfo imageInfo = ImageFITSConverter::getImageInfo(header);
+
+// If we had one of those unofficial pseudo-Stokes on the Stokes axis, store it in the imageInfo
+
+    if (stokesFITSValue != -1) {
+       ImageInfo::ImageTypes type = ImageInfo::imageTypeFromFITS(stokesFITSValue);
+       if (type!= ImageInfo::Undefined) {
+          imageInfo.setImageType(type);
+       }
+    }
     pNewImage->setImageInfo(imageInfo);
 
 // Get rid of anything else
