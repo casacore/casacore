@@ -535,11 +535,10 @@ void SSMStringHandler::flush()
     AlwaysAssert (itsCurrentBucket != -1, AipsError);
     //save old bucket
     Char* aPtr = itsSSMPtr->getBucket(itsCurrentBucket);
-    CanonicalConversion::fromLocal(aPtr+itsIntSize,itsUsedLength);
-    CanonicalConversion::fromLocal(aPtr+itsIntSize*2,itsNDeleted);
-    CanonicalConversion::fromLocal(aPtr+itsIntSize*3,itsNextBucket);
-
-    memcpy (aPtr+itsStart,itsData,itsLength);
+    CanonicalConversion::fromLocal (aPtr+itsIntSize,   itsUsedLength);
+    CanonicalConversion::fromLocal (aPtr+itsIntSize*2, itsNDeleted);
+    CanonicalConversion::fromLocal (aPtr+itsIntSize*3, itsNextBucket);
+    memcpy (aPtr+itsStart, itsData, itsLength);
     itsSSMPtr->setBucketDirty();
     isChanged = False;
   }
@@ -551,13 +550,11 @@ void SSMStringHandler::getBucket (uInt bucketNr,Bool isNew)
   flush();
   itsCurrentBucket = bucketNr;
   if (! isNew) {
-    char* aBuf=new char[4*itsIntSize];
-    memcpy(aBuf,itsSSMPtr->getBucket(itsCurrentBucket),itsStart);
-    memcpy(itsData,(itsSSMPtr->getBucket(itsCurrentBucket))+itsStart,itsLength);
-    CanonicalConversion::toLocal(itsUsedLength,aBuf+itsIntSize);
-    CanonicalConversion::toLocal(itsNDeleted,aBuf+2*itsIntSize);
-    CanonicalConversion::toLocal(itsNextBucket,aBuf+3*itsIntSize);
-    delete [] aBuf;
+    char* aPtr = itsSSMPtr->getBucket(itsCurrentBucket);
+    memcpy (itsData, aPtr+itsStart, itsLength);
+    CanonicalConversion::toLocal (itsUsedLength, aPtr+itsIntSize);
+    CanonicalConversion::toLocal (itsNDeleted,   aPtr+2*itsIntSize);
+    CanonicalConversion::toLocal (itsNextBucket, aPtr+3*itsIntSize);
   }
 }
 
