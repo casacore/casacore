@@ -52,7 +52,7 @@ extern "C" {
 #define RE_DUP_MAX  ((1 << 15) - 1) 
 
 /* This defines the various regexp syntaxes.
-   It can be set using the function re_set_syntax.  */
+   It can be set using the function a2_re_set_syntax.  */
 extern int obscure_syntax;
 
 
@@ -234,7 +234,7 @@ struct re_registers
 #if defined(__STDC__) || defined(__cplusplus)
 
 extern char *a2_re_compile_pattern (char *, int, struct re_pattern_buffer *);
-extern int re_set_syntax (int syntax);
+extern int a2_re_set_syntax (int syntax);
 /* Is this really advertised?  */
 extern void a2_re_compile_fastmap (struct re_pattern_buffer *);
 extern int a2_re_search (struct re_pattern_buffer *, char*, int, int, int,

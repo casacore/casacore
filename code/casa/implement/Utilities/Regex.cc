@@ -73,7 +73,7 @@ void Regex::create (const String& exp, int fast, int bufsize,
     bufsize = tlen;
   buf->allocated = bufsize;
   buf->buffer = new char[buf->allocated];
-  int orig = re_set_syntax (RE_NO_BK_PARENS+       // use () for grouping
+  int orig = a2_re_set_syntax (RE_NO_BK_PARENS+       // use () for grouping
 			    RE_NO_BK_VBAR+         // use | for OR
 			    RE_INTERVALS+          // intervals are possible
 			    RE_NO_BK_CURLY_BRACES+ // use {} for interval
@@ -82,7 +82,7 @@ void Regex::create (const String& exp, int fast, int bufsize,
 			    RE_NO_EMPTY_RANGES+    // e.g. [z-a] is empty set
 			    RE_CONTEXTUAL_INVALID_OPS);
   char* msg = a2_re_compile_pattern((char*)(exp.chars()), tlen, buf);
-  re_set_syntax (orig);
+  a2_re_set_syntax (orig);
   if (msg != 0) {
     throw(RegexExpressnError( msg));
   } else if (fast)

@@ -252,7 +252,7 @@ enum regexpcode
    defined in regex.h.  */
 
 int
-re_set_syntax (int syntax)
+a2_re_set_syntax (int syntax)
 {
   int ret;
 
@@ -261,7 +261,7 @@ re_set_syntax (int syntax)
   return ret;
 }
 
-/* Set by re_set_syntax to the current regexp syntax to recognize.  */
+/* Set by a2_re_set_syntax to the current regexp syntax to recognize.  */
 int obscure_syntax = 0;
 
 
