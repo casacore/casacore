@@ -26,15 +26,6 @@
 //#
 //# $Id$
 
-//#! Create an include 'guard', containing your class name in the all
-//#! upper case format implied below.  This prevents multiple inclusion
-//#! of this header file during pre-processing.
-//#!
-//#! Note that the leading "AIPS_" identifies the package to which your class
-//#! belongs.  Other packages include dish, vlbi, nfra, synthesis, atnf...
-//#! If you are contributing a new class to one of these packages, be
-//#! sure to replace "AIPS_" with (for instance) "DISH_" or "ATNF_".
-
 #if !defined(AIPS_COMPONENTFLUX_H)
 #define AIPS_COMPONENTFLUX_H
 
@@ -116,14 +107,13 @@ public:
   		NumericTraits<T>::ConjugateType xy,
   		NumericTraits<T>::ConjugateType yx,
   		NumericTraits<T>::ConjugateType yy, 
- 		FluxEnums::PolType whichRep=FluxEnums::LINEAR);
+ 		FluxEnums::PolType rep);
 
   // Stokes representation, units are Jy.
   ComponentFlux(const Vector<T> & flux);
 
   // Stokes representation
   // <group>
-  ComponentFlux(const Vector<T> & flux, const Unit & unit);
   ComponentFlux(const Quantum<Vector<T> > & flux);
   // </group>
 
@@ -132,8 +122,6 @@ public:
   		const FluxEnums::PolType & rep);
 
   // Fully Specified
-  ComponentFlux(const Vector<NumericTraits<T>::ConjugateType> & flux,
- 		const Unit & unit, const FluxEnums::PolType & rep);
   ComponentFlux(const Quantum<Vector<NumericTraits<T>::ConjugateType> > & flux,
  		const FluxEnums::PolType & rep);
 
@@ -151,16 +139,12 @@ public:
   void unit(Unit & unit) const;
   // set the default units
   void setUnit(const Unit & unit);
-  // set the default units and convert the internal flux
-  void convertUnit(const Unit & unit);
 
   // get the default polarisation representation
   FluxEnums::PolType rep() const;
   void rep(FluxEnums::PolType & rep) const;
   // set the default polarisation representation
   void setRep(const FluxEnums::PolType & rep);
-  // set the default polarisation representation and convert the internal flux
-  void convertRep(const FluxEnums::PolType & rep);
 
   // get the flux assuming ...
   // <group>
@@ -168,70 +152,68 @@ public:
   T flux();
   // Stokes representation & current unit
   void flux(Vector<T> & value);
-  // current representation & unit
-//   void flux(Vector<NumericTraits<T>::ConjugateType> & value) const;
   // current unit
-//   void flux(Vector<NumericTraits<T>::ConjugateType> & value, 
-// 	    const FluxEnums::PolType & rep) const;
+  void flux(Vector<NumericTraits<T>::ConjugateType> & value, 
+ 	    const FluxEnums::PolType & rep);
   // Stokes rep.
-//   void flux(Quantum<Vector<T> > & value) const;
-  // current rep.
-//   void flux(Quantum<Vector<NumericTraits<T>::ConjugateType> > & value) const;
+  void flux(Quantum<Vector<T> > & value);
   // Don't assume anything
-//   void flux(Quantum<Vector<NumericTraits<T>::ConjugateType> > & value,
-// 	    const FluxEnums::PolType & rep) const;
+  void flux(Quantum<Vector<NumericTraits<T>::ConjugateType> > & value,
+  	    const FluxEnums::PolType & rep);
   // </group>
 
   // Set the current flux assuming for the unspecified values ...
   // <group>
-  // User specifies I only and Q=U=V=0
+  // User specifies I only and Q=U=V=0 and the current unit
   void setFlux(T value); 
   // a Stokes rep and the current unit
   void setFlux(const Vector<T> & value); 
-  // the current rep and unit
-//   void setFlux(const Vector<NumericTraits<T>::ConjugateType> & value);
   // the current unit
-//   void setFlux(const Vector<NumericTraits<T>::ConjugateType> & value, 
-// 	       const FluxEnums::PolType & rep);
+  void setFlux(const Vector<NumericTraits<T>::ConjugateType> & value, 
+	       const FluxEnums::PolType & rep);
   // a Stokes rep
   void setFlux(const Quantum<Vector<T> > & value);
-  // the current rep
-//   void setFlux(const Quantum<Vector<NumericTraits<T>::ConjugateType> >& value);
   // Nothing. Flux is fully specified.
-//   void setFlux(const Quantum<Vector<NumericTraits<T>::ConjugateType> > & value,
-// 	       const FluxEnums::PolType & rep);
+  void setFlux(const Quantum<Vector<NumericTraits<T>::ConjugateType> > & value,
+ 	       const FluxEnums::PolType & rep);
 
   // Functions for converting a 4 element complex vector between
   // different representations.
+//   static void stokesToCircular(Vector<NumericTraits<T>::ConjugateType> & out, 
+//    			       const Vector<T> & in);
   static void stokesToCircular(Vector<NumericTraits<T>::ConjugateType> & out, 
  			       const Vector<NumericTraits<T>::ConjugateType> &
  			       in);
-//  static void stokesToCircular(Vector<NumericTraits<T>::ConjugateType> & out, 
-  // 			       const Vector<T> & in);
-   static void circularToStokes(Vector<NumericTraits<T>::ConjugateType> & out,
+//   static void circularToStokes(Vector<T> & out,
+//  			       const Vector<NumericTraits<T>::ConjugateType> &
+//  			       in);
+  static void circularToStokes(Vector<NumericTraits<T>::ConjugateType> & out,
  			       const Vector<NumericTraits<T>::ConjugateType> &
  			       in);
-//   static void circularToStokes(Vector<T> & out,
-// 			       const Vector<NumericTraits<T>::ConjugateType> &
-// 			       in);
-//   static void stokesToLinear(Vector<NumericTraits<T>::ConjugateType> & out, 
-//  			     const Vector<NumericTraits<T>::ConjugateType> &
-// 			     in);
 //   static void stokesToLinear(Vector<NumericTraits<T>::ConjugateType> & out, 
 //  			     const Vector<T> & in);
-//   static void linearToStokes(Vector<NumericTraits<T>::ConjugateType> & out, 
-// 			     const Vector<NumericTraits<T>::ConjugateType> &
-// 			     in)
+  static void stokesToLinear(Vector<NumericTraits<T>::ConjugateType> & out, 
+  			     const Vector<NumericTraits<T>::ConjugateType> &
+ 			     in);
 //   static void linearToStokes(Vector<T> & out, 
 // 			     const Vector<NumericTraits<T>::ConjugateType> &
 // 			     in)
-//   static void linearToCircular(Vector<NumericTraits<T>::ConjugateType> & out, 
-// 			       const Vector<NumericTraits<T>::ConjugateType> &
-// 			       in);
-//   static void circularToLinear(Vector<NumericTraits<T>::ConjugateType> & out, 
-// 			       const Vector<NumericTraits<T>::ConjugateType> &
-// 			       in);
+  static void linearToStokes(Vector<NumericTraits<T>::ConjugateType> & out, 
+ 			     const Vector<NumericTraits<T>::ConjugateType> &
+ 			     in);
+  static void linearToCircular(Vector<NumericTraits<T>::ConjugateType> & out, 
+ 			       const Vector<NumericTraits<T>::ConjugateType> &
+ 			       in);
+  static void circularToLinear(Vector<NumericTraits<T>::ConjugateType> & out, 
+ 			       const Vector<NumericTraits<T>::ConjugateType> &
+ 			       in);
 private:
+  // set the default units and convert the internal flux
+  void convertUnit(const Unit & unit);
+
+  // set the default polarisation representation and convert the internal flux
+  void convertRep(const FluxEnums::PolType & rep);
+
   Vector<NumericTraits<T>::ConjugateType> itsFlux;
   FluxEnums::PolType itsRep;
   Unit itsUnit;
