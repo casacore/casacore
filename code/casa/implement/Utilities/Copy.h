@@ -167,10 +167,13 @@ inline void objmove (const char** to, const char*const *from, uInt n)
     { memmove (to, from, n*sizeof(char*)); }
 
 //# To support a container of void*.
+// On the HP g++ is unhappy with these specializations (only!) for some reason
+#if !defined(__hpux__)
 inline void objmove (void** to, void*const *from, uInt n)
     { memmove (to, from, n*sizeof(void*)); }
 inline void objmove (char** to, char*const *from, uInt n)
     { memmove (to, from, n*sizeof(char*)); }
+#endif
 
 
 
@@ -226,11 +229,13 @@ inline void objcopy (const char** to, const char*const *from, uInt n)
     { memcpy (to, from, n*sizeof(char*)); }
 
 //# To support a container of void*.
-// g++ is unhappy with these specializations (only!) for some reason
-// inline void objcopy (void** to, void*const *from, uInt n)
-//     { memcpy (to, from, n*sizeof(void*)); }
-// inline void objcopy (char** to, char*const *from, uInt n)
-//     { memcpy (to, from, n*sizeof(char*)); }
+// On the HP g++ is unhappy with these specializations (only!) for some reason
+#if !defined(__hpux__)
+inline void objcopy (void** to, void*const *from, uInt n)
+    { memcpy (to, from, n*sizeof(void*)); }
+inline void objcopy (char** to, char*const *from, uInt n)
+    { memcpy (to, from, n*sizeof(char*)); }
+#endif
 
 
 
