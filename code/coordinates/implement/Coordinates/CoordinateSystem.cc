@@ -565,10 +565,8 @@ Bool CoordinateSystem::removePixelAxis(uInt axis, Double replacement)
        set_error (String(oss));
        return False;
     }
-
-
+//
     const uInt nc = nCoordinates();
-
     Int coord, caxis;
     findPixelAxis(coord, caxis, axis);
     pixel_replacement_values_p[coord]->operator()(caxis) = replacement;
@@ -4182,7 +4180,7 @@ void CoordinateSystem::listHeader (LogIO& os,  Coordinate* pc, uInt& widthAxis, 
                }
             }
          } else {
-            pixel(0) =pc->referencePixel()(axisInCoordinate);
+            pixel(0) = (*pixel_replacement_values_p[coordinate])[axisInCoordinate];
             Bool ok = pc->toWorld(world, pixel);
             if (ok) {
                sName = pc->format(refValListUnits, form, world(0), 
@@ -4196,9 +4194,17 @@ void CoordinateSystem::listHeader (LogIO& os,  Coordinate* pc, uInt& widthAxis, 
          form = Coordinate::DEFAULT;
          pc->getPrecision(prec, form, True, precRefValSci, 
                           precRefValFloat, precRefValRADEC);
-         string = pc->format(refValListUnits, form, 
-                            pc->referenceValue()(axisInCoordinate),
-                            axisInCoordinate, True, True, prec);
+         if (pixelAxis != -1) {
+            string = pc->format(refValListUnits, form, 
+                               pc->referenceValue()(axisInCoordinate),
+                               axisInCoordinate, True, True, prec);
+         } else {
+            Vector<Double> world;
+            pc->toWorld(world, (*pixel_replacement_values_p[coordinate]));
+            string = pc->format(refValListUnits, form, 
+                                world(axisInCoordinate),
+                                axisInCoordinate, True, True, prec);
+         }
       }
    }
    if (findWidths) {
@@ -4211,15 +4217,15 @@ void CoordinateSystem::listHeader (LogIO& os,  Coordinate* pc, uInt& widthAxis, 
 // Reference pixel
 
    if (pc->type() != Coordinate::STOKES) {
+      ostrstream oss;
+      oss.setf(ios::fixed, ios::floatfield);
+      oss.precision(precRefPixFloat);
       if (pixelAxis != -1) {
-         ostrstream oss;
-         oss.setf(ios::fixed, ios::floatfield);
-         oss.precision(precRefPixFloat);
          oss << pc->referencePixel()(axisInCoordinate) + 1.0;
-         string = String(oss);
       } else {
-         string = " ";
+         oss << (*pixel_replacement_values_p[coordinate])[axisInCoordinate] + 1.0;
       }
+      string = String(oss);
       if (findWidths) {
          widthRefPixel = max(widthRefPixel,string.length());
       } else {
