@@ -197,7 +197,7 @@
       for TOKEN
       do
 	case $TOKEN in
-        *.cc | *.h | *[a-z][a-z][a-z] | *646)
+        *.cc | *.h | *[a-z][a-z][a-z] | [a-z]*646)
 	  echo "#include <$TOKEN>" >> tmp1.$$
 	  ;;
         *)
@@ -297,7 +297,7 @@
           [ "$VERBOSE" ] && echo "$*"
           break
 	  ;;
-        *.cc | *.h | *[a-z][a-z][a-z] | *646)
+        *.cc | *.h | *[a-z][a-z][a-z] | [a-z]*646)
 	  echo "#include <$TOKEN>" >> tmp1.$$
 	  ;;
         *)
