@@ -212,7 +212,13 @@ public:
     virtual void flush();
 private:
     CountedPtr<LogSinkInterface> local_sink_p;
-    static PtrHolder<LogSinkInterface> global_sink_p;
+    static CountedPtr<LogSinkInterface> global_sink_p;
+
+    // The following is a reference to the global sink. It is created to
+    // ensure that the global sink is not destroyed before the last local
+    // reference to it is destroyed. This can happen if you have a static
+    // LogSink (or LogIO).
+    CountedPtr<LogSinkInterface> local_ref_to_global_p;
 };
 
 #endif
