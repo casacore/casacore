@@ -268,8 +268,16 @@ public:
     // (the shift is subtracted from the reference pixel)
     // and change of increment (the increments are multipled
     // by the factor). Both vectors should be of length nPixelAxes(). 
+    // The newShape vector is only needed for the StokesCoordinate,
+    // if any.  If this vector is of length zero, the new StokesCoordinate
+    // is formed from all of the available input Stokes after application
+    // of the shift and increment factor.    Otherwise,
+    // the new Stokes axis length is equal to that specified after
+    // appliction of the shift and increment and excess values 
+    // discarded.  
     CoordinateSystem subImage(const Vector<Int> &originShift,
-			      const Vector<Int> &incrFac) const;
+			      const Vector<Int> &incrFac,
+                              const Vector<Int>& newShape) const;
 
     // Untranspose and undelete all axes. Does not undo the effects of
     // subimaging.
@@ -412,6 +420,15 @@ public:
                        const Vector<Bool>& pixelAxes,
                        const Vector<Double>& worldMin,
                        const Vector<Double>& worldMax) const; 
+
+    // Make absolute coordinates relative and vice-versa    
+    //<group>
+    virtual void makePixelRelative (Vector<Double>& pixel) const;
+    virtual void makePixelAbsolute (Vector<Double>& pixel) const;
+    virtual void makeWorldRelative (Vector<Double>& world) const;
+    virtual void makeWorldAbsolute (Vector<Double>& world) const;
+    //</group>
+
 
     // Return the requested attribute.
     // <group>
@@ -611,6 +628,10 @@ private:
     static void getPCFromHeader(LogIO& os, Int& rotationAxis, Matrix<Double>& pc,
                                 uInt n, const RecordInterface& header,
                                 const String& sprefix);
+
+    // Do subImage for Stokes
+    StokesCoordinate stokesSubImage(const StokesCoordinate& sc, Int originShift, Int pixincFac,
+                                    Int newShape) const;
 
     // Generate FITS keywords
     Bool toFITSHeaderGenerateKeywords (LogIO& os, Bool& isNCP,
