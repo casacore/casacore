@@ -183,6 +183,69 @@ main(int argc, char *argv[])
       latout.copyData (expr3);
       timer.show ("amp(sublat,lat) ");
     }
+    if (latticeShape.product() <= 1024*1024) {
+      Array<Float> arr1(latticeShape);
+      Array<Float> arr5(latticeShape);
+      indgen(arr1);
+      ArrayLattice<Float> al1(arr1);
+      ArrayLattice<Float> al5(latticeShape);
+
+      cout << "arr1+arr1" << endl;
+      Timer timer;
+      arr5 = arr1 + arr1;
+      timer.show ("as array  ");
+      timer.mark();
+      al5.copyData (LatticeExpr<Float>(al1+al1));
+      timer.show ("as lattice");
+
+      cout << "arr1+arr1+arr1" << endl;
+      timer.mark();
+      arr5 = arr1 + arr1 + arr1;
+      timer.show ("as array  ");
+      timer.mark();
+      al5.copyData (LatticeExpr<Float>(al1+al1+al1));
+      timer.show ("as lattice");
+
+      cout << "arr1+arr1+arr1+arr1" << endl;
+      timer.mark();
+      arr5 = arr1 + arr1 + arr1 + arr1;
+      timer.show ("as array  ");
+      timer.mark();
+      al5.copyData (LatticeExpr<Float>(al1+al1+al1+al1));
+      timer.show ("as lattice");
+
+      cout << "arr1+arr1+arr1+arr1+arr1" << endl;
+      timer.mark();
+      arr5 = arr1 + arr1 + arr1 + arr1 + arr1;
+      timer.show ("as array  ");
+      timer.mark();
+      al5.copyData (LatticeExpr<Float>(al1+al1+al1+al1+al1));
+      timer.show ("as lattice");
+
+      cout << "((((arr1+arr1)+arr1)+arr1)+arr1)+arr1" << endl;
+      timer.mark();
+      arr5 = ((((arr1 + arr1) + arr1) + arr1) + arr1) + arr1;
+      timer.show ("as array  ");
+      timer.mark();
+      al5.copyData (LatticeExpr<Float>(((((al1+al1)+al1)+al1)+al1)+al1));
+      timer.show ("as lattice");
+
+      cout << "arr1+(arr1+(arr1+(arr1+(arr1+arr1))))" << endl;
+      timer.mark();
+      arr5 = arr1 + (arr1 + (arr1 + (arr1 + (arr1 + arr1))));
+      timer.show ("as array  ");
+      timer.mark();
+      al5.copyData (LatticeExpr<Float>(al1+(al1+(al1+(al1+(al1+al1))))));
+      timer.show ("as lattice");
+
+      cout << "arr1+arr1+arr1+arr1+arr1+arr1+arr1+arr1+arr1+arr1" << endl;
+      timer.mark();
+      arr5 = arr1+arr1+arr1+arr1+arr1+arr1+arr1+arr1+arr1+arr1;
+      timer.show ("as array  ");
+      timer.mark();
+      al5.copyData (LatticeExpr<Float>(al1+al1+al1+al1+al1+al1+al1+al1+al1+al1));
+      timer.show ("as lattice");
+    }
 
   } catch (AipsError x) {
     cerr << "aipserror: error " << x.getMesg() << endl;
