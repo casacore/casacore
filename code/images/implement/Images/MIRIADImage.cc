@@ -27,15 +27,10 @@
 
 #include <trial/Images/MIRIADImage.h>
 
-#include <aips/FITS/fitsio.h>
-#include <aips/FITS/hdu.h>
-#include <trial/FITS/FITSUtil.h>
 #include <trial/Images/ImageInfo.h>
-#include <trial/Images/ImageFITSConverter.h>
 #include <trial/Images/MaskSpecifier.h>
 #include <aips/Lattices/TiledShape.h>
 #include <aips/Lattices/TempLattice.h>
-#include <trial/Lattices/FITSMask.h>
 #include <trial/Tables/TiledFileAccess.h>
 #include <trial/Coordinates/CoordinateSystem.h>
 
@@ -147,7 +142,6 @@ MIRIADImage& MIRIADImage::operator=(const MIRIADImage& other)
  
 MIRIADImage::~MIRIADImage()
 {
-  xyclose_c(tno_p);
   delete pPixelMask_p;
 }
 
@@ -455,9 +449,9 @@ void MIRIADImage::getImageAttributes (CoordinateSystem& cSys,
   LogIO os(LogOrigin("MIRIADImage", "getImageAttributes", WHERE));
   int naxis = MAXNAX, axes[MAXNAX];              // see miriad's maxdimc.h
   int i, ndim;
-  Projection projn;
-  Vector<Double>   projp;
-  Projection::Type ptype;
+  // Projection projn;
+  // Vector<Double>   projp;
+  // Projection::Type ptype;
   Double offset = 1.0;                           // miriad crpix 'origin' is 1-based
   Int rotationAxis = -1;
   
@@ -507,19 +501,19 @@ void MIRIADImage::getImageAttributes (CoordinateSystem& cSys,
       tmps = "ctype" + digit.toString(i+1);
       rdhda_c(tno_p,(const char *)tmps, tmps64, "", 64);
       ctype(i) = tmps64;
-      cerr << tmps << "=>" << ctype(i) << endl;
+      //cerr << tmps << "=>" << ctype(i) << endl;
 
       tmps = "crval" + digit.toString(i+1);
       rdhdd_c(tno_p,(const char *)tmps, &crval(i), 0.0);
-      cerr << tmps << "=>" << crval(i) << endl;
+      //cerr << tmps << "=>" << crval(i) << endl;
 
       tmps = "cdelt" + digit.toString(i+1);
       rdhdd_c(tno_p,(const char *)tmps, &cdelt(i), 0.0);
-      cerr << tmps << "=>" << cdelt(i) << endl;
+      //cerr << tmps << "=>" << cdelt(i) << endl;
 
       tmps = "crpix" + digit.toString(i+1);
       rdhdd_c(tno_p,(const char *)tmps, &crpix(i), 0.0);
-      cerr << tmps << "=>" << crpix(i) << endl;
+      //cerr << tmps << "=>" << crpix(i) << endl;
   }
 
   Int longAxis=-1, latAxis=-1, stokesAxis=-1, specAxis=-1;
@@ -599,7 +593,7 @@ void MIRIADImage::getImageAttributes (CoordinateSystem& cSys,
       
       os << WHERE << LogIO::WARN << 
 	"No projection has been defined so cannot make a Celestial Coordinate\n"
-	"from this FITS header.  Will make a LinearCoordinate instead" << LogIO::POST;
+	"from this miriad header.  Will make a LinearCoordinate instead" << LogIO::POST;
       longAxis = -1;
       latAxis = -1;
       failedDirection = True;
@@ -617,21 +611,20 @@ void MIRIADImage::getImageAttributes (CoordinateSystem& cSys,
     }
 
     // OK, let's make our Direction coordinate and add it to the
-    // coordinate system. We'll worry about transposing later. FITS
-    // should always be degrees, but if the units are set we'll honor
-    // them.
+    // coordinate system. We'll worry about transposing later. MIRIAD
+    // uses radians by convention
        
     // First, work out what the projection actually is.
     // Special case NCP - now SIN with  parameters
        
-    //Vector<Double>   projp;
-    //Projection::Type ptype;
+    Vector<Double>   projp;
+    Projection::Type ptype;
 
     ptype =  Projection::SIN;
 	
     if (proj1 == "NCP") {
 	 os << LogIO::NORMAL << "NCP projection is now SIN projection in"
-		" WCS.\nOld FITS readers will not handle this correctly." <<
+		" WCS.\nmiriad readers will not handle this correctly." <<
 	        LogIO::POST;
 	 ptype = Projection::SIN;
 	 projp.resize(2);
@@ -651,7 +644,7 @@ void MIRIADImage::getImageAttributes (CoordinateSystem& cSys,
     
     // OK, now try making the projection
     
-    //// Projection projn;
+    Projection projn;
 
     try {
       projn = Projection(ptype, projp);
@@ -688,7 +681,7 @@ void MIRIADImage::getImageAttributes (CoordinateSystem& cSys,
     pc(0,1) = pc(1,0) = 0.0;
 
     Matrix<Double> dirpc(2,2);
-    cout << "long/lat = " << longAxis << " " << latAxis << endl;
+    //cerr << "long/lat = " << longAxis << " " << latAxis << endl;
     dirpc(0,0) = pc(longAxis, longAxis);
     dirpc(0,1) = pc(longAxis, latAxis);
     dirpc(1,0) = pc(latAxis, longAxis);
@@ -801,7 +794,7 @@ void MIRIADImage::getImageAttributes (CoordinateSystem& cSys,
 	       os << LogIO::WARN 
 		  << "Detected Stokes coordinate = 0; this is an unoffical" << endl;
 	       os << "Convention for an image containing a beam.  Assuming Stokes=I" << endl;
-	       os << "Better would be to write your FITS image with the correct Stokes" << LogIO::POST;
+	       os << "Better would be to write your miriad image with the correct Stokes" << LogIO::POST;
 	       foundI = True;
 	     } else {
 	       os << LogIO::SEVERE
@@ -818,7 +811,7 @@ void MIRIADImage::getImageAttributes (CoordinateSystem& cSys,
 	   // Percentage linear polarization not supported
 	   
 	   {
-	     os << LogIO::SEVERE << "The FITS image Stokes axis has the unofficial percentage polarization value." << endl;
+	     os << LogIO::SEVERE << "The Stokes axis has the unofficial percentage polarization value." << endl;
 	     os << "This is not supported.  Will use fractional polarization instead " << endl;
 	     os << "You must scale the image by 0.01" << LogIO::POST;
 	     stokes(k) = Stokes::PFlinear;
@@ -835,7 +828,7 @@ void MIRIADImage::getImageAttributes (CoordinateSystem& cSys,
 	   // Spectral index not supported
 	   
 	   {
-	     os << LogIO::SEVERE << "The FITS image Stokes axis has the unofficial spectal index value." << endl;
+	     os << LogIO::SEVERE << "The Stokes axis has the unofficial spectal index value." << endl;
 	     os << "This is not supported, cannot continue building the StokesCoordinate" << LogIO::POST;
 	     //return False;
 	   }
@@ -863,4 +856,5 @@ void MIRIADImage::getImageAttributes (CoordinateSystem& cSys,
 	//return False;
       } 
   }
+  xyclose_c(tno_p);
 }
