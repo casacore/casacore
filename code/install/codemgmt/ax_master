@@ -4177,3 +4177,4 @@
 14 065 src mv trial/apps/viewer/handb3.xbm trialdisplay/apps/viewer/handb3.xbm
 14 065 src mv trial/apps/viewer/magnifyb0.xbm trialdisplay/apps/viewer/magnifyb0.xbm
 14 065 src mv trial/apps/viewer/magnifyb1.xbm trialdisplay/apps/viewer/magnifyb1.xbm
+14 065 src mv trial/apps/viewer/magnifyb2.xbm trialdisplay/apps/viewer/magnifyb2.xbm
