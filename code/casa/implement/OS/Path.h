@@ -1,5 +1,5 @@
 //# Path.h: Path name of a file
-//# Copyright (C) 1993,1994,1995,1996,1997
+//# Copyright (C) 1993,1994,1995,1996,1997,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -197,13 +197,16 @@ public:
     // </srcblock>
     String dirName() const;
 
-    // Strip the directory of otherName from this name (if matching).
-    // When stripped, the result gets a leading ./.
+    // Strip otherName from this name. If stripped, the result gets a
+    // leading ././
+    // If not stripped, it is tried to strip the directory of otherName.
+    // If that succeeds, the result gets a leading ./
     // This is used by RefTable and TableKeyword to ensure that the
     // name of a subtable or referenced table is always relative to
     // the main table.
     static String stripDirectory (const String& name, const String& otherName);
 
+    // If the name starts with ././ add otherName to it.
     // If the name starts with ./ add the directory of otherName to it.
     // It is the opposite of stripDirectory.
     static String addDirectory (const String& name, const String& otherName);
