@@ -89,11 +89,11 @@ public:
     virtual String classname() const;
 
     // Check if the coordinates of this and that conform.
-    // <br>The default implementation returns False.
+    // <br>The default implementation returns True.
     virtual Bool conform (const LattCoord& other) const;
 
     // Check if the coordinates of this and that image conform.
-    // <br>The default implementation returns False.
+    // <br>The default implementation returns True.
     virtual Bool doConform (const ImageCoord& other) const;
 };
 
