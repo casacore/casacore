@@ -101,6 +101,7 @@ WCLELMask::~WCLELMask()
 WCLELMask& WCLELMask::operator= (const WCLELMask& that)
 {
   if (this != &that) {
+    WCRegion::operator= (that);
     delete itsImageExpr;
     itsImageExpr = 0;
     delete itsLattExpr;
