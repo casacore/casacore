@@ -283,6 +283,8 @@ void FITSImage::tempClose()
 {
    if (! isClosed_p) {
       delete pPixelMask_p;
+      pPixelMask_p = 0;
+//
       pTiledFile_p = 0;
       isClosed_p = True;
    }
