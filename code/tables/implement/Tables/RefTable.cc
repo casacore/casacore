@@ -402,8 +402,10 @@ void RefTable::makeRefCol()
 //# Add a row number of the root table.
 void RefTable::addRownr (uInt rnr)
 {
-    if (nrrow_p >= rowStorage_p.nelements()) {
-	rowStorage_p.resize (rowStorage_p.nelements() + 1024, True);
+    uInt nrow = rowStorage_p.nelements();
+    if (nrrow_p >= nrow) {
+        nrow = max ( nrow + 1024, uInt(1.2f * nrow));
+	rowStorage_p.resize (nrow, True);
 	rows_p = getStorage (rowStorage_p);
     }
     rows_p[nrrow_p++] = rnr;
