@@ -1,0 +1,21 @@
+
+<change id=0144>
+ <author> Ger van Diepen </author>
+ <date> 2003/04/08 </date>
+ <avers> 1.8 </avers>
+ <area> LearnMore </area>
+ <package> LearnMore </package>
+ <module> notes </module>
+ <type> Documentation </type>
+ <category> New </category>
+ <defects>  </defects>
+ <summary>
+Added note 255 and 256
+ </summary>
+ <description>
+Two notes about the table system have been added.
+
+Note 255 was written for the technical review in March 2003. It discusses the pros and cons of the table system.
+Note 256 discusses the ways the table locking can be used.
+ </description>
+</change>
