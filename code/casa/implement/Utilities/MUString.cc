@@ -267,7 +267,7 @@ Bool MUString::testCharNC(Char ch) const {
 }
 
 Bool MUString::testChar(const Regex &ex) const {
-  return ToBool(ptr < len && String(str[ptr]).matches(ex));
+  return ToBool(ptr < len && String(str[ptr]).index(ex) == 0);
 }
 
 Bool MUString::testAlpha() const {
@@ -297,12 +297,13 @@ String MUString::getAlpha() {
 
 String MUString::getAlphaNum() {
   Int p = initLast();
-  if (testAlphaNum()) setLast(p);
+  if (tSkipAlphaNum()) setLast(p);
   return lget;
 }
 
 Bool MUString::testString(const Regex &ex) const {
-  return ToBool(ptr < len && String(str).from(Int(ptr)).matches(ex));
+  return ToBool(ptr < len &&
+		String(String(str).from(Int(ptr))).index(ex) == 0);
 }
 
 Bool MUString::testString(const String &ex) const {

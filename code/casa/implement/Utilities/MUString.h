@@ -1,5 +1,5 @@
 //# MUString.h: Pointed String class to aid analysis of quantity strings
-//# Copyright (C) 1996
+//# Copyright (C) 1996,1997
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
