@@ -1,5 +1,5 @@
 //# SubImage.h: A (masked) subset of an ImageInterface object
-//# Copyright (C) 1998,1999
+//# Copyright (C) 1998,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -139,6 +139,11 @@ public:
   virtual const Lattice<Bool>& pixelMask() const;
   virtual Lattice<Bool>& pixelMask();
   // </group>
+
+  // A SubImage is persistent if no region is applied to the parent image.
+  // That is true if the region has the same shape as the parent image
+  // and the region has no mask.
+  virtual Bool isPersistent() const;
 
   // Is the SubImage paged to disk?
   virtual Bool isPaged() const;
