@@ -2623,3 +2623,4 @@
 10 010 src mv aips/implement/Measures/QLogical2.cc aips/implement/Quanta/QLogical2.cc
 10 010 src mv aips/implement/Measures/QMath.cc aips/implement/Quanta/QMath.cc
 10 010 src mv aips/implement/Measures/QMath.h aips/implement/Quanta/QMath.h
+10 010 src mv aips/implement/Measures/QMath2.cc aips/implement/Quanta/QMath2.cc
