@@ -470,9 +470,18 @@ Bool ImageFITSConverter::ImageToFITS(String &error,
 //
     const uInt nmisc = image.miscInfo().nfields();
     for (i=0; i<nmisc; i++) {
-	String miscname = image.miscInfo().name(i);
-	if (miscname != "end" && miscname != "END" && 
-	    !header.isDefined(miscname)) {
+ 	String tmp0 = image.miscInfo().name(i);
+        String miscname(tmp0.at(0,8));
+        if (tmp0.length() > 8) {
+           log << LogIO::WARN << "Truncating miscinfo field " << tmp0 
+               << " to " << miscname << LogIO::POST;
+        }
+//         
+	if (miscname != "end" && miscname != "END") {
+          if (header.isDefined(miscname)) {
+             log << LogIO::WARN << "FITS keyword " << miscname 
+                 << " is already defined so dropping it" << LogIO::POST;
+          } else {
 	    DataType misctype = image.miscInfo().dataType(i);
 	    switch(misctype) {
 	    case TpBool:
@@ -547,6 +556,7 @@ Bool ImageFITSConverter::ImageToFITS(String &error,
 	if (header.isDefined(miscname)) {
 	    header.setComment(miscname, image.miscInfo().comment(i));
 	}
+      }
     }
 
 //
