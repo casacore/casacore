@@ -1,5 +1,5 @@
 //# RecordTransformable.h: Interface class for converting to/from records
-//# Copyright (C) 1998,1999
+//# Copyright (C) 1998,1999,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -33,8 +33,6 @@
 
 class String;
 class RecordInterface;
-class GlishValue;
-class GlishRecord;
 
 // <summary>Interface class for converting to/from records</summary>
 
@@ -58,7 +56,7 @@ class GlishRecord;
 // functions should be called <src>toRecord</src> and
 // <src>fromRecord</src>). Examples of records are: 
 // <ul> 
-// <li> <linkto class="GlishRecord">GlishRecord</linkto>
+// <li> <linkto class="Record">Record</linkto>
 // <li> <linkto class="TableRecord">TableRecord</linkto>
 // </ul> 
 //
@@ -71,14 +69,9 @@ class GlishRecord;
 // String when the transformation cannot be accomplished.
 //
 // <note role=warning>
-// At the moment only Records & TableRecords are derived from
-// RecordInterface. In future all records (like GlishRecord) will be derived
-// from this one base. Till then separate to/fromRecord() methods should be
-// provided for the different record types. Implementation of these could be in
-// a separate file to make sure they are only included when
-// needed. Alternatively you could use the supplied to/fromGlishRecord
-// functions. As the implementation of these functions is in a seperate file
-// (Record2Transformable.cc) they are only linked in when necessary.
+// Converting to/from a GlishRecord requires an extra step.
+// First a Record should be used which can thereafter be converted to/from
+// a GlishRecord using the appropriate GlishRecord functions.
 // </note>
 // </synopsis>
 //
@@ -88,12 +81,12 @@ class GlishRecord;
 // <srcblock>
 // void printAsRecord(const RecordTransformable & myClass) {
 //   String errorMessage;
-//   GlishRecord rec;
-//   if (!myClass.toGlishRecord(errorMessage, rec)) {
+//   Record rec;
+//   if (!myClass.toRecord(errorMessage, rec)) {
 //     cout << "Cannot convert class to a Record. The reason is:" << endl; 
 //     cout << errorMessage << endl;
 //   } else {
-//     cout << rec.format() << endl;
+//     cout << rec.ndefined() << endl;
 //   }
 // }
 // </srcblock>
@@ -121,10 +114,7 @@ public:
   // then the error String is unchanged and the function returns
   // True. Otherwise the function returns False and appends an error message to
   // the supplied String giving the reason why the conversion failed.
-  // <group>
   virtual Bool toRecord(String & error, RecordInterface & outRecord) const = 0;
-  Bool toGlishRecord(String & error, GlishRecord & outRecord) const;
-  // </group>
 
   // Initialise the class from a Record representation. The input record should
   // contain the fields that are required by the class. Other fields will be
@@ -141,15 +131,6 @@ public:
   // string. If the class can be initialised from a string then this function
   // should be overridden.
   virtual Bool fromString(String & error, const String & inString);
-
-  // Initialise the class from a Record or a String representation. The input
-  // GlishValue should either be a record or a string and this function will
-  // call the appropriate virtual function to do the conversion. This function
-  // returns False if the input GlishValue is not a record or a string. It also
-  // returns False if it could not initialise the object from the String or
-  // Record. Whenever it reurns False an error message is appended to the
-  // supplied string. It returns True if the conversion succeeded.
-  Bool fromGlishRecord(String & error, const GlishValue & inValue);
 
   // Specify the identification of the record (e.g. 'meas', 'quant'). The
   // default implementation returns a empty string.

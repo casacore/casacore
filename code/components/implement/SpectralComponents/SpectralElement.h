@@ -1,5 +1,5 @@
 //# SpectralElement.h: Describes (a set of related) spectral lines
-//# Copyright (C) 2001
+//# Copyright (C) 2001,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -36,7 +36,6 @@
 
 //# Forward Declarations
 class String;
-class GlishRecord;
 #include <aips/iosfwd.h>
 
 // <summary>
@@ -288,17 +287,13 @@ class SpectralElement : public RecordTransformable {
   // <group>
   virtual Bool fromRecord(String &error, const RecordInterface &in);
   virtual Bool fromString(String &error, const String &in);
-  Bool fromRecord(String &error, const GlishRecord &in);
   // </group>
 
   // Save to a record.  The return will be False and an error
   // message generated only if the SpectralElement is illegal (could not happen)
   // Error messages are postfixed to error.   For Gaussian elements,
   // the width is defined as a FWHM in the record interface.
-  // <group>
   virtual Bool toRecord(String &error, RecordInterface &out) const;
-  Bool toRecord(String &error, GlishRecord &out) const;
-  // </group>
 
   // Get the identification of a record
   virtual const String &ident() const;

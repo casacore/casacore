@@ -1,5 +1,5 @@
 //# QuantumHolder.h: A holder for Quantities to enable record conversions
-//# Copyright (C) 1998,1999,2000
+//# Copyright (C) 1998,1999,2000,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -38,7 +38,6 @@
 class QBase;
 class String;
 class RecordInterface;
-class GlishRecord;
 template <class Qtype> class Quantum;
 template <class T> class Vector;
 template <class T> class Array;
@@ -52,7 +51,6 @@ template <class T> class Array;
 
 // <prerequisite>
 //   <li> <linkto class=RecordInterface>RecordInterface</linkto> class
-//   <li> <linkto class=GlishRecord>GlishRecord</linkto> class
 //   <li> <linkto class=Quantum>Quantity</linkto> class
 // </prerequisite>
 //
@@ -99,12 +97,12 @@ template <class T> class Array;
 //	if (!QuantumHolder(x).toRecord(error, rec)) {  // make record
 //		cout << error << endl;
 //	};
-//	GlishRecord grec;		// a GlishRecord
+//	Record grec;		        // a Record
 //	if (!QuantumHolder(x).toRecord(error, grec)) {  // make record
 //		cout << error << endl;
 //	};
-// // Note that for GlishRecords use can be made of the to/fromGlishrecord()
-// // methods	
+// // Note that for GlishRecords use can be made of the
+// // GlishRecord::to/fromrecord() methods.
 // </srcblock>
 // </example>
 //
@@ -112,10 +110,6 @@ template <class T> class Array;
 // To make general conversions between Quantums and records, without knowing
 // the actual Quantum being converted.
 // </motivation>
-//
-// <todo asof="1998/04/14">
-//   <li> possible change if GlishRecord derived from RecordInterface
-// </todo>
 
 class QuantumHolder : public RecordTransformable {
 
@@ -216,14 +210,10 @@ public:
   // <group>
   virtual Bool fromRecord(String &error, const RecordInterface &in);
   virtual Bool fromString(String &error, const String &in);
-  Bool fromRecord(String &error, const GlishRecord &in);
   // </group>
   // Create a record from a Quantum. A False return and an error message is
   // only generated if there is no valid Quantum in the holder.
-  // <group>
   virtual Bool toRecord(String &error, RecordInterface &out) const;
-  Bool toRecord(String &error, GlishRecord &out) const;
-  // </group>
   // Return identification
   virtual const String &ident() const;
 

@@ -1,5 +1,5 @@
 //# FunctionOrder.h: Container of function description details
-//# Copyright (C) 2002
+//# Copyright (C) 2002,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -38,7 +38,6 @@
 
 //# Forward declarations
 class RecordInterface;
-class GlishRecord;
 #include <aips/iosfwd.h>
 
 // <summary> Container of function description details
@@ -116,14 +115,10 @@ template<class T> class FunctionOrder : public RecordTransformable {
   // <group>
   virtual Bool fromRecord(String &error, const RecordInterface &in);
   virtual Bool fromString(String &error, const String &in);
-  Bool fromRecord(String &error, const GlishRecord &in);
   // </group>
   // Create a record from a FunctionOrder.
   // Error messages are postfixed to error.
-  // <group>
   virtual Bool toRecord(String &error, RecordInterface &out) const;
-  Bool toRecord(String &error, GlishRecord &out) const;
-  // </group>
   // Get identification of record
   virtual const String &ident() const;
 

@@ -1,5 +1,5 @@
 //# SkyComponent.cc:  this defines SkyComponent
-//# Copyright (C) 1996,1997,1998,1999,2000,2001
+//# Copyright (C) 1996,1997,1998,1999,2000,2001,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -185,14 +185,6 @@ Bool SkyComponent::toRecord(String& errorMessage,
  			    RecordInterface& record) const {
   DebugAssert(ok(), AipsError);
   return itsCompPtr->toRecord(errorMessage, record);
-}
-
-Bool SkyComponent::fromRecord(String& error, const GlishRecord& in) {
-  return itsCompPtr->SkyCompBase::fromRecord(error, in);
-}
-
-Bool SkyComponent::toRecord(String& error, GlishRecord& out) const {
-  return itsCompPtr->SkyCompBase::toRecord(error, out);
 }
 
 SkyComponent SkyComponent::copy() const {

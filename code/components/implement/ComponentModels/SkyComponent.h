@@ -1,5 +1,5 @@
 //# SkyComponent.h: this defines SkyComponent.h
-//# Copyright (C) 1996,1997,1998,1999,2000,2001
+//# Copyright (C) 1996,1997,1998,1999,2000,2001,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -235,10 +235,6 @@ public:
 			  const RecordInterface & record);
   virtual Bool toRecord(String & errorMessage, 
 			RecordInterface & record) const;
-  virtual Bool fromRecord(String& errorMessage, 
-                          const GlishRecord& record);
-  virtual Bool toRecord(String& errorMessage, 
-                        GlishRecord& record) const;
   // </group>
 
   // Return a distinct copy of this component. As both the assignment operator

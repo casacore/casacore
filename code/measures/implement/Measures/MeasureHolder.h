@@ -1,5 +1,5 @@
 //# MeasureHolder.h: A holder for Measures to enable record conversions
-//# Copyright (C) 1998,1999,2000
+//# Copyright (C) 1998,1999,2000,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -45,7 +45,6 @@ class MRadialVelocity;
 class Muvw;
 class MBaseline;
 class MEarthMagnetic;
-class GlishRecord;
 class MeasValue;
 
 // <summary> A holder for Measures to enable record conversions </summary>
@@ -101,12 +100,12 @@ class MeasValue;
 //	if (!MeasureHolder(dir).toRecord(error, rec)) {
 //		cout << error << endl;
 //	};
-//	GlishRecord grec;		// a GlishRecord
+//	Record grec;		// a Record
 //	if (!MeasureHolder(dir).toRecord(error, grec)) {  // make record
 //		cout << error << endl;
 //	};
-// // Note that for GlishRecords use can be made of the to/fromGlishrecord()
-// // methods	
+// // Note that for GlishRecords use can be made of the
+// // GlishRecord::to/fromrecord() methods.
 // </srcblock>
 // </example>
 //
@@ -114,10 +113,6 @@ class MeasValue;
 // To make general conversions between Measures and records, without knowing
 // the actual Measure being converted.
 // </motivation>
-//
-// <todo asof="1998/04/14">
-//   <li> possible change if GlishRecord derived from RecordInterface
-// </todo>
 
 class MeasureHolder : public RecordTransformable {
 
@@ -203,15 +198,11 @@ public:
   // <group>
   virtual Bool fromRecord(String &error, const RecordInterface &in);
   virtual Bool fromString(String &error, const String &in);
-  Bool fromRecord(String &error, const GlishRecord &in);
   // </group>
   // Create a record from a Measure. The return will be False and an error
   // message generated only if the MeasureHolder does not contain a Measure.
   // Error messages are postfixed to error.
-  // <group>
   virtual Bool toRecord(String &error, RecordInterface &out) const;
-  Bool toRecord(String &error, GlishRecord &out) const;
-  // </group>
   // Create a default Measure or a record with only a type from a Measure
   // <group>
   Bool toType(String &error, RecordInterface &out) const;

@@ -1,5 +1,5 @@
 //# SkyCompBase.h: Base class for model components of the sky brightness
-//# Copyright (C) 1996,1997,1998,1999,2000
+//# Copyright (C) 1996,1997,1998,1999,2000,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -43,7 +43,6 @@ class RecordInterface;
 class String;
 class ComponentShape;
 class SpectralModel;
-class GlishRecord;
 class Unit;
 template <class T> class Flux;
 template <class T> class Vector;
@@ -269,8 +268,6 @@ public:
 			  const RecordInterface& record) = 0;
   virtual Bool toRecord(String& errorMessage, 
 			RecordInterface& record) const = 0;
-  virtual Bool fromRecord(String& errorMessage, const GlishRecord& record);
-  virtual Bool toRecord(String& errorMessage, GlishRecord& record) const;
   // </group>
 
   // Function which checks the internal data of this class for correct

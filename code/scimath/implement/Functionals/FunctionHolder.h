@@ -72,12 +72,12 @@
 //	if (!FunctionHolder(dir).toRecord(error, rec)) {
 //		cout << error << endl;
 //	};
-//	GlishRecord grec;		// a GlishRecord
+//	Record grec;		// a Record
 //	if (!FunctionHolder(dir).toRecord(error, grec)) {  // make record
 //		cout << error << endl;
 //	};
-// // Note that for GlishRecords use can be made of the to/fromGlishrecord()
-// // methods	
+// // Note that for GlishRecords use can be made of the
+// // GlishRecord::to/fromrecord() methods.
 // </srcblock>
 // </example>
 //
@@ -85,10 +85,6 @@
 // To make general conversions between Functions and records, without knowing
 // the actual Function being converted.
 // </motivation>
-//
-// <todo asof="2002/04/14">
-//   <li> possible change if GlishRecord derived from RecordInterface
-// </todo>
 
 template <class T> class FunctionHolder : public RecordTransformable {
  public:
@@ -176,21 +172,14 @@ template <class T> class FunctionHolder : public RecordTransformable {
   // <group>
   virtual Bool fromRecord(String &error, const RecordInterface &in);
   virtual Bool fromString(String &error, const String &in);
-  Bool fromRecord(String &error, const GlishRecord &in);
   template <class U>
     Bool getRecord(String &error, Function<U> *&fn,
 		   const RecordInterface &in);
-  template <class U>
-    Bool getRecord(String &error, Function<U> *&fn,
-		   const GlishRecord &in);
   // </group>
   // Create a record from a Function. The return will be False and an error
   // message generated only if the FunctionHolder does not contain a Function.
   // Error messages are postfixed to error.
-  // <group>
   virtual Bool toRecord(String &error, RecordInterface &out) const;
-  Bool toRecord(String &error, GlishRecord &out) const;
-  // </group>
   // Get identification of record
   virtual const String &ident() const;
 
