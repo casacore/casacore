@@ -145,7 +145,7 @@ public:
 	      MVAngle & pixelSize) const;
 
   // Project all the members of the componentList onto the image
-  void project(ImageInterface<Float> & plane) const;
+  //  void project(ImageInterface<Float> & plane) const;
 
   // Add a SkyComponent to the end of the ComponentList. The list length is
   // increased by one when using this function. By default the newly added
