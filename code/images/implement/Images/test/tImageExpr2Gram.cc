@@ -32,6 +32,7 @@
 #include <trial/Coordinates/CoordinateUtil.h>
 #include <trial/Lattices/LCBox.h>
 #include <trial/Lattices/LCPagedMask.h>
+#include <trial/Lattices/LELArray.h>
 #include <aips/Arrays/Array.h>
 #include <aips/Arrays/Matrix.h>
 #include <aips/Arrays/ArrayLogical.h>
@@ -58,8 +59,14 @@ main (int argc, char *argv[])
     const uInt nx=inp.GetInt("nx");
     const uInt ny=inp.GetInt("ny");
     IPosition shape(2, nx, ny);
+    Slicer section(IPosition(2,0), shape);
     Array<Float> arr(shape);
     indgen (arr);
+    Array<Float> arrm1, arrm2;
+    arrm1 = arr;
+    arrm2 = arr;
+    Array<Bool> m1;
+    Array<Bool> m2;
     {    
       PagedImage<Float> image (shape,
 			       CoordinateUtil::defaultCoords2D(),
@@ -72,11 +79,16 @@ main (int argc, char *argv[])
       Matrix<Bool> mask(shape);
       mask = True;
       mask(0,0) = False;
+      arrm1(IPosition(2,0,0)) = -1;
       mask1.put (mask);
+      m1 = mask;
       mask = True;
       mask(0,1) = False;
       mask(1,1) = False;
+      arrm2(IPosition(2,0,1)) = -1;
+      arrm2(IPosition(2,1,1)) = -1;
       mask2.put (mask);
+      m2 = mask;
       image.defineRegion ("mask1", mask1, RegionHandler::Masks);
       image.defineRegion ("mask2", mask2, RegionHandler::Masks);
       image.setDefaultMask ("mask1");
@@ -123,6 +135,148 @@ main (int argc, char *argv[])
       Double result = expr.getDouble();
       if (result != shape.product()-1) {
 	cout << "Result should be " << shape.product()-1 << endl;
+	cout << "Result is " << result << endl;
+	foundError = True;
+      }
+    }
+    {
+      cout << endl;
+      cout << "Expr:  ndim('tImageExpr2Gram_tmp.img::mask1')" << endl;
+      LatticeExprNode expr (ImageExprParse::command
+			    ("ndim('tImageExpr2Gram_tmp.img::mask1')",
+			     temps, tempRegs));
+      Float result = expr.getFloat();
+      if (result != shape.nelements()) {
+	cout << "Result should be " << shape.nelements() << endl;
+	cout << "Result is " << result << endl;
+	foundError = True;
+      }
+    }
+    {
+      cout << endl;
+      cout << "Expr:  ndim($REGION#1)" << endl;
+      LatticeExprNode expr (ImageExprParse::command
+			    ("ndim($REGION#1)",
+			     temps, tempRegs));
+      Float result = expr.getFloat();
+      if (result != shape.nelements()) {
+	cout << "Result should be " << shape.nelements() << endl;
+	cout << "Result is " << result << endl;
+	foundError = True;
+      }
+    }
+    {
+      cout << endl;
+      cout << "Expr:  any('tImageExpr2Gram_tmp.img::mask2')" << endl;
+      LatticeExprNode expr (ImageExprParse::command
+			    ("any('tImageExpr2Gram_tmp.img::mask2')",
+			     temps, tempRegs));
+      Bool result = expr.getBool();
+      if (!result) {
+	cout << "Result should be " << True << endl;
+	cout << "Result is " << result << endl;
+	foundError = True;
+      }
+    }
+    {
+      cout << endl;
+      cout << "Expr:  all('tImageExpr2Gram_tmp.img::mask2')" << endl;
+      LatticeExprNode expr (ImageExprParse::command
+			    ("all('tImageExpr2Gram_tmp.img::mask2')",
+			     temps, tempRegs));
+      Bool result = expr.getBool();
+      if (result) {
+	cout << "Result should be " << False << endl;
+	cout << "Result is " << result << endl;
+	foundError = True;
+      }
+    }
+    {
+      cout << endl;
+      cout << "Expr:  ntrue('tImageExpr2Gram_tmp.img::mask1')" << endl;
+      LatticeExprNode expr (ImageExprParse::command
+			    ("ntrue('tImageExpr2Gram_tmp.img::mask1')",
+			     temps, tempRegs));
+      Double result = expr.getDouble();
+      if (result != shape.product()-1) {
+	cout << "Result should be " << shape.product()-1 << endl;
+	cout << "Result is " << result << endl;
+	foundError = True;
+      }
+    }
+    {
+      cout << endl;
+      cout << "Expr:  nfalse('tImageExpr2Gram_tmp.img::mask1')" << endl;
+      LatticeExprNode expr (ImageExprParse::command
+			    ("nfalse('tImageExpr2Gram_tmp.img::mask1')",
+			     temps, tempRegs));
+      Double result = expr.getDouble();
+      if (result != 1) {
+	cout << "Result should be " << 1 << endl;
+	cout << "Result is " << result << endl;
+	foundError = True;
+      }
+    }
+    {
+      cout << endl;
+      cout << "Expr:  nelements('tImageExpr2Gram_tmp.img::mask1')" << endl;
+      LatticeExprNode expr (ImageExprParse::command
+			    ("nelements('tImageExpr2Gram_tmp.img::mask1')",
+			     temps, tempRegs));
+      Double result = expr.getDouble();
+      if (result != shape.product()) {
+	cout << "Result should be " << shape.product() << endl;
+	cout << "Result is " << result << endl;
+	foundError = True;
+      }
+    }
+    {
+      cout << endl;
+      cout << "Expr:  'tImageExpr2Gram_tmp.img::mask2' == tImageExpr2Gram_tmp.img::mask2" << endl;
+      LatticeExprNode expr (ImageExprParse::command
+	  ("'tImageExpr2Gram_tmp.img::mask2' == tImageExpr2Gram_tmp.img::mask2",
+	   temps, tempRegs));
+      LELArray<Bool> result(shape);
+      expr.eval (result, section);
+      if (! allEQ (result.value(), True)) {
+	cout << "Result should be " << m2 << endl;
+	cout << "Result is " << result.value() << endl;
+	foundError = True;
+      }
+    }
+    {
+      cout << endl;
+      cout << "Expr:  'tImageExpr2Gram_tmp.img::mask2' && "
+	      "tImageExpr2Gram_tmp.img::mask1 && "
+	      "(tImageExpr2Gram_tmp.img::mask2=="
+	      "tImageExpr2Gram_tmp.img::mask2)" << endl;
+      LatticeExprNode expr (ImageExprParse::command
+			    ("'tImageExpr2Gram_tmp.img::mask2' &&"
+			     "tImageExpr2Gram_tmp.img::mask1 && "
+			     "(tImageExpr2Gram_tmp.img::mask1=="
+			     "tImageExpr2Gram_tmp.img::mask2)",
+			     temps, tempRegs));
+      LELArray<Bool> result(shape);
+      expr.eval (result, section);
+      if (! allEQ (result.value(), m1&&m2)) {
+	cout << "Result should be " << False << endl;
+	cout << "Result is " << result.value() << endl;
+	foundError = True;
+      }
+    }
+    {
+      cout << endl;
+      cout << "Expr:  iif ('tImageExpr2Gram_tmp.img::mask2', "
+ 	      "tImageExpr2Gram_tmp.img,-1)"
+	   << endl;
+      LatticeExpr<Float> expr (ImageExprParse::command
+			       ("iif ('tImageExpr2Gram_tmp.img::mask2', "
+				"tImageExpr2Gram_tmp.img,-1)",
+				temps, tempRegs));
+      Array<Float> result;
+      expr.get (result);
+      if (! allEQ (result, arrm2)) {
+	cout << "Result should be " << arr << endl;
 	cout << "Result is " << result << endl;
 	foundError = True;
       }
