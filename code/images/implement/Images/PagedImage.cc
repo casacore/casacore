@@ -42,6 +42,8 @@
 #include <aips/Arrays/MaskArrMath.h>
 #include <aips/Arrays/MaskedArray.h>
 #include <aips/Exceptions/Error.h>
+#include <aips/OS/File.h>
+#include <aips/OS/Path.h>
 #include <aips/Lattices/IPosition.h>
 #include <aips/Lattices/Slicer.h>
 #include <aips/Tables/SetupNewTab.h>
@@ -242,20 +244,8 @@ name(const Bool stripPath) const {
 
 // Strip off path
  
-      String fullName = table_p.tableName();
-      Int iLen = fullName.length();
-    
-// Find last "/"
-     
-      for (Int i=iLen-1,iSlash=-1; i>=0; i--) {
-         String c(fullName.elem(i));
-         if (c == "/") {
-           iSlash = i;
-           break;
-         }   
-      }
-      Int n = iLen - ++iSlash;
-      return String(fullName(iSlash,n));
+      File file(table_p.tableName());
+      return file.path().baseName();
    }
 }
 
