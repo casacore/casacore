@@ -11,3 +11,15 @@ change id: 162
  summary:  Added arbitrary axes to ArrayIterator classes
 ArrayIterator (and its derived classes VectorIterator and MatrixIterator) have been extended with the ability to iterate over any combination of axes.
 For example, in VectorIterator the cursor axis can now be axis 2. Before it could only be axis 0.
+
+change id: 163
+ author:   Ger van Diepen
+ date:     2004/12/23
+ avers:    1.9
+ area:     Library
+ package:  casa
+ module:   Arrays
+ type:     Code
+ category: New
+ summary:  aa
+xx
