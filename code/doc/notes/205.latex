@@ -1,0 +1,23 @@
+\documentclass[11pt]{article}
+\usepackage{html, epsf}
+%%-----------------------------------------------------------------------------
+
+\begin{document}
+
+\title{NOTE 205 -- AIPS++ DEMONSTRATION SCRIPTS}
+  
+
+\author{Tim Cornwell}
+
+\date{April 6 1997}
+
+\maketitle
+%%---------------------------------------------------------------------------
+\begin{htmlonly}
+\htmladdnormallink{A postscript version of this note is available (100kB).}{../205.ps}
+\end{htmlonly}
+
+\tableofcontents
+      
+\input{demoscript.tex}
+\end{document}
