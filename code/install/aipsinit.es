@@ -3,7 +3,7 @@
 # aipsinit.es: Define the AIPS++ environment for the "es" shell
 #-----------------------------------------------------------------------------
 #
-#   Copyright (C) 1994-1997,1999,2000
+#   Copyright (C) 1994-1997,1999,2000,2001
 #   Associated Universities, Inc. Washington DC, USA.
 #
 #   This program is free software; you can redistribute it and/or modify
@@ -365,3 +365,6 @@
   a_arch_t=()
   a_root_t=()
   a_fds=()
+
+# echo out the version
+  avers -r 

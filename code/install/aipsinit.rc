@@ -3,7 +3,7 @@
 # aipsinit.rc: Define the AIPS++ environment for the "rc" shell
 #-----------------------------------------------------------------------------
 #
-#   Copyright (C) 1992-1997,1999,2000
+#   Copyright (C) 1992-1997,1999,2000,2001
 #   Associated Universities, Inc. Washington DC, USA.
 #
 #   This program is free software; you can redistribute it and/or modify
@@ -358,3 +358,6 @@
   a_arch_t=()
   a_root_t=()
   a_fds=()
+
+# echo out the version
+  avers -r
