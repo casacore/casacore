@@ -128,8 +128,8 @@
   COMMAND2="cd $PGMRDIR && rm -f a.tmp.tar"
   $ARSH /aips++/weekly/.rshexec sh -c \'\""$COMMAND"\"\'
   scp -qpC aips2.nrao.edu:$PGMRDIR/a.tmp.tar  a.tmp.tar
-  $ARSH /aips++/weekly/.rshexec sh -c \'\""$COMMAND2"\"\'
   tar xpvf a.tmp.tar > /dev/null 
+  $ARSH /aips++/weekly/.rshexec sh -c \'\""$COMMAND2"\"\'
   rm -f a.tmp.tar
 
 
