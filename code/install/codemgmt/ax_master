@@ -4875,3 +4875,4 @@
 14 316 src rm trial/apps/newdish/dishregridgui.g
 14 316 sys rm libexec/dishregridgui.g
 14 316 src rm trial/apps/newdish/dishregrid.g
+14 316 sys rm libexec/dishregrid.g
