@@ -267,9 +267,9 @@ Bool TabularCoordinate::toPixel(Vector<Double> &pixel,
 }
 
 
-uInt TabularCoordinate::toWorldMany(Matrix<Double>& world,
+Bool TabularCoordinate::toWorldMany(Matrix<Double>& world,
                                     const Matrix<Double>& pixel,
-                                    Vector<Int>& failures) const
+                                    Vector<Bool>& failures) const
 {
     const uInt nTransforms = pixel.ncolumn();
     Double alpha = cdelt_p * matrix_p;
@@ -279,7 +279,6 @@ uInt TabularCoordinate::toWorldMany(Matrix<Double>& world,
     Vector<Double> worlds(world.row(0));     // Only 1 axis in TC
     Vector<Double> pixels(pixel.row(0));
 //
-    uInt nFail = 0;
     if (channel_corrector_p) {
        for (uInt j=0; j<nTransforms; j++) { 
           worlds[j] = beta + alpha*((*channel_corrector_p)(pixels[j]));
@@ -290,13 +289,15 @@ uInt TabularCoordinate::toWorldMany(Matrix<Double>& world,
        }
     }
 //
-    return nFail;
+    failures.resize(nTransforms);
+    failures = False;
+    return True;
 }
 
 
-uInt TabularCoordinate::toPixelMany (Matrix<Double>& pixel,
+Bool TabularCoordinate::toPixelMany (Matrix<Double>& pixel,
                                     const Matrix<Double>& world,
-                                    Vector<Int>& failures) const
+                                    Vector<Bool>& failures) const
 {
     const uInt nTransforms = world.ncolumn();
     Double alpha = cdelt_p * matrix_p;
@@ -306,7 +307,6 @@ uInt TabularCoordinate::toPixelMany (Matrix<Double>& pixel,
     Vector<Double> worlds(world.row(0));      // Only 1 axis in TC
     Vector<Double> pixels(pixel.row(0));
 //
-    uInt nFail = 0;
     if (channel_corrector_rev_p) {
        for (uInt j=0; j<nTransforms; j++) { 
           pixels[j] = worlds[j]/alpha + beta;
@@ -318,7 +318,9 @@ uInt TabularCoordinate::toPixelMany (Matrix<Double>& pixel,
        }
     }
 //
-    return nFail;
+    failures.resize(nTransforms);
+    failures = False;
+    return True;
 }
 
 
@@ -721,11 +723,12 @@ Coordinate* TabularCoordinate::makeFourierCoordinate (const Vector<Bool>& axes,
       throw (AipsError("Invalid number of elements in shape"));
    }
 //
-   Vector<String> units = worldAxisUnits();
-   Vector<String> names = worldAxisNames();
+   const Vector<String>& units = worldAxisUnits();
+   const Vector<String>& names = worldAxisNames();
+//
    Vector<String> unitsCanon(worldAxisUnits().copy());
    Vector<String> unitsOut(worldAxisUnits().copy());
-   Vector<String> namesOut(worldAxisNames());
+   Vector<String> namesOut(worldAxisNames().copy());
 //
    for (uInt i=0; i<nPixelAxes(); i++) {
       if (axes(i)) {

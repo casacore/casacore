@@ -333,18 +333,18 @@ Bool SpectralCoordinate::toPixel(Double& pixel, const Double& world) const
 }
 
 
-uInt SpectralCoordinate::toWorldMany(Matrix<Double>& world,
+Bool SpectralCoordinate::toWorldMany(Matrix<Double>& world,
                              const Matrix<Double>& pixel,
-                             Vector<Int>& failures) const
+                             Vector<Bool>& failures) const
 {
-   uInt n = worker_p.toWorldMany(world, pixel, failures);
+   Bool ok = worker_p.toWorldMany(world, pixel, failures);
    convertToMany(world);    
-   return n;
+   return ok;
 }
    
-uInt SpectralCoordinate::toPixelMany(Matrix<Double>& pixel,
+Bool SpectralCoordinate::toPixelMany(Matrix<Double>& pixel,
                              const Matrix<Double>& world,
-                             Vector<Int>& failures) const
+                             Vector<Bool>& failures) const
 {
    Matrix<Double> world_tmp(world.copy());
    convertFromMany(world_tmp);
