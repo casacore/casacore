@@ -1915,3 +1915,4 @@
 08 015 src mv trial/apps/iofits/UVFitsFiller.cc trial/apps/ms/UVFitsFiller.cc
 08 015 src mv trial/apps/iofits/UVFitsFiller.h trial/apps/ms/UVFitsFiller.h
 08 015 src mv trial/apps/iofits/UVFitsWriter.h trial/apps/ms/UVFitsWriter.h
+08 015 src mv trial/apps/iofits/UVFitsWriter.cc trial/apps/ms/UVFitsWriter.cc
