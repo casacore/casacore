@@ -381,6 +381,14 @@ void b (Bool doExcp)
     if (seltabset.nrow() != 4) {
 	cout << "seltabset does not contain 4 rows" << endl;
     }
+    seltabset = sortab (sortab.col("arr1")(IPosition(3,0,0,0)) < 100);
+    if (seltabset.nrow() != 5) {
+	cout << "seltabset does not contain 5 rows" << endl;
+    }
+    seltabset = sortab (sortab.col("arr1")(IPosition(3,1,0,0)) == 97);
+    if (seltabset.nrow() != 1) {
+	cout << "seltabset does not contain 1 row" << endl;
+    }
 
     // Get a subset of the table via row numbers.
     Vector<uInt> rownrs(4);
