@@ -171,6 +171,10 @@ class SpectralElement : public RecordTransformable {
   Double getSigma() const;
   Double getFWHM() const;
   // </group>
+  // Get all parameters
+  void get(Vector<Double> &param) const;
+  // get error estimates of parameters
+  void getError(Vector<Double> &err) const;
   // Get the degree of e.g. polynomial
   uInt getDegree() const;
   // </group>
@@ -184,7 +188,12 @@ class SpectralElement : public RecordTransformable {
   //   <li> AipsError if incorrect number of parameters (e.g. not 3 for GAUSSIAN)
   //   <li> AipsError if sigma == 0.0
   // </thrown>
+  // <group>
   void set(SpectralElement::Types tp, const Vector<Double> &param);
+  void set(SpectralElement::Types tp, const Vector<Float> &param);
+  // </group>
+  // Set the error fields
+  void setError(const Vector<Double> &err);
   // Set amplitude
   // <thrown>
   //   <li> AipsError if non GAUSSIAN
@@ -255,6 +264,8 @@ class SpectralElement : public RecordTransformable {
   // The parameters of the function. I.e. the polynomial coefficients;
   // amplitude, center and sigma of a Gaussian.
   Vector<Double> par_p;
+  // The errors of the parameters
+  Vector<Double> err_p;
 
   //# Member functions
   // Check if GAUSSIAN type

@@ -39,16 +39,17 @@
 //# Constructors
 SpectralElement::SpectralElement() :
   tp_p(SpectralElement::GAUSSIAN), n_p(0),
-  par_p(3) {
+  par_p(3), err_p(3) {
   par_p(0) = 1.0;
   par_p(1) = 0.0;
   par_p(2) = 2*sqrt(C::ln2)/C::pi;
+  err_p = 0;
 }
 
 SpectralElement::SpectralElement(SpectralElement::Types tp, const Double ampl,
 				 const Double center, const Double sigma) :
   tp_p(tp), n_p(0),
-  par_p(3) {
+  par_p(3), err_p(3) {
   if (tp != GAUSSIAN) {
     throw(AipsError("SpectralElement: Only GAUSSIAN can have ampl, "
 		    "center and sigma"));
@@ -56,25 +57,28 @@ SpectralElement::SpectralElement(SpectralElement::Types tp, const Double ampl,
   par_p(0) = ampl;
   par_p(1) = center;
   par_p(2) = sigma;
+  err_p = 0;
   check();
 }
 
 SpectralElement::SpectralElement(const uInt n) :
   tp_p(SpectralElement::POLYNOMIAL), n_p(n),
-  par_p(n+1) {
+  par_p(n+1), err_p(n+1) {
   par_p = 0;
+  err_p = 0;
 }
 
 SpectralElement::SpectralElement(SpectralElement::Types tp,
 				 const Vector<Double> &param) :
   tp_p(tp), n_p(0),
-  par_p(0) {
+  par_p(0), err_p(0) {
   if (tp_p == GAUSSIAN) {
     if (param.nelements() != 3) {
       throw(AipsError("SpectralElement: GAUSSIAN must have "
 		      "3 parameters"));
     };
     par_p.resize(3);
+    err_p.resize(3);
   } else if (tp_p == POLYNOMIAL) {
     if (param.nelements() == 0) {
       throw(AipsError("SpectralElement: POLYNOMIAL must have "
@@ -82,15 +86,18 @@ SpectralElement::SpectralElement(SpectralElement::Types tp,
     };
     n_p = param.nelements()-1;
     par_p.resize(n_p+1);
+    err_p.resize(n_p+1);
   };
-  for (uInt i=0; i<param.nelements(); i++) par_p(i) = param(i);
+  par_p = param;
+  err_p = 0;
   check();
 }
 
 SpectralElement::SpectralElement(const SpectralElement &other) :
   tp_p(other.tp_p), n_p(other.n_p),
-  par_p(0) {
+  par_p(0), err_p(0) {
   par_p = other.par_p;
+  err_p = other.err_p;
   check();
 }
 
@@ -101,6 +108,7 @@ SpectralElement &SpectralElement::operator=(const SpectralElement &other) {
     tp_p = other.tp_p;
     n_p = other.n_p;
     par_p = other.par_p;
+    err_p = other.err_p;
     check();
   };
   return *this;
@@ -108,8 +116,8 @@ SpectralElement &SpectralElement::operator=(const SpectralElement &other) {
 
 Double SpectralElement::operator()(const Double x) const {
   if (tp_p == GAUSSIAN) {
-    return  par_p(0)*exp(-(x-par_p(1))*(x-par_p(1))*4*C::ln2/
-			 par_p(2)/par_p(2));
+    return par_p(0)*exp(-(x-par_p(1))*(x-par_p(1))*4*C::ln2/
+			par_p(2)/par_p(2));
   };
   Double s(0);
   if (tp_p == POLYNOMIAL) {
@@ -184,6 +192,16 @@ Double SpectralElement::getFWHM() const {
   return sqrt(32.0*C::ln2)*par_p(2);
 }
 
+void SpectralElement::get(Vector<Double> &param) const {
+  param.resize(par_p.nelements());
+  param = par_p;
+}
+
+void SpectralElement::getError(Vector<Double> &err) const {
+  err.resize(err_p.nelements());
+  err = err_p;
+}
+
 uInt SpectralElement::getDegree() const {
   checkPoly();
   return n_p;
@@ -199,6 +217,7 @@ void SpectralElement::set(SpectralElement::Types tp,
 		      "3 parameters"));
     };
     par_p.resize(3);
+    err_p.resize(3);
   };
   if (tp_p == POLYNOMIAL) {
     if (param.nelements() == 0) {
@@ -207,24 +226,63 @@ void SpectralElement::set(SpectralElement::Types tp,
     };
     n_p = param.nelements()-1;
     par_p.resize(n_p+1);
+    err_p.resize(n_p+1);
   };
-  for (uInt i=0; i<param.nelements(); i++) par_p(i) = param(i);
+  par_p = param;
+  err_p = 0;
   check();
+}
+
+void SpectralElement::set(SpectralElement::Types tp,
+			  const Vector<Float> &param) {
+  tp_p = tp;
+  n_p = 0;
+  if (tp_p == GAUSSIAN) {
+    if (param.nelements() != 3) {
+      throw(AipsError("SpectralElement: GAUSSIAN must have "
+		      "3 parameters"));
+    };
+    par_p.resize(3);
+    err_p.resize(3);
+  };
+  if (tp_p == POLYNOMIAL) {
+    if (param.nelements() == 0) {
+      throw(AipsError("SpectralElement: POLYNOMIAL must have "
+		      "at least 1 parameter"));
+    };
+    n_p = param.nelements()-1;
+    par_p.resize(n_p+1);
+    err_p.resize(n_p+1);
+  };
+  for (uInt i=0; i<par_p.nelements(); i++) par_p(i) = param(i);
+  err_p = 0;
+  check();
+}
+
+void SpectralElement::setError(const Vector<Double> &err) {
+    if (err.nelements() != err_p.nelements()) {
+      throw(AipsError("SpectralElement: setting incorrect number of errors "
+		      "in the element"));
+    };
+    err_p = err;
 }
 
 void SpectralElement::setAmpl(Double ampl) {
   checkGauss();
   par_p(0) = ampl;
+  err_p(0) = 0;
 } 
 
 void SpectralElement::setCenter(Double center) {
   checkGauss();
   par_p(1) = center;
+  err_p(1) = 0;
 }
 
 void SpectralElement::setSigma(Double sigma) {
   checkGauss();
   par_p(2) = sigma;
+  err_p(2) = 0;
   check();
 }
 
@@ -232,7 +290,9 @@ void SpectralElement::setDegree(uInt n) {
   checkPoly();
   n_p = n;
   par_p.resize(n_p+1);
+  err_p.resize(n_p+1);
   par_p = 0;
+  err_p = 0;
 }
 
 const String &SpectralElement::ident() const {

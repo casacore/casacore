@@ -68,7 +68,7 @@ void SpectralFit::addFitElement(const SpectralList &elem) {
 Bool SpectralFit::fit(const Vector<Double> &y,
 		      const Vector<Double> &x) {
   // The fitter
-  NonLinearFitLM<Double> fitter;
+  NonLinearFitLM<Double> fitter(True);
   // The functions to fit
   const Gaussian1D<AutoDiff<Double> > gauss; 
   const Polynomial<AutoDiff<Double> > poly; 
@@ -85,7 +85,7 @@ Bool SpectralFit::fit(const Vector<Double> &y,
     };
   };
   FuncWithAutoDerivs<Double,Double> autoFunc(func);
-  fitter.setFunction(autoFunc);
+    fitter.setFunction(autoFunc);
   // Initial guess
   Vector<Double> v(npar);
   uInt j(0);
@@ -105,13 +105,22 @@ Bool SpectralFit::fit(const Vector<Double> &y,
   fitter.setCriteria(0.001);
   // Fit
   Vector<Double> sol;
+  Vector<Double> err;
   Vector<Double> sigma(x.nelements());
   sigma = 1.0;
   sol = fitter.fit(x, y, sigma);
+  fitter.getErrors(err);
+  j = 0;
+  Vector<Double> tmp, terr;
   for (uInt i=0; i<slist_p.nelements(); i++) {
-    slist_p[i].setAmpl(  sol(3*i +0));
-    slist_p[i].setCenter(sol(3*i +1));
-    slist_p[i].setSigma( abs(sol(3*i +2)));
+    tmp.resize(slist_p[i].getOrder());
+    terr.resize(slist_p[i].getOrder());
+    for (uInt k=0; k<slist_p[i].getOrder(); k++) {
+      tmp(k) = sol(j);
+      terr(k) = err(j++);
+    };
+    slist_p[i].set(slist_p[i].getType(), tmp);
+    slist_p[i].setError(terr);
   };
   return fitter.converged();
 }
@@ -122,16 +131,32 @@ Bool SpectralFit::fit(const Vector<Float> &y,
   NonLinearFitLM<Float> fitter;
   // The functions to fit
   const Gaussian1D<AutoDiff<Float> > gauss; 
+  const Polynomial<AutoDiff<Float> > poly; 
   SumFunction<AutoDiff<Float>,AutoDiff<Float> > func;
-  for (uInt i=0; i<slist_p.nelements(); i++) func.addFunction(gauss);
+  Int npar(0);
+  for (uInt i=0; i<slist_p.nelements(); i++) {
+    if (slist_p[i].getType() == SpectralElement::GAUSSIAN) {
+      func.addFunction(gauss);
+      npar += 3;
+    } else if (slist_p[i].getType() == SpectralElement::POLYNOMIAL) {
+      npar += slist_p[i].getDegree()+1;
+      const Polynomial<AutoDiff<Float> > poly(slist_p[i].getDegree());
+      func.addFunction(poly);
+    };
+  };
   FuncWithAutoDerivs<Float,Float> autoFunc(func);
   fitter.setFunction(autoFunc);
   // Initial guess
-  Vector<Float> v(3*slist_p.nelements());
+  Vector<Float> v(npar);
+  uInt j(0);
   for (uInt i=0; i<slist_p.nelements(); i++) {
-    v(3*i +0) = slist_p[i].getAmpl();
-    v(3*i +1) = slist_p[i].getCenter();
-    v(3*i +2) = slist_p[i].getSigma();
+    if (slist_p[i].getType() == SpectralElement::GAUSSIAN) {
+      v(j++) = slist_p[i].getAmpl();
+      v(j++) = slist_p[i].getCenter();
+      v(j++) = slist_p[i].getSigma();
+    } else if (slist_p[i].getType() == SpectralElement::POLYNOMIAL) {
+      for (uInt k=0; k<slist_p[i].getDegree()+1; k++) v(j++) = 0;
+    };
   };
   fitter.setFittedFuncParams(v);
   // Max. number of iterations
@@ -140,13 +165,22 @@ Bool SpectralFit::fit(const Vector<Float> &y,
   fitter.setCriteria(0.001);
   // Fit
   Vector<Float> sol;
+  Vector<Double> err;
   Vector<Float> sigma(x.nelements());
   sigma = 1.0;
   sol = fitter.fit(x, y, sigma);
+  fitter.getErrors(err);
+  j = 0;
+  Vector<Double> tmp, terr;
   for (uInt i=0; i<slist_p.nelements(); i++) {
-    slist_p[i].setAmpl(  sol(3*i +0));
-    slist_p[i].setCenter(sol(3*i +1));
-    slist_p[i].setSigma( abs(sol(3*i +2)));
+    tmp.resize(slist_p[i].getOrder());
+    terr.resize(slist_p[i].getOrder());
+    for (uInt k=0; k<slist_p[i].getOrder(); k++) {
+      tmp(k) = sol(j);
+      terr(k) = err(j++);
+    };
+    slist_p[i].set(slist_p[i].getType(), tmp);
+    slist_p[i].setError(terr);
   };
   return fitter.converged();
 }
