@@ -2403,3 +2403,7 @@
 11 215 src rm trial/implement/DisplayGTk
 11 218 src mv aips/implement/Mathematics/extern_fft.h aips/implement/Mathematics/FFTPack.h
 11 218 src mv aips/implement/Mathematics/extern_fft.cc aips/implement/Mathematics/FFTPack.cc
+11 219 src rm trial/apps/gDisplay/GTkDDPosEH.cc
+11 219 src rm trial/apps/gDisplay/GTkDDPosEH.h
+11 219 src rm trial/apps/gDisplay/GTkDDPositioner.cc
+11 219 src rm trial/apps/gDisplay/GTkDDPositioner.h
