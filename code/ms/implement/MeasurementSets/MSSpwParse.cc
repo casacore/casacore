@@ -81,7 +81,7 @@ const TableExprNode *MSSpwParse::selectChaninASpw(const Int spw, const Int chann
   MeasurementSet selms= Table(ms()->tableName(), Table::Update);
   if(!selms.isWritable()) {
     os << "Table is not writable " << LogIO::POST;
-    //    exit(0);
+    return NULL;
   } 
 
   IPosition rowShape;
@@ -140,7 +140,7 @@ const TableExprNode *MSSpwParse::selectChanRangeinASpw(const Int spw, const Int 
   MeasurementSet selms= Table(ms()->tableName(), Table::Update);
   if(!selms.isWritable()) {
     os << "Table is not writable " << endl;
-    //    exit(0);
+    return NULL;
   } 
 
   IPosition rowShape;
@@ -199,13 +199,13 @@ const TableExprNode *MSSpwParse::selectVelRangeinASpw(const Int spw, const Doubl
   //---------------------------------------------------------------
   if(!ms()->source().isReadable(ms()->source().tableName())){
     os <<" Source table does not exist, No rest Frequency! " << LogIO::POST;
-    exit(0);
+    return NULL;
   }
   ROMSSourceColumns msSrcCol( ms()->source());
   ROArrayColumn<Double> restFreqCol = msSrcCol.restFrequency();
   if(restFreqCol.nrow()==0){
     os <<" Source table is empty, No rest Frequency! " << LogIO::POST;
-    exit(0);
+    return NULL;
   }
   Array<Double> restFreqArray = restFreqCol.getColumn();
   IPosition ip = restFreqArray.shape();
@@ -256,7 +256,7 @@ const TableExprNode *MSSpwParse::selectFreRangeinASpw(const Int spw, const Doubl
 
   if(startFreq >= freqVec(numChan-1)/factor || endFreq <= freqVec(0)/factor){
     os <<" Selection is not in the range! " <<LogIO::POST;
-    exit(0);
+    return NULL;
   }
   //  cout << " adj startFreq " << adjStartFreq << " adj endFreq " << adjEndFreq << endl;
   //Channel starts from 1
@@ -283,7 +283,7 @@ const TableExprNode *MSSpwParse::selectFreRangeinASpw(const Int spw, const Doubl
   //  cout << " startChan  " << startChan << " endChan " << endChan << endl;
   if(startChan > endChan ) {
     os <<" Start is greater than End ! " <<LogIO::POST;
-    exit(0);
+    return NULL;
   }
   return selectChanRangeinASpw(spw, startChan, endChan);
   //////////////////////////////////////////////////////////////////
