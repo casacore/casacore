@@ -332,6 +332,10 @@ protected:
     void decrementNcolumn()
 	{ nrcol_p--; }
 
+    // Tell the data manager if big or little endian format is needed.
+    void setEndian (Bool bigEndian)
+      { asBigEndian_p = bigEndian; }
+
     // Throw an exception in case data type is TpOther, because the
     // storage managers (and maybe other data managers) do not support
     // such columns.
@@ -400,10 +404,6 @@ private:
 
     // Link the data manager to the Table object.
     void linkToTable (Table& tab);
-
-    // Tell the data manager if big or little endian format is needed.
-    void setEndian (Bool bigEndian)
-      { asBigEndian_p = bigEndian; }
 
     // Flush and optionally fsync the data.
     // The AipsIO stream represents the main table file and can be
