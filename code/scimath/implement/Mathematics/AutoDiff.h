@@ -1,5 +1,5 @@
 //# AutoDiff.h: an automatic differential class for parameterized functions
-//# Copyright (C) 1995,1998,1999
+//# Copyright (C) 1995,1998,1999,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -26,22 +26,28 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_AUTO_DIFF_H)
-#define AIPS_AUTO_DIFF_H
+#if !defined(AIPS_AUTODIFF_H)
+#define AIPS_AUTODIFF_H
 
+//# Includes
 #include <aips/aips.h>
-#include <aips/Arrays/ArrayLogical.h>
-#include <trial/Mathematics/VectorPool.h>
+#include <trial/Mathematics/AutoDiffRep.h>
+#include <trial/Mathematics/ObjectPool.h>
+
+//# Forward declarations
+template <class T> class Vector;
 
 // <summary>
 // Class that computes partial derivatives by automatic differentiation.
 // </summary>
 //
+// <use visibility=export>
+//
 // <reviewed reviewer="" date="yyyy/mm/dd" tests="tAutoDiff.cc" demos="">
 // </reviewed>
 //
 // <prerequisite>
-// <li> VectorPool
+// <li> 
 // </prerequisite>
 //
 // <etymology>
@@ -87,6 +93,7 @@
 // </synopsis>
 //
 // <example>
+// <srcblock>
 // // To define a function of the form 
 // // f(x,y,z) = x, f(10.0,y,z) = 10.0, df/dx = 1.0, df/dy = df/dz = 0.0
 // AutoDiff<Double> x(10.0, 3, 0); 
@@ -95,6 +102,7 @@
 // AutoDiff<Double> result = x*y + sin(z);
 // cout << result.value() << endl;
 // cout << result.derivatives() << endl;
+// </srcblock>
 // </example>
 //
 // <motivation>
@@ -103,75 +111,114 @@
 // to create functionals for all partial derivatives of a function.
 // </motivation>
 //
-// <todo asof="yyyy/mm/dd">
+// <templating arg=T>
+//  <li> any class that has the standard mathematical and comparisons
+//	defined
+// </templating>
+//
+// <todo asof="2001/06/07">
+// <li> Nothing I know off
 // </todo>
 
-template <class T> class AutoDiff
-{
-public:
-  // A constant of a value of zero.  Zero derivative.
+template <class T> class AutoDiff {
+ public:
+  //# Constructors
+  // Construct a constant with a value of zero.  Zero derivatives.
   AutoDiff();
 
-  // A constant of a value of v.  Zero derivative.
+  // Construct a constant with a value of v.  Zero derivatives.
   explicit AutoDiff(const T &v);
 
-  // A function f(x0,x1,...,xi,...,xn) = xi of a value of v.  The 
-  // total number of derivatives is ndiffs, the ith derivative is one, and all 
+  // A function f(x0,x1,...,xi,...,xn) with a value of v.  The 
+  // total number of derivatives is ndiffs, the nth derivative is one, and all 
   // others are zero. 
-  AutoDiff(const T &v, const uInt ndiffs, const uInt i); 
+  AutoDiff(const T &v, const uInt ndiffs, const uInt n); 
+
+  // A function f(x0,x1,...,xi,...,xn) with a value of v.  The 
+  // total number of derivatives is ndiffs.
+  // All derivatives are zero. 
+  AutoDiff(const T &v, const uInt ndiffs); 
 
   // Construct one from another
   AutoDiff(const AutoDiff<T> &other);
 
   // Construct a function f(x0,x1,...,xn) of a value v and a vector of 
-  // derivatives derivs(0) = df/dx0, derivs(0) = df/dx1, ...
-  AutoDiff(const T& v, const Vector<T>& derivs);
+  // derivatives derivs(0) = df/dx0, derivs(1) = df/dx1, ...
+  AutoDiff(const T &v, const Vector<T> &derivs);
 
   ~AutoDiff();
 
   // Assignment operator.  Assign a constant to variable.  All derivatives
   // are zero.
-  AutoDiff<T>& operator=(const T& v);
+  AutoDiff<T> &operator=(const T &v);
 
   // Assign one to another.
-  AutoDiff<T>& operator=(const AutoDiff<T> &other);
+  AutoDiff<T> &operator=(const AutoDiff<T> &other);
 
   // Math operations
   // <group>
-  AutoDiff<T>& operator*=(const AutoDiff<T> &other);
-  AutoDiff<T>& operator/=(const AutoDiff<T> &other);
-  AutoDiff<T>& operator+=(const AutoDiff<T> &other);
-  AutoDiff<T>& operator-=(const AutoDiff<T> &other);
+  void operator*=(const AutoDiff<T> &other);
+  void operator/=(const AutoDiff<T> &other);
+  void operator+=(const AutoDiff<T> &other);
+  void operator-=(const AutoDiff<T> &other);
+  void operator*=(const T other);
+  void operator/=(const T other);
+  void operator+=(const T other);
+  void operator-=(const T other);
   // </group>
 
-  // Returns the value of an AutoDiff
-  T& value();
-  const T& value() const;
+  // Returns the pointer to the area
+  // <group>
+  AutoDiffRep<T> *theRep() { return rep_p; };
+  const AutoDiffRep<T> *theRep() const { return rep_p; };
+  // </group>
 
+  // Returns the value of the function
+  // <group>
+  T &value() { return rep_p->val_p; };
+  const T &value() const { return rep_p->val_p; };
+  // </group>
+  
   // Returns a vector of the derivatives of an AutoDiff
-  Vector<T>& derivatives();
-  const Vector<T>& derivatives() const;
-
-  // Returns a specific derivative
-  T& derivative(uInt which);
-
-  // Returns a specific derivative
-  const T& derivative(uInt which) const;
-
+  // <group>
+  Vector<T> derivatives() const;
+  void derivatives(Vector<T> &res) const;
+  // </group>
+  
+  // Returns a specific derivative. The second set does not check for
+  // nDerivatives() > 0.
+  // <group>
+  T &derivative(uInt which) { return rep_p->derivative(which); };
+  const T &derivative(uInt which) const { return rep_p->derivative(which); };
+  T &deriv(uInt which) { return rep_p->grad_p[which]; };
+  const T &deriv(uInt which) const { return rep_p->grad_p[which]; };
+  // </group>
+  
   // Return total number of derivatives
-  uInt nDerivatives() const;
-
+  uInt nDerivatives() const { return rep_p->nd_p; };
+  
   // Is it a constant, i.e., with zero derivatives?
-  Bool isConstant() const;
+  Bool isConstant() const { return rep_p->nd_p == 0; };
 
-  // Resize the number of derivatives
-  void resize(uInt ndivs);
+  // Indicate that we are going to use a temporary value for the last time
+  // (e.g. at the of a function returning by value). This way superfluous
+  // copying can be circumvented.
+  const AutoDiff<T> &ref() { rep_p->nocopy_p = True; return *this; };
+  
+ private:
+  //# Data
+  // Pool of data blocks
+  static ObjectPool<AutoDiffRep<T>, uInt> pool;
+  // Value representation
+  AutoDiffRep<T> *rep_p;
 
-  T value_;
-  Vector<T> *gradient_;
-  uInt nderivs;
-  static Vector<T> null;
-  static VectorPool<T> pool;
+  //# Methods
+  // Release a block of representation when necessary
+  void release() {
+    if (!rep_p->nocopy_p) pool.release(rep_p, rep_p->nd_p);
+    else rep_p->nocopy_p = False;
+  };
+
 };
 
 #endif
