@@ -1,5 +1,5 @@
 //# tTiledFileAccess.h: Test program for class TiledFileAccess
-//# Copyright (C) 2001
+//# Copyright (C) 2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -202,7 +202,7 @@ int main()
 			    IPosition(2,17,4), TpShort, 0, True);
       AlwaysAssertExit (allEQ (arrs, tfac.getShort (slicer)));
       AlwaysAssertExit (allEQ (arrf, tfac.getFloat (slicer, scale, offset,
-						    -32768)));
+						    short(-32768))));
       AlwaysAssertExit (tfac.shape() == shape);
       AlwaysAssertExit (tfac.tileShape() == IPosition(2,17,4));
     } catch (AipsError x) {
