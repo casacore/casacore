@@ -70,7 +70,7 @@
 
 LockFile::LockFile (const String& fileName, double inspectInterval,
 		    Bool create, Bool setRequestFlag, Bool mustExist,
-		    uInt seqnr)
+		    uInt seqnr, Bool permLocking)
 : itsFileIO    (0),
   itsCanIO     (0),
   itsWritable  (True),
@@ -116,9 +116,14 @@ LockFile::LockFile (const String& fileName, double inspectInterval,
     }
     //# Create FileLocker objects for this lock file.
     //# The first one is for read/write locks.
-    //# The second one is to set the file to "in use".
-    itsLocker    = FileLocker (fd, 2*seqnr, 1);
-    itsUseLocker = FileLocker (fd, 2*seqnr+1, 1);
+    //# The second one is to set the file to "in use" and to tell if
+    //# permanent locking is used.
+    itsLocker = FileLocker (fd, 4*seqnr, 1);
+    if (permLocking) {
+        itsUseLocker = FileLocker (fd, 4*seqnr+1, 2);
+    } else {
+        itsUseLocker = FileLocker (fd, 4*seqnr+1, 1);
+    }
     itsFileIO = new FiledesIO (fd);
     itsCanIO  = new CanonicalIO (itsFileIO);
     // Set the file to in use by acquiring a read lock.
@@ -305,11 +310,10 @@ void LockFile::addReqId()
     //# If full, use last element. This is better than ignoring it,
     //# because in this way the last request is always known.
     uInt inx = itsReqId[0];
-    if (inx == itsReqId.nelements()) {
-	inx--;
-    }else{
-	itsReqId[0]++;
+    if (inx >= NRREQID) {
+	inx = NRREQID-1;
     }
+    itsReqId[0] = inx+1;
     itsReqId[2*inx+1] = itsPid;
     itsReqId[2*inx+2] = itsHostId;
     putReqId (itsLocker.fd());
@@ -362,9 +366,10 @@ void LockFile::getReqId()
 }
 
 
-uInt LockFile::showLock (uInt& pid, const String& fileName)
+uInt LockFile::showLock (uInt& pid, Bool& permLocked, const String& fileName)
 {
     pid = 0;
+    permLocked = False;
     String fullName = Path(fileName).expandedName();
     File f (fullName);
     if (! f.exists()) {
@@ -379,23 +384,30 @@ uInt LockFile::showLock (uInt& pid, const String& fileName)
     }
     // The first byte is for read/write locking.
     // The second byte is to see if the file is used in another process.
+    // The third one is to see if the file is permanently locked.
     FileLocker fileLocker (fd, 0, 1);
     FileLocker useLocker  (fd, 1, 1);
+    FileLocker permLocker  (fd, 2, 1);
     // Determine if the file is opened in another process.
     // If not, we can exit immediately.
     uInt usePid;
     if (useLocker.canLock (usePid, FileLocker::Write)) {
         return 0;
     }
+    uInt result;
     // If we cannot readlock, the file is writelocked elsewhere.
-    if (! fileLocker.canLock (pid, FileLocker::Read)) {
-        return 3;
-    }
     // If we cannot writelock, the file is readlocked elsewhere.
-    if (! fileLocker.canLock (pid, FileLocker::Write)) {
-        return 2;
-    }
     // Otherwise the file is simply in use.
-    pid = usePid;
-    return 1;
+    if (! fileLocker.canLock (pid, FileLocker::Read)) {
+        result = 3;
+    } else if (! fileLocker.canLock (pid, FileLocker::Write)) {
+        result = 2;
+    } else {
+        pid = usePid;
+        return 1;
+    }
+    if (! permLocker.canLock (usePid, FileLocker::Write)) {
+        permLocked = True;
+    }
+    return result;
 }
