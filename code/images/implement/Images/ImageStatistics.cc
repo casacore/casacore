@@ -73,6 +73,7 @@ ImageStatistics<T>::ImageStatistics (const ImageInterface<T>& imageU,
 // Constructor
 //
 : os_p(osU),
+  pInImage_p(0), 
   pStoreImage_p(0),
   doList_p(False),
   noInclude_p(True),
@@ -110,7 +111,8 @@ ImageStatistics<T>::ImageStatistics (const ImageInterface<T>& imageU,
 // 
 // Constructor
 //
-: pStoreImage_p(0),
+: pInImage_p(0), 
+  pStoreImage_p(0),
   doList_p(False),
   noInclude_p(True),
   noExclude_p(True),
@@ -143,32 +145,13 @@ ImageStatistics<T>::ImageStatistics (const ImageInterface<T>& imageU,
 
 template <class T>
 ImageStatistics<T>::ImageStatistics(const ImageStatistics<T> &other) 
-                      : os_p(other.os_p), 
-                        pInImage_p(other.pInImage_p),
-                        cursorAxes_p(other.cursorAxes_p),
-                        displayAxes_p(other.displayAxes_p), 
-                        nxy_p(other.nxy_p),
-                        statsToPlot_p(other.statsToPlot_p), 
-                        range_p(other.range_p),
-                        plotter_p(other.plotter_p), 
-                        doList_p(other.doList_p),
-                        noInclude_p(other.noInclude_p), 
-                        noExclude_p(other.noExclude_p),
-                        goodParameterStatus_p(other.goodParameterStatus_p),
-                        doneSomeGoodPoints_p(other.doneSomeGoodPoints_p),
-                        someGoodPointsValue_p(other.someGoodPointsValue_p),
-                        haveLogger_p(other.haveLogger_p),
-                        showProgress_p(other.showProgress_p),
-                        fixedMinMax_p(other.fixedMinMax_p),
-                        minPos_p(other.minPos_p), 
-                        maxPos_p(other.maxPos_p),
-                        blcParent_p(other.blcParent_p)
+                      : pInImage_p(0),
+                        pStoreImage_p(0)
 //
 // Copy constructor.  Storage image is not copied.
 //
 {
-   pStoreImage_p = 0;
-   needStorageImage_p = True;
+   operator=(other);
 }
 
 
@@ -180,10 +163,10 @@ ImageStatistics<T> &ImageStatistics<T>::operator=(const ImageStatistics<T> &othe
 {
    if (this != &other) {
 
-// Assign to image pointer
+// Deal with image pointer
 
-      pInImage_p = other.pInImage_p;
-
+      if (pInImage_p!=0) delete pInImage_p;
+      pInImage_p = other.pInImage_p->cloneII();
 
 // Delete storage image 
 
@@ -226,10 +209,15 @@ ImageStatistics<T> &ImageStatistics<T>::operator=(const ImageStatistics<T> &othe
 template <class T>
 ImageStatistics<T>::~ImageStatistics()
 //
-// Destructor.  Delete storage image memory
+// Destructor.  
 //
 {
-   if (pStoreImage_p != 0) delete pStoreImage_p;
+   delete pInImage_p;
+   pInImage_p = 0;
+   if (pStoreImage_p != 0) {
+      delete pStoreImage_p;
+      pStoreImage_p = 0;
+   }
 }
 
 
@@ -438,27 +426,25 @@ Bool ImageStatistics<T>::setPlotting(PGPlotter& plotter,
 
 template <class T>
 Bool ImageStatistics<T>::setNewImage(const ImageInterface<T>& image)
-//    
-// Assign pointer to image
-//
 { 
    if (!goodParameterStatus_p) {
       if (haveLogger_p) os_p << LogIO::SEVERE << "Internal class status is bad" << LogIO::POST;
       return False;
    }
-  
-   pInImage_p = &image;
-
-   T *dummy = 0;
+//
+   T* dummy = 0;
    DataType imageType = whatType(dummy);
    if (imageType !=TpFloat && imageType != TpDouble) {
       if (haveLogger_p) os_p << LogIO::SEVERE << "Statistics can only be evaluated from images of type : " 
            << TpFloat << " and " << TpDouble << endl << LogIO::POST;
       goodParameterStatus_p = False;
-      pInImage_p = 0;
       return False;
    }
 
+// Make a clone of the image
+
+   if (pInImage_p!=0) delete pInImage_p;
+   pInImage_p = image.cloneII();
 
 // This is the location of the input SubImage in
 // the parent Image
@@ -1163,36 +1149,35 @@ Bool ImageStatistics<T>::generateStorageImage()
 
 // Set up min/max location variables
 
-   minPos_p.resize(pInImage_p->shape().nelements());
-   maxPos_p.resize(pInImage_p->shape().nelements());
+    minPos_p.resize(pInImage_p->shape().nelements());
+    maxPos_p.resize(pInImage_p->shape().nelements());
 
 
 // Iterate through image and accumulate statistical sums
 
-   StatsTiledCollapser<T> collapser(range_p, noInclude_p, noExclude_p,
-                                    fixedMinMax_p, blcParent_p);
+    StatsTiledCollapser<T> collapser(range_p, noInclude_p, noExclude_p,
+                                     fixedMinMax_p, blcParent_p);
 
-
-   ImageStatisticsProgress* pProgressMeter = 0;
-   if (showProgress_p) pProgressMeter = new ImageStatisticsProgress();
+    ImageStatisticsProgress* pProgressMeter = 0;
+    if (showProgress_p) pProgressMeter = new ImageStatisticsProgress();
 
 // This is the first output axis (there is only one in IS) getting 
 // collapsed values
 
-   Int newOutAxis = pStoreImage_p->ndim()-1;
-   LatticeApply<T>::tiledApply(*pStoreImage_p, *pInImage_p, 
-                               collapser, IPosition(cursorAxes_p),
-                               newOutAxis, pProgressMeter);
-   if (pProgressMeter !=0) {
-      delete pProgressMeter;
-      pProgressMeter = 0;
-   }
-   collapser.minMaxPos(minPos_p, maxPos_p);
+    Int newOutAxis = pStoreImage_p->ndim()-1;
+    LatticeApply<T>::tiledApply(*pStoreImage_p, *pInImage_p, 
+                                collapser, IPosition(cursorAxes_p),
+                                newOutAxis, pProgressMeter);
+    if (pProgressMeter !=0) {
+       delete pProgressMeter;
+       pProgressMeter = 0;
+    }
+    collapser.minMaxPos(minPos_p, maxPos_p);
 
-   needStorageImage_p = False;     
-   doneSomeGoodPoints_p = False;
+    needStorageImage_p = False;     
+    doneSomeGoodPoints_p = False;
 
-   return True;
+    return True;
 }
 
 
@@ -2440,13 +2425,13 @@ void StatsTiledCollapser<T>::initAccumulator (uInt n1, uInt n3)
 
 template <class T>
 void StatsTiledCollapser<T>::process (uInt index1,
-                                           uInt index3,
-                                           const T* pInData, 
-                                           const Bool* pInMask, 
-                                           uInt inIncr, 
-                                           uInt nrval,
-                                           const IPosition& startPos, 
-                                           const IPosition& shape)
+                                      uInt index3,
+                                      const T* pInData, 
+                                      const Bool* pInMask, 
+                                      uInt inIncr, 
+                                      uInt nrval,
+                                      const IPosition& startPos, 
+                                      const IPosition& shape)
 //
 // Process the data in the current chunk.   Everything in this
 // chunk belongs in one output location in the accumulation
@@ -2555,7 +2540,7 @@ void StatsTiledCollapser<T>::process (uInt index1,
             pInMask += inIncr;
          }
       } else {
- 
+
 // All data accepted
 
          T datum;
