@@ -2423,3 +2423,4 @@
 11 235 src mv trial/implement/Lattices/LattCoord.h trial/implement/Lattices/LELLattCoord.h
 11 235 src mv trial/implement/Lattices/LattCoord.cc trial/implement/Lattices/LELLattCoord.cc
 11 235 src mv trial/implement/Images/ImageCoord.h trial/implement/Images/LELImageCoord.h
+11 235 src mv trial/implement/Images/ImageCoord.cc trial/implement/Images/LELImageCoord.cc
