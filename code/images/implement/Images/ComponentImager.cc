@@ -152,7 +152,7 @@ project(ImageInterface<Float>& image, const ComponentList& list) {
   LatticeStepper pixelStepper(imageShape, pixelShape);
 
   LatticeIterator<Float> chunkIter(image, chunkShape);
-  const uInt nDirs = imageShape(latAxis) * imageShape(longAxis);
+  const uInt nDirs = chunkShape(latAxis) * chunkShape(longAxis);
   Matrix<Flux<Double> > pixelVals(nDirs, nFreqs);
   Vector<MVDirection> dirVals(nDirs);
   Vector<Bool> pixelFlag(nDirs);
