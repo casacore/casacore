@@ -355,10 +355,10 @@ public:
                            const Vector<Int>& axes,
                            ostream& os);
 
-// Verify an image region specification.  Illegal or unspecified values are 
-// given 0 (blc) imageShape (trc) or unity (inc).  Returns <src>True</src> if
-// any of the region objects are changed from their input values, else
-// returns <src>False</src>
+// Verify an image region specification.  Illegal (inlcuding blc > trc) or 
+// unspecified values are  given 0 (blc) imageShape (trc) or 
+// unity (inc).  Returns <src>True</src> if any of the region objects 
+// are changed from their input values, else returns <src>False</src>
    static Bool verifyRegion (IPosition& blc,
                              IPosition& trc,
                              IPosition& inc,
