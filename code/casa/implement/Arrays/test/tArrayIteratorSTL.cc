@@ -1,5 +1,5 @@
 //# tArrayIteratorSTL.cc: Test program for the Array Iterator member class
-//# Copyright (C) 2002
+//# Copyright (C) 2002,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -28,6 +28,7 @@
 #include <aips/Arrays/Array.h>
 #include <aips/Arrays/ArrayMath.h>
 #include <aips/OS/Timer.h>
+#include <aips/iostream.h>
 
 
 void testSub (Array<Int>& arr1, const IPosition& blc,
@@ -102,7 +103,8 @@ int main()
     Timer tim;
     for (Int j=0; j<nstep; j++) {
       Int inx=0;
-      const Array<Int>::const_iterator& iterend = arr.end();
+      ///      const Array<Int>::const_iterator& iterend = arr.end();
+      Array<Int>::end_iterator iterend = arr.end();
       for (Array<Int>::const_iterator iter=arr.begin(); iter!=iterend; iter++) {
 	if (*iter != inx) {
 	  cout << "err" << endl;
@@ -118,7 +120,8 @@ int main()
     Timer tim;
     for (Int j=0; j<nstep; j++) {
       Int inx=0;
-      const Array<Int>::const_iterator iterend = arr.end();
+      ///      const Array<Int>::const_iterator iterend = arr.end();
+      Array<Int>::end_iterator iterend = arr.end();
       for (Array<Int>::const_iterator iter=arr.begin(); iter!=iterend; iter++) {
 	if (*iter != inx) {
 	  cout << "err" << endl;
@@ -127,6 +130,21 @@ int main()
       }
     }
     tim.show("read  full, enditer   ");
+  }
+  {
+    Array<Int> arr(IPosition(1,nelem));
+    indgen(arr);
+    Timer tim;
+    for (Int j=0; j<nstep; j++) {
+      Int inx=0;
+      for (Array<Int>::const_contiter iter=arr.cbegin(); iter!=arr.cend(); iter++) {
+	if (*iter != inx) {
+	  cout << "err" << endl;
+	}
+	inx++;
+      }
+    }
+    tim.show("read  full, contiter()");
   }
   {
     Array<Int> bl(IPosition(1,nelem));
@@ -145,6 +163,44 @@ int main()
       bl.freeStorage(str, deleteIt);
     }
     tim.show("read  full, getStorage");
+  }
+  {
+    Array<Int> bl(IPosition(1,nelem));
+    indgen(bl);
+    Timer tim;
+    for (Int j=0; j<nstep; j++) {
+      Int inx=0;
+      Int* ptr = bl.data();
+      for (Int i=0; i<nelem; i++) {
+	if (ptr[i] != inx) {
+	  cout << "err" << endl;
+	}
+	inx++;
+      }
+    }
+    tim.show("read  full, data()[i] ");
+  }
+  {
+    Array<Int> bl(IPosition(1,nelem));
+    indgen(bl);
+    Timer tim;
+    for (Int j=0; j<nstep; j++) {
+      Int inx=0;
+      Bool deleteIt;
+      const Int* str = bl.getStorage(deleteIt);
+      const Bool contig = bl.contiguousStorage();
+      for (Int i=0; i<nelem; i++) {
+	if (str[i] != inx) {
+	  cout << "err" << endl;
+	}
+	inx++;
+	if (!contig) {
+	  inx++;
+	}
+      }
+      bl.freeStorage(str, deleteIt);
+    }
+    tim.show("read  full, getSt+test");
   }
   {
     Array<Int> bl1(IPosition(2,1000,1000));
@@ -272,7 +328,8 @@ int main()
     Timer tim;
     for (Int j=0; j<nstep; j++) {
       Int inx=0;
-      const Array<Int>::iterator& iterend = arr.end();
+      ///      const Array<Int>::iterator& iterend = arr.end();
+      Array<Int>::end_iterator iterend = arr.end();
       for (Array<Int>::iterator iter=arr.begin(); iter!=iterend; iter++) {
 	*iter = inx;
 	inx++;
@@ -285,13 +342,26 @@ int main()
     Timer tim;
     for (Int j=0; j<nstep; j++) {
       Int inx=0;
-      const Array<Int>::iterator iterend = arr.end();
+      Array<Int>::end_iterator iterend = arr.end();
+      ///const Array<Int>::iterator iterend = arr.end();
       for (Array<Int>::iterator iter=arr.begin(); iter!=iterend; iter++) {
 	*iter = inx;
 	inx++;
       }
     }
     tim.show("write full, enditer   ");
+  }
+  {
+    Array<Int> arr(IPosition(1,nelem));
+    Timer tim;
+    for (Int j=0; j<nstep; j++) {
+      Int inx=0;
+      for (Array<Int>::contiter iter=arr.cbegin(); iter!=arr.cend(); iter++) {
+	*iter = inx;
+	inx++;
+      }
+    }
+    tim.show("write full, contiter()");
   }
   {
     Array<Int> bl(IPosition(1,nelem));
