@@ -112,6 +112,8 @@ template<class T> AutoDiff<T> cosh(const AutoDiff<T> &ad);
 template<class T> AutoDiff<T> exp(const AutoDiff<T> &ad);
 template<class T> AutoDiff<T> log(const AutoDiff<T> &ad);
 template<class T> AutoDiff<T> log10(const AutoDiff<T> &ad);
+template<class T> AutoDiff<T> erf(const AutoDiff<T> &ad);
+template<class T> AutoDiff<T> erfc(const AutoDiff<T> &ad);
 template<class T> AutoDiff<T> pow(const AutoDiff<T> &a, 
 				  const AutoDiff<T> &b);
 template<class T> AutoDiff<T> pow(const AutoDiff<T> &a, const T &b);

@@ -223,6 +223,22 @@ template<class T> AutoDiff<T> log10(const AutoDiff<T> &ad) {
   return tmp.ref();
 }
 
+template<class T> AutoDiff<T> erf(const AutoDiff<T> &ad) { 
+  AutoDiff<T> tmp(ad);
+  T tv = tmp.theRep()->val_p;
+  tmp.theRep()->grad_p *= T(_2_sqrtpi*exp(-tv*tv));
+  tmp.theRep()->val_p = erf(tv);
+  return tmp.ref();
+}
+
+template<class T> AutoDiff<T> erfc(const AutoDiff<T> &ad) { 
+  AutoDiff<T> tmp(ad);
+  T tv = tmp.theRep()->val_p;
+  tmp.theRep()->grad_p *= T(-_2_sqrtpi*exp(-tv*tv));
+  tmp.theRep()->val_p = erfc(tv);
+  return tmp.ref();
+}
+
 template<class T> 
 AutoDiff<T> pow(const AutoDiff<T> &a, const AutoDiff<T> &b) {
   if (b.theRep()->nd_p == 0) return pow(a, b.theRep()->val_p);
