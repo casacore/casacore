@@ -44,7 +44,6 @@
 
 #include <casa/OS/malloc.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
 
 /* 
   Emulation of sbrk for WIN32
@@ -2325,8 +2324,6 @@ History:
 
 */
 
-
-} //# NAMESPACE CASA - END
 
 #else
 /* Some binutils unhappy with a file with no symbols at all */
