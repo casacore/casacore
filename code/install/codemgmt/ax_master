@@ -6111,3 +6111,4 @@
 17 151 src rm admin/system/aips2-ui.list
 17 151 src rm admin/system/aips2-visualization.list
 17 151 src rm admin/system/aips2-weekly-reports.list
+17 151 src rm admin/system/aips2-workers.list
