@@ -34,7 +34,7 @@
 #include <aips/Tables/ColumnDesc.h>
 #include <aips/Tables/ScaColDesc.h>
 #include <aips/Tables/ArrColDesc.h>
-#include <aips/Tables/SubTabDesc.h>
+#include <aips/Tables/ScaRecordColDesc.h>
 
 //#   storage managers
 #include <aips/Tables/StManAipsIO.h>
@@ -67,6 +67,9 @@
 //#   keywords
 #include <aips/Tables/TableRecord.h>
 #include <aips/Containers/RecordField.h>
+
+//#   table lookup
+///#include <aips/Tables/ColumnsIndex.h>
 
 //#   table expressions (for selection of rows)
 #include <aips/Tables/ExprNode.h>
@@ -118,11 +121,12 @@
 //  <LI> <A HREF="#Tables:write">writing</A> into a table,
 //  <LI> <A HREF="#Tables:row-access">accessing rows</A> in a table,
 //  <LI> <A HREF="#Tables:select and sort">selection and sorting</A>
-//       (also <A HREF=../../notes/199/199.html>Table Query Language</A>),
-//  <LI> <A HREF="#Tables:iterate">iterating</A> through a table, and
-//  <LI> <A HREF="#Tables:vectors">vector operations</A> on a column.
+//       (see also <A HREF=../../notes/199/199.html>Table Query Language</A>),
+//  <LI> <A HREF="#Tables:iterate">iterating</A> through a table,
 //  <LI> <A HREF="#Tables:LockSync">locking/synchronization</A>
-//       for concurrent access.
+//       for concurrent access,
+//  <LI> <A HREF="#Tables:KeyLookup">indexing</A> a table for faster lookup,
+//  <LI> <A HREF="#Tables:vectors">vector operations</A> on a column.
 // </UL>
 
 
@@ -191,6 +195,8 @@
 //  <li> Only the standard AIPS++ data types can be used in filled
 //       columns, be they scalars or arrays:  Bool, uChar, Short, uShort,
 //       Int, uInt, float, double, Complex, DComplex and String.
+//       Furthermore scalars containing
+//       <linkto class=TableRecord>record</linkto> values are possible
 //  <li> A column can have a default value, which will automatically be stored
 //       in a cell of the column, when a row is added to the table.
 //  <li> <A HREF="#Tables:Data Managers">Data managers</A> handle the
@@ -203,6 +209,11 @@
 // fully supported by means of a <A HREF="#Tables:LockSync">
 // locking/synchronization</A> mechanism. Concurrent access over NFS is also
 // supported.
+// <p>
+// A (somewhat primitive) mechanism is available to do a
+// <A HREF="#Tables:KeyLookup">table lookup</A> based on the contents
+// of a key. In the future this might be replaced by a proper B+-tree index
+// mechanism.
 
 // <A NAME="Tables:open">
 // <h3>Opening an Existing Table</h3></A>
@@ -273,14 +284,14 @@
 //     // Construct the various column objects.
 //     // Their data type has to match the data type in the table description.
 //     ROScalarColumn<Int> acCol (tab, "ac");
-//     ROArrayColumn<float> arr2Col (tab, "arr2");
+//     ROArrayColumn<Float> arr2Col (tab, "arr2");
 //
 //     // Loop through all rows in the table.
 //     uInt nrrow = tab.nrow();
 //     for (uInt i=0; i<nrow; i++) {
 //         // Read the row for both columns.
 //         cout << "Column ac in row i = " << acCol(i) << endl;
-//         Array<float> array = arr2Col.get (i);
+//         Array<Float> array = arr2Col.get (i);
 //     }
 //
 //     // Show the entire column ac,
@@ -326,6 +337,7 @@
 // #include <aips/Tables/SetupNewTab.h>
 // #include <aips/Tables/Table.h>
 // #include <aips/Tables/ScaColDesc.h>
+// #include <aips/Tables/ScaRecordColDesc.h>
 // #include <aips/Tables/ArrColDesc.h>
 // #include <aips/Tables/StManAipsIO.h>
 // #include <aips/Tables/IncrementalStMan.h>
@@ -338,10 +350,11 @@
 //     td.addColumn (ScalarColumnDesc<Int> ("ab" ,"Comment for column ab"));
 //     td.addColumn (ScalarColumnDesc<Int> ("ac"));
 //     td.addColumn (ScalarColumnDesc<uInt> ("ad","comment for ad"));
-//     td.addColumn (ScalarColumnDesc<float> ("ae"));
-//     td.addColumn (ArrayColumnDesc<float> ("arr1",3,ColumnDesc::Direct));
-//     td.addColumn (ArrayColumnDesc<float> ("arr2",0));
-//     td.addColumn (ArrayColumnDesc<float> ("arr3",0,ColumnDesc::Direct));
+//     td.addColumn (ScalarColumnDesc<Float> ("ae"));
+//     td.addColumn (ScalarRecordColumnDesc ("arec"));
+//     td.addColumn (ArrayColumnDesc<Float> ("arr1",3,ColumnDesc::Direct));
+//     td.addColumn (ArrayColumnDesc<Float> ("arr2",0));
+//     td.addColumn (ArrayColumnDesc<Float> ("arr3",0,ColumnDesc::Direct));
 // 
 //     // Step 2 -- Setup a new table from the description.
 //     SetupNewTable newtab("newtab.data", td, Table::New);
@@ -424,7 +437,7 @@
 //     TableDesc td("tTableDesc", "1", TableDesc::Scratch);
 //     td.comment() = "A test of class SetupNewTable";
 //     td.addColumn (ScalarColumnDesc<Int> ("ac"));
-//     td.addColumn (ArrayColumnDesc<float> ("arr2",0));
+//     td.addColumn (ArrayColumnDesc<Float> ("arr2",0));
 // 
 //     // Setup a new table from the description,
 //     // and create the (still empty) table.
@@ -437,8 +450,8 @@
 //     // Construct the various column objects.
 //     // Their data type has to match the data type in the description.
 //     ScalarColumn<Int> ac (tab, "ac");
-//     ArrayColumn<float> arr2 (tab, "arr2");
-//     Vector<float> vec2(100);
+//     ArrayColumn<Float> arr2 (tab, "arr2");
+//     Vector<Float> vec2(100);
 //
 //     // Write the data into the columns.
 //     // In each cell arr2 will be a vector of length 100.
@@ -571,7 +584,7 @@
 // // objects could be used to allow for easy and fast access to
 // // the record which is refilled for each get.
 // RORecordFieldPtr<String> col1(row.record(), "col1");
-// RORecordFieldPtr<double> col2(row.record(), "col2");
+// RORecordFieldPtr<Double> col2(row.record(), "col2");
 // RORecordFieldPtr<Array<Int> > col3(row.record(), "col3");
 // for (uInt i=0; i<table.nrow(); i++) {
 //     row.get (i);
@@ -776,7 +789,7 @@
 //    Table tab ("Table.data", Table::Update);
 //    TableVector<Int> tabvec(tab, "COL1");
 //    // Multiply it by a constant.
-//    tabvec *= 2;;
+//    tabvec *= 2;
 // </srcblock>
 
 // <A NAME="Tables:keywords">
@@ -827,11 +840,12 @@
 //  <li> <linkto class="ScalarColumnDesc:description">ScalarColumnDesc&lt;T&gt;
 //       </linkto>
 //       -- defines a column containing a scalar value.
+//  <li> <linkto class="ScalarRecordColumnDesc:description">ScalarRecordColumnDesc;
+//       </linkto>
+//       -- defines a column containing a scalar record value.
 //  <li> <linkto class="ArrayColumnDesc:description">ArrayColumnDesc&lt;T&gt;
 //       </linkto>
 //       -- defines a column containing an (in)direct array.
-//  <li> <linkto class="SubTableDesc:description">SubTableDesc</linkto>
-//       -- defines a column containing a table.
 // </ul>
 //
 // Here follows a typical example of the construction of a table
@@ -843,22 +857,14 @@
 // #include <aips/Tables/TableDesc.h>
 // #include <aips/Tables/ScaColDesc.h>
 // #include <aips/Tables/ArrColDesc.h>
-// #include <aips/Tables/SubTabDesc.h>
+// #include <aips/Tables/ScaRecordTabDesc.h>
 // #include <aips/Tables/TableRecord.h>
 // #include <aips/Lattices/IPosition.h>
 // #include <aips/Arrays/Vector.h>
 //
 // main()
 // {
-//     // First build the new description of a subtable.
-//     // Define keyword subkey (integer) having value 10.
-//     // Define columns ra and dec (double).
-//     TableDesc subTableDesc("tTableDesc_sub", "1", TableDesc::New);
-//     subTableDesc.rwKeywordSet().define ("subkey", Int(10));
-//     subTableDesc.addColumn (ScalarColumnDesc<double> ("ra"));
-//     subTableDesc.addColumn (ScalarColumnDesc<double> ("dec"));
-//
-//     // Now create a new table description
+//     // Create a new table description
 //     // Define a comment for the table description.
 //     // Define some keywords.
 //     ColumnDesc colDesc1, colDesc2;
@@ -875,7 +881,7 @@
 //     // and define a default value 0.
 //     // Overwrite the value of keyword unit.
 //     ScalarColumnDesc<Int> acColumn("ac");
-//     acColumn.rwKeywordSet().define ("scale" Complex(0,0));;
+//     acColumn.rwKeywordSet().define ("scale" Complex(0,0));
 //     acColumn.rwKeywordSet().define ("unit", "");
 //     acColumn.setDefault (0);
 //     td.addColumn (acColumn);
@@ -894,13 +900,8 @@
 //                                          IPosition(2,4,7),
 //                                          ColumnDesc::Direct));
 //
-//     // Add columns containing tables.
-//     // This is done in 3 slightly different ways, which all have
-//     // their own (dis)advantages.
-//     // See SubTabDesc.h for a description of the SubTableDesc constructors.
-//     td.addColumn (SubTableDesc("sub1", "subtable by name","tTableDesc_sub"));
-//     td.addColumn (SubTableDesc("sub2", "subtable copy",    subTableDesc));
-//     td.addColumn (SubTableDesc("sub3", "subtable pointer", &subTableDesc));
+//     // Add columns containing records.
+//     td.addColumn (ScalarRecordColumnDesc ("Rec1"));
 // }
 // </srcblock>
 
@@ -1305,8 +1306,60 @@
 // }
 // </srcblock>
 
-// </synopsis>
+// <A NAME="Tables:KeyLookup">
+// <h3>Table lookup based on a key</h3></A>
+//
+// Class <linkto class=ColumnsIndex>ColumnsIndex</linkto> offers the
+// user a means to find the rows matching a given key or key range.
+// It is a somewhat primitive replacement of a B-tree index and in the
+// future it may be replaced by a proper B+-tree implementation.
+// <p>
+// The <src>ColumnsIndex</src> class makes it possible to build an
+// in-core index on one or more columns. Looking a key or key range
+// is done using a binary search on that index. It returns a vector
+// containing the row numbers of the rows matching the key (range).
+// <p>
+// The class is not capable of tracing changes in the underlying column(s).
+// It detects a change in the number of rows and updates the index
+// accordingly. However, it has to be told explicitly when a value
+// in the underlying column(s) changes.
+// <p>
+// The following example shows how the class can be used.
+// <example>
+// Suppose one has an antenna table with key ANTENNA.
+// <srcblock>
+// // Open the table and make an index for column ANTENNA.
+// Table tab("antenna.tab")
+// ColumnsIndex colInx(tab, "ANTENNA");
+// // Make a RecordFieldPtr for the ANTENNA field in the index key record.
+// // Its data type has to match the data type of the column.
+// RecordFieldPtr<Int> antFld(colInx.accessKey(), "ANTENNA");
+// // Now loop in some way and find the row for the antenna
+// // involved in that loop.
+// Bool found;
+// while (...) {
+//     // Fill the key field and get the row number.
+//     // ANTENNA is a unique key, so only one row number matches.
+//     // Otherwise function getRowNumbers had to be used.
+//     *antFld = antenna;
+//     uInt antRownr = colInx.getRowNumber (found);
+//     if (!found) {
+//         cout << "Antenna " << antenna << " is unknown" << endl;
+//     } else {
+//         // antRownr can now be used to get data from that row in
+//         // the antenna table.
+//     }
+// }
+// </srcblock>
+// </example>
+// <linkto class=ColumnsIndex>ColumnsIndex</linkto> itself contains a more
+// advanced example. It shows how to use a private compare function
+// to adjust the lookup when the index does not contain single
+// key values, but intervals instead. This is useful when a row in
+// a (sub)table is valid for, say, a time range instead of a single
+// timestamp.
 
+// </synopsis>
 // </module>
 
 
