@@ -1818,3 +1818,4 @@
 08 003 sys rm bin/aipsview2
 08 003 sys rm bin/display.atoms
 08 003 sys rm bin/fits2image
+08 003 sys rm bin/gfitpoly
