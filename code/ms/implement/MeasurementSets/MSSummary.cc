@@ -365,18 +365,18 @@ void MSSummary::listField (LogIO& os, Bool verbose) const
     Int widthDec   = 14;
     Int widthType  =  8;
 
-    if (verbose) {
-      // Line is	ID Date Time Name RA Dec Type
-      os.output().setf(ios::left, ios::adjustfield);
-      os.output().width(widthLead);	os << "   ";
-      os.output().width(widthField);	os << "ID";
-      os.output().width(widthName);	os << "Name";
-      os.output().width(widthRA);	os << "Right Ascension";
-      os.output().width(widthDec);	os << "Declination";
-      os.output().width(widthType);	os << "Type";
-      os << endl;
-    }
+    if (verbose) {}  // null, always same output
 
+    // Line is	ID Date Time Name RA Dec Type
+    os.output().setf(ios::left, ios::adjustfield);
+    os.output().width(widthLead);	os << "   ";
+    os.output().width(widthField);	os << "ID";
+    os.output().width(widthName);	os << "Name";
+    os.output().width(widthRA);	os << "Right Ascension";
+    os.output().width(widthDec);	os << "Declination";
+    os.output().width(widthType);	os << "Epoch";
+    os << endl;
+    
     // loop through rows
     for (uInt row=0; row<msFC.name().nrow(); row++) {
       MDirection mRaDec=msFC.phaseDirMeas(row);
@@ -385,23 +385,13 @@ void MSSummary::listField (LogIO& os, Bool verbose) const
 
       os.output().setf(ios::left, ios::adjustfield);
       os.output().width(widthLead);	os << "   ";
-      if (verbose) {
-	os.output().width(widthField);	os << (row+1);
-      }
-      else {
-	os << "Name: ";
-	//	if (row==0) {os << "Name: ";}
-	//	else {os << "         Name: ";}
-      }
+      os.output().width(widthField);	os << (row+1);
+
       os.output().width(widthName);	os << msFC.name()(row);
-      if (!verbose) os << "RA: ";
       os.output().width(widthRA);	os << mvRa(0.0).string(MVAngle::TIME,8);
-      if (!verbose) os << "Dec: ";
       os.output().width(widthDec);	os << mvDec.string(MVAngle::DIG2,8);
-      if (!verbose) os << "(";
       os.output().width(widthType);
 		    os << MDirection::showType(mRaDec.getRefPtr()->getType());
-      if (!verbose) os << ")";
       os << endl;
     }
   }
