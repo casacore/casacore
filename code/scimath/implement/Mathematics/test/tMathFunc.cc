@@ -1,5 +1,5 @@
 //# tMathFunc.cc: This program tests MathFunc objects
-//# Copyright (C) 1993,1994,1995,1997
+//# Copyright (C) 1993,1994,1995,1997,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -72,7 +72,8 @@ try{
 
    cout << "\ncreate a Gaussian pointed to by p1 by call to newMathFunc\n";
    cout << " p1->sup_value() = " << p1->sup_value() << endl;
-   for(int j = 0; j <5; j++)
+   int j;
+   for(j = 0; j <5; j++)
      {
 
         float result = p1->value( (float) j);
@@ -184,7 +185,8 @@ try{
 0.0268752,
 0.0072334};
 
-   for(int i = 0; i <5; i++)
+   int i;
+   for(i = 0; i <5; i++)
      {
 	 float result = aa.value((float) i);
 	 AlwaysAssertExit(abs(result-tmp5[i]) < 1.e-5); 	 
