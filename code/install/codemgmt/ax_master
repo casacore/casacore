@@ -2712,3 +2712,4 @@
 10 047 src rm atnf/apps/pks
 10 052 src rm nrao/apps/dish/dish_tracewin.g
 10 052 src rm nrao/apps/dish/dish_dialogbox.g
+10 058 src rm nrao/apps/dish/dishavg.g
