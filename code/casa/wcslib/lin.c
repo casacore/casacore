@@ -1,6 +1,6 @@
 /*============================================================================
 *
-*   WCSLIB 3.4 - an implementation of the FITS WCS convention.
+*   WCSLIB 3.5 - an implementation of the FITS WCS convention.
 *   Copyright (C) 1995-2004, Mark Calabretta
 *
 *   This library is free software; you can redistribute it and/or modify it
@@ -26,10 +26,12 @@
 *                      AUSTRALIA
 *
 *   Author: Mark Calabretta, Australia Telescope National Facility
+*   http://www.atnf.csiro.au/~mcalabre/index.html
 *   $Id$
 *===========================================================================*/
 
 #include <stdio.h>
+#include <stdlib.h>
 #include <math.h>
 #include "lin.h"
 
@@ -40,14 +42,8 @@ const char *lin_errmsg[] = {
    0,
    "Null linprm pointer passed",
    "Memory allocation error",
-   "PC matrix is singular"};
+   "PCi_ja matrix is singular"};
 
-
-#if defined(__convexc__) || defined(__APPLE__)
-#include <stdlib.h>
-#else
-#include <malloc.h>
-#endif
 
 /*--------------------------------------------------------------------------*/
 
@@ -57,7 +53,7 @@ int alloc, naxis;
 struct linprm *lin;
 
 {
-   int i, j, mem;
+   int i, j;
    double *pc;
 
    if (lin == 0) return 1;
@@ -92,8 +88,7 @@ struct linprm *lin;
             lin->crpix = lin->m_crpix;
 
          } else {
-            mem = naxis * sizeof(double);
-            if ((lin->crpix = (double *)malloc(mem)) == (double *)0) {
+            if (!(lin->crpix = (double *)calloc(naxis, sizeof(double)))) {
                return 2;
             }
 
@@ -109,8 +104,7 @@ struct linprm *lin;
             lin->pc = lin->m_pc;
 
          } else {
-            mem = naxis * naxis * sizeof(double);
-            if ((lin->pc = (double *)malloc(mem)) == (double *)0) {
+            if (!(lin->pc = (double *)calloc(naxis*naxis, sizeof(double)))) {
                linfree(lin);
                return 2;
             }
@@ -127,8 +121,7 @@ struct linprm *lin;
             lin->cdelt = lin->m_cdelt;
 
          } else {
-            mem = naxis * sizeof(double);
-            if ((lin->cdelt = (double *)malloc(mem)) == (double *)0) {
+            if (!(lin->cdelt = (double *)calloc(naxis, sizeof(double)))) {
                linfree(lin);
                return 2;
             }
@@ -155,26 +148,27 @@ struct linprm *lin;
    lin->naxis = naxis;
 
 
-   /* CRPIXj defaults to 0.0. */
+   /* CRPIXja defaults to 0.0. */
    for (j = 0; j < naxis; j++) {
       lin->crpix[j] = 0.0;
    }
 
 
-   /* PCi_j defaults to the unit matrix. */
+   /* PCi_ja defaults to the unit matrix. */
    pc = lin->pc;
    for (i = 0; i < naxis; i++) {
       for (j = 0; j < naxis; j++) {
          if (j == i) {
-            *(pc++) = 1.0;
+            *pc = 1.0;
          } else {
-            *(pc++) = 0.0;
+            *pc = 0.0;
          }
+         pc++;
       }
    }
 
 
-   /* CDELTi defaults to 1.0. */
+   /* CDELTia defaults to 1.0. */
    for (i = 0; i < naxis; i++) {
       lin->cdelt[i] = 1.0;
    }
@@ -239,15 +233,17 @@ struct linprm *lin;
 {
    if (lin == 0) return 1;
 
-   /* Free memory allocated by linini(). */
-   if (lin->m_flag == LINSET) {
-      if (lin->crpix == lin->m_crpix) lin->crpix = 0;
-      if (lin->pc    == lin->m_pc)    lin->pc    = 0;
-      if (lin->cdelt == lin->m_cdelt) lin->cdelt = 0;
+   if (lin->flag != -1) {
+      /* Free memory allocated by linini(). */
+      if (lin->m_flag == LINSET) {
+         if (lin->crpix == lin->m_crpix) lin->crpix = 0;
+         if (lin->pc    == lin->m_pc)    lin->pc    = 0;
+         if (lin->cdelt == lin->m_cdelt) lin->cdelt = 0;
 
-      if (lin->m_crpix) free(lin->m_crpix);
-      if (lin->m_pc)    free(lin->m_pc);
-      if (lin->m_cdelt) free(lin->m_cdelt);
+         if (lin->m_crpix) free(lin->m_crpix);
+         if (lin->m_pc)    free(lin->m_pc);
+         if (lin->m_cdelt) free(lin->m_cdelt);
+      }
    }
 
    lin->m_flag  = 0;
@@ -364,7 +360,7 @@ int linset(lin)
 struct linprm *lin;
 
 {
-   int i, j, mem, n, status;
+   int i, j, n, status;
    double *pc, *piximg;
 
    if (lin == 0) return 1;
@@ -411,12 +407,11 @@ struct linprm *lin;
          }
 
          /* Allocate memory for internal arrays. */
-         mem = n * n * sizeof(double);
-         if ((lin->piximg = (double*)malloc(mem)) == (double*)0) {
+         if (!(lin->piximg = (double*)calloc(n*n, sizeof(double)))) {
             return 2;
          }
 
-         if ((lin->imgpix = (double*)malloc(mem)) == (double*)0) {
+         if (!(lin->imgpix = (double*)calloc(n*n, sizeof(double)))) {
             free(lin->piximg);
             return 2;
          }
@@ -434,7 +429,9 @@ struct linprm *lin;
       }
 
       /* Compute the image-to-pixel transformation matrix. */
-      if (status = matinv(n, lin->piximg, lin->imgpix)) return status;
+      if (status = matinv(n, lin->piximg, lin->imgpix)) {
+         return status;
+      }
    }
 
 
@@ -574,27 +571,24 @@ double inv[];
 
 {
    register int i, ij, ik, j, k, kj, pj;
-   int    itemp, mem, *mxl, *lxm, pivot;
+   int    itemp, *mxl, *lxm, pivot;
    double colmax, *lu, *rowmax, dtemp;
 
 
    /* Allocate memory for internal arrays. */
-   mem = n * sizeof(int);
-   if ((mxl = (int*)malloc(mem)) == (int*)0) return 2;
-   if ((lxm = (int*)malloc(mem)) == (int*)0) {
+   if (!(mxl = (int*)calloc(n, sizeof(int)))) return 2;
+   if (!(lxm = (int*)calloc(n, sizeof(int)))) {
       free(mxl);
       return 2;
    }
 
-   mem = n * sizeof(double);
-   if ((rowmax = (double*)malloc(mem)) == (double*)0) {
+   if (!(rowmax = (double*)calloc(n, sizeof(double)))) {
       free(mxl);
       free(lxm);
       return 2;
    }
 
-   mem *= n;
-   if ((lu = (double*)malloc(mem)) == (double*)0) {
+   if (!(lu = (double*)calloc(n*n, sizeof(double)))) {
       free(mxl);
       free(lxm);
       free(rowmax);

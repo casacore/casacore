@@ -1,6 +1,6 @@
 /*============================================================================
 *
-*   WCSLIB 3.4 - an implementation of the FITS WCS convention.
+*   WCSLIB 3.5 - an implementation of the FITS WCS convention.
 *   Copyright (C) 1995-2004, Mark Calabretta
 *
 *   This library is free software; you can redistribute it and/or modify it
@@ -25,9 +25,12 @@
 *                      Epping NSW 1710
 *                      AUSTRALIA
 *
+*   Author: Mark Calabretta, Australia Telescope National Facility
+*   http://www.atnf.csiro.au/~mcalabre/index.html
+*   $Id$
 *=============================================================================
 *
-*   WCSLIB 3.4 - C routines that implement the FITS World Coordinate System
+*   WCSLIB 3.5 - C routines that implement the FITS World Coordinate System
 *   (WCS) convention.  Refer to
 *
 *      "Representations of world coordinates in FITS",
@@ -159,7 +162,7 @@
 *                           0: Success.
 *                           1: Null linprm pointer passed.
 *                           2: Memory allocation error.
-*                           3: PC matrix is singular.
+*                           3: PCi_ja matrix is singular.
 *
 *
 *   Pixel-to-world transformation; linp2x()
@@ -187,7 +190,7 @@
 *                           0: Success.
 *                           1: Null linprm pointer passed.
 *                           2: Memory allocation error.
-*                           3: PC matrix is singular.
+*                           3: PCi_ja matrix is singular.
 *
 *
 *   World-to-pixel transformation; linx2p()
@@ -215,7 +218,7 @@
 *                           0: Success.
 *                           1: Null linprm pointer passed.
 *                           2: Memory allocation error.
-*                           3: PC matrix is singular.
+*                           3: PCi_ja matrix is singular.
 *
 *
 *   Linear transformation parameters
@@ -237,10 +240,10 @@
 *
 *      double *crpix
 *         Pointer to the first element of an array of double containing the
-*         coordinate reference pixel, CRPIXj.
+*         coordinate reference pixel, CRPIXja.
 *
 *      double *pc
-*         Pointer to the first element of the PC (pixel coordinate)
+*         Pointer to the first element of the PCi_ja (pixel coordinate)
 *         transformation matrix.  The expected order is
 *
 *            lin.pc = {PC1_1, PC1_2, PC2_1, PC2_2};
@@ -267,7 +270,7 @@
 *
 *      double *cdelt
 *         Pointer to the first element of an array of double containing the
-*         coordinate increments, CDELTi.
+*         coordinate increments, CDELTia.
 *
 *   The remaining members of the linprm struct are maintained by linset() and
 *   must not be modified elsewhere:
@@ -277,7 +280,7 @@
 *
 *      double *piximg
 *         Pointer to the first element of the matrix containing the product
-*         of the CDELTi diagonal matrix and the PC matrix.
+*         of the CDELTia diagonal matrix and the PCi_ja matrix.
 *
 *      double *imgpix
 *         Pointer to the first element of the inverse of the piximg matrix.
@@ -334,9 +337,6 @@
 *   Error messages to match the error codes returned from each function are
 *   encoded in the lin_errmsg character array.
 *
-*
-*   Author: Mark Calabretta, Australia Telescope National Facility
-*   $Id$
 *===========================================================================*/
 
 #ifndef WCSLIB_LIN
@@ -371,14 +371,14 @@ struct linprm {
    /* Parameters to be provided (see the prologue above).                   */
    /*-----------------------------------------------------------------------*/
    int naxis;			/* The number of axes, given by NAXIS.      */
-   double *crpix;		/* CRPIXj cards for each pixel axis.        */
-   double *pc;			/* PCi_j  linear transformation matrix.     */
-   double *cdelt;		/* CDELTi cards for each coordinate axis.   */
+   double *crpix;		/* CRPIXja cards for each pixel axis.       */
+   double *pc;			/* PCi_ja  linear transformation matrix.    */
+   double *cdelt;		/* CDELTia cards for each coordinate axis.  */
 
    /* Information derived from the parameters supplied.                     */
    /*-----------------------------------------------------------------------*/
-   int unity;			/* True if the PCi_j matrix is unity.       */
-   double *piximg;		/* Product of the CDELTi and PCij matrices. */
+   int unity;			/* True if the PCi_ja matrix is unity.      */
+   double *piximg;		/* Product of CDELTia and PCi_ja matrices.  */
    double *imgpix;		/* Inverse of the piximg matrix.            */
 
    int m_flag, m_naxis;		/* The remainder are for memory management. */

@@ -30,56 +30,31 @@
 *   $Id$
 *===========================================================================*/
 
-#ifndef WCSLIB_TRIG
-#define WCSLIB_TRIG
+#include <stdlib.h>
 
-#ifdef WCSTRIG_MACRO
+#include "wcshdr.h"
+#include "wcs.h"
 
-/* Macro implementation of the trigd functions. */
-#include "wcsmath.h"
+/*--------------------------------------------------------------------------*/
 
-#define cosd(X) cos((X)*D2R)
-#define sind(X) sin((X)*D2R)
-#define tand(X) tan((X)*D2R)
-#define acosd(X) acos(X)*R2D
-#define asind(X) asin(X)*R2D
-#define atand(X) atan(X)*R2D
-#define atan2d(Y,X) atan2(Y,X)*R2D
+int wcsvfree(nwcs, wcs)
 
-#else
+int *nwcs;
+struct wcsprm **wcs;
 
-/* Use WCSLIB wrappers or native trigd functions. */
+{
+  int a, status = 0;
+  struct wcsprm *wcsp;
 
-#ifdef __cplusplus
-extern "C" {
-#endif
+  wcsp = *wcs;
+  for (a = 0; a < *nwcs; a++, wcsp++) {
+    status |= wcsfree(wcsp);
+  }
 
+  free(*wcs);
 
-#if __STDC__ || defined(__cplusplus)
-   double cosd(double);
-   double sind(double);
-   double tand(double);
-   double acosd(double);
-   double asind(double);
-   double atand(double);
-   double atan2d(double, double);
-#else
-   double cosd();
-   double sind();
-   double tand();
-   double acosd();
-   double asind();
-   double atand();
-   double atan2d();
-#endif
+  *nwcs = 0;
+  *wcs = 0;
 
-/* Domain tolerance for asin and acos functions. */
-#define WCSTRIG_TOL 1e-10
-
-#ifdef __cplusplus
-};
-#endif
-
-#endif /* WCSTRIG_MACRO */
-
-#endif /* WCSLIB_TRIG */
+  return status;
+}

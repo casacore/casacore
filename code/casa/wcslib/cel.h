@@ -1,6 +1,6 @@
 /*============================================================================
 *
-*   WCSLIB 3.4 - an implementation of the FITS WCS convention.
+*   WCSLIB 3.5 - an implementation of the FITS WCS convention.
 *   Copyright (C) 1995-2004, Mark Calabretta
 *
 *   This library is free software; you can redistribute it and/or modify it
@@ -25,9 +25,12 @@
 *                      Epping NSW 1710
 *                      AUSTRALIA
 *
+*   Author: Mark Calabretta, Australia Telescope National Facility
+*   http://www.atnf.csiro.au/~mcalabre/index.html
+*   $Id$
 *=============================================================================
 *
-*   WCSLIB 3.4 - C routines that implement the FITS World Coordinate System
+*   WCSLIB 3.5 - C routines that implement the FITS World Coordinate System
 *   (WCS) convention.  Refer to
 *
 *      "Representations of world coordinates in FITS",
@@ -201,14 +204,14 @@
 *      double ref[4]
 *         The first pair of values should be set to the celestial longitude
 *         and latitude (usually right ascension and declination) of the
-*         fiducial point.  These are given by the CRVALi keywords in FITS.
+*         fiducial point.  These are given by the CRVALia keywords in FITS.
 *
 *         The second pair of values are the native longitude and latitude of
 *         the celestial pole (the latter is the same as the celestial latitude
-*         of the native pole) and correspond to the FITS keywords LONPOLE and
-*         LATPOLE.
+*         of the native pole) and correspond to the FITS keywords LONPOLEa and
+*         LATPOLEa.
 *
-*         LONPOLE defaults to 0 degrees if the celestial latitude of the
+*         LONPOLEa defaults to 0 degrees if the celestial latitude of the
 *         fiducial point of the projection is greater than the native
 *         latitude, otherwise 180 degrees.  (This is the condition for the
 *         celestial latitude to increase in the same direction as the native
@@ -217,15 +220,15 @@
 *
 *         In some circumstances the celestial latitude of the native pole may
 *         be determined by the first three values only to within a sign and
-*         LATPOLE is used to choose between the two solutions.  LATPOLE is
+*         LATPOLEa is used to choose between the two solutions.  LATPOLEa is
 *         set in ref[3] and the solution closest to this value is used to
 *         reset ref[3].  It is therefore legitimate, for example, to set
 *         ref[3] to 999.0 to choose the more northerly solution - the default
-*         if the LATPOLE card is omitted from the FITS header.  For the
+*         if the LATPOLEa card is omitted from the FITS header.  For the
 *         special case where the fiducial point of the projection is at native
-*         latitude zero, its celestial latitude is zero, and LONPOLE = +/- 90
+*         latitude zero, its celestial latitude is zero, and LONPOLEa = +/- 90
 *         then the celestial latitude of the native pole is not determined by
-*         the first three reference values and LATPOLE specifies it
+*         the first three reference values and LATPOLEa specifies it
 *         completely.
 *
 *      struct prjprm prj
@@ -321,9 +324,6 @@
 *   Error messages to match the error codes returned from each function are
 *   encoded in the cel_errmsg character array.
 *
-*
-*   Author: Mark Calabretta, Australia Telescope National Facility
-*   $Id$
 *===========================================================================*/
 
 #ifndef WCSLIB_CEL

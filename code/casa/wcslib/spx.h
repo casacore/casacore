@@ -1,6 +1,6 @@
 /*============================================================================
 *
-*   WCSLIB 3.4 - an implementation of the FITS WCS convention.
+*   WCSLIB 3.5 - an implementation of the FITS WCS convention.
 *   Copyright (C) 1995-2004, Mark Calabretta
 *
 *   This library is free software; you can redistribute it and/or modify it
@@ -25,9 +25,12 @@
 *                      Epping NSW 1710
 *                      AUSTRALIA
 *
+*   Author: Mark Calabretta, Australia Telescope National Facility
+*   http://www.atnf.csiro.au/~mcalabre/index.html
+*   $Id$
 *=============================================================================
 *
-*   WCSLIB 3.4 - C routines that implement the spectral coordinate systems
+*   WCSLIB 3.5 - C routines that implement the spectral coordinate systems
 *   recognized by the FITS World Coordinate System (WCS) convention.  Refer to
 *
 *      "Representations of world coordinates in FITS",
@@ -251,9 +254,6 @@
 *   double precision rounding error was demonstrated by test routine tspec.c
 *   which accompanies this software.
 *
-*
-*   Author: Mark Calabretta, Australia Telescope National Facility
-*   $Id$
 *===========================================================================*/
 
 #ifndef WCSLIB_SPEC

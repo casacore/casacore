@@ -1,6 +1,6 @@
 /*============================================================================
 *
-*   WCSLIB 3.4 - an implementation of the FITS WCS convention.
+*   WCSLIB 3.5 - an implementation of the FITS WCS convention.
 *   Copyright (C) 1995-2004, Mark Calabretta
 *
 *   This library is free software; you can redistribute it and/or modify it
@@ -25,9 +25,12 @@
 *                      Epping NSW 1710
 *                      AUSTRALIA
 *
+*   Author: Mark Calabretta, Australia Telescope National Facility
+*   http://www.atnf.csiro.au/~mcalabre/index.html
+*   $Id$
 *=============================================================================
 *
-*   WCSLIB 3.4 - C routines that implement the spectral coordinate systems
+*   WCSLIB 3.5 - C routines that implement the spectral coordinate systems
 *   recognized by the FITS World Coordinate System (WCS) convention.  Refer to
 *
 *      "Representations of world coordinates in FITS",
@@ -173,14 +176,14 @@
 *
 *      char type[8]
 *         Four-letter spectral coordinate type, e.g "ZOPT" for
-*         CTYPEk = "ZOPT-F2W".  (Declared as char[8] for alignment reasons.)
+*         CTYPEia = "ZOPT-F2W".  (Declared as char[8] for alignment reasons.)
 *
 *      char code[4]
 *         Three-letter spectral algorithm code, e.g "F2W" for
-*         CTYPEk = "ZOPT-F2W".
+*         CTYPEia = "ZOPT-F2W".
 *
 *      double crval
-*         Reference value (CRVALk), SI units.
+*         Reference value (CRVALia), SI units.
 *
 *      double restfrq
 *         Rest frequency, Hz.
@@ -269,9 +272,6 @@
 *   double precision rounding error was demonstrated by test routine tspc.c
 *   which accompanies this software.
 *
-*
-*   Author: Mark Calabretta, Australia Telescope National Facility
-*   $Id$
 *===========================================================================*/
 
 #ifndef WCSLIB_SPC
@@ -311,7 +311,7 @@ struct spcprm {
    char   type[8];		/* Four-letter spectral coordinate type.    */
    char   code[4];		/* Three-letter spectral algorithm code.    */
 
-   double crval;		/* Reference value (CRVALk), SI units.      */
+   double crval;		/* Reference value (CRVALia), SI units.     */
    double restfrq;		/* Rest frequency, Hz.                      */
    double restwav;		/* Rest wavelength, m.                      */
 
@@ -329,7 +329,7 @@ struct spcprm {
    double w[6];			/* Intermediate values.                     */
 				/*   0: Rest frequency or wavelength (SI).  */
 				/*   1: CRVALX (SI units).                  */
-				/*   2: CDELTX/CDELTi = dX/dw (SI units).   */
+				/*   2: CDELTX/CDELTia = dX/dw (SI units).  */
 				/* The remainder are grism intermediates.   */
 
    int isGrism;			/* Grism coordinates?  1: vacuum, 2: air.   */
@@ -348,45 +348,45 @@ struct spcprm {
 
 
 /* Use the preprocessor to define function prototypes. */
-#ifdef INI
-#undef INI
+#ifdef SPCINI
+#undef SPCINI
 #endif
 
-#ifdef PRT
-#undef PRT
+#ifdef SPCPRT
+#undef SPCPRT
 #endif
 
-#ifdef SET
-#undef SET
+#ifdef SPCSET
+#undef SPCSET
 #endif
 
-#ifdef X2S
-#undef X2S
+#ifdef SPCX2S
+#undef SPCX2S
 #endif
 
-#ifdef S2X
-#undef S2X
+#ifdef SPCS2X
+#undef SPCS2X
 #endif
 
 #if __STDC__ || defined(__cplusplus)
-#define INI struct spcprm *
-#define PRT const struct spcprm *
-#define SET struct spcprm *
-#define X2S struct spcprm *, int, int, int, const double[], double[], int[]
-#define S2X struct spcprm *, int, int, int, const double[], double[], int[]
+#define SPCINI struct spcprm *
+#define SPCPRT const struct spcprm *
+#define SPCSET struct spcprm *
+#define SPCX2S struct spcprm *, int, int, int, const double[], double[], int[]
+#define SPCS2X struct spcprm *, int, int, int, const double[], double[], int[]
 #else
-#define INI
-#define PRT
-#define SET
-#define X2S
-#define S2X
+#define SPCINI
+#define SPCPRT
+#define SPCSET
+#define SPCX2S
+#define SPCS2X
 #endif
 
-int spcini(INI);
-int spcprt(PRT);
-int spcset(SET);
-int spcx2s(X2S);
-int spcs2x(S2X);
+int spcini(SPCINI);
+int spcprt(SPCPRT);
+int spcset(SPCSET);
+int spcx2s(SPCX2S);
+int spcs2x(SPCS2X);
 
 #ifdef __cplusplus
 };

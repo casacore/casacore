@@ -1,6 +1,6 @@
 /*============================================================================
 *
-*   WCSLIB 3.4 - an implementation of the FITS WCS convention.
+*   WCSLIB 3.5 - an implementation of the FITS WCS convention.
 *   Copyright (C) 1995-2004, Mark Calabretta
 *
 *   This library is free software; you can redistribute it and/or modify it
@@ -25,9 +25,12 @@
 *                      Epping NSW 1710
 *                      AUSTRALIA
 *
+*   Author: Mark Calabretta, Australia Telescope National Facility
+*   http://www.atnf.csiro.au/~mcalabre/index.html
+*   $Id$
 *=============================================================================
 *
-*   WCSLIB 3.4 - C routines that implement the spherical map projections
+*   WCSLIB 3.5 - C routines that implement the spherical map projections
 *   recognized by the FITS World Coordinate System (WCS) convention.  Refer to
 *
 *      "Representations of world coordinates in FITS",
@@ -224,10 +227,10 @@
 *         value of 180/pi (the value for FITS WCS).
 *
 *      double pv[30]
-*         Projection parameters.  These correspond to the PVi_m keywords in
-*         FITS, so pv[0] is PVi_0, pv[1] is PVi_1, etc., where i denotes the
-*         latitude-like axis.  Many projections use pv[1] (PVi_1), some also
-*         use pv[2] (PVi_2) and SZP uses pv[3] (PVi_3).  ZPN is the only
+*         Projection parameters.  These correspond to the PVi_ma keywords in
+*         FITS, so pv[0] is PVi_0a, pv[1] is PVi_1a, etc., where i denotes the
+*         latitude-like axis.  Many projections use pv[1] (PVi_1a), some also
+*         use pv[2] (PVi_2a) and SZP uses pv[3] (PVi_3a).  ZPN is the only
 *         projection that uses any of the others.
 *
 *      double phi0, theta0
@@ -393,9 +396,6 @@
 *   diverge).  Refer to the tproj1.c and tproj2.c test routines which
 *   accompany this software.
 *
-*
-*   Author: Mark Calabretta, Australia Telescope National Facility
-*   $Id$
 *===========================================================================*/
 
 #ifndef WCSLIB_PROJ
@@ -431,42 +431,42 @@ extern const char prj_codes[26][4];
 
 
 /* Use the preprocessor to define function interfaces. */
-#ifdef INI
-#undef INI
+#ifdef PRJINI
+#undef PRJINI
 #endif
 
-#ifdef PRT
-#undef PRT
+#ifdef PRJPRT
+#undef PRJPRT
 #endif
 
-#ifdef SET
-#undef SET
+#ifdef PRJSET
+#undef PRJSET
 #endif
 
-#ifdef X2S
-#undef X2S
+#ifdef PRJX2S
+#undef PRJX2S
 #endif
 
-#ifdef S2X
-#undef S2X
+#ifdef PRJS2X
+#undef PRJS2X
 #endif
 
 #if __STDC__ || defined(__cplusplus)
-#define INI struct prjprm *
-#define PRT const struct prjprm *
-#define SET struct prjprm *
-#define X2S struct prjprm *, int, int, int, int, \
-            const double[], const double[],      \
-            double[], double[], int[]
-#define S2X struct prjprm *, int, int, int, int, \
-            const double[], const double[],      \
-            double[], double[], int[]
+#define PRJINI struct prjprm *
+#define PRJPRT const struct prjprm *
+#define PRJSET struct prjprm *
+#define PRJX2S struct prjprm *, int, int, int, int, \
+               const double[], const double[],      \
+               double[], double[], int[]
+#define PRJS2X struct prjprm *, int, int, int, int, \
+               const double[], const double[],      \
+               double[], double[], int[]
 #else
-#define INI
-#define PRT
-#define SET
-#define X2S
-#define S2X
+#define PRJINI
+#define PRJPRT
+#define PRJSET
+#define PRJX2S
+#define PRJS2X
 #endif
 
 
@@ -498,8 +498,8 @@ struct prjprm {
    double w[10];		/* Intermediate values.                     */
    int    n;			/* Intermediate value.                      */
 
-   int (*prjx2s)(X2S);		/* Pointers to the spherical projection and */
-   int (*prjs2x)(S2X);		/* deprojection functions.                  */
+   int (*prjx2s)(PRJX2S);	/* Pointers to the spherical projection and */
+   int (*prjs2x)(PRJS2X);	/* deprojection functions.                  */
 
    double *p;			/* Aliased to pv[] by prjini() for backward */
                                 /* compatibility with WCSLIB 2.x.           */
@@ -509,13 +509,13 @@ struct prjprm {
 
 
 /* Use the preprocessor to declare function prototypes. */
-int prjini(INI);
-int prjprt(PRT);
+int prjini(PRJINI);
+int prjprt(PRJPRT);
 
 #define PROTO(CODE)    \
-   int CODE##set(SET); \
-   int CODE##x2s(X2S); \
-   int CODE##s2x(S2X);
+   int CODE##set(PRJSET); \
+   int CODE##x2s(PRJX2S); \
+   int CODE##s2x(PRJS2X);
 
 PROTO(prj)
 PROTO(azp)

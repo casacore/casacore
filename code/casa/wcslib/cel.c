@@ -1,6 +1,6 @@
 /*============================================================================
 *
-*   WCSLIB 3.4 - an implementation of the FITS WCS convention.
+*   WCSLIB 3.5 - an implementation of the FITS WCS convention.
 *   Copyright (C) 1995-2004, Mark Calabretta
 *
 *   This library is free software; you can redistribute it and/or modify it
@@ -26,6 +26,7 @@
 *                      AUSTRALIA
 *
 *   Author: Mark Calabretta, Australia Telescope National Facility
+*   http://www.atnf.csiro.au/~mcalabre/index.html
 *   $Id$
 *===========================================================================*/
 
@@ -215,7 +216,7 @@ struct celprm *cel;
             return 3;
          }
 
-         /* latp determined by LATPOLE in this case. */
+         /* latp determined by LATPOLEa in this case. */
          if (latp > 90.0) {
             latp = 90.0;
          } else if (latp < -90.0) {
@@ -309,7 +310,7 @@ struct celprm *cel;
       }
    }
 
-   /* Reset LATPOLE. */
+   /* Reset LATPOLEa. */
    cel->ref[3] = latp;
 
    /* Set the Euler angles. */

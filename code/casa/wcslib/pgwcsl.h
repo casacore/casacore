@@ -1,6 +1,6 @@
 /*============================================================================
 *
-*   PGSBOX 3.4 - a non-linear coordinate axis plotter for PGPLOT.
+*   PGSBOX 3.5 - a non-linear coordinate axis plotter for PGPLOT.
 *   Copyright (C) 1997-2004, Mark Calabretta
 *
 *   This library is free software; you can redistribute it and/or modify it
@@ -25,6 +25,9 @@
 *                      Epping NSW 1710
 *                      AUSTRALIA
 *
+*   Author: Mark Calabretta, Australia Telescope National Facility
+*   http://www.atnf.csiro.au/~mcalabre/index.html
+*   $Id$
 *=============================================================================
 *
 *   pgwcsl_() is an NLFUNC for PGSBOX that defines curvilinear celestial
@@ -111,8 +114,6 @@
 *       of the quadcube projections.
 *
 *
-*   Author: Mark Calabretta, Australia Telescope National Facility
-*   $Id$
 *===========================================================================*/
 #ifndef pgwcsl_h
 #define pgwcsl_h

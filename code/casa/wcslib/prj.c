@@ -1,6 +1,6 @@
 /*============================================================================
 *
-*   WCSLIB 3.4 - an implementation of the FITS WCS convention.
+*   WCSLIB 3.5 - an implementation of the FITS WCS convention.
 *   Copyright (C) 1995-2004, Mark Calabretta
 *
 *   This library is free software; you can redistribute it and/or modify it
@@ -26,6 +26,7 @@
 *                      AUSTRALIA
 *
 *   Author: Mark Calabretta, Australia Telescope National Facility
+*   http://www.atnf.csiro.au/~mcalabre/index.html
 *   $Id$
 *===========================================================================*/
 
@@ -109,6 +110,8 @@ int prj_stat;
 *
 * prjini initializes a prjprm struct to default values.
 *
+* prjprt prints the contents of a prjprm struct.
+*
 * prjset invokes the specific initialization routine based on the projection
 *        code in the prjprm struct.
 *
@@ -167,7 +170,7 @@ int prjprt(prj)
 const struct prjprm *prj;
 
 {
-   int i, j;
+   int i, n;
 
    if (prj == 0) return 1;
 
@@ -176,17 +179,24 @@ const struct prjprm *prj;
    printf("         r0: %9f\n", prj->r0);
    printf("         pv:");
    if (prj->pvrange) {
-      for (j = 0; j < prj->pvrange/100; j++) {
-         printf("   (0)        ");
+      n = (prj->pvrange)%100;
+
+      if (prj->pvrange/100) {
+         printf(" (0)");
+      } else {
+         printf(" %- 11.4g", prj->pv[0]);
+         n--;
       }
-      for (i = 0; i < (prj->pvrange)%100; i++, j++) {
-         if (undefined(prj->pv[prj->pvrange/100 + i])) {
+
+      for (i = 1; i <= n; i++) {
+         if (i%5 == 1) {
+            printf("\n           ");
+         }
+
+         if (undefined(prj->pv[i])) {
             printf("  UNDEFINED   ");
          } else {
-            printf("  %- 11.4g", prj->pv[prj->pvrange/100 + i]);
-         }
-         if (j && j%5 == 0) {
-            printf("\n            ");
+            printf("  %- 11.4g", prj->pv[i]);
          }
       }
       printf("\n");
@@ -346,11 +356,11 @@ int stat[];
 }
 
 /*============================================================================
-* Internal helper routine used by the *set() routines which forces
+* Internal helper routine used by the *set() routines that forces
 * (x,y) = (0,0) at (phi0,theta0).
 *---------------------------------------------------------------------------*/
 
-int offset(prj, phi0, theta0)
+int prjoff(prj, phi0, theta0)
 
 struct prjprm *prj;
 const double phi0, theta0;
@@ -456,7 +466,7 @@ struct prjprm *prj;
    prj->prjx2s = azpx2s;
    prj->prjs2x = azps2x;
 
-   return offset(prj, 0.0, 90.0);
+   return prjoff(prj, 0.0, 90.0);
 }
 
 /*--------------------------------------------------------------------------*/
@@ -765,7 +775,7 @@ struct prjprm *prj;
    prj->prjx2s = szpx2s;
    prj->prjs2x = szps2x;
 
-   return offset(prj, 0.0, 90.0);
+   return prjoff(prj, 0.0, 90.0);
 }
 
 /*--------------------------------------------------------------------------*/
@@ -1058,7 +1068,7 @@ struct prjprm *prj;
    prj->prjx2s = tanx2s;
    prj->prjs2x = tans2x;
 
-   return offset(prj, 0.0, 90.0);
+   return prjoff(prj, 0.0, 90.0);
 }
 
 /*--------------------------------------------------------------------------*/
@@ -1277,7 +1287,7 @@ struct prjprm *prj;
    prj->prjx2s = stgx2s;
    prj->prjs2x = stgs2x;
 
-   return offset(prj, 0.0, 90.0);
+   return prjoff(prj, 0.0, 90.0);
 }
 
 /*--------------------------------------------------------------------------*/
@@ -1495,7 +1505,7 @@ struct prjprm *prj;
    prj->prjx2s = sinx2s;
    prj->prjs2x = sins2x;
 
-   return offset(prj, 0.0, 90.0);
+   return prjoff(prj, 0.0, 90.0);
 }
 
 /*--------------------------------------------------------------------------*/
@@ -1822,7 +1832,7 @@ struct prjprm *prj;
    prj->prjx2s = arcx2s;
    prj->prjs2x = arcs2x;
 
-   return offset(prj, 0.0, 90.0);
+   return prjoff(prj, 0.0, 90.0);
 }
 
 /*--------------------------------------------------------------------------*/
@@ -1990,8 +2000,8 @@ int stat[];
 *      prj->x0      Fiducial offset in x.
 *      prj->y0      Fiducial offset in y.
 *      prj->n       Degree of the polynomial, N.
-*      prj->w[0]    Co-latitude of the first point of inflection (N > 2).
-*      prj->w[1]    Radius of the first point of inflection (N > 2).
+*      prj->w[0]    Co-latitude of the first point of inflection, radian.
+*      prj->w[1]    Radius of the first point of inflection (N > 1), radian.
 *      prj->prjx2s  Pointer to zpnx2s().
 *      prj->prjs2x  Pointer to zpns2x().
 *===========================================================================*/
@@ -2030,7 +2040,11 @@ struct prjprm *prj;
 
    prj->n = k;
 
-   if (k >= 3) {
+   if (k < 2) {
+      /* No point of inflection. */
+      prj->w[0] = PI;
+
+   } else {
       /* Find the point of inflection closest to the pole. */
       zd1 = 0.0;
       d1  = prj->pv[1];
@@ -2088,7 +2102,7 @@ struct prjprm *prj;
    prj->prjx2s = zpnx2s;
    prj->prjs2x = zpns2x;
 
-   return offset(prj, 0.0, 90.0);
+   return prjoff(prj, 0.0, 90.0);
 }
 
 /*--------------------------------------------------------------------------*/
@@ -2405,7 +2419,7 @@ struct prjprm *prj;
    prj->prjx2s = zeax2s;
    prj->prjs2x = zeas2x;
 
-   return offset(prj, 0.0, 90.0);
+   return prjoff(prj, 0.0, 90.0);
 }
 
 /*--------------------------------------------------------------------------*/
@@ -2645,7 +2659,7 @@ struct prjprm *prj;
    prj->prjx2s = airx2s;
    prj->prjs2x = airs2x;
 
-   return offset(prj, 0.0, 90.0);
+   return prjoff(prj, 0.0, 90.0);
 }
 
 /*--------------------------------------------------------------------------*/
@@ -2959,7 +2973,7 @@ struct prjprm *prj;
    prj->prjx2s = cypx2s;
    prj->prjs2x = cyps2x;
 
-   return offset(prj, 0.0, 0.0);
+   return prjoff(prj, 0.0, 0.0);
 }
 
 /*--------------------------------------------------------------------------*/
@@ -3173,7 +3187,7 @@ struct prjprm *prj;
    prj->prjx2s = ceax2s;
    prj->prjs2x = ceas2x;
 
-   return offset(prj, 0.0, 0.0);
+   return prjoff(prj, 0.0, 0.0);
 }
 
 /*--------------------------------------------------------------------------*/
@@ -3372,7 +3386,7 @@ struct prjprm *prj;
    prj->prjx2s = carx2s;
    prj->prjs2x = cars2x;
 
-   return offset(prj, 0.0, 0.0);
+   return prjoff(prj, 0.0, 0.0);
 }
 
 /*--------------------------------------------------------------------------*/
@@ -3555,7 +3569,7 @@ struct prjprm *prj;
    prj->prjx2s = merx2s;
    prj->prjs2x = mers2x;
 
-   return offset(prj, 0.0, 0.0);
+   return prjoff(prj, 0.0, 0.0);
 }
 
 /*--------------------------------------------------------------------------*/
@@ -3748,7 +3762,7 @@ struct prjprm *prj;
    prj->prjx2s = sflx2s;
    prj->prjs2x = sfls2x;
 
-   return offset(prj, 0.0, 0.0);
+   return prjoff(prj, 0.0, 0.0);
 }
 
 /*--------------------------------------------------------------------------*/
@@ -3953,7 +3967,7 @@ struct prjprm *prj;
    prj->prjx2s = parx2s;
    prj->prjs2x = pars2x;
 
-   return offset(prj, 0.0, 0.0);
+   return prjoff(prj, 0.0, 0.0);
 }
 
 /*--------------------------------------------------------------------------*/
@@ -4178,7 +4192,7 @@ struct prjprm *prj;
    prj->prjx2s = molx2s;
    prj->prjs2x = mols2x;
 
-   return offset(prj, 0.0, 0.0);
+   return prjoff(prj, 0.0, 0.0);
 }
 
 /*--------------------------------------------------------------------------*/
@@ -4454,7 +4468,7 @@ struct prjprm *prj;
    prj->prjx2s = aitx2s;
    prj->prjs2x = aits2x;
 
-   return offset(prj, 0.0, 0.0);
+   return prjoff(prj, 0.0, 0.0);
 }
 
 /*--------------------------------------------------------------------------*/
@@ -4712,7 +4726,7 @@ struct prjprm *prj;
    prj->prjx2s = copx2s;
    prj->prjs2x = cops2x;
 
-   return offset(prj, 0.0, prj->pv[1]);
+   return prjoff(prj, 0.0, prj->pv[1]);
 }
 
 /*--------------------------------------------------------------------------*/
@@ -4963,7 +4977,7 @@ struct prjprm *prj;
    prj->prjx2s = coex2s;
    prj->prjs2x = coes2x;
 
-   return offset(prj, 0.0, prj->pv[1]);
+   return prjoff(prj, 0.0, prj->pv[1]);
 }
 
 /*--------------------------------------------------------------------------*/
@@ -5211,7 +5225,7 @@ struct prjprm *prj;
    prj->prjx2s = codx2s;
    prj->prjs2x = cods2x;
 
-   return offset(prj, 0.0, prj->pv[1]);
+   return prjoff(prj, 0.0, prj->pv[1]);
 }
 
 /*--------------------------------------------------------------------------*/
@@ -5449,7 +5463,7 @@ struct prjprm *prj;
    prj->prjx2s = coox2s;
    prj->prjs2x = coos2x;
 
-   return offset(prj, 0.0, prj->pv[1]);
+   return prjoff(prj, 0.0, prj->pv[1]);
 }
 
 /*--------------------------------------------------------------------------*/
@@ -5665,6 +5679,11 @@ struct prjprm *prj;
       return 2;
    }
 
+   if (prj->pv[1] == 0.0) {
+      /* Sanson-Flamsteed. */
+      return sflset(prj);
+   }
+
    strcpy(prj->name, "Bonne's");
    prj->category  = POLYCONIC;
    prj->pvrange   = 101;
@@ -5687,7 +5706,7 @@ struct prjprm *prj;
    prj->prjx2s = bonx2s;
    prj->prjs2x = bons2x;
 
-   return offset(prj, 0.0, 0.0);
+   return prjoff(prj, 0.0, 0.0);
 }
 
 /*--------------------------------------------------------------------------*/
@@ -5910,7 +5929,7 @@ struct prjprm *prj;
    prj->prjx2s = pcox2s;
    prj->prjs2x = pcos2x;
 
-   return offset(prj, 0.0, 0.0);
+   return prjoff(prj, 0.0, 0.0);
 }
 
 /*--------------------------------------------------------------------------*/
@@ -6174,7 +6193,7 @@ struct prjprm *prj;
    prj->prjx2s = tscx2s;
    prj->prjs2x = tscs2x;
 
-   return offset(prj, 0.0, 0.0);
+   return prjoff(prj, 0.0, 0.0);
 }
 
 /*--------------------------------------------------------------------------*/
@@ -6325,8 +6344,7 @@ int stat[];
 
 {
    int face, mphi, mtheta, rowlen, rowoff, status;
-   double cosphi, costhe, l, m, n, rho, sinphi, sinthe, x0, xf,
-          y0, yf;
+   double cosphi, costhe, l, m, n, sinphi, sinthe, x0, xf, y0, yf, zeta;
    const double tol = 1.0e-12;
    register int iphi, istat, itheta, *statp;
    register const double *phip, *thetap;
@@ -6384,63 +6402,63 @@ int stat[];
          n = sinthe;
 
          face = 0;
-         rho  = n;
-         if (l > rho) {
+         zeta = n;
+         if (l > zeta) {
             face = 1;
-            rho  = l;
+            zeta = l;
          }
-         if (m > rho) {
+         if (m > zeta) {
             face = 2;
-            rho  = m;
+            zeta = m;
          }
-         if (-l > rho) {
+         if (-l > zeta) {
             face = 3;
-            rho  = -l;
+            zeta = -l;
          }
-         if (-m > rho) {
+         if (-m > zeta) {
             face = 4;
-            rho  = -m;
+            zeta = -m;
          }
-         if (-n > rho) {
+         if (-n > zeta) {
             face = 5;
-            rho  = -n;
+            zeta = -n;
          }
 
          switch (face) {
          case 1:
-            xf =  m/rho;
-            yf =  n/rho;
+            xf =  m/zeta;
+            yf =  n/zeta;
             x0 =  0.0;
             y0 =  0.0;
             break;
          case 2:
-            xf = -l/rho;
-            yf =  n/rho;
+            xf = -l/zeta;
+            yf =  n/zeta;
             x0 =  2.0;
             y0 =  0.0;
             break;
          case 3:
-            xf = -m/rho;
-            yf =  n/rho;
+            xf = -m/zeta;
+            yf =  n/zeta;
             x0 =  4.0;
             y0 =  0.0;
             break;
          case 4:
-            xf =  l/rho;
-            yf =  n/rho;
+            xf =  l/zeta;
+            yf =  n/zeta;
             x0 =  6.0;
             y0 =  0.0;
             break;
          case 5:
-            xf =  m/rho;
-            yf =  l/rho;
+            xf =  m/zeta;
+            yf =  l/zeta;
             x0 =  0.0;
             y0 = -2.0;
             break;
          default:
             /* face == 0 */
-            xf =  m/rho;
-            yf = -l/rho;
+            xf =  m/zeta;
+            yf = -l/zeta;
             x0 =  0.0;
             y0 =  2.0;
             break;
@@ -6521,7 +6539,7 @@ struct prjprm *prj;
    prj->prjx2s = cscx2s;
    prj->prjs2x = cscs2x;
 
-   return offset(prj, 0.0, 0.0);
+   return prjoff(prj, 0.0, 0.0);
 }
 
 /*--------------------------------------------------------------------------*/
@@ -6541,7 +6559,7 @@ int stat[];
    register const double *xp, *yp;
    register double *phip, *thetap;
 
-   float     a, b, xf, xx, yf, yy, z0, z1, z2, z3, z4, z5, z6;
+   float     chi, psi, xf, xx, yf, yy, z0, z1, z2, z3, z4, z5, z6;
    const float p00 = -0.27292696;
    const float p10 = -0.07629969;
    const float p20 = -0.22797056;
@@ -6669,8 +6687,8 @@ int stat[];
          z5 = p05 + xx*(p15);
          z6 = p06;
 
-         a = z0 + yy*(z1 + yy*(z2 + yy*(z3 + yy*(z4 + yy*(z5 + yy*z6)))));
-         a = xf + xf*(1.0 - xx)*a;
+         chi = z0 + yy*(z1 + yy*(z2 + yy*(z3 + yy*(z4 + yy*(z5 + yy*z6)))));
+         chi = xf + xf*(1.0 - xx)*chi;
 
          z0 = p00 + yy*(p10 + yy*(p20 + yy*(p30 + yy*(p40 + yy*(p50 +
                     yy*(p60))))));
@@ -6681,40 +6699,40 @@ int stat[];
          z5 = p05 + yy*(p15);
          z6 = p06;
 
-         b = z0 + xx*(z1 + xx*(z2 + xx*(z3 + xx*(z4 + xx*(z5 + xx*z6)))));
-         b = yf + yf*(1.0 - yy)*b;
+         psi = z0 + xx*(z1 + xx*(z2 + xx*(z3 + xx*(z4 + xx*(z5 + xx*z6)))));
+         psi = yf + yf*(1.0 - yy)*psi;
 
          switch (face) {
          case 1:
-            l =  1.0/sqrt(a*a + b*b + 1.0);
-            m =  a*l;
-            n =  b*l;
+            l =  1.0/sqrt(chi*chi + psi*psi + 1.0);
+            m =  chi*l;
+            n =  psi*l;
             break;
          case 2:
-            m =  1.0/sqrt(a*a + b*b + 1.0);
-            l = -a*m;
-            n =  b*m;
+            m =  1.0/sqrt(chi*chi + psi*psi + 1.0);
+            l = -chi*m;
+            n =  psi*m;
             break;
          case 3:
-            l = -1.0/sqrt(a*a + b*b + 1.0);
-            m =  a*l;
-            n = -b*l;
+            l = -1.0/sqrt(chi*chi + psi*psi + 1.0);
+            m =  chi*l;
+            n = -psi*l;
             break;
          case 4:
-            m = -1.0/sqrt(a*a + b*b + 1.0);
-            l = -a*m;
-            n = -b*m;
+            m = -1.0/sqrt(chi*chi + psi*psi + 1.0);
+            l = -chi*m;
+            n = -psi*m;
             break;
          case 5:
-            n = -1.0/sqrt(a*a + b*b + 1.0);
-            l = -b*n;
-            m = -a*n;
+            n = -1.0/sqrt(chi*chi + psi*psi + 1.0);
+            l = -psi*n;
+            m = -chi*n;
             break;
          default:
             /* face == 0 */
-            n =  1.0/sqrt(a*a + b*b + 1.0);
-            l = -b*n;
-            m =  a*n;
+            n =  1.0/sqrt(chi*chi + psi*psi + 1.0);
+            l = -psi*n;
+            m =  chi*n;
             break;
          }
 
@@ -6744,13 +6762,13 @@ int stat[];
 
 {
    int face, mphi, mtheta, rowlen, rowoff, status;
-   double cosphi, costhe, eta, l, m, n, rho, sinphi, sinthe, xi;
+   double cosphi, costhe, eta, l, m, n, sinphi, sinthe, xi, zeta;
    const float tol = 1.0e-7;
    register int iphi, istat, itheta, *statp;
    register const double *phip, *thetap;
    register double *xp, *yp;
 
-   float a, a2, a2b2, a4, ab, b, b2, b4, ca2, cb2, x0, xf, y0, yf;
+   float chi, chi2, chi2psi2, chi4, chipsi, psi, psi2, psi4, chi2co, psi2co, x0, xf, y0, yf;
    const float gstar  =  1.37484847732;
    const float mm     =  0.004869491981;
    const float gamma  = -0.13161671474;
@@ -6817,26 +6835,26 @@ int stat[];
          n = sinthe;
 
          face = 0;
-         rho  = n;
-         if (l > rho) {
+         zeta = n;
+         if (l > zeta) {
             face = 1;
-            rho  = l;
+            zeta = l;
          }
-         if (m > rho) {
+         if (m > zeta) {
             face = 2;
-            rho  = m;
+            zeta = m;
          }
-         if (-l > rho) {
+         if (-l > zeta) {
             face = 3;
-            rho  = -l;
+            zeta = -l;
          }
-         if (-m > rho) {
+         if (-m > zeta) {
             face = 4;
-            rho  = -m;
+            zeta = -m;
          }
-         if (-n > rho) {
+         if (-n > zeta) {
             face = 5;
-            rho  = -n;
+            zeta = -n;
          }
 
          switch (face) {
@@ -6879,26 +6897,26 @@ int stat[];
             break;
          }
 
-         a =  xi/rho;
-         b = eta/rho;
+         chi =  xi/zeta;
+         psi = eta/zeta;
 
-         a2 = a*a;
-         b2 = b*b;
-         ca2 = 1.0 - a2;
-         cb2 = 1.0 - b2;
+         chi2 = chi*chi;
+         psi2 = psi*psi;
+         chi2co = 1.0 - chi2;
+         psi2co = 1.0 - psi2;
 
          /* Avoid floating underflows. */
-         ab   = fabs(a*b);
-         a4   = (a2 > 1.0e-16) ? a2*a2 : 0.0;
-         b4   = (b2 > 1.0e-16) ? b2*b2 : 0.0;
-         a2b2 = (ab > 1.0e-16) ? a2*b2 : 0.0;
+         chipsi = fabs(chi*psi);
+         chi4   = (chi2 > 1.0e-16) ? chi2*chi2 : 0.0;
+         psi4   = (psi2 > 1.0e-16) ? psi2*psi2 : 0.0;
+         chi2psi2 = (chipsi > 1.0e-16) ? chi2*psi2 : 0.0;
 
-         xf = a*(a2 + ca2*(gstar + b2*(gamma*ca2 + mm*a2 +
-                cb2*(c00 + c10*a2 + c01*b2 + c11*a2b2 + c20*a4 + c02*b4)) +
-                a2*(omega1 - ca2*(d0 + d1*a2))));
-         yf = b*(b2 + cb2*(gstar + a2*(gamma*cb2 + mm*b2 +
-                ca2*(c00 + c10*b2 + c01*a2 + c11*a2b2 + c20*b4 + c02*a4)) +
-                b2*(omega1 - cb2*(d0 + d1*b2))));
+         xf = chi*(chi2 + chi2co*(gstar + psi2*(gamma*chi2co + mm*chi2 +
+                psi2co*(c00 + c10*chi2 + c01*psi2 + c11*chi2psi2 + c20*chi4 +
+                c02*psi4)) + chi2*(omega1 - chi2co*(d0 + d1*chi2))));
+         yf = psi*(psi2 + psi2co*(gstar + chi2*(gamma*psi2co + mm*psi2 +
+                chi2co*(c00 + c10*psi2 + c01*chi2 + c11*chi2psi2 + c20*psi4 +
+                c02*chi4)) + psi2*(omega1 - psi2co*(d0 + d1*psi2))));
 
          istat = 0;
          if (fabs(xf) > 1.0) {
@@ -6975,7 +6993,7 @@ struct prjprm *prj;
    prj->prjx2s = qscx2s;
    prj->prjs2x = qscs2x;
 
-   return offset(prj, 0.0, 0.0);
+   return prjoff(prj, 0.0, 0.0);
 }
 
 /*--------------------------------------------------------------------------*/
@@ -6990,7 +7008,7 @@ int stat[];
 
 {
    int direct, face, mx, my, rowlen, rowoff, status;
-   double l, m, n, omega, rho, rhu, tau, xf, yf, w;
+   double l, m, n, omega, tau, xf, yf, w, zeco, zeta;
    const double tol = 1.0e-12;
    register int ix, iy, *statp;
    register const double *xp, *yp;
@@ -7087,33 +7105,33 @@ int stat[];
          if (direct) {
             if (xf == 0.0) {
                omega = 0.0;
-               tau = 1.0;
-               rho = 1.0;
-               rhu = 0.0;
+               tau  = 1.0;
+               zeta = 1.0;
+               zeco = 0.0;
             } else {
                w = 15.0*yf/xf;
                omega = sind(w)/(cosd(w) - SQRT2INV);
-               tau = 1.0 + omega*omega;
-               rhu = xf*xf*(1.0 - 1.0/sqrt(1.0 + tau));
-               rho = 1.0 - rhu;
+               tau  = 1.0 + omega*omega;
+               zeco = xf*xf*(1.0 - 1.0/sqrt(1.0 + tau));
+               zeta = 1.0 - zeco;
             }
          } else {
             if (yf == 0.0) {
                omega = 0.0;
-               tau = 1.0;
-               rho = 1.0;
-               rhu = 0.0;
+               tau  = 1.0;
+               zeta = 1.0;
+               zeco = 0.0;
             } else {
                w = 15.0*xf/yf;
                omega = sind(w)/(cosd(w) - SQRT2INV);
-               tau = 1.0 + omega*omega;
-               rhu = yf*yf*(1.0 - 1.0/sqrt(1.0 + tau));
-               rho = 1.0 - rhu;
+               tau  = 1.0 + omega*omega;
+               zeco = yf*yf*(1.0 - 1.0/sqrt(1.0 + tau));
+               zeta = 1.0 - zeco;
             }
          }
 
-         if (rho < -1.0) {
-            if (rho < -1.0-tol) {
+         if (zeta < -1.0) {
+            if (zeta < -1.0-tol) {
                *phip = 0.0;
                *thetap = 0.0;
                *(statp++) = 1;
@@ -7121,16 +7139,16 @@ int stat[];
                continue;
             }
 
-            rho = -1.0;
-            rhu =  2.0;
-            w   =  0.0;
+            zeta = -1.0;
+            zeco =  2.0;
+            w    =  0.0;
          } else {
-            w = sqrt(rhu*(2.0-rhu)/tau);
+            w = sqrt(zeco*(2.0-zeco)/tau);
          }
 
          switch (face) {
          case 1:
-            l = rho;
+            l = zeta;
             if (direct) {
                m = w;
                if (xf < 0.0) m = -m;
@@ -7142,7 +7160,7 @@ int stat[];
             }
             break;
          case 2:
-            m = rho;
+            m = zeta;
             if (direct) {
                l = w;
                if (xf > 0.0) l = -l;
@@ -7154,7 +7172,7 @@ int stat[];
             }
             break;
          case 3:
-            l = -rho;
+            l = -zeta;
             if (direct) {
                m = w;
                if (xf > 0.0) m = -m;
@@ -7166,7 +7184,7 @@ int stat[];
             }
             break;
          case 4:
-            m = -rho;
+            m = -zeta;
             if (direct) {
                l = w;
                if (xf < 0.0) l = -l;
@@ -7178,7 +7196,7 @@ int stat[];
             }
             break;
          case 5:
-            n = -rho;
+            n = -zeta;
             if (direct) {
                m = w;
                if (xf < 0.0) m = -m;
@@ -7191,7 +7209,7 @@ int stat[];
             break;
          default:
             /* face == 0 */
-            n = rho;
+            n = zeta;
             if (direct) {
                m = w;
                if (xf < 0.0) m = -m;
@@ -7230,8 +7248,8 @@ int stat[];
 
 {
    int face, mphi, mtheta, rowlen, rowoff, status;
-   double cosphi, costhe, eta, l, m, n, omega, p, rho, rhu, sinphi,
-          sinthe, t, tau, x0, xf, xi, y0, yf;
+   double cosphi, costhe, eta, l, m, n, omega, p, sinphi, sinthe, t, tau, x0,
+          xf, xi, y0, yf, zeco, zeta;
    const double tol = 1.0e-12;
    register int iphi, istat, itheta, *statp;
    register const double *phip, *thetap;
@@ -7297,39 +7315,39 @@ int stat[];
          n = sinthe;
 
          face = 0;
-         rho  = n;
-         if (l > rho) {
+         zeta = n;
+         if (l > zeta) {
             face = 1;
-            rho  = l;
+            zeta = l;
          }
-         if (m > rho) {
+         if (m > zeta) {
             face = 2;
-            rho  = m;
+            zeta = m;
          }
-         if (-l > rho) {
+         if (-l > zeta) {
             face = 3;
-            rho  = -l;
+            zeta = -l;
          }
-         if (-m > rho) {
+         if (-m > zeta) {
             face = 4;
-            rho  = -m;
+            zeta = -m;
          }
-         if (-n > rho) {
+         if (-n > zeta) {
             face = 5;
-            rho  = -n;
+            zeta = -n;
          }
 
-         rhu = 1.0 - rho;
+         zeco = 1.0 - zeta;
 
          switch (face) {
          case 1:
             xi  = m;
             eta = n;
-            if (rhu < 1.0e-8) {
+            if (zeco < 1.0e-8) {
                /* Small angle formula. */
                t = (*thetap)*D2R;
                p = atan2(*yp, *xp);
-               rhu = (p*p + t*t)/2.0;
+               zeco = (p*p + t*t)/2.0;
             }
             x0 = 0.0;
             y0 = 0.0;
@@ -7337,11 +7355,11 @@ int stat[];
          case 2:
             xi  = -l;
             eta =  n;
-            if (rhu < 1.0e-8) {
+            if (zeco < 1.0e-8) {
                /* Small angle formula. */
                t = (*thetap)*D2R;
                p = atan2(*yp, *xp) - PI/2.0;
-               rhu = (p*p + t*t)/2.0;
+               zeco = (p*p + t*t)/2.0;
             }
             x0 = 2.0;
             y0 = 0.0;
@@ -7349,12 +7367,12 @@ int stat[];
          case 3:
             xi  = -m;
             eta =  n;
-            if (rhu < 1.0e-8) {
+            if (zeco < 1.0e-8) {
                /* Small angle formula. */
                t = (*thetap)*D2R;
                p = atan2(*yp, *xp);
                p -= copysign(PI, p);
-               rhu = (p*p + t*t)/2.0;
+               zeco = (p*p + t*t)/2.0;
             }
             x0 = 4.0;
             y0 = 0.0;
@@ -7362,11 +7380,11 @@ int stat[];
          case 4:
             xi  = l;
             eta = n;
-            if (rhu < 1.0e-8) {
+            if (zeco < 1.0e-8) {
                /* Small angle formula. */
                t = (*thetap)*D2R;
                p = atan2(*yp, *xp) + PI/2.0;
-               rhu = (p*p + t*t)/2.0;
+               zeco = (p*p + t*t)/2.0;
             }
             x0 = 6;
             y0 = 0.0;
@@ -7374,10 +7392,10 @@ int stat[];
          case 5:
             xi  =  m;
             eta =  l;
-            if (rhu < 1.0e-8) {
+            if (zeco < 1.0e-8) {
                /* Small angle formula. */
                t = (*thetap + 90.0)*D2R;
-               rhu = t*t/2.0;
+               zeco = t*t/2.0;
             }
             x0 =  0.0;
             y0 = -2;
@@ -7386,10 +7404,10 @@ int stat[];
             /* face == 0 */
             xi  =  m;
             eta = -l;
-            if (rhu < 1.0e-8) {
+            if (zeco < 1.0e-8) {
                /* Small angle formula. */
                t = (90.0 - *thetap)*D2R;
-               rhu = t*t/2.0;
+               zeco = t*t/2.0;
             }
             x0 = 0.0;
             y0 = 2.0;
@@ -7399,25 +7417,25 @@ int stat[];
          xf = 0.0;
          yf = 0.0;
          if (xi != 0.0 || eta != 0.0) {
-            if (-xi >= fabs(eta)) {
+            if (-xi > fabs(eta)) {
                omega = eta/xi;
                tau = 1.0 + omega*omega;
-               xf  = -sqrt(rhu/(1.0-1.0/sqrt(1.0+tau)));
+               xf  = -sqrt(zeco/(1.0 - 1.0/sqrt(1.0+tau)));
                yf  = (xf/15.0)*(atand(omega) - asind(omega/sqrt(tau+tau)));
-            } else if (xi >= fabs(eta)) {
+            } else if (xi > fabs(eta)) {
                omega = eta/xi;
                tau = 1.0 + omega*omega;
-               xf  =  sqrt(rhu/(1.0-1.0/sqrt(1.0+tau)));
+               xf  =  sqrt(zeco/(1.0 - 1.0/sqrt(1.0+tau)));
                yf  = (xf/15.0)*(atand(omega) - asind(omega/sqrt(tau+tau)));
-            } else if (-eta > fabs(xi)) {
+            } else if (-eta >= fabs(xi)) {
                omega = xi/eta;
                tau = 1.0 + omega*omega;
-               yf  = -sqrt(rhu/(1.0-1.0/sqrt(1.0+tau)));
+               yf  = -sqrt(zeco/(1.0 - 1.0/sqrt(1.0+tau)));
                xf  = (yf/15.0)*(atand(omega) - asind(omega/sqrt(tau+tau)));
-            } else if (eta > fabs(xi)) {
+            } else if (eta >= fabs(xi)) {
                omega = xi/eta;
                tau = 1.0 + omega*omega;
-               yf  =  sqrt(rhu/(1.0-1.0/sqrt(1.0+tau)));
+               yf  =  sqrt(zeco/(1.0 - 1.0/sqrt(1.0+tau)));
                xf  = (yf/15.0)*(atand(omega) - asind(omega/sqrt(tau+tau)));
             }
          }

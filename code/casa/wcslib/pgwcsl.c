@@ -1,6 +1,6 @@
 /*============================================================================
 *
-*   PGSBOX 3.4 - a non-linear coordinate axis plotter for PGPLOT.
+*   PGSBOX 3.5 - a non-linear coordinate axis plotter for PGPLOT.
 *   Copyright (C) 1997-2004, Mark Calabretta
 *
 *   This library is free software; you can redistribute it and/or modify it
@@ -26,6 +26,7 @@
 *                      AUSTRALIA
 *
 *   Author: Mark Calabretta, Australia Telescope National Facility
+*   http://www.atnf.csiro.au/~mcalabre/index.html
 *   $Id$
 *===========================================================================*/
 
@@ -41,15 +42,16 @@ const int *opcode, *nlc, *nli, *nld;
 const char *nlcprm;
 int *wcs;
 double *nldprm;
-double world[2];
-double pixel[2];
+double *world;
+double *pixel;
 int *contrl;
 double contxt[20];
 int *ierr;
 
 {
-   int outside, stat;
-   double dp, imgcrd[2], lat, lng, ph, phi, sdummy, th, theta, wrld[2];
+   int i, outside, stat;
+   double dp, imgcrd[9], lat, lng, ph, phi, sdummy, th, theta;
+   static double wrld[9];
    struct wcsprm *wcsp;
 
    *ierr = 0;
@@ -211,6 +213,10 @@ int *ierr;
       }
 
       *ierr = wcsset(wcsp);
+
+      for (i = 2; i < 9; i++) {
+         wrld[i] = 0.0;
+      }
 
       *contrl = 0;
 
