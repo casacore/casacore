@@ -575,3 +575,54 @@ uInt TableDesc::hypercolumnDesc (const String& name,
     idColumnNames = set.asArrayString ("id");
     return set.asuInt ("ndim");
 }
+
+void TableDesc::adjustHypercolumns
+                        (const SimpleOrderedMap<String, String>& old2new)
+{
+  Vector<String> hcNames = hypercolumnNames();
+  Vector<String> dataNames, coordNames, idNames;
+  for (uInt i=0; i<hcNames.nelements(); i++) {
+    // Get hypercolumn description and delete it.
+    uInt ndim = hypercolumnDesc (hcNames(i), dataNames, coordNames, idNames);
+    privKey_p->removeField (theHyperPrefix + hcNames(i));
+    // Rename/remove columns in the hypercolumn description.
+    uInt nr = 0;
+    for (uInt j=0; j<dataNames.nelements(); j++) {
+      const String* newName = old2new.isDefined (dataNames(j));
+      if (newName) {
+	dataNames(nr++) = *newName;
+      }
+    }
+    if (nr == 0) {
+      // No data columns left, so no need to recreate the hypercolumn.
+    } else {
+      dataNames.resize (nr, True);
+      nr = 0;
+      for (uInt j=0; j<coordNames.nelements(); j++) {
+	const String* newName = old2new.isDefined (coordNames(j));
+	if (newName) {
+	  coordNames(nr++) = *newName;
+	}
+      }
+      // All coordinate columns are needed, so removal of one means
+      // that they cannot be used anymore.
+      // That also means their default storage manager has to be reset.
+      if (nr != ndim) {
+	for (uInt j=0; j<nr; j++) {
+	  rwColumnDesc(coordNames(j)).setDefaultDataManager();
+	}
+	coordNames.resize (0);
+      }
+      nr = 0;
+      for (uInt j=0; j<idNames.nelements(); j++) {
+	const String* newName = old2new.isDefined (idNames(j));
+	if (newName) {
+	  idNames(nr++) = *newName;
+	}
+      }
+      idNames.resize (nr, True);
+      // Add the hypercolumn again.
+      defineHypercolumn (hcNames(i), ndim, dataNames, coordNames, idNames);
+    }
+  }
+}
