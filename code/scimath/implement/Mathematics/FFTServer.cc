@@ -628,6 +628,9 @@ flip(Array<S> & cData, const Bool toZero, const Bool isHermitian) {
   const IPosition shape = cData.shape();
   const uInt ndim = shape.nelements();
   const uInt nElements = shape.product();
+  if (nElements == 1) {
+    return;
+  }
   AlwaysAssert(nElements != 0, AipsError);
   {
     Int buffLen = itsBuffer.nelements();
@@ -652,30 +655,32 @@ flip(Array<S> & cData, const Bool toZero, const Bool isHermitian) {
   }
   for (; n < ndim; n++) {
     rowLen = shape(n);
-    rowLen2 = rowLen/2;
-    rowLen2o = (rowLen+1)/2;
-    nFlips = nElements/rowLen;
-    rowPtr = dataPtr;
-    r = 0;
-    while (r < nFlips) {
-      rowPtr2 = rowPtr + stride * rowLen2;
-      rowPtr2o = rowPtr + stride * rowLen2o;
-      if (toZero) {
-	objcopy(buffPtr, rowPtr2, rowLen2o, 1u, stride);
-	objcopy(rowPtr2o, rowPtr, rowLen2, stride, stride);
-	objcopy(rowPtr, buffPtr, rowLen2o, stride, 1u);
+    if (rowLen > 1) {
+      rowLen2 = rowLen/2;
+      rowLen2o = (rowLen+1)/2;
+      nFlips = nElements/rowLen;
+      rowPtr = dataPtr;
+      r = 0;
+      while (r < nFlips) {
+	rowPtr2 = rowPtr + stride * rowLen2;
+	rowPtr2o = rowPtr + stride * rowLen2o;
+	if (toZero) {
+	  objcopy(buffPtr, rowPtr2, rowLen2o, 1u, stride);
+	  objcopy(rowPtr2o, rowPtr, rowLen2, stride, stride);
+	  objcopy(rowPtr, buffPtr, rowLen2o, stride, 1u);
+	}
+	else {
+	  objcopy(buffPtr, rowPtr, rowLen2o, 1u, stride);
+	  objcopy(rowPtr, rowPtr2o, rowLen2, stride, stride);
+	  objcopy(rowPtr2, buffPtr, rowLen2o, stride, 1u);
+	}
+	r++;
+	rowPtr++;
+	if (r%stride == 0)
+	  rowPtr += stride*(rowLen-1);
       }
-      else {
-	objcopy(buffPtr, rowPtr, rowLen2o, 1u, stride);
-	objcopy(rowPtr, rowPtr2o, rowLen2, stride, stride);
-	objcopy(rowPtr2, buffPtr, rowLen2o, stride, 1u);
-      }
-      r++;
-      rowPtr++;
-      if (r%stride == 0)
-	rowPtr += stride*(rowLen-1);
+      stride *= rowLen;
     }
-    stride *= rowLen;
   }
   cData.putStorage(dataPtr, dataIsAcopy);
 }
@@ -685,11 +690,15 @@ flip(Array<T> & rData, const Bool toZero, const Bool isHermitian) {
   const IPosition shape = rData.shape();
   const uInt ndim = shape.nelements();
   const uInt nElements = shape.product();
+  if (nElements == 1) {
+    return;
+  }
   AlwaysAssert(nElements != 0, AipsError);
   {
     Int buffLen = itsBuffer.nelements();
-    for (uInt i = 0; i < ndim; i++)
-      buffLen = max(buffLen, shape(i)/2);
+    for (uInt i = 0; i < ndim; i++) {
+      buffLen = max(buffLen, (shape(i)+1)/2);
+    }
     itsBuffer.resize(buffLen, False, False);
   }
   Bool dataIsAcopy;
@@ -709,30 +718,32 @@ flip(Array<T> & rData, const Bool toZero, const Bool isHermitian) {
   }
   for (; n < ndim; n++) {
     rowLen = shape(n);
-    rowLen2 = rowLen/2;
-    rowLen2o = (rowLen+1)/2;
-    nFlips = nElements/rowLen;
-    rowPtr = dataPtr;
-    r = 0;
-    while (r < nFlips) {
-      rowPtr2 = rowPtr + stride * rowLen2;
-      rowPtr2o = rowPtr + stride * rowLen2o;
-      if (toZero) {
-	objcopy(buffPtr, rowPtr2, rowLen2o, 1u, stride);
-	objcopy(rowPtr2o, rowPtr, rowLen2, stride, stride);
-	objcopy(rowPtr, buffPtr, rowLen2o, stride, 1u);
+    if (rowLen > 1) {
+      rowLen2 = rowLen/2;
+      rowLen2o = (rowLen+1)/2;
+      nFlips = nElements/rowLen;
+      rowPtr = dataPtr;
+      r = 0;
+      while (r < nFlips) {
+	rowPtr2 = rowPtr + stride * rowLen2;
+	rowPtr2o = rowPtr + stride * rowLen2o;
+	if (toZero) {
+	  objcopy(buffPtr, rowPtr2, rowLen2o, 1u, stride);
+	  objcopy(rowPtr2o, rowPtr, rowLen2, stride, stride);
+	  objcopy(rowPtr, buffPtr, rowLen2o, stride, 1u);
+	}
+	else {
+	  objcopy(buffPtr, rowPtr, rowLen2o, 1u, stride);
+	  objcopy(rowPtr, rowPtr2o, rowLen2, stride, stride);
+	  objcopy(rowPtr2, buffPtr, rowLen2o, stride, 1u);
+	}
+	r++;
+	rowPtr++;
+	if (r%stride == 0)
+	  rowPtr += stride*(rowLen-1);
       }
-      else {
-	objcopy(buffPtr, rowPtr, rowLen2o, 1u, stride);
-	objcopy(rowPtr, rowPtr2o, rowLen2, stride, stride);
-	objcopy(rowPtr2, buffPtr, rowLen2o, stride, 1u);
-      }
-      r++;
-      rowPtr++;
-      if (r%stride == 0)
-	rowPtr += stride*(rowLen-1);
+      stride *= rowLen;
     }
-    stride *= rowLen;
   }
   rData.putStorage(dataPtr, dataIsAcopy);
 }
