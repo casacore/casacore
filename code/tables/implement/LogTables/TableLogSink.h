@@ -92,7 +92,13 @@ public:
     // If <src>fileName</src> exists, attach and append to it, otherwise create
     // a table with that name. If the table exists, it must have all the
     // required columns defined by <src>logTableDescription()</src>.
-    TableLogSink(const LogFilter &filter, const String &fileName);
+    // <p>
+    // The <src>useSSM</src> is a temmporary fix to make it possible
+    // to use the old StManAipsIO storage manager for a log table.
+    // It is used by PagedImage to make it possible to access release 1.4
+    // images with release 1.3 software.
+    TableLogSink(const LogFilter &filter, const String &fileName,
+		 Bool useSSM=True);
 
     // Open the log table for readonly.
     // If needed, reopenRW can be used later to define a filter and

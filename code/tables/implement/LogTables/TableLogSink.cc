@@ -32,12 +32,14 @@
 #include <aips/Tables/TableRecord.h>
 #include <aips/Tables/SetupNewTab.h>
 #include <aips/Tables/StandardStMan.h>
+#include <aips/Tables/StManAipsIO.h>
 #include <aips/Tables/ScaColDesc.h>
 
 #include <aips/Exceptions/Error.h>
 #include <aips/Utilities/Assert.h>
 
-TableLogSink::TableLogSink(const LogFilter &filter, const String &fileName)
+TableLogSink::TableLogSink(const LogFilter &filter, const String &fileName,
+			   Bool useSSM)
   : LogSinkInterface(filter)
 {
     LogMessage logMessage(
@@ -59,9 +61,14 @@ TableLogSink::TableLogSink(const LogFilter &filter, const String &fileName)
 	  String("Creating ") + fileName);
 	LogSink::postGlobally(logMessage);
         SetupNewTable setup(fileName, logTableDescription(), Table::New);
-// 	// Bind all to the SSM.
- 	StandardStMan stman("SSM", 32768);
-	setup.bindAll(stman);
+// 	// Bind all to the SSM or ISM.
+	if (useSSM) {
+	  StandardStMan stman("SSM", 32768);
+	  setup.bindAll(stman);
+	} else {
+	  StManAipsIO stman;
+	  setup.bindAll(stman);
+	}
 	log_table_p = Table(setup);
 	log_table_p.tableInfo() = TableInfo(TableInfo::LOG);
 	log_table_p.tableInfo().
