@@ -25,7 +25,7 @@
     fi
   fi
   # set symlink
-  LINK='tAutoflag.MS2'
+  LINK='tAutoflag_tmp.MS2'
   rm -f $LINK 2>/dev/null
   if ! ln -s $MSPATH $LINK; then
     echo "UNTESTED: tAutoflag.run (failed to set $LINK symlink)"
