@@ -31,9 +31,13 @@
 #include <aips/Arrays/Matrix.h>
 #include <aips/Arrays/ArrayLogical.h>
 #include <aips/Arrays/ArrayMath.h>
+#include <aips/Arrays/IPosition.h>
 #include <aips/Containers/Record.h>
+#include <aips/Logging/LogIO.h>
+#include <aips/Logging/LogOrigin.h>
 #include <aips/Mathematics/Math.h>
 #include <aips/Measures/MDirection.h>
+#include <aips/Measures/MDoppler.h>
 #include <aips/Quanta/Unit.h>
 #include <trial/Coordinates/CoordinateSystem.h>
 #include <trial/Coordinates/DirectionCoordinate.h>
@@ -162,6 +166,17 @@ int main()
       {
          doit6();
       }
+      {
+         CoordinateSystem cSys = makeCoordinateSystem(nCoords, types, sTypes,
+                                                      iDC, iSpC, iTC, iStC, iLC,
+                                                      dC, spC, tC, stC, lC);
+//       
+         LogOrigin or("dImageStatistics", "main()", WHERE);
+         LogIO os(or);
+         IPosition s1, s2;
+         cSys.list(os, MDoppler::RADIO, False, s1, s2);
+      }
+
 
   } catch (AipsError x) {
       cerr << "aipserror: error " << x.getMesg() << endl;
