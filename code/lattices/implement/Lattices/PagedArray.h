@@ -50,11 +50,11 @@ template <class T> class RO_PagedArrIter;
 template <class T> class PagedArrIter;
 class ostream;
 
-// <summary>An Array that is read/written from/to disk on demand</summary>
+// <summary>A Lattice that is read from or written to disk</summary>
 //
 // <use visibility=export>
 // 
-// <reviewed reviewer="" date="" tests="tPagedArray.cc,tPagedArray1.cc" demos="dPagedArray.cc,dPagedArray1.cc">
+// <reviewed reviewer="" date="" tests="tPagedArray.cc,tPagedArrayOld.cc" demos="dPagedArray.cc,dPagedArrayOld.cc">
 // </reviewed>
 //
 // <prerequisite>
@@ -229,7 +229,7 @@ class ostream;
 // </synopsis> 
 
 // <example>
-// All the examples in this section are availaible in dPagedArray1.cc
+// All the examples in this section are available in dPagedArray.cc
 //
 // <h4>Example 1:</h4>
 // Create a PagedArray of Floats of shape [512,512,4,32] in a file
@@ -384,6 +384,10 @@ class ostream;
 //   <li> The ability to construct a PagedArray from a Table that is opened
 //   readonly. (ie a readonly PagedArray). 
 // </todo>
+
+// <linkfrom anchor="PagedArray" classes="Lattice ArrayLattice">
+//  <here>PagedArray</here> - a disk based Lattice.
+// </linkfrom>
 
 template <class T> class PagedArray : public Lattice<T>
 {
@@ -605,7 +609,7 @@ public:
   
   // a function which checks for internal consistency. Returns False if
   // something nasty has happened to the PagedArray.
-  Bool ok() const;
+  virtual Bool ok() const;
 
   // These functions are used by the LatticeIterator class to generate an
   // iterator of the correct type for a specified Lattice. Not recommended
