@@ -1376,3 +1376,4 @@
 11 047 src rm aips/implement/Containers/test/tOrdMap.exec
 11 047 src rm aips/implement/Containers/test/tOrdMap2.exec
 11 047 src rm aips/implement/Containers/test/tSimOrdMap.exec
+11 048 src rm aips/implement/RTTI/test/tRegister.exec
