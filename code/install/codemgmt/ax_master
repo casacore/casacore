@@ -1922,3 +1922,4 @@
 08 030 src rm atnf/implement/PKSLoad.cc
 08 030 src rm atnf/implement/PKSLoad.h
 08 030 src rm atnf/implement/PKSMSwriter.cc
+08 030 src rm atnf/implement/PKSMSwriter.h
