@@ -1,5 +1,5 @@
 //# MCFrequency.cc: MFrequency conversion routines 
-//# Copyright (C) 1995,1996,1997,1998,2000
+//# Copyright (C) 1995,1996,1997,1998,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -107,13 +107,39 @@ void MCFrequency::initConvert(uInt which, MConvertBase &mc) {
   case BARY_GEO:
     if (ABERFROM) delete ABERFROM;
     ABERFROM = new Aberration(Aberration::STANDARD);
+    mc.addFrameType(MeasFrame::EPOCH);
+    mc.addFrameType(MeasFrame::DIRECTION);
     break;
       
   case GEO_BARY:
     if (ABERTO) delete ABERTO;
     ABERTO = new Aberration(Aberration::STANDARD);
+    mc.addFrameType(MeasFrame::EPOCH);
+    mc.addFrameType(MeasFrame::DIRECTION);
     break;
-      
+
+  case LSRD_BARY:
+  case BARY_LSRD:
+  case LSRD_GALACTO:
+  case GALACTO_LSRD:
+  case LSRK_BARY:
+  case BARY_LSRK:
+    mc.addFrameType(MeasFrame::DIRECTION);
+    break;
+
+  case GEO_TOPO:
+  case TOPO_GEO:
+    mc.addFrameType(MeasFrame::EPOCH);
+    mc.addFrameType(MeasFrame::DIRECTION);
+    mc.addFrameType(MeasFrame::POSITION);
+    break;
+
+  case REST_LSRK:
+  case LSRK_REST:      
+    mc.addFrameType(MeasFrame::DIRECTION);
+    mc.addFrameType(MeasFrame::VELOCITY);
+    break;
+
   default:
     break;
   }
