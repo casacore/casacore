@@ -271,7 +271,7 @@ ntrue
   Bool Array
 nfalse
   Bool Array
-isnan
+isNaN
   Float Scalar
   Complex Scalar
   Float Array
@@ -656,7 +656,7 @@ ntrue
   Bool Array
 nfalse
   Bool Array
-isnan
+isNaN
   Float Scalar
   Complex Scalar
   Float Array
@@ -1041,7 +1041,7 @@ ntrue
   Bool Array
 nfalse
   Bool Array
-isnan
+isNaN
   Float Scalar
   Complex Scalar
   Float Array
