@@ -30,7 +30,7 @@
 
 
 //# Includes
-#include <trial/Images/MaskedImage.h>
+#include <trial/Images/ImageInterface.h>
 
 //# Forward Declarations
 class IPosition;
@@ -77,7 +77,7 @@ class String;
 // </todo>
 
 
-template <class T> class SubImage: public MaskedImage<T>
+template <class T> class SubImage: public ImageInterface<T>
 {
 public: 
   // The default constructor
@@ -94,27 +94,21 @@ public:
   SubImage (ImageInterface<T>& image, Bool writableIfPossible);
   // </group>
 
-  // Create a SubImage from the given (Masked)Image and region.
+  // Create a SubImage from the given Image and region.
   // <br>An exception is thrown if the image shape used in the region
   // differs from the shape of the image.
   // <group>
   SubImage (const ImageInterface<T>& image, const ImageRegion& region);
   SubImage (ImageInterface<T>& image, const ImageRegion& region,
 	    Bool writableIfPossible);
-  SubImage (const MaskedImage<T>& image, const ImageRegion& region);
-  SubImage (MaskedImage<T>& image, const ImageRegion& region,
-	    Bool writableIfPossible);
   // </group>
   
-  // Create a SubImage from the given (Masked)Image and slicer.
+  // Create a SubImage from the given Image and slicer.
   // The slicer can be strided.
   // <br>An exception is thrown if the slicer exceeds the image shape.
   // <group>
   SubImage (const ImageInterface<T>& image, const Slicer& slicer);
   SubImage (ImageInterface<T>& image, const Slicer& slicer,
-	    Bool writableIfPossible);
-  SubImage (const MaskedImage<T>& image, const Slicer& slicer);
-  SubImage (MaskedImage<T>& image, const Slicer& slicer,
 	    Bool writableIfPossible);
   // </group>
   
@@ -128,8 +122,7 @@ public:
 
   // Make a copy of the object (reference semantics).
   // <group>
-  virtual Lattice<T>* clone() const;
-  virtual MaskedImage<T>* cloneMI() const;
+  virtual ImageInterface<T>* cloneII() const;
   // </group>
 
   // Is the SubImage paged to disk?
@@ -138,13 +131,8 @@ public:
   // Is the SubImage writable?
   virtual Bool isWritable() const;
 
-  // Is the SubImage really masked?
-  // False means that it is only a rectangular box and that it is
-  // not needed to look at the mask.
-  virtual Bool isMasked() const;
-
   // Get the region/mask object describing this subImage.
-  virtual const LatticeRegion& region() const;
+  virtual const LatticeRegion* getRegionPtr() const;
 
   // Returns the shape of the SubImage including all degenerate axes
   // (i.e. axes with a length of one).
@@ -206,9 +194,6 @@ public:
   // Check class invariants.
   virtual Bool ok() const;
 
-  // Do the actual get of the mask data.
-  virtual Bool doGetMaskSlice (Array<Bool>& buffer, const Slicer& section);
-
   // Do the actual getting of an array of values.
   virtual Bool doGetSlice (Array<T>& buffer, const Slicer& section);
 
@@ -234,8 +219,7 @@ public:
   // </group>
 
 private:
-  //# Both pointers point to the same object.
-  //# However, itsSubImagePtr is 0 if the parent image was not a SubImage.
+  //# itsImagePtr points to the parent image.
   ImageInterface<T>* itsImagePtr;
   SubLattice<T>*     itsSubLatPtr;
 };
