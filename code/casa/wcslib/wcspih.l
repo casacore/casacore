@@ -1,6 +1,6 @@
 /*============================================================================
 *
-*   WCSLIB 3.5 - an implementation of the FITS WCS convention.
+*   WCSLIB 3.6 - an implementation of the FITS WCS convention.
 *   Copyright (C) 1995-2004, Mark Calabretta
 *
 *   This library is free software; you can redistribute it and/or modify it
@@ -34,6 +34,9 @@
 *
 *   It requires Flex v2.5.4 or later.
 *
+*   Refer to wcshdr.h for a description of the user interface and operating
+*   notes.
+*
 *   The flawed definition of WCSAXESa and its nullifying effect on NAXIS
 *   forces the scanner to be implemented in two passes.  A first pass is
 *   required to determine the number coordinate representations (up to 27) and
@@ -44,8 +47,6 @@
 *   required number of wcsprm structs and each of these is initialized
 *   appropriately.  These structs are filled in the second pass.  The parser
 *   does not check for duplicated cards, it accepts the last encountered.
-*
-*   Refer to wcshdr.h for a description of the user interface.
 *
 *===========================================================================*/
 
@@ -78,6 +79,7 @@ STRING	'([^']|'')*'
 %x DISCARD ERROR FLUSH
 
 %{
+#include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -118,11 +120,17 @@ char *header; int nkeys, relax, errlvl, *nreject, *nwcs; struct wcsprm **wcs;
 
 extern char *yytext;
 
+#ifdef YY_USE_PROTOS
 void wcspih_naxes(int naxis, int i, int j, char alt, int alts[], int *npptr);
 int  wcspih_inits(int alts[], int npv[], int nps[], int *nwcs,
                   struct wcsprm **wcs);
-int  wcspih_final(int alts[], double epoch[], int velref[], int *nwcs,
-                  struct wcsprm **wcs);
+int  wcspih_final(int alts[], double epoch[], int velref[], double vsource[],
+                  int *nwcs, struct wcsprm **wcs);
+#else
+void wcspih_naxes();
+int  wcspih_inits();
+int  wcspih_final();
+#endif
 
 /* These global variables are required by YY_INPUT. */
 char *wcspih_hdr;
@@ -136,7 +144,7 @@ int  wcspih_nkeys;
 	char alt, *cptr, errmsg[80];
 	int  a, altlin, alts[27], i, j, k, m, naxis, ndx, *npptr, nps[27],
 	     npv[27], pass, status, type, velref[27], voff;
-	double epoch[27];
+	double epoch[27], vsource[27];
 	void *vptr, *wptr;
 	struct wcsprm *wcsp;
 
@@ -145,8 +153,9 @@ int  wcspih_nkeys;
 	  alts[a] = 0;
 	  npv[a] = 0;
 	  nps[a] = 0;
-	  epoch[a]  = UNDEFINED;
-	  velref[a] = 0;
+	  epoch[a]   = UNDEFINED;
+	  velref[a]  = 0;
+	  vsource[a] = UNDEFINED;
 	}
 
 	wcspih_hdr = header;
@@ -321,7 +330,6 @@ int  wcspih_nkeys;
 	  BEGIN(CCCCCCCa);
 	}
 
-^EPOCH"   " |
 ^EPOCH{ALT}"  " {
 	  sscanf(yytext, "EPOCH%c", &alt);
 
@@ -378,7 +386,6 @@ int  wcspih_nkeys;
 	  BEGIN(CCCCCCCa);
 	}
 
-^VELREF"  " |
 ^VELREF{ALT}" " {
 	  sscanf(yytext, "VELREF%c", &alt);
 
@@ -386,7 +393,7 @@ int  wcspih_nkeys;
 	    if (*wcs) {
 	      vptr = velref;
 	      if (alt >= 'A') {
-	        vptr = (void *)((double *)vptr + alts[alt-'A'+1]);
+	        vptr = (void *)((int *)vptr + alts[alt-'A'+1]);
 	      }
 	    }
 
@@ -410,10 +417,34 @@ int  wcspih_nkeys;
 	  BEGIN(CCCCCCCa);
 	}
 
-^VSOURCE {
-	  if (*wcs) vptr = &((*wcs)->vsource);
-	  type = FLOAT;
+^SSYSSRC {
+	  if (*wcs) vptr = (*wcs)->ssyssrc;
+	  type = STRING;
 	  BEGIN(CCCCCCCa);
+	}
+
+^VSOURCE{ALT} {
+	  sscanf(yytext, "VSOURCE%c", &alt);
+
+	  if (relax & (WCSHDR_all | WCSHDR_VSOURCEa)) {
+	    if (*wcs) {
+	      vptr = vsource;
+	      if (alt >= 'A') {
+	        vptr = (void *)((double *)vptr + alts[alt-'A'+1]);
+	      }
+	    }
+
+	    unput(' ');
+	    type = FLOAT;
+	    BEGIN(CCCCCCCa);
+
+	  } else if (relax & WCSHDR_reject) {
+            sprintf(errmsg, "Deprecated VSOURCEa keyword rejected");
+	    BEGIN(ERROR);
+
+	  } else {
+	    BEGIN(DISCARD);
+	  }
 	}
 
 ^ZSOURCE {
@@ -462,6 +493,8 @@ int  wcspih_nkeys;
 	  if (wcspih_nkeys) {
 	    sprintf(errmsg, "Illegal cards following END card");
 	    BEGIN(ERROR);
+	  } else {
+	    BEGIN(FLUSH);
 	  }
 	}
 
@@ -640,7 +673,7 @@ int  wcspih_nkeys;
 	  } else if (type == STRING) {
 	    BEGIN(STRING_VAL);
 	  } else {
-	    sprintf(errmsg, "Internal parser error, bad data type: %d", type);
+	    sprintf(errmsg, "Internal parser ERROR, bad data type: %d", type);
 	    BEGIN(ERROR);
 	  }
 	}
@@ -683,7 +716,7 @@ int  wcspih_nkeys;
 	      BEGIN(COMMENT);
 
 	    } else {
-	      sprintf(errmsg, "Internal parser error, null int pointer");
+	      sprintf(errmsg, "Internal parser ERROR, null int pointer");
 	      BEGIN(ERROR);
 	    }
 	  }
@@ -739,7 +772,7 @@ int  wcspih_nkeys;
 	      BEGIN(COMMENT);
 
 	    } else {
-	      sprintf(errmsg, "Internal parser error, null float pointer");
+	      sprintf(errmsg, "Internal parser ERROR, null float pointer");
 	      BEGIN(ERROR);
 	    }
 	  }
@@ -807,7 +840,7 @@ int  wcspih_nkeys;
 	      BEGIN(COMMENT);
 
 	    } else {
-	      sprintf(errmsg, "Internal parser error, null string pointer");
+	      sprintf(errmsg, "Internal parser ERROR, null string pointer");
 	      BEGIN(ERROR);
 	    }
 	  }
@@ -818,7 +851,8 @@ int  wcspih_nkeys;
 	  BEGIN(ERROR);
 	}
 
-<COMMENT>" "*\/.* {
+<COMMENT>" "*\/.* |
+<COMMENT>" "* {
 	  BEGIN(FLUSH);
 	}
 
@@ -884,7 +918,7 @@ int  wcspih_nkeys;
 	      fprintf(stderr, "%d WCS cards were rejected.\n", *nreject);
 	    }
 
-	    wcspih_final(alts, epoch, velref, nwcs, wcs);
+	    wcspih_final(alts, epoch, velref, vsource, nwcs, wcs);
 
 	    return 0;
 	  }
@@ -894,9 +928,9 @@ int  wcspih_nkeys;
 
 
 /*----------------------------------------------------------------------------
-*   Determine the number coordinate representations (up to 27), the number of
-*   coordinate axes in each, and count the number of PVi_ma and PSi_ma cards
-*   in each representation.
+*   Determine the number of coordinate representations (up to 27), the number
+*   of coordinate axes in each, and count the number of PVi_ma and PSi_ma
+*   cards in each representation.
 *---------------------------------------------------------------------------*/
 
 void wcspih_naxes(naxis, i, j, alt, alts, npptr)
@@ -995,17 +1029,20 @@ struct wcsprm **wcs;
 *   Interpret any VELREF cards encountered for each coordinate representation.
 *---------------------------------------------------------------------------*/
 
-int wcspih_final(alts, epoch, velref, nwcs, wcs)
+int wcspih_final(alts, epoch, velref, vsource, nwcs, wcs)
 
 int alts[];
 double epoch[];
-int velref[], *nwcs;
+int velref[];
+double vsource[];
+int *nwcs;
 struct wcsprm **wcs;
 
 {
   static char *specsys[] = {"LSRK", "BARYCENT", "TOPOCENT",
                             "LSRD", "GEOCENTR", "SOURCE", "GALACTOC"};
   int a, i;
+  double beta, c = 299792458.0;
 
   for (a = 0; a < *nwcs; a++) {
     /* Check for EPOCH overriding EQUINOXa. */
@@ -1023,7 +1060,13 @@ struct wcsprm **wcs;
           sprintf((*wcs+a)->specsys, "%s", specsys[i]);
         }
       }
+    }
 
+    /* Check for VSOURCEa overriding ZSOURCEa. */
+    if (undefined((*wcs+a)->zsource) && !undefined(vsource[a])) {
+      /* Convert relativistic Doppler velocity to redshift. */
+      beta = vsource[a]/c;
+      (*wcs+a)->zsource = (1.0+beta)/sqrt(1.0 - beta*beta) - 1.0;
     }
   }
 
