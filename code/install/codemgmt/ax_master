@@ -5693,3 +5693,4 @@
 15 337 src rm trial/apps/megaserver/sysinfo_mega.h
 15 341 src mv doc/project/devplan_1.5.latex doc/project/deferred_1.5.latex
 15 355 src rm aips/implement/Deconvolution
+16 004 src rm aips/implement/Deconvolution.h
