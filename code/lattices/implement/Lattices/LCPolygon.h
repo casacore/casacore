@@ -115,13 +115,19 @@ public:
 	       const IPosition& latticeShape);
     // </group>
 
-    // Copy constructor (partly reference semantics).
+    // Copy constructor (reference semantics).
     LCPolygon (const LCPolygon& other);
 
     virtual ~LCPolygon();
 
     // Assignment (copy semantics).
     LCPolygon& operator= (const LCPolygon& other);
+
+    // Comparison
+    // <group>
+    virtual Bool operator== (const LCRegion& other) const;
+    virtual Bool operator!= (const LCRegion& other) const;
+    // </group>
 
     // Make a copy of the derived object.
     virtual LCRegion* cloneRegion() const;
@@ -140,6 +146,9 @@ public:
 
     // Get the class name (to store in the record).
     static String className();
+
+    // Get the region type.  Returns className()
+    virtual String type() const;
 
     // Convert the (derived) object to a record.
     virtual TableRecord toRecord (const String& tableName) const;
