@@ -544,6 +544,15 @@ CoordinateSystem ImageRegrid<T>::makeCoordinateSystem(LogIO& os,
    CoordinateSystem cSys2;
    cSys2.setObsInfo(cSysIn.obsInfo());
 
+// If specified axes are empty, set to all
+
+   IPosition outPixelAxes2;
+   if (outPixelAxes.nelements()==0) {
+      outPixelAxes2 = IPosition::makeAxisPath(nPixelAxes);
+   } else {
+      outPixelAxes2 = outPixelAxes;
+   }
+
 // Loop over output pixel axes from output CS. 
 
 
@@ -552,10 +561,10 @@ CoordinateSystem ImageRegrid<T>::makeCoordinateSystem(LogIO& os,
    for (uInt i=0; i<nPixelAxes; i++) {
  
 // Is this output CS axis one to be regridded ?
-         
+
       Bool regridIt = False;                 
-      for (uInt j=0; j<outPixelAxes.nelements(); j++) {
-         if (Int(i)==outPixelAxes(j)) {              
+      for (uInt j=0; j<outPixelAxes2.nelements(); j++) {
+         if (Int(i)==outPixelAxes2(j)) {              
             regridIt = True;  
             break;
          }
