@@ -2864,8 +2864,8 @@ Bool CoordinateSystem::fromFITSHeader(CoordinateSystem &coordsys,
 
 // Get rid of the first 4 characters, e.g., RA--
 
-        const uInt l1 = proj1.length();
-        const uInt l2 = proj2.length();
+        const Int l1 = proj1.length();
+        const Int l2 = proj2.length();
         proj1 = String(proj1.at(4, l1-4));
         proj2 = String(proj2.at(4, l2-4));
 
