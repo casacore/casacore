@@ -132,6 +132,8 @@ class Time;
 //	precede the time with 'yyyy/mm/dd/'.<br>
 //	The <src>MVTime::DMY</src> format implies TIME, and will
 //	precede the time with 'dd-Mon-yyyy/'.<br>
+//	The <src>MVTime::FITS</src> format implies TIME, and will
+//	precede the time with 'ccyy-mm-ddT'.<br>
 //	The output format can be modified with modifiers (specify as
 //	MVTime::TIME | MVTime::MOD (or + MVTime::MOD)). 
 //	<note> For overloading/casting problems with some compilers, the
@@ -140,8 +142,7 @@ class Time;
 //	<src>((MVTime::formatTypes)(A|B))</src>, or make use of
 //	the provided <src>TIME[_CLEAN][_NO_H[M]]</src> and
 //	<src>ANGLE[_CLEAN][_NO_D[M]].</note>
-//	The modifiers
-//	can be:
+//	The modifiers can be:
 //	<ul>
 //	 <li> <src>MVTime::CLEAN</src> to suppress leading or trailing
 //		periods (or colons for TIME). Note that he result can not be
@@ -167,6 +168,9 @@ class Time;
 //	  <li> MVTime::NO_[D|H][M] modifier to suppress first field(s)
 //	  <li> MVTime::DIG2 modifier to get +dd.mm.ss.ttt in angle or
 //		time format(i.e. in range -90 - +90 or -12 - +12)
+//	  <li> MVTime::LOCAL modifier to produce local time (as derived from
+//		aipsrc time.tzoffset). In FITS mode the time zone will
+//		be appended (as <src><sign>hh:mm</src>).
 //	</ul>
 // </ul>
 // The default formatting can be overwritten by a 
@@ -201,6 +205,13 @@ class Time;
 //				MMM can be at least first three characters
 //				of month name; or a month number (1 == Jan).
 //				Omitted month indicates day is day number.
+//   <li> ccyy-mm-dd[Ttime[Z|+-hh[:mm]]]  -- new FITS format the 'T' as time 
+//				separator should be UC, as should be the 'Z'
+//				(the UTC indicator, assumed as default).
+//				A signed hh or hh:mm can be present to
+//				indicate time zone. This value will be
+//				subtracted to give UTC. To recognise this
+//				format, the year should be greater than 1000. 
 // </ul>
 // The time can be expressed as described in 
 // <linkto class=MVAngle>MVAngle</linkto>
@@ -210,6 +221,7 @@ class Time;
 //	1996/11/20	20 November 1996 0h UT
 //	1996/11/20/5:20 20 November 1996 at 5h20m
 //	20Nov96-5h20m	same (again no case dependence)
+//	1996-11-20T5:20Z same (FITS format, case dependent)
 // </srcblock>
 // </synopsis>
 //
@@ -243,6 +255,8 @@ class MVTime {
 	NO_TIME			= 256,
 	MJD			= TIME+512,
 	DIG2			= 1024,
+	FITS			= TIME+2048,
+	LOCAL			= 4096,
 	NO_H 			= NO_D,
 	NO_HM 			= NO_DM,
 	ANGLE_CLEAN 		= ANGLE + CLEAN,
@@ -255,7 +269,8 @@ class MVTime {
 	TIME_NO_HM 		= TIME + NO_HM,
 	TIME_CLEAN_NO_H		= TIME + CLEAN + NO_H,
 	TIME_CLEAN_NO_HM	= TIME + CLEAN + NO_HM,
-	MOD_MASK		= CLEAN + NO_DM + DAY + NO_TIME + DIG2};
+	MOD_MASK		= CLEAN + NO_DM + DAY + NO_TIME + DIG2 + LOCAL
+    };
 
 //# Local structure
 // Format structure
@@ -315,10 +330,12 @@ class MVTime {
 
 //# General member functions
   // Make res time Quantity from string. The String version will accept
-  // a time/angle Quantity as well
+  // a time/angle Quantity as well. The chk checks for eos
   // <group>
   static Bool read(Quantity &res, const String &in);
   static Bool read(Quantity &res, MUString &in);
+  static Bool read(Quantity &res, const String &in, Bool chk);
+  static Bool read(Quantity &res, MUString &in, Bool chk);
   // </group>
 // Get value of date/time (MJD) in given units
 // <group>
@@ -363,10 +380,12 @@ class MVTime {
     static Format setFormat(uInt inprec = 0);
     static Format setFormat(const Format &form);
 // </group>
-// Get default format
-    static Format getFormat();
-// Get code belonging to string. 0 if not known
-     static MVTime::formatTypes  giveMe(const String &in);
+  // Get default format
+  static Format getFormat();
+  // Get code belonging to string. 0 if not known
+  static MVTime::formatTypes  giveMe(const String &in);
+  // Get time zone offset (in days)
+static const Double &timeZone();
 
     private:
 //# Data

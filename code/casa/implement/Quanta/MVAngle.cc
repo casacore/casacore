@@ -33,6 +33,7 @@
 #include <aips/Mathematics/Constants.h>
 #include <aips/Measures/QMath.h>
 #include <aips/Measures/MUString.h>
+#include <aips/Tasking/Aipsrc.h>
 
 #ifdef __GNUG__
 typedef Quantum<Double> gpp_mvangle_bug1;
@@ -43,6 +44,7 @@ typedef Quantum<Double> gpp_mvangle_bug1;
 MVAngle::Format MVAngle::defaultFormat = MVAngle::Format();
 MVAngle::Format MVAngle::interimFormat = MVAngle::Format();
 Bool MVAngle::interimSet = False;
+Double MVAngle::tzone = -1000.;
 
 //# Constructors
 MVAngle::MVAngle() : 
@@ -195,9 +197,32 @@ String MVAngle::string(const MVAngle::Format &form) const {
     print (oss, form);
     return oss;
 }
-   
+
+const Double &MVAngle::timeZone() {
+  if (MVAngle::tzone < -100.0) {
+    String val;
+    if (Aipsrc::find(val, "time.tzoffset")) {
+      MUString in(val);
+      Double s = in.getSign();
+      Double r = in.getuInt();
+      if (in.tSkipChar(':')) {
+	r += Double(in.getuInt())/60.0;
+      };
+      tzone = s*r/24.0;
+    } else {
+      MVAngle::tzone = 0;
+    };
+  } 
+  return tzone;
+}  
+
 void MVAngle::print(ostream &oss,
 		    const MVAngle::Format &form) const {
+  print(oss, form, False);
+}
+
+void MVAngle::print(ostream &oss,
+		    const MVAngle::Format &form, Bool loc) const {
     uInt inprec = form.prec;
     uInt intyp = form.typ;
     uInt i1 = intyp & ~MVAngle::MOD_MASK;
@@ -207,12 +232,16 @@ void MVAngle::print(ostream &oss,
 	t = val/C::degree;
 	sep = '.';
     } else {
+      if (loc) {
+	t = MVAngle::timeZone() * 24.0;
+      } else {
 	t = val/C::circle;
 	t = (t - floor(t)) * 24.;
 	if (((intyp & MVAngle::DIG2) == MVAngle::DIG2) && t > 12) {
 	  t -= 24.0;
 	};
-	sep = ':';
+      };
+      sep = ':';
     };
     if (inprec == 0) inprec = oss.precision();
     Char sfill = oss.fill();
@@ -223,7 +252,8 @@ void MVAngle::print(ostream &oss,
     if (i1 == MVAngle::ANGLE || ((intyp & MVAngle::DIG2) == MVAngle::DIG2)) {
 	if (t < 0) {
 	  oss << '-';
-	} else if ((intyp & MVAngle::CLEAN) != MVAngle::CLEAN) {
+	} else if ((intyp & MVAngle::CLEAN) != MVAngle::CLEAN ||
+		   ((intyp & MVAngle::DIG2) == MVAngle::DIG2)) {
 	  oss << '+';
 	} else {
 	  oss << ' ';
@@ -284,13 +314,23 @@ void MVAngle::print(ostream &oss,
 	oss << setfill('0') << setw(2) << h;
     };
     if (inprec > 6) {
-	t -= 59.9*t1;
-	t = fmod(t, 1.0) *60.;
-	Int oprec = oss.precision();
-	Long oldb = oss.setf(ios::fixed,ios::floatfield);
-	oss << setfill('0') << setprecision(inprec-6) << setw(inprec-3) << t <<
-	    setprecision(oprec);
-	oss.setf(oldb,ios::floatfield);
+      t -= 59.9*t1;
+      t = fmod(t, 1.0) *60.;
+      Int oprec = oss.precision();
+      Long oldb = oss.setf(ios::fixed,ios::floatfield);
+      oss << setfill('0') << setprecision(inprec-6) << setw(inprec-3) << t <<
+	setprecision(oprec);
+      oss.setf(oldb,ios::floatfield);
+    };
+    if ((intyp & MVAngle::FITS) == MVAngle::FITS) {
+      if ((intyp & MVAngle::LOCAL) == MVAngle::LOCAL) {
+	MVAngle my = MVAngle::timeZone() * C::circle;
+	my.
+	  print(oss, MVAngle::Format(MVAngle::TIME_CLEAN | MVAngle::DIG2, 4),
+		True);
+      } else {
+	oss << 'Z';
+      };
     };
     oss.fill(sfill);
 }
@@ -302,6 +342,10 @@ Bool MVAngle::unitString(UnitVal &uv, String &us, MUString &in) {
 }
 
 Bool MVAngle::read(Quantity &res, MUString &in) {
+  return read(res, in, True);
+};
+
+Bool MVAngle::read(Quantity &res, MUString &in, Bool chk) {
   res = Quantity(0.0, "rad");
   in.skipBlank();
   in.push();			// Save position
@@ -355,7 +399,7 @@ Bool MVAngle::read(Quantity &res, MUString &in) {
     break;
   };
 
-  if (! in.eos()) tp = 0;		// incorrect
+  if (chk && !in.eos()) tp = 0;	     // incorrect
   switch (tp) {
 
   case 1:
@@ -379,6 +423,10 @@ Bool MVAngle::read(Quantity &res, MUString &in) {
 }
 
 Bool MVAngle::read(Quantity &res, const String &in) {
+  return read(res, in, True);
+}
+
+Bool MVAngle::read(Quantity &res, const String &in, Bool chk) {
   MUString tmp(in);		// Pointed non-const String
   if (!MVAngle::read(res, tmp)) {
     Double r = tmp.getDouble();

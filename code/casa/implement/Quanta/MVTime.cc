@@ -308,41 +308,56 @@ String MVTime::string(const MVTime::Format &form) const {
     print (oss, form);
     return oss;
 }
-   
+
+const Double &MVTime::timeZone() {
+  return MVAngle::timeZone();
+}  
 void MVTime::print(ostream &oss,
 		    const MVTime::Format &form) const {
     uInt inprec = form.prec;
     uInt intyp = form.typ;
     uInt i1 = intyp & ~MVTime::MOD_MASK;
+    MVTime loc(val);
+    if ((intyp & MVTime::LOCAL) == MVTime::LOCAL) {
+      loc = MVTime(val + MVTime::timeZone());
+    };
 
     if ((intyp & MVTime::DAY) == MVTime::DAY) {
-	oss << dayName();
-	if (i1 == MVTime::YMD || i1 == MVTime::DMY ||
-	    i1 == MVTime::MJD ||
-	    (intyp & MVTime::NO_TIME) != MVTime::NO_TIME) {
-	    oss << '-';
-	};
+      oss << loc.dayName();
+      if (i1 == MVTime::YMD || i1 == MVTime::DMY ||
+	  i1 == MVTime::MJD ||
+	  (intyp & MVTime::NO_TIME) != MVTime::NO_TIME) {
+	oss << '-';
+      };
     };
-    if (i1 == MVTime::YMD || i1 == MVTime::DMY) {
+    if (i1 == MVTime::YMD || i1 == MVTime::DMY || i1 == MVTime::FITS) {
       Int c,e,a;
-      ymd(c,e,a);			// y,m,d
+      loc.ymd(c,e,a);			// y,m,d
       Char sfill = oss.fill();
       if (i1 == MVTime::YMD) {
 	oss << setfill('0') << setw(4) << c << "/" << 
 	  setw(2) << e << "/" << 
 	  setw(2) << a;
-      } else {
+      } else if (i1 == MVTime::DMY) {
 	oss << setfill('0') << setw(2) << a << "-" <<
 	  setw(3) << monthName(e) << "-" <<
 	  setw(4) << c;
+      } else {				// FITS
+	oss << setfill('0') << setw(4) << c << "-" << 
+	  setw(2) << e << "-" << 
+	  setw(2) << a;
       };
-      if ((intyp & MVTime::NO_TIME) != MVTime::NO_TIME) {
-	oss << "/";
+    if ((intyp & MVTime::NO_TIME) != MVTime::NO_TIME) {
+	if (i1 == MVTime::FITS) {
+	  oss << "T";
+	} else {
+	  oss << "/";
+	};
       };
       oss.fill(sfill);
     };
     if (i1 == MVTime::MJD) {
-      Int c = ifloor(val);
+      Int c = ifloor(loc);
       oss << c;
       if ((intyp & MVTime::NO_TIME) != MVTime::NO_TIME) {
 	oss << "/";
@@ -350,12 +365,16 @@ void MVTime::print(ostream &oss,
     };
     if ((intyp & MVTime::NO_TIME) != MVTime::NO_TIME) {
 	MVAngle::Format ftmp((MVAngle::formatTypes) intyp, inprec);
-	MVAngle atmp(val*C::circle); atmp();
+	MVAngle atmp(loc.val * C::circle); atmp();
 	atmp.print(oss, ftmp);
     };
 }
 
 Bool MVTime::read(Quantity &res, MUString &in) {
+  return read(res, in, True);
+};
+
+Bool MVTime::read(Quantity &res, MUString &in, Bool chk) {
   static const String mon[12] = {
     "January", "February", "March", "April", "May", "June",
     "July", "August", "September", "October", "November", "December"};
@@ -390,7 +409,7 @@ Bool MVTime::read(Quantity &res, MUString &in) {
       } else {
 	mm = MUString::minimaxNC(amon, 12, mon);
 	if (mm < 12) {
-	  mm++;
+ 	  mm++;
 	} else {
 	  in.pop(); return False;
 	};
@@ -407,13 +426,17 @@ Bool MVTime::read(Quantity &res, MUString &in) {
     };
     in.skipChar('-');
     Int dd2 = in.getuInt();
-    if (dd2 < 50) {
-      dd2 += 2000;
-    } else if (dd2 < 100) {
-      dd2 += 1900;
-    };
-    dd = r;			// Swap day/year
-    r = dd2;    
+    if (r > 1000) {		// New FITS format
+      dd = dd2;
+    } else {
+      if (dd2 < 50) {
+	dd2 += 2000;
+      } else if (dd2 < 100) {
+	dd2 += 1900;
+      };
+      dd = r;			// Swap day/year
+      r = dd2;
+    };    
   } else if (in.testChar('/')) {
     if (in.freqChar('/') > 1) {
       in.skipChar();
@@ -439,6 +462,23 @@ Bool MVTime::read(Quantity &res, MUString &in) {
     } else {
       in.pop(); return False;
     };
+  } else if (in.tSkipChar('T')) {	// new FITS
+    if (MVAngle::read(res, in, False)) {
+      res = Quantity(res.get("deg").getValue()/360., "d");
+      if (in.testChar('+') || in.testChar('-')) {
+	Double s = in.getSign();
+	Double r = in.getuInt();
+	if (in.tSkipChar(':')) {
+	  r += Double(in.getuInt())/60.0;
+	};
+	res -= Quantity(s*r/24.0,"d");	// FITS time zone
+      } else if (in.tSkipChar('Z')) {	// FITS UTC
+      } else {				// FITS must have time zone (or Z)
+	in.pop(); return False;
+      };
+    } else {
+      in.pop(); return False;
+    };
   };
   if (tp == 0) {
     res += MVTime(r, mm, dd).get();
@@ -450,6 +490,10 @@ Bool MVTime::read(Quantity &res, MUString &in) {
 }
 
 Bool MVTime::read(Quantity &res, const String &in) {
+  return read(res, in, True);
+}
+
+Bool MVTime::read(Quantity &res, const String &in, Bool chk) {
   MUString tmp(in);		// Pointed non-const String
   if (!MVTime::read(res, tmp)) {
     Double r = tmp.getDouble();

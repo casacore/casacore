@@ -129,8 +129,7 @@ class MUString;
 //	the provided <src>ANGLE[_CLEAN][_NO_D[M]]</src> and
 //	<src>TIME[_CLEAN][_NO_H[M]].</src>
 //	</note>
-//	The modifiers
-//	can be:
+//	The modifiers can be:
 //	<ul>
 //	 <li> <src>MVAngle::CLEAN</src> to suppress leading or trailing
 //		periods (or colons for TIME). + and leading zeroes in degree
@@ -143,6 +142,12 @@ class MUString;
 //		suppress the degrees and minutes.
 //	 <li> <src>MVAngle::DIG2</src> to allow only 2 digits for degrees,
 //		or -12 - +12 range for hours
+//	 <li> <src>MVAngle::LOCAL</src> to indicate local time to FITS
+//		formatting only
+//	  <li> <src>MVAngle::FITS</src> to produce trailing 'Z', or, if
+//		LOCAL set as well the time zone (note that if local set
+//		here, as opposed to in MVTime) the angle is supposed
+//		to be in local time already).
 //	</ul>
 //	Output in formats like <src>20'</src> can be done via the standard
 //	Quantum output (e.g. <src> stream << angle.get("'") </src>).
@@ -241,6 +246,8 @@ class MVAngle {
 	NO_D 			= 8,
 	NO_DM 			= NO_D+16,
 	DIG2			= 1024,
+	FITS			= TIME+2048,
+	LOCAL			= 4096,
 	NO_H 			= NO_D,
 	NO_HM 			= NO_DM,
 	ANGLE_CLEAN 		= ANGLE + CLEAN,
@@ -253,7 +260,7 @@ class MVAngle {
 	TIME_NO_HM 		= TIME + NO_HM,
 	TIME_CLEAN_NO_H		= TIME + CLEAN + NO_H,
 	TIME_CLEAN_NO_HM	= TIME + CLEAN + NO_HM ,
-	MOD_MASK		= NO_DM + CLEAN + DIG2};
+	MOD_MASK		= NO_DM + CLEAN + DIG2 + LOCAL};
 
 //# Local structure
 // Format structure
@@ -315,10 +322,12 @@ class MVAngle {
   // Check if String unit
   static Bool unitString(UnitVal &uv, String &us, MUString &in);
   // Make res angle Quantity from string in angle/time-like format. In the
-  // case of String input, also quantities are recognised.
+  // case of String input, also quantities are recognised. chk checks eos
   // <group> 
   static Bool read(Quantity &res, const String &in);
   static Bool read(Quantity &res, MUString &in);
+  static Bool read(Quantity &res, const String &in, Bool chk);
+  static Bool read(Quantity &res, MUString &in, Bool chk);
   // </group>
 // Make co-angle (e.g. zenith distance from elevation)
     MVAngle coAngle() const;
@@ -338,6 +347,7 @@ class MVAngle {
     String string(uInt inprec) const;
     String string(const MVAngle::Format &form) const;
     void print(ostream &oss, const MVAngle::Format &form) const;
+    void print(ostream &oss, const MVAngle::Format &form, Bool loc) const;
 // </group>
 // Set default format
 // <group>
@@ -351,6 +361,8 @@ class MVAngle {
     static Format getFormat();
 // Get code belonging to string. 0 if not known
      static MVAngle::formatTypes  giveMe(const String &in);
+  // Get time zone offset (in days)
+  static const Double &timeZone();
 
     private:
 //# Data
@@ -363,6 +375,8 @@ class MVAngle {
     static MVAngle::Format interimFormat;
     static Bool interimSet;
 // </group>
+  // Time zone (in days)
+  static Double tzone;
 
 //# Member functions
 };
