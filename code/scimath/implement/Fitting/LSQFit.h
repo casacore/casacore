@@ -394,9 +394,10 @@ class LSQFit {
   // <src>nUnknowns</src> are actually present in the condition equation
   // (starting indexing at 0); the other terms are supposed to be zero. E.g.
   // if a 12-telescope array has an equation only using telescopes 2 and 4,
-  // the lengths of <cEqIndex</src> and <src>cEq</src> will be both 2,
+  // the lengths of <src>cEqIndex</src> and <src>cEq</src> will be both 2,
   // and the index will contain 1 and 3 (when telescope numbering starts at 1)
-  // or 2 and 4 (when telescope numbering starts at 0.
+  // or 2 and 4 (when telescope numbering starts at 0. The index is given
+  // as an iterator (and hence can be a raw pointer)
   //
   // Note that the
   // use of <src>const U &</src> is due to a Float->Double conversion problem
@@ -526,12 +527,23 @@ class LSQFit {
   // same number of unknowns, and be pure normal equations (i.e. no
   // <src>invert(), solve(), solveLoop()</src> or statistics calls//
   // should have been made). If merging cannot be done, <src>False</src>
-  // is returned.
+  // is returned. The index case (the index is an iterator) assumes that
+  // the normal equations to be merged are a sparse subset of the complete
+  // matrix. The index 'vector' specifies which unknown are present. An index
+  // outside the scope of the final equations will be skipped.
   // <note role=tip> For highest numerical precision in the case of a larger
   // number of partial normal equations to be merged, it is best to merge
   // them in pairs (and repeat).
   // </note>
+  // <group>
   Bool merge(const LSQFit &other);
+  Bool merge(const LSQFit &other, uInt nIndex, uInt *nEqIndex);
+  template <class W>
+    Bool merge(const LSQFit &other, uInt nIndex, const W &nEqIndex) {
+    uInt *ix = new uInt[nIndex+1];
+    for (uInt i=0; i<nIndex; ++i) *ix++ = nEqIndex[i];
+    return merge(other, nIndex, ix); delete [] ix; }
+  // </group>
   // Reset status to empty
   void reset();
   // Set new sizes (default is for Real)

@@ -567,6 +567,39 @@ Bool LSQFit::merge(const LSQFit &other) {
   return True;
 }
 
+Bool LSQFit::merge(const LSQFit &other, uInt nIndex, uInt *nEqIndex) {
+  if (other.nun_p != nIndex || state_p || other.state_p) return False;
+  // Copy normal equations
+  for (uInt i=0; i<nIndex; ++i) {
+    if (nEqIndex[i] >= 0 && nEqIndex[i]<nun_p) {
+      Double *i3 = other.norm_p->row(i);
+      for (uInt i1=i; i1<nIndex; ++i1) {
+	if (nEqIndex[i1] >= 0 && nEqIndex[i1]<nun_p) {
+	  if (nEqIndex[i] <= nEqIndex[i1]) {
+	    norm_p->row(nEqIndex[i])[nEqIndex[i1]] += i3[i1];
+	  } else norm_p->row(nEqIndex[i1])[nEqIndex[i]] += i3[i1];
+	};
+      };
+    };
+  };
+  // Copy known terms
+  Double *i2 = known_p;
+  Double *i3 = other.known_p;
+  for (uInt i=0; i<nIndex; ++i) {
+    if (nEqIndex[i] >= 0 && nEqIndex[i]<nun_p) i2[nEqIndex[i]] += i3[i];
+  };
+  // Copy statistics information
+  error_p[NC]        += other.error_p[NC];
+  error_p[SUMWEIGHT] += other.error_p[SUMWEIGHT];
+  error_p[SUMLL]     += other.error_p[SUMLL];
+  // Copy constraint equations
+  for (uInt i=0; i<other.ncon_p; ++i) {
+    addConstraint(nIndex, nEqIndex,
+		  other.constr_p + i*other.nun_p, other.known_p[nun_p+i]);
+  };  
+  return True;
+}
+
 void LSQFit::reset() {
   clear();
 }
