@@ -451,7 +451,12 @@ public:
 			  Vector<String>& coordColumnNames,
 			  Vector<String>& idColumnNames) const;
 
-    //*display 4
+    // Adjust the hypercolumn definitions (for a RefTable).
+    // It removes and/or renames columns as necessary.
+    // If all data columns of a hypercolumn are removed, the entire
+    // hypercolumn is removed.
+    void adjustHypercolumns (const SimpleOrderedMap<String, String>& old2new);
+
     // Check recursively if the descriptions of all subtables are known.
     void checkSubTableDesc() const;
 
