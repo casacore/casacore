@@ -1271,7 +1271,7 @@ template<class T, class U> void convertArray(Array<T> &to,
     const U *fromptr = from.getStorage(deleteFrom);
 
     for (uInt i=0; i < to.nelements(); i++) {
-	*toptr = T(*fromptr);
+	*toptr = *fromptr;
 	toptr++; fromptr++;
     }
     to.putStorage(toptr, deleteTo);
