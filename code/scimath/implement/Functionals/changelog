@@ -1,10 +1,28 @@
 
+<change id=0088>
+ <author> Wim Brouw </author>
+ <date> 2002/02/25 </date>
+ <avers> 1.7 </avers>
+ <area> Library </area>
+ <package> scimath </package>
+ <module> Functionals </module>
+ <type> Code </type>
+ <category> New </category>
+ <defects>  </defects>
+ <summary>
+Added odd and even polynomials
+ </summary>
+ <description>
+Added the specialised OddPolynomial and EvenPolynomial classes
+ </description>
+</change>
+
 <change id=0116>
  <author> Wim Brouw </author>
  <date> 2002/02/18 </date>
  <avers> 1.7 </avers>
  <area> Library </area>
- <package> aips </package>
+ <package> scimath </package>
  <module> Functionals </module>
  <type> Code Documentation </type>
  <category> Change </category>
@@ -24,12 +42,51 @@ Class FuncWithDerivs have been removed from the system: all Functions can be use
  </description>
 </change>
 
+<change id=0121>
+ <author> Wim Brouw </author>
+ <date> 2002/04/17 </date>
+ <avers> 1.7 </avers>
+ <area> Tool </area>
+ <package> scimath </package>
+ <module> functionals </module>
+ <type> Code Documentation </type>
+ <category> New </category>
+ <defects>  </defects>
+ <summary>
+functional tool added
+ </summary>
+ <description>
+A functionals tool has been provided, which encapsulates the state (parameters, type, dimension, combination) of a Function in a glish closure.
+Methods in the closure exists to get values and derivatives at single or multiple points, and to manipulate the parameters. Functions that can combine/compound a number of functions exist
+ </description>
+</change>
+
+<change id=0122>
+ <author> Wim Brouw </author>
+ <date> 2002/04/17 </date>
+ <avers> 1.7 </avers>
+ <area> Library </area>
+ <package> scimath </package>
+ <module> Functionals </module>
+ <type> Code Documentation </type>
+ <category> New </category>
+ <defects>  </defects>
+ <summary>
+Added generic FunctionHolder
+ </summary>
+ <description>
+A generic FunctionHolder class has been added.
+It is used in the transfer of functional related information between gliosh and C++.
+It can (and will ) be used to create a Param<Function>
+ </description>
+</change>
+
 <change id=0136>
  <author> Raymond Plante </author>
  <date> 2003/03/26 </date>
  <avers> 1.8 </avers>
  <area> Library </area>
- <package> aips </package>
+ <package> scimath </package>
  <module> Functionals </module>
  <type> Code </type>
  <category> Change </category>
@@ -54,90 +111,12 @@ The Mode facility may be replaced with a different mechanism in the future.
  </description>
 </change>
 
-<change id=0142>
- <author> Raymond Plante </author>
- <date> 2003/03/31 </date>
- <avers> 1.8 </avers>
- <area> Library </area>
- <package> aips </package>
- <module> Functionals </module>
- <type> Code Documentation </type>
- <category> Change </category>
- <defects>  </defects>
- <summary>
-added get/setMode() functions to SimButterworthBandpass
- </summary>
- <description>
-SimButterworthBandpass now uses the Function interface's "Mode" facility
-to support generic access to non-Parameter data.  In this case, the passband
-orders can be accessed via a Record using this facility.  This allows these
-parameters to be accessible to the functionals tool.
- </description>
-</change>
-
-<change id=0088>
- <author> Wim Brouw </author>
- <date> 2002/02/25 </date>
- <avers> 1.7 </avers>
- <area> Library </area>
- <package> trial </package>
- <module> Functionals </module>
- <type> Code </type>
- <category> New </category>
- <defects>  </defects>
- <summary>
-Added odd and even polynomials
- </summary>
- <description>
-Added the specialised OddPolynomial and EvenPolynomial classes
- </description>
-</change>
-
-<change id=0121>
- <author> Wim Brouw </author>
- <date> 2002/04/17 </date>
- <avers> 1.7 </avers>
- <area> Tool </area>
- <package> trial </package>
- <module> functionals </module>
- <type> Code Documentation </type>
- <category> New </category>
- <defects>  </defects>
- <summary>
-functional tool added
- </summary>
- <description>
-A functionals tool has been provided, which encapsulates the state (parameters, type, dimension, combination) of a Function in a glish closure.
-Methods in the closure exists to get values and derivatives at single or multiple points, and to manipulate the parameters. Functions that can combine/compound a number of functions exist
- </description>
-</change>
-
-<change id=0122>
- <author> Wim Brouw </author>
- <date> 2002/04/17 </date>
- <avers> 1.7 </avers>
- <area> Library </area>
- <package> trial </package>
- <module> Functionals </module>
- <type> Code Documentation </type>
- <category> New </category>
- <defects>  </defects>
- <summary>
-Added generic FunctionHolder
- </summary>
- <description>
-A generic FunctionHolder class has been added.
-It is used in the transfer of functional related information between gliosh and C++.
-It can (and will ) be used to create a Param<Function>
- </description>
-</change>
-
 <change id=0137>
  <author> Raymond Plante </author>
  <date> 2003/03/26 </date>
  <avers> 1.8 </avers>
  <area> Library </area>
- <package> trial </package>
+ <package> scimath </package>
  <module> Functionals </module>
  <type> Code </type>
  <category> Change </category>
@@ -158,7 +137,7 @@ facility to pass this special state.
  <date> 2003/03/26 </date>
  <avers> 1.8 </avers>
  <area> Tool </area>
- <package> trial </package>
+ <package> scimath </package>
  <module> functionals </module>
  <type> Code </type>
  <category> Change </category>
@@ -176,7 +155,7 @@ The functionals tool now supports the Chebyshev function.
  <date> 2003/03/31 </date>
  <avers> 1.8 </avers>
  <area> Library </area>
- <package> trial </package>
+ <package> scimath </package>
  <module> Functionals </module>
  <type> Code </type>
  <category> Change </category>
@@ -191,12 +170,33 @@ in the functionals tool.
  </description>
 </change>
 
+<change id=0142>
+ <author> Raymond Plante </author>
+ <date> 2003/03/31 </date>
+ <avers> 1.8 </avers>
+ <area> Library </area>
+ <package> scimath </package>
+ <module> Functionals </module>
+ <type> Code Documentation </type>
+ <category> Change </category>
+ <defects>  </defects>
+ <summary>
+added get/setMode() functions to SimButterworthBandpass
+ </summary>
+ <description>
+SimButterworthBandpass now uses the Function interface's "Mode" facility
+to support generic access to non-Parameter data.  In this case, the passband
+orders can be accessed via a Record using this facility.  This allows these
+parameters to be accessible to the functionals tool.
+ </description>
+</change>
+
 <change id=0143>
  <author> Raymond Plante </author>
  <date> 2003/03/31 </date>
  <avers> 1.8 </avers>
  <area> Tool </area>
- <package> trial </package>
+ <package> scimath </package>
  <module> functionals </module>
  <type> Code Documentation </type>
  <category> Change </category>
