@@ -29,11 +29,9 @@
 #include <aips/OS/HostInfo.h>
 #include <aips/Utilities/Regex.h>
 #include <aips/Utilities/Assert.h>
-#include <aips/Containers/RecordInterface.h>
 
 #include <aips/sstream.h>
 #include <aips/iostream.h>
-#include <aips/stdio.h>                  // needed for sprintf
 
 
 ObjectID::ObjectID(Bool makeNull)
@@ -216,39 +214,4 @@ ostream &operator<<(ostream &os, const ObjectID &id)
     id.toString(tmp);
     os << "[" << tmp << "]";
     return os;
-}
-
-
-String ObjectID::extractIDs (Block<ObjectID>& objectIDs,
-			     const String& command)
-{
-    objectIDs.resize (0, True, True);
-    String error;
-    String result;
-    String str = command;
-    // Extract object-id from the command, convert it to an
-    // ObjectID in the block, and put its index into the command.
-    Int index = str.index ("'ObjectID=[");
-    while (index >= 0) {
-        result += str.before(index);
-	index += 11;
-	Int pos = str.index ("]'", index);
-	ObjectID oid;
-	// Convert to ObjectID.
-	// If not succesfull, put original back.
-	if (! oid.fromString (error, str(index, pos-index))) {
-	    result += str(index-11, pos-index+13);
-	} else {
-	    uInt n = objectIDs.nelements() + 1;
-	    objectIDs.resize (n);
-	    objectIDs[n-1] = oid;
-	    char buf[16];
-	    sprintf (buf, "$OBJ#%i#O", n);
-	    result += buf;
-	    str = str.after(pos+1);
-	}
-	index = str.index ("'ObjectID=[");
-    }
-    result += str;
-    return result;
 }
