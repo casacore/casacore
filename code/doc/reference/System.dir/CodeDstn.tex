@@ -283,7 +283,7 @@ Retrieve \aipspp\ source code updates.
 
 \begin{synopsis}
    \code{\exe{inhale} [\exe{-b}] [\exe{-c|-m}] [\exe{-D}] [\exe{-d}]
-	[\exe{-l}] [\exe{-n}] [\exe{-r}\#] [\exe{-w}\#]}
+	[\exe{-l}] [\exe{-n}] [\exe{-P}] [\exe{-R} NAME] [\exe{-r}\#] [\exe{-w}\#]}
 \end{synopsis}
 
 \subsection*{Description}
@@ -392,6 +392,13 @@ the last slave and code updates (see \exeref{avers}).
    Don't remake the system (\code{allsys}) after installing the update.  It
    does however remake the \code{install} target, and also \code{docsys}
    provided that the \exe{-d} option is not also specified.
+
+\item[\exe{-P}]
+  Use passive mode when doing FTP. Useful for firewalls etc. The
+  FTP client being used must support passive mode.
+
+\item[\exe{-R} NAME]
+  instead of downloading the default distribution, get the one called "NAME".
 
 \item[\exe{-r} count]
    Set the retry count for the ftp transfer, default is 12.  Set this to zero
