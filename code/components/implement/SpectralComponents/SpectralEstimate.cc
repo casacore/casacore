@@ -36,19 +36,29 @@ SpectralEstimate::SpectralEstimate() :
   useWindow_p(False), rms_p(0), cutoff_p(0),
   windowLow_p(0), windowEnd_p(0),
   q_p(2), sigmin_p(0),
-  maxpar_p(200), deriv_p(0), pars_p(0), npar_p(0) {}
-
-SpectralEstimate::SpectralEstimate(const Double ampl,
-				   const Double center, const Double sigma) {
-  ///
+  maxpar_p(200), deriv_p(0), pars_p(0), npar_p(0), lprof_p(0) {
+  setQ();
+  setMaxN();
 }
+
+SpectralEstimate::SpectralEstimate(const Double rms,
+				   const Double cutoff,
+				   const Double minsigma) :
+  useWindow_p(False), rms_p(rms), cutoff_p(cutoff),
+  windowLow_p(0), windowEnd_p(0),
+  q_p(2), sigmin_p(minsigma),
+  maxpar_p(200), deriv_p(0), pars_p(0), npar_p(0), lprof_p(0) {
+  setQ();
+  setMaxN();
+}
+
 
 SpectralEstimate::SpectralEstimate(const SpectralEstimate &other) {
   ///
 }
 
 SpectralEstimate::~SpectralEstimate() {
-  delete [] deriv_p; deriv_p = 0;
+  delete [] deriv_p; deriv_p = 0; lprof_p = 0;
   delete [] pars_p; pars_p = 0; npar_p = 0;
 }
 
@@ -59,19 +69,31 @@ SpectralEstimate &SpectralEstimate::operator=(const SpectralEstimate &other) {
   return *this;
 }
 
-uInt SpectralEstimate::estimate(const Vector<Float> &prof) {
-
+uInt SpectralEstimate::estimate(const Vector<Float> &prof,
+				Vector<Float> *der) {
+  if (prof.nelements() != lprof_p) {
+    delete [] deriv_p; deriv_p = 0; lprof_p = 0;
+    lprof_p = prof.nelements();
+    deriv_p = new Double[lprof_p];
+  };
   // Check if signal in window
   if (!window(prof)) return (0);
   // Limit window
-  windowEnd_p = min(windowEnd_p+q_p , Int(prof.nelements())-1); 
+  windowEnd_p = min(windowEnd_p+q_p , Int(lprof_p)); 
   windowLow_p = max(windowLow_p-q_p , 0 );
   // Get the second derivatives
   findc2(prof);
+  // Next for debugging
+  if (der) {
+    for (uInt i=0; i<lprof_p; i++) {
+      der->operator()(i) = deriv_p[i];
+    };
+  };
   // Find the estimates
   npar_p = findga(prof);
-  ///  if (npar_p > 1) qsort( pars, npar_p, sizeof( par_struct ), compar );
-  return (npar_p);
+  // Sort the estimates (simple minded one)
+  if (npar_p > 1) sort();
+  return npar_p;
 }
 
 Int SpectralEstimate::compar(const SpectralElement &p1,
@@ -81,22 +103,63 @@ Int SpectralEstimate::compar(const SpectralElement &p1,
    else return (0);
 }
 
+void SpectralEstimate::sort() {
+  SpectralElement x;
+  for (Int i=0; i<npar_p-1; i++) {
+    for (Int j=npar_p-1; j>i; j--) {
+      if (compar(pars_p[j-1], pars_p[j]) > 0) {
+	x = pars_p[j-1];
+	pars_p[j-1] = pars_p[j];
+	pars_p[j] = x;
+      };
+    };
+  };
+}
+
 const SpectralElement SpectralEstimate::element(uInt which) const {
   return pars_p[which]; /// test which
 }
 
+void SpectralEstimate::setRMS(const Double rms) {
+  rms_p = abs(rms);
+}
+
+void SpectralEstimate::setCutoff(const Double cutoff) {
+  cutoff_p = max(0.0, cutoff);
+}
+
+void SpectralEstimate::setMinSigma(const Double minsigma) {
+  sigmin_p = max(0.0, minsigma);
+}
+
+void SpectralEstimate::setQ(const uInt q) {
+q_p = max(1, Int(q));
+  a_p = 90.0/(q_p*(q_p+1)*(4*q_p*q_p-1)*(2*q_p+3));
+  b_p = (q_p*(q_p+1))/3.0;
+}
+
+void SpectralEstimate::setWindowing(const Bool win) {
+  useWindow_p = win;
+}
+
+void SpectralEstimate::setMaxN(const uInt maxpar) {
+  maxpar_p = max(1, Int(maxpar));
+  delete [] pars_p; pars_p = 0; npar_p = 0;
+  pars_p = new SpectralElement[maxpar_p];
+}
+
 uInt SpectralEstimate::window(const Vector<Float> &prof) {
-  if (!useWindow_p || rms_p <= 0.0) {
-    windowLow_p =0;
-    windowEnd_p = prof.nelements();
-    return prof.nelements();
+  windowLow_p =0;
+  windowEnd_p = 0;
+  if (!useWindow_p || rms_p <= 0.0 || lprof_p == 0) {
+    windowEnd_p = lprof_p;
+    return lprof_p;
   };
-  if (prof.nelements() == 0) return 0;
   // Total flux in profile and max position
   Double flux(0.0);
   Double pmax(prof(0));
   uInt imax(0);
-  for (uInt i=0; i<prof.nelements(); i++) {
+  for (uInt i=0; i<lprof_p; i++) {
     if (prof(i)>pmax) {
       pmax = prof(i);
       imax = i;
@@ -106,17 +169,16 @@ uInt SpectralEstimate::window(const Vector<Float> &prof) {
   // No data
   if (pmax < cutoff_p) return 0;
   // Window boundaries; new/old base and centre; width
-  Int windowEnd_p;
-  Int windowLow_p;
-  Int width(0);
+  Int width(-1);
   Int nw(0);
   Double bnew(flux), bold;
   Double cnew(imax), cold;
   do {
+    width++;
     cold = cnew;
     bold = bnew;
-    windowLow_p = max(0, Int(floor(cold-width++)));
-    windowEnd_p = min(Int(prof.nelements()), Int(ceil(cold+width)));
+    windowLow_p = max(0, Int(cold-width+0.5));
+    windowEnd_p = min(Int(lprof_p), Int(cold+width+1.5));
     // flux and first moment in window
     Double s(0);
     Double c(0);
@@ -125,77 +187,56 @@ uInt SpectralEstimate::window(const Vector<Float> &prof) {
       c += i*prof(i);
     };
     bnew = flux-s;
-    nw = prof.nelements()-windowEnd_p+windowLow_p-1;
+    nw = lprof_p-windowEnd_p+windowLow_p;
     if (s != 0.0) {
       cnew = c/s;
-      if (cnew < 0 || cnew > prof.nelements()) cnew = cold;
+      if (cnew < 0 || cnew >= lprof_p) cnew = cold;
     };
   } while (abs(bnew-bold) > rms_p && nw);
-  windowLow_p = windowLow_p;
-  windowEnd_p = windowEnd_p;
-  return nw;
+  return windowEnd_p-windowLow_p;
 }
 
 void SpectralEstimate::findc2(const Vector<Float> &prof) {
-  delete [] deriv_p; deriv_p = 0;
-  deriv_p = new Double[prof.nelements()];
-  // Save the smoothing data
-  static Int oldq = -1;
-  static Double a, b;
-  if (oldq != q_p) {
-    a = 90.0/Double(q_p*(q_p+1)*(4*q_p*q_p-1)*(2*q_p+3));
-    b = (q_p*(q_p+1))/3.0;
-    oldq = q_p;
-  };
   for (Int i=windowLow_p; i<windowEnd_p; i++) {
     // Moments
     Double m0(0.0); 
     Double m2(0.0); 
-    for (Int j = -q_p; j < q_p; j++) {
+    for (Int j = -q_p; j <= q_p; j++) {
       Int k = i+j;
-      if (k >= 0 && k<Int(prof.nelements())) {
+      if (k >= 0 && k<Int(lprof_p)) {
 	// add to moments
 	m0 += prof(k);
 	m2 += prof(k)*j*j;
       };
     };
     // get the derivative
-    deriv_p[i] = a*(m2-b*m0);
+    deriv_p[i] = a_p*(m2-b_p*m0);
   };
 }
 
 Int SpectralEstimate::findga(const Vector<Float> &prof) {
-  if (pars_p) {
-    delete [] pars_p; pars_p = 0; npar_p = 0;
-  };
-  pars_p = new SpectralElement[maxpar_p];
   Int i(windowLow_p-1);
   // Window on Gaussian
   Int iclo(windowLow_p);
-  Int ichi;
+  Int ichi(windowLow_p);
   // Peak counter
   Int nmax = 0;
   Int r = 0;
 
-  while (i++ < windowEnd_p) {
+  while (++i < windowEnd_p) {
     if (deriv_p[i] > 0.0) {
       // At edge?
-      if (i > windowLow_p && i < windowEnd_p) {
-	if (deriv_p[i-1] < deriv_p[i] && deriv_p[i+1] < deriv_p[i]) {
-	  // Peak in 2nd derivative
-	  nmax += 1;
-	};
-      } else if (i == windowLow_p && deriv_p[i+1] < deriv_p[i]) {
+      if (i > windowLow_p && i < windowEnd_p-1) {
+	// Peak in 2nd derivative
+	if (deriv_p[i-1] < deriv_p[i] && deriv_p[i+1] < deriv_p[i]) nmax++;
 	// At start
-	nmax += 1;
-      } else if (i == windowEnd_p && deriv_p[i-1] < deriv_p[i]) {
-	// At end of window
-	nmax += 1;
-      };
+      } else if (i == windowLow_p && deriv_p[i+1] < deriv_p[i]) nmax++;
+      // At end of window
+      else if (i == windowEnd_p-1 && deriv_p[i-1] < deriv_p[i]) nmax++;
     };
     switch (nmax) {
       // Search for next peak
-    case 1:
+    case 1: 
       break;
       // Found a Gaussian
     case 2: {
@@ -208,11 +249,10 @@ Int SpectralEstimate::findga(const Vector<Float> &prof) {
       ichi = i;
       // Do Schwarz' calculation
       Double b = deriv_p[iclo];
-      Double a = (deriv_p[ichi] - b) / Double(ichi - iclo);
+      Double a = (deriv_p[ichi] - b) / (ichi-iclo);
       for (Int ic=iclo; ic<=ichi; ic++) {
-	Double wi;
 	m0m += min(deriv_p[ic], 0.0);
-	wi = deriv_p[ic] - a*Double(ic-iclo) - b;
+	Double wi = deriv_p[ic] - a*(ic-iclo) - b;
 	m0 += wi;
 	m1 += wi*ic;
 	m2 += wi*ic*ic;
@@ -221,41 +261,39 @@ Int SpectralEstimate::findga(const Vector<Float> &prof) {
       Double det = m2*m0 - m1*m1;
       if (det > 0.0 && fabs(m0m) >  FLT_EPSILON) {
 	Double   xm = m1/m0;
-	Double   yh, yl;
 	
 	Double sg = 1.69*sqrt(det) / fabs(m0);
 	// Width above critical?
 	if (sg > sigmin_p) {
 	  Int is = Int(1.73*sg+0.5);
 	  Int im = Int(xm+0.5);
-	  if ((im-is) < 0) yl = 0.0;
-	  else yl = prof(im-is);
+	  Double yl(0);
+	  if ((im-is) >= 0) yl = prof(im-is);
+	  Double yh(0);
+	  if ((im + is) <= Int(lprof_p-1)) yh = prof(im+is);
 	  Double ym = prof(im);
-	  if ((im + is) > Int(prof.nelements()-1)) yh = 0.0;
-	  else yh = prof(im+is);
-	  Double pg = (ym-0.5*(yh+yl))/(1.0-exp(-0.5*((Double)(is*is))/sg/sg));
+	  Double pg = (ym-0.5*(yh+yl))/(1.0-exp(-0.5*(is*is)/sg/sg));
 	  pg = min(pg, ym);
 	  // Above critical level? Add to list
 	  if (pg > cutoff_p) {
 	    if (r < maxpar_p) {
 	      pars_p[r].setAmpl(pg);
 	      pars_p[r].setCenter(xm);
-	      pars_p[r].setSigma(sg);
+	      pars_p[r].setSigma(sg*sqrt(2*log(16.0)));
 	    };
 	    // Count Gaussians
-	    r += 1;
+	    r++;
 	  };
 	};
       };
       // Next gaussian
       iclo = ichi;
-      nmax -= 1;
+      nmax--;
       break;
     }
-    default: {
+    default:
       iclo = i+1;
       break;
-    }
     };
   };
   return (r);

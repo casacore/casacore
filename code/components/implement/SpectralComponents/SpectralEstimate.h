@@ -94,9 +94,11 @@ class SpectralEstimate {
   //# Constructors
   // Default constructor creates a default estimator
   SpectralEstimate();
-  // Construct with 
-  SpectralEstimate(const Double ampl,
-		   const Double center, const Double sigma);
+  // Construct with a given rms in profiles, a cutoff for amplitudes
+  // found, and a minimum width. All default to 0.0.
+  explicit SpectralEstimate(const Double rms,
+			    const Double cutoff=0.0,
+			    const Double minsigma=0.0);
   // Copy constructor (deep copy)
   SpectralEstimate(const SpectralEstimate &other);
 
@@ -105,13 +107,28 @@ class SpectralEstimate {
   SpectralEstimate &operator=(const SpectralEstimate &other);
 
   //# Member functions
-  // Get the number of estimates found in a profile
-  uInt estimate(const Vector<Float> &prof);
+  // Get the number of estimates found in a profile. The der pointer is
+  // meant for debugging, and can return the derivative profile.
+  uInt estimate(const Vector<Float> &prof, Vector<Float> *der = 0);
   // Get the data for the n-th element
   const SpectralElement element(uInt which) const;
 
-  // Set data for element
+  // Set estimation parameters
   // <group>
+  // Set the profile's estimated rms (forced to abs(rms))
+  void setRMS(const Double rms=0.0);
+  // Set the amplitude cutoff for valid estimate (forced to max(0,cutoff))
+  void setCutoff(const Double cutoff=0.0);
+  // Set the minimum width allowed (forced to max(0,minsigma))
+  void setMinSigma(const Double minsigma=0.0);
+  // Set the number of points consider at each side of test point (i.e. a
+  // width of 2q+1 is taken). Default internally is 2; max(1,q) taken.
+  void setQ(const uInt q=2);
+  // Do you want to look in an automatically determined window with signal?
+  // Default is False, meaning the full profile.
+  void setWindowing(const Bool win=False);
+  // Set the maximum number of estimates to find (forced to >=1; 200 default)
+  void setMaxN(const uInt maxpar=200);
   // </group>
 
   //#Destructor
@@ -133,6 +150,11 @@ class SpectralEstimate {
   // </group>
   // Smoothing parameter. I.e. 2q+1 points are taken
   Int q_p;
+  // Internal cashing of calculated values based on q
+  // <group>
+  Double a_p;
+  Double b_p;
+  // </group>
   // The minimum gaussian width
   Double sigmin_p;
   // Maximum number of parameters to find
@@ -141,12 +163,17 @@ class SpectralEstimate {
   Double *deriv_p;
   // The list of components
   SpectralElement *pars_p;
-  // The number of components
+  // The number of components found
   Int npar_p;
+  // The length of the current profile being estimated
+  uInt lprof_p;
 
   //# Member functions
+  // Compare two elements
   Int compar(const SpectralElement &p1,
 	     const SpectralElement &p2);
+  // Sort the element list
+  void sort();
   // Get the window or the total spectrum
   uInt window(const Vector<Float> &prof);
   // Get the second derivatives
