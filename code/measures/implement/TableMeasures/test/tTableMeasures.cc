@@ -523,8 +523,8 @@ int main(int argc)
     // putting and getting Measures into and out of the table.
 
 
-    MEpoch obsTime(MVEpoch(MVTime(1996, 5, 17, (8+18./60.)/24.)),
-		   MEpoch::UTC);
+    MVEpoch mvobsTime((MVTime(1996, 5, 17, (8+18./60.)/24.)));
+    MEpoch obsTime(mvobsTime, MEpoch::UTC);
     const uInt tabRows = 5;
     {
       Table tab(newtab);
