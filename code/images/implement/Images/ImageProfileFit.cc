@@ -591,10 +591,21 @@ void ImageProfileFit::setData (const ImageInterface<Float>& image,
       itsFitRegion = False;
    } else {
 
-// We are going to fit all profiles in the region. Just set the units
+// We are going to fit all profiles in the region. However, the
+// estimate function might be used to fish out an initial
+// estimate and it uses itsX and itsY...
+// I think i need to rewrite this class !
 
-      itsX.setUnit(Unit("pix"));
-      itsY.setUnit(image.units());
+      const uInt n = image.shape()(itsProfileAxis);
+      Vector<Float> x(n);
+      indgen(x, Float(sl.start()(itsProfileAxis)));
+      itsX = Quantum<Vector<Float> >(x, Unit("pix"));
+//
+      IPosition blc(image.ndim(),0);
+      IPosition trc = blc;
+      trc(itsProfileAxis) = n-1;
+      Vector<Float> y = image.getSlice(blc,trc-blc+1,True);
+      itsY = Quantum<Vector<Float> >(y, image.units());
 //
       itsFitRegion = True;
       itsImagePtr = image.cloneII();
@@ -806,14 +817,18 @@ void ImageProfileFit::convertXEstimateFromPixels (SpectralElement& el,
 }
 
 
-void ImageProfileFit::fit (RecordInterface& rec, ImageInterface<Float>*& pFit,
-                           ImageInterface<Float>*& pResid, const String& xUnitRec)
+void ImageProfileFit::fit (RecordInterface& rec, 
+                           PtrHolder<ImageInterface<Float> >& fitImage,
+                           PtrHolder<ImageInterface<Float> >& residImage,
+                           const String& xUnitRec)
 {
    LogIO os(LogOrigin("image", "setDataAndFit", WHERE));
    if (!itsFitRegion) {
       os << "You cannot call this function as you are averaging all profiles" << LogIO::EXCEPTION;
    }
 //
+   ImageInterface<Float>* pFit = fitImage.ptr();
+   ImageInterface<Float>* pResid = residImage.ptr();
    IPosition inShape = itsImagePtr->shape();
    if (pFit!=0) {
       AlwaysAssert(inShape.isEqual(pFit->shape()), AipsError);
@@ -826,20 +841,29 @@ void ImageProfileFit::fit (RecordInterface& rec, ImageInterface<Float>*& pFit,
    TiledLineStepper stepper (itsImagePtr->shape(), inTileShape, itsProfileAxis);
    RO_LatticeIterator<Float> inIter(*itsImagePtr, stepper);
 //
+   PtrHolder<LatticeIterator<Float> > fitIter;
+   PtrHolder<LatticeIterator<Bool> > fitMaskIter;
+   PtrHolder<LatticeIterator<Float> > residIter;
+   PtrHolder<LatticeIterator<Bool> > residMaskIter;
+//
    LatticeIterator<Float>* pFitIter = 0;
    LatticeIterator<Bool>* pFitMaskIter = 0;
    LatticeIterator<Float>* pResidIter = 0;
    LatticeIterator<Bool>* pResidMaskIter = 0;
    if (pFit) {
-      pFitIter = new LatticeIterator<Float>(*pFit, stepper);
+      fitIter.set(new LatticeIterator<Float>(*pFit, stepper));
+      pFitIter = fitIter.ptr();
       if (pFit->hasPixelMask()) {
-         pFitMaskIter = new LatticeIterator<Bool>(pFit->pixelMask(), stepper);
+         fitMaskIter.set(new LatticeIterator<Bool>(pFit->pixelMask(), stepper));
+         pFitMaskIter = fitMaskIter.ptr();
       }
    }
    if (pResid) {
-      pResidIter = new LatticeIterator<Float>(*pResid, stepper);
+      residIter.set(new LatticeIterator<Float>(*pResid, stepper));	
+      pResidIter = residIter.ptr();
       if (pResid->hasPixelMask()) {
-         pResidMaskIter = new LatticeIterator<Bool>(pResid->pixelMask(), stepper);
+         residMaskIter.set(new LatticeIterator<Bool>(pResid->pixelMask(), stepper));
+         pResidMaskIter = residMaskIter.ptr();
       }
    }
 //
@@ -852,35 +876,25 @@ void ImageProfileFit::fit (RecordInterface& rec, ImageInterface<Float>*& pFit,
    Vector<Float> y(inShape(itsProfileAxis));
    for (uInt i=0; i<x.nelements(); i++) x(i) = i;
 
-// See if we have an estimate set in the class state
+// Fish out initial estimate (defines number of components to fit)
 
-   SpectralFit fit;
-   Bool est = False;
    const SpectralList& l = itsSpectralFitPtr->list();
-   if (l.nelements() > 0) {
-      fit.addFitElement(l);
-      est = True;
+   if (l.nelements() == 0) {
+      throw(AipsError("You must specify an initial estimate"));
    }
+//
+   SpectralFit fit;
+   fit.addFitElement(l);
 //
    Vector<Bool> inMask;
    Bool ok = False;
    uInt nFail = 0;
    while (!inIter.atEnd()) {
 
-// Use user give or auto estimate for first profile. Else use last fit
-// as starting place
-
-      if (inIter.nsteps()==0) {
-         if (!est) {
-            SpectralEstimate se;
-            fit.addFitElement(se.estimate(inIter.vectorCursor()));
-         }
-      }
-
 // Get mask (reflects pixelMask and region mask of SubImage)
 
-      inMask = itsImagePtr->getMaskSlice(inIter.position(), inIter.cursorShape(), True);
-
+      inMask = itsImagePtr->getMaskSlice(inIter.position(), 
+                                         inIter.cursorShape(), True);
 //
       try {
          ok = fit.fit(inIter.vectorCursor(), x, inMask);
@@ -945,9 +959,4 @@ void ImageProfileFit::fit (RecordInterface& rec, ImageInterface<Float>*& pFit,
     os << "Number of    profiles = " << nProfiles << LogIO::POST;
     os << "Number of   good fits = " << nProfiles - nFail << LogIO::POST;
     os << "Number of failed fits = " << nFail << LogIO::POST;
-//
-    if (pFitIter) delete pFitIter;
-    if (pFitMaskIter) delete pFitMaskIter;
-    if (pResidIter) delete pResidIter;
-    if (pResidMaskIter) delete pResidMaskIter;
 }
