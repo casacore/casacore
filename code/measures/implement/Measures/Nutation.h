@@ -62,15 +62,16 @@
 //   <li> Nutation::NONE       (nutation of zero returned)
 //   <li> Nutation::IAU1980
 //   <li> Nutation::B1950
+//   <li> Nutation::IAU2000
+//   <li> Nutation::IAU2000A   (equal to IAU2000)
+//   <li> Nutation::IAU2000B   (official short form of IAU2000)
 // </ul>
 // Epochs can be specified as the MJD (with defined constants MeasData::MJD2000
 // and MeasData::MJDB1950 or the actual MJD),
 // leading to the following constructors:
 // <ul>
-//   <li> Nutation() default; assuming JD2000, IAU1980
-//   <li> Nutation(method) assuming the correct default epoch of
-//		JD2000 or B1950
-//   <li> Nutation(method,epoch) with epoch Double(MJD)
+//   <li> Nutation() default; assuming IAU1980
+//   <li> Nutation(method) 
 // </ul>
 // Actual Nutation for a certain Epoch is calculated by the () operator
 // as Nutation(epoch), with epoch Double MJD. values returned as an
@@ -119,88 +120,91 @@
 // </todo>
 
 class Nutation {
-public:
-//# Constants
-// Interval to be used for linear approximation (in days)
-    static const Double INTV;
-
-//# Enumerations
-// Types of known Nutation calculations (at 1995/09/04 STANDARD == IAU1976)
-    enum NutationTypes {STANDARD,NONE,IAU1980,B1950};
-
-//# Constructors
-// Default constructor, generates default J2000 Nutation identification
-    Nutation();
-// Copy constructor
-    Nutation(const Nutation &other);
-// Constructor with type
-    explicit Nutation(NutationTypes type);
-// Copy assignment
-    Nutation &operator=(const Nutation &other);
-
-//# Destructor
-    ~Nutation();
-
-//# Operators
-// Return the Nutation angles
-    const Euler &operator()(Double epoch);
-
-//# General Member Functions
-// Return derivative of Nutation (d<sup>-1</sup>)
-    const Euler &derivative(Double epoch);
-
-// Re-initialise Nutation object
-// <group>
-    void init();
-    void init(NutationTypes type);
-// </group>
-
-// Refresh calculations
-    void refresh();
-
-// Get the equation of equinox
-// <group>
-    Double eqox(Double epoch) ;
-    Quantity getEqoxAngle(Double epoch);
-    Quantity getEqoxAngle(Double epoch, const Unit &unit) ;
-// </group>
-// Get the derivative of the equation of equinoxes in d<sup>-1</sup>
-    Double derivativeEqox(Double epoch);
-
-private:
-
-//# Data members
-// Method to be used
-    NutationTypes method;
-// Check epoch for linear approximation
-    Double checkEpoch;
-// Cached calculated angles
-    Double nval[3];
-// Cached derivatives
-    Double dval[3];
-// Cached equation of equinoxes
-    Double eqeq;
-// Cached derivative equation of equinoxes
-    Double deqeq;
-// To be able to use references rather than copies, and also to use these
-// references in simple (up to 4 terms of Nutation results) expressions,
-// results are calculated in circulating buffer
-    Int lres;
-// Last calculation
-    Euler result[4];
-// Interpolation interval
-    static uInt interval_reg;
-// IERS use
-    static uInt useiers_reg;
-// JPL use
-    static uInt usejpl_reg;
-//# Member functions
-// Make a copy
-    void copy(const Nutation &other);
-// Fill an empty copy
-    void fill();
-// Calculate Nutation angles for time t
-    void calcNut(Double t);
+ public:
+  //# Constants
+  // Interval to be used for linear approximation (in days)
+  static const Double INTV;
+  
+  //# Enumerations
+  // Types of known Nutation calculations (at 1995/09/04 STANDARD == IAU1976)
+  enum NutationTypes {
+    NONE, IAU1980, B1950, IAU2000A, IAU2000B,
+    IAU2000 = IAU2000A,
+    STANDARD = IAU1980 };
+  
+  //# Constructors
+  // Default constructor, generates default J2000 Nutation identification
+  Nutation();
+  // Copy constructor
+  Nutation(const Nutation &other);
+  // Constructor with type
+  explicit Nutation(NutationTypes type);
+  // Copy assignment
+  Nutation &operator=(const Nutation &other);
+  
+  //# Destructor
+  ~Nutation();
+  
+  //# Operators
+  // Return the Nutation angles
+  const Euler &operator()(Double epoch);
+  
+  //# General Member Functions
+  // Return derivative of Nutation (d<sup>-1</sup>)
+  const Euler &derivative(Double epoch);
+  
+  // Re-initialise Nutation object
+  // <group>
+  void init();
+  void init(NutationTypes type);
+  // </group>
+  
+  // Refresh calculations
+  void refresh();
+  
+  // Get the equation of equinox
+  // <group>
+  Double eqox(Double epoch) ;
+  Quantity getEqoxAngle(Double epoch);
+  Quantity getEqoxAngle(Double epoch, const Unit &unit) ;
+  // </group>
+  // Get the derivative of the equation of equinoxes in d<sup>-1</sup>
+  Double derivativeEqox(Double epoch);
+  
+ private:
+  
+  //# Data members
+  // Method to be used
+  NutationTypes method;
+  // Check epoch for linear approximation
+  Double checkEpoch;
+  // Cached calculated angles
+  Double nval[3];
+  // Cached derivatives
+  Double dval[3];
+  // Cached equation of equinoxes
+  Double eqeq;
+  // Cached derivative equation of equinoxes
+  Double deqeq;
+  // To be able to use references rather than copies, and also to use these
+  // references in simple (up to 4 terms of Nutation results) expressions,
+  // results are calculated in circulating buffer
+  Int lres;
+  // Last calculation
+  Euler result[4];
+  // Interpolation interval
+  static uInt interval_reg;
+  // IERS use
+  static uInt useiers_reg;
+  // JPL use
+  static uInt usejpl_reg;
+  //# Member functions
+  // Make a copy
+  void copy(const Nutation &other);
+  // Fill an empty copy
+  void fill();
+  // Calculate Nutation angles for time t
+  void calcNut(Double t);
 };
 
 #endif
