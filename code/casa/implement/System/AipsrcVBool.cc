@@ -84,6 +84,7 @@ const Vector<Bool> &AipsrcVector<Bool>::get(uInt keyword) {
 void AipsrcVector<Bool>::set(uInt keyword, const Vector<Bool> &deflt) {
   AipsrcVector<Bool> &gcl = init();
   AlwaysAssert(keyword > 0 && keyword <= gcl.tlst.nelements(), AipsError);
+  (gcl.tlst)[keyword-1].resize(deflt.nelements());
   (gcl.tlst)[keyword-1] = deflt;
 }
 

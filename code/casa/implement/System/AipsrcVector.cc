@@ -133,6 +133,7 @@ template <class T>
 void AipsrcVector<T>::set(uInt keyword, const Vector<T> &deflt) {
   AipsrcVector<T> &gcl = init();
   AlwaysAssert(keyword > 0 && keyword <= gcl.tlst.nelements(), AipsError);
+  (gcl.tlst)[keyword-1].resize(deflt.nelements());
   (gcl.tlst)[keyword-1] = deflt;
 }
 
