@@ -39,8 +39,14 @@
 # include <math.h>
 #else
 # include <cmath>
-# if !defined(AIPS_KCC)
-#define NEEDS_POWFLOATFLOAT
+# if defined(AIPS_INTELCC)
+    inline float  abs (float  x) { return fabs (x); }
+    inline double abs (double x) { return fabs (x); }
+# else
+    using std::abs;
+# endif
+# if !defined(AIPS_KAICC)
+#  define NEEDS_POWFLOATFLOAT
 # endif
 #endif
 
@@ -50,11 +56,12 @@ using std::abs;
 #define NEEDS_POWFLOATFLOAT
 #endif
 
+
 // The following is not yet part of some of the cmath include file. Should be
 // removed at some stage
 # if defined(NEEDS_POWFLOATFLOAT)
-   inline Float pow(Float f1, Float f2) {
-    return Float(pow(Double(f1), Double(f2))); };
+   inline Float pow(Float f1, Float f2)
+     { return Float(pow(Double(f1), Double(f2))); };
 # endif
 
 #endif
