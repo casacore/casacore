@@ -44,11 +44,11 @@ if($opt_noheaders == 0 && $opt_glish == 0){
    print "\\documentclass{book}\n";
    print "\\usepackage{html, longtable, epsfig}\n";
    print "\\begin{document}\n";   
-   print "\\newcommand{\\helptab}{\n";
+   print "\\newcommand{\\starthelptab}{\n";
    print "\\begin{tabular}{|l p{0.36in}p{2.79in}|}\n";
    print "}\n";
    print "\\begin{htmlonly}\n";
-   print "\\renewcommand{\\helptab}{\n";
+   print "\\renewcommand{\\starthelptab}{\n";
    print "\\begin{tabular}{|l p{0.75in}p{2.38in}|}\n";
    print "}\n";
    print "\\end{htmlonly}\n";
@@ -426,7 +426,7 @@ sub make_tex_file{
    
      s/\\begin{ahaipsrc}/$wlabel*{Aipsrc Variables}
    \\hfill \\\\
-   \\helptab
+   \\starthelptab
    \\hline/g;
    
 #
@@ -434,7 +434,7 @@ sub make_tex_file{
    
      s/\\begin{ahargs}/$wlabel*{Arguments}
    \\hfill \\\\
-   \\helptab
+   \\starthelptab
    \\hline/g;
 
      s/\\end{ahargslong}/\\end{longtable}/g;
