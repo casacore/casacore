@@ -1,5 +1,5 @@
 //# LCBox.h: Class to define a rectangular box of interest
-//# Copyright (C) 1997,1998
+//# Copyright (C) 1997,1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -115,8 +115,19 @@ public:
     static LCBox* fromRecord (const TableRecord&,
 			      const String& tablename);
 
+    // Get the box blc
     Vector<Float> blc() const;
+
+    // Get the box trc
     Vector<Float> trc() const;
+
+// Verify a box specification.  Illegal (inlcuding blc > trc) or
+// unspecified values are  given 0 (blc) shape (trc) or
+// unity (inc).  Returns <src>True</src> if any of the blc/trc/inc 
+// are changed from their input values, else returns <src>False</src>
+   static Bool verify (IPosition& blc, IPosition& trc,
+                       IPosition& inc, const IPosition& shape);
+
 
 protected:
     // Construct another LCBox (for e.g. another lattice) by moving

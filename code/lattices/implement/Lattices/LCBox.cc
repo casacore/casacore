@@ -254,3 +254,82 @@ void LCBox::fillBlcTrc()
 	itsTrc(i) = sl.end()(i);
     }
 }
+
+Bool LCBox::verify (IPosition& blc, IPosition& trc,
+                    IPosition& inc, const IPosition& shape)
+{
+   IPosition inBlc(blc);
+   IPosition inTrc(trc);
+   IPosition inInc(inc);
+   const Int nDim = shape.nelements();
+
+// Check blc
+
+   const Int blcDim = blc.nelements();
+   blc.resize(nDim,True);
+   if (blcDim == 0) {
+      blc = 0;
+   } else {
+      for (Int i=0; i<nDim; i++) {
+         if (i > blcDim-1) {
+            blc(i) = 0;
+         } else {
+            if (blc(i) < 0 || blc(i) > shape(i)-1) blc(i) = 0;
+         }
+      }
+   }
+
+// Check trc
+
+   const Int trcDim = trc.nelements();
+   trc.resize(nDim,True);
+   if (trcDim == 0) {
+      trc = shape- 1;
+   } else {
+      for (Int i=0; i<nDim; i++) {
+         if (i > trcDim-1) {
+            trc(i) = shape(i) - 1;
+         } else {
+            if (trc(i) < 0 || trc(i) > shape(i)-1) {
+               trc(i) = shape(i) - 1;
+            }
+         }
+      }
+   }
+
+// Check increment
+
+   const Int incDim = inc.nelements();
+   inc.resize(nDim,True);
+   if (incDim == 0) {
+      inc = 1;
+   } else {
+      for (Int i=0; i<nDim; i++) {
+         if (i > incDim-1) {
+            inc(i) = 1;
+         } else {
+            if (inc(i) < 1 || inc(i) > trc(i)-blc(i)+1) inc(i) = 1;
+         }
+      }     
+   }     
+
+// Check blc<trc 
+
+   for (Int i=0; i<nDim; i++) {
+      if (blc (i) > trc(i)) {
+         blc(i) = 0;
+         trc(i) = shape(i) - 1;
+      }
+   }
+//
+   Bool changed = ToBool(blc.nelements()!=inBlc.nelements() ||
+                         trc.nelements()!=inTrc.nelements() ||
+                         inc.nelements()!=inInc.nelements());
+   if (!changed) changed = ToBool(blc!=inBlc || trc!=inTrc || inc!=inInc);
+//
+   return changed;
+}
+  
+
+             
+
