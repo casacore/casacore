@@ -42,8 +42,9 @@
 #include <aips/IO/RawIO.h>
 #include <aips/IO/MemoryIO.h>
 #include <aips/IO/CanonicalIO.h>
-#include <aips/OS/CanonicalConversion.h>
 #include <aips/IO/FiledesIO.h>
+#include <aips/OS/CanonicalConversion.h>
+#include <aips/OS/DOos.h>
 #include <aips/Mathematics/Math.h>
 #include <aips/Tables/DataManError.h>
 #include <iostream.h>
@@ -87,7 +88,7 @@ SSMBase::SSMBase (Int aBucketSize, uInt aCacheSize)
 SSMBase::SSMBase (const String& aDataManName,
 		  Int aBucketSize, uInt aCacheSize)
 : DataManager          (),
-  itsDataManName       ("SSM"),
+  itsDataManName       (aDataManName),
   itsVersion           (2),
   itsIosFile           (0),
   itsNrRows            (0),
@@ -967,6 +968,20 @@ void SSMBase::reopenRW()
   if (itsIosFile != 0) {
     itsIosFile->reopenRW();
   }
+}
+
+void SSMBase::deleteManager()
+{
+  delete itsIosFile;
+  itsIosFile = 0;
+  // Clear cache without flushing.
+  if (itsCache != 0) {
+    itsCache->clear (0, False);
+  }
+  if (itsFile != 0) {
+    itsFile->remove();
+  }
+  DOos::remove (fileName(), False, False);
 }
 
 void SSMBase::init()
