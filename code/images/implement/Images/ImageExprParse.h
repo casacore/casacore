@@ -36,6 +36,7 @@
 #include <aips/Utilities/DataType.h>
 
 //# Forward Declarations
+template<class T> class Block;
 
 
 // <summary>
@@ -125,6 +126,13 @@
 //       Support of Bool, Double, and DComplex is very simple to build in.
 //       The resulting lattice can be of type Bool, Float, Double,
 //       Complex, and DComplex.
+//  <li> An image can also be given by means of the <src>$n</src> notation,
+//       where <src>n</src> is the sequence number in the
+//       <src>tempLattices</src> argument given to the <src>command</src>
+//       function. Note that the sequence numbers start counting at 1
+//       (to be compliant with glish indexing).
+//       <br>It can, for instance, be used to use non-persistent lattices
+//       in an expression.
 // </ul>
 // When the expression is parsed, it is checked if the images and lattices
 // involved have conforming shapes and coordinates. Note, however, that
@@ -191,7 +199,14 @@ public:
     // Parse the given command.
     // It will open all lattices needed.
     // It returns the resulting image expression.
+    // <br>The <src>tempLattices</src> argument makes it possible to
+    // use temporary lattices/images in the expression by means
+    // of the <src>$n</src> notation.
+    // <group>
     static LatticeExprNode command (const String& str);
+    static LatticeExprNode command (const String& str,
+				   const Block<LatticeExprNode>& tempLattices);
+    // </group>
 
     // Construct a literal object for the given type.
     // <group>
