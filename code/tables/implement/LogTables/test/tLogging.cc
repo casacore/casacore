@@ -1,5 +1,5 @@
 //# tLogging.cc: Test the logging classes
-//# Copyright (C) 1996,1997
+//# Copyright (C) 1996,1997,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -183,7 +183,8 @@ void testLogOrigin()
     }
 
     // Takes the place of WHERE, which would be used in user code
-    SourceLocation location; location.fileName = "file"; location.lineNumber = 10;
+    SourceLocation location; location.fileName = "file"; 
+    location.lineNumber = 10;
 
     // LogOrigin(const String &globalFunctionName, const char *fileName=0,
     //           uInt lineNumber = 0);
@@ -195,6 +196,7 @@ void testLogOrigin()
 			 global.line() == 10 &&
 			 global.fileName() == "file");
     }
+
     // LogOrigin(const String &className, const String &memberFuncName,
     // 	      const char *fileName=0, uInt lineNumber = 0);
     {
@@ -205,6 +207,7 @@ void testLogOrigin()
 			 member.line() == 10 &&
 			 member.fileName() == "file");
     }
+
     // LogOrigin(const String &className, const String &memberFuncName,
     //         const ObjectID &id, const char *fileName=0, uInt lineNumber = 0);
     // LogOrigin(const LogOrigin &other);
@@ -246,7 +249,6 @@ void testLogOrigin()
 			 distributed.objectID() == t3.objectID() &&
 			 distributed.line() == t3.line() &&
 			 distributed.fileName() == t3.fileName());
-
 	String s = t3.toString();
 	AlwaysAssertExit(s.contains(String("class")) &&
 			 s.contains(String("member")) &&
@@ -261,19 +263,23 @@ void testLogOrigin()
     // ~LogOrigin(); - implicit at end of blocks
 }
 
+const char *tableNames[] = { "tLogging_tmp", "tLogging2_tmp", 0};
+
+void cleanup()
+{
+    int i = 0;
+    while (tableNames[i]) {
+	Directory deleteme(tableNames[i]);
+	if (deleteme.exists()) {
+	    deleteme.removeRecursive();
+	}
+	i++;
+    }
+}
+
 void testLogSink()
 {
-      const char *tableNames[] = { "tLogging_tmp", "tLogging2_tmp", 0};
-    {
-        int i = 0;
-	while (tableNames[i]) {
-	    Directory deleteme(tableNames[i]);
-	    if (deleteme.exists()) {
-		deleteme.removeRecursive();
-	    }
-	    i++;
-	}
-    }
+    cleanup();
 
     // LogSink(const LogFilter &filter);
     LogSink sink1(LogMessage::SEVERE);
@@ -444,6 +450,7 @@ int main()
 	// Also tests other classes derived from LogSinkInterface
 	testLogSink();
 	testLogIO();
+	cleanup();
     } catch (AipsError x) {
         cout << "Caught an exception : " << x.getMesg() << endl;
 	exit(1);
