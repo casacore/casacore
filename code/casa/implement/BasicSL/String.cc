@@ -269,7 +269,7 @@ Bool String::contains(const Regex &r) const {
 	  npos);
 }
 
-Bool String::matches(const Regex &r, Int pos = 0) const {
+Bool String::matches(const Regex &r, Int pos) const {
   Int l = (pos < 0) ? -pos : length() - pos;
   return r.match(c_str(), length(), pos) == l;
 }
