@@ -168,6 +168,8 @@ class TableExprNode
 				    const TableExprNode& right);
     friend TableExprNode operator% (const TableExprNode& left,
 				    const TableExprNode& right);
+    friend TableExprNode operator^ (const TableExprNode& left,
+				    const TableExprNode& right);
     // </group>
 
     // Comparison operators.
@@ -320,6 +322,7 @@ class TableExprNode
     // <group>
     friend TableExprNode sum (const TableExprNode& array);
     friend TableExprNode product (const TableExprNode& array);
+    friend TableExprNode sumSquare (const TableExprNode& array);
     // </group>
 
     // Functions operating on a Double array.
@@ -331,6 +334,8 @@ class TableExprNode
     friend TableExprNode stddev (const TableExprNode& array);
     friend TableExprNode avdev (const TableExprNode& array);
     friend TableExprNode median (const TableExprNode& array);
+    friend TableExprNode fractile (const TableExprNode& array,
+				   const TableExprNode& fraction);
     // </group>
 
     // Functions operating on a Bool array.
@@ -348,6 +353,14 @@ class TableExprNode
     friend TableExprNode ndim (const TableExprNode& array);
     friend TableExprNode shape (const TableExprNode& array);
     // </group>
+
+    // Function resembling the ternary <src>?:</src> construct in C++.
+    // The argument "condition" has to be a Bool value.
+    // If an element in "condition" is True, the corresponding element from
+    // "arg1" is taken, otherwise it is taken from "arg2".
+    friend TableExprNode iif (const TableExprNode& condition,
+			      const TableExprNode& arg1,
+			      const TableExprNode& arg2);
 
 
 public:
@@ -389,6 +402,7 @@ public:
     TableExprNode (const Bool& value);
     TableExprNode (const Int& value);
     TableExprNode (const Double& value);
+    TableExprNode (const Complex& value);
     TableExprNode (const DComplex& value);
     TableExprNode (const String& value);
     TableExprNode (const char*);
@@ -438,6 +452,11 @@ public:
     void get (const TableExprId& id, String& value) const;
     void get (const TableExprId& id, Regex& value) const;
     void get (const TableExprId& id, MVTime& value) const;
+    void get (const TableExprId& id, Array<Bool>& value) const;
+    void get (const TableExprId& id, Array<Double>& value) const;
+    void get (const TableExprId& id, Array<DComplex>& value) const;
+    void get (const TableExprId& id, Array<String>& value) const;
+    void get (const TableExprId& id, Array<MVTime>& value) const;
     // </group>
 
     // Get the data type for doing a getColumn on the expression.
@@ -602,6 +621,21 @@ inline void TableExprNode::get (const TableExprId& id, Regex& value) const
     { value = node_p->getRegex (id); }
 inline void TableExprNode::get (const TableExprId& id, MVTime& value) const
     { value = node_p->getDate (id); }
+inline void TableExprNode::get (const TableExprId& id,
+				Array<Bool>& value) const
+    { value = node_p->getArrayBool (id); }
+inline void TableExprNode::get (const TableExprId& id,
+				Array<Double>& value) const
+    { value = node_p->getArrayDouble (id); }
+inline void TableExprNode::get (const TableExprId& id,
+				Array<DComplex>& value) const
+    { value = node_p->getArrayDComplex (id); }
+inline void TableExprNode::get (const TableExprId& id,
+				Array<String>& value) const
+    { value = node_p->getArrayString (id); }
+inline void TableExprNode::get (const TableExprId& id,
+				Array<MVTime>& value) const
+    { value = node_p->getArrayDate (id); }
 
 inline Array<Bool>      TableExprNode::getColumnBool() const
     { return node_p->getColumnBool(); }
@@ -651,6 +685,11 @@ inline TableExprNode operator% (const TableExprNode& left,
 				const TableExprNode& right)
 {
     return left.newModulo (right.node_p);
+}
+inline TableExprNode operator^ (const TableExprNode& left,
+				const TableExprNode& right)
+{
+    return pow(left, right);
 }
 inline TableExprNode operator== (const TableExprNode& left,
 				 const TableExprNode& right)
@@ -959,6 +998,11 @@ inline TableExprNode product (const TableExprNode& node)
     return TableExprNode::newFunctionNode (TableExprFuncNode::arrproductFUNC,
 					   node);
 }
+inline TableExprNode sumSquare (const TableExprNode& node)
+{
+    return TableExprNode::newFunctionNode (TableExprFuncNode::arrsumsqrFUNC,
+					   node);
+}
 inline TableExprNode mean (const TableExprNode& node)
 {
     return TableExprNode::newFunctionNode (TableExprFuncNode::arrmeanFUNC,
@@ -983,6 +1027,12 @@ inline TableExprNode median (const TableExprNode& node)
 {
     return TableExprNode::newFunctionNode (TableExprFuncNode::arrmedianFUNC,
 					   node);
+}
+inline TableExprNode fractile (const TableExprNode& node,
+			       const TableExprNode& fraction)
+{
+    return TableExprNode::newFunctionNode (TableExprFuncNode::arrfractileFUNC,
+					   node, fraction);
 }
 inline TableExprNode any (const TableExprNode& node)
 {
@@ -1015,6 +1065,13 @@ inline TableExprNode ndim (const TableExprNode& node)
 inline TableExprNode shape (const TableExprNode& node)
 {
     return TableExprNode::newFunctionNode (TableExprFuncNode::shapeFUNC, node);
+}
+inline TableExprNode iif (const TableExprNode& condition,
+			  const TableExprNode& arg1,
+			  const TableExprNode& arg2)
+{
+    return TableExprNode::newFunctionNode (TableExprFuncNode::iifFUNC,
+					   condition, arg1, arg2);
 }
 
 
