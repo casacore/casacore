@@ -35,11 +35,14 @@ template<class T>
 AutoDiff<T> NQCompoundFunction<AutoDiff<T> >::
 eval(typename Function<AutoDiff<T> >::FunctionArg x) const {
   AutoDiff<T> tmp(0);
-  for (uInt i=0; i<nparameters(); ++i) {
-    if (param_p[i].nDerivatives() > 0) {
-      tmp = param_p[i];
-      break;
+  for (uInt i=0; i<nFunctions(); ++i) {
+    for (uInt j=0; j<function(i).nparameters(); ++j) {
+      if (function(i)[j].nDerivatives() > 0) {
+	tmp = function(i)[j];
+	break;
+      };
     };
+    if (tmp.nDerivatives() > 0) break;
   };
   for (uInt j=0; j<tmp.nDerivatives(); j++) tmp.deriv(j) = 0.0;
   // function value
