@@ -56,6 +56,8 @@
 #include <aips/Utilities/Assert.h>
 #include <aips/Utilities/String.h>
 #include <strstream.h>
+#include <iostream.h>
+#include <iomanip.h>
 
 SkyCompRep::~SkyCompRep() {
 }
@@ -275,66 +277,11 @@ Bool SkyCompRep::readFlux(String & errorMessage, const GlishRecord & record) {
   Flux<Double> & thisFlux = flux();
   const GlishRecord fluxRec = record.get("flux");
   {
-    if (!fluxRec.exists("value")) {
-      errorMessage += "\nThe 'flux' record must have a 'value' field";
-      return False;
-    }
-    if (fluxRec.get("value").type() != GlishValue::ARRAY) {
-      errorMessage += "\nThe 'value' field cannot be a record";
-      return False;
-    }
-    const GlishArray valueField = fluxRec.get("value");
-    if (valueField.elementType() == GlishArray::STRING) {
-      errorMessage += "\nThe 'value' field cannot be a string";
-      return False;
-    }
-    const IPosition shape = valueField.shape();
-    if (shape.nelements() != 1 || shape.product() != 4) {
-      errorMessage += String("\nThe 'value' field in the flux record ") + 
-	String("must contain a vector with 4 elements");
-      return False;
-    }
-    Vector<DComplex> fluxVal(4);
-    if (!valueField.get(fluxVal.ac())) {
-      errorMessage += String("\nCould not read the 'value' field ") + 
-	String("in the flux record for an unknown reason");
-      return False;
-    }
-    thisFlux.setValue(fluxVal);
-  }
-  {
-    if (!fluxRec.exists("unit")) {
-      errorMessage += "\nThe 'flux' record must have a 'unit' field";
-      return False;
-    }
-    if (fluxRec.get("unit").type() != GlishValue::ARRAY) {
-      errorMessage += "\nThe 'unit' field cannot be a record";
-      return False;
-    }
-    const GlishArray unitField = fluxRec.get("unit");
-    if (unitField.elementType() != GlishArray::STRING) {
-      errorMessage += "\nThe 'unit' field must be a string";
-      return False;
-    }
-    if (unitField.shape().product() != 1) {
-      errorMessage += String("\nThe 'unit' field cannot be an array ");
-      return False;
-    }
-    String unitVal;
-    if (!unitField.get(unitVal)) {
-      errorMessage += String("\nCould not read the 'unit' field ") + 
-	String("in the flux record for an unknown reason");
-      return False;
-    }
-    thisFlux.setUnit(Unit(unitVal));
-  }
-  {
     if (!fluxRec.exists("polarisation")) {
       // FIX THIS UP LATER
 //      errorMessage += "\nThe 'flux' record must have a 'polarisation' field";
 //      return False;
       thisFlux.setPol(ComponentType::STOKES);
-      return True;
     }
     if (fluxRec.get("polarisation").type() != GlishValue::ARRAY) {
       errorMessage += "\nThe 'polarisation' field cannot be a record";
@@ -365,18 +312,89 @@ Bool SkyCompRep::readFlux(String & errorMessage, const GlishRecord & record) {
     }
     thisFlux.setPol(pol);
   }
+  {
+    if (!fluxRec.exists("value")) {
+      errorMessage += "\nThe 'flux' record must have a 'value' field";
+      return False;
+    }
+    if (fluxRec.get("value").type() != GlishValue::ARRAY) {
+      errorMessage += "\nThe 'value' field cannot be a record";
+      return False;
+    }
+    const GlishArray valueField = fluxRec.get("value");
+    if (valueField.elementType() == GlishArray::STRING) {
+      errorMessage += "\nThe 'value' field cannot be a string";
+      return False;
+    }
+    const IPosition shape = valueField.shape();
+    if (shape.nelements() != 1 || shape.product() != 4) {
+      errorMessage += String("\nThe 'value' field in the flux record ") + 
+	String("must contain a vector with 4 elements");
+      return False;
+    }
+    // This code needs to be consolidated when the GlishArray bug is resolved.
+    if (thisFlux.pol() == ComponentType::STOKES) {
+      Vector<Double> fluxVal(4);
+      if (!valueField.get(fluxVal.ac())) {
+	errorMessage += String("\nCould not read the 'value' field ") + 
+	  String("in the flux record for an unknown reason");
+	return False;
+      }
+      thisFlux.setValue(fluxVal);
+    } else {
+      Vector<DComplex> fluxVal(4);
+      if (!valueField.get(fluxVal.ac())) {
+	errorMessage += String("\nCould not read the 'value' field ") + 
+	  String("in the flux record for an unknown reason");
+	return False;
+      }
+      thisFlux.setValue(fluxVal);
+    }
+  }
+  {
+    if (!fluxRec.exists("unit")) {
+      errorMessage += "\nThe 'flux' record must have a 'unit' field";
+      return False;
+    }
+    if (fluxRec.get("unit").type() != GlishValue::ARRAY) {
+      errorMessage += "\nThe 'unit' field cannot be a record";
+      return False;
+    }
+    const GlishArray unitField = fluxRec.get("unit");
+    if (unitField.elementType() != GlishArray::STRING) {
+      errorMessage += "\nThe 'unit' field must be a string";
+      return False;
+    }
+    if (unitField.shape().product() != 1) {
+      errorMessage += String("\nThe 'unit' field cannot be an array ");
+      return False;
+    }
+    String unitVal;
+    if (!unitField.get(unitVal)) {
+      errorMessage += String("\nCould not read the 'unit' field ") + 
+	String("in the flux record for an unknown reason");
+      return False;
+    }
+    thisFlux.setUnit(Unit(unitVal));
+  }
   return True;
 }
 
 // Move into the Flux<T> class.
 Bool SkyCompRep::addFlux(String & errorMessage, GlishRecord & record) const {
   const Flux<Double> & thisFlux = flux();
-  Vector<DComplex> fluxVal(4);
-  thisFlux.value(fluxVal);
   GlishRecord fluxRec;
-  fluxRec.add("value", GlishArray(fluxVal.ac()));
+  if (thisFlux.pol() == ComponentType::STOKES) {
+    Flux<Double> fluxCopy = thisFlux;
+    Vector<Double> fluxVal(4);
+    fluxCopy.value(fluxVal);
+    fluxRec.add("value", GlishArray(fluxVal.ac()));
+    fluxRec.add("polarisation", ComponentType::name(ComponentType::STOKES));
+  } else {
+    fluxRec.add("value", GlishArray(thisFlux.value().ac()));
+    fluxRec.add("polarisation", ComponentType::name(thisFlux.pol()));
+  }
   fluxRec.add("unit", thisFlux.unit().getName());
-  fluxRec.add("polarisation", ComponentType::name(thisFlux.pol()));
   record.add("flux", fluxRec);
   if (errorMessage == ""); // Suppress compiler warning about unused variable
   return True;
