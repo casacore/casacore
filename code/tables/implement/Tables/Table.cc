@@ -35,6 +35,7 @@
 #include <aips/Tables/StManColumn.h>
 #include <aips/Tables/ExprNode.h>
 #include <aips/Arrays/Vector.h>
+#include <aips/Arrays/ArrayMath.h>
 #include <aips/Arrays/ArrayIO.h>
 #include <aips/Containers/Block.h>
 #include <aips/IO/AipsIO.h>
@@ -434,8 +435,61 @@ TableRecord& Table::rwKeywordSet()
     return baseTabPtr_p->rwKeywordSet();
 }
 
+
 Vector<uInt> Table::rowNumbers () const
     { return baseTabPtr_p->rowNumbers(); }
+
+Vector<uInt> Table::rowNumbers (const Table& that) const
+{
+    const uInt highValue = 4294967295u;
+    // If that is the root table of this, we can simply use rowNumbers().
+    if (that.baseTabPtr_p == baseTabPtr_p->root()) {
+        return rowNumbers();
+    }
+    // Get the rowNumbers of that and transform it to a vector
+    // mapping rownr in root to rownr in that.
+    Vector<uInt> thatRows = that.rowNumbers();
+    uInt nrthat = thatRows.nelements();
+    uInt maxv = nrthat;
+    Vector<uInt> rownrs(thatRows);
+    // That mapping only needs to be done if that is not a root table.
+    // Non-used rownrs are initialized with a very high value.
+    if (! that.isRootTable()) {
+        maxv = max(thatRows);
+        Vector<uInt> tmp(maxv+1, highValue);
+	rownrs.reference (tmp);
+    }
+    Bool deleteIt;
+    uInt* rownrsData = rownrs.getStorage (deleteIt);
+    // Now make the mapping.
+    // thatRows is not needed anymore, sp resize at the end to reclaim memory.
+    if (! that.isRootTable()) {
+        Bool deleteThat;
+        const uInt* thatRowData = thatRows.getStorage (deleteThat);
+	for (uInt i=0; i<nrthat; i++) {
+	    rownrsData[rownrsData[i]] = i;
+	}
+	thatRows.freeStorage (thatRowData, deleteThat);
+	thatRows.resize();
+    }
+    // Use the first mapping to map the rownrs in this to rownrs in that.
+    // First get the rownrs of this in root to achieve it.
+    // Use a very high value if the rownr is too high.
+    Vector<uInt> thisRows = rowNumbers();
+    Bool deleteThis;
+    uInt* thisRowData = thisRows.getStorage (deleteThis);
+    uInt nrthis = thisRows.nelements();
+    for (uInt i=0; i<nrthis; i++) {
+        if (thisRowData[i] > maxv) {
+	    thisRowData[i] = highValue;
+	} else {
+	    thisRowData[i] = rownrsData[thisRowData[i]];
+	}
+    }
+    thisRows.putStorage (thisRowData, deleteThis);
+    rownrs.freeStorage (rownrsData, deleteIt);
+    return thisRows;
+}
 
 //# Sort on a single column.
 //# This is converted to a sort on a vector of column names.

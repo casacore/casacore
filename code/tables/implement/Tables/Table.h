@@ -367,6 +367,10 @@ public:
     // Find the non-writable files in a table.
     static Vector<String> nonWritableFiles (const String& tableName);
 
+    // Test if this table is the root table (ie. if it is not the subset
+    // of another table).
+    Bool isRootTable() const;
+
     // Test if this table is opened as writable.
     Bool isWritable() const;
 
@@ -627,12 +631,38 @@ public:
 		int = Sort::HeapSort) const;
     // </group>
 
-    // Get a vector of row numbers.
+    // Get a vector of row numbers in the root table of rows in this table.
     // In case the table is a subset of the root table, this tells which
     // rows of the root table are part of the subset.
     // In case the table is the root table itself, the result is a vector
     // containing the row numbers 0 .. #rows-1.
+    // <br>Note that in general it is better to use the next
+    // <src>rowNumbers(Table)</src> function.
     Vector<uInt> rowNumbers() const;
+
+    // Get a vector of row numbers in that table of rows in this table.
+    // In case the table is a subset of that table, this tells which
+    // rows of that table are part of the subset.
+    // In case the table is that table itself, the result is a vector
+    // containing the row numbers 0 .. #rows-1.
+    // <note role=caution>This function is in principle meant for cases
+    // where this table is a subset of that table. However, it can be used
+    // for any table. In that case the returned vector contains a very high
+    // number for rows in this table which are not part of that table.
+    // In that way they are invalid if used elsewhere.
+    // </note>
+    // <srcblock>
+    // Table tab("somename");
+    // Table subset = tab(some_select_expression);
+    // Vector<uInt> rownrs = subset.rowNumbers(tab);
+    // </srcblock>
+    // Note that one cannot be sure that table "somename" is the root
+    // (i.e. original) table. It may also be a subset of another table.
+    // In the latter case doing
+    // <br> <src>    Vector<uInt> rownrs = subset.rowNumbers()<src>
+    // does not give the row numbers in <src>tab</src>, but in the root table
+    // (which is probably not what you want).
+    Vector<uInt> rowNumbers (const Table& that) const;
 
     // Add a column to the table.
     // The data manager used for the column depend on the function used.
@@ -775,6 +805,9 @@ inline Bool Table::hasLock (Bool write) const
 {
     return baseTabPtr_p->hasLock (write ? FileLocker::Write : FileLocker::Read);
 }
+
+inline Bool Table::isRootTable() const
+    { return baseTabPtr_p == baseTabPtr_p->root(); }
 
 inline Bool Table::isWritable() const
     { return baseTabPtr_p->isWritable(); }
