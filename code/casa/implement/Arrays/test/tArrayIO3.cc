@@ -33,7 +33,7 @@
 #include <aips/Arrays/Matrix.h>
 #include <aips/Arrays/Cube.h>
 #include <aips/Utilities/String.h>
-#include <aips/Measures.h>
+#include <aips/Quanta/Quantum.h>
 #include <aips/sstream.h>
 
 
