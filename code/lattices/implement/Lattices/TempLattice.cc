@@ -28,9 +28,9 @@
 #include <trial/Lattices/TempLattice.h>
 #include <trial/Lattices/PagedArray.h>
 #include <trial/Lattices/ArrayLattice.h>
-#include <trial/Lattices/TiledShape.h>
 #include <aips/Lattices/IPosition.h>
 #include <aips/Tasking/AppInfo.h>
+
 
 template<class T>
 TempLattice<T>::TempLattice() 
@@ -39,9 +39,9 @@ TempLattice<T>::TempLattice()
 }
 
 template<class T>
-TempLattice<T>::TempLattice (const IPosition& shape, Int maxMemoryInMB) 
+TempLattice<T>::TempLattice (const TiledShape& shape, Int maxMemoryInMB) 
 {
-  uInt memoryReq = shape.product()*sizeof(T);
+  uInt memoryReq = shape.shape().product()*sizeof(T);
   uInt memoryAvail;
   if (maxMemoryInMB > 0) {
     memoryAvail = maxMemoryInMB;
@@ -51,9 +51,9 @@ TempLattice<T>::TempLattice (const IPosition& shape, Int maxMemoryInMB)
   memoryAvail *= 1024*1024;
 
   if (memoryReq > memoryAvail) {
-    itsLatticePtr = new PagedArray<T>(TiledShape(shape));
+    itsLatticePtr = new PagedArray<T>(shape);
   } else {
-    itsLatticePtr = new ArrayLattice<T>(shape);
+    itsLatticePtr = new ArrayLattice<T>(shape.shape());
   }
 }
 
@@ -138,7 +138,7 @@ void TempLattice<T>::set (const T& value)
 }
 
 template<class T>
-void TempLattice<T>::apply(T (*function)(T))
+void TempLattice<T>::apply (T (*function)(T))
 {
   itsLatticePtr->apply (function);
 }
