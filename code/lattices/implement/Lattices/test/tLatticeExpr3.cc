@@ -1,5 +1,5 @@
 //# LELFunction.cc:  this defines non-templated classes in LELFunction.h
-//# Copyright (C) 1997,1998,1999,2000,2001
+//# Copyright (C) 1997,1998,1999,2000,2001,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -27,6 +27,7 @@
 
 #include <trial/Lattices/LatticeExpr.h>
 #include <aips/Lattices/PagedArray.h>
+#include <aips/Lattices/TempLattice.h>
 #include <trial/Lattices/SubLattice.h>
 #include <aips/Lattices/LatticeIterator.h>
 #include <aips/Lattices/TiledShape.h>
@@ -44,7 +45,7 @@
 #include <aips/iostream.h>
 
 
-main(int argc, char *argv[])
+int main(int argc, char *argv[])
 {
   try {
     Input inp(1);
@@ -281,7 +282,64 @@ main(int argc, char *argv[])
       al5.copyData (LatticeExpr<Complex>(al1+al1+al1+al1+al1+al1+al1+al1+al1+al1));
       timer.show ("as lattice");
     }
-
+    {
+      // Force TempLattice on disk.
+      TempLattice<Float> pa1(latticeShape, 0);
+      TempLattice<Float> pa2(latticeShape, 0);
+      pa1.set (1);
+      pa2.set (2);
+      LatticeExpr<Float> expr(2*pa2);
+      Timer timer;
+      pa1 += expr;
+      timer.show ("+= disk   ");
+      AlwaysAssertExit (allEQ(pa1.get(), float(5)));
+    }
+    {
+      // Force TempLattice in memory.
+      TempLattice<Float> pa1(latticeShape, 100);
+      TempLattice<Float> pa2(latticeShape, 100);
+      pa1.set (1);
+      pa2.set (2);
+      LatticeExpr<Float> expr(2*pa2);
+      Timer timer;
+      pa1 += expr;
+      timer.show ("+= memory ");
+      AlwaysAssertExit (allEQ(pa1.get(), float(5)));
+    }
+    {
+      // Force TempLattice on disk.
+      TempLattice<Float> pa1(latticeShape, 0);
+      TempLattice<Float> pa2(latticeShape, 0);
+      pa1.set (1);
+      pa2.set (2);
+      LatticeExpr<Float> expr(pa1+2*pa2);
+      Timer timer;
+      pa1.copyData (expr);
+      timer.show (" = disk   ");
+      AlwaysAssertExit (allEQ(pa1.get(), float(5)));
+    }
+    {
+      // Force TempLattice in memory.
+      TempLattice<Float> pa1(latticeShape, 100);
+      TempLattice<Float> pa2(latticeShape, 100);
+      pa1.set (1);
+      pa2.set (2);
+      LatticeExpr<Float> expr(pa1+2*pa2);
+      Timer timer;
+      pa1.copyData (expr);
+      timer.show (" = memory ");
+      AlwaysAssertExit (allEQ(pa1.get(), float(5)));
+    }
+    {
+      // Add a scalar to the lattice.
+      TempLattice<Float> pa1(latticeShape, 100);
+      pa1.set (3);
+      LatticeExpr<Float> expr(4);
+      Timer timer;
+      pa1 *= expr;
+      timer.show ("+= sca mem");
+      AlwaysAssertExit (allEQ(pa1.get(), float(12)));
+    }
   } catch (AipsError x) {
     cerr << "aipserror: error " << x.getMesg() << endl;
     return 1;
