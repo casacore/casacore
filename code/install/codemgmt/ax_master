@@ -6032,3 +6032,11 @@
 17 070 src rm aips/implement/Functionals/Gaussian1D.cc
 17 070 src rm aips/implement/Functionals/Gaussian2D.h
 17 070 src rm aips/implement/Functionals/Gaussian2D.cc
+17 070 src rm aips/implement/Functionals/Gaussian1D2.h
+17 070 src rm aips/implement/Functionals/Gaussian1D2.cc
+17 070 src rm aips/implement/Functionals/Gaussian1DParam.h
+17 070 src rm aips/implement/Functionals/Gaussian1DParam.cc
+17 070 src rm aips/implement/Functionals/Gaussian2D2.h
+17 070 src rm aips/implement/Functionals/Gaussian2D2.cc
+17 070 src rm aips/implement/Functionals/Gaussian2DParam.h
+17 070 src rm aips/implement/Functionals/Gaussian2DParam.cc
