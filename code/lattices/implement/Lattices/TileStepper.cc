@@ -31,6 +31,7 @@
 #include <aips/Logging/LogOrigin.h>
 #include <aips/Utilities/Assert.h>
 
+
 TileStepper::TileStepper(const IPosition& latticeShape, 
 			 const IPosition& tileShape)
 : itsBlc(latticeShape.nelements(), 0),
@@ -57,8 +58,32 @@ TileStepper::TileStepper(const IPosition& latticeShape,
   DebugAssert(ok() == True, AipsError);
 }
 
+TileStepper::TileStepper(const IPosition& latticeShape, 
+			 const IPosition& tileShape,
+			 const IPosition& axisPath)
+: itsBlc(latticeShape.nelements(), 0),
+  itsTrc(latticeShape - 1),
+  itsInc(latticeShape.nelements(), 1),
+  itsSubSection(latticeShape),
+  itsTiler(latticeShape),
+  itsTilerCursorPos(latticeShape.nelements(), 0),
+  itsTileShape(tileShape),
+  itsAxisPath(IPosition::makeAxisPath(latticeShape.nelements(), axisPath)),
+  itsCurBlc(latticeShape.nelements()),
+  itsCurTrc(latticeShape.nelements()),
+  itsNsteps(0),
+  itsEnd(False),
+  itsStart(True)
+{
+  const uInt nrdim = latticeShape.nelements();
+  AlwaysAssert(nrdim > 0, AipsError);
+  AlwaysAssert(tileShape.nelements() == nrdim, AipsError);
+  reset();
+  DebugAssert(ok() == True, AipsError);
+}
+
 // the copy constructor which uses copy semantics.
-TileStepper::TileStepper(const TileStepper & other)
+TileStepper::TileStepper(const TileStepper& other)
 : itsBlc(other.itsBlc),
   itsTrc(other.itsTrc),
   itsInc(other.itsInc),
@@ -81,7 +106,7 @@ TileStepper::~TileStepper()
   // does nothing
 }
 
-TileStepper & TileStepper::operator=(const TileStepper & other)
+TileStepper& TileStepper::operator=(const TileStepper& other)
 {
   if (this != &other) { 
     itsBlc = other.itsBlc;
@@ -174,8 +199,8 @@ Bool TileStepper::operator--(Int)
       return False;
     }
     //# Calculate the boundaries of the tile.
-    IPosition itsCurBlc = itsTiler.absolutePosition (itsTilerCursorPos);
-    IPosition itsCurTrc = itsCurBlc + itsTileShape - 1;
+    itsCurBlc = itsTiler.absolutePosition (itsTilerCursorPos);
+    itsCurTrc = itsCurBlc + itsTileShape - 1;
 //    cout << itsCurBlc << itsCurTrc << "   ";
     empty = False;
     //# Calculate the first and last pixel in the tile taking the
@@ -325,7 +350,7 @@ void TileStepper::subSection (const IPosition& blc, const IPosition& trc,
 
 // Function to specify a "section" of the Lattice to Navigate over. The step
 // increment is assumed to be one. 
-void TileStepper::subSection(const IPosition & blc, const IPosition & trc)
+void TileStepper::subSection(const IPosition& blc, const IPosition& trc)
 {
   subSection(blc, trc, IPosition(itsTiler.ndim(), 1));
 }
@@ -354,7 +379,7 @@ IPosition TileStepper::increment() const
   return itsInc;
 }
 
-const IPosition & TileStepper::axisPath() const
+const IPosition& TileStepper::axisPath() const
 {
   DebugAssert(ok() == True, AipsError);
   return itsAxisPath;
