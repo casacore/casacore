@@ -1,5 +1,5 @@
 //# tConstants.cc: This program tests the AIPS++ C (constants) class
-//# Copyright (C) 1993,1994,1995
+//# Copyright (C) 1993,1994,1995,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -98,18 +98,8 @@ main()
                             } else {
                                  cout << "(unprintable)"    << endl;
                             }
-
    cout << endl
         << "Machine constants from values.h:"               << endl
-        << "BITS(Char)............  " << BITS(Char)         << endl
-        << "BITS(uChar)...........  " << BITS(uChar)        << endl
-        << "BITS(Short)...........  " << BITS(Short)        << endl
-        << "BITS(uShort)..........  " << BITS(uShort)       << endl
-        << "BITS(Int).............  " << BITS(Int)          << endl
-        << "BITS(uInt)............  " << BITS(uInt)         << endl
-        << "BITS(Float)...........  " << BITS(Float)        << endl
-        << "BITS(Double)..........  " << BITS(Double)       << endl
-        << "BITS(lDouble).........  " << BITS(lDouble)      << endl
         << "HIBITS................  " << HIBITS             << endl
         << "HIBITL................  " << HIBITL             << endl
         << "MAXSHORT..............  " << MAXSHORT           << endl
@@ -118,9 +108,7 @@ main()
         << "MINFLOAT..............  " << MINFLOAT           << endl
         << "MINDOUBLE.............  " << MINDOUBLE          << endl
         << "MAXFLOAT..............  " << MAXFLOAT           << endl
-        << "MAXDOUBLE.............  " << MAXDOUBLE          << endl
-        << "FSIGNIF...............  " << FSIGNIF            << endl
-        << "DSIGNIF...............  " << DSIGNIF            << endl;
+        << "MAXDOUBLE.............  " << MAXDOUBLE          << endl;
 
    cout << endl
         << "<<< End of machine constants." << endl;
