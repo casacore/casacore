@@ -40,6 +40,7 @@ int main() {
       for (uInt i = 1; i < MS::NUMBER_PREDEFINED_COLUMNS; i++) {
 	MS::addColumnToDesc(td, MS::PredefinedColumns(i));
       }
+      td.rwKeywordSet().define("MS_VERSION", Float(2.0));
       
       SetupNewTable newtab("tMSColumns_table.ms",td,Table::New);  
       
