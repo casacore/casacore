@@ -312,9 +312,9 @@ void NewMeasurementSet::init()
 	// HISTORY
 	keyMapDef(HISTORY,"HISTORY",TpTable,
 		  "Observation and processing history");
-	// NewMS_VERSION
-	keyMapDef(NewMS_VERSION,"NewMS_VERSION",TpFloat,
-		  "NewMS version number, i.e., 2.0");
+	// MS_VERSION
+	keyMapDef(MS_VERSION,"MS_VERSION",TpFloat,
+		  "MS version number, i.e., 2.0");
 	// OBSERVATION
 	keyMapDef(OBSERVATION,"OBSERVATION",TpTable,
 		  "Observation subtable. Project, observer, schedule.");
@@ -371,8 +371,8 @@ void NewMeasurementSet::init()
 	     i <= NUMBER_REQUIRED_KEYWORDS; i++) {
 	    addKeyToDesc(requiredTD, PredefinedKeywords(i));
 	}
-	// Set NewMS_VERSION number
-	requiredTD.rwKeywordSet().define("NewMS_VERSION",Float(2.0));
+	// Set MS_VERSION number
+	requiredTD.rwKeywordSet().define("MS_VERSION",Float(2.0));
 	
 	// all required columns 
 	// First define the columns with fixed size arrays

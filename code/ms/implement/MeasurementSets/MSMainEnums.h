@@ -261,7 +261,7 @@ public:
     HISTORY,
     // NewMS Version number. <BR>
     // Float.
-    NewMS_VERSION,
+    MS_VERSION,
     // Observation subtable. Project, observer, schedule.
     OBSERVATION,
     // Pointing information subtable..
