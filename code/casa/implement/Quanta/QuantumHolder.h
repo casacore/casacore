@@ -190,14 +190,14 @@ public:
   // <group>
   virtual Bool fromRecord(String &error,
 			  const RecordInterface &in);
-  virtual Bool fromRecord(String &error,
-			  const GlishRecord &in);
+  Bool fromRecord(String &error,
+		  const GlishRecord &in);
   // </group>
   // Create a record from a Quantum. A False return and an error message is
   // only generated if there is no valid Quantum in the holder.
   // <group>
   virtual Bool toRecord(String &error, RecordInterface &out) const;
-  virtual Bool toRecord(String &error, GlishRecord &out) const;
+  Bool toRecord(String &error, GlishRecord &out) const;
   // </group>
 
 private:
