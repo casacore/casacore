@@ -3134,3 +3134,4 @@
 13 010 src rm nrao/apps/gbtmsfiller/GBTMSFillerInputs.cc
 13 012 src rm trial/implement/Guiutils/pgplotter_gplot1d.gp
 13 012 src rm trial/implement/Guiutils/pgplotter_gplot1d.help
+13 012 src rm trial/implement/Guiutils/pgplotter_gplot1d_meta.g
