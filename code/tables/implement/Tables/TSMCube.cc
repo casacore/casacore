@@ -97,10 +97,10 @@ TSMCube::~TSMCube()
 }
 
 
-void TSMCube::clearCache()
+void TSMCube::clearCache (Bool doFlush)
 {
     if (cache_p != 0) {
-        cache_p->clear();
+        cache_p->clear (0, doFlush);
     }
 }
 void TSMCube::emptyCache()
