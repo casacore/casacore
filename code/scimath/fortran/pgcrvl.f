@@ -11,7 +11,7 @@
 *                           2: Name of the second world coordinate.
 *                           3: Title, written at top.
 *
-*      TYPE     C(2)*1   Formatting control for the world coordinates,
+*      OPT      C(2)*(*) Formatting control for the world coordinates,
 *                        used for axis labelling (see notes 1 and 2):
 *                           ' ': plain numeric
 *                           'A': angle in degrees expressed in
@@ -29,9 +29,9 @@
 *                           'G': angle in degrees expressed in
 *                                hms notation, HHhMMmSSs.S, normalized
 *                                in the range [0,24) hours.
-*                           'H': as 'H' but normalized in the range
+*                           'H': as 'G' but normalized in the range
 *                                (-12,12] hours.
-*                           'I': as 'H' but unnormalized.
+*                           'I': as 'G' but unnormalized.
 *                           'L': logarithmic (see note 2)
 *                           'T': time in hours expressed as HH:MM:SS.S
 *
@@ -84,29 +84,28 @@
 *                        coordinate.  LABDEN = 0 is effectively the same
 *                        as LABDEN = 808.
 *
-*      CI       I        Index into a predefined set of colours
-*                        established by calls to PGSCR.  This is used
-*                        optionally to control the colour used for
-*                        different parts of the plot.  Offsets from CI
-*                        are used as follows:
+*      CI       I(7)     Table of predefined colours established by
+*                        calls to PGSCR.  This is used to control the
+*                        colour used for different parts of the plot.
+*                        CI table entries are used as follows:
 *
-*                                                  world
-*                                                coordinate
-*                        Offset      usage        element
-*                        ------  --------------  ----------
-*                          +0      grid lines        1
-*                          +1      grid lines        2
-*                          +2    numeric labels      1
-*                          +3    numeric labels      2
-*                          +4    axis annotation     1
-*                          +5    axis annotation     2
-*                          +6        title           -
+*                                                 world
+*                                               coordinate
+*                        Index      usage        element
+*                        -----  --------------  ----------
+*                          1      grid lines        1
+*                          2      grid lines        2
+*                          3    numeric labels      1
+*                          4    numeric labels      2
+*                          5    axis annotation     1
+*                          6    axis annotation     2
+*                          7        title           -
 *
-*                        For example, if CI = 24, then colour 26 will be
-*                        used for numeric labels for the first world
-*                        coordinate.
+*                        For example, if CI(3) is used for numeric
+*                        labels for the first world coordinate.
 *
-*                        Colour selection is disabled if CI < 0.
+*                        Colour selection is disabled for component J
+*                        if CI(J) <= 0.
 *
 *      GCODE(2) I        Code for the type of grid to draw for each
 *                        world coordinate:
@@ -171,12 +170,14 @@
 *
 *      NLDPRM   D(NLD)   Double precision coefficients for NLFUNC.
 *
-*      NC       I        Total number of locations in the CROSS table
-*                        (must be >0).
+*      NC       I        Upper array index for CACHE.
 *
-*      IC       I        Current number of entries in the CROSS table.
+*      IC       I        Current number of entries in the CACHE table.
+*                        Should be set to -1 on the first call to
+*                        PGCRVL (see note 3).
 *
-*      CROSS    D(4,NC)  Table of points where the tick marks or grid
+*      CACHE    D(4,0:NC)
+*                        Table of points where the tick marks or grid
 *                        lines cross the frame (see note 3).
 *                           1: Frame segment
 *                              1: bottom
@@ -186,6 +187,9 @@
 *                           2: X or Y-pixel coordinate.
 *                           3: World coordinate element (1 or 2).
 *                           4: Value.
+*
+*                        CACHE(,0) is used to cache the extrema of the
+*                        coordinate values between calls.
 *
 *   Returned:
 *      IERR     I        Error status
@@ -203,22 +207,22 @@
 *       would draw a subset of the following set of grid lines and
 *       labels:
 *
-*            value    label
-*            ------   -----
-*            0.9031     8
-*            0.9542     9
-*            1.0000   10**1
-*            1.3010     2
-*            1.4771     3
-*            1.6021     4
-*            1.6990     5
-*            1.7782     6
-*            1.8451     7
-*            1.9031     8
-*            1.9542     9
-*            2.0000   10**2
-*            2.3010     2
-*            2.4771     3
+*                   value          label
+*            ------------------    -----
+*            0.9031 = log10(8)      8
+*            0.9542 = log10(9)      9
+*            1.0000 = log10(10)    10**1
+*            1.3010 = log10(20)     2
+*            1.4771 = log10(30)     3
+*            1.6021 = log10(40)     4
+*            1.6990 = log10(50)     5
+*            1.7782 = log10(60)     6
+*            1.8451 = log10(70)     7
+*            1.9031 = log10(80)     8
+*            1.9542 = log10(90)     9
+*            2.0000 = log10(100)   10**2
+*            2.3010 = log10(200)    2
+*            2.4771 = log10(300)    3
 *
 *       The subset chosen depends on the coordinate increment as
 *       specified by the caller (e.g. via NG1 = 0, GRID1(0) != 0) or as
@@ -255,7 +259,7 @@
 *       changed to return a normalized angle, or else a continuous
 *       sequence.
 *
-*    3) PGCRVL maintains a table of axis crossings, CROSS, in which it
+*    3) PGCRVL maintains a table of axis crossings, CACHE, in which it
 *       stores information used for axis labelling.  The caller need not
 *       normally be concerned about the use of this table other than to
 *       provide sufficient space.
@@ -267,6 +271,14 @@
 *       successive call until the labels are produced.  The table index,
 *       IC, may be reset to zero by the caller to discard the
 *       information collected.
+*
+*       The extrema of the world coordinate elements are stored in
+*       CACHE(,0).  When a coordinate grid is plotted with multiple calls
+*       to PGCRVL the initial call should always have IC set to -1 to
+*       to signal that PGCRVL needs to determine the extrema.  On
+*       subsequent calls with IC non-negative PGCRVL uses the extrema
+*       cached from the first call.  This can speed up execution
+*       considerably.
 *
 *- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 *
@@ -362,25 +374,26 @@
 *   Author: Mark Calabretta, Australia Telescope National Facility
 *   $Id$
 *=======================================================================
-      SUBROUTINE PGCRVL (AXEN, IDENTS, TYPE, LABCTL, LABDEN, CI, GCODE,
+      SUBROUTINE PGCRVL (AXEN, IDENTS, OPT, LABCTL, LABDEN, CI, GCODE,
      *   TIKLEN, NG1, GRID1, NG2, GRID2, DOEQ, NLFUNC, NLC, NLI, NLD,
-     *   NLCPRM, NLIPRM, NLDPRM, NC, IC, CROSS, IERR)
+     *   NLCPRM, NLIPRM, NLDPRM, NC, IC, CACHE, IERR)
 *-----------------------------------------------------------------------
       INTEGER   BUFSIZ
       PARAMETER (BUFSIZ = 2048)
 
-      LOGICAL   DOEQ, GETEND, INSIDE, ISANGL(2), PRVIN
-      INTEGER   AXEN(2), CI, CI0, CONTRL, DENS(2), FSEG, GCODE(2), IC,
-     *          IERR, IPIX, ISTEP, IWJ, IWK, J, JPIX, K, L, LABCTL,
-     *          LABDEN, LDIV(2), LTABL(6,2:6), N1, N2, NC, NG(2), NG1,
-     *          NG2, NLC, NLD, NLI, NLIPRM(NLI), NP, NW(2), TCODE(2,4)
+      LOGICAL   DOEQ, GETEND, INSIDE, ISANGL(2), MAJOR, PRVIN
+      INTEGER   AXEN(2), CI(7), CI0, CJ(7), CONTRL, DENS(2), FSEG,
+     *          GCODE(2), IC, IERR, IPIX, ISTEP, IWJ, IWK, J, JPIX, K,
+     *          L, LABCTL, LABDEN, LDIV(2), LTABL(6,2:6), N1, N2, NC,
+     *          NG(2), NG1, NG2, NLC, NLD, NLI, NLIPRM(NLI), NP, NW(2),
+     *          TCODE(2,4)
       REAL      S, WPIX(4), X1, X2, XPOINT, XR(BUFSIZ), XSCL, XVP1,
      *          XVP2, Y1, Y2, YR(BUFSIZ), YSCL, YVP1, YVP2
-      DOUBLE PRECISION CONTXT(20), CROSS(4,NC), D1, D2, DW(2), FACT,
+      DOUBLE PRECISION CONTXT(20), CACHE(4,0:NC), D1, D2, DW(2), FACT,
      *          G0(2), GSTEP(2), GRID1(0:NG1), GRID2(0:NG2),
      *          NLDPRM(NLD), PIXEL(2), STEP, TIKLEN, TMP, VMAX(2,2),
      *          VMIN(2,2), WMAX(2), WMIN(2), WORLD(2)
-      CHARACTER IDENTS(3)*(*), NLCPRM(NLC)*1, TYPE(2)*1
+      CHARACTER IDENTS(3)*(*), NLCPRM(NLC)*1, OPT(2)*(*), TYPE(2)
 
       EXTERNAL NLFUNC
 
@@ -414,7 +427,9 @@
 
       NG(1) = NG1
       NG(2) = NG2
-      IF (IC.LT.0) IC = 0
+
+      TYPE(1) = OPT(1)(1:1)
+      TYPE(2) = OPT(2)(1:1)
 
 *     Extend the PGPLOT window and rescale it to pixels.
       CALL PGQVP (0, XVP1, XVP2, YVP1, YVP2)
@@ -426,118 +441,134 @@
      *             0.5-YSCL*YVP1, AXEN(2)+0.5+YSCL*(1.0-YVP2))
 
 *     Labels only?
-      IF (LABCTL.GE.10000) GO TO 100
+      IF (LABCTL.GE.10000) GO TO 120
 
 
 *  Find world coordinate ranges.
-*     Coarse search to find approximate ranges.
-      WMIN(1) =  1D99
-      WMAX(1) = -1D99
-      WMIN(2) =  1D99
-      WMAX(2) = -1D99
+      IF (IC.GE.0) THEN
+*        Extrema cached from a previous call.
+         WMIN(1) = CACHE(1,0)
+         WMAX(1) = CACHE(2,0)
+         WMIN(2) = CACHE(3,0)
+         WMAX(2) = CACHE(4,0)
+      ELSE
+*        Coarse search to find approximate ranges.
+         WMIN(1) =  1D99
+         WMAX(1) = -1D99
+         WMIN(2) =  1D99
+         WMAX(2) = -1D99
 
-*     Need to consider cycles in angle through 360 degrees.
-      ISANGL(1) = INDEX('ABCDEFGHI',TYPE(1)).NE.0
-      ISANGL(2) = INDEX('ABCDEFGHI',TYPE(2)).NE.0
-      VMIN(1,1) =  1D99
-      VMIN(1,2) =  1D99
-      VMAX(1,1) = -1D99
-      VMAX(1,2) = -1D99
-      VMIN(2,1) =  1D99
-      VMIN(2,2) =  1D99
-      VMAX(2,1) = -1D99
-      VMAX(2,2) = -1D99
+*        Need to consider cycles in angle through 360 degrees.
+         ISANGL(1) = INDEX('ABCDEFGHI',TYPE(1)).NE.0
+         ISANGL(2) = INDEX('ABCDEFGHI',TYPE(2)).NE.0
+         VMIN(1,1) =  1D99
+         VMIN(1,2) =  1D99
+         VMAX(1,1) = -1D99
+         VMAX(1,2) = -1D99
+         VMIN(2,1) =  1D99
+         VMIN(2,2) =  1D99
+         VMAX(2,1) = -1D99
+         VMAX(2,2) = -1D99
 
-*     Decimate the image.
-      N1 = AXEN(1)/10 + 1
-      N2 = AXEN(2)/10 + 1
-      D1 = DBLE(AXEN(1))/N1
-      D2 = DBLE(AXEN(2))/N2
+*        Decimate the image.
+         N1 = AXEN(1)/10 + 1
+         N2 = AXEN(2)/10 + 1
+         D1 = DBLE(AXEN(1))/N1
+         D2 = DBLE(AXEN(2))/N2
 
-      PIXEL(1) = 0.5D0
-      DO 20 IPIX = 0, N1
+         PIXEL(1) = 0.5D0
+         DO 20 IPIX = 0, N1
 
-         PIXEL(2) = 0.5D0
-         DO 10 JPIX = 0, N2
-            CALL NLFUNC (-1, NLC, NLI, NLD, NLCPRM, NLIPRM, NLDPRM,
-     *         WORLD, PIXEL, CONTRL, CONTXT, IERR)
-            IF (IERR.NE.0) GO TO 10
+            PIXEL(2) = 0.5D0
+            DO 10 JPIX = 0, N2
+               CALL NLFUNC (-1, NLC, NLI, NLD, NLCPRM, NLIPRM, NLDPRM,
+     *            WORLD, PIXEL, CONTRL, CONTXT, IERR)
+               IF (IERR.NE.0) GO TO 10
 
-            IF (WORLD(1).LT.WMIN(1)) WMIN(1) = WORLD(1)
-            IF (WORLD(1).GT.WMAX(1)) WMAX(1) = WORLD(1)
-            IF (WORLD(2).LT.WMIN(2)) WMIN(2) = WORLD(2)
-            IF (WORLD(2).GT.WMAX(2)) WMAX(2) = WORLD(2)
+               IF (WORLD(1).LT.WMIN(1)) WMIN(1) = WORLD(1)
+               IF (WORLD(1).GT.WMAX(1)) WMAX(1) = WORLD(1)
+               IF (WORLD(2).LT.WMIN(2)) WMIN(2) = WORLD(2)
+               IF (WORLD(2).GT.WMAX(2)) WMAX(2) = WORLD(2)
 
-            IF (ISANGL(1)) THEN
-*              Normalize to the range [0,360).
-               WORLD(1) = MOD(WORLD(1), 360D0)
-               IF (WORLD(1).LT.0D0) WORLD(1) = WORLD(1) + 360D0
-               IF (WORLD(1).LT.VMIN(1,1)) VMIN(1,1) = WORLD(1)
-               IF (WORLD(1).GT.VMAX(1,1)) VMAX(1,1) = WORLD(1)
+               IF (ISANGL(1)) THEN
+*                 Normalize to the range [0,360).
+                  WORLD(1) = MOD(WORLD(1), 360D0)
+                  IF (WORLD(1).LT.0D0) WORLD(1) = WORLD(1) + 360D0
+                  IF (WORLD(1).LT.VMIN(1,1)) VMIN(1,1) = WORLD(1)
+                  IF (WORLD(1).GT.VMAX(1,1)) VMAX(1,1) = WORLD(1)
 
-*              Normalize to the range (-180,180].
-               IF (WORLD(1).GT.180D0) WORLD(1) = WORLD(1) - 360D0
-               IF (WORLD(1).LT.VMIN(1,2)) VMIN(1,2) = WORLD(1)
-               IF (WORLD(1).GT.VMAX(1,2)) VMAX(1,2) = WORLD(1)
-            END IF
-
-            IF (ISANGL(2)) THEN
-*              Normalize to the range [0,360).
-               WORLD(2) = MOD(WORLD(2), 360D0)
-               IF (WORLD(2).LT.0D0) WORLD(2) = WORLD(2) + 360D0
-               IF (WORLD(2).LT.VMIN(2,1)) VMIN(2,1) = WORLD(2)
-               IF (WORLD(2).GT.VMAX(2,1)) VMAX(2,1) = WORLD(2)
-
-*              Normalize to the range (-180,180].
-               IF (WORLD(2).GT.180D0) WORLD(2) = WORLD(2) - 360D0
-               IF (WORLD(2).LT.VMIN(2,2)) VMIN(2,2) = WORLD(2)
-               IF (WORLD(2).GT.VMAX(2,2)) VMAX(2,2) = WORLD(2)
-            END IF
-
-            PIXEL(2) = PIXEL(2) + D2
- 10      CONTINUE
-
-         PIXEL(1) = PIXEL(1) + D1
- 20   CONTINUE
-
-*     Check for cycles in angle.
-      DO 30 J = 1, 2
-         IF (ISANGL(J)) THEN
-            IF (WMAX(J)-WMIN(J).LT.360D0 .AND.
-     *          WMAX(J)-WMIN(J).GT.VMAX(J,1)-VMIN(J,1)+TOL) THEN
-*              Must have a cycle, preserve the sign.
-               IF (WMAX(J).GE.0D0) THEN
-                  WMIN(J) = VMIN(J,1)
-                  WMAX(J) = VMAX(J,1)
-               ELSE
-                  WMIN(J) = VMIN(J,1) - 360D0
-                  WMAX(J) = VMAX(J,1) - 360D0
+*                 Normalize to the range (-180,180].
+                  IF (WORLD(1).GT.180D0) WORLD(1) = WORLD(1) - 360D0
+                  IF (WORLD(1).LT.VMIN(1,2)) VMIN(1,2) = WORLD(1)
+                  IF (WORLD(1).GT.VMAX(1,2)) VMAX(1,2) = WORLD(1)
                END IF
-            END IF
 
-            IF (WMAX(J)-WMIN(J).LT.360D0 .AND.
-     *          WMAX(J)-WMIN(J).GT.VMAX(J,2)-VMIN(J,2)+TOL) THEN
-*              Must have a cycle, preserve the sign.
-               IF (WMAX(J).GE.0D0) THEN
-                  IF (VMAX(J,2).GE.0D0) THEN
-                     WMIN(J) = VMIN(J,2)
-                     WMAX(J) = VMAX(J,2)
+               IF (ISANGL(2)) THEN
+*                 Normalize to the range [0,360).
+                  WORLD(2) = MOD(WORLD(2), 360D0)
+                  IF (WORLD(2).LT.0D0) WORLD(2) = WORLD(2) + 360D0
+                  IF (WORLD(2).LT.VMIN(2,1)) VMIN(2,1) = WORLD(2)
+                  IF (WORLD(2).GT.VMAX(2,1)) VMAX(2,1) = WORLD(2)
+
+*                 Normalize to the range (-180,180].
+                  IF (WORLD(2).GT.180D0) WORLD(2) = WORLD(2) - 360D0
+                  IF (WORLD(2).LT.VMIN(2,2)) VMIN(2,2) = WORLD(2)
+                  IF (WORLD(2).GT.VMAX(2,2)) VMAX(2,2) = WORLD(2)
+               END IF
+
+               PIXEL(2) = PIXEL(2) + D2
+ 10         CONTINUE
+
+            PIXEL(1) = PIXEL(1) + D1
+ 20      CONTINUE
+
+*        Check for cycles in angle.
+         DO 30 J = 1, 2
+            IF (ISANGL(J)) THEN
+               IF (WMAX(J)-WMIN(J).LT.360D0 .AND.
+     *             WMAX(J)-WMIN(J).GT.VMAX(J,1)-VMIN(J,1)+TOL) THEN
+*                 Must have a cycle, preserve the sign.
+                  IF (WMAX(J).GE.0D0) THEN
+                     WMIN(J) = VMIN(J,1)
+                     WMAX(J) = VMAX(J,1)
                   ELSE
-                     WMIN(J) = VMIN(J,2) + 360D0
-                     WMAX(J) = VMAX(J,2) + 360D0
-                  END IF
-               ELSE
-                  IF (VMAX(J,2).LT.0D0) THEN
-                     WMIN(J) = VMIN(J,2)
-                     WMAX(J) = VMAX(J,2)
-                  ELSE
-                     WMIN(J) = VMIN(J,2) - 360D0
-                     WMAX(J) = VMAX(J,2) - 360D0
+                     WMIN(J) = VMIN(J,1) - 360D0
+                     WMAX(J) = VMAX(J,1) - 360D0
                   END IF
                END IF
+
+               IF (WMAX(J)-WMIN(J).LT.360D0 .AND.
+     *             WMAX(J)-WMIN(J).GT.VMAX(J,2)-VMIN(J,2)+TOL) THEN
+*                 Must have a cycle, preserve the sign.
+                  IF (WMAX(J).GE.0D0) THEN
+                     IF (VMAX(J,2).GE.0D0) THEN
+                        WMIN(J) = VMIN(J,2)
+                        WMAX(J) = VMAX(J,2)
+                     ELSE
+                        WMIN(J) = VMIN(J,2) + 360D0
+                        WMAX(J) = VMAX(J,2) + 360D0
+                     END IF
+                  ELSE
+                     IF (VMAX(J,2).LT.0D0) THEN
+                        WMIN(J) = VMIN(J,2)
+                        WMAX(J) = VMAX(J,2)
+                     ELSE
+                        WMIN(J) = VMIN(J,2) - 360D0
+                        WMAX(J) = VMAX(J,2) - 360D0
+                     END IF
+                  END IF
+               END IF
             END IF
-         END IF
- 30   CONTINUE
+ 30      CONTINUE
+
+*        Cache extrema for subsequent calls.
+         CACHE(1,0) = WMIN(1)
+         CACHE(2,0) = WMAX(1)
+         CACHE(3,0) = WMIN(2)
+         CACHE(4,0) = WMAX(2)
+
+         IC = 0
+      END IF
 
 *     Choose an appropriate grid spacing.
       IF (LABDEN.GT.0) THEN
@@ -588,10 +619,10 @@
                   STEP = 90D0
                ELSE IF (STEP.LT.270D0) THEN
                   STEP = 180D0
-               ELSE IF (STEP.LT.360D0) THEN
+               ELSE IF (STEP.LT.520D0) THEN
                   STEP = 360D0
                ELSE
-                  STEP = 360D0*MOD(STEP,360D0)
+                  STEP = 360D0*INT(STEP/360D0 + 0.5)
                END IF
 
             ELSE IF (INDEX('GHI',TYPE(J)).NE.0 .AND. STEP.GE.15D0 .OR.
@@ -611,18 +642,20 @@
                   STEP = 2D0
                ELSE IF (STEP.LT.3.5D0) THEN
                   STEP = 3D0
-               ELSE IF (STEP.LT.4.5D0) THEN
-                  STEP = 4D0
                ELSE IF (STEP.LT.5D0) THEN
-                  STEP = 6D0
+                  STEP = 4D0
                ELSE IF (STEP.LT.7D0) THEN
-                  STEP = 8D0
+                  STEP = 6D0
                ELSE IF (STEP.LT.10D0) THEN
+                  STEP = 8D0
+               ELSE IF (STEP.LT.15D0) THEN
                   STEP = 12D0
-               ELSE IF (STEP.LT.18D0) THEN
+               ELSE IF (STEP.LT.21D0) THEN
+                  STEP = 18D0
+               ELSE IF (STEP.LT.36D0) THEN
                   STEP = 24D0
                ELSE
-                  STEP = 24D0*MOD(STEP,24D0)
+                  STEP = 24D0*INT(STEP/24D0 + 0.5)
                END IF
 
                STEP = STEP/FACT
@@ -755,7 +788,7 @@
       END IF
 
 *     Fine tune the end points.
-      DO 45 J = 1, 2
+      DO 50 J = 1, 2
          IF (TYPE(J).EQ.'L') THEN
             WMIN(J) = AINT(WMIN(J)-1D0)
             WMAX(J) = AINT(WMAX(J)+1D0)
@@ -768,7 +801,7 @@
             WMAX(J) = TMP
          END IF
          DW(J) = WMAX(J) - WMIN(J)
- 45   CONTINUE
+ 50   CONTINUE
 
 
 *  Draw the grid.
@@ -778,7 +811,7 @@
       YSCL = (Y2-Y1)/AXEN(2)
 
 *     Decode tick mark control.
-      DO 50 J = 1, 2
+      DO 60 J = 1, 2
          IF (GCODE(J).EQ.2) THEN
             TCODE(J,1) = -1
             TCODE(J,2) = -1
@@ -801,20 +834,27 @@
             TCODE(J,3) = 0
             TCODE(J,4) = 0
          END IF
- 50   CONTINUE
+ 60   CONTINUE
 
 *     Determine initial colour.
       CALL PGQCI (CI0)
+      DO 70 J = 1, 7
+         IF (CI(J).GT.0) THEN
+            CJ(J) = CI(J)
+         ELSE
+            CJ(J) = CI0
+         END IF
+ 70   CONTINUE
 
 *     Draw each set of grid lines.
-      DO 90 J = 1, 2
-         IF (GCODE(J).EQ.0) GO TO 90
+      DO 110 J = 1, 2
+         IF (GCODE(J).EQ.0) GO TO 110
 
          IF (J.EQ.1) THEN
-            IF (CI.GT.0) CALL PGSCI (CI)
+            CALL PGSCI (CJ(1))
             K = 2
          ELSE
-            IF (CI.GT.0) CALL PGSCI (CI+1)
+            CALL PGSCI (CJ(2))
             K = 1
          END IF
 
@@ -824,21 +864,30 @@
             NW(J) = NINT(DW(J)/GSTEP(J))
          END IF
 
-         DO 80 IWJ = 0, NW(J)
+         DO 100 IWJ = 0, NW(J)
+            MAJOR = .FALSE.
+
+*           Determine the world coordinate of the grid line.
             IF (NG(J).GT.0) THEN
-               IF (IWJ.EQ.0) GO TO 80
+*              User-specified.
+               IF (IWJ.EQ.0) GO TO 100
                WORLD(1) = GRID1(IWJ)
                WORLD(2) = GRID2(IWJ)
             ELSE
+*              Internally computed.
                WORLD(J) = WMIN(J) + IWJ*GSTEP(J)
 
-*              Logarithmic.
+*              Logarithmic?
                IF (TYPE(J).EQ.'L') THEN
                   TMP = MOD(WORLD(J),1D0)
                   IF (TMP.LT.0D0) TMP = TMP + 1D0
                   L = NINT(TMP*LDIV(J))
 
-                  IF (L.NE.0) THEN
+                  IF (L.EQ.0) THEN
+*                    Major tick mark.
+                     MAJOR = .TRUE.
+                  ELSE
+*                    Adjust logarithmic scales.
                      IF (LDIV(J).LE.6) THEN
                         L = LTABL(L,LDIV(J))
                      ELSE
@@ -852,7 +901,7 @@
 
             NP = 0
             GETEND = .TRUE.
-            DO 70 IWK = 0, NSTEP
+            DO 90 IWK = 0, NSTEP
                WORLD(K) = WMIN(K) + IWK*(DW(K)/NSTEP)
 
                IF (GETEND) THEN
@@ -872,16 +921,16 @@
                      PRVIN  = INSIDE
                      GETEND = .FALSE.
                   END IF
-                  GO TO 70
+                  GO TO 90
                END IF
 
-               DO 60 ISTEP = 1, 1000
+               DO 80 ISTEP = 1, 1000
                   CALL NLFUNC (2, NLC, NLI, NLD, NLCPRM, NLIPRM, NLDPRM,
      *               WORLD, PIXEL, CONTRL, CONTXT, IERR)
                   IF (IERR.NE.0) THEN
 *                    Flush buffer.
                      IF (NP.GT.0) CALL PGLINE(NP, XR, YR)
-                     GO TO 80
+                     GO TO 100
                   END IF
 
                   IF (NP.EQ.BUFSIZ) THEN
@@ -945,10 +994,10 @@
                            IF (TCODE(J,FSEG).NE.0) THEN
                               IF (IC.LT.NC) THEN
                                  IC = IC + 1
-                                 CROSS(1,IC) = FSEG
-                                 CROSS(2,IC) = XPOINT
-                                 CROSS(3,IC) = J
-                                 CROSS(4,IC) = WORLD(J)
+                                 CACHE(1,IC) = FSEG
+                                 CACHE(2,IC) = XPOINT
+                                 CACHE(3,IC) = J
+                                 CACHE(4,IC) = WORLD(J)
                               END IF
                            END IF
 
@@ -958,6 +1007,7 @@
                               Y1 = YR(NP)
                               S = SQRT((XSCL*(X2-X1))**2 +
      *                                 (YSCL*(Y2-Y1))**2)/TCODE(J,FSEG)
+                              IF (MAJOR) S = S/1.5
                               NP = NP + 1
                               XR(NP) = X1 + (X2-X1)*TIKLEN/S
                               YR(NP) = Y1 + (Y2-Y1)*TIKLEN/S
@@ -1019,10 +1069,10 @@
                            IF (TCODE(J,FSEG).NE.0) THEN
                               IF (IC.LT.NC) THEN
                                  IC = IC + 1
-                                 CROSS(1,IC) = FSEG
-                                 CROSS(2,IC) = XPOINT
-                                 CROSS(3,IC) = J
-                                 CROSS(4,IC) = WORLD(J)
+                                 CACHE(1,IC) = FSEG
+                                 CACHE(2,IC) = XPOINT
+                                 CACHE(3,IC) = J
+                                 CACHE(4,IC) = WORLD(J)
                               END IF
                            END IF
 
@@ -1034,6 +1084,7 @@
                               Y2 = YR(NP-1)
                               S = SQRT((XSCL*(X2-X1))**2 +
      *                                 (YSCL*(Y2-Y1))**2)/TCODE(J,FSEG)
+                              IF (MAJOR) S = S/1.5
                               XR(NP-1) = X1 + (X2-X1)*TIKLEN/S
                               YR(NP-1) = Y1 + (Y2-Y1)*TIKLEN/S
                            END IF
@@ -1054,23 +1105,23 @@
                   PRVIN = INSIDE
 
                   IF (CONTRL.EQ.0) THEN
-                     GO TO 70
+                     GO TO 90
                   ELSE IF (CONTRL.EQ.1) THEN
 *                    Flush buffer.
                      IF (NP.GT.1) CALL PGLINE(NP, XR, YR)
                      NP = 0
                   END IF
- 60            CONTINUE
- 70         CONTINUE
+ 80            CONTINUE
+ 90         CONTINUE
 
             IF (NP.GT.1) CALL PGLINE(NP, XR, YR)
- 80      CONTINUE
- 90   CONTINUE
+ 100     CONTINUE
+ 110  CONTINUE
 
 
 *  Produce axis labels.
- 100  IF (LABCTL.NE.-1) CALL PGCRLB (AXEN, IDENTS, TYPE, LABCTL, CI, NC,
-     *   IC, CROSS)
+ 120  IF (LABCTL.NE.-1) CALL PGCRLB (AXEN, IDENTS, TYPE, LABCTL, CJ, NC,
+     *   IC, CACHE)
 
 
 *  Clean up.
@@ -1095,34 +1146,35 @@
 *
 *      IDENTS   C(3)**   Identification strings (see PGCRVL).
 *
-*      TYPE     C*1(2)   Axis types, used for axis labelling (see
+*      TYPE     C(2)*1   Axis types, used for axis labelling (see
 *                        PGCRVL).
 *
 *      LABCTL   I        Decimal encoded grid labelling control (see
 *                        PGCRVL).
 *
-*      CI       I        Colour index (see PGCRVL).
+*      CI       I(7)     Colour table (see PGCRVL).
 *
 *   Given and/or returned:
-*      NC       I        Total number of locations in the CROSS table.
+*      NC       I        Upper array index for CACHE.
 *
-*      IC       I        Current number of entries in the CROSS table.
+*      IC       I        Current number of entries in the CACHE table.
 *
-*      CROSS    D(4,NC)  Table of points where the tick marks or grid
+*      CACHE    D(4,0:NC)
+*                        Table of points where the tick marks or grid
 *                        lines cross the frame (see PGCRVL).
 *
 *   Author: Mark Calabretta, Australia Telescope National Facility
 *=======================================================================
-      SUBROUTINE PGCRLB (AXEN, IDENTS, TYPE, LABCTL, CI, NC, IC, CROSS)
+      SUBROUTINE PGCRLB (AXEN, IDENTS, TYPE, LABCTL, CI, NC, IC, CACHE)
 *-----------------------------------------------------------------------
       LOGICAL   ANGLE, LFORCE, TICKIT
-      INTEGER   AXEN(2), CI, EDGE, IC, IMAG(2), ITER, IWRLD, J, JC, K,
-     *          L, LABCTL, LD, LM, LMAG(2), LS, LV, M, MM, NC, NCH,
-     *          NI(2,0:4), NSWAP, PP, PRVD(2), PRVH(2), PRVM(2), PRVEDG,
-     *          SKIP(4), SKOP(4)
+      INTEGER   AXEN(2), CI(7), EDGE, IC, IMAG(2), ITER, IWRLD, J, JC,
+     *          K, K1, K2, L, LABCTL, LD, LM, LMAG(2), LS, LV, M, M1,
+     *          M2, MM, NC, NCH, NI(2,0:4), NSWAP, PP, PRVD(2), PRVH(2),
+     *          PRVM(2), PRVEDG, SKIP(4), SKOP(4)
       REAL      ANGL, FJUST, BNDRY(4), OMAG(2), SI(2), X, XBOX(4),
      *          XCH, XL, XW1, XW2, Y, YCH, YBOX(4), YL, YW1, YW2, Z
-      DOUBLE PRECISION CROSS(4,NC), TMP
+      DOUBLE PRECISION CACHE(4,0:NC), TMP
       CHARACTER EXPONT*20, FMT*8, IDENTS(3)*(*), TEXT*80, TYPE(2)*1,
      *          TXT(2)*40
 *-----------------------------------------------------------------------
@@ -1130,27 +1182,27 @@
       IF (INDEX('ABDEGH',TYPE(1)).NE.0 .OR.
      *    INDEX('ABDEGH',TYPE(2)).NE.0) THEN
          DO 10 J = 1, IC
-            IF (CROSS(3,J).EQ.1D0) THEN
+            IF (CACHE(3,J).EQ.1D0) THEN
                IWRLD = 1
             ELSE
                IWRLD = 2
             END IF
 
             IF (INDEX('ADG', TYPE(IWRLD)).NE.0) THEN
-               CROSS(4,J) = MOD(CROSS(4,J), 360D0)
-               IF (CROSS(4,J).LT.0D0) CROSS(4,J) = CROSS(4,J) + 360D0
+               CACHE(4,J) = MOD(CACHE(4,J), 360D0)
+               IF (CACHE(4,J).LT.0D0) CACHE(4,J) = CACHE(4,J) + 360D0
             ELSE IF (INDEX('BEH', TYPE(IWRLD)).NE.0) THEN
-               CROSS(4,J) = MOD(CROSS(4,J), 360D0)
-               IF (CROSS(4,J).LE.-180D0) THEN
-                  CROSS(4,J) = CROSS(4,J) + 360D0
-               ELSE IF (CROSS(4,J).GT.180D0) THEN
-                  CROSS(4,J) = CROSS(4,J) - 360D0
+               CACHE(4,J) = MOD(CACHE(4,J), 360D0)
+               IF (CACHE(4,J).LE.-180D0) THEN
+                  CACHE(4,J) = CACHE(4,J) + 360D0
+               ELSE IF (CACHE(4,J).GT.180D0) THEN
+                  CACHE(4,J) = CACHE(4,J) - 360D0
                END IF
             END IF
 
             IF (INDEX('GHI', TYPE(IWRLD)).NE.0) THEN
 *              Angle expressed as time.
-               CROSS(4,J) = CROSS(4,J)/15D0
+               CACHE(4,J) = CACHE(4,J)/15D0
             END IF
  10      CONTINUE
       END IF
@@ -1161,15 +1213,15 @@
       DO 40 ITER = 1, IC
          NSWAP = 0
          DO 30 J = 1, IC-1
-            IF (CROSS(1,J).LT.CROSS(1,J+1)) GO TO 30
-            IF (CROSS(1,J).EQ.CROSS(1,J+1) .AND.
-     *          CROSS(2,J).LE.CROSS(2,J+1)) GO TO 30
+            IF (CACHE(1,J).LT.CACHE(1,J+1)) GO TO 30
+            IF (CACHE(1,J).EQ.CACHE(1,J+1) .AND.
+     *          CACHE(2,J).LE.CACHE(2,J+1)) GO TO 30
 
             NSWAP = NSWAP + 1
             DO 20 M = 1, 4
-               TMP = CROSS(M,J)
-               CROSS(M,J) = CROSS(M,J+1)
-               CROSS(M,J+1) = TMP
+               TMP = CACHE(M,J)
+               CACHE(M,J) = CACHE(M,J+1)
+               CACHE(M,J+1) = TMP
  20         CONTINUE
  30      CONTINUE
          IF (NSWAP.EQ.0) GO TO 50
@@ -1181,14 +1233,14 @@
          IF (J.GT.JC) GO TO 100
 
          DO 60 M = 1, 4
-            IF (CROSS(M,J).NE.CROSS(M,J-1)) GO TO 90
+            IF (CACHE(M,J).NE.CACHE(M,J-1)) GO TO 90
  60      CONTINUE
 
 *        This entry is the same as the previous one.
          JC = JC - 1
          DO 80 K = J, JC
             DO 70 M = 1, 4
-               CROSS(M,K) = CROSS(M,K+1)
+               CACHE(M,K) = CACHE(M,K+1)
  70         CONTINUE
  80      CONTINUE
  90   CONTINUE
@@ -1209,13 +1261,13 @@
       NI(2,3) = 0
       NI(2,4) = 0
       DO 110 J = 1, IC
-         IF (CROSS(3,J).EQ.1D0) THEN
+         IF (CACHE(3,J).EQ.1D0) THEN
             IWRLD = 1
          ELSE
             IWRLD = 2
          END IF
 
-         EDGE = NINT(CROSS(1,J))
+         EDGE = NINT(CACHE(1,J))
 
          NI(IWRLD,0) = NI(IWRLD,0) + 1
          NI(IWRLD,EDGE) = NI(IWRLD,EDGE) + 1
@@ -1276,61 +1328,108 @@
 *           Skew grid lines or worse.
             IF (SI(1).GT.0.5D0) THEN
 *              First world coordinate with vertical grid lines.
+               IF (NI(1,1).GT.1 .OR. NI(1,1).GT.NI(1,3)) THEN
+                  L = 1
+               ELSE
+                  L = 100
+               END IF
+
                IF (SI(2).GT.0.5D0) THEN
 *                 Second world coordinate also with vertical grid lines.
-                  L = 201
+                  IF (L.EQ.1) THEN
+                     L = 201
+                  ELSE
+                     IF (NI(2,1).GT.1 .OR. NI(2,1).GT.NI(2,3)) THEN
+                        L = 102
+                     ELSE
+                        L = 300
+                     END IF
+                  END IF
                ELSE
 *                 Second world coordinate with diagonal grid lines.
-                  L = 2021
+                  L = L + 2020
                END IF
             ELSE IF (SI(1).LT.-0.5D0) THEN
 *              First world coordinate with horizontal grid lines.
+               IF (NI(1,2).GT.1 .OR. NI(1,2).GT.NI(1,4)) THEN
+                  L = 10
+               ELSE
+                  L = 1000
+               END IF
+
                IF (SI(2).LT.-0.5D0) THEN
 *                 Second world coordinate also with horizontal grid.
-                  L = 2010
+                  IF (L.EQ.10) THEN
+                     L = 2010
+                  ELSE
+                     IF (NI(2,2).GT.1 .OR. NI(2,2).GT.NI(2,4)) THEN
+                        L = 1020
+                     ELSE
+                        L = 3000
+                     END IF
+                  END IF
                ELSE
 *                 Second world coordinate with diagonal grid lines.
-                  L = 212
+                  L = L + 202
                END IF
             ELSE IF (SI(2).GT.0.5D0) THEN
 *              Second world coordinate with vertical grid lines.
-               L = 1012
+               IF (NI(2,1).GT.1 .OR. NI(2,1).GT.NI(2,3)) THEN
+                  L = 1012
+               ELSE
+                  L = 1210
+               END IF
             ELSE IF (SI(2).LT.-0.5D0) THEN
 *              Second world coordinate with horizontal grid lines.
-               L = 121
+               IF (NI(2,2).GT.1 .OR. NI(2,2).GT.NI(2,4)) THEN
+                  L = 121
+               ELSE
+                  L = 2101
+               END IF
             ELSE
 *              Desperation stakes!  Label all four axes.
-               K = NI(2,4) + NI(1,3) + NI(2,2) + NI(1,1)
+               K1 = NI(1,3) + NI(1,1)
+               K2 = NI(2,4) + NI(2,2)
                L = 2121
 
-               M = NI(1,4) + NI(2,3) + NI(2,2) + NI(1,1)
-               IF (M.GT.K) THEN
-                  L = 1221
-                  K = M
+               M1 = NI(1,4) + NI(1,1)
+               M2 = NI(2,3) + NI(2,2)
+               IF (M1.GE.K1 .AND. M2.GE.K2) THEN
+                  L  = 1221
+                  K1 = M1
+                  K2 = M2
                END IF
 
-               M = NI(2,4) + NI(2,3) + NI(1,2) + NI(1,1)
-               IF (M.GT.K) THEN
-                  L = 2211
-                  K = M
+               M1 = NI(1,2) + NI(1,1)
+               M2 = NI(2,4) + NI(2,3)
+               IF (M1.GE.K1 .AND. M2.GE.K2) THEN
+                  L  = 2211
+                  K1 = M1
+                  K2 = M2
                END IF
 
-               M = NI(1,4) + NI(2,3) + NI(1,2) + NI(2,1)
-               IF (M.GT.K) THEN
-                  L = 1212
-                  K = M
+               M1 = NI(1,4) + NI(1,2)
+               M2 = NI(2,3) + NI(2,1)
+               IF (M1.GE.K1 .AND. M2.GE.K2) THEN
+                  L  = 1212
+                  K1 = M1
+                  K2 = M2
                END IF
 
-               M = NI(2,4) + NI(1,3) + NI(1,2) + NI(2,1)
-               IF (M.GT.K) THEN
-                  L = 2112
-                  K = M
+               M1 = NI(1,3) + NI(1,2)
+               M2 = NI(2,4) + NI(2,1)
+               IF (M1.GE.K1 .AND. M2.GE.K2) THEN
+                  L  = 2112
+                  K1 = M1
+                  K2 = M2
                END IF
 
-               M = NI(1,4) + NI(1,3) + NI(2,2) + NI(2,1)
-               IF (M.GT.K) THEN
-                  L = 1122
-                  K = M
+               M1 = NI(1,4) + NI(1,3)
+               M2 = NI(2,2) + NI(2,1)
+               IF (M1.GE.K1 .AND. M2.GE.K2) THEN
+                  L  = 1122
+                  K1 = M1
+                  K2 = M2
                END IF
             END IF
          END IF
@@ -1352,7 +1451,7 @@
          OMAG(1) = 0.0
          OMAG(2) = 0.0
          DO 120 J = 1, IC
-            IF (CROSS(3,J).EQ.1D0) THEN
+            IF (CACHE(3,J).EQ.1D0) THEN
                IWRLD = 1
             ELSE
                IWRLD = 2
@@ -1360,8 +1459,8 @@
 
             IF (TYPE(IWRLD).EQ.' ') THEN
 *              Plain numeric.
-               IF (CROSS(4,J).EQ.0D0) GO TO 120
-               OMAG(IWRLD) = OMAG(IWRLD) + LOG10(ABS(CROSS(4,J)))
+               IF (CACHE(4,J).EQ.0D0) GO TO 120
+               OMAG(IWRLD) = OMAG(IWRLD) + LOG10(ABS(CACHE(4,J)))
                IMAG(IWRLD) = IMAG(IWRLD) + 1
             END IF
  120     CONTINUE
@@ -1375,13 +1474,13 @@
 *        Renormalize grid values.
          IF (IMAG(1).NE.0 .OR. IMAG(2).NE.0) THEN
             DO 130 J = 1, IC
-               IF (CROSS(3,J).EQ.1D0) THEN
+               IF (CACHE(3,J).EQ.1D0) THEN
                   IWRLD = 1
                ELSE
                   IWRLD = 2
                END IF
 
-               CROSS(4,J) = CROSS(4,J)/10D0**IMAG(IWRLD)
+               CACHE(4,J) = CACHE(4,J)/10D0**IMAG(IWRLD)
  130        CONTINUE
          END IF
       END IF
@@ -1393,7 +1492,7 @@
          LMAG(2) = -2
 
          DO 150 J = 1, IC
-            IF (CROSS(3,J).EQ.1D0) THEN
+            IF (CACHE(3,J).EQ.1D0) THEN
                IWRLD = 1
             ELSE
                IWRLD = 2
@@ -1403,8 +1502,8 @@
             IF (INDEX('DEFGHIT', TYPE(IWRLD)).EQ.0) GO TO 150
 
 *           Defeat rounding errors.
-            LS = INT(ABS(CROSS(4,J)*3600D0) + 0.5D-6)
-            LV = NINT(MOD(ABS(CROSS(4,J)*3600D0), 1D0)*1D6)
+            LS = INT(ABS(CACHE(4,J)*3600D0) + 0.5D-6)
+            LV = NINT(MOD(ABS(CACHE(4,J)*3600D0), 1D0)*1D6)
             IF (LV.NE.0) THEN
 *              Sub-arcsec/second resolution.
                M = 1
@@ -1451,15 +1550,15 @@
 *     Loop through the axis crossing table.
       DO 180 J = 1, IC
 *        Determine the position.
-         IF (CROSS(3,J).EQ.1D0) THEN
+         IF (CACHE(3,J).EQ.1D0) THEN
             IWRLD = 1
-            IF (CI.GT.0) CALL PGSCI (CI+2)
+            CALL PGSCI (CI(3))
          ELSE
-            IF (CI.GT.0) CALL PGSCI (CI+3)
+            CALL PGSCI (CI(4))
             IWRLD = 2
          END IF
 
-         EDGE = NINT(CROSS(1,J))
+         EDGE = NINT(CACHE(1,J))
          IF (EDGE.NE.PRVEDG) THEN
             PRVD(1) = -1
             PRVD(2) = -1
@@ -1482,7 +1581,7 @@
             END IF
 
             FJUST = 0.5
-            X = CROSS(2,J)
+            X = CACHE(2,J)
             Y = YW1 - 1.5*YCH
          ELSE IF (EDGE.EQ.2) THEN
 *           Left.
@@ -1494,7 +1593,7 @@
 
             FJUST = 1.0
             X = XW1 - 0.5*XCH
-            Y = CROSS(2,J) - YCH/2.0
+            Y = CACHE(2,J) - YCH/2.0
          ELSE IF (EDGE.EQ.3) THEN
 *           Top.
             IF (IWRLD.EQ.1) THEN
@@ -1504,7 +1603,7 @@
             END IF
 
             FJUST = 0.5
-            X = CROSS(2,J)
+            X = CACHE(2,J)
             Y = YW2 + 0.5*YCH
          ELSE IF (EDGE.EQ.4) THEN
 *           Right.
@@ -1516,17 +1615,17 @@
 
             FJUST = 0.0
             X = XW2 + 0.5*XCH
-            Y = CROSS(2,J) - YCH/2.0
+            Y = CACHE(2,J) - YCH/2.0
          END IF
 
 *        Format the numeric label.
          IF (INDEX('ABC', TYPE(IWRLD)).NE.0) THEN
 *           Decimal angle; allow up to 6 decimal digits.
-            TMP = ABS(CROSS(4,J)) + 0.5D-6
+            TMP = ABS(CACHE(4,J)) + 0.5D-6
             LD  = INT(TMP)
 
             K = 1
-            IF (CROSS(4,J).LT.0D0) THEN
+            IF (CACHE(4,J).LT.0D0) THEN
 *              Insert a minus sign.
                TEXT(1:1) = '-'
                K = 2
@@ -1546,7 +1645,7 @@
             L = LMAG(IWRLD)
 
 *           Use integer arithmetic to avoid rounding problems.
-            TMP = ABS(CROSS(4,J))*3600D0 + 0.5D-6
+            TMP = ABS(CACHE(4,J))*3600D0 + 0.5D-6
             LV = INT(TMP)
 
 *           Degree/hour field.
@@ -1555,7 +1654,7 @@
             K = 1
             IF (L.EQ.-2 .OR. LD.NE.PRVD(IWRLD)) THEN
 *              Write the degree/hour field.
-               IF (CROSS(4,J).LT.0D0) THEN
+               IF (CACHE(4,J).LT.0D0) THEN
 *                 Insert a minus sign.
                   TEXT(1:1) = '-'
                   K = 2
@@ -1621,7 +1720,7 @@
 
          ELSE IF (TYPE(IWRLD).EQ.'L') THEN
 *           Logarithmic.
-            TMP = MOD(CROSS(4,J),1D0)
+            TMP = MOD(CACHE(4,J),1D0)
             IF (TMP.LT.0D0) TMP = TMP + 1D0
             MM = NINT(10D0**TMP)
             IF (MM.EQ.10) THEN
@@ -1629,7 +1728,7 @@
                MM = 1
             END IF
 
-            PP = NINT(CROSS(4,J) - TMP)
+            PP = NINT(CACHE(4,J) - TMP)
 
             IF (MM.NE.1) THEN
                WRITE (TEXT, '(I1)') MM
@@ -1646,9 +1745,9 @@
 
          ELSE
 *           Plain number; allow up to six significant digits.
-            IF (CROSS(4,J).NE.0D0) THEN
-               PP = INT(LOG10(ABS(CROSS(4,J)))) - 6
-               MM = NINT(CROSS(4,J)/10D0**PP)
+            IF (CACHE(4,J).NE.0D0) THEN
+               PP = INT(LOG10(ABS(CACHE(4,J)))) - 6
+               MM = NINT(CACHE(4,J)/10D0**PP)
             ELSE
                PP = 0
                MM = 0
@@ -1660,12 +1759,10 @@
 *        Write the label if it doesn't overlap the previous one.
          CALL PGQTXT (X, Y, 0.0, FJUST, TEXT, XBOX, YBOX)
          IF (LFORCE .OR. XBOX(1).GT.XL .OR. YBOX(1).GT.YL) THEN
-            IF (CI.GT.0) THEN
-               IF (IWRLD.EQ.1) THEN
-                  CALL PGSCI (CI+2)
-               ELSE
-                  CALL PGSCI (CI+3)
-               END IF
+            IF (IWRLD.EQ.1) THEN
+               CALL PGSCI (CI(3))
+            ELSE
+               CALL PGSCI (CI(4))
             END IF
 
             CALL PGPTXT (X, Y, 0.0, FJUST, TEXT)
@@ -1696,22 +1793,22 @@
 
 *           Check the distance to the previous grid line.
             IF (J.GT.1) THEN
-               IF (CROSS(1,J).EQ.CROSS(1,J-1)) THEN
+               IF (CACHE(1,J).EQ.CACHE(1,J-1)) THEN
                   IF (EDGE.EQ.1 .OR. EDGE.EQ.3) THEN
-                     TICKIT = XBOX(1).LT.CROSS(2,J-1)
+                     TICKIT = XBOX(1).LT.CACHE(2,J-1)
                   ELSE
-                     TICKIT = YBOX(1).LT.CROSS(2,J-1)
+                     TICKIT = YBOX(1).LT.CACHE(2,J-1)
                   END IF
                END IF
             END IF
 
 *           Check the distance to the next grid line.
             IF (J.LT.IC) THEN
-               IF (CROSS(1,J).EQ.CROSS(1,J+1)) THEN
+               IF (CACHE(1,J).EQ.CACHE(1,J+1)) THEN
                   IF (EDGE.EQ.1 .OR. EDGE.EQ.3) THEN
-                     TICKIT = XBOX(2).GT.CROSS(2,J+1)
+                     TICKIT = XBOX(2).GT.CACHE(2,J+1)
                   ELSE
-                     TICKIT = YBOX(2).GT.CROSS(2,J+1)
+                     TICKIT = YBOX(2).GT.CACHE(2,J+1)
                   END IF
                END IF
             END IF
@@ -1719,7 +1816,7 @@
 *           Density of grid lines is high.
             IF (TICKIT) THEN
 *              Draw outside pip mark.
-               Z = REAL(CROSS(2,J))
+               Z = REAL(CACHE(2,J))
                IF (EDGE.EQ.1) THEN
                   CALL PGMOVE (Z, YW1-0.3*YCH)
                   CALL PGDRAW (Z, YW1)
@@ -1772,7 +1869,7 @@
          IF (TXT(1).NE.' ') THEN
 *           Identify first world coordinate...
             TEXT = TXT(1)
-            IF (CI.GT.0) CALL PGSCI (CI+4)
+            CALL PGSCI (CI(5))
 
             IF (TXT(2).NE.' ') THEN
 *              ...and also second world coordinate.
@@ -1786,7 +1883,7 @@
          ELSE IF (TXT(2).NE.' ') THEN
 *           Identify second world coordinate only.
             TEXT = TXT(2)
-            IF (CI.GT.0) CALL PGSCI (CI+5)
+            CALL PGSCI (CI(6))
          ELSE
 *           No text to write.
             GO TO 260
@@ -1825,13 +1922,13 @@
             END IF
          END IF
 
-         IF (K.EQ.0 .OR. CI.LT.0) THEN
+         IF (K.EQ.0 .OR. CI(6).LE.0) THEN
             CALL PGPTXT (X, Y, ANGL, 0.5, TEXT)
          ELSE
 *           Two-colour annotation.
             CALL PGQTXT (X, Y, ANGL, 0.5, TEXT, XBOX, YBOX)
             CALL PGPTXT (XBOX(1), YBOX(1), ANGL, 0.0, TEXT(:K))
-            CALL PGSCI (CI+5)
+            CALL PGSCI (CI(6))
             CALL PGPTXT (XBOX(4), YBOX(4), ANGL, 1.0, TEXT(K+1:))
          END IF
 
@@ -1839,7 +1936,7 @@
 
 *     Title.
       IF (IDENTS(3).NE.' ') THEN
-         IF (CI.GT.0) CALL PGSCI (CI+6)
+         CALL PGSCI (CI(7))
          X = (XW1 + XW2)/2.0
          Y = BNDRY(3) + 0.5*YCH
          CALL PGPTXT (X, Y, 0.0, 0.5, IDENTS(3))
