@@ -2692,3 +2692,4 @@
 11 411 src mv trial/implement/componentmodels.help trial/implement/Mathematics/componentmodels.help
 11 411 src mv trial/implement/componentmodels.g trial/implement/Mathematics/componentmodels.g
 11 412 src mv trial/implement/images.help trial/implement/Images/images.help
+11 412 src mv trial/implement/images.g trial/implement/Images/images.g
