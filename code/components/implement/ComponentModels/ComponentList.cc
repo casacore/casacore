@@ -723,9 +723,7 @@ void ComponentList::writeTable() {
   ArrayColumn<Double> specShapeParmCol(itsTable, "Spectral_Parameters");
   ScalarColumn<String> labelCol(itsTable, "Label");
 
-  MDirection compDir;
-  Vector<Double> shapeParms, spectralParms;
-  String compLabel;
+  Vector<Double> spectralParms;
   for (uInt i = 0; i < nelements(); i++) {
     {
       fluxValCol.put(i, component(i).flux().value());
@@ -734,12 +732,9 @@ void ComponentList::writeTable() {
     }
     {
       const ComponentShape& compShape = component(i).shape();
-      shapeCol.put(i, ComponentType::name(compShape.type()));
-      compDir = compShape.refDirection();
-      dirCol.put(i, compDir);
-      shapeParms.resize(compShape.nParameters());
-      compShape.parameters(shapeParms);
-      shapeParmCol.put(i, shapeParms);
+      shapeCol.put(i, compShape.ident());
+      dirCol.put(i, compShape.refDirection());
+      shapeParmCol.put(i, compShape.parameters());
     }
     {
       const SpectralModel& compSpectrum = component(i).spectrum();
