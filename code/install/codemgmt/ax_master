@@ -2113,3 +2113,4 @@
 08 339 src rm install/codedevl/reident
 08 352 src mv trial/apps/duplicates/reident.cc trial/apps/reident/reident.cc
 08 353 src rm trial/apps/gfitgauss/templates
+08 355 src rm trial/implement/Images/test/templates
