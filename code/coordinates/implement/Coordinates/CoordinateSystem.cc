@@ -1691,6 +1691,9 @@ Bool CoordinateSystem::fromFITSHeader(CoordinateSystem &coordsys,
 		linctype(where_i) = ctype(i);
 		if (cunit.nelements() > 0) {
 		    lincunit(where_i) = cunit(i);
+		} else if (specAxis < 0 && (ctype(i).contains("FELO") ||
+					    ctype(i).contains("VELO"))) {
+		  lincunit(where_i) = "m/s";
 		}
 		where_i++;
 	    }
