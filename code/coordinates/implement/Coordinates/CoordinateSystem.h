@@ -259,6 +259,8 @@ public:
     // is, however, possible and meaningful. It can be used when e.g. a
     // frequency plane is taken from a cube. The plane has 2 pixel axes, but
     // the 3rd world axis can still describe the frequency coordinate.
+    // See also the functions in  <linkto class=CoordinateUtil>CoordinateUtil</linkto>
+    // for removing lists of pixel/world axes (tricky because they shift down)
     // <group>
     Bool removeWorldAxis(uInt axis, Double replacement);
     Bool removePixelAxis(uInt axis, Double replacement);
