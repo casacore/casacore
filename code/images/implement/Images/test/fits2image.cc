@@ -63,7 +63,8 @@ int main(int argc, char **argv)
     if (!pOutImage) {
         os << LogIO::SEVERE << error << LogIO::EXCEPTION;
     }
-    
+
+    delete pOutImage;    
     os << "table " << outFile << " write complete " << endl;
 
   } catch (AipsError x) {
