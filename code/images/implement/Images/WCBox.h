@@ -72,11 +72,12 @@ class IPosition;
 // that these axes can be independently removed and independently
 // (re)ordered.
 //
-// During construction, the world coordinate vectors must have a 
-// length equal to the number of world coordinate axes in the 
-// supplied <src>CoordinateSystem</src>.
-// It is assumed that the units of the world coordinates are the same as those
-// encapsulated in the construction <src>CoordinateSystem</src>.
+// During construction, the length of the world coordinate vectors may be
+// smaller than the number world axes in the supplied <src>CoordinateSystem</src>.
+// It is that the units of the world coordinates are the same as those
+// encapsulated in the construction <src>CoordinateSystem</src> and in the same
+// order as specified (either intrinsically, or by the world axes 
+// specification vectors).
 // 
 // The following rules are followed during conversion to an <src>LCRegion</src>.
 // <ol>
@@ -273,7 +274,7 @@ public:
    // or offset) defining the box corners. 
    // If  <src>isOffset</src> is True, then the world coordinates
    // are offset relative to the reference pixel of the supplied 
-   // <src>CoordinateSystem</src>
+   // <src>CoordinateSystem</src>.  
    // <group>
    WCBox(const Vector<Double>& blcWC,
          const Vector<Double>& trcWC,
@@ -281,6 +282,28 @@ public:
          const Bool isOffset=False);
    WCBox(const Vector<Float>& blcWC,
          const Vector<Float>& trcWC,
+         const CoordinateSystem& cSys,
+         const Bool isOffset=False);
+   // </group>
+
+   // Construct from two vectors of world coordinates (absolute
+   // or offset) defining the box corners. 
+   // If  <src>isOffset</src> is True, then the world coordinates
+   // are offset relative to the reference pixel of the supplied 
+   // <src>CoordinateSystem</src>.  You specify which world axes in
+   // the <src>CoordinateSystem</src> the world coordinates 
+   // vectors refer to.
+   // <group>
+   WCBox(const Vector<Double>& blcWC,
+         const Vector<Double>& trcWC,
+         const Vector<uInt> blcWorldAxes,
+         const Vector<uInt> trcWorldAxes,
+         const CoordinateSystem& cSys,
+         const Bool isOffset=False);
+   WCBox(const Vector<Float>& blcWC,
+         const Vector<Float>& trcWC,
+         const Vector<uInt> blcWorldAxes,
+         const Vector<uInt> trcWorldAxes,
          const CoordinateSystem& cSys,
          const Bool isOffset=False);
    // </group>
@@ -329,15 +352,20 @@ public:
 private:
    Vector<Double> itsBlcWC;
    Vector<Double> itsTrcWC;
+   Vector<uInt> itsBlcWorldAxes;
+   Vector<uInt> itsTrcWorldAxes;
    CoordinateSystem itsCSys;
    Bool itsIsOffset;
+   Bool itsNull;
 
 // Convert world corners to floating pixels
    Bool setFloatingBox(Vector<Double>& blcLC,
                        Vector<Double>& trcLC,
                        const Vector<Double>& blcWC,
                        const Vector<Double>& trcWC,
-                       const CoordinateSystem& cSys,
+                       CoordinateSystem& cSys,
+                       const Vector<String>& blcUnits,
+                       const Vector<String>& trcUnits,
                        const Bool isOffset) const;
 
 };
