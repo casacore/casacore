@@ -30,6 +30,7 @@
 #include <casa/Arrays/IPosition.h>
 #include <casa/Arrays/ArrayLogical.h>
 #include <casa/Arrays/ArrayMath.h>
+#include <casa/Arrays/MaskedArray.h>
 #include <casa/Arrays/Slicer.h>
 #include <casa/BasicMath/Math.h>
 #include <casa/Logging/LogIO.h>
@@ -50,6 +51,7 @@ void doMinMax();
 void doCollapse();
 void doCopy();
 void doReplicate();
+void doBin();
 
 int main()
 {
@@ -70,6 +72,10 @@ int main()
 // Replicate
 
      doReplicate();
+
+// Bin
+
+     doBin();
 
   } catch (AipsError x) {
     cout<< "FAIL"<< endl;
@@ -226,6 +232,7 @@ void doCopy ()
 
 void doReplicate ()
 {
+   cerr << "Replicate" << endl;
    IPosition shapeLat(2,10,20);
    ArrayLattice<Float> lat(shapeLat);
 
@@ -265,5 +272,35 @@ void doReplicate ()
          cerr << "Expected error = " << x.getMesg() << endl;
       }
    }
+}
+
+
+void doBin ()
+{
+   cerr << "Bin" << endl;
+   IPosition shape(2,16,20);
+   Array<Float> data(shape);
+   Array<Bool> mask(shape);
+   Float val = 1.0;
+   data.set(val);
+   mask.set(True);
+   MaskedArray<Float> mArrIn(data,mask);
+//
+   MaskedArray<Float> mArrOut;
+   uInt axis = 0;
+   uInt bin = 4;
+   LatticeUtilities::bin(mArrOut, mArrIn, axis, bin);
+   IPosition shapeOut = mArrOut.shape();
+   for (uInt i=0; i<shape.nelements(); i++) {
+      if (i==axis) {
+         AlwaysAssert(shapeOut(i)==shape(i)/bin,AipsError);
+      } else {
+         AlwaysAssert(shapeOut(i)==shape(i),AipsError);
+      }
+   }
+//
+   Double tol = 1.0e-6;
+   AlwaysAssert(allNear(mArrOut.getArray(),val,tol), AipsError);
+   AlwaysAssert(allEQ(mArrOut.getMask(),True), AipsError);
 }
 

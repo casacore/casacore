@@ -51,3 +51,8 @@
      template class PtrRep<Lattice<DComplex> > 
      template class SimpleCountedConstPtr<Lattice<DComplex> > 
      template class SimpleCountedPtr<Lattice<DComplex> > 
+################################################################################
+# Needed for tLatticeUtilities.cc
+1000 lattices/Lattices/LatticeUtilities.cc
+     = casa/Arrays/MaskedArray.cc 
+     template void LatticeUtilities::bin<Float>(MaskedArray<Float> &, MaskedArray<Float> const &, uInt, uInt)
