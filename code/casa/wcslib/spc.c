@@ -629,7 +629,9 @@ int spctyp(
    char ctype[9], ptype_t, sname_t[32], units_t[8], xtype_t;
    int  restreq_t = 0;
 
-   strcpy(ctype, ctypei);
+   /* Copy with blank padding. */
+   sprintf(ctype, "%-8s", ctypei);
+   ctype[8] = '\0';
 
    /* Do alias translation for AIPS spectral types. */
    if (ctype[4] == '-') {
@@ -702,7 +704,7 @@ int spctyp(
    /* Determine X-type and validate the spectral algorithm code. */
    if ((xtype_t = ctype[5]) == ' ') {
       /* The algorithm code must be completely blank. */
-      if (strncmp(ctype+4, "    ", 4) != 0) {
+      if (strcmp(ctype+4, "    ") != 0) {
          return 2;
       }
 
@@ -738,7 +740,7 @@ int spctyp(
 
    } else if (ctype[7] == ctype[5]) {
       /* Degenerate algorithm code. */
-      return 2;
+      sprintf(ctype+4, "    ");
    }
 
 
@@ -1060,7 +1062,7 @@ int spctrn(
    double *cdeltS2)
 
 {
-   char ptype1, ptype2, xtype1, xtype2;
+   char *cp, ptype1, ptype2, xtype1, xtype2;
    int  restreq, status;
    double crvalX, dS2dX, dXdS1;
 
@@ -1068,6 +1070,11 @@ int spctrn(
                        &restreq, &crvalX, &dXdS1)) {
       return status;
    }
+
+   /* Blank fill. */
+   ctypeS2[8] = '\0';
+   for (cp = ctypeS2; *cp; cp++);
+   while (cp < ctypeS2+8) *(cp++) = ' ';
 
    if (strncmp(ctypeS2+5, "???", 3) == 0) {
       /* Set the algorithm code if required. */
@@ -1091,7 +1098,7 @@ int spctrn(
       return 2;
    }
 
-   if (ctypeS2[7] = '?') {
+   if (ctypeS2[7] == '?') {
       if (ptype2 == xtype2) {
         strcpy(ctypeS2+4, "    ");
       } else {

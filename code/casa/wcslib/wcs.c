@@ -245,13 +245,13 @@ int wcsini(int alloc, int naxis, struct wcsprm *wcs)
 
          } else {
             if (NPVMAX) {
-              elsize = sizeof(struct pvcard);
-              if (!(wcs->pv = (struct pvcard *)calloc(NPVMAX, elsize))) {
-                 wcsfree(wcs);
-                 return 2;
-              }
+               elsize = sizeof(struct pvcard);
+               if (!(wcs->pv = (struct pvcard *)calloc(NPVMAX, elsize))) {
+                  wcsfree(wcs);
+                  return 2;
+               }
             } else {
-              wcs->pv = (struct pvcard *)0;
+               wcs->pv = (struct pvcard *)0;
             }
 
             wcs->npvmax  = NPVMAX;
@@ -1230,7 +1230,6 @@ int wcsset(struct wcsprm *wcs)
    wcs->types = calloc(naxis, sizeof(int));
 
    for (i = 0; i < naxis; i++) {
-      wcs->types[i] = 0;
       strncpy(ctypei, wcs->ctype[i], 72);
 
       /* Null fill. */
@@ -1250,40 +1249,73 @@ int wcsset(struct wcsprm *wcs)
          ctypei[k] = '\0';
       }
 
+
+      /* Logarithmic or tabular axis? */
+      wcs->types[i] = 0;
+      if (strcmp(ctypei+5, "LOG") == 0) {
+         /* Logarithmic axis. */
+         wcs->types[i] = 400;
+	 ctypei[4] = '\0';
+
+      } else if (strcmp(ctypei+5, "TAB") == 0) {
+         /* Tabular axis. */
+         wcs->types[i] = 500;
+	 ctypei[4] = '\0';
+      }
+
+
       /* Is CTYPEia in "4-3" form? */
       if (ctypei[4] != '-' || ctypei[8] != '\0') {
-         /* No, but check for a CUBEFACE axis. */
-         if (strcmp(ctypei, "CUBEFACE") == 0) {
+         /* Identify Stokes, celestial and spectral types. */
+         if (strcmp(ctypei, "STOKES") == 0) {
+            /* STOKES axis. */
+            wcs->types[i] = 1100;
+
+         } else if (strcmp(ctypei,   "RA")  == 0 ||
+             strcmp(ctypei+1, "LON") == 0 ||
+             strcmp(ctypei+2, "LN")  == 0) {
+            /* Longitude axis. */
+            wcs->types[i] += 2000;
+
+         } else if (strcmp(ctypei,   "DEC") == 0 ||
+                    strcmp(ctypei+1, "LAT") == 0 ||
+                    strcmp(ctypei+2, "LT")  == 0) {
+            /* Latitude axis. */
+            wcs->types[i] += 2001;
+
+         } else if (strcmp(ctypei, "CUBEFACE") == 0) {
+            /* CUBEFACE axis. */
             if (wcs->cubeface == -1) {
+               wcs->types[i] = 2102;
                wcs->cubeface = i;
             } else {
                /* Multiple CUBEFACE axes! */
                return 4;
             }
+
+         } else if (spctyp(ctypei, stype, scode, 0, 0, 0, 0, 0) == 0) {
+            /* Spectral axis. */
+            wcs->types[i] += 3000;
          }
 
-         /* Linear axis. */
          continue;
       }
 
 
-      /* Got an axis qualifier, is it a logarithmic or tabular axis? */
-      if (strncmp(ctypei+5, "LOG", 3) == 0) {
-         /* Logarithmic axis found. */
-         wcs->types[i] = 100;
-         break;
-      } else if (strncmp(ctypei+5, "TAB", 3) == 0) {
-         /* Tabular axis found. */
-         wcs->types[i] = 400;
-         break;
-      }
+      /* CTYPEia is in "4-3" form; is it a recognized spectral type? */
+      if (spctyp(ctypei, stype, scode, 0, 0, 0, 0, 0) == 0) {
+         /* Spectral axis found (possibly linear, e.g. FREQ-LSR). */
+         wcs->types[i] = 3000;
 
-
-      /* Is it a recognized spectral type? */
-      if (!spctyp(ctypei, stype, scode, 0, 0, 0, 0, 0)) {
          if (strcmp(scode, "   ")) {
             /* Non-linear spectral axis found. */
             wcs->types[i] += 300;
+
+            /* Check uniqueness. */
+            if (wcs->spec >= 0) {
+               return 4;
+            }
+
             wcs->spec = i;
          }
 
@@ -1304,13 +1336,14 @@ int wcsset(struct wcsprm *wcs)
 
          if (k == nalias) {
             /* Not a recognized algorithm code of any type. */
+            wcs->types[i] = -1;
             return 4;
          }
       }
 
       /* Parse the celestial axis type. */
-      wcs->types[i] = 200;
-      if (strcmp(pcode, "") == 0) {
+      wcs->types[i] = 2200;
+      if (*pcode == '\0') {
          /* The first of the two celestial axes. */
          sprintf(pcode, "%.3s", ctypei+5);
 
@@ -1352,13 +1385,19 @@ int wcsset(struct wcsprm *wcs)
             sprintf(requir, "%s-%s", wcs->lngtyp, pcode);
          } else {
             /* Unrecognized celestial type. */
+            wcs->types[i] = -1;
+
             wcs->lng = -1;
             wcs->lat = -1;
             return 4;
          }
 
+         if (wcs->lat >= 0) wcs->types[i]++;
+
       } else {
          /* Looking for the complementary celestial axis. */
+         if (wcs->lat < 0) wcs->types[i]++;
+
          if (strncmp(ctypei, requir, 8) != 0) {
             /* Inconsistent projection types. */
             wcs->lng = -1;
@@ -1380,7 +1419,7 @@ int wcsset(struct wcsprm *wcs)
    }
 
 
-   /* Celestial projection present? */
+   /* Non-linear celestial axes present? */
    if (wcs->lng >= 0) {
       celini(wcscel);
 
@@ -1459,7 +1498,7 @@ int wcsset(struct wcsprm *wcs)
    }
 
 
-   /* Spectral axis present? */
+   /* Non-linear spectral axis present? */
    if (wcs->spec >= 0) {
       spcini(wcsspc);
 
@@ -2458,12 +2497,12 @@ int wcsmix(
 int wcssptr(
    struct wcsprm *wcs,
    int  *i,
-   char ctypeS2[9])
+   char ctype[9])
 
 {
    char   *code;
    int    j, status;
-   double cdeltS2, crvalS2;
+   double cdelt, crval;
 
    /* Initialize if required. */
    if (wcs == 0) return 1;
@@ -2474,7 +2513,7 @@ int wcssptr(
    if ((j = *i) < 0 && (j = wcs->spec) < 0) {
       /* Look for a linear spectral axis. */
       for (j = 0; j < wcs->naxis; j++) {
-         if (!spctyp(wcs->ctype[j], 0, 0, 0, 0, 0, 0, 0)) {
+         if (wcs->types[j]/100 == 30) {
             break;
          }
       }
@@ -2489,16 +2528,16 @@ int wcssptr(
 
    /* Translate the spectral axis. */
    if (status = spctrn(wcs->ctype[j], wcs->crval[j], wcs->cdelt[j],
-                       wcs->restfrq, wcs->restwav, ctypeS2, &crvalS2,
-                       &cdeltS2)) {
+                       wcs->restfrq, wcs->restwav, ctype, &crval,
+                       &cdelt)) {
       return 6;
    }
 
 
    /* Translate keyword values. */
    wcs->flag = 0;
-   wcs->cdelt[j] = cdeltS2;
-   wcs->crval[j] = crvalS2;
+   wcs->cdelt[j] = cdelt;
+   wcs->crval[j] = crval;
 
    /* Extract the Doppler frame from AIPS-convention types. */
    code = wcs->ctype[j] + 4;
@@ -2510,7 +2549,10 @@ int wcssptr(
       strcpy(wcs->specsys, "TOPOCENT");
    }
 
-   strcpy(wcs->ctype[j], ctypeS2);
+   strcpy(wcs->ctype[j], ctype);
+
+   /* This keeps things tidy if the spectral axis is linear. */
+   spcini(&(wcs->spc));
 
    return 0;
 }

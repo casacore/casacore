@@ -363,7 +363,9 @@
 *                        axes, the character code for the P-type spectral
 *                        variable in the algorithm code (i.e. the eighth
 *                        character of CTYPEia) may be set to '?' (it will not
-*                        be reset).
+*                        be reset).  AIPS-convention spectral types are
+*                        accepted for ctypeS1 but the Doppler frame encoded
+*                        within them will not be used.
 *      crvalS1  double   Value of the S-type spectral variable at the
 *                        reference point, i.e. the CRVALia keyvalue, SI units.
 *      cdeltS1  double   Increment of the S-type spectral variable at the
@@ -389,6 +391,9 @@
 *                        the eighth character is specified as '?', the correct
 *                        algorithm code will be substituted (applies for grism
 *                        axes as well as non-grism).
+*
+*                        AIPS-convention spectral types are not accepted for
+*                        ctypeS2.
 *
 *   Returned:
 *      crvalS2  double*  Value of the new S-type spectral variable at the

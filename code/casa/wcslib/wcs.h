@@ -859,6 +859,38 @@
 *         Spectral transformation parameters (usage is described in the
 *         prologue to spc.h).
 *
+*      double *types
+*         Pointer to the first element of an array of int containing a four-
+*         digit type code for each axis.
+*
+*            First digit:
+*               0: Non-specific coordinate type.
+*               1: Stokes coordinate.
+*               2: Celestial coordinate (including CUBEFACE).
+*               3: Spectral coordinate.
+*
+*            Second digit:
+*               0: Linear axis.
+*               1: Quantized axis (STOKES, CUBEFACE).
+*               2: Non-linear celestial axis.
+*               3: Non-linear spectral axis.
+*               4: Logarithmic axis.
+*               5: Tabular axis.
+*
+*            Third digit:
+*               0: Group number, e.g. lookup table number, being an index into
+*                  the tabprm array (see below).
+*
+*         The fourth digit is used as a qualifier depending on the axis type.
+*         For celestial axes:
+*               0: Longitude coordinate.
+*               1: Latitude coordinate.
+*               2: CUBEFACE number.
+*         For lookup tables; the axis number in a multidimensional table.
+*
+*         CTYPEia in "4-3" form with unrecognized algorithm code will have its
+*         type set to -1 and generate an error.
+*
 * ...........
 *      struct tabprm *tab
 *         Tabular transformation parameters (usage is described in the
@@ -1066,7 +1098,7 @@ struct wcsprm {
    struct celprm cel;		/* Celestial transformation parameters.     */
    struct spcprm spc;		/* Spectral  transformation parameters.     */
 
-   int    *types;		/* For each axis, ...                       */
+   int    *types;		/* Coordinate type codes for each axis.     */
    struct tabprm *tab;		/* Tabular transformation parameters.       */
                                 /* Logarithmic...                           */
 
