@@ -1,5 +1,5 @@
 //# tLatticeExprNode.cc:  Basic test program for LEL classes
-//# Copyright (C) 1997,1998,1999,2000,2001
+//# Copyright (C) 1997,1998,1999,2000,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -1766,23 +1766,23 @@ Bool doIt (const MaskedLattice<Float>& aF,
       }
       if (!checkDouble(expr2, result, shape, True, False)) ok = False;
    }
-    cout << "isnan" << endl;
+    cout << "isNaN" << endl;
    {
       cout << "  Float Scalar" << endl;
       LatticeExprNode expr1(bFVal);
-      LatticeExprNode expr2 = isnan(expr1);
+      LatticeExprNode expr2 = isNaN(expr1);
       if (!checkBool(expr2, False, shape, True, False)) ok = False;
    }
    {
       cout << "  Complex Scalar" << endl;
       LatticeExprNode expr1(bCVal);
-      LatticeExprNode expr2 = isnan(expr1);
+      LatticeExprNode expr2 = isNaN(expr1);
       if (!checkBool(expr2, False, shape, True, False)) ok = False;
    }
    {
       cout << "  Float Array" << endl;
       LatticeExprNode expr1(bF);
-      LatticeExprNode expr2 = isnan(expr1);
+      LatticeExprNode expr2 = isNaN(expr1);
       if (!checkBool(expr2, False, shape, False, False)) ok = False;
       if (!checkMask (expr2, bF.isMasked(),
 		      bF.getMask())) ok = False;
@@ -1790,7 +1790,7 @@ Bool doIt (const MaskedLattice<Float>& aF,
    {
       cout << "  Complex Array" << endl;
       LatticeExprNode expr1(bC);
-      LatticeExprNode expr2 = isnan(expr1);
+      LatticeExprNode expr2 = isNaN(expr1);
       if (!checkBool(expr2, False, shape, False, False)) ok = False;
       if (!checkMask (expr2, bC.isMasked(),
 		      bC.getMask())) ok = False;

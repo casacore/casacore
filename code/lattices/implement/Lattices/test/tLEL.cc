@@ -1,5 +1,5 @@
 //# tLEL.cc:  Tests the LEL* classes directly
-//# Copyright (C) 1997,1998,1999,2000,2001
+//# Copyright (C) 1997,1998,1999,2000,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -2194,7 +2194,7 @@ int main (int argc, char *argv[])
 
     {
     Block<LatticeExprNode> argb(1);
-    cout << "   Function isnan" << endl;     
+    cout << "   Function isNaN" << endl;     
     {
       argb[0] = LatticeExprNode(bF);
       LELFunctionBool expr(LELFunctionEnums::ISNAN, argb);

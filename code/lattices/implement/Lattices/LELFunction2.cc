@@ -1,5 +1,5 @@
 //# LELFunction2.cc:  this defines non-templated classes in LELFunction.h
-//# Copyright (C) 1997,1998,1999,2000,2001
+//# Copyright (C) 1997,1998,1999,2000,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -1663,7 +1663,7 @@ LELFunctionBool::LELFunctionBool(const LELFunctionEnums::Function function,
 	}
 	if (exp[0].dataType() == TpBool) {
 	    throw (AipsError ("LELFunctionBool::constructor - "
-			      "function isnan cannot have bool argument"));
+			      "function isNaN cannot have bool argument"));
 	}
 	setAttr(exp[0].getAttribute());
 	break;
