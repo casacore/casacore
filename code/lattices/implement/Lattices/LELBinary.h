@@ -62,9 +62,10 @@ class PixelRegion;
 // This LEL letter class is derived from LELInterface.  It
 // is used to construct LEL objects that apply numerical binary
 // operators to Lattice expressions.  They operate on numerical
-// Lattices and return a numerical Lattice. The
-// available C++ operators  are  <src>+,-,*,/</src> with 
-// equivalents in the enum of ADD, SUBTRACT, MULTIPLY, and DIVIDE.
+// Lattice (Float,Double,Complex,DComplex) expressions and return the 
+// same numerical type. The available C++ operators  
+// are  <src>+,-,*,/</src> with  equivalents in the enum 
+// of ADD, SUBTRACT, MULTIPLY, and DIVIDE.
 //
 // A description of the implementation details of the LEL classes can
 // be found in <a href="../../../notes/216/216.html">Note 216</a>
@@ -155,8 +156,9 @@ private:
 // This LEL letter class is derived from LELInterface.  It
 // is used to construct LEL objects that apply relational numerical 
 // binary operators to Lattice expressions.  They operate on numerical
-// Lattices and result in a Bool Lattice.  The available C++ operators
-// are  <src>==,!=>,>=,<,<=,</src> with equivalents in the enum of 
+// (Float,Double,Complex,DComplex) Lattice expressions and result 
+// in a Bool.  The available C++ operators are  
+// <src>==,!=>,>=,<,<=,</src> with equivalents in the enum of 
 // EQ, NE, GT, GE, LT, and LE
 //
 // A description of the implementation details of the LEL classes can
@@ -249,7 +251,7 @@ private:
 // This LEL letter class is derived from LELInterface.  It
 // is used to construct LEL objects that apply logical 
 // binary operators to Lattice expressions.  They apply only
-// to Boolean Lattices and result in Boolean Lattices.  The 
+// to Bool Lattice expressions and result in a Bool.  The 
 // available C++ operators are  <src>&&,||,==,!=</src> with 
 // equivalents in the enum of  AND, OR, EQ, and NE
 //
