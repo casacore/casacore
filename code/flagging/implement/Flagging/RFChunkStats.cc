@@ -1,5 +1,5 @@
 //# RFChunkStats.cc: this defines RFChunkStats
-//# Copyright (C) 2000,2001
+//# Copyright (C) 2000,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -31,6 +31,7 @@
 #include <trial/MeasurementEquations/VisibilityIterator.h>
 #include <trial/MeasurementEquations/VisBuffer.h>
 #include <stdio.h>
+#include <aips/strstream.h>
 #include <trial/Tasking/PGPlotter.h>
     
 // when no plotter is specified for screen/report,
@@ -145,11 +146,6 @@ void RFChunkStats::newTime ()
 }
 
 
-static String toString( Int i )  
-{ return String::toString(i); }
-static String toString( const String &i ) 
-{ return i; }
-
 template<class T> RFlagWord RFChunkStats::getCorrMask ( const Vector<T> &corrspec )
 {
   RFlagWord mask=0;
@@ -158,8 +154,11 @@ template<class T> RFlagWord RFChunkStats::getCorrMask ( const Vector<T> &corrspe
   {
     // convert element of polspec to Stokes type
     Stokes::StokesTypes type = Stokes::type( corrspec(i) );
-    if( type == Stokes::Undefined )
-      throw(AipsError( String("Unknown correlation type: ")+toString(corrspec(i))));
+    if( type == Stokes::Undefined ){
+      ostrstream oss;
+      oss << corrspec(i) << ends;
+      throw(AipsError( String("Unknown correlation type: ")+ oss.str()));
+    }
     // find this type in current corrarizations
     Int icorr = findCorrType(type,corrtypes);
     if( icorr>=0 )
@@ -168,8 +167,8 @@ template<class T> RFlagWord RFChunkStats::getCorrMask ( const Vector<T> &corrspe
   return mask;
 }
 
-template RFlagWord RFChunkStats::getCorrMask( const Vector<Int> &);
-template RFlagWord RFChunkStats::getCorrMask( const Vector<String> &);
+template RFlagWord RFChunkStats::getCorrMask<Int>( const Vector<Int> &);
+template RFlagWord RFChunkStats::getCorrMask<String>( const Vector<String> &);
 
 
 uInt RFChunkStats::antToIfr ( uInt ant1,uInt ant2 )
