@@ -1,5 +1,5 @@
 //# IPosition.cc: A vector of integers, used to index into arrays.
-//# Copyright (C) 1994,1995,1996,1997
+//# Copyright (C) 1994,1995,1996,1997,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -583,6 +583,48 @@ IPosition operator / (Int val, const IPosition& right)
     return result;
 }
 
+IPosition max (const IPosition& left, const IPosition& right)
+{
+    if (! left.conform(right)) {
+        throw(ArrayConformanceError("::max "
+                        "(const IPosition&, const IPosition&) - "
+                        "left and right operand do not conform "));
+    }
+    IPosition result(left);
+    const uInt ndim = result.nelements();
+    Int max;
+    for (uInt i = 0; i < ndim; i++) {
+      if (result(i) < (max = right(i))) {
+        result(i) = max;
+      }
+    }
+    return result;
+}
+
+// <thrown>
+//    <item> ArrayConformanceError
+// </thrown>
+IPosition min (const IPosition& left, const IPosition& right)
+{
+    if (! left.conform(right)) {
+        throw(ArrayConformanceError("::min "
+                        "(const IPosition&, const IPosition&) - "
+                        "left and right operand do not conform "));
+    }
+    IPosition result(left);
+    const uInt ndim = result.nelements();
+    Int min;
+    for (uInt i = 0; i < ndim; i++) {
+      if (result(i) > (min = right(i))) {
+        result(i) = min;
+      }
+    }
+    return result;
+}
+
+// <thrown>
+//    <item> ArrayConformanceError
+// </thrown>
 Int IPosition::product() const
 {
     if (nelements() ==  0) {
