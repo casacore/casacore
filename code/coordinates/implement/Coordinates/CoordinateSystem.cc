@@ -908,23 +908,71 @@ Bool CoordinateSystem::toMix(Vector<Double>& worldOut,
 
       const uInt nAxes = world_maps_p[i]->nelements();
       const uInt nPixelAxes = pixel_maps_p[i]->nelements();
+
       AlwaysAssert(nAxes==nPixelAxes, AipsError);
 //
       Vector<Bool> worldAxes2(nAxes);
       Vector<Bool> pixelAxes2(nAxes);
 //
+
+/*
+      cout << "World map = ";
+      for (uInt k=0; k<nAxes; k++) {
+         cout << world_maps_p[i]->operator[](k) << " ";
+      } 
+      cout << endl;
+      cout << "Pixel map = ";
+      for (uInt k=0; k<nAxes; k++) {
+        cout << pixel_maps_p[i]->operator[](k) << " ";
+      }
+      cout << endl;
+
+      Vector<Double> wr = *(world_replacement_values_p[i]);
+      cout << "world replacement=" << wr.ac() << endl;
+      Vector<Double> pr = *(pixel_replacement_values_p[i]);
+      cout << "pixel replacement=" << pr.ac() << endl;
+*/
+
       for (uInt j=0; j<nAxes; j++) {
          Int where = world_maps_p[i]->operator[](j);
          if (where >= 0) {
             world_tmps_p[i]->operator()(j) = worldIn(where);
             worldAxes2(j) = worldAxes(where);
          } else {
+//
+// Axis removed.  
+//
             world_tmps_p[i]->operator()(j) = 
                world_replacement_values_p[i]->operator()(j);
-            worldAxes2(j) = False;
+// 
+// We have to decide what conversion to do (pixel<->world) for
+// the removed axis.  For coupled axes like DirectionCOordinate,
+// I do for the removed axis whatever I did for
+// the unremoved axis, if there is one...  If both world
+// axes are removed, ultinately it doesn't really matter what
+// I do since the pixel axes will be gone as well, and there
+// is nowhere to put the output !  For uncoupled axes it
+// doesn't matter.
+//
+            if (type(i)==Coordinate::DIRECTION) {
+               Int where2;
+               if (j==0) {
+                  where2 = world_maps_p[i]->operator[](1);
+               } else {
+                  where2 = world_maps_p[i]->operator[](0);
+               }
+               if (where2 >= 0) {
+                  worldAxes2(j) = worldAxes(where2);
+               } else {
+                  worldAxes2(j) = False;
+               }
+            } else {
+               worldAxes2(j) = False;
+            }
          }
       }
 //
+
       for (uInt j=0; j<nAxes; j++) {
          Int where = pixel_maps_p[i]->operator[](j);
          if (where >= 0) {
@@ -943,6 +991,13 @@ Bool CoordinateSystem::toMix(Vector<Double>& worldOut,
 //
       Vector<Double> worldOut2(nAxes);
       Vector<Double> pixelOut2(nAxes);
+
+/*
+      Vector<Double> w = *(world_tmps_p[i]);
+      Vector<Double> p = *(pixel_tmps_p[i]);
+      cout << "worldIn, pixelIn = " << w.ac() << p.ac() << endl;
+      cout << "worldAxes2, pixelAxes2" << worldAxes2.ac() << pixelAxes2.ac() << endl;
+*/
 
       if (!coordinates_p[i]->toMix(worldOut2, pixelOut2,
 		       *(world_tmps_p[i]), *(pixel_tmps_p[i]),
