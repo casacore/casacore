@@ -60,23 +60,23 @@ AIPS++ release v1.6, currently scheduled for October 15, 2001.
 The highest priority for the project in development cycle v1.6 is to
 continue the process of scientific integration. This includes:
 
-\begin{description}
+\begin{enumerate}
 
-\item[Scientific completeness] Demonstrated end-to-end reduction
+\item Scientific completeness: Demonstrated end-to-end reduction
 capabilities for targeted instruments in all scientifically important
 observing and reduction modes.
 
-\item[Usability by the astronomical community] Quality of the user
+\item Usability by the astronomical community: Quality of the user
 interface, applications presentation and user documentation.
 
-\item[Robustness, correctness and accuracy] Prove the correctness and
+\item Robustness, correctness and accuracy: Prove the correctness and
 robustness of existing capabilities and ensure comparable performance
 to other disk-based packages.
 
-\item[Continued deployment to an expanded user base] Continue to
+\item Continued deployment to an expanded user base: Continue to
 increase the scientific user base for AIPS++.
 
-\end{description}
+\end{enumerate}
 
 Maintaining a sound infrastructure in the project is important
 however, and infrastructure work has been scheduled for this cycle
@@ -140,11 +140,11 @@ WY & Wes Young & NRAO\\
 
 \section{\underbar{Single-dish}}
 
-\subsection{\underbar{Targets}}
 
-\begin{description}
 
-\item[Complete GBT MS filler] Including: i) complete IF/LO conversion;
+\begin{enumerate}
+
+\item Complete GBT MS filler: Including: i) complete IF/LO conversion;
 ii) GBT GO FITS file to MS; iii) Tcal to SYSCAL sub-table; iv)
 spectrometer and spectral processor backend support; v) track M\&C FITS
 file changes; vi) improve reliability and robustness in on-line mode;
@@ -152,157 +152,157 @@ vii) complete holography support; viii) document filler internals in
 preparation for filler transfer to GBT science support. ({\bf BG, H, 9
 wk}).
 
-\item[SD MS audit] Audit the MS produced by the GBT MS filler for
+\item SD MS audit: Audit the MS produced by the GBT MS filler for
 scientific completeness. ({\bf BG, H, 2 wk, AK, H, 1 wk}).
 
-\item[SD calibration] Complete basic SD calibration modes using
+\item SD calibration: Complete basic SD calibration modes using
 synthesis infrastructure({\bf JM, H, 6 wk, AK, H, 2 wk}).
 
-\item[ssa enhancements] Complete ssa improvements. ({\bf JM, H, 2 wk}).
+\item ssa enhancements: Complete ssa improvements. ({\bf JM, H, 2 wk}).
 
-\item[IARDS] Interim real-time display system for the GBT ({\bf JB, H, 4 wk}).
+\item IARDS: Interim real-time display system for the GBT ({\bf JB, H, 4 wk}).
 
-\item[Holography support] Full holography support using synthesis
+\item Holography support: Full holography support using synthesis
 infrastructure. ({\bf JB, H, 4 wk}).
 
-\item[Document DCR tool] Document DCR tool and heuristics({\bf JB, H, 3 wk}).
+\item Document DCR tool: Document DCR tool and heuristics({\bf JB, H, 3 wk}).
 
-\item[SD imaging] Including: i) verify single-dish imaging speed for
+\item SD imaging: Including: i) verify single-dish imaging speed for
 spectral line data; ii) demonstrate combined VLA and GBT
 imaging. ({\bf TC, H, 6 wk}).
 
-\end{description}
+\end{enumerate}
 
 %%----------------------------------------------------------------------
 
 \section{\underbar{Synthesis}}
 
-\subsection{\underbar{Targets}}
 
-\begin{description}
 
-\item[Complete the FITS-IDI filler] Including: i) support for all
+\begin{enumerate}
+
+\item Complete the FITS-IDI filler: Including: i) support for all
 required MS sub-tables; ii) VLBA correlator quantization corrections;
 iii) testing with SMA and VLBA data. Work with SMA in these
 tasks. ({\bf GM, H, 2 wk}).
 
-\item[BIMA filler revisions] Continued improvements in the BIMA
+\item BIMA filler revisions: Continued improvements in the BIMA
 filler. ({\bf RP, H, 1 wk}).
 
-\item[Multi-MS support in imager and calibrater] Make existing
+\item Multi-MS support in imager and calibrater: Make existing
 multi-MS support available in the calibrater and imager tools. ({\bf
 KG, H, 3 wk}).
 
-\item[Support for variable spw] Ensure proper functioning of the
+\item Support for variable spw: Ensure proper functioning of the
 synthesis tools with variable-shaped spectral windows. Includes
 resolution of all current defects in this area ({\bf KG, H, 2 wk}).
 
-\item[Implement initial compressed data format] Implement initial
+\item Implement initial compressed data format: Implement initial
 solution to the MS data volume problem caused by the MODEL\_DATA,
 CORRECTED\_DATA and IMAGING\_WEIGHT scratch columns. ({\bf GvD, H, 2
 wk, \bf AK, H, 1 wk}).
 
-\item[msplot defect correction] Fix all current, high-severity msplot
+\item msplot defect correction: Fix all current, high-severity msplot
 defects. ({\bf RM, H, 2 wk}).
 
-\item[Autoflag interface revisions] Change autoflag.g Glish interface
+\item Autoflag interface revisions: Change autoflag.g Glish interface
 to be compatible with AIPS++ user interface conventions. ({\bf OS, H,
 1 wk}).
 
-\item[Autoflag C++ code review] Complete preparation of autoflag C++
+\item Autoflag C++ code review: Complete preparation of autoflag C++
 code for AIPS++ code review. ({\bf OS, H, 2 wk, \bf AK, H, 1 wk}).
 
-\item[Requirements for uv-component fitting] Finalize requirements and
+\item Requirements for uv-component fitting: Finalize requirements and
 implementation document for full uv-component fitting. Including list
 of required changes to component models. ({\bf WB, H, 1 wk}).
 
-\item[Analytic errors in simulator] Add basic analytic errors to
+\item Analytic errors in simulator: Add basic analytic errors to
 simulator, including: i) Chebyshev polynomial in amplitude, phase,
 rate and delay (G Jones); ii) polynomial bandpass (B Jones); iii)
 Chebyshev polynomial in instrumental polarization (D Jones). Requires
 Chebyshev polynomial implementation. ({\bf RP, H, 2 wk}).
 
-\item[calibrater enhancements] Includes: i) identified improvements in
+\item calibrater enhancements: Includes: i) identified improvements in
 the MS access classes; ii) full interpolation and parametrization
 modes. ({\bf GM, H, 4 wk}).
 
-\item[Ionosphere C++ code review] Prepare Ionosphere C++ code for code
+\item Ionosphere C++ code review: Prepare Ionosphere C++ code for code
 review. ({\bf OS, H, 2 wk}).
 
-\item[Ionsophere correction testing] Test first-order FJones
+\item Ionsophere correction testing: Test first-order FJones
 correction on WSRT and other data. ({\bf OS, H, 3 wk}).
 
-\item[Second-order ionosphere corrections] Derive initial second-order
+\item Second-order ionosphere corrections: Derive initial second-order
 FJones corrections to the PIM model. ({\bf OS, H, 6 wk}).
 
-\item[Automated wide-field imaging] Refine the packaging of the
+\item Automated wide-field imaging: Refine the packaging of the
 existing wide-field imaging capabilities. Includes: i) improved mask
 setting, including automated options; ii) improvements to
 dragon.g. ({\bf KG, H, 3 wk}).
 
-\item[SD mosaic combinations] Improved single-dish mosaicing data
+\item SD mosaic combinations: Improved single-dish mosaicing data
 combination options. ({\bf KG, H, 3 wk}).
 
-\item[Planet flux density calibration] Develop flux density calibration
+\item Planet flux density calibration: Develop flux density calibration
 using planets. ({\bf RP, H, 2 wk}).
 
-\item[imager test scripts] Revise all imager test scripts to use
+\item imager test scripts: Revise all imager test scripts to use
 simulated data for test generation and verification. Includes coverage
 of all observing contexts (single-field, multi-field, mosaiced, and
 wide-field), and all available deconvolution algorithms. ({\bf DM, H,
 4 wk, KG, H, 1 wk}).
 
-\item[ATCA test scripts] Test scripts and associated data
+\item ATCA test scripts: Test scripts and associated data
 demonstrating ATCA reduction for continuum, continuum polarimetry and
 spectral line reduction modes. ({\bf MW, H, 3 wk}).
 
-\item[WSRT test scripts] Test scripts and associated data
+\item WSRT test scripts: Test scripts and associated data
 demonstrating WSRT reduction for continuum, continuum polarimetry and
 spectral line reduction modes. ({\bf JN, H, 4 wk}).
 
-\item[BIMA test scripts] Additions to the existing BIMA test scripts
+\item BIMA test scripts: Additions to the existing BIMA test scripts
 to cover new observing modes. ({\bf DM, H, 2 wk}).
 
-\item[VLA test scripts] Expand the existing VLA test scripts to cover spectral-line modes and additional data sets. ({\bf AK, H, 1 wk}).
+\item VLA test scripts: Expand the existing VLA test scripts to cover spectral-line modes and additional data sets. ({\bf AK, H, 1 wk}).
 
-\item[IRAM AIPS++ test] Verify AIPS++ reduction using IRAM test
+\item IRAM AIPS++ test: Verify AIPS++ reduction using IRAM test
 data. ({\bf AK, H, 5 wk, KG, M, 2 wk}).
 
-\end{description}
+\end{enumerate}
 
 %%----------------------------------------------------------------------
 
 \section{\underbar{Documentation}}
 
-\subsection{\underbar{Targets}}
 
-\begin{description}
 
-\item[Editing of Getting Results] Includes: i) edit existing and new
+\begin{enumerate}
+
+\item Editing of Getting Results: Includes: i) edit existing and new
 GR chapters to conform to a common framework; ii) identify missing
 areas in GR; iii) incorporate user group feedback in the editing
 process. ({\bf NK, H, 4 wk}).
 
-\item[Single-dish documentation editing] Improve the existing SD
+\item Single-dish documentation editing: Improve the existing SD
 documentation and add new material ({\bf JM, H, 2 wk}).
 
-\item[ATCA Getting Results chapter] Getting Results chapter for ATCA
+\item ATCA Getting Results chapter: Getting Results chapter for ATCA
 continuum, continuum polarimetry and spectral line reduction
 modes. ({\bf MW, H, 2 wk}).
 
-\item[BIMA Getting Results chapter] Getting Results chapter for BIMA
+\item BIMA Getting Results chapter: Getting Results chapter for BIMA
 continuum, continuum polarimetry and spectral line reduction
 modes. ({\bf AS, H, 2 wk}).
 
-\item[VLA Getting Results chapter] Edit and extend the existing VLA
+\item VLA Getting Results chapter: Edit and extend the existing VLA
 Getting Results chapter to cover spectral line, and improve existing
 material. ({\bf GM, H, 2 wk}).
 
-\item[Recipes] Revitalize the existing recipes repository. Change the
+\item Recipes: Revitalize the existing recipes repository. Change the
 format as required, and add new recipes in all areas. ({\bf GM, H, 3
 wk}).
 
-\end{description}
+\end{enumerate}
 
 %%----------------------------------------------------------------------
 
@@ -312,17 +312,17 @@ This includes development aimed at improving the overall integration
 of applications in AIPS++ in a common framework, using common
 interfaces and services.
 
-\subsection{\underbar{Targets}}
 
-\begin{description}
 
-\item[History propagation] Develop infrastructure for history
+\begin{enumerate}
+
+\item History propagation: Develop infrastructure for history
 propagation. ({\bf RP, H, 3 wk}).
 
-\item[Programmer documentation] Update the existing programmer
+\item Programmer documentation: Update the existing programmer
 documentation. ({\bf AK, H, 1 wk}).
 
-\end{description}
+\end{enumerate}
 
 %%----------------------------------------------------------------------
 
@@ -331,146 +331,146 @@ documentation. ({\bf AK, H, 1 wk}).
 This covers all system work, excluding maintenance and support of the
 basic library.
 
-\subsection{\underbar{Targets}}
 
-\begin{description}
 
-\item[Documentation system] Develop written requirements for the
+\begin{enumerate}
+
+\item Documentation system: Develop written requirements for the
 documentation build system; audit current capabilities. Explore
 central documentation build and remote distribution using cvsup ({\bf
 WY, H, 2 wk}).
 
-\item[Glish documentation utilities] Develop utilities to assist in
+\item Glish documentation utilities: Develop utilities to assist in
 generating Glish-level tool documentation, and to verify completeness
 and correctness of existing Glish documentation. ({\bf WY, H, 3 wk}).
 
-\item[Build and release maintenance] Maintenance of existing builds
+\item Build and release maintenance: Maintenance of existing builds
 under Linux, Solaris and IRIX. Patch generation and distribution for
 the release master. ({\bf WY, H, 4 wk}).
 
-\item[Solaris native C++ port] Complete port of AIPS++ to the Solaris
+\item Solaris native C++ port: Complete port of AIPS++ to the Solaris
 native C++ compiler. Document all required changes as a note. ({\bf
 WY, H, 2 wk}).
 
-\end{description}
+\end{enumerate}
 
 %%----------------------------------------------------------------------
 
 \section{\underbar{Glish}}
 
-\subsection{\underbar{Targets}}
 
-\begin{description}
 
-\item[GlishTk performance] Continue evaluation of GlishTk performance
+\begin{enumerate}
+
+\item GlishTk performance: Continue evaluation of GlishTk performance
 factors, including: i) dependence on pipe buffer size; ii) other
 short-term optimizations to mitigate dynamic scheduling losses. ({\bf
 DrS, H, 3 wk}).
 
-\item[Glish threading] Assess cost of Glish threading. Prototype
+\item Glish threading: Assess cost of Glish threading. Prototype
 threading in parts of the Glish library and determine likely GTk
 performance enhancements. ({\bf DrS, H, 3 wk}).
 
-\item[fail on return] Implement fail on return handling in Glish at
+\item fail on return: Implement fail on return handling in Glish at
 function end-points. ({\bf DrS, H, 1 wk}).
 
-\item[Defect backlog] Address current defect backlog, including: i)
+\item Defect backlog: Address current defect backlog, including: i)
 slider problems; ii) hourglass packing; iii) remaining JIVE reference
 counting defects. ({\bf DrS, H, 3 wk}).
 
-\item[Tab widget] Add the Tab widget. ({\bf DrS, H, 2 wk}).
+\item Tab widget: Add the Tab widget. ({\bf DrS, H, 2 wk}).
 
-\end{description}
+\end{enumerate}
 
 %%----------------------------------------------------------------------
 
 \section{\underbar{User interface and tasking}}
 
-\subsection{\underbar{Targets}}
 
-\begin{description}
 
-\item[GUI performance improvements] Improve GUI performance by
+\begin{enumerate}
+
+\item GUI performance improvements: Improve GUI performance by
 investigating the use of larger-scale widgets, and/or optimization of
 existing Glish GUI code. ({\bf RM, H, 3 wk}).
 
-\item[Data item propagation] Ensure use of all existing data items
+\item Data item propagation: Ensure use of all existing data items
 throughout the user interface, where possible. ({\bf RM, H, 2 wk}).
 
-\item[guientry defects] Resolve all current guientry.g defects. ({\bf
+\item guientry defects: Resolve all current guientry.g defects. ({\bf
 RM, H, 2 wk}).
 
-\item[toolmanager enhancements] Includes: i) allow aipsrc
+\item toolmanager enhancements: Includes: i) allow aipsrc
 customization of tools visible in toolmanager; ii) trial
 implementation of default sets for one tool. ({\bf RM, H, 2 wk}).
 
-\item[Revised tasking requirements] Develop requirements for an
+\item Revised tasking requirements: Develop requirements for an
 improved Tasking system. ({\bf AK, H, 1 wk}).
 
-\item[CORBA evaluation] Develop implementation plan for CORBA adoption
+\item CORBA evaluation: Develop implementation plan for CORBA adoption
 in the Tasking system and Glish. Includes some CORBA
 prototyping. ({\bf DrS, H, 3 wk}).
 
-\end{description}
+\end{enumerate}
 
 %%----------------------------------------------------------------------
 
 \section{\underbar{Basic library}}
 
-\subsection{\underbar{Targets}}
 
-\begin{description}
 
-\item[Overhaul Functionals] Overhaul Functionals so that they can be
+\begin{enumerate}
+
+\item Overhaul Functionals: Overhaul Functionals so that they can be
 used more extensively in other parts of the library, including
 Fitting. Includes an implementation of optimized
 auto-differentiation. ({\bf WB, H, 4 wk}).
 
-\item[C++ standard proposal] Draft a proposal outlining strategies for
+\item C++ standard proposal: Draft a proposal outlining strategies for
 implementing further C++ standard library compliance in AIPS++. ({\bf
 WB, H, 1 wk}).
 
-\item[C++ interface to non-linear fitting] Improve the C++ interface
+\item C++ interface to non-linear fitting: Improve the C++ interface
 to existing non-linear fitting capabilities. Requires improvements in
 Functionals ({\bf WB, H, 2 wk}).
 
-\item[Deep copy] Allow deep copy of tables. ({\bf GvD, H, 1 wk}).
+\item Deep copy: Allow deep copy of tables. ({\bf GvD, H, 1 wk}).
 
-\item[Measures frame handling] Improved frame handling in
+\item Measures frame handling: Improved frame handling in
 Measures. ({\bf WB, M, 1 wk}).
 
-\end{description}
+\end{enumerate}
 
 %%----------------------------------------------------------------------
 
 \section{\underbar{Images}}
 
-\subsection{\underbar{Targets}}
 
-\begin{description}
 
-\item[LEL spectral index function] Implement a spectral index function
+\begin{enumerate}
+
+\item LEL spectral index function: Implement a spectral index function
 in LEL ({\bf GvD, H, 0.5 wk}).
 
-\item[Support non-cardinal axes] Support slicing along non-cardinal
+\item Support non-cardinal axes: Support slicing along non-cardinal
 axes, which is required for the pvslice visualization
 application. Requires addition of Lattice interpolation along
 non-cardinal axes. ({\bf NK, H, 2 wk, \bf GvD, H, 3 wk}).
 
-\item[Mask generation from cubes] Support mask generation from cubes,
+\item Mask generation from cubes: Support mask generation from cubes,
 as required to support a range of visualization and image analysis
 applications. ({\bf NK, H, 3 wk}).
 
-\item[Multi-dimensional LEL] Add facility for handling multi-dimensional images in LEL. {(\bf GvD, H, 1 wk}).
+\item Multi-dimensional LEL: Add facility for handling multi-dimensional images in LEL. {(\bf GvD, H, 1 wk}).
 
-\item[Unified logsink use in Image classes] Unify logsink use in
+\item Unified logsink use in Image classes: Unify logsink use in
 derived Image classes. ({\bf GvD, H, 1 wk}).
 
-\item[Miriad image handling] Support MIRIAD image handling. ({\bf PT,
+\item Miriad image handling: Support MIRIAD image handling. ({\bf PT,
 M, 4 wk}).
 
 
-\end{description}
+\end{enumerate}
 
 %%----------------------------------------------------------------------
 
@@ -479,71 +479,70 @@ M, 4 wk}).
 This includes work in the Display Library (DL), and in applications
 using this library.
 
-\subsection{\underbar{Targets}}
 
-\begin{description}
 
-\item[pvslice application] Implement high-level application supporting
+\begin{enumerate}
+
+\item pvslice application: Implement high-level application supporting
 pv-slicing. ({\bf MM, H, 4 wk}).
 
-\item[Color bar wedge] Implement color bar wedge support in the DL and
+\item Color bar wedge: Implement color bar wedge support in the DL and
 viewer. ({\bf MM, H, 2 wk}).
 
-\item[Multiple regions per panel] Support multiple regions per display
+\item Multiple regions per panel: Support multiple regions per display
 panel. ({\bf MM, H, 1 wk}).
 
-\item[Unify CachingDD and PADD code branches] Unify the existing
+\item Unify CachingDD and PADD code branches: Unify the existing
 caching and principal axes DisplayData code branches. Preserve the
 current API for each branch in the interim to allow uv DD development
 to continue. ({\bf MM, H, 5 wk}).
 
-\item[Proposal for coordinates on world canvas] Prepare a
+\item Proposal for coordinates on world canvas: Prepare a
 proposal/design for the implementation of coordinates on the
 WorldCanvas. ({\bf MM, H, 2 wk}).
 
-\item[uv DisplayDatas] Complete: i) MSAsRaster; ii) MSAsContour; iii)
+\item uv DisplayDatas: Complete: i) MSAsRaster; ii) MSAsContour; iii)
 MSAsXY; iv) TableAsRaster; v) TableAsContour; vi) TableAsXY. ({\bf DK,
 H, 6 wk}).
 
-\item[Integrated uv-visualization] Provide full integration of the
+\item Integrated uv-visualization: Provide full integration of the
 uv-DD through to the viewer, and make available as re-usable
 uv-visualization components. ({\bf DK, H, 4 wk}).
 
-\item[Editing event-handlers] Develop editing capabilities as DL event
+\item Editing event-handlers: Develop editing capabilities as DL event
 handlers. ({\bf DK, H, 4 wk}).
 
-\item[Animation increments in world coordinates] Allow animation
+\item Animation increments in world coordinates: Allow animation
 increments in world coordinates. ({\bf MM, M, 1 wk}).
 
-\item[OpenGL PixelCanvas] Continue development of an OpenGL or vtk
+\item OpenGL PixelCanvas: Continue development of an OpenGL or vtk
 PixelCanvas. ({\bf HR, M, 4 wk}).
 
-\end{description}
+\end{enumerate}
 
 %%----------------------------------------------------------------------
 
 
 \section{\underbar{Parallelization and high-performance computing}}
 
-\subsection{\underbar{Targets}}
 
-\begin{description}
+\begin{enumerate}
 
-\item[Revise test scripts for parallel problems] Revise the test
+\item Revise test scripts for parallel problems: Revise the test
 scripts for large parallelized algorithms to use simulated test data
 and verification. ({\bf DM, H, 2 wk}).
 
-\item[Key science processing and profiling] Reduce the identified key
+\item Key science processing and profiling: Reduce the identified key
 science datasets on DSM and cluster systems, with and without
 associated performance and I/O profiling. ({\bf AS, H, 6 wk}).
 
-\item[IA64 port] AIPS++ port to the IA-64 Linux cluster. ({\bf PC, H,
+\item IA64 port: AIPS++ port to the IA-64 Linux cluster. ({\bf PC, H,
 4 wk}).
 
-\item[Parallel I/O] Initial implementation of parallel I/O
+\item Parallel I/O: Initial implementation of parallel I/O
 capabilities. ({\bf WY, H, 3 wk}).
 
-\end{description}
+\end{enumerate}    
 
 %%----------------------------------------------------------------------
 
