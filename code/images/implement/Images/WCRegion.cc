@@ -257,18 +257,25 @@ LCRegion* WCRegion::toLCRegionAxes (const CoordinateSystem& cSys,
 
 
 void WCRegion::makeWorldAbsolute (Vector<Double>& world, 
-                               const Vector<Int>& absRel, 
-                               const CoordinateSystem& cSys,
-                               const IPosition& shape) const
+                                  const Vector<Int>& absRel, 
+                                  const CoordinateSystem& cSys,
+                                  const IPosition& shape) const
 {
-
 // For values that are already absolute, temporarily use rel = 0
+// The absrel vector may have any length from 0 to nWorld
 
+   Vector<Int> ar(world.nelements());   
+   const uInt nAR = absRel.nelements();
    Vector<Double> t(world.copy());
+//
    for (uInt i=0; i<world.nelements(); i++) {
-      if (absRel(i) == RegionType::Abs) {
-         t(i) = 0.0;
+      if (i < nAR) {
+         ar(i) = absRel(i);
+      } else {
+         ar(i) = RegionType::Abs;
       }
+//
+      if (ar(i) == RegionType::Abs) t(i) = 0.0;
    }
    Vector<Double> t2(t.copy());
 
@@ -295,9 +302,9 @@ void WCRegion::makeWorldAbsolute (Vector<Double>& world,
 // Overwrite result for relative values.
 
    for (uInt i=0; i<world.nelements(); i++) {
-      if (absRel(i) == RegionType::RelRef) {
+      if (ar(i) == RegionType::RelRef) {
          world(i) = t(i);
-      } else if (absRel(i) == RegionType::RelCen) {
+      } else if (ar(i) == RegionType::RelCen) {
          world(i) = t2(i);
       }  
    }
