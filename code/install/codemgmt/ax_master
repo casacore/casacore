@@ -6023,3 +6023,5 @@
 17 069 src rm aips/implement/Functionals/GaussianND.h
 17 069 src rm aips/implement/Functionals/GaussianNDParam.cc
 17 069 src rm aips/implement/Functionals/GaussianNDParam.h
+17 069 src rm aips/implement/Functionals/test/tGaussianND.cc
+17 069 src rm aips/implement/Functionals/test/dGaussianND.cc
