@@ -1,5 +1,5 @@
 //# MeasMath.h: Measure conversion aid routines
-//# Copyright (C) 1998,2000,2002,2003
+//# Copyright (C) 1998,2000,2002,2003,2004
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -178,6 +178,8 @@ public:
   void deapplyGALtoB1950(MVPosition &in);
   void applyGALtoSUPERGAL(MVPosition &in);
   void deapplyGALtoSUPERGAL(MVPosition &in);
+  void applyICRStoJ2000(MVPosition &in);
+  void deapplyICRStoJ2000(MVPosition &in);
   void applyTOPOtoHADEC(MVPosition &in, Bool doin=True);
   void deapplyTOPOtoHADEC(MVPosition &in, Bool doin=True);
   void applyPolarMotion(MVPosition &in);

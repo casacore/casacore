@@ -1,5 +1,5 @@
 //# MDirection.h: A Measure: astronomical direction
-//# Copyright (C) 1995,1996,1997,1998,1999,2000,2002
+//# Copyright (C) 1995-1999,2000,2002,2004
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -70,7 +70,7 @@ template <class M> class ROScalarMeasColumn;
 // latitudinal angle.<br>
 // The different reference types that can be used for a Direction are:
 // <ul>
-//  <li>MDirection::J2000 -- mean equator and equinox at J2000.0
+//  <li>MDirection::J2000 -- mean equator and equinox at J2000.0 (FK5)
 //  <li>MDirection::JNAT --- geocentric natural frame
 //  <li>MDirection::JMEAN -- mean equator and equinox at frame epoch
 //  <li>MDirection::JTRUE -- true equator and equinox at frame epoch
@@ -92,6 +92,7 @@ template <class M> class ROScalarMeasColumn;
 //  <li>MDirection::SUPERGAL -- supergalactic coordinates
 //  <li>MDirection::ITRF -- coordinates wrt ITRF Earth frame
 //  <li>MDirection::TOPO -- apparent topocentric position
+//  <li>MDirection::ICRS -- International Celestial reference system
 //  <li>MDirection::MERCURY -- the planet: has no data attached
 //  <li>MDirection::VENUS
 //  <li>MDirection::MARS
@@ -114,7 +115,7 @@ template <class M> class ROScalarMeasColumn;
 // information is essential. The following list specifies which information
 // is needed if the conversion goes to or from the different types:
 // <ul>
-//   <li><em>Epoch</em>: all but J2000, B1950, GALACTIC, SUPGAL, ECLIPTIC
+//   <li><em>Epoch</em>: all but J2000, B1950, GALACTIC, SUPGAL, ECLIPTIC, ICRS
 //   <li><em>Positiom</em>: HADEC, AZEL, AZELGEO
 // </ul>
 // Conversions are based on the IAU system of 
@@ -198,6 +199,7 @@ public:
       SUPERGAL,
       ITRF,
       TOPO,
+      ICRS,
       N_Types,
       // Planets. First one should be Mercury
       MERCURY = 32,

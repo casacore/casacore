@@ -1,5 +1,5 @@
 //# MeasMath.cc:  Measure conversion aid routines
-//# Copyright (C) 1998,1999,2000,2002,2003
+//# Copyright (C) 1998-2000,2002,2003,2004
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -512,6 +512,14 @@ void MeasMath::applyGALtoSUPERGAL(MVPosition &in) {
 
 void MeasMath::deapplyGALtoSUPERGAL(MVPosition &in) {
   in *= MeasTable::galToSupergal();
+}
+
+void MeasMath::applyICRStoJ2000(MVPosition &in) {
+  in = MeasTable::ICRSToJ2000() * in;
+}
+
+void MeasMath::deapplyICRStoJ2000(MVPosition &in) {
+  in *= MeasTable::ICRSToJ2000();
 }
 
 void MeasMath::applyTOPOtoHADEC(MVPosition &in, Bool doin) {

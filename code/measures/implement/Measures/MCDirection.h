@@ -1,5 +1,5 @@
 //# MCDirection.h: MDirection conversion routines 
-//# Copyright (C) 1995,1996,1997,1998,1999,2000,2002
+//# Copyright (C) 1995-1999,2000,2002,2004
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -149,6 +149,8 @@ private:
     HADEC_ITRF,
     TOPO_HADEC,
     TOPO_APP,
+    ICRS_J2000,
+    J2000_ICRS,
     N_Routes,
     // General for Planets
     R_PLANET0,

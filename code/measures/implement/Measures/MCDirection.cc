@@ -1,5 +1,5 @@
 //# MCDirection.cc:  MDirection conversion routines 
-//# Copyright (C) 1995,1996,1997,1998,2000,2001,2002
+//# Copyright (C) 1995-1998,2000,2001,2002,2004
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -82,7 +82,9 @@ uInt MCDirection::ToRef_p[N_Routes][3] = {
   {MDirection::ITRF,		MDirection::HADEC,	0},
   {MDirection::HADEC,		MDirection::ITRF,	0},
   {MDirection::TOPO,		MDirection::HADEC,	0},
-  {MDirection::TOPO,		MDirection::APP,	0} };
+  {MDirection::TOPO,		MDirection::APP,	0},
+  {MDirection::ICRS,		MDirection::J2000,	0},
+  {MDirection::J2000,		MDirection::ICRS,	0} };
 uInt MCDirection::FromTo_p[MDirection::N_Types][MDirection::N_Types];
 
 //# Constructors
@@ -454,7 +456,15 @@ void MCDirection::doConvert(MVDirection &in,
     case SUPERGAL_GAL:
       measMath.deapplyGALtoSUPERGAL(in);
       break;
-    
+ 
+    case ICRS_J2000:
+      measMath.applyICRStoJ2000(in);
+      break;
+      
+    case J2000_ICRS:
+      measMath.deapplyICRStoJ2000(in);
+      break;
+   
     case R_PLANET0: {
       ((MCFrame *)(MDirection::Ref::frameEpoch(outref, inref).
 		   getMCFramePoint()))->
