@@ -75,7 +75,8 @@ Int LatticeStatsBase::toStatisticType (const String& statU)
       statToPlot = MEAN;
    } else if (stat.contains("VAR")) {
       statToPlot = VARIANCE;
-   } else if (stat.contains("SIG")) {
+   } else if (stat.contains("SIG") ||
+              stat.contains("STD")) {
       statToPlot = SIGMA;
    } else if (stat.contains("RMS")) {
       statToPlot = RMS;
