@@ -1,5 +1,5 @@
 //# fits.h:
-//# Copyright (C) 1993,1994,1995,1996,1997,1999,2000,2001
+//# Copyright (C) 1993,1994,1995,1996,1997,1999,2000,2001,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //# 
 //# This library is free software; you can redistribute it and/or modify it
@@ -883,7 +883,7 @@ inline void FitsKeywordList::mk(FITS::ReservedName k, double v, const char *c) {
 // FitsKeyword constructors for indexed Reserved keywords
 inline void FitsKeywordList::mk(int n, FITS::ReservedName k, Bool v, 
 	const char *c) { 
-	int tmp; tmp = v; insert(make(n,k,FITS::LOGICAL,&tmp,c)); }
+	Bool tmp; tmp = v; insert(make(n,k,FITS::LOGICAL,&tmp,c)); }
 inline void FitsKeywordList::mk(int n, FITS::ReservedName k, const char *v, 
 	const char *c) { insert(make(n,k,FITS::STRING,v,c)); }
 inline void FitsKeywordList::mk(int n, FITS::ReservedName k, Int v, 
@@ -894,7 +894,7 @@ inline void FitsKeywordList::mk(int n, FITS::ReservedName k, double v,
 	const char *c) { insert(make(n,k,FITS::DOUBLE,&v,c)); }
 // FitsKeyword constructors for User-Defined keywords
 inline void FitsKeywordList::mk(const char *n, Bool v, const char *c) {
-	int tmp; tmp = v; insert(make(n,FITS::LOGICAL,&tmp,c)); }
+	Bool tmp; tmp = v; insert(make(n,FITS::LOGICAL,&tmp,c)); }
 inline void FitsKeywordList::mk(const char *n, const char *v, const char *c) {
 	insert(make(n,FITS::STRING,v,c)); }
 inline void FitsKeywordList::mk(const char *n, Int v, const char *c) {
