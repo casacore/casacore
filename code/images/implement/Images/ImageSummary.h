@@ -51,7 +51,7 @@ class LinearCoordinate;
 // 
 // <prerequisite>
 //   <li> <linkto class=ImageInterface>ImageInterface</linkto>
-//   <li> <linkto class=Coordinates>Coordinates</linkto> 
+//   <li> <linkto module=Coordinates>Coordinates</linkto> 
 // </prerequisite>
 //
 // <etymology>
@@ -76,6 +76,18 @@ class LinearCoordinate;
 // A <src>PagedImage</src> object is constructed and then logged to the 
 // supplied <src>LogIO</src> object.
 // </example>
+//
+// <note role=tip>
+// This class lists information about the coordinates in the image.
+// The Coordinates classes can maintain the information in a variety
+// of units.  For example, angular quantities are by default in radians,
+// but the manipulator of a <linkto class=CoordinateSystem>CoordinateSystem</linkto>
+// may have converted to some other unit such as arcseconds.  This
+// means that when this class fetches coordinate information and returns
+// it to you (such as the <src>referenceValues()</src> function, 
+// the information is returned to you in whatever units the coordinates
+// are currently in.  It does not convert it.
+// </note>
 //
 // <note role=caution>
 // Note that if the <src>PagedImage</src> goes out of scope, this
@@ -124,13 +136,11 @@ public:
    Vector<Double> referencePixels () const;
 
 // Retrieve reference values.  These are returned without
-// conversion to some other units.  E.g., angles are returned
-// in radians.
+// conversion to some other units.  
    Vector<Double> referenceValues() const;
 
 // Retrieve axis increments. These are returned without
-// conversion to some other units.  E.g., angles are returned
-// in radians.
+// conversion to some other units.  
    Vector<Double> axisIncrements () const;
 
 // Retrieve axis units
@@ -146,11 +156,9 @@ public:
    Bool hasAMask () const;
 
 // List all header information.  By default, the reference
-// values and pixel increments are converted to a "nice"
-// unit before formatting (e.g. RA is shown as HH:MM:SS.S).
-// If <src>nativeFormat</src> is <src>True</src> then
-// the values are formatted in their native format (e.g.
-// RA would be listed in exponential format in radians).
+// values and pixel increments are converted to a "nice" unit before 
+// formatting (e.g. RA is  shown as HH:MM:SS.S).  If <src>nativeFormat</src> 
+// is <src>True</src> then the values are formatted in their native format.
    void list (LogIO& os, Bool nativeFormat=False);
 
 // Set a new image
@@ -179,7 +187,7 @@ private:
 
 // List DirectionCoordinate axis descriptors
    void listDirection (LogIO& os, 
-                       const DirectionCoordinate& coord,
+                       DirectionCoordinate& coord,
                        const Int& axisInCoordinate,
                        const Int& pixelAxis, 
                        const Bool& nativeFormat) const;
