@@ -42,7 +42,7 @@ class String;
 template <class T> class Vector;
 
 // <summary>
-// A class to provide easy read-only access to NewMeasurementSet main table columns
+// A class for easy read-only access to NewMeasurementSet main table columns
 // </summary>
 
 // <use visibility=export>
@@ -257,7 +257,7 @@ private:
 };
 
 // <summary>
-// A class to provide easy read-write access to NewMeasurementSet main table columns
+// A class for easy read-write access to NewMeasurementSet main table columns
 // </summary>
 
 // <use visibility=export>
