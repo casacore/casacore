@@ -33,6 +33,7 @@
 #include <aips/Utilities/String.h>
 #include <trial/Images/ImageSummary.h>
 #include <trial/Images/PagedImage.h>
+#include <aips/Measures/MDoppler.h>
 
 
 main (int argc, char **argv)
@@ -42,9 +43,11 @@ try {
    Input inputs(1);
    inputs.Version ("$Revision$");
 
-   inputs.Create("in", "","Input image name?","in");
+   inputs.Create("in", "","Input image name?");
+   inputs.Create("type", "RADIO","Velocity type ?");
    inputs.ReadArguments(argc, argv);
    const String in = inputs.GetString("in");
+   const String velocityType = inputs.GetString("type");
 
 
 // Open image, construct helper class object and list header
@@ -57,14 +60,23 @@ try {
    LogOrigin or("imhead", "main()", WHERE);
    LogIO os(or);
 
+// Parse velocity type
+
+   MDoppler::Types type;
+   Bool ok = MDoppler::getType(type, velocityType);
+   if (!ok) {
+     os << "Invalid velocity type, using RADIO" << endl;
+      type = MDoppler::RADIO;
+   }     
+
    if (imageType==TpFloat) {    
       const PagedImage<Float> inImage(in);
       ImageSummary<Float> header(inImage);
-      header.list(os);
+      header.list(os, type, False);
    } else if (imageType==TpComplex) {    
       const PagedImage<Complex> inImage(in);
       ImageSummary<Complex> header(inImage);
-      header.list(os);
+      header.list(os, type, False);
    } else {
       cout << "images of type " << imageType << " not yet supported" << endl;
    }
