@@ -1,0 +1,316 @@
+\documentclass[11pt]{article}
+\usepackage{html, epsfig}
+\begin{document}
+\title{Note 227: 64 Bit Compiler Considerations}
+\author{Wes Young and  Athol Kemball}
+\date{December 17, 1999}
+\maketitle
+\begin{htmlonly}
+\htmladdnormallink{A postscript version of this note is available (100kB).}{../207.ps.gz}
+\end{htmlonly}
+
+\tableofcontents
+
+\section{Introduction}
+\subsection{Motivation}
+
+To take advantage of large memory machines available at the NCSA we need to
+move beyond 32 bit pointers because they limit the amount of memory to 1Gb.
+Additionally, with a 64bit Linux and the IA64 Intel processor series on the
+horizon, it behooves us to be "64 bit"
+clean sooner rather than later. AIPS++ already has a working 64-bit build on
+the Dec Alpha using the \#ifdef macro \_\_alpha to handle some of the 64-bit
+differences.
+
+\subsection{Background}
+
+Here's a table lifted from the "SGI MIPSpro 64-bit Porting and Transition
+Guide". It shows the how long each of the types are in bits.  Note that
+longs and pointers have different sizes depending on compiling using
+64 or 32 bit modes.\\
+
+\begin{tabular}{lrr}
+C type       & 32-bit & 64-bit\\
+char         &    8   &    8\\
+short int    &   16   &   16\\
+int          &   32   &   32\\
+long int     &   32   &   64\\
+long long int&  64    &  64\\
+pointer      &  32    &  64\\
+float        &  32    &  32\\
+double       &  64    &  64\\
+long double  &  64    & 128\\
+\end{tabular}
+
+
+
+\section{Porting Considerations}
+\subsection{Common Problems}
+
+We have identified several 64 bit porting problems and potential problems in
+the AIPS++ code tree:
+
+\begin{enumerate}
+\item Assuming the equivalence of Long and Int
+\item Assuming pointers and Ints are equivalent
+\item Use of "C style" formating functions
+\item Explicit constant typing
+\item Bit shifting and bit-wise operations
+\item Library return types, parameters and implementations differences
+\item Memory alignment assumptions (eg. structs)
+\item C++/FORTRAN interface
+\end{enumerate}
+
+Compilation on the SGI using CC -64 (64 bit compilation) finds a handful of
+problems like type 2 and 3 ( $ \sim$ 10).  The most prevalent problem ($\sim$
+250) is assuming the equivalence of int and long usually found with returns
+from standard library functions.
+
+
+\subsection{Examples}
+
+
+\subsubsection{Library Return Types}
+
+\begin{verbatim}
+
+cc-1506 CC: REMARK File = /home/argus/aips++/daily/code/include/aips/Tables/BucketFile.h,
+Line = 168
+  There is an implicit conversion from "long" to "unsigned int"; rounding, sign
+          extension, or loss of accuracy may result.
+
+      { return ::lseek (fd_p, 0, SEEK_END); }
+
+   lseek returns an off_t not a uInt
+               ^
+blockio (opt)
+cc-1506 CC: REMARK File = /home/argus/aips++/daily/code/aips/implement/FITS/blockio.cc, Line = 117
+  There is an implicit conversion from "long" to "int"; rounding, sign
+          extension, or loss of accuracy may result.
+
+            nreadlast = ::read(fd, buffer + iosize, (unsigned)ntoread);
+                        ^
+   read returns an ssize_t not an Int
+
+cc-1506 CC: REMARK File = /home/argus/aips++/daily/code/aips/implement/FITS/blockio.cc, Line = 152
+  There is an implicit conversion from "long" to "int"; rounding, sign
+          extension, or loss of accuracy may result.
+
+                iosize = ::write(fd,buffer,current);
+
+   write returns an ssize_t not an Int
+                         ^
+cc-1506 CC: REMARK File = /home/argus/aips++/daily/code/aips/implement/FITS/fits.cc, Line = 2068
+  There is an implicit conversion from "unsigned long" to "int"; rounding, sign
+          extension, or loss of accuracy may result.
+
+                vallen = strlen((char *)val);
+                         ^
+
+   strlen returns a size_t not an int
+\end{verbatim}
+
+
+
+
+\emph{Comments} These examples point out a need to check the return types of
+various standard function calls and not assume they are Int/uInt.  A better
+choice would uLong, Long, or preferably define a new AIPS type, SizeT.
+
+The following two lists document the list of library and
+system calls that return off\_t, size\_t (unsigned), and ssize\_t (signed).\\
+
+Library routines that return off\_t, size\_t or ssize\_t:\\
+
+\begin{itemize}
+\item strftime
+\item strcspn
+\item strlen
+\item strspn
+\item strxfrm
+\item strlen
+\item strspn
+\item strcspn
+\item wcstombs
+\item telldir
+\end{itemize}
+
+System calls that return off\_t, size\_t or ssize\_t:\\
+
+\begin{itemize}
+\item getpagesize
+\item read
+\item write
+\item lseek
+\end{itemize}
+
+
+\subsubsection{ Equivalence of pointers and ints}
+
+
+\begin{verbatim}
+/opt/MIPSpro/bin/cc -I.. -I../../include -I../.. -I../../../include -g -64 -DSGI64 -KPIC -c ../../sv.c
+cc-3187 cc: WARNING File = ../../sv.c, Line = 575
+  A pointer is converted to a smaller integer.
+
+        iv      = (IV)pv;
+                  ^
+
+cc-3187 cc: WARNING File = ../../sv.c, Line = 935
+  A pointer is converted to a smaller integer.
+
+          return (IV)SvRV(sv);
+                 ^
+\end{verbatim}
+
+\emph{Comments}
+Here IV is defined as an int and perhaps should be defined as a void pointer,
+long or a new AIPS++ date type, ptrInt?  This category includes pointer
+arithmetic incorrectly using Ints.
+
+\subsubsection{String conversion problems}
+
+\begin{verbatim}
+cc-1178 CC: WARNING File = ../../ValKern.cc, Line = 68
+  Argument is incompatible with the corresponding format string conversion.
+
+                fprintf( stdout, " + %d {ValueKernel}\n", sizeof(ValueKernel) );
+                                                          ^
+\end{verbatim}
+
+
+\emph{Comments}
+\%d is for Int, sizeof returns a Long in 64bit and needs \%ld.  We could use 
+macros to handle the \%d and \%ld, however
+we really should use iostreams to avoid these
+kinds of conversion problems.
+
+
+\subsubsection{Explicit Constant Typing}
+
+\emph{Comments} There are many instances of explicit constants used in the
+AIPS++, in general we get this "right" using only Int constants for Ints,
+i.e. we don't do
+\begin{verbatim}
+Long a = 0xffff;  //Assumes a long is 4 bytes.
+\end{verbatim}
+
+It's possible we may need to define these types of constants in a
+OS/Bitmask.h file when dealing with long ints or long long ints or long
+doubles.
+
+
+\subsubsection{Bit shifting and bit-wise operations}
+
+\emph{Comments} We generally do the right thing. Random.cc has some 32/64-bit
+dependencies of this type.  It's important to keep the data types
+in mind when using the shift operators $<<$ and $>>$.
+
+
+\subsubsection{FORTRAN Interface}
+
+Again directly from "SGI MIPSpro 64-bit Porting and Transition Guide".
+
+\begin{verbatim}
+64-Bit Fortran Porting Guidelines
+
+This section describes which sections of your Fortran source code you
+need to modify to port to a 64-bit system.
+
+Standard ANSI Fortran 77 code should have no problems, but the
+following areas need attention:
+
+. Code that uses REAL*16 could get different runtime results due to
+additional accuracy in the QUAD libraries.
+
+. fcom and fef77 are incompatible with regard to real constant
+folding.
+
+. Integer variables which were used to hold addresses need to be
+changed to INTEGER*8.
+
+. C interface issues (Fortran passes by reference).
+
+. %LOC returns 64-bit addresses.
+
+. %VAL passes 64-bit values.
+
+Source code modifications are best done in phases. In the first phase,
+try to locate all of the variables affected by the size issues mentioned
+above. In the second phase, locate variables that depend on the
+variables changed in the first phase. Depending on your code, you may
+need to iterate on this phase as you track down long sets of
+dependencies.
+
+Examples of Fortran Portability Issues
+
+The following examples illustrate the variable size issues outlined
+above:
+
+Example 1: Changing Integer Variables
+
+Integer variables used to hold addresses must be changed to
+INTEGER*8.
+
+32-bit code:
+
+integer iptr, asize
+iptr = malloc(asize)
+
+64-bit code:
+
+integer*8 iptr, asize
+iptr = malloc(asize)
+
+Example 2: Enlarging Tables
+
+Tables which hold integers used as pointers must be enlarged by a
+factor of two.
+
+32-bit code:
+
+integer tableptr, asize, numptrs
+numptrs = 100
+asize = 100 * 4
+tableptr = malloc(asize)
+
+64-bit code:
+
+integer numptrs
+integer*8 tableptr, asize
+numptrs = 100
+asize = 100 * 8
+tableptr = malloc(asize)
+
+\end{verbatim}
+
+\subsubsection{Memory alignment assumptions}
+\emph{Comments} These include assumptions on the layout in memory of data
+in structs or unions.  No known problems.
+
+\subsubsection{Library function parameters and implementation}
+\emph{Comment} This includes differences in function parameters or
+implementations between 32- and 64-bit version of a library.  Examples
+include, the signature of memcpy() and the absence of the macro definition
+SCM\_RIGHTS (which is not defined using the SGI 64-bit compiler).
+
+\section{Recommendations}
+
+\begin{enumerate}
+\item We have two options, either use Long for all library/system calls that
+return off\_t, size\_t, or ssize\_t  or define a new AIPS type SizeT (used
+for off\_t, ssize\_t) which can be defined in the aips.h file.
+
+\item Any bitmask constant for a Long should go into trial/OS/Bitmask.h
+
+\item We need to define a macro, AIPS\_64BIT, to let us recognize 64 bit
+compilers and handle them in a generic fashion (would be used in
+CanonicalConversion.h, Bitmask.h, and possibly in some FORTRAN codes). 
+
+\item Define a new AIPS++ type, intPtr to hold an address in the few cases
+when the pointer needs to be coerced into an Int, i.e FORTRAN
+interface or passing a pointer to Glish.
+\end{enumerate}
+
+
+\end{document}
