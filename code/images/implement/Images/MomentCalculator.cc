@@ -1401,7 +1401,7 @@ Bool MomentCalcBase<T>::stats(T& dMin,
    Int iStart = -1;
    uInt i = 0;
    uInt nPts = 0;
-   NumericTraits<T>::PrecisionType sum = 0;
+   typename NumericTraits<T>::PrecisionType sum = 0;
 
    while (i<profile.nelements() && iStart==-1) {
       if (pMask[i]) {
@@ -1658,10 +1658,10 @@ void MomentClip<T>::multiProcess(Vector<T>& moments,
 // the original data, regardless of whether the pixel selection is 
 // done with the primary or ancilliary data.
 
-   NumericTraits<T>::PrecisionType s0  = 0.0;
-   NumericTraits<T>::PrecisionType s0Sq = 0.0;
-   NumericTraits<T>::PrecisionType s1  = 0.0;
-   NumericTraits<T>::PrecisionType s2  = 0.0;
+   typename NumericTraits<T>::PrecisionType s0  = 0.0;
+   typename NumericTraits<T>::PrecisionType s0Sq = 0.0;
+   typename NumericTraits<T>::PrecisionType s1  = 0.0;
+   typename NumericTraits<T>::PrecisionType s2  = 0.0;
    Int iMin = -1;
    Int iMax = -1;
    T dMin =  1.0e30;
@@ -1810,7 +1810,7 @@ void MomentClip<T>::multiProcess(Vector<T>& moments,
          
 // Absolute deviations of I from mean needs an extra pass.
          
-   NumericTraits<T>::PrecisionType sumAbsDev = 0;
+   typename NumericTraits<T>::PrecisionType sumAbsDev = 0;
    if (doAbsDev_p) {
       T iMean = s0 / nPts;
       for (i=0; i<nPts; i++) sumAbsDev += abs(selectedData_p(i) - iMean);
@@ -2133,10 +2133,10 @@ void MomentWindow<T>::multiProcess(Vector<T>& moments,
 
 // Accumulate sums and acquire selected data from primary lattice 
             
-   NumericTraits<T>::PrecisionType s0  = 0.0;
-   NumericTraits<T>::PrecisionType s0Sq = 0.0;
-   NumericTraits<T>::PrecisionType s1  = 0.0;
-   NumericTraits<T>::PrecisionType s2  = 0.0;
+   typename NumericTraits<T>::PrecisionType s0  = 0.0;
+   typename NumericTraits<T>::PrecisionType s0Sq = 0.0;
+   typename NumericTraits<T>::PrecisionType s1  = 0.0;
+   typename NumericTraits<T>::PrecisionType s2  = 0.0;
    Int iMin = -1;
    Int iMax = -1;
    T dMin =  1.0e30;
@@ -2163,7 +2163,7 @@ void MomentWindow<T>::multiProcess(Vector<T>& moments,
          
 // Absolute deviations of I from mean needs an extra pass.
    
-   NumericTraits<T>::PrecisionType sumAbsDev = 0.0;
+   typename NumericTraits<T>::PrecisionType sumAbsDev = 0.0;
    if (doAbsDev_p) {
       T iMean = s0 / nPts;
       for (i=0; i<nPts; i++) sumAbsDev += abs(selectedData_p(i) - iMean);
@@ -2559,7 +2559,7 @@ Bool MomentWindow<T>::getBosmaWindow (Vector<Int>& window,
    
 // Find mean outside of peak region
 
-      NumericTraits<T>::PrecisionType sum = 0;
+      typename NumericTraits<T>::PrecisionType sum = 0;
       Int i,j;
       for (i=0,j=0; i<nPts; i++) {
          if (mask(i) && (i < iMin || i > iMax)) {
@@ -2789,10 +2789,10 @@ void MomentFit<T>::multiProcess(Vector<T>& moments,
 
 // Compute moments from the fitted Gaussian
             
-   NumericTraits<T>::PrecisionType s0  = 0.0;
-   NumericTraits<T>::PrecisionType s0Sq = 0.0;
-   NumericTraits<T>::PrecisionType s1  = 0.0;
-   NumericTraits<T>::PrecisionType s2  = 0.0;
+   typename NumericTraits<T>::PrecisionType s0  = 0.0;
+   typename NumericTraits<T>::PrecisionType s0Sq = 0.0;
+   typename NumericTraits<T>::PrecisionType s1  = 0.0;
+   typename NumericTraits<T>::PrecisionType s2  = 0.0;
    Int iMin = -1;
    Int iMax = -1;
    T dMin =  1.0e30;
@@ -2832,7 +2832,7 @@ void MomentFit<T>::multiProcess(Vector<T>& moments,
 
 // Absolute deviations of I from mean needs an extra pass.
          
-   NumericTraits<T>::PrecisionType sumAbsDev = 0.0;
+   typename NumericTraits<T>::PrecisionType sumAbsDev = 0.0;
    if (doAbsDev_p) {
       T iMean = s0 / nPts;
       for (i=0; i<nPts; i++) sumAbsDev += abs(gData(i) - iMean);

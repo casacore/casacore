@@ -1,5 +1,5 @@
 //# ImageSourceFinder.cc:  find sources
-//# Copyright (C) 1995,1996,1997,1998,1999,2000,2001,2002
+//# Copyright (C) 1995,1996,1997,1998,1999,2000,2001,2002,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -233,8 +233,8 @@ ComponentList ImageSourceFinder<T>::findSources (LogIO& os,
 
 // Results matrix
 
-   Matrix<NumericTraits<T>::PrecisionType> mat(w,w);
-   Matrix<NumericTraits<T>::PrecisionType> rs(nMax, 3);    // flux, x, y
+   Matrix<typename NumericTraits<T>::PrecisionType> mat(w,w);
+   Matrix<typename NumericTraits<T>::PrecisionType> rs(nMax, 3);  // flux, x, y
    rs = 0.0;
     
 // Assume only positive
@@ -306,7 +306,7 @@ ComponentList ImageSourceFinder<T>::findSources (LogIO& os,
          if (inDone(inp, i)) continue;             // point already used or masked
 //
          pos(0) = i;
-         NumericTraits<T>::PrecisionType v(inPtr[inp].ref()(pos));
+         typename NumericTraits<T>::PrecisionType v(inPtr[inp].ref()(pos));
          if (absFind) {                            // find pos/neg
             asign = (v<0) ? -1.0 : 1.0;
             v = abs(v);
@@ -360,9 +360,9 @@ ComponentList ImageSourceFinder<T>::findSources (LogIO& os,
    
 // Find max
 
-         NumericTraits<T>::PrecisionType r1(sol(5)*sol(5) - 4*sol(3)*sol(4));       // dx
+         typename NumericTraits<T>::PrecisionType r1(sol(5)*sol(5) - 4*sol(3)*sol(4));       // dx
          if (r1 == 0) continue;                            // forget
-         NumericTraits<T>::PrecisionType r0((2*sol(2)*sol(3) - sol(1)*sol(5))/r1);  // dy
+         typename NumericTraits<T>::PrecisionType r0((2*sol(2)*sol(3) - sol(1)*sol(5))/r1);  // dy
          r1 = (2*sol(1)*sol(4) - sol(2)*sol(5))/r1;
          if (abs(r0)>1 || abs(r1)>1) continue;             // too far away from peak
    
@@ -402,7 +402,7 @@ ComponentList ImageSourceFinder<T>::findSources (LogIO& os,
 // Find the number filled
                        
    Int nFound = 0;
-   NumericTraits<T>::PrecisionType x = cutoff*abs(rs(0,0));
+   typename NumericTraits<T>::PrecisionType x = cutoff*abs(rs(0,0));
    for (Int k=0; k<nMax; k++) {
      if (abs(rs(k,0)) < x || rs(k,0) == 0) break;
      nFound++;   
@@ -415,8 +415,8 @@ ComponentList ImageSourceFinder<T>::findSources (LogIO& os,
 
 // Generate more accurate fit if required giveing shape information
 
-   Matrix<NumericTraits<T>::PrecisionType> ss(nFound, 3);    // major, minor, pa
-   Matrix<NumericTraits<T>::PrecisionType> rs2(rs.copy());   // copy
+   Matrix<typename NumericTraits<T>::PrecisionType> ss(nFound, 3);    // major, minor, pa
+   Matrix<typename NumericTraits<T>::PrecisionType> rs2(rs.copy());   // copy
 //
    if (!doPoint) {
 
@@ -462,14 +462,14 @@ ComponentList ImageSourceFinder<T>::findSources (LogIO& os,
 // Make fitter, add model and fit
 
                Fit2D fit2d(os);
-               Vector<NumericTraits<T>::PrecisionType> model = 
+               Vector<typename NumericTraits<T>::PrecisionType> model = 
                   fit2d.estimate(Fit2D::GAUSSIAN, dataIn, maskIn);
                model(0) = rs(k,0);
                fit2d.addModel(Fit2D::GAUSSIAN, model);
                Fit2D::ErrorTypes ret = fit2d.fit(dataIn, maskIn, sigmaIn);
 //              
                if (ret==Fit2D::OK) {
-                  Vector<NumericTraits<T>::PrecisionType> solution = 
+                  Vector<typename NumericTraits<T>::PrecisionType> solution = 
                      fit2d.availableSolution();
 //
                   rs(k,0) = solution(0);
