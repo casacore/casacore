@@ -83,7 +83,7 @@ void docomm()
 
 
 // Show the required columns.
-// First test if they exist and contain scalars.
+// First test if they exist and contain scalars or arrays.
 void showtab (const Table& tab, const Vector<String>& colnam)
 {
     uInt nrcol = 0;
@@ -93,8 +93,10 @@ void showtab (const Table& tab, const Vector<String>& colnam)
 	    cout << "Column " << colnam(i) << " does not exist" << endl;
 	}else{
 	    tableColumns[nrcol] = new ROTableColumn (tab, colnam(i));
-	    if (! tableColumns[nrcol]->columnDesc().isScalar()) {
-		cout << "Column " << colnam(i) << " does not contain scalars"
+	    if (! tableColumns[nrcol]->columnDesc().isScalar()
+	    &&  ! tableColumns[nrcol]->columnDesc().isArray()) {
+		cout << "Column " << colnam(i)
+		     << " contains scalars nor arrays"
 		     << endl;
 		delete tableColumns[nrcol];
 	    }else{
@@ -108,19 +110,23 @@ void showtab (const Table& tab, const Vector<String>& colnam)
 
     for (i=0; i<tab.nrow(); i++) {
 	for (uInt j=0; j<nrcol; j++) {
-	    switch (tableColumns[j]->columnDesc().dataType()) {
-	    case TpBool:
-		cout << " " << tableColumns[j]->asBool (i);
-		break;
-	    case TpString:
-		cout << " " << tableColumns[j]->asString (i);
-		break;
-	    case TpComplex:
-	    case TpDComplex:
-		cout << " " << tableColumns[j]->asDComplex (i);
-		break;
-	    default:
-		cout << " " << tableColumns[j]->asdouble (i);
+	    if (tableColumns[j]->columnDesc().isArray()) {
+		cout << " " << tableColumns[j]->shape (i);
+	    }else{
+		switch (tableColumns[j]->columnDesc().dataType()) {
+		case TpBool:
+		    cout << " " << tableColumns[j]->asBool (i);
+		    break;
+		case TpString:
+		    cout << " " << tableColumns[j]->asString (i);
+		    break;
+		case TpComplex:
+		case TpDComplex:
+		    cout << " " << tableColumns[j]->asDComplex (i);
+		    break;
+		default:
+		    cout << " " << tableColumns[j]->asdouble (i);
+		}
 	    }
 	}
 	cout << endl;
