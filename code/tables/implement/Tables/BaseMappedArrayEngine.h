@@ -271,8 +271,14 @@ public:
     // Deleting rows is possible for this engine.
     virtual Bool canRemoveRow() const;
 
-    // Give the virtual name.
+    // Get the virtual column name.
     const String& virtualName() const;
+
+    // Get the stored column name.
+    const String& storedName() const;
+
+    // The column is writable if the underlying stored column is writable.
+    virtual Bool isWritable() const;
 
 protected:
 
@@ -303,9 +309,6 @@ protected:
     // Set the virtual and stored column name.
     void setNames (const String& virtualName, const String& storedName);
 
-    // Get the stored name.
-    const String& storedName() const;
-
     // Give readonly access to the stored column.
     // This can be used by the derived classes to get data.
     inline ROArrayColumn<StoredType>& roColumn();
@@ -313,9 +316,6 @@ protected:
     // Give read/write access to the stored column.
     // This can be used by the derived classes to put data.
     inline ArrayColumn<StoredType>& rwColumn();
-
-    // The column is writable if the underlying stored column is writable.
-    virtual Bool isWritable() const;
 
     // Create the column object for the array column in this engine.
     // It will check if the given column name matches the virtual
