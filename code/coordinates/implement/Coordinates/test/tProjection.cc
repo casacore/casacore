@@ -13,7 +13,7 @@ int main()
 // Test parameter setting and recovery
 
    for (Int i=0; i<Projection::N_PROJ; i++) {
-      cout << "Testing " << Projection::name(Projection::Type(i)) << endl;
+//      cout << "Testing " << Projection::name(Projection::Type(i)) << endl;
       uInt nP = Projection::nParameters(Projection::Type(i));
       Vector<Double> pars(nP);
       for (uInt j=0; j<nP; j++) {
@@ -30,6 +30,9 @@ int main()
       }
       if (proj.name() != Projection::name(type)) {
         throw(AipsError("Name recovery inconsistent"));
+      }
+      if (proj.type(proj.name()) != type) {
+        throw(AipsError("Type recovery inconsistent"));
       }
    }
       
@@ -75,6 +78,7 @@ int main()
         throw(AipsError("Copy constructor fails"));
       }
    }
+
 
    
    } catch (AipsError x) {
