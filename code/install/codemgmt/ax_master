@@ -2600,3 +2600,5 @@
 09 518 src rm trial/implement/Measures/SkyPosition.cc
 09 518 src rm trial/implement/Measures/MeasuredValue.h
 09 518 src rm trial/implement/Measures/MeasuredValue.cc
+09 531 src rm trial/implement/Measures/FieldMachine.h
+09 531 src rm trial/implement/Measures/FieldMachine.cc
