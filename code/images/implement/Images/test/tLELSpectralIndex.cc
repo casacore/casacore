@@ -31,6 +31,7 @@
 #include <trial/Coordinates/SpectralCoordinate.h>
 #include <trial/Lattices/LatticeExpr.h>
 #include <aips/Arrays/Vector.h>
+#include <aips/Arrays/Matrix.h>
 #include <aips/Arrays/Cube.h>
 #include <aips/Arrays/ArrayMath.h>
 #include <aips/Arrays/ArrayLogical.h>
@@ -46,7 +47,7 @@ Bool doIt()
 {
   Bool ok = True;
   IPosition shp1(2,10,10);
-  IPosition shp2(3,10,10,5);
+  IPosition shp2(3,10,10,15);
   Double freq, freql, freqstep, scafreq;
   Array<Float> arr1(shp1);
   Array<Float> arr2(shp2);
@@ -69,10 +70,17 @@ Bool doIt()
     // Remove the pixel axis (and replace by middle element).
     cSys1.removePixelAxis (2, Double(shp2(2)) / 2);
     CoordinateSystem cSys2 = CoordinateUtil::defaultCoords3D();
+    CoordinateSystem cSys3;
+    CoordinateUtil::addFreqAxis(cSys3);
+    CoordinateUtil::addDirAxes(cSys3);
+    cSys3.removePixelAxis (0, Double(shp2(2)) / 2 + 1);
     PagedImage<Float> pa1(shp1, cSys1, "tExtendImage_tmp.pa1");
-    PagedImage<Float> pa2(shp2, cSys2, "tExtendImage_tmp.pa2");
+    PagedImage<Float> pa2(TiledShape(shp2, IPosition(3,4,3,6)),
+				     cSys2, "tExtendImage_tmp.pa2");
+    PagedImage<Float> pa3(shp1, cSys3, "tExtendImage_tmp.pa3");
     pa1.put (arr1);
     pa2.put (arr2);
+    pa3.put (arr1 + Float(100));
   }
   {
     PagedImage<Float> pa1("tExtendImage_tmp.pa1");
@@ -95,19 +103,37 @@ Bool doIt()
     }
   }
   {
+    PagedImage<Float> pa3("tExtendImage_tmp.pa3");
     PagedImage<Float> pa1("tExtendImage_tmp.pa1");
+    LatticeExpr<Float> expr = spectralindex(pa1,pa3);
+    Array<Float> result = expr.get();
+    Matrix<Float> arrf(shp1);
+    for (Int i=0; i<shp1(0); i++) {
+      for (Int j=0; j<shp1(1); j++) {
+	arrf(i,j) = log (scafreq / (scafreq+freqstep));
+      }
+    }
+    Array<Float> expect = log(arr1 / (arr1+Float(100))) / arrf;
+    if (! allNear (result, expect, 1e-6)) {
+      cout << expect << endl;
+      cout << result << endl;
+      ok = False;
+    }
+  }
+  {
+    PagedImage<Float> pa3("tExtendImage_tmp.pa3");
     PagedImage<Float> pa2("tExtendImage_tmp.pa2");
-    LatticeExpr<Float> expr = spectralindex(pa2,pa1);
+    LatticeExpr<Float> expr = spectralindex(pa2,pa3);
     Array<Float> result = expr.get();
     Cube<Float> arrf(shp2);
     for (Int i=0; i<shp2(0); i++) {
       for (Int j=0; j<shp2(1); j++) {
 	for (Int k=0; k<shp2(2); k++) {
-	  arrf(i,j,k) = log ((freq + k*freqstep) / scafreq);
+	  arrf(i,j,k) = log ((freq + k*freqstep) / (scafreq+freqstep));
 	}
       }
     }
-    Array<Float> expect = log(arr2 / arr1a) / arrf;
+    Array<Float> expect = log(arr2 / (arr1a+Float(100))) / arrf;
     if (! allNear (result, expect, 1e-6)) {
       cout << expect << endl;
       cout << result << endl;
