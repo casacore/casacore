@@ -98,7 +98,7 @@ void LatticeUtilities::collapse (Array<T>& out, const IPosition& axes,
 { 
    LatticeStatistics<T> stats(in, False, False);
    AlwaysAssert(stats.setAxes(axes.asVector()), AipsError);
-   stats.getMean(out, dropDegenerateAxes);
+   stats.getConvertedStatistic(out, LatticeStatsBase::MEAN, dropDegenerateAxes);
 }
 
 template <class T>
@@ -119,7 +119,7 @@ void LatticeUtilities::collapse(Array<T>& data, Array<Bool>& mask,
    stats.setAxes(axes.asVector());
 //
    if (getPixels) {
-      stats.getMean(data, dropDegenerateAxes);
+      stats.getConvertedStatistic(data, LatticeStatsBase::MEAN, dropDegenerateAxes);
    } else {
       data.resize(IPosition(0,0));
    }
@@ -128,7 +128,7 @@ void LatticeUtilities::collapse(Array<T>& data, Array<Bool>& mask,
 
    if (getMask) {
       Array<T> n;
-      stats.getNPts(n, dropDegenerateAxes);
+      stats.getConvertedStatistic(n, LatticeStatsBase::NPTS, dropDegenerateAxes);
       mask.resize(n.shape());
 //
       T lim(0.5);
