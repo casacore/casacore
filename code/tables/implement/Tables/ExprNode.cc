@@ -162,14 +162,21 @@ TableExprNode::TableExprNode (TableExprNodeRep* node)
 {}
 
 TableExprNode::TableExprNode (const TableExprNode& node)
-: node_p (node.node_p->link())
-{}
+: node_p (node.node_p)
+{
+    if (node_p) {
+        node_p->link();
+    }
+}
 
 TableExprNode& TableExprNode::operator= (const TableExprNode& that)
 {
     if (this != &that) {
 	TableExprNodeRep::unlink (node_p);
-	node_p = that.node_p->link();
+	node_p = that.node_p;
+	if (node_p) {
+	    node_p->link();
+	}
     }
     return *this;
 }
@@ -178,6 +185,11 @@ TableExprNode& TableExprNode::operator= (const TableExprNode& that)
 TableExprNode::~TableExprNode ()
 {
     TableExprNodeRep::unlink (node_p);
+}
+
+Table TableExprNode::table() const
+{
+    return Table(const_cast<BaseTable*>(baseTablePtr()));
 }
 
 

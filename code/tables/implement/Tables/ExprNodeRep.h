@@ -209,7 +209,8 @@ public:
     // </group>
 
     // Get the number of rows in the table associated with this expression.
-    // Zero is returned when no table is associated with it.
+    // One is returned if the expression is a constant.
+    // Zero is returned if no table is associated with it.
     uInt nrow() const;
 
     // Get the data type of the column.

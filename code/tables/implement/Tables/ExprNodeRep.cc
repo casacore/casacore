@@ -120,6 +120,9 @@ void TableExprNodeRep::replaceTablePtr (const Table&,
 //# Determine the number of rows in the table used in the expression.
 uInt TableExprNodeRep::nrow() const
 {
+    if (exprtype_p == Constant) {
+        return 1;
+    }
     if (baseTabPtr_p == 0) {
 	return 0;
     }

@@ -32,9 +32,9 @@
 #include <casa/aips.h>
 #include <tables/Tables/ExprNodeRep.h>
 #include <tables/Tables/ExprRange.h>
+#include <tables/Tables/ExprFuncNode.h>
 #include <casa/Utilities/DataType.h>
 #include <casa/BasicSL/Complex.h>
-#include <tables/Tables/ExprFuncNode.h>
 #include <casa/Utilities/Regex.h>
 
 //# Forward Declarations
@@ -504,6 +504,10 @@ public:
     // The destructor deletes all the underlying TableExprNode objects,
     ~TableExprNode ();
 
+    // Does the node contain no actual node?
+    Bool isNull() const
+      { return node_p == 0; }
+
     // Get the data type of the expression.
     // Currently the only possible values are TpBool, TpDouble,
     // TpDComplex and TpString.
@@ -514,6 +518,12 @@ public:
     // Is the expression a scalar?
     Bool isScalar() const
       { return (node_p->valueType() == TableExprNodeRep::VTScalar); }
+
+    // Get the number of rows in the table associated with this expression.
+    // One is returned if the expression is a constant.
+    // Zero is returned if no table is associated with it.
+    uInt nrow() const
+      { return node_p->nrow(); }
 
     // Get a value for this node in the given row.
     // These functions are implemented in the derived classes and
@@ -589,7 +599,10 @@ public:
     // TableExprNode belongs. A TableExprNode belongs to the BaseTable to
     // which the column(s) used in an expression belong. Note that
     // all columns in an expression have to belong to the same table.
+    // <group>
+    Table table() const;
     const BaseTable* baseTablePtr() const;
+    // </group>
 
     // Create a column node on behalf of the Table class.
     // For builtin data types another type of node is created than
@@ -681,7 +694,6 @@ private:
     // The actual (counted referenced) representation of a node.
     TableExprNodeRep* node_p;
 };
-
 
 
 
