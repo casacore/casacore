@@ -354,7 +354,7 @@ Quantum<Qtype> operator/(const Quantum<Qtype> &other) const;
 // Get value in specified units
     Qtype getValue(const Unit &other) const;
 // Get the full unit specification
-    const Unit &getFullUnit() const;
+    virtual const Unit &getFullUnit() const;
 
 // Re-specify parts of a quantum
 // <group name="set value">
@@ -409,6 +409,15 @@ Quantum<Qtype> operator/(const Quantum<Qtype> &other) const;
 // Convert a Quantum to units from specified quantum (ibid example)
     void convert(const Quantum<Qtype> &other) ;
 // </group>
+// Get a copy of Quantum
+  virtual QBase *clone() const;
+  // Print a Quantum
+  virtual void print(ostream &os) const;
+  // Get the type (== Register() of derived Quantum (faster than Strings)
+  // <group>
+  virtual uInt type() const;
+  static uInt myType();
+  // </group>
 
 private:
 //# Data members
@@ -419,9 +428,9 @@ private:
 // Global functions
 // Output/Input
 // <group name=output>
+// only Quantity is supported on input
 template<class Qtype>
  ostream& operator<< (ostream &os, const Quantum<Qtype> &ku);
-// only Quantity is supported on input
 istream& operator>> (istream &is, Quantity &ku);
 // </group>
 

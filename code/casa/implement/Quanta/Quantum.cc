@@ -40,6 +40,7 @@
 #include <aips/Measures/MUString.h>
 #include <aips/Measures/MVAngle.h>
 #include <aips/Measures/MVTime.h>
+#include <aips/RTTI/Register.h>
 
 #if defined(__GNUG__)
 typedef Quantum<Double> gpp_bug_1;
@@ -134,7 +135,7 @@ Quantum<Qtype> &Quantum<Qtype>::operator-=(const Qtype &other) {
 
 template <class Qtype>
 Quantum<Qtype> &Quantum<Qtype>::operator*=(const Quantum<Qtype> &other) {
-    at_c(qVal) *= at_cc(other.qVal);
+    at_c(qVal) *= at_cc(other.qVal); 
     if (!(other.qUnit.getName().empty())) {
 	if (qUnit.getName().empty()) {
 	    qUnit = other.qUnit;
@@ -188,7 +189,7 @@ Quantum<Qtype> Quantum<Qtype>::operator-(const Quantum<Qtype> &other) const{
 
 template <class Qtype>
 Quantum<Qtype> Quantum<Qtype>::operator*(const Quantum<Qtype> &other) const{
-    Quantum<Qtype> loc; loc = *this;
+    Quantum<Qtype> loc; loc = *this; 
     loc *= other;
     return loc;
 }
@@ -201,9 +202,8 @@ Quantum<Qtype> Quantum<Qtype>::operator/(const Quantum<Qtype> &other) const{
 }
 
 template <class Qtype>
-ostream& operator<< (ostream &os, const Quantum<Qtype> &ku) {
-    os << at_cc(ku.qVal) << " " << ku.qUnit.getName();
-    return os;
+void  Quantum<Qtype>::print(ostream &os) const {
+    os << at_cc(qVal) << " " << qUnit.getName();
 }
 
 //# Quantum general member functions
@@ -362,3 +362,23 @@ Quantum<Qtype> Quantum<Qtype>::get(const Quantum<Qtype> &other) const{
     return get(other.qUnit);
 }
 
+template <class Qtype>
+QBase *Quantum<Qtype>::clone() const {
+  return (new Quantum<Qtype>(*this));
+}
+
+template <class Qtype>
+uInt Quantum<Qtype>::type() const {
+  return Register((Quantum<Qtype> *)0);
+}
+
+template <class Qtype>
+uInt Quantum<Qtype>::myType() {
+  return Register((Quantum<Qtype> *)0);
+}
+
+template <class Qtype>
+ostream& operator<< (ostream &os, const Quantum<Qtype> &ku) {
+    os << at_cc(ku.qVal) << " " << ku.qUnit.getName();
+    return os;
+}
