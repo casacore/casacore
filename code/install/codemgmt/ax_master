@@ -4744,3 +4744,4 @@
 14 306 sys rm libexec/sditerator2.g
 14 306 sys rm libexec/newsdfits2ms.g
 14 306 src rm trial/apps/newsditerator
+14 308 src mv trial/apps/ms/ms.help trial/apps/oldms/oldms.help
