@@ -40,8 +40,11 @@
 #include <aips/Tables/TableRecord.h>
 #include <aips/Tables/StManAipsIO.h>
 #include <aips/Tables/IncrementalStMan.h>
+#include <aips/Tables/StandardStMan.h>
 #include <aips/Tables/TiledColumnStMan.h>
+#include <aips/Tables/TiledShapeStMan.h>
 #include <aips/Tables/TiledDataStMan.h>
+#include <aips/Tables/TiledStManAccessor.h>
 #include <aips/Tables/TiledDataStManAccessor.h>
 #include <aips/Mathematics/Constants.h>
 #include <aips/Mathematics/Random.h>
@@ -65,8 +68,7 @@
 #include <aips/iostream.h>
 #include <aips/fstream.h>
 #include <aips/strstream.h>
-
-
+#include <trial/MeasurementSets/MSTileLayout.h>
 
 
 MSSimulator::MSSimulator() :
@@ -396,53 +398,80 @@ void MSSimulator::writeMS(const String& name)
     TableDesc td(MS::requiredTableDesc());
     // add data column
     MS::addColumnToDesc(td,MS::DATA,2);
-    if (nSpWindows_p==1) {
-      // all data has same shape, make columns direct
-      td.removeColumn(MS::columnName(MS::DATA));
-      MS::addColumnToDesc(td, MS::DATA, IPosition(2,nCorr_p(0),nChan_p(0)), 
-			  ColumnDesc::Direct);
-      td.removeColumn(MS::columnName(MS::FLAG));
-      MS::addColumnToDesc(td, MS::FLAG, IPosition(2,nCorr_p(0),nChan_p(0)), 
-			  ColumnDesc::Direct);
-      td.removeColumn(MS::columnName(MS::SIGMA));
-      MS::addColumnToDesc(td, MS::SIGMA, IPosition(1,nCorr_p(0)), 
-			  ColumnDesc::Direct);
-    } 
-    // define tiled hypercube for the data (may add flag etc later)
-    Vector<String> coordColNames(0); //# don't use coord columns
-    td.addColumn(ScalarColumnDesc<Int>("DATA_HYPERCUBE_ID",
-				       "Index for Data Tiling"));
-    td.defineHypercolumn("TiledData",3,
-			 stringToVector(MS::columnName(MS::DATA)+","+
-					MS::columnName(MS::FLAG)),
-			 coordColNames,
-			 stringToVector("DATA_HYPERCUBE_ID")
-			 );
-    td.defineHypercolumn("TiledUVW",2,
-			 stringToVector(MS::columnName(MS::UVW)));
 
+    td.defineHypercolumn("TiledData",3,
+			 stringToVector(MS::columnName(MS::DATA)));
+    td.defineHypercolumn("TiledFlag",3,
+ 			 stringToVector(MS::columnName(MS::FLAG)));
+    td.defineHypercolumn("TiledFlagCategory",4,
+ 			 stringToVector(MS::columnName(MS::FLAG_CATEGORY)));
+    td.defineHypercolumn("TiledUVW",2,
+ 			 stringToVector(MS::columnName(MS::UVW)));
+    td.defineHypercolumn("TiledWgt",2,
+			 stringToVector(MS::columnName(MS::WEIGHT)));
+    td.defineHypercolumn("TiledSigma", 2,
+			 stringToVector(MS::columnName(MS::SIGMA)));
     
     SetupNewTable newtab(name, td, Table::New);
 
     // Set the default Storage Manager to be the Incr one
     IncrementalStMan incrStMan ("ISMData");
     newtab.bindAll(incrStMan, True);
-    StManAipsIO aipsStMan;
-    TiledDataStMan tiledStMan("TiledData");
-    // Bind the DATA column to the tiled stman
-    newtab.bindColumn(MS::columnName(MS::DATA),tiledStMan);
-    newtab.bindColumn(MS::columnName(MS::FLAG),tiledStMan);
-    newtab.bindColumn("DATA_HYPERCUBE_ID",tiledStMan);
-    // Tile UVW access to avoid loading it all into memory at once
-    TiledColumnStMan tiledStManUVW("TiledUVW",IPosition(2,3,1024));
-    newtab.bindColumn(MS::columnName(MS::UVW),tiledStManUVW);
+
+    // Bind ANTENNA1, ANTENNA2 and DATA_DESC_ID to the standardStMan 
+    // as they may change sufficiently frequently to make the
+    // incremental storage manager inefficient for these columns.
     
-    // Change some to be aips
-    newtab.bindColumn(MS::columnName(MS::ANTENNA2),aipsStMan);
+    StandardStMan aipsStMan(32768);
+    newtab.bindColumn(MS::columnName(MS::ANTENNA1), aipsStMan);
+    newtab.bindColumn(MS::columnName(MS::ANTENNA2), aipsStMan);
+    newtab.bindColumn(MS::columnName(MS::DATA_DESC_ID), aipsStMan);
+    
+    IPosition dataShape(2,nCorr_p(0),nChan_p(0));
+    Int obsType(MSTileLayout::Standard);
+    // Use FastMosaic for big mosaics
+    if((nMos_p(0,0)*nMos_p(1,0))>10) obsType = MSTileLayout::FastMosaic;
+    Int nBase;
+    if(autoCorrelationWt_p > 0.0) {
+      nBase =nAnt_p*(nAnt_p+1)/2;
+    }
+    else {
+      nBase =nAnt_p*(nAnt_p-1)/2;
+    }
+    Int nInt(nIntFld_p(0));
+    IPosition tileShape = MSTileLayout::tileShape(dataShape,obsType,
+						  nBase, nInt);
+
+    TiledShapeStMan tiledStMan1("TiledData",tileShape);
+    TiledShapeStMan tiledStMan1f("TiledFlag",tileShape);
+    TiledShapeStMan tiledStMan1fc("TiledFlagCategory",
+				  IPosition(4,tileShape(0),tileShape(1),1,
+ 					   tileShape(2)));
+    TiledColumnStMan tiledStMan3("TiledUVW",IPosition(2,3,1024));
+    TiledShapeStMan tiledStMan4("TiledWgt", 
+				IPosition(2,tileShape(0),tileShape(2)));
+    TiledShapeStMan tiledStMan5("TiledSigma", 
+				IPosition(2,tileShape(0),tileShape(2)));
+
+    // Bind the DATA, FLAG & WEIGHT_SPECTRUM columns to the tiled stman
+    newtab.bindColumn(MS::columnName(MS::DATA),tiledStMan1);
+    newtab.bindColumn(MS::columnName(MS::FLAG),tiledStMan1f);
+    newtab.bindColumn(MS::columnName(MS::FLAG_CATEGORY),tiledStMan1fc);
+    newtab.bindColumn(MS::columnName(MS::UVW),tiledStMan3);
+    newtab.bindColumn(MS::columnName(MS::WEIGHT),tiledStMan4);
+    newtab.bindColumn(MS::columnName(MS::SIGMA),tiledStMan5);
 
     MeasurementSet simulMS(newtab,0);
     simulMS.createDefaultSubtables(Table::New);
 
+    { // Set the TableInfo
+      TableInfo& info(simulMS.tableInfo());
+      info.setType(TableInfo::type(TableInfo::MEASUREMENTSET));
+      info.setSubType(String("simulator"));
+      info.readmeAddLine
+	("This is a measurement set Table holding simulated astronomical observations");
+    }
+    
     // fill all 'coordinate' columns
     fillCoords(simulMS);
 }
@@ -598,23 +627,6 @@ void MSSimulator::fillCoords(MeasurementSet & ms)
 	polc.corrProduct().put(i,corrProduct);
     }
 
-    // Now that we know the spectral windows, we can add the appropriate
-    // hypercubes to the table.
-    TiledDataStManAccessor accessor(ms,"TiledData");
-    for (Int i=0; i<nSpWindows_p; i++) {
-	Record values;
-	values.define("DATA_HYPERCUBE_ID",i);
-	// choose a tile size in the channel direction that is <=10
-	// and doesn't waste too much storage.
-	Int tileSize=(nChan_p(i)+nChan_p(i)/10)/(nChan_p(i)/10+1);
-	// make the tile about 32k big
-	accessor.addHypercube(IPosition(3,nCorr_p(i),nChan_p(i),0),
-			      IPosition(3,nCorr_p(i),tileSize,
-					4000/nCorr_p(i)/tileSize),
-			      values);
-    }
-
-    //HAVE TO DO IT FOR EVERY ANTENNA FOR POINTING
     MSFieldColumns& fieldc=msc.field();
     MSPointingColumns& pointingc=msc.pointing();
     Int nField=0;
@@ -779,7 +791,7 @@ void MSSimulator::fillCoords(MeasurementSet & ms)
 	  nBase =nAnt_p*(nAnt_p-1)/2;
 	}
 	ms.addRow(nBase);
-	accessor.extendHypercube(nBase,values);
+	//	accessor.extendHypercube(nBase,values);
 	for (Int ant1=0; ant1<nAnt_p; ant1++) {
 	    Double x1=antXYZ_p(0,ant1), y1=antXYZ_p(1,ant1), z1=antXYZ_p(2,ant1);
 	    for (Int ant2=ant1; ant2<nAnt_p; ant2++) {
@@ -1091,23 +1103,6 @@ void MSSimulator::extendMS(MeasurementSet & ms)
     }
 
 
-    // Now that we know the spectral windows, we can add the appropriate
-    // hypercubes to the table.
-    TiledDataStManAccessor accessor(ms,"TiledData");
-    for (Int i=0; i<nSpWindows_p; i++) {
-	Record values;
-	values.define("DATA_HYPERCUBE_ID",i+nSpwid);
-	// choose a tile size in the channel direction that is <=10
-	// and doesn't waste too much storage.
-	Int tileSize=(nChan_p(i)+nChan_p(i)/10)/(nChan_p(i)/10+1);
-	// make the tile about 32k big
-	accessor.addHypercube(IPosition(3,nCorr_p(i),nChan_p(i),0),
-			      IPosition(3,nCorr_p(i),tileSize,
-					4000/nCorr_p(i)/tileSize),
-			      values);
-
-    }
-    
     MSFieldColumns& fieldc=msc.field();
     Int numField=fieldc.nrow();
     MSPointingColumns& pointingc=msc.pointing();
@@ -1293,7 +1288,7 @@ void MSSimulator::extendMS(MeasurementSet & ms)
 	}
 	ms.addRow(nBase);
 	
-	accessor.extendHypercube(nBase,values);
+	//	accessor.extendHypercube(nBase,values);
 
 
 	for (Int ant1=0; ant1<nAnt_p; ant1++) {
