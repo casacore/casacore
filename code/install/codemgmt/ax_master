@@ -5962,3 +5962,4 @@
 16 347 src mv trial/implement/Functionals/test/tNQHyperPlane.cc aips/implement/Functionals/test/tNQHyperPlane.cc
 16 347 src mv trial/implement/Functionals/test/tNQSinusoid1D.cc aips/implement/Functionals/test/tNQSinusoid1D.cc
 16 356 src rm doc/gettingresults/gettingresults.dir/note236.latex
+16 361 src rm doc/gettingresults/gettingresults.dir/imagerwizard0.ps
