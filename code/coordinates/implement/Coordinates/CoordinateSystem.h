@@ -267,7 +267,7 @@ public:
 
     // For a given coordinate say where its world and coordinate axes are in
     // this coordinate system. The position in the returned Vector is its
-    // axis number in the coordinate system, and its value is the axis
+    // axis number in the coordinate, and its value is the axis
     // number in the coordinate system. If the value is less than zero the axis
     // has been removed from this coordinate system.
     //  <group>
