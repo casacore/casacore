@@ -2852,3 +2852,4 @@
 11 425 src rm doc/html/tour/tsld034.htm
 11 425 src mv aips/implement/Tables/ExprMath.h aips/implement/Tables/ExprMathNode.h
 11 425 src mv aips/implement/Tables/ExprMath.cc aips/implement/Tables/ExprMathNode.cc
+11 425 src mv aips/implement/Tables/ExprLogic.h aips/implement/Tables/ExprLogicNode.h
