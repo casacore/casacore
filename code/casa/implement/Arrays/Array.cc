@@ -1,5 +1,5 @@
 //# Array.cc: A templated N-D Array class with zero origin
-//# Copyright (C) 1993,1994,1995,1996,1997,1998,1999,2000,2001,2002
+//# Copyright (C) 1993,1994,1995,1996,1997,1998,1999,2000,2001,2002,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -1151,6 +1151,7 @@ void Array<T>::takeStorage(const IPosition &shape, T *storage,
     begin_p  = data_p->storage();
     nels_p   = new_nels;
     ndimen_p = new_ndimen;
+    contiguous_p = True;
     makeSteps();
     // Call OK at the end rather than the beginning since this might
     // be called from a constructor.
