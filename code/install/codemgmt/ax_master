@@ -5840,3 +5840,4 @@
 16 217 src mv trial/implement/Images/test/tImageLogger.cc trial/implement/Logging/test/tLoggerHolder.cc
 16 219 src rm bima/mirlib/packALPHA.c
 16 219 src mv trial/implement/Functionals/Gaussian2DParam.h aips/implement/Functionals/Gaussian2DParam.h
+16 219 src mv trial/implement/Functionals/Gaussian2DParam.cc aips/implement/Functionals/Gaussian2DParam.cc
