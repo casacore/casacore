@@ -39,18 +39,16 @@
 
 //# Constructors
 MeasMath::MeasMath() :
+  inOK_p(False), outOK_p(False),
+  inFrame_p(0), outFrame_p(0),
   SOLPOSIAU(0),
   ABERIAU(0), ABERB1950(0),
   NUTATIAU(0), NUTATB1950(0),
   PRECESIAU(0), PRECESB1950(0) {
-  inOK_p = False;
-  outOK_p = False;
-  inFrame_p = MeasFrame();
-  outFrame_p = MeasFrame();
   for (uInt i=0; i<N_FrameType; i++) {
     frameOK_p[i] = False;
-    applyFrame_p[i] = MeasFrame();
-    deapplyFrame_p[i] = MeasFrame();
+    applyFrame_p[i] = 0;
+    deapplyFrame_p[i] = 0;
   };
 }
 
@@ -77,13 +75,17 @@ void MeasMath::initFrame(MRBase &outref, MRBase &inref) {
   for (uInt i=0; i<N_FrameInfo; i++) infoOK_p[i] = False;
   // Get correct frame
   inOK_p = True;
-  if (!inref.empty()) inFrame_p = inref.getFrame();
-  else if (!outref.empty()) inFrame_p = outref.getFrame();
-  else inOK_p = False;
+  if (!inref.empty()) {
+    inFrame_p = &(inref.getFrame());
+  } else if (!outref.empty()) {
+    inFrame_p = &(outref.getFrame());
+  } else inOK_p = False;
   outOK_p = True;
-  if (!outref.empty()) outFrame_p = outref.getFrame();
-  else if (!inref.empty()) outFrame_p = inref.getFrame();
-  else outOK_p = False;
+  if (!outref.empty()) {
+    outFrame_p = &(outref.getFrame());
+  } else if (!inref.empty()) {
+    outFrame_p = &(inref.getFrame());
+  } else outOK_p = False;
 }
 
 void MeasMath::getFrame(FrameType i) {
@@ -97,15 +99,15 @@ void MeasMath::getFrame(FrameType i) {
   // Get correct frame
   if (!frameOK_p[i]) {
     frameOK_p[i] = True;
-    if (inOK_p && (inFrame_p.*frameInfo[i])()) {
+    if (inOK_p && (inFrame_p->*frameInfo[i])()) {
       applyFrame_p[i] = inFrame_p;
-    } else if (outOK_p && (outFrame_p.*frameInfo[i])()) {
+    } else if (outOK_p && (outFrame_p->*frameInfo[i])()) {
       applyFrame_p[i] = outFrame_p;
     } else {
       frameOK_p[i] = False;
     };
     if (frameOK_p[i]) {
-      if (outOK_p && (outFrame_p.*frameInfo[i])()) {
+      if (outOK_p && (outFrame_p->*frameInfo[i])()) {
 	deapplyFrame_p[i] = outFrame_p;
       } else {
 	deapplyFrame_p[i] = inFrame_p;
@@ -418,7 +420,7 @@ void MeasMath::getInfo(FrameInfo i) {
     // Make sure there has not been an epoch added
     getFrame(InfoType[i]);
     if (frameOK_p[InfoType[i]]) {
-      (((MCFrame *)(applyFrame_p[InfoType[i]].
+      (((MCFrame *)(applyFrame_p[InfoType[i]]->
 		    getMCFramePoint()))->*InfoFrame[i])(info_p[i]);
     } else {
       throw(AipsError(String("Missing information in Frame ") +
