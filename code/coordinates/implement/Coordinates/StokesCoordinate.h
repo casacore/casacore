@@ -1,5 +1,5 @@
 //# StokesCoordinate.h: Interconvert between pixel number and Stokes value.
-//# Copyright (C) 1997,1998,1999,2000,2001,2002
+//# Copyright (C) 1997,1998,1999,2000,2001,2002,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -136,16 +136,16 @@ public:
     // <src>errorMessage</src> returns an error message.
     // The output vectors are appropriately resized before use.
     // <group>
-    virtual Bool toWorld(Vector<Double> &world, 
-			 const Vector<Double> &pixel) const;
-    virtual Bool toPixel(Vector<Double> &pixel, 
-			 const Vector<Double> &world) const;
+    inline virtual Bool toWorld(Vector<Double> &world, 
+                                const Vector<Double> &pixel) const;
+    inline virtual Bool toPixel(Vector<Double> &pixel, 
+                                const Vector<Double> &world) const;
     // </group>
 
     // Interconvert between pixel and world as a Stokes type.
     // <group>
-    Bool toPixel(Int &pixel, Stokes::StokesTypes stokes) const;
-    Bool toWorld(Stokes::StokesTypes &stokes, Int pixel) const;
+    inline Bool toPixel(Int &pixel, Stokes::StokesTypes stokes) const;
+    inline Bool toWorld(Stokes::StokesTypes &stokes, Int pixel) const;
     // </group>
 
     // Interconvert between world stored as a Double and world stored as
@@ -162,10 +162,10 @@ public:
     // same as absolute world coordinates.  Relative pixels do have meaning
     // and are implemented (rel = abs - refPix)
     // <group>
-    virtual void makePixelRelative (Vector<Double>& pixel) const;
-    virtual void makePixelAbsolute (Vector<Double>& pixel) const;
-    virtual void makeWorldRelative (Vector<Double>& world) const;
-    virtual void makeWorldAbsolute (Vector<Double>& world) const;
+    inline virtual void makePixelRelative (Vector<Double>& pixel) const;
+    inline virtual void makePixelAbsolute (Vector<Double>& pixel) const;
+    inline virtual void makeWorldRelative (Vector<Double>& world) const;
+    inline virtual void makeWorldAbsolute (Vector<Double>& world) const;
     // </group>
  
 
