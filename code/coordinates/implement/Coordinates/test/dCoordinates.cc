@@ -1,5 +1,5 @@
 //# Program.cc: This program ...
-//# Copyright (C) 1996,1997
+//# Copyright (C) 1996,1997,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -163,7 +163,11 @@ int main()
     cout << world.ac() << " ---> " << pixel.ac() << endl;
 
     // CoordinateSystem::remove*Axis
-    coordsys.removePixelAxis(1, 138.0);
+    ok = coordsys.removePixelAxis(10, 138.0);
+    if (!ok) {
+	cout << "Error: " << coordsys.errorMessage() << endl;
+	exit(1);
+    }
     pixel.resize(3); pixel(0) = 138; pixel(1) = 50; pixel(2) = 2;
     ok = coordsys.toWorld(world, pixel);
     if (!ok) {
