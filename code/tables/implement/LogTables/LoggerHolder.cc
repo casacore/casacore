@@ -52,8 +52,7 @@ ImageLogger::ImageLogger (const String& logTableName, Bool isWritable)
 }
 
 ImageLogger::ImageLogger (const ImageLogger& that)
-: itsParents    (that.itsParents),
-  itsSink       (that.itsSink),
+: itsSink       (that.itsSink),
   itsLogger     (that.itsLogger),
   itsTableName  (that.itsTableName),
   itsTablePtr   (that.itsTablePtr),
@@ -62,12 +61,14 @@ ImageLogger::ImageLogger (const ImageLogger& that)
 {}
 
 ImageLogger::~ImageLogger()
-{}
+{
+  removeParents();
+}
 
 ImageLogger& ImageLogger::operator= (const ImageLogger& that)
 {
   if (this != &that) {
-    itsParents    = that.itsParents;
+    removeParents();
     itsSink       = that.itsSink;
     itsLogger     = that.itsLogger;
     itsTableName  = that.itsTableName;
@@ -80,6 +81,7 @@ ImageLogger& ImageLogger::operator= (const ImageLogger& that)
 
 void ImageLogger::append (const ImageLogger& other)
 {
+  reopenRW();
   LogSinkInterface& logsink = sink().localSink();
   for (ImageLogger::const_iterator iter = other.begin();
        iter != other.end();
@@ -91,12 +93,12 @@ void ImageLogger::append (const ImageLogger& other)
 
 void ImageLogger::reopenRW()
 {
-  // Only needed if a table is used and if not already open for rw..
+  // Only needed if a table is used and if not already open for rw.
   if (!itsTableName.empty()) {
     if (itsTablePtr == 0  ||  !itsIsWritable) {
     // Temporarily close table possibly opened for readonly.
       tempClose (False);
-      // Reopen temporarily closed table (if possible).
+      // Reopen temporarily closed table for rw (if possible).
       if (!itsIsWritable) {
 	itsIsWritable = Table::isWritable (itsTableName);
       }
@@ -172,7 +174,16 @@ void ImageLogger::resync()
   }
 }
 
+void ImageLogger::removeParents()
+{
+  itsParents.resize (0, True, True);
+}
 
+void ImageLogger::clear()
+{
+  reopenRW();
+  removeParents();
+}
 
 
 ImageLogIter::ImageLogIter (const ImageLogger* logger)
