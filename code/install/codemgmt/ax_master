@@ -5960,3 +5960,4 @@
 16 346 src mv trial/implement/Functionals/NQWrapperParam.cc aips/implement/Functionals/NQWrapperParam.cc
 16 347 src mv trial/implement/Functionals/test/tNQFunctionWrapper.cc aips/implement/Functionals/test/tNQFunctionWrapper.cc
 16 347 src mv trial/implement/Functionals/test/tNQHyperPlane.cc aips/implement/Functionals/test/tNQHyperPlane.cc
+16 347 src mv trial/implement/Functionals/test/tNQSinusoid1D.cc aips/implement/Functionals/test/tNQSinusoid1D.cc
