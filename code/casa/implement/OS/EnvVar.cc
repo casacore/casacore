@@ -1,5 +1,5 @@
 //# EnvVar.cc: Environment variables class
-//# Copyright (C) 1993,1994,1995,1998
+//# Copyright (C) 1993,1994,1995,1998,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //# 
 //# This library is free software; you can redistribute it and/or modify it
@@ -39,11 +39,11 @@ EnvironmentVariables::EnvironmentVariables() {
   // Change pointer of environ list to myenviron and then
   // point new environ to big area
   if (environ != myenviron) {
-    for (i = 0; i < maxenviron &&  environ[i] != NULL; i++)
+    for (i = 0; i < maxenviron &&  environ[i]; i++)
       myenviron[i] = environ[i];
     if (i < maxenviron) {
       environ = myenviron;
-      myenviron[i] = NULL;
+      myenviron[i] = 0;
     }
   }
 }
@@ -54,11 +54,11 @@ EnvironmentVariables::EnvironmentVariables(const String &namevalue) {
   // Change pointer of environ list to myenviron and then
   // point environ to big area
   if (environ != myenviron) {
-    for (i = 0; i < maxenviron &&  environ[i] != NULL; i++)
+    for (i = 0; i < maxenviron &&  environ[i]; i++)
       myenviron[i] = environ[i];
     if (i < maxenviron) {
       environ = myenviron;
-      myenviron[i] = NULL;
+      myenviron[i] = 0;
     }
   }
   if(!EnvironmentVariables().set(namevalue))
@@ -71,11 +71,11 @@ EnvironmentVariables::EnvironmentVariables(const String &name, const String &val
   // Change pointer of environ list to myenviron and then
   // point environ to big area
   if (environ != myenviron) {
-    for (i = 0; i < maxenviron &&  environ[i] != NULL; i++)
+    for (i = 0; i < maxenviron &&  environ[i]; i++)
       myenviron[i] = environ[i];
     if (i < maxenviron) {
       environ = myenviron;
-      myenviron[i] = NULL;
+      myenviron[i] = 0;
     }
   }
   if(!EnvironmentVariables().set(name, value))
@@ -85,7 +85,7 @@ EnvironmentVariables::EnvironmentVariables(const String &name, const String &val
 uInt EnvironmentVariables::number() {
 
   uInt i;
-  for(i=0; environ[i]!=NULL; i++)
+  for(i=0; environ[i]; i++)
     ;
   return i;
 }
@@ -105,9 +105,9 @@ String EnvironmentVariables::name(uInt number) {
 
 String EnvironmentVariables::value(const String &name) {
 
-  String env;
-  env=getenv(name);
-  return env;
+  Char *env = getenv(name);
+  if (env) return String(env);
+  return String();
 }
 
 String EnvironmentVariables::value(uInt number) {
@@ -125,10 +125,8 @@ String EnvironmentVariables::value(uInt number) {
 
 Bool EnvironmentVariables::isSet(const String &name) {
 
-  if(getenv(name) != NULL)
-    return True;
-  else
-    return False;
+  if(getenv(name)) return True;
+  else return False;
 }
 
 Bool EnvironmentVariables::set(const String &name, const String &value) {
@@ -164,15 +162,15 @@ void EnvironmentVariables::unSet(const String &name) {
   register char **cp;
   String env;
 
-  for(int i=0; environ[i]!=NULL; i++) {
+  for (Int i=0; environ[i]; i++) {
     env=environ[i];
     env=env.before("=");
-    if(env==name) {
-      for (cp = &environ[i];; ++cp)
-        if (!(*cp = *(cp + 1)))
-          break;
-    }
-  }
+    if (env==name) {
+      for (cp = &environ[i];; ++cp) {
+        if (!(*cp = *(cp + 1))) break;
+      };
+    };
+  };
 }
 
 Bool EnvironmentVariables::setenv(const String &name, const String &value){
@@ -185,7 +183,7 @@ Bool EnvironmentVariables::setenv(const String &name, const String &value){
   lname=name.length()+1;
 
   found = 0;
-  for (i = 0; environ[i] != NULL; i++) {
+  for (i = 0; environ[i]; i++) {
   // If exist the definition
     ev=environ[i];
     if( name == ev.before("=") ) {
@@ -194,10 +192,10 @@ Bool EnvironmentVariables::setenv(const String &name, const String &value){
       if (need > 0) {
         // Create space for new name=value
 	need=snew.length()+1;
-	if ((ptr =(char *)malloc(need)) == NULL) {
-	  DebugAssert((ptr = (char *)malloc(need)) == NULL, AipsError);
+	if (!(ptr =(char *)malloc(need))) {
+	  DebugAssert(!(ptr = (char *)malloc(need)), AipsError);
 	  return False;
-	}
+	};
 	environ[i] = ptr;
       }
       // copy name=value into environment list
@@ -216,8 +214,8 @@ Bool EnvironmentVariables::setenv(const String &name, const String &value){
     else {
       // Create a new slot
       need=snew.length()+1;
-      if ((environ[i] =(char *)malloc(need)) == NULL) {
-	DebugAssert((environ[i] = (char *)malloc(need)) == NULL, AipsError);
+      if (!(environ[i] =(char *)malloc(need))) {
+	DebugAssert(!(environ[i] = (char *)malloc(need)), AipsError);
 	return False;
       }
       else {
@@ -225,7 +223,7 @@ Bool EnvironmentVariables::setenv(const String &name, const String &value){
 	envnew=(char *)snew.chars();
 	strcpy (environ[i], envnew);
         // Environment list need NULL in last position
-	environ[i+1] = NULL;
+	environ[i+1] = 0;
       }
     }
   }
