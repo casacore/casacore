@@ -1759,15 +1759,22 @@ Bool DirectionCoordinate::setWorldMixRanges (const IPosition& shape)
    Vector<String> units = worldAxisUnits();
    Double cosdec = cos(world(1) * to_radians_p[1]);
    Double fac = 1.0;
+
+// If the shape is -1, it means its not known for this world
+// axis (user may have removed a pixel axis in CoordinateSystem)
+// Use default value in this case
+
    for (uInt i=0; i<2; i++) {
       fac = 1.0;
       if (i==0) fac = cosdec;
 //
-      Int n2 = (shape(i) + Int(0.5*shape(i))) / 2;
-      worldMin_p(i) = world(i) - abs(cdelt(i))*n2/fac;    
-      worldMin_p(i) = max(worldMin_p(i), dwMin(i));
-      worldMax_p(i) = world(i) + abs(cdelt(i))*n2/fac;
-      worldMax_p(i) = min(worldMax_p(i),  dwMax(i));
+      if (shape(i) > 0) { 
+         Int n2 = (shape(i) + Int(0.5*shape(i))) / 2;
+         worldMin_p(i) = world(i) - abs(cdelt(i))*n2/fac;    
+         worldMin_p(i) = max(worldMin_p(i), dwMin(i));
+         worldMax_p(i) = world(i) + abs(cdelt(i))*n2/fac;
+         worldMax_p(i) = min(worldMax_p(i),  dwMax(i));
+      }
    }
 
 // Put longitude in range -180 to 180
