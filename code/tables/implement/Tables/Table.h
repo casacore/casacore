@@ -474,11 +474,15 @@ public:
     void rename (const String& newName, TableOption);
 
     // Copy the table and all its subtables.
-    // For RefTables <src>copy</src> and <src>deepCopy</src> behave
+    // Especially for RefTables <src>copy</src> and <src>deepCopy</src> behave
     // differently. <src>copy</src> makes a bitwise copy of the table, thus
     // the result is still a RefTable. On the other hand <src>deepCopy</src>
     // makes a physical copy of all referenced table rows and columns, thus
     // the result is a PlainTable.
+    // <br>For PlainTables <src>deepCopy</src> is the same as <src>copy</src>
+    // unless <src>valueCopy==True</src> is given. In that case the values
+    // are copied which takes longer, but reorganizes the data files to get
+    // rid of gaps in the data.
     // <br>The following options can be given:
     // <dl>
     // <dt> Table::New
@@ -491,7 +495,8 @@ public:
     // </dl>
     // <group>
     void copy (const String& newName, TableOption) const;
-    void deepCopy (const String& newName, TableOption) const;
+    void deepCopy (const String& newName, TableOption,
+		   Bool valueCopy=False) const;
     // </group>
 
     // Get the table option.
@@ -884,8 +889,9 @@ inline void Table::rename (const String& newName, TableOption option)
     { baseTabPtr_p->rename (newName, option); }
 inline void Table::copy (const String& newName, TableOption option) const
     { baseTabPtr_p->copy (newName, option); }
-inline void Table::deepCopy (const String& newName, TableOption option) const
-    { baseTabPtr_p->deepCopy (newName, option); }
+inline void Table::deepCopy (const String& newName, TableOption option,
+			     Bool valueCopy) const
+    { baseTabPtr_p->deepCopy (newName, option, valueCopy); }
 inline void Table::markForDelete()
     { baseTabPtr_p->markForDelete (True, ""); }
 inline void Table::unmarkForDelete()
