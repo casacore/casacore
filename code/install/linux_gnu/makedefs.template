@@ -84,8 +84,7 @@ MotifROOT := /usr/X11
 X11ROOT  := /usr/X11
 
 # PGPLOT
-PGPLOTROOT := /opt/local
-PGPLOTLIB := -L$(PGPLOTLIBD) -lXmPgplot -lcpgplot -lpgplot -L$(MotifLIBD) $(MotifLIB)
+PGPLOTROOT := /usr/local
 
 # TCL (version 7.6 or later
 TCLROOT  := /usr
