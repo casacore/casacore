@@ -94,7 +94,7 @@ operator-:      [29.9977, 39.9977, -0.0023]
 operator-pre-:  [-0.0023, -0.0023, -0.0023]
 operator*:      [0.0023, 0.00197536, 0.00258418]
 operator*:      [0.0046, 0.0046, 0.0046]
-assert:         ok
+assure:         ok
 getLength:      50 nT
 operator*:      2500
 operator*       0.161
@@ -113,7 +113,7 @@ Exercise all MEarthMagnetic function
 getType:        1, 10
 giveMe:         1, Reference for an EarthMagnetic with Type: AZEL
 setRefString:   1, EarthMagnetic: [41637.4, 1822.27, 24904.1]
-assert:         ok
+assure:         ok
 clone:          EarthMagnetic: [41637.4, 1822.27, 24904.1]
 get:            [4.16374e+06, 182227, 2.49041e+06] cm.m-1.kg.s-2.A-1
 getAngle:       [2.50596, 30.8603] deg
