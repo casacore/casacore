@@ -1,5 +1,5 @@
 //# tMeasurementSet.cc : this program tests the MeasurementSet class
-//# Copyright (C) 1995,1996,1997,2000
+//# Copyright (C) 1995,1996,1997,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -42,7 +42,7 @@
 #include <aips/Measures/MPosition.h>
 #include <aips/Measures/MFrequency.h>
 
-#include <iostream.h>
+#include <aips/iostream.h>
 
 // the dataType() member functions in Tables report only the scalar type
 // even for Array columns.  So, if a column is TpArrayFloat in MS then it
