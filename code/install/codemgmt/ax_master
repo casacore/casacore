@@ -2758,3 +2758,4 @@
 10 089 src rm trial/implement/MeasurementEquations/CompositeSkyEquation.h
 10 089 src rm trial/implement/MeasurementEquations/DOsky.h
 10 089 src rm trial/implement/MeasurementEquations/DOsky.cc
+10 093 src mv trial/implement/Measures/VelocityMachine.h aips/implement/Measures/VelocityMachine.h
