@@ -2439,3 +2439,4 @@
 11 251 src rm atnf/apps/livedata/gridzilla.lastexit
 11 256 src mv nrao/apps/vlafiller/vlafiller.cc nrao/apps/vlafiller/vla2table.cc
 11 256 src mv nrao/apps/vlafiller nrao/apps/vla2table
+11 259 src rm trial/apps/gDisplay/templates
