@@ -34,6 +34,7 @@
 #include <aips/Arrays/Vector.h>
 #include <aips/Arrays/ArrayUtil.h>
 #include <aips/Containers/Block.h>
+#include <aips/Exceptions/Error.h>
 
 
 TableExprNode makeRecordExpr (const RecordDesc& desc,
@@ -73,7 +74,7 @@ TableExprNode makeRecordExpr (const RecordInterface& record,
   }
   Block<Int> fieldNrs (names.nelements());
   String name;
-  Int fld;
+  Int fld=0;
   const RecordInterface* recPtr = &record;
   RecordDesc desc(record.description());
   for (uInt i=0; i<names.nelements(); i++) {
