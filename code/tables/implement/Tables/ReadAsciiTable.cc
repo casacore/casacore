@@ -40,6 +40,7 @@
 #include <aips/Logging/LogIO.h>
 #include <aips/Logging/LogOrigin.h>
 
+#include <stdio.h>
 #include <string.h>
 #include <iostream.h>
 #include <fstream.h>             // needed for file IO
