@@ -141,6 +141,25 @@ public:
     // of thresh.
     static Double predict(Int n, Double threshhold)
     { return ( (n>3) ? predictNgt3(n,threshhold) : predictN3(threshhold));}
+
+    // Compute an approximation to the mean signal level (DC offset)
+    // and quantizer threshold setting (both in terms of the r.m.s.
+    // signal input level) given the observed positive bias (the
+    // asymptotic limit of the measured autocorrelation at large
+    // lags) and the zero-lag autocorrelation.
+    // dcoffset is the mean signal level, threshold is the quantizer
+    // setting, n is the number of levels, zerolag is the zero-lag
+    // value and bias is the asymptotic bias.
+    // Currently, this is only available for the n==3 level case,
+    // all other cases set the returned dcoffset to 0 and use thresh()
+    // to set the returned value of threshold.  A return value of F
+    // indicates that the zerolag and bias values are inconsistent
+    // and the dcoffset can not be determined.  In that case,
+    // the returned dcoffset is 0 and thresh() is used to set
+    // the threshold level.
+    static Bool dcoff(Double &dcoffset, Double &threshold,
+		      Int n, Double zerolag, Double bias);
+		      
     
 private:
     // the number of points to use in setting up the interpolator
@@ -203,6 +222,10 @@ private:
     // for n=3.
     static Double predictN3(Double threshhold)
     { return erfc(threshhold/sqrt(2.0));}
+
+    // implementation of dcoff for the 3-level case
+    static Bool dcoff3(Double &dcoffset, Double &threshold,
+		       Double zerolag, Double bias);
 };
 
 inline 

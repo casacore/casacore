@@ -519,3 +519,43 @@ Double VanVleck::predictNgt3(Int n, Double threshhold)
   }
   return result;
 }
+
+
+Bool VanVleck::dcoff(Double &dcoffset, Double &threshold,
+		     Int n, Double zerolag, Double bias)
+{
+    Bool result = True;
+    if (n == 3) {
+	result = dcoff3(dcoffset, threshold, zerolag, bias);
+    } else {
+	dcoffset = 0.0;
+	threshold = thresh(n,zerolag);
+    }
+    return result;
+}
+
+
+Bool VanVleck::dcoff3(Double &dcoffset, Double &threshold,
+		      Double zerolag, Double bias)
+{
+    // the input data, bias and zerolag, should satisfy the
+    // inequality constraints 0 <= bias < 1 and
+    // sqrt(bias) < zerolag < 2-sqrt(bias)
+ 
+    Bool result = True;
+    Double rtbias = sqrt(bias);
+    if (bias < 0.0 || bias >= 1.0 || rtbias >= zerolag ||
+	zerolag >= (2.0-rtbias)) {
+	// fall back and return False
+	result = False;
+	dcoffset = 0.0;
+	threshold = threshN3(zerolag);
+    } else {
+	Double rt2 = sqrt(2.0);
+	Double t1 = invErf(1.0+rtbias-zerolag);
+	Double t2 = invErf(-1.0+rtbias+zerolag);
+	dcoffset = (t1+t2)/rt2;
+	threshold = (t1-t2)/rt2;
+    }
+    return result;
+}
