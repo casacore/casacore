@@ -6058,3 +6058,4 @@
 17 100 src rm trial/apps/gainfitter/gainpolyfitter_optionlist.g
 17 100 src rm trial/apps/gainfitter/gainpolyfitter_plotter.g
 17 100 src rm trial/apps/gainfitter/gainpolyfitter_widget.g
+17 102 src rm trial/apps/gainfitter/gainpolyfitter_framework.g
