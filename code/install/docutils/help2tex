@@ -47,11 +47,11 @@ if($opt_noheaders == 0 && $opt_glish == 0 && $opt_outline == 0){
    print "\\usepackage{html, longtable, epsfig}\n";
    print "\\begin{document}\n";   
    print "\\newcommand{\\starthelptab}{\n";
-   print "\\begin{tabular}{|l p{0.36in}p{2.79in}|}\n";
+   print "\\begin{tabular}{|l p{0.25in}p{0.36in}p{2.79in}|}\n";
    print "}\n";
    print "\\begin{htmlonly}\n";
    print "\\newcommand{\\starthelptab}{\n";
-   print "\\begin{tabular}{|l p{0.75in}p{2.38in}|}\n";
+   print "\\begin{tabular}{|l p{0.25in}p{0.75in}p{2.38in}|}\n";
    print "}\n";
    print "\\end{htmlonly}\n";
    print "\\input{aips2defs}\n";
@@ -439,7 +439,7 @@ sub make_tex_file{
       # Changed dtext to mtext in the hopes everything will appear in the
       # synopsis now
 
-     while(/\\ahaddarg{($mtext)}\s*{($mtext)}\s*{($mtext)}\s*{($mtext)}/mg){
+     while(/\\ahaddarg[^\{]*{($mtext)}\s*{($mtext)}\s*{($mtext)}\s*{($mtext)}/mg){
        $args .= ($1.", ");
        $hasArgs = 1;
        if($opt_glish == 1 && length $argroot){
@@ -617,27 +617,47 @@ sub make_tex_file{
   
      s/\\begin{ahargslong}/$tbflabel {Arguments}\\\\
    \\hfill \\\\
-   \\begin{longtable}{|p{1in}p{0.39in}p{2.79in}|}
+   \\begin{longtable}{|p{1in}p{0.25in}p{0.39in}p{2.79in}|}
    \\hline/g;
    
      s/\\ahaddarg{($mtext)}\s*{($mtext)}\s*{\s*}\s*{\s*}/
-   $1 \& \\multicolumn{2}{p{3.36in}|}{$2}\\\\ \\hline/g;
+   $1 \& \& \\multicolumn{2}{p{3.36in}|}{$2}\\\\ \\hline/g;
 
      s/\\ahaddarg{($mtext)}\s*{($mtext)}\s*{}\s*{($mtext)}/
-   $1 \& \\multicolumn{2}{p{3.36in}|}{$2}\\\\
-      \& Allowed: \& $3\\\\ \\hline/g;
+   $1 \& \& \\multicolumn{2}{p{3.36in}|}{$2}\\\\
+      \& \& Allowed: \& $3\\\\ \\hline/g;
    
      s/\\ahaddarg{($mtext)}\s*{($mtext)}\s*{($mtext)}\s*{}/
-   $1 \& \\multicolumn{2}{p{3.36in}|}{$2}\\\\
-   \& Default: \& $3 \\\\ \\hline/g;
+   $1 \& \& \\multicolumn{2}{p{3.36in}|}{$2}\\\\
+   \& \& Default: \& $3 \\\\ \\hline/g;
    
      s/\\ahaddarg{($mtext)}\s*{($mtext)}\s*{($mtext)}\s*{($mtext)}/
-   $1 \& \\multicolumn{2}{p{3.36in}|}{$2}\\\\
-   \& Allowed: \& $4\\\\
-   \& Default: \& $3  \\\\ \\hline/g;
+   $1 \& \& \\multicolumn{2}{p{3.36in}|}{$2}\\\\
+   \& \& Allowed: \& $4\\\\
+   \& \& Default: \& $3  \\\\ \\hline/g;
+   
+# input/output option   
+    foreach $inout ("in", "out", "inout", ""){
+     s/\\ahaddarg\[($inout)\]{($mtext)}\s*{($mtext)}\s*{\s*}\s*{\s*}/
+   $2 \& $inout \& \\multicolumn{2}{p{3.36in}|}{$3}\\\\ \\hline/g;
+
+     s/\\ahaddarg\[($inout)\]{($mtext)}\s*{($mtext)}\s*{}\s*{($mtext)}/
+   $2 \& $inout \& \\multicolumn{2}{p{3.36in}|}{$3}\\\\
+      \& \& Allowed: \& $4\\\\ \\hline/g;
+   
+     s/\\ahaddarg\[($inout)\]{($mtext)}\s*{($mtext)}\s*{($mtext)}\s*{}/
+   $2 \& $inout \& \\multicolumn{2}{p{3.36in}|}{$3}\\\\
+   \& \& Default: \& $4 \\\\ \\hline/g;
+   
+     s/\\ahaddarg\[($inout)\]{($mtext)}\s*{($mtext)}\s*{($mtext)}\s*{($mtext)}/
+   $2 \& $inout \& \\multicolumn{2}{p{3.36in}|}{$3}\\\\
+   \& \& Allowed: \& $5\\\\
+   \& \& Default: \& $4  \\\\ \\hline/g;
+   }
    
      s/\\ahsynopsis{($mtext)}/$tbflabel {Synopsis}\\newline
    $1($args)/g;
+
      s/\\ahreturns{($mtext)}/$tbflabel {Returns}\\newline
    $1\\\\/g;
    
