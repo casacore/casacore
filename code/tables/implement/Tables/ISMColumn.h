@@ -1,5 +1,5 @@
 //# ISMColumn.h: A Column in the Incremental Storage Manager
-//# Copyright (C) 1996,1997
+//# Copyright (C) 1996,1997,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -28,9 +28,6 @@
 #if !defined(AIPS_ISMCOLUMN_H)
 #define AIPS_ISMCOLUMN_H
 
-#if defined(_AIX)
-#pragma implementation ("ISMColumn.cc")
-#endif 
 
 //# Includes
 #include <aips/aips.h>
@@ -312,7 +309,8 @@ protected:
     int isLastValueInvalid (Int rownr) const;
 
     // Get the value for this row.
-    void getValue (uInt rownr, void* value);
+    // Set the cache if the flag is set.
+    void getValue (uInt rownr, void* value, Bool setCache);
 
     // Put the value for this row.
     void putValue (uInt rownr, const void* value);
