@@ -32,3 +32,13 @@ const Double & NumericTraits<Float>::epsilon = FLT_EPSILON;
 const Double & NumericTraits<Double>::epsilon = DBL_EPSILON;
 const Double & NumericTraits<Complex>::epsilon = FLT_EPSILON;
 const Double & NumericTraits<DComplex>::epsilon = DBL_EPSILON;
+
+const Double & NumericTraits<Float>::minimum = FLT_MIN;
+const Double & NumericTraits<Double>::minimum = DBL_MIN;
+const Double & NumericTraits<Complex>::minimum = FLT_MIN;
+const Double & NumericTraits<DComplex>::minimum = DBL_MIN;
+
+const Double & NumericTraits<Float>::maximum = FLT_MAX;
+const Double & NumericTraits<Double>::maximum = DBL_MAX;
+const Double & NumericTraits<Complex>::maximum = FLT_MAX;
+const Double & NumericTraits<DComplex>::maximum = DBL_MAX;
