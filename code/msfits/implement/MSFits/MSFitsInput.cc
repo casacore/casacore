@@ -520,6 +520,9 @@ void MSFitsInput::setupMeasurementSet(const String& MSFileName, Bool useTSM,
     // Choose an appropriate tileshape
     IPosition dataShape(2,nCorr,nChan);
     IPosition tileShape = MSTileLayout::tileShape(dataShape,obsType,array_p);
+    itsLog << LogOrigin("MSFitsInput", "setupMeasurementSet");
+    itsLog << LogIO::NORMAL << "Using tile shape "<<tileShape <<" for "<<
+      array_p<<" with obstype="<< obsType<<LogIO::POST;
     TiledShapeStMan tiledStMan1("TiledData",tileShape);
     TiledShapeStMan tiledStMan1f("TiledFlag",tileShape);
     TiledShapeStMan tiledStMan1fc("TiledFlagCategory",
