@@ -40,6 +40,7 @@
 #include <aips/Tables/CompressComplex.h>
 #include <aips/Arrays/ArrayLogical.h>
 #include <aips/Arrays/Vector.h>
+#include <aips/Containers/SimOrdMap.h>
 #include <aips/Utilities/Assert.h>
 #include <aips/Exceptions/Error.h>
 #include <aips/MeasurementSets/MeasurementSet.h>
@@ -359,7 +360,7 @@ void MSTableImpl::addColumnCompression (TableDesc& td, const String& colName,
 					  "",
 					  cdesc.dataManagerType(),
 					  cdesc.dataManagerGroup(),
-					  cdesc.shape(),
+					  cdesc.ndim(),
 					  cdesc.options()));
     cdesc.rwKeywordSet().define ("CompressFloat_AutoScale", autoScale);
   } else {
@@ -367,9 +368,13 @@ void MSTableImpl::addColumnCompression (TableDesc& td, const String& colName,
 					"",
 					cdesc.dataManagerType(),
 					cdesc.dataManagerGroup(),
-					cdesc.shape(),
+					cdesc.ndim(),
 					cdesc.options()));
     cdesc.rwKeywordSet().define ("CompressComplex_AutoScale", autoScale);
+  }
+  if (cdesc.shape().nelements() > 0) {
+    ColumnDesc& cd = td.rwColumnDesc (colName + "_COMPRESSED");
+    cd.setShape (cdesc.shape());
   }
   td.addColumn (ScalarColumnDesc<Float> (colName + "_SCALE"));
   td.addColumn (ScalarColumnDesc<Float> (colName + "_OFFSET"));
@@ -385,22 +390,32 @@ SetupNewTable& MSTableImpl::setupCompression (SetupNewTable& newtab)
   for (uInt i=0; i<td.ncolumn(); i++) {
     const ColumnDesc& cdesc = td[i];
     const TableRecord& keyset = cdesc.keywordSet();
+    String cname;
     if (keyset.isDefined ("CompressFloat_AutoScale")) {
+      cname = cdesc.name() + "_COMPRESSED";
       CompressFloat engine (cdesc.name(),
-			    cdesc.name() + "_COMPRESSED",
+			    cname,
 			    cdesc.name() + "_SCALE",
 			    cdesc.name() + "_OFFSET",
 			    keyset.asBool ("CompressFloat_AutoScale"));
-      newtab.bindColumn (cdesc.name() + "_COMPRESSED", cdesc.name());
+      newtab.bindColumn (cname, cdesc.name());
       newtab.bindColumn (cdesc.name(), engine);
     } else if (keyset.isDefined ("CompressComplex_AutoScale")) {
+      cname = cdesc.name() + "_COMPRESSED";
       CompressComplex engine (cdesc.name(),
-			      cdesc.name() + "_COMPRESSED",
+			      cname,
 			      cdesc.name() + "_SCALE",
 			      cdesc.name() + "_OFFSET",
 			      keyset.asBool ("CompressComplex_AutoScale"));
-      newtab.bindColumn (cdesc.name() + "_COMPRESSED", cdesc.name());
+      newtab.bindColumn (cname, cdesc.name());
       newtab.bindColumn (cdesc.name(), engine);
+    }
+    // If the column is used in a hypercolumn definition, change it
+    // to contain the compressed column.
+    if (! cname.empty()) {
+      SimpleOrderedMap<String,String> old2new("");
+      old2new.define (cdesc.name(), cname);
+      newtab.adjustHypercolumns (old2new);
     }
   }
   return newtab;
