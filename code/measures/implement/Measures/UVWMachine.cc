@@ -26,7 +26,7 @@
 //# $Id$
 
 //# Includes
-#include <trial/Measures/UVWMachine.h>
+#include <aips/Measures/UVWMachine.h>
 #include <aips/Measures/Euler.h>
 
 //# Constructors

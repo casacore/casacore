@@ -28,7 +28,7 @@
 //# Includes
 #include <aips/aips.h>
 #include <aips/Exceptions/Error.h>
-#include <trial/Measures/UVWMachine.h>
+#include <aips/Measures/UVWMachine.h>
 #include <aips/Arrays/Vector.h>
 #include <aips/Measures/MPosition.h>
 #include <aips/Measures/MEpoch.h>
