@@ -42,6 +42,8 @@ class CoordinateSystem;
 class RecordInterface;
 class LogIO;
 class Unit;
+class ImageLogger;
+class ConstFitsKeywordList;
 
 // <summary>
 // Interconvert between AIPS++ Images and FITS files.
@@ -214,6 +216,10 @@ public:
 
 // Recover brightness unit from header. Used keywords are removed from header
     static Unit getBrightnessUnit (RecordInterface& header, LogIO& os);
+
+// Recover history from FITS file keywrod list into logger
+   static void restoreHistory (ImageLogger& logger,
+                               ConstFitsKeywordList& kw);
 
 private:
    static Bool removeFile (String& error, const File& outFile,
