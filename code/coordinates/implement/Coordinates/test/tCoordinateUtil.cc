@@ -25,7 +25,8 @@
 //#
 //#
 //# $Id$
- 
+
+#include <aips/Arrays/ArrayLogical.h> 
 #include <trial/Coordinates.h>
 #include <trial/Coordinates/CoordinateUtil.h>
 #include <aips/Mathematics/Constants.h>
@@ -237,6 +238,163 @@ try {
       cout << "Pixel axis2 = " << pixelAxis2 << endl << endl;
    }
 
+// addStokesAxis
+
+   {
+      CoordinateSystem cSys;
+      CoordinateUtil::addStokesAxis(cSys, 4);
+      Int afterCoord = -1;
+      Int coordinate = cSys.findCoordinate(Coordinate::STOKES, afterCoord);
+      uInt nPixelAxes = cSys.nPixelAxes();
+      uInt nWorldAxes = cSys.nWorldAxes();
+      if (coordinate!=0 || nPixelAxes!=1 || nWorldAxes!=1 ||
+          cSys.type(coordinate)!=Coordinate::STOKES) {          
+         throw(AipsError("addStokesAxis failed"));
+      }
+   }   
+
+// addLinearAxes
+
+   {
+      const uInt n = 4;
+      CoordinateSystem cSys;
+      Vector<String> names(n);
+      names(0) = "axis0";
+      names(1) = "axis1";
+      names(2) = "axis2";
+      names(3) = "axis3";
+      IPosition shape;
+      CoordinateUtil::addLinearAxes(cSys, names, shape);
+      Int coordinate;
+      Int afterCoord = -1;
+      coordinate = cSys.findCoordinate(Coordinate::LINEAR, afterCoord);
+//      
+      uInt nPixelAxes = cSys.nPixelAxes();
+      uInt nWorldAxes = cSys.nWorldAxes();
+      Vector<Double> refPix = cSys.referencePixel();
+//
+      if (coordinate!=0 || nPixelAxes!=n || nWorldAxes!=n ||
+          cSys.type(coordinate)!=Coordinate::LINEAR ||
+          !::allNear(refPix.ac(), Double(0.0), Double(1.0e-6))) {
+         throw(AipsError("addLinearAxes failed"));
+      }
+   }   
+   {
+      const uInt n = 2;
+      CoordinateSystem cSys;
+      Vector<String> names(n);
+      names(0) = "axis0";
+      names(1) = "axis1";
+      IPosition shape(n, 100);
+      CoordinateUtil::addLinearAxes(cSys, names, shape);
+      Int coordinate;
+      Int afterCoord = -1;
+      coordinate = cSys.findCoordinate(Coordinate::LINEAR, afterCoord);
+//      
+      uInt nPixelAxes = cSys.nPixelAxes();
+      uInt nWorldAxes = cSys.nWorldAxes();
+      Vector<Double> refPix = cSys.referencePixel();
+//
+      if (coordinate!=0 || nPixelAxes!=n || nWorldAxes!=n ||
+          cSys.type(coordinate)!=Coordinate::LINEAR ||
+          !::allNear(refPix.ac(), Double(50.0), Double(1e-6))) {
+         throw(AipsError("addLinearAxes failed"));
+      }
+   }   
+// 
+// makeCoordinateSYstem.  A lot of built in knowledge in
+// the verification process.  Urk.
+//
+   {
+      IPosition shape(1, 10);
+      CoordinateSystem cSys = CoordinateUtil::makeCoordinateSystem(shape);
+      Int coordinate;
+      Int afterCoord = -1;
+      coordinate = cSys.findCoordinate(Coordinate::SPECTRAL, afterCoord);
+      if (coordinate!=0 || cSys.nPixelAxes()!=1 || cSys.nWorldAxes()!=1 ||
+          cSys.type(coordinate)!=Coordinate::SPECTRAL) {
+         throw(AipsError("makeCoordinateSystem 1 failed"));
+      }
+   }   
+   {
+      IPosition shape(2, 10, 10);
+      CoordinateSystem cSys = CoordinateUtil::makeCoordinateSystem(shape);
+      Int coordinate;
+      Int afterCoord = -1;
+      coordinate = cSys.findCoordinate(Coordinate::DIRECTION, afterCoord);
+      if (coordinate!=0 || cSys.nPixelAxes()!=2 || cSys.nWorldAxes()!=2 ||
+          cSys.type(coordinate)!=Coordinate::DIRECTION) {
+         throw(AipsError("makeCoordinateSystem 2 failed"));
+      }
+   }   
+   {
+      IPosition shape(3, 10, 10, 4);
+      CoordinateSystem cSys = CoordinateUtil::makeCoordinateSystem(shape);
+      Int c0, c1;
+      Int afterCoord = -1;
+      c0 = cSys.findCoordinate(Coordinate::DIRECTION, afterCoord);
+      c1 = cSys.findCoordinate(Coordinate::STOKES, afterCoord);
+      if (c0 !=0 || cSys.type(c0)!=Coordinate::DIRECTION ||
+          c1 !=1 || cSys.type(c1)!=Coordinate::STOKES) {
+         throw(AipsError("makeCoordinateSystem 3a failed"));
+      }
+      if (cSys.nPixelAxes()!=3 || cSys.nWorldAxes()!=3) {
+         throw(AipsError("makeCoordinateSystem 3b failed"));
+      }
+   }   
+   {
+      IPosition shape(4, 10, 10, 4, 16);
+      CoordinateSystem cSys = CoordinateUtil::makeCoordinateSystem(shape);
+      Int c0, c1, c2;
+      Int afterCoord = -1;
+      c0 = cSys.findCoordinate(Coordinate::DIRECTION, afterCoord);
+      c1 = cSys.findCoordinate(Coordinate::STOKES, afterCoord);
+      c2 = cSys.findCoordinate(Coordinate::SPECTRAL, afterCoord);
+      if (c0 !=0 || cSys.type(c0)!=Coordinate::DIRECTION ||
+          c1 !=1 || cSys.type(c1)!=Coordinate::STOKES ||
+          c2 !=2 || cSys.type(c2)!=Coordinate::SPECTRAL) {
+         throw(AipsError("makeCoordinateSystem 4a failed"));
+      }
+      if (cSys.nPixelAxes()!=4 || cSys.nWorldAxes()!=4) {
+         throw(AipsError("makeCoordinateSystem 4b failed"));
+      }
+   }   
+   {
+      IPosition shape(4, 10, 10, 16, 4);
+      CoordinateSystem cSys = CoordinateUtil::makeCoordinateSystem(shape);
+      Int c0, c1, c2;
+      Int afterCoord = -1;
+      c0 = cSys.findCoordinate(Coordinate::DIRECTION, afterCoord);
+      c1 = cSys.findCoordinate(Coordinate::SPECTRAL, afterCoord);
+      c2 = cSys.findCoordinate(Coordinate::STOKES, afterCoord);
+      if (c0 !=0 || cSys.type(c0)!=Coordinate::DIRECTION ||
+          c1 !=1 || cSys.type(c1)!=Coordinate::SPECTRAL ||
+          c2 !=2 || cSys.type(c2)!=Coordinate::STOKES) {
+         throw(AipsError("makeCoordinateSystem 5a failed"));
+      }
+      if (cSys.nPixelAxes()!=4 || cSys.nWorldAxes()!=4) {
+         throw(AipsError("makeCoordinateSystem 5b failed"));
+      }
+   }   
+   {
+      IPosition shape(6, 10, 10, 16, 4, 2, 3);
+      CoordinateSystem cSys = CoordinateUtil::makeCoordinateSystem(shape);
+      Int c0, c1, c2, c3;
+      Int afterCoord = -1;
+      c0 = cSys.findCoordinate(Coordinate::DIRECTION, afterCoord);
+      c1 = cSys.findCoordinate(Coordinate::SPECTRAL, afterCoord);
+      c2 = cSys.findCoordinate(Coordinate::STOKES, afterCoord);
+      c3 = cSys.findCoordinate(Coordinate::LINEAR, afterCoord);
+      if (c0 !=0 || cSys.type(c0)!=Coordinate::DIRECTION ||
+          c1 !=1 || cSys.type(c1)!=Coordinate::SPECTRAL ||
+          c2 !=2 || cSys.type(c2)!=Coordinate::STOKES ||
+          c3 !=3 || cSys.type(c3)!=Coordinate::LINEAR) {
+         throw(AipsError("makeCoordinateSystem 6a failed"));
+      }
+      if (cSys.nPixelAxes()!=6 || cSys.nWorldAxes()!=6) {
+         throw(AipsError("makeCoordinateSystem 6b"));
+      }
+   }   
 
 }
    catch (AipsError x) {
@@ -247,3 +405,4 @@ try {
   return 0;
 
 }
+
