@@ -89,6 +89,7 @@ void MSSelectionKeywords::initMap(SimpleOrderedMap<String,Int>*& fieldMap,
     map.define("flag",FLAG);
     map.define("flag_row",FLAG_ROW);
     map.define("flag_sum",FLAG_SUM);
+    map.define("float_data",FLOAT_DATA);
     map.define("ha",HA);
     map.define("ifr_number",IFR_NUMBER);
     map.define("imaginary",IMAGINARY);

@@ -207,7 +207,7 @@ Bool MSSelector::selectChannel(Int nChan, Int start, Int width, Int incr)
 {
   LogIO os;
   if (!initSel_p) {
-    os << LogIO::WARN <<"Initializing selection with dd=0"
+    os << LogIO::NORMAL <<"Initializing selection with data_desc_id=0"
        << LogIO::POST;
     initSelection();
   }
@@ -368,7 +368,7 @@ Bool MSSelector::select(const GlishRecord& items, Bool oneBased)
 {
   LogIO os;
   if (!initSel_p) {
-    os << LogIO::WARN <<"Initializing selection with dd=0"
+    os << LogIO::NORMAL <<"Initializing selection with data_desc_id=0"
        << LogIO::POST;
     initSelection();
   }
@@ -571,7 +571,7 @@ GlishRecord MSSelector::getData(const Vector<String>& items, Bool ifrAxis,
   LogIO os;
   GlishRecord out;
   if (!initSel_p) {
-    os << LogIO::WARN <<"Initializing selection with dd=0"
+    os << LogIO::NORMAL <<"Initializing selection with data_desc_id=0"
        << LogIO::POST;
     initSelection();
   }
@@ -582,12 +582,12 @@ GlishRecord MSSelector::getData(const Vector<String>& items, Bool ifrAxis,
     return out;
   }
   if (ifrAxis && dataDescId_p<0) {
-    os << LogIO::WARN << " Need to select one dataDesc only"
+    os << LogIO::WARN << " Need to select one data_desc_id only"
       " when ifrAxis==True" << LogIO::POST;
     return out;
   }
 
-  Bool wantAmp, wantPhase, wantReal, wantImag, wantData,
+  Bool wantAmp, wantPhase, wantReal, wantImag, wantData, wantFloat,
     wantCAmp, wantCPhase, wantCReal, wantCImag, wantCData,
     wantMAmp, wantMPhase, wantMReal, wantMImag, wantMData, wantFlag,
     wantFlagSum, 
@@ -595,7 +595,7 @@ GlishRecord MSSelector::getData(const Vector<String>& items, Bool ifrAxis,
     wantRatAmp, wantRatPhase, wantRatReal, wantRatImag, wantRatData,
     wantORAmp, wantORPhase, wantORReal, wantORImag, wantORData,
     wantWeight;
-  wantAmp=wantPhase=wantReal=wantImag=wantData=
+  wantAmp=wantPhase=wantReal=wantImag=wantData=wantFloat=
     wantCAmp=wantCPhase=wantCReal=wantCImag=wantCData=
     wantMAmp=wantMPhase=wantMReal=wantMImag=wantMData=wantFlag=
     wantFlagSum=
@@ -983,6 +983,9 @@ GlishRecord MSSelector::getData(const Vector<String>& items, Bool ifrAxis,
 	}
       }
       break;
+    case MSS::FLOAT_DATA:
+      wantFloat=True;
+      break;
     case MSS::PHASE:
       wantPhase=True;
       break;
@@ -1247,6 +1250,22 @@ GlishRecord MSSelector::getData(const Vector<String>& items, Bool ifrAxis,
   Bool wantRat = (wantRatAmp || wantRatPhase || wantRatReal || 
 			wantRatImag || wantRatData );
   Array<Complex> observed_data;
+
+  if (wantFloat) {
+    // get the data
+    Array<Float> fdata;
+    if (!msc.floatData().isNull()) {
+      getAveragedData(fdata,msc.floatData());
+      if (doIfrAxis) MSSelUtil2<Float>::
+	reorderData(fdata,ifrSlot,nIfr,timeSlot,nTime,Float());
+      if (average) MSSelUtil2<Float>::
+	timeAverage(dataflags,fdata,flags,weights);
+      out.add("float_data",fdata);
+    } else {
+      os << LogIO::WARN << "FLOAT_DATA column doesn't exist"<< LogIO::POST;
+    }
+  }
+
   if (wantAmp || wantPhase || wantReal || wantImag || wantData
       || wantOR ) {
     // get the data
@@ -1255,20 +1274,26 @@ GlishRecord MSSelector::getData(const Vector<String>& items, Bool ifrAxis,
       os << LogIO::WARN << "Polarization conversion of uncalibrated"
 	 << " data may give incorrect results"<< LogIO::POST;
     }
-    getAveragedData(data,msc.data());
-    if (doIfrAxis) MSSelUtil2<Complex>::
-      reorderData(data,ifrSlot,nIfr,timeSlot,nTime,Complex());
-    if (wantOR) {
-      if (average) observed_data=data;
-      else observed_data.reference(data);
+    if (!msc.data().isNull()) {
+      getAveragedData(data,msc.data());
+      if (doIfrAxis) MSSelUtil2<Complex>::
+	reorderData(data,ifrSlot,nIfr,timeSlot,nTime,Complex());
+      if (wantOR) {
+	if (average) observed_data=data;
+	else observed_data.reference(data);
+      }
+      if (average) 
+	MSSelUtil2<Complex>::timeAverage(dataflags,data,flags,weights);
+      if (wantAmp) out.add("amplitude",amplitude(data));
+      if (wantPhase) out.add("phase",phase(data));
+      if (wantReal) out.add("real",real(data));
+      if (wantImag) out.add("imaginary",imag(data));
+      if (wantData) out.add("data",data);
+    } else {
+      os << LogIO::WARN << "DATA column doesn't exist"<<LogIO::POST;
     }
-    if (average) timeAverage(dataflags,data,flags,weights);
-    if (wantAmp) out.add("amplitude",amplitude(data));
-    if (wantPhase) out.add("phase",phase(data));
-    if (wantReal) out.add("real",real(data));
-    if (wantImag) out.add("imaginary",imag(data));
-    if (wantData) out.add("data",data);
   }
+
   Array<Complex> corrected_data;
   if  (wantCAmp || wantCPhase || wantCReal || wantCImag || wantCData
        || wantR || wantRat) {
@@ -1282,7 +1307,8 @@ GlishRecord MSSelector::getData(const Vector<String>& items, Bool ifrAxis,
 	if (average) corrected_data=data;
 	else corrected_data.reference(data);
       }
-      if (average) timeAverage(dataflags,data,flags,weights);
+      if (average) 
+	MSSelUtil2<Complex>::timeAverage(dataflags,data,flags,weights);
       if (wantCAmp) out.add("corrected_amplitude",amplitude(data));
       if (wantCPhase) out.add("corrected_phase",phase(data));
       if (wantCReal) out.add("corrected_real",real(data));
@@ -1309,7 +1335,8 @@ GlishRecord MSSelector::getData(const Vector<String>& items, Bool ifrAxis,
 	  model_data.reference(data);
 	}
       }
-      if (average) timeAverage(dataflags,data,flags,weights);
+      if (average) 
+	MSSelUtil2<Complex>::timeAverage(dataflags,data,flags,weights);
       if (wantMAmp) out.add("model_amplitude",amplitude(data));
       if (wantMPhase) out.add("model_phase",phase(data));
       if (wantMReal) out.add("model_real",real(data));
@@ -1318,7 +1345,8 @@ GlishRecord MSSelector::getData(const Vector<String>& items, Bool ifrAxis,
       if (wantR) {
 	Array<Complex> res_data; 
 	res_data=corrected_data; res_data-=model_data;
-	if (average) timeAverage(dataflags,res_data,flags,weights);
+	if (average) 
+	  MSSelUtil2<Complex>::timeAverage(dataflags,res_data,flags,weights);
 	if (wantRAmp) out.add("residual_amplitude",amplitude(res_data));
 	if (wantRPhase) out.add("residual_phase",phase(res_data));
 	if (wantRReal) out.add("residual_real",real(res_data));
@@ -1328,7 +1356,8 @@ GlishRecord MSSelector::getData(const Vector<String>& items, Bool ifrAxis,
       if (wantOR) {
 	Array<Complex> res_data; 
 	res_data=observed_data; res_data-=model_data;
-	if (average) timeAverage(dataflags,res_data,flags,weights);
+	if (average) 
+	  MSSelUtil2<Complex>::timeAverage(dataflags,res_data,flags,weights);
 	if (wantORAmp) out.add("obs_residual_amplitude",
 			       amplitude(res_data));
 	if (wantORPhase) out.add("obs_residual_phase",phase(res_data));
@@ -1343,7 +1372,8 @@ GlishRecord MSSelector::getData(const Vector<String>& items, Bool ifrAxis,
 	  ratio=corrected_data; 
 	  ratio/=model_data(mask);
 	  ratio(!mask)=1.0;
-	  if (average) timeAverage(dataflags,ratio,flags,weights);
+	  if (average) 
+	    MSSelUtil2<Complex>::timeAverage(dataflags,ratio,flags,weights);
 	  if (wantRatAmp) out.add("ratio_amplitude",amplitude(ratio));
 	  if (wantRatPhase) out.add("ratio_phase",phase(ratio));
 	  if (wantRatReal) out.add("ratio_real",real(ratio));
@@ -1370,7 +1400,7 @@ Bool MSSelector::putData(const GlishRecord& items)
 {
   LogIO os;
   if (!initSel_p) {
-    os << LogIO::WARN <<"Initializing selection with dd=0"
+    os << LogIO::NORMAL <<"Initializing selection with data_desc_id=0"
        << LogIO::POST;
     initSelection();
   }
@@ -1409,7 +1439,8 @@ Bool MSSelector::putData(const GlishRecord& items)
 	  os << LogIO::SEVERE <<"Polarization conversion not supported "
 	     << "when writing data" << LogIO::POST;
 	  return False;
-	}	Array<Complex> data;
+	}
+	Array<Complex> data;
 	if (GlishArray(items.get(i)).get(data)) {
 	  if (data.ndim()==4) {
 	    if (data.shape()(2)==Int(rowIndex_p.nrow()) && 
@@ -1459,6 +1490,39 @@ Bool MSSelector::putData(const GlishRecord& items)
 	  if (data.ndim()==3) {
 	    if (useSlicer_p) msc.correctedData().putColumn(slicer_p, data);
 	    else msc.correctedData().putColumn(data);
+	  }
+	}
+      }
+      break;
+    case MSS::FLOAT_DATA:
+      {
+	// averaging not supported
+	if (chanSel_p(2)>1) {
+	  os << LogIO::SEVERE << "Averaging not supported when writing data"
+	     << LogIO::POST;
+	  break;
+	}
+	if (convert_p) {
+	  os << LogIO::SEVERE <<"Polarization conversion not supported "
+	     << "when writing data" << LogIO::POST;
+	  return False;
+	}
+	Array<Float> data;
+	if (GlishArray(items.get(i)).get(data)) {
+	  if (data.ndim()==4) {
+	    if (data.shape()(2)==Int(rowIndex_p.nrow()) && 
+		data.shape()(3)==Int(rowIndex_p.ncolumn())) {
+	      MSSelUtil2<Float>::reorderData(data, rowIndex_p, 
+					     selms_p.nrow());
+	    } else {
+	      os << LogIO::SEVERE<<"Data shape inconsistent with "
+		"current selection"<< LogIO::POST;
+	      break;
+	    }
+	  }
+	  if (data.ndim()==3) {
+	    if (useSlicer_p) msc.floatData().putColumn(slicer_p, data);
+	    else msc.floatData().putColumn(data);
 	  }
 	}
       }
@@ -1577,7 +1641,7 @@ Bool MSSelector::iterInit(const Vector<String>& columns,
 {
   LogIO os;
   if (!initSel_p) {
-    os << LogIO::WARN <<"Initializing selection with dd=0"
+    os << LogIO::NORMAL <<"Initializing selection with data_desc_id=0"
        << LogIO::POST;
     initSelection();
   }
@@ -1697,6 +1761,52 @@ void MSSelector::getAveragedData(Array<Complex>& avData,
     Array<Complex> out;
     stokesConverter_p.convert(out,avData);
     avData.reference(out);
+  }
+}
+
+void MSSelector::getAveragedData(Array<Float>& avData, 
+				 const ROArrayColumn<Float>& col)
+{
+  Array<Float> data;
+  if (useSlicer_p) {
+    if (!haveSlicer_p) {
+      if (wantedOne_p>=0) makeSlicer(wantedOne_p,1);
+      else makeSlicer(0,col.shape(0)(0));
+    }
+    data=col.getColumn(slicer_p);
+  } else {
+    data=col.getColumn();
+  }
+  Int nPol=data.shape()(0);
+  Int nChan=chanSel_p(0);
+  Int nRow=data.shape()(2);
+  avData.resize(IPosition(3,nPol,nChan,nRow));
+  if (chanSel_p(2)==1) {
+    // no averaging, just copy the data across
+    avData=data;
+  } else {
+    // Average channel by channel
+    for (Int i=0; i<nChan; i++) {
+      // if width>1, the slice doesn't have an increment, so we take big steps
+      Int chn=i*chanSel_p(3);
+      Array<Float> ref(avData(IPosition(3,0,i,0),IPosition(3,nPol-1,i,nRow-1)));
+      ref=data(IPosition(3,0,chn,0),IPosition(3,nPol-1,chn,nRow-1));
+      // average over channels
+      // TODO: take flagging into account
+      for (Int j=1; j<chanSel_p(2); j++) {
+	ref+=data(IPosition(3,0,chn+j,0),IPosition(3,nPol-1,chn+j,nRow-1));
+      }
+      ref/=Float(chanSel_p(2));
+    }
+  }
+  // do the polarization conversion
+  if (convert_p) {
+    //    Array<Float> out;
+    //  stokesConverter_p.convert(out,avData);
+    //    avData.reference(out);
+    LogIO os;
+    os << LogIO::WARN << "Polarization conversion for FLOAT_DATA "
+      "not implemented" << LogIO::POST;
   }
 }
 
@@ -1849,65 +1959,4 @@ void MSSelector::reorderWeight(Array<Float>& weight)
   rowIndex_p.freeStorage(pRow,deleteRow);
   rowWeight.putStorage(pRowWeight,deleteRowWeight);
   weight.reference(rowWeight);
-}
-
-// average data (with flags & weights applied) over it's last axis (time or
-// row), return in data (overwritten), dataFlag gives new flags.
-void MSSelector::timeAverage(Array<Bool>& dataFlag, Array<Complex>& data, 
-			     const Array<Bool>& flag, 
-			     const Array<Float>& weight)
-{
-  Bool delData,delFlag,delWeight;
-  const Complex* pdata=data.getStorage(delData);
-  const Bool* pflag=flag.getStorage(delFlag);
-  const Float* pweight=weight.getStorage(delWeight);
-  Int nPol=data.shape()(0),nChan=data.shape()(1);
-  Int nIfr=1, nTime=data.shape()(2);
-  Array<Complex> out;
-  if (data.ndim()==4) {
-    nIfr=nTime;
-    nTime=data.shape()(3);
-    out.resize(IPosition(3,nPol,nChan,nIfr));
-  } else {
-    out.resize(IPosition(2,nPol,nChan));
-  }
-  Array<Float> wt(IPosition(3,nPol,nChan,nIfr));
-  dataFlag.resize(IPosition(3,nPol,nChan,nIfr));
-  dataFlag.set(True);
-  Bool delDataflag, delWt, delOut;
-  Float* pwt=wt.getStorage(delWt);
-  Complex* pout=out.getStorage(delOut);
-  Bool* pdflags=dataFlag.getStorage(delDataflag);
-  out=0;
-  wt=0;
-  Int offset=0,off1=0,offw=0;
-  for (Int l=0; l<nTime; l++) {
-    off1=0;
-    for (Int k=0; k<nIfr; k++) {
-      for (Int j=0; j<nChan; j++) {
-	for (Int i=0; i<nPol; i++) {
-	  //	  if (!flag(i,j,k,l)) {
-	  if (!pflag[offset]) {
-	    //	    out(i,j,k)+=weight(k,l)*data(i,j,k,l);
-	    pdflags[off1]=False;
-	    pout[off1]+=pweight[offw]*pdata[offset];
-	    //	    wt(i,j,k)+=weight(k,l);
-	    pwt[off1]+=pweight[offw];
-	  }
-	  off1++; offset++;
-	}
-      }
-      offw++;
-    }
-  }
-  for (Int k=0; k<nIfr*nChan*nPol; k++) {
-    if (pwt[k]>0) pout[k]/=pwt[k];
-  }
-  data.freeStorage(pdata,delData);
-  flag.freeStorage(pflag,delFlag);
-  weight.freeStorage(pweight,delWeight);
-  dataFlag.putStorage(pdflags,delDataflag);
-  wt.putStorage(pwt,delWt);
-  out.putStorage(pout,delOut);
-  data.reference(out);
 }

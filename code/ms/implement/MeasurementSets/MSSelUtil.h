@@ -1,5 +1,5 @@
 //# MSSelUtil.h: this defines MSSelUtil, a helper class for MSSelector
-//# Copyright (C) 1998,1999,2000
+//# Copyright (C) 1998,1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it

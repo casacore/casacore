@@ -148,6 +148,8 @@ public:
     FLAG_ROW,
     // a summary of flags (flag count summed over rows)
     FLAG_SUM,
+    // the float data (optional single dish column)
+    FLOAT_DATA,
     // Hour angle
     HA,
     // the list of interferometers (= 1000*ant1+ant2) present
@@ -249,4 +251,3 @@ protected:
 };
 
 #endif
-

@@ -216,6 +216,10 @@ protected:
   void getAveragedData(Array<Complex>& avData, 
 		       const ROArrayColumn<Complex>& col);
 
+  // average and convert data
+  void getAveragedData(Array<Float>& avData, 
+		       const ROArrayColumn<Float>& col);
+
   // "average" flag, at present all output which has a flagged input is flagged
   void getAveragedFlag(Array<Bool>& avFlag, 
 		       const ROArrayColumn<Bool>& col);

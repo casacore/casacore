@@ -1,5 +1,5 @@
 //# MSSelUtil2.cc: templated helper function for MSSelector
-//# Copyright (C) 1997,1999,2000
+//# Copyright (C) 1997,1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -89,10 +89,74 @@ void MSSelUtil2<T>::reorderData(Array<T>& data, const Matrix<Int>& rowIndex,
   data.reference(data2);
 }
 
+// average data (with flags & weights applied) over it's last axis (time or
+// row), return in data (overwritten), dataFlag gives new flags.
+template <class T>
+void MSSelUtil2<T>::timeAverage(Array<Bool>& dataFlag, Array<T>& data, 
+				const Array<Bool>& flag, 
+				const Array<Float>& weight)
+{
+  Bool delData,delFlag,delWeight;
+  const T* pdata=data.getStorage(delData);
+  const Bool* pflag=flag.getStorage(delFlag);
+  const Float* pweight=weight.getStorage(delWeight);
+  Int nPol=data.shape()(0),nChan=data.shape()(1);
+  Int nIfr=1, nTime=data.shape()(2);
+  Array<T> out;
+  if (data.ndim()==4) {
+    nIfr=nTime;
+    nTime=data.shape()(3);
+    out.resize(IPosition(3,nPol,nChan,nIfr));
+  } else {
+    out.resize(IPosition(2,nPol,nChan));
+  }
+  Array<Float> wt(IPosition(3,nPol,nChan,nIfr));
+  dataFlag.resize(IPosition(3,nPol,nChan,nIfr));
+  dataFlag.set(True);
+  Bool delDataflag, delWt, delOut;
+  Float* pwt=wt.getStorage(delWt);
+  T* pout=out.getStorage(delOut);
+  Bool* pdflags=dataFlag.getStorage(delDataflag);
+  out=0;
+  wt=0;
+  Int offset=0,off1=0,offw=0;
+  for (Int l=0; l<nTime; l++) {
+    off1=0;
+    for (Int k=0; k<nIfr; k++) {
+      for (Int j=0; j<nChan; j++) {
+	for (Int i=0; i<nPol; i++) {
+	  //	  if (!flag(i,j,k,l)) {
+	  if (!pflag[offset]) {
+	    //	    out(i,j,k)+=weight(k,l)*data(i,j,k,l);
+	    pdflags[off1]=False;
+	    pout[off1]+=pweight[offw]*pdata[offset];
+	    //	    wt(i,j,k)+=weight(k,l);
+	    pwt[off1]+=pweight[offw];
+	  }
+	  off1++; offset++;
+	}
+      }
+      offw++;
+    }
+  }
+  for (Int k=0; k<nIfr*nChan*nPol; k++) {
+    if (pwt[k]>0) pout[k]/=pwt[k];
+  }
+  data.freeStorage(pdata,delData);
+  flag.freeStorage(pflag,delFlag);
+  weight.freeStorage(pweight,delWeight);
+  dataFlag.putStorage(pdflags,delDataflag);
+  wt.putStorage(pwt,delWt);
+  out.putStorage(pout,delOut);
+  data.reference(out);
+}
+
+
 
 // define the instantiations we need
 template class MSSelUtil2<Bool>;
 template class MSSelUtil2<Complex>;
+template class MSSelUtil2<Float>;
 
 
 
