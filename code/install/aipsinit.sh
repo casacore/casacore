@@ -283,13 +283,18 @@
 #    Update the prompt string.
      cd .
 
+#    Escape pound sign
+     a_old=`echo $a_old | sed -e 's/#/\\\\#/g'`
+     a_och=`echo $a_och | sed -e 's/#/\\\\#/g'`
+     a_arch_t=`echo $a_arch | sed -e 's/#/\\\\#/g'`
+     a_root_t=`echo $a_root | sed -e 's/#/\\\\#/g'`
 
 #    Reset PATH.
      a_new=`echo " $PATH " | \
         sed -e 's#::*# #g' \
             -e "s# $a_old/bin # aips_bin #g" \
-            -e "s#/aips++/$a_och/#/aips++/$a_arch/#g" \
-            -e "s# aips_bin # $a_root/$a_arch/bin #g"`
+            -e "s#/aips++/$a_och/#/aips++/$a_arch_t/#g" \
+            -e "s# aips_bin # $a_root_r/$a_arch_t/bin #g"`
      export PATH
 
 #    Ensure that some AIPS++ bin area got into PATH.
@@ -300,7 +305,7 @@
         a_temp=`echo $a_new | awk '{ print $1 }'`
         if [ "$a_temp" = "." ]
         then
-           a_new=`echo $a_new | sed -e "s#^\. #. $a_root/$a_arch/bin #"`
+           a_new=`echo $a_new | sed -e "s#^\. #. $a_root_t/$a_arch_t/bin #"`
         else
            a_new="$a_root/$a_arch/bin $a_new"
         fi
@@ -317,7 +322,7 @@
         a_new=`echo " $LD_LIBRARY_PATH " | \
            sed -e 's#::*# #g' \
                -e "s# $a_old/lib # aips_lib #g" \
-               -e "s# aips_lib # $a_root/$a_arch/lib #g"`
+               -e "s# aips_lib # $a_root_t/$a_arch_t/lib #g"`
 
 #       Ensure that some AIPS++ lib area got into LD_LIBRARY_PATH.
         echo $a_new | grep " $a_root/$a_arch/lib " > /dev/null 2>&1
@@ -338,7 +343,7 @@
         a_new=`echo " $MANPATH " | \
            sed -e 's#::*# #g' \
                -e "s# $a_old/doc # aips_doc #g" \
-               -e "s# aips_doc # $a_root/$a_arch/doc #g"`
+               -e "s# aips_doc # $a_root_t/$a_arch_t/doc #g"`
 
 #       Ensure that some AIPS++ man area got into MANPATH.
         echo $a_new | grep " $a_root/$a_arch/doc " > /dev/null 2>&1
@@ -387,4 +392,4 @@
   fi
 
 # Clean up.
-  unset a_arch a_host a_new a_och a_old a_root a_shell a_site a_temp
+  unset a_arch a_host a_new a_och a_old a_root a_shell a_site a_temp a_arch_t a_root_t

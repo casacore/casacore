@@ -259,9 +259,14 @@
 #    Update the prompt string.
      cd .
 
+#    Escape pound sign
+     set a_old = `echo $a_old | sed -e 's/#/\\#/g'`
+     set a_och = `echo $a_och | sed -e 's/#/\\#/g'`
+     set a_arch_t = `echo $a_arch | sed -e 's/#/\\#/g'`
+     set a_root_t = `echo $a_root | sed -e 's/#/\\#/g'`
 
 #    Reset PATH.
-     set a_new = `echo " $PATH " | sed -e 's#::*# #g' -e "s# $a_old/bin # aips_bin #g" -e "s#/aips++/$a_och/#/aips++/$a_arch/#g" -e "s# aips_bin # $a_root/$a_arch/bin #g"`
+     set a_new = `echo " $PATH " | sed -e 's#::*# #g' -e "s# $a_old/bin # aips_bin #g" -e "s#/aips++/$a_och/#/aips++/$a_arch_t/#g" -e "s# aips_bin # $a_root_t/$a_arch_t/bin #g"`
 
 #    Ensure that some AIPS++ bin area got into PATH.
      echo " $a_new " | grep " $a_root/$a_arch/bin " >& /dev/null
@@ -281,7 +286,7 @@
 
 #    Reset LD_LIBRARY_PATH.
      if ("$?LD_LIBRARY_PATH") then
-        set a_new = `echo " $LD_LIBRARY_PATH " | sed -e 's#::*# #g' -e "s# $a_old/lib # aips_lib #g" -e "s# aips_lib # $a_root/$a_arch/lib #g"`
+        set a_new = `echo " $LD_LIBRARY_PATH " | sed -e 's#::*# #g' -e "s# $a_old/lib # aips_lib #g" -e "s# aips_lib # $a_root_t/$a_arch_t/lib #g"`
 
 #       Ensure that some AIPS++ lib area got into LD_LIBRARY_PATH.
         echo " $a_new " | grep " $a_root/$a_arch/lib " >& /dev/null
@@ -297,7 +302,7 @@
 
 #    Reset MANPATH.
      if ("$?MANPATH") then
-        set a_new = `echo " $MANPATH " | sed -e 's#::*# #g' -e "s# $a_old/doc # aips_doc #g" -e "s# aips_doc # $a_root/$a_arch/doc #g"`
+        set a_new = `echo " $MANPATH " | sed -e 's#::*# #g' -e "s# $a_old/doc # aips_doc #g" -e "s# aips_doc # $a_root_t/$a_arch_t/doc #g"`
 
 #       Ensure that some AIPS++ man area got into MANPATH.
         echo " $a_new " | grep " $a_root/$a_arch/doc " >& /dev/null
@@ -331,4 +336,4 @@
   endif
 
 # Clean up.
-  unset a_arch a_host a_new a_nonomatch a_och a_old a_root a_site a_temp
+  unset a_arch a_host a_new a_nonomatch a_och a_old a_root a_site a_temp a_arch_t a_root_t

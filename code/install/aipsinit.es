@@ -250,13 +250,18 @@
 #    Update the prompt string.
      cd .
 
+#    Escape pound sign
+     a_old=`{echo $a_old | sed -e 's/#/\\#/g'}
+     a_och=`{echo $a_och | sed -e 's/#/\\#/g'}
+     a_arch_t=`{echo $a_arch | sed -e 's/#/\\#/g'}
+     a_root_t=`{echo $a_root | sed -e 's/#/\\#/g'}
 
 #    Reset PATH.
      a_new=`{echo ' '^$PATH^' ' | \
         sed -e 's#::*# #g' \
             -e 's# '^$a_old/bin^' # aips_bin #g' \
-            -e 's#/aips++/'^$a_och^'/#/aips++/'^$a_arch^'/#g' \
-            -e 's# aips_bin # '^$a_root/$a_arch/bin^' #g'}
+            -e 's#/aips++/'^$a_och^'/#/aips++/'^$a_arch_t^'/#g' \
+            -e 's# aips_bin # '^$a_root_t/$a_arch_t/bin^' #g'}
 
 #    Ensure that some AIPS++ bin area got into PATH.
      if {~ 1 <={echo ' '^$^a_new^' ' | \
@@ -264,7 +269,7 @@
 #       Leave "." first, and put the AIPS++ areas next.
         a_temp=$a_new(1)
         if {test $a_temp '=' '.'} {
-           a_new=`{echo $a_new | sed -e 's#^\. #. '^$a_root/$a_arch/bin^' #'}
+           a_new=`{echo $a_new | sed -e 's#^\. #. '^$a_root_t/$a_arch_t/bin^' #'}
         } {
            a_new=$a_root/$a_arch/bin $a_new
         }
@@ -278,7 +283,7 @@
         a_new=`{echo ' '^$LD_LIBRARY_PATH^' ' | \
            sed -e 's#::*# #g' \
                -e 's# '^$a_old/lib^' # aips_lib #g' \
-               -e 's# aips_lib # '^$a_root/$a_arch/lib^' #g'}
+               -e 's# aips_lib # '^$a_root_t/$a_arch_t/lib^' #g'}
 
 #       Ensure that some AIPS++ lib area got into LD_LIBRARY_PATH.
         if {~ 1 <={echo ' '^$^a_new^' ' | \
@@ -299,7 +304,7 @@
         a_new=`{echo ' '^$MANPATH^' ' |
            sed -e 's#::*# #g' \
                -e 's# '^$a_old/doc^' # aips_doc #g' \
-               -e 's# aips_doc # '^$a_root/$a_arch/doc^' #g'}
+               -e 's# aips_doc # '^$a_root_t/$a_arch_t/doc^' #g'}
 
 #       Ensure that some AIPS++ man area got into MANPATH.
         if {~ 1 <={echo ' '^$^a_new^' ' | \
@@ -348,3 +353,5 @@
   a_root=()
   a_site=()
   a_temp=()
+  a_arch_t=()
+  a_root_t=()
