@@ -40,6 +40,9 @@ Last modified: $Date$ By: $Author$
 
 @node Introduction, Table Description, Top, Top
 @unnumbered Introduction
+@b{NOTE: This document is very old and does not reflect the current
+status of the AIPS++ Table System anymore}.
+
 The @sc{aips++} Table Data System is described in the reference document
 with that title, written by G. van Diepen and A. Farris. This tutorial
 is a stylized report of my own first experiences with the tables, and as
