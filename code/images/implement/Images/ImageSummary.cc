@@ -384,12 +384,8 @@ void ImageSummary<T>::list (LogIO& os,
    if (epoch.getValue().getDay() != Double(0.0)) { 
       os << "Date observation : " << obsDate(epoch) << endl;
    }
-   if (hasAMask()) {
-     String list = makeMasksString();
-     os << "Image mask       : " << list << endl;
-   } else {
-      os << "Image mask       : Absent" << endl;
-   }
+   String list = makeMasksString();
+   os << "Image mask       : " << list << endl;
    if (!units().getName().empty()) 
       os << "Image units      : " << this->units().getName() << endl << endl;
 
@@ -1201,6 +1197,7 @@ String ImageSummary<T>::makeMasksString() const
    const String defaultMask = defaultMaskName();
    const Vector<String> masks = maskNames();
    const uInt nMasks = masks.nelements();
+   if (nMasks==0) return String("None");
 //
    ostrstream oss;
    if (!defaultMask.empty()) oss << defaultMask;
