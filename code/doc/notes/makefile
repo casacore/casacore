@@ -50,6 +50,8 @@ notes := -split 0 -no_navigation
 201 := -split 0
 202 := -split 0
 203 := -split 1
+204 := -split 0
+205 := -split 0
 
 # Use the generic AIPS++ documentation makefile
 #----------------------------------------------
