@@ -4929,3 +4929,4 @@
 14 316 sys rm libexec/dishplot_data.g
 14 316 sys rm libexec/dishplot_buttons.g
 14 316 sys rm libexec/dish_standard.gp
+14 316 src rm trial/apps/newdishplot/makefile
