@@ -27,9 +27,10 @@ Prefix table (20):
     u         (micro)                      1e-06
     y         (yocto)                      1e-24
     z         (zepto)                      1e-21
-Defining unit table (9):
+Defining unit table (10):
     A         (ampere)                     1 A
     K         (kelvin)                     1 K
+    _         (undimensioned)              1 _
     cd        (candela)                    1 cd
     kg        (kilogram)                   1 kg
     m         (metre)                      1 m
@@ -38,7 +39,7 @@ Defining unit table (9):
     s         (second)                     1 s
     sr        (steradian)                  1 sr
 SI unit table (50):
-    $         (currency)                   1
+    $         (currency)                   1 _
     %         (percent)                    0.01
     %%        (permille)                   0.001
     A         (ampere)                     1 A
@@ -66,7 +67,7 @@ SI unit table (50):
     V         (volt)                       1 m2.kg.s-3.A-1
     W         (watt)                       1 m2.kg.s-3
     Wb        (weber)                      1 m2.kg.s-2.A-1
-    _         (dimensionless)              1
+    _         (undimensioned)              1 _
     a         (year)                       31557600 s
     arcmin    (arcmin)                     0.000290888208666 rad
     arcsec    (arcsec)                     4.8481368111e-06 rad
@@ -88,7 +89,7 @@ SI unit table (50):
     s         (second)                     1 s
     sr        (steradian)                  1 sr
     t         (tonne)                      1000 kg
-Customary unit table (73):
+Customary unit table (74):
     "         (arcsec)                     4.8481368111e-06 rad
     "_2       (square arcsec)              2.35044305391e-11 sr
     '         (arcmin)                     0.000290888208666 rad
@@ -127,7 +128,7 @@ Customary unit table (73):
     ata       (technical atmosphere)       98066.5 m-1.kg.s-2
     atm       (standard atmosphere)        101325 m-1.kg.s-2
     bar       (bar)                        100000 m-1.kg.s-2
-    beam      (undefined beam area)        1
+    beam      (undefined beam area)        1 _
     cal       (calorie (Int))              4.1868 m2.kg.s-2
     cwt       (hundredweight)              50.80234544 kg
     deg_2     (square degree)              0.000304617419787 sr
@@ -149,6 +150,7 @@ Customary unit table (73):
     mile      (mile)                       1609.344 m
     n_mile    (nautical mile (Imp))        1853.184 m
     oz        (ounce (avoirdupois))        0.028349523125 kg
+    pixel     (pixel)                      1 _
     sb        (stilb)                      10000 m-2.cd
     sq_arcmin (square arcmin)              8.46159499408e-08 sr
     sq_arcsec (square arcsec)              2.35044305391e-11 sr
@@ -224,7 +226,7 @@ User list before FITS:
     Jypb      (Jansky/beam)                1.35425483146e-15 kg.s-2.sr-1
     beam      (telescope beam)             7.38413463084e-12 sr
 User list after FITS:
-    BEAM      (dimensionless beam)         1
+    BEAM      (dimensionless beam)         1 _
     DAYS      (day)                        86400 s
     DEG       (degree)                     0.0174532925199 rad
     DEGREES   (degree)                     0.0174532925199 rad
@@ -237,18 +239,19 @@ User list after FITS:
     M         (meter)                      1 m
     METERS    (meter)                      1 m
     PASCAL    (pascal)                     1 m-1.kg.s-2
-    PIXEL     (dimensionless pixel)        1
+    PIXEL     (dimensionless pixel)        1 _
     S         (second)                     1 s
     SEC       (second)                     1 s
     SECONDS   (second)                     1 s
     VOLTS     (volt)                       1 m2.kg.s-3.A-1
     YEAR      (year)                       31557600 s
     YEARS     (year)                       31557600 s
-    beam      (telescope beam)             7.38413463084e-12 sr
-A = 4 mJY/BEAM   : 4e-29 kg.s-2
+A = 4 mJY/BEAM   : 4e-29 kg.s-2._-1
+A FITS unit to translate: M(JY5/SEC2.(YEAR.HZ).KM)
+it translates to:         m(Jy5/s2.(a.Hz).km)
+and back to:              M(JY5/S2.(YEAR.HZ).KM)
 User list after FITS removal:
     Jypb      (Jansky/beam)                1.35425483146e-15 kg.s-2.sr-1
-    beam      (telescope beam)             7.38413463084e-12 sr
 
 --------------------------
 Try illegal Unit values
