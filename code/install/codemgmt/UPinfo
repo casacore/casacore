@@ -196,10 +196,11 @@ endif
 if (! $?dir) then
    set dir = ($AIPSPATH)
    set dir = $dir[1]
+   echo "Make sure you have a proper mktree built before proceeding..."
    echo -n "Assuming master search tree in $dir/code. ok? (y|n) [n]: "
    set repl=($<)
    if ($repl != 'y') then
-      echo "Restart with proper AIPSROOT set"
+      echo "Restart with proper AIPSROOT set (use aipsinit)"
       exit (1)
    endif
 endif 
