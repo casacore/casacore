@@ -270,6 +270,7 @@ ifeq "$(MAKEMODE)" "programmer"
    ifndef PGMRBIND
       override PGMRBIND := .
    endif
+   include $(AIPSROOT)/code/install/makefile.help
 endif
 
 

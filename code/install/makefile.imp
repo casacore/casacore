@@ -175,6 +175,7 @@ ifneq "$(MODULE)" ""
       .PRECIOUS : $(PCKGDBGD)/%.o $(PCKGOPTD)/%.o
    endif
 endif
+include $AIPSROOT/code/install/makefile.help
 
 
 # Pattern rules.

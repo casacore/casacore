@@ -58,6 +58,7 @@ else
    PERL4EXE :=
    PERL5EXE :=
 endif
+include $(AIPSROOT)/code/install/makefile.help
 
 
 # Pattern rules.
