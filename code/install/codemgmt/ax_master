@@ -3297,3 +3297,4 @@
 13 214 src rm npoi/implement/Cuttlefish/GeoParm.h
 13 214 src rm npoi/implement/Cuttlefish/hdsstack.g
 13 214 src rm npoi/implement/Cuttlefish/hdsstack.html
+13 214 src mv npoi/implement/HDS/HDSLocator.h npoi/implement/HDS/HDSNode.h
