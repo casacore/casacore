@@ -141,7 +141,8 @@ public:
     void flushCache();
 
     // Clear the cache, so data will be reread.
-    void clearCache();
+    // If wanted, the data is flushed before the cache is cleared.
+    void clearCache (Bool doFlush = True);
 
     // Empty the cache.
     // It will flush the cache as needed and remove all buckets from it
