@@ -37,6 +37,7 @@ SpectralElement::SpectralElement() :
   tp_p(SpectralElement::GAUSSIAN), n_p(0),
   ampl_p(1.0), center_p(0.0), sigma_p(1.0) {}
 
+/// Check the type and the values; add a (type, vector one)
 SpectralElement::SpectralElement(SpectralElement::Types tp, const Double ampl,
 				 const Double center, const Double sigma) :
   tp_p(tp), n_p(0),
@@ -72,8 +73,8 @@ const String *const SpectralElement::allTypes(Int &nall,
 					      const SpectralElement::Types
 					      *&typ) {
   static const String tname[SpectralElement::N_Types] = {
-    "GAUSSIAN",
-    "POLYNOMIAL" };
+    String("GAUSSIAN"),
+    String("POLYNOMIAL") };
 
   static const SpectralElement::Types oname[SpectralElement::N_Types] = {
     SpectralElement::GAUSSIAN,
