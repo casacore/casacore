@@ -5717,3 +5717,4 @@
 16 102 src rm trial/implement/Mathematics/AutoDiff2.cc
 16 102 src rm trial/implement/Mathematics/VectorPool.h
 16 102 src rm trial/implement/Mathematics/VectorPool.cc
+16 102 src rm trial/implement/Mathematics/test/tVectorPool.cc
