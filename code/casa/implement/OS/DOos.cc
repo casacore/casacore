@@ -40,6 +40,11 @@
 #include <aips/Exceptions/Error.h>
 
 
+Bool DOos::isValidPathName (const String& pathName)
+{
+  return Path(pathName).isValid();
+}
+
 Vector<String> DOos::fileNames (const String& directoryName,
 				const String& fileNamePattern,
 				const String& fileTypes,
