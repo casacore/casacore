@@ -17,3 +17,16 @@ change id: <fail>: "/aips++/daily/linux_gnu/libexec/addchange.g", line 480: coul
 The VLA filler can now read data, as it is being observed, from the
 online computing system. This feature only works on machines in the NRAO
 domain due to blocks put in the routers.
+
+change id: 0001
+ author:   Ralph Marson
+ date:     2001/03/08
+ avers:    1.5
+ area:     Library
+ package:  nrao
+ module:   VLA
+ type:     Code
+ category: Bugfix
+ summary:  Improved logging
+The logging of progress by the VLA filler has been greatly (I hope)
+improved in response to a number of comments from users.
