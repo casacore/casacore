@@ -29,7 +29,7 @@
 #include <trial/Images/ImageExprGram.h>
 #include <trial/Images/PagedImage.h>
 #include <trial/Images/ImageRegion.h>
-#include <trial/Images/RegionHandler.h>
+#include <trial/Images/RegionHandlerTable.h>
 #include <trial/Lattices/LatticeExprNode.h>
 #include <aips/Lattices/PagedArray.h>
 #include <aips/Tables/Table.h>
@@ -100,6 +100,11 @@ ImageExprParse::ImageExprParse (const String& value)
 : itsType (TpString),
   itsSval (value)
 {}
+
+Table& ImageExprParse::getRegionTable (void*, Bool)
+{
+  return theLastTable;
+}
 
 void ImageExprParse::addNode (LatticeExprNode* node)
 {
@@ -414,16 +419,15 @@ LatticeExprNode ImageExprParse::makeLRNode() const
     }
     // Now try to find the region in the table.
     ImageRegion* regPtr;
+    RegionHandlerTable regHand(getRegionTable, 0);
     if (names.nelements() == 1) {
-	regPtr = RegionHandler::getRegion (theLastTable, names(0),
-					   RegionHandler::Any, False);
+	regPtr = regHand.getRegion (names(0), RegionHandler::Any, False);
 	if (regPtr == 0) {
 	    throw (AipsError ("ImageExprParse: '" + itsSval +
 			      "' is an unknown lattice, image, or region"));
 	}
     } else {
-	regPtr = RegionHandler::getRegion (theLastTable, names(2),
-					   RegionHandler::Any, False);
+	regPtr = regHand.getRegion (names(2), RegionHandler::Any, False);
 	if (regPtr == 0) {
 	    throw (AipsError ("ImageExprParse: region '" + itsSval +
 			      " is an unknown region"));
