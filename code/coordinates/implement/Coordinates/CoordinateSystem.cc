@@ -257,7 +257,7 @@ void CoordinateSystem::transpose(const Vector<Int> &newWorldOrder,
 
 void CoordinateSystem::removeWorldAxis(uInt axis, Double replacement) 
 {
-    AlwaysAssert(axis <= nWorldAxes(), AipsError);
+    AlwaysAssert(axis < nWorldAxes(), AipsError);
 
     const uInt nc = nCoordinates();
 
@@ -277,7 +277,7 @@ void CoordinateSystem::removeWorldAxis(uInt axis, Double replacement)
 
 void CoordinateSystem::removePixelAxis(uInt axis, Double replacement) 
 {
-    AlwaysAssert(axis <= nPixelAxes(), AipsError);
+    AlwaysAssert(axis < nPixelAxes(), AipsError);
 
     const uInt nc = nCoordinates();
 
@@ -348,43 +348,49 @@ Coordinate::Type CoordinateSystem::type(uInt whichCoordinate) const
     return coordinates_p[whichCoordinate]->type();
 }
 
+String CoordinateSystem::showType(uInt whichCoordinate) const
+{
+    AlwaysAssert(whichCoordinate<nCoordinates(), AipsError);
+    return coordinates_p[whichCoordinate]->showType();
+}
+
 const Coordinate &CoordinateSystem::coordinate(uInt which) const
 {
-    AlwaysAssert(which <= nCoordinates(), AipsError);
+    AlwaysAssert(which < nCoordinates(), AipsError);
     return *(coordinates_p[which]);
 }
 
 const LinearCoordinate &CoordinateSystem::linearCoordinate(uInt which) const
 {
-    AlwaysAssert(which <= nCoordinates() && 
+    AlwaysAssert(which < nCoordinates() && 
 		 coordinates_p[which]->type() == Coordinate::LINEAR, AipsError);
     return (const LinearCoordinate &)(*(coordinates_p[which]));
 }
 
 const DirectionCoordinate &CoordinateSystem::directionCoordinate(uInt which) const
 {
-    AlwaysAssert(which <= nCoordinates() && 
+    AlwaysAssert(which < nCoordinates() && 
 		 coordinates_p[which]->type() == Coordinate::DIRECTION, AipsError);
     return (const DirectionCoordinate &)(*(coordinates_p[which]));
 }
 
 const SpectralCoordinate &CoordinateSystem::spectralCoordinate(uInt which) const
 {
-    AlwaysAssert(which <= nCoordinates() && 
+    AlwaysAssert(which < nCoordinates() && 
 		 coordinates_p[which]->type() == Coordinate::SPECTRAL, AipsError);
     return (const SpectralCoordinate &)(*(coordinates_p[which]));
 }
 
 const StokesCoordinate &CoordinateSystem::stokesCoordinate(uInt which) const
 {
-    AlwaysAssert(which <= nCoordinates() && 
+    AlwaysAssert(which < nCoordinates() && 
 		 coordinates_p[which]->type() == Coordinate::STOKES, AipsError);
     return (const StokesCoordinate &)(*(coordinates_p[which]));
 }
 
 const TabularCoordinate &CoordinateSystem::tabularCoordinate(uInt which) const
 {
-    AlwaysAssert(which <= nCoordinates() && 
+    AlwaysAssert(which < nCoordinates() && 
 		 coordinates_p[which]->type() == Coordinate::TABULAR, 
 		 AipsError);
     return (const TabularCoordinate &)(*(coordinates_p[which]));
@@ -518,6 +524,11 @@ Vector<Int> CoordinateSystem::pixelAxes(uInt whichCoord) const
 Coordinate::Type CoordinateSystem::type() const
 {
     return Coordinate::COORDSYS;
+}
+
+String CoordinateSystem::showType() const
+{
+    return String("System");
 }
 
 uInt CoordinateSystem::nWorldAxes() const
