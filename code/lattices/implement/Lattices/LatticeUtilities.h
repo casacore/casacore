@@ -58,7 +58,7 @@ class IPosition;
 // Float lmax;
 // IPosition posMin = myImg.shape();
 // IPosition posMax = myImg.shape();
-// LatticeMinMax( lmin, lmax, posMin, posMax, myImg );
+// minMax( lmin, lmax, posMin, posMax, myImg );
 //
 // </srcblock>
 // </example>
@@ -82,7 +82,7 @@ class IPosition;
 // the IPositions of the max.  (LEL does not get you the IPositions of the
 // min and max)
 template <class T>
-void LatticeMinMax(T & min, T & max, 
+void minMax(T & min, T & max, 
 		   IPosition & posMin, IPosition & posMax, 
 		   const Lattice<T>& lat);
 
