@@ -26,48 +26,64 @@
 
 main (int argc, char **argv)
 {
+try {
+
    Input inputs(1);
    inputs.version ("$Revision$");
 
 // Get inputs
 
    inputs.create("in", "", "Input image name");
-   inputs.create("core", "True", "Image in core");
    inputs.create("axes", "-10", "axes");
    inputs.create("method", "linear", "Method");
    inputs.create("save", "False", "Save output ?");
-   inputs.create("shape", "-10", "Shape");
+   inputs.create("shape", "100,100", "Shape");
    inputs.create("replicate", "False", "Replicate ?");
+   inputs.create("disk", "False", "Image on disk");
+   inputs.create("dbg", "0", "Debug level");
+   inputs.create("double", "0", "Double size ?");
    inputs.readArguments(argc, argv);
    const String in = inputs.getString("in");
-   const Bool core = inputs.getBool("core");
    const Bool save = inputs.getBool("save");
    const String method = inputs.getString("method");
    const Block<Int> axesU(inputs.getIntArray("axes"));
    const Block<Int> shapeU(inputs.getIntArray("shape"));
    const Bool replicate = inputs.getBool("replicate");
+   const Bool onDisk = inputs.getBool("disk");
+   const Bool dbl = inputs.getBool("double");
+   const Int dbg = inputs.getInt("dbg");
 //
-   Int lim = 0;
-   if (core) lim = 1000000;
+   Int maxMBInMemory = -1;
+   if (onDisk) maxMBInMemory = 0;
 //
    ImageInterface<Float>* pIm = 0;
+   IPosition shapeIn;
    if (in.empty()) {
-      IPosition shape(3, 64, 128, 32);
-      TiledShape shape2(shape);
-      CoordinateSystem cSys = CoordinateUtil::makeCoordinateSystem(shape, False);
+      if (shapeU.nelements()>0) {
+         if (shapeU.nelements()==1 && shapeU[0]==-10) {
+         } else {
+            shapeIn.resize(shapeU.nelements());
+            for (uInt i=0; i<shapeIn.nelements(); i++) shapeIn(i) = shapeU[i];
+         }
+      }
 //
-      pIm = new TempImage<Float>(shape2, cSys, lim);
+      TiledShape shape2(shapeIn);
+      CoordinateSystem cSys = CoordinateUtil::makeCoordinateSystem(shapeIn, False);
+//
+      pIm = new TempImage<Float>(shape2, cSys, maxMBInMemory);
       pIm->set(1.0);
 //
-      TempLattice<Bool> inMask(shape2, lim);
+      TempLattice<Bool> inMask(shape2, maxMBInMemory);
       inMask.set(True);
       TempImage<Float>* pTemp = dynamic_cast<TempImage<Float>*>(pIm);
       pTemp->attachMask(inMask);
    } else {
       pIm = new PagedImage<Float>(in);
+      shapeIn = pIm->shape();
    }
+   IPosition shapeOut = pIm->shape();
 //
-   IPosition axes(3, 0, 1, 2);
+   IPosition axes = IPosition::makeAxisPath(pIm->ndim());
    if (axesU.nelements()>0) {
       if (axesU.nelements()==1 && axesU[0]==-10) {
       } else {
@@ -75,46 +91,48 @@ main (int argc, char **argv)
          for (uInt i=0; i<axes.nelements(); i++) axes(i) = axesU[i];
       }
    }
-//
-   IPosition shapeIn = pIm->shape();
-   IPosition shapeOut = shapeIn;
-   if (shapeU.nelements()>0) {
-      if (shapeU.nelements()==1 && shapeU[0]==-10) {
-      } else {
-         shapeOut.resize(shapeU.nelements());
-         for (uInt i=0; i<shapeOut.nelements(); i++) shapeOut(i) = shapeU[i];
-      }
-   }
-   cerr << "shape = " << shapeIn << shapeOut << endl;
    cerr << "axes = " << axes << endl;
 //
-   uInt n = pIm->ndim();
    CoordinateSystem cSysOut = pIm->coordinates();
-   Vector<Double> incr = cSysOut.increment().copy();
-   Vector<Double> refp  = cSysOut.referencePixel().copy();
-   Vector<Double> refv  = cSysOut.referenceValue().copy();
-   for (uInt i=0; i<n; i++) {
-      incr(i) = incr(i) * shapeIn(i) / shapeOut(i);
-      refp(i) = shapeOut(i) / 2.0;
+   if (dbl) {
+      Vector<Double> incr = cSysOut.increment().copy();
+      Vector<Double> refp  = cSysOut.referencePixel().copy();
+      Vector<Double> refv  = cSysOut.referenceValue().copy();
+      for (uInt i=0; i<axes.nelements(); i++) {
+         uInt j = axes(i);
+         shapeOut(j) = 2 * shapeIn(j);
+         incr(j) = incr(j) / 2.0;
+//         refp(j) = shapeOut(j) / 2.0;              // Center
+      }
+      cSysOut.setReferencePixel(refp);
+      cSysOut.setIncrement(incr);
    }
-   cSysOut.setReferencePixel(refp);
-   cSysOut.setIncrement(incr);
+   cerr << "shapeIn, shapeOut = " << shapeIn << shapeOut << endl;
 //
-
    ImageInterface<Float>* pImOut = 0;
    if (save) {
       pImOut = new PagedImage<Float>(shapeOut, cSysOut, String("outFile"));
    } else {
-      pImOut = new TempImage<Float>(shapeOut, cSysOut, lim);
+      pImOut = new TempImage<Float>(shapeOut, cSysOut, maxMBInMemory);
    }
    String maskName = pImOut->makeUniqueRegionName(String("mask"), 0);    
    pImOut->makeMask(maskName, True, True, True, True);
 //
    Interpolate2D::Method emethod = Interpolate2D::stringToMethod(method);
    ImageRegrid<Float> regridder;
+   regridder.showDebugInfo(dbg);
    regridder.regrid(*pImOut, emethod, axes, *pIm, replicate);
+//
    delete pIm;
    delete pImOut;
+
+} catch (AipsError x) {
+     cerr << "aipserror: error " << x.getMesg() << endl;
+     return 1;
+} 
+
+return 0;
+
 }
 
 
