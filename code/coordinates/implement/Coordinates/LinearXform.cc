@@ -110,7 +110,7 @@ uInt LinearXform::nWorldAxes() const
 Bool LinearXform::forward(const Vector<Double> &world, 
 				Vector<Double> &pixel, String &errorMsg) const
 {
-    const Int max_size = 10;
+    const uInt max_size = 10;
     uInt naxis = world.nelements();
     AlwaysAssert(naxis <= max_size, AipsError);
     pixel.resize(naxis);
@@ -138,7 +138,7 @@ Bool LinearXform::reverse(      Vector<Double> &world,
                           const Vector<Double> &pixel, 
                           String &errorMsg) const
 {
-    const Int max_size = 10;
+    const uInt max_size = 10;
     uInt naxis = pixel.nelements();
     AlwaysAssert(naxis <= max_size, AipsError);
     world.resize(naxis); 
