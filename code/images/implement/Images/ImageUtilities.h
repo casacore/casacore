@@ -64,10 +64,6 @@ class Table;
 // 2) functions to set up objects which can be used to create image iterators, 
 // and 3) miscellaneous functions which might be commonly useful.
 //
-// It is anticipated that image access will change significantly in the next few
-// months (late 1996 and early 1997) so do not expect this class to remain in any
-// way static (sic).
-//
 // Our main goal in an image analysis application is to iterate through an 
 // image and do something with the chunk of data received with each iteration.
 // The chunk (or "cursor") received is specified to the image iterator 
@@ -188,7 +184,9 @@ class Table;
 //   Int nVirCursorIter;
 //   if (cursorAxes.nelements() == 1 && cursorAxes(0) = -10) cursorAxes.resize(0);
 //   if (!ImageUtilities::setCursor(nVirCursorIter, cursorShape, cursorAxes,
-//                                  pImage, False, 0, cout)) return 1;
+//                                  pImage->shape(), 
+//                                  pImage->niceCursorShape(pImage->maxPixels()),
+//                                  False, 0, cout)) return 1;
 //
 //
 //// Set display axis array
@@ -243,6 +241,71 @@ class Table;
 class ImageUtilities {
 public:
 
+// Return, 0 relative, the number of the first pixel axis in an image which is a spectral axis
+// A return value of -1 indicates no spectral axis was found
+   static Int findSpectralAxis (const IPosition& imageShape,
+                                const CoordinateSystem& coordinate);
+
+// Convert comma or space delimitered substrings into an
+// array of strings.  
+   static Vector<String> getStrings (const String& string);
+
+// Find the next comma or space delimiterd substring in a string.   If <src>init=True</src> 
+// start from the start of the string, else start from the end of the previous found 
+// substring.  A return value of False indicates no more substrings.
+   static Bool getNextSubString (String& subString,
+                                 const String& inString,
+                                 const Bool& init);
+
+// Determine whether the value of an integer is matched by the value of any of 
+// the elements of a <src>Vector<Int></src>. Returns the index if found, else -1
+   static Int inVector (const Int& target, 
+                        const Vector<Int>& vector);
+
+// Find the world axis for the given pixel axis in a coordinate system
+   static Int pixelAxisToWorldAxis(const CoordinateSystem& cSys, 
+                                   const Int& pixelAxis);
+
+// This function converts pixel coordinates to world coordinates. You
+// specify a vector of pixel coordinates (<src>pixels</src>) for only one 
+// axis, the <src>pixelAxis</src>.    For the other pixel axes in the
+// <src>CoordinateSystem</src>, if a pixel axis "i" is  found in the 
+// <src>CursorAxes</src> vector, its pixel coordinate is set to 
+// the average of the selected region from the image for that axis
+// (<src>(blc(i)+trc(i))/2)</src>), otherwise it is set to the reference pixel.   
+// The vector of world coordinates for <src>pixelAxis</src> is returned as formatted 
+// Strings.  If for some reason it can't make the conversion, the element
+// element is returned as "?"    Returns </src>False</src> if the lengths of
+// <<src>blc</src> and <src>trc</src> are not equal to the number of pixel axes
+// in the coordinate system.
+   static Bool pixToWorld (Vector<String>& sWorld,
+                           const CoordinateSystem& cSys,
+                           const Int& pixelAxis,
+                           const Vector<Int>& cursorAxes,
+                           const IPosition& blc,
+                           const IPosition& trc,
+                           const Vector<Double>& pixels,
+                           const Int& prec);
+
+// Set the cursor shape and cursor order arrays (0 relative) from the cursor axes array.  
+// The cursor order is always the image natural order (0,1,2...).  See general
+// description above for details on call objects.   A return value of False
+// indicates invalid arguments.
+   static Bool setCursor (Int& nVirCursorIter,
+                          IPosition& cursorShape,
+                          Vector<Int>& cursorAxes, 
+                          const IPosition& imageShape,
+                          const IPosition& imageTileShape,
+                          const Bool& optimumEntireImage,
+                          const Int& maxDim,
+                          ostream& os);
+
+// Set the display axes (0 relative). These are the axes that are not cursor axes.   If the
+// cursor axes are all of the available image axes, the displayAxes array is of length 0.
+   static void setDisplayAxes (Vector<Int>& displayAxes, 
+                               const Vector<Int>& cursorAxes, 
+                               const Int& nImageDim);
+
 // Convert the <src>Vector<Double></src> include or exclude pixel ranges to
 // a single range and Booleans specifying whether the range is inclusion 
 // or exclusion (you can't have both).  <src>include</src> and/or <src>exclude</src> 
@@ -267,57 +330,6 @@ public:
    static Bool setNxy (Vector<Int>& nxy,
                        ostream& os);
 
-// Determine whether the value of an integer is matched by the value of any of 
-// the elements of a <src>Vector<Int></src>. Returns the index if found, else -1
-   static Int inVector (const Int& target, 
-                        const Vector<Int>& vector);
-
-// Set the cursor shape and cursor order arrays (0 relative) from the cursor axes array.  
-// The cursor order is always the image natural order (0,1,2...).  See general
-// description above for details on call objects.   A return value of false
-// indicates invalid arguments.
-//<group>   
-   static Bool setCursor           (Int& nVirCursorIter,
-                                    IPosition& cursorShape,
-                                    Vector<Int>& cursorAxes, 
-                                    const Lattice<Float>* pImage,    
-                                    const Bool& optimumEntireImage,
-                                    const Int& maxDim,
-                                    ostream& os);
-
-   static Bool setCursor           (Int& nVirCursorIter,
-                                    IPosition& cursorShape, 
-                                    Vector<Int>& cursorAxes, 
-                                    const Lattice<Double>* pImage,    
-                                    const Bool& optimumEntireImage,
-                                    const Int& maxDim,
-                                    ostream& os);
-
-   static Bool setCursor           (Int& nVirCursorIter,
-                                    IPosition& cursorShape, 
-                                    Vector<Int>& cursorAxes, 
-                                    const Lattice<Int>* pImage,    
-                                    const Bool& optimumEntireImage,
-                                    const Int& maxDim,
-                                    ostream& os);
-
-   static Bool setCursor           (Int& nVirCursorIter,
-                                    IPosition& cursorShape, 
-                                    Vector<Int>& cursorAxes, 
-                                    const Lattice<Complex>* pImage,    
-                                    const Bool& optimumEntireImage,
-                                    const Int& maxDim,
-                                    ostream& os);
-
-//</group>
-
-
-// Set the display axes (0 relative). These are the axes that are not cursor axes.   If the
-// cursor axes are all of the available image axes, the displayAxes array is of length 0.
-   static void setDisplayAxes      (Vector<Int>& displayAxes, 
-                                    const Vector<Int>& cursorAxes, 
-                                    const Int& nImageDim);
-
 // Return a Scratch Table where the Table name was constructed from the directory 
 // of a given file, a specified string and a unique number appended to the string
 // and worked out by this function.  This can be handy to generate, say, a scratch 
@@ -335,39 +347,31 @@ public:
                                      const Vector<Int>& displayAxes,
                                      const IPosition& imageShape);
 
-// Return, 0 relative, the number of the first axis in an image which is a spectral axis
-// A return value of -1 indicates no spectral axis was found
-   static Int findSpectralAxis     (const IPosition& imageShape,
-                                    const CoordinateSystem& coordinate);
-
 // Convert long axis names "Right Ascension", "Declination", "Frequency" and
-// "Velocity" to "RA", "Dec", "Freq", "Vel" respectively.
+// "Velocity" to "RA", "Dec", "Freq", "Vel" respectively.  Unknown strings
+// are returned as given.
    static String shortAxisName (const String& axisName);
 
 
-// Verify that an array of axes are valid for this image. That is, make sure they are 
-// in the range 0 -> nDimensions-1.   A return value of <src>False</src> indicates
-// an invalid axis in the list.
-   static Bool verifyAxes          (const Int& nDim,
-                                    const Vector<Int>& axes,
-                                    ostream& os);
-
 // Stretch a range by 10%
-   static void stretchMinMax       (Float& min, 
-                                    Float& max);
+   static void stretchMinMax (Float& min, 
+                              Float& max);
 
-// Convert comma or space delimitered substrings into an
-// array of strings.  
-   static Vector<String> getStrings (const String& string);
+// Verify that an array of axes are valid for this image. That is, make sure they are 
+// in the range 0 -> nDim-1.   A return value of <src>False</src> indicates
+// an invalid axis in the list.
+   static Bool verifyAxes (const Int& nDim,
+                           const Vector<Int>& axes,
+                           ostream& os);
 
-// Find the next comma or space delimiterd substring in a 
-// string.   If <src>init=True</src> start from the start
-// of the string, else start from the end of the previous
-// found substring.  A return value of False indicates
-// no more substrings.
-   static Bool getNextSubString (String& subString,
-                                 const String& inString,
-                                 const Bool& init);
+// Verify an image region specification.  Unspecified values are given 0 (blc)
+// imageShape (trc) or unity (inc).  Returns <src>False</src> if the inputs
+// are outside of <src>imageShape</src>
+   static void verifyRegion (IPosition& blc,
+                             IPosition& trc,
+                             IPosition& inc,
+                             const IPosition& imageShape);
+
 };
 
 #endif
