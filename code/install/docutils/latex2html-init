@@ -88,9 +88,9 @@ $BODYTEXT =  "background=\"$DOCSROOT/gif/watermark.gif\" bgcolor=\"\#ffffff\" te
 
 sub aips2script {
 "\n" .
-"<SCRIPT LANGUAGE = \"JavaScript1.2\" src=\"$DOCSROOT/javascripts/menu.js\"></script>\n" .
-"<SCRIPT LANGUAGE = \"JavaScript1.2\" src=\"$DOCSROOT/javascripts/aipsmenu.js\"></script>\n" .
-"<SCRIPT LANGUAGE = \"JavaScript1.2\">\n" .
+"<SCRIPT LANGUAGE = \"JavaScript\" src=\"$DOCSROOT/javascripts/menu.js\"></script>\n" .
+"<SCRIPT LANGUAGE = \"JavaScript\" src=\"$DOCSROOT/javascripts/aipsmenu.js\"></script>\n" .
+"<SCRIPT LANGUAGE = \"JavaScript\">\n" .
 "<!--\n" .
 " // Function need to place directory relative to docs tree.\n" .
 " aMenu = new aipsMenu(\"$DOCSROOT\", \"\#$DOCSCOLOR\");\n" .
@@ -132,13 +132,13 @@ sub aips2topbar {
 "<tr><td><img src=\"$DOCSROOT/gif/aips2logo-sm.gif\">\n" .
 "</td><td align=right>\n" .
 "<table cellpadding=2 cellspace=2>\n" .
-"<td><font size=2 face=helvetica color=\"cc0f0f\"><a href=\"$DOCSROOT/newsletters/index.html\"><img src=\"$DOCSROOT/gif/tri2.gif\" border=0>  <b>Latest news </a>" .
+"<td><font size=2 face=helvetica color=\"\#cc0f0f\"><a href=\"$DOCSROOT/newsletters/index.html\"><img src=\"$DOCSROOT/gif/tri2.gif\" border=0>  <b>Latest news </a>" .
 "</font></b></td>\n" .
-"<td><font size=2 face=helvetica color=\"cc0f0f\"><a href=\"$DOCSROOT/faq/faq.html\"><img src=\"$DOCSROOT/gif/tri2.gif\" border=0>  <b>FAQ</a></font>\n" .
+"<td><font size=2 face=helvetica color=\"\#cc0f0f\"><a href=\"$DOCSROOT/faq/faq.html\"><img src=\"$DOCSROOT/gif/tri2.gif\" border=0>  <b>FAQ</a></font>\n" .
 "</b></td></tr>\n" .
-"<tr><td><font size=2 face=helvetica color=\"cc0f0f\"><a href=\"$DOCSROOT/search/search.html\"><img src=\"$DOCSROOT/gif/tri2.gif\" border=0>  <b>Search\n" .
+"<tr><td><font size=2 face=helvetica color=\"\#cc0f0f\"><a href=\"$DOCSROOT/search/search.html\"><img src=\"$DOCSROOT/gif/tri2.gif\" border=0>  <b>Search\n" .
 "</a></font></b></td>\n" .
-"<td><font size=2 face=helvetica color=\"cc0f0f\"><a href=\"$DOCSROOT/aips++.html\"><img src=\"$DOCSROOT/gif/tri2.gif\" border=0>  <b>Home</a></font>\n" .
+"<td><font size=2 face=helvetica color=\"\#cc0f0f\"><a href=\"$DOCSROOT/aips++.html\"><img src=\"$DOCSROOT/gif/tri2.gif\" border=0>  <b>Home</a></font>\n" .
 "</b></td></tr>\n" .
 "\n" .
 "</table>\n" .
