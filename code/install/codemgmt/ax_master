@@ -2703,3 +2703,4 @@
 10 020 src mv trial/apps/datalinetool/dltplot.g trial/implement/Datalinetool/dltplot.g
 10 020 src mv trial/apps/datalinetool/makefile trial/implement/Datalinetool/makefile
 10 020 src mv trial/apps/datalinetool/textgroup.g trial/implement/Datalinetool/textgroup.g
+10 020 src mv trial/apps/datalinetool/tgplot.g trial/implement/Datalinetool/tgplot.g
