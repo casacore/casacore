@@ -32,9 +32,9 @@ C baseline data to get antenna based coefficients
 C Written by  R.Lucas for IRAM gildas.
 C
 
-    SUBROUTINE POLYANT(IY, M, NBAS, IANT, JANT, IREF,
-     $KPLUS1, NANT, X, Y, W,
-     $WK1, WK2, WK3, SS, C) 
+      SUBROUTINE POLYANT(IY, M, NBAS, IANT, JANT, IREF,
+     $     KPLUS1, NANT, X, Y, W,
+     $     WK1, WK2, WK3, SS, C) 
 C------------------------------------------------------------------------
 C     polyant computes a weighted least-squares polynimial approximation
 C     to the antenna amplitudes or phases
