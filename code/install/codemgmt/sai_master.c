@@ -36,7 +36,7 @@
 * for further details.
 *
 * Like ai_master, this program is not indended for direct execution by
-* users.  It's only experimental anyway.  La la la.  Do re mi.
+* users.  It's only experimental anyway.
 *
 * Options:
 *    See the documentation for ai_master.
