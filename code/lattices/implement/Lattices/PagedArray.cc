@@ -401,13 +401,6 @@ RO_LatticeIterInterface<T> *PagedArray<T>::makeIter(const LatticeNavigator &
 
 //
 template<class T>
-RO_LatticeIterInterface<T> *PagedArray<T>::makeIter(const IPosition &
-						    cursorShape) const
-{
-  return new RO_PagedArrIter<T>(*this, cursorShape);
-};
-
-template<class T>
 LatticeIterInterface<T> *PagedArray<T>::makeIter(const LatticeNavigator &
 						 navigator)
 {
@@ -415,13 +408,6 @@ LatticeIterInterface<T> *PagedArray<T>::makeIter(const LatticeNavigator &
 };
 
 //
-template<class T>
-LatticeIterInterface<T> *PagedArray<T>::makeIter(const IPosition &
-						 cursorShape) 
-{
-  return new PagedArrIter<T>(*this, cursorShape);
-};
-
 template<class T>
 void PagedArray<T>::showCacheStatistics(ostream &os)
 {

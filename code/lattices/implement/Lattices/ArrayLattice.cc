@@ -1,5 +1,5 @@
 //# ArrayLattice.h: this defines the Lattice wrapper class for Arrays.
-//# Copyright (C) 1995
+//# Copyright (C) 1995,1997
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -168,22 +168,9 @@ RO_LatticeIterInterface<T> *ArrayLattice<T>::makeIter(
 };
 
 template <class T> 
-RO_LatticeIterInterface<T> *ArrayLattice<T>::makeIter(
-					         const IPosition &shape) const 
-{
-  return new RO_ArrLatticeIter<T>(*this, shape);
-};
-
-template <class T> 
 LatticeIterInterface<T> *ArrayLattice<T>::makeIter(const LatticeNavigator &nav)
 {
   return new ArrLatticeIter<T>(*this, nav);
-};
-
-template <class T> 
-LatticeIterInterface<T> *ArrayLattice<T>::makeIter(const IPosition &shape)
-{
-  return new ArrLatticeIter<T>(*this, shape);
 };
 
 template <class T> Array<T> &ArrayLattice<T>::asArray() 

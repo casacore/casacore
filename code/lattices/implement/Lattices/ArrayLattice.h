@@ -1,5 +1,5 @@
 //# ArrayLattice: Object which converts an Array to a Lattice.
-//# Copyright (C) 1994,1995,1996
+//# Copyright (C) 1994,1995,1996,1997
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -203,14 +203,13 @@ public:
   void putAt(const T &value, const IPosition &where);
   // </group>
   
-  // These are the true implementations of the Lattice Iterators.
-  // <note> Not for public use. </note>
+  // These functions are used by the LatticeIterator class to generate an
+  // iterator of the correct type for a specified Lattice. Not recommended
+  // for general use. 
   // <group>
-  RO_LatticeIterInterface<T> *makeIter(
+  virtual RO_LatticeIterInterface<T> *makeIter(
 				    const LatticeNavigator &navigator) const;
-  RO_LatticeIterInterface<T> *makeIter(const IPosition &cursorShape) const;
-  LatticeIterInterface<T> *makeIter(const LatticeNavigator &navigator);
-  LatticeIterInterface<T> *makeIter(const IPosition &cursorShape);
+  virtual LatticeIterInterface<T> *makeIter(const LatticeNavigator &navigator);
   // </group>
 
 protected:

@@ -394,12 +394,11 @@ public:
   // These are the PagedArray letter implementations for the LatticeIterator
   // envelope class <note> Not for public use </note>
   // <group>
-  RO_LatticeIterInterface<T> *makeIter(
-				     const LatticeNavigator &navigator) const;
-  RO_LatticeIterInterface<T> *makeIter(const IPosition &cursorShape) const;
+  virtual RO_LatticeIterInterface<T> * makeIter(const LatticeNavigator & 
+						navigator) const;
 
-  LatticeIterInterface<T> *makeIter(const LatticeNavigator &navigator);
-  LatticeIterInterface<T> *makeIter(const IPosition &cursorShape);
+  virtual LatticeIterInterface<T> * makeIter(const LatticeNavigator & 
+					     navigator);
   // </group>
 
   // Help the user pick a cursor for most efficient access if he only wants
