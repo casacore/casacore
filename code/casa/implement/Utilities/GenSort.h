@@ -1,5 +1,5 @@
 //# GenSort.h: General sort functions
-//# Copyright (C) 1993,1994,1995,1996
+//# Copyright (C) 1993,1994,1995,1996,1997
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -87,15 +87,17 @@ template<class T> class Block;
 //   <dd> is o(n*n) for random inputs. It is, however, the
 //     only stable sort (i.e. equal values remain in the original order).
 // </dl>
-//
 // <src>Sort::NoDuplicates</src> in the options field indicates that
 // duplicate values should be removed. Multiple options can be given by
 // or-ing them, e.g. <src>Sort::HeapSort | Sort::NoDuplicates</src>.
-//
+// <p>
 // All the sort functions return the number of values sorted as their
 // function value; when duplicate values have been removed, the number of
 // unique valuess will be returned.
-//
+// <p>
+// The class also provides a function to find the k-th largest value
+// in an array of values. This uses a stripped-down version of quicksort
+// and is at least 6 times faster than a full quicksort.
 // </synopsis> 
 
 // <templating arg=T>
@@ -123,6 +125,11 @@ public:
     // The sort is done in place.
     static uInt sort (Block<T>&, uInt nr, Sort::Order = Sort::Ascending,
 		      int options = Sort::QuickSort);
+
+    // Find the k-th largest value.
+    // Note: it does a partial sort, thus the data array gets changed..
+    static T kthLargest (T* data, uInt nr, uInt k);
+
 private:
     // Sort C-array using quicksort.
     static uInt quickSort (T*, uInt nr, Sort::Order, int options);
@@ -132,7 +139,7 @@ private:
     static uInt insSort   (T*, uInt nr, Sort::Order, int options);
 
     // Swap 2 elements in array.
-    static inline void swap (T&, T&, T&);
+    static inline void swap (T&, T&);
 
     // Quicksort in ascending order.
     static void quickSortAsc (T*, Int);
@@ -519,9 +526,9 @@ uInt genSort (Vector<uInt>& indexVector, const Block<T>& data, uInt nr,
 // Implement inline member functions.
 
 template<class T>
-inline void GenSort<T>::swap (T& l, T& r, T& t)
+inline void GenSort<T>::swap (T& l, T& r)
 {
-    t = l;
+    T t = l;
     l = r;
     r = t;
 }
