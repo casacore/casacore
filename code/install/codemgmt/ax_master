@@ -2620,3 +2620,4 @@
 10 010 src mv aips/implement/Measures/QC.h aips/implement/Quanta/QC.h
 10 010 src mv aips/implement/Measures/QLogical.cc aips/implement/Quanta/QLogical.cc
 10 010 src mv aips/implement/Measures/QLogical.h aips/implement/Quanta/QLogical.h
+10 010 src mv aips/implement/Measures/QLogical2.cc aips/implement/Quanta/QLogical2.cc
