@@ -318,7 +318,8 @@ TableExprNode TableParseSelect::handleKeyCol (const String& name)
 TableExprNode TableParseSelect::handleSlice (const TableExprNode& array,
 					     const TableExprNodeSet& indices)
 {
-    return TableExprNode::newArrayPartNode (array, indices);
+    // TaQL indexing is 1-based.
+    return TableExprNode::newArrayPartNode (array, indices, 1);
 }
  
 //# Parse the name of a function.

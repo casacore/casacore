@@ -933,15 +933,16 @@ TableExprNode TableExprNode::newFunctionNode
 }
 
 TableExprNode TableExprNode::newArrayPartNode (const TableExprNode& arrayNode,
-					       const TableExprNodeSet& indices)
+					       const TableExprNodeSet& indices,
+					       uInt origin)
 {
     // Check if the node is an array.
     if (arrayNode.node_p->valueType() != TableExprNodeRep::VTArray) {
 	throw (TableInvExpr ("Indexing can only be done on arrays"));
     }
-    // Create new Index node (with origin 1) and fill it.
+    // Create new Index node and fill it.
     // Check the index bounds as far as possible.
-    TableExprNodeIndex* inode = new TableExprNodeIndex (indices, 1);
+    TableExprNodeIndex* inode = new TableExprNodeIndex (indices, origin);
     inode->checkIndexValues (arrayNode.node_p);
     TableExprNodeBinary* anode = new TableExprNodeArrayPart (arrayNode.node_p,
 							     inode);
