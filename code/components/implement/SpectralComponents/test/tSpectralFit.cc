@@ -28,6 +28,7 @@
 //# Includes
 #include <aips/aips.h>
 #include <trial/Wnbt/SpectralElement.h>
+#include <trial/Wnbt/SpectralList.h>
 #include <trial/Wnbt/SpectralEstimate.h>
 #include <trial/Wnbt/SpectralFit.h>
 #include <trial/Tasking/PGPlotter.h>
@@ -95,16 +96,17 @@ int main(int argc, char **argv) {
     {
       SpectralEstimate est(rms, cutoff, minsig);
       Vector<Float> deriv(n);
-      r = est.estimate(y, &deriv);
+      const SpectralList &slist = est.estimate(y, &deriv);
+      r = slist.nelements();
       cout << "Found (using rms, cutoff, minsig, q): (" <<
 	rms << ", " << cutoff << ", " << minsig << ", " << q << ") " <<
 	r << " estimates" << endl;
       for (Int i=0; i<r; i++) {
-	cout << "Estimate " << i << ": " << est.element(i) << endl;
+	cout << "Estimate " << i << ": " << slist[i] << endl;
       };
       Vector<Float> res(NPTS);
       res = y;
-      est.residual(res);
+      slist.residual(res);
       cout << "Minimum, Maximum residuals: " << min(res) << ", " <<
 	max(res) << endl;
       plotter.sci(2);
@@ -121,31 +123,33 @@ int main(int argc, char **argv) {
       plotter.line(xy, y);
       plotter.sci(2);
       for (Int j=0; j<r; j++) {
-	for (Int i = 0; i<n; i++) res(i) = est.element(j)(i);
+	for (Int i = 0; i<n; i++) res(i) = slist[j](i);
 	plotter.line(xy, res);
       };
     }
     {
       SpectralEstimate est(rms, cutoff, minsig);
       est.setWindowing(True);
-      r = est.estimate(y);
+      const SpectralList &slist = est.estimate(y);
+      r = slist.nelements();
       cout << "Window (using rms, cutoff, minsig, q): (" <<
 	rms << ", " << cutoff << ", " << minsig << ", " << q << ") " <<
 	r << " estimates" << endl;
       for (Int i=0; i<r; i++) {
-	cout << "Estimate " << i << ": " << est.element(i) << endl;
+	cout << "Estimate " << i << ": " << slist[i] << endl;
       };
     }
     {
       q = 1;
       SpectralEstimate est(rms, cutoff, minsig);
       est.setQ(q);
-      r = est.estimate(y);
+      const SpectralList &slist = est.estimate(y);
+      r = slist.nelements();
       cout << "Found (using rms, cutoff, minsig, q): (" <<
 	rms << ", " << cutoff << ", " << minsig << ", " << q << ") " <<
 	r << " estimates" << endl;
       for (Int i=0; i<r; i++) {
-	cout << "Estimate " << i << ": " << est.element(i) << endl;
+	cout << "Estimate " << i << ": " << slist[i] << endl;
       };
     }
     {
@@ -153,12 +157,13 @@ int main(int argc, char **argv) {
       rms = cutoff = minsig = 0.0;
       SpectralEstimate est(rms, cutoff, minsig);
       est.setQ(q);
-      r = est.estimate(y);
+      const SpectralList &slist = est.estimate(y);
+      r = slist.nelements();
       cout << "Found (using rms, cutoff, minsig, q): (" <<
 	rms << ", " << cutoff << ", " << minsig << ", " << q << ") " <<
 	r << " estimates" << endl;
       for (Int i=0; i<r; i++) {
-	cout << "Estimate " << i << ": " << est.element(i) << endl;
+	cout << "Estimate " << i << ": " << slist[i] << endl;
       };
     }
     {
@@ -166,12 +171,13 @@ int main(int argc, char **argv) {
       rms = cutoff = minsig = 0.0;
       SpectralEstimate est(rms, cutoff, minsig);
       est.setQ(q);
-      r = est.estimate(y);
+      const SpectralList &slist = est.estimate(y);
+      r = slist.nelements();
       cout << "Found (using rms, cutoff, minsig, q): (" <<
 	rms << ", " << cutoff << ", " << minsig << ", " << q << ") " <<
 	r << " estimates" << endl;
       for (Int i=0; i<r; i++) {
-	cout << "Estimate " << i << ": " << est.element(i) << endl;
+	cout << "Estimate " << i << ": " << slist[i] << endl;
       };
     }
   }
@@ -237,15 +243,15 @@ int main(int argc, char **argv) {
       cout << "Specify fitter on the 4 gaussians:" << endl;
       SpectralFit fitter;
       for (uInt i=0; i<ncomp; i++) fitter.addFitElement(el[i]);
-      for (uInt i=0; i<fitter.getNElements(); i++) {
-	cout << fitter.getElement(i) << endl;
+      for (uInt i=0; i<fitter.list().nelements(); i++) {
+	cout << fitter.list()[i] << endl;
       };
       cout << "---------------------------------------------------" << endl;
       cout << "Execute the fitter, can do (1:Y): " <<
-	fitter.fit(freq, dat) << endl;
+	fitter.fit(dat,freq) << endl;
       cout << "The results: " << endl;
-      for (uInt i=0; i<fitter.getNElements(); i++) {
-	cout << fitter.getElement(i) << endl;
+      for (uInt i=0; i<fitter.list().nelements(); i++) {
+	cout << fitter.list()[i] << endl;
       };
       cout << "---------------------------------------------------" << endl;
       
@@ -255,14 +261,14 @@ int main(int argc, char **argv) {
 	el[i].setSigma(0.95*el[i].getSigma());
 	fitter.setFitElement(i, el[i]);
       };
-      for (uInt i=0; i<fitter.getNElements(); i++) {
-	cout << fitter.getElement(i) << endl;
+      for (uInt i=0; i<fitter.list().nelements(); i++) {
+	cout << fitter.list()[i] << endl;
       };
       cout << "Execute the fitter, can do (1:Y): " <<
-	fitter.fit(freq, dat) << endl;
+	fitter.fit(dat, freq) << endl;
       cout << "The results: " << endl;
-      for (uInt i=0; i<fitter.getNElements(); i++) {
-	cout << fitter.getElement(i) << endl;
+      for (uInt i=0; i<fitter.list().nelements(); i++) {
+	cout << fitter.list()[i] << endl;
       };
       
       cout << "---------------------------------------------------" << endl;
@@ -274,7 +280,7 @@ int main(int argc, char **argv) {
       Double avg(0);
       Double sg(0);
       xdat = dat;
-      fitter.residual(xdat, freq);
+      fitter.list().residual(xdat, freq);
       convertArray(fxdat, xdat);
       mx = max(xdat);
       mn = min(xdat);
@@ -293,17 +299,18 @@ int main(int argc, char **argv) {
       cout << "Estimates: " << endl;
       SpectralEstimate mest(0.1, 0.5);
       mest.setQ(5);
-      Int mr = mest.estimate(fdat);
+      const SpectralList &slist = mest.estimate(fdat);
+      Int mr = slist.nelements();
       cout << "Found " << mr << " estimates" << endl;
       for (Int i=0; i<mr; i++) {
-	cout << "Estimate " << i << ": " << mest.element(i) << endl;
+	cout << "Estimate " << i << ": " << slist[i] << endl;
       };
       plotter.env(ffreq(0), ffreq(1023), -1, 12, 0, 0);
       plotter.sci(1);
       plotter.lab("", "", "Synthetic spectra and residual after estimates");
       plotter.line(ffreq, fdat);
       fxdat= fdat;
-      mest.residual(fxdat);
+      slist.residual(fxdat);
       plotter.sci(2);
       plotter.line(ffreq, fxdat);
       plotter.env(ffreq(0), ffreq(1023), -1, 12, 0, 0);
@@ -312,11 +319,41 @@ int main(int argc, char **argv) {
       plotter.line(ffreq, fdat);
       plotter.sci(2);
       for (Int j=0; j<mr; j++) {
-	mest.evaluate(fxdat);
+	slist.evaluate(fxdat);
 	plotter.line(ffreq, fxdat);
       };
       plotter.env(ffreq(0), ffreq(1023), -1, 12, 0, 0);
       
+      cout << "---------------------------------------------------" << endl;
+      cout << "Limited number of estimates: " << endl;
+      {
+	SpectralEstimate mest(0.1, 0.5, 0.0, 4);
+	mest.setQ(5);
+	const SpectralList &slist = mest.estimate(fdat);
+	Int mr = slist.nelements();
+	cout << "Found " << mr << " estimates" << endl;
+	for (Int i=0; i<mr; i++) {
+	  cout << "Estimate " << i << ": " << slist[i] << endl;
+	};
+	plotter.env(ffreq(0), ffreq(1023), -1, 12, 0, 0);
+	plotter.sci(1);
+	plotter.lab("", "", "Synthetic spectra and residual after estimates");
+	plotter.line(ffreq, fdat);
+	fxdat= fdat;
+	slist.residual(fxdat);
+	plotter.sci(2);
+	plotter.line(ffreq, fxdat);
+	plotter.env(ffreq(0), ffreq(1023), -1, 12, 0, 0);
+	plotter.sci(1);
+	plotter.lab("", "", "Synthetic spectrum with estimates");
+	plotter.line(ffreq, fdat);
+	plotter.sci(2);
+	for (Int j=0; j<mr; j++) {
+	  slist.evaluate(fxdat);
+	  plotter.line(ffreq, fxdat);
+	};
+	plotter.env(ffreq(0), ffreq(1023), -1, 12, 0, 0);
+      }      
       cout << "---------------------------------------------------" << endl;
       
     } catch (AipsError x) {

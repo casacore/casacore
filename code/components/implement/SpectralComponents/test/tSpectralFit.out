@@ -338,3 +338,26 @@ Estimate 19: GAUSSIAN element:
   Sigma:     2.78615
 
 ---------------------------------------------------
+Limited number of estimates: 
+Found 4 estimates
+Estimate 0: GAUSSIAN element: 
+  Amplitude: 4.93017
+  Center:    307.195
+  Sigma:     7.1863
+
+Estimate 1: GAUSSIAN element: 
+  Amplitude: 2.79525
+  Center:    511.819
+  Sigma:     7.75084
+
+Estimate 2: GAUSSIAN element: 
+  Amplitude: 0.906691
+  Center:    766.653
+  Sigma:     5.44959
+
+Estimate 3: GAUSSIAN element: 
+  Amplitude: 0.90563
+  Center:    501.372
+  Sigma:     8.48239
+
+---------------------------------------------------
