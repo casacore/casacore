@@ -68,6 +68,7 @@ template<class T> class MaskedLattice;
 
 // <todo asof="1998/12/11">
 //  <li> Return error estimates
+//  <li> template it 
 //  <li> Speed up some Array calculations indexed with IPositions
 //  <li> Don't handle Lattices simply by getting pixels into Arrays
 // </todo>
@@ -105,6 +106,14 @@ public:
 
     // Destructor
     ~Fit2D();
+
+    // Copy constructor.  Uses copy semantics except for the logger
+    // for which a reference copy is made
+    Fit2D(const Fit2D& other);
+
+    // Assignment operator. Uses copy semantics except for the logger
+    // for which a reference copy is made
+    Fit2D& operator=(const Fit2D& other);
 
     // Add a model to the list to be simultaneously fit and 
     // return its index
@@ -170,7 +179,7 @@ public:
     //<group>
     Vector<Double> solution() const;
     Vector<Double> solution(uInt which);
-    //<group>
+    //</group>
 
     // Recover solution for either all model components or
     // a specific one.  These functions will return an empty vector
@@ -179,7 +188,7 @@ public:
     //<group>
     Vector<Double> availableSolution () const;
     Vector<Double> availableSolution (uInt which);
-    //<group>
+    //</group>
 
     // The number of iterations that the fitter finished with
     uInt numberIterations() const;
@@ -199,6 +208,7 @@ public:
 private:
 
    LogIO itsLogger;
+
    Bool itsValid, itsValidSolution, itsIsNormalized, itsHasSigma;
    Bool itsInclude;
    Vector<Float> itsPixelRange;
