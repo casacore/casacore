@@ -34,8 +34,11 @@
 #include <fcntl.h>                // needed for ::open
 #include <errno.h>                // needed for errno
 #include <string.h>               // needed for strerror
-#include <sys/ioctl.h>            // needed for ioctl
 #include <sys/mtio.h>             // needed for ioctl
+#if defined(AIPS_SOLARIS)
+#include <sys/ioctl.h>            // needed for ioctl
+#include <sys/types.h>            // needed for ioctl
+#endif
 
 TapeIO::TapeIO()
   :itsDevice(-1),
@@ -149,6 +152,70 @@ void TapeIO::mark(uInt howMany) {
 		      + strerror(errno)));
     }
   }
+}
+
+Bool TapeIO::fixedBlocks() const {
+  return  (getBlockSize() != 0) ? True : False;
+}
+
+uInt TapeIO::fixedBlockSize() const {
+  return getBlockSize();
+}
+
+void TapeIO::setFixedBlockSize(uInt sizeInBytes) {
+  DebugAssert(sizeInBytes > 0, AipsError);
+  setBlockSize(sizeInBytes);
+}
+
+void TapeIO::setVariableBlockSize() {
+  setBlockSize(0);
+}
+
+void TapeIO::setBlockSize(uInt sizeInBytes) {
+#if defined(AIPS_SOLARIS) || defined(AIPS_LINUX)
+  struct mtop tapeCommand;
+#if defined(AIPS_LINUX) 
+  tapeCommand.mt_op = MTSETBLK;
+#else 
+  tapeCommand.mt_op = MTSRSZ;
+#endif
+  tapeCommand.mt_count = sizeInBytes;
+  Int error = ::ioctl(itsDevice, MTIOCTOP, &tapeCommand);
+  if (error != 0) {
+    throw(AipsError(String("TapeIO::setVariableBlockSize - ") + 
+		    String("error returned by ioctl: ") 
+		    + strerror(errno)));
+  }
+#endif
+}
+
+uInt TapeIO::getBlockSize() const {
+#if defined(AIPS_SOLARIS) || defined(AIPS_LINUX)
+#if defined(AIPS_LINUX) 
+  struct mtget tapeInquiry;
+  Int error = ::ioctl(itsDevice, MTIOCGET, &tapeInquiry);
+  if (error != 0) {
+    throw(AipsError(String("TapeIO::setVariableBlockSize - ") + 
+		    String("error returned by ioctl: ") 
+		    + strerror(errno)));
+  }
+  return tapeInquiry.mt_dsreg & MT_ST_BLKSIZE_MASK;
+#else 
+  struct mtdrivetype tapeInfo;
+  struct mtdrivetype_request tapeInquiry;
+  tapeInquiry.size = sizeof(struct mtdrivetype);
+  tapeInquiry.mtdtp = &tapeInfo;
+  Int error = ::ioctl(itsDevice, MTIOCGETDRIVETYPE, &tapeInquiry);
+  if (error != 0) {
+    throw(AipsError(String("TapeIO::setVariableBlockSize - ") + 
+		    String("error returned by ioctl: ") 
+		    + strerror(errno)));
+  }
+  return tapeInfo.bsize;
+#endif
+#else
+  return 0;
+#endif
 }
 
 Int64 TapeIO::doSeek (Int64 offset, ByteIO::SeekOption dir) {

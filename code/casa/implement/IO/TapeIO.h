@@ -28,14 +28,11 @@
 #if !defined(AIPS_TAPEIO_H)
 #define AIPS_TAPEIO_H
 
-//# Includes
 #include <aips/aips.h>
 #include <aips/IO/ByteIO.h>
 #include <aips/Utilities/String.h>
 
-//# Forward Declarations
 class Path;
-
 
 // <summary>Class for IO on a tape device</summary>
 
@@ -126,7 +123,7 @@ public:
   // or an error occured, unless throwException is set to False. Will always
   // throw an exception if the tape is not readable or the system call returns
   // an undocumented value. Returns zero if the tape is at the end of the
-  // current file (and size if non-zero and throwException is False).
+  // current file (and size is non-zero and throwException is False).
   virtual Int read(uInt size, void* buf, Bool throwException=True);    
 
   // Rewind the tape device to the beginning.
@@ -139,7 +136,24 @@ public:
   // write the specified number of filemarks.
   virtual void mark(uInt howMany=1);
   
-  // Get the length of the tape device.  Not a meaningful function in for this
+  // returns True if the tape device is configured to use a fixed block size
+  Bool fixedBlocks() const;
+
+  // returns the block size in bytes. Returns zero if the device is configured
+  // to use variable length blocks.
+  uInt fixedBlockSize() const;
+
+  // Configure the tape device to use fixed length blocks of the specified
+  // size. The size must be bigger than zero (dugh!). Values bigger than 64k
+  // may cause problems on some systems. Currently this function only does
+  // anything under Solaris and Linux systems.
+  void setFixedBlockSize(uInt sizeInBytes);
+
+  // Configure the tape device to use variable length blocks. Currently this
+  // function only does anything under Solaris and Linux systems.
+  void setVariableBlockSize();
+
+  // Get the length of the tape device.  Not a meaningful function for this
   // class and this function always returns -1.
   virtual Int64 length();
   
@@ -164,7 +178,6 @@ public:
   static void close(int fd);
   // </group>
 
-
 protected:
   // Detach the FILE. Close it when it is owned.
   void detach();
@@ -186,6 +199,9 @@ private:
   // generate default ones. They cannot be used and are not defined.
   TapeIO (const TapeIO& that);
   TapeIO& operator= (const TapeIO& that);
+
+  void setBlockSize(uInt sizeInBytes);
+  uInt getBlockSize() const;
 
   int         itsDevice;
   Bool        itsOwner;
