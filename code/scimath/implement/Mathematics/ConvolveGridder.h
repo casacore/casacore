@@ -1,5 +1,5 @@
 //# ConvolveGridder.h: Definition for Convolutional Gridder
-//# Copyright (C) 1996,1997
+//# Copyright (C) 1996,1997,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -34,6 +34,10 @@
 #ifdef __GNUG__
 typedef Vector<Double> gppbug3;
 #endif
+
+// <summary>
+// Does convolutional gridding
+// </summary>
 
 template <class Domain, class Range>
 class ConvolveGridder : public Gridder<Domain, Range>{
