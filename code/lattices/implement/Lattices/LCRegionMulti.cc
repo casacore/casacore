@@ -31,7 +31,6 @@
 #include <aips/Tables/TableRecord.h>
 #include <aips/Utilities/Assert.h>
 #include <aips/Exceptions/Error.h>
-#include <stdio.h>                          // for sprintf
 
 
 LCRegionMulti::LCRegionMulti()
@@ -116,8 +115,13 @@ LCRegionMulti& LCRegionMulti::operator= (const LCRegionMulti& other)
     if (this != &other) {
 	LCRegion::operator= (other);
 	itsHasMask = other.itsHasMask;
-	itsRegions.resize (other.itsRegions.nelements(), True);
 	uInt nr = itsRegions.nelements();
+	for (uInt j=0; j<nr; j++) {
+	    delete itsRegions[j];
+	    itsRegions[j] = 0;
+	}
+	itsRegions.resize (other.itsRegions.nelements(), True);
+	nr = itsRegions.nelements();
 	for (uInt i=0; i<nr; i++) {
 	    itsRegions[i] = other.itsRegions[i]->cloneRegion();
 	}
@@ -144,40 +148,37 @@ void LCRegionMulti::multiTranslate (PtrBlock<const LCRegion*>& regions,
 
 Bool LCRegionMulti::operator== (const LCRegion& other) const
 {
-   
-// Check below us
-
-   if (!LCRegion::operator==(other)) return False;
-
-// Caste (is safe)
-
-   const LCRegionMulti& that = (const LCRegionMulti&)other;
-
-// Check regions
-
-   if (itsRegions.nelements() != that.itsRegions.nelements()) return False;
-
-// The regions don't have to be in the same order.  This
-// makes it slower
-
-   Vector<Bool> used(itsRegions.nelements(),False);
-   for (uInt i=0; i<itsRegions.nelements(); i++) {
-      Bool found = False;
-      for (uInt j=0; j<that.itsRegions.nelements(); j++) {
-         if (!used(j)) {      
-            if ((*itsRegions[i]) == (*(that.itsRegions[j]))) {
-               used(j) = True;
-               found = True;
-               break;
-            }
-         }
-      }
-      if (!found) return False;
-   }
-
-   return True;
+    // Check if parent class matches.
+    // If so, we can safely cast.
+    if (! LCRegion::operator== (other)) {
+	return False;
+    }
+    const LCRegionMulti& that = (const LCRegionMulti&)other;
+    // Check the regions.
+    if (itsRegions.nelements() != that.itsRegions.nelements()) {
+	return False;
+    }
+    // The regions do not have to be in the same order.
+    // It makes it a bit slower.
+    uInt nr = itsRegions.nelements();
+    Vector<Bool> used(nr, False);
+    for (uInt i=0; i<nr; i++) {
+	Bool found = False;
+	for (uInt j=0; j<nr; j++) {
+	    if (!used(j)) {      
+		if (*itsRegions[i] == *(that.itsRegions[j])) {
+		    used(j) = True;
+		    found = True;
+		    break;
+		}
+	    }
+	}
+	if (!found) {
+	    return False;          // no matching region
+	}
+    }
+    return True;
 }
-
 
 
 void LCRegionMulti::init (Bool takeOver)
@@ -211,53 +212,103 @@ Bool LCRegionMulti::findAreas (IPosition& bufStart, IPosition& bufEnd,
 			       IPosition& regStart, IPosition& regEnd,
 			       const Slicer& section, uInt regNr) const
 {
+    DebugAssert (regNr < itsRegions.nelements(), AipsError);
     uInt nrdim = section.ndim();
     bufStart.resize (nrdim);
     bufEnd.resize (nrdim);
     regStart.resize (nrdim);
     regEnd.resize (nrdim);
-    const IPosition& bboxstart = box().start();
-    const IPosition& rstart = itsRegions[regNr]->box().start();
-    const IPosition& rend = itsRegions[regNr]->box().end();
+    const IPosition& bboxstart = boundingBox().start();
+    const IPosition& rstart = itsRegions[regNr]->boundingBox().start();
+    const IPosition& rend = itsRegions[regNr]->boundingBox().end();
     Bool overlap = True;
     for (uInt j=0; j<nrdim; j++) {
         Int bstart = bboxstart(j);
-        Int secst  = section.start()(j);
-	Int secend = section.end()(j);
-	Int regst  = rstart(j) - bstart;
-	Int regend = rend(j) - bstart;
+        Int secst  = section.start()(j);      // section start in bounding box
+	Int secend = section.end()(j);        // section end in bounding box
+	Int secinc = section.stride()(j);
+	Int regst  = rstart(j) - bstart;      // region start in bounding box
+	Int regend = rend(j) - bstart;        // region end in bounding box
+	// Exit if there is no overlap between this region and the
+	// requested section in the entire bounding box.
         if (regst > secend  ||  regend < secst) {
 	    overlap = False;
 	    break;
 	}
-	if (secst < regst) {
-	    regStart(j) = 0;
-	    bufStart(j) = regst-secst;
+	// Fine, there is overlap.
+	// Now find out where the section starts in the region and in
+	// the receiving buffer. There are several cases:
+	// - section starts before or after region
+	// - section ends before or after region
+	// Life is complicated by the fact that the section can have a
+	// stride. This less common case is handled separately to
+	// not to affect performance of common case stride==1.
+	// At the end we get:
+	// - bufStart gives the offset of the first pixel in the buffer
+	// - bufEnd   gives the offset of the last pixel in the buffer
+	// - regStart gives the offset of the first pixel in the region
+	// - regEnd   gives the offset of the last pixel in the region
+	// They tell the caller where to get the required pixels from
+	// this region and where to store them in the buffer.
+	if (secinc == 1) {
+	    Int diff = secst - regst;
+	    if (diff >= 0) {
+		regStart(j) = diff;        // section starts at or after region
+		bufStart(j) = 0;
+	    } else {
+		regStart(j) = 0;           // section starts before region
+		bufStart(j) = -diff;
+	    }
+	    if (regend < secend) {
+		regEnd(j) = regend-regst;  // section ends after region
+		bufEnd(j) = regend-secst;
+	    } else {
+		regEnd(j) = secend-regst;  // section ends at or before region
+		bufEnd(j) = secend-secst;
+	    }
 	} else {
-	    regStart(j) = secst-regst;
-	    bufStart(j) = 0;
+	    // The case with stride>1 is a bit more complicated.
+	    // The buffer has no stride (it receives the required pixels only),
+	    // so when determining its starts, we must take the increment
+	    // into account. When the section starts before the boundary,
+	    // the actual start in the region must be on a stride alignment.
+	    // It is also possible that the increment is such that the
+	    // entire region is skipped.
+	    Int diff = secst - regst;
+	    if (diff >= 0) {
+		regStart(j) = diff;
+		bufStart(j) = 0;
+	    } else {
+		Int diffalign = 1 + (-1-diff)/secinc;
+		regStart(j) = diffalign*secinc + diff;
+		bufStart(j) = diffalign;
+	    }
+	    if (regend < secend) {
+		regEnd(j) = regend-regst;
+	    } else {
+		regEnd(j) = secend-regst;
+	    }
+	    if (regEnd(j) < regStart(j)) {
+		overlap = False;
+		break;
+	    }
+	    bufEnd(j) = bufStart(j) + (regEnd(j)-regStart(j))/secinc;
 	}
-	if (regend < secend) {
-	    regEnd(j) = regend-regst;
-	    bufEnd(j) = regend-secst;
-	} else {
-	    regEnd(j) = secend-regst;
-	    bufEnd(j) = secend-secst;
-	}
+	DebugAssert (bufEnd(j)-bufStart(j) == (regEnd(j)-regStart(j))/secinc,
+		     AipsError);
     }
     return overlap;
 }
+
 
 TableRecord LCRegionMulti::makeRecord (const String& tableName) const
 {
     TableRecord rec;
     Int nr = itsRegions.nelements();
-    rec.define ("nr", nr);
-    char str[8];
     for (Int i=0; i<nr; i++) {
-        sprintf (str, "r%i", i);
-	rec.defineRecord (str, itsRegions[i]->toRecord (tableName));
+	rec.defineRecord (i, itsRegions[i]->toRecord (tableName));
     }
+    rec.define ("nr", nr);
     return rec;
 }
 
@@ -267,10 +318,8 @@ void LCRegionMulti::unmakeRecord (PtrBlock<const LCRegion*>& regions,
 {
     Int nr = rec.asInt ("nr");
     regions.resize (nr, True);
-    char str[8];
     for (Int i=0; i<nr; i++) {
-        sprintf (str, "r%i", i);
-	regions[i] = LCRegion::fromRecord (rec.asRecord (str), tableName);
+	regions[i] = LCRegion::fromRecord (rec.asRecord (i), tableName);
     }
 }
 
