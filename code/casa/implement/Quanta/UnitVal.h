@@ -1,5 +1,5 @@
 //# UnitVal.h: defines the class describing a unit as a value and a dimension
-//# Copyright (C) 1994,1995,1996,1997,1998,1999,2000,2001
+//# Copyright (C) 1994-1999,2000,2001,2004
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -300,6 +300,7 @@ class UnitVal {
 ostream& operator<<(ostream &os, const UnitVal &ku);
 // </group>
 
+// <summary> Static initialisation of UnitVal constants </summary>
 static class UnitVal_static_initializer {
   public:
     UnitVal_static_initializer( ) {
