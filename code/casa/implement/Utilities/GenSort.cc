@@ -143,7 +143,7 @@ T GenSort<T>::kthLargest (T* data, uInt nr, uInt k)
 	if (i >= Int(k)) end = i;
     }
     if (end == st+1) {
-      if (data[st] < data[end]) {
+      if (data[st] > data[end]) {
 	swap (data[st], data[end]);
       }
     }
