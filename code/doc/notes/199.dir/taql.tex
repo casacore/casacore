@@ -967,42 +967,67 @@ that indexing arrays should be done with care.
 
 \section{Examples}
 \begin{description}
-  \item[] \texttt{SELECT FROM mytable WHERE column1 $>$ 0 }
+  \item[] \texttt{ SELECT FROM mytable WHERE column1 $>$ 0 }
     \\selects the rows in which the value of column1 $>$ 0
+    \\
   \item[] \texttt{ SELECT column0,column1 FROM mytable }
     \\selects 2 columns from the table.
+    \\
   \item[] \texttt{ SELECT column0,column1 FROM mytable WHERE column1$>$0 }
     \\is a combination of the previous selections.
-  \item[] \texttt{ SELECT FROM mytable WHERE column0 IN}
-       \\\texttt{[SELECT FROM outtable ORDERBY column0 DESC][1:10] }
-       \\selects the 10 highest values of \texttt{column0}
-  \item[] \texttt{ SELECT FROM mytable ORDERBY column0 DESC GIVING outtable}
-       \\\texttt{SELECT FROM outtable WHERE rownumber()$<=$10 }
-       \\is the less elegant SQL solution for the previous problem.
+    \\
+  \item[] \texttt{ SELECT FROM mytable WHERE column0 IN }
+    \\\texttt{ [SELECT FROM outtable ORDERBY column0 DESC][1:10] }
+    \\selects the 10 highest values of \texttt{column0}
+    \\
+  \item[] \texttt{ SELECT FROM mytable ORDERBY column0 DESC GIVING outtable }
+    \\\texttt{ SELECT FROM outtable WHERE rownumber()$<=$10 }
+    \\is the SQL-like solution for the previous problem.
+    It is less elegant, because it requires two steps.
+  \item[] \texttt{ SELECT FROM some.MS WHERE }
+    \\\texttt{ near(TIME/(24*3600),MJD(1999/03/30/17:27:15)) }
+    \\selects the rows with the given time from a MeasurementSet.
+    \\Note that the TIME is stored in seconds; the division converts
+	it to days.
+   \item[] \texttt{ SELECT FROM some.MS where TIME/(24*3600) in }
+     \\\texttt{ [\{MJD(1999/03/30/17:27:15),MJD(1999/03/30/17:29:15)\}] }
+     \\selects the rows in the given closed time interval.
+     \\
+   \item[] \texttt{ SELECT FROM some.MS where TIME/(24*3600) in }
+     \\\texttt{ [MJD(1999/03/30/17:27:15),MJD(1999/03/30/17:29:15)] }
+     \\selects the rows having one of the given times.
+     \\Note the difference with the previous example where an interval
+     was given. Here a set of two individual time values is given.
+     \\
   \item[] \texttt{ SELECT FROM resource.table WHERE}
-       \\\texttt{any(PValues == pattern('synth*'))}
-       \\selects the rows in which an element in array
-       \texttt{PValues} matches the given regular expression.
+     \\\texttt{any(PValues == pattern('synth*'))}
+     \\selects the rows in which an element in array
+     \texttt{PValues} matches the given regular expression.
+     \\
   \item[] \texttt{ SELECT FROM table WHERE ntrue(flags) >= 3}
-    \\selects rows where at least 3 elements of array \texttt{flags}
-    are set.
+     \\selects rows where at least 3 elements of array \texttt{flags}
+     are set.
+     \\
   \item[] \texttt{ SELECT FROM book.table WHERE nelements(author) > 1}
-    \\selects books with more than 1 author.
+     \\selects books with more than 1 author.
+     \\
   \item[] \texttt{ SELECT FROM mytable WHERE}
-       \\\texttt{ cos(0d1m) $<$
+     \\\texttt{ cos(0d1m) $<$
          sin(52deg) * sin(DEC) + cos(52deg) * cos(DEC) *
          cos(3h30m - RA) }
-       \\selects observations with an equatorial position (in say J2000)
-       inside a circle with a radius of 1 arcmin around (3h30m, 52deg).
-       To find them the condition DISTANCE$<=$RADIUS must be fulfilled,
-       which is equivalent to COS(RADIUS)$<=$COS(DISTANCE).
-       \\Note that in the future this useful astronomical test could
-       be implemented as a function of its own (with better optimization
-       possibilities).
+     \\selects observations with an equatorial position (in say J2000)
+     inside a circle with a radius of 1 arcmin around (3h30m, 52deg).
+     To find them the condition DISTANCE$<=$RADIUS must be fulfilled,
+     which is equivalent to COS(RADIUS)$<=$COS(DISTANCE).
+     \\Note that in the future this useful astronomical test could
+     be implemented as a function of its own (with better optimization
+     possibilities).
+     \\
   \item[] \texttt{ SELECT FROM mytable WHERE object == pattern("3C*") \&\&}
-       \\\texttt{cos(0d1m) $<$ sin(52deg) * sin(DEC) + cos(52deg) *
+     \\\texttt{cos(0d1m) $<$ sin(52deg) * sin(DEC) + cos(52deg) *
         cos(DEC) * cos(3h30m - RA) }
-       \\finds all 3C objects inside that circle.
+     \\finds all 3C objects inside that circle.
+     \\
 \end{description}
 
 \section{\label{TAQL:GLISHC}Interface to TaQL}
