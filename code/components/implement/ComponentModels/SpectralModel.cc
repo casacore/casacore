@@ -44,21 +44,21 @@ SpectralModel::SpectralModel()
   :itsRefFreq(Quantum<Double>(1, "GHz"), MFrequency::LSR),
    itsFreqUnit("GHz")
 {
-  DebugAssert(ok(), AipsError);
+  DebugAssert(SpectralModel::ok(), AipsError);
 }
 
 SpectralModel::SpectralModel(const MFrequency& refFreq, const Unit& freqUnit)
   :itsRefFreq(refFreq),
    itsFreqUnit(freqUnit)
 {
-  DebugAssert(ok(), AipsError);
+  DebugAssert(SpectralModel::ok(), AipsError);
 }
 
 SpectralModel::SpectralModel(const SpectralModel& other) 
   :itsRefFreq(other.itsRefFreq),
    itsFreqUnit(other.itsFreqUnit)
 {
-  DebugAssert(ok(), AipsError);
+  DebugAssert(SpectralModel::ok(), AipsError);
 }
 
 SpectralModel& SpectralModel::operator=(const SpectralModel& other) {
@@ -66,37 +66,43 @@ SpectralModel& SpectralModel::operator=(const SpectralModel& other) {
     itsRefFreq = other.itsRefFreq;
     itsFreqUnit = other.itsFreqUnit;
   }
-  DebugAssert(ok(), AipsError);
+  DebugAssert(SpectralModel::ok(), AipsError);
   return *this;
 }
 
 SpectralModel::~SpectralModel() {
 }
 
+const String& SpectralModel::ident() const {
+  DebugAssert(SpectralModel::ok(), AipsError);
+  static const String typeString = ComponentType::name(type());
+  return typeString;
+}
+
 const MFrequency& SpectralModel::refFrequency() const {
-  DebugAssert(ok(), AipsError);
+  DebugAssert(SpectralModel::ok(), AipsError);
   return itsRefFreq;
 }
 
 void SpectralModel::setRefFrequency(const MFrequency& newRefFreq) {
   itsRefFreq = newRefFreq;
-  DebugAssert(ok(), AipsError);
+  DebugAssert(SpectralModel::ok(), AipsError);
 }
 
 const Unit& SpectralModel::frequencyUnit() const {  
-  DebugAssert(ok(), AipsError);
+  DebugAssert(SpectralModel::ok(), AipsError);
   return itsFreqUnit;
 }
 
 void SpectralModel::convertFrequencyUnit(const Unit& freqUnit) {
   itsFreqUnit = freqUnit;
-  DebugAssert(ok(), AipsError);
+  DebugAssert(SpectralModel::ok(), AipsError);
 }
 
 void  SpectralModel::sample(Vector<Double>& scale, 
 			    const Vector<MFrequency::MVType>& frequencies, 
 			    const MFrequency::Ref& refFrame) const {
-  DebugAssert(ok(), AipsError);
+  DebugAssert(SpectralModel::ok(), AipsError);
   const uInt nSamples = frequencies.nelements();
   DebugAssert(scale.nelements() == nSamples, AipsError);
   
@@ -140,7 +146,7 @@ Bool SpectralModel::fromRecord(String& errorMessage,
 
 Bool SpectralModel::toRecord(String& errorMessage,
 			     RecordInterface& record) const {
-  DebugAssert(ok(), AipsError);
+  DebugAssert(SpectralModel::ok(), AipsError);
   record.define(RecordFieldId("type"), ComponentType::name(type()));
   Record freqRecord;
   const MeasureHolder mh(refFrequency());
