@@ -6067,3 +6067,4 @@
 17 135 src mv trial/implement/Tables/test/tColumnsIndexArray.out aips/implement/Tables/test/tColumnsIndexArray.out
 17 136 src mv doc/recipes/recipe3/imager-ss433 doc/recipes/recipe3/imager-ss433.dir
 17 136 src mv doc/recipes/recipe4/timeimager doc/recipes/recipe4/timeimager.dir
+17 136 src mv doc/recipes/recipe5/mosaic-casa doc/recipes/recipe5/mosaic-casa.dir
